@@ -33,6 +33,7 @@
     <None Include="src\Language\Lua\Register\sqlte3.alittle" />
     <None Include="src\OOP\Lua\LuaBind.alittle" />
     <None Include="src\OOP\Lua\LuaClass.alittle" />
+    <None Include="src\OOP\Lua\LuaException.alittle" />
     <None Include="src\OOP\ReflectDefine.alittle" />
     <None Include="src\OOP\ReflectRegister.alittle" />
   </ItemGroup>

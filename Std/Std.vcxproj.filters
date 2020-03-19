@@ -79,5 +79,8 @@
     <None Include="src\OOP\ReflectRegister.alittle">
       <Filter>源文件\OOP</Filter>
     </None>
+    <None Include="src\OOP\Lua\LuaException.alittle">
+      <Filter>源文件\OOP\Lua</Filter>
+    </None>
   </ItemGroup>
 </Project>

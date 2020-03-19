@@ -23,6 +23,12 @@
     <Filter Include="源文件\Language\JavaScript\Native">
       <UniqueIdentifier>{0c183cae-5e9d-4fbc-a43b-e58b7d36946c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="源文件\OOP">
+      <UniqueIdentifier>{0b6b482e-22c0-4feb-b537-3f46bae0a0d5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\OOP\Lua">
+      <UniqueIdentifier>{7baef148-3500-4b42-8fc8-0cf42f3ba5b4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Language\Lua\Register\sqlte3.alittle">
@@ -60,6 +66,18 @@
     </None>
     <None Include="src\Language\Lua\Native\math.alittle">
       <Filter>源文件\Language\Lua\Native</Filter>
+    </None>
+    <None Include="src\OOP\ReflectDefine.alittle">
+      <Filter>源文件\OOP</Filter>
+    </None>
+    <None Include="src\OOP\Lua\LuaBind.alittle">
+      <Filter>源文件\OOP\Lua</Filter>
+    </None>
+    <None Include="src\OOP\Lua\LuaClass.alittle">
+      <Filter>源文件\OOP\Lua</Filter>
+    </None>
+    <None Include="src\OOP\ReflectRegister.alittle">
+      <Filter>源文件\OOP</Filter>
     </None>
   </ItemGroup>
 </Project>

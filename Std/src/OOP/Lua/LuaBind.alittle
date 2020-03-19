@@ -1,5 +1,6 @@
 
-namespace ALittle;
+[Language(LuaJIT)]
+namespace Lua;
 
 private var select = lua.select;
 private var unpack = lua.unpack;
@@ -8,6 +9,7 @@ private var setmetatable = lua.setmetatable;
 private var getmetatable = lua.getmetatable;
 private var coroutine = lua.coroutine;
 private var type = lua.type;
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

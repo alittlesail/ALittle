@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -31,6 +31,10 @@
     <None Include="src\Language\Lua\Register\json.alittle" />
     <None Include="src\Language\Lua\Register\lfs.alittle" />
     <None Include="src\Language\Lua\Register\sqlte3.alittle" />
+    <None Include="src\OOP\Lua\LuaBind.alittle" />
+    <None Include="src\OOP\Lua\LuaClass.alittle" />
+    <None Include="src\OOP\ReflectDefine.alittle" />
+    <None Include="src\OOP\ReflectRegister.alittle" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

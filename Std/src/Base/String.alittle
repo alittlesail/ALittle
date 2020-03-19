@@ -1,0 +1,427 @@
+namespace ALittle;
+
+private var byte = lua.String.byte;
+private var sub = lua.String.sub;
+private var len = lua.String.len;
+private var find = lua.String.find;
+private var concat = lua.table.concat;
+private var type = lua.type;
+private var tostring = lua.tostring;
+private var tonumber = lua.tonumber;
+private var floor = lua.math.floor;
+private var time = lua.os.time;
+private var maxn = lua.table.maxn;
+private var random = lua.math.random;
+
+// 深度复制表
+public static String_CopyTable<T>(T info) : T
+{
+    var new_info = new Map<any, any>();
+    for (var key, value in cast<Map<any, any> >(info))
+    {
+        if (type(value) != "table")
+            new_info[key] = value;
+        else
+            new_info[key] = String_CopyTable(value);
+    }
+    return cast<T>(new_info);
+}
+
+// 去掉前后空格
+public static String_Trim(string content) :string
+{
+    return A_ScriptSystem.Trim(content);
+}
+
+// 根据分隔符拆分字符串成列表，正常版本
+public static String_Split(string target, string sep) : List<string>
+{
+    if (target == null)
+        return new List<string>();
+    if (sep == null || sep == "")
+        sep = ":";
+    var fields = new List<string>();
+    var fields_count = 0;
+    var start_pos = 1;
+    while (true)
+    {
+        var start_index = find(target, sep, start_pos, true);
+        if (start_index == null)
+        {
+            ++fields_count;
+            fields[fields_count] = sub(target, start_pos);
+            break;
+        }
+        ++fields_count;
+        fields[fields_count] = sub(target, start_pos, start_index - 1);
+        start_pos = start_index + len(sep);
+    }
+    return fields;
+}
+
+// 根据分隔符拆分字符串成列表，正常版本
+public static String_SplitSepList(string target, List<string> sep_list) : List<string>
+{
+    if (target == null) return new List<string>();
+    if (sep_list == null) sep_list = new List<string>();
+
+    var fields = new List<string>();
+    var fields_count = 0;
+    var start_pos = 1;
+    while (true)
+    {
+        var start_index:int;
+        var end_index:int;
+        for (var _, sep in sep_list)
+        {
+            var start_index_tmp = find(target, sep, start_pos, true);
+            if (start_index_tmp != null)
+            {
+                if (start_index == null || start_index_tmp < start_index)
+                {
+                    start_index = start_index_tmp;
+                    end_index = start_index + len(sep) - 1;
+                }
+            }
+        }
+        if (start_index == null)
+        {
+            var value = sub(target, start_pos);
+            if (len(value) > 0)
+            {
+                ++ fields_count;
+                fields[fields_count] = sub(target, start_pos);
+            }
+            break;
+        }
+
+        var value = sub(target, start_pos, start_index - 1);
+        if (len(value) > 0)
+        {
+            ++ fields_count;
+            fields[fields_count] = sub(target, start_pos, start_index - 1);
+        }
+        start_pos = end_index + 1;
+    }
+    return fields;
+}
+
+// 把列表以分隔符合并成字符串
+public static String_Join<T>(List<T> list, string sep) : string
+{
+    return concat(list, sep);
+}
+
+// 往Url尾巴添加参数
+public static String_UrlAppendParam(string url, string param) : string
+{
+    if (find(url, "?", 1, true) == null)
+        url = url .. "?";
+    else
+        url = url .. "&";
+
+    return url .. param;
+}
+public static String_UrlAppendParamMap(string url, Map<string, any> param) : string
+{
+    var list = new List<string>();
+    var count = 0;
+    for (var key, value in param)
+    {
+        ++ count;
+        list[count] = key.."="..tostring(value);
+    }
+
+    if (find(url, "?", 1, true) == null)
+        url = url .. "?";
+    else
+        url = url .. "&";
+
+    return url .. String_Join(list, "&");
+}
+
+// 把Url解析成需要的信息
+struct UrlAnalyseInfo
+{
+    string protocol;
+    string ip;
+    int port;
+    string path;
+    Map<string, string> value_map;
+}
+public static String_UrlAnalyse(string url) : UrlAnalyseInfo
+{
+    var info = new UrlAnalyseInfo();
+    info.value_map = new Map<string, string>();
+
+    var start_pos = 1;
+    var start_index = find(url, "http://", start_pos, true);
+    if (start_index != null)
+    {
+        info.protocol = "http";
+        start_pos = start_index + len("http://");
+    }
+    else
+    {
+        start_index = find(url, "https://", start_pos, true);
+        if (start_index != null)
+        {
+            info.protocol = "https";
+            start_pos = start_index + len("https://");
+        }
+    }
+
+    var ip_and_port:string = null;
+    start_index = find(url, "/", start_pos, true);
+    if (start_index != null)
+        ip_and_port = sub(url, start_pos, start_index - 1);
+    else
+        ip_and_port = sub(url, start_pos);
+
+    var ip_start = find(ip_and_port, ":", 1, true);
+    if (ip_start != null)
+    {
+        info.ip = sub(ip_and_port, 1, ip_start - 1);
+        info.port = floor(tonumber(sub(ip_and_port, ip_start + 1)));
+    }
+    else
+    {
+        info.ip = ip_and_port;
+        info.port = 80;
+        if (info.protocol == "https")
+            info.port = 443;
+    }
+
+    if (start_index == null)
+        return info;
+
+    start_pos = start_index;
+    start_index = find(url, "?", start_pos, true);
+    if (start_index != null)
+        info.path = sub(url, start_pos, start_index - 1);
+    else
+        info.path = sub(url, start_pos);
+
+    if (start_index == null)
+        return info;
+
+    start_pos = start_index + 1;
+
+    var param_list = String_Split(sub(url, start_pos), "&");
+    for (var k, v in param_list)
+    {
+        var param_list_list = String_Split(v, "=");
+        if (param_list_list[1] != null && param_list_list[2] != null)
+            info.value_map[param_list_list[1]] = param_list_list[2];
+    }
+
+    return info;
+}
+
+class StringGenerateID
+{
+    private int _string_last_time;
+    private int _string_last_index;
+
+    public ctor()
+    {
+        this._string_last_index = 0;
+        this._string_last_time = 0;
+    }
+
+    public fun GenID(string pre) : string
+    {
+        var cur_time = time();
+        if (cur_time != this._string_last_time)
+        {
+            this._string_last_time = cur_time;
+            this._string_last_index = 0;
+        }
+        else
+        {
+            ++ this._string_last_index;
+        }
+        var result = "";
+        if (pre != null)
+            result = pre .. "-";
+        result = result .. this._string_last_time .. "-" .. this._string_last_index .. "-" .. random(0, 10000) .. "-" .. random(0, 10000);
+        return result;
+    }
+}
+
+private var A_StringGenerateID = new StringGenerateID();
+
+// 生成ID
+public static String_GenerateID(string pre) : string
+{
+    return A_StringGenerateID.GenID(pre);
+}
+
+// 替换
+public static String_Replace(string content, string old_split, string new_split) : string
+{
+    var list = String_Split(content, old_split);
+    return String_Join(list, new_split);
+}
+
+// 判断是不是手机号码
+public static String_IsPhoneNumber(string number) : bool
+{
+    var l = len(number);
+    for (var i = 1, l, 1)
+    {
+        var value = byte(number, i);
+        if (value < 48) return false;
+        if (value > 57) return false;
+    }
+
+    return true;
+}
+
+// 参数解析
+public static String_HttpAnalysisValueMap(string param, string content) : Map<string, any>
+{
+    var value_map = new Map<string, any>();
+    var param_split_list = String_Split(param, "&");
+    for (var index, param_content in param_split_list)
+    {
+        var value_split_list = String_Split(param_content, "=");
+        if (maxn(value_split_list) == 2)
+        {
+            if (sub(value_split_list[2], 1, 1) == "\""
+                && sub(value_split_list[2], -1, -1) == "\"")
+            {
+                value_map[value_split_list[1]] = sub(value_split_list[2], 2, -2);
+            }
+            else
+            {
+                var number = lua.tonumber(value_split_list[2]);
+                if (number == null)
+                    value_map[value_split_list[1]] = value_split_list[2];
+                else
+                    value_map[value_split_list[1]] = number;
+            }
+        }
+    }
+
+    if (len(content) > 0)
+    {
+        var error, value:Map<string, any> = tcall(lua.json.decode, content);
+        if (error == null)
+        {
+            for (var k, v in value)
+                value_map[k] = v;
+        }
+    }
+
+    return value_map;
+}
+
+// 把UTF8拆分成以一个字为单位的列表
+struct SplitUTF8Info
+{
+    List<string> list;
+    int count;
+}
+
+public static String_SplitUTF8(string content, SplitUTF8Info out)
+{
+    var result = new List<string>();
+    var l = len(content);
+    var offset = 0;
+    var count = 0;
+    while (l > offset)
+    {
+        var byte_count = A_ScriptSystem.GetUTF8ByteCountByOffset(content, offset);
+        ++ count;
+        result[count] = sub(content, offset + 1, offset + byte_count);
+        offset = offset + byte_count;
+    }
+
+    out.list = result;
+    out.count = count;
+}
+
+// 对字符串进行md5
+// param content
+// return md5
+public static String_MD5(string content) : string
+{
+    return A_ScriptSystem.StringMD5(content);
+}
+
+// 计算一个文件的MD5
+// param file_path
+// return md5 如果文件不存在会返回空串
+public static String_FileMD5(string path) :string
+{
+    return A_ScriptSystem.FileMD5(path);
+}
+
+// sha1加密
+public static String_Sha1(string content) : string
+{
+    return A_ScriptSystem.Sha1(content);
+}
+// base64解密
+public static String_Base64Decode(string content) : string
+{
+    return A_ScriptSystem.Base64Decode(content);
+}
+// base64加密
+public static String_Base64Encode(string content) : string
+{
+    return A_ScriptSystem.Base64Encode(content);
+}
+// UTF8 转 GBK (注意：只在windows平台有转换，其他平台不做转换直接不变传回来)
+public static String_UTF8ToGBK(string content) : string
+{
+    return A_ScriptSystem.UTF82GBK(content);
+}
+// GBK 转 UTF8 (注意：只在windows平台有转换，其他平台不做转换直接不变传回来)
+public static String_GBKToUTF8(string content) : string
+{
+    return A_ScriptSystem.GBK2UTF8(content);
+}
+// 获取UTF8的字的个数
+public static String_GetUTF8Length(string content) : int
+{
+    return A_ScriptSystem.GetUTF8Length(content);
+}
+// 获取UTF8的字的字节数
+public static String_CalcUTF8LengthOfWord(string content, int word_count) : int
+{
+    return A_ScriptSystem.CalcUTF8LengthOfWord(content, word_count);
+}
+
+// 把时间转为，XX天XX小时XX分钟XX秒
+public static String_FormatTime2Remain(int remain_time) : string
+{
+    var room_time_desc = "";
+    if (remain_time > TimeSecond.ONE_DAY_SECONDS)
+    {
+        var count = lua.math.floor(remain_time / TimeSecond.ONE_DAY_SECONDS);
+        remain_time = remain_time - count * TimeSecond.ONE_DAY_SECONDS;
+        room_time_desc = room_time_desc..count.."天";
+    }
+    if (remain_time > TimeSecond.ONE_HOUR_SECONDS)
+    {
+        var count = lua.math.floor(remain_time / TimeSecond.ONE_HOUR_SECONDS);
+        remain_time = remain_time - count * TimeSecond.ONE_HOUR_SECONDS;
+        room_time_desc = room_time_desc..count.."小时";
+    }
+    if (remain_time > TimeSecond.ONE_MINUTE_SECONDS)
+    {
+        var count = lua.math.floor(remain_time / TimeSecond.ONE_MINUTE_SECONDS);
+        remain_time = remain_time - count * TimeSecond.ONE_MINUTE_SECONDS;
+        room_time_desc = room_time_desc..count.."分钟";
+    }
+    if (remain_time > 0)
+    {
+        var count = lua.math.floor(remain_time / TimeSecond.ONE_MINUTE_SECONDS);
+        remain_time = remain_time - count * TimeSecond.ONE_MINUTE_SECONDS;
+        room_time_desc = room_time_desc..remain_time.."秒";
+    }
+
+    return room_time_desc;
+}

@@ -1,0 +1,210 @@
+
+namespace ALittle;
+
+public class ICSVFile
+{
+    public fun Close() {}
+    public fun ReadCell(int lua_row, int lua_col) : string { return ""; }
+    public fun GetRowCount() : int { return 0; }
+    public fun GetColCount() : int { return 0; }
+}
+
+public struct CSVInvokeInfo
+{
+    Functor<(string, CSVInvokeInfo):any> func;
+    
+    // 当这个结构体是上级的成员变量时，那么这个不为空
+    string var_name;
+    
+    // 如果是List
+    string split;
+    CSVInvokeInfo sub_info;
+    
+    // 如果是message，表示列表
+    List<CSVInvokeInfo> handle;
+}
+
+//回调注册部分//////////////////////////////////////////////////////////////////////////////////////////////////////////-
+
+private var floor = lua.math.floor;
+private var tonumber = lua.tonumber;
+private var maxn = lua.table.maxn;
+
+private static CSV_ReadBool(string content, CSVInvokeInfo value) : bool
+{
+    return lua.String.upper(content) == "TRUE";
+}
+
+private static CSV_ReadInt(string content, CSVInvokeInfo value) : int
+{
+    if (content == "") return 0;
+    return floor(tonumber(content));
+}
+
+private static CSV_ReadLong(string content, CSVInvokeInfo value) : long
+{
+    if (content == "") return 0;
+    return floor(tonumber(content));
+}
+
+private static CSV_ReadString(string content, CSVInvokeInfo value) : string
+{
+    return content;
+}
+
+private static CSV_ReadDouble(string content, CSVInvokeInfo value) : double
+{
+    if (content == "") return 0;
+    return tonumber(content);
+}
+
+private static CSV_ReadArray(string content, CSVInvokeInfo value) : List<any>
+{
+    var list = String_Split(content, value.split);
+    var result = new List<any>();
+    for (var index, sub in list)
+    {
+        var v = value.sub_info.func(sub, value.sub_info);
+        if (v == null) return null;
+        result[index] = v;
+    }
+    return result;
+}
+
+protected static CSV_ReadMessage(string content, CSVInvokeInfo value) : any
+{
+    var list = String_Split(content, value.split);
+    var t = new Map<string, any>();
+    for (var index, handle in value.handle)
+        t[handle.var_name] = handle.func(list[index], handle);
+    return t;
+}
+
+private var __csv_read_data_map = new Map<string, any>();
+__csv_read_data_map["bool"] = CSV_ReadBool;
+__csv_read_data_map["int"] = CSV_ReadInt;
+__csv_read_data_map["long"] = CSV_ReadLong;
+__csv_read_data_map["string"] = CSV_ReadString;
+__csv_read_data_map["double"] = CSV_ReadDouble;
+
+protected var __split_list = ["*","#",";"];     // 从左到右，从里到外
+protected var __split_list_last = __split_list[maxn(__split_list)];
+protected var __split_list_max = maxn(__split_list);
+
+//构造部分//////////////////////////////////////////////////////////////////////////////////////////////////////////-
+private var find = lua.String.find;
+private var sub = lua.String.sub;
+
+protected static CalcCSVSubInfoSplit(string sub_type, int split_index) : int
+{
+    if (find(sub_type, "List<", 1, true) == 1)
+        return CalcCSVSubInfoSplit(sub(sub_type, 6, -2), split_index + 1);
+    
+    if (find(sub_type, "Map<", 1, true) == 1)
+        throw("不支持Map解析");
+    
+    var func = __csv_read_data_map[sub_type];
+    if (func != null) return split_index;
+    
+    return CalcCSVInfoSplitImpl(sub_type, split_index + 1);
+}
+
+protected static CalcCSVInfoSplitImpl(string var_type, int split_index) : int
+{
+    var rflt = FindStructByName(var_type);
+    assert(rflt != null, "FindReflectByName调用失败! 未知类型:" .. var_type);
+    
+    var max_count = split_index;
+    for (var index, var_name in rflt.name_list)
+    {
+        var count = CalcCSVSubInfoSplit(rflt.type_list[index], split_index);
+        if (max_count < count) max_count = count;
+    }
+    return max_count;
+}
+
+protected static CalcCSVInfoSplit(StructInfo rflt) : int
+{
+    var max_count = 0;
+    for (var index, var_name in rflt.name_list)
+    {
+        var count = CalcCSVSubInfoSplit(rflt.type_list[index], 0);
+        if (max_count < count) max_count = count;
+    }
+    return max_count;
+}
+
+protected static CreateCSVSubInfo(string sub_type, int split_index) : CSVInvokeInfo
+{
+    var func = __csv_read_data_map[sub_type];
+    if (func != null)
+    {
+        var sub_info = new CSVInvokeInfo();
+        sub_info.func = func;
+        return sub_info;
+    }
+    
+    if (find(sub_type, "List<", 1, true) == 1)
+        return CreateCSVArrayInfo(sub_type, split_index);
+    
+    if (find(sub_type, "Map<", 1, true) == 1)
+        throw("不支持Map解析");
+    
+    return CreateCSVInfoImpl(sub_type, split_index);
+}
+
+protected static CreateCSVArrayInfo(string var_type, int split_index) : CSVInvokeInfo
+{
+    assert(split_index > 0, "分隔符数量不足");
+
+    var invoke_info = new CSVInvokeInfo();
+    invoke_info.func = CSV_ReadArray;
+    invoke_info.split = __split_list[split_index];
+    invoke_info.sub_info = CreateCSVSubInfo(sub(var_type, 6, -2), split_index - 1);
+    return invoke_info;
+}
+
+protected static CreateCSVInfoImpl(string var_type, int split_index) : CSVInvokeInfo
+{
+    assert(split_index > 0, "分隔符数量不足");
+    
+    var rflt = FindStructByName(var_type);
+    assert(rflt, "FindReflectByName调用失败! 未知类型:" .. var_type);
+    
+    var invoke_info = new CSVInvokeInfo();
+    invoke_info.split = __split_list[split_index];
+    invoke_info.func = CSV_ReadMessage;
+    
+    var handle = new List<CSVInvokeInfo>();
+    invoke_info.handle = handle;
+    var handle_count = 0;
+    for (var index, var_name in rflt.name_list)
+    {
+        var var_info = CreateCSVSubInfo(rflt.type_list[index], split_index - 1);
+        var_info.var_name = var_name;
+        handle_count = handle_count + 1;
+        handle[handle_count] = var_info;
+    }
+    return invoke_info;
+}
+
+protected static CreateCSVInfo(StructInfo rflt) : CSVInvokeInfo
+{
+    var split_index = CalcCSVInfoSplit(rflt);
+    
+    var invoke_info = new CSVInvokeInfo();
+    invoke_info.split = __split_list[split_index];
+    invoke_info.func = CSV_ReadMessage;
+    
+    var handle = new List<CSVInvokeInfo>();
+    invoke_info.handle = handle;
+    var handle_count = 0;
+    for (var index, var_name in rflt.name_list)
+    {
+        var var_info = CreateCSVSubInfo(rflt.type_list[index], split_index);
+        var_info.var_name = var_name;
+        handle_count = handle_count + 1;
+        handle[handle_count] = var_info;
+    }
+    return invoke_info;
+}

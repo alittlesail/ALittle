@@ -1,0 +1,10 @@
+
+register namespace lua;
+
+public class TimerSystem
+{
+    public fun AddTimer(int delay_ms, int loop, int interval_ms) : int { }
+    public fun RemoveTimer(int id) : bool { }
+    public fun UpdateTime(int frame_time) { }
+    public fun Poll() : int { }
+}

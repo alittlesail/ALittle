@@ -1,0 +1,171 @@
+
+namespace ALittle;
+
+public class LoopObject
+{
+    public fun IsCompleted() : bool { return true; }
+    public fun Completed() {}
+    protected fun Update(int frame_time) {}
+    public fun Reset() {}
+    public fun SetTime(int time) : int, bool { return time, true; }
+    public fun SetCompleted() {}
+    public fun Start() {}
+    public fun Close() {}
+}
+
+public class LoopSystem
+{
+    private Map<LoopObject, bool> _loop_updaters;
+    private bool _in_update;
+    private Map<LoopObject, bool> _loop_cache;
+    private bool _cache_empty;
+
+    private lua.TimerSystem _timer;
+    private Map<int, Functor<()>> _handler_map;
+
+    public ctor(bool weak)
+    {
+        this._loop_updaters = new Map<LoopObject, bool>();
+        this._in_update = false;
+        this._loop_cache = new Map<LoopObject, bool>();
+        this._cache_empty = true;
+
+        this._timer = new lua.TimerSystem();
+        this._handler_map = new Map<int, Functor<()>>();
+
+        if (weak) Setweak(this._loop_updaters, true, false);
+    }
+
+    // 添加updater
+    public fun AddUpdater(LoopObject updater)
+    {
+        if (updater == null) return;
+        
+        if (this._in_update)
+        {
+            this._cache_empty = false;
+            this._loop_cache[updater] = true;
+        }
+        else
+        {
+            this._loop_updaters[updater] = true;
+        }
+    }
+    
+    // 移除updater
+    public fun RemoveUpdater(LoopObject updater)
+    {
+        if (updater == null) return;
+        
+        if (this._in_update)
+        {
+            this._cache_empty = false;
+            this._loop_cache[updater] = false;
+        }
+        else
+        {
+            this._loop_updaters[updater] = null;
+        }
+    }
+    
+    // 检查updater是否存在
+    public fun HasUpdater(LoopObject updater) : bool
+    {
+        return this._loop_updaters[updater] != null || this._loop_cache[updater] == true;
+    }
+
+    // 添加定时器
+    // loop 表示循环次数，如果小于或等于0，表示无限循环
+    public fun AddTimer(int delay_ms, Functor<()> callback, @Nullable int loop, @Nullable int interval_ms) : int
+    {
+        if (callback == null) return 0;
+        if (loop == null) loop = 1;
+        if (interval_ms == null) interval_ms = 1;
+        var id = this._timer.AddTimer(delay_ms, loop, interval_ms);
+        this._handler_map[id] = callback;
+        return id;
+    }
+
+    // 移除定时器
+    public fun RemoveTimer(int id) : bool
+    {
+        if (id == null) return false;
+        this._handler_map[id] = null;
+        return this._timer.RemoveTimer(id);
+    }
+
+    // 更新
+    public fun Update(int frame_time)
+    {
+        // 标记为正在更新
+        this._in_update = true;
+        
+        // 遍历并更新，并且保存更新完成的对象
+        var remove_map:Map<LoopObject, bool> = null;
+        for (var updater, v in this._loop_updaters)
+        {
+            if (updater.IsCompleted())
+            {
+                if (remove_map == null)
+                    remove_map = new Map<LoopObject, bool>();
+                remove_map[updater] = true;
+            }
+            else
+            {
+                updater.Update(frame_time);
+            }
+        }
+        
+        // 遍历列表，移除
+        if (remove_map != null)
+        {
+            for (var updater, v in remove_map)
+            {
+                this._loop_updaters[updater] = null;
+                updater.Completed();
+            }
+        }
+        
+        // 处理更新期间所产生的缓存
+        if (!this._cache_empty)
+        {
+            for (var updater, v in this._loop_cache)
+            {
+                if (v)
+                    this._loop_updaters[updater] = true;
+                else
+                    this._loop_updaters[updater] = null;
+            }
+            this._loop_cache = new Map<LoopObject, bool>();
+            this._cache_empty = true;
+        }
+        
+        // 标记为不在更新中
+        this._in_update = false;
+
+        this._timer.UpdateTime(frame_time);
+        while (true)
+        {
+            var id = this._timer.Poll();
+            if (id == 0) break;
+
+            if (id < 0)
+            {
+                var handle = this._handler_map[-id];
+                if (handle != null)
+                {
+                    handle();
+                    this._handler_map[-id] = null;
+                }
+            }
+            else
+            {
+                var handle = this._handler_map[id];
+                if (handle != null) handle();
+            }
+        }
+    }
+}
+
+public var A_LoopSystem = new LoopSystem(false);
+public var A_WeakLoopSystem = new LoopSystem(true);

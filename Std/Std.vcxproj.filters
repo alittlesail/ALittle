@@ -29,6 +29,9 @@
     <Filter Include="源文件\OOP\Lua">
       <UniqueIdentifier>{7baef148-3500-4b42-8fc8-0cf42f3ba5b4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="源文件\OOP\JavaScript">
+      <UniqueIdentifier>{835a836b-44ab-4102-8d72-b5f35d888ff8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Language\Lua\Register\sqlte3.alittle">
@@ -81,6 +84,9 @@
     </None>
     <None Include="src\OOP\Lua\LuaException.alittle">
       <Filter>源文件\OOP\Lua</Filter>
+    </None>
+    <None Include="src\OOP\JavaScript\JavaScriptException.alittle">
+      <Filter>源文件\OOP\JavaScript</Filter>
     </None>
   </ItemGroup>
 </Project>

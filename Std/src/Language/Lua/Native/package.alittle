@@ -1,6 +1,6 @@
 
 [Language(LuaJIT)]
-register namespace ALittle;
+register namespace lua;
 
 public class Package
 {

@@ -1,0 +1,23 @@
+
+【安装步骤】
+1. 安装VS2019
+2. 安装ALittleScript.vsix语言插件
+3. 打开ALittle.sln工程，就可以看到代码了
+
+【插件说明】
+1. ALittleScript是一门脚本语言，兼顾强类型和弱类型的语言
+2. 可以翻译成Lua和JavaScript
+3. 通过编写alittle为后缀的代码文件
+4. 生成代码
+	a. 修改代码文件时会自动生成目标代码
+	b. 代码文件获得焦点时，使用组合键Ctrl+B可以生成整个工程的目标代码
+	c. 代码文件获得焦点时，使用组合键Ctrl+F7可以生成当前焦点文件的目标代码
+
+【语言特点】
+1. 统一Lua和JavaScript两个脚本语言的特性
+2. 通过开发ALittleScript代码可以对客户端和网页端进行一次性开发
+
+
+TODO
+1. 完善对JavaScript代码生成
+2. 完善标准库Std

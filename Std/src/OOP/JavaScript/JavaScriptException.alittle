@@ -9,11 +9,3 @@ protected static Assert(any value, string msg)
     if (msg == null) msg = "Assert failed";
     throw(msg);
 }
-
-protected static Test() : int, int
-{
-    return 1,2;
-}
-
-var a:int, b:int;
-a,b = Test();

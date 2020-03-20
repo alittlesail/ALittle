@@ -19,6 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <None Include="src\Language\JavaScript\Native\array.alittle" />
+    <None Include="src\Language\JavaScript\Native\function.alittle" />
+    <None Include="src\Language\JavaScript\Native\object.alittle" />
     <None Include="src\Language\Lua\Native\bit.alittle" />
     <None Include="src\Language\Lua\Native\coroutine.alittle" />
     <None Include="src\Language\Lua\Native\io.alittle" />
@@ -31,6 +34,7 @@
     <None Include="src\Language\Lua\Register\json.alittle" />
     <None Include="src\Language\Lua\Register\lfs.alittle" />
     <None Include="src\Language\Lua\Register\sqlte3.alittle" />
+    <None Include="src\OOP\JavaScript\JavaScriptClass.alittle" />
     <None Include="src\OOP\JavaScript\JavaScriptException.alittle" />
     <None Include="src\OOP\Lua\LuaBind.alittle" />
     <None Include="src\OOP\Lua\LuaClass.alittle" />

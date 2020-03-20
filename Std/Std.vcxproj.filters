@@ -88,5 +88,17 @@
     <None Include="src\OOP\JavaScript\JavaScriptException.alittle">
       <Filter>源文件\OOP\JavaScript</Filter>
     </None>
+    <None Include="src\OOP\JavaScript\JavaScriptClass.alittle">
+      <Filter>源文件\OOP\JavaScript</Filter>
+    </None>
+    <None Include="src\Language\JavaScript\Native\function.alittle">
+      <Filter>源文件\Language\JavaScript\Native</Filter>
+    </None>
+    <None Include="src\Language\JavaScript\Native\object.alittle">
+      <Filter>源文件\Language\JavaScript\Native</Filter>
+    </None>
+    <None Include="src\Language\JavaScript\Native\array.alittle">
+      <Filter>源文件\Language\JavaScript\Native</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -1,0 +1,9 @@
+
+[Language(JavaScript)]
+register namespace javascript;
+                       
+public class Array
+{
+    public fun shift() {}
+    public get length() : int {}             
+}

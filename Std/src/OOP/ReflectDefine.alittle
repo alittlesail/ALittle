@@ -24,8 +24,37 @@ public struct ClassInfo
     Map<string, Functor<(any, any)>> __setter;   // setter
 }
 
+
+// 递归调用构造函数
+[Language(JavaScript)]
+protected static ClassCtor(any object, ALittle.ClassInfo clazz, any args)
+{
+    var super = clazz.__super;
+    if (super != null) ClassCtor(object, super, args);
+    
+    var fctor = cast<Map<string, javascript.Function>>(clazz)["Ctor"];
+    if (fctor != null) fctor.apply(object, args);
+}
+
 // 根据反射信息创建对象
 public static NewObject(ClassInfo clazz, ...) : any
 {
+    [Language(LuaJIT)]
     return cast<Functor<(any):any>>(clazz)(...);
+    
+    // 构造对象
+    [Language(JavaScript)]
+    var object = javascript.Object.create(clazz);
+	// 把自己作为类保存在对象中
+    [Language(JavaScript)]
+    object["__class"] = clazz;
+    // 调用构造函数
+    [Language(JavaScript)]
+    arguments.shift();
+    [Language(JavaScript)]
+    ClassCtor(object, clazz, arguments);
+    // 返回对象
+    [Language(JavaScript)]
+    return object;
 }
+

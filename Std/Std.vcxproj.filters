@@ -100,5 +100,8 @@
     <None Include="src\Language\JavaScript\Native\array.alittle">
       <Filter>源文件\Language\JavaScript\Native</Filter>
     </None>
+    <None Include="src\Language\JavaScript\Native\console.alittle">
+      <Filter>源文件\Language\JavaScript\Native</Filter>
+    </None>
   </ItemGroup>
 </Project>

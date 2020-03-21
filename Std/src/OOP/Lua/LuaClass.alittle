@@ -183,13 +183,8 @@ protected static Template(ALittle.ClassInfo clazz, string name, ...) : ALittle.C
     template.__name = name;
     template.__setter = clazz.__setter;
     template.__getter = clazz.__getter;
-    // 模板元素
-    var list = new List<ALittle.ClassInfo>();
     // 复制模板
-    var len:int = select("#", ...);
-    for (var i = 1, len, 1)
-        list[i] = select(i, ...);
-    template.__element = list;
+    template.__element = [cast<ALittle.ClassInfo>(...)];
     
     // 设置类模版的元表
     setmetatable(template, __class_mt);

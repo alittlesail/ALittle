@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Language\JavaScript\Native\array.alittle" />
+    <None Include="src\Language\JavaScript\Native\console.alittle" />
     <None Include="src\Language\JavaScript\Native\function.alittle" />
     <None Include="src\Language\JavaScript\Native\object.alittle" />
     <None Include="src\Language\Lua\Native\bit.alittle" />

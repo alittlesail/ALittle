@@ -1,0 +1,91 @@
+namespace ALittle;
+
+// 连接对象
+public class IHttpSenderNative
+{
+    public fun GetID() : int { return 0; }                         // 获取HttpSender的全局ID
+    public fun SetURL(string url, string content) {}    // 设置请求数据，url是请求路径，如果content不为null，那么就是post请求
+    public fun Start() {}                               // 开始请求
+    public fun Stop() {}                                // 停止请求
+    public fun GetResponse() : string { return null;}                // 获取请求结果
+}
+
+// Http协议接口类，负责请求发送
+public class IHttpSender
+{
+    // 提供子类继承
+    protected fun SendRPC(Thread co, string method, any content) { }
+    
+    // 提供框架调用
+    protected await static Invoke(string method, IHttpSender client, any content) : string, any
+    {
+        var co = Coroutine.Running();
+        if (co == null) return "当前不是协程", null;
+        client.SendRPC(co, method, content);
+        return yield;
+    }
+}
+
+// 短连接所有的对象集合，提供客户端使用
+private var __HttpSenderMap = new Map<int, IHttpSender>();
+public static FindHttpSender(int id) : IHttpSender { return __HttpSenderMap[id]; }
+
+public class HttpSenderTemplate<NATIVE : IHttpSenderNative> : IHttpSender
+{
+    private NATIVE _interface;          // 实际Http的接口对象
+    private Thread _co;         // 协程对象
+    private string _ip;             // 目标url或者ip
+    private int _port;              // 目标端口
+
+    public ctor(string ip, int port)
+    {
+        this._interface = new NATIVE();
+        this._ip = ip;
+        this._port = port;
+    }
+
+    protected fun SendRPC(Thread co, string method, any content)
+    {
+        this._co = co;
+        __HttpSenderMap[this._interface.GetID()] = this;
+        
+        var url = "http://"..this._ip..":"..this._port.."/"..method;
+        if (content == null)
+            this._interface.SetURL(url, null);
+        else
+            this._interface.SetURL(url, lua.json.encode(content));
+        this._interface.Start();
+    }
+
+    public fun Stop()
+    {
+        this._interface.Stop();
+    }
+
+    protected fun HandleSucceed()
+    {
+        __HttpSenderMap[this._interface.GetID()] = null;
+        var error, param:Map<string, any> = tcall(lua.json.decode, this._interface.GetResponse());
+        if (error != null)
+        {
+            var result, reason = Coroutine.Resume(this._co, error, null);
+            if (result != true) Error(reason);
+            return;
+        }
+        if (param["error"] != null)
+        {
+            var result, reason = Coroutine.Resume(this._co, param["error"], null);
+            if (result != true) Error(reason);
+            return;
+        }
+        var result, reason = Coroutine.Resume(this._co, null, param);
+        if (result != true) Error(reason);
+    }
+    
+    protected fun HandleFailed(string reason)
+    {
+        __HttpSenderMap[this._interface.GetID()] = null;
+        var result, reason = Coroutine.Resume(this._co, reason, null);
+        if (result != true) Error(reason);
+    }
+}

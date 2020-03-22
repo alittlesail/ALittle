@@ -1,0 +1,25 @@
+
+register namespace ALittle;
+
+public struct Thread { }
+
+public class Coroutine
+{
+    public static Resume(ALittle.Thread co, ...) : bool, ...
+    {
+        [Language(LuaJIT)]
+        return lua.coroutine.resume(co, ...);
+        
+        [Language(JavaScript)]
+        return javascript.coroutine.resume(co, ...);   
+    }
+    
+    public static Running() : ALittle.Thread
+    {
+        [Language(LuaJIT)]
+        return lua.coroutine.running();
+        
+        [Language(JavaScript)]
+        return javascript.coroutine.running();
+    }
+}

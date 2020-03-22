@@ -1,0 +1,8 @@
+
+[Language(JavaScript)]
+register namespace javascript;
+                       
+public class Date
+{
+    public static now() : int {}
+}

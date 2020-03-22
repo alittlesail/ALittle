@@ -1,0 +1,11 @@
+namespace ALittle;
+
+// 获取当前时间（秒）
+public static GetCurTime() : int
+{
+    [Language(LuaJIT)]
+    return lua.os.time();
+    
+    [Language(JavaScript)]
+    return javascript.Date.now();
+}

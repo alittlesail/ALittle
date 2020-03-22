@@ -25,6 +25,9 @@
     <Filter Include="Core\Utility">
       <UniqueIdentifier>{6701c85e-cb48-43b3-a66c-540b7e8b2ba4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core\Net">
+      <UniqueIdentifier>{dfd19747-ddbd-4378-bcfa-3bf48e3ad831}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Core\Lua\LuaClass.alittle">
@@ -113,6 +116,45 @@
     </None>
     <None Include="src\Core\Utility\Math.alittle">
       <Filter>Core\Utility</Filter>
+    </None>
+    <None Include="src\Core\Net\MsgCommon.alittle">
+      <Filter>Core\Net</Filter>
+    </None>
+    <None Include="src\Core\Net\MsgReceiver.alittle">
+      <Filter>Core\Net</Filter>
+    </None>
+    <None Include="src\Core\Net\MsgSender.alittle">
+      <Filter>Core\Net</Filter>
+    </None>
+    <None Include="src\Core\Net\MsgSession.alittle">
+      <Filter>Core\Net</Filter>
+    </None>
+    <None Include="src\Core\Net\HttpFileReceiver.alittle">
+      <Filter>Core\Net</Filter>
+    </None>
+    <None Include="src\Core\Net\HttpFileSender.alittle">
+      <Filter>Core\Net</Filter>
+    </None>
+    <None Include="src\Core\Net\HttpReceiver.alittle">
+      <Filter>Core\Net</Filter>
+    </None>
+    <None Include="src\Core\Net\HttpSender.alittle">
+      <Filter>Core\Net</Filter>
+    </None>
+    <None Include="src\Core\Utility\SafeIDCreator.alittle">
+      <Filter>Core\Utility</Filter>
+    </None>
+    <None Include="src\Core\Utility\Coroutine.alittle">
+      <Filter>Core\Utility</Filter>
+    </None>
+    <None Include="src\Language\JavaScript\coroutine.alittle">
+      <Filter>Language\JavaScript</Filter>
+    </None>
+    <None Include="src\Core\Utility\Time.alittle">
+      <Filter>Core\Utility</Filter>
+    </None>
+    <None Include="src\Language\JavaScript\time.alittle">
+      <Filter>Language\JavaScript</Filter>
     </None>
   </ItemGroup>
 </Project>

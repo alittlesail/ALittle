@@ -116,3 +116,26 @@ protected static Template(ALittle.ClassInfo clazz, string name, ...) : ALittle.C
     // 返回模板
     return template;
 }
+
+// 递归调用构造函数
+protected static ClassCtor(any object, ALittle.ClassInfo clazz, ...)
+{
+    var drived = clazz.__super;
+    if (drived != null) ClassCtor(object, drived, ...);
+    
+    var fctor = cast<Map<string, javascript.Function>>(clazz)["Ctor"];
+    if (fctor != null) fctor.call(object, ...);
+}
+
+// 创建对象
+public static NewObject(ALittle.ClassInfo clazz, ...) : any
+{
+    // 构造对象
+    var object = javascript.Object.create(clazz);
+	// 把自己作为类保存在对象中
+    cast<Map<string, any>>(object)["__class"] = clazz;
+    // 调用构造函数
+    ClassCtor(object, clazz, ...);
+    // 返回对象
+    return object;
+}

@@ -1,0 +1,10 @@
+
+[Language(JavaScript)]
+register namespace javascript;
+                       
+public class Array
+{
+    public fun shift() {}
+    public get length() : int {}
+    public fun join(string sep) : string {}          
+}

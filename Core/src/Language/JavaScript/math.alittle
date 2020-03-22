@@ -1,0 +1,12 @@
+
+[Language(JavaScript)]
+register namespace javascript;
+                     
+public static parseInt(string s) : int {}
+public static parseFloat(string s) : double {}
+
+public class Math
+{
+    public static random() : double {}
+    public static floor(double v) : int {}
+}

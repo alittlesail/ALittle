@@ -44,4 +44,11 @@ public class String
     // Note that if plain is given, then init must be given as well.
     // If the pattern has captures, then in a successful match the captured values are also returned, after the two indices.
     public static find(string content, string substring, int init, bool plain) : int, int, ... {}
+    
+    // Looks for the first match of pattern in the string s.
+    // If it finds one, then match returns the captures from the pattern; otherwise it returns nil.
+    // If pattern specifies no captures, then the whole match is returned.
+    // A third, optional numerical argument init specifies where to start the search;
+    // its default value is 1 and can be negative.
+    public static match (string content, string pattern, [Nullable] int init) : string {}
 }

@@ -1,0 +1,52 @@
+namespace ALittle;
+
+[Language(LuaJIT)]
+private var tonumber = lua.tonumber;
+[Language(LuaJIT)]
+private var floor = lua.math.floor;
+[Language(LuaJIT)]
+private var random = lua.math.random;
+[Language(LuaJIT)]
+private var randomseed = lua.math.randomseed;
+
+public static Math_ToInt(string s) : int
+{
+    [Language(LuaJIT)]
+    return floor(tonumber(s));
+    
+    [Language(JavaScript)]
+    return javascript.parseInt(s);
+}
+
+public static Math_ToDouble(string s) : double
+{
+    [Language(LuaJIT)]
+    return tonumber(s);
+    
+    [Language(JavaScript)]
+    return javascript.parseFloat(s);
+}
+
+public static Math_RandomSeed(int seed)
+{
+    [Language(LuaJIT)]
+    randomseed(seed);
+}
+
+public static Math_RandomInt(int min, int max) : int
+{
+    [Language(LuaJIT)]
+    return cast<int>(random(min, max));
+    
+    [Language(JavaScript)]
+    return javascript.Math.floor(javascript.Math.random() * (max - min + 1)) + min;
+}
+
+public static Math_RandomDouble(double min, double max) : double
+{
+    [Language(LuaJIT)]
+    return random() * (max - min) + min;
+    
+    [Language(JavaScript)]
+    return javascript.Math.random() * (max - min) + min;
+}

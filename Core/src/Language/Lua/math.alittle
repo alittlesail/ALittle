@@ -58,7 +58,7 @@ public class math
     // When called without arguments, returns a uniform pseudo-random real number in the range [0,1).
     // When called with an integer number m, math.random returns a uniform pseudo-random integer in the range [1, m].
     // When called with two integer numbers m and n, math.random returns a uniform pseudo-random integer in the range [m, n].
-    public static random(double min, [Nullable] double max) : double {}
+    public static random([Nullable] double min, [Nullable] double max) : double {}
     // Sets x as the "seed" for the pseudo-random generator: equal seeds produce equal sequences of numbers.
     public static randomseed(int value) {}
 

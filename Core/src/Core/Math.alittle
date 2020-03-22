@@ -9,6 +9,15 @@ private var random = lua.math.random;
 [Language(LuaJIT)]
 private var randomseed = lua.math.randomseed;
 
+public static Math_Floor(double v) : int
+{
+    [Language(LuaJIT)]
+    return floor(v);
+    
+    [Language(JavaScript)]
+    return javascript.Math.floor(v);
+}
+
 public static Math_ToInt(string s) : int
 {
     [Language(LuaJIT)]

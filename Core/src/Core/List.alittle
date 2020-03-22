@@ -5,6 +5,8 @@ namespace ALittle;
 private var insert = lua.table.insert;
 [Language(LuaJIT)]
 private var maxn = lua.table.maxn;
+[Language(LuaJIT)]
+private var sort = lua.table.sort;
 
 public static MaxN<T>(List<T> list) : int
 {
@@ -31,4 +33,13 @@ public static Push<T>(List<T> list, T object)
     }
     [Language(JavaScript)]
     cast<javascript.Array>(list).push(object);
+}
+
+public static Sort<T>(List<T> list, [Nullable] Functor<(T, T) : bool> cmp)
+{
+    [Language(LuaJIT)]
+    sort(list, cmp);
+    
+    [Language(JavaScript)]
+    cast<javascript.Array>(list).sort(cast<Functor<(T, T) : int>>(cmp));
 }

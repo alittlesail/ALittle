@@ -1,11 +1,15 @@
 namespace ALittle;
 
 [Language(LuaJIT)]
+private var byte = lua.String.byte;
+[Language(LuaJIT)]
 private var sub = lua.String.sub;
 [Language(LuaJIT)]
 private var len = lua.String.len;
 [Language(LuaJIT)]
 private var find = lua.String.find;
+[Language(LuaJIT)]
+private var upper = lua.String.upper;
 [Language(LuaJIT)]
 private var match = lua.String.match;
 [Language(LuaJIT)]
@@ -17,6 +21,16 @@ private var tonumber = lua.tonumber;
 [Language(LuaJIT)]
 private var floor = lua.math.floor;
 
+// 转为大写
+public static String_Upper(string s) : string
+{
+    [Language(LuaJIT)]
+    return upper(s);
+    
+    [Language(JavaScript)]
+    return cast<javascript.String>(s).toUpperCase();
+}
+
 // 转字符串
 public static String_ToString(any s) : string
 {
@@ -26,6 +40,16 @@ public static String_ToString(any s) : string
     [Language(JavaScript)]
     if (s == null) return "undefined";
     else return cast<javascript.Object>(s).toString();
+}
+
+// 把指定字符转为整数
+public static String_Byte(string s, int index) : int
+{
+    [Language(LuaJIT)]
+    return byte(s, index);
+    
+    [Language(JavaScript)]
+    return cast<javascript.String>(s).charCodeAt(index - 1);
 }
 
 // 获取子串长度

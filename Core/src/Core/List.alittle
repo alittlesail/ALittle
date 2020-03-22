@@ -1,0 +1,34 @@
+
+namespace ALittle;
+
+[Language(LuaJIT)]
+private var insert = lua.table.insert;
+[Language(LuaJIT)]
+private var maxn = lua.table.maxn;
+
+public static MaxN<T>(List<T> list) : int
+{
+    [Language(LuaJIT)]
+    return maxn(list);
+    
+    [Language(JavaScript)]
+    return cast<javascript.Array>(list).length;
+}
+
+public static Push<T>(List<T> list, T object)
+{
+    [Language(LuaJIT)]
+    insert(list, cast<int>(object));
+    
+    [Language(JavaScript)]
+    for (var i = 1, cast<javascript.Array>(list).length, 1)
+    {
+        if (list[i] == null)
+        {
+            list[i] = object;
+            return;        
+        }
+    }
+    [Language(JavaScript)]
+    cast<javascript.Array>(list).push(object);
+}

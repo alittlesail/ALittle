@@ -34,7 +34,7 @@ public class MsgSenderTemplate<MI : IMsgCommonNative, WFACTORY : IMessageWriteFa
         if (this._heartbeat != null)
             this._check_heartbeat = check_heartbeat;
         this._last_recv_time = 0;
-
+        
         // 连接回调
         this._callback = callback;
     }
@@ -45,10 +45,8 @@ public class MsgSenderTemplate<MI : IMsgCommonNative, WFACTORY : IMessageWriteFa
         if (ip == null) ip = "";
         if (port == null) port = 0;
         
-        var co = lua.coroutine.running();
-        if (co == null)
-            return "当前不是协程";
-
+        if (co == null) return "当前不是协程";
+        
         this._co = co;
         // 注册到MsgSystem
         __MsgSenderMap[this._interface.GetID()] = this;

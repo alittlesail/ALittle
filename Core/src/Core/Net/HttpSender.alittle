@@ -14,12 +14,11 @@ public class IHttpSenderNative
 public class IHttpSender
 {
     // 提供子类继承
-    protected fun SendRPC(Thread co, string method, any content) { throw("not impl"); }
+    protected fun SendRPC(Thread thread, string method, any content) { throw("not impl"); }
     
     // 提供框架调用
     protected await static Invoke(string method, IHttpSender client, any content) : string, any
     {
-        var co = Coroutine.Running();
         if (co == null) return "当前不是协程", null;
         client.SendRPC(co, method, content);
         return yield;
@@ -33,7 +32,7 @@ public static FindHttpSender(int id) : IHttpSender { return __HttpSenderMap[id];
 public class HttpSenderTemplate<NATIVE : IHttpSenderNative> : IHttpSender
 {
     private NATIVE _interface;          // 实际Http的接口对象
-    private Thread _co;         // 协程对象
+    private Thread _thread;         // 协程对象
     private string _ip;             // 目标url或者ip
     private int _port;              // 目标端口
 
@@ -54,9 +53,9 @@ public class HttpSenderTemplate<NATIVE : IHttpSenderNative> : IHttpSender
         throw("not impl");
     }
     
-    protected fun SendRPC(Thread co, string method, any content)
+    protected fun SendRPC(Thread thread, string method, any content)
     {
-        this._co = co;
+        this._thread = thread;
         __HttpSenderMap[this._interface.GetID()] = this;
         
         var url = "http://"..this._ip..":"..this._port.."/"..method;
@@ -78,24 +77,24 @@ public class HttpSenderTemplate<NATIVE : IHttpSenderNative> : IHttpSender
         var error, param:Map<string, any> = tcall(this.JsonDecode, this, this._interface.GetResponse());
         if (error != null)
         {
-            var result, reason = Coroutine.Resume(this._co, error, null);
+            var result, reason = Coroutine.Resume(this._thread, error, null);
             if (result != true) Error(reason);
             return;
         }
         if (param["error"] != null)
         {
-            var result, reason = Coroutine.Resume(this._co, param["error"], null);
+            var result, reason = Coroutine.Resume(this._thread, param["error"], null);
             if (result != true) Error(reason);
             return;
         }
-        var result, reason = Coroutine.Resume(this._co, null, param);
+        var result, reason = Coroutine.Resume(this._thread, null, param);
         if (result != true) Error(reason);
     }
     
     protected fun HandleFailed(string reason)
     {
         __HttpSenderMap[this._interface.GetID()] = null;
-        var result, reason = Coroutine.Resume(this._co, reason, null);
+        var result, reason = Coroutine.Resume(this._thread, reason, null);
         if (result != true) Error(reason);
     }
 }

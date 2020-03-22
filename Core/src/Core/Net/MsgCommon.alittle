@@ -51,7 +51,7 @@ public class IMsgCommonNative
 struct MsgRPCInfo
 {
     int rpc_id;
-    Thread co;
+    Thread thread;
 }
 
 // 用于长连接
@@ -161,7 +161,7 @@ public class IMsgCommon
         // 如果是RPC异常包
         if (id == 1)
         {
-            var result, reason = Coroutine.Resume(info.co, factory.ReadString());
+            var result, reason = Coroutine.Resume(info.thread, factory.ReadString());
             if (result != true) Error(reason);
             return;
         }
@@ -169,12 +169,12 @@ public class IMsgCommon
         var msg = this.MessageRead(factory, id);
         if (msg == null)
         {
-            var result, reason = Coroutine.Resume(info.co, "MsgSystem.HandleMessage MessageRead failed by id:"..id);
+            var result, reason = Coroutine.Resume(info.thread, "MsgSystem.HandleMessage MessageRead failed by id:"..id);
             if (result != true) Error(reason);
             Log("MsgSystem.HandleMessage MessageRead failed by id:"..id);
             return;
         }
-        var result, reason = Coroutine.Resume(info.co, null, msg);
+        var result, reason = Coroutine.Resume(info.thread, null, msg);
         if (result != true) Error(reason);
     }
 
@@ -211,7 +211,7 @@ public class IMsgCommon
     }
 
     // 发送RPC包
-    protected fun SendRPC(Thread co, int msg_id, any msg_body)
+    protected fun SendRPC(Thread thread, int msg_id, any msg_body)
     {
         var rpc_id = this._id_creator.CreateID();
         this._write_factory.SetRpcID(rpc_id);
@@ -219,7 +219,7 @@ public class IMsgCommon
         this._interface.SendFactory(this._write_factory);
         
         var info = new MsgRPCInfo();
-        info.co = co;
+        info.thread = thread;
         info.rpc_id = rpc_id;
         this._id_map_rpc[rpc_id] = info;
     }
@@ -275,7 +275,7 @@ public class IMsgCommon
         // 逐个调用表示失败
         for (var rpc_id, info in tmp)
         {
-            var result, reason = Coroutine.Resume(info.co, reason, null);
+            var result, reason = Coroutine.Resume(info.thread, reason, null);
             if (result != true) Error(reason);
         }
     }
@@ -291,7 +291,6 @@ public class IMsgCommon
     protected static Invoke(int msg_id, IMsgCommon client, any msg_body) { client.Send(msg_id, msg_body, 0); }
     protected await static InvokeRPC(int msg_id, IMsgCommon client, any msg_body) : string, any
     {
-        var co = Coroutine.Running();
         if (co == null) return "当前不是协程", null;
         
         if (!client.IsConnected())

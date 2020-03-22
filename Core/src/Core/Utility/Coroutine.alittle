@@ -5,21 +5,12 @@ public struct Thread { }
 
 public class Coroutine
 {
-    public static Resume(ALittle.Thread co, ...) : bool, ...
+    public static Resume(ALittle.Thread thread, ...) : bool, ...
     {
         [Language(LuaJIT)]
-        return lua.coroutine.resume(co, ...);
+        return lua.coroutine.resume(thread, ...);
         
         [Language(JavaScript)]
-        return javascript.coroutine.resume(co, ...);   
-    }
-    
-    public static Running() : ALittle.Thread
-    {
-        [Language(LuaJIT)]
-        return lua.coroutine.running();
-        
-        [Language(JavaScript)]
-        return javascript.coroutine.running();
+        return javascript.Coroutine.resume(thread, ...);   
     }
 }

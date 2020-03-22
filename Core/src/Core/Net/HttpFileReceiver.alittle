@@ -37,16 +37,16 @@ public static FindHttpFileReceiverCallback(string method) : Functor<await(IHttpF
 public class HttpFileReceiverTemplate<NATIVE : IHttpFileReceiverNative> : IHttpFileReceiver
 {
     private int _http_id;
-    private Thread _co;
+    private Thread _thread;
     private string _file_path;
     private NATIVE _interface;
-
+    
     private bool _received;
-
-    public ctor(int http_id, Thread co)
+    
+    public ctor(int http_id, Thread thread)
     {
         this._http_id = http_id;
-        this._co = co;
+        this._thread = thread;
         this._received = false;
         this._interface = new NATIVE();
     }
@@ -61,7 +61,7 @@ public class HttpFileReceiverTemplate<NATIVE : IHttpFileReceiverNative> : IHttpF
     
     protected fun HandleReceiveResult(string reason)
     {
-        var result, reason = Coroutine.Resume(this._co, reason);
+        var result, reason = Coroutine.Resume(this._thread, reason);
         if (!result) Error(reason);
     }
     

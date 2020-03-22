@@ -93,5 +93,11 @@
     <None Include="src\Language\JavaScript\math.alittle">
       <Filter>Language\JavaScript</Filter>
     </None>
+    <None Include="src\Core\Log.alittle">
+      <Filter>Core</Filter>
+    </None>
+    <None Include="src\Core\List.alittle">
+      <Filter>Core</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -6,5 +6,6 @@ public class Array
 {
     public fun shift() {}
     public get length() : int {}
-    public fun join(string sep) : string {}          
+    public fun join(string sep) : string {}      
+    public fun push(any object) {}    
 }

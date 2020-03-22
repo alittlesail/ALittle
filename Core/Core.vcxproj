@@ -21,6 +21,8 @@
   <ItemGroup>
     <None Include="src\Core\JavaScript\JavaScriptClass.alittle" />
     <None Include="src\Core\JavaScript\JavaScriptException.alittle" />
+    <None Include="src\Core\List.alittle" />
+    <None Include="src\Core\Log.alittle" />
     <None Include="src\Core\Lua\LuaBind.alittle" />
     <None Include="src\Core\Lua\LuaClass.alittle" />
     <None Include="src\Core\Lua\LuaException.alittle" />

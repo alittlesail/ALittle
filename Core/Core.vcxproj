@@ -21,15 +21,18 @@
   <ItemGroup>
     <None Include="src\Core\JavaScript\JavaScriptClass.alittle" />
     <None Include="src\Core\JavaScript\JavaScriptException.alittle" />
-    <None Include="src\Core\List.alittle" />
-    <None Include="src\Core\Log.alittle" />
     <None Include="src\Core\Lua\LuaBind.alittle" />
     <None Include="src\Core\Lua\LuaClass.alittle" />
     <None Include="src\Core\Lua\LuaException.alittle" />
-    <None Include="src\Core\Math.alittle" />
-    <None Include="src\Core\ReflectDefine.alittle" />
-    <None Include="src\Core\ReflectRegister.alittle" />
-    <None Include="src\Core\String.alittle" />
+    <None Include="src\Core\Reflect\ReflectCmd.alittle" />
+    <None Include="src\Core\Reflect\ReflectCsv.alittle" />
+    <None Include="src\Core\Reflect\ReflectDefine.alittle" />
+    <None Include="src\Core\Reflect\ReflectMessage.alittle" />
+    <None Include="src\Core\Reflect\ReflectRegister.alittle" />
+    <None Include="src\Core\Utility\List.alittle" />
+    <None Include="src\Core\Utility\Log.alittle" />
+    <None Include="src\Core\Utility\Math.alittle" />
+    <None Include="src\Core\Utility\String.alittle" />
     <None Include="src\Language\JavaScript\array.alittle" />
     <None Include="src\Language\JavaScript\console.alittle" />
     <None Include="src\Language\JavaScript\function.alittle" />

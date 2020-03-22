@@ -19,14 +19,14 @@
     <Filter Include="Core\JavaScript">
       <UniqueIdentifier>{1fc02d7f-7522-44ce-94b9-70c6892a0819}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core\Reflect">
+      <UniqueIdentifier>{067f2fe8-f58b-4b7f-a29b-d691d7ab38ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Utility">
+      <UniqueIdentifier>{6701c85e-cb48-43b3-a66c-540b7e8b2ba4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\Core\ReflectRegister.alittle">
-      <Filter>Core</Filter>
-    </None>
-    <None Include="src\Core\ReflectDefine.alittle">
-      <Filter>Core</Filter>
-    </None>
     <None Include="src\Core\Lua\LuaClass.alittle">
       <Filter>Core\Lua</Filter>
     </None>
@@ -84,20 +84,35 @@
     <None Include="src\Language\JavaScript\string.alittle">
       <Filter>Language\JavaScript</Filter>
     </None>
-    <None Include="src\Core\String.alittle">
-      <Filter>Core</Filter>
-    </None>
-    <None Include="src\Core\Math.alittle">
-      <Filter>Core</Filter>
-    </None>
     <None Include="src\Language\JavaScript\math.alittle">
       <Filter>Language\JavaScript</Filter>
     </None>
-    <None Include="src\Core\Log.alittle">
-      <Filter>Core</Filter>
+    <None Include="src\Core\Reflect\ReflectDefine.alittle">
+      <Filter>Core\Reflect</Filter>
     </None>
-    <None Include="src\Core\List.alittle">
-      <Filter>Core</Filter>
+    <None Include="src\Core\Reflect\ReflectMessage.alittle">
+      <Filter>Core\Reflect</Filter>
+    </None>
+    <None Include="src\Core\Reflect\ReflectRegister.alittle">
+      <Filter>Core\Reflect</Filter>
+    </None>
+    <None Include="src\Core\Reflect\ReflectCmd.alittle">
+      <Filter>Core\Reflect</Filter>
+    </None>
+    <None Include="src\Core\Reflect\ReflectCsv.alittle">
+      <Filter>Core\Reflect</Filter>
+    </None>
+    <None Include="src\Core\Utility\String.alittle">
+      <Filter>Core\Utility</Filter>
+    </None>
+    <None Include="src\Core\Utility\List.alittle">
+      <Filter>Core\Utility</Filter>
+    </None>
+    <None Include="src\Core\Utility\Log.alittle">
+      <Filter>Core\Utility</Filter>
+    </None>
+    <None Include="src\Core\Utility\Math.alittle">
+      <Filter>Core\Utility</Filter>
     </None>
   </ItemGroup>
 </Project>

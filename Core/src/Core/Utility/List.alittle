@@ -4,6 +4,8 @@ namespace ALittle;
 [Language(LuaJIT)]
 private var insert = lua.table.insert;
 [Language(LuaJIT)]
+private var remove = lua.table.remove;
+[Language(LuaJIT)]
 private var maxn = lua.table.maxn;
 [Language(LuaJIT)]
 private var sort = lua.table.sort;
@@ -33,6 +35,15 @@ public static Push<T>(List<T> list, T object)
     }
     [Language(JavaScript)]
     cast<javascript.Array>(list).push(object);
+}
+
+public static Remove<T>(List<T> list, int index)
+{
+    [Language(LuaJIT)]
+    remove(list, index);
+    
+    [Language(JavaScript)]
+    cast<javascript.Array>(list).splice(index - 1, 1);
 }
 
 public static Sort<T>(List<T> list, [Nullable] Functor<(T, T) : bool> cmp)

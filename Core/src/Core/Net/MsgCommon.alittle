@@ -189,7 +189,7 @@ public class IMsgCommon
     protected fun Send(int msg_id, any msg_body, int rpc_id)
     {
         if (!this.IsConnected()) return;
-
+        
         this._write_factory.SetRpcID(rpc_id);
         this.MessageWrite(msg_id, msg_body);
         this._interface.SendFactory(this._write_factory);

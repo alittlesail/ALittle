@@ -21,8 +21,8 @@ public class IHttpFileSenderNative
 public class IHttpFileSender
 {
     // 提供子类继承
-    protected fun SendDownloadRPC(Thread co, string method, any content) { }
-    protected fun SendUploadRPC(Thread co, string method, any content){ }
+    protected fun SendDownloadRPC(Thread co, string method, any content) { throw("not impl"); }
+    protected fun SendUploadRPC(Thread co, string method, any content) { throw("not impl"); }
     
     // 提供框架调用
     protected await static InvokeDownload(string method, IHttpFileSender client, any content) : string
@@ -39,25 +39,6 @@ public class IHttpFileSender
         client.SendUploadRPC(co, method, content);
         return yield;
     }
-}
-
-// 拼接url
-public static HttpUrlAppendParamMap(string url, Map<string, any> param) : string
-{
-    var list = new List<string>();
-    var count = 0;
-    for (var key, value in param)
-    {
-        ++ count;
-        list[count] = key.."="..String_ToString(value);
-    }
-    
-    if (String_Find(url, "?") == null)
-        url = url .. "?";
-    else
-        url = url .. "&";
-    
-    return url .. String_Join(list, "&");
 }
 
 // 短连接文件所有的对象集合，提供客户端使用
@@ -94,7 +75,7 @@ public class HttpFileSenderTemplate<NATIVE : IHttpFileSenderNative> : IHttpFileS
 
         // 设置URL
         var url = "http://"..this._ip..":"..this._port.."/"..method;
-        this._interface.SetURL(HttpUrlAppendParamMap(url, content), this._file_path, true, this._start_size);
+        this._interface.SetURL(this.HttpUrlAppendParamMap(url, content), this._file_path, true, this._start_size);
         this._interface.Start();
     }
 
@@ -105,10 +86,10 @@ public class HttpFileSenderTemplate<NATIVE : IHttpFileSenderNative> : IHttpFileS
 
         if (this._start_size == null)
             this._start_size = 0;
-
+        
         // 设置URL
         var url = "http://"..this._ip..":"..this._port.."/"..method;
-        this._interface.SetURL(HttpUrlAppendParamMap(url, content), this._file_path, false, this._start_size);
+        this._interface.SetURL(this.HttpUrlAppendParamMap(url, content), this._file_path, false, this._start_size);
         this._interface.Start();
     }
 
@@ -140,5 +121,24 @@ public class HttpFileSenderTemplate<NATIVE : IHttpFileSenderNative> : IHttpFileS
     {
         if (this._callback != null)
             this._callback(this._interface);
+    }
+    
+    // 拼接url
+    private fun HttpUrlAppendParamMap(string url, Map<string, any> param) : string
+    {
+        var list = new List<string>();
+        var count = 0;
+        for (var key, value in param)
+        {
+            ++ count;
+            list[count] = key.."="..String_ToString(value);
+        }
+    
+        if (String_Find(url, "?") == null)
+            url = url .. "?";
+        else
+            url = url .. "&";
+    
+        return url .. String_Join(list, "&");
     }
 }

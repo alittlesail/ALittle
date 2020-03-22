@@ -21,6 +21,11 @@
   <ItemGroup>
     <None Include="src\Core\JavaScript\JavaScriptClass.alittle" />
     <None Include="src\Core\JavaScript\JavaScriptException.alittle" />
+    <None Include="src\Core\Loop\LoopFunction.alittle" />
+    <None Include="src\Core\Loop\LoopGroup.alittle" />
+    <None Include="src\Core\Loop\LoopList.alittle" />
+    <None Include="src\Core\Loop\LoopSystem.alittle" />
+    <None Include="src\Core\Loop\LoopTimer.alittle" />
     <None Include="src\Core\Lua\LuaBind.alittle" />
     <None Include="src\Core\Lua\LuaClass.alittle" />
     <None Include="src\Core\Lua\LuaException.alittle" />

@@ -14,7 +14,7 @@ public class IHttpSenderNative
 public class IHttpSender
 {
     // 提供子类继承
-    protected fun SendRPC(Thread co, string method, any content) { }
+    protected fun SendRPC(Thread co, string method, any content) { throw("not impl"); }
     
     // 提供框架调用
     protected await static Invoke(string method, IHttpSender client, any content) : string, any
@@ -43,7 +43,17 @@ public class HttpSenderTemplate<NATIVE : IHttpSenderNative> : IHttpSender
         this._ip = ip;
         this._port = port;
     }
-
+    
+    private fun JsonEncode(any content) : string
+    {
+        throw("not impl");
+    }
+    
+    private fun JsonDecode(string content) : any
+    {
+        throw("not impl");
+    }
+    
     protected fun SendRPC(Thread co, string method, any content)
     {
         this._co = co;
@@ -53,19 +63,19 @@ public class HttpSenderTemplate<NATIVE : IHttpSenderNative> : IHttpSender
         if (content == null)
             this._interface.SetURL(url, null);
         else
-            this._interface.SetURL(url, lua.json.encode(content));
+            this._interface.SetURL(url, this.JsonEncode(content));
         this._interface.Start();
     }
-
+    
     public fun Stop()
     {
         this._interface.Stop();
     }
-
+    
     protected fun HandleSucceed()
     {
         __HttpSenderMap[this._interface.GetID()] = null;
-        var error, param:Map<string, any> = tcall(lua.json.decode, this._interface.GetResponse());
+        var error, param:Map<string, any> = tcall(this.JsonDecode, this, this._interface.GetResponse());
         if (error != null)
         {
             var result, reason = Coroutine.Resume(this._co, error, null);

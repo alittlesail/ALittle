@@ -9,4 +9,5 @@ public class Array
     public fun join(string sep) : string {}      
     public fun push(any object) {}
     public fun sort<T>(Functor<(T,T):int> cmp) {}
+    public fun splice(int index, int count, ...) {}
 }

@@ -11,19 +11,21 @@ public class MsgSenderTemplate<MI : IMsgCommonNative, WFACTORY : IMessageWriteFa
     private int _heartbeat;        // 心跳间隔时间
     private int _heartbeat_loop;   // 心跳定时器
     private bool _check_heartbeat;
+    private ILoopSystem _loop_system;
     private Functor<()> _callback;
-
+    
     private string _ip;
     private int _port;
     
     // @param heartbeat 心跳间隔时间(秒)
     // @param check_heartbeat 检测心跳是否有接受到回复
     // @param callback 断开连接的回调
-    public ctor(int heartbeat, bool check_heartbeat, [Nullable] Functor<()> callback)
+    public ctor(int heartbeat, bool check_heartbeat, ILoopSystem loop_system, [Nullable] Functor<()> callback)
     {
         // 创建客户端对象
         this._interface = new MI();
         this._write_factory = new WFACTORY();
+        this._loop_system = loop_system;
         // 定时心跳
         this._heartbeat = heartbeat;
         this._heartbeat_loop = null;
@@ -139,7 +141,7 @@ public class MsgSenderTemplate<MI : IMsgCommonNative, WFACTORY : IMessageWriteFa
             if (delta_time > default_delta)
             delta_time = default_delta;
             // 定时检查
-            A_LoopSystem.AddTimer(Math_Floor(delta_time) * 1000
+            this._loop_system.AddTimer(Math_Floor(delta_time) * 1000
                                  , bind(this.CheckHeartbeat, this, send_time, Math_Floor(delta_time)));
         }
     }
@@ -181,7 +183,7 @@ public class MsgSenderTemplate<MI : IMsgCommonNative, WFACTORY : IMessageWriteFa
             return;
         if (this._heartbeat_loop != null)
             return;
-        this._heartbeat_loop = A_LoopSystem.AddTimer(1, bind(this.SendHeartbeat, this, null), -1, this._heartbeat * 1000);
+        this._heartbeat_loop = this._loop_system.AddTimer(1, bind(this.SendHeartbeat, this, null), -1, this._heartbeat * 1000);
     }
     // 停止发送心跳包
     private fun StopHeartbeat()
@@ -189,7 +191,7 @@ public class MsgSenderTemplate<MI : IMsgCommonNative, WFACTORY : IMessageWriteFa
         if (this._heartbeat_loop == null)
             return;
         this._last_recv_time = 0;
-        A_LoopSystem.RemoveTimer(this._heartbeat_loop);
+        this._loop_system.RemoveTimer(this._heartbeat_loop);
         this._heartbeat_loop = null;
     }
 }

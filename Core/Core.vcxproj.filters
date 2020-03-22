@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="源文件\Language">
+      <UniqueIdentifier>{557a2795-51ac-4c10-ad12-368e58c14eaf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Language\JavaScript">
+      <UniqueIdentifier>{8a7f463e-cad4-4146-b864-1d0cb66413ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Language\Lua">
+      <UniqueIdentifier>{ad7f4f72-24da-40d3-a966-22638ef17dc0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Language\Lua\Native">
+      <UniqueIdentifier>{b4a1556f-fd61-4061-89f1-600cd8f69e61}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Language\Lua\Register">
+      <UniqueIdentifier>{2ce0e213-00b1-468d-a4b2-e80f9ae67cba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Language\JavaScript\Native">
+      <UniqueIdentifier>{0c183cae-5e9d-4fbc-a43b-e58b7d36946c}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\Language\Lua\Register\sqlte3.alittle">
+      <Filter>源文件\Language\Lua\Register</Filter>
+    </None>
+    <None Include="src\Language\Lua\Register\json.alittle">
+      <Filter>源文件\Language\Lua\Register</Filter>
+    </None>
+    <None Include="src\Language\Lua\Register\lfs.alittle">
+      <Filter>源文件\Language\Lua\Register</Filter>
+    </None>
+    <None Include="src\Language\Lua\Native\os.alittle">
+      <Filter>源文件\Language\Lua\Native</Filter>
+    </None>
+    <None Include="src\Language\Lua\Native\package.alittle">
+      <Filter>源文件\Language\Lua\Native</Filter>
+    </None>
+    <None Include="src\Language\Lua\Native\string.alittle">
+      <Filter>源文件\Language\Lua\Native</Filter>
+    </None>
+    <None Include="src\Language\Lua\Native\table.alittle">
+      <Filter>源文件\Language\Lua\Native</Filter>
+    </None>
+    <None Include="src\Language\Lua\Native\bit.alittle">
+      <Filter>源文件\Language\Lua\Native</Filter>
+    </None>
+    <None Include="src\Language\Lua\Native\coroutine.alittle">
+      <Filter>源文件\Language\Lua\Native</Filter>
+    </None>
+    <None Include="src\Language\Lua\Native\io.alittle">
+      <Filter>源文件\Language\Lua\Native</Filter>
+    </None>
+    <None Include="src\Language\Lua\Native\lib.alittle">
+      <Filter>源文件\Language\Lua\Native</Filter>
+    </None>
+    <None Include="src\Language\Lua\Native\math.alittle">
+      <Filter>源文件\Language\Lua\Native</Filter>
+    </None>
+    <None Include="src\Language\JavaScript\Native\function.alittle">
+      <Filter>源文件\Language\JavaScript\Native</Filter>
+    </None>
+    <None Include="src\Language\JavaScript\Native\object.alittle">
+      <Filter>源文件\Language\JavaScript\Native</Filter>
+    </None>
+    <None Include="src\Language\JavaScript\Native\array.alittle">
+      <Filter>源文件\Language\JavaScript\Native</Filter>
+    </None>
+    <None Include="src\Language\JavaScript\Native\console.alittle">
+      <Filter>源文件\Language\JavaScript\Native</Filter>
+    </None>
+  </ItemGroup>
+</Project>

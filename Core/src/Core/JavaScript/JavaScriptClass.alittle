@@ -1,0 +1,118 @@
+
+[Language(JavaScript)]
+namespace JavaScript;
+
+protected static CloneProperty(ALittle.ClassInfo clazz, bool copy_ctor) : ALittle.ClassInfo
+{
+    var new_clazz = new ALittle.ClassInfo();
+    
+    // 保存父类对象
+    new_clazz.__super = clazz.__super;
+    new_clazz.__name = clazz.__name;
+        
+    var setter_map = new Map<string, Functor<(any, any)>>();    // setter
+    var getter_map = new Map<string, Functor<(any):any>>();    // getter
+    new_clazz.__setter = setter_map;
+    new_clazz.__getter = getter_map;
+    
+    // 遍历所有父类的属性和函数
+    for (var name, _ in cast<Map<string, any>>(clazz))
+    {
+        if (!copy_ctor && name == "Ctor") continue;
+        
+		// 除了构造函数和super_class的父类对象不需要复制，其他都要复制
+        if (name != "__super" && name != "__getter" && name != "__setter")
+        {
+			// 复制对应的setter，getter函数
+            var info = cast<Map<string, any>>(javascript.Object.getOwnPropertyDescriptor(clazz, name));
+            if (info["set"] != null || info["get"] != null) javascript.Object.defineProperty(new_clazz, name, info);
+                
+            if (info["set"] != null) setter_map[name] = info["set"];
+            if (info["get"] != null) getter_map[name] = info["get"];
+                
+            // 如果两个都没有，那么这个基本上就是函数了，那么就直接复制
+            if (info["set"] == null && info["get"] == null)
+                cast<Map<string, any>>(new_clazz)[name] = cast<Map<string, any>>(clazz)[name];
+        }
+    }
+    
+    return new_clazz;
+}
+
+protected static Class(ALittle.ClassInfo drived, Map<string, any> clazz_prop, string clazz_name) : ALittle.ClassInfo
+{
+    // 创建对象
+    var clazz:ALittle.ClassInfo;
+    if (drived != null)
+    {
+        clazz = CloneProperty(drived, false);
+        clazz.__super = drived;
+    }
+    else
+    {
+        clazz  = new ALittle.ClassInfo();
+        clazz.__setter = new Map<string, Functor<(any, any)>>();
+        clazz.__getter = new Map<string, Functor<(any):any>>();
+    }
+    clazz.__name = clazz_name;
+    
+    var setter_map = clazz.__setter;    // setter
+    var getter_map = clazz.__getter;    // getter
+    
+    // 同理复制当前的属性和函数
+    for (var name, _ in clazz_prop)
+    {
+		// 复制对应的setter，getter函数
+        var info = cast<Map<string, any>>(javascript.Object.getOwnPropertyDescriptor(clazz_prop, name));
+        if (info["get"] == null && info["set"] == null)
+        {
+            cast<Map<string, any>>(clazz)[name] = clazz_prop[name];
+        }
+        else if (info["get"] != null && info["set"] == null)
+        {
+            getter_map[name] = info["get"];
+            if (setter_map[name] != null)
+                info["set"] = setter_map[name];
+            javascript.Object.defineProperty(clazz, name, info);
+        }
+        else if (info["get"] == null && info["set"] != null)
+        {
+            setter_map[name] = info["set"];
+            if (getter_map[name] != null)
+                info["get"] = getter_map[name];
+            javascript.Object.defineProperty(clazz, name, info);
+        }
+        else
+        {
+            getter_map[name] = info["get"];
+            setter_map[name] = info["set"];
+            javascript.Object.defineProperty(clazz, name, info);
+        }
+    }
+    
+    return clazz;
+}
+
+// 定义模板
+protected static Template(ALittle.ClassInfo clazz, string name, ...) : ALittle.ClassInfo
+{
+    var child = clazz.__child;
+    if (child == null)
+    {
+        child = new Map<string, ALittle.ClassInfo>();
+        clazz.__child = child;
+    }
+    var template = child[name];
+    if (template != null) return template;
+    
+    // 定义模板
+    template = CloneProperty(clazz, true);
+    child[name] = template;
+    
+    // 获取参数
+    template.__name = name;
+    template.__element = [cast<ALittle.ClassInfo>(...)];
+    
+    // 返回模板
+    return template;
+}

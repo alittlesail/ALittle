@@ -125,12 +125,12 @@ public class MsgSenderTemplate<MI : IMsgCommonNative, WFACTORY : IMessageWriteFa
         this._write_factory.SetID(0);
         this._write_factory.SetRpcID(0);
         this._interface.SendFactory(this._write_factory);
-
+        
         // 启动检测
         if (this._check_heartbeat)
         {
             // 获取当前时间
-            var send_time = GetCurTime();
+            var send_time = Time_GetCurTime();
             // 计算合适的间隔时间
             var default_delta = this._heartbeat / 2;
 
@@ -151,7 +151,7 @@ public class MsgSenderTemplate<MI : IMsgCommonNative, WFACTORY : IMessageWriteFa
         // 所以确认当前时间和发送时间是否在delta_time+2范围内，如果没有则放弃当前检查
 
         // 获取当前时间
-        var invoke_time = lua.os.time();
+        var invoke_time = Time_GetCurTime();
         // 获取间隔时间
         var interval_time = invoke_time - send_time;
         // 如果调用的时间和发送的时间超过delta_time，说明是线程挂起导致的，这个时候可以跳过不用检查

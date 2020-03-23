@@ -84,12 +84,13 @@ public class IMsgCommon
     {
         return this._interface.IsConnected();
     }
-
+    
     // 消息读取
     private fun MessageRead(IMessageReadFactory factory, int msg_id) : any
     {
         var invoke = CreateProtocolInvokeInfo(msg_id);
-        return PS_ReadMessageForReceive(factory, invoke, null, factory.GetTotalSize());
+        var object, size = PS_ReadMessageForReceive(factory, invoke, null, factory.GetTotalSize());
+        return object;
     }
     
     // 序列化
@@ -108,7 +109,7 @@ public class IMsgCommon
         if (id == 0)
         {
             // 记录最后接受时间
-            this._last_recv_time = GetCurTime();
+            this._last_recv_time = Time_GetCurTime();
             return;
         }
 

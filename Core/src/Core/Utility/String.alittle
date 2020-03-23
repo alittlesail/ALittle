@@ -38,7 +38,7 @@ public static String_ToString(any s) : string
     return tostring(s);
     
     [Language(JavaScript)]
-    if (s == null) return "undefined";
+    if (s == null) return "nil";
     else return cast<javascript.Object>(s).toString();
 }
 
@@ -66,7 +66,9 @@ public static String_Len(string s) : int
 public static String_Find(string s, string t, [Nullable] int init) : int
 {
     [Language(LuaJIT)]
-    return find(s, t, init, true);
+    var result = find(s, t, init, true);
+    [Language(LuaJIT)]
+    return result;
     
     [Language(JavaScript)]
     if (init == null)

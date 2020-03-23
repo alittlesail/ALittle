@@ -1,7 +1,7 @@
 namespace ALittle;
 
 // 获取当前时间（秒）
-public static GetCurTime() : int
+public static Time_GetCurTime() : int
 {
     [Language(LuaJIT)]
     return lua.os.time();

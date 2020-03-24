@@ -1,30 +1,30 @@
 namespace ALittle;
 
-[Language(LuaJIT)]
+[Language(Lua)]
 private var byte = lua.String.byte;
-[Language(LuaJIT)]
+[Language(Lua)]
 private var sub = lua.String.sub;
-[Language(LuaJIT)]
+[Language(Lua)]
 private var len = lua.String.len;
-[Language(LuaJIT)]
+[Language(Lua)]
 private var find = lua.String.find;
-[Language(LuaJIT)]
+[Language(Lua)]
 private var upper = lua.String.upper;
-[Language(LuaJIT)]
+[Language(Lua)]
 private var match = lua.String.match;
-[Language(LuaJIT)]
+[Language(Lua)]
 private var concat = lua.table.concat;
-[Language(LuaJIT)]
+[Language(Lua)]
 private var tostring = lua.tostring;
-[Language(LuaJIT)]
+[Language(Lua)]
 private var tonumber = lua.tonumber;
-[Language(LuaJIT)]
+[Language(Lua)]
 private var floor = lua.math.floor;
 
 // 转为大写
 public static String_Upper(string s) : string
 {
-    [Language(LuaJIT)]
+    [Language(Lua)]
     return upper(s);
     
     [Language(JavaScript)]
@@ -34,7 +34,7 @@ public static String_Upper(string s) : string
 // 转字符串
 public static String_ToString(any s) : string
 {
-    [Language(LuaJIT)]
+    [Language(Lua)]
     return tostring(s);
     
     [Language(JavaScript)]
@@ -45,7 +45,7 @@ public static String_ToString(any s) : string
 // 把指定字符转为整数
 public static String_Byte(string s, int index) : int
 {
-    [Language(LuaJIT)]
+    [Language(Lua)]
     return byte(s, index);
     
     [Language(JavaScript)]
@@ -55,7 +55,7 @@ public static String_Byte(string s, int index) : int
 // 获取子串长度
 public static String_Len(string s) : int
 {
-    [Language(LuaJIT)]
+    [Language(Lua)]
     return len(s);
     
     [Language(JavaScript)]
@@ -65,9 +65,9 @@ public static String_Len(string s) : int
 // 子串查找
 public static String_Find(string s, string t, [Nullable] int init) : int
 {
-    [Language(LuaJIT)]
+    [Language(Lua)]
     var result = find(s, t, init, true);
-    [Language(LuaJIT)]
+    [Language(Lua)]
     return result;
     
     [Language(JavaScript)]
@@ -88,7 +88,7 @@ public static String_Find(string s, string t, [Nullable] int init) : int
 // 切割子串
 public static String_Sub(string s, int start, [Nullable] int end) : string
 {
-    [Language(LuaJIT)]
+    [Language(Lua)]
     return sub(s, start, end);
     
     [Language(JavaScript)]
@@ -101,7 +101,7 @@ public static String_Sub(string s, int start, [Nullable] int end) : string
 // 去掉前后空格，制表符
 public static String_Trim(string s) : string
 {
-    [Language(LuaJIT)]
+    [Language(Lua)]
     return match(s, "^%s*(.*)%s*$");
     
     [Language(JavaScript)]
@@ -183,9 +183,9 @@ public static String_SplitSepList(string target, List<string> sep_list) : List<s
 // 把列表以分隔符合并成字符串
 public static String_Join<T>(List<T> list, string sep) : string
 {
-    [Language(LuaJIT)]
+    [Language(Lua)]
     if (sep == null) sep = ",";
-    [Language(LuaJIT)]
+    [Language(Lua)]
     return concat(list, sep);
     
     [Language(JavaScript)]
@@ -195,7 +195,7 @@ public static String_Join<T>(List<T> list, string sep) : string
 // 替换
 public static String_Replace(string s, string os, string ns) : string
 {
-    [Language(LuaJIT)]
+    [Language(Lua)]
     return String_Join(String_Split(s, os), ns);
     
     [Language(JavaScript)]

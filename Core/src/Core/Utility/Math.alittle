@@ -1,17 +1,17 @@
 namespace ALittle;
 
-[Language(LuaJIT)]
+[Language(Lua)]
 private var tonumber = lua.tonumber;
-[Language(LuaJIT)]
+[Language(Lua)]
 private var floor = lua.math.floor;
-[Language(LuaJIT)]
+[Language(Lua)]
 private var random = lua.math.random;
-[Language(LuaJIT)]
+[Language(Lua)]
 private var randomseed = lua.math.randomseed;
 
 public static Math_Floor(double v) : int
 {
-    [Language(LuaJIT)]
+    [Language(Lua)]
     return floor(v);
     
     [Language(JavaScript)]
@@ -20,7 +20,7 @@ public static Math_Floor(double v) : int
 
 public static Math_ToInt(string s) : int
 {
-    [Language(LuaJIT)]
+    [Language(Lua)]
     return floor(tonumber(s));
     
     [Language(JavaScript)]
@@ -29,7 +29,7 @@ public static Math_ToInt(string s) : int
 
 public static Math_ToDouble(string s) : double
 {
-    [Language(LuaJIT)]
+    [Language(Lua)]
     return tonumber(s);
     
     [Language(JavaScript)]
@@ -38,13 +38,13 @@ public static Math_ToDouble(string s) : double
 
 public static Math_RandomSeed(int seed)
 {
-    [Language(LuaJIT)]
+    [Language(Lua)]
     randomseed(seed);
 }
 
 public static Math_RandomInt(int min, int max) : int
 {
-    [Language(LuaJIT)]
+    [Language(Lua)]
     return cast<int>(random(min, max));
     
     [Language(JavaScript)]
@@ -53,7 +53,7 @@ public static Math_RandomInt(int min, int max) : int
 
 public static Math_RandomDouble(double min, double max) : double
 {
-    [Language(LuaJIT)]
+    [Language(Lua)]
     return random() * (max - min) + min;
     
     [Language(JavaScript)]

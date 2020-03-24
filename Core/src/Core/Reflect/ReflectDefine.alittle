@@ -27,7 +27,7 @@ public struct ClassInfo
 // 根据反射信息创建对象
 public static NewObject(ClassInfo clazz, ...) : any
 {
-    [Language(LuaJIT)]
+    [Language(Lua)]
     return cast<Functor<(any):any>>(clazz)(...);
     
     // 构造对象

@@ -3,7 +3,7 @@ namespace ALittle;
 // 获取当前时间（秒）
 public static Time_GetCurTime() : int
 {
-    [Language(LuaJIT)]
+    [Language(Lua)]
     return lua.os.time();
     
     [Language(JavaScript)]

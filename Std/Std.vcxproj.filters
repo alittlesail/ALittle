@@ -5,11 +5,22 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="Language">
-      <UniqueIdentifier>{d946872b-6fb4-47b4-b225-e0d86d1739ec}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Std\Utility">
       <UniqueIdentifier>{707c22fb-256b-47ce-abdc-2af5faec20f0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Register">
+      <UniqueIdentifier>{d946872b-6fb4-47b4-b225-e0d86d1739ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Register\Lua">
+      <UniqueIdentifier>{b6dde6c6-4d36-443f-b9ae-7693822fdd6d}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\Register\Lua\json.alittle">
+      <Filter>Register\Lua</Filter>
+    </None>
+    <None Include="src\Register\Lua\md5.alittle">
+      <Filter>Register\Lua</Filter>
+    </None>
   </ItemGroup>
 </Project>

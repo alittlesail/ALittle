@@ -199,7 +199,7 @@ public static ExecuteCommand(string cmd)
         }
     }
     
-    [Language(LuaJIT)]
+    [Language(Lua)]
     info.callback(lua.unpack(value_list, 1, len));
     
     [Language(JavaScript)]

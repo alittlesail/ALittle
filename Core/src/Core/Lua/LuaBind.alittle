@@ -1,5 +1,5 @@
 
-[Language(LuaJIT)]
+[Language(Lua)]
 namespace Lua;
 
 private var select = lua.select;

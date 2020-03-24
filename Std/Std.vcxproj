@@ -18,6 +18,10 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="src\Register\Lua\json.alittle" />
+    <None Include="src\Register\Lua\md5.alittle" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <ProjectGuid>{D8283CA8-73F5-4984-B9B1-E1A8065095CF}</ProjectGuid>

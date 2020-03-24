@@ -14,6 +14,7 @@
 
 #include "md5.h"
 
+#define MD5_MODNAME "md5"
 
 /**
 *  Hash function. Returns a hash for a given string.
@@ -190,22 +191,11 @@ static struct luaL_Reg md5lib[] = {
   {NULL, NULL}
 };
 
-static void set_funcs (lua_State *L, const luaL_Reg *l, int nup) {
-  luaL_checkstack(L, nup+1, "too many upvalues");
-  for (; l->name != NULL; l++) {  /* fill the table with given functions */
-    int i;
-    lua_pushstring(L, l->name);
-    for (i = 0; i < nup; i++)  /* copy upvalues to the top */
-      lua_pushvalue(L, -(nup + 1));
-    lua_pushcclosure(L, l->func, nup);  /* closure with those upvalues */
-    lua_settable(L, -(nup + 3)); /* table must be below the upvalues, the name and the closure */
-  }
-  lua_pop(L, nup);  /* remove upvalues */
-}
-
 int luaopen_md5_core (lua_State *L) {
   lua_newtable(L);
-  set_funcs(L, md5lib, 0);
+  luaL_setfuncs(L, md5lib, 0);
   set_info (L);
+  lua_pushvalue(L, -1);
+  lua_setglobal(L, MD5_MODNAME);
   return 1;
 }

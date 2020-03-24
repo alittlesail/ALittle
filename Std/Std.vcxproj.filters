@@ -22,5 +22,8 @@
     <None Include="src\Register\Lua\md5.alittle">
       <Filter>Register\Lua</Filter>
     </None>
+    <None Include="src\Register\Lua\timer.alittle">
+      <Filter>Register\Lua</Filter>
+    </None>
   </ItemGroup>
 </Project>

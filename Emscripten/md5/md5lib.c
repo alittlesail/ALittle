@@ -191,7 +191,7 @@ static struct luaL_Reg md5lib[] = {
   {NULL, NULL}
 };
 
-int luaopen_md5_core (lua_State *L) {
+int luaopen_md5 (lua_State *L) {
   lua_newtable(L);
   luaL_setfuncs(L, md5lib, 0);
   set_info (L);

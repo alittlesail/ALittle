@@ -21,6 +21,7 @@
   <ItemGroup>
     <None Include="src\Register\Lua\json.alittle" />
     <None Include="src\Register\Lua\md5.alittle" />
+    <None Include="src\Register\Lua\timer.alittle" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

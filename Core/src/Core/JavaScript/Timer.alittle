@@ -1,0 +1,55 @@
+
+namespace ALittle;
+
+public struct MiniHeapNodeInfo
+{
+    int heap_index;
+    int end_time;
+}
+
+public class MiniHeap
+{
+    private Map<int, MiniHeapNodeInfo> _nodes;
+    private int _size;
+    private int _capacity;
+    
+    public ctor()
+    {
+        this._nodes = new Map<int, MiniHeapNodeInfo>();
+        this._size = 0;
+        this._capacity = 0;
+    }
+    
+    public get size() : int { return this._size; }
+    public get top() : MiniHeapNodeInfo
+    {
+        if (this._size == 0) return null;
+        return this._nodes[1];
+    }
+    
+    public fun Push(MiniHeapNodeInfo node) : bool
+    {
+        if (!this.Reserve(this._size + 1))
+            return false;
+        
+        this.Shitup(this._size + 1, node);
+        ++ this._size;
+        return true;
+    }
+    
+    public fun Pop() : MiniHeapNodeInfo
+    {
+        if (this._size == 0) return null;
+        
+        var node = this._nodes[1];
+        this.Shutdown(0, this._nodes[this._size - 1]);
+        this._size -= 1;
+        node.heap_index = -1;
+        return node;
+    }
+    
+    public fun Adjust(MiniHeapNodeInfo node) : bool
+    {
+        if (node.heap_index == -1)
+    }
+}

@@ -174,5 +174,8 @@
     <None Include="src\Core\Loop\LoopList.alittle">
       <Filter>Core\Loop</Filter>
     </None>
+    <None Include="src\Core\JavaScript\Timer.alittle">
+      <Filter>Core\Utility</Filter>
+    </None>
   </ItemGroup>
 </Project>

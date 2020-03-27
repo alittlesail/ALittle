@@ -5,15 +5,41 @@
 3. 打开ALittle.sln工程，就可以看到代码了
 
 【Emscripten编译说明】
-1. 安装python3:https://www.python.org/downloads/. 并把python目录加到环境变量
-2. 用git拉一下代码 git clone https://github.com/emscripten-core/emsdk.git
-3. 打开控制台，依次执行一下命令
-	cd emsdk
-	emsdk.bat install latest	（只需要执行一次）
-	emsdk.bat activate latest	（只需要执行一次）
-	emsdk_env.bat 				（每次打开控制台执行一次）
-	将目录切换到当前git下的Emscripten目录
-	执行build.bat （编译为wasm）
+1. 安装docker:https://www.docker.com/products/docker-desktop
+
+2. 打开Windows PowerShell，执行以下指令
+	拉取ubuntu镜像  docker pull ubuntu
+	创建ubuntu容器  docker run -it --name alittle ubuntu /bin/bash -v D:/Software/ALittle/trunk/Emscripten:/alittle
+	此时已进入ubuntu
+	更新系统 apt update
+	安装git  apt install git
+	安装python apt install python
+	安装xml2 apt install xml2
+	安装gcc apt install gcc
+	更新gcc apt upgrade gcc
+	安装autoconf apt install autoconf
+	安装cmake apt install cmake
+	安装readline库 apt install libreadline-dev
+	拉emsdk的代码 git clone https://github.com/emscripten-core/emsdk.git
+	进入emsdk目录 cd emsdk
+	安装emsdk		sh emsdk install latest
+	激活emsdk		sh emsdk activate latest
+	设置环境变量		source ./emsdk_env.sh
+
+3. 编译lua5.3.5:https://www.lua.org/download.html
+	a. 把lua5.3.5解压到D:/Software/ALittle/trunk/Emscripten/lua5.3.5文件夹中
+	b. 进入D:/Software/ALittle/trunk/Emscripten/lua5.3.5文件夹
+	c. emmake make posix CC=emcc
+	d. emmake make install
+
+5. 编译SDL2（SDL2_image，SDL2_mixer，SDL2_net，SDL2_ttf同理）
+	a. 把SDL2解压到D:/Software/ALittle/trunk/Emscripten/SDL2中
+	b. 进入D:/Software/ALittle/trunk/Emscripten
+	c. mkdir build_SDL2
+	d. cd build_SDL2
+	e. emcmake cmake ../SDL2
+	d. emmake make
+	e. emmake make install
 
 
 【插件说明】

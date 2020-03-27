@@ -14,7 +14,7 @@ public class LoopFunction : LoopObject
     private Functor<()> _complete_callback;
 
     public any _user_data;
-
+    
     public ctor(Functor<()> func, int count, int interval_time, int delay_time)
     {
         this._func = func;                // 保存函数

@@ -19,9 +19,23 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\Register\Lua\json.alittle" />
-    <None Include="src\Register\Lua\md5.alittle" />
-    <None Include="src\Register\Lua\timer.alittle" />
+    <None Include="src\Std\Loop\LoopFunction.alittle" />
+    <None Include="src\Std\Loop\LoopGroup.alittle" />
+    <None Include="src\Std\Loop\LoopList.alittle" />
+    <None Include="src\Std\Loop\LoopSystem.alittle" />
+    <None Include="src\Std\Loop\LoopTimer.alittle" />
+    <None Include="src\Std\Net\HttpFileReceiverTemplate.alittle" />
+    <None Include="src\Std\Net\HttpFileSenderTemplate.alittle" />
+    <None Include="src\Std\Net\HttpReceiverTemplate.alittle" />
+    <None Include="src\Std\Net\HttpSenderTemplate.alittle" />
+    <None Include="src\Std\Net\MsgCommonTemplate.alittle" />
+    <None Include="src\Std\Net\MsgReceiverTemplate.alittle" />
+    <None Include="src\Std\Net\MsgSenderTemplate.alittle" />
+    <None Include="src\Std\Net\MsgSessionTemplate.alittle" />
+    <None Include="src\Std\Reflect\ReflectCmd.alittle" />
+    <None Include="src\Std\Reflect\ReflectCsv.alittle" />
+    <None Include="src\Std\Reflect\ReflectMessage.alittle" />
+    <None Include="src\Std\Utility\SafeIDCreator.alittle" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

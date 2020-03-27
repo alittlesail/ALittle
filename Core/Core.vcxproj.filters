@@ -28,9 +28,6 @@
     <Filter Include="Core\Net">
       <UniqueIdentifier>{dfd19747-ddbd-4378-bcfa-3bf48e3ad831}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Core\Loop">
-      <UniqueIdentifier>{06ba64d1-8780-4490-b6b8-71df2d7e0c1f}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Core\Lua\LuaClass.alittle">
@@ -96,16 +93,7 @@
     <None Include="src\Core\Reflect\ReflectDefine.alittle">
       <Filter>Core\Reflect</Filter>
     </None>
-    <None Include="src\Core\Reflect\ReflectMessage.alittle">
-      <Filter>Core\Reflect</Filter>
-    </None>
     <None Include="src\Core\Reflect\ReflectRegister.alittle">
-      <Filter>Core\Reflect</Filter>
-    </None>
-    <None Include="src\Core\Reflect\ReflectCmd.alittle">
-      <Filter>Core\Reflect</Filter>
-    </None>
-    <None Include="src\Core\Reflect\ReflectCsv.alittle">
       <Filter>Core\Reflect</Filter>
     </None>
     <None Include="src\Core\Utility\String.alittle">
@@ -123,15 +111,6 @@
     <None Include="src\Core\Net\MsgCommon.alittle">
       <Filter>Core\Net</Filter>
     </None>
-    <None Include="src\Core\Net\MsgReceiver.alittle">
-      <Filter>Core\Net</Filter>
-    </None>
-    <None Include="src\Core\Net\MsgSender.alittle">
-      <Filter>Core\Net</Filter>
-    </None>
-    <None Include="src\Core\Net\MsgSession.alittle">
-      <Filter>Core\Net</Filter>
-    </None>
     <None Include="src\Core\Net\HttpFileReceiver.alittle">
       <Filter>Core\Net</Filter>
     </None>
@@ -144,9 +123,6 @@
     <None Include="src\Core\Net\HttpSender.alittle">
       <Filter>Core\Net</Filter>
     </None>
-    <None Include="src\Core\Utility\SafeIDCreator.alittle">
-      <Filter>Core\Utility</Filter>
-    </None>
     <None Include="src\Core\Utility\Coroutine.alittle">
       <Filter>Core\Utility</Filter>
     </None>
@@ -158,24 +134,6 @@
     </None>
     <None Include="src\Language\JavaScript\time.alittle">
       <Filter>Language\JavaScript</Filter>
-    </None>
-    <None Include="src\Core\Loop\LoopSystem.alittle">
-      <Filter>Core\Loop</Filter>
-    </None>
-    <None Include="src\Core\Loop\LoopTimer.alittle">
-      <Filter>Core\Loop</Filter>
-    </None>
-    <None Include="src\Core\Loop\LoopFunction.alittle">
-      <Filter>Core\Loop</Filter>
-    </None>
-    <None Include="src\Core\Loop\LoopGroup.alittle">
-      <Filter>Core\Loop</Filter>
-    </None>
-    <None Include="src\Core\Loop\LoopList.alittle">
-      <Filter>Core\Loop</Filter>
-    </None>
-    <None Include="src\Core\JavaScript\Timer.alittle">
-      <Filter>Core\Utility</Filter>
     </None>
   </ItemGroup>
 </Project>

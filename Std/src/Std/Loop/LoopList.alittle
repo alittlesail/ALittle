@@ -30,7 +30,7 @@ public class LoopList : LoopObject
     {
         return this._count;
     }
-
+    
     // 添加updater
     public fun AddUpdater(LoopObject value)
     {

@@ -3,10 +3,10 @@ namespace ALittle;
 
 public class IHeapTimer
 {
-    public fun add(int delay_ms, int loop, int interval_ms) : int { return 0; }
-    public fun remove(int id) : bool { return false; }
-    public fun update(int ms) {}
-    public fun poll() : int { return 0; }
+    public fun Add(int delay_ms, int loop, int interval_ms) : int { return 0; }
+    public fun Remove(int id) : bool { return false; }
+    public fun Update(int ms) {}
+    public fun Poll() : int { return 0; }
 }
 
 public class LoopObject
@@ -17,8 +17,6 @@ public class LoopObject
     public fun Reset() {}
     public fun SetTime(int time) : int, bool { return time, true; }
     public fun SetCompleted() {}
-    public fun Start() {}
-    public fun Close() {}
 }
 
 public class ILoopSystem
@@ -33,21 +31,19 @@ public class LoopSystem<HT : IHeapTimer> : ILoopSystem
     private bool _in_update;
     private Map<LoopObject, bool> _loop_cache;
     private bool _cache_empty;
-
+    
     private HT _timer;
     private Map<int, Functor<()>> _handler_map;
-
-    public ctor(bool weak)
+    
+    public ctor()
     {
         this._loop_updaters = new Map<LoopObject, bool>();
         this._in_update = false;
         this._loop_cache = new Map<LoopObject, bool>();
         this._cache_empty = true;
-
+        
         this._timer = new HT();
         this._handler_map = new Map<int, Functor<()>>();
-
-        // if (weak) Setweak(this._loop_updaters, true, false);
     }
 
     // 添加updater
@@ -95,17 +91,17 @@ public class LoopSystem<HT : IHeapTimer> : ILoopSystem
         if (callback == null) return 0;
         if (loop == null) loop = 1;
         if (interval_ms == null) interval_ms = 1;
-        var id = this._timer.add(delay_ms, loop, interval_ms);
+        var id = this._timer.Add(delay_ms, loop, interval_ms);
         this._handler_map[id] = callback;
         return id;
     }
-
+    
     // 移除定时器
     public fun RemoveTimer(int id) : bool
     {
         if (id == null) return false;
         this._handler_map[id] = null;
-        return this._timer.remove(id);
+        return this._timer.Remove(id);
     }
     
     // 更新
@@ -157,10 +153,10 @@ public class LoopSystem<HT : IHeapTimer> : ILoopSystem
         // 标记为不在更新中
         this._in_update = false;
 
-        this._timer.update(frame_time);
+        this._timer.Update(frame_time);
         while (true)
         {
-            var id = this._timer.poll();
+            var id = this._timer.Poll();
             if (id == 0) break;
 
             if (id < 0)
@@ -180,4 +176,3 @@ public class LoopSystem<HT : IHeapTimer> : ILoopSystem
         }
     }
 }
-

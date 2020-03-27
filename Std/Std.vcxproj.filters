@@ -11,19 +11,67 @@
     <Filter Include="Register">
       <UniqueIdentifier>{d946872b-6fb4-47b4-b225-e0d86d1739ec}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Register\Lua">
-      <UniqueIdentifier>{b6dde6c6-4d36-443f-b9ae-7693822fdd6d}</UniqueIdentifier>
+    <Filter Include="Std\Loop">
+      <UniqueIdentifier>{641c7dec-0e3d-43c2-bb04-4e84c6d68da4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Std\Reflect">
+      <UniqueIdentifier>{a9cf95fd-6d37-445d-a0f8-b9efd1a06d98}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Std\Net">
+      <UniqueIdentifier>{638ef73b-420c-4547-988b-1621503f01aa}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\Register\Lua\json.alittle">
-      <Filter>Register\Lua</Filter>
+    <None Include="src\Std\Loop\LoopSystem.alittle">
+      <Filter>Std\Loop</Filter>
     </None>
-    <None Include="src\Register\Lua\md5.alittle">
-      <Filter>Register\Lua</Filter>
+    <None Include="src\Std\Loop\LoopTimer.alittle">
+      <Filter>Std\Loop</Filter>
     </None>
-    <None Include="src\Register\Lua\timer.alittle">
-      <Filter>Register\Lua</Filter>
+    <None Include="src\Std\Loop\LoopFunction.alittle">
+      <Filter>Std\Loop</Filter>
+    </None>
+    <None Include="src\Std\Loop\LoopGroup.alittle">
+      <Filter>Std\Loop</Filter>
+    </None>
+    <None Include="src\Std\Loop\LoopList.alittle">
+      <Filter>Std\Loop</Filter>
+    </None>
+    <None Include="src\Std\Utility\SafeIDCreator.alittle">
+      <Filter>Std\Utility</Filter>
+    </None>
+    <None Include="src\Std\Reflect\ReflectMessage.alittle">
+      <Filter>Std\Reflect</Filter>
+    </None>
+    <None Include="src\Std\Reflect\ReflectCmd.alittle">
+      <Filter>Std\Reflect</Filter>
+    </None>
+    <None Include="src\Std\Reflect\ReflectCsv.alittle">
+      <Filter>Std\Reflect</Filter>
+    </None>
+    <None Include="src\Std\Net\HttpFileReceiverTemplate.alittle">
+      <Filter>Std\Net</Filter>
+    </None>
+    <None Include="src\Std\Net\HttpFileSenderTemplate.alittle">
+      <Filter>Std\Net</Filter>
+    </None>
+    <None Include="src\Std\Net\HttpReceiverTemplate.alittle">
+      <Filter>Std\Net</Filter>
+    </None>
+    <None Include="src\Std\Net\HttpSenderTemplate.alittle">
+      <Filter>Std\Net</Filter>
+    </None>
+    <None Include="src\Std\Net\MsgCommonTemplate.alittle">
+      <Filter>Std\Net</Filter>
+    </None>
+    <None Include="src\Std\Net\MsgReceiverTemplate.alittle">
+      <Filter>Std\Net</Filter>
+    </None>
+    <None Include="src\Std\Net\MsgSenderTemplate.alittle">
+      <Filter>Std\Net</Filter>
+    </None>
+    <None Include="src\Std\Net\MsgSessionTemplate.alittle">
+      <Filter>Std\Net</Filter>
     </None>
   </ItemGroup>
 </Project>

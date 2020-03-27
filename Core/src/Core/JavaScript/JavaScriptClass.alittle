@@ -16,6 +16,7 @@ protected static CloneProperty(ALittle.ClassInfo clazz, bool copy_ctor) : ALittl
     new_clazz.__getter = getter_map;
     
     // 遍历所有父类的属性和函数
+    [Native]
     for (var name, _ in cast<Map<string, any>>(clazz))
     {
         if (!copy_ctor && name == "Ctor") continue;

@@ -21,12 +21,6 @@
   <ItemGroup>
     <None Include="src\Core\JavaScript\JavaScriptClass.alittle" />
     <None Include="src\Core\JavaScript\JavaScriptException.alittle" />
-    <None Include="src\Core\JavaScript\Timer.alittle" />
-    <None Include="src\Core\Loop\LoopFunction.alittle" />
-    <None Include="src\Core\Loop\LoopGroup.alittle" />
-    <None Include="src\Core\Loop\LoopList.alittle" />
-    <None Include="src\Core\Loop\LoopSystem.alittle" />
-    <None Include="src\Core\Loop\LoopTimer.alittle" />
     <None Include="src\Core\Lua\LuaBind.alittle" />
     <None Include="src\Core\Lua\LuaClass.alittle" />
     <None Include="src\Core\Lua\LuaException.alittle" />
@@ -35,19 +29,12 @@
     <None Include="src\Core\Net\HttpReceiver.alittle" />
     <None Include="src\Core\Net\HttpSender.alittle" />
     <None Include="src\Core\Net\MsgCommon.alittle" />
-    <None Include="src\Core\Net\MsgReceiver.alittle" />
-    <None Include="src\Core\Net\MsgSender.alittle" />
-    <None Include="src\Core\Net\MsgSession.alittle" />
-    <None Include="src\Core\Reflect\ReflectCmd.alittle" />
-    <None Include="src\Core\Reflect\ReflectCsv.alittle" />
     <None Include="src\Core\Reflect\ReflectDefine.alittle" />
-    <None Include="src\Core\Reflect\ReflectMessage.alittle" />
     <None Include="src\Core\Reflect\ReflectRegister.alittle" />
     <None Include="src\Core\Utility\Coroutine.alittle" />
     <None Include="src\Core\Utility\List.alittle" />
     <None Include="src\Core\Utility\Log.alittle" />
     <None Include="src\Core\Utility\Math.alittle" />
-    <None Include="src\Core\Utility\SafeIDCreator.alittle" />
     <None Include="src\Core\Utility\String.alittle" />
     <None Include="src\Core\Utility\Time.alittle" />
     <None Include="src\Language\JavaScript\array.alittle" />

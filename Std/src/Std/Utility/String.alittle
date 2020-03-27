@@ -1,0 +1,20 @@
+
+namespace ALittle;
+
+public static String_JsonEncode(any object) : string
+{
+    [Language(Lua)]
+    return lua.json.encode(object);
+    
+    [Language(JavaScript)]
+    return javascript.JSON.stringify(object);
+}
+
+public static String_JsonDecode(string text) : any
+{
+    [Language(Lua)]
+    return lua.json.decode(text);
+    
+    [Language(JavaScript)]
+    return javascript.JSON.parse(text);
+}

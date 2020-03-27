@@ -135,5 +135,8 @@
     <None Include="src\Language\JavaScript\time.alittle">
       <Filter>Language\JavaScript</Filter>
     </None>
+    <None Include="src\Language\JavaScript\json.alittle">
+      <Filter>Language\JavaScript</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -41,6 +41,7 @@
     <None Include="src\Language\JavaScript\console.alittle" />
     <None Include="src\Language\JavaScript\coroutine.alittle" />
     <None Include="src\Language\JavaScript\function.alittle" />
+    <None Include="src\Language\JavaScript\json.alittle" />
     <None Include="src\Language\JavaScript\math.alittle" />
     <None Include="src\Language\JavaScript\object.alittle" />
     <None Include="src\Language\JavaScript\string.alittle" />

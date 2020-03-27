@@ -1,5 +1,9 @@
 
-namespace ALittle;
+[Language(JavaScript)]
+namespace JavaScript;
+
+// 因为只会翻译成JavaScript，只需要从javascript取
+var Math_Floor = javascript.Math.floor;
 
 public struct MiniHeapNodeInfo
 {
@@ -9,7 +13,7 @@ public struct MiniHeapNodeInfo
 
 public class MiniHeap<T : MiniHeapNodeInfo>
 {
-    [Native]
+    [Native] // 翻译成JavaScript时 使用Native表示下标从0开始
     private List<T> _nodes;
     private int _size;
     private int _capacity;
@@ -157,7 +161,7 @@ public struct TimerInfo : MiniHeapNodeInfo
     int interval_ms;
 }
 
-public class AHeapTimer : IHeapTimer
+public class JHeapTimer : ALittle.IHeapTimer
 {
     private int _cur_time;
     private int _max_id;

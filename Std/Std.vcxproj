@@ -19,6 +19,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <None Include="src\Adapter\JavaScript\Timer.alittle" />
+    <None Include="src\Adapter\Lua\HeapTimer.alittle" />
+    <None Include="src\Adapter\Lua\json.alittle" />
+    <None Include="src\Adapter\Lua\lfs.alittle" />
+    <None Include="src\Adapter\Lua\MessageFactory.alittle" />
+    <None Include="src\Adapter\Lua\sqlte3.alittle" />
     <None Include="src\Std\Loop\LoopFunction.alittle" />
     <None Include="src\Std\Loop\LoopGroup.alittle" />
     <None Include="src\Std\Loop\LoopList.alittle" />
@@ -36,6 +42,7 @@
     <None Include="src\Std\Reflect\ReflectCsv.alittle" />
     <None Include="src\Std\Reflect\ReflectMessage.alittle" />
     <None Include="src\Std\Utility\SafeIDCreator.alittle" />
+    <None Include="src\Std\Utility\String.alittle" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

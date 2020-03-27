@@ -1,0 +1,9 @@
+
+[Language(JavaScript)]
+register namespace javascript;
+                       
+public class JSON
+{
+    public static parse(string text) : any {}
+    public static stringify(any object) : string {}
+}

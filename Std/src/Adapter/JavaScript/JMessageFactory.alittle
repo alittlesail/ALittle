@@ -45,9 +45,9 @@ public class JMessageWriteFactory : ALittle.IMessageWriteFactory
     {
         this.ResizeMemory(1);
         if (value)
-            this._memory.setUint8(this._size, 1, true);
+            this._memory.setUint8(this._size, 1);
         else
-            this._memory.setUint8(this._size, 0, true);
+            this._memory.setUint8(this._size, 0);
         this._size += 1;
         return 1;
     }
@@ -72,12 +72,12 @@ public class JMessageWriteFactory : ALittle.IMessageWriteFactory
 		var new_memory = new javascript.DataView(new_data.buffer);
 		for (var i = 0, new_memory.byteLength - 1, 1)
 		{
-            this._memory.setUint8(this._size, new_memory.getUint8(i), true);
+            this._memory.setUint8(this._size, new_memory.getUint8(i));
 			++ this._size;
 		}
         var str_len = this._size - 4 - old_size;
         this._memory.setUint32(old_size, str_len + 1, true);
-        this._memory.setUint8(this._size, 0, true);
+        this._memory.setUint8(this._size, 0);
         this._size += 1;
         return str_len + 4 + 1;
     }
@@ -179,5 +179,6 @@ public class JMessageReadFactory : ALittle.IMessageReadFactory
         this._last_read_size = 8;
 		return value;
     }
+    
     public fun GetReadSize() : int { return this._last_read_size; }
 }

@@ -1,6 +1,6 @@
 register namespace lua;
 
-public class MessageWriteFactory : ALittle.IMessageWriteFactory
+public class __CPPAPIMessageWriteFactory : ALittle.IMessageWriteFactory
 {
     public fun SetID(int id) {}
     public fun SetRpcID(int id) {}
@@ -15,7 +15,7 @@ public class MessageWriteFactory : ALittle.IMessageWriteFactory
     public fun WriteDouble(double value) : int {}
 }
 
-public class MessageReadFactory : ALittle.IMessageReadFactory
+public class __CPPAPIMessageReadFactory : ALittle.IMessageReadFactory
 {
     public fun GetTotalSize() : int {}
     

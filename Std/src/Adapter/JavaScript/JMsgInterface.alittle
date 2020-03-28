@@ -1,0 +1,97 @@
+
+[Language(JavaScript)]
+namespace JavaScript;
+
+public class JNetBuffer
+{
+    private int _size;
+    private int _offset;
+    private javascript.DataView _memory;
+    
+    public ctor(int init_size)
+    {
+        this._size = 0;
+        this._offset = 0;
+        var data = new javascript.ArrayBuffer(init_size);
+        this._memory = new javascript.DataView(data);
+    }
+    
+    public fun Read(javascript.ArrayBuffer array_buffer) : bool
+    {
+        var head_completed = (this._offset >= 12);
+        
+		var data_view = new javascript.DataView(array_buffer);
+		this.Resize(data_view.byteLength);
+		for (var i = 0, data_view.byteLength - 1, 1)
+		{
+			this._memory.setUint8(this._offset, data_view.getUint8(i));
+			++ this._offset;
+		}
+
+		if (this._offset < 12) return false;
+
+		if (head_completed == false)
+			this._size = this._memory.getInt32(0, true);   
+        
+		if (this._offset - 12 >= this._size)
+			return true;
+
+		return false;
+    }
+        
+    public fun Resize(int add_size)
+	{
+		if (this._offset + add_size <= this._memory.byteLength) return;
+        
+		var new_data:javascript.ArrayBuffer = null;
+		if (this._memory.byteLength * 2 < this._offset + add_size)
+			new_data = new javascript.ArrayBuffer(this._offset + add_size);
+		else
+			new_data = new javascript.ArrayBuffer(this._memory.byteLength * 2);
+		var new_memory = new javascript.DataView(new_data);
+
+		for (var i = 0, this._memory.byteLength - 1, 1)
+			new_memory.setUint8(i, this._memory.getUint8(i));
+        
+        this._memory = new_memory;
+	}
+    
+    public fun GetResultBuffer() : javascript.ArrayBuffer
+    {
+		if (this._offset - 12 < this._size) return null;
+
+		var new_data = new javascript.ArrayBuffer(this._size + 12);
+		var new_memory = new javascript.DataView(new_data);
+		
+        var length = this._size + 12;
+		for (var i = 0, length - 1, 1)
+			new_memory.setUint8(i, this._memory.getUint8(i));
+		
+		return new_data;
+    }
+    
+    public fun GetLastBuffer() : javascript.ArrayBuffer
+    {
+        if (this._offset - 12 < this._size) return null;
+
+		var last_size = this._offset - this._size - 12;
+		if (last_size <= 0) return null;
+
+		var new_data = new javascript.ArrayBuffer(last_size);
+		var new_memory = new javascript.DataView(new_data);
+        
+		var index = 0;
+		for (var i = this._size + 12, this._offset - 1, 1)
+		{
+			new_memory.setUint8(index, this._memory.getUint8(i));
+			++ index;
+		}	
+
+		return new_data;
+    }
+}
+
+public class JMsgInterface : ALittle.IMsgCommonNative
+{
+    
+}

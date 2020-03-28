@@ -6,8 +6,8 @@ public class DataView
 {
     public ctor(ArrayBuffer buffer) {}
     
-    public fun setInt8(int offset, int value, [Nullable] bool little_endian) {}
-    public fun setUint8(int offset, int value, [Nullable] bool little_endian) {}
+    public fun setInt8(int offset, int value) {}
+    public fun setUint8(int offset, int value) {}
     public fun getUint8(int offset) : int {}
     
     public fun setInt16(int offset, int value, [Nullable] bool little_endian) {}

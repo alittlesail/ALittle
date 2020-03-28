@@ -1,0 +1,10 @@
+
+[Language(JavaScript)]
+register namespace javascript;
+                       
+public class TextEncoder
+{
+    public ctor(string encoder) {}
+    
+    public fun encode(string text) : ArrayBuffer {}
+}

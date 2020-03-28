@@ -1,7 +1,7 @@
 
 namespace ALittle;
 
-public class MsgSessionTemplate<NATIVE : IMsgCommonNative, WFACTORY : IMessageWriteFactory> : IMsgCommon
+public class MsgSessionTemplate<NATIVE : IMsgCommonNative, WFACTORY : IMessageWriteFactory> : IMsgCommonTemplate
 {
     private int _connect_key;
     private int _route_type;

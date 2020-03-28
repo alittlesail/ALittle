@@ -138,5 +138,14 @@
     <None Include="src\Language\JavaScript\json.alittle">
       <Filter>Language\JavaScript</Filter>
     </None>
+    <None Include="src\Language\JavaScript\arraybuffer.alittle">
+      <Filter>Language\JavaScript</Filter>
+    </None>
+    <None Include="src\Language\JavaScript\dataview.alittle">
+      <Filter>Language\JavaScript</Filter>
+    </None>
+    <None Include="src\Language\JavaScript\textencoder.alittle">
+      <Filter>Language\JavaScript</Filter>
+    </None>
   </ItemGroup>
 </Project>

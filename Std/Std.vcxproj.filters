@@ -100,5 +100,8 @@
     <None Include="src\Std\Utility\String.alittle">
       <Filter>Std\Utility</Filter>
     </None>
+    <None Include="src\Adapter\JavaScript\JMessageFactory.alittle">
+      <Filter>Adapter\JavaScript</Filter>
+    </None>
   </ItemGroup>
 </Project>

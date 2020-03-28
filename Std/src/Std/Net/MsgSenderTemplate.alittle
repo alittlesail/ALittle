@@ -6,7 +6,7 @@ private var __MsgSenderMap = new Map<int, IMsgCommon>();
 public static FindMsgSender(int id) : IMsgCommon { return __MsgSenderMap[id]; }
 
 // 用于长连接
-public class MsgSenderTemplate<MI : IMsgCommonNative, WFACTORY : IMessageWriteFactory> : IMsgCommon
+public class MsgSenderTemplate<MI : IMsgCommonNative, WFACTORY : IMessageWriteFactory> : IMsgCommonTemplate
 {
     private int _heartbeat;        // 心跳间隔时间
     private int _heartbeat_loop;   // 心跳定时器

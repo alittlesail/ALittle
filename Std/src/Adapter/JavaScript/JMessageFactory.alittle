@@ -1,0 +1,119 @@
+
+[Language(JavaScript)]
+namespace JavaScript;
+
+private var __TEXTENCODER:javascript.TextEncoder = new javascript.TextEncoder("utf8");
+
+public class JMessageWriteFactory : ALittle.IMessageWriteFactory
+{
+    private int _id;
+    private int _size;
+    private int _rpc_id;
+    private javascript.DataView _memory;
+    
+    public ctor(int init_size)
+    {
+        this._size = 0;
+        this._id = 0;
+        this._rpc_id = 0;
+        
+        var data = new javascript.ArrayBuffer(init_size);
+        this._memory = new javascript.DataView(data);
+    }
+    
+    private fun ResizeMemory(int add_size)
+    {
+        if (this._memory.byteLength >= this._size + add_size) return;
+        
+		var new_data = new javascript.ArrayBuffer(this._memory.byteLength * 2);
+		var new_memory = new javascript.DataView(new_data);
+        
+        for (var i = 0, this._memory.byteLength - 1, 1)
+            new_memory.setUint8(i, this._memory.getUint8(i));
+        
+		this._memory = new_memory;
+    }
+    
+    public fun SetID(int id) { this._id = id; }
+    public fun SetRpcID(int id) { this._rpc_id = id; }
+    public fun ResetOffset() { this._size = 0; }
+    public fun GetOffset() : int { return this._size; }
+    public fun SetInt(int offset, int value) { this._memory.setInt32(offset, value, true); }
+    
+    public fun WriteBool(bool value) : int
+    {
+        this.ResizeMemory(1);
+        if (value)
+            this._memory.setUint8(this._size, 1, true);
+        else
+            this._memory.setUint8(this._size, 0, true);
+        this._size += 1;
+        return 1;
+    }
+    public fun WriteInt(int value) : int
+    {
+        this.ResizeMemory(4);
+        this._memory.setInt32(this._size, value, true);
+        this._size += 4;
+        return 4;
+    }
+    public fun WriteLong(long value) : int
+    {
+        throw("not suppert long");
+    }
+    public fun WriteString(string value) : int
+    {
+		this.ResizeMemory(cast<javascript.String>(value).length*4 + 5);
+        
+        var old_size = this._size;
+        this._size += 4;
+		var new_data = __TEXTENCODER.encode(value);
+		var new_memory = new javascript.DataView(new_data);
+		for (var i = 0, new_memory.byteLength - 1, 1)
+		{
+            this._memory.setUint8(this._size, new_memory.getUint8(i), true);
+			++ this._size;
+		}
+        var str_len = this._size - 4 - old_size;
+        this._memory.setUint32(old_size, str_len + 1, true);
+        this._memory.setUint8(this._size, 0, true);
+        this._size += 1;
+        return str_len + 4 + 1;
+    }
+    public fun WriteDouble(double value) : int
+    {
+        this.ResizeMemory(8);
+        this._memory.setFloat64(this._size, value, true);
+        this._size += 8;
+        return 8;
+    }
+}
+
+public class JMessageReadFactory : ALittle.IMessageReadFactory
+{
+    private int _id;
+    private int _rpc_id;
+    private int _read_size;
+    private int _total_size;
+    private int _last_read_size;
+    private javascript.DataView _memory;
+    
+    public ctor(javascript.ArrayBuffer buffer, int offset, int len)
+    {
+        this._id = 0;
+        this._rpc_id = 0;
+        this._read_size = 0;
+        this._total_size = 0;
+        this._last_read_size = 0;
+        this._memory = new javascript.DataView(buffer);
+    }
+    
+    public fun GetTotalSize() : int { return this._total_size; }
+    
+    public fun ReadBool() : bool { return false; }
+    public fun ReadInt() : int { return 0;}
+    public fun ReadLong() : long { return 0; }
+    public fun ReadString() : string { return ""; }
+    public fun ReadDouble() : double { return 0; }
+    public fun GetReadSize() : int { return 0; }
+}

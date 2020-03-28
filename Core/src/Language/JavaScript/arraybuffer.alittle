@@ -1,0 +1,8 @@
+
+[Language(JavaScript)]
+register namespace javascript;
+                       
+public class ArrayBuffer
+{
+    public ctor(int init_size) {}
+}

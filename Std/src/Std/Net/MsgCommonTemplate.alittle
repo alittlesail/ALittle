@@ -252,17 +252,4 @@ public class IMsgCommonTemplate : IMsgCommon
         this.ClearRPC(reason);
         this._interface.Close();
     }
-
-    // 提供框架调用
-    protected static Invoke(int msg_id, IMsgCommon client, any msg_body) { client.Send(msg_id, msg_body, 0); }
-    protected await static InvokeRPC(int msg_id, IMsgCommon client, any msg_body) : string, any
-    {
-        if (co == null) return "当前不是协程", null;
-        
-        if (!client.IsConnected())
-            return "连接还没成功", null;
-        
-        client.SendRPC(co, msg_id, msg_body);
-        return yield;
-    }
 }

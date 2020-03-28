@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <None Include="src\Adapter\JavaScript\JMessageFactory.alittle" />
     <None Include="src\Adapter\JavaScript\Timer.alittle" />
     <None Include="src\Adapter\Lua\HeapTimer.alittle" />
     <None Include="src\Adapter\Lua\json.alittle" />

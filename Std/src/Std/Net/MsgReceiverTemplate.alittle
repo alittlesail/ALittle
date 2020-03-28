@@ -1,7 +1,7 @@
 
 namespace ALittle;
 
-public class MsgReceiverTemplate<NATIVE : IMsgCommonNative, WFATCORY : IMessageWriteFactory> : IMsgCommon
+public class MsgReceiverTemplate<NATIVE : IMsgCommonNative, WFATCORY : IMessageWriteFactory> : IMsgCommonTemplate
 {
     private int _client_id;
     private string _remote_ip;
@@ -12,7 +12,7 @@ public class MsgReceiverTemplate<NATIVE : IMsgCommonNative, WFATCORY : IMessageW
     public bool _client_logining;
     public string _web_account_id;
     public bool _web_is_logining;
-
+    
     public ctor(int client_id, string remote_ip, int remote_port)
     {
         // 创建客户端对象

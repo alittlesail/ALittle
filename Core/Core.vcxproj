@@ -38,14 +38,17 @@
     <None Include="src\Core\Utility\String.alittle" />
     <None Include="src\Core\Utility\Time.alittle" />
     <None Include="src\Language\JavaScript\array.alittle" />
+    <None Include="src\Language\JavaScript\arraybuffer.alittle" />
     <None Include="src\Language\JavaScript\console.alittle" />
     <None Include="src\Language\JavaScript\coroutine.alittle" />
+    <None Include="src\Language\JavaScript\dataview.alittle" />
     <None Include="src\Language\JavaScript\function.alittle" />
     <None Include="src\Language\JavaScript\json.alittle" />
     <None Include="src\Language\JavaScript\math.alittle" />
     <None Include="src\Language\JavaScript\object.alittle" />
     <None Include="src\Language\JavaScript\string.alittle" />
     <None Include="src\Language\JavaScript\time.alittle" />
+    <None Include="src\Language\JavaScript\textencoder.alittle" />
     <None Include="src\Language\Lua\bit.alittle" />
     <None Include="src\Language\Lua\coroutine.alittle" />
     <None Include="src\Language\Lua\io.alittle" />

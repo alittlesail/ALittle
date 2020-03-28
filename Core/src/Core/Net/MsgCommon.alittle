@@ -3,7 +3,26 @@ namespace ALittle;
 
 public class IMsgCommon
 {
+    public fun IsConnected() : bool { return false; }
     
+    // 发送数据
+    protected fun Send(int msg_id, any msg_body, int rpc_id) { throw("not impl"); }
+    
+    // 发送rpc
+    protected fun SendRPC(Thread thread, int msg_id, any msg_body) { }
+    
+    // 提供框架调用
+    protected static Invoke(int msg_id, IMsgCommon client, any msg_body) { client.Send(msg_id, msg_body, 0); }
+    protected await static InvokeRPC(int msg_id, IMsgCommon client, any msg_body) : string, any
+    {
+        if (co == null) return "当前不是协程", null;
+        
+        if (!client.IsConnected())
+            return "连接还没成功", null;
+        
+        client.SendRPC(co, msg_id, msg_body);
+        return yield;
+    }
 }
 
 private var __all_callback = new Map<int, Functor<(IMsgCommon, any)>>();

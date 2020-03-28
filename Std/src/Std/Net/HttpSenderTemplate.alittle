@@ -28,16 +28,6 @@ public class HttpSenderTemplate<NATIVE : IHttpSenderNative> : IHttpSender
         this._port = port;
     }
     
-    private fun JsonEncode(any content) : string
-    {
-        throw("not impl");
-    }
-    
-    private fun JsonDecode(string content) : any
-    {
-        throw("not impl");
-    }
-    
     protected fun SendRPC(Thread thread, string method, any content)
     {
         this._thread = thread;
@@ -47,7 +37,7 @@ public class HttpSenderTemplate<NATIVE : IHttpSenderNative> : IHttpSender
         if (content == null)
             this._interface.SetURL(url, null);
         else
-            this._interface.SetURL(url, this.JsonEncode(content));
+            this._interface.SetURL(url, String_JsonEncode(content));
         this._interface.Start();
     }
     
@@ -59,7 +49,7 @@ public class HttpSenderTemplate<NATIVE : IHttpSenderNative> : IHttpSender
     protected fun HandleSucceed()
     {
         __HttpSenderMap[this._interface.GetID()] = null;
-        var error, param:Map<string, any> = tcall(this.JsonDecode, this, this._interface.GetResponse());
+        var error, param:Map<string, any> = tcall(String_JsonDecode, this._interface.GetResponse());
         if (error != null)
         {
             var result, reason = Coroutine.Resume(this._thread, error, null);

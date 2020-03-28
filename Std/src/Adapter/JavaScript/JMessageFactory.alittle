@@ -2,7 +2,8 @@
 [Language(JavaScript)]
 namespace JavaScript;
 
-private var __TEXTENCODER:javascript.TextEncoder = new javascript.TextEncoder("utf8");
+private var __TEXTENCODER:javascript.TextEncoder = new javascript.TextEncoder("utf-8");
+private var __TEXTDECODER:javascript.TextDecoder = new javascript.TextDecoder("utf-8");
 
 public class JMessageWriteFactory : ALittle.IMessageWriteFactory
 {
@@ -68,7 +69,7 @@ public class JMessageWriteFactory : ALittle.IMessageWriteFactory
         var old_size = this._size;
         this._size += 4;
 		var new_data = __TEXTENCODER.encode(value);
-		var new_memory = new javascript.DataView(new_data);
+		var new_memory = new javascript.DataView(new_data.buffer);
 		for (var i = 0, new_memory.byteLength - 1, 1)
 		{
             this._memory.setUint8(this._size, new_memory.getUint8(i), true);
@@ -110,10 +111,73 @@ public class JMessageReadFactory : ALittle.IMessageReadFactory
     
     public fun GetTotalSize() : int { return this._total_size; }
     
-    public fun ReadBool() : bool { return false; }
-    public fun ReadInt() : int { return 0;}
-    public fun ReadLong() : long { return 0; }
-    public fun ReadString() : string { return ""; }
-    public fun ReadDouble() : double { return 0; }
-    public fun GetReadSize() : int { return 0; }
+    public fun ReadBool() : bool
+    {
+		if (this._read_size >= this._total_size || this._read_size < 0)
+		{
+			this._last_read_size = -1;
+			ALittle.Error("id: "..this._id.." already read completed:"..this._total_size..", "..this._read_size);
+			return false;
+		}
+		var value = this._memory.getUint8(this._read_size);
+        this._read_size += 1;
+        this._last_read_size = 1;
+		return value != 0;
+    }
+    public fun ReadInt() : int
+    {
+		if (this._read_size >= this._total_size || this._read_size < 0)
+		{
+			this._last_read_size = -1;
+			ALittle.Error("id: "..this._id.." already read completed:"..this._total_size..", "..this._read_size);
+			return 0;
+		}
+		var value = this._memory.getInt32(this._read_size, true);
+        this._read_size += 4;
+        this._last_read_size = 4;
+		return value;
+    }
+    public fun ReadLong() : long
+    {
+		ALittle.Error("id: "..this._id.." not support long");
+        return 0;
+    }
+    public fun ReadString() : string
+    {
+        if (this._read_size >= this._total_size || this._read_size < 0)
+        {
+            this._last_read_size = -1;
+		    ALittle.Log("id:"..this._id.." already read completed:"..this._total_size..", "..this._read_size);
+		    return "";
+	    }
+	    var len = this._memory.getInt32(this._read_size); // include '\0'
+	    if (len <= 0)
+        {
+            this._last_read_size = -1;
+		    ALittle.Error("id:"..this._id.." string len: "..len.." is error:"..this._total_size..", "..this._read_size);
+		    return "";
+	    }
+        this._read_size += 4;
+        var value = "";
+        if (len > 1)
+            value = __TEXTDECODER.decode(new javascript.Uint8Array(this._memory.buffer, this._read_size, len - 1));
+        this._read_size += len;
+        this._last_read_size = len + 4;
+	    return value;
+    }
+    
+    public fun ReadDouble() : double
+    {
+		if (this._read_size >= this._total_size || this._read_size < 0)
+		{
+			this._last_read_size = -1;
+			ALittle.Error("id: "..this._id.." already read completed:"..this._total_size..", "..this._read_size);
+			return 0;
+		}
+		var value = this._memory.getFloat64(this._read_size, true);
+        this._read_size += 8;
+        this._last_read_size = 8;
+		return value;
+    }
+    public fun GetReadSize() : int { return this._last_read_size; }
 }

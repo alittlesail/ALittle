@@ -1,0 +1,17 @@
+
+[Language(JavaScript)]
+register namespace javascript;
+                       
+public class TextEncoder
+{
+    public ctor(string encoder) {}
+    
+    public fun encode(string text) : Uint8Array {}
+}
+                       
+public class TextDecoder
+{
+    public ctor(string encoder) {}
+    
+    public fun decode(Uint8Array array) : string {}
+}

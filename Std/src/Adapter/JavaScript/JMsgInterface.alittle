@@ -199,5 +199,6 @@ public class JMsgInterface : ALittle.IMsgCommonNative
 		    if (func == null) return;
 		    func(id, rpc_id, factory, this);
 		}
+        this._net_buffer.Optimizes();
 	}   
 }

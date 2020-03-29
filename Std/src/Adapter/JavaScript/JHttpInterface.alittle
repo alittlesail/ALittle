@@ -1,0 +1,8 @@
+
+[Language(JavaScript)]
+namespace JavaScript;
+
+public class JHttpInterface : ALittle.IHttpSenderNative
+{
+
+}

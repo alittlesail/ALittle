@@ -109,5 +109,14 @@
     <None Include="src\Adapter\JavaScript\JMsgInterface.alittle">
       <Filter>Adapter\JavaScript</Filter>
     </None>
+    <None Include="src\Adapter\Lua\HttpInterface.alittle">
+      <Filter>Adapter\Lua</Filter>
+    </None>
+    <None Include="src\Adapter\Lua\HttpFileInterface.alittle">
+      <Filter>Adapter\Lua</Filter>
+    </None>
+    <None Include="src\Adapter\JavaScript\JHttpInterface.alittle">
+      <Filter>Adapter\JavaScript</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -1,0 +1,14 @@
+
+register namespace lua;
+
+public static __CPPAPI_GetCursorX() : int {}
+public static __CPPAPI_GetCursorY() : int {}
+
+public static __CPPAPI_SetEditCursor() {}
+public static __CPPAPI_SetNormalCursor() {}
+public static __CPPAPI_SetHandCursor() {}
+public static __CPPAPI_SetHDragCursor() {}
+public static __CPPAPI_SetVDragCursor() {}
+public static __CPPAPI_SetHVDragCursor() {}
+public static __CPPAPI_SetHV2DragCursor() {}
+public static __CPPAPI_SetCrossDragCursor() {}

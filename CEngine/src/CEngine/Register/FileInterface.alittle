@@ -1,0 +1,52 @@
+
+register namespace lua;
+
+public class __CPPAPILocalFile
+{
+    public fun SetPath(string path) {}
+    public fun Load() : bool {}
+    public fun LoadBySDL() : bool {}
+    public fun Clear() {}
+    public fun Decrypt(string key) {}
+    public fun Encrypt(string key) {}
+    public fun Save(string file_path) : bool {}
+    public fun GetContent() : string {}
+    public fun GetPath() : string {}
+    public fun GetSize() : int {}
+    public fun ReadChar(int offset) : int {}
+    public fun ReadUint(int offset) : int {}
+    public fun ReadInt(int offset) : int {}
+    public fun ReadFloat(int offset) : double {}
+    public fun ReadDouble(int offset) : double {}
+}
+
+public class __CPPAPICsvFileLoader
+{
+    public fun SetPath(string path, bool only_from_asset, string headers) : bool {}
+    public fun Start() {}
+    public fun GetPath() : string {}
+    public fun GetID() : int {}
+}
+
+public class __CPPAPICsvFile
+{
+    public fun Load(string path, bool only_from_asset, string headers) : bool {}
+    public fun Close() {}
+    public fun GetPath() : string {}
+    public fun ReadCell(int lua_row, int lua_col) : string {}
+    public fun GetRowCount() : int {}
+    public fun GetColCount() : int {}
+}
+
+public class __CPPAPICsvFileWrap : ALittle.ICsvFile
+{
+    public fun SetCsvFile(__CPPAPICsvFile file) {}
+    public fun Close() {}
+    public fun GetPath() : string {}
+    public fun ReadCell(int lua_row, int lua_col) : string {}
+    public fun GetRowCount() : int {}
+    public fun GetColCount() : int {}
+}
+
+public static __CPPAPI_CopyFile(string src_path, string dst_path, bool only_from_asset) : bool {}
+public static __CPPAPI_SaveFile(string target_path, string content, int size) : bool {}

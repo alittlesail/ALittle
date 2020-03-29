@@ -1,0 +1,301 @@
+
+namespace ALittle;
+
+////操作系统部分////////////////////////////////////////////////////////////////////
+// 获取平台
+public static System_GetPlatform() : string
+{
+    [Language(Lua)]
+    return lua.__CPPAPI_GetPlatform();
+    
+    [Language(JavaScript)]
+    return "Web";
+}
+
+// 获取设备唯一性
+public static System_GetDeviceID() : string
+{
+    [Language(Lua)]
+    return lua.__CPPAPI_GetDeviceID();
+    
+    // 先从cookie获取，如果没有就随机生成一个
+    [Language(JavaScript)]
+    var id:string = null;
+    [Language(JavaScript)]
+    var json:Map<string, any> = null;
+    [Language(JavaScript)]
+    if (docuemnt.cookie != null && docuemnt.cookie != "")
+    {
+        var error:string = null;
+        error, json = tcall(String_JsonDecode, docuemnt.cookie);
+        if (error != null) json = null;
+    }
+    if (json != null)
+        id = json["device_id"];
+    if (id == null)
+    {
+        var rand = Math_RandomInt(0, 10000);
+        var time = Time_GetCurTime();
+        if (json == null) json = new Map<string, any>();
+        id = "device_id_"..rand.."_"..time;
+        json["device_id"] = id;
+        docuemnt.cookie = String_JsonEncode(json);
+    }
+    return id;
+}
+
+// 获取局域网的IP列表，比如["127.0.0.1","192.168.1.10"]
+public static System_GetLocalIPList() : string { return lua.__CPPAPI_GetLocalIPList(); }
+
+// 获取是不是移动平台
+public static System_IsPhone() : bool { return (lua.__CPPAPI_GetPlatform() != "Windows"); }
+
+// 执行一个安装包
+public static System_InstallProgram(string file_path)
+{
+    lua.__CPPAPI_InstallProgram(file_path);
+}
+// 清理AI簇数据
+public static System_ClearAIFamily()
+{
+    lua.__CPPAPI_ClearAIFamily();
+}
+// 启动进程
+public static System_StartProgram(string package_name)
+{
+    lua.__CPPAPI_StartProgram(package_name);
+}
+// 切到后台
+public static System_BackProgram() { lua.__CPPAPI_BackProgram(); }
+
+// 获取屏幕宽度
+public static System_GetScreenWidth() : int { return lua.__CPPAPI_GetScreenWidth(); }
+// 获取屏幕高度
+public static System_GetScreenHeight() : int { return lua.__CPPAPI_GetScreenHeight(); }
+
+public static System_GetStatusBarHeight() : int { return lua.__CPPAPI_GetStatusBarHeight(); }
+
+////调度系统部分////////////////////////////////////////////////////////////////////-
+// 强制退出
+public static System_ForceExit() { __CPPAPI_ScheduleSystem.ForceExit(); }
+// 正常退出
+public static System_Exit() { __CPPAPI_ScheduleSystem.Exit(); }
+// 重启
+public static System_Restart() { __CPPAPI_ScheduleSystem.Restart(); }
+// 设置FPS
+public static System_SetFPS(int fps) { __CPPAPI_ScheduleSystem.SetFPS(fps); }
+// 设置框架在切到后台之后，死循环的每个循环的睡眠时间，单位毫秒（这个接口主要用于省电）
+public static System_SetAppPauseInterval(int interval) { __CPPAPI_ScheduleSystem.SetAppPauseInterval(interval); }
+// 获取每个死循环的睡眠时间，单位毫秒
+public static System_GetAppPauseInterval() : int { return __CPPAPI_ScheduleSystem.GetAppPauseInterval(); }
+// 启动服务器模块
+public static System_StartServerSystem(string core_path, Map<string, string> modules) : bool
+{
+    var module_list = new List<string>();
+    for (var name, path in modules)
+        Push(module_list, name..","..path);
+    return __CPPAPI_ScheduleSystem.StartServerSystem(core_path, String_Join(module_list, ";"));
+}
+////线程部分//////////////////////////////////////////////////////////////////////
+public enum SystemThreadType // 这里的枚举值和C++部分一致，不要修改
+{
+    FAST = 0;
+    MIDDLE = 1;
+    SLOW = 2;
+}
+// 设置线程数
+public static System_SetThreadCount(int count, [Nullable] int thread_type)
+{
+    if (thread_type == null) thread_type = SystemThreadType.SLOW;
+    __CPPAPI_ThreadSystem.SetThreadCount(count, thread_type);
+}
+// 获取线程数
+public static System_GetThreadCount(int thread_type) : int
+{
+    if (thread_type == null) thread_type = SystemThreadType.SLOW;
+    return __CPPAPI_ThreadSystem.GetThreadCount(thread_type);
+}
+
+////输入法部分////////////////////////////////////////////////////////////////////-
+// 获取输入法候选框内容
+public static System_GetIMESelectList() : string { return lua.__CPPAPI_GetIMESelectList(); }
+// 设置IME候选框的位置
+public static System_SetIMEPos(int x, int y) { lua.__CPPAPI_SetIMSPos(x, y); }
+// 设置IME候选框的位置，以及大小
+public static System_SetIMERect(int x, int y, int w, int h) { lua.__CPPAPI_SetIMSRect(x, y, w, h); }
+// 打开IME
+public static System_OpenIME() { lua.__CPPAPI_OpenIME(); }
+// 关闭IME
+public static System_CloseIME() { lua.__CPPAPI_CloseIME(); }
+
+////光标部分////////////////////////////////////////////////////////////////////-
+// 获取鼠标的位置
+public static System_GetCursorX() : int { return lua.__CPPAPI_GetCursorX(); }
+public static System_GetCursorY() : int { return lua.__CPPAPI_GetCursorY(); }
+// 设置光标类型
+public static System_SetEditCursor() { lua.__CPPAPI_SetEditCursor(); }            // 编辑光标
+public static System_SetNormalCursor() { lua.__CPPAPI_SetNormalCursor(); }        // 普通光标
+public static System_SetHandCursor() { lua.__CPPAPI_SetHandCursor(); }            // 手势光标
+public static System_SetHDragCursor() { lua.__CPPAPI_SetHDragCursor(); }        // 水平光标
+public static System_SetVDragCursor() { lua.__CPPAPI_SetVDragCursor(); }        // 垂直光标
+public static System_SetHVDragCursor() { lua.__CPPAPI_SetHVDragCursor(); }        // 反斜杠光标
+public static System_SetHV2DragCursor() { lua.__CPPAPI_SetHV2DragCursor(); }    // 正斜杠光标
+public static System_SetCrossDragCursor() { lua.__CPPAPI_SetCrossDragCursor(); } // 十字光标
+
+////窗口部分////////////////////////////////////////////////////////////////////-
+// 创建窗口
+public static System_CreateView(string title, int width, int height, int flag, double scale) : bool
+{
+    return __CPPAPI_RenderSystem.CreateView(title, width, height, flag, scale);
+}
+// 设置窗口标题
+public static System_SetViewTitle(string title) : bool
+{
+    return __CPPAPI_RenderSystem.SetViewTitle(title);
+}
+// 设置窗口图标
+public static System_SetViewIcon(string path) : bool
+{
+    return __CPPAPI_RenderSystem.SetViewIcon(path);
+}
+// 设置窗口形状，path是形状路径图片
+public static System_SetViewShape(string path) : bool
+{
+    return __CPPAPI_RenderSystem.SetViewShape(path);
+}
+// 操作窗口大小
+public static System_SetViewSize(int width, int height)
+{
+    __CPPAPI_RenderSystem.SetViewSize(width, height);
+}
+public static System_SetMaxViewSize()
+{
+    __CPPAPI_RenderSystem.SetMaxViewSize();
+}
+public static System_SetMinViewSize()
+{
+    __CPPAPI_RenderSystem.SetMinViewSize();
+}
+public static System_SetRestoreViewSize()
+{
+    __CPPAPI_RenderSystem.SetRestoreViewSize();
+}
+public static System_RaiseView()
+{
+    __CPPAPI_RenderSystem.RaiseView();
+}
+public static System_ShowView()
+{
+    __CPPAPI_RenderSystem.ShowView();
+}
+public static System_HideView()
+{
+    __CPPAPI_RenderSystem.HideView();
+}
+// 获取窗口的位置
+public static System_GetViewX() : int
+{
+    return __CPPAPI_RenderSystem.GetViewX();
+}
+public static System_GetViewY() : int
+{
+    return __CPPAPI_RenderSystem.GetViewY();
+}
+public static System_SetViewPosition(int x, int y)
+{
+    __CPPAPI_RenderSystem.SetViewPosition(x, y);
+}
+public static System_GetMaxTextureWidth() : int
+{
+    return __CPPAPI_RenderSystem.GetMaxTextureWidth();
+}
+public static System_GetMaxTextureHeight() : int
+{
+    return __CPPAPI_RenderSystem.GetMaxTextureHeight();
+}
+// 强制渲染
+public static System_Render() : bool
+{
+    return __CPPAPI_RenderSystem.Render();
+}
+
+////剪切板//////////////////////////////////////////////////////////////////////-
+// 获取剪切板的文本内容
+public static System_GetClipboardText() : string
+{
+    return lua.__CPPAPI_GetClipboardText();
+}
+// 设置剪切板的文本内容
+public static System_SetClipboardText(string content) { lua.__CPPAPI_SetClipboardText(content); }
+// 剪切板是否有文本
+public static System_HasClipboardText() : bool { return lua.__CPPAPI_HasClipboardText(); }
+
+// 获取剪切板的图片内容，返回的是surface，最后必须使用__CPPAPI_FreeSurface释放
+public static System_GetClipboardImage() : lua.__CPPAPISurface { return lua.__CPPAPI_GetClipboardImage(); }
+// 设置剪切板的图片内容，参数是surface
+public static System_SetClipboardImage(lua.__CPPAPISurface surface) { lua.__CPPAPI_SetClipboardImage(surface); }
+// 剪切板是否有图片
+public static System_HasClipboardImage() : bool { return lua.__CPPAPI_HasClipboardImage(); }
+
+////时间部分////////////////////////////////////////////////////////////////////////-
+// 获取系统时间，单位毫秒
+public static System_GetTicks() : int { return lua.__CPPAPI_GetTicks(); }
+// 获取系统时间，单位秒
+public static System_GetTime() : int { return lua.os.time(); }
+
+
+////系统提示////////////////////////////////////////////////////////////////////////-
+
+// 横竖屏枚举
+public enum SystemOrientationType
+{
+    SDL_ORIENTATION_UNKNOWN = 0;            //**< The display orientation can't be determined */
+    SDL_ORIENTATION_LANDSCAPE = 1;          //**< The display is in landscape mode, with the right side up, relative to portrait mode */
+    SDL_ORIENTATION_LANDSCAPE_FLIPPED = 2;  //**< The display is in landscape mode, with the left side up, relative to portrait mode */
+    SDL_ORIENTATION_PORTRAIT = 3;           //**< The display is in portrait mode */
+    SDL_ORIENTATION_PORTRAIT_FLIPPED = 4;   ///**< The display is in portrait mode, upside down */
+}
+
+// 获取横屏竖屏
+// 返回SystemOrientationType
+public static System_GetDisplayOrientation() : int { return lua.__CPPAPI_GetDisplayOrientation(); }
+
+// 允许手机休眠
+public static System_EnableScreenSaver() { lua.__CPPAPI_EnableScreenSaver(); }
+// 阻止手机休眠
+public static System_DisableScreenSaver() { lua.__CPPAPI_DisableScreenSaver(); }
+
+// 使用系统浏览器打开某个网址
+// url 地址，一定要以http或者https开头，否则在android，ios平台是无效的
+public static System_OpenUrlBySystemBrowser(string url) { lua.__CPPAPI_OpenUrlBySystemBrowser(url); }
+
+// 原声警告对话框
+// message
+public static System_Alert(string msg) { lua.__CPPAPI_Alert(msg); }
+
+////表面信息////////////////////////////////////////////////////////////////////////-
+
+public static System_LoadSurface(string path) : lua.__CPPAPISurface { return lua.__CPPAPI_LoadSurface(path); }
+public static System_CreateSurface(int width, int height) : lua.__CPPAPISurface { return lua.__CPPAPI_CreateSurface(width, height); }
+public static System_SaveSurface(lua.__CPPAPISurface surface, string path) : bool { return lua.__CPPAPI_SaveSurface(surface, path); }
+public static System_FreeSurface(lua.__CPPAPISurface surface) { lua.__CPPAPI_FreeSurface(surface); }
+public static System_GetSurfaceWidth(lua.__CPPAPISurface surface) : int { return lua.__CPPAPI_GetSurfaceWidth(surface); }
+public static System_GetSurfaceHeight(lua.__CPPAPISurface surface) : int { return lua.__CPPAPI_GetSurfaceHeight(surface); }
+public static System_CutBlitSurface(lua.__CPPAPISurface new_surface, lua.__CPPAPISurface surface, string to, string from) : bool { return lua.__CPPAPI_CutBlitSurface(new_surface, surface, to, from); }
+public static System_SetSurfacePixel(lua.__CPPAPISurface surface, int x, int y, int color) : bool { return lua.__CPPAPI_SetSurfacePixel(surface, x, y, color); }
+public static System_GetSurfacePixel(lua.__CPPAPISurface surface, int x, int y) : int { return lua.__CPPAPI_GetSurfacePixel(surface, x, y); }
+public static System_GetPixelAlpha(int color) : int { return lua.__CPPAPI_GetPixelAlpha(color); }
+public static System_SetPixelAlpha(int color, int alpha) : int { return lua.__CPPAPI_SetPixelAlpha(color, alpha); }
+public static System_GetSurfaceGrid9(lua.__CPPAPISurface surface, string type) : int { return lua.__CPPAPI_GetSurfaceGrid9(surface, type); }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+public using MsgSender = MsgSenderTemplate<lua.__CPPAPIMsgInterface>;
+public using HttpSender = HttpSenderTemplate<lua.__CPPAPIHttpInterface>;
+public using HttpFileSender = HttpFileSenderTemplate<lua.__CPPAPIHttpFileInterface>;
+public using LocalFile = lua.__CPPAPILocalFile;
+public using TextureLoader = lua.__CPPAPITextureLoader;
+public using RenderTexture = lua.__CPPAPIRenderTexture;
+public using TextureCutLoader = lua.__CPPAPITextureCutLoader;
+public using CSVFileLoader = lua.__CPPAPICSVFileLoader;
+public using CSVFile = lua.__CPPAPICSVFile;
+

@@ -1,0 +1,31 @@
+
+namespace ALittle;
+
+public class ScriptSystem
+{
+    private bool _crypt_mode;
+    private string _base_path;
+    private Map<string, bool> _script_map;
+
+    public ctor(string module_name, bool crypt_mode)
+    {
+        // 保存是否要加密
+        this._crypt_mode = crypt_mode || false;
+        // 设置基本路径
+        this._base_path = "Module/" .. module_name .. "/Script/";
+        // 已加载的脚本文件映射表
+        this._script_map = new Map<string, bool>();
+    }
+    
+    // @param path 脚本路径
+    public fun Require(string path)
+    {
+        // 检查
+        if (this._script_map[path])
+            return;
+        // 加载
+        var result = A_ScriptSystem.RunScriptFile(this._base_path .. path .. ".lua", this._crypt_mode);
+        if (result)
+            this._script_map[path] = true;
+    }
+}

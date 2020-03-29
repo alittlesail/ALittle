@@ -50,6 +50,7 @@
     <None Include="src\Language\JavaScript\time.alittle" />
     <None Include="src\Language\JavaScript\textcoder.alittle" />
     <None Include="src\Language\JavaScript\uint8array.alittle" />
+    <None Include="src\Language\JavaScript\websocket.alittle" />
     <None Include="src\Language\Lua\bit.alittle" />
     <None Include="src\Language\Lua\coroutine.alittle" />
     <None Include="src\Language\Lua\io.alittle" />

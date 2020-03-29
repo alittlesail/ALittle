@@ -150,5 +150,8 @@
     <None Include="src\Language\JavaScript\uint8array.alittle">
       <Filter>Language\JavaScript</Filter>
     </None>
+    <None Include="src\Language\JavaScript\websocket.alittle">
+      <Filter>Language\JavaScript</Filter>
+    </None>
   </ItemGroup>
 </Project>

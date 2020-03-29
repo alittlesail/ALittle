@@ -99,15 +99,18 @@ public class JMessageReadFactory : ALittle.IMessageReadFactory
     private int _last_read_size;
     private javascript.DataView _memory;
     
-    public ctor(javascript.ArrayBuffer buffer, int offset, int len)
+    public ctor(javascript.DataView data)
     {
-        this._id = 0;
-        this._rpc_id = 0;
+        this._id = id;
+        this._rpc_id = rpc_id;
         this._read_size = 0;
         this._total_size = 0;
         this._last_read_size = 0;
-        this._memory = new javascript.DataView(buffer);
+        this._memory = data;
     }
+    
+    public fun SetID(int id) { this._id = id; }
+    public fun SetRpcID(int rpc_id) { this._rpc_id = rpc_id; }
     
     public fun GetTotalSize() : int { return this._total_size; }
     

@@ -4,94 +4,200 @@ namespace JavaScript;
 
 public class JNetBuffer
 {
-    private int _size;
-    private int _offset;
+    private int _msize;    // 数据包体大小
+    private int _dstart;    // 数据起始便宜，dstart之前都是旧数据不要的
+    private int _dsize;    // 数据大小
     private javascript.DataView _memory;
     
     public ctor(int init_size)
     {
-        this._size = 0;
-        this._offset = 0;
+        this._msize = 0;
+        this._dstart = 0;
+        this._dsize = 0;
         var data = new javascript.ArrayBuffer(init_size);
         this._memory = new javascript.DataView(data);
     }
     
-    public fun Read(javascript.ArrayBuffer array_buffer) : bool
+    // 添加缓冲区
+    public fun Add(javascript.ArrayBuffer array_buffer)
     {
-        var head_completed = (this._offset >= 12);
-        
 		var data_view = new javascript.DataView(array_buffer);
 		this.Resize(data_view.byteLength);
 		for (var i = 0, data_view.byteLength - 1, 1)
 		{
-			this._memory.setUint8(this._offset, data_view.getUint8(i));
-			++ this._offset;
+			this._memory.setUint8(this._dstart + this._dsize, data_view.getUint8(i));
+			++ this._dsize;
 		}
-
-		if (this._offset < 12) return false;
-
-		if (head_completed == false)
-			this._size = this._memory.getInt32(0, true);   
+    }
+    
+    public fun Read() : javascript.DataView
+    {
+        // 如果数据还不足头部大小，那么直接返回
+		if (this._dsize < 12) return null;
         
-		if (this._offset - 12 >= this._size)
-			return true;
-
-		return false;
+        // 读取头部大小
+		if (this._dsize >= 4)
+			this._msize = this._memory.getInt32(this._dstart, true);   
+        
+        // 检查协议体大小
+        if (this._dsize - 12 >= this._msize)
+        {
+            var data = new javascript.DataView(this._memory.buffer, this._dstart, this._msize + 12);
+            this._dstart += this._msize + 12;
+            this._dsize -= this._msize + 12;
+            return data;
+        }
+        
+		return null;
+    }
+    
+    public fun Optimizes()
+    {
+        if (this._dstart < 100) return;
+        
+        var start = this._dstart;
+        var end = this._dstart + this._dsize - 1;
+        for (var i = start, end, 1)
+            this._memory.setUint8(i - this._dsize, this._memory.getUint8(i));
+        
+        this._dstart = 0;
     }
         
     public fun Resize(int add_size)
 	{
-		if (this._offset + add_size <= this._memory.byteLength) return;
-        
+        // 计算大小
+        var need_size = this._dstart + this._dsize + add_size;
+		if (need_size <= this._memory.byteLength) return;
+
+        // 创建内存        
 		var new_data:javascript.ArrayBuffer = null;
-		if (this._memory.byteLength * 2 < this._offset + add_size)
-			new_data = new javascript.ArrayBuffer(this._offset + add_size);
+		if (this._memory.byteLength * 2 < need_size)
+			new_data = new javascript.ArrayBuffer(need_size);
 		else
 			new_data = new javascript.ArrayBuffer(this._memory.byteLength * 2);
+        
+        // 拷贝内存
 		var new_memory = new javascript.DataView(new_data);
-
 		for (var i = 0, this._memory.byteLength - 1, 1)
 			new_memory.setUint8(i, this._memory.getUint8(i));
         
+        // 替换内存
         this._memory = new_memory;
 	}
-    
-    public fun GetResultBuffer() : javascript.ArrayBuffer
-    {
-		if (this._offset - 12 < this._size) return null;
+}
 
-		var new_data = new javascript.ArrayBuffer(this._size + 12);
-		var new_memory = new javascript.DataView(new_data);
-		
-        var length = this._size + 12;
-		for (var i = 0, length - 1, 1)
-			new_memory.setUint8(i, this._memory.getUint8(i));
-		
-		return new_data;
-    }
-    
-    public fun GetLastBuffer() : javascript.ArrayBuffer
-    {
-        if (this._offset - 12 < this._size) return null;
-
-		var last_size = this._offset - this._size - 12;
-		if (last_size <= 0) return null;
-
-		var new_data = new javascript.ArrayBuffer(last_size);
-		var new_memory = new javascript.DataView(new_data);
-        
-		var index = 0;
-		for (var i = this._size + 12, this._offset - 1, 1)
-		{
-			new_memory.setUint8(index, this._memory.getUint8(i));
-			++ index;
-		}	
-
-		return new_data;
-    }
+private enum JConnectStatus
+{
+    NET_IDLE = 0;
+    NET_CONNECTING = 1;
+    NET_CONNECTED = 2;
 }
 
 public class JMsgInterface : ALittle.IMsgCommonNative
 {
+    private javascript.WebSocket _net_system;
+    private JNetBuffer _net_buffer;
+    private int _net_status;    // 当前状态
+    private string _ip;
+    private int _port;
     
+    public ctor()
+    {
+        this._net_status = JConnectStatus.NET_IDLE;
+        this._ip = "";
+        this._port = 0;
+	    this._net_buffer = new JNetBuffer(2048);
+    }
+    
+    public fun SetID(int id) {}         // 设置连接对象全局ID
+    public fun GetID() : int { return 0; }         // 获取连接对象全局ID
+    public fun Connect(string ip, int port)
+    {
+        if (this._net_status == JConnectStatus.NET_CONNECTED)
+            this.Close();
+        
+        if (this._net_status == JConnectStatus.NET_CONNECTING)
+        {
+            ALittle.Warn("net system already connecting:"..this._ip..":"..this._port);
+            return;
+        }
+        
+        var url = "ws://"..ip..":"..port;
+		
+		this._net_status = JConnectStatus.NET_CONNECTING;
+        
+		this._net_system = new javascript.WebSocket(url);
+		this._net_system.binaryType = "arraybuffer";
+		this._net_system.onmessage = bind(this.HandleNetSystemMessage, this);
+		this._net_system.onopen = bind(this.HandleNetSystemOpen, this);
+		this._net_system.onclose = bind(this.HandleNetSystemClose, this);
+		this._net_system.onerror = bind(this.HandleNetSystemError, this);
+    }
+    public fun IsConnected() : bool { return false; }      // 是否已经连接
+    public fun SendFactory(ALittle.IMessageWriteFactory factory) {}  // 发送请求
+    public fun Close()
+    {
+        if (this._net_status == JConnectStatus.NET_IDLE)
+			return;
+        
+        this._net_system.close();
+        this._net_system = null;
+        this._net_status = JConnectStatus.NET_IDLE;
+    }
+    
+	private fun HandleNetSystemOpen(javascript.WebSocketOnOpenEvent event)
+	{
+		if (this._net_status != JConnectStatus.NET_CONNECTING) return;
+		
+		this._net_status = JConnectStatus.NET_CONNECTED;
+		var func = cast<Functor<(ALittle.IMsgCommonNative)>>(window["__LUAAPI_ConnectSucceed"]);
+		if (func == null) return;
+		func(this);
+	}
+    
+    private fun HandleNetSystemClose(javascript.WebSocketOnCloseEvent event)
+    {
+		if (this._net_status != JConnectStatus.NET_CONNECTED) return;
+        
+		this._net_status = JConnectStatus.NET_IDLE;
+		this._net_system = null;
+        
+		var func = cast<Functor<(ALittle.IMsgCommonNative)>>(window["__LUAAPI_Disconnect"]);
+		if (func == null) return;
+		func(this);
+    }
+    
+    private fun HandleNetSystemError(javascript.WebSocketOnErrorEvent event)
+    {
+		if (this._net_status != JConnectStatus.NET_CONNECTING) return;
+
+		this._net_status = JConnectStatus.NET_IDLE;
+		this._net_system = null;
+        
+		var func = cast<Functor<(ALittle.IMsgCommonNative)>>(window["__LUAAPI_ConnectFailed"]);
+		if (func == null) return;
+		func(this);
+    }
+                                          
+    private fun HandleNetSystemMessage(javascript.WebSocketOnMessageEvent event)
+	{
+        if (event.data == null) return;
+        
+        this._net_buffer.Add(event.data);
+		while (true)
+		{
+            var data = this._net_buffer.Read();
+            if (data == null) break;
+            
+			var factory = new JMessageReadFactory(data);
+			var size = factory.ReadInt();
+			var id = factory.ReadInt();
+            var rpc_id = factory.ReadInt();
+            factory.SetID(id);
+            factory.SetRpcID(rpc_id);
+		    var func = cast<Functor<(int, int, ALittle.IMessageReadFactory, ALittle.IMsgCommonNative)>>(window["__LUAAPI_Message"]);
+		    if (func == null) return;
+		    func(id, rpc_id, factory, this);
+		}
+	}   
 }

@@ -4,7 +4,7 @@ register namespace javascript;
                        
 public class DataView
 {
-    public ctor(ArrayBuffer buffer) {}
+    public ctor(ArrayBuffer buffer, [Nullable] int offset, [Nullable] int length) {}
     
     public fun setInt8(int offset, int value) {}
     public fun setUint8(int offset, int value) {}

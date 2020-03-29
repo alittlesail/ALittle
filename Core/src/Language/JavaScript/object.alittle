@@ -9,3 +9,5 @@ public class Object
     public static create(any object) : any {}
     public fun toString() : string {}
 }
+
+public var window:Map<string, any>;

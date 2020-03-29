@@ -103,5 +103,14 @@
     <None Include="src\Adapter\Lua\CsvLoader.alittle">
       <Filter>Adapter\Lua</Filter>
     </None>
+    <None Include="src\Std\Utility\EventDispatcher.alittle">
+      <Filter>Std\Utility</Filter>
+    </None>
+    <None Include="src\Std\Utility\CsvConfig.alittle">
+      <Filter>Std\Utility</Filter>
+    </None>
+    <None Include="src\Adapter\JavaScript\JCsvLoader.alittle">
+      <Filter>Adapter\JavaScript</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -1,0 +1,13 @@
+
+[Language(JavaScript)]
+namespace JavaScript;
+
+public class JCsvLoader : ALittle.ICsvFile
+{
+    public fun Load(string path, string headers) : bool { return false; }
+    public fun Close() {}
+    public fun GetPath() : string { return null; }
+    public fun ReadCell(int row, int col) : string { return null; }
+    public fun GetRowCount() : int { return 0; }
+    public fun GetColCount() : int { return 0; }
+}

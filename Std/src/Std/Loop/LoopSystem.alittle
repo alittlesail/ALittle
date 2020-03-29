@@ -17,6 +17,24 @@ public class LoopObject
     public fun Reset() {}
     public fun SetTime(int time) : int, bool { return time, true; }
     public fun SetCompleted() {}
+    
+    public fun Start()
+    {
+        [Language(Lua)]
+        A_LuaLoopSystem.AddUpdater(this);
+        
+        [Language(JavaScript)]
+        A_JLoopSystem.AddUpdater(this);
+    }
+    
+    public fun Stop()
+    {
+        [Language(Lua)]
+        A_LuaLoopSystem.RemoveUpdater(this);
+        
+        [Language(JavaScript)]
+        A_JLoopSystem.RemoveUpdater(this);
+    }
 }
 
 public class ILoopSystem
@@ -176,3 +194,9 @@ public class LoopSystem<HT : IHeapTimer> : ILoopSystem
         }
     }
 }
+
+[Language(Lua)]
+public var A_LuaLoopSystem = new LoopSystem<lua.__CPPAPIHeapTimer>();
+
+[Language(JavaScript)]
+public var A_JLoopSystem = new LoopSystem<JavaScript.JHeapTimer>();

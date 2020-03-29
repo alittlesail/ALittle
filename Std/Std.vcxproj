@@ -19,17 +19,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\Adapter\JavaScript\JHttpInterface.alittle" />
-    <None Include="src\Adapter\JavaScript\JMessageFactory.alittle" />
-    <None Include="src\Adapter\JavaScript\JMsgInterface.alittle" />
     <None Include="src\Adapter\JavaScript\Timer.alittle" />
+    <None Include="src\Adapter\Lua\CsvLoader.alittle" />
     <None Include="src\Adapter\Lua\HeapTimer.alittle" />
-    <None Include="src\Adapter\Lua\HttpFileInterface.alittle" />
-    <None Include="src\Adapter\Lua\HttpInterface.alittle" />
     <None Include="src\Adapter\Lua\json.alittle" />
     <None Include="src\Adapter\Lua\lfs.alittle" />
     <None Include="src\Adapter\Lua\MessageFactory.alittle" />
-    <None Include="src\Adapter\Lua\MsgInterface.alittle" />
     <None Include="src\Adapter\Lua\sqlte3.alittle" />
     <None Include="src\Std\Loop\LoopFunction.alittle" />
     <None Include="src\Std\Loop\LoopGroup.alittle" />

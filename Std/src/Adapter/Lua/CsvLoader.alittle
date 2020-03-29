@@ -1,0 +1,12 @@
+
+register namespace lua;
+
+public class __CPPAPICsvLoader : ALittle.ICsvFile
+{
+    public fun Load(string path, string headers) : bool {}
+    public fun Close() {}
+    public fun GetPath() : string {}
+    public fun ReadCell(int row, int col) : string {}
+    public fun GetRowCount() : int {}
+    public fun GetColCount() : int {}
+}

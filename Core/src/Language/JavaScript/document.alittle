@@ -1,0 +1,11 @@
+
+[Language(JavaScript)]
+register namespace javascript;
+    
+public class Document
+{
+    public get cookie() : string {}
+    public set cookie(string value) {}
+}
+
+public var docuemnt:Document;

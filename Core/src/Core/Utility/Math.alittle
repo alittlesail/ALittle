@@ -8,6 +8,17 @@ private var floor = lua.math.floor;
 private var random = lua.math.random;
 [Language(Lua)]
 private var randomseed = lua.math.randomseed;
+[Language(Lua)]
+private var abs = lua.math.abs;
+
+public static Math_Abs(double v) : double
+{
+    [Language(Lua)]
+    return abs(v);
+    
+    [Language(JavaScript)]
+    return javascript.Math.abs(v);
+}
 
 public static Math_Floor(double v) : int
 {

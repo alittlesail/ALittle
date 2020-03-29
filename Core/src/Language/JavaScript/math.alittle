@@ -9,4 +9,5 @@ public class Math
 {
     public static random() : double {}
     public static floor(double v) : int {}
+    public static abs(double v) : double {}
 }

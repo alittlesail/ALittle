@@ -156,5 +156,8 @@
     <None Include="src\Language\JavaScript\xmlhttprequest.alittle">
       <Filter>Language\JavaScript</Filter>
     </None>
+    <None Include="src\Language\JavaScript\document.alittle">
+      <Filter>Language\JavaScript</Filter>
+    </None>
   </ItemGroup>
 </Project>

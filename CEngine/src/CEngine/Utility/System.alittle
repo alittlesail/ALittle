@@ -111,12 +111,30 @@ public static System_BackProgram()
 // 获取屏幕宽度
 public static System_GetScreenWidth() : int
 {
+    [Language(Lua)]
     return lua.__CPPAPI_GetScreenWidth();
+    
+    [Language(JavaScript)]
+    return window.innerWidth;
 }
 // 获取屏幕高度
-public static System_GetScreenHeight() : int { return lua.__CPPAPI_GetScreenHeight(); }
+public static System_GetScreenHeight() : int
+{
+    [Language(Lua)]
+    return lua.__CPPAPI_GetScreenHeight();
+    
+    [Language(JavaScript)]
+    return window.innerHeight;
+}
 
-public static System_GetStatusBarHeight() : int { return lua.__CPPAPI_GetStatusBarHeight(); }
+public static System_GetStatusBarHeight() : int
+{
+    [Language(Lua)]
+    return lua.__CPPAPI_GetStatusBarHeight();
+    
+    [Language(JavaScript)]
+    return 0;
+}
 
 ////调度系统部分////////////////////////////////////////////////////////////////////-
 // 强制退出

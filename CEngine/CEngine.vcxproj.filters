@@ -301,5 +301,8 @@
     <None Include="src\CEngine\Version\VersionSystemAndroid.alittle">
       <Filter>CEngine\Version</Filter>
     </None>
+    <None Include="src\Adapter\JavaScript\Pixi.alittle">
+      <Filter>Adapter\JavaScript</Filter>
+    </None>
   </ItemGroup>
 </Project>

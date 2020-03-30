@@ -22,6 +22,7 @@
     <None Include="src\Adapter\JavaScript\JHttpInterface.alittle" />
     <None Include="src\Adapter\JavaScript\JMessageFactory.alittle" />
     <None Include="src\Adapter\JavaScript\JMsgInterface.alittle" />
+    <None Include="src\Adapter\JavaScript\Pixi.alittle" />
     <None Include="src\Adapter\Lua\HttpFileInterface.alittle" />
     <None Include="src\Adapter\Lua\HttpInterface.alittle" />
     <None Include="src\Adapter\Lua\MsgInterface.alittle" />

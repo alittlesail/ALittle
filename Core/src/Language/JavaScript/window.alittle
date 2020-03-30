@@ -1,0 +1,11 @@
+
+[Language(JavaScript)]
+register namespace javascript;
+    
+public class Window
+{
+    public get innerHeight() : int {}
+    public get innerWidth() : int {}
+}
+
+public var window:Window;

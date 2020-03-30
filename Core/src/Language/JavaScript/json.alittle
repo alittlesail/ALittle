@@ -1,7 +1,8 @@
 
 [Language(JavaScript)]
 register namespace javascript;
-                       
+
+[Native]               
 public class JSON
 {
     public static parse(string text) : any {}

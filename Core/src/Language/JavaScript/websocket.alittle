@@ -1,7 +1,8 @@
 
 [Language(JavaScript)]
 register namespace javascript;
-    
+   
+[Native] 
 public class XMLHttpRequest
 {
     public fun open(string method, string url, bool async_v) {}

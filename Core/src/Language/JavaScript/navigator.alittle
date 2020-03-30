@@ -2,6 +2,7 @@
 [Language(JavaScript)]
 register namespace javascript;
     
+[Native]
 public class Navigator
 {
     public get userAgent() : string {}

@@ -1,7 +1,8 @@
 
 [Language(JavaScript)]
 register namespace javascript;
-                       
+          
+[Native]             
 public class Uint8Array
 {
     public ctor(ArrayBuffer buffer, [Nullable] int offset, [Nullable] int length) {}

@@ -1,2 +1,8 @@
 
-register namespace javascript;
+register namespace PIXI;
+
+[Native]
+public class Application
+{
+    
+}

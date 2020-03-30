@@ -1,0 +1,28 @@
+
+[Language(JavaScript)]
+namespace JavaScript;
+
+public static JSystem_GetDeviceID() : string
+{
+    // 先从cookie获取，如果没有就随机生成一个
+    var id:string = null;
+    var json:Map<string, any> = null;
+    if (docuemnt.cookie != null && docuemnt.cookie != "")
+    {
+        var error:string = null;
+        error, json = tcall(ALittle.String_JsonDecode, docuemnt.cookie);
+        if (error != null) json = null;
+    }
+    if (json != null)
+        id = json["device_id"];
+    if (id == null)
+    {
+        var rand = ALittle.Math_RandomInt(0, 10000);
+        var time = ALittle.Time_GetCurTime();
+        if (json == null) json = new Map<string, any>();
+        id = "device_id_"..rand.."_"..time;
+        json["device_id"] = id;
+        docuemnt.cookie = ALittle.String_JsonEncode(json);
+    }
+    return id;
+}

@@ -1,7 +1,8 @@
 
 [Language(JavaScript)]
 register namespace javascript;
-                       
+
+[Native]                 
 public class ArrayBuffer
 {
     public ctor(int init_size) {}

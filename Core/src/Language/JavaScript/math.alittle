@@ -5,6 +5,7 @@ register namespace javascript;
 public static parseInt(string s) : int {}
 public static parseFloat(string s) : double {}
 
+[Native]
 public class Math
 {
     public static random() : double {}

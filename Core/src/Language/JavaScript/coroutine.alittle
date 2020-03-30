@@ -2,6 +2,7 @@
 [Language(JavaScript)]
 register namespace javascript;
 
+[Native]
 public class Coroutine
 {
     // Starts or continues the execution of coroutine co.

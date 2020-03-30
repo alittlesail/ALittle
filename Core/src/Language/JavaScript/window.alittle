@@ -2,6 +2,7 @@
 [Language(JavaScript)]
 register namespace javascript;
     
+[Native]
 public class Window
 {
     public get innerHeight() : int {}

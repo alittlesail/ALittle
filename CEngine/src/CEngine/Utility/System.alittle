@@ -20,28 +20,7 @@ public static System_GetDeviceID() : string
     
     // 先从cookie获取，如果没有就随机生成一个
     [Language(JavaScript)]
-    var id:string = null;
-    [Language(JavaScript)]
-    var json:Map<string, any> = null;
-    [Language(JavaScript)]
-    if (docuemnt.cookie != null && docuemnt.cookie != "")
-    {
-        var error:string = null;
-        error, json = tcall(String_JsonDecode, docuemnt.cookie);
-        if (error != null) json = null;
-    }
-    if (json != null)
-        id = json["device_id"];
-    if (id == null)
-    {
-        var rand = Math_RandomInt(0, 10000);
-        var time = Time_GetCurTime();
-        if (json == null) json = new Map<string, any>();
-        id = "device_id_"..rand.."_"..time;
-        json["device_id"] = id;
-        docuemnt.cookie = String_JsonEncode(json);
-    }
-    return id;
+    return JavaScript.JSystem_GetDeviceID();
 }
 
 // 获取局域网的IP列表，比如["127.0.0.1","192.168.1.10"]
@@ -138,11 +117,32 @@ public static System_GetStatusBarHeight() : int
 
 ////调度系统部分////////////////////////////////////////////////////////////////////-
 // 强制退出
-public static System_ForceExit() { __CPPAPI_ScheduleSystem.ForceExit(); }
+public static System_ForceExit()
+{
+    [Language(Lua)]
+    __CPPAPI_ScheduleSystem.ForceExit();
+    
+    [Language(JavaScript)]
+    Error("not support System_ForceExit");
+}
 // 正常退出
-public static System_Exit() { __CPPAPI_ScheduleSystem.Exit(); }
+public static System_Exit()
+{
+    [Language(Lua)]
+    __CPPAPI_ScheduleSystem.Exit();
+    
+    [Language(JavaScript)]
+    Error("not support System_Exit");
+}
 // 重启
-public static System_Restart() { __CPPAPI_ScheduleSystem.Restart(); }
+public static System_Restart()
+{
+    [Language(Lua)]
+    __CPPAPI_ScheduleSystem.Restart();
+    
+    [Language(JavaScript)]
+    Error("not support System_Restart");
+}
 // 设置FPS
 public static System_SetFPS(int fps) { __CPPAPI_ScheduleSystem.SetFPS(fps); }
 // 设置框架在切到后台之后，死循环的每个循环的睡眠时间，单位毫秒（这个接口主要用于省电）

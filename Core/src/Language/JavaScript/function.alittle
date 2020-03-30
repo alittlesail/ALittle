@@ -2,6 +2,7 @@
 [Language(JavaScript)]
 register namespace javascript;
 
+[Native]
 public class Function
 {
     public fun call(any object, ...) : ... {}

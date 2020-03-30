@@ -2,6 +2,7 @@
 [Language(JavaScript)]
 register namespace javascript;
 
+[Native]
 public class Object
 {
     public static getOwnPropertyDescriptor(any object, string name) : any {}

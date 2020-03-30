@@ -45,31 +45,74 @@ public static System_GetDeviceID() : string
 }
 
 // 获取局域网的IP列表，比如["127.0.0.1","192.168.1.10"]
-public static System_GetLocalIPList() : string { return lua.__CPPAPI_GetLocalIPList(); }
+public static System_GetLocalIPList() : string
+{
+    [Language(Lua)]
+    return lua.__CPPAPI_GetLocalIPList();
+    
+    [Language(JavaScript)]
+    return "[]";
+}
 
 // 获取是不是移动平台
-public static System_IsPhone() : bool { return (lua.__CPPAPI_GetPlatform() != "Windows"); }
+public static System_IsPhone() : bool
+{
+    [Language(Lua)]
+    return (lua.__CPPAPI_GetPlatform() != "Windows");
+    
+    [Language(JavaScript)]
+    var user_agent = navigator.userAgent;
+    [Language(JavaScript)]
+    return String_Find(user_agent, "Android") != null
+        || String_Find(user_agent, "iPhone") != null
+        || String_Find(user_agent, "iPad") != null
+        || String_Find(user_agent, "iPod") != null;
+}
 
 // 执行一个安装包
 public static System_InstallProgram(string file_path)
 {
+    [Language(Lua)]
     lua.__CPPAPI_InstallProgram(file_path);
+    
+    [Language(JavaScript)]
+    Error("not support System_InstallProgram");
 }
+
 // 清理AI簇数据
 public static System_ClearAIFamily()
 {
+    [Language(Lua)]
     lua.__CPPAPI_ClearAIFamily();
+    
+    [Language(JavaScript)]
+    Error("not support System_ClearAIFamily");
 }
+
 // 启动进程
 public static System_StartProgram(string package_name)
 {
+    [Language(Lua)]
     lua.__CPPAPI_StartProgram(package_name);
+    
+    [Language(JavaScript)]
+    Error("not support System_StartProgram");
 }
 // 切到后台
-public static System_BackProgram() { lua.__CPPAPI_BackProgram(); }
+public static System_BackProgram()
+{
+    [Language(Lua)]
+    lua.__CPPAPI_BackProgram();
+    
+    [Language(JavaScript)]
+    Error("not support System_BackProgram");
+}
 
 // 获取屏幕宽度
-public static System_GetScreenWidth() : int { return lua.__CPPAPI_GetScreenWidth(); }
+public static System_GetScreenWidth() : int
+{
+    return lua.__CPPAPI_GetScreenWidth();
+}
 // 获取屏幕高度
 public static System_GetScreenHeight() : int { return lua.__CPPAPI_GetScreenHeight(); }
 

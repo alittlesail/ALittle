@@ -1,0 +1,10 @@
+
+[Language(JavaScript)]
+register namespace javascript;
+    
+public class Navigator
+{
+    public get userAgent() : string {}
+}
+
+public var navigator:Navigator;

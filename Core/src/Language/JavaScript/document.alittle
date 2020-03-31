@@ -7,6 +7,10 @@ public class Document
 {
     public get cookie() : string {}
     public set cookie(string value) {}
+    
+    public get body() : BodyElement {}
+    
+    public fun createElement(string type) : DomElement {}
 }
 
 public var docuemnt:Document;

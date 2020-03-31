@@ -21,6 +21,7 @@
   <ItemGroup>
     <None Include="src\Core\JavaScript\JavaScriptClass.alittle" />
     <None Include="src\Core\JavaScript\JavaScriptException.alittle" />
+    <None Include="src\Core\JavaScript\JavaScriptRequire.alittle" />
     <None Include="src\Core\Lua\LuaBind.alittle" />
     <None Include="src\Core\Lua\LuaClass.alittle" />
     <None Include="src\Core\Lua\LuaException.alittle" />
@@ -39,15 +40,17 @@
     <None Include="src\Core\Utility\Time.alittle" />
     <None Include="src\Language\JavaScript\array.alittle" />
     <None Include="src\Language\JavaScript\arraybuffer.alittle" />
+    <None Include="src\Language\JavaScript\bodyelement.alittle" />
     <None Include="src\Language\JavaScript\console.alittle" />
-    <None Include="src\Language\JavaScript\coroutine.alittle" />
     <None Include="src\Language\JavaScript\dataview.alittle" />
     <None Include="src\Language\JavaScript\document.alittle" />
+    <None Include="src\Language\JavaScript\domelement.alittle" />
     <None Include="src\Language\JavaScript\function.alittle" />
     <None Include="src\Language\JavaScript\json.alittle" />
     <None Include="src\Language\JavaScript\math.alittle" />
     <None Include="src\Language\JavaScript\navigator.alittle" />
     <None Include="src\Language\JavaScript\object.alittle" />
+    <None Include="src\Language\JavaScript\scriptelement.alittle" />
     <None Include="src\Language\JavaScript\string.alittle" />
     <None Include="src\Language\JavaScript\time.alittle" />
     <None Include="src\Language\JavaScript\textcoder.alittle" />

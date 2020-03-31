@@ -1,0 +1,9 @@
+
+[Language(JavaScript)]
+register namespace javascript;
+    
+[Native]
+public class DomElement
+{
+    public fun appendChild(DomElement element) {}
+}

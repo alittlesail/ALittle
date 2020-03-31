@@ -126,9 +126,6 @@
     <None Include="src\Core\Utility\Coroutine.alittle">
       <Filter>Core\Utility</Filter>
     </None>
-    <None Include="src\Language\JavaScript\coroutine.alittle">
-      <Filter>Language\JavaScript</Filter>
-    </None>
     <None Include="src\Core\Utility\Time.alittle">
       <Filter>Core\Utility</Filter>
     </None>
@@ -163,6 +160,18 @@
       <Filter>Language\JavaScript</Filter>
     </None>
     <None Include="src\Language\JavaScript\window.alittle">
+      <Filter>Language\JavaScript</Filter>
+    </None>
+    <None Include="src\Core\JavaScript\JavaScriptRequire.alittle">
+      <Filter>Core\JavaScript</Filter>
+    </None>
+    <None Include="src\Language\JavaScript\scriptelement.alittle">
+      <Filter>Language\JavaScript</Filter>
+    </None>
+    <None Include="src\Language\JavaScript\domelement.alittle">
+      <Filter>Language\JavaScript</Filter>
+    </None>
+    <None Include="src\Language\JavaScript\bodyelement.alittle">
       <Filter>Language\JavaScript</Filter>
     </None>
   </ItemGroup>

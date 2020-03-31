@@ -12,6 +12,15 @@ public class Coroutine
         return lua.coroutine.resume(thread, ...);
         
         [Language(JavaScript)]
-        return javascript.Coroutine.resume(thread, ...);   
+        var value = [...];
+        [Language(JavaScript)]
+        if (cast<javascript.Array>(value).length == 0)
+            cast<Functor<()>>(thread)();
+        elseif (cast<javascript.Array>(value).length == 1)
+            cast<Functor<(any)>>(thread)(value[1]);
+        else
+            cast<Functor<(List<any>)>>(thread)(value);
+        [Language(JavaScript)]
+        return true;
     }
 }

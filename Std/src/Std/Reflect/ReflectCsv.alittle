@@ -87,9 +87,9 @@ __csv_read_data_map["long"] = Csv_ReadLong;
 __csv_read_data_map["string"] = Csv_ReadString;
 __csv_read_data_map["double"] = Csv_ReadDouble;
 
-protected var __split_list = ["*","#",";"];     // 从左到右，从里到外
-protected var __split_list_last = __split_list[maxn(__split_list)];
-protected var __split_list_max = maxn(__split_list);
+private var __split_list = ["*","#",";"];     // 从左到右，从里到外
+private var __split_list_last = __split_list[maxn(__split_list)];
+private var __split_list_max = maxn(__split_list);
 
 //构造部分//////////////////////////////////////////////////////////////////////////////////////////////////////////-
 private var find = String_Find;

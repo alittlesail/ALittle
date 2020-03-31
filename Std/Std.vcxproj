@@ -27,6 +27,7 @@
     <None Include="src\Adapter\Lua\lfs.alittle" />
     <None Include="src\Adapter\Lua\MessageFactory.alittle" />
     <None Include="src\Adapter\Lua\sqlte3.alittle" />
+    <None Include="src\ALittle.alittle" />
     <None Include="src\Std\Loop\LoopFunction.alittle" />
     <None Include="src\Std\Loop\LoopGroup.alittle" />
     <None Include="src\Std\Loop\LoopList.alittle" />

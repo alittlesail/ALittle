@@ -1,0 +1,19 @@
+namespace ALittle;
+
+public async static __LUAAPI_CEngine_Init(string base_path, Functor<()> callback)
+{
+    [Language(JavaScript)]
+    {
+        Require(base_path.."Adapter/JavaScript/JHttpInterface");
+        Require(base_path.."Adapter/JavaScript/JMessageFactory");
+        Require(base_path.."Adapter/JavaScript/JMsgInterface");
+        Require(base_path.."Adapter/JavaScript/JSystem");
+    }
+    Require(base_path.."CEngine/LoopSystem/LoopAnimation");
+    Require(base_path.."CEngine/LoopSystem/LoopAttribute");
+    Require(base_path.."CEngine/LoopSystem/LoopLinear");
+    Require(base_path.."CEngine/LoopSystem/LoopRit");
+    
+    
+    if (callback != null) callback();
+}

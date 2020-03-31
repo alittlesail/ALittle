@@ -307,5 +307,11 @@
     <None Include="src\Adapter\JavaScript\JSystem.alittle">
       <Filter>Adapter\JavaScript</Filter>
     </None>
+    <None Include="src\CEngine\Register\ScriptInterface.alittle">
+      <Filter>Adapter\Lua</Filter>
+    </None>
+    <None Include="src\Adapter\JavaScript\JScriptInterface.alittle">
+      <Filter>Adapter\JavaScript</Filter>
+    </None>
   </ItemGroup>
 </Project>

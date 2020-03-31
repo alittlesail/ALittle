@@ -1,0 +1,24 @@
+namespace ALittle;
+
+[Language(JavaScript)]
+private await static Require(string url) : string
+{
+    var script = cast<javascript.ScriptElement>(docuemnt.createElement("script"));
+    script.type = "text/javascript";
+    script.async = "async";
+        
+    var error = bind(cast<Functor<(string)>>(co), "load failed:"..url);
+    script.onabort = error;
+    script.onerror = error;
+    script.ontimeout = error;
+    script.onload = bind(cast<Functor<(string)>>(co), null);
+        
+    script.src = url;
+    docuemnt.body.appendChild(script);
+    return yield;
+}
+    
+public async static __LUAAPI_Core_Init()
+{
+    
+}

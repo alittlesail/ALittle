@@ -1,0 +1,12 @@
+
+register namespace lua;
+
+public class __CPPAPIScriptSystem
+{
+    public fun RunCoreScript(string path) {}
+    public fun RunStdScript(string path) {}
+    public fun RunEngineScript(string path) {}
+    public fun RunModuleScript(string path, bool crypt_mode) {}
+}
+
+public var __CPPAPI_ScriptSystem:__CPPAPIScriptSystem;

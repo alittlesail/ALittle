@@ -1,0 +1,11 @@
+
+[Language(JavaScript)]
+namespace JavaScript;
+
+public class JScriptSystem
+{
+    public ctor(string core_path, string std_path, string engine_path, string module_path)
+    {
+        
+    }
+}

@@ -22,6 +22,7 @@
     <None Include="src\Adapter\JavaScript\JHttpInterface.alittle" />
     <None Include="src\Adapter\JavaScript\JMessageFactory.alittle" />
     <None Include="src\Adapter\JavaScript\JMsgInterface.alittle" />
+    <None Include="src\Adapter\JavaScript\JScriptInterface.alittle" />
     <None Include="src\Adapter\JavaScript\JSystem.alittle" />
     <None Include="src\Adapter\JavaScript\Pixi.alittle" />
     <None Include="src\Adapter\Lua\HttpFileInterface.alittle" />
@@ -35,6 +36,7 @@
     <None Include="src\CEngine\Protocol\VersionServerProtocol.alittle" />
     <None Include="src\CEngine\Register\AudioInterface.alittle" />
     <None Include="src\CEngine\Register\FileInterface.alittle" />
+    <None Include="src\CEngine\Register\ScriptInterface.alittle" />
     <None Include="src\CEngine\Register\ShowInterface.alittle" />
     <None Include="src\CEngine\Register\SystemInterface.alittle" />
     <None Include="src\CEngine\Register\CursorInterface.alittle" />

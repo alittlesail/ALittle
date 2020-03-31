@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head>
+
+<body onload="onLoad()">
+	<script src="Core/JSScript/ALittle.js"></script>
+	<script src="Std/JSScript/ALittle.js"></script>
+	<script src="CEngine/JSScript/ALittle.js"></script>
+	<script src="G2048/JSScript/Main.js"></script>
+	<script type='text/javascript'>
+		async function onLoad()
+		{
+			await __LUAAPI_Core_Init();
+			await __LUAAPI_Std_Init();
+			await __LUAAPI_CEngine_Init();
+			__LUAAPI_SetupMainModule();
+		}
+	</script>
+</body>
+
+</html>

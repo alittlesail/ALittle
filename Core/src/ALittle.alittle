@@ -1,24 +1,71 @@
 namespace ALittle;
 
 [Language(JavaScript)]
-private await static Require(string url) : string
+private static JSRequire(string url, ALittle.Thread thread)
 {
     var script = cast<javascript.ScriptElement>(docuemnt.createElement("script"));
     script.type = "text/javascript";
     script.async = "async";
         
-    var error = bind(cast<Functor<(string)>>(co), "load failed:"..url);
+    var error = bind(cast<Functor<(string)>>(thread), "load failed:"..url);
     script.onabort = error;
     script.onerror = error;
     script.ontimeout = error;
-    script.onload = bind(cast<Functor<(string)>>(co), null);
+    script.onload = bind(cast<Functor<(string)>>(thread), null);
         
-    script.src = url;
+    script.src = url..".js";
     docuemnt.body.appendChild(script);
+}
+
+[Language(Lua)]
+private static LuaRequire(string path)
+{
+    lua.require(path);
+}
+
+public await static Require(string url) : string
+{
+    [Language(JavaScript)]
+    JSRequire(url, co);
+    [Language(JavaScript)]
     return yield;
+    
+    [Language(Lua)]
+    lua.require(url);
+    [Language(Lua)]
+    return null;
 }
     
-public async static __LUAAPI_Core_Init()
+public async static __LUAAPI_Core_Init(string base_path, Functor<()> callback)
 {
+    [Language(JavaScript)]
+    {
+        Require(base_path.."Core/JavaScript/JavaScriptClass");
+        Require(base_path.."Core/JavaScript/JavaScriptException");
+    }
     
+    [Language(Lua)]
+    {
+        Require(base_path.."Core/Lua/LuaBind");
+        Require(base_path.."Core/Lua/LuaClass");
+        Require(base_path.."Core/Lua/LuaException");
+    }
+    
+    Require(base_path.."Core/Reflect/ReflectDefine");
+    Require(base_path.."Core/Reflect/ReflectRegister");
+    
+    Require(base_path.."Core/Utility/Log");
+    Require(base_path.."Core/Utility/List");
+    Require(base_path.."Core/Utility/Math");
+    Require(base_path.."Core/Utility/String");
+    Require(base_path.."Core/Utility/Time");
+    Require(base_path.."Core/Utility/Coroutine");
+    
+    Require(base_path.."Core/Net/HttpFileReceiver");
+    Require(base_path.."Core/Net/HttpFileSender");
+    Require(base_path.."Core/Net/HttpReceiver");
+    Require(base_path.."Core/Net/HttpSender");
+    Require(base_path.."Core/Net/MsgCommon");
+    
+    if (callback != null) callback();
 }

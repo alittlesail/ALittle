@@ -7,18 +7,14 @@
 </head>
 
 <body onload="onLoad()">
-	<script src="Core/JSScript/ALittle.js"></script>
-	<script src="Std/JSScript/ALittle.js"></script>
-	<script src="CEngine/JSScript/ALittle.js"></script>
-	<script src="G2048/JSScript/Main.js"></script>
+	<script src="../Core/JSScript/ALittle.js"></script>
+	<script src="../Std/JSScript/ALittle.js"></script>
 	<script type='text/javascript'>
 		function onLoad()
 		{
-			__LUAAPI_Core_Init(function () {
-				__LUAAPI_Std_Init(function() {
-					__LUAAPI_CEngine_Init(function() {
-						__LUAAPI_SetupMainModule(false, "G2048");
-					})
+			__LUAAPI_Core_Init("../Core/JSScript/", function () {
+				__LUAAPI_Std_Init("../Std/JSScript/", function() {
+					console.log("aaaa");
 				})
 			});
 		}

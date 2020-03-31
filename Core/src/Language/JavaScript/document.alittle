@@ -13,4 +13,4 @@ public class Document
     public fun createElement(string type) : DomElement {}
 }
 
-public var docuemnt:Document;
+public var document:Document;

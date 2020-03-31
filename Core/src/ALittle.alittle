@@ -1,9 +1,9 @@
-namespace ALittle;
+namespace alittle;
 
 [Language(JavaScript)]
 private static JSRequire(string url, ALittle.Thread thread)
 {
-    var script = cast<javascript.ScriptElement>(docuemnt.createElement("script"));
+    var script = cast<javascript.ScriptElement>(document.createElement("script"));
     script.type = "text/javascript";
     script.async = "async";
         
@@ -14,7 +14,7 @@ private static JSRequire(string url, ALittle.Thread thread)
     script.onload = bind(cast<Functor<(string)>>(thread), null);
         
     script.src = url..".js";
-    docuemnt.body.appendChild(script);
+    document.body.appendChild(script);
 }
 
 [Language(Lua)]
@@ -51,8 +51,8 @@ public async static __LUAAPI_Core_Init(string base_path, Functor<()> callback)
         Require(base_path.."Core/Lua/LuaException");
     }
     
-    Require(base_path.."Core/Reflect/ReflectDefine");
     Require(base_path.."Core/Reflect/ReflectRegister");
+    Require(base_path.."Core/Reflect/ReflectDefine");
     
     Require(base_path.."Core/Utility/Log");
     Require(base_path.."Core/Utility/List");

@@ -262,9 +262,6 @@
     <None Include="src\CEngine\Utility\OtherSystem.alittle">
       <Filter>CEngine\Utility</Filter>
     </None>
-    <None Include="src\CEngine\Utility\ScriptSystem.alittle">
-      <Filter>CEngine\Utility</Filter>
-    </None>
     <None Include="src\CEngine\Utility\String.alittle">
       <Filter>CEngine\Utility</Filter>
     </None>
@@ -306,9 +303,6 @@
     </None>
     <None Include="src\Adapter\JavaScript\JSystem.alittle">
       <Filter>Adapter\JavaScript</Filter>
-    </None>
-    <None Include="src\CEngine\Register\ScriptInterface.alittle">
-      <Filter>Adapter\Lua</Filter>
     </None>
     <None Include="src\ALittle.alittle" />
   </ItemGroup>

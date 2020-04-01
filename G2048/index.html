@@ -7,14 +7,19 @@
 </head>
 
 <body onload="onLoad()">
+	<script src="../JSNative/md5.min.js"></script>
+	<script src="../JSNative/pixi.min.js"></script>
 	<script src="../Core/JSScript/ALittle.js"></script>
 	<script src="../Std/JSScript/ALittle.js"></script>
+	<script src="../CEngine/JSScript/ALittle.js"></script>
 	<script type='text/javascript'>
 		function onLoad()
 		{
-			__LUAAPI_Core_Init("../Core/JSScript/", function () {
-				__LUAAPI_Std_Init("../Std/JSScript/", function() {
-					console.log("aaaa");
+			__ALITTLEAPI_Core_Init("../Core/JSScript/", function () {
+				__ALITTLEAPI_Std_Init("../Std/JSScript/", function() {
+					__ALITTLEAPI_CEngine_Init("../CEngine/JSScript/", function() {
+						console.log("aaaa");	
+					})
 				})
 			});
 		}

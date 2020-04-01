@@ -1,6 +1,6 @@
-namespace ALittle;
+namespace alittle;
 
-public async static __LUAAPI_CEngine_Init(string base_path, Functor<()> callback)
+public async static __ALITTLEAPI_CEngine_Init(string base_path, Functor<()> callback)
 {
     [Language(JavaScript)]
     {
@@ -9,11 +9,16 @@ public async static __LUAAPI_CEngine_Init(string base_path, Functor<()> callback
         Require(base_path.."Adapter/JavaScript/JMsgInterface");
         Require(base_path.."Adapter/JavaScript/JSystem");
     }
+    
+    Require(base_path.."CEngine/Utility/String");
+    Require(base_path.."CEngine/Utility/System");
+    Require(base_path.."CEngine/Utility/AudioSystem");
+    
     Require(base_path.."CEngine/LoopSystem/LoopAnimation");
     Require(base_path.."CEngine/LoopSystem/LoopAttribute");
     Require(base_path.."CEngine/LoopSystem/LoopLinear");
     Require(base_path.."CEngine/LoopSystem/LoopRit");
     
-    
+    ALittle.System_CreateView("test", 800, 600, 0, 0);
     if (callback != null) callback();
 }

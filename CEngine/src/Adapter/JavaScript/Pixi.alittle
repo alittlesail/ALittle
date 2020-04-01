@@ -1,8 +1,16 @@
 
 register namespace PIXI;
 
+public struct ApplicationData
+{
+    int width;
+    int height;
+}
+
 [Native]
 public class Application
 {
-    
+    public ctor(ApplicationData data) { }
+    public get view() : javascript.DomElement {}
+    public fun render() {}
 }

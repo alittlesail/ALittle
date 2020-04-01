@@ -7,10 +7,10 @@ public static JSystem_GetDeviceID() : string
     // 先从cookie获取，如果没有就随机生成一个
     var id:string = null;
     var json:Map<string, any> = null;
-    if (docuemnt.cookie != null && docuemnt.cookie != "")
+    if (document.cookie != null && document.cookie != "")
     {
         var error:string = null;
-        error, json = tcall(ALittle.String_JsonDecode, docuemnt.cookie);
+        error, json = tcall(ALittle.String_JsonDecode, document.cookie);
         if (error != null) json = null;
     }
     if (json != null)
@@ -22,7 +22,36 @@ public static JSystem_GetDeviceID() : string
         if (json == null) json = new Map<string, any>();
         id = "device_id_"..rand.."_"..time;
         json["device_id"] = id;
-        docuemnt.cookie = ALittle.String_JsonEncode(json);
+        document.cookie = ALittle.String_JsonEncode(json);
     }
     return id;
+}
+
+public var A_PixiApp:PIXI.Application;
+
+public static JSystem_CreateView(string title, int width, int height, int flag, double scale) : bool
+{
+    if (A_PixiApp != null) return true;
+    
+    var data = new PIXI.ApplicationData();
+    data.width = width;
+    data.height = height;
+    A_PixiApp = new PIXI.Application(data);
+    document.body.appendChild(A_PixiApp.view);
+    document.title = title;
+    
+    return true;
+}
+
+public static JSystem_SetViewTitle(string title) : bool
+{
+    document.title = title;
+    return true;
+}
+
+public static JSystem_Render() : bool
+{
+    if (A_PixiApp == null) return false;
+    A_PixiApp.render();
+    return true;
 }

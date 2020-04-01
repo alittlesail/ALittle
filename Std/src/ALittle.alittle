@@ -1,6 +1,6 @@
 namespace alittle;
 
-public async static __LUAAPI_Std_Init(string base_path, Functor<()> callback)
+public async static __ALITTLEAPI_Std_Init(string base_path, Functor<()> callback)
 {
     Require(base_path.."Std/Reflect/ReflectCmd");
     Require(base_path.."Std/Reflect/ReflectCsv");

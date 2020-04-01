@@ -157,4 +157,4 @@ public class LoopSystem<HT : IHeapTimer> : ILoopSystem
 public var A_LuaLoopSystem = new LoopSystem<lua.__CPPAPIHeapTimer>();
 
 [Language(JavaScript)]
-public var A_JLoopSystem = new LoopSystem<JavaScript.JHeapTimer>();
+public var A_JSLoopSystem = new LoopSystem<JavaScript.JHeapTimer>();

@@ -94,7 +94,7 @@ class OtherSystem : EventDispatcher
     
     // 重载侦听函数
     // 对于侦听特殊服务的，侦听事件之后再启动
-    public fun AddEventListener<T:Event>(any object, Functor<(any, T)> callback) : bool
+    public fun AddEventListener<T:Event>(EventListener object, Functor<(EventListener, T)> callback) : bool
     {
         var rflt = reflect<T>;
         var net_rflt = reflect<NetChangeEvent>;
@@ -122,7 +122,7 @@ class OtherSystem : EventDispatcher
     
     public fun HandleALittleJsonRPC(string json)
     {
-        var error, content:ALittleJsonRPCInfo = tcall(lua.json.decode, json);
+        var error, content:ALittleJsonRPCInfo = tcall(String_JsonDecode, json);
         if (error != null)
         {
             Log("OtherSystem:HandleALittleJsonRPC:", error, json);
@@ -145,7 +145,7 @@ class OtherSystem : EventDispatcher
     }
     
     // 系统选择文件
-    public fun SystemSelectFile(DisplayObject target, @Nullable string init_dir)
+    public fun SystemSelectFile(DisplayObject target, [Nullable] string init_dir)
     {
         this._system_select_file = target;
         lua.__CPPAPI_SystemSelectFile(init_dir);

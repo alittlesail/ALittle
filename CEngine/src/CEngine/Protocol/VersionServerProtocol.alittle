@@ -38,7 +38,7 @@ public struct AUpdateVersion
     List<string> log_list;          // 版本更新内容
 }
 
-@Http
+[Http]
 public await static HandleHttpQUpdateVersion(ALittle.IHttpReceiver client, QUpdateVersion msg) : AUpdateVersion {}
 
 
@@ -50,5 +50,5 @@ public struct QDownloadVersionFile
     string file_path;               // 文件路径
 }
 
-@HttpDownload
+[HttpDownload]
 public await static HandleHttpQDownloadVersionFile(ALittle.IHttpReceiver client, QDownloadVersionFile msg) : string, int {}

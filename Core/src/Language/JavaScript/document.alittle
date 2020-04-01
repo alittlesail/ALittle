@@ -9,6 +9,7 @@ public class Document
     public set cookie(string value) {}
     
     public get body() : BodyElement {}
+    public set title(string value) {}
     
     public fun createElement(string type) : DomElement {}
 }

@@ -17,9 +17,9 @@ namespace ALittle;
 // {
 // }
 
-protected var g_Script:ScriptSystem;
 protected var g_Control:ControlSystem;
 protected var g_LayerGroup:DisplayLayout;
+protected var g_BasePath:string;
 
 struct UIViewModuleDebugInfo
 {
@@ -30,12 +30,12 @@ struct UIViewModuleDebugInfo
 }
 
 // 模块入口函数
-public static __Module_Setup(DisplayLayout layer_group, ScriptSystem script, ControlSystem control, string base_path, string debug)
+public static __Module_Setup(DisplayLayout layer_group, ControlSystem control, string base_path, string debug)
 {
     // 把resource, layer_group变量保存到全局，便于使用
-    g_Script = script;
     g_Control = control;
     g_LayerGroup = layer_group;
+    g_BasePath = base_path;
 
     var error, info:UIViewModuleDebugInfo = tcall(lua.json.decode, debug);
 
@@ -74,7 +74,7 @@ public static __Module_Shutdown()
 }
 
 // 提供给壳的模块信息
-public static __Module_GetInfo(ScriptSystem script, ControlSystem control, string base_path) : ModuleShortInfo
+public static __Module_GetInfo(ControlSystem control, string base_path) : ModuleShortInfo
 {
     var info = new ModuleShortInfo();
     info.title = "UIViewer";
@@ -87,7 +87,7 @@ public static __Module_GetInfo(ScriptSystem script, ControlSystem control, strin
 }
 
 // 插件入口函数
-public static __Plugin_Setup(ScriptSystem script, ControlSystem control, string base_path, string debug)
+public static __Plugin_Setup(ControlSystem control, string base_path, string debug)
 {
 }
 

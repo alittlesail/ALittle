@@ -36,7 +36,7 @@ public await static Require(string url) : string
     return null;
 }
     
-public async static __LUAAPI_Core_Init(string base_path, Functor<()> callback)
+public async static __ALITTLEAPI_Core_Init(string base_path, Functor<()> callback)
 {
     [Language(JavaScript)]
     {

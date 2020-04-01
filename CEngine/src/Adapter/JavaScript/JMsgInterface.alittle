@@ -150,7 +150,7 @@ public class JMsgInterface : ALittle.IMsgCommonNative
 		if (this._net_status != JConnectStatus.NET_CONNECTING) return;
 		
 		this._net_status = JConnectStatus.NET_CONNECTED;
-		var func = cast<Functor<(ALittle.IMsgCommonNative)>>(window["__LUAAPI_ConnectSucceed"]);
+		var func = cast<Map<string, Functor<(ALittle.IMsgCommonNative)>>>(window)["__ALITTLEAPI_ConnectSucceed"];
 		if (func == null) return;
 		func(this);
 	}
@@ -162,7 +162,7 @@ public class JMsgInterface : ALittle.IMsgCommonNative
 		this._net_status = JConnectStatus.NET_IDLE;
 		this._net_system = null;
         
-		var func = cast<Functor<(ALittle.IMsgCommonNative)>>(window["__LUAAPI_Disconnect"]);
+		var func = cast<Map<string, Functor<(ALittle.IMsgCommonNative)>>>(window)["__ALITTLEAPI_Disconnect"];
 		if (func == null) return;
 		func(this);
     }
@@ -174,7 +174,7 @@ public class JMsgInterface : ALittle.IMsgCommonNative
 		this._net_status = JConnectStatus.NET_IDLE;
 		this._net_system = null;
         
-		var func = cast<Functor<(ALittle.IMsgCommonNative)>>(window["__LUAAPI_ConnectFailed"]);
+		var func = cast<Map<string, Functor<(ALittle.IMsgCommonNative)>>>(window)["__ALITTLEAPI_ConnectFailed"];
 		if (func == null) return;
 		func(this);
     }
@@ -195,7 +195,7 @@ public class JMsgInterface : ALittle.IMsgCommonNative
             var rpc_id = factory.ReadInt();
             factory.SetID(id);
             factory.SetRpcID(rpc_id);
-		    var func = cast<Functor<(int, int, ALittle.IMessageReadFactory, ALittle.IMsgCommonNative)>>(window["__LUAAPI_Message"]);
+		    var func = cast<Map<string, Functor<(int, int, ALittle.IMessageReadFactory, ALittle.IMsgCommonNative)>>>(window)["__ALITTLEAPI_Message"];
 		    if (func == null) return;
 		    func(id, rpc_id, factory, this);
 		}

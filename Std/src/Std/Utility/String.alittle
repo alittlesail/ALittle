@@ -18,3 +18,30 @@ public static String_JsonDecode(string text) : any
     [Language(JavaScript)]
     return javascript.JSON.parse(text);
 }
+
+public static String_MD5(string text) : string
+{
+    [Language(Lua)]
+    return __CPPAPI_ScriptSystem.StringMD5(text);
+    
+    [Language(JavaScript)]
+    return javascript.md5(text);
+}
+
+public static String_Base64Encode(string text) : string
+{
+    [Language(Lua)]
+    return __CPPAPI_ScriptSystem.Base64Encode(text);
+    
+    [Language(JavaScript)]
+    return javascript.btoa(text);
+}
+
+public static String_Base64Decode(string text) : string
+{
+    [Language(Lua)]
+    return __CPPAPI_ScriptSystem.Base64Decode(text);
+    
+    [Language(JavaScript)]
+    return javascript.atob(text);
+}

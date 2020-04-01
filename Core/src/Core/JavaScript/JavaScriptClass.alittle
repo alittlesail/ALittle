@@ -61,6 +61,7 @@ protected static Class(ALittle.ClassInfo drived, Map<string, any> clazz_prop, st
     var getter_map = clazz.__getter;    // getter
     
     // 同理复制当前的属性和函数
+    [Native]
     for (var name, _ in clazz_prop)
     {
 		// 复制对应的setter，getter函数

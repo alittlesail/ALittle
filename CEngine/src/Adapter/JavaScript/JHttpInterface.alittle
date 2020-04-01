@@ -45,14 +45,14 @@ public class JHttpInterface : ALittle.IHttpSenderNative
     
     private fun HandleAjaxError()
 	{
-		var func = cast<Functor<(ALittle.IHttpSenderNative, string)>>(window["__LUAAPI_HttpClientFailed"]);
+		var func = cast<Map<string, Functor<(ALittle.IHttpSenderNative, string)>>>(window)["__ALITTLEAPI_HttpClientFailed"];
 		if (func == null) return;
 		func(this, this._request.statusText);
 	}
     
 	private fun HandleStartCompleted()
 	{
-		var func = cast<Functor<(ALittle.IHttpSenderNative)>>(window["__LUAAPI_HttpClientSucceed"]);
+		var func = cast<Map<string, Functor<(ALittle.IHttpSenderNative)>>>(window)["__ALITTLEAPI_HttpClientSucceed"];
 		if (func == null) return;
 		func(this);
 	}

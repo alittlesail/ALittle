@@ -36,7 +36,6 @@
     <None Include="src\CEngine\Protocol\VersionServerProtocol.alittle" />
     <None Include="src\CEngine\Register\AudioInterface.alittle" />
     <None Include="src\CEngine\Register\FileInterface.alittle" />
-    <None Include="src\CEngine\Register\ScriptInterface.alittle" />
     <None Include="src\CEngine\Register\ShowInterface.alittle" />
     <None Include="src\CEngine\Register\SystemInterface.alittle" />
     <None Include="src\CEngine\Register\CursorInterface.alittle" />
@@ -100,7 +99,6 @@
     <None Include="src\CEngine\Utility\File.alittle" />
     <None Include="src\CEngine\Utility\ModuleSystem.alittle" />
     <None Include="src\CEngine\Utility\OtherSystem.alittle" />
-    <None Include="src\CEngine\Utility\ScriptSystem.alittle" />
     <None Include="src\CEngine\Utility\String.alittle" />
     <None Include="src\CEngine\Utility\System.alittle" />
     <None Include="src\CEngine\Version\VersionSystem.alittle" />

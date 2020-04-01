@@ -162,8 +162,8 @@ public class LoopAnimation
     {
         if (this._co == null) return;
         
-        var result, reason = lua.coroutine.resume(this._co, reason);
-        if (result != true) Error(reason);
+        var result, error = Coroutine.Resume(this._co, reason);
+        if (result != true) Error(error);
         this._co = null;
     }
     

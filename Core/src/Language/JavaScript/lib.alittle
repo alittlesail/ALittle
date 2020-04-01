@@ -1,0 +1,16 @@
+
+[Language(JavaScript)]
+register namespace javascript;
+
+public static btoa(string text) : string {}
+public static atob(string text) : string {}
+public static alert(string text) {}
+public static open(string url) {}
+
+public struct MediaQueryList
+{
+    string media;
+    bool matches;
+}
+
+public static matchMedia(string text) : MediaQueryList {}

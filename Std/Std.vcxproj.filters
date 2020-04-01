@@ -122,5 +122,11 @@
     <None Include="src\Std\Utility\IHeapTimer.alittle">
       <Filter>Std\Utility</Filter>
     </None>
+    <None Include="src\Adapter\JavaScript\Md5.alittle">
+      <Filter>Adapter\JavaScript</Filter>
+    </None>
+    <None Include="src\Adapter\Lua\ScriptInterface.alittle">
+      <Filter>Adapter\Lua</Filter>
+    </None>
   </ItemGroup>
 </Project>

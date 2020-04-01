@@ -18,10 +18,10 @@ ALittle.LoopObject = JavaScript.Class(undefined, {
 	SetCompleted : function() {
 	},
 	Start : function() {
-		A_JLoopSystem.AddUpdater(this);
+		A_JSLoopSystem.AddUpdater(this);
 	},
 	Stop : function() {
-		A_JLoopSystem.RemoveUpdater(this);
+		A_JSLoopSystem.RemoveUpdater(this);
 	},
 }, "ALittle.LoopObject");
 

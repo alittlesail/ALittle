@@ -52,8 +52,9 @@ JavaScript.Class = function(drived, clazz_prop, clazz_name) {
 	let getter_map = clazz.__getter;
 	let ___OBJECT_2 = clazz_prop;
 	for (let name in ___OBJECT_2) {
-		let _ = ___OBJECT_2[name];
-		if (_ === undefined) continue;
+		// 因为for使用了Native修饰，不做undefined处理
+		// let _ = ___OBJECT_2[name];
+		// if (_ === undefined) continue;
 		let info = Object.getOwnPropertyDescriptor(clazz_prop, name);
 		if (info["get"] === undefined && info["set"] === undefined) {
 			clazz[name] = clazz_prop[name];

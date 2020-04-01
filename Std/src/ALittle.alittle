@@ -39,5 +39,6 @@ public async static __LUAAPI_Std_Init(string base_path, Functor<()> callback)
     {
         Require(base_path.."Adapter/JavaScript/JCsvLoader");
     }
+    
     if (callback != null) callback();
 }

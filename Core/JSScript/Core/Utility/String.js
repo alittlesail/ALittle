@@ -1,0 +1,130 @@
+{
+if (typeof ALittle === "undefined") ALittle = {};
+
+
+ALittle.String_Upper = function(s) {
+	return s.toUpperCase();
+}
+
+ALittle.String_ToString = function(s) {
+	if (s === undefined) {
+		return "nil";
+	} else {
+		return s.toString();
+	}
+}
+
+ALittle.String_Byte = function(s, index) {
+	return s.charCodeAt(index - 1);
+}
+
+ALittle.String_Len = function(s) {
+	return s.length;
+}
+
+ALittle.String_Find = function(s, t, init) {
+	if (init === undefined) {
+		let index = s.indexOf(t);
+		if (index >= 0) {
+			return index + 1;
+		} else {
+			return undefined;
+		}
+	} else {
+		let index = s.indexOf(t, init - 1);
+		if (index >= 0) {
+			return index + 1;
+		} else {
+			return undefined;
+		}
+	}
+}
+
+ALittle.String_Sub = function(s, start, end) {
+	if (end === undefined) {
+		return s.slice(start - 1);
+	} else {
+		return s.slice(start - 1, end);
+	}
+}
+
+ALittle.String_Trim = function(s) {
+	return s.trim();
+}
+
+ALittle.String_Split = function(target, sep) {
+	if (target === undefined) {
+		return [];
+	}
+	if (sep === undefined || sep === "") {
+		sep = ",";
+	}
+	let fields = [];
+	let fields_count = 0;
+	let start_pos = 1;
+	while (true) {
+		let start_index = ALittle.String_Find(target, sep, start_pos);
+		if (start_index === undefined) {
+			++ fields_count;
+			fields[fields_count - 1] = ALittle.String_Sub(target, start_pos);
+			break;
+		}
+		++ fields_count;
+		fields[fields_count - 1] = ALittle.String_Sub(target, start_pos, start_index - 1);
+		start_pos = start_index + len(sep);
+	}
+	return fields;
+}
+
+ALittle.String_SplitSepList = function(target, sep_list) {
+	if (target === undefined) {
+		return [];
+	}
+	if (sep_list === undefined) {
+		sep_list = [];
+	}
+	let fields = [];
+	let fields_count = 0;
+	let start_pos = 1;
+	while (true) {
+		let start_index = undefined;
+		let end_index = undefined;
+		let ___OBJECT_1 = sep_list;
+		for (let _ = 1; _ <= ___OBJECT_1.length; ++_) {
+			let sep = ___OBJECT_1[_ - 1];
+			if (sep === undefined) break;
+			let start_index_tmp = ALittle.String_Find(target, sep, start_pos);
+			if (start_index_tmp !== undefined) {
+				if (start_index === undefined || start_index_tmp < start_index) {
+					start_index = start_index_tmp;
+					end_index = start_index + ALittle.String_Len(sep) - 1;
+				}
+			}
+		}
+		if (start_index === undefined) {
+			let value = ALittle.String_Sub(target, start_pos);
+			if (ALittle.String_Len(value) > 0) {
+				++ fields_count;
+				fields[fields_count - 1] = ALittle.String_Sub(target, start_pos);
+			}
+			break;
+		}
+		let value = ALittle.String_Sub(target, start_pos, start_index - 1);
+		if (ALittle.String_Len(value) > 0) {
+			++ fields_count;
+			fields[fields_count - 1] = ALittle.String_Sub(target, start_pos, start_index - 1);
+		}
+		start_pos = end_index + 1;
+	}
+	return fields;
+}
+
+ALittle.String_Join = function(list, sep) {
+	return list.join(sep);
+}
+
+ALittle.String_Replace = function(s, os, ns) {
+	return s.replace(os, ns);
+}
+
+}

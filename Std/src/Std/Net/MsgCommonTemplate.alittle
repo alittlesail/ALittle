@@ -226,7 +226,7 @@ public class IMsgCommonTemplate : IMsgCommon
         }
         this.Send(return_id, return_body, -rpc_id);
     }
-
+    
     // 清理RPC
     private fun ClearRPC(string reason)
     {

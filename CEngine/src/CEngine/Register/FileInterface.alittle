@@ -33,14 +33,14 @@ public class __CPPAPICsvFile : ALittle.ICsvFile
 public class __CPPAPICsvFileLoader : ALittle.ICsvFileLoader
 {
     public fun Start() {}
-    public fun SetPath(string file_path) {}
+    public fun SetPath(string file_path, bool only_from_asset, string headers) {}
     public fun GetPath() : string { return null; }
     public fun GetID() : int { return null; }
 }
 
 public class __CPPAPICsvFileWrap : ALittle.ICsvFile
 {
-    public fun SetCsvFile(__CPPAPICsvFile file) {}
+    public fun SetCsvFile(ALittle.ICsvFile file) {}
     public fun Close() {}
     public fun GetPath() : string {}
     public fun ReadCell(int lua_row, int lua_col) : string {}

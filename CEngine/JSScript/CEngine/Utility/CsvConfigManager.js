@@ -4,7 +4,7 @@ if (typeof ALittle === "undefined") ALittle = {};
 ALittle.RegStruct(332955965, "ALittle.CsvPreloadInfoDetail", {
 name : "ALittle.CsvPreloadInfoDetail", ns_name : "ALittle", rl_name : "CsvPreloadInfoDetail", hash_code : 332955965,
 name_list : ["loader","config"],
-type_list : ["lua.__CPPAPICsvFileLoader","ALittle.CsvConfig"],
+type_list : ["ALittle.ICsvFileLoader","ALittle.CsvConfig"],
 option_map : {}
 })
 ALittle.RegStruct(-1040774381, "ALittle.CsvPreloadInfo", {

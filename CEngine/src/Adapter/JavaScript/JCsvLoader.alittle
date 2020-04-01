@@ -15,7 +15,7 @@ public class JCsvFile : ALittle.ICsvFile
 public class JCsvFileLoader : ALittle.ICsvFileLoader
 {
     public fun Start() {}
-    public fun SetPath(string file_path) {}
+    public fun SetPath(string file_path, bool only_from_asset, string headers) {}
     public fun GetPath() : string { return null; }
     public fun GetID() : int { return null; }
 }

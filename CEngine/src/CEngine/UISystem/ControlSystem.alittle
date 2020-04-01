@@ -152,8 +152,8 @@ public class ControlSystem
         var new_csv_map = new Map<string, CsvConfig>();
         for (var file_path, config in csv_map)
             new_csv_map[this._other_path..file_path] = config;
-
-        A_CSVConfigManager.PrepareCsv(new_csv_map, callback);
+        
+        A_CsvConfigManager.PrepareCsv(new_csv_map, callback);
     }
     
     public set cache_texture(bool cache)

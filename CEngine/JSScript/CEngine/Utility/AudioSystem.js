@@ -15,7 +15,8 @@ type_list : ["ALittle.EventDispatcher"],
 option_map : {}
 })
 
-ALittle.AudioSystem = JavaScript.Class(undefined, {
+if (ALittle.EventListener === undefined) throw new Error(" extends class:ALittle.EventListener is undefined");
+ALittle.AudioSystem = JavaScript.Class(ALittle.EventListener, {
 	Ctor : function() {
 		this._chunk_map = new Map();
 		this._app_background = false;

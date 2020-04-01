@@ -27,7 +27,7 @@ if (ALittle.ICsvFileLoader === undefined) throw new Error(" extends class:ALittl
 JavaScript.JCsvFileLoader = JavaScript.Class(ALittle.ICsvFileLoader, {
 	Start : function() {
 	},
-	SetPath : function(file_path) {
+	SetPath : function(file_path, only_from_asset, headers) {
 	},
 	GetPath : function() {
 		return undefined;

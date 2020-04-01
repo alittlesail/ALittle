@@ -10,7 +10,7 @@ struct ChunkInfo
     bool mute;
 }
 
-class AudioSystem
+class AudioSystem : EventListener
 {
     private Map<int, ChunkInfo> _chunk_map;
     private bool                _app_background;

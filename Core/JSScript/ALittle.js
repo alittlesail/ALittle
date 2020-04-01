@@ -22,7 +22,7 @@ Require = function(url) {
 	});
 }
 
-__ALITTLEAPI_Core_Init = async function(base_path, callback) {
+__LUAAPI_Core_Init = async function(base_path, callback) {
 	{
 		await Require(base_path + "Core/JavaScript/JavaScriptClass");
 		await Require(base_path + "Core/JavaScript/JavaScriptException");

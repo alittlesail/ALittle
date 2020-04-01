@@ -3,12 +3,6 @@ if (typeof ALittle === "undefined") ALittle = {};
 
 
 ALittle.IHttpFileSender = JavaScript.Class(undefined, {
-	HandleSucceed : function() {
-	},
-	HandleProcess : function() {
-	},
-	HandleFailed : function(reason) {
-	},
 	SendDownloadRPC : function(thread, method, content) {
 		throw new Error("not impl");
 	},

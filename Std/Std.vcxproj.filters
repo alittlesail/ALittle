@@ -113,5 +113,14 @@
       <Filter>Adapter\JavaScript</Filter>
     </None>
     <None Include="src\ALittle.alittle" />
+    <None Include="src\Std\Loop\LoopObject.alittle">
+      <Filter>Std\Loop</Filter>
+    </None>
+    <None Include="src\Std\Loop\ILoopSystem.alittle">
+      <Filter>Std\Loop</Filter>
+    </None>
+    <None Include="src\Std\Utility\IHeapTimer.alittle">
+      <Filter>Std\Utility</Filter>
+    </None>
   </ItemGroup>
 </Project>

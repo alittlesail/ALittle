@@ -38,8 +38,8 @@ public class HttpFileReceiverTemplate<NATIVE : IHttpFileReceiverNative> : IHttpF
     
     protected fun HandleReceiveResult(string reason)
     {
-        var result, reason = Coroutine.Resume(this._thread, reason);
-        if (!result) Error(reason);
+        var result, error = Coroutine.Resume(this._thread, reason);
+        if (!result) Error(error);
     }
     
     public get received() : bool { return this._received; }

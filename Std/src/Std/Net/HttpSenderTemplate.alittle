@@ -69,7 +69,7 @@ public class HttpSenderTemplate<NATIVE : IHttpSenderNative> : IHttpSender
     protected fun HandleFailed(string reason)
     {
         __HttpSenderMap[this._interface.GetID()] = null;
-        var result, reason = Coroutine.Resume(this._thread, reason, null);
-        if (result != true) Error(reason);
+        var result, error = Coroutine.Resume(this._thread, reason, null);
+        if (result != true) Error(error);
     }
 }

@@ -6,6 +6,15 @@ public async static __LUAAPI_Std_Init(string base_path, Functor<()> callback)
     Require(base_path.."Std/Reflect/ReflectCsv");
     Require(base_path.."Std/Reflect/ReflectMessage");
     
+    Require(base_path.."Std/Utility/IHeapTimer");
+    
+    [Language(JavaScript)]
+    {
+        Require(base_path.."Adapter/JavaScript/Timer");
+    }
+    
+    Require(base_path.."Std/Loop/LoopObject");
+    Require(base_path.."Std/Loop/ILoopSystem");
     Require(base_path.."Std/Loop/LoopSystem");
     Require(base_path.."Std/Loop/LoopFunction");
     Require(base_path.."Std/Loop/LoopGroup");
@@ -29,7 +38,6 @@ public async static __LUAAPI_Std_Init(string base_path, Functor<()> callback)
     [Language(JavaScript)]
     {
         Require(base_path.."Adapter/JavaScript/JCsvLoader");
-        Require(base_path.."Adapter/JavaScript/Timer");
     }
     if (callback != null) callback();
 }

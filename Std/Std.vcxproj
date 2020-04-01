@@ -28,6 +28,8 @@
     <None Include="src\Adapter\Lua\MessageFactory.alittle" />
     <None Include="src\Adapter\Lua\sqlte3.alittle" />
     <None Include="src\ALittle.alittle" />
+    <None Include="src\Std\Loop\ILoopSystem.alittle" />
+    <None Include="src\Std\Loop\LoopObject.alittle" />
     <None Include="src\Std\Loop\LoopFunction.alittle" />
     <None Include="src\Std\Loop\LoopGroup.alittle" />
     <None Include="src\Std\Loop\LoopList.alittle" />
@@ -46,6 +48,7 @@
     <None Include="src\Std\Reflect\ReflectMessage.alittle" />
     <None Include="src\Std\Utility\CsvConfig.alittle" />
     <None Include="src\Std\Utility\EventDispatcher.alittle" />
+    <None Include="src\Std\Utility\IHeapTimer.alittle" />
     <None Include="src\Std\Utility\SafeIDCreator.alittle" />
     <None Include="src\Std\Utility\String.alittle" />
   </ItemGroup>

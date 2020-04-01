@@ -241,8 +241,8 @@ public class IMsgCommonTemplate : IMsgCommon
         // 逐个调用表示失败
         for (var rpc_id, info in tmp)
         {
-            var result, reason = Coroutine.Resume(info.thread, reason, null);
-            if (result != true) Error(reason);
+            var result, error = Coroutine.Resume(info.thread, reason, null);
+            if (result != true) Error(error);
         }
     }
 

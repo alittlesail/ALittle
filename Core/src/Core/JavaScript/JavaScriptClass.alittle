@@ -104,7 +104,8 @@ protected static Template(ALittle.ClassInfo clazz, string name, ...) : ALittle.C
         clazz.__child = child;
     }
     var template = child[name];
-    if (template != null) return template;
+    if (template != null)
+        return template;
     
     // ¶¨ÒåÄ£°å
     template = CloneProperty(clazz, true);

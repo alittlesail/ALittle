@@ -45,3 +45,24 @@ public static String_Base64Decode(string text) : string
     [Language(JavaScript)]
     return javascript.atob(text);
 }
+
+public static String_GetUTF8Length(string text) : int
+{
+    [Language(Lua)]
+    return __CPPAPI_ScriptSystem.GetUTF8Length(text);
+    
+    [Language(JavaScript)]
+    return cast<javascript.String>(text).length;
+}
+
+public static String_CalcUTF8LengthOfWord(string text, int word_count) : int
+{
+    [Language(Lua)]
+    return __CPPAPI_ScriptSystem.CalcUTF8LengthOfWord(text, word_count);
+    
+    [Language(JavaScript)]
+    if (cast<javascript.String>(text).length < word_count)
+        return cast<javascript.String>(text).length;
+    else
+        return word_count;
+}

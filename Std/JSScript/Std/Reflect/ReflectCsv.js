@@ -25,7 +25,7 @@ ALittle.ICsvFile = JavaScript.Class(undefined, {
 ALittle.ICsvFileLoader = JavaScript.Class(undefined, {
 	Start : function() {
 	},
-	SetPath : function(file_path) {
+	SetPath : function(file_path, only_from_asset, headers) {
 	},
 	GetPath : function() {
 		return undefined;

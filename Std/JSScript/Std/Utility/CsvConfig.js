@@ -12,7 +12,7 @@ option_map : {}
 ALittle.CsvConfig = JavaScript.Class(undefined, {
 	Load : function(file_path) {
 		let name_list = this.GetFieldNameList();
-		let js_loader = ALittle.NewObject(JavaScript.JCsvLoader);
+		let js_loader = ALittle.NewObject(JavaScript.JCsvFile);
 		JavaScript.Assert(js_loader.Load(file_path, ALittle.String_Join(name_list, ",")), file_path + " load failed!");
 		this.Init(js_loader);
 		ALittle.Log(file_path + " load succeed!");

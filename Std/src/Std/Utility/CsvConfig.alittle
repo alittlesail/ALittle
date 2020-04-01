@@ -8,14 +8,14 @@ public class CsvConfig
     {
         var name_list = this.GetFieldNameList();
         [Language(Lua)]
-        var lua_loader = new lua.__CPPAPICsvLoader();
+        var lua_loader = new lua.__CPPAPICsvFile();
         [Language(Lua)]
         assert(lua_loader.Load(file_path, String_Join(name_list, ",")), file_path.." load failed!");
         [Language(Lua)]
         this.Init(lua_loader);
         
         [Language(JavaScript)]
-        var js_loader = new JavaScript.JCsvLoader();
+        var js_loader = new JavaScript.JCsvFile();
         [Language(JavaScript)]
         assert(js_loader.Load(file_path, String_Join(name_list, ",")), file_path.." load failed!");
         [Language(JavaScript)]

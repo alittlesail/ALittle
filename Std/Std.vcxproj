@@ -19,10 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\Adapter\JavaScript\JCsvLoader.alittle" />
     <None Include="src\Adapter\JavaScript\Md5.alittle" />
     <None Include="src\Adapter\JavaScript\Timer.alittle" />
-    <None Include="src\Adapter\Lua\CsvLoader.alittle" />
     <None Include="src\Adapter\Lua\HeapTimer.alittle" />
     <None Include="src\Adapter\Lua\json.alittle" />
     <None Include="src\Adapter\Lua\lfs.alittle" />
@@ -48,8 +46,10 @@
     <None Include="src\Std\Reflect\ReflectCmd.alittle" />
     <None Include="src\Std\Reflect\ReflectCsv.alittle" />
     <None Include="src\Std\Reflect\ReflectMessage.alittle" />
+    <None Include="src\Std\Utility\ConfigSystem.alittle" />
     <None Include="src\Std\Utility\CsvConfig.alittle" />
     <None Include="src\Std\Utility\EventDispatcher.alittle" />
+    <None Include="src\Std\Utility\File.alittle" />
     <None Include="src\Std\Utility\IHeapTimer.alittle" />
     <None Include="src\Std\Utility\SafeIDCreator.alittle" />
     <None Include="src\Std\Utility\String.alittle" />

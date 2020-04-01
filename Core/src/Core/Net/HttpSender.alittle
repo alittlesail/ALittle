@@ -3,6 +3,9 @@ namespace ALittle;
 // Http协议接口类，负责请求发送
 public class IHttpSender
 {
+    protected fun HandleSucceed() {}
+    protected fun HandleFailed(string reason) {}
+    
     // 提供子类继承
     protected fun SendRPC(Thread thread, string method, any content) { throw("not impl"); }
     

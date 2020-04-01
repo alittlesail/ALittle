@@ -10,4 +10,4 @@ public class Package
     public Map<string, any> loaded;
 }
 
-protected var package:Package;
+public var package:Package;

@@ -126,7 +126,7 @@ public class SpringCheckButton : DisplayLayout
         var scale = 1.0;
         if (this._big_or_small) scale = 1.2;
     
-        if (this._anti_loop != null) { this._anti_loop.Close(); this._anti_loop = null; }
+        if (this._anti_loop != null) { this._anti_loop.Stop(); this._anti_loop = null; }
         this._anti_loop = new LoopGroup();
         this._anti_loop.AddUpdater(new LoopLinear(this, "scale_x", scale, time_in_ms, 1));
         this._anti_loop.AddUpdater(new LoopLinear(this, "scale_y", scale, time_in_ms, 1));

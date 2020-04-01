@@ -32,7 +32,7 @@ public class TileTable : DisplayGroup
         this._clip_top_index = 0;
         this._clip_bottom_index = 0;
         this._show_child_map = new Map<DisplayObject, bool>();
-        Setweak(this._show_child_map, true, false);
+        // Setweak(this._show_child_map, true, false);
     
         this._pickup_rect = false;
         this._pickup_child = true;
@@ -114,7 +114,7 @@ public class TileTable : DisplayGroup
         return this._col_count;
     }
     
-    public fun AddChild(DisplayObject child, @Nullable int index) : bool
+    public fun AddChild(DisplayObject child, [Nullable] int index) : bool
     {
         var result = DisplayGroup.AddChild(this, child, index);
         if (result == false)
@@ -155,7 +155,7 @@ public class TileTable : DisplayGroup
             child.RemoveEventListener{UIResizeEvent}(this);
         
         this._show_child_map = new Map<DisplayObject, bool>();
-        Setweak(this._show_child_map, true, false);
+        // Setweak(this._show_child_map, true, false);
     
         this._clip_left_index = 0;
         this._clip_right_index = 0;
@@ -281,7 +281,7 @@ public class TileTable : DisplayGroup
         var childs = this.childs;
 
         var new_show_map = new Map<DisplayObject, bool>();
-        Setweak(new_show_map, true, false);
+        // Setweak(new_show_map, true, false);
         this._show.RemoveAllChild(); // 移除所有显示列表
     
         // 处理水平

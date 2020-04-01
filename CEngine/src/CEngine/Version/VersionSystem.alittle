@@ -234,13 +234,13 @@ public class VersionSystem
     }
 
     // 内部调用，用于获取当前的版本号
-    public fun GetCurVersion(@Nullable int get_log_count) : BigVersionInfo, SmallVersionInfo, List<string>
+    public fun GetCurVersion([Nullable] int get_log_count) : BigVersionInfo, SmallVersionInfo, List<string>
     {
         return this.GetVersionInfo(File_BaseFilePath() .. this._module_path .. this._cur_in_version, get_log_count);
     }
 
     // 调用完UpdateVersion，再调用这个函数才有意义
-    public fun GetNewVersion(@Nullable int get_log_count) : BigVersionInfo, SmallVersionInfo, List<string>
+    public fun GetNewVersion([Nullable] int get_log_count) : BigVersionInfo, SmallVersionInfo, List<string>
     {
         return this.GetVersionInfo(File_BaseFilePath() .. this._update_path .. this._new_in_version, get_log_count);
     }
@@ -377,7 +377,7 @@ public class VersionSystem
     // check true表示只是检查，不直接更新。如果不填，那么检查到需要更新版本就直接更新了
     // repeat_count 因为http下载文件比较容易断开，所以这个用来表示重复的次数，不填或者填null表示默认不会重复
     // return 错误类型
-    public await fun UpdateVersion(string ip, int port, Functor<(string, int, int, int, int)> callback, bool check, @Nullable int repeat_count) : int
+    public await fun UpdateVersion(string ip, int port, Functor<(string, int, int, int, int)> callback, bool check, [Nullable] int repeat_count) : int
     {
         if (this._doing == true)
         {
@@ -745,7 +745,7 @@ public class VersionSystem
         }
     }
 
-    public fun Install(@Nullable string install_name)
+    public fun Install([Nullable] string install_name)
     {
         // 什么都不处理
     }

@@ -14,7 +14,7 @@ public class VersionSystemIOS : VersionSystem
         VersionSystemAndroid.RefreshVersion();
     }
 
-    public fun Install(@Nullable string install_name)
+    public fun Install([Nullable] string install_name)
     {
         // 跳出AppStore，提示用户下载重新安装
     }

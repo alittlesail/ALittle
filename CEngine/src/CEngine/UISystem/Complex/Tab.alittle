@@ -48,7 +48,7 @@ public class Tab : Grid3
     
         // 控件映射ID
         this._child_id_map = new Map<DisplayObject, string>();
-        Setweak(this._child_id_map, true, false);
+        // Setweak(this._child_id_map, true, false);
         // 单选按钮组名
         this._group_name = A_TextRadioButtonManager.CreateGroupName();
 
@@ -423,7 +423,7 @@ public class Tab : Grid3
         var show_center = this.show_center;
         return show_center.child_count;
     }
-    public fun AddChild(DisplayObject child, @Nullable int index) : bool
+    public fun AddChild(DisplayObject child, [Nullable] int index) : bool
     {
         if (child == null || child == this)
             return false;

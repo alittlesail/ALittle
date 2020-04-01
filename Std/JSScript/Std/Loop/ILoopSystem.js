@@ -9,6 +9,13 @@ ALittle.ILoopSystem = JavaScript.Class(undefined, {
 	RemoveTimer : function(id) {
 		return false;
 	},
+	AddUpdater : function(object) {
+	},
+	RemoveUpdater : function(object) {
+	},
+	HasUpdater : function(object) {
+		return false;
+	},
 }, "ALittle.ILoopSystem");
 
 }

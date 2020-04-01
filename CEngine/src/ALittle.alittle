@@ -12,7 +12,9 @@ public async static __ALITTLEAPI_CEngine_Init(string base_path, Functor<()> call
     
     Require(base_path.."CEngine/Utility/String");
     Require(base_path.."CEngine/Utility/System");
+    Require(base_path.."CEngine/Utility/ConfigSysem");
     Require(base_path.."CEngine/Utility/AudioSystem");
+    Require(base_path.."CEngine/Utility/OtherSystem");
     
     Require(base_path.."CEngine/LoopSystem/LoopAnimation");
     Require(base_path.."CEngine/LoopSystem/LoopAttribute");
@@ -21,4 +23,284 @@ public async static __ALITTLEAPI_CEngine_Init(string base_path, Functor<()> call
     
     ALittle.System_CreateView("test", 800, 600, 0, 0);
     if (callback != null) callback();
+}
+
+public static __ALITTLEAPI_HandleConsoleCmd(string cmd)
+{
+    ALittle.ExecuteCommand(cmd);
+}
+
+public static __ALITTLEAPI_FingerMoved(double x, double y, int finger_id, int touch_id)
+{
+    A_UISystem.HandleFingerMoved(x, y, finger_id, touch_id);
+}
+
+public static __ALITTLEAPI_FingerDown(double x, double y, int finger_id, int touch_id)
+{
+    A_UISystem.HandleFingerDown(x, y, finger_id, touch_id);
+}
+
+public static __ALITTLEAPI_FingerUp(double x, double y, int finger_id, int touch_id)
+{
+    A_UISystem.HandleFingerUp(x, y, finger_id, touch_id);
+}
+
+public static __ALITTLEAPI_MouseMoved(double x, double y)
+{
+     A_UISystem.HandleMouseMoved(x, y);
+}
+
+public static __ALITTLEAPI_LButtonDown(double x, double y, int count)
+{
+    A_UISystem.HandleLButtonDown(x, y, count);
+}
+
+public static __ALITTLEAPI_LButtonUp(double x, double y)
+{
+    A_UISystem.HandleLButtonUp(x, y);
+}
+
+public static __ALITTLEAPI_MButtonDown(double x, double y, int count)
+{
+    A_UISystem.HandleMButtonDown(x, y, count);
+}
+
+public static __ALITTLEAPI_MButtonUp(double x, double y)
+{
+    A_UISystem.HandleMButtonUp(x, y);
+}
+
+public static __ALITTLEAPI_RButtonDown(double x, double y, int count)
+{
+    A_UISystem.HandleRButtonDown(x, y, count);
+}
+
+public static __ALITTLEAPI_RButtonUp(double x, double y)
+{
+    A_UISystem.HandleRButtonUp(x, y);
+}
+
+public static __ALITTLEAPI_MouseWheel(double x, double y)
+{
+    A_UISystem.HandleMouseWheel(x, y);
+}
+
+public static __ALITTLEAPI_KeyDown(int mod, int sym, int scancode)
+{
+    A_UISystem.HandleKeyDown(mod, sym, scancode);
+}
+
+public static __ALITTLEAPI_KeyUp(int mod, int sym, int scancode)
+{
+    A_UISystem.HandleKeyUp(mod, sym, scancode);
+}
+
+public static __ALITTLEAPI_ViewResized(int width, int height)
+{
+    A_UISystem.HandleViewResized(width, height);
+}
+
+public static __ALITTLEAPI_TextInput(string text)
+{
+    A_UISystem.HandleTextInput(text);
+}
+
+public static __ALITTLEAPI_TextEditing(string text, int start)
+{
+    A_UISystem.HandleTextEditing(text, start);
+}
+
+public static __ALITTLEAPI_DropFile(string path)
+{
+    A_UISystem.HandleDropFile(path);
+}
+
+public static __ALITTLEAPI_WindowEnter()
+{
+    A_UISystem.HandleWindowEnter();
+}
+
+public static __ALITTLEAPI_WindowLeave()
+{
+    A_UISystem.HandleWindowLeave();
+}
+    
+//////////////////////////////////////////////////////////////////-
+public static __ALITTLEAPI_Update(int frame_time)
+{
+    [Language(Lua)]
+    A_LuaLoopSystem.Update(frame_time);
+    [Language(JavaScript)]
+    A_JSLoopSystem.Update(frame_time);
+}
+//////////////////////////////////////////////////////////////////-
+    
+public static __ALITTLEAPI_WillEnterBackground()
+{
+    A_OtherSystem.HandleWillEnterBackground();
+}
+
+public static __ALITTLEAPI_DidEnterBackground()
+{
+    A_OtherSystem.HandleDidEnterBackground();
+}
+
+public static __ALITTLEAPI_WillEnterForeground()
+{
+    A_OtherSystem.HandleWillEnterForeground();
+}
+
+public static __ALITTLEAPI_DidEnterForeground()
+{
+    A_OtherSystem.HandleDidEnterForeground();
+}
+
+public static __ALITTLEAPI_LowMemory()
+{
+    A_OtherSystem.HandleLowMemory();
+}
+
+//////////////////////////////////////////////////////////////////-
+// 客户端连接服务端，成功
+public static __ALITTLEAPI_ConnectSucceed(ALittle.IMsgCommonNative msg_interface)
+{
+    var client = ALittle.FindMsgSender(msg_interface.GetID());
+    if (client ==  null) return;
+    client.HandleConnectSucceed();
+}
+
+// 断开连接
+public static __ALITTLEAPI_Disconnect(ALittle.IMsgCommonNative msg_interface)
+{
+    var client = ALittle.FindMsgSender(msg_interface.GetID());
+    if (client ==  null) return;
+    client.HandleDisconnect();
+}
+
+// 客户端链接服务端，失败
+public static __ALITTLEAPI_ConnectFailed(ALittle.IMsgCommonNative msg_interface)
+{
+    var client = ALittle.FindMsgSender(msg_interface.GetID());
+    if (client ==  null) return;
+    client.HandleConnectFailed(null);
+}
+
+// 收到服务端发来的数据包
+public static __ALITTLEAPI_Message(int id, int rpc_id, ALittle.IMessageReadFactory factory, ALittle.IMsgCommonNative msg_interface)
+{
+    var client = ALittle.FindMsgSender(msg_interface.GetID());
+    if (client ==  null) return;
+    
+    client.HandleMessage(id, rpc_id, factory);
+}
+
+//////////////////////////////////////////////////////////////////-
+// 收到HTTP应答成功
+public static __ALITTLEAPI_HttpClientSucceed(ALittle.IHttpSenderNative http_interface)
+{
+    var client = ALittle.FindHttpSender(http_interface.GetID());
+    if (client ==  null) return;
+    client.HandleSucceed();
+}
+
+// 收到HTTP应答失败
+public static __ALITTLEAPI_HttpClientFailed(ALittle.IHttpSenderNative http_interface, string reason)
+{
+    var client = ALittle.FindHttpSender(http_interface.GetID());
+    if (client ==  null) return;
+    client.HandleFailed(reason);
+}
+
+public static __ALITTLEAPI_HttpFileSucceed(ALittle.IHttpFileSenderNative httpfile_interface)
+{
+    var client = ALittle.FindHttpFileSender(httpfile_interface.GetID());
+    if (client ==  null) return;
+    client.HandleSucceed();
+}
+
+public static __ALITTLEAPI_HttpFileFailed(ALittle.IHttpFileSenderNative httpfile_interface, string reason)
+{
+    var client = ALittle.FindHttpFileSender(httpfile_interface.GetID());
+    if (client ==  null) return;
+    client.HandleFailed(reason);
+}
+
+public static __ALITTLEAPI_HttpFileProcess(ALittle.IHttpFileSenderNative httpfile_interface)
+{
+    var client = ALittle.FindHttpFileSender(httpfile_interface.GetID());
+    if (client ==  null) return;
+    client.HandleProcess();
+}
+
+//////////////////////////////////////////////////////////////////-
+// 这个函数用于C++调用
+public static __ALITTLEAPI_TextureLoadSucceed(ALittle.TextureLoader loader, ALittle.RenderTexture texture)
+{
+    A_LoadTextureManager.HandleTextureLoadSucceed(loader, texture);
+}
+public static __ALITTLEAPI_TextureLoadFailed(ALittle.TextureLoader loader)
+{
+    A_LoadTextureManager.HandleTextureLoadFailed(loader);
+}
+public static __ALITTLEAPI_TextureCutLoadSucceed(ALittle.TextureCutLoader loader, ALittle.RenderTexture texture)
+{
+    A_LoadTextureManager.HandleTextureCutLoadSucceed(loader, texture);
+}
+public static __ALITTLEAPI_TextureCutLoadFailed(ALittle.TextureCutLoader loader)
+{
+    A_LoadTextureManager.HandleTextureCutLoadFailed(loader);
+}
+public static __ALITTLEAPI_CsvFileLoadSucceed(ALittle.ICsvFileLoader loader, ALittle.ICsvFile file)
+{
+    A_CsvConfigManager.HandleCsvFileLoadSucceed(loader, file);
+}
+public static __ALITTLEAPI_CsvFileLoadFailed(ALittle.ICsvFileLoader loader)
+{
+    A_CsvConfigManager.HandleCsvFileLoadFailed(loader);
+}
+public static __ALITTLEAPI_RenderDeviceReset()
+{
+    A_LoadTextureManager.HandleRenderDeviceReset();
+}
+
+//////////////////////////////////////////////////////////////////////////////////////
+public static __ALITTLEAPI_AudioChunkStopedEvent(int id)
+{
+    A_AudioSystem.HandleAudioChunkStopedEvent(id);
+}
+//////////////////////////////////////////////////////////////////////////////////////
+public static __ALITTLEAPI_NetworkChanged(int net_type)
+{
+    ALittle.System_ClearAIFamily();
+    A_OtherSystem.HandleNetworkChanged(net_type);
+}
+
+public static __ALITTLEAPI_ALittleJsonRPC(string json)
+{
+    A_OtherSystem.HandleALittleJsonRPC(json);
+}
+
+public static __ALITTLEAPI_SystemSelectFile(string path)
+{
+    A_OtherSystem.HandleSystemSelectFile(path);
+}
+
+public static __ALITTLEAPI_SystemSaveFile(string path)
+{
+    A_OtherSystem.HandleSystemSaveFile(path);
+}
+
+//////////////////////////////////////////////////////////////////////////////////////-
+// 启动核心模块资源
+public static __ALITTLEAPI_SetupMainModule(string base_path, string debug, string module_name, string sengine_path, string modules) : bool
+{
+    A_AudioSystem.Setup();
+    return A_ModuleSystem.MainSetup(base_path, debug, module_name, sengine_path, modules);
+}
+// 释放核心模块资源
+public static __ALITTLEAPI_ShutdownMainModule()
+{
+    A_LayerManager.Shutdown();
+    A_AudioSystem.Shutdown();
+    A_ModuleSystem.MainShutdown();
 }

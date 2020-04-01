@@ -27,49 +27,49 @@ public class TextCheckButton : DisplayLayout
 
     public ctor(ControlSystem ctrl_sys)
     {
-        this._show_text = Create();
+        this._show_text = cast<DisplayObject>((new Map<string, any>()));
         this._show_text.width = 0;
         this._show_text.height = 0;
         this._show_text.text = "";
         this._show_text.visible = true;
     
-        this._show_over_text = Create();
+        this._show_over_text = cast<DisplayObject>((new Map<string, any>()));
         this._show_over_text.width = 0;
         this._show_over_text.height = 0;
         this._show_over_text.text = "";
         this._show_over_text.visible = false;
     
-        this._show_down_text = Create();
+        this._show_down_text = cast<DisplayObject>((new Map<string, any>()));
         this._show_down_text.width = 0;
         this._show_down_text.height = 0;
         this._show_down_text.text = "";
         this._show_down_text.visible = false;
     
-        this._show_disabled_text = Create();
+        this._show_disabled_text = cast<DisplayObject>((new Map<string, any>()));
         this._show_disabled_text.width = 0;
         this._show_disabled_text.height = 0;
         this._show_disabled_text.text = "";
         this._show_disabled_text.visible = false;
     
-        this._show_selected_text = Create();
+        this._show_selected_text = cast<DisplayObject>((new Map<string, any>()));
         this._show_selected_text.width = 0;
         this._show_selected_text.height = 0;
         this._show_selected_text.text = "";
         this._show_selected_text.visible = false;
     
-        this._show_selected_over_text = Create();
+        this._show_selected_over_text = cast<DisplayObject>((new Map<string, any>()));
         this._show_selected_over_text.width = 0;
         this._show_selected_over_text.height = 0;
         this._show_selected_over_text.text = "";
         this._show_selected_over_text.visible = false;
     
-        this._show_selected_down_text = Create();
+        this._show_selected_down_text = cast<DisplayObject>((new Map<string, any>()));
         this._show_selected_down_text.width = 0;
         this._show_selected_down_text.height = 0;
         this._show_selected_down_text.text = "";
         this._show_selected_down_text.visible = false;
     
-        this._show_selected_disabled_text = Create();
+        this._show_selected_disabled_text = cast<DisplayObject>((new Map<string, any>()));
         this._show_selected_disabled_text.width = 0;
         this._show_selected_disabled_text.height = 0;
         this._show_selected_disabled_text.text = "";
@@ -415,7 +415,7 @@ public class TextCheckButton : DisplayLayout
         {
             var show = this._show_text;
             this.RemoveChild(show);
-            this._show_text = Create();
+            this._show_text = cast<DisplayObject>((new Map<string, any>()));
             this._show_text.width = 0;
             this._show_text.height = 0;
             this._show_text.text = show.text;
@@ -446,7 +446,7 @@ public class TextCheckButton : DisplayLayout
         {
             var show = this._show_over_text;
             this.RemoveChild(show);
-            this._show_over_text = Create();
+            this._show_over_text = cast<DisplayObject>((new Map<string, any>()));
             this._show_over_text.width = 0;
             this._show_over_text.height = 0;
             this._show_over_text.text = show.text;
@@ -478,7 +478,7 @@ public class TextCheckButton : DisplayLayout
         {
             var show = this._show_down_text;
             this.RemoveChild(show);
-            this._show_down_text = Create();
+            this._show_down_text = cast<DisplayObject>((new Map<string, any>()));
             this._show_down_text.width = 0;
             this._show_down_text.height = 0;
             this._show_down_text.text = show.text;
@@ -509,7 +509,7 @@ public class TextCheckButton : DisplayLayout
         {
             var show = this._show_disabled_text;
             this.RemoveChild(show);
-            this._show_disabled_text = Create();
+            this._show_disabled_text = cast<DisplayObject>((new Map<string, any>()));
             this._show_disabled_text.width = 0;
             this._show_disabled_text.height = 0;
             this._show_disabled_text.text = show.text;
@@ -540,7 +540,7 @@ public class TextCheckButton : DisplayLayout
         {
             var show = this._show_selected_text;
             this.RemoveChild(show);
-            this._show_selected_text = Create();
+            this._show_selected_text = cast<DisplayObject>((new Map<string, any>()));
             this._show_selected_text.width = 0;
             this._show_selected_text.height = 0;
             this._show_selected_text.text = show.text;
@@ -571,7 +571,7 @@ public class TextCheckButton : DisplayLayout
         {
             var show = this._show_selected_over_text;
             this.RemoveChild(show);
-            this._show_selected_over_text = Create();
+            this._show_selected_over_text = cast<DisplayObject>((new Map<string, any>()));
             this._show_selected_over_text.width = 0;
             this._show_selected_over_text.height = 0;
             this._show_selected_over_text.text = show.text;
@@ -602,7 +602,7 @@ public class TextCheckButton : DisplayLayout
         {
             var show = this._show_selected_down_text;
             this.RemoveChild(show);
-            this._show_selected_down_text = Create();
+            this._show_selected_down_text = cast<DisplayObject>((new Map<string, any>()));
             this._show_selected_down_text.width = 0;
             this._show_selected_down_text.height = 0;
             this._show_selected_down_text.text = show.text;
@@ -633,7 +633,7 @@ public class TextCheckButton : DisplayLayout
         {
             var show = this._show_selected_disabled_text;
             this.RemoveChild(show);
-            this._show_selected_disabled_text = Create();
+            this._show_selected_disabled_text = cast<DisplayObject>((new Map<string, any>()));
             this._show_selected_disabled_text.width = 0;
             this._show_selected_disabled_text.height = 0;
             this._show_selected_disabled_text.text = show.text;

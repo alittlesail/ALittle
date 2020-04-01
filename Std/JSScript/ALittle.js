@@ -20,6 +20,8 @@ __ALITTLEAPI_Std_Init = async function(base_path, callback) {
 	await Require(base_path + "Std/Utility/EventDispatcher");
 	await Require(base_path + "Std/Utility/SafeIDCreator");
 	await Require(base_path + "Std/Utility/String");
+	await Require(base_path + "Std/Utility/File");
+	await Require(base_path + "Std/Utility/ConfigSystem");
 	await Require(base_path + "Std/Net/HttpFileReceiverTemplate");
 	await Require(base_path + "Std/Net/HttpFileSenderTemplate");
 	await Require(base_path + "Std/Net/HttpReceiverTemplate");
@@ -28,9 +30,6 @@ __ALITTLEAPI_Std_Init = async function(base_path, callback) {
 	await Require(base_path + "Std/Net/MsgReceiverTemplate");
 	await Require(base_path + "Std/Net/MsgSenderTemplate");
 	await Require(base_path + "Std/Net/MsgSessionTemplate");
-	{
-		await Require(base_path + "Adapter/JavaScript/JCsvLoader");
-	}
 	if (callback !== undefined) {
 		callback();
 	}

@@ -10,12 +10,12 @@
 
 namespace ALittle;
 
-private var __byte = lua.String.byte;
-private var __sub = lua.String.sub;
-private var __find = Find;
-private var __floor = lua.math.floor;
-private var __len = lua.String.len;
-private var __abs = lua.math.abs;
+private var __byte = String_Byte;
+private var __sub = String_Sub;
+private var __find = String_Find;
+private var __floor = Math_Floor;
+private var __len = String_Len;
+private var __abs = Math_Abs;
 private var __type = lua.type;
 
 struct RichEditCharInfo
@@ -239,7 +239,7 @@ public class RichEdit : DisplayLayout
         return true;
     }
 
-    protected fun DisplayListToCharInfoList(List<DisplayInfo> display_list, @Nullable DisplayInfo default_text_info) : List<RichEditCharInfo>
+    protected fun DisplayListToCharInfoList(List<DisplayInfo> display_list, [Nullable] DisplayInfo default_text_info) : List<RichEditCharInfo>
     {
         var char_info_list = new List<RichEditCharInfo>();
         var char_info_list_count = 0;
@@ -3972,7 +3972,7 @@ public class RichEdit : DisplayLayout
     // @param width, height RichEidt键盘感应的区域大小
     // 如果以上参数有一个没填，那么就是用RichEdit默认的键盘区域感应
     // 不考虑旋转
-    public fun OpenIME(@Nullable double x, @Nullable double y, @Nullable double width, @Nullable double height)
+    public fun OpenIME([Nullable] double x, [Nullable] double y, [Nullable] double width, [Nullable] double height)
     {
         if (this._editable)
         {

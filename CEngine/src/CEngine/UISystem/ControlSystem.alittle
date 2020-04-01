@@ -22,7 +22,7 @@ public class ControlSystem
 
     // @param module_name 模块名
     // @param crypt_mode 是否是加密模式
-    public ctor(string module_name, @Nullable bool crypt_mode)
+    public ctor(string module_name, [Nullable] bool crypt_mode)
     {
         // 定义缓存
         this._name_map_info = new Map<string, DisplayInfo>();
@@ -172,7 +172,7 @@ public class ControlSystem
     }
     
     // 把内容渲染到纹理，并且保存起来
-    public fun SaveControlToFile(DisplayObject control, string file_path, @Nullable double scale) : bool
+    public fun SaveControlToFile(DisplayObject control, string file_path, [Nullable] double scale) : bool
     {
         if (control == null) return false;
         if (scale == null) scale = 1;
@@ -200,7 +200,7 @@ public class ControlSystem
         return result;
     }
 
-    public fun CreateControl<T>(string name, @Nullable any target_logic, @Nullable DisplayGroup parent) : T
+    public fun CreateControl<T>(string name, [Nullable] any target_logic, [Nullable] DisplayGroup parent) : T
     {
         var info = this.LoadInfo(name);
         if (info == null)

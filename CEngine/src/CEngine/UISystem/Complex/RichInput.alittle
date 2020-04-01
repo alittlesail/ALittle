@@ -213,7 +213,7 @@ public class RichInput : DisplayLayout
     }
     
     // 将display_list转化成char_list
-    protected fun DisplayListToCharInfoList(List<DisplayInfo> display_list, @Nullable DisplayInfo default_text_info) : List<RichInputCharInfo>
+    protected fun DisplayListToCharInfoList(List<DisplayInfo> display_list, [Nullable] DisplayInfo default_text_info) : List<RichInputCharInfo>
     {
         var char_info_list = new List<RichInputCharInfo>();
         var char_info_list_count = 0;
@@ -2460,7 +2460,7 @@ public class RichInput : DisplayLayout
     // @param width, height RichEidt键盘感应的区域大小
     // 如果以上参数有一个没填，那么就是用RichInput默认的键盘区域感应
     // 不考虑旋转
-    public fun OpenIME(@Nullable double x, @Nullable double y, @Nullable double width, @Nullable double height)
+    public fun OpenIME([Nullable] double x, [Nullable] double y, [Nullable] double width, [Nullable] double height)
     {
         if (this._editable)
         {

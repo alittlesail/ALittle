@@ -136,7 +136,7 @@ public class ScrollList : DisplayView
     {
         return this._type;
     }
-    public fun AddChild(DisplayObject child, @Nullable int index) : bool
+    public fun AddChild(DisplayObject child, [Nullable] int index) : bool
     {
         if (child == null)
             return false;
@@ -815,7 +815,7 @@ public class ScrollList : DisplayView
                 __remove(this._drag_delta_table, 1);
                 this._drag_delta_table[this._drag_delta_table_count] = event.delta_x;
             }
-            this._drag_time = System_GetTicks();
+            this._drag_time = Time_GetCurTime();
 
             var linear_width = this._scroll_linear.width;
     
@@ -890,7 +890,7 @@ public class ScrollList : DisplayView
                 __remove(this._drag_delta_table, 1);
                 this._drag_delta_table[this._drag_delta_table_count] = event.delta_y;
             }
-            this._drag_time = System_GetTicks();
+            this._drag_time = Time_GetCurTime();
 
             var linear_height = this._scroll_linear.height;
     
@@ -1000,7 +1000,7 @@ public class ScrollList : DisplayView
                 // 计算惯性移动用的偏移量
                 var count = this._drag_delta_table_count;
                 var drag_delta_x = 0.0;
-                var drag_end_time = System_GetTicks() - this._drag_time;
+                var drag_end_time = Time_GetCurTime() - this._drag_time;
                 // 快速拖动忽略最后一个drag
                 if (drag_end_time < 50)
                 {
@@ -1074,7 +1074,7 @@ public class ScrollList : DisplayView
                 // 计算惯性移动用的偏移量
                 var count = this._drag_delta_table_count;
                 var drag_delta_y = 0.0;
-                var drag_end_time = System_GetTicks() - this._drag_time;
+                var drag_end_time = Time_GetCurTime() - this._drag_time;
                 // 快速拖动忽略最后一个drag
                 if (drag_end_time < 50)
                 {
@@ -1375,7 +1375,7 @@ public class ScrollList : DisplayView
     }
     
     // 更新裁剪控件索引范围
-    public fun RefreshClipDisLine(@Nullable double v_move)
+    public fun RefreshClipDisLine([Nullable] double v_move)
     {
         this.UpdateLoadingShow();
         if (this._clip_atonce)

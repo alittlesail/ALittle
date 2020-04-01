@@ -4,6 +4,10 @@ namespace ALittle;
 // Http文件协议接口类，负责处理
 public class IHttpFileSender
 {
+    protected fun HandleSucceed() {}
+    protected fun HandleProcess() {}
+    protected fun HandleFailed(string reason) {}
+    
     // 提供子类继承
     protected fun SendDownloadRPC(Thread thread, string method, any content) { throw("not impl"); }
     protected fun SendUploadRPC(Thread thread, string method, any content) { throw("not impl"); }

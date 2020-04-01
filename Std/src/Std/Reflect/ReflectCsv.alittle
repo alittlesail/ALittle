@@ -9,6 +9,14 @@ public class ICsvFile
     public fun GetColCount() : int { return 0; }
 }
 
+public class ICsvFileLoader
+{
+    public fun Start() {}
+    public fun SetPath(string file_path) {}
+    public fun GetPath() : string { return null; }
+    public fun GetID() : int { return null; }
+}
+
 public struct CsvInvokeInfo
 {
     Functor<(string, CsvInvokeInfo):any> func;

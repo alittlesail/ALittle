@@ -34,7 +34,7 @@ class TextRadioButtonManager
             if (group == null)
             {
                 group = new Map<DisplayObject, DisplayObject>();
-                Setweak(group, true, true);
+                // Setweak(group, true, true);
                 this._name_map_group[new_name] = group;
             }
             group[object] = object;

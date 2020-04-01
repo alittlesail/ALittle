@@ -1,112 +1,77 @@
 
 namespace ALittle;
 
-struct CSVPreloadInfoDetail
+// 文件加载器
+[Language(Lua)]
+public class LuaClientFileLoader : IFileLoader
 {
-    lua.__CPPAPICsvFileLoader loader;
-    CsvConfig config;
-}
-
-struct CSVPreloadInfo
-{
-    int total;
-    int succeed;
-    int failed;
-    Map<int, CSVPreloadInfoDetail> loader_map;
-    Functor<(int, int, int)> callback;
-}
-
-class CSVConfigManager
-{
-    private Map<CSVPreloadInfo, bool> _preload_map;
-
-    public ctor()
+    public fun Load(string file_path) : string
     {
-        // csv预加载映射表
-        this._preload_map = new Map<CSVPreloadInfo, bool>();
-    }
-
-    public fun PrepareCsv(Map<string, CsvConfig> csv_map, Functor<(int, int, int)> callback)
-    {
-        var preload_info = new CSVPreloadInfo();
-        preload_info.total = 0;
-        preload_info.succeed = 0;
-        preload_info.failed = 0;
-        preload_info.loader_map = new Map<int, CSVPreloadInfoDetail>();
-        preload_info.callback = callback;
-
-        for (var file_path, config in csv_map)
-        {
-            var loader = new lua.__CPPAPICSVFileLoader();
-            loader.SetPath(file_path, false, String_Join(config.GetFieldNameList(), ","));
-            var detail = new CSVPreloadInfoDetail();
-            detail.loader = loader;
-            detail.config = config;
-            preload_info.loader_map[loader.GetID()] = detail;
-            loader.Start();
-
-            ++ preload_info.total;
-        }
-        if (preload_info.total > preload_info.succeed + preload_info.failed)
-            this._preload_map[preload_info] = true;
-        
-        // 调用回调通知
-        if (callback != null)
-            callback(preload_info.total, preload_info.succeed, preload_info.failed);
-    }
-
-    public fun HandleCSVFileLoadSucceed(lua.__CPPAPICSVFileLoader loader, lua.__CPPAPICSVFile file)
-    {
-        var id = loader.GetID();
-        for (var info, value in this._preload_map)
-        {
-            var detail = info.loader_map[id];
-            if (detail != null)
-            {
-                ++info.succeed;
-
-                if (detail.config != null)
-                {
-                    var wrap = new lua.__CPPAPICSVFileWrap();
-                    wrap.SetCSVFile(file);
-                    detail.config.Init(wrap);
-                }
-
-                if (info.callback != null)
-                    info.callback(info.total, info.succeed, info.failed);
-
-                if (info.total == info.succeed + info.failed)
-                    this._preload_map[info] = null;
-
-                return;
-            }
-        }
-    }
-
-    public fun HandleCSVFileLoadFailed(lua.__CPPAPICSVFileLoader loader)
-    {
-        Error("csv load failed! path:"..loader.GetPath());
-        var id = loader.GetID();
-        for (var info, value in this._preload_map)
-        {
-            var detail = info.loader_map[id];
-            if (detail != null)
-            {
-                ++info.failed;
-
-                if (detail.config != null)
-                    detail.config.Init(null);
-
-                if (info.callback != null)
-                    info.callback(info.total, info.succeed, info.failed);
-
-                if (info.total == info.succeed + info.failed)
-                    this._preload_map[info] = null;
-
-                return;
-            }
-        }
+        var file = new lua.__CPPAPILocalFile();
+        file.SetPath(file_path);
+        if (!file.Load()) return null;
+        var content = file.GetContent();
+        file.Clear();
+        return content;
     }
 }
 
-public var A_CSVConfigManager = new CSVConfigManager();
+// 文件保存器
+[Language(Lua)]
+public class LuaClientFileSaver : IFileSaver
+{
+    public fun Save(string file_path, string content) : bool
+    {
+        return File_SaveFile(file_path, content, -1);
+    }
+}
+
+// 文件加载器
+[Language(JavaScript)]
+public class JSClientFileLoader : IFileLoader
+{
+    public fun Load(string file_path) : string
+    {
+        // 先从cookie获取，如果没有就随机生成一个
+        var content:string = null;
+        var json:Map<string, any> = null;
+        if (document.cookie != null && document.cookie != "")
+        {
+            var error:string = null;
+            error, json = tcall(ALittle.String_JsonDecode, document.cookie);
+            if (error != null) json = null;
+        }
+        if (json == null) return null;
+        return json[file_path];
+    }
+}
+
+// 文件保存期
+[Language(JavaScript)]
+public class JSClientFileSaver : IFileSaver
+{
+    public fun Save(string file_path, string content) : bool
+    {
+        // 先从cookie获取，如果没有就随机生成一个
+        var content:string = null;
+        var json:Map<string, any> = null;
+        if (document.cookie != null && document.cookie != "")
+        {
+            var error:string = null;
+            error, json = tcall(ALittle.String_JsonDecode, document.cookie);
+            if (error != null) json = null;
+        }
+        if (json == null) json = new Map<string, any>();
+        json[file_path] = content;
+        return true;
+    }
+}
+
+public static CreateConfigSystem(string file_path, [Nullable] bool print_error) : IConfigSystem
+{
+    [Language(Lua)]
+    return new ConfigSystem<LuaClientFileLoader, LuaClientFileSaver>(file_path, print_error);
+    
+    [Language(JavaScript)]
+    return new ConfigSystem<JSClientFileLoader, JSClientFileSaver>(file_path, print_error);
+}

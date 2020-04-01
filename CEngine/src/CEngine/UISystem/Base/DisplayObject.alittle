@@ -331,7 +331,7 @@ public class DisplayObject : UIEventDispatcher
     public get childs() : List<DisplayObject> { return null; }
     public get child_count() : int { return null; }
     public fun SetChildIndex(DisplayObject child, int index) : bool { return false; }
-    public fun AddChild(DisplayObject child, @Nullable int index) : bool { return false; }
+    public fun AddChild(DisplayObject child, [Nullable] int index) : bool { return false; }
     public fun RemoveChild(DisplayObject child) : bool { return false; }
     public fun RemoveAllChild() {}
 
@@ -451,7 +451,7 @@ public class DisplayObject : UIEventDispatcher
     }
 
     // 当前控件，相对于窗口的坐标，不考虑旋转
-    public fun LocalToGlobal(@Nullable DisplayObject target) : double, double
+    public fun LocalToGlobal([Nullable] DisplayObject target) : double, double
     {
         var x = 0.0;
         var y = 0.0;
@@ -514,7 +514,7 @@ public class DisplayObject : UIEventDispatcher
     }
 
     // 窗口的坐标，相对于当前控件的坐标
-    public fun GlobalToLocalMatrix2D(double x, double y, @Nullable DisplayObject target) : double, double
+    public fun GlobalToLocalMatrix2D(double x, double y, [Nullable] DisplayObject target) : double, double
     {
         var list = new List<DisplayObject>();
         var count = 0;

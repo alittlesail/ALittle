@@ -18,7 +18,7 @@ public class VersionSystemWindows : VersionSystem
         System_ForceExit();
     }
 
-    public fun Install(@Nullable string install_name)
+    public fun Install([Nullable] string install_name)
     {
         // 执行安装包安装
         if (install_name == null)

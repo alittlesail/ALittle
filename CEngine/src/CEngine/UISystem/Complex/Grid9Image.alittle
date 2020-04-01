@@ -155,7 +155,7 @@ public class Grid9Image : DisplayObject
     // 强制设置图片路径
     // texture_name 可以本地路径，也可以是网络图片支持HTTP协议
     // index 如果填写表示加载ios图库的图片（注意c++下标从0开始）
-    protected fun SetTextureCut(string texture_name, int max_width, int max_height, bool cache, @Nullable int index, @Nullable Functor<(DisplayObject, bool)> callback)
+    protected fun SetTextureCut(string texture_name, int max_width, int max_height, bool cache, [Nullable] int index, [Nullable] Functor<(DisplayObject, bool)> callback)
     {
         if (this._texture_name != null)
         {

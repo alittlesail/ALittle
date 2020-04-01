@@ -58,7 +58,7 @@ public class LayerManager
     }
     
     // 添加一个层，添加在最上面
-    public fun AddChild(DisplayLayout child, @Nullable int index)
+    public fun AddChild(DisplayLayout child, [Nullable] int index)
     {
         if (child == null)
             return;
@@ -127,7 +127,7 @@ public class LayerManager
         this.HideCurrentFromRight();
     }
     
-    public fun AddToModal(DisplayObject dialog, @Nullable int index)
+    public fun AddToModal(DisplayObject dialog, [Nullable] int index)
     {
         if (dialog == null)
             return;
@@ -151,7 +151,7 @@ public class LayerManager
     }
     
     // 显示一个右键菜单
-    public fun ShowFromRight(DisplayObject dialog, @Nullable bool focus)
+    public fun ShowFromRight(DisplayObject dialog, [Nullable] bool focus)
     {
         // 是否获取焦点
         if (focus == null)

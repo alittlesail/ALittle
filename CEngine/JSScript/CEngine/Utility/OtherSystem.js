@@ -102,14 +102,6 @@ ALittle.OtherSystem = JavaScript.Class(ALittle.EventDispatcher, {
 		this.DispatchEvent(___all_struct.get(1720966934), event);
 	},
 	AddEventListener : function(T, object, callback) {
-		let rflt = T;
-		let net_rflt = ___all_struct.get(708183011);
-		if (rflt.hash_code === net_rflt.hash_code) {
-			if (this._network_started === false) {
-				lua.__CPPAPI_StartNetworkListener();
-				this._network_started = true;
-			}
-		}
 		return ALittle.EventDispatcher.AddEventListener.call(this, T, object, callback);
 	},
 	HandleNetworkChanged : function(net_type) {
@@ -118,7 +110,7 @@ ALittle.OtherSystem = JavaScript.Class(ALittle.EventDispatcher, {
 		this.DispatchEvent(___all_struct.get(708183011), event);
 	},
 	GetNetworkType : function() {
-		return lua.__CPPAPI_GetNetworkType();
+		return ALittle.NetworkType.LINE;
 	},
 	HandleALittleJsonRPC : function(json) {
 		let [error, content] = (function() { try { let ___VALUE = ALittle.String_JsonDecode.call(undefined, json); return [undefined, ___VALUE]; } catch (___ERROR) { return [___ERROR.message]; } })();
@@ -138,12 +130,8 @@ ALittle.OtherSystem = JavaScript.Class(ALittle.EventDispatcher, {
 		event.param = content.param;
 		this.DispatchEvent(___all_struct.get(-840570937), event);
 	},
-	SendALittleWebJsonRPC : function(method, param) {
-		lua.__CPPAPI_SendWebJsonRPC(method, lua.json.encode(param));
-	},
 	SystemSelectFile : function(target, init_dir) {
-		this._system_select_file = target;
-		lua.__CPPAPI_SystemSelectFile(init_dir);
+		ALittle.Error("not support SystemSelectFile");
 	},
 	HandleSystemSelectFile : function(path) {
 		if (this._system_select_file === undefined) {
@@ -157,8 +145,7 @@ ALittle.OtherSystem = JavaScript.Class(ALittle.EventDispatcher, {
 		tmp.DispatchEvent(___all_struct.get(124598654), event);
 	},
 	SystemSaveFile : function(target, file_name, path) {
-		this._system_save_file = target;
-		lua.__CPPAPI_SystemSaveFile(file_name, path);
+		ALittle.Error("not support SystemSelectFile");
 	},
 	HandleSystemSaveFile : function(path) {
 		if (this._system_save_file === undefined) {

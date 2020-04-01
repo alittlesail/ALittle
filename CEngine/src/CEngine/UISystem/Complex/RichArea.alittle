@@ -1,9 +1,9 @@
 
 namespace ALittle;
 
-private var __find = Find;
-private var __sub = lua.String.sub;
-private var __floor = lua.math.floor;
+private var __find = String_Find;
+private var __sub = String_Sub;
+private var __floor = Math_Floor;
 
 struct RichAreaLineInfo
 {

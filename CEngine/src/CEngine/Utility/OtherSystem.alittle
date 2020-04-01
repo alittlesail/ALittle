@@ -96,15 +96,18 @@ class OtherSystem : EventDispatcher
     // 对于侦听特殊服务的，侦听事件之后再启动
     public fun AddEventListener<T:Event>(EventListener object, Functor<(EventListener, T)> callback) : bool
     {
-        var rflt = reflect<T>;
-        var net_rflt = reflect<NetChangeEvent>;
-        if (rflt.hash_code == net_rflt.hash_code)
+        [Language(Lua)]
         {
-            if (this._network_started == false)
+            var rflt = reflect<T>;
+            var net_rflt = reflect<NetChangeEvent>;
+            if (rflt.hash_code == net_rflt.hash_code)
             {
-                lua.__CPPAPI_StartNetworkListener();
-                this._network_started = true;
-            }
+                if (this._network_started == false)
+                {
+                    lua.__CPPAPI_StartNetworkListener();
+                    this._network_started = true;
+                }
+            }   
         }
         return EventDispatcher.AddEventListener(this, object, callback);
     }
@@ -117,7 +120,10 @@ class OtherSystem : EventDispatcher
     }
     public fun GetNetworkType() : string
     {
+        [Language(Lua)]
         return lua.__CPPAPI_GetNetworkType();
+        [Language(JavaScript)]
+        return NetworkType.LINE;
     }
     
     public fun HandleALittleJsonRPC(string json)
@@ -138,17 +144,16 @@ class OtherSystem : EventDispatcher
         this.DispatchEvent(event);
     }
     
-    // 向外部Web系统通知
-    public fun SendALittleWebJsonRPC(string method, any param)
-    {
-        lua.__CPPAPI_SendWebJsonRPC(method, lua.json.encode(param));
-    }
-    
     // 系统选择文件
     public fun SystemSelectFile(DisplayObject target, [Nullable] string init_dir)
     {
+        [Language(Lua)]
         this._system_select_file = target;
+        [Language(Lua)]
         lua.__CPPAPI_SystemSelectFile(init_dir);
+        
+        [Language(JavaScript)]
+        Error("not support SystemSelectFile");
     }
     
     // 处理系统文件选择结果
@@ -168,8 +173,13 @@ class OtherSystem : EventDispatcher
     // 系统保存文件
     public fun SystemSaveFile(UIEventDispatcher target, string file_name, string path)
     {
+        [Language(Lua)]
         this._system_save_file = target;
+        [Language(Lua)]
         lua.__CPPAPI_SystemSaveFile(file_name, path);
+        
+        [Language(JavaScript)]
+        Error("not support SystemSelectFile");
     }
     
     // 处理系统文件保存结果

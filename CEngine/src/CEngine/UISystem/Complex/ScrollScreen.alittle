@@ -263,7 +263,7 @@ public class ScrollScreen : DisplayGroup
     {
         return this._scroll_content.child_count;
     }
-    public fun AddChild(DisplayObject child, @Nullable int index) : bool
+    public fun AddChild(DisplayObject child, [Nullable] int index) : bool
     {
         if (child == null)
             return false;

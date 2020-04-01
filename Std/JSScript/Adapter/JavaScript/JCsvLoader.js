@@ -3,7 +3,7 @@ if (typeof JavaScript === "undefined") JavaScript = {};
 
 
 if (ALittle.ICsvFile === undefined) throw new Error(" extends class:ALittle.ICsvFile is undefined");
-JavaScript.JCsvLoader = JavaScript.Class(ALittle.ICsvFile, {
+JavaScript.JCsvFile = JavaScript.Class(ALittle.ICsvFile, {
 	Load : function(path, headers) {
 		return false;
 	},
@@ -21,6 +21,6 @@ JavaScript.JCsvLoader = JavaScript.Class(ALittle.ICsvFile, {
 	GetColCount : function() {
 		return 0;
 	},
-}, "JavaScript.JCsvLoader");
+}, "JavaScript.JCsvFile");
 
 }

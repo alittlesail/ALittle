@@ -3,10 +3,10 @@ namespace ALittle;
 
 private var __type = lua.type;
 private var __tonumber = lua.tonumber;
-private var __tostring = lua.tostring;
-private var __floor = lua.math.floor;
-private var __sub = lua.String.sub;
-private var __find = Find;
+private var __tostring = String_ToString;
+private var __floor = Math_Floor;
+private var __sub = String_Sub;
+private var __find = String_Find;
 
 public class TextEdit : DisplayObject
 {
@@ -368,7 +368,7 @@ public class TextEdit : DisplayObject
         this._show.ShowCursor(true);
         if (this._loop == null)
             this._loop = new LoopFunction(bind(this.Update, this), -1, 1, 1);
-        A_WeakLoopSystem.AddUpdater(this._loop);
+        A_LoopSystem.AddUpdater(this._loop);
     
         if (this._editable)
         {
@@ -388,7 +388,7 @@ public class TextEdit : DisplayObject
     {
         this._is_selecting = false;
         this._show.ShowCursor(false);
-        A_WeakLoopSystem.RemoveUpdater(this._loop);
+        A_LoopSystem.RemoveUpdater(this._loop);
         System_CloseIME();
     
         if (this.text == "")

@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <None Include="src\Adapter\JavaScript\JCsvLoader.alittle" />
     <None Include="src\Adapter\JavaScript\JHttpInterface.alittle" />
     <None Include="src\Adapter\JavaScript\JMessageFactory.alittle" />
     <None Include="src\Adapter\JavaScript\JMsgInterface.alittle" />
@@ -96,6 +97,7 @@
     <None Include="src\CEngine\UISystem\UISystem.alittle" />
     <None Include="src\CEngine\Utility\AudioSystem.alittle" />
     <None Include="src\CEngine\Utility\ConfigSystem.alittle" />
+    <None Include="src\CEngine\Utility\CsvConfigManager.alittle" />
     <None Include="src\CEngine\Utility\File.alittle" />
     <None Include="src\CEngine\Utility\ModuleSystem.alittle" />
     <None Include="src\CEngine\Utility\OtherSystem.alittle" />

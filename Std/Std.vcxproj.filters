@@ -100,17 +100,11 @@
     <None Include="src\Std\Utility\String.alittle">
       <Filter>Std\Utility</Filter>
     </None>
-    <None Include="src\Adapter\Lua\CsvLoader.alittle">
-      <Filter>Adapter\Lua</Filter>
-    </None>
     <None Include="src\Std\Utility\EventDispatcher.alittle">
       <Filter>Std\Utility</Filter>
     </None>
     <None Include="src\Std\Utility\CsvConfig.alittle">
       <Filter>Std\Utility</Filter>
-    </None>
-    <None Include="src\Adapter\JavaScript\JCsvLoader.alittle">
-      <Filter>Adapter\JavaScript</Filter>
     </None>
     <None Include="src\ALittle.alittle" />
     <None Include="src\Std\Loop\LoopObject.alittle">
@@ -127,6 +121,12 @@
     </None>
     <None Include="src\Adapter\Lua\ScriptInterface.alittle">
       <Filter>Adapter\Lua</Filter>
+    </None>
+    <None Include="src\Std\Utility\File.alittle">
+      <Filter>Std\Utility</Filter>
+    </None>
+    <None Include="src\Std\Utility\ConfigSystem.alittle">
+      <Filter>Std\Utility</Filter>
     </None>
   </ItemGroup>
 </Project>

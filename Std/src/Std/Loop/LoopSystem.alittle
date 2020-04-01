@@ -158,3 +158,13 @@ public var A_LuaLoopSystem = new LoopSystem<lua.__CPPAPIHeapTimer>();
 
 [Language(JavaScript)]
 public var A_JSLoopSystem = new LoopSystem<JavaScript.JHeapTimer>();
+
+private static GetLoopSystem() : ILoopSystem
+{
+    [Language(Lua)]
+    return A_LuaLoopSystem;
+    [Language(JavaScript)]
+    return A_JSLoopSystem;
+}
+
+public var A_LoopSystem = GetLoopSystem();

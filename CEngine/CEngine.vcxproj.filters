@@ -271,9 +271,6 @@
     <None Include="src\CEngine\Utility\AudioSystem.alittle">
       <Filter>CEngine\Utility</Filter>
     </None>
-    <None Include="src\CEngine\Utility\ConfigSystem.alittle">
-      <Filter>CEngine\Utility</Filter>
-    </None>
     <None Include="src\CEngine\Utility\File.alittle">
       <Filter>CEngine\Utility</Filter>
     </None>
@@ -305,5 +302,14 @@
       <Filter>Adapter\JavaScript</Filter>
     </None>
     <None Include="src\ALittle.alittle" />
+    <None Include="src\CEngine\Utility\CsvConfigManager.alittle">
+      <Filter>CEngine\Utility</Filter>
+    </None>
+    <None Include="src\CEngine\Utility\ConfigSystem.alittle">
+      <Filter>CEngine\Utility</Filter>
+    </None>
+    <None Include="src\Adapter\JavaScript\JCsvLoader.alittle">
+      <Filter>Adapter\JavaScript</Filter>
+    </None>
   </ItemGroup>
 </Project>

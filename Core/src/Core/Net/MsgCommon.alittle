@@ -4,6 +4,10 @@ namespace ALittle;
 public class IMsgCommon
 {
     public fun IsConnected() : bool { return false; }
+    protected fun HandleConnectSucceed() {}
+    protected fun HandleDisconnect() {}
+    protected fun HandleConnectFailed(string reason) {}
+    protected fun HandleMessage(int id, int rpc_id, ALittle.IMessageReadFactory factory) {}
     
     // 发送数据
     protected fun Send(int msg_id, any msg_body, int rpc_id) { throw("not impl"); }

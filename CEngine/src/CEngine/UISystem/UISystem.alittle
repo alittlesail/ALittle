@@ -107,7 +107,6 @@ class UISystem
     
         // 多点触控数据
         this._finger_info = new Map<string, FingerInfo>();
-        Setweak(this._finger_info, false, true);
     }
 
     // 注册窗口大小发生变化后回调函数
@@ -115,7 +114,7 @@ class UISystem
     {
         this._view_resize_callback = value;
     }
-
+    
     public get view_resize_callback() : Functor<(int, int)>
     {
         return this._view_resize_callback;
@@ -266,7 +265,7 @@ class UISystem
 
         if (this._long_press != null)
         {
-            this._long_press.Close();
+            this._long_press.Stop();
             this._long_press = null;
         }
     
@@ -404,7 +403,7 @@ class UISystem
             if (rflt.name == "ALittle.UILButtonDownEvent")
             {
                 if (this._long_press != null)
-                    this._long_press.Close();
+                    this._long_press.Stop();
                 var long_event = new UILongButtonDownEvent();
                 long_event.target = this._mfc;
                 long_event.abs_x = x;
@@ -472,7 +471,7 @@ class UISystem
 
         if (this._long_press != null)
         {
-            this._long_press.Close();
+            this._long_press.Stop();
             this._long_press = null;
         }
         // 标记为不锁定焦点控件（因为这个时候鼠标已经释放了左键）

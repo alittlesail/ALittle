@@ -10,7 +10,9 @@ __ALITTLEAPI_CEngine_Init = async function(base_path, callback) {
 	}
 	await Require(base_path + "CEngine/Utility/String");
 	await Require(base_path + "CEngine/Utility/System");
+	await Require(base_path + "CEngine/Utility/ConfigSysem");
 	await Require(base_path + "CEngine/Utility/AudioSystem");
+	await Require(base_path + "CEngine/Utility/OtherSystem");
 	await Require(base_path + "CEngine/LoopSystem/LoopAnimation");
 	await Require(base_path + "CEngine/LoopSystem/LoopAttribute");
 	await Require(base_path + "CEngine/LoopSystem/LoopLinear");

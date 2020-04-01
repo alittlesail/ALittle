@@ -25,6 +25,8 @@ public async static __ALITTLEAPI_Std_Init(string base_path, Functor<()> callback
     Require(base_path.."Std/Utility/EventDispatcher");
     Require(base_path.."Std/Utility/SafeIDCreator");
     Require(base_path.."Std/Utility/String");
+    Require(base_path.."Std/Utility/File");
+    Require(base_path.."Std/Utility/ConfigSystem");
     
     Require(base_path.."Std/Net/HttpFileReceiverTemplate");
     Require(base_path.."Std/Net/HttpFileSenderTemplate");
@@ -34,11 +36,6 @@ public async static __ALITTLEAPI_Std_Init(string base_path, Functor<()> callback
     Require(base_path.."Std/Net/MsgReceiverTemplate");
     Require(base_path.."Std/Net/MsgSenderTemplate");
     Require(base_path.."Std/Net/MsgSessionTemplate");
-    
-    [Language(JavaScript)]
-    {
-        Require(base_path.."Adapter/JavaScript/JCsvLoader");
-    }
-    
+        
     if (callback != null) callback();
 }

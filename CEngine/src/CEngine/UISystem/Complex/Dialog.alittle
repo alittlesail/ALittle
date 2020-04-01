@@ -281,7 +281,7 @@ public class Dialog : DisplayLayout
         return this._body.child_count;
     }
     // 添加子控件
-    public fun AddChild(DisplayObject child, @Nullable int index) : bool
+    public fun AddChild(DisplayObject child, [Nullable] int index) : bool
     {
         if (child == null || child == this)
             return false;

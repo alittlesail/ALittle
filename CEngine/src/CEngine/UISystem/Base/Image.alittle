@@ -144,7 +144,7 @@ public class Image : DisplayObject
     // max_height 最大高度，不限制可以填0
     // cache 图片管理器是否缓存这个图片
     // callback 当前纹理设置完毕后，调用一下这个函数(函数格式 function callback(image, result) ... })
-    public fun SetTextureCut(string texture_name, int max_width, int max_height, bool cache, @Nullable Functor<(DisplayObject, bool)> callback)
+    public fun SetTextureCut(string texture_name, int max_width, int max_height, bool cache, [Nullable] Functor<(DisplayObject, bool)> callback)
     {
         if (this._texture_name != null)
         {

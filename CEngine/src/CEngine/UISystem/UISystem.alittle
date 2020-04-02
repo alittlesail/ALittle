@@ -108,7 +108,7 @@ class UISystem
         // 多点触控数据
         this._finger_info = new Map<string, FingerInfo>();
     }
-
+    
     // 注册窗口大小发生变化后回调函数
     public set view_resize_callback(Functor<(int, int)> value)
     {

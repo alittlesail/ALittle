@@ -17,7 +17,7 @@ public class ControlSystem
     private string              _font_path;
     private string              _sound_path;
     private string              _other_path;
-
+    
     private TextureManager      _texture_mgr;
 
     // @param module_name 模块名

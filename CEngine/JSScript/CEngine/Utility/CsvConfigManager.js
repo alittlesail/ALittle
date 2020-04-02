@@ -29,7 +29,8 @@ ALittle.CsvConfigManager = JavaScript.Class(undefined, {
 		for (let file_path in ___OBJECT_1) {
 			let config = ___OBJECT_1[file_path];
 			if (config === undefined) continue;
-			let loader = ALittle.NewObject(lua.__CPPAPICsvFileLoader);
+			let loader = undefined;
+			loader = ALittle.NewObject(JavaScript.JCsvFileLoader);
 			loader.SetPath(file_path, false, ALittle.String_Join(config.GetFieldNameList(), ","));
 			let detail = {};
 			detail.loader = loader;
@@ -53,9 +54,7 @@ ALittle.CsvConfigManager = JavaScript.Class(undefined, {
 			if (detail !== undefined) {
 				++ info.succeed;
 				if (detail.config !== undefined) {
-					let wrap = ALittle.NewObject(lua.__CPPAPICsvFileWrap);
-					wrap.SetCsvFile(file);
-					detail.config.Init(wrap);
+					detail.config.Init(file);
 				}
 				if (info.callback !== undefined) {
 					info.callback(info.total, info.succeed, info.failed);

@@ -25,7 +25,7 @@ class CsvConfigManager
         // csv预加载映射表
         this._preload_map = new Map<CsvPreloadInfo, bool>();
     }
-
+    
     public fun PrepareCsv(Map<string, CsvConfig> csv_map, Functor<(int, int, int)> callback)
     {
         var preload_info = new CsvPreloadInfo();
@@ -37,7 +37,11 @@ class CsvConfigManager
 
         for (var file_path, config in csv_map)
         {
-            var loader = new lua.__CPPAPICsvFileLoader();
+            var loader:ALittle.ICsvFileLoader;
+            [Language(Lua)]
+            loader = new lua.__CPPAPICsvFileLoader();
+            [Language(JavaScript)]
+            loader = new JavaScript.JCsvFileLoader();
             loader.SetPath(file_path, false, String_Join(config.GetFieldNameList(), ","));
             var detail = new CsvPreloadInfoDetail();
             detail.loader = loader;
@@ -67,9 +71,15 @@ class CsvConfigManager
 
                 if (detail.config != null)
                 {
+                    [Language(Lua)]
                     var wrap = new lua.__CPPAPICsvFileWrap();
+                    [Language(Lua)]
                     wrap.SetCsvFile(file);
+                    [Language(Lua)]
                     detail.config.Init(wrap);
+                    
+                    [Language(JavaScript)]
+                    detail.config.Init(file);
                 }
                 
                 if (info.callback != null)

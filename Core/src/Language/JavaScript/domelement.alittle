@@ -1,9 +1,46 @@
 
 [Language(JavaScript)]
 register namespace javascript;
-    
+
+public struct DomElementOnTouchEvent
+{
+    string type;
+    int pageX;
+    int pageY;
+}
+
+public struct DomElementOnMouseEvent
+{
+    int which;
+    int pageX;
+    int pageY;
+}
+
+public struct DomElementOnMouseWheelEvent
+{
+    int wheelDelta;
+    int detail;
+}
+
+public struct DomElementOnKeyEvent
+{
+    int keyCode;
+}
+
 [Native]
 public class DomElement
 {
     public fun appendChild(DomElement element) {}
+    
+    public set ontouchstart(Functor<(DomElementOnTouchEvent)> func) {}
+    public set ontouchmove(Functor<(DomElementOnTouchEvent)> func) {}
+    public set ontouchend(Functor<(DomElementOnTouchEvent)> func) {}
+    
+    public set onmousedown(Functor<(DomElementOnMouseEvent)> func) {}
+    public set onmousemove(Functor<(DomElementOnMouseEvent)> func) {}
+    public set onmouseup(Functor<(DomElementOnMouseEvent)> func) {}
+    public set onmousewheel(Functor<(DomElementOnMouseWheelEvent)> func) {}
+    public set onmouseout(Functor<(DomElementOnMouseEvent)> func) {}
+    public set onkeydown(Functor<(DomElementOnKeyEvent)> func) {}
+    public set onkeyup(Functor<(DomElementOnKeyEvent)> func) {}
 }

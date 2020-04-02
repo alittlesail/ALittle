@@ -37,6 +37,15 @@ public static Push<T>(List<T> list, T object)
     cast<javascript.Array>(list).push(object);
 }
 
+public static Insert<T>(List<T> list, int index, T object)
+{
+    [Language(Lua)]
+    insert(list, index, object);
+    
+    [Language(JavaScript)]
+    cast<javascript.Array>(list).splice(index - 1, 0, object);
+}
+
 public static Remove<T>(List<T> list, int index)
 {
     [Language(Lua)]

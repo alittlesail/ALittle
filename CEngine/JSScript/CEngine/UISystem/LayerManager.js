@@ -36,7 +36,7 @@ ALittle.LayerManager = JavaScript.Class(undefined, {
 			}
 			let back_child = this._normal_groups[index - 1];
 			__CPPAPI_DisplaySystem.AddChildBefore(back_child.native_show, child.native_show);
-			lua.table.insert(this._normal_groups, index, child);
+			ALittle.Insert(this._normal_groups, index, child);
 			++ this._normal_group_count;
 		}
 		child.width = A_UISystem.view_width;
@@ -52,7 +52,7 @@ ALittle.LayerManager = JavaScript.Class(undefined, {
 			let value = ___OBJECT_1[index - 1];
 			if (value === undefined) break;
 			if (value === child) {
-				lua.table.remove(this._normal_groups, index);
+				ALittle.Remove(this._normal_groups, index);
 				has_layer = true;
 				break;
 			}

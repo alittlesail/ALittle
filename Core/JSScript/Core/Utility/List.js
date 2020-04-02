@@ -16,6 +16,10 @@ ALittle.Push = function(list, object) {
 	list.push(object);
 }
 
+ALittle.Insert = function(list, index, object) {
+	list.splice(index - 1, 0, object);
+}
+
 ALittle.Remove = function(list, index) {
 	list.splice(index - 1, 1);
 }

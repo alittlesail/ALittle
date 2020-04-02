@@ -29,6 +29,103 @@ public static JSystem_GetDeviceID() : string
 
 public var A_PixiApp:PIXI.Application;
 
+private static JSystem_FingerDown(javascript.DomElementOnTouchEvent event)
+{
+    var func = cast<Map<string, Functor<(double, double, int, int)>>>(window)["__ALITTLEAPI_FingerDown"];
+    if (func == null) return;
+    
+    func(event.pageX, event.pageY, 1, 1);
+}
+
+private static JSystem_FingerUp(javascript.DomElementOnTouchEvent event)
+{
+    var func = cast<Map<string, Functor<(double, double, int, int)>>>(window)["__ALITTLEAPI_FingerUp"];
+    if (func == null) return;
+    
+    func(event.pageX, event.pageY, 1, 1);
+}
+
+private static JSystem_FingerMoved(javascript.DomElementOnTouchEvent event)
+{
+    var func = cast<Map<string, Functor<(double, double, int, int)>>>(window)["__ALITTLEAPI_FingerMoved"];
+    if (func == null) return;
+    
+    func(event.pageX, event.pageY, 1, 1);
+}
+
+private static JSystem_MouseMoved(javascript.DomElementOnMouseEvent event)
+{
+    var func = cast<Map<string, Functor<(double, double)>>>(window)["__ALITTLEAPI_MouseMoved"];
+    if (func == null) return;
+    
+    func(event.pageX, event.pageY);
+}
+
+private static JSystem_MouseDown(javascript.DomElementOnMouseEvent event)
+{
+    var func:Functor<(double, double, int)>;
+    if (event.which == 1)
+        func = cast<Map<string, Functor<(double, double, int)>>>(window)["__ALITTLEAPI_LButtonDown"];
+    elseif (event.which == 2)
+        func = cast<Map<string, Functor<(double, double, int)>>>(window)["__ALITTLEAPI_MButtonDown"];
+    elseif (event.which == 3)
+        func = cast<Map<string, Functor<(double, double, int)>>>(window)["__ALITTLEAPI_RButtonDown"];
+    if (func == null) return;
+    
+    func(event.pageX, event.pageY, 1);
+}
+
+private static JSystem_MouseUp(javascript.DomElementOnMouseEvent event)
+{
+    var func:Functor<(double, double)>;
+    if (event.which == 1)
+        func = cast<Map<string, Functor<(double, double)>>>(window)["__ALITTLEAPI_LButtonUp"];
+    elseif (event.which == 2)
+        func = cast<Map<string, Functor<(double, double)>>>(window)["__ALITTLEAPI_MButtonUp"];
+    elseif (event.which == 3)
+        func = cast<Map<string, Functor<(double, double)>>>(window)["__ALITTLEAPI_RButtonUp"];
+    if (func == null) return;
+    func(event.pageX, event.pageY);
+}
+
+private static JSystem_MouseWheel(javascript.DomElementOnMouseWheelEvent event)
+{
+    var func = cast<Map<string, Functor<(double, double)>>>(window)["__ALITTLEAPI_MouseWheel"];
+    if (func == null) return;
+    
+    var x = event.wheelDelta;
+    if (x == null) x = event.detail;
+    var y = event.wheelDelta;
+    if (y == null) y = event.detail;
+    func(x, y);
+}
+
+private static JSystem_MouseOut(javascript.DomElementOnMouseEvent event)
+{
+    var func = cast<Map<string, Functor<()>>>(window)["__ALITTLEAPI_WindowLeave"];
+    if (func == null) return;
+    
+	if (event.pageX > 0 && event.pageY > 0) return;
+	if (event.pageX < 0) event.pageX = 0; 
+	if (event.pageY < 0) event.pageY = 0;
+    
+    func();
+}
+
+private static JSystem_KeyDown(javascript.DomElementOnKeyEvent event)
+{
+    var func = cast<Map<string, Functor<(int, int, int)>>>(window)["__ALITTLEAPI_KeyDown"];
+    if (func == null) return;
+    func(0, event.keyCode, 0);
+}
+
+private static JSystem_KeyUp(javascript.DomElementOnKeyEvent event)
+{
+    var func = cast<Map<string, Functor<(int, int, int)>>>(window)["__ALITTLEAPI_KeyUp"];
+    if (func == null) return;
+    func(0, event.keyCode, 0);
+}
+
 public static JSystem_CreateView(string title, int width, int height, int flag, double scale) : bool
 {
     if (A_PixiApp != null) return true;
@@ -39,6 +136,24 @@ public static JSystem_CreateView(string title, int width, int height, int flag, 
     A_PixiApp = new PIXI.Application(data);
     document.body.appendChild(A_PixiApp.view);
     document.title = title;
+    
+	// 监听鼠标基本事件
+	if (ALittle.System_IsPhone())
+	{
+		A_PixiApp.view.ontouchstart = JSystem_FingerDown;
+		A_PixiApp.view.ontouchmove = JSystem_FingerMoved;
+		A_PixiApp.view.ontouchend = JSystem_FingerUp;
+	}
+	else
+	{
+		A_PixiApp.view.onmousedown = JSystem_MouseDown;
+		A_PixiApp.view.onmousemove = JSystem_MouseMoved;
+		A_PixiApp.view.onmouseup = JSystem_MouseUp;
+		A_PixiApp.view.onmousewheel = JSystem_MouseWheel;
+		A_PixiApp.view.onmouseout = JSystem_MouseOut;
+		A_PixiApp.view.onkeydown = JSystem_KeyDown;
+		A_PixiApp.view.onkeyup = JSystem_KeyUp;
+	}
     
     return true;
 }

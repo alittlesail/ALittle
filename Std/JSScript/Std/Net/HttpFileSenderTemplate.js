@@ -21,6 +21,9 @@ ALittle.IHttpFileSenderNative = JavaScript.Class(undefined, {
 	GetTotalSize : function() {
 		return 0;
 	},
+	GetContent : function() {
+		return undefined;
+	},
 }, "ALittle.IHttpFileSenderNative");
 
 let __HttpFileSenderMap = new Map();
@@ -34,6 +37,9 @@ ALittle.HttpFileSenderTemplate = JavaScript.Class(ALittle.IHttpFileSender, {
 		this._interface = ALittle.NewObject(this.__class.__element[0]);
 		this._ip = ip;
 		this._port = port;
+		if (this._port === undefined) {
+			this._port = 80;
+		}
 		this._file_path = file_path;
 		this._start_size = start_size;
 		this._callback = callback;
@@ -64,16 +70,19 @@ ALittle.HttpFileSenderTemplate = JavaScript.Class(ALittle.IHttpFileSender, {
 	GetTotalSize : function() {
 		return this._interface.GetTotalSize();
 	},
+	GetContent : function() {
+		return this._interface.GetContent();
+	},
 	HandleSucceed : function() {
 		__HttpFileSenderMap.delete(this._interface.GetID());
-		let [result, reason] = ALittle.Coroutine.Resume(this._thread, undefined, undefined);
+		let [result, reason] = ALittle.Coroutine.Resume(this._thread, undefined, this);
 		if (result !== true) {
 			ALittle.Error(reason);
 		}
 	},
 	HandleFailed : function(reason) {
 		__HttpFileSenderMap.delete(this._interface.GetID());
-		let [result, error] = ALittle.Coroutine.Resume(this._thread, reason, undefined);
+		let [result, error] = ALittle.Coroutine.Resume(this._thread, reason, this);
 		if (result !== true) {
 			ALittle.Error(error);
 		}

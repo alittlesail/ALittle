@@ -36,6 +36,7 @@ class AudioSystem : EventListener
     
     public fun Shutdown()
     {
+        this.RemoveFromDispatcher();
     }
     
     //////////////////////////////////-监听APP前后台切换//////////////////////////////////-

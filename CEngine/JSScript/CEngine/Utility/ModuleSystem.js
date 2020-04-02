@@ -183,14 +183,14 @@ ALittle.ModuleSystem = JavaScript.Class(undefined, {
 			if (info === undefined) continue;
 			let shutdown_func = info.module_shutdown;
 			if (shutdown_func !== undefined && info.module_loaded) {
-				let error = (function() { try { shutdown_func.call(); return undefined; } catch (___ERROR) { return ___ERROR.message; } })();
+				let error = (function() { try { shutdown_func.call(); return undefined; } catch (___ERROR) { return ___ERROR.message; } }).call(this);
 				if (error !== undefined) {
 					ALittle.Log("ModuleSystem:MainShutdown invoke __Module_Shutdown error:", error);
 				}
 			}
 			shutdown_func = info.plugin_shutdown;
 			if (shutdown_func !== undefined && info.plugin_loaded) {
-				let error = (function() { try { shutdown_func.call(); return undefined; } catch (___ERROR) { return ___ERROR.message; } })();
+				let error = (function() { try { shutdown_func.call(); return undefined; } catch (___ERROR) { return ___ERROR.message; } }).call(this);
 				if (error !== undefined) {
 					ALittle.Log("ModuleSystem:MainShutdown invoke __Plugin_Shutdown error:", error);
 				}

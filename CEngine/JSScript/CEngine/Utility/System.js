@@ -361,9 +361,32 @@ ALittle.CreateHttpSender = function(ip, port) {
 	return ALittle.NewObject(JavaScript.Template(ALittle.HttpSenderTemplate, "ALittle.HttpSenderTemplate<JavaScript.JHttpInterface>", JavaScript.JHttpInterface), ip, port);
 }
 
+ALittle.HttpRequest = function(ip, port, path) {
+	return new Promise(function(___COROUTINE, ___) {
+		let sender = ALittle.CreateHttpSender(ip, port);
+		if (___COROUTINE === undefined) {
+			___COROUTINE(["当前不是协程", undefined]); return;
+		}
+		sender.SendRPC(___COROUTINE, path, undefined);
+		return;
+		___COROUTINE();
+	});
+}
+
 ALittle.CreateHttpFileSender = function(ip, port, file_path, start_size, callback) {
-	ALittle.Error("not support CreateHttpFileSender");
-	return undefined;
+	return ALittle.NewObject(JavaScript.Template(ALittle.HttpFileSenderTemplate, "ALittle.HttpFileSenderTemplate<JavaScript.JHttpFileInterface>", JavaScript.JHttpFileInterface), ip, port, file_path, start_size, callback);
+}
+
+ALittle.HttpDownloadRequest = function(ip, port, file_path, callback) {
+	return new Promise(function(___COROUTINE, ___) {
+		let sender = ALittle.CreateHttpFileSender(ip, port, file_path, 0, callback);
+		if (___COROUTINE === undefined) {
+			___COROUTINE(["当前不是协程", undefined]); return;
+		}
+		sender.SendDownloadRPC(___COROUTINE, file_path, undefined);
+		return;
+		___COROUTINE();
+	});
 }
 
 }

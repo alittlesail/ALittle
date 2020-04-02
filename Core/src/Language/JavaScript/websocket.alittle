@@ -1,7 +1,13 @@
 
 [Language(JavaScript)]
 register namespace javascript;
-   
+
+public struct XMLHttpRequestOnProgressEvent
+{
+    int loaded;
+    int total;
+}
+
 [Native] 
 public class XMLHttpRequest
 {
@@ -14,4 +20,5 @@ public class XMLHttpRequest
     public set onerror(Functor<()> func) {}
     public set ontimeout(Functor<()> func) {}
     public set onload(Functor<()> func) {}
+    public set onprogress(Functor<(XMLHttpRequestOnProgressEvent)> func) {}
 }

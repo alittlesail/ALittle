@@ -311,5 +311,8 @@
     <None Include="src\Adapter\JavaScript\JCsvLoader.alittle">
       <Filter>Adapter\JavaScript</Filter>
     </None>
+    <None Include="src\Adapter\JavaScript\JHttpFileInterface.alittle">
+      <Filter>Adapter\JavaScript</Filter>
+    </None>
   </ItemGroup>
 </Project>

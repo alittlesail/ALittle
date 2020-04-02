@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Adapter\JavaScript\JCsvLoader.alittle" />
+    <None Include="src\Adapter\JavaScript\JHttpFileInterface.alittle" />
     <None Include="src\Adapter\JavaScript\JHttpInterface.alittle" />
     <None Include="src\Adapter\JavaScript\JMessageFactory.alittle" />
     <None Include="src\Adapter\JavaScript\JMsgInterface.alittle" />

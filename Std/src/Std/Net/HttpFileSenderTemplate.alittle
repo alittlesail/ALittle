@@ -15,6 +15,7 @@ public class IHttpFileSenderNative
     public fun GetPath() : string { return ""; }        // 获取文件路径
     public fun GetCurrentSize() : int { return 0; }    // 获取已上传的文件大小
     public fun GetTotalSize() : int { return 0; }      // 获取文件总大小
+    public fun GetContent() : string { return null; }
 }
 
 // 短连接文件所有的对象集合，提供客户端使用
@@ -36,6 +37,7 @@ public class HttpFileSenderTemplate<NATIVE : IHttpFileSenderNative> : IHttpFileS
         this._interface = new NATIVE();
         this._ip = ip;
         this._port = port;
+        if (this._port == null) this._port = 80;
         this._file_path = file_path;
         this._start_size = start_size;
         this._callback = callback;
@@ -78,21 +80,26 @@ public class HttpFileSenderTemplate<NATIVE : IHttpFileSenderNative> : IHttpFileS
     {
         return this._interface.GetTotalSize();
     }
+    
+    public fun GetContent() : string
+    {
+        return this._interface.GetContent();
+    }
 
     protected fun HandleSucceed()
     {
         __HttpFileSenderMap[this._interface.GetID()] = null;
-        var result, reason = Coroutine.Resume(this._thread, null, null);
+        var result, reason = Coroutine.Resume(this._thread, null, this);
         if (result != true) Error(reason);
     }
     
     protected fun HandleFailed(string reason)
     {
         __HttpFileSenderMap[this._interface.GetID()] = null;
-        var result, error = Coroutine.Resume(this._thread, reason, null);
+        var result, error = Coroutine.Resume(this._thread, reason, this);
         if (result != true) Error(error);
     }
-
+    
     protected fun HandleProcess()
     {
         if (this._callback != null)

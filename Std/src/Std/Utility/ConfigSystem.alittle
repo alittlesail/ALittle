@@ -2,11 +2,11 @@ namespace ALittle;
 
 public class IConfigSystem
 {
-    public fun GetConfig<T>(string key, T default) : T { return default; }   
-    public fun GetBool(string key, bool default) : bool { return default; }
-    public fun GetInt(string key, int default) : int { return default; }
-    public fun GetDouble(string key, double default) : double { return default; }
-    public fun GetString(string key, string default) : string { return default; }
+    public fun GetConfig<T>(string key, T defaultv) : T { return defaultv; }   
+    public fun GetBool(string key, bool defaultv) : bool { return defaultv; }
+    public fun GetInt(string key, int defaultv) : int { return defaultv; }
+    public fun GetDouble(string key, double defaultv) : double { return defaultv; }
+    public fun GetString(string key, string defaultv) : string { return defaultv; }
     public fun SetConfig(string key, any value, [Nullable] bool not_save) {}
     public fun CoverConfig(Map<string, any> msg, bool save) {}
     public fun SaveConfig() {}
@@ -45,38 +45,38 @@ public class ConfigSystem<FL : IFileLoader, FS : IFileSaver> : IConfigSystem
         this._config_map = json_content;
     }
     
-    public fun GetConfig<T>(string key, T default) : T
+    public fun GetConfig<T>(string key, T defaultv) : T
     {
         // 获取值
         var value = cast<T>(this._config_map[key]);
         // 如果为空则返回默认值
-        if (value == null) return default;
+        if (value == null) return defaultv;
         return value;
     }
     
-    public fun GetBool(string key, bool default) : bool
+    public fun GetBool(string key, bool defaultv) : bool
     {
-        var value = this.GetConfig(key, default);
+        var value = this.GetConfig(key, defaultv);
         return value != null && value != false;
     }
     
-    public fun GetInt(string key, int default) : int
+    public fun GetInt(string key, int defaultv) : int
     {
-        var value = this.GetConfig(key, default);
+        var value = this.GetConfig(key, defaultv);
         if (value == null) value = 0;
         return value;
     }
     
-    public fun GetDouble(string key, double default) : double
+    public fun GetDouble(string key, double defaultv) : double
     {
-        var value = this.GetConfig(key, default);
+        var value = this.GetConfig(key, defaultv);
         if (value == null) value = 0;
         return value;
     }
     
-    public fun GetString(string key, string default) : string
+    public fun GetString(string key, string defaultv) : string
     {
-        var value = this.GetConfig(key, default);
+        var value = this.GetConfig(key, defaultv);
         if (value == null) value = "";
         return value;
     }

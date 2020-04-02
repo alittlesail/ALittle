@@ -4,13 +4,14 @@
 __ALITTLEAPI_CEngine_Init = async function(base_path, callback) {
 	{
 		await Require(base_path + "Adapter/JavaScript/JHttpInterface");
+		await Require(base_path + "Adapter/JavaScript/JHttpFileInterface");
 		await Require(base_path + "Adapter/JavaScript/JMessageFactory");
 		await Require(base_path + "Adapter/JavaScript/JMsgInterface");
 		await Require(base_path + "Adapter/JavaScript/JSystem");
 	}
 	await Require(base_path + "CEngine/Utility/String");
 	await Require(base_path + "CEngine/Utility/System");
-	await Require(base_path + "CEngine/Utility/ConfigSysem");
+	await Require(base_path + "CEngine/Utility/ConfigSystem");
 	await Require(base_path + "CEngine/Utility/AudioSystem");
 	await Require(base_path + "CEngine/Utility/OtherSystem");
 	await Require(base_path + "CEngine/LoopSystem/LoopAnimation");

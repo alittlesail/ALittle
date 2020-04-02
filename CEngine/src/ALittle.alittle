@@ -5,6 +5,7 @@ public async static __ALITTLEAPI_CEngine_Init(string base_path, Functor<()> call
     [Language(JavaScript)]
     {
         Require(base_path.."Adapter/JavaScript/JHttpInterface");
+        Require(base_path.."Adapter/JavaScript/JHttpFileInterface");
         Require(base_path.."Adapter/JavaScript/JMessageFactory");
         Require(base_path.."Adapter/JavaScript/JMsgInterface");
         Require(base_path.."Adapter/JavaScript/JSystem");
@@ -12,7 +13,7 @@ public async static __ALITTLEAPI_CEngine_Init(string base_path, Functor<()> call
     
     Require(base_path.."CEngine/Utility/String");
     Require(base_path.."CEngine/Utility/System");
-    Require(base_path.."CEngine/Utility/ConfigSysem");
+    Require(base_path.."CEngine/Utility/ConfigSystem");
     Require(base_path.."CEngine/Utility/AudioSystem");
     Require(base_path.."CEngine/Utility/OtherSystem");
     
@@ -214,21 +215,21 @@ public static __ALITTLEAPI_HttpClientFailed(ALittle.IHttpSenderNative http_inter
 public static __ALITTLEAPI_HttpFileSucceed(ALittle.IHttpFileSenderNative httpfile_interface)
 {
     var client = ALittle.FindHttpFileSender(httpfile_interface.GetID());
-    if (client ==  null) return;
+    if (client == null) return;
     client.HandleSucceed();
 }
 
 public static __ALITTLEAPI_HttpFileFailed(ALittle.IHttpFileSenderNative httpfile_interface, string reason)
 {
     var client = ALittle.FindHttpFileSender(httpfile_interface.GetID());
-    if (client ==  null) return;
+    if (client == null) return;
     client.HandleFailed(reason);
 }
 
 public static __ALITTLEAPI_HttpFileProcess(ALittle.IHttpFileSenderNative httpfile_interface)
 {
     var client = ALittle.FindHttpFileSender(httpfile_interface.GetID());
-    if (client ==  null) return;
+    if (client == null) return;
     client.HandleProcess();
 }
 

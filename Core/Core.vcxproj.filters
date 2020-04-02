@@ -178,5 +178,8 @@
     <None Include="src\Language\JavaScript\map.alittle">
       <Filter>Language\JavaScript</Filter>
     </None>
+    <None Include="src\Language\JavaScript\location.alittle">
+      <Filter>Language\JavaScript</Filter>
+    </None>
   </ItemGroup>
 </Project>

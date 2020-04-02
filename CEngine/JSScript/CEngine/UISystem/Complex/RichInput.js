@@ -1905,7 +1905,7 @@ ALittle.RichInput = JavaScript.Class(ALittle.DisplayLayout, {
 		this._is_selecting = false;
 		if (ALittle.System_HasClipboardText()) {
 			let content = ALittle.System_GetClipboardText();
-			let [error, new_content] = (function() { try { let ___VALUE = lua.json.decode.call(undefined, content); return [undefined, ___VALUE]; } catch (___ERROR) { return [___ERROR.message]; } })();
+			let [error, new_content] = (function() { try { let ___VALUE = lua.json.decode.call(undefined, content); return [undefined, ___VALUE]; } catch (___ERROR) { return [___ERROR.message]; } }).call(this);
 			if (error === undefined && __type(new_content) === "table" && this.CheckDisplayList(new_content)) {
 				if (this.CheckAtKeyInput(new_content)) {
 					return;
@@ -2176,7 +2176,7 @@ ALittle.RichInput = JavaScript.Class(ALittle.DisplayLayout, {
 					this._is_selecting = false;
 					if (ALittle.System_HasClipboardText()) {
 						let content = ALittle.System_GetClipboardText();
-						let [error, new_content] = (function() { try { let ___VALUE = lua.json.decode.call(undefined, content); return [undefined, ___VALUE]; } catch (___ERROR) { return [___ERROR.message]; } })();
+						let [error, new_content] = (function() { try { let ___VALUE = lua.json.decode.call(undefined, content); return [undefined, ___VALUE]; } catch (___ERROR) { return [___ERROR.message]; } }).call(this);
 						if (error === undefined && __type(new_content) === "table" && this.CheckDisplayList(new_content)) {
 							if (this.CheckAtKeyInput(new_content)) {
 								return;
@@ -2195,7 +2195,7 @@ ALittle.RichInput = JavaScript.Class(ALittle.DisplayLayout, {
 					this._is_selecting = false;
 					if (ALittle.System_HasClipboardText()) {
 						let content = ALittle.System_GetClipboardText();
-						let [error, new_content] = (function() { try { let ___VALUE = lua.json.decode.call(undefined, content); return [undefined, ___VALUE]; } catch (___ERROR) { return [___ERROR.message]; } })();
+						let [error, new_content] = (function() { try { let ___VALUE = lua.json.decode.call(undefined, content); return [undefined, ___VALUE]; } catch (___ERROR) { return [___ERROR.message]; } }).call(this);
 						if (error === undefined && __type(new_content) === "table" && this.CheckDisplayList(new_content)) {
 							is_change = this.InsertDisplayListNative(new_content, false);
 						} else {

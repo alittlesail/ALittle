@@ -35,7 +35,10 @@ public static Math_ToInt(string s) : int
     return floor(tonumber(s));
     
     [Language(JavaScript)]
-    return javascript.parseInt(s);
+    var value = javascript.parseInt(s);
+    [Language(JavaScript)]
+    if (javascript.isNaN(value)) return null;
+    else return value;
 }
 
 public static Math_ToDouble(string s) : double
@@ -44,7 +47,10 @@ public static Math_ToDouble(string s) : double
     return tonumber(s);
     
     [Language(JavaScript)]
-    return javascript.parseFloat(s);
+    var value = javascript.parseFloat(s);
+    [Language(JavaScript)]
+    if (javascript.isNaN(value)) return null;
+    else return value;
 }
 
 public static Math_RandomSeed(int seed)

@@ -45,7 +45,7 @@ ALittle.HttpSenderTemplate = JavaScript.Class(ALittle.IHttpSender, {
 	},
 	HandleSucceed : function() {
 		__HttpSenderMap.delete(this._interface.GetID());
-		let [error, param] = (function() { try { let ___VALUE = ALittle.String_JsonDecode.call(undefined, this._interface.GetResponse()); return [undefined, ___VALUE]; } catch (___ERROR) { return [___ERROR.message]; } })();
+		let [error, param] = (function() { try { let ___VALUE = ALittle.String_JsonDecode.call(undefined, this._interface.GetResponse()); return [undefined, ___VALUE]; } catch (___ERROR) { return [___ERROR.message]; } }).call(this);
 		if (error !== undefined) {
 			let [result, reason] = ALittle.Coroutine.Resume(this._thread, error, undefined);
 			if (result !== true) {

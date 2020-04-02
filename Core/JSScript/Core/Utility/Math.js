@@ -11,11 +11,21 @@ ALittle.Math_Floor = function(v) {
 }
 
 ALittle.Math_ToInt = function(s) {
-	return parseInt(s);
+	let value = parseInt(s);
+	if (isNaN(value)) {
+		return undefined;
+	} else {
+		return value;
+	}
 }
 
 ALittle.Math_ToDouble = function(s) {
-	return parseFloat(s);
+	let value = parseFloat(s);
+	if (isNaN(value)) {
+		return undefined;
+	} else {
+		return value;
+	}
 }
 
 ALittle.Math_RandomSeed = function(seed) {

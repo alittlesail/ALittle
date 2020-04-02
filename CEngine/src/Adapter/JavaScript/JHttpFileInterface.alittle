@@ -1,0 +1,88 @@
+
+[Language(JavaScript)]
+namespace JavaScript;
+
+private var __JHTTPFILE_MAXID:int = 0;
+
+public class JHttpFileInterface : ALittle.IHttpFileSenderNative
+{
+    private int _id;
+    private string _url;
+    private string _file_path;
+    private bool _download;
+    private javascript.XMLHttpRequest _request;
+    
+    private int _cur_size;
+    private int _total_size;
+    
+    public ctor()
+    {
+        this._cur_size = 0;
+        this._total_size = 0;
+        ++ __JHTTPFILE_MAXID;
+        this._id = __JHTTPFILE_MAXID;
+    }
+    public fun GetID() : int { return this._id; }
+    
+    // 如果是下载，那么file_path必须要
+    // 如果是上传，file_path表示上传内容
+    // start_size不支持
+    public fun SetURL(string url, string file_path, bool download, int start_size)
+    {
+        this._url = url;
+        this._file_path = file_path;
+        this._download = download;
+    }
+    public fun Start()
+    {
+        this._request = new javascript.XMLHttpRequest();
+        if (this._download)
+            this._request.open("GET", this._url, true);
+        else
+            this._request.open("POST", this._url, true);
+        
+		var error_func = bind(this.HandleAjaxError, this);
+        this._request.onerror = error_func;
+		this._request.ontimeout = error_func;
+        this._request.onload = bind(this.HandleStartCompleted, this);
+        this._request.onprogress = bind(this.HandleOnProgress, this);
+        if (this._download)
+            this._request.send(null);
+        else
+            this._request.send(this._file_path);
+    }
+    public fun Stop()
+    {
+        if (this._request != null)
+            this._request.abort();
+    }
+    
+    public fun GetPath() : string { return this._file_path; }
+    public fun GetCurrentSize() : int { return this._cur_size; }
+    public fun GetTotalSize() : int { return this._total_size; }
+    
+    public fun GetContent() : string { return this._request.responseText; }
+    
+    private fun HandleAjaxError()
+	{
+		var func = cast<Map<string, Functor<(ALittle.IHttpFileSenderNative, string)>>>(window)["__ALITTLEAPI_HttpFileFailed"];
+		if (func == null) return;
+		func(this, this._request.statusText);
+	}
+    
+	private fun HandleStartCompleted()
+	{
+		var func = cast<Map<string, Functor<(ALittle.IHttpFileSenderNative)>>>(window)["__ALITTLEAPI_HttpFileSucceed"];
+		if (func == null) return;
+		func(this);
+	}
+    private fun HandleOnProgress(javascript.XMLHttpRequestOnProgressEvent event)
+    {
+        this._cur_size = event.loaded;
+        this._total_size = event.total;
+        
+		var func = cast<Map<string, Functor<(ALittle.IHttpFileSenderNative)>>>(window)["__ALITTLEAPI_HttpFileProcess"];
+		if (func == null) return;
+		func(this);
+    }
+}

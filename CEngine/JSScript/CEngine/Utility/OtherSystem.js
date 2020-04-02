@@ -113,7 +113,7 @@ ALittle.OtherSystem = JavaScript.Class(ALittle.EventDispatcher, {
 		return ALittle.NetworkType.LINE;
 	},
 	HandleALittleJsonRPC : function(json) {
-		let [error, content] = (function() { try { let ___VALUE = ALittle.String_JsonDecode.call(undefined, json); return [undefined, ___VALUE]; } catch (___ERROR) { return [___ERROR.message]; } })();
+		let [error, content] = (function() { try { let ___VALUE = ALittle.String_JsonDecode.call(undefined, json); return [undefined, ___VALUE]; } catch (___ERROR) { return [___ERROR.message]; } }).call(this);
 		if (error !== undefined) {
 			ALittle.Log("OtherSystem:HandleALittleJsonRPC:", error, json);
 			return;

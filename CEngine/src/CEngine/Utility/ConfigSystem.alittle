@@ -53,7 +53,6 @@ public class JSClientFileSaver : IFileSaver
     public fun Save(string file_path, string content) : bool
     {
         // 先从cookie获取，如果没有就随机生成一个
-        var content:string = null;
         var json:Map<string, any> = null;
         if (document.cookie != null && document.cookie != "")
         {

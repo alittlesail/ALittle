@@ -43,7 +43,37 @@ public class ControlSystem
         this._texture_mgr = new TextureManager(module_name, this._crypt_mode);
         A_LoadTextureManager.RegisterTexmgrControl(this._texture_mgr);
     }
-
+    
+    private async fun RegisterInfoByHttpImpl(string host, int port, string base_path, List<string> name_list, ALittle.Thread thread)
+    {
+        var host = location.host;
+        var port = ALittle.Math_ToInt(location.port);
+        
+        for (var index, name in name_list)
+        {
+			var error, content = ALittle.HttpDownloadRequest(host, port, base_path.."../UI/"..name..".json");
+            if (error != null)
+            {
+                ALittle.Error("ui load failed:"..error);
+                continue;
+            }
+            var jerror, json = tcall(ALittle.String_JsonDecode, content.GetContent());
+            if (jerror != null)
+            {
+                ALittle.Error("ui json decode failed:"..jerror);
+                continue;
+            }
+            g_Control.RegisterInfo(name, json);
+        }
+        
+        Coroutine.Resume(thread);
+    }
+    
+    public await fun RegisterInfoByHttp(string host, int port, string base_path, List<string> name_list)
+    {
+        this.RegisterInfoByHttpImpl(host, port, base_path, name_list, co);
+    }
+    
     public fun RegisterInfo(string name, DisplayInfo info)
     {
         this._name_map_info[name] = info;

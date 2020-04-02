@@ -3,20 +3,20 @@ if (typeof ALittle === "undefined") ALittle = {};
 
 
 ALittle.IConfigSystem = JavaScript.Class(undefined, {
-	GetConfig : function(key, default) {
-		return default;
+	GetConfig : function(key, defaultv) {
+		return defaultv;
 	},
-	GetBool : function(key, default) {
-		return default;
+	GetBool : function(key, defaultv) {
+		return defaultv;
 	},
-	GetInt : function(key, default) {
-		return default;
+	GetInt : function(key, defaultv) {
+		return defaultv;
 	},
-	GetDouble : function(key, default) {
-		return default;
+	GetDouble : function(key, defaultv) {
+		return defaultv;
 	},
-	GetString : function(key, default) {
-		return default;
+	GetString : function(key, defaultv) {
+		return defaultv;
 	},
 	SetConfig : function(key, value, not_save) {
 	},
@@ -46,33 +46,33 @@ ALittle.ConfigSystem = JavaScript.Class(ALittle.IConfigSystem, {
 		}
 		this._config_map = json_content;
 	},
-	GetConfig : function(key, default) {
+	GetConfig : function(key, defaultv) {
 		let value = this._config_map[key];
 		if (value === undefined) {
-			return default;
+			return defaultv;
 		}
 		return value;
 	},
-	GetBool : function(key, default) {
-		let value = this.GetConfig(key, default);
+	GetBool : function(key, defaultv) {
+		let value = this.GetConfig(key, defaultv);
 		return value !== undefined && value !== false;
 	},
-	GetInt : function(key, default) {
-		let value = this.GetConfig(key, default);
+	GetInt : function(key, defaultv) {
+		let value = this.GetConfig(key, defaultv);
 		if (value === undefined) {
 			value = 0;
 		}
 		return value;
 	},
-	GetDouble : function(key, default) {
-		let value = this.GetConfig(key, default);
+	GetDouble : function(key, defaultv) {
+		let value = this.GetConfig(key, defaultv);
 		if (value === undefined) {
 			value = 0;
 		}
 		return value;
 	},
-	GetString : function(key, default) {
-		let value = this.GetConfig(key, default);
+	GetString : function(key, defaultv) {
+		let value = this.GetConfig(key, defaultv);
 		if (value === undefined) {
 			value = "";
 		}

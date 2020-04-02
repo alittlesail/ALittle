@@ -618,14 +618,30 @@ public static CreateHttpSender(string ip, int port) : IHttpSender
     return new HttpSenderTemplate<JavaScript.JHttpInterface>(ip, port);
 }
 
+public await static HttpRequest(string ip, int port, string path) : string, string
+{
+    var sender = CreateHttpSender(ip, port);
+    
+    if (co == null) return "当前不是协程", null;
+    sender.SendRPC(co, path, null);
+    return yield;
+}
+
 public static CreateHttpFileSender(string ip, int port, string file_path, int start_size, [Nullable] Functor<(IHttpFileSenderNative)> callback) : IHttpFileSender
 {
     [Language(Lua)]
     return new HttpFileSenderTemplate<lua.__CPPAPIHttpFileInterface>(ip, port, file_path, start_size, callback);
     [Language(JavaScript)]
-    Error("not support CreateHttpFileSender");
-    [Language(JavaScript)]
-    return null;
+    return new HttpFileSenderTemplate<JavaScript.JHttpFileInterface>(ip, port, file_path, start_size, callback);
+}
+
+public await static HttpDownloadRequest(string ip, int port, string file_path, [Nullable] Functor<(IHttpFileSenderNative)> callback) : string, IHttpFileSender
+{
+    var sender = CreateHttpFileSender(ip, port, file_path, 0, callback);
+    
+    if (co == null) return "当前不是协程", null;
+    sender.SendDownloadRPC(co, file_path, null);
+    return yield;
 }
 
 [Language(Lua)]
@@ -636,7 +652,3 @@ public using TextureLoader = lua.__CPPAPITextureLoader;
 public using RenderTexture = lua.__CPPAPIRenderTexture;
 [Language(Lua)]
 public using TextureCutLoader = lua.__CPPAPITextureCutLoader;
-[Language(Lua)]
-public using CSVFileLoader = lua.__CPPAPICsvFileLoader;
-[Language(Lua)]
-public using CSVFile = lua.__CPPAPICsvFile;

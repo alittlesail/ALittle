@@ -31,6 +31,10 @@ G2048.__Module_Setup = async function(layer_group, control, base_path, debug) {
 	G2048.g_Control = control;
 	G2048.g_LayerGroup = layer_group;
 	G2048.g_ModuleBasePath = base_path;
+	{
+		let name_list = ["item_2", "item_4", "item_8", "item_16", "item_32", "item_64", "item_128", "item_256", "item_512", "item_1024", "item_2048", "main_menu", "main_scene"];
+		await G2048.g_Control.RegisterInfoByHttp(location.host, ALittle.Math_ToInt(location.port), base_path, name_list);
+	}
 	await alittle.Require(base_path + "GCenter");
 	G2048.g_GCenter.Setup();
 }

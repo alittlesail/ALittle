@@ -23,7 +23,7 @@ ALittle.MsgSenderTemplate = JavaScript.Class(ALittle.IMsgCommonTemplate, {
 		this._callback = callback;
 	},
 	Connect : function(ip, port) {
-		return new Promise(function(___COROUTINE, ___) {
+		return new Promise(async function(___COROUTINE, ___) {
 			if (ip === undefined) {
 				ip = "";
 			}

@@ -51,7 +51,7 @@ public class LoopList : LoopObject
             {
                 if (this._cur_index > index)
                     -- this._cur_index;
-                Remove(this._update_list, index);
+                List_Remove(this._update_list, index);
                 -- this._count;
                 break;
             }

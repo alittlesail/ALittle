@@ -101,7 +101,6 @@ ALittle.ModuleSystem = JavaScript.Class(undefined, {
 			return false;
 		}
 		info.plugin_loaded = true;
-		let module_base_path = "Module/" + module_name;
 		setup_func(info.control, module_base_path, this._debug);
 		return true;
 	},

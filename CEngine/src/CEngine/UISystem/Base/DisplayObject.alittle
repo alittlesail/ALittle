@@ -1,11 +1,10 @@
 
 namespace ALittle;
 
-private var __cos = lua.math.cos;
-private var __sin = lua.math.sin;
-private var __byte = lua.String.byte;
-private var __type = lua.type;
-private var __concat = lua.table.concat;
+private var __cos = Math_Cos;
+private var __sin = Math_Sin;
+private var __byte = String_Byte;
+private var __type = String_Type;
 
 public struct EventInfo
 {
@@ -320,7 +319,7 @@ public class DisplayObject : UIEventDispatcher
     public get selected() : bool { return null; }
     public set selected(bool value) {}
     public get font_height() : int { return null; }
-
+    
     public fun SetTextureCoord(double t, double b, double l, double r) {}
     public get texture() : lua.__CPPAPITextureWrap { return null; }
     public set texture(lua.__CPPAPITextureWrap value) {}

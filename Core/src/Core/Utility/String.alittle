@@ -52,6 +52,16 @@ public static String_Byte(string s, int index) : int
     return cast<javascript.String>(s).charCodeAt(index - 1);
 }
 
+// 获取类型
+public static String_Type(any v) : string
+{
+    [Language(Lua)]
+    return lua.type(v);
+    
+    [Language(JavaScript)]
+    return javascript.typeof(v);
+}
+
 // 获取子串长度
 public static String_Len(string s) : int
 {

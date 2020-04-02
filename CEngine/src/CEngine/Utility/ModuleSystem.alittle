@@ -178,9 +178,6 @@ class ModuleSystem
         }
         info.plugin_loaded = true;
     
-        // 模块基本路径
-        var module_base_path = "Module/" .. module_name;
-    
         // 传入debug，层组，资源对象
         setup_func(info.control, module_base_path, this._debug);
     

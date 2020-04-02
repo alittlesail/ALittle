@@ -1,10 +1,10 @@
 
 namespace ALittle;
 
-private var __remove = lua.table.remove;
-private var __insert = lua.table.insert;
-private var __cos = lua.math.cos;
-private var __sin = lua.math.sin;
+private var __remove = List_Remove;
+private var __insert = List_Insert;
+private var __cos = Math_Cos;
+private var __sin = Math_Sin;
 
 public class DisplayGroup : DisplayObject
 {

@@ -4,7 +4,7 @@ if (typeof ALittle === "undefined") ALittle = {};
 
 ALittle.IHttpFileReceiver = JavaScript.Class(undefined, {
 	StartReceiveFile : function(file_path, start_size) {
-		return new Promise(function(___COROUTINE, ___) {
+		return new Promise(async function(___COROUTINE, ___) {
 			___COROUTINE("not impl"); return;
 			___COROUTINE();
 		});

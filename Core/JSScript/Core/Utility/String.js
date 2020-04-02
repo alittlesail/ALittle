@@ -18,6 +18,10 @@ ALittle.String_Byte = function(s, index) {
 	return s.charCodeAt(index - 1);
 }
 
+ALittle.String_Type = function(v) {
+	return typeof(v);
+}
+
 ALittle.String_Len = function(s) {
 	return s.length;
 }

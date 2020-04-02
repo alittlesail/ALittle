@@ -15,11 +15,8 @@ public class CsvConfig
         this.Init(lua_loader);
         
         [Language(JavaScript)]
-        var js_loader = new JavaScript.JCsvFile();
-        [Language(JavaScript)]
-        assert(js_loader.Load(file_path, String_Join(name_list, ",")), file_path.." load failed!");
-        [Language(JavaScript)]
-        this.Init(js_loader);
+        Error("not support Load");
+        
         Log(file_path.." load succeed!");
     }
     

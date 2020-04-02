@@ -52,11 +52,11 @@ public static ExecuteCommand(string cmd)
     {
         var method_list = new List<string>();
         for (var method_name, info in __all_callback)
-            Push(method_list, method_name);
-        Sort(method_list);
+            List_Push(method_list, method_name);
+        List_Sort(method_list);
         var out_list = new List<string>();
-        Push(out_list, "");
-        Push(out_list, "help 打印当前模块支持的指令列表");
+        List_Push(out_list, "");
+        List_Push(out_list, "help 打印当前模块支持的指令列表");
         for (var index, method_name in method_list)
         {
             var info = __all_callback[method_name];
@@ -64,7 +64,7 @@ public static ExecuteCommand(string cmd)
             for (var i, v in info.var_list)
                 detail = detail..v.." "..info.name_list[i].." ";
             detail = detail..info.desc;
-            Push(out_list, detail);
+            List_Push(out_list, detail);
         }
         Log(String_Join(out_list, "\n"));
         return;
@@ -105,7 +105,7 @@ public static ExecuteCommand(string cmd)
                 // 如果当前已经收集到字符，那么就要做切割
                 else
                 {
-                    Push(param_list, String_Sub(param, index, i - 1));
+                    List_Push(param_list, String_Sub(param, index, i - 1));
                     ++i;
                     index = i;
                 }
@@ -120,13 +120,13 @@ public static ExecuteCommand(string cmd)
                 in_quote = false;
                 if (index == i)
                 {
-                    Push(param_list, "");
+                    List_Push(param_list, "");
                     ++i;
                     index = i;
                 }
                 else
                 {
-                    Push(param_list, String_Sub(param, index, i - 1));
+                    List_Push(param_list, String_Sub(param, index, i - 1));
                     ++i;
                     index = i;
                 }
@@ -136,7 +136,7 @@ public static ExecuteCommand(string cmd)
                 in_quote = true;
                 if (index != i)
                 {
-                    Push(param_list, String_Sub(param, index, i - 1));
+                    List_Push(param_list, String_Sub(param, index, i - 1));
                     ++i;
                     index = i;
                 }
@@ -150,13 +150,13 @@ public static ExecuteCommand(string cmd)
 
     if (index != i)
     {
-        Push(param_list, String_Sub(param, index, i - 1));
+        List_Push(param_list, String_Sub(param, index, i - 1));
         ++i;
         index = i;
     }
 
-    len = MaxN(param_list);
-    var need_len = MaxN(info.var_list);
+    len = List_MaxN(param_list);
+    var need_len = List_MaxN(info.var_list);
     if (len != need_len)
     {
         Warn("输入的参数数量"..len.."和指令要求"..need_len.."的不一致");

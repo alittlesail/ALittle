@@ -37,7 +37,7 @@ ALittle.ICsvFileLoader = JavaScript.Class(undefined, {
 
 let floor = ALittle.Math_Floor;
 let tonumber = ALittle.Math_ToDouble;
-let maxn = ALittle.MaxN;
+let maxn = ALittle.List_MaxN;
 let Csv_ReadBool = function(content, value) {
 	return lua.String.upper(content) === "TRUE";
 }

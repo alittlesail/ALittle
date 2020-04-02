@@ -83,7 +83,7 @@ ALittle.File_PathEndWithSplit = function(file_path) {
 
 ALittle.File_GetFileNameByPath = function(file_path) {
 	let list = ALittle.String_SplitSepList(file_path, ["/", "\\"]);
-	let l = ALittle.MaxN(list);
+	let l = ALittle.List_MaxN(list);
 	if (l <= 0) {
 		return file_path;
 	}
@@ -97,7 +97,7 @@ ALittle.File_GetFilePathByPath = function(file_path) {
 
 ALittle.File_GetFileExtByPath = function(file_path) {
 	let list = ALittle.String_Split(file_path, ".");
-	let l = ALittle.MaxN(list);
+	let l = ALittle.List_MaxN(list);
 	if (l <= 0) {
 		return file_path;
 	}
@@ -111,7 +111,7 @@ ALittle.File_GetFileExtByPathAndUpper = function(file_path) {
 ALittle.File_GetJustFileNameByPath = function(file_path) {
 	let new_file_path = ALittle.File_GetFileNameByPath(file_path);
 	let list = ALittle.String_Split(new_file_path, ".");
-	let l = ALittle.MaxN(list);
+	let l = ALittle.List_MaxN(list);
 	if (l <= 1) {
 		return new_file_path;
 	}

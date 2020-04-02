@@ -39,7 +39,7 @@ ALittle.ConfigSystem = JavaScript.Class(ALittle.IConfigSystem, {
 			}
 			return;
 		}
-		let [error, json_content] = (function() { try { let ___VALUE = ALittle.String_JsonDecode.call(undefined, content); return [undefined, ___VALUE]; } catch (___ERROR) { return [___ERROR.message]; } })();
+		let [error, json_content] = (function() { try { let ___VALUE = ALittle.String_JsonDecode.call(undefined, content); return [undefined, ___VALUE]; } catch (___ERROR) { return [___ERROR.message]; } }).call(this);
 		if (error !== undefined) {
 			ALittle.Log("Json Decode failed." + file_path + ", " + error);
 			return;

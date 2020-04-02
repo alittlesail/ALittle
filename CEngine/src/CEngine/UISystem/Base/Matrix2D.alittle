@@ -1,8 +1,8 @@
 
 namespace ALittle;
 
-private var __cos = lua.math.cos;
-private var __sin = lua.math.sin;
+private var __cos = Math_Cos;
+private var __sin = Math_Sin;
 
 public class Matrix2D
 {

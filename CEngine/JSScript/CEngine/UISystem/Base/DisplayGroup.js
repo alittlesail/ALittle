@@ -2,10 +2,10 @@
 if (typeof ALittle === "undefined") ALittle = {};
 
 
-let __remove = lua.table.remove;
-let __insert = lua.table.insert;
-let __cos = lua.math.cos;
-let __sin = lua.math.sin;
+let __remove = ALittle.List_Remove;
+let __insert = ALittle.List_Insert;
+let __cos = ALittle.Math_Cos;
+let __sin = ALittle.Math_Sin;
 if (ALittle.DisplayObject === undefined) throw new Error(" extends class:ALittle.DisplayObject is undefined");
 ALittle.DisplayGroup = JavaScript.Class(ALittle.DisplayObject, {
 	Ctor : function(ctrl_sys) {

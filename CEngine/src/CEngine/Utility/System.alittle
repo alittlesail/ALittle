@@ -157,7 +157,7 @@ public static System_StartServerSystem(string core_path, Map<string, string> mod
 {
     var module_list = new List<string>();
     for (var name, path in modules)
-        Push(module_list, name..","..path);
+        List_Push(module_list, name..","..path);
     return __CPPAPI_ScheduleSystem.StartServerSystem(core_path, String_Join(module_list, ";"));
 }
 ////线程部分//////////////////////////////////////////////////////////////////////

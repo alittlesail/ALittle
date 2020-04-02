@@ -20,7 +20,7 @@ ALittle.HttpFileReceiverTemplate = JavaScript.Class(ALittle.IHttpFileReceiver, {
 		this._interface = ALittle.NewObject(this.__class.__element[0]);
 	},
 	StartReceiveFile : function(file_path, start_size) {
-		return new Promise(function(___COROUTINE, ___) {
+		return new Promise(async function(___COROUTINE, ___) {
 			if (this._received) {
 				___COROUTINE("StartReceiveFile已经被调用过"); return;
 			}

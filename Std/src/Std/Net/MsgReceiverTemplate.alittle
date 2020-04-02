@@ -31,7 +31,7 @@ public class MsgReceiverTemplate<NATIVE : IMsgCommonNative, WFATCORY : IMessageW
         this._web_account_id = "";
         this._web_is_logining = false;
     }
-
+    
     public get remote_ip() : string { return this._remote_ip; }
     public get remote_port() : int { return this._remote_port; }
 

@@ -10,6 +10,28 @@ private var random = lua.math.random;
 private var randomseed = lua.math.randomseed;
 [Language(Lua)]
 private var abs = lua.math.abs;
+[Language(Lua)]
+private var cos = lua.math.cos;
+[Language(Lua)]
+private var sin = lua.math.sin;
+
+public static Math_Sin(double v) : double
+{
+    [Language(Lua)]
+    return sin(v);
+    
+    [Language(JavaScript)]
+    return javascript.Math.sin(v);
+}
+
+public static Math_Cos(double v) : double
+{
+    [Language(Lua)]
+    return cos(v);
+    
+    [Language(JavaScript)]
+    return javascript.Math.cos(v);
+}
 
 public static Math_Abs(double v) : double
 {

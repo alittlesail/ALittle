@@ -73,7 +73,7 @@ public class LayerManager
             if (index < 1) index = 1;
             var back_child = this._normal_groups[index];
             __CPPAPI_DisplaySystem.AddChildBefore(back_child.native_show, child.native_show);
-            Insert(this._normal_groups, index, child);
+            List_Insert(this._normal_groups, index, child);
             ++ this._normal_group_count;
         }
         // 设置层的宽高，层的大小总是跟窗口的大小一样
@@ -91,7 +91,7 @@ public class LayerManager
         {
             if (value == child)
             {
-                Remove(this._normal_groups, index);
+                List_Remove(this._normal_groups, index);
                 has_layer = true;
                 break;
             }

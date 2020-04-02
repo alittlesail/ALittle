@@ -43,12 +43,12 @@ ALittle.ExecuteCommand = function(cmd) {
 		for (let method_name in ___OBJECT_1) {
 			let info = ___OBJECT_1[method_name];
 			if (info === undefined) continue;
-			ALittle.Push(method_list, method_name);
+			ALittle.List_Push(method_list, method_name);
 		}
-		ALittle.Sort(method_list);
+		ALittle.List_Sort(method_list);
 		let out_list = [];
-		ALittle.Push(out_list, "");
-		ALittle.Push(out_list, "help 打印当前模块支持的指令列表");
+		ALittle.List_Push(out_list, "");
+		ALittle.List_Push(out_list, "help 打印当前模块支持的指令列表");
 		let ___OBJECT_2 = method_list;
 		for (let index = 1; index <= ___OBJECT_2.length; ++index) {
 			let method_name = ___OBJECT_2[index - 1];
@@ -62,7 +62,7 @@ ALittle.ExecuteCommand = function(cmd) {
 				detail = detail + v + " " + info.name_list[i - 1] + " ";
 			}
 			detail = detail + info.desc;
-			ALittle.Push(out_list, detail);
+			ALittle.List_Push(out_list, detail);
 		}
 		ALittle.Log(ALittle.String_Join(out_list, "\n"));
 		return;
@@ -87,7 +87,7 @@ ALittle.ExecuteCommand = function(cmd) {
 					++ i;
 					index = i;
 				} else {
-					ALittle.Push(param_list, ALittle.String_Sub(param, index, i - 1));
+					ALittle.List_Push(param_list, ALittle.String_Sub(param, index, i - 1));
 					++ i;
 					index = i;
 				}
@@ -96,18 +96,18 @@ ALittle.ExecuteCommand = function(cmd) {
 			if (in_quote) {
 				in_quote = false;
 				if (index === i) {
-					ALittle.Push(param_list, "");
+					ALittle.List_Push(param_list, "");
 					++ i;
 					index = i;
 				} else {
-					ALittle.Push(param_list, ALittle.String_Sub(param, index, i - 1));
+					ALittle.List_Push(param_list, ALittle.String_Sub(param, index, i - 1));
 					++ i;
 					index = i;
 				}
 			} else {
 				in_quote = true;
 				if (index !== i) {
-					ALittle.Push(param_list, ALittle.String_Sub(param, index, i - 1));
+					ALittle.List_Push(param_list, ALittle.String_Sub(param, index, i - 1));
 					++ i;
 					index = i;
 				}
@@ -117,12 +117,12 @@ ALittle.ExecuteCommand = function(cmd) {
 		}
 	}
 	if (index !== i) {
-		ALittle.Push(param_list, ALittle.String_Sub(param, index, i - 1));
+		ALittle.List_Push(param_list, ALittle.String_Sub(param, index, i - 1));
 		++ i;
 		index = i;
 	}
-	len = ALittle.MaxN(param_list);
-	let need_len = ALittle.MaxN(info.var_list);
+	len = ALittle.List_MaxN(param_list);
+	let need_len = ALittle.List_MaxN(info.var_list);
 	if (len !== need_len) {
 		ALittle.Warn("输入的参数数量" + len + "和指令要求" + need_len + "的不一致");
 		return;

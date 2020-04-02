@@ -36,7 +36,7 @@ public struct CsvInvokeInfo
 
 private var floor = Math_Floor;
 private var tonumber = Math_ToDouble;
-private var maxn = MaxN;
+private var maxn = List_MaxN;
 
 private static Csv_ReadBool(string content, CsvInvokeInfo value) : bool
 {

@@ -19,7 +19,7 @@ ALittle.IHttpFileSender = JavaScript.Class(undefined, {
 		throw new Error("not impl");
 	},
 	InvokeDownload : function(method, client, content) {
-		return new Promise(function(___COROUTINE, ___) {
+		return new Promise(async function(___COROUTINE, ___) {
 			if (___COROUTINE === undefined) {
 				___COROUTINE("当前不是协程"); return;
 			}
@@ -29,7 +29,7 @@ ALittle.IHttpFileSender = JavaScript.Class(undefined, {
 		});
 	},
 	InvokeUpload : function(method, client, content) {
-		return new Promise(function(___COROUTINE, ___) {
+		return new Promise(async function(___COROUTINE, ___) {
 			if (___COROUTINE === undefined) {
 				___COROUTINE(["当前不是协程", undefined]); return;
 			}

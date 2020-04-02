@@ -40,7 +40,7 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 		ALittle.Coroutine.Resume(thread);
 	},
 	RegisterInfoByHttp : function(host, port, base_path, name_list) {
-		return new Promise(function(___COROUTINE, ___) {
+		return new Promise(async function(___COROUTINE, ___) {
 			this.RegisterInfoByHttpImpl(host, port, base_path, name_list, ___COROUTINE);
 			___COROUTINE();
 		});

@@ -2,8 +2,8 @@
 if (typeof ALittle === "undefined") ALittle = {};
 
 
-let __cos = lua.math.cos;
-let __sin = lua.math.sin;
+let __cos = ALittle.Math_Cos;
+let __sin = ALittle.Math_Sin;
 ALittle.Matrix2D = JavaScript.Class(undefined, {
 	Ctor : function() {
 		let m = new Map();

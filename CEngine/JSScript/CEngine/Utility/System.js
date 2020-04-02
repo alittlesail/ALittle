@@ -77,7 +77,7 @@ ALittle.System_StartServerSystem = function(core_path, modules) {
 	for (let name in ___OBJECT_1) {
 		let path = ___OBJECT_1[name];
 		if (path === undefined) continue;
-		ALittle.Push(module_list, name + "," + path);
+		ALittle.List_Push(module_list, name + "," + path);
 	}
 	return __CPPAPI_ScheduleSystem.StartServerSystem(core_path, ALittle.String_Join(module_list, ";"));
 }

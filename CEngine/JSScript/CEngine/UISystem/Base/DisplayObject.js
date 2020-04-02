@@ -15,11 +15,10 @@ type_list : ["List<string>","any","Map<string,any>","Map<string,any>","Map<strin
 option_map : {}
 })
 
-let __cos = lua.math.cos;
-let __sin = lua.math.sin;
-let __byte = lua.String.byte;
-let __type = lua.type;
-let __concat = lua.table.concat;
+let __cos = ALittle.Math_Cos;
+let __sin = ALittle.Math_Sin;
+let __byte = ALittle.String_Byte;
+let __type = ALittle.String_Type;
 if (ALittle.UIEventDispatcher === undefined) throw new Error(" extends class:ALittle.UIEventDispatcher is undefined");
 ALittle.DisplayObject = JavaScript.Class(ALittle.UIEventDispatcher, {
 	Ctor : function(ctrl_sys) {

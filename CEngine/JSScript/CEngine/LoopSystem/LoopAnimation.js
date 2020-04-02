@@ -110,7 +110,7 @@ ALittle.LoopAnimation = JavaScript.Class(undefined, {
 		this._group.Start();
 	},
 	AsyncPlay : function(loop) {
-		return new Promise(function(___COROUTINE, ___) {
+		return new Promise(async function(___COROUTINE, ___) {
 			this.ReleaseCo("AsyncPlay被调用");
 			if (this._group === undefined) {
 				___COROUTINE("this._group == null"); return;

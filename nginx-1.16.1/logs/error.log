@@ -1,3 +1,6 @@
 2020/04/02 10:31:30 [error] 7608#6812: *1 CreateFile() "D:\Software\ALittle\trunk\nginx-1.16.1/../favicon.ico" failed (2: The system cannot find the file specified), client: 127.0.0.1, server: localhost, request: "GET /favicon.ico HTTP/1.1", host: "localhost", referrer: "http://localhost/"
 2020/04/02 12:20:18 [error] 7608#6812: *93 CreateFile() "D:\Software\ALittle\trunk\nginx-1.16.1/../favicon.ico" failed (2: The system cannot find the file specified), client: 127.0.0.1, server: localhost, request: "GET /favicon.ico HTTP/1.1", host: "localhost", referrer: "http://localhost/G2048/index.html"
 2020/04/02 12:47:23 [notice] 21160#15712: signal process started
+2020/04/02 14:26:25 [notice] 20656#16264: signal process started
+2020/04/02 14:26:25 [error] 20656#16264: CreateFile() "D:\Software\ALittle\trunk\nginx-1.16.1/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2020/04/02 18:11:36 [notice] 17920#3660: signal process started

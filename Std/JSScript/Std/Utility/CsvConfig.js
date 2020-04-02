@@ -12,9 +12,7 @@ option_map : {}
 ALittle.CsvConfig = JavaScript.Class(undefined, {
 	Load : function(file_path) {
 		let name_list = this.GetFieldNameList();
-		let js_loader = ALittle.NewObject(JavaScript.JCsvFile);
-		JavaScript.Assert(js_loader.Load(file_path, ALittle.String_Join(name_list, ",")), file_path + " load failed!");
-		this.Init(js_loader);
+		ALittle.Error("not support Load");
 		ALittle.Log(file_path + " load succeed!");
 	},
 	GetFieldNameList : function() {
@@ -28,7 +26,7 @@ if (ALittle.CsvConfig === undefined) throw new Error(" extends class:ALittle.Csv
 ALittle.CsvTableConfig = JavaScript.Class(ALittle.CsvConfig, {
 	Ctor : function() {
 		let error = undefined;
-		[error, this._csv_info] = (function() { try { let ___VALUE = ALittle.CreateCsvInfo.call(undefined, this.__class.__element[0]); return [undefined, ___VALUE]; } catch (___ERROR) { return [___ERROR.message]; } })();
+		[error, this._csv_info] = (function() { try { let ___VALUE = ALittle.CreateCsvInfo.call(undefined, this.__class.__element[0]); return [undefined, ___VALUE]; } catch (___ERROR) { return [___ERROR.message]; } }).call(this);
 		if (error !== undefined) {
 			ALittle.Error(error);
 		}

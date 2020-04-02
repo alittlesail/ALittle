@@ -38,7 +38,7 @@ ALittle.LoopList = JavaScript.Class(ALittle.LoopObject, {
 				if (this._cur_index > index) {
 					-- this._cur_index;
 				}
-				ALittle.Remove(this._update_list, index);
+				ALittle.List_Remove(this._update_list, index);
 				-- this._count;
 				break;
 			}

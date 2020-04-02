@@ -266,7 +266,7 @@ public static File_PathEndWithSplit(string file_path) : string
 public static File_GetFileNameByPath(string file_path) : string
 {
     var list = String_SplitSepList(file_path, ["/","\\"]);
-    var l = MaxN(list);
+    var l = List_MaxN(list);
     if (l <= 0) return file_path;
     return list[l];
 }
@@ -282,7 +282,7 @@ public static File_GetFilePathByPath(string file_path) : string
 public static File_GetFileExtByPath(string file_path) : string
 {
     var list = String_Split(file_path, ".");
-    var l = MaxN(list);
+    var l = List_MaxN(list);
     if (l <= 0) return file_path;
     return list[l];
 }
@@ -298,7 +298,7 @@ public static File_GetJustFileNameByPath(string file_path) : string
 {
     var new_file_path = File_GetFileNameByPath(file_path);
     var list = String_Split(new_file_path, ".");
-    var l = MaxN(list);
+    var l = List_MaxN(list);
     if (l <= 1) return new_file_path;
     return list[l - 1];
 }

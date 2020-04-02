@@ -12,15 +12,29 @@ public async static __ALITTLEAPI_CEngine_Init(string base_path, Functor<()> call
     }
     
     Require(base_path.."CEngine/Utility/String");
+    Require(base_path.."CEngine/Utility/File");
+    Require(base_path.."CEngine/Utility/ModuleSystem");
     Require(base_path.."CEngine/Utility/System");
     Require(base_path.."CEngine/Utility/ConfigSystem");
     Require(base_path.."CEngine/Utility/AudioSystem");
     Require(base_path.."CEngine/Utility/OtherSystem");
+    Require(base_path.."CEngine/Utility/CsvConfigManager");
     
     Require(base_path.."CEngine/LoopSystem/LoopAnimation");
     Require(base_path.."CEngine/LoopSystem/LoopAttribute");
     Require(base_path.."CEngine/LoopSystem/LoopLinear");
     Require(base_path.."CEngine/LoopSystem/LoopRit");
+    
+    Require(base_path.."CEngine/UISystem/UIEnumTypes");
+    Require(base_path.."CEngine/UISystem/UIEventDispatcher");
+    
+    Require(base_path.."CEngine/UISystem/Base/Matrix2D");
+    Require(base_path.."CEngine/UISystem/Base/DisplayObject");
+    Require(base_path.."CEngine/UISystem/Base/DisplayGroup");
+    Require(base_path.."CEngine/UISystem/Base/DisplayLayout");
+    
+    Require(base_path.."CEngine/UISystem/UISystem");
+    Require(base_path.."CEngine/UISystem/LayerManager");
     
     ALittle.System_CreateView("test", 800, 600, 0, 0);
     if (callback != null) callback();

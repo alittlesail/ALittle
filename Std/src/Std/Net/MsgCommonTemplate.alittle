@@ -189,7 +189,7 @@ public class IMsgCommonTemplate : IMsgCommon
         info.rpc_id = rpc_id;
         this._id_map_rpc[rpc_id] = info;
     }
-
+    
     // 处理RPC请求
     private async fun HandleRPCRequest(int id, int rpc_id, IMessageReadFactory factory)
     {

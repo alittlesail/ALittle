@@ -10,14 +10,25 @@ __ALITTLEAPI_CEngine_Init = async function(base_path, callback) {
 		await Require(base_path + "Adapter/JavaScript/JSystem");
 	}
 	await Require(base_path + "CEngine/Utility/String");
+	await Require(base_path + "CEngine/Utility/File");
+	await Require(base_path + "CEngine/Utility/ModuleSystem");
 	await Require(base_path + "CEngine/Utility/System");
 	await Require(base_path + "CEngine/Utility/ConfigSystem");
 	await Require(base_path + "CEngine/Utility/AudioSystem");
 	await Require(base_path + "CEngine/Utility/OtherSystem");
+	await Require(base_path + "CEngine/Utility/CsvConfigManager");
 	await Require(base_path + "CEngine/LoopSystem/LoopAnimation");
 	await Require(base_path + "CEngine/LoopSystem/LoopAttribute");
 	await Require(base_path + "CEngine/LoopSystem/LoopLinear");
 	await Require(base_path + "CEngine/LoopSystem/LoopRit");
+	await Require(base_path + "CEngine/UISystem/UIEnumTypes");
+	await Require(base_path + "CEngine/UISystem/UIEventDispatcher");
+	await Require(base_path + "CEngine/UISystem/Base/Matrix2D");
+	await Require(base_path + "CEngine/UISystem/Base/DisplayObject");
+	await Require(base_path + "CEngine/UISystem/Base/DisplayGroup");
+	await Require(base_path + "CEngine/UISystem/Base/DisplayLayout");
+	await Require(base_path + "CEngine/UISystem/UISystem");
+	await Require(base_path + "CEngine/UISystem/LayerManager");
 	ALittle.System_CreateView("test", 800, 600, 0, 0);
 	if (callback !== undefined) {
 		callback();

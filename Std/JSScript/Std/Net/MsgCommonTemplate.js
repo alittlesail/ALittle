@@ -162,7 +162,7 @@ ALittle.IMsgCommonTemplate = JavaScript.Class(ALittle.IMsgCommon, {
 			ALittle.Log("MsgSystem.HandleMessage MessageRead failed by id:" + id);
 			return;
 		}
-		let [error, return_body] = await (function() { return new Promise(async function(___COROUTINE, _) { try { let ___VALUE = await callback.call(this, msg); ___COROUTINE([undefined, ___VALUE]); } catch (___ERROR) { ___COROUTINE([___ERROR.message]); } }); })();
+		let [error, return_body] = await (async function() { try { let ___VALUE = await callback.call(this, msg); return [undefined, ___VALUE]; } catch (___ERROR) { return [___ERROR.message]; } }).call(this);
 		if (error !== undefined) {
 			this.SendRpcError(rpc_id, error);
 			ALittle.Log("MsgSystem.HandleMessage callback invoke failed! by id:" + id + ", reason:" + error);

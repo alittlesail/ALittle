@@ -6,6 +6,14 @@ ALittle.IMsgCommon = JavaScript.Class(undefined, {
 	IsConnected : function() {
 		return false;
 	},
+	HandleConnectSucceed : function() {
+	},
+	HandleDisconnect : function() {
+	},
+	HandleConnectFailed : function(reason) {
+	},
+	HandleMessage : function(id, rpc_id, factory) {
+	},
 	Send : function(msg_id, msg_body, rpc_id) {
 		throw new Error("not impl");
 	},

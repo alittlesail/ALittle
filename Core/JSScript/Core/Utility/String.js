@@ -127,4 +127,52 @@ ALittle.String_Replace = function(s, os, ns) {
 	return s.replace(os, ns);
 }
 
+ALittle.String_CopyTable = function(info) {
+	{
+		if (typeof(info) === "object") {
+			if (info.__proto__.constructor === Array) {
+				let new_info = [];
+				let ___OBJECT_2 = info;
+				for (let key = 1; key <= ___OBJECT_2.length; ++key) {
+					let value = ___OBJECT_2[key - 1];
+					if (value === undefined) break;
+					if (typeof(info) !== "object") {
+						new_info[key - 1] = value;
+					} else {
+						new_info[key - 1] = ALittle.String_CopyTable(value);
+					}
+				}
+				return new_info;
+			}
+			if (info.__proto__.constructor === Map) {
+				let new_info = new Map();
+				for (let [key, value] of info) {
+					if (value === undefined) continue;
+					if (typeof(info) !== "object") {
+						new_info.set(key, value);
+					} else {
+						new_info.set(key, ALittle.String_CopyTable(value));
+					}
+				}
+				return new_info;
+			}
+			if (info.__proto__.constructor === Object) {
+				let new_info = {};
+				let ___OBJECT_3 = info;
+				for (let key in ___OBJECT_3) {
+					let value = ___OBJECT_3[key];
+					if (value === undefined) continue;
+					if (typeof(info) !== "object") {
+						new_info[key] = value;
+					} else {
+						new_info[key] = ALittle.String_CopyTable(value);
+					}
+				}
+				return new_info;
+			}
+		}
+		return info;
+	}
+}
+
 }

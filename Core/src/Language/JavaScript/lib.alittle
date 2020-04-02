@@ -14,3 +14,5 @@ public struct MediaQueryList
 }
 
 public static matchMedia(string text) : MediaQueryList {}
+
+public static typeof(any text) : string {}

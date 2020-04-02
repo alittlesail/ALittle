@@ -48,6 +48,7 @@
     <None Include="src\Language\JavaScript\function.alittle" />
     <None Include="src\Language\JavaScript\json.alittle" />
     <None Include="src\Language\JavaScript\lib.alittle" />
+    <None Include="src\Language\JavaScript\map.alittle" />
     <None Include="src\Language\JavaScript\math.alittle" />
     <None Include="src\Language\JavaScript\navigator.alittle" />
     <None Include="src\Language\JavaScript\object.alittle" />

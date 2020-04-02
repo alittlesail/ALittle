@@ -767,7 +767,7 @@ public class RichEdit : DisplayLayout
         this.AddChild(this._default_text_area);
     
         this._link_map = new Map<string, DisplayObject>();
-        Setweak(this._link_map, false, true);
+        // Setweak(this._link_map, false, true);
     
         this._pickup_rect = true;
         this._pickup_child = false;
@@ -804,7 +804,7 @@ public class RichEdit : DisplayLayout
         // 添加光标闪烁
         if (this._loop == null)
             this._loop = new LoopFunction(bind(this.Update, this), -1, 1, 1);
-        A_WeakLoopSystem.AddUpdater(this._loop);
+        A_LoopSystem.AddUpdater(this._loop);
     }
     
     // 获取光标的位置
@@ -822,7 +822,7 @@ public class RichEdit : DisplayLayout
     public fun ClearLinkMap()
     {
         this._link_map = new Map<string, DisplayObject>();
-        Setweak(this._link_map, false, true);
+        // Setweak(this._link_map, false, true);
     }
     
     // 获取内容高度，如果最后一行是空行，不会算上去

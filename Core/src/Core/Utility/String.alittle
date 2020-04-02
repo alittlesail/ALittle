@@ -202,3 +202,66 @@ public static String_Replace(string s, string os, string ns) : string
     return cast<javascript.String>(s).replace(os, ns);
 }
 
+// 拷贝
+public static String_CopyTable<T>(T info) : T
+{
+    [Language(Lua)]
+    {
+        var new_info = new Map<any, any>();
+        for (var key, value in cast<Map<any, any>>(info))
+        {
+            if (lua.type(value) != "table")
+                new_info[key] = value;
+            else
+                new_info[key] = String_CopyTable(value);
+        }
+        return cast<T>(new_info);   
+    }
+    
+    [Language(JavaScript)]
+    {
+        if (javascript.typeof(info) == "object")
+        {
+            if (cast<javascript.Object>(info).__proto__.constructor == javascript.Array)
+            {
+                var new_info = new List<any>();
+                for (var key, value in cast<List<any>>(info))
+                {
+                    if (javascript.typeof(info) != "object")
+                        new_info[key] = value;
+                    else
+                        new_info[key] = String_CopyTable(value);
+                }
+                return cast<T>(new_info); 
+            }
+            
+            if (cast<javascript.Object>(info).__proto__.constructor == javascript.Map)
+            {
+                var new_info = new Map<any, any>();
+                for (var key, value in cast<Map<any, any>>(info))
+                {
+                    if (javascript.typeof(info) != "object")
+                        new_info[key] = value;
+                    else
+                        new_info[key] = String_CopyTable(value);
+                }
+                return cast<T>(new_info); 
+            }
+            
+            if (cast<javascript.Object>(info).__proto__.constructor == javascript.Object)
+            {
+                var new_info = new Map<string, any>();
+                for (var key, value in cast<Map<string, any>>(info))
+                {
+                    if (javascript.typeof(info) != "object")
+                        new_info[key] = value;
+                    else
+                        new_info[key] = String_CopyTable(value);
+                }
+                return cast<T>(new_info); 
+            }
+        }
+        
+        return info;
+    }
+}

@@ -3,7 +3,7 @@ namespace ALittle;
 
 private var __byte = lua.String.byte;
 private var __sub = lua.String.sub;
-private var __find = Find;
+private var __find = String_Find;
 private var __floor = lua.math.floor;
 private var __len = lua.String.len;
 private var __abs = lua.math.abs;
@@ -613,7 +613,7 @@ public class RichInput : DisplayLayout
         this._default_font_height = 20;
     
         this._link_map = new Map<string, DisplayObject>();
-        Setweak(this._link_map, false, true);
+        // Setweak(this._link_map, false, true);
     
         this._pickup_rect = true;
         this._pickup_child = false;
@@ -648,7 +648,7 @@ public class RichInput : DisplayLayout
         // 添加光标闪烁
         if (this._loop == null)
             this._loop = new LoopFunction(bind(this.Update, this), -1, 1, 1);
-        A_WeakLoopSystem.AddUpdater(this._loop);
+        A_LoopSystem.AddUpdater(this._loop);
     }
     
     // 获取光标的位置
@@ -661,7 +661,7 @@ public class RichInput : DisplayLayout
     public fun ClearLinkMap()
     {
         this._link_map = new Map<string, DisplayObject>();
-        Setweak(this._link_map, false, true);
+        // Setweak(this._link_map, false, true);
     }
     
     // 获取内容宽度

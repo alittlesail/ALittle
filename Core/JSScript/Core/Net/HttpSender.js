@@ -3,6 +3,10 @@ if (typeof ALittle === "undefined") ALittle = {};
 
 
 ALittle.IHttpSender = JavaScript.Class(undefined, {
+	HandleSucceed : function() {
+	},
+	HandleFailed : function(reason) {
+	},
 	SendRPC : function(thread, method, content) {
 		throw new Error("not impl");
 	},

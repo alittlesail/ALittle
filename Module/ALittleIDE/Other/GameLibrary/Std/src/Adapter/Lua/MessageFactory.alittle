@@ -1,0 +1,28 @@
+register namespace lua;
+
+public class __CPPAPIMessageWriteFactory : ALittle.IMessageWriteFactory
+{
+    public fun SetID(int id) {}
+    public fun SetRpcID(int id) {}
+    public fun ResetOffset() {}
+    public fun GetOffset() : int {}
+    public fun SetInt(int offset, int value) {}
+
+    public fun WriteBool(bool value) : int {}
+    public fun WriteInt(int value) : int {}
+    public fun WriteLong(long value) : int {}
+    public fun WriteString(string value) : int {}
+    public fun WriteDouble(double value) : int {}
+}
+
+public class __CPPAPIMessageReadFactory : ALittle.IMessageReadFactory
+{
+    public fun GetTotalSize() : int {}
+    
+    public fun ReadBool() : bool {}
+    public fun ReadInt() : int {}
+    public fun ReadLong() : long {}
+    public fun ReadString() : string {}
+    public fun ReadDouble() : double {}
+    public fun GetReadSize() : int {}
+}

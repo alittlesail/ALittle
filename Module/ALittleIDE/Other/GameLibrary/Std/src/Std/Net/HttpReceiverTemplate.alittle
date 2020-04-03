@@ -1,0 +1,25 @@
+namespace ALittle;
+
+
+public class IHttpReceiverNative
+{
+    public fun Close(int http_id) {}                            // 直接关闭请求
+    public fun SendString(int http_id, string content) {}       // 应答返回字符串
+    public fun SendFile(int http_id, string file_path, int start_size) {}   // 应答返回本地文件
+}
+
+public class HttpReceiverTemplate<NATIVE : IHttpReceiverNative> : IHttpReceiver
+{
+    private int _http_id;
+    private NATIVE _interface;
+    
+    public ctor(int http_id)
+    {
+        this._http_id = http_id;
+        this._interface = new NATIVE();
+    }
+
+    public fun Close() { this._interface.Close(this._http_id); }
+    protected fun SendString(string content) { this._interface.SendString(this._http_id, content); }
+    protected fun SendFile(string file_path, int start_size) { this._interface.SendFile(this._http_id, file_path, start_size); }
+}

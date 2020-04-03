@@ -12,6 +12,7 @@ public async static __Browser_Setup(ALittle.DisplayLayout layer_group
 	var window_height = 1280;
 	var rate = 0.5;
 	var flag = ALittle.UIEnumTypes.VIEW_RESIZABLE;
+    [Language(Lua)]
 	if (ALittle.System_GetPlatform() != "Windows")
 	{
 		var screen_width = ALittle.System_GetScreenWidth();
@@ -52,6 +53,7 @@ public async static __Module_Setup(ALittle.DisplayLayout layer_group, ALittle.Co
     
     [Language(JavaScript)]
     {
+        ALittle.Log(base_path);
         var name_list = ["item_2", "item_4", "item_8", "item_16", "item_32", "item_64", "item_128"
 						, "item_256", "item_512", "item_1024", "item_2048"
 						, "main_menu", "main_scene"];

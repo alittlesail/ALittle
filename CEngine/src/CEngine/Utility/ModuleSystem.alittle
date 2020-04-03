@@ -72,7 +72,9 @@ class ModuleSystem
         if (cast<Map<string, any>>(window)[name] != null) return null;
     
         // 刷新模块
+        [Language(Lua)]
         var version_system = VersionSystem.CreateVersionSystem("", name);
+        [Language(Lua)]
         version_system.UpdateModule();
         
         // 创建信息
@@ -265,7 +267,7 @@ class ModuleSystem
         // 检查主模块是否已经加载
         if (this._main_module != null)
             return false;
-
+        
         // 读取启动文件
         if (module_name == null)
             module_name = File_ReadTextFromFile("Enter.ali", false);

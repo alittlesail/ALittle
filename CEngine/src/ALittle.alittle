@@ -43,7 +43,7 @@ public async static __ALITTLEAPI_CEngine_Init(string base_path)
     Require(base_path.."CEngine/UISystem/LayerManager");
     Require(base_path.."CEngine/UISystem/TextureManager");
     Require(base_path.."CEngine/UISystem/ControlSystem");
-    
+    /*
     ALittle.System_CreateView("test", 800, 600, 0, 0);
     
     var control = new ALittle.ControlSystem("G2048");
@@ -75,6 +75,7 @@ public async static __ALITTLEAPI_CEngine_Init(string base_path)
     text.font_path = "Arial";
     text.text = "这个是一个文本3";
     A_LayerManager.AddToTip(text);
+    */
 }
 
 public static __ALITTLEAPI_HandleConsoleCmd(string cmd)

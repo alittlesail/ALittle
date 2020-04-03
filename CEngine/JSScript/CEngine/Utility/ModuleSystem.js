@@ -30,17 +30,15 @@ ALittle.ModuleSystem = JavaScript.Class(undefined, {
 		return this._main_module.name;
 	},
 	LoadModuleImpl : function(module_base_path, name) {
-		return new Promise(async function(___COROUTINE, ___) {
+		return new Promise((async function(___COROUTINE, ___) {
 			if (window[name] !== undefined) {
 				___COROUTINE(undefined); return;
 			}
-			let version_system = ALittle.VersionSystem.CreateVersionSystem("", name);
-			version_system.UpdateModule();
 			let info = {};
 			info.name = name;
 			info.crypt_mode = false;
 			info.control = ALittle.NewObject(ALittle.ControlSystem, name, info.crypt_mode);
-			await alittle.Require(module_base_path + "Main");
+			await Require(module_base_path + "Main");
 			info.module = window[name];
 			if (info.module === undefined) {
 				___COROUTINE(undefined); return;
@@ -61,7 +59,7 @@ ALittle.ModuleSystem = JavaScript.Class(undefined, {
 			info.layer_group = ALittle.NewObject(ALittle.DisplayLayout, control);
 			___COROUTINE(info); return;
 			___COROUTINE();
-		});
+		}).bind(this));
 	},
 	RemoveModule : function(name) {
 		if (this._main_module !== undefined && this._main_module.name === name) {
@@ -83,7 +81,7 @@ ALittle.ModuleSystem = JavaScript.Class(undefined, {
 		return true;
 	},
 	LoadPlugin : function(module_base_path, module_name) {
-		return new Promise(async function(___COROUTINE, ___) {
+		return new Promise((async function(___COROUTINE, ___) {
 			if (module_name === undefined) {
 				ALittle.Log("module_name is null!");
 				___COROUTINE(false); return;
@@ -109,10 +107,10 @@ ALittle.ModuleSystem = JavaScript.Class(undefined, {
 			setup_func(info.control, module_base_path, this._debug);
 			___COROUTINE(true); return;
 			___COROUTINE();
-		});
+		}).bind(this));
 	},
 	LoadModule : function(module_base_path, module_name) {
-		return new Promise(async function(___COROUTINE, ___) {
+		return new Promise((async function(___COROUTINE, ___) {
 			if (module_name === undefined) {
 				ALittle.Log("module_name is null!");
 				___COROUTINE(false); return;
@@ -151,10 +149,10 @@ ALittle.ModuleSystem = JavaScript.Class(undefined, {
 			setup_func(info.layer_group, info.control, module_base_path, this._debug);
 			___COROUTINE(true); return;
 			___COROUTINE();
-		});
+		}).bind(this));
 	},
 	MainSetup : function(base_path, debug, module_name, sengine_path, server_modules) {
-		return new Promise(async function(___COROUTINE, ___) {
+		return new Promise((async function(___COROUTINE, ___) {
 			if (this._main_module !== undefined) {
 				___COROUTINE(false); return;
 			}
@@ -183,7 +181,7 @@ ALittle.ModuleSystem = JavaScript.Class(undefined, {
 			setup_func(this._main_module.layer_group, this._main_module.control, module_base_path, this._debug);
 			___COROUTINE(true); return;
 			___COROUTINE();
-		});
+		}).bind(this));
 	},
 	MainShutdown : function() {
 		if (this._main_module === undefined) {

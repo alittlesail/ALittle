@@ -7,12 +7,6 @@ G2048.__Browser_Setup = async function(layer_group, control, base_path, debug) {
 	let window_height = 1280;
 	let rate = 0.5;
 	let flag = 0x00000020;
-	if (ALittle.System_GetPlatform() !== "Windows") {
-		let screen_width = ALittle.System_GetScreenWidth();
-		let screen_height = ALittle.System_GetScreenHeight();
-		window_height = lua.math.floor(screen_height / screen_width * window_width);
-		flag = lua.bit.bor(flag, 0x00000001);
-	}
 	ALittle.System_CreateView("2048", window_width, window_height, flag, rate);
 	ALittle.System_SetViewIcon(base_path + "/Other/ic_launcher.png");
 	await A_ModuleSystem.LoadModule(base_path, "G2048");
@@ -32,10 +26,11 @@ G2048.__Module_Setup = async function(layer_group, control, base_path, debug) {
 	G2048.g_LayerGroup = layer_group;
 	G2048.g_ModuleBasePath = base_path;
 	{
+		ALittle.Log(base_path);
 		let name_list = ["item_2", "item_4", "item_8", "item_16", "item_32", "item_64", "item_128", "item_256", "item_512", "item_1024", "item_2048", "main_menu", "main_scene"];
 		await G2048.g_Control.RegisterInfoByHttp(location.host, ALittle.Math_ToInt(location.port), base_path, name_list);
 	}
-	await alittle.Require(base_path + "GCenter");
+	await Require(base_path + "GCenter");
 	G2048.g_GCenter.Setup();
 }
 

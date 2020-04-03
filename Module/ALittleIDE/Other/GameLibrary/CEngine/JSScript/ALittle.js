@@ -32,6 +32,7 @@ __ALITTLEAPI_CEngine_Init = async function(base_path) {
 	await Require(base_path + "CEngine/UISystem/Base/Quad");
 	await Require(base_path + "CEngine/UISystem/Base/Image");
 	await Require(base_path + "CEngine/UISystem/Base/Text");
+	await Require(base_path + "CEngine/UISystem/Complex/Grid9Image");
 	await Require(base_path + "CEngine/UISystem/UISystem");
 	await Require(base_path + "CEngine/UISystem/LayerManager");
 	await Require(base_path + "CEngine/UISystem/TextureManager");

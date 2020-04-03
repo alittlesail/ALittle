@@ -4,7 +4,7 @@ if (typeof ALittle === "undefined") ALittle = {};
 ALittle.RegStruct(1376035901, "ALittle.ModuleInfo", {
 name : "ALittle.ModuleInfo", ns_name : "ALittle", rl_name : "ModuleInfo", hash_code : 1376035901,
 name_list : ["name","crypt_mode","control","module","plugin_loaded","module_loaded","browser_loaded","layer_group","browser_setup","browser_addmodule","browser_shutdown","module_setup","module_shutdown","module_getinfo","plugin_setup","plugin_shutdown"],
-type_list : ["string","bool","ALittle.ControlSystem","any","bool","bool","bool","ALittle.DisplayLayout","Functor<(ALittle.DisplayLayout,ALittle.ControlSystem,string,string)>","Functor<(string,ALittle.DisplayLayout,ALittle.ModuleShortInfo):bool>","Functor<()>","Functor<(ALittle.DisplayLayout,ALittle.ControlSystem,string,string)>","Functor<()>","Functor<(ALittle.ControlSystem,string):ALittle.ModuleShortInfo>","Functor<(ALittle.ControlSystem,string,string)>","Functor<()>"],
+type_list : ["string","bool","ALittle.ControlSystem","any","bool","bool","bool","ALittle.DisplayLayout","Functor<(ALittle.DisplayLayout,ALittle.ControlSystem,string,string,string)>","Functor<(string,ALittle.DisplayLayout,ALittle.ModuleShortInfo):bool>","Functor<()>","Functor<(ALittle.DisplayLayout,ALittle.ControlSystem,string,string,string)>","Functor<()>","Functor<(ALittle.ControlSystem,string):ALittle.ModuleShortInfo>","Functor<(ALittle.ControlSystem,string,string,string)>","Functor<()>"],
 option_map : {}
 })
 ALittle.RegStruct(-1652314301, "ALittle.ModuleShortInfo", {
@@ -38,7 +38,7 @@ ALittle.ModuleSystem = JavaScript.Class(undefined, {
 			info.name = name;
 			info.crypt_mode = false;
 			info.control = ALittle.NewObject(ALittle.ControlSystem, name, info.crypt_mode);
-			await Require(module_base_path + "Main");
+			await Require(module_base_path + "JSScript/Main");
 			info.module = window[name];
 			if (info.module === undefined) {
 				___COROUTINE(undefined); return;
@@ -104,7 +104,7 @@ ALittle.ModuleSystem = JavaScript.Class(undefined, {
 				___COROUTINE(false); return;
 			}
 			info.plugin_loaded = true;
-			setup_func(info.control, module_base_path, this._debug);
+			setup_func(info.control, module_base_path, module_base_path + "JSScript/", this._debug);
 			___COROUTINE(true); return;
 			___COROUTINE();
 		}).bind(this));
@@ -146,7 +146,7 @@ ALittle.ModuleSystem = JavaScript.Class(undefined, {
 					A_LayerManager.AddChild(info.layer_group, A_LayerManager.group_count - 1);
 				}
 			}
-			setup_func(info.layer_group, info.control, module_base_path, this._debug);
+			setup_func(info.layer_group, info.control, module_base_path, module_base_path + "JSScript/", this._debug);
 			___COROUTINE(true); return;
 			___COROUTINE();
 		}).bind(this));
@@ -171,14 +171,14 @@ ALittle.ModuleSystem = JavaScript.Class(undefined, {
 			A_LayerManager.AddChild(info.layer_group, A_LayerManager.group_count - 1);
 			this._main_module = info;
 			this._debug = debug;
-			let module_base_path = base_path + "Module/" + module_name;
+			let module_base_path = "Module/" + module_name + "/";
 			this._main_module.browser_loaded = true;
 			let setup_func = this._main_module.browser_setup;
 			if (setup_func === undefined) {
 				await this.LoadModule(module_base_path, this._main_module.name);
 				___COROUTINE(false); return;
 			}
-			setup_func(this._main_module.layer_group, this._main_module.control, module_base_path, this._debug);
+			setup_func(this._main_module.layer_group, this._main_module.control, module_base_path, module_base_path + "JSScript/", this._debug);
 			___COROUTINE(true); return;
 			___COROUTINE();
 		}).bind(this));

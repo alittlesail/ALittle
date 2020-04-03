@@ -57,7 +57,7 @@ class GCenter
         // 获取配置信息
         g_GConfig = ALittle.CreateConfigSystem(g_ModuleBasePath.."/User.cfg");
         // 生成随机数种子
-        lua.math.randomseed(ALittle.Time_GetCurTime());
+        ALittle.Math_RandomSeed(ALittle.Time_GetCurTime());
         // 设置5个线程
         ALittle.System_SetThreadCount(5, ALittle.SystemThreadType.SLOW);
     
@@ -127,7 +127,7 @@ class GCenter
         var list_count = 0;
         for (var i = 1; i <= 4; 1)
         {
-            for (var j = 1; i <= 4; 1)
+            for (var j = 1; j <= 4; 1)
             {
                 if (this._data_map[i][j] == null)
                 {
@@ -142,12 +142,12 @@ class GCenter
         if (list_count == 0) return false;
     
         // 随机格子的编号，2 或者 4
-        var rand1 = lua.math.floor(lua.math.random(1, 100));
+        var rand1 = ALittle.Math_RandomInt(1, 100);
         var number = 2;
         if (rand1 > 50) number = 4;
     
         // 随机格子的位置
-        var rand2 = lua.math.floor(lua.math.random(1, list_count));
+        var rand2 = ALittle.Math_RandomInt(1, list_count);
         var row = list[rand2][1];
         var col = list[rand2][2];
         // 创建动画
@@ -639,7 +639,7 @@ class GCenter
         this._loop_delay = 0;
     
         // 水平方向
-        if (lua.math.abs(this._drag_total_x) > lua.math.abs(this._drag_total_y))
+        if (ALittle.Math_Abs(this._drag_total_x) > ALittle.Math_Abs(this._drag_total_y))
         {
             // 向左
             if (this._drag_total_x < 0)

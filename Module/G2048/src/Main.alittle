@@ -4,7 +4,7 @@ namespace G2048;
 // 壳入口函数
 public async static __Browser_Setup(ALittle.DisplayLayout layer_group
                               , ALittle.ControlSystem control
-                              , string base_path
+                              , string module_base_path, string script_base_path
                               , string debug)
 {
 	// 创建窗口
@@ -22,10 +22,10 @@ public async static __Browser_Setup(ALittle.DisplayLayout layer_group
 		flag = lua.bit.bor(flag, ALittle.UIEnumTypes.VIEW_FULLSCREEN);
 	}
 	ALittle.System_CreateView("2048", window_width, window_height, flag, rate);
-	ALittle.System_SetViewIcon(base_path.."/Other/ic_launcher.png");
+	ALittle.System_SetViewIcon(module_base_path.."/Other/ic_launcher.png");
     
 	// 加载模块
-	A_ModuleSystem.LoadModule(base_path, "G2048");
+	A_ModuleSystem.LoadModule(module_base_path, "G2048");
 }
 
 // 壳处理添加模块，layer_group是模块的层组
@@ -44,23 +44,23 @@ protected var g_LayerGroup:ALittle.DisplayLayout;
 protected var g_ModuleBasePath:string;
 
 // 模块入口函数
-public async static __Module_Setup(ALittle.DisplayLayout layer_group, ALittle.ControlSystem control, string base_path, string debug)
+public async static __Module_Setup(ALittle.DisplayLayout layer_group, ALittle.ControlSystem control
+                                  , string module_base_path, string script_base_path, string debug)
 {
 	// 把resource, layer_group变量保存到全局，便于使用
 	g_Control = control;
 	g_LayerGroup = layer_group;
-	g_ModuleBasePath = base_path;
+	g_ModuleBasePath = module_base_path;
     
     [Language(JavaScript)]
     {
-        ALittle.Log(base_path);
         var name_list = ["item_2", "item_4", "item_8", "item_16", "item_32", "item_64", "item_128"
 						, "item_256", "item_512", "item_1024", "item_2048"
 						, "main_menu", "main_scene"];
-        g_Control.RegisterInfoByHttp(location.host, ALittle.Math_ToInt(location.port), base_path, name_list);
+        g_Control.RegisterInfoByHttp(location.host, ALittle.Math_ToInt(location.port), name_list);
     }
     
-	alittle.Require(base_path.."GCenter");
+	alittle.Require(script_base_path.."GCenter");
 	g_GCenter.Setup();
 }
 
@@ -71,7 +71,7 @@ public static __Module_Shutdown()
 }
 
 // 提供给壳的模块信息
-public static __Module_GetInfo(ALittle.ControlSystem control, string base_path) : ALittle.ModuleShortInfo
+public static __Module_GetInfo(ALittle.ControlSystem control, string module_base_path, string script_base_path) : ALittle.ModuleShortInfo
 {
 	var info = new ALittle.ModuleShortInfo();
 	info.title = "2048";

@@ -3,6 +3,8 @@ if (typeof ALittle === "undefined") ALittle = {};
 
 
 ALittle.ILoopSystem = JavaScript.Class(undefined, {
+	Update : function(frame_time) {
+	},
 	AddTimer : function(delay_ms, callback, loop, interval_ms) {
 		return 0;
 	},

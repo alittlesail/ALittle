@@ -442,7 +442,13 @@ public class UIEventDispatcher : UIEventListener
         {
             // 依次调用它们的回调函数
             for (var func, _ in callback_value)
+            {
+                [Language(Lua)]
                 func(object, event);
+                [Language(JavaScript)]
+                cast<javascript.Function>(func).call(object, event);
+            }
+                
         }
     }
 }

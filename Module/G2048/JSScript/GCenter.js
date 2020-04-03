@@ -24,7 +24,7 @@ G2048.GCenter = JavaScript.Class(undefined, {
 	},
 	Setup : function() {
 		G2048.g_GConfig = ALittle.CreateConfigSystem(G2048.g_ModuleBasePath + "/User.cfg");
-		lua.math.randomseed(ALittle.Time_GetCurTime());
+		ALittle.Math_RandomSeed(ALittle.Time_GetCurTime());
 		ALittle.System_SetThreadCount(5, 2);
 		this._main_layer = ALittle.NewObject(ALittle.DisplayLayout, G2048.g_Control);
 		this._main_layer.width_type = 4;
@@ -70,7 +70,7 @@ G2048.GCenter = JavaScript.Class(undefined, {
 		let list = [];
 		let list_count = 0;
 		for (let i = 1; i <= 4; i += 1) {
-			for (let j = 1; i <= 4; j += 1) {
+			for (let j = 1; j <= 4; j += 1) {
 				if (this._data_map.get(i).get(j) === undefined) {
 					let data = [];
 					data[1 - 1] = i;
@@ -83,12 +83,12 @@ G2048.GCenter = JavaScript.Class(undefined, {
 		if (list_count === 0) {
 			return false;
 		}
-		let rand1 = lua.math.floor(lua.math.random(1, 100));
+		let rand1 = ALittle.Math_RandomInt(1, 100);
 		let number = 2;
 		if (rand1 > 50) {
 			number = 4;
 		}
-		let rand2 = lua.math.floor(lua.math.random(1, list_count));
+		let rand2 = ALittle.Math_RandomInt(1, list_count);
 		let row = list[rand2 - 1][1 - 1];
 		let col = list[rand2 - 1][2 - 1];
 		this.BornItem(number, row, col, delay_time, true);
@@ -433,7 +433,7 @@ G2048.GCenter = JavaScript.Class(undefined, {
 		this.ClearAnti();
 		this._item_moved = false;
 		this._loop_delay = 0;
-		if (lua.math.abs(this._drag_total_x) > lua.math.abs(this._drag_total_y)) {
+		if (ALittle.Math_Abs(this._drag_total_x) > ALittle.Math_Abs(this._drag_total_y)) {
 			if (this._drag_total_x < 0) {
 				this.CalcLeft();
 			} else {

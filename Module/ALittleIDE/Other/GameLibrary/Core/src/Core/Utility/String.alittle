@@ -141,7 +141,7 @@ public static String_Split(string target, string sep) : List<string>
         }
         ++fields_count;
         fields[fields_count] = String_Sub(target, start_pos, start_index - 1);
-        start_pos = start_index + len(sep);
+        start_pos = start_index + String_Len(sep);
     }
     return fields;
 }

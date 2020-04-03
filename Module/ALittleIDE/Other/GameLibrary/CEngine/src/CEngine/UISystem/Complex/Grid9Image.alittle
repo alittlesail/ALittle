@@ -7,7 +7,7 @@ public class Grid9Image : DisplayObject
     private string  _texture_name;
     private TextureCutInfo _texture_cut;
     // 当前纹理对象
-    private lua.__CPPAPITextureWrap _texture;
+    private ITexture _texture;
     // 保存纹理的宽高
     private int _texture_width;
     private int _texture_height;
@@ -18,7 +18,7 @@ public class Grid9Image : DisplayObject
     private double _tex_coord_b;
     private double _tex_coord_l;
     private double _tex_coord_r;
-
+    
     private double _left_size;
     private double _right_size;
     private double _top_size;
@@ -26,7 +26,11 @@ public class Grid9Image : DisplayObject
 
     public ctor(ControlSystem ctrl_sys)
     {
+        [Language(Lua)]
         this._show = new lua.__CPPAPIGrid9Image();
+        [Language(JavaScript)]
+        this._show = new JavaScript.JGrid9Image();
+                
         // 当前的纹理名称
         // this._texture_name = null;
         // this._texture_cut = null;
@@ -195,7 +199,7 @@ public class Grid9Image : DisplayObject
         return this._texture_name;
     }
     
-    public set texture(lua.__CPPAPITextureWrap value)
+    public set texture(ITexture value)
     {
         this._show.SetTexture(value.GetTexture());
         this._texture_width = value.GetWidth();
@@ -203,7 +207,7 @@ public class Grid9Image : DisplayObject
         this._texture = value;
     }
     
-    public get texture() : lua.__CPPAPITextureWrap
+    public get texture() : ITexture
     {
         return this._texture;
     }

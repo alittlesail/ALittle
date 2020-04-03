@@ -54,23 +54,28 @@ public class ControlSystem
         this._font_map[src] = dst;
     }
     
-    public await fun RegisterInfoByHttp(string host, int port, string base_path, List<string> name_list)
+    public await fun RegisterInfoByHttp(string host, int port, List<string> name_list)
     {
         for (var index, name in name_list)
         {
-			var error, content = ALittle.HttpDownloadRequest(host, port, base_path.."../UI/"..name..".json");
+			var error, content = ALittle.HttpDownloadRequest(host, port, this._ui_path..name..".json");
             if (error != null)
             {
                 ALittle.Error("ui load failed:"..error);
                 continue;
             }
-            var jerror, json = tcall(ALittle.String_JsonDecode, content.GetContent());
+            var jerror, json:Map<string, DisplayInfo> = tcall(ALittle.String_JsonDecode, content.GetContent());
             if (jerror != null)
             {
                 ALittle.Error("ui json decode failed:"..jerror);
                 continue;
             }
-            g_Control.RegisterInfo(name, json);
+            for (var key, value in json)
+                this.RegisterInfo(key, value);
+            
+            var info = this.CreateInfo(this._name_map_info[name]);
+            this._name_map_info[name] = info;
+            this._name_map_info_cache[name] = true;
         }
     }
     
@@ -101,7 +106,10 @@ public class ControlSystem
             var class_func = info.__class_func;
             if (class_func == null)
             {
+                [Language(Lua)]
                 class_func = _G;
+                [Language(JavaScript)]
+                class_func = window;
                 for (var index, value in target_class)
                 {
                     class_func = cast<Map<string, any>>(class_func)[value];
@@ -116,7 +124,7 @@ public class ControlSystem
             else
                 Log("unknow target class." .. String_Join(target_class, "."));
         }
-
+        
         var clazz = info.__class;
         if (clazz == null)
         {
@@ -136,7 +144,8 @@ public class ControlSystem
             Log("unknow class." .. clazz);
             return null;
         }
-        return cast<Functor<(ControlSystem):DisplayObject>>(class_func)(this);
+        
+        return ALittle.NewObject(class_func, this);
     }
     
     // 播放Sound包内的声音
@@ -244,10 +253,8 @@ public class ControlSystem
             Log("can't find control name:" .. name);
             return null;
         }
-
         var object = this.CreateControlObject(info);
-        if (object == null)
-            return null;
+        if (object == null) return null;
     
         object.Deserialize(info, target_logic, parent);
         return cast<T>(object);
@@ -280,11 +287,11 @@ public class ControlSystem
             // 直接从文件中读入json，并且解密
             var json:Map<string, DisplayInfo> = File_ReadJsonFromFile(this._ui_path .. name .. ".json", this._crypt_mode);
             if (json == null) return null;
-
+            
             for (var key, value in json)
                 this.RegisterInfo(key, value);
         }
-
+        
         info = this.CreateInfo(this._name_map_info[name]);
         this._name_map_info[name] = info;
         this._name_map_info_cache[name] = true;

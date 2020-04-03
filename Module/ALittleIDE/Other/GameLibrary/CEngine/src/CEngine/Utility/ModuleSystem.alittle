@@ -13,13 +13,13 @@ public struct ModuleInfo
     bool browser_loaded;
 
     DisplayLayout layer_group;
-    Functor<(DisplayLayout, ControlSystem, string, string)> browser_setup;
+    Functor<(DisplayLayout, ControlSystem, string, string, string)> browser_setup;
     Functor<(string, DisplayLayout, ModuleShortInfo):bool> browser_addmodule;
     Functor<()> browser_shutdown;
-    Functor<(DisplayLayout, ControlSystem, string, string)> module_setup;
+    Functor<(DisplayLayout, ControlSystem, string, string, string)> module_setup;
     Functor<()> module_shutdown;
     Functor<(ControlSystem, string):ModuleShortInfo> module_getinfo;
-    Functor<(ControlSystem, string, string)> plugin_setup;
+    Functor<(ControlSystem, string, string, string)> plugin_setup;
     Functor<()> plugin_shutdown;
 }
 
@@ -90,7 +90,10 @@ class ModuleSystem
         // 加载UI文件
         info.control = new ControlSystem(name, info.crypt_mode);
         // 加载Main文件
-        alittle.Require(module_base_path.."Main");
+        [Language(Lua)]
+        alittle.Require(module_base_path.."Script/Main");
+        [Language(JavaScript)]
+        alittle.Require(module_base_path.."JSScript/Main");
         // 检查是否有这个模块
         [Language(Lua)]
         info.module = package.loaded[name];
@@ -101,13 +104,13 @@ class ModuleSystem
         this._name_module_map[name] = info;
     
         // 获取壳和模块的启动和结束函数
-        info.browser_setup = cast<Map<string, Functor<(DisplayLayout, ControlSystem, string, string)>>>(info.module)["__Browser_Setup"];
+        info.browser_setup = cast<Map<string, Functor<(DisplayLayout, ControlSystem, string, string, string)>>>(info.module)["__Browser_Setup"];
         info.browser_addmodule = cast<Map<string, Functor<(string, DisplayLayout, ModuleShortInfo):bool>>>(info.module)["__Browser_AddModule"];
         info.browser_shutdown = cast<Map<string, Functor<()>>>(info.module)["__Browser_Shutdown"];
-        info.module_setup = cast<Map<string, Functor<(DisplayLayout, ControlSystem, string, string)>>>(info.module)["__Module_Setup"];
+        info.module_setup = cast<Map<string, Functor<(DisplayLayout, ControlSystem, string, string, string)>>>(info.module)["__Module_Setup"];
         info.module_shutdown = cast<Map<string, Functor<()>>>(info.module)["__Module_Shutdown"];
         info.module_getinfo = cast<Map<string, Functor<(ControlSystem, string):ModuleShortInfo>>>(info.module)["__Module_GetInfo"];
-        info.plugin_setup = cast<Map<string, Functor<(ControlSystem, string, string)>>>(info.module)["__Plugin_Setup"];
+        info.plugin_setup = cast<Map<string, Functor<(ControlSystem, string, string, string)>>>(info.module)["__Plugin_Setup"];
         info.plugin_shutdown = cast<Map<string, Functor<()>>>(info.module)["__Plugin_Shutdown"];
     
         // 创建层组
@@ -183,7 +186,10 @@ class ModuleSystem
         info.plugin_loaded = true;
     
         // 传入debug，层组，资源对象
-        setup_func(info.control, module_base_path, this._debug);
+        [Language(Lua)]
+        setup_func(info.control, module_base_path, module_base_path.."Script/", this._debug);
+        [Language(JavaScript)]
+        setup_func(info.control, module_base_path, module_base_path.."JSScript/", this._debug);
     
         return true;
     }
@@ -242,7 +248,10 @@ class ModuleSystem
         }
     
         // 传入debug，层组，资源对象
-        setup_func(info.layer_group, info.control, module_base_path, this._debug);
+        [Language(Lua)]
+        setup_func(info.layer_group, info.control, module_base_path, module_base_path.."Script/", this._debug);
+        [Language(JavaScript)]
+        setup_func(info.layer_group, info.control, module_base_path, module_base_path.."JSScript/", this._debug);
     
         return true;
     }
@@ -290,7 +299,7 @@ class ModuleSystem
         this._debug = debug;
     
         // 模块基本路径
-        var module_base_path = base_path.."Module/" .. module_name;
+        var module_base_path = "Module/" .. module_name.."/";
         
         // 标记已经加载完成
         this._main_module.browser_loaded = true;
@@ -303,7 +312,10 @@ class ModuleSystem
         }
     
         // 调用壳的启动函数
-        setup_func(this._main_module.layer_group, this._main_module.control, module_base_path, this._debug);
+        [Language(Lua)]
+        setup_func(this._main_module.layer_group, this._main_module.control, module_base_path, module_base_path.."Script/", this._debug);
+        [Language(JavaScript)]
+        setup_func(this._main_module.layer_group, this._main_module.control, module_base_path, module_base_path.."JSScript/", this._debug);
         return true;
     }
     

@@ -39,6 +39,8 @@ public async static __ALITTLEAPI_CEngine_Init(string base_path)
     Require(base_path.."CEngine/UISystem/Base/Image");
     Require(base_path.."CEngine/UISystem/Base/Text");
     
+    Require(base_path.."CEngine/UISystem/Complex/Grid9Image");
+    
     Require(base_path.."CEngine/UISystem/UISystem");
     Require(base_path.."CEngine/UISystem/LayerManager");
     Require(base_path.."CEngine/UISystem/TextureManager");

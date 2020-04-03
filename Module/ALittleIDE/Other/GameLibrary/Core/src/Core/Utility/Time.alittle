@@ -7,5 +7,5 @@ public static Time_GetCurTime() : int
     return lua.os.time();
     
     [Language(JavaScript)]
-    return javascript.Date.now();
+    return Math_Floor(javascript.Date.now() / 1000);
 }

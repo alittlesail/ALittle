@@ -14,6 +14,7 @@ public class Application
     public get view() : javascript.DomElement {}
     public fun render() {}
     public get stage() : Container {}
+    public get ticker() : Ticker {}
 }
 
 [Native]
@@ -142,4 +143,10 @@ public class Loader
     public get onError() : LoaderCallback {}
     public get onLoad() : LoaderCallback {}
     public get onComplete() : LoaderCallback {}
+}
+
+[Native]
+public class Ticker
+{
+    public fun add(Functor<(double)> func) {}
 }

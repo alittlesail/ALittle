@@ -159,6 +159,8 @@ public static JSystem_CreateView(string title, int width, int height, int flag, 
     
     var func = cast<Map<string, Functor<(int, int)>>>(window)["__ALITTLEAPI_ViewResized"];
     if (func != null) func(width, height);
+    
+    A_PixiApp.ticker.add(JSystem_MainLoop);
     return true;
 }
 
@@ -179,4 +181,19 @@ public static JSystem_GetStage() : PIXI.Container
 {
     if (A_PixiApp == null) return null;
     return A_PixiApp.stage;
+}
+
+private var LOOP_LAST_TIME = 0;
+public static JSystem_MainLoop(double delta)
+{
+    if (LOOP_LAST_TIME == 0)
+    {
+        LOOP_LAST_TIME = javascript.Date.now();
+        return;
+    }
+    
+    var cur_time = javascript.Date.now();
+    var delta_time = cur_time - LOOP_LAST_TIME;
+    LOOP_LAST_TIME = cur_time;
+    A_LoopSystem.Update(delta_time);
 }

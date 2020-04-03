@@ -478,7 +478,7 @@ ALittle.UIEventDispatcher = JavaScript.Class(ALittle.UIEventListener, {
 			if (callback_value === undefined) continue;
 			for (let [func, _] of callback_value) {
 				if (_ === undefined) continue;
-				func(object, event);
+				func.call(object, event);
 			}
 		}
 	},

@@ -272,10 +272,10 @@ if (JavaScript.JDisplayObject === undefined) throw new Error(" extends class:Jav
 JavaScript.JQuad = JavaScript.Class(JavaScript.JDisplayObject, {
 	Ctor : function() {
 		this._native = new PIXI.Graphics();
-		this._color = 0;
-		this._red = 0;
-		this._green = 0;
-		this._blue = 0;
+		this._red = 255;
+		this._green = 255;
+		this._blue = 255;
+		this._color = this._red * 65536 + this._green * 256 + this._blue;
 		this._alpha = 1;
 		this._width = 0;
 		this._height = 0;
@@ -331,15 +331,39 @@ JavaScript.JImage = JavaScript.Class(JavaScript.JDisplayObject, {
 }, "JavaScript.JImage");
 
 if (JavaScript.JDisplayObject === undefined) throw new Error(" extends class:JavaScript.JDisplayObject is undefined");
+JavaScript.JGrid9Image = JavaScript.Class(JavaScript.JDisplayObject, {
+	Ctor : function() {
+		this._native = new PIXI.Sprite();
+	},
+	ClearTexture : function() {
+		this._native.texture = undefined;
+	},
+	SetTexture : function(texture) {
+		this._native.texture = texture.native;
+	},
+	SetTextureCoord : function(t, b, l, r) {
+	},
+	SetLeftSize : function(value) {
+	},
+	SetRightSize : function(value) {
+	},
+	SetTopSize : function(value) {
+	},
+	SetBottomSize : function(value) {
+	},
+}, "JavaScript.JGrid9Image");
+
+if (JavaScript.JDisplayObject === undefined) throw new Error(" extends class:JavaScript.JDisplayObject is undefined");
 JavaScript.JText = JavaScript.Class(JavaScript.JDisplayObject, {
 	Ctor : function() {
 		this._native = new PIXI.Text();
 		this._style = new PIXI.TextStyle();
 		this._real_width = 0;
 		this._real_height = 0;
-		this._red = 0;
-		this._green = 0;
-		this._blue = 0;
+		this._red = 255;
+		this._green = 255;
+		this._blue = 255;
+		this._style.fill = "#" + ((this._red * 65536 + this._green * 256 + this._blue).toString(16));
 		this._text = "";
 	},
 	SetText : function(value) {
@@ -417,11 +441,27 @@ JavaScript.JTextureLoader = JavaScript.Class(ALittle.ITextureLoader, {
 		this._atlas_info = altas;
 		this._width = big_width;
 		this._height = big_height;
+		this._altas = altas;
 	},
 	Start : function() {
+		let real_path = undefined;
+		let altas_list = ALittle.String_Split(this._altas, ";");
+		let ___OBJECT_1 = altas_list;
+		for (let index = 1; index <= ___OBJECT_1.length; ++index) {
+			let altas = ___OBJECT_1[index - 1];
+			if (altas === undefined) break;
+			let split = ALittle.String_Split(altas, ",");
+			if (split[1 - 1] !== undefined) {
+				real_path = split[1 - 1];
+			}
+		}
+		if (real_path === undefined) {
+			this.HandleLoadFailed();
+			return;
+		}
 		let loader = new PIXI.Loader();
 		loader.onError.add(this.HandleLoadFailed.bind(this));
-		loader.add(this._file_path, "Texture/" + this._file_path).load(this.HandleLoadSucceed.bind(this));
+		loader.add(this._file_path, real_path).load(this.HandleLoadSucceed.bind(this));
 	},
 	GetID : function() {
 		return this._id;

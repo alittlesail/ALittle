@@ -186,10 +186,10 @@ public class JQuad : JDisplayObject
     public ctor()
     {
         this._native = new PIXI.Graphics();
-        this._color = 0;
-        this._red = 0;
-        this._green = 0;
-        this._blue = 0;
+        this._red = 255;
+        this._green = 255;
+        this._blue = 255;
+        this._color = this._red * 65536 + this._green * 256 + this._blue;
         this._alpha = 1;
         this._width = 0;
         this._height = 0;
@@ -261,6 +261,32 @@ public class JImage : JDisplayObject
     }
 }
 
+public class JGrid9Image : JDisplayObject
+{
+    public ctor()
+    {
+        this._native = new PIXI.Sprite();
+    }
+    
+    public fun ClearTexture()
+    {
+        cast<PIXI.Sprite>(this._native).texture = null;
+    }
+    public fun SetTexture(ALittle.ITexture texture)
+    {
+        cast<PIXI.Sprite>(this._native).texture = cast<JTexture>(texture).native;
+    }
+    public fun SetTextureCoord(double t, double b, double l, double r)
+    {
+        // 因为Web版本的图片都是散装的，所以不需要处理
+    }
+    
+    public fun SetLeftSize(double value) {}
+    public fun SetRightSize(double value) {}
+    public fun SetTopSize(double value) {}
+    public fun SetBottomSize(double value) {}
+}
+
 public class JText : JDisplayObject
 {
     private PIXI.TextStyle _style;
@@ -277,9 +303,10 @@ public class JText : JDisplayObject
         this._style = new PIXI.TextStyle();
         this._real_width = 0;
         this._real_height = 0;
-        this._red = 0;
-        this._green = 0;
-        this._blue = 0;
+        this._red = 255;
+        this._green = 255;
+        this._blue = 255;
+        this._style.fill = "#"..cast<javascript.Number>((this._red * 65536 + this._green * 256 + this._blue)).toString(16);
         this._text = "";
     }
     
@@ -359,6 +386,7 @@ public class JTextureLoader : ALittle.ITextureLoader
     private int _width;
     private int _height;
     private bool _load_failed;
+    private string _altas;
     
     public ctor()
     {
@@ -373,13 +401,28 @@ public class JTextureLoader : ALittle.ITextureLoader
         this._atlas_info = altas;
         this._width = big_width;
         this._height = big_height;
+        this._altas = altas;
     }
     
     public fun Start()
     {
+        var real_path:string = null;
+        var altas_list = ALittle.String_Split(this._altas, ";");
+        for (var index, altas in altas_list)
+        {
+            var split = ALittle.String_Split(altas, ",");
+            if (split[1] != null)
+                real_path = split[1];
+        }
+        if (real_path == null)
+        {
+            this.HandleLoadFailed();
+            return;
+        }
+        
         var loader = new PIXI.Loader();
         loader.onError.add(bind(this.HandleLoadFailed, this));
-        loader.add(this._file_path, "Texture/"..this._file_path).load(bind(this.HandleLoadSucceed, this));
+        loader.add(this._file_path, real_path).load(bind(this.HandleLoadSucceed, this));
     }
     public fun GetID() : int { return this._id; }
     public fun GetPath() : string { return this._file_path; }

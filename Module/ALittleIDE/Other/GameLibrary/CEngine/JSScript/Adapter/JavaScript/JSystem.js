@@ -168,6 +168,7 @@ JavaScript.JSystem_CreateView = function(title, width, height, flag, scale) {
 	if (func !== undefined) {
 		func(width, height);
 	}
+	A_PixiApp.ticker.add(JavaScript.JSystem_MainLoop);
 	return true;
 }
 
@@ -189,6 +190,18 @@ JavaScript.JSystem_GetStage = function() {
 		return undefined;
 	}
 	return A_PixiApp.stage;
+}
+
+let LOOP_LAST_TIME = 0;
+JavaScript.JSystem_MainLoop = function(delta) {
+	if (LOOP_LAST_TIME === 0) {
+		LOOP_LAST_TIME = Date.now();
+		return;
+	}
+	let cur_time = Date.now();
+	let delta_time = cur_time - LOOP_LAST_TIME;
+	LOOP_LAST_TIME = cur_time;
+	A_LoopSystem.Update(delta_time);
 }
 
 }

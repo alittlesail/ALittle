@@ -146,7 +146,10 @@ public static System_Restart()
 // 设置FPS
 public static System_SetFPS(int fps)
 {
+    [Language(Lua)]
     __CPPAPI_ScheduleSystem.SetFPS(fps);
+    [Language(JavaScript)]
+    Error("not support System_SetFPS");
 }
 // 设置框架在切到后台之后，死循环的每个循环的睡眠时间，单位毫秒（这个接口主要用于省电）
 public static System_SetAppPauseInterval(int interval) { __CPPAPI_ScheduleSystem.SetAppPauseInterval(interval); }
@@ -171,13 +174,21 @@ public enum SystemThreadType // 这里的枚举值和C++部分一致，不要修
 public static System_SetThreadCount(int count, [Nullable] int thread_type)
 {
     if (thread_type == null) thread_type = SystemThreadType.SLOW;
+    [Language(Lua)]
     __CPPAPI_ThreadSystem.SetThreadCount(count, thread_type);
+    [Language(JavaScript)]
+    Error("not support System_SetThreadCount");
 }
 // 获取线程数
 public static System_GetThreadCount(int thread_type) : int
 {
     if (thread_type == null) thread_type = SystemThreadType.SLOW;
+    [Language(Lua)]
     return __CPPAPI_ThreadSystem.GetThreadCount(thread_type);
+    [Language(JavaScript)]
+    Error("not support System_SetThreadCount");
+    [Language(JavaScript)]
+    return 0;
 }
 
 ////输入法部分////////////////////////////////////////////////////////////////////-

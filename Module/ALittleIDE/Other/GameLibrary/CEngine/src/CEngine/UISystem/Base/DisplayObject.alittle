@@ -1156,12 +1156,18 @@ public class DisplayObject : UIEventDispatcher
             // 添加到父控件
             if (parent != null) parent.AddChild(this);
         }
-
+        
         // 如果当前是插件，那么就调用一下初始化函数
         if (info.__target_class != null)
         {
-            if (cast<Map<string, Functor<(DisplayObject)>>>(this)["TCtor"] != null)
-                cast<Map<string, Functor<(DisplayObject)>>>(this)["TCtor"](this);
+            var tctor:Functor<(DisplayObject)> = cast<Map<string, Functor<(DisplayObject)>>>(this)["TCtor"]; 
+            if (tctor != null)
+            {
+                [Language(Lua)]
+                tctor(this);
+                [Language(JavaScript)]
+                cast<javascript.Function>(tctor).call(this);
+            }   
         }
     }
 }

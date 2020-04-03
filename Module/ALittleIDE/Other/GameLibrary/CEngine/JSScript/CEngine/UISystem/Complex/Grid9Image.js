@@ -6,7 +6,7 @@ let ___all_struct = ALittle.GetAllStruct();
 if (ALittle.DisplayObject === undefined) throw new Error(" extends class:ALittle.DisplayObject is undefined");
 ALittle.Grid9Image = JavaScript.Class(ALittle.DisplayObject, {
 	Ctor : function(ctrl_sys) {
-		this._show = ALittle.NewObject(lua.__CPPAPIGrid9Image);
+		this._show = ALittle.NewObject(JavaScript.JGrid9Image);
 		this._texture_width = 0;
 		this._texture_height = 0;
 		this._flip = 0;

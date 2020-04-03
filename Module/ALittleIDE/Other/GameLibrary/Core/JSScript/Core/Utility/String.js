@@ -80,7 +80,7 @@ ALittle.String_Split = function(target, sep) {
 		}
 		++ fields_count;
 		fields[fields_count - 1] = ALittle.String_Sub(target, start_pos, start_index - 1);
-		start_pos = start_index + len(sep);
+		start_pos = start_index + ALittle.String_Len(sep);
 	}
 	return fields;
 }

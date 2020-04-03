@@ -60,7 +60,7 @@ ALittle.System_Restart = function() {
 }
 
 ALittle.System_SetFPS = function(fps) {
-	__CPPAPI_ScheduleSystem.SetFPS(fps);
+	ALittle.Error("not support System_SetFPS");
 }
 
 ALittle.System_SetAppPauseInterval = function(interval) {
@@ -92,14 +92,15 @@ ALittle.System_SetThreadCount = function(count, thread_type) {
 	if (thread_type === undefined) {
 		thread_type = ALittle.SystemThreadType.SLOW;
 	}
-	__CPPAPI_ThreadSystem.SetThreadCount(count, thread_type);
+	ALittle.Error("not support System_SetThreadCount");
 }
 
 ALittle.System_GetThreadCount = function(thread_type) {
 	if (thread_type === undefined) {
 		thread_type = ALittle.SystemThreadType.SLOW;
 	}
-	return __CPPAPI_ThreadSystem.GetThreadCount(thread_type);
+	ALittle.Error("not support System_SetThreadCount");
+	return 0;
 }
 
 ALittle.System_GetIMESelectList = function() {

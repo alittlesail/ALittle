@@ -22,13 +22,13 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 	RegisterFont : function(src, dst) {
 		this._font_map[src] = dst;
 	},
-	RegisterInfoByHttp : function(host, port, base_path, name_list) {
-		return new Promise(async function(___COROUTINE, ___) {
+	RegisterInfoByHttp : function(host, port, name_list) {
+		return new Promise((async function(___COROUTINE, ___) {
 			let ___OBJECT_1 = name_list;
 			for (let index = 1; index <= ___OBJECT_1.length; ++index) {
 				let name = ___OBJECT_1[index - 1];
 				if (name === undefined) break;
-				let [error, content] = await ALittle.HttpDownloadRequest(host, port, base_path + "../UI/" + name + ".json");
+				let [error, content] = await ALittle.HttpDownloadRequest(host, port, this._ui_path + name + ".json");
 				if (error !== undefined) {
 					ALittle.Error("ui load failed:" + error);
 					continue;
@@ -38,10 +38,18 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 					ALittle.Error("ui json decode failed:" + jerror);
 					continue;
 				}
-				ALittle.g_Control.RegisterInfo(name, json);
+				let ___OBJECT_2 = json;
+				for (let key in ___OBJECT_2) {
+					let value = ___OBJECT_2[key];
+					if (value === undefined) continue;
+					this.RegisterInfo(key, value);
+				}
+				let info = this.CreateInfo(this._name_map_info[name]);
+				this._name_map_info[name] = info;
+				this._name_map_info_cache[name] = true;
 			}
 			___COROUTINE();
-		});
+		}).bind(this));
 	},
 	RegisterInfo : function(name, info) {
 		this._name_map_info[name] = info;
@@ -60,10 +68,10 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 		if (target_class !== undefined) {
 			let class_func = info.__class_func;
 			if (class_func === undefined) {
-				class_func = _G;
-				let ___OBJECT_2 = target_class;
-				for (let index = 1; index <= ___OBJECT_2.length; ++index) {
-					let value = ___OBJECT_2[index - 1];
+				class_func = window;
+				let ___OBJECT_3 = target_class;
+				for (let index = 1; index <= ___OBJECT_3.length; ++index) {
+					let value = ___OBJECT_3[index - 1];
 					if (value === undefined) break;
 					class_func = class_func[value];
 					if (class_func === undefined) {
@@ -92,7 +100,7 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 			ALittle.Log("unknow class." + clazz);
 			return undefined;
 		}
-		return class_func(this);
+		return ALittle.NewObject(class_func, this);
 	},
 	StartChunk : function(file_path, loop, callback) {
 		return A_AudioSystem.StartChunk(this._sound_path + file_path, loop, callback);
@@ -112,9 +120,9 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 	PrepareTexture : function(ui_list, callback) {
 		let name_map = {};
 		if (ui_list !== undefined) {
-			let ___OBJECT_3 = ui_list;
-			for (let index = 1; index <= ___OBJECT_3.length; ++index) {
-				let ui = ___OBJECT_3[index - 1];
+			let ___OBJECT_4 = ui_list;
+			for (let index = 1; index <= ___OBJECT_4.length; ++index) {
+				let ui = ___OBJECT_4[index - 1];
 				if (ui === undefined) break;
 				this.CollectTextureName(ui, name_map);
 			}
@@ -123,9 +131,9 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 	},
 	PrepareCsv : function(csv_map, callback) {
 		let new_csv_map = {};
-		let ___OBJECT_4 = csv_map;
-		for (let file_path in ___OBJECT_4) {
-			let config = ___OBJECT_4[file_path];
+		let ___OBJECT_5 = csv_map;
+		for (let file_path in ___OBJECT_5) {
+			let config = ___OBJECT_5[file_path];
 			if (config === undefined) continue;
 			new_csv_map[this._other_path + file_path] = config;
 		}
@@ -201,9 +209,9 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 			if (json === undefined) {
 				return undefined;
 			}
-			let ___OBJECT_5 = json;
-			for (let key in ___OBJECT_5) {
-				let value = ___OBJECT_5[key];
+			let ___OBJECT_6 = json;
+			for (let key in ___OBJECT_6) {
+				let value = ___OBJECT_6[key];
 				if (value === undefined) continue;
 				this.RegisterInfo(key, value);
 			}
@@ -229,15 +237,15 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 					return undefined;
 				}
 				let copy = {};
-				let ___OBJECT_6 = control;
-				for (let key in ___OBJECT_6) {
-					let value = ___OBJECT_6[key];
+				let ___OBJECT_7 = control;
+				for (let key in ___OBJECT_7) {
+					let value = ___OBJECT_7[key];
 					if (value === undefined) continue;
 					copy[key] = value;
 				}
-				let ___OBJECT_7 = info;
-				for (let key in ___OBJECT_7) {
-					let value = ___OBJECT_7[key];
+				let ___OBJECT_8 = info;
+				for (let key in ___OBJECT_8) {
+					let value = ___OBJECT_8[key];
 					if (value === undefined) continue;
 					copy[key] = value;
 				}
@@ -250,9 +258,9 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 			}
 		}
 		if (info.__shows_included !== true) {
-			let ___OBJECT_8 = info;
-			for (let key in ___OBJECT_8) {
-				let value = ___OBJECT_8[key];
+			let ___OBJECT_9 = info;
+			for (let key in ___OBJECT_9) {
+				let value = ___OBJECT_9[key];
 				if (value === undefined) continue;
 				if (__byte(key, 1) !== 95 && __type(value) === "table" && (value.__include !== undefined || value.__extends !== undefined || value.__class !== undefined)) {
 					info[key] = this.CreateInfo(value);
@@ -263,9 +271,9 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 		let childs = info.__childs;
 		if (childs !== undefined) {
 			if (info.__childs_included !== true) {
-				let ___OBJECT_9 = childs;
-				for (let index = 1; index <= ___OBJECT_9.length; ++index) {
-					let child = ___OBJECT_9[index - 1];
+				let ___OBJECT_10 = childs;
+				for (let index = 1; index <= ___OBJECT_10.length; ++index) {
+					let child = ___OBJECT_10[index - 1];
 					if (child === undefined) break;
 					childs[index - 1] = this.CreateInfo(childs[index - 1]);
 				}
@@ -282,9 +290,9 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 		let target_class = info.__target_class;
 		if (target_class !== undefined) {
 			class_func = _G;
-			let ___OBJECT_10 = target_class;
-			for (let index = 1; index <= ___OBJECT_10.length; ++index) {
-				let value = ___OBJECT_10[index - 1];
+			let ___OBJECT_11 = target_class;
+			for (let index = 1; index <= ___OBJECT_11.length; ++index) {
+				let value = ___OBJECT_11[index - 1];
 				if (value === undefined) break;
 				class_func = class_func[value];
 				if (class_func === undefined) {
@@ -307,9 +315,9 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 			map[texture_name] = true;
 		}
 		let info_t = info;
-		let ___OBJECT_11 = info_t;
-		for (let key in ___OBJECT_11) {
-			let value = ___OBJECT_11[key];
+		let ___OBJECT_12 = info_t;
+		for (let key in ___OBJECT_12) {
+			let value = ___OBJECT_12[key];
 			if (value === undefined) continue;
 			if (__type(value) === "table" && value.__class !== undefined) {
 				this.CollectTextureNameImpl(value, map);
@@ -317,9 +325,9 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 		}
 		let childs = info.__childs;
 		if (childs !== undefined) {
-			let ___OBJECT_12 = childs;
-			for (let index = 1; index <= ___OBJECT_12.length; ++index) {
-				let value = ___OBJECT_12[index - 1];
+			let ___OBJECT_13 = childs;
+			for (let index = 1; index <= ___OBJECT_13.length; ++index) {
+				let value = ___OBJECT_13[index - 1];
 				if (value === undefined) break;
 				this.CollectTextureNameImpl(value, map);
 			}

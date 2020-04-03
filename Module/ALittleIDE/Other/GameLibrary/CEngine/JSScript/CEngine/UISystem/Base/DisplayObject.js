@@ -788,8 +788,9 @@ ALittle.DisplayObject = JavaScript.Class(ALittle.UIEventDispatcher, {
 			}
 		}
 		if (info.__target_class !== undefined) {
-			if (this["TCtor"] !== undefined) {
-				this["TCtor"](this);
+			let tctor = this["TCtor"];
+			if (tctor !== undefined) {
+				tctor.call(this);
 			}
 		}
 	},

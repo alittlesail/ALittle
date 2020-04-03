@@ -1,7 +1,7 @@
 {
 
 
-__ALITTLEAPI_Std_Init = async function(base_path, callback) {
+__ALITTLEAPI_Std_Init = async function(base_path) {
 	await Require(base_path + "Std/Reflect/ReflectCmd");
 	await Require(base_path + "Std/Reflect/ReflectCsv");
 	await Require(base_path + "Std/Reflect/ReflectMessage");
@@ -30,9 +30,6 @@ __ALITTLEAPI_Std_Init = async function(base_path, callback) {
 	await Require(base_path + "Std/Net/MsgReceiverTemplate");
 	await Require(base_path + "Std/Net/MsgSenderTemplate");
 	await Require(base_path + "Std/Net/MsgSessionTemplate");
-	if (callback !== undefined) {
-		callback();
-	}
 }
 
 }

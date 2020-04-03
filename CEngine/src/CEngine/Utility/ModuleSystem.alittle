@@ -63,7 +63,7 @@ class ModuleSystem
         return this._main_module.name;
     }
     
-    public fun LoadModuleImpl(string module_base_path, string name) : ModuleInfo
+    public await fun LoadModuleImpl(string module_base_path, string name) : ModuleInfo
     {
         // 检查模块是否已被加载
         [Language(Lua)]
@@ -87,6 +87,8 @@ class ModuleSystem
     
         // 加载UI文件
         info.control = new ControlSystem(name, info.crypt_mode);
+        // 加载Main文件
+        alittle.Require(module_base_path.."Main");
         // 检查是否有这个模块
         [Language(Lua)]
         info.module = package.loaded[name];
@@ -142,7 +144,7 @@ class ModuleSystem
         return true;
     }
     
-    public fun LoadPlugin(string module_base_path, string module_name) : bool
+    public await fun LoadPlugin(string module_base_path, string module_name) : bool
     {
         // 检查模块是否是null
         if (module_name == null)
@@ -184,7 +186,7 @@ class ModuleSystem
         return true;
     }
     
-    public fun LoadModule(string module_base_path, string module_name) : bool
+    public await fun LoadModule(string module_base_path, string module_name) : bool
     {
         // 检查模块是否是null
         if (module_name == null)
@@ -243,7 +245,7 @@ class ModuleSystem
         return true;
     }
     
-    public fun MainSetup(string base_path, string debug, string module_name, string sengine_path, string server_modules) : bool
+    public await fun MainSetup(string base_path, string debug, string module_name, string sengine_path, string server_modules) : bool
     {
         // 启动服务器模块
         [Language(Lua)]

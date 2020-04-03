@@ -1,7 +1,7 @@
 {
 
 
-__ALITTLEAPI_CEngine_Init = async function(base_path, callback) {
+__ALITTLEAPI_CEngine_Init = async function(base_path) {
 	{
 		await Require(base_path + "Adapter/JavaScript/JHttpInterface");
 		await Require(base_path + "Adapter/JavaScript/JHttpFileInterface");
@@ -30,9 +30,6 @@ __ALITTLEAPI_CEngine_Init = async function(base_path, callback) {
 	await Require(base_path + "CEngine/UISystem/UISystem");
 	await Require(base_path + "CEngine/UISystem/LayerManager");
 	ALittle.System_CreateView("test", 800, 600, 0, 0);
-	if (callback !== undefined) {
-		callback();
-	}
 }
 
 __ALITTLEAPI_HandleConsoleCmd = function(cmd) {
@@ -260,9 +257,9 @@ __ALITTLEAPI_SystemSaveFile = function(path) {
 	A_OtherSystem.HandleSystemSaveFile(path);
 }
 
-__ALITTLEAPI_SetupMainModule = function(base_path, debug, module_name, sengine_path, modules) {
+__ALITTLEAPI_SetupMainModule = async function(base_path, debug, module_name, sengine_path, modules) {
 	A_AudioSystem.Setup();
-	return A_ModuleSystem.MainSetup(base_path, debug, module_name, sengine_path, modules);
+	return await A_ModuleSystem.MainSetup(base_path, debug, module_name, sengine_path, modules);
 }
 
 __ALITTLEAPI_ShutdownMainModule = function() {

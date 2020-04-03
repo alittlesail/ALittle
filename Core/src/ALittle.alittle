@@ -36,7 +36,7 @@ public await static Require(string url) : string
     return null;
 }
     
-public async static __ALITTLEAPI_Core_Init(string base_path, Functor<()> callback)
+public async static __ALITTLEAPI_Core_Init(string base_path)
 {
     [Language(JavaScript)]
     {
@@ -66,6 +66,4 @@ public async static __ALITTLEAPI_Core_Init(string base_path, Functor<()> callbac
     Require(base_path.."Core/Net/HttpReceiver");
     Require(base_path.."Core/Net/HttpSender");
     Require(base_path.."Core/Net/MsgCommon");
-    
-    if (callback != null) callback();
 }

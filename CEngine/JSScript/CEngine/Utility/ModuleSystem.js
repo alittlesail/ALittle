@@ -30,34 +30,38 @@ ALittle.ModuleSystem = JavaScript.Class(undefined, {
 		return this._main_module.name;
 	},
 	LoadModuleImpl : function(module_base_path, name) {
-		if (window[name] !== undefined) {
-			return undefined;
-		}
-		let version_system = ALittle.VersionSystem.CreateVersionSystem("", name);
-		version_system.UpdateModule();
-		let info = {};
-		info.name = name;
-		info.crypt_mode = false;
-		info.control = ALittle.NewObject(ALittle.ControlSystem, name, info.crypt_mode);
-		info.module = window[name];
-		if (info.module === undefined) {
-			return undefined;
-		}
-		this._name_module_map[name] = info;
-		info.browser_setup = info.module["__Browser_Setup"];
-		info.browser_addmodule = info.module["__Browser_AddModule"];
-		info.browser_shutdown = info.module["__Browser_Shutdown"];
-		info.module_setup = info.module["__Module_Setup"];
-		info.module_shutdown = info.module["__Module_Shutdown"];
-		info.module_getinfo = info.module["__Module_GetInfo"];
-		info.plugin_setup = info.module["__Plugin_Setup"];
-		info.plugin_shutdown = info.module["__Plugin_Shutdown"];
-		let control = info.control;
-		if (this._main_module !== undefined) {
-			control = this._main_module.control;
-		}
-		info.layer_group = ALittle.NewObject(ALittle.DisplayLayout, control);
-		return info;
+		return new Promise(async function(___COROUTINE, ___) {
+			if (window[name] !== undefined) {
+				___COROUTINE(undefined); return;
+			}
+			let version_system = ALittle.VersionSystem.CreateVersionSystem("", name);
+			version_system.UpdateModule();
+			let info = {};
+			info.name = name;
+			info.crypt_mode = false;
+			info.control = ALittle.NewObject(ALittle.ControlSystem, name, info.crypt_mode);
+			await alittle.Require(module_base_path + "Main");
+			info.module = window[name];
+			if (info.module === undefined) {
+				___COROUTINE(undefined); return;
+			}
+			this._name_module_map[name] = info;
+			info.browser_setup = info.module["__Browser_Setup"];
+			info.browser_addmodule = info.module["__Browser_AddModule"];
+			info.browser_shutdown = info.module["__Browser_Shutdown"];
+			info.module_setup = info.module["__Module_Setup"];
+			info.module_shutdown = info.module["__Module_Shutdown"];
+			info.module_getinfo = info.module["__Module_GetInfo"];
+			info.plugin_setup = info.module["__Plugin_Setup"];
+			info.plugin_shutdown = info.module["__Plugin_Shutdown"];
+			let control = info.control;
+			if (this._main_module !== undefined) {
+				control = this._main_module.control;
+			}
+			info.layer_group = ALittle.NewObject(ALittle.DisplayLayout, control);
+			___COROUTINE(info); return;
+			___COROUTINE();
+		});
 	},
 	RemoveModule : function(name) {
 		if (this._main_module !== undefined && this._main_module.name === name) {
@@ -79,98 +83,107 @@ ALittle.ModuleSystem = JavaScript.Class(undefined, {
 		return true;
 	},
 	LoadPlugin : function(module_base_path, module_name) {
-		if (module_name === undefined) {
-			ALittle.Log("module_name is null!");
-			return false;
-		}
-		let info = this._name_module_map[module_name];
-		if (info === undefined) {
-			info = this.LoadModuleImpl(module_base_path, module_name);
-			if (info === undefined) {
-				ALittle.Log("Module:" + module_name + " load failed!");
-				return false;
+		return new Promise(async function(___COROUTINE, ___) {
+			if (module_name === undefined) {
+				ALittle.Log("module_name is null!");
+				___COROUTINE(false); return;
 			}
-		}
-		if (info.plugin_loaded) {
-			ALittle.Log(module_name + ":__Plugin_Setup already invoked!");
-			return false;
-		}
-		let setup_func = info.plugin_setup;
-		if (setup_func === undefined) {
-			ALittle.Log("can't find Plugin_Setup funciton in Module:" + module_name);
-			return false;
-		}
-		info.plugin_loaded = true;
-		setup_func(info.control, module_base_path, this._debug);
-		return true;
+			let info = this._name_module_map[module_name];
+			if (info === undefined) {
+				info = await this.LoadModuleImpl(module_base_path, module_name);
+				if (info === undefined) {
+					ALittle.Log("Module:" + module_name + " load failed!");
+					___COROUTINE(false); return;
+				}
+			}
+			if (info.plugin_loaded) {
+				ALittle.Log(module_name + ":__Plugin_Setup already invoked!");
+				___COROUTINE(false); return;
+			}
+			let setup_func = info.plugin_setup;
+			if (setup_func === undefined) {
+				ALittle.Log("can't find Plugin_Setup funciton in Module:" + module_name);
+				___COROUTINE(false); return;
+			}
+			info.plugin_loaded = true;
+			setup_func(info.control, module_base_path, this._debug);
+			___COROUTINE(true); return;
+			___COROUTINE();
+		});
 	},
 	LoadModule : function(module_base_path, module_name) {
-		if (module_name === undefined) {
-			ALittle.Log("module_name is null!");
-			return false;
-		}
-		let info = this._name_module_map[module_name];
-		if (info === undefined) {
-			info = this.LoadModuleImpl(module_base_path, module_name);
+		return new Promise(async function(___COROUTINE, ___) {
+			if (module_name === undefined) {
+				ALittle.Log("module_name is null!");
+				___COROUTINE(false); return;
+			}
+			let info = this._name_module_map[module_name];
 			if (info === undefined) {
-				ALittle.Log("Module:" + module_name + " load failed!");
-				return false;
-			}
-		}
-		if (info.module_loaded) {
-			ALittle.Log(module_name + ":__Module_Setup already invoked!");
-			return false;
-		}
-		let setup_func = info.module_setup;
-		if (setup_func === undefined) {
-			ALittle.Log("can't find Module_Setup funciton in Module:" + module_name);
-			return false;
-		}
-		info.module_loaded = true;
-		if (this._main_module.name !== module_name) {
-			let result = false;
-			if (this._main_module !== undefined && this._main_module.browser_addmodule !== undefined) {
-				let module_info = undefined;
-				if (info.module_getinfo !== undefined) {
-					module_info = info.module_getinfo(info.control, module_base_path);
+				info = await this.LoadModuleImpl(module_base_path, module_name);
+				if (info === undefined) {
+					ALittle.Log("Module:" + module_name + " load failed!");
+					___COROUTINE(false); return;
 				}
-				result = this._main_module.browser_addmodule(module_name, info.layer_group, module_info);
 			}
-			if (!result) {
-				A_LayerManager.AddChild(info.layer_group, A_LayerManager.group_count - 1);
+			if (info.module_loaded) {
+				ALittle.Log(module_name + ":__Module_Setup already invoked!");
+				___COROUTINE(false); return;
 			}
-		}
-		setup_func(info.layer_group, info.control, module_base_path, this._debug);
-		return true;
+			let setup_func = info.module_setup;
+			if (setup_func === undefined) {
+				ALittle.Log("can't find Module_Setup funciton in Module:" + module_name);
+				___COROUTINE(false); return;
+			}
+			info.module_loaded = true;
+			if (this._main_module.name !== module_name) {
+				let result = false;
+				if (this._main_module !== undefined && this._main_module.browser_addmodule !== undefined) {
+					let module_info = undefined;
+					if (info.module_getinfo !== undefined) {
+						module_info = info.module_getinfo(info.control, module_base_path);
+					}
+					result = this._main_module.browser_addmodule(module_name, info.layer_group, module_info);
+				}
+				if (!result) {
+					A_LayerManager.AddChild(info.layer_group, A_LayerManager.group_count - 1);
+				}
+			}
+			setup_func(info.layer_group, info.control, module_base_path, this._debug);
+			___COROUTINE(true); return;
+			___COROUTINE();
+		});
 	},
 	MainSetup : function(base_path, debug, module_name, sengine_path, server_modules) {
-		if (this._main_module !== undefined) {
-			return false;
-		}
-		if (module_name === undefined) {
-			module_name = ALittle.File_ReadTextFromFile("Enter.ali", false);
-		}
-		if (module_name === undefined) {
-			ALittle.Log("Load Enter.ali failed!");
-			return false;
-		}
-		let info = this.LoadModuleImpl(base_path, module_name);
-		if (info === undefined) {
-			ALittle.Log("Module:" + module_name + " load failed!");
-			return false;
-		}
-		A_LayerManager.AddChild(info.layer_group, A_LayerManager.group_count - 1);
-		this._main_module = info;
-		this._debug = debug;
-		let module_base_path = base_path + "Module/" + module_name;
-		this._main_module.browser_loaded = true;
-		let setup_func = this._main_module.browser_setup;
-		if (setup_func === undefined) {
-			this.LoadModule(module_base_path, this._main_module.name);
-			return false;
-		}
-		setup_func(this._main_module.layer_group, this._main_module.control, module_base_path, this._debug);
-		return true;
+		return new Promise(async function(___COROUTINE, ___) {
+			if (this._main_module !== undefined) {
+				___COROUTINE(false); return;
+			}
+			if (module_name === undefined) {
+				module_name = ALittle.File_ReadTextFromFile("Enter.ali", false);
+			}
+			if (module_name === undefined) {
+				ALittle.Log("Load Enter.ali failed!");
+				___COROUTINE(false); return;
+			}
+			let info = await this.LoadModuleImpl(base_path, module_name);
+			if (info === undefined) {
+				ALittle.Log("Module:" + module_name + " load failed!");
+				___COROUTINE(false); return;
+			}
+			A_LayerManager.AddChild(info.layer_group, A_LayerManager.group_count - 1);
+			this._main_module = info;
+			this._debug = debug;
+			let module_base_path = base_path + "Module/" + module_name;
+			this._main_module.browser_loaded = true;
+			let setup_func = this._main_module.browser_setup;
+			if (setup_func === undefined) {
+				await this.LoadModule(module_base_path, this._main_module.name);
+				___COROUTINE(false); return;
+			}
+			setup_func(this._main_module.layer_group, this._main_module.control, module_base_path, this._debug);
+			___COROUTINE(true); return;
+			___COROUTINE();
+		});
 	},
 	MainShutdown : function() {
 		if (this._main_module === undefined) {

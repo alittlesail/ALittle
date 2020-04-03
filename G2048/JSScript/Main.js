@@ -2,7 +2,7 @@
 if (typeof G2048 === "undefined") G2048 = {};
 
 
-G2048.__Browser_Setup = function(layer_group, control, base_path, debug) {
+G2048.__Browser_Setup = async function(layer_group, control, base_path, debug) {
 	let window_width = 720;
 	let window_height = 1280;
 	let rate = 0.5;
@@ -15,7 +15,7 @@ G2048.__Browser_Setup = function(layer_group, control, base_path, debug) {
 	}
 	ALittle.System_CreateView("2048", window_width, window_height, flag, rate);
 	ALittle.System_SetViewIcon(base_path + "/Other/ic_launcher.png");
-	A_ModuleSystem.LoadModule(base_path, "G2048");
+	await A_ModuleSystem.LoadModule(base_path, "G2048");
 }
 
 G2048.__Browser_AddModule = function(module_name, layer_group, module_info) {

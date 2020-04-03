@@ -2,7 +2,7 @@
 namespace G2048;
 
 // 壳入口函数
-public static __Browser_Setup(ALittle.DisplayLayout layer_group
+public async static __Browser_Setup(ALittle.DisplayLayout layer_group
                               , ALittle.ControlSystem control
                               , string base_path
                               , string debug)

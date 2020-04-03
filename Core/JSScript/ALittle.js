@@ -22,7 +22,7 @@ Require = function(url) {
 	});
 }
 
-__ALITTLEAPI_Core_Init = async function(base_path, callback) {
+__ALITTLEAPI_Core_Init = async function(base_path) {
 	{
 		await Require(base_path + "Core/JavaScript/JavaScriptClass");
 		await Require(base_path + "Core/JavaScript/JavaScriptException");
@@ -40,9 +40,6 @@ __ALITTLEAPI_Core_Init = async function(base_path, callback) {
 	await Require(base_path + "Core/Net/HttpReceiver");
 	await Require(base_path + "Core/Net/HttpSender");
 	await Require(base_path + "Core/Net/MsgCommon");
-	if (callback !== undefined) {
-		callback();
-	}
 }
 
 }

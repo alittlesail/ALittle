@@ -1,6 +1,6 @@
 namespace alittle;
 
-public async static __ALITTLEAPI_CEngine_Init(string base_path, Functor<()> callback)
+public async static __ALITTLEAPI_CEngine_Init(string base_path)
 {
     [Language(JavaScript)]
     {
@@ -37,7 +37,6 @@ public async static __ALITTLEAPI_CEngine_Init(string base_path, Functor<()> call
     Require(base_path.."CEngine/UISystem/LayerManager");
     
     ALittle.System_CreateView("test", 800, 600, 0, 0);
-    if (callback != null) callback();
 }
 
 public static __ALITTLEAPI_HandleConsoleCmd(string cmd)
@@ -307,7 +306,7 @@ public static __ALITTLEAPI_SystemSaveFile(string path)
 
 //////////////////////////////////////////////////////////////////////////////////////-
 // 启动核心模块资源
-public static __ALITTLEAPI_SetupMainModule(string base_path, string debug, string module_name, string sengine_path, string modules) : bool
+public async static __ALITTLEAPI_SetupMainModule(string base_path, string debug, string module_name, string sengine_path, string modules) : bool
 {
     A_AudioSystem.Setup();
     return A_ModuleSystem.MainSetup(base_path, debug, module_name, sengine_path, modules);

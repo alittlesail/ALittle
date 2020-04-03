@@ -13,15 +13,12 @@
 	<script src="../Std/JSScript/ALittle.js"></script>
 	<script src="../CEngine/JSScript/ALittle.js"></script>
 	<script type='text/javascript'>
-		function onLoad()
+		async function onLoad()
 		{
-			__ALITTLEAPI_Core_Init("../Core/JSScript/", function () {
-				__ALITTLEAPI_Std_Init("../Std/JSScript/", function() {
-					__ALITTLEAPI_CEngine_Init("../CEngine/JSScript/", function() {
-						console.log("aaaa");	
-					})
-				})
-			});
+			await __ALITTLEAPI_Core_Init("../Core/JSScript/");
+			await __ALITTLEAPI_Std_Init("../Std/JSScript/");
+			await __ALITTLEAPI_CEngine_Init("../CEngine/JSScript/");
+			console.log("aaaa");
 		}
 	</script>
 </body>

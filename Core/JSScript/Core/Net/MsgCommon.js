@@ -23,7 +23,7 @@ ALittle.IMsgCommon = JavaScript.Class(undefined, {
 		client.Send(msg_id, msg_body, 0);
 	},
 	InvokeRPC : function(msg_id, client, msg_body) {
-		return new Promise(async function(___COROUTINE, ___) {
+		return new Promise(function(___COROUTINE, ___) {
 			if (___COROUTINE === undefined) {
 				___COROUTINE(["当前不是协程", undefined]); return;
 			}

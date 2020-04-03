@@ -1,0 +1,186 @@
+
+[Language(JavaScript)]
+namespace JavaScript;
+
+public class JDisplayObject : ALittle.IDisplayObject
+{
+    private PIXI.DisplayObject _native;
+    private PIXI.Point _scale;
+    private PIXI.Point _pivot;
+    private bool _clip;
+    private bool _visible;
+    
+    public ctor()
+    {
+        this._scale = new PIXI.Point(1, 1);
+        this._pivot = new PIXI.Point(0, 0);
+        this._clip = false;
+        this._visible = true;
+    }
+    
+    public get native() : PIXI.DisplayObject { return this._native; }
+    public fun SetX(double value) { this._native.x = value; }
+    public fun SetY(double value) { this._native.y = value; }
+    public fun SetScaleX(double value) { this._scale.x = value; this._native.scale = this._scale; }
+    public fun SetScaleY(double value) { this._scale.y = value; this._native.scale = this._scale; }
+    public fun SetCenterX(double value) { this._pivot.x = value; this._native.pivot = this._pivot; }
+    public fun SetCenterY(double value) { this._pivot.y = value; this._native.pivot = this._pivot; }
+    public fun SetAngle(double value) { this._native.rotation = value; }
+    public fun SetWidth(double value) { this._native.width = value; }
+    public fun SetHeight(double value) { this._native.height = value; }
+    public fun SetVisible(bool value) { this._visible = value; this._native.visible = value && this._clip; }
+    public fun SetClip(bool value) { this._clip = value; this._native.visible = value && this._visible; }
+    public fun SetAlpha(double value) { this._native.alpha = value; }
+    public fun SetRed(double value) {}
+    public fun SetGreen(double value) {}
+    public fun SetBlue(double value) {}
+    public fun RemoveChild(ALittle.IDisplayObject value) {}
+    public fun AddChild(ALittle.IDisplayObject value) {}
+    public fun AddChildBefore(ALittle.IDisplayObject value1, ALittle.IDisplayObject value2) {}
+    public fun RemoveAllChild() {}
+    public fun SetFont(string path, int size) {}
+    public fun ClearTexture() {}
+    public fun SetTexture(ALittle.IRenderTexture texture) {}
+    public fun SetTextureCoord(double t, double b, double l, double r) {}
+    public fun SetFlip(int value) {}
+    public fun SetRowColCount(int row_count, int col_count) {}
+    public fun SetRowColIndex(int row, int col) {}
+    public fun NeedDraw() {}
+    public fun SetText(string value) {}
+    public fun SetBold(bool value) {}
+    public fun SetItalic(bool value) {}
+    public fun SetUnderline(bool value) {}
+    public fun SetDeleteline(bool value) {}
+    public fun SetOutline(bool value) {}
+    public fun GetRealWidth() : int { return 0; }
+    public fun GetRealHeight() : int { return 0; }
+    public fun GetFontHeight() : int { return 0; }
+    public fun SetHAlign(int value) {}
+    public fun SetVAlign(int value) {}
+    public fun SetCursorAlpha(double value) {}
+    public fun GetLineWidth(int value) : int { return 0; }
+    public fun GetLineCount() : int { return 0; }
+    public fun GetScrollOffset() : int { return 0; }
+    public fun IsDefaultText() : bool { return false; }
+    public fun SetDefaultText(bool defaultv, string value) {}
+    public fun SetDefaultTextAlpha(double value) {}
+    public fun GetCursorX() : int { return 0; }
+    public fun GetCursorY() : int { return 0; }
+    public fun GetText() : string { return null; }
+    public fun SetCursorToEnd() {}
+    public fun SetCursorToHome() {}
+    public fun ShowCursor(bool value) {}
+    public fun ClickCursor(double x, double y) {}
+    public fun ClickWordCursor(double x, double y) : bool { return false; }
+    public fun SelectAll() {}
+    public fun GetSelectText() : string { return null; }
+    public fun InsertText(string value) : bool { return false; }
+    public fun CursorOffsetLR(bool value) {}
+    public fun SelectCursorOffsetLR(bool value) {}
+    public fun CursorOffsetUD(bool value) {}
+    public fun SelectCursorOffsetUD(bool value) {}
+    public fun DeleteText(bool value) : bool { return false; }
+    public fun DeleteSelectText() : bool { return false; }
+    public fun DragCursorBegin() {}
+    public fun DragCursor(double x, double y) {}
+    public fun SetCursorRed(double value) {}
+    public fun SetCursorGreen(double value) {}
+    public fun SetCursorBlue(double value) {}
+    public fun SetPasswordMode(bool value) {}
+    public fun CursorOffset(bool value) {}
+    public fun SelectCursorOffset(bool value) {}
+    public fun SetTexUV(int index, double u, double v) {}
+    public fun SetPosXY(int index, double x, double y) {}
+    public fun SetLeftSize(double value) {}
+    public fun SetRightSize(double value) {}
+    public fun SetTopSize(double value) {}
+    public fun SetBottomSize(double value) {}
+    public fun CutTextByWidth(int remain_width, string text, int total_width) : int { return 0; }
+    public fun ClearCutWidthCache() {}
+    public fun GetCutWidthListCount() : int { return 0; }
+    public fun GetCutWidthByIndex(int index) : int { return 0; }
+    public fun CalcTextWidth(string value) : int { return 0; }    
+}
+
+public class JDisplayObjects : JDisplayObject
+{
+    public ctor()
+    {
+        this._native = new PIXI.Container();
+    }
+    
+    public fun RemoveChild(ALittle.IDisplayObject value)
+    {
+        cast<PIXI.Container>(this._native).removeChild(cast<JDisplayObject>(value)._native);
+    }
+    public fun AddChild(ALittle.IDisplayObject value) { cast<PIXI.Container>(this._native).addChild(cast<JDisplayObject>(value)._native); }
+    public fun AddChildBefore(ALittle.IDisplayObject back, ALittle.IDisplayObject value)
+    {
+        var index = cast<PIXI.Container>(this._native).getChildAt(cast<JDisplayObject>(value)._native);
+        cast<PIXI.Container>(this._native).addChildAt(cast<JDisplayObject>(value)._native, index - 1);
+    }
+    public fun RemoveAllChild()
+    {
+        cast<PIXI.Container>(this._native).removeChildren(0);
+    }
+}
+
+
+public class JDisplaySystem : ALittle.IDisplaySystem
+{
+    private PIXI.Container _layer;
+    private PIXI.Container _special_layer;
+    
+    private fun Init() : bool
+    {
+        var stage = JSystem_GetStage();
+        if (stage == null) return false;
+        if (this._layer != null) return true;
+        
+        this._layer = new PIXI.Container();
+        this._special_layer = new PIXI.Container();
+        
+        this._layer.width = stage.width;
+        this._layer.height = stage.height;
+        this._special_layer.width = stage.width;
+        this._special_layer.height = stage.height;
+        
+        stage.addChild(this._layer);
+        stage.addChild(this._special_layer);
+        
+        return true;
+    }
+    
+    public fun AddSpecialChild(ALittle.IDisplayObject value)
+    {
+        if (!this.Init()) return;
+        this._special_layer.addChild(cast<JDisplayObject>(value).native);
+    }
+    public fun AddChild(ALittle.IDisplayObject value)
+    {
+        if (!this.Init()) return;
+        this._layer.addChild(cast<JDisplayObject>(value).native);
+    }
+    public fun AddChildBefore(ALittle.IDisplayObject back, ALittle.IDisplayObject value)
+    {
+        if (!this.Init()) return;
+        var index = this._layer.getChildAt(cast<JDisplayObject>(value).native);
+        this._layer.addChildAt(cast<JDisplayObject>(value).native, index - 1);
+    }
+    public fun RemoveChild(ALittle.IDisplayObject value)
+    {
+        this._layer.removeChild(cast<JDisplayObject>(value).native);
+    }
+    public fun RemoveAllChild()
+    {
+        this._layer.removeChildren(0);
+        this._special_layer.removeChildren(0);
+    }
+}
+
+public var A_JDisplaySystem:JDisplaySystem = new JDisplaySystem();
+
+public class JQuad : JDisplayObject
+{
+    
+}

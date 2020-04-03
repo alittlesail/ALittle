@@ -19,7 +19,12 @@ ALittle.String_Byte = function(s, index) {
 }
 
 ALittle.String_Type = function(v) {
-	return typeof(v);
+	let value = typeof(v);
+	if (value === "object") {
+		return "table";
+	} else {
+		return value;
+	}
 }
 
 ALittle.String_Len = function(s) {

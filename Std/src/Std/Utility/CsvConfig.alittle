@@ -111,7 +111,7 @@ public class KeyValueConfig<T:struct> : CsvConfig
             handle_map[handle.var_name] = handle;
         
         var row_count = loader.GetRowCount();
-        for (var row = 1, row_count, 1)
+        for (var row = 1; row <= row_count; 1)
         {
             var key = loader.ReadCell(row, 1);
             var value = loader.ReadCell(row, 2);
@@ -168,7 +168,7 @@ public class SingleKeyTableConfig<T:struct, KEY> : CsvTableConfig
         var is_number = key_type == "int" || key_type == "double" || key_type == "long";
 
         var row_count = this._csv_file.GetRowCount();
-        for (var row = 1, row_count, 1)
+        for (var row = 1; row <= row_count; 1)
         {
             var value = this._csv_file.ReadCell(row, 1);
             if (value != null)
@@ -290,7 +290,7 @@ public class DoubleKeyTableConfig<T:struct, KEY1, KEY2> : CsvTableConfig
         var second_is_number = second_key_type == "int" || second_key_type == "double" || second_key_type == "long";
 
         var row_count = this._csv_file.GetRowCount();
-        for (var row = 1, row_count, 1)
+        for (var row = 1; row <= row_count; 1)
         {
             var tmp:Map<KEY2, int>;
             var value = this._csv_file.ReadCell(row, 1);

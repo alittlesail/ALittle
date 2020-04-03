@@ -1,14 +1,14 @@
 
 namespace ALittle;
 
-private var __byte = lua.String.byte;
-private var __type = lua.type;
+private var __byte = String_Byte;
+private var __type = String_Type;
 
 public class ControlSystem
 {
     private Map<string, DisplayInfo>    _name_map_info;
     private Map<string, bool>    _name_map_info_cache;
-
+    
     private string              _module_name;
     private bool                _crypt_mode;
     
@@ -114,7 +114,7 @@ public class ControlSystem
             if (class_func != null)
                 return cast<Functor<(ControlSystem):DisplayObject>>(class_func)(this);
             else
-                Log("unknow target class." .. lua.table.concat(target_class, "."));
+                Log("unknow target class." .. String_Join(target_class, "."));
         }
 
         var clazz = info.__class;
@@ -220,7 +220,7 @@ public class ControlSystem
         control.native_show.SetY(0);
         control.visible = true;
         control.clip = false;
-        var result = texture.Save(file_path, control.native_show, lua.math.floor(width), lua.math.floor(height), scale);
+        var result = texture.Save(file_path, control.native_show, Math_Floor(width), Math_Floor(height), scale);
         control.native_show.SetX(x);
         control.native_show.SetY(y);
         control.visible = visible;
@@ -329,7 +329,7 @@ public class ControlSystem
                     && (cast<DisplayInfo>(value).__include != null
                         || cast<DisplayInfo>(value).__extends != null
                         || cast<DisplayInfo>(value).__class != null))
-                    cast<Map<string, any> >(info)[key] = this.CreateInfo(value);
+                    cast<Map<string, any>>(info)[key] = this.CreateInfo(value);
             }
             info.__shows_included = true;
         }
@@ -369,7 +369,7 @@ public class ControlSystem
             }
     
             if (class_func == null)
-                Log("unknow target class." .. lua.table.concat(target_class, "."));
+                Log("unknow target class." .. String_Join(target_class, "."));
         }
     
         if (class_func == null)

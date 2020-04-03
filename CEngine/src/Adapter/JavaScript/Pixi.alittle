@@ -13,4 +13,56 @@ public class Application
     public ctor(ApplicationData data) { }
     public get view() : javascript.DomElement {}
     public fun render() {}
+    public get stage() : Container {}
+}
+
+[Native]
+public class Point
+{
+    public ctor(double x, double y) {}
+    public get x() : double {}
+    public set x(double v) {}
+    
+    public get y() : double {}
+    public set y(double v) {}
+}
+
+[Native]
+public class DisplayObject
+{
+    public get x() : double {}
+    public set x(double v) {}
+    public get y() : double {}
+    public set y(double v) {}
+    
+    public get width() : double {}
+    public set width(double v) {}
+    public get height() : double {}
+    public set height(double v) {}
+    
+    public get scale() : Point {}
+    public set scale(Point v) {}
+    public get pivot() : Point {}
+    public set pivot(Point v) {}
+    public get rotation() : double {}
+    public set rotation(double v) {}
+    public get angle() : double {}
+    public set angle(double v) {}
+    
+    public get visible() : bool {}
+    public set visible(bool v) {}
+    
+    public get alpha() : double {}
+    public set alpha(double v) {}
+}
+
+[Native]
+public class Container : DisplayObject
+{
+    public fun addChild(DisplayObject value) {}
+    public fun addChildAt(DisplayObject value, int index) {}
+    public fun getChildAt(DisplayObject value) : int {}
+    public fun removeChild(DisplayObject value) {}
+    public fun removeChildAt(DisplayObject value, int index) {}
+    public fun removeChildren(int begin, [Nullable] int end) {}
 }

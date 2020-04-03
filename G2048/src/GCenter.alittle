@@ -125,9 +125,9 @@ class GCenter
         // 把空闲的格子遍历出来
         var list = new List<List<int> >();
         var list_count = 0;
-        for (var i = 1, 4, 1)
+        for (var i = 1; i <= 4; 1)
         {
-            for (var j = 1, 4, 1)
+            for (var j = 1; i <= 4; 1)
             {
                 if (this._data_map[i][j] == null)
                 {
@@ -158,12 +158,12 @@ class GCenter
     public fun CalcLeft()
     {
         var moved = false;
-        for (var i = 1, 4, 1)
+        for (var i = 1; i <= 4; 1)
         {
             // 收集横向的
             var list = new List<ItemInfo>();
             var list_count = 0;
-            for (var j = 1, 4, 1)
+            for (var j = 1; j <= 4; 1)
             {
                 if (this._data_map[i][j] != null)
                 {
@@ -245,12 +245,12 @@ class GCenter
     
     public fun CalcRight()
     {
-        for (var i = 1, 4, 1)
+        for (var i = 1; i <= 4; 1)
         {
             // 收集横向的
             var list = new List<ItemInfo>();
             var list_count = 0;
-            for (var j = 4, 1, -1)
+            for (var j = 4; j >= 1; -1)
             {
                 if (this._data_map[i][j] != null)
                 {
@@ -332,12 +332,12 @@ class GCenter
     
     public fun CalcUp()
     {
-        for (var j = 1, 4, 1)
+        for (var j = 1; j <= 4; 1)
         {
             // 收集横向的
             var list = new List<ItemInfo>();
             var list_count = 0;
-            for (var i = 1, 4, 1)
+            for (var i = 1; i <= 4; 1)
             {
                 if (this._data_map[i][j] != null)
                 {
@@ -419,12 +419,12 @@ class GCenter
     
     public fun CalcDown()
     {
-        for (var j = 1, 4, 1)
+        for (var j = 1; j <= 4; 1)
         {
             // 收集横向的
             var list = new List<ItemInfo>();
             var list_count = 0;
-            for (var i = 4, 1, -1)
+            for (var i = 4; i >= 1; -1)
             {
                 if (this._data_map[i][j] != null)
                 {
@@ -671,9 +671,9 @@ class GCenter
     
     public fun CheckGameOver() : bool
     {
-        for (var i = 1, 4, 1)
+        for (var i = 1; i <= 4; 1)
         {
-            for (var j = 1, 4, 1)
+            for (var j = 1; j <= 4; 1)
             {
                 var item = this._data_map[i][j];
                 if (item != null && item._user_data == 2048)
@@ -690,9 +690,9 @@ class GCenter
             }
         }
     
-        for (var i = 1, 4, 1)
+        for (var i = 1; i <= 4; 1)
         {
-            for (var j = 1, 4, 1)
+            for (var j = 1; j <= 4; 1)
             {
                 var item = this._data_map[i][j];
                 if (item == null)

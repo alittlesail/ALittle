@@ -168,8 +168,8 @@ public class DisplayObject : UIEventDispatcher
     protected ControlSystem _ctrl_sys;      // 控件所归属的ControlSystem
     protected bool _clip;                   // 是否被裁减	如果为true，不管怎么样都看不到
     protected bool _ignore;                 // 是否忽略		如果为true，不管怎么样都操作不到
-    protected lua.__CPPAPIDisplayObject _show;// 显示控件
-
+    protected IDisplayObject _show;// 显示控件
+    
     protected DisplayGroup _show_parent;    // 显示级父控件，最直接的父控件
     protected DisplayGroup _logic_parent;   // 逻辑级父控件，用于跳级管理
 
@@ -311,7 +311,7 @@ public class DisplayObject : UIEventDispatcher
 
     //////////////////////////////////////////////////////////////////////
 
-    public get native_show() : lua.__CPPAPIDisplayObject { return this._show; }
+    public get native_show() : IDisplayObject { return this._show; }
     public get text() : string { return null; }
     public set text(any value) {}
     public get group_name() : string { return null; }
@@ -321,8 +321,8 @@ public class DisplayObject : UIEventDispatcher
     public get font_height() : int { return null; }
     
     public fun SetTextureCoord(double t, double b, double l, double r) {}
-    public get texture() : lua.__CPPAPITextureWrap { return null; }
-    public set texture(lua.__CPPAPITextureWrap value) {}
+    public get texture() : ITextureWrap { return null; }
+    public set texture(ITextureWrap value) {}
     public get texture_name() : string { return null; }
     public set texture_name(string value) {}
     public fun Redraw() {}
@@ -492,7 +492,7 @@ public class DisplayObject : UIEventDispatcher
             parent = parent._show_parent;
         }
 
-        for (var index = count, 1, -1)
+        for (var index = count; index >= 1; -1)
         {
             var object = list[index];
             var m = new Matrix2D();
@@ -528,7 +528,7 @@ public class DisplayObject : UIEventDispatcher
         }
 
         var pick:DisplayObject;
-        for (var index = count, 1, -1)
+        for (var index = count; index >= 1; -1)
         {
             pick, x, y = list[index].PickUpSelf(x, y);
         }
@@ -1117,7 +1117,7 @@ public class DisplayObject : UIEventDispatcher
                 {
                     func = cast<Map<string, Functor<(any, UIEvent)>>>(target_logic)[einfo.func];
                     if (func == null)
-                        Log("can't find event func:\"" .. einfo.func .. "\" in "..lua.tostring(target_logic));
+                        Log("can't find event func:\"" .. einfo.func .. "\" in "..String_ToString(target_logic));
                 }
                 // 把这三个串起来
                 if (einfo.type != null && func != null)

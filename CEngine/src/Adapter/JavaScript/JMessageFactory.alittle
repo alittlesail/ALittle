@@ -29,7 +29,7 @@ public class JMessageWriteFactory : ALittle.IMessageWriteFactory
 		var new_data = new javascript.ArrayBuffer(this._memory.byteLength * 2);
 		var new_memory = new javascript.DataView(new_data);
         
-        for (var i = 0, this._memory.byteLength - 1, 1)
+        for (var i = 0; i < this._memory.byteLength; 1)
             new_memory.setUint8(i, this._memory.getUint8(i));
         
 		this._memory = new_memory;
@@ -70,7 +70,7 @@ public class JMessageWriteFactory : ALittle.IMessageWriteFactory
         this._size += 4;
 		var new_data = __TEXTENCODER.encode(value);
 		var new_memory = new javascript.DataView(new_data.buffer);
-		for (var i = 0, new_memory.byteLength - 1, 1)
+		for (var i = 0; i < new_memory.byteLength; 1)
 		{
             this._memory.setUint8(this._size, new_memory.getUint8(i));
 			++ this._size;

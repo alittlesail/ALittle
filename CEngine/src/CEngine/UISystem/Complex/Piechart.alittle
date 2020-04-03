@@ -16,7 +16,7 @@ public class Piechart : DisplayLayout
     
     	// 创建子控件
     	this._tri_list = new List<Triangle>();
-    	for (var i = 1, 5, 1)
+    	for (var i = 1; i <= 5; 1)
     	{
 			var triangle = new Triangle(this._ctrl_sys);
     		triangle.u2 = 0.5;
@@ -70,7 +70,7 @@ public class Piechart : DisplayLayout
     {
     	if (this.red == value) return;
     	this.red = value;
-    	for (var i = 1, 5, 1)
+    	for (var i = 1; i <= 5; 1)
     		this._tri_list[i].red = value;
     }
     // 设置控件的Green颜色
@@ -78,7 +78,7 @@ public class Piechart : DisplayLayout
     {
     	if (this.green == value) return;
     	this.green = value;
-    	for (var i = 1, 5, 1)
+    	for (var i = 1; i <= 5; 1)
     		this._tri_list[i].green = value;
     }
     // 设置控件的RGB颜色
@@ -86,7 +86,7 @@ public class Piechart : DisplayLayout
     {
     	if (this.blue == value) return;
     	this.blue = value;
-    	for (var i = 1, 5, 1)
+    	for (var i = 1; i <= 5; 1)
     		this._tri_list[i].blue = value;
     }
 

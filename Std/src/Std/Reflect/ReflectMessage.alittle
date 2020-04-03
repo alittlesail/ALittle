@@ -241,7 +241,7 @@ private static PS_ReadArray(IMessageReadFactory factory, ProtocolInvokeInfo var_
     var sub_func = sub_info.rfunc;
     var sub_len = 0;
     var value_list = new List<any>();
-    for (var index = 1, count, 1)
+    for (var index = 1; index <= count; 1)
     {
         value_list[index], sub_len = sub_func(factory, sub_info, value_list, l);
         if (sub_len < 0)
@@ -267,7 +267,7 @@ private static PS_ReadMap(IMessageReadFactory factory, ProtocolInvokeInfo var_in
     var value_info = var_info.value_info;
     var value_func = value_info.rfunc;
     var value_map = new Map<string, any>();
-    for (var index = 1, count, 1)
+    for (var index = 1; index <= count; 1)
     {
         var key, key_len = key_func(factory, key_info, value_map, l);
         if (key_len < 0)
@@ -397,7 +397,7 @@ protected static CreateMapInfo(string var_type) : ProtocolInvokeInfo
     var comma_index = 0;
     var sub_type_len = len(sub_type);
     var ltgt = 0;
-    for (var i = 1, sub_type_len, 1)
+    for (var i = 1; i <= sub_type_len; 1)
     {
         var code = byte(sub_type, i);
         if (code == 60)

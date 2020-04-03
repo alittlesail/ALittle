@@ -170,3 +170,9 @@ public static JSystem_Render() : bool
     A_PixiApp.render();
     return true;
 }
+
+public static JSystem_GetStage() : PIXI.Container
+{
+    if (A_PixiApp == null) return null;
+    return A_PixiApp.stage;
+}

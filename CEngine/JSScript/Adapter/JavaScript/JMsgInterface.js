@@ -13,7 +13,7 @@ JavaScript.JNetBuffer = JavaScript.Class(undefined, {
 	Add : function(array_buffer) {
 		let data_view = new DataView(array_buffer);
 		this.Resize(data_view.byteLength);
-		for (let i = 0; i <= data_view.byteLength - 1; i += 1) {
+		for (let i = 0; i < data_view.byteLength; i += 1) {
 			this._memory.setUint8(this._dstart + this._dsize, data_view.getUint8(i));
 			++ this._dsize;
 		}
@@ -38,8 +38,8 @@ JavaScript.JNetBuffer = JavaScript.Class(undefined, {
 			return;
 		}
 		let start = this._dstart;
-		let end = this._dstart + this._dsize - 1;
-		for (let i = start; i <= end; i += 1) {
+		let end = this._dstart + this._dsize;
+		for (let i = start; i < end; i += 1) {
 			this._memory.setUint8(i - this._dsize, this._memory.getUint8(i));
 		}
 		this._dstart = 0;
@@ -56,7 +56,7 @@ JavaScript.JNetBuffer = JavaScript.Class(undefined, {
 			new_data = new ArrayBuffer(this._memory.byteLength * 2);
 		}
 		let new_memory = new DataView(new_data);
-		for (let i = 0; i <= this._memory.byteLength - 1; i += 1) {
+		for (let i = 0; i < this._memory.byteLength; i += 1) {
 			new_memory.setUint8(i, this._memory.getUint8(i));
 		}
 		this._memory = new_memory;

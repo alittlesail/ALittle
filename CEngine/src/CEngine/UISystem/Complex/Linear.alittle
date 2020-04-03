@@ -253,7 +253,7 @@ public class Linear : DisplayGroup
             var offset = 0.0;
             if (index > 1)
                 offset = this._childs[index - 1].x + this._childs[index - 1].width + this._gap;
-            for (var i = index, child_count, 1)
+            for (var i = index; i <= child_count; 1)
             {
                 this._childs[i].x = offset;
                 this._childs[i].y = 0;
@@ -265,7 +265,7 @@ public class Linear : DisplayGroup
             var offset = 0.0;
             if (index > 1)
                 offset = this._childs[index - 1].y + this._childs[index - 1].height + this._gap;
-            for (var i = index, child_count, 1)
+            for (var i = index; i <= child_count; 1)
             {
                 this._childs[i].y = offset;
                 this._childs[i].x = 0;
@@ -286,7 +286,7 @@ public class Linear : DisplayGroup
         if (this._type == UIEnumTypes.TYPE_H)
         {
             var offset = 0.0;
-            for (var i = 1, child_count, 1)
+            for (var i = 1; i <= child_count; 1)
             {
                 var child = this._childs[i];
                 if (child.DeepLayout != null)
@@ -299,7 +299,7 @@ public class Linear : DisplayGroup
         else
         {
             var offset = 0.0;
-            for (var i = 1, child_count, 1)
+            for (var i = 1; i <= child_count; 1)
             {
                 var child = this._childs[i];
                 if (child.DeepLayout != null)
@@ -432,7 +432,7 @@ public class Linear : DisplayGroup
             }
 
             this._clip_up_index = index;
-            for (var i = index, child_count, 1)
+            for (var i = index; i <= child_count; 1)
             {
                 if (childs[i].x < right)
                 {
@@ -496,7 +496,7 @@ public class Linear : DisplayGroup
             }
     
             this._clip_up_index = index;
-            for (var i = index, child_count, 1)
+            for (var i = index; i <= child_count; 1)
             {
                 if (childs[i].y < bottom)
                 {

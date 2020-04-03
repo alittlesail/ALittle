@@ -263,7 +263,7 @@ ALittle.DisplayObject = JavaScript.Class(ALittle.UIEventDispatcher, {
 			list[count - 1] = parent;
 			parent = parent._show_parent;
 		}
-		for (let index = count; index <= 1; index += -1) {
+		for (let index = count; index >= 1; index += -1) {
 			let object = list[index - 1];
 			let m = ALittle.NewObject(ALittle.Matrix2D);
 			if (index === 1) {
@@ -292,7 +292,7 @@ ALittle.DisplayObject = JavaScript.Class(ALittle.UIEventDispatcher, {
 			parent = parent._show_parent;
 		}
 		let pick = undefined;
-		for (let index = count; index <= 1; index += -1) {
+		for (let index = count; index >= 1; index += -1) {
 			[pick, x, y] = list[index - 1].PickUpSelf(x, y);
 		}
 		return [x, y];
@@ -756,7 +756,7 @@ ALittle.DisplayObject = JavaScript.Class(ALittle.UIEventDispatcher, {
 				if (einfo.func !== undefined) {
 					func = target_logic[einfo.func];
 					if (func === undefined) {
-						ALittle.Log("can't find event func:\"" + einfo.func + "\" in " + lua.tostring(target_logic));
+						ALittle.Log("can't find event func:\"" + einfo.func + "\" in " + ALittle.String_ToString(target_logic));
 					}
 				}
 				if (einfo.type !== undefined && func !== undefined) {

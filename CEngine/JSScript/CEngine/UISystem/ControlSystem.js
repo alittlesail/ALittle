@@ -2,8 +2,8 @@
 if (typeof ALittle === "undefined") ALittle = {};
 
 
-let __byte = lua.String.byte;
-let __type = lua.type;
+let __byte = ALittle.String_Byte;
+let __type = ALittle.String_Type;
 ALittle.ControlSystem = JavaScript.Class(undefined, {
 	Ctor : function(module_name, crypt_mode) {
 		this._name_map_info = {};
@@ -77,7 +77,7 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 			if (class_func !== undefined) {
 				return class_func(this);
 			} else {
-				ALittle.Log("unknow target class." + lua.table.concat(target_class, "."));
+				ALittle.Log("unknow target class." + ALittle.String_Join(target_class, "."));
 			}
 		}
 		let clazz = info.__class;
@@ -160,7 +160,7 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 		control.native_show.SetY(0);
 		control.visible = true;
 		control.clip = false;
-		let result = texture.Save(file_path, control.native_show, lua.math.floor(width), lua.math.floor(height), scale);
+		let result = texture.Save(file_path, control.native_show, ALittle.Math_Floor(width), ALittle.Math_Floor(height), scale);
 		control.native_show.SetX(x);
 		control.native_show.SetY(y);
 		control.visible = visible;
@@ -290,7 +290,7 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 				}
 			}
 			if (class_func === undefined) {
-				ALittle.Log("unknow target class." + lua.table.concat(target_class, "."));
+				ALittle.Log("unknow target class." + ALittle.String_Join(target_class, "."));
 			}
 		}
 		if (class_func === undefined) {

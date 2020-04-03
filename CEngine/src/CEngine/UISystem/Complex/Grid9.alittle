@@ -279,10 +279,10 @@ public class Grid9 : DisplayGroup
         width_list[2] = real_center;
         width_list[3] = this._real_right;
 
-        for (var col = 1, 3, 1)
+        for (var col = 1; col <= 3; 1)
         {
             var row_childs = this._child_map[col];
-            for (var row = 1, 3, 1)
+            for (var row = 1; row <= 3; 1)
             {
                 if (row_childs[row] != null)
                 {
@@ -336,10 +336,10 @@ public class Grid9 : DisplayGroup
         height_list[1] = this._real_top;
         height_list[2] = real_center;
         height_list[3] = this._real_bottom;
-        for (var col = 1, 3, 1)
+        for (var col = 1; col <= 3; 1)
         {
             var row_childs = this._child_map[col];
-            for (var row = 1, 3, 1)
+            for (var row = 1; row <= 3; 1)
             {
                 if (row_childs[row] != null)
                 {

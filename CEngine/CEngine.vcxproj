@@ -24,6 +24,7 @@
     <None Include="src\Adapter\JavaScript\JHttpInterface.alittle" />
     <None Include="src\Adapter\JavaScript\JMessageFactory.alittle" />
     <None Include="src\Adapter\JavaScript\JMsgInterface.alittle" />
+    <None Include="src\Adapter\JavaScript\JShow.alittle" />
     <None Include="src\Adapter\JavaScript\JSystem.alittle" />
     <None Include="src\Adapter\JavaScript\Pixi.alittle" />
     <None Include="src\Adapter\Lua\HttpFileInterface.alittle" />
@@ -86,6 +87,7 @@
     <None Include="src\CEngine\UISystem\Complex\TileTable.alittle" />
     <None Include="src\CEngine\UISystem\ControlSystem.alittle" />
     <None Include="src\CEngine\UISystem\Effect\EffectImage.alittle" />
+    <None Include="src\CEngine\UISystem\IShow.alittle" />
     <None Include="src\CEngine\UISystem\LayerManager.alittle" />
     <None Include="src\CEngine\UISystem\Plugin\SpringButton.alittle" />
     <None Include="src\CEngine\UISystem\Plugin\SpringCheckButton.alittle" />

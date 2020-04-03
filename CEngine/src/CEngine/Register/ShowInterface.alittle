@@ -24,7 +24,7 @@ public class __CPPAPIRenderSystem
 
 public var __CPPAPI_RenderSystem:__CPPAPIRenderSystem;
 
-public class __CPPAPIDisplayObject
+public class __CPPAPIDisplayObject : ALittle.IDisplayObject
 {
     public fun SetX(double value) {}
     public fun SetY(double value) {}
@@ -41,13 +41,13 @@ public class __CPPAPIDisplayObject
     public fun SetWidth(double value) {}
     public fun SetHeight(double value) {}
     public fun SetVisible(bool value) {}
-    public fun RemoveChild(__CPPAPIDisplayObject value) {}
-    public fun AddChild(__CPPAPIDisplayObject value) {}
-    public fun AddChildBefore(__CPPAPIDisplayObject value1, __CPPAPIDisplayObject value2) {}
+    public fun RemoveChild(ALittle.IDisplayObject value) {}
+    public fun AddChild(ALittle.IDisplayObject value) {}
+    public fun AddChildBefore(ALittle.IDisplayObject value1, ALittle.IDisplayObject value2) {}
     public fun RemoveAllChild() {}
     public fun SetFont(string path, int size) {}
     public fun ClearTexture() {}
-    public fun SetTexture(__CPPAPIRenderTexture texture) {}
+    public fun SetTexture(ALittle.IRenderTexture texture) {}
     public fun SetTextureCoord(double t, double b, double l, double r) {}
     public fun SetFlip(int value) {}
     public fun SetRowColCount(int row_count, int col_count) {}
@@ -121,25 +121,25 @@ public class __CPPAPITextInput : __CPPAPIDisplayObject {}
 public class __CPPAPITriangle : __CPPAPIDisplayObject {}
 public class __CPPAPIGrid9Image : __CPPAPIDisplayObject {}
 
-public class __CPPAPIDisplaySystem
+public class __CPPAPIDisplaySystem : ALittle.IDisplaySystem
 {
-    public fun AddSpecialChild(__CPPAPIDisplayObject value) {}
-    public fun AddChild(__CPPAPIDisplayObject value) {}
-    public fun AddChildBefore(__CPPAPIDisplayObject value1, __CPPAPIDisplayObject value2) {}
-    public fun RemoveChild(__CPPAPIDisplayObject value) {}
+    public fun AddSpecialChild(ALittle.IDisplayObject value) {}
+    public fun AddChild(ALittle.IDisplayObject value) {}
+    public fun AddChildBefore(ALittle.IDisplayObject value1, ALittle.IDisplayObject value2) {}
+    public fun RemoveChild(ALittle.IDisplayObject value) {}
     public fun RemoveAllChild() {}
 }
 
 public var __CPPAPI_DisplaySystem:__CPPAPIDisplaySystem;
 
-public class __CPPAPIRenderTexture
+public class __CPPAPIRenderTexture : ALittle.IRenderTexture
 {
-    public fun Save(string file_path, __CPPAPIDisplayObject show, int width, int height, double scale) : bool {}
+    public fun Save(string file_path, ALittle.IDisplayObject show, int width, int height, double scale) : bool {}
     public fun Clear() {}
-    public fun Draw(__CPPAPIDisplayObject show, int width, int height, double scale) : bool {}
+    public fun Draw(ALittle.IDisplayObject show, int width, int height, double scale) : bool {}
 }
 
-public class __CPPAPITextureLoader
+public class __CPPAPITextureLoader : ALittle.ITextureLoader
 {
     public fun SetPath(string big_path, string altas, int big_width, int big_height, bool crypt_mode) {}
     public fun Start() {}
@@ -149,7 +149,7 @@ public class __CPPAPITextureLoader
     public fun GetMaxHeight() : int {}
 }
 
-public class __CPPAPITextureCutLoader
+public class __CPPAPITextureCutLoader : ALittle.ITextureCutLoader
 {
     public fun SetPath(string path, int max_width, int max_height) {}
     public fun Start() {}
@@ -159,7 +159,7 @@ public class __CPPAPITextureCutLoader
     public fun GetMaxHeight() : int {}
 }
 
-public class __CPPAPITextureWrap
+public class __CPPAPITextureWrap : ALittle.ITextureWrap
 {
     public fun SetTexture(__CPPAPIRenderTexture texture) {}
     public fun Clear() {}

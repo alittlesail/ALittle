@@ -1320,7 +1320,7 @@ public class RichInput : DisplayLayout
         var char_acc_width = 0.0;
     
         // 处理插入位置之前的元素
-        for (var i = 1, char_cursor_it_tmp, 1)
+        for (var i = 1; i <= char_cursor_it_tmp; 1)
         {
             var char_info = this._char_info_list[i];
             // 普通文本信息缓存
@@ -1434,7 +1434,7 @@ public class RichInput : DisplayLayout
         }
     
         // 对插入位置之后的原来列表
-        for (var i = char_cursor_it_tmp + 1, this._char_count, 1)
+        for (var i = char_cursor_it_tmp + 1; i <= this._char_count; 1)
         {
             var char_info = this._char_info_list[i];
             // 是可以和之前的文本合并的文本信息
@@ -1522,7 +1522,7 @@ public class RichInput : DisplayLayout
         var char_acc_width = 0.0;
 
         // 处理删除位置之前的元素
-        for (var i = 1, begin_char_it, 1)
+        for (var i = 1; i <= begin_char_it; 1)
         {
             var char_info = this._char_info_list[i];
             // 普通文本信息缓存
@@ -1537,7 +1537,7 @@ public class RichInput : DisplayLayout
         }
 
         // 处理删除位置之后的元素
-        for (var i = end_char_it + 1, this._char_count, 1)
+        for (var i = end_char_it + 1; i <= this._char_count; 1)
         {
             var char_info = this._char_info_list[i];
             // 是可以和之前的文本合并的文本信息

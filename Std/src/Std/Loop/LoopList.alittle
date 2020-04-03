@@ -105,7 +105,7 @@ public class LoopList : LoopObject
     // 设置为完成
     public fun SetCompleted()
     {
-        for (var index = this._cur_index, this._count, 1)
+        for (var index = this._cur_index; index <= this._count; 1)
             this._update_list[index].SetCompleted();
 
         this._cur_index = this._count + 1;

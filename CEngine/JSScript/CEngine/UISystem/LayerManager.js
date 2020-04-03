@@ -8,16 +8,16 @@ ALittle.LayerManager = JavaScript.Class(undefined, {
 		this._normal_groups = [];
 		this._normal_group_count = 0;
 		this._modal_layer = ALittle.NewObject(ALittle.DisplayLayout, undefined);
-		__CPPAPI_DisplaySystem.AddSpecialChild(this._modal_layer.native_show);
+		A_JDisplaySystem.AddSpecialChild(this._modal_layer.native_show);
 		this._right_layer = ALittle.NewObject(ALittle.DisplayLayout, undefined);
 		this._right_show = undefined;
-		__CPPAPI_DisplaySystem.AddSpecialChild(this._right_layer.native_show);
+		A_JDisplaySystem.AddSpecialChild(this._right_layer.native_show);
 		this._tip_layer = ALittle.NewObject(ALittle.DisplayLayout, undefined);
 		this._tip_layer.disabled = true;
-		__CPPAPI_DisplaySystem.AddSpecialChild(this._tip_layer.native_show);
+		A_JDisplaySystem.AddSpecialChild(this._tip_layer.native_show);
 	},
 	Shutdown : function() {
-		__CPPAPI_DisplaySystem.RemoveAllChild();
+		A_JDisplaySystem.RemoveAllChild();
 	},
 	get group_count() {
 		return this._normal_group_count;
@@ -29,13 +29,13 @@ ALittle.LayerManager = JavaScript.Class(undefined, {
 		if (index === undefined || index > this._normal_group_count || this._normal_group_count < 1) {
 			++ this._normal_group_count;
 			this._normal_groups[this._normal_group_count - 1] = child;
-			__CPPAPI_DisplaySystem.AddChild(child.native_show);
+			A_JDisplaySystem.AddChild(child.native_show);
 		} else {
 			if (index < 1) {
 				index = 1;
 			}
 			let back_child = this._normal_groups[index - 1];
-			__CPPAPI_DisplaySystem.AddChildBefore(back_child.native_show, child.native_show);
+			A_JDisplaySystem.AddChildBefore(back_child.native_show, child.native_show);
 			ALittle.List_Insert(this._normal_groups, index, child);
 			++ this._normal_group_count;
 		}
@@ -60,7 +60,7 @@ ALittle.LayerManager = JavaScript.Class(undefined, {
 		if (has_layer === false) {
 			return;
 		}
-		__CPPAPI_DisplaySystem.RemoveChild(child.native_show);
+		A_JDisplaySystem.RemoveChild(child.native_show);
 		-- this._normal_group_count;
 	},
 	HandleViewResized : function(width, height) {
@@ -163,10 +163,10 @@ ALittle.LayerManager = JavaScript.Class(undefined, {
 			return [mfc, undefined, mfc_rel_x, mfc_rel_y];
 		}
 		let normal_groups = this._normal_groups;
-		for (let group_index = this._normal_group_count; group_index <= 1; group_index += -1) {
+		for (let group_index = this._normal_group_count; group_index > 0; group_index += -1) {
 			let normal_layers = normal_groups[group_index - 1];
 			let layer_list = normal_layers.childs;
-			for (let layer_index = normal_layers.child_count; layer_index <= 1; layer_index += -1) {
+			for (let layer_index = normal_layers.child_count; layer_index > 0; layer_index += -1) {
 				let layer = layer_list[layer_index - 1];
 				[mfc, mfd, mfc_rel_x, mfc_rel_y] = this.LayerPickup(layer, x, y);
 				if (mfc !== undefined) {
@@ -185,7 +185,7 @@ ALittle.LayerManager = JavaScript.Class(undefined, {
 			let rel_x = x - layer.x;
 			let rel_y = y - layer.y;
 			let child_list = layer.childs;
-			for (let index = layer.child_count; index <= 1; index += -1) {
+			for (let index = layer.child_count; index > 0; index += -1) {
 				let dialog = child_list[index - 1];
 				[mfc, mfc_rel_x, mfc_rel_y] = dialog.PickUp(rel_x, rel_y);
 				if (mfc !== undefined) {

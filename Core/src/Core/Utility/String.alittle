@@ -59,7 +59,10 @@ public static String_Type(any v) : string
     return lua.type(v);
     
     [Language(JavaScript)]
-    return javascript.typeof(v);
+    var value = javascript.typeof(v);
+    [Language(JavaScript)]
+    if (value == "object") return "table";
+    else return value;
 }
 
 // 获取子串长度

@@ -225,7 +225,7 @@ public class Grid3 : DisplayGroup
     {
         if (this._type == UIEnumTypes.TYPE_V)
         {
-            for (var index = 1, 3, 1)
+            for (var index = 1; index <= 3; 1)
             {
                 if (this._child_map[index] != null)
                 {
@@ -283,7 +283,7 @@ public class Grid3 : DisplayGroup
         width_list[2] = this._width - this._real_gap * 2 - this._real_up - this._real_down;
         width_list[3] = this._real_down;
     
-        for (var index = 1, 3, 1)
+        for (var index = 1; index <= 3; 1)
         {
             if (this._child_map[index] != null)
             {
@@ -297,7 +297,7 @@ public class Grid3 : DisplayGroup
     {
         if (this._type == UIEnumTypes.TYPE_H)
         {
-            for (var index = 1, 3, 1)
+            for (var index = 1; index <= 3; 1)
             {
                 if (this._child_map[index] != null)
                 {
@@ -355,7 +355,7 @@ public class Grid3 : DisplayGroup
         height_list[2] = this._height - this._real_gap * 2 - this._real_up - this._real_down;
         height_list[3] = this._real_down;
     
-        for (var index = 1, 3, 1)
+        for (var index = 1; index <= 3; 1)
         {
             if (this._child_map[index] != null)
             {

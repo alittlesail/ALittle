@@ -936,7 +936,7 @@ public class Tab : Grid3
         var count = show_center.child_count;
 
         var linear_childs = this._linear.childs;
-        for (var index = 1, count, 1)
+        for (var index = 1; index <= count; 1)
         {
             var simplelayout = linear_childs[index];
             if (simplelayout == null)

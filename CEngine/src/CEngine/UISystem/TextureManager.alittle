@@ -534,7 +534,7 @@ protected class TextureManager
         var texture_width = cast<int>(big_list[1]);
         var texture_height = cast<int>(big_list[2]);
     
-        for (var index = 3, big_list_count, 1)
+        for (var index = 3; index <= big_list_count; 1)
         {
             var list = big_list[index];
             var big_path = index .. ".atlas";

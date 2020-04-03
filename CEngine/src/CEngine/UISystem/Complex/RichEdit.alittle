@@ -2503,7 +2503,7 @@ public class RichEdit : DisplayLayout
         if (free_line_it > 0)
         {
             free_line_list = new List<RichEditLineInfo>();
-            for (var i = free_line_it, this._line_count, 1)
+            for (var i = free_line_it; i <= this._line_count; 1)
             {
                 ++ free_line_list_count;
                 free_line_list[free_line_list_count] = line_list[i];
@@ -2512,7 +2512,7 @@ public class RichEdit : DisplayLayout
     
         line_it = line_delete_begin;
         line_it = line_it + 1;
-        for (var i = line_it, this._line_count, 1)
+        for (var i = line_it; i <= this._line_count; 1)
             line_list[i] = null;
         this._line_count = line_delete_begin;
     
@@ -2651,7 +2651,7 @@ public class RichEdit : DisplayLayout
         if (free_line_it > 0)
         {
             free_line_list = new List<RichEditLineInfo>();
-            for (var i = free_line_it, this._line_count, 1)
+            for (var i = free_line_it; i <= this._line_count; 1)
             {
                 ++ free_line_list_count;
                 free_line_list[free_line_list_count] = line_list[i];
@@ -2661,7 +2661,7 @@ public class RichEdit : DisplayLayout
         // 清空掉所有的行
         line_it = this._line_cursor_it;
         line_it = line_it + 1;
-        for (var i = line_it, this._line_count, 1)
+        for (var i = line_it; i <= this._line_count; 1)
             line_list[i] = null;
         this._line_count = this._line_cursor_it;
     
@@ -2926,7 +2926,7 @@ public class RichEdit : DisplayLayout
                             this.SetDrawText(cast<Text>(display_object));
                             // 把所有的字符全部切割取出大小，然后排成列表
                             var char_count = display_object._show.GetCutWidthListCount();
-                            for (var i = 1, char_count, 1)
+                            for (var i = 1; i <= char_count; 1)
                             {
                                 var byte_count = String_CalcUTF8LengthOfWord(calc_text, 1);
                                 var sub_text = __sub(calc_text, 1, byte_count);

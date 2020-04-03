@@ -70,7 +70,7 @@ G2048.GCenter = JavaScript.Class(undefined, {
 		let list = [];
 		let list_count = 0;
 		for (let i = 1; i <= 4; i += 1) {
-			for (let j = 1; j <= 4; j += 1) {
+			for (let j = 1; i <= 4; j += 1) {
 				if (this._data_map.get(i).get(j) === undefined) {
 					let data = [];
 					data[1 - 1] = i;
@@ -156,7 +156,7 @@ G2048.GCenter = JavaScript.Class(undefined, {
 		for (let i = 1; i <= 4; i += 1) {
 			let list = [];
 			let list_count = 0;
-			for (let j = 4; j <= 1; j += -1) {
+			for (let j = 4; j >= 1; j += -1) {
 				if (this._data_map.get(i).get(j) !== undefined) {
 					let info = {};
 					info.item = this._data_map.get(i).get(j);
@@ -270,7 +270,7 @@ G2048.GCenter = JavaScript.Class(undefined, {
 		for (let j = 1; j <= 4; j += 1) {
 			let list = [];
 			let list_count = 0;
-			for (let i = 4; i <= 1; i += -1) {
+			for (let i = 4; i >= 1; i += -1) {
 				if (this._data_map.get(i).get(j) !== undefined) {
 					let info = {};
 					info.item = this._data_map.get(i).get(j);

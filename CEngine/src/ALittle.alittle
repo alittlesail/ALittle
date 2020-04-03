@@ -2,6 +2,8 @@ namespace alittle;
 
 public async static __ALITTLEAPI_CEngine_Init(string base_path)
 {
+    Require(base_path.."CEngine/UISystem/IShow");
+    
     [Language(JavaScript)]
     {
         Require(base_path.."Adapter/JavaScript/JHttpInterface");
@@ -9,6 +11,7 @@ public async static __ALITTLEAPI_CEngine_Init(string base_path)
         Require(base_path.."Adapter/JavaScript/JMessageFactory");
         Require(base_path.."Adapter/JavaScript/JMsgInterface");
         Require(base_path.."Adapter/JavaScript/JSystem");
+        Require(base_path.."Adapter/JavaScript/JShow");
     }
     
     Require(base_path.."CEngine/Utility/String");

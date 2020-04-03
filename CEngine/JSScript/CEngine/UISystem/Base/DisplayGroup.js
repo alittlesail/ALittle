@@ -11,7 +11,7 @@ ALittle.DisplayGroup = JavaScript.Class(ALittle.DisplayObject, {
 	Ctor : function(ctrl_sys) {
 		this._childs = [];
 		this._child_count = 0;
-		this._show = ALittle.NewObject(lua.__CPPAPIDisplayObjects);
+		this._show = ALittle.NewObject(JavaScript.JDisplayObjects);
 		this._pickup_rect = false;
 		this._pickup_child = true;
 		this._pickup_this = false;
@@ -228,7 +228,7 @@ ALittle.DisplayGroup = JavaScript.Class(ALittle.DisplayObject, {
 		}
 		if (this._pickup_child) {
 			let childs = this._childs;
-			for (let index = this._child_count; index <= 1; index += -1) {
+			for (let index = this._child_count; index >= 1; index += -1) {
 				let [v_focus, v_x, v_y] = childs[index - 1].PickUp(rel_x, rel_y);
 				if (v_focus !== undefined) {
 					return [v_focus, v_x, v_y];

@@ -179,4 +179,11 @@ JavaScript.JSystem_Render = function() {
 	return true;
 }
 
+JavaScript.JSystem_GetStage = function() {
+	if (A_PixiApp === undefined) {
+		return undefined;
+	}
+	return A_PixiApp.stage;
+}
+
 }

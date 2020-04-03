@@ -19,7 +19,7 @@ JavaScript.JMessageWriteFactory = JavaScript.Class(ALittle.IMessageWriteFactory,
 		}
 		let new_data = new ArrayBuffer(this._memory.byteLength * 2);
 		let new_memory = new DataView(new_data);
-		for (let i = 0; i <= this._memory.byteLength - 1; i += 1) {
+		for (let i = 0; i < this._memory.byteLength; i += 1) {
 			new_memory.setUint8(i, this._memory.getUint8(i));
 		}
 		this._memory = new_memory;
@@ -64,7 +64,7 @@ JavaScript.JMessageWriteFactory = JavaScript.Class(ALittle.IMessageWriteFactory,
 		this._size = this._size + (4);
 		let new_data = __TEXTENCODER.encode(value);
 		let new_memory = new DataView(new_data.buffer);
-		for (let i = 0; i <= new_memory.byteLength - 1; i += 1) {
+		for (let i = 0; i < new_memory.byteLength; i += 1) {
 			this._memory.setUint8(this._size, new_memory.getUint8(i));
 			++ this._size;
 		}

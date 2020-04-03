@@ -10,12 +10,15 @@ public class DisplayGroup : DisplayObject
 {
     protected List<DisplayObject> _childs;    // 控件的子控件
     protected int _child_count;               // 子控件个数
-
+    
     public ctor(ControlSystem ctrl_sys)
     {
         this._childs = new List<DisplayObject>();       // 控件的子控件
         this._child_count = 0;                           // 子控件个数
+        [Language(Lua)]
         this._show = new lua.__CPPAPIDisplayObjects();           // 创建显示控件
+        [Language(JavaScript)]
+        this._show = new JavaScript.JDisplayObjects();
     
         this._pickup_rect = false;                       // 默认不判断拾取矩形
         this._pickup_child = true;                       // 默认拾取子控件
@@ -301,7 +304,7 @@ public class DisplayGroup : DisplayObject
             // 开始检测子控件
             var childs = this._childs;
             // 计算点是否在子控件内部
-            for (var index = this._child_count, 1, -1)
+            for (var index = this._child_count; index >= 1; -1)
             {
                 // 获取滚动焦点和移动焦点
                 var v_focus, v_x, v_y = childs[index].PickUp(rel_x, rel_y);

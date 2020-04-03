@@ -314,5 +314,11 @@
     <None Include="src\Adapter\JavaScript\JHttpFileInterface.alittle">
       <Filter>Adapter\JavaScript</Filter>
     </None>
+    <None Include="src\CEngine\UISystem\IShow.alittle">
+      <Filter>CEngine\UISystem</Filter>
+    </None>
+    <None Include="src\Adapter\JavaScript\JShow.alittle">
+      <Filter>Adapter\JavaScript</Filter>
+    </None>
   </ItemGroup>
 </Project>

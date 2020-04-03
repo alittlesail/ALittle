@@ -23,7 +23,7 @@ public class JNetBuffer
     {
 		var data_view = new javascript.DataView(array_buffer);
 		this.Resize(data_view.byteLength);
-		for (var i = 0, data_view.byteLength - 1, 1)
+		for (var i = 0; i < data_view.byteLength; 1)
 		{
 			this._memory.setUint8(this._dstart + this._dsize, data_view.getUint8(i));
 			++ this._dsize;
@@ -56,8 +56,8 @@ public class JNetBuffer
         if (this._dstart < 100) return;
         
         var start = this._dstart;
-        var end = this._dstart + this._dsize - 1;
-        for (var i = start, end, 1)
+        var end = this._dstart + this._dsize;
+        for (var i = start; i < end; 1)
             this._memory.setUint8(i - this._dsize, this._memory.getUint8(i));
         
         this._dstart = 0;
@@ -78,7 +78,7 @@ public class JNetBuffer
         
         // ¿½±´ÄÚ´æ
 		var new_memory = new javascript.DataView(new_data);
-		for (var i = 0, this._memory.byteLength - 1, 1)
+		for (var i = 0; i < this._memory.byteLength; 1)
 			new_memory.setUint8(i, this._memory.getUint8(i));
         
         // Ìæ»»ÄÚ´æ

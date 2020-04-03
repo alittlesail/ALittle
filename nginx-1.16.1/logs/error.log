@@ -4,3 +4,7 @@
 2020/04/02 14:26:25 [notice] 20656#16264: signal process started
 2020/04/02 14:26:25 [error] 20656#16264: CreateFile() "D:\Software\ALittle\trunk\nginx-1.16.1/logs/nginx.pid" failed (2: The system cannot find the file specified)
 2020/04/02 18:11:36 [notice] 17920#3660: signal process started
+2020/04/03 09:29:44 [notice] 18864#11376: signal process started
+2020/04/03 09:29:44 [error] 18864#11376: CreateFile() "D:\Software\ALittle\trunk\nginx-1.16.1/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2020/04/03 09:30:07 [error] 9920#21128: *1 CreateFile() "D:\Software\ALittle\trunk\nginx-1.16.1/../favicon.ico" failed (2: The system cannot find the file specified), client: 127.0.0.1, server: localhost, request: "GET /favicon.ico HTTP/1.1", host: "localhost", referrer: "http://localhost/G2048/index.html"
+2020/04/03 11:18:08 [error] 9920#21128: *6 CreateFile() "D:\Software\ALittle\trunk\nginx-1.16.1/../CEngine/JSScript/CEngine/UISystem/IShow.js" failed (2: The system cannot find the file specified), client: 127.0.0.1, server: localhost, request: "GET /CEngine/JSScript/CEngine/UISystem/IShow.js HTTP/1.1", host: "localhost", referrer: "http://localhost/G2048/index.html"

@@ -643,12 +643,3 @@ public await static HttpDownloadRequest(string ip, int port, string file_path, [
     sender.SendDownloadRPC(co, file_path, null);
     return yield;
 }
-
-[Language(Lua)]
-public using LocalFile = lua.__CPPAPILocalFile;
-[Language(Lua)]
-public using TextureLoader = lua.__CPPAPITextureLoader;
-[Language(Lua)]
-public using RenderTexture = lua.__CPPAPIRenderTexture;
-[Language(Lua)]
-public using TextureCutLoader = lua.__CPPAPITextureCutLoader;

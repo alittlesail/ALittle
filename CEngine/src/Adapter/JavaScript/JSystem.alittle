@@ -159,8 +159,6 @@ public static JSystem_CreateView(string title, int width, int height, int flag, 
     
     var func = cast<Map<string, Functor<(int, int)>>>(window)["__ALITTLEAPI_ViewResized"];
     if (func != null) func(width, height);
-    
-    ALittle.Log(JSystem_GetStage().children);
     return true;
 }
 

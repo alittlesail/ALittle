@@ -36,11 +36,16 @@ public async static __ALITTLEAPI_CEngine_Init(string base_path)
     Require(base_path.."CEngine/UISystem/Base/DisplayGroup");
     Require(base_path.."CEngine/UISystem/Base/DisplayLayout");
     Require(base_path.."CEngine/UISystem/Base/Quad");
+    Require(base_path.."CEngine/UISystem/Base/Image");
     
     Require(base_path.."CEngine/UISystem/UISystem");
     Require(base_path.."CEngine/UISystem/LayerManager");
+    Require(base_path.."CEngine/UISystem/TextureManager");
+    Require(base_path.."CEngine/UISystem/ControlSystem");
     
     ALittle.System_CreateView("test", 800, 600, 0, 0);
+    
+    var control = new ALittle.ControlSystem("G2048");
     
     var quad = new ALittle.Quad(null);
     quad.x = 10;
@@ -49,7 +54,14 @@ public async static __ALITTLEAPI_CEngine_Init(string base_path)
     quad.height = 100;
     quad.red = 1;
     A_LayerManager.AddToTip(quad);
-    ALittle.Log(cast<JavaScript.JDisplayObject>(quad._show).native);
+    
+    var image = new ALittle.Image(control);
+    image.x = 210;
+    image.y = 210;
+    image.width = 100;
+    image.height = 100;
+    image.texture_name = "Texture/2048.png";
+    A_LayerManager.AddToTip(image);
 }
 
 public static __ALITTLEAPI_HandleConsoleCmd(string cmd)
@@ -261,19 +273,19 @@ public static __ALITTLEAPI_HttpFileProcess(ALittle.IHttpFileSenderNative httpfil
 
 //////////////////////////////////////////////////////////////////-
 // 这个函数用于C++调用
-public static __ALITTLEAPI_TextureLoadSucceed(ALittle.TextureLoader loader, ALittle.RenderTexture texture)
+public static __ALITTLEAPI_TextureLoadSucceed(ALittle.ITextureLoader loader, ALittle.ITexture texture)
 {
     A_LoadTextureManager.HandleTextureLoadSucceed(loader, texture);
 }
-public static __ALITTLEAPI_TextureLoadFailed(ALittle.TextureLoader loader)
+public static __ALITTLEAPI_TextureLoadFailed(ALittle.ITextureLoader loader)
 {
     A_LoadTextureManager.HandleTextureLoadFailed(loader);
 }
-public static __ALITTLEAPI_TextureCutLoadSucceed(ALittle.TextureCutLoader loader, ALittle.RenderTexture texture)
+public static __ALITTLEAPI_TextureCutLoadSucceed(ALittle.ITextureCutLoader loader, ALittle.ITexture texture)
 {
     A_LoadTextureManager.HandleTextureCutLoadSucceed(loader, texture);
 }
-public static __ALITTLEAPI_TextureCutLoadFailed(ALittle.TextureCutLoader loader)
+public static __ALITTLEAPI_TextureCutLoadFailed(ALittle.ITextureCutLoader loader)
 {
     A_LoadTextureManager.HandleTextureCutLoadFailed(loader);
 }

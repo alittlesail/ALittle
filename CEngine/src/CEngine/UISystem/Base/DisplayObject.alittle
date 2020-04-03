@@ -321,8 +321,8 @@ public class DisplayObject : UIEventDispatcher
     public get font_height() : int { return null; }
     
     public fun SetTextureCoord(double t, double b, double l, double r) {}
-    public get texture() : ITextureWrap { return null; }
-    public set texture(ITextureWrap value) {}
+    public get texture() : ITexture { return null; }
+    public set texture(ITexture value) {}
     public get texture_name() : string { return null; }
     public set texture_name(string value) {}
     public fun Redraw() {}

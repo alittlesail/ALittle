@@ -315,4 +315,124 @@ JavaScript.JQuad = JavaScript.Class(JavaScript.JDisplayObject, {
 	},
 }, "JavaScript.JQuad");
 
+if (JavaScript.JDisplayObject === undefined) throw new Error(" extends class:JavaScript.JDisplayObject is undefined");
+JavaScript.JImage = JavaScript.Class(JavaScript.JDisplayObject, {
+	Ctor : function() {
+		this._native = new PIXI.Sprite();
+	},
+	ClearTexture : function() {
+		this._native.texture = undefined;
+	},
+	SetTexture : function(texture) {
+		this._native.texture = texture.native;
+	},
+	SetTextureCoord : function(t, b, l, r) {
+	},
+}, "JavaScript.JImage");
+
+if (JavaScript.JDisplayObject === undefined) throw new Error(" extends class:JavaScript.JDisplayObject is undefined");
+JavaScript.JText = JavaScript.Class(JavaScript.JDisplayObject, {
+}, "JavaScript.JText");
+
+let __TEXTURELOADER_MAXID = 0;
+if (ALittle.ITexture === undefined) throw new Error(" extends class:ALittle.ITexture is undefined");
+JavaScript.JTexture = JavaScript.Class(ALittle.ITexture, {
+	Ctor : function(texture, width, height) {
+		this._texture = texture;
+		this._width = width;
+		this._height = height;
+	},
+	Clear : function() {
+		this._texture = undefined;
+	},
+	get native() {
+		return this._texture;
+	},
+	GetTexture : function() {
+		return this;
+	},
+	GetWidth : function() {
+		return 0;
+	},
+	GetHeight : function() {
+		return 0;
+	},
+}, "JavaScript.JTexture");
+
+if (ALittle.ITextureLoader === undefined) throw new Error(" extends class:ALittle.ITextureLoader is undefined");
+JavaScript.JTextureLoader = JavaScript.Class(ALittle.ITextureLoader, {
+	Ctor : function() {
+		++ __TEXTURELOADER_MAXID;
+		this._id = __TEXTURELOADER_MAXID;
+		this._load_failed = false;
+	},
+	SetPath : function(big_path, altas, big_width, big_height, crypt_mode) {
+		this._file_path = big_path;
+		this._atlas_info = altas;
+		this._width = big_width;
+		this._height = big_height;
+	},
+	Start : function() {
+		let loader = new PIXI.Loader();
+		loader.onError.add(this.HandleLoadFailed.bind(this));
+		loader.add(this._file_path, this._file_path).load(this.HandleLoadSucceed.bind(this));
+	},
+	GetID : function() {
+		return this._id;
+	},
+	GetPath : function() {
+		return this._file_path;
+	},
+	HandleLoadSucceed : function(loader, resources) {
+		if (this._load_failed) {
+			return;
+		}
+		let resource = resources[this._file_path];
+		if (resource === undefined || resource.texture === undefined) {
+			this.HandleLoadFailed();
+			return;
+		}
+		let func = window["__ALITTLEAPI_TextureLoadSucceed"];
+		if (func === undefined) {
+			return;
+		}
+		func(this, ALittle.NewObject(JavaScript.JTexture, resource.texture, this._width, this._height));
+	},
+	HandleLoadFailed : function() {
+		if (this._load_failed) {
+			return;
+		}
+		this._load_failed = true;
+		let func = window["__ALITTLEAPI_TextureLoadFailed"];
+		if (func === undefined) {
+			return;
+		}
+		func(this);
+	},
+}, "JavaScript.JTextureLoader");
+
+if (ALittle.ITextureCutLoader === undefined) throw new Error(" extends class:ALittle.ITextureCutLoader is undefined");
+JavaScript.JTextureCutLoader = JavaScript.Class(ALittle.ITextureCutLoader, {
+	Ctor : function() {
+		++ __TEXTURELOADER_MAXID;
+		this._id = __TEXTURELOADER_MAXID;
+	},
+	SetPath : function(path, max_width, max_height) {
+	},
+	Start : function() {
+	},
+	GetID : function() {
+		return this._id;
+	},
+	GetPath : function() {
+		return undefined;
+	},
+	GetMaxWidth : function() {
+		return undefined;
+	},
+	GetMaxHeight : function() {
+		return undefined;
+	},
+}, "JavaScript.JTextureCutLoader");
+
 }

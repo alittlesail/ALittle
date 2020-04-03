@@ -145,8 +145,6 @@ public class __CPPAPITextureLoader : ALittle.ITextureLoader
     public fun Start() {}
     public fun GetID() : int {}
     public fun GetPath() : string {}
-    public fun GetMaxWidth() : int {}
-    public fun GetMaxHeight() : int {}
 }
 
 public class __CPPAPITextureCutLoader : ALittle.ITextureCutLoader
@@ -159,11 +157,11 @@ public class __CPPAPITextureCutLoader : ALittle.ITextureCutLoader
     public fun GetMaxHeight() : int {}
 }
 
-public class __CPPAPITextureWrap : ALittle.ITextureWrap
+public class __CPPAPITextureWrap : ALittle.ITexture
 {
-    public fun SetTexture(__CPPAPIRenderTexture texture) {}
+    public fun SetTexture(ALittle.ITexture texture) {}
     public fun Clear() {}
-    public fun GetTexture() : __CPPAPIRenderTexture {}
+    public fun GetTexture() : ALittle.ITexture {}
     public fun GetWidth() : int {}
     public fun GetHeight() : int {}
 }

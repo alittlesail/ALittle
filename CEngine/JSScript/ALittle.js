@@ -30,9 +30,13 @@ __ALITTLEAPI_CEngine_Init = async function(base_path) {
 	await Require(base_path + "CEngine/UISystem/Base/DisplayGroup");
 	await Require(base_path + "CEngine/UISystem/Base/DisplayLayout");
 	await Require(base_path + "CEngine/UISystem/Base/Quad");
+	await Require(base_path + "CEngine/UISystem/Base/Image");
 	await Require(base_path + "CEngine/UISystem/UISystem");
 	await Require(base_path + "CEngine/UISystem/LayerManager");
+	await Require(base_path + "CEngine/UISystem/TextureManager");
+	await Require(base_path + "CEngine/UISystem/ControlSystem");
 	ALittle.System_CreateView("test", 800, 600, 0, 0);
+	let control = ALittle.NewObject(ALittle.ControlSystem, "G2048");
 	let quad = ALittle.NewObject(ALittle.Quad, undefined);
 	quad.x = 10;
 	quad.y = 10;
@@ -40,7 +44,13 @@ __ALITTLEAPI_CEngine_Init = async function(base_path) {
 	quad.height = 100;
 	quad.red = 1;
 	A_LayerManager.AddToTip(quad);
-	ALittle.Log(quad._show.native);
+	let image = ALittle.NewObject(ALittle.Image, control);
+	image.x = 210;
+	image.y = 210;
+	image.width = 100;
+	image.height = 100;
+	image.texture_name = "Texture/2048.png";
+	A_LayerManager.AddToTip(image);
 }
 
 __ALITTLEAPI_HandleConsoleCmd = function(cmd) {

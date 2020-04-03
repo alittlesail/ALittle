@@ -19,8 +19,6 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 		A_LoadTextureManager.RegisterTexmgrControl(this._texture_mgr);
 	},
 	RegisterInfoByHttpImpl : async function(host, port, base_path, name_list, thread) {
-		let host = location.host;
-		let port = ALittle.Math_ToInt(location.port);
 		let ___OBJECT_1 = name_list;
 		for (let index = 1; index <= ___OBJECT_1.length; ++index) {
 			let name = ___OBJECT_1[index - 1];
@@ -218,12 +216,12 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 		if (info.__include !== undefined) {
 			return this.LoadInfo(info.__include);
 		}
-		let extends = info.__extends;
-		if (extends !== undefined) {
+		let extendsv = info.__extends;
+		if (extendsv !== undefined) {
 			if (info.__extends_included !== true) {
-				let control = this.LoadInfo(extends);
+				let control = this.LoadInfo(extendsv);
 				if (control === undefined) {
-					ALittle.Log("ControlSystem CreateInfo extends Failed:" + extends);
+					ALittle.Log("ControlSystem CreateInfo extends Failed:" + extendsv);
 					return undefined;
 				}
 				let copy = {};

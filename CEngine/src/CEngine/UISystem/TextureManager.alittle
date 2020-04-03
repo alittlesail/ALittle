@@ -3,8 +3,8 @@ namespace ALittle;
 
 struct LoadTextureInfo
 {
-    lua.__CPPAPITextureLoader loader;
-    lua.__CPPAPITextureCutLoader cut_loader;
+    ITextureLoader loader;
+    ITextureCutLoader cut_loader;
     TextureManager texture_mgr;
 }
 
@@ -38,18 +38,18 @@ protected struct TextureCutInfo
 protected class LoadTextureManager
 {
     private Map<int, LoadTextureInfo>           _id_map_info;
-    private Map<string, lua.__CPPAPITextureWrap>  _path_map_texture_cut;
+    private Map<string, ITexture>  _path_map_texture_cut;
     private Map<string, LoadingTextureInfo>     _path_map_objects_cut;
     private Map<DisplayObject, DisplayObject>   _redraw_map_redraw;
     private Map<TextureManager, TextureManager> _texmgr_map_texmgr;
-
+    
     public ctor()
     {
         // 加载器管理
         this._id_map_info = new Map<int, LoadTextureInfo>();
-
+        
         // 路径映射资源（散装），设置成虚表
-        this._path_map_texture_cut = new Map<string, lua.__CPPAPITextureWrap>();
+        this._path_map_texture_cut = new Map<string, ITexture>();
         // Setweak(this._path_map_texture_cut, false, true);
         
         // 正在加载中的纹理信息（散装）
@@ -65,7 +65,11 @@ protected class LoadTextureManager
     protected fun CreateTexture(TextureManager texture_mgr, LoadAtlasInfo atlas)
     {
         // 创建加载器
-        var loader = new lua.__CPPAPITextureLoader();
+        var loader:ITextureLoader;
+        [Language(Lua)]
+        loader = new lua.__CPPAPITextureLoader();
+        [Language(JavaScript)]
+        loader = new JavaScript.JTextureLoader();
         loader.SetPath(atlas.big_path, String_Join(atlas.atlas, ";"), atlas.big_width, atlas.big_height, texture_mgr.crypt_mode);
         var info = new LoadTextureInfo();
         this._id_map_info[loader.GetID()] = info;
@@ -75,7 +79,7 @@ protected class LoadTextureManager
     }
 
     // 添加纹理
-    protected fun HandleTextureLoadSucceed(lua.__CPPAPITextureLoader loader, lua.__CPPAPIRenderTexture texture)
+    protected fun HandleTextureLoadSucceed(ITextureLoader loader, ITexture texture)
     {
         var loader_id = loader.GetID();
         var info = this._id_map_info[loader_id];
@@ -87,7 +91,7 @@ protected class LoadTextureManager
     }
 
     // 添加纹理，path：图片资源路径
-    protected fun HandleTextureLoadFailed(lua.__CPPAPITextureLoader loader)
+    protected fun HandleTextureLoadFailed(ITextureLoader loader)
     {
         var loader_id = loader.GetID();
         var info = this._id_map_info[loader_id];
@@ -99,7 +103,7 @@ protected class LoadTextureManager
     }
 
     // 根据纹理ID来获取纹理
-    protected fun GetTextureCut(string path, int max_width, int max_height) : lua.__CPPAPITextureWrap
+    protected fun GetTextureCut(string path, int max_width, int max_height) : ITexture
     {
         // 拼接ID
         var texture_id = path .. "_" .. max_width .. "_" .. max_height;
@@ -128,9 +132,9 @@ protected class LoadTextureManager
 
         // 这里必须向下取整，不然回调回来的时候会找不到texture_id
         if (max_width == null) max_width = 0;
-        max_width = lua.math.floor(max_width);
+        max_width = Math_Floor(max_width);
         if (max_height == null) max_height = 0;
-        max_height = lua.math.floor(max_height);
+        max_height = Math_Floor(max_height);
         if (cache == null) cache = false;
         // 拼接ID
         var texture_id = path .. "_" .. max_width .. "_" .. max_height;
@@ -165,7 +169,11 @@ protected class LoadTextureManager
         loading_info.object_map[object] = object_info;
 
         // 创建加载器, 判断是否是加载ios相册的资源
-        var loader = new lua.__CPPAPITextureCutLoader();
+        var loader:ITextureCutLoader;
+        [Language(Lua)]
+        loader = new lua.__CPPAPITextureCutLoader();
+        [Language(JavaScript)]
+        loader = new JavaScript.JTextureCutLoader();
         loader.SetPath(path, max_width, max_height);
 
         var info = new LoadTextureInfo();
@@ -175,7 +183,7 @@ protected class LoadTextureManager
     }
 
     // 添加纹理
-    protected fun HandleTextureCutLoadSucceed(lua.__CPPAPITextureCutLoader loader, lua.__CPPAPIRenderTexture texture)
+    protected fun HandleTextureCutLoadSucceed(ITextureCutLoader loader, ITexture texture)
     {
         var loader_id = loader.GetID();
         var info = this._id_map_info[loader_id];
@@ -183,8 +191,13 @@ protected class LoadTextureManager
             return;
         this._id_map_info[loader_id] = null;
         // 创建纹理对象
+        [Language(Lua)]
         var texture_wrap = new lua.__CPPAPITextureWrap();
+        [Language(Lua)]
         texture_wrap.SetTexture(texture);
+        [Language(Lua)]
+        texture = texture_wrap;
+        
         var path = loader.GetPath();
         var max_width = loader.GetMaxWidth();
         var max_height = loader.GetMaxHeight();
@@ -195,13 +208,13 @@ protected class LoadTextureManager
             return;
 
         if (loading_info.cache)
-            this._path_map_texture_cut[texture_id] = texture_wrap;
+            this._path_map_texture_cut[texture_id] = texture;
 
         for (var object, value in loading_info.object_map)
         {
             if (object.texture_name == path)
             {
-                object.texture = texture_wrap;
+                object.texture = texture;
                 if (value.callback != null)
                     value.callback(object, true);
             }
@@ -210,7 +223,7 @@ protected class LoadTextureManager
     }
 
     // 添加纹理，path：图片资源路径
-    protected fun HandleTextureCutLoadFailed(lua.__CPPAPITextureCutLoader loader)
+    protected fun HandleTextureCutLoadFailed(ITextureCutLoader loader)
     {
         var loader_id = loader.GetID();
         var info = this._id_map_info[loader_id];
@@ -251,7 +264,7 @@ protected class LoadTextureManager
     protected fun HandleRenderDeviceReset()
     {
         // 清空所有散装的图片
-        this._path_map_texture_cut = new Map<string, lua.__CPPAPITextureWrap>();
+        this._path_map_texture_cut = new Map<string, ITexture>();
         // Setweak(this._path_map_texture_cut, false, true);
         // 清空所有拼接图片
         for (var key, texmgr in this._texmgr_map_texmgr)
@@ -297,13 +310,13 @@ public class AltasBinary
         this._height = height;
         this._x = x;
         this._y = y;
-
+        
         this._texture_x = null;
         this._texture_y = null;
         this._texture_w = null;
         this._texture_h = null;
         this._texture_path = null;
-
+        
         this._left = null;
         this._right = null;
     }
@@ -413,7 +426,7 @@ public class AltasBinary
     public static GenerateAltas(List<AltasTextureInfo> texture_list, int max_width, int max_height, int padding) : List<any>
     {
         // 先按高度从大到小来排，再按宽度从大到小排
-        lua.table.sort(texture_list, AltasBinary.TextureListComp);
+        List_Sort(texture_list, AltasBinary.TextureListComp);
 
         // 合并列表
         var big_list = new List<any>();
@@ -483,11 +496,11 @@ protected class TextureManager
     private bool _cache_texture;
     private string _base_path;
     private bool _crypt_mode;
-    private Map<string, lua.__CPPAPITextureWrap> _path_map_texture;
+    private Map<string, ITexture> _path_map_texture;
     private Map<PrepareInfo, bool> _prepare_map;
     private Map<string, Map<DisplayObject, string> > _path_map_objects;
     private Map<string, AltasInfo> _name_map_atlas;
-
+    
     // @param module_name 模块名
     // @param crypt_mode 是否是加密模式
     public ctor(string module_name, bool crypt_mode)
@@ -500,7 +513,7 @@ protected class TextureManager
         this._crypt_mode = crypt_mode || false;
     
         // 路径映射资源，设置成虚表
-        this._path_map_texture = new Map<string, lua.__CPPAPITextureWrap>();
+        this._path_map_texture = new Map<string, ITexture>();
         // Setweak(this._path_map_texture, false, true);
         
         this._prepare_map = new Map<PrepareInfo, bool>(); // 强引用，用于保存预加载纹理映射
@@ -526,7 +539,7 @@ protected class TextureManager
         if (big_list == null)
             return;
 
-        var big_list_count = lua.table.maxn(big_list);
+        var big_list_count = List_MaxN(big_list);
         if (big_list_count < 2)
             return;
     
@@ -603,7 +616,7 @@ protected class TextureManager
     // 清空所有纹理
     public fun ClearCache()
     {
-        this._path_map_texture = new Map<string, lua.__CPPAPITextureWrap>();
+        this._path_map_texture = new Map<string, ITexture>();
         // Setweak(this._path_map_texture, false, true);
         this._prepare_map = new Map<PrepareInfo, bool>();
     }
@@ -694,11 +707,16 @@ protected class TextureManager
     }
     
     // 添加文理成功
-    protected fun HandleTextureLoadSucceed(lua.__CPPAPITextureLoader loader, lua.__CPPAPIRenderTexture texture)
+    protected fun HandleTextureLoadSucceed(ITextureLoader loader, ITexture texture)
     {
         // 创建纹理对象
+        [Language(Lua)]
         var texture_wrap = new lua.__CPPAPITextureWrap();
+        [Language(Lua)]
         texture_wrap.SetTexture(texture);
+        [Language(Lua)]
+        texture = texture_wrap;
+        
         var path = loader.GetPath();
     
         // 将信息保存到加载完毕的信息中
@@ -706,12 +724,12 @@ protected class TextureManager
         if (loading_map != null)
         {
             if (this._cache_texture)
-                this._path_map_texture[path] = texture_wrap;
+                this._path_map_texture[path] = texture;
     
             for (var k, v in loading_map)
             {
                 if (k.texture_name == v)
-                    k.texture = texture_wrap;
+                    k.texture = texture;
             }
             // 清空等待该纹理的对象
             this._path_map_objects[path] = null;
@@ -741,7 +759,7 @@ protected class TextureManager
             this._prepare_map[info] = null;
     }
 
-    protected fun HandleTextureLoadFailed(lua.__CPPAPITextureLoader loader)
+    protected fun HandleTextureLoadFailed(ITextureLoader loader)
     {
         var path = loader.GetPath();
         // 将信息保存到加载完毕的信息中

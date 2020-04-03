@@ -4,7 +4,7 @@ if (typeof ALittle === "undefined") ALittle = {};
 ALittle.RegStruct(1266404893, "ALittle.LoadTextureInfo", {
 name : "ALittle.LoadTextureInfo", ns_name : "ALittle", rl_name : "LoadTextureInfo", hash_code : 1266404893,
 name_list : ["loader","cut_loader","texture_mgr"],
-type_list : ["lua.__CPPAPITextureLoader","lua.__CPPAPITextureCutLoader","ALittle.TextureManager"],
+type_list : ["ALittle.ITextureLoader","ALittle.ITextureCutLoader","ALittle.TextureManager"],
 option_map : {}
 })
 ALittle.RegStruct(1002517605, "ALittle.LoadingTextureObjectInfo", {
@@ -65,7 +65,8 @@ ALittle.LoadTextureManager = JavaScript.Class(undefined, {
 		this._texmgr_map_texmgr = new Map();
 	},
 	CreateTexture : function(texture_mgr, atlas) {
-		let loader = ALittle.NewObject(lua.__CPPAPITextureLoader);
+		let loader = undefined;
+		loader = ALittle.NewObject(JavaScript.JTextureLoader);
 		loader.SetPath(atlas.big_path, ALittle.String_Join(atlas.atlas, ";"), atlas.big_width, atlas.big_height, texture_mgr.crypt_mode);
 		let info = {};
 		this._id_map_info.set(loader.GetID(), info);
@@ -108,11 +109,11 @@ ALittle.LoadTextureManager = JavaScript.Class(undefined, {
 		if (max_width === undefined) {
 			max_width = 0;
 		}
-		max_width = lua.math.floor(max_width);
+		max_width = ALittle.Math_Floor(max_width);
 		if (max_height === undefined) {
 			max_height = 0;
 		}
-		max_height = lua.math.floor(max_height);
+		max_height = ALittle.Math_Floor(max_height);
 		if (cache === undefined) {
 			cache = false;
 		}
@@ -139,7 +140,8 @@ ALittle.LoadTextureManager = JavaScript.Class(undefined, {
 		let object_info = {};
 		object_info.callback = callback;
 		loading_info.object_map.set(object, object_info);
-		let loader = ALittle.NewObject(lua.__CPPAPITextureCutLoader);
+		let loader = undefined;
+		loader = ALittle.NewObject(JavaScript.JTextureCutLoader);
 		loader.SetPath(path, max_width, max_height);
 		let info = {};
 		this._id_map_info.set(loader.GetID(), info);
@@ -153,8 +155,6 @@ ALittle.LoadTextureManager = JavaScript.Class(undefined, {
 			return;
 		}
 		this._id_map_info.delete(loader_id);
-		let texture_wrap = ALittle.NewObject(lua.__CPPAPITextureWrap);
-		texture_wrap.SetTexture(texture);
 		let path = loader.GetPath();
 		let max_width = loader.GetMaxWidth();
 		let max_height = loader.GetMaxHeight();
@@ -164,12 +164,12 @@ ALittle.LoadTextureManager = JavaScript.Class(undefined, {
 			return;
 		}
 		if (loading_info.cache) {
-			this._path_map_texture_cut[texture_id] = texture_wrap;
+			this._path_map_texture_cut[texture_id] = texture;
 		}
 		for (let [object, value] of loading_info.object_map) {
 			if (value === undefined) continue;
 			if (object.texture_name === path) {
-				object.texture = texture_wrap;
+				object.texture = texture;
 				if (value.callback !== undefined) {
 					value.callback(object, true);
 				}
@@ -304,7 +304,7 @@ ALittle.AltasBinary = JavaScript.Class(undefined, {
 		return false;
 	},
 	GenerateAltas : function(texture_list, max_width, max_height, padding) {
-		lua.table.sort(texture_list, ALittle.AltasBinary.TextureListComp);
+		ALittle.List_Sort(texture_list, ALittle.AltasBinary.TextureListComp);
 		let big_list = [];
 		let big_list_count = 0;
 		++ big_list_count;
@@ -361,7 +361,7 @@ ALittle.TextureManager = JavaScript.Class(undefined, {
 		if (big_list === undefined) {
 			return;
 		}
-		let big_list_count = lua.table.maxn(big_list);
+		let big_list_count = ALittle.List_MaxN(big_list);
 		if (big_list_count < 2) {
 			return;
 		}
@@ -490,18 +490,16 @@ ALittle.TextureManager = JavaScript.Class(undefined, {
 		A_LoadTextureManager.CreateTexture(this, atlas);
 	},
 	HandleTextureLoadSucceed : function(loader, texture) {
-		let texture_wrap = ALittle.NewObject(lua.__CPPAPITextureWrap);
-		texture_wrap.SetTexture(texture);
 		let path = loader.GetPath();
 		let loading_map = this._path_map_objects[path];
 		if (loading_map !== undefined) {
 			if (this._cache_texture) {
-				this._path_map_texture[path] = texture_wrap;
+				this._path_map_texture[path] = texture;
 			}
 			for (let [k, v] of loading_map) {
 				if (v === undefined) continue;
 				if (k.texture_name === v) {
-					k.texture = texture_wrap;
+					k.texture = texture;
 				}
 			}
 			delete this._path_map_objects[path];

@@ -243,11 +243,24 @@ ALittle.IDisplaySystem = JavaScript.Class(undefined, {
 	},
 }, "ALittle.IDisplaySystem");
 
-ALittle.IRenderTexture = JavaScript.Class(undefined, {
+ALittle.ITexture = JavaScript.Class(undefined, {
+	Clear : function() {
+	},
+	GetTexture : function() {
+		return this;
+	},
+	GetWidth : function() {
+		return 0;
+	},
+	GetHeight : function() {
+		return 0;
+	},
+}, "ALittle.ITexture");
+
+if (ALittle.ITexture === undefined) throw new Error(" extends class:ALittle.ITexture is undefined");
+ALittle.IRenderTexture = JavaScript.Class(ALittle.ITexture, {
 	Save : function(file_path, show, width, height, scale) {
 		return false;
-	},
-	Clear : function() {
 	},
 	Draw : function(show, width, height, scale) {
 		return false;
@@ -264,12 +277,6 @@ ALittle.ITextureLoader = JavaScript.Class(undefined, {
 	},
 	GetPath : function() {
 		return undefined;
-	},
-	GetMaxWidth : function() {
-		return 0;
-	},
-	GetMaxHeight : function() {
-		return 0;
 	},
 }, "ALittle.ITextureLoader");
 
@@ -291,21 +298,5 @@ ALittle.ITextureCutLoader = JavaScript.Class(undefined, {
 		return 0;
 	},
 }, "ALittle.ITextureCutLoader");
-
-ALittle.ITextureWrap = JavaScript.Class(undefined, {
-	SetTexture : function(texture) {
-	},
-	Clear : function() {
-	},
-	GetTexture : function() {
-		return undefined;
-	},
-	GetWidth : function() {
-		return 0;
-	},
-	GetHeight : function() {
-		return 0;
-	},
-}, "ALittle.ITextureWrap");
 
 }

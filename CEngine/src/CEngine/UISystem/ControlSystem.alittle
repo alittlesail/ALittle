@@ -46,9 +46,6 @@ public class ControlSystem
     
     private async fun RegisterInfoByHttpImpl(string host, int port, string base_path, List<string> name_list, ALittle.Thread thread)
     {
-        var host = location.host;
-        var port = ALittle.Math_ToInt(location.port);
-        
         for (var index, name in name_list)
         {
 			var error, content = ALittle.HttpDownloadRequest(host, port, base_path.."../UI/"..name..".json");
@@ -295,15 +292,15 @@ public class ControlSystem
             return this.LoadInfo(info.__include);
 
         // 继承
-        var extends = info.__extends;
-        if (extends != null)
+        var extendsv = info.__extends;
+        if (extendsv != null)
         {
             if (info.__extends_included != true)
             {
-                var control = this.LoadInfo(extends);
+                var control = this.LoadInfo(extendsv);
                 if (control == null)
                 {
-                    Log("ControlSystem CreateInfo extends Failed:"..extends);
+                    Log("ControlSystem CreateInfo extends Failed:"..extendsv);
                     return null;
                 }
                 var copy = new DisplayInfo();

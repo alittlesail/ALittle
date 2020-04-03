@@ -168,7 +168,6 @@ JavaScript.JSystem_CreateView = function(title, width, height, flag, scale) {
 	if (func !== undefined) {
 		func(width, height);
 	}
-	ALittle.Log(JavaScript.JSystem_GetStage().children);
 	return true;
 }
 

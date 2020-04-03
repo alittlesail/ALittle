@@ -40,7 +40,7 @@ public class JDisplayObject : ALittle.IDisplayObject
     public fun RemoveAllChild() {}
     public fun SetFont(string path, int size) {}
     public fun ClearTexture() {}
-    public fun SetTexture(ALittle.IRenderTexture texture) {}
+    public fun SetTexture(ALittle.ITexture texture) {}
     public fun SetTextureCoord(double t, double b, double l, double r) {}
     public fun SetFlip(int value) {}
     public fun SetRowColCount(int row_count, int col_count) {}
@@ -124,7 +124,6 @@ public class JDisplayObjects : JDisplayObject
         cast<PIXI.Container>(this._native).removeChildren(0);
     }
 }
-
 
 public class JDisplaySystem : ALittle.IDisplaySystem
 {
@@ -238,6 +237,134 @@ public class JQuad : JDisplayObject
     {
         this._alpha = value;
         this.Draw();
+    }   
+}
+
+public class JImage : JDisplayObject
+{ 
+    public ctor()
+    {
+        this._native = new PIXI.Sprite();
     }
     
+    public fun ClearTexture()
+    {
+        cast<PIXI.Sprite>(this._native).texture = null;
+    }
+    public fun SetTexture(ALittle.ITexture texture)
+    {
+        cast<PIXI.Sprite>(this._native).texture = cast<JTexture>(texture).native;
+    }
+    public fun SetTextureCoord(double t, double b, double l, double r)
+    {
+        // 因为Web版本的图片都是散装的，所以不需要处理
+    }
+}
+
+public class JText : JDisplayObject
+{
+    
+}
+
+private var __TEXTURELOADER_MAXID = 0;
+
+public class JTexture : ALittle.ITexture
+{
+    private PIXI.Texture _texture;
+    private int _width;
+    private int _height;
+    
+    public ctor(PIXI.Texture texture, int width, int height)
+    {
+        this._texture = texture;
+        this._width = width;
+        this._height = height;
+    }
+    
+    public fun Clear()
+    {
+        this._texture = null;
+    }
+    public get native() : PIXI.Texture { return this._texture; }
+    public fun GetTexture() : ALittle.ITexture { return this; }
+    public fun GetWidth() : int { return 0; }
+    public fun GetHeight() : int { return 0; }
+}
+
+public class JTextureLoader : ALittle.ITextureLoader
+{
+    private int _id;
+    private string _file_path;
+    private string _atlas_info;
+    private int _width;
+    private int _height;
+    private bool _load_failed;
+    
+    public ctor()
+    {
+        ++ __TEXTURELOADER_MAXID;
+        this._id = __TEXTURELOADER_MAXID;
+        this._load_failed = false;
+    }
+    
+    public fun SetPath(string big_path, string altas, int big_width, int big_height, bool crypt_mode)
+    {
+        this._file_path = big_path;
+        this._atlas_info = altas;
+        this._width = big_width;
+        this._height = big_height;
+    }
+    
+    public fun Start()
+    {
+        var loader = new PIXI.Loader();
+        loader.onError.add(bind(this.HandleLoadFailed, this));
+        loader.add(this._file_path, this._file_path).load(bind(this.HandleLoadSucceed, this));
+    }
+    public fun GetID() : int { return this._id; }
+    public fun GetPath() : string { return this._file_path; }
+        
+    private fun HandleLoadSucceed(PIXI.Loader loader, Map<string, PIXI.LoaderResource> resources)
+    {
+        if (this._load_failed) return;
+        
+        var resource = resources[this._file_path];
+        if (resource == null || resource.texture == null)
+        {
+            this.HandleLoadFailed();
+            return;
+        }
+        
+        var func = cast<Map<string, Functor<(ALittle.ITextureLoader, ALittle.ITexture)>>>(window)["__ALITTLEAPI_TextureLoadSucceed"];
+        if (func == null) return;
+        func(this, new JTexture(resource.texture, this._width, this._height));
+    }
+       
+    private fun HandleLoadFailed()
+    {
+        if (this._load_failed) return;
+        
+        this._load_failed = true;
+        var func = cast<Map<string, Functor<(ALittle.ITextureLoader)>>>(window)["__ALITTLEAPI_TextureLoadFailed"];
+        if (func == null) return;
+        func(this);
+    }
+}
+
+public class JTextureCutLoader : ALittle.ITextureCutLoader
+{
+    private int _id;
+    
+    public ctor()
+    {
+        ++ __TEXTURELOADER_MAXID;
+        this._id = __TEXTURELOADER_MAXID;
+    }
+    
+    public fun SetPath(string path, int max_width, int max_height) {}
+    public fun Start() {}
+    public fun GetID() : int { return this._id; }
+    public fun GetPath() : string { return null; }
+    public fun GetMaxWidth() : int { return null; }
+    public fun GetMaxHeight() : int { return null; }
 }

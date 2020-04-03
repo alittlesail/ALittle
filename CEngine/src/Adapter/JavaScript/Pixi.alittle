@@ -76,3 +76,39 @@ public class Graphics : Container
     public fun drawRect(double x, double y, double width, double height) {}
     public fun endFill() {}
 }
+
+[Native]
+public class Sprite : Container
+{
+    public get texture() : Texture {}
+    public set texture(Texture texture) {}
+}
+
+[Native]
+public class Texture
+{
+    
+}
+
+[Native]
+public class LoaderResource
+{
+    public get texture() : Texture {}
+}
+
+[Native]
+public class LoaderCallback
+{
+    public fun add(Functor<()> func) {}
+}
+
+[Native]
+public class Loader
+{
+    public fun add(string name, string url) : Loader {}
+    public fun load(Functor<(Loader, Map<string, LoaderResource>)> func) {}
+    public get onProgress() : LoaderCallback {}
+    public get onError() : LoaderCallback {}
+    public get onLoad() : LoaderCallback {}
+    public get onComplete() : LoaderCallback {}
+}

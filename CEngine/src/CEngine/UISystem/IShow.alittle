@@ -24,7 +24,7 @@ public class IDisplayObject
     public fun RemoveAllChild() {}
     public fun SetFont(string path, int size) {}
     public fun ClearTexture() {}
-    public fun SetTexture(IRenderTexture texture) {}
+    public fun SetTexture(ITexture texture) {}
     public fun SetTextureCoord(double t, double b, double l, double r) {}
     public fun SetFlip(int value) {}
     public fun SetRowColCount(int row_count, int col_count) {}
@@ -107,10 +107,17 @@ public class IDisplaySystem
     public fun RemoveAllChild() {}
 }
 
-public class IRenderTexture
+public class ITexture
+{
+    public fun Clear() {}
+    public fun GetTexture() : ITexture { return this; }
+    public fun GetWidth() : int { return 0; }
+    public fun GetHeight() : int { return 0; }
+}
+
+public class IRenderTexture : ITexture
 {
     public fun Save(string file_path, IDisplayObject show, int width, int height, double scale) : bool { return false; }
-    public fun Clear() {}
     public fun Draw(IDisplayObject show, int width, int height, double scale) : bool { return false; }
 }
 
@@ -120,8 +127,6 @@ public class ITextureLoader
     public fun Start() {}
     public fun GetID() : int { return 0; }
     public fun GetPath() : string { return null; }
-    public fun GetMaxWidth() : int { return 0; }
-    public fun GetMaxHeight() : int { return 0; }
 }
 
 public class ITextureCutLoader
@@ -132,13 +137,4 @@ public class ITextureCutLoader
     public fun GetPath() : string { return null; }
     public fun GetMaxWidth() : int { return 0; }
     public fun GetMaxHeight() : int { return 0; }
-}
-
-public class ITextureWrap
-{
-    public fun SetTexture(IRenderTexture texture) {}
-    public fun Clear() {}
-    public fun GetTexture() : IRenderTexture { return null; }
-    public fun GetWidth() : int { return 0; }
-    public fun GetHeight() : int { return 0; }
 }

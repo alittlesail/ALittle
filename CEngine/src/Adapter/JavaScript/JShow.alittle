@@ -263,7 +263,67 @@ public class JImage : JDisplayObject
 
 public class JText : JDisplayObject
 {
+    private PIXI.TextStyle _style;
+    private int _red;
+    private int _green;
+    private int _blue;
+    private int _real_width;
+    private int _real_height;
+    private string _text;
     
+    public ctor()
+    {
+        this._native = new PIXI.Text();
+        this._style = new PIXI.TextStyle();
+        this._real_width = 0;
+        this._real_height = 0;
+        this._red = 0;
+        this._green = 0;
+        this._blue = 0;
+        this._text = "";
+    }
+    
+    public fun SetText(string value)
+    {
+        this._text = value;
+        cast<PIXI.Text>(this._native).text = value;
+        var m = PIXI.TextMetrics.measureText(this._text, this._style);
+        this._real_width = m.width;
+        this._real_height = m.height;
+    }
+        
+    public fun SetFont(string path, int size)
+    {
+        this._style.fontFamily = path;
+        this._style.fontSize = size;
+        cast<PIXI.Text>(this._native).style = this._style;
+        var m = PIXI.TextMetrics.measureText(this._text, this._style);
+        this._real_width = m.width;
+        this._real_height = m.height;
+    }
+    
+    public fun SetRed(double value)
+    {
+        this._red = javascript.Math.floor(value * 255);
+        this._style.fill = "#"..cast<javascript.Number>((this._red * 65536 + this._green * 256 + this._blue)).toString(16);
+        cast<PIXI.Text>(this._native).style = this._style;
+    }
+    
+    public fun SetGreen(double value)
+    {
+        this._green = javascript.Math.floor(value * 255);
+        this._style.fill = "#"..cast<javascript.Number>((this._red * 65536 + this._green * 256 + this._blue)).toString(16);
+        cast<PIXI.Text>(this._native).style = this._style;
+    }
+    public fun SetBlue(double value)
+    {
+        this._blue = javascript.Math.floor(value * 255);
+        this._style.fill = "#"..cast<javascript.Number>((this._red * 65536 + this._green * 256 + this._blue)).toString(16);
+        cast<PIXI.Text>(this._native).style = this._style;
+    }
+    
+    public fun GetRealWidth() : int { return this._real_width; }
+    public fun GetRealHeight() : int { return this._real_height; }
 }
 
 private var __TEXTURELOADER_MAXID = 0;
@@ -319,7 +379,7 @@ public class JTextureLoader : ALittle.ITextureLoader
     {
         var loader = new PIXI.Loader();
         loader.onError.add(bind(this.HandleLoadFailed, this));
-        loader.add(this._file_path, this._file_path).load(bind(this.HandleLoadSucceed, this));
+        loader.add(this._file_path, "Texture/"..this._file_path).load(bind(this.HandleLoadSucceed, this));
     }
     public fun GetID() : int { return this._id; }
     public fun GetPath() : string { return this._file_path; }

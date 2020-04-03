@@ -2,9 +2,9 @@
 if (typeof ALittle === "undefined") ALittle = {};
 
 
-let __tostring = lua.tostring;
-let __byte = lua.String.byte;
-let __type = lua.type;
+let __tostring = ALittle.String_ToString;
+let __byte = ALittle.String_Byte;
+let __type = ALittle.String_Type;
 if (ALittle.DisplayObject === undefined) throw new Error(" extends class:ALittle.DisplayObject is undefined");
 ALittle.Text = JavaScript.Class(ALittle.DisplayObject, {
 	Ctor : function(ctrl_sys) {
@@ -15,7 +15,7 @@ ALittle.Text = JavaScript.Class(ALittle.DisplayObject, {
 		this._deleteline = false;
 		this._outline = false;
 		this._flip = 0;
-		this._show = ALittle.NewObject(lua.__CPPAPIText);
+		this._show = ALittle.NewObject(JavaScript.JText);
 		A_LoadTextureManager.RegisterRedrawControl(this);
 	},
 	Redraw : function() {

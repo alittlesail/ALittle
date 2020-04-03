@@ -332,6 +332,52 @@ JavaScript.JImage = JavaScript.Class(JavaScript.JDisplayObject, {
 
 if (JavaScript.JDisplayObject === undefined) throw new Error(" extends class:JavaScript.JDisplayObject is undefined");
 JavaScript.JText = JavaScript.Class(JavaScript.JDisplayObject, {
+	Ctor : function() {
+		this._native = new PIXI.Text();
+		this._style = new PIXI.TextStyle();
+		this._real_width = 0;
+		this._real_height = 0;
+		this._red = 0;
+		this._green = 0;
+		this._blue = 0;
+		this._text = "";
+	},
+	SetText : function(value) {
+		this._text = value;
+		this._native.text = value;
+		let m = PIXI.TextMetrics.measureText(this._text, this._style);
+		this._real_width = m.width;
+		this._real_height = m.height;
+	},
+	SetFont : function(path, size) {
+		this._style.fontFamily = path;
+		this._style.fontSize = size;
+		this._native.style = this._style;
+		let m = PIXI.TextMetrics.measureText(this._text, this._style);
+		this._real_width = m.width;
+		this._real_height = m.height;
+	},
+	SetRed : function(value) {
+		this._red = Math.floor(value * 255);
+		this._style.fill = "#" + ((this._red * 65536 + this._green * 256 + this._blue).toString(16));
+		this._native.style = this._style;
+	},
+	SetGreen : function(value) {
+		this._green = Math.floor(value * 255);
+		this._style.fill = "#" + ((this._red * 65536 + this._green * 256 + this._blue).toString(16));
+		this._native.style = this._style;
+	},
+	SetBlue : function(value) {
+		this._blue = Math.floor(value * 255);
+		this._style.fill = "#" + ((this._red * 65536 + this._green * 256 + this._blue).toString(16));
+		this._native.style = this._style;
+	},
+	GetRealWidth : function() {
+		return this._real_width;
+	},
+	GetRealHeight : function() {
+		return this._real_height;
+	},
 }, "JavaScript.JText");
 
 let __TEXTURELOADER_MAXID = 0;
@@ -375,7 +421,7 @@ JavaScript.JTextureLoader = JavaScript.Class(ALittle.ITextureLoader, {
 	Start : function() {
 		let loader = new PIXI.Loader();
 		loader.onError.add(this.HandleLoadFailed.bind(this));
-		loader.add(this._file_path, this._file_path).load(this.HandleLoadSucceed.bind(this));
+		loader.add(this._file_path, "Texture/" + this._file_path).load(this.HandleLoadSucceed.bind(this));
 	},
 	GetID : function() {
 		return this._id;

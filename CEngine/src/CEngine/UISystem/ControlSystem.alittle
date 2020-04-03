@@ -19,11 +19,16 @@ public class ControlSystem
     private string              _other_path;
     
     private TextureManager      _texture_mgr;
-
+    
+    private Map<string, string> _font_map;
+    
     // @param module_name 模块名
     // @param crypt_mode 是否是加密模式
     public ctor(string module_name, [Nullable] bool crypt_mode)
     {
+        // 字体映射
+        this._font_map = new Map<string, string>();
+        
         // 定义缓存
         this._name_map_info = new Map<string, DisplayInfo>();
         this._name_map_info_cache = new Map<string, bool>();
@@ -31,7 +36,7 @@ public class ControlSystem
         // 保存模块名
         this._module_name = module_name;
         this._crypt_mode = crypt_mode || false;
-
+        
         // 基本路径
         this._base_path = "Module/" .. module_name .. "/";
         this._ui_path = this._base_path .. "UI/";
@@ -44,7 +49,12 @@ public class ControlSystem
         A_LoadTextureManager.RegisterTexmgrControl(this._texture_mgr);
     }
     
-    private async fun RegisterInfoByHttpImpl(string host, int port, string base_path, List<string> name_list, ALittle.Thread thread)
+    public fun RegisterFont(string src, string dst)
+    {
+        this._font_map[src] = dst;
+    }
+    
+    public await fun RegisterInfoByHttp(string host, int port, string base_path, List<string> name_list)
     {
         for (var index, name in name_list)
         {
@@ -62,13 +72,6 @@ public class ControlSystem
             }
             g_Control.RegisterInfo(name, json);
         }
-        
-        Coroutine.Resume(thread);
-    }
-    
-    public await fun RegisterInfoByHttp(string host, int port, string base_path, List<string> name_list)
-    {
-        this.RegisterInfoByHttpImpl(host, port, base_path, name_list, co);
     }
     
     public fun RegisterInfo(string name, DisplayInfo info)
@@ -195,7 +198,13 @@ public class ControlSystem
 
     protected fun SetFont(DisplayObject object, string font_path, int font_size)
     {
-        object.native_show.SetFont(this._font_path .. font_path, font_size);
+        var dst = this._font_map[font_path];
+        if (dst == null) dst = font_path;
+        
+        [Language(Lua)]
+        object.native_show.SetFont(this._font_path .. dst, font_size);
+        [Language(JavaScript)]
+        object.native_show.SetFont(dst, font_size);
     }
     
     // 把内容渲染到纹理，并且保存起来

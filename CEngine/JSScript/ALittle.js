@@ -31,6 +31,7 @@ __ALITTLEAPI_CEngine_Init = async function(base_path) {
 	await Require(base_path + "CEngine/UISystem/Base/DisplayLayout");
 	await Require(base_path + "CEngine/UISystem/Base/Quad");
 	await Require(base_path + "CEngine/UISystem/Base/Image");
+	await Require(base_path + "CEngine/UISystem/Base/Text");
 	await Require(base_path + "CEngine/UISystem/UISystem");
 	await Require(base_path + "CEngine/UISystem/LayerManager");
 	await Require(base_path + "CEngine/UISystem/TextureManager");
@@ -49,8 +50,19 @@ __ALITTLEAPI_CEngine_Init = async function(base_path) {
 	image.y = 210;
 	image.width = 100;
 	image.height = 100;
-	image.texture_name = "Texture/2048.png";
+	image.texture_name = "2048.png";
 	A_LayerManager.AddToTip(image);
+	let text = ALittle.NewObject(ALittle.Text, control);
+	text.x = 0;
+	text.y = 210;
+	text.width = 100;
+	text.height = 100;
+	text.red = 1;
+	text.green = 0.8;
+	text.font_size = 20;
+	text.font_path = "Arial";
+	text.text = "这个是一个文本3";
+	A_LayerManager.AddToTip(text);
 }
 
 __ALITTLEAPI_HandleConsoleCmd = function(cmd) {

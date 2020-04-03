@@ -1,9 +1,9 @@
 
 namespace ALittle;
 
-private var __tostring = lua.tostring;
-private var __byte = lua.String.byte;
-private var __type = lua.type;
+private var __tostring = String_ToString;
+private var __byte = String_Byte;
+private var __type = String_Type;
 
 public class Text : DisplayObject
 {
@@ -31,7 +31,10 @@ public class Text : DisplayObject
         this._flip = 0;
     
         // 创建text对象
+        [Language(Lua)]
         this._show = new lua.__CPPAPIText();
+        [Language(JavaScript)]
+        this._show = new JavaScript.JText();
         A_LoadTextureManager.RegisterRedrawControl(this);
     }
     

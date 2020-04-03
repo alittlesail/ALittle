@@ -85,6 +85,37 @@ public class Sprite : Container
 }
 
 [Native]
+public class Text : Sprite
+{
+    public get text() : string {}
+    public set text(string v) {}
+    
+    public get style() : TextStyle {}
+    public set style(TextStyle value) {}
+}
+
+[Native]
+public class TextStyle
+{
+    public get fontFamily() : string {}
+    public set fontFamily(string value) {}
+    public get fontSize() : int {}
+    public set fontSize(int value) {}
+    public get fill() : string {}
+    public set fill(string value) {}
+}
+
+[Native]
+public class TextMetrics
+{
+    public static measureText(string text, TextStyle stype) : TextMetrics {}
+    
+    public get text() : string {}
+    public get width() : int {}
+    public get height() : int {}
+}
+
+[Native]
 public class Texture
 {
     

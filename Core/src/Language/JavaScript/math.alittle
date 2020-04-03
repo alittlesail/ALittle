@@ -14,3 +14,9 @@ public class Math
     public static cos(double v) : double {}
     public static sin(double v) : double {}
 }
+
+[Native]
+public class Number
+{
+    public fun toString(int radix) : string {}
+}

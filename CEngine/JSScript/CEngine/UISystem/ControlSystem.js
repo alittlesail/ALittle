@@ -6,6 +6,7 @@ let __byte = ALittle.String_Byte;
 let __type = ALittle.String_Type;
 ALittle.ControlSystem = JavaScript.Class(undefined, {
 	Ctor : function(module_name, crypt_mode) {
+		this._font_map = {};
 		this._name_map_info = {};
 		this._name_map_info_cache = {};
 		this._module_name = module_name;
@@ -18,28 +19,27 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 		this._texture_mgr = ALittle.NewObject(ALittle.TextureManager, module_name, this._crypt_mode);
 		A_LoadTextureManager.RegisterTexmgrControl(this._texture_mgr);
 	},
-	RegisterInfoByHttpImpl : async function(host, port, base_path, name_list, thread) {
-		let ___OBJECT_1 = name_list;
-		for (let index = 1; index <= ___OBJECT_1.length; ++index) {
-			let name = ___OBJECT_1[index - 1];
-			if (name === undefined) break;
-			let [error, content] = await ALittle.HttpDownloadRequest(host, port, base_path + "../UI/" + name + ".json");
-			if (error !== undefined) {
-				ALittle.Error("ui load failed:" + error);
-				continue;
-			}
-			let [jerror, json] = (function() { try { let ___VALUE = ALittle.String_JsonDecode.call(undefined, content.GetContent()); return [undefined, ___VALUE]; } catch (___ERROR) { return [___ERROR.message]; } }).call(this);
-			if (jerror !== undefined) {
-				ALittle.Error("ui json decode failed:" + jerror);
-				continue;
-			}
-			ALittle.g_Control.RegisterInfo(name, json);
-		}
-		ALittle.Coroutine.Resume(thread);
+	RegisterFont : function(src, dst) {
+		this._font_map[src] = dst;
 	},
 	RegisterInfoByHttp : function(host, port, base_path, name_list) {
-		return new Promise(function(___COROUTINE, ___) {
-			this.RegisterInfoByHttpImpl(host, port, base_path, name_list, ___COROUTINE);
+		return new Promise(async function(___COROUTINE, ___) {
+			let ___OBJECT_1 = name_list;
+			for (let index = 1; index <= ___OBJECT_1.length; ++index) {
+				let name = ___OBJECT_1[index - 1];
+				if (name === undefined) break;
+				let [error, content] = await ALittle.HttpDownloadRequest(host, port, base_path + "../UI/" + name + ".json");
+				if (error !== undefined) {
+					ALittle.Error("ui load failed:" + error);
+					continue;
+				}
+				let [jerror, json] = (function() { try { let ___VALUE = ALittle.String_JsonDecode.call(undefined, content.GetContent()); return [undefined, ___VALUE]; } catch (___ERROR) { return [___ERROR.message]; } }).call(this);
+				if (jerror !== undefined) {
+					ALittle.Error("ui json decode failed:" + jerror);
+					continue;
+				}
+				ALittle.g_Control.RegisterInfo(name, json);
+			}
 			___COROUTINE();
 		});
 	},
@@ -138,7 +138,11 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 		return this._texture_mgr.cache_texture;
 	},
 	SetFont : function(object, font_path, font_size) {
-		object.native_show.SetFont(this._font_path + font_path, font_size);
+		let dst = this._font_map[font_path];
+		if (dst === undefined) {
+			dst = font_path;
+		}
+		object.native_show.SetFont(dst, font_size);
 	},
 	SaveControlToFile : function(control, file_path, scale) {
 		if (control === undefined) {

@@ -163,6 +163,12 @@ JavaScript.JSystem_CreateView = function(title, width, height, flag, scale) {
 		A_PixiApp.view.onkeydown = JSystem_KeyDown;
 		A_PixiApp.view.onkeyup = JSystem_KeyUp;
 	}
+	A_JDisplaySystem.AddToStage(A_PixiApp.stage);
+	let func = window["__ALITTLEAPI_ViewResized"];
+	if (func !== undefined) {
+		func(width, height);
+	}
+	ALittle.Log(JavaScript.JSystem_GetStage().children);
 	return true;
 }
 

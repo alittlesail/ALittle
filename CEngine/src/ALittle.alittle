@@ -35,11 +35,21 @@ public async static __ALITTLEAPI_CEngine_Init(string base_path)
     Require(base_path.."CEngine/UISystem/Base/DisplayObject");
     Require(base_path.."CEngine/UISystem/Base/DisplayGroup");
     Require(base_path.."CEngine/UISystem/Base/DisplayLayout");
+    Require(base_path.."CEngine/UISystem/Base/Quad");
     
     Require(base_path.."CEngine/UISystem/UISystem");
     Require(base_path.."CEngine/UISystem/LayerManager");
     
     ALittle.System_CreateView("test", 800, 600, 0, 0);
+    
+    var quad = new ALittle.Quad(null);
+    quad.x = 10;
+    quad.y = 10;
+    quad.width = 100;
+    quad.height = 100;
+    quad.red = 1;
+    A_LayerManager.AddToTip(quad);
+    ALittle.Log(cast<JavaScript.JDisplayObject>(quad._show).native);
 }
 
 public static __ALITTLEAPI_HandleConsoleCmd(string cmd)

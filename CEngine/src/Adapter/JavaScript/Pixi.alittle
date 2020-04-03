@@ -65,4 +65,14 @@ public class Container : DisplayObject
     public fun removeChild(DisplayObject value) {}
     public fun removeChildAt(DisplayObject value, int index) {}
     public fun removeChildren(int begin, [Nullable] int end) {}
+    public get children() : List<DisplayObject> {}
+}
+
+[Native]
+public class Graphics : Container
+{
+    public fun clear() {}
+    public fun beginFill(int color, double alpha) {}
+    public fun drawRect(double x, double y, double width, double height) {}
+    public fun endFill() {}
 }

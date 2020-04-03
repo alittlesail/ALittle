@@ -155,6 +155,12 @@ public static JSystem_CreateView(string title, int width, int height, int flag, 
 		A_PixiApp.view.onkeyup = JSystem_KeyUp;
 	}
     
+    A_JDisplaySystem.AddToStage(A_PixiApp.stage);
+    
+    var func = cast<Map<string, Functor<(int, int)>>>(window)["__ALITTLEAPI_ViewResized"];
+    if (func != null) func(width, height);
+    
+    ALittle.Log(JSystem_GetStage().children);
     return true;
 }
 

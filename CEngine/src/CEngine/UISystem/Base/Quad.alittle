@@ -6,7 +6,10 @@ public class Quad : DisplayObject
     public ctor(ControlSystem ctrl_sys)
     {
         // 创建quad显示对象
+        [Language(Lua)]
         this._show = new lua.__CPPAPIQuad();
+        [Language(JavaScript)]
+        this._show = new JavaScript.JQuad();
     
         this.AddEventListener(this, this.HandleLButtonUp);
         this.AddEventListener(this, this.HandleMButtonUp);

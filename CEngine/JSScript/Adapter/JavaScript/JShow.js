@@ -46,7 +46,7 @@ JavaScript.JDisplayObject = JavaScript.Class(ALittle.IDisplayObject, {
 	},
 	SetVisible : function(value) {
 		this._visible = value;
-		this._native.visible = value && this._clip;
+		this._native.visible = value && !this._clip;
 	},
 	SetClip : function(value) {
 		this._clip = value;
@@ -236,40 +236,25 @@ JavaScript.JDisplayObjects = JavaScript.Class(JavaScript.JDisplayObject, {
 
 if (ALittle.IDisplaySystem === undefined) throw new Error(" extends class:ALittle.IDisplaySystem is undefined");
 JavaScript.JDisplaySystem = JavaScript.Class(ALittle.IDisplaySystem, {
-	Init : function() {
-		let stage = JavaScript.JSystem_GetStage();
-		if (stage === undefined) {
-			return false;
-		}
-		if (this._layer !== undefined) {
-			return true;
-		}
+	Ctor : function() {
 		this._layer = new PIXI.Container();
 		this._special_layer = new PIXI.Container();
+	},
+	AddToStage : function(stage) {
 		this._layer.width = stage.width;
 		this._layer.height = stage.height;
 		this._special_layer.width = stage.width;
 		this._special_layer.height = stage.height;
 		stage.addChild(this._layer);
 		stage.addChild(this._special_layer);
-		return true;
 	},
 	AddSpecialChild : function(value) {
-		if (!this.Init()) {
-			return;
-		}
 		this._special_layer.addChild(value.native);
 	},
 	AddChild : function(value) {
-		if (!this.Init()) {
-			return;
-		}
 		this._layer.addChild(value.native);
 	},
 	AddChildBefore : function(back, value) {
-		if (!this.Init()) {
-			return;
-		}
 		let index = this._layer.getChildAt(value.native);
 		this._layer.addChildAt(value.native, index - 1);
 	},
@@ -285,6 +270,49 @@ JavaScript.JDisplaySystem = JavaScript.Class(ALittle.IDisplaySystem, {
 window.A_JDisplaySystem = ALittle.NewObject(JavaScript.JDisplaySystem);
 if (JavaScript.JDisplayObject === undefined) throw new Error(" extends class:JavaScript.JDisplayObject is undefined");
 JavaScript.JQuad = JavaScript.Class(JavaScript.JDisplayObject, {
+	Ctor : function() {
+		this._native = new PIXI.Graphics();
+		this._color = 0;
+		this._red = 0;
+		this._green = 0;
+		this._blue = 0;
+		this._alpha = 1;
+		this._width = 0;
+		this._height = 0;
+	},
+	Draw : function() {
+		this._native.clear();
+		this._native.beginFill(this._color, this._alpha);
+		this._native.drawRect(0, 0, this._width, this._height);
+		this._native.endFill();
+	},
+	SetWidth : function(value) {
+		this._width = value;
+		this.Draw();
+	},
+	SetHeight : function(value) {
+		this._height = value;
+		this.Draw();
+	},
+	SetRed : function(value) {
+		this._red = Math.floor(value * 255);
+		this._color = this._red * 65536 + this._green * 256 + this._blue;
+		this.Draw();
+	},
+	SetGreen : function(value) {
+		this._green = Math.floor(value * 255);
+		this._color = this._red * 65536 + this._green * 256 + this._blue;
+		this.Draw();
+	},
+	SetBlue : function(value) {
+		this._blue = Math.floor(value * 255);
+		this._color = this._red * 65536 + this._green * 256 + this._blue;
+		this.Draw();
+	},
+	SetAlpha : function(value) {
+		this._alpha = value;
+		this.Draw();
+	},
 }, "JavaScript.JQuad");
 
 }

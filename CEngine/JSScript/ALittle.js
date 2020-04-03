@@ -29,9 +29,18 @@ __ALITTLEAPI_CEngine_Init = async function(base_path) {
 	await Require(base_path + "CEngine/UISystem/Base/DisplayObject");
 	await Require(base_path + "CEngine/UISystem/Base/DisplayGroup");
 	await Require(base_path + "CEngine/UISystem/Base/DisplayLayout");
+	await Require(base_path + "CEngine/UISystem/Base/Quad");
 	await Require(base_path + "CEngine/UISystem/UISystem");
 	await Require(base_path + "CEngine/UISystem/LayerManager");
 	ALittle.System_CreateView("test", 800, 600, 0, 0);
+	let quad = ALittle.NewObject(ALittle.Quad, undefined);
+	quad.x = 10;
+	quad.y = 10;
+	quad.width = 100;
+	quad.height = 100;
+	quad.red = 1;
+	A_LayerManager.AddToTip(quad);
+	ALittle.Log(quad._show.native);
 }
 
 __ALITTLEAPI_HandleConsoleCmd = function(cmd) {

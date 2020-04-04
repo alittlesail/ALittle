@@ -8,3 +8,22 @@
 2020/04/03 09:29:44 [error] 18864#11376: CreateFile() "D:\Software\ALittle\trunk\nginx-1.16.1/logs/nginx.pid" failed (2: The system cannot find the file specified)
 2020/04/03 09:30:07 [error] 9920#21128: *1 CreateFile() "D:\Software\ALittle\trunk\nginx-1.16.1/../favicon.ico" failed (2: The system cannot find the file specified), client: 127.0.0.1, server: localhost, request: "GET /favicon.ico HTTP/1.1", host: "localhost", referrer: "http://localhost/G2048/index.html"
 2020/04/03 11:18:08 [error] 9920#21128: *6 CreateFile() "D:\Software\ALittle\trunk\nginx-1.16.1/../CEngine/JSScript/CEngine/UISystem/IShow.js" failed (2: The system cannot find the file specified), client: 127.0.0.1, server: localhost, request: "GET /CEngine/JSScript/CEngine/UISystem/IShow.js HTTP/1.1", host: "localhost", referrer: "http://localhost/G2048/index.html"
+2020/04/04 19:39:15 [notice] 8404#8856: signal process started
+2020/04/04 19:39:15 [error] 8404#8856: CreateFile() "D:\Software\ALittle\trunk\nginx-1.16.1/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2020/04/04 19:39:15 [emerg] 1504#9184: CreateDirectory() "D:\Software\ALittle\trunk\nginx-1.16.1/temp/client_body_temp" failed (3: The system cannot find the path specified)
+2020/04/04 19:40:10 [notice] 7428#2508: signal process started
+2020/04/04 19:40:10 [error] 7428#2508: CreateFile() "D:\Software\ALittle\trunk\nginx-1.16.1/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2020/04/04 19:40:10 [emerg] 2312#9096: CreateDirectory() "D:\Software\ALittle\trunk\nginx-1.16.1/temp/client_body_temp" failed (3: The system cannot find the path specified)
+2020/04/04 19:40:12 [notice] 7564#6860: signal process started
+2020/04/04 19:40:12 [error] 7564#6860: CreateFile() "D:\Software\ALittle\trunk\nginx-1.16.1/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2020/04/04 19:40:12 [emerg] 8988#8984: CreateDirectory() "D:\Software\ALittle\trunk\nginx-1.16.1/temp/client_body_temp" failed (3: The system cannot find the path specified)
+2020/04/04 19:40:20 [notice] 8844#4392: signal process started
+2020/04/04 19:40:20 [error] 8844#4392: CreateFile() "D:\Software\ALittle\trunk\nginx-1.16.1/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2020/04/04 19:40:20 [emerg] 6492#8052: CreateDirectory() "D:\Software\ALittle\trunk\nginx-1.16.1/temp/client_body_temp" failed (3: The system cannot find the path specified)
+2020/04/04 19:40:40 [notice] 904#7716: signal process started
+2020/04/04 19:40:40 [error] 904#7716: CreateFile() "D:\Software\ALittle\trunk\nginx-1.16.1/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2020/04/04 19:40:57 [error] 7920#4868: *1 directory index of "D:\Software\ALittle\trunk\nginx-1.16.1/../" is forbidden, client: 127.0.0.1, server: localhost, request: "GET / HTTP/1.1", host: "localhost"
+2020/04/04 19:40:57 [error] 7920#4868: *1 CreateFile() "D:\Software\ALittle\trunk\nginx-1.16.1/../favicon.ico" failed (2: The system cannot find the file specified), client: 127.0.0.1, server: localhost, request: "GET /favicon.ico HTTP/1.1", host: "localhost", referrer: "http://localhost/"
+2020/04/04 19:42:37 [error] 7920#4868: *1 CreateFile() "D:\Software\ALittle\trunk\nginx-1.16.1/../Module/ALittleIDE/Other/GameLibrary/HelloWorld/JSScript/Main.js.js" failed (2: The system cannot find the file specified), client: 127.0.0.1, server: localhost, request: "GET /Module/ALittleIDE/Other/GameLibrary/HelloWorld/JSScript/Main.js.js HTTP/1.1", host: "localhost", referrer: "http://localhost/Module/ALittleIDE/Other/GameLibrary/HelloWorld/HelloWorld.html"
+2020/04/04 19:43:12 [error] 7920#4868: *1 CreateFile() "D:\Software\ALittle\trunk\nginx-1.16.1/../favicon.ico" failed (2: The system cannot find the file specified), client: 127.0.0.1, server: localhost, request: "GET /favicon.ico HTTP/1.1", host: "localhost"
+2020/04/04 19:43:12 [error] 7920#4868: *5 CreateFile() "D:\Software\ALittle\trunk\nginx-1.16.1/../favicon.ico" failed (2: The system cannot find the file specified), client: 127.0.0.1, server: localhost, request: "GET /favicon.ico HTTP/1.1", host: "www.localhost"

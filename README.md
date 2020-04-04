@@ -18,8 +18,7 @@ ALittleScript是一门兼顾强类型和弱类型的语言。
 * 使用Visual Studio打开Module/ALittleIDE/Other/GameLibrary/ALittle.sln
 * 已经内置两个工程Core和HelloWorld
 * Core是语言标准库，今后的每个sln都要包含它
-* HelloWorld项目只有一个文件Main.alittle，内部有一个Main函数打印了HelloWorld
-* 运行nginx-1.16.1中的start.bat来打开nginx
-* 打开浏览器输入localhost/Module/ALittleIDE/Other/GameLibrary/HelloWorld/HelloWorld.html
+* HelloWorld项目只有一个文件Main.alittle，内部有一个Main函数打印了Hello World
+* 使用浏览器打开Module/ALittleIDE/Other/GameLibrary/HelloWorld/HelloWorld.html
 * 按F12打开浏览器调试界面，就可以看到HelloWorld
 * ![HelloWorld](https://github.com/alittlesail/ALittle/blob/master/Module/ALittleIDE/Other/GameLibrary/HelloWorld/HelloWorld.png)

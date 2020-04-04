@@ -34,4 +34,47 @@ ALittleScript是一门兼顾强类型和弱类型的语言。
   * 运行HelloWorld.bat。就可以看到HelloWorld
   * ![HelloWorld](https://github.com/alittlesail/ALittle/blob/master/Module/ALittleIDE/Other/GameLibrary/HelloWorld/HelloWorld.js.png)
   
-  
+# 语言快速入门
+
+## 命名域 namespace
+* 每个文件开头必须定义命名域，比如namespace HelloWorld;
+* 所有代码相关的定义都会在命名域内
+* lua, javascript, alittle属于内置命名域，不能作为开发者使用。这些命名域内部的定义属于全局
+## 基本变量类型
+* any, bool, int, long, string
+## 内置模板容器
+* List 数组容器，因为ALittle是以生成Lua语言为主，所以`下标也是从1开始`
+* Map 映射表容器
+## 高级类型
+* struct 结构体, 支持继承
+* enum 枚举类型
+* class 单继承, 多态, 封装
+## 访问权限修饰符
+* private(本文件范围可访问，如果修饰类成员类自己和子类可访问)
+* protected(本命名域范围可访问)
+* public(全局可访问)
+## 流程控制
+* 条件跳转  if, elseif, else
+* while
+* do while
+* for, for in
+## 基本运算符
+* 加法(+), 减法(-), 乘法(\*), 除法(/), 取模(%), 字符串连接(..)
+## 逻辑运算符
+* ==, !=, >, <, >=, <=
+## 异常处理
+* 断言 assert
+* 抛异常 throw
+* 保护调用 tcall
+## Functor, bind
+* 定义函数格式，并且任意函数可以进行携带参数绑定
+## setter和getter
+* 类成员函数可以定义为setter和getter
+## 模板类，类比Java的模板
+* 定义class时可以定义一些模板参数，在实例化时要带上填充的模板参数
+## 模板函数，类比Java的模板
+* 对成员函数、类静态函数、全局函数可以定义模板参数
+## 类型推导
+* var 自动推导类型，加快代码编辑
+## 反射
+* reflect 对struct、class、模板可以获取反射信息

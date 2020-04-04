@@ -7,13 +7,18 @@ ALittleScript是一门兼顾强类型和弱类型的语言。
 * 它也可以生成`JavaScript`。
 * 最终以生成的目标语言来运行，所以目标语言所有的已有资源和代码都可以无缝对接使用。
 * `一次编写，多平台运行`。
-* 代码文件以alittle为后缀，比如`Main.alittle`
+* 代码文件以alittle为后缀，比如`Main.alittle`。
+* 满足所有现代语言的特点，并且选用最为简单直接的语法。
+* 严格的类型检查，提高编写效率。
 
 ## 安装环境
 
 * 安装[Visual Studio](https://visualstudio.microsoft.com/zh-hans/vs/)(2015、2017、2019)
 * 安装[ALittleScript.vsix](https://github.com/alittlesail/ALittle/blob/master/ALittleScript.vsix)语言插件
 * 选择目标语言：打开Visula Studio->工具->选项->ALittleScript->General->目标语言->Lua或者JavaScript
+* 当修改某个文件后进行保存时，会生成目标语言。
+* 组合键Ctrl+F7，可以对某个alittle文件进行生成目标语言
+* 组合键Ctrl+B， 可以对某个alittle所在的工程中所有的alittle文件进行生成目标语言
 
 ## Hello World
 * 使用Git拉去当前项目
@@ -78,3 +83,6 @@ ALittleScript是一门兼顾强类型和弱类型的语言。
 * var 自动推导类型，加快代码编辑
 ## 反射
 * reflect 对struct、class、模板可以获取反射信息
+## 协程
+* async 对全局函数，类静态函数，类成员函数可以使用async修饰，表示是一个协程函数
+* await 对全局函数，类静态函数，类成员函数可以使用await修饰，表示需要在带async和await修饰的函数中执行。

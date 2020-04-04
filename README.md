@@ -26,12 +26,12 @@ ALittleScript是一门兼顾强类型和弱类型的语言。
   * 打开Core项目的ALittle.alittle文件，然后按组合键Ctrl+B，语言插件就可以生成lua文件到Script文件夹
   * 打开HelloWorld项目Main.alittle文件，然后按组合键Ctrl+B，语言插件就可以生成lua文件到Script文件夹
   * 使用浏览器打开HelloWorld.html。按F12打开浏览器调试界面，就可以看到HelloWorld
-  * ![HelloWorld](https://github.com/alittlesail/ALittle/blob/master/Module/ALittleIDE/Other/GameLibrary/HelloWorld/HelloWorld.js.png)
+  * ![HelloWorld](https://github.com/alittlesail/ALittle/blob/master/Module/ALittleIDE/Other/GameLibrary/HelloWorld/HelloWorld.lua.png)
 * JavaScript版本
   * 把目标语言设置为JavaScript
   * 打开Core项目的ALittle.alittle文件，然后按组合键Ctrl+B，语言插件就可以生成js文件到JSScript文件夹
   * 打开HelloWorld项目Main.alittle文件，然后按组合键Ctrl+B，语言插件就可以生成js文件到JSScript文件夹
   * 运行HelloWorld.bat。就可以看到HelloWorld
-  * ![HelloWorld](https://github.com/alittlesail/ALittle/blob/master/Module/ALittleIDE/Other/GameLibrary/HelloWorld/HelloWorld.lua.png)
+  * ![HelloWorld](https://github.com/alittlesail/ALittle/blob/master/Module/ALittleIDE/Other/GameLibrary/HelloWorld/HelloWorld.js.png)
   
   

@@ -39,6 +39,11 @@ ALittleScript是一门兼顾强类型和弱类型的语言。
   * 运行HelloWorld.bat。就可以看到HelloWorld
   * ![HelloWorld](https://github.com/alittlesail/ALittle/blob/master/Module/ALittleIDE/Other/GameLibrary/HelloWorld/HelloWorld.js.png)
   
+## G2048 一个小游戏
+* 运行nginx-1.16.1目录下的start.bat
+* 打开浏览器，输入地址localhost/G2048.html
+* ![G2048](https://github.com/alittlesail/ALittle/blob/master/Module/G2048/G2048.js.png)
+  
 # 语言快速入门
 
 ## 命名域 namespace
@@ -63,6 +68,7 @@ ALittleScript是一门兼顾强类型和弱类型的语言。
 * while
 * do while
 * for, for in
+* break, continue
 ## 基本运算符
 * 加法(+), 减法(-), 乘法(\*), 除法(/), 取模(%), 字符串连接(..)
 ## 逻辑运算符
@@ -86,3 +92,24 @@ ALittleScript是一门兼顾强类型和弱类型的语言。
 ## 协程
 * async 对全局函数，类静态函数，类成员函数可以使用async修饰，表示是一个协程函数
 * await 对全局函数，类静态函数，类成员函数可以使用await修饰，表示需要在带async和await修饰的函数中执行。
+
+# ALittle 全平台标准化方案
+## Core 核心库
+* ALittleScript是一门独立的语言，它是生成目标语言来运行。目标语言大部分情况下是不支持ALittleScript很多现代语言特性，比如lua没有class，没有类模板，函数模板。为了让目标语言都支持ALittleScript语言特性，需要Core核心库进行适配。
+* Core核心库只依赖目标语言本身，不会依赖任何第三方库，所以使用起来是`0成本`。
+* 对于所有使用ALittleScript语言进行开发的项目，都必须引用Core核心库。
+## Std 标准库
+* Core核心库的目标只是实现语言本身的特性，所以可以使用Std标准库来丰富ALittleScript的工具库。为后续开发提供便利。
+* Std标准库对目标语言进行了适配，所有目标语言都可以使用。部分接口在目标语言不支持。
+* 提供Http，Http文件上传，Http文件下载，流程进行标准化。
+* 便利的字符串库，文件库。
+* 提供LoopSystem循环系统，可应用于动画。
+* 提供HeapTimer最小堆定时器，可应用于定时。
+* 提供EventDispatcher，可以进行事件派发。
+* 提供对struct的二进制序列化和反序列化。
+* 后续会不断添加标准库的方案。
+## CEngine客户端UI框架
+* 提供全平台的UI架构。
+* 提供UISystem，以及若干UI组件。用于管理UI控件
+* 提供UI组件对应的渲染接口，用于适配不同平台的渲染接口。目前适配了SDL(Lua)，Pixijs(js)
+* 提供ALittleIDE所见即所得的UI编辑软件

@@ -1,33 +1,6 @@
 
 namespace ALittle;
 
-public class IMessageWriteFactory
-{
-    public fun SetID(int id) {}
-    public fun SetRpcID(int id) {}
-    public fun ResetOffset() {}
-    public fun GetOffset() : int { return 0; }
-    public fun SetInt(int offset, int value) {}
-    
-    public fun WriteBool(bool value) : int { return 0; }
-    public fun WriteInt(int value) : int { return 0; }
-    public fun WriteLong(long value) : int { return 0; }
-    public fun WriteString(string value) : int { return 0; }
-    public fun WriteDouble(double value) : int { return 0; }
-}
-
-public class IMessageReadFactory
-{
-    public fun GetTotalSize() : int { return 0; }
-    
-    public fun ReadBool() : bool { return false; }
-    public fun ReadInt() : int { return 0;}
-    public fun ReadLong() : long { return 0; }
-    public fun ReadString() : string { return ""; }
-    public fun ReadDouble() : double { return 0; }
-    public fun GetReadSize() : int { return 0; }
-}
-
 protected struct ProtocolInvokeInfo
 {
     // 当前结构体的序列化和反序列化方法

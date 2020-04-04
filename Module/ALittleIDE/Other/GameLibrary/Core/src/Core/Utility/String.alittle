@@ -99,16 +99,16 @@ public static String_Find(string s, string t, [Nullable] int init) : int
 }
 
 // 切割子串
-public static String_Sub(string s, int start, [Nullable] int end) : string
+public static String_Sub(string s, int starti, [Nullable] int endi) : string
 {
     [Language(Lua)]
-    return sub(s, start, end);
+    return sub(s, starti, endi);
     
     [Language(JavaScript)]
-    if (end == null)
-        return cast<javascript.String>(s).slice(start - 1);
+    if (endi == null)
+        return cast<javascript.String>(s).slice(starti - 1);
     else
-        return cast<javascript.String>(s).slice(start - 1, end);
+        return cast<javascript.String>(s).slice(starti - 1, endi);
 }
     
 // 去掉前后空格，制表符

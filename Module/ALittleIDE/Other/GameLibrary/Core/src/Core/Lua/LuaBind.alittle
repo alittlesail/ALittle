@@ -37,12 +37,12 @@ private static __functor_mt__call(FunctorObject caller, ...) : any
     // 获取携带参数个数
     var arg_count = caller._arg_count;
     // 遍历参数列表，添加到新的列表中
-    for (var i = 1, arg_count, 1)
+    for (var i = 1; i <= arg_count; 1)
         new_arg_list[i] = arg_list[i];
     // 获取调用参数个数
     var add_count:int = select("#", ...);
     // 遍历调用参数列表，添加到携带参数列表中
-    for (var i = 1, add_count, 1)
+    for (var i = 1; i <= add_count; 1)
         new_arg_list[arg_count + i] = select(i, ...);
     // 把参数列表解包，调用回调函数
     return caller._func(unpack(new_arg_list, 1, arg_count + add_count));

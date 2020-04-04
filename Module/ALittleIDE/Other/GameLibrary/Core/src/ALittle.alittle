@@ -36,7 +36,7 @@ public await static Require(string url) : string
     return null;
 }
     
-public async static __ALITTLEAPI_Core_Init(string base_path)
+public await static __ALITTLEAPI_Core_Init(string base_path)
 {
     [Language(JavaScript)]
     {
@@ -44,15 +44,15 @@ public async static __ALITTLEAPI_Core_Init(string base_path)
         Require(base_path.."Core/JavaScript/JavaScriptException");
     }
     
+    Require(base_path.."Core/Reflect/ReflectRegister");
+    Require(base_path.."Core/Reflect/ReflectDefine");
+    
     [Language(Lua)]
     {
         Require(base_path.."Core/Lua/LuaBind");
         Require(base_path.."Core/Lua/LuaClass");
         Require(base_path.."Core/Lua/LuaException");
     }
-    
-    Require(base_path.."Core/Reflect/ReflectRegister");
-    Require(base_path.."Core/Reflect/ReflectDefine");
     
     Require(base_path.."Core/Utility/Log");
     Require(base_path.."Core/Utility/List");

@@ -4,6 +4,6 @@
 
 #include "../../src/lua.h"
 
-extern int luaopen_timer(lua_State* l);
+LUALIB_API int luaopen_timer(lua_State* l);
 
 #endif // _ALITTLE_TIMERLIB_H_

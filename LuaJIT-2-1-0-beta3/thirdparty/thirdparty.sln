@@ -5,6 +5,8 @@ VisualStudioVersion = 16.0.29911.84
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "md5", "md5\md5.vcxproj", "{FD935B9F-BFB8-40A0-B9FF-EEE5602DE76A}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "timer", "timer\timer.vcxproj", "{B89AEC48-1BEA-48A2-A86F-1C1240BBEB9A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -21,6 +23,14 @@ Global
 		{FD935B9F-BFB8-40A0-B9FF-EEE5602DE76A}.Release|x64.Build.0 = Release|x64
 		{FD935B9F-BFB8-40A0-B9FF-EEE5602DE76A}.Release|x86.ActiveCfg = Release|Win32
 		{FD935B9F-BFB8-40A0-B9FF-EEE5602DE76A}.Release|x86.Build.0 = Release|Win32
+		{B89AEC48-1BEA-48A2-A86F-1C1240BBEB9A}.Debug|x64.ActiveCfg = Debug|x64
+		{B89AEC48-1BEA-48A2-A86F-1C1240BBEB9A}.Debug|x64.Build.0 = Debug|x64
+		{B89AEC48-1BEA-48A2-A86F-1C1240BBEB9A}.Debug|x86.ActiveCfg = Debug|Win32
+		{B89AEC48-1BEA-48A2-A86F-1C1240BBEB9A}.Debug|x86.Build.0 = Debug|Win32
+		{B89AEC48-1BEA-48A2-A86F-1C1240BBEB9A}.Release|x64.ActiveCfg = Release|x64
+		{B89AEC48-1BEA-48A2-A86F-1C1240BBEB9A}.Release|x64.Build.0 = Release|x64
+		{B89AEC48-1BEA-48A2-A86F-1C1240BBEB9A}.Release|x86.ActiveCfg = Release|Win32
+		{B89AEC48-1BEA-48A2-A86F-1C1240BBEB9A}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

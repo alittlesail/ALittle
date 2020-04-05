@@ -1,5 +1,6 @@
 #include "miniheap.h"
 #include <stdlib.h>
+#include <stdio.h>
 
 static int mini_heap_reserve(mini_heap* heap, unsigned int size)
 {
@@ -88,8 +89,8 @@ mini_heap* mini_heap_create()
 
 void mini_heap_destory(mini_heap* heap)
 {
-	free(heap->nodes);
-	free(heap);
+    if (heap->nodes) free(heap->nodes);
+    free(heap);
 }
 
 unsigned int mini_heap_size(mini_heap* heap)

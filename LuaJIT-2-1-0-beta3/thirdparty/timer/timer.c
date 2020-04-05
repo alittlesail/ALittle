@@ -1,17 +1,22 @@
 
 #include "timer.h"
+#include <stdio.h>
 
 timer* timer_create()
 {
     timer* ts = (timer*)malloc(sizeof(timer));
+    timer_init(ts);
+    return ts;
+}
+
+void timer_init(timer* ts)
+{
     ts->cur_time = 0;
     ts->max_id = 0;
     ts->heap = mini_heap_create();
     ts->map = kh_init(node_info);
     ts->pool = 0;
     ts->pool_count = 0;
-
-    return ts;
 }
 
 void timer_destroy(timer* ts)

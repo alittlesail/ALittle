@@ -8,9 +8,7 @@
 #ifndef md5_h
 #define md5_h
 
-#include "../../src/lua.h"
 #include <stddef.h>
-
 
 #define HASHSIZE       16
 
@@ -34,7 +32,8 @@ int  md5_update (md5_t *m, const char *message, size_t len);
 void md5_finish (md5_t *m, char output[HASHSIZE]);
 void md5 (const char *message, size_t len, char output[HASHSIZE]);
 
-LUALIB_API int luaopen_md5 (lua_State *L);
+#include "../../src/lua.h"
 
+LUALIB_API int luaopen_md5(lua_State* L);
 
 #endif

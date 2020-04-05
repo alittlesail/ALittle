@@ -1,5 +1,9 @@
 
+#ifndef _ALITTLE_JSONLIB_H_
+#define _ALITTLE_JSONLIB_H_
+
 #include "../../src/lua.h"
 
-extern int luaopen_cjson(lua_State *l);
-extern int luaopen_cjson_safe(lua_State *l);
+LUALIB_API int luaopen_json(lua_State *l);
+
+#endif // _ALITTLE_JSONLIB_H

@@ -42,6 +42,7 @@
 #include <limits.h>
 #include <ctype.h>
 
+#include "lua_cjson.h"
 #include "../../src/lua.h"
 #include "../../src/lualib.h"
 #include "../../src/lauxlib.h"
@@ -64,9 +65,15 @@
 #include <float.h>  
 
 #ifdef _WIN32
+#ifndef isnan
 #define isnan(x) ((x) != (x))  
+#endif // !isnan
+#ifndef isinf
 #define isinf(x) (!_finite(x) && !_isnan(x))  
+#endif
+#ifndef strncasecmp
 #define strncasecmp  _strnicmp   
+#endif
 #endif
 
 /* Workaround for Solaris platforms missing isinf() */
@@ -1420,7 +1427,7 @@ static int lua_cjson_safe_new(lua_State *l)
 }
 #define ENABLE_CJSON_GLOBAL
 
-int luaopen_cjson(lua_State *l)
+int luaopen_json(lua_State *l)
 {
     lua_cjson_new(l);
 #ifdef ENABLE_CJSON_GLOBAL

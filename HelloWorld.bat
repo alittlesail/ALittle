@@ -1,3 +1,3 @@
 @echo off
-"LuaJIT/luajit" HelloWorld.lua
+"LuaJIT-2.1.0-beta3/luajit" HelloWorld.lua
 pause

@@ -7,12 +7,12 @@
 </head>
 
 <body onload="onLoad()">
-	<script src="Module/ALittleIDE/Other/GameLibrary/Core/JSScript/ALittle.js"></script>
+	<script src="ALittle/Module/ALittleIDE/Other/GameLibrary/Core/JSScript/ALittle.js"></script>
 	<script type='text/javascript'>
 		async function onLoad()
 		{
-			await __ALITTLEAPI_Core_Init("Module/ALittleIDE/Other/GameLibrary/Core/JSScript/");
-			await Require("Module/ALittleIDE/Other/GameLibrary/HelloWorld/JSScript/Main");
+			await __ALITTLEAPI_Core_Init("ALittle/Module/ALittleIDE/Other/GameLibrary/Core/JSScript/");
+			await Require("ALittle/Module/ALittleIDE/Other/GameLibrary/HelloWorld/JSScript/Main");
 			HelloWorld.Main();
 		}
 	</script>

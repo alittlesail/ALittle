@@ -1,0 +1,122 @@
+
+[Language(Lua)]
+namespace Lua;
+
+private var select = lua.select;
+private var unpack = lua.unpack;
+private var tostring = lua.tostring;
+private var setmetatable = lua.setmetatable;
+private var getmetatable = lua.getmetatable;
+private var coroutine = lua.coroutine;
+private var type = lua.type;
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+private struct FunctorMetatable
+{
+    any __call;
+    Functor<(FunctorObject):string> __tostring;
+}
+
+private struct FunctorObject
+{
+    List<any> _arg;
+    int _arg_count;
+    Functor<(any):any> _func;
+}
+
+private var __functor_mt = new FunctorMetatable();
+
+// 设置call函数。这样创建类实例对象时，可以使用A()这样的书写方式。
+private static __functor_mt__call(FunctorObject caller, ...) : any
+{
+    // 创建新的参数列表
+    var new_arg_list = new List<any>();
+    // 获取携带参数列表
+    var arg_list = caller._arg;
+    // 获取携带参数个数
+    var arg_count = caller._arg_count;
+    // 遍历参数列表，添加到新的列表中
+    for (var i = 1; i <= arg_count; 1)
+        new_arg_list[i] = arg_list[i];
+    // 获取调用参数个数
+    var add_count:int = select("#", ...);
+    // 遍历调用参数列表，添加到携带参数列表中
+    for (var i = 1; i <= add_count; 1)
+        new_arg_list[arg_count + i] = select(i, ...);
+    // 把参数列表解包，调用回调函数
+    return caller._func(unpack(new_arg_list, 1, arg_count + add_count));
+}
+__functor_mt.__call = __functor_mt__call;
+
+// 设置tostring函数
+private static __functor_mt__tostring(FunctorObject caller) : string
+{
+    return "[ALittle Functor:" .. tostring(caller) .. "]";
+}
+__functor_mt.__tostring = __functor_mt__tostring;
+
+// 提供语言生成代码使用
+protected static Bind(any func, ...) : any
+{
+    assert(func, "func == null");
+    // 如果没有携带参数，那么就直接返回func
+    if (select("#", ...) == 0) return func;
+    // 委托对象
+    var object = new FunctorObject();
+    // 保存func
+    object._func = func;
+    // 保存参数列表
+    object._arg = [...];
+    // 保存参数个数
+    object._arg_count = select("#", ...);
+    // 委托对象的metatable
+    setmetatable(object, __functor_mt);
+    // 返回委托对象
+    return object;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+private struct CoFunctorMetatable
+{
+    any __call;
+    Functor<(CoFunctorObject):string> __tostring;
+}
+
+private struct CoFunctorObject
+{
+    Functor<(any):any> _func;
+}
+
+private var __co_functor_mt = new CoFunctorMetatable();
+// 设置call函数。这样创建类实例对象时，可以使用A()这样的书写方式。
+private static __co_functor_mt__call(CoFunctorObject caller, ...) : any
+{
+    return cast<Functor<(any):any>>(coroutine.wrap(caller._func))(...);
+}
+__co_functor_mt.__call = __co_functor_mt__call;
+
+// 设置tostring函数
+private static __co_functor_mt__tostring(CoFunctorObject caller) : string
+{
+    return "[ALittle CoWrap:" .. tostring(caller) .. "]";
+}
+__co_functor_mt.__tostring = __co_functor_mt__tostring;
+
+protected static CoWrap(any func) : CoFunctorObject
+{
+    // 委托对象
+    var object = new CoFunctorObject();
+    // 保存func
+    object._func = func;
+    // 委托对象的metatable
+    setmetatable(object, __co_functor_mt);
+    // 返回委托对象
+    return object;
+}
+
+protected static IsCoWrap(any value) : bool
+{
+    return type(value) == "table" && getmetatable(value) == __co_functor_mt;
+}

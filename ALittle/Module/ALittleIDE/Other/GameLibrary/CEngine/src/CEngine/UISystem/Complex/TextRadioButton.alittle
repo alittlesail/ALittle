@@ -1,0 +1,137 @@
+
+namespace ALittle;
+
+class TextRadioButtonManager
+{
+    private Map<string, Map<DisplayObject, DisplayObject> > _name_map_group;
+    private int _group_id;
+    
+    public ctor()
+    {
+        this._name_map_group = new Map<string, Map<DisplayObject, DisplayObject> >();
+
+        // 系统分配的group_name
+        this._group_id = 0;
+    }
+
+    public fun CreateGroupName() : string
+    {
+        ++ this._group_id;
+        return "__TextRadioButtonManager_" .. this._group_id;
+    }
+
+    protected fun SetGroupName(DisplayObject object, string old_name, string new_name)
+    {
+        if (old_name != null)
+        {
+            var group = this._name_map_group[old_name];
+            if (group != null) group[object] = null;
+        }
+
+        if (new_name != null)
+        {
+            var group = this._name_map_group[new_name];
+            if (group == null)
+            {
+                group = new Map<DisplayObject, DisplayObject>();
+                // Setweak(group, true, true);
+                this._name_map_group[new_name] = group;
+            }
+            group[object] = object;
+        }
+    }
+
+    protected fun GetGroupByName(string name) : Map<DisplayObject, DisplayObject>
+    {
+        return this._name_map_group[name];
+    }
+}
+
+public var A_TextRadioButtonManager = new TextRadioButtonManager();
+
+public class TextRadioButton : TextCheckButton
+{
+    private string _group_name;
+
+    public ctor(ControlSystem ctrl_sys)
+    {
+        this._group_name = null;
+    }
+
+    public set group_name(string name)
+    {
+        A_TextRadioButtonManager.SetGroupName(this, this._group_name, name);
+        this._group_name = name;
+    }
+
+    public get group_name() : string
+    {
+        return this._group_name;
+    }
+
+    protected fun HandleLButtonUp(UILButtonUpEvent event)
+    {
+        if (event.rel_x >= 0 && event.rel_y >= 0 && event.rel_x < event.target._width && event.rel_y < event.target._height)
+        {
+            if (this._selected == false)
+            {
+                this._selected = true;
+                // 获取同组的单选按钮
+                var group = A_TextRadioButtonManager.GetGroupByName(this._group_name);
+                if (group != null)
+                {
+                    for (var k, v:TextRadioButton in group)
+                    {
+                        // 设置为false
+                        if (k != this && v._selected == true)
+                        {
+                            v._selected = false;
+                            v.ShowUp();
+                            v.DispatchEvent(new UIChangedEvent());
+                        }
+                    }
+                }
+                this.DispatchEvent(new UIChangedEvent());
+            }
+            var e = new UIClickEvent();
+            e.is_drag = event.is_drag;
+            this.DispatchEvent(e);
+            if (System_IsPhone == false)
+                this.ShowOver();
+            else
+                this.ShowUp();
+        }
+        else
+            this.ShowUp();
+    }
+
+    public set selected(bool value)
+    {
+        if (this._selected == value)
+            return;
+        this._selected = value;
+
+        if (this._abs_disabled)
+            this.ShowDisabled();
+        else
+            this.ShowUp();
+
+        if (this._selected == false)
+            return;
+
+        // 获取同组的单选按钮
+        var group = A_TextRadioButtonManager.GetGroupByName(this._group_name);
+        if (group != null)
+        {
+            for (var k, v:TextRadioButton in group)
+            {
+                // 设置为false
+                if (k != this && v._selected == true)
+                {
+                    v._selected = false;
+                    v.ShowUp();
+                }
+            }
+        }
+    }
+}

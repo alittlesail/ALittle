@@ -1,0 +1,39 @@
+namespace ALittle;
+
+// Http协议接口类，负责处理
+public class IHttpReceiver
+{
+    
+}
+
+private var __all_callback = new Map<string, Functor<await(IHttpReceiver, any):any>>();
+protected static RegHttpCallback(string method, Functor<await(IHttpReceiver, any):any> callback)
+{
+    if (__all_callback[method] != null)
+    {
+        Error("RegHttpCallback消息回调函数注册失败，名字为"..method.."已存在");
+        return;
+    }
+    __all_callback[method] = callback;
+}
+// 获取回调函数
+public static FindHttpCallback(string method) : Functor<await(IHttpReceiver, any):any>
+{
+    return __all_callback[method];
+}
+
+private var __all_download_callback = new Map<string, Functor<await(IHttpReceiver, any):string, int>>();
+protected static RegHttpDownloadCallback(string method, Functor<await(IHttpReceiver, any):string, int> callback)
+{
+    if (__all_download_callback[method] != null)
+    {
+        Error("RegHttpDownloadCallback消息回调函数注册失败，名字为"..method.."已存在");
+        return;
+    }
+    __all_download_callback[method] = callback;
+}
+// 获取回调函数
+public static FindHttpDownloadCallback(string method) : Functor<await(IHttpReceiver, any):string, int>
+{
+    return __all_download_callback[method];
+}

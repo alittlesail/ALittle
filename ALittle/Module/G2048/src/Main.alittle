@@ -1,0 +1,84 @@
+
+namespace G2048;
+
+// 壳入口函数
+public async static __Browser_Setup(ALittle.DisplayLayout layer_group
+                              , ALittle.ControlSystem control
+                              , string module_base_path, string script_base_path
+                              , string debug)
+{
+	// 创建窗口
+	var window_width = 720;
+	var window_height = 1280;
+	var rate = 0.5;
+	var flag = ALittle.UIEnumTypes.VIEW_RESIZABLE;
+    [Language(Lua)]
+	if (ALittle.System_GetPlatform() != "Windows")
+	{
+		var screen_width = ALittle.System_GetScreenWidth();
+		var screen_height  = ALittle.System_GetScreenHeight();
+		window_height = lua.math.floor(screen_height / screen_width * window_width);
+        
+		flag = lua.bit.bor(flag, ALittle.UIEnumTypes.VIEW_FULLSCREEN);
+	}
+	ALittle.System_CreateView("2048", window_width, window_height, flag, rate);
+	ALittle.System_SetViewIcon(module_base_path.."/Other/ic_launcher.png");
+    
+	// 加载模块
+	A_ModuleSystem.LoadModule(module_base_path, "G2048");
+}
+
+// 壳处理添加模块，layer_group是模块的层组
+// 返回false，或者nil，表示不处理，下面的层直接挂姐在壳下面
+public static __Browser_AddModule(string module_name, ALittle.DisplayLayout layer_group, ALittle.ModuleInfo module_info)
+{
+}
+
+// 壳结束函数
+public static __Browser_Shutdown()
+{
+}
+
+protected var g_Control:ALittle.ControlSystem;
+protected var g_LayerGroup:ALittle.DisplayLayout;
+protected var g_ModuleBasePath:string;
+
+// 模块入口函数
+public async static __Module_Setup(ALittle.DisplayLayout layer_group, ALittle.ControlSystem control
+                                  , string module_base_path, string script_base_path, string debug)
+{
+	// 把resource, layer_group变量保存到全局，便于使用
+	g_Control = control;
+	g_LayerGroup = layer_group;
+	g_ModuleBasePath = module_base_path;
+    
+    [Language(JavaScript)]
+    {
+        var name_list = ["item_2", "item_4", "item_8", "item_16", "item_32", "item_64", "item_128"
+						, "item_256", "item_512", "item_1024", "item_2048"
+						, "main_menu", "main_scene"];
+        g_Control.RegisterInfoByHttp(location.host, ALittle.Math_ToInt(location.port), name_list);
+    }
+    
+	alittle.Require(script_base_path.."GCenter");
+	g_GCenter.Setup();
+}
+
+// 模块结束函数
+public static __Module_Shutdown()
+{
+	g_GCenter.Shutdown();
+}
+
+// 提供给壳的模块信息
+public static __Module_GetInfo(ALittle.ControlSystem control, string module_base_path, string script_base_path) : ALittle.ModuleShortInfo
+{
+	var info = new ALittle.ModuleShortInfo();
+	info.title = "2048";
+	info.icon = null;
+	info.width_type = ALittle.UIEnumTypes.SIZE_ABS;
+	info.width_value = 720;
+	info.height_type = ALittle.UIEnumTypes.SIZE_ABS;
+	info.height_value = 1280;
+	return info;
+}

@@ -1,0 +1,18 @@
+
+[Language(JavaScript)]
+register namespace javascript;
+
+public struct ObjectProto
+{
+    any constructor;
+}
+
+[Native]
+public class Object
+{
+    public static getOwnPropertyDescriptor(any object, string name) : any {}
+    public static defineProperty(any object, string name, any value) {}
+    public static create(any object) : any {}
+    public fun toString() : string {}
+    public get __proto__() : ObjectProto {}
+}

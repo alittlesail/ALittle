@@ -1,0 +1,422 @@
+
+namespace ALittle;
+
+private var __byte = String_Byte;
+private var __type = String_Type;
+
+public class ControlSystem
+{
+    private Map<string, DisplayInfo>    _name_map_info;
+    private Map<string, bool>    _name_map_info_cache;
+    
+    private string              _module_name;
+    private bool                _crypt_mode;
+    
+    private string              _base_path;
+    private string              _ui_path;
+    private string              _font_path;
+    private string              _sound_path;
+    private string              _other_path;
+    
+    private TextureManager      _texture_mgr;
+    
+    private Map<string, string> _font_map;
+    
+    // @param module_name 模块名
+    // @param crypt_mode 是否是加密模式
+    public ctor(string module_name, [Nullable] bool crypt_mode)
+    {
+        // 字体映射
+        this._font_map = new Map<string, string>();
+        
+        // 定义缓存
+        this._name_map_info = new Map<string, DisplayInfo>();
+        this._name_map_info_cache = new Map<string, bool>();
+    
+        // 保存模块名
+        this._module_name = module_name;
+        this._crypt_mode = crypt_mode || false;
+        
+        // 基本路径
+        this._base_path = "Module/" .. module_name .. "/";
+        this._ui_path = this._base_path .. "UI/";
+        this._font_path = this._base_path .. "Font/";
+        this._sound_path = this._base_path .. "Sound/";
+        this._other_path = this._base_path.."Other/";
+    
+        // 文理管理器
+        this._texture_mgr = new TextureManager(module_name, this._crypt_mode);
+        A_LoadTextureManager.RegisterTexmgrControl(this._texture_mgr);
+    }
+    
+    public fun RegisterFont(string src, string dst)
+    {
+        this._font_map[src] = dst;
+    }
+    
+    public await fun RegisterInfoByHttp(string host, int port, List<string> name_list)
+    {
+        for (var index, name in name_list)
+        {
+			var error, content = ALittle.HttpDownloadRequest(host, port, this._ui_path..name..".json");
+            if (error != null)
+            {
+                ALittle.Error("ui load failed:"..error);
+                continue;
+            }
+            var jerror, json:Map<string, DisplayInfo> = tcall(ALittle.String_JsonDecode, content.GetContent());
+            if (jerror != null)
+            {
+                ALittle.Error("ui json decode failed:"..jerror);
+                continue;
+            }
+            for (var key, value in json)
+                this.RegisterInfo(key, value);
+            
+            var info = this.CreateInfo(this._name_map_info[name]);
+            this._name_map_info[name] = info;
+            this._name_map_info_cache[name] = true;
+        }
+    }
+    
+    public fun RegisterInfo(string name, DisplayInfo info)
+    {
+        this._name_map_info[name] = info;
+        this._name_map_info_cache[name] = null;
+    }
+    
+    public fun UnRegisterInfo(string name)
+    {
+        this._name_map_info[name] = null;
+        this._name_map_info_cache[name] = null;
+    }
+    
+    public fun ClearAllInfo()
+    {
+        this._name_map_info = new Map<string, DisplayInfo>();
+        this._name_map_info_cache = new Map<string, bool>();
+    }
+
+    public fun CreateControlObject(DisplayInfo info) : DisplayObject
+    {
+        // 如果默认的插件类没有填写，那么就是用UI编辑的插件类
+        var target_class = info.__target_class;
+        if (target_class != null)
+        {
+            var class_func = info.__class_func;
+            if (class_func == null)
+            {
+                [Language(Lua)]
+                class_func = _G;
+                [Language(JavaScript)]
+                class_func = window;
+                for (var index, value in target_class)
+                {
+                    class_func = cast<Map<string, any>>(class_func)[value];
+                    if (class_func == null)
+                        break;
+                }
+                info.__class_func = class_func;
+            }
+
+            if (class_func != null)
+                return cast<Functor<(ControlSystem):DisplayObject>>(class_func)(this);
+            else
+                Log("unknow target class." .. String_Join(target_class, "."));
+        }
+        
+        var clazz = info.__class;
+        if (clazz == null)
+        {
+            Log("__class is null");
+            return null;
+        }
+
+        var class_func = info.__class_func;
+        if (class_func == null)
+        {
+            class_func = cast<Map<string,any>>(ALittle)[clazz];
+            info.__class_func = class_func;
+        }
+
+        if (class_func == null)
+        {
+            Log("unknow class." .. clazz);
+            return null;
+        }
+        
+        return ALittle.NewObject(class_func, this);
+    }
+    
+    // 播放Sound包内的声音
+    public fun StartChunk(string file_path, int loop, Functor<(string, int)> callback) : int
+    {
+        return A_AudioSystem.StartChunk(this._sound_path .. file_path, loop, callback);
+    }
+    public fun StopChunk(int channel)
+    {
+        A_AudioSystem.StopChunk(channel);
+    }
+    public fun StartMusic(string file_path, int loop) : bool
+    {
+        return A_AudioSystem.StartMusic(this._sound_path .. file_path, loop);
+    }
+    public fun StopMusic()
+    {
+        A_AudioSystem.StopMusic();
+    }
+    
+    ////////////////////////////////////////////////////////////////-
+    public fun SetTexture(DisplayObject object, string name)
+    {
+        this._texture_mgr.SetTexture(object, name);
+    }
+
+    // 提供IDE里面要预加载的ui界面名称列表，该函数会从ui_list中找到所有需要使用到的图片，然后进行预加载
+    // 每当一个图片文件预加载成功，那么就会调用一次callback函数
+    // callback的第一个参数是需要预加载的总数，第二个是成功的个数，第三个是失败的个数
+    public fun PrepareTexture(List<string> ui_list, Functor<(int, int, int)> callback)
+    {
+        var name_map = new Map<string, bool>();
+        if (ui_list != null)
+        {
+            for (var index, ui in ui_list)
+                this.CollectTextureName(ui, name_map);
+        }
+        this._texture_mgr.PrepareTexture(name_map, callback);
+    }
+
+    public fun PrepareCsv(Map<string, CsvConfig> csv_map, Functor<(int, int, int)> callback)
+    {
+        var new_csv_map = new Map<string, CsvConfig>();
+        for (var file_path, config in csv_map)
+            new_csv_map[this._other_path..file_path] = config;
+        
+        A_CsvConfigManager.PrepareCsv(new_csv_map, callback);
+    }
+    
+    public set cache_texture(bool cache)
+    {
+        this._texture_mgr.cache_texture = cache;
+    }
+    
+    public get cache_texture() : bool
+    {
+        return this._texture_mgr.cache_texture;
+    }
+
+    protected fun SetFont(DisplayObject object, string font_path, int font_size)
+    {
+        var dst = this._font_map[font_path];
+        if (dst == null) dst = font_path;
+        
+        [Language(Lua)]
+        object.native_show.SetFont(this._font_path .. dst, font_size);
+        [Language(JavaScript)]
+        object.native_show.SetFont(dst, font_size);
+    }
+    
+    // 把内容渲染到纹理，并且保存起来
+    public fun SaveControlToFile(DisplayObject control, string file_path, [Nullable] double scale) : bool
+    {
+        if (control == null) return false;
+        if (scale == null) scale = 1;
+    
+        // 可渲染纹理
+        var texture = new lua.__CPPAPIRenderTexture();
+        var x = control.x;
+        var y = control.y;
+        var width = control.width;
+        var height = control.height;
+        var visible = control.visible;
+        var clip = control.clip;
+    
+        control.native_show.SetX(0);
+        control.native_show.SetY(0);
+        control.visible = true;
+        control.clip = false;
+        var result = texture.Save(file_path, control.native_show, Math_Floor(width), Math_Floor(height), scale);
+        control.native_show.SetX(x);
+        control.native_show.SetY(y);
+        control.visible = visible;
+        control.clip = clip;
+    
+        texture.Clear();
+        return result;
+    }
+
+    public fun CreateControl<T>(string name, [Nullable] any target_logic, [Nullable] DisplayGroup parent) : T
+    {
+        var info = this.LoadInfo(name);
+        if (info == null)
+        {
+            Log("can't find control name:" .. name);
+            return null;
+        }
+        var object = this.CreateControlObject(info);
+        if (object == null) return null;
+    
+        object.Deserialize(info, target_logic, parent);
+        return cast<T>(object);
+    }
+    
+    // 根据UI控件的名字，来获取所有需要加载的纹理对象
+    // name UI控件名
+    // map 初始映射表
+    public fun CollectTextureName(string name, Map<string, bool> map) : Map<string, bool>
+    {
+        var info = this.LoadInfo(name);
+        if (info == null)
+        {
+            Log("can't find control name:" .. name);
+            return null;
+        }
+    
+        return this.CollectTextureNameImpl(info, map);
+    }
+    
+    // 根据UI的名字，从文件中加载信息
+    protected fun LoadInfo(string name) : DisplayInfo
+    {
+        // 如果已经处理过，那么直接返回结果
+        if (this._name_map_info_cache[name]) return this._name_map_info[name];
+
+        var info = this._name_map_info[name];
+        if (info == null)
+        {
+            // 直接从文件中读入json，并且解密
+            var json:Map<string, DisplayInfo> = File_ReadJsonFromFile(this._ui_path .. name .. ".json", this._crypt_mode);
+            if (json == null) return null;
+            
+            for (var key, value in json)
+                this.RegisterInfo(key, value);
+        }
+        
+        info = this.CreateInfo(this._name_map_info[name]);
+        this._name_map_info[name] = info;
+        this._name_map_info_cache[name] = true;
+
+        return this._name_map_info[name];
+    }
+
+    protected fun CreateInfo(DisplayInfo info) : DisplayInfo
+    {
+        if (info == null) return null;
+    
+        // 引用
+        if (info.__include != null)
+            return this.LoadInfo(info.__include);
+
+        // 继承
+        var extendsv = info.__extends;
+        if (extendsv != null)
+        {
+            if (info.__extends_included != true)
+            {
+                var control = this.LoadInfo(extendsv);
+                if (control == null)
+                {
+                    Log("ControlSystem CreateInfo extends Failed:"..extendsv);
+                    return null;
+                }
+                var copy = new DisplayInfo();
+                for (var key, value in cast<Map<string, any> >(control))
+                    cast<Map<string, any> >(copy)[key] = value;
+                for (var key, value in cast<Map<string, any> >(info))
+                    cast<Map<string, any> >(copy)[key] = value;
+                info = copy;
+                info.__extends_included = true;
+                info.__shows_included = null;
+                info.__childs_included = null;
+                info.__base_attr = null;
+                info.__show_attr = null;
+            }
+        }
+
+        // 组合
+        if (info.__shows_included != true)
+        {
+            for (var key, value in cast<Map<string, any> >(info))
+            {
+                if (__byte(key, 1) != 95 && __type(value) == "table"
+                    && (cast<DisplayInfo>(value).__include != null
+                        || cast<DisplayInfo>(value).__extends != null
+                        || cast<DisplayInfo>(value).__class != null))
+                    cast<Map<string, any>>(info)[key] = this.CreateInfo(value);
+            }
+            info.__shows_included = true;
+        }
+
+        // 子控件
+        var childs = info.__childs;
+        if (childs != null)
+        {
+            if (info.__childs_included != true)
+            {
+                for (var index, child in childs)
+                    childs[index] = this.CreateInfo(childs[index]);
+                info.__childs_included = true;
+            }
+        }
+
+        return info;
+    }
+    
+    // 递归info对象，把使用到的图片全部收集到map
+    protected fun CollectTextureNameImpl(DisplayInfo info, Map<string, bool> map) : Map<string, bool>
+    {
+        if (map == null)
+            map = new Map<string, bool>();
+    
+        // 获取对应的类
+        var class_func:any = null;
+        var target_class = info.__target_class;
+        if (target_class != null)
+        {
+            class_func = _G;
+            for (var index, value in target_class)
+            {
+                class_func = cast<Map<string,any>>(class_func)[value];
+                if (class_func == null)
+                    break;
+            }
+    
+            if (class_func == null)
+                Log("unknow target class." .. String_Join(target_class, "."));
+        }
+    
+        if (class_func == null)
+            class_func = cast<Map<string,any>>(ALittle)[info.__class];
+    
+        // 检查类是否存在
+        if (class_func == null)
+        {
+            Log("unknow class." .. info.__class);
+            return map;
+        }
+    
+        // 处理
+        var texture_name = info.texture_name;
+        if (texture_name != null && texture_name != "")
+            map[texture_name] = true;
+
+        // 反序列化属性
+        var info_t = info;
+        for (var key, value in cast<Map<string, any> >(info_t))
+        {
+            if (__type(value) == "table" && cast<DisplayInfo>(value).__class != null)
+                this.CollectTextureNameImpl(value, map);
+        }
+    
+        // 反序列化子控件
+        var childs = info.__childs;
+        if (childs != null)
+        {
+            for (var index, value in childs)
+                this.CollectTextureNameImpl(value, map);
+        }
+    
+        return map;
+    }
+}
+

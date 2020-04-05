@@ -1,0 +1,17 @@
+
+[Language(JavaScript)]
+register namespace javascript;
+    
+[Native]
+public class Document
+{
+    public get cookie() : string {}
+    public set cookie(string value) {}
+    
+    public get body() : BodyElement {}
+    public set title(string value) {}
+    
+    public fun createElement(string type) : DomElement {}
+}
+
+public var document:Document;

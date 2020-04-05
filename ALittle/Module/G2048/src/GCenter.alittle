@@ -1,0 +1,752 @@
+
+//[[
+//	编辑器中心逻辑，主要处理主界面逻辑
+//]]
+
+namespace G2048;
+
+protected var g_GConfig:ALittle.IConfigSystem;
+
+struct ItemInfo
+{
+    ALittle.DisplayObject item;
+    int row;
+    int col;
+}
+
+class GCenter
+{
+    private Map<ALittle.LoopObject, ALittle.LoopObject> _loop_group;
+    private int _loop_delay;
+    private ALittle.DisplayLayout _main_layer;
+    private ALittle.DisplayLayout _dialog_layer;
+    
+    private ALittle.Text _max_score_text;
+    private ALittle.DisplayLayout _main_menu;
+    private ALittle.Text _menu_content;
+    private ALittle.Text _menu_back;
+    
+    private ALittle.Text _score_text;
+    
+    private Map<int, Map<int, ALittle.DisplayObject>> _data_map;
+    
+    private ALittle.DisplayLayout _tile_container;
+    
+    private bool _item_moved;
+    
+    private double _drag_total_x;
+    private double _drag_total_y;
+
+    public ctor()
+    {
+	    this._loop_group = new Map<ALittle.LoopObject, ALittle.LoopObject>();
+	}
+
+    public fun ClearAnti()
+    {
+        for (var k, v in this._loop_group)
+        {
+            if (v.IsCompleted() == false)
+                v.SetCompleted();
+        }
+        this._loop_group = new Map<ALittle.LoopObject, ALittle.LoopObject>();
+    }
+    
+    public fun Setup()
+    {
+        // 获取配置信息
+        g_GConfig = ALittle.CreateConfigSystem(g_ModuleBasePath.."/User.cfg");
+        // 生成随机数种子
+        ALittle.Math_RandomSeed(ALittle.Time_GetCurTime());
+        // 设置5个线程
+        ALittle.System_SetThreadCount(5, ALittle.SystemThreadType.SLOW);
+    
+        // 创建主层
+        this._main_layer = new ALittle.DisplayLayout(g_Control);
+        this._main_layer.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+        this._main_layer.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+        g_LayerGroup.AddChild(this._main_layer, null);
+        this._dialog_layer = new ALittle.DisplayLayout(g_Control);
+        this._dialog_layer.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+        this._dialog_layer.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+        g_LayerGroup.AddChild(this._dialog_layer, null);
+    
+        // 创建主界面
+        g_Control.CreateControl{ALittle.DisplayObject}("main_scene", this, this._main_layer);
+    
+        this._max_score_text._user_data = g_GConfig.GetConfig("max_score", 0);
+        this._max_score_text.text = this._max_score_text._user_data;
+    
+        this.Restart();
+    }
+    
+    public fun ShowMainMenu(string content, bool show_back)
+    {
+        if (this._main_menu == null)
+        {
+            this._main_menu = g_Control.CreateControl{ALittle.DisplayLayout}("main_menu", this, null);
+            this._dialog_layer.AddChild(this._main_menu, null);
+        }
+        this._main_menu.visible = true;
+        this._menu_content.text = content;
+        this._menu_back.visible = show_back;
+    }
+    
+    public fun Restart()
+    {
+        if (this._main_menu != null) this._main_menu.visible = false;
+        // 分数清0
+        this._score_text.text = "0";
+        this._score_text._user_data = 0;
+    
+        // 清空数据
+        this._data_map = new Map<int, Map<int, ALittle.DisplayObject> >();
+        this._data_map[1] = new Map<int, ALittle.DisplayObject>();
+        this._data_map[2] = new Map<int, ALittle.DisplayObject>();
+        this._data_map[3] = new Map<int, ALittle.DisplayObject>();
+        this._data_map[4] = new Map<int, ALittle.DisplayObject>();
+    
+        // 清空动画
+        this._loop_group = new Map<ALittle.LoopObject, ALittle.LoopObject>();
+    
+        // 清空容器
+        this._tile_container.RemoveAllChild();
+    
+        // 随机生成两个
+        this.GenerateItem(0);
+        this.GenerateItem(0);
+    
+        this._item_moved = false;
+        this._loop_delay = 0;
+    }
+    
+    public fun GenerateItem(int delay_time) : bool
+    {
+        // 把空闲的格子遍历出来
+        var list = new List<List<int> >();
+        var list_count = 0;
+        for (var i = 1; i <= 4; 1)
+        {
+            for (var j = 1; j <= 4; 1)
+            {
+                if (this._data_map[i][j] == null)
+                {
+                    var data = new List<int>();
+                    data[1] = i;
+                    data[2] = j;
+                    ++ list_count;
+                    list[list_count] = data;
+                }
+            }
+        }
+        if (list_count == 0) return false;
+    
+        // 随机格子的编号，2 或者 4
+        var rand1 = ALittle.Math_RandomInt(1, 100);
+        var number = 2;
+        if (rand1 > 50) number = 4;
+    
+        // 随机格子的位置
+        var rand2 = ALittle.Math_RandomInt(1, list_count);
+        var row = list[rand2][1];
+        var col = list[rand2][2];
+        // 创建动画
+        this.BornItem(number, row, col, delay_time, true);
+        return true;
+    }
+    
+    public fun CalcLeft()
+    {
+        var moved = false;
+        for (var i = 1; i <= 4; 1)
+        {
+            // 收集横向的
+            var list = new List<ItemInfo>();
+            var list_count = 0;
+            for (var j = 1; j <= 4; 1)
+            {
+                if (this._data_map[i][j] != null)
+                {
+                    var info = new ItemInfo();
+                    info.item = this._data_map[i][j];
+                    info.row = i;
+                    info.col = j;
+                    ++ list_count;
+                    list[list_count] = info;
+                }
+            }
+            // 计算合并
+            var new_list = new List<ItemInfo>();
+            if (list_count == 1)
+            {
+                this.TransItem(list[1], i, 1);
+            }
+            elseif (list_count == 2)
+            {
+                if (list[1].item._user_data == list[2].item._user_data)
+                {
+                    this.CombineItems(list[1], list[2], i, 1);
+                }
+                else
+                {
+                    this.TransItem(list[1], i, 1);
+                    this.TransItem(list[2], i, 2);
+                }
+            }
+            elseif (list_count == 3)
+            {
+                if (list[1].item._user_data == list[2].item._user_data)
+                {
+                    this.CombineItems(list[1], list[2], i, 1);
+                    this.TransItem(list[3], i, 2);
+                }
+                elseif (list[2].item._user_data == list[3].item._user_data)
+                {
+                    this.TransItem(list[1], i, 1);
+                    this.CombineItems(list[2], list[3], i, 2);
+                }
+                else
+                {
+                    this.TransItem(list[1], i, 1);
+                    this.TransItem(list[2], i, 2);
+                    this.TransItem(list[3], i, 3);
+                }
+            }
+            elseif (list_count == 4)
+            {
+                if (list[1].item._user_data == list[2].item._user_data)
+                {
+                    this.CombineItems(list[1], list[2], i, 1);
+                    if (list[3].item._user_data == list[4].item._user_data)
+                    {
+                        this.CombineItems(list[3], list[4], i, 2);
+                    }
+                    else
+                    {
+                        this.TransItem(list[3], i, 2);
+                        this.TransItem(list[4], i, 3);
+                    }
+                }
+                elseif (list[2].item._user_data == list[3].item._user_data)
+                {
+                    this.TransItem(list[1], i, 1);
+                    this.CombineItems(list[2], list[3], i, 2);
+                    this.TransItem(list[4], i, 3);
+                }
+                elseif (list[3].item._user_data == list[4].item._user_data)
+                {
+                    this.TransItem(list[1], i, 1);
+                    this.TransItem(list[2], i, 2);
+                    this.CombineItems(list[3], list[4], i, 3);
+                }
+            }
+        }
+    }
+    
+    public fun CalcRight()
+    {
+        for (var i = 1; i <= 4; 1)
+        {
+            // 收集横向的
+            var list = new List<ItemInfo>();
+            var list_count = 0;
+            for (var j = 4; j >= 1; -1)
+            {
+                if (this._data_map[i][j] != null)
+                {
+                    var info = new ItemInfo();
+                    info.item = this._data_map[i][j];
+                    info.row = i;
+                    info.col = j;
+                    ++ list_count;
+                    list[list_count] = info;
+                }
+            }
+            // 计算合并
+            var new_list = new List<ItemInfo>();
+            if (list_count == 1)
+            {
+                this.TransItem(list[1], i, 5-1);
+            }
+            elseif (list_count == 2)
+            {
+                if (list[1].item._user_data == list[2].item._user_data)
+                {
+                    this.CombineItems(list[1], list[2], i, 5-1);
+                }
+                else
+                {
+                    this.TransItem(list[1], i, 5-1);
+                    this.TransItem(list[2], i, 5-2);
+                }
+            }
+            elseif (list_count == 3)
+            {
+                if (list[1].item._user_data == list[2].item._user_data)
+                {
+                    this.CombineItems(list[1], list[2], i, 5-1);
+                    this.TransItem(list[3], i, 5-2);
+                }
+                elseif (list[2].item._user_data == list[3].item._user_data)
+                {
+                    this.TransItem(list[1], i, 5-1);
+                    this.CombineItems(list[2], list[3], i, 5-2);
+                }
+                else
+                {
+                    this.TransItem(list[1], i, 5-1);
+                    this.TransItem(list[2], i, 5-2);
+                    this.TransItem(list[3], i, 5-3);
+                }
+            }
+            elseif (list_count == 4)
+            {
+                if (list[1].item._user_data == list[2].item._user_data)
+                {
+                    this.CombineItems(list[1], list[2], i, 5-1);
+                    if (list[3].item._user_data == list[4].item._user_data)
+                    {
+                        this.CombineItems(list[3], list[4], i, 5-2);
+                    }
+                    else
+                    {
+                        this.TransItem(list[3], i, 5-2);
+                        this.TransItem(list[4], i, 5-3);
+                    }
+                }
+                elseif (list[2].item._user_data == list[3].item._user_data)
+                {
+                    this.TransItem(list[1], i, 5-1);
+                    this.CombineItems(list[2], list[3], i, 5-2);
+                    this.TransItem(list[4], i, 5-3);
+                }
+                elseif (list[3].item._user_data == list[4].item._user_data)
+                {
+                    this.TransItem(list[1], i, 5-1);
+                    this.TransItem(list[2], i, 5-2);
+                    this.CombineItems(list[3], list[4], i, 5-3);
+                }
+            }
+        }
+    }
+    
+    public fun CalcUp()
+    {
+        for (var j = 1; j <= 4; 1)
+        {
+            // 收集横向的
+            var list = new List<ItemInfo>();
+            var list_count = 0;
+            for (var i = 1; i <= 4; 1)
+            {
+                if (this._data_map[i][j] != null)
+                {
+                    var info = new ItemInfo();
+                    info.item = this._data_map[i][j];
+                    info.row = i;
+                    info.col = j;
+                    ++ list_count;
+                    list[list_count] = info;
+                }
+            }
+            // 计算合并
+            var new_list = new ItemInfo();
+            if (list_count == 1)
+            {
+                this.TransItem(list[1], 1, j);
+            }
+            elseif (list_count == 2)
+            {
+                if (list[1].item._user_data == list[2].item._user_data)
+                {
+                    this.CombineItems(list[1], list[2], 1, j);
+                }
+                else
+                {
+                    this.TransItem(list[1], 1, j);
+                    this.TransItem(list[2], 2, j);
+                }
+            }
+            elseif (list_count == 3)
+            {
+                if (list[1].item._user_data == list[2].item._user_data)
+                {
+                    this.CombineItems(list[1], list[2], 1, j);
+                    this.TransItem(list[3], 2, j);
+                }
+                elseif (list[2].item._user_data == list[3].item._user_data)
+                {
+                    this.TransItem(list[1], 1, j);
+                    this.CombineItems(list[2], list[3], 2, j);
+                }
+                else
+                {
+                    this.TransItem(list[1], 1, j);
+                    this.TransItem(list[2], 2, j);
+                    this.TransItem(list[3], 3, j);
+                }
+            }
+            elseif (list_count == 4)
+            {
+                if (list[1].item._user_data == list[2].item._user_data)
+                {
+                    this.CombineItems(list[1], list[2], 1, j);
+                    if (list[3].item._user_data == list[4].item._user_data)
+                    {
+                        this.CombineItems(list[3], list[4], 2, j);
+                    }
+                    else
+                    {
+                        this.TransItem(list[3], 2, j);
+                        this.TransItem(list[4], 3, j);
+                    }
+                }
+                elseif (list[2].item._user_data == list[3].item._user_data)
+                {
+                    this.TransItem(list[1], 1, j);
+                    this.CombineItems(list[2], list[3], 2, j);
+                    this.TransItem(list[4], 3, j);
+                }
+                elseif (list[3].item._user_data == list[4].item._user_data)
+                {
+                    this.TransItem(list[1], 1, j);
+                    this.TransItem(list[2], 2, j);
+                    this.CombineItems(list[3], list[4], 3, j);
+                }
+            }
+        }
+    }
+    
+    public fun CalcDown()
+    {
+        for (var j = 1; j <= 4; 1)
+        {
+            // 收集横向的
+            var list = new List<ItemInfo>();
+            var list_count = 0;
+            for (var i = 4; i >= 1; -1)
+            {
+                if (this._data_map[i][j] != null)
+                {
+                    var info = new ItemInfo();
+                    info.item = this._data_map[i][j];
+                    info.row = i;
+                    info.col = j;
+                    ++ list_count;
+                    list[list_count] = info;
+                }
+            }
+            // 计算合并
+            var new_list = new List<ItemInfo>();
+            if (list_count == 1)
+            {
+                this.TransItem(list[1], 5-1, j);
+            }
+            elseif (list_count == 2)
+            {
+                if (list[1].item._user_data == list[2].item._user_data)
+                {
+                    this.CombineItems(list[1], list[2], 5-1, j);
+                }
+                else
+                { 
+                    this.TransItem(list[1], 5-1, j);
+                    this.TransItem(list[2], 5-2, j);
+                }
+            }
+            elseif (list_count == 3)
+            {
+                if (list[1].item._user_data == list[2].item._user_data)
+                {
+                    this.CombineItems(list[1], list[2], 5-1, j);
+                    this.TransItem(list[3], 5-2, j);
+                }
+                elseif (list[2].item._user_data == list[3].item._user_data)
+                {
+                    this.TransItem(list[1], 5-1, j);
+                    this.CombineItems(list[2], list[3], 5-2, j);
+                }
+                else
+                {
+                    this.TransItem(list[1], 5-1, j);
+                    this.TransItem(list[2], 5-2, j);
+                    this.TransItem(list[3], 5-3, j);
+                }
+            }
+            elseif (list_count == 4)
+            {
+                if (list[1].item._user_data == list[2].item._user_data)
+                {
+                    this.CombineItems(list[1], list[2], 5-1, j);
+                    if (list[3].item._user_data == list[4].item._user_data)
+                    {
+                        this.CombineItems(list[3], list[4], 5-2, j);
+                    }
+                    else
+                    {
+                        this.TransItem(list[3], 5-2, j);
+                        this.TransItem(list[4], 5-3, j);
+                    }
+                }
+                elseif (list[2].item._user_data == list[3].item._user_data)
+                {
+                    this.TransItem(list[1], 5-1, j);
+                    this.CombineItems(list[2], list[3], 5-2, j);
+                    this.TransItem(list[4], 5-3, j);
+                }
+                elseif (list[3].item._user_data == list[4].item._user_data)
+                {
+                    this.TransItem(list[1], 5-1, j);
+                    this.TransItem(list[2], 5-2, j);
+                    this.CombineItems(list[3], list[4], 5-3, j);
+                }
+            }
+        }
+    }
+    
+    public fun BornItem(int number, int row, int col, int delay_time, bool anti)
+    {
+        var target = cast<Map<string,ALittle.DisplayObject>>(this)["_tile"..row..col];
+        // 创建ui
+        var ui_name = "item_"..number;
+        var item = g_Control.CreateControl{ALittle.DisplayObject}(ui_name, null, null);
+        this._data_map[row][col] = item;
+        item._user_data = number;
+        this._tile_container.AddChild(item, null);
+        var target_x = target.x;
+        var target_y = target.y;
+        var target_width = target.width;
+        var target_height = target.height;
+        if (anti == true)
+        {
+            item.width = 0;
+            item.height = 0;
+            item.x = target_x + target_width / 2;
+            item.y = target_y + target_height / 2;
+            item.visible = false;
+            var loop:ALittle.LoopObject = new ALittle.LoopAttribute(item, "visible", true, delay_time);
+            this._loop_group[loop] = loop;
+            A_LoopSystem.AddUpdater(loop);
+            loop = new ALittle.LoopLinear(item, "x", target_x, 100, delay_time, null);
+            this._loop_group[loop] = loop;
+            A_LoopSystem.AddUpdater(loop);
+            loop = new ALittle.LoopLinear(item, "y", target_y, 100, delay_time, null);
+            this._loop_group[loop] = loop;
+            A_LoopSystem.AddUpdater(loop);
+            loop = new ALittle.LoopLinear(item, "width", target_width, 100, delay_time, null);
+            this._loop_group[loop] = loop;
+            A_LoopSystem.AddUpdater(loop);
+            loop = new ALittle.LoopLinear(item, "height", target_height, 100, delay_time, null);
+            this._loop_group[loop] = loop;
+            A_LoopSystem.AddUpdater(loop);
+        }
+        else
+        {
+            item.width = target_width;
+            item.height = target_height;
+            item.x = target_x;
+            item.y = target_y;
+            item.visible = false;
+            var loop:ALittle.LoopObject = new ALittle.LoopAttribute(item, "visible", true, delay_time);
+            this._loop_group[loop] = loop;
+            A_LoopSystem.AddUpdater(loop);
+        }
+    }
+    
+    public fun TransItem(ItemInfo item_info, int to_row, int to_col)
+    {
+        var target = cast<Map<string,ALittle.DisplayObject>>(this)["_tile"..to_row..to_col];
+        var target_x = target.x;
+        var target_y = target.y;
+        if (item_info.col != to_col)
+        {
+            var loop:ALittle.LoopObject = new ALittle.LoopLinear(item_info.item, "x", target_x, 200, 0, null);
+            this._loop_group[loop] = loop;
+            A_LoopSystem.AddUpdater(loop);
+            this._item_moved = true;
+        }
+        if (item_info.row != to_row)
+        {
+            var loop:ALittle.LoopObject = new ALittle.LoopLinear(item_info.item, "y", target_y, 200, 0, null);
+            this._loop_group[loop] = loop;
+            A_LoopSystem.AddUpdater(loop);
+            this._item_moved = true;
+        }
+        this._data_map[item_info.row][item_info.col] = null;
+        this._data_map[to_row][to_col] = item_info.item;
+    
+        if (this._loop_delay < 200) this._loop_delay = 200;
+    }
+    
+    public fun CombineItems(ItemInfo item1_info, ItemInfo item2_info, int to_row, int to_col)
+    {	
+        this.TransAndRemoveItem(item1_info.item, item1_info.row, item1_info.col, to_row, to_col);
+        this.TransAndRemoveItem(item2_info.item, item2_info.row, item2_info.col, to_row, to_col);
+        this.BornItem(cast<int>(item1_info.item._user_data) * 2, to_row, to_col, 200, false);
+        this._score_text._user_data = cast<int>(this._score_text._user_data) + cast<int>(item1_info.item._user_data) * 2;
+        this._score_text.text = this._score_text._user_data;
+        this._item_moved = true;
+    
+        if (this._loop_delay < 300) this._loop_delay = 300;
+    }
+    public fun TransAndRemoveItem(ALittle.DisplayObject item, int from_row, int from_col, int to_row, int to_col)
+    {
+        var target = cast<Map<string,ALittle.DisplayObject>>(this)["_tile"..to_row..to_col];
+        var target_x = target.x;
+        var target_y = target.y;
+        if (from_col != to_col)
+        {
+            var loop:ALittle.LoopObject = new ALittle.LoopLinear(item, "x", target_x, 200, 0, null);
+            this._loop_group[loop] = loop;
+            A_LoopSystem.AddUpdater(loop);
+        }
+        if (from_row != to_row)
+        {
+            var loop:ALittle.LoopObject = new ALittle.LoopLinear(item, "y", target_y, 200, 0, null);
+            this._loop_group[loop] = loop;
+            A_LoopSystem.AddUpdater(loop);
+        }
+        var loop:ALittle.LoopObject = new ALittle.LoopTimer(bind(this.EraseItem, this, item), 200);
+        this._loop_group[loop] = loop;
+        A_LoopSystem.AddUpdater(loop);
+        this._data_map[from_row][from_col] = null;
+    }
+    public fun EraseItem(ALittle.DisplayObject item)
+    {
+        this._tile_container.RemoveChild(item);
+    }
+    
+    public fun HandleDragBegin(ALittle.UIButtonDragEvent event)
+    {
+        // 重置拖拽累计
+        this._drag_total_x = 0;
+        this._drag_total_y = 0;
+    }
+    
+    public fun HandleDrag(ALittle.UIButtonDragEvent event)
+    {
+        // 拖拽累计
+        this._drag_total_x = this._drag_total_x + event.delta_x;
+        this._drag_total_y = this._drag_total_y + event.delta_y;
+    }
+    
+    public fun HandleDragEnd(ALittle.UIButtonDragEvent event)
+    {
+        // 清除所有动画
+        this.ClearAnti();
+    
+        this._item_moved = false;
+        this._loop_delay = 0;
+    
+        // 水平方向
+        if (ALittle.Math_Abs(this._drag_total_x) > ALittle.Math_Abs(this._drag_total_y))
+        {
+            // 向左
+            if (this._drag_total_x < 0)
+                this.CalcLeft();
+            // 向右
+            else
+                this.CalcRight();
+        }
+        // 垂直方向
+        else
+        {
+            // 向上
+            if (this._drag_total_y < 0)
+                this.CalcUp();
+            // 向下
+            else
+                this.CalcDown();
+        }
+    
+        // 检查是否游戏结束
+        if (this.CheckGameOver()) return;
+    
+        if (this._item_moved == false) return;
+        this.GenerateItem(this._loop_delay);
+        
+        // 检查是否游戏结束
+        if (this.CheckGameOver()) return;
+    }
+    
+    public fun CheckGameOver() : bool
+    {
+        for (var i = 1; i <= 4; 1)
+        {
+            for (var j = 1; j <= 4; 1)
+            {
+                var item = this._data_map[i][j];
+                if (item != null && item._user_data == 2048)
+                {
+                    this.ShowMainMenu("Victory", false);
+                    if (cast<int>(this._max_score_text._user_data) < cast<int>(this._score_text._user_data))
+                    {
+                        this._max_score_text._user_data = this._score_text._user_data;
+                        this._max_score_text.text = this._max_score_text._user_data;
+                        g_GConfig.SetConfig("max_score", this._max_score_text._user_data, null);
+                    }
+                    return true;
+                }
+            }
+        }
+    
+        for (var i = 1; i <= 4; 1)
+        {
+            for (var j = 1; j <= 4; 1)
+            {
+                var item = this._data_map[i][j];
+                if (item == null)
+                    return false;
+                    
+                // 检查左边
+                if (j > 1
+                && (this._data_map[i][j-1] == null
+                    || this._data_map[i][j-1]._user_data == item._user_data))
+                    return false;
+                    
+                // 检查右边
+                if (j < 4
+                && (this._data_map[i][j+1] == null
+                    || this._data_map[i][j+1]._user_data == item._user_data))
+                    return false;
+
+                // 检查上边
+                if (i > 1
+                && (this._data_map[i-1][j] == null
+                    || this._data_map[i-1][j]._user_data == item._user_data))
+                    return false;
+                    
+                // 检查下边
+                if (i < 4
+                && (this._data_map[i+1][j] == null
+                    || this._data_map[i+1][j]._user_data == item._user_data))
+                    return false;
+                    
+            }
+        }
+    
+        this.ShowMainMenu("GameOver", false);
+        return true;
+    }
+    
+    public fun HandleRestartClick(ALittle.UIEvent event)
+    {
+        this.Restart();
+    }
+    
+    public fun HandleBackClick(ALittle.UIEvent event)
+    {
+        this._main_menu.visible = false;
+    }
+    
+    public fun HandleMenuClick(ALittle.UIEvent event)
+    {
+        this.ShowMainMenu("", true);
+    }
+    
+    public fun Shutdown()
+    {
+    }
+}
+    
+protected var g_GCenter = new GCenter();

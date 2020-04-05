@@ -1,0 +1,5 @@
+
+[Language(JavaScript)]
+register namespace javascript;
+
+public static md5(string text) : string {}

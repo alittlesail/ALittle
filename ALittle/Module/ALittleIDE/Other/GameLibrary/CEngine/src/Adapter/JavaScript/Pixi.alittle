@@ -1,0 +1,152 @@
+
+register namespace PIXI;
+
+public struct ApplicationData
+{
+    int width;
+    int height;
+}
+
+[Native]
+public class Application
+{
+    public ctor(ApplicationData data) { }
+    public get view() : javascript.DomElement {}
+    public fun render() {}
+    public get stage() : Container {}
+    public get ticker() : Ticker {}
+}
+
+[Native]
+public class Point
+{
+    public ctor(double x, double y) {}
+    public get x() : double {}
+    public set x(double v) {}
+    
+    public get y() : double {}
+    public set y(double v) {}
+}
+
+[Native]
+public class DisplayObject
+{
+    public get x() : double {}
+    public set x(double v) {}
+    public get y() : double {}
+    public set y(double v) {}
+    
+    public get width() : double {}
+    public set width(double v) {}
+    public get height() : double {}
+    public set height(double v) {}
+    
+    public get scale() : Point {}
+    public set scale(Point v) {}
+    public get pivot() : Point {}
+    public set pivot(Point v) {}
+    public get rotation() : double {}
+    public set rotation(double v) {}
+    public get angle() : double {}
+    public set angle(double v) {}
+    
+    public get visible() : bool {}
+    public set visible(bool v) {}
+    
+    public get alpha() : double {}
+    public set alpha(double v) {}
+}
+
+[Native]
+public class Container : DisplayObject
+{
+    public fun addChild(DisplayObject value) {}
+    public fun addChildAt(DisplayObject value, int index) {}
+    public fun getChildAt(DisplayObject value) : int {}
+    public fun removeChild(DisplayObject value) {}
+    public fun removeChildAt(DisplayObject value, int index) {}
+    public fun removeChildren(int begin, [Nullable] int end) {}
+    public get children() : List<DisplayObject> {}
+}
+
+[Native]
+public class Graphics : Container
+{
+    public fun clear() {}
+    public fun beginFill(int color, double alpha) {}
+    public fun drawRect(double x, double y, double width, double height) {}
+    public fun endFill() {}
+}
+
+[Native]
+public class Sprite : Container
+{
+    public get texture() : Texture {}
+    public set texture(Texture texture) {}
+}
+
+[Native]
+public class Text : Sprite
+{
+    public get text() : string {}
+    public set text(string v) {}
+    
+    public get style() : TextStyle {}
+    public set style(TextStyle value) {}
+}
+
+[Native]
+public class TextStyle
+{
+    public get fontFamily() : string {}
+    public set fontFamily(string value) {}
+    public get fontSize() : int {}
+    public set fontSize(int value) {}
+    public get fill() : string {}
+    public set fill(string value) {}
+}
+
+[Native]
+public class TextMetrics
+{
+    public static measureText(string text, TextStyle stype) : TextMetrics {}
+    
+    public get text() : string {}
+    public get width() : int {}
+    public get height() : int {}
+}
+
+[Native]
+public class Texture
+{
+    
+}
+
+[Native]
+public class LoaderResource
+{
+    public get texture() : Texture {}
+}
+
+[Native]
+public class LoaderCallback
+{
+    public fun add(Functor<()> func) {}
+}
+
+[Native]
+public class Loader
+{
+    public fun add(string name, string url) : Loader {}
+    public fun load(Functor<(Loader, Map<string, LoaderResource>)> func) {}
+    public get onProgress() : LoaderCallback {}
+    public get onError() : LoaderCallback {}
+    public get onLoad() : LoaderCallback {}
+    public get onComplete() : LoaderCallback {}
+}
+
+[Native]
+public class Ticker
+{
+    public fun add(Functor<(double)> func) {}
+}

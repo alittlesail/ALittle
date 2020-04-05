@@ -1,0 +1,13 @@
+register namespace lua;
+
+public class __CPPAPIHttpInterface : ALittle.IHttpSenderNative
+{
+    public fun GetID() : int {}
+    public fun SetURL(string url, string content) {}
+    public fun Load() : bool {}
+    public fun Start() {}
+    public fun Stop() {}
+    public fun GetStatus() : string {}
+    public fun GetResponse() : string {}
+    public fun GetURL() : string {}
+}

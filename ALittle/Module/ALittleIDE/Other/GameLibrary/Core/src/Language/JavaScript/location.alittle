@@ -1,0 +1,12 @@
+
+[Language(JavaScript)]
+register namespace javascript;
+      
+[Native]                 
+public class Location
+{
+    public get host() : string {}
+    public get port() : string {}
+}
+
+public var location:Location;

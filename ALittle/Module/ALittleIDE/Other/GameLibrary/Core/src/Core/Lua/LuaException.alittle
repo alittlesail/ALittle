@@ -1,0 +1,37 @@
+
+[Language(Lua)]
+namespace Lua;
+
+private var error = lua.error;
+
+// 提供给关键字tcall使用
+protected static TCall(...) : string
+{
+    var out_list:List<any> = [lua.pcall(...)];
+    // 如果第一个参数不是true，说明第二个调用失败的原因
+    if (out_list[1] != true)
+    {
+        if (out_list[2] == null) return "nil";
+        return out_list[2];
+    }
+    // 先获取当前list的长度
+    var l = lua.table.maxn(out_list);
+    // 把第一个设置为空
+    out_list[1] = null;
+    // 最后展开返回
+    return lua.unpack(out_list, 1, l);
+}
+
+// 提供关键字throw使用
+protected static Throw(string msg)
+{
+    error(msg);
+}
+
+// 提供关键字assert使用
+protected static Assert(any value, string msg)
+{
+    if (value != null && value != false) return;
+    if (msg == null) msg = "Assert failed";
+    error(msg);
+}

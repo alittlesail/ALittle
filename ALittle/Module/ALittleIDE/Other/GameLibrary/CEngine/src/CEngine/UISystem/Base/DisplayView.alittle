@@ -1,0 +1,13 @@
+
+namespace ALittle;
+
+public class DisplayView : DisplayLayout
+{
+    public ctor(ControlSystem ctrl_sys)
+    {
+        this._show = new lua.__CPPAPIDisplayView();    // 创建显示控件
+
+        this._pickup_rect = true;
+        this._pickup_child = true;
+    }
+}

@@ -1,3 +1,6 @@
+require("md5")
+
+print(md5.encode("1"))
 
 require("ALittle/Module/ALittleIDE/Other/GameLibrary/Core/Script/ALittle")
 

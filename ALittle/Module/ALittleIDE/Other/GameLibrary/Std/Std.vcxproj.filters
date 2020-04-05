@@ -79,9 +79,6 @@
     <None Include="src\Std\Net\MsgSessionTemplate.alittle">
       <Filter>Std\Net</Filter>
     </None>
-    <None Include="src\Adapter\Lua\sqlte3.alittle">
-      <Filter>Adapter\Lua</Filter>
-    </None>
     <None Include="src\Adapter\Lua\HeapTimer.alittle">
       <Filter>Adapter\Lua</Filter>
     </None>
@@ -127,6 +124,15 @@
     </None>
     <None Include="src\Std\Utility\ConfigSystem.alittle">
       <Filter>Std\Utility</Filter>
+    </None>
+    <None Include="src\Adapter\Lua\timer.alittle">
+      <Filter>Adapter\Lua</Filter>
+    </None>
+    <None Include="src\Adapter\Lua\base64.alittle">
+      <Filter>Adapter\Lua</Filter>
+    </None>
+    <None Include="src\Adapter\Lua\md5.alittle">
+      <Filter>Adapter\Lua</Filter>
     </None>
   </ItemGroup>
 </Project>

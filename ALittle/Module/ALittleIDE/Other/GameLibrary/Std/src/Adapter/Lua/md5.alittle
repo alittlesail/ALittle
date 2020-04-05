@@ -1,0 +1,7 @@
+
+register namespace lua;
+
+public class md5
+{
+    public static encode(string value) : string {}
+}

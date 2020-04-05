@@ -22,7 +22,7 @@ public static String_JsonDecode(string text) : any
 public static String_MD5(string text) : string
 {
     [Language(Lua)]
-    return __CPPAPI_ScriptSystem.StringMD5(text);
+    return lua.md5.encode(text);
     
     [Language(JavaScript)]
     return javascript.md5(text);
@@ -31,7 +31,7 @@ public static String_MD5(string text) : string
 public static String_Base64Encode(string text) : string
 {
     [Language(Lua)]
-    return __CPPAPI_ScriptSystem.Base64Encode(text);
+    return lua.base64.encode(text);
     
     [Language(JavaScript)]
     return javascript.btoa(text);
@@ -40,7 +40,7 @@ public static String_Base64Encode(string text) : string
 public static String_Base64Decode(string text) : string
 {
     [Language(Lua)]
-    return __CPPAPI_ScriptSystem.Base64Decode(text);
+    return lua.base64.decode(text);
     
     [Language(JavaScript)]
     return javascript.atob(text);

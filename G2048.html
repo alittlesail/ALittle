@@ -7,18 +7,18 @@
 </head>
 
 <body onload="onLoad()">
-	<script src="Module/ALittleIDE/Other/GameLibrary/JSNative/md5.min.js"></script>
-	<script src="Module/ALittleIDE/Other/GameLibrary/JSNative/pixi.js"></script>
-	<script src="Module/ALittleIDE/Other/GameLibrary/Core/JSScript/ALittle.js"></script>
-	<script src="Module/ALittleIDE/Other/GameLibrary/Std/JSScript/ALittle.js"></script>
-	<script src="Module/ALittleIDE/Other/GameLibrary/CEngine/JSScript/ALittle.js"></script>
+	<script src="ALittle/Module/ALittleIDE/Other/GameLibrary/JSNative/md5.min.js"></script>
+	<script src="ALittle/Module/ALittleIDE/Other/GameLibrary/JSNative/pixi.js"></script>
+	<script src="ALittle/Module/ALittleIDE/Other/GameLibrary/Core/JSScript/ALittle.js"></script>
+	<script src="ALittle/Module/ALittleIDE/Other/GameLibrary/Std/JSScript/ALittle.js"></script>
+	<script src="ALittle/Module/ALittleIDE/Other/GameLibrary/CEngine/JSScript/ALittle.js"></script>
 	<script type='text/javascript'>
 		async function onLoad()
 		{
-			await __ALITTLEAPI_Core_Init("Module/ALittleIDE/Other/GameLibrary/Core/JSScript/");
-			await __ALITTLEAPI_Std_Init("Module/ALittleIDE/Other/GameLibrary/Std/JSScript/");
-			await __ALITTLEAPI_CEngine_Init("Module/ALittleIDE/Other/GameLibrary/CEngine/JSScript/");
-			await __ALITTLEAPI_SetupMainModule("Module/G2048/", "debug", "G2048")
+			await __ALITTLEAPI_Core_Init("ALittle/Module/ALittleIDE/Other/GameLibrary/Core/JSScript/");
+			await __ALITTLEAPI_Std_Init("ALittle/Module/ALittleIDE/Other/GameLibrary/Std/JSScript/");
+			await __ALITTLEAPI_CEngine_Init("ALittle/Module/ALittleIDE/Other/GameLibrary/CEngine/JSScript/");
+			await __ALITTLEAPI_SetupMainModule("ALittle/Module/G2048/", "debug", "G2048")
 		}
 	</script>
 </body>

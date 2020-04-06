@@ -11,6 +11,7 @@ public async static __ALITTLEAPI_Std_Init(string base_path)
     [Language(JavaScript)]
     {
         Require(base_path.."Adapter/JavaScript/Timer");
+        Require(base_path.."Adapter/JavaScript/FileSystem");
     }
     
     Require(base_path.."Std/Loop/LoopObject");

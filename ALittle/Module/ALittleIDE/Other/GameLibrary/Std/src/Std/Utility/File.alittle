@@ -66,7 +66,7 @@ public static File_GetCurrentPath() : string
     [Language(Lua)]
     return currentdir();
     [Language(JavaScript)]
-    return "";
+    return JavaScript.File_GetCurrentPath();
 }
 
 // 设置当前路径
@@ -76,9 +76,7 @@ public static File_SetCurrentPath(string path) : bool
     return chdir(path);
     
     [Language(JavaScript)]
-    Error("not support File_SetCurrentPath");
-    [Language(JavaScript)]
-    return false;
+    return JavaScript.File_SetCurrentPath(path);
 }
 
 // 重命名文件
@@ -88,9 +86,7 @@ public static File_RenameFile(string path, string new_path) : bool
     return rename(path, new_path);
     
     [Language(JavaScript)]
-    Error("not support File_RenameFile");
-    [Language(JavaScript)]
-    return false;
+    return JavaScript.File_RenameFile(path, new_path);
 }
 
 // 删除文件
@@ -100,9 +96,7 @@ public static File_DeleteFile(string path) : bool
     return remove(path);
     
     [Language(JavaScript)]
-    Error("not support File_DeleteFile");
-    [Language(JavaScript)]
-    return false;
+    return JavaScript.File_DeleteFile(path);
 }
 
 // 获取文件属性
@@ -112,21 +106,7 @@ public static File_GetFileAttr(string path) : lua.fileattr
     return attributes(path);
     
     [Language(JavaScript)]
-    Error("not support File_GetFileAttr");
-    [Language(JavaScript)]
-    return null;
-}
-
-// 遍历目录文件
-public static File_IteratorDir(string path) : Functor<(string,string)>, string, string
-{
-    [Language(Lua)]
-    return dir(path);
-    
-    [Language(JavaScript)]
-    Error("not support File_IteratorDir");
-    [Language(JavaScript)]
-    return null, null, null;
+    return JavaScript.File_GetFileAttr(path);
 }
 
 // 获取某个目录以及子目录下的所有文件属性
@@ -160,9 +140,7 @@ public static File_GetFileAttrByDir(string path, [Nullable] Map<string, lua.file
     }
     
     [Language(JavaScript)]
-    Error("not support File_GetFileAttrByDir");
-    [Language(JavaScript)]
-    return new Map<string, lua.fileattr>();
+    return JavaScript.File_GetFileAttrByDir(path, file_map);
 }
 
 // 删除文件夹(只对空文件夹有效)
@@ -171,9 +149,7 @@ public static File_DeleteDir(string path) : bool
     [Language(Lua)]
     return rmdir(path);
     [Language(JavaScript)]
-    Error("not support File_DeleteDir");
-    [Language(JavaScript)]
-    return false;
+    return JavaScript.File_DeleteDir(path);
 }
 
 // 深度删除文件夹
@@ -214,7 +190,7 @@ public static File_DeleteDeepDir(string path, [Nullable] bool log_path)
     }
     
     [Language(JavaScript)]
-    Error("not support File_DeleteDeepDir");
+    JavaScript.File_DeleteDeepDir(path, log_path);
 }
 
 // 创建文件夹
@@ -223,32 +199,25 @@ public static File_MakeDir(string path) : bool
     [Language(Lua)]
     return mkdir(path);
     [Language(JavaScript)]
-    Error("not support File_MakeDir");
-    [Language(JavaScript)]
-    return false;
+    return JavaScript.File_MakeDir(path);
 }
 
 // 深度创建文件夹
 public static File_MakeDeepDir(string path)
 {
-    [Language(Lua)]
+    // 根据路径分隔符分割
+    var path_list = String_SplitSepList(path, ["/", "\\"]);
+    // 遍历路径列表
+    var cur_path = "";
+    for (var index, sub_path in path_list)
     {
-        // 根据路径分隔符分割
-        var path_list = String_SplitSepList(path, ["/", "\\"]);
-        // 遍历路径列表
-        var cur_path = "";
-        for (var index, sub_path in path_list)
-        {
-            // 计算当前要创建的路径
-            cur_path = cur_path .. sub_path;
-            // 创建路径
-            mkdir(cur_path);
-            // 添加分隔符
-            cur_path = cur_path .. "/";
-        }
+        // 计算当前要创建的路径
+        cur_path = cur_path .. sub_path;
+        // 创建路径
+        File_MakeDir(cur_path);
+        // 添加分隔符
+        cur_path = cur_path .. "/";
     }
-    [Language(JavaScript)]
-    Error("not support File_MakeDeepDir");
 }
 
 // 修正路径

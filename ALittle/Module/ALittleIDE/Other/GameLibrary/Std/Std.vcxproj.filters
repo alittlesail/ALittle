@@ -134,5 +134,11 @@
     <None Include="src\Adapter\Lua\md5.alittle">
       <Filter>Adapter\Lua</Filter>
     </None>
+    <None Include="src\Adapter\Lua\utf8.alittle">
+      <Filter>Adapter\Lua</Filter>
+    </None>
+    <None Include="src\Adapter\JavaScript\FileSystem.alittle">
+      <Filter>Adapter\JavaScript</Filter>
+    </None>
   </ItemGroup>
 </Project>

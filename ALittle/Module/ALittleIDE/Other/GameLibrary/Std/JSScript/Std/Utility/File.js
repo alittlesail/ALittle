@@ -15,55 +15,52 @@ ALittle.IFileSaver = JavaScript.Class(undefined, {
 }, "ALittle.IFileSaver");
 
 ALittle.File_GetCurrentPath = function() {
-	return "";
+	return JavaScript.File_GetCurrentPath();
 }
 
 ALittle.File_SetCurrentPath = function(path) {
-	ALittle.Error("not support File_SetCurrentPath");
-	return false;
+	return JavaScript.File_SetCurrentPath(path);
 }
 
 ALittle.File_RenameFile = function(path, new_path) {
-	ALittle.Error("not support File_RenameFile");
-	return false;
+	return JavaScript.File_RenameFile(path, new_path);
 }
 
 ALittle.File_DeleteFile = function(path) {
-	ALittle.Error("not support File_DeleteFile");
-	return false;
+	return JavaScript.File_DeleteFile(path);
 }
 
 ALittle.File_GetFileAttr = function(path) {
-	ALittle.Error("not support File_GetFileAttr");
-	return undefined;
-}
-
-ALittle.File_IteratorDir = function(path) {
-	ALittle.Error("not support File_IteratorDir");
-	return [undefined, undefined, undefined];
+	return JavaScript.File_GetFileAttr(path);
 }
 
 ALittle.File_GetFileAttrByDir = function(path, file_map) {
-	ALittle.Error("not support File_GetFileAttrByDir");
-	return {};
+	return JavaScript.File_GetFileAttrByDir(path, file_map);
 }
 
 ALittle.File_DeleteDir = function(path) {
-	ALittle.Error("not support File_DeleteDir");
-	return false;
+	return JavaScript.File_DeleteDir(path);
 }
 
 ALittle.File_DeleteDeepDir = function(path, log_path) {
-	ALittle.Error("not support File_DeleteDeepDir");
+	JavaScript.File_DeleteDeepDir(path, log_path);
 }
 
 ALittle.File_MakeDir = function(path) {
-	ALittle.Error("not support File_MakeDir");
-	return false;
+	return JavaScript.File_MakeDir(path);
 }
 
 ALittle.File_MakeDeepDir = function(path) {
-	ALittle.Error("not support File_MakeDeepDir");
+	let path_list = ALittle.String_SplitSepList(path, ["/", "\\"]);
+	let cur_path = "";
+	let ___OBJECT_1 = path_list;
+	for (let index = 1; index <= ___OBJECT_1.length; ++index) {
+		let sub_path = ___OBJECT_1[index - 1];
+		if (sub_path === undefined) break;
+		cur_path = cur_path + sub_path;
+		ALittle.File_MakeDir(cur_path);
+		cur_path = cur_path + "/";
+	}
 }
 
 ALittle.File_PathEndWithSplit = function(file_path) {

@@ -6,3 +6,9 @@ register namespace javascript;
 public class Map
 {
 }
+
+[Native]
+public class Set
+{
+    public fun add(any value) {}
+}

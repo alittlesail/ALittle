@@ -1,0 +1,10 @@
+
+register namespace lua;
+
+public class utf8
+{
+    // 计算utf8字符串的字的个数
+    public static wordcount(string value) : int {}
+    // 计算utf8字符串，在指定wordcount下的字节数
+    public static bytecount(string value, int word_count) : int {}
+}

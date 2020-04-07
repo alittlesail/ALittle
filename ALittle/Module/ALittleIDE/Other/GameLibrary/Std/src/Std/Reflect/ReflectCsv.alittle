@@ -1,22 +1,6 @@
 
 namespace ALittle;
 
-public class ICsvFile
-{
-    public fun Close() {}
-    public fun ReadCell(int row, int col) : string { return ""; }
-    public fun GetRowCount() : int { return 0; }
-    public fun GetColCount() : int { return 0; }
-}
-
-public class ICsvFileLoader
-{
-    public fun Start() {}
-    public fun SetPath(string file_path, bool only_from_asset, string headers) {}
-    public fun GetPath() : string { return null; }
-    public fun GetID() : int { return null; }
-}
-
 public struct CsvInvokeInfo
 {
     Functor<(string, CsvInvokeInfo):any> func;

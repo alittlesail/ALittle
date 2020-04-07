@@ -11,10 +11,6 @@ ALittle.String_JsonDecode = function(text) {
 }
 
 ALittle.String_MD5 = function(text) {
-	if (window["utf8"] === undefined) {
-		ALittle.Error("请在html添加script标签 <script src=\"ALittle/Module/ALittleIDE/Other/GameLibrary/JSNative/md5.min.js\"></script>");
-		return undefined;
-	}
 	return md5(text);
 }
 

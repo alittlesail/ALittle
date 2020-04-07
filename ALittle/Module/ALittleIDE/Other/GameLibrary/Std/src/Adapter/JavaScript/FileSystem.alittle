@@ -255,3 +255,43 @@ public static File_MakeDir(string path) : bool
     file.parent = cur_file;
     return true;
 }
+
+public static File_LoadFile(string path) : string
+{
+    var list = ALittle.String_SplitSepList(path, ["/", "\\"]);
+    var list_len = ALittle.List_MaxN(list);
+    var cur = root;
+    for (var i = 1; i <= list_len - 1; 1)
+    {
+        var file = cur.file[list[i]];
+        if (file == null) return null;
+        if (!file.is_directory) return null;
+        cur = file;
+    }
+    if (cur.file == null) return null;
+    var cur_file = cur.file[list[list_len]];
+    if (cur_file == null || cur_file.is_directory) return null;
+    return cur_file.content;
+}
+
+public static File_SaveFile(string path, string content) : bool
+{
+    var list = ALittle.String_SplitSepList(path, ["/", "\\"]);
+    var list_len = ALittle.List_MaxN(list);
+    var cur = root;
+    for (var i = 1; i <= list_len - 1; 1)
+    {
+        var file = cur.file[list[i]];
+        if (file == null) return false;
+        if (!file.is_directory) return false;
+        cur = file;
+    }
+    if (cur.file == null) return false;
+    var file = new FileInfo();
+    file.content = content;
+    file.is_directory = false;
+    file.name = list[list_len];
+    file.parent = cur;
+    cur.file[list[list_len]] = file;
+    return true;    
+}

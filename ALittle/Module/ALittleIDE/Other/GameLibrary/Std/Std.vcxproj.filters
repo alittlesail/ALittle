@@ -122,9 +122,6 @@
     <None Include="src\Std\Utility\File.alittle">
       <Filter>Std\Utility</Filter>
     </None>
-    <None Include="src\Std\Utility\ConfigSystem.alittle">
-      <Filter>Std\Utility</Filter>
-    </None>
     <None Include="src\Adapter\Lua\timer.alittle">
       <Filter>Adapter\Lua</Filter>
     </None>
@@ -139,6 +136,18 @@
     </None>
     <None Include="src\Adapter\JavaScript\FileSystem.alittle">
       <Filter>Adapter\JavaScript</Filter>
+    </None>
+    <None Include="src\Std\Utility\JsonConfig.alittle">
+      <Filter>Std\Utility</Filter>
+    </None>
+    <None Include="src\Adapter\Lua\csv.alittle">
+      <Filter>Adapter\Lua</Filter>
+    </None>
+    <None Include="src\Adapter\JavaScript\JCsvFile.alittle">
+      <Filter>Adapter\JavaScript</Filter>
+    </None>
+    <None Include="src\Adapter\Lua\LuaCsvFile.alittle">
+      <Filter>Adapter\Lua</Filter>
     </None>
   </ItemGroup>
 </Project>

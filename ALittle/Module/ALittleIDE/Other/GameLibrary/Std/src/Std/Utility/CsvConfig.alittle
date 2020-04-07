@@ -1,87 +1,44 @@
 
 namespace ALittle;
 
+public class ICsvFile
+{
+    public fun Close() {}
+    public fun ReadCell(int row, int col) : string { return ""; }
+    public fun GetRowCount() : int { return 0; }
+    public fun GetColCount() : int { return 0; }
+}
+
 public class CsvConfig
 {
     // 直接阻塞加载
     public fun Load(string file_path)
     {
-        var name_list = this.GetFieldNameList();
+        // Lua加载csv
         [Language(Lua)]
-        var lua_loader = new lua.__CPPAPICsvFile();
+        var lua_file = new Lua.LuaCsvFile();
         [Language(Lua)]
-        assert(lua_loader.Load(file_path, String_Join(name_list, ",")), file_path.." load failed!");
+        assert(lua_file.Load(file_path), file_path.." load failed!");
         [Language(Lua)]
-        this.Init(lua_loader);
+        this.Init(lua_file);
         
+        // JavaScript加载csv
         [Language(JavaScript)]
-        Error("not support Load");
+        var js_file = new JavaScript.JCsvFile();
+        [Language(JavaScript)]
+        var content = JavaScript.File_LoadFile(file_path);
+        assert(content, file_path.." load failed!");
+        [Language(JavaScript)]
+        assert(js_file.Load(file_path, content), file_path.." load failed!");
+        [Language(JavaScript)]
+        this.Init(js_file);
         
+        // 打印加载成功
         Log(file_path.." load succeed!");
     }
     
-    // 获取字段列表
-    public fun GetFieldNameList() : List<string> { return null; }
-
     // 初始化数据
-    public fun Init(ICsvFile loader) {}
-}
-
-protected class CsvTableConfig<T:struct> : CsvConfig
-{
-    protected ICsvFile _csv_file;
-    protected CsvInvokeInfo _csv_info;
-    
-    public ctor()
-    {
-        var error:string = null;
-        error, this._csv_info = tcall(CreateCsvInfo, reflect<T>);
-        if (error != null) Error(error);
-    }
-    
-    public fun Init(ICsvFile loader)
-    {
-        this._csv_file = loader;
-    }
-    
-    public fun GetFieldInfo(string field) : int, bool
-    {
-        var rflt = reflect<T>;
-        var field_index = 0;
-        var is_number = false;
-        for (var index, name in rflt.name_list)
-        {
-            if (name == field)
-            {
-                field_index = index;
-                var var_type = rflt.type_list[index];
-                is_number = var_type == "int" || var_type == "double" || var_type == "long";
-                break;
-            }
-        }
-        return field_index, is_number;
-    }
-    
-    public fun GetFieldNameList() : List<string>
-    {
-        var rflt = reflect<T>;
-        return rflt.name_list;
-    }
-
-    public fun ReadCell(int lua_row, int lua_col) : string
-    {
-        return this._csv_file.ReadCell(lua_row, lua_col);
-    }
-
-    private fun LoadCell(int row) : T
-    {
-        var value = new Map<string, any>();
-        for (var index, handle in this._csv_info.handle)
-        {
-            value[handle.var_name] = handle.func(this._csv_file.ReadCell(row, index), handle);
-        }
-        return cast<T>(value);
-    }
+    public fun Init(ICsvFile file) {}
 }
 
 protected struct KeyValueInfo
@@ -101,20 +58,20 @@ public class KeyValueConfig<T:struct> : CsvConfig
         this._csv_info = CreateCsvInfo(reflect<T>);
     }
     
-    protected fun Init(ICsvFile loader)
+    protected fun Init(ICsvFile file)
     {
-        if (loader == null) return;
+        if (file == null) return;
         
         var reflt = reflect<T>;
         var handle_map = new Map<string, CsvInvokeInfo>();
         for (var index, handle in this._csv_info.handle)
             handle_map[handle.var_name] = handle;
         
-        var row_count = loader.GetRowCount();
+        var row_count = file.GetRowCount();
         for (var row = 1; row <= row_count; 1)
         {
-            var key = loader.ReadCell(row, 1);
-            var value = loader.ReadCell(row, 2);
+            var key = file.ReadCell(row, 1);
+            var value = file.ReadCell(row, 2);
             if (key != null && value != null)
             {
                 var handle = handle_map[key];
@@ -128,7 +85,7 @@ public class KeyValueConfig<T:struct> : CsvConfig
                 }
             }
         }
-        loader.Close();
+        file.Close();
     }
     
     protected fun GetFieldNameList() : List<string>
@@ -144,6 +101,64 @@ public class KeyValueConfig<T:struct> : CsvConfig
     }
 }
 
+protected class CsvTableConfig<T:struct> : CsvConfig
+{
+    protected ICsvFile _csv_file;
+    protected CsvInvokeInfo _csv_info;
+    protected Map<int, int> _col_map;
+    
+    public ctor()
+    {
+        // 获取csv反射信息
+        var error:string = null;
+        error, this._csv_info = tcall(CreateCsvInfo, reflect<T>);
+        if (error != null) Error(error);
+        
+        // 获取csv列映射信息
+        this._col_map = new Map<int, int>();
+    }
+    
+    public fun Init(ICsvFile file)
+    {
+        if (this._csv_file != null) this._csv_file.Close();
+        this._csv_file = file;
+        if (this._csv_file == null) return;
+        
+        // 收集字段列信息
+        var rflt = reflect<T>;
+        var name_map = new Map<string, int>();
+        for (var index, name in rflt.name_list)
+            name_map[name] = index;
+        
+        // 字段的列映射csv的列
+        for (var i = 1; i <= this._csv_file.GetColCount(); 1)
+        {
+            var name = this._csv_file.ReadCell(1, i);
+            var index = name_map[name];
+            if (index != null)
+                this._col_map[index] = i;
+        }
+        
+        this.onInit();
+    }
+    
+    private fun onInit() {}
+    
+    private fun LoadCell(int row) : T
+    {
+        var value = new Map<string, any>();
+        for (var index, handle in this._csv_info.handle)
+        {
+            var real = this._col_map[index];
+            if (real == null)
+                value[handle.var_name] = handle.func("", handle);
+            else
+                value[handle.var_name] = handle.func(this._csv_file.ReadCell(row + 1, real), handle);
+        }
+        return cast<T>(value);
+    }
+}
+
 public class SingleKeyTableConfig<T:struct, KEY> : CsvTableConfig
 {
     private Map<KEY, int> _key_map;
@@ -154,33 +169,31 @@ public class SingleKeyTableConfig<T:struct, KEY> : CsvTableConfig
         this._key_map = new Map<KEY, int>();
         this._cache_map = new Map<KEY, T>();
     }
-
-    public get key_map() : Map<KEY, int> { return this._key_map; }
     
-    public fun Init(ICsvFile loader)
+    public fun onInit()
     {
-        if (this._csv_file != null) this._csv_file.Close();
-        this._csv_file = loader;
-        if (this._csv_file == null) return;
-        
         var rflt = reflect<T>;
         var key_type = rflt.type_list[1];
-        var is_number = key_type == "int" || key_type == "double" || key_type == "long";
-
+        var key_index = this._col_map[1];
+        var is_int = key_type == "int" || key_type == "long";
+        var is_double = key_type == "double";
+        
         var row_count = this._csv_file.GetRowCount();
-        for (var row = 1; row <= row_count; 1)
+        for (var row = 2; row <= row_count; 1)
         {
-            var value = this._csv_file.ReadCell(row, 1);
+            var value = this._csv_file.ReadCell(row, key_index);
             if (value != null)
             {
-                if (is_number)
-                    this._key_map[cast<KEY>(lua.tonumber(value))] = row;
+                if (is_int)
+                    this._key_map[cast<KEY>(Math_ToInt(value))] = row;
+                if (is_double)
+                    this._key_map[cast<KEY>(Math_ToDouble(value))] = row;
                 else
                     this._key_map[cast<KEY>(value)] = row;
             }
         }
     }
-
+    
     public fun GetData(KEY key) : T
     {
         if (this._csv_file == null) return null;
@@ -197,73 +210,6 @@ public class SingleKeyTableConfig<T:struct, KEY> : CsvTableConfig
         this._cache_map[key] = value;
         return value;
     }
-
-    public fun CreateIndex<INDEX>(string field) : SingleKeyTableIndexConfig<INDEX, KEY, T>
-    {
-        if (this._csv_file == null) return null;
-
-        var col_index, is_number = this.GetFieldInfo(field);
-        if (col_index == 0) return null;
-
-        return new SingleKeyTableIndexConfig<INDEX, KEY, T>(this, col_index, is_number);
-    }
-}
-
-public class SingleKeyTableIndexConfig<INDEX, KEY, T : struct>
-{
-    private SingleKeyTableConfig<T, KEY> _parent;
-    private Map<INDEX, Map<KEY, bool>> _value_map;
-
-    public ctor(SingleKeyTableConfig<T, KEY> parent, int col_index, bool is_number)
-    {
-        this._parent = parent;
-        this._value_map = new Map<INDEX, Map<KEY, bool>>();
-
-        for (var key, row in this._parent.key_map)
-        {
-            var value:INDEX;
-            if (is_number)
-                value = cast<INDEX>(lua.tonumber(this._parent.ReadCell(row, col_index)));
-            else
-                value = cast<INDEX>(this._parent.ReadCell(row, col_index));
-
-            var key_set = this._value_map[value];
-            if (key_set == null)
-            {
-                key_set = new Map<KEY, bool>();
-                this._value_map[value] = key_set;
-            }
-            key_set[key] = true;
-        }
-    }
-
-    public fun GetKeySet(INDEX index) : Map<KEY, bool>
-    {
-        return this._value_map[index];
-    }
-
-    public fun GetOne(INDEX index) : T
-    {
-        var keys = this._value_map[index];
-        if (keys == null) return null;
-        for (var k, _ in keys)
-            return this._parent.GetData(k);
-    }
-
-    public fun GetList(INDEX index) : List<T>
-    {
-        var list = new List<T>();
-        var keys = this._value_map[index];
-        if (keys == null) return list;
-
-        var count = 0;
-        for (var k, _ in keys)
-        {
-            ++ count;
-            list[count] = this._parent.GetData(k);
-        }
-        return list;
-    }
 }
 
 public class DoubleKeyTableConfig<T:struct, KEY1, KEY2> : CsvTableConfig
@@ -277,32 +223,45 @@ public class DoubleKeyTableConfig<T:struct, KEY1, KEY2> : CsvTableConfig
         this._cache_map = new Map<KEY1, Map<KEY2, T>>();
     }
 
-    public fun Init(ICsvFile loader)
-    {
-        if (this._csv_file != null) this._csv_file.Close();
-        this._csv_file = loader;
-        if (this._csv_file == null) return;
-        
+    public fun onInit()
+    {   
         var rflt = reflect<T>;
+        
+        // 第一个key
         var first_key_type = rflt.type_list[1];
-        var first_is_number = first_key_type == "int" || first_key_type == "double" || first_key_type == "long";
+        var first_key_index = this._col_map[1];
+        var first_is_int = first_key_type == "int" || first_key_type == "long";
+        var first_is_double = first_key_type == "double";
+        
+        // 第二个key
         var second_key_type = rflt.type_list[2];
-        var second_is_number = second_key_type == "int" || second_key_type == "double" || second_key_type == "long";
-
+        var second_key_index = this._col_map[2];
+        var second_is_int = second_key_type == "int" || second_key_type == "long";
+        var second_is_double = second_key_type == "double";
+        
         var row_count = this._csv_file.GetRowCount();
-        for (var row = 1; row <= row_count; 1)
+        for (var row = 2; row <= row_count; 1)
         {
             var tmp:Map<KEY2, int>;
-            var value = this._csv_file.ReadCell(row, 1);
+            var value = this._csv_file.ReadCell(row, first_key_index);
             if (value != null)
             {
-                if (first_is_number)
+                if (first_is_int)
                 {
-                    tmp = this._key_map[cast<KEY1>(lua.tonumber(value))];
+                    tmp = this._key_map[cast<KEY1>(Math_ToInt(value))];
                     if (tmp == null)
                     {
                         tmp = new Map<KEY2, int>();
-                        this._key_map[cast<KEY1>(lua.tonumber(value))] = tmp;
+                        this._key_map[cast<KEY1>(Math_ToInt(value))] = tmp;
+                    }
+                }
+                elseif (first_is_double)
+                {
+                    tmp = this._key_map[cast<KEY1>(Math_ToDouble(value))];
+                    if (tmp == null)
+                    {
+                        tmp = new Map<KEY2, int>();
+                        this._key_map[cast<KEY1>(Math_ToDouble(value))] = tmp;
                     }
                 }
                 else
@@ -315,12 +274,14 @@ public class DoubleKeyTableConfig<T:struct, KEY1, KEY2> : CsvTableConfig
                     }
                 }
             }
-
-            value = this._csv_file.ReadCell(row, 2);
+            
+            value = this._csv_file.ReadCell(row, second_key_index);
             if (value != null)
             {
-                if (second_is_number)
-                    tmp[cast<KEY2>(lua.tonumber(value))] = row;
+                if (second_is_int)
+                    tmp[cast<KEY2>(Math_ToInt(value))] = row;
+                elseif (second_is_double)
+                    tmp[cast<KEY2>(Math_ToDouble(value))] = row;
                 else
                     tmp[cast<KEY2>(value)] = row;
             }

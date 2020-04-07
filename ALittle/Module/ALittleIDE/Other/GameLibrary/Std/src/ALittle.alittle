@@ -12,6 +12,7 @@ public async static __ALITTLEAPI_Std_Init(string base_path)
     {
         Require(base_path.."Adapter/JavaScript/Timer");
         Require(base_path.."Adapter/JavaScript/FileSystem");
+        Require(base_path.."../../JSNative/md5.min");
     }
     
     Require(base_path.."Std/Loop/LoopObject");
@@ -27,7 +28,7 @@ public async static __ALITTLEAPI_Std_Init(string base_path)
     Require(base_path.."Std/Utility/SafeIDCreator");
     Require(base_path.."Std/Utility/String");
     Require(base_path.."Std/Utility/File");
-    Require(base_path.."Std/Utility/ConfigSystem");
+    Require(base_path.."Std/Utility/JsonConfig");
     
     Require(base_path.."Std/Net/HttpFileReceiverTemplate");
     Require(base_path.."Std/Net/HttpFileSenderTemplate");

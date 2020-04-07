@@ -1,6 +1,6 @@
 namespace ALittle;
 
-public class IConfigSystem
+public class IJsonConfig
 {
     public fun GetConfig<T>(string key, T defaultv) : T { return defaultv; }   
     public fun GetBool(string key, bool defaultv) : bool { return defaultv; }
@@ -12,7 +12,7 @@ public class IConfigSystem
     public fun SaveConfig() {}
 }
 
-public class ConfigSystem<FL : IFileLoader, FS : IFileSaver> : IConfigSystem
+public class JsonConfig<FL : IFileLoader, FS : IFileSaver> : IJsonConfig
 {
     private string              _file_path;
     private Map<string, any>    _config_map;
@@ -106,4 +106,11 @@ public class ConfigSystem<FL : IFileLoader, FS : IFileSaver> : IConfigSystem
     }
 }
 
-public using NormalConfigSystem = ConfigSystem<NormalFileLoader, NormalFileSaver>;
+public static CreateJsonConfig(string file_path, [Nullable] bool print_error) : IJsonConfig
+{
+    [Language(Lua)]
+    return new JsonConfig<LuaFileLoader, LuaFileSaver>(file_path, print_error);
+    
+    [Language(JavaScript)]
+    return new JsonConfig<JFileLoader, JFileSaver>(file_path, print_error);
+}

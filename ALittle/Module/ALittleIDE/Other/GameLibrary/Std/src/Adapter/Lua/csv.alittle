@@ -1,0 +1,14 @@
+
+register namespace lua;
+
+public class csv
+{
+    public static create() : csv {}
+    // 如果失败则返回失败的原因，否则返回null
+    public static load(csv c, string path) : string {}
+    public static clear(csv c) {}
+    public static getpath(csv c) : string {}
+    public static readcell(csv c, int row, int col) : string {}
+    public static rowcount(csv c) : int {}
+    public static colcount(csv c) : int {}
+}

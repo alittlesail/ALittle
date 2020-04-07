@@ -22,19 +22,6 @@ ALittle.ICsvFile = JavaScript.Class(undefined, {
 	},
 }, "ALittle.ICsvFile");
 
-ALittle.ICsvFileLoader = JavaScript.Class(undefined, {
-	Start : function() {
-	},
-	SetPath : function(file_path, only_from_asset, headers) {
-	},
-	GetPath : function() {
-		return undefined;
-	},
-	GetID : function() {
-		return undefined;
-	},
-}, "ALittle.ICsvFileLoader");
-
 let floor = ALittle.Math_Floor;
 let tonumber = ALittle.Math_ToDouble;
 let maxn = ALittle.List_MaxN;

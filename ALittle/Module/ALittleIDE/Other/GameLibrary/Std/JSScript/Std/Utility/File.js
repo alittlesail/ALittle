@@ -8,11 +8,25 @@ ALittle.IFileLoader = JavaScript.Class(undefined, {
 	},
 }, "ALittle.IFileLoader");
 
+if (ALittle.IFileLoader === undefined) throw new Error(" extends class:ALittle.IFileLoader is undefined");
+ALittle.JFileLoader = JavaScript.Class(ALittle.IFileLoader, {
+	Load : function(file_path) {
+		return JavaScript.File_LoadFile(file_path);
+	},
+}, "ALittle.JFileLoader");
+
 ALittle.IFileSaver = JavaScript.Class(undefined, {
 	Save : function(file_path, content) {
 		return false;
 	},
 }, "ALittle.IFileSaver");
+
+if (ALittle.IFileSaver === undefined) throw new Error(" extends class:ALittle.IFileSaver is undefined");
+ALittle.JFileSaver = JavaScript.Class(ALittle.IFileSaver, {
+	Save : function(file_path, content) {
+		return JavaScript.File_SaveFile(file_path, content);
+	},
+}, "ALittle.JFileSaver");
 
 ALittle.File_GetCurrentPath = function() {
 	return JavaScript.File_GetCurrentPath();

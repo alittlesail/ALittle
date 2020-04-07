@@ -9,6 +9,7 @@ __ALITTLEAPI_Std_Init = async function(base_path) {
 	{
 		await Require(base_path + "Adapter/JavaScript/Timer");
 		await Require(base_path + "Adapter/JavaScript/FileSystem");
+		await Require(base_path + "../../JSNative/md5.min");
 	}
 	await Require(base_path + "Std/Loop/LoopObject");
 	await Require(base_path + "Std/Loop/ILoopSystem");
@@ -22,7 +23,7 @@ __ALITTLEAPI_Std_Init = async function(base_path) {
 	await Require(base_path + "Std/Utility/SafeIDCreator");
 	await Require(base_path + "Std/Utility/String");
 	await Require(base_path + "Std/Utility/File");
-	await Require(base_path + "Std/Utility/ConfigSystem");
+	await Require(base_path + "Std/Utility/JsonConfig");
 	await Require(base_path + "Std/Net/HttpFileReceiverTemplate");
 	await Require(base_path + "Std/Net/HttpFileSenderTemplate");
 	await Require(base_path + "Std/Net/HttpReceiverTemplate");

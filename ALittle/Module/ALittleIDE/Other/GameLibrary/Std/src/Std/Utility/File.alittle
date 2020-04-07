@@ -28,7 +28,7 @@ public class IFileLoader
 
 // 最普通的文件加载器
 [Language(Lua)]
-public class NormalFileLoader : IFileLoader
+public class LuaFileLoader : IFileLoader
 {
     public fun Load(string file_path) : string
     {
@@ -40,6 +40,15 @@ public class NormalFileLoader : IFileLoader
     }
 }
 
+[Language(JavaScript)]
+public class JFileLoader : IFileLoader
+{
+    public fun Load(string file_path) : string
+    {
+        return JavaScript.File_LoadFile(file_path);
+    }
+}
+
 // 文件保存接口
 public class IFileSaver
 {
@@ -48,7 +57,7 @@ public class IFileSaver
 
 // 最普通的文件保存期
 [Language(Lua)]
-public class NormalFileSaver : IFileSaver
+public class LuaFileSaver : IFileSaver
 {
     public fun Save(string file_path, string content) : bool
     {
@@ -57,6 +66,15 @@ public class NormalFileSaver : IFileSaver
         file.write(content);
         file.close();
         return true;
+    }
+}
+
+[Language(JavaScript)]
+public class JFileSaver : IFileSaver
+{
+    public fun Save(string file_path, string content) : bool
+    {
+        return JavaScript.File_SaveFile(file_path, content);
     }
 }
 

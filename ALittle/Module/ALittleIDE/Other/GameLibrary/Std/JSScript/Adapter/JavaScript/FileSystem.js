@@ -304,4 +304,54 @@ JavaScript.File_MakeDir = function(path) {
 	return true;
 }
 
+JavaScript.File_LoadFile = function(path) {
+	let list = ALittle.String_SplitSepList(path, ["/", "\\"]);
+	let list_len = ALittle.List_MaxN(list);
+	let cur = root;
+	for (let i = 1; i <= list_len - 1; i += 1) {
+		let file = cur.file[list[i - 1]];
+		if (file === undefined) {
+			return undefined;
+		}
+		if (!file.is_directory) {
+			return undefined;
+		}
+		cur = file;
+	}
+	if (cur.file === undefined) {
+		return undefined;
+	}
+	let cur_file = cur.file[list[list_len - 1]];
+	if (cur_file === undefined || cur_file.is_directory) {
+		return undefined;
+	}
+	return cur_file.content;
+}
+
+JavaScript.File_SaveFile = function(path, content) {
+	let list = ALittle.String_SplitSepList(path, ["/", "\\"]);
+	let list_len = ALittle.List_MaxN(list);
+	let cur = root;
+	for (let i = 1; i <= list_len - 1; i += 1) {
+		let file = cur.file[list[i - 1]];
+		if (file === undefined) {
+			return false;
+		}
+		if (!file.is_directory) {
+			return false;
+		}
+		cur = file;
+	}
+	if (cur.file === undefined) {
+		return false;
+	}
+	let file = {};
+	file.content = content;
+	file.is_directory = false;
+	file.name = list[list_len - 1];
+	file.parent = cur;
+	cur.file[list[list_len - 1]] = file;
+	return true;
+}
+
 }

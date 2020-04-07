@@ -9,66 +9,32 @@ type_list : ["string","string"],
 option_map : {}
 })
 
+ALittle.ICsvFile = JavaScript.Class(undefined, {
+	Close : function() {
+	},
+	ReadCell : function(row, col) {
+		return "";
+	},
+	GetRowCount : function() {
+		return 0;
+	},
+	GetColCount : function() {
+		return 0;
+	},
+}, "ALittle.ICsvFile");
+
 ALittle.CsvConfig = JavaScript.Class(undefined, {
 	Load : function(file_path) {
-		let name_list = this.GetFieldNameList();
-		ALittle.Error("not support Load");
+		let js_file = ALittle.NewObject(JavaScript.JCsvFile);
+		let content = JavaScript.File_LoadFile(file_path);
+		JavaScript.Assert(content, file_path + " load failed!");
+		JavaScript.Assert(js_file.Load(file_path, content), file_path + " load failed!");
+		this.Init(js_file);
 		ALittle.Log(file_path + " load succeed!");
 	},
-	GetFieldNameList : function() {
-		return undefined;
-	},
-	Init : function(loader) {
+	Init : function(file) {
 	},
 }, "ALittle.CsvConfig");
-
-if (ALittle.CsvConfig === undefined) throw new Error(" extends class:ALittle.CsvConfig is undefined");
-ALittle.CsvTableConfig = JavaScript.Class(ALittle.CsvConfig, {
-	Ctor : function() {
-		let error = undefined;
-		[error, this._csv_info] = (function() { try { let ___VALUE = ALittle.CreateCsvInfo.call(undefined, this.__class.__element[0]); return [undefined, ___VALUE]; } catch (___ERROR) { return [___ERROR.message]; } }).call(this);
-		if (error !== undefined) {
-			ALittle.Error(error);
-		}
-	},
-	Init : function(loader) {
-		this._csv_file = loader;
-	},
-	GetFieldInfo : function(field) {
-		let rflt = this.__class.__element[0];
-		let field_index = 0;
-		let is_number = false;
-		let ___OBJECT_1 = rflt.name_list;
-		for (let index = 1; index <= ___OBJECT_1.length; ++index) {
-			let name = ___OBJECT_1[index - 1];
-			if (name === undefined) break;
-			if (name === field) {
-				field_index = index;
-				let var_type = rflt.type_list[index - 1];
-				is_number = var_type === "int" || var_type === "double" || var_type === "long";
-				break;
-			}
-		}
-		return [field_index, is_number];
-	},
-	GetFieldNameList : function() {
-		let rflt = this.__class.__element[0];
-		return rflt.name_list;
-	},
-	ReadCell : function(lua_row, lua_col) {
-		return this._csv_file.ReadCell(lua_row, lua_col);
-	},
-	LoadCell : function(row) {
-		let value = {};
-		let ___OBJECT_2 = this._csv_info.handle;
-		for (let index = 1; index <= ___OBJECT_2.length; ++index) {
-			let handle = ___OBJECT_2[index - 1];
-			if (handle === undefined) break;
-			value[handle.var_name] = handle.func(this._csv_file.ReadCell(row, index), handle);
-		}
-		return value;
-	},
-}, "ALittle.CsvTableConfig");
 
 if (ALittle.CsvConfig === undefined) throw new Error(" extends class:ALittle.CsvConfig is undefined");
 ALittle.KeyValueConfig = JavaScript.Class(ALittle.CsvConfig, {
@@ -76,22 +42,22 @@ ALittle.KeyValueConfig = JavaScript.Class(ALittle.CsvConfig, {
 		this._data = {};
 		this._csv_info = ALittle.CreateCsvInfo(this.__class.__element[0]);
 	},
-	Init : function(loader) {
-		if (loader === undefined) {
+	Init : function(file) {
+		if (file === undefined) {
 			return;
 		}
 		let reflt = this.__class.__element[0];
 		let handle_map = {};
-		let ___OBJECT_3 = this._csv_info.handle;
-		for (let index = 1; index <= ___OBJECT_3.length; ++index) {
-			let handle = ___OBJECT_3[index - 1];
+		let ___OBJECT_1 = this._csv_info.handle;
+		for (let index = 1; index <= ___OBJECT_1.length; ++index) {
+			let handle = ___OBJECT_1[index - 1];
 			if (handle === undefined) break;
 			handle_map[handle.var_name] = handle;
 		}
-		let row_count = loader.GetRowCount();
+		let row_count = file.GetRowCount();
 		for (let row = 1; row <= row_count; row += 1) {
-			let key = loader.ReadCell(row, 1);
-			let value = loader.ReadCell(row, 2);
+			let key = file.ReadCell(row, 1);
+			let value = file.ReadCell(row, 2);
 			if (key !== undefined && value !== undefined) {
 				let handle = handle_map[key];
 				if (handle !== undefined) {
@@ -104,7 +70,7 @@ ALittle.KeyValueConfig = JavaScript.Class(ALittle.CsvConfig, {
 				}
 			}
 		}
-		loader.Close();
+		file.Close();
 	},
 	GetFieldNameList : function() {
 		let rflt = ___all_struct.get(115253948);
@@ -115,32 +81,81 @@ ALittle.KeyValueConfig = JavaScript.Class(ALittle.CsvConfig, {
 	},
 }, "ALittle.KeyValueConfig");
 
+if (ALittle.CsvConfig === undefined) throw new Error(" extends class:ALittle.CsvConfig is undefined");
+ALittle.CsvTableConfig = JavaScript.Class(ALittle.CsvConfig, {
+	Ctor : function() {
+		let error = undefined;
+		[error, this._csv_info] = (function() { try { let ___VALUE = ALittle.CreateCsvInfo.call(undefined, this.__class.__element[0]); return [undefined, ___VALUE]; } catch (___ERROR) { return [___ERROR.message]; } }).call(this);
+		if (error !== undefined) {
+			ALittle.Error(error);
+		}
+		this._col_map = new Map();
+	},
+	Init : function(file) {
+		if (this._csv_file !== undefined) {
+			this._csv_file.Close();
+		}
+		this._csv_file = file;
+		if (this._csv_file === undefined) {
+			return;
+		}
+		let rflt = this.__class.__element[0];
+		let name_map = {};
+		let ___OBJECT_2 = rflt.name_list;
+		for (let index = 1; index <= ___OBJECT_2.length; ++index) {
+			let name = ___OBJECT_2[index - 1];
+			if (name === undefined) break;
+			name_map[name] = index;
+		}
+		for (let i = 1; i <= this._csv_file.GetColCount(); i += 1) {
+			let name = this._csv_file.ReadCell(1, i);
+			let index = name_map[name];
+			if (index !== undefined) {
+				this._col_map.set(index, i);
+			}
+		}
+		this.onInit();
+	},
+	onInit : function() {
+	},
+	LoadCell : function(row) {
+		let value = {};
+		let ___OBJECT_3 = this._csv_info.handle;
+		for (let index = 1; index <= ___OBJECT_3.length; ++index) {
+			let handle = ___OBJECT_3[index - 1];
+			if (handle === undefined) break;
+			let real = this._col_map.get(index);
+			if (real === undefined) {
+				value[handle.var_name] = handle.func("", handle);
+			} else {
+				value[handle.var_name] = handle.func(this._csv_file.ReadCell(row + 1, real), handle);
+			}
+		}
+		return value;
+	},
+}, "ALittle.CsvTableConfig");
+
 if (ALittle.CsvTableConfig === undefined) throw new Error(" extends class:ALittle.CsvTableConfig is undefined");
 ALittle.SingleKeyTableConfig = JavaScript.Class(ALittle.CsvTableConfig, {
 	Ctor : function() {
 		this._key_map = new Map();
 		this._cache_map = new Map();
 	},
-	get key_map() {
-		return this._key_map;
-	},
-	Init : function(loader) {
-		if (this._csv_file !== undefined) {
-			this._csv_file.Close();
-		}
-		this._csv_file = loader;
-		if (this._csv_file === undefined) {
-			return;
-		}
+	onInit : function() {
 		let rflt = this.__class.__element[0];
 		let key_type = rflt.type_list[1 - 1];
-		let is_number = key_type === "int" || key_type === "double" || key_type === "long";
+		let key_index = this._col_map.get(1);
+		let is_int = key_type === "int" || key_type === "long";
+		let is_double = key_type === "double";
 		let row_count = this._csv_file.GetRowCount();
-		for (let row = 1; row <= row_count; row += 1) {
-			let value = this._csv_file.ReadCell(row, 1);
+		for (let row = 2; row <= row_count; row += 1) {
+			let value = this._csv_file.ReadCell(row, key_index);
 			if (value !== undefined) {
-				if (is_number) {
-					this._key_map.set(lua.tonumber(value), row);
+				if (is_int) {
+					this._key_map.set(ALittle.Math_ToInt(value), row);
+				}
+				if (is_double) {
+					this._key_map.set(ALittle.Math_ToDouble(value), row);
 				} else {
 					this._key_map.set(value, row);
 				}
@@ -166,66 +181,7 @@ ALittle.SingleKeyTableConfig = JavaScript.Class(ALittle.CsvTableConfig, {
 		this._cache_map.set(key, value);
 		return value;
 	},
-	CreateIndex : function(field) {
-		if (this._csv_file === undefined) {
-			return undefined;
-		}
-		let [col_index, is_number] = this.GetFieldInfo(field);
-		if (col_index === 0) {
-			return undefined;
-		}
-		return ALittle.NewObject(JavaScript.Template(ALittle.SingleKeyTableIndexConfig, "ALittle.SingleKeyTableIndexConfig<" + INDEX.__name + ", " + this.__class.__element[1].__name + ", " + this.__class.__element[2].name + ">", INDEX, this.__class.__element[1], this.__class.__element[2]), this, col_index, is_number);
-	},
 }, "ALittle.SingleKeyTableConfig");
-
-ALittle.SingleKeyTableIndexConfig = JavaScript.Class(undefined, {
-	Ctor : function(parent, col_index, is_number) {
-		this._parent = parent;
-		this._value_map = new Map();
-		for (let [key, row] of this._parent.key_map) {
-			if (row === undefined) continue;
-			let value = undefined;
-			if (is_number) {
-				value = lua.tonumber(this._parent.ReadCell(row, col_index));
-			} else {
-				value = this._parent.ReadCell(row, col_index);
-			}
-			let key_set = this._value_map.get(value);
-			if (key_set === undefined) {
-				key_set = new Map();
-				this._value_map.set(value, key_set);
-			}
-			key_set.set(key, true);
-		}
-	},
-	GetKeySet : function(index) {
-		return this._value_map.get(index);
-	},
-	GetOne : function(index) {
-		let keys = this._value_map.get(index);
-		if (keys === undefined) {
-			return undefined;
-		}
-		for (let [k, _] of keys) {
-			if (_ === undefined) continue;
-			return this._parent.GetData(k);
-		}
-	},
-	GetList : function(index) {
-		let list = [];
-		let keys = this._value_map.get(index);
-		if (keys === undefined) {
-			return list;
-		}
-		let count = 0;
-		for (let [k, _] of keys) {
-			if (_ === undefined) continue;
-			++ count;
-			list[count - 1] = this._parent.GetData(k);
-		}
-		return list;
-	},
-}, "ALittle.SingleKeyTableIndexConfig");
 
 if (ALittle.CsvTableConfig === undefined) throw new Error(" extends class:ALittle.CsvTableConfig is undefined");
 ALittle.DoubleKeyTableConfig = JavaScript.Class(ALittle.CsvTableConfig, {
@@ -233,29 +189,32 @@ ALittle.DoubleKeyTableConfig = JavaScript.Class(ALittle.CsvTableConfig, {
 		this._key_map = new Map();
 		this._cache_map = new Map();
 	},
-	Init : function(loader) {
-		if (this._csv_file !== undefined) {
-			this._csv_file.Close();
-		}
-		this._csv_file = loader;
-		if (this._csv_file === undefined) {
-			return;
-		}
+	onInit : function() {
 		let rflt = this.__class.__element[0];
 		let first_key_type = rflt.type_list[1 - 1];
-		let first_is_number = first_key_type === "int" || first_key_type === "double" || first_key_type === "long";
+		let first_key_index = this._col_map.get(1);
+		let first_is_int = first_key_type === "int" || first_key_type === "long";
+		let first_is_double = first_key_type === "double";
 		let second_key_type = rflt.type_list[2 - 1];
-		let second_is_number = second_key_type === "int" || second_key_type === "double" || second_key_type === "long";
+		let second_key_index = this._col_map.get(2);
+		let second_is_int = second_key_type === "int" || second_key_type === "long";
+		let second_is_double = second_key_type === "double";
 		let row_count = this._csv_file.GetRowCount();
-		for (let row = 1; row <= row_count; row += 1) {
+		for (let row = 2; row <= row_count; row += 1) {
 			let tmp = undefined;
-			let value = this._csv_file.ReadCell(row, 1);
+			let value = this._csv_file.ReadCell(row, first_key_index);
 			if (value !== undefined) {
-				if (first_is_number) {
-					tmp = this._key_map.get(lua.tonumber(value));
+				if (first_is_int) {
+					tmp = this._key_map.get(ALittle.Math_ToInt(value));
 					if (tmp === undefined) {
 						tmp = new Map();
-						this._key_map.set(lua.tonumber(value), tmp);
+						this._key_map.set(ALittle.Math_ToInt(value), tmp);
+					}
+				} else if (first_is_double) {
+					tmp = this._key_map.get(ALittle.Math_ToDouble(value));
+					if (tmp === undefined) {
+						tmp = new Map();
+						this._key_map.set(ALittle.Math_ToDouble(value), tmp);
 					}
 				} else {
 					tmp = this._key_map.get(value);
@@ -265,10 +224,12 @@ ALittle.DoubleKeyTableConfig = JavaScript.Class(ALittle.CsvTableConfig, {
 					}
 				}
 			}
-			value = this._csv_file.ReadCell(row, 2);
+			value = this._csv_file.ReadCell(row, second_key_index);
 			if (value !== undefined) {
-				if (second_is_number) {
-					tmp.set(lua.tonumber(value), row);
+				if (second_is_int) {
+					tmp.set(ALittle.Math_ToInt(value), row);
+				} else if (second_is_double) {
+					tmp.set(ALittle.Math_ToDouble(value), row);
 				} else {
 					tmp.set(value, row);
 				}

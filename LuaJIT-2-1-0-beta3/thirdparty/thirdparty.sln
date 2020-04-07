@@ -15,6 +15,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "base64", "base64\base64.vcx
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "utf8", "utf8\utf8.vcxproj", "{F7A8C1D6-0108-4767-B03D-C86A2A65B38C}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "csv", "csv\csv.vcxproj", "{BF43AD0A-E4F9-4C1C-97BB-C16F5907E054}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -71,6 +73,14 @@ Global
 		{F7A8C1D6-0108-4767-B03D-C86A2A65B38C}.Release|x64.Build.0 = Release|x64
 		{F7A8C1D6-0108-4767-B03D-C86A2A65B38C}.Release|x86.ActiveCfg = Release|Win32
 		{F7A8C1D6-0108-4767-B03D-C86A2A65B38C}.Release|x86.Build.0 = Release|Win32
+		{BF43AD0A-E4F9-4C1C-97BB-C16F5907E054}.Debug|x64.ActiveCfg = Debug|x64
+		{BF43AD0A-E4F9-4C1C-97BB-C16F5907E054}.Debug|x64.Build.0 = Debug|x64
+		{BF43AD0A-E4F9-4C1C-97BB-C16F5907E054}.Debug|x86.ActiveCfg = Debug|Win32
+		{BF43AD0A-E4F9-4C1C-97BB-C16F5907E054}.Debug|x86.Build.0 = Debug|Win32
+		{BF43AD0A-E4F9-4C1C-97BB-C16F5907E054}.Release|x64.ActiveCfg = Release|x64
+		{BF43AD0A-E4F9-4C1C-97BB-C16F5907E054}.Release|x64.Build.0 = Release|x64
+		{BF43AD0A-E4F9-4C1C-97BB-C16F5907E054}.Release|x86.ActiveCfg = Release|Win32
+		{BF43AD0A-E4F9-4C1C-97BB-C16F5907E054}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

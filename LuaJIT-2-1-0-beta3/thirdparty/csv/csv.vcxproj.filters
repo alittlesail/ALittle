@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="csvlib.h" />
+    <ClInclude Include="csv.h" />
+    <ClInclude Include="..\klib\kstring.h" />
+    <ClInclude Include="..\klib\kvec.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="csvlib.c" />
+    <ClCompile Include="csv.c" />
+    <ClCompile Include="..\klib\kstring.c" />
+  </ItemGroup>
+</Project>

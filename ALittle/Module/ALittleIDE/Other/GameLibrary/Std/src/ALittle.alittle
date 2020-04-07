@@ -12,7 +12,14 @@ public async static __ALITTLEAPI_Std_Init(string base_path)
     {
         Require(base_path.."Adapter/JavaScript/Timer");
         Require(base_path.."Adapter/JavaScript/FileSystem");
+        Require(base_path.."Adapter/JavaScript/JCsvFile");
         Require(base_path.."../../JSNative/md5.min");
+    }
+    
+    [Language(Lua)]
+    {
+        Require(base_path.."Adapter/Lua/HeapTimer");
+        Require(base_path.."Adapter/Lua/LuaCsvFile");
     }
     
     Require(base_path.."Std/Loop/LoopObject");

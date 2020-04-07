@@ -149,5 +149,17 @@
     <None Include="src\Adapter\JavaScript\md5.alittle">
       <Filter>Adapter\JavaScript</Filter>
     </None>
+    <None Include="src\Adapter\JavaScript\JHttpInterface.alittle">
+      <Filter>Adapter\JavaScript</Filter>
+    </None>
+    <None Include="src\Adapter\JavaScript\JHttpFileInterface.alittle">
+      <Filter>Adapter\JavaScript</Filter>
+    </None>
+    <None Include="src\Adapter\JavaScript\JMsgInterface.alittle">
+      <Filter>Adapter\JavaScript</Filter>
+    </None>
+    <None Include="src\Adapter\JavaScript\JMessageFactory.alittle">
+      <Filter>Adapter\JavaScript</Filter>
+    </None>
   </ItemGroup>
 </Project>

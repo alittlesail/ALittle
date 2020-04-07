@@ -58,15 +58,6 @@
     <None Include="src\Adapter\Lua\HttpInterface.alittle">
       <Filter>Adapter\Lua</Filter>
     </None>
-    <None Include="src\Adapter\JavaScript\JMsgInterface.alittle">
-      <Filter>Adapter\JavaScript</Filter>
-    </None>
-    <None Include="src\Adapter\JavaScript\JHttpInterface.alittle">
-      <Filter>Adapter\JavaScript</Filter>
-    </None>
-    <None Include="src\Adapter\JavaScript\JMessageFactory.alittle">
-      <Filter>Adapter\JavaScript</Filter>
-    </None>
     <None Include="src\CEngine\LoopSystem\LoopLinear.alittle">
       <Filter>CEngine\LoopSystem</Filter>
     </None>
@@ -309,9 +300,6 @@
       <Filter>CEngine\Utility</Filter>
     </None>
     <None Include="src\Adapter\JavaScript\JCsvLoader.alittle">
-      <Filter>Adapter\JavaScript</Filter>
-    </None>
-    <None Include="src\Adapter\JavaScript\JHttpFileInterface.alittle">
       <Filter>Adapter\JavaScript</Filter>
     </None>
     <None Include="src\CEngine\UISystem\IShow.alittle">

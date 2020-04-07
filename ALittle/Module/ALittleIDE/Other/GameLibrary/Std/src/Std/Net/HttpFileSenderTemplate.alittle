@@ -10,7 +10,9 @@ public class IHttpFileSenderNative
     // download 为true表示下载，false表示上传
     // start_size 文件的起始位置
     public fun SetURL(string url, string file_path, bool download, int start_size) {}
-    public fun Start() {}                   // 开始请求
+    public fun Start(Functor<(ALittle.IHttpFileSenderNative, string)> failed_callback
+                    , Functor<(ALittle.IHttpFileSenderNative)> succeed_callback
+                    , Functor<(ALittle.IHttpFileSenderNative)> process_callback) {}                   // 开始请求
     public fun Stop() {}                    // 结束请求
     public fun GetPath() : string { return ""; }        // 获取文件路径
     public fun GetCurrentSize() : int { return 0; }    // 获取已上传的文件大小

@@ -23,6 +23,19 @@ ALittle.ICsvFile = JavaScript.Class(undefined, {
 	},
 }, "ALittle.ICsvFile");
 
+ALittle.ICsvFileLoader = JavaScript.Class(undefined, {
+	Start : function() {
+	},
+	SetPath : function(file_path, only_from_asset, headers) {
+	},
+	GetPath : function() {
+		return undefined;
+	},
+	GetID : function() {
+		return undefined;
+	},
+}, "ALittle.ICsvFileLoader");
+
 ALittle.CsvConfig = JavaScript.Class(undefined, {
 	Load : function(file_path) {
 		let js_file = ALittle.NewObject(JavaScript.JCsvFile);

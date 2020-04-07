@@ -20,7 +20,7 @@ ALittle.IMsgCommonNative = JavaScript.Class(undefined, {
 	GetID : function() {
 		return 0;
 	},
-	Connect : function(ip, port) {
+	Connect : function(ip, port, conn_succeed, conn_failed, disconnected, message) {
 	},
 	IsConnected : function() {
 		return false;

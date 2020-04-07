@@ -101,6 +101,11 @@ public class JMsgInterface : ALittle.IMsgCommonNative
     private string _ip;
     private int _port;
     
+    private Functor<(ALittle.IMsgCommonNative)> _conn_succeed;
+    private Functor<(ALittle.IMsgCommonNative)> _conn_failed;
+    private Functor<(ALittle.IMsgCommonNative)> _disconnected;
+    private Functor<(int, int, ALittle.IMessageReadFactory, ALittle.IMsgCommonNative)> _message;
+    
     public ctor()
     {
         this._net_status = JConnectStatus.NET_IDLE;
@@ -111,7 +116,11 @@ public class JMsgInterface : ALittle.IMsgCommonNative
     
     public fun SetID(int id) {}         // 设置连接对象全局ID
     public fun GetID() : int { return 0; }         // 获取连接对象全局ID
-    public fun Connect(string ip, int port)
+    public fun Connect(string ip, int port
+                      , Functor<(ALittle.IMsgCommonNative)> conn_succeed
+                      , Functor<(ALittle.IMsgCommonNative)> conn_failed
+                      , Functor<(ALittle.IMsgCommonNative)> disconnected
+                      , Functor<(int, int, ALittle.IMessageReadFactory, ALittle.IMsgCommonNative)> message)
     {
         if (this._net_status == JConnectStatus.NET_CONNECTED)
             this.Close();
@@ -121,6 +130,11 @@ public class JMsgInterface : ALittle.IMsgCommonNative
             ALittle.Warn("net system already connecting:"..this._ip..":"..this._port);
             return;
         }
+        
+        this._conn_succeed = conn_succeed;
+        this._conn_failed = conn_failed;
+        this._disconnected = disconnected;
+        this._message = message;
         
         var url = "ws://"..ip..":"..port;
 		
@@ -150,9 +164,8 @@ public class JMsgInterface : ALittle.IMsgCommonNative
 		if (this._net_status != JConnectStatus.NET_CONNECTING) return;
 		
 		this._net_status = JConnectStatus.NET_CONNECTED;
-		var func = cast<Map<string, Functor<(ALittle.IMsgCommonNative)>>>(window)["__ALITTLEAPI_ConnectSucceed"];
-		if (func == null) return;
-		func(this);
+        if (this._conn_succeed != null)
+            this._conn_succeed(this);
 	}
     
     private fun HandleNetSystemClose(javascript.WebSocketOnCloseEvent event)
@@ -162,21 +175,19 @@ public class JMsgInterface : ALittle.IMsgCommonNative
 		this._net_status = JConnectStatus.NET_IDLE;
 		this._net_system = null;
         
-		var func = cast<Map<string, Functor<(ALittle.IMsgCommonNative)>>>(window)["__ALITTLEAPI_Disconnect"];
-		if (func == null) return;
-		func(this);
+        if (this._disconnected != null)
+            this._disconnected(this);
     }
     
     private fun HandleNetSystemError(javascript.WebSocketOnErrorEvent event)
     {
 		if (this._net_status != JConnectStatus.NET_CONNECTING) return;
-
+        
 		this._net_status = JConnectStatus.NET_IDLE;
 		this._net_system = null;
         
-		var func = cast<Map<string, Functor<(ALittle.IMsgCommonNative)>>>(window)["__ALITTLEAPI_ConnectFailed"];
-		if (func == null) return;
-		func(this);
+        if (this._conn_failed != null)
+            this._conn_failed(this);
     }
                                           
     private fun HandleNetSystemMessage(javascript.WebSocketOnMessageEvent event)
@@ -195,9 +206,8 @@ public class JMsgInterface : ALittle.IMsgCommonNative
             var rpc_id = factory.ReadInt();
             factory.SetID(id);
             factory.SetRpcID(rpc_id);
-		    var func = cast<Map<string, Functor<(int, int, ALittle.IMessageReadFactory, ALittle.IMsgCommonNative)>>>(window)["__ALITTLEAPI_Message"];
-		    if (func == null) return;
-		    func(id, rpc_id, factory, this);
+            if (this._message != null)
+                this._message(id, rpc_id, factory, this);
 		}
         this._net_buffer.Optimizes();
 	}   

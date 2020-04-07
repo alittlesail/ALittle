@@ -5,7 +5,8 @@ public class IHttpSenderNative
 {
     public fun GetID() : int { return 0; }                         // 获取HttpSender的全局ID
     public fun SetURL(string url, string content) {}    // 设置请求数据，url是请求路径，如果content不为null，那么就是post请求
-    public fun Start() {}                               // 开始请求
+    public fun Start(Functor<(ALittle.IHttpSenderNative, string)> failed_callback
+                    , Functor<(ALittle.IHttpSenderNative)> succeed_callback) {}                               // 开始请求
     public fun Stop() {}                                // 停止请求
     public fun GetResponse() : string { return null;}                // 获取请求结果
 }

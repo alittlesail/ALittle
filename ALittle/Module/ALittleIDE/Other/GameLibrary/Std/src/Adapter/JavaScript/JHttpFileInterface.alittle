@@ -11,6 +11,9 @@ public class JHttpFileInterface : ALittle.IHttpFileSenderNative
     private string _file_path;
     private bool _download;
     private javascript.XMLHttpRequest _request;
+    private Functor<(ALittle.IHttpFileSenderNative, string)> _failed_callback;
+    private Functor<(ALittle.IHttpFileSenderNative)> _succeed_callback;
+    private Functor<(ALittle.IHttpFileSenderNative)> _process_callback;
     
     private int _cur_size;
     private int _total_size;
@@ -24,17 +27,33 @@ public class JHttpFileInterface : ALittle.IHttpFileSenderNative
     }
     public fun GetID() : int { return this._id; }
     
-    // 如果是下载，那么file_path必须要
-    // 如果是上传，file_path表示上传内容
-    // start_size不支持
+    // start_size暂时不支持
     public fun SetURL(string url, string file_path, bool download, int start_size)
     {
         this._url = url;
         this._file_path = file_path;
         this._download = download;
     }
-    public fun Start()
+    public fun Start(Functor<(ALittle.IHttpFileSenderNative, string)> failed_callback
+                    , Functor<(ALittle.IHttpFileSenderNative)> succeed_callback
+                    , Functor<(ALittle.IHttpFileSenderNative)> process_callback)
     {
+        var content:string;
+        if (!this._download)
+        {
+            content = File_LoadFile(this._file_path);
+            if (content == null)
+            {
+                if (failed_callback != null)
+                    failed_callback(this, "file is not exist:" .. this._file_path);
+                return;
+            }
+        }
+        
+        this._failed_callback = failed_callback;
+        this._succeed_callback = succeed_callback;
+        this._process_callback = process_callback;
+            
         this._request = new javascript.XMLHttpRequest();
         if (this._download)
             this._request.open("GET", this._url, true);
@@ -46,6 +65,7 @@ public class JHttpFileInterface : ALittle.IHttpFileSenderNative
 		this._request.ontimeout = error_func;
         this._request.onload = bind(this.HandleStartCompleted, this);
         this._request.onprogress = bind(this.HandleOnProgress, this);
+        
         if (this._download)
             this._request.send(null);
         else
@@ -65,24 +85,29 @@ public class JHttpFileInterface : ALittle.IHttpFileSenderNative
     
     private fun HandleAjaxError()
 	{
-		var func = cast<Map<string, Functor<(ALittle.IHttpFileSenderNative, string)>>>(window)["__ALITTLEAPI_HttpFileFailed"];
-		if (func == null) return;
-		func(this, this._request.statusText);
+        if (this._failed_callback != null)
+            this._failed_callback(this, this._request.statusText);
 	}
     
 	private fun HandleStartCompleted()
 	{
-		var func = cast<Map<string, Functor<(ALittle.IHttpFileSenderNative)>>>(window)["__ALITTLEAPI_HttpFileSucceed"];
-		if (func == null) return;
-		func(this);
+        if (this._download && !File_SaveFile(this._file_path, this._request.responseText))
+        {
+            if (this._failed_callback != null)
+                this._failed_callback(this, "file save failed:" .. this._file_path);
+            return;
+        }
+        
+        if (this._succeed_callback != null)
+            this._succeed_callback(this);
 	}
+    
     private fun HandleOnProgress(javascript.XMLHttpRequestOnProgressEvent event)
     {
         this._cur_size = event.loaded;
         this._total_size = event.total;
         
-		var func = cast<Map<string, Functor<(ALittle.IHttpFileSenderNative)>>>(window)["__ALITTLEAPI_HttpFileProcess"];
-		if (func == null) return;
-		func(this);
+        if (this._process_callback != null)
+            this._process_callback(this);
     }
 }

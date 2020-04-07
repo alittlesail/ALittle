@@ -10,7 +10,7 @@
 static int csvlib_destroy(lua_State* L)
 {
     csv* c = (csv*)lua_touserdata(L, 1);
-    if (c) csv_destroy(c);
+    if (c) csv_clear(c);
     return 0;
 }
 

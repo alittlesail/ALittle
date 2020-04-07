@@ -50,6 +50,8 @@ void csv_clear(csv* c)
     }
     kv_destroy(c->data);
     kv_init(c->data);
+    c->row_count = 0;
+    c->col_count = 0;
 }
 
 #define END_OF_FILE 0

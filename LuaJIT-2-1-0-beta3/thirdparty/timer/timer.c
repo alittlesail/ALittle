@@ -19,7 +19,7 @@ void timer_init(timer* ts)
     ts->pool_count = 0;
 }
 
-void timer_destroy(timer* ts)
+void timer_clear(timer* ts)
 {
     mini_heap_destory(ts->heap);
     for (khint_t k = kh_begin(ts->map); k != kh_end(ts->map); ++k)
@@ -35,6 +35,11 @@ void timer_destroy(timer* ts)
         ts->pool = next;
     }
     ts->pool_count = 0;
+}
+
+void timer_destroy(timer* ts)
+{
+    timer_clear(ts);
     free(ts);
 }
 

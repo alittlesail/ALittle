@@ -10,7 +10,7 @@
 static int timerlib_destroy(lua_State* L)
 {
     timer* ts = (timer*)lua_touserdata(L, 1);
-    if (ts) timer_destroy(ts);
+    if (ts) timer_clear(ts);
     return 0;
 }
 

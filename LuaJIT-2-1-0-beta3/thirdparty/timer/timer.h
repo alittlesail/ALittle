@@ -20,6 +20,7 @@ typedef struct
 
 timer* timer_create();
 void timer_init(timer* ts);
+void timer_clear(timer* ts);
 void timer_destroy(timer* ts);
 
 // Ìí¼Ó¶¨Ê±Æ÷

@@ -33,8 +33,11 @@
     <None Include="src\Adapter\Lua\json.alittle" />
     <None Include="src\Adapter\Lua\lfs.alittle" />
     <None Include="src\Adapter\Lua\LuaCsvFile.alittle" />
+    <None Include="src\Adapter\Lua\LuaHttpFileInterface.alittle" />
+    <None Include="src\Adapter\Lua\LuaHttpInterface.alittle" />
     <None Include="src\Adapter\Lua\md5.alittle" />
     <None Include="src\Adapter\Lua\MessageFactory.alittle" />
+    <None Include="src\Adapter\Lua\net.alittle" />
     <None Include="src\Adapter\Lua\ScriptInterface.alittle" />
     <None Include="src\Adapter\Lua\timer.alittle" />
     <None Include="src\Adapter\Lua\utf8.alittle" />

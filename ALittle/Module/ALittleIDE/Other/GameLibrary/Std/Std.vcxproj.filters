@@ -161,5 +161,14 @@
     <None Include="src\Adapter\JavaScript\JMessageFactory.alittle">
       <Filter>Adapter\JavaScript</Filter>
     </None>
+    <None Include="src\Adapter\Lua\net.alittle">
+      <Filter>Adapter\Lua</Filter>
+    </None>
+    <None Include="src\Adapter\Lua\LuaHttpInterface.alittle">
+      <Filter>Adapter\Lua</Filter>
+    </None>
+    <None Include="src\Adapter\Lua\LuaHttpFileInterface.alittle">
+      <Filter>Adapter\Lua</Filter>
+    </None>
   </ItemGroup>
 </Project>

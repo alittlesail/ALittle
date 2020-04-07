@@ -1,0 +1,57 @@
+
+[Language(Lua)]
+namespace Lua;
+
+private var __LUAHTTP_MAXID:int = 0;
+
+public class LuaHttpInterface : ALittle.IHttpSenderNative
+{
+    private int _id;
+    private string _url;
+    private string _content;
+    private lua.net _net;
+    private string _response;
+    private Functor<(ALittle.IHttpSenderNative, string)> _failed_callback;
+    private Functor<(ALittle.IHttpSenderNative)> _succeed_callback;
+    
+    public ctor()
+    {
+        ++ __LUAHTTP_MAXID;
+        this._id = __LUAHTTP_MAXID;
+    }
+    public fun GetID() : int { return this._id; }
+    public fun SetURL(string url, string content)
+    {
+        this._url = url;
+        this._content = content;
+    }
+    public fun Start(Functor<(ALittle.IHttpSenderNative, string)> failed_callback
+                    , Functor<(ALittle.IHttpSenderNative)> succeed_callback)
+    {
+        this._failed_callback = failed_callback;
+        this._succeed_callback = succeed_callback;
+        this._net = lua.net.create();
+        if (this._content == null)
+            lua.net.get(this._net, this._id, this._url);
+        else
+            lua.net.post(this._net, this._id, this._url, "application/json", this._content);
+    }
+    public fun Stop()
+    {
+        if (this._net != null)
+            lua.net.stop(this._net, this._id);
+    }
+    public fun GetResponse() : string { return this._response; }                // 获取请求结果
+    
+    private fun HandleError(string reason)
+	{
+        if (this._failed_callback != null)
+            this._failed_callback(this, reason);
+	}
+    
+	private fun HandleStartCompleted()
+	{
+        if (this._succeed_callback != null)
+            this._succeed_callback(this);
+	}
+}

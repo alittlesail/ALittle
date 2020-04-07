@@ -1,0 +1,37 @@
+
+register namespace lua;
+
+public enum net_type
+{
+	HTTP_SUCCEED = 1;
+	HTTP_FAILED = 2;
+    
+	HTTP_FILE_SUCCEED = 11;
+	HTTP_FILE_FAILED = 12;
+	HTTP_FILE_PROGRESS = 13;
+}
+
+public struct net_event
+{
+    int type;
+    int id;
+    int cur_size;
+    int total_size;
+    string content;
+}
+
+public class net
+{
+    public static create() : net {}
+    
+    // 如果返回null，表示所有net全部处理结束
+    public static poll() : net_event {}
+    
+    public static get(net c, int id, string url) {}
+    public static post(net c, int id, string url, string type, string content) {}
+    public static download(net c, int id, string url, string file_path) {}
+    public static upload(net c, int id, string url, string file_path) {}
+    public static stop(net c, int id) {}
+    
+    public static exit(net c) {}
+}

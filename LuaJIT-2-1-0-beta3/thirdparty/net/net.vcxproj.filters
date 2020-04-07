@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="HttpSystem">
+      <UniqueIdentifier>{36f73d2d-a73d-44b4-8ce8-4cb3be97b7f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Helper">
+      <UniqueIdentifier>{d75725ce-6052-41e0-88ec-2fd14e7475ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ClientSystem">
+      <UniqueIdentifier>{c24354e6-3bea-4199-a3dc-6cd90ede42d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ServerSystem">
+      <UniqueIdentifier>{df361453-9c51-4663-a137-708919aa3396}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="HttpSystem\HttpClientText.cpp">
+      <Filter>HttpSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpSystem\HttpClientPost.cpp">
+      <Filter>HttpSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Helper\StringHelper.cpp">
+      <Filter>Helper</Filter>
+    </ClCompile>
+    <ClCompile Include="Helper\HttpHelper.cpp">
+      <Filter>Helper</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerSystem\ServerSchedule.cpp">
+      <Filter>ServerSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="netlib.c" />
+    <ClCompile Include="net.cpp" />
+    <ClCompile Include="Helper\FileHelper.cpp">
+      <Filter>Helper</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="HttpSystem\HttpClientText.h">
+      <Filter>HttpSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpSystem\HttpClientPost.h">
+      <Filter>HttpSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Helper\StringHelper.h">
+      <Filter>Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="Helper\SocketWrap.h">
+      <Filter>Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="Helper\HttpHelper.h">
+      <Filter>Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerSystem\ServerSchedule.h">
+      <Filter>ServerSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="netlib.h" />
+    <ClInclude Include="net.h" />
+    <ClInclude Include="Helper\FileHelper.h">
+      <Filter>Helper</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

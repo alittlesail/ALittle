@@ -187,10 +187,12 @@ void HttpClientText::HandleSocketConnect(const asio::error_code& ec
 	if (!ec)
 	{
 		SOCKETHELPER_AfterAsyncConnect(m_socket);
+#ifdef ALITTLE_HAS_SSL
 		if (m_socket->ssl_socket)
 			m_socket->ssl_socket->async_handshake(asio::ssl::stream<asio::ip::tcp::socket>::client
 				, std::bind(&HttpClientText::HandleSSLHandShake, this->shared_from_this(), std::placeholders::_1));
 		else
+#endif
 			HandleSSLHandShake(asio::error_code());
 	}  
 	else if (endpoint_iterator != asio::ip::tcp::resolver::iterator())  

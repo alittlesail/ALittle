@@ -3,9 +3,13 @@
 #define _ALITTLE_SOCKETWRAP_H_
 
 #include <asio.hpp>
+#ifdef _WIN32
 #include <asio/ssl.hpp>
+#define ALITTLE_HAS_SSL
+#endif
 
 #include <functional>
+#include <string>
 #include <memory>
 
 namespace ALittle
@@ -15,10 +19,10 @@ typedef std::shared_ptr<asio::io_service> ServicePtr;
 typedef std::shared_ptr<asio::ip::tcp::resolver> ResolverPtr;
 
 typedef std::shared_ptr<asio::ip::tcp::socket> NTVSocketPtr;
-typedef std::shared_ptr<asio::ssl::stream<asio::ip::tcp::socket> > SSLSocketPtr;
-
 typedef std::shared_ptr<asio::ip::tcp::acceptor> AcceptorPtr;
 
+#ifdef ALITTLE_HAS_SSL
+typedef std::shared_ptr<asio::ssl::stream<asio::ip::tcp::socket> > SSLSocketPtr;
 class ALittleSocket
 {
 public:
@@ -173,6 +177,98 @@ do { \
 	else \
 		result = self->ssl_socket->lowest_layer().remote_endpoint().port(); \
 } while(0)
+#else
+class ALittleSocket
+{
+public:
+	ALittleSocket(bool is_ssl, asio::io_service* service, const std::string& domain)
+	{
+		ntv_socket = NTVSocketPtr(new asio::ip::tcp::socket(*service));
+	}
+
+	ALittleSocket(bool is_ssl, asio::io_service* service)
+	{
+		ntv_socket = NTVSocketPtr(new asio::ip::tcp::socket(*service));
+	}
+
+	~ALittleSocket() {}
+
+public:
+	NTVSocketPtr ntv_socket;
+};
+typedef std::shared_ptr<ALittleSocket> ALittleSocketPtr;
+
+#define SOCKETHELPER_Connect(self, it, ec) \
+do { \
+	self->ntv_socket->connect(*it, ec); \
+} while (0)
+
+#define SOCKETHELPER_IsOpen(self, result) \
+do { \
+	result = self->ntv_socket->is_open(); \
+} while (0)
+
+#define SOCKETHELPER_SetNoDelay(self) \
+do { \
+	self->ntv_socket->set_option(asio::ip::tcp::no_delay(true)); \
+} while (0)
+
+#define SOCKETHELPER_AfterConnect(self) \
+do { \
+	self->ntv_socket->lowest_layer().set_option(asio::ip::tcp::no_delay(true)); \
+} while (0)
+
+#define SOCKETHELPER_AfterAsyncConnect(self) \
+do { \
+	self->ntv_socket->lowest_layer().set_option(asio::ip::tcp::no_delay(true)); \
+} while (0)
+
+#define SOCKETHELPER_Close(self) \
+do { \
+	asio::error_code ec; \
+	self->ntv_socket->close(ec); \
+} while (0)
+
+#define SOCKETHELPER_Write(self, content, size, ec) \
+do { \
+	asio::write(*self->ntv_socket, asio::buffer(content, size), ec); \
+} while (0)
+
+#define SOCKETHELPER_ReadSome(self, content, size, ec, result) \
+do { \
+	result = self->ntv_socket->read_some(asio::buffer(content, size), ec); \
+} while (0)
+
+#define SOCKETHELPER_AsyncConnect(self, it, callback) \
+do { \
+	self->ntv_socket->async_connect(*it, callback); \
+} while(0)
+
+#define SOCKETHELPER_AsyncWrite(self, content, size, callback) \
+do { \
+	asio::async_write(*self->ntv_socket, asio::buffer(content, size), callback); \
+} while(0)
+
+#define SOCKETHELPER_AsyncReadSome(self, content, size, callback) \
+do { \
+	self->ntv_socket->async_read_some(asio::buffer(content, size), callback); \
+} while(0)
+
+#define SOCKETHELPER_AsyncAccept(self, acceptor, callback) \
+do { \
+	acceptor->async_accept(*self->ntv_socket, callback); \
+} while(0)
+
+#define SOCKETHELPER_GetRemoteIp(self, result) \
+do { \
+	result = self->ntv_socket->remote_endpoint().address().to_string(); \
+} while(0)
+
+#define SOCKETHELPER_GetRemotePort(self, result) \
+do { \
+	result = self->ntv_socket->remote_endpoint().port(); \
+} while(0)
+#endif
 
 } // ALittle
 

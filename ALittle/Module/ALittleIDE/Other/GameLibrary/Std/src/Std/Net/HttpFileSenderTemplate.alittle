@@ -53,7 +53,14 @@ public class HttpFileSenderTemplate<NATIVE : IHttpFileSenderNative> : IHttpFileS
             this._start_size = 0;
 
         // 设置URL
-        var url = "http://"..this._ip..":"..this._port.."/"..method;
+        var url = this._ip..":"..this._port.."/"..method;
+        if (String_Find(this._ip, "http://") != 1 && String_Find(this._ip, "https://") != 1)
+        {
+            if (this._port == 443)
+                url = "https://"..url;
+            else
+                url = "http://"..url;
+        }
         this._interface.SetURL(this.HttpUrlAppendParamMap(url, content), this._file_path, true, this._start_size);
         this._interface.Start();
     }
@@ -113,6 +120,8 @@ public class HttpFileSenderTemplate<NATIVE : IHttpFileSenderNative> : IHttpFileS
     // 拼接url
     private fun HttpUrlAppendParamMap(string url, Map<string, any> param) : string
     {
+        if (param == null) return url;
+        
         var list = new List<string>();
         var count = 0;
         for (var key, value in param)
@@ -149,4 +158,27 @@ public static __ALITTLEAPI_HttpFileProcess(int id, int cur_size, int total_size)
     var client = __HttpFileSenderMap[id];
     if (client == null) return;
     client.HandleProcess(cur_size, total_size);
+}
+
+public await static DownloadFile(string ip, int port, string method, string file_path) : string
+{
+    var sender:IHttpFileSender;
+    [Language(Lua)]
+    sender = new HttpFileSenderTemplate<Lua.LuaHttpFileInterface>(ip, port, file_path, 0);
+    [Language(JavaScript)]
+    sender = new HttpFileSenderTemplate<JavaScript.JHttpFileInterface>(ip, port, file_path, 0);
+    
+    return IHttpFileSender.InvokeDownload(method, sender, null);
+}
+
+public await static UploadFile(string ip, int port, string method, string file_path) : string
+{
+    var sender:IHttpFileSender;
+    [Language(Lua)]
+    sender = new HttpFileSenderTemplate<Lua.LuaHttpFileInterface>(ip, port, file_path, 0);
+    [Language(JavaScript)]
+    sender = new HttpFileSenderTemplate<JavaScript.JHttpFileInterface>(ip, port, file_path, 0);
+    
+    var error = IHttpFileSender.InvokeUpload(method, sender, null);
+    return error;
 }

@@ -14,7 +14,7 @@ end
 function IHttpFileSender:HandleSucceed()
 end
 
-function IHttpFileSender:HandleProcess()
+function IHttpFileSender:HandleProcess(cur_size, total_size)
 end
 
 function IHttpFileSender:HandleFailed(reason)

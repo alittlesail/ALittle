@@ -31,7 +31,14 @@ public class HttpSenderTemplate<NATIVE : IHttpSenderNative> : IHttpSender
         this._thread = thread;
         __HttpSenderMap[this._interface.GetID()] = this;
         
-        var url = "http://"..this._ip..":"..this._port.."/"..method;
+        var url = this._ip..":"..this._port.."/"..method;
+        if (String_Find(this._ip, "http://") != 1 && String_Find(this._ip, "https://") != 1)
+        {
+            if (this._port == 443)
+                url = "https://"..url;
+            else
+                url = "http://"..url;
+        }   
         if (content == null)
             this._interface.SetURL(url, null);
         else

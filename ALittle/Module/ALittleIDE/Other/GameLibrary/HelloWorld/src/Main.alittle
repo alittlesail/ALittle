@@ -1,6 +1,18 @@
 namespace HelloWorld;
 
+public async static DownloadTest()
+{
+    var error = ALittle.DownloadFile("marketplace.visualstudio.com", 443, "items?itemName=AProtobuf.ALittleAProtobuf", "text.txt");
+    if (error != null)
+        ALittle.Log(error);
+    else
+        ALittle.Log("download succeed");
+}
+
 public static Main()
 {
     ALittle.Log("HelloWorld");
+    
+    DownloadTest();
+    A_Schedule.Run();
 }

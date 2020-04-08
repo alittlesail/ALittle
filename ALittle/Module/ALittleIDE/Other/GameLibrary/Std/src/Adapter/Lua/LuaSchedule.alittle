@@ -33,8 +33,7 @@ public class LuaSchedule : ALittle.ISchedule
     // 在Lua版本下Run直接阻塞，等待所有事件全部处理完毕才退出
     public fun Run()
     {
-        if (this._net == null) return;
-        
+        lua.net.timer(this._net, 2000);
         while (true)
         {
             var event = lua.net.poll(this._net);
@@ -44,13 +43,14 @@ public class LuaSchedule : ALittle.ISchedule
             {
                 if (this._last_time != null)
                     A_LuaLoopSystem.Update(event.time - this._last_time);
-                this._last_time = event.time;                
-                lua.net.timer(this._net, 15);
+                this._last_time = event.time;
+                lua.net.timer(this._net, 2000);
             }
             elseif (event.type == net_type.MSG_MESSAGE)
             {
                 this._factory.SetFactory(event.factory);
                 ALittle.__ALITTLEAPI_Message(event.id, event.msg_id, event.rpc_id, this._factory);
+                lua.net.rfactoryrelease(this._net, event.factory);
             }
             elseif (event.type == net_type.HTTP_SUCCEED)
             {

@@ -75,6 +75,7 @@ public class net
     public static wfactorywritedouble(write_factory factory, double value) : int {}
     
     // 反序列化相关接口
+    public static rfactoryrelease(net c, read_factory factory) {}
     public static rfactorygettotalsize(read_factory factory) : int {}
     public static rfactoryreadbool(read_factory factory) : bool {}
     public static rfactoryreadint(read_factory factory) : int {}

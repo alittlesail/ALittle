@@ -6,14 +6,12 @@ public class ISchedule
     // 在Lua版本下Run直接阻塞，等待所有事件全部处理完毕才退出
     // 在JS版本下Run不阻塞，因为JS有自己的事件系统
     public fun Run() {}
+    
+    public static Instance() : ISchedule
+    {
+        [Language(Lua)]
+        return A_LuaSchedule;
+        [Language(JavaScript)]
+        return A_JSchedule;
+    }
 }
-
-private static GetSchedule() : ISchedule
-{
-    [Language(Lua)]
-    return A_LuaSchedule;
-    [Language(JavaScript)]
-    return A_JSchedule;
-}
-
-public var A_Schedule = GetSchedule();

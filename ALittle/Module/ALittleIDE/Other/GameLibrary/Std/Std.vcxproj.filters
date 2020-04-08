@@ -179,5 +179,8 @@
     <None Include="src\Std\Utility\ISchedule.alittle">
       <Filter>Std\Utility</Filter>
     </None>
+    <None Include="src\Adapter\Lua\dump.alittle">
+      <Filter>Adapter\Lua</Filter>
+    </None>
   </ItemGroup>
 </Project>

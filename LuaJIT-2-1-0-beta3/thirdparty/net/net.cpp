@@ -14,10 +14,15 @@ net* net_create()
 void net_init(net* c)
 {
     c->schedule = new ALittle::ServerSchedule();
-    c->events = 0;
     c->wait_count = 0;
-    c->pool = 0;
-    c->pool_count = 0;
+    
+    c->events = 0;
+    c->events_pool = 0;
+    c->events_pool_count = 0;
+
+    c->rfactorys = 0;
+    c->rfactorys_pool = 0;
+    c->rfactorys_pool_count = 0;
 }
 
 void net_clear(net* c)
@@ -31,13 +36,21 @@ void net_clear(net* c)
         c->events = c->events->next;
         net_freeevent(event);
     }
-    while (c->pool)
+    while (c->events_pool)
     {
-        net_event* event = c->pool;
-        c->pool = c->pool->next;
+        net_event* event = c->events_pool;
+        c->events_pool = c->events_pool->next;
         net_freeevent(event);
     }
-    c->pool_count = 0;
+    c->events_pool_count = 0;
+
+    while (c->rfactorys_pool)
+    {
+        read_factory* rfactory = c->rfactorys_pool;
+        c->rfactorys_pool = c->rfactorys_pool->next;
+        net_freerfactory(rfactory);
+    }
+    c->rfactorys_pool_count = 0;
 }
 
 void net_destroy(net* c)
@@ -62,7 +75,8 @@ net_event* net_runone(net* c)
     }
 
     ALittle::ServerSchedule* schedule = (ALittle::ServerSchedule*)(c->schedule);
-    while ((c->wait_count > 0 || schedule->GetConnectCount() > 0) && c->events == 0)
+    while ((c->wait_count > 0 || schedule->GetConnectCount() > 0)
+        && c->events == 0 && !schedule->IsExit())
         schedule->RunOne();
 
     if (c->events)
@@ -87,6 +101,7 @@ void net_clearevent(net_event* event)
         free(event->error->s);
         free(event->error);
     }
+    event->rfactory = 0;
 }
 
 void net_freeevent(net_event* event)
@@ -97,28 +112,89 @@ void net_freeevent(net_event* event)
 
 net_event* net_createevent(net* c)
 {
-    if (c->pool_count == 0)
+    if (c->events_pool_count == 0)
         return (net_event*)calloc(1, sizeof(net_event));
 
-    net_event* event = c->pool;
-    c->pool = c->pool->next;
-    -- c->pool_count;
+    net_event* event = c->events_pool;
+    c->events_pool = c->events_pool->next;
+    -- c->events_pool_count;
     memset(event, 0, sizeof(net_event));
     return event;
 }
 
 void net_releaseevent(net* c, net_event* event)
 {
-    if (c->pool_count > 100)
+    if (c->events_pool_count > 100)
     {
         net_freeevent(event);
         return;
     }
 
     net_clearevent(event);
-    ++c->pool_count;
-    c->pool->next = event;
+    ++c->events_pool_count;
+    if (c->events_pool)
+        c->events_pool->next = event;
+    else
+        c->events_pool = event;
     event->next = 0;
+}
+
+void net_freerfactory(read_factory* rfactory)
+{
+    net_clearrfactory(rfactory);
+    free(rfactory);
+}
+
+void net_clearrfactory(read_factory* rfactory)
+{
+    rfactory->id = 0;
+    rfactory->last_read_size = 0;
+    if (rfactory->memory) free(rfactory->memory);
+    rfactory->memory = 0;
+    rfactory->read_size = 0;
+    rfactory->rpc_id = 0;
+    rfactory->total_size = 0;
+}
+
+read_factory* net_createrfactory(net* c, char* memory, int memory_size)
+{
+    read_factory* rfactory = 0;
+    if (c->rfactorys_pool_count == 0)
+    {
+        rfactory = (read_factory*)calloc(1, sizeof(read_factory));
+    }
+    else
+    {
+        rfactory = c->rfactorys_pool;
+        c->rfactorys_pool = c->rfactorys_pool->next;
+        --c->rfactorys_pool_count;
+        memset(rfactory, 0, sizeof(read_factory));
+    }
+
+    rfactory->memory = memory;
+    rfactory->total_size = memory_size;
+    rfactory->total_size = net_rfactoryreadint(rfactory);
+    rfactory->id = net_rfactoryreadint(rfactory);
+    rfactory->rpc_id = net_rfactoryreadint(rfactory);
+
+    return rfactory;
+}
+
+void net_releaserfactory(net* c, read_factory* rfactory)
+{
+    if (c->rfactorys_pool_count > 100)
+    {
+        net_freerfactory(rfactory);
+        return;
+    }
+
+    net_clearrfactory(rfactory);
+    ++c->rfactorys_pool_count;
+    if (c->rfactorys_pool)
+        c->rfactorys_pool->next = rfactory;
+    else
+        c->rfactorys_pool = rfactory;
+    rfactory->next = 0;
 }
 
 void net_addevent(net* c, net_event* event, int dec_wait)
@@ -328,43 +404,6 @@ int net_wfactorywritedouble(write_factory* c, double value)
     memcpy(&(kv_A(c->memory, c->size)), &value, sizeof(value));
     c->size += sizeof(value);
     return sizeof(value);
-}
-
-read_factory* net_createrfactory(int id, int rpc_id, const char* memory, int total_size)
-{
-    read_factory* factory = (read_factory*)malloc(sizeof(read_factory));
-    net_rfactoryinit(factory);
-    factory->id = id;
-    factory->rpc_id = rpc_id;
-    factory->memory = memory;
-    factory->total_size = total_size;
-    return factory;
-}
-
-void net_rfactoryinit(read_factory* c)
-{
-    c->id = 0;
-    c->last_read_size = 0;
-    c->memory = 0;
-    c->read_size = 0;
-    c->rpc_id = 0;
-    c->total_size = 0;
-    c->empty[0] = 0;
-}
-
-void net_rfactoryclear(read_factory* c)
-{
-    c->id = 0;
-    c->last_read_size = 0;
-    c->memory = 0;
-    c->read_size = 0;
-    c->rpc_id = 0;
-    c->total_size = 0;
-}
-
-void net_rfactorydestroy(read_factory* c)
-{
-    free(c);
 }
 
 int net_rfactorygettotalsize(read_factory* c)

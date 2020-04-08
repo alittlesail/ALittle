@@ -52,8 +52,8 @@ static int CalcWordCount(lua_State* L)
 static int CalcByteCountByWordCount(lua_State* L)
 {
     size_t l = 0;
-    const char* str = luaL_checkstring(L, 1, &l);
-    int word_count = (int)luaL_checknumber(L, 2);
+    const char* str = luaL_checklstring(L, 1, &l);
+    int word_count = (int)luaL_checkinteger(L, 2);
 
     const char* old_str = str;
     int length = 0;

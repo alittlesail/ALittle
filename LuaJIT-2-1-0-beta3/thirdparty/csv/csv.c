@@ -60,7 +60,7 @@ int csv_addrow(csv* c, csvrow* rowdata, kstring_t* error)
 {
     if (c->col_count == 0)
     {
-        c->col_count = kv_size(c->data);
+        c->col_count = (int)kv_size(c->data);
         kv_push(csvrow*, c->data, rowdata);
         return 1;
     }

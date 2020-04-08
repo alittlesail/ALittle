@@ -10,6 +10,7 @@
 #include <string>
 
 struct _net;
+struct _write_factory;
 
 namespace ALittle
 {
@@ -20,11 +21,16 @@ typedef std::shared_ptr<ConnectClient> ConnectClientPtr;
 
 typedef std::shared_ptr<asio::ip::tcp::socket> SocketPtr;
 
-class ConnectClient
+typedef unsigned int MESSAGE_SIZE;
+typedef int MESSAGE_ID;
+typedef int MESSAGE_RPCID;
+#define PROTOCOL_HEAD_SIZE 12
+
+class ConnectClient : public std::enable_shared_from_this<ConnectClient>
 {
 public:
-	ConnectClient(_net* c, ServerSchedule* schedule);
-	virtual ~ConnectClient();
+	ConnectClient(_net* c, ServerSchedule* schedule, int id);
+	~ConnectClient();
 
 //连接部分/////////////////////////////////////////////////////////////////////////////////
 public:
@@ -42,7 +48,7 @@ public:
 	bool IsConnecting();
 
 	// 关闭连接
-	void Close(const std::string& reason);
+	void Close();
 
 private:
 	std::string m_ip;			// 目标服务器的IP
@@ -61,6 +67,14 @@ private:
 private:
 	// 处理断开连接
 	void ExecuteDisconnectCallback();
+	// 处理连接失败
+	void HandleConnectFailed();
+	// 处理连接成功
+	void HandleConnectSucceed();
+	// 处理断开连接
+	void HandleDisconnected();
+	// 处理消息包
+	void HandleMessage(void* memory, int memory_size);
 
 //读取消息包部分/////////////////////////////////////////////////////////////////////////////////
 public:
@@ -85,7 +99,7 @@ private:
 //发送消息包部分/////////////////////////////////////////////////////////////////////////////////
 public:
 	// 发送消息包
-	void Send(const Message& message);
+	void Send(const _write_factory* message);
 
 private:
 	// 处理发送
@@ -102,6 +116,7 @@ private:
 private:
 	ServerSchedule* m_schedule;
 	_net* m_net;
+	int m_id;
 };
 
 } // ALittle

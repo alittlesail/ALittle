@@ -11,6 +11,7 @@
 #include <asio.hpp>
 
 struct _net;
+struct _write_factory;
 
 namespace ALittle
 {
@@ -32,6 +33,8 @@ public:
 	ServerSchedule();
 	~ServerSchedule();
 
+	friend class ConnectClient;
+
 public:
 	void RunOne();
 	void Exit();
@@ -52,7 +55,7 @@ public:
 	bool IsConnected(struct _net* c, int id);
 	bool IsConnecting(struct _net* c, int id);
 	void Close(struct _net* c, int id);
-	void Send(struct _net* c, int id, write_factory* factory);
+	void Send(struct _net* c, int id, _write_factory* factory);
 	size_t GetConnectCount() { return m_connect_map.size(); }
 
 public:
@@ -61,6 +64,8 @@ private:
 	void Update(const asio::error_code& ec, _net* c);
 
 public:
+	asio::io_service& GetIOService() { return m_io_service; }
+	void Execute(std::function<void()> func);
 	bool IsExit() const { return m_is_exit; }
 private:
 	bool m_is_exit;

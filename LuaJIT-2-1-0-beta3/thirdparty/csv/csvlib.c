@@ -37,7 +37,7 @@ static int csvlib_load(lua_State* L)
     csv* c = (csv*)lua_touserdata(L, 1);
     luaL_argcheck(L, c != 0, 1, "csv object is null");
     const char* path = luaL_checkstring(L, 2);
-    int loop = luaL_checkinteger(L, 3);
+    int loop = (int)luaL_checkinteger(L, 3);
     kstring_t* error = (kstring_t*)calloc(1, sizeof(kstring_t));
     if (!csv_load(c, path, error))
         lua_pushstring(L, ks_str(error));
@@ -63,8 +63,8 @@ static int csvlib_readcell(lua_State* L)
 {
     csv* c = (csv*)lua_touserdata(L, 1);
     luaL_argcheck(L, c != 0, 1, "csv object is null");
-    int row = luaL_checkinteger(L, 2);
-    int col = luaL_checkinteger(L, 3);
+    int row = (int)luaL_checkinteger(L, 2);
+    int col = (int)luaL_checkinteger(L, 3);
     const char* data = csv_readcell(c, row - 1, col - 1);
     if (data)
         lua_pushstring(L, data);
@@ -115,7 +115,7 @@ static struct luaL_Reg csvlib[] = {
   {NULL, NULL}
 };
 
-int luaopen_timer(lua_State* L) {
+int luaopen_csv(lua_State* L) {
     lua_newtable(L);
     luaL_setfuncs(L, csvlib, 0);
     set_info(L);

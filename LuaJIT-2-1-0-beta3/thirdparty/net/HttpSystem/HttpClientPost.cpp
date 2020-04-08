@@ -242,7 +242,7 @@ bool HttpClientPost::GeneratePostRequest(const std::string& domain, const std::s
 		m_request_head.append("Connection: Keep-Alive\r\n");
 	m_request_head.append(add_header);
 	m_request_head.append("\r\n");
-	m_total_size = total_size;
+	m_total_size = (int)total_size;
 
 	return true;
 }

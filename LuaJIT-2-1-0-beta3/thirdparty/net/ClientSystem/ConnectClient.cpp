@@ -10,54 +10,36 @@ extern "C" {
 namespace ALittle
 {
 	 
-ConnectClient::ConnectClient(_net* c, ServerSchedule* schedule)
-, m_port(0), m_memory(0), m_excuting(false), m_is_connecting(false)
-, m_reconnect_interval(0), m_heartbeat_interval(0), m_message_head()
+ConnectClient::ConnectClient(_net* c, ServerSchedule* schedule, int id)
+: m_port(0), m_memory(0), m_excuting(false), m_is_connecting(false), m_message_head(), m_id(id)
 {
 }
 
 ConnectClient::~ConnectClient()
 {
-	// 关闭
-	Close("route_id:" + ROUTE2S(m_route_id) + u8":ConnectClient调用析构函数的时候触发ClearRPC");
+	Close();
 	// 释放内存
 	if (m_memory) { free(m_memory); m_memory = 0; }
 }
 
-void ConnectClient::Connect(ROUTE_ID route_id
-							, const std::string& ip, unsigned int port
-							, int heartbeat_interval
-							, int reconnect_interval)
+void ConnectClient::Connect(const std::string& ip, unsigned int port)
 {
 	// 检查是否正在连接
-	if (m_is_connecting)
-	{
-		ALITTLE_ERROR(u8"ConnectClient:Connect 正在连接的时候，不能再进行连接，" << "ip:" << ip << ", port:" << port);
-		return;
-	}
-
-	// 先关闭
-	Close(u8"ConnectClient:Connect 时调用Close触发ClearRPC");
+	if (IsConnected() || IsConnecting()) return;
 
 	// 标记为正在连接
 	m_is_connecting = true;
-	// 保存断开重连的间隔时间
-	m_reconnect_interval = reconnect_interval;
-	// 保存心跳包的间隔时间
-	m_heartbeat_interval = heartbeat_interval;
 	// 创建一个socket对象
-	m_socket = SocketPtr(new asio::ip::tcp::socket(m_route_system->GetSchedule()->GetIOService()));
+	m_socket = SocketPtr(new asio::ip::tcp::socket(m_schedule->GetIOService()));
 	// 创建一个目标服务器的连接点
 	asio::ip::tcp::endpoint ep(asio::ip::address_v4::from_string(ip), port);
 
 	// 保存并初始化
 	m_ip = ip;
 	m_port = port;
-	m_route_id = route_id;
-	m_target_route_id = 0;
 
 	// 开始异步连接
-	m_socket->async_connect(ep, std::bind(&ConnectEndpoint::HandleAsyncConnect, this->shared_from_this(), std::placeholders::_1));
+	m_socket->async_connect(ep, std::bind(&ConnectClient::HandleAsyncConnect, this->shared_from_this(), std::placeholders::_1));
 }
 
 void ConnectClient::HandleAsyncConnect(const asio::error_code& ec)
@@ -69,10 +51,6 @@ void ConnectClient::HandleAsyncConnect(const asio::error_code& ec)
 		
 		// 处理连接失败
 		HandleConnectFailed();
-
-		// 打开重连计时器
-		m_reconnect_timer = AsioTimerPtr(new AsioTimer(m_route_system->GetSchedule()->GetIOService(), std::chrono::seconds(m_reconnect_interval)));
-		m_reconnect_timer->async_wait(std::bind(&ConnectEndpoint::HandleReconnectTimer, this->shared_from_this(), std::placeholders::_1));
 		return;
 	}
 	// 设置 nodelay
@@ -83,52 +61,11 @@ void ConnectClient::HandleAsyncConnect(const asio::error_code& ec)
 	// 标记为不是正在连接
 	m_is_connecting = false;
 
-	// 发送本端数据，进行注册锁定
-	QConnectRegister msg;
-	msg.route_id = m_route_id;
-	Send(msg);
-
 	// 开始接受消息包
 	NextReadHead();
 
-	// 创建心跳定时器
-	m_heartbeat_timer = AsioTimerPtr(new AsioTimer(m_route_system->GetSchedule()->GetIOService(), std::chrono::seconds(m_heartbeat_interval)));
-	m_heartbeat_timer->async_wait(std::bind(&ConnectEndpoint::HandleHeartbeatTimer, this->shared_from_this(), std::placeholders::_1));
-	
 	// 处理连接成功
 	HandleConnectSucceed();
-}
-
-void ConnectClient::HandleReconnectTimer(const asio::error_code& ec)
-{
-	// 如果出现错误码，说明是主动取消定时器的
-	if (ec == asio::error::operation_aborted) return;
-
-	// 其他错误，一定要打印一下
-	if (ec) ALITTLE_ERROR(u8"定时器出现未知的错误类型，一定要检查解决一下:" << SUTF8(ec.message().c_str()));
-
-	// 关闭，释放
-	Close("route_id:" + ROUTE2S(m_route_id) + u8":ConnectClient:HandleReconnectTimer 主动连接失败的时候调用Close，触发ClearRPC");
-
-	// 重新开始连接
-	Connect(m_route_id, m_ip, m_port, m_reconnect_interval, m_heartbeat_interval);
-}
-
-void ConnectClient::HandleHeartbeatTimer(const asio::error_code& ec)
-{
-	// 如果出现错误码，说明是主动取消定时器的
-	if (ec == asio::error::operation_aborted) return;
-
-	// 其他错误，一定要打印一下
-	if (ec) ALITTLE_ERROR(u8"定时器出现未知的错误类型，一定要检查解决一下:" << SUTF8(ec.message().c_str()));
-
-	// 发送心跳包
-	HeartbeatMessage msg;
-	Send(msg);
-
-	if (!m_heartbeat_timer) return;
-	m_heartbeat_timer->expires_at(std::chrono::system_clock::now() + std::chrono::seconds(m_heartbeat_interval));
-	m_heartbeat_timer->async_wait(std::bind(&ConnectEndpoint::HandleHeartbeatTimer, this->shared_from_this(), std::placeholders::_1));
 }
 
 bool ConnectClient::IsConnected()
@@ -141,7 +78,7 @@ bool ConnectClient::IsConnecting()
 	return m_is_connecting;
 }
 
-void ConnectClient::Close(const std::string& reason)
+void ConnectClient::Close()
 {
 	// 释放带发送的消息包
 	auto end = m_pocket_list.end();
@@ -154,21 +91,6 @@ void ConnectClient::Close(const std::string& reason)
 	// 标记为不是正在连接
 	m_is_connecting = false;
 
-	// 关闭重连定时器
-	if (m_reconnect_timer)
-	{
-		asio::error_code ec;
-		m_reconnect_timer->cancel(ec);
-		m_reconnect_timer = AsioTimerPtr();
-	}
-	// 关闭心跳定时器
-	if (m_heartbeat_timer)
-	{
-		asio::error_code ec;
-		m_heartbeat_timer->cancel(ec);
-		m_heartbeat_timer = AsioTimerPtr();
-	}
-
 	// 释放socket
 	if (m_socket)
 	{
@@ -180,9 +102,6 @@ void ConnectClient::Close(const std::string& reason)
 	// 这里不要急着释放m_memory，可能asio正在用
 	// 放到析构函数里面释放
 	// if (m_memory) { free(m_memory); m_memory = 0; }
-
-	// 可靠性回调全部以调用失败处理
-	ClearRPC(reason);
 }
 
 void ConnectClient::ExecuteDisconnectCallback()
@@ -193,10 +112,42 @@ void ConnectClient::ExecuteDisconnectCallback()
 
 	// 关闭，内部会把m_socket设置为空指针
 	// 所以即使同时因为接收失败或者发送失败而触发的ExecuteDisconnectCallback也不会多次调用HandleDisconnected
-	Close("route_id:" + ROUTE2S(m_route_id) + u8" ConnectClient:ExecuteDisconnectCallback 断开连接的时候调用Close，触发ClearRPC");
+	Close();
 
 	// 如果不是自己关闭的，那么就调用回调
 	if (close_by_self == false) HandleDisconnected();
+}
+
+void ConnectClient::HandleConnectFailed()
+{
+	net_event* event = net_createevent(m_net);
+	event->type = net_event_types::MSG_CONNECT_FAILED;
+	event->id = m_id;
+	net_addevent(m_net, event, 0);
+
+	// 释放自己
+	// 这个务必最后最后调用，这个操作相当于delete自己
+	m_schedule->m_connect_map.erase(m_id);
+}
+
+void ConnectClient::HandleConnectSucceed()
+{
+	net_event* event = net_createevent(m_net);
+	event->type = net_event_types::MSG_CONNECT_SUCCEED;
+	event->id = m_id;
+	net_addevent(m_net, event, 0);
+}
+
+void ConnectClient::HandleDisconnected()
+{
+	net_event* event = net_createevent(m_net);
+	event->type = net_event_types::MSG_DISCONNECTED;
+	event->id = m_id;
+	net_addevent(m_net, event, 0);
+
+	// 释放自己
+	// 这个务必最后最后调用，这个操作相当于delete自己
+	m_schedule->m_connect_map.erase(m_id);
 }
 
 void ConnectClient::NextReadHead()
@@ -206,7 +157,7 @@ void ConnectClient::NextReadHead()
 
 	// 开始接受协议头
 	asio::async_read(*m_socket, asio::buffer(m_message_head, sizeof(m_message_head))
-					, std::bind(&ConnectEndpoint::HandleReadHead, this->shared_from_this()
+					, std::bind(&ConnectClient::HandleReadHead, this->shared_from_this()
 					, std::placeholders::_1, std::placeholders::_2));
 }
 
@@ -216,8 +167,6 @@ void ConnectClient::HandleReadHead(const asio::error_code& ec, std::size_t actua
 	{
 		// 释放内存
 		if (m_memory) { free(m_memory); m_memory = 0; }
-		// 数据包接受失败，说明是断开连接了
-		ALITTLE_SYSTEM("route_id:" + ROUTE2S(m_route_id) + u8" ConnectClient:HandleReadHead 消息包接收失败，连接断开了:" << SUTF8(ec.message().c_str()));
 		ExecuteDisconnectCallback();
 		return;
 	}
@@ -243,7 +192,7 @@ void ConnectClient::HandleReadHead(const asio::error_code& ec, std::size_t actua
 
 	// 开始读取协议体
 	asio::async_read(*m_socket, asio::buffer((char*)m_memory + PROTOCOL_HEAD_SIZE, message_size)
-		, std::bind(&ConnectEndpoint::HandleReadBody, this->shared_from_this(), std::placeholders::_1, std::placeholders::_2));
+		, std::bind(&ConnectClient::HandleReadBody, this->shared_from_this(), std::placeholders::_1, std::placeholders::_2));
 }
 
 void ConnectClient::HandleReadBody(const asio::error_code& ec, std::size_t actual_size)
@@ -252,8 +201,6 @@ void ConnectClient::HandleReadBody(const asio::error_code& ec, std::size_t actua
 	{
 		// 释放内存
 		if (m_memory) { free(m_memory); m_memory = 0; }
-		// 数据包接受失败，说明是断开连接了
-		ALITTLE_INFO("route_id:" + ROUTE2S(m_route_id) + u8" ConnectClient:HandleReadBody 消息包接收失败:" << SUTF8(ec.message().c_str()));
 		// 通知断开连接
 		ExecuteDisconnectCallback();
 		return;
@@ -270,20 +217,20 @@ void ConnectClient::ReadComplete()
 	// 获取协议大小
 	MESSAGE_SIZE message_size = *(MESSAGE_SIZE*)m_message_head;
 	// 发送给调度系统
-	m_route_system->GetSchedule()->Execute(std::bind(&ConnectEndpoint::HandleMessage, this->shared_from_this(), m_memory, message_size + PROTOCOL_HEAD_SIZE));
+	m_schedule->Execute(std::bind(&ConnectClient::HandleMessage, this->shared_from_this(), m_memory, message_size + PROTOCOL_HEAD_SIZE));
 	// 内存已经移交出去，HandleMessage会负责释放
 	// 这里置0
 	m_memory = 0;
 }
 
-void ConnectClient::Send(const Message& message)
+void ConnectClient::Send(const _write_factory* factory)
 {
 	// 获取协议大小
-	MESSAGE_SIZE message_size = message.GetTotalSize();
+	MESSAGE_SIZE message_size = factory->size;
 	// 获取协议ID
-	MESSAGE_ID message_id = message.GetID();
+	MESSAGE_ID message_id = factory->id;
 	// 获取RPCID
-	MESSAGE_RPCID message_rpcid = message.GetRpcID();
+	MESSAGE_RPCID message_rpcid = factory->rpc_id;
 
 	// 协议大小 = 协议体大小 + 协议头大小
 	unsigned int memory_size = message_size + PROTOCOL_HEAD_SIZE;
@@ -301,8 +248,9 @@ void ConnectClient::Send(const Message& message)
 	body_memory += sizeof(MESSAGE_RPCID);
 	
 	// 序列化消息包
-	message.Serialize(body_memory);
-
+	if (factory->size > 0)
+		memcpy(body_memory, &(kv_A(factory->memory, 0)), factory->size);
+	
 	// 发送
 	SendPocket(memory, memory_size);
 }
@@ -339,7 +287,7 @@ void ConnectClient::NextSend()
 
 	// 发送
 	asio::async_write(*m_socket, asio::buffer(info.memory, info.memory_size)
-		, std::bind(&ConnectEndpoint::HandleSend, this->shared_from_this()
+		, std::bind(&ConnectClient::HandleSend, this->shared_from_this()
 		, std::placeholders::_1, std::placeholders::_2, info.memory));
 }
 
@@ -351,8 +299,6 @@ void ConnectClient::HandleSend(const asio::error_code& ec, std::size_t bytes_tra
 	// 检查错误
 	if (ec)
 	{
-		// 发送失败说明断开连接了，但是这里不做通知，统一在读取那个位置进行通知
-		ALITTLE_SYSTEM("route_id:" << ROUTE2S(m_route_id) + u8" ConnectClient:HandleSend 消息包发送失败:" << SUTF8(ec.message().c_str()));
 		// 这里不通知断开连接，等待接受那部分通知断开
 		ExecuteDisconnectCallback();
 		return;
@@ -360,6 +306,15 @@ void ConnectClient::HandleSend(const asio::error_code& ec, std::size_t bytes_tra
 	
 	// 发送下一个包
 	NextSend();
+}
+
+void ConnectClient::HandleMessage(void* memory, int memory_size)
+{
+	net_event* event = net_createevent(m_net);
+	event->type = net_event_types::MSG_MESSAGE;
+	event->id = m_id;
+	event->rfactory = net_createrfactory(m_net, (char*)memory, memory_size);
+	net_addevent(m_net, event, 0);
 }
 
 } // ALittle

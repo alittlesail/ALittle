@@ -29,9 +29,9 @@ static int netlib_connect(lua_State* L)
 {
     net* c = (net*)lua_touserdata(L, 1);
     luaL_argcheck(L, c != 0, 1, "net object is null");
-    int id = luaL_checkinteger(L, 2);
+    int id = (int)luaL_checkinteger(L, 2);
     const char* ip = luaL_checkstring(L, 3);
-    int port = luaL_checkinteger(L, 4);
+    int port = (int)luaL_checkinteger(L, 4);
     net_connect(c, id, ip, port);
     return 0;
 }
@@ -40,7 +40,7 @@ static int netlib_isconnected(lua_State* L)
 {
     net* c = (net*)lua_touserdata(L, 1);
     luaL_argcheck(L, c != 0, 1, "net object is null");
-    int id = luaL_checkinteger(L, 2);
+    int id = (int)luaL_checkinteger(L, 2);
     lua_pushboolean(L, net_isconnected(c, id));
     return 1;
 }
@@ -49,7 +49,7 @@ static int netlib_isconnecting(lua_State* L)
 {
     net* c = (net*)lua_touserdata(L, 1);
     luaL_argcheck(L, c != 0, 1, "net object is null");
-    int id = luaL_checkinteger(L, 2);
+    int id = (int)luaL_checkinteger(L, 2);
     lua_pushboolean(L, net_isconnecting(c, id));
     return 1;
 }
@@ -58,7 +58,7 @@ static int netlib_close(lua_State* L)
 {
     net* c = (net*)lua_touserdata(L, 1);
     luaL_argcheck(L, c != 0, 1, "net object is null");
-    int id = luaL_checkinteger(L, 2);
+    int id = (int)luaL_checkinteger(L, 2);
     net_close(c, id);
     return 0;
 }
@@ -67,7 +67,7 @@ static int netlib_send(lua_State* L)
 {
     net* c = (net*)lua_touserdata(L, 1);
     luaL_argcheck(L, c != 0, 1, "net object is null");
-    int id = luaL_checkinteger(L, 2);
+    int id = (int)luaL_checkinteger(L, 2);
     write_factory* factory = (write_factory*)lua_touserdata(L, 3);
     luaL_argcheck(L, factory != 0, 2, "write factory object is null");
     net_send(c, id, factory);
@@ -78,7 +78,7 @@ static int netlib_httpget(lua_State* L)
 {
     net* c = (net*)lua_touserdata(L, 1);
     luaL_argcheck(L, c != 0, 1, "net object is null");
-    int id = luaL_checkinteger(L, 2);
+    int id = (int)luaL_checkinteger(L, 2);
     const char* url = luaL_checkstring(L, 3);
     net_httpget(c, id, url);
     return 0;
@@ -88,7 +88,7 @@ static int netlib_httpdownload(lua_State* L)
 {
     net* c = (net*)lua_touserdata(L, 1);
     luaL_argcheck(L, c != 0, 1, "net object is null");
-    int id = luaL_checkinteger(L, 2);
+    int id = (int)luaL_checkinteger(L, 2);
     const char* url = luaL_checkstring(L, 3);
     const char* file_path = luaL_checkstring(L, 4);
     net_httpdownload(c, id, url, file_path);
@@ -99,7 +99,7 @@ static int netlib_httppost(lua_State* L)
 {
     net* c = (net*)lua_touserdata(L, 1);
     luaL_argcheck(L, c != 0, 1, "net object is null");
-    int id = luaL_checkinteger(L, 2);
+    int id = (int)luaL_checkinteger(L, 2);
     const char* url = luaL_checkstring(L, 3);
     const char* type = luaL_checkstring(L, 4);
     const char* content = luaL_checkstring(L, 5);
@@ -111,7 +111,7 @@ static int netlib_httpupload(lua_State* L)
 {
     net* c = (net*)lua_touserdata(L, 1);
     luaL_argcheck(L, c != 0, 1, "net object is null");
-    int id = luaL_checkinteger(L, 2);
+    int id = (int)luaL_checkinteger(L, 2);
     const char* url = luaL_checkstring(L, 3);
     const char* file_path = luaL_checkstring(L, 4);
     net_httpupload(c, id, url, file_path);
@@ -122,7 +122,7 @@ static int netlib_httpstopget(lua_State* L)
 {
     net* c = (net*)lua_touserdata(L, 1);
     luaL_argcheck(L, c != 0, 1, "net object is null");
-    int id = luaL_checkinteger(L, 2);
+    int id = (int)luaL_checkinteger(L, 2);
     net_httpstopget(c, id);
     return 0;
 }
@@ -131,7 +131,7 @@ static int netlib_httpstoppost(lua_State* L)
 {
     net* c = (net*)lua_touserdata(L, 1);
     luaL_argcheck(L, c != 0, 1, "net object is null");
-    int id = luaL_checkinteger(L, 2);
+    int id = (int)luaL_checkinteger(L, 2);
     net_httpstoppost(c, id);
     return 0;
 }
@@ -140,7 +140,7 @@ static int netlib_httpstopdownload(lua_State* L)
 {
     net* c = (net*)lua_touserdata(L, 1);
     luaL_argcheck(L, c != 0, 1, "net object is null");
-    int id = luaL_checkinteger(L, 2);
+    int id = (int)luaL_checkinteger(L, 2);
     net_httpstopdownload(c, id);
     return 0;
 }
@@ -149,7 +149,7 @@ static int netlib_httpstopupload(lua_State* L)
 {
     net* c = (net*)lua_touserdata(L, 1);
     luaL_argcheck(L, c != 0, 1, "net object is null");
-    int id = luaL_checkinteger(L, 2);
+    int id = (int)luaL_checkinteger(L, 2);
     net_httpstopupload(c, id);
     return 0;
 }
@@ -158,7 +158,7 @@ static int netlib_timer(lua_State* L)
 {
     net* c = (net*)lua_touserdata(L, 1);
     luaL_argcheck(L, c != 0, 1, "net object is null");
-    int delay_ms = luaL_checkinteger(L, 2);
+    int delay_ms = (int)luaL_checkinteger(L, 2);
     net_timer(c, delay_ms);
     return 0;
 }
@@ -175,18 +175,24 @@ static int netlib_poll(lua_State* L)
     else
     {
         lua_newtable(L);
-        lua_pushinteger(L, (int)event->type);
+        lua_pushinteger(L, event->type);
         lua_setfield(L, -2, "type");
-        lua_pushinteger(L, (int)event->id);
+        lua_pushinteger(L, event->id);
         lua_setfield(L, -2, "id");
         if (event->content)
         {
-            lua_pushstring(L, ks_str(event->content));
+            if (ks_str(event->content))
+                lua_pushstring(L, ks_str(event->content));
+            else
+                lua_pushstring(L, "");
             lua_setfield(L, -2, "content");
         }
         if (event->error)
         {
-            lua_pushstring(L, ks_str(event->error));
+            if (ks_str(event->error))
+                lua_pushstring(L, ks_str(event->error));
+            else
+                lua_pushstring(L, "");
             lua_setfield(L, -2, "error");
         }
         if (event->type == TIMER)
@@ -194,12 +200,17 @@ static int netlib_poll(lua_State* L)
             lua_pushinteger(L, event->time);
             lua_setfield(L, -2, "time");
         }
-        if (event->type == HTTP_FILE_PROGRESS)
+        else if (event->type == HTTP_FILE_PROGRESS)
         {
             lua_pushinteger(L, event->cur_size);
             lua_setfield(L, -2, "cur_size");
             lua_pushinteger(L, event->total_size);
             lua_setfield(L, -2, "total_size");
+        }
+        else if (event->type == MSG_MESSAGE)
+        {
+            lua_pushlightuserdata(L, event->rfactory);
+            lua_setfield(L, -2, "rfactory");
         }
         net_releaseevent(c, event);
     }
@@ -216,7 +227,7 @@ static int netlib_exit(lua_State* L)
 
 static int netlib_wfactorydestroy(lua_State* L)
 {
-    net* c = (net*)lua_touserdata(L, 1);
+    write_factory* c = (write_factory*)lua_touserdata(L, 1);
     if (c) net_wfactoryclear(c);
     return 0;
 }
@@ -236,7 +247,7 @@ static int netlib_wfactorysetid(lua_State* L)
 {
     write_factory* c = (write_factory*)lua_touserdata(L, 1);
     luaL_argcheck(L, c != 0, 1, "write_factory object is null");
-    int id = luaL_checkinteger(L, 2);
+    int id = (int)luaL_checkinteger(L, 2);
     net_wfactorysetid(c, id);
     return 0;
 }
@@ -245,7 +256,7 @@ static int netlib_wfactorysetrpcid(lua_State* L)
 {
     write_factory* c = (write_factory*)lua_touserdata(L, 1);
     luaL_argcheck(L, c != 0, 1, "write_factory object is null");
-    int id = luaL_checkinteger(L, 2);
+    int id = (int)luaL_checkinteger(L, 2);
     net_wfactorysetrpcid(c, id);
     return 0;
 }
@@ -270,8 +281,8 @@ static int netlib_wfactorysetint(lua_State* L)
 {
     write_factory* c = (write_factory*)lua_touserdata(L, 1);
     luaL_argcheck(L, c != 0, 1, "write_factory object is null");
-    int offset = luaL_checkinteger(L, 2);
-    int value = luaL_checkinteger(L, 3);
+    int offset = (int)luaL_checkinteger(L, 2);
+    int value = (int)luaL_checkinteger(L, 3);
     net_wfactorysetint(c, offset, value);
     return 0;
 }
@@ -289,7 +300,7 @@ static int netlib_wfactorywriteint(lua_State* L)
 {
     write_factory* c = (write_factory*)lua_touserdata(L, 1);
     luaL_argcheck(L, c != 0, 1, "write_factory object is null");
-    int value = luaL_checkinteger(L, 2);
+    int value = (int)luaL_checkinteger(L, 2);
     lua_pushinteger(L, net_wfactorywriteint(c, value));
     return 1;
 }
@@ -298,7 +309,7 @@ static int netlib_wfactorywritelong(lua_State* L)
 {
     write_factory* c = (write_factory*)lua_touserdata(L, 1);
     luaL_argcheck(L, c != 0, 1, "write_factory object is null");
-    int value = luaL_checkinteger(L, 2);
+    int value = (int)luaL_checkinteger(L, 2);
     lua_pushinteger(L, net_wfactorywritelong(c, value));
     return 1;
 }
@@ -318,27 +329,18 @@ static int netlib_wfactorywritestring(lua_State* L)
     luaL_argcheck(L, c != 0, 1, "write_factory object is null");
     size_t l;
     const char* value = luaL_checklstring(L, 2, &l);
-    lua_pushinteger(L, net_wfactorywritestring(c, value, l));
+    lua_pushinteger(L, net_wfactorywritestring(c, value, (int)l));
     return 1;
 }
 
-
-static int netlib_rfactorydestroy(lua_State* L)
+static int netlib_releaserfactory(lua_State* L)
 {
     net* c = (net*)lua_touserdata(L, 1);
-    if (c) net_rfactoryclear(c);
+    luaL_argcheck(L, c != 0, 1, "net object is null");
+    read_factory* r = (read_factory*)lua_touserdata(L, 2);
+    luaL_argcheck(L, r != 0, 2, "read_factory object is null");
+    net_releaserfactory(c, r);
     return 0;
-}
-
-static int netlib_createrfactory(lua_State* L)
-{
-    read_factory* c = (read_factory*)lua_newuserdata(L, sizeof(read_factory));
-    lua_newtable(L);
-    lua_pushcfunction(L, netlib_rfactorydestroy);
-    lua_setfield(L, -2, "__gc");
-    lua_setmetatable(L, -2);
-    net_rfactoryinit(c);
-    return 1;
 }
 
 static int netlib_rfactorygettotalsize(lua_State* L)
@@ -445,6 +447,7 @@ static struct luaL_Reg netlib[] = {
     {"wfactorywritestring", netlib_wfactorywritestring},
     {"wfactorywritedouble", netlib_wfactorywritedouble},
 
+    {"rfactoryrelease", netlib_releaserfactory},
     {"rfactorygettotalsize", netlib_rfactorygettotalsize},
     {"rfactoryreadbool", netlib_rfactoryreadbool},
     {"rfactoryreadint", netlib_rfactoryreadint},

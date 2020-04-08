@@ -42,27 +42,27 @@ void ServerSchedule::Exit()
 void ServerSchedule::HttpDownload(_net* c, int id, const char* url, const char* file_path)
 {
 	HttpClientTextPtr client = HttpClientTextPtr(new HttpClientText);
+	m_download_map[id] = client;
 	client->SendRequest(url, true, "text/html", "", 0
-		, [this, id, c](bool result, const std::string& body, const std::string& head)
+		, [this, id, c](bool result, const std::string& body, const std::string& head, const std::string& error)
 		{
-			net_event* event = (net_event*)malloc(sizeof(net_event));
+			m_download_map.erase(id);
+			net_event* event = net_createevent(c);
 			event->id = id;
-			event->next = 0;
-			event->content = 0;
-			event->total_size = 0;
-			event->cur_size = 0;
 			if (result)
 				event->type = net_event_types::HTTP_FILE_SUCCEED;
 			else
+			{
+				event->error = (kstring_t*)calloc(1, sizeof(kstring_t));
+				kputs(error.c_str(), event->error);
 				event->type = net_event_types::HTTP_FILE_FAILED;
+			}
 			net_addevent(c, event, 1);
 		}
 		, [this, id, c](int total_size, int cur_size)
 		{
-			net_event* event = (net_event*)malloc(sizeof(net_event));
+			net_event* event = net_createevent(c);
 			event->id = id;
-			event->next = 0;
-			event->content = 0;
 			event->total_size = total_size;
 			event->cur_size = cur_size;
 			event->type = net_event_types::HTTP_FILE_PROGRESS;
@@ -73,28 +73,28 @@ void ServerSchedule::HttpDownload(_net* c, int id, const char* url, const char* 
 void ServerSchedule::HttpUpload(_net* c, int id, const char* url, const char* file_path)
 {
 	HttpClientPostPtr client = HttpClientPostPtr(new HttpClientPost);
+	m_upload_map[id] = client;
 	client->SendRequest(url, std::map<std::string, std::string>()
 		, FileHelper::GetJustFileNameByPath(file_path), file_path
-		, [this, id, c](bool result, const std::string& body, const std::string& head)
+		, [this, id, c](bool result, const std::string& body, const std::string& head, const std::string& error)
 		{
-			net_event* event = (net_event*)malloc(sizeof(net_event));
+			m_upload_map.erase(id);
+			net_event* event = net_createevent(c);
 			event->id = id;
-			event->next = 0;
-			event->content = 0;
-			event->total_size = 0;
-			event->cur_size = 0;
 			if (result)
 				event->type = net_event_types::HTTP_FILE_SUCCEED;
 			else
+			{
+				event->error = (kstring_t*)calloc(1, sizeof(kstring_t));
+				kputs(error.c_str(), event->error);
 				event->type = net_event_types::HTTP_FILE_FAILED;
+			}
 			net_addevent(c, event, 1);
 		}
 		, [this, id, c](int total_size, int cur_size)
 		{
-			net_event* event = (net_event*)malloc(sizeof(net_event));
+			net_event* event = net_createevent(c);
 			event->id = id;
-			event->next = 0;
-			event->content = 0;
 			event->total_size = total_size;
 			event->cur_size = cur_size;
 			event->type = net_event_types::HTTP_FILE_PROGRESS;
@@ -102,53 +102,105 @@ void ServerSchedule::HttpUpload(_net* c, int id, const char* url, const char* fi
 		}, &m_io_service, "");
 }
 
-void ServerSchedule::HttpGet(net* c, int id, const char* url)
+void ServerSchedule::HttpStopGet(_net* c, int id)
+{
+	auto it = m_get_map.find(id);
+	if (it == m_get_map.end()) return;
+
+	it->second->Stop();
+}
+
+void ServerSchedule::HttpStopPost(_net* c, int id)
+{
+	auto it = m_post_map.find(id);
+	if (it == m_post_map.end()) return;
+
+	it->second->Stop();
+}
+
+void ServerSchedule::HttpStopDownload(_net* c, int id)
+{
+	auto it = m_download_map.find(id);
+	if (it == m_download_map.end()) return;
+
+	it->second->Stop();
+}
+
+void ServerSchedule::HttpStopUpload(_net* c, int id)
+{
+	auto it = m_upload_map.find(id);
+	if (it == m_upload_map.end()) return;
+
+	it->second->Stop();
+}
+
+void ServerSchedule::Timer(_net* c, int delay_ms)
+{
+	if (!m_timer)
+		m_timer = AsioTimerPtr(new AsioTimer(m_io_service, std::chrono::milliseconds(delay_ms)));
+	else
+		m_timer->expires_at(std::chrono::system_clock::now() + std::chrono::milliseconds(delay_ms));
+	
+	m_timer->async_wait(std::bind(&ServerSchedule::Update, this, std::placeholders::_1, c));
+}
+
+void ServerSchedule::Update(const asio::error_code& ec, _net* c)
+{
+	auto time = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+
+	net_event* event = net_createevent(c);
+	event->type = net_event_types::TIMER;
+	event->time = (int)time;
+	net_addevent(c, event, 1);
+}
+
+void ServerSchedule::HttpGet(struct _net* c, int id, const char* url)
 {
 	HttpClientTextPtr client = HttpClientTextPtr(new HttpClientText);
+	m_get_map[id] = client;
 	client->SendRequest(url, true, "text/html", "", 0
-		, [this, id, c](bool result, const std::string& body, const std::string& head)
+		, [this, id, c](bool result, const std::string& body, const std::string& head, const std::string& error)
 		{
-			net_event* event = (net_event*)malloc(sizeof(net_event));
+			m_get_map.erase(id);
+			net_event* event = net_createevent(c);
 			event->id = id;
-			event->next = 0;
-			event->total_size = 0;
-			event->cur_size = 0;
-			event->content = (kstring_t*)calloc(1, sizeof(kstring_t));
 			if (result)
 			{
-				event->type = net_event_types::HTTP_SUCCEED;
+				event->content = (kstring_t*)calloc(1, sizeof(kstring_t));
 				kputs(body.c_str(), event->content);
+				event->type = net_event_types::HTTP_SUCCEED;
 			}	
 			else
 			{
+				event->error = (kstring_t*)calloc(1, sizeof(kstring_t));
+				kputs(error.c_str(), event->error);
 				event->type = net_event_types::HTTP_FAILED;
-				kputs(head.c_str(), event->content);
 			}
 			net_addevent(c, event, 1);
 		}, nullptr, &m_io_service, "", "");
 }
 
-void ServerSchedule::HttpPost(net* c, int id, const char* url, const char* type, const char* content)
+void ServerSchedule::HttpPost(struct _net* c, int id, const char* url, const char* type, const char* content)
 {
 	HttpClientTextPtr client = HttpClientTextPtr(new HttpClientText);
+	m_post_map[id] = client;
 	client->SendRequest(url, false, type, content, strlen(content)
-		, [this, id, c](bool result, const std::string& body, const std::string& head)
+		, [this, id, c](bool result, const std::string& body, const std::string& head, const std::string& error)
 		{
-			net_event* event = (net_event*)malloc(sizeof(net_event));
+			m_post_map.erase(id);
+			net_event* event = net_createevent(c);
 			event->id = id;
-			event->next = 0;
-			event->total_size = 0;
-			event->cur_size = 0;
-			event->content = (kstring_t*)calloc(1, sizeof(kstring_t));
 			if (result)
 			{
-				event->type = net_event_types::HTTP_SUCCEED;
+				event->content = (kstring_t*)calloc(1, sizeof(kstring_t));
 				kputs(body.c_str(), event->content);
+				event->type = net_event_types::HTTP_SUCCEED;
 			}
 			else
 			{
+				event->error = (kstring_t*)calloc(1, sizeof(kstring_t));
+				kputs(error.c_str(), event->error);
 				event->type = net_event_types::HTTP_FAILED;
-				kputs(head.c_str(), event->content);
 			}
 			net_addevent(c, event, 1);
 		}, nullptr, &m_io_service, "", "");

@@ -69,6 +69,51 @@ static int netlib_httpupload(lua_State* L)
     return 0;
 }
 
+static int netlib_httpstopget(lua_State* L)
+{
+    net* c = (net*)lua_touserdata(L, 1);
+    luaL_argcheck(L, c != 0, 1, "net object is null");
+    int id = (int)luaL_checknumber(L, 2);
+    net_httpstopget(c, id);
+    return 0;
+}
+
+static int netlib_httpstoppost(lua_State* L)
+{
+    net* c = (net*)lua_touserdata(L, 1);
+    luaL_argcheck(L, c != 0, 1, "net object is null");
+    int id = (int)luaL_checknumber(L, 2);
+    net_httpstoppost(c, id);
+    return 0;
+}
+
+static int netlib_httpstopdownload(lua_State* L)
+{
+    net* c = (net*)lua_touserdata(L, 1);
+    luaL_argcheck(L, c != 0, 1, "net object is null");
+    int id = (int)luaL_checknumber(L, 2);
+    net_httpstopdownload(c, id);
+    return 0;
+}
+
+static int netlib_httpstopupload(lua_State* L)
+{
+    net* c = (net*)lua_touserdata(L, 1);
+    luaL_argcheck(L, c != 0, 1, "net object is null");
+    int id = (int)luaL_checknumber(L, 2);
+    net_httpstopupload(c, id);
+    return 0;
+}
+
+static int netlib_timer(lua_State* L)
+{
+    net* c = (net*)lua_touserdata(L, 1);
+    luaL_argcheck(L, c != 0, 1, "net object is null");
+    int delay_ms = (int)luaL_checknumber(L, 2);
+    net_timer(c, delay_ms);
+    return 0;
+}
+
 static int netlib_poll(lua_State* L)
 {
     net* c = (net*)lua_touserdata(L, 1);
@@ -90,12 +135,24 @@ static int netlib_poll(lua_State* L)
             lua_pushstring(L, ks_str(event->content));
             lua_setfield(L, -2, "content");
         }
-        lua_pushinteger(L, (int)event->cur_size);
-        lua_setfield(L, -2, "cur_size");
-        lua_pushinteger(L, (int)event->total_size);
-        lua_setfield(L, -2, "total_size");
-
-        net_freeevent(event);
+        if (event->error)
+        {
+            lua_pushstring(L, ks_str(event->error));
+            lua_setfield(L, -2, "error");
+        }
+        if (event->type == TIMER)
+        {
+            lua_pushinteger(L, event->time);
+            lua_setfield(L, -2, "time");
+        }
+        if (event->type == HTTP_FILE_PROGRESS)
+        {
+            lua_pushinteger(L, event->cur_size);
+            lua_setfield(L, -2, "cur_size");
+            lua_pushinteger(L, event->total_size);
+            lua_setfield(L, -2, "total_size");
+        }
+        net_releaseevent(c, event);
     }
     return 1;
 }
@@ -130,6 +187,11 @@ static struct luaL_Reg netlib[] = {
   {"post", netlib_httppost},
   {"download", netlib_httpdownload},
   {"upload", netlib_httpupload},
+  {"stopget", netlib_httpstopget},
+  {"stoppost", netlib_httpstoppost},
+  {"stopdownload", netlib_httpstopdownload},
+  {"stopupload", netlib_httpstopupload},
+  {"timer", netlib_timer},
   {"exit", netlib_exit},
   {NULL, NULL}
 };

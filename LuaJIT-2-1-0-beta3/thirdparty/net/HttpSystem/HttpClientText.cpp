@@ -6,18 +6,21 @@ namespace ALittle
 {
 
 HttpClientText::HttpClientText()
-    : m_get_or_post(false)
-	, m_response_type(HttpHelper::ResponseType::RESPONSE_TYPE_CONTENT_LENGTH)
-	, m_response_size(0), m_total_size(0), m_http_buffer(), m_io_service(0)
+: m_get_or_post(false)
+, m_response_type(HttpHelper::ResponseType::RESPONSE_TYPE_CONTENT_LENGTH)
+, m_response_size(0), m_total_size(0), m_http_buffer(), m_io_service(0)
+, m_stoped(false)
 {
 
 }
-HttpClientText::~HttpClientText() { }
+HttpClientText::~HttpClientText()
+{
+}
 
 void HttpClientText::SendRequest(const std::string& url
 									 , bool get_or_post
 									 , const std::string& type, const char* content, size_t content_len
-									 , std::function<void(bool, const std::string&, const std::string&)> complete_func
+									 , std::function<void(bool, const std::string&, const std::string&, const std::string&)> complete_func
 									 , std::function<void(int, int)> progress_func
 									 , asio::io_service* io_service
 									 , const std::string& file_path/*=""*/
@@ -31,9 +34,7 @@ void HttpClientText::SendRequest(const std::string& url
 	if (!result)
 	{
 		m_error = "can't find domain and port in url:" + url;
-		try { complete_func(false, "", m_response_head); }
-		catch (std::exception& e) { m_error = "exception:"; m_error += e.what(); }
-		catch (...) { m_error = "something error"; }
+		complete_func(false, "", m_response_head, m_error);
 		return;
 	}
 
@@ -55,9 +56,7 @@ void HttpClientText::SendRequest(const std::string& url
 	if (!GenerateRequestHead(domain, add_header))
 	{
 		m_error = "generate post request failed: " + url;
-		try { m_complete_callback(false, "", m_response_head); }
-		catch (std::exception& e) { m_error = "exception:"; m_error += e.what(); }
-		catch (...) { m_error = "something error"; }
+		m_complete_callback(false, "", m_response_head, m_error);
 		return;
 	}
 
@@ -75,6 +74,11 @@ void HttpClientText::SendRequest(const std::string& url
 
 	// query
 	m_resolver->async_resolve(ip_query, query_func);
+}
+
+void HttpClientText::Stop()
+{
+	m_stoped = true;
 }
 
 void HttpClientText::HandleQueryIPByDemain(	const asio::error_code& ec, asio::ip::tcp::resolver::iterator endpoint_iterator
@@ -95,6 +99,13 @@ void HttpClientText::HandleQueryIPByDemain(	const asio::error_code& ec, asio::ip
 		m_resolver->async_resolve(ip_query, query_func);
 		return;
 	}
+
+	if (m_stoped)
+	{
+		m_error = "stoped";
+		m_complete_callback(false, "", "", m_error);
+		return;
+	}
 	
 	asio::ip::tcp::resolver::iterator endpoint = endpoint_iterator;
 	SOCKETHELPER_AsyncConnect(m_socket, endpoint
@@ -107,9 +118,14 @@ void HttpClientText::HandleQueryIPByDemainAgain(const asio::error_code& ec , asi
 	if (ec)
 	{
 		m_error = "query ip by domain failed:"; m_error += asio::system_error(ec).what();
-		try { m_complete_callback(false, "", m_response_head); }
-		catch (std::exception& e) { m_error = "exception:"; m_error += e.what(); }
-		catch (...) { m_error = "something error"; }
+		m_complete_callback(false, "", m_response_head, m_error);
+		return;
+	}
+
+	if (m_stoped)
+	{
+		m_error = "stoped";
+		m_complete_callback(false, "", "", m_error);
 		return;
 	}
 
@@ -187,9 +203,7 @@ void HttpClientText::HandleSocketConnect(const asio::error_code& ec
 	else  
 	{
 		m_error = "connect domain failed:"; m_error += asio::system_error(ec).what();
-		try { m_complete_callback(false, "", m_response_head); }
-		catch (std::exception& e) { m_error = "exception:"; m_error += e.what(); }
-		catch (...) { m_error = "something error"; }
+		m_complete_callback(false, "", m_response_head, m_error);
 	}  
 }
 
@@ -198,9 +212,14 @@ void HttpClientText::HandleSocketSendRequestHead1(const asio::error_code& ec , s
 	if (ec)
 	{
 		m_error = "socket send post request file end failed:"; m_error += asio::system_error(ec).what();
-		try { m_complete_callback(false, "", m_response_head); }
-		catch (std::exception& e) { m_error = "exception:"; m_error += e.what(); }
-		catch (...) { m_error = "something error"; }
+		m_complete_callback(false, "", m_response_head, m_error);
+		return;
+	}
+
+	if (m_stoped)
+	{
+		m_error = "stoped";
+		m_complete_callback(false, "", "", m_error);
 		return;
 	}
 
@@ -223,9 +242,14 @@ void HttpClientText::HandleSocketSendRequestHead2(const asio::error_code& ec , s
 	if (ec)
 	{
 		m_error = "socket send post request file end failed:"; m_error += asio::system_error(ec).what();
-		try { m_complete_callback(false, "", m_response_head); }
-		catch (std::exception& e) { m_error = "exception:"; m_error += e.what(); }
-		catch (...) { m_error = "something error"; }
+		m_complete_callback(false, "", m_response_head, m_error);
+		return;
+	}
+
+	if (m_stoped)
+	{
+		m_error = "stoped";
+		m_complete_callback(false, "", "", m_error);
 		return;
 	}
 
@@ -239,9 +263,14 @@ void HttpClientText::HandleResponseHead(const asio::error_code& ec, std::size_t 
 	if (ec)
 	{
 		m_error = "read response failed:"; m_error += asio::system_error(ec).what();
-		try { m_complete_callback(false, "", m_response_head); }
-		catch (std::exception& e) { m_error = "exception:"; m_error += e.what(); }
-		catch (...) { m_error = "something error"; }
+		m_complete_callback(false, "", m_response_head, m_error);
+		return;
+	}
+
+	if (m_stoped)
+	{
+		m_error = "stoped";
+		m_complete_callback(false, "", "", m_error);
 		return;
 	}
 
@@ -266,9 +295,7 @@ void HttpClientText::HandleResponseHead(const asio::error_code& ec, std::size_t 
 		if (!HttpHelper::CalcStatusFromHttp(m_response_head, m_status))
 		{
 			m_error = "http status calc failed:" + m_response;
-			try { m_complete_callback(false, "", m_response_head); }
-			catch (std::exception& e) { m_error = "exception:"; m_error += e.what(); }
-			catch (...) { m_error = "something error"; }
+			m_complete_callback(false, "", m_response_head, m_error);
 			return;
 		}
 
@@ -276,9 +303,7 @@ void HttpClientText::HandleResponseHead(const asio::error_code& ec, std::size_t 
 // 		if (status != "200")
 // 		{
 // 			ALITTLE_ERROR("http status error:" << m_response);
-// 			try { m_complete_callback(false, "", m_response_head); }
-// 			catch(std::exception& e) { ALITTLE_ERROR("exception:" << SUTF8(e.what())); }
-// 			catch (...) { ALITTLE_ERROR("something error"); }
+// 			m_complete_callback(false, "", m_response_head);
 // 			return;
 // 		}
 
@@ -287,9 +312,7 @@ void HttpClientText::HandleResponseHead(const asio::error_code& ec, std::size_t 
 		if (!HttpHelper::CalcFileSizeFromHttp(m_response_head, m_response_size, m_response_type))
 		{
 			m_error = "http file size calc failed:" + m_response;
-			try { m_complete_callback(false, "", m_response_head); }
-			catch (std::exception& e) { m_error = "exception:"; m_error += e.what(); }
-			catch (...) { m_error = "something error"; }
+			m_complete_callback(false, "", m_response_head, m_error);
 			return;
 		}
 		m_total_size = m_response_size;
@@ -310,9 +333,7 @@ void HttpClientText::HandleResponseHead(const asio::error_code& ec, std::size_t 
 			if (!m_file)
 			{
 				m_error = "file create failed!" + m_file_path;
-				try { m_complete_callback(false, "", m_response_head); }
-				catch (std::exception& e) { m_error = "exception:"; m_error += e.what(); }
-				catch (...) { m_error = "something error"; }
+				m_complete_callback(false, "", m_response_head, m_error);
 				return;
 			}
 		}
@@ -338,9 +359,14 @@ void HttpClientText::HandleResponseByContentLength(const asio::error_code& ec, s
 	if (ec)
 	{
 		m_error = "read response failed:"; m_error += asio::system_error(ec).what();
-		try { m_complete_callback(false, "", m_response_head); }
-		catch (std::exception& e) { m_error = "exception:"; m_error += e.what(); }
-		catch (...) { m_error = "something error"; }
+		m_complete_callback(false, "", m_response_head, m_error);
+		return;
+	}
+
+	if (m_stoped)
+	{
+		m_error = "stoped";
+		m_complete_callback(false, "", "", m_error);
 		return;
 	}
 
@@ -352,17 +378,14 @@ void HttpClientText::HandleResponseByContentLength(const asio::error_code& ec, s
 	{
 		m_file.write(m_http_buffer + buffer_offset, actual_size);
 		if (m_total_size > 0 && m_progress_callback)
-		{
-			try { m_progress_callback(m_total_size, m_total_size - m_response_size); }
-			catch (...) {}
-		}
+			m_progress_callback(m_total_size, m_total_size - m_response_size);
 
 		if (m_response_size <= 0)
 		{
 			m_file.close();
-			try { m_complete_callback(m_status == "200", "", m_response_head); }
-			catch (std::exception& e) { m_error = "exception:"; m_error += e.what(); }
-			catch (...) { m_error = "something error"; }
+			bool result = m_status == "200";
+			if (!result) m_error = "status != 200";
+			m_complete_callback(result, "", m_response_head, m_error);
 			return;
 		}
 	}
@@ -372,9 +395,9 @@ void HttpClientText::HandleResponseByContentLength(const asio::error_code& ec, s
 
 		if (m_response_size <= 0)
 		{
-			try { m_complete_callback(m_status == "200", m_response, m_response_head); }
-			catch (std::exception& e) { m_error = "exception:"; m_error += e.what(); }
-			catch (...) { m_error = "something error"; }
+			bool result = m_status == "200";
+			if (!result) m_error = "status != 200";
+			m_complete_callback(result, m_response, m_response_head, m_error);
 			return;
 		}
 	}
@@ -391,16 +414,23 @@ void HttpClientText::HandleResponseByDataFollow(const asio::error_code& ec, std:
 		if (m_file_path.size())
 		{
 			m_file.close();
-			try { m_complete_callback(m_status == "200", "", m_response_head); }
-			catch (std::exception& e) { m_error = "exception:"; m_error += e.what(); }
-			catch (...) { m_error = "something error"; }
+			bool result = m_status == "200";
+			if (!result) m_error = "status != 200";
+			m_complete_callback(result, "", m_response_head, m_error);
 		}
 		else
 		{
-			try { m_complete_callback(m_status == "200", m_response, m_response_head); }
-			catch (std::exception& e) { m_error = "exception:"; m_error += e.what(); }
-			catch (...) { m_error = "something error"; }
+			bool result = m_status == "200";
+			if (!result) m_error = "status != 200";
+			m_complete_callback(result, m_response, m_response_head, m_error);
 		}
+		return;
+	}
+
+	if (m_stoped)
+	{
+		m_error = "stoped";
+		m_complete_callback(false, "", "", m_error);
 		return;
 	}
 
@@ -420,9 +450,14 @@ void HttpClientText::HandleResponseByChunk(const asio::error_code& ec, std::size
 	if (ec)
 	{
 		m_error = "read response failed:"; m_error += asio::system_error(ec).what();
-		try { m_complete_callback(false, "", m_response_head); }
-		catch (std::exception& e) { m_error = "exception:"; m_error += e.what(); }
-		catch (...) { m_error = "something error"; }
+		m_complete_callback(false, "", m_response_head, m_error);
+		return;
+	}
+
+	if (m_stoped)
+	{
+		m_error = "stoped";
+		m_complete_callback(false, "", "", m_error);
 		return;
 	}
 
@@ -442,9 +477,7 @@ void HttpClientText::HandleResponseByChunk(const asio::error_code& ec, std::size
 			if (m_chunk_size.size() >= HTTP_HEAD_BUFFER_SIZE)
 			{
 				m_error = "read response failed: chunk size is too large! " + std::to_string(m_chunk_size.size());
-				try { m_complete_callback(false, "", m_response_head); }
-				catch (std::exception& e) { m_error = "exception:"; m_error += e.what(); }
-				catch (...) { m_error = "something error"; }
+				m_complete_callback(false, "", m_response_head, m_error);
 				return;
 			}
 
@@ -474,9 +507,7 @@ void HttpClientText::HandleResponseByChunk(const asio::error_code& ec, std::size
 		if (chunk_pos == 0 || HttpHelper::String2HexNumber(result, number) == false)
 		{
 			m_error = "read chunk size calc failed:" + std::to_string(m_chunk_size.size());
-			try { m_complete_callback(false, "", m_response_head); }
-			catch (std::exception& e) { m_error = "exception:"; m_error += e.what(); }
-			catch (...) { m_error = "something error"; }
+			m_complete_callback(false, "", m_response_head, m_error);
 			return;
 		}
 		m_response_size = result;
@@ -487,15 +518,15 @@ void HttpClientText::HandleResponseByChunk(const asio::error_code& ec, std::size
 			if (m_file_path.size())
 			{
 				m_file.close();
-				try { m_complete_callback(m_status == "200", "", m_response_head); }
-				catch (std::exception& e) { m_error = "exception:"; m_error += e.what(); }
-				catch (...) { m_error = "something error"; }
+				bool result = m_status == "200";
+				if (!result) m_error = "status != 200";
+				m_complete_callback(result, "", m_response_head, m_error);
 			}
 			else
 			{
-				try { m_complete_callback(m_status == "200", m_response, m_response_head); }
-				catch (std::exception& e) { m_error = "exception:"; m_error += e.what(); }
-				catch (...) { m_error = "something error"; }
+				bool result = m_status == "200";
+				if (!result) m_error = "status != 200";
+				m_complete_callback(result, m_response, m_response_head, m_error);
 			}
 			return;
 		}
@@ -541,11 +572,17 @@ void HttpClientText::HandleSSLHandShake(const asio::error_code& ec)
 	if (ec)
 	{
 		m_error = "ssl hand shake failed:"; m_error += asio::system_error(ec).what();
-		try { m_complete_callback(false, "", m_response_head); }
-		catch (std::exception& e) { m_error = "exception:"; m_error += e.what(); }
-		catch (...) { m_error = "something error"; }
+		m_complete_callback(false, "", m_response_head, m_error);
 		return;
 	}
+
+	if (m_stoped)
+	{
+		m_error = "stoped";
+		m_complete_callback(false, "", "", m_error);
+		return;
+	}
+
 	// connect succeed and send request
 	SOCKETHELPER_AsyncWrite(m_socket, m_request_head.c_str(), m_request_head.size()
 		, std::bind(&HttpClientText::HandleSocketSendRequestHead1, this->shared_from_this(), std::placeholders::_1, std::placeholders::_2)); 

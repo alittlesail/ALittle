@@ -31,15 +31,17 @@ public:
 	 * @param get_or_post: true: get method, false: post method
 	 * @param type type of content. ie text/xml. text/html text/json
 	 * @param file_path: write content of response to file(if file_path is not empry, then string of callback is empty£©
-	 * @param func: callback function, bool:succeed or not, string:content of response, string:head of response
+	 * @param func: callback function, bool:succeed or not, string:content of response, string:head of response, string:error
 	 * @param is_ssl: is ssl
 	 */
 	void SendRequest(const std::string& url
 		, bool get_or_post, const std::string& type, const char* content, size_t content_len
-		, std::function<void(bool, const std::string&, const std::string&)> complete_func
+		, std::function<void(bool, const std::string&, const std::string&, const std::string&)> complete_func
 		, std::function<void(int, int)> progress_func
 		, asio::io_service* io_service
 		, const std::string& file_path="", const std::string& add_header="");
+
+	void Stop();
 
 private:
 	void HandleQueryIPByDemain(const asio::error_code& ec
@@ -87,15 +89,16 @@ private:
 	ResolverPtr m_resolver;			// reslover
 	asio::io_service* m_io_service;	// io_service
 
-	std::function<void(bool, const std::string&, const std::string&)> m_complete_callback; // callback
+	std::function<void(bool, const std::string&, const std::string&, const std::string&)> m_complete_callback; // callback
 	std::function<void(int, int)> m_progress_callback; // callback
 	std::string m_file_path;		// file path to write
 	std::ofstream m_file;			// file object
 	std::string m_error;
-	
+
 private:
 	char m_http_buffer[HTTP_HEAD_BUFFER_SIZE]; // receive buffer
 	std::string m_status;
+	bool m_stoped;
 };
 
 } // ALittle

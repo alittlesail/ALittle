@@ -12,6 +12,13 @@ typedef enum
 	HTTP_FILE_SUCCEED = 11,
 	HTTP_FILE_FAILED = 12,
 	HTTP_FILE_PROGRESS = 13,
+
+	TIMER = 21,     // ¶¨Ê±Æ÷
+
+	MSG_CONNECT_SUCCEED = 31,
+	MSG_CONNECT_FAILED = 32,
+	MSG_DISCONNECTED = 33,
+	MSG_MESSAGE = 34,
 } net_event_types;
 
 typedef struct _net_event
@@ -21,13 +28,17 @@ typedef struct _net_event
 	int cur_size;
 	int total_size;
 	kstring_t* content;
+	kstring_t* error;
 	struct _net_event* next;
+	int time;
 } net_event;
 
 typedef struct _net
 {
 	void* schedule;
 	net_event* events;
+	net_event* pool;
+	int pool_count;
 	int wait_count;
 } net;
 
@@ -37,11 +48,22 @@ void net_clear(net* c);
 void net_destroy(net* c);
 void net_exit(net* c);
 net_event* net_runone(net* c);
+
 void net_addevent(net* c, net_event* event, int dec_wait);
 void net_freeevent(net_event* event);
+void net_clearevent(net_event* event);
+net_event* net_createevent(net* c);
+void net_releaseevent(net* c, net_event* event);
+
 void net_httpget(net* c, int id, const char* url);
 void net_httpdownload(net* c, int id, const char* url, const char* file_path);
 void net_httppost(net* c, int id, const char* url, const char* type, const char* content);
 void net_httpupload(net* c, int id, const char* url, const char* file_path);
+void net_httpstopget(net* c, int id);
+void net_httpstopdownload(net* c, int id);
+void net_httpstoppost(net* c, int id);
+void net_httpstopupload(net* c, int id);
+
+void net_timer(net* c, int delay_ms);
 
 #endif // _ALITTLE_NET_H_

@@ -37,10 +37,12 @@ public:
 		, const std::map<std::string, std::string>& value_map
 		, const std::string& file_name
 		, const std::string& file_path
-		, std::function<void(bool, const std::string&, const std::string&)> complete_func
+		, std::function<void(bool, const std::string&, const std::string&, const std::string&)> complete_func
 		, std::function<void(int, int)> progress_func
 		, asio::io_service* io_service
 		, const std::string& add_header="");
+
+	void Stop();
 
 private:
 	void HandleQueryIPByDemain(const asio::error_code& ec
@@ -97,7 +99,7 @@ private:
 	ResolverPtr m_resolver;				// reslover
 	asio::io_service* m_io_service;		// io_service
 
-	std::function<void(bool, const std::string&, const std::string&)> m_complete_callback; // callback
+	std::function<void(bool, const std::string&, const std::string&, const std::string&)> m_complete_callback; // callback
 	std::function<void(int, int)> m_progress_callback;
 	std::string m_file_path;			// the path of file to upload
 	std::string m_file_name;			// rename the file to upload
@@ -108,6 +110,7 @@ private:
 
 private:
 	char m_http_buffer[HTTP_HEAD_BUFFER_SIZE]; // receive buffer
+	bool m_stoped;
 };
 
 } // ALittle

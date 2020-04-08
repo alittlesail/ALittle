@@ -23,6 +23,9 @@ typedef std::shared_ptr<HttpClientText> HttpClientTextPtr;
 class HttpClientPost;
 typedef std::shared_ptr<HttpClientPost> HttpClientPostPtr;
 
+class ConnectClient;
+typedef std::shared_ptr<ConnectClient> ConnectClientPtr;
+
 class ServerSchedule
 {
 public:
@@ -45,6 +48,14 @@ public:
 	void HttpStopUpload(struct _net* c, int id);
 
 public:
+	void Connect(struct _net* c, int id, const char* ip, int port);
+	bool IsConnected(struct _net* c, int id);
+	bool IsConnecting(struct _net* c, int id);
+	void Close(struct _net* c, int id);
+	void Send(struct _net* c, int id, write_factory* factory);
+	size_t GetConnectCount() { return m_connect_map.size(); }
+
+public:
 	void Timer(struct _net* c, int delay_ms);
 private:
 	void Update(const asio::error_code& ec, _net* c);
@@ -63,6 +74,8 @@ private:
 	std::unordered_map<int, HttpClientTextPtr> m_post_map;
 	std::unordered_map<int, HttpClientTextPtr> m_download_map;
 	std::unordered_map<int, HttpClientPostPtr> m_upload_map;
+
+	std::unordered_map<int, ConnectClientPtr> m_connect_map;
 };
 
 } // ALittle

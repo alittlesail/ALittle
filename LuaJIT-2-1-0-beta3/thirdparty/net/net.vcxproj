@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ClientSystem\ConnectClient.cpp" />
     <ClCompile Include="Helper\FileHelper.cpp" />
     <ClCompile Include="Helper\HttpHelper.cpp" />
     <ClCompile Include="Helper\StringHelper.cpp" />
@@ -29,6 +30,7 @@
     <ClCompile Include="ServerSystem\ServerSchedule.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ClientSystem\ConnectClient.h" />
     <ClInclude Include="Helper\FileHelper.h" />
     <ClInclude Include="Helper\HttpHelper.h" />
     <ClInclude Include="Helper\SocketWrap.h" />

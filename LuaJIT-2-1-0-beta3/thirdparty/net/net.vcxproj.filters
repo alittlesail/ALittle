@@ -35,6 +35,9 @@
     <ClCompile Include="Helper\FileHelper.cpp">
       <Filter>Helper</Filter>
     </ClCompile>
+    <ClCompile Include="ClientSystem\ConnectClient.cpp">
+      <Filter>ClientSystem</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="HttpSystem\HttpClientText.h">
@@ -59,6 +62,9 @@
     <ClInclude Include="net.h" />
     <ClInclude Include="Helper\FileHelper.h">
       <Filter>Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="ClientSystem\ConnectClient.h">
+      <Filter>ClientSystem</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

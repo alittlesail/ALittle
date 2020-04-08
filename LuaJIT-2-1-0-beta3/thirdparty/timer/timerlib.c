@@ -29,11 +29,11 @@ static int timerlib_add(lua_State* L)
 {
     timer* ts = (timer*)lua_touserdata(L, 1);
     luaL_argcheck(L, ts != 0, 1, "timer object is null");
-    int delay_ms = (int)luaL_checknumber(L, 2);
-    int loop = (int)luaL_checknumber(L, 3);
-    int interval_ms = (int)luaL_checknumber(L, 4);
+    int delay_ms = luaL_checkinteger(L, 2);
+    int loop = luaL_checkinteger(L, 3);
+    int interval_ms = luaL_checkinteger(L, 4);
     int id = timer_add(ts, delay_ms, loop, interval_ms);
-    lua_pushnumber(L, id);
+    lua_pushinteger(L, id);
     return 1;
 }
 
@@ -41,7 +41,7 @@ static int timerlib_remove(lua_State* L)
 {
     timer* ts = (timer*)lua_touserdata(L, 1);
     luaL_argcheck(L, ts != 0, 1, "timer object is null");
-    int id = (int)luaL_checknumber(L, 2);
+    int id = luaL_checkinteger(L, 2);
     int result = timer_remove(ts, id);
     lua_pushboolean(L, result);
     return 1;
@@ -51,7 +51,7 @@ static int timerlib_update(lua_State* L)
 {
     timer* ts = (timer*)lua_touserdata(L, 1);
     luaL_argcheck(L, ts != 0, 1, "timer object is null");
-    int frame_ms = (int)luaL_checknumber(L, 2);
+    int frame_ms = luaL_checkinteger(L, 2);
     timer_update(ts, frame_ms);
     return 0;
 }
@@ -61,7 +61,7 @@ static int timerlib_poll(lua_State* L)
     timer* ts = (timer*)lua_touserdata(L, 1);
     luaL_argcheck(L, ts != 0, 1, "timer object is null");
     int id = timer_poll(ts);
-    lua_pushnumber(L, id);
+    lua_pushinteger(L, id);
     return 1;
 }
 

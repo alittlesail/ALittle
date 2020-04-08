@@ -9,6 +9,7 @@
 
 #include "../HttpSystem/HttpClientText.h"
 #include "../HttpSystem/HttpClientPost.h"
+#include "../ClientSystem/ConnectClient.h"
 
 extern "C" {
 #include "../net.h"
@@ -132,6 +133,17 @@ void ServerSchedule::HttpStopUpload(_net* c, int id)
 	if (it == m_upload_map.end()) return;
 
 	it->second->Stop();
+}
+
+void ServerSchedule::Connect(_net* c, int id, const char* ip, int port)
+{
+	ConnectClientPtr client;
+	auto it = m_connect_map.find(id);
+	if (it == m_connect_map.end())
+		client = it->second;
+	else
+		client = ConnectClientPtr(new ConnectClient());
+	if (client->)
 }
 
 void ServerSchedule::Timer(_net* c, int delay_ms)

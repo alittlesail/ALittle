@@ -45,7 +45,7 @@ static int CalcWordCount(lua_State* L)
         ++count;
     }
 
-    lua_pushnumber(L, count);
+    lua_pushinteger(L, count);
     return 1;
 }
 
@@ -65,7 +65,7 @@ static int CalcByteCountByWordCount(lua_State* L)
         ++length;
         if (length >= word_count) break;
     }
-    lua_pushnumber(L, (int)index);
+    lua_pushinteger(L, (int)index);
     return 1;
 }
 

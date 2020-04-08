@@ -70,6 +70,7 @@
     <None Include="src\Std\Utility\IHeapTimer.alittle" />
     <None Include="src\Std\Utility\SafeIDCreator.alittle" />
     <None Include="src\Std\Utility\ISchedule.alittle" />
+    <None Include="src\Std\Utility\Schedule.alittle" />
     <None Include="src\Std\Utility\String.alittle" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

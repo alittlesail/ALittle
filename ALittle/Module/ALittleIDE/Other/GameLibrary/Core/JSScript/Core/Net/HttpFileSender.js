@@ -31,7 +31,7 @@ ALittle.IHttpFileSender = JavaScript.Class(undefined, {
 	InvokeUpload : function(method, client, content) {
 		return new Promise(function(___COROUTINE, ___) {
 			if (___COROUTINE === undefined) {
-				___COROUTINE(["当前不是协程", undefined]); return;
+				___COROUTINE("当前不是协程"); return;
 			}
 			client.SendUploadRPC(___COROUTINE, method, content);
 			return;

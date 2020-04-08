@@ -25,7 +25,7 @@ JavaScript.JSchedule = JavaScript.Class(ALittle.ISchedule, {
 		}
 		this._run = true;
 		if (this._requestAnimationFrame !== undefined) {
-			this._requestAnimationFrame(this._callback);
+			this._requestAnimationFrame.call(window, this._callback);
 		} else {
 			ALittle.Error("current browser is not support requestAnimationFrame");
 		}
@@ -37,7 +37,7 @@ JavaScript.JSchedule = JavaScript.Class(ALittle.ISchedule, {
 		}
 		A_JLoopSystem.Update(cur_time - this._last_time);
 		this._last_time = cur_time;
-		this._requestAnimationFrame(this._callback);
+		this._requestAnimationFrame.call(window, this._callback);
 	},
 }, "JavaScript.JSchedule");
 

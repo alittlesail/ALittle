@@ -7,9 +7,4 @@ ALittle.ISchedule = JavaScript.Class(undefined, {
 	},
 }, "ALittle.ISchedule");
 
-let GetSchedule = function() {
-	return A_JSchedule;
-}
-
-window.A_Schedule = GetSchedule();
 }

@@ -343,7 +343,7 @@ JavaScript.File_SaveFile = function(path, content) {
 		cur = file;
 	}
 	if (cur.file === undefined) {
-		return false;
+		cur.file = {};
 	}
 	let file = {};
 	file.content = content;

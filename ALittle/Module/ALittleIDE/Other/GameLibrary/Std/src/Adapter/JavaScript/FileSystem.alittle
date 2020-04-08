@@ -286,7 +286,8 @@ public static File_SaveFile(string path, string content) : bool
         if (!file.is_directory) return false;
         cur = file;
     }
-    if (cur.file == null) return false;
+    if (cur.file == null)
+        cur.file = new Map<string, FileInfo>();
     var file = new FileInfo();
     file.content = content;
     file.is_directory = false;

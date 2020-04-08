@@ -25,7 +25,6 @@
     <None Include="src\Adapter\JavaScript\Pixi.alittle" />
     <None Include="src\Adapter\Lua\HttpFileInterface.alittle" />
     <None Include="src\Adapter\Lua\HttpInterface.alittle" />
-    <None Include="src\Adapter\Lua\MsgInterface.alittle" />
     <None Include="src\ALittle.alittle" />
     <None Include="src\CEngine\LoopSystem\LoopAnimation.alittle" />
     <None Include="src\CEngine\LoopSystem\LoopAttribute.alittle" />

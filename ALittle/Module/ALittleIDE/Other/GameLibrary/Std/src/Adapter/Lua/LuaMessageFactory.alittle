@@ -2,28 +2,28 @@
 [Language(Lua)]
 namespace Lua;
 
-private var createwritefactory = lua.net.createwritefactory;
-private var setid = lua.net.setid;
-private var setrpcid = lua.net.setrpcid;
-private var resetoffset = lua.net.resetoffset;
-private var getoffset = lua.net.getoffset;
-private var setint = lua.net.setint;
-private var writebool = lua.net.writebool;
-private var writeint = lua.net.writeint;
-private var writelong = lua.net.writelong;
-private var writestring = lua.net.writestring;
-private var writedouble = lua.net.writedouble;
+private var wcreate = lua.net.createwfactory;
+private var wsetid = lua.net.wfactorysetid;
+private var wsetrpcid = lua.net.wfactorysetrpcid;
+private var wresetoffset = lua.net.wfactoryresetoffset;
+private var wgetoffset = lua.net.wfactorygetoffset;
+private var wsetint = lua.net.wfactorysetint;
+private var writebool = lua.net.wfactorywritebool;
+private var writeint = lua.net.wfactorywriteint;
+private var writelong = lua.net.wfactorywritelong;
+private var writestring = lua.net.wfactorywritestring;
+private var writedouble = lua.net.wfactorywritedouble;
 
 public class LuaMessageWriteFactory : ALittle.IMessageWriteFactory
 {
-    private lua.write_factory _factory;
+    public lua.write_factory _factory;
     
-    public ctor() { this._factory = lua.net.createwritefactory(); }
-    public fun SetID(int id) { setid(this._factory, id); }
-    public fun SetRpcID(int id) { setrpcid(this._factory, id); }
-    public fun ResetOffset() { resetoffset(this._factory); }
-    public fun GetOffset() : int { return getoffset(this._factory); }
-    public fun SetInt(int offset, int value) { setint(this._factory, offset, value); }
+    public ctor() { this._factory = wcreate(); }
+    public fun SetID(int id) { wsetid(this._factory, id); }
+    public fun SetRpcID(int id) { wsetrpcid(this._factory, id); }
+    public fun ResetOffset() { wresetoffset(this._factory); }
+    public fun GetOffset() : int { return wgetoffset(this._factory); }
+    public fun SetInt(int offset, int value) { wsetint(this._factory, offset, value); }
     
     public fun WriteBool(bool value) : int { return writebool(this._factory, value); }
     public fun WriteInt(int value) : int { return writeint(this._factory, value); }
@@ -32,13 +32,13 @@ public class LuaMessageWriteFactory : ALittle.IMessageWriteFactory
     public fun WriteDouble(double value) : int { return writedouble(this._factory, value); }
 }
 
-private var gettotalsize = lua.net.gettotalsize;
-private var readbool = lua.net.readbool;
-private var readint = lua.net.readint;
-private var readlong = lua.net.readlong;
-private var readstring = lua.net.readstring;
-private var readdouble = lua.net.readdouble;
-private var getreadsize = lua.net.getreadsize;
+private var gettotalsize = lua.net.rfactorygettotalsize;
+private var readbool = lua.net.rfactoryreadbool;
+private var readint = lua.net.rfactoryreadint;
+private var readlong = lua.net.rfactoryreadlong;
+private var readstring = lua.net.rfactoryreadstring;
+private var readdouble = lua.net.rfactoryreaddouble;
+private var getreadsize = lua.net.rfactorygetreadsize;
 
 public class LuaMessageReadFactory : ALittle.IMessageReadFactory
 {

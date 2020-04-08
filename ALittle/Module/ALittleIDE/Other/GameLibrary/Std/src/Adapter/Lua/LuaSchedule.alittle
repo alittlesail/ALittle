@@ -58,7 +58,7 @@ public class LuaSchedule : ALittle.ISchedule
             }
             elseif (event.type == net_type.HTTP_FAILED)
             {
-                ALittle.__ALITTLEAPI_HttpClientFailed(event.id, event.reason);
+                ALittle.__ALITTLEAPI_HttpClientFailed(event.id, event.error);
             }
             elseif (event.type == net_type.HTTP_FILE_SUCCEED)
             {
@@ -66,7 +66,7 @@ public class LuaSchedule : ALittle.ISchedule
             }
             elseif (event.type == net_type.HTTP_FILE_FAILED)
             {
-                ALittle.__ALITTLEAPI_HttpFileFailed(event.id, event.reason);
+                ALittle.__ALITTLEAPI_HttpFileFailed(event.id, event.error);
             }
             elseif (event.type == net_type.HTTP_FILE_PROGRESS)
             {

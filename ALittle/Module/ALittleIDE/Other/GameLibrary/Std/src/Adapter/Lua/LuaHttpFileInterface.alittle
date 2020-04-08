@@ -34,7 +34,10 @@ public class LuaHttpFileInterface : ALittle.IHttpFileSenderNative
     }
     public fun Stop()
     {
-        lua.net.stop(A_LuaSchedule._net, this._id);
+        if (this._download)
+            lua.net.stopdownload(A_LuaSchedule._net, this._id);
+        else
+            lua.net.stopupload(A_LuaSchedule._net, this._id);
     }
     
     public fun GetPath() : string { return this._file_path; }

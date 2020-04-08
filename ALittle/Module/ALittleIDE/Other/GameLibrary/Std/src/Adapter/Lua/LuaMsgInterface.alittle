@@ -19,5 +19,5 @@ public class LuaMsgInterface : ALittle.IMsgCommonNative
     public fun Connect(string ip, int port) { lua.net.connect(A_LuaSchedule._net, this._id, ip, port); }
     public fun Close() { lua.net.close(A_LuaSchedule._net, this._id); }
     public fun IsConnected() : bool { return lua.net.isconnected(A_LuaSchedule._net, this._id); }
-    public fun SendFactory(ALittle.IMessageWriteFactory factory) { send(A_LuaSchedule._net, this._id, factory); }
+    public fun SendFactory(ALittle.IMessageWriteFactory factory) { send(A_LuaSchedule._net, this._id, cast<LuaMessageWriteFactory>(factory)._factory); }
 }

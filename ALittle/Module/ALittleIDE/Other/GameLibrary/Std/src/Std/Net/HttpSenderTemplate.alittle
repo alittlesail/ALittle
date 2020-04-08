@@ -5,16 +5,13 @@ public class IHttpSenderNative
 {
     public fun GetID() : int { return 0; }                         // 获取HttpSender的全局ID
     public fun SetURL(string url, string content) {}    // 设置请求数据，url是请求路径，如果content不为null，那么就是post请求
-    public fun Start(Functor<(ALittle.IHttpSenderNative, string)> failed_callback
-                    , Functor<(ALittle.IHttpSenderNative)> succeed_callback) {}                               // 开始请求
+    public fun Start() {}                               // 开始请求
     public fun Stop() {}                                // 停止请求
     public fun GetResponse() : string { return null;}                // 获取请求结果
 }
 
 // 短连接所有的对象集合，提供客户端使用
 private var __HttpSenderMap = new Map<int, IHttpSender>();
-public static FindHttpSender(int id) : IHttpSender { return __HttpSenderMap[id]; }
-
 public class HttpSenderTemplate<NATIVE : IHttpSenderNative> : IHttpSender
 {
     private NATIVE _interface;          // 实际Http的接口对象
@@ -73,4 +70,20 @@ public class HttpSenderTemplate<NATIVE : IHttpSenderNative> : IHttpSender
         var result, error = Coroutine.Resume(this._thread, reason, null);
         if (result != true) Error(error);
     }
+}
+
+// 收到HTTP应答成功
+public static __ALITTLEAPI_HttpClientSucceed(int id)
+{
+    var client = __HttpSenderMap[id];
+    if (client ==  null) return;
+    client.HandleSucceed();
+}
+
+// 收到HTTP应答失败
+public static __ALITTLEAPI_HttpClientFailed(int id, string reason)
+{
+    var client = __HttpSenderMap[id];
+    if (client ==  null) return;
+    client.HandleFailed(reason);
 }

@@ -10,8 +10,6 @@ public class JHttpInterface : ALittle.IHttpSenderNative
     private string _url;
     private string _content;
     private javascript.XMLHttpRequest _request;
-    private Functor<(ALittle.IHttpSenderNative, string)> _failed_callback;
-    private Functor<(ALittle.IHttpSenderNative)> _succeed_callback;
     
     public ctor()
     {
@@ -24,11 +22,8 @@ public class JHttpInterface : ALittle.IHttpSenderNative
         this._url = url;
         this._content = content;
     }
-    public fun Start(Functor<(ALittle.IHttpSenderNative, string)> failed_callback
-                    , Functor<(ALittle.IHttpSenderNative)> succeed_callback)
+    public fun Start()
     {
-        this._failed_callback = failed_callback;
-        this._succeed_callback = succeed_callback;
         this._request = new javascript.XMLHttpRequest();
         if (this._content == null)
             this._request.open("GET", this._url, true);
@@ -50,13 +45,11 @@ public class JHttpInterface : ALittle.IHttpSenderNative
     
     private fun HandleAjaxError()
 	{
-        if (this._failed_callback != null)
-            this._failed_callback(this, this._request.statusText);
+        ALittle.__ALITTLEAPI_HttpClientFailed(this._id, this._request.statusText);
 	}
     
 	private fun HandleStartCompleted()
 	{
-        if (this._succeed_callback != null)
-            this._succeed_callback(this);
+        ALittle.__ALITTLEAPI_HttpClientSucceed(this._id);
 	}
 }

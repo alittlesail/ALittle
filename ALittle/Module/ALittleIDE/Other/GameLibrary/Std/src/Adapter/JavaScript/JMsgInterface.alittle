@@ -93,6 +93,7 @@ private enum JConnectStatus
     NET_CONNECTED = 2;
 }
 
+private var __JMSG_MAXID:int = 0;
 public class JMsgInterface : ALittle.IMsgCommonNative
 {
     private javascript.WebSocket _net_system;
@@ -100,27 +101,20 @@ public class JMsgInterface : ALittle.IMsgCommonNative
     private int _net_status;    // 当前状态
     private string _ip;
     private int _port;
-    
-    private Functor<(ALittle.IMsgCommonNative)> _conn_succeed;
-    private Functor<(ALittle.IMsgCommonNative)> _conn_failed;
-    private Functor<(ALittle.IMsgCommonNative)> _disconnected;
-    private Functor<(int, int, ALittle.IMessageReadFactory, ALittle.IMsgCommonNative)> _message;
+    private int _id;
     
     public ctor()
     {
+        ++__JMSG_MAXID;
+        this._id = __JMSG_MAXID;
         this._net_status = JConnectStatus.NET_IDLE;
         this._ip = "";
         this._port = 0;
 	    this._net_buffer = new JNetBuffer(2048);
     }
     
-    public fun SetID(int id) {}         // 设置连接对象全局ID
-    public fun GetID() : int { return 0; }         // 获取连接对象全局ID
-    public fun Connect(string ip, int port
-                      , Functor<(ALittle.IMsgCommonNative)> conn_succeed
-                      , Functor<(ALittle.IMsgCommonNative)> conn_failed
-                      , Functor<(ALittle.IMsgCommonNative)> disconnected
-                      , Functor<(int, int, ALittle.IMessageReadFactory, ALittle.IMsgCommonNative)> message)
+    public fun GetID() : int { return this._id; }         // 获取连接对象全局ID
+    public fun Connect(string ip, int port)
     {
         if (this._net_status == JConnectStatus.NET_CONNECTED)
             this.Close();
@@ -130,11 +124,6 @@ public class JMsgInterface : ALittle.IMsgCommonNative
             ALittle.Warn("net system already connecting:"..this._ip..":"..this._port);
             return;
         }
-        
-        this._conn_succeed = conn_succeed;
-        this._conn_failed = conn_failed;
-        this._disconnected = disconnected;
-        this._message = message;
         
         var url = "ws://"..ip..":"..port;
 		
@@ -164,8 +153,7 @@ public class JMsgInterface : ALittle.IMsgCommonNative
 		if (this._net_status != JConnectStatus.NET_CONNECTING) return;
 		
 		this._net_status = JConnectStatus.NET_CONNECTED;
-        if (this._conn_succeed != null)
-            this._conn_succeed(this);
+        ALittle.__ALITTLEAPI_ConnectSucceed(this._id);
 	}
     
     private fun HandleNetSystemClose(javascript.WebSocketOnCloseEvent event)
@@ -175,8 +163,7 @@ public class JMsgInterface : ALittle.IMsgCommonNative
 		this._net_status = JConnectStatus.NET_IDLE;
 		this._net_system = null;
         
-        if (this._disconnected != null)
-            this._disconnected(this);
+        ALittle.__ALITTLEAPI_Disconnect(this._id);
     }
     
     private fun HandleNetSystemError(javascript.WebSocketOnErrorEvent event)
@@ -186,8 +173,7 @@ public class JMsgInterface : ALittle.IMsgCommonNative
 		this._net_status = JConnectStatus.NET_IDLE;
 		this._net_system = null;
         
-        if (this._conn_failed != null)
-            this._conn_failed(this);
+        ALittle.__ALITTLEAPI_ConnectFailed(this._id);
     }
                                           
     private fun HandleNetSystemMessage(javascript.WebSocketOnMessageEvent event)
@@ -206,8 +192,8 @@ public class JMsgInterface : ALittle.IMsgCommonNative
             var rpc_id = factory.ReadInt();
             factory.SetID(id);
             factory.SetRpcID(rpc_id);
-            if (this._message != null)
-                this._message(id, rpc_id, factory, this);
+            
+            ALittle.__ALITTLEAPI_Message(this._id, id, rpc_id, factory);
 		}
         this._net_buffer.Optimizes();
 	}   

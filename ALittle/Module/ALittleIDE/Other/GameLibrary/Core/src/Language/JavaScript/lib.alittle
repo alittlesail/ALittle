@@ -18,3 +18,10 @@ public static matchMedia(string text) : MediaQueryList {}
 public static typeof(any text) : string {}
 
 public static isNaN(double v) : bool {}
+
+public static requestAnimationFrame(Functor<(int)> callback) : int {}
+public static mozRequestAnimationFrame(Functor<(int)> callback) : int {}
+public static webkitRequestAnimationFrame (Functor<(int)> callback) : int {}
+public static msRequestAnimationFrame(Functor<(int)> callback) : int {}
+public static cancelAnimationFrame(int id) {}
+public static mozCancelAnimationFrame(int id) {}

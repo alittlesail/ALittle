@@ -8,7 +8,7 @@ ALittle.IHttpFileSender = JavaScript.Class(undefined, {
 	},
 	HandleSucceed : function() {
 	},
-	HandleProcess : function() {
+	HandleProcess : function(cur_size, total_size) {
 	},
 	HandleFailed : function(reason) {
 	},

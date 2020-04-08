@@ -69,18 +69,19 @@ JavaScript.JConnectStatus = {
 	NET_CONNECTED : 2,
 }
 
+let __JMSG_MAXID = 0;
 if (ALittle.IMsgCommonNative === undefined) throw new Error(" extends class:ALittle.IMsgCommonNative is undefined");
 JavaScript.JMsgInterface = JavaScript.Class(ALittle.IMsgCommonNative, {
 	Ctor : function() {
+		++ __JMSG_MAXID;
+		this._id = __JMSG_MAXID;
 		this._net_status = JavaScript.JConnectStatus.NET_IDLE;
 		this._ip = "";
 		this._port = 0;
 		this._net_buffer = ALittle.NewObject(JavaScript.JNetBuffer, 2048);
 	},
-	SetID : function(id) {
-	},
 	GetID : function() {
-		return 0;
+		return this._id;
 	},
 	Connect : function(ip, port) {
 		if (this._net_status === JavaScript.JConnectStatus.NET_CONNECTED) {
@@ -117,9 +118,7 @@ JavaScript.JMsgInterface = JavaScript.Class(ALittle.IMsgCommonNative, {
 			return;
 		}
 		this._net_status = JavaScript.JConnectStatus.NET_CONNECTED;
-		if (this._conn_succeed !== undefined) {
-			this._conn_succeed(this);
-		}
+		ALittle.__ALITTLEAPI_ConnectSucceed(this._id);
 	},
 	HandleNetSystemClose : function(event) {
 		if (this._net_status !== JavaScript.JConnectStatus.NET_CONNECTED) {
@@ -127,9 +126,7 @@ JavaScript.JMsgInterface = JavaScript.Class(ALittle.IMsgCommonNative, {
 		}
 		this._net_status = JavaScript.JConnectStatus.NET_IDLE;
 		this._net_system = undefined;
-		if (this._disconnected !== undefined) {
-			this._disconnected(this);
-		}
+		ALittle.__ALITTLEAPI_Disconnect(this._id);
 	},
 	HandleNetSystemError : function(event) {
 		if (this._net_status !== JavaScript.JConnectStatus.NET_CONNECTING) {
@@ -137,9 +134,7 @@ JavaScript.JMsgInterface = JavaScript.Class(ALittle.IMsgCommonNative, {
 		}
 		this._net_status = JavaScript.JConnectStatus.NET_IDLE;
 		this._net_system = undefined;
-		if (this._conn_failed !== undefined) {
-			this._conn_failed(this);
-		}
+		ALittle.__ALITTLEAPI_ConnectFailed(this._id);
 	},
 	HandleNetSystemMessage : function(event) {
 		if (event.data === undefined) {
@@ -157,9 +152,7 @@ JavaScript.JMsgInterface = JavaScript.Class(ALittle.IMsgCommonNative, {
 			let rpc_id = factory.ReadInt();
 			factory.SetID(id);
 			factory.SetRpcID(rpc_id);
-			if (this._message !== undefined) {
-				this._message(id, rpc_id, factory, this);
-			}
+			ALittle.__ALITTLEAPI_Message(this._id, id, rpc_id, factory);
 		}
 		this._net_buffer.Optimizes();
 	},

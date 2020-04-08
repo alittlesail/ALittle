@@ -1,7 +1,7 @@
 
 namespace Lua;
 
-public class CHeapTimer : ALittle.IHeapTimer
+public class LuaHeapTimer : ALittle.IHeapTimer
 {
     private lua.timer _timer;
     public ctor() { this._timer = lua.timer.create(); }

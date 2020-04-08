@@ -6,9 +6,15 @@ __ALITTLEAPI_Std_Init = async function(base_path) {
 	await Require(base_path + "Std/Reflect/ReflectCsv");
 	await Require(base_path + "Std/Reflect/ReflectMessage");
 	await Require(base_path + "Std/Utility/IHeapTimer");
+	await Require(base_path + "Std/Utility/ISchedule");
 	{
 		await Require(base_path + "Adapter/JavaScript/Timer");
 		await Require(base_path + "Adapter/JavaScript/FileSystem");
+		await Require(base_path + "Adapter/JavaScript/JHttpFileInterface");
+		await Require(base_path + "Adapter/JavaScript/JHttpInterface");
+		await Require(base_path + "Adapter/JavaScript/JMessageFactory");
+		await Require(base_path + "Adapter/JavaScript/JMsgInterface");
+		await Require(base_path + "Adapter/JavaScript/JSchedule");
 		await Require(base_path + "Adapter/JavaScript/JCsvFile");
 		await Require(base_path + "../../JSNative/md5.min");
 	}

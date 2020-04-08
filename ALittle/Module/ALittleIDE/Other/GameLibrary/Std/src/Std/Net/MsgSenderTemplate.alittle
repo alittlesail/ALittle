@@ -3,7 +3,6 @@ namespace ALittle;
 
 // 长连接所有的对象集合，提供客户端使用
 private var __MsgSenderMap = new Map<int, IMsgCommon>();
-public static FindMsgSender(int id) : IMsgCommon { return __MsgSenderMap[id]; }
 
 // 用于长连接
 public class MsgSenderTemplate<MI : IMsgCommonNative, WFACTORY : IMessageWriteFactory> : IMsgCommonTemplate
@@ -192,4 +191,36 @@ public class MsgSenderTemplate<MI : IMsgCommonNative, WFACTORY : IMessageWriteFa
         this._loop_system.RemoveTimer(this._heartbeat_loop);
         this._heartbeat_loop = null;
     }
+}
+
+// 客户端连接服务端，成功
+public static __ALITTLEAPI_ConnectSucceed(int id)
+{
+    var client = __MsgSenderMap[id];
+    if (client ==  null) return;
+    client.HandleConnectSucceed();
+}
+
+// 断开连接
+public static __ALITTLEAPI_Disconnect(int id)
+{
+    var client = __MsgSenderMap[id];
+    if (client ==  null) return;
+    client.HandleDisconnect();
+}
+
+// 客户端链接服务端，失败
+public static __ALITTLEAPI_ConnectFailed(int id)
+{
+    var client = __MsgSenderMap[id];
+    if (client ==  null) return;
+    client.HandleConnectFailed(null);
+}
+
+// 收到服务端发来的数据包
+public static __ALITTLEAPI_Message(int id, int msg_id, int rpc_id, ALittle.IMessageReadFactory factory)
+{
+    var client = __MsgSenderMap[id];
+    if (client ==  null) return;
+    client.HandleMessage(msg_id, rpc_id, factory);
 }

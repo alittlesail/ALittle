@@ -154,17 +154,17 @@ public class LoopSystem<HT : IHeapTimer> : ILoopSystem
 }
 
 [Language(Lua)]
-public var A_LuaLoopSystem = new LoopSystem<lua.__CPPAPIHeapTimer>();
+public var A_LuaLoopSystem = new LoopSystem<Lua.LuaHeapTimer>();
 
 [Language(JavaScript)]
-public var A_JSLoopSystem = new LoopSystem<JavaScript.JHeapTimer>();
+public var A_JLoopSystem = new LoopSystem<JavaScript.JHeapTimer>();
 
 private static GetLoopSystem() : ILoopSystem
 {
     [Language(Lua)]
     return A_LuaLoopSystem;
     [Language(JavaScript)]
-    return A_JSLoopSystem;
+    return A_JLoopSystem;
 }
 
 public var A_LoopSystem = GetLoopSystem();

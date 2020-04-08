@@ -1,0 +1,55 @@
+
+[Language(Lua)]
+namespace Lua;
+
+private var createwritefactory = lua.net.createwritefactory;
+private var setid = lua.net.setid;
+private var setrpcid = lua.net.setrpcid;
+private var resetoffset = lua.net.resetoffset;
+private var getoffset = lua.net.getoffset;
+private var setint = lua.net.setint;
+private var writebool = lua.net.writebool;
+private var writeint = lua.net.writeint;
+private var writelong = lua.net.writelong;
+private var writestring = lua.net.writestring;
+private var writedouble = lua.net.writedouble;
+
+public class LuaMessageWriteFactory : ALittle.IMessageWriteFactory
+{
+    private lua.write_factory _factory;
+    
+    public ctor() { this._factory = lua.net.createwritefactory(); }
+    public fun SetID(int id) { setid(this._factory, id); }
+    public fun SetRpcID(int id) { setrpcid(this._factory, id); }
+    public fun ResetOffset() { resetoffset(this._factory); }
+    public fun GetOffset() : int { return getoffset(this._factory); }
+    public fun SetInt(int offset, int value) { setint(this._factory, offset, value); }
+    
+    public fun WriteBool(bool value) : int { return writebool(this._factory, value); }
+    public fun WriteInt(int value) : int { return writeint(this._factory, value); }
+    public fun WriteLong(long value) : int { return writelong(this._factory, value); }
+    public fun WriteString(string value) : int { return writestring(this._factory, value); }
+    public fun WriteDouble(double value) : int { return writedouble(this._factory, value); }
+}
+
+private var gettotalsize = lua.net.gettotalsize;
+private var readbool = lua.net.readbool;
+private var readint = lua.net.readint;
+private var readlong = lua.net.readlong;
+private var readstring = lua.net.readstring;
+private var readdouble = lua.net.readdouble;
+private var getreadsize = lua.net.getreadsize;
+
+public class LuaMessageReadFactory : ALittle.IMessageReadFactory
+{
+    private lua.read_factory _factory;
+    public fun SetFactory(lua.read_factory factory) { this._factory = factory; }
+    public fun GetTotalSize() : int { return gettotalsize(this._factory); }
+    
+    public fun ReadBool() : bool { return readbool(this._factory); }
+    public fun ReadInt() : int { return readint(this._factory); }
+    public fun ReadLong() : long { return readlong(this._factory); }
+    public fun ReadString() : string { return readstring(this._factory); }
+    public fun ReadDouble() : double { return readdouble(this._factory); }
+    public fun GetReadSize() : int { return getreadsize(this._factory); }
+}

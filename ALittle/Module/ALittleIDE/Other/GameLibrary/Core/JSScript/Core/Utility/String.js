@@ -49,11 +49,11 @@ ALittle.String_Find = function(s, t, init) {
 	}
 }
 
-ALittle.String_Sub = function(s, start, end) {
-	if (end === undefined) {
-		return s.slice(start - 1);
+ALittle.String_Sub = function(s, starti, endi) {
+	if (endi === undefined) {
+		return s.slice(starti - 1);
 	} else {
-		return s.slice(start - 1, end);
+		return s.slice(starti - 1, endi);
 	}
 }
 

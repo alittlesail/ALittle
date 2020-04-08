@@ -10,20 +10,13 @@ public class IHttpFileSenderNative
     // download 为true表示下载，false表示上传
     // start_size 文件的起始位置
     public fun SetURL(string url, string file_path, bool download, int start_size) {}
-    public fun Start(Functor<(ALittle.IHttpFileSenderNative, string)> failed_callback
-                    , Functor<(ALittle.IHttpFileSenderNative)> succeed_callback
-                    , Functor<(ALittle.IHttpFileSenderNative)> process_callback) {}                   // 开始请求
+    public fun Start() {}                   // 开始请求
     public fun Stop() {}                    // 结束请求
     public fun GetPath() : string { return ""; }        // 获取文件路径
-    public fun GetCurrentSize() : int { return 0; }    // 获取已上传的文件大小
-    public fun GetTotalSize() : int { return 0; }      // 获取文件总大小
-    public fun GetContent() : string { return null; }
 }
 
 // 短连接文件所有的对象集合，提供客户端使用
 private var __HttpFileSenderMap = new Map<int, IHttpFileSender>();
-public static FindHttpFileSender(int id) : IHttpFileSender { return __HttpFileSenderMap[id]; }
-
 public class HttpFileSenderTemplate<NATIVE : IHttpFileSenderNative> : IHttpFileSender
 {
     private NATIVE _interface;
@@ -33,7 +26,10 @@ public class HttpFileSenderTemplate<NATIVE : IHttpFileSenderNative> : IHttpFileS
     private string _file_path;
     private int _start_size;
     private Functor<(IHttpFileSenderNative)> _callback;        // 下载或者上传的进度回调
-
+    
+    private int _cur_size;
+    private int _total_size;
+    
     public ctor(string ip, int port, string file_path, int start_size, [Nullable] Functor<(IHttpFileSenderNative)> callback)
     {
         this._interface = new NATIVE();
@@ -43,6 +39,9 @@ public class HttpFileSenderTemplate<NATIVE : IHttpFileSenderNative> : IHttpFileS
         this._file_path = file_path;
         this._start_size = start_size;
         this._callback = callback;
+        
+        this._cur_size = 0;
+        this._total_size = 0;
     }
 
     protected fun SendDownloadRPC(Thread thread, string method, any content)
@@ -80,14 +79,14 @@ public class HttpFileSenderTemplate<NATIVE : IHttpFileSenderNative> : IHttpFileS
 
     public fun GetTotalSize() : int
     {
-        return this._interface.GetTotalSize();
+        return this._total_size;
     }
     
-    public fun GetContent() : string
+    public fun GetCurSize() : int
     {
-        return this._interface.GetContent();
+        return this._cur_size;
     }
-
+    
     protected fun HandleSucceed()
     {
         __HttpFileSenderMap[this._interface.GetID()] = null;
@@ -102,8 +101,11 @@ public class HttpFileSenderTemplate<NATIVE : IHttpFileSenderNative> : IHttpFileS
         if (result != true) Error(error);
     }
     
-    protected fun HandleProcess()
+    protected fun HandleProcess(int cur_size, int total_size)
     {
+        this._cur_size = cur_size;
+        this._total_size = total_size;
+        
         if (this._callback != null)
             this._callback(this._interface);
     }
@@ -126,4 +128,25 @@ public class HttpFileSenderTemplate<NATIVE : IHttpFileSenderNative> : IHttpFileS
     
         return url .. String_Join(list, "&");
     }
+}
+
+public static __ALITTLEAPI_HttpFileSucceed(int id)
+{
+    var client = __HttpFileSenderMap[id];
+    if (client == null) return;
+    client.HandleSucceed();
+}
+
+public static __ALITTLEAPI_HttpFileFailed(int id, string reason)
+{
+    var client = __HttpFileSenderMap[id];
+    if (client == null) return;
+    client.HandleFailed(reason);
+}
+
+public static __ALITTLEAPI_HttpFileProcess(int id, int cur_size, int total_size)
+{
+    var client = __HttpFileSenderMap[id];
+    if (client == null) return;
+    client.HandleProcess(cur_size, total_size);
 }

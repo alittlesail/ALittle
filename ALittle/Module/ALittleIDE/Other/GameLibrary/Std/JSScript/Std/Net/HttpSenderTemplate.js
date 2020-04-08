@@ -18,10 +18,6 @@ ALittle.IHttpSenderNative = JavaScript.Class(undefined, {
 }, "ALittle.IHttpSenderNative");
 
 let __HttpSenderMap = new Map();
-ALittle.FindHttpSender = function(id) {
-	return __HttpSenderMap.get(id);
-}
-
 if (ALittle.IHttpSender === undefined) throw new Error(" extends class:ALittle.IHttpSender is undefined");
 ALittle.HttpSenderTemplate = JavaScript.Class(ALittle.IHttpSender, {
 	Ctor : function(ip, port) {
@@ -73,5 +69,21 @@ ALittle.HttpSenderTemplate = JavaScript.Class(ALittle.IHttpSender, {
 		}
 	},
 }, "ALittle.HttpSenderTemplate");
+
+ALittle.__ALITTLEAPI_HttpClientSucceed = function(id) {
+	let client = __HttpSenderMap.get(id);
+	if (client === undefined) {
+		return;
+	}
+	client.HandleSucceed();
+}
+
+ALittle.__ALITTLEAPI_HttpClientFailed = function(id, reason) {
+	let client = __HttpSenderMap.get(id);
+	if (client === undefined) {
+		return;
+	}
+	client.HandleFailed(reason);
+}
 
 }

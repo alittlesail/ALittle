@@ -3,10 +3,6 @@ if (typeof ALittle === "undefined") ALittle = {};
 
 
 let __MsgSenderMap = new Map();
-ALittle.FindMsgSender = function(id) {
-	return __MsgSenderMap.get(id);
-}
-
 if (ALittle.IMsgCommonTemplate === undefined) throw new Error(" extends class:ALittle.IMsgCommonTemplate is undefined");
 ALittle.MsgSenderTemplate = JavaScript.Class(ALittle.IMsgCommonTemplate, {
 	Ctor : function(heartbeat, check_heartbeat, loop_system, callback) {
@@ -23,7 +19,7 @@ ALittle.MsgSenderTemplate = JavaScript.Class(ALittle.IMsgCommonTemplate, {
 		this._callback = callback;
 	},
 	Connect : function(ip, port) {
-		return new Promise(function(___COROUTINE, ___) {
+		return new Promise((function(___COROUTINE, ___) {
 			if (ip === undefined) {
 				ip = "";
 			}
@@ -40,7 +36,7 @@ ALittle.MsgSenderTemplate = JavaScript.Class(ALittle.IMsgCommonTemplate, {
 			this._interface.Connect(ip, port);
 			return;
 			___COROUTINE();
-		});
+		}).bind(this));
 	},
 	HandleConnectSucceed : function() {
 		this._last_recv_time = 0;
@@ -136,5 +132,37 @@ ALittle.MsgSenderTemplate = JavaScript.Class(ALittle.IMsgCommonTemplate, {
 		this._heartbeat_loop = undefined;
 	},
 }, "ALittle.MsgSenderTemplate");
+
+ALittle.__ALITTLEAPI_ConnectSucceed = function(id) {
+	let client = __MsgSenderMap.get(id);
+	if (client === undefined) {
+		return;
+	}
+	client.HandleConnectSucceed();
+}
+
+ALittle.__ALITTLEAPI_Disconnect = function(id) {
+	let client = __MsgSenderMap.get(id);
+	if (client === undefined) {
+		return;
+	}
+	client.HandleDisconnect();
+}
+
+ALittle.__ALITTLEAPI_ConnectFailed = function(id) {
+	let client = __MsgSenderMap.get(id);
+	if (client === undefined) {
+		return;
+	}
+	client.HandleConnectFailed(undefined);
+}
+
+ALittle.__ALITTLEAPI_Message = function(id, msg_id, rpc_id, factory) {
+	let client = __MsgSenderMap.get(id);
+	if (client === undefined) {
+		return;
+	}
+	client.HandleMessage(msg_id, rpc_id, factory);
+}
 
 }

@@ -6,8 +6,6 @@ let __JHTTPFILE_MAXID = 0;
 if (ALittle.IHttpFileSenderNative === undefined) throw new Error(" extends class:ALittle.IHttpFileSenderNative is undefined");
 JavaScript.JHttpFileInterface = JavaScript.Class(ALittle.IHttpFileSenderNative, {
 	Ctor : function() {
-		this._cur_size = 0;
-		this._total_size = 0;
 		++ __JHTTPFILE_MAXID;
 		this._id = __JHTTPFILE_MAXID;
 	},
@@ -19,20 +17,15 @@ JavaScript.JHttpFileInterface = JavaScript.Class(ALittle.IHttpFileSenderNative, 
 		this._file_path = file_path;
 		this._download = download;
 	},
-	Start : function(failed_callback, succeed_callback, process_callback) {
+	Start : function() {
 		let content = undefined;
 		if (!this._download) {
 			content = JavaScript.File_LoadFile(this._file_path);
 			if (content === undefined) {
-				if (failed_callback !== undefined) {
-					failed_callback(this, "file is not exist:" + this._file_path);
-				}
+				ALittle.__ALITTLEAPI_HttpFileFailed(this._id, "file is not exist:" + this._file_path);
 				return;
 			}
 		}
-		this._failed_callback = failed_callback;
-		this._succeed_callback = succeed_callback;
-		this._process_callback = process_callback;
 		this._request = new XMLHttpRequest();
 		if (this._download) {
 			this._request.open("GET", this._url, true);
@@ -58,37 +51,21 @@ JavaScript.JHttpFileInterface = JavaScript.Class(ALittle.IHttpFileSenderNative, 
 	GetPath : function() {
 		return this._file_path;
 	},
-	GetCurrentSize : function() {
-		return this._cur_size;
-	},
-	GetTotalSize : function() {
-		return this._total_size;
-	},
 	GetContent : function() {
 		return this._request.responseText;
 	},
 	HandleAjaxError : function() {
-		if (this._failed_callback !== undefined) {
-			this._failed_callback(this, this._request.statusText);
-		}
+		ALittle.__ALITTLEAPI_HttpFileFailed(this._id, this._request.statusText);
 	},
 	HandleStartCompleted : function() {
 		if (this._download && !JavaScript.File_SaveFile(this._file_path, this._request.responseText)) {
-			if (this._failed_callback !== undefined) {
-				this._failed_callback(this, "file save failed:" + this._file_path);
-			}
+			ALittle.__ALITTLEAPI_HttpFileFailed(this._id, "file save failed:" + this._file_path);
 			return;
 		}
-		if (this._succeed_callback !== undefined) {
-			this._succeed_callback(this);
-		}
+		ALittle.__ALITTLEAPI_HttpFileSucceed(this._id);
 	},
 	HandleOnProgress : function(event) {
-		this._cur_size = event.loaded;
-		this._total_size = event.total;
-		if (this._process_callback !== undefined) {
-			this._process_callback(this);
-		}
+		ALittle.__ALITTLEAPI_HttpFileProcess(this._id, event.loaded, event.total);
 	},
 }, "JavaScript.JHttpFileInterface");
 

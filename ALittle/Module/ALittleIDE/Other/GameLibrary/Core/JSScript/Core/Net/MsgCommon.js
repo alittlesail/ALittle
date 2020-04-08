@@ -2,6 +2,59 @@
 if (typeof ALittle === "undefined") ALittle = {};
 
 
+ALittle.IMessageWriteFactory = JavaScript.Class(undefined, {
+	SetID : function(id) {
+	},
+	SetRpcID : function(id) {
+	},
+	ResetOffset : function() {
+	},
+	GetOffset : function() {
+		return 0;
+	},
+	SetInt : function(offset, value) {
+	},
+	WriteBool : function(value) {
+		return 0;
+	},
+	WriteInt : function(value) {
+		return 0;
+	},
+	WriteLong : function(value) {
+		return 0;
+	},
+	WriteString : function(value) {
+		return 0;
+	},
+	WriteDouble : function(value) {
+		return 0;
+	},
+}, "ALittle.IMessageWriteFactory");
+
+ALittle.IMessageReadFactory = JavaScript.Class(undefined, {
+	GetTotalSize : function() {
+		return 0;
+	},
+	ReadBool : function() {
+		return false;
+	},
+	ReadInt : function() {
+		return 0;
+	},
+	ReadLong : function() {
+		return 0;
+	},
+	ReadString : function() {
+		return "";
+	},
+	ReadDouble : function() {
+		return 0;
+	},
+	GetReadSize : function() {
+		return 0;
+	},
+}, "ALittle.IMessageReadFactory");
+
 ALittle.IMsgCommon = JavaScript.Class(undefined, {
 	IsConnected : function() {
 		return false;

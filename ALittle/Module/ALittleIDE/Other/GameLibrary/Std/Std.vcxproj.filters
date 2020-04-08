@@ -79,16 +79,10 @@
     <None Include="src\Std\Net\MsgSessionTemplate.alittle">
       <Filter>Std\Net</Filter>
     </None>
-    <None Include="src\Adapter\Lua\HeapTimer.alittle">
-      <Filter>Adapter\Lua</Filter>
-    </None>
     <None Include="src\Adapter\Lua\json.alittle">
       <Filter>Adapter\Lua</Filter>
     </None>
     <None Include="src\Adapter\Lua\lfs.alittle">
-      <Filter>Adapter\Lua</Filter>
-    </None>
-    <None Include="src\Adapter\Lua\MessageFactory.alittle">
       <Filter>Adapter\Lua</Filter>
     </None>
     <None Include="src\Adapter\JavaScript\Timer.alittle">
@@ -112,9 +106,6 @@
     </None>
     <None Include="src\Std\Utility\IHeapTimer.alittle">
       <Filter>Std\Utility</Filter>
-    </None>
-    <None Include="src\Adapter\Lua\ScriptInterface.alittle">
-      <Filter>Adapter\Lua</Filter>
     </None>
     <None Include="src\Std\Utility\File.alittle">
       <Filter>Std\Utility</Filter>
@@ -169,6 +160,24 @@
     </None>
     <None Include="src\Adapter\Lua\LuaHttpFileInterface.alittle">
       <Filter>Adapter\Lua</Filter>
+    </None>
+    <None Include="src\Adapter\Lua\LuaHeapTimer.alittle">
+      <Filter>Adapter\Lua</Filter>
+    </None>
+    <None Include="src\Adapter\JavaScript\JSchedule.alittle">
+      <Filter>Adapter\JavaScript</Filter>
+    </None>
+    <None Include="src\Adapter\Lua\LuaSchedule.alittle">
+      <Filter>Adapter\Lua</Filter>
+    </None>
+    <None Include="src\Adapter\Lua\LuaMsgInterface.alittle">
+      <Filter>Adapter\Lua</Filter>
+    </None>
+    <None Include="src\Adapter\Lua\LuaMessageFactory.alittle">
+      <Filter>Adapter\Lua</Filter>
+    </None>
+    <None Include="src\Std\Utility\ISchedule.alittle">
+      <Filter>Std\Utility</Filter>
     </None>
   </ItemGroup>
 </Project>

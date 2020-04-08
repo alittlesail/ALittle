@@ -15,22 +15,9 @@ ALittle.IHttpFileSenderNative = JavaScript.Class(undefined, {
 	GetPath : function() {
 		return "";
 	},
-	GetCurrentSize : function() {
-		return 0;
-	},
-	GetTotalSize : function() {
-		return 0;
-	},
-	GetContent : function() {
-		return undefined;
-	},
 }, "ALittle.IHttpFileSenderNative");
 
 let __HttpFileSenderMap = new Map();
-ALittle.FindHttpFileSender = function(id) {
-	return __HttpFileSenderMap.get(id);
-}
-
 if (ALittle.IHttpFileSender === undefined) throw new Error(" extends class:ALittle.IHttpFileSender is undefined");
 ALittle.HttpFileSenderTemplate = JavaScript.Class(ALittle.IHttpFileSender, {
 	Ctor : function(ip, port, file_path, start_size, callback) {
@@ -43,6 +30,8 @@ ALittle.HttpFileSenderTemplate = JavaScript.Class(ALittle.IHttpFileSender, {
 		this._file_path = file_path;
 		this._start_size = start_size;
 		this._callback = callback;
+		this._cur_size = 0;
+		this._total_size = 0;
 	},
 	SendDownloadRPC : function(thread, method, content) {
 		this._thread = thread;
@@ -68,10 +57,10 @@ ALittle.HttpFileSenderTemplate = JavaScript.Class(ALittle.IHttpFileSender, {
 		this._interface.Stop();
 	},
 	GetTotalSize : function() {
-		return this._interface.GetTotalSize();
+		return this._total_size;
 	},
-	GetContent : function() {
-		return this._interface.GetContent();
+	GetCurSize : function() {
+		return this._cur_size;
 	},
 	HandleSucceed : function() {
 		__HttpFileSenderMap.delete(this._interface.GetID());
@@ -87,7 +76,9 @@ ALittle.HttpFileSenderTemplate = JavaScript.Class(ALittle.IHttpFileSender, {
 			ALittle.Error(error);
 		}
 	},
-	HandleProcess : function() {
+	HandleProcess : function(cur_size, total_size) {
+		this._cur_size = cur_size;
+		this._total_size = total_size;
 		if (this._callback !== undefined) {
 			this._callback(this._interface);
 		}
@@ -110,5 +101,29 @@ ALittle.HttpFileSenderTemplate = JavaScript.Class(ALittle.IHttpFileSender, {
 		return url + ALittle.String_Join(list, "&");
 	},
 }, "ALittle.HttpFileSenderTemplate");
+
+ALittle.__ALITTLEAPI_HttpFileSucceed = function(id) {
+	let client = __HttpFileSenderMap.get(id);
+	if (client === undefined) {
+		return;
+	}
+	client.HandleSucceed();
+}
+
+ALittle.__ALITTLEAPI_HttpFileFailed = function(id, reason) {
+	let client = __HttpFileSenderMap.get(id);
+	if (client === undefined) {
+		return;
+	}
+	client.HandleFailed(reason);
+}
+
+ALittle.__ALITTLEAPI_HttpFileProcess = function(id, cur_size, total_size) {
+	let client = __HttpFileSenderMap.get(id);
+	if (client === undefined) {
+		return;
+	}
+	client.HandleProcess(cur_size, total_size);
+}
 
 }

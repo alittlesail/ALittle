@@ -3,7 +3,7 @@ if (typeof Lua === "undefined") Lua = {};
 
 
 if (ALittle.IHeapTimer === undefined) throw new Error(" extends class:ALittle.IHeapTimer is undefined");
-Lua.CHeapTimer = JavaScript.Class(ALittle.IHeapTimer, {
+Lua.LuaHeapTimer = JavaScript.Class(ALittle.IHeapTimer, {
 	Ctor : function() {
 		this._timer = lua.timer.create();
 	},
@@ -19,6 +19,6 @@ Lua.CHeapTimer = JavaScript.Class(ALittle.IHeapTimer, {
 	Poll : function() {
 		return lua.timer.poll(this._timer);
 	},
-}, "Lua.CHeapTimer");
+}, "Lua.LuaHeapTimer");
 
 }

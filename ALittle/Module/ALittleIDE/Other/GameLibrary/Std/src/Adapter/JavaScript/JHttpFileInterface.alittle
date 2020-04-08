@@ -11,17 +11,9 @@ public class JHttpFileInterface : ALittle.IHttpFileSenderNative
     private string _file_path;
     private bool _download;
     private javascript.XMLHttpRequest _request;
-    private Functor<(ALittle.IHttpFileSenderNative, string)> _failed_callback;
-    private Functor<(ALittle.IHttpFileSenderNative)> _succeed_callback;
-    private Functor<(ALittle.IHttpFileSenderNative)> _process_callback;
-    
-    private int _cur_size;
-    private int _total_size;
     
     public ctor()
     {
-        this._cur_size = 0;
-        this._total_size = 0;
         ++ __JHTTPFILE_MAXID;
         this._id = __JHTTPFILE_MAXID;
     }
@@ -34,9 +26,7 @@ public class JHttpFileInterface : ALittle.IHttpFileSenderNative
         this._file_path = file_path;
         this._download = download;
     }
-    public fun Start(Functor<(ALittle.IHttpFileSenderNative, string)> failed_callback
-                    , Functor<(ALittle.IHttpFileSenderNative)> succeed_callback
-                    , Functor<(ALittle.IHttpFileSenderNative)> process_callback)
+    public fun Start()
     {
         var content:string;
         if (!this._download)
@@ -44,15 +34,10 @@ public class JHttpFileInterface : ALittle.IHttpFileSenderNative
             content = File_LoadFile(this._file_path);
             if (content == null)
             {
-                if (failed_callback != null)
-                    failed_callback(this, "file is not exist:" .. this._file_path);
+                ALittle.__ALITTLEAPI_HttpFileFailed(this._id, "file is not exist:" .. this._file_path);
                 return;
             }
         }
-        
-        this._failed_callback = failed_callback;
-        this._succeed_callback = succeed_callback;
-        this._process_callback = process_callback;
             
         this._request = new javascript.XMLHttpRequest();
         if (this._download)
@@ -78,36 +63,27 @@ public class JHttpFileInterface : ALittle.IHttpFileSenderNative
     }
     
     public fun GetPath() : string { return this._file_path; }
-    public fun GetCurrentSize() : int { return this._cur_size; }
-    public fun GetTotalSize() : int { return this._total_size; }
     
     public fun GetContent() : string { return this._request.responseText; }
     
     private fun HandleAjaxError()
 	{
-        if (this._failed_callback != null)
-            this._failed_callback(this, this._request.statusText);
+        ALittle.__ALITTLEAPI_HttpFileFailed(this._id, this._request.statusText);
 	}
     
 	private fun HandleStartCompleted()
 	{
         if (this._download && !File_SaveFile(this._file_path, this._request.responseText))
         {
-            if (this._failed_callback != null)
-                this._failed_callback(this, "file save failed:" .. this._file_path);
+            ALittle.__ALITTLEAPI_HttpFileFailed(this._id, "file save failed:" .. this._file_path);
             return;
         }
         
-        if (this._succeed_callback != null)
-            this._succeed_callback(this);
+        ALittle.__ALITTLEAPI_HttpFileSucceed(this._id);
 	}
     
     private fun HandleOnProgress(javascript.XMLHttpRequestOnProgressEvent event)
     {
-        this._cur_size = event.loaded;
-        this._total_size = event.total;
-        
-        if (this._process_callback != null)
-            this._process_callback(this);
+        ALittle.__ALITTLEAPI_HttpFileProcess(this._id, event.loaded, event.total);
     }
 }

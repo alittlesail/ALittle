@@ -16,7 +16,7 @@ public class LoopObject
         A_LuaLoopSystem.AddUpdater(this);
         
         [Language(JavaScript)]
-        A_JSLoopSystem.AddUpdater(this);
+        A_JLoopSystem.AddUpdater(this);
     }
     
     public fun Stop()
@@ -25,6 +25,6 @@ public class LoopObject
         A_LuaLoopSystem.RemoveUpdater(this);
         
         [Language(JavaScript)]
-        A_JSLoopSystem.RemoveUpdater(this);
+        A_JLoopSystem.RemoveUpdater(this);
     }
 }

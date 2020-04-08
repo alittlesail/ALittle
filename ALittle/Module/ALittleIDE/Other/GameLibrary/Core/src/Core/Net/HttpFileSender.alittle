@@ -6,7 +6,7 @@ public class IHttpFileSender
 {
     public fun GetContent() : string { return null; }
     protected fun HandleSucceed() {}
-    protected fun HandleProcess() {}
+    protected fun HandleProcess(int cur_size, int total_size) {}
     protected fun HandleFailed(string reason) {}
     
     // 提供子类继承

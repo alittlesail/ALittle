@@ -20,7 +20,7 @@ ALittle.HttpFileReceiverTemplate = JavaScript.Class(ALittle.IHttpFileReceiver, {
 		this._interface = ALittle.NewObject(this.__class.__element[0]);
 	},
 	StartReceiveFile : function(file_path, start_size) {
-		return new Promise(function(___COROUTINE, ___) {
+		return new Promise((function(___COROUTINE, ___) {
 			if (this._received) {
 				___COROUTINE("StartReceiveFile已经被调用过"); return;
 			}
@@ -28,7 +28,7 @@ ALittle.HttpFileReceiverTemplate = JavaScript.Class(ALittle.IHttpFileReceiver, {
 			this._interface.StartReceiveFile(this._http_id, file_path, start_size);
 			return;
 			___COROUTINE();
-		});
+		}).bind(this));
 	},
 	HandleReceiveResult : function(reason) {
 		let [result, error] = ALittle.Coroutine.Resume(this._thread, reason);

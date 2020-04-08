@@ -7,11 +7,17 @@ public async static __ALITTLEAPI_Std_Init(string base_path)
     Require(base_path.."Std/Reflect/ReflectMessage");
     
     Require(base_path.."Std/Utility/IHeapTimer");
+    Require(base_path.."Std/Utility/ISchedule");
     
     [Language(JavaScript)]
     {
         Require(base_path.."Adapter/JavaScript/Timer");
         Require(base_path.."Adapter/JavaScript/FileSystem");
+        Require(base_path.."Adapter/JavaScript/JHttpFileInterface");
+        Require(base_path.."Adapter/JavaScript/JHttpInterface");
+        Require(base_path.."Adapter/JavaScript/JMessageFactory");
+        Require(base_path.."Adapter/JavaScript/JMsgInterface");
+        Require(base_path.."Adapter/JavaScript/JSchedule");
         Require(base_path.."Adapter/JavaScript/JCsvFile");
         Require(base_path.."../../JSNative/md5.min");
     }
@@ -20,6 +26,11 @@ public async static __ALITTLEAPI_Std_Init(string base_path)
     {
         Require(base_path.."Adapter/Lua/HeapTimer");
         Require(base_path.."Adapter/Lua/LuaCsvFile");
+        Require(base_path.."Adapter/Lua/LuaHttpFileInterface");
+        Require(base_path.."Adapter/Lua/LuaHttpInterface");
+        Require(base_path.."Adapter/Lua/LuaMsgInterface");
+        Require(base_path.."Adapter/Lua/LuaMessageFactory");
+        Require(base_path.."Adapter/Lua/LuaSchedule");
     }
     
     Require(base_path.."Std/Loop/LoopObject");

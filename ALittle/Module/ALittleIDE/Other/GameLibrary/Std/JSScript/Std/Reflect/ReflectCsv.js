@@ -8,20 +8,6 @@ type_list : ["Functor<(string,ALittle.CsvInvokeInfo):any>","string","string","AL
 option_map : {}
 })
 
-ALittle.ICsvFile = JavaScript.Class(undefined, {
-	Close : function() {
-	},
-	ReadCell : function(row, col) {
-		return "";
-	},
-	GetRowCount : function() {
-		return 0;
-	},
-	GetColCount : function() {
-		return 0;
-	},
-}, "ALittle.ICsvFile");
-
 let floor = ALittle.Math_Floor;
 let tonumber = ALittle.Math_ToDouble;
 let maxn = ALittle.List_MaxN;

@@ -22,24 +22,27 @@ Require = function(url) {
 	});
 }
 
-__ALITTLEAPI_Core_Init = async function(base_path) {
-	{
-		await Require(base_path + "Core/JavaScript/JavaScriptClass");
-		await Require(base_path + "Core/JavaScript/JavaScriptException");
-	}
-	await Require(base_path + "Core/Reflect/ReflectRegister");
-	await Require(base_path + "Core/Reflect/ReflectDefine");
-	await Require(base_path + "Core/Utility/Log");
-	await Require(base_path + "Core/Utility/List");
-	await Require(base_path + "Core/Utility/Math");
-	await Require(base_path + "Core/Utility/String");
-	await Require(base_path + "Core/Utility/Time");
-	await Require(base_path + "Core/Utility/Coroutine");
-	await Require(base_path + "Core/Net/HttpFileReceiver");
-	await Require(base_path + "Core/Net/HttpFileSender");
-	await Require(base_path + "Core/Net/HttpReceiver");
-	await Require(base_path + "Core/Net/HttpSender");
-	await Require(base_path + "Core/Net/MsgCommon");
+__ALITTLEAPI_Core_Init = function(base_path) {
+	return new Promise(async function(___COROUTINE, ___) {
+		{
+			await Require(base_path + "Core/JavaScript/JavaScriptClass");
+			await Require(base_path + "Core/JavaScript/JavaScriptException");
+		}
+		await Require(base_path + "Core/Reflect/ReflectRegister");
+		await Require(base_path + "Core/Reflect/ReflectDefine");
+		await Require(base_path + "Core/Utility/Log");
+		await Require(base_path + "Core/Utility/List");
+		await Require(base_path + "Core/Utility/Math");
+		await Require(base_path + "Core/Utility/String");
+		await Require(base_path + "Core/Utility/Time");
+		await Require(base_path + "Core/Utility/Coroutine");
+		await Require(base_path + "Core/Net/HttpFileReceiver");
+		await Require(base_path + "Core/Net/HttpFileSender");
+		await Require(base_path + "Core/Net/HttpReceiver");
+		await Require(base_path + "Core/Net/HttpSender");
+		await Require(base_path + "Core/Net/MsgCommon");
+		___COROUTINE();
+	});
 }
 
 }

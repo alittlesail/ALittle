@@ -230,6 +230,53 @@ void md5 (const char *message, size_t len, char output[HASHSIZE]) {
   word32tobytes(d, output);
 }
 
+int md5_file(const char* file_path, char output[HASHSIZE])
+{
+    if (file_path == 0) return 0;
+
+#ifdef _WIN32
+    FILE* file = 0;
+    fopen_s(&file, file_path, "rb");
+#else
+    file = fopen(file_path, "rb");
+#endif
+    if (file == 0) return 0;
+
+    md5_t info;
+    md5_init(&info);
+
+    unsigned char buffer[1024];
+    while (1)
+    {
+        size_t read_size = fread(buffer, 1, sizeof(buffer), file);
+        if (read_size == 0) break;
+        md5_update(&info, buffer, read_size);
+    }
+    fclose(file);
+
+    md5_finish(&info, output);
+    return 1;
+}
+
+const char HEX[16] = {
+    '0', '1', '2', '3',
+    '4', '5', '6', '7',
+    '8', '9', 'a', 'b',
+    'c', 'd', 'e', 'f'
+};
+
+void md5_tostring(char output[HASHSIZE], char str[32])
+{
+    int index = 0;
+    for (int i = 0; i < 16; ++i) {
+        int t = (unsigned char)output[i];
+        int a = t / 16;
+        int b = t % 16;
+        str[index++] = HEX[a];
+        str[index++] = HEX[b];
+    }
+}
+
 void md5_init(md5_t *m) {
     inic_digest(m->d);
     m->len = 0;

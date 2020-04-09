@@ -31,6 +31,8 @@ void md5_init   (md5_t *m);
 int  md5_update (md5_t *m, const char *message, size_t len);
 void md5_finish (md5_t *m, char output[HASHSIZE]);
 void md5 (const char *message, size_t len, char output[HASHSIZE]);
+int md5_file(const char* file_path, char output[HASHSIZE]);
+void md5_tostring(char output[HASHSIZE], char str[32]);
 
 #include "lua.h"
 

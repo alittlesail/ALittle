@@ -16,13 +16,6 @@
 
 #define MD5_MODNAME "md5"
 
-const char HEX[16] = {
-    '0', '1', '2', '3',
-    '4', '5', '6', '7',
-    '8', '9', 'a', 'b',
-    'c', 'd', 'e', 'f'
-};
-
 /**
 *  Hash function. Returns a hash for a given string.
 *  @param message: arbitrary binary string.
@@ -37,21 +30,24 @@ static int lmd5 (lua_State *L) {
   return 1;
 }
 
-static int encode(lua_State* L) {
+static int stringmd5(lua_State* L) {
     char buff[16];
     size_t l;
     const char* message = luaL_checklstring(L, 1, &l);
     md5(message, l, buff);
-    char value[32];
+    char value[32] = { 0 };
+    md5_tostring(buff, value);
+    lua_pushlstring(L, value, 32L);
+    return 1;
+}
 
-    int index = 0;
-    for (int i = 0; i < 16; ++i) {
-        int t = (unsigned char)buff[i];
-        int a = t / 16;
-        int b = t % 16;
-        value[index++] = HEX[a];
-        value[index++] = HEX[b];
-    }
+static int filemd5(lua_State* L) {
+    char buff[16];
+    size_t l;
+    const char* message = luaL_checklstring(L, 1, &l);
+    md5_file(message, l, buff);
+    char value[32] = { 0 };
+    md5_tostring(buff, value);
     lua_pushlstring(L, value, 32L);
     return 1;
 }
@@ -210,7 +206,8 @@ static void set_info (lua_State *L) {
 
 static struct luaL_Reg md5lib[] = {
   {"sum", lmd5},
-  {"encode", encode},
+  {"stringmd5", stringmd5},
+  {"filemd5", filemd5},
   {"exor", ex_or},
   {"crypt", crypt},
   {"decrypt", decrypt},

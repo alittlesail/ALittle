@@ -75,7 +75,12 @@ int csv_addrow(csv* c, csvrow* rowdata, kstring_t* error)
     return 1;
 }
 
-int csv_load(csv* c, const char* path, kstring_t* error)
+size_t csv_std_fread(void* buffer, size_t element_size, size_t count, void* file)
+{
+    return fread(buffer, element_size, count, (FILE*)file);
+}
+
+int csv_std_load(csv* c, const char* path, kstring_t* error)
 {
     FILE* file = 0;
 #ifdef _WIN32
@@ -89,19 +94,25 @@ int csv_load(csv* c, const char* path, kstring_t* error)
         return 0;
     }
 
+    int result = csv_load(c, path, csv_std_fread, file, error);
+
+    fclose(file);
+    return result;
+}
+
+int csv_load(csv* c, const char* path, csv_fread func_read, void* file, kstring_t* error)
+{
     // 读取第一个字符
     char cur_char = END_OF_FILE;
-    size_t size = fread(&cur_char, 1, 1, file);
+    size_t size = func_read(&cur_char, 1, 1, file);
     if (size == 0)
     {
         if (error) ksprintf(error, "file is empty:%s", path);
-        fclose(file);
         return 0;
     }
     if (cur_char == 0)
     {
         if (error) ksprintf(error, "row(1) has char is 0:%s", path);
-        fclose(file);
         return 0;
     }
 
@@ -110,7 +121,7 @@ int csv_load(csv* c, const char* path, kstring_t* error)
 
     // 读取下一个字符
     char next_char = 0;
-    size = fread(&next_char, 1, 1, file);
+    size = func_read(&next_char, 1, 1, file);
     if (size == 0)
     {
         // 构建字符串
@@ -125,14 +136,12 @@ int csv_load(csv* c, const char* path, kstring_t* error)
         // 添加到总数据
         kv_push(csvrow*, c->data, rowdata);
 
-        fclose(file);
         return 1;
     }
 
     if (next_char == 0)
     {
         if (error) ksprintf(error, "row(1) has char is 0:%s", path);
-        fclose(file);
         return 0;
     }
 
@@ -238,7 +247,7 @@ int csv_load(csv* c, const char* path, kstring_t* error)
                     kputc('"', cell);
                     // 直接读取下一个字符
                     next_char = END_OF_FILE;
-                    fread(&next_char, 1, 1, file);
+                    func_read(&next_char, 1, 1, file);
                     // 如果后面没有数据了，说明没有关闭引号，报错
                     if (next_char == END_OF_FILE)
                     {
@@ -344,7 +353,7 @@ int csv_load(csv* c, const char* path, kstring_t* error)
         // 读取下一个字符
         cur_char = next_char;
         next_char = END_OF_FILE;
-        fread(&next_char, 1, 1, file);
+        func_read(&next_char, 1, 1, file);
     }
 
     if (cell)
@@ -359,7 +368,6 @@ int csv_load(csv* c, const char* path, kstring_t* error)
         free(row);
     }
 
-    fclose(file);
     return result;
 }
 

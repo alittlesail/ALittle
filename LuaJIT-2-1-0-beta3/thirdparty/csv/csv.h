@@ -8,7 +8,7 @@
 typedef kvec_t(kstring_t*) csvrow;
 typedef kvec_t(csvrow*) csvdata;
 
-typedef struct
+typedef struct _csv
 {
 	kstring_t* path;
 	csvdata data;
@@ -21,8 +21,13 @@ void csv_init(csv* c);
 void csv_destroy(csv* c);
 void csv_clear(csv* c);
 
+// 读取接口
+typedef size_t (*csv_fread)(void* buffer, size_t element_size, size_t count, void* file);
+size_t csv_std_fread(void* buffer, size_t element_size, size_t count, void* file);
+
 // 加载数据
-int csv_load(csv* c, const char* path, kstring_t* error);
+int csv_std_load(csv* c, const char* path, kstring_t* error);
+int csv_load(csv* c, const char* path, csv_fread func_read, void* file, kstring_t* error);
 // 读取路径
 const char* csv_getpath(csv* c);
 // 读取单位

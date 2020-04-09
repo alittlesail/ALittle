@@ -39,7 +39,7 @@ static int csvlib_load(lua_State* L)
     const char* path = luaL_checkstring(L, 2);
     int loop = (int)luaL_checkinteger(L, 3);
     kstring_t* error = (kstring_t*)calloc(1, sizeof(kstring_t));
-    if (!csv_load(c, path, error))
+    if (!csv_std_load(c, path, error))
         lua_pushstring(L, ks_str(error));
     else
         lua_pushnil(L);

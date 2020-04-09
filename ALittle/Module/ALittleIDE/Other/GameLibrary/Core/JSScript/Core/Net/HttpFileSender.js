@@ -3,9 +3,6 @@ if (typeof ALittle === "undefined") ALittle = {};
 
 
 ALittle.IHttpFileSender = JavaScript.Class(undefined, {
-	GetContent : function() {
-		return undefined;
-	},
 	HandleSucceed : function() {
 	},
 	HandleProcess : function(cur_size, total_size) {

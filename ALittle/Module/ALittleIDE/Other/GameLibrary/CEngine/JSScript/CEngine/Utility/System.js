@@ -382,7 +382,7 @@ ALittle.HttpDownloadRequest = function(ip, port, file_path, callback) {
 	return new Promise(function(___COROUTINE, ___) {
 		let sender = ALittle.CreateHttpFileSender(ip, port, file_path, 0, callback);
 		if (___COROUTINE === undefined) {
-			___COROUTINE(["当前不是协程", undefined]); return;
+			___COROUTINE("当前不是协程"); return;
 		}
 		sender.SendDownloadRPC(___COROUTINE, file_path, undefined);
 		return;

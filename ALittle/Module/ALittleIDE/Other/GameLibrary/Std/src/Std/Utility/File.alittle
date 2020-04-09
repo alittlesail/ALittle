@@ -262,7 +262,7 @@ public static File_GetFileNameByPath(string file_path) : string
 public static File_GetFilePathByPath(string file_path) : string
 {
     var new_file_path = File_GetFileNameByPath(file_path);
-    return String_Sub(file_path, 1, -String_Len(new_file_path) - 2);
+    return String_Sub(file_path, 1, String_Len(file_path)-String_Len(new_file_path) - 1);
 }
 
 // 从路径中获取扩展名

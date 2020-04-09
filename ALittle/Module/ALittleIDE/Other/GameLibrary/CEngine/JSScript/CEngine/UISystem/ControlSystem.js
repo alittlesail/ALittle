@@ -11,7 +11,11 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 		this._name_map_info_cache = {};
 		this._module_name = module_name;
 		this._crypt_mode = crypt_mode || false;
+		this._host = location.host;
+		this._port = location.port;
+		this._base_url = ALittle.File_GetFilePathByPath(location.pathname) + "/";
 		this._base_path = "Module/" + module_name + "/";
+		this._base_path = this._base_url + this._base_path;
 		this._ui_path = this._base_path + "UI/";
 		this._font_path = this._base_path + "Font/";
 		this._sound_path = this._base_path + "Sound/";
@@ -22,18 +26,25 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 	RegisterFont : function(src, dst) {
 		this._font_map[src] = dst;
 	},
-	RegisterInfoByHttp : function(host, port, name_list) {
+	RegisterInfoByHttp : function(name_list) {
 		return new Promise((async function(___COROUTINE, ___) {
 			let ___OBJECT_1 = name_list;
 			for (let index = 1; index <= ___OBJECT_1.length; ++index) {
 				let name = ___OBJECT_1[index - 1];
 				if (name === undefined) break;
-				let [error, content] = await ALittle.HttpDownloadRequest(host, port, this._ui_path + name + ".json");
+				let path = this._ui_path + name + ".json";
+				ALittle.File_MakeDeepDir(ALittle.File_GetFilePathByPath(path));
+				let error = await ALittle.HttpDownloadRequest(this._host, ALittle.Math_ToInt(this._port), path);
 				if (error !== undefined) {
 					ALittle.Error("ui load failed:" + error);
 					continue;
 				}
-				let [jerror, json] = (function() { try { let ___VALUE = ALittle.String_JsonDecode.call(undefined, content.GetContent()); return [undefined, ___VALUE]; } catch (___ERROR) { return [___ERROR.message]; } }).call(this);
+				let content = JavaScript.File_LoadFile(path);
+				if (content === undefined) {
+					ALittle.Error("ui load failed:" + error);
+					continue;
+				}
+				let [jerror, json] = (function() { try { let ___VALUE = ALittle.String_JsonDecode.call(undefined, content); return [undefined, ___VALUE]; } catch (___ERROR) { return [___ERROR.message]; } }).call(this);
 				if (jerror !== undefined) {
 					ALittle.Error("ui json decode failed:" + jerror);
 					continue;

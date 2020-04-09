@@ -4,7 +4,6 @@ namespace ALittle;
 // Http文件协议接口类，负责处理
 public class IHttpFileSender
 {
-    public fun GetContent() : string { return null; }
     protected fun HandleSucceed() {}
     protected fun HandleProcess(int cur_size, int total_size) {}
     protected fun HandleFailed(string reason) {}

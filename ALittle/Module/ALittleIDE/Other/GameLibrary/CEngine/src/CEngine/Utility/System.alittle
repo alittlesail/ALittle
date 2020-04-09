@@ -646,11 +646,11 @@ public static CreateHttpFileSender(string ip, int port, string file_path, int st
     return new HttpFileSenderTemplate<JavaScript.JHttpFileInterface>(ip, port, file_path, start_size, callback);
 }
 
-public await static HttpDownloadRequest(string ip, int port, string file_path, [Nullable] Functor<()> callback) : string, IHttpFileSender
+public await static HttpDownloadRequest(string ip, int port, string file_path, [Nullable] Functor<()> callback) : string
 {
     var sender = CreateHttpFileSender(ip, port, file_path, 0, callback);
     
-    if (co == null) return "当前不是协程", null;
+    if (co == null) return "当前不是协程";
     sender.SendDownloadRPC(co, file_path, null);
     return yield;
 }

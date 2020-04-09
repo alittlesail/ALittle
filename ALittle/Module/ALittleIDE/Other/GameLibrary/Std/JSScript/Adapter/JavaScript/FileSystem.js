@@ -28,6 +28,12 @@ JavaScript.File_SetCurrentPath = function(path) {
 	for (let index = 1; index <= ___OBJECT_1.length; ++index) {
 		let name = ___OBJECT_1[index - 1];
 		if (name === undefined) break;
+		if (name === "") {
+			continue;
+		}
+		if (cur.file === undefined) {
+			return false;
+		}
 		let file = cur.file[name];
 		if (file === undefined) {
 			return false;
@@ -50,6 +56,12 @@ JavaScript.File_RenameFile = function(path, new_path) {
 	let list_len = ALittle.List_MaxN(list);
 	let cur = root;
 	for (let i = 1; i <= list_len - 1; i += 1) {
+		if (list[i - 1] === "") {
+			continue;
+		}
+		if (cur.file === undefined) {
+			return false;
+		}
 		let file = cur.file[list[i - 1]];
 		if (file === undefined) {
 			return false;
@@ -90,6 +102,12 @@ JavaScript.File_DeleteFile = function(path) {
 	let list_len = ALittle.List_MaxN(list);
 	let cur = root;
 	for (let i = 1; i <= list_len - 1; i += 1) {
+		if (list[i - 1] === "") {
+			continue;
+		}
+		if (cur.file === undefined) {
+			return false;
+		}
 		let file = cur.file[list[i - 1]];
 		if (file === undefined) {
 			return false;
@@ -120,6 +138,12 @@ JavaScript.File_GetFileAttr = function(path) {
 	let list_len = ALittle.List_MaxN(list);
 	let cur = root;
 	for (let i = 1; i <= list_len - 1; i += 1) {
+		if (list[i - 1] === "") {
+			continue;
+		}
+		if (cur.file === undefined) {
+			return undefined;
+		}
 		let file = cur.file[list[i - 1]];
 		if (file === undefined) {
 			return undefined;
@@ -162,6 +186,9 @@ JavaScript.File_GetFileAttrByDir = function(path, file_map) {
 	for (let index = 1; index <= ___OBJECT_2.length; ++index) {
 		let name = ___OBJECT_2[index - 1];
 		if (name === undefined) break;
+		if (name === "") {
+			continue;
+		}
 		let file = cur.file[name];
 		if (file === undefined) {
 			return file_map;
@@ -212,6 +239,12 @@ JavaScript.File_DeleteDir = function(path) {
 	for (let index = 1; index <= ___OBJECT_4.length; ++index) {
 		let name = ___OBJECT_4[index - 1];
 		if (name === undefined) break;
+		if (name === "") {
+			continue;
+		}
+		if (cur.file === undefined) {
+			return false;
+		}
 		let file = cur.file[name];
 		if (file === undefined) {
 			return false;
@@ -259,6 +292,9 @@ JavaScript.File_DeleteDeepDir = function(path, log_path) {
 	for (let index = 1; index <= ___OBJECT_7.length; ++index) {
 		let name = ___OBJECT_7[index - 1];
 		if (name === undefined) break;
+		if (name === "") {
+			continue;
+		}
 		let file = cur.file[name];
 		if (file === undefined) {
 			return;
@@ -281,6 +317,12 @@ JavaScript.File_MakeDir = function(path) {
 	let list_len = ALittle.List_MaxN(list);
 	let cur = root;
 	for (let i = 1; i <= list_len - 1; i += 1) {
+		if (list[i - 1] === "") {
+			continue;
+		}
+		if (cur.file === undefined) {
+			return false;
+		}
 		let file = cur.file[list[i - 1]];
 		if (file === undefined) {
 			return false;
@@ -301,6 +343,7 @@ JavaScript.File_MakeDir = function(path) {
 	file.is_directory = true;
 	file.name = list[list_len - 1];
 	file.parent = cur_file;
+	cur.file[list[list_len - 1]] = file;
 	return true;
 }
 
@@ -309,6 +352,12 @@ JavaScript.File_LoadFile = function(path) {
 	let list_len = ALittle.List_MaxN(list);
 	let cur = root;
 	for (let i = 1; i <= list_len - 1; i += 1) {
+		if (list[i - 1] === "") {
+			continue;
+		}
+		if (cur.file === undefined) {
+			return undefined;
+		}
 		let file = cur.file[list[i - 1]];
 		if (file === undefined) {
 			return undefined;
@@ -333,6 +382,12 @@ JavaScript.File_SaveFile = function(path, content) {
 	let list_len = ALittle.List_MaxN(list);
 	let cur = root;
 	for (let i = 1; i <= list_len - 1; i += 1) {
+		if (list[i - 1] === "") {
+			continue;
+		}
+		if (cur.file === undefined) {
+			return false;
+		}
 		let file = cur.file[list[i - 1]];
 		if (file === undefined) {
 			return false;

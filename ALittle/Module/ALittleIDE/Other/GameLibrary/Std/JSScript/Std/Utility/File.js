@@ -103,7 +103,7 @@ ALittle.File_GetFileNameByPath = function(file_path) {
 
 ALittle.File_GetFilePathByPath = function(file_path) {
 	let new_file_path = ALittle.File_GetFileNameByPath(file_path);
-	return ALittle.String_Sub(file_path, 1, -ALittle.String_Len(new_file_path) - 2);
+	return ALittle.String_Sub(file_path, 1, ALittle.String_Len(file_path) - ALittle.String_Len(new_file_path) - 1);
 }
 
 ALittle.File_GetFileExtByPath = function(file_path) {

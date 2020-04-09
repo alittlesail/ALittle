@@ -6,12 +6,9 @@ public await static __ALITTLEAPI_CEngine_Init(string base_path)
     
     [Language(JavaScript)]
     {
-        Require(base_path.."Adapter/JavaScript/JHttpInterface");
-        Require(base_path.."Adapter/JavaScript/JHttpFileInterface");
-        Require(base_path.."Adapter/JavaScript/JMessageFactory");
-        Require(base_path.."Adapter/JavaScript/JMsgInterface");
-        Require(base_path.."Adapter/JavaScript/JSystem");
-        Require(base_path.."Adapter/JavaScript/JShow");
+        Require(base_path.."Adapter/PIXI/JSystem");
+        Require(base_path.."Adapter/PIXI/JShow");
+        Require(base_path.."Adapter/PIXI/JCsvLoader");
     }
     
     Require(base_path.."CEngine/Utility/String");

@@ -31,6 +31,8 @@ public static File_SetCurrentPath(string path) : bool
     var dir = "";
     for (var index, name in list)
     {
+        if (name == "") continue;
+        if (cur.file == null) return false;
         var file = cur.file[name];
         if (file == null) return false;
         if (!file.is_directory) return false;
@@ -50,6 +52,8 @@ public static File_RenameFile(string path, string new_path) : bool
     var cur = root;
     for (var i = 1; i <= list_len - 1; 1)
     {
+        if (list[i] == "") continue;
+        if (cur.file == null) return false;
         var file = cur.file[list[i]];
         if (file == null) return false;
         if (!file.is_directory) return false;
@@ -82,6 +86,8 @@ public static File_DeleteFile(string path) : bool
     var cur = root;
     for (var i = 1; i <= list_len - 1; 1)
     {
+        if (list[i] == "") continue;
+        if (cur.file == null) return false;
         var file = cur.file[list[i]];
         if (file == null) return false;
         if (!file.is_directory) return false;
@@ -105,6 +111,8 @@ public static File_GetFileAttr(string path) : lua.fileattr
     var cur = root;
     for (var i = 1; i <= list_len - 1; 1)
     {
+        if (list[i] == "") continue;
+        if (cur.file == null) return null;
         var file = cur.file[list[i]];
         if (file == null) return null;
         if (!file.is_directory) return null;
@@ -137,6 +145,7 @@ public static File_GetFileAttrByDir(string path, [Nullable] Map<string, lua.file
     var dir = "";
     for (var index, name in list)
     {
+        if (name == "") continue;
         var file = cur.file[name];
         if (file == null) return file_map;
         if (!file.is_directory) return file_map;
@@ -183,6 +192,8 @@ public static File_DeleteDir(string path) : bool
     var cur = root;
     for (var index, name in list)
     {
+        if (name == "") continue;
+        if (cur.file == null) return false;
         var file = cur.file[name];
         if (file == null) return false;
         if (!file.is_directory) return false;
@@ -219,6 +230,7 @@ public static File_DeleteDeepDir(string path, [Nullable] bool log_path)
     var cur = root;
     for (var index, name in list)
     {
+        if (name == "") continue;
         var file = cur.file[name];
         if (file == null) return;
         if (!file.is_directory) return;
@@ -238,6 +250,8 @@ public static File_MakeDir(string path) : bool
     var cur = root;
     for (var i = 1; i <= list_len - 1; 1)
     {
+        if (list[i] == "") continue;
+        if (cur.file == null) return false;
         var file = cur.file[list[i]];
         if (file == null) return false;
         if (!file.is_directory) return false;
@@ -253,6 +267,7 @@ public static File_MakeDir(string path) : bool
     file.is_directory = true;
     file.name = list[list_len];
     file.parent = cur_file;
+    cur.file[list[list_len]] = file;
     return true;
 }
 
@@ -263,6 +278,8 @@ public static File_LoadFile(string path) : string
     var cur = root;
     for (var i = 1; i <= list_len - 1; 1)
     {
+        if (list[i] == "") continue;
+        if (cur.file == null) return null;
         var file = cur.file[list[i]];
         if (file == null) return null;
         if (!file.is_directory) return null;
@@ -281,6 +298,8 @@ public static File_SaveFile(string path, string content) : bool
     var cur = root;
     for (var i = 1; i <= list_len - 1; 1)
     {
+        if (list[i] == "") continue;
+        if (cur.file == null) return false;
         var file = cur.file[list[i]];
         if (file == null) return false;
         if (!file.is_directory) return false;

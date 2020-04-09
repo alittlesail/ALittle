@@ -12,6 +12,10 @@ public class ControlSystem
     private string              _module_name;
     private bool                _crypt_mode;
     
+    private string              _host;
+    private string              _port;
+    private string              _base_url;
+    
     private string              _base_path;
     private string              _ui_path;
     private string              _font_path;
@@ -37,8 +41,17 @@ public class ControlSystem
         this._module_name = module_name;
         this._crypt_mode = crypt_mode || false;
         
+        [Language(JavaScript)]
+        this._host = location.host;
+        [Language(JavaScript)]
+        this._port = location.port;
+        [Language(JavaScript)]
+        this._base_url = File_GetFilePathByPath(location.pathname).."/";
+        
         // 基本路径
         this._base_path = "Module/" .. module_name .. "/";
+        [Language(JavaScript)]
+        this._base_path = this._base_url ..this._base_path;
         this._ui_path = this._base_path .. "UI/";
         this._font_path = this._base_path .. "Font/";
         this._sound_path = this._base_path .. "Sound/";
@@ -54,17 +67,25 @@ public class ControlSystem
         this._font_map[src] = dst;
     }
     
-    public await fun RegisterInfoByHttp(string host, int port, List<string> name_list)
+    public await fun RegisterInfoByHttp(List<string> name_list)
     {
         for (var index, name in name_list)
         {
-			var error, content = ALittle.HttpDownloadRequest(host, port, this._ui_path..name..".json");
+            var path = this._ui_path..name..".json";
+            ALittle.File_MakeDeepDir(ALittle.File_GetFilePathByPath(path));
+			var error = ALittle.HttpDownloadRequest(this._host, Math_ToInt(this._port), path);
             if (error != null)
             {
                 ALittle.Error("ui load failed:"..error);
                 continue;
             }
-            var jerror, json:Map<string, DisplayInfo> = tcall(ALittle.String_JsonDecode, content.GetContent());
+            var content = JavaScript.File_LoadFile(path);
+            if (content == null)
+            {
+                ALittle.Error("ui load failed:"..error);
+                continue;
+            }
+            var jerror, json:Map<string, DisplayInfo> = tcall(ALittle.String_JsonDecode, content);
             if (jerror != null)
             {
                 ALittle.Error("ui json decode failed:"..jerror);

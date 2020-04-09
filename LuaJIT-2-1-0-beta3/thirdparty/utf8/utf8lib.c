@@ -12,66 +12,44 @@
 #include "lua.h"
 #include "lauxlib.h"
 
+#include "utf8.h"
 #include "utf8lib.h"
 
-int GetByteCountOfOneWord(unsigned char first_char)
+static int utf8lib_CalcWordCount(lua_State* L)
 {
-    unsigned char temp = 0x80;
-    int num = 0;
-
-    unsigned char char_value = first_char;
-
-    if (char_value < 0x80) // ascii code.(0-127)
-        return 1;
-    while (temp & char_value)
-    {
-        ++num;
-        temp = temp >> 1;
-    }
-
-    return num;
-}
-
-static int CalcWordCount(lua_State* L)
-{
-    size_t l = 0;
-    const char* str = luaL_checklstring(L, 1, &l);
-    int count = 0;
-
-    size_t index = 0;
-    while (index < l)
-    {
-        index += GetByteCountOfOneWord(str[index]);
-        ++count;
-    }
-
-    lua_pushinteger(L, count);
+    const char* str = luaL_checkstring(L, 1);
+    lua_pushinteger(L, utf8_CalcWordCount(str));
     return 1;
 }
 
-static int CalcByteCountByWordCount(lua_State* L)
+static int utf8lib_CalcByteCountByWordCount(lua_State* L)
 {
-    size_t l = 0;
-    const char* str = luaL_checklstring(L, 1, &l);
+    const char* str = luaL_checkstring(L, 1);
     int word_count = (int)luaL_checkinteger(L, 2);
 
-    const char* old_str = str;
-    int length = 0;
+    lua_pushinteger(L, utf8_CalcByteCountByWordCount(str, word_count));
+    return 1;
+}
 
-    size_t index = 0;
-    while (index < l)
-    {
-        index += GetByteCountOfOneWord(str[index]);
-        ++length;
-        if (length >= word_count) break;
-    }
-    lua_pushinteger(L, (int)index);
+static int utf8lib_ANSI2UTF8(lua_State* L)
+{
+    const char* str = luaL_checkstring(L, 1);
+    lua_pushstring(L, utf8_ANSI2UTF8(str));
+    return 1;
+}
+
+static int utf8lib_UTF82ANSI(lua_State* L)
+{
+    const char* str = luaL_checkstring(L, 1);
+    lua_pushstring(L, utf8_UTF82ANSI(str));
     return 1;
 }
 
 static struct luaL_Reg utf8lib[] = {
-  {"wordcount", CalcWordCount},
-  {"bytecount", CalcByteCountByWordCount},
+  {"wordcount", utf8lib_CalcWordCount},
+  {"bytecount", utf8lib_CalcByteCountByWordCount},
+  {"ansi2utf8", utf8lib_ANSI2UTF8},
+  {"utf82ansi", utf8lib_UTF82ANSI},
   {NULL, NULL}
 };
 

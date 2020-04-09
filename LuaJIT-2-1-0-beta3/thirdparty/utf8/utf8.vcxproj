@@ -19,9 +19,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="utf8.c" />
     <ClCompile Include="utf8lib.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="utf8.h" />
     <ClInclude Include="utf8lib.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

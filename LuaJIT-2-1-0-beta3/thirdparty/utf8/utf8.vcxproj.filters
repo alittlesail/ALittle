@@ -2,8 +2,10 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="utf8lib.c" />
+    <ClCompile Include="utf8.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="utf8lib.h" />
+    <ClInclude Include="utf8.h" />
   </ItemGroup>
 </Project>

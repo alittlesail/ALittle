@@ -22,7 +22,7 @@ public static String_JsonDecode(string text) : any
 public static String_MD5(string text) : string
 {
     [Language(Lua)]
-    return lua.md5.encode(text);
+    return lua.md5.stringmd5(text);
     
     [Language(JavaScript)]
     return javascript.md5(text);
@@ -65,4 +65,13 @@ public static String_GetByteCount(string text, int word_count) : int
         return cast<javascript.String>(text).length;
     else
         return word_count;
+}
+
+public static String_Trim(string text) : string
+{
+    [Language(Lua)]
+    return lua.String.gsub(text, "^%s*(.-)%s*$", "%1");
+    
+    [Language(JavaScript)]
+    return cast<javascript.String>(text).trim();
 }

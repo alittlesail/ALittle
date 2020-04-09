@@ -31,9 +31,12 @@ public class JCsvFile : ALittle.ICsvFile
         return true;
     }
     
-    public fun Load(string path, string content) : bool
+    public fun Load(string path) : bool
     {
+        var content = JavaScript.File_LoadFile(path);
+        if (content == null) return false;
         this._file_path = path;
+        
         var char_index = 0;
         this._data = new List<List<string>>();
         var data_index = 1;

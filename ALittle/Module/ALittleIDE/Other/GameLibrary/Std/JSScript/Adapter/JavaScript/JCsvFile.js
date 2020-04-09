@@ -19,7 +19,11 @@ JavaScript.JCsvFile = JavaScript.Class(ALittle.ICsvFile, {
 		this._data[this._row_count - 1] = row;
 		return true;
 	},
-	Load : function(path, content) {
+	Load : function(path) {
+		let content = JavaScript.File_LoadFile(path);
+		if (content === undefined) {
+			return false;
+		}
 		this._file_path = path;
 		let char_index = 0;
 		this._data = [];

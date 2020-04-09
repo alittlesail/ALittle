@@ -8,7 +8,6 @@ public class JCsvFileLoader : ALittle.ICsvFileLoader
 {
     private int _id;
     private string _file_path;
-    private string _headers;
     
     public ctor()
     {
@@ -32,7 +31,7 @@ public class JCsvFileLoader : ALittle.ICsvFileLoader
         }
         
         var file = new JCsvFile();
-        if (!file.Load(this._file_path, content.GetContent(), this._headers))
+        if (!file.Load(this._file_path))
         {
             var func = cast<Map<string, Functor<(ALittle.ICsvFileLoader)>>>(window)["__ALITTLEAPI_CsvFileLoadFailed"];
             if (func != null) func(this);
@@ -43,10 +42,9 @@ public class JCsvFileLoader : ALittle.ICsvFileLoader
         if (func != null) func(this, file);
     }
     
-    public fun SetPath(string file_path, bool only_from_asset, string headers)
+    public fun SetPath(string file_path, bool only_from_asset)
     {
         this._file_path = file_path;
-        this._headers = headers;
     }
     public fun GetPath() : string { return this._file_path; }
     public fun GetID() : int { return this._id; }

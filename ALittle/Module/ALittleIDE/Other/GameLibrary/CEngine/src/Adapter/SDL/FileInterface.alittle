@@ -33,7 +33,7 @@ public class __CPPAPICsvFile : ALittle.ICsvFile
 public class __CPPAPICsvFileLoader : ALittle.ICsvFileLoader
 {
     public fun Start() {}
-    public fun SetPath(string file_path, bool only_from_asset, string headers) {}
+    public fun SetPath(string file_path, bool only_from_asset) {}
     public fun GetPath() : string { return null; }
     public fun GetID() : int { return null; }
 }

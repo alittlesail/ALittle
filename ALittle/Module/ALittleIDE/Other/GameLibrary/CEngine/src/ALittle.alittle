@@ -45,39 +45,6 @@ public async static __ALITTLEAPI_CEngine_Init(string base_path)
     Require(base_path.."CEngine/UISystem/LayerManager");
     Require(base_path.."CEngine/UISystem/TextureManager");
     Require(base_path.."CEngine/UISystem/ControlSystem");
-    /*
-    ALittle.System_CreateView("test", 800, 600, 0, 0);
-    
-    var control = new ALittle.ControlSystem("G2048");
-    
-    var quad = new ALittle.Quad(null);
-    quad.x = 10;
-    quad.y = 10;
-    quad.width = 100;
-    quad.height = 100;
-    quad.red = 1;
-    A_LayerManager.AddToTip(quad);
-    
-    var image = new ALittle.Image(control);
-    image.x = 210;
-    image.y = 210;
-    image.width = 100;
-    image.height = 100;
-    image.texture_name = "2048.png";
-    A_LayerManager.AddToTip(image);
-    
-    var text = new ALittle.Text(control);
-    text.x = 0;
-    text.y = 210;
-    text.width = 100;
-    text.height = 100;
-    text.red = 1;
-    text.green = 0.8;
-    text.font_size = 20;
-    text.font_path = "Arial";
-    text.text = "这个是一个文本3";
-    A_LayerManager.AddToTip(text);
-    */
 }
 
 public static __ALITTLEAPI_HandleConsoleCmd(string cmd)
@@ -186,7 +153,7 @@ public static __ALITTLEAPI_Update(int frame_time)
     [Language(Lua)]
     A_LuaLoopSystem.Update(frame_time);
     [Language(JavaScript)]
-    A_JSLoopSystem.Update(frame_time);
+    A_JLoopSystem.Update(frame_time);
 }
 //////////////////////////////////////////////////////////////////-
     
@@ -245,6 +212,19 @@ public static __ALITTLEAPI_RenderDeviceReset()
 {
     A_LoadTextureManager.HandleRenderDeviceReset();
 }
+
+//////////////////////////////////////////////////////////////////////////////////////
+public var __ALITTLEAPI_HttpFileSucceed = ALittle.__ALITTLEAPI_HttpFileSucceed;
+public var __ALITTLEAPI_HttpFileFailed = ALittle.__ALITTLEAPI_HttpFileFailed;
+public var __ALITTLEAPI_HttpFileProcess = ALittle.__ALITTLEAPI_HttpFileProcess;
+
+public var __ALITTLEAPI_HttpClientSucceed = ALittle.__ALITTLEAPI_HttpClientSucceed;
+public var __ALITTLEAPI_HttpClientFailed = ALittle.__ALITTLEAPI_HttpClientFailed;
+
+public var __ALITTLEAPI_ConnectSucceed = ALittle.__ALITTLEAPI_ConnectSucceed;
+public var __ALITTLEAPI_Disconnect = ALittle.__ALITTLEAPI_Disconnect;
+public var __ALITTLEAPI_ConnectFailed = ALittle.__ALITTLEAPI_ConnectFailed;
+public var __ALITTLEAPI_Message = ALittle.__ALITTLEAPI_Message;
 
 //////////////////////////////////////////////////////////////////////////////////////
 public static __ALITTLEAPI_AudioChunkStopedEvent(int id)

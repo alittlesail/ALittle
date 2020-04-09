@@ -4,12 +4,6 @@
     <Filter Include="Adapter">
       <UniqueIdentifier>{d946872b-6fb4-47b4-b225-e0d86d1739ec}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Adapter\Lua">
-      <UniqueIdentifier>{80b79e99-d532-444f-b8b7-3054f1f0b95a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Adapter\JavaScript">
-      <UniqueIdentifier>{82b42735-79d5-4932-8819-1ba676106666}</UniqueIdentifier>
-    </Filter>
     <Filter Include="CEngine">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
@@ -47,14 +41,14 @@
     <Filter Include="CEngine\Version">
       <UniqueIdentifier>{98f1a73e-27e1-4e72-afea-05a204f9822a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Adapter\PIXI">
+      <UniqueIdentifier>{82b42735-79d5-4932-8819-1ba676106666}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Adapter\SDL">
+      <UniqueIdentifier>{80b79e99-d532-444f-b8b7-3054f1f0b95a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\Adapter\Lua\HttpFileInterface.alittle">
-      <Filter>Adapter\Lua</Filter>
-    </None>
-    <None Include="src\Adapter\Lua\HttpInterface.alittle">
-      <Filter>Adapter\Lua</Filter>
-    </None>
     <None Include="src\CEngine\LoopSystem\LoopLinear.alittle">
       <Filter>CEngine\LoopSystem</Filter>
     </None>
@@ -217,36 +211,6 @@
     <None Include="src\CEngine\UISystem\Special\SpringTextButton.alittle">
       <Filter>CEngine\UISystem\Special</Filter>
     </None>
-    <None Include="src\CEngine\Register\ThreadInterface.alittle">
-      <Filter>Adapter\Lua</Filter>
-    </None>
-    <None Include="src\CEngine\Register\AudioInterface.alittle">
-      <Filter>Adapter\Lua</Filter>
-    </None>
-    <None Include="src\CEngine\Register\NetInterface.alittle">
-      <Filter>Adapter\Lua</Filter>
-    </None>
-    <None Include="src\CEngine\Register\ScheduleInterface.alittle">
-      <Filter>Adapter\Lua</Filter>
-    </None>
-    <None Include="src\CEngine\Register\SurfaceInteface.alittle">
-      <Filter>Adapter\Lua</Filter>
-    </None>
-    <None Include="src\CEngine\Register\IMEInterface.alittle">
-      <Filter>Adapter\Lua</Filter>
-    </None>
-    <None Include="src\CEngine\Register\CursorInterface.alittle">
-      <Filter>Adapter\Lua</Filter>
-    </None>
-    <None Include="src\CEngine\Register\ShowInterface.alittle">
-      <Filter>Adapter\Lua</Filter>
-    </None>
-    <None Include="src\CEngine\Register\SystemInterface.alittle">
-      <Filter>Adapter\Lua</Filter>
-    </None>
-    <None Include="src\CEngine\Register\FileInterface.alittle">
-      <Filter>Adapter\Lua</Filter>
-    </None>
     <None Include="src\CEngine\Utility\OtherSystem.alittle">
       <Filter>CEngine\Utility</Filter>
     </None>
@@ -283,12 +247,6 @@
     <None Include="src\CEngine\Version\VersionSystemAndroid.alittle">
       <Filter>CEngine\Version</Filter>
     </None>
-    <None Include="src\Adapter\JavaScript\Pixi.alittle">
-      <Filter>Adapter\JavaScript</Filter>
-    </None>
-    <None Include="src\Adapter\JavaScript\JSystem.alittle">
-      <Filter>Adapter\JavaScript</Filter>
-    </None>
     <None Include="src\ALittle.alittle" />
     <None Include="src\CEngine\Utility\CsvConfigManager.alittle">
       <Filter>CEngine\Utility</Filter>
@@ -296,14 +254,62 @@
     <None Include="src\CEngine\Utility\ConfigSystem.alittle">
       <Filter>CEngine\Utility</Filter>
     </None>
-    <None Include="src\Adapter\JavaScript\JCsvLoader.alittle">
-      <Filter>Adapter\JavaScript</Filter>
-    </None>
     <None Include="src\CEngine\UISystem\IShow.alittle">
       <Filter>CEngine\UISystem</Filter>
     </None>
-    <None Include="src\Adapter\JavaScript\JShow.alittle">
-      <Filter>Adapter\JavaScript</Filter>
+    <None Include="src\Adapter\PIXI\JShow.alittle">
+      <Filter>Adapter\PIXI</Filter>
+    </None>
+    <None Include="src\Adapter\PIXI\JCsvLoader.alittle">
+      <Filter>Adapter\PIXI</Filter>
+    </None>
+    <None Include="src\Adapter\PIXI\JSystem.alittle">
+      <Filter>Adapter\PIXI</Filter>
+    </None>
+    <None Include="src\Adapter\PIXI\Pixi.alittle">
+      <Filter>Adapter\PIXI</Filter>
+    </None>
+    <None Include="src\Adapter\SDL\AudioInterface.alittle">
+      <Filter>Adapter\SDL</Filter>
+    </None>
+    <None Include="src\Adapter\SDL\CursorInterface.alittle">
+      <Filter>Adapter\SDL</Filter>
+    </None>
+    <None Include="src\Adapter\SDL\FileInterface.alittle">
+      <Filter>Adapter\SDL</Filter>
+    </None>
+    <None Include="src\Adapter\SDL\HttpFileInterface.alittle">
+      <Filter>Adapter\SDL</Filter>
+    </None>
+    <None Include="src\Adapter\SDL\HttpInterface.alittle">
+      <Filter>Adapter\SDL</Filter>
+    </None>
+    <None Include="src\Adapter\SDL\IMEInterface.alittle">
+      <Filter>Adapter\SDL</Filter>
+    </None>
+    <None Include="src\Adapter\SDL\MsgInterface.alittle">
+      <Filter>Adapter\SDL</Filter>
+    </None>
+    <None Include="src\Adapter\SDL\NetInterface.alittle">
+      <Filter>Adapter\SDL</Filter>
+    </None>
+    <None Include="src\Adapter\SDL\ScheduleInterface.alittle">
+      <Filter>Adapter\SDL</Filter>
+    </None>
+    <None Include="src\Adapter\SDL\ShowInterface.alittle">
+      <Filter>Adapter\SDL</Filter>
+    </None>
+    <None Include="src\Adapter\SDL\SurfaceInteface.alittle">
+      <Filter>Adapter\SDL</Filter>
+    </None>
+    <None Include="src\Adapter\SDL\SystemInterface.alittle">
+      <Filter>Adapter\SDL</Filter>
+    </None>
+    <None Include="src\Adapter\SDL\ThreadInterface.alittle">
+      <Filter>Adapter\SDL</Filter>
+    </None>
+    <None Include="src\Adapter\SDL\ScriptExInterface.alittle">
+      <Filter>Adapter\SDL</Filter>
     </None>
   </ItemGroup>
 </Project>

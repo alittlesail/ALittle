@@ -42,7 +42,8 @@ class CsvConfigManager
             loader = new lua.__CPPAPICsvFileLoader();
             [Language(JavaScript)]
             loader = new JavaScript.JCsvFileLoader();
-            loader.SetPath(file_path, false, String_Join(config.GetFieldNameList(), ","));
+            
+            loader.SetPath(file_path, false);
             var detail = new CsvPreloadInfoDetail();
             detail.loader = loader;
             detail.config = config;

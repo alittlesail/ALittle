@@ -11,7 +11,7 @@ ALittle.VersionSystemAndroid = JavaScript.Class(ALittle.VersionSystem, {
 		if (ALittle.File_GetFileAttr(ALittle.File_BaseFilePath() + "Module") === undefined) {
 			return;
 		}
-		for (let file of ALittle.File_IteratorDir(ALittle.File_BaseFilePath() + "Module")) {
+		for (let file of lua.lfs.dir(ALittle.File_BaseFilePath() + "Module")) {
 			if (file !== "." && file !== "..") {
 				let module_path = "Module/" + file;
 				ALittle.File_MakeDir(ALittle.File_BaseFilePath() + module_path);

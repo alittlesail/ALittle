@@ -120,7 +120,7 @@ __ALITTLEAPI_WindowLeave = function() {
 }
 
 __ALITTLEAPI_Update = function(frame_time) {
-	A_JSLoopSystem.Update(frame_time);
+	A_JLoopSystem.Update(frame_time);
 }
 
 __ALITTLEAPI_WillEnterBackground = function() {
@@ -141,78 +141,6 @@ __ALITTLEAPI_DidEnterForeground = function() {
 
 __ALITTLEAPI_LowMemory = function() {
 	A_OtherSystem.HandleLowMemory();
-}
-
-__ALITTLEAPI_ConnectSucceed = function(msg_interface) {
-	let client = ALittle.FindMsgSender(msg_interface.GetID());
-	if (client === undefined) {
-		return;
-	}
-	client.HandleConnectSucceed();
-}
-
-__ALITTLEAPI_Disconnect = function(msg_interface) {
-	let client = ALittle.FindMsgSender(msg_interface.GetID());
-	if (client === undefined) {
-		return;
-	}
-	client.HandleDisconnect();
-}
-
-__ALITTLEAPI_ConnectFailed = function(msg_interface) {
-	let client = ALittle.FindMsgSender(msg_interface.GetID());
-	if (client === undefined) {
-		return;
-	}
-	client.HandleConnectFailed(undefined);
-}
-
-__ALITTLEAPI_Message = function(id, rpc_id, factory, msg_interface) {
-	let client = ALittle.FindMsgSender(msg_interface.GetID());
-	if (client === undefined) {
-		return;
-	}
-	client.HandleMessage(id, rpc_id, factory);
-}
-
-__ALITTLEAPI_HttpClientSucceed = function(http_interface) {
-	let client = ALittle.FindHttpSender(http_interface.GetID());
-	if (client === undefined) {
-		return;
-	}
-	client.HandleSucceed();
-}
-
-__ALITTLEAPI_HttpClientFailed = function(http_interface, reason) {
-	let client = ALittle.FindHttpSender(http_interface.GetID());
-	if (client === undefined) {
-		return;
-	}
-	client.HandleFailed(reason);
-}
-
-__ALITTLEAPI_HttpFileSucceed = function(httpfile_interface) {
-	let client = ALittle.FindHttpFileSender(httpfile_interface.GetID());
-	if (client === undefined) {
-		return;
-	}
-	client.HandleSucceed();
-}
-
-__ALITTLEAPI_HttpFileFailed = function(httpfile_interface, reason) {
-	let client = ALittle.FindHttpFileSender(httpfile_interface.GetID());
-	if (client === undefined) {
-		return;
-	}
-	client.HandleFailed(reason);
-}
-
-__ALITTLEAPI_HttpFileProcess = function(httpfile_interface) {
-	let client = ALittle.FindHttpFileSender(httpfile_interface.GetID());
-	if (client === undefined) {
-		return;
-	}
-	client.HandleProcess();
 }
 
 __ALITTLEAPI_TextureLoadSucceed = function(loader, texture) {
@@ -243,6 +171,15 @@ __ALITTLEAPI_RenderDeviceReset = function() {
 	A_LoadTextureManager.HandleRenderDeviceReset();
 }
 
+window.__ALITTLEAPI_HttpFileSucceed = ALittle.__ALITTLEAPI_HttpFileSucceed;
+window.__ALITTLEAPI_HttpFileFailed = ALittle.__ALITTLEAPI_HttpFileFailed;
+window.__ALITTLEAPI_HttpFileProcess = ALittle.__ALITTLEAPI_HttpFileProcess;
+window.__ALITTLEAPI_HttpClientSucceed = ALittle.__ALITTLEAPI_HttpClientSucceed;
+window.__ALITTLEAPI_HttpClientFailed = ALittle.__ALITTLEAPI_HttpClientFailed;
+window.__ALITTLEAPI_ConnectSucceed = ALittle.__ALITTLEAPI_ConnectSucceed;
+window.__ALITTLEAPI_Disconnect = ALittle.__ALITTLEAPI_Disconnect;
+window.__ALITTLEAPI_ConnectFailed = ALittle.__ALITTLEAPI_ConnectFailed;
+window.__ALITTLEAPI_Message = ALittle.__ALITTLEAPI_Message;
 __ALITTLEAPI_AudioChunkStopedEvent = function(id) {
 	A_AudioSystem.HandleAudioChunkStopedEvent(id);
 }

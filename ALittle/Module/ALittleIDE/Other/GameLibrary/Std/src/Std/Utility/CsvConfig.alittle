@@ -12,7 +12,7 @@ public class ICsvFile
 public class ICsvFileLoader
 {
     public fun Start() {}
-    public fun SetPath(string file_path, bool only_from_asset, string headers) {}
+    public fun SetPath(string file_path, bool only_from_asset) {}
     public fun GetPath() : string { return null; }
     public fun GetID() : int { return null; }
 }
@@ -34,10 +34,7 @@ public class CsvConfig
         [Language(JavaScript)]
         var js_file = new JavaScript.JCsvFile();
         [Language(JavaScript)]
-        var content = JavaScript.File_LoadFile(file_path);
-        assert(content, file_path.." load failed!");
-        [Language(JavaScript)]
-        assert(js_file.Load(file_path, content), file_path.." load failed!");
+        assert(js_file.Load(file_path), file_path.." load failed!");
         [Language(JavaScript)]
         this.Init(js_file);
         

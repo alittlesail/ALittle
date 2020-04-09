@@ -31,7 +31,7 @@ ALittle.CsvConfigManager = JavaScript.Class(undefined, {
 			if (config === undefined) continue;
 			let loader = undefined;
 			loader = ALittle.NewObject(JavaScript.JCsvFileLoader);
-			loader.SetPath(file_path, false, ALittle.String_Join(config.GetFieldNameList(), ","));
+			loader.SetPath(file_path, false);
 			let detail = {};
 			detail.loader = loader;
 			detail.config = config;

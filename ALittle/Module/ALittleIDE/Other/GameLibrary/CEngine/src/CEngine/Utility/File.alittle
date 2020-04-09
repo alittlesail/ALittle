@@ -5,7 +5,7 @@ namespace ALittle;
 public static File_BaseFilePath() : string
 {
     [Language(Lua)]
-    return __CPPAPI_ScriptSystem.BaseFilePath();
+    return __CPPAPI_ScriptSystemEx.BaseFilePath();
     [Language(JavaScript)]
     return "";
 }
@@ -14,7 +14,7 @@ public static File_BaseFilePath() : string
 public static File_ExternalFilePath() : string
 {
     [Language(Lua)]
-    return __CPPAPI_ScriptSystem.ExternalFilePath();
+    return __CPPAPI_ScriptSystemEx.ExternalFilePath();
     [Language(JavaScript)]
     return "";
 }

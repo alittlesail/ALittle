@@ -19,12 +19,24 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\Adapter\JavaScript\JCsvLoader.alittle" />
-    <None Include="src\Adapter\JavaScript\JShow.alittle" />
-    <None Include="src\Adapter\JavaScript\JSystem.alittle" />
-    <None Include="src\Adapter\JavaScript\Pixi.alittle" />
-    <None Include="src\Adapter\Lua\HttpFileInterface.alittle" />
-    <None Include="src\Adapter\Lua\HttpInterface.alittle" />
+    <None Include="src\Adapter\PIXI\JCsvLoader.alittle" />
+    <None Include="src\Adapter\PIXI\JShow.alittle" />
+    <None Include="src\Adapter\PIXI\JSystem.alittle" />
+    <None Include="src\Adapter\PIXI\Pixi.alittle" />
+    <None Include="src\Adapter\SDL\AudioInterface.alittle" />
+    <None Include="src\Adapter\SDL\CursorInterface.alittle" />
+    <None Include="src\Adapter\SDL\FileInterface.alittle" />
+    <None Include="src\Adapter\SDL\HttpFileInterface.alittle" />
+    <None Include="src\Adapter\SDL\HttpInterface.alittle" />
+    <None Include="src\Adapter\SDL\IMEInterface.alittle" />
+    <None Include="src\Adapter\SDL\MsgInterface.alittle" />
+    <None Include="src\Adapter\SDL\NetInterface.alittle" />
+    <None Include="src\Adapter\SDL\ScheduleInterface.alittle" />
+    <None Include="src\Adapter\SDL\ScriptExInterface.alittle" />
+    <None Include="src\Adapter\SDL\ShowInterface.alittle" />
+    <None Include="src\Adapter\SDL\SurfaceInteface.alittle" />
+    <None Include="src\Adapter\SDL\SystemInterface.alittle" />
+    <None Include="src\Adapter\SDL\ThreadInterface.alittle" />
     <None Include="src\ALittle.alittle" />
     <None Include="src\CEngine\LoopSystem\LoopAnimation.alittle" />
     <None Include="src\CEngine\LoopSystem\LoopAttribute.alittle" />
@@ -32,16 +44,6 @@
     <None Include="src\CEngine\LoopSystem\LoopRit.alittle" />
     <None Include="src\CEngine\MainTemplate\UIViewer.alittle" />
     <None Include="src\CEngine\Protocol\VersionServerProtocol.alittle" />
-    <None Include="src\CEngine\Register\AudioInterface.alittle" />
-    <None Include="src\CEngine\Register\FileInterface.alittle" />
-    <None Include="src\CEngine\Register\ShowInterface.alittle" />
-    <None Include="src\CEngine\Register\SystemInterface.alittle" />
-    <None Include="src\CEngine\Register\CursorInterface.alittle" />
-    <None Include="src\CEngine\Register\IMEInterface.alittle" />
-    <None Include="src\CEngine\Register\NetInterface.alittle" />
-    <None Include="src\CEngine\Register\ScheduleInterface.alittle" />
-    <None Include="src\CEngine\Register\SurfaceInteface.alittle" />
-    <None Include="src\CEngine\Register\ThreadInterface.alittle" />
     <None Include="src\CEngine\UISystem\Base\DisplayGroup.alittle" />
     <None Include="src\CEngine\UISystem\Base\DisplayLayout.alittle" />
     <None Include="src\CEngine\UISystem\Base\DisplayObject.alittle" />

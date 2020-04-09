@@ -63,6 +63,9 @@ ALittle.HttpFileSenderTemplate = JavaScript.Class(ALittle.IHttpFileSender, {
 	Stop : function() {
 		this._interface.Stop();
 	},
+	GetFilePath : function() {
+		return this._file_path;
+	},
 	GetTotalSize : function() {
 		return this._total_size;
 	},
@@ -87,7 +90,7 @@ ALittle.HttpFileSenderTemplate = JavaScript.Class(ALittle.IHttpFileSender, {
 		this._cur_size = cur_size;
 		this._total_size = total_size;
 		if (this._callback !== undefined) {
-			this._callback(this._interface);
+			this._callback();
 		}
 	},
 	HttpUrlAppendParamMap : function(url, param) {

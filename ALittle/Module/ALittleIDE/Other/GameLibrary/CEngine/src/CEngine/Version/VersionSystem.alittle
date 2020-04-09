@@ -2,6 +2,9 @@
 [Language(Lua)]
 namespace ALittle;
 
+using HttpSender = HttpSenderTemplate<lua.__CPPAPIHttpInterface>;
+using HttpFileSender = HttpFileSenderTemplate<lua.__CPPAPIHttpFileInterface>;
+
 public enum VersionProcess
 {
     VERSION_NONEED_UPDATE = 1;        // 已经是最新版本，不需要更新
@@ -576,10 +579,10 @@ public class VersionSystem
                     this._total_update_size = this._total_update_size + v.c_file_size;
 
                 // 之前如果有下载，并且没有下载完成，就检查一下下载进度，从上次结束的点继续下载
-                var new_md5 = String_FileMD5(File_BaseFilePath() .. this._update_path .. this._new_in_version);
+                var new_md5 = __CPPAPI_ScriptSystemEx.FileMD5(File_BaseFilePath() .. this._update_path .. this._new_in_version);
                 var tmp_md5:string = null;
                 if (File_GetFileAttr(File_BaseFilePath() .. this._update_path .. this._tmp_in_version) != null)
-                    tmp_md5 = String_FileMD5(File_BaseFilePath() .. this._update_path .. this._tmp_in_version);
+                    tmp_md5 = __CPPAPI_ScriptSystemEx.FileMD5(File_BaseFilePath() .. this._update_path .. this._tmp_in_version);
                 if (new_md5 == tmp_md5)
                 {
                     // 把已经下载好的移除列表，下载到一半的标记大小
@@ -681,7 +684,7 @@ public class VersionSystem
         param.start_size = file_info.start_size;
         param.version_id = this._update_info.version_info.version_id;
         param.file_path = file_info.c_file_path;
-        this._current_request = new HttpFileSender(this._ip, this._port, file_full_path, file_info.start_size, bind(this.DownloadUpdateFileCallback, this, file_info));
+        this._current_request = new HttpFileSender(this._ip, this._port, file_full_path, file_info.start_size, bind(this.DownloadUpdateFileCallback, this, file_info, this._current_request));
         var error = VersionServer.HandleHttpQDownloadVersionFile(this._current_request, param);
         this._current_request = null;
         if (error != null)
@@ -718,10 +721,10 @@ public class VersionSystem
     }
     
     // 下载更新文件回调
-    public fun DownloadUpdateFileCallback(VersionDownloadInfo file_info, IHttpFileSenderNative file)
+    public fun DownloadUpdateFileCallback(VersionDownloadInfo file_info, HttpFileSender file)
     {
-        var file_name = file.GetPath();
-        var cur_size = file.GetCurrentSize();
+        var file_name = file.GetFilePath();
+        var cur_size = file.GetCurSize();
         var total_size = file.GetTotalSize();
 
         this._callback(file_name, cur_size, total_size, this._cur_file_index, this._file_count);

@@ -28,7 +28,7 @@ public class LuaClientFileSaver : IFileSaver
 
 // 文件加载器
 [Language(JavaScript)]
-public class JSClientFileLoader : IFileLoader
+public class JClientFileLoader : IFileLoader
 {
     public fun Load(string file_path) : string
     {
@@ -48,7 +48,7 @@ public class JSClientFileLoader : IFileLoader
 
 // 文件保存期
 [Language(JavaScript)]
-public class JSClientFileSaver : IFileSaver
+public class JClientFileSaver : IFileSaver
 {
     public fun Save(string file_path, string content) : bool
     {
@@ -66,11 +66,11 @@ public class JSClientFileSaver : IFileSaver
     }
 }
 
-public static CreateConfigSystem(string file_path, [Nullable] bool print_error) : IConfigSystem
+public static CreateConfigSystem(string file_path, [Nullable] bool print_error) : IJsonConfig
 {
     [Language(Lua)]
-    return new ConfigSystem<LuaClientFileLoader, LuaClientFileSaver>(file_path, print_error);
+    return new JsonConfig<LuaClientFileLoader, LuaClientFileSaver>(file_path, print_error);
     
     [Language(JavaScript)]
-    return new ConfigSystem<JSClientFileLoader, JSClientFileSaver>(file_path, print_error);
+    return new JsonConfig<JClientFileLoader, JClientFileSaver>(file_path, print_error);
 }

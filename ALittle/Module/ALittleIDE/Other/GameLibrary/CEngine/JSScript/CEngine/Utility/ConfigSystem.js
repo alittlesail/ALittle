@@ -3,7 +3,7 @@ if (typeof ALittle === "undefined") ALittle = {};
 
 
 if (ALittle.IFileLoader === undefined) throw new Error(" extends class:ALittle.IFileLoader is undefined");
-ALittle.JSClientFileLoader = JavaScript.Class(ALittle.IFileLoader, {
+ALittle.JClientFileLoader = JavaScript.Class(ALittle.IFileLoader, {
 	Load : function(file_path) {
 		let content = undefined;
 		let json = undefined;
@@ -19,10 +19,10 @@ ALittle.JSClientFileLoader = JavaScript.Class(ALittle.IFileLoader, {
 		}
 		return json[file_path];
 	},
-}, "ALittle.JSClientFileLoader");
+}, "ALittle.JClientFileLoader");
 
 if (ALittle.IFileSaver === undefined) throw new Error(" extends class:ALittle.IFileSaver is undefined");
-ALittle.JSClientFileSaver = JavaScript.Class(ALittle.IFileSaver, {
+ALittle.JClientFileSaver = JavaScript.Class(ALittle.IFileSaver, {
 	Save : function(file_path, content) {
 		let json = undefined;
 		if (document.cookie !== undefined && document.cookie !== "") {
@@ -38,10 +38,10 @@ ALittle.JSClientFileSaver = JavaScript.Class(ALittle.IFileSaver, {
 		json[file_path] = content;
 		return true;
 	},
-}, "ALittle.JSClientFileSaver");
+}, "ALittle.JClientFileSaver");
 
 ALittle.CreateConfigSystem = function(file_path, print_error) {
-	return ALittle.NewObject(JavaScript.Template(ALittle.ConfigSystem, "ALittle.ConfigSystem<ALittle.JSClientFileLoader, ALittle.JSClientFileSaver>", ALittle.JSClientFileLoader, ALittle.JSClientFileSaver), file_path, print_error);
+	return ALittle.NewObject(JavaScript.Template(ALittle.JsonConfig, "ALittle.JsonConfig<ALittle.JClientFileLoader, ALittle.JClientFileSaver>", ALittle.JClientFileLoader, ALittle.JClientFileSaver), file_path, print_error);
 }
 
 }

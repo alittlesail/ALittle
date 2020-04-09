@@ -1,4 +1,5 @@
 
+[Language(Lua)]
 namespace ALittle;
 
 public class VersionSystemAndroid : VersionSystem
@@ -14,7 +15,7 @@ public class VersionSystemAndroid : VersionSystem
         // 遍历所有模块
         if (File_GetFileAttr(File_BaseFilePath() .. "Module") == null) return;
 
-        for (var file in File_IteratorDir(File_BaseFilePath() .. "Module"))
+        for (var file in lua.lfs.dir(File_BaseFilePath() .. "Module"))
         {
             // 跳过当前目录，父级目录
             if (file != "." && file != "..")

@@ -26,7 +26,7 @@ ALittle.ICsvFile = JavaScript.Class(undefined, {
 ALittle.ICsvFileLoader = JavaScript.Class(undefined, {
 	Start : function() {
 	},
-	SetPath : function(file_path, only_from_asset, headers) {
+	SetPath : function(file_path, only_from_asset) {
 	},
 	GetPath : function() {
 		return undefined;
@@ -39,9 +39,7 @@ ALittle.ICsvFileLoader = JavaScript.Class(undefined, {
 ALittle.CsvConfig = JavaScript.Class(undefined, {
 	Load : function(file_path) {
 		let js_file = ALittle.NewObject(JavaScript.JCsvFile);
-		let content = JavaScript.File_LoadFile(file_path);
-		JavaScript.Assert(content, file_path + " load failed!");
-		JavaScript.Assert(js_file.Load(file_path, content), file_path + " load failed!");
+		JavaScript.Assert(js_file.Load(file_path), file_path + " load failed!");
 		this.Init(js_file);
 		ALittle.Log(file_path + " load succeed!");
 	},

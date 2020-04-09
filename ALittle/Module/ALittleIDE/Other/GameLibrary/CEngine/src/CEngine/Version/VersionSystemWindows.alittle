@@ -1,4 +1,5 @@
 
+[Language(Lua)]
 namespace ALittle;
 
 public class VersionSystemWindows : VersionSystem

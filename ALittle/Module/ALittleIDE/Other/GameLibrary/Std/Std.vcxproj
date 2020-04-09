@@ -42,6 +42,7 @@
     <None Include="src\Adapter\Lua\md5.alittle" />
     <None Include="src\Adapter\Lua\LuaMessageFactory.alittle" />
     <None Include="src\Adapter\Lua\net.alittle" />
+    <None Include="src\Adapter\Lua\sqlte3.alittle" />
     <None Include="src\Adapter\Lua\timer.alittle" />
     <None Include="src\Adapter\Lua\utf8.alittle" />
     <None Include="src\ALittle.alittle" />

@@ -185,5 +185,8 @@
     <None Include="src\Std\Utility\Schedule.alittle">
       <Filter>Std\Utility</Filter>
     </None>
+    <None Include="src\Adapter\Lua\sqlte3.alittle">
+      <Filter>Adapter\Lua</Filter>
+    </None>
   </ItemGroup>
 </Project>

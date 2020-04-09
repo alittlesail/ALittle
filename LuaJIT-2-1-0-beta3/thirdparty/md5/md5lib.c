@@ -9,8 +9,8 @@
 #include <string.h>
 #include <time.h>
 
-#include "../../src/lua.h"
-#include "../../src/lauxlib.h"
+#include "lua.h"
+#include "lauxlib.h"
 
 #include "md5.h"
 

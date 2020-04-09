@@ -2,7 +2,7 @@
 #ifndef _ALITTLE_TIMERLIB_H_
 #define _ALITTLE_TIMERLIB_H_
 
-#include "../../src/lua.h"
+#include "lua.h"
 
 LUALIB_API int luaopen_timer(lua_State* l);
 

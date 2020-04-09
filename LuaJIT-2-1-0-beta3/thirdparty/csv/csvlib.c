@@ -2,8 +2,8 @@
 #include "csvlib.h"
 #include "csv.h"
 
-#include "../../src/lua.h"
-#include "../../src/lauxlib.h"
+#include "lua.h"
+#include "lauxlib.h"
 
 #define CSV_MODNAME "csv"
 

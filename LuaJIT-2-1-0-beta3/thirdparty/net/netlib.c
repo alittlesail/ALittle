@@ -2,8 +2,8 @@
 #include "netlib.h"
 #include "net.h"
 
-#include "../../src/lua.h"
-#include "../../src/lauxlib.h"
+#include "lua.h"
+#include "lauxlib.h"
 
 #define NET_MODNAME "net"
 

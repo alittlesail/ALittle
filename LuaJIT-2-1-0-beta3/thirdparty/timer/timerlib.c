@@ -2,8 +2,8 @@
 #include "timerlib.h"
 #include "timer.h"
 
-#include "../../src/lua.h"
-#include "../../src/lauxlib.h"
+#include "lua.h"
+#include "lauxlib.h"
 
 #define TIMER_MODNAME "timer"
 

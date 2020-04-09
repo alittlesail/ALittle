@@ -2,7 +2,7 @@
 #ifndef _ALITTLE_UTF8LIB_H_
 #define _ALITTLE_UTF8LIB_H_
 
-#include "../../src/lua.h"
+#include "lua.h"
 
 LUALIB_API int luaopen_utf8(lua_State* l);
 

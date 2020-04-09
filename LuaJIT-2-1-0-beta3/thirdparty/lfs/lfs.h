@@ -8,7 +8,7 @@
 #ifndef lfs_h
 #define lfs_h
 
-#include "../../src/lua.h"
+#include "lua.h"
 
 /* Define 'chdir' for systems that do not implement it */
 #ifdef NO_CHDIR

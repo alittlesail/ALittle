@@ -2,7 +2,7 @@
 #ifndef _ALITTLE_CSVLIB_H_
 #define _ALITTLE_CSVLIB_H_
 
-#include "../../src/lua.h"
+#include "lua.h"
 
 LUALIB_API int luaopen_csv(lua_State* l);
 

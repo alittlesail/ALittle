@@ -3,8 +3,8 @@
 #include "base64.h"
 #include <stdlib.h>
 
-#include "../../src/lua.h"
-#include "../../src/lauxlib.h"
+#include "lua.h"
+#include "lauxlib.h"
 
 static int base64lib_encode(lua_State* L)
 {

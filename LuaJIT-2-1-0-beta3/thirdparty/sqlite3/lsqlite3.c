@@ -30,8 +30,8 @@
 #include <string.h>
 #include <assert.h>
 
-#include "../../src/lua.h"
-#include "../../src/lauxlib.h"
+#include "lua.h"
+#include "lauxlib.h"
 
 #if LUA_VERSION_NUM > 501
 //

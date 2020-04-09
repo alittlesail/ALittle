@@ -57,9 +57,9 @@
 #endif
 
 #include "lfs.h"
-#include "../../src/lua.h"
-#include "../../src/lualib.h"
-#include "../../src/lauxlib.h"
+#include "lua.h"
+#include "lualib.h"
+#include "lauxlib.h"
 
 #define LFS_VERSION "1.6.2"
 #define LFS_LIBNAME "lfs"

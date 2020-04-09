@@ -2,6 +2,8 @@ require("base64");
 require("csv");
 require("dump");
 require("json");
+require("ajson");
+require("sqlite3");
 require("lfs");
 require("md5");
 require("net");

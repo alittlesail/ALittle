@@ -1369,7 +1369,7 @@ public class RichInput : DisplayLayout
                 var password_width:double = null;  // 密码的文本宽度都一样
                 while (calc_text != "")
                 {
-                    var byte_count = String_CalcUTF8LengthOfWord(calc_text, 1);
+                    var byte_count = String_GetByteCount(calc_text, 1);
                     var real_text = __sub(calc_text, 1, byte_count);
                     var password_text = "*";
                     var text_width = 0.0;
@@ -2202,7 +2202,7 @@ public class RichInput : DisplayLayout
         // 判断长度
         if (this._limit_len > 0)
         {
-            var text_len = String_GetUTF8Length(text);
+            var text_len = String_GetWordCount(text);
             // 先判断输入的文本是否满足条件
             if (text_len > this._limit_len)
                 return false;
@@ -2213,7 +2213,7 @@ public class RichInput : DisplayLayout
             for (var k, v in displaylist)
             {
                 if (v.__class == "Text")
-                    select_len = select_len + String_GetUTF8Length(v.text);
+                    select_len = select_len + String_GetWordCount(v.text);
             }
     
             // 计算最后文本长度
@@ -2222,7 +2222,7 @@ public class RichInput : DisplayLayout
             for (var k, v in displaylist)
             {
                 if (v.__class == "Text")
-                    total_len = total_len + String_GetUTF8Length(v.text);
+                    total_len = total_len + String_GetWordCount(v.text);
             }
             if (total_len - select_len + text_len > this._limit_len)
                 return false;
@@ -2233,7 +2233,7 @@ public class RichInput : DisplayLayout
         {
             while (text != "")
             {
-                var byte_count = String_CalcUTF8LengthOfWord(text, 1);
+                var byte_count = String_GetByteCount(text, 1);
                 var sub_text = __sub(text, 1, byte_count);
 
                 var start_it = __find(sub_text, this._regex);

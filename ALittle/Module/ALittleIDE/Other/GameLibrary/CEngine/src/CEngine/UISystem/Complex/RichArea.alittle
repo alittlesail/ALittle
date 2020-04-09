@@ -404,7 +404,7 @@ public class RichArea : DisplayLayout
                         var count = display_object._show.CutTextByWidth(__floor(remain_width), display_info.text, __floor(total_width));
                         // 不够塞一个字，且本行无控件的情况下，要塞一个字进去
                         if (count == 0 && line_info.child_count == 0)
-                            count = String_CalcUTF8LengthOfWord(display_info.text, 1);
+                            count = String_GetByteCount(display_info.text, 1);
 
                         // 字节大于0，说明要开始切文本
                         if (count == 0)

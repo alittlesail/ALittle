@@ -618,7 +618,7 @@ public static CreateMsgSender(int heartbeat, bool check_heartbeat, [Nullable] Fu
     [Language(Lua)]
     return new MsgSenderTemplate<lua.__CPPAPIMsgInterface, lua.__CPPAPIMessageWriteFactory>(heartbeat, check_heartbeat, A_LuaLoopSystem, callback);
     [Language(JavaScript)]
-    return new MsgSenderTemplate<JavaScript.JMsgInterface, JavaScript.JMessageWriteFactory>(heartbeat, check_heartbeat, A_JSLoopSystem, callback);
+    return new MsgSenderTemplate<JavaScript.JMsgInterface, JavaScript.JMessageWriteFactory>(heartbeat, check_heartbeat, A_JLoopSystem, callback);
 }
 
 public static CreateHttpSender(string ip, int port) : IHttpSender
@@ -638,7 +638,7 @@ public await static HttpRequest(string ip, int port, string path) : string, stri
     return yield;
 }
 
-public static CreateHttpFileSender(string ip, int port, string file_path, int start_size, [Nullable] Functor<(IHttpFileSenderNative)> callback) : IHttpFileSender
+public static CreateHttpFileSender(string ip, int port, string file_path, int start_size, [Nullable] Functor<()> callback) : IHttpFileSender
 {
     [Language(Lua)]
     return new HttpFileSenderTemplate<lua.__CPPAPIHttpFileInterface>(ip, port, file_path, start_size, callback);
@@ -646,7 +646,7 @@ public static CreateHttpFileSender(string ip, int port, string file_path, int st
     return new HttpFileSenderTemplate<JavaScript.JHttpFileInterface>(ip, port, file_path, start_size, callback);
 }
 
-public await static HttpDownloadRequest(string ip, int port, string file_path, [Nullable] Functor<(IHttpFileSenderNative)> callback) : string, IHttpFileSender
+public await static HttpDownloadRequest(string ip, int port, string file_path, [Nullable] Functor<()> callback) : string, IHttpFileSender
 {
     var sender = CreateHttpFileSender(ip, port, file_path, 0, callback);
     

@@ -1744,7 +1744,7 @@ public class RichEdit : DisplayLayout
         // 判断长度
         if (this._limit_len != 0)
         {
-            var text_len = String_GetUTF8Length(text);
+            var text_len = String_GetWordCount(text);
             // 先判断输入的文本是否满足条件
             if (text_len > this._limit_len)
                 return false;
@@ -1755,7 +1755,7 @@ public class RichEdit : DisplayLayout
             for (var k, v in displaylist)
             {
                 if (v.__class == "Text")
-                    select_len = select_len + String_GetUTF8Length(v.text);
+                    select_len = select_len + String_GetWordCount(v.text);
             }
     
             // 计算最后文本长度
@@ -1764,7 +1764,7 @@ public class RichEdit : DisplayLayout
             for (var k, v in displaylist)
             {
                 if (v.__class == "Text")
-                    total_len = total_len + String_GetUTF8Length(v.text);
+                    total_len = total_len + String_GetWordCount(v.text);
             }
             if (total_len - select_len + text_len > this._limit_len)
                 return false;
@@ -1775,7 +1775,7 @@ public class RichEdit : DisplayLayout
         {
             while (text != "")
             {
-                var byte_count = String_CalcUTF8LengthOfWord(text, 1);
+                var byte_count = String_GetByteCount(text, 1);
                 var sub_text = __sub(text, 1, byte_count);
 
                 var start_it = __find(sub_text, this._regex);
@@ -2823,7 +2823,7 @@ public class RichEdit : DisplayLayout
                     var calc_text = "\t";
                     while (calc_text != "")
                     {
-                        var byte_count = String_CalcUTF8LengthOfWord(calc_text, 1);
+                        var byte_count = String_GetByteCount(calc_text, 1);
                         var sub_text = __sub(calc_text, 1, byte_count);
                         var text_width = this._draw_text.native_show.CalcTextWidth("    ");
                         var char_info = new RichEditCharInfo();
@@ -2910,7 +2910,7 @@ public class RichEdit : DisplayLayout
                         var count = display_object._show.CutTextByWidth(__floor(remain_width), display_info.text, __floor(total_width));
                         // 不够塞一个字，且本行无控件的情况下，要塞一个字进去
                         if (count == 0 && line_info.char_count <= 1)
-                            count = String_CalcUTF8LengthOfWord(display_info.text, 1);
+                            count = String_GetByteCount(display_info.text, 1);
     
                         if (count == 0)
                             remain_width = 0;
@@ -2928,7 +2928,7 @@ public class RichEdit : DisplayLayout
                             var char_count = display_object._show.GetCutWidthListCount();
                             for (var i = 1; i <= char_count; 1)
                             {
-                                var byte_count = String_CalcUTF8LengthOfWord(calc_text, 1);
+                                var byte_count = String_GetByteCount(calc_text, 1);
                                 var sub_text = __sub(calc_text, 1, byte_count);
                                 var text_width = display_object._show.GetCutWidthByIndex(i - 1);
                                 var char_info = new RichEditCharInfo();

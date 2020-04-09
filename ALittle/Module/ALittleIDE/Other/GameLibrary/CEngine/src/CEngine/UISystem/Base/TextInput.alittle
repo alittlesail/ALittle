@@ -402,14 +402,14 @@ public class TextInput : DisplayObject
         // 判断长度问题
         if (this._limit_len > 0)
         {
-            var text_len = String_GetUTF8Length(text);
+            var text_len = String_GetWordCount(text);
             // 输入文本超过限制
             if (text_len > this._limit_len)
                 return false;
             // 获取选中文本长度
-            var select_len = String_GetUTF8Length(this._show.GetSelectText());
+            var select_len = String_GetWordCount(this._show.GetSelectText());
 
-            var total_len = String_GetUTF8Length(this.text);
+            var total_len = String_GetWordCount(this.text);
             if (total_len - select_len + text_len > this._limit_len)
                 return false;
         }
@@ -419,7 +419,7 @@ public class TextInput : DisplayObject
         {
             while (text != "")
             {
-                var byte_count = String_CalcUTF8LengthOfWord(text, 1);
+                var byte_count = String_GetByteCount(text, 1);
                 var sub_text = __sub(text, 1, byte_count);
 
                 var start_it = __find(sub_text, this._regex);

@@ -1,6 +1,6 @@
 namespace alittle;
 
-public async static __ALITTLEAPI_CEngine_Init(string base_path)
+public await static __ALITTLEAPI_CEngine_Init(string base_path)
 {
     Require(base_path.."CEngine/UISystem/IShow");
     
@@ -45,6 +45,14 @@ public async static __ALITTLEAPI_CEngine_Init(string base_path)
     Require(base_path.."CEngine/UISystem/LayerManager");
     Require(base_path.."CEngine/UISystem/TextureManager");
     Require(base_path.."CEngine/UISystem/ControlSystem");
+    
+    [Language(Lua)]
+    {
+        Require(base_path.."CEngine/Version/VersionSystem");
+        Require(base_path.."CEngine/Version/VersionSystemAndroid");
+        Require(base_path.."CEngine/Version/VersionSystemIOS");
+        Require(base_path.."CEngine/Version/VersionSystemWindows");
+    }
 }
 
 public static __ALITTLEAPI_HandleConsoleCmd(string cmd)
@@ -69,7 +77,7 @@ public static __ALITTLEAPI_FingerUp(double x, double y, int finger_id, int touch
 
 public static __ALITTLEAPI_MouseMoved(double x, double y)
 {
-     A_UISystem.HandleMouseMoved(x, y);
+    A_UISystem.HandleMouseMoved(x, y);
 }
 
 public static __ALITTLEAPI_LButtonDown(double x, double y, int count)
@@ -255,10 +263,10 @@ public static __ALITTLEAPI_SystemSaveFile(string path)
 
 //////////////////////////////////////////////////////////////////////////////////////-
 // 启动核心模块资源
-public async static __ALITTLEAPI_SetupMainModule(string base_path, string debug, string module_name, string sengine_path, string modules) : bool
+public static __ALITTLEAPI_SetupMainModule(string base_path, string debug, string module_name, string sengine_path, string modules)
 {
     A_AudioSystem.Setup();
-    return A_ModuleSystem.MainSetup(base_path, debug, module_name, sengine_path, modules);
+    A_ModuleSystem.MainSetup(base_path, debug, module_name, sengine_path, modules);
 }
 // 释放核心模块资源
 public static __ALITTLEAPI_ShutdownMainModule()

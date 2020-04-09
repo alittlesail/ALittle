@@ -1,42 +1,45 @@
 {
 
 
-__ALITTLEAPI_CEngine_Init = async function(base_path) {
-	await Require(base_path + "CEngine/UISystem/IShow");
-	{
-		await Require(base_path + "Adapter/JavaScript/JHttpInterface");
-		await Require(base_path + "Adapter/JavaScript/JHttpFileInterface");
-		await Require(base_path + "Adapter/JavaScript/JMessageFactory");
-		await Require(base_path + "Adapter/JavaScript/JMsgInterface");
-		await Require(base_path + "Adapter/JavaScript/JSystem");
-		await Require(base_path + "Adapter/JavaScript/JShow");
-	}
-	await Require(base_path + "CEngine/Utility/String");
-	await Require(base_path + "CEngine/Utility/File");
-	await Require(base_path + "CEngine/Utility/ModuleSystem");
-	await Require(base_path + "CEngine/Utility/System");
-	await Require(base_path + "CEngine/Utility/ConfigSystem");
-	await Require(base_path + "CEngine/Utility/AudioSystem");
-	await Require(base_path + "CEngine/Utility/OtherSystem");
-	await Require(base_path + "CEngine/Utility/CsvConfigManager");
-	await Require(base_path + "CEngine/LoopSystem/LoopAnimation");
-	await Require(base_path + "CEngine/LoopSystem/LoopAttribute");
-	await Require(base_path + "CEngine/LoopSystem/LoopLinear");
-	await Require(base_path + "CEngine/LoopSystem/LoopRit");
-	await Require(base_path + "CEngine/UISystem/UIEnumTypes");
-	await Require(base_path + "CEngine/UISystem/UIEventDispatcher");
-	await Require(base_path + "CEngine/UISystem/Base/Matrix2D");
-	await Require(base_path + "CEngine/UISystem/Base/DisplayObject");
-	await Require(base_path + "CEngine/UISystem/Base/DisplayGroup");
-	await Require(base_path + "CEngine/UISystem/Base/DisplayLayout");
-	await Require(base_path + "CEngine/UISystem/Base/Quad");
-	await Require(base_path + "CEngine/UISystem/Base/Image");
-	await Require(base_path + "CEngine/UISystem/Base/Text");
-	await Require(base_path + "CEngine/UISystem/Complex/Grid9Image");
-	await Require(base_path + "CEngine/UISystem/UISystem");
-	await Require(base_path + "CEngine/UISystem/LayerManager");
-	await Require(base_path + "CEngine/UISystem/TextureManager");
-	await Require(base_path + "CEngine/UISystem/ControlSystem");
+__ALITTLEAPI_CEngine_Init = function(base_path) {
+	return new Promise(async function(___COROUTINE, ___) {
+		await Require(base_path + "CEngine/UISystem/IShow");
+		{
+			await Require(base_path + "Adapter/JavaScript/JHttpInterface");
+			await Require(base_path + "Adapter/JavaScript/JHttpFileInterface");
+			await Require(base_path + "Adapter/JavaScript/JMessageFactory");
+			await Require(base_path + "Adapter/JavaScript/JMsgInterface");
+			await Require(base_path + "Adapter/JavaScript/JSystem");
+			await Require(base_path + "Adapter/JavaScript/JShow");
+		}
+		await Require(base_path + "CEngine/Utility/String");
+		await Require(base_path + "CEngine/Utility/File");
+		await Require(base_path + "CEngine/Utility/ModuleSystem");
+		await Require(base_path + "CEngine/Utility/System");
+		await Require(base_path + "CEngine/Utility/ConfigSystem");
+		await Require(base_path + "CEngine/Utility/AudioSystem");
+		await Require(base_path + "CEngine/Utility/OtherSystem");
+		await Require(base_path + "CEngine/Utility/CsvConfigManager");
+		await Require(base_path + "CEngine/LoopSystem/LoopAnimation");
+		await Require(base_path + "CEngine/LoopSystem/LoopAttribute");
+		await Require(base_path + "CEngine/LoopSystem/LoopLinear");
+		await Require(base_path + "CEngine/LoopSystem/LoopRit");
+		await Require(base_path + "CEngine/UISystem/UIEnumTypes");
+		await Require(base_path + "CEngine/UISystem/UIEventDispatcher");
+		await Require(base_path + "CEngine/UISystem/Base/Matrix2D");
+		await Require(base_path + "CEngine/UISystem/Base/DisplayObject");
+		await Require(base_path + "CEngine/UISystem/Base/DisplayGroup");
+		await Require(base_path + "CEngine/UISystem/Base/DisplayLayout");
+		await Require(base_path + "CEngine/UISystem/Base/Quad");
+		await Require(base_path + "CEngine/UISystem/Base/Image");
+		await Require(base_path + "CEngine/UISystem/Base/Text");
+		await Require(base_path + "CEngine/UISystem/Complex/Grid9Image");
+		await Require(base_path + "CEngine/UISystem/UISystem");
+		await Require(base_path + "CEngine/UISystem/LayerManager");
+		await Require(base_path + "CEngine/UISystem/TextureManager");
+		await Require(base_path + "CEngine/UISystem/ControlSystem");
+		___COROUTINE();
+	});
 }
 
 __ALITTLEAPI_HandleConsoleCmd = function(cmd) {
@@ -201,9 +204,9 @@ __ALITTLEAPI_SystemSaveFile = function(path) {
 	A_OtherSystem.HandleSystemSaveFile(path);
 }
 
-__ALITTLEAPI_SetupMainModule = async function(base_path, debug, module_name, sengine_path, modules) {
+__ALITTLEAPI_SetupMainModule = function(base_path, debug, module_name, sengine_path, modules) {
 	A_AudioSystem.Setup();
-	return await A_ModuleSystem.MainSetup(base_path, debug, module_name, sengine_path, modules);
+	A_ModuleSystem.MainSetup(base_path, debug, module_name, sengine_path, modules);
 }
 
 __ALITTLEAPI_ShutdownMainModule = function() {

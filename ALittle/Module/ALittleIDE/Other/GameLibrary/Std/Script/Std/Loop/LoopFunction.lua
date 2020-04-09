@@ -6,7 +6,8 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-LoopFunction = Lua.Class(nil, "ALittle.LoopFunction")
+assert(ALittle.LoopObject, " extends class:ALittle.LoopObject is nil")
+LoopFunction = Lua.Class(ALittle.LoopObject, "ALittle.LoopFunction")
 
 function LoopFunction:Ctor(func, count, interval_time, delay_time)
 	___rawset(self, "_func", func)

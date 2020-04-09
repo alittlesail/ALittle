@@ -270,7 +270,7 @@ ALittle.RichArea = JavaScript.Class(ALittle.DisplayLayout, {
 						let object_height = display_object.height;
 						let count = display_object._show.CutTextByWidth(__floor(remain_width), display_info.text, __floor(total_width));
 						if (count === 0 && line_info.child_count === 0) {
-							count = ALittle.String_CalcUTF8LengthOfWord(display_info.text, 1);
+							count = ALittle.String_GetByteCount(display_info.text, 1);
 						}
 						if (count === 0) {
 							remain_width = 0;

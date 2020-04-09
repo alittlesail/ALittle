@@ -29,6 +29,7 @@
     <None Include="src\Adapter\SDL\HttpFileInterface.alittle" />
     <None Include="src\Adapter\SDL\HttpInterface.alittle" />
     <None Include="src\Adapter\SDL\IMEInterface.alittle" />
+    <None Include="src\Adapter\SDL\MessageFactoryInterface.alittle" />
     <None Include="src\Adapter\SDL\MsgInterface.alittle" />
     <None Include="src\Adapter\SDL\NetInterface.alittle" />
     <None Include="src\Adapter\SDL\ScheduleInterface.alittle" />

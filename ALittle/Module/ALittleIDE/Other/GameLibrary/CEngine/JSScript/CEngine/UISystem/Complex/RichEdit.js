@@ -1238,7 +1238,7 @@ ALittle.RichEdit = JavaScript.Class(ALittle.DisplayLayout, {
 	},
 	CheckTextRegexLimit : function(text) {
 		if (this._limit_len !== 0) {
-			let text_len = ALittle.String_GetUTF8Length(text);
+			let text_len = ALittle.String_GetWordCount(text);
 			if (text_len > this._limit_len) {
 				return false;
 			}
@@ -1249,7 +1249,7 @@ ALittle.RichEdit = JavaScript.Class(ALittle.DisplayLayout, {
 				let v = ___OBJECT_9[k - 1];
 				if (v === undefined) break;
 				if (v.__class === "Text") {
-					select_len = select_len + ALittle.String_GetUTF8Length(v.text);
+					select_len = select_len + ALittle.String_GetWordCount(v.text);
 				}
 			}
 			displaylist = this.display_list;
@@ -1259,7 +1259,7 @@ ALittle.RichEdit = JavaScript.Class(ALittle.DisplayLayout, {
 				let v = ___OBJECT_10[k - 1];
 				if (v === undefined) break;
 				if (v.__class === "Text") {
-					total_len = total_len + ALittle.String_GetUTF8Length(v.text);
+					total_len = total_len + ALittle.String_GetWordCount(v.text);
 				}
 			}
 			if (total_len - select_len + text_len > this._limit_len) {
@@ -1268,7 +1268,7 @@ ALittle.RichEdit = JavaScript.Class(ALittle.DisplayLayout, {
 		}
 		if (this._regex !== "") {
 			while (text !== "") {
-				let byte_count = ALittle.String_CalcUTF8LengthOfWord(text, 1);
+				let byte_count = ALittle.String_GetByteCount(text, 1);
 				let sub_text = __sub(text, 1, byte_count);
 				let start_it = __find(sub_text, this._regex);
 				if (start_it === undefined) {
@@ -2030,7 +2030,7 @@ ALittle.RichEdit = JavaScript.Class(ALittle.DisplayLayout, {
 					this.SetDrawText(display_object);
 					let calc_text = "\t";
 					while (calc_text !== "") {
-						let byte_count = ALittle.String_CalcUTF8LengthOfWord(calc_text, 1);
+						let byte_count = ALittle.String_GetByteCount(calc_text, 1);
 						let sub_text = __sub(calc_text, 1, byte_count);
 						let text_width = this._draw_text.native_show.CalcTextWidth("    ");
 						let char_info = {};
@@ -2094,7 +2094,7 @@ ALittle.RichEdit = JavaScript.Class(ALittle.DisplayLayout, {
 						}
 						let count = display_object._show.CutTextByWidth(__floor(remain_width), display_info.text, __floor(total_width));
 						if (count === 0 && line_info.char_count <= 1) {
-							count = ALittle.String_CalcUTF8LengthOfWord(display_info.text, 1);
+							count = ALittle.String_GetByteCount(display_info.text, 1);
 						}
 						if (count === 0) {
 							remain_width = 0;
@@ -2106,7 +2106,7 @@ ALittle.RichEdit = JavaScript.Class(ALittle.DisplayLayout, {
 							this.SetDrawText(display_object);
 							let char_count = display_object._show.GetCutWidthListCount();
 							for (let i = 1; i <= char_count; i += 1) {
-								let byte_count = ALittle.String_CalcUTF8LengthOfWord(calc_text, 1);
+								let byte_count = ALittle.String_GetByteCount(calc_text, 1);
 								let sub_text = __sub(calc_text, 1, byte_count);
 								let text_width = display_object._show.GetCutWidthByIndex(i - 1);
 								let char_info = {};

@@ -323,7 +323,6 @@ class UISystem
             // 这里直接返回，因为在拖动，所以不需要检查新的移动焦点控件
             return true;
         }
-    
         // 更新移动焦点控件，由于鼠标移动了，所以要获取新的移动焦点控件
         this.UpdateMoveFocus(x, y);
         return this._mfc != null;
@@ -684,7 +683,7 @@ class UISystem
         // 移动焦点对话框
         var mfd:DisplayLayout;
         mfc, mfd, this._mfc_rel_x, this._mfc_rel_y = A_LayerManager.PickUp(x, y);
-
+        
         // 保存移动焦点对话框
         this._mfd = mfd;
         // 如果计算得到的移动焦点控件就是当前的移动焦点控件

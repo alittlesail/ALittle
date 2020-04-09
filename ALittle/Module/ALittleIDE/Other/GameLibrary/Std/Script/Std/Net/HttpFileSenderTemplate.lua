@@ -26,7 +26,8 @@ function IHttpFileSenderNative:GetPath()
 end
 
 local __HttpFileSenderMap = {}
-HttpFileSenderTemplate = Lua.Class(nil, "ALittle.HttpFileSenderTemplate")
+assert(ALittle.IHttpFileSender, " extends class:ALittle.IHttpFileSender is nil")
+HttpFileSenderTemplate = Lua.Class(ALittle.IHttpFileSender, "ALittle.HttpFileSenderTemplate")
 
 function HttpFileSenderTemplate:Ctor(ip, port, file_path, start_size, callback)
 	___rawset(self, "_interface", self.__class.__element[1]())
@@ -75,6 +76,10 @@ function HttpFileSenderTemplate:Stop()
 	self._interface:Stop()
 end
 
+function HttpFileSenderTemplate:GetFilePath()
+	return self._file_path
+end
+
 function HttpFileSenderTemplate:GetTotalSize()
 	return self._total_size
 end
@@ -85,7 +90,7 @@ end
 
 function HttpFileSenderTemplate:HandleSucceed()
 	__HttpFileSenderMap[self._interface:GetID()] = nil
-	local result, reason = Coroutine.Resume(self._thread, nil, self)
+	local result, reason = Coroutine.Resume(self._thread, nil)
 	if result ~= true then
 		Error(reason)
 	end
@@ -93,7 +98,7 @@ end
 
 function HttpFileSenderTemplate:HandleFailed(reason)
 	__HttpFileSenderMap[self._interface:GetID()] = nil
-	local result, error = Coroutine.Resume(self._thread, reason, self)
+	local result, error = Coroutine.Resume(self._thread, reason)
 	if result ~= true then
 		Error(error)
 	end
@@ -103,7 +108,7 @@ function HttpFileSenderTemplate:HandleProcess(cur_size, total_size)
 	self._cur_size = cur_size
 	self._total_size = total_size
 	if self._callback ~= nil then
-		self._callback(self._interface)
+		self._callback()
 	end
 end
 

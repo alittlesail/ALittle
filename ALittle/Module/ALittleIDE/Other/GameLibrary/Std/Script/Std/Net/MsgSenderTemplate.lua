@@ -7,7 +7,8 @@ local ___ipairs = ipairs
 
 
 local __MsgSenderMap = {}
-MsgSenderTemplate = Lua.Class(nil, "ALittle.MsgSenderTemplate")
+assert(ALittle.IMsgCommonTemplate, " extends class:ALittle.IMsgCommonTemplate is nil")
+MsgSenderTemplate = Lua.Class(ALittle.IMsgCommonTemplate, "ALittle.MsgSenderTemplate")
 
 function MsgSenderTemplate:Ctor(heartbeat, check_heartbeat, loop_system, callback)
 	___rawset(self, "_interface", self.__class.__element[1]())

@@ -6,7 +6,8 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-LoopList = Lua.Class(nil, "ALittle.LoopList")
+assert(ALittle.LoopObject, " extends class:ALittle.LoopObject is nil")
+LoopList = Lua.Class(ALittle.LoopObject, "ALittle.LoopList")
 
 function LoopList:Ctor()
 	___rawset(self, "_count", 0)
@@ -89,11 +90,11 @@ function LoopList:Completed()
 end
 
 function LoopList:SetCompleted()
+	local index = self._cur_index
 	while true do
-		local index = self._cur_index
 		if not(index <= self._count) then break end
 		self._update_list[index]:SetCompleted()
-		index = index+1
+		index = index+(1)
 	end
 	self._cur_index = self._count + 1
 end

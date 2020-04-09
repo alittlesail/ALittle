@@ -40,7 +40,8 @@ end
 function IMsgCommonNative:Close()
 end
 
-IMsgCommonTemplate = Lua.Class(nil, "ALittle.IMsgCommonTemplate")
+assert(ALittle.IMsgCommon, " extends class:ALittle.IMsgCommon is nil")
+IMsgCommonTemplate = Lua.Class(ALittle.IMsgCommon, "ALittle.IMsgCommonTemplate")
 
 function IMsgCommonTemplate:Ctor()
 	___rawset(self, "_last_recv_time", 0)

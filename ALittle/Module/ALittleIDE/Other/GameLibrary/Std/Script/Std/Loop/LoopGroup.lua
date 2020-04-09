@@ -6,7 +6,8 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-LoopGroup = Lua.Class(nil, "ALittle.LoopGroup")
+assert(ALittle.LoopObject, " extends class:ALittle.LoopObject is nil")
+LoopGroup = Lua.Class(ALittle.LoopObject, "ALittle.LoopGroup")
 
 function LoopGroup:Ctor()
 	___rawset(self, "_total_count", 0)

@@ -110,7 +110,7 @@ ALittle.LoopAnimation = JavaScript.Class(undefined, {
 		this._group.Start();
 	},
 	AsyncPlay : function(loop) {
-		return new Promise(function(___COROUTINE, ___) {
+		return new Promise((function(___COROUTINE, ___) {
 			this.ReleaseCo("AsyncPlay被调用");
 			if (this._group === undefined) {
 				___COROUTINE("this._group == null"); return;
@@ -129,7 +129,7 @@ ALittle.LoopAnimation = JavaScript.Class(undefined, {
 			this._group.Start();
 			return;
 			___COROUTINE();
-		});
+		}).bind(this));
 	},
 	ReleaseCo : function(reason) {
 		if (this._co === undefined) {

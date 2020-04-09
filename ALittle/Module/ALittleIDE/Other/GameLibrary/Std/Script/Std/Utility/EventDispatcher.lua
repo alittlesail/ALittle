@@ -32,7 +32,8 @@ function EventListener:RemoveFromDispatcher()
 	self._ref_map = nil
 end
 
-EventDispatcher = Lua.Class(nil, "ALittle.EventDispatcher")
+assert(ALittle.EventListener, " extends class:ALittle.EventListener is nil")
+EventDispatcher = Lua.Class(ALittle.EventListener, "ALittle.EventDispatcher")
 
 function EventDispatcher:Ctor()
 	___rawset(self, "_listeners", {})

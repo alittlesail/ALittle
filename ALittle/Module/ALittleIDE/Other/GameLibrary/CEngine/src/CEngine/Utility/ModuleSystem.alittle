@@ -91,9 +91,9 @@ class ModuleSystem
         info.control = new ControlSystem(name, info.crypt_mode);
         // 加载Main文件
         [Language(Lua)]
-        alittle.Require(module_base_path.."Script/Main");
+        alittle.Require(module_base_path.."Main");
         [Language(JavaScript)]
-        alittle.Require(module_base_path.."JSScript/Main");
+        alittle.Require(module_base_path.."Main");
         // 检查是否有这个模块
         [Language(Lua)]
         info.module = package.loaded[name];
@@ -256,7 +256,7 @@ class ModuleSystem
         return true;
     }
     
-    public await fun MainSetup(string base_path, string debug, string module_name, string sengine_path, string server_modules) : bool
+    public async fun MainSetup(string base_path, string debug, string module_name, string sengine_path, string server_modules)
     {
         // 启动服务器模块
         [Language(Lua)]
@@ -275,7 +275,7 @@ class ModuleSystem
 
         // 检查主模块是否已经加载
         if (this._main_module != null)
-            return false;
+            return;
         
         // 读取启动文件
         if (module_name == null)
@@ -283,15 +283,15 @@ class ModuleSystem
         if (module_name == null)
         {
             Log("Load Enter.ali failed!");
-            return false;
+            return;
         }
-
+        
         // 加载主模块
         var info = this.LoadModuleImpl(base_path, module_name);
         if (info == null)
         {
             Log("Module:" .. module_name .. " load failed!");
-            return false;
+            return;
         }
         // 把组模块的层组放进层管理器
         A_LayerManager.AddChild(info.layer_group, A_LayerManager.group_count - 1);
@@ -308,7 +308,7 @@ class ModuleSystem
         if (setup_func == null)
         {
             this.LoadModule(module_base_path, this._main_module.name);
-            return false;
+            return;
         }
     
         // 调用壳的启动函数
@@ -316,7 +316,6 @@ class ModuleSystem
         setup_func(this._main_module.layer_group, this._main_module.control, module_base_path, module_base_path.."Script/", this._debug);
         [Language(JavaScript)]
         setup_func(this._main_module.layer_group, this._main_module.control, module_base_path, module_base_path.."JSScript/", this._debug);
-        return true;
     }
     
     public fun MainShutdown()

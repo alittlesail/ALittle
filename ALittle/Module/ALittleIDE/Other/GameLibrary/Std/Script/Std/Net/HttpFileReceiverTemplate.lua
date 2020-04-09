@@ -17,7 +17,8 @@ end
 function IHttpFileReceiverNative:StartReceiveFile(http_id, file_path, start_size)
 end
 
-HttpFileReceiverTemplate = Lua.Class(nil, "ALittle.HttpFileReceiverTemplate")
+assert(ALittle.IHttpFileReceiver, " extends class:ALittle.IHttpFileReceiver is nil")
+HttpFileReceiverTemplate = Lua.Class(ALittle.IHttpFileReceiver, "ALittle.HttpFileReceiverTemplate")
 
 function HttpFileReceiverTemplate:Ctor(http_id, thread)
 	___rawset(self, "_http_id", http_id)

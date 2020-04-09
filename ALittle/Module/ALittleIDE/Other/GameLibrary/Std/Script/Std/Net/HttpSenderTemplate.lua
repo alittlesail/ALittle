@@ -26,7 +26,8 @@ function IHttpSenderNative:GetResponse()
 end
 
 local __HttpSenderMap = {}
-HttpSenderTemplate = Lua.Class(nil, "ALittle.HttpSenderTemplate")
+assert(ALittle.IHttpSender, " extends class:ALittle.IHttpSender is nil")
+HttpSenderTemplate = Lua.Class(ALittle.IHttpSender, "ALittle.HttpSenderTemplate")
 
 function HttpSenderTemplate:Ctor(ip, port)
 	___rawset(self, "_interface", self.__class.__element[1]())

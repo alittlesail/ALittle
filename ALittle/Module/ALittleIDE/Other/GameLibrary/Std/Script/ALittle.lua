@@ -4,6 +4,7 @@ local ___ipairs = ipairs
 
 
 function __ALITTLEAPI_Std_Init(base_path)
+local ___COROUTINE = coroutine.running()
 	Require(base_path .. "Std/Reflect/ReflectCmd")
 	Require(base_path .. "Std/Reflect/ReflectCsv")
 	Require(base_path .. "Std/Reflect/ReflectMessage")
@@ -32,14 +33,15 @@ function __ALITTLEAPI_Std_Init(base_path)
 	do
 		Require(base_path .. "Adapter/Lua/LuaHeapTimer")
 		Require(base_path .. "Adapter/Lua/LuaCsvFile")
-		Require(base_path .. "Adapter/Lua/LuaHttpFileInterface")
-		Require(base_path .. "Adapter/Lua/LuaHttpInterface")
-		Require(base_path .. "Adapter/Lua/LuaMsgInterface")
-		Require(base_path .. "Adapter/Lua/LuaMessageFactory")
-		Require(base_path .. "Adapter/Lua/LuaSchedule")
+		if net ~= nil then
+			Require(base_path .. "Adapter/Lua/LuaHttpFileInterface")
+			Require(base_path .. "Adapter/Lua/LuaHttpInterface")
+			Require(base_path .. "Adapter/Lua/LuaMsgInterface")
+			Require(base_path .. "Adapter/Lua/LuaMessageFactory")
+			Require(base_path .. "Adapter/Lua/LuaSchedule")
+		end
 	end
 	Require(base_path .. "Std/Loop/LoopSystem")
 	Require(base_path .. "Std/Utility/Schedule")
 end
-__ALITTLEAPI_Std_Init = Lua.CoWrap(__ALITTLEAPI_Std_Init)
 

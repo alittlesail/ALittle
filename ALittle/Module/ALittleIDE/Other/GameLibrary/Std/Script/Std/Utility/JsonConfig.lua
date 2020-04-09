@@ -37,7 +37,8 @@ end
 function IJsonConfig:SaveConfig()
 end
 
-JsonConfig = Lua.Class(nil, "ALittle.JsonConfig")
+assert(ALittle.IJsonConfig, " extends class:ALittle.IJsonConfig is nil")
+JsonConfig = Lua.Class(ALittle.IJsonConfig, "ALittle.JsonConfig")
 
 function JsonConfig:Ctor(file_path, print_error)
 	___rawset(self, "_file_path", file_path)

@@ -979,7 +979,7 @@ ALittle.RichInput = JavaScript.Class(ALittle.DisplayLayout, {
 				let calc_text = display_info.text;
 				let password_width = undefined;
 				while (calc_text !== "") {
-					let byte_count = ALittle.String_CalcUTF8LengthOfWord(calc_text, 1);
+					let byte_count = ALittle.String_GetByteCount(calc_text, 1);
 					let real_text = __sub(calc_text, 1, byte_count);
 					let password_text = "*";
 					let text_width = 0.0;
@@ -1596,7 +1596,7 @@ ALittle.RichInput = JavaScript.Class(ALittle.DisplayLayout, {
 	},
 	CheckTextRegexLimit : function(text) {
 		if (this._limit_len > 0) {
-			let text_len = ALittle.String_GetUTF8Length(text);
+			let text_len = ALittle.String_GetWordCount(text);
 			if (text_len > this._limit_len) {
 				return false;
 			}
@@ -1607,7 +1607,7 @@ ALittle.RichInput = JavaScript.Class(ALittle.DisplayLayout, {
 				let v = ___OBJECT_12[k - 1];
 				if (v === undefined) break;
 				if (v.__class === "Text") {
-					select_len = select_len + ALittle.String_GetUTF8Length(v.text);
+					select_len = select_len + ALittle.String_GetWordCount(v.text);
 				}
 			}
 			displaylist = this.display_list;
@@ -1617,7 +1617,7 @@ ALittle.RichInput = JavaScript.Class(ALittle.DisplayLayout, {
 				let v = ___OBJECT_13[k - 1];
 				if (v === undefined) break;
 				if (v.__class === "Text") {
-					total_len = total_len + ALittle.String_GetUTF8Length(v.text);
+					total_len = total_len + ALittle.String_GetWordCount(v.text);
 				}
 			}
 			if (total_len - select_len + text_len > this._limit_len) {
@@ -1626,7 +1626,7 @@ ALittle.RichInput = JavaScript.Class(ALittle.DisplayLayout, {
 		}
 		if (this._regex !== "") {
 			while (text !== "") {
-				let byte_count = ALittle.String_CalcUTF8LengthOfWord(text, 1);
+				let byte_count = ALittle.String_GetByteCount(text, 1);
 				let sub_text = __sub(text, 1, byte_count);
 				let start_it = __find(sub_text, this._regex);
 				if (start_it === undefined) {

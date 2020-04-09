@@ -35,7 +35,7 @@ ICsvFileLoader = Lua.Class(nil, "ALittle.ICsvFileLoader")
 function ICsvFileLoader:Start()
 end
 
-function ICsvFileLoader:SetPath(file_path, only_from_asset, headers)
+function ICsvFileLoader:SetPath(file_path, only_from_asset)
 end
 
 function ICsvFileLoader:GetPath()
@@ -52,14 +52,14 @@ function CsvConfig:Load(file_path)
 	local lua_file = Lua.LuaCsvFile()
 	Lua.Assert(lua_file:Load(file_path), file_path .. " load failed!")
 	self:Init(lua_file)
-	Lua.Assert(content, file_path .. " load failed!")
 	Log(file_path .. " load succeed!")
 end
 
 function CsvConfig:Init(file)
 end
 
-KeyValueConfig = Lua.Class(nil, "ALittle.KeyValueConfig")
+assert(ALittle.CsvConfig, " extends class:ALittle.CsvConfig is nil")
+KeyValueConfig = Lua.Class(ALittle.CsvConfig, "ALittle.KeyValueConfig")
 
 function KeyValueConfig:Ctor()
 	___rawset(self, "_data", {})
@@ -76,8 +76,8 @@ function KeyValueConfig:Init(file)
 		handle_map[handle.var_name] = handle
 	end
 	local row_count = file:GetRowCount()
+	local row = 1
 	while true do
-		local row = 1
 		if not(row <= row_count) then break end
 		local key = file:ReadCell(row, 1)
 		local value = file:ReadCell(row, 2)
@@ -92,7 +92,7 @@ function KeyValueConfig:Init(file)
 				end
 			end
 		end
-		row = row+1
+		row = row+(1)
 	end
 	file:Close()
 end
@@ -106,7 +106,8 @@ function KeyValueConfig:GetData()
 	return self._data
 end
 
-CsvTableConfig = Lua.Class(nil, "ALittle.CsvTableConfig")
+assert(ALittle.CsvConfig, " extends class:ALittle.CsvConfig is nil")
+CsvTableConfig = Lua.Class(ALittle.CsvConfig, "ALittle.CsvTableConfig")
 
 function CsvTableConfig:Ctor()
 	local error = nil
@@ -130,15 +131,15 @@ function CsvTableConfig:Init(file)
 	for index, name in ___ipairs(rflt.name_list) do
 		name_map[name] = index
 	end
+	local i = 1
 	while true do
-		local i = 1
 		if not(i <= self._csv_file:GetColCount()) then break end
 		local name = self._csv_file:ReadCell(1, i)
 		local index = name_map[name]
 		if index ~= nil then
 			self._col_map[index] = i
 		end
-		i = i+1
+		i = i+(1)
 	end
 	self:onInit()
 end
@@ -159,7 +160,8 @@ function CsvTableConfig:LoadCell(row)
 	return value
 end
 
-SingleKeyTableConfig = Lua.Class(nil, "ALittle.SingleKeyTableConfig")
+assert(ALittle.CsvTableConfig, " extends class:ALittle.CsvTableConfig is nil")
+SingleKeyTableConfig = Lua.Class(ALittle.CsvTableConfig, "ALittle.SingleKeyTableConfig")
 
 function SingleKeyTableConfig:Ctor()
 	___rawset(self, "_key_map", {})
@@ -173,8 +175,8 @@ function SingleKeyTableConfig:onInit()
 	local is_int = key_type == "int" or key_type == "long"
 	local is_double = key_type == "double"
 	local row_count = self._csv_file:GetRowCount()
+	local row = 2
 	while true do
-		local row = 2
 		if not(row <= row_count) then break end
 		local value = self._csv_file:ReadCell(row, key_index)
 		if value ~= nil then
@@ -187,7 +189,7 @@ function SingleKeyTableConfig:onInit()
 				self._key_map[value] = row
 			end
 		end
-		row = row+1
+		row = row+(1)
 	end
 end
 
@@ -211,7 +213,8 @@ function SingleKeyTableConfig:GetData(key)
 	return value
 end
 
-DoubleKeyTableConfig = Lua.Class(nil, "ALittle.DoubleKeyTableConfig")
+assert(ALittle.CsvTableConfig, " extends class:ALittle.CsvTableConfig is nil")
+DoubleKeyTableConfig = Lua.Class(ALittle.CsvTableConfig, "ALittle.DoubleKeyTableConfig")
 
 function DoubleKeyTableConfig:Ctor()
 	___rawset(self, "_key_map", {})
@@ -229,8 +232,8 @@ function DoubleKeyTableConfig:onInit()
 	local second_is_int = second_key_type == "int" or second_key_type == "long"
 	local second_is_double = second_key_type == "double"
 	local row_count = self._csv_file:GetRowCount()
+	local row = 2
 	while true do
-		local row = 2
 		if not(row <= row_count) then break end
 		local tmp
 		local value = self._csv_file:ReadCell(row, first_key_index)
@@ -265,7 +268,7 @@ function DoubleKeyTableConfig:onInit()
 				tmp[value] = row
 			end
 		end
-		row = row+1
+		row = row+(1)
 	end
 end
 

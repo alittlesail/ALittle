@@ -20,7 +20,8 @@ function IFileLoader:Load(file_path)
 	return nil
 end
 
-LuaFileLoader = Lua.Class(nil, "ALittle.LuaFileLoader")
+assert(ALittle.IFileLoader, " extends class:ALittle.IFileLoader is nil")
+LuaFileLoader = Lua.Class(ALittle.IFileLoader, "ALittle.LuaFileLoader")
 
 function LuaFileLoader:Load(file_path)
 	local file = open(file_path, "r")
@@ -38,7 +39,8 @@ function IFileSaver:Save(file_path, content)
 	return false
 end
 
-LuaFileSaver = Lua.Class(nil, "ALittle.LuaFileSaver")
+assert(ALittle.IFileSaver, " extends class:ALittle.IFileSaver is nil")
+LuaFileSaver = Lua.Class(ALittle.IFileSaver, "ALittle.LuaFileSaver")
 
 function LuaFileSaver:Save(file_path, content)
 	local file = open(file_path, "w")

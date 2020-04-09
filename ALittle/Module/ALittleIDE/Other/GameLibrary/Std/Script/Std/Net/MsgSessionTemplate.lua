@@ -6,7 +6,8 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-MsgSessionTemplate = Lua.Class(nil, "ALittle.MsgSessionTemplate")
+assert(ALittle.IMsgCommonTemplate, " extends class:ALittle.IMsgCommonTemplate is nil")
+MsgSessionTemplate = Lua.Class(ALittle.IMsgCommonTemplate, "ALittle.MsgSessionTemplate")
 
 function MsgSessionTemplate:Ctor(connect_key, route_type, route_num)
 	___rawset(self, "_interface", self.__class.__element[1]())

@@ -1,6 +1,6 @@
 namespace alittle;
 
-public async static __ALITTLEAPI_Std_Init(string base_path)
+public await static __ALITTLEAPI_Std_Init(string base_path)
 {
     Require(base_path.."Std/Reflect/ReflectCmd");
     Require(base_path.."Std/Reflect/ReflectCsv");
@@ -48,11 +48,15 @@ public async static __ALITTLEAPI_Std_Init(string base_path)
     {
         Require(base_path.."Adapter/Lua/LuaHeapTimer");
         Require(base_path.."Adapter/Lua/LuaCsvFile");
-        Require(base_path.."Adapter/Lua/LuaHttpFileInterface");
-        Require(base_path.."Adapter/Lua/LuaHttpInterface");
-        Require(base_path.."Adapter/Lua/LuaMsgInterface");
-        Require(base_path.."Adapter/Lua/LuaMessageFactory");
-        Require(base_path.."Adapter/Lua/LuaSchedule");
+        
+        if (lua.net != null)
+        {
+            Require(base_path.."Adapter/Lua/LuaHttpFileInterface");
+            Require(base_path.."Adapter/Lua/LuaHttpInterface");
+            Require(base_path.."Adapter/Lua/LuaMsgInterface");
+            Require(base_path.."Adapter/Lua/LuaMessageFactory");
+            Require(base_path.."Adapter/Lua/LuaSchedule");
+        }
     }
     
     Require(base_path.."Std/Loop/LoopSystem");

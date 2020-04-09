@@ -311,5 +311,8 @@
     <None Include="src\Adapter\SDL\ScriptExInterface.alittle">
       <Filter>Adapter\SDL</Filter>
     </None>
+    <None Include="src\Adapter\SDL\MessageFactoryInterface.alittle">
+      <Filter>Adapter\SDL</Filter>
+    </None>
   </ItemGroup>
 </Project>

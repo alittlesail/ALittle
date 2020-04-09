@@ -6,7 +6,8 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-MsgReceiverTemplate = Lua.Class(nil, "ALittle.MsgReceiverTemplate")
+assert(ALittle.IMsgCommonTemplate, " extends class:ALittle.IMsgCommonTemplate is nil")
+MsgReceiverTemplate = Lua.Class(ALittle.IMsgCommonTemplate, "ALittle.MsgReceiverTemplate")
 
 function MsgReceiverTemplate:Ctor(client_id, remote_ip, remote_port)
 	___rawset(self, "_interface", self.__class.__element[1]())

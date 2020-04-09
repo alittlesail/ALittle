@@ -284,19 +284,19 @@ ALittle.TextEdit = JavaScript.Class(ALittle.DisplayObject, {
 	},
 	CheckTextRegexLimit : function(text) {
 		if (this._limit_len > 0) {
-			let text_len = ALittle.String_GetUTF8Length(text);
+			let text_len = ALittle.String_GetWordCount(text);
 			if (text_len > this._limit_len) {
 				return false;
 			}
-			let select_len = ALittle.String_GetUTF8Length(this._show.GetSelectText());
-			let total_len = ALittle.String_GetUTF8Length(this.text);
+			let select_len = ALittle.String_GetWordCount(this._show.GetSelectText());
+			let total_len = ALittle.String_GetWordCount(this.text);
 			if (total_len - select_len + text_len > this._limit_len) {
 				return false;
 			}
 		}
 		if (this._regex !== "") {
 			while (text !== "") {
-				let byte_count = ALittle.String_CalcUTF8LengthOfWord(text, 1);
+				let byte_count = ALittle.String_GetByteCount(text, 1);
 				let sub_text = __sub(text, 1, byte_count);
 				let start_it = __find(sub_text, this._regex);
 				if (start_it === undefined) {

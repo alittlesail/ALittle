@@ -355,7 +355,7 @@ ALittle.System_GetSurfaceGrid9 = function(surface, type) {
 }
 
 ALittle.CreateMsgSender = function(heartbeat, check_heartbeat, callback) {
-	return ALittle.NewObject(JavaScript.Template(ALittle.MsgSenderTemplate, "ALittle.MsgSenderTemplate<JavaScript.JMsgInterface, JavaScript.JMessageWriteFactory>", JavaScript.JMsgInterface, JavaScript.JMessageWriteFactory), heartbeat, check_heartbeat, A_JSLoopSystem, callback);
+	return ALittle.NewObject(JavaScript.Template(ALittle.MsgSenderTemplate, "ALittle.MsgSenderTemplate<JavaScript.JMsgInterface, JavaScript.JMessageWriteFactory>", JavaScript.JMsgInterface, JavaScript.JMessageWriteFactory), heartbeat, check_heartbeat, A_JLoopSystem, callback);
 }
 
 ALittle.CreateHttpSender = function(ip, port) {

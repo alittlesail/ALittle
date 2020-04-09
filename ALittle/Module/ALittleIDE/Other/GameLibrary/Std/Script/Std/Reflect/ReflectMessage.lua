@@ -218,15 +218,15 @@ PS_ReadArray = function(factory, var_info, parent, l)
 	local sub_func = sub_info.rfunc
 	local sub_len = 0
 	local value_list = {}
+	local index = 1
 	while true do
-		local index = 1
 		if not(index <= count) then break end
 		value_list[index], sub_len = sub_func(factory, sub_info, value_list, l)
 		if sub_len < 0 then
 			return nil, sub_len
 		end
 		l = l - (sub_len)
-		index = index+1
+		index = index+(1)
 	end
 	return value_list, save_len - l
 end
@@ -250,8 +250,8 @@ PS_ReadMap = function(factory, var_info, parent, l)
 	local value_info = var_info.value_info
 	local value_func = value_info.rfunc
 	local value_map = {}
+	local index = 1
 	while true do
-		local index = 1
 		if not(index <= count) then break end
 		local key, key_len = key_func(factory, key_info, value_map, l)
 		if key_len < 0 then
@@ -264,7 +264,7 @@ PS_ReadMap = function(factory, var_info, parent, l)
 		end
 		l = l - value_len
 		value_map[key] = value
-		index = index+1
+		index = index+(1)
 	end
 	return value_map, save_len - l
 end
@@ -376,8 +376,8 @@ function CreateMapInfo(var_type)
 	local comma_index = 0
 	local sub_type_len = len(sub_type)
 	local ltgt = 0
+	local i = 1
 	while true do
-		local i = 1
 		if not(i <= sub_type_len) then break end
 		local code = byte(sub_type, i)
 		if code == 60 then
@@ -390,7 +390,7 @@ function CreateMapInfo(var_type)
 				break
 			end
 		end
-		i = i+1
+		i = i+(1)
 	end
 	Lua.Assert(comma_index ~= 0, "can'f find comma in var_type:" .. var_type)
 	invoke_info.wfunc = PS_WriteMap

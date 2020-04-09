@@ -38,7 +38,7 @@ ALittle.ModuleSystem = JavaScript.Class(undefined, {
 			info.name = name;
 			info.crypt_mode = false;
 			info.control = ALittle.NewObject(ALittle.ControlSystem, name, info.crypt_mode);
-			await Require(module_base_path + "JSScript/Main");
+			await Require(module_base_path + "Main");
 			info.module = window[name];
 			if (info.module === undefined) {
 				___COROUTINE(undefined); return;
@@ -151,37 +151,33 @@ ALittle.ModuleSystem = JavaScript.Class(undefined, {
 			___COROUTINE();
 		}).bind(this));
 	},
-	MainSetup : function(base_path, debug, module_name, sengine_path, server_modules) {
-		return new Promise((async function(___COROUTINE, ___) {
-			if (this._main_module !== undefined) {
-				___COROUTINE(false); return;
-			}
-			if (module_name === undefined) {
-				module_name = ALittle.File_ReadTextFromFile("Enter.ali", false);
-			}
-			if (module_name === undefined) {
-				ALittle.Log("Load Enter.ali failed!");
-				___COROUTINE(false); return;
-			}
-			let info = await this.LoadModuleImpl(base_path, module_name);
-			if (info === undefined) {
-				ALittle.Log("Module:" + module_name + " load failed!");
-				___COROUTINE(false); return;
-			}
-			A_LayerManager.AddChild(info.layer_group, A_LayerManager.group_count - 1);
-			this._main_module = info;
-			this._debug = debug;
-			let module_base_path = "Module/" + module_name + "/";
-			this._main_module.browser_loaded = true;
-			let setup_func = this._main_module.browser_setup;
-			if (setup_func === undefined) {
-				await this.LoadModule(module_base_path, this._main_module.name);
-				___COROUTINE(false); return;
-			}
-			setup_func(this._main_module.layer_group, this._main_module.control, module_base_path, module_base_path + "JSScript/", this._debug);
-			___COROUTINE(true); return;
-			___COROUTINE();
-		}).bind(this));
+	MainSetup : async function(base_path, debug, module_name, sengine_path, server_modules) {
+		if (this._main_module !== undefined) {
+			return;
+		}
+		if (module_name === undefined) {
+			module_name = ALittle.File_ReadTextFromFile("Enter.ali", false);
+		}
+		if (module_name === undefined) {
+			ALittle.Log("Load Enter.ali failed!");
+			return;
+		}
+		let info = await this.LoadModuleImpl(base_path, module_name);
+		if (info === undefined) {
+			ALittle.Log("Module:" + module_name + " load failed!");
+			return;
+		}
+		A_LayerManager.AddChild(info.layer_group, A_LayerManager.group_count - 1);
+		this._main_module = info;
+		this._debug = debug;
+		let module_base_path = "Module/" + module_name + "/";
+		this._main_module.browser_loaded = true;
+		let setup_func = this._main_module.browser_setup;
+		if (setup_func === undefined) {
+			await this.LoadModule(module_base_path, this._main_module.name);
+			return;
+		}
+		setup_func(this._main_module.layer_group, this._main_module.control, module_base_path, module_base_path + "JSScript/", this._debug);
 	},
 	MainShutdown : function() {
 		if (this._main_module === undefined) {

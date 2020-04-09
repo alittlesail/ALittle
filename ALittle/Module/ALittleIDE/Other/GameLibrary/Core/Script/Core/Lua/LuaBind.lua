@@ -42,18 +42,18 @@ __functor_mt__call = function(caller, ...)
 	local new_arg_list = {}
 	local arg_list = caller._arg
 	local arg_count = caller._arg_count
+	local i = 1
 	while true do
-		local i = 1
 		if not(i <= arg_count) then break end
 		new_arg_list[i] = arg_list[i]
-		i = i+1
+		i = i+(1)
 	end
 	local add_count = select("#", ...)
+	local i = 1
 	while true do
-		local i = 1
 		if not(i <= add_count) then break end
 		new_arg_list[arg_count + i] = select(i, ...)
-		i = i+1
+		i = i+(1)
 	end
 	return caller._func(unpack(new_arg_list, 1, arg_count + add_count))
 end

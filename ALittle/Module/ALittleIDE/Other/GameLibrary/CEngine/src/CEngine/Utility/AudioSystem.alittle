@@ -17,7 +17,7 @@ class AudioSystem : EventListener
     private bool                _all_chunk_mute;
     private bool                _music_mute;
     private double              _music_valume;
-
+    
     public ctor()
     {
         this._chunk_map = new Map<int, ChunkInfo>();

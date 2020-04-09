@@ -14,7 +14,7 @@ function String_JsonDecode(text)
 end
 
 function String_MD5(text)
-	return md5.encode(text)
+	return md5.stringmd5(text)
 end
 
 function String_Base64Encode(text)
@@ -31,5 +31,9 @@ end
 
 function String_GetByteCount(text, word_count)
 	return utf8.bytecount(text, word_count)
+end
+
+function String_Trim(text)
+	return string.gsub(text, "^%s*(.-)%s*$", "%1")
 end
 

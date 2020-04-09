@@ -40,7 +40,7 @@ public class EventDispatcher : EventListener
     protected Map<int, EventCallbackTable> _listeners;
     // 是否禁用，如果_abs_disable为true，那么它调用DispatchEvent时什么都不做
     private bool _abs_disabled;
-
+    
     public ctor()
     {
         this._listeners = new Map<int, EventCallbackTable>();

@@ -5,7 +5,7 @@
 
 namespace G2048;
 
-protected var g_GConfig:ALittle.IConfigSystem;
+protected var g_GConfig:ALittle.IJsonConfig;
 
 struct ItemInfo
 {

@@ -43,12 +43,17 @@ static int stringmd5(lua_State* L) {
 
 static int filemd5(lua_State* L) {
     char buff[16];
-    size_t l;
-    const char* message = luaL_checklstring(L, 1, &l);
-    md5_file(message, l, buff);
-    char value[32] = { 0 };
-    md5_tostring(buff, value);
-    lua_pushlstring(L, value, 32L);
+    const char* message = luaL_checkstring(L, 1);
+    if (md5_file(message, buff) == 0)
+    {
+        lua_pushnil(L);
+    }
+    else
+    {
+        char value[32] = { 0 };
+        md5_tostring(buff, value);
+        lua_pushlstring(L, value, 32L);
+    }
     return 1;
 }
 

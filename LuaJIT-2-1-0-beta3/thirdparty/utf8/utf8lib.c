@@ -34,14 +34,28 @@ static int utf8lib_CalcByteCountByWordCount(lua_State* L)
 static int utf8lib_ANSI2UTF8(lua_State* L)
 {
     const char* str = luaL_checkstring(L, 1);
-    lua_pushstring(L, utf8_ANSI2UTF8(str));
+    const char* res = utf8_ANSI2UTF8(str);
+    if (res == 0)
+        lua_pushstring(L, str);
+    else
+    {
+        lua_pushstring(L, res);
+        free((void*)res);
+    }
     return 1;
 }
 
 static int utf8lib_UTF82ANSI(lua_State* L)
 {
     const char* str = luaL_checkstring(L, 1);
-    lua_pushstring(L, utf8_UTF82ANSI(str));
+    const char* res = utf8_UTF82ANSI(str);
+    if (res == 0)
+        lua_pushstring(L, str);
+    else
+    {
+        lua_pushstring(L, res);
+        free((void*)res);
+    }   
     return 1;
 }
 

@@ -21,6 +21,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "net", "net\net.vcxproj", "{
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dump", "dump\dump.vcxproj", "{665CA2F7-0504-4411-A3D2-00D0418D9881}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sqlite3", "sqlite3\sqlite3.vcxproj", "{EE6047D0-A29C-41EA-BAC5-871F05C70499}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -101,6 +103,14 @@ Global
 		{665CA2F7-0504-4411-A3D2-00D0418D9881}.Release|x64.Build.0 = Release|x64
 		{665CA2F7-0504-4411-A3D2-00D0418D9881}.Release|x86.ActiveCfg = Release|Win32
 		{665CA2F7-0504-4411-A3D2-00D0418D9881}.Release|x86.Build.0 = Release|Win32
+		{EE6047D0-A29C-41EA-BAC5-871F05C70499}.Debug|x64.ActiveCfg = Debug|x64
+		{EE6047D0-A29C-41EA-BAC5-871F05C70499}.Debug|x64.Build.0 = Debug|x64
+		{EE6047D0-A29C-41EA-BAC5-871F05C70499}.Debug|x86.ActiveCfg = Debug|Win32
+		{EE6047D0-A29C-41EA-BAC5-871F05C70499}.Debug|x86.Build.0 = Debug|Win32
+		{EE6047D0-A29C-41EA-BAC5-871F05C70499}.Release|x64.ActiveCfg = Release|x64
+		{EE6047D0-A29C-41EA-BAC5-871F05C70499}.Release|x64.Build.0 = Release|x64
+		{EE6047D0-A29C-41EA-BAC5-871F05C70499}.Release|x86.ActiveCfg = Release|Win32
+		{EE6047D0-A29C-41EA-BAC5-871F05C70499}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

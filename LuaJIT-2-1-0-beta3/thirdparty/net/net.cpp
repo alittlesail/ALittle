@@ -154,6 +154,7 @@ void net_clearrfactory(read_factory* rfactory)
     rfactory->read_size = 0;
     rfactory->rpc_id = 0;
     rfactory->total_size = 0;
+    rfactory->data_size = 0;
 }
 
 read_factory* net_createrfactory(net* c, char* memory, int memory_size)
@@ -173,7 +174,7 @@ read_factory* net_createrfactory(net* c, char* memory, int memory_size)
 
     rfactory->memory = memory;
     rfactory->total_size = memory_size;
-    rfactory->total_size = net_rfactoryreadint(rfactory);
+    rfactory->data_size = net_rfactoryreadint(rfactory);
     rfactory->id = net_rfactoryreadint(rfactory);
     rfactory->rpc_id = net_rfactoryreadint(rfactory);
 
@@ -406,9 +407,9 @@ int net_wfactorywritedouble(write_factory* c, double value)
     return sizeof(value);
 }
 
-int net_rfactorygettotalsize(read_factory* c)
+int net_rfactorygetdatasize(read_factory* c)
 {
-    return c->total_size;
+    return c->data_size;
 }
 
 int net_rfactoryreadbool(read_factory* c)

@@ -27,6 +27,7 @@ typedef struct _read_factory
 	char* memory;	// memory
 	int read_size;		// read offset
 	int total_size;		// total size
+	int data_size;		// data size
 	int last_read_size;   // last read size
 	int id;		// ID
 	int rpc_id;
@@ -123,7 +124,7 @@ int net_wfactorywritelong(write_factory* c, long long value);
 int net_wfactorywritestring(write_factory* c, const char* value, int len);
 int net_wfactorywritedouble(write_factory* c, double value);
 
-int net_rfactorygettotalsize(read_factory* c);
+int net_rfactorygetdatasize(read_factory* c);
 int net_rfactoryreadbool(read_factory* c);
 int net_rfactoryreadint(read_factory* c);
 long long net_rfactoryreadlong(read_factory* c);

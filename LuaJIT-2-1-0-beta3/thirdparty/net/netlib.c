@@ -343,11 +343,11 @@ static int netlib_releaserfactory(lua_State* L)
     return 0;
 }
 
-static int netlib_rfactorygettotalsize(lua_State* L)
+static int netlib_rfactorygetdatasize(lua_State* L)
 {
     read_factory* c = (read_factory*)lua_touserdata(L, 1);
     luaL_argcheck(L, c != 0, 1, "read_factory object is null");
-    lua_pushinteger(L, net_rfactorygettotalsize(c));
+    lua_pushinteger(L, net_rfactorygetdatasize(c));
     return 1;
 }
 
@@ -448,7 +448,7 @@ static struct luaL_Reg netlib[] = {
     {"wfactorywritedouble", netlib_wfactorywritedouble},
 
     {"rfactoryrelease", netlib_releaserfactory},
-    {"rfactorygettotalsize", netlib_rfactorygettotalsize},
+    {"rfactorygetdatasize", netlib_rfactorygetdatasize},
     {"rfactoryreadbool", netlib_rfactoryreadbool},
     {"rfactoryreadint", netlib_rfactoryreadint},
     {"rfactoryreadlong", netlib_rfactoryreadlong},

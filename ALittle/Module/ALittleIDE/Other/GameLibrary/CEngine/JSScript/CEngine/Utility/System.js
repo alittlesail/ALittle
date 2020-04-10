@@ -362,13 +362,13 @@ ALittle.CreateHttpSender = function(ip, port) {
 	return ALittle.NewObject(JavaScript.Template(ALittle.HttpSenderTemplate, "ALittle.HttpSenderTemplate<JavaScript.JHttpInterface>", JavaScript.JHttpInterface), ip, port);
 }
 
-ALittle.HttpRequest = function(ip, port, path) {
+ALittle.HttpRequest = function(ip, port, method) {
 	return new Promise(function(___COROUTINE, ___) {
 		let sender = ALittle.CreateHttpSender(ip, port);
 		if (___COROUTINE === undefined) {
 			___COROUTINE(["当前不是协程", undefined]); return;
 		}
-		sender.SendRPC(___COROUTINE, path, undefined);
+		sender.SendRPC(___COROUTINE, method, undefined);
 		return;
 		___COROUTINE();
 	});
@@ -378,13 +378,13 @@ ALittle.CreateHttpFileSender = function(ip, port, file_path, start_size, callbac
 	return ALittle.NewObject(JavaScript.Template(ALittle.HttpFileSenderTemplate, "ALittle.HttpFileSenderTemplate<JavaScript.JHttpFileInterface>", JavaScript.JHttpFileInterface), ip, port, file_path, start_size, callback);
 }
 
-ALittle.HttpDownloadRequest = function(ip, port, file_path, callback) {
+ALittle.HttpDownloadRequest = function(ip, port, file_path, method, callback) {
 	return new Promise(function(___COROUTINE, ___) {
 		let sender = ALittle.CreateHttpFileSender(ip, port, file_path, 0, callback);
 		if (___COROUTINE === undefined) {
 			___COROUTINE("当前不是协程"); return;
 		}
-		sender.SendDownloadRPC(___COROUTINE, file_path, undefined);
+		sender.SendDownloadRPC(___COROUTINE, method, undefined);
 		return;
 		___COROUTINE();
 	});

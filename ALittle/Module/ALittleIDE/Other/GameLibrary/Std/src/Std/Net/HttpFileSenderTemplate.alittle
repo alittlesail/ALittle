@@ -43,7 +43,7 @@ public class HttpFileSenderTemplate<NATIVE : IHttpFileSenderNative> : IHttpFileS
         this._cur_size = 0;
         this._total_size = 0;
     }
-
+    
     protected fun SendDownloadRPC(Thread thread, string method, any content)
     {
         this._thread = thread;

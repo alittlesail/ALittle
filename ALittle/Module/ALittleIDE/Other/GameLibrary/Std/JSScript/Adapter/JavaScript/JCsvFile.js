@@ -4,6 +4,11 @@ if (typeof JavaScript === "undefined") JavaScript = {};
 
 if (ALittle.ICsvFile === undefined) throw new Error(" extends class:ALittle.ICsvFile is undefined");
 JavaScript.JCsvFile = JavaScript.Class(ALittle.ICsvFile, {
+	Ctor : function() {
+		this._row_count = 0;
+		this._col_count = 0;
+		this._file_path = "";
+	},
 	addRow : function(row) {
 		if (this._col_count === 0) {
 			++ this._row_count;
@@ -22,12 +27,13 @@ JavaScript.JCsvFile = JavaScript.Class(ALittle.ICsvFile, {
 	Load : function(path) {
 		let content = JavaScript.File_LoadFile(path);
 		if (content === undefined) {
+			ALittle.Error("file load failed:" + path);
 			return false;
 		}
 		this._file_path = path;
-		let char_index = 0;
 		this._data = [];
 		let data_index = 1;
+		let char_index = 0;
 		let cur_char = undefined;
 		let size = content.length;
 		if (size === 0) {
@@ -38,8 +44,8 @@ JavaScript.JCsvFile = JavaScript.Class(ALittle.ICsvFile, {
 			ALittle.Error("row(" + ((this._row_count + 1)) + ") has char is 0");
 			return false;
 		}
-		let next_char = 0;
-		size = content.charCodeAt(char_index);
+		let next_char = undefined;
+		next_char = content.charCodeAt(char_index);
 		if (size === 0) {
 			this._data[1 - 1] = [];
 			this._data[1 - 1][1 - 1] = String.fromCharCode(cur_char);
@@ -97,9 +103,9 @@ JavaScript.JCsvFile = JavaScript.Class(ALittle.ICsvFile, {
 					if (next_char === 34) {
 						cell = cell + "\"";
 						next_char = undefined;
-						if (char_index < content.length) {
-							next_char = content.charCodeAt(char_index);
+						if (char_index + 1 < content.length) {
 							++ char_index;
+							next_char = content.charCodeAt(char_index);
 						}
 						if (next_char === undefined) {
 							ALittle.Error("row(" + this._row_count + ") have no close quote");
@@ -157,9 +163,9 @@ JavaScript.JCsvFile = JavaScript.Class(ALittle.ICsvFile, {
 			}
 			cur_char = next_char;
 			next_char = undefined;
-			if (char_index < content.length) {
-				next_char = content.charCodeAt(char_index);
+			if (char_index + 1 < content.length) {
 				++ char_index;
+				next_char = content.charCodeAt(char_index);
 			}
 		}
 		return true;

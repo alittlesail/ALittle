@@ -297,8 +297,6 @@ option_map : {}
 })
 
 ALittle.UIEventListener = JavaScript.Class(undefined, {
-	Ctor : function() {
-	},
 	RemoveFromDispatcher : function() {
 		if (this._event_map !== undefined) {
 			for (let [d, v] of this._event_map) {

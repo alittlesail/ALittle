@@ -45,7 +45,7 @@ public class LoopFunction : LoopObject
 
         this._complete_callback = null;    // 完成后会调用这个函数
     }
-
+    
     public get complete_callback() : Functor<()>
     {
         return this._complete_callback;

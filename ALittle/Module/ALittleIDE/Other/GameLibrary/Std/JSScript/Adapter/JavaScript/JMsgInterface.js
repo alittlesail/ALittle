@@ -23,7 +23,7 @@ JavaScript.JNetBuffer = JavaScript.Class(undefined, {
 			return undefined;
 		}
 		if (this._dsize >= 4) {
-			this._msize = this._memory.getInt32(this._dstart, true);
+			this._msize = this._memory.getUint32(this._dstart, true);
 		}
 		if (this._dsize - 12 >= this._msize) {
 			let data = new DataView(this._memory.buffer, this._dstart, this._msize + 12);
@@ -95,10 +95,10 @@ JavaScript.JMsgInterface = JavaScript.Class(ALittle.IMsgCommonNative, {
 		this._net_status = JavaScript.JConnectStatus.NET_CONNECTING;
 		this._net_system = new WebSocket(url);
 		this._net_system.binaryType = "arraybuffer";
-		this._net_system.onmessage = this.HandleNetSystemMessage.bind(this);
-		this._net_system.onopen = this.HandleNetSystemOpen.bind(this);
-		this._net_system.onclose = this.HandleNetSystemClose.bind(this);
-		this._net_system.onerror = this.HandleNetSystemError.bind(this);
+		this._net_system.onmessage = this.HandleMessage.bind(this);
+		this._net_system.onopen = this.HandleOpen.bind(this);
+		this._net_system.onclose = this.HandleClose.bind(this);
+		this._net_system.onerror = this.HandleError.bind(this);
 	},
 	IsConnected : function() {
 		return false;
@@ -113,14 +113,14 @@ JavaScript.JMsgInterface = JavaScript.Class(ALittle.IMsgCommonNative, {
 		this._net_system = undefined;
 		this._net_status = JavaScript.JConnectStatus.NET_IDLE;
 	},
-	HandleNetSystemOpen : function(event) {
+	HandleOpen : function(event) {
 		if (this._net_status !== JavaScript.JConnectStatus.NET_CONNECTING) {
 			return;
 		}
 		this._net_status = JavaScript.JConnectStatus.NET_CONNECTED;
 		ALittle.__ALITTLEAPI_ConnectSucceed(this._id);
 	},
-	HandleNetSystemClose : function(event) {
+	HandleClose : function(event) {
 		if (this._net_status !== JavaScript.JConnectStatus.NET_CONNECTED) {
 			return;
 		}
@@ -128,7 +128,7 @@ JavaScript.JMsgInterface = JavaScript.Class(ALittle.IMsgCommonNative, {
 		this._net_system = undefined;
 		ALittle.__ALITTLEAPI_Disconnect(this._id);
 	},
-	HandleNetSystemError : function(event) {
+	HandleError : function(event) {
 		if (this._net_status !== JavaScript.JConnectStatus.NET_CONNECTING) {
 			return;
 		}
@@ -136,7 +136,7 @@ JavaScript.JMsgInterface = JavaScript.Class(ALittle.IMsgCommonNative, {
 		this._net_system = undefined;
 		ALittle.__ALITTLEAPI_ConnectFailed(this._id);
 	},
-	HandleNetSystemMessage : function(event) {
+	HandleMessage : function(event) {
 		if (event.data === undefined) {
 			return;
 		}
@@ -147,12 +147,7 @@ JavaScript.JMsgInterface = JavaScript.Class(ALittle.IMsgCommonNative, {
 				break;
 			}
 			let factory = ALittle.NewObject(JavaScript.JMessageReadFactory, data);
-			let size = factory.ReadInt();
-			let id = factory.ReadInt();
-			let rpc_id = factory.ReadInt();
-			factory.SetID(id);
-			factory.SetRpcID(rpc_id);
-			ALittle.__ALITTLEAPI_Message(this._id, id, rpc_id, factory);
+			ALittle.__ALITTLEAPI_Message(this._id, factory.GetID(), factory.GetRpcID(), factory);
 		}
 		this._net_buffer.Optimizes();
 	},

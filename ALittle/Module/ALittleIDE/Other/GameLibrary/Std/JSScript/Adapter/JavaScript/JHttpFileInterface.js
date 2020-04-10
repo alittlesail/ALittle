@@ -32,15 +32,15 @@ JavaScript.JHttpFileInterface = JavaScript.Class(ALittle.IHttpFileSenderNative, 
 		} else {
 			this._request.open("POST", this._url, true);
 		}
-		let error_func = this.HandleAjaxError.bind(this);
+		let error_func = this.HandleError.bind(this);
 		this._request.onerror = error_func;
 		this._request.ontimeout = error_func;
-		this._request.onload = this.HandleStartCompleted.bind(this);
+		this._request.onload = this.HandleCompleted.bind(this);
 		this._request.onprogress = this.HandleOnProgress.bind(this);
 		if (this._download) {
 			this._request.send(undefined);
 		} else {
-			this._request.send(this._file_path);
+			this._request.send(content);
 		}
 	},
 	Stop : function() {
@@ -54,10 +54,10 @@ JavaScript.JHttpFileInterface = JavaScript.Class(ALittle.IHttpFileSenderNative, 
 	GetContent : function() {
 		return this._request.responseText;
 	},
-	HandleAjaxError : function() {
+	HandleError : function() {
 		ALittle.__ALITTLEAPI_HttpFileFailed(this._id, this._request.statusText);
 	},
-	HandleStartCompleted : function() {
+	HandleCompleted : function() {
 		if (this._download && !JavaScript.File_SaveFile(this._file_path, this._request.responseText)) {
 			ALittle.__ALITTLEAPI_HttpFileFailed(this._id, "file save failed:" + this._file_path);
 			return;

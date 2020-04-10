@@ -17,7 +17,7 @@ public class LoopGroup : LoopObject
         this._complete_updaters = new Map<LoopObject, bool>();
         this._complete_callback = null;
     }
-
+    
     public get complete_callback() : Functor<()>
     {
         return this._complete_callback;

@@ -16,6 +16,17 @@ root.is_directory = true;
 root.name = "";
 private var cur_dir = "";
 
+private static Path_FilterEmpty(List<string> list) : List<string>
+{
+    var new_list = new List<string>();
+    for (var index, value in list)
+    {
+        if (value == "") continue;
+        ALittle.List_Push(new_list, value);
+    }
+    return new_list;
+}
+
 public static File_GetCurrentPath() : string
 {
     return cur_dir; 
@@ -23,15 +34,11 @@ public static File_GetCurrentPath() : string
 
 public static File_SetCurrentPath(string path) : bool
 {
-    var ends = ALittle.String_Byte(path, ALittle.String_Len(path));
-    if (ends == 47 || ends == 92) path = ALittle.String_Sub(path, 1, ALittle.String_Len(path) - 1);
-    
-    var list = ALittle.String_SplitSepList(path, ["/", "\\"]);
+    var list = Path_FilterEmpty(ALittle.String_SplitSepList(path, ["/", "\\"]));
     var cur = root;
     var dir = "";
     for (var index, name in list)
     {
-        if (name == "") continue;
         if (cur.file == null) return false;
         var file = cur.file[name];
         if (file == null) return false;
@@ -40,19 +47,17 @@ public static File_SetCurrentPath(string path) : bool
         dir = dir .. "/"..file.name;
     }
     cur_dir = dir;
-    if (ALittle.String_Len(cur_dir) > 0)
-        cur_dir = cur_dir .. "/";
+    if (ALittle.String_Len(cur_dir) > 0) cur_dir = cur_dir .. "/";
     return true;    
 }
 
 public static File_RenameFile(string path, string new_path) : bool
 {   
-    var list = ALittle.String_SplitSepList(path, ["/", "\\"]);
+    var list = Path_FilterEmpty(ALittle.String_SplitSepList(path, ["/", "\\"]));
     var list_len = ALittle.List_MaxN(list);
     var cur = root;
     for (var i = 1; i <= list_len - 1; 1)
     {
-        if (list[i] == "") continue;
         if (cur.file == null) return false;
         var file = cur.file[list[i]];
         if (file == null) return false;
@@ -63,12 +68,13 @@ public static File_RenameFile(string path, string new_path) : bool
     var cur_file = cur.file[list[list_len]];
     if (cur_file == null || cur_file.is_directory) return false;
     
-    var new_list = ALittle.String_SplitSepList(path, ["/", "\\"]);
+    var new_list = Path_FilterEmpty(ALittle.String_SplitSepList(new_path, ["/", "\\"]));
     var new_list_len = ALittle.List_MaxN(new_list);
     var new_cur = root;
     for (var i = 1; i <= new_list_len - 1; 1)
     {
-        var file = new_cur.file[list[i]];
+        if (new_cur.file == null) return false;
+        var file = new_cur.file[new_list[i]];
         if (file == null) return false;
         if (!file.is_directory) return false;
         new_cur = file;
@@ -81,12 +87,11 @@ public static File_RenameFile(string path, string new_path) : bool
 
 public static File_DeleteFile(string path) : bool
 {
-    var list = ALittle.String_SplitSepList(path, ["/", "\\"]);
+    var list = Path_FilterEmpty(ALittle.String_SplitSepList(path, ["/", "\\"]));
     var list_len = ALittle.List_MaxN(list);
     var cur = root;
     for (var i = 1; i <= list_len - 1; 1)
     {
-        if (list[i] == "") continue;
         if (cur.file == null) return false;
         var file = cur.file[list[i]];
         if (file == null) return false;
@@ -103,15 +108,11 @@ public static File_DeleteFile(string path) : bool
 
 public static File_GetFileAttr(string path) : lua.fileattr
 {
-    var ends = ALittle.String_Byte(path, ALittle.String_Len(path));
-    if (ends == 47 || ends == 92) path = ALittle.String_Sub(path, 1, ALittle.String_Len(path) - 1);
-    
-    var list = ALittle.String_SplitSepList(path, ["/", "\\"]);
+    var list = Path_FilterEmpty(ALittle.String_SplitSepList(path, ["/", "\\"]));
     var list_len = ALittle.List_MaxN(list);
     var cur = root;
     for (var i = 1; i <= list_len - 1; 1)
     {
-        if (list[i] == "") continue;
         if (cur.file == null) return null;
         var file = cur.file[list[i]];
         if (file == null) return null;
@@ -135,26 +136,18 @@ public static File_GetFileAttr(string path) : lua.fileattr
 
 public static File_GetFileAttrByDir(string path, [Nullable] Map<string, lua.fileattr> file_map) : Map<string, lua.fileattr>
 {
-    var ends = ALittle.String_Byte(path, ALittle.String_Len(path));
-    if (ends == 47 || ends == 92) path = ALittle.String_Sub(path, 1, ALittle.String_Len(path) - 1);
-    
     if (file_map == null) file_map = new Map<string, lua.fileattr>();
     
-    var list = ALittle.String_SplitSepList(path, ["/", "\\"]);
+    var list = Path_FilterEmpty(ALittle.String_SplitSepList(path, ["/", "\\"]));
     var cur = root;
-    var dir = "";
     for (var index, name in list)
     {
-        if (name == "") continue;
+        if (cur.file == null) return file_map;
         var file = cur.file[name];
         if (file == null) return file_map;
         if (!file.is_directory) return file_map;
         cur = file;
-        dir = dir .. "/"..file.name;
     }
-    cur_dir = dir;
-    if (ALittle.String_Len(cur_dir) > 0)
-        cur_dir = cur_dir .. "/";
     if (cur.file == null) return file_map;
     
     // 遍历路径
@@ -170,11 +163,7 @@ public static File_GetFileAttrByDir(string path, [Nullable] Map<string, lua.file
         {    
             var attr = new lua.fileattr();
             attr.mode = "file";
-            attr.size = 0;
-            if (value.is_directory)
-                attr.mode = "directory";
-            else
-                attr.size = ALittle.String_Len(value.content);
+            attr.size = ALittle.String_Len(value.content);
             file_map[file_path] = attr;
         }
     }
@@ -185,14 +174,10 @@ public static File_GetFileAttrByDir(string path, [Nullable] Map<string, lua.file
 
 public static File_DeleteDir(string path) : bool
 {
-    var ends = ALittle.String_Byte(path, ALittle.String_Len(path));
-    if (ends == 47 || ends == 92) path = ALittle.String_Sub(path, 1, ALittle.String_Len(path) - 1);
-    
-    var list = ALittle.String_SplitSepList(path, ["/", "\\"]);
+    var list = Path_FilterEmpty(ALittle.String_SplitSepList(path, ["/", "\\"]));
     var cur = root;
     for (var index, name in list)
     {
-        if (name == "") continue;
         if (cur.file == null) return false;
         var file = cur.file[name];
         if (file == null) return false;
@@ -200,6 +185,7 @@ public static File_DeleteDir(string path) : bool
         cur = file;
     }
     var can = true;
+    // 检查是否有子文件或者子文件夹
     if (cur.file != null)
     {
         for (var index, value in cur.file)
@@ -209,6 +195,7 @@ public static File_DeleteDir(string path) : bool
         }
     }
     if (!can) return false;
+    // 解除关系
     cur.parent.file[cur.name] = null;
     cur.parent = null;
     return true;
@@ -216,9 +203,7 @@ public static File_DeleteDir(string path) : bool
 
 public static File_DeleteDeepDir(string path, [Nullable] bool log_path)
 {
-    var ends = ALittle.String_Byte(path, ALittle.String_Len(path));
-    if (ends == 47 || ends == 92) path = ALittle.String_Sub(path, 1, ALittle.String_Len(path) - 1);
-    
+    // 如果需要打印，那么获取一下目录，然后打印出来
     if (log_path)
     {
         var file_map = File_GetFileAttrByDir(path);
@@ -226,7 +211,7 @@ public static File_DeleteDeepDir(string path, [Nullable] bool log_path)
             ALittle.Log("delete file:", file_path);
     }
     
-    var list = ALittle.String_SplitSepList(path, ["/", "\\"]);
+    var list = Path_FilterEmpty(ALittle.String_SplitSepList(path, ["/", "\\"]));
     var cur = root;
     for (var index, name in list)
     {
@@ -242,15 +227,11 @@ public static File_DeleteDeepDir(string path, [Nullable] bool log_path)
 
 public static File_MakeDir(string path) : bool
 {
-    var ends = ALittle.String_Byte(path, ALittle.String_Len(path));
-    if (ends == 47 || ends == 92) path = ALittle.String_Sub(path, 1, ALittle.String_Len(path) - 1);
-    
-    var list = ALittle.String_SplitSepList(path, ["/", "\\"]);
+    var list = Path_FilterEmpty(ALittle.String_SplitSepList(path, ["/", "\\"]));
     var list_len = ALittle.List_MaxN(list);
     var cur = root;
     for (var i = 1; i <= list_len - 1; 1)
     {
-        if (list[i] == "") continue;
         if (cur.file == null) return false;
         var file = cur.file[list[i]];
         if (file == null) return false;
@@ -273,12 +254,11 @@ public static File_MakeDir(string path) : bool
 
 public static File_LoadFile(string path) : string
 {
-    var list = ALittle.String_SplitSepList(path, ["/", "\\"]);
+    var list = Path_FilterEmpty(ALittle.String_SplitSepList(path, ["/", "\\"]));
     var list_len = ALittle.List_MaxN(list);
     var cur = root;
     for (var i = 1; i <= list_len - 1; 1)
     {
-        if (list[i] == "") continue;
         if (cur.file == null) return null;
         var file = cur.file[list[i]];
         if (file == null) return null;
@@ -293,12 +273,11 @@ public static File_LoadFile(string path) : string
 
 public static File_SaveFile(string path, string content) : bool
 {
-    var list = ALittle.String_SplitSepList(path, ["/", "\\"]);
+    var list = Path_FilterEmpty(ALittle.String_SplitSepList(path, ["/", "\\"]));
     var list_len = ALittle.List_MaxN(list);
     var cur = root;
     for (var i = 1; i <= list_len - 1; 1)
     {
-        if (list[i] == "") continue;
         if (cur.file == null) return false;
         var file = cur.file[list[i]];
         if (file == null) return false;

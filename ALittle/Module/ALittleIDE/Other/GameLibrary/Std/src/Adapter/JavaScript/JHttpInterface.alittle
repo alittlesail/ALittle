@@ -30,10 +30,10 @@ public class JHttpInterface : ALittle.IHttpSenderNative
         else
             this._request.open("POST", this._url, true);
         
-		var error_func = bind(this.HandleAjaxError, this);
+		var error_func = bind(this.HandleError, this);
         this._request.onerror = error_func;
 		this._request.ontimeout = error_func;
-        this._request.onload = bind(this.HandleStartCompleted, this);
+        this._request.onload = bind(this.HandleCompleted, this);
         this._request.send(this._content);
     }
     public fun Stop()
@@ -43,12 +43,12 @@ public class JHttpInterface : ALittle.IHttpSenderNative
     }
     public fun GetResponse() : string { return this._request.responseText; }                // 获取请求结果
     
-    private fun HandleAjaxError()
+    private fun HandleError()
 	{
         ALittle.__ALITTLEAPI_HttpClientFailed(this._id, this._request.statusText);
 	}
     
-	private fun HandleStartCompleted()
+	private fun HandleCompleted()
 	{
         ALittle.__ALITTLEAPI_HttpClientSucceed(this._id);
 	}

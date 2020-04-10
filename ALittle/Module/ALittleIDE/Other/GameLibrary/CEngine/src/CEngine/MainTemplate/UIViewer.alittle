@@ -2,7 +2,8 @@
 namespace ALittle;
 
 // 壳入口函数
-// public static __Browser_Setup(DisplayLayout layer_group, ScriptSystem script, ControlSystem control, string base_path, string debug)
+// public static __Browser_Setup(DisplayLayout layer_group, ScriptSystem script, ControlSystem control
+//                              , string module_base_path, string script_base_path, string debug)
 // {
 // }
 
@@ -19,7 +20,7 @@ namespace ALittle;
 
 protected var g_Control:ControlSystem;
 protected var g_LayerGroup:DisplayLayout;
-protected var g_BasePath:string;
+protected var g_ModuleBasePath:string;
 
 struct UIViewModuleDebugInfo
 {
@@ -30,14 +31,14 @@ struct UIViewModuleDebugInfo
 }
 
 // 模块入口函数
-public static __Module_Setup(DisplayLayout layer_group, ControlSystem control, string base_path, string debug)
+public static __Module_Setup(DisplayLayout layer_group, ControlSystem control, string module_base_path, string script_base_path, string debug)
 {
     // 把resource, layer_group变量保存到全局，便于使用
     g_Control = control;
     g_LayerGroup = layer_group;
-    g_BasePath = base_path;
+    g_ModuleBasePath = module_base_path;
 
-    var error, info:UIViewModuleDebugInfo = tcall(lua.json.decode, debug);
+    var error, info:UIViewModuleDebugInfo = tcall(String_JsonDecode, debug);
 
     //创建窗体
     var screen_width = System_GetScreenWidth();
@@ -47,7 +48,7 @@ public static __Module_Setup(DisplayLayout layer_group, ControlSystem control, s
     var window_height = info.window_height;
     var rate = 1.0;
     if (System_GetPlatform() != "Windows")
-        window_width = lua.math.floor(screen_width / screen_height * window_height);
+        window_width = Math_Floor(screen_width / screen_height * window_height);
     else
     {
         if (window_width > screen_width || window_height > screen_height)
@@ -87,7 +88,7 @@ public static __Module_GetInfo(ControlSystem control, string base_path) : Module
 }
 
 // 插件入口函数
-public static __Plugin_Setup(ControlSystem control, string base_path, string debug)
+public static __Plugin_Setup(ControlSystem control, string module_base_path, string script_base_path, string debug)
 {
 }
 

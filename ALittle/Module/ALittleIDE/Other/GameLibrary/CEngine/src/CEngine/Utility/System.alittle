@@ -629,12 +629,12 @@ public static CreateHttpSender(string ip, int port) : IHttpSender
     return new HttpSenderTemplate<JavaScript.JHttpInterface>(ip, port);
 }
 
-public await static HttpRequest(string ip, int port, string path) : string, string
+public await static HttpRequest(string ip, int port, string method) : string, string
 {
     var sender = CreateHttpSender(ip, port);
     
     if (co == null) return "当前不是协程", null;
-    sender.SendRPC(co, path, null);
+    sender.SendRPC(co, method, null);
     return yield;
 }
 
@@ -646,11 +646,11 @@ public static CreateHttpFileSender(string ip, int port, string file_path, int st
     return new HttpFileSenderTemplate<JavaScript.JHttpFileInterface>(ip, port, file_path, start_size, callback);
 }
 
-public await static HttpDownloadRequest(string ip, int port, string file_path, [Nullable] Functor<()> callback) : string
+public await static HttpDownloadRequest(string ip, int port, string file_path, string method, [Nullable] Functor<()> callback) : string
 {
     var sender = CreateHttpFileSender(ip, port, file_path, 0, callback);
     
     if (co == null) return "当前不是协程";
-    sender.SendDownloadRPC(co, file_path, null);
+    sender.SendDownloadRPC(co, method, null);
     return yield;
 }

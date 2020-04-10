@@ -45,16 +45,16 @@ public class JHttpFileInterface : ALittle.IHttpFileSenderNative
         else
             this._request.open("POST", this._url, true);
         
-		var error_func = bind(this.HandleAjaxError, this);
+		var error_func = bind(this.HandleError, this);
         this._request.onerror = error_func;
 		this._request.ontimeout = error_func;
-        this._request.onload = bind(this.HandleStartCompleted, this);
+        this._request.onload = bind(this.HandleCompleted, this);
         this._request.onprogress = bind(this.HandleOnProgress, this);
         
         if (this._download)
             this._request.send(null);
         else
-            this._request.send(this._file_path);
+            this._request.send(content);
     }
     public fun Stop()
     {
@@ -66,12 +66,12 @@ public class JHttpFileInterface : ALittle.IHttpFileSenderNative
     
     public fun GetContent() : string { return this._request.responseText; }
     
-    private fun HandleAjaxError()
+    private fun HandleError()
 	{
         ALittle.__ALITTLEAPI_HttpFileFailed(this._id, this._request.statusText);
 	}
     
-	private fun HandleStartCompleted()
+	private fun HandleCompleted()
 	{
         if (this._download && !File_SaveFile(this._file_path, this._request.responseText))
         {

@@ -32,7 +32,7 @@ public class LuaMessageWriteFactory : ALittle.IMessageWriteFactory
     public fun WriteDouble(double value) : int { return writedouble(this._factory, value); }
 }
 
-private var gettotalsize = lua.net.rfactorygettotalsize;
+private var getdatasize = lua.net.rfactorygetdatasize;
 private var readbool = lua.net.rfactoryreadbool;
 private var readint = lua.net.rfactoryreadint;
 private var readlong = lua.net.rfactoryreadlong;
@@ -44,7 +44,7 @@ public class LuaMessageReadFactory : ALittle.IMessageReadFactory
 {
     private lua.read_factory _factory;
     public fun SetFactory(lua.read_factory factory) { this._factory = factory; }
-    public fun GetTotalSize() : int { return gettotalsize(this._factory); }
+    public fun GetDataSize() : int { return getdatasize(this._factory); }
     
     public fun ReadBool() : bool { return readbool(this._factory); }
     public fun ReadInt() : int { return readint(this._factory); }

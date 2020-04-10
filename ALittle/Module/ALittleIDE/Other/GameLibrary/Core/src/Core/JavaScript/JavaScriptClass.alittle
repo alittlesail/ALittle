@@ -4,21 +4,24 @@ namespace JavaScript;
 
 protected static CloneProperty(ALittle.ClassInfo clazz, bool copy_ctor) : ALittle.ClassInfo
 {
+    // 构建反射信息
     var new_clazz = new ALittle.ClassInfo();
     
     // 保存父类对象
     new_clazz.__super = clazz.__super;
     new_clazz.__name = clazz.__name;
-        
-    var setter_map = new Map<string, Functor<(any, any)>>();    // setter
-    var getter_map = new Map<string, Functor<(any):any>>();    // getter
+    
+    // 构建setter getter
+    var setter_map = new Map<string, Functor<(any, any)>>();
+    var getter_map = new Map<string, Functor<(any):any>>();
     new_clazz.__setter = setter_map;
     new_clazz.__getter = getter_map;
     
     // 遍历所有父类的属性和函数
-    [Native]
+    [Native] // 这里使用Native表示对值为undefined的键值对进行过滤
     for (var name, _ in cast<Map<string, any>>(clazz))
     {
+        // 如果不拷贝构造函数，就跳过
         if (!copy_ctor && name == "Ctor") continue;
         
 		// 除了构造函数和super_class的父类对象不需要复制，其他都要复制
@@ -37,6 +40,7 @@ protected static CloneProperty(ALittle.ClassInfo clazz, bool copy_ctor) : ALittl
         }
     }
     
+    // 返回反射信息
     return new_clazz;
 }
 
@@ -44,32 +48,38 @@ protected static Class(ALittle.ClassInfo drived, Map<string, any> clazz_prop, st
 {
     // 创建对象
     var clazz:ALittle.ClassInfo;
+    // 如果有父类，那么就对父类进行拷贝
     if (drived != null)
     {
         clazz = CloneProperty(drived, false);
         clazz.__super = drived;
     }
+    // 没有父类，那么就创建一个空的
     else
     {
         clazz  = new ALittle.ClassInfo();
         clazz.__setter = new Map<string, Functor<(any, any)>>();
         clazz.__getter = new Map<string, Functor<(any):any>>();
     }
+    // 设置类名
     clazz.__name = clazz_name;
     
-    var setter_map = clazz.__setter;    // setter
-    var getter_map = clazz.__getter;    // getter
+    // 获取setter，getter
+    var setter_map = clazz.__setter;
+    var getter_map = clazz.__getter;
     
     // 同理复制当前的属性和函数
-    [Native]
+    [Native] // 这里使用Native表示对值为undefined的键值对进行过滤
     for (var name, _ in clazz_prop)
     {
 		// 复制对应的setter，getter函数
         var info = cast<Map<string, any>>(javascript.Object.getOwnPropertyDescriptor(clazz_prop, name));
+        // 如果该属性没有setter或者getter，那么就直接复制，一般是函数
         if (info["get"] == null && info["set"] == null)
         {
             cast<Map<string, any>>(clazz)[name] = clazz_prop[name];
         }
+        // 如果有getter，没有setter。那么setter使用父类的
         else if (info["get"] != null && info["set"] == null)
         {
             getter_map[name] = info["get"];
@@ -77,6 +87,7 @@ protected static Class(ALittle.ClassInfo drived, Map<string, any> clazz_prop, st
                 info["set"] = setter_map[name];
             javascript.Object.defineProperty(clazz, name, info);
         }
+        // 如果有setter，没有getter。那么getter使用父类
         else if (info["get"] == null && info["set"] != null)
         {
             setter_map[name] = info["set"];
@@ -84,6 +95,7 @@ protected static Class(ALittle.ClassInfo drived, Map<string, any> clazz_prop, st
                 info["get"] = getter_map[name];
             javascript.Object.defineProperty(clazz, name, info);
         }
+        // 如果都有，那么就只使用自己的
         else
         {
             getter_map[name] = info["get"];
@@ -98,6 +110,7 @@ protected static Class(ALittle.ClassInfo drived, Map<string, any> clazz_prop, st
 // 定义模板
 protected static Template(ALittle.ClassInfo clazz, string name, ...) : ALittle.ClassInfo
 {
+    // 检查该模板类是否已经创建过，如果有那么就直接返回
     var child = clazz.__child;
     if (child == null)
     {
@@ -105,15 +118,16 @@ protected static Template(ALittle.ClassInfo clazz, string name, ...) : ALittle.C
         clazz.__child = child;
     }
     var template = child[name];
-    if (template != null)
-        return template;
+    if (template != null) return template;
     
-    // 定义模板
+    // 从原始类拷贝一份
     template = CloneProperty(clazz, true);
+    // 保存起来
     child[name] = template;
     
-    // 获取参数
+    // 设置类名
     template.__name = name;
+    // 保存模板元素
     template.__element = [cast<ALittle.ClassInfo>(...)];
     
     // 返回模板

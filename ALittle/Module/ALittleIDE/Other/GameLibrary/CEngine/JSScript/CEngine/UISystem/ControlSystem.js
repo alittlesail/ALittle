@@ -34,7 +34,7 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 				if (name === undefined) break;
 				let path = this._ui_path + name + ".json";
 				ALittle.File_MakeDeepDir(ALittle.File_GetFilePathByPath(path));
-				let error = await ALittle.HttpDownloadRequest(this._host, ALittle.Math_ToInt(this._port), path);
+				let error = await ALittle.HttpDownloadRequest(this._host, ALittle.Math_ToInt(this._port), path, path);
 				if (error !== undefined) {
 					ALittle.Error("ui load failed:" + error);
 					continue;
@@ -59,6 +59,7 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 				this._name_map_info[name] = info;
 				this._name_map_info_cache[name] = true;
 			}
+			ALittle.File_DeleteDeepDir(this._ui_path);
 			___COROUTINE();
 		}).bind(this));
 	},

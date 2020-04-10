@@ -23,10 +23,10 @@ JavaScript.JHttpInterface = JavaScript.Class(ALittle.IHttpSenderNative, {
 		} else {
 			this._request.open("POST", this._url, true);
 		}
-		let error_func = this.HandleAjaxError.bind(this);
+		let error_func = this.HandleError.bind(this);
 		this._request.onerror = error_func;
 		this._request.ontimeout = error_func;
-		this._request.onload = this.HandleStartCompleted.bind(this);
+		this._request.onload = this.HandleCompleted.bind(this);
 		this._request.send(this._content);
 	},
 	Stop : function() {
@@ -37,10 +37,10 @@ JavaScript.JHttpInterface = JavaScript.Class(ALittle.IHttpSenderNative, {
 	GetResponse : function() {
 		return this._request.responseText;
 	},
-	HandleAjaxError : function() {
+	HandleError : function() {
 		ALittle.__ALITTLEAPI_HttpClientFailed(this._id, this._request.statusText);
 	},
-	HandleStartCompleted : function() {
+	HandleCompleted : function() {
 		ALittle.__ALITTLEAPI_HttpClientSucceed(this._id);
 	},
 }, "JavaScript.JHttpInterface");

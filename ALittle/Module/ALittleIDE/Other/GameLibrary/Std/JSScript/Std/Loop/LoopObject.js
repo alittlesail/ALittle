@@ -17,6 +17,9 @@ ALittle.LoopObject = JavaScript.Class(undefined, {
 	},
 	SetCompleted : function() {
 	},
+	Dispose : function(deep) {
+		this.Stop();
+	},
 	Start : function() {
 		A_JLoopSystem.AddUpdater(this);
 	},

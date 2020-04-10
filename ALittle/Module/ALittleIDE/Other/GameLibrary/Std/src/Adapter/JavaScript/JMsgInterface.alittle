@@ -37,7 +37,7 @@ public class JNetBuffer
         
         // 读取头部大小
 		if (this._dsize >= 4)
-			this._msize = this._memory.getInt32(this._dstart, true);   
+			this._msize = this._memory.getUint32(this._dstart, true);   
         
         // 检查协议体大小
         if (this._dsize - 12 >= this._msize)
@@ -51,6 +51,7 @@ public class JNetBuffer
 		return null;
     }
     
+    // 把后面的数据全部整到前面
     public fun Optimizes()
     {
         if (this._dstart < 100) return;
@@ -131,10 +132,10 @@ public class JMsgInterface : ALittle.IMsgCommonNative
         
 		this._net_system = new javascript.WebSocket(url);
 		this._net_system.binaryType = "arraybuffer";
-		this._net_system.onmessage = bind(this.HandleNetSystemMessage, this);
-		this._net_system.onopen = bind(this.HandleNetSystemOpen, this);
-		this._net_system.onclose = bind(this.HandleNetSystemClose, this);
-		this._net_system.onerror = bind(this.HandleNetSystemError, this);
+		this._net_system.onmessage = bind(this.HandleMessage, this);
+		this._net_system.onopen = bind(this.HandleOpen, this);
+		this._net_system.onclose = bind(this.HandleClose, this);
+		this._net_system.onerror = bind(this.HandleError, this);
     }
     public fun IsConnected() : bool { return false; }      // 是否已经连接
     public fun SendFactory(ALittle.IMessageWriteFactory factory) {}  // 发送请求
@@ -148,7 +149,7 @@ public class JMsgInterface : ALittle.IMsgCommonNative
         this._net_status = JConnectStatus.NET_IDLE;
     }
     
-	private fun HandleNetSystemOpen(javascript.WebSocketOnOpenEvent event)
+	private fun HandleOpen(javascript.WebSocketOnOpenEvent event)
 	{
 		if (this._net_status != JConnectStatus.NET_CONNECTING) return;
 		
@@ -156,7 +157,7 @@ public class JMsgInterface : ALittle.IMsgCommonNative
         ALittle.__ALITTLEAPI_ConnectSucceed(this._id);
 	}
     
-    private fun HandleNetSystemClose(javascript.WebSocketOnCloseEvent event)
+    private fun HandleClose(javascript.WebSocketOnCloseEvent event)
     {
 		if (this._net_status != JConnectStatus.NET_CONNECTED) return;
         
@@ -166,7 +167,7 @@ public class JMsgInterface : ALittle.IMsgCommonNative
         ALittle.__ALITTLEAPI_Disconnect(this._id);
     }
     
-    private fun HandleNetSystemError(javascript.WebSocketOnErrorEvent event)
+    private fun HandleError(javascript.WebSocketOnErrorEvent event)
     {
 		if (this._net_status != JConnectStatus.NET_CONNECTING) return;
         
@@ -176,7 +177,7 @@ public class JMsgInterface : ALittle.IMsgCommonNative
         ALittle.__ALITTLEAPI_ConnectFailed(this._id);
     }
                                           
-    private fun HandleNetSystemMessage(javascript.WebSocketOnMessageEvent event)
+    private fun HandleMessage(javascript.WebSocketOnMessageEvent event)
 	{
         if (event.data == null) return;
         
@@ -187,14 +188,10 @@ public class JMsgInterface : ALittle.IMsgCommonNative
             if (data == null) break;
             
 			var factory = new JMessageReadFactory(data);
-			var size = factory.ReadInt();
-			var id = factory.ReadInt();
-            var rpc_id = factory.ReadInt();
-            factory.SetID(id);
-            factory.SetRpcID(rpc_id);
-            
-            ALittle.__ALITTLEAPI_Message(this._id, id, rpc_id, factory);
+            ALittle.__ALITTLEAPI_Message(this._id, factory.GetID(), factory.GetRpcID(), factory);
 		}
+        
+        // 优化缓冲区
         this._net_buffer.Optimizes();
 	}   
 }

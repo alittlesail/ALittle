@@ -29,16 +29,16 @@ public class LoopAnimation
     private LoopGroup _group;
     private int _loop;          // 循环次数
     private Thread _co;
-
+    
     private Map<DisplayObject, Map<string, any>> _save_value_map;
     private Map<DisplayObject, Map<string, any>> _init_value_map;
-
+    
     public ctor(DisplayObject from, LoopGroupInfo info)
     {
         this._from = from;
         this._info = info;
     }
-
+    
     public fun Init([Nullable] Map<string, DisplayObject> map) : string
     {
         this.Close();
@@ -194,7 +194,7 @@ public class LoopAnimation
         }
         this._group.SetTime(time);
     }
-
+    
     // restore 表示是否还原到动画之前的状态
     public fun Close()
     {

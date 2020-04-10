@@ -9,8 +9,6 @@ option_map : {}
 })
 
 ALittle.EventListener = JavaScript.Class(undefined, {
-	Ctor : function() {
-	},
 	RemoveFromDispatcher : function() {
 		if (this._ref_map === undefined) {
 			return;

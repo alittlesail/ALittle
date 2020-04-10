@@ -10,6 +10,11 @@ public class LoopObject
     public fun SetTime(int time) : int, bool { return time, true; }
     public fun SetCompleted() {}
     
+    public fun Dispose([Nullable] bool deep)
+    {
+        this.Stop();
+    }
+    
     public fun Start()
     {
         [Language(Lua)]

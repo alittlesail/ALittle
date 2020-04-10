@@ -73,7 +73,7 @@ public class ControlSystem
         {
             var path = this._ui_path..name..".json";
             ALittle.File_MakeDeepDir(ALittle.File_GetFilePathByPath(path));
-			var error = ALittle.HttpDownloadRequest(this._host, Math_ToInt(this._port), path);
+			var error = ALittle.HttpDownloadRequest(this._host, Math_ToInt(this._port), path, path);
             if (error != null)
             {
                 ALittle.Error("ui load failed:"..error);
@@ -98,6 +98,8 @@ public class ControlSystem
             this._name_map_info[name] = info;
             this._name_map_info_cache[name] = true;
         }
+        // 删除文件夹，因为不会再用到了
+        ALittle.File_DeleteDeepDir(this._ui_path);
     }
     
     public fun RegisterInfo(string name, DisplayInfo info)

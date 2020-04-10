@@ -18,7 +18,7 @@ public class IMessageWriteFactory
 
 public class IMessageReadFactory
 {
-    public fun GetTotalSize() : int { return 0; }
+    public fun GetDataSize() : int { return 0; }
     
     public fun ReadBool() : bool { return false; }
     public fun ReadInt() : int { return 0;}

@@ -21,8 +21,10 @@ public class JCsvFileLoader : ALittle.ICsvFileLoader
     {
         var host = location.host;
         var port = ALittle.Math_ToInt(location.port);
-        
-		var error, content = ALittle.HttpDownloadRequest(host, port, this._file_path);
+        var base_url = ALittle.File_GetFilePathByPath(location.pathname).."/";
+        var path = base_url..this._file_path;
+        ALittle.File_MakeDeepDir(ALittle.File_GetFilePathByPath(path));
+		var error = ALittle.HttpDownloadRequest(host, port, path, path);
         if (error != null)
         {
             var func = cast<Map<string, Functor<(ALittle.ICsvFileLoader)>>>(window)["__ALITTLEAPI_CsvFileLoadFailed"];
@@ -30,13 +32,23 @@ public class JCsvFileLoader : ALittle.ICsvFileLoader
             return;
         }
         
-        var file = new JCsvFile();
-        if (!file.Load(this._file_path))
+        var content = JavaScript.File_LoadFile(path);
+        if (content == null)
         {
             var func = cast<Map<string, Functor<(ALittle.ICsvFileLoader)>>>(window)["__ALITTLEAPI_CsvFileLoadFailed"];
             if (func != null) func(this);
             return;
         }
+        
+        var file = new JCsvFile();
+        if (!file.Load(content))
+        {
+            var func = cast<Map<string, Functor<(ALittle.ICsvFileLoader)>>>(window)["__ALITTLEAPI_CsvFileLoadFailed"];
+            if (func != null) func(this);
+            return;
+        }
+        // 可以删掉文件了，已经没有用了
+        ALittle.File_DeleteFile(path);
         
         var func = cast<Map<string, Functor<(ALittle.ICsvFileLoader, ALittle.ICsvFile)>>>(window)["__ALITTLEAPI_CsvFileLoadSucceed"];
         if (func != null) func(this, file);

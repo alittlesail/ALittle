@@ -10,19 +10,19 @@ option_map : {}
 
 ALittle.g_Control = undefined;
 ALittle.g_LayerGroup = undefined;
-ALittle.g_BasePath = undefined;
-ALittle.__Module_Setup = function(layer_group, control, base_path, debug) {
+ALittle.g_ModuleBasePath = undefined;
+ALittle.__Module_Setup = function(layer_group, control, module_base_path, script_base_path, debug) {
 	ALittle.g_Control = control;
 	ALittle.g_LayerGroup = layer_group;
-	ALittle.g_BasePath = base_path;
-	let [error, info] = (function() { try { let ___VALUE = lua.json.decode.call(undefined, debug); return [undefined, ___VALUE]; } catch (___ERROR) { return [___ERROR.message]; } })();
+	ALittle.g_ModuleBasePath = module_base_path;
+	let [error, info] = (function() { try { let ___VALUE = ALittle.String_JsonDecode.call(undefined, debug); return [undefined, ___VALUE]; } catch (___ERROR) { return [___ERROR.message]; } })();
 	let screen_width = ALittle.System_GetScreenWidth();
 	let screen_height = ALittle.System_GetScreenHeight();
 	let window_width = info.window_width;
 	let window_height = info.window_height;
 	let rate = 1.0;
 	if (ALittle.System_GetPlatform() !== "Windows") {
-		window_width = lua.math.floor(screen_width / screen_height * window_height);
+		window_width = ALittle.Math_Floor(screen_width / screen_height * window_height);
 	} else {
 		if (window_width > screen_width || window_height > screen_height) {
 			rate = 0.5;
@@ -53,7 +53,7 @@ ALittle.__Module_GetInfo = function(control, base_path) {
 	return info;
 }
 
-ALittle.__Plugin_Setup = function(control, base_path, debug) {
+ALittle.__Plugin_Setup = function(control, module_base_path, script_base_path, debug) {
 }
 
 ALittle.__Plugin_Shutdown = function() {

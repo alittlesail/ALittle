@@ -7,7 +7,7 @@ public class LoopList : LoopObject
     private int _cur_index;          // 当前执行的updater下标
     private List<LoopObject> _update_list;   // updater列表
     private Functor<()> _complete_callback;  // 完成后会调用这个函数
-
+    
     public ctor()
     {
         this._count = 0;                // updater个数
@@ -15,7 +15,7 @@ public class LoopList : LoopObject
         this._update_list = new List<LoopObject>();        // updater列表
         this._complete_callback = null;    // 完成后会调用这个函数
     }
-
+    
     public get complete_callback() : Functor<()>
     {
         return this._complete_callback;

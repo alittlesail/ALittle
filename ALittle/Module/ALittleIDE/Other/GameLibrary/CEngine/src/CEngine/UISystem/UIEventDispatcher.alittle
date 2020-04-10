@@ -200,10 +200,6 @@ public class UIEventListener
     protected Map<UIEventDispatcher, bool> _drag_map;
     protected Map<UIEventDispatcher, bool> _event_map;
     
-    public ctor()
-    {
-    }
-    
     public fun RemoveFromDispatcher()
     {
         if (this._event_map != null)

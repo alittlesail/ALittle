@@ -19,7 +19,7 @@ public class LoopAttribute : LoopObject
         
         // 调整参数
         if (delay_time == null || delay_time < 0) delay_time = 0;
-
+        
         // 保存间隔时间，延时时间
         this._total_delay_time = delay_time;
 

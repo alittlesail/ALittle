@@ -10,6 +10,9 @@ JavaScript.JMessageWriteFactory = JavaScript.Class(ALittle.IMessageWriteFactory,
 		this._size = 0;
 		this._id = 0;
 		this._rpc_id = 0;
+		if (init_size === undefined || init_size <= 0) {
+			init_size = 1024;
+		}
 		let data = new ArrayBuffer(init_size);
 		this._memory = new DataView(data);
 	},
@@ -85,21 +88,22 @@ JavaScript.JMessageWriteFactory = JavaScript.Class(ALittle.IMessageWriteFactory,
 if (ALittle.IMessageReadFactory === undefined) throw new Error(" extends class:ALittle.IMessageReadFactory is undefined");
 JavaScript.JMessageReadFactory = JavaScript.Class(ALittle.IMessageReadFactory, {
 	Ctor : function(data) {
-		this._id = 0;
-		this._rpc_id = 0;
+		this._total_size = data.byteLength;
 		this._read_size = 0;
-		this._total_size = 0;
+		this._data_size = this.ReadInt();
+		this._id = this.ReadInt();
+		this._rpc_id = this.ReadInt();
 		this._last_read_size = 0;
 		this._memory = data;
 	},
-	SetID : function(id) {
-		this._id = id;
+	GetID : function() {
+		return this._id;
 	},
-	SetRpcID : function(rpc_id) {
-		this._rpc_id = rpc_id;
+	GetRpcID : function() {
+		return this._rpc_id;
 	},
-	GetTotalSize : function() {
-		return this._total_size;
+	GetDataSize : function() {
+		return this._data_size;
 	},
 	ReadBool : function() {
 		if (this._read_size >= this._total_size || this._read_size < 0) {

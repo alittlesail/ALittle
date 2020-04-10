@@ -2,7 +2,6 @@
 [Language(JavaScript)]
 namespace JavaScript;
 
-
 public class JCsvFile : ALittle.ICsvFile
 {
     private string _file_path;
@@ -10,8 +9,17 @@ public class JCsvFile : ALittle.ICsvFile
     private int _col_count;
     private List<List<string>> _data;
     
+    public ctor()
+    {
+        this._row_count = 0;
+        this._col_count = 0;
+        this._file_path = "";
+    }
+    
+    // 添加一行
     private fun addRow(List<string> row) : bool
     {
+        // 如果是第一行，那么就保存列总数
         if (this._col_count == 0)
         {
             ++ this._row_count;
@@ -20,12 +28,14 @@ public class JCsvFile : ALittle.ICsvFile
             return true;
         }
         
+        // 如果不是第一行，那么就检查列数量是否一致
         if (cast<javascript.Array>(row).length != this._col_count)
         {
             ALittle.Error("row("..(this._row_count + 1)..") col: "..cast<javascript.Array>(row).length.." != "..this._col_count);
             return false;
         }
     
+        // 添加行
         ++ this._row_count;
         this._data[this._row_count] = row;
         return true;
@@ -33,13 +43,23 @@ public class JCsvFile : ALittle.ICsvFile
     
     public fun Load(string path) : bool
     {
+        // 加载文件
         var content = JavaScript.File_LoadFile(path);
-        if (content == null) return false;
+        if (content == null)
+        {
+            ALittle.Error("file load failed:"..path);
+            return false;   
+        }
+        
+        // 保存文件
         this._file_path = path;
         
-        var char_index = 0;
+        // 构建数据
         this._data = new List<List<string>>();
         var data_index = 1;
+        
+        // 字符游标
+        var char_index = 0;
         
         // 读取第一个字符
         var cur_char:int = null;
@@ -56,8 +76,8 @@ public class JCsvFile : ALittle.ICsvFile
         }
             
         // 读取下一个字符
-        var next_char = 0;
-        size = cast<javascript.String>(content).charCodeAt(char_index);
+        var next_char:int = null;
+        next_char = cast<javascript.String>(content).charCodeAt(char_index);
         if (size == 0)
         {
             this._data[1] = new List<string>();
@@ -161,10 +181,10 @@ public class JCsvFile : ALittle.ICsvFile
                         cell = cell .."\"";
                         // 直接读取下一个字符
                         next_char = null;
-                        if (char_index < cast<javascript.String>(content).length)
+                        if (char_index + 1 < cast<javascript.String>(content).length)
                         {
-                            next_char = cast<javascript.String>(content).charCodeAt(char_index);
                             ++char_index;
+                            next_char = cast<javascript.String>(content).charCodeAt(char_index);
                         }
                         // 如果后面没有数据了，说明没有关闭引号，报错
                         if (next_char == null)
@@ -263,21 +283,23 @@ public class JCsvFile : ALittle.ICsvFile
             // 读取下一个字符
             cur_char = next_char;
             next_char = null;
-            if (char_index < cast<javascript.String>(content).length)
+            if (char_index + 1 < cast<javascript.String>(content).length)
             {
-                next_char = cast<javascript.String>(content).charCodeAt(char_index);
                 ++char_index;
+                next_char = cast<javascript.String>(content).charCodeAt(char_index);
             }
         }
         
         return true;
     }
+    
     public fun Close()
     {
         this._data = null;
         this._row_count = 0;
         this._col_count = 0;   
     }
+    
     public fun GetPath() : string { return this._file_path; }
     public fun ReadCell(int row, int col) : string { return this._data[row][col]; }
     public fun GetRowCount() : int { return this._row_count; }

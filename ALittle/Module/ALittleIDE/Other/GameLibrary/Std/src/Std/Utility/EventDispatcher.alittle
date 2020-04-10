@@ -12,10 +12,6 @@ public class EventListener
 {
     protected Map<EventDispatcher, Map<int, bool>> _ref_map;
     
-    public ctor()
-    {
-    }
-    
     public fun RemoveFromDispatcher()
     {
         if (this._ref_map == null) return;

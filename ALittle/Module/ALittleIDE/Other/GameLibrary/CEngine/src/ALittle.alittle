@@ -1,5 +1,10 @@
 namespace alittle;
 
+[Language(Lua)]
+private static __Log(string content, int level) { __CPPAPI_ScriptSystemEx.Log(content, level); }
+[Language(Lua)]
+ALittle.SetLogFunc(__Log);
+
 public await static __ALITTLEAPI_CEngine_Init(string base_path)
 {
     Require(base_path.."CEngine/UISystem/IShow");

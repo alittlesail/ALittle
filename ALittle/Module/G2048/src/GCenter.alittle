@@ -74,7 +74,7 @@ class GCenter
         // 创建主界面
         g_Control.CreateControl{ALittle.DisplayObject}("main_scene", this, this._main_layer);
     
-        this._max_score_text._user_data = g_GConfig.GetConfig("max_score", 0);
+        this._max_score_text._user_data = g_GConfig.GetConfig("max_score", 0);        
         this._max_score_text.text = this._max_score_text._user_data;
     
         this.Restart();

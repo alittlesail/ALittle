@@ -62,6 +62,7 @@ public class JClientFileSaver : IFileSaver
         }
         if (json == null) json = new Map<string, any>();
         json[file_path] = content;
+        document.cookie = ALittle.String_JsonEncode(json);
         return true;
     }
 }

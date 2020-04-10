@@ -36,6 +36,7 @@ ALittle.JClientFileSaver = JavaScript.Class(ALittle.IFileSaver, {
 			json = {};
 		}
 		json[file_path] = content;
+		document.cookie = ALittle.String_JsonEncode(json);
 		return true;
 	},
 }, "ALittle.JClientFileSaver");

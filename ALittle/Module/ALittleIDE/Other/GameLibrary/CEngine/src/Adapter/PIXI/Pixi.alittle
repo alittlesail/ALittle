@@ -5,6 +5,7 @@ public struct ApplicationData
 {
     int width;
     int height;
+    int backgroundColor;
 }
 
 [Native]

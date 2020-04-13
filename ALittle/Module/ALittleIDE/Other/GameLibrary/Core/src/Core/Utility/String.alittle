@@ -112,13 +112,13 @@ public static String_Sub(string s, int starti, [Nullable] int endi) : string
 }
     
 // 去掉前后空格，制表符
-public static String_Trim(string s) : string
+public static String_Trim(string text) : string
 {
     [Language(Lua)]
-    return match(s, "^%s*(.*)%s*$");
+    return lua.String.gsub(text, "^%s*(.-)%s*$", "%1");
     
     [Language(JavaScript)]
-    return cast<javascript.String>(s).trim();
+    return cast<javascript.String>(text).trim();
 }
 
 // 根据分隔符拆分字符串成列表，正常版本

@@ -57,8 +57,8 @@ ALittle.String_Sub = function(s, starti, endi) {
 	}
 }
 
-ALittle.String_Trim = function(s) {
-	return s.trim();
+ALittle.String_Trim = function(text) {
+	return text.trim();
 }
 
 ALittle.String_Split = function(target, sep) {

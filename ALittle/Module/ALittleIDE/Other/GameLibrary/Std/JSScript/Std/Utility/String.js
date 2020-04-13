@@ -34,8 +34,4 @@ ALittle.String_GetByteCount = function(text, word_count) {
 	}
 }
 
-ALittle.String_Trim = function(text) {
-	return text.trim();
-}
-
 }

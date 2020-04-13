@@ -11,26 +11,23 @@ ALittle.File_ExternalFilePath = function() {
 }
 
 ALittle.File_CopyFile = function(src_path, dst_path) {
-	ALittle.Error("not support File_CopyFile");
-	return false;
+	return JavaScript.File_CopyFile(src_path, dst_path);
 }
 
 ALittle.File_CopyFileFromAsset = function(src_path, dst_path) {
-	ALittle.Error("not support File_CopyFileFromAsset");
-	return false;
+	return JavaScript.File_CopyFile(src_path, dst_path);
 }
 
 ALittle.File_SaveFile = function(target_path, content, size) {
-	ALittle.Error("not support File_SaveFile");
-	return false;
+	return JavaScript.File_SaveFile(target_path, content);
 }
 
 ALittle.File_CopyDeepDir = function(src_path, dest_path, ext, log) {
+	JavaScript.File_CopyDeepDir(src_path, dest_path, ext, log);
 }
 
 ALittle.File_ReadTextFromFile = function(file_path, crypt_mode) {
-	ALittle.Error("not support File_ReadTextFromFile");
-	return undefined;
+	return JavaScript.File_LoadFile(file_path);
 }
 
 ALittle.File_WriteTextToFile = function(content, file_path) {
@@ -38,13 +35,11 @@ ALittle.File_WriteTextToFile = function(content, file_path) {
 }
 
 ALittle.File_ReadJsonFromFile = function(file_path, crypt_mode) {
-	ALittle.Error("not support File_ReadJsonFromFile");
-	return [undefined, "not support File_ReadJsonFromFile"];
+	return [ALittle.File_ReadJsonFromStdFile(file_path)];
 }
 
 ALittle.File_ReadJsonFromAsset = function(file_path, crypt_mode) {
-	ALittle.Error("not support File_ReadJsonFromAsset");
-	return [undefined, "not support File_ReadJsonFromAsset"];
+	return [ALittle.File_ReadJsonFromStdFile(file_path)];
 }
 
 ALittle.File_WriteJsonToFile = function(content, file_path) {
@@ -52,7 +47,6 @@ ALittle.File_WriteJsonToFile = function(content, file_path) {
 }
 
 ALittle.DeleteLog = function(day_count_before) {
-	ALittle.Error("not support DeleteLog");
 }
 
 }

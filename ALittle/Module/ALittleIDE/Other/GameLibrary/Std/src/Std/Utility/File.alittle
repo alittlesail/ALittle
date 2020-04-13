@@ -331,3 +331,41 @@ public static File_WriteJsonFromStdFile(any content, string file_path) : bool
         return JavaScript.File_SaveFile(file_path, javascript.JSON.stringify(content));
     }
 }
+
+public static File_ReadTextFromStdFile(string file_path) : any, string
+{
+    // 读取文件
+    [Language(Lua)]
+    {
+        var file = lua.io.open(file_path, "rb");
+        if (file == null) return null, file_path.." load failed";
+        var content = file.read("*a");
+        file.close();
+        return null, content;
+    }
+    
+    [Language(JavaScript)]
+    {
+        var content = JavaScript.File_LoadFile(file_path);
+        if (content == null) return null, file_path.." load failed";
+        return null, content;
+    }
+}
+
+public static File_WriteTextFromStdFile(string content, string file_path) : bool
+{
+    // 读取文件
+    [Language(Lua)]
+    {
+        var file = lua.io.open(file_path, "wb");
+        if (file == null) return false;
+        file.write(content);
+        file.close();
+        return true;
+    }
+    
+    [Language(JavaScript)]
+    {
+        return JavaScript.File_SaveFile(file_path, content);
+    }
+}

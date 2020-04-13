@@ -1,0 +1,31 @@
+
+register namespace LogServer;
+
+public struct EmptyResult
+{
+
+}
+
+public struct LogEventInfo
+{
+    option index = "account_id,main_type,sub_type,create_time";
+    int account_id;         // 账号ID
+    int main_type;          // 主类型
+    int sub_type;           // 子类型
+    int res_type;           // 资源类型
+    int res_id;             // 资源ID
+    int res_num;            // 资源数量
+    int res_count;          // 操作完后的资源数量
+    int param_1;            // 其他参数
+    int param_2;            // 其他参数
+    int param_3;            // 其他参数
+    int param_4;            // 其他参数
+    int param_5;            // 其他参数
+    string param_string;    // 其他参数
+    int create_time;        // 创建时间
+    int log_time;           // 写入表的时间
+}
+
+// 处理日志
+[Msg]
+public await static HandleLogEventInfo(ALittle.IMsgCommon client, LogEventInfo msg) : EmptyResult {}

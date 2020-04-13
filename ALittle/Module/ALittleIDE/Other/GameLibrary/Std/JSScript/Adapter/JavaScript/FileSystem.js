@@ -335,6 +335,14 @@ JavaScript.File_LoadFile = function(path) {
 	return cur_file.content;
 }
 
+JavaScript.File_CopyFile = function(src_path, dst_path) {
+	let content = JavaScript.File_LoadFile(src_path);
+	if (content === undefined) {
+		return false;
+	}
+	return JavaScript.File_SaveFile(dst_path, content);
+}
+
 JavaScript.File_SaveFile = function(path, content) {
 	let list = Path_FilterEmpty(ALittle.String_SplitSepList(path, ["/", "\\"]));
 	let list_len = ALittle.List_MaxN(list);
@@ -362,6 +370,52 @@ JavaScript.File_SaveFile = function(path, content) {
 	file.parent = cur;
 	cur.file[list[list_len - 1]] = file;
 	return true;
+}
+
+JavaScript.File_CopyDeepDir = function(src_path, dest_path, ext, log) {
+	let upper_ext = undefined;
+	if (ext !== undefined) {
+		upper_ext = ext.toUpperCase();
+	}
+	let list = Path_FilterEmpty(ALittle.String_SplitSepList(src_path, ["/", "\\"]));
+	let cur = root;
+	let ___OBJECT_9 = list;
+	for (let index = 1; index <= ___OBJECT_9.length; ++index) {
+		let name = ___OBJECT_9[index - 1];
+		if (name === undefined) break;
+		if (cur.file === undefined) {
+			return;
+		}
+		let file = cur.file[name];
+		if (file === undefined) {
+			return;
+		}
+		if (!file.is_directory) {
+			return;
+		}
+		cur = file;
+	}
+	if (cur.file === undefined) {
+		return;
+	}
+	let ___OBJECT_10 = cur.file;
+	for (let file in ___OBJECT_10) {
+		let info = ___OBJECT_10[file];
+		if (info === undefined) continue;
+		let src_file_path = src_path + "/" + file;
+		let dest_file_path = dest_path + "/" + file;
+		if (info.is_directory) {
+			JavaScript.File_MakeDir(dest_file_path);
+			JavaScript.File_CopyDeepDir(src_file_path, dest_file_path, upper_ext, log);
+		} else {
+			if (upper_ext === undefined || ALittle.File_GetFileExtByPathAndUpper(src_file_path) === upper_ext) {
+				JavaScript.File_CopyFile(src_file_path, dest_file_path);
+				if (log) {
+					ALittle.Log("copy file:", src_file_path, dest_file_path);
+				}
+			}
+		}
+	}
 }
 
 }

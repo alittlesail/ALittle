@@ -270,6 +270,13 @@ public static File_LoadFile(string path) : string
     return cur_file.content;
 }
 
+public static File_CopyFile(string src_path, string dst_path) : bool
+{
+    var content = File_LoadFile(src_path);
+    if (content == null) return false;
+    return File_SaveFile(dst_path, content);
+}
+
 public static File_SaveFile(string path, string content) : bool
 {
     var list = Path_FilterEmpty(ALittle.String_SplitSepList(path, ["/", "\\"]));
@@ -292,4 +299,48 @@ public static File_SaveFile(string path, string content) : bool
     file.parent = cur;
     cur.file[list[list_len]] = file;
     return true;    
+}
+
+public static File_CopyDeepDir(string src_path, string dest_path, [Nullable] string ext, [Nullable] bool log)
+{
+    var upper_ext:string = null;
+    if (ext != null) upper_ext = cast<javascript.String>(ext).toUpperCase();
+    
+    var list = Path_FilterEmpty(ALittle.String_SplitSepList(src_path, ["/", "\\"]));
+    var cur = root;
+    for (var index, name in list)
+    {
+        if (cur.file == null) return;
+        var file = cur.file[name];
+        if (file == null) return;
+        if (!file.is_directory) return;
+        cur = file;
+    }
+    if (cur.file == null) return;
+
+    // 遍历源文件夹
+    for (var file, info in cur.file)
+    {
+        // 源文件路径
+        var src_file_path = src_path .. "/" .. file;
+        // 目标文件路径
+        var dest_file_path = dest_path .. "/" .. file;
+        // 如果是目录进行递归复制
+        if (info.is_directory)
+        {
+            // 创建文件夹
+            File_MakeDir(dest_file_path);
+            // 开始复制
+            File_CopyDeepDir(src_file_path, dest_file_path, upper_ext, log);
+        }
+        // 如果是文件，就直接复制文件
+        else
+        {
+            if (upper_ext == null || ALittle.File_GetFileExtByPathAndUpper(src_file_path) == upper_ext)
+            {
+                File_CopyFile(src_file_path, dest_file_path);
+                if (log) ALittle.Log("copy file:", src_file_path, dest_file_path);
+            }
+        }
+    }
 }

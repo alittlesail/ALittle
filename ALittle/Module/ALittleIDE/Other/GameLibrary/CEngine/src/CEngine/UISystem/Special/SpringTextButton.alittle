@@ -146,7 +146,7 @@ public class SpringTextButton : DisplayLayout
     }
     
     ////////////////////////////////////////////////////////////////////////////////-
-    protected fun ShowUp(UIEvent event)
+    protected fun ShowUp(UIFocusOutEvent event)
     {
         if (this._abs_disabled || this._disabled)
             return;

@@ -24,7 +24,7 @@ ALittle.SpringTextButton = JavaScript.Class(ALittle.DisplayLayout, {
 		this.AddEventListener(___all_struct.get(40651933), this, this.HandleLButtonUp);
 		this.AddEventListener(___all_struct.get(349963892), this, this.HandleMButtonDown);
 		this.AddEventListener(___all_struct.get(683647260), this, this.HandleMButtonUp);
-		this.AddEventListener(___all_struct.get(-1479093282), this, this.ShowUp);
+		this.AddEventListener(___all_struct.get(292776509), this, this.ShowUp);
 		this.AddEventListener(___all_struct.get(-1233353463), this, this.HandleFButtonDown);
 		this.AddEventListener(___all_struct.get(734860930), this, this.HandleFButtonUp);
 		this._pickup_rect = true;

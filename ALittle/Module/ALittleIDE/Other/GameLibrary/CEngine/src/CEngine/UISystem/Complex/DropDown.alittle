@@ -244,7 +244,7 @@ public class DropDown : TextCheckButton
         }
     }
 
-    protected fun HandleBodyHide(UIEvent event)
+    protected fun HandleBodyHide(UIHideEvent event)
     {
         if (this.selected == false)
             return;

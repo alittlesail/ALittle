@@ -29,7 +29,7 @@ ALittle.DropDown = JavaScript.Class(ALittle.TextCheckButton, {
 		this._screen_margin_bottom = 0;
 		this._show_count = 0;
 		this.AddEventListener(___all_struct.get(958494922), this, this.HandleButtonChange);
-		this._body.AddEventListener(___all_struct.get(-1479093282), this, this.HandleBodyHide);
+		this._body.AddEventListener(___all_struct.get(348388800), this, this.HandleBodyHide);
 	},
 	set show_background(value) {
 		if (this._background === value) {

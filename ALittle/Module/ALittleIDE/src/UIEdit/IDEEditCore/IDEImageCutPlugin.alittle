@@ -1,0 +1,314 @@
+
+namespace ALittleIDE;
+
+public class IDEImageCutPlugin : ALittle.DisplayLayout
+{
+	private bool _is_circle;
+	private double _cut_size;
+
+	private double _MAX_WIDTH;
+	private double _MAX_HEIGHT;
+
+	private double _cut_center_x;
+	private double _cut_center_y;
+	private double _cut_center_w;
+	private double _cut_center_h;
+	
+	private string _file_path;
+	private ALittle.Image _src_image;
+	private ALittle.DisplayGroup _image_container;
+	private ALittle.DisplayGroup _edit_container;
+	private ALittle.Grid9 _edit_grid9;
+
+	private ALittle.DisplayObject _left_top_drag;
+	private ALittle.DisplayObject _right_top_drag;
+	private ALittle.DisplayObject _left_bottom_drag;
+	private ALittle.DisplayObject _right_bottom_drag;
+	private ALittle.DisplayObject _center_drag;
+
+    public ctor(ALittle.ControlSystem ctrl_sys)
+    {
+        this._is_circle = false;
+        this._cut_size = 200;
+    
+        // 头像最大的大小
+        this._MAX_WIDTH = 200;
+        this._MAX_HEIGHT = 200;
+    
+        this._cut_center_x = 0;
+        this._cut_center_y = 0;
+        this._cut_center_w = 0;
+        this._cut_center_h = 0;
+    }
+    
+    public fun TCtor()
+    {
+    }
+    
+    public fun EditTexture(string file_path, @Nullable bool is_circle, @Nullable int cut_size)
+    {
+        this._is_circle = is_circle || false;
+        if (cut_size == null) cut_size = 200;
+        this._cut_size = cut_size;
+        this._file_path = file_path;
+    
+        // 把原来的图片删除掉
+        if (this._src_image != null)
+        {
+            this._image_container.RemoveChild(this._src_image);
+            this._src_image = null;
+        }
+    
+        // 创建一个新的控件
+        this._src_image = new ALittle.Image(g_Control);
+        this._image_container.AddChild(this._src_image);
+    
+        // 隐藏编辑层
+        this._edit_container.visible = false;
+        this._edit_container.x = 0;
+        this._edit_container.y = 0;
+    
+        this._edit_container.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+        this._edit_container.width_value = 0;
+        this._edit_container.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+        this._edit_container.height_value = 0;
+    
+        var max_width:double = ALittle.System_GetMaxTextureWidth();
+        if (max_width > this._edit_container.width)
+            max_width = this._edit_container.width;
+
+        var max_height:double = ALittle.System_GetMaxTextureHeight();
+        if (max_height > this._edit_container.height)
+            max_height = this._edit_container.height;
+    
+        this._src_image.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+        this._src_image.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+        this._src_image.SetTextureCut(file_path, lua.math.floor(max_width), lua.math.floor(max_height), false, bind(this.LoadTextureCallback, this));
+    }
+    
+    public fun Clear()
+    {
+        // 把原来的图片删除掉
+        if (this._src_image != null)
+        {
+            this._image_container.RemoveChild(this._src_image);
+            this._src_image = null;
+        }
+        this._edit_container.visible = false;
+    }
+    
+    public fun Cut(@Nullable string target_path) : bool
+    {
+        if (this._cut_center_w <= 0) return false;
+        if (this._cut_center_h <= 0) return false;
+    
+        if (target_path == null) target_path = this._file_path;
+    
+        // 加载图片
+        var surface = ALittle.System_LoadSurface(this._file_path);
+        if (surface == null) return false;
+    
+        var width = ALittle.System_GetSurfaceWidth(surface);
+        var height = ALittle.System_GetSurfaceHeight(surface);
+    
+        var rate_w = this._edit_container.width / width;
+        var rate_h = this._edit_container.height / height;
+    
+        var cut_x = lua.math.floor(this._cut_center_x / rate_w);
+        var cut_y = lua.math.floor(this._cut_center_y / rate_h);
+        var cut_width = lua.math.ceil(this._cut_center_w / rate_w);
+        var cut_height = lua.math.ceil(this._cut_center_h / rate_h);
+    
+        var new_width:double = cut_width;
+        if (new_width > this._MAX_WIDTH) new_width = this._MAX_WIDTH;
+        var new_height:double = cut_height;
+        if (new_height > this._MAX_HEIGHT) new_height = this._MAX_HEIGHT;
+    
+        var new_surface = ALittle.System_CreateSurface(lua.math.floor(new_width), lua.math.floor(new_height));
+        ALittle.System_CutBlitSurface(new_surface, surface, "0,0,"..new_width..","..new_height, cut_x..","..cut_y..","..cut_width..","..cut_height);
+        ALittle.System_FreeSurface(surface);
+    
+        // 检查是否要剪成圆
+        if (this._is_circle)
+        {
+            var new_center = new_width / 2;
+            var gradual_len = lua.math.floor(new_center * 0.05);
+    
+            for (var row = 0, new_height - 1, 1)
+            {
+                for (var col = 0, new_width - 1, 1)
+                {
+                    var x2 = (new_center - col) * (new_center - col);
+                    var y2 = (new_center - row) * (new_center - row);
+                    var distance = lua.math.sqrt(x2 + y2);
+                    // 超出范围直接清理
+                    if (distance > new_center)
+                    {
+                        ALittle.System_SetSurfacePixel(new_surface, col, row, 0);
+                    }
+                    // 在圆的边界N个像素内，做递减的alpha
+                    elseif (gradual_len > 0 && new_center - distance < gradual_len)
+                    {
+                        var color = ALittle.System_GetSurfacePixel(new_surface, col, row);
+                        var src_alpha = ALittle.System_GetPixelAlpha(color);
+                        var dst_alpha = lua.math.sin((3.14159625 / 2) * (new_center - distance) / gradual_len) * 255;
+                        if (src_alpha < dst_alpha) dst_alpha = src_alpha;
+                        color = ALittle.System_SetPixelAlpha(color, lua.math.ceil(dst_alpha));
+                        ALittle.System_SetSurfacePixel(new_surface, col, row, color);
+                    }
+                }
+            }
+        }
+    
+        var result = ALittle.System_SaveSurface(new_surface, target_path);
+        ALittle.System_FreeSurface(new_surface);
+        return result;
+    }
+    
+    public fun LoadTextureCallback(ALittle.Image image, bool result)
+    {
+        if (result == false) return;
+        if (this._src_image != image) return;
+    
+        // 设置图片大小
+        image.width = image.texture_width;
+        image.height = image.texture_height;
+        image.UpdateLayout();
+    
+        // 设置编辑容器
+        this._edit_container.visible = true;
+        this._edit_container.x = image.x;
+        this._edit_container.y = image.y;
+        this._edit_container.width = image.width;
+        this._edit_container.height = image.height;
+    
+        // 调整编辑区
+        if (this._cut_size > image.width)
+            this._cut_size = image.width;
+        if (this._cut_size > image.height)
+            this._cut_size = image.height;
+    
+        this._cut_center_x = (image.width - this._cut_size) / 2;
+        this._cut_center_y = (image.height - this._cut_size) / 2;
+    
+        this._cut_center_w = this._cut_size;
+        this._cut_center_h = this._cut_size;
+    
+        this.UpdateEditQuad(this._cut_center_x, this._cut_center_y, this._cut_center_w, this._cut_center_h);
+    }
+    
+    public fun UpdateEditQuad(double x, double y, double w, double h)
+    {
+        this._edit_grid9.top_size = y;
+        this._edit_grid9.bottom_size = lua.math.ceil(this._edit_container.height - y - h);
+    
+        this._edit_grid9.left_size = x;
+        this._edit_grid9.right_size = lua.math.ceil(this._edit_container.width - x - w);
+    
+        this._left_top_drag.x = x - this._left_top_drag.width / 2;
+        this._left_top_drag.y = y - this._left_top_drag.height / 2;
+    
+        this._right_top_drag.x = x + w - this._right_top_drag.width / 2;
+        this._right_top_drag.y = y - this._right_top_drag.height / 2;
+    
+        this._left_bottom_drag.x = x - this._left_bottom_drag.width / 2;
+        this._left_bottom_drag.y = y + h - this._left_bottom_drag.height / 2;
+    
+        this._right_bottom_drag.x = x + w - this._right_bottom_drag.width / 2;
+        this._right_bottom_drag.y = y + h - this._right_bottom_drag.height / 2;
+    }
+    
+    public fun HandleDrag(ALittle.UIButtonDragEvent event)
+    {
+        if (event.target == this._left_top_drag)
+        {
+            var delta_x = event.delta_x;
+            var delta_y = event.delta_y;
+    
+            if (this._is_circle)
+            {
+                if (lua.math.abs(delta_x) > lua.math.abs(delta_y))
+                    delta_y = delta_x;
+                else
+                    delta_x = delta_y;
+            }
+    
+            this._cut_center_x = this._cut_center_x + delta_x;
+            this._cut_center_y = this._cut_center_y + delta_y;
+            this._cut_center_w = this._cut_center_w - delta_x;
+            this._cut_center_h = this._cut_center_h - delta_y;
+        }
+        elseif (event.target == this._right_top_drag)
+        {
+            var delta_x = event.delta_x;
+            var delta_y = event.delta_y;
+    
+            if (this._is_circle)
+            {
+                if (lua.math.abs(delta_x) > lua.math.abs(delta_y))
+                    delta_y = -delta_x;
+                else
+                    delta_x = -delta_y;
+            }
+    
+            this._cut_center_y = this._cut_center_y + delta_y;
+            this._cut_center_w = this._cut_center_w + delta_x;
+            this._cut_center_h = this._cut_center_h - delta_y;
+        }
+        elseif (event.target == this._left_bottom_drag)
+        {
+            var delta_x = event.delta_x;
+            var delta_y = event.delta_y;
+    
+            if (this._is_circle)
+            {
+                if (lua.math.abs(delta_x) > lua.math.abs(delta_y))
+                    delta_y = -delta_x;
+                else
+                    delta_x = -delta_y;
+            }
+    
+            this._cut_center_x = this._cut_center_x + delta_x;
+            this._cut_center_w = this._cut_center_w - delta_x;
+            this._cut_center_h = this._cut_center_h + delta_y;
+        }
+        elseif (event.target == this._right_bottom_drag)
+        {
+            var delta_x = event.delta_x;
+            var delta_y = event.delta_y;
+    
+            if (this._is_circle)
+            {
+                if (lua.math.abs(delta_x) > lua.math.abs(delta_y))
+                    delta_y = delta_x;
+                else
+                    delta_x = delta_y;
+            }
+    
+            this._cut_center_w = this._cut_center_w + delta_x;
+            this._cut_center_h = this._cut_center_h + delta_y;
+        }
+        elseif (event.target == this._center_drag)
+        {
+            this._cut_center_x = this._cut_center_x + event.delta_x;
+            this._cut_center_y = this._cut_center_y + event.delta_y;
+        }
+    
+        // 修正参数
+        if (this._cut_center_x < 0) this._cut_center_x = 0;
+        if (this._cut_center_x > this._edit_container.width) this._cut_center_x = this._edit_container.width;
+    
+        if (this._cut_center_y < 0) this._cut_center_y = 0;
+        if (this._cut_center_y > this._edit_container.height) this._cut_center_y = this._edit_container.height;
+    
+        if (this._cut_center_x + this._cut_center_w > this._edit_container.width)
+        	this._cut_center_w = this._edit_container.width - this._cut_center_x;
+
+        if (this._cut_center_w < 0) this._cut_center_w = 0;
+        if (this._cut_center_y + this._cut_center_h > this._edit_container.height)
+            this._cut_center_h = this._edit_container.height - this._cut_center_y;
+        if (this._cut_center_h < 0) this._cut_center_h = 0;
+    
+        this.UpdateEditQuad(this._cut_center_x, this._cut_center_y, this._cut_center_w, this._cut_center_h);
+    }
+}

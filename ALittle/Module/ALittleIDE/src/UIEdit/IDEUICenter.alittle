@@ -1,0 +1,398 @@
+
+namespace ALittleIDE;
+
+class IDEUICenter
+{
+	private ALittle.DisplayLayout _ui_edit_container;			// UI编辑器主界面
+
+	private ALittle.Tab _main_edit_tab;				// 编辑区标签容器
+	private ALittle.Tab _control_tree_tab;			// 控件树标签容器
+	private ALittle.Tab _project_edit_tab;			// 项目库，图片库，控件库标签容器
+	private ALittle.Tab _control_edit_tab;			// 属性面板标签容器
+	private ALittle.Tab _project_quick_tab;			// 便利控件查找，动画容器
+	private ALittle.ScrollScreen _image_scroll_screen;			// 图片库的滚动屏
+
+	private ALittle.Grid3 _right_edit_grid3;		// 下面全部三宫格
+	private ALittle.Grid3 _control_edit_grid3;		// 左边三宫格
+	private ALittle.Grid3 _quick_edit_grid3;		// 中间三宫格
+    
+	private ALittle.DisplayObject _tool_h_align_left;		// 水平对齐
+	private ALittle.DisplayObject _tool_h_align_center;
+	private ALittle.DisplayObject _tool_h_align_right;
+	private ALittle.DisplayObject _tool_v_align_top;		// 垂直对齐
+	private ALittle.DisplayObject _tool_v_align_center;
+	private ALittle.DisplayObject _tool_v_align_bottom;
+
+	private ALittle.DisplayObject _tool_h_align_left_icon;		// 水平对齐图标
+	private ALittle.DisplayObject _tool_h_align_center_icon;
+	private ALittle.DisplayObject _tool_h_align_right_icon;
+	private ALittle.DisplayObject _tool_v_align_top_icon;		// 垂直对齐图标
+	private ALittle.DisplayObject _tool_v_align_center_icon;
+	private ALittle.DisplayObject _tool_v_align_bottom_icon;
+	
+	private ALittle.DisplayObject _tool_scale_text;				// 缩放标题
+	private ALittle.DisplayObject _tool_scale_input;			// 缩放输入框
+	private ALittle.DisplayObject _tool_singleselect;			// 选择模式
+	private ALittle.DisplayObject _tool_handdrag;				// 拖拽模式
+	private ALittle.DisplayObject _tool_scale;					// 缩放模式
+
+	public ctor()
+	{
+	}
+    
+	public get image_scroll_screen() : ALittle.ScrollScreen { return this._image_scroll_screen; }
+	
+	public fun Setup(ALittle.DisplayLayout edit_container)
+	{
+		g_Script.Require("UIEdit/IDEUtility");
+	
+		g_Script.Require("UIEdit/IDEDataCore/IDEEnum");
+		g_Script.Require("UIEdit/IDEDataCore/IDEExport");
+	
+		g_Script.Require("UIEdit/IDEEditCore/IDETabChild");
+		g_Script.Require("UIEdit/IDEEditCore/IDETabManager");
+		g_Script.Require("UIEdit/IDEEditCore/IDETreeLogic");
+		g_Script.Require("UIEdit/IDEEditCore/IDETree");
+		g_Script.Require("UIEdit/IDEEditCore/IDETreeItem");
+		g_Script.Require("UIEdit/IDEEditCore/IDERevocation");
+		g_Script.Require("UIEdit/IDEEditCore/IDEAttrTextDialog");
+		g_Script.Require("UIEdit/IDEEditCore/IDEAttrEventDialog");
+	
+		g_Script.Require("UIEdit/IDEEditCore/IDEAttrImageDialog");
+		g_Script.Require("UIEdit/IDEEditCore/IDEEditImageDialog");
+		g_Script.Require("UIEdit/IDEEditCore/IDEImageCutPlugin");
+	
+		g_Script.Require("UIEdit/IDEEditCore/IDESetting/DisplayObjectS");
+		g_Script.Require("UIEdit/IDEEditCore/IDESetting/DisplayLayoutS");
+		g_Script.Require("UIEdit/IDEEditCore/IDESetting/DisplayViewS");
+		g_Script.Require("UIEdit/IDEEditCore/IDESetting/TextCheckButtonS");
+		g_Script.Require("UIEdit/IDEEditCore/IDESetting/DialogS");
+		g_Script.Require("UIEdit/IDEEditCore/IDESetting/DropDownS");
+		g_Script.Require("UIEdit/IDEEditCore/IDESetting/Grid3S");
+		g_Script.Require("UIEdit/IDEEditCore/IDESetting/Grid9S");
+		g_Script.Require("UIEdit/IDEEditCore/IDESetting/Grid9ImageS");
+		g_Script.Require("UIEdit/IDEEditCore/IDESetting/TextS");
+		g_Script.Require("UIEdit/IDEEditCore/IDESetting/TextEditS");
+		g_Script.Require("UIEdit/IDEEditCore/IDESetting/ImageEditS");
+		g_Script.Require("UIEdit/IDEEditCore/IDESetting/TextInputS");
+		g_Script.Require("UIEdit/IDEEditCore/IDESetting/ImageInputS");
+		g_Script.Require("UIEdit/IDEEditCore/IDESetting/ImageS");
+		g_Script.Require("UIEdit/IDEEditCore/IDESetting/TriangleS");
+		g_Script.Require("UIEdit/IDEEditCore/IDESetting/ImagePlayS");
+		g_Script.Require("UIEdit/IDEEditCore/IDESetting/FramePlayS");
+		g_Script.Require("UIEdit/IDEEditCore/IDESetting/SpriteS");
+		g_Script.Require("UIEdit/IDEEditCore/IDESetting/SpritePlayS");
+		g_Script.Require("UIEdit/IDEEditCore/IDESetting/LinearS");
+		g_Script.Require("UIEdit/IDEEditCore/IDESetting/QuadS");
+		g_Script.Require("UIEdit/IDEEditCore/IDESetting/RichAreaS");
+		g_Script.Require("UIEdit/IDEEditCore/IDESetting/RichInputS");
+		g_Script.Require("UIEdit/IDEEditCore/IDESetting/RichEditS");
+		g_Script.Require("UIEdit/IDEEditCore/IDESetting/SliderS");
+		g_Script.Require("UIEdit/IDEEditCore/IDESetting/ScrollBarS");
+		g_Script.Require("UIEdit/IDEEditCore/IDESetting/ScrollButtonS");
+		g_Script.Require("UIEdit/IDEEditCore/IDESetting/ScrollListS");
+		g_Script.Require("UIEdit/IDEEditCore/IDESetting/ScrollScreenS");
+		g_Script.Require("UIEdit/IDEEditCore/IDESetting/TabS");
+		g_Script.Require("UIEdit/IDEEditCore/IDESetting/TextAreaS");
+		g_Script.Require("UIEdit/IDEEditCore/IDESetting/TextButtonS");
+		g_Script.Require("UIEdit/IDEEditCore/IDESetting/SpringTextButtonS");
+		g_Script.Require("UIEdit/IDEEditCore/IDESetting/TextRadioButtonS");
+		g_Script.Require("UIEdit/IDEEditCore/IDESetting/TileTableS");
+		g_Script.Require("UIEdit/IDEEditCore/IDESetting/PiechartS");
+		
+		g_Script.Require("UIEdit/IDEEditLogic/IDETool");
+	
+		g_Script.Require("UIEdit/IDEEditLogic/IDEMainMenu");
+		g_Script.Require("UIEdit/IDEEditLogic/IDEAttributeManager");
+		g_Script.Require("UIEdit/IDEEditLogic/IDEControlManager");
+		g_Script.Require("UIEdit/IDEEditLogic/IDEQuickManager");
+		g_Script.Require("UIEdit/IDEEditLogic/IDEAntiManager");
+		g_Script.Require("UIEdit/IDEEditLogic/IDEControlTree");
+		g_Script.Require("UIEdit/IDEEditLogic/IDEImageManager");
+		g_Script.Require("UIEdit/IDEEditLogic/IDEProjectManager");
+		g_Script.Require("UIEdit/IDEEditLogic/IDEVersionList");
+		g_Script.Require("UIEdit/IDEEditLogic/IDEVersionManager");
+		g_Script.Require("UIEdit/IDEEditLogic/IDELoginManager");
+		g_Script.Require("UIEdit/IDEEditLogic/IDEIMEManager");
+
+		// 创建UI编辑器主界面
+		this._ui_edit_container = g_Control.CreateControl{ALittle.DisplayLayout}("ide_ui_edit_container", this, edit_container);
+
+		// 初始化左下角数据管理的标签页
+		var tree_displaylayout = g_Control.CreateControl{ALittle.DisplayLayout}("ide_main_tab_tree_displaylayout", g_IDEControlTree, this._control_tree_tab);
+		g_Control.CreateControl{ALittle.DisplayObject}("ide_main_tab_control_scroll_screen", g_IDEControlManager, this._project_edit_tab);
+		g_Control.CreateControl{ALittle.DisplayObject}("ide_main_tab_image_scroll_screen", g_IDEImageManager, this._project_edit_tab);
+		g_Control.CreateControl{ALittle.DisplayObject}("ide_main_tab_project_scroll_screen", g_IDEProjectManager, this._project_edit_tab);
+		this._project_edit_tab.DisableAllCloseButton();
+		this._project_edit_tab.tab_index = 1;
+		this._control_tree_tab.DisableAllCloseButton();
+		this._control_tree_tab.tab_index = 1;
+
+		// 初始化右边属性的标签页
+		var attr_displaylayout = g_Control.CreateControl{ALittle.DisplayLayout}("ide_main_tab_attr_displaylayout", g_IDEAttributeManager, this._control_edit_tab);
+		this._control_edit_tab.DisableAllCloseButton();
+		this._control_edit_tab.tab_index = 1;
+
+		// 初始化下面快捷标签页，动画编辑器
+		var anti_displaylayout = g_Control.CreateControl{ALittle.DisplayLayout}("ide_main_project_quick_anti", g_IDEAntiManager, this._project_quick_tab);
+		g_IDEAntiManager.Setup(this._project_quick_tab, anti_displaylayout);
+		g_IDEQuickManager.Setup(this._project_quick_tab);
+		this._project_quick_tab.DisableAllCloseButton();
+		this._project_quick_tab.tab_index = 1;
+
+		// 初始化主要单件
+		g_IDEAttributeManager.Setup(this._control_edit_tab, attr_displaylayout);
+		g_IDETabManager.Setup(this._main_edit_tab, tree_displaylayout, attr_displaylayout, anti_displaylayout);
+		g_IDEAttrImageDialog.Setup();
+	}
+	
+	public fun Shutdown()
+	{
+		g_IDETabManager.Shutdown();
+	}
+	
+	public fun Show()
+	{
+		this._ui_edit_container.visible = true;
+	}
+	
+	public fun Hide()
+	{
+		this._ui_edit_container.visible = false;
+	}
+
+	////////////////////////////////////////////////////////////////////////////////////////
+
+	public fun System_SetVDragCursor(ALittle.UIEvent event) { ALittle.System_SetVDragCursor(); }
+	public fun System_SetNormalCursor(ALittle.UIEvent event) { ALittle.System_SetNormalCursor(); }
+	public fun System_SetHDragCursor(ALittle.UIEvent event) { ALittle.System_SetHDragCursor(); }
+	public fun System_SetHVDragCursor(ALittle.UIEvent event) { ALittle.System_SetHVDragCursor(); }
+
+	////////////////////////////////////////////////////////////////////////////////////////
+	// 处理面板大小拖拽
+	public fun HandleLeftEditResizeDrag(ALittle.UIButtonDragEvent event)
+	{
+		var up_size = this._right_edit_grid3.up_size;
+		up_size = up_size + event.delta_x;
+		var max_size = this._right_edit_grid3.width - this._right_edit_grid3.down_size - 50;
+		if (up_size > max_size) up_size = max_size;
+		if (up_size < 100) up_size = 100;
+		this._right_edit_grid3.up_size = up_size;
+	}
+	public fun HandleRightEditResizeDrag(ALittle.UIButtonDragEvent event)
+	{
+		var down_size = this._right_edit_grid3.down_size;
+		down_size = down_size - event.delta_x;
+		var max_size = this._right_edit_grid3.width - this._right_edit_grid3.up_size - 50;
+		if (down_size > max_size) down_size = max_size;
+		if (down_size < 100) down_size = 100;
+		this._right_edit_grid3.down_size = down_size;
+	}
+	public fun HandleControlEditResizeDrag(ALittle.UIButtonDragEvent event)
+	{
+		var up_size = this._control_edit_grid3.up_size;
+		up_size = up_size + event.delta_y;
+		var max_size = this._control_edit_grid3.height - this._control_edit_grid3.down_size - 50;
+		if (up_size < 50) up_size = 50;
+		if (up_size > max_size) up_size = max_size;
+		this._control_edit_grid3.up_size = up_size;
+	}
+	public fun HandleQuickEditResizeDrag(ALittle.UIButtonDragEvent event)
+	{
+		var down_size = this._quick_edit_grid3.down_size;
+		down_size = down_size - event.delta_y;
+		var max_size = this._quick_edit_grid3.height - this._quick_edit_grid3.up_size - 50;
+		if (down_size < 50) down_size = 50;
+		if (down_size > max_size) down_size = max_size;
+		this._quick_edit_grid3.down_size = down_size;
+	}
+	////////////////////////////////////////////////////////////////////////////////////////
+	// 处理快捷点
+	public fun HandleShortcutKey()
+	{
+		// 判定Ctrl键是否按下
+		var ctrl = A_UISystem.sym_map[1073742048];
+		if (ctrl == null) return;
+		// 判断Ctrl+Z
+		var z = A_UISystem.sym_map[122];
+		if (z)
+		{
+			this.HandleUndoRevoke(null);
+			return;
+		}
+		// 判断Ctrl+S
+		var s = A_UISystem.sym_map[115];
+		if (s)
+		{
+			this.HandleSaveCurrent(null);
+			return;
+		}
+		// 判断Ctrl+N
+		var n = A_UISystem.sym_map[110];
+		if (n)
+		{
+			g_IDEControlManager.ShowNewControl();
+			return;
+		}
+	}
+	// 快捷键 撤销
+	public fun HandleUndoRevoke(ALittle.UIEvent event)
+	{
+		var tab_child = g_IDETabManager.cur_tab_child;
+		if (tab_child == null) return;
+		tab_child.revoke_list.UndoRevoke();
+	}
+	// 快捷键 重做
+	public fun HandleDoRevoke(ALittle.UIEvent event)
+	{
+		var tab_child = g_IDETabManager.cur_tab_child;
+		if (tab_child == null) return;
+		tab_child.revoke_list.DoRevoke();
+	}
+	// 快捷键 保存
+	public fun HandleSaveCurrent(ALittle.UIEvent event)
+	{
+		var tab_child = g_IDETabManager.cur_tab_child;
+		if (tab_child == null) return;
+		tab_child.Save(true);
+	}
+	// 快捷键 撤销
+	public fun HandleUndoRevoke(ALittle.UIEvent event)
+	{
+		// 如果某些对话框打开着那么就直接返回
+		if (g_IDEAttrEventDialog.IsShow()) return;
+		var tab_child = g_IDETabManager.cur_tab_child;
+		if (tab_child == null) return;
+		tab_child.revoke_list.UndoRevoke();
+	}
+	// 快捷键 重做
+	public fun HandleDoRevoke(ALittle.UIEvent event)
+	{
+		var tab_child = g_IDETabManager.cur_tab_child;
+		if (tab_child == null) return;
+		tab_child.revoke_list.DoRevoke();
+	}
+	// 快捷键 保存
+	public fun HandleSaveCurrent(ALittle.UIEvent event)
+	{
+		var tab_child = g_IDETabManager.cur_tab_child;
+		if (tab_child == null) return;
+		tab_child.Save(true);
+	}
+	////////////////////////////////////////////////////////////////////////////////////////
+	// 工具栏按钮发生变化
+	public fun HandleToolSingleSelect(ALittle.UIEvent event)
+	{
+		var object = event.target;
+		g_IDETabManager.ShowTabChildSelectLayer(object.selected);
+		this._tool_h_align_left.visible = object.selected;
+		this._tool_h_align_center.visible = object.selected;
+		this._tool_h_align_right.visible = object.selected;
+		this._tool_v_align_top.visible = object.selected;
+		this._tool_v_align_center.visible = object.selected;
+		this._tool_v_align_bottom.visible = object.selected;
+	
+		this._tool_h_align_left_icon.visible = object.selected;
+		this._tool_h_align_center_icon.visible = object.selected;
+		this._tool_h_align_right_icon.visible = object.selected;
+		this._tool_v_align_top_icon.visible = object.selected;
+		this._tool_v_align_center_icon.visible = object.selected;
+		this._tool_v_align_bottom_icon.visible = object.selected;
+	}
+	public fun HandleToolHandDrag(ALittle.UIButtonDragEvent event)
+	{
+		g_IDETabManager.ShowTabChildHandDragLayer(event.target.selected);
+	}
+	public fun HandleToolPreSee(ALittle.UIEvent event)
+	{
+	}
+	public fun HandleToolScale(ALittle.UIEvent event)
+	{
+		g_IDETabManager.ShowTabChildScaleLayer(event.target.selected);
+		this._tool_scale_text.visible = event.target.selected;
+		this._tool_scale_input.visible = event.target.selected;
+	}
+	public get singleselect() : bool
+	{
+		return this._tool_singleselect.selected;
+	}
+	public get handdrag() : bool
+	{
+		return this._tool_handdrag.selected;
+	}
+	public get scale() : bool
+	{
+		return this._tool_scale.selected;
+	}
+	public fun UpdateToolScale(double scale)
+	{
+		this._tool_scale_input.text = scale;
+	}
+	public fun HandleToolScaleDrag(ALittle.UIButtonDragEvent event)
+	{
+		var tab_child = g_IDETabManager.cur_tab_child;
+		if (tab_child == null) return;
+	
+		var scale = lua.tonumber(this._tool_scale_input.text);
+		if (scale == null) scale = 1;
+		scale = scale + event.delta_x * 0.05;
+		if (scale < 0) scale = 0;
+		this._tool_scale_input.text = scale;
+		tab_child.SetScale(scale);
+	}
+	public fun HandleToolScaleMoveIn(ALittle.UIEvent event)
+	{
+		ALittle.System_SetHDragCursor();
+	}
+	public fun HandleToolScaleMoveOut(ALittle.UIEvent event)
+	{
+		ALittle.System_SetNormalCursor();
+	}
+	public fun HandleToolScaleInputFOCUSOUT(ALittle.UIEvent event)
+	{
+		var tab_child = g_IDETabManager.cur_tab_child;
+		if (tab_child == null) return;
+	
+		var scale = lua.tonumber(this._tool_scale_input.text);
+		if (scale == null) scale = 1;
+		if (scale < 0)
+		{
+			scale = 0;
+			this._tool_scale_input.text = "0";
+		}
+		tab_child.SetScale(scale);
+	}
+	
+	public fun HandleToolHLAlign(ALittle.UIEvent event)
+	{
+		var cur_tab = g_IDETabManager.cur_tab;
+		if (cur_tab == null) return;
+		var tab_child:IDETabChild = cur_tab._user_data;
+		if (event.target == this._tool_h_align_left)
+			tab_child.SelectAlign("h_align_left");
+		elseif (event.target == this._tool_h_align_center)
+			tab_child.SelectAlign("h_align_center");
+		elseif (event.target == this._tool_h_align_right)
+			tab_child.SelectAlign("h_align_right");
+		elseif (event.target == this._tool_v_align_top)
+			tab_child.SelectAlign("v_align_top");
+		elseif (event.target == this._tool_v_align_center)
+			tab_child.SelectAlign("v_align_center");
+		elseif (event.target == this._tool_v_align_bottom)
+			tab_child.SelectAlign("v_align_bottom");
+	}
+	
+	public fun HandleImageSelectClick(ALittle.UIEvent event)
+	{
+		g_IDEAttrImageDialog.ShowDialog(null, null);
+	}
+
+	// Tab界面右上角菜单按钮
+	public fun HandleTabRightExMenu(ALittle.UIEvent event)
+	{
+		var x, y = event.target.LocalToGlobal();
+		g_IDETabManager.ShowTabRightExMenu(x, y + event.target.height);
+	}
+}
+
+protected var g_IDEUICenter = new IDEUICenter();

@@ -1,0 +1,712 @@
+
+namespace ALittleIDE;
+
+// 快捷控件信息
+struct IDEQuickInfo
+{
+	ALittle.ScrollList scroll_list;					// 滚动列表
+	Map<string, ALittle.DisplayObject> item_map;	// 控件映射表
+}
+
+// 快捷控件item
+struct IDEQuickItemInfo
+{
+	ALittle.Image image;			// 快照图片
+	ALittle.DisplayObject button;	// 按钮
+	ALittle.DisplayObject name;		// 点击
+	ALittle.DisplayObject frame;	// 外框
+}
+
+// 快捷控件的携带参数
+struct IDEQuickItemUserData
+{
+	string path;			// 路径
+	string flag_type;		// 分类
+	string name;			// 名称
+	bool directory;			// 是否是目录
+}
+
+// 正在加载控件信息
+struct IDEQuickLoadingInfo
+{
+	Map<IDEQuickItemInfo, bool> map;		// 道具信息集合
+	int loop;					// 加载Loop
+}
+
+// 快捷控件的配置信息
+struct IDEQuickConfigInfo
+{
+	string name;			// 名称
+	int time;				// 时间
+}
+
+// 搜索运行时，用来拦截深度搜索
+struct IDEQuickSearchRunTime
+{
+	int cur_count;			// 当前数量
+	int total_count;		// 总数量
+	int item_count;			// 道具数量
+}
+
+public class IDEQuickManager
+{
+	private string _base_path;								// 基本路径
+	private List<string> _flag_type_list;					// 标签类型列表
+	private Map<string, IDEQuickInfo> _quick_map;			// 快捷控件映射表
+	private ALittle.Tab _project_quick_tab;					// 快捷控件映射表Tab
+	private ALittle.DisplayLayout _first_tab;				// 第一个标签页用于搜索控件
+	private Map<string, IDEQuickLoadingInfo> _loading;		// 正在加载的快捷控件信息
+
+	private ALittle.ScrollList _scroll_list;			// 控件选择器的列表
+	private ALittle.DisplayObject _search_type;			// 搜索类型
+	private ALittle.DisplayObject _search_input;		// 搜索关键字
+
+	private ALittle.DisplayObject _quick_right_menu;	// 右键菜单
+	private ALittle.Image _drag_image;					// 拖拽图片
+	private ALittle.Dialog _quick_pre_dialog;			// 预览对话框
+	private ALittle.Image _pre_image;					// 预览图片
+	
+	private double _real_size;		// 实际每个item大小
+
+	public ctor()
+	{
+		this._flag_type_list = ["常用按钮", "常用图片", "常用文本", "其他常用"];
+	
+		this._quick_map = new Map<string, IDEQuickInfo>();
+		for (var k, flag_type in this._flag_type_list)
+			this._quick_map[flag_type] = new IDEQuickInfo();
+	
+		this._first_tab = null;
+	
+		this._real_size = 80;
+		this._loading = new Map<string, IDEQuickLoadingInfo>();
+	}
+	
+	public fun Setup(ALittle.Tab project_quick_tab)
+	{
+		// 监听事件
+		g_IDEProject.AddEventListener(this, this.HandleDeleteControl);
+		g_IDEProject.AddEventListener(this, this.HandleChangeControl);
+		g_IDEProject.AddEventListener(this, this.HandleOpenProject);
+		g_IDEProject.AddEventListener(this, this.HandleCloseProject);
+
+		this._project_quick_tab = project_quick_tab;
+
+		// 添加第一个分页
+		this._first_tab = g_Control.CreateControl{ALittle.DisplayLayout}("ide_main_project_quick_search", this);
+		this._project_quick_tab.AddChild(this._first_tab);
+		this._project_quick_tab.SetChildText(this._first_tab, "控件选择器");
+
+		// 创建快捷控件标签页
+		for (var k, flag_type in this._flag_type_list)
+		{
+			var item = g_Control.CreateControl{ALittle.ScrollList}("ide_common_scroll_list", this);
+			this._project_quick_tab.AddChild(item);
+			this._project_quick_tab.SetChildText(item, flag_type);
+			this._quick_map[flag_type].scroll_list = item;
+		}
+	}
+
+	// 延时创建控件
+	public fun CreateItemDelay(ALittle.DisplayObject control, string abs_path)
+	{
+		g_Control.SaveControlToFile(control, abs_path);
+		var loading = this._loading[abs_path];
+		if (loading == null) return;
+		for (var info, v in loading.map)
+			info.image.SetTextureCut(abs_path, lua.math.floor(info.frame.width), lua.math.floor(info.frame.height), true);
+	}
+	
+	public fun CreateItem(IDEControlInfo control_info, string flag_type) : ALittle.DisplayObject
+	{
+		var info = new IDEQuickItemInfo();
+		var item = g_Control.CreateControl{ALittle.DisplayObject}("ide_quick_select_item", info);
+		info.name.text = control_info.name;
+	
+		// 计算控件截图的位置
+		if (ALittle.File_GetFileAttr(this._base_path) == null) ALittle.File_MakeDeepDir(this._base_path);
+		var abs_path = this._base_path.."/"..control_info.name..".png";
+		// 计算图片的大小
+		var width:double = null;
+		var height:double = null;
+		var surface = ALittle.System_LoadSurface(abs_path);
+		if (surface != null)
+		{
+			width = ALittle.System_GetSurfaceWidth(surface);
+			height = ALittle.System_GetSurfaceHeight(surface);
+			ALittle.System_FreeSurface(surface);
+		}
+		if (width == null)
+		{
+			// 创建一个控件
+			var control = g_IDEProject.project.control.CreateControl{ALittle.DisplayObject}(control_info.name);
+			if (control == null) return null;
+			width = control.width;
+			height = control.height;
+			if (width <= 0)
+			{
+				control.width = g_IDEProject.project.config.GetConfig("default_show_width", 800);
+				width = control.width;
+			}
+			if (height <= 0)
+			{
+				control.height = g_IDEProject.project.config.GetConfig("default_show_height", 800);
+				height = control.height;
+			}
+			// 因为这个时候control的相关图片还在异步加载中，所以这里需要做一个延时处理，最后再更新上去
+			var loading = this._loading[abs_path];
+			if (loading == null)
+			{
+				loading = new IDEQuickLoadingInfo();
+				loading.map = new Map<IDEQuickItemInfo, bool>();
+				this._loading[abs_path] = loading;
+				loading.loop = A_LoopSystem.AddTimer(2000, bind(this.CreateItemDelay, this, control, abs_path));
+			}
+			loading.map[info] = true;
+		}
+		else
+			info.image.SetTextureCut(abs_path, lua.math.floor(info.frame.width), lua.math.floor(info.frame.height), true);
+		
+		if (width < height)
+		{
+			var rate = width / height;
+			height = info.frame.height;
+			width = rate * height;
+		}
+		else
+		{
+			var rate = height / width;
+			width = info.frame.width;
+			height = rate * width;
+		}
+		info.image.width = width;
+		info.image.height = height;
+		info.image.UpdateLayout();
+		// info.button.drag_trans_target = this._scroll_list
+		info.button.AddEventListener(this, this.HandleItemClick);
+		info.button.AddEventListener(this, this.HandleItemRButtonDown);
+		info.button.AddEventListener(this, this.HandleItemMoveIn);
+		info.button.AddEventListener(this, this.HandleItemMoveOut);
+		info.button.AddEventListener(this, this.HandleItemMouseMove);
+		info.button.AddEventListener(this, this.HandleItemDragBegin);
+		info.button.AddEventListener(this, this.HandleItemDrag);
+		info.button.AddEventListener(this, this.HandleItemDragEnd);
+	
+		var user_data = new IDEQuickItemUserData();
+		user_data.path = abs_path;
+		user_data.flag_type = flag_type;
+		user_data.name = control_info.name;
+		user_data.directory = false;
+		info.button._user_data = user_data;
+		item._user_data = user_data;
+	
+		return item;
+	}
+	
+	public fun CreateItemAndAddToList(ALittle.ScrollList scroll_list, List<ALittle.DisplayObject> item_list)
+	{
+		var col_count = lua.math.floor(scroll_list.width / this._real_size);
+		var remain_count = 0;
+		var container:ALittle.Linear = null;
+		// 遍历列表
+		for (var index, item in item_list)
+		{
+			if (remain_count == 0)
+			{
+				container = new ALittle.Linear(g_Control);
+				container.type = ALittle.UIEnumTypes.TYPE_H;
+				container.height = item.height;
+				scroll_list.AddChild(container);
+				container.AddChild(item);
+				remain_count = col_count - 1;
+			}
+			else
+			{
+				remain_count = remain_count - 1;
+				container.AddChild(item);
+			}
+		}
+	}
+	
+	public fun AddToList(ALittle.ScrollList scroll_list, ALittle.DisplayObject item)
+	{
+		var col_count = lua.math.floor(scroll_list.width / this._real_size);
+		var container = cast<ALittle.Linear>(scroll_list.GetChildByIndex(scroll_list.child_count));
+		if (container != null && container.child_count >= col_count)
+			container = null;
+		
+		if (container == null)
+		{
+			container = new ALittle.Linear(g_Control);
+			container.type = ALittle.UIEnumTypes.TYPE_H;
+			container.height = item.height;
+			scroll_list.AddChild(container);
+		}
+		container.AddChild(item);
+	}
+	
+	public fun RemoveFromList(ALittle.ScrollList scroll_list, ALittle.DisplayObject item)
+	{
+		var item_list = new List<ALittle.DisplayObject>();
+		var item_count = 0;
+	
+		var childs = scroll_list.childs;
+		for (var k, child in childs)
+		{
+			for (var _, child_item in child.childs)
+			{
+				if (child_item != item)
+				{
+					++ item_count;
+					item_list[item_count] = child_item;
+				}
+			}
+		}
+	
+		scroll_list.RemoveAllChild();
+		this.CreateItemAndAddToList(scroll_list, item_list);
+	}
+	
+	public fun SearchCollect(string search_type, string key, @Nullable List<ALittle.DisplayObject> item_list, @Nullable IDEQuickSearchRunTime run_time) : List<ALittle.DisplayObject>, IDEQuickSearchRunTime
+	{
+		if (item_list == null) item_list = new List<ALittle.DisplayObject>();
+		if (run_time == null)
+		{
+			run_time = new IDEQuickSearchRunTime();
+			run_time.cur_count = 0;
+			run_time.total_count = 100;
+			run_time.item_count = 0;
+		}
+		
+		if (key == "" || key == null) return item_list, run_time;
+	
+		// 获取当前项目
+		var project = g_IDEProject.project;
+		if (project == null)
+		{
+			g_IDETool.ShowNotice("提示", "当前没有打开的项目");
+			return null, null;
+		}
+	
+		// 获取当前的项目控件资源路径
+		var control_map = project.control_map;
+		for (var control_name, control_info in control_map)
+		{
+			if (search_type == "控件名|描述")
+			{
+				if (key == ""
+						|| ALittle.Find(control_name, key) != null
+						|| (control_info.info.description != null && ALittle.Find(control_info.info.description, key) != null))
+				{
+					var item = this.CreateItem(control_info, "控件选择器");
+					if (item != null)
+					{
+						++ run_time.item_count;
+						item_list[run_time.item_count] = item;
+					}
+				}
+			}
+			elseif (search_type == "插件名")
+			{
+				if (IDEUtility_HasTargetClass(control_info.info, key))
+				{
+					var item = this.CreateItem(control_info, "控件选择器");
+					if (item != null)
+					{
+						++ run_time.item_count;
+						item_list[run_time.item_count] = item;
+					}
+				}
+			}
+			elseif (search_type == "事件设置")
+			{
+				if (IDEUtility_HasEventCallback(control_info.info, key))
+				{
+					var item = this.CreateItem(control_info, "控件选择器");
+					if (item != null)
+					{
+						++ run_time.item_count;
+						item_list[run_time.item_count] = item;
+					}
+				}
+			}
+			if (run_time.cur_count >= run_time.total_count)
+				return item_list, run_time;
+		}
+	
+		return item_list, run_time;
+	}
+
+	public static SearchCmp(ALittle.DisplayObject a, ALittle.DisplayObject b) : bool
+	{
+		var a_user_data:IDEQuickItemUserData = a._user_data;
+		var b_user_data:IDEQuickItemUserData = b._user_data;
+		return a_user_data.path < b_user_data.path;
+	}
+
+	public fun Search(string search_type, string name)
+	{
+		// 清空所有
+		this._scroll_list.RemoveAllChild();
+	
+		var item_list, run_time = this.SearchCollect(search_type, name);
+		// 提示一下只显示前面100个
+		var title = "控件选择器";
+		if (run_time.cur_count >= run_time.total_count)
+			title = title.."(筛选出来的数量太多，只显示前"..run_time.total_count.."个)";
+
+		// 根据文件名进行排序，文件夹永远你在前面
+		lua.table.sort(item_list, IDEQuickManager.SearchCmp);
+		this._project_quick_tab.SetChildText(this._first_tab, title);
+		this.CreateItemAndAddToList(this._scroll_list, item_list);
+	}
+	
+	public fun HandleSearchClick(ALittle.UIEvent event)
+	{
+		this.Search(this._search_type.text, this._search_input.text);
+	}
+	
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	public fun HandleItemClick(ALittle.UIClickEvent event)
+	{
+	}
+	
+	public fun HandleItemRButtonDown(ALittle.UIRButtonDownEvent event)
+	{
+		if (this._quick_right_menu == null)
+			this._quick_right_menu = g_Control.CreateControl{ALittle.DisplayObject}("ide_quick_right_menu", this);
+
+		A_LayerManager.ShowFromRight(this._quick_right_menu);
+	
+		this._quick_right_menu.x = A_UISystem.mouse_x;
+		this._quick_right_menu.y = A_UISystem.mouse_y;
+		if (this._quick_right_menu.x + this._quick_right_menu.width > A_UISystem.view_width)
+			this._quick_right_menu.x = A_UISystem.view_width - this._quick_right_menu.width;
+
+		if (this._quick_right_menu.y + this._quick_right_menu.height > A_UISystem.view_height)
+			this._quick_right_menu.y = A_UISystem.view_height - this._quick_right_menu.height;
+
+		this._quick_right_menu._user_data = event.target;
+	}
+	
+	// 处理复制控件名
+	public fun HandleQuickRightMenuCopyName(ALittle.UIEvent event)
+	{
+		A_LayerManager.HideFromRight(this._quick_right_menu);
+		var target:ALittle.DisplayObject = this._quick_right_menu._user_data;
+		this._quick_right_menu._user_data = null;
+
+		var user_data:IDEQuickItemUserData = target._user_data;
+		ALittle.System_SetClipboardText(user_data.name);
+	}
+	
+	// 复制继承代码
+	public fun HandleQuickRightMenuCopyExtends(ALittle.UIEvent event)
+	{
+		A_LayerManager.HideFromRight(this._quick_right_menu);
+		var target:ALittle.DisplayObject = this._quick_right_menu._user_data;
+		this._quick_right_menu._user_data = null;
+
+		var user_data:IDEQuickItemUserData = target._user_data;
+		var display_info = new ALittle.DisplayInfo();
+		display_info.__extends = user_data.name;
+		var info = new IDEControlCopyInfo();
+		info.index = 1;
+		info.info = display_info;
+		var copy_list = new List<IDEControlCopyInfo>();
+		copy_list[1] = info;
+		ALittle.System_SetClipboardText(lua.json.encode(copy_list));
+	}
+	
+	// 处理删除信息
+	public fun HandleQuickRightMenuDelete(ALittle.UIEvent event)
+	{
+		A_LayerManager.HideFromRight(this._quick_right_menu);
+		var target:ALittle.DisplayObject = this._quick_right_menu._user_data;
+		this._quick_right_menu._user_data = null;
+
+		var user_data:IDEQuickItemUserData = target._user_data;
+		var control_name = user_data.name;
+		var flag_type = user_data.flag_type;
+		// 配置文件删除配置
+		var cfg_quick_map = g_IDEProject.project.config.GetConfig("quick_map", new Map<string, Map<string, IDEQuickConfigInfo>>());
+		var cfg_info_map = cfg_quick_map[flag_type];
+		if (cfg_info_map == null) return;
+		if (cfg_info_map[control_name] == null) return;
+        
+		cfg_info_map[control_name] = null;
+		g_IDEProject.project.config.SetConfig("quick_map", cfg_quick_map);
+		// 快捷面板删除控件
+		var quick_info = this._quick_map[flag_type];
+		if (quick_info.item_map != null)
+		{
+			var item = quick_info.item_map[control_name];
+			if (item != null)
+			{
+				quick_info.item_map[control_name] = null;
+				this.RemoveFromList(quick_info.scroll_list, item);
+			}
+		}
+	}
+	
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	public fun HandleItemDragBegin(ALittle.UIButtonDragBeginEvent event)
+	{
+		this._drag_image = new ALittle.Image(g_Control);
+		var user_data:IDEQuickItemUserData = event.target._user_data;
+		this._drag_image._user_data = user_data;
+		A_LayerManager.AddToTip(this._drag_image);
+		this._drag_image.alpha = 0.5;
+		this._drag_image.SetTextureCut(user_data.path, 0, 0, true, bind(this.HandleItemDragViewCallback, this));
+		if (this._quick_pre_dialog != null) A_LayerManager.RemoveFromTip(this._quick_pre_dialog);
+	}
+	
+	public fun HandleItemDragViewCallback(ALittle.Image image, bool result)
+	{
+		image.width = image.texture_width;
+		image.height = image.texture_height;
+	
+		image.x = A_UISystem.mouse_x - image.width / 2;
+		image.y = A_UISystem.mouse_y - image.height / 2;
+	}
+	
+	public fun HandleItemDrag(ALittle.UIButtonDragEvent event)
+	{
+		this._drag_image.x = this._drag_image.x + event.delta_x;
+		this._drag_image.y = this._drag_image.y + event.delta_y;
+	}
+	
+	public fun HandleItemDragEnd(ALittle.UIButtonDragEndEvent event)
+	{
+		A_LayerManager.RemoveFromTip(this._drag_image);
+		var abs_x = this._drag_image.x;
+		var abs_y = this._drag_image.y;
+		this._drag_image = null;
+	
+		var user_data:IDEQuickItemUserData = event.target._user_data;
+	
+		// 获取当前的tab
+		var cur_tab_child = g_IDETabManager.cur_tab_child;
+		if (cur_tab_child == null) return;
+	
+		// 添加进去
+		cur_tab_child.QuickDragAddControl(abs_x, abs_y, user_data.name);
+	}
+	
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	public fun HandleItemMoveIn(ALittle.UIMoveInEvent event)
+	{
+		if (this._quick_pre_dialog == null)
+			this._quick_pre_dialog = g_Control.CreateControl{ALittle.Dialog}("ide_quick_pre_dialog", this);
+
+		A_LayerManager.AddToTip(this._quick_pre_dialog);
+		var user_data:IDEQuickItemUserData = event.target._user_data;
+		this._pre_image.SetTextureCut(user_data.path, 0, 0, true, bind(this.HandleItemPreViewCallback, this));
+		this.UpdateImagePreDialogPos();
+	}
+	
+	public fun HandleItemPreViewCallback(ALittle.Image image, bool result)
+	{
+		var width = image.texture_width;
+		image.width = width;
+		if (width < 100) width = 100;
+		if (width > A_UISystem.view_width)
+		{
+			width = A_UISystem.view_width;
+			image.width = width;
+		}
+		this._quick_pre_dialog.width = width;
+		image.x = (width - image.width) / 2;
+	
+		var height:double = image.texture_height;
+		image.height = height;
+		if (height < 50) height = 50;
+		if (height > A_UISystem.view_height - this._quick_pre_dialog.head_size)
+		{
+			height = A_UISystem.view_height - this._quick_pre_dialog.head_size;
+			image.height = height;
+		}
+		image.y = (height - image.height) / 2;
+		this._quick_pre_dialog.height = this._quick_pre_dialog.head_size + height;
+	}
+	
+	public fun HandleItemMoveOut(ALittle.UIMoveOutEvent event)
+	{
+		A_LayerManager.RemoveFromTip(this._quick_pre_dialog);
+	}
+	
+	public fun HandleItemMouseMove(ALittle.UIMouseMoveEvent event)
+	{
+		this.UpdateImagePreDialogPos();
+	}
+	
+	public fun UpdateImagePreDialogPos()
+	{
+		if (this._quick_pre_dialog == null) return;
+		var x = A_UISystem.mouse_x + 20;
+		if (x + this._quick_pre_dialog.width > A_UISystem.view_width)
+			x = A_UISystem.view_width - this._quick_pre_dialog.width;
+
+		var y = A_UISystem.mouse_y + 20;
+		if (y + this._quick_pre_dialog.height > A_UISystem.view_height)
+			y = A_UISystem.view_height - this._quick_pre_dialog.height;
+
+		this._quick_pre_dialog.x = x;
+		this._quick_pre_dialog.y = y;
+	}
+	
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	public fun HandleOpenProject(IDEProjectOpenEvent event)
+	{
+		this._base_path = g_IDEProject.project.base_path.."IDETemp/QuickManager";
+		var control_map = g_IDEProject.project.control_map;
+		// 读取配置文件信息，创建控件
+		var cfg_quick_map = g_IDEProject.project.config.GetConfig("quick_map", new Map<string, Map<string, IDEQuickConfigInfo>>());
+		for (var flag_type, cfg_map in cfg_quick_map)
+		{
+			var quick_info = this._quick_map[flag_type];
+			if (quick_info != null)
+			{
+				var item_list = new List<ALittle.DisplayObject>();
+				var item_list_count = 0;
+				quick_info.item_map = new Map<string, ALittle.DisplayObject>();
+				for (var k, cfg_info in cfg_map)
+				{
+					var control_info = control_map[cfg_info.name];
+					if (control_info != null)
+					{
+						var item = this.CreateItem(control_info, flag_type);
+						if (item != null)
+						{
+							++ item_list_count;
+							item_list[item_list_count] = item;
+							quick_info.item_map[cfg_info.name] = item;
+						}
+					}
+				}
+				this.CreateItemAndAddToList(quick_info.scroll_list, item_list);
+			}
+		}
+	}
+	
+	public fun HandleCloseProject(IDEProjectCloseEvent event)
+	{
+		for (var k, quick_info in this._quick_map)
+		{
+			quick_info.scroll_list.RemoveAllChild();
+			quick_info.item_map = new Map<string, ALittle.DisplayObject>();
+		}
+		this._scroll_list.RemoveAllChild();
+	}
+	
+	public fun HandleDeleteControl(IDEProjectDeleteControlEvent event)
+	{
+		var control_name = event.name;
+		// 删除对应的快照图片
+		var abs_path = g_IDEProject.project.base_path.."IDETemp/QuickManager/"..control_name..".png";
+		ALittle.File_DeleteFile(abs_path);
+		// 移除异步加载loop
+		var loading = this._loading[abs_path];
+		this._loading[abs_path] = null;
+		if (loading != null)
+		{
+			A_LoopSystem.RemoveTimer(loading.loop);
+			loading.loop = null;
+		}
+		// 配置文件删除配置
+		var cfg_quick_map = g_IDEProject.project.config.GetConfig("quick_map", new Map<string, Map<string, IDEQuickConfigInfo>>());
+		var has_changed = false;
+		for (var flag_type, cfg_info_map in cfg_quick_map)
+		{
+			if (cfg_info_map[control_name] != null)
+			{
+				cfg_info_map[control_name] = null;
+				has_changed = true;
+			}
+		}
+		if (has_changed)
+			g_IDEProject.project.config.SetConfig("quick_map", cfg_quick_map);
+        
+		// 快捷面板删除控件
+		for (var flag_type, quick_info in this._quick_map)
+		{
+			if (quick_info.item_map != null)
+			{
+				var item = quick_info.item_map[control_name];
+				if (item != null)
+				{
+					quick_info.item_map[control_name] = null;
+					this.RemoveFromList(quick_info.scroll_list, item);
+				}
+			}
+		}
+	}
+	
+	// 如果在快捷列表里面，那么就要重新创建
+	public fun HandleChangeControl(IDEProjectChangeControlEvent event)
+	{
+	}
+	
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	public fun FlagImage(string control_name)
+	{
+		this.FlagImpl("常用图片", control_name);
+	}
+	public fun FlagButton(string control_name)
+	{
+		this.FlagImpl("常用按钮", control_name);
+	}
+	public fun FlagText(string control_name)
+	{
+		this.FlagImpl("常用文本", control_name);
+	}
+	public fun FlagOther(string control_name)
+	{
+		this.FlagImpl("其他常用", control_name);
+	}
+	public fun FlagImpl(string flag_type, string control_name)
+	{
+		// 获取控件信息
+		var control_map = g_IDEProject.project.control_map;
+		var control_info = control_map[control_name];
+		if (control_info == null) return;
+	
+		// 获取标签信息
+		var quick_info = this._quick_map[flag_type];
+		if (quick_info == null) return;
+	
+		// 获取配置信息
+		var cfg_quick_map = g_IDEProject.project.config.GetConfig("quick_map", new Map<string, Map<string, IDEQuickConfigInfo>>());
+		var cfg_info_map = cfg_quick_map[flag_type];
+		if (cfg_info_map == null)
+		{
+			cfg_info_map = new Map<string, IDEQuickConfigInfo>();
+			cfg_quick_map[flag_type] = cfg_info_map;
+		}
+	
+		// 检查是否已经收录
+		if (cfg_info_map[control_name] != null) return;
+	
+		// 创建控件
+		var item = this.CreateItem(control_info, flag_type);
+		if (item == null) return;
+	
+		// 添加到列表
+		this.AddToList(quick_info.scroll_list, item);
+		if (quick_info.item_map == null) quick_info.item_map = new Map<string, ALittle.DisplayObject>();
+		quick_info.item_map[control_name] = item;
+	
+		// 保存配置
+		var info = new IDEQuickConfigInfo();
+		info.name = control_name;
+		info.time = lua.os.time();
+		cfg_info_map[control_name] = info;
+		g_IDEProject.project.config.SetConfig("quick_map", cfg_quick_map);
+	}
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+protected var g_IDEQuickManager = new IDEQuickManager();

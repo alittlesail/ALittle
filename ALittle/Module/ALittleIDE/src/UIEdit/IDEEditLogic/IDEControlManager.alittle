@@ -1,0 +1,628 @@
+
+namespace ALittleIDE;
+
+struct IDEControlItemUserData
+{
+	int pre_index;
+	bool presee;
+	IDEControlInfo control_info;
+}
+
+public class IDEControlManager
+{
+	private ALittle.EffectImage _drag_effect;
+	private bool _drag_shift;
+	
+	private List<ALittle.DisplayObject> _item_pool;
+	private int _item_pool_count;
+	private List<ALittle.DisplayObject> _item_used;
+	
+	private ALittle.ScrollScreen _control_scroll_screen;
+	private ALittle.DisplayObject _control_search_key;
+	private ALittle.DisplayObject _control_search_type;
+	private ALittle.Dialog _control_new_dialog;
+	private ALittle.DropDown _control_new_type;
+	private ALittle.ImageInput _control_new_name;
+	private ALittle.DisplayObject _control_new_extends_name;
+	private ALittle.DisplayObject _control_right_menu;
+
+	public ctor()
+	{
+		this._drag_effect = null;
+		this._drag_shift = false;
+	
+		this._item_pool = new List<ALittle.DisplayObject>();
+		this._item_pool_count = 0;
+		this._item_used = new List<ALittle.DisplayObject>();
+	}
+
+	public static ControlInfoCmp(IDEControlInfo a, IDEControlInfo b) : bool
+	{
+		return a.name < b.name;
+	}
+
+	// 处理控件搜索
+	public fun HandleControlSearchClick(ALittle.UIEvent event)
+	{
+		// 移除所有子控件
+		this._control_scroll_screen.RemoveAllChild();
+		// 把所有控件全部放入池
+		for (var k, item in this._item_used)
+		{
+			this._item_pool_count = this._item_pool_count + 1;
+			this._item_pool[this._item_pool_count] = item;
+		}
+		this._item_used = new List<ALittle.DisplayObject>();
+		var item_used_count = 0;
+		// 获取当前项目
+		var project = g_IDEProject.project;
+		if (project == null)
+		{
+			g_IDETool.ShowNotice("提示", "当前没有打开的项目");
+			return;
+		}
+	
+		// 获取搜索的内容
+		var key = this._control_search_key.text;
+		var search_type = this._control_search_type.text;
+		var control_info_list = new List<IDEControlInfo>();
+		var control_info_count = 0;
+	
+		// 获取当前的项目控件资源路径
+		var control_map = project.control_map;
+		for (var control_name, control_info in control_map)
+		{
+			if (search_type == "控件名|描述")
+			{
+				if (key == ""
+				|| ALittle.Find(control_name, key) != null
+				|| (control_info.info.description != null && ALittle.Find(control_info.info.description, key) != null))
+				{
+					++ control_info_count;
+					control_info_list[control_info_count] = control_info;
+				}
+			}
+			elseif (search_type == "插件名")
+			{
+				if (IDEUtility_HasTargetClass(control_info.info, key))
+				{
+					++ control_info_count;
+					control_info_list[control_info_count] = control_info;
+				}
+			}
+			elseif (search_type == "事件设置")
+			{
+				if (IDEUtility_HasEventCallback(control_info.info, key))
+				{
+					++ control_info_count;
+					control_info_list[control_info_count] = control_info;
+				}
+			}
+		}
+	
+		// 获取当前已经打开的所有控件名
+		var tabname_map = g_IDETabManager.GetTabNameMap();
+		var search_count = 0;
+		var last_control_info:IDEControlInfo = null;
+		// 排序
+		lua.table.sort(control_info_list, IDEControlManager.ControlInfoCmp);
+		// 开始遍历
+		for (var index, control_info in control_info_list)
+		{
+			// 创建控件
+			var item:ALittle.DisplayObject = null;
+			if (this._item_pool_count > 0)
+			{
+				item = this._item_pool[this._item_pool_count];
+				this._item_pool_count = this._item_pool_count - 1;
+			}
+			if (item == null)
+			{
+				item = g_Control.CreateControl{ALittle.DisplayObject}("ide_common_item_checkbutton");
+				// 添加点击事件
+				item.AddEventListener(this, this.HandleControlItemClick);
+				item.AddEventListener(this, this.HandleControlItemRightClick);
+				item.AddEventListener(this, this.HandleControlPreseeMoveIn);
+				item.AddEventListener(this, this.HandleControlPreseeMoveOut);
+				item.AddEventListener(this, this.HandleControlKeyDown);
+	
+				item.AddEventListener(this, this.HandleControlDragBegin);
+				item.AddEventListener(this, this.HandleControlDrag);
+				item.AddEventListener(this, this.HandleControlDragEnd);
+			}
+			// 添加到使用列表
+			++ item_used_count;
+			this._item_used[item_used_count] = item;
+			// 设置控件显示文本
+			if (control_info.info.description != null && control_info.info.description != "")
+				item.text = control_info.name.."("..control_info.info.description..")";
+			else
+				item.text = control_info.name;
+
+			// 检查是否已打开，如果是就设置选中状态
+			item.selected = tabname_map[control_info.name] != null;
+			// 设置携带数据
+			var user_data = new IDEControlItemUserData();
+			item._user_data = user_data;
+			user_data.presee = false;
+			user_data.control_info = control_info;
+			// item.drag_trans_target = this._control_scroll_screen
+			this._control_scroll_screen.AddChild(item);
+	
+			search_count = search_count + 1;
+			last_control_info = control_info;
+		}
+	
+		if (search_count == 1)
+			g_IDETabManager.StartEditControlBySelect(last_control_info.name, last_control_info.info);
+	}
+	public fun HandleControlItemClick(ALittle.UIClickEvent event)
+	{
+		var info:IDEControlItemUserData = event.target._user_data;
+		info.presee = false;
+		event.target.selected = true;
+		g_IDETabManager.StartEditControlBySelect(info.control_info.name, info.control_info.info);
+	}
+	public fun HandleControlPreseeMoveIn(ALittle.UIMoveInEvent event)
+	{
+		var info:IDEControlItemUserData = event.target._user_data;
+		info.presee = true;
+		if (g_IDETabManager.GetTabByName(info.control_info.name) != null) { info.presee = false; return; }
+		info.pre_index = g_IDETabManager.GetCurTabIndex();
+		g_IDETabManager.StartEditControlBySelect(info.control_info.name, info.control_info.info);
+	}
+	public fun HandleControlPreseeMoveOut(ALittle.UIMoveOutEvent event)
+	{
+		var info:IDEControlItemUserData = event.target._user_data;
+		if (info.presee != true) return;
+		var child = g_IDETabManager.GetTabByName(info.control_info.name);
+		if (child == null) return;
+		g_IDETabManager.CloseTab(child);
+		if (info.pre_index != null) g_IDETabManager.SetCurTabIndex(info.pre_index);
+	}
+	public fun HandleControlKeyDown(ALittle.UIKeyDownEvent event)
+	{
+		// 判断F2
+		if (event.sym == 1073741883)
+			this.ControlRenameImpl(event.target);
+	}
+	public fun HandleControlDragBegin(ALittle.UIButtonDragBeginEvent event)
+	{
+		this._drag_shift = (A_UISystem.sym_map[1073742049] != null || A_UISystem.sym_map[1073742053] != null);
+		if (this._drag_shift == false)
+		{
+			event.target = this._control_scroll_screen;
+			this._control_scroll_screen.DispatchEvent(event);
+			return;
+		}
+
+		var x, y = event.target.LocalToGlobal();
+		// 创建渲染图片
+		this._drag_effect = new ALittle.EffectImage(g_Control);
+		this._drag_effect.Action(event.target);
+		// 添加到Tip层
+		A_LayerManager.AddToTip(this._drag_effect);
+		this._drag_effect.x = x;
+		this._drag_effect.y = y;
+		this._drag_effect.alpha = 0.6;
+        
+		var info:IDEControlItemUserData = event.target._user_data;
+		if (info.presee != true) return;
+		var child = g_IDETabManager.GetTabByName(info.control_info.name);
+		if (child == null) return;
+		g_IDETabManager.CloseTab(child);
+		if (info.pre_index != null) g_IDETabManager.SetCurTabIndex(info.pre_index);
+	}
+	public fun HandleControlDrag(ALittle.UIButtonDragEvent event)
+	{
+		if (this._drag_shift == false)
+		{
+			event.target = this._control_scroll_screen;
+			this._control_scroll_screen.DispatchEvent(event);
+			return;
+		}
+		if (this._drag_effect == null) return;
+		this._drag_effect.x = this._drag_effect.x + event.delta_x;
+		this._drag_effect.y = this._drag_effect.y + event.delta_y;
+	}
+	public fun HandleControlDragEnd(ALittle.UIButtonDragEndEvent event)
+	{
+		if (this._drag_shift == false)
+		{
+			event.target = this._control_scroll_screen;
+			this._control_scroll_screen.DispatchEvent(event);
+			return;
+		}
+		if (this._drag_effect != null)
+		{
+			// 从Tip层移除
+			A_LayerManager.RemoveFromTip(this._drag_effect);
+			this._drag_effect.Clear();
+			this._drag_effect = null;
+		}
+	
+		var tab_child = g_IDETabManager.cur_tab_child;
+		var x, y = tab_child.tree_object.LocalToGlobal();
+		var delta_x = event.abs_x - x;
+		var delta_y = event.abs_y - y;
+	
+		var target = tab_child.tree_object.PickUp(delta_x, delta_y);
+		if (target == null)
+		{
+			ALittle.Log("IDETreeLogic:HandleDrag} target null");
+			return;
+		}
+		var tree:IDETreeLogic = target._user_data;
+
+		var user_data:IDEControlItemUserData = event.target._user_data;
+		// 把自己剪切
+		var save_info = new Map<string, any>();
+		save_info["__extends"] = user_data.control_info.name;
+		var copy_list = new List<Map<string, any> >();
+		var info = new Map<string, any>();
+		info["index"] = 1;
+		info["info"] = save_info;
+		copy_list[1] = info;
+		ALittle.System_SetClipboardText(lua.json.encode(copy_list));
+	
+		if (tree.IsTree())
+			tab_child.RightControlTreePasteImpl(tree, null, 1);
+		else
+		{
+			// 获取父控件
+			var common_parent = tree.logic_parent;
+			if (common_parent == null)
+			{
+				g_IDETool.ShowNotice("提示", "当前是根节点，并且不是容器，粘帖失败");
+				return;
+			}
+			var child_index = common_parent.GetChildIndex(tree);
+			x, y = target.LocalToGlobal();
+			y = y + target.height / 2;
+			if (event.abs_y > y) child_index = child_index + 1;
+			tab_child.RightControlTreePasteImpl(cast<IDETreeLogic>(common_parent), null, child_index);
+		}
+	}
+	
+	public fun ClearControlItem()
+	{
+		this._control_scroll_screen.RemoveAllChild();
+	}
+	
+	public fun ShowNewControl()
+	{
+		// 检查当前是否打开项目
+		if (g_IDEProject.project == null)
+		{
+			g_IDETool.ShowNotice("提示", "当前没有打开的项目");
+			return;
+		}
+		
+		// 创建新建控件对话框，并加入模态层
+		if (this._control_new_dialog == null)
+		{
+			this._control_new_dialog = g_Control.CreateControl{ALittle.Dialog}("ide_new_control_dialog", this);
+			A_LayerManager.AddToModal(this._control_new_dialog);
+			// 把可以新建的空间列表设置到控件中
+			this._control_new_type.data_list = g_IDEEnum.child_type_list;
+		}
+	
+		// 清空输入框
+		this._control_new_name.text = "";
+		this._control_new_extends_name.text = "";
+		// 隐藏对话框
+		this._control_new_dialog.visible = true;
+		//- 把输入框设置为焦点
+		A_UISystem.focus = this._control_new_name.show_input;
+	}
+	
+	// 处理新建控件-取消
+	public fun HandleNewControlCancel(ALittle.UIEvent event)
+	{
+		this._control_new_dialog.visible = false;
+	}
+	// 处理新建控件-确认
+	public fun HandleNewControlConfirm(ALittle.UIEvent event)
+	{
+		// 获取当前项目
+		var project = g_IDEProject.project;
+		if (project == null)
+		{
+			g_IDETool.ShowNotice("错误", "当前没有打开的项目");
+			return;
+		}
+		// 获取控件名字
+		var name = this._control_new_name.text;
+		if (name == "")
+		{
+			g_IDETool.ShowNotice("错误", "请输入控件名");
+			return;
+		}
+		// 检查控件名
+		if (IDEUtility_CheckName(name) == false)
+		{
+			g_IDETool.ShowNotice("错误", "控件名不合法:"..name);
+			return;
+		}
+		// 检查控件是否存在
+		if (project.control_map[name] != null)
+		{
+			g_IDETool.ShowNotice("错误", "控件已存在:"..name);
+			return;
+		}
+		// 检查控件名是否已经正在编辑了
+		if (g_IDETabManager.GetTabByName(name) != null)
+		{
+			g_IDETool.ShowNotice("错误", "控件名已存在:"..name);
+			return;
+		}
+		// 获取控件类型
+		var control_type = this._control_new_type.text;
+		if (control_type == "")
+		{
+			g_IDETool.ShowNotice("错误", "请选择控件类型");
+			return;
+		}
+		// 获取继承控件名
+		var extends_name = this._control_new_extends_name.text;
+		if (extends_name != "")
+			g_IDETabManager.StartEditControlByExtends(name, extends_name);
+		else
+			g_IDETabManager.StartEditControlByNew(name, control_type);
+		// 关闭对话框
+		this._control_new_dialog.visible = false;
+	}
+	// 处理控件搜索右键点击
+	public fun HandleControlItemRightClick(ALittle.UIRButtonDownEvent event)
+	{
+		if (this._control_right_menu == null)
+			this._control_right_menu = g_Control.CreateControl{ALittle.DisplayObject}("ide_control_right_menu", this);
+		A_LayerManager.ShowFromRight(this._control_right_menu);
+	
+		this._control_right_menu.x = A_UISystem.mouse_x;
+		this._control_right_menu.y = A_UISystem.mouse_y;
+		if (this._control_right_menu.x + this._control_right_menu.width > A_UISystem.view_width)
+			this._control_right_menu.x = A_UISystem.view_width - this._control_right_menu.width;
+
+		if (this._control_right_menu.y + this._control_right_menu.height > A_UISystem.view_height)
+			this._control_right_menu.y = A_UISystem.view_height - this._control_right_menu.height;
+
+		this._control_right_menu._user_data = event.target;
+	}
+	// 处理删除
+	public fun DeleteControlImpl(ALittle.DisplayObject target)
+	{
+		this._control_scroll_screen.RemoveChild(target);
+		var user_data:IDEControlItemUserData = target._user_data;
+		var result, content = g_IDEProject.DeleteControl(user_data.control_info.name);
+		if (result == false)
+		{
+			g_IDETool.ShowNotice("提示", content);
+			return;
+		}
+	
+		var tab = g_IDETabManager.GetTabByName(user_data.control_info.name);
+		if (tab == null) return;
+		g_IDETabManager.CloseTab(tab);
+	}
+	// 处理删除信息
+	public fun HandleControlRightMenuDelete(ALittle.UIEvent event)
+	{
+		A_LayerManager.HideFromRight(this._control_right_menu);
+		var target:ALittle.DisplayObject = this._control_right_menu._user_data;
+		this._control_right_menu._user_data = null;
+
+		var user_data:IDEControlItemUserData = target._user_data;
+		var name = user_data.control_info.name;
+		var result, content = g_IDEProject.CanDelete(name);
+		if (result == false)
+		{
+			g_IDETool.ShowNotice("错误", content);
+			return;
+		}
+		result, content = g_IDETabManager.CanDelete(name);
+		if (result == false)
+		{
+			g_IDETool.ShowNotice("错误", content);
+			return;
+		}
+        
+		var callback = bind(this.DeleteControlImpl, this, target);
+		g_IDETool.DeleteNotice("提示", "确定要删除"..target.text.."吗?", callback);
+	}
+	// 处理复制控件名
+	public fun HandleControlRightMenuCopyName(ALittle.UIEvent event)
+	{
+		A_LayerManager.HideFromRight(this._control_right_menu);
+		var target:ALittle.DisplayObject = this._control_right_menu._user_data;
+		this._control_right_menu._user_data = null;
+
+		var user_data:IDEControlItemUserData = target._user_data;
+		var name = user_data.control_info.name;
+		ALittle.System_SetClipboardText(name);
+	}
+	// 处理复制控件
+	public fun HandleControlRightMenuCopyInfo(ALittle.UIEvent event)
+	{
+		A_LayerManager.HideFromRight(this._control_right_menu);
+		var target:ALittle.DisplayObject = this._control_right_menu._user_data;
+		this._control_right_menu._user_data = null;
+
+		var user_data:IDEControlItemUserData = target._user_data;
+		var name = user_data.control_info.name;
+		var x, y = target.LocalToGlobal();
+		var callback = bind(this.ControlCopyInfo, this, name);
+		g_IDETool.ShowRename(callback, name, x, y, target.width);
+	}
+	
+	// 复制控件信息
+	public fun ControlCopyInfo(string target_name, string new_name)
+	{
+		var result, content = IDEUtility_CheckName(new_name);
+		if (result == false)
+		{
+			g_IDETool.ShowNotice("错误", content);
+			return;
+		}
+		var info = g_IDEProject.project.control_map[new_name];
+		if (info != null)
+		{
+			g_IDETool.ShowNotice("错误", "控件名已存在:"..new_name);
+			return;
+		}
+		info = g_IDEProject.project.control_map[target_name];
+		if (info == null)
+		{
+			g_IDETool.ShowNotice("错误", "控件不存在:"..target_name);
+			return;
+		}
+		g_IDEProject.SaveControl(new_name, ALittle.String_CopyTable(info.info));
+		info = g_IDEProject.project.control_map[new_name];
+		if (info == null)
+		{
+			g_IDETool.ShowNotice("错误", "控件新建失败:"..new_name);
+			return;
+		}
+		// 直接打开这个控件
+		g_IDETabManager.StartEditControlBySelect(new_name, info.info);
+	}
+	
+	// 修改控件名
+	public fun ControlRename(ALittle.DisplayObject target, string old_name, string new_name)
+	{
+		// 检查是否有修改
+		if (old_name == new_name) return;
+		// 重命名
+		var result, content = g_IDEProject.RenameControl(old_name, new_name);
+		if (result == false)
+		{
+			g_IDETool.ShowNotice("错误", content);
+			return;
+		}
+	
+		target.text = new_name;
+	
+		// 检查有没有正在编辑的控件
+		var tab = g_IDETabManager.GetTabByName(old_name);
+		if (tab == null) return;
+		var tab_child:IDETabChild = tab._user_data;
+		tab_child.Rename(new_name);
+	}
+	
+	// 修改控件名事件处理
+	public fun ControlRenameImpl(ALittle.DisplayObject target)
+	{
+		var user_data:IDEControlItemUserData = target._user_data;
+		var name = user_data.control_info.name;
+		var result, content = g_IDEProject.CanDelete(name);
+		if (result == false)
+		{
+			g_IDETool.ShowNotice("错误", content);
+			return;
+		}
+		result, content = g_IDETabManager.CanDelete(name);
+		if (result == false)
+		{
+			g_IDETool.ShowNotice("错误", content);
+			return;
+		}
+	
+		var x, y = target.LocalToGlobal();
+		var callback = bind(this.ControlRename, this, target, name);
+		g_IDETool.ShowRename(callback, name, x, y, target.width);
+	}
+	
+	// 修改控件名
+	public fun HandleControlRightMenuRename(ALittle.UIEvent event)
+	{
+		A_LayerManager.HideFromRight(this._control_right_menu);
+		var target:ALittle.DisplayObject = this._control_right_menu._user_data;
+		this._control_right_menu._user_data = null;
+	
+		this.ControlRenameImpl(target);
+	}
+	// 复制继承代码
+	public fun HandleControlRightMenuCopyExtends(ALittle.UIEvent event)
+	{
+		A_LayerManager.HideFromRight(this._control_right_menu);
+		var target:ALittle.DisplayObject = this._control_right_menu._user_data;
+		this._control_right_menu._user_data = null;
+
+		var user_data:IDEControlItemUserData = target._user_data;
+		var name = user_data.control_info.name;
+		var save_info = new Map<string, any>();
+		save_info["__extends"] = name;
+		var copy_list = new List<Map<string, any> >();
+		var info = new Map<string, any>();
+		info["index"] = 1;
+		info["info"] = save_info;
+		copy_list[1] = info;
+		ALittle.System_SetClipboardText(lua.json.encode(copy_list));
+	}
+	// 运行控件
+	public fun ControlRunImpl(string name)
+	{
+		var debug = new Map<string, any>();
+		debug["title"] = name;
+		debug["window_width"] = g_IDEProject.project.config.GetConfig("default_show_width", 800);
+		debug["window_height"] = g_IDEProject.project.config.GetConfig("default_show_height", 600);
+		debug["ui_name"] = name;
+		debug["module_name"] = g_IDEProject.project.name;
+		var debug_str = lua.json.encode(debug);
+		debug_str = "\""..ALittle.String_Replace(debug_str, "\"", "\\\"").."\"";
+
+		lua.os.execute("start ALittleClientWin32.exe "..debug_str.." "..g_IDEProject.project.name.." Engine/MainTemplate/UIViewer");
+	}
+	
+	public fun HandleControlRightMenuRun(ALittle.UIEvent event)
+	{
+		A_LayerManager.HideFromRight(this._control_right_menu);
+		var target:ALittle.DisplayObject = this._control_right_menu._user_data;
+		this._control_right_menu._user_data = null;
+
+		var user_data:IDEControlItemUserData = target._user_data;
+		this.ControlRunImpl(user_data.control_info.name);
+	}
+	
+	public fun HandleControlRightMenuFlagQuickImage(ALittle.UIEvent event)
+	{
+		A_LayerManager.HideFromRight(this._control_right_menu);
+		var target:ALittle.DisplayObject = this._control_right_menu._user_data;
+		this._control_right_menu._user_data = null;
+
+		var user_data:IDEControlItemUserData = target._user_data;
+		g_IDEQuickManager.FlagImage(user_data.control_info.name);
+	}
+	
+	public fun HandleControlRightMenuFlagQuickButton(ALittle.UIEvent event)
+	{
+		A_LayerManager.HideFromRight(this._control_right_menu);
+		var target:ALittle.DisplayObject = this._control_right_menu._user_data;
+		this._control_right_menu._user_data = null;
+
+		var user_data:IDEControlItemUserData = target._user_data;
+		g_IDEQuickManager.FlagButton(user_data.control_info.name);
+	}
+	
+	public fun HandleControlRightMenuFlagQuickText(ALittle.UIEvent event)
+	{
+		A_LayerManager.HideFromRight(this._control_right_menu);
+		var target:ALittle.DisplayObject = this._control_right_menu._user_data;
+		this._control_right_menu._user_data = null;
+
+		var user_data:IDEControlItemUserData = target._user_data;
+		g_IDEQuickManager.FlagText(user_data.control_info.name);
+	}
+	
+	public fun HandleControlRightMenuFlagQuickOther(ALittle.UIEvent event)
+	{
+		A_LayerManager.HideFromRight(this._control_right_menu);
+		var target:ALittle.DisplayObject = this._control_right_menu._user_data;
+		this._control_right_menu._user_data = null;
+
+		var user_data:IDEControlItemUserData = target._user_data;
+		g_IDEQuickManager.FlagOther(user_data.control_info.name);
+	}
+}
+
+protected var g_IDEControlManager = new IDEControlManager();

@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\IDECenter.alittle" />
+    <None Include="src\IDEProject.alittle" />
+    <None Include="src\Main.alittle" />
+    <None Include="src\UIEdit\IDEDataCore\IDEEnum.alittle" />
+    <None Include="src\UIEdit\IDEDataCore\IDEExport.alittle" />
+    <None Include="src\UIEdit\IDEEditCore\IDEAttrEventDialog.alittle" />
+    <None Include="src\UIEdit\IDEEditCore\IDEAttrImageDialog.alittle" />
+    <None Include="src\UIEdit\IDEEditCore\IDEAttrTextDialog.alittle" />
+    <None Include="src\UIEdit\IDEEditCore\IDEEditImageDialog.alittle" />
+    <None Include="src\UIEdit\IDEEditCore\IDEImageCutPlugin.alittle" />
+    <None Include="src\UIEdit\IDEEditCore\IDERevocation.alittle" />
+    <None Include="src\UIEdit\IDEEditCore\IDESetting\DialogS.alittle" />
+    <None Include="src\UIEdit\IDEEditCore\IDESetting\DisplayLayoutS.alittle" />
+    <None Include="src\UIEdit\IDEEditCore\IDESetting\DisplayObjectS.alittle" />
+    <None Include="src\UIEdit\IDEEditCore\IDESetting\DisplayViewS.alittle" />
+    <None Include="src\UIEdit\IDEEditCore\IDESetting\DropDownS.alittle" />
+    <None Include="src\UIEdit\IDEEditCore\IDESetting\FramePlayS.alittle" />
+    <None Include="src\UIEdit\IDEEditCore\IDESetting\Grid3S.alittle" />
+    <None Include="src\UIEdit\IDEEditCore\IDESetting\Grid9ImageS.alittle" />
+    <None Include="src\UIEdit\IDEEditCore\IDESetting\Grid9S.alittle" />
+    <None Include="src\UIEdit\IDEEditCore\IDESetting\ImageEditS.alittle" />
+    <None Include="src\UIEdit\IDEEditCore\IDESetting\ImageInputS.alittle" />
+    <None Include="src\UIEdit\IDEEditCore\IDESetting\ImagePlayS.alittle" />
+    <None Include="src\UIEdit\IDEEditCore\IDESetting\ImageS.alittle" />
+    <None Include="src\UIEdit\IDEEditCore\IDESetting\LinearS.alittle" />
+    <None Include="src\UIEdit\IDEEditCore\IDESetting\PiechartS.alittle" />
+    <None Include="src\UIEdit\IDEEditCore\IDESetting\QuadS.alittle" />
+    <None Include="src\UIEdit\IDEEditCore\IDESetting\RichAreaS.alittle" />
+    <None Include="src\UIEdit\IDEEditCore\IDESetting\RichEditS.alittle" />
+    <None Include="src\UIEdit\IDEEditCore\IDESetting\RichInputS.alittle" />
+    <None Include="src\UIEdit\IDEEditCore\IDESetting\ScrollBarS.alittle" />
+    <None Include="src\UIEdit\IDEEditCore\IDESetting\ScrollButtonS.alittle" />
+    <None Include="src\UIEdit\IDEEditCore\IDESetting\ScrollListS.alittle" />
+    <None Include="src\UIEdit\IDEEditCore\IDESetting\ScrollScreenS.alittle" />
+    <None Include="src\UIEdit\IDEEditCore\IDESetting\SliderS.alittle" />
+    <None Include="src\UIEdit\IDEEditCore\IDESetting\SpringTextButtonS.alittle" />
+    <None Include="src\UIEdit\IDEEditCore\IDESetting\SpritePlayS.alittle" />
+    <None Include="src\UIEdit\IDEEditCore\IDESetting\SpriteS.alittle" />
+    <None Include="src\UIEdit\IDEEditCore\IDESetting\TabS.alittle" />
+    <None Include="src\UIEdit\IDEEditCore\IDESetting\TextAreaS.alittle" />
+    <None Include="src\UIEdit\IDEEditCore\IDESetting\TextButtonS.alittle" />
+    <None Include="src\UIEdit\IDEEditCore\IDESetting\TextCheckButtonS.alittle" />
+    <None Include="src\UIEdit\IDEEditCore\IDESetting\TextEditS.alittle" />
+    <None Include="src\UIEdit\IDEEditCore\IDESetting\TextInputS.alittle" />
+    <None Include="src\UIEdit\IDEEditCore\IDESetting\TextRadioButtonS.alittle" />
+    <None Include="src\UIEdit\IDEEditCore\IDESetting\TextS.alittle" />
+    <None Include="src\UIEdit\IDEEditCore\IDESetting\TileTableS.alittle" />
+    <None Include="src\UIEdit\IDEEditCore\IDESetting\TriangleS.alittle" />
+    <None Include="src\UIEdit\IDEEditCore\IDETabChild.alittle" />
+    <None Include="src\UIEdit\IDEEditCore\IDETabManager.alittle" />
+    <None Include="src\UIEdit\IDEEditCore\IDETree.alittle" />
+    <None Include="src\UIEdit\IDEEditCore\IDETreeItem.alittle" />
+    <None Include="src\UIEdit\IDEEditCore\IDETreeLogic.alittle" />
+    <None Include="src\UIEdit\IDEEditLogic\IDEAntiManager.alittle" />
+    <None Include="src\UIEdit\IDEEditLogic\IDEAttributeManager.alittle" />
+    <None Include="src\UIEdit\IDEEditLogic\IDEControlManager.alittle" />
+    <None Include="src\UIEdit\IDEEditLogic\IDEControlTree.alittle" />
+    <None Include="src\UIEdit\IDEEditLogic\IDEImageManager.alittle" />
+    <None Include="src\UIEdit\IDEEditLogic\IDEIMEManager.alittle" />
+    <None Include="src\UIEdit\IDEEditLogic\IDELoginManager.alittle" />
+    <None Include="src\UIEdit\IDEEditLogic\IDEMainMenu.alittle" />
+    <None Include="src\UIEdit\IDEEditLogic\IDEProjectManager.alittle" />
+    <None Include="src\UIEdit\IDEEditLogic\IDEQuickManager.alittle" />
+    <None Include="src\UIEdit\IDEEditLogic\IDETool.alittle" />
+    <None Include="src\UIEdit\IDEEditLogic\IDEVersionList.alittle" />
+    <None Include="src\UIEdit\IDEEditLogic\IDEVersionManager.alittle" />
+    <None Include="src\UIEdit\IDEUICenter.alittle" />
+    <None Include="src\UIEdit\IDEUtility.alittle" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <ProjectGuid>{6E80F077-D738-4D65-97D4-991EC7A5E668}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>Std</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

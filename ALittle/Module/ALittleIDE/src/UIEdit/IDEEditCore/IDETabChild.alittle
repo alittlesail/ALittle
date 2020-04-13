@@ -1,0 +1,1642 @@
+
+namespace ALittleIDE;
+
+// 选中操作信息
+struct IDETabChildHandleInfo
+{
+    ALittle.DisplayObject display_group;        // 选中后的显示集合
+    ALittle.DisplayObject handle_quad;          // 选中后 用于显示的Quad集合
+    ALittle.DisplayObject focus_quad;           // 选中后 用于拖拽移动的Quad
+    ALittle.DisplayObject size_quad_container;  // 选中后的拖拽大小的Quad集合
+    IDETreeLogic target;                        // 选中的节点目标
+    bool buttondown_lock;                       // 按钮按下锁定
+    
+    double delta_x;
+    double delta_y;
+    bool lock_x_or_y;           // 锁定x或者y
+
+    double delta_width;
+    double delta_height;
+    bool lock_width_or_height;  // 锁定宽或者高
+}
+
+// 操作控件的信息
+struct IDETabChildControlLine
+{
+    ALittle.DisplayObject quad;                 // 用于拖拽移动的Quad
+    ALittle.DisplayObject size_quad;            // 用于拖拽大小的Quad
+    ALittle.DisplayObject size_quad_container;  // 拖拽大小的Quad集合
+}
+
+// 控件树搜索信息
+struct IDETabChildSearchInfo
+{
+	string name;        // 名称
+	int index;          // 下标
+}
+
+// 快捷拖拽携带信息
+struct IDETabChildQuickDragAddUserData
+{
+    double abs_x;           // 绝对坐标X
+    double abs_y;           // 绝对坐标Y
+    string control_name;    // 拖拽的控件名称
+}
+
+public class IDETabChild
+{
+	private string _name;           // 当前控件名
+	private bool _save;             // 是否已保存
+	private string _group_name;     // 组名称
+
+	private ALittle.DisplayLayout _tab_body;        // 标签页
+	private ALittle.ScrollScreen _tree_screen;      // 控件树滚动屏
+	private ALittle.ScrollScreen _control_screen;   // 显示部分的滚动屏
+    private IDEAntiPanel _anti_panel;               // 动画部分的面板
+	private ALittle.ScrollScreen _tab_screen;       // 编辑部分的滚动屏
+
+	private IDETreeLogic _tree_object;              // 根节点
+
+	private ALittle.DisplayLayout _tab_container;               // 总容器
+	private ALittle.DisplayLayout _tab_select_container;        // 选中部分容器
+	private ALittle.DisplayLayout _tab_handle_quad;             // 用于感应鼠标操作的Quad
+	private ALittle.DisplayLayout _tab_quad_container;          // 用于存放红色Quad的容器
+	private ALittle.DisplayLayout _tab_handdrag_container;      // 拖拽部分容器
+	private ALittle.DisplayLayout _tab_dragadd_container;       // 拖拽添加部分容器
+	private ALittle.DisplayLayout _tab_scale_container;         // 缩放分布容器
+    private ALittle.DisplayLayout _tab_object_container;        // 显示部分容器
+	private ALittle.Quad _tab_handdrag_quad;        // 用于感应手动拖拽的Quad
+	private ALittle.Quad _tab_scale_quad;           // 用于感应缩放的Quad
+	
+	private Map<IDETreeLogic, IDETabChildHandleInfo> _tab_quad_map; // 选中的控件集合
+	private IDETabChildSearchInfo _tree_search_info;                // 搜索集合
+	
+	private IDERevokeList _revoke_list;         // 撤销操作列表
+
+	private ALittle.LoopLinear _tree_loop_x;    // 进行获取焦点操作时，移动到焦点位置时的动画
+	private ALittle.LoopLinear _tree_loop_y;    // 进行获取焦点操作时，移动到焦点位置时的动画
+
+    private ALittle.DisplayObject _select_right_exmenu;     // 对选中控件显示的右键菜单
+    private ALittle.DisplayObject _tab_right_exlinear;      // 右键菜单的菜单容器Linear
+    
+    private ALittle.DisplayObject _control_tabchild_menu;           // 对选中控件显示的右键菜单
+    private ALittle.DisplayObject _right_control_tree_textedit;
+    private ALittle.DisplayObject _right_control_tree_up;
+    private ALittle.DisplayObject _right_control_tree_down;
+    private ALittle.DisplayObject _right_control_tree_add;
+    private ALittle.DisplayObject _right_control_tree_add_image;
+    private ALittle.DisplayObject _right_control_tree_add_text;
+    private ALittle.DisplayObject _right_control_tree_cut;
+    private ALittle.DisplayObject _right_control_tree_jump;
+    private ALittle.DisplayObject _right_control_tree_delete;
+    private ALittle.DisplayObject _right_control_tree_replace;
+
+    private ALittle.ImageInput _control_tabchild_textinput;
+
+    private ALittle.DisplayObject _quick_right_exmenu;
+    private ALittle.Linear _quick_right_exlinear;
+
+	public ctor(string name, bool save)
+	{
+		// 保存信息
+		this._name = name;
+		this._save = save;
+	
+		// 组名
+		this._group_name = A_TextRadioButtonManager.CreateGroupName();
+	
+		// 创建编辑容器
+		this._tab_body = g_Control.CreateControl{ALittle.DisplayLayout}("ide_edit_tab_screen", this);
+		this._tree_screen = g_Control.CreateControl{ALittle.ScrollScreen}("ide_edit_tree_screen", this);
+		this._control_screen = g_Control.CreateControl{ALittle.ScrollScreen}("ide_edit_control_screen", this);
+        this._anti_panel = g_Control.CreateControl{IDEAntiPanel}("ide_edit_anti_panel", this);
+        this._tree_object = null; // 树形结构根节点
+	
+		// 初始化容器
+		this._tab_screen.container = new ALittle.DisplayGroup(g_Control);
+		this._tab_screen.container.scale_x = 1;
+		this._tab_screen.container.scale_y = 1;
+		this._tab_container.width = g_IDEProject.project.config.GetConfig("default_show_width", 800);
+		this._tab_container.height = g_IDEProject.project.config.GetConfig("default_show_height", 600);
+		this._tab_screen.RejustScrollBar();
+	
+		// 控件层
+		// this._tab_object_container
+		// 选择层
+		this._tab_select_container.visible = g_IDEUICenter.singleselect;
+		this._tab_handle_quad.AddEventListener(this, this.HandleHandleContainerLButtonDown);
+		// 选中层
+		this._tab_quad_container.RemoveAllChild();
+		this._tab_quad_map = new Map<IDETreeLogic, IDETabChildHandleInfo>(); // 收集的选中的TreeLogic
+		// 拖拽层
+		this._tab_handdrag_container.visible = g_IDEUICenter.handdrag;
+		this._tab_handdrag_quad.drag_trans_target = this._tab_screen;
+		// 拖拽添加控件层
+		this._tab_dragadd_container.visible = false;
+		// 缩放层
+		this._tab_scale_container.visible = g_IDEUICenter.scale;
+		this._tab_scale_quad.AddEventListener(this, this.HandleScaleContainerLButtonDown);
+		// 搜索信息
+		this._tree_search_info = new IDETabChildSearchInfo();
+		this._tree_search_info.name = "";
+		this._tree_search_info.index = 0;
+	
+		// 把自己作为容器的携带数据
+		this._tab_body._user_data = this;
+		this._tree_screen._user_data = this;
+	
+		// 撤销列表
+		this._revoke_list = new IDERevokeList();
+	
+		// 左侧控件树滚动Loop
+		this._tree_loop_x = null;
+		this._tree_loop_y = null;
+    }
+	
+	public fun HandleTreeSizeChanged(ALittle.UIResizeEvent event)
+	{
+		this._tree_screen.RejustScrollBar();
+	}
+	
+	////////////////////////////////////////////////////////////////////////////////////////////-
+	public get name() : string { return this._name; }
+	public get tab_screen() : ALittle.ScrollScreen { return this._tab_screen; }
+	public get tab_body() : ALittle.DisplayLayout { return this._tab_body; }
+	public get tree_screen() : ALittle.ScrollScreen { return this._tree_screen; }
+	public get control_screen() : ALittle.ScrollScreen { return this._control_screen; }
+    public get anti_panel() : IDEAntiPanel { return this._anti_panel; }
+	public get group_name() : string { return this._group_name; }
+	public get revoke_list() : IDERevokeList { return this._revoke_list; }
+	public get tree_object() : IDETreeLogic  { return this._tree_object; }
+	public get save() : bool { return this._save; }
+	////////////////////////////////////////////////////////////////////////////////////////////-
+	public fun Save(bool value) : bool, string
+    {
+        if (this._save == value) return true, null;
+		if (value == false)
+        {
+            this._save = false;
+            this.UpdateTitle();
+            return true, null;
+		}
+        if (this._tree_object == null) return false, "根节点不存在，不能保存";
+	
+        var info = this._tree_object.CalcInfo();
+        var result, content = g_IDEProject.SaveControl(this._name, info);
+        if (result == false) return false, content;
+	
+        this._save = value;
+        this.UpdateTitle();
+	
+        return true, null;
+	}
+	
+	public fun Rename(string name)
+    {
+        this._name = name;
+	
+        this.UpdateTitle();
+	}
+	
+	public fun UpdateTitle()
+    {
+        if (this._tree_object == null) return;
+	
+        var text = this._tree_object.GetDesc();
+		if (text == "")
+        {
+            text = this._name;
+			if (lua.String.len(this._name) > 15)
+                text =  "..."..lua.String.sub(this._name, -15, -1);
+		}
+        if (this._save == false) text = text.." *";
+        g_IDETabManager.main_tab.SetChildText(this._tab_body, text);
+	}
+	
+	public get total_title() : string
+    {
+        var text = this._tree_object.GetDesc();
+        if (text == "") return this._name;
+        return this._name.."("..text..")";
+	}
+	
+	public fun SetEditWH(double width, double height)
+    {
+        this._tab_container.width = width;
+        this._tab_container.height = height;
+        this._tab_screen.RejustScrollBar();
+	
+		for (var target, handle_info in this._tab_quad_map)
+            this.UpdateHandleQuadLayout(target);
+	}
+	
+	public fun CanDeleteControl(string name) : bool, string
+    {
+        if (this._tree_object == null) return true, null;
+        var info = this._tree_object.CalcInfo();
+        var map = IDEUtility_GetExtends(info);
+		if (map[name])
+            return false, "被其他控件引用:"..name;
+        
+        return true, null;
+	}
+	
+	// 对选中的控件进行处理
+	// align_type 对齐方式
+		// h_align_left 水平居左
+		// h_align_center 水平居中
+		// h_align_right 水平居右
+		// v_align_top 垂直置顶
+		// v_align_center 垂直居中
+		// v_align_bottom 垂直置底
+	public fun SelectAlign(string align_type)
+    {
+		// 计算个数
+        var count = 0;
+		// 获取其中一个目标
+        var first_target:IDETreeLogic = null;
+		for (var target, handle_info in this._tab_quad_map)
+        {
+            count = count + 1;
+            first_target = target;
+		}
+		// 如果没有就直接返回
+        if (count == 0) return;
+		// 根节点不能进行对齐
+        if (first_target == this._tree_object) return;
+		if (count == 1)
+        {
+			// 获取父控件
+            var parent = cast<IDETreeLogic>(first_target.logic_parent);
+            var parent_object = parent.user_info.object;
+            var drag_x = 0.0;
+            var drag_y = 0.0;
+            var target_object = first_target.user_info.object;
+			if (align_type == "h_align_left")
+                drag_x = - target_object.x;
+			elseif (align_type == "h_align_center")
+                drag_x = (parent_object.width - target_object.width) / 2 - target_object.x;
+			elseif (align_type == "h_align_right")
+                drag_x = (parent_object.width - target_object.width) - target_object.x;
+			elseif (align_type == "v_align_top")
+                drag_y = - target_object.y;
+			elseif (align_type == "v_align_center")
+                drag_y = (parent_object.height - target_object.height) / 2 - target_object.y;
+			elseif (align_type == "v_align_bottom")
+                drag_y = (parent_object.height - target_object.height) - target_object.y;
+
+            first_target.DragXY(drag_x, drag_y);
+            this.UpdateHandleQuadLayout(first_target);
+            var revoke = new IDEDragXYRevoke(first_target, drag_x, drag_y);
+            this._revoke_list.PushRevoke(revoke);
+        }
+		else
+        {
+            var revoke_bind = new IDERevokeBind();
+			if (align_type == "h_align_left")
+            {
+                var common = first_target.user_info.object.x;
+				for (var target, v in this._tab_quad_map)
+                {
+                    if (target.user_info.object.x < common)
+                        common = target.user_info.object.x;
+				}
+				for (var target, v in this._tab_quad_map)
+                {
+                    var drag_x = common - target.user_info.object.x;
+                    target.DragXY(drag_x, 0);
+                    this.UpdateHandleQuadLayout(target);
+                    var revoke = new IDEDragXYRevoke(target, drag_x, 0);
+                    revoke_bind.PushRevoke(revoke);
+				}
+            }
+			elseif (align_type == "h_align_center")
+            {
+                var common = 0.0;
+				for (var target, v in this._tab_quad_map)
+                    common = common + target.user_info.object.x + target.user_info.object.width / 2;
+                common = common / count;
+				for (var target, v in this._tab_quad_map)
+                {
+                    var drag_x = common - (target.user_info.object.x + target.user_info.object.width / 2);
+                    target.DragXY(drag_x, 0);
+                    this.UpdateHandleQuadLayout(target);
+                    var revoke = new IDEDragXYRevoke(target, drag_x, 0);
+                    revoke_bind.PushRevoke(revoke);
+				}
+            }
+			elseif (align_type == "h_align_right")
+            {
+                var common = first_target.user_info.object.x + first_target.user_info.object.width;
+				for (var target, v in this._tab_quad_map)
+                {
+					if (target.user_info.object.x + target.user_info.object.width > common)
+                        common = target.user_info.object.x + target.user_info.object.width;
+				}
+				for (var target, v in this._tab_quad_map)
+                {
+                    var drag_x = common - (target.user_info.object.x + target.user_info.object.width);
+                    target.DragXY(drag_x, 0);
+                    this.UpdateHandleQuadLayout(target);
+                    var revoke = new IDEDragXYRevoke(target, drag_x, 0);
+                    revoke_bind.PushRevoke(revoke);
+				}
+            }
+			elseif (align_type == "v_align_top")
+            {
+                var common = first_target.user_info.object.y;
+				for (var target, v in this._tab_quad_map)
+                {
+					if (target.user_info.object.y < common)
+                        common = target.user_info.object.y;
+				}
+				for (var target, v in this._tab_quad_map)
+                {
+                    var drag_y = common - target.user_info.object.y;
+                    target.DragXY(0, drag_y);
+                    this.UpdateHandleQuadLayout(target);
+                    var revoke = new IDEDragXYRevoke(target, 0, drag_y);
+                    revoke_bind.PushRevoke(revoke);
+				}
+            }
+			elseif (align_type == "v_align_center")
+            {
+                var common = 0.0;
+				for (var target, v in this._tab_quad_map)
+                    common = common + target.user_info.object.y + target.user_info.object.height / 2;
+                common = common / count;
+				for (var target, v in this._tab_quad_map)
+                {
+                    var drag_y = common - (target.user_info.object.y + target.user_info.object.height / 2);
+                    target.DragXY(0, drag_y);
+                    this.UpdateHandleQuadLayout(target);
+                    var revoke = new IDEDragXYRevoke(target, 0, drag_y);
+                    revoke_bind.PushRevoke(revoke);
+				}
+            }
+			elseif (align_type == "v_align_bottom")
+            {
+                var common = first_target.user_info.object.y + first_target.user_info.object.height;
+				for (var target, v in this._tab_quad_map)
+                {
+					if (target.user_info.object.y + target.user_info.object.height > common)
+                        common = target.user_info.object.y + target.user_info.object.height;
+				}
+				for (var target, v in this._tab_quad_map)
+                {
+                    var drag_y = common - (target.user_info.object.y + target.user_info.object.height);
+                    target.DragXY(0, drag_y);
+                    this.UpdateHandleQuadLayout(target);
+                    var revoke = new IDEDragXYRevoke(target, 0, drag_y);
+                    revoke_bind.PushRevoke(revoke);
+				}
+			}
+            this._revoke_list.PushRevoke(revoke_bind);
+		}
+        this.Save(false);
+	}
+	
+	public fun ShowSelectLayer(bool value)
+    {
+        this._tab_select_container.visible = value;
+	}
+	
+	public fun ShowHandDragLayer(bool value)
+    {
+        this._tab_handdrag_container.visible = value;
+	}
+	
+	public fun ShowScaleLayer(bool value)
+    {
+        this._tab_scale_container.visible = value;
+	}
+	
+	////////////////////////////////////////////////////////////////////////////////////////////-
+	
+	public fun CreateByNew(string type)
+    {
+		// 创建初始信息
+        var info = new ALittle.DisplayInfo();
+        info.__class = type;
+		// 新建控件对象
+        var object = ALittle.NewObject(cast<Map<string,any>>(ALittle)[type], g_IDEProject.project.control);
+		// 初始化一些数据，便于编辑
+        IDEUtility_NewGiveBaseCase(info, object);
+		// 添加到标签页
+        this._tab_object_container.AddChild(object);
+		// 添加控件树
+        this._tree_object = IDEUtility_CreateTree(info, false, object, null, this, true);
+        this._tree_object.AddEventListener(this, this.HandleTreeSizeChanged);
+        this._tree_screen.AddChild(this._tree_object);
+        this._anti_panel.Init(this);
+	}
+	
+	public fun CreateByExtends(string extends)
+    {
+		// 创建初始信息
+        var info = new ALittle.DisplayInfo();
+        info.__extends = extends;
+		// 新建控件对象
+        var object = g_IDEProject.project.control.CreateControl{ALittle.DisplayObject}(extends);
+		// 添加到标签页
+        this._tab_object_container.AddChild(object);
+		//控件树
+        this._tree_object = IDEUtility_CreateTree(info, false, object, null, this, true);
+        this._tree_object.AddEventListener(this, this.HandleTreeSizeChanged);
+        this._tree_screen.AddChild(this._tree_object);
+        this._anti_panel.Init(this);
+	}
+	
+	public fun CreateBySelect(ALittle.DisplayInfo info)
+    {
+		// 新建控件对象
+        var object = g_IDEProject.project.control.CreateControl{ALittle.DisplayObject}(this._name);
+		// 添加到标签页
+        this._tab_object_container.AddChild(object);
+		//控件树
+        this._tree_object = IDEUtility_CreateTree(info, false, object, null, this, true);
+        this._tree_object.AddEventListener(this, this.HandleTreeSizeChanged);
+        this._tree_screen.AddChild(this._tree_object);
+        // this.ShowHandleQuad(this._tree_object);
+        this._anti_panel.Init(this);
+	}
+	
+	////////////////////////////////////////////////////////////////////////////////////////////-
+	public fun IsShowHandleQuad(IDETreeLogic target) : bool
+    {
+        return this._tab_quad_map[target] != null;
+	}
+	
+	public fun FocusInHandleQuad(IDETreeLogic target)
+    {
+        var handle_info = this._tab_quad_map[target];
+        if (handle_info == null) return;
+        A_UISystem.focus = handle_info.focus_quad;
+	}
+	
+	public fun ShowHandleQuad(IDETreeLogic target, @Nullable bool force_shift)
+    {
+		// 检查是否有按下shift键
+        var shift = (A_UISystem.sym_map[1073742049] != null || A_UISystem.sym_map[1073742053] != null);
+        if (force_shift) shift = true;
+	
+		// 如果没有按下shift键，那么就直接清空所有的
+		if (shift == false)
+        {
+            this._tab_quad_map = new Map<IDETreeLogic, IDETabChildHandleInfo>();
+            this._tab_quad_container.RemoveAllChild();
+		}
+	
+		// 如果已经存在，那么直接返回
+        var handle_info = this._tab_quad_map[target];
+        if (handle_info != null) return;
+
+		// 不是同一个父控件的不能同时选中
+        var common_parent:IDETreeLogic = null;
+        var has_target = false;
+		for (var tree_target, handle_info in this._tab_quad_map)
+        {
+            common_parent = cast<IDETreeLogic>(tree_target.logic_parent);
+            has_target = true;
+            break;
+		}
+		if (has_target && common_parent != target.logic_parent)
+            return;
+	
+        var control_line = new IDETabChildControlLine();
+        var handle_quad = g_Control.CreateControl{ALittle.DisplayObject}("ide_common_handle_quad", control_line);
+        control_line.quad.AddEventListener(this, this.HandleHandleQuadLButtonUp);
+        control_line.quad.AddEventListener(this, this.HandleHandleQuadLButtonDown);
+        control_line.quad.AddEventListener(this, this.HandleHandleQuadDragBegin);
+        control_line.quad.AddEventListener(this, this.HandleHandleQuadDrag);
+        control_line.quad.AddEventListener(this, this.HandleHandleQuadDragEnd);
+        control_line.quad.AddEventListener(this, this.HandleHandleQuadRButtonDown);
+        control_line.quad.AddEventListener(this, this.HandleHandleQuadKeyDown);
+	
+		// control_line.size_quad_container.visible = false
+        control_line.size_quad.AddEventListener(this, this.HandleHandleSizeQuadKeyDown);
+        control_line.size_quad.AddEventListener(this, this.HandleHandleSizeQuadDragBegin);
+        control_line.size_quad.AddEventListener(this, this.HandleHandleSizeQuadDrag);
+        control_line.size_quad.AddEventListener(this, this.HandleHandleSizeQuadDragEnd);
+        control_line.size_quad.AddEventListener(this, this.HandleHandleSizeQuadMoveIn);
+        control_line.size_quad.AddEventListener(this, this.HandleHandleSizeQuadMoveOut);
+
+        handle_info = new IDETabChildHandleInfo();
+	
+        var target_parent = target.user_info.object;
+        var quad_parent = handle_quad;
+		while (target_parent != null)
+        {
+            quad_parent.x = target_parent.x;
+            quad_parent.y = target_parent.y;
+            quad_parent.width = target_parent.width;
+            quad_parent.height = target_parent.height;
+            quad_parent.scale_x = target_parent.scale_x;
+            quad_parent.scale_y = target_parent.scale_y;
+            quad_parent.center_x = target_parent.center_x;
+            quad_parent.center_y = target_parent.center_y;
+            quad_parent.angle = target_parent.angle;
+	
+            var display_group = new ALittle.DisplayGroup(g_Control);
+            display_group.AddChild(quad_parent);
+	
+			if (target_parent.show_parent == this._tab_object_container)
+            {
+                handle_info.display_group = display_group;
+                this._tab_quad_container.AddChild(display_group);
+                break;
+			}
+	
+            quad_parent = display_group;
+            target_parent = target_parent.show_parent;
+		}
+		
+        handle_info.handle_quad = handle_quad;
+        handle_info.focus_quad = control_line.quad;
+        handle_info.size_quad_container = control_line.size_quad_container;
+        control_line.quad._user_data = handle_info;
+        control_line.size_quad._user_data = handle_info;
+	
+        target.ShowAttributePanel();
+		
+        handle_info.target = target;
+        this._tab_quad_map[target] = handle_info;
+        var loop = new ALittle.LoopFunction(bind(this.FocusInHandleQuad, this, target), 1, 0, 1);
+        loop.Start();
+	}
+	
+	public fun HideHandleQuad(IDETreeLogic target, @Nullable bool shift)
+    {
+        var handle_info = this._tab_quad_map[target];
+        if (handle_info == null) return;
+	
+		if (shift == null)
+            shift = (A_UISystem.sym_map[1073742049] != null || A_UISystem.sym_map[1073742053] != null);
+
+		if (shift == false)
+        {
+            this._tab_quad_map = new Map<IDETreeLogic, IDETabChildHandleInfo>();
+            this._tab_quad_container.RemoveAllChild();
+	
+            target.ShowAttributePanel();
+            this._tab_quad_map[handle_info.target] = handle_info;
+            this._tab_quad_container.AddChild(handle_info.display_group);
+            return;
+		}
+	
+        this._tab_quad_container.RemoveChild(handle_info.display_group);
+        this._tab_quad_map[handle_info.target] = null;
+	}
+	
+	public fun UpdateHandleQuadLayout(IDETreeLogic target)
+    {
+        var handle_info = this._tab_quad_map[target];
+        if (handle_info == null) return;
+	
+        handle_info.handle_quad.x = target.user_info.object.x;
+        handle_info.handle_quad.y = target.user_info.object.y;
+        handle_info.handle_quad.width = target.user_info.object.width;
+        handle_info.handle_quad.height = target.user_info.object.height;
+        handle_info.handle_quad.scale_x = target.user_info.object.scale_x;
+        handle_info.handle_quad.scale_y = target.user_info.object.scale_y;
+        handle_info.handle_quad.center_x = target.user_info.object.center_x;
+        handle_info.handle_quad.center_y = target.user_info.object.center_y;
+        handle_info.handle_quad.angle = target.user_info.object.angle;
+	}
+	
+	public fun UpdateHandleQuadRemove(IDETreeLogic target)
+    {
+        var handle_info = this._tab_quad_map[target];
+        if (handle_info == null) return;
+        this._tab_quad_container.RemoveChild(handle_info.handle_quad);
+        this._tab_quad_map[target] = null;
+	}
+	
+	public fun HandleHandleContainerLButtonDown(ALittle.UILButtonDownEvent event)
+    {
+		// 检查必要参数
+        if (this._tree_object == null) return;
+	
+        var target = this._tree_object.EditPickUp(event.rel_x, event.rel_y);
+        if (target == null) return;
+	
+        this.ShowHandleQuad(target);
+	}
+	
+	public fun HandleSelectRightExItemClick(ALittle.UIEvent event)
+    {
+        A_LayerManager.HideFromRight(this._select_right_exmenu);
+        this._tab_right_exlinear.RemoveAllChild();
+	
+        var tree = event.target._user_data;
+        if (tree == null) return;
+	
+        this.ShowHandleQuad(tree);
+	}
+	
+	public fun HandleScaleContainerLButtonDown(ALittle.UILButtonDownEvent event)
+    {
+        var shift = (A_UISystem.sym_map[1073742049] != null || A_UISystem.sym_map[1073742053] != null);
+        var scale = this._tab_screen.container.scale_x;
+		if (shift)
+        {
+            scale = scale - 0.1;
+            if (scale < 0) scale = 0;
+        }
+		else
+            scale = scale + 0.1;
+
+        this._tab_screen.container.scale_x = scale;
+        this._tab_screen.container.scale_y = scale;
+        this._tab_screen.RejustScrollBar();
+        g_IDEUICenter.UpdateToolScale(scale);
+	}
+	
+	public fun SetScale(double scale)
+    {
+        this._tab_screen.container.scale_x = scale;
+        this._tab_screen.container.scale_y = scale;
+        this._tab_screen.RejustScrollBar();
+	}
+	public fun GetScale() : double
+    {
+        return this._tab_screen.container.scale_x;
+	}
+	
+	public fun HandleHandleQuadLButtonDown(ALittle.UILButtonDownEvent event)
+    {
+		// 获取信息
+        var handle_info:IDETabChildHandleInfo = event.target._user_data;
+        handle_info.buttondown_lock = true;
+	}
+	
+	public fun HandleHandleQuadLButtonUp(ALittle.UILButtonUpEvent event)
+    {
+		// 获取信息
+        var handle_info:IDETabChildHandleInfo = event.target._user_data;
+        if (handle_info.buttondown_lock != true) return;
+	
+        this.HideHandleQuad(handle_info.target);
+	}
+
+    public static ControlCopyInfoCmp(IDEControlCopyInfo a, IDEControlCopyInfo b) : bool
+    {
+        return a.index < b.index;
+    }
+	
+	public fun HandleHandleQuadKeyDown(ALittle.UIKeyDownEvent event)
+    {
+	//处理Ctrl+C////////////////////////////////////////////////////////////////////////
+		if (event.sym == 99 && lua.bit.band(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) != 0)
+        {
+            var copy_list = new List<IDEControlCopyInfo>();
+            var copy_list_count = 0;
+			for (var target, handle_info in this._tab_quad_map)
+            {
+				if (handle_info.target.logic_parent != null)
+                {
+                    var info = new IDEControlCopyInfo();
+                    info.index = handle_info.target.logic_parent.GetChildIndex(handle_info.target);
+					info.info = handle_info.target.CalcInfo();
+                    ++ copy_list_count;
+                    copy_list[copy_list_count] = info;
+				}
+			}
+			if (copy_list_count > 0)
+            {
+                lua.table.sort(copy_list, IDETabChild.ControlCopyInfoCmp);
+                ALittle.System_SetClipboardText(lua.json.encode(copy_list));
+			}
+            return;
+		}
+	//处理Ctrl+X////////////////////////////////////////////////////////////////////////
+		if (event.sym == 120 && lua.bit.band(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) != 0)
+        {
+            var copy_list = new List<IDEControlCopyInfo>();
+            var copy_list_count = 0;
+			for (var target, handle_info in this._tab_quad_map)
+            {
+                var info = new IDEControlCopyInfo();
+                info.index = handle_info.target.logic_parent.GetChildIndex(handle_info.target);
+                info.info = handle_info.target.CalcInfo();
+                ++ copy_list_count;
+                copy_list[copy_list_count] = info;
+			}
+			if (copy_list_count > 0)
+            {
+                lua.table.sort(copy_list, IDETabChild.ControlCopyInfoCmp);
+                ALittle.System_SetClipboardText(lua.json.encode(copy_list));
+                var revoke_bind = new IDERevokeBind();
+				for (var target, handle_info in this._tab_quad_map)
+                    handle_info.target.TreeCut(revoke_bind);
+                this._revoke_list.PushRevoke(revoke_bind);
+			}
+            return;
+		}
+	//处理Delete键
+		if (event.sym == 127)
+        {
+            var revoke_bind = new IDERevokeBind();
+            var has_target = false;
+			for (var target, handle_info in this._tab_quad_map)
+            {
+                handle_info.target.TreeDelete(revoke_bind);
+                has_target = true;
+			}
+			if (has_target)
+            {
+                this._tab_quad_map = new Map<IDETreeLogic, IDETabChildHandleInfo>();
+                this._tab_quad_container.RemoveAllChild();
+                this._revoke_list.PushRevoke(revoke_bind);
+			}
+            return;
+		}
+	//处理Ctrl+V////////////////////////////////////////////////////////////////////////
+		if (event.sym == 118 && lua.bit.band(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) != 0)
+        {
+            var handle_info:IDETabChildHandleInfo = event.target._user_data;
+			// 获取父控件
+            var common_parent = handle_info.target.logic_parent;
+            var child_index = 1;
+			if (common_parent == null)
+                common_parent = handle_info.target;
+			else
+                child_index = common_parent.GetChildIndex(handle_info.target);
+            
+            this.RightControlTreePasteImpl(cast<IDETreeLogic>(common_parent), null, child_index);
+            return;
+		}
+	//处理键盘上下左右//////////////////////////////////////////////////////////////////
+        var delta_x = 0;
+        var delta_y = 0;
+		if (event.sym == 1073741904) // 左键
+            delta_x = -1;
+		elseif (event.sym == 1073741903) // 右键
+            delta_x = 1;
+		elseif (event.sym == 1073741906) // 上键
+            delta_y = -1;
+		elseif (event.sym == 1073741905) // 下键
+            delta_y = 1;
+		else
+            return;
+	
+		// 当前没有控件，或者是根节点，不能拖动
+        var common_parent:IDETreeLogic = null;
+		for (var tree_target, handle_info in this._tab_quad_map)
+        {
+            common_parent = cast<IDETreeLogic>(tree_target.logic_parent);
+            break;
+		}
+        if (common_parent == null) return;
+		// 检查这个父控件的子控件是否可以移动
+		if (g_IDEEnum.can_move_child_map[common_parent.user_info.default.__class] == null)
+            return;
+	
+		// 创建一批撤销
+        var revoke_bind = new IDERevokeBind();
+	
+		// 开始拖动
+        var has_target = false;
+		for (var target, handle_info in this._tab_quad_map)
+        {
+            target.DragXY(delta_x, delta_y);
+            this.UpdateHandleQuadLayout(target);
+	
+            has_target = true;
+            var revoke = new IDEDragXYRevoke(target, delta_x, delta_y);
+            revoke_bind.PushRevoke(revoke);
+		}
+        if (has_target == false) return;
+        this._revoke_list.PushRevoke(revoke_bind);
+	
+        this.Save(false);
+	}
+	
+	public fun HandleHandleQuadDragBegin(ALittle.UIButtonDragBeginEvent event)
+    {
+		// 当前没有控件，或者是根节点，不能拖动
+        var common_parent:IDETreeLogic = null;
+		for (var tree_target, handle_info in this._tab_quad_map)
+        {
+            common_parent = cast<IDETreeLogic>(tree_target.logic_parent);
+            break;
+		}
+        if (common_parent == null) return;
+		// 检查这个父控件的子控件是否可以移动
+		if (g_IDEEnum.can_move_child_map[common_parent.user_info.default.__class] == null)
+            return;
+        
+		// 标记一下刚才的位置
+		for (var target, handle_info in this._tab_quad_map)
+        {
+            handle_info.delta_x = 0;
+            handle_info.delta_y = 0;
+            handle_info.lock_x_or_y = lua.math.abs(event.delta_x) > lua.math.abs(event.delta_y);
+            handle_info.buttondown_lock = false;
+		}
+	
+        this.Save(false);
+	}
+	
+	public fun HandleHandleQuadDrag(ALittle.UIButtonDragEvent event)
+    {
+		// 当前没有控件，或者是根节点，不能拖动
+        var common_parent:IDETreeLogic = null;
+		for (var tree_target, handle_info in this._tab_quad_map)
+        {
+            common_parent = cast<IDETreeLogic>(tree_target.logic_parent);
+            break;
+		}
+        if (common_parent == null) return;
+		// 检查这个父控件的子控件是否可以移动
+		if (g_IDEEnum.can_move_child_map[common_parent.user_info.default.__class] == null)
+            return;
+	
+        var shift = (A_UISystem.sym_map[1073742049] != null || A_UISystem.sym_map[1073742053] != null);
+		
+		// 开始拖动
+		for (var target, handle_info in this._tab_quad_map)
+        {
+            var delta_x = event.delta_x;
+            var delta_y = event.delta_y;
+			
+			if (shift)
+            {
+				if (handle_info.lock_x_or_y)
+                    delta_y = 0;
+				else
+                    delta_x = 0;
+			}
+	
+			// 旧的绝对位置
+            var old_abs_x = event.abs_x - delta_x;
+            var old_abs_y = event.abs_y - delta_y;
+	
+			// 旧的绝对位置，转为旧的相对位置
+            var old_rel_x, old_rel_y = target.user_info.object.show_parent.GlobalToLocalMatrix2D(old_abs_x, old_abs_y);
+			// 新的绝对位置，转为新的相对位置
+            var new_rel_x, new_rel_y = target.user_info.object.show_parent.GlobalToLocalMatrix2D(event.abs_x, event.abs_y);
+			// 新的相对位置 减去 旧的相对位置，才是真正的差值
+            delta_x = new_rel_x - old_rel_x;
+            delta_y = new_rel_y - old_rel_y;
+	
+            target.DragXY(delta_x, delta_y);
+	
+            this.UpdateHandleQuadLayout(target);
+	
+            handle_info.delta_x = handle_info.delta_x + delta_x;
+            handle_info.delta_y = handle_info.delta_y + delta_y;
+		}
+	}
+	
+	public fun HandleHandleQuadDragEnd(ALittle.UIButtonDragEndEvent event)
+    {
+		// 创建一批撤销
+        var revoke_bind = new IDERevokeBind();
+	
+        var has_target = false;
+		for (var target, handle_info in this._tab_quad_map)
+        {
+            has_target = true;
+            var revoke = new IDEDragXYRevoke(target, handle_info.delta_x, handle_info.delta_y);
+            revoke_bind.PushRevoke(revoke);
+		}
+	
+        if (has_target == false) return;
+        this._revoke_list.PushRevoke(revoke_bind);
+	}
+	
+	public fun HandleHandleQuadRButtonDown(ALittle.UIRButtonDownEvent event)
+    {
+        var handle_info:IDETabChildHandleInfo = event.target._user_data;
+        var target = handle_info.target;
+	
+		if (this._control_tabchild_menu == null)
+            this._control_tabchild_menu = g_Control.CreateControl{ALittle.DisplayObject}("ide_control_tabchild_menu", this);
+	
+        this._right_control_tree_textedit.disabled = g_IDEEnum.text_edit_display_map[target.user_info.default.__class] == null;
+        this._right_control_tree_up.disabled = target.user_info.root || target.user_info.child_type != "child";
+        this._right_control_tree_down.disabled = target.user_info.root || target.user_info.child_type != "child";
+        this._right_control_tree_add.disabled = !target.IsTree();
+        this._right_control_tree_add_image.disabled = !target.IsTree();
+        this._right_control_tree_add_text.disabled = !target.IsTree();
+        this._right_control_tree_cut.disabled = target.user_info.root;
+        this._right_control_tree_jump.disabled = !target.user_info.extends_root;
+        this._right_control_tree_delete.disabled = target.user_info.root;
+        this._right_control_tree_replace.disabled = target.user_info.root;
+	
+        this._control_tabchild_menu._user_data = target;
+        this._control_tabchild_menu.x = A_UISystem.mouse_x;
+        this._control_tabchild_menu.y = A_UISystem.mouse_y;
+	
+		if (this._control_tabchild_menu.x + this._control_tabchild_menu.width > A_UISystem.view_width)
+            this._control_tabchild_menu.x = A_UISystem.view_width - this._control_tabchild_menu.width;
+
+		if (this._control_tabchild_menu.y + this._control_tabchild_menu.height > A_UISystem.view_height)
+            this._control_tabchild_menu.y = A_UISystem.view_height - this._control_tabchild_menu.height;
+
+        A_LayerManager.ShowFromRight(this._control_tabchild_menu);
+	}
+	
+	////////////////////////////////////////////////////////////////////////////////////////////////////
+	public fun HandleHandleSizeQuadKeyDown(ALittle.UIKeyDownEvent event)
+    {
+	
+	}
+	
+	public fun HandleHandleSizeQuadDragBegin(ALittle.UIButtonDragBeginEvent event)
+    {
+		// 获取信息
+        var target_handle_info:IDETabChildHandleInfo = event.target._user_data;
+		// 获取target
+        var target = target_handle_info.target;
+        var parent = cast<IDETreeLogic>(target.logic_parent);
+		
+		// 检查这个父控件的子控件是否可以变化大小
+		if (parent != null && g_IDEEnum.can_move_child_map[parent.user_info.default.__class] == null)
+            return;
+
+		// 标记一下刚才的位置
+		for (var target, handle_info in this._tab_quad_map)
+        {
+            handle_info.delta_width = 0;
+            handle_info.delta_height = 0;
+            handle_info.lock_width_or_height = lua.math.abs(event.delta_x) > lua.math.abs(event.delta_y);
+		}
+	
+        this.Save(false);
+	}
+	public fun HandleHandleSizeQuadDrag(ALittle.UIButtonDragEvent event)
+    {
+		// 获取信息
+        var handle_info:IDETabChildHandleInfo = event.target._user_data;
+        // 获取target
+        var target = handle_info.target;
+        var parent = cast<IDETreeLogic>(target.logic_parent);
+		
+		// 检查这个父控件的子控件是否可以变化大小
+		if (parent != null && g_IDEEnum.can_move_child_map[parent.user_info.default.__class] == null)
+            return;
+	
+        var shift = (A_UISystem.sym_map[1073742049] != null || A_UISystem.sym_map[1073742053] != null);
+		
+		// 开始拖动
+        var delta_x = event.delta_x;
+        var delta_y = event.delta_y;
+			
+		if (shift)
+        {
+			if (handle_info.lock_width_or_height)
+                delta_y = 0;
+			else
+                delta_x = 0;
+		}
+	
+		// 旧的绝对位置
+        var old_abs_x = event.abs_x - delta_x;
+        var old_abs_y = event.abs_y - delta_y;
+	
+		// 旧的绝对位置，转为旧的相对位置
+        var old_rel_x, old_rel_y = target.user_info.object.GlobalToLocalMatrix2D(old_abs_x, old_abs_y);
+		// 新的绝对位置，转为新的相对位置
+        var new_rel_x, new_rel_y = target.user_info.object.GlobalToLocalMatrix2D(event.abs_x, event.abs_y);
+		// 新的相对位置 减去 旧的相对位置，才是真正的差值
+        delta_x = new_rel_x - old_rel_x;
+        delta_y = new_rel_y - old_rel_y;
+	
+        var quad_width = handle_info.handle_quad.width + delta_x;
+		if (quad_width < 0)
+            delta_x = - handle_info.handle_quad.width;
+	
+        var quad_height = handle_info.handle_quad.height + delta_y;
+		if (quad_height < 0)
+            delta_y = - handle_info.handle_quad.height;
+	
+        target.DragWH(delta_x, delta_y);
+	
+        handle_info.handle_quad.width = handle_info.handle_quad.width + delta_x;
+        handle_info.handle_quad.height = handle_info.handle_quad.height + delta_y;
+	
+        handle_info.delta_width = handle_info.delta_width + delta_x;
+        handle_info.delta_height = handle_info.delta_height + delta_y;
+		// 重置红框位置
+        this.UpdateHandleQuadLayout(target);
+	}
+	
+	public fun HandleHandleSizeQuadDragEnd(ALittle.UIButtonDragEndEvent event)
+    {
+		// 获取信息
+        var handle_info:IDETabChildHandleInfo = event.target._user_data;
+		// 获取target
+        var target = handle_info.target;
+        var revoke = new IDEDragWHRevoke(target, handle_info.delta_width, handle_info.delta_height);
+        this._revoke_list.PushRevoke(revoke);
+	}
+	
+	public fun HandleHandleSizeQuadMoveIn(ALittle.UIMoveInEvent event)
+    {
+        ALittle.System_SetHVDragCursor();
+	}
+	public fun HandleHandleSizeQuadMoveOut(ALittle.UIMoveOutEvent event)
+    {
+        ALittle.System_SetNormalCursor();
+	}
+	////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	// 处理上移
+	public fun HandleRightControlTreeUp(ALittle.UIEvent event)
+    {
+		// 隐藏右键菜单
+        A_LayerManager.HideFromRight(this._control_tabchild_menu);
+		// 获取tree对象
+        var target:IDETreeLogic = this._control_tabchild_menu._user_data;
+        this._control_tabchild_menu._user_data = null;
+		// 处理上移
+        target.TransferUp();
+	}
+	// 处理下移
+	public fun HandleRightControlTreeDown(ALittle.UIEvent event)
+    {
+		// 隐藏右键菜单
+        A_LayerManager.HideFromRight(this._control_tabchild_menu);
+		// 获取tree对象
+        var target:IDETreeLogic = this._control_tabchild_menu._user_data;
+        this._control_tabchild_menu._user_data = null;
+		// 处理下移
+        target.TransferDown();
+	}
+	// 处理添加
+	public fun HandleRightControlTreeAdd(ALittle.UIEvent event)
+    {
+		// 隐藏右键菜单
+        A_LayerManager.HideFromRight(this._control_tabchild_menu);
+		// 获取tree对象
+        var target:IDETreeLogic = this._control_tabchild_menu._user_data;
+        this._control_tabchild_menu._user_data = null;
+	
+        g_IDEControlTree.ShowAddDialog(target);
+	}
+	// 处理添加
+	public fun HandleRightControlTreeAddImage(ALittle.UIEvent event)
+    {
+		// 隐藏右键菜单
+        A_LayerManager.HideFromRight(this._control_tabchild_menu);
+		// 获取tree对象
+        var target:IDETreeLogic = this._control_tabchild_menu._user_data;
+        this._control_tabchild_menu._user_data = null;
+	
+        var func = bind(this.ImagePathSelectCallback, this, target);
+		// 直接显示图片选择框
+        g_IDEAttrImageDialog.ShowDialog(null, func);
+	}
+	// 处理选中图片
+	public fun ImagePathSelectCallback(IDETreeLogic target, string path)
+    {
+		// 设置这个下拉菜单
+		if (target.CanAddChild() == false)
+        {
+            g_IDETool.ShowNotice("提示", "当前控件不能添加子控件");
+            return;
+		}
+		// 添加一个控件
+        var tree_object = target.TreeAdd("", "Image", "child");
+		if (tree_object == null)
+        {
+            g_IDETool.ShowNotice("提示", "添加失败");
+            return;
+		}
+		// 对这个新的Image设置纹理
+        tree_object.attr_panel.SetTextureName(path, null);
+        tree_object.ShowFocus(false);
+	}
+	// 处理添加
+	public fun HandleRightControlTreeAddText(ALittle.UIEvent event)
+    {
+		// 隐藏右键菜单
+        A_LayerManager.HideFromRight(this._control_tabchild_menu);
+		// 获取tree对象
+        var target:IDETreeLogic = this._control_tabchild_menu._user_data;
+        this._control_tabchild_menu._user_data = null;
+	
+		// 设置这个下拉菜单
+		if (target.CanAddChild() == false)
+        {
+            g_IDETool.ShowNotice("提示", "当前控件不能添加子控件");
+            return;
+		}
+		// 添加一个控件
+        var tree_object = target.TreeAdd("", "Text", "child");
+		if (tree_object == null)
+        {
+            g_IDETool.ShowNotice("提示", "添加失败");
+            return;
+		}
+        tree_object.ShowFocus(false);
+	}
+	// 处理复制
+	public fun HandleRightControlTreeCopy(ALittle.UIEvent event)
+    {
+		// 隐藏右键菜单
+        A_LayerManager.HideFromRight(this._control_tabchild_menu);
+		// 获取tree对象
+        var target:IDETreeLogic = this._control_tabchild_menu._user_data;
+        this._control_tabchild_menu._user_data = null;
+		// 计算信息
+        var copy_list = new List<IDEControlCopyInfo>();
+        var copy_list_count = 0;
+		for (var target, handle_info in this._tab_quad_map)
+        {
+            var info = new IDEControlCopyInfo();
+            info.index = handle_info.target.logic_parent.GetChildIndex(handle_info.target);
+            info.info = handle_info.target.CalcInfo();
+            ++ copy_list_count;
+            copy_list[copy_list_count] = info;
+		}
+		if (copy_list_count > 0)
+        {
+            lua.table.sort(copy_list, IDETabChild.ControlCopyInfoCmp);
+            ALittle.System_SetClipboardText(lua.json.encode(copy_list));
+		}
+	}
+	// 实际处理粘贴的函数
+	public fun RightControlTreePasteImpl(IDETreeLogic target, @Nullable List<IDEControlCopyInfo> copy_list, @Nullable int child_index, @Nullable IDERevokeBind revoke_bind,  @Nullable Functor<(bool, List<IDETreeLogic>)> callback)
+    {
+		// 获取剪切板内容
+		if (copy_list == null)
+        {
+            var text_info = ALittle.System_GetClipboardText();
+			if (text_info == null)
+            {
+                g_IDETool.ShowNotice("错误", "剪切板的内容不能粘帖");
+                if (callback != null) callback(false, null);
+                return;
+			}
+	
+            var error, copy_list_tmp:List<IDEControlCopyInfo> = tcall(lua.json.decode, text_info);
+			if (error != null || lua.table.maxn(copy_list_tmp) == 0)
+            {
+                g_IDETool.ShowNotice("错误", "剪切板的内容不能粘帖");
+                if (callback != null) callback(false, null);
+                return;
+			}
+            copy_list = copy_list_tmp;
+		}
+	
+		for (var k, info in copy_list)
+        {
+			if (info.info.__class == null && info.info.__extends == null)
+            {
+                g_IDETool.ShowNotice("错误", "剪切板的内容不能粘帖");
+                if (callback != null) callback(false, null);
+                return;
+			}
+		}
+	
+        var clazz = target.user_info.default.__class;
+		// 如果只有child，那么就直接添加
+		if (g_IDEEnum.can_add_child_map[clazz] && g_IDEEnum.child_show_map[clazz] == null)
+        {
+            var add_list = new List<IDETreeLogic>();
+            var add_list_count = 0;
+            var inner_revoke_bind = new IDERevokeBind();
+			for (var k, info in copy_list)
+            {
+				if (k == 1)
+                {
+                    var tree_object = target.TreePaste(info.info, "child", child_index, false, inner_revoke_bind);
+                    ++ add_list_count;
+                    add_list[add_list_count] = tree_object;
+                }
+				else
+                {
+                    var tree_object = target.TreePaste(info.info, "child", child_index, true, inner_revoke_bind);
+                    ++ add_list_count;
+                    add_list[add_list_count] = tree_object;
+				}
+			}
+			if (revoke_bind != null)
+                revoke_bind.PushRevoke(inner_revoke_bind);
+			else
+                this._revoke_list.PushRevoke(inner_revoke_bind);
+
+            if (callback != null) callback(true, add_list);
+        }
+		else
+            g_IDEControlTree.ShowPasteDialog(target, copy_list[1].info, child_index, revoke_bind, callback);
+	}
+	// 处理粘帖
+	public fun HandleRightControlTreePaste(ALittle.UIEvent event)
+    {
+		// 隐藏右键菜单
+        A_LayerManager.HideFromRight(this._control_tabchild_menu);
+		// 获取tree对象
+        var target:IDETreeLogic = this._control_tabchild_menu._user_data;
+        this._control_tabchild_menu._user_data = null;
+		// 获取剪切板内容
+	
+		if (target.IsTree())
+            this.RightControlTreePasteImpl(target);
+		else
+        {
+            var common_parent = cast<IDETreeLogic>(target.logic_parent);
+            var child_index = 1;
+			if (common_parent == null)
+                common_parent = target;
+			else
+                child_index = common_parent.GetChildIndex(target);
+
+            this.RightControlTreePasteImpl(common_parent, null, child_index);
+		}
+	}
+	// 处理删除
+	public fun HandleRightControlTreeDelete(ALittle.UIEvent event)
+    {
+		// 隐藏右键菜单
+        A_LayerManager.HideFromRight(this._control_tabchild_menu);
+		// 获取tree对象
+        var target:IDETreeLogic = this._control_tabchild_menu._user_data;
+        this._control_tabchild_menu._user_data = null;
+		// 执行删除
+        var revoke_bind = new IDERevokeBind();
+        var has_target = false;
+		for (var target, handle_info in this._tab_quad_map)
+        {
+            handle_info.target.TreeDelete(revoke_bind);
+            has_target = true;
+		}
+		if (has_target)
+        {
+            this._tab_quad_map = new Map<IDETreeLogic, IDETabChildHandleInfo>();
+            this._tab_quad_container.RemoveAllChild();
+            this._revoke_list.PushRevoke(revoke_bind);
+		}
+	}
+	// 处理剪切
+	public fun HandleRightControlTreeCut(ALittle.UIEvent event)
+    {
+		// 隐藏右键菜单
+        A_LayerManager.HideFromRight(this._control_tabchild_menu);
+		// 获取tree对象
+        var target:IDETreeLogic = this._control_tabchild_menu._user_data;
+        this._control_tabchild_menu._user_data = null;
+	
+        var copy_list = new List<IDEControlCopyInfo>();
+        var copy_list_count = 0;
+		for (var target, handle_info in this._tab_quad_map)
+        {
+            var info = new IDEControlCopyInfo();
+            info.index = handle_info.target.logic_parent.GetChildIndex(handle_info.target);
+			info.info = handle_info.target.CalcInfo();
+            ++ copy_list_count;
+            copy_list[copy_list_count] = info;
+		}
+		if (copy_list_count > 0)
+        {
+            lua.table.sort(copy_list, IDETabChild.ControlCopyInfoCmp);
+            ALittle.System_SetClipboardText(lua.json.encode(copy_list));
+            var revoke_bind = new IDERevokeBind();
+			for (var target, handle_info in this._tab_quad_map)
+                handle_info.target.TreeCut(revoke_bind);
+            this._revoke_list.PushRevoke(revoke_bind);
+		}
+	}
+	// 处理跳转
+	public fun HandleRightControlTreeJump(ALittle.UIEvent event)
+    {
+		// 隐藏右键菜单
+        A_LayerManager.HideFromRight(this._control_tabchild_menu);
+		// 获取tree对象
+        var target:IDETreeLogic = this._control_tabchild_menu._user_data;
+        this._control_tabchild_menu._user_data = null;
+	
+        var extends_name = target.user_info.base.__extends;
+        var control_info = g_IDEProject.project.control_map[extends_name];
+		if (control_info == null)
+        {
+            g_IDETool.ShowNotice("错误", "控件不存在:"..extends_name);
+            return;
+		}
+	
+        g_IDETabManager.StartEditControlBySelect(control_info.name, control_info.info);
+	}
+	// 处理处理替换
+	public fun HandleRightControlTreeReplace(ALittle.UIEvent event)
+    {
+		// 隐藏右键菜单
+        A_LayerManager.HideFromRight(this._control_tabchild_menu);
+		// 获取tree对象
+        var target:IDETreeLogic = this._control_tabchild_menu._user_data;
+        this._control_tabchild_menu._user_data = null;
+	
+        g_IDEControlTree.ShowReplaceDialog(target);
+	}
+	// 处理文本编辑
+	public fun HandleRightControlTreeTextEdit(ALittle.UIEvent event)
+    {
+		// 隐藏右键菜单
+        A_LayerManager.HideFromRight(this._control_tabchild_menu);
+        var target:IDETreeLogic = this._control_tabchild_menu._user_data;
+        this._control_tabchild_menu._user_data = null;
+	
+        var object = target.user_info.object;
+	
+		// 创建输入框
+		if (this._control_tabchild_textinput == null)
+        {
+            this._control_tabchild_textinput = g_Control.CreateControl{ALittle.ImageInput}("ide_rename_image_input", this);
+            this._control_tabchild_textinput.width = 200;
+            A_LayerManager.AddToModal(this._control_tabchild_textinput);
+		}
+		// 初始化输入框内容
+        this._control_tabchild_textinput.visible = true;
+        var x, y = object.LocalToGlobal();
+        this._control_tabchild_textinput.text = object.text;
+        this._control_tabchild_textinput.x = x;
+        this._control_tabchild_textinput.y = y;
+        this._control_tabchild_textinput._user_data = target;
+        this._control_tabchild_textinput.SelectAll();
+        A_UISystem.focus = this._control_tabchild_textinput.show_input;
+	}
+	// 处理控件获得焦点
+	public fun HandleRightControlTreeFocus(ALittle.UIEvent event)
+    {
+		// 隐藏右键菜单
+        A_LayerManager.HideFromRight(this._control_tabchild_menu);
+        var target = this._control_tabchild_menu._user_data;
+        this._control_tabchild_menu._user_data = null;
+	
+        this.ShowTreeItemFocus(target);
+	}
+	// 处理文本编辑结果
+	public fun HandleRenameConfirm(ALittle.UIEvent event)
+    {
+		// 获取目标
+        var target:IDETreeLogic = this._control_tabchild_textinput._user_data;
+        if (target == null) return;
+		// 清空目标
+        this._control_tabchild_textinput._user_data = null;
+		// 隐藏输入框
+        this._control_tabchild_textinput.visible = false;
+		// 获取输入框文本
+        var text = this._control_tabchild_textinput.text;
+	
+		// 如果输入框没有文本，那么就直接返回
+        if (text == "") return;
+		// 调用重命名函数
+        target.ChangeText(text);
+	}
+	
+	//////////////////////////////////////////////////////////////////-
+	// 在树形区域，设置控件焦点
+	public fun ShowTreeItemFocus(IDETreeLogic target)
+    {
+        if (this._tree_object == null) return;
+		// 显示
+		if (target != this._tree_object)
+        {
+            var parent = cast<IDETreeLogic>(target.logic_parent);
+			while (parent != null && parent != this._tree_object)
+            {
+                parent.fold = true;
+                parent = cast<IDETreeLogic>(parent.logic_parent);
+			}
+		}
+        this._tree_object.fold = true;
+        this._tree_screen.RejustScrollBar();
+	
+		// 如果现在直接看的见的话，就直接返回了
+        var x, y = target.LocalToGlobal(this._tree_screen.container);
+        var target_x = (this._tree_screen.view_width - target.width / 2) / 2 - x;
+        var target_y = (this._tree_screen.view_height - target.height) / 2 - y;
+	
+        if (this._tree_loop_x != null) { this._tree_loop_x.Close(); this._tree_loop_x = null; }
+        if (this._tree_loop_y != null) { this._tree_loop_y.Close(); this._tree_loop_y = null; }
+	
+        this._tree_loop_x = new ALittle.LoopLinear(this._tree_screen, "container_x", target_x, 300, 0);
+        this._tree_loop_x.Start();
+        this._tree_loop_y = new ALittle.LoopLinear(this._tree_screen, "container_y", target_y, 300, 0);
+        this._tree_loop_y.Start();
+	}
+	//////////////////////////////////////////////////////////////////-
+	public fun SearchLink(string name)
+    {
+        if (this._tree_object == null) return;
+	
+		if (this._tree_search_info.name != name)
+        {
+            this._tree_search_info.name = name;
+            this._tree_search_info.index = 0;
+		}
+        var list = this._tree_object.SearchLink(name);
+        var count = lua.table.maxn(list);
+        if (count == 0) return;
+	
+        this._tree_search_info.index = this._tree_search_info.index + 1;
+        this._tree_search_info.index = this._tree_search_info.index % (count + 1);
+	
+        var target = list[this._tree_search_info.index];
+        this.ShowTreeItemFocus(target);
+        target.ShowAttributePanel();
+        this.ShowHandleQuad(target);
+	}
+	
+	public fun SearchEvent(string name)
+    {
+        if (this._tree_object == null) return;
+	
+		if (this._tree_search_info.name != name)
+        {
+            this._tree_search_info.name = name;
+            this._tree_search_info.index = 0;
+		}
+        var list = this._tree_object.SearchEvent(name);
+        var count = lua.table.maxn(list);
+        if (count == 0) return;
+	
+        this._tree_search_info.index = this._tree_search_info.index + 1;
+        this._tree_search_info.index = this._tree_search_info.index % (count + 1);
+	
+        var target = list[this._tree_search_info.index];
+        this.ShowTreeItemFocus(target);
+        target.ShowAttributePanel();
+        this.ShowHandleQuad(target);
+	}
+	
+	public fun SearchDescription(string name)
+    {
+        if (this._tree_object == null) return;
+	
+		if (this._tree_search_info.name != name)
+        {
+            this._tree_search_info.name = name;
+            this._tree_search_info.index = 0;
+		}
+        var list = this._tree_object.SearchDescription(name);
+        var count = lua.table.maxn(list);
+        if (count == 0) return;
+	
+        this._tree_search_info.index = this._tree_search_info.index + 1;
+        this._tree_search_info.index = this._tree_search_info.index % (count + 1);
+	
+        var target = list[this._tree_search_info.index];
+        this.ShowTreeItemFocus(target);
+        target.ShowAttributePanel();
+        this.ShowHandleQuad(target);
+	}
+	
+	public fun SearchTargetClass(string name)
+    {
+        if (this._tree_object == null) return;
+	
+		if (this._tree_search_info.name != name)
+        {
+            this._tree_search_info.name = name;
+            this._tree_search_info.index = 0;
+		}
+        var list = this._tree_object.SearchTargetClass(name);
+        var count = lua.table.maxn(list);
+        if (count == 0) return;
+	
+        this._tree_search_info.index = this._tree_search_info.index + 1;
+        this._tree_search_info.index = this._tree_search_info.index % (count + 1);
+	
+        var target = list[this._tree_search_info.index];
+        this.ShowTreeItemFocus(target);
+        target.ShowAttributePanel();
+        this.ShowHandleQuad(target);
+	}
+	
+	public fun SearchTextureName(string name)
+    {
+        if (this._tree_object == null) return;
+	
+		if (this._tree_search_info.name != name)
+        {
+            this._tree_search_info.name = name;
+            this._tree_search_info.index = 0;
+		}
+        var list = this._tree_object.SearchTextureName(name);
+        var count = lua.table.maxn(list);
+        if (count == 0) return;
+	
+        this._tree_search_info.index = this._tree_search_info.index + 1;
+        this._tree_search_info.index = this._tree_search_info.index % (count + 1);
+	
+        var target = list[this._tree_search_info.index];
+        this.ShowTreeItemFocus(target);
+        target.ShowAttributePanel();
+        this.ShowHandleQuad(target);
+	}
+	//////////////////////////////////////////////////////////////////-
+	
+	// 实际处理快捷操作添加控件
+	public fun QuickDragAddControl(double abs_x, double abs_y, string control_name)
+    {
+		// 检查必要参数
+        if (this._tree_object == null) return;
+
+        // 如果超出编辑区，那么就直接返回
+        var screen_x, screen_y = this._tab_screen.LocalToGlobal();
+        if (abs_x < screen_x || abs_y < screen_y
+            || abs_x > screen_x + this._tab_screen.width || abs_y > screen_y + this._tab_screen.height)
+            return;
+        
+        var global_x, global_y = this._tab_handle_quad.LocalToGlobal();
+	
+        var list = new List<IDETreeLogic>();
+        this._tree_object.QuickPickUp(abs_x - global_x, abs_y - global_y, list);
+        var count = lua.table.maxn(list);
+        if (count == 0) return;
+	
+        var user_data = new IDETabChildQuickDragAddUserData();
+        user_data.abs_x = abs_x;
+        user_data.abs_y = abs_y;
+        user_data.control_name = control_name;
+	
+		if (count == 1)
+        {
+            this.QuickDragAddStart(list[1], user_data);
+            return;
+		}
+	
+		// 创建动态右键菜单
+		if (this._quick_right_exmenu == null)
+            this._quick_right_exmenu = g_Control.CreateControl{ALittle.DisplayObject}("ide_quick_drag_menu", this);
+
+        this._quick_right_exlinear.RemoveAllChild();
+		for (var index, tree in list)
+        {
+            var item = g_Control.CreateControl{ALittle.DisplayObject}("ide_common_item_button");
+            item.AddEventListener(this, this.HandleQuickRightExItemClick);
+            item._user_data = tree;
+            item.text = tree.title;
+            this._quick_right_exlinear.AddChild(item);
+		}
+	
+		// 添加一个取消按钮
+        var item = g_Control.CreateControl{ALittle.DisplayObject}("ide_common_item_button");
+        item.AddEventListener(this, this.HandleQuickRightExItemClick);
+        item._user_data = null;
+        item.text = "取消";
+        this._quick_right_exlinear.AddChild(item);
+	
+        this._quick_right_exmenu.height = this._quick_right_exlinear.height + 5;
+	
+		if (abs_x + this._quick_right_exmenu.width > A_UISystem.view_width)
+            abs_x = A_UISystem.view_width - this._quick_right_exmenu.width;
+        
+        this._quick_right_exmenu.x = abs_x;
+        this._quick_right_exmenu.y = abs_y;
+        this._quick_right_exmenu._user_data = user_data;
+        A_LayerManager.ShowFromRight(this._quick_right_exmenu);
+	}
+	
+	public fun HandleQuickRightExItemClick(ALittle.UIClickEvent event)
+    {
+		// 隐藏菜单
+        A_LayerManager.HideFromRight(this._quick_right_exmenu);
+        this._quick_right_exlinear.RemoveAllChild();
+	
+        var user_data = this._quick_right_exmenu._user_data;
+	
+        var tree:IDETreeLogic = event.target._user_data;
+        if (tree == null) return;
+	
+        this.QuickDragAddStart(tree, user_data);
+	}
+	
+	public fun QuickDragAddStart(IDETreeLogic tree, IDETabChildQuickDragAddUserData user_data)
+    {
+		// 定义撤销
+        var revoke_bind = new IDERevokeBind();
+	
+        var display_info = new ALittle.DisplayInfo();
+        display_info.__extends = user_data.control_name;
+        var info = new IDEControlCopyInfo();
+        info.index = 1;
+        info.info = display_info;
+        var copy_list = new List<IDEControlCopyInfo>();
+        copy_list[1] = info;
+		this.RightControlTreePasteImpl(tree, copy_list, tree.child_count + 1, revoke_bind
+                                      , bind(this.QuickDragAddEnd, this, tree, user_data, revoke_bind));
+	}
+	
+	public fun QuickDragAddEnd(IDETreeLogic tree, IDETabChildQuickDragAddUserData user_data, IDERevokeBind revoke_bind, bool result, List<IDETreeLogic> add_list)
+    {
+        if (result == false) return;
+	
+        var global_x, global_y = tree.user_info.object.LocalToGlobal();
+	
+		// 设置一下位置
+		for (var k, tree_object in add_list)
+        {
+            tree_object.attr_panel.SetXType(ALittle.UIEnumTypes.POS_ABS, revoke_bind);
+            tree_object.attr_panel.SetYType(ALittle.UIEnumTypes.POS_ABS, revoke_bind);
+            tree_object.attr_panel.SetXValue(user_data.abs_x - global_x, revoke_bind);
+            tree_object.attr_panel.SetYValue(user_data.abs_y - global_y, revoke_bind);
+		}
+	
+		// 添加撤销
+        this._revoke_list.PushRevoke(revoke_bind);
+	}
+}

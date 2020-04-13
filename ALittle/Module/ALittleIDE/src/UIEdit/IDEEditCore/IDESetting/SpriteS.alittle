@@ -1,0 +1,59 @@
+
+namespace ALittleIDE;
+
+public class SpriteS : DisplayObjectS
+{
+    public ctor(IDETreeUserInfo user_info, IDETabChild tab_child, IDETreeLogic tree_logic)
+    {
+        this._layer_name = "ide_setting_sprite";
+    }
+    
+    public fun LoadNatureBase()
+    {
+        DisplayObjectS.LoadNatureBase(this);
+        this.LoadDefaultNilString("texture_name");
+
+        this.LoadValueData("row_count");
+        this.LoadValueData("col_count");
+        this.LoadValueData("row_index");
+        this.LoadValueData("col_index");
+        this.LoadEnumData("flip", cast<Map<string, any>>(g_IDEEnum.flip_type));
+    }
+    //texture_name
+    public fun HandleImageTextureNameFOCUSOUT(ALittle.UIEvent event)
+    {
+        this.DefaultNilStringInputChange("texture_name", false);
+    }
+    //texture_name
+    public fun HandleImageTextureNameSelect(ALittle.UIEvent event)
+    {
+        var func = bind(this.ImagePathSelectCallback, this, "texture_name", this.HandleImageTextureNameFOCUSOUT, null);
+        g_IDEAttrImageDialog.ShowDialog(null, func);
+    }
+    
+    public fun HandleRowCountFOCUSOUT(ALittle.UIEvent event)
+    {
+        this.ValueNumInputChange("row_count", false);
+    }
+    
+    public fun HandleColCountFOCUSOUT(ALittle.UIEvent event)
+    {
+        this.ValueNumInputChange("col_count", false);
+    }
+    
+    public fun HandleRowIndexFOCUSOUT(ALittle.UIEvent event)
+    {
+        this.ValueNumInputChange("row_index", false);
+    }
+    
+    public fun HandleColIndexFOCUSOUT(ALittle.UIEvent event)
+    {
+        this.ValueNumInputChange("col_index", false);
+    }
+    
+    public fun HandleFlipSELECT_CHANGE(ALittle.UIEvent event)
+    {
+        var list = g_IDEEnum.flip_rtype;
+        this.TypeSelectChange("flip", cast<Map<string, any>>(list), false);
+    }
+}

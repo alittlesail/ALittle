@@ -1,0 +1,477 @@
+
+namespace ALittleIDE;
+
+public class IDEProjectManager
+{
+	private ALittle.ScrollScreen _project_scroll_screen;	// 项目滚动屏
+	private ALittle.DisplayObject _project_search_key;		// 搜索输入框
+
+	private ALittle.DisplayObject _project_new_dialog;		// 创建项目对话框
+	private ALittle.ImageInput _project_new_name;			// 新项目名称
+	private ALittle.DropDown _view_size_dropdown;			// 界面大小选择
+	private ALittle.DisplayObject _default_font_path;		// 字体路径
+	private ALittle.DisplayObject _default_font_size;		// 字体大小
+	private ALittle.DisplayObject _core_path_input;			// 服务端核心代码路径
+	private ALittle.DisplayObject _modules_edit;			// 服务端模块列表
+
+	private ALittle.DisplayObject _project_open_dialog;		// 打开项目对话框
+	private ALittle.ImageInput _project_open_name;			// 项目名称
+
+	private ALittle.DisplayObject _project_setting_dialog;	// 项目设置对话框
+	private ALittle.DisplayObject _default_show_width;		// 界面宽
+	private ALittle.DisplayObject _default_show_height;		// 界面高
+
+	private ALittle.DisplayObject _project_search_menu;		// 项目菜单
+
+	private ALittle.DisplayObject _export_dialog;			// 导出项目
+	private ALittle.Tab _main_export_tab;					// 导出Tab控件
+	private IDEVersionWindows _export_windows_official;		// 导出Windows分页
+	private IDEVersionAndroid _export_android_official;		// 导出Android分页
+	private IDEVersioniOS _export_ios_official;				// 导出IOS分页
+
+	// 打开上次的项目
+	public fun OpenLastProject()
+	{
+		if (g_IDEProject.project != null) return;
+		
+		var project_name = g_IDEConfig.GetConfig("last_project", "");
+		if (project_name == "") return;
+	
+		this.OpenProjectImpl(project_name);
+	}
+	
+	// 处理项目搜索
+	public fun HandleProjectSearchClick(ALittle.UIEvent event)
+	{
+		// 移除所有子控件
+		this._project_scroll_screen.RemoveAllChild();
+		// 获取搜索的内容
+		var key = this._project_search_key.text;
+		// 获取项目列表
+		var project_map = g_IDEConfig.GetConfig("project_map", new Map<string, string>());
+		// 遍历项目
+		for (var k, v in project_map)
+		{
+			if (key == "" || ALittle.Find(v, key) != null)
+			{
+				var item = g_Control.CreateControl{ALittle.DisplayObject}("ide_common_item_button");
+				item.text = v;
+				item.drag_trans_target = this._project_scroll_screen;
+				item.AddEventListener(this, this.HandleProjectItemRightClick);
+				this._project_scroll_screen.AddChild(item);
+			}
+		}
+	}
+	
+	public fun ShowNewProject()
+	{
+		// 创建新建项目对话框，并加入模态层
+		if (this._project_new_dialog == null)
+		{
+			this._project_new_dialog = g_Control.CreateControl{ALittle.DisplayObject}("ide_new_project_dialog", this);
+			A_LayerManager.AddToModal(this._project_new_dialog);
+		}
+		// 清空输入框内容
+		this._project_new_name.text = "";
+		// 显示新建对话框
+		this._project_new_dialog.visible = true;
+		// 把输入框设置为焦点
+		A_UISystem.focus = this._project_new_name.show_input;
+	}
+	
+	// 新建项目取消
+	public fun HandleNewProjectCancel(ALittle.UIEvent event)
+	{
+		this._project_new_dialog.visible = false;
+	}
+	// 新建项目确认
+	public fun HandleNewProjectConfirm(ALittle.UIEvent event)
+	{
+		// 获取项目名字
+		var name = this._project_new_name.text;
+		if (name == "")
+		{
+			g_IDETool.ShowNotice("错误", "请输入项目名");
+			return;
+		}
+	
+		// 检查项目名称
+		if (IDEUtility_CheckName(name) == false)
+		{
+			g_IDETool.ShowNotice("错误", "项目名不合法:"..name);
+			return;
+		}
+		// 检查项目是否存在
+		if (ALittle.File_GetFileAttr(ALittle.File_BaseFilePath()..name) != null)
+		{
+			g_IDETool.ShowNotice("错误", "项目已存在:"..name);
+			return;
+		}
+		// 窗口大小
+		var size_list = ALittle.String_Split(this._view_size_dropdown.text, "x");
+		var window_width = lua.tonumber(size_list[1]);
+		if (window_width == null) window_width = 800;
+		var window_height = lua.tonumber(size_list[2]);
+		if (window_height == null) window_height = 600;
+		// 字体路径
+		var font_path = this._default_font_path.text;
+		var font_size = lua.tonumber(this._default_font_size.text);
+		if (font_size == null) font_size = 25;
+	
+		// 创建项目
+		g_IDEProject.NewProject(name, lua.math.floor(window_width), lua.math.floor(window_height), font_path, lua.math.floor(font_size));
+		g_IDECenter.UpdateProjectList();
+	
+		// 如果当前没有打开的项目，就直接打开
+		if (g_IDEProject.project == null)
+			// 打开项目
+			g_IDECenter.OpenProject(name);
+	
+		// 关闭对话框
+		this._project_new_dialog.visible = false;
+	}
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// 打开项目
+	public fun OpenProjectImpl(string name)
+	{
+		// 检查项目名
+		if (name == "")
+		{
+			g_IDETool.ShowNotice("错误", "请输入项目名");
+			return;
+		}
+		// 检查项目是否存在
+		if (ALittle.File_GetFileAttr(ALittle.File_BaseFilePath().."Module/"..name) == null)
+		{
+			g_IDETool.ShowNotice("错误", "项目不存在:"..name);
+			return;
+		}
+		// 关闭当前项目
+		g_IDECenter.CloseProject();
+		// 打开项目
+		g_IDECenter.OpenProject(name);
+	}
+	// 处理打开项目操作
+	public fun ShowOpenProject()
+	{
+		// 创建对话框
+		if (this._project_open_dialog == null)
+		{
+			this._project_open_dialog = g_Control.CreateControl{ALittle.DisplayObject}("ide_open_project_dialog", this);
+			A_LayerManager.AddToModal(this._project_open_dialog);
+		}
+		// 初始化项目名输入框
+		this._project_open_name.text = "";
+		// 显示对话框
+		this._project_open_dialog.visible = true;
+		// 把输入框设置为焦点
+		A_UISystem.focus = this._project_open_name.show_input;
+	}
+	// 处理打开项目-取消
+	public fun HandleOpenProjectCancel(ALittle.UIEvent event)
+	{
+		this._project_open_dialog.visible = false;
+	}
+	// 处理打开项目-确定
+	public fun HandleOpenProjectConfirm(ALittle.UIEvent event)
+	{
+		// 关闭对话框
+		this._project_open_dialog.visible = false;
+		// 获取项目名字
+		var name = this._project_open_name.text;
+	
+		// 检查当前是否有项目并且是否保存
+		if (g_IDETabManager.IsSaveAll())
+		{
+			// 打开项目
+			this.OpenProjectImpl(name);
+			return;
+		}
+	
+		// 如果没有保存，那么走保存提示流程
+		var cancel_callback = bind(this.OpenProjectImpl, this, name);
+		var confirm_callback = bind(g_IDETabManager.SaveAllTab, g_IDETabManager);
+		g_IDETool.SaveNotice("提示", "是否保存当前项目?", cancel_callback, confirm_callback);
+	}
+	////////////////////////////////////////////////////////////////////////////////////-
+	
+	public fun ShowSettingProject(ALittle.UIEvent event)
+	{
+		if (g_IDEProject.project == null)
+		{
+			g_IDETool.ShowNotice("错误", "当前没有打开的项目");
+			return;
+		}
+	
+		// 创建对话框
+		if (this._project_setting_dialog == null)
+		{
+			this._project_setting_dialog = g_Control.CreateControl{ALittle.DisplayObject}("ide_setting_project_dialog", this);
+			A_LayerManager.AddToModal(this._project_setting_dialog);
+		}
+	
+		// 显示对话框
+		this._project_setting_dialog.visible = true;
+	
+		// 初始化信息
+		this._default_show_width.text = g_IDEProject.project.config.GetConfig("default_show_width", 800);
+		this._default_show_height.text = g_IDEProject.project.config.GetConfig("default_show_height", 600);
+		this._default_font_path.text = g_IDEProject.project.config.GetConfig("default_font_path", "");
+		this._default_font_size.text = g_IDEProject.project.config.GetConfig("default_font_size", 15);
+		this._core_path_input.text = "Module/ALittleIDE/Other/Server/Core/";
+		this._modules_edit.text =
+			"Module/ALittleIDE/Other/Server/GatewayServer/\n"
+			.."Module/ALittleIDE/Other/Server/VersionServer/";
+	}
+	
+	public fun HandleSettingProjectCancel(ALittle.UIEvent event)
+	{
+		this._project_setting_dialog.visible = false;
+	}
+	
+	public fun HandleSettingProjectConfirm(ALittle.UIEvent event)
+	{
+		var default_show_width = lua.tonumber(this._default_show_width.text);
+		if (default_show_width == null || default_show_width <= 0)
+		{
+			g_IDETool.ShowNotice("错误", "默认宽度不合法");
+			return;
+		}
+		var default_show_height = lua.tonumber(this._default_show_height.text);
+		if (default_show_height == null || default_show_height <= 0)
+		{
+			g_IDETool.ShowNotice("错误", "默认高度不合法");
+			return;
+		}
+		var default_font_path = this._default_font_path.text;
+		var default_font_size = lua.tonumber(this._default_font_size.text);
+		if (default_font_size == null || default_font_size <= 0)
+		{
+			g_IDETool.ShowNotice("错误", "默认字体大小不合法");
+			return;
+		}
+		var core_path = this._core_path_input.text;
+		if (core_path != "" && ALittle.File_GetFileAttr(core_path) == null)
+		{
+			g_IDETool.ShowNotice("错误", "服务端引擎路径不存在");
+			return;
+		}
+		var modules = this._modules_edit.text;
+		if (core_path != "")
+		{
+			var module_split = ALittle.String_SplitSepList(modules, ["\n","\r"]);
+			for (var index, module in module_split)
+			{
+				var split = ALittle.String_Split(module, ",");
+				if (lua.table.maxn(split) != 2)
+				{
+					g_IDETool.ShowNotice("错误", "服务端模块格式错误:"..module);
+					return;
+				}
+				if (ALittle.File_GetFileAttr(split[1]) == null)
+				{
+					g_IDETool.ShowNotice("错误", "服务端模块路径不存在:"..split[1]);
+					return;
+				}
+			}
+		}
+		
+		g_IDEProject.project.config.SetConfig("default_show_width", default_show_width);
+		g_IDEProject.project.config.SetConfig("default_show_height", default_show_height);
+		g_IDEProject.project.config.SetConfig("default_font_path", default_font_path);
+		g_IDEProject.project.config.SetConfig("default_font_size", default_font_size);
+		g_IDEProject.project.config.SetConfig("core_path", core_path);
+		g_IDEProject.project.config.SetConfig("modules", modules);
+	
+		// 更新相关界面
+		g_IDETabManager.SetTabChildWH(default_show_width, default_show_height);
+	
+		this._project_setting_dialog.visible = false;
+	}
+	
+	////////////////////////////////////////////////////////////////////////////////////-
+	// 处理项目搜索，右键菜单
+	public fun HandleProjectItemRightClick(ALittle.UIRButtonDownEvent event)
+	{
+		if (this._project_search_menu == null)
+			this._project_search_menu = g_Control.CreateControl{ALittle.DisplayObject}("ide_search_project_menu", this);
+
+		this._project_search_menu.x = A_UISystem.mouse_x;
+		this._project_search_menu.y = A_UISystem.mouse_y;
+		if (this._project_search_menu.y + this._project_search_menu.height > A_UISystem.view_height)
+			this._project_search_menu.y = A_UISystem.view_height - this._project_search_menu.height;
+
+		this._project_search_menu._user_data = event.target;
+		A_LayerManager.ShowFromRight(this._project_search_menu);
+	}
+	
+	public fun HandleRightProjectOpen(ALittle.UIEvent event)
+	{
+		A_LayerManager.HideFromRight(this._project_search_menu);
+		var target:ALittle.DisplayObject = this._project_search_menu._user_data;
+		this._project_search_menu._user_data = null;
+		var project_name = target.text;
+	
+		// 检查当前是否有项目并且是否保存
+		if (g_IDETabManager.IsSaveAll())
+		{
+			// 打开项目
+			this.OpenProjectImpl(project_name);
+			return;
+		}
+	
+		// 如果没有保存，那么走保存提示流程
+		var cancel_callback = bind(this.OpenProjectImpl, this, project_name);
+		var confirm_callback = bind(g_IDETabManager.SaveAllTab, g_IDETabManager);
+		g_IDETool.SaveNotice("提示", "是否保存当前项目?", cancel_callback, confirm_callback);
+	}
+	
+	public fun HandleRightProjectRemove(ALittle.UIEvent event)
+	{
+		A_LayerManager.HideFromRight(this._project_search_menu);
+		var target:ALittle.DisplayObject = this._project_search_menu._user_data;
+		this._project_search_menu._user_data = null;
+		var project_name = target.text;
+	
+		// 检查当前是否有项目并且是否保存
+		if (g_IDEProject.project != null && g_IDEProject.project.name == project_name)
+		{
+			g_IDETool.ShowNotice("提示", "当前项目正在编辑，请先关闭");
+			return;
+		}
+		// 移除项目
+		g_IDEProject.RemoveProject(project_name);
+		this._project_scroll_screen.RemoveChild(target);
+		g_IDECenter.UpdateProjectList();
+	}
+	
+	public fun HandleRightProjectClose(ALittle.UIEvent event)
+	{
+		A_LayerManager.HideFromRight(this._project_search_menu);
+		var target:ALittle.DisplayObject = this._project_search_menu._user_data;
+		this._project_search_menu._user_data = null;
+		var project_name = target.text;
+	
+		// 检查当前是否有项目并且是否保存
+		if (g_IDEProject.project == null || g_IDEProject.project.name != project_name)
+			return;
+        
+		// 如果都保存了，就直接关闭项目
+		if (g_IDETabManager.IsSaveAll())
+		{
+			g_IDECenter.CloseProject();
+			return;
+		}
+	
+		// 如果没有保存，那么走保存提示流程
+		var cancel_callback = bind(g_IDECenter.CloseProject, g_IDECenter);
+		var confirm_callback = bind(g_IDETabManager.SaveAllTab, g_IDETabManager);
+		g_IDETool.SaveNotice("提示", "是否保存当前项目?", cancel_callback, confirm_callback);
+	}
+	public fun RefreshProject()
+	{
+		// 检查是否都保存了
+		if (g_IDETabManager.IsSaveAll())
+		{
+			// 刷新当前
+			g_IDECenter.RefreshProject();
+			return;
+		}
+	
+		// 如果没有保存，那么走保存提示流程
+		var cancel_callback = bind(g_IDECenter.RefreshProject, g_IDECenter);
+		var confirm_callback = bind(g_IDETabManager.SaveAllTab, g_IDETabManager);
+		g_IDETool.SaveNotice("提示", "是否保存当前项目?", cancel_callback, confirm_callback);
+	}
+	public fun HandleRightProjectRefresh(ALittle.UIEvent event)
+	{
+		A_LayerManager.HideFromRight(this._project_search_menu);
+		var target:ALittle.DisplayObject = this._project_search_menu._user_data;
+		this._project_search_menu._user_data = null;
+		var project_name = target.text;
+	
+		// 检查当前是否有项目并且是否保存
+		if (g_IDEProject.project == null || g_IDEProject.project.name != project_name)
+			return;
+
+		this.RefreshProject();
+	}
+	
+	////////////////////////////////////////////////////////////////////////////////////-
+	
+	// 处理导出Exe
+	public fun ShowExportProject()
+	{
+		if (g_IDEProject.project == null)
+		{
+			g_IDETool.ShowNotice("错误", "当前没有打开的项目");
+			return;
+		}
+	
+		if (this._export_dialog == null)
+		{
+			this._export_dialog = g_Control.CreateControl{ALittle.DisplayObject}("ide_export_dialog", this);
+			g_IDECenter.dialog_layer.AddChild(this._export_dialog);
+			this._main_export_tab.DisableAllCloseButton();
+								  this._main_export_tab.tab_index = 1;
+	
+			// 初始化所有的标签页
+			this._export_windows_official.config_key = "export_windows_official";
+			this._export_android_official.config_key = "export_android_official";
+			this._export_ios_official.config_key = "export_ios_official";
+		}
+		this._export_dialog.visible = true;
+	
+		this._export_windows_official.LoadConfigImpl();
+		this._export_android_official.LoadConfigImpl();
+		this._export_ios_official.LoadConfigImpl();
+	}
+	
+	////////////////////////////////////////////////////////////////////////////////////-
+	// 运行项目
+	public fun RunProject()
+	{
+		if (g_IDEProject.project == null)
+		{
+			g_IDETool.ShowNotice("提示", "当前没有打开的项目");
+			return;
+		}
+
+		var server_module = "";
+		var core_path = g_IDEProject.project.config.GetConfig("core_path", "");
+		if (core_path != "")
+		{
+			if (ALittle.File_GetFileAttr(core_path) == null)
+			{
+				g_IDETool.ShowNotice("提示", "服务端引擎路径不存在:"..core_path);
+				return;
+			}
+			var modules = g_IDEProject.project.config.GetConfig("modules", "");
+			var module_split = ALittle.String_SplitSepList(modules, ["\n","\r"]);
+			var new_modules = new List<string>();
+			for (var index, module in module_split)
+			{
+				var split = ALittle.String_Split(module, ",");
+				if (lua.table.maxn(split) != 2)
+				{
+					g_IDETool.ShowNotice("提示", "服务端模块格式错误:"..module);
+					return;
+				}
+				if (ALittle.File_GetFileAttr(split[1]) == null)
+				{
+					g_IDETool.ShowNotice("提示", "服务端模块路径不存在:"..split[1]);
+					return;
+				}
+				ALittle.Push(new_modules, module);
+			}
+			if (lua.table.maxn(new_modules) > 0)
+				server_module = " \""..core_path.."\" \""..ALittle.String_Join(new_modules, ";").."\"";
+		}
+
+		// 第二个参数 debug 表示是调试模式
+		lua.os.execute("start ALittleClient.exe debug "..g_IDEProject.project.name..server_module);
+	}
+}
+////////////////////////////////////////////////////////////////////////////////////-
+
+protected var g_IDEProjectManager = new IDEProjectManager();

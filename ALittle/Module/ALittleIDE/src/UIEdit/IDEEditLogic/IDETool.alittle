@@ -1,0 +1,313 @@
+
+namespace ALittleIDE;
+
+struct IDECallbackUserData
+{
+	Functor<()> cancel_callback;		// 取消操作回调
+	Functor<()> confirm_callback;		// 确认操作回调
+}
+
+public class IDETool
+{
+	// 警告框
+	private ALittle.Dialog _alert_dialog;
+	private ALittle.DisplayObject _content;
+
+	// 提示框
+	private ALittle.Dialog _notice_dialog;
+	private ALittle.TextArea _notice_content;
+	private double _notice_min_size;
+
+	// 保存对话框
+	private ALittle.Dialog _save_dialog;
+	private ALittle.TextArea _save_content;
+
+	// 删除对话框
+	private ALittle.Dialog _delete_dialog;
+	private ALittle.TextArea _delete_content;
+
+	// 重命名输入框
+	private ALittle.ImageInput _rename_input;
+
+	// 版本对话框
+	private ALittle.Dialog _version_dialog;
+	private ALittle.TextArea _version_content;
+    
+	// 帮助提示
+	private ALittle.Dialog _tip_help_dialog;
+	private ALittle.LoopList _tip_help_loop;
+	private ALittle.TextArea _tip_help_content;
+	
+	////////////////////////////////////////////////////////////////////////////////////////
+	// 显示警告对话框
+	public fun ShowAlertDialog(string title, string content)
+	{
+		// 创建模态提示对话框，并添加到模态层
+		if (this._alert_dialog == null)
+		{
+			this._alert_dialog = g_Control.CreateControl{ALittle.Dialog}("ide_alert_dialog", this);
+			A_LayerManager.AddToModal(this._alert_dialog);
+		}
+		// 显示提示对话框，设置标题和内容
+		this._alert_dialog.visible = true;
+		this._alert_dialog.MoveToTop();
+		this._alert_dialog.title = title;
+		this._content.text = content;
+	}
+	// 隐藏警告对话框
+	public fun HideAlertDialog()
+	{
+		this._alert_dialog.visible = false;
+	}
+	////////////////////////////////////////////////////////////////////////////////////////
+	// 显示模态提示
+	public fun ShowNotice(string title, string content)
+	{
+		// 创建模态提示对话框，并添加到模态层
+		if (this._notice_dialog == null)
+		{
+			this._notice_dialog = g_Control.CreateControl{ALittle.Dialog}("ide_notice_dialog", this);
+			A_LayerManager.AddToModal(this._notice_dialog);
+			this._notice_min_size = this._notice_content.height;
+		}
+		// 显示提示对话框，设置标题和内容
+		this._notice_dialog.visible = true;
+		this._notice_dialog.MoveToTop();
+		this._notice_dialog.title = title;
+		this._notice_content.text = content;
+	
+		var real_height = this._notice_content.real_height;
+		if (real_height < this._notice_min_size) real_height = this._notice_min_size;
+	
+		var dialog_body_height = real_height + this._notice_content.y + this._notice_content.height_value;
+		this._notice_dialog.height = dialog_body_height + this._notice_dialog.head_size;
+	}
+	// 隐藏提示框
+	public fun HandleNoticeConfirmClick(ALittle.UIEvent event)
+	{
+		this._notice_dialog.visible = false;
+	}
+	
+	////////////////////////////////////////////////////////////////////////////////////////
+	// 显示保存提示对话框
+	public fun SaveNotice(string title, string content, Functor<()> cancel_callback, Functor<()> confirm_callback)
+	{
+		// 创建保存提示对话框，并添加到模态层
+		if (this._save_dialog == null)
+		{
+			this._save_dialog = g_Control.CreateControl{ALittle.Dialog}("ide_save_dialog", this);
+			A_LayerManager.AddToModal(this._save_dialog);
+		}
+		// 显示提示框，设置标题和内容
+		this._save_dialog.visible = true;
+		this._save_dialog.MoveToTop();
+		this._save_dialog.title = title;
+		this._save_content.text = content;
+		// 保存取消回调函数，保存确认回调函数
+		var user_data = new IDECallbackUserData();
+		user_data.cancel_callback = cancel_callback;
+		user_data.confirm_callback = confirm_callback;
+		this._save_dialog._user_data = user_data;
+	}
+	// 处理保存确定
+	public fun HandleSaveConfirmClick(ALittle.UIEvent event)
+	{
+		// 隐藏对话框
+		this._save_dialog.visible = false;
+		var user_data:IDECallbackUserData = this._save_dialog._user_data;
+		// 调用确认回调
+		if (user_data.confirm_callback != null) user_data.confirm_callback();
+		// 调用取消回调(确认调用玩故意调用的取消)
+		if (user_data.cancel_callback != null) user_data.cancel_callback();
+		// 把携带数据清空
+		this._save_dialog._user_data = null;
+	}
+	// 处理不保存
+	public fun HandleNoSaveClick(ALittle.UIEvent event)
+	{
+		// 隐藏对话框
+		this._save_dialog.visible = false;
+		var user_data:IDECallbackUserData = this._save_dialog._user_data;
+		// 调用取消回调
+		if (user_data.cancel_callback != null) user_data.cancel_callback();
+		// 把携带数据清空
+		this._save_dialog._user_data = null;
+	}
+	// 处理取消
+	public fun HandleSaveCancelClick(ALittle.UIEvent event)
+	{
+		this._save_dialog.visible = false;
+		this._save_dialog._user_data = null;
+	}
+	
+	////////////////////////////////////////////////////////////////////////////////////////
+	// 显示删除提示对话框
+	public fun DeleteNotice(string title, string content, Functor<()> confirm_callback)
+	{
+		// 创建保存提示对话框，并添加到模态层
+		if (this._delete_dialog == null)
+		{
+			this._delete_dialog = g_Control.CreateControl{ALittle.Dialog}("ide_delete_dialog", this);
+			A_LayerManager.AddToModal(this._delete_dialog);
+		}
+		// 显示提示框，设置标题和内容
+		this._delete_dialog.visible = true;
+		this._delete_dialog.MoveToTop();
+		this._delete_dialog.title = title;
+		this._delete_content.text = content;
+		this._delete_dialog._user_data = confirm_callback;
+	}
+	// 处理保存确定
+	public fun HandleDeleteConfirmClick(ALittle.UIEvent event)
+	{
+		// 隐藏对话框
+		this._delete_dialog.visible = false;
+		var callback:Functor<()> = this._delete_dialog._user_data;
+		// 调用确认回调
+		if (callback != null) callback();
+		// 把携带数据清空
+		this._delete_dialog._user_data = null;
+	}
+	// 处理取消
+	public fun HandleDeleteCancelClick(ALittle.UIEvent event)
+	{
+		this._delete_dialog.visible = false;
+		this._delete_dialog._user_data = null;
+	}
+	////////////////////////////////////////////////////////////////////////////////////////
+	// 显示重命名输入框
+	public fun ShowRename(Functor<(string)> callback, string text, double x, double y, double width)
+	{
+		// 创建输入框，并加入模态层
+		if (this._rename_input == null)
+		{
+			this._rename_input = g_Control.CreateControl{ALittle.ImageInput}("ide_rename_image_input", this);
+			A_LayerManager.AddToModal(this._rename_input);
+		}
+		// 显示输入框
+		this._rename_input.visible = true;
+		// 并且获得焦点
+		A_UISystem.focus = this._rename_input.show_input;
+		// 设置位置
+		this._rename_input.x = x;
+		this._rename_input.y = y;
+		this._rename_input.width = width;
+		this._rename_input.text = text;
+		this._rename_input.SelectAll();
+	
+		// 保存目标
+		this._rename_input._user_data = callback;
+	}
+	// 重新名确认
+	public fun HandleRenameConfirm(ALittle.UIEvent event)
+	{
+		// 获取目标
+		var callback:Functor<(string)> = this._rename_input._user_data;
+		this._rename_input._user_data = null;
+	
+		if (callback == null) return;
+	
+		// 隐藏输入框
+		this._rename_input.visible = false;
+		// 获取输入框文本
+		var text = this._rename_input.text;
+	
+		// 调用重命名函数
+		callback(text);
+	}
+
+	////////////////////////////////////////////////////////////////////////////////////////
+	// 显示版本提示对话框
+	public fun VersionNotice(string title, string content, Functor<()> confirm_callback)
+	{
+		// 创建保存提示对话框，并添加到模态层
+		if (this._version_dialog == null)
+		{
+			this._version_dialog = g_Control.CreateControl{ALittle.Dialog}("ide_version_dialog", this);
+			A_LayerManager.AddToModal(this._version_dialog);
+		}
+		// 显示提示框，设置标题和内容
+		this._version_dialog.visible = true;
+		this._version_dialog.MoveToTop();
+		this._version_dialog.title = title;
+		this._version_content.text = content;
+		// 保存取消回调函数，保存确认回调函数
+		this._version_dialog._user_data = confirm_callback;
+	}
+	// 处理确定要更新版本
+	public fun HandleVersionConfirmClick(ALittle.UIEvent event)
+	{
+		// 隐藏对话框
+		this._version_dialog.visible = false;
+		// 调用确认回调
+		var callback:Functor<()> = this._version_dialog._user_data;
+		if (callback != null) callback();
+		// 把携带数据清空
+		this._version_dialog._user_data = null;
+	}
+	// 处理取消
+	public fun HandleVersionCancelClick(ALittle.UIEvent event)
+	{
+		this._version_dialog.visible = false;
+		this._version_dialog._user_data = null;
+	}
+	////////////////////////////////////////////////////////////////////////////////////////
+	// 显示版本提示对话框
+	public fun ShowTipHelp(string content, int show_time)
+	{
+		// 创建保存提示对话框，并添加到模态层
+		if (this._tip_help_dialog == null)
+		{
+			this._tip_help_dialog = g_Control.CreateControl{ALittle.Dialog}("ide_tip_help", this);
+			g_IDECenter.dialog_layer.AddChild(this._tip_help_dialog);
+		}
+	
+		// 清空当前的动画
+		if (this._tip_help_loop != null)
+		{
+			if (A_LoopSystem.HasUpdater(this._tip_help_loop))
+			{
+				this._tip_help_loop.SetCompleted();
+				A_LoopSystem.RemoveUpdater(this._tip_help_loop);
+			}
+			this._tip_help_loop = null;
+		}
+	
+		// 初始化位置
+		this._tip_help_dialog.visible = true;
+		this._tip_help_dialog.x = A_UISystem.view_width;
+		this._tip_help_dialog.y = 0;
+		this._tip_help_content.text = content;
+		var target_x = A_UISystem.view_width - this._tip_help_dialog.width;
+	
+		// 创建动画
+		if (show_time == null) show_time = 10000;
+		this._tip_help_loop = new ALittle.LoopList();
+		var move_in = new ALittle.LoopLinear(this._tip_help_dialog, "x", target_x, 1000, 0);
+		this._tip_help_loop.AddUpdater(move_in);
+		var move_out = new ALittle.LoopLinear(this._tip_help_dialog, "x", A_UISystem.view_width, 1000, show_time);
+		this._tip_help_loop.AddUpdater(move_out);
+		var set_value = new ALittle.LoopAttribute(this._tip_help_dialog, "visible", false, 1);
+		this._tip_help_loop.AddUpdater(set_value);
+		A_LoopSystem.AddUpdater(this._tip_help_loop);
+	}
+	
+	public fun HandleTipHelpCloseClick(ALittle.UIEvent event)
+	{
+		// 清空当前的动画
+		if (this._tip_help_loop != null)
+		{
+			if (A_LoopSystem.HasUpdater(this._tip_help_loop))
+			{
+				this._tip_help_loop.SetCompleted();
+				A_LoopSystem.RemoveUpdater(this._tip_help_loop);
+			}
+			this._tip_help_loop = null;
+		}
+	
+		this._tip_help_dialog.visible = false;
+	}
+}
+////////////////////////////////////////////////////////////////////////////////////////
+
+protected var g_IDETool = new IDETool();

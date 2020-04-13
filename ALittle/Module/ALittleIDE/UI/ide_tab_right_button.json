@@ -1,0 +1,1 @@
+{"ide_tab_right_button":{"__class":"TextButton","show_down":{"__class":"Image","texture_name":"tab_right_up.png"},"width_value":18,"show_disabled":{"__class":"Image","texture_name":"tab_right_up.png"},"show_over":{"__class":"Image","texture_name":"tab_right_down.png"},"show_up":{"__class":"Image","texture_name":"tab_right_up.png"},"height_value":15}}

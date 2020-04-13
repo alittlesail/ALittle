@@ -1,0 +1,21 @@
+
+namespace ALittleIDE;
+
+public class SpritePlayS : SpriteS
+{
+    public ctor(IDETreeUserInfo user_info, IDETabChild tab_child, IDETreeLogic tree_logic)
+    {
+        this._layer_name = "ide_setting_spriteplay";
+    }
+    
+    public fun LoadNatureBase()
+    {
+        SpriteS.LoadNatureBase(this);
+        this.LoadValueData("interval");
+    }
+
+    public fun HandleIntervalFOCUSOUT(ALittle.UIEvent event)
+    {
+        this.ValueNumZInputChange("interval", false);
+    }
+}

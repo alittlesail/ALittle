@@ -1,0 +1,301 @@
+
+namespace ALittleIDE;
+
+class IDECenter
+{
+	private ALittle.DisplayObject _phone_status_quad;	// 手机头底色
+    
+	private ALittle.DisplayLayout _main_layer;			// 主层
+	private ALittle.DisplayLayout _dialog_layer;		// 对话框层
+    
+	private ALittle.DisplayLayout _edit_container;		// 编辑器容器
+	private ALittle.DropDown _current_project_name;		// 当前正在编辑的项目
+    
+	// 账号登录相关
+	private ALittle.Text _account_login;
+	private ALittle.DropDown _account_dropdown;
+	private ALittle.DisplayObject _account_icon;
+
+	public ctor()
+	{
+	}
+
+	public get main_layer() : ALittle.DisplayLayout
+	{
+		return this._main_layer;
+	}
+
+	public get dialog_layer() : ALittle.DisplayLayout
+	{
+		return this._dialog_layer;
+	}
+	
+	public fun Setup(string debug)
+	{
+		g_Script.Require("IDEProject");
+		g_Script.Require("UIEdit/IDEUICenter");
+	
+		// 获取配置信息
+		g_IDEConfig = new ALittle.ClientConfigSystem("ALittleIDE.cfg");
+		// 生成随机数种子
+		lua.math.randomseed(lua.os.time());
+		// 设置5个线程
+		ALittle.System_SetThreadCount(5);
+	
+		// 添加背景
+		var background_quad = new ALittle.Quad(g_Control);
+		background_quad.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+		background_quad.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+		background_quad.alpha = 0.8;
+		g_LayerGroup.AddChild(background_quad);
+		this._phone_status_quad = background_quad;
+	
+		// 创建主层
+		this._main_layer = new ALittle.DisplayLayout(g_Control);
+		this._main_layer.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+		this._main_layer.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+		g_LayerGroup.AddChild(this._main_layer);
+		this._dialog_layer = new ALittle.DisplayLayout(g_Control);
+		this._dialog_layer.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+		this._dialog_layer.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+		g_LayerGroup.AddChild(this._dialog_layer);
+	
+		// 设置标题头颜色
+		this.ShowPhoneStatusLine(106, 106, 106);
+	
+		// 创建主界面
+		g_Control.CreateControl{ALittle.DisplayObject}("ide_main_scene", this, this._main_layer);
+		this.UpdateProjectList();
+		g_IDEUICenter.Setup(this._edit_container);
+		g_IDEUICenter.Show();
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// 初始化组合键
+		A_UISystem.keydown_callback = bind(this.HandleShortcutKey, this);
+		// 初始化输入法
+		g_IDEIMEManager.Setup();
+		// 打开上次工程
+		g_IDEProjectManager.OpenLastProject();
+
+		// 如果不是debug模式，那么就检查版本
+		if (debug != "debug")
+			g_IDEVersionManager.CheckVersionUpdate();
+
+		// 初始化登录
+		g_IDELoginManager.Setup();
+	}
+	
+	public fun Shutdown()
+	{
+		g_IDEUICenter.Shutdown();
+		g_IDEVersionManager.Shutdown();
+		g_IDELoginManager.Shutdown();
+		g_IDEIMEManager.Shutdown();
+	}
+
+	////////////////////////////////////////////////////////////////////////////////////////
+	
+	public fun ShowPhoneStatusLine(int r, int g, int b)
+	{
+		var background_quad = this._phone_status_quad;
+		background_quad.red = r/255;
+		background_quad.green = g/255;
+		background_quad.blue = b/255;
+		background_quad.visible = true;
+		var status_h = ALittle.System_GetStatusBarHeight();
+		this._main_layer.height_value = status_h;
+		this._main_layer.y = status_h;
+		this._dialog_layer.height_value = status_h;
+		this._dialog_layer.y = status_h;
+	}
+	
+	public fun HidePhoneStatusLine()
+	{
+		var background_quad = this._phone_status_quad;
+		background_quad.visible = false;
+		this._main_layer.height_value = 0;
+		this._main_layer.y = 0;
+		this._dialog_layer.height_value = 0;
+		this._dialog_layer.y = 0;
+	}
+	
+	////////////////////////////////////////////////////////////////////////////////////////
+	// 打开另一个工程
+	public fun HandlePeojectSelectChange(ALittle.UISelectChangedEvent event)
+	{
+		// 当前项目
+		var name = "";
+		if (g_IDEProject.project != null)
+			name = g_IDEProject.project.name;
+
+		// 要打开的项目
+		var new_name = event.target.text;
+		if (new_name == name) return;
+	
+		// 检查当前是否有项目并且是否保存
+		if (g_IDETabManager.IsSaveAll())
+		{
+			// 打开项目
+		    g_IDEProjectManager.OpenProjectImpl(new_name);
+			return;
+		}
+
+		// 设置新的项目名称
+		event.target.text = name;
+	
+		// 如果没有保存，那么走保存提示流程
+		var cancel_callback = bind(g_IDEProjectManager.OpenProjectImpl, g_IDEProjectManager, new_name);
+		var confirm_callback = bind(g_IDETabManager.SaveAllTab, g_IDETabManager);
+		g_IDETool.SaveNotice("提示", "是否保存当前项目?", cancel_callback, confirm_callback);
+	}
+    
+	// 更新项目下拉菜单
+	public fun UpdateProjectList()
+	{
+		if (this._current_project_name == null) return;
+		var data_list = new List<string>();
+		var data_list_count = 0;
+		var project_map = g_IDEConfig.GetConfig("project_map", new Map<string, string>());
+		for (var k, v in project_map)
+		{
+			++ data_list_count;
+			data_list[data_list_count] = v;
+		}
+		lua.table.sort(data_list);
+		var text = this._current_project_name.text;
+		this._current_project_name.data_list = data_list;
+		this._current_project_name.text = text;
+	}
+    
+	// 项目打开后要初始化界面
+	public fun OpenProject(string name)
+	{
+		if (name == "")
+			this._current_project_name.text = "当前没有打开的项目";
+		else
+			this._current_project_name.text = name;
+
+		g_IDEProject.OpenProject(name);
+		this.UpdateProjectList();
+	}
+
+	// 项目关闭后要初始化界面
+	public fun CloseProject()
+	{
+		this._current_project_name.text = "当前没有打开的项目";
+	
+		g_IDEImageManager.ClearImageItem();
+		g_IDEControlManager.ClearControlItem();
+	
+		g_IDETabManager.CloseAllTab();
+		g_IDEProject.CloseProject();
+		g_IDEAttrImageDialog.Close();
+	}
+
+	// 项目刷新
+	public fun RefreshProject()
+	{
+		// 检查当前是否有打开的项目
+		if (g_IDEProject.project == null) return;
+		// 获取项目名
+		var project_name = g_IDEProject.project.name;
+		// 获取tab列表
+		var name_list = g_IDETabManager.GetTabNameList();
+		// 获取当前显示的标签也下标
+		var tab_index = g_IDETabManager.GetCurTabIndex();
+		// 关闭当前项目
+		this.CloseProject();
+		// 打开当前项目
+		this.OpenProject(project_name);
+		// 打开tab
+		var count = lua.table.maxn(name_list);
+		if (count > 0)
+		{
+			for (var i = count, 1, -1)
+			{
+				var control_info = g_IDEProject.project.control_map[name_list[i]];
+				if (control_info != null)
+					g_IDETabManager.StartEditControlBySelect(control_info.name, control_info.info);
+			}
+			g_IDETabManager.SetCurTabIndex(tab_index);
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////////////////////-
+	// 处理文件菜单
+	public fun HandleFileMenuClick(ALittle.UIClickEvent event) { g_IDEMainMenu.ShowFileMenu(event); }
+	// 处理编辑菜单
+	public fun HandleEditMenuClick(ALittle.UIClickEvent event) { g_IDEMainMenu.ShowEditMenu(event); }
+	// 处理工具菜单
+	public fun HandleToolMenuClick(ALittle.UIClickEvent event) { g_IDEMainMenu.ShowToolMenu(event); }
+	// 处理版本菜单
+	public fun HandleVersionMenuClick(ALittle.UIClickEvent event) { g_IDEVersionManager.ShowDialog(); }
+	// 处理运行
+	public fun HandleRunMenuClick(ALittle.UIClickEvent event) { g_IDEProjectManager.RunProject(); }
+	////////////////////////////////////////////////////////////////////////////////////////
+	// 处理快捷点
+	public fun HandleShortcutKey(int mod, int sym, int scancode)
+	{
+		// 判断F5，运行当前项目快捷键
+		if (A_UISystem.sym_map[1073741886])
+		{
+			g_IDEProjectManager.RunProject();
+			return;
+		}
+
+		g_IDEUICenter.HandleShortcutKey();
+	}
+	////////////////////////////////////////////////////////////////////////////////////////
+	// 处理账号登录
+	public fun HandleAccountLoginLB(ALittle.UILButtonDownEvent event)
+	{
+		g_IDELoginManager.ShowLoginDialog();
+	}
+	// 已登录
+	public fun AccountInLogin()
+	{
+		this._account_login.visible = false;
+		this._account_dropdown.visible = true;
+
+		var data_list = new List<string>();
+		data_list[1] = "修改密码";
+		data_list[2] = "登出";
+		this._account_dropdown.data_list = data_list;
+		this._account_dropdown.text = g_IDELoginManager.account_name;
+	
+		this._account_icon.x_value = this._account_dropdown.x_value + this._account_dropdown.width + 5;
+	}
+	// 已登出
+	public fun AccountInLogout()
+	{
+		this._account_login.text = "请登录";
+		this._account_login.underline = true;
+		this._account_login.visible = true;
+		this._account_login.disabled = false;
+		this._account_dropdown.visible = false;
+	
+		this._account_icon.x_value = this._account_login.x_value + this._account_login.width + 5;
+	}
+	// 正在重连
+	public fun AccountInReConnect()
+	{
+		this._account_login.text = "正在重连";
+		this._account_login.underline = false;
+		this._account_login.visible = true;
+		this._account_login.disabled = true;
+		this._account_dropdown.visible = false;
+	
+		this._account_icon.x_value = this._account_login.x_value + this._account_login.width + 5;
+	}
+	
+	public fun HandleAccountDropdownChange(ALittle.UISelectChangedEvent event)
+	{
+		if (event.target.text == "登出")
+			g_IDELoginManager.Logout();
+		elseif (event.target.text == "修改密码")
+			g_IDELoginManager.ShowPasswordDialog();
+		
+		this._account_dropdown.text = g_IDELoginManager.account_name;
+	}
+	//////////////////////////////////////////////////////////////////////////////////////// 
+}
+
+protected var g_IDECenter = new IDECenter();

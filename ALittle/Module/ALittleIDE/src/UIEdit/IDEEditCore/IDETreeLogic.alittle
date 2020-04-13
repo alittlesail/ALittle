@@ -1,0 +1,874 @@
+
+namespace ALittleIDE;
+
+public class IDETreeLogic : ALittle.DisplayLayout
+{
+	private IDETabChild _tab_child;				// 当前控件所在的编辑页
+	private IDETreeUserInfo _user_info;			// 当前控件所对应的控件数据
+	private DisplayObjectS _attr_panel;			// 当前控件对应的属性面板
+	
+	private ALittle.EffectImage _drag_effect;	// 拖拽特效
+	private bool _drag_shift;					// 拖拽时是否按下shift
+
+	private ALittle.DisplayObject _item_title;	// 标题
+	private ALittle.DisplayObject _item_button;	// 按钮
+
+	private ALittle.DisplayObject _head;		// 头部
+	private ALittle.DisplayObject _item;		// item部分
+
+	public ctor(ALittle.ControlSystem ctrl_sys, IDETreeUserInfo user_info, IDETabChild tab_child)
+	{
+		this._tab_child = tab_child;	// 编辑逻辑对象
+		this._user_info = user_info;	// 这个是当子控件信息对象
+		this._attr_panel = null;		// 属性设置面板
+		this._drag_effect = null;
+		this._drag_shift = false;
+	}
+
+	public get user_info() : IDETreeUserInfo { return this._user_info; }
+	public get tab_child() : IDETabChild { return this._tab_child; }
+	public get user_info() : IDETreeUserInfo { return this._user_info; }
+	public fun IsRoot() : bool { return this._user_info.root; }
+	public fun IsTree() : bool { return false; }
+	public get attr_panel() : DisplayObjectS { return this._attr_panel; }
+	public get title() : string	{ return this._item_title.text; }
+	public fun CanAddChild() : bool { return false; }
+	public set fold(bool value) { }
+
+	// 获取描述
+	public fun GetDesc() : string
+	{
+		var desc = this._user_info.base.description;
+		if (desc != null) return desc;
+
+		desc = this._user_info.default.description;
+		if (desc != null) return desc;
+		
+		return "";
+	}
+
+	// 设置描述
+	public fun SetDesc(string text)
+	{
+		this._user_info.base.description = text;
+		if (this._user_info.base.description == ""
+			|| this._user_info.base.description == this._user_info.default.description)
+			this._user_info.base.description = null;
+	
+		this._tab_child.Save(false);
+		this.UpdateDesc();
+	}
+
+	// 更新描述
+	public fun UpdateDesc()
+	{
+		var title = "";
+		if (this._user_info.extends_root)
+			title = "[E]"..title;
+		
+		if (this._user_info.child_type != null && this._user_info.child_type != "child")
+			title = title.."["..this._user_info.child_type.."]";
+
+		title = title.."["..this._user_info.default.__class.."]";
+	
+		if (this._user_info.base.description != null)
+			title = title..this._user_info.base.description;
+		elseif (this._user_info.default.description != null)
+			title = title..this._user_info.default.description;
+		elseif (this._user_info.base.text != null)
+			title = title..this._user_info.base.text;
+		elseif (this._user_info.default.text != null)
+			title = title..this._user_info.default.text;
+
+		this._item_title.text = title;
+	
+		if (this._user_info.child_type == null)
+			this._tab_child.UpdateTitle();
+	}
+
+	// 移除属性面板
+	public fun RemoveAttributePanel()
+	{
+		if (this._attr_panel == null) return;
+		this._tab_child.control_screen.RemoveChild(this._attr_panel.layer);
+	
+		g_IDEAttributeManager.SetTitle("");
+	}
+
+	// 显示属性面板
+	public fun ShowAttributePanel()
+	{
+		// 移除所有的
+		this._tab_child.control_screen.RemoveAllChild();
+		// 设置当前
+		this._item_button.selected = true;
+		// 显示当前的
+		if (this._attr_panel == null)
+		{
+			var class_name = this._user_info.default.__class.."S";
+			var clazz = cast<Map<string,any>>(ALittleIDE)[class_name];
+			this._attr_panel = ALittle.NewObject{any}(clazz, this._user_info, this._tab_child, this);
+			this._attr_panel.layer._user_data = this._attr_panel;
+			this._attr_panel.layer.disabled = this._user_info.extends;
+		}
+		// 显示标题
+		g_IDEAttributeManager.SetTitle(this._attr_panel.title);
+		this._tab_child.control_screen.AddChild(this._attr_panel.layer);
+	}
+	
+	public fun ShowFocus(bool is_group)
+	{
+		// 新建自动跳出设置面板
+		this.ShowAttributePanel();
+		// 显示到界面上
+		this._tab_child.ShowTreeItemFocus(this);
+		// 显示红色外框
+		this._tab_child.ShowHandleQuad(this, is_group);
+	}
+
+	// 处理控件点击
+	public fun HandleClick(ALittle.UIClickEvent event)
+	{
+		if (this._user_info.extends) { this.ShowAttributePanel(); return; }
+	
+		var shift = (A_UISystem.sym_map[1073742049] != null || A_UISystem.sym_map[1073742053] != null);
+		if (shift && this._tab_child.IsShowHandleQuad(this))
+			this._tab_child.HideHandleQuad(this);
+		else
+			this._tab_child.ShowHandleQuad(this);
+	}
+
+	// 鼠标移入，显示绑定信息
+	public fun HandleMoveIn(ALittle.UIMoveInEvent event)
+	{
+		var link = this._user_info.base.__link;
+		if (link == null) link = this._user_info.default.__link;
+		if (link == null) return;
+	
+		g_IDEControlTree.ShowTip(link);
+		g_IDEControlTree.MoveTip(A_UISystem.mouse_x + 10, A_UISystem.mouse_y + 20);
+	}
+
+	// 鼠标移动，也移动绑定信息
+	public fun HandleMouseMove(ALittle.UIMouseMoveEvent event)
+	{
+		var link = this._user_info.base.__link;
+		if (link == null) link = this._user_info.default.__link;
+		if (link == null) return;
+	
+		g_IDEControlTree.MoveTip(A_UISystem.mouse_x + 10, A_UISystem.mouse_y + 20);
+	}
+
+	// 鼠标移除，也移除绑定信息
+	public fun HandleMoveOut(ALittle.UIMoveOutEvent event)
+	{
+		var link = this._user_info.base.__link;
+		if (link == null) link = this._user_info.default.__link;
+		if (link == null) return;
+	
+		g_IDEControlTree.HideTip();
+	}
+
+	// 拖拽item
+	public fun HandleDragBegin(ALittle.UIButtonDragBeginEvent event)
+	{
+		this._drag_shift = (A_UISystem.sym_map[1073742049] != null || A_UISystem.sym_map[1073742053] != null);
+		if (this._drag_shift == false)
+		{
+			event.target = this._tab_child.tree_screen;
+			this._tab_child.tree_screen.DispatchEvent(event);
+			return;
+		}	
+		var button = this._head;
+		if (button == null) button = this._item;
+		var x, y = button.LocalToGlobal();
+		// 创建渲染图片
+		this._drag_effect = new ALittle.EffectImage(g_Control);
+		this._drag_effect.Action(button);
+		// 添加到Tip层
+		A_LayerManager.AddToTip(this._drag_effect);
+		this._drag_effect.x = x;
+		this._drag_effect.y = y;
+		this._drag_effect.alpha = 0.6;
+	}
+	public fun HandleDrag(ALittle.UIButtonDragEvent event)
+	{
+		if (this._drag_shift == false)
+		{
+			event.target = this._tab_child.tree_screen;
+			this._tab_child.tree_screen.DispatchEvent(event);
+			return;
+		}
+		if (this._drag_effect == null) return;
+		this._drag_effect.x = this._drag_effect.x + event.delta_x;
+		this._drag_effect.y = this._drag_effect.y + event.delta_y;
+	}
+	public fun HandleDragEnd(ALittle.UIButtonDragEndEvent event)
+	{
+		if (this._drag_shift == false)
+		{
+			event.target = this._tab_child.tree_screen;
+			this._tab_child.tree_screen.DispatchEvent(event);
+			return;
+		}
+	
+		if (this._drag_effect != null)
+		{
+			// 从Tip层移除
+			A_LayerManager.RemoveFromTip(this._drag_effect);
+			this._drag_effect.Clear();
+			this._drag_effect = null;
+		}
+	
+		if (this._tab_child.tree_object == this) return;
+	
+		var x, y = this._tab_child.tree_object.LocalToGlobal();
+		var delta_x = event.abs_x - x;
+		var delta_y = event.abs_y - y;
+	
+		var target = this._tab_child.tree_object.PickUp(delta_x, delta_y);
+		if (target == null)
+		{
+			ALittle.Log("IDETreeLogic:HandleDrag} target null");
+			return;
+		}
+		var tree:IDETreeLogic = target._user_data;
+		// 不能是自己的子控件
+		if (tree.IsGrandParent(this))
+		{
+			g_IDETool.ShowNotice("提示", "目标是自己的子控件，移动失败");
+			return;
+		}
+		// 如果目标是继承的控件，那么不能操作
+		if (tree._user_info.extends)
+		{
+			g_IDETool.ShowNotice("提示", "目标控件不能操作，移动失败");
+			return;
+		}
+	
+		// 把自己剪切
+		var copy_list = new List<IDEControlCopyInfo>();
+		var info = new IDEControlCopyInfo();
+		info.index = 1;
+		info.info = this.CalcInfo();
+		copy_list[1] = info;
+		ALittle.System_SetClipboardText(lua.json.encode(copy_list));
+	
+		var revoke_bind = new IDERevokeBind();
+		if (tree.IsTree())
+			this._tab_child.RightControlTreePasteImpl(tree, null, 1, revoke_bind, bind(this.HandleDragEndAndCut, this, revoke_bind));
+		else
+		{
+			// 获取父控件
+			var common_parent = tree._logic_parent;
+			if (common_parent == null)
+			{
+				g_IDETool.ShowNotice("提示", "当前是根节点，并且不是容器，移动失败");
+				return;
+			}
+			var child_index = common_parent.GetChildIndex(tree);
+			x, y = target.LocalToGlobal();
+			y = y + target.height / 2;
+			if (event.abs_y > y) child_index = child_index + 1;
+			this._tab_child.RightControlTreePasteImpl(cast<IDETreeLogic>(common_parent), null, child_index, revoke_bind, bind(this.HandleDragEndAndCut, this, revoke_bind));
+		}
+	}
+	
+	// 处理Drag的最后一步
+	public fun HandleDragEndAndCut(IDERevokeBind revoke_bind, bool result, List<IDETreeLogic> list)
+	{
+		if (result == false) return;
+		this.TreeCut(revoke_bind);
+		this._tab_child.revoke_list.PushRevoke(revoke_bind);
+	}
+	
+	// 上移
+	public fun TransferUp()
+	{
+		var parent = cast<IDETree>(this._logic_parent);
+		if (parent == null) return;
+		// 向上移
+		var index = parent.GetChildIndex(this);
+		if (index == 1) return;
+		index = index - 1;
+		parent.SetChildIndex(this, index);
+		parent.user_info.object.SetChildIndex(this._user_info.object, index);
+		this.tab_child.Save(false);
+		// 生成撤销类
+		var revoke = new IDEChildUpDownRevoke(parent, cast<IDETreeItem>(this), "up");
+		this._tab_child.revoke_list.PushRevoke(revoke);
+	}
+	
+	// 下移
+	public fun TransferDown()
+	{
+		// 获取当前下标
+		var parent = cast<IDETree>(this._logic_parent);
+		if (parent == null) return;
+	
+		var index = parent.GetChildIndex(this);
+		if (index == parent.child_count) return;
+		index = index + 1;
+		parent.SetChildIndex(this, index);
+		parent.user_info.object.SetChildIndex(this._user_info.object, index);
+		this.tab_child.Save(false);
+		// 生成撤销类
+		var revoke = new IDEChildUpDownRevoke(parent, cast<IDETreeItem>(this), "down");
+		this._tab_child.revoke_list.PushRevoke(revoke);
+	}
+	
+	// 复制
+	// public fun TreeCopy()
+	// 	ALittle.System_SetClipboardText(Json.encode(this.CalcInfo()))
+	// }
+	
+	// 粘帖
+	public fun TreePaste(ALittle.DisplayInfo info, string child_type, int child_index, bool is_group, IDERevokeBind revoke_bind) : IDETreeLogic
+	{
+		// 撤销
+		var inner_revoke_bind = new IDERevokeBind();
+	
+		// 如果是show，那么就移除对应的show
+		if (child_type != "child" && cast<Map<string,any>>(this._user_info.object)[child_type] != null)
+		{
+			// 移除控件对象
+			cast<Map<string,any>>(this._user_info.object)[child_type] = null;
+			// 遍历子控件
+			for (var k, v:IDETreeLogic in this.childs)
+			{
+				if (v.user_info.child_type == child_type)
+				{
+					this.RemoveChild(v);
+					var revoke = new IDEDeleteRevoke(cast<IDETree>(this), cast<IDETreeItem>(v), k);
+					inner_revoke_bind.PushRevoke(revoke);
+					break;
+				}
+			}
+		}
+	
+		// 临时注册到IU系统
+		var control_name = "alittleide201601291343";
+		g_IDEProject.project.control.RegisterInfo(control_name, ALittle.String_CopyTable(info));
+		var object = g_IDEProject.project.control.CreateControl{ALittle.DisplayObject}(control_name);
+		g_IDEProject.project.control.UnRegisterInfo(control_name);
+	
+		if (child_type == "child")
+			this._user_info.object.AddChild(object, child_index);
+		else
+			cast<Map<string,any>>(this._user_info.object)[child_type] = object;
+		
+		// 添加控件树
+		var tree_object = IDEUtility_CreateTree(info, false, object, child_type, this._tab_child, false);
+		this.AddChild(tree_object, child_index);
+		this._tab_child.Save(false);
+		
+		// 生成撤销类
+		var index = this.GetChildIndex(tree_object);
+		var revoke = new IDEChildShowRevoke(cast<IDETree>(this), cast<IDETreeItem>(tree_object), index);
+		inner_revoke_bind.PushRevoke(revoke);
+		if (revoke_bind != null)
+			revoke_bind.PushRevoke(inner_revoke_bind);
+		else
+			this.tab_child.revoke_list.PushRevoke(inner_revoke_bind);
+		
+		tree_object.ShowFocus(is_group);
+	
+		return tree_object;
+	}
+	
+	// 添加
+	public fun TreeAdd(string extends_name, string class_name, string child_type) : IDETreeLogic
+	{
+		// 获取继承
+		var extends_info = g_IDEProject.project.control_map[extends_name];
+		if (extends_name != "" && extends_info == null) return null;
+	
+		// 定义撤销
+		var revoke_bind = new IDERevokeBind();
+	
+		// 如果是show，那么就移除对应的show
+		if (child_type != "child" && cast<Map<string,any>>(this._user_info.object)[child_type] != null)
+		{
+			// 移除控件对象
+			cast<Map<string,any>>(this._user_info.object)[child_type] = null;
+			// 遍历子控件
+			for (var k, v:IDETreeLogic in this.childs)
+			{
+				if (v.user_info.child_type == child_type)
+				{
+					this.RemoveChild(v);
+					var revoke = new IDEDeleteRevoke(cast<IDETree>(this), cast<IDETreeItem>(v), k);
+					revoke_bind.PushRevoke(revoke);
+					break;
+				}
+			}
+		}
+	
+		var tree_object:IDETreeLogic = null;
+	
+		// 创建控件
+		if (extends_info == null)
+		{
+			// 创建初始信息
+			var info = new ALittle.DisplayInfo();
+			info.__class = class_name;
+			// 新建控件对象
+			var object = ALittle.NewObject(cast<Map<string,any>>(ALittle)[info.__class], g_IDEProject.project.control);
+			// 初始化一些数据，便于编辑
+			IDEUtility_NewGiveBaseCase(info, object);
+			if (child_type == "child")
+				this._user_info.object.AddChild(object);
+			else
+				cast<Map<string,any>>(this._user_info.object)[child_type] = object;
+
+			// 添加控件树
+			tree_object = IDEUtility_CreateTree(info, false, object, child_type, this._tab_child, false);
+			this.AddChild(tree_object);
+			this._tab_child.Save(false);
+			// 生成撤销类
+			var index = this.GetChildIndex(tree_object);
+			var revoke = new IDEChildShowRevoke(cast<IDETree>(this), cast<IDETreeItem>(tree_object), index);
+			revoke_bind.PushRevoke(revoke);
+			// 新建自动跳出设置面板
+			tree_object.ShowAttributePanel();
+			// 显示到界面上
+			this._tab_child.ShowTreeItemFocus(tree_object);
+		}
+		else
+		{
+			var info = new ALittle.DisplayInfo();
+			info.__extends = extends_name;
+			var object = g_IDEProject.project.control.CreateControl{ALittle.DisplayObject}(extends_name);
+			if (child_type == "child")
+				this._user_info.object.AddChild(object);
+			else
+				cast<Map<string,any>>(this._user_info.object)[child_type] = object;
+
+			tree_object = IDEUtility_CreateTree(info, false, object, child_type, this._tab_child, false);
+			this.AddChild(tree_object);
+			this._tab_child.Save(false);
+			// 生成撤销类
+			var index = this.GetChildIndex(tree_object);
+			var revoke = new IDEChildShowRevoke(cast<IDETree>(this), cast<IDETreeItem>(tree_object), index);
+			revoke_bind.PushRevoke(revoke);
+			// 新建自动跳出设置面板
+			tree_object.ShowAttributePanel();
+			// 显示到界面上
+			this._tab_child.ShowTreeItemFocus(tree_object);
+		}
+		this._tab_child.revoke_list.PushRevoke(revoke_bind);
+	
+		return tree_object;
+	}
+	
+	// 替换
+	public fun TreeReplace(string extends_name, string class_name, string child_type)
+	{
+		// 获取继承
+		var extends_info = g_IDEProject.project.control_map[extends_name];
+		if (extends_name != "" && extends_info == null) return;
+	
+		// 定义撤销
+		var revoke_bind = new IDERevokeBind();
+	
+		// 获取父节点
+		var target_parent = cast<IDETreeLogic>(this._logic_parent);
+		// 控件节点下标
+		var child_index:int = null;
+		// 如果是show，那么就移除对应的show
+		if (this._user_info.child_type != "child")
+		{
+			// 移除对象
+			cast<Map<string,any>>(target_parent._user_info.object)[child_type] = null;
+			// 遍历子控件
+			for (var k, v:IDETreeLogic in target_parent.childs)
+			{
+				if (v._user_info.child_type == child_type)
+				{
+					target_parent.RemoveChild(v);
+					var revoke = new IDEDeleteRevoke(cast<IDETree>(target_parent), cast<IDETreeItem>(v), k);
+					revoke_bind.PushRevoke(revoke);
+					break;
+				}
+			}
+		}
+		else
+		{
+			child_index = target_parent.GetChildIndex(this);
+			target_parent._user_info.object.RemoveChild(this._user_info.object);
+			target_parent.RemoveChild(this);
+			var revoke = new IDEDeleteRevoke(cast<IDETree>(target_parent), cast<IDETreeItem>(this), child_index);
+			revoke_bind.PushRevoke(revoke);
+		}
+	
+		// 新建的对象
+		var tree_object:IDETreeLogic = null;
+	
+		// 创建控件
+		if (extends_info == null)
+		{
+			// 创建初始信息
+			var info = new ALittle.DisplayInfo();
+			info.__class = class_name;
+			// 新建控件对象
+			var object = ALittle.NewObject(cast<Map<string,any>>(ALittle)[info.__class], g_IDEProject.project.control);
+			// 初始化一些数据，便于编辑
+			IDEUtility_NewGiveBaseCase(info, object);
+			if (child_type == "child")
+				target_parent._user_info.object.AddChild(object, child_index);
+			else
+				cast<Map<string,any>>(target_parent._user_info.object)[child_type] = object;
+			
+			// 添加控件树
+			tree_object = IDEUtility_CreateTree(info, false, object, child_type, target_parent._tab_child, false);
+			target_parent.AddChild(tree_object, child_index);
+			target_parent._tab_child.Save(false);
+			// 生成撤销类
+			var index = target_parent.GetChildIndex(tree_object);
+			var revoke = new IDEChildShowRevoke(cast<IDETree>(target_parent), cast<IDETreeItem>(tree_object), index);
+			revoke_bind.PushRevoke(revoke);
+		}
+		else
+		{
+			var info = new ALittle.DisplayInfo();
+			info.__extends = extends_name;
+			var object = g_IDEProject.project.control.CreateControl{ALittle.DisplayObject}(extends_name);
+			if (child_type == "child")
+				target_parent._user_info.object.AddChild(object, child_index);
+			else
+				cast<Map<string,any>>(target_parent._user_info.object)[child_type] = object;
+			
+			tree_object = IDEUtility_CreateTree(info, false, object, child_type, target_parent._tab_child, false);
+			target_parent.AddChild(tree_object, child_index);
+			target_parent._tab_child.Save(false);
+			// 生成撤销类
+			var index = target_parent.GetChildIndex(tree_object);
+			var revoke = new IDEChildShowRevoke(cast<IDETree>(target_parent), cast<IDETreeItem>(tree_object), index);
+			revoke_bind.PushRevoke(revoke);
+		}
+		// 新建自动跳出设置面板
+		tree_object.ShowAttributePanel();
+		// 把新的控件的基本属性设置成跟之前一样
+		if (this._user_info.base.x_type != null)
+			tree_object._attr_panel.SetXType(this._user_info.base.x_type, revoke_bind);
+		else
+			tree_object._attr_panel.SetXType(this._user_info.default.x_type, revoke_bind);
+		if (this._user_info.base.y_type != null)
+			tree_object._attr_panel.SetYType(this._user_info.base.y_type, revoke_bind);
+		else
+			tree_object._attr_panel.SetYType(this._user_info.default.y_type, revoke_bind);
+		if (this._user_info.base.x_value != null)
+			tree_object._attr_panel.SetXValue(this._user_info.base.x_value, revoke_bind);
+		else
+			tree_object._attr_panel.SetXValue(this._user_info.default.x_value, revoke_bind);
+		if (this._user_info.base.y_value != null)
+			tree_object._attr_panel.SetYValue(this._user_info.base.y_value, revoke_bind);
+		else
+			tree_object._attr_panel.SetYValue(this._user_info.default.y_value, revoke_bind);
+		if (this._user_info.base.width_type != null)
+			tree_object._attr_panel.SetWType(this._user_info.base.width_type, revoke_bind);
+		else
+			tree_object._attr_panel.SetWType(this._user_info.default.width_type, revoke_bind);
+		if (this._user_info.base.height_type != null)
+			tree_object._attr_panel.SetHType(this._user_info.base.height_type, revoke_bind);
+		else
+			tree_object._attr_panel.SetHType(this._user_info.default.height_type, revoke_bind);
+		if (this._user_info.base.width_value != null)
+			tree_object._attr_panel.SetWValue(this._user_info.base.width_value, revoke_bind);
+		else
+			tree_object._attr_panel.SetWValue(this._user_info.default.width_value, revoke_bind);
+		if (this._user_info.base.height_value != null)
+			tree_object._attr_panel.SetHValue(this._user_info.base.height_value, revoke_bind);
+		else
+			tree_object._attr_panel.SetHValue(this._user_info.default.height_value, revoke_bind);
+
+		if (this._user_info.base.alpha != null)
+			tree_object._attr_panel.SetAlpha(this._user_info.base.alpha*255, revoke_bind);
+		else
+			tree_object._attr_panel.SetAlpha(this._user_info.default.alpha*255, revoke_bind);
+		if (this._user_info.base.red != null)
+			tree_object._attr_panel.SetRed(this._user_info.base.red*255, revoke_bind);
+		else
+			tree_object._attr_panel.SetRed(this._user_info.default.red*255, revoke_bind);
+		if (this._user_info.base.green != null)
+			tree_object._attr_panel.SetGreen(this._user_info.base.green*255, revoke_bind);
+		else
+			tree_object._attr_panel.SetGreen(this._user_info.default.green*255, revoke_bind);
+		if (this._user_info.base.blue != null)
+			tree_object._attr_panel.SetBlue(this._user_info.base.blue*255, revoke_bind);
+		else
+			tree_object._attr_panel.SetBlue(this._user_info.default.blue*255, revoke_bind);
+		if (this._user_info.base.scale_x != null)
+			tree_object._attr_panel.SetScaleX(this._user_info.base.scale_x, revoke_bind);
+		else
+			tree_object._attr_panel.SetScaleX(this._user_info.default.scale_x, revoke_bind);
+		if (this._user_info.base.scale_y != null)
+			tree_object._attr_panel.SetScaleY(this._user_info.base.scale_y, revoke_bind);
+		else
+			tree_object._attr_panel.SetScaleY(this._user_info.default.scale_y, revoke_bind);
+
+		if (this._user_info.base.center_x != null)
+			tree_object._attr_panel.SetCenterX(this._user_info.base.center_x, revoke_bind);
+		else
+			tree_object._attr_panel.SetCenterX(this._user_info.default.center_x, revoke_bind);
+		if (this._user_info.base.center_y != null)
+			tree_object._attr_panel.SetCenterY(this._user_info.base.center_y, revoke_bind);
+		else
+			tree_object._attr_panel.SetCenterY(this._user_info.default.center_y, revoke_bind);
+		if (this._user_info.base.angle != null)
+			tree_object._attr_panel.SetAngle(this._user_info.base.angle, revoke_bind);
+		else
+			tree_object._attr_panel.SetAngle(this._user_info.default.angle, revoke_bind);
+
+		if (this._user_info.base.hand_cursor != null)
+			tree_object._attr_panel.SetHandCursor(this._user_info.base.hand_cursor, revoke_bind);
+		else
+			tree_object._attr_panel.SetHandCursor(this._user_info.default.hand_cursor, revoke_bind);
+		if (this._user_info.base.visible != null)
+			tree_object._attr_panel.SetVisible(this._user_info.base.visible, revoke_bind);
+		else
+			tree_object._attr_panel.SetVisible(this._user_info.default.visible, revoke_bind);
+		if (this._user_info.base.disabled != null)
+			tree_object._attr_panel.SetDisabled(this._user_info.base.disabled, revoke_bind);
+		else
+			tree_object._attr_panel.SetDisabled(this._user_info.default.disabled, revoke_bind);
+
+		if (this._user_info.base.description != null)
+			tree_object._attr_panel.SetDescription(this._user_info.base.description, revoke_bind);
+		else
+			tree_object._attr_panel.SetDescription(this._user_info.default.description, revoke_bind);
+		if (this._user_info.base.__link != null)
+			tree_object._attr_panel.SetLink(this._user_info.base.__link, revoke_bind);
+		else
+			tree_object._attr_panel.SetLink(this._user_info.default.__link, revoke_bind);
+		if (this._user_info.base.__target_class != null)
+			tree_object._attr_panel.SetTargetClass(this._user_info.base.__target_class, revoke_bind);
+		else
+			tree_object._attr_panel.SetTargetClass(this._user_info.default.__target_class, revoke_bind);
+		if (this._user_info.base.__event != null)
+			tree_object._attr_panel.SetEvent(this._user_info.base.__event, revoke_bind);
+		else
+			tree_object._attr_panel.SetEvent(this._user_info.default.__event, revoke_bind);
+		// 显示到界面上
+		this._tab_child.ShowTreeItemFocus(tree_object);
+	
+		target_parent._tab_child.revoke_list.PushRevoke(revoke_bind);
+	}
+	
+	// 删除
+	public fun TreeDelete(@Nullable IDERevokeBind revoke_bind)
+	{
+		var parent = cast<IDETreeLogic>(this._logic_parent);
+		if (parent == null) return;
+	
+		var child_type = this._user_info.child_type;
+		if (child_type == "child")
+			parent.user_info.object.RemoveChild(this._user_info.object);
+		else
+			cast<Map<string,any>>(parent.user_info.object)[child_type] = null;
+
+		var index = parent.GetChildIndex(this);
+		var revoke = new IDEDeleteRevoke(cast<IDETree>(parent), cast<IDETreeItem>(this), index);
+		if (revoke_bind != null)
+			revoke_bind.PushRevoke(revoke);
+		else
+			this._tab_child.revoke_list.PushRevoke(revoke);
+
+		this._tab_child.Save(false);
+		parent.RemoveChild(this);
+	
+		// 移除设置面板
+		this.RemoveAttributePanel();
+		this._tab_child.UpdateHandleQuadRemove(this);
+		parent.tab_child.UpdateHandleQuadLayout(parent);
+	}
+	
+	// 剪切
+	public fun TreeCut(@Nullable IDERevokeBind revoke_bind)
+	{
+		// 删除
+		var parent = cast<IDETreeLogic>(this._logic_parent);
+		if (parent == null) return;
+	
+		var child_type = this._user_info.child_type;
+		if (child_type == "child")
+			parent._user_info.object.RemoveChild(this._user_info.object);
+		else
+			cast<Map<string,any>>(parent._user_info.object)[child_type] = null;
+
+		var index = parent.GetChildIndex(this);
+		var revoke = new IDEDeleteRevoke(cast<IDETree>(parent), cast<IDETreeItem>(this), index);
+		if (revoke_bind != null)
+			revoke_bind.PushRevoke(revoke);
+		else
+			this._tab_child.revoke_list.PushRevoke(revoke);
+
+		this._tab_child.Save(false);
+		parent.RemoveChild(this);
+	
+		this._tab_child.UpdateHandleQuadRemove(this);
+		parent.tab_child.UpdateHandleQuadLayout(parent);
+	}
+	
+	// 改变文本内容
+	public fun ChangeText(string text)
+	{
+		var object = this._user_info.object;
+	
+		// 保存旧的值，设置新的值
+		var old_base = this._user_info.base.text;
+		var old_object = object.text;
+		object.text = text;
+	
+		// 把新的值保存到数据中
+		this._user_info.base.text = object.text;
+		if (this._user_info.base.text == this._user_info.default.text)
+			this._user_info.base.text = null;
+	
+		// 更新面板的内容
+		if (this._attr_panel != null)
+		{
+			var text_object:ALittle.DisplayObject = cast<Map<string,any>>(this._attr_panel)["_text"];
+			text_object.text = object.text;
+		}
+	
+		this._tab_child.UpdateHandleQuadLayout(this);
+	
+		// 处理撤销类
+		this._tab_child.Save(false);
+	
+		var new_base = this._user_info.base.text;
+		var new_object = object.text;
+		// 生成撤销类
+		var old_text:string = null;
+		var revoke = new IDENatureChangeRevoke(this, "text", old_base, new_base, old_object, new_object, old_text, true);
+		this._tab_child.revoke_list.PushRevoke(revoke);
+	}
+	
+	// 拖拽
+	public fun DragXY(double x, double y)
+	{
+		// 获取操作对象
+		var object = this._user_info.object;
+		// 保存旧的值
+		var old_x = object.x;
+		var old_y = object.y;
+		// 计算新的值
+		var target_x = old_x + x;
+		var target_y = old_y + y;
+	
+		// 设置新的X值
+		if (object.x_type == ALittle.UIEnumTypes.POS_ABS)
+			object.x_value = target_x;
+		elseif (object.x_type == ALittle.UIEnumTypes.POS_ALIGN_STARTING)
+			object.x_value = target_x;
+		elseif (object.x_type == ALittle.UIEnumTypes.POS_ALIGN_CENTER)
+			object.x_value = target_x - (object._show_parent.width - object.width) / 2;
+		elseif (object.x_type == ALittle.UIEnumTypes.POS_ALIGN_ENDING)
+			object.x_value = object._show_parent.width - object.width - target_x;
+		elseif (object.x_type == ALittle.UIEnumTypes.POS_PERCENT_STARTING)
+			if (object._show_parent.width == 0) object.x_value = 0;
+			else object.x_value = target_x / object._show_parent.width;
+		elseif (object.x_type == ALittle.UIEnumTypes.POS_PERCENT_CENTER)
+			if (object._show_parent.width == 0) object.x_value = 0;
+			else object.x_value = (target_x - (object._show_parent.width - object.width) / 2) / object._show_parent.width;
+		elseif (object.x_type == ALittle.UIEnumTypes.POS_PERCENT_ENDING)
+			if (object._show_parent.width - object.width == 0) object.x_value = 0;
+			else object.x_value = 1 - target_x / (object._show_parent.width - object.width);
+	
+		// 把新的值保存到数据中
+		this._user_info.base.x_value = object.x_value;
+		if (this._user_info.base.x_value == this._user_info.default.x_value)
+			this._user_info.base.x_value = null;
+	
+		// 设置新的Y值
+		if (object.y_type == ALittle.UIEnumTypes.POS_ABS)
+			object.y_value = target_y;
+		elseif (object.y_type == ALittle.UIEnumTypes.POS_ALIGN_STARTING)
+			object.y_value = target_y;
+		elseif (object.y_type == ALittle.UIEnumTypes.POS_ALIGN_CENTER)
+            object.y_value = target_y - (object._show_parent.height - object.height) / 2;
+		elseif (object.y_type == ALittle.UIEnumTypes.POS_ALIGN_ENDING)
+            object.y_value = object._show_parent.height - object.height - target_y;
+		elseif (object.y_type == ALittle.UIEnumTypes.POS_PERCENT_STARTING)
+            if (object._show_parent.height == 0) object.y_value = 0;
+            else object.y_value = target_y / object._show_parent.height;
+		elseif (object.y_type == ALittle.UIEnumTypes.POS_PERCENT_CENTER)
+            if (object._show_parent.height == 0) object.y_value = 0;
+            else object.y_value = (target_y - (object._show_parent.height - object.height) / 2) / object._show_parent.height;
+        elseif (object.y_type == ALittle.UIEnumTypes.POS_PERCENT_ENDING)
+            if (object._show_parent.height - object.height == 0) object.y_value = 0;
+            else object.y_value = 1 - target_y / (object._show_parent.height - object.height);
+	
+		// 把新的值保存到数据中
+        this._user_info.base.y_value = object.y_value;
+		if (this._user_info.base.y_value == this._user_info.default.y_value)
+            this._user_info.base.y_value = null;
+	
+		// 更新面板的内容
+		if (this._attr_panel != null)
+        {
+			this._attr_panel.x_value.text = object.x_value;
+            this._attr_panel.y_value.text = object.y_value;
+		}
+	}
+	
+	// 拖拽
+	public fun DragWH(double width, double height)
+    {
+		// 获取操作对象
+        var object = this._user_info.object;
+		// 保存旧的值
+        var old_width = object.width;
+        var old_height = object.height;
+		// 计算新的值
+        var target_width = old_width + width;
+        var target_height = old_height + height;
+	
+		// 设置新的width值
+		if (object.width_type == ALittle.UIEnumTypes.SIZE_ABS)
+            object.width_value = target_width;
+		elseif (object.width_type == ALittle.UIEnumTypes.SIZE_MARGIN)
+            object.width_value = object._show_parent.width - target_width;
+		elseif (object.width_type == ALittle.UIEnumTypes.SIZE_PERCENT)
+            if (object._show_parent.width == 0) object.width_value = 0;
+            else object.width_value = target_width / object._show_parent.width;
+	
+		// 把新的值保存到数据中
+        this._user_info.base.width_value = object.width_value;
+		if (this._user_info.base.width_value == this._user_info.default.width_value)
+            this._user_info.base.width_value = null;
+	
+		// 设置新的height值
+		if (object.height_type == ALittle.UIEnumTypes.SIZE_ABS)
+            object.height_value = target_height;
+		elseif (object.height_type == ALittle.UIEnumTypes.SIZE_MARGIN)
+            object.height_value = object._show_parent.height - target_height;
+		elseif (object.height_type == ALittle.UIEnumTypes.SIZE_PERCENT)
+            if (object._show_parent.height == 0) object.height_value = 0;
+            else object.height_value = target_height / object._show_parent.height;
+	
+		// 把新的值保存到数据中
+        this._user_info.base.height_value = object.height_value;
+		if (this._user_info.base.height_value == this._user_info.default.height_value)
+            this._user_info.base.height_value = null;
+	
+		// 更新面板的内容
+		if (this._attr_panel != null)
+        {
+            this._attr_panel.width_value.text = object.width_value;
+            this._attr_panel.height_value.text = object.height_value;
+		}
+	}
+    
+	public fun CalcInfo() : ALittle.DisplayInfo { return null; }
+    public fun SearchLink(string name, @Nullable List<IDETreeLogic> list) : List<IDETreeLogic> { return null; }
+    public fun SearchEvent(string name, @Nullable List<IDETreeLogic> list) : List<IDETreeLogic> { return null; }
+    public fun SearchDescription(string name, @Nullable List<IDETreeLogic> list) : List<IDETreeLogic> { return null; }
+    public fun SearchTargetClass(string name, @Nullable List<IDETreeLogic> list) : List<IDETreeLogic> { return null; }
+    public fun SearchTextureName(string name, @Nullable List<IDETreeLogic> list) : List<IDETreeLogic> { return null; }
+	public fun EditPickUp(double x, double y) : IDETreeLogic { return null; }
+    public fun QuickPickUp(double x, double y, List<IDETreeLogic> list) { }
+    public fun SelectPickUp(double x, double y) : IDETreeLogic, IDETreeLogic { return null, null; }
+	public fun GetDataListForAdd() : List<string> { return null; }
+}

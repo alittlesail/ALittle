@@ -1,0 +1,601 @@
+
+module("ALittleIDE", package.seeall)
+
+local ___rawset = rawset
+local ___pairs = pairs
+local ___ipairs = ipairs
+local ___coroutine = coroutine
+local ___all_struct = ALittle.GetAllStruct()
+
+ALittle.RegStruct(-11865120, "ALittleIDE.IDEControlItemUserData", {
+name = "ALittleIDE.IDEControlItemUserData", ns_name = "ALittleIDE", rl_name = "IDEControlItemUserData", hash_code = -11865120,
+name_list = {"pre_index","presee","control_info"},
+type_list = {"int","bool","ALittleIDE.IDEControlInfo"},
+option_map = {}
+})
+ALittle.RegStruct(-4982446, "ALittle.DisplayInfo", {
+name = "ALittle.DisplayInfo", ns_name = "ALittle", rl_name = "DisplayInfo", hash_code = -4982446,
+name_list = {"__target_class","__class_func","__base_attr","__show_attr","loop_map","__class","__include","__extends","__childs","__event","__link","__shows_included","__childs_included","__extends_included","description","text","font_path","font_size","red","green","blue","alpha","bold","italic","underline","deleteline","outline","x","y","x_type","x_value","y_type","y_value","width","height","width_type","width_value","height_type","height_value","scale_x","scale_y","center_x","center_y","angle","flip","hand_cursor","visible","disabled","left_size","right_size","top_size","bottom_size","texture_name","interval","play_loop_count","var_play","base_y","head_size","gap","up_size","down_size","cursor_red","cursor_green","cursor_blue","default_text_alpha","ims_padding","margin_left","margin_right","margin_top","margin_bottom","show_count","body_margin","screen_margin_left","screen_margin_right","screen_margin_top","screen_margin_bottom","start_degree","end_degree","line_spacing","max_line_count","font_red","font_green","font_blue","margin_halign","margin_valign","cursor_margin_up","cursor_margin_down","total_size","show_size","offset_rate","offset_step","grade","row_count","col_count","row_index","col_index","u1","v1","u2","v2","u3","v3","x1","y1","x2","y2","x3","y3","x_gap","y_gap","x_start_gap","y_start_gap","button_gap","button_start","button_margin","tab_index","view_margin","child_width_margin"},
+type_list = {"List<string>","any","Map<string,any>","Map<string,any>","Map<string,ALittle.LoopGroupInfo>","string","string","string","List<ALittle.DisplayInfo>","List<ALittle.EventInfo>","string","bool","bool","bool","string","string","string","int","double","double","double","double","bool","bool","bool","bool","bool","double","double","int","double","int","double","double","double","int","double","int","double","double","double","double","double","double","int","bool","bool","bool","double","double","double","double","string","int","int","bool","double","double","double","double","double","double","double","double","double","double","double","double","double","double","int","double","double","double","double","double","double","double","double","int","double","double","double","double","double","double","double","double","double","double","double","int","int","int","int","int","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double"},
+option_map = {}
+})
+ALittle.RegStruct(1653869333, "ALittle.LoopGroupInfo", {
+name = "ALittle.LoopGroupInfo", ns_name = "ALittle", rl_name = "LoopGroupInfo", hash_code = 1653869333,
+name_list = {"childs"},
+type_list = {"List<ALittle.LoopListInfo>"},
+option_map = {}
+})
+ALittle.RegStruct(-1741432339, "ALittle.LoopListInfo", {
+name = "ALittle.LoopListInfo", ns_name = "ALittle", rl_name = "LoopListInfo", hash_code = -1741432339,
+name_list = {"link","attribute","init","childs"},
+type_list = {"string","string","any","List<ALittle.LoopChildInfo>"},
+option_map = {}
+})
+ALittle.RegStruct(-925381158, "ALittle.LoopChildInfo", {
+name = "ALittle.LoopChildInfo", ns_name = "ALittle", rl_name = "LoopChildInfo", hash_code = -925381158,
+name_list = {"clazz","target","total_time","delay_time"},
+type_list = {"string","any","int","int"},
+option_map = {}
+})
+ALittle.RegStruct(-2110455927, "ALittle.EventInfo", {
+name = "ALittle.EventInfo", ns_name = "ALittle", rl_name = "EventInfo", hash_code = -2110455927,
+name_list = {"type","func"},
+type_list = {"string","string"},
+option_map = {}
+})
+ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
+name = "ALittle.UIEvent", ns_name = "ALittle", rl_name = "UIEvent", hash_code = -1479093282,
+name_list = {"target"},
+type_list = {"ALittle.DisplayObject"},
+option_map = {}
+})
+ALittle.RegStruct(-449066808, "ALittle.UIClickEvent", {
+name = "ALittle.UIClickEvent", ns_name = "ALittle", rl_name = "UIClickEvent", hash_code = -449066808,
+name_list = {"target","is_drag"},
+type_list = {"ALittle.DisplayObject","bool"},
+option_map = {}
+})
+ALittle.RegStruct(-1347278145, "ALittle.UIButtonEvent", {
+name = "ALittle.UIButtonEvent", ns_name = "ALittle", rl_name = "UIButtonEvent", hash_code = -1347278145,
+name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
+type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
+option_map = {}
+})
+ALittle.RegStruct(-641444818, "ALittle.UIRButtonDownEvent", {
+name = "ALittle.UIRButtonDownEvent", ns_name = "ALittle", rl_name = "UIRButtonDownEvent", hash_code = -641444818,
+name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
+type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
+option_map = {}
+})
+ALittle.RegStruct(544684311, "ALittle.UIMoveInEvent", {
+name = "ALittle.UIMoveInEvent", ns_name = "ALittle", rl_name = "UIMoveInEvent", hash_code = 544684311,
+name_list = {"target"},
+type_list = {"ALittle.DisplayObject"},
+option_map = {}
+})
+ALittle.RegStruct(-1202439334, "ALittle.UIMoveOutEvent", {
+name = "ALittle.UIMoveOutEvent", ns_name = "ALittle", rl_name = "UIMoveOutEvent", hash_code = -1202439334,
+name_list = {"target"},
+type_list = {"ALittle.DisplayObject"},
+option_map = {}
+})
+ALittle.RegStruct(882286932, "ALittle.UIKeyEvent", {
+name = "ALittle.UIKeyEvent", ns_name = "ALittle", rl_name = "UIKeyEvent", hash_code = 882286932,
+name_list = {"target","mod","sym","scancode","custom","handled"},
+type_list = {"ALittle.DisplayObject","int","int","int","bool","bool"},
+option_map = {}
+})
+ALittle.RegStruct(-1604617962, "ALittle.UIKeyDownEvent", {
+name = "ALittle.UIKeyDownEvent", ns_name = "ALittle", rl_name = "UIKeyDownEvent", hash_code = -1604617962,
+name_list = {"target","mod","sym","scancode","custom","handled"},
+type_list = {"ALittle.DisplayObject","int","int","int","bool","bool"},
+option_map = {}
+})
+ALittle.RegStruct(1337289812, "ALittle.UIButtonDragEvent", {
+name = "ALittle.UIButtonDragEvent", ns_name = "ALittle", rl_name = "UIButtonDragEvent", hash_code = 1337289812,
+name_list = {"target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"},
+type_list = {"ALittle.DisplayObject","double","double","double","double","double","double"},
+option_map = {}
+})
+ALittle.RegStruct(1301789264, "ALittle.UIButtonDragBeginEvent", {
+name = "ALittle.UIButtonDragBeginEvent", ns_name = "ALittle", rl_name = "UIButtonDragBeginEvent", hash_code = 1301789264,
+name_list = {"target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"},
+type_list = {"ALittle.DisplayObject","double","double","double","double","double","double"},
+option_map = {}
+})
+ALittle.RegStruct(150587926, "ALittle.UIButtonDragEndEvent", {
+name = "ALittle.UIButtonDragEndEvent", ns_name = "ALittle", rl_name = "UIButtonDragEndEvent", hash_code = 150587926,
+name_list = {"target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"},
+type_list = {"ALittle.DisplayObject","double","double","double","double","double","double"},
+option_map = {}
+})
+
+IDEControlManager = ALittle.Class(nil, "ALittleIDE.IDEControlManager")
+
+function IDEControlManager:Ctor()
+	___rawset(self, "_drag_effect", nil)
+	___rawset(self, "_drag_shift", false)
+	___rawset(self, "_item_pool", {})
+	___rawset(self, "_item_pool_count", 0)
+	___rawset(self, "_item_used", {})
+end
+
+function IDEControlManager:HandleControlSearchClick(event)
+	self._control_scroll_screen:RemoveAllChild()
+	for k, item in ___ipairs(self._item_used) do
+		self._item_pool_count = self._item_pool_count + 1
+		self._item_pool[self._item_pool_count] = item
+	end
+	self._item_used = {}
+	local item_used_count = 0
+	local project = g_IDEProject.project
+	if project == nil then
+		g_IDETool:ShowNotice("提示", "当前没有打开的项目")
+		return
+	end
+	local key = self._control_search_key.text
+	local search_type = self._control_search_type.text
+	local control_info_list = {}
+	local control_info_count = 0
+	local control_map = project.control_map
+	for control_name, control_info in ___pairs(control_map) do
+		if search_type == "控件名|描述" then
+			if key == "" or ALittle.Find(control_name, key) ~= nil or (control_info.info.description ~= nil and ALittle.Find(control_info.info.description, key) ~= nil) then
+				control_info_count = control_info_count + 1
+				control_info_list[control_info_count] = control_info
+			end
+		elseif search_type == "插件名" then
+			if IDEUtility_HasTargetClass(control_info.info, key) then
+				control_info_count = control_info_count + 1
+				control_info_list[control_info_count] = control_info
+			end
+		elseif search_type == "事件设置" then
+			if IDEUtility_HasEventCallback(control_info.info, key) then
+				control_info_count = control_info_count + 1
+				control_info_list[control_info_count] = control_info
+			end
+		end
+	end
+	local tabname_map = g_IDETabManager:GetTabNameMap()
+	local search_count = 0
+	local last_control_info = nil
+	table.sort(control_info_list, IDEControlManager.ControlInfoCmp)
+	for index, control_info in ___ipairs(control_info_list) do
+		local item = nil
+		if self._item_pool_count > 0 then
+			item = self._item_pool[self._item_pool_count]
+			self._item_pool_count = self._item_pool_count - 1
+		end
+		if item == nil then
+			item = g_Control:CreateControl("ide_common_item_checkbutton")
+			item:AddEventListener(___all_struct[-449066808], self, self.HandleControlItemClick)
+			item:AddEventListener(___all_struct[-641444818], self, self.HandleControlItemRightClick)
+			item:AddEventListener(___all_struct[544684311], self, self.HandleControlPreseeMoveIn)
+			item:AddEventListener(___all_struct[-1202439334], self, self.HandleControlPreseeMoveOut)
+			item:AddEventListener(___all_struct[-1604617962], self, self.HandleControlKeyDown)
+			item:AddEventListener(___all_struct[1301789264], self, self.HandleControlDragBegin)
+			item:AddEventListener(___all_struct[1337289812], self, self.HandleControlDrag)
+			item:AddEventListener(___all_struct[150587926], self, self.HandleControlDragEnd)
+		end
+		item_used_count = item_used_count + 1
+		self._item_used[item_used_count] = item
+		if control_info.info.description ~= nil and control_info.info.description ~= "" then
+			item.text = control_info.name .. "(" .. control_info.info.description .. ")"
+		else
+			item.text = control_info.name
+		end
+		item.selected = tabname_map[control_info.name] ~= nil
+		local user_data = {}
+		item._user_data = user_data
+		user_data.presee = false
+		user_data.control_info = control_info
+		self._control_scroll_screen:AddChild(item)
+		search_count = search_count + 1
+		last_control_info = control_info
+	end
+	if search_count == 1 then
+		g_IDETabManager:StartEditControlBySelect(last_control_info.name, last_control_info.info)
+	end
+end
+
+function IDEControlManager:HandleControlItemClick(event)
+	local info = event.target._user_data
+	info.presee = false
+	event.target.selected = true
+	g_IDETabManager:StartEditControlBySelect(info.control_info.name, info.control_info.info)
+end
+
+function IDEControlManager:HandleControlPreseeMoveIn(event)
+	local info = event.target._user_data
+	info.presee = true
+	if g_IDETabManager:GetTabByName(info.control_info.name) ~= nil then
+		info.presee = false
+		return
+	end
+	info.pre_index = g_IDETabManager:GetCurTabIndex()
+	g_IDETabManager:StartEditControlBySelect(info.control_info.name, info.control_info.info)
+end
+
+function IDEControlManager:HandleControlPreseeMoveOut(event)
+	local info = event.target._user_data
+	if info.presee ~= true then
+		return
+	end
+	local child = g_IDETabManager:GetTabByName(info.control_info.name)
+	if child == nil then
+		return
+	end
+	g_IDETabManager:CloseTab(child)
+	if info.pre_index ~= nil then
+		g_IDETabManager:SetCurTabIndex(info.pre_index)
+	end
+end
+
+function IDEControlManager:HandleControlKeyDown(event)
+	if event.sym == 1073741883 then
+		self:ControlRenameImpl(event.target)
+	end
+end
+
+function IDEControlManager:HandleControlDragBegin(event)
+	self._drag_shift = (A_UISystem.sym_map[1073742049] ~= nil or A_UISystem.sym_map[1073742053] ~= nil)
+	if self._drag_shift == false then
+		event.target = self._control_scroll_screen
+		self._control_scroll_screen:DispatchEvent(___all_struct[1301789264], event)
+		return
+	end
+	local x, y = event.target:LocalToGlobal()
+	self._drag_effect = ALittle.EffectImage(g_Control)
+	self._drag_effect:Action(event.target)
+	A_LayerManager:AddToTip(self._drag_effect)
+	self._drag_effect.x = x
+	self._drag_effect.y = y
+	self._drag_effect.alpha = 0.6
+	local info = event.target._user_data
+	if info.presee ~= true then
+		return
+	end
+	local child = g_IDETabManager:GetTabByName(info.control_info.name)
+	if child == nil then
+		return
+	end
+	g_IDETabManager:CloseTab(child)
+	if info.pre_index ~= nil then
+		g_IDETabManager:SetCurTabIndex(info.pre_index)
+	end
+end
+
+function IDEControlManager:HandleControlDrag(event)
+	if self._drag_shift == false then
+		event.target = self._control_scroll_screen
+		self._control_scroll_screen:DispatchEvent(___all_struct[1337289812], event)
+		return
+	end
+	if self._drag_effect == nil then
+		return
+	end
+	self._drag_effect.x = self._drag_effect.x + event.delta_x
+	self._drag_effect.y = self._drag_effect.y + event.delta_y
+end
+
+function IDEControlManager:HandleControlDragEnd(event)
+	if self._drag_shift == false then
+		event.target = self._control_scroll_screen
+		self._control_scroll_screen:DispatchEvent(___all_struct[150587926], event)
+		return
+	end
+	if self._drag_effect ~= nil then
+		A_LayerManager:RemoveFromTip(self._drag_effect)
+		self._drag_effect:Clear()
+		self._drag_effect = nil
+	end
+	local tab_child = g_IDETabManager.cur_tab_child
+	local x, y = tab_child.tree_object:LocalToGlobal()
+	local delta_x = event.abs_x - x
+	local delta_y = event.abs_y - y
+	local target = tab_child.tree_object:PickUp(delta_x, delta_y)
+	if target == nil then
+		ALittle.Log("IDETreeLogic:HandleDrag} target null")
+		return
+	end
+	local tree = target._user_data
+	local user_data = event.target._user_data
+	local save_info = {}
+	save_info["__extends"] = user_data.control_info.name
+	local copy_list = {}
+	local info = {}
+	info["index"] = 1
+	info["info"] = save_info
+	copy_list[1] = info
+	ALittle.System_SetClipboardText(json.encode(copy_list))
+	if tree:IsTree() then
+		tab_child:RightControlTreePasteImpl(tree, nil, 1)
+	else
+		local common_parent = tree.logic_parent
+		if common_parent == nil then
+			g_IDETool:ShowNotice("提示", "当前是根节点，并且不是容器，粘帖失败")
+			return
+		end
+		local child_index = common_parent:GetChildIndex(tree)
+		x, y = target:LocalToGlobal()
+		y = y + target.height / 2
+		if event.abs_y > y then
+			child_index = child_index + 1
+		end
+		tab_child:RightControlTreePasteImpl(common_parent, nil, child_index)
+	end
+end
+
+function IDEControlManager:ClearControlItem()
+	self._control_scroll_screen:RemoveAllChild()
+end
+
+function IDEControlManager:ShowNewControl()
+	if g_IDEProject.project == nil then
+		g_IDETool:ShowNotice("提示", "当前没有打开的项目")
+		return
+	end
+	if self._control_new_dialog == nil then
+		self._control_new_dialog = g_Control:CreateControl("ide_new_control_dialog", self)
+		A_LayerManager:AddToModal(self._control_new_dialog)
+		self._control_new_type.data_list = g_IDEEnum.child_type_list
+	end
+	self._control_new_name.text = ""
+	self._control_new_extends_name.text = ""
+	self._control_new_dialog.visible = true
+	A_UISystem.focus = self._control_new_name.show_input
+end
+
+function IDEControlManager:HandleNewControlCancel(event)
+	self._control_new_dialog.visible = false
+end
+
+function IDEControlManager:HandleNewControlConfirm(event)
+	local project = g_IDEProject.project
+	if project == nil then
+		g_IDETool:ShowNotice("错误", "当前没有打开的项目")
+		return
+	end
+	local name = self._control_new_name.text
+	if name == "" then
+		g_IDETool:ShowNotice("错误", "请输入控件名")
+		return
+	end
+	if IDEUtility_CheckName(name) == false then
+		g_IDETool:ShowNotice("错误", "控件名不合法:" .. name)
+		return
+	end
+	if project.control_map[name] ~= nil then
+		g_IDETool:ShowNotice("错误", "控件已存在:" .. name)
+		return
+	end
+	if g_IDETabManager:GetTabByName(name) ~= nil then
+		g_IDETool:ShowNotice("错误", "控件名已存在:" .. name)
+		return
+	end
+	local control_type = self._control_new_type.text
+	if control_type == "" then
+		g_IDETool:ShowNotice("错误", "请选择控件类型")
+		return
+	end
+	local extends_name = self._control_new_extends_name.text
+	if extends_name ~= "" then
+		g_IDETabManager:StartEditControlByExtends(name, extends_name)
+	else
+		g_IDETabManager:StartEditControlByNew(name, control_type)
+	end
+	self._control_new_dialog.visible = false
+end
+
+function IDEControlManager:HandleControlItemRightClick(event)
+	if self._control_right_menu == nil then
+		self._control_right_menu = g_Control:CreateControl("ide_control_right_menu", self)
+	end
+	A_LayerManager:ShowFromRight(self._control_right_menu)
+	self._control_right_menu.x = A_UISystem.mouse_x
+	self._control_right_menu.y = A_UISystem.mouse_y
+	if self._control_right_menu.x + self._control_right_menu.width > A_UISystem.view_width then
+		self._control_right_menu.x = A_UISystem.view_width - self._control_right_menu.width
+	end
+	if self._control_right_menu.y + self._control_right_menu.height > A_UISystem.view_height then
+		self._control_right_menu.y = A_UISystem.view_height - self._control_right_menu.height
+	end
+	self._control_right_menu._user_data = event.target
+end
+
+function IDEControlManager:DeleteControlImpl(target)
+	self._control_scroll_screen:RemoveChild(target)
+	local user_data = target._user_data
+	local result, content = g_IDEProject:DeleteControl(user_data.control_info.name)
+	if result == false then
+		g_IDETool:ShowNotice("提示", content)
+		return
+	end
+	local tab = g_IDETabManager:GetTabByName(user_data.control_info.name)
+	if tab == nil then
+		return
+	end
+	g_IDETabManager:CloseTab(tab)
+end
+
+function IDEControlManager:HandleControlRightMenuDelete(event)
+	A_LayerManager:HideFromRight(self._control_right_menu)
+	local target = self._control_right_menu._user_data
+	self._control_right_menu._user_data = nil
+	local user_data = target._user_data
+	local name = user_data.control_info.name
+	local result, content = g_IDEProject:CanDelete(name)
+	if result == false then
+		g_IDETool:ShowNotice("错误", content)
+		return
+	end
+	result, content = g_IDETabManager:CanDelete(name)
+	if result == false then
+		g_IDETool:ShowNotice("错误", content)
+		return
+	end
+	local callback = ALittle.Bind(self.DeleteControlImpl, self, target)
+	g_IDETool:DeleteNotice("提示", "确定要删除" .. target.text .. "吗?", callback)
+end
+
+function IDEControlManager:HandleControlRightMenuCopyName(event)
+	A_LayerManager:HideFromRight(self._control_right_menu)
+	local target = self._control_right_menu._user_data
+	self._control_right_menu._user_data = nil
+	local user_data = target._user_data
+	local name = user_data.control_info.name
+	ALittle.System_SetClipboardText(name)
+end
+
+function IDEControlManager:HandleControlRightMenuCopyInfo(event)
+	A_LayerManager:HideFromRight(self._control_right_menu)
+	local target = self._control_right_menu._user_data
+	self._control_right_menu._user_data = nil
+	local user_data = target._user_data
+	local name = user_data.control_info.name
+	local x, y = target:LocalToGlobal()
+	local callback = ALittle.Bind(self.ControlCopyInfo, self, name)
+	g_IDETool:ShowRename(callback, name, x, y, target.width)
+end
+
+function IDEControlManager:ControlCopyInfo(target_name, new_name)
+	local result, content = IDEUtility_CheckName(new_name)
+	if result == false then
+		g_IDETool:ShowNotice("错误", content)
+		return
+	end
+	local info = g_IDEProject.project.control_map[new_name]
+	if info ~= nil then
+		g_IDETool:ShowNotice("错误", "控件名已存在:" .. new_name)
+		return
+	end
+	info = g_IDEProject.project.control_map[target_name]
+	if info == nil then
+		g_IDETool:ShowNotice("错误", "控件不存在:" .. target_name)
+		return
+	end
+	g_IDEProject:SaveControl(new_name, ALittle.String_CopyTable(info.info))
+	info = g_IDEProject.project.control_map[new_name]
+	if info == nil then
+		g_IDETool:ShowNotice("错误", "控件新建失败:" .. new_name)
+		return
+	end
+	g_IDETabManager:StartEditControlBySelect(new_name, info.info)
+end
+
+function IDEControlManager:ControlRename(target, old_name, new_name)
+	if old_name == new_name then
+		return
+	end
+	local result, content = g_IDEProject:RenameControl(old_name, new_name)
+	if result == false then
+		g_IDETool:ShowNotice("错误", content)
+		return
+	end
+	target.text = new_name
+	local tab = g_IDETabManager:GetTabByName(old_name)
+	if tab == nil then
+		return
+	end
+	local tab_child = tab._user_data
+	tab_child:Rename(new_name)
+end
+
+function IDEControlManager:ControlRenameImpl(target)
+	local user_data = target._user_data
+	local name = user_data.control_info.name
+	local result, content = g_IDEProject:CanDelete(name)
+	if result == false then
+		g_IDETool:ShowNotice("错误", content)
+		return
+	end
+	result, content = g_IDETabManager:CanDelete(name)
+	if result == false then
+		g_IDETool:ShowNotice("错误", content)
+		return
+	end
+	local x, y = target:LocalToGlobal()
+	local callback = ALittle.Bind(self.ControlRename, self, target, name)
+	g_IDETool:ShowRename(callback, name, x, y, target.width)
+end
+
+function IDEControlManager:HandleControlRightMenuRename(event)
+	A_LayerManager:HideFromRight(self._control_right_menu)
+	local target = self._control_right_menu._user_data
+	self._control_right_menu._user_data = nil
+	self:ControlRenameImpl(target)
+end
+
+function IDEControlManager:HandleControlRightMenuCopyExtends(event)
+	A_LayerManager:HideFromRight(self._control_right_menu)
+	local target = self._control_right_menu._user_data
+	self._control_right_menu._user_data = nil
+	local user_data = target._user_data
+	local name = user_data.control_info.name
+	local save_info = {}
+	save_info["__extends"] = name
+	local copy_list = {}
+	local info = {}
+	info["index"] = 1
+	info["info"] = save_info
+	copy_list[1] = info
+	ALittle.System_SetClipboardText(json.encode(copy_list))
+end
+
+function IDEControlManager:ControlRunImpl(name)
+	local debug = {}
+	debug["title"] = name
+	debug["window_width"] = g_IDEProject.project.config:GetConfig("default_show_width", 800)
+	debug["window_height"] = g_IDEProject.project.config:GetConfig("default_show_height", 600)
+	debug["ui_name"] = name
+	debug["module_name"] = g_IDEProject.project.name
+	local debug_str = json.encode(debug)
+	debug_str = "\"" .. ALittle.String_Replace(debug_str, "\"", "\\\"") .. "\""
+	os.execute("start ALittleClientWin32.exe " .. debug_str .. " " .. g_IDEProject.project.name .. " Engine/MainTemplate/UIViewer")
+end
+
+function IDEControlManager:HandleControlRightMenuRun(event)
+	A_LayerManager:HideFromRight(self._control_right_menu)
+	local target = self._control_right_menu._user_data
+	self._control_right_menu._user_data = nil
+	local user_data = target._user_data
+	self:ControlRunImpl(user_data.control_info.name)
+end
+
+function IDEControlManager:HandleControlRightMenuFlagQuickImage(event)
+	A_LayerManager:HideFromRight(self._control_right_menu)
+	local target = self._control_right_menu._user_data
+	self._control_right_menu._user_data = nil
+	local user_data = target._user_data
+	g_IDEQuickManager:FlagImage(user_data.control_info.name)
+end
+
+function IDEControlManager:HandleControlRightMenuFlagQuickButton(event)
+	A_LayerManager:HideFromRight(self._control_right_menu)
+	local target = self._control_right_menu._user_data
+	self._control_right_menu._user_data = nil
+	local user_data = target._user_data
+	g_IDEQuickManager:FlagButton(user_data.control_info.name)
+end
+
+function IDEControlManager:HandleControlRightMenuFlagQuickText(event)
+	A_LayerManager:HideFromRight(self._control_right_menu)
+	local target = self._control_right_menu._user_data
+	self._control_right_menu._user_data = nil
+	local user_data = target._user_data
+	g_IDEQuickManager:FlagText(user_data.control_info.name)
+end
+
+function IDEControlManager:HandleControlRightMenuFlagQuickOther(event)
+	A_LayerManager:HideFromRight(self._control_right_menu)
+	local target = self._control_right_menu._user_data
+	self._control_right_menu._user_data = nil
+	local user_data = target._user_data
+	g_IDEQuickManager:FlagOther(user_data.control_info.name)
+end
+
+function IDEControlManager.ControlInfoCmp(a, b)
+	return a.name < b.name
+end
+
+g_IDEControlManager = IDEControlManager()

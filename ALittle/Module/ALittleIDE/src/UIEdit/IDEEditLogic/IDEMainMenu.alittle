@@ -1,0 +1,398 @@
+
+namespace ALittleIDE;
+
+struct IDEMainMenuImageInfo
+{
+	string file_name;
+	double x;
+	double y;
+	double width;
+	double height;
+}
+
+struct IDEMainMenuFramePlayInfo
+{
+	double width;
+	double height;
+	string root_path;
+	List<IDEMainMenuImageInfo> image_list;
+	int image_count;
+}
+
+class IDEMainMenu
+{
+	private ALittle.DisplayObject _menu_file_menu;
+	private ALittle.DisplayObject _menu_edit_menu;
+	private ALittle.DisplayObject _menu_tool_menu;
+
+	private ALittle.DisplayObject _gen_json_template_code_dialog;
+	private ALittle.DisplayObject _json_template_count;
+	private ALittle.DisplayObject _json_template_file_count;
+
+	private ALittle.DisplayObject _gen_server_module_code_dialog;
+	private ALittle.DisplayObject _server_module_code_name;
+
+	private ALittle.DisplayObject _frameplay_plist_dialog;
+	private ALittle.DisplayObject _plist_path;
+	private ALittle.DisplayObject _view_log_dialog;
+	private ALittle.DisplayObject _view_log_content;
+	private ALittle.DisplayObject _robot_chat_dialog;
+	private ALittle.DisplayObject _robot_chat_content;
+	private ALittle.DisplayObject _robot_chat_url;
+
+	////////////////////////////////////////////////////////////////////////////////////////
+	// 显示文件菜单
+	public fun ShowFileMenu(ALittle.UIEvent event)
+	{
+		// 创建菜单界面
+		if (this._menu_file_menu == null)
+			this._menu_file_menu = g_Control.CreateControl{ALittle.DisplayObject}("ide_file_menu", this);
+
+		// 设置菜单的位置
+		var x, y = event.target.LocalToGlobal();
+		this._menu_file_menu.x = x;
+		this._menu_file_menu.y = y + event.target.height;
+		// 显示菜单
+		A_LayerManager.ShowFromRight(this._menu_file_menu);
+	}
+	// 处理文件菜单中的新建项目
+	public fun HandleNewProject(ALittle.UIEvent event)
+	{
+		// 隐藏文件菜单
+		A_LayerManager.HideFromRight(this._menu_file_menu);
+		// 显示对话框
+		g_IDEProjectManager.ShowNewProject();
+	}
+	// 处理文件菜单中的打开项目
+	public fun HandleOpenProject(ALittle.UIEvent event)
+	{
+		// 隐藏文件菜单
+		A_LayerManager.HideFromRight(this._menu_file_menu);
+		// 显示对话框
+		g_IDEProjectManager.ShowOpenProject();
+	}
+	// 处理文件菜单中的打开项目
+	public fun HandleSettingProject(ALittle.UIEvent event)
+	{
+		// 隐藏文件菜单
+		A_LayerManager.HideFromRight(this._menu_file_menu);
+		// 显示对话框
+		g_IDEProjectManager.ShowSettingProject(null);
+	}
+	// 处理保存项目
+	public fun HandleSaveProject(ALittle.UIEvent event)
+	{
+		A_LayerManager.HideFromRight(this._menu_file_menu);
+		g_IDETabManager.SaveAllTab();
+	}
+	
+	// 处理刷新项目
+	public fun HandleRefreshProject(ALittle.UIEvent event)
+	{
+		A_LayerManager.HideFromRight(this._menu_file_menu);
+		g_IDEProjectManager.RefreshProject();
+	}
+	
+	// 处理导出项目
+	public fun HandleExportProject(ALittle.UIEvent event)
+	{
+		// 隐藏文件菜单
+		A_LayerManager.HideFromRight(this._menu_file_menu);
+		// 显示对话框
+		g_IDEProjectManager.ShowExportProject();
+	}
+	
+	// 处理运行项目
+	public fun HandleRun(ALittle.UIEvent event)
+	{
+		// 隐藏文件菜单
+		A_LayerManager.HideFromRight(this._menu_file_menu);
+		// 显示对话框
+		g_IDEProjectManager.RunProject();
+	}
+	//////////////////////////////////////////////////////////////////////////////-
+	// 显示编辑菜单
+	public fun ShowEditMenu(ALittle.UIEvent event)
+	{
+		// 创建菜单界面
+		if (this._menu_edit_menu == null)
+			this._menu_edit_menu = g_Control.CreateControl{ALittle.DisplayObject}("ide_edit_menu", this);
+
+		// 设置菜单的位置
+		var x, y = event.target.LocalToGlobal();
+		this._menu_edit_menu.x = x;
+		this._menu_edit_menu.y = y + event.target.height;
+		// 显示菜单
+		A_LayerManager.ShowFromRight(this._menu_edit_menu);
+	}
+	// 处理新建控件
+	public fun HandleNewControl(ALittle.UIEvent event)
+	{
+		// 隐藏文件菜单
+		A_LayerManager.HideFromRight(this._menu_edit_menu);
+		// 显示对话框
+		g_IDEControlManager.ShowNewControl();
+	}
+	// 处理撤销
+	public fun HandleUndoRevoke(ALittle.UIEvent event)
+	{
+		// 隐藏文件菜单
+		A_LayerManager.HideFromRight(this._menu_edit_menu);
+		// 撤销
+		g_IDEUICenter.HandleUndoRevoke(null);
+	}
+	// 处理重做
+	public fun HandleDoRevoke(ALittle.UIEvent event)
+	{
+		// 隐藏文件菜单
+		A_LayerManager.HideFromRight(this._menu_edit_menu);
+		// 撤销
+		g_IDEUICenter.HandleDoRevoke(null);
+	}
+	//////////////////////////////////////////////////////////////////////////////-
+	// 显示工具菜单
+	public fun ShowToolMenu(ALittle.UIEvent event)
+	{
+		// 创建工具界面
+		if (this._menu_tool_menu == null)
+			this._menu_tool_menu = g_Control.CreateControl{ALittle.DisplayObject}("ide_tool_menu", this);
+
+		// 设置菜单的位置
+		var x, y = event.target.LocalToGlobal();
+		this._menu_tool_menu.x = x;
+		this._menu_tool_menu.y = y + event.target.height;
+		// 显示菜单
+		A_LayerManager.ShowFromRight(this._menu_tool_menu);
+	}
+	// 生成Json模板代码
+	public fun HandleGenJsonTemplateCodeClick(ALittle.UIEvent event)
+	{
+		// 隐藏文件菜单
+		A_LayerManager.HideFromRight(this._menu_tool_menu);
+	
+		if (this._gen_json_template_code_dialog == null)
+			this._gen_json_template_code_dialog = g_Control.CreateControl{ALittle.DisplayObject}("ide_gen_json_template_code_dialog", this, g_IDECenter.dialog_layer);
+
+		this._gen_json_template_code_dialog.visible = true;
+	}
+	
+	public static GenTemplate(int num) : string
+	{
+		var code = "#define JSON_MACRO_"..(num * 2 + 1).."(Name";
+		for (var i = 0, num - 1, 1) code = code..", t"..i..", m"..i;
+		code = code..") \\\n";
+		code = code.."class Name : public ALittle::Json { \\\n";
+		code = code.."public: \\\n";
+		code = code.."\tvirtual const char* GetID() const { return #Name; } \\\n";
+		code = code.."\tinline static const char* GetStaticID() { return #Name; } \\\n";
+		code = code.."public: \\\n";
+		code = code.."\tvirtual void Serialize(ALittle::JsonValue& v, ALittle::JsonAlloc& a) const { \\\n";
+		for (var i = 0, num - 1, 1) code = code.."\t\tALittle::JsonTemplate::Json_Serialize(m"..i..", #m"..i..", (int)sizeof(#m"..i..")-1, v, a); \\\n";
+		code = code.."\t} \\\n";
+		code = code.."\tvirtual void Deserialize(const ALittle::JsonValue& v) { \\\n";
+		for (var i = 0, num - 1, 1) code = code.."\t\tALittle::JsonTemplate::Json_Deserialize(m"..i..", #m"..i..", (int)sizeof(#m"..i..")-1, v); \\\n";
+		code = code.."\t} \\\n";
+		code = code.."\tvirtual void Serialize(ALittle::ValueMap& v) const { \\\n";
+		for (var i = 0, num - 1, 1) code = code.."\t\tALittle::JsonTemplate::Json_SerializeValueMap(m"..i..", #m"..i..", v); \\\n";
+		code = code.."\t} \\\n";
+		code = code.."\tvirtual void Deserialize(const ALittle::ValueMap& v) { \\\n";
+		for (var i = 0, num - 1, 1) code = code.."\t\tALittle::JsonTemplate::Json_DeserializeValueMap(m"..i..", #m"..i..", v); \\\n";
+		code = code.."\t} \\\n";
+		code = code.."\tvirtual const std::vector<std::string>& GetNameList() const { \\\n";
+		code = code.."\t\tstatic std::vector<std::string> s_list; \\\n";
+		code = code.."\t\tif (s_list.empty()) { \\\n";
+		for (var i = 0, num - 1, 1) code = code.."\t\t\ts_list.push_back(#m"..i.."); \\\n";
+		code = code.."\t\t} return s_list; \\\n";
+		code = code.."\t} \\\n";
+		code = code.."\tvirtual const std::vector<std::string>& GetTypeList() const { \\\n";
+		code = code.."\t\tstatic std::vector<std::string> s_list; \\\n";
+		code = code.."\t\tif (s_list.empty()) { \\\n";
+		for (var i = 0, num - 1, 1) code = code.."\t\t\ts_list.push_back(#t"..i.."); \\\n";
+		code = code.."\t\t} return s_list; \\\n";
+		code = code.."\t} \\\n";
+		code = code.."\tvirtual void Reset() { *this = Name(); } \\\n";
+		code = code.."\tvirtual ~Name() { } \\\n";
+		code = code.."\tName() : ";
+		for (var i = 0, num - 1, 1)
+		{
+			if (i > 0) code = code..", ";
+			code = code.."m"..i.."()";
+		}
+		code = code.." {} \\\n";
+		code = code.."\t";
+		for (var i = 0, num - 1, 1)
+		{
+			if (i > 0) code = code.." ";
+			code = code.."t"..i.." m"..i..";";
+		}
+		code = code.." \\\n";
+		code = code.."}\n";
+
+		return code;
+	}
+	
+	public fun HandleGenJsonTemplateCode(ALittle.UIEvent event)
+	{
+		var template_count = lua.math.floor(lua.tonumber(this._json_template_count.text));
+		if (template_count == null) template_count = 20;
+		
+		var file_count = lua.math.floor(lua.tonumber(this._json_template_file_count.text));
+		if (file_count == null) file_count = 0;
+
+		var num = 1;
+		for (var file_index = 1, file_count, 1)
+		{
+			var code_head = "\n#ifndef _ALITTLE_JSON_"..file_index.."_H_\n#define _ALITTLE_JSON_"..file_index.."_H_\n\n";
+			code_head = code_head.."#include \"Json.h\"\n\n";
+			var code_foot = "\n#endif // _ALITTLE_JSON_"..file_index.."_H_\n";
+	
+			var code_list = new List<string>();
+			var index = 1;
+			code_list[index] = code_head;
+			for (var template_index = 1, template_count, 1)
+			{
+				++index;
+				code_list[index] = IDEMainMenu.GenTemplate(num);
+				++ num;
+			}
+			++ index;
+			code_list[index] = code_foot;
+			var content = ALittle.String_Join(code_list, "");
+			ALittle.File_WriteTextToFile(content, "Json_"..file_index..".h");
+		}
+	
+		var code = "\n#ifndef _ALITTLE_JSON_ALL_H_\n#define _ALITTLE_JSON_ALL_H_\n\n";
+		for (var file_index = 1, file_count, 1)
+			code = code.."#include \"Json_"..file_index..".h\"\n";
+	
+		var max_count = file_count * template_count * 2 + 1;
+	
+		code = code.."\n#define VA_JSON_EXPAND(...) __VA_ARGS__\n";
+		code = code.."#define VA_JSON_FILTER_(";
+		for (var i = 1, max_count, 1)
+		{
+			if (i > 1) code = code..",";
+			code = code.."_"..i;
+		}
+		code = code..",_N,...) _N\n";
+		code = code.."#define VA_JSON_NUMBER_() ";
+		for (var i = max_count, 1, -1)
+		{
+			if (i < max_count) code = code..",";
+			code = code..i;
+		}
+		code = code.."\n";
+		code = code.."#define VA_JSON_HELPER(...) VA_JSON_EXPAND(VA_JSON_FILTER_(__VA_ARGS__))\n";
+		code = code.."#define VA_JSON_COUNT(...) VA_JSON_HELPER(__VA_ARGS__, VA_JSON_NUMBER_())\n";
+		code = code.."#define VA_JSON_CAT(X, Y) X##Y\n";
+		code = code.."#define VA_JSON_JOIN(X, Y) VA_JSON_CAT(X, Y)\n";
+		code = code.."#define VA_JSON_PROXY(F, ...) VA_JSON_EXPAND(F(__VA_ARGS__))\n";
+		code = code.."\n#define JSON_MACRO(...) VA_JSON_PROXY(VA_JSON_JOIN(JSON_MACRO_, VA_JSON_COUNT(__VA_ARGS__)), __VA_ARGS__)\n";
+		code = code.."\ntypedef JSON_MACRO(EmptyJson) EmptyJson;\ntypedef JSON_MACRO(ResultJson, bool, result, std::string, reason) ResultJson;\n";
+	
+		code = code.."\n#endif // _ALITTLE_JSON_ALL_H_\n";
+	
+		ALittle.File_WriteTextToFile(code, "Json_ALL.h");
+	
+		g_IDETool.ShowNotice("提示", "生成成功");
+	}
+	// 生成服务器模块代码
+	public fun HandleGenServerModuleCodeClick(ALittle.UIEvent event)
+	{
+		// 隐藏文件菜单
+		A_LayerManager.HideFromRight(this._menu_tool_menu);
+	
+		if (this._gen_server_module_code_dialog == null)
+			this._gen_server_module_code_dialog = g_Control.CreateControl{ALittle.DisplayObject}("ide_gen_server_module_code_dialog", this, g_IDECenter.dialog_layer);
+		
+		this._gen_server_module_code_dialog.visible = true;
+	}
+	public fun HandleGenServerModuleCode(ALittle.UIEvent event)
+	{
+		var module_name = this._server_module_code_name.text;
+		var base_path = g_ModuleBasePathEx.."/ServerModuleCode/"..module_name;
+		ALittle.File_MakeDeepDir(base_path);
+	
+		var file_map = ALittle.File_GetFileAttrByDir(g_ModuleBasePath.."/Other/ServerTemplate");
+		for (var file_path, attr in file_map)
+		{
+			var file_name = ALittle.File_GetFileNameByPath(file_path);
+			file_name = ALittle.String_Replace(file_name, "abcd@module_name@abcd", module_name);
+			file_name = ALittle.String_Replace(file_name, "abcd@upper_module_name@abcd", lua.String.upper(module_name));
+			file_name = ALittle.String_Replace(file_name, "abcd@lower_module_name@abcd", lua.String.lower(module_name));
+			var content = ALittle.File_ReadTextFromFile(file_path);
+			if (content != null)
+			{
+				content = ALittle.String_Replace(content, "abcd@module_name@abcd", module_name);
+				content = ALittle.String_Replace(content, "abcd@upper_module_name@abcd", lua.String.upper(module_name));
+				content = ALittle.String_Replace(content, "abcd@lower_module_name@abcd", lua.String.lower(module_name));
+	
+				var full_path = base_path.."/"..file_name;
+				ALittle.File_WriteTextToFile(content, full_path);
+			}
+		}
+		g_IDETool.ShowNotice("提示", "生成成功");
+	}
+	// 处理转换
+	public fun HandleFramePlayFromPList(ALittle.UIEvent event)
+	{
+		// 隐藏文件菜单
+		A_LayerManager.HideFromRight(this._menu_tool_menu);
+	
+		if (this._frameplay_plist_dialog == null)
+			this._frameplay_plist_dialog = g_Control.CreateControl{ALittle.DisplayObject}("ide_frameplay_plist_dialog", this, g_IDECenter.dialog_layer);
+		
+		this._frameplay_plist_dialog.visible = true;
+	}
+
+	public static ImageListInFramePlayCmp(IDEMainMenuImageInfo a, IDEMainMenuFramePlayInfo b) : bool
+	{
+		return a.file_name < a.file_name;
+	}
+
+	// 处理查看日志
+	public fun HandleViewLog(ALittle.UIEvent event)
+	{
+		// 隐藏文件菜单
+		A_LayerManager.HideFromRight(this._menu_tool_menu);
+	
+		if (this._view_log_dialog == null)
+		{
+			this._view_log_dialog = g_Control.CreateControl{ALittle.DisplayObject}("ide_view_log_dialog", this, g_IDECenter.dialog_layer);
+			this.HandleViewLogRefresh(null);
+		}
+		this._view_log_dialog.visible = true;
+	}
+	// 刷新日志内容
+	public fun HandleViewLogRefresh(ALittle.UIEvent event)
+	{
+		// 读取日志
+		var file_name = lua.os.date("%Y-%m-%d", lua.os.time())..".log";
+		var file_path = ALittle.File_BaseFilePath().."Log/"..file_name;
+		var content = ALittle.File_ReadTextFromFile(file_path, false);
+		if (content == null) return;
+
+		var content_list = ALittle.String_Split(content, "\n");
+		var content_len = lua.table.maxn(content_list);
+		var copy_len = content_len - 100;
+		if (copy_len < 1) copy_len = 1;
+	
+		var log_list = new List<string>();
+		var log_list_count = 0;
+		for (var i = content_len, copy_len, -1)
+		{
+			++ log_list_count;
+			log_list[log_list_count] = content_list[i];
+		}
+	
+		this._view_log_content.text = ALittle.String_Join(log_list, "\n");
+	}
+	// 关闭日志内容
+	public fun HandleViewLogClose(ALittle.UIEvent event)
+	{
+		this._view_log_dialog.visible = false;
+	}
+}
+//////////////////////////////////////////////////////////////////////////////
+
+protected var g_IDEMainMenu = new IDEMainMenu();

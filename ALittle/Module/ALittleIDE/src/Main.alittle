@@ -1,0 +1,85 @@
+namespace ALittleIDE;
+
+// 壳入口函数
+public static __Browser_Setup(ALittle.DisplayLayout layer_group, ALittle.ScriptSystem script, ALittle.ControlSystem control, string base_path, string debug)
+{
+    // 删除7天前的日志
+    ALittle.DeleteLog(7);
+    
+    // 创建窗口
+    var window_width = 1200;
+    var window_height = 600;
+    var rate = 1.0;
+    var flag = lua.bit.bor(ALittle.UIEnumTypes.VIEW_MAXIMIZED, ALittle.UIEnumTypes.VIEW_RESIZABLE);
+    if (ALittle.System_GetPlatform() != "Windows")
+    {
+        var screen_width = ALittle.System_GetScreenWidth();
+        var screen_height = ALittle.System_GetScreenHeight();
+        rate = screen_height / screen_width;
+        window_height = lua.math.floor(rate * window_width);
+        
+        flag = lua.bit.bor(flag, ALittle.UIEnumTypes.VIEW_FULLSCREEN);
+    }
+    ALittle.System_CreateView("ALittleIDE", window_width, window_height, flag, rate);
+    ALittle.System_SetViewIcon(base_path.."/Other/ic_launcher.png");
+    
+    // 加载模块
+    A_ModuleSystem.LoadModule("ALittleIDE");
+}
+
+// 壳处理添加模块，layer_group是模块的层组
+// 返回false，或者nil，表示不处理，下面的层直接挂姐在壳下面
+public static __Browser_AddModule(string module_name, ALittle.DisplayLayout layer_group, ALittle.ModuleInfo module_info)
+{
+}
+
+// 壳结束函数
+public static __Browser_Shutdown()
+{
+}
+
+protected var g_Script:ALittle.ScriptSystem;
+protected var g_Control:ALittle.ControlSystem;
+protected var g_LayerGroup:ALittle.DisplayLayout;
+protected var g_ModuleBasePath:string;
+protected var g_ModuleBasePathEx:string;
+protected var g_IDEConfig:ALittle.ClientConfigSystem;
+
+// 模块入口函数
+public static __Module_Setup(ALittle.DisplayLayout layer_group, ALittle.ScriptSystem script, ALittle.ControlSystem control, string base_path, string debug)
+{
+    // 把resource, layer_group变量保存到全局，便于使用
+    g_Script = script;
+    g_Control = control;
+    g_LayerGroup = layer_group;
+    g_ModuleBasePath = base_path;
+    g_ModuleBasePathEx = ALittle.File_BaseFilePath()..base_path;
+
+    // 这里加载必要的代码，最好把所有的都加载进来
+    g_Script.Require("IDECenter");
+    g_IDECenter.Setup(debug);
+}
+
+// 模块结束函数
+public static __Module_Shutdown()
+{
+    g_IDECenter.Shutdown();
+}
+
+// 提供给壳的模块信息
+public static __Module_GetInfo(ALittle.ScriptSystem script, ALittle.ControlSystem control, string base_path) : ALittle.ModuleShortInfo
+{
+    var info = new ALittle.ModuleShortInfo();
+    info.title = "ALittle集成开发环境";
+    info.icon = null;
+    info.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+    info.width_value = 0;
+    info.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+    info.height_value = 0;
+    return info;
+}
+
+// 插件入口函数
+public static __Plugin_Setup(ALittle.ScriptSystem script, ALittle.ControlSystem control, string base_path)
+{
+}

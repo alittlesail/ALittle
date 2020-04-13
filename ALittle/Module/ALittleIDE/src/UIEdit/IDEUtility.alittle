@@ -1,0 +1,444 @@
+
+namespace ALittleIDE;
+
+// 收集所有引用的纹理路径
+public static IDEUtility_CalcTextureName(ALittle.DisplayInfo info, Map<string, bool> map) : Map<string, bool>
+{
+	if (map == null) map = new Map<string, bool>();
+	for (var k, v in cast<Map<string, any> >(info))
+	{
+		if (k == "texture_name")
+			map[v] = true;
+		elseif (lua.type(v) == "table")
+			IDEUtility_CalcTextureName(v, map);
+	}
+	return map;
+}
+
+// 手机所有引用的控件名称
+public static IDEUtility_GetExtends(ALittle.DisplayInfo info, @Nullable Map<string, bool> map) : Map<string, bool>
+{
+	if (map == null) map = new Map<string, bool>();
+	for (var k, v in cast<Map<string, any> >(info))
+	{
+		if (lua.type(v) == "table")
+			IDEUtility_GetExtends(v, map);
+		elseif (k == "__extends" || k == "__include")
+			map[v] = true;
+	}
+	return map;
+}
+
+// 检查控件是否包含某个目标类
+public static IDEUtility_HasTargetClass(ALittle.DisplayInfo info, string name) : bool
+{
+	var target_class = info.__target_class;
+	if (target_class != null)
+	{
+		var str = ALittle.String_Join(target_class, ".");
+		if (ALittle.Find(str, name) != null) return true;
+	}
+
+	for (var k, v in cast<Map<string, any> >(info))
+	{
+		if (lua.type(v) == "table")
+		{
+			if (IDEUtility_HasTargetClass(v, name))
+				return true;
+		}
+	}
+	return false;
+}
+
+// 检查某个控件是否包含某个回调函数名
+public static IDEUtility_HasEventCallback(ALittle.DisplayInfo info, string name) : bool
+{
+	var event = info.__event;
+	if (event != null)
+	{
+		var content_list = new List<string>();
+		var count = 0;
+		for (var index, event_info in event)
+		{
+			var data_type = event_info.type..":";
+			var event_string  = data_type..event_info.func;
+			++ count;
+			content_list[count] = event_string;
+		}
+		var content = ALittle.String_Join(content_list, "\n");
+		if (ALittle.Find(content, name) != null) return true;
+	}
+
+	for (var k, v in cast<Map<string, any> >(info))
+	{
+		if (lua.type(v) == "table")
+		{
+			if (IDEUtility_HasEventCallback(v, name))
+				return true;
+		}
+	}
+	return false;
+}
+
+// 检查控件名是否合法
+public static IDEUtility_CheckName(string name) : bool, string
+{
+	// 检查合法性
+	var len = lua.String.len(name);
+	if (len == 0) return false, "命名只能支持字母数字下划线，不能以数字开头";
+	for (var i = 1, len, 1)
+	{
+		var byte = lua.String.byte(name, i);
+		var check_all = byte >= 65 && byte <= 90
+					 || byte >= 97 && byte <= 122
+					 || byte >= 48 && byte <= 57
+				     || byte == 95;
+		if (i == 1)
+		{
+			var check_first = byte >= 65 && byte <= 90
+							|| byte >= 97 && byte <= 122
+							|| byte == 95;
+			if (check_first == false)
+				return false, "命名只能支持字母数字，不能以数字开头";
+		}
+		else
+		{
+			if (check_all == false)
+				return false, "命名只能支持字母数字，不能以数字开头";
+		}
+	}
+
+	return true, null;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////-
+
+// 对控件进行初始化设置，便于编辑
+public static IDEUtility_NewGiveBaseCase(ALittle.DisplayInfo info, ALittle.DisplayObject object)
+{
+	// 如果是文本的话，那么就初始化下文本
+	if (g_IDEEnum.text_type_display_map[info.__class])
+	{
+		// 设置默认字体
+		info.font_path = g_IDEProject.project.config.GetConfig{string}("default_font_path", null);
+		cast<ALittle.Text>(object).font_path = info.font_path;
+		// 设置字体大小
+		var size = lua.math.floor(lua.tonumber(g_IDEProject.project.config.GetConfig("default_font_size", 15)));
+		info.font_size = size;
+		cast<ALittle.Text>(object).font_size = size;
+		// 如果是Text的话，就根据文本设置大小
+		if (info.__class == "Text")
+		{
+			info.text = "123456789";
+			object.text = "123456789";
+			cast<ALittle.Text>(object).RejuseSize();
+		}
+		// 如果不是的话，就设置一下大小
+		else
+		{
+			info.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+			object.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+			info.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+			object.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+		}
+	}
+	// 如果不是文本的话，设置一下大小
+	else
+	{
+		info.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+		object.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+		info.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+		object.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+	}
+}
+
+// 对控件进行初始化设置，便于编辑
+public static IDEUtility_DragAddGiveBaseCase(ALittle.DisplayInfo info)
+{
+	// 如果是文本的话，那么就初始化下文本
+	if (g_IDEEnum.text_type_display_map[info.__class])
+	{
+		// 设置默认字体
+		info.font_path = g_IDEProject.project.config.GetConfig{string}("default_font_path", null);
+		// 设置字体大小
+		var size = lua.math.floor(lua.tonumber(g_IDEProject.project.config.GetConfig("default_font_size", 15)));
+		info.font_size = size;
+		// 如果是Text的话，就根据文本设置大小
+		if (info.__class != "Text")
+		{
+			info.width_value = 100;
+			info.height_value = 100;
+		}
+		else
+			info.text = "123456789";
+	}
+	// 如果不是文本的话，设置一下大小
+	else
+	{
+		info.width_value = 100;
+		info.height_value = 100;
+	}
+}
+
+// 只获取基本属性
+public static IDEUtility_GetBaseInfo(ALittle.DisplayInfo info) : ALittle.DisplayInfo
+{
+	// 复制结果
+	var base = new ALittle.DisplayInfo();
+
+	// 复制基本信息
+	for (var k, v in cast<Map<string, any>>(info))
+	{
+		// 避开__childs和show
+		if (lua.type(v) != "table")
+			cast<Map<string, any> >(base)[k] = v;
+		// 这里处理类似dropdown控件里面的data_list那样的属性
+		elseif (lua.type(v) == "table" && k != "__childs")
+			cast<Map<string, any> >(base)[k] = ALittle.String_CopyTable(v);
+	}
+
+	// 复制link信息
+	var link = info.__link;
+	if (link != null)
+		base.__link = link;
+
+	// 复制事件信息
+	var event = info.__event;
+	if (event != null)
+		base.__event = ALittle.String_CopyTable(event);
+
+	return base;
+}	
+
+// 获取默认属性
+public static IDEUtility_GetDefaultInfo(ALittle.DisplayInfo info) : ALittle.DisplayInfo
+{
+	// 默认属性
+	var default = new ALittle.DisplayInfo();
+	// 处理继承
+	if (info.__extends != null)
+	{
+		// 获取控件默认数据
+		default = IDEUtility_GetDefaultInfo(g_IDEProject.project.control_map[info.__extends].info);
+		// 覆盖其他属性
+		for (var k, v in cast<Map<string, any> >(info))
+		{
+			if (k != "__extends")
+				cast<Map<string, any> >(default)[k] = v;
+		}
+	}
+	// 处理包含
+	elseif (info.__include != null)
+		// 获取控件默认属性 
+		default = IDEUtility_GetDefaultInfo(g_IDEProject.project.control_map[info.__include].info);
+	// 处理class
+	elseif (info.__class != null)
+	{
+		// 获取默认属性
+		var class_default = g_IDEEnum.type_default_map[info.__class];
+		// 复制属性
+		default = new ALittle.DisplayInfo();
+		for (var k, v in cast<Map<string, any> >(class_default))
+		{
+			if (lua.type(v) != "table")
+				cast<Map<string, any> >(default)[k] = v;
+		}
+		// 覆盖属性
+		for (var k, v in cast<Map<string, any> >(info))
+			cast<Map<string, any> >(default)[k] = v;
+	}
+	else
+		ALittle.Log("error GetDefaultInfo: there have not extends, include, class");
+
+	// 返回结果
+	return default;
+}
+
+// 控件树节点信息
+public struct IDETreeUserInfo
+{
+	ALittle.DisplayInfo base;       // 控件基本信息
+	ALittle.DisplayInfo default;    // 控件默认信息
+	string child_type;              // 作为子控件时的类型
+	bool root;                      // 是否是根节点
+	ALittle.DisplayObject object;   // 显示对象
+	bool extends;                   // 是否是继承
+	bool extends_root;              // 标记是否是继承的根节点
+}
+
+// 递归创建控件树
+	// control 控件信息
+	// extends 是否继承
+	// object 控件对象
+	// parent 父控件
+	// child_type 子控件类型
+	// group_name 单选按键组名
+public static IDEUtility_CreateTree(ALittle.DisplayInfo control, bool extends, ALittle.DisplayObject object, string child_type, IDETabChild tab_child, bool root) : IDETreeLogic
+{
+	// 创建核心数据
+	var user_info = new IDETreeUserInfo();
+//////////////////////////////////////////////////////////////////////////////////////////////////////////-
+	// 获取基础信息
+	user_info.base = IDEUtility_GetBaseInfo(control);
+	// 剥开一层，然后获取继承信息
+	if (control.__extends != null)
+	{
+		var control_info = g_IDEProject.project.control_map[control.__extends];
+		if (control_info == null)
+			g_IDETool.ShowNotice("错误", "extends 的控件不存在:"..control.__extends);
+		// 获取默认信息
+		user_info.default = IDEUtility_GetDefaultInfo(control_info.info);
+	}
+	elseif (control.__include != null)
+	{
+		var control_info = g_IDEProject.project.control_map[control.__include];
+		if (control_info == null)
+			g_IDETool.ShowNotice("错误", "include 的控件不存在:"..control.__include);
+		// 获取默认信息
+		user_info.default = IDEUtility_GetDefaultInfo(control_info.info);
+	}
+	elseif (control.__class != null)
+		// 直接从枚举里面获取信息
+		user_info.default = g_IDEEnum.type_default_map[control.__class];
+	else
+		// 错误则打印日志
+		ALittle.Log("error CreateTree: there have no extends,include,class");
+
+	// 处理普通的show
+	var nature_list = g_IDEEnum.nature_show_map[user_info.default.__class];
+	if (nature_list != null)
+	{
+		for (var index, name in nature_list)
+		{
+			if (cast<Map<string, any> >(control)[name] != null)
+				cast<Map<string, any> >(user_info.base)[name] = ALittle.String_CopyTable(cast<Map<string, any> >(control)[name]);
+		}
+	}
+
+	// 设置当前子控件类型，null：根控件，child：子控件，showXX：show
+	user_info.child_type = child_type;
+
+	// 标记为不是根
+	user_info.root = root;
+
+	// 设置控件对象
+	user_info.object = object;
+
+	// 设置是否是继承
+	user_info.extends = extends;
+	// 标记是否是继承的根节点
+	user_info.extends_root = control.__extends != null;
+//////////////////////////////////////////////////////////////////////////////////////////////////////////-
+	// 创建控件
+	var tree_logic:IDETreeLogic = null;
+
+	// 区分是树形控件，还是按钮
+	if (g_IDEEnum.can_add_child_map[user_info.default.__class]
+		|| g_IDEEnum.child_show_map[user_info.default.__class] != null)
+		tree_logic = new IDETree(g_Control, user_info, tab_child);
+	else
+		tree_logic = new IDETreeItem(g_Control, user_info, tab_child);
+
+	// 处理子控件
+	if (g_IDEEnum.can_add_child_map[user_info.default.__class] && object.childs != null && lua.table.maxn(object.childs) > 0)
+	{
+		// 如果当前信息就有子控件，那么是否是继承由extends变量决定
+		if (control.__childs != null && lua.table.maxn(control.__childs) > 0)
+		{
+			var childs = control.__childs;
+			for (var k, v in childs)
+				tree_logic.AddChild(IDEUtility_CreateTree(v, extends, object.childs[k], "child", tab_child, false));
+		}
+		// 如果继承就有子控件，那么都是继承
+		elseif (user_info.default.__childs != null && lua.table.maxn(user_info.default.__childs) > 0)
+		{
+			var childs = user_info.default.__childs;
+			for (var k, v in childs)
+				tree_logic.AddChild(IDEUtility_CreateTree(v, true, object.childs[k], "child", tab_child, false));
+		}
+	}
+
+	// 处理布局show
+	var show_list = g_IDEEnum.child_show_map[user_info.default.__class];
+	if (show_list != null)
+	{
+		for (var index, name in show_list)
+		{
+			// 检查当前对象是否有show
+			if (cast<Map<string,any>>(object)[name] != null)
+			{
+				// 如果这个show是当前控件的，那么是否继承由extends决定
+				if (cast<Map<string, any> >(control)[name] != null)
+					tree_logic.AddChild(IDEUtility_CreateTree(cast<Map<string, any> >(control)[name], extends, cast<Map<string,any>>(object)[name], name, tab_child, false));
+				// 如果这个show是继承的，那么都是继承
+				elseif (cast<Map<string, any> >(user_info.default)[name] != null)
+					tree_logic.AddChild(IDEUtility_CreateTree(cast<Map<string, any> >(user_info.default)[name], true, cast<Map<string,any>>(object)[name], name, tab_child, false));
+			}
+		}
+	}
+
+	// 更新描述
+	tree_logic.UpdateDesc();
+	return tree_logic;
+}
+
+// 生成九宫格信息
+public static IDEUtility_GenerateGrid9ImageInfo(string base_path, string image_path) : ALittle.DisplayInfo
+{
+	var surface = ALittle.System_LoadSurface(base_path..image_path);
+	if (surface == null) return null;
+
+	var width = ALittle.System_GetSurfaceWidth(surface);
+	var height = ALittle.System_GetSurfaceHeight(surface);
+
+	var helf_width = lua.math.floor(width / 2);
+	var helf_height = lua.math.floor(height / 2);
+
+	var left = ALittle.System_GetSurfaceGrid9(surface, "left");
+	var right = ALittle.System_GetSurfaceGrid9(surface, "right");
+	var top = ALittle.System_GetSurfaceGrid9(surface, "top");
+	var bottom = ALittle.System_GetSurfaceGrid9(surface, "bottom");
+
+	if (left == 0)
+		left = 1;
+	elseif (left == helf_width)
+		left = left - 2;
+	else
+		left = left + 1;
+
+	if (right == width)
+	    right = 1;
+	elseif (right == helf_width)
+		right = right + 2;
+	else
+		right = width - right + 1;
+
+	if (top == 0)
+		top = 1;
+	elseif (top == helf_height)
+		top = top - 2;
+	else
+		top = top + 1;
+
+	if (bottom == height)
+		bottom = 1;
+	elseif (bottom == helf_height)
+		bottom = bottom + 2;
+	else
+		bottom = height - bottom + 1;
+
+	ALittle.System_FreeSurface(surface);
+
+	var display_info = new ALittle.DisplayInfo();
+	display_info.__class = "Grid9Image";
+	display_info.texture_name = image_path;
+	display_info.width_type = ALittle.UIEnumTypes.POS_ABS;
+	display_info.width_value = width;
+	display_info.height_type = ALittle.UIEnumTypes.POS_ABS;
+	display_info.height_value = height;
+	display_info.left_size = left;
+	display_info.right_size = right;
+	display_info.top_size = top;
+	display_info.bottom_size = bottom;
+	return display_info;
+}

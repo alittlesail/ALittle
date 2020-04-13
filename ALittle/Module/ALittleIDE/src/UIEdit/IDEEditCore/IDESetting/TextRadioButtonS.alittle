@@ -1,0 +1,30 @@
+
+namespace ALittleIDE;
+
+public class TextRadioButtonS : TextCheckButtonS
+{
+	private ALittle.DisplayObject _group_name;
+
+	public ctor(IDETreeUserInfo user_info, IDETabChild tab_child, IDETreeLogic tree_logic)
+	{
+		this._layer_name = "ide_setting_textradiobutton";
+	}
+	
+	public fun LoadNatureBase()
+	{
+		TextCheckButtonS.LoadNatureBase(this);
+	
+		this.LoadDefaultNilString("group_name");
+	}
+	
+	public fun HandleGroupNameFOCUSOUT(ALittle.UIEvent event)
+	{
+		this.DefaultNilStringInputChange("group_name", false);
+	}
+	
+	public fun HandleGroupNameAutoClick(ALittle.UIEvent event)
+	{
+		this._group_name.text = lua.os.date("%Y%m%d%H%M%S")..lua.tostring(lua.math.random(1000));
+		this.DefaultNilStringInputChange("group_name", false);
+	}
+}

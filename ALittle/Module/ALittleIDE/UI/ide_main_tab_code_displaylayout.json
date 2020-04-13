@@ -1,0 +1,1 @@
+{"ide_main_tab_code_displaylayout":{"__class":"DisplayLayout","width_value":400,"__childs":[{"height_value":0,"width_value":0,"width_type":4,"top_size":5,"__class":"Grid9Image","height_type":4,"left_size":5,"bottom_size":5,"right_size":5,"texture_name":"tab_body_bg.png"}],"height_value":400,"__link":"_code_displaylayout","description":"代码管理"}}

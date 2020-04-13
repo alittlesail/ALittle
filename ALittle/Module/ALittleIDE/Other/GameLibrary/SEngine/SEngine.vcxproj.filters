@@ -97,5 +97,8 @@
     <None Include="src\Register\ScheduleInterface.alittle">
       <Filter>源文件\Register</Filter>
     </None>
+    <None Include="src\Utility\Time.alittle">
+      <Filter>源文件\Utility</Filter>
+    </None>
   </ItemGroup>
 </Project>

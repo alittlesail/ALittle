@@ -1,0 +1,140 @@
+namespace GatewayServer;
+
+protected struct UpdateRouteInfo : NUpdateRouteInfo
+{
+    int route_type;
+}
+
+class ModuleRouteManager
+{
+    // 路由映射表 KEY:ConnectKey，Value路由信息
+    private Map<int, UpdateRouteInfo> _route_map;
+    
+    public ctor()
+    {
+        this._route_map = new Map<int, UpdateRouteInfo>();
+        
+        // 监听连接断开
+        A_SessionSystem.AddEventListener(this, this.HandleAnySessionDisconnected);
+        A_SessionSystem.AddEventListener(this, this.HandleAnySessionConnected);
+    }
+    
+    public fun HandleAnySessionConnected(ALittle.SessionConnectEvent event)
+    {
+        // 向当前服务器广播所有的路由
+        var session_map = A_SessionSystem.GetSessionMap();
+        for (var connect_key, session in session_map)
+        {
+            if (session.route_type != event.route_type
+                || session.route_num != event.route_num)
+            {
+                var msg = new NRouteConnected();
+                msg.route_type = session.route_type;
+                msg.route_num = session.route_num;
+                event.session.SendMsg(msg);
+            }
+        }
+        
+        // 向所有服务器广播新服务器连接
+        for (var connect_key, session in session_map)
+        {
+            if (session.route_type != event.route_type
+                || session.route_num != event.route_num)
+            {
+                var msg = new NRouteConnected();
+                msg.route_type = event.route_type;
+                msg.route_num = event.route_num;
+                session.SendMsg(msg);
+            }
+        }
+    }
+    
+    public fun HandleAnySessionDisconnected(ALittle.SessionDisconnectEvent event)
+    {
+        // 遍历路由映射表
+        var info = this._route_map[event.connect_key];
+        if (info == null) return;
+        this._route_map[event.connect_key] = null;
+        
+        ALittle.Log("模块断开了, route:"..ALittle.GetRouteName(event.route_type, event.route_num));
+    }
+    
+    public fun HandleUpdateRouteInfo(ALittle.MsgSession client, NUpdateRouteInfo msg)
+    {
+        // 打印模块信息
+        ALittle.Log("新的模块连进来了, route:"..ALittle.GetRouteName(client.route_type, client.route_num));
+        
+        // 保存路由信息
+        var param = new UpdateRouteInfo();
+        param.route_type = client.route_type;
+        param.route_weight = msg.route_weight;
+        param.route_info = msg.route_info;
+        this._route_map[client.GetID()] = param;
+    }
+
+    public fun HandleUpdateRouteWeight(ALittle.MsgSession client, NUpdateRouteWeight msg)
+    {
+        // 更新权重
+        var info = this._route_map[client.GetID()];
+        if (info == null) return;
+        info.route_weight = msg.route_weight;
+    }
+    
+    // 获取权重值最小的路由
+    public fun GetRouteInfo(int route_type) : NUpdateRouteInfo
+    {
+        var min_weight = 0;
+        var target:NUpdateRouteInfo = null;
+        for (var connect_key, info in this._route_map)
+        {
+            if (target == null || min_weight > info.route_weight)
+            {
+                target = info;
+                min_weight = info.route_weight;
+            }
+        }
+        return target;
+    }
+}
+
+protected var g_ModuleRouteManager = new ModuleRouteManager();
+
+[Msg]
+public static HandleSession_NUpdateRouteInfo(ALittle.IMsgCommon client, NUpdateRouteInfo msg)
+{
+    g_ModuleRouteManager.HandleUpdateRouteInfo(cast<ALittle.MsgSession>(client), msg);
+    g_DataRouteManager.HandleUpdateRouteInfo(cast<ALittle.MsgSession>(client), msg);
+}
+
+[Msg]
+public static HandleNUpdateRouteWeight(ALittle.IMsgCommon client, NUpdateRouteWeight msg)
+{
+    g_ModuleRouteManager.HandleUpdateRouteWeight(cast<ALittle.MsgSession>(client), msg);
+    g_DataRouteManager.HandleUpdateRouteWeight(cast<ALittle.MsgSession>(client), msg);
+}
+
+public struct QRouteInfo
+{
+    int route_type;
+}
+
+public struct ARouteInfo
+{
+    string client_ip;
+    int client_port;
+    string http_ip;
+    int http_port;
+}
+
+[Http]
+public await static HandleQRouteInfo(ALittle.IHttpReceiver client, QRouteInfo msg) : ARouteInfo
+{
+    var route_info = g_ModuleRouteManager.GetRouteInfo(msg.route_type);
+    assert(route_info, "没有找到模块类型:"..msg.route_type);
+    var result = new ARouteInfo();
+    result.client_ip = route_info.route_info.client_ip;
+    result.client_port = route_info.route_info.client_port;
+    result.http_ip = route_info.route_info.http_ip;
+    result.http_port = route_info.route_info.http_port;
+    return result;
+}

@@ -11,6 +11,8 @@ private var find = lua.String.find;
 [Language(Lua)]
 private var upper = lua.String.upper;
 [Language(Lua)]
+private var lower = lua.String.lower;
+[Language(Lua)]
 private var match = lua.String.match;
 [Language(Lua)]
 private var concat = lua.table.concat;
@@ -29,6 +31,16 @@ public static String_Upper(string s) : string
     
     [Language(JavaScript)]
     return cast<javascript.String>(s).toUpperCase();
+}
+
+// 转为小写
+public static String_Lower(string s) : string
+{
+    [Language(Lua)]
+    return lower(s);
+    
+    [Language(JavaScript)]
+    return cast<javascript.String>(s).toLowerCase();
 }
 
 // 转字符串

@@ -53,6 +53,11 @@ function IMsgCommonTemplate:GetID()
 	return self._interface:GetID()
 end
 
+function IMsgCommonTemplate:Connect(ip, port)
+local ___COROUTINE = coroutine.running()
+	return "not impl"
+end
+
 function IMsgCommonTemplate:IsConnected()
 	return self._interface:IsConnected()
 end

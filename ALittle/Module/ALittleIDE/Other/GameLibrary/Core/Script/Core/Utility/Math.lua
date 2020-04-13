@@ -7,11 +7,13 @@ local ___ipairs = ipairs
 
 local tonumber = tonumber
 local floor = math.floor
+local ceil = math.ceil
 local random = math.random
 local randomseed = math.randomseed
 local abs = math.abs
 local cos = math.cos
 local sin = math.sin
+local sqrt = math.sqrt
 function Math_Sin(v)
 	return sin(v)
 end
@@ -26,6 +28,14 @@ end
 
 function Math_Floor(v)
 	return floor(v)
+end
+
+function Math_Ceil(v)
+	return ceil(v)
+end
+
+function Math_Sqrt(v)
+	return sqrt(v)
 end
 
 function Math_ToInt(s)

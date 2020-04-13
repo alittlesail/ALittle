@@ -2,6 +2,7 @@ namespace alittle;
 
 public async static __LUAAPI_SEngine_Init(string script_base_path)
 {
+    alittle.Require(script_base_path.."Utility/Time");
     alittle.Require(script_base_path.."Utility/System");
     alittle.Require(script_base_path.."Utility/HttpSystem");
     alittle.Require(script_base_path.."Utility/HttpFileSystem");

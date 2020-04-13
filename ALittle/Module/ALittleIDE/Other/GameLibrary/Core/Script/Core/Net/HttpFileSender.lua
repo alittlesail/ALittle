@@ -16,6 +16,21 @@ end
 function IHttpFileSender:HandleFailed(reason)
 end
 
+function IHttpFileSender:Stop()
+end
+
+function IHttpFileSender:GetFilePath()
+	return nil
+end
+
+function IHttpFileSender:GetTotalSize()
+	return 0
+end
+
+function IHttpFileSender:GetCurSize()
+	return 0
+end
+
 function IHttpFileSender:SendDownloadRPC(thread, method, content)
 	Lua.Throw("not impl")
 end

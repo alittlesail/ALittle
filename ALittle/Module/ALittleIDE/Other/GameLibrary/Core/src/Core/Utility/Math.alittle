@@ -5,6 +5,8 @@ private var tonumber = lua.tonumber;
 [Language(Lua)]
 private var floor = lua.math.floor;
 [Language(Lua)]
+private var ceil = lua.math.ceil;
+[Language(Lua)]
 private var random = lua.math.random;
 [Language(Lua)]
 private var randomseed = lua.math.randomseed;
@@ -14,6 +16,8 @@ private var abs = lua.math.abs;
 private var cos = lua.math.cos;
 [Language(Lua)]
 private var sin = lua.math.sin;
+[Language(Lua)]
+private var sqrt = lua.math.sqrt;
 
 public static Math_Sin(double v) : double
 {
@@ -49,6 +53,24 @@ public static Math_Floor(double v) : int
     
     [Language(JavaScript)]
     return javascript.Math.floor(v);
+}
+
+public static Math_Ceil(double v) : int
+{
+    [Language(Lua)]
+    return ceil(v);
+
+    [Language(JavaScript)]
+    return javascript.Math.ceil(v);
+}
+
+public static Math_Sqrt(double v) : double
+{
+    [Language(Lua)]
+    return sqrt(v);
+
+    [Language(JavaScript)]
+    return javascript.Math.sqrt(v);
 }
 
 public static Math_ToInt(string s) : int

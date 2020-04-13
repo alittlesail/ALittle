@@ -39,6 +39,7 @@
     <None Include="src\Utility\MysqlSystem.alittle" />
     <None Include="src\Utility\SessionSystem.alittle" />
     <None Include="src\Utility\System.alittle" />
+    <None Include="src\Utility\Time.alittle" />
     <None Include="src\WebAccount\WebAccount.alittle" />
     <None Include="src\WebAccount\WebAccountManager.alittle" />
     <None Include="src\WebAccount\WebOPSManager.alittle" />

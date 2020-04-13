@@ -10,6 +10,7 @@ local sub = string.sub
 local len = string.len
 local find = string.find
 local upper = string.upper
+local lower = string.lower
 local match = string.match
 local concat = table.concat
 local tostring = tostring
@@ -17,6 +18,10 @@ local tonumber = tonumber
 local floor = math.floor
 function String_Upper(s)
 	return upper(s)
+end
+
+function String_Lower(s)
+	return lower(s)
 end
 
 function String_ToString(s)
@@ -44,8 +49,8 @@ function String_Sub(s, starti, endi)
 	return sub(s, starti, endi)
 end
 
-function String_Trim(s)
-	return match(s, "^%s*(.*)%s*$")
+function String_Trim(text)
+	return string.gsub(text, "^%s*(.-)%s*$", "%1")
 end
 
 function String_Split(target, sep)

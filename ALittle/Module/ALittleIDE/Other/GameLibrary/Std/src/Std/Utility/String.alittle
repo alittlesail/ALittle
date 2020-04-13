@@ -144,3 +144,17 @@ public static String_HttpAnalysisValueMap(string param, string content) : Map<st
 
     return value_map;
 }
+
+// 判断是不是手机号码
+public static String_IsPhoneNumber(string number) : bool
+{
+    var l = String_Len(number);
+    for (var i = 1; i <= l; 1)
+    {
+        var value = String_Byte(number, i);
+        if (value < 48) return false;
+        if (value > 57) return false;
+    }
+
+    return true;
+}

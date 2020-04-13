@@ -8,6 +8,11 @@ public class IHttpFileSender
     protected fun HandleProcess(int cur_size, int total_size) {}
     protected fun HandleFailed(string reason) {}
     
+    public fun Stop() {}
+    public fun GetFilePath() : string { return null; }
+    public fun GetTotalSize() : int { return 0; }
+    public fun GetCurSize() : int { return 0; }
+    
     // 提供子类继承
     protected fun SendDownloadRPC(Thread thread, string method, any content) { throw("not impl"); }
     protected fun SendUploadRPC(Thread thread, string method, any content) { throw("not impl"); }

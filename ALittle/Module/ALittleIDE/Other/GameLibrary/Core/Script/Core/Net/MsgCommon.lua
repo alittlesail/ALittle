@@ -79,6 +79,9 @@ function IMsgCommon:IsConnected()
 	return false
 end
 
+function IMsgCommon:Close(reason)
+end
+
 function IMsgCommon:HandleConnectSucceed()
 end
 
@@ -89,6 +92,11 @@ function IMsgCommon:HandleConnectFailed(reason)
 end
 
 function IMsgCommon:HandleMessage(id, rpc_id, factory)
+end
+
+function IMsgCommon:SendMsg(T, msg)
+	local rflt = T
+	self:Send(rflt.hash_code, msg, 0)
 end
 
 function IMsgCommon:Send(msg_id, msg_body, rpc_id)

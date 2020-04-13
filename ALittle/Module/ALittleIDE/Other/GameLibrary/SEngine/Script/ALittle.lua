@@ -4,6 +4,7 @@ local ___ipairs = ipairs
 
 
 function __LUAAPI_SEngine_Init(script_base_path)
+	Require(script_base_path .. "Utility/Time")
 	Require(script_base_path .. "Utility/System")
 	Require(script_base_path .. "Utility/HttpSystem")
 	Require(script_base_path .. "Utility/HttpFileSystem")

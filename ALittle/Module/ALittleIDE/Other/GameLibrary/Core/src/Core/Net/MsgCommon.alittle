@@ -31,6 +31,7 @@ public class IMessageReadFactory
 public class IMsgCommon
 {
     public fun IsConnected() : bool { return false; }
+    public fun Close([Nullable] string reason) {}
     protected fun HandleConnectSucceed() {}
     protected fun HandleDisconnect() {}
     protected fun HandleConnectFailed(string reason) {}

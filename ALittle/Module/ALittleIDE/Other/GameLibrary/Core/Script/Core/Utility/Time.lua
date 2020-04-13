@@ -9,3 +9,7 @@ function Time_GetCurTime()
 	return os.time()
 end
 
+function Time_GetCurDate(time)
+	return os.date("%Y-%m-%d-%H-%M-%S", time)
+end
+

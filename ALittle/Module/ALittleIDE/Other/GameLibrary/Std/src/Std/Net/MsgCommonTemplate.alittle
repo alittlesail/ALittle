@@ -44,6 +44,9 @@ public class IMsgCommonTemplate : IMsgCommon
     // 获取ID
     public fun GetID() : int { return this._interface.GetID(); }
 
+    // 连接
+    public await fun Connect(string ip, int port) : string { return "not impl"; }
+
     // 判断是否已经连接成功
     public fun IsConnected() : bool
     {

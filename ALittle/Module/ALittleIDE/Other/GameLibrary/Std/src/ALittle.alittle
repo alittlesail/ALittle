@@ -13,7 +13,6 @@ public await static __ALITTLEAPI_Std_Init(string base_path)
     Require(base_path.."Std/Loop/LoopList");
     Require(base_path.."Std/Loop/LoopTimer");
     
-    Require(base_path.."Std/Utility/Time");
     Require(base_path.."Std/Utility/WeakRef");
     Require(base_path.."Std/Utility/IHeapTimer");
     Require(base_path.."Std/Utility/ISchedule");

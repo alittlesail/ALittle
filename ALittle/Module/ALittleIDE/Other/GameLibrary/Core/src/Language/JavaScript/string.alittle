@@ -12,6 +12,7 @@ public class String
     public fun replace(string os, string ns) : string {}
     public fun charCodeAt(int index) : int {}
     public fun toUpperCase() : string {}
+    public fun toLowerCase() : string {}
     
     public static fromCharCode(int code) : string {}
 }

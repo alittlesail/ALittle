@@ -18,7 +18,6 @@ ALittle.Sprite = JavaScript.Class(ALittle.DisplayObject, {
 		this._row_index = 1;
 		this._col_index = 1;
 		this._flip = 0;
-		A_LoadTextureManager.RegisterRedrawControl(this);
 		this.AddEventListener(___all_struct.get(40651933), this, this.HandleLButtonUp);
 		this.AddEventListener(___all_struct.get(683647260), this, this.HandleMButtonUp);
 		this.AddEventListener(___all_struct.get(734860930), this, this.HandleFLButtonUp);

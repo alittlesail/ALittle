@@ -16,7 +16,6 @@ ALittle.TextArea = JavaScript.Class(ALittle.DisplayObject, {
 		this._halign_type = ALittle.UIEnumTypes.HALIGN_LEFT;
 		this._valign_type = ALittle.UIEnumTypes.VALIGN_TOP;
 		this._show = ALittle.NewObject(lua.__CPPAPITextArea);
-		A_LoadTextureManager.RegisterRedrawControl(this);
 	},
 	Redraw : function() {
 		this._show.NeedDraw();

@@ -188,3 +188,31 @@ function File_GetJustFileNameByPath(file_path)
 	return list[l - 1]
 end
 
+function File_ReadJsonFromStdFile(file_path)
+	do
+		local file = io.open(file_path, "rb")
+		if file == nil then
+			return nil, file_path .. " load failed"
+		end
+		local content = file:read("*a")
+		file:close()
+		local error, new_content = Lua.TCall(json.decode, content)
+		if error == nil then
+			return new_content, content
+		end
+		return nil, new_content
+	end
+end
+
+function File_WriteJsonFromStdFile(content, file_path)
+	do
+		local file = io.open(file_path, "wb")
+		if file == nil then
+			return false
+		end
+		file:write(json.encode(content))
+		file:close()
+		return true
+	end
+end
+

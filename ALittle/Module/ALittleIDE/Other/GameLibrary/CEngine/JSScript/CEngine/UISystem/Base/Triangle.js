@@ -22,7 +22,6 @@ ALittle.Triangle = JavaScript.Class(ALittle.DisplayObject, {
 		this._texture_width = 0;
 		this._texture_height = 0;
 		this._auto_rejust = false;
-		A_LoadTextureManager.RegisterRedrawControl(this);
 	},
 	Redraw : function() {
 		this._show.ClearTexture();

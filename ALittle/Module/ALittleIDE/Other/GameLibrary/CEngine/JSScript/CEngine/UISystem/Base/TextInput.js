@@ -41,7 +41,6 @@ ALittle.TextInput = JavaScript.Class(ALittle.DisplayObject, {
 		this.AddEventListener(___all_struct.get(-1604617962), this, this.HandleKeyDown);
 		this.AddEventListener(___all_struct.get(1301789264), this, this.HandleDragBegin);
 		this.AddEventListener(___all_struct.get(1337289812), this, this.HandleDrag);
-		A_LoadTextureManager.RegisterRedrawControl(this);
 	},
 	Redraw : function() {
 		this._show.NeedDraw();

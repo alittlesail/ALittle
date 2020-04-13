@@ -289,3 +289,45 @@ public static File_GetJustFileNameByPath(string file_path) : string
     if (l <= 1) return new_file_path;
     return list[l - 1];
 }
+
+public static File_ReadJsonFromStdFile(string file_path) : any, string
+{
+    // 读取文件
+    [Language(Lua)]
+    {
+        var file = lua.io.open(file_path, "rb");
+        if (file == null) return null, file_path.." load failed";
+        var content = file.read("*a");
+        file.close();
+        var error, new_content = tcall(lua.json.decode, content);
+        if (error == null) return new_content, content;
+        return null, new_content;
+    }
+    
+    [Language(JavaScript)]
+    {
+        var content = JavaScript.File_LoadFile(file_path);
+        if (content == null) return null, file_path.." load failed";
+        var error, new_content = tcall(javascript.JSON.parse, content);
+        if (error == null) return new_content, content;
+        return null, new_content;
+    }
+}
+
+public static File_WriteJsonFromStdFile(any content, string file_path) : bool
+{
+    // 读取文件
+    [Language(Lua)]
+    {
+        var file = lua.io.open(file_path, "wb");
+        if (file == null) return false;
+        file.write(lua.json.encode(content));
+        file.close();
+        return true;
+    }
+    
+    [Language(JavaScript)]
+    {
+        return JavaScript.File_SaveFile(file_path, javascript.JSON.stringify(content));
+    }
+}

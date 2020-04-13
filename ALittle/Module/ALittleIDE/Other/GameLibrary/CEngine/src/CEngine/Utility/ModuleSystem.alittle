@@ -89,6 +89,8 @@ class ModuleSystem
     
         // 加载UI文件
         info.control = new ControlSystem(name, info.crypt_mode);
+        [Language(JavaScript)]
+        info.control.RegisterInfoByHttp();
         // 加载Main文件
         [Language(Lua)]
         alittle.Require(module_base_path.."Main");

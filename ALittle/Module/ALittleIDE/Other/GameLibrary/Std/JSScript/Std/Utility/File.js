@@ -129,4 +129,24 @@ ALittle.File_GetJustFileNameByPath = function(file_path) {
 	return list[l - 1 - 1];
 }
 
+ALittle.File_ReadJsonFromStdFile = function(file_path) {
+	{
+		let content = JavaScript.File_LoadFile(file_path);
+		if (content === undefined) {
+			return [undefined, file_path + " load failed"];
+		}
+		let [error, new_content] = (function() { try { let ___VALUE = JSON.parse.call(undefined, content); return [undefined, ___VALUE]; } catch (___ERROR) { return [___ERROR.message]; } })();
+		if (error === undefined) {
+			return [new_content, content];
+		}
+		return [undefined, new_content];
+	}
+}
+
+ALittle.File_WriteJsonFromStdFile = function(content, file_path) {
+	{
+		return JavaScript.File_SaveFile(file_path, JSON.stringify(content));
+	}
+}
+
 }

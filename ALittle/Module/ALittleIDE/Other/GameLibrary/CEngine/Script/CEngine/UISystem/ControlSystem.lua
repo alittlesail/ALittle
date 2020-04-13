@@ -29,35 +29,32 @@ function ControlSystem:RegisterFont(src, dst)
 	self._font_map[src] = dst
 end
 
-function ControlSystem:RegisterInfoByHttp(name_list)
+function ControlSystem:RegisterInfoByHttp()
 local ___COROUTINE = coroutine.running()
-	for index, name in ___ipairs(name_list) do
-		local path = self._ui_path .. name .. ".json"
-		ALittle.File_MakeDeepDir(ALittle.File_GetFilePathByPath(path))
-		local error = ALittle.HttpDownloadRequest(self._host, Math_ToInt(self._port), path, path)
-		if error ~= nil then
-			ALittle.Error("ui load failed:" .. error)
-			goto continue_1
-		end
-		local content = JavaScript.File_LoadFile(path)
-		if content == nil then
-			ALittle.Error("ui load failed:" .. error)
-			goto continue_1
-		end
-		local jerror, json = Lua.TCall(ALittle.String_JsonDecode, content)
-		if jerror ~= nil then
-			ALittle.Error("ui json decode failed:" .. jerror)
-			goto continue_1
-		end
-		for key, value in ___pairs(json) do
-			self:RegisterInfo(key, value)
-		end
+	local path = self._ui_path .. "../ui_all_in_one.json"
+	ALittle.File_MakeDeepDir(ALittle.File_GetFilePathByPath(path))
+	local error = ALittle.HttpDownloadRequest(self._host, Math_ToInt(self._port), path, path)
+	if error ~= nil then
+		ALittle.Error("ui load failed:" .. error)
+		goto continue_0
+	end
+	local content = JavaScript.File_LoadFile(path)
+	if content == nil then
+		ALittle.Error("ui load failed:" .. error)
+		goto continue_0
+	end
+	JavaScript.File_DeleteFile(path)
+	local jerror, json = Lua.TCall(ALittle.String_JsonDecode, content)
+	if jerror ~= nil then
+		ALittle.Error("ui json decode failed:" .. jerror)
+		goto continue_0
+	end
+	for name, value in ___pairs(json) do
+		self:RegisterInfo(name, value)
 		local info = self:CreateInfo(self._name_map_info[name])
 		self._name_map_info[name] = info
 		self._name_map_info_cache[name] = true
-		::continue_1::
 	end
-	ALittle.File_DeleteDeepDir(self._ui_path)
 end
 
 function ControlSystem:RegisterInfo(name, info)

@@ -18,7 +18,6 @@ ALittle.Grid9Image = JavaScript.Class(ALittle.DisplayObject, {
 		this._right_size = 0;
 		this._top_size = 0;
 		this._bottom_size = 0;
-		A_LoadTextureManager.RegisterRedrawControl(this);
 		this.AddEventListener(___all_struct.get(40651933), this, this.HandleLButtonUp);
 		this.AddEventListener(___all_struct.get(683647260), this, this.HandleMButtonUp);
 		this.AddEventListener(___all_struct.get(734860930), this, this.HandleFLButtonUp);

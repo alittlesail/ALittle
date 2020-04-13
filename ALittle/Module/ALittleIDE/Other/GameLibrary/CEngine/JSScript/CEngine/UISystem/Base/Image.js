@@ -14,7 +14,6 @@ ALittle.Image = JavaScript.Class(ALittle.DisplayObject, {
 		this._tex_coord_l = 0;
 		this._tex_coord_r = 1;
 		this._flip = 0;
-		A_LoadTextureManager.RegisterRedrawControl(this);
 		this.AddEventListener(___all_struct.get(40651933), this, this.HandleLButtonUp);
 		this.AddEventListener(___all_struct.get(683647260), this, this.HandleMButtonUp);
 		this.AddEventListener(___all_struct.get(734860930), this, this.HandleFLButtonUp);

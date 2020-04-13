@@ -67,39 +67,37 @@ public class ControlSystem
         this._font_map[src] = dst;
     }
     
-    public await fun RegisterInfoByHttp(List<string> name_list)
+    public await fun RegisterInfoByHttp()
     {
-        for (var index, name in name_list)
+        var path = this._ui_path.."../ui_all_in_one.json";
+        ALittle.File_MakeDeepDir(ALittle.File_GetFilePathByPath(path));
+		var error = ALittle.HttpDownloadRequest(this._host, Math_ToInt(this._port), path, path);
+        if (error != null)
         {
-            var path = this._ui_path..name..".json";
-            ALittle.File_MakeDeepDir(ALittle.File_GetFilePathByPath(path));
-			var error = ALittle.HttpDownloadRequest(this._host, Math_ToInt(this._port), path, path);
-            if (error != null)
-            {
-                ALittle.Error("ui load failed:"..error);
-                continue;
-            }
-            var content = JavaScript.File_LoadFile(path);
-            if (content == null)
-            {
-                ALittle.Error("ui load failed:"..error);
-                continue;
-            }
-            var jerror, json:Map<string, DisplayInfo> = tcall(ALittle.String_JsonDecode, content);
-            if (jerror != null)
-            {
-                ALittle.Error("ui json decode failed:"..jerror);
-                continue;
-            }
-            for (var key, value in json)
-                this.RegisterInfo(key, value);
+            ALittle.Error("ui load failed:"..error);
+            return;
+        }
+        var content = JavaScript.File_LoadFile(path);
+        if (content == null)
+        {
+            ALittle.Error("ui load failed:"..error);
+            return;
+        }
+        JavaScript.File_DeleteFile(path);
+        var jerror, json:Map<string, DisplayInfo> = tcall(ALittle.String_JsonDecode, content);
+        if (jerror != null)
+        {
+            ALittle.Error("ui json decode failed:"..jerror);
+            return;
+        }
+        for (var name, value in json)
+        {
+            this.RegisterInfo(name, value);
             
             var info = this.CreateInfo(this._name_map_info[name]);
             this._name_map_info[name] = info;
             this._name_map_info_cache[name] = true;
-        }
-        // 删除文件夹，因为不会再用到了
-        ALittle.File_DeleteDeepDir(this._ui_path);
+        }   
     }
     
     public fun RegisterInfo(string name, DisplayInfo info)

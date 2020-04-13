@@ -16,7 +16,6 @@ ALittle.Text = JavaScript.Class(ALittle.DisplayObject, {
 		this._outline = false;
 		this._flip = 0;
 		this._show = ALittle.NewObject(JavaScript.JText);
-		A_LoadTextureManager.RegisterRedrawControl(this);
 	},
 	Redraw : function() {
 		this._show.NeedDraw();

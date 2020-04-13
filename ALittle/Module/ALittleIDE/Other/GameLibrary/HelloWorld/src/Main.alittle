@@ -1,18 +1,21 @@
 namespace HelloWorld;
 
-public async static DownloadTest()
-{
-    var error = ALittle.DownloadFile("marketplace.visualstudio.com", 443, "items?itemName=AProtobuf.ALittleAProtobuf", "text.txt");
-    if (error != null)
-        ALittle.Log(error);
-    else
-        ALittle.Log("download succeed");
-}
-
 public static Main()
 {
     ALittle.Log("HelloWorld");
+
+    var all_in_one = new Map<string, any>();
+
+    var map = ALittle.File_GetFileAttrByDir("ALittle/Module/G2048/UI");
+    for (var path, _ in map)
+    {
+        var json:Map<string, any> = ALittle.File_ReadJsonFromStdFile(path);
+        for (var name, o in json)
+        {
+            all_in_one[name] = o;
+        }
+    }
+    ALittle.File_WriteJsonFromStdFile(all_in_one, "ALittle/Module/G2048/ui_all_in_one.json");
     
-    DownloadTest();
     A_Schedule.Run();
 }

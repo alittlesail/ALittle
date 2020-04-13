@@ -36,6 +36,13 @@ public class IMsgCommon
     protected fun HandleConnectFailed(string reason) {}
     protected fun HandleMessage(int id, int rpc_id, IMessageReadFactory factory) {}
     
+    // 发送通知包
+    public fun SendMsg<T:struct>(T msg)
+    {
+        var rflt = reflect<T>;
+        this.Send(rflt.hash_code, msg, 0);
+    }
+
     // 发送数据
     protected fun Send(int msg_id, any msg_body, int rpc_id) { throw("not impl"); }
     

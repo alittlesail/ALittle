@@ -67,6 +67,10 @@ ALittle.IMsgCommon = JavaScript.Class(undefined, {
 	},
 	HandleMessage : function(id, rpc_id, factory) {
 	},
+	SendMsg : function(T, msg) {
+		let rflt = T;
+		this.Send(rflt.hash_code, msg, 0);
+	},
 	Send : function(msg_id, msg_body, rpc_id) {
 		throw new Error("not impl");
 	},

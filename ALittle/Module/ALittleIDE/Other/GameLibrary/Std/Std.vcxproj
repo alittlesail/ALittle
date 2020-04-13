@@ -74,6 +74,7 @@
     <None Include="src\Std\Utility\ISchedule.alittle" />
     <None Include="src\Std\Utility\Schedule.alittle" />
     <None Include="src\Std\Utility\String.alittle" />
+    <None Include="src\Std\Utility\Time.alittle" />
     <None Include="src\Std\Utility\WeakRef.alittle" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

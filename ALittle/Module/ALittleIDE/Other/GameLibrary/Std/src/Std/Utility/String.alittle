@@ -66,3 +66,81 @@ public static String_GetByteCount(string text, int word_count) : int
     else
         return word_count;
 }
+
+class StringGenerateID
+{
+    private int _string_last_time;
+    private int _string_last_index;
+
+    public ctor()
+    {
+        this._string_last_index = 0;
+        this._string_last_time = 0;
+    }
+
+    public fun GenID(string pre) : string
+    {
+        var cur_time = Time_GetCurTime();
+        if (cur_time != this._string_last_time)
+        {
+            this._string_last_time = cur_time;
+            this._string_last_index = 0;
+        }
+        else
+        {
+            ++ this._string_last_index;
+        }
+        var result = "";
+        if (pre != null)
+            result = pre .. "-";
+        result = result .. this._string_last_time .. "-" .. this._string_last_index .. "-" .. Math_RandomInt(0, 10000) .. "-" .. Math_RandomInt(0, 10000);
+        return result;
+    }
+}
+
+private var A_StringGenerateID = new StringGenerateID();
+
+// 生成ID
+public static String_GenerateID(string pre) : string
+{
+    return A_StringGenerateID.GenID(pre);
+}
+
+// 参数解析
+public static String_HttpAnalysisValueMap(string param, string content) : Map<string, any>
+{
+    var value_map = new Map<string, any>();
+    var param_split_list = String_Split(param, "&");
+    for (var index, param_content in param_split_list)
+    {
+        var value_split_list = String_Split(param_content, "=");
+        if (List_MaxN(value_split_list) == 2)
+        {
+            if (String_Sub(value_split_list[2], 1, 1) == "\""
+                && String_Sub(value_split_list[2], -1, -1) == "\"")
+            {
+                value_map[value_split_list[1]] = String_Sub(value_split_list[2], 2, -2);
+            }
+            else
+            {
+                var number = Math_ToDouble(value_split_list[2]);
+                if (number == null)
+                    value_map[value_split_list[1]] = value_split_list[2];
+                else
+                    value_map[value_split_list[1]] = number;
+            }
+        }
+    }
+
+    if (String_Len(content) > 0)
+    {
+        var error, value:Map<string, any> = tcall(String_JsonDecode, content);
+        if (error == null)
+        {
+            for (var k, v in value)
+                value_map[k] = v;
+        }
+    }
+
+    return value_map;
+}

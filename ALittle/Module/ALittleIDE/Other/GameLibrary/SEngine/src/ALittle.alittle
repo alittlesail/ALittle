@@ -1,4 +1,4 @@
-namespace lua;
+namespace alittle;
 
 public async static __LUAAPI_SEngine_Init(string script_base_path)
 {
@@ -119,7 +119,7 @@ public static __LUAAPI_ClientDisconnect(int client_id)
     A_ClientSystem.HandleClientDisconnect(client_id);
 }
 
-public static __LUAAPI_ClientMessage(int client_id, int id, int rpc_id, MessageReadFactory factory)
+public static __LUAAPI_ClientMessage(int client_id, int id, int rpc_id, ALittle.IMessageReadFactory factory)
 {
     A_ClientSystem.HandleClientMessage(client_id, id, rpc_id, factory);
 }
@@ -134,7 +134,7 @@ public static __LUAAPI_SessionDisconnect(int connect_key, int route_type, int ro
     A_SessionSystem.HandleSessionDisconnect(connect_key, route_type, route_num);
 }
 
-public static __LUAAPI_SessionMessage(int connect_key, int id, int rpc_id, MessageReadFactory factory)
+public static __LUAAPI_SessionMessage(int connect_key, int id, int rpc_id, ALittle.IMessageReadFactory factory)
 {
     A_SessionSystem.HandleSessionMessage(connect_key, id, rpc_id, factory);
 }

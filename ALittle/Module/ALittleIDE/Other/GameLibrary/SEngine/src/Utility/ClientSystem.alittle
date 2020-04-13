@@ -27,7 +27,7 @@ public class MsgReceiverNative : IMsgCommonNative
 }
 
 // 客户端连接
-public using MsgReceiver = MsgReceiverTemplate<MsgReceiverNative>;
+public using MsgReceiver = MsgReceiverTemplate<MsgReceiverNative, lua.__CPPAPIMessageWriteFactory>;
 
 // 客户端连接成功
 public struct ClientConnectEvent : Event

@@ -159,7 +159,7 @@ public await static HandleQVersionCreateRole(IMsgCommon client, QVersionCreateRo
     // 检查角色权限
     var permission_list = new List<string>();
     for (var permission, _ in msg.role_permission)
-        Push(permission_list, permission);
+        List_Push(permission_list, permission);
 
     var role_info = new WebRoleInfo();
     role_info.role_id = String_GenerateID("role_id");
@@ -200,7 +200,7 @@ public await static HandleQVersionUpdateRole(IMsgCommon client, QVersionUpdateRo
     // 检查角色权限
     var permission_list = new List<string>();
     for (var permission, _ in msg.role_permission)
-        Push(permission_list, permission);
+        List_Push(permission_list, permission);
     
     error = A_MysqlSystem.UpdateSet{WebRoleInfo}("role_name", msg.role_name, "role_id", msg.role_id);
     if (error != null) throw("数据库操作失败:"..error);
@@ -213,7 +213,7 @@ public await static HandleQVersionUpdateRole(IMsgCommon client, QVersionUpdateRo
     query.value = msg.role_id;
     error = query.Execute();
     if (error != null) throw("数据库操作失败:"..error);
-    for (var i = 1, query.count, 1)
+    for (var i = 1; i <= query.count; 1)
     {
         var account_id = query.String;
         var account = A_WebAccountManager.GetAccountById(account_id);

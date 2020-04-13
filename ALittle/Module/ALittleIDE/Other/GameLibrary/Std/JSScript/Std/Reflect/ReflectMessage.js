@@ -448,4 +448,45 @@ ALittle.CreateProtocolInvokeInfo = function(msg_id) {
 	return invoke;
 }
 
+let CollectStructInfo = function(invoke, map) {
+	if (invoke === undefined) {
+		return;
+	}
+	if (invoke.rflt !== undefined) {
+		if (map.get(invoke.rflt.hash_code) !== undefined) {
+			return;
+		}
+		map.set(invoke.rflt.hash_code, invoke.rflt);
+	}
+	if (invoke.key_info !== undefined) {
+		CollectStructInfo(invoke.key_info, map);
+	}
+	if (invoke.value_info !== undefined) {
+		CollectStructInfo(invoke.value_info, map);
+	}
+	if (invoke.sub_info !== undefined) {
+		CollectStructInfo(invoke.sub_info, map);
+	}
+	if (invoke.handle !== undefined) {
+		let ___OBJECT_12 = invoke.handle;
+		for (let index = 1; index <= ___OBJECT_12.length; ++index) {
+			let info = ___OBJECT_12[index - 1];
+			if (info === undefined) break;
+			CollectStructInfo(info, map);
+		}
+	}
+}
+
+ALittle.CollectStructReflect = function(info, map) {
+	if (info === undefined) {
+		return "参数info是null";
+	}
+	let [error, invoke] = (function() { try { let ___VALUE = ALittle.CreateMessageInfoImpl.call(undefined, info); return [undefined, ___VALUE]; } catch (___ERROR) { return [___ERROR.message]; } })();
+	if (error !== undefined) {
+		return error;
+	}
+	CollectStructInfo(invoke, map);
+	return undefined;
+}
+
 }

@@ -30,4 +30,3 @@ protected static GetAllStruct() : Map<int, StructInfo>
 {
     return __all_id_struct;
 }
-  

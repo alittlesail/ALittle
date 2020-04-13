@@ -27,7 +27,7 @@ public class MsgSessionNative : IMsgCommonNative
 }
 
 // Session连接
-public using MsgSession = MsgSessionTemplate<MsgSessionNative>;
+public using MsgSession = MsgSessionTemplate<MsgSessionNative, lua.__CPPAPIMessageWriteFactory>;
 
 // Session连接事件
 public struct SessionConnectEvent : Event

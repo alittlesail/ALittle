@@ -3,10 +3,9 @@ module("ALittleIDE", package.seeall)
 
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___coroutine = coroutine
 
 
-function __Browser_Setup(layer_group, script, control, base_path, debug)
+function __Browser_Setup(layer_group, control, module_base_path, script_base_path, debug)
 	ALittle.DeleteLog(7)
 	local window_width = 1200
 	local window_height = 600
@@ -20,9 +19,10 @@ function __Browser_Setup(layer_group, script, control, base_path, debug)
 		flag = bit.bor(flag, 0x00000001)
 	end
 	ALittle.System_CreateView("ALittleIDE", window_width, window_height, flag, rate)
-	ALittle.System_SetViewIcon(base_path .. "/Other/ic_launcher.png")
-	A_ModuleSystem:LoadModule("ALittleIDE")
+	ALittle.System_SetViewIcon(module_base_path .. "/Other/ic_launcher.png")
+	A_ModuleSystem:LoadModule(module_base_path, "ALittleIDE")
 end
+__Browser_Setup = Lua.CoWrap(__Browser_Setup)
 
 function __Browser_AddModule(module_name, layer_group, module_info)
 end
@@ -30,27 +30,26 @@ end
 function __Browser_Shutdown()
 end
 
-g_Script = nil
 g_Control = nil
 g_LayerGroup = nil
 g_ModuleBasePath = nil
 g_ModuleBasePathEx = nil
 g_IDEConfig = nil
-function __Module_Setup(layer_group, script, control, base_path, debug)
-	g_Script = script
+function __Module_Setup(layer_group, control, module_base_path, script_base_path, debug)
 	g_Control = control
 	g_LayerGroup = layer_group
-	g_ModuleBasePath = base_path
-	g_ModuleBasePathEx = ALittle.File_BaseFilePath() .. base_path
-	g_Script:Require("IDECenter")
+	g_ModuleBasePath = module_base_path
+	g_ModuleBasePathEx = ALittle.File_BaseFilePath() .. module_base_path
+	Require("IDECenter")
 	g_IDECenter:Setup(debug)
 end
+__Module_Setup = Lua.CoWrap(__Module_Setup)
 
 function __Module_Shutdown()
 	g_IDECenter:Shutdown()
 end
 
-function __Module_GetInfo(script, control, base_path)
+function __Module_GetInfo(control, module_base_path, script_base_path)
 	local info = {}
 	info.title = "ALittle集成开发环境"
 	info.icon = nil
@@ -61,6 +60,6 @@ function __Module_GetInfo(script, control, base_path)
 	return info
 end
 
-function __Plugin_Setup(script, control, base_path)
+function __Plugin_Setup(control, module_base_path, script_base_path)
 end
 

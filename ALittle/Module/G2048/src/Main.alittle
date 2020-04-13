@@ -52,13 +52,6 @@ public async static __Module_Setup(ALittle.DisplayLayout layer_group, ALittle.Co
 	g_LayerGroup = layer_group;
 	g_ModuleBasePath = module_base_path;
     
-    [Language(JavaScript)]
-    {
-        var name_list = ["item_2", "item_4", "item_8", "item_16", "item_32", "item_64", "item_128"
-						, "item_256", "item_512", "item_1024", "item_2048"
-						, "main_menu", "main_scene"];
-        g_Control.RegisterInfoByHttp(name_list);
-    }
 	alittle.Require(script_base_path.."GCenter");
 	g_GCenter.Setup();
 }

@@ -30,15 +30,15 @@ class IDECenter
 		return this._dialog_layer;
 	}
 	
-	public fun Setup(string debug)
+	public await fun Setup(string debug)
 	{
-		g_Script.Require("IDEProject");
-		g_Script.Require("UIEdit/IDEUICenter");
+		alittle.Require(g_ScriptBasePath.."IDEProject");
+		alittle.Require(g_ScriptBasePath.."UIEdit/IDEUICenter");
 	
 		// 获取配置信息
-		g_IDEConfig = new ALittle.ClientConfigSystem("ALittleIDE.cfg");
+		g_IDEConfig = ALittle.CreateConfigSystem("ALittleIDE.cfg");
 		// 生成随机数种子
-		lua.math.randomseed(lua.os.time());
+		ALittle.Math_RandomSeed(ALittle.Time_GetCurTime());
 		// 设置5个线程
 		ALittle.System_SetThreadCount(5);
 	
@@ -210,7 +210,7 @@ class IDECenter
 		var count = lua.table.maxn(name_list);
 		if (count > 0)
 		{
-			for (var i = count, 1, -1)
+			for (var i = count; count >= 1; -1)
 			{
 				var control_info = g_IDEProject.project.control_map[name_list[i]];
 				if (control_info != null)

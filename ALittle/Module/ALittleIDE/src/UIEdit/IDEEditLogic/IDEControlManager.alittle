@@ -75,8 +75,8 @@ public class IDEControlManager
 			if (search_type == "控件名|描述")
 			{
 				if (key == ""
-				|| ALittle.Find(control_name, key) != null
-				|| (control_info.info.description != null && ALittle.Find(control_info.info.description, key) != null))
+				|| ALittle.String_Find(control_name, key) != null
+				|| (control_info.info.description != null && ALittle.String_Find(control_info.info.description, key) != null))
 				{
 					++ control_info_count;
 					control_info_list[control_info_count] = control_info;

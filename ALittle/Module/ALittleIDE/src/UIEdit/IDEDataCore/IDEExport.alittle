@@ -84,7 +84,7 @@ class IDEExport
 {
 	private ALittle.DisplayObject _submit_dialog;
 	private bool _is_in_submit;
-	private ALittle.HttpFileSender _submit_client;
+	private ALittle.IHttpFileSender _submit_client;
 	private ALittle.DisplayObject _submit_content;
 	private ALittle.DisplayObject _submit_process_bar;
 	private ALittle.DisplayObject _submit_cancel_btn;
@@ -209,13 +209,13 @@ class IDEExport
 		var out_file_map = new Map<string, IDEExportFileAttr>();
 		for (var file_path, attr in file_map)
 		{
-			var start_index, end_index = ALittle.Find(file_path, src_path);
-			var rel_path = lua.String.sub(file_path, end_index + 1);
+			var start_index = ALittle.String_Find(file_path, src_path);
+			var rel_path = ALittle.String_Sub(file_path, start_index + ALittle.String_Len(src_path));
 	
 			// 如果是图片，那么就获取一下宽高
 			var ext = ALittle.File_GetFileExtByPath(file_path);
-			ext = lua.String.upper(ext);
-			var file = new ALittle.LocalFile();
+			ext = ALittle.String_Upper(ext);
+			var file = new lua.__CPPAPILocalFile();
 			file.SetPath(file_path);
 			assert(file.Load(), "IDEExport:PackagePath, 文件加载失败:"..file_path);
 
@@ -225,7 +225,7 @@ class IDEExport
 
 			var new_attr = new IDEExportFileAttr();
 			new_attr.attr = attr;
-			new_attr.md5 = ALittle.String_FileMD5(dst_path..rel_path);
+			new_attr.md5 = __CPPAPI_ScriptSystemEx.FileMD5(dst_path..rel_path);
 			new_attr.file_type = file_type;
 			new_attr.file_path = file_type..rel_path;
 			out_file_map[file_path] = new_attr;

@@ -26,7 +26,7 @@ public class ImageS : DisplayObjectS
         g_IDEAttrImageDialog.ShowDialog(null, func);
     }
     //设置texture_name
-    public fun SetTextureName(string texture_name, @Nullable IDERevokeBind revoke_bind)
+    public fun SetTextureName(string texture_name, [Nullable] IDERevokeBind revoke_bind)
     {
         if (texture_name == null) return;
         this.ImagePathSelectCallback("texture_name", this.HandleImageTextureNameFOCUSOUT, revoke_bind, texture_name);

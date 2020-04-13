@@ -42,78 +42,78 @@ class IDEUICenter
     
 	public get image_scroll_screen() : ALittle.ScrollScreen { return this._image_scroll_screen; }
 	
-	public fun Setup(ALittle.DisplayLayout edit_container)
+	public await fun Setup(ALittle.DisplayLayout edit_container)
 	{
-		g_Script.Require("UIEdit/IDEUtility");
+		alittle.Require(g_ScriptBasePath.."UIEdit/IDEUtility");
 	
-		g_Script.Require("UIEdit/IDEDataCore/IDEEnum");
-		g_Script.Require("UIEdit/IDEDataCore/IDEExport");
+		alittle.Require(g_ScriptBasePath.."UIEdit/IDEDataCore/IDEEnum");
+		alittle.Require(g_ScriptBasePath.."UIEdit/IDEDataCore/IDEExport");
 	
-		g_Script.Require("UIEdit/IDEEditCore/IDETabChild");
-		g_Script.Require("UIEdit/IDEEditCore/IDETabManager");
-		g_Script.Require("UIEdit/IDEEditCore/IDETreeLogic");
-		g_Script.Require("UIEdit/IDEEditCore/IDETree");
-		g_Script.Require("UIEdit/IDEEditCore/IDETreeItem");
-		g_Script.Require("UIEdit/IDEEditCore/IDERevocation");
-		g_Script.Require("UIEdit/IDEEditCore/IDEAttrTextDialog");
-		g_Script.Require("UIEdit/IDEEditCore/IDEAttrEventDialog");
+		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDETabChild");
+		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDETabManager");
+		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDETreeLogic");
+		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDETree");
+		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDETreeItem");
+		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDERevocation");
+		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDEAttrTextDialog");
+		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDEAttrEventDialog");
 	
-		g_Script.Require("UIEdit/IDEEditCore/IDEAttrImageDialog");
-		g_Script.Require("UIEdit/IDEEditCore/IDEEditImageDialog");
-		g_Script.Require("UIEdit/IDEEditCore/IDEImageCutPlugin");
+		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDEAttrImageDialog");
+		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDEEditImageDialog");
+		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDEImageCutPlugin");
 	
-		g_Script.Require("UIEdit/IDEEditCore/IDESetting/DisplayObjectS");
-		g_Script.Require("UIEdit/IDEEditCore/IDESetting/DisplayLayoutS");
-		g_Script.Require("UIEdit/IDEEditCore/IDESetting/DisplayViewS");
-		g_Script.Require("UIEdit/IDEEditCore/IDESetting/TextCheckButtonS");
-		g_Script.Require("UIEdit/IDEEditCore/IDESetting/DialogS");
-		g_Script.Require("UIEdit/IDEEditCore/IDESetting/DropDownS");
-		g_Script.Require("UIEdit/IDEEditCore/IDESetting/Grid3S");
-		g_Script.Require("UIEdit/IDEEditCore/IDESetting/Grid9S");
-		g_Script.Require("UIEdit/IDEEditCore/IDESetting/Grid9ImageS");
-		g_Script.Require("UIEdit/IDEEditCore/IDESetting/TextS");
-		g_Script.Require("UIEdit/IDEEditCore/IDESetting/TextEditS");
-		g_Script.Require("UIEdit/IDEEditCore/IDESetting/ImageEditS");
-		g_Script.Require("UIEdit/IDEEditCore/IDESetting/TextInputS");
-		g_Script.Require("UIEdit/IDEEditCore/IDESetting/ImageInputS");
-		g_Script.Require("UIEdit/IDEEditCore/IDESetting/ImageS");
-		g_Script.Require("UIEdit/IDEEditCore/IDESetting/TriangleS");
-		g_Script.Require("UIEdit/IDEEditCore/IDESetting/ImagePlayS");
-		g_Script.Require("UIEdit/IDEEditCore/IDESetting/FramePlayS");
-		g_Script.Require("UIEdit/IDEEditCore/IDESetting/SpriteS");
-		g_Script.Require("UIEdit/IDEEditCore/IDESetting/SpritePlayS");
-		g_Script.Require("UIEdit/IDEEditCore/IDESetting/LinearS");
-		g_Script.Require("UIEdit/IDEEditCore/IDESetting/QuadS");
-		g_Script.Require("UIEdit/IDEEditCore/IDESetting/RichAreaS");
-		g_Script.Require("UIEdit/IDEEditCore/IDESetting/RichInputS");
-		g_Script.Require("UIEdit/IDEEditCore/IDESetting/RichEditS");
-		g_Script.Require("UIEdit/IDEEditCore/IDESetting/SliderS");
-		g_Script.Require("UIEdit/IDEEditCore/IDESetting/ScrollBarS");
-		g_Script.Require("UIEdit/IDEEditCore/IDESetting/ScrollButtonS");
-		g_Script.Require("UIEdit/IDEEditCore/IDESetting/ScrollListS");
-		g_Script.Require("UIEdit/IDEEditCore/IDESetting/ScrollScreenS");
-		g_Script.Require("UIEdit/IDEEditCore/IDESetting/TabS");
-		g_Script.Require("UIEdit/IDEEditCore/IDESetting/TextAreaS");
-		g_Script.Require("UIEdit/IDEEditCore/IDESetting/TextButtonS");
-		g_Script.Require("UIEdit/IDEEditCore/IDESetting/SpringTextButtonS");
-		g_Script.Require("UIEdit/IDEEditCore/IDESetting/TextRadioButtonS");
-		g_Script.Require("UIEdit/IDEEditCore/IDESetting/TileTableS");
-		g_Script.Require("UIEdit/IDEEditCore/IDESetting/PiechartS");
+		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/DisplayObjectS");
+		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/DisplayLayoutS");
+		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/DisplayViewS");
+		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/TextCheckButtonS");
+		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/DialogS");
+		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/DropDownS");
+		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/Grid3S");
+		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/Grid9S");
+		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/Grid9ImageS");
+		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/TextS");
+		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/TextEditS");
+		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/ImageEditS");
+		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/TextInputS");
+		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/ImageInputS");
+		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/ImageS");
+		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/TriangleS");
+		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/ImagePlayS");
+		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/FramePlayS");
+		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/SpriteS");
+		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/SpritePlayS");
+		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/LinearS");
+		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/QuadS");
+		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/RichAreaS");
+		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/RichInputS");
+		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/RichEditS");
+		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/SliderS");
+		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/ScrollBarS");
+		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/ScrollButtonS");
+		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/ScrollListS");
+		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/ScrollScreenS");
+		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/TabS");
+		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/TextAreaS");
+		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/TextButtonS");
+		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/SpringTextButtonS");
+		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/TextRadioButtonS");
+		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/TileTableS");
+		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/PiechartS");
 		
-		g_Script.Require("UIEdit/IDEEditLogic/IDETool");
+		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditLogic/IDETool");
 	
-		g_Script.Require("UIEdit/IDEEditLogic/IDEMainMenu");
-		g_Script.Require("UIEdit/IDEEditLogic/IDEAttributeManager");
-		g_Script.Require("UIEdit/IDEEditLogic/IDEControlManager");
-		g_Script.Require("UIEdit/IDEEditLogic/IDEQuickManager");
-		g_Script.Require("UIEdit/IDEEditLogic/IDEAntiManager");
-		g_Script.Require("UIEdit/IDEEditLogic/IDEControlTree");
-		g_Script.Require("UIEdit/IDEEditLogic/IDEImageManager");
-		g_Script.Require("UIEdit/IDEEditLogic/IDEProjectManager");
-		g_Script.Require("UIEdit/IDEEditLogic/IDEVersionList");
-		g_Script.Require("UIEdit/IDEEditLogic/IDEVersionManager");
-		g_Script.Require("UIEdit/IDEEditLogic/IDELoginManager");
-		g_Script.Require("UIEdit/IDEEditLogic/IDEIMEManager");
+		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditLogic/IDEMainMenu");
+		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditLogic/IDEAttributeManager");
+		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditLogic/IDEControlManager");
+		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditLogic/IDEQuickManager");
+		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditLogic/IDEAntiManager");
+		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditLogic/IDEControlTree");
+		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditLogic/IDEImageManager");
+		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditLogic/IDEProjectManager");
+		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditLogic/IDEVersionList");
+		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditLogic/IDEVersionManager");
+		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditLogic/IDELoginManager");
+		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditLogic/IDEIMEManager");
 
 		// 创建UI编辑器主界面
 		this._ui_edit_container = g_Control.CreateControl{ALittle.DisplayLayout}("ide_ui_edit_container", this, edit_container);

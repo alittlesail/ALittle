@@ -239,7 +239,7 @@ public class DisplayObjectS
 		event.target._user_data = event.target.text;
 	}
 	//设置x_type
-	public fun SetXType(int x_type, @Nullable IDERevokeBind revoke_bind)
+	public fun SetXType(int x_type, [Nullable] IDERevokeBind revoke_bind)
 	{
 		if (x_type == null) return;
 		this._x_type.text = g_IDEEnum.xy_type[x_type];
@@ -280,7 +280,7 @@ public class DisplayObjectS
 		this._tab_child.revoke_list.PushRevoke(revoke_bind);
 	}
 	//设置y_type
-	public fun SetYType(int y_type, @Nullable IDERevokeBind revoke_bind)
+	public fun SetYType(int y_type, [Nullable] IDERevokeBind revoke_bind)
 	{
 		if (y_type == null) return;
 		this._y_type.text = g_IDEEnum.xy_type[y_type];
@@ -321,7 +321,7 @@ public class DisplayObjectS
 		this._tab_child.revoke_list.PushRevoke(revoke_bind);
 	}
 	//设置width_type
-	public fun SetWType(int width_type, @Nullable IDERevokeBind revoke_bind)
+	public fun SetWType(int width_type, [Nullable] IDERevokeBind revoke_bind)
 	{
 		if (width_type == null) return;
 		this._width_type.text = g_IDEEnum.wh_type[width_type];
@@ -335,7 +335,7 @@ public class DisplayObjectS
 		this.TypeSelectChange("width_type", cast<Map<string, any>>(list), true);
 	}
 	//设置height_type
-	public fun SetHType(int height_type, @Nullable IDERevokeBind revoke_bind)
+	public fun SetHType(int height_type, [Nullable] IDERevokeBind revoke_bind)
 	{
 		if (height_type == null) return;
 		this._height_type.text = g_IDEEnum.wh_type[height_type];
@@ -349,7 +349,7 @@ public class DisplayObjectS
 		this.TypeSelectChange("height_type", cast<Map<string, any>>(list), true);
 	}
 	//设置x_value
-	public fun SetXValue(double x_value, @Nullable IDERevokeBind revoke_bind)
+	public fun SetXValue(double x_value, [Nullable] IDERevokeBind revoke_bind)
 	{
 		if (x_value == null) return;
 		this._x_value.text = x_value;
@@ -375,7 +375,7 @@ public class DisplayObjectS
 		this.ValueNumInputChange("x_value", true);
 	}
 	//设置y_value
-	public fun SetYValue(double y_value, @Nullable IDERevokeBind revoke_bind)
+	public fun SetYValue(double y_value, [Nullable] IDERevokeBind revoke_bind)
 	{
 		if (y_value == null) return;
 		this._y_value.text = y_value;
@@ -401,7 +401,7 @@ public class DisplayObjectS
 		this.ValueNumInputChange("y_value", true);
 	}
 	//设置width_value
-	public fun SetWValue(double width_value, @Nullable IDERevokeBind revoke_bind)
+	public fun SetWValue(double width_value, [Nullable] IDERevokeBind revoke_bind)
 	{
 		if (width_value == null) return;
 		this._width_value.text = width_value;
@@ -427,7 +427,7 @@ public class DisplayObjectS
 		this.ValueNumInputChange("width_value", true);
 	}
 	//设置height_value
-	public fun SetHValue(double height_value, @Nullable IDERevokeBind revoke_bind)
+	public fun SetHValue(double height_value, [Nullable] IDERevokeBind revoke_bind)
 	{
 		if (height_value == null) return;
 		this._height_value.text = height_value;
@@ -453,7 +453,7 @@ public class DisplayObjectS
 		this.ValueNumInputChange("height_value", true);
 	}
 	//设置alpha
-	public fun SetAlpha(double alpha, @Nullable IDERevokeBind revoke_bind)
+	public fun SetAlpha(double alpha, [Nullable] IDERevokeBind revoke_bind)
 	{
 		if (alpha == null) return;
 		this._alpha.text = alpha;
@@ -479,7 +479,7 @@ public class DisplayObjectS
 		this.ColorValueInputChange("alpha", true);
 	}
 	//设置red
-	public fun SetRed(double red, @Nullable IDERevokeBind revoke_bind)
+	public fun SetRed(double red, [Nullable] IDERevokeBind revoke_bind)
 	{
 		if (red == null) return;
 		this._red.text = red;
@@ -505,7 +505,7 @@ public class DisplayObjectS
 		this.ColorValueInputChange("red", true);
 	}
 	//设置green
-	public fun SetGreen(double green, @Nullable IDERevokeBind revoke_bind)
+	public fun SetGreen(double green, [Nullable] IDERevokeBind revoke_bind)
 	{
 		if (green == null) return;
 		this._green.text = green;
@@ -531,7 +531,7 @@ public class DisplayObjectS
 		this.ColorValueInputChange("green", true);
 	}
 	//设置blue
-	public fun SetBlue(double blue, @Nullable IDERevokeBind revoke_bind)
+	public fun SetBlue(double blue, [Nullable] IDERevokeBind revoke_bind)
 	{
 		if (blue == null) return;
 		this._blue.text = blue;
@@ -562,7 +562,7 @@ public class DisplayObjectS
 		this.ValueNumInputChange("scale_x", true);
 	}
 	//设置scale_x
-	public fun SetScaleX(double scale_x, @Nullable IDERevokeBind revoke_bind)
+	public fun SetScaleX(double scale_x, [Nullable] IDERevokeBind revoke_bind)
 	{
 		if (scale_x == null) return;
 		this._scale_x.text = scale_x;
@@ -573,7 +573,7 @@ public class DisplayObjectS
 	{
 		this.ValueNumInputChange("scale_y", true);
 	}
-	public fun SetScaleY(double scale_y, @Nullable IDERevokeBind revoke_bind)
+	public fun SetScaleY(double scale_y, [Nullable] IDERevokeBind revoke_bind)
 	{
 		if (scale_y == null) return;
 		this._scale_y.text = scale_y;
@@ -584,7 +584,7 @@ public class DisplayObjectS
 	{
 		this.ValueNumInputChange("center_x", true);
 	}
-	public fun SetCenterX(double center_x, @Nullable IDERevokeBind revoke_bind)
+	public fun SetCenterX(double center_x, [Nullable] IDERevokeBind revoke_bind)
 	{
 		if (center_x == null) return;
 		this._center_x.text = center_x;
@@ -595,7 +595,7 @@ public class DisplayObjectS
 	{
 		this.ValueNumInputChange("center_y", true);
 	}
-	public fun SetCenterY(double center_y, @Nullable IDERevokeBind revoke_bind)
+	public fun SetCenterY(double center_y, [Nullable] IDERevokeBind revoke_bind)
 	{
 		if (center_y == null) return;
 		this._center_y.text = center_y;
@@ -625,14 +625,14 @@ public class DisplayObjectS
 	{
 		this.ValueNumInputChange("angle", true);
 	}
-	public fun SetAngle(double angle, @Nullable IDERevokeBind revoke_bind)
+	public fun SetAngle(double angle, [Nullable] IDERevokeBind revoke_bind)
 	{
 		if (angle == null) return;
 		this._angle.text = angle;
 		this.ValueNumInputChange("angle", true, revoke_bind);
 	}
 	//设置hand_cursor
-	public fun SetHandCursor(bool hand_cursor, @Nullable IDERevokeBind revoke_bind)
+	public fun SetHandCursor(bool hand_cursor, [Nullable] IDERevokeBind revoke_bind)
 	{
 		if (hand_cursor == null) return;
 		this._hand_cursor.text = g_IDEEnum.yn_type[hand_cursor];
@@ -644,7 +644,7 @@ public class DisplayObjectS
 		this.BoolSelectChange("hand_cursor", false, g_IDEEnum.yn_type);
 	}
 	//设置visible
-	public fun SetVisible(bool visible, @Nullable IDERevokeBind revoke_bind)
+	public fun SetVisible(bool visible, [Nullable] IDERevokeBind revoke_bind)
 	{
 		if (visible == null) return;
 		this._visible.text = g_IDEEnum.yn_type[visible];
@@ -656,7 +656,7 @@ public class DisplayObjectS
 		this.BoolSelectChange("visible", false, g_IDEEnum.yn_type);
 	}
 	//设置disabled
-	public fun SetDisabled(bool disabled, @Nullable IDERevokeBind revoke_bind)
+	public fun SetDisabled(bool disabled, [Nullable] IDERevokeBind revoke_bind)
 	{
 		if (disabled == null) return;
 		this._disabled.text = g_IDEEnum.yn_type[disabled];
@@ -668,7 +668,7 @@ public class DisplayObjectS
 		this.BoolSelectChange("disabled", false, g_IDEEnum.yn_type);
 	}
 	//设置description
-	public fun SetDescription(string description, @Nullable IDERevokeBind revoke_bind)
+	public fun SetDescription(string description, [Nullable] IDERevokeBind revoke_bind)
 	{
 		if (description == null) return;
 		this._description.text = description;
@@ -683,7 +683,7 @@ public class DisplayObjectS
 	
 	//以下为系统参数，不涉及对object的修改
 	//设置__link
-	public fun SetLink(string link, @Nullable IDERevokeBind revoke_bind)
+	public fun SetLink(string link, [Nullable] IDERevokeBind revoke_bind)
 	{
 		if (link == null) return;
 		this.___link.text = link;
@@ -706,7 +706,7 @@ public class DisplayObjectS
 	}
 	
 	//设置__event
-	public fun SetEvent(List<ALittle.EventInfo> event, @Nullable IDERevokeBind revoke_bind)
+	public fun SetEvent(List<ALittle.EventInfo> event, [Nullable] IDERevokeBind revoke_bind)
 	{
 		if (event == null) return;
 		var content = new List<string>();
@@ -728,7 +728,7 @@ public class DisplayObjectS
 		g_IDEAttrEventDialog.ShowDialog(this, "__event", false);
 	}
 	//设置__target_class
-	public fun SetTargetClass(List<string> target_class, @Nullable IDERevokeBind revoke_bind)
+	public fun SetTargetClass(List<string> target_class, [Nullable] IDERevokeBind revoke_bind)
 	{
 		if (target_class == null) return;
 		this.___target_class.text = ALittle.String_Join(target_class, ".");
@@ -757,7 +757,7 @@ public class DisplayObjectS
 	// text 如x_type，text为需要处理的类型的名字，为string
 	// list 为枚举的表
 	// need_reset 是否需要调整选中框
-	public fun TypeSelectChange(string text, Map<string, any> list, bool need_reset, @Nullable IDERevokeBind revoke_bind)
+	public fun TypeSelectChange(string text, Map<string, any> list, bool need_reset, [Nullable] IDERevokeBind revoke_bind)
 	{
 		// 保存旧属性
 		var old_base = cast<Map<string, any> >(this._base)[text];
@@ -788,7 +788,7 @@ public class DisplayObjectS
 	
 	//number
 	//非空非字符串数字值的改变
-	public fun ValueNumInputChange(string text, bool need_reset, @Nullable IDERevokeBind revoke_bind)
+	public fun ValueNumInputChange(string text, bool need_reset, [Nullable] IDERevokeBind revoke_bind)
 	{
 		// 保存旧属性
 		var old_base = cast<Map<string, any> >(this._base)[text];
@@ -828,7 +828,7 @@ public class DisplayObjectS
 		else this._tab_child.revoke_list.PushRevoke(revoke);
 	}
 	//>0  number
-	public fun ValueNumZInputChange(string text, bool need_reset, @Nullable IDERevokeBind revoke_bind)
+	public fun ValueNumZInputChange(string text, bool need_reset, [Nullable] IDERevokeBind revoke_bind)
 	{
 		// 保存旧属性
 		var old_base = cast<Map<string, any> >(this._base)[text];
@@ -869,7 +869,7 @@ public class DisplayObjectS
 	}
 	
 	//颜色类数据改变，0-255
-	public fun ColorValueInputChange(string text, bool need_reset, @Nullable IDERevokeBind revoke_bind)
+	public fun ColorValueInputChange(string text, bool need_reset, [Nullable] IDERevokeBind revoke_bind)
 	{
 		// 保存旧属性
 		var old_base = cast<Map<string, any> >(this._base)[text];
@@ -918,7 +918,7 @@ public class DisplayObjectS
 	}
 	
 	//number类数据改变，0-1
-	public fun Z2OValueInputChange(string text, bool need_reset, @Nullable IDERevokeBind revoke_bind)
+	public fun Z2OValueInputChange(string text, bool need_reset, [Nullable] IDERevokeBind revoke_bind)
 	{
 		// 保存旧属性
 		var old_base = cast<Map<string, any> >(this._base)[text];
@@ -967,7 +967,7 @@ public class DisplayObjectS
 	
 	//string
 	//默认值可能为空的字符串数据，如：description
-	public fun DefaultNilStringInputChange(string text, bool need_reset, @Nullable IDERevokeBind revoke_bind)
+	public fun DefaultNilStringInputChange(string text, bool need_reset, [Nullable] IDERevokeBind revoke_bind)
 	{
 		// 保存旧的属性
 		var old_base = cast<Map<string, any> >(this._base)[text];
@@ -1014,7 +1014,7 @@ public class DisplayObjectS
 	}
 	
 	//默认值为空串的字符串数据，如：text
-	public fun DefaultNoStringInputChange(string text, bool need_reset, @Nullable IDERevokeBind revoke_bind)
+	public fun DefaultNoStringInputChange(string text, bool need_reset, [Nullable] IDERevokeBind revoke_bind)
 	{
 		// 保存旧的属性
 		var old_base = cast<Map<string, any> >(this._base)[text];
@@ -1044,7 +1044,7 @@ public class DisplayObjectS
 	}
 	
 	//由于控件本身的特殊性独立出来的函数，用于font_path
-	public fun SpecialFontPathInputChange(string text, bool need_reset, @Nullable IDERevokeBind revoke_bind)
+	public fun SpecialFontPathInputChange(string text, bool need_reset, [Nullable] IDERevokeBind revoke_bind)
 	{
 		// 保存旧的属性
 		var old_base = cast<Map<string, any> >(this._base)[text];
@@ -1093,7 +1093,7 @@ public class DisplayObjectS
 	
 	//bool
 	//布尔值的改变
-	public fun BoolSelectChange(string text, bool need_reset, Map<bool, string> list, @Nullable IDERevokeBind revoke_bind)
+	public fun BoolSelectChange(string text, bool need_reset, Map<bool, string> list, [Nullable] IDERevokeBind revoke_bind)
 	{
 		// 保存旧的属性
 		var old_base = cast<Map<string, any> >(this._base)[text];
@@ -1134,7 +1134,7 @@ public class DisplayObjectS
 		else this._tab_child.revoke_list.PushRevoke(revoke);
 	}
 	
-	public fun RemoverToNilShowSetForImage(string text, string image_path, bool grid9, bool need_reset, @Nullable IDERevokeBind revoke_bind)
+	public fun RemoverToNilShowSetForImage(string text, string image_path, bool grid9, bool need_reset, [Nullable] IDERevokeBind revoke_bind)
 	{
 		if (image_path == "")
 			this.RemoverToNilShowSet(text, "", need_reset, revoke_bind);
@@ -1159,7 +1159,7 @@ public class DisplayObjectS
 			}
 		}
 	}
-	public fun RemoverToNilShowSetForExtends(string text, string extends, bool need_reset, @Nullable IDERevokeBind revoke_bind)
+	public fun RemoverToNilShowSetForExtends(string text, string extends, bool need_reset, [Nullable] IDERevokeBind revoke_bind)
 	{
 		if (extends != "")
 		{
@@ -1177,7 +1177,7 @@ public class DisplayObjectS
 	}
 	//table
 	//show类数据修改
-	public fun RemoverToNilShowSet(string text, string json_content, bool need_reset, @Nullable IDERevokeBind revoke_bind)
+	public fun RemoverToNilShowSet(string text, string json_content, bool need_reset, [Nullable] IDERevokeBind revoke_bind)
 	{
 		var old_base = cast<Map<string, any> >(this._base)[text];
 		var old_object = cast<Map<string, any>>(this._object)[text];
@@ -1253,7 +1253,7 @@ public class DisplayObjectS
 	}
 	
 	//初始不为空的show类数据，通过default.__class判断
-	public fun RemoverToNilNoNilShowSet(string text, bool need_reset, @Nullable IDERevokeBind revoke_bind)
+	public fun RemoverToNilNoNilShowSet(string text, bool need_reset, [Nullable] IDERevokeBind revoke_bind)
 	{
 		// 保存旧的属性
 		var old_base = cast<Map<string, any> >(this._base)[text];
@@ -1333,7 +1333,7 @@ public class DisplayObjectS
 	}
 	
 	//表类数据，例：data_list
-	public fun TableDataSet(string text, bool need_reset, @Nullable IDERevokeBind revoke_bind)
+	public fun TableDataSet(string text, bool need_reset, [Nullable] IDERevokeBind revoke_bind)
 	{
 		// 保存旧的属性
 		var old_base = cast<Map<string, any> >(this._base)[text];
@@ -1388,7 +1388,7 @@ public class DisplayObjectS
 	}
 	
 	//target class
-	public fun TableDataSetForTargetClass(string text, bool need_reset, @Nullable IDERevokeBind revoke_bind)
+	public fun TableDataSetForTargetClass(string text, bool need_reset, [Nullable] IDERevokeBind revoke_bind)
 	{
 		// 保存旧的属性
 		var old_base = cast<Map<string, any>>(this._base)[text];
@@ -1667,7 +1667,7 @@ public class DisplayObjectS
 	}
     
 	//设置texture_name
-	public fun SetTextureName(string texture_name, @Nullable IDERevokeBind revoke_bind)
+	public fun SetTextureName(string texture_name, [Nullable] IDERevokeBind revoke_bind)
 	{
 	}
 }

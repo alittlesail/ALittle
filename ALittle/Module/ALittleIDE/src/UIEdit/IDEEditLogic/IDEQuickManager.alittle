@@ -267,7 +267,7 @@ public class IDEQuickManager
 		this.CreateItemAndAddToList(scroll_list, item_list);
 	}
 	
-	public fun SearchCollect(string search_type, string key, @Nullable List<ALittle.DisplayObject> item_list, @Nullable IDEQuickSearchRunTime run_time) : List<ALittle.DisplayObject>, IDEQuickSearchRunTime
+	public fun SearchCollect(string search_type, string key, [Nullable] List<ALittle.DisplayObject> item_list, [Nullable] IDEQuickSearchRunTime run_time) : List<ALittle.DisplayObject>, IDEQuickSearchRunTime
 	{
 		if (item_list == null) item_list = new List<ALittle.DisplayObject>();
 		if (run_time == null)

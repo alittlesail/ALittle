@@ -16,7 +16,7 @@ public static IDEUtility_CalcTextureName(ALittle.DisplayInfo info, Map<string, b
 }
 
 // 手机所有引用的控件名称
-public static IDEUtility_GetExtends(ALittle.DisplayInfo info, @Nullable Map<string, bool> map) : Map<string, bool>
+public static IDEUtility_GetExtends(ALittle.DisplayInfo info, [Nullable] Map<string, bool> map) : Map<string, bool>
 {
 	if (map == null) map = new Map<string, bool>();
 	for (var k, v in cast<Map<string, any> >(info))
@@ -36,12 +36,12 @@ public static IDEUtility_HasTargetClass(ALittle.DisplayInfo info, string name) :
 	if (target_class != null)
 	{
 		var str = ALittle.String_Join(target_class, ".");
-		if (ALittle.Find(str, name) != null) return true;
+		if (ALittle.String_Find(str, name) != null) return true;
 	}
 
 	for (var k, v in cast<Map<string, any> >(info))
 	{
-		if (lua.type(v) == "table")
+		if (ALittle.String_Type(v) == "table")
 		{
 			if (IDEUtility_HasTargetClass(v, name))
 				return true;
@@ -66,12 +66,12 @@ public static IDEUtility_HasEventCallback(ALittle.DisplayInfo info, string name)
 			content_list[count] = event_string;
 		}
 		var content = ALittle.String_Join(content_list, "\n");
-		if (ALittle.Find(content, name) != null) return true;
+		if (ALittle.String_Find(content, name) != null) return true;
 	}
 
 	for (var k, v in cast<Map<string, any> >(info))
 	{
-		if (lua.type(v) == "table")
+		if (ALittle.String_Type(v) == "table")
 		{
 			if (IDEUtility_HasEventCallback(v, name))
 				return true;
@@ -84,11 +84,11 @@ public static IDEUtility_HasEventCallback(ALittle.DisplayInfo info, string name)
 public static IDEUtility_CheckName(string name) : bool, string
 {
 	// 检查合法性
-	var len = lua.String.len(name);
+	var len = ALittle.String_Len(name);
 	if (len == 0) return false, "命名只能支持字母数字下划线，不能以数字开头";
-	for (var i = 1, len, 1)
+	for (var i = 1; i <= len; 1)
 	{
-		var byte = lua.String.byte(name, i);
+		var byte = ALittle.String_Byte(name, i);
 		var check_all = byte >= 65 && byte <= 90
 					 || byte >= 97 && byte <= 122
 					 || byte >= 48 && byte <= 57
@@ -123,7 +123,7 @@ public static IDEUtility_NewGiveBaseCase(ALittle.DisplayInfo info, ALittle.Displ
 		info.font_path = g_IDEProject.project.config.GetConfig{string}("default_font_path", null);
 		cast<ALittle.Text>(object).font_path = info.font_path;
 		// 设置字体大小
-		var size = lua.math.floor(lua.tonumber(g_IDEProject.project.config.GetConfig("default_font_size", 15)));
+		var size = g_IDEProject.project.config.GetConfig("default_font_size", 15);
 		info.font_size = size;
 		cast<ALittle.Text>(object).font_size = size;
 		// 如果是Text的话，就根据文本设置大小
@@ -161,7 +161,7 @@ public static IDEUtility_DragAddGiveBaseCase(ALittle.DisplayInfo info)
 		// 设置默认字体
 		info.font_path = g_IDEProject.project.config.GetConfig{string}("default_font_path", null);
 		// 设置字体大小
-		var size = lua.math.floor(lua.tonumber(g_IDEProject.project.config.GetConfig("default_font_size", 15)));
+		var size = g_IDEProject.project.config.GetConfig("default_font_size", 15);
 		info.font_size = size;
 		// 如果是Text的话，就根据文本设置大小
 		if (info.__class != "Text")
@@ -190,10 +190,10 @@ public static IDEUtility_GetBaseInfo(ALittle.DisplayInfo info) : ALittle.Display
 	for (var k, v in cast<Map<string, any>>(info))
 	{
 		// 避开__childs和show
-		if (lua.type(v) != "table")
+		if (ALittle.String_Type(v) != "table")
 			cast<Map<string, any> >(base)[k] = v;
 		// 这里处理类似dropdown控件里面的data_list那样的属性
-		elseif (lua.type(v) == "table" && k != "__childs")
+		elseif (ALittle.String_Type(v) == "table" && k != "__childs")
 			cast<Map<string, any> >(base)[k] = ALittle.String_CopyTable(v);
 	}
 
@@ -240,7 +240,7 @@ public static IDEUtility_GetDefaultInfo(ALittle.DisplayInfo info) : ALittle.Disp
 		default = new ALittle.DisplayInfo();
 		for (var k, v in cast<Map<string, any> >(class_default))
 		{
-			if (lua.type(v) != "table")
+			if (ALittle.String_Type(v) != "table")
 				cast<Map<string, any> >(default)[k] = v;
 		}
 		// 覆盖属性
@@ -340,17 +340,17 @@ public static IDEUtility_CreateTree(ALittle.DisplayInfo control, bool extends, A
 		tree_logic = new IDETreeItem(g_Control, user_info, tab_child);
 
 	// 处理子控件
-	if (g_IDEEnum.can_add_child_map[user_info.default.__class] && object.childs != null && lua.table.maxn(object.childs) > 0)
+	if (g_IDEEnum.can_add_child_map[user_info.default.__class] && object.childs != null && ALittle.List_MaxN(object.childs) > 0)
 	{
 		// 如果当前信息就有子控件，那么是否是继承由extends变量决定
-		if (control.__childs != null && lua.table.maxn(control.__childs) > 0)
+		if (control.__childs != null && ALittle.List_MaxN(control.__childs) > 0)
 		{
 			var childs = control.__childs;
 			for (var k, v in childs)
 				tree_logic.AddChild(IDEUtility_CreateTree(v, extends, object.childs[k], "child", tab_child, false));
 		}
 		// 如果继承就有子控件，那么都是继承
-		elseif (user_info.default.__childs != null && lua.table.maxn(user_info.default.__childs) > 0)
+		elseif (user_info.default.__childs != null && ALittle.List_MaxN(user_info.default.__childs) > 0)
 		{
 			var childs = user_info.default.__childs;
 			for (var k, v in childs)
@@ -391,8 +391,8 @@ public static IDEUtility_GenerateGrid9ImageInfo(string base_path, string image_p
 	var width = ALittle.System_GetSurfaceWidth(surface);
 	var height = ALittle.System_GetSurfaceHeight(surface);
 
-	var helf_width = lua.math.floor(width / 2);
-	var helf_height = lua.math.floor(height / 2);
+	var helf_width = ALittle.Math_Floor(width / 2);
+	var helf_height = ALittle.Math_Floor(height / 2);
 
 	var left = ALittle.System_GetSurfaceGrid9(surface, "left");
 	var right = ALittle.System_GetSurfaceGrid9(surface, "right");

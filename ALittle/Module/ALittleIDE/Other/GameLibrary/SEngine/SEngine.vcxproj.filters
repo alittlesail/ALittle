@@ -61,9 +61,6 @@
     <None Include="src\Utility\HttpSystem.alittle">
       <Filter>源文件\Utility</Filter>
     </None>
-    <None Include="src\Register\CPPAPISystem.alittle">
-      <Filter>源文件\Register</Filter>
-    </None>
     <None Include="src\Protocol\LogServerProtocol.alittle">
       <Filter>源文件\Protocol</Filter>
     </None>
@@ -90,6 +87,15 @@
     </None>
     <None Include="src\CacheData\FullDataSet.alittle">
       <Filter>源文件\CacheData</Filter>
+    </None>
+    <None Include="src\Register\ScriptInterface.alittle">
+      <Filter>源文件\Register</Filter>
+    </None>
+    <None Include="src\Register\MysqlInterface.alittle">
+      <Filter>源文件\Register</Filter>
+    </None>
+    <None Include="src\Register\ScheduleInterface.alittle">
+      <Filter>源文件\Register</Filter>
     </None>
   </ItemGroup>
 </Project>

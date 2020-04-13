@@ -45,7 +45,7 @@ public class IDEImageCutPlugin : ALittle.DisplayLayout
     {
     }
     
-    public fun EditTexture(string file_path, @Nullable bool is_circle, @Nullable int cut_size)
+    public fun EditTexture(string file_path, [Nullable] bool is_circle, [Nullable] int cut_size)
     {
         this._is_circle = is_circle || false;
         if (cut_size == null) cut_size = 200;
@@ -97,7 +97,7 @@ public class IDEImageCutPlugin : ALittle.DisplayLayout
         this._edit_container.visible = false;
     }
     
-    public fun Cut(@Nullable string target_path) : bool
+    public fun Cut([Nullable] string target_path) : bool
     {
         if (this._cut_center_w <= 0) return false;
         if (this._cut_center_h <= 0) return false;

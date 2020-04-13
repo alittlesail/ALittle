@@ -221,7 +221,7 @@ public class IDEAttrImageDialog
 		return item_list_dir, item_list_img;
 	}
 	
-	public fun SearchCollect(string search_path, string name, @Nullable List<ALittle.DisplayObject> item_list, @Nullable IDEAttrImageSelectCollectRunTime run_time) : List<ALittle.DisplayObject>, IDEAttrImageSelectCollectRunTime
+	public fun SearchCollect(string search_path, string name, [Nullable] List<ALittle.DisplayObject> item_list, [Nullable] IDEAttrImageSelectCollectRunTime run_time) : List<ALittle.DisplayObject>, IDEAttrImageSelectCollectRunTime
 	{
 		if (item_list == null) item_list = new List<ALittle.DisplayObject>();
 		if (run_time == null)

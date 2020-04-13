@@ -71,7 +71,7 @@ public await static HandleQLoadStruct(ALittle.IMsgCommon client, GS2DATA_QLoadSt
     assert(info, "反射信息查找失败");
     
     // 根据账号名和表明进行哈希
-    var thread_id = A_ScriptSystem.JSHash(msg.account_id.."_"..info.rl_name);
+    var thread_id = __CPPAPI_ScriptSystem.JSHash(msg.account_id.."_"..info.rl_name);
     
     // 查找主键
     var primary:string = info.option_map["primary"];
@@ -130,7 +130,7 @@ public async static HandleNBackupStruct(ALittle.IMsgCommon client, GS2DATA_NBack
     assert(info, "反射信息查找失败");
     
     // 根据账号名和表明进行哈希
-    var thread_id = A_ScriptSystem.JSHash(msg.account_id.."_"..info.rl_name);
+    var thread_id = __CPPAPI_ScriptSystem.JSHash(msg.account_id.."_"..info.rl_name);
     
     // 查找主键
     var primary:string = info.option_map["primary"];

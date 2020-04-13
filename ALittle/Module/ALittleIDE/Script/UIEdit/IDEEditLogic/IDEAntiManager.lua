@@ -3,7 +3,6 @@ module("ALittleIDE", package.seeall)
 
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___coroutine = coroutine
 local ___all_struct = ALittle.GetAllStruct()
 
 ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
@@ -50,7 +49,7 @@ option_map = {}
 })
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
-IDEAntiFrameLinearItem = ALittle.Class(ALittle.DisplayLayout, "ALittleIDE.IDEAntiFrameLinearItem")
+IDEAntiFrameLinearItem = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDEAntiFrameLinearItem")
 
 function IDEAntiFrameLinearItem:Init(panel, frame)
 	self._panel = panel
@@ -58,7 +57,7 @@ function IDEAntiFrameLinearItem:Init(panel, frame)
 end
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
-IDEAntiFrameLinkItem = ALittle.Class(ALittle.DisplayLayout, "ALittleIDE.IDEAntiFrameLinkItem")
+IDEAntiFrameLinkItem = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDEAntiFrameLinkItem")
 
 function IDEAntiFrameLinkItem:Init(panel, info)
 	self._panel = panel
@@ -145,7 +144,17 @@ function IDEAntiFrameLinkItem:HandleInitChanged(event)
 end
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
-IDEAntiFrameLoopItem = ALittle.Class(ALittle.DisplayLayout, "ALittleIDE.IDEAntiFrameLoopItem")
+IDEAntiFrameLoopItem = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDEAntiFrameLoopItem")
+
+function IDEAntiFrameLoopItem:Init(item, info)
+	self._item = item
+	self._button.drag_trans_target = self._item.panel.anti_screen
+	self._bg_quad.drag_trans_target = self._item.panel.anti_screen
+	self._info = info
+	self._button.group_name = self._item.panel.loop_group_name
+	self:UpdateText()
+	self:UpdateShow()
+end
 
 function IDEAntiFrameLoopItem.__getter:info()
 	return self._info
@@ -157,20 +166,6 @@ end
 
 function IDEAntiFrameLoopItem.__getter:item()
 	return self._item
-end
-
-function IDEAntiFrameLoopItem.__getter:info()
-	return self._info
-end
-
-function IDEAntiFrameLoopItem:Init(item, info)
-	self._item = item
-	self._button.drag_trans_target = self._item.panel.anti_screen
-	self._bg_quad.drag_trans_target = self._item.panel.anti_screen
-	self._info = info
-	self._button.group_name = self._item.panel.loop_group_name
-	self:UpdateText()
-	self:UpdateShow()
 end
 
 function IDEAntiFrameLoopItem:UpdateText()
@@ -205,6 +200,10 @@ function IDEAntiFrameLoopItem:UpdateShow()
 	self.width = width
 end
 
+function IDEAntiFrameLoopItem.__getter:info()
+	return self._info
+end
+
 function IDEAntiFrameLoopItem:HandleButtonChanged(event)
 	self._item.panel:ShowAntiLoop(self)
 end
@@ -235,6 +234,34 @@ end
 
 function IDEAntiFrameLoopItem:HandleRButtonDown(event)
 	g_IDEAntiManager:ShowAntiLoopMenu(self)
+end
+
+function IDEAntiFrameLoopItem.ValueToString(value)
+	if value == nil then
+		return ""
+	end
+	if value == true then
+		return "true"
+	end
+	if value == false then
+		return "false"
+	end
+	return tostring(value)
+end
+
+function IDEAntiFrameLoopItem.StringToValue(attribute, value)
+	if value == "" then
+		return nil
+	end
+	if attribute == "visible" or attribute == "disabled" then
+		if value == "true" then
+			return true
+		else
+			return false
+		end
+	else
+		return tonumber(value)
+	end
 end
 
 function IDEAntiFrameLoopItem:SetTargetValue(text)
@@ -286,48 +313,8 @@ function IDEAntiFrameLoopItem:SetDelayTime(time)
 	self._item.panel.tab_child:Save(false)
 end
 
-function IDEAntiFrameLoopItem.ValueToString(value)
-	if value == nil then
-		return ""
-	end
-	if value == true then
-		return "true"
-	end
-	if value == false then
-		return "false"
-	end
-	return tostring(value)
-end
-
-function IDEAntiFrameLoopItem.StringToValue(attribute, value)
-	if value == "" then
-		return nil
-	end
-	if attribute == "visible" or attribute == "disabled" then
-		if value == "true" then
-			return true
-		else
-			return false
-		end
-	else
-		return tonumber(value)
-	end
-end
-
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
-IDEAntiFrameAntiItem = ALittle.Class(ALittle.DisplayLayout, "ALittleIDE.IDEAntiFrameAntiItem")
-
-function IDEAntiFrameAntiItem.__getter:panel()
-	return self._panel
-end
-
-function IDEAntiFrameAntiItem.__getter:info()
-	return self._info
-end
-
-function IDEAntiFrameAntiItem.__getter:container()
-	return self._container
-end
+IDEAntiFrameAntiItem = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDEAntiFrameAntiItem")
 
 function IDEAntiFrameAntiItem:Init(panel, info)
 	self._panel = panel
@@ -341,6 +328,18 @@ function IDEAntiFrameAntiItem:Init(panel, info)
 		loop_item:Init(self, child)
 		self._container:AddChild(loop_item)
 	end
+end
+
+function IDEAntiFrameAntiItem.__getter:panel()
+	return self._panel
+end
+
+function IDEAntiFrameAntiItem.__getter:info()
+	return self._info
+end
+
+function IDEAntiFrameAntiItem.__getter:container()
+	return self._container
 end
 
 function IDEAntiFrameAntiItem:CalcTimeByWidth(width)
@@ -379,7 +378,7 @@ function IDEAntiFrameAntiItem:Insert(rel_x, clazz)
 	else
 		return
 	end
-	ALittle.Push(self._info.childs, child)
+	ALittle.List_Push(self._info.childs, child)
 	local loop_item = g_Control:CreateControl("ide_anti_screen_loop_item")
 	loop_item:Init(self, child)
 	self._container:AddChild(loop_item)
@@ -449,7 +448,19 @@ function IDEAntiFrameAntiItem:DeleteLoop(loop_item)
 end
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
-IDEAntiPanel = ALittle.Class(ALittle.DisplayLayout, "ALittleIDE.IDEAntiPanel")
+IDEAntiPanel = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDEAntiPanel")
+
+function IDEAntiPanel:TCtor()
+	self._handle_container.visible = false
+	self._loop_linear.visible = false
+	self._loop_attribute.visible = false
+	self._loop_rit.visible = false
+	self._cur_loop_item = nil
+	self._FRAME_WIDTH = 40
+	self._FRAME_TIME = 50
+	self._INIT_TIME = 10
+	self._MIN_WIDTH = 10
+end
 
 function IDEAntiPanel.__getter:anti_link_linear()
 	return self._anti_link_linear
@@ -511,22 +522,6 @@ function IDEAntiPanel.__getter:rit_delay_time()
 	return self._rit_delay_time
 end
 
-function IDEAntiPanel.__getter:tab_child()
-	return self._tab_child
-end
-
-function IDEAntiPanel:TCtor()
-	self._handle_container.visible = false
-	self._loop_linear.visible = false
-	self._loop_attribute.visible = false
-	self._loop_rit.visible = false
-	self._cur_loop_item = nil
-	self._FRAME_WIDTH = 40
-	self._FRAME_TIME = 50
-	self._INIT_TIME = 10
-	self._MIN_WIDTH = 10
-end
-
 function IDEAntiPanel:Init(tab_child)
 	self._tab_child = tab_child
 	self._list_group_name = A_TextRadioButtonManager:CreateGroupName()
@@ -545,11 +540,14 @@ function IDEAntiPanel:Init(tab_child)
 	local static_object_hv = g_Control:CreateControl("ide_anti_screen_hv")
 	local static_object_h = g_Control:CreateControl("ide_anti_screen_h", self)
 	self._anti_frame_linear.x = static_object_hv.width
-	for frame = 0, 10000, 50 do
+	local frame = 0
+	while true do
+		if not(frame <= 10000) then break end
 		local text = g_Control:CreateControl("ide_anti_screen_frame_item")
 		text.width = self._FRAME_WIDTH
 		text:Init(self, frame)
 		self._anti_frame_linear:AddChild(text)
+		frame = frame+(50)
 	end
 	static_object_h.width = self._anti_frame_linear.x + self._anti_frame_linear.width
 	local static_object_v = g_Control:CreateControl("ide_anti_screen_v", self)
@@ -567,6 +565,10 @@ function IDEAntiPanel:Init(tab_child)
 		self._anti_scroll_list.childs[1].selected = true
 		self:ShowAnti(self._anti_scroll_list.childs[1].text)
 	end
+end
+
+function IDEAntiPanel.__getter:tab_child()
+	return self._tab_child
 end
 
 function IDEAntiPanel:GetCurLoopInfo()
@@ -743,7 +745,7 @@ function IDEAntiPanel:HandleCopyAttrLineClick(event)
 		return
 	end
 	local child = ALittle.String_CopyTable(self._cur_loop_item.item.info)
-	ALittle.Push(info.childs, child)
+	ALittle.List_Push(info.childs, child)
 	local anti_item = g_Control:CreateControl("ide_anti_screen_anti_item")
 	anti_item:Init(self, child)
 	self._anti_anti_linear:AddChild(anti_item)
@@ -770,7 +772,7 @@ function IDEAntiPanel:HandleAddAttrClick(event)
 	local child = {}
 	child.childs = {}
 	child.attribute = "x"
-	ALittle.Push(info.childs, child)
+	ALittle.List_Push(info.childs, child)
 	local anti_item = g_Control:CreateControl("ide_anti_screen_anti_item")
 	anti_item:Init(self, child)
 	self._anti_anti_linear:AddChild(anti_item)
@@ -971,7 +973,7 @@ function IDEAntiPanel:HandlePauseClick(event)
 	end
 end
 
-IDEAntiManager = ALittle.Class(nil, "ALittleIDE.IDEAntiManager")
+IDEAntiManager = Lua.Class(nil, "ALittleIDE.IDEAntiManager")
 
 function IDEAntiManager:Setup(tab, control)
 	self._main_tab = tab
@@ -1039,7 +1041,7 @@ function IDEAntiManager:HandleAntiListRightMenuCopyAnNew(event)
 		end
 	end
 	local name = user_data.name
-	local callback = ALittle.Bind(self.CopyAndNew, self, name, user_data)
+	local callback = Lua.Bind(self.CopyAndNew, self, name, user_data)
 	g_IDETool:ShowRename(callback, name, x, y, event.target.width)
 end
 

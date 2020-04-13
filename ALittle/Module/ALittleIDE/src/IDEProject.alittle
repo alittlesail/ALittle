@@ -35,7 +35,7 @@ public struct IDEProjectInfo
 	string base_path;							// 项目基本路径
 	bool save;									// 所有信息是否已保存
 	ALittle.ControlSystem control;				// 项目的控件系统
-	ALittle.ClientConfigSystem config;			// 项目的配置文件系统
+	ALittle.IJsonConfig config;			// 项目的配置文件系统
 	Map<string, IDEControlInfo> control_map;	// 项目内所有的控件
 }
 
@@ -135,7 +135,7 @@ public class IDEProject : ALittle.EventDispatcher
 		ALittle.File_CopyFile("Export/Icon/install.png", ALittle.File_BaseFilePath().."Module/"..name.."/Icon/install.png");
 
 		// 创建配置文件
-		var config = new ALittle.ClientConfigSystem("Module/"..name.."/ALittleIDE.cfg");
+		var config = ALittle.CreateConfigSystem("Module/"..name.."/ALittleIDE.cfg");
 		config.SetConfig("default_show_width", window_width, true);
 		config.SetConfig("default_show_height", window_height, true);
 		config.SetConfig("default_font_path", font_path, true);
@@ -160,7 +160,7 @@ public class IDEProject : ALittle.EventDispatcher
 		this._project.save = true;
 		this._project.control = new ALittle.ControlSystem(name);
 		this._project.control.cache_texture = false;
-		this._project.config = new ALittle.ClientConfigSystem("Module/"..name.."/ALittleIDE.cfg");
+		this._project.config = ALittle.CreateConfigSystem("Module/"..name.."/ALittleIDE.cfg");
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// 加载所有控件

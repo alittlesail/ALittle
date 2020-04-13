@@ -3,7 +3,6 @@ module("LogServer", package.seeall)
 
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___coroutine = coroutine
 local ___all_struct = ALittle.GetAllStruct()
 
 ALittle.RegStruct(976782632, "LogServer.LogEventInfo", {
@@ -25,7 +24,7 @@ function __Module_Setup(config_path)
 	if config_path == nil or config_path == "" then
 		config_path = "Module/ALittleIDE/Other/GameLibrary/LogServer.cfg"
 	end
-	g_ConfigSystem = ALittle.NormalConfigSystem(config_path, true)
+	g_ConfigSystem = ALittle.CreateJsonConfig(config_path, true)
 	local wan_ip = g_ConfigSystem:GetConfig("wan_ip", "127.0.0.1")
 	local yun_ip = g_ConfigSystem:GetConfig("yun_ip", "")
 	local port_offset = g_ConfigSystem:GetConfig("port_offset", 0)
@@ -33,13 +32,14 @@ function __Module_Setup(config_path)
 	__CPPAPI_ServerSchedule:StartRouteSystem(5, 1)
 	__CPPAPI_ServerSchedule:CreateConnectServer(yun_ip, wan_ip, 1300 + port_offset)
 end
-__Module_Setup = ALittle.CoWrap(__Module_Setup)
+__Module_Setup = Lua.CoWrap(__Module_Setup)
 
 function __Module_Shutdown()
 end
 
 local g_CurDate = ""
 function HandleLogEventInfo(client, msg)
+local ___COROUTINE = coroutine.running()
 	msg.log_time = os.time(nil)
 	local cur_date = os.date("%Y_%m_%d", msg.create_time)
 	local info = ___all_struct[976782632]
@@ -47,13 +47,13 @@ function HandleLogEventInfo(client, msg)
 	if g_CurDate ~= cur_date then
 		local error = A_MysqlSystem:CreateIfNotExit(___all_struct[976782632], table_name)
 		if error ~= nil then
-			ALittle.Throw("日志表创建失败:" .. table_name)
+			Lua.Throw("日志表创建失败:" .. table_name)
 		end
 		g_CurDate = cur_date
 	end
 	local error = A_MysqlSystem:InsertInto(___all_struct[976782632], msg, table_name)
 	if error ~= nil then
-		ALittle.Throw("数据插入失败:" .. error)
+		Lua.Throw("数据插入失败:" .. error)
 	end
 	return {}
 end

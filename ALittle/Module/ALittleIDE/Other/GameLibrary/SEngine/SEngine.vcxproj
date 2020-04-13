@@ -28,7 +28,9 @@
     <None Include="src\GameAccount\GameLoginManager.alittle" />
     <None Include="src\Protocol\GatewayServerProtocol.alittle" />
     <None Include="src\Protocol\LogServerProtocol.alittle" />
-    <None Include="src\Register\CPPAPISystem.alittle" />
+    <None Include="src\Register\ScheduleInterface.alittle" />
+    <None Include="src\Register\MysqlInterface.alittle" />
+    <None Include="src\Register\ScriptInterface.alittle" />
     <None Include="src\Utility\ClientSystem.alittle" />
     <None Include="src\Utility\GatewaySystem.alittle" />
     <None Include="src\Utility\HttpFileSystem.alittle" />

@@ -156,7 +156,7 @@ public class IDETree : IDETreeLogic
 	}
 	
 	// 搜索link
-	public fun SearchLink(string name, @Nullable List<IDETreeLogic> list) : List<IDETreeLogic>
+	public fun SearchLink(string name, [Nullable] List<IDETreeLogic> list) : List<IDETreeLogic>
 	{
 		if (list == null) list = new List<IDETreeLogic>();
 	
@@ -175,7 +175,7 @@ public class IDETree : IDETreeLogic
 	}
 	
 	// 搜索event
-	public fun SearchEvent(string name, @Nullable List<IDETreeLogic> list) : List<IDETreeLogic>
+	public fun SearchEvent(string name, [Nullable] List<IDETreeLogic> list) : List<IDETreeLogic>
 	{
 		if (list == null) list = new List<IDETreeLogic>();
 	
@@ -200,7 +200,7 @@ public class IDETree : IDETreeLogic
 	}
 	
 	// 搜索description
-	public fun SearchDescription(string name, @Nullable List<IDETreeLogic> list) : List<IDETreeLogic>
+	public fun SearchDescription(string name, [Nullable] List<IDETreeLogic> list) : List<IDETreeLogic>
 	{
 		if (list == null) list = new List<IDETreeLogic>();
 	
@@ -218,7 +218,7 @@ public class IDETree : IDETreeLogic
 	}
 	
 	// 搜索target_class
-	public fun SearchTargetClass(string name, @Nullable List<IDETreeLogic> list) : List<IDETreeLogic>
+	public fun SearchTargetClass(string name, [Nullable] List<IDETreeLogic> list) : List<IDETreeLogic>
 	{
 		if (list == null) list =  new List<IDETreeLogic>();
 	
@@ -237,7 +237,7 @@ public class IDETree : IDETreeLogic
 	}
 	
 	// 搜索texture_name
-	public fun SearchTextureName(string name, @Nullable List<IDETreeLogic> list) : List<IDETreeLogic>
+	public fun SearchTextureName(string name, [Nullable] List<IDETreeLogic> list) : List<IDETreeLogic>
 	{
 		if (list == null) list = new List<IDETreeLogic>();
 	
@@ -338,7 +338,7 @@ public class IDETree : IDETreeLogic
 	public get child_count() : int { return this._body.child_count;	}
 	public fun HasChild(ALittle.DisplayObject child) : bool { return this._body.HasChild(child); }
 
-	public fun AddChild(ALittle.DisplayObject child, @Nullable int index) : bool
+	public fun AddChild(ALittle.DisplayObject child, [Nullable] int index) : bool
 	{
 		if (this._body.AddChild(child, index) == false)
 			return false;

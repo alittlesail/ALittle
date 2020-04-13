@@ -4,10 +4,9 @@ module("ALittleIDE", package.seeall)
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___coroutine = coroutine
 
 
-DisplayObjectS = ALittle.Class(nil, "ALittleIDE.DisplayObjectS")
+DisplayObjectS = Lua.Class(nil, "ALittleIDE.DisplayObjectS")
 
 function DisplayObjectS:Ctor(user_info, tab_child, tree_logic)
 	___rawset(self, "_layer_name", "ide_setting_displayobject")
@@ -1188,9 +1187,9 @@ function DisplayObjectS:RemoverToNilShowSet(text, json_content, need_reset, revo
 		self._base[text] = nil
 		if self._default[text] ~= nil and self._default[text].__class ~= nil then
 			local content = self._default[text]
-			local error1, content1 = ALittle.TCall(json.decode, content)
+			local error1, content1 = Lua.TCall(json.decode, content)
 			if error1 == nil then
-				local error2, content2 = ALittle.TCall(json.decode, content1)
+				local error2, content2 = Lua.TCall(json.decode, content1)
 				local name = "mnbvcxzasdfghjklpoiuytrewq20160121"
 				g_IDEProject.project.control:RegisterInfo(name, content2)
 				local temp = g_IDEProject.project.control:CreateControl(name)
@@ -1203,7 +1202,7 @@ function DisplayObjectS:RemoverToNilShowSet(text, json_content, need_reset, revo
 		end
 	else
 		local content = json_content
-		local error1, content1 = ALittle.TCall(json.decode, content)
+		local error1, content1 = Lua.TCall(json.decode, content)
 		if error1 == nil then
 			local include = content1.__include
 			if include == nil then
@@ -1216,7 +1215,7 @@ function DisplayObjectS:RemoverToNilShowSet(text, json_content, need_reset, revo
 				end
 			end
 			self._base[text] = content1
-			local error2, content2 = ALittle.TCall(json.decode, content)
+			local error2, content2 = Lua.TCall(json.decode, content)
 			local name = "mnbvcxzasdfghjklpoiuytrewq20160121"
 			g_IDEProject.project.control:RegisterInfo(name, content2)
 			local temp = g_IDEProject.project.control:CreateControl(name)
@@ -1252,10 +1251,10 @@ function DisplayObjectS:RemoverToNilNoNilShowSet(text, need_reset, revoke_bind)
 		self._base[text] = nil
 		if self._default[text] ~= nil and (self._default[text].__class ~= nil or self._default[text].__include ~= nil or self._default[text].__extends ~= nil) then
 			local content = self._default[text]
-			local error, content1 = ALittle.TCall(json.encode, content)
+			local error, content1 = Lua.TCall(json.encode, content)
 			if error ~= nil then
 				display_object.text = content1
-				local error2, content2 = ALittle.TCall(json.decode, content1)
+				local error2, content2 = Lua.TCall(json.decode, content1)
 				local name = "mnbvcxzasdfghjklpoiuytrewq20160121"
 				g_IDEProject.project.control:RegisterInfo(name, content2)
 				local temp = g_IDEProject.project.control:CreateControl(name)
@@ -1267,7 +1266,7 @@ function DisplayObjectS:RemoverToNilNoNilShowSet(text, need_reset, revoke_bind)
 		end
 	else
 		local content = display_object.text
-		local error1, content1 = ALittle.TCall(json.decode, content)
+		local error1, content1 = Lua.TCall(json.decode, content)
 		if error1 == nil then
 			local include = content1.__include
 			if include == nil then
@@ -1281,7 +1280,7 @@ function DisplayObjectS:RemoverToNilNoNilShowSet(text, need_reset, revoke_bind)
 				end
 			end
 			self._base[text] = content1
-			local error2, content2 = ALittle.TCall(json.decode, content)
+			local error2, content2 = Lua.TCall(json.decode, content)
 			local name = "mnbvcxzasdfghjklpoiuytrewq20160121"
 			g_IDEProject.project.control:RegisterInfo(name, content2)
 			local temp = g_IDEProject.project.control:CreateControl(name)
@@ -1317,7 +1316,7 @@ function DisplayObjectS:TableDataSet(text, need_reset, revoke_bind)
 		self._base[text] = nil
 		if self._default[text] ~= nil then
 			local content = self._default[text]
-			local error, content1 = ALittle.TCall(json.encode, content)
+			local error, content1 = Lua.TCall(json.encode, content)
 			if error == nil then
 				display_object.text = content1
 				self._object[text] = content
@@ -1326,7 +1325,7 @@ function DisplayObjectS:TableDataSet(text, need_reset, revoke_bind)
 			self._object[text] = nil
 		end
 	else
-		local error, content = ALittle.TCall(json.decode, display_object.text)
+		local error, content = Lua.TCall(json.decode, display_object.text)
 		if error == nil then
 			self._base[text] = content
 			self._object[text] = content
@@ -1472,7 +1471,7 @@ function DisplayObjectS:LoadShowTypeData(text)
 		content = self._default[text]
 	end
 	if content ~= nil then
-		local error, object = ALittle.TCall(json.encode, content)
+		local error, object = Lua.TCall(json.encode, content)
 		if error == nil then
 			display_object.text = object
 		else
@@ -1491,7 +1490,7 @@ function DisplayObjectS:LoadShowTypeNoNilData(text)
 			content = self._default[text]
 		end
 		if content ~= nil then
-			local error, new_content = ALittle.TCall(json.encode, content)
+			local error, new_content = Lua.TCall(json.encode, content)
 			if error == nil then
 				display_object.text = new_content
 			else
@@ -1503,7 +1502,7 @@ function DisplayObjectS:LoadShowTypeNoNilData(text)
 	else
 		local content = self._base[text]
 		if content ~= nil then
-			local error, new_content = ALittle.TCall(json.encode, content)
+			local error, new_content = Lua.TCall(json.encode, content)
 			if error == nil then
 				display_object.text = new_content
 			else

@@ -386,7 +386,7 @@ public class IDEAntiFrameAntiItem : ALittle.DisplayLayout
 		else
 			return;
 
-		ALittle.Push(this._info.childs, child);
+		ALittle.List_Push(this._info.childs, child);
 
 		var loop_item = g_Control.CreateControl{IDEAntiFrameLoopItem}("ide_anti_screen_loop_item");
 		loop_item.Init(this, child);
@@ -573,7 +573,7 @@ public class IDEAntiPanel : ALittle.DisplayLayout
 
 		var static_object_h = g_Control.CreateControl{ALittle.DisplayLayout}("ide_anti_screen_h", this);
 		this._anti_frame_linear.x = static_object_hv.width;
-		for (var frame = 0, 10000, 50)
+		for (var frame = 0; frame <= 10000; 50)
 		{
 			var text = g_Control.CreateControl{IDEAntiFrameLinearItem}("ide_anti_screen_frame_item");
 			text.width = this._FRAME_WIDTH;
@@ -815,7 +815,7 @@ public class IDEAntiPanel : ALittle.DisplayLayout
 		if (info == null) return;
         
 		var child = ALittle.String_CopyTable(this._cur_loop_item.item.info);
-		ALittle.Push(info.childs, child);
+		ALittle.List_Push(info.childs, child);
         
 		var anti_item = g_Control.CreateControl{IDEAntiFrameAntiItem}("ide_anti_screen_anti_item");
 		anti_item.Init(this, child);
@@ -846,7 +846,7 @@ public class IDEAntiPanel : ALittle.DisplayLayout
 		var child = new ALittle.LoopListInfo();
 		child.childs = new List<ALittle.LoopChildInfo>();
 		child.attribute = "x";
-		ALittle.Push(info.childs, child);
+		ALittle.List_Push(info.childs, child);
         
 		var anti_item = g_Control.CreateControl{IDEAntiFrameAntiItem}("ide_anti_screen_anti_item");
 		anti_item.Init(this, child);
@@ -952,7 +952,7 @@ public class IDEAntiPanel : ALittle.DisplayLayout
 		}
 	}
 
-	public fun HideAntiLoop(@Nullable IDEAntiFrameLoopItem loop_item)
+	public fun HideAntiLoop([Nullable] IDEAntiFrameLoopItem loop_item)
 	{
 		if (loop_item != null && this._cur_loop_item != loop_item) return;
 		this._loop_linear.visible = false;
@@ -1002,7 +1002,7 @@ public class IDEAntiPanel : ALittle.DisplayLayout
 	}
         
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	private fun PlayImpl(@Nullable int loop)
+	private fun PlayImpl([Nullable] int loop)
 	{
 		var cur_loop_info = this.GetCurLoopInfo();
 		if (cur_loop_info == null) return;

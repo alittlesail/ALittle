@@ -40,7 +40,7 @@ public class IDETreeItem : IDETreeLogic
 	}
 	
 	// 搜索link
-	public fun SearchLink(string name, @Nullable List<IDETreeLogic> list) : List<IDETreeLogic>
+	public fun SearchLink(string name, [Nullable] List<IDETreeLogic> list) : List<IDETreeLogic>
 	{
 		if (list == null) list = new List<IDETreeLogic>();
 	
@@ -58,7 +58,7 @@ public class IDETreeItem : IDETreeLogic
 	}
 	
 	// 搜索event
-	public fun SearchEvent(string name, @Nullable List<IDETreeLogic> list) : List<IDETreeLogic>
+	public fun SearchEvent(string name, [Nullable] List<IDETreeLogic> list) : List<IDETreeLogic>
 	{
 		if (list == null) list = new List<IDETreeLogic>();
 	
@@ -79,7 +79,7 @@ public class IDETreeItem : IDETreeLogic
 	}
 	
 	// 搜索description
-	public fun SearchDescription(string name, @Nullable List<IDETreeLogic> list) : List<IDETreeLogic>
+	public fun SearchDescription(string name, [Nullable] List<IDETreeLogic> list) : List<IDETreeLogic>
 	{
 		if (list == null) list = new List<IDETreeLogic>();
 	
@@ -97,7 +97,7 @@ public class IDETreeItem : IDETreeLogic
 	}
 	
 	// 搜索target_class
-	public fun SearchTargetClass(string name, @Nullable List<IDETreeLogic> list) : List<IDETreeLogic>
+	public fun SearchTargetClass(string name, [Nullable] List<IDETreeLogic> list) : List<IDETreeLogic>
 	{
 		if (list == null) list = new List<IDETreeLogic>();
 	
@@ -116,7 +116,7 @@ public class IDETreeItem : IDETreeLogic
 	}
 	
 	// 搜索texture_name
-	public fun SearchTextureName(string name, @Nullable List<IDETreeLogic> list) : List<IDETreeLogic>
+	public fun SearchTextureName(string name, [Nullable] List<IDETreeLogic> list) : List<IDETreeLogic>
 	{
 		if (list == null) list = new List<IDETreeLogic>();
 	

@@ -656,7 +656,7 @@ public class IDETreeLogic : ALittle.DisplayLayout
 	}
 	
 	// 删除
-	public fun TreeDelete(@Nullable IDERevokeBind revoke_bind)
+	public fun TreeDelete([Nullable] IDERevokeBind revoke_bind)
 	{
 		var parent = cast<IDETreeLogic>(this._logic_parent);
 		if (parent == null) return;
@@ -684,7 +684,7 @@ public class IDETreeLogic : ALittle.DisplayLayout
 	}
 	
 	// 剪切
-	public fun TreeCut(@Nullable IDERevokeBind revoke_bind)
+	public fun TreeCut([Nullable] IDERevokeBind revoke_bind)
 	{
 		// 删除
 		var parent = cast<IDETreeLogic>(this._logic_parent);
@@ -862,11 +862,11 @@ public class IDETreeLogic : ALittle.DisplayLayout
 	}
     
 	public fun CalcInfo() : ALittle.DisplayInfo { return null; }
-    public fun SearchLink(string name, @Nullable List<IDETreeLogic> list) : List<IDETreeLogic> { return null; }
-    public fun SearchEvent(string name, @Nullable List<IDETreeLogic> list) : List<IDETreeLogic> { return null; }
-    public fun SearchDescription(string name, @Nullable List<IDETreeLogic> list) : List<IDETreeLogic> { return null; }
-    public fun SearchTargetClass(string name, @Nullable List<IDETreeLogic> list) : List<IDETreeLogic> { return null; }
-    public fun SearchTextureName(string name, @Nullable List<IDETreeLogic> list) : List<IDETreeLogic> { return null; }
+    public fun SearchLink(string name, [Nullable] List<IDETreeLogic> list) : List<IDETreeLogic> { return null; }
+    public fun SearchEvent(string name, [Nullable] List<IDETreeLogic> list) : List<IDETreeLogic> { return null; }
+    public fun SearchDescription(string name, [Nullable] List<IDETreeLogic> list) : List<IDETreeLogic> { return null; }
+    public fun SearchTargetClass(string name, [Nullable] List<IDETreeLogic> list) : List<IDETreeLogic> { return null; }
+    public fun SearchTextureName(string name, [Nullable] List<IDETreeLogic> list) : List<IDETreeLogic> { return null; }
 	public fun EditPickUp(double x, double y) : IDETreeLogic { return null; }
     public fun QuickPickUp(double x, double y, List<IDETreeLogic> list) { }
     public fun SelectPickUp(double x, double y) : IDETreeLogic, IDETreeLogic { return null, null; }

@@ -4,11 +4,10 @@ module("ALittleIDE", package.seeall)
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___coroutine = coroutine
 
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
-IDEImageCutPlugin = ALittle.Class(ALittle.DisplayLayout, "ALittleIDE.IDEImageCutPlugin")
+IDEImageCutPlugin = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDEImageCutPlugin")
 
 function IDEImageCutPlugin:Ctor(ctrl_sys)
 	___rawset(self, "_is_circle", false)
@@ -54,7 +53,7 @@ function IDEImageCutPlugin:EditTexture(file_path, is_circle, cut_size)
 	end
 	self._src_image.x_type = 3
 	self._src_image.y_type = 3
-	self._src_image:SetTextureCut(file_path, math.floor(max_width), math.floor(max_height), false, ALittle.Bind(self.LoadTextureCallback, self))
+	self._src_image:SetTextureCut(file_path, ALittle.Math_Floor(max_width), ALittle.Math_Floor(max_height), false, Lua.Bind(self.LoadTextureCallback, self))
 end
 
 function IDEImageCutPlugin:Clear()
@@ -83,10 +82,10 @@ function IDEImageCutPlugin:Cut(target_path)
 	local height = ALittle.System_GetSurfaceHeight(surface)
 	local rate_w = self._edit_container.width / width
 	local rate_h = self._edit_container.height / height
-	local cut_x = math.floor(self._cut_center_x / rate_w)
-	local cut_y = math.floor(self._cut_center_y / rate_h)
-	local cut_width = math.ceil(self._cut_center_w / rate_w)
-	local cut_height = math.ceil(self._cut_center_h / rate_h)
+	local cut_x = ALittle.Math_Floor(self._cut_center_x / rate_w)
+	local cut_y = ALittle.Math_Floor(self._cut_center_y / rate_h)
+	local cut_width = ALittle.Math_Ceil(self._cut_center_w / rate_w)
+	local cut_height = ALittle.Math_Ceil(self._cut_center_h / rate_h)
 	local new_width = cut_width
 	if new_width > self._MAX_WIDTH then
 		new_width = self._MAX_WIDTH
@@ -95,30 +94,36 @@ function IDEImageCutPlugin:Cut(target_path)
 	if new_height > self._MAX_HEIGHT then
 		new_height = self._MAX_HEIGHT
 	end
-	local new_surface = ALittle.System_CreateSurface(math.floor(new_width), math.floor(new_height))
+	local new_surface = ALittle.System_CreateSurface(ALittle.Math_Floor(new_width), ALittle.Math_Floor(new_height))
 	ALittle.System_CutBlitSurface(new_surface, surface, "0,0," .. new_width .. "," .. new_height, cut_x .. "," .. cut_y .. "," .. cut_width .. "," .. cut_height)
 	ALittle.System_FreeSurface(surface)
 	if self._is_circle then
 		local new_center = new_width / 2
-		local gradual_len = math.floor(new_center * 0.05)
-		for row = 0, new_height - 1, 1 do
-			for col = 0, new_width - 1, 1 do
+		local gradual_len = ALittle.Math_Floor(new_center * 0.05)
+		local row = 0
+		while true do
+			if not(row <= new_height - 1) then break end
+			local col = 0
+			while true do
+				if not(col <= new_width - 1) then break end
 				local x2 = (new_center - col) * (new_center - col)
 				local y2 = (new_center - row) * (new_center - row)
-				local distance = math.sqrt(x2 + y2)
+				local distance = ALittle.Math_Sqrt(x2 + y2)
 				if distance > new_center then
 					ALittle.System_SetSurfacePixel(new_surface, col, row, 0)
 				elseif gradual_len > 0 and new_center - distance < gradual_len then
 					local color = ALittle.System_GetSurfacePixel(new_surface, col, row)
 					local src_alpha = ALittle.System_GetPixelAlpha(color)
-					local dst_alpha = math.sin((3.14159625 / 2) * (new_center - distance) / gradual_len) * 255
+					local dst_alpha = ALittle.Math_Sin((3.14159625 / 2) * (new_center - distance) / gradual_len) * 255
 					if src_alpha < dst_alpha then
 						dst_alpha = src_alpha
 					end
-					color = ALittle.System_SetPixelAlpha(color, math.ceil(dst_alpha))
+					color = ALittle.System_SetPixelAlpha(color, ALittle.Math_Ceil(dst_alpha))
 					ALittle.System_SetSurfacePixel(new_surface, col, row, color)
 				end
+				col = col+(1)
 			end
+			row = row+(1)
 		end
 	end
 	local result = ALittle.System_SaveSurface(new_surface, target_path)
@@ -156,9 +161,9 @@ end
 
 function IDEImageCutPlugin:UpdateEditQuad(x, y, w, h)
 	self._edit_grid9.top_size = y
-	self._edit_grid9.bottom_size = math.ceil(self._edit_container.height - y - h)
+	self._edit_grid9.bottom_size = ALittle.Math_Ceil(self._edit_container.height - y - h)
 	self._edit_grid9.left_size = x
-	self._edit_grid9.right_size = math.ceil(self._edit_container.width - x - w)
+	self._edit_grid9.right_size = ALittle.Math_Ceil(self._edit_container.width - x - w)
 	self._left_top_drag.x = x - self._left_top_drag.width / 2
 	self._left_top_drag.y = y - self._left_top_drag.height / 2
 	self._right_top_drag.x = x + w - self._right_top_drag.width / 2
@@ -174,7 +179,7 @@ function IDEImageCutPlugin:HandleDrag(event)
 		local delta_x = event.delta_x
 		local delta_y = event.delta_y
 		if self._is_circle then
-			if math.abs(delta_x) > math.abs(delta_y) then
+			if ALittle.Math_Abs(delta_x) > ALittle.Math_Abs(delta_y) then
 				delta_y = delta_x
 			else
 				delta_x = delta_y
@@ -188,7 +193,7 @@ function IDEImageCutPlugin:HandleDrag(event)
 		local delta_x = event.delta_x
 		local delta_y = event.delta_y
 		if self._is_circle then
-			if math.abs(delta_x) > math.abs(delta_y) then
+			if ALittle.Math_Abs(delta_x) > ALittle.Math_Abs(delta_y) then
 				delta_y = -delta_x
 			else
 				delta_x = -delta_y
@@ -201,7 +206,7 @@ function IDEImageCutPlugin:HandleDrag(event)
 		local delta_x = event.delta_x
 		local delta_y = event.delta_y
 		if self._is_circle then
-			if math.abs(delta_x) > math.abs(delta_y) then
+			if ALittle.Math_Abs(delta_x) > ALittle.Math_Abs(delta_y) then
 				delta_y = -delta_x
 			else
 				delta_x = -delta_y
@@ -214,7 +219,7 @@ function IDEImageCutPlugin:HandleDrag(event)
 		local delta_x = event.delta_x
 		local delta_y = event.delta_y
 		if self._is_circle then
-			if math.abs(delta_x) > math.abs(delta_y) then
+			if ALittle.Math_Abs(delta_x) > ALittle.Math_Abs(delta_y) then
 				delta_y = delta_x
 			else
 				delta_x = delta_y

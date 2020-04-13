@@ -4,11 +4,10 @@ module("ALittleIDE", package.seeall)
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___coroutine = coroutine
 
 
-assert(DisplayLayoutS, " extends class:DisplayLayoutS is nil")
-Grid3S = ALittle.Class(DisplayLayoutS, "ALittleIDE.Grid3S")
+assert(ALittleIDE.DisplayLayoutS, " extends class:ALittleIDE.DisplayLayoutS is nil")
+Grid3S = Lua.Class(ALittleIDE.DisplayLayoutS, "ALittleIDE.Grid3S")
 
 function Grid3S:Ctor(user_info, tab_child, tree_logic)
 	___rawset(self, "_layer_name", "ide_setting_grid3")

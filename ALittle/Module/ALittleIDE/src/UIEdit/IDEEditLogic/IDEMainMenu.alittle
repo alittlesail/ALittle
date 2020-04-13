@@ -179,7 +179,7 @@ class IDEMainMenu
 	public static GenTemplate(int num) : string
 	{
 		var code = "#define JSON_MACRO_"..(num * 2 + 1).."(Name";
-		for (var i = 0, num - 1, 1) code = code..", t"..i..", m"..i;
+		for (var i = 0; i <= num - 1; 1) code = code..", t"..i..", m"..i;
 		code = code..") \\\n";
 		code = code.."class Name : public ALittle::Json { \\\n";
 		code = code.."public: \\\n";
@@ -187,40 +187,40 @@ class IDEMainMenu
 		code = code.."\tinline static const char* GetStaticID() { return #Name; } \\\n";
 		code = code.."public: \\\n";
 		code = code.."\tvirtual void Serialize(ALittle::JsonValue& v, ALittle::JsonAlloc& a) const { \\\n";
-		for (var i = 0, num - 1, 1) code = code.."\t\tALittle::JsonTemplate::Json_Serialize(m"..i..", #m"..i..", (int)sizeof(#m"..i..")-1, v, a); \\\n";
+		for (var i = 0; i <= num - 1; 1) code = code.."\t\tALittle::JsonTemplate::Json_Serialize(m"..i..", #m"..i..", (int)sizeof(#m"..i..")-1, v, a); \\\n";
 		code = code.."\t} \\\n";
 		code = code.."\tvirtual void Deserialize(const ALittle::JsonValue& v) { \\\n";
-		for (var i = 0, num - 1, 1) code = code.."\t\tALittle::JsonTemplate::Json_Deserialize(m"..i..", #m"..i..", (int)sizeof(#m"..i..")-1, v); \\\n";
+		for (var i = 0; i <= num - 1; 1) code = code.."\t\tALittle::JsonTemplate::Json_Deserialize(m"..i..", #m"..i..", (int)sizeof(#m"..i..")-1, v); \\\n";
 		code = code.."\t} \\\n";
 		code = code.."\tvirtual void Serialize(ALittle::ValueMap& v) const { \\\n";
-		for (var i = 0, num - 1, 1) code = code.."\t\tALittle::JsonTemplate::Json_SerializeValueMap(m"..i..", #m"..i..", v); \\\n";
+		for (var i = 0; i <= num - 1; 1) code = code.."\t\tALittle::JsonTemplate::Json_SerializeValueMap(m"..i..", #m"..i..", v); \\\n";
 		code = code.."\t} \\\n";
 		code = code.."\tvirtual void Deserialize(const ALittle::ValueMap& v) { \\\n";
-		for (var i = 0, num - 1, 1) code = code.."\t\tALittle::JsonTemplate::Json_DeserializeValueMap(m"..i..", #m"..i..", v); \\\n";
+		for (var i = 0; i <= num - 1; 1) code = code.."\t\tALittle::JsonTemplate::Json_DeserializeValueMap(m"..i..", #m"..i..", v); \\\n";
 		code = code.."\t} \\\n";
 		code = code.."\tvirtual const std::vector<std::string>& GetNameList() const { \\\n";
 		code = code.."\t\tstatic std::vector<std::string> s_list; \\\n";
 		code = code.."\t\tif (s_list.empty()) { \\\n";
-		for (var i = 0, num - 1, 1) code = code.."\t\t\ts_list.push_back(#m"..i.."); \\\n";
+		for (var i = 0; i <= num - 1; 1) code = code.."\t\t\ts_list.push_back(#m"..i.."); \\\n";
 		code = code.."\t\t} return s_list; \\\n";
 		code = code.."\t} \\\n";
 		code = code.."\tvirtual const std::vector<std::string>& GetTypeList() const { \\\n";
 		code = code.."\t\tstatic std::vector<std::string> s_list; \\\n";
 		code = code.."\t\tif (s_list.empty()) { \\\n";
-		for (var i = 0, num - 1, 1) code = code.."\t\t\ts_list.push_back(#t"..i.."); \\\n";
+		for (var i = 0; i <= num - 1; 1) code = code.."\t\t\ts_list.push_back(#t"..i.."); \\\n";
 		code = code.."\t\t} return s_list; \\\n";
 		code = code.."\t} \\\n";
 		code = code.."\tvirtual void Reset() { *this = Name(); } \\\n";
 		code = code.."\tvirtual ~Name() { } \\\n";
 		code = code.."\tName() : ";
-		for (var i = 0, num - 1, 1)
+		for (var i = 0; i <= num - 1; 1)
 		{
 			if (i > 0) code = code..", ";
 			code = code.."m"..i.."()";
 		}
 		code = code.." {} \\\n";
 		code = code.."\t";
-		for (var i = 0, num - 1, 1)
+		for (var i = 0; i <= num - 1; 1)
 		{
 			if (i > 0) code = code.." ";
 			code = code.."t"..i.." m"..i..";";
@@ -233,14 +233,14 @@ class IDEMainMenu
 	
 	public fun HandleGenJsonTemplateCode(ALittle.UIEvent event)
 	{
-		var template_count = lua.math.floor(lua.tonumber(this._json_template_count.text));
+		var template_count = ALittle.Math_ToInt(this._json_template_count.text);
 		if (template_count == null) template_count = 20;
 		
-		var file_count = lua.math.floor(lua.tonumber(this._json_template_file_count.text));
+		var file_count = ALittle.Math_ToInt(this._json_template_file_count.text);
 		if (file_count == null) file_count = 0;
 
 		var num = 1;
-		for (var file_index = 1, file_count, 1)
+		for (var file_index = 1; file_index <= file_count; 1)
 		{
 			var code_head = "\n#ifndef _ALITTLE_JSON_"..file_index.."_H_\n#define _ALITTLE_JSON_"..file_index.."_H_\n\n";
 			code_head = code_head.."#include \"Json.h\"\n\n";
@@ -249,7 +249,7 @@ class IDEMainMenu
 			var code_list = new List<string>();
 			var index = 1;
 			code_list[index] = code_head;
-			for (var template_index = 1, template_count, 1)
+			for (var template_index = 1; template_index <= template_count; 1)
 			{
 				++index;
 				code_list[index] = IDEMainMenu.GenTemplate(num);
@@ -262,21 +262,21 @@ class IDEMainMenu
 		}
 	
 		var code = "\n#ifndef _ALITTLE_JSON_ALL_H_\n#define _ALITTLE_JSON_ALL_H_\n\n";
-		for (var file_index = 1, file_count, 1)
+		for (var file_index = 1; file_index <= file_count; 1)
 			code = code.."#include \"Json_"..file_index..".h\"\n";
 	
 		var max_count = file_count * template_count * 2 + 1;
 	
 		code = code.."\n#define VA_JSON_EXPAND(...) __VA_ARGS__\n";
 		code = code.."#define VA_JSON_FILTER_(";
-		for (var i = 1, max_count, 1)
+		for (var i = 1; i <= max_count; 1)
 		{
 			if (i > 1) code = code..",";
 			code = code.."_"..i;
 		}
 		code = code..",_N,...) _N\n";
 		code = code.."#define VA_JSON_NUMBER_() ";
-		for (var i = max_count, 1, -1)
+		for (var i = max_count; i >= 1; -1)
 		{
 			if (i < max_count) code = code..",";
 			code = code..i;
@@ -318,14 +318,14 @@ class IDEMainMenu
 		{
 			var file_name = ALittle.File_GetFileNameByPath(file_path);
 			file_name = ALittle.String_Replace(file_name, "abcd@module_name@abcd", module_name);
-			file_name = ALittle.String_Replace(file_name, "abcd@upper_module_name@abcd", lua.String.upper(module_name));
-			file_name = ALittle.String_Replace(file_name, "abcd@lower_module_name@abcd", lua.String.lower(module_name));
+			file_name = ALittle.String_Replace(file_name, "abcd@upper_module_name@abcd", ALittle.String_Upper(module_name));
+			file_name = ALittle.String_Replace(file_name, "abcd@lower_module_name@abcd", ALittle.String_Lower(module_name));
 			var content = ALittle.File_ReadTextFromFile(file_path);
 			if (content != null)
 			{
 				content = ALittle.String_Replace(content, "abcd@module_name@abcd", module_name);
-				content = ALittle.String_Replace(content, "abcd@upper_module_name@abcd", lua.String.upper(module_name));
-				content = ALittle.String_Replace(content, "abcd@lower_module_name@abcd", lua.String.lower(module_name));
+				content = ALittle.String_Replace(content, "abcd@upper_module_name@abcd", ALittle.String_Upper(module_name));
+				content = ALittle.String_Replace(content, "abcd@lower_module_name@abcd", ALittle.String_Lower(module_name));
 	
 				var full_path = base_path.."/"..file_name;
 				ALittle.File_WriteTextToFile(content, full_path);
@@ -367,19 +367,19 @@ class IDEMainMenu
 	public fun HandleViewLogRefresh(ALittle.UIEvent event)
 	{
 		// 读取日志
-		var file_name = lua.os.date("%Y-%m-%d", lua.os.time())..".log";
+		var file_name = ALittle.Time_GetCurYMD(ALittle.Time_GetCurTime())..".log";
 		var file_path = ALittle.File_BaseFilePath().."Log/"..file_name;
 		var content = ALittle.File_ReadTextFromFile(file_path, false);
 		if (content == null) return;
 
 		var content_list = ALittle.String_Split(content, "\n");
-		var content_len = lua.table.maxn(content_list);
+		var content_len = ALittle.List_MaxN(content_list);
 		var copy_len = content_len - 100;
 		if (copy_len < 1) copy_len = 1;
 	
 		var log_list = new List<string>();
 		var log_list_count = 0;
-		for (var i = content_len, copy_len, -1)
+		for (var i = content_len; i >= copy_len; -1)
 		{
 			++ log_list_count;
 			log_list[log_list_count] = content_list[i];

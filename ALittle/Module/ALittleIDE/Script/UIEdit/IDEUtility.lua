@@ -3,7 +3,6 @@ module("ALittleIDE", package.seeall)
 
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___coroutine = coroutine
 
 ALittle.RegStruct(-1105378563, "ALittleIDE.IDETreeUserInfo", {
 name = "ALittleIDE.IDETreeUserInfo", ns_name = "ALittleIDE", rl_name = "IDETreeUserInfo", hash_code = -1105378563,
@@ -49,7 +48,7 @@ function IDEUtility_CalcTextureName(info, map)
 	for k, v in ___pairs(info) do
 		if k == "texture_name" then
 			map[v] = true
-		elseif type(v) == "table" then
+		elseif ALittle.String_Type(v) == "table" then
 			IDEUtility_CalcTextureName(v, map)
 		end
 	end
@@ -61,7 +60,7 @@ function IDEUtility_GetExtends(info, map)
 		map = {}
 	end
 	for k, v in ___pairs(info) do
-		if type(v) == "table" then
+		if ALittle.String_Type(v) == "table" then
 			IDEUtility_GetExtends(v, map)
 		elseif k == "__extends" or k == "__include" then
 			map[v] = true
@@ -74,12 +73,12 @@ function IDEUtility_HasTargetClass(info, name)
 	local target_class = info.__target_class
 	if target_class ~= nil then
 		local str = ALittle.String_Join(target_class, ".")
-		if ALittle.Find(str, name) ~= nil then
+		if ALittle.String_Find(str, name) ~= nil then
 			return true
 		end
 	end
 	for k, v in ___pairs(info) do
-		if type(v) == "table" then
+		if ALittle.String_Type(v) == "table" then
 			if IDEUtility_HasTargetClass(v, name) then
 				return true
 			end
@@ -100,12 +99,12 @@ function IDEUtility_HasEventCallback(info, name)
 			content_list[count] = event_string
 		end
 		local content = ALittle.String_Join(content_list, "\n")
-		if ALittle.Find(content, name) ~= nil then
+		if ALittle.String_Find(content, name) ~= nil then
 			return true
 		end
 	end
 	for k, v in ___pairs(info) do
-		if type(v) == "table" then
+		if ALittle.String_Type(v) == "table" then
 			if IDEUtility_HasEventCallback(v, name) then
 				return true
 			end
@@ -115,12 +114,14 @@ function IDEUtility_HasEventCallback(info, name)
 end
 
 function IDEUtility_CheckName(name)
-	local len = string.len(name)
+	local len = ALittle.String_Len(name)
 	if len == 0 then
 		return false, "命名只能支持字母数字下划线，不能以数字开头"
 	end
-	for i = 1, len, 1 do
-		local byte = string.byte(name, i)
+	local i = 1
+	while true do
+		if not(i <= len) then break end
+		local byte = ALittle.String_Byte(name, i)
 		local check_all = byte >= 65 and byte <= 90 or byte >= 97 and byte <= 122 or byte >= 48 and byte <= 57 or byte == 95
 		if i == 1 then
 			local check_first = byte >= 65 and byte <= 90 or byte >= 97 and byte <= 122 or byte == 95
@@ -132,6 +133,7 @@ function IDEUtility_CheckName(name)
 				return false, "命名只能支持字母数字，不能以数字开头"
 			end
 		end
+		i = i+(1)
 	end
 	return true, nil
 end
@@ -140,7 +142,7 @@ function IDEUtility_NewGiveBaseCase(info, object)
 	if g_IDEEnum.text_type_display_map[info.__class] then
 		info.font_path = g_IDEProject.project.config:GetConfig("default_font_path", nil)
 		object.font_path = info.font_path
-		local size = math.floor(tonumber(g_IDEProject.project.config:GetConfig("default_font_size", 15)))
+		local size = g_IDEProject.project.config:GetConfig("default_font_size", 15)
 		info.font_size = size
 		object.font_size = size
 		if info.__class == "Text" then
@@ -164,7 +166,7 @@ end
 function IDEUtility_DragAddGiveBaseCase(info)
 	if g_IDEEnum.text_type_display_map[info.__class] then
 		info.font_path = g_IDEProject.project.config:GetConfig("default_font_path", nil)
-		local size = math.floor(tonumber(g_IDEProject.project.config:GetConfig("default_font_size", 15)))
+		local size = g_IDEProject.project.config:GetConfig("default_font_size", 15)
 		info.font_size = size
 		if info.__class ~= "Text" then
 			info.width_value = 100
@@ -181,9 +183,9 @@ end
 function IDEUtility_GetBaseInfo(info)
 	local base = {}
 	for k, v in ___pairs(info) do
-		if type(v) ~= "table" then
+		if ALittle.String_Type(v) ~= "table" then
 			base[k] = v
-		elseif type(v) == "table" and k ~= "__childs" then
+		elseif ALittle.String_Type(v) == "table" and k ~= "__childs" then
 			base[k] = ALittle.String_CopyTable(v)
 		end
 	end
@@ -213,7 +215,7 @@ function IDEUtility_GetDefaultInfo(info)
 		local class_default = g_IDEEnum.type_default_map[info.__class]
 		default = {}
 		for k, v in ___pairs(class_default) do
-			if type(v) ~= "table" then
+			if ALittle.String_Type(v) ~= "table" then
 				default[k] = v
 			end
 		end
@@ -265,13 +267,13 @@ function IDEUtility_CreateTree(control, extends, object, child_type, tab_child, 
 	else
 		tree_logic = IDETreeItem(g_Control, user_info, tab_child)
 	end
-	if g_IDEEnum.can_add_child_map[user_info.default.__class] and object.childs ~= nil and table.maxn(object.childs) > 0 then
-		if control.__childs ~= nil and table.maxn(control.__childs) > 0 then
+	if g_IDEEnum.can_add_child_map[user_info.default.__class] and object.childs ~= nil and ALittle.List_MaxN(object.childs) > 0 then
+		if control.__childs ~= nil and ALittle.List_MaxN(control.__childs) > 0 then
 			local childs = control.__childs
 			for k, v in ___ipairs(childs) do
 				tree_logic:AddChild(IDEUtility_CreateTree(v, extends, object.childs[k], "child", tab_child, false))
 			end
-		elseif user_info.default.__childs ~= nil and table.maxn(user_info.default.__childs) > 0 then
+		elseif user_info.default.__childs ~= nil and ALittle.List_MaxN(user_info.default.__childs) > 0 then
 			local childs = user_info.default.__childs
 			for k, v in ___ipairs(childs) do
 				tree_logic:AddChild(IDEUtility_CreateTree(v, true, object.childs[k], "child", tab_child, false))
@@ -301,8 +303,8 @@ function IDEUtility_GenerateGrid9ImageInfo(base_path, image_path)
 	end
 	local width = ALittle.System_GetSurfaceWidth(surface)
 	local height = ALittle.System_GetSurfaceHeight(surface)
-	local helf_width = math.floor(width / 2)
-	local helf_height = math.floor(height / 2)
+	local helf_width = ALittle.Math_Floor(width / 2)
+	local helf_height = ALittle.Math_Floor(height / 2)
 	local left = ALittle.System_GetSurfaceGrid9(surface, "left")
 	local right = ALittle.System_GetSurfaceGrid9(surface, "right")
 	local top = ALittle.System_GetSurfaceGrid9(surface, "top")

@@ -4,11 +4,10 @@ module("ALittleIDE", package.seeall)
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___coroutine = coroutine
 
 
-assert(DisplayLayoutS, " extends class:DisplayLayoutS is nil")
-SliderS = ALittle.Class(DisplayLayoutS, "ALittleIDE.SliderS")
+assert(ALittleIDE.DisplayLayoutS, " extends class:ALittleIDE.DisplayLayoutS is nil")
+SliderS = Lua.Class(ALittleIDE.DisplayLayoutS, "ALittleIDE.SliderS")
 
 function SliderS:Ctor(user_info, tab_child, tree_logic)
 	___rawset(self, "_layer_name", "ide_setting_slider")
@@ -63,7 +62,7 @@ function SliderS:HandleBarBackFOCUSOUT(event)
 end
 
 function SliderS:HandleBarBackSelect(event)
-	local func = ALittle.Bind(self.ImagePathSelectCallback, self, "bar_background", self.HandleBarBackFOCUSOUT, nil)
+	local func = Lua.Bind(self.ImagePathSelectCallback, self, "bar_background", self.HandleBarBackFOCUSOUT, nil)
 	g_IDEAttrImageDialog:ShowDialog(nil, func)
 end
 

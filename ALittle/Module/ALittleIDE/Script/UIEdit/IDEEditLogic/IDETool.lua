@@ -3,7 +3,6 @@ module("ALittleIDE", package.seeall)
 
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___coroutine = coroutine
 
 ALittle.RegStruct(-125023360, "ALittleIDE.IDECallbackUserData", {
 name = "ALittleIDE.IDECallbackUserData", ns_name = "ALittleIDE", rl_name = "IDECallbackUserData", hash_code = -125023360,
@@ -12,7 +11,7 @@ type_list = {"Functor<()>","Functor<()>"},
 option_map = {}
 })
 
-IDETool = ALittle.Class(nil, "ALittleIDE.IDETool")
+IDETool = Lua.Class(nil, "ALittleIDE.IDETool")
 
 function IDETool:ShowAlertDialog(title, content)
 	if self._alert_dialog == nil then

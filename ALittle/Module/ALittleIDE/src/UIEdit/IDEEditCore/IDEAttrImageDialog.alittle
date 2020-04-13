@@ -114,7 +114,7 @@ public class IDEAttrImageDialog
 	public fun CreateImgItem(string file_name, string rel_path, string abs_path) : ALittle.DisplayObject
 	{
 		var ext = ALittle.File_GetFileExtByPath(file_name);
-		ext = lua.String.upper(ext);
+		ext = ALittle.String_Upper(ext);
 		if (ext == "PNG" || ext == "JPG")
 		{
 			var info = new IDEAttrImageSelectItemInfo();
@@ -152,7 +152,7 @@ public class IDEAttrImageDialog
 					height = rate * width;
 				}
 			}
-			info.image.SetTextureCut(abs_path, lua.math.floor(info.frame.width), lua.math.floor(info.frame.height), true);
+			info.image.SetTextureCut(abs_path, ALittle.Math_Floor(info.frame.width), ALittle.Math_Floor(info.frame.height), true);
 			info.image.width = width;
 			info.image.height = height;
 			info.image.UpdateLayout();
@@ -197,24 +197,24 @@ public class IDEAttrImageDialog
 		var item_list_dir = new List<ALittle.DisplayObject>();
 		var item_list_img = new List<ALittle.DisplayObject>();
 		// 遍历文件夹
-		for (var file in ALittle.File_IteratorDir(browser_path))
+		for (var file in lua.lfs.dir(browser_path))
 		{
 			if (file != "." && file != "..")
 			{
 				var path = browser_path.."/"..file;
 				// 获取相对路劲
-				var rel_path = lua.String.sub(path, lua.String.len(this._base_path) + 2);
+				var rel_path = ALittle.String_Sub(path, ALittle.String_Len(this._base_path) + 2);
 				// 检查路径类型
 				var attr = ALittle.File_GetFileAttr(path);
 				if (attr.mode == "directory")
 				{
 					var item = this.CreateDirItem(file, rel_path, path);
-					if (item != null) ALittle.Push(item_list_dir, item);
+					if (item != null) ALittle.List_Push(item_list_dir, item);
 				}
 				else
 				{
 					var item = this.CreateImgItem(file, rel_path, path);
-					if (item != null) ALittle.Push(item_list_img, item);
+					if (item != null) ALittle.List_Push(item_list_img, item);
 				}
 			}
 		}
@@ -233,24 +233,24 @@ public class IDEAttrImageDialog
 		if (name == "" || name == null) return item_list, run_time;
 	
 		// 遍历文件夹
-		for (var file in ALittle.File_IteratorDir(search_path))
+		for (var file in lua.lfs.dir(search_path))
 		{
 			if (file != "." && file != "..")
 			{
 				var path = search_path.."/"..file;
 				// 获取相对路劲
-				var rel_path = lua.String.sub(path, lua.String.len(this._base_path) + 2);
+				var rel_path = ALittle.String_Sub(path, ALittle.String_Len(this._base_path) + 2);
 				// 检查路径类型
 				var attr = ALittle.File_GetFileAttr(path);
 				if (attr.mode == "directory")
 					this.SearchCollect(path, name, item_list, run_time);
-				elseif (ALittle.Find(file, name) != null)
+				elseif (ALittle.String_Find(file, name) != null)
 				{
 					var item = this.CreateImgItem(file, rel_path, path);
 					if (item != null)
 					{
 						run_time.cur_count = run_time.cur_count + 1;
-						ALittle.Push(item_list, item);
+						ALittle.List_Push(item_list, item);
 					}
 				}
 				if (run_time.cur_count >= run_time.total_count)
@@ -271,16 +271,16 @@ public class IDEAttrImageDialog
 	public fun CreateItemAndAddToList(List<ALittle.DisplayObject> item_list_dir, List<ALittle.DisplayObject> item_list_img)
 	{
 		// 根据文件名进行排序，文件夹永远你在前面
-		lua.table.sort(item_list_dir, IDEAttrImageDialog.ItemListCmp);
-		lua.table.sort(item_list_img, IDEAttrImageDialog.ItemListCmp);
+		ALittle.List_Sort(item_list_dir, IDEAttrImageDialog.ItemListCmp);
+		ALittle.List_Sort(item_list_img, IDEAttrImageDialog.ItemListCmp);
 		var item_list = new List<ALittle.DisplayObject>();
 		for (var index, item in item_list_dir)
-			ALittle.Push(item_list, item);
+			ALittle.List_Push(item_list, item);
         
 		for (var index, item in item_list_img)
-			ALittle.Push(item_list, item);
+			ALittle.List_Push(item_list, item);
 	
-		var col_count = lua.math.floor(this._scroll_list.width / this._real_size);
+		var col_count = ALittle.Math_Floor(this._scroll_list.width / this._real_size);
 		var remain_count = 0;
 		var container:ALittle.Linear = null;
 		// 遍历列表
@@ -309,7 +309,7 @@ public class IDEAttrImageDialog
 		// 清空所有
 		this._scroll_list.RemoveAllChild();
 	
-		this._path_input.text = lua.String.sub(this._real_path, lua.String.len(this._base_path) + 2);
+		this._path_input.text = ALittle.String_Sub(this._real_path, ALittle.String_Len(this._base_path) + 2);
 		this._search_input.text = "";
 		this._dialog.title = this._src_title;
 		var item_list_dir, item_list_img = this.BrowserCollect(this._real_path);
@@ -366,7 +366,7 @@ public class IDEAttrImageDialog
 	
 	public fun HandleSetPrePathClick(ALittle.UIEvent event)
 	{
-		var rel_path = lua.String.sub(this._real_path, lua.String.len(this._base_path) + 2);
+		var rel_path = ALittle.String_Sub(this._real_path, ALittle.String_Len(this._base_path) + 2);
 		if (rel_path == "") return;
 		this.SetPath(ALittle.File_GetFilePathByPath(rel_path));
 	}
@@ -408,7 +408,7 @@ public class IDEAttrImageDialog
 		var user_data:IDEAttrImageSelectItemUserData = this._image_select_menu._user_data;
 		this._image_select_menu._user_data = null;
 
-		lua.os.remove(g_IDEProject.project.base_path.."Texture/"..user_data.path);
+		ALittle.File_DeleteFile(g_IDEProject.project.base_path.."Texture/"..user_data.path);
 		this.Refresh();
 	}
 	

@@ -3,10 +3,9 @@ module("ALittleIDE", package.seeall)
 
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___coroutine = coroutine
 
 
-IDECenter = ALittle.Class(nil, "ALittleIDE.IDECenter")
+IDECenter = Lua.Class(nil, "ALittleIDE.IDECenter")
 
 function IDECenter:Ctor()
 end
@@ -20,10 +19,11 @@ function IDECenter.__getter:dialog_layer()
 end
 
 function IDECenter:Setup(debug)
-	g_Script:Require("IDEProject")
-	g_Script:Require("UIEdit/IDEUICenter")
-	g_IDEConfig = ALittle.ClientConfigSystem("ALittleIDE.cfg")
-	math.randomseed(os.time())
+local ___COROUTINE = coroutine.running()
+	Require(g_ScriptBasePath .. "IDEProject")
+	Require(g_ScriptBasePath .. "UIEdit/IDEUICenter")
+	g_IDEConfig = ALittle.CreateConfigSystem("ALittleIDE.cfg")
+	ALittle.Math_RandomSeed(ALittle.Time_GetCurTime())
 	ALittle.System_SetThreadCount(5)
 	local background_quad = ALittle.Quad(g_Control)
 	background_quad.height_type = 4
@@ -44,7 +44,7 @@ function IDECenter:Setup(debug)
 	self:UpdateProjectList()
 	g_IDEUICenter:Setup(self._edit_container)
 	g_IDEUICenter:Show()
-	A_UISystem.keydown_callback = ALittle.Bind(self.HandleShortcutKey, self)
+	A_UISystem.keydown_callback = Lua.Bind(self.HandleShortcutKey, self)
 	g_IDEIMEManager:Setup()
 	g_IDEProjectManager:OpenLastProject()
 	if debug ~= "debug" then
@@ -96,8 +96,8 @@ function IDECenter:HandlePeojectSelectChange(event)
 		return
 	end
 	event.target.text = name
-	local cancel_callback = ALittle.Bind(g_IDEProjectManager.OpenProjectImpl, g_IDEProjectManager, new_name)
-	local confirm_callback = ALittle.Bind(g_IDETabManager.SaveAllTab, g_IDETabManager)
+	local cancel_callback = Lua.Bind(g_IDEProjectManager.OpenProjectImpl, g_IDEProjectManager, new_name)
+	local confirm_callback = Lua.Bind(g_IDETabManager.SaveAllTab, g_IDETabManager)
 	g_IDETool:SaveNotice("提示", "是否保存当前项目?", cancel_callback, confirm_callback)
 end
 
@@ -112,7 +112,7 @@ function IDECenter:UpdateProjectList()
 		data_list_count = data_list_count + 1
 		data_list[data_list_count] = v
 	end
-	table.sort(data_list)
+	ALittle.List_Sort(data_list)
 	local text = self._current_project_name.text
 	self._current_project_name.data_list = data_list
 	self._current_project_name.text = text
@@ -146,13 +146,16 @@ function IDECenter:RefreshProject()
 	local tab_index = g_IDETabManager:GetCurTabIndex()
 	self:CloseProject()
 	self:OpenProject(project_name)
-	local count = table.maxn(name_list)
+	local count = ALittle.List_MaxN(name_list)
 	if count > 0 then
-		for i = count, 1, -1 do
+		local i = count
+		while true do
+			if not(count >= 1) then break end
 			local control_info = g_IDEProject.project.control_map[name_list[i]]
 			if control_info ~= nil then
 				g_IDETabManager:StartEditControlBySelect(control_info.name, control_info.info)
 			end
+			i = i+(-1)
 		end
 		g_IDETabManager:SetCurTabIndex(tab_index)
 	end

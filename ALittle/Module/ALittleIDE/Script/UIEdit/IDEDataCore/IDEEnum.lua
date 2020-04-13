@@ -4,10 +4,9 @@ module("ALittleIDE", package.seeall)
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___coroutine = coroutine
 
 
-IDEEnum = ALittle.Class(nil, "ALittleIDE.IDEEnum")
+IDEEnum = Lua.Class(nil, "ALittleIDE.IDEEnum")
 
 function IDEEnum:Ctor()
 	___rawset(self, "xy_type", {})

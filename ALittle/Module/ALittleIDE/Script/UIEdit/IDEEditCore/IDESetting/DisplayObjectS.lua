@@ -308,7 +308,7 @@ function DisplayObjectS:HandleXValueTabKey(event)
 end
 
 function DisplayObjectS:HandleXValueDrag(event)
-	local value = tonumber(self._x_value.text)
+	local value = ALittle.Math_ToDouble(self._x_value.text)
 	if value == nil then
 		value = 0
 	end
@@ -345,7 +345,7 @@ function DisplayObjectS:HandleYValueTabKey(event)
 end
 
 function DisplayObjectS:HandleYValueDrag(event)
-	local value = tonumber(self._y_value.text)
+	local value = ALittle.Math_ToDouble(self._y_value.text)
 	if value == nil then
 		value = 0
 	end
@@ -382,7 +382,7 @@ function DisplayObjectS:HandleWValueTabKey(event)
 end
 
 function DisplayObjectS:HandleWValueDrag(event)
-	local value = tonumber(self._width_value.text)
+	local value = ALittle.Math_ToDouble(self._width_value.text)
 	if value == nil then
 		value = 0
 	end
@@ -419,7 +419,7 @@ function DisplayObjectS:HandleHValueTabKey(event)
 end
 
 function DisplayObjectS:HandleHValueDrag(event)
-	local value = tonumber(self._height_value.text)
+	local value = ALittle.Math_ToDouble(self._height_value.text)
 	if value == nil then
 		value = 0
 	end
@@ -454,7 +454,7 @@ function DisplayObjectS:HandleAlphaValueTabKey(event)
 end
 
 function DisplayObjectS:HandleAlphaValueDrag(event)
-	local value = tonumber(self._alpha.text)
+	local value = ALittle.Math_ToDouble(self._alpha.text)
 	if value == nil then
 		value = 0
 	end
@@ -494,7 +494,7 @@ function DisplayObjectS:HandleRedValueTabKey(event)
 end
 
 function DisplayObjectS:HandleRedValueDrag(event)
-	local value = tonumber(self._red.text)
+	local value = ALittle.Math_ToDouble(self._red.text)
 	if value == nil then
 		value = 0
 	end
@@ -534,7 +534,7 @@ function DisplayObjectS:HandleGreenValueTabKey(event)
 end
 
 function DisplayObjectS:HandleGreenValueDrag(event)
-	local value = tonumber(self._green.text)
+	local value = ALittle.Math_ToDouble(self._green.text)
 	if value == nil then
 		value = 0
 	end
@@ -574,7 +574,7 @@ function DisplayObjectS:HandleBlueValueTabKey(event)
 end
 
 function DisplayObjectS:HandleBlueValueDrag(event)
-	local value = tonumber(self._blue.text)
+	local value = ALittle.Math_ToDouble(self._blue.text)
 	if value == nil then
 		value = 0
 	end
@@ -652,7 +652,7 @@ function DisplayObjectS:HandleAngleMoveOut(event)
 end
 
 function DisplayObjectS:HandleAngleDrag(event)
-	local value = tonumber(self._angle.text)
+	local value = ALittle.Math_ToDouble(self._angle.text)
 	if value == nil then
 		value = 0
 	end
@@ -834,7 +834,7 @@ function DisplayObjectS:ValueNumInputChange(text, need_reset, revoke_bind)
 	local old_base = self._base[text]
 	local old_object = self._object[text]
 	local display_object = self["_" .. text]
-	local value = tonumber(display_object.text)
+	local value = ALittle.Math_ToDouble(display_object.text)
 	if value == nil then
 		display_object.text = "0"
 		if revoke_bind == nil and self._object[text] == 0 then
@@ -872,7 +872,7 @@ function DisplayObjectS:ValueNumZInputChange(text, need_reset, revoke_bind)
 	local old_base = self._base[text]
 	local old_object = self._object[text]
 	local display_object = self["_" .. text]
-	local value = tonumber(display_object.text)
+	local value = ALittle.Math_ToDouble(display_object.text)
 	if value == nil or value < 0 then
 		display_object.text = "0"
 		if revoke_bind == nil and self._object[text] == 0 then
@@ -910,7 +910,7 @@ function DisplayObjectS:ColorValueInputChange(text, need_reset, revoke_bind)
 	local old_base = self._base[text]
 	local old_object = self._object[text]
 	local display_object = self["_" .. text]
-	local value = tonumber(display_object.text)
+	local value = ALittle.Math_ToDouble(display_object.text)
 	if value == nil or value < 0 then
 		display_object.text = "0"
 		if revoke_bind == nil and self._object[text] == 0 then
@@ -926,7 +926,7 @@ function DisplayObjectS:ColorValueInputChange(text, need_reset, revoke_bind)
 		self._object[text] = 1
 		self._base[text] = 1
 	else
-		if revoke_bind == nil and math.ceil(self._object[text] * 255) == value then
+		if revoke_bind == nil and ALittle.Math_Ceil(self._object[text] * 255) == value then
 			return
 		end
 		value = value / 255
@@ -956,7 +956,7 @@ function DisplayObjectS:Z2OValueInputChange(text, need_reset, revoke_bind)
 	local old_base = self._base[text]
 	local old_object = self._object[text]
 	local display_object = self["_" .. text]
-	local value = tonumber(display_object.text)
+	local value = ALittle.Math_ToDouble(display_object.text)
 	if value == nil or value < 0 then
 		display_object.text = "0"
 		if revoke_bind == nil and self._object[text] == 0 then
@@ -1156,12 +1156,12 @@ function DisplayObjectS:RemoverToNilShowSetForImage(text, image_path, grid9, nee
 				g_IDETool:ShowNotice("错误", "图片不存在:" .. image_path)
 				return
 			end
-			self:RemoverToNilShowSet(text, json.encode(display_info), need_reset, revoke_bind)
+			self:RemoverToNilShowSet(text, ALittle.String_JsonEncode(display_info), need_reset, revoke_bind)
 		else
 			local display_info = {}
 			display_info.__class = "Image"
 			display_info.texture_name = image_path
-			self:RemoverToNilShowSet(text, json.encode(display_info), need_reset, revoke_bind)
+			self:RemoverToNilShowSet(text, ALittle.String_JsonEncode(display_info), need_reset, revoke_bind)
 		end
 	end
 end
@@ -1174,7 +1174,7 @@ function DisplayObjectS:RemoverToNilShowSetForExtends(text, extends, need_reset,
 		end
 		local display_info = {}
 		display_info.__extends = extends
-		self:RemoverToNilShowSet(text, json.encode(display_info), need_reset, revoke_bind)
+		self:RemoverToNilShowSet(text, ALittle.String_JsonEncode(display_info), need_reset, revoke_bind)
 	else
 		self:RemoverToNilShowSet(text, "", need_reset, revoke_bind)
 	end
@@ -1187,9 +1187,9 @@ function DisplayObjectS:RemoverToNilShowSet(text, json_content, need_reset, revo
 		self._base[text] = nil
 		if self._default[text] ~= nil and self._default[text].__class ~= nil then
 			local content = self._default[text]
-			local error1, content1 = Lua.TCall(json.decode, content)
+			local error1, content1 = Lua.TCall(ALittle.String_JsonDecode, content)
 			if error1 == nil then
-				local error2, content2 = Lua.TCall(json.decode, content1)
+				local error2, content2 = Lua.TCall(ALittle.String_JsonDecode, content1)
 				local name = "mnbvcxzasdfghjklpoiuytrewq20160121"
 				g_IDEProject.project.control:RegisterInfo(name, content2)
 				local temp = g_IDEProject.project.control:CreateControl(name)
@@ -1202,7 +1202,7 @@ function DisplayObjectS:RemoverToNilShowSet(text, json_content, need_reset, revo
 		end
 	else
 		local content = json_content
-		local error1, content1 = Lua.TCall(json.decode, content)
+		local error1, content1 = Lua.TCall(ALittle.String_JsonDecode, content)
 		if error1 == nil then
 			local include = content1.__include
 			if include == nil then
@@ -1215,7 +1215,7 @@ function DisplayObjectS:RemoverToNilShowSet(text, json_content, need_reset, revo
 				end
 			end
 			self._base[text] = content1
-			local error2, content2 = Lua.TCall(json.decode, content)
+			local error2, content2 = Lua.TCall(ALittle.String_JsonDecode, content)
 			local name = "mnbvcxzasdfghjklpoiuytrewq20160121"
 			g_IDEProject.project.control:RegisterInfo(name, content2)
 			local temp = g_IDEProject.project.control:CreateControl(name)
@@ -1251,10 +1251,10 @@ function DisplayObjectS:RemoverToNilNoNilShowSet(text, need_reset, revoke_bind)
 		self._base[text] = nil
 		if self._default[text] ~= nil and (self._default[text].__class ~= nil or self._default[text].__include ~= nil or self._default[text].__extends ~= nil) then
 			local content = self._default[text]
-			local error, content1 = Lua.TCall(json.encode, content)
+			local error, content1 = Lua.TCall(ALittle.String_JsonEncode, content)
 			if error ~= nil then
 				display_object.text = content1
-				local error2, content2 = Lua.TCall(json.decode, content1)
+				local error2, content2 = Lua.TCall(ALittle.String_JsonDecode, content1)
 				local name = "mnbvcxzasdfghjklpoiuytrewq20160121"
 				g_IDEProject.project.control:RegisterInfo(name, content2)
 				local temp = g_IDEProject.project.control:CreateControl(name)
@@ -1266,7 +1266,7 @@ function DisplayObjectS:RemoverToNilNoNilShowSet(text, need_reset, revoke_bind)
 		end
 	else
 		local content = display_object.text
-		local error1, content1 = Lua.TCall(json.decode, content)
+		local error1, content1 = Lua.TCall(ALittle.String_JsonDecode, content)
 		if error1 == nil then
 			local include = content1.__include
 			if include == nil then
@@ -1280,7 +1280,7 @@ function DisplayObjectS:RemoverToNilNoNilShowSet(text, need_reset, revoke_bind)
 				end
 			end
 			self._base[text] = content1
-			local error2, content2 = Lua.TCall(json.decode, content)
+			local error2, content2 = Lua.TCall(ALittle.String_JsonDecode, content)
 			local name = "mnbvcxzasdfghjklpoiuytrewq20160121"
 			g_IDEProject.project.control:RegisterInfo(name, content2)
 			local temp = g_IDEProject.project.control:CreateControl(name)
@@ -1316,7 +1316,7 @@ function DisplayObjectS:TableDataSet(text, need_reset, revoke_bind)
 		self._base[text] = nil
 		if self._default[text] ~= nil then
 			local content = self._default[text]
-			local error, content1 = Lua.TCall(json.encode, content)
+			local error, content1 = Lua.TCall(ALittle.String_JsonEncode, content)
 			if error == nil then
 				display_object.text = content1
 				self._object[text] = content
@@ -1325,7 +1325,7 @@ function DisplayObjectS:TableDataSet(text, need_reset, revoke_bind)
 			self._object[text] = nil
 		end
 	else
-		local error, content = Lua.TCall(json.decode, display_object.text)
+		local error, content = Lua.TCall(ALittle.String_JsonDecode, display_object.text)
 		if error == nil then
 			self._base[text] = content
 			self._object[text] = content
@@ -1471,7 +1471,7 @@ function DisplayObjectS:LoadShowTypeData(text)
 		content = self._default[text]
 	end
 	if content ~= nil then
-		local error, object = Lua.TCall(json.encode, content)
+		local error, object = Lua.TCall(ALittle.String_JsonEncode, content)
 		if error == nil then
 			display_object.text = object
 		else
@@ -1490,7 +1490,7 @@ function DisplayObjectS:LoadShowTypeNoNilData(text)
 			content = self._default[text]
 		end
 		if content ~= nil then
-			local error, new_content = Lua.TCall(json.encode, content)
+			local error, new_content = Lua.TCall(ALittle.String_JsonEncode, content)
 			if error == nil then
 				display_object.text = new_content
 			else
@@ -1502,7 +1502,7 @@ function DisplayObjectS:LoadShowTypeNoNilData(text)
 	else
 		local content = self._base[text]
 		if content ~= nil then
-			local error, new_content = Lua.TCall(json.encode, content)
+			local error, new_content = Lua.TCall(ALittle.String_JsonEncode, content)
 			if error == nil then
 				display_object.text = new_content
 			else
@@ -1538,7 +1538,7 @@ function DisplayObjectS:LoadColorData(text)
 	if color == nil then
 		color = self._default[text]
 	end
-	display_object.text = tonumber(color) * 255
+	display_object.text = color * 255
 end
 
 function DisplayObjectS:LoadBoolData(text, default_bool, list)

@@ -4,11 +4,10 @@ module("ALittleIDE", package.seeall)
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___coroutine = coroutine
 
 
-assert(DisplayLayoutS, " extends class:DisplayLayoutS is nil")
-TabS = ALittle.Class(DisplayLayoutS, "ALittleIDE.TabS")
+assert(ALittleIDE.DisplayLayoutS, " extends class:ALittleIDE.DisplayLayoutS is nil")
+TabS = Lua.Class(ALittleIDE.DisplayLayoutS, "ALittleIDE.TabS")
 
 function TabS:Ctor(user_info, tab_child, tree_logic)
 	___rawset(self, "_layer_name", "ide_setting_tab")
@@ -62,7 +61,7 @@ function TabS:HandleShowHeadBFOCUSOUT(event)
 end
 
 function TabS:HandleShowHeadBSelect(event)
-	local func = ALittle.Bind(self.ImagePathSelectCallback, self, "show_head_background", self.HandleShowHeadBFOCUSOUT, nil)
+	local func = Lua.Bind(self.ImagePathSelectCallback, self, "show_head_background", self.HandleShowHeadBFOCUSOUT, nil)
 	g_IDEAttrImageDialog:ShowDialog(nil, func)
 end
 

@@ -4,7 +4,6 @@ module("ALittleIDE", package.seeall)
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___coroutine = coroutine
 local ___all_struct = ALittle.GetAllStruct()
 
 ALittle.RegStruct(-11865120, "ALittleIDE.IDEControlItemUserData", {
@@ -110,7 +109,7 @@ type_list = {"ALittle.DisplayObject","double","double","double","double","double
 option_map = {}
 })
 
-IDEControlManager = ALittle.Class(nil, "ALittleIDE.IDEControlManager")
+IDEControlManager = Lua.Class(nil, "ALittleIDE.IDEControlManager")
 
 function IDEControlManager:Ctor()
 	___rawset(self, "_drag_effect", nil)
@@ -118,6 +117,10 @@ function IDEControlManager:Ctor()
 	___rawset(self, "_item_pool", {})
 	___rawset(self, "_item_pool_count", 0)
 	___rawset(self, "_item_used", {})
+end
+
+function IDEControlManager.ControlInfoCmp(a, b)
+	return a.name < b.name
 end
 
 function IDEControlManager:HandleControlSearchClick(event)
@@ -140,7 +143,7 @@ function IDEControlManager:HandleControlSearchClick(event)
 	local control_map = project.control_map
 	for control_name, control_info in ___pairs(control_map) do
 		if search_type == "控件名|描述" then
-			if key == "" or ALittle.Find(control_name, key) ~= nil or (control_info.info.description ~= nil and ALittle.Find(control_info.info.description, key) ~= nil) then
+			if key == "" or ALittle.String_Find(control_name, key) ~= nil or (control_info.info.description ~= nil and ALittle.String_Find(control_info.info.description, key) ~= nil) then
 				control_info_count = control_info_count + 1
 				control_info_list[control_info_count] = control_info
 			end
@@ -159,7 +162,7 @@ function IDEControlManager:HandleControlSearchClick(event)
 	local tabname_map = g_IDETabManager:GetTabNameMap()
 	local search_count = 0
 	local last_control_info = nil
-	table.sort(control_info_list, IDEControlManager.ControlInfoCmp)
+	ALittle.List_Sort(control_info_list, IDEControlManager.ControlInfoCmp)
 	for index, control_info in ___ipairs(control_info_list) do
 		local item = nil
 		if self._item_pool_count > 0 then
@@ -307,7 +310,7 @@ function IDEControlManager:HandleControlDragEnd(event)
 	info["index"] = 1
 	info["info"] = save_info
 	copy_list[1] = info
-	ALittle.System_SetClipboardText(json.encode(copy_list))
+	ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list))
 	if tree:IsTree() then
 		tab_child:RightControlTreePasteImpl(tree, nil, 1)
 	else
@@ -434,7 +437,7 @@ function IDEControlManager:HandleControlRightMenuDelete(event)
 		g_IDETool:ShowNotice("错误", content)
 		return
 	end
-	local callback = ALittle.Bind(self.DeleteControlImpl, self, target)
+	local callback = Lua.Bind(self.DeleteControlImpl, self, target)
 	g_IDETool:DeleteNotice("提示", "确定要删除" .. target.text .. "吗?", callback)
 end
 
@@ -454,7 +457,7 @@ function IDEControlManager:HandleControlRightMenuCopyInfo(event)
 	local user_data = target._user_data
 	local name = user_data.control_info.name
 	local x, y = target:LocalToGlobal()
-	local callback = ALittle.Bind(self.ControlCopyInfo, self, name)
+	local callback = Lua.Bind(self.ControlCopyInfo, self, name)
 	g_IDETool:ShowRename(callback, name, x, y, target.width)
 end
 
@@ -515,7 +518,7 @@ function IDEControlManager:ControlRenameImpl(target)
 		return
 	end
 	local x, y = target:LocalToGlobal()
-	local callback = ALittle.Bind(self.ControlRename, self, target, name)
+	local callback = Lua.Bind(self.ControlRename, self, target, name)
 	g_IDETool:ShowRename(callback, name, x, y, target.width)
 end
 
@@ -539,7 +542,7 @@ function IDEControlManager:HandleControlRightMenuCopyExtends(event)
 	info["index"] = 1
 	info["info"] = save_info
 	copy_list[1] = info
-	ALittle.System_SetClipboardText(json.encode(copy_list))
+	ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list))
 end
 
 function IDEControlManager:ControlRunImpl(name)
@@ -549,7 +552,7 @@ function IDEControlManager:ControlRunImpl(name)
 	debug["window_height"] = g_IDEProject.project.config:GetConfig("default_show_height", 600)
 	debug["ui_name"] = name
 	debug["module_name"] = g_IDEProject.project.name
-	local debug_str = json.encode(debug)
+	local debug_str = ALittle.String_JsonEncode(debug)
 	debug_str = "\"" .. ALittle.String_Replace(debug_str, "\"", "\\\"") .. "\""
 	os.execute("start ALittleClientWin32.exe " .. debug_str .. " " .. g_IDEProject.project.name .. " Engine/MainTemplate/UIViewer")
 end
@@ -592,10 +595,6 @@ function IDEControlManager:HandleControlRightMenuFlagQuickOther(event)
 	self._control_right_menu._user_data = nil
 	local user_data = target._user_data
 	g_IDEQuickManager:FlagOther(user_data.control_info.name)
-end
-
-function IDEControlManager.ControlInfoCmp(a, b)
-	return a.name < b.name
 end
 
 g_IDEControlManager = IDEControlManager()

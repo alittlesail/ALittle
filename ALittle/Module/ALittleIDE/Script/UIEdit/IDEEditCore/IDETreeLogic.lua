@@ -4,7 +4,6 @@ module("ALittleIDE", package.seeall)
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___coroutine = coroutine
 local ___all_struct = ALittle.GetAllStruct()
 
 ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
@@ -33,7 +32,7 @@ option_map = {}
 })
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
-IDETreeLogic = ALittle.Class(ALittle.DisplayLayout, "ALittleIDE.IDETreeLogic")
+IDETreeLogic = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDETreeLogic")
 
 function IDETreeLogic:Ctor(ctrl_sys, user_info, tab_child)
 	___rawset(self, "_tab_child", tab_child)
@@ -55,17 +54,6 @@ function IDETreeLogic.__getter:user_info()
 	return self._user_info
 end
 
-function IDETreeLogic.__getter:attr_panel()
-	return self._attr_panel
-end
-
-function IDETreeLogic.__getter:title()
-	return self._item_title.text
-end
-
-function IDETreeLogic.__setter:fold(value)
-end
-
 function IDETreeLogic:IsRoot()
 	return self._user_info.root
 end
@@ -74,8 +62,19 @@ function IDETreeLogic:IsTree()
 	return false
 end
 
+function IDETreeLogic.__getter:attr_panel()
+	return self._attr_panel
+end
+
+function IDETreeLogic.__getter:title()
+	return self._item_title.text
+end
+
 function IDETreeLogic:CanAddChild()
 	return false
+end
+
+function IDETreeLogic.__setter:fold(value)
 end
 
 function IDETreeLogic:GetDesc()
@@ -267,10 +266,10 @@ function IDETreeLogic:HandleDragEnd(event)
 	info.index = 1
 	info.info = self:CalcInfo()
 	copy_list[1] = info
-	ALittle.System_SetClipboardText(json.encode(copy_list))
+	ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list))
 	local revoke_bind = IDERevokeBind()
 	if tree:IsTree() then
-		self._tab_child:RightControlTreePasteImpl(tree, nil, 1, revoke_bind, ALittle.Bind(self.HandleDragEndAndCut, self, revoke_bind))
+		self._tab_child:RightControlTreePasteImpl(tree, nil, 1, revoke_bind, Lua.Bind(self.HandleDragEndAndCut, self, revoke_bind))
 	else
 		local common_parent = tree._logic_parent
 		if common_parent == nil then
@@ -283,7 +282,7 @@ function IDETreeLogic:HandleDragEnd(event)
 		if event.abs_y > y then
 			child_index = child_index + 1
 		end
-		self._tab_child:RightControlTreePasteImpl(common_parent, nil, child_index, revoke_bind, ALittle.Bind(self.HandleDragEndAndCut, self, revoke_bind))
+		self._tab_child:RightControlTreePasteImpl(common_parent, nil, child_index, revoke_bind, Lua.Bind(self.HandleDragEndAndCut, self, revoke_bind))
 	end
 end
 

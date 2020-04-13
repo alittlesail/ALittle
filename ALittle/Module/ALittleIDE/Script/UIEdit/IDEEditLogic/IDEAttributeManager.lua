@@ -3,10 +3,9 @@ module("ALittleIDE", package.seeall)
 
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___coroutine = coroutine
 
 
-IDEAttributeManager = ALittle.Class(nil, "ALittleIDE.IDEAttributeManager")
+IDEAttributeManager = Lua.Class(nil, "ALittleIDE.IDEAttributeManager")
 
 function IDEAttributeManager:Setup(tab, control)
 	self._main_tab = tab

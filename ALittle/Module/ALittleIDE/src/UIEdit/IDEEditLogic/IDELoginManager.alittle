@@ -7,7 +7,7 @@ class IDELoginManager
 	private int _logingate_port;
 	private string _version_ip;
 	private int _version_port;
-	private ALittle.MsgSender _msg_client;
+	private ALittle.IMsgCommonTemplate _msg_client;
 	private string _session_id;
 
 	private ALittle.S2CWebAccountInfo _account_info;
@@ -38,7 +38,7 @@ class IDELoginManager
 	public ctor()
 	{
 		// 获取配置信息
-		var config = new ALittle.ClientConfigSystem(g_ModuleBasePath.."/Other/Server.cfg");
+		var config = ALittle.CreateConfigSystem(g_ModuleBasePath.."/Other/Server.cfg");
 	
 		// 登录网关
 		this._logingate_ip = config.GetConfig("logingate_ip", "version.alittleide.com");
@@ -49,7 +49,7 @@ class IDELoginManager
 		this._version_port = config.GetConfig("version_port", 1011);
 	
 		// 创建长连接
-		this._msg_client = new ALittle.MsgSender(30, true);
+		this._msg_client = ALittle.CreateMsgSender(30, true);
 	
 		// 短链接会话ID
 		this._session_id = "";
@@ -98,7 +98,7 @@ class IDELoginManager
 	{
         var param = new GatewayServer.QRouteInfo();
         param.route_type = ALittle.RouteType.RT_VERSION; // 版本服务器
-		var client = new ALittle.HttpSender(this._logingate_ip, this._logingate_port);
+		var client = ALittle.CreateHttpSender(this._logingate_ip, this._logingate_port);
 		var error, result = GatewayServer.HandleQRouteInfo(client, param);
 		if (error != null)
 		{
@@ -109,7 +109,7 @@ class IDELoginManager
 			return;
 		}
 
-		this._msg_client = new ALittle.MsgSender(60, true, bind(this.OnDisconnected, this));
+		this._msg_client = ALittle.CreateMsgSender(60, true, bind(this.OnDisconnected, this));
 		error = this._msg_client.Connect(result.client_ip, result.client_port);
 		if (error != null)
 		{
@@ -332,11 +332,11 @@ class IDELoginManager
 
 protected var g_IDELoginManager = new IDELoginManager();
 
-@Msg
+[Msg]
 public static HandleMsgNForceLogout(ALittle.IMsgCommon client, ALittle.S2CWebForceLogout msg) { g_IDELoginManager.HandleMsgNForceLogout(); }
-@Msg
+[Msg]
 public static HandleMsgNWebSession(ALittle.IMsgCommon client, ALittle.S2CWebSession msg) { g_IDELoginManager.HandleMsgNWebSession(msg); }
-@Msg
+[Msg]
 public static HandleMsgNWebAccountInfo(ALittle.IMsgCommon client, ALittle.S2CWebAccountInfo msg) { g_IDELoginManager.HandleMsgNWebAccountInfo(msg); }
-@Msg
+[Msg]
 public static HandleMsgNWebServerInfo(ALittle.IMsgCommon client, ALittle.S2CWebServerInfo msg) { g_IDELoginManager.HandleMsgNWebServerInfo(msg); }

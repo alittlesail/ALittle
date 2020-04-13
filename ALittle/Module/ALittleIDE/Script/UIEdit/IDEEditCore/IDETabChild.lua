@@ -4,7 +4,6 @@ module("ALittleIDE", package.seeall)
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___coroutine = coroutine
 local ___all_struct = ALittle.GetAllStruct()
 
 ALittle.RegStruct(1290936016, "ALittleIDE.IDETabChildHandleInfo", {
@@ -116,7 +115,7 @@ type_list = {"ALittle.DisplayObject","bool"},
 option_map = {}
 })
 
-IDETabChild = ALittle.Class(nil, "ALittleIDE.IDETabChild")
+IDETabChild = Lua.Class(nil, "ALittleIDE.IDETabChild")
 
 function IDETabChild:Ctor(name, save)
 	___rawset(self, "_name", name)
@@ -150,6 +149,10 @@ function IDETabChild:Ctor(name, save)
 	___rawset(self, "_revoke_list", IDERevokeList())
 	___rawset(self, "_tree_loop_x", nil)
 	___rawset(self, "_tree_loop_y", nil)
+end
+
+function IDETabChild:HandleTreeSizeChanged(event)
+	self._tree_screen:RejustScrollBar()
 end
 
 function IDETabChild.__getter:name()
@@ -192,18 +195,6 @@ function IDETabChild.__getter:save()
 	return self._save
 end
 
-function IDETabChild.__getter:total_title()
-	local text = self._tree_object:GetDesc()
-	if text == "" then
-		return self._name
-	end
-	return self._name .. "(" .. text .. ")"
-end
-
-function IDETabChild:HandleTreeSizeChanged(event)
-	self._tree_screen:RejustScrollBar()
-end
-
 function IDETabChild:Save(value)
 	if self._save == value then
 		return true, nil
@@ -238,14 +229,22 @@ function IDETabChild:UpdateTitle()
 	local text = self._tree_object:GetDesc()
 	if text == "" then
 		text = self._name
-		if string.len(self._name) > 15 then
-			text = "..." .. string.sub(self._name, -15, -1)
+		if ALittle.String_Len(self._name) > 15 then
+			text = "..." .. ALittle.String_Sub(self._name, -15, -1)
 		end
 	end
 	if self._save == false then
 		text = text .. " *"
 	end
 	g_IDETabManager.main_tab:SetChildText(self._tab_body, text)
+end
+
+function IDETabChild.__getter:total_title()
+	local text = self._tree_object:GetDesc()
+	if text == "" then
+		return self._name
+	end
+	return self._name .. "(" .. text .. ")"
 end
 
 function IDETabChild:SetEditWH(width, height)
@@ -520,7 +519,7 @@ function IDETabChild:ShowHandleQuad(target, force_shift)
 	target:ShowAttributePanel()
 	handle_info.target = target
 	self._tab_quad_map[target] = handle_info
-	local loop = ALittle.LoopFunction(ALittle.Bind(self.FocusInHandleQuad, self, target), 1, 0, 1)
+	local loop = ALittle.LoopFunction(Lua.Bind(self.FocusInHandleQuad, self, target), 1, 0, 1)
 	loop:Start()
 end
 
@@ -630,6 +629,10 @@ function IDETabChild:HandleHandleQuadLButtonUp(event)
 	self:HideHandleQuad(handle_info.target)
 end
 
+function IDETabChild.ControlCopyInfoCmp(a, b)
+	return a.index < b.index
+end
+
 function IDETabChild:HandleHandleQuadKeyDown(event)
 	if event.sym == 99 and bit.band(event.mod, 0x00c0) ~= 0 then
 		local copy_list = {}
@@ -644,8 +647,8 @@ function IDETabChild:HandleHandleQuadKeyDown(event)
 			end
 		end
 		if copy_list_count > 0 then
-			table.sort(copy_list, IDETabChild.ControlCopyInfoCmp)
-			ALittle.System_SetClipboardText(json.encode(copy_list))
+			ALittle.List_Sort(copy_list, IDETabChild.ControlCopyInfoCmp)
+			ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list))
 		end
 		return
 	end
@@ -660,8 +663,8 @@ function IDETabChild:HandleHandleQuadKeyDown(event)
 			copy_list[copy_list_count] = info
 		end
 		if copy_list_count > 0 then
-			table.sort(copy_list, IDETabChild.ControlCopyInfoCmp)
-			ALittle.System_SetClipboardText(json.encode(copy_list))
+			ALittle.List_Sort(copy_list, IDETabChild.ControlCopyInfoCmp)
+			ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list))
 			local revoke_bind = IDERevokeBind()
 			for target, handle_info in ___pairs(self._tab_quad_map) do
 				handle_info.target:TreeCut(revoke_bind)
@@ -751,7 +754,7 @@ function IDETabChild:HandleHandleQuadDragBegin(event)
 	for target, handle_info in ___pairs(self._tab_quad_map) do
 		handle_info.delta_x = 0
 		handle_info.delta_y = 0
-		handle_info.lock_x_or_y = math.abs(event.delta_x) > math.abs(event.delta_y)
+		handle_info.lock_x_or_y = ALittle.Math_Abs(event.delta_x) > ALittle.Math_Abs(event.delta_y)
 		handle_info.buttondown_lock = false
 	end
 	self:Save(false)
@@ -848,7 +851,7 @@ function IDETabChild:HandleHandleSizeQuadDragBegin(event)
 	for target, handle_info in ___pairs(self._tab_quad_map) do
 		handle_info.delta_width = 0
 		handle_info.delta_height = 0
-		handle_info.lock_width_or_height = math.abs(event.delta_x) > math.abs(event.delta_y)
+		handle_info.lock_width_or_height = ALittle.Math_Abs(event.delta_x) > ALittle.Math_Abs(event.delta_y)
 	end
 	self:Save(false)
 end
@@ -932,7 +935,7 @@ function IDETabChild:HandleRightControlTreeAddImage(event)
 	A_LayerManager:HideFromRight(self._control_tabchild_menu)
 	local target = self._control_tabchild_menu._user_data
 	self._control_tabchild_menu._user_data = nil
-	local func = ALittle.Bind(self.ImagePathSelectCallback, self, target)
+	local func = Lua.Bind(self.ImagePathSelectCallback, self, target)
 	g_IDEAttrImageDialog:ShowDialog(nil, func)
 end
 
@@ -980,8 +983,8 @@ function IDETabChild:HandleRightControlTreeCopy(event)
 		copy_list[copy_list_count] = info
 	end
 	if copy_list_count > 0 then
-		table.sort(copy_list, IDETabChild.ControlCopyInfoCmp)
-		ALittle.System_SetClipboardText(json.encode(copy_list))
+		ALittle.List_Sort(copy_list, IDETabChild.ControlCopyInfoCmp)
+		ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list))
 	end
 end
 
@@ -995,8 +998,8 @@ function IDETabChild:RightControlTreePasteImpl(target, copy_list, child_index, r
 			end
 			return
 		end
-		local error, copy_list_tmp = ALittle.TCall(json.decode, text_info)
-		if error ~= nil or table.maxn(copy_list_tmp) == 0 then
+		local error, copy_list_tmp = Lua.TCall(ALittle.String_JsonDecode, text_info)
+		if error ~= nil or ALittle.List_MaxN(copy_list_tmp) == 0 then
 			g_IDETool:ShowNotice("错误", "剪切板的内容不能粘帖")
 			if callback ~= nil then
 				callback(false, nil)
@@ -1092,8 +1095,8 @@ function IDETabChild:HandleRightControlTreeCut(event)
 		copy_list[copy_list_count] = info
 	end
 	if copy_list_count > 0 then
-		table.sort(copy_list, IDETabChild.ControlCopyInfoCmp)
-		ALittle.System_SetClipboardText(json.encode(copy_list))
+		ALittle.List_Sort(copy_list, IDETabChild.ControlCopyInfoCmp)
+		ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list))
 		local revoke_bind = IDERevokeBind()
 		for target, handle_info in ___pairs(self._tab_quad_map) do
 			handle_info.target:TreeCut(revoke_bind)
@@ -1180,11 +1183,11 @@ function IDETabChild:ShowTreeItemFocus(target)
 	local target_x = (self._tree_screen.view_width - target.width / 2) / 2 - x
 	local target_y = (self._tree_screen.view_height - target.height) / 2 - y
 	if self._tree_loop_x ~= nil then
-		self._tree_loop_x:Close()
+		self._tree_loop_x:Stop()
 		self._tree_loop_x = nil
 	end
 	if self._tree_loop_y ~= nil then
-		self._tree_loop_y:Close()
+		self._tree_loop_y:Stop()
 		self._tree_loop_y = nil
 	end
 	self._tree_loop_x = ALittle.LoopLinear(self._tree_screen, "container_x", target_x, 300, 0)
@@ -1202,7 +1205,7 @@ function IDETabChild:SearchLink(name)
 		self._tree_search_info.index = 0
 	end
 	local list = self._tree_object:SearchLink(name)
-	local count = table.maxn(list)
+	local count = ALittle.List_MaxN(list)
 	if count == 0 then
 		return
 	end
@@ -1223,7 +1226,7 @@ function IDETabChild:SearchEvent(name)
 		self._tree_search_info.index = 0
 	end
 	local list = self._tree_object:SearchEvent(name)
-	local count = table.maxn(list)
+	local count = ALittle.List_MaxN(list)
 	if count == 0 then
 		return
 	end
@@ -1244,7 +1247,7 @@ function IDETabChild:SearchDescription(name)
 		self._tree_search_info.index = 0
 	end
 	local list = self._tree_object:SearchDescription(name)
-	local count = table.maxn(list)
+	local count = ALittle.List_MaxN(list)
 	if count == 0 then
 		return
 	end
@@ -1265,7 +1268,7 @@ function IDETabChild:SearchTargetClass(name)
 		self._tree_search_info.index = 0
 	end
 	local list = self._tree_object:SearchTargetClass(name)
-	local count = table.maxn(list)
+	local count = ALittle.List_MaxN(list)
 	if count == 0 then
 		return
 	end
@@ -1286,7 +1289,7 @@ function IDETabChild:SearchTextureName(name)
 		self._tree_search_info.index = 0
 	end
 	local list = self._tree_object:SearchTextureName(name)
-	local count = table.maxn(list)
+	local count = ALittle.List_MaxN(list)
 	if count == 0 then
 		return
 	end
@@ -1309,7 +1312,7 @@ function IDETabChild:QuickDragAddControl(abs_x, abs_y, control_name)
 	local global_x, global_y = self._tab_handle_quad:LocalToGlobal()
 	local list = {}
 	self._tree_object:QuickPickUp(abs_x - global_x, abs_y - global_y, list)
-	local count = table.maxn(list)
+	local count = ALittle.List_MaxN(list)
 	if count == 0 then
 		return
 	end
@@ -1367,7 +1370,7 @@ function IDETabChild:QuickDragAddStart(tree, user_data)
 	info.info = display_info
 	local copy_list = {}
 	copy_list[1] = info
-	self:RightControlTreePasteImpl(tree, copy_list, tree.child_count + 1, revoke_bind, ALittle.Bind(self.QuickDragAddEnd, self, tree, user_data, revoke_bind))
+	self:RightControlTreePasteImpl(tree, copy_list, tree.child_count + 1, revoke_bind, Lua.Bind(self.QuickDragAddEnd, self, tree, user_data, revoke_bind))
 end
 
 function IDETabChild:QuickDragAddEnd(tree, user_data, revoke_bind, result, add_list)
@@ -1382,9 +1385,5 @@ function IDETabChild:QuickDragAddEnd(tree, user_data, revoke_bind, result, add_l
 		tree_object.attr_panel:SetYValue(user_data.abs_y - global_y, revoke_bind)
 	end
 	self._revoke_list:PushRevoke(revoke_bind)
-end
-
-function IDETabChild.ControlCopyInfoCmp(a, b)
-	return a.index < b.index
 end
 

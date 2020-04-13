@@ -206,8 +206,8 @@ public class IDETabChild
 		if (text == "")
         {
             text = this._name;
-			if (lua.String.len(this._name) > 15)
-                text =  "..."..lua.String.sub(this._name, -15, -1);
+			if (ALittle.String_Len(this._name) > 15)
+                text =  "..."..ALittle.String_Sub(this._name, -15, -1);
 		}
         if (this._save == false) text = text.." *";
         g_IDETabManager.main_tab.SetChildText(this._tab_body, text);
@@ -704,8 +704,8 @@ public class IDETabChild
 			}
 			if (copy_list_count > 0)
             {
-                lua.table.sort(copy_list, IDETabChild.ControlCopyInfoCmp);
-                ALittle.System_SetClipboardText(lua.json.encode(copy_list));
+                ALittle.List_Sort(copy_list, IDETabChild.ControlCopyInfoCmp);
+                ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list));
 			}
             return;
 		}
@@ -724,8 +724,8 @@ public class IDETabChild
 			}
 			if (copy_list_count > 0)
             {
-                lua.table.sort(copy_list, IDETabChild.ControlCopyInfoCmp);
-                ALittle.System_SetClipboardText(lua.json.encode(copy_list));
+                ALittle.List_Sort(copy_list, IDETabChild.ControlCopyInfoCmp);
+                ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list));
                 var revoke_bind = new IDERevokeBind();
 				for (var target, handle_info in this._tab_quad_map)
                     handle_info.target.TreeCut(revoke_bind);
@@ -831,7 +831,7 @@ public class IDETabChild
         {
             handle_info.delta_x = 0;
             handle_info.delta_y = 0;
-            handle_info.lock_x_or_y = lua.math.abs(event.delta_x) > lua.math.abs(event.delta_y);
+            handle_info.lock_x_or_y = ALittle.Math_Abs(event.delta_x) > ALittle.Math_Abs(event.delta_y);
             handle_info.buttondown_lock = false;
 		}
 	
@@ -961,7 +961,7 @@ public class IDETabChild
         {
             handle_info.delta_width = 0;
             handle_info.delta_height = 0;
-            handle_info.lock_width_or_height = lua.math.abs(event.delta_x) > lua.math.abs(event.delta_y);
+            handle_info.lock_width_or_height = ALittle.Math_Abs(event.delta_x) > ALittle.Math_Abs(event.delta_y);
 		}
 	
         this.Save(false);
@@ -1154,8 +1154,8 @@ public class IDETabChild
 		}
 		if (copy_list_count > 0)
         {
-            lua.table.sort(copy_list, IDETabChild.ControlCopyInfoCmp);
-            ALittle.System_SetClipboardText(lua.json.encode(copy_list));
+            ALittle.List_Sort(copy_list, IDETabChild.ControlCopyInfoCmp);
+            ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list));
 		}
 	}
 	// 实际处理粘贴的函数
@@ -1172,8 +1172,8 @@ public class IDETabChild
                 return;
 			}
 	
-            var error, copy_list_tmp:List<IDEControlCopyInfo> = tcall(lua.json.decode, text_info);
-			if (error != null || lua.table.maxn(copy_list_tmp) == 0)
+            var error, copy_list_tmp:List<IDEControlCopyInfo> = tcall(ALittle.String_JsonDecode, text_info);
+			if (error != null || ALittle.List_MaxN(copy_list_tmp) == 0)
             {
                 g_IDETool.ShowNotice("错误", "剪切板的内容不能粘帖");
                 if (callback != null) callback(false, null);
@@ -1292,8 +1292,8 @@ public class IDETabChild
 		}
 		if (copy_list_count > 0)
         {
-            lua.table.sort(copy_list, IDETabChild.ControlCopyInfoCmp);
-            ALittle.System_SetClipboardText(lua.json.encode(copy_list));
+            ALittle.List_Sort(copy_list, IDETabChild.ControlCopyInfoCmp);
+            ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list));
             var revoke_bind = new IDERevokeBind();
 			for (var target, handle_info in this._tab_quad_map)
                 handle_info.target.TreeCut(revoke_bind);
@@ -1409,8 +1409,8 @@ public class IDETabChild
         var target_x = (this._tree_screen.view_width - target.width / 2) / 2 - x;
         var target_y = (this._tree_screen.view_height - target.height) / 2 - y;
 	
-        if (this._tree_loop_x != null) { this._tree_loop_x.Close(); this._tree_loop_x = null; }
-        if (this._tree_loop_y != null) { this._tree_loop_y.Close(); this._tree_loop_y = null; }
+        if (this._tree_loop_x != null) { this._tree_loop_x.Stop(); this._tree_loop_x = null; }
+        if (this._tree_loop_y != null) { this._tree_loop_y.Stop(); this._tree_loop_y = null; }
 	
         this._tree_loop_x = new ALittle.LoopLinear(this._tree_screen, "container_x", target_x, 300, 0);
         this._tree_loop_x.Start();
@@ -1428,7 +1428,7 @@ public class IDETabChild
             this._tree_search_info.index = 0;
 		}
         var list = this._tree_object.SearchLink(name);
-        var count = lua.table.maxn(list);
+        var count = ALittle.List_MaxN(list);
         if (count == 0) return;
 	
         this._tree_search_info.index = this._tree_search_info.index + 1;
@@ -1450,7 +1450,7 @@ public class IDETabChild
             this._tree_search_info.index = 0;
 		}
         var list = this._tree_object.SearchEvent(name);
-        var count = lua.table.maxn(list);
+        var count = ALittle.List_MaxN(list);
         if (count == 0) return;
 	
         this._tree_search_info.index = this._tree_search_info.index + 1;
@@ -1472,7 +1472,7 @@ public class IDETabChild
             this._tree_search_info.index = 0;
 		}
         var list = this._tree_object.SearchDescription(name);
-        var count = lua.table.maxn(list);
+        var count = ALittle.List_MaxN(list);
         if (count == 0) return;
 	
         this._tree_search_info.index = this._tree_search_info.index + 1;
@@ -1494,7 +1494,7 @@ public class IDETabChild
             this._tree_search_info.index = 0;
 		}
         var list = this._tree_object.SearchTargetClass(name);
-        var count = lua.table.maxn(list);
+        var count = ALittle.List_MaxN(list);
         if (count == 0) return;
 	
         this._tree_search_info.index = this._tree_search_info.index + 1;
@@ -1516,7 +1516,7 @@ public class IDETabChild
             this._tree_search_info.index = 0;
 		}
         var list = this._tree_object.SearchTextureName(name);
-        var count = lua.table.maxn(list);
+        var count = ALittle.List_MaxN(list);
         if (count == 0) return;
 	
         this._tree_search_info.index = this._tree_search_info.index + 1;
@@ -1545,7 +1545,7 @@ public class IDETabChild
 	
         var list = new List<IDETreeLogic>();
         this._tree_object.QuickPickUp(abs_x - global_x, abs_y - global_y, list);
-        var count = lua.table.maxn(list);
+        var count = ALittle.List_MaxN(list);
         if (count == 0) return;
 	
         var user_data = new IDETabChildQuickDragAddUserData();

@@ -171,7 +171,7 @@ class IDEExport
 					var height = ALittle.System_GetSurfaceHeight(surface);
 					ALittle.System_FreeSurface(surface);
 					var texture_info = new ALittle.AltasTextureInfo();
-					texture_info.path = lua.String.sub(file_path, lua.String.len(path)+2);
+					texture_info.path = ALittle.String_Sub(file_path, ALittle.String_Len(path)+2);
 					texture_info.width = width;
 					texture_info.height = height;
 
@@ -323,12 +323,12 @@ class IDEExport
 			var param = new VersionServer.QNewUpdateTimeIndex();
 			param.__account_id = g_IDELoginManager.account_id;
 			param.__session_id = g_IDELoginManager.session_id;
-			var client = new ALittle.HttpSender(g_IDELoginManager.http_ip, g_IDELoginManager.http_port);
+			var client = ALittle.CreateHttpSender(g_IDELoginManager.http_ip, g_IDELoginManager.http_port);
 			var error, result = VersionServer.HandleHttpQNewUpdateTimeIndex(client, param);
 			this.HandleAskNewUpdateTimeIndex(error, result, package_info, true);
 		}
 		else
-			this.HandleAskNewUpdateTimeIndexImpl(package_info, false, lua.os.time(), 0);
+			this.HandleAskNewUpdateTimeIndexImpl(package_info, false, ALittle.Time_GetCurTime(), 0);
 	}
 	
 	// 获取一个新版本
@@ -355,7 +355,7 @@ class IDEExport
 			param.__session_id = g_IDELoginManager.session_id;
 			param.platform = package_info.platform;
 			param.module_name = package_info.project_name;
-			var client = new ALittle.HttpSender(g_IDELoginManager.http_ip, g_IDELoginManager.http_port);
+			var client = ALittle.CreateHttpSender(g_IDELoginManager.http_ip, g_IDELoginManager.http_port);
 			var error, result = VersionServer.HandleHttpQNewCurVersion(client, param);
 			this.HandleQueryNewCurVersion(error, result, package_info, is_login, update_time, update_index);
 		}
@@ -387,7 +387,7 @@ class IDEExport
 			param.platform = package_info.platform;
 			param.version_id = result.version_info.version_id;
 			param.file_path = "CurVersion.db";
-			var client = new ALittle.HttpFileSender(result.http_ip, result.http_port, target_path, 0);
+			var client = ALittle.CreateHttpFileSender(result.http_ip, result.http_port, target_path, 0);
 			var error = VersionServer.HandleHttpQDownloadVersionFile(client, param);
 			this.HandleDownloadCurVersion(error, package_info, is_login, update_time, update_index);
 		}
@@ -512,7 +512,7 @@ class IDEExport
 	
 			// 插入版版本日志
 			var new_log = ALittle.String_Split(package_info.install_info.new_log, "\n");
-			var create_time  = lua.os.time();
+			var create_time  = ALittle.Time_GetCurTime();
 			var create_index = 0;
 			for (var k, v in new_log)
 			{
@@ -601,9 +601,9 @@ class IDEExport
 				}
 			}
 	
-			var db_version = lua.os.date("%Y-%m-%d-%H-%M-%S");
+			var db_version = ALittle.Time_GetCurDate();
 			if (version_info != null) db_version = version_info.big_version.c_db_version;
-			if (db_version == null) db_version = lua.os.date("%Y-%m-%d-%H-%M-%S");
+			if (db_version == null) db_version = ALittle.Time_GetCurDate();
 	
 			// 如果安装包版本有变化，那么就标记为有变化
 			if (version_info != null && version_info.big_version.c_install_version < package_info.version_info.install_version)
@@ -646,7 +646,7 @@ class IDEExport
 			sqlite_no_delete.exec("DELETE FROM SmallVersion WHERE c_is_delete=1");
 	
 			// 更新数据库版本号，这样版本更新的时候会做文件全面对比
-			db_version = lua.os.date("%Y-%m-%d-%H-%M-%S");
+			db_version = ALittle.Time_GetCurDate();
 			sqlite_no_delete.exec("UPDATE BigVersion SET c_db_version='"..db_version.."'");
 	
 			// 让文件最小化
@@ -806,7 +806,7 @@ class IDEExport
 			param.small_version_index = submit_info.small_version_index;
 			param.update_time = submit_info.update_time;
 			param.update_index = submit_info.update_index;
-			var client = new ALittle.HttpSender(g_IDELoginManager.http_ip, g_IDELoginManager.http_port);
+			var client = ALittle.CreateHttpSender(g_IDELoginManager.http_ip, g_IDELoginManager.http_port);
 			var error, result = VersionServer.HandleHttpQNewVersionInfo(client, param);
 			this.HandleNewVersionInfo(error, result, submit_info);
 		}
@@ -843,7 +843,7 @@ class IDEExport
         this._is_in_submit = true;
 
         var upload_index = 0;
-        var total_count = lua.table.maxn(submit_info.upload_list) + 2;
+        var total_count = ALittle.List_MaxN(submit_info.upload_list) + 2;
 
         var param = new VersionServer.QUploadVersionFile();
 		param.__account_id = g_IDELoginManager.account_id;
@@ -867,9 +867,9 @@ class IDEExport
 			while (repeat_count < 1)
 			{
 				++repeat_count;
-				this._submit_client = new ALittle.HttpFileSender(g_IDELoginManager.http_ip, g_IDELoginManager.http_port,
-                                      submit_info.export_module_path.."/"..file_path, 0, bind(this.HandleSubmitVersionUpload, this, upload_index, total_count));
-				error, result = VersionServer.HandleHttpQUploadVersionFile(this._submit_client, param);
+				this._submit_client = ALittle.CreateHttpFileSender(g_IDELoginManager.http_ip, g_IDELoginManager.http_port,
+                                      submit_info.export_module_path.."/"..file_path, 0, bind(this.HandleSubmitVersionUpload, this, upload_index, total_count, this._submit_client));
+				error = VersionServer.HandleHttpQUploadVersionFile(this._submit_client, param);
 				if (error == null) break;
 			}
 
@@ -893,9 +893,9 @@ class IDEExport
 			while (repeat_count < 100)
 			{
 				++repeat_count;
-				this._submit_client = new ALittle.HttpFileSender(g_IDELoginManager.http_ip, g_IDELoginManager.http_port,
-                                      submit_info.project_path.."/Export/"..submit_info.install_name, 0, bind(this.HandleSubmitVersionUpload, this, upload_index, total_count));
-				error, result = VersionServer.HandleHttpQUploadVersionFile(this._submit_client, param);
+				this._submit_client = ALittle.CreateHttpFileSender(g_IDELoginManager.http_ip, g_IDELoginManager.http_port,
+                                      submit_info.project_path.."/Export/"..submit_info.install_name, 0, bind(this.HandleSubmitVersionUpload, this, upload_index, total_count, this._submit_client));
+				error = VersionServer.HandleHttpQUploadVersionFile(this._submit_client, param);
 				if (error == null) break;
 			}
 
@@ -920,9 +920,9 @@ class IDEExport
 			while (repeat_count < 100)
 			{
 				++repeat_count;
-				this._submit_client = new ALittle.HttpFileSender(g_IDELoginManager.http_ip, g_IDELoginManager.http_port,
-                                      submit_info.export_module_path.."/CurVersion.db", 0, bind(this.HandleSubmitVersionUpload, this, upload_index, total_count));
-				error, result = VersionServer.HandleHttpQUploadVersionFile(this._submit_client, param);
+				this._submit_client = ALittle.CreateHttpFileSender(g_IDELoginManager.http_ip, g_IDELoginManager.http_port,
+                                      submit_info.export_module_path.."/CurVersion.db", 0, bind(this.HandleSubmitVersionUpload, this, upload_index, total_count, this._submit_client));
+				error = VersionServer.HandleHttpQUploadVersionFile(this._submit_client, param);
 				if (error == null) break;
 			}
 
@@ -953,10 +953,10 @@ class IDEExport
         this._submit_dialog.visible = false;
 	}
 	
-	public fun HandleSubmitVersionUpload(int upload_index, int total_count, ALittle.IHttpFileSenderNative file)
+	public fun HandleSubmitVersionUpload(int upload_index, int total_count, ALittle.IHttpFileSender file)
 	{
-		var file_path = file.GetPath();
-		var cur_size = file.GetCurrentSize();
+		var file_path = file.GetFilePath();
+		var cur_size = file.GetCurSize();
 		var total_size = file.GetTotalSize();
 
         this._submit_content.text = "正在上传:"..upload_index.."/"..total_count.."\n"..file_path;
@@ -1022,13 +1022,13 @@ class IDEExport
 		template = ALittle.String_Replace(template, "VERSION_NUMBER", package_info.version_info.version_number);
 	
 		// 替换安装包名
-		var install_name_gbk = ALittle.String_UTF8ToGBK(package_info.install_info.install_name);
+		var install_name_gbk = lua.utf8.utf82ansi(package_info.install_info.install_name);
 		template = ALittle.String_Replace(template, "INSTALL_NAME", install_name_gbk);
 		
 		// 替换安装唯一ID
 		var guid = ALittle.String_MD5(package_info.project_name.."-"..package_info.install_info.install_name);
-		guid = lua.String.upper(guid);
-		guid = lua.String.sub(guid, 1, 8).."-"..lua.String.sub(guid, 9, 13).."-"..lua.String.sub(guid, 14, 18).."-"..lua.String.sub(guid, 19, 23).."-"..lua.String.sub(guid, 24, 32);
+		guid = ALittle.String_Upper(guid);
+		guid = ALittle.String_Sub(guid, 1, 8).."-"..ALittle.String_Sub(guid, 9, 13).."-"..ALittle.String_Sub(guid, 14, 18).."-"..ALittle.String_Sub(guid, 19, 23).."-"..ALittle.String_Sub(guid, 24, 32);
 		template = ALittle.String_Replace(template, "INSTALL_GUID", guid);
 		// 是否开机启动
 		if (package_info.install_info.auto_start == true)
@@ -1069,7 +1069,7 @@ class IDEExport
 		}
         
 		// 生成AndroidManifest.xml文件
-		var file = new ALittle.LocalFile();
+		var file = new lua.__CPPAPILocalFile();
 		file.SetPath(ALittle.File_BaseFilePath().."Export/Android/AndroidManifestTemplate.xml");
 		if (file.Load())
 		{
@@ -1374,7 +1374,7 @@ class IDEExport
 		}
 	
 		// 修改文件
-		var share_file = new ALittle.LocalFile();
+		var share_file = new lua.__CPPAPILocalFile();
 		share_file.SetPath(package_info.export_path.."/ALittleClient.xcodeproj/project.pbxproj");
 		if (share_file.Load())
 		{
@@ -1384,7 +1384,7 @@ class IDEExport
 		}
 	
 		// 修改文件
-		share_file = new ALittle.LocalFile();
+		share_file = new lua.__CPPAPILocalFile();
 		share_file.SetPath(package_info.export_path.."/ALittleClient/ALittleClient.entitlements");
 		if (share_file.Load())
 		{
@@ -1394,7 +1394,7 @@ class IDEExport
 		}
 	
 		// 修改文件
-		share_file = new ALittle.LocalFile();
+		share_file = new lua.__CPPAPILocalFile();
 		share_file.SetPath(package_info.export_path.."/ALittleClient/Info.plist");
 		if (share_file.Load())
 		{

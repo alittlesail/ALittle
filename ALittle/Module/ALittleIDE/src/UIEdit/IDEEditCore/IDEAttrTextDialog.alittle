@@ -44,7 +44,7 @@ public class IDEAttrTextDialog
 	public fun ReadColor(string text) : double
 	{
 		var display_object:ALittle.DisplayObject = cast<Map<string,any>>(this)["_"..text];
-		var value = lua.tonumber(display_object.text);
+		var value = ALittle.Math_ToDouble(display_object.text);
 		if (value == null || value < 0)
 		{
 			display_object.text = "0";
@@ -72,14 +72,14 @@ public class IDEAttrTextDialog
 		if (this._deleteline.text == "是") info.deleteline = true;
 		if (this._italic.text == "是") info.italic = true;
 		if (this._font_path.text != "") info.font_path = this._font_path.text;
-		if (this._font_size.text != "") info.font_size = lua.math.floor(lua.tonumber(this._font_size.text));
+		if (this._font_size.text != "") info.font_size = ALittle.Math_ToInt(this._font_size.text);
 		info.red = this.ReadColor("red");
 		if (info.red == 1) info.red = null;
 		info.green = this.ReadColor("green");
 		if (info.green == 1) info.green = null;
 		info.blue = this.ReadColor("blue");
 		if (info.blue == 1) info.blue = null;
-		var info_json = lua.json.encode(info);
+		var info_json = ALittle.String_JsonEncode(info);
 		cast<ALittle.DisplayObject>(cast<Map<string,any>>(this._target_panel)["_"..this._target_text]).text = info_json;
 		this._target_panel.RemoverToNilShowSet(this._target_text, info_json, this._target_need_reset);
 	}

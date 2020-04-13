@@ -3,7 +3,6 @@ module("ALittleIDE", package.seeall)
 
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___coroutine = coroutine
 local ___all_struct = ALittle.GetAllStruct()
 
 ALittle.RegStruct(1715346212, "ALittle.Event", {
@@ -93,18 +92,14 @@ option_map = {}
 ALittle.RegStruct(934918978, "ALittleIDE.IDEProjectInfo", {
 name = "ALittleIDE.IDEProjectInfo", ns_name = "ALittleIDE", rl_name = "IDEProjectInfo", hash_code = 934918978,
 name_list = {"name","base_path","save","control","config","control_map"},
-type_list = {"string","string","bool","ALittle.ControlSystem","ALittle.ConfigSystem<ALittle.ClientFileLoader,ALittle.ClientFileSaver>","Map<string,ALittleIDE.IDEControlInfo>"},
+type_list = {"string","string","bool","ALittle.ControlSystem","ALittle.IJsonConfig","Map<string,ALittleIDE.IDEControlInfo>"},
 option_map = {}
 })
 
 assert(ALittle.EventDispatcher, " extends class:ALittle.EventDispatcher is nil")
-IDEProject = ALittle.Class(ALittle.EventDispatcher, "ALittleIDE.IDEProject")
+IDEProject = Lua.Class(ALittle.EventDispatcher, "ALittleIDE.IDEProject")
 
 function IDEProject:Ctor()
-end
-
-function IDEProject.__getter:project()
-	return self._project
 end
 
 function IDEProject:AddProjectConfig(name)
@@ -140,21 +135,21 @@ function IDEProject:NewProject(name, window_width, window_height, font_path, fon
 	local target_path = ALittle.File_BaseFilePath() .. "Module/" .. name .. "/"
 	local file_map = ALittle.File_GetFileAttrByDir(base_path)
 	for file_path, attr in ___pairs(file_map) do
-		local rel_path = string.sub(file_path, string.len(base_path) + 1)
+		local rel_path = ALittle.String_Sub(file_path, ALittle.String_Len(base_path) + 1)
 		local full_path = target_path .. rel_path
 		full_path = ALittle.String_Replace(full_path, "abcd@module_name@abcd", name)
-		full_path = ALittle.String_Replace(full_path, "abcd@upper_module_name@abcd", string.upper(name))
-		full_path = ALittle.String_Replace(full_path, "abcd@lower_module_name@abcd", string.lower(name))
+		full_path = ALittle.String_Replace(full_path, "abcd@upper_module_name@abcd", ALittle.String_Upper(name))
+		full_path = ALittle.String_Replace(full_path, "abcd@lower_module_name@abcd", ALittle.String_Lower(name))
 		ALittle.File_MakeDeepDir(ALittle.File_GetFilePathByPath(full_path))
-		local ext = string.upper(ALittle.File_GetFileExtByPath(file_path))
+		local ext = ALittle.String_Upper(ALittle.File_GetFileExtByPath(file_path))
 		if ext == "JSON" or ext == "LUA" or ext == "CFG" or ext == "TXT" or ext == "ALITTLE" or ext == "XML" or ext == "NAME" then
 			local content = ALittle.File_ReadTextFromFile(file_path)
 			if content ~= nil then
 				content = ALittle.String_Replace(content, "abcd@module_name@abcd", name)
-				content = ALittle.String_Replace(content, "abcd@upper_module_name@abcd", string.upper(name))
-				content = ALittle.String_Replace(content, "abcd@lower_module_name@abcd", string.lower(name))
-				content = ALittle.String_Replace(content, "abcd@view_width@abcd", tostring(window_width))
-				content = ALittle.String_Replace(content, "abcd@view_height@abcd", tostring(window_height))
+				content = ALittle.String_Replace(content, "abcd@upper_module_name@abcd", ALittle.String_Upper(name))
+				content = ALittle.String_Replace(content, "abcd@lower_module_name@abcd", ALittle.String_Lower(name))
+				content = ALittle.String_Replace(content, "abcd@view_width@abcd", "" .. window_width)
+				content = ALittle.String_Replace(content, "abcd@view_height@abcd", "" .. window_height)
 				content = ALittle.String_Replace(content, "abcd@font_path@abcd", font_path)
 				ALittle.File_WriteTextToFile(content, full_path)
 			end
@@ -164,7 +159,7 @@ function IDEProject:NewProject(name, window_width, window_height, font_path, fon
 	end
 	ALittle.File_CopyFile("Export/Icon/install.ico", ALittle.File_BaseFilePath() .. "Module/" .. name .. "/Icon/install.ico")
 	ALittle.File_CopyFile("Export/Icon/install.png", ALittle.File_BaseFilePath() .. "Module/" .. name .. "/Icon/install.png")
-	local config = ALittle.ClientConfigSystem("Module/" .. name .. "/ALittleIDE.cfg")
+	local config = ALittle.CreateConfigSystem("Module/" .. name .. "/ALittleIDE.cfg")
 	config:SetConfig("default_show_width", window_width, true)
 	config:SetConfig("default_show_height", window_height, true)
 	config:SetConfig("default_font_path", font_path, true)
@@ -182,17 +177,17 @@ function IDEProject:OpenProject(name)
 	self._project.save = true
 	self._project.control = ALittle.ControlSystem(name)
 	self._project.control.cache_texture = false
-	self._project.config = ALittle.ClientConfigSystem("Module/" .. name .. "/ALittleIDE.cfg")
+	self._project.config = ALittle.CreateConfigSystem("Module/" .. name .. "/ALittleIDE.cfg")
 	local control_map = {}
 	self._project.control_map = control_map
 	local path = ALittle.File_BaseFilePath() .. "Module/" .. name .. "/UI"
 	local file_map = ALittle.File_GetFileAttrByDir(path)
 	for file_path, attr in ___pairs(file_map) do
-		local ext = string.upper(ALittle.File_GetFileExtByPath(file_path))
+		local ext = ALittle.String_Upper(ALittle.File_GetFileExtByPath(file_path))
 		if ext == "JSON" then
 			local content = ALittle.File_ReadTextFromFile(file_path)
 			if content ~= nil then
-				local error, content_info_map = ALittle.TCall(json.decode, content)
+				local error, content_info_map = Lua.TCall(ALittle.String_JsonDecode, content)
 				if error == nil then
 					for control_name, control_info in ___pairs(content_info_map) do
 						local all_info = {}
@@ -265,7 +260,7 @@ function IDEProject:SaveControl(name, info)
 	local file_path = self._project.base_path .. "UI/" .. name .. ".json"
 	local save_info = {}
 	save_info[name] = info
-	if ALittle.File_SaveFile(file_path, json.encode(save_info), -1) == false then
+	if ALittle.File_SaveFile(file_path, ALittle.String_JsonEncode(save_info), -1) == false then
 		return false, "文件保存失败:" .. file_path
 	end
 	local all_info = self._project.control_map[name]
@@ -335,7 +330,7 @@ function IDEProject:DeleteControl(name)
 		return result, content
 	end
 	local file_path = self._project.base_path .. "UI/" .. name .. ".json"
-	os.remove(file_path)
+	ALittle.File_DeleteFile(file_path)
 	local all_info = self._project.control_map[name]
 	for other_name, v in ___pairs(all_info.extends_other) do
 		local other = self._project.control_map[other_name]
@@ -369,14 +364,14 @@ function IDEProject:RenameControl(old_name, new_name)
 	self._project.control_map[old_name] = nil
 	self._project.control:UnRegisterInfo(old_name)
 	local file_path = self._project.base_path .. "UI/" .. old_name .. ".json"
-	os.remove(file_path)
+	ALittle.File_DeleteFile(file_path)
 	all_info.name = new_name
 	self._project.control_map[new_name] = all_info
 	self._project.control:RegisterInfo(new_name, ALittle.String_CopyTable(all_info.info))
 	file_path = self._project.base_path .. "UI/" .. new_name .. ".json"
 	local save_info = {}
 	save_info[new_name] = all_info.info
-	ALittle.File_SaveFile(file_path, json.encode(save_info), -1)
+	ALittle.File_SaveFile(file_path, ALittle.String_JsonEncode(save_info), -1)
 	local ce = {}
 	ce.name = new_name
 	self:DispatchEvent(___all_struct[-93681239], ce)
@@ -404,6 +399,10 @@ function IDEProject:RemoveProject(name)
 		g_IDEConfig:SetConfig("last_project", "")
 	end
 	return true, nil
+end
+
+function IDEProject.__getter:project()
+	return self._project
 end
 
 g_IDEProject = IDEProject()

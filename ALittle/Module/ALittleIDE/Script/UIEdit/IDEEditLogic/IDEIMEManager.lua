@@ -3,10 +3,9 @@ module("ALittleIDE", package.seeall)
 
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___coroutine = coroutine
 
 
-IDEIMEManager = ALittle.Class(nil, "ALittleIDE.IDEIMEManager")
+IDEIMEManager = Lua.Class(nil, "ALittleIDE.IDEIMEManager")
 
 function IDEIMEManager:Ctor()
 end
@@ -21,7 +20,7 @@ function IDEIMEManager:Setup()
 		self._ime_dialog.visible = false
 		self._ime_dialog_init_width = self._ime_dialog.width
 	end
-	self._callback = ALittle.Bind(self.HandleImeEditingCallback, self)
+	self._callback = Lua.Bind(self.HandleImeEditingCallback, self)
 	A_UISystem.ime_callback = self._callback
 end
 

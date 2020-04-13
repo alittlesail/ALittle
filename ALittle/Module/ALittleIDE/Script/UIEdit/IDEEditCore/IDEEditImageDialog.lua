@@ -3,10 +3,9 @@ module("ALittleIDE", package.seeall)
 
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___coroutine = coroutine
 
 
-IDEEditImageDialog = ALittle.Class(nil, "ALittleIDE.IDEEditImageDialog")
+IDEEditImageDialog = Lua.Class(nil, "ALittleIDE.IDEEditImageDialog")
 
 function IDEEditImageDialog:HideDialog()
 	if self._dialog ~= nil then

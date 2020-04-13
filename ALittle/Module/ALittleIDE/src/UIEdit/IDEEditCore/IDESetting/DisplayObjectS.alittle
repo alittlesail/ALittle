@@ -368,7 +368,7 @@ public class DisplayObjectS
 	public fun HandleXValueDrag(ALittle.UIButtonDragEvent event)
 	{
 		// 获取当前值
-		var value = lua.tonumber(this._x_value.text);
+		var value = ALittle.Math_ToDouble(this._x_value.text);
 		if (value == null) value = 0;
 		value = value + event.delta_x;
 		this._x_value.text = value;
@@ -394,7 +394,7 @@ public class DisplayObjectS
 	public fun HandleYValueDrag(ALittle.UIButtonDragEvent event)
 	{
 		// 获取当前值
-		var value = lua.tonumber(this._y_value.text);
+		var value = ALittle.Math_ToDouble(this._y_value.text);
 		if (value == null) value = 0;
 		value = value + event.delta_x;
 		this._y_value.text = value;
@@ -420,7 +420,7 @@ public class DisplayObjectS
 	public fun HandleWValueDrag(ALittle.UIButtonDragEvent event)
 	{
 		// 获取当前值
-		var value = lua.tonumber(this._width_value.text);
+		var value = ALittle.Math_ToDouble(this._width_value.text);
 		if (value == null) value = 0;
 		value = value + event.delta_x;
 		this._width_value.text = value;
@@ -446,7 +446,7 @@ public class DisplayObjectS
 	public fun HandleHValueDrag(ALittle.UIButtonDragEvent event)
 	{
 		// 获取当前值
-		var value = lua.tonumber(this._height_value.text);
+		var value = ALittle.Math_ToDouble(this._height_value.text);
 		if (value == null) value =0;
 		value = value + event.delta_x;
 		this._height_value.text = value;
@@ -470,7 +470,7 @@ public class DisplayObjectS
 	public fun HandleAlphaValueDrag(ALittle.UIButtonDragEvent event)
 	{
 		// 获取当前值
-		var value = lua.tonumber(this._alpha.text);
+		var value = ALittle.Math_ToDouble(this._alpha.text);
 		if (value == null) value = 0;
 		value = value + event.delta_x;
 		if (value < 0) value = 0;
@@ -496,7 +496,7 @@ public class DisplayObjectS
 	public fun HandleRedValueDrag(ALittle.UIButtonDragEvent event)
 	{
 		// 获取当前值
-		var value = lua.tonumber(this._red.text);
+		var value = ALittle.Math_ToDouble(this._red.text);
 		if (value == null) value = 0;
 		value = value + event.delta_x;
 		if (value < 0) value = 0;
@@ -522,7 +522,7 @@ public class DisplayObjectS
 	public fun HandleGreenValueDrag(ALittle.UIButtonDragEvent event)
 	{
 		// 获取当前值
-		var value = lua.tonumber(this._green.text);
+		var value = ALittle.Math_ToDouble(this._green.text);
 		if (value == null) value = 0;
 		value = value + event.delta_x;
 		if (value < 0) value = 0;
@@ -548,7 +548,7 @@ public class DisplayObjectS
 	public fun HandleBlueValueDrag(ALittle.UIButtonDragEvent event)
 	{
 		// 获取当前值
-		var value = lua.tonumber(this._blue.text);
+		var value = ALittle.Math_ToDouble(this._blue.text);
 		if (value == null) value = 0;
 		value = value + event.delta_x;
 		if (value < 0) value = 0;
@@ -615,7 +615,7 @@ public class DisplayObjectS
 	public fun HandleAngleDrag(ALittle.UIButtonDragEvent event)
 	{
 		// 获取当前值
-		var value = lua.tonumber(this._angle.text);
+		var value = ALittle.Math_ToDouble(this._angle.text);
 		if (value == null) value = 0;
 		value = value + event.delta_x;
 		this._angle.text = value;
@@ -795,7 +795,7 @@ public class DisplayObjectS
 		var old_object = cast<Map<string, any>>(this._object)[text];
 		// 设置新的属性
 		var display_object:ALittle.DisplayObject = cast<Map<string, any>>(this)["_"..text];
-		var value = lua.tonumber(display_object.text);
+		var value = ALittle.Math_ToDouble(display_object.text);
 		if (value == null)
 		{
 			display_object.text = "0";
@@ -835,7 +835,7 @@ public class DisplayObjectS
 		var old_object = cast<Map<string, any>>(this._object)[text];
 		// 设置新的属性
 		var display_object:ALittle.DisplayObject = cast<Map<string, any>>(this)["_"..text];
-		var value = lua.tonumber(display_object.text);
+		var value = ALittle.Math_ToDouble(display_object.text);
 		if (value == null || value < 0)
 		{
 			display_object.text = "0";
@@ -876,7 +876,7 @@ public class DisplayObjectS
 		var old_object = cast<Map<string, any>>(this._object)[text];
 		// 设置新的属性
 		var display_object:ALittle.DisplayObject = cast<Map<string, any>>(this)["_"..text];
-		var value = lua.tonumber(display_object.text);
+		var value = ALittle.Math_ToDouble(display_object.text);
 		if (value == null || value < 0)
 		{
 			display_object.text = "0";
@@ -893,7 +893,7 @@ public class DisplayObjectS
 		}
 		else
 		{
-			if (revoke_bind == null && lua.math.ceil(cast<Map<string, double>>(this._object)[text] * 255) == value) return;
+			if (revoke_bind == null && ALittle.Math_Ceil(cast<Map<string, double>>(this._object)[text] * 255) == value) return;
 			value = value / 255;
 			cast<Map<string, any>>(this._object)[text] = value;
 			cast<Map<string, any> >(this._base)[text] = value;
@@ -925,7 +925,7 @@ public class DisplayObjectS
 		var old_object = cast<Map<string, any>>(this._object)[text];
 		// 设置新的属性
 		var display_object:ALittle.DisplayObject = cast<Map<string, any>>(this)["_"..text];
-		var value = lua.tonumber(display_object.text);
+		var value = ALittle.Math_ToDouble(display_object.text);
 		if (value == null || value < 0)
 		{
 			display_object.text = "0";
@@ -1148,14 +1148,14 @@ public class DisplayObjectS
 					g_IDETool.ShowNotice("错误", "图片不存在:"..image_path);
 					return;
 				}
-				this.RemoverToNilShowSet(text, lua.json.encode(display_info), need_reset, revoke_bind);
+				this.RemoverToNilShowSet(text, ALittle.String_JsonEncode(display_info), need_reset, revoke_bind);
 			}
 			else
 			{
 				var display_info = new ALittle.DisplayInfo();
 				display_info.__class = "Image";
 				display_info.texture_name = image_path;
-				this.RemoverToNilShowSet(text, lua.json.encode(display_info), need_reset, revoke_bind);
+				this.RemoverToNilShowSet(text, ALittle.String_JsonEncode(display_info), need_reset, revoke_bind);
 			}
 		}
 	}
@@ -1170,7 +1170,7 @@ public class DisplayObjectS
 			}
 			var display_info = new ALittle.DisplayInfo();
 			display_info.__extends = extends;
-			this.RemoverToNilShowSet(text, lua.json.encode(display_info), need_reset, revoke_bind);
+			this.RemoverToNilShowSet(text, ALittle.String_JsonEncode(display_info), need_reset, revoke_bind);
 		}
 		else
 			this.RemoverToNilShowSet(text, "", need_reset, revoke_bind);
@@ -1187,11 +1187,11 @@ public class DisplayObjectS
 			if (cast<Map<string, any> >(this._default)[text] != null && cast<Map<string, ALittle.DisplayInfo> >(this._default)[text].__class != null)
 			{
 				var content = cast<Map<string, any> >(this._default)[text];
-				var error1, content1 = tcall(lua.json.decode, content);
+				var error1, content1 = tcall(ALittle.String_JsonDecode, content);
 				if (error1 == null)
 				{
 					// 最终生成object的数据重新tcall，避免CreateControl对default数据的操作
-					var error2, content2 = tcall(lua.json.decode, content1);
+					var error2, content2 = tcall(ALittle.String_JsonDecode, content1);
 					var name = "mnbvcxzasdfghjklpoiuytrewq20160121";
 					g_IDEProject.project.control.RegisterInfo(name, content2);
 					var temp = g_IDEProject.project.control.CreateControl{ALittle.DisplayObject}(name);
@@ -1208,7 +1208,7 @@ public class DisplayObjectS
 		else
 		{
 			var content = json_content;
-			var error1, content1:ALittle.DisplayInfo = tcall(lua.json.decode, content);
+			var error1, content1:ALittle.DisplayInfo = tcall(ALittle.String_JsonDecode, content);
 			if (error1 == null)
 			{
 				var include = content1.__include;
@@ -1222,7 +1222,7 @@ public class DisplayObjectS
 					}
 				}
 				cast<Map<string, ALittle.DisplayInfo> >(this._base)[text] = content1;
-				var error2, content2:ALittle.DisplayInfo = tcall(lua.json.decode, content);
+				var error2, content2:ALittle.DisplayInfo = tcall(ALittle.String_JsonDecode, content);
 				var name = "mnbvcxzasdfghjklpoiuytrewq20160121";
 				g_IDEProject.project.control.RegisterInfo(name, content2);
 				var temp = g_IDEProject.project.control.CreateControl{ALittle.DisplayObject}(name);
@@ -1268,12 +1268,12 @@ public class DisplayObjectS
 					|| cast<Map<string, ALittle.DisplayInfo> >(this._default)[text].__extends != null))
 			{
 				var content = cast<Map<string, ALittle.DisplayInfo> >(this._default)[text];
-				var error, content1 = tcall(lua.json.encode, content);
+				var error, content1 = tcall(ALittle.String_JsonEncode, content);
 				if (error != null)
 				{
 					display_object.text = content1;
 					//最终生成object的数据重新tcall，避免CreateControl对default数据的操作
-					var error2, content2:ALittle.DisplayInfo = tcall(lua.json.decode, content1);
+					var error2, content2:ALittle.DisplayInfo = tcall(ALittle.String_JsonDecode, content1);
 					var name = "mnbvcxzasdfghjklpoiuytrewq20160121";
 					g_IDEProject.project.control.RegisterInfo(name, content2);
 					var temp = g_IDEProject.project.control.CreateControl{ALittle.DisplayObject}(name);
@@ -1287,7 +1287,7 @@ public class DisplayObjectS
 		else
 		{
 			var content = display_object.text;
-			var error1, content1:ALittle.DisplayInfo = tcall(lua.json.decode, content);
+			var error1, content1:ALittle.DisplayInfo = tcall(ALittle.String_JsonDecode, content);
 			if (error1 == null)
 			{
 				var include = content1.__include;
@@ -1302,7 +1302,7 @@ public class DisplayObjectS
 					}
 				}
 				cast<Map<string, any> >(this._base)[text] = content1;
-				var error2, content2:ALittle.DisplayInfo = tcall(lua.json.decode, content);
+				var error2, content2:ALittle.DisplayInfo = tcall(ALittle.String_JsonDecode, content);
 				var name = "mnbvcxzasdfghjklpoiuytrewq20160121";
 				g_IDEProject.project.control.RegisterInfo(name, content2);
 				var temp = g_IDEProject.project.control.CreateControl{ALittle.DisplayObject}(name);
@@ -1346,7 +1346,7 @@ public class DisplayObjectS
 			if (cast<Map<string, any>>(this._default)[text] != null)
 			{
 				var content = cast<Map<string, any>>(this._default)[text];
-				var error, content1 = tcall(lua.json.encode, content);
+				var error, content1 = tcall(ALittle.String_JsonEncode, content);
 				if (error == null)
 				{
 					display_object.text = content1;
@@ -1358,7 +1358,7 @@ public class DisplayObjectS
 		}
 		else
 		{
-			var error, content = tcall(lua.json.decode, display_object.text);
+			var error, content = tcall(ALittle.String_JsonDecode, display_object.text);
 			if (error == null)
 			{
 				cast<Map<string, any>>(this._base)[text] = content;
@@ -1515,7 +1515,7 @@ public class DisplayObjectS
 		if (content == null) content = cast<Map<string, any>>(this._default)[text];
 		if (content != null)
 		{
-			var error, object = tcall(lua.json.encode, content);
+			var error, object = tcall(ALittle.String_JsonEncode, content);
 			if (error == null)
 				display_object.text = object;
 			else 
@@ -1539,7 +1539,7 @@ public class DisplayObjectS
 			if (content == null) content = cast<Map<string, any>>(this._default)[text];
 			if (content != null)
 			{
-				var error, new_content = tcall(lua.json.encode, content);
+				var error, new_content = tcall(ALittle.String_JsonEncode, content);
 				if (error == null)
 					display_object.text = new_content;
 				else 
@@ -1553,7 +1553,7 @@ public class DisplayObjectS
 			var content = cast<Map<string, any>>(this._base)[text];
 			if (content != null)
 			{
-				var error, new_content = tcall(lua.json.encode, content);
+				var error, new_content = tcall(ALittle.String_JsonEncode, content);
 				if (error == null)
 					display_object.text = new_content;
 				else 
@@ -1592,7 +1592,7 @@ public class DisplayObjectS
         
 		var color:double = cast<Map<string, any>>(this._base)[text];
 		if (color == null) color = cast<Map<string, any>>(this._default)[text];
-		display_object.text = lua.tonumber(color)*255;
+		display_object.text = color*255;
 	}
 	
 	//bool

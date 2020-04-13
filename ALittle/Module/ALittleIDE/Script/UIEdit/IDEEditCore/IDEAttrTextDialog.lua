@@ -3,10 +3,9 @@ module("ALittleIDE", package.seeall)
 
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___coroutine = coroutine
 
 
-IDEAttrTextDialog = ALittle.Class(nil, "ALittleIDE.IDEAttrTextDialog")
+IDEAttrTextDialog = Lua.Class(nil, "ALittleIDE.IDEAttrTextDialog")
 
 function IDEAttrTextDialog:ShowDialog(target_panel, text, need_reset)
 	if self._dialog == nil then
@@ -26,7 +25,7 @@ end
 
 function IDEAttrTextDialog:ReadColor(text)
 	local display_object = self["_" .. text]
-	local value = tonumber(display_object.text)
+	local value = ALittle.Math_ToDouble(display_object.text)
 	if value == nil or value < 0 then
 		display_object.text = "0"
 		return 0
@@ -61,7 +60,7 @@ function IDEAttrTextDialog:HandleEditChanged(event)
 		info.font_path = self._font_path.text
 	end
 	if self._font_size.text ~= "" then
-		info.font_size = math.floor(tonumber(self._font_size.text))
+		info.font_size = ALittle.Math_ToInt(self._font_size.text)
 	end
 	info.red = self:ReadColor("red")
 	if info.red == 1 then
@@ -75,7 +74,7 @@ function IDEAttrTextDialog:HandleEditChanged(event)
 	if info.blue == 1 then
 		info.blue = nil
 	end
-	local info_json = json.encode(info)
+	local info_json = ALittle.String_JsonEncode(info)
 	self._target_panel["_" .. self._target_text].text = info_json
 	self._target_panel:RemoverToNilShowSet(self._target_text, info_json, self._target_need_reset)
 end

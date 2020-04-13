@@ -9,7 +9,7 @@ public static IDEUtility_CalcTextureName(ALittle.DisplayInfo info, Map<string, b
 	{
 		if (k == "texture_name")
 			map[v] = true;
-		elseif (lua.type(v) == "table")
+		elseif (ALittle.String_Type(v) == "table")
 			IDEUtility_CalcTextureName(v, map);
 	}
 	return map;
@@ -21,7 +21,7 @@ public static IDEUtility_GetExtends(ALittle.DisplayInfo info, [Nullable] Map<str
 	if (map == null) map = new Map<string, bool>();
 	for (var k, v in cast<Map<string, any> >(info))
 	{
-		if (lua.type(v) == "table")
+		if (ALittle.String_Type(v) == "table")
 			IDEUtility_GetExtends(v, map);
 		elseif (k == "__extends" || k == "__include")
 			map[v] = true;

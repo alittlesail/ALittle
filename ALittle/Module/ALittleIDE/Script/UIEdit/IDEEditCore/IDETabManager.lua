@@ -3,7 +3,6 @@ module("ALittleIDE", package.seeall)
 
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___coroutine = coroutine
 local ___all_struct = ALittle.GetAllStruct()
 
 ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
@@ -49,7 +48,23 @@ type_list = {"ALittle.DisplayObject","bool"},
 option_map = {}
 })
 
-IDETabManager = ALittle.Class(nil, "ALittleIDE.IDETabManager")
+IDETabManager = Lua.Class(nil, "ALittleIDE.IDETabManager")
+
+function IDETabManager:Setup(tab, tree, control, anti)
+	self._main_tab = tab
+	self._main_tree = tree
+	self._main_control = control
+	self._main_anti = anti
+	self._main_tab:AddEventListener(___all_struct[444989011], self, self.HandleMainTabSelectChange)
+	self._main_tab:AddEventListener(___all_struct[-641444818], self, self.HandleMainTabRightClick)
+	self._main_tab:AddEventListener(___all_struct[-1604617962], self, self.HandleMainTabKeyDown)
+	self._main_tab.close_callback = Lua.Bind(self.MainTabTabCloseYesOrNot, self)
+	self._main_tab.close_post_callback = Lua.Bind(self.MainTabTabClose, self)
+	self._cur_tab = nil
+end
+
+function IDETabManager:Shutdown()
+end
 
 function IDETabManager.__getter:main_control()
 	return self._main_control
@@ -72,22 +87,6 @@ function IDETabManager.__getter:cur_tab_child()
 		return nil
 	end
 	return self._cur_tab._user_data
-end
-
-function IDETabManager:Setup(tab, tree, control, anti)
-	self._main_tab = tab
-	self._main_tree = tree
-	self._main_control = control
-	self._main_anti = anti
-	self._main_tab:AddEventListener(___all_struct[444989011], self, self.HandleMainTabSelectChange)
-	self._main_tab:AddEventListener(___all_struct[-641444818], self, self.HandleMainTabRightClick)
-	self._main_tab:AddEventListener(___all_struct[-1604617962], self, self.HandleMainTabKeyDown)
-	self._main_tab.close_callback = ALittle.Bind(self.MainTabTabCloseYesOrNot, self)
-	self._main_tab.close_post_callback = ALittle.Bind(self.MainTabTabClose, self)
-	self._cur_tab = nil
-end
-
-function IDETabManager:Shutdown()
 end
 
 function IDETabManager:GetTabByName(name)
@@ -113,7 +112,7 @@ function IDETabManager:GetTabNameList()
 	local info = {}
 	local tab_childs = self._main_tab.childs
 	for index, child in ___ipairs(tab_childs) do
-		ALittle.Push(info, child._user_data.name)
+		ALittle.List_Push(info, child._user_data.name)
 	end
 	return info
 end
@@ -249,13 +248,17 @@ function IDETabManager:MainTabTabClose(child)
 	self:CloseTab(child)
 end
 
+function IDETabManager.TabChildSave(tab_child, save)
+	tab_child:Save(save)
+end
+
 function IDETabManager:MainTabTabCloseYesOrNot(child)
 	local tab_child = child._user_data
 	if tab_child.save then
 		return true
 	end
-	local cancel_callback = ALittle.Bind(self.CloseTab, self, child)
-	local confirm_callback = ALittle.Bind(IDETabManager.TabChildSave, tab_child, true)
+	local cancel_callback = Lua.Bind(self.CloseTab, self, child)
+	local confirm_callback = Lua.Bind(IDETabManager.TabChildSave, tab_child, true)
 	g_IDETool:SaveNotice("提示", "是否保存当前控件?", cancel_callback, confirm_callback)
 	return false
 end
@@ -278,8 +281,8 @@ function IDETabManager:HandleMainTabKeyDown(event)
 			event.handled = true
 			return
 		end
-		local cancel_callback = ALittle.Bind(self.RefreshTab, self, child)
-		local confirm_callback = ALittle.Bind(IDETabManager.TabChildSave, tab_child, true)
+		local cancel_callback = Lua.Bind(self.RefreshTab, self, child)
+		local confirm_callback = Lua.Bind(IDETabManager.TabChildSave, tab_child, true)
 		g_IDETool:SaveNotice("提示", "是否保存当前控件?", cancel_callback, confirm_callback)
 		event.handled = true
 		return
@@ -346,8 +349,8 @@ function IDETabManager:HandleTabRightMenu(event)
 			self:RefreshTab(child)
 			return
 		end
-		local cancel_callback = ALittle.Bind(self.RefreshTab, self, child)
-		local confirm_callback = ALittle.Bind(IDETabManager.TabChildSave, tab_child, true)
+		local cancel_callback = Lua.Bind(self.RefreshTab, self, child)
+		local confirm_callback = Lua.Bind(IDETabManager.TabChildSave, tab_child, true)
 		g_IDETool:SaveNotice("提示", "是否保存当前控件?", cancel_callback, confirm_callback)
 		return
 	end
@@ -356,8 +359,8 @@ function IDETabManager:HandleTabRightMenu(event)
 			self:CloseTab(child)
 			return
 		end
-		local cancel_callback = ALittle.Bind(self.CloseTab, self, child)
-		local confirm_callback = ALittle.Bind(IDETabManager.TabChildSave, tab_child, true)
+		local cancel_callback = Lua.Bind(self.CloseTab, self, child)
+		local confirm_callback = Lua.Bind(IDETabManager.TabChildSave, tab_child, true)
 		g_IDETool:SaveNotice("提示", "是否保存当前控件?", cancel_callback, confirm_callback)
 		return
 	end
@@ -374,7 +377,7 @@ function IDETabManager:HandleTabRightMenu(event)
 		info.index = 1
 		info.info = display_info
 		copy_list[1] = info
-		ALittle.System_SetClipboardText(json.encode(copy_list))
+		ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list))
 		return
 	end
 	if handle_name == "关闭左侧" then
@@ -385,7 +388,7 @@ function IDETabManager:HandleTabRightMenu(event)
 			end
 			tab_child = child_v._user_data
 			if tab_child.save then
-				ALittle.Push(close_list, child_v)
+				ALittle.List_Push(close_list, child_v)
 			end
 		end
 		for index, child_v in ___ipairs(close_list) do
@@ -398,12 +401,15 @@ function IDETabManager:HandleTabRightMenu(event)
 		local child_list = self._main_tab.childs
 		local cur_index = self._main_tab:GetChildIndex(child)
 		local child_count = self._main_tab.child_count
-		for index = cur_index + 1, child_count, 1 do
+		local index = cur_index + 1
+		while true do
+			if not(index <= child_count) then break end
 			local child_v = child_list[index]
 			tab_child = child_v._user_data
 			if tab_child.save then
-				ALittle.Push(close_list, child_v)
+				ALittle.List_Push(close_list, child_v)
 			end
+			index = index+(1)
 		end
 		for index, child_v in ___ipairs(close_list) do
 			self:CloseTab(child_v)
@@ -439,7 +445,7 @@ function IDETabManager:ControlRenameImpl(child)
 	if width < 150 then
 		width = 150
 	end
-	local callback = ALittle.Bind(self.ControlRename, self, name)
+	local callback = Lua.Bind(self.ControlRename, self, name)
 	g_IDETool:ShowRename(callback, name, x, y, width)
 end
 
@@ -512,10 +518,6 @@ function IDETabManager:StartEditControlBySelect(name, info)
 		tab_child:ShowHandleQuad(tab_child.tree_object)
 	end
 	return tab_child
-end
-
-function IDETabManager.TabChildSave(tab_child, save)
-	tab_child:Save(save)
 end
 
 g_IDETabManager = IDETabManager()

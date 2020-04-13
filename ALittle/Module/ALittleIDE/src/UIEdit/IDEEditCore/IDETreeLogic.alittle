@@ -252,7 +252,7 @@ public class IDETreeLogic : ALittle.DisplayLayout
 		info.index = 1;
 		info.info = this.CalcInfo();
 		copy_list[1] = info;
-		ALittle.System_SetClipboardText(lua.json.encode(copy_list));
+		ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list));
 	
 		var revoke_bind = new IDERevokeBind();
 		if (tree.IsTree())

@@ -4,11 +4,10 @@ module("ALittleIDE", package.seeall)
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___coroutine = coroutine
 
 
-assert(TextEditS, " extends class:TextEditS is nil")
-ImageEditS = ALittle.Class(TextEditS, "ALittleIDE.ImageEditS")
+assert(ALittleIDE.TextEditS, " extends class:ALittleIDE.TextEditS is nil")
+ImageEditS = Lua.Class(ALittleIDE.TextEditS, "ALittleIDE.ImageEditS")
 
 function ImageEditS:Ctor(user_info, tab_child, tree_logic)
 	___rawset(self, "_layer_name", "ide_setting_imageedit")
@@ -58,7 +57,7 @@ function ImageEditS:HandleShowUpFOCUSOUT(event)
 end
 
 function ImageEditS:HandleShowUpSelect(event)
-	local func = ALittle.Bind(self.ImagePathSelectCallback, self, "show_up", self.HandleShowUpFOCUSOUT, nil)
+	local func = Lua.Bind(self.ImagePathSelectCallback, self, "show_up", self.HandleShowUpFOCUSOUT, nil)
 	g_IDEAttrImageDialog:ShowDialog(nil, func)
 end
 
@@ -73,7 +72,7 @@ function ImageEditS:HandleShowOverFOCUSOUT(event)
 end
 
 function ImageEditS:HandleShowOverSelect(event)
-	local func = ALittle.Bind(self.ImagePathSelectCallback, self, "show_over", self.HandleShowOverFOCUSOUT, nil)
+	local func = Lua.Bind(self.ImagePathSelectCallback, self, "show_over", self.HandleShowOverFOCUSOUT, nil)
 	g_IDEAttrImageDialog:ShowDialog(nil, func)
 end
 
@@ -88,7 +87,7 @@ function ImageEditS:HandleShowDownFOCUSOUT(event)
 end
 
 function ImageEditS:HandleShowDownSelect(event)
-	local func = ALittle.Bind(self.ImagePathSelectCallback, self, "show_down", self.HandleShowDownFOCUSOUT, nil)
+	local func = Lua.Bind(self.ImagePathSelectCallback, self, "show_down", self.HandleShowDownFOCUSOUT, nil)
 	g_IDEAttrImageDialog:ShowDialog(nil, func)
 end
 
@@ -103,7 +102,7 @@ function ImageEditS:HandleShowDisabledFOCUSOUT(event)
 end
 
 function ImageEditS:HandleShowDisabledSelect(event)
-	local func = ALittle.Bind(self.ImagePathSelectCallback, self, "show_disabled", self.HandleShowDisabledFOCUSOUT, nil)
+	local func = Lua.Bind(self.ImagePathSelectCallback, self, "show_disabled", self.HandleShowDisabledFOCUSOUT, nil)
 	g_IDEAttrImageDialog:ShowDialog(nil, func)
 end
 

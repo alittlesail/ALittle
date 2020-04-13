@@ -4,7 +4,6 @@ module("ALittleIDE", package.seeall)
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___coroutine = coroutine
 local ___all_struct = ALittle.GetAllStruct()
 
 ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
@@ -68,8 +67,8 @@ type_list = {"ALittle.DisplayObject","double","double","double","double","int","
 option_map = {}
 })
 
-assert(IDETreeLogic, " extends class:IDETreeLogic is nil")
-IDETreeItem = ALittle.Class(IDETreeLogic, "ALittleIDE.IDETreeItem")
+assert(ALittleIDE.IDETreeLogic, " extends class:ALittleIDE.IDETreeLogic is nil")
+IDETreeItem = Lua.Class(ALittleIDE.IDETreeLogic, "ALittleIDE.IDETreeItem")
 
 function IDETreeItem:Ctor(ctrl_sys, user_info, tab_child)
 	if self._user_info.extends then
@@ -93,15 +92,15 @@ function IDETreeItem:Ctor(ctrl_sys, user_info, tab_child)
 	self._item_button._user_data = self
 end
 
+function IDETreeItem:IsTree()
+	return false
+end
+
 function IDETreeItem.__getter:fold()
 	return false
 end
 
 function IDETreeItem.__setter:fold(value)
-end
-
-function IDETreeItem:IsTree()
-	return false
 end
 
 function IDETreeItem:GetDataListForAdd()
@@ -121,8 +120,8 @@ function IDETreeItem:SearchLink(name, list)
 		link = self._user_info.default.__link
 	end
 	if link ~= nil then
-		if ALittle.Find(link, name) ~= nil then
-			ALittle.Push(list, self)
+		if ALittle.String_Find(link, name) ~= nil then
+			ALittle.List_Push(list, self)
 			return list
 		end
 	end
@@ -139,8 +138,8 @@ function IDETreeItem:SearchEvent(name, list)
 	end
 	if event ~= nil then
 		for k, v in ___ipairs(event) do
-			if ALittle.Find(v.func, name) ~= nil then
-				ALittle.Push(list, self)
+			if ALittle.String_Find(v.func, name) ~= nil then
+				ALittle.List_Push(list, self)
 				return list
 			end
 		end
@@ -157,8 +156,8 @@ function IDETreeItem:SearchDescription(name, list)
 		description = self._user_info.default.description
 	end
 	if description ~= nil then
-		if ALittle.Find(description, name) ~= nil then
-			ALittle.Push(list, self)
+		if ALittle.String_Find(description, name) ~= nil then
+			ALittle.List_Push(list, self)
 			return list
 		end
 	end
@@ -175,8 +174,8 @@ function IDETreeItem:SearchTargetClass(name, list)
 	end
 	if target_class ~= nil then
 		local target_class_str = ALittle.String_Join(target_class, ".")
-		if ALittle.Find(target_class_str, name) ~= nil then
-			ALittle.Push(list, self)
+		if ALittle.String_Find(target_class_str, name) ~= nil then
+			ALittle.List_Push(list, self)
 			return list
 		end
 	end
@@ -192,8 +191,8 @@ function IDETreeItem:SearchTextureName(name, list)
 		texture_name = self._user_info.default.texture_name
 	end
 	if texture_name ~= nil then
-		if ALittle.Find(texture_name, name) ~= nil then
-			ALittle.Push(list, self)
+		if ALittle.String_Find(texture_name, name) ~= nil then
+			ALittle.List_Push(list, self)
 			return list
 		end
 	end

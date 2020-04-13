@@ -4,7 +4,6 @@ module("ALittleIDE", package.seeall)
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___coroutine = coroutine
 local ___all_struct = ALittle.GetAllStruct()
 
 ALittle.RegStruct(766794486, "ALittleIDE.IDEAttrImageSelectItemInfo", {
@@ -74,7 +73,7 @@ type_list = {"ALittle.DisplayObject","double","double","double","double"},
 option_map = {}
 })
 
-IDEAttrImageDialog = ALittle.Class(nil, "ALittleIDE.IDEAttrImageDialog")
+IDEAttrImageDialog = Lua.Class(nil, "ALittleIDE.IDEAttrImageDialog")
 
 function IDEAttrImageDialog:Ctor()
 	___rawset(self, "_real_size", 100)
@@ -150,7 +149,7 @@ end
 
 function IDEAttrImageDialog:CreateImgItem(file_name, rel_path, abs_path)
 	local ext = ALittle.File_GetFileExtByPath(file_name)
-	ext = string.upper(ext)
+	ext = ALittle.String_Upper(ext)
 	if ext == "PNG" or ext == "JPG" then
 		local info = {}
 		local item = g_Control:CreateControl("ide_image_select_item", info)
@@ -177,7 +176,7 @@ function IDEAttrImageDialog:CreateImgItem(file_name, rel_path, abs_path)
 				height = rate * width
 			end
 		end
-		info.image:SetTextureCut(abs_path, math.floor(info.frame.width), math.floor(info.frame.height), true)
+		info.image:SetTextureCut(abs_path, ALittle.Math_Floor(info.frame.width), ALittle.Math_Floor(info.frame.height), true)
 		info.image.width = width
 		info.image.height = height
 		info.image:UpdateLayout()
@@ -214,20 +213,20 @@ end
 function IDEAttrImageDialog:BrowserCollect(browser_path)
 	local item_list_dir = {}
 	local item_list_img = {}
-	for file in ALittle.File_IteratorDir(browser_path) do
+	for file in lfs.dir(browser_path) do
 		if file ~= "." and file ~= ".." then
 			local path = browser_path .. "/" .. file
-			local rel_path = string.sub(path, string.len(self._base_path) + 2)
+			local rel_path = ALittle.String_Sub(path, ALittle.String_Len(self._base_path) + 2)
 			local attr = ALittle.File_GetFileAttr(path)
 			if attr.mode == "directory" then
 				local item = self:CreateDirItem(file, rel_path, path)
 				if item ~= nil then
-					ALittle.Push(item_list_dir, item)
+					ALittle.List_Push(item_list_dir, item)
 				end
 			else
 				local item = self:CreateImgItem(file, rel_path, path)
 				if item ~= nil then
-					ALittle.Push(item_list_img, item)
+					ALittle.List_Push(item_list_img, item)
 				end
 			end
 		end
@@ -247,18 +246,18 @@ function IDEAttrImageDialog:SearchCollect(search_path, name, item_list, run_time
 	if name == "" or name == nil then
 		return item_list, run_time
 	end
-	for file in ALittle.File_IteratorDir(search_path) do
+	for file in lfs.dir(search_path) do
 		if file ~= "." and file ~= ".." then
 			local path = search_path .. "/" .. file
-			local rel_path = string.sub(path, string.len(self._base_path) + 2)
+			local rel_path = ALittle.String_Sub(path, ALittle.String_Len(self._base_path) + 2)
 			local attr = ALittle.File_GetFileAttr(path)
 			if attr.mode == "directory" then
 				self:SearchCollect(path, name, item_list, run_time)
-			elseif ALittle.Find(file, name) ~= nil then
+			elseif ALittle.String_Find(file, name) ~= nil then
 				local item = self:CreateImgItem(file, rel_path, path)
 				if item ~= nil then
 					run_time.cur_count = run_time.cur_count + 1
-					ALittle.Push(item_list, item)
+					ALittle.List_Push(item_list, item)
 				end
 			end
 			if run_time.cur_count >= run_time.total_count then
@@ -269,17 +268,23 @@ function IDEAttrImageDialog:SearchCollect(search_path, name, item_list, run_time
 	return item_list, run_time
 end
 
+function IDEAttrImageDialog.ItemListCmp(a, b)
+	local a_user_data = a._user_data
+	local b_user_data = b._user_data
+	return a_user_data.path < b_user_data.path
+end
+
 function IDEAttrImageDialog:CreateItemAndAddToList(item_list_dir, item_list_img)
-	table.sort(item_list_dir, IDEAttrImageDialog.ItemListCmp)
-	table.sort(item_list_img, IDEAttrImageDialog.ItemListCmp)
+	ALittle.List_Sort(item_list_dir, IDEAttrImageDialog.ItemListCmp)
+	ALittle.List_Sort(item_list_img, IDEAttrImageDialog.ItemListCmp)
 	local item_list = {}
 	for index, item in ___ipairs(item_list_dir) do
-		ALittle.Push(item_list, item)
+		ALittle.List_Push(item_list, item)
 	end
 	for index, item in ___ipairs(item_list_img) do
-		ALittle.Push(item_list, item)
+		ALittle.List_Push(item_list, item)
 	end
-	local col_count = math.floor(self._scroll_list.width / self._real_size)
+	local col_count = ALittle.Math_Floor(self._scroll_list.width / self._real_size)
 	local remain_count = 0
 	local container = nil
 	for index, item in ___ipairs(item_list) do
@@ -299,7 +304,7 @@ end
 
 function IDEAttrImageDialog:Refresh()
 	self._scroll_list:RemoveAllChild()
-	self._path_input.text = string.sub(self._real_path, string.len(self._base_path) + 2)
+	self._path_input.text = ALittle.String_Sub(self._real_path, ALittle.String_Len(self._base_path) + 2)
 	self._search_input.text = ""
 	self._dialog.title = self._src_title
 	local item_list_dir, item_list_img = self:BrowserCollect(self._real_path)
@@ -343,7 +348,7 @@ function IDEAttrImageDialog:HandleSetPathClick(event)
 end
 
 function IDEAttrImageDialog:HandleSetPrePathClick(event)
-	local rel_path = string.sub(self._real_path, string.len(self._base_path) + 2)
+	local rel_path = ALittle.String_Sub(self._real_path, ALittle.String_Len(self._base_path) + 2)
 	if rel_path == "" then
 		return
 	end
@@ -375,7 +380,7 @@ function IDEAttrImageDialog:HandleImageDeleteClick(event)
 	A_LayerManager:HideFromRight(self._image_select_menu)
 	local user_data = self._image_select_menu._user_data
 	self._image_select_menu._user_data = nil
-	os.remove(g_IDEProject.project.base_path .. "Texture/" .. user_data.path)
+	ALittle.File_DeleteFile(g_IDEProject.project.base_path .. "Texture/" .. user_data.path)
 	self:Refresh()
 end
 
@@ -401,7 +406,7 @@ function IDEAttrImageDialog:HandleItemMoveIn(event)
 	A_LayerManager:AddToTip(self._image_pre_dialog)
 	local user_data = event.target._user_data
 	local path = g_IDEProject.project.base_path .. "Texture/" .. user_data.path
-	self._pre_image:SetTextureCut(path, 0, 0, true, ALittle.Bind(self.HandleItemPreViewCallback, self))
+	self._pre_image:SetTextureCut(path, 0, 0, true, Lua.Bind(self.HandleItemPreViewCallback, self))
 	self:UpdateImagePreDialogPos()
 end
 
@@ -464,12 +469,6 @@ function IDEAttrImageDialog:HandleDialogDrag(event)
 	end
 	self._dialog.width = self._dialog.width + delta_x
 	self._dialog.height = self._dialog.height + delta_y
-end
-
-function IDEAttrImageDialog.ItemListCmp(a, b)
-	local a_user_data = a._user_data
-	local b_user_data = b._user_data
-	return a_user_data.path < b_user_data.path
 end
 
 g_IDEAttrImageDialog = IDEAttrImageDialog()

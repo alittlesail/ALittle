@@ -3,7 +3,6 @@ module("ALittleIDE", package.seeall)
 
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___coroutine = coroutine
 local ___all_struct = ALittle.GetAllStruct()
 
 ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
@@ -25,7 +24,7 @@ type_list = {"ALittle.DisplayObject","double","double","double","double","int","
 option_map = {}
 })
 
-IDEProjectManager = ALittle.Class(nil, "ALittleIDE.IDEProjectManager")
+IDEProjectManager = Lua.Class(nil, "ALittleIDE.IDEProjectManager")
 
 function IDEProjectManager:OpenLastProject()
 	if g_IDEProject.project ~= nil then
@@ -43,7 +42,7 @@ function IDEProjectManager:HandleProjectSearchClick(event)
 	local key = self._project_search_key.text
 	local project_map = g_IDEConfig:GetConfig("project_map", {})
 	for k, v in ___pairs(project_map) do
-		if key == "" or ALittle.Find(v, key) ~= nil then
+		if key == "" or ALittle.String_Find(v, key) ~= nil then
 			local item = g_Control:CreateControl("ide_common_item_button")
 			item.text = v
 			item.drag_trans_target = self._project_scroll_screen
@@ -82,20 +81,20 @@ function IDEProjectManager:HandleNewProjectConfirm(event)
 		return
 	end
 	local size_list = ALittle.String_Split(self._view_size_dropdown.text, "x")
-	local window_width = tonumber(size_list[1])
+	local window_width = ALittle.Math_ToInt(size_list[1])
 	if window_width == nil then
 		window_width = 800
 	end
-	local window_height = tonumber(size_list[2])
+	local window_height = ALittle.Math_ToInt(size_list[2])
 	if window_height == nil then
 		window_height = 600
 	end
 	local font_path = self._default_font_path.text
-	local font_size = tonumber(self._default_font_size.text)
+	local font_size = ALittle.Math_ToInt(self._default_font_size.text)
 	if font_size == nil then
 		font_size = 25
 	end
-	g_IDEProject:NewProject(name, math.floor(window_width), math.floor(window_height), font_path, math.floor(font_size))
+	g_IDEProject:NewProject(name, ALittle.Math_Floor(window_width), ALittle.Math_Floor(window_height), font_path, ALittle.Math_Floor(font_size))
 	g_IDECenter:UpdateProjectList()
 	if g_IDEProject.project == nil then
 		g_IDECenter:OpenProject(name)
@@ -137,8 +136,8 @@ function IDEProjectManager:HandleOpenProjectConfirm(event)
 		self:OpenProjectImpl(name)
 		return
 	end
-	local cancel_callback = ALittle.Bind(self.OpenProjectImpl, self, name)
-	local confirm_callback = ALittle.Bind(g_IDETabManager.SaveAllTab, g_IDETabManager)
+	local cancel_callback = Lua.Bind(self.OpenProjectImpl, self, name)
+	local confirm_callback = Lua.Bind(g_IDETabManager.SaveAllTab, g_IDETabManager)
 	g_IDETool:SaveNotice("提示", "是否保存当前项目?", cancel_callback, confirm_callback)
 end
 
@@ -165,18 +164,18 @@ function IDEProjectManager:HandleSettingProjectCancel(event)
 end
 
 function IDEProjectManager:HandleSettingProjectConfirm(event)
-	local default_show_width = tonumber(self._default_show_width.text)
+	local default_show_width = ALittle.Math_ToInt(self._default_show_width.text)
 	if default_show_width == nil or default_show_width <= 0 then
 		g_IDETool:ShowNotice("错误", "默认宽度不合法")
 		return
 	end
-	local default_show_height = tonumber(self._default_show_height.text)
+	local default_show_height = ALittle.Math_ToInt(self._default_show_height.text)
 	if default_show_height == nil or default_show_height <= 0 then
 		g_IDETool:ShowNotice("错误", "默认高度不合法")
 		return
 	end
 	local default_font_path = self._default_font_path.text
-	local default_font_size = tonumber(self._default_font_size.text)
+	local default_font_size = ALittle.Math_ToInt(self._default_font_size.text)
 	if default_font_size == nil or default_font_size <= 0 then
 		g_IDETool:ShowNotice("错误", "默认字体大小不合法")
 		return
@@ -191,7 +190,7 @@ function IDEProjectManager:HandleSettingProjectConfirm(event)
 		local module_split = ALittle.String_SplitSepList(modules, {"\n", "\r"})
 		for index, module in ___ipairs(module_split) do
 			local split = ALittle.String_Split(module, ",")
-			if table.maxn(split) ~= 2 then
+			if ALittle.List_MaxN(split) ~= 2 then
 				g_IDETool:ShowNotice("错误", "服务端模块格式错误:" .. module)
 				return
 			end
@@ -233,8 +232,8 @@ function IDEProjectManager:HandleRightProjectOpen(event)
 		self:OpenProjectImpl(project_name)
 		return
 	end
-	local cancel_callback = ALittle.Bind(self.OpenProjectImpl, self, project_name)
-	local confirm_callback = ALittle.Bind(g_IDETabManager.SaveAllTab, g_IDETabManager)
+	local cancel_callback = Lua.Bind(self.OpenProjectImpl, self, project_name)
+	local confirm_callback = Lua.Bind(g_IDETabManager.SaveAllTab, g_IDETabManager)
 	g_IDETool:SaveNotice("提示", "是否保存当前项目?", cancel_callback, confirm_callback)
 end
 
@@ -264,8 +263,8 @@ function IDEProjectManager:HandleRightProjectClose(event)
 		g_IDECenter:CloseProject()
 		return
 	end
-	local cancel_callback = ALittle.Bind(g_IDECenter.CloseProject, g_IDECenter)
-	local confirm_callback = ALittle.Bind(g_IDETabManager.SaveAllTab, g_IDETabManager)
+	local cancel_callback = Lua.Bind(g_IDECenter.CloseProject, g_IDECenter)
+	local confirm_callback = Lua.Bind(g_IDETabManager.SaveAllTab, g_IDETabManager)
 	g_IDETool:SaveNotice("提示", "是否保存当前项目?", cancel_callback, confirm_callback)
 end
 
@@ -274,8 +273,8 @@ function IDEProjectManager:RefreshProject()
 		g_IDECenter:RefreshProject()
 		return
 	end
-	local cancel_callback = ALittle.Bind(g_IDECenter.RefreshProject, g_IDECenter)
-	local confirm_callback = ALittle.Bind(g_IDETabManager.SaveAllTab, g_IDETabManager)
+	local cancel_callback = Lua.Bind(g_IDECenter.RefreshProject, g_IDECenter)
+	local confirm_callback = Lua.Bind(g_IDETabManager.SaveAllTab, g_IDETabManager)
 	g_IDETool:SaveNotice("提示", "是否保存当前项目?", cancel_callback, confirm_callback)
 end
 
@@ -327,7 +326,7 @@ function IDEProjectManager:RunProject()
 		local new_modules = {}
 		for index, module in ___ipairs(module_split) do
 			local split = ALittle.String_Split(module, ",")
-			if table.maxn(split) ~= 2 then
+			if ALittle.List_MaxN(split) ~= 2 then
 				g_IDETool:ShowNotice("提示", "服务端模块格式错误:" .. module)
 				return
 			end
@@ -335,9 +334,9 @@ function IDEProjectManager:RunProject()
 				g_IDETool:ShowNotice("提示", "服务端模块路径不存在:" .. split[1])
 				return
 			end
-			ALittle.Push(new_modules, module)
+			ALittle.List_Push(new_modules, module)
 		end
-		if table.maxn(new_modules) > 0 then
+		if ALittle.List_MaxN(new_modules) > 0 then
 			server_module = " \"" .. core_path .. "\" \"" .. ALittle.String_Join(new_modules, ";") .. "\""
 		end
 	end

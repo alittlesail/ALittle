@@ -83,7 +83,7 @@ public class IDEImageCutPlugin : ALittle.DisplayLayout
     
         this._src_image.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
         this._src_image.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
-        this._src_image.SetTextureCut(file_path, lua.math.floor(max_width), lua.math.floor(max_height), false, bind(this.LoadTextureCallback, this));
+        this._src_image.SetTextureCut(file_path, ALittle.Math_Floor(max_width), ALittle.Math_Floor(max_height), false, bind(this.LoadTextureCallback, this));
     }
     
     public fun Clear()
@@ -114,17 +114,17 @@ public class IDEImageCutPlugin : ALittle.DisplayLayout
         var rate_w = this._edit_container.width / width;
         var rate_h = this._edit_container.height / height;
     
-        var cut_x = lua.math.floor(this._cut_center_x / rate_w);
-        var cut_y = lua.math.floor(this._cut_center_y / rate_h);
-        var cut_width = lua.math.ceil(this._cut_center_w / rate_w);
-        var cut_height = lua.math.ceil(this._cut_center_h / rate_h);
+        var cut_x = ALittle.Math_Floor(this._cut_center_x / rate_w);
+        var cut_y = ALittle.Math_Floor(this._cut_center_y / rate_h);
+        var cut_width = ALittle.Math_Ceil(this._cut_center_w / rate_w);
+        var cut_height = ALittle.Math_Ceil(this._cut_center_h / rate_h);
     
         var new_width:double = cut_width;
         if (new_width > this._MAX_WIDTH) new_width = this._MAX_WIDTH;
         var new_height:double = cut_height;
         if (new_height > this._MAX_HEIGHT) new_height = this._MAX_HEIGHT;
     
-        var new_surface = ALittle.System_CreateSurface(lua.math.floor(new_width), lua.math.floor(new_height));
+        var new_surface = ALittle.System_CreateSurface(ALittle.Math_Floor(new_width), ALittle.Math_Floor(new_height));
         ALittle.System_CutBlitSurface(new_surface, surface, "0,0,"..new_width..","..new_height, cut_x..","..cut_y..","..cut_width..","..cut_height);
         ALittle.System_FreeSurface(surface);
     
@@ -132,15 +132,15 @@ public class IDEImageCutPlugin : ALittle.DisplayLayout
         if (this._is_circle)
         {
             var new_center = new_width / 2;
-            var gradual_len = lua.math.floor(new_center * 0.05);
+            var gradual_len = ALittle.Math_Floor(new_center * 0.05);
     
-            for (var row = 0, new_height - 1, 1)
+            for (var row = 0; row <= new_height - 1; 1)
             {
-                for (var col = 0, new_width - 1, 1)
+                for (var col = 0; col <= new_width - 1; 1)
                 {
                     var x2 = (new_center - col) * (new_center - col);
                     var y2 = (new_center - row) * (new_center - row);
-                    var distance = lua.math.sqrt(x2 + y2);
+                    var distance = ALittle.Math_Sqrt(x2 + y2);
                     // 超出范围直接清理
                     if (distance > new_center)
                     {
@@ -151,9 +151,9 @@ public class IDEImageCutPlugin : ALittle.DisplayLayout
                     {
                         var color = ALittle.System_GetSurfacePixel(new_surface, col, row);
                         var src_alpha = ALittle.System_GetPixelAlpha(color);
-                        var dst_alpha = lua.math.sin((3.14159625 / 2) * (new_center - distance) / gradual_len) * 255;
+                        var dst_alpha = ALittle.Math_Sin((3.14159625 / 2) * (new_center - distance) / gradual_len) * 255;
                         if (src_alpha < dst_alpha) dst_alpha = src_alpha;
-                        color = ALittle.System_SetPixelAlpha(color, lua.math.ceil(dst_alpha));
+                        color = ALittle.System_SetPixelAlpha(color, ALittle.Math_Ceil(dst_alpha));
                         ALittle.System_SetSurfacePixel(new_surface, col, row, color);
                     }
                 }
@@ -200,10 +200,10 @@ public class IDEImageCutPlugin : ALittle.DisplayLayout
     public fun UpdateEditQuad(double x, double y, double w, double h)
     {
         this._edit_grid9.top_size = y;
-        this._edit_grid9.bottom_size = lua.math.ceil(this._edit_container.height - y - h);
+        this._edit_grid9.bottom_size = ALittle.Math_Ceil(this._edit_container.height - y - h);
     
         this._edit_grid9.left_size = x;
-        this._edit_grid9.right_size = lua.math.ceil(this._edit_container.width - x - w);
+        this._edit_grid9.right_size = ALittle.Math_Ceil(this._edit_container.width - x - w);
     
         this._left_top_drag.x = x - this._left_top_drag.width / 2;
         this._left_top_drag.y = y - this._left_top_drag.height / 2;
@@ -227,7 +227,7 @@ public class IDEImageCutPlugin : ALittle.DisplayLayout
     
             if (this._is_circle)
             {
-                if (lua.math.abs(delta_x) > lua.math.abs(delta_y))
+                if (ALittle.Math_Abs(delta_x) > ALittle.Math_Abs(delta_y))
                     delta_y = delta_x;
                 else
                     delta_x = delta_y;
@@ -245,7 +245,7 @@ public class IDEImageCutPlugin : ALittle.DisplayLayout
     
             if (this._is_circle)
             {
-                if (lua.math.abs(delta_x) > lua.math.abs(delta_y))
+                if (ALittle.Math_Abs(delta_x) > ALittle.Math_Abs(delta_y))
                     delta_y = -delta_x;
                 else
                     delta_x = -delta_y;
@@ -262,7 +262,7 @@ public class IDEImageCutPlugin : ALittle.DisplayLayout
     
             if (this._is_circle)
             {
-                if (lua.math.abs(delta_x) > lua.math.abs(delta_y))
+                if (ALittle.Math_Abs(delta_x) > ALittle.Math_Abs(delta_y))
                     delta_y = -delta_x;
                 else
                     delta_x = -delta_y;
@@ -279,7 +279,7 @@ public class IDEImageCutPlugin : ALittle.DisplayLayout
     
             if (this._is_circle)
             {
-                if (lua.math.abs(delta_x) > lua.math.abs(delta_y))
+                if (ALittle.Math_Abs(delta_x) > ALittle.Math_Abs(delta_y))
                     delta_y = delta_x;
                 else
                     delta_x = delta_y;

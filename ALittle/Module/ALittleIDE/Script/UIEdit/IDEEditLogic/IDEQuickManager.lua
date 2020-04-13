@@ -4,7 +4,6 @@ module("ALittleIDE", package.seeall)
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___coroutine = coroutine
 local ___all_struct = ALittle.GetAllStruct()
 
 ALittle.RegStruct(-2082638860, "ALittleIDE.IDEQuickInfo", {
@@ -110,7 +109,7 @@ type_list = {"ALittle.DisplayObject","double","double","double","double","double
 option_map = {}
 })
 
-IDEQuickManager = ALittle.Class(nil, "ALittleIDE.IDEQuickManager")
+IDEQuickManager = Lua.Class(nil, "ALittleIDE.IDEQuickManager")
 
 function IDEQuickManager:Ctor()
 	___rawset(self, "_flag_type_list", {"常用按钮", "常用图片", "常用文本", "其他常用"})
@@ -147,7 +146,7 @@ function IDEQuickManager:CreateItemDelay(control, abs_path)
 		return
 	end
 	for info, v in ___pairs(loading.map) do
-		info.image:SetTextureCut(abs_path, math.floor(info.frame.width), math.floor(info.frame.height), true)
+		info.image:SetTextureCut(abs_path, ALittle.Math_Floor(info.frame.width), ALittle.Math_Floor(info.frame.height), true)
 	end
 end
 
@@ -187,11 +186,11 @@ function IDEQuickManager:CreateItem(control_info, flag_type)
 			loading = {}
 			loading.map = {}
 			self._loading[abs_path] = loading
-			loading.loop = A_LoopSystem:AddTimer(2000, ALittle.Bind(self.CreateItemDelay, self, control, abs_path))
+			loading.loop = A_LoopSystem:AddTimer(2000, Lua.Bind(self.CreateItemDelay, self, control, abs_path))
 		end
 		loading.map[info] = true
 	else
-		info.image:SetTextureCut(abs_path, math.floor(info.frame.width), math.floor(info.frame.height), true)
+		info.image:SetTextureCut(abs_path, ALittle.Math_Floor(info.frame.width), ALittle.Math_Floor(info.frame.height), true)
 	end
 	if width < height then
 		local rate = width / height
@@ -224,7 +223,7 @@ function IDEQuickManager:CreateItem(control_info, flag_type)
 end
 
 function IDEQuickManager:CreateItemAndAddToList(scroll_list, item_list)
-	local col_count = math.floor(scroll_list.width / self._real_size)
+	local col_count = ALittle.Math_Floor(scroll_list.width / self._real_size)
 	local remain_count = 0
 	local container = nil
 	for index, item in ___ipairs(item_list) do
@@ -243,7 +242,7 @@ function IDEQuickManager:CreateItemAndAddToList(scroll_list, item_list)
 end
 
 function IDEQuickManager:AddToList(scroll_list, item)
-	local col_count = math.floor(scroll_list.width / self._real_size)
+	local col_count = ALittle.Math_Floor(scroll_list.width / self._real_size)
 	local container = scroll_list:GetChildByIndex(scroll_list.child_count)
 	if container ~= nil and container.child_count >= col_count then
 		container = nil
@@ -294,7 +293,7 @@ function IDEQuickManager:SearchCollect(search_type, key, item_list, run_time)
 	local control_map = project.control_map
 	for control_name, control_info in ___pairs(control_map) do
 		if search_type == "控件名|描述" then
-			if key == "" or ALittle.Find(control_name, key) ~= nil or (control_info.info.description ~= nil and ALittle.Find(control_info.info.description, key) ~= nil) then
+			if key == "" or ALittle.String_Find(control_name, key) ~= nil or (control_info.info.description ~= nil and ALittle.String_Find(control_info.info.description, key) ~= nil) then
 				local item = self:CreateItem(control_info, "控件选择器")
 				if item ~= nil then
 					run_time.item_count = run_time.item_count + 1
@@ -325,6 +324,12 @@ function IDEQuickManager:SearchCollect(search_type, key, item_list, run_time)
 	return item_list, run_time
 end
 
+function IDEQuickManager.SearchCmp(a, b)
+	local a_user_data = a._user_data
+	local b_user_data = b._user_data
+	return a_user_data.path < b_user_data.path
+end
+
 function IDEQuickManager:Search(search_type, name)
 	self._scroll_list:RemoveAllChild()
 	local item_list, run_time = self:SearchCollect(search_type, name)
@@ -332,7 +337,7 @@ function IDEQuickManager:Search(search_type, name)
 	if run_time.cur_count >= run_time.total_count then
 		title = title .. "(筛选出来的数量太多，只显示前" .. run_time.total_count .. "个)"
 	end
-	table.sort(item_list, IDEQuickManager.SearchCmp)
+	ALittle.List_Sort(item_list, IDEQuickManager.SearchCmp)
 	self._project_quick_tab:SetChildText(self._first_tab, title)
 	self:CreateItemAndAddToList(self._scroll_list, item_list)
 end
@@ -380,7 +385,7 @@ function IDEQuickManager:HandleQuickRightMenuCopyExtends(event)
 	info.info = display_info
 	local copy_list = {}
 	copy_list[1] = info
-	ALittle.System_SetClipboardText(json.encode(copy_list))
+	ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list))
 end
 
 function IDEQuickManager:HandleQuickRightMenuDelete(event)
@@ -416,7 +421,7 @@ function IDEQuickManager:HandleItemDragBegin(event)
 	self._drag_image._user_data = user_data
 	A_LayerManager:AddToTip(self._drag_image)
 	self._drag_image.alpha = 0.5
-	self._drag_image:SetTextureCut(user_data.path, 0, 0, true, ALittle.Bind(self.HandleItemDragViewCallback, self))
+	self._drag_image:SetTextureCut(user_data.path, 0, 0, true, Lua.Bind(self.HandleItemDragViewCallback, self))
 	if self._quick_pre_dialog ~= nil then
 		A_LayerManager:RemoveFromTip(self._quick_pre_dialog)
 	end
@@ -453,7 +458,7 @@ function IDEQuickManager:HandleItemMoveIn(event)
 	end
 	A_LayerManager:AddToTip(self._quick_pre_dialog)
 	local user_data = event.target._user_data
-	self._pre_image:SetTextureCut(user_data.path, 0, 0, true, ALittle.Bind(self.HandleItemPreViewCallback, self))
+	self._pre_image:SetTextureCut(user_data.path, 0, 0, true, Lua.Bind(self.HandleItemPreViewCallback, self))
 	self:UpdateImagePreDialogPos()
 end
 
@@ -621,15 +626,9 @@ function IDEQuickManager:FlagImpl(flag_type, control_name)
 	quick_info.item_map[control_name] = item
 	local info = {}
 	info.name = control_name
-	info.time = os.time()
+	info.time = ALittle.Time_GetCurTime()
 	cfg_info_map[control_name] = info
 	g_IDEProject.project.config:SetConfig("quick_map", cfg_quick_map)
-end
-
-function IDEQuickManager.SearchCmp(a, b)
-	local a_user_data = a._user_data
-	local b_user_data = b._user_data
-	return a_user_data.path < b_user_data.path
 end
 
 g_IDEQuickManager = IDEQuickManager()

@@ -4,11 +4,10 @@ module("ALittleIDE", package.seeall)
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___coroutine = coroutine
 
 
-assert(DisplayLayoutS, " extends class:DisplayLayoutS is nil")
-PiechartS = ALittle.Class(DisplayLayoutS, "ALittleIDE.PiechartS")
+assert(ALittleIDE.DisplayLayoutS, " extends class:ALittleIDE.DisplayLayoutS is nil")
+PiechartS = Lua.Class(ALittleIDE.DisplayLayoutS, "ALittleIDE.PiechartS")
 
 function PiechartS:Ctor(user_info, tab_child, tree_logic)
 	___rawset(self, "_layer_name", "ide_setting_piechart")
@@ -26,7 +25,7 @@ function PiechartS:HandleImageTextureNameFOCUSOUT(event)
 end
 
 function PiechartS:HandleImageTextureNameSelect(event)
-	local func = ALittle.Bind(self.ImagePathSelectCallback, self, "texture_name", self.HandleImageTextureNameFOCUSOUT, nil)
+	local func = Lua.Bind(self.ImagePathSelectCallback, self, "texture_name", self.HandleImageTextureNameFOCUSOUT, nil)
 	g_IDEAttrImageDialog:ShowDialog(nil, func)
 end
 

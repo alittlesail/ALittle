@@ -4,11 +4,10 @@ module("ALittleIDE", package.seeall)
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___coroutine = coroutine
 
 
-assert(SpriteS, " extends class:SpriteS is nil")
-SpritePlayS = ALittle.Class(SpriteS, "ALittleIDE.SpritePlayS")
+assert(ALittleIDE.SpriteS, " extends class:ALittleIDE.SpriteS is nil")
+SpritePlayS = Lua.Class(ALittleIDE.SpriteS, "ALittleIDE.SpritePlayS")
 
 function SpritePlayS:Ctor(user_info, tab_child, tree_logic)
 	___rawset(self, "_layer_name", "ide_setting_spriteplay")

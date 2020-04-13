@@ -4,11 +4,10 @@ module("ALittleIDE", package.seeall)
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___coroutine = coroutine
 
 
-assert(DisplayObjectS, " extends class:DisplayObjectS is nil")
-SpriteS = ALittle.Class(DisplayObjectS, "ALittleIDE.SpriteS")
+assert(ALittleIDE.DisplayObjectS, " extends class:ALittleIDE.DisplayObjectS is nil")
+SpriteS = Lua.Class(ALittleIDE.DisplayObjectS, "ALittleIDE.SpriteS")
 
 function SpriteS:Ctor(user_info, tab_child, tree_logic)
 	___rawset(self, "_layer_name", "ide_setting_sprite")
@@ -29,7 +28,7 @@ function SpriteS:HandleImageTextureNameFOCUSOUT(event)
 end
 
 function SpriteS:HandleImageTextureNameSelect(event)
-	local func = ALittle.Bind(self.ImagePathSelectCallback, self, "texture_name", self.HandleImageTextureNameFOCUSOUT, nil)
+	local func = Lua.Bind(self.ImagePathSelectCallback, self, "texture_name", self.HandleImageTextureNameFOCUSOUT, nil)
 	g_IDEAttrImageDialog:ShowDialog(nil, func)
 end
 

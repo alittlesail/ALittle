@@ -4,11 +4,10 @@ module("ALittleIDE", package.seeall)
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___coroutine = coroutine
 
 
-assert(TextEditS, " extends class:TextEditS is nil")
-TextInputS = ALittle.Class(TextEditS, "ALittleIDE.TextInputS")
+assert(ALittleIDE.TextEditS, " extends class:ALittleIDE.TextEditS is nil")
+TextInputS = Lua.Class(ALittleIDE.TextEditS, "ALittleIDE.TextInputS")
 
 function TextInputS:Ctor(user_info, tab_child, tree_logic)
 	___rawset(self, "_layer_name", "ide_setting_textinput")

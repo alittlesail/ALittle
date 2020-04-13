@@ -4,11 +4,10 @@ module("ALittleIDE", package.seeall)
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___coroutine = coroutine
 
 
-assert(TextCheckButtonS, " extends class:TextCheckButtonS is nil")
-DropDownS = ALittle.Class(TextCheckButtonS, "ALittleIDE.DropDownS")
+assert(ALittleIDE.TextCheckButtonS, " extends class:ALittleIDE.TextCheckButtonS is nil")
+DropDownS = Lua.Class(ALittleIDE.TextCheckButtonS, "ALittleIDE.DropDownS")
 
 function DropDownS:Ctor(user_info, tab_child, tree_logic)
 	___rawset(self, "_layer_name", "ide_setting_dropdown")
@@ -39,7 +38,7 @@ function DropDownS:HandleShowBackGFOCUSOUT(event)
 end
 
 function DropDownS:HandleShowBackGSelect(event)
-	local func = ALittle.Bind(self.ImagePathSelectCallback, self, "show_background", self.HandleShowBackGFOCUSOUT, nil)
+	local func = Lua.Bind(self.ImagePathSelectCallback, self, "show_background", self.HandleShowBackGFOCUSOUT, nil)
 	g_IDEAttrImageDialog:ShowDialog(nil, func)
 end
 

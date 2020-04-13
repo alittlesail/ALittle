@@ -164,8 +164,8 @@ public class IDETree : IDETreeLogic
 		if (link == null) link = this._user_info.default.__link;
 		if (link != null)
 		{
-			if (ALittle.Find(link, name) != null)
-				ALittle.Push(list, this);
+			if (ALittle.String_Find(link, name) != null)
+				ALittle.List_Push(list, this);
 		}
 		
 		for (var k, child:IDETreeLogic in this._body.childs)
@@ -185,9 +185,9 @@ public class IDETree : IDETreeLogic
 		{
 			for (var k, v in event)
 			{
-				if (ALittle.Find(v.func, name) != null)
+				if (ALittle.String_Find(v.func, name) != null)
 				{
-					ALittle.Push(list, this);
+					ALittle.List_Push(list, this);
 					break;
 				}
 			}
@@ -208,8 +208,8 @@ public class IDETree : IDETreeLogic
 		if (description == null) description = this._user_info.default.description;
 		if (description != null)
 		{
-			if (ALittle.Find(description, name) != null)
-				ALittle.Push(list, this);
+			if (ALittle.String_Find(description, name) != null)
+				ALittle.List_Push(list, this);
 		}
 		for (var k, child:IDETreeLogic in this._body.childs)
 			child.SearchDescription(name, list);
@@ -227,8 +227,8 @@ public class IDETree : IDETreeLogic
 		if (target_class != null)
 		{
 			var target_class_str = ALittle.String_Join(target_class, "");
-			if (ALittle.Find(target_class_str, name) != null)
-				ALittle.Push(list, this);
+			if (ALittle.String_Find(target_class_str, name) != null)
+				ALittle.List_Push(list, this);
 		}
 		for (var k, child:IDETreeLogic in this._body.childs)
 			child.SearchTargetClass(name, list);
@@ -245,8 +245,8 @@ public class IDETree : IDETreeLogic
 		if (texture_name == null) texture_name = this._user_info.default.texture_name;
 		if (texture_name != null)
 		{
-			if (ALittle.Find(texture_name, name) != null)
-				ALittle.Push(list, this);
+			if (ALittle.String_Find(texture_name, name) != null)
+				ALittle.List_Push(list, this);
 		}
 		for (var k, child:IDETreeLogic in this._body.childs)
 			child.SearchTextureName(name, list);
@@ -265,7 +265,7 @@ public class IDETree : IDETreeLogic
 	
 		var child_count = this._body.child_count;
 		var child_list = this._body.childs;
-		for (var i = child_count, 1, -1)
+		for (var i = child_count; i >= 1; -1)
 		{
 			var child = cast<IDETreeLogic>(child_list[i]);
 			var target = child.EditPickUp(rel_x, rel_y);
@@ -284,11 +284,11 @@ public class IDETree : IDETreeLogic
 	
 		var object = this._user_info.object;
 		var pick_this, rel_x, rel_y = object.PickUpSelf(x, y);
-		if (pick_this != null) ALittle.Push(list, this);
+		if (pick_this != null) ALittle.List_Push(list, this);
 	
 		var child_count = this._body.child_count;
 		var child_list = this._body.childs;
-		for (var i = child_count, 1, -1)
+		for (var i = child_count; i >= 1; -1)
 		{
 			var child = cast<IDETreeLogic>(child_list[i]);
 			child.QuickPickUp(rel_x, rel_y, list);
@@ -308,7 +308,7 @@ public class IDETree : IDETreeLogic
 		{
 			var child_count = this._body.child_count;
 			var child_list = this._body.childs;
-			for (var i = child_count, 1, -1)
+			for (var i = child_count; i >= 1; -1)
 			{
 				var parent, child = cast<IDETreeLogic>(child_list[i]).SelectPickUp(rel_x, rel_y);
 				if (parent != null || child != null) return parent, child;

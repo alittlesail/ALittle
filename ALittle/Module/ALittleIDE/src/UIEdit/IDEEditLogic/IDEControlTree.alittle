@@ -221,7 +221,7 @@ public class IDEControlTree
 		}
 		// 设置这个下拉菜单
 		var data_list = target.GetDataListForAdd();
-		if (lua.table.maxn(data_list) == 0)
+		if (ALittle.List_MaxN(data_list) == 0)
 		{
 			g_IDETool.ShowNotice("提示", "当前控件不能添加子控件");
 			return;
@@ -295,7 +295,7 @@ public class IDEControlTree
 			}
 		}
 		if (child_type_exist == false)
-			ALittle.Push(data_list, child_type);
+			ALittle.List_Push(data_list, child_type);
 
 		// 这个是IDETree或者IDETreeItem
 		this._control_replace_dialog._user_data = target;
@@ -343,13 +343,13 @@ public class IDEControlTree
 		info.info = target.CalcInfo();
 		var copy_list = new List<IDEControlCopyInfo>();
 		copy_list[1] = info;
-		ALittle.System_SetClipboardText(lua.json.encode(copy_list));
+		ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list));
 	}
 	
 	public fun ShowPasteDialog(IDETreeLogic target, ALittle.DisplayInfo info, int child_index, IDERevokeBind revoke_bind, Functor<(bool, List<IDETreeLogic>)> callback)
 	{
 		var data_list = target.GetDataListForAdd();
-		if (lua.table.maxn(data_list) == 0)
+		if (ALittle.List_MaxN(data_list) == 0)
 		{
 			g_IDETool.ShowNotice("提示", "当前控件不能添加子控件");
 			if (callback != null) callback(false, null);
@@ -442,7 +442,7 @@ public class IDEControlTree
 		info.info = target.CalcInfo();
 		var copy_list = new List<IDEControlCopyInfo>();
 		copy_list[1] = info;
-		ALittle.System_SetClipboardText(lua.json.encode(copy_list));
+		ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list));
 		target.TreeCut();
 	}
 	

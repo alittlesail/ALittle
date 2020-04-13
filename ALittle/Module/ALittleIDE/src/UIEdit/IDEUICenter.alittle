@@ -333,7 +333,7 @@ class IDEUICenter
 		var tab_child = g_IDETabManager.cur_tab_child;
 		if (tab_child == null) return;
 	
-		var scale = lua.tonumber(this._tool_scale_input.text);
+		var scale = ALittle.Math_ToDouble(this._tool_scale_input.text);
 		if (scale == null) scale = 1;
 		scale = scale + event.delta_x * 0.05;
 		if (scale < 0) scale = 0;
@@ -353,7 +353,7 @@ class IDEUICenter
 		var tab_child = g_IDETabManager.cur_tab_child;
 		if (tab_child == null) return;
 	
-		var scale = lua.tonumber(this._tool_scale_input.text);
+		var scale = ALittle.Math_ToDouble(this._tool_scale_input.text);
 		if (scale == null) scale = 1;
 		if (scale < 0)
 		{

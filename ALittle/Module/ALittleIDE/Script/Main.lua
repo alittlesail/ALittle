@@ -10,12 +10,13 @@ function __Browser_Setup(layer_group, control, module_base_path, script_base_pat
 	local window_width = 1200
 	local window_height = 600
 	local rate = 1.0
-	local flag = bit.bor(0x00000080, 0x00000020)
+	local flag = 0
+	flag = bit.bor(0x00000080, 0x00000020)
 	if ALittle.System_GetPlatform() ~= "Windows" then
 		local screen_width = ALittle.System_GetScreenWidth()
 		local screen_height = ALittle.System_GetScreenHeight()
 		rate = screen_height / screen_width
-		window_height = math.floor(rate * window_width)
+		window_height = ALittle.Math_Floor(rate * window_width)
 		flag = bit.bor(flag, 0x00000001)
 	end
 	ALittle.System_CreateView("ALittleIDE", window_width, window_height, flag, rate)
@@ -33,6 +34,7 @@ end
 g_Control = nil
 g_LayerGroup = nil
 g_ModuleBasePath = nil
+g_ScriptBasePath = nil
 g_ModuleBasePathEx = nil
 g_IDEConfig = nil
 function __Module_Setup(layer_group, control, module_base_path, script_base_path, debug)
@@ -40,7 +42,8 @@ function __Module_Setup(layer_group, control, module_base_path, script_base_path
 	g_LayerGroup = layer_group
 	g_ModuleBasePath = module_base_path
 	g_ModuleBasePathEx = ALittle.File_BaseFilePath() .. module_base_path
-	Require("IDECenter")
+	g_ScriptBasePath = script_base_path
+	Require(script_base_path .. "IDECenter")
 	g_IDECenter:Setup(debug)
 end
 __Module_Setup = Lua.CoWrap(__Module_Setup)

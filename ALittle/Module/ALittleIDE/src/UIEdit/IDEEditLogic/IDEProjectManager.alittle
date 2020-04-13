@@ -52,7 +52,7 @@ public class IDEProjectManager
 		// 遍历项目
 		for (var k, v in project_map)
 		{
-			if (key == "" || ALittle.Find(v, key) != null)
+			if (key == "" || ALittle.String_Find(v, key) != null)
 			{
 				var item = g_Control.CreateControl{ALittle.DisplayObject}("ide_common_item_button");
 				item.text = v;
@@ -109,17 +109,17 @@ public class IDEProjectManager
 		}
 		// 窗口大小
 		var size_list = ALittle.String_Split(this._view_size_dropdown.text, "x");
-		var window_width = lua.tonumber(size_list[1]);
+		var window_width = ALittle.Math_ToInt(size_list[1]);
 		if (window_width == null) window_width = 800;
-		var window_height = lua.tonumber(size_list[2]);
+		var window_height = ALittle.Math_ToInt(size_list[2]);
 		if (window_height == null) window_height = 600;
 		// 字体路径
 		var font_path = this._default_font_path.text;
-		var font_size = lua.tonumber(this._default_font_size.text);
+		var font_size = ALittle.Math_ToInt(this._default_font_size.text);
 		if (font_size == null) font_size = 25;
 	
 		// 创建项目
-		g_IDEProject.NewProject(name, lua.math.floor(window_width), lua.math.floor(window_height), font_path, lua.math.floor(font_size));
+		g_IDEProject.NewProject(name, ALittle.Math_Floor(window_width), ALittle.Math_Floor(window_height), font_path, ALittle.Math_Floor(font_size));
 		g_IDECenter.UpdateProjectList();
 	
 		// 如果当前没有打开的项目，就直接打开
@@ -231,20 +231,20 @@ public class IDEProjectManager
 	
 	public fun HandleSettingProjectConfirm(ALittle.UIEvent event)
 	{
-		var default_show_width = lua.tonumber(this._default_show_width.text);
+		var default_show_width = ALittle.Math_ToInt(this._default_show_width.text);
 		if (default_show_width == null || default_show_width <= 0)
 		{
 			g_IDETool.ShowNotice("错误", "默认宽度不合法");
 			return;
 		}
-		var default_show_height = lua.tonumber(this._default_show_height.text);
+		var default_show_height = ALittle.Math_ToInt(this._default_show_height.text);
 		if (default_show_height == null || default_show_height <= 0)
 		{
 			g_IDETool.ShowNotice("错误", "默认高度不合法");
 			return;
 		}
 		var default_font_path = this._default_font_path.text;
-		var default_font_size = lua.tonumber(this._default_font_size.text);
+		var default_font_size = ALittle.Math_ToInt(this._default_font_size.text);
 		if (default_font_size == null || default_font_size <= 0)
 		{
 			g_IDETool.ShowNotice("错误", "默认字体大小不合法");
@@ -263,7 +263,7 @@ public class IDEProjectManager
 			for (var index, module in module_split)
 			{
 				var split = ALittle.String_Split(module, ",");
-				if (lua.table.maxn(split) != 2)
+				if (ALittle.List_MaxN(split) != 2)
 				{
 					g_IDETool.ShowNotice("错误", "服务端模块格式错误:"..module);
 					return;
@@ -452,7 +452,7 @@ public class IDEProjectManager
 			for (var index, module in module_split)
 			{
 				var split = ALittle.String_Split(module, ",");
-				if (lua.table.maxn(split) != 2)
+				if (ALittle.List_MaxN(split) != 2)
 				{
 					g_IDETool.ShowNotice("提示", "服务端模块格式错误:"..module);
 					return;
@@ -462,9 +462,9 @@ public class IDEProjectManager
 					g_IDETool.ShowNotice("提示", "服务端模块路径不存在:"..split[1]);
 					return;
 				}
-				ALittle.Push(new_modules, module);
+				ALittle.List_Push(new_modules, module);
 			}
-			if (lua.table.maxn(new_modules) > 0)
+			if (ALittle.List_MaxN(new_modules) > 0)
 				server_module = " \""..core_path.."\" \""..ALittle.String_Join(new_modules, ";").."\"";
 		}
 

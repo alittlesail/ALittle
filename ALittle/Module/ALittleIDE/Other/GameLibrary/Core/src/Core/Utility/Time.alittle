@@ -45,3 +45,28 @@ public static Time_GetCurDate([Nullable] int time) : string
         return result;
     }
 }
+
+
+
+// 获取当前时间字符串%Y-%m-%d
+public static Time_GetCurYMD([Nullable] int time) : string
+{
+    [Language(Lua)]
+    return lua.os.date("%Y-%m-%d", time);
+
+    [Language(JavaScript)]
+    {
+        var date = new javascript.Date();
+        if (time != null) date.setTime(time * 1000);
+        var result = date.getFullYear().."-";
+
+        var month = (date.getMonth() + 1);
+        if (month < 10) result = result.."-0"..month;
+        else result = result.."-"..month;
+
+        var day = date.getDate();
+        if (day < 10) result = result.."-0"..day;
+        else result = result.."-"..day;
+        return result;
+    }
+}

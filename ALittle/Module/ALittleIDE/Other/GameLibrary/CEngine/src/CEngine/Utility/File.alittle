@@ -196,7 +196,7 @@ public static DeleteLog(int day_count_before)
         if (File_GetFileAttr(log_path) == null)
             return;
     
-        var time_table = new lua.dateinfo();
+        var time_table = cast<lua.dateinfo>(lua.os.date("*t"));
         time_table.day = time_table.day - day_count_before;
         var time_string = lua.os.date("%Y-%m-%d", lua.os.time(time_table))..".log";
     

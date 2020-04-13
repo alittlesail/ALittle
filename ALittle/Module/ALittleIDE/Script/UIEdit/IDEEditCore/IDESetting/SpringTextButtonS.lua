@@ -4,11 +4,10 @@ module("ALittleIDE", package.seeall)
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___coroutine = coroutine
 
 
-assert(DisplayLayoutS, " extends class:DisplayLayoutS is nil")
-SpringTextButtonS = ALittle.Class(DisplayLayoutS, "ALittleIDE.SpringTextButtonS")
+assert(ALittleIDE.DisplayLayoutS, " extends class:ALittleIDE.DisplayLayoutS is nil")
+SpringTextButtonS = Lua.Class(ALittleIDE.DisplayLayoutS, "ALittleIDE.SpringTextButtonS")
 
 function SpringTextButtonS:Ctor(user_info, tab_child, tree_logic)
 	___rawset(self, "_layer_name", "ide_setting_springtextbutton")
@@ -39,7 +38,7 @@ function SpringTextButtonS:HandleShowUpFOCUSOUT(event)
 end
 
 function SpringTextButtonS:HandleShowUpSelect(event)
-	local func = ALittle.Bind(self.ImagePathSelectCallback, self, "show_up", self.HandleShowUpFOCUSOUT, nil)
+	local func = Lua.Bind(self.ImagePathSelectCallback, self, "show_up", self.HandleShowUpFOCUSOUT, nil)
 	g_IDEAttrImageDialog:ShowDialog(nil, func)
 end
 
@@ -54,7 +53,7 @@ function SpringTextButtonS:HandleShowDisabledFOCUSOUT(event)
 end
 
 function SpringTextButtonS:HandleShowDisabledSelect(event)
-	local func = ALittle.Bind(self.ImagePathSelectCallback, self, "show_disabled", self.HandleShowDisabledFOCUSOUT, nil)
+	local func = Lua.Bind(self.ImagePathSelectCallback, self, "show_disabled", self.HandleShowDisabledFOCUSOUT, nil)
 	g_IDEAttrImageDialog:ShowDialog(nil, func)
 end
 

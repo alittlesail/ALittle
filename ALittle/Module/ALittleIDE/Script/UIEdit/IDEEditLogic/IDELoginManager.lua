@@ -4,7 +4,6 @@ module("ALittleIDE", package.seeall)
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___coroutine = coroutine
 
 ALittle.RegStruct(1598450085, "ALittle.QWebLogout", {
 name = "ALittle.QWebLogout", ns_name = "ALittle", rl_name = "QWebLogout", hash_code = 1598450085,
@@ -67,15 +66,15 @@ type_list = {"string","int"},
 option_map = {}
 })
 
-IDELoginManager = ALittle.Class(nil, "ALittleIDE.IDELoginManager")
+IDELoginManager = Lua.Class(nil, "ALittleIDE.IDELoginManager")
 
 function IDELoginManager:Ctor()
-	local config = ALittle.ClientConfigSystem(g_ModuleBasePath .. "/Other/Server.cfg")
+	local config = ALittle.CreateConfigSystem(g_ModuleBasePath .. "/Other/Server.cfg")
 	___rawset(self, "_logingate_ip", config:GetConfig("logingate_ip", "version.alittleide.com"))
 	___rawset(self, "_logingate_port", config:GetConfig("logingate_port", 1000))
 	___rawset(self, "_version_ip", config:GetConfig("version_ip", "version.alittleide.com"))
 	___rawset(self, "_version_port", config:GetConfig("version_port", 1011))
-	___rawset(self, "_msg_client", ALittle.MsgSender(30, true))
+	___rawset(self, "_msg_client", ALittle.CreateMsgSender(30, true))
 	___rawset(self, "_session_id", "")
 	___rawset(self, "_account_info", {})
 	___rawset(self, "_server_info", {})
@@ -89,30 +88,6 @@ end
 
 function IDELoginManager.__getter:account_name()
 	return self._account_name
-end
-
-function IDELoginManager.__getter:account_id()
-	return self._account_info.account_id
-end
-
-function IDELoginManager.__getter:session_id()
-	return self._session_id
-end
-
-function IDELoginManager.__getter:http_ip()
-	return self._server_info.http_ip
-end
-
-function IDELoginManager.__getter:http_port()
-	return self._server_info.http_port
-end
-
-function IDELoginManager.__getter:version_ip()
-	return self._version_ip
-end
-
-function IDELoginManager.__getter:version_port()
-	return self._version_port
 end
 
 function IDELoginManager:Setup()
@@ -135,26 +110,26 @@ end
 function IDELoginManager:Connect()
 	local param = {}
 	param.route_type = 3
-	local client = ALittle.HttpSender(self._logingate_ip, self._logingate_port)
-	local error, result = ALittle.IHttpSender.Invoke("GatewayServer.QRouteInfo", client, param)
+	local client = ALittle.CreateHttpSender(self._logingate_ip, self._logingate_port)
+	local error, result = Lua.IHttpSender.Invoke("GatewayServer.QRouteInfo", client, param)
 	if error ~= nil then
 		ALittle.Log(error)
 		self._msg_client = nil
 		self:OnConnectFailed()
-		A_LoopSystem:AddTimer(5000, ALittle.Bind(self.Connect, self))
+		A_LoopSystem:AddTimer(5000, Lua.Bind(self.Connect, self))
 		return
 	end
-	self._msg_client = ALittle.MsgSender(60, true, ALittle.Bind(self.OnDisconnected, self))
+	self._msg_client = ALittle.CreateMsgSender(60, true, Lua.Bind(self.OnDisconnected, self))
 	error = self._msg_client:Connect(result.client_ip, result.client_port)
 	if error ~= nil then
 		self._msg_client = nil
 		self:OnConnectFailed()
-		A_LoopSystem:AddTimer(5000, ALittle.Bind(self.Connect, self))
+		A_LoopSystem:AddTimer(5000, Lua.Bind(self.Connect, self))
 		return
 	end
 	self:OnConnectSucceed()
 end
-IDELoginManager.Connect = ALittle.CoWrap(IDELoginManager.Connect)
+IDELoginManager.Connect = Lua.CoWrap(IDELoginManager.Connect)
 
 function IDELoginManager:OnConnectFailed()
 	g_IDECenter:AccountInReConnect()
@@ -172,7 +147,7 @@ end
 function IDELoginManager:OnDisconnected()
 	g_IDECenter:AccountInReConnect()
 	self:HidePasswordDialog()
-	A_LoopSystem:AddTimer(5000, ALittle.Bind(self.Connect, self))
+	A_LoopSystem:AddTimer(5000, Lua.Bind(self.Connect, self))
 end
 
 function IDELoginManager:ShowLoginDialog()
@@ -234,7 +209,7 @@ function IDELoginManager:Logout()
 		return
 	end
 	local param = {}
-	local error, result = ALittle.IMsgCommon.InvokeRPC(1598450085, self._msg_client, param)
+	local error, result = Lua.IMsgCommon.InvokeRPC(1598450085, self._msg_client, param)
 	if error ~= nil then
 		ALittle.Error(error)
 		return
@@ -250,7 +225,7 @@ function IDELoginManager:Logout()
 	end
 	g_IDECenter:AccountInLogout()
 end
-IDELoginManager.Logout = ALittle.CoWrap(IDELoginManager.Logout)
+IDELoginManager.Logout = Lua.CoWrap(IDELoginManager.Logout)
 
 function IDELoginManager:HandleMsgNForceLogout()
 	self._is_login = false
@@ -289,7 +264,7 @@ function IDELoginManager:LoginImpl()
 	param.client_platform = ALittle.System_GetPlatform()
 	param.account_name = self._account_name
 	param.account_pwd = self._account_pwd
-	local error, result = ALittle.IMsgCommon.InvokeRPC(898014419, self._msg_client, param)
+	local error, result = Lua.IMsgCommon.InvokeRPC(898014419, self._msg_client, param)
 	if self._login_button ~= nil then
 		self._login_button.disabled = false
 	end
@@ -307,7 +282,7 @@ function IDELoginManager:LoginImpl()
 	self:HideLoginDialog()
 	g_IDECenter:AccountInLogin()
 end
-IDELoginManager.LoginImpl = ALittle.CoWrap(IDELoginManager.LoginImpl)
+IDELoginManager.LoginImpl = Lua.CoWrap(IDELoginManager.LoginImpl)
 
 function IDELoginManager:HandlePasswordAlterClick(event)
 	local old_password = self._pas_old_password.text
@@ -321,7 +296,7 @@ function IDELoginManager:HandlePasswordAlterClick(event)
 	local param = {}
 	param.old_password = ALittle.String_MD5(old_password)
 	param.new_password = ALittle.String_MD5(new_password)
-	local error, result = ALittle.IMsgCommon.InvokeRPC(-1373673802, self._msg_client, param)
+	local error, result = Lua.IMsgCommon.InvokeRPC(-1373673802, self._msg_client, param)
 	self._change_pas_confirm.disabled = false
 	if g_IDELoginManager._change_pas_confirm ~= nil then
 		g_IDELoginManager._change_pas_confirm.disabled = false
@@ -333,7 +308,7 @@ function IDELoginManager:HandlePasswordAlterClick(event)
 	g_IDETool:ShowNotice("提示", "密码修改成功")
 	g_IDELoginManager:HidePasswordDialog()
 end
-IDELoginManager.HandlePasswordAlterClick = ALittle.CoWrap(IDELoginManager.HandlePasswordAlterClick)
+IDELoginManager.HandlePasswordAlterClick = Lua.CoWrap(IDELoginManager.HandlePasswordAlterClick)
 
 function IDELoginManager:HandlePasswordCancelClick(event)
 	self:HidePasswordDialog()
@@ -341,6 +316,30 @@ end
 
 function IDELoginManager:IsLogin()
 	return self._is_login
+end
+
+function IDELoginManager.__getter:account_id()
+	return self._account_info.account_id
+end
+
+function IDELoginManager.__getter:session_id()
+	return self._session_id
+end
+
+function IDELoginManager.__getter:http_ip()
+	return self._server_info.http_ip
+end
+
+function IDELoginManager.__getter:http_port()
+	return self._server_info.http_port
+end
+
+function IDELoginManager.__getter:version_ip()
+	return self._version_ip
+end
+
+function IDELoginManager.__getter:version_port()
+	return self._version_port
 end
 
 g_IDELoginManager = IDELoginManager()

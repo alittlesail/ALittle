@@ -115,7 +115,7 @@ function IDEAntiFrameLinkItem:HandleAttributeChanged(event)
 		if self._attribute_dropdown.text == "visible" or self._attribute_dropdown.text == "disabled" then
 			child.init = self._init_input.text == "true"
 		else
-			child.init = tonumber(self._init_input.text)
+			child.init = ALittle.Math_ToDouble(self._init_input.text)
 		end
 	end
 	self._panel.tab_child:Save(false)
@@ -137,7 +137,7 @@ function IDEAntiFrameLinkItem:HandleInitChanged(event)
 		if self._attribute_dropdown.text == "visible" or self._attribute_dropdown.text == "disabled" then
 			child.init = self._init_input.text == "true"
 		else
-			child.init = tonumber(self._init_input.text)
+			child.init = ALittle.Math_ToDouble(self._init_input.text)
 		end
 	end
 	self._panel.tab_child:Save(false)
@@ -175,7 +175,7 @@ function IDEAntiFrameLoopItem:UpdateText()
 	elseif self._info.target == false then
 		value = "false"
 	else
-		value = tostring(self._info.target)
+		value = ALittle.String_ToString(self._info.target)
 	end
 	if self._info.clazz == "LoopLinear" then
 		self._button.text = "L(" .. value .. ")"
@@ -246,7 +246,7 @@ function IDEAntiFrameLoopItem.ValueToString(value)
 	if value == false then
 		return "false"
 	end
-	return tostring(value)
+	return ALittle.String_ToString(value)
 end
 
 function IDEAntiFrameLoopItem.StringToValue(attribute, value)
@@ -260,7 +260,7 @@ function IDEAntiFrameLoopItem.StringToValue(attribute, value)
 			return false
 		end
 	else
-		return tonumber(value)
+		return ALittle.Math_ToDouble(value)
 	end
 end
 
@@ -343,7 +343,7 @@ function IDEAntiFrameAntiItem.__getter:container()
 end
 
 function IDEAntiFrameAntiItem:CalcTimeByWidth(width)
-	return math.floor(width / self._panel._FRAME_WIDTH * self._panel._FRAME_TIME)
+	return ALittle.Math_Floor(width / self._panel._FRAME_WIDTH * self._panel._FRAME_TIME)
 end
 
 function IDEAntiFrameAntiItem:CalcWidthByTime(time)
@@ -382,7 +382,7 @@ function IDEAntiFrameAntiItem:Insert(rel_x, clazz)
 	local loop_item = g_Control:CreateControl("ide_anti_screen_loop_item")
 	loop_item:Init(self, child)
 	self._container:AddChild(loop_item)
-	local revoke = IDEAntiInsertLoopRevoke(self, child, loop_item, table.maxn(self._info.childs))
+	local revoke = IDEAntiInsertLoopRevoke(self, child, loop_item, ALittle.List_MaxN(self._info.childs))
 	self._panel.tab_child.revoke_list:PushRevoke(revoke)
 	loop_item.button.selected = true
 	self._panel:ShowAntiLoop(loop_item)
@@ -423,7 +423,7 @@ function IDEAntiFrameAntiItem:InsertBefore(loop_item, clazz)
 		return
 	end
 	local child_index = self._container:GetChildIndex(loop_item)
-	table.insert(self._info.childs, child_index, child)
+	ALittle.List_Insert(self._info.childs, child_index, child)
 	local loop_item = g_Control:CreateControl("ide_anti_screen_loop_item")
 	loop_item:Init(self, child)
 	self._container:AddChild(loop_item, child_index)
@@ -440,7 +440,7 @@ function IDEAntiFrameAntiItem:DeleteLoop(loop_item)
 		return
 	end
 	local child = self._info.childs[child_index]
-	table.remove(self._info.childs, child_index)
+	ALittle.List_Remove(self._info.childs, child_index)
 	self._container:RemoveChild(loop_item)
 	local revoke = IDEAntiDeleteLoopRevoke(self, child, loop_item, child_index)
 	self._panel.tab_child.revoke_list:PushRevoke(revoke)
@@ -797,7 +797,7 @@ function IDEAntiPanel:RemoveAttr(child_index)
 		return
 	end
 	local child = info.childs[child_index]
-	table.remove(info.childs, child_index)
+	ALittle.List_Remove(info.childs, child_index)
 	local anti_item = self._anti_anti_linear:GetChildByIndex(child_index)
 	self._anti_anti_linear:RemoveChild(anti_item)
 	local link_item = self._anti_link_linear:GetChildByIndex(child_index)
@@ -890,7 +890,7 @@ function IDEAntiPanel:HandleTotalTimeChanged(event)
 	if self._cur_loop_item == nil then
 		return
 	end
-	local time = math.floor(tonumber(event.target.text))
+	local time = ALittle.Math_ToInt(event.target.text)
 	if time == nil or time < 0 then
 		time = 0
 		event.target.text = time
@@ -902,7 +902,7 @@ function IDEAntiPanel:HandleDelayTimeChanged(event)
 	if self._cur_loop_item == nil then
 		return
 	end
-	local time = math.floor(tonumber(event.target.text))
+	local time = ALittle.Math_ToInt(event.target.text)
 	if time == nil or time < 0 then
 		time = 0
 		event.target.text = time

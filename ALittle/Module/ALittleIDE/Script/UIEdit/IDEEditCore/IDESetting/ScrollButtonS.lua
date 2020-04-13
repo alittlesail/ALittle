@@ -4,11 +4,10 @@ module("ALittleIDE", package.seeall)
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___coroutine = coroutine
 
 
-assert(DisplayLayoutS, " extends class:DisplayLayoutS is nil")
-ScrollButtonS = ALittle.Class(DisplayLayoutS, "ALittleIDE.ScrollButtonS")
+assert(ALittleIDE.DisplayLayoutS, " extends class:ALittleIDE.DisplayLayoutS is nil")
+ScrollButtonS = Lua.Class(ALittleIDE.DisplayLayoutS, "ALittleIDE.ScrollButtonS")
 
 function ScrollButtonS:Ctor(user_info, tab_child, tree_logic)
 	___rawset(self, "_layer_name", "ide_setting_scrollbutton")
@@ -38,7 +37,7 @@ function ScrollButtonS:HandleShowUpFOCUSOUT(event)
 end
 
 function ScrollButtonS:HandleShowUpSelect(event)
-	local func = ALittle.Bind(self.ImagePathSelectCallback, self, "show_up", self.HandleShowUpFOCUSOUT, nil)
+	local func = Lua.Bind(self.ImagePathSelectCallback, self, "show_up", self.HandleShowUpFOCUSOUT, nil)
 	g_IDEAttrImageDialog:ShowDialog(nil, func)
 end
 
@@ -53,7 +52,7 @@ function ScrollButtonS:HandleShowOverFOCUSOUT(event)
 end
 
 function ScrollButtonS:HandleShowOverSelect(event)
-	local func = ALittle.Bind(self.ImagePathSelectCallback, self, "show_over", self.HandleShowOverFOCUSOUT, nil)
+	local func = Lua.Bind(self.ImagePathSelectCallback, self, "show_over", self.HandleShowOverFOCUSOUT, nil)
 	g_IDEAttrImageDialog:ShowDialog(nil, func)
 end
 
@@ -68,7 +67,7 @@ function ScrollButtonS:HandleShowDownFOCUSOUT(event)
 end
 
 function ScrollButtonS:HandleShowDownSelect(event)
-	local func = ALittle.Bind(self.ImagePathSelectCallback, self, "show_down", self.HandleShowDownFOCUSOUT, nil)
+	local func = Lua.Bind(self.ImagePathSelectCallback, self, "show_down", self.HandleShowDownFOCUSOUT, nil)
 	g_IDEAttrImageDialog:ShowDialog(nil, func)
 end
 
@@ -83,7 +82,7 @@ function ScrollButtonS:HandleShowDisabledFOCUSOUT(event)
 end
 
 function ScrollButtonS:HandleShowDisabledSelect(event)
-	local func = ALittle.Bind(self.ImagePathSelectCallback, self, "show_disabled", self.HandleShowDisabledFOCUSOUT, nil)
+	local func = Lua.Bind(self.ImagePathSelectCallback, self, "show_disabled", self.HandleShowDisabledFOCUSOUT, nil)
 	g_IDEAttrImageDialog:ShowDialog(nil, func)
 end
 

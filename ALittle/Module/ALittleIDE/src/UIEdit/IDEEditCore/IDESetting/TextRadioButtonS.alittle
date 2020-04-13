@@ -24,7 +24,7 @@ public class TextRadioButtonS : TextCheckButtonS
 	
 	public fun HandleGroupNameAutoClick(ALittle.UIEvent event)
 	{
-		this._group_name.text = lua.os.date("%Y%m%d%H%M%S")..lua.tostring(lua.math.random(1000));
+		this._group_name.text = ALittle.Time_GetCurDate()..ALittle.Math_RandomInt(1, 1000);
 		this.DefaultNilStringInputChange("group_name", false);
 	}
 }

@@ -114,7 +114,7 @@ public class IDEQuickManager
 		var loading = this._loading[abs_path];
 		if (loading == null) return;
 		for (var info, v in loading.map)
-			info.image.SetTextureCut(abs_path, lua.math.floor(info.frame.width), lua.math.floor(info.frame.height), true);
+			info.image.SetTextureCut(abs_path, ALittle.Math_Floor(info.frame.width), ALittle.Math_Floor(info.frame.height), true);
 	}
 	
 	public fun CreateItem(IDEControlInfo control_info, string flag_type) : ALittle.DisplayObject
@@ -165,7 +165,7 @@ public class IDEQuickManager
 			loading.map[info] = true;
 		}
 		else
-			info.image.SetTextureCut(abs_path, lua.math.floor(info.frame.width), lua.math.floor(info.frame.height), true);
+			info.image.SetTextureCut(abs_path, ALittle.Math_Floor(info.frame.width), ALittle.Math_Floor(info.frame.height), true);
 		
 		if (width < height)
 		{
@@ -205,7 +205,7 @@ public class IDEQuickManager
 	
 	public fun CreateItemAndAddToList(ALittle.ScrollList scroll_list, List<ALittle.DisplayObject> item_list)
 	{
-		var col_count = lua.math.floor(scroll_list.width / this._real_size);
+		var col_count = ALittle.Math_Floor(scroll_list.width / this._real_size);
 		var remain_count = 0;
 		var container:ALittle.Linear = null;
 		// 遍历列表
@@ -230,7 +230,7 @@ public class IDEQuickManager
 	
 	public fun AddToList(ALittle.ScrollList scroll_list, ALittle.DisplayObject item)
 	{
-		var col_count = lua.math.floor(scroll_list.width / this._real_size);
+		var col_count = ALittle.Math_Floor(scroll_list.width / this._real_size);
 		var container = cast<ALittle.Linear>(scroll_list.GetChildByIndex(scroll_list.child_count));
 		if (container != null && container.child_count >= col_count)
 			container = null;
@@ -295,8 +295,8 @@ public class IDEQuickManager
 			if (search_type == "控件名|描述")
 			{
 				if (key == ""
-						|| ALittle.Find(control_name, key) != null
-						|| (control_info.info.description != null && ALittle.Find(control_info.info.description, key) != null))
+						|| ALittle.String_Find(control_name, key) != null
+						|| (control_info.info.description != null && ALittle.String_Find(control_info.info.description, key) != null))
 				{
 					var item = this.CreateItem(control_info, "控件选择器");
 					if (item != null)
@@ -356,7 +356,7 @@ public class IDEQuickManager
 			title = title.."(筛选出来的数量太多，只显示前"..run_time.total_count.."个)";
 
 		// 根据文件名进行排序，文件夹永远你在前面
-		lua.table.sort(item_list, IDEQuickManager.SearchCmp);
+		ALittle.List_Sort(item_list, IDEQuickManager.SearchCmp);
 		this._project_quick_tab.SetChildText(this._first_tab, title);
 		this.CreateItemAndAddToList(this._scroll_list, item_list);
 	}
@@ -416,7 +416,7 @@ public class IDEQuickManager
 		info.info = display_info;
 		var copy_list = new List<IDEControlCopyInfo>();
 		copy_list[1] = info;
-		ALittle.System_SetClipboardText(lua.json.encode(copy_list));
+		ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list));
 	}
 	
 	// 处理删除信息
@@ -702,7 +702,7 @@ public class IDEQuickManager
 		// 保存配置
 		var info = new IDEQuickConfigInfo();
 		info.name = control_name;
-		info.time = lua.os.time();
+		info.time = ALittle.Time_GetCurTime();
 		cfg_info_map[control_name] = info;
 		g_IDEProject.project.config.SetConfig("quick_map", cfg_quick_map);
 	}

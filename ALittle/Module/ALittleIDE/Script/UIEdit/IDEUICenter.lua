@@ -3,10 +3,9 @@ module("ALittleIDE", package.seeall)
 
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___coroutine = coroutine
 
 
-IDEUICenter = ALittle.Class(nil, "ALittleIDE.IDEUICenter")
+IDEUICenter = Lua.Class(nil, "ALittleIDE.IDEUICenter")
 
 function IDEUICenter:Ctor()
 end
@@ -15,83 +14,72 @@ function IDEUICenter.__getter:image_scroll_screen()
 	return self._image_scroll_screen
 end
 
-function IDEUICenter.__getter:singleselect()
-	return self._tool_singleselect.selected
-end
-
-function IDEUICenter.__getter:handdrag()
-	return self._tool_handdrag.selected
-end
-
-function IDEUICenter.__getter:scale()
-	return self._tool_scale.selected
-end
-
 function IDEUICenter:Setup(edit_container)
-	g_Script:Require("UIEdit/IDEUtility")
-	g_Script:Require("UIEdit/IDEDataCore/IDEEnum")
-	g_Script:Require("UIEdit/IDEDataCore/IDEExport")
-	g_Script:Require("UIEdit/IDEEditCore/IDETabChild")
-	g_Script:Require("UIEdit/IDEEditCore/IDETabManager")
-	g_Script:Require("UIEdit/IDEEditCore/IDETreeLogic")
-	g_Script:Require("UIEdit/IDEEditCore/IDETree")
-	g_Script:Require("UIEdit/IDEEditCore/IDETreeItem")
-	g_Script:Require("UIEdit/IDEEditCore/IDERevocation")
-	g_Script:Require("UIEdit/IDEEditCore/IDEAttrTextDialog")
-	g_Script:Require("UIEdit/IDEEditCore/IDEAttrEventDialog")
-	g_Script:Require("UIEdit/IDEEditCore/IDEAttrImageDialog")
-	g_Script:Require("UIEdit/IDEEditCore/IDEEditImageDialog")
-	g_Script:Require("UIEdit/IDEEditCore/IDEImageCutPlugin")
-	g_Script:Require("UIEdit/IDEEditCore/IDESetting/DisplayObjectS")
-	g_Script:Require("UIEdit/IDEEditCore/IDESetting/DisplayLayoutS")
-	g_Script:Require("UIEdit/IDEEditCore/IDESetting/DisplayViewS")
-	g_Script:Require("UIEdit/IDEEditCore/IDESetting/TextCheckButtonS")
-	g_Script:Require("UIEdit/IDEEditCore/IDESetting/DialogS")
-	g_Script:Require("UIEdit/IDEEditCore/IDESetting/DropDownS")
-	g_Script:Require("UIEdit/IDEEditCore/IDESetting/Grid3S")
-	g_Script:Require("UIEdit/IDEEditCore/IDESetting/Grid9S")
-	g_Script:Require("UIEdit/IDEEditCore/IDESetting/Grid9ImageS")
-	g_Script:Require("UIEdit/IDEEditCore/IDESetting/TextS")
-	g_Script:Require("UIEdit/IDEEditCore/IDESetting/TextEditS")
-	g_Script:Require("UIEdit/IDEEditCore/IDESetting/ImageEditS")
-	g_Script:Require("UIEdit/IDEEditCore/IDESetting/TextInputS")
-	g_Script:Require("UIEdit/IDEEditCore/IDESetting/ImageInputS")
-	g_Script:Require("UIEdit/IDEEditCore/IDESetting/ImageS")
-	g_Script:Require("UIEdit/IDEEditCore/IDESetting/TriangleS")
-	g_Script:Require("UIEdit/IDEEditCore/IDESetting/ImagePlayS")
-	g_Script:Require("UIEdit/IDEEditCore/IDESetting/FramePlayS")
-	g_Script:Require("UIEdit/IDEEditCore/IDESetting/SpriteS")
-	g_Script:Require("UIEdit/IDEEditCore/IDESetting/SpritePlayS")
-	g_Script:Require("UIEdit/IDEEditCore/IDESetting/LinearS")
-	g_Script:Require("UIEdit/IDEEditCore/IDESetting/QuadS")
-	g_Script:Require("UIEdit/IDEEditCore/IDESetting/RichAreaS")
-	g_Script:Require("UIEdit/IDEEditCore/IDESetting/RichInputS")
-	g_Script:Require("UIEdit/IDEEditCore/IDESetting/RichEditS")
-	g_Script:Require("UIEdit/IDEEditCore/IDESetting/SliderS")
-	g_Script:Require("UIEdit/IDEEditCore/IDESetting/ScrollBarS")
-	g_Script:Require("UIEdit/IDEEditCore/IDESetting/ScrollButtonS")
-	g_Script:Require("UIEdit/IDEEditCore/IDESetting/ScrollListS")
-	g_Script:Require("UIEdit/IDEEditCore/IDESetting/ScrollScreenS")
-	g_Script:Require("UIEdit/IDEEditCore/IDESetting/TabS")
-	g_Script:Require("UIEdit/IDEEditCore/IDESetting/TextAreaS")
-	g_Script:Require("UIEdit/IDEEditCore/IDESetting/TextButtonS")
-	g_Script:Require("UIEdit/IDEEditCore/IDESetting/SpringTextButtonS")
-	g_Script:Require("UIEdit/IDEEditCore/IDESetting/TextRadioButtonS")
-	g_Script:Require("UIEdit/IDEEditCore/IDESetting/TileTableS")
-	g_Script:Require("UIEdit/IDEEditCore/IDESetting/PiechartS")
-	g_Script:Require("UIEdit/IDEEditLogic/IDETool")
-	g_Script:Require("UIEdit/IDEEditLogic/IDEMainMenu")
-	g_Script:Require("UIEdit/IDEEditLogic/IDEAttributeManager")
-	g_Script:Require("UIEdit/IDEEditLogic/IDEControlManager")
-	g_Script:Require("UIEdit/IDEEditLogic/IDEQuickManager")
-	g_Script:Require("UIEdit/IDEEditLogic/IDEAntiManager")
-	g_Script:Require("UIEdit/IDEEditLogic/IDEControlTree")
-	g_Script:Require("UIEdit/IDEEditLogic/IDEImageManager")
-	g_Script:Require("UIEdit/IDEEditLogic/IDEProjectManager")
-	g_Script:Require("UIEdit/IDEEditLogic/IDEVersionList")
-	g_Script:Require("UIEdit/IDEEditLogic/IDEVersionManager")
-	g_Script:Require("UIEdit/IDEEditLogic/IDELoginManager")
-	g_Script:Require("UIEdit/IDEEditLogic/IDEIMEManager")
+local ___COROUTINE = coroutine.running()
+	Require(g_ScriptBasePath .. "UIEdit/IDEUtility")
+	Require(g_ScriptBasePath .. "UIEdit/IDEDataCore/IDEEnum")
+	Require(g_ScriptBasePath .. "UIEdit/IDEDataCore/IDEExport")
+	Require(g_ScriptBasePath .. "UIEdit/IDEEditCore/IDETabChild")
+	Require(g_ScriptBasePath .. "UIEdit/IDEEditCore/IDETabManager")
+	Require(g_ScriptBasePath .. "UIEdit/IDEEditCore/IDETreeLogic")
+	Require(g_ScriptBasePath .. "UIEdit/IDEEditCore/IDETree")
+	Require(g_ScriptBasePath .. "UIEdit/IDEEditCore/IDETreeItem")
+	Require(g_ScriptBasePath .. "UIEdit/IDEEditCore/IDERevocation")
+	Require(g_ScriptBasePath .. "UIEdit/IDEEditCore/IDEAttrTextDialog")
+	Require(g_ScriptBasePath .. "UIEdit/IDEEditCore/IDEAttrEventDialog")
+	Require(g_ScriptBasePath .. "UIEdit/IDEEditCore/IDEAttrImageDialog")
+	Require(g_ScriptBasePath .. "UIEdit/IDEEditCore/IDEEditImageDialog")
+	Require(g_ScriptBasePath .. "UIEdit/IDEEditCore/IDEImageCutPlugin")
+	Require(g_ScriptBasePath .. "UIEdit/IDEEditCore/IDESetting/DisplayObjectS")
+	Require(g_ScriptBasePath .. "UIEdit/IDEEditCore/IDESetting/DisplayLayoutS")
+	Require(g_ScriptBasePath .. "UIEdit/IDEEditCore/IDESetting/DisplayViewS")
+	Require(g_ScriptBasePath .. "UIEdit/IDEEditCore/IDESetting/TextCheckButtonS")
+	Require(g_ScriptBasePath .. "UIEdit/IDEEditCore/IDESetting/DialogS")
+	Require(g_ScriptBasePath .. "UIEdit/IDEEditCore/IDESetting/DropDownS")
+	Require(g_ScriptBasePath .. "UIEdit/IDEEditCore/IDESetting/Grid3S")
+	Require(g_ScriptBasePath .. "UIEdit/IDEEditCore/IDESetting/Grid9S")
+	Require(g_ScriptBasePath .. "UIEdit/IDEEditCore/IDESetting/Grid9ImageS")
+	Require(g_ScriptBasePath .. "UIEdit/IDEEditCore/IDESetting/TextS")
+	Require(g_ScriptBasePath .. "UIEdit/IDEEditCore/IDESetting/TextEditS")
+	Require(g_ScriptBasePath .. "UIEdit/IDEEditCore/IDESetting/ImageEditS")
+	Require(g_ScriptBasePath .. "UIEdit/IDEEditCore/IDESetting/TextInputS")
+	Require(g_ScriptBasePath .. "UIEdit/IDEEditCore/IDESetting/ImageInputS")
+	Require(g_ScriptBasePath .. "UIEdit/IDEEditCore/IDESetting/ImageS")
+	Require(g_ScriptBasePath .. "UIEdit/IDEEditCore/IDESetting/TriangleS")
+	Require(g_ScriptBasePath .. "UIEdit/IDEEditCore/IDESetting/ImagePlayS")
+	Require(g_ScriptBasePath .. "UIEdit/IDEEditCore/IDESetting/FramePlayS")
+	Require(g_ScriptBasePath .. "UIEdit/IDEEditCore/IDESetting/SpriteS")
+	Require(g_ScriptBasePath .. "UIEdit/IDEEditCore/IDESetting/SpritePlayS")
+	Require(g_ScriptBasePath .. "UIEdit/IDEEditCore/IDESetting/LinearS")
+	Require(g_ScriptBasePath .. "UIEdit/IDEEditCore/IDESetting/QuadS")
+	Require(g_ScriptBasePath .. "UIEdit/IDEEditCore/IDESetting/RichAreaS")
+	Require(g_ScriptBasePath .. "UIEdit/IDEEditCore/IDESetting/RichInputS")
+	Require(g_ScriptBasePath .. "UIEdit/IDEEditCore/IDESetting/RichEditS")
+	Require(g_ScriptBasePath .. "UIEdit/IDEEditCore/IDESetting/SliderS")
+	Require(g_ScriptBasePath .. "UIEdit/IDEEditCore/IDESetting/ScrollBarS")
+	Require(g_ScriptBasePath .. "UIEdit/IDEEditCore/IDESetting/ScrollButtonS")
+	Require(g_ScriptBasePath .. "UIEdit/IDEEditCore/IDESetting/ScrollListS")
+	Require(g_ScriptBasePath .. "UIEdit/IDEEditCore/IDESetting/ScrollScreenS")
+	Require(g_ScriptBasePath .. "UIEdit/IDEEditCore/IDESetting/TabS")
+	Require(g_ScriptBasePath .. "UIEdit/IDEEditCore/IDESetting/TextAreaS")
+	Require(g_ScriptBasePath .. "UIEdit/IDEEditCore/IDESetting/TextButtonS")
+	Require(g_ScriptBasePath .. "UIEdit/IDEEditCore/IDESetting/SpringTextButtonS")
+	Require(g_ScriptBasePath .. "UIEdit/IDEEditCore/IDESetting/TextRadioButtonS")
+	Require(g_ScriptBasePath .. "UIEdit/IDEEditCore/IDESetting/TileTableS")
+	Require(g_ScriptBasePath .. "UIEdit/IDEEditCore/IDESetting/PiechartS")
+	Require(g_ScriptBasePath .. "UIEdit/IDEEditLogic/IDETool")
+	Require(g_ScriptBasePath .. "UIEdit/IDEEditLogic/IDEMainMenu")
+	Require(g_ScriptBasePath .. "UIEdit/IDEEditLogic/IDEAttributeManager")
+	Require(g_ScriptBasePath .. "UIEdit/IDEEditLogic/IDEControlManager")
+	Require(g_ScriptBasePath .. "UIEdit/IDEEditLogic/IDEQuickManager")
+	Require(g_ScriptBasePath .. "UIEdit/IDEEditLogic/IDEAntiManager")
+	Require(g_ScriptBasePath .. "UIEdit/IDEEditLogic/IDEControlTree")
+	Require(g_ScriptBasePath .. "UIEdit/IDEEditLogic/IDEImageManager")
+	Require(g_ScriptBasePath .. "UIEdit/IDEEditLogic/IDEProjectManager")
+	Require(g_ScriptBasePath .. "UIEdit/IDEEditLogic/IDEVersionList")
+	Require(g_ScriptBasePath .. "UIEdit/IDEEditLogic/IDEVersionManager")
+	Require(g_ScriptBasePath .. "UIEdit/IDEEditLogic/IDELoginManager")
+	Require(g_ScriptBasePath .. "UIEdit/IDEEditLogic/IDEIMEManager")
 	self._ui_edit_container = g_Control:CreateControl("ide_ui_edit_container", self, edit_container)
 	local tree_displaylayout = g_Control:CreateControl("ide_main_tab_tree_displaylayout", g_IDEControlTree, self._control_tree_tab)
 	g_Control:CreateControl("ide_main_tab_control_scroll_screen", g_IDEControlManager, self._project_edit_tab)
@@ -297,6 +285,18 @@ function IDEUICenter:HandleToolScale(event)
 	self._tool_scale_input.visible = event.target.selected
 end
 
+function IDEUICenter.__getter:singleselect()
+	return self._tool_singleselect.selected
+end
+
+function IDEUICenter.__getter:handdrag()
+	return self._tool_handdrag.selected
+end
+
+function IDEUICenter.__getter:scale()
+	return self._tool_scale.selected
+end
+
 function IDEUICenter:UpdateToolScale(scale)
 	self._tool_scale_input.text = scale
 end
@@ -306,7 +306,7 @@ function IDEUICenter:HandleToolScaleDrag(event)
 	if tab_child == nil then
 		return
 	end
-	local scale = tonumber(self._tool_scale_input.text)
+	local scale = ALittle.Math_ToDouble(self._tool_scale_input.text)
 	if scale == nil then
 		scale = 1
 	end
@@ -331,7 +331,7 @@ function IDEUICenter:HandleToolScaleInputFOCUSOUT(event)
 	if tab_child == nil then
 		return
 	end
-	local scale = tonumber(self._tool_scale_input.text)
+	local scale = ALittle.Math_ToDouble(self._tool_scale_input.text)
 	if scale == nil then
 		scale = 1
 	end

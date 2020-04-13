@@ -13,3 +13,7 @@ function Time_GetCurDate(time)
 	return os.date("%Y-%m-%d-%H-%M-%S", time)
 end
 
+function Time_GetCurYMD(time)
+	return os.date("%Y-%m-%d", time)
+end
+

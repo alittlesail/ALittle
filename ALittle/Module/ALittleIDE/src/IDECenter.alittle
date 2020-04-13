@@ -160,7 +160,7 @@ class IDECenter
 			++ data_list_count;
 			data_list[data_list_count] = v;
 		}
-		lua.table.sort(data_list);
+		ALittle.List_Sort(data_list);
 		var text = this._current_project_name.text;
 		this._current_project_name.data_list = data_list;
 		this._current_project_name.text = text;
@@ -207,7 +207,7 @@ class IDECenter
 		// 打开当前项目
 		this.OpenProject(project_name);
 		// 打开tab
-		var count = lua.table.maxn(name_list);
+		var count = ALittle.List_MaxN(name_list);
 		if (count > 0)
 		{
 			for (var i = count; count >= 1; -1)

@@ -4,11 +4,10 @@ module("ALittleIDE", package.seeall)
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___coroutine = coroutine
 
 
-assert(DisplayLayoutS, " extends class:DisplayLayoutS is nil")
-RichInputS = ALittle.Class(DisplayLayoutS, "ALittleIDE.RichInputS")
+assert(ALittleIDE.DisplayLayoutS, " extends class:ALittleIDE.DisplayLayoutS is nil")
+RichInputS = Lua.Class(ALittleIDE.DisplayLayoutS, "ALittleIDE.RichInputS")
 
 function RichInputS:Ctor(user_info, tab_child, tree_logic)
 	___rawset(self, "_layer_name", "ide_setting_richinput")

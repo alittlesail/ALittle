@@ -4,11 +4,10 @@ module("ALittleIDE", package.seeall)
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___coroutine = coroutine
 
 
-assert(DisplayLayoutS, " extends class:DisplayLayoutS is nil")
-DialogS = ALittle.Class(DisplayLayoutS, "ALittleIDE.DialogS")
+assert(ALittleIDE.DisplayLayoutS, " extends class:ALittleIDE.DisplayLayoutS is nil")
+DialogS = Lua.Class(ALittleIDE.DisplayLayoutS, "ALittleIDE.DialogS")
 
 function DialogS:Ctor(user_info, tab_child, tree_logic)
 	___rawset(self, "_layer_name", "ide_setting_dialog")
@@ -43,7 +42,7 @@ function DialogS:HandleShowBackgroundFOCUSOUT(event)
 end
 
 function DialogS:HandleShowBackgroundSelect(event)
-	local func = ALittle.Bind(self.ImagePathSelectCallback, self, "show_background", self.HandleShowBackgroundFOCUSOUT, nil)
+	local func = Lua.Bind(self.ImagePathSelectCallback, self, "show_background", self.HandleShowBackgroundFOCUSOUT, nil)
 	g_IDEAttrImageDialog:ShowDialog(nil, func)
 end
 
@@ -58,7 +57,7 @@ function DialogS:HandleShowHeadDragFOCUSOUT(event)
 end
 
 function DialogS:HandleShowHeadDragSelect(event)
-	local func = ALittle.Bind(self.ImagePathSelectCallback, self, "show_head_drag", self.HandleShowHeadDragFOCUSOUT, nil)
+	local func = Lua.Bind(self.ImagePathSelectCallback, self, "show_head_drag", self.HandleShowHeadDragFOCUSOUT, nil)
 	g_IDEAttrImageDialog:ShowDialog(nil, func)
 end
 

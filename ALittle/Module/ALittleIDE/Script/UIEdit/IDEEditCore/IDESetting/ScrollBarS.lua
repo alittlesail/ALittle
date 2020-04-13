@@ -4,11 +4,10 @@ module("ALittleIDE", package.seeall)
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___coroutine = coroutine
 
 
-assert(Grid3S, " extends class:Grid3S is nil")
-ScrollBarS = ALittle.Class(Grid3S, "ALittleIDE.ScrollBarS")
+assert(ALittleIDE.Grid3S, " extends class:ALittleIDE.Grid3S is nil")
+ScrollBarS = Lua.Class(ALittleIDE.Grid3S, "ALittleIDE.ScrollBarS")
 
 function ScrollBarS:Ctor(user_info, tab_child, tree_logic)
 	___rawset(self, "_layer_name", "ide_setting_scrollbar")
@@ -83,7 +82,7 @@ function ScrollBarS:HandleBarBackFOCUSOUT(event)
 end
 
 function ScrollBarS:HandleBarBackSelect(event)
-	local func = ALittle.Bind(self.ImagePathSelectCallback, self, "bar_background", self.HandleBarBackFOCUSOUT, nil)
+	local func = Lua.Bind(self.ImagePathSelectCallback, self, "bar_background", self.HandleBarBackFOCUSOUT, nil)
 	g_IDEAttrImageDialog:ShowDialog(nil, func)
 end
 

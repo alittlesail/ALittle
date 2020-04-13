@@ -3,7 +3,6 @@ module("ALittleIDE", package.seeall)
 
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___coroutine = coroutine
 
 ALittle.RegStruct(1255897792, "ALittleIDE.IDEMainMenuImageInfo", {
 name = "ALittleIDE.IDEMainMenuImageInfo", ns_name = "ALittleIDE", rl_name = "IDEMainMenuImageInfo", hash_code = 1255897792,
@@ -18,7 +17,7 @@ type_list = {"double","double","string","List<ALittleIDE.IDEMainMenuImageInfo>",
 option_map = {}
 })
 
-IDEMainMenu = ALittle.Class(nil, "ALittleIDE.IDEMainMenu")
+IDEMainMenu = Lua.Class(nil, "ALittleIDE.IDEMainMenu")
 
 function IDEMainMenu:ShowFileMenu(event)
 	if self._menu_file_menu == nil then
@@ -108,53 +107,164 @@ function IDEMainMenu:HandleGenJsonTemplateCodeClick(event)
 	self._gen_json_template_code_dialog.visible = true
 end
 
+function IDEMainMenu.GenTemplate(num)
+	local code = "#define JSON_MACRO_" .. (num * 2 + 1) .. "(Name"
+	local i = 0
+	while true do
+		if not(i <= num - 1) then break end
+		code = code .. ", t" .. i .. ", m" .. i
+		i = i+(1)
+	end
+	code = code .. ") \\\n"
+	code = code .. "class Name : public ALittle::Json { \\\n"
+	code = code .. "public: \\\n"
+	code = code .. "\tvirtual const char* GetID() const { return #Name; } \\\n"
+	code = code .. "\tinline static const char* GetStaticID() { return #Name; } \\\n"
+	code = code .. "public: \\\n"
+	code = code .. "\tvirtual void Serialize(ALittle::JsonValue& v, ALittle::JsonAlloc& a) const { \\\n"
+	local i = 0
+	while true do
+		if not(i <= num - 1) then break end
+		code = code .. "\t\tALittle::JsonTemplate::Json_Serialize(m" .. i .. ", #m" .. i .. ", (int)sizeof(#m" .. i .. ")-1, v, a); \\\n"
+		i = i+(1)
+	end
+	code = code .. "\t} \\\n"
+	code = code .. "\tvirtual void Deserialize(const ALittle::JsonValue& v) { \\\n"
+	local i = 0
+	while true do
+		if not(i <= num - 1) then break end
+		code = code .. "\t\tALittle::JsonTemplate::Json_Deserialize(m" .. i .. ", #m" .. i .. ", (int)sizeof(#m" .. i .. ")-1, v); \\\n"
+		i = i+(1)
+	end
+	code = code .. "\t} \\\n"
+	code = code .. "\tvirtual void Serialize(ALittle::ValueMap& v) const { \\\n"
+	local i = 0
+	while true do
+		if not(i <= num - 1) then break end
+		code = code .. "\t\tALittle::JsonTemplate::Json_SerializeValueMap(m" .. i .. ", #m" .. i .. ", v); \\\n"
+		i = i+(1)
+	end
+	code = code .. "\t} \\\n"
+	code = code .. "\tvirtual void Deserialize(const ALittle::ValueMap& v) { \\\n"
+	local i = 0
+	while true do
+		if not(i <= num - 1) then break end
+		code = code .. "\t\tALittle::JsonTemplate::Json_DeserializeValueMap(m" .. i .. ", #m" .. i .. ", v); \\\n"
+		i = i+(1)
+	end
+	code = code .. "\t} \\\n"
+	code = code .. "\tvirtual const std::vector<std::string>& GetNameList() const { \\\n"
+	code = code .. "\t\tstatic std::vector<std::string> s_list; \\\n"
+	code = code .. "\t\tif (s_list.empty()) { \\\n"
+	local i = 0
+	while true do
+		if not(i <= num - 1) then break end
+		code = code .. "\t\t\ts_list.push_back(#m" .. i .. "); \\\n"
+		i = i+(1)
+	end
+	code = code .. "\t\t} return s_list; \\\n"
+	code = code .. "\t} \\\n"
+	code = code .. "\tvirtual const std::vector<std::string>& GetTypeList() const { \\\n"
+	code = code .. "\t\tstatic std::vector<std::string> s_list; \\\n"
+	code = code .. "\t\tif (s_list.empty()) { \\\n"
+	local i = 0
+	while true do
+		if not(i <= num - 1) then break end
+		code = code .. "\t\t\ts_list.push_back(#t" .. i .. "); \\\n"
+		i = i+(1)
+	end
+	code = code .. "\t\t} return s_list; \\\n"
+	code = code .. "\t} \\\n"
+	code = code .. "\tvirtual void Reset() { *this = Name(); } \\\n"
+	code = code .. "\tvirtual ~Name() { } \\\n"
+	code = code .. "\tName() : "
+	local i = 0
+	while true do
+		if not(i <= num - 1) then break end
+		if i > 0 then
+			code = code .. ", "
+		end
+		code = code .. "m" .. i .. "()"
+		i = i+(1)
+	end
+	code = code .. " {} \\\n"
+	code = code .. "\t"
+	local i = 0
+	while true do
+		if not(i <= num - 1) then break end
+		if i > 0 then
+			code = code .. " "
+		end
+		code = code .. "t" .. i .. " m" .. i .. ";"
+		i = i+(1)
+	end
+	code = code .. " \\\n"
+	code = code .. "}\n"
+	return code
+end
+
 function IDEMainMenu:HandleGenJsonTemplateCode(event)
-	local template_count = math.floor(tonumber(self._json_template_count.text))
+	local template_count = ALittle.Math_ToInt(self._json_template_count.text)
 	if template_count == nil then
 		template_count = 20
 	end
-	local file_count = math.floor(tonumber(self._json_template_file_count.text))
+	local file_count = ALittle.Math_ToInt(self._json_template_file_count.text)
 	if file_count == nil then
 		file_count = 0
 	end
 	local num = 1
-	for file_index = 1, file_count, 1 do
+	local file_index = 1
+	while true do
+		if not(file_index <= file_count) then break end
 		local code_head = "\n#ifndef _ALITTLE_JSON_" .. file_index .. "_H_\n#define _ALITTLE_JSON_" .. file_index .. "_H_\n\n"
 		code_head = code_head .. "#include \"Json.h\"\n\n"
 		local code_foot = "\n#endif // _ALITTLE_JSON_" .. file_index .. "_H_\n"
 		local code_list = {}
 		local index = 1
 		code_list[index] = code_head
-		for template_index = 1, template_count, 1 do
+		local template_index = 1
+		while true do
+			if not(template_index <= template_count) then break end
 			index = index + 1
 			code_list[index] = IDEMainMenu.GenTemplate(num)
 			num = num + 1
+			template_index = template_index+(1)
 		end
 		index = index + 1
 		code_list[index] = code_foot
 		local content = ALittle.String_Join(code_list, "")
 		ALittle.File_WriteTextToFile(content, "Json_" .. file_index .. ".h")
+		file_index = file_index+(1)
 	end
 	local code = "\n#ifndef _ALITTLE_JSON_ALL_H_\n#define _ALITTLE_JSON_ALL_H_\n\n"
-	for file_index = 1, file_count, 1 do
+	local file_index = 1
+	while true do
+		if not(file_index <= file_count) then break end
 		code = code .. "#include \"Json_" .. file_index .. ".h\"\n"
+		file_index = file_index+(1)
 	end
 	local max_count = file_count * template_count * 2 + 1
 	code = code .. "\n#define VA_JSON_EXPAND(...) __VA_ARGS__\n"
 	code = code .. "#define VA_JSON_FILTER_("
-	for i = 1, max_count, 1 do
+	local i = 1
+	while true do
+		if not(i <= max_count) then break end
 		if i > 1 then
 			code = code .. ","
 		end
 		code = code .. "_" .. i
+		i = i+(1)
 	end
 	code = code .. ",_N,...) _N\n"
 	code = code .. "#define VA_JSON_NUMBER_() "
-	for i = max_count, 1, -1 do
+	local i = max_count
+	while true do
+		if not(i >= 1) then break end
 		if i < max_count then
 			code = code .. ","
 		end
 		code = code .. i
+		i = i+(-1)
 	end
 	code = code .. "\n"
 	code = code .. "#define VA_JSON_HELPER(...) VA_JSON_EXPAND(VA_JSON_FILTER_(__VA_ARGS__))\n"
@@ -185,13 +295,13 @@ function IDEMainMenu:HandleGenServerModuleCode(event)
 	for file_path, attr in ___pairs(file_map) do
 		local file_name = ALittle.File_GetFileNameByPath(file_path)
 		file_name = ALittle.String_Replace(file_name, "abcd@module_name@abcd", module_name)
-		file_name = ALittle.String_Replace(file_name, "abcd@upper_module_name@abcd", string.upper(module_name))
-		file_name = ALittle.String_Replace(file_name, "abcd@lower_module_name@abcd", string.lower(module_name))
+		file_name = ALittle.String_Replace(file_name, "abcd@upper_module_name@abcd", ALittle.String_Upper(module_name))
+		file_name = ALittle.String_Replace(file_name, "abcd@lower_module_name@abcd", ALittle.String_Lower(module_name))
 		local content = ALittle.File_ReadTextFromFile(file_path)
 		if content ~= nil then
 			content = ALittle.String_Replace(content, "abcd@module_name@abcd", module_name)
-			content = ALittle.String_Replace(content, "abcd@upper_module_name@abcd", string.upper(module_name))
-			content = ALittle.String_Replace(content, "abcd@lower_module_name@abcd", string.lower(module_name))
+			content = ALittle.String_Replace(content, "abcd@upper_module_name@abcd", ALittle.String_Upper(module_name))
+			content = ALittle.String_Replace(content, "abcd@lower_module_name@abcd", ALittle.String_Lower(module_name))
 			local full_path = base_path .. "/" .. file_name
 			ALittle.File_WriteTextToFile(content, full_path)
 		end
@@ -207,6 +317,10 @@ function IDEMainMenu:HandleFramePlayFromPList(event)
 	self._frameplay_plist_dialog.visible = true
 end
 
+function IDEMainMenu.ImageListInFramePlayCmp(a, b)
+	return a.file_name < a.file_name
+end
+
 function IDEMainMenu:HandleViewLog(event)
 	A_LayerManager:HideFromRight(self._menu_tool_menu)
 	if self._view_log_dialog == nil then
@@ -217,102 +331,32 @@ function IDEMainMenu:HandleViewLog(event)
 end
 
 function IDEMainMenu:HandleViewLogRefresh(event)
-	local file_name = os.date("%Y-%m-%d", os.time()) .. ".log"
+	local file_name = ALittle.Time_GetCurYMD(ALittle.Time_GetCurTime()) .. ".log"
 	local file_path = ALittle.File_BaseFilePath() .. "Log/" .. file_name
 	local content = ALittle.File_ReadTextFromFile(file_path, false)
 	if content == nil then
 		return
 	end
 	local content_list = ALittle.String_Split(content, "\n")
-	local content_len = table.maxn(content_list)
+	local content_len = ALittle.List_MaxN(content_list)
 	local copy_len = content_len - 100
 	if copy_len < 1 then
 		copy_len = 1
 	end
 	local log_list = {}
 	local log_list_count = 0
-	for i = content_len, copy_len, -1 do
+	local i = content_len
+	while true do
+		if not(i >= copy_len) then break end
 		log_list_count = log_list_count + 1
 		log_list[log_list_count] = content_list[i]
+		i = i+(-1)
 	end
 	self._view_log_content.text = ALittle.String_Join(log_list, "\n")
 end
 
 function IDEMainMenu:HandleViewLogClose(event)
 	self._view_log_dialog.visible = false
-end
-
-function IDEMainMenu.GenTemplate(num)
-	local code = "#define JSON_MACRO_" .. (num * 2 + 1) .. "(Name"
-	for i = 0, num - 1, 1 do
-		code = code .. ", t" .. i .. ", m" .. i
-	end
-	code = code .. ") \\\n"
-	code = code .. "class Name : public ALittle::Json { \\\n"
-	code = code .. "public: \\\n"
-	code = code .. "\tvirtual const char* GetID() const { return #Name; } \\\n"
-	code = code .. "\tinline static const char* GetStaticID() { return #Name; } \\\n"
-	code = code .. "public: \\\n"
-	code = code .. "\tvirtual void Serialize(ALittle::JsonValue& v, ALittle::JsonAlloc& a) const { \\\n"
-	for i = 0, num - 1, 1 do
-		code = code .. "\t\tALittle::JsonTemplate::Json_Serialize(m" .. i .. ", #m" .. i .. ", (int)sizeof(#m" .. i .. ")-1, v, a); \\\n"
-	end
-	code = code .. "\t} \\\n"
-	code = code .. "\tvirtual void Deserialize(const ALittle::JsonValue& v) { \\\n"
-	for i = 0, num - 1, 1 do
-		code = code .. "\t\tALittle::JsonTemplate::Json_Deserialize(m" .. i .. ", #m" .. i .. ", (int)sizeof(#m" .. i .. ")-1, v); \\\n"
-	end
-	code = code .. "\t} \\\n"
-	code = code .. "\tvirtual void Serialize(ALittle::ValueMap& v) const { \\\n"
-	for i = 0, num - 1, 1 do
-		code = code .. "\t\tALittle::JsonTemplate::Json_SerializeValueMap(m" .. i .. ", #m" .. i .. ", v); \\\n"
-	end
-	code = code .. "\t} \\\n"
-	code = code .. "\tvirtual void Deserialize(const ALittle::ValueMap& v) { \\\n"
-	for i = 0, num - 1, 1 do
-		code = code .. "\t\tALittle::JsonTemplate::Json_DeserializeValueMap(m" .. i .. ", #m" .. i .. ", v); \\\n"
-	end
-	code = code .. "\t} \\\n"
-	code = code .. "\tvirtual const std::vector<std::string>& GetNameList() const { \\\n"
-	code = code .. "\t\tstatic std::vector<std::string> s_list; \\\n"
-	code = code .. "\t\tif (s_list.empty()) { \\\n"
-	for i = 0, num - 1, 1 do
-		code = code .. "\t\t\ts_list.push_back(#m" .. i .. "); \\\n"
-	end
-	code = code .. "\t\t} return s_list; \\\n"
-	code = code .. "\t} \\\n"
-	code = code .. "\tvirtual const std::vector<std::string>& GetTypeList() const { \\\n"
-	code = code .. "\t\tstatic std::vector<std::string> s_list; \\\n"
-	code = code .. "\t\tif (s_list.empty()) { \\\n"
-	for i = 0, num - 1, 1 do
-		code = code .. "\t\t\ts_list.push_back(#t" .. i .. "); \\\n"
-	end
-	code = code .. "\t\t} return s_list; \\\n"
-	code = code .. "\t} \\\n"
-	code = code .. "\tvirtual void Reset() { *this = Name(); } \\\n"
-	code = code .. "\tvirtual ~Name() { } \\\n"
-	code = code .. "\tName() : "
-	for i = 0, num - 1, 1 do
-		if i > 0 then
-			code = code .. ", "
-		end
-		code = code .. "m" .. i .. "()"
-	end
-	code = code .. " {} \\\n"
-	code = code .. "\t"
-	for i = 0, num - 1, 1 do
-		if i > 0 then
-			code = code .. " "
-		end
-		code = code .. "t" .. i .. " m" .. i .. ";"
-	end
-	code = code .. " \\\n"
-	code = code .. "}\n"
-	return code
-end
-
-function IDEMainMenu.ImageListInFramePlayCmp(a, b)
-	return a.file_name < a.file_name
 end
 
 g_IDEMainMenu = IDEMainMenu()

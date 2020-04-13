@@ -78,7 +78,7 @@ public class IDETabManager
 		var info = new List<string>();
 		var tab_childs = this._main_tab.childs;
 		for (var index, child in tab_childs)
-			ALittle.Push(info, cast<IDETabChild>(child._user_data).name);
+			ALittle.List_Push(info, cast<IDETabChild>(child._user_data).name);
 
 		return info;
 	}
@@ -413,7 +413,7 @@ public class IDETabManager
 			info.index = 1;
 			info.info = display_info;
 			copy_list[1] = info;
-			ALittle.System_SetClipboardText(lua.json.encode(copy_list));
+			ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list));
 			return;
 		}
 		if (handle_name == "关闭左侧")
@@ -424,7 +424,7 @@ public class IDETabManager
 				if (child_v == child) break;
 				tab_child = child_v._user_data;
 				if (tab_child.save)
-					ALittle.Push(close_list, child_v);
+					ALittle.List_Push(close_list, child_v);
 			}
 			for (var index, child_v in close_list)
 				this.CloseTab(child_v);
@@ -436,12 +436,12 @@ public class IDETabManager
 			var child_list = this._main_tab.childs;
 			var cur_index = this._main_tab.GetChildIndex(child);
 			var child_count = this._main_tab.child_count;
-			for (var index = cur_index + 1, child_count, 1)
+			for (var index = cur_index + 1; index <= child_count; 1)
 			{
 				var child_v = child_list[index];
 				tab_child = child_v._user_data;
 				if (tab_child.save)
-					ALittle.Push(close_list, child_v);
+					ALittle.List_Push(close_list, child_v);
 			}
 			for (var index, child_v in close_list)
 				this.CloseTab(child_v);

@@ -63,7 +63,7 @@ public class IDEAttrEventDialog
             var event_info:ALittle.EventInfo = null;
             // 根据冒号拆分
             var event_split = ALittle.String_Split(ALittle.String_Trim(event_string), ":");
-            var event_count = lua.table.maxn(event_split);
+            var event_count = ALittle.List_MaxN(event_split);
             if (event_count == 2)
             {
                 event_info = new ALittle.EventInfo();
@@ -73,7 +73,7 @@ public class IDEAttrEventDialog
 
             // 如果是有效信息，那么就添加到列表中
             if (event_info != null)
-                ALittle.Push(event_data, event_info);
+                ALittle.List_Push(event_data, event_info);
             else
                 has_error = true;
         }
@@ -85,7 +85,7 @@ public class IDEAttrEventDialog
         }
         this._dialog.visible = false;
         if (event_data == null) return;
-        cast<ALittle.DisplayObject>(cast<Map<string, any>>(this._target_panel)["_"..this._target_text]).text = lua.json.encode(event_data);
+        cast<ALittle.DisplayObject>(cast<Map<string, any>>(this._target_panel)["_"..this._target_text]).text = ALittle.String_JsonEncode(event_data);
         this._target_panel.TableDataSet(this._target_text, false);
     }
     

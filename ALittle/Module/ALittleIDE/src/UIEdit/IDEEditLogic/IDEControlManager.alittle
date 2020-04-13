@@ -105,7 +105,7 @@ public class IDEControlManager
 		var search_count = 0;
 		var last_control_info:IDEControlInfo = null;
 		// 排序
-		lua.table.sort(control_info_list, IDEControlManager.ControlInfoCmp);
+		ALittle.List_Sort(control_info_list, IDEControlManager.ControlInfoCmp);
 		// 开始遍历
 		for (var index, control_info in control_info_list)
 		{
@@ -263,7 +263,7 @@ public class IDEControlManager
 		info["index"] = 1;
 		info["info"] = save_info;
 		copy_list[1] = info;
-		ALittle.System_SetClipboardText(lua.json.encode(copy_list));
+		ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list));
 	
 		if (tree.IsTree())
 			tab_child.RightControlTreePasteImpl(tree, null, 1);
@@ -557,7 +557,7 @@ public class IDEControlManager
 		info["index"] = 1;
 		info["info"] = save_info;
 		copy_list[1] = info;
-		ALittle.System_SetClipboardText(lua.json.encode(copy_list));
+		ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list));
 	}
 	// 运行控件
 	public fun ControlRunImpl(string name)
@@ -568,7 +568,7 @@ public class IDEControlManager
 		debug["window_height"] = g_IDEProject.project.config.GetConfig("default_show_height", 600);
 		debug["ui_name"] = name;
 		debug["module_name"] = g_IDEProject.project.name;
-		var debug_str = lua.json.encode(debug);
+		var debug_str = ALittle.String_JsonEncode(debug);
 		debug_str = "\""..ALittle.String_Replace(debug_str, "\"", "\\\"").."\"";
 
 		lua.os.execute("start ALittleClientWin32.exe "..debug_str.." "..g_IDEProject.project.name.." Engine/MainTemplate/UIViewer");

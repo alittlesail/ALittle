@@ -4,10 +4,9 @@ module("ALittleIDE", package.seeall)
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___coroutine = coroutine
 
 
-IDEVersionManager = ALittle.Class(nil, "ALittleIDE.IDEVersionManager")
+IDEVersionManager = Lua.Class(nil, "ALittleIDE.IDEVersionManager")
 
 function IDEVersionManager:Ctor()
 	___rawset(self, "_version_system", ALittle.VersionSystem.CreateVersionSystem("alittle", "ALittleIDE"))
@@ -65,7 +64,7 @@ function IDEVersionManager:HandleRestartClick(event)
 end
 
 function IDEVersionManager:CheckVersionUpdate()
-	local loop = ALittle.LoopFunction(ALittle.Bind(self.CheckVersionUpdateImpl, self), -1, 3600000, 0)
+	local loop = ALittle.LoopFunction(Lua.Bind(self.CheckVersionUpdateImpl, self), -1, 3600000, 0)
 	loop:Start()
 end
 
@@ -78,7 +77,7 @@ function IDEVersionManager:CheckVersionUpdateImpl()
 		g_IDETool:ShowTipHelp("有最新版本，需要就更新~", 10000)
 	end
 end
-IDEVersionManager.CheckVersionUpdateImpl = ALittle.CoWrap(IDEVersionManager.CheckVersionUpdateImpl)
+IDEVersionManager.CheckVersionUpdateImpl = Lua.CoWrap(IDEVersionManager.CheckVersionUpdateImpl)
 
 function IDEVersionManager:UpdateVersion(check)
 	self:CreateDialog()
@@ -106,7 +105,7 @@ function IDEVersionManager:UpdateVersion(check)
 		self._check_btn.visible = false
 		self._install_btn.visible = false
 	end
-	local result = self._version_system:UpdateVersion(g_IDELoginManager.version_ip, g_IDELoginManager.version_port, ALittle.Bind(self.HandleUpdateVersion, self), check)
+	local result = self._version_system:UpdateVersion(g_IDELoginManager.version_ip, g_IDELoginManager.version_port, Lua.Bind(self.HandleUpdateVersion, self), check)
 	if result == 2 or result == 3 then
 		local text = "有最新版本，您是否更新?"
 		local new_big_version, new_small_version, new_log_list = self._version_system:GetNewVersion(5)
@@ -169,10 +168,10 @@ function IDEVersionManager:UpdateVersion(check)
 		self._restart_btn.visible = false
 	end
 end
-IDEVersionManager.UpdateVersion = ALittle.CoWrap(IDEVersionManager.UpdateVersion)
+IDEVersionManager.UpdateVersion = Lua.CoWrap(IDEVersionManager.UpdateVersion)
 
 function IDEVersionManager:HandleUpdateVersion(file_name, cur_size, total_size, cur_file_index, file_count)
-	self._notice_content.text = "版本正在更新..." .. math.floor(self._version_system.current_update_size / self._version_system.total_update_size * 100) .. "%"
+	self._notice_content.text = "版本正在更新..." .. ALittle.Math_Floor(self._version_system.current_update_size / self._version_system.total_update_size * 100) .. "%"
 	self._notice_content.visible = true
 	self._notice_edit.visible = false
 	self._process_bg.visible = true

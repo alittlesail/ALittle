@@ -3,7 +3,6 @@ module("ALittleIDE", package.seeall)
 
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___coroutine = coroutine
 
 ALittle.RegStruct(1025287370, "ALittleIDE.IDEPasteControlUserData", {
 name = "ALittleIDE.IDEPasteControlUserData", ns_name = "ALittleIDE", rl_name = "IDEPasteControlUserData", hash_code = 1025287370,
@@ -42,7 +41,7 @@ type_list = {"string","string"},
 option_map = {}
 })
 
-IDEControlTree = ALittle.Class(nil, "ALittleIDE.IDEControlTree")
+IDEControlTree = Lua.Class(nil, "ALittleIDE.IDEControlTree")
 
 function IDEControlTree:ShowTip(content)
 	if self._tip_dialog == nil then
@@ -120,7 +119,7 @@ function IDEControlTree:HandleRightControlTreeAddImage(event)
 	A_LayerManager:HideFromRight(self._control_tree_menu)
 	local target = self._control_tree_menu._user_data
 	self._control_tree_menu._user_data = nil
-	local func = ALittle.Bind(self.ImagePathSelectCallback, self, target)
+	local func = Lua.Bind(self.ImagePathSelectCallback, self, target)
 	g_IDEAttrImageDialog:ShowDialog(nil, func)
 end
 
@@ -169,7 +168,7 @@ function IDEControlTree:ShowAddDialog(target)
 		self._control_add_dialog.visible = false
 	end
 	local data_list = target:GetDataListForAdd()
-	if table.maxn(data_list) == 0 then
+	if ALittle.List_MaxN(data_list) == 0 then
 		g_IDETool:ShowNotice("提示", "当前控件不能添加子控件")
 		return
 	end
@@ -226,7 +225,7 @@ function IDEControlTree:ShowReplaceDialog(target)
 		end
 	end
 	if child_type_exist == false then
-		ALittle.Push(data_list, child_type)
+		ALittle.List_Push(data_list, child_type)
 	end
 	self._control_replace_dialog._user_data = target
 	self._control_replace_type.data_list = data_list
@@ -262,12 +261,12 @@ function IDEControlTree:HandleRightControlTreeCopy(event)
 	info.info = target:CalcInfo()
 	local copy_list = {}
 	copy_list[1] = info
-	ALittle.System_SetClipboardText(json.encode(copy_list))
+	ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list))
 end
 
 function IDEControlTree:ShowPasteDialog(target, info, child_index, revoke_bind, callback)
 	local data_list = target:GetDataListForAdd()
-	if table.maxn(data_list) == 0 then
+	if ALittle.List_MaxN(data_list) == 0 then
 		g_IDETool:ShowNotice("提示", "当前控件不能添加子控件")
 		if callback ~= nil then
 			callback(false, nil)
@@ -346,7 +345,7 @@ function IDEControlTree:HandleRightControlTreeCut(event)
 	info.info = target:CalcInfo()
 	local copy_list = {}
 	copy_list[1] = info
-	ALittle.System_SetClipboardText(json.encode(copy_list))
+	ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list))
 	target:TreeCut()
 end
 
@@ -368,7 +367,7 @@ function IDEControlTree:HandleRightControlTreeDesc(event)
 	local target = self._control_tree_menu._user_data
 	self._control_tree_menu._user_data = nil
 	local x, y = target:LocalToGlobal()
-	local callback = ALittle.Bind(target.SetDesc, target)
+	local callback = Lua.Bind(target.SetDesc, target)
 	local desc = target:GetDesc()
 	g_IDETool:ShowRename(callback, desc, x, y, target.width)
 end

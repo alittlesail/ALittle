@@ -216,3 +216,27 @@ function File_WriteJsonFromStdFile(content, file_path)
 	end
 end
 
+function File_ReadTextFromStdFile(file_path)
+	do
+		local file = io.open(file_path, "rb")
+		if file == nil then
+			return nil, file_path .. " load failed"
+		end
+		local content = file:read("*a")
+		file:close()
+		return nil, content
+	end
+end
+
+function File_WriteTextFromStdFile(content, file_path)
+	do
+		local file = io.open(file_path, "wb")
+		if file == nil then
+			return false
+		end
+		file:write(content)
+		file:close()
+		return true
+	end
+end
+

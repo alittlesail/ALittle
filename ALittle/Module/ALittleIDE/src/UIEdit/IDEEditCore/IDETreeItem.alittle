@@ -48,9 +48,9 @@ public class IDETreeItem : IDETreeLogic
 		if (link == null) link = this._user_info.default.__link;
 		if (link != null)
 		{
-			if (ALittle.Find(link, name) != null)
+			if (ALittle.String_Find(link, name) != null)
 			{
-				ALittle.Push(list, this);
+				ALittle.List_Push(list, this);
 				return list;
 			}
 		}
@@ -68,9 +68,9 @@ public class IDETreeItem : IDETreeLogic
 		{
 			for (var k, v in event)
 			{
-				if (ALittle.Find(v.func, name) != null)
+				if (ALittle.String_Find(v.func, name) != null)
 				{
-					ALittle.Push(list, this);
+					ALittle.List_Push(list, this);
 					return list;
 				}
 			}
@@ -87,9 +87,9 @@ public class IDETreeItem : IDETreeLogic
 		if (description == null) description = this._user_info.default.description;
 		if (description != null)
 		{
-			if (ALittle.Find(description, name) != null)
+			if (ALittle.String_Find(description, name) != null)
 			{
-				ALittle.Push(list, this);
+				ALittle.List_Push(list, this);
 				return list;
 			}
 		}
@@ -106,9 +106,9 @@ public class IDETreeItem : IDETreeLogic
 		if (target_class != null)
 		{
 			var target_class_str = ALittle.String_Join(target_class, ".");
-			if (ALittle.Find(target_class_str, name) != null)
+			if (ALittle.String_Find(target_class_str, name) != null)
 			{
-				ALittle.Push(list, this);
+				ALittle.List_Push(list, this);
 				return list;
 			}
 		}
@@ -124,9 +124,9 @@ public class IDETreeItem : IDETreeLogic
 		if (texture_name == null) texture_name = this._user_info.default.texture_name;
 		if (texture_name != null)
 		{
-			if (ALittle.Find(texture_name, name) != null)
+			if (ALittle.String_Find(texture_name, name) != null)
 			{
-				ALittle.Push(list, this);
+				ALittle.List_Push(list, this);
 				return list;
 			}
 		}

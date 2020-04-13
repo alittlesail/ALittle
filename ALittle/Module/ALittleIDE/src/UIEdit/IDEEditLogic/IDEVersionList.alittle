@@ -84,7 +84,7 @@ public class IDEVersionList : ALittle.DisplayLayout
 		param.__session_id = g_IDELoginManager.session_id;
 		param.platform = this._platform;
 		param.module_name = g_IDEProject.project.name;
-		var client = new ALittle.HttpSender(g_IDELoginManager.http_ip, g_IDELoginManager.http_port);
+		var client = ALittle.CreateHttpSender(g_IDELoginManager.http_ip, g_IDELoginManager.http_port);
 		var error, result = VersionServer.HandleHttpQVersionInfo(client, param);
 		// 解禁刷新按钮
 		this._export_refresh_btn.disabled = false;
@@ -101,7 +101,7 @@ public class IDEVersionList : ALittle.DisplayLayout
 		var version_list = result.version_list;
 		if (version_list == null) version_list = new List<VersionServer.D_VersionInfo>();
 		// 按时间从大到小排序
-		lua.table.sort(version_list, IDEVersionList.VersionInfoCmp);
+		ALittle.List_Sort(version_list, IDEVersionList.VersionInfoCmp);
 
 		var first_version_info:IDEVersionInfoItemUserData = null;
 		for (var k, v in version_list)
@@ -119,7 +119,7 @@ public class IDEVersionList : ALittle.DisplayLayout
 			control_line._item_button.AddEventListener(this, this.HandleVersionListMenu);
 			var status_str = "上传失败";
 			if (v.status == 1) status_str = "上传成功";
-			control_line._item_title.text = "版本时间:"..lua.os.date("%Y-%m-%d %H:%M:%S", v.update_time).."("..status_str..")";
+			control_line._item_title.text = "版本时间:"..ALittle.Time_GetCurDate(v.update_time).."("..status_str..")";
 
 			if (first_version_info == null)
 			{
@@ -180,7 +180,7 @@ public class IDEVersionList : ALittle.DisplayLayout
 		if (version_info == null) return;
         
 		var callback = bind(this.VersionDeleteImpl, this, version_info);
-		g_IDETool.DeleteNotice("删除", "确定要删除"..lua.os.date("%Y-%m-%d %H:%M:%S", version_info.data.update_time).."(版本时间)这个版本吗?", callback);
+		g_IDETool.DeleteNotice("删除", "确定要删除"..ALittle.Time_GetCurDate(version_info.data.update_time).."(版本时间)这个版本吗?", callback);
 	}
 	// 处理版本删除
 	public async fun VersionDeleteImpl(IDEVersionInfoItemUserData version_info)
@@ -193,7 +193,7 @@ public class IDEVersionList : ALittle.DisplayLayout
 		param.module_name = g_IDEProject.project.name;
 		param.version_id = version_info.data.version_id;
 
-		var client = new ALittle.HttpSender(g_IDELoginManager.http_ip, g_IDELoginManager.http_port);
+		var client = ALittle.CreateHttpSender(g_IDELoginManager.http_ip, g_IDELoginManager.http_port);
 		var error, result = VersionServer.HandleHttpQDeleteVersionInfo(client, param);
 		if (error != null)
 		{
@@ -246,7 +246,7 @@ public class IDEVersionList : ALittle.DisplayLayout
 			{
 				last_create_time = v.create_time;
 				log_index = 1;
-				log_list[log_index] = lua.os.date("%Y-%m-%d %H:%M:%S", last_create_time);
+				log_list[log_index] = ALittle.Time_GetCurDate(last_create_time);
 			}
 			log_list[log_index + 1] = "\t"..log_index.."."..v.content;
 			log_index = log_index + 1;
@@ -287,7 +287,7 @@ public class IDEVersionList : ALittle.DisplayLayout
 		param.platform = this._platform;
 		param.module_name = g_IDEProject.project.name;
 		param.close_version = version_info.data.close_version;
-		var client = new ALittle.HttpSender(g_IDELoginManager.http_ip, g_IDELoginManager.http_port);
+		var client = ALittle.CreateHttpSender(g_IDELoginManager.http_ip, g_IDELoginManager.http_port);
 		var error, result = VersionServer.HandleHttpQDeleteVersionClose(client, param);
 		if (error != null)
 		{
@@ -326,7 +326,7 @@ public class IDEVersionList : ALittle.DisplayLayout
 		param.module_name = g_IDEProject.project.name;
 		param.close_version = this._version_close_version.text;
 		param.submit_platform = this._version_submit_platform.text;
-		var client = new ALittle.HttpSender(g_IDELoginManager.http_ip, g_IDELoginManager.http_port);
+		var client = ALittle.CreateHttpSender(g_IDELoginManager.http_ip, g_IDELoginManager.http_port);
 		var error, result = VersionServer.HandleHttpQAddVersionClose(client, param);
 		if (error != null)
 		{
@@ -346,7 +346,7 @@ public class IDEVersionList : ALittle.DisplayLayout
 		var version_info = export_info.version_info;
 		if (version_info == null) version_info = new IDEVersionInfo();
 	
-		var version = lua.os.date("%Y-%m-%d-%H-%M-%S", lua.os.time());
+		var version = ALittle.Time_GetCurDate(ALittle.Time_GetCurTime());
 		if (version_info.big_version != null)
 			this._export_big_version.text = version_info.big_version;
 		else
@@ -366,15 +366,15 @@ public class IDEVersionList : ALittle.DisplayLayout
 	public fun CheckDateString(string content) : bool
 	{
 		var list = ALittle.String_Split(content, "-");
-		if (lua.table.maxn(list) != 6) return false;
+		if (ALittle.List_MaxN(list) != 6) return false;
 
-		if (lua.String.len(list[1]) != 4) return false;
-		if (lua.tonumber(list[1]) == null) return false;
+		if (ALittle.String_Len(list[1]) != 4) return false;
+		if (ALittle.Math_ToInt(list[1]) == null) return false;
 
-		for (var i = 2, 6, 1)
+		for (var i = 2; i <= 6; 1)
 		{
-			if (lua.String.len(list[i]) != 2) return false;
-			if (lua.tonumber(list[i]) == null) return false;
+			if (ALittle.String_Len(list[i]) != 2) return false;
+			if (ALittle.Math_ToInt(list[i]) == null) return false;
 		}
 
 		return true;
@@ -383,11 +383,11 @@ public class IDEVersionList : ALittle.DisplayLayout
 	public fun CheckVersionString(string content) : bool
 	{
 		var list = ALittle.String_Split(content, ".");
-		if (lua.table.maxn(list) != 3) return false;
+		if (ALittle.List_MaxN(list) != 3) return false;
 
-		for (var i = 1, 2, 1)
+		for (var i = 1; i <= 2; 1)
 		{
-			if (lua.tonumber(list[i]) == null) return false;
+			if (ALittle.Math_ToInt(list[i]) == null) return false;
 		}
 
 		return true;
@@ -425,7 +425,7 @@ public class IDEVersionList : ALittle.DisplayLayout
 	// 生成大版本
 	public fun HandleGenBigVersionImpl()
 	{
-		this._export_big_version.text = lua.os.date("%Y-%m-%d-%H-%M-%S");
+		this._export_big_version.text = ALittle.Time_GetCurDate();
 	}
 	public fun HandleGenBigVersion(ALittle.UIEvent event)
 	{
@@ -435,7 +435,7 @@ public class IDEVersionList : ALittle.DisplayLayout
 	// 生成安装包版本
 	public fun HandleGenInstallVersionImpl()
 	{
-		this._export_install_version.text = lua.os.date("%Y-%m-%d-%H-%M-%S");
+		this._export_install_version.text = ALittle.Time_GetCurDate();
 	}
 	public fun HandleGenInstallVersion(ALittle.UIEvent event)
 	{

@@ -3,7 +3,6 @@ module("ALittleIDE", package.seeall)
 
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___coroutine = coroutine
 local ___all_struct = ALittle.GetAllStruct()
 
 ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
@@ -19,7 +18,7 @@ type_list = {"ALittle.DisplayObject","bool"},
 option_map = {}
 })
 
-IDEAttrEventDialog = ALittle.Class(nil, "ALittleIDE.IDEAttrEventDialog")
+IDEAttrEventDialog = Lua.Class(nil, "ALittleIDE.IDEAttrEventDialog")
 
 function IDEAttrEventDialog:ShowDialog(target_panel, text, need_reset)
 	if self._dialog == nil then
@@ -63,14 +62,14 @@ function IDEAttrEventDialog:HandleEventConfirm(event)
 		end
 		local event_info = nil
 		local event_split = ALittle.String_Split(ALittle.String_Trim(event_string), ":")
-		local event_count = table.maxn(event_split)
+		local event_count = ALittle.List_MaxN(event_split)
 		if event_count == 2 then
 			event_info = {}
 			event_info.type = event_split[1]
 			event_info.func = event_split[2]
 		end
 		if event_info ~= nil then
-			ALittle.Push(event_data, event_info)
+			ALittle.List_Push(event_data, event_info)
 		else
 			has_error = true
 		end
@@ -83,7 +82,7 @@ function IDEAttrEventDialog:HandleEventConfirm(event)
 	if event_data == nil then
 		return
 	end
-	self._target_panel["_" .. self._target_text].text = json.encode(event_data)
+	self._target_panel["_" .. self._target_text].text = ALittle.String_JsonEncode(event_data)
 	self._target_panel:TableDataSet(self._target_text, false)
 end
 

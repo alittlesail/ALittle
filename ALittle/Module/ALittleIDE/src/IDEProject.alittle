@@ -96,18 +96,18 @@ public class IDEProject : ALittle.EventDispatcher
 		for (var file_path, attr in file_map)
 		{
 			// 计算相对路径
-			var rel_path = lua.String.sub(file_path, lua.String.len(base_path) + 1);
+			var rel_path = ALittle.String_Sub(file_path, ALittle.String_Len(base_path) + 1);
 			// 计算目标全路径
 			var full_path = target_path..rel_path;
 			// 对路径进行处理
 			full_path = ALittle.String_Replace(full_path, "abcd@module_name@abcd", name);
-			full_path = ALittle.String_Replace(full_path, "abcd@upper_module_name@abcd", lua.String.upper(name));
-			full_path = ALittle.String_Replace(full_path, "abcd@lower_module_name@abcd", lua.String.lower(name));
+			full_path = ALittle.String_Replace(full_path, "abcd@upper_module_name@abcd", ALittle.String_Upper(name));
+			full_path = ALittle.String_Replace(full_path, "abcd@lower_module_name@abcd", ALittle.String_Lower(name));
 			// 创建目录
 			ALittle.File_MakeDeepDir(ALittle.File_GetFilePathByPath(full_path));
 
 			// 对一下后缀进行文件内容处理
-			var ext = lua.String.upper(ALittle.File_GetFileExtByPath(file_path));
+			var ext = ALittle.String_Upper(ALittle.File_GetFileExtByPath(file_path));
 			if (ext == "JSON" || ext == "LUA" || ext == "CFG" || ext == "TXT" || ext == "ALITTLE" || ext == "XML" || ext == "NAME")
 			{
 				// 读出文件
@@ -115,10 +115,10 @@ public class IDEProject : ALittle.EventDispatcher
 				if (content != null)
 				{
 					content = ALittle.String_Replace(content, "abcd@module_name@abcd", name);
-					content = ALittle.String_Replace(content, "abcd@upper_module_name@abcd", lua.String.upper(name));
-					content = ALittle.String_Replace(content, "abcd@lower_module_name@abcd", lua.String.lower(name));
-					content = ALittle.String_Replace(content, "abcd@view_width@abcd", lua.tostring(window_width));
-					content = ALittle.String_Replace(content, "abcd@view_height@abcd", lua.tostring(window_height));
+					content = ALittle.String_Replace(content, "abcd@upper_module_name@abcd", ALittle.String_Upper(name));
+					content = ALittle.String_Replace(content, "abcd@lower_module_name@abcd", ALittle.String_Lower(name));
+					content = ALittle.String_Replace(content, "abcd@view_width@abcd", ""..window_width);
+					content = ALittle.String_Replace(content, "abcd@view_height@abcd", ""..window_height);
 					content = ALittle.String_Replace(content, "abcd@font_path@abcd", font_path);
 
 					ALittle.File_WriteTextToFile(content, full_path);
@@ -172,14 +172,14 @@ public class IDEProject : ALittle.EventDispatcher
 		var file_map = ALittle.File_GetFileAttrByDir(path);
 		for (var file_path, attr in file_map)
 		{
-			var ext = lua.String.upper(ALittle.File_GetFileExtByPath(file_path));
+			var ext = ALittle.String_Upper(ALittle.File_GetFileExtByPath(file_path));
 			if (ext == "JSON")
 			{
 				// 读取文件内容
 				var content = ALittle.File_ReadTextFromFile(file_path);
 				if (content != null)
 				{
-					var error, content_info_map:Map<string, ALittle.DisplayInfo> = tcall(lua.json.decode, content);
+					var error, content_info_map:Map<string, ALittle.DisplayInfo> = tcall(ALittle.String_JsonDecode, content);
 					if (error == null)
 					{
 						for (var control_name, control_info in content_info_map)
@@ -272,7 +272,7 @@ public class IDEProject : ALittle.EventDispatcher
 		var save_info = new Map<string, ALittle.DisplayInfo>();
 		save_info[name] = info;
 		// 保存文件
-		if (ALittle.File_SaveFile(file_path, lua.json.encode(save_info), -1) == false)
+		if (ALittle.File_SaveFile(file_path, ALittle.String_JsonEncode(save_info), -1) == false)
 			return false, "文件保存失败:"..file_path;
 
 		// 取出改控件原有信息
@@ -360,7 +360,7 @@ public class IDEProject : ALittle.EventDispatcher
         
 		// 删除文件
 		var file_path = this._project.base_path.."UI/"..name..".json";
-		lua.os.remove(file_path);
+		ALittle.File_DeleteFile(file_path);
 
 		// 取消引用别人的标记
 		// 如果可以删除，说明并没有其他控件引用自己，所以不需要处理这块
@@ -409,7 +409,7 @@ public class IDEProject : ALittle.EventDispatcher
 		this._project.control.UnRegisterInfo(old_name);
 		// 删除文件
 		var file_path = this._project.base_path.."UI/"..old_name..".json";
-		lua.os.remove(file_path);
+		ALittle.File_DeleteFile(file_path);
 
 		// 设置新的控件名并注册
 		all_info.name = new_name;
@@ -419,7 +419,7 @@ public class IDEProject : ALittle.EventDispatcher
 		file_path = this._project.base_path.."UI/"..new_name..".json";
 		var save_info = new Map<string, any>();
 		save_info[new_name] = all_info.info;
-		ALittle.File_SaveFile(file_path, lua.json.encode(save_info), -1);
+		ALittle.File_SaveFile(file_path, ALittle.String_JsonEncode(save_info), -1);
 
 		// 创建控件
         var ce = new IDEProjectCreateControlEvent();

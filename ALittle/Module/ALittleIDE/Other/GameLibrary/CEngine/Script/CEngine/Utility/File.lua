@@ -125,7 +125,7 @@ function DeleteLog(day_count_before)
 		if File_GetFileAttr(log_path) == nil then
 			return
 		end
-		local time_table = {}
+		local time_table = os.date("*t")
 		time_table.day = time_table.day - day_count_before
 		local time_string = os.date("%Y-%m-%d", os.time(time_table)) .. ".log"
 		local delete_list = {}

@@ -3,7 +3,6 @@ module("ALittleIDE", package.seeall)
 
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___coroutine = coroutine
 local ___all_struct = ALittle.GetAllStruct()
 
 ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
@@ -43,7 +42,7 @@ type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
 
-IDEImageManager = ALittle.Class(nil, "ALittleIDE.IDEImageManager")
+IDEImageManager = Lua.Class(nil, "ALittleIDE.IDEImageManager")
 
 function IDEImageManager:HandleImageSearchClick(event)
 	self._image_scroll_screen:RemoveAllChild()
@@ -59,17 +58,17 @@ function IDEImageManager:HandleImageSearchClick(event)
 	local file_map = ALittle.File_GetFileAttrByDir(path)
 	for file_path, attr in ___pairs(file_map) do
 		local file_name = ALittle.File_GetFileNameByPath(file_path)
-		if key == "" or ALittle.Find(file_name, key) ~= nil then
+		if key == "" or ALittle.String_Find(file_name, key) ~= nil then
 			image_info_count = image_info_count + 1
 			image_info_list[image_info_count] = file_path
 		end
 	end
-	table.sort(image_info_list)
+	ALittle.List_Sort(image_info_list)
 	for index, file_path in ___ipairs(image_info_list) do
 		local file_name = ALittle.File_GetFileNameByPath(file_path)
 		local item = g_Control:CreateControl("ide_common_item_button")
 		item.text = file_name
-		item._user_data = string.sub(file_path, string.len(path) + 2)
+		item._user_data = ALittle.String_Sub(file_path, ALittle.String_Len(path) + 2)
 		item:AddEventListener(___all_struct[-641444818], self, self.HandleImageItemRightClick)
 		item:AddEventListener(___all_struct[544684311], self, self.HandleImageItemMoveIn)
 		item:AddEventListener(___all_struct[-1001723540], self, self.HandleImageItemMouseMove)
@@ -132,14 +131,14 @@ end
 
 function IDEImageManager:DeleteControlImpl(target)
 	g_IDEUICenter.image_scroll_screen:RemoveChild(target)
-	os.remove(target._user_data)
+	ALittle.File_DeleteFile(target._user_data)
 end
 
 function IDEImageManager:HandleImageRightMenuDelete(event)
 	A_LayerManager:HideFromRight(self._image_right_menu)
 	local target = self._image_right_menu._user_data
 	self._image_right_menu._user_data = nil
-	local callback = ALittle.Bind(self.DeleteControlImpl, self, target)
+	local callback = Lua.Bind(self.DeleteControlImpl, self, target)
 	g_IDETool:DeleteNotice("提示", "确定要删除" .. target.text .. "吗?", callback)
 end
 
@@ -178,7 +177,7 @@ function IDEImageManager:CopyImageCodeImpl(file_path)
 	info.info = display_info
 	local copy_list = {}
 	copy_list[1] = info
-	ALittle.System_SetClipboardText(json.encode(copy_list))
+	ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list))
 end
 
 function IDEImageManager:HandleImageRightMenuGrid9(event)
@@ -195,7 +194,7 @@ function IDEImageManager:HandleImageRightMenuGrid9(event)
 	info.index = 1
 	info.info = display_info
 	copy_list[1] = info
-	ALittle.System_SetClipboardText(json.encode(copy_list))
+	ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list))
 end
 
 function IDEImageManager:HandleImageRightMenuRepair(event)
@@ -220,64 +219,88 @@ function IDEImageManager:HandleImageRightMenuCutEmpty(event)
 		local width = ALittle.System_GetSurfaceWidth(surface)
 		local height = ALittle.System_GetSurfaceHeight(surface)
 		local left = 0
-		for i = 1, width, 1 do
+		local i = 1
+		while true do
+			if not(i <= width) then break end
 			left = i - 1
 			local flag = false
-			for j = 1, height, 1 do
+			local j = 1
+			while true do
+				if not(j <= height) then break end
 				local color = ALittle.System_GetSurfacePixel(surface, i - 1, j - 1)
 				if color ~= 0 then
 					flag = true
 					break
 				end
+				j = j+(1)
 			end
 			if flag == true then
 				break
 			end
+			i = i+(1)
 		end
 		local right = 0
-		for i = width, 1, -1 do
+		local i = width
+		while true do
+			if not(i >= 1) then break end
 			right = i - 1
 			local flag = false
-			for j = 1, height, 1 do
+			local j = 1
+			while true do
+				if not(j <= height) then break end
 				local color = ALittle.System_GetSurfacePixel(surface, i - 1, j - 1)
 				if color ~= 0 then
 					flag = true
 					break
 				end
+				j = j+(1)
 			end
 			if flag == true then
 				break
 			end
+			i = i+(-1)
 		end
 		local top = 0
-		for j = 1, height, 1 do
+		local j = 1
+		while true do
+			if not(j <= height) then break end
 			top = j - 1
 			local flag = false
-			for i = 1, width, 1 do
+			local i = 1
+			while true do
+				if not(i <= width) then break end
 				local color = ALittle.System_GetSurfacePixel(surface, i - 1, j - 1)
 				if color ~= 0 then
 					flag = true
 					break
 				end
+				i = i+(1)
 			end
 			if flag == true then
 				break
 			end
+			j = j+(1)
 		end
 		local bottom = 0
-		for j = height, 1, -1 do
+		local j = height
+		while true do
+			if not(j >= 1) then break end
 			bottom = j - 1
 			local flag = false
-			for i = 1, width, 1 do
+			local i = 1
+			while true do
+				if not(i <= width) then break end
 				local color = ALittle.System_GetSurfacePixel(surface, i - 1, j - 1)
 				if color ~= 0 then
 					flag = true
 					break
 				end
+				i = i+(1)
 			end
 			if flag == true then
 				break
 			end
+			j = j+(-1)
 		end
 		if left <= right and top <= bottom then
 			local new_width = right - left + 1

@@ -223,7 +223,7 @@ public class IDEVersionManager
 	// 处理版本更新事件
 	public fun HandleUpdateVersion(string file_name, int cur_size, int total_size, int cur_file_index, int file_count)
 	{
-		this._notice_content.text = "版本正在更新..."..lua.math.floor(this._version_system.current_update_size / this._version_system.total_update_size * 100).."%";
+		this._notice_content.text = "版本正在更新..."..ALittle.Math_Floor(this._version_system.current_update_size / this._version_system.total_update_size * 100).."%";
 		this._notice_content.visible = true;
 		this._notice_edit.visible = false;
 		this._process_bg.visible = true;

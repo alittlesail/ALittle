@@ -443,3 +443,42 @@ function CreateProtocolInvokeInfo(msg_id)
 	return invoke
 end
 
+local CollectStructInfo
+CollectStructInfo = function(invoke, map)
+	if invoke == nil then
+		return
+	end
+	if invoke.rflt ~= nil then
+		if map[invoke.rflt.hash_code] ~= nil then
+			return
+		end
+		map[invoke.rflt.hash_code] = invoke.rflt
+	end
+	if invoke.key_info ~= nil then
+		CollectStructInfo(invoke.key_info, map)
+	end
+	if invoke.value_info ~= nil then
+		CollectStructInfo(invoke.value_info, map)
+	end
+	if invoke.sub_info ~= nil then
+		CollectStructInfo(invoke.sub_info, map)
+	end
+	if invoke.handle ~= nil then
+		for index, info in ___ipairs(invoke.handle) do
+			CollectStructInfo(info, map)
+		end
+	end
+end
+
+function CollectStructReflect(info, map)
+	if info == nil then
+		return "参数info是null"
+	end
+	local error, invoke = Lua.TCall(CreateMessageInfoImpl, info)
+	if error ~= nil then
+		return error
+	end
+	CollectStructInfo(invoke, map)
+	return nil
+end
+

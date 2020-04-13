@@ -4,7 +4,6 @@ module("ALittleIDE", package.seeall)
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___coroutine = coroutine
 local ___all_struct = ALittle.GetAllStruct()
 
 ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
@@ -80,8 +79,8 @@ type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
 
-assert(IDETreeLogic, " extends class:IDETreeLogic is nil")
-IDETree = ALittle.Class(IDETreeLogic, "ALittleIDE.IDETree")
+assert(ALittleIDE.IDETreeLogic, " extends class:ALittleIDE.IDETreeLogic is nil")
+IDETree = Lua.Class(ALittleIDE.IDETreeLogic, "ALittleIDE.IDETree")
 
 function IDETree:Ctor(ctrl_sys, user_info, tab_child)
 	if self._user_info.extends then
@@ -113,69 +112,6 @@ function IDETree:Ctor(ctrl_sys, user_info, tab_child)
 	___rawset(self, "_pickup_rect", false)
 	___rawset(self, "_pickup_child", true)
 	self.fold = false
-end
-
-function IDETree.__getter:childs()
-	return self._body.childs
-end
-
-function IDETree.__getter:child_count()
-	return self._body.child_count
-end
-
-function IDETree.__getter:width()
-	local head_width = 0.0
-	if self._head ~= nil then
-		head_width = self._head.width
-	end
-	local body_width = 0.0
-	if self._body.visible then
-		local start_x = self._body.x
-		body_width = start_x + self._body.width
-		local childs = self._body.childs
-		for k, v in ___ipairs(childs) do
-			local child_width = start_x + v.x + v.width
-			if body_width < child_width then
-				body_width = child_width
-			end
-		end
-	end
-	if head_width > body_width then
-		return head_width
-	end
-	return body_width
-end
-
-function IDETree.__getter:height()
-	local head_height = 0.0
-	if self._head ~= nil then
-		head_height = self._head.height
-	end
-	if self._body.visible then
-		return head_height + self._body.height
-	end
-	return head_height
-end
-
-function IDETree.__getter:fold()
-	return self._body.visible
-end
-
-function IDETree.__getter:max_right()
-	return self.width
-end
-
-function IDETree.__getter:max_bottom()
-	return self.height
-end
-
-function IDETree.__setter:fold(value)
-	if value == self._body.visible then
-		return
-	end
-	self._body.visible = value
-	self._item_checkbutton.selected = value
-	self:DispatchEvent(___all_struct[-431205740], {})
 end
 
 function IDETree:HandleLButtonDown(event)
@@ -274,8 +210,8 @@ function IDETree:SearchLink(name, list)
 		link = self._user_info.default.__link
 	end
 	if link ~= nil then
-		if ALittle.Find(link, name) ~= nil then
-			ALittle.Push(list, self)
+		if ALittle.String_Find(link, name) ~= nil then
+			ALittle.List_Push(list, self)
 		end
 	end
 	for k, child in ___ipairs(self._body.childs) do
@@ -294,8 +230,8 @@ function IDETree:SearchEvent(name, list)
 	end
 	if event ~= nil then
 		for k, v in ___ipairs(event) do
-			if ALittle.Find(v.func, name) ~= nil then
-				ALittle.Push(list, self)
+			if ALittle.String_Find(v.func, name) ~= nil then
+				ALittle.List_Push(list, self)
 				break
 			end
 		end
@@ -315,8 +251,8 @@ function IDETree:SearchDescription(name, list)
 		description = self._user_info.default.description
 	end
 	if description ~= nil then
-		if ALittle.Find(description, name) ~= nil then
-			ALittle.Push(list, self)
+		if ALittle.String_Find(description, name) ~= nil then
+			ALittle.List_Push(list, self)
 		end
 	end
 	for k, child in ___ipairs(self._body.childs) do
@@ -335,8 +271,8 @@ function IDETree:SearchTargetClass(name, list)
 	end
 	if target_class ~= nil then
 		local target_class_str = ALittle.String_Join(target_class, "")
-		if ALittle.Find(target_class_str, name) ~= nil then
-			ALittle.Push(list, self)
+		if ALittle.String_Find(target_class_str, name) ~= nil then
+			ALittle.List_Push(list, self)
 		end
 	end
 	for k, child in ___ipairs(self._body.childs) do
@@ -354,8 +290,8 @@ function IDETree:SearchTextureName(name, list)
 		texture_name = self._user_info.default.texture_name
 	end
 	if texture_name ~= nil then
-		if ALittle.Find(texture_name, name) ~= nil then
-			ALittle.Push(list, self)
+		if ALittle.String_Find(texture_name, name) ~= nil then
+			ALittle.List_Push(list, self)
 		end
 	end
 	for k, child in ___ipairs(self._body.childs) do
@@ -372,12 +308,15 @@ function IDETree:EditPickUp(x, y)
 	local pick_this, rel_x, rel_y = object:PickUpSelf(x, y)
 	local child_count = self._body.child_count
 	local child_list = self._body.childs
-	for i = child_count, 1, -1 do
+	local i = child_count
+	while true do
+		if not(i >= 1) then break end
 		local child = child_list[i]
 		local target = child:EditPickUp(rel_x, rel_y)
 		if target ~= nil then
 			return target
 		end
+		i = i+(-1)
 	end
 	if pick_this ~= nil then
 		return self
@@ -392,13 +331,16 @@ function IDETree:QuickPickUp(x, y, list)
 	local object = self._user_info.object
 	local pick_this, rel_x, rel_y = object:PickUpSelf(x, y)
 	if pick_this ~= nil then
-		ALittle.Push(list, self)
+		ALittle.List_Push(list, self)
 	end
 	local child_count = self._body.child_count
 	local child_list = self._body.childs
-	for i = child_count, 1, -1 do
+	local i = child_count
+	while true do
+		if not(i >= 1) then break end
 		local child = child_list[i]
 		child:QuickPickUp(rel_x, rel_y, list)
+		i = i+(-1)
 	end
 end
 
@@ -410,11 +352,14 @@ function IDETree:SelectPickUp(x, y)
 	if self._body.visible then
 		local child_count = self._body.child_count
 		local child_list = self._body.childs
-		for i = child_count, 1, -1 do
+		local i = child_count
+		while true do
+			if not(i >= 1) then break end
 			local parent, child = child_list[i]:SelectPickUp(rel_x, rel_y)
 			if parent ~= nil or child ~= nil then
 				return parent, child
 			end
+			i = i+(-1)
 		end
 	end
 	if pick_this ~= nil then
@@ -448,6 +393,14 @@ function IDETree:GetChildIndex(child)
 	return self._body:GetChildIndex(child)
 end
 
+function IDETree.__getter:childs()
+	return self._body.childs
+end
+
+function IDETree.__getter:child_count()
+	return self._body.child_count
+end
+
 function IDETree:HasChild(child)
 	return self._body:HasChild(child)
 end
@@ -472,5 +425,60 @@ end
 function IDETree:RemoveAllChild()
 	self._body:RemoveAllChild()
 	self:DispatchEvent(___all_struct[-431205740], {})
+end
+
+function IDETree.__getter:width()
+	local head_width = 0.0
+	if self._head ~= nil then
+		head_width = self._head.width
+	end
+	local body_width = 0.0
+	if self._body.visible then
+		local start_x = self._body.x
+		body_width = start_x + self._body.width
+		local childs = self._body.childs
+		for k, v in ___ipairs(childs) do
+			local child_width = start_x + v.x + v.width
+			if body_width < child_width then
+				body_width = child_width
+			end
+		end
+	end
+	if head_width > body_width then
+		return head_width
+	end
+	return body_width
+end
+
+function IDETree.__getter:height()
+	local head_height = 0.0
+	if self._head ~= nil then
+		head_height = self._head.height
+	end
+	if self._body.visible then
+		return head_height + self._body.height
+	end
+	return head_height
+end
+
+function IDETree.__getter:fold()
+	return self._body.visible
+end
+
+function IDETree.__setter:fold(value)
+	if value == self._body.visible then
+		return
+	end
+	self._body.visible = value
+	self._item_checkbutton.selected = value
+	self:DispatchEvent(___all_struct[-431205740], {})
+end
+
+function IDETree.__getter:max_right()
+	return self.width
+end
+
+function IDETree.__getter:max_bottom()
+	return self.height
 end
 

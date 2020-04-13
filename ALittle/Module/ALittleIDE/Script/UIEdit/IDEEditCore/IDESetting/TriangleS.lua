@@ -4,11 +4,10 @@ module("ALittleIDE", package.seeall)
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___coroutine = coroutine
 
 
-assert(DisplayObjectS, " extends class:DisplayObjectS is nil")
-TriangleS = ALittle.Class(DisplayObjectS, "ALittleIDE.TriangleS")
+assert(ALittleIDE.DisplayObjectS, " extends class:ALittleIDE.DisplayObjectS is nil")
+TriangleS = Lua.Class(ALittleIDE.DisplayObjectS, "ALittleIDE.TriangleS")
 
 function TriangleS:Ctor(user_info, tab_child, tree_logic)
 	___rawset(self, "_layer_name", "ide_setting_triangle")
@@ -36,7 +35,7 @@ function TriangleS:HandleImageTextureNameFOCUSOUT(event)
 end
 
 function TriangleS:HandleImageTextureNameSelect(event)
-	local func = ALittle.Bind(self.ImagePathSelectCallback, self, "texture_name", self.HandleImageTextureNameFOCUSOUT, nil)
+	local func = Lua.Bind(self.ImagePathSelectCallback, self, "texture_name", self.HandleImageTextureNameFOCUSOUT, nil)
 	g_IDEAttrImageDialog:ShowDialog(nil, func)
 end
 

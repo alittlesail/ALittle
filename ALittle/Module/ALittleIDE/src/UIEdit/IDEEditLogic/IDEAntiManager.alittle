@@ -84,7 +84,7 @@ public class IDEAntiFrameLinkItem : ALittle.DisplayLayout
 				|| this._attribute_dropdown.text == "disabled")
 				child.init = this._init_input.text == "true";
 			else
-				child.init = lua.tonumber(this._init_input.text);
+				child.init = ALittle.Math_ToDouble(this._init_input.text);
 		}
 
 		this._panel.tab_child.Save(false);
@@ -109,7 +109,7 @@ public class IDEAntiFrameLinkItem : ALittle.DisplayLayout
 				|| this._attribute_dropdown.text == "disabled")
 				child.init = this._init_input.text == "true";
 			else
-				child.init = lua.tonumber(this._init_input.text);
+				child.init = ALittle.Math_ToDouble(this._init_input.text);
 		}
 		this._panel.tab_child.Save(false);
 	}
@@ -158,7 +158,7 @@ public class IDEAntiFrameLoopItem : ALittle.DisplayLayout
 		elseif (this._info.target == false)
 			value = "false";
 		else
-			value = lua.tostring(this._info.target);
+			value = ALittle.String_ToString(this._info.target);
 
 		if (this._info.clazz == "LoopLinear")
 			this._button.text = "L("..value..")";
@@ -234,7 +234,7 @@ public class IDEAntiFrameLoopItem : ALittle.DisplayLayout
 		if (value == null) return "";
 		if (value == true) return "true";
 		if (value == false) return "false";
-		return lua.tostring(value);
+		return ALittle.String_ToString(value);
 	}
 
 	public static StringToValue(string attribute, string value) : any
@@ -250,7 +250,7 @@ public class IDEAntiFrameLoopItem : ALittle.DisplayLayout
 		}
 		else
 		{
-			return lua.tonumber(value);
+			return ALittle.Math_ToDouble(value);
 		}
 	}
 
@@ -349,7 +349,7 @@ public class IDEAntiFrameAntiItem : ALittle.DisplayLayout
 
 	public fun CalcTimeByWidth(double width) : int
 	{
-		return lua.math.floor(width / this._panel._FRAME_WIDTH * this._panel._FRAME_TIME);
+		return ALittle.Math_Floor(width / this._panel._FRAME_WIDTH * this._panel._FRAME_TIME);
 	}
 
 	public fun CalcWidthByTime(int time) : double
@@ -392,7 +392,7 @@ public class IDEAntiFrameAntiItem : ALittle.DisplayLayout
 		loop_item.Init(this, child);
 		this._container.AddChild(loop_item);
 
-		var revoke = new IDEAntiInsertLoopRevoke(this, child, loop_item, lua.table.maxn(this._info.childs));
+		var revoke = new IDEAntiInsertLoopRevoke(this, child, loop_item, ALittle.List_MaxN(this._info.childs));
 		this._panel.tab_child.revoke_list.PushRevoke(revoke);
 
 		loop_item.button.selected = true;
@@ -441,7 +441,7 @@ public class IDEAntiFrameAntiItem : ALittle.DisplayLayout
         
 		var child_index = this._container.GetChildIndex(loop_item);
         
-		lua.table.insert(this._info.childs, child_index, child);
+		ALittle.List_Insert(this._info.childs, child_index, child);
         
 		var loop_item = g_Control.CreateControl{IDEAntiFrameLoopItem}("ide_anti_screen_loop_item");
 		loop_item.Init(this, child);
@@ -462,7 +462,7 @@ public class IDEAntiFrameAntiItem : ALittle.DisplayLayout
 		if (child_index <= 0) return;
         
 		var child = this._info.childs[child_index];
-		lua.table.remove(this._info.childs, child_index);
+		ALittle.List_Remove(this._info.childs, child_index);
 		this._container.RemoveChild(loop_item);
         
 		var revoke = new IDEAntiDeleteLoopRevoke(this, child, loop_item, child_index);
@@ -875,7 +875,7 @@ public class IDEAntiPanel : ALittle.DisplayLayout
 		if (info == null) return;
 
 		var child = info.childs[child_index];
-		lua.table.remove(info.childs, child_index);
+		ALittle.List_Remove(info.childs, child_index);
 		var anti_item = cast<IDEAntiFrameAntiItem>(this._anti_anti_linear.GetChildByIndex(child_index));
 		this._anti_anti_linear.RemoveChild(anti_item);
 		var link_item = cast<IDEAntiFrameLinkItem>(this._anti_link_linear.GetChildByIndex(child_index));
@@ -980,7 +980,7 @@ public class IDEAntiPanel : ALittle.DisplayLayout
 	public fun HandleTotalTimeChanged(ALittle.UIEvent event)
 	{
 		if (this._cur_loop_item == null) return;
-		var time = lua.math.floor(lua.tonumber(event.target.text));
+		var time = ALittle.Math_ToInt(event.target.text);
 		if (time == null || time < 0)
 		{
 			time = 0;
@@ -992,7 +992,7 @@ public class IDEAntiPanel : ALittle.DisplayLayout
 	public fun HandleDelayTimeChanged(ALittle.UIEvent event)
 	{
 		if (this._cur_loop_item == null) return;
-		var time = lua.math.floor(lua.tonumber(event.target.text));
+		var time = ALittle.Math_ToInt(event.target.text);
 		if (time == null || time < 0)
 		{
 			time = 0;

@@ -36,18 +36,18 @@ local ___COROUTINE = coroutine.running()
 	local error = ALittle.HttpDownloadRequest(self._host, Math_ToInt(self._port), path, path)
 	if error ~= nil then
 		ALittle.Error("ui load failed:" .. error)
-		goto continue_0
+		return
 	end
 	local content = JavaScript.File_LoadFile(path)
 	if content == nil then
 		ALittle.Error("ui load failed:" .. error)
-		goto continue_0
+		return
 	end
 	JavaScript.File_DeleteFile(path)
 	local jerror, json = Lua.TCall(ALittle.String_JsonDecode, content)
 	if jerror ~= nil then
 		ALittle.Error("ui json decode failed:" .. jerror)
-		goto continue_0
+		return
 	end
 	for name, value in ___pairs(json) do
 		self:RegisterInfo(name, value)

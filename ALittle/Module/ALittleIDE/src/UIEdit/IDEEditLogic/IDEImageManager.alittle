@@ -31,20 +31,20 @@ public class IDEImageManager
 		for (var file_path, attr in file_map)
 		{
 			var file_name = ALittle.File_GetFileNameByPath(file_path);
-			if (key == "" || ALittle.Find(file_name, key) != null)
+			if (key == "" || ALittle.String_Find(file_name, key) != null)
 			{
 				++ image_info_count;
 				image_info_list[image_info_count] = file_path;
 			}
 		}
 		// 排序
-		lua.table.sort(image_info_list);
+		ALittle.List_Sort(image_info_list);
 		for (var index, file_path in image_info_list)
 		{
 			var file_name = ALittle.File_GetFileNameByPath(file_path);
 			var item = g_Control.CreateControl{ALittle.DisplayObject}("ide_common_item_button");
 			item.text = file_name;
-			item._user_data = lua.String.sub(file_path, lua.String.len(path) + 2);
+			item._user_data = ALittle.String_Sub(file_path, ALittle.String_Len(path) + 2);
 			item.AddEventListener(this, this.HandleImageItemRightClick);
 			item.AddEventListener(this, this.HandleImageItemMoveIn);
 			item.AddEventListener(this, this.HandleImageItemMouseMove);
@@ -116,7 +116,7 @@ public class IDEImageManager
 		g_IDEUICenter.image_scroll_screen.RemoveChild(target);
 
 		// 删除图片
-		lua.os.remove(target._user_data);
+		ALittle.File_DeleteFile(target._user_data);
 	}
 	// 处理删除信息
 	public fun HandleImageRightMenuDelete(ALittle.UIEvent event)
@@ -170,7 +170,7 @@ public class IDEImageManager
 		info.info = display_info;
 		var copy_list = new List<IDEControlCopyInfo>();
 		copy_list[1] = info;
-		ALittle.System_SetClipboardText(lua.json.encode(copy_list));
+		ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list));
 	}
 
 	// 九宫格
@@ -191,7 +191,7 @@ public class IDEImageManager
 		info.index = 1;
 		info.info = display_info;
 		copy_list[1] = info;
-		ALittle.System_SetClipboardText(lua.json.encode(copy_list));
+		ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list));
 	}
 	// 修正图片
 	public fun HandleImageRightMenuRepair(ALittle.UIEvent event)
@@ -225,11 +225,11 @@ public class IDEImageManager
 
 			// 左边向前走几步
 			var left = 0;
-			for (var i = 1, width, 1)
+			for (var i = 1; i <= width; 1)
 			{
 				left = i - 1;
 				var flag = false;
-				for (var j = 1, height, 1)
+				for (var j = 1; j <= height; 1)
 				{
 					var color = ALittle.System_GetSurfacePixel(surface, i-1, j-1);
 					if (color != 0)
@@ -243,11 +243,11 @@ public class IDEImageManager
 			}
 
 			var right = 0;
-			for (var i = width, 1, -1)
+			for (var i = width; i >= 1; -1)
 			{
 				right = i - 1;
 				var flag = false;
-				for (var j = 1, height, 1)
+				for (var j = 1; j <= height; 1)
 				{
 					var color = ALittle.System_GetSurfacePixel(surface, i-1, j-1);
 					if (color != 0)
@@ -261,11 +261,11 @@ public class IDEImageManager
 			}
 
 			var top = 0;
-			for (var j = 1, height, 1)
+			for (var j = 1; j <= height; 1)
 			{
 				top = j - 1;
 				var flag = false;
-				for (var i = 1, width, 1)
+				for (var i = 1; i <= width; 1)
 				{
 					var color = ALittle.System_GetSurfacePixel(surface, i-1, j-1);
 					if (color != 0)
@@ -279,11 +279,11 @@ public class IDEImageManager
 			}
 
 			var bottom = 0;
-			for (var j = height, 1, -1)
+			for (var j = height; j >= 1; -1)
 			{
 				bottom = j - 1;
 				var flag = false;
-				for (var i = 1, width, 1)
+				for (var i = 1; i <= width; 1)
 				{
 					var color = ALittle.System_GetSurfacePixel(surface, i-1, j-1);
 					if (color != 0)

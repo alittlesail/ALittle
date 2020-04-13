@@ -4,11 +4,10 @@ module("ALittleIDE", package.seeall)
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___coroutine = coroutine
 
 
-assert(DisplayLayoutS, " extends class:DisplayLayoutS is nil")
-TextCheckButtonS = ALittle.Class(DisplayLayoutS, "ALittleIDE.TextCheckButtonS")
+assert(ALittleIDE.DisplayLayoutS, " extends class:ALittleIDE.DisplayLayoutS is nil")
+TextCheckButtonS = Lua.Class(ALittleIDE.DisplayLayoutS, "ALittleIDE.TextCheckButtonS")
 
 function TextCheckButtonS:Ctor(user_info, tab_child, tree_logic)
 	___rawset(self, "_layer_name", "ide_setting_textcheckbutton")
@@ -55,7 +54,7 @@ function TextCheckButtonS:HandleShowUpFOCUSOUT(event)
 end
 
 function TextCheckButtonS:HandleShowUpSelect(event)
-	local func = ALittle.Bind(self.ImagePathSelectCallback, self, "show_up", self.HandleShowUpFOCUSOUT, nil)
+	local func = Lua.Bind(self.ImagePathSelectCallback, self, "show_up", self.HandleShowUpFOCUSOUT, nil)
 	g_IDEAttrImageDialog:ShowDialog(nil, func)
 end
 
@@ -70,7 +69,7 @@ function TextCheckButtonS:HandleShowOverFOCUSOUT(event)
 end
 
 function TextCheckButtonS:HandleShowOverSelect(event)
-	local func = ALittle.Bind(self.ImagePathSelectCallback, self, "show_over", self.HandleShowOverFOCUSOUT, nil)
+	local func = Lua.Bind(self.ImagePathSelectCallback, self, "show_over", self.HandleShowOverFOCUSOUT, nil)
 	g_IDEAttrImageDialog:ShowDialog(nil, func)
 end
 
@@ -85,7 +84,7 @@ function TextCheckButtonS:HandleShowDownFOCUSOUT(event)
 end
 
 function TextCheckButtonS:HandleShowDownSelect(event)
-	local func = ALittle.Bind(self.ImagePathSelectCallback, self, "show_down", self.HandleShowDownFOCUSOUT, nil)
+	local func = Lua.Bind(self.ImagePathSelectCallback, self, "show_down", self.HandleShowDownFOCUSOUT, nil)
 	g_IDEAttrImageDialog:ShowDialog(nil, func)
 end
 
@@ -100,7 +99,7 @@ function TextCheckButtonS:HandleShowDisabledFOCUSOUT(event)
 end
 
 function TextCheckButtonS:HandleShowDisabledSelect(event)
-	local func = ALittle.Bind(self.ImagePathSelectCallback, self, "show_disabled", self.HandleShowDisabledFOCUSOUT, nil)
+	local func = Lua.Bind(self.ImagePathSelectCallback, self, "show_disabled", self.HandleShowDisabledFOCUSOUT, nil)
 	g_IDEAttrImageDialog:ShowDialog(nil, func)
 end
 
@@ -115,7 +114,7 @@ function TextCheckButtonS:HandleShowSUpFOCUSOUT(event)
 end
 
 function TextCheckButtonS:HandleShowSUpSelect(event)
-	local func = ALittle.Bind(self.ImagePathSelectCallback, self, "show_selected_up", self.HandleShowSUpFOCUSOUT, nil)
+	local func = Lua.Bind(self.ImagePathSelectCallback, self, "show_selected_up", self.HandleShowSUpFOCUSOUT, nil)
 	g_IDEAttrImageDialog:ShowDialog(nil, func)
 end
 
@@ -130,7 +129,7 @@ function TextCheckButtonS:HandleShowSOverFOCUSOUT(event)
 end
 
 function TextCheckButtonS:HandleShowSOverSelect(event)
-	local func = ALittle.Bind(self.ImagePathSelectCallback, self, "show_selected_over", self.HandleShowSOverFOCUSOUT, nil)
+	local func = Lua.Bind(self.ImagePathSelectCallback, self, "show_selected_over", self.HandleShowSOverFOCUSOUT, nil)
 	g_IDEAttrImageDialog:ShowDialog(nil, func)
 end
 
@@ -145,7 +144,7 @@ function TextCheckButtonS:HandleShowSDownFOCUSOUT(event)
 end
 
 function TextCheckButtonS:HandleShowSDownSelect(event)
-	local func = ALittle.Bind(self.ImagePathSelectCallback, self, "show_selected_down", self.HandleShowSDownFOCUSOUT, nil)
+	local func = Lua.Bind(self.ImagePathSelectCallback, self, "show_selected_down", self.HandleShowSDownFOCUSOUT, nil)
 	g_IDEAttrImageDialog:ShowDialog(nil, func)
 end
 
@@ -160,7 +159,7 @@ function TextCheckButtonS:HandleShowSDisabledFOCUSOUT(event)
 end
 
 function TextCheckButtonS:HandleShowSDisabledSelect(event)
-	local func = ALittle.Bind(self.ImagePathSelectCallback, self, "show_selected_disabled", self.HandleShowSDisabledFOCUSOUT, nil)
+	local func = Lua.Bind(self.ImagePathSelectCallback, self, "show_selected_disabled", self.HandleShowSDisabledFOCUSOUT, nil)
 	g_IDEAttrImageDialog:ShowDialog(nil, func)
 end
 

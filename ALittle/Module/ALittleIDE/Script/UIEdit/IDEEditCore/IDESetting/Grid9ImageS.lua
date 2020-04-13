@@ -4,11 +4,10 @@ module("ALittleIDE", package.seeall)
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___coroutine = coroutine
 
 
-assert(Grid9S, " extends class:Grid9S is nil")
-Grid9ImageS = ALittle.Class(Grid9S, "ALittleIDE.Grid9ImageS")
+assert(ALittleIDE.Grid9S, " extends class:ALittleIDE.Grid9S is nil")
+Grid9ImageS = Lua.Class(ALittleIDE.Grid9S, "ALittleIDE.Grid9ImageS")
 
 function Grid9ImageS:Ctor(user_info, tab_child, tree_logic)
 	___rawset(self, "_layer_name", "ide_setting_grid9image")
@@ -26,7 +25,7 @@ function Grid9ImageS:HandleImageTextureNameFOCUSOUT(event)
 end
 
 function Grid9ImageS:HandleImageTextureNameSelect(event)
-	local func = ALittle.Bind(self.ImagePathSelectCallback, self, "texture_name", self.HandleImageTextureNameFOCUSOUT, nil)
+	local func = Lua.Bind(self.ImagePathSelectCallback, self, "texture_name", self.HandleImageTextureNameFOCUSOUT, nil)
 	g_IDEAttrImageDialog:ShowDialog(nil, func)
 end
 

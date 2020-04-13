@@ -4,11 +4,10 @@ module("ALittleIDE", package.seeall)
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___coroutine = coroutine
 
 
-assert(DisplayObjectS, " extends class:DisplayObjectS is nil")
-TextS = ALittle.Class(DisplayObjectS, "ALittleIDE.TextS")
+assert(ALittleIDE.DisplayObjectS, " extends class:ALittleIDE.DisplayObjectS is nil")
+TextS = Lua.Class(ALittleIDE.DisplayObjectS, "ALittleIDE.TextS")
 
 function TextS:Ctor(user_info, tab_child, tree_logic)
 	___rawset(self, "_layer_name", "ide_setting_text")

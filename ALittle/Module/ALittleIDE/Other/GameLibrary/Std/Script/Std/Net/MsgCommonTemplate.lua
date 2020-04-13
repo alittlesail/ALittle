@@ -59,7 +59,7 @@ end
 
 function IMsgCommonTemplate:MessageRead(factory, msg_id)
 	local invoke = CreateProtocolInvokeInfo(msg_id)
-	local object, size = PS_ReadMessageForReceive(factory, invoke, nil, factory:GetTotalSize())
+	local object, size = PS_ReadMessageForReceive(factory, invoke, nil, factory:GetDataSize())
 	return object
 end
 

@@ -34,7 +34,7 @@ function DropDown:Ctor(ctrl_sys)
 	___rawset(self, "_screen_margin_bottom", 0)
 	___rawset(self, "_show_count", 0)
 	self:AddEventListener(___all_struct[958494922], self, self.HandleButtonChange)
-	self._body:AddEventListener(___all_struct[-1479093282], self, self.HandleBodyHide)
+	self._body:AddEventListener(___all_struct[348388800], self, self.HandleBodyHide)
 end
 
 function DropDown.__setter:show_background(value)

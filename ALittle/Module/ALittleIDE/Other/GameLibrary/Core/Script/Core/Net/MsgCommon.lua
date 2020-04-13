@@ -45,7 +45,7 @@ end
 
 IMessageReadFactory = Lua.Class(nil, "ALittle.IMessageReadFactory")
 
-function IMessageReadFactory:GetTotalSize()
+function IMessageReadFactory:GetDataSize()
 	return 0
 end
 

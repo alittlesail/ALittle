@@ -32,7 +32,7 @@ ALittle.IMessageWriteFactory = JavaScript.Class(undefined, {
 }, "ALittle.IMessageWriteFactory");
 
 ALittle.IMessageReadFactory = JavaScript.Class(undefined, {
-	GetTotalSize : function() {
+	GetDataSize : function() {
 		return 0;
 	},
 	ReadBool : function() {

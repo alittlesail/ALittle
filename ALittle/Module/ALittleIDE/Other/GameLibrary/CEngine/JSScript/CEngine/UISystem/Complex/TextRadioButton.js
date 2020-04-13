@@ -22,10 +22,10 @@ ALittle.TextRadioButtonManager = JavaScript.Class(undefined, {
 		if (new_name !== undefined) {
 			let group = this._name_map_group[new_name];
 			if (group === undefined) {
-				group = new Map();
+				group = ALittle.CreateKeyWeakMap();
 				this._name_map_group[new_name] = group;
 			}
-			group.set(object, object);
+			group.set(object, true);
 		}
 	},
 	GetGroupByName : function(name) {
@@ -52,12 +52,12 @@ ALittle.TextRadioButton = JavaScript.Class(ALittle.TextCheckButton, {
 				this._selected = true;
 				let group = A_TextRadioButtonManager.GetGroupByName(this._group_name);
 				if (group !== undefined) {
-					for (let [k, v] of group) {
-						if (v === undefined) continue;
-						if (k !== this && v._selected === true) {
-							v._selected = false;
-							v.ShowUp();
-							v.DispatchEvent(___all_struct.get(958494922), {});
+					for (let [k, _] of group) {
+						if (_ === undefined) continue;
+						if (k !== this && k._selected === true) {
+							k._selected = false;
+							k.ShowUp();
+							k.DispatchEvent(___all_struct.get(958494922), {});
 						}
 					}
 				}
@@ -90,11 +90,11 @@ ALittle.TextRadioButton = JavaScript.Class(ALittle.TextCheckButton, {
 		}
 		let group = A_TextRadioButtonManager.GetGroupByName(this._group_name);
 		if (group !== undefined) {
-			for (let [k, v] of group) {
-				if (v === undefined) continue;
-				if (k !== this && v._selected === true) {
-					v._selected = false;
-					v.ShowUp();
+			for (let [k, _] of group) {
+				if (_ === undefined) continue;
+				if (k !== this && k._selected === true) {
+					k._selected = false;
+					k.ShowUp();
 				}
 			}
 		}

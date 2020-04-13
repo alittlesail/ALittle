@@ -24,12 +24,9 @@ public class Linear : DisplayGroup
         this._clip_up_index = 0; // 裁剪下标
         this._clip_down_index = 0; // 裁剪下标
     
-        this._child_width_map = new Map<DisplayObject, double>();
-        // Setweak(this._child_width_map, true, false);
-        this._child_height_map = new Map<DisplayObject, double>();
-        // Setweak(this._child_height_map, true, false);
-        this._show_child_map = new Map<DisplayObject, bool>();
-        // Setweak(this._show_child_map, true, false);
+        this._child_width_map = CreateKeyWeakMap();
+        this._child_height_map = CreateKeyWeakMap();
+        this._show_child_map = CreateKeyWeakMap();
     
         this._pickup_rect = false;
         this._pickup_child = true;
@@ -133,12 +130,9 @@ public class Linear : DisplayGroup
     {
         for (var i, child in this._childs)
             child.RemoveEventListener{UIResizeEvent}(this);
-        this._child_width_map = new Map<DisplayObject, double>();
-        // Setweak(this._child_width_map, true, false);
-        this._child_height_map = new Map<DisplayObject, double>();
-        // Setweak(this._child_height_map, true, false);
-        this._show_child_map = new Map<DisplayObject, bool>();
-        // Setweak(this._show_child_map, true, false);
+        this._child_width_map = CreateKeyWeakMap();
+        this._child_height_map = CreateKeyWeakMap();
+        this._show_child_map = CreateKeyWeakMap();
     
         this._clip_up_index = 0;
         this._clip_down_index = 0;

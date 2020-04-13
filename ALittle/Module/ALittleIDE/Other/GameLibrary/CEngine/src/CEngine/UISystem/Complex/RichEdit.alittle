@@ -766,8 +766,7 @@ public class RichEdit : DisplayLayout
         this._default_text_area.y = 0;    // 0
         this.AddChild(this._default_text_area);
     
-        this._link_map = new Map<string, DisplayObject>();
-        // Setweak(this._link_map, false, true);
+        this._link_map = CreateValueWeakMap();
     
         this._pickup_rect = true;
         this._pickup_child = false;
@@ -821,8 +820,7 @@ public class RichEdit : DisplayLayout
     // 清空link_map
     public fun ClearLinkMap()
     {
-        this._link_map = new Map<string, DisplayObject>();
-        // Setweak(this._link_map, false, true);
+        this._link_map = CreateValueWeakMap();
     }
     
     // 获取内容高度，如果最后一行是空行，不会算上去

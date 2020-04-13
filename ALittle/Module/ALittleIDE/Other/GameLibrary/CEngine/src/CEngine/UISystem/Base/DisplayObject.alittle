@@ -272,12 +272,6 @@ public class DisplayObject : UIEventDispatcher
 
         // this._user_data = null;
     }
-    
-    public fun Dispose([Nullable] bool deep)
-    {
-        UIEventDispatcher.Dispose(this, deep);
-        this.RemoveFromParent();
-    }
 
     //////////////////////////////////////////////////////////////////////
 

@@ -61,14 +61,14 @@ ALittle.ScrollButton = JavaScript.Class(ALittle.TextButton, {
 				e.abs_y = event.abs_y;
 				this.DispatchEvent(___all_struct.get(-2129379001), e);
 				this._can_set_drag_trans = false;
-				if (this._can_drag_trans && this._trans_target.drag !== undefined) {
+				if (this._can_drag_trans && this._trans_target.get("drag") !== undefined) {
 					let ue = {};
-					ue.target = this._trans_target.drag;
+					ue.target = this._trans_target.get("drag");
 					ue.delta_x = event.delta_x;
 					ue.delta_y = event.delta_y;
 					ue.abs_x = event.abs_x;
 					ue.abs_y = event.abs_y;
-					this._trans_target.drag.DispatchEvent(___all_struct.get(-2129379001), e);
+					this._trans_target.get("drag").DispatchEvent(___all_struct.get(-2129379001), e);
 				}
 				this._btn_drag = true;
 			}
@@ -80,9 +80,9 @@ ALittle.ScrollButton = JavaScript.Class(ALittle.TextButton, {
 			e.abs_x = event.abs_x;
 			e.abs_y = event.abs_y;
 			this.DispatchEvent(___all_struct.get(-646882501), e);
-			if (this._can_drag_trans && this._trans_target.drag !== undefined) {
+			if (this._can_drag_trans && this._trans_target.get("drag") !== undefined) {
 				let ue = {};
-				ue.target = this._trans_target.drag;
+				ue.target = this._trans_target.get("drag");
 				ue.delta_x = event.delta_x;
 				ue.delta_y = event.delta_y;
 				ue.abs_x = event.abs_x;
@@ -93,14 +93,14 @@ ALittle.ScrollButton = JavaScript.Class(ALittle.TextButton, {
 	},
 	HandleDragEnd : function(event) {
 		if (this._btn_drag) {
-			if (this._can_drag_trans && this._trans_target.drag !== undefined) {
+			if (this._can_drag_trans && this._trans_target.get("drag") !== undefined) {
 				let e = {};
-				e.target = this._trans_target.drag;
+				e.target = this._trans_target.get("drag");
 				e.delta_x = event.delta_x;
 				e.delta_y = event.delta_y;
 				e.abs_x = event.abs_x;
 				e.abs_y = event.abs_y;
-				this._trans_target.drag.DispatchEvent(___all_struct.get(150587926), e);
+				this._trans_target.get("drag").DispatchEvent(___all_struct.get(150587926), e);
 			}
 			this._can_set_drag_trans = true;
 			let e = {};
@@ -135,8 +135,8 @@ ALittle.ScrollButton = JavaScript.Class(ALittle.TextButton, {
 	DispatchEvent : function(T, event) {
 		let rflt = T;
 		let event_target = this;
-		if (this._trans_target.event !== undefined) {
-			event_target = this._trans_target.event;
+		if (this._trans_target.get("event") !== undefined) {
+			event_target = this._trans_target.get("event");
 		}
 		if (event_target._abs_disabled) {
 			return;

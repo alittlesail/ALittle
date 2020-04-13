@@ -46,7 +46,7 @@ ALittle.IMsgCommonTemplate = JavaScript.Class(ALittle.IMsgCommon, {
 	},
 	MessageRead : function(factory, msg_id) {
 		let invoke = ALittle.CreateProtocolInvokeInfo(msg_id);
-		let [object, size] = ALittle.PS_ReadMessageForReceive(factory, invoke, undefined, factory.GetTotalSize());
+		let [object, size] = ALittle.PS_ReadMessageForReceive(factory, invoke, undefined, factory.GetDataSize());
 		return object;
 	},
 	MessageWrite : function(msg_id, msg_body) {

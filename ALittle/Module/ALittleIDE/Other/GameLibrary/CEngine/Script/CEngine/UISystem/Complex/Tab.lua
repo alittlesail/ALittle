@@ -18,7 +18,7 @@ Tab = Lua.Class(ALittle.Grid3, "ALittle.Tab")
 
 function Tab:Ctor(ctrl_sys)
 	___rawset(self, "_button_inner_gap", 8)
-	___rawset(self, "_child_id_map", {})
+	___rawset(self, "_child_id_map", CreateKeyWeakMap())
 	___rawset(self, "_group_name", A_TextRadioButtonManager:CreateGroupName())
 	self.type = UIEnumTypes.TYPE_V
 	___rawset(self, "_view", DisplayView(self._ctrl_sys))

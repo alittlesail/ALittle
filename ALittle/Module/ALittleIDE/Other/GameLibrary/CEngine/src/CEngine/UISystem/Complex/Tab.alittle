@@ -47,8 +47,7 @@ public class Tab : Grid3
         this._button_inner_gap = 8;    // 按钮文本，关闭按钮，tab按钮边缘，它们之间的间隔
     
         // 控件映射ID
-        this._child_id_map = new Map<DisplayObject, string>();
-        // Setweak(this._child_id_map, true, false);
+        this._child_id_map = CreateKeyWeakMap();
         // 单选按钮组名
         this._group_name = A_TextRadioButtonManager.CreateGroupName();
 

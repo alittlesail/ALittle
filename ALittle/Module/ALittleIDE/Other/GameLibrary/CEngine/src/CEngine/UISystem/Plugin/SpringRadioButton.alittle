@@ -44,14 +44,14 @@ public class SpringRadioButton : SpringCheckButton
                 var group = A_TextRadioButtonManager.GetGroupByName(this._group_name);
                 if (group != null)
                 {
-                    for (var k, v:SpringRadioButton in group)
+                    for (var k:SpringRadioButton, _ in group)
                     {
                         // 设置为false
-                        if (k != this && v._selected == true)
+                        if (k != this && k._selected == true)
                         {
-                            v._selected = false;
-                            v.ShowUp();
-                            v.DispatchEvent(new UIChangedEvent());
+                            k._selected = false;
+                            k.ShowUp();
+                            k.DispatchEvent(new UIChangedEvent());
                         }
                     }
                 }
@@ -95,13 +95,13 @@ public class SpringRadioButton : SpringCheckButton
         var group = A_TextRadioButtonManager.GetGroupByName(this._group_name);
         if (group != null)
         {
-            for (var k, v:SpringRadioButton in group)
+            for (var k:SpringRadioButton, _ in group)
             {
                 // 设置为false
-                if (k != this && v._selected == true)
+                if (k != this && k._selected == true)
                 {
-                    v._selected = false;
-                    v.ShowUp();
+                    k._selected = false;
+                    k.ShowUp();
                 }
             }
         }

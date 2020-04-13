@@ -90,6 +90,7 @@ public class TextInput : DisplayObject
         this.AddEventListener(this, this.HandleDragBegin);
         this.AddEventListener(this, this.HandleDrag);
     
+        [Language(Lua)]
         A_LoadTextureManager.RegisterRedrawControl(this);
     }
     

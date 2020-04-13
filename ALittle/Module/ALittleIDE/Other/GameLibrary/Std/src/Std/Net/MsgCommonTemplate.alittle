@@ -54,7 +54,7 @@ public class IMsgCommonTemplate : IMsgCommon
     private fun MessageRead(IMessageReadFactory factory, int msg_id) : any
     {
         var invoke = CreateProtocolInvokeInfo(msg_id);
-        var object, size = PS_ReadMessageForReceive(factory, invoke, null, factory.GetTotalSize());
+        var object, size = PS_ReadMessageForReceive(factory, invoke, null, factory.GetDataSize());
         return object;
     }
     

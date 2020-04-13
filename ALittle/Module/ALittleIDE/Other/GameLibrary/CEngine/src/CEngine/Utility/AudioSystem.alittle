@@ -10,7 +10,7 @@ struct ChunkInfo
     bool mute;
 }
 
-class AudioSystem : EventListener
+class AudioSystem
 {
     private Map<int, ChunkInfo> _chunk_map;
     private bool                _app_background;
@@ -36,7 +36,6 @@ class AudioSystem : EventListener
     
     public fun Shutdown()
     {
-        this.RemoveFromDispatcher();
     }
     
     //////////////////////////////////-监听APP前后台切换//////////////////////////////////-

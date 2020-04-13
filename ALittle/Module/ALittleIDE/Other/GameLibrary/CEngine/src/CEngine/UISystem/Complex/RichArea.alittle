@@ -91,8 +91,7 @@ public class RichArea : DisplayLayout
         this._line_list = new List<RichAreaLineInfo>();                    // 行控件列表
         this._line_count = 0;
         this._real_height = 0;                    // 内容的真实高度
-        this._link_map = new Map<string, DisplayObject>();                        // 内部控件绑定的逻辑对象
-        // Setweak(this._link_map, false, true);
+        this._link_map = CreateValueWeakMap();                        // 内部控件绑定的逻辑对象
         this._max_line_count = 0;                // 最大的行数，表示不限制
     }
     
@@ -105,8 +104,7 @@ public class RichArea : DisplayLayout
     // 清空link_map
     public fun ClearLinkMap()
     {
-        this._link_map = new Map<string, DisplayObject>();                        // 内部控件绑定的逻辑对象
-        // Setweak(this._link_map, false, true);
+        this._link_map = CreateValueWeakMap();                        // 内部控件绑定的逻辑对象
     }
     
     // 设置宽度

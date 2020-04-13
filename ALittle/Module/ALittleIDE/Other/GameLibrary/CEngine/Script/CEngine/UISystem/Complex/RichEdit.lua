@@ -560,7 +560,7 @@ function RichEdit:Ctor(ctrl_sys)
 	self._default_text_area.x_type = UIEnumTypes.POS_ALIGN_CENTER
 	self._default_text_area.y = 0
 	self:AddChild(self._default_text_area)
-	___rawset(self, "_link_map", {})
+	___rawset(self, "_link_map", CreateValueWeakMap())
 	___rawset(self, "_pickup_rect", true)
 	___rawset(self, "_pickup_child", false)
 	___rawset(self, "_pickup_this", true)
@@ -601,7 +601,7 @@ function RichEdit.__getter:link_map()
 end
 
 function RichEdit:ClearLinkMap()
-	self._link_map = {}
+	self._link_map = CreateValueWeakMap()
 end
 
 function RichEdit.__getter:real_height()

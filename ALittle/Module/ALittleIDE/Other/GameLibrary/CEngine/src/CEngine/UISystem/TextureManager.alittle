@@ -40,8 +40,8 @@ protected class LoadTextureManager
     private Map<int, LoadTextureInfo>           _id_map_info;
     private Map<string, ITexture>  _path_map_texture_cut;
     private Map<string, LoadingTextureInfo>     _path_map_objects_cut;
-    private Map<DisplayObject, DisplayObject>   _redraw_map_redraw;
-    private Map<TextureManager, TextureManager> _texmgr_map_texmgr;
+    private Map<DisplayObject, bool>   _redraw_map_redraw;
+    private Map<TextureManager, bool> _texmgr_map_texmgr;
     
     public ctor()
     {
@@ -49,17 +49,14 @@ protected class LoadTextureManager
         this._id_map_info = new Map<int, LoadTextureInfo>();
         
         // 路径映射资源（散装），设置成虚表
-        this._path_map_texture_cut = new Map<string, ITexture>();
-        // Setweak(this._path_map_texture_cut, false, true);
+        this._path_map_texture_cut = CreateValueWeakMap();
         
         // 正在加载中的纹理信息（散装）
         this._path_map_objects_cut = new Map<string, LoadingTextureInfo>();
         
         // 用来保存所有文本的映射表用于渲染设备重置的时候处理
-        this._redraw_map_redraw = new Map<DisplayObject, DisplayObject>();
-        // Setweak(this._redraw_map_redraw, true, true);
-        this._texmgr_map_texmgr = new Map<TextureManager, TextureManager>();
-        // Setweak(this._texmgr_map_texmgr, true, true);
+        this._redraw_map_redraw = CreateKeyWeakMap();
+        this._texmgr_map_texmgr = CreateKeyWeakMap();
     }
 
     protected fun CreateTexture(TextureManager texture_mgr, LoadAtlasInfo atlas)
@@ -162,8 +159,7 @@ protected class LoadTextureManager
         this._path_map_objects_cut[texture_id] = loading_info;
 
         // 设置为弱引用表
-        loading_info.object_map = new Map<DisplayObject, LoadingTextureObjectInfo>();
-        // Setweak(loading_info.object_map, true, false);
+        loading_info.object_map = CreateKeyWeakMap();
         var object_info = new LoadingTextureObjectInfo();
         object_info.callback = callback;
         loading_info.object_map[object] = object_info;
@@ -251,26 +247,25 @@ protected class LoadTextureManager
     // 注册有使用到纹理类的控件
     protected fun RegisterRedrawControl(DisplayObject control)
     {
-        this._redraw_map_redraw[control] = control;
+        this._redraw_map_redraw[control] = true;
     }
 
     // 注册纹理管理器
     protected fun RegisterTexmgrControl(TextureManager control)
     {
-        this._texmgr_map_texmgr[control] = control;
+        this._texmgr_map_texmgr[control] = null;
     }
 
     // 处理渲染设备重置
     protected fun HandleRenderDeviceReset()
     {
         // 清空所有散装的图片
-        this._path_map_texture_cut = new Map<string, ITexture>();
-        // Setweak(this._path_map_texture_cut, false, true);
+        this._path_map_texture_cut = CreateValueWeakMap();
         // 清空所有拼接图片
-        for (var key, texmgr in this._texmgr_map_texmgr)
+        for (var texmgr, _ in this._texmgr_map_texmgr)
             texmgr.ClearCache();
         // 重置所有需要重绘的控件
-        for (var key, control in this._redraw_map_redraw)
+        for (var control, _ in this._redraw_map_redraw)
             control.Redraw();
     }
 }
@@ -513,8 +508,7 @@ protected class TextureManager
         this._crypt_mode = crypt_mode || false;
     
         // 路径映射资源，设置成虚表
-        this._path_map_texture = new Map<string, ITexture>();
-        // Setweak(this._path_map_texture, false, true);
+        this._path_map_texture = CreateValueWeakMap();
         
         this._prepare_map = new Map<PrepareInfo, bool>(); // 强引用，用于保存预加载纹理映射
     
@@ -616,8 +610,7 @@ protected class TextureManager
     // 清空所有纹理
     public fun ClearCache()
     {
-        this._path_map_texture = new Map<string, ITexture>();
-        // Setweak(this._path_map_texture, false, true);
+        this._path_map_texture = CreateValueWeakMap();
         this._prepare_map = new Map<PrepareInfo, bool>();
     }
     
@@ -641,9 +634,7 @@ protected class TextureManager
                     var loading_map = this._path_map_objects[atlas.big_path];
                     if (loading_map == null)
                     {
-                        loading_map = new Map<DisplayObject, string>();
-                        // 设置为弱引用表
-                        // Setweak(loading_map, true, false);
+                        loading_map = CreateKeyWeakMap();
                         this._path_map_objects[atlas.big_path] = loading_map;
                     }
                     A_LoadTextureManager.CreateTexture(this, atlas);
@@ -696,9 +687,7 @@ protected class TextureManager
             return;
         }
     
-        loading_map = new Map<DisplayObject, string>();
-        // 设置为弱引用表
-        // Setweak(loading_map, true, false);
+        loading_map = CreateKeyWeakMap();
         this._path_map_objects[atlas.big_path] = loading_map;
         loading_map[object] = name;
     

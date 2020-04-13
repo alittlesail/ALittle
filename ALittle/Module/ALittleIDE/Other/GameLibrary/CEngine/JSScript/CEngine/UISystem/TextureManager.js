@@ -59,10 +59,10 @@ option_map : {}
 ALittle.LoadTextureManager = JavaScript.Class(undefined, {
 	Ctor : function() {
 		this._id_map_info = new Map();
-		this._path_map_texture_cut = {};
+		this._path_map_texture_cut = ALittle.CreateValueWeakMap();
 		this._path_map_objects_cut = {};
-		this._redraw_map_redraw = new Map();
-		this._texmgr_map_texmgr = new Map();
+		this._redraw_map_redraw = ALittle.CreateKeyWeakMap();
+		this._texmgr_map_texmgr = ALittle.CreateKeyWeakMap();
 	},
 	CreateTexture : function(texture_mgr, atlas) {
 		let loader = undefined;
@@ -136,7 +136,7 @@ ALittle.LoadTextureManager = JavaScript.Class(undefined, {
 		loading_info = {};
 		loading_info.cache = cache;
 		this._path_map_objects_cut[texture_id] = loading_info;
-		loading_info.object_map = new Map();
+		loading_info.object_map = ALittle.CreateKeyWeakMap();
 		let object_info = {};
 		object_info.callback = callback;
 		loading_info.object_map.set(object, object_info);
@@ -201,19 +201,19 @@ ALittle.LoadTextureManager = JavaScript.Class(undefined, {
 		delete this._path_map_objects_cut[texture_id];
 	},
 	RegisterRedrawControl : function(control) {
-		this._redraw_map_redraw.set(control, control);
+		this._redraw_map_redraw.set(control, true);
 	},
 	RegisterTexmgrControl : function(control) {
-		this._texmgr_map_texmgr.set(control, control);
+		this._texmgr_map_texmgr.delete(control);
 	},
 	HandleRenderDeviceReset : function() {
-		this._path_map_texture_cut = {};
-		for (let [key, texmgr] of this._texmgr_map_texmgr) {
-			if (texmgr === undefined) continue;
+		this._path_map_texture_cut = ALittle.CreateValueWeakMap();
+		for (let [texmgr, _] of this._texmgr_map_texmgr) {
+			if (_ === undefined) continue;
 			texmgr.ClearCache();
 		}
-		for (let [key, control] of this._redraw_map_redraw) {
-			if (control === undefined) continue;
+		for (let [control, _] of this._redraw_map_redraw) {
+			if (_ === undefined) continue;
 			control.Redraw();
 		}
 	},
@@ -347,7 +347,7 @@ ALittle.TextureManager = JavaScript.Class(undefined, {
 		this._cache_texture = true;
 		this._base_path = "Module/" + module_name + "/Texture/";
 		this._crypt_mode = crypt_mode || false;
-		this._path_map_texture = {};
+		this._path_map_texture = ALittle.CreateValueWeakMap();
 		this._prepare_map = new Map();
 		this._path_map_objects = {};
 		this.LoadAtlas();
@@ -424,7 +424,7 @@ ALittle.TextureManager = JavaScript.Class(undefined, {
 		return this._crypt_mode;
 	},
 	ClearCache : function() {
-		this._path_map_texture = {};
+		this._path_map_texture = ALittle.CreateValueWeakMap();
 		this._prepare_map = new Map();
 	},
 	PrepareTexture : function(name_map, callback) {
@@ -439,7 +439,7 @@ ALittle.TextureManager = JavaScript.Class(undefined, {
 				if (texture === undefined) {
 					let loading_map = this._path_map_objects[atlas.big_path];
 					if (loading_map === undefined) {
-						loading_map = new Map();
+						loading_map = ALittle.CreateKeyWeakMap();
 						this._path_map_objects[atlas.big_path] = loading_map;
 					}
 					A_LoadTextureManager.CreateTexture(this, atlas);
@@ -484,7 +484,7 @@ ALittle.TextureManager = JavaScript.Class(undefined, {
 			loading_map.set(object, name);
 			return;
 		}
-		loading_map = new Map();
+		loading_map = ALittle.CreateKeyWeakMap();
 		this._path_map_objects[atlas.big_path] = loading_map;
 		loading_map.set(object, name);
 		A_LoadTextureManager.CreateTexture(this, atlas);

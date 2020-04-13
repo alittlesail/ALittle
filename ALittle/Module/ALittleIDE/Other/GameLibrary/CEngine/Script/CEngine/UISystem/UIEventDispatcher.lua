@@ -5,12 +5,6 @@ local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
-RegStruct(550649122, "ALittle.UITransTarget", {
-name = "ALittle.UITransTarget", ns_name = "ALittle", rl_name = "UITransTarget", hash_code = 550649122,
-name_list = {"event","drag"},
-type_list = {"ALittle.DisplayObject","ALittle.DisplayObject"},
-option_map = {}
-})
 RegStruct(-1479093282, "ALittle.UIEvent", {
 name = "ALittle.UIEvent", ns_name = "ALittle", rl_name = "UIEvent", hash_code = -1479093282,
 name_list = {"target"},
@@ -300,86 +294,36 @@ type_list = {"ALittle.DisplayObject","string"},
 option_map = {}
 })
 
-UIEventListener = Lua.Class(nil, "ALittle.UIEventListener")
-
-function UIEventListener:Ctor()
-end
-
-function UIEventListener:RemoveFromDispatcher()
-	if self._event_map ~= nil then
-		for d, v in ___pairs(self._event_map) do
-			d._trans_target.event = nil
-		end
-		self._event_map = nil
-	end
-	if self._drag_map ~= nil then
-		for d, v in ___pairs(self._drag_map) do
-			d._trans_target.drag = nil
-		end
-		self._drag_map = nil
-	end
-	if self._ref_map ~= nil then
-		for d, t in ___pairs(self._ref_map) do
-			for name, vb in ___pairs(t) do
-				local callback_table = d._listeners[name]
-				if callback_table ~= nil then
-					callback_table[self] = nil
-				end
-			end
-		end
-		self._ref_map = nil
-	end
-end
-
-assert(ALittle.UIEventListener, " extends class:ALittle.UIEventListener is nil")
-UIEventDispatcher = Lua.Class(ALittle.UIEventListener, "ALittle.UIEventDispatcher")
+UIEventDispatcher = Lua.Class(nil, "ALittle.UIEventDispatcher")
 
 function UIEventDispatcher:Ctor()
-	___rawset(self, "_trans_target", {})
+	___rawset(self, "_trans_target", CreateValueWeakMap())
 	___rawset(self, "_listeners", {})
 	___rawset(self, "_abs_disabled", false)
 end
 
 function UIEventDispatcher.__getter:event_trans_target()
-	return self._trans_target.event
+	return self._trans_target["event"]
 end
 
 function UIEventDispatcher.__setter:event_trans_target(value)
-	local old_value = self._trans_target.event
+	local old_value = self._trans_target["event"]
 	if old_value == value then
 		return
 	end
-	if old_value ~= nil and old_value._event_map ~= nil then
-		old_value._event_map[self] = nil
-	end
-	self._trans_target.event = value
-	if value ~= nil then
-		if value._event_map == nil then
-			value._event_map = {}
-		end
-		value._event_map[self] = true
-	end
+	self._trans_target["event"] = value
 end
 
 function UIEventDispatcher.__getter:drag_trans_target()
-	return self._trans_target.drag
+	return self._trans_target["drag"]
 end
 
 function UIEventDispatcher.__setter:drag_trans_target(value)
-	local old_value = self._trans_target.drag
+	local old_value = self._trans_target["drag"]
 	if old_value == value then
 		return
 	end
-	if old_value ~= nil and old_value._drag_map ~= nil then
-		old_value._drag_map[self] = nil
-	end
-	self._trans_target.drag = value
-	if value ~= nil then
-		if value._drag_map == nil then
-			value._drag_map = {}
-		end
-		value._drag_map[self] = true
-	end
+	self._trans_target["drag"] = value
 end
 
 function UIEventDispatcher.__getter:abs_disabled()
@@ -404,7 +348,7 @@ function UIEventDispatcher:AddEventListenerImpl(event_type, object, callback)
 	end
 	local callback_table = self._listeners[event_type]
 	if callback_table == nil then
-		callback_table = {}
+		callback_table = CreateKeyWeakMap()
 		self._listeners[event_type] = callback_table
 	end
 	local callback_value = callback_table[object]
@@ -413,17 +357,6 @@ function UIEventDispatcher:AddEventListenerImpl(event_type, object, callback)
 		callback_table[object] = callback_value
 	end
 	callback_value[callback] = true
-	local ref_map = object._ref_map
-	if ref_map == nil then
-		ref_map = {}
-		object._ref_map = ref_map
-	end
-	local ref_value = ref_map[self]
-	if ref_value == nil then
-		ref_value = {}
-		ref_map[self] = ref_value
-	end
-	ref_value[event_type] = true
 	return true
 end
 
@@ -433,12 +366,7 @@ function UIEventDispatcher:RemoveEventListener(T, object, callback)
 	if callback_table == nil then
 		return
 	end
-	if object == nil then
-		self._listeners[rflt.name] = {}
-		return
-	end
 	if callback == nil then
-		object._ref_map[self] = nil
 		callback_table[object] = nil
 	else
 		local callback_value = callback_table[object]
@@ -446,16 +374,10 @@ function UIEventDispatcher:RemoveEventListener(T, object, callback)
 			return
 		end
 		callback_value[callback] = nil
-		object._ref_map[self][rflt.name] = nil
 	end
 end
 
 function UIEventDispatcher:ClearEventListener()
-	for name, callback_table in ___pairs(self._listeners) do
-		for listener, callback_value in ___pairs(callback_table) do
-			listener._ref_map[self] = nil
-		end
-	end
 	self._listeners = {}
 end
 
@@ -465,13 +387,13 @@ function UIEventDispatcher:DispatchEvent(T, event)
 		event.target = self
 	end
 	local event_target = self
-	if self._trans_target.event ~= nil then
-		event_target = self._trans_target.event
-	elseif self._trans_target.drag ~= nil then
+	if self._trans_target["event"] ~= nil then
+		event_target = self._trans_target["event"]
+	elseif self._trans_target["drag"] ~= nil then
 		if rflt.name == "ALittle.UIButtonDragEvent" or rflt.name == "ALittle.UIButtonDragBeginEvent" then
-			event_target = self._trans_target.drag
+			event_target = self._trans_target["drag"]
 		elseif rflt.name == "ALittle.UIButtonDragEndEvent" then
-			A_UISystem.focus = self._trans_target.drag
+			A_UISystem.focus = self._trans_target["drag"]
 		end
 	end
 	if event_target._abs_disabled then

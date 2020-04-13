@@ -29,15 +29,22 @@ function ControlSystem:RegisterFont(src, dst)
 	self._font_map[src] = dst
 end
 
-function ControlSystem:RegisterInfoByHttp(host, port, name_list)
+function ControlSystem:RegisterInfoByHttp(name_list)
 local ___COROUTINE = coroutine.running()
 	for index, name in ___ipairs(name_list) do
-		local error, content = ALittle.HttpDownloadRequest(host, port, self._ui_path .. name .. ".json")
+		local path = self._ui_path .. name .. ".json"
+		ALittle.File_MakeDeepDir(ALittle.File_GetFilePathByPath(path))
+		local error = ALittle.HttpDownloadRequest(self._host, Math_ToInt(self._port), path, path)
 		if error ~= nil then
 			ALittle.Error("ui load failed:" .. error)
 			goto continue_1
 		end
-		local jerror, json = Lua.TCall(ALittle.String_JsonDecode, content:GetContent())
+		local content = JavaScript.File_LoadFile(path)
+		if content == nil then
+			ALittle.Error("ui load failed:" .. error)
+			goto continue_1
+		end
+		local jerror, json = Lua.TCall(ALittle.String_JsonDecode, content)
 		if jerror ~= nil then
 			ALittle.Error("ui json decode failed:" .. jerror)
 			goto continue_1
@@ -50,6 +57,7 @@ local ___COROUTINE = coroutine.running()
 		self._name_map_info_cache[name] = true
 		::continue_1::
 	end
+	ALittle.File_DeleteDeepDir(self._ui_path)
 end
 
 function ControlSystem:RegisterInfo(name, info)

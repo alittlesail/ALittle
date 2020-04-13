@@ -612,8 +612,7 @@ public class RichInput : DisplayLayout
     
         this._default_font_height = 20;
     
-        this._link_map = new Map<string, DisplayObject>();
-        // Setweak(this._link_map, false, true);
+        this._link_map = CreateValueWeakMap();
     
         this._pickup_rect = true;
         this._pickup_child = false;
@@ -660,8 +659,7 @@ public class RichInput : DisplayLayout
     // 清空link_map
     public fun ClearLinkMap()
     {
-        this._link_map = new Map<string, DisplayObject>();
-        // Setweak(this._link_map, false, true);
+        this._link_map = CreateValueWeakMap();
     }
     
     // 获取内容宽度

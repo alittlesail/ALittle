@@ -72,7 +72,7 @@ function RichArea:Ctor(ctrl_sys)
 	___rawset(self, "_line_list", {})
 	___rawset(self, "_line_count", 0)
 	___rawset(self, "_real_height", 0)
-	___rawset(self, "_link_map", {})
+	___rawset(self, "_link_map", CreateValueWeakMap())
 	___rawset(self, "_max_line_count", 0)
 end
 
@@ -81,7 +81,7 @@ function RichArea.__getter:link_map()
 end
 
 function RichArea:ClearLinkMap()
-	self._link_map = {}
+	self._link_map = CreateValueWeakMap()
 end
 
 function RichArea.__setter:width(value)

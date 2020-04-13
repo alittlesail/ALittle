@@ -81,15 +81,15 @@ public class ScrollButton : TextButton
                 this.DispatchEvent(e);
                 this._can_set_drag_trans = false;
                 // 转发事件拖动开始事件
-                if (this._can_drag_trans && this._trans_target.drag != null)
+                if (this._can_drag_trans && this._trans_target["drag"] != null)
                 {
                     var ue = new UIButtonDragEvent();
-                    ue.target = this._trans_target.drag;
+                    ue.target = this._trans_target["drag"];
                     ue.delta_x = event.delta_x;
                     ue.delta_y = event.delta_y;
                     ue.abs_x = event.abs_x;
                     ue.abs_y = event.abs_y;
-                    this._trans_target.drag.DispatchEvent(e);
+                    this._trans_target["drag"].DispatchEvent(e);
                 }
                 this._btn_drag = true;
             }
@@ -104,10 +104,10 @@ public class ScrollButton : TextButton
             e.abs_x = event.abs_x;
             e.abs_y = event.abs_y;
             this.DispatchEvent(e);
-            if (this._can_drag_trans && this._trans_target.drag != null)
+            if (this._can_drag_trans && this._trans_target["drag"] != null)
             {
                 var ue = new UIButtonDragEvent();
-                ue.target = this._trans_target.drag;
+                ue.target = this._trans_target["drag"];
                 ue.delta_x = event.delta_x;
                 ue.delta_y = event.delta_y;
                 ue.abs_x = event.abs_x;
@@ -122,15 +122,15 @@ public class ScrollButton : TextButton
         // 拖动已开始,发送结束事件
         if (this._btn_drag)
         {
-            if (this._can_drag_trans && this._trans_target.drag != null)
+            if (this._can_drag_trans && this._trans_target["drag"] != null)
             {
                 var e = new UIButtonDragEndEvent();
-                e.target = this._trans_target.drag;
+                e.target = this._trans_target["drag"];
                 e.delta_x = event.delta_x;
                 e.delta_y = event.delta_y;
                 e.abs_x = event.abs_x;
                 e.abs_y = event.abs_y;
-                this._trans_target.drag.DispatchEvent(e);
+                this._trans_target["drag"].DispatchEvent(e);
             }
             this._can_set_drag_trans = true;
 
@@ -184,8 +184,8 @@ public class ScrollButton : TextButton
         // 初始化时间目标
         var event_target:DisplayObject = this;
         // 无条件事件转移
-        if (this._trans_target.event != null)
-            event_target = this._trans_target.event;
+        if (this._trans_target["event"] != null)
+            event_target = this._trans_target["event"];
 
         // 如果是禁用状态，那么就什么都不做
         if (event_target._abs_disabled)

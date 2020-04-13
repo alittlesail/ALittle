@@ -70,14 +70,14 @@ function ScrollButton:HandleDrag(event)
 			e.abs_y = event.abs_y
 			self:DispatchEvent(___all_struct[-2129379001], e)
 			self._can_set_drag_trans = false
-			if self._can_drag_trans and self._trans_target.drag ~= nil then
+			if self._can_drag_trans and self._trans_target["drag"] ~= nil then
 				local ue = {}
-				ue.target = self._trans_target.drag
+				ue.target = self._trans_target["drag"]
 				ue.delta_x = event.delta_x
 				ue.delta_y = event.delta_y
 				ue.abs_x = event.abs_x
 				ue.abs_y = event.abs_y
-				self._trans_target.drag:DispatchEvent(___all_struct[-2129379001], e)
+				self._trans_target["drag"]:DispatchEvent(___all_struct[-2129379001], e)
 			end
 			self._btn_drag = true
 		end
@@ -89,9 +89,9 @@ function ScrollButton:HandleDrag(event)
 		e.abs_x = event.abs_x
 		e.abs_y = event.abs_y
 		self:DispatchEvent(___all_struct[-646882501], e)
-		if self._can_drag_trans and self._trans_target.drag ~= nil then
+		if self._can_drag_trans and self._trans_target["drag"] ~= nil then
 			local ue = {}
-			ue.target = self._trans_target.drag
+			ue.target = self._trans_target["drag"]
 			ue.delta_x = event.delta_x
 			ue.delta_y = event.delta_y
 			ue.abs_x = event.abs_x
@@ -103,14 +103,14 @@ end
 
 function ScrollButton:HandleDragEnd(event)
 	if self._btn_drag then
-		if self._can_drag_trans and self._trans_target.drag ~= nil then
+		if self._can_drag_trans and self._trans_target["drag"] ~= nil then
 			local e = {}
-			e.target = self._trans_target.drag
+			e.target = self._trans_target["drag"]
 			e.delta_x = event.delta_x
 			e.delta_y = event.delta_y
 			e.abs_x = event.abs_x
 			e.abs_y = event.abs_y
-			self._trans_target.drag:DispatchEvent(___all_struct[150587926], e)
+			self._trans_target["drag"]:DispatchEvent(___all_struct[150587926], e)
 		end
 		self._can_set_drag_trans = true
 		local e = {}
@@ -148,8 +148,8 @@ end
 function ScrollButton:DispatchEvent(T, event)
 	local rflt = T
 	local event_target = self
-	if self._trans_target.event ~= nil then
-		event_target = self._trans_target.event
+	if self._trans_target["event"] ~= nil then
+		event_target = self._trans_target["event"]
 	end
 	if event_target._abs_disabled then
 		return

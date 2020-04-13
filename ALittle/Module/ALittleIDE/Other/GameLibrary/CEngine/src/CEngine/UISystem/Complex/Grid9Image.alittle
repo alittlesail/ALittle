@@ -52,6 +52,7 @@ public class Grid9Image : DisplayObject
         this._top_size = 0;
         this._bottom_size = 0;
     
+        [Language(Lua)]
         A_LoadTextureManager.RegisterRedrawControl(this);
         
         this.AddEventListener(this, this.HandleLButtonUp);

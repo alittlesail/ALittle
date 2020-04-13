@@ -27,12 +27,12 @@ ALittle.SpringRadioButton = JavaScript.Class(ALittle.SpringCheckButton, {
 				this._selected = true;
 				let group = A_TextRadioButtonManager.GetGroupByName(this._group_name);
 				if (group !== undefined) {
-					for (let [k, v] of group) {
-						if (v === undefined) continue;
-						if (k !== this && v._selected === true) {
-							v._selected = false;
-							v.ShowUp();
-							v.DispatchEvent(___all_struct.get(958494922), {});
+					for (let [k, _] of group) {
+						if (_ === undefined) continue;
+						if (k !== this && k._selected === true) {
+							k._selected = false;
+							k.ShowUp();
+							k.DispatchEvent(___all_struct.get(958494922), {});
 						}
 					}
 				}
@@ -68,11 +68,11 @@ ALittle.SpringRadioButton = JavaScript.Class(ALittle.SpringCheckButton, {
 		}
 		let group = A_TextRadioButtonManager.GetGroupByName(this._group_name);
 		if (group !== undefined) {
-			for (let [k, v] of group) {
-				if (v === undefined) continue;
-				if (k !== this && v._selected === true) {
-					v._selected = false;
-					v.ShowUp();
+			for (let [k, _] of group) {
+				if (_ === undefined) continue;
+				if (k !== this && k._selected === true) {
+					k._selected = false;
+					k.ShowUp();
 				}
 			}
 		}

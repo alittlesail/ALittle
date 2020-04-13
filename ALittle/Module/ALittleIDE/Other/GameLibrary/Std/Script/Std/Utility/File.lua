@@ -162,7 +162,7 @@ end
 
 function File_GetFilePathByPath(file_path)
 	local new_file_path = File_GetFileNameByPath(file_path)
-	return String_Sub(file_path, 1, -String_Len(new_file_path) - 2)
+	return String_Sub(file_path, 1, String_Len(file_path) - String_Len(new_file_path) - 1)
 end
 
 function File_GetFileExtByPath(file_path)

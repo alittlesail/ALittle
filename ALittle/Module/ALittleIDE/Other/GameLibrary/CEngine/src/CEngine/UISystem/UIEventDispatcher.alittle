@@ -13,12 +13,6 @@
 
 namespace ALittle;
 
-public struct UITransTarget
-{
-    DisplayObject event;    // 无条件事件转移对象
-    DisplayObject drag;     // 拖拽事件转移对象
-}
-
 public struct UIEvent
 {
     DisplayObject target;
@@ -192,50 +186,12 @@ public struct UISystemSaveFileEvent : UIEvent
     string path;    
 }
 
-using UIEventCallbackTable = Map<UIEventListener, Map<Functor<(UIEventListener, UIEvent)>, bool>>;
+using UIEventCallbackValue = Map<Functor<(any, UIEvent)>, bool>;
+using UIEventCallbackTable = Map<any, UIEventCallbackValue>;
 
-public class UIEventListener
+public class UIEventDispatcher
 {
-    protected Map<UIEventDispatcher, Map<string, bool>> _ref_map;
-    protected Map<UIEventDispatcher, bool> _drag_map;
-    protected Map<UIEventDispatcher, bool> _event_map;
-    
-    public fun RemoveFromDispatcher()
-    {
-        if (this._event_map != null)
-        {
-            for (var d, v in this._event_map)
-                d._trans_target.event = null;
-            this._event_map = null;
-        }
-        
-        if (this._drag_map != null)
-        {
-            for (var d, v in this._drag_map)
-                d._trans_target.drag = null;
-            this._drag_map = null;
-        }
-        
-        if (this._ref_map != null)
-        {
-            for (var d, t in this._ref_map)
-            {
-                for (var name, vb in t)
-                {
-                    var callback_table = d._listeners[name];
-                    if (callback_table != null)
-                        callback_table[this] = null;
-                }
-            }
-        
-            this._ref_map = null;
-        }
-    }
-}
-
-public class UIEventDispatcher : UIEventListener
-{
-    protected UITransTarget _trans_target;
+    protected Map<any, DisplayObject> _trans_target;
     // 侦听对象，保存所有侦听这个控件的逻辑对象，以及它们的回调函数
     protected Map<string, UIEventCallbackTable> _listeners;
     // 是否禁用，如果_abs_disable为true，那么它调用DispatchEvent时什么都不做
@@ -243,8 +199,7 @@ public class UIEventDispatcher : UIEventListener
 
     public ctor()
     {
-        this._trans_target = new UITransTarget();
-
+        this._trans_target = CreateValueWeakMap();
         this._listeners = new Map<string, UIEventCallbackTable>();
         // 是否禁用，如果_abs_disable为true，那么它调用DispatchEvent时什么都不做
         this._abs_disabled = false;
@@ -253,47 +208,29 @@ public class UIEventDispatcher : UIEventListener
     // 获取事件转移对象
     public get event_trans_target() : DisplayObject
     {
-        return this._trans_target.event;
+        return this._trans_target["event"];
     }
 
     // 设置事件转移对象
     public set event_trans_target(DisplayObject value)
     {
-        var old_value = this._trans_target.event;
+        var old_value = this._trans_target["event"];
         if (old_value == value) return;
-        
-        if (old_value != null && old_value._event_map != null)
-            old_value._event_map[this] = null;
-        this._trans_target.event = value;
-        if (value != null)
-        {
-            if (value._event_map == null)
-                value._event_map = new Map<UIEventDispatcher, bool>();
-            value._event_map[this] = true;
-        }
+        this._trans_target["event"] = value;
     }
 
     // 获取拖拽转移对象
     public get drag_trans_target() : DisplayObject
     {
-        return this._trans_target.drag;
+        return this._trans_target["drag"];
     }
 
     // 设置拖拽转移对象
     public set drag_trans_target(DisplayObject value)
     {
-        var old_value = this._trans_target.drag;
+        var old_value = this._trans_target["drag"];
         if (old_value == value) return;
-        
-        if (old_value != null && old_value._drag_map != null)
-            old_value._drag_map[this] = null;
-        this._trans_target.drag = value;
-        if (value != null)
-        {
-            if (value._drag_map == null)
-                value._drag_map = new Map<UIEventDispatcher, bool>();
-            value._drag_map[this] = true;
-        }
+        this._trans_target["drag"] = value;
     }
 
     // 获取是否绝对禁用
@@ -312,14 +249,14 @@ public class UIEventDispatcher : UIEventListener
     // event_type 侦听的时间类型
     // object 回调函数的对象
     // callback object的回调函数
-    public fun AddEventListener<T:UIEvent>(UIEventListener object, Functor<(UIEventListener, T)> callback) : bool
+    public fun AddEventListener<T:UIEvent>(any object, Functor<(any, T)> callback) : bool
     {
         var rflt = reflect<T>;
         return this.AddEventListenerImpl(rflt.name, object, callback);
     }
     
     // 添加监听
-    protected fun AddEventListenerImpl(string event_type, UIEventListener object, Functor<(UIEventListener, UIEvent)> callback) : bool
+    protected fun AddEventListenerImpl(string event_type, any object, Functor<(any, UIEvent)> callback) : bool
     {
         if (object == null) return false;
         if (callback == null) return false;
@@ -328,9 +265,7 @@ public class UIEventDispatcher : UIEventListener
         if (callback_table == null)
         {
             // 创建回调映射表
-            callback_table = new UIEventCallbackTable();
-            // 设置为弱引用表
-            // Setweak(callback_table, true, false);
+            callback_table = CreateKeyWeakMap();
             // 保存表
             this._listeners[event_type] = callback_table;
         }
@@ -340,47 +275,24 @@ public class UIEventDispatcher : UIEventListener
         // 如果是空的直接赋值
         if (callback_value == null)
         {
-            callback_value = new Map<Functor<(UIEventListener, UIEvent)>, bool>();
+            callback_value = new UIEventCallbackValue();
             callback_table[object] = callback_value;
         }
         callback_value[callback] = true;
-        
-        // 注册好相互引用的关系
-        var ref_map = object._ref_map;
-        if (ref_map == null)
-        {
-            ref_map = new Map<UIEventDispatcher, Map<string, bool>>();
-            object._ref_map = ref_map;
-        }
-        var ref_value = ref_map[this];
-        if (ref_value == null)
-        {
-            ref_value = new Map<string, bool>();
-            ref_map[this] = ref_value;
-        }
-        ref_value[event_type] = true;
-        
         return true;
     }
 
     // 移除侦听对象：侦听事件类型，侦听对象
-    public fun RemoveEventListener<T:UIEvent>(UIEventListener object, [Nullable] Functor<(UIEventListener, T)> callback)
+    public fun RemoveEventListener<T:UIEvent>(any object, [Nullable] Functor<(any, T)> callback)
     {
         var rflt = reflect<T>;
         
         var callback_table = this._listeners[rflt.name];
         if (callback_table == null) return;
 
-        if (object == null)
-        {
-        	this._listeners[rflt.name] = new UIEventCallbackTable();
-        	return;
-        }
-
         // 将要删除的侦听对象置为nil
         if (callback == null)
         {
-            object._ref_map[this] = null;
             callback_table[object] = null;
         }
         else
@@ -388,20 +300,12 @@ public class UIEventDispatcher : UIEventListener
             var callback_value = callback_table[object];
             if (callback_value == null) return;
             callback_value[callback] = null;
-            object._ref_map[this][rflt.name] = null;
         }
     }
 
     // 清理所有侦听
     public fun ClearEventListener()
     {
-        for (var name, callback_table in this._listeners)
-        {
-            for (var listener, callback_value in callback_table)
-            {
-                listener._ref_map[this] = null;
-            }
-        }
         this._listeners = new Map<string, UIEventCallbackTable>();
     }
     
@@ -415,15 +319,15 @@ public class UIEventDispatcher : UIEventListener
         // 初始化时间目标
         var event_target = this;
         // 无条件事件转移
-        if (this._trans_target.event != null)
-            event_target = this._trans_target.event;
+        if (this._trans_target["event"] != null)
+            event_target = this._trans_target["event"];
         // 拖拽转移
-        elseif (this._trans_target.drag != null)
+        elseif (this._trans_target["drag"] != null)
         {
             if (rflt.name == "ALittle.UIButtonDragEvent" || rflt.name == "ALittle.UIButtonDragBeginEvent")
-                event_target = this._trans_target.drag;
+                event_target = this._trans_target["drag"];
             elseif (rflt.name == "ALittle.UIButtonDragEndEvent")
-                A_UISystem.focus = this._trans_target.drag;
+                A_UISystem.focus = this._trans_target["drag"];
         }
         
         // 如果是禁用状态，那么就什么都不做

@@ -27,7 +27,7 @@ function LuaSchedule:Ctor()
 end
 
 function LuaSchedule:Run()
-	net.timer(self._net, 2000)
+	net.timer(self._net, 16)
 	while true do
 		local event = net.poll(self._net)
 		if event == nil then
@@ -38,7 +38,7 @@ function LuaSchedule:Run()
 				A_LuaLoopSystem:Update(event.time - self._last_time)
 			end
 			self._last_time = event.time
-			net.timer(self._net, 2000)
+			net.timer(self._net, 16)
 		elseif event.type == net_type.MSG_MESSAGE then
 			self._factory:SetFactory(event.factory)
 			ALittle.__ALITTLEAPI_Message(event.id, event.msg_id, event.rpc_id, self._factory)

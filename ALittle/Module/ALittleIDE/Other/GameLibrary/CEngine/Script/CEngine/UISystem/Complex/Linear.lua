@@ -17,9 +17,9 @@ function Linear:Ctor(ctrl_sys)
 	___rawset(self, "_gap", 0)
 	___rawset(self, "_clip_up_index", 0)
 	___rawset(self, "_clip_down_index", 0)
-	___rawset(self, "_child_width_map", {})
-	___rawset(self, "_child_height_map", {})
-	___rawset(self, "_show_child_map", {})
+	___rawset(self, "_child_width_map", CreateKeyWeakMap())
+	___rawset(self, "_child_height_map", CreateKeyWeakMap())
+	___rawset(self, "_show_child_map", CreateKeyWeakMap())
 	___rawset(self, "_pickup_rect", false)
 	___rawset(self, "_pickup_child", true)
 end
@@ -111,9 +111,9 @@ function Linear:RemoveAllChild()
 	for i, child in ___ipairs(self._childs) do
 		child:RemoveEventListener(___all_struct[-431205740], self)
 	end
-	self._child_width_map = {}
-	self._child_height_map = {}
-	self._show_child_map = {}
+	self._child_width_map = CreateKeyWeakMap()
+	self._child_height_map = CreateKeyWeakMap()
+	self._show_child_map = CreateKeyWeakMap()
 	self._clip_up_index = 0
 	self._clip_down_index = 0
 	DisplayGroup.RemoveAllChild(self)

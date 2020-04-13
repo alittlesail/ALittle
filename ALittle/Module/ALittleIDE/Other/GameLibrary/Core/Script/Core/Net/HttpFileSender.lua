@@ -7,10 +7,6 @@ local ___ipairs = ipairs
 
 IHttpFileSender = Lua.Class(nil, "ALittle.IHttpFileSender")
 
-function IHttpFileSender:GetContent()
-	return nil
-end
-
 function IHttpFileSender:HandleSucceed()
 end
 

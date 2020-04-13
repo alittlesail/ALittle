@@ -21,7 +21,7 @@ function TileTable:Ctor(ctrl_sys)
 	___rawset(self, "_clip_right_index", 0)
 	___rawset(self, "_clip_top_index", 0)
 	___rawset(self, "_clip_bottom_index", 0)
-	___rawset(self, "_show_child_map", {})
+	___rawset(self, "_show_child_map", CreateKeyWeakMap())
 	___rawset(self, "_pickup_rect", false)
 	___rawset(self, "_pickup_child", true)
 	___rawset(self, "_width", 0)
@@ -129,7 +129,7 @@ function TileTable:RemoveAllChild()
 	for k, child in ___ipairs(self._childs) do
 		child:RemoveEventListener(___all_struct[-431205740], self)
 	end
-	self._show_child_map = {}
+	self._show_child_map = CreateKeyWeakMap()
 	self._clip_left_index = 0
 	self._clip_right_index = 0
 	self._clip_top_index = 0
@@ -227,7 +227,7 @@ function TileTable:ClipRect(left, top, right, bottom, h_move, v_move)
 		return
 	end
 	local childs = self.childs
-	local new_show_map = {}
+	local new_show_map = CreateKeyWeakMap()
 	self._show:RemoveAllChild()
 	local max_index = self._col_count
 	if self._child_count < max_index then

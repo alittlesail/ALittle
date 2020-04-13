@@ -1,12 +1,6 @@
 {
 if (typeof ALittle === "undefined") ALittle = {};
 
-ALittle.RegStruct(550649122, "ALittle.UITransTarget", {
-name : "ALittle.UITransTarget", ns_name : "ALittle", rl_name : "UITransTarget", hash_code : 550649122,
-name_list : ["event","drag"],
-type_list : ["ALittle.DisplayObject","ALittle.DisplayObject"],
-option_map : {}
-})
 ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
 name : "ALittle.UIEvent", ns_name : "ALittle", rl_name : "UIEvent", hash_code : -1479093282,
 name_list : ["target"],
@@ -296,84 +290,31 @@ type_list : ["ALittle.DisplayObject","string"],
 option_map : {}
 })
 
-ALittle.UIEventListener = JavaScript.Class(undefined, {
-	RemoveFromDispatcher : function() {
-		if (this._event_map !== undefined) {
-			for (let [d, v] of this._event_map) {
-				if (v === undefined) continue;
-				d._trans_target.event = undefined;
-			}
-			this._event_map = undefined;
-		}
-		if (this._drag_map !== undefined) {
-			for (let [d, v] of this._drag_map) {
-				if (v === undefined) continue;
-				d._trans_target.drag = undefined;
-			}
-			this._drag_map = undefined;
-		}
-		if (this._ref_map !== undefined) {
-			for (let [d, t] of this._ref_map) {
-				if (t === undefined) continue;
-				let ___OBJECT_1 = t;
-				for (let name in ___OBJECT_1) {
-					let vb = ___OBJECT_1[name];
-					if (vb === undefined) continue;
-					let callback_table = d._listeners[name];
-					if (callback_table !== undefined) {
-						callback_table.delete(this);
-					}
-				}
-			}
-			this._ref_map = undefined;
-		}
-	},
-}, "ALittle.UIEventListener");
-
-if (ALittle.UIEventListener === undefined) throw new Error(" extends class:ALittle.UIEventListener is undefined");
-ALittle.UIEventDispatcher = JavaScript.Class(ALittle.UIEventListener, {
+ALittle.UIEventDispatcher = JavaScript.Class(undefined, {
 	Ctor : function() {
-		this._trans_target = {};
+		this._trans_target = ALittle.CreateValueWeakMap();
 		this._listeners = {};
 		this._abs_disabled = false;
 	},
 	get event_trans_target() {
-		return this._trans_target.event;
+		return this._trans_target.get("event");
 	},
 	set event_trans_target(value) {
-		let old_value = this._trans_target.event;
+		let old_value = this._trans_target.get("event");
 		if (old_value === value) {
 			return;
 		}
-		if (old_value !== undefined && old_value._event_map !== undefined) {
-			old_value._event_map.delete(this);
-		}
-		this._trans_target.event = value;
-		if (value !== undefined) {
-			if (value._event_map === undefined) {
-				value._event_map = new Map();
-			}
-			value._event_map.set(this, true);
-		}
+		this._trans_target.set("event", value);
 	},
 	get drag_trans_target() {
-		return this._trans_target.drag;
+		return this._trans_target.get("drag");
 	},
 	set drag_trans_target(value) {
-		let old_value = this._trans_target.drag;
+		let old_value = this._trans_target.get("drag");
 		if (old_value === value) {
 			return;
 		}
-		if (old_value !== undefined && old_value._drag_map !== undefined) {
-			old_value._drag_map.delete(this);
-		}
-		this._trans_target.drag = value;
-		if (value !== undefined) {
-			if (value._drag_map === undefined) {
-				value._drag_map = new Map();
-			}
-			value._drag_map.set(this, true);
-		}
+		this._trans_target.set("drag", value);
 	},
 	get abs_disabled() {
 		return this._abs_disabled;
@@ -394,7 +335,7 @@ ALittle.UIEventDispatcher = JavaScript.Class(ALittle.UIEventListener, {
 		}
 		let callback_table = this._listeners[event_type];
 		if (callback_table === undefined) {
-			callback_table = new Map();
+			callback_table = ALittle.CreateKeyWeakMap();
 			this._listeners[event_type] = callback_table;
 		}
 		let callback_value = callback_table.get(object);
@@ -403,17 +344,6 @@ ALittle.UIEventDispatcher = JavaScript.Class(ALittle.UIEventListener, {
 			callback_table.set(object, callback_value);
 		}
 		callback_value.set(callback, true);
-		let ref_map = object._ref_map;
-		if (ref_map === undefined) {
-			ref_map = new Map();
-			object._ref_map = ref_map;
-		}
-		let ref_value = ref_map.get(this);
-		if (ref_value === undefined) {
-			ref_value = {};
-			ref_map.set(this, ref_value);
-		}
-		ref_value[event_type] = true;
 		return true;
 	},
 	RemoveEventListener : function(T, object, callback) {
@@ -422,12 +352,7 @@ ALittle.UIEventDispatcher = JavaScript.Class(ALittle.UIEventListener, {
 		if (callback_table === undefined) {
 			return;
 		}
-		if (object === undefined) {
-			this._listeners[rflt.name] = new Map();
-			return;
-		}
 		if (callback === undefined) {
-			object._ref_map.delete(this);
 			callback_table.delete(object);
 		} else {
 			let callback_value = callback_table.get(object);
@@ -435,19 +360,9 @@ ALittle.UIEventDispatcher = JavaScript.Class(ALittle.UIEventListener, {
 				return;
 			}
 			callback_value.delete(callback);
-			delete object._ref_map.get(this)[rflt.name];
 		}
 	},
 	ClearEventListener : function() {
-		let ___OBJECT_2 = this._listeners;
-		for (let name in ___OBJECT_2) {
-			let callback_table = ___OBJECT_2[name];
-			if (callback_table === undefined) continue;
-			for (let [listener, callback_value] of callback_table) {
-				if (callback_value === undefined) continue;
-				listener._ref_map.delete(this);
-			}
-		}
 		this._listeners = {};
 	},
 	DispatchEvent : function(T, event) {
@@ -456,13 +371,13 @@ ALittle.UIEventDispatcher = JavaScript.Class(ALittle.UIEventListener, {
 			event.target = this;
 		}
 		let event_target = this;
-		if (this._trans_target.event !== undefined) {
-			event_target = this._trans_target.event;
-		} else if (this._trans_target.drag !== undefined) {
+		if (this._trans_target.get("event") !== undefined) {
+			event_target = this._trans_target.get("event");
+		} else if (this._trans_target.get("drag") !== undefined) {
 			if (rflt.name === "ALittle.UIButtonDragEvent" || rflt.name === "ALittle.UIButtonDragBeginEvent") {
-				event_target = this._trans_target.drag;
+				event_target = this._trans_target.get("drag");
 			} else if (rflt.name === "ALittle.UIButtonDragEndEvent") {
-				A_UISystem.focus = this._trans_target.drag;
+				A_UISystem.focus = this._trans_target.get("drag");
 			}
 		}
 		if (event_target._abs_disabled) {

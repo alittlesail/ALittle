@@ -57,10 +57,6 @@ ALittle.DisplayObject = JavaScript.Class(ALittle.UIEventDispatcher, {
 		this._pickup_this = false;
 		this._can_scroll = false;
 	},
-	Dispose : function(deep) {
-		ALittle.UIEventDispatcher.Dispose.call(this, deep);
-		this.RemoveFromParent();
-	},
 	set hand_cursor(value) {
 		if (this._hand_cursor === value) {
 			return;

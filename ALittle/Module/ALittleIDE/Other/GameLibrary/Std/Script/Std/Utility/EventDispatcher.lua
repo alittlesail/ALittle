@@ -12,28 +12,7 @@ type_list = {"ALittle.EventDispatcher"},
 option_map = {}
 })
 
-EventListener = Lua.Class(nil, "ALittle.EventListener")
-
-function EventListener:Ctor()
-end
-
-function EventListener:RemoveFromDispatcher()
-	if self._ref_map == nil then
-		return
-	end
-	for d, t in ___pairs(self._ref_map) do
-		for hash_code, vb in ___pairs(t) do
-			local callback_table = d._listeners[hash_code]
-			if callback_table ~= nil then
-				callback_table[self] = nil
-			end
-		end
-	end
-	self._ref_map = nil
-end
-
-assert(ALittle.EventListener, " extends class:ALittle.EventListener is nil")
-EventDispatcher = Lua.Class(ALittle.EventListener, "ALittle.EventDispatcher")
+EventDispatcher = Lua.Class(nil, "ALittle.EventDispatcher")
 
 function EventDispatcher:Ctor()
 	___rawset(self, "_listeners", {})
@@ -50,7 +29,7 @@ function EventDispatcher:AddEventListener(T, object, callback)
 	local rflt = T
 	local callback_table = self._listeners[rflt.hash_code]
 	if callback_table == nil then
-		callback_table = {}
+		callback_table = CreateKeyWeakMap()
 		self._listeners[rflt.hash_code] = callback_table
 	end
 	local callback_value = callback_table[object]
@@ -59,17 +38,6 @@ function EventDispatcher:AddEventListener(T, object, callback)
 		callback_table[object] = callback_value
 	end
 	callback_value[callback] = true
-	local ref_map = object._ref_map
-	if ref_map == nil then
-		ref_map = {}
-		object._ref_map = ref_map
-	end
-	local ref_value = ref_map[self]
-	if ref_value == nil then
-		ref_value = {}
-		ref_map[self] = ref_value
-	end
-	ref_value[rflt.hash_code] = true
 	return true
 end
 
@@ -80,7 +48,6 @@ function EventDispatcher:RemoveEventListener(T, object, callback)
 		return
 	end
 	if callback == nil then
-		object._ref_map[self] = nil
 		callback_table[object] = nil
 	else
 		local callback_value = callback_table[object]
@@ -88,16 +55,10 @@ function EventDispatcher:RemoveEventListener(T, object, callback)
 			return
 		end
 		callback_value[callback] = nil
-		object._ref_map[self][rflt.hash_code] = nil
 	end
 end
 
 function EventDispatcher:ClearEventListener()
-	for hash_code, callback_table in ___pairs(self._listeners) do
-		for listener, callback_value in ___pairs(callback_table) do
-			listener._ref_map[self] = nil
-		end
-	end
 	self._listeners = {}
 end
 

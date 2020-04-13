@@ -263,9 +263,6 @@ JavaScript.File_DeleteDeepDir = function(path, log_path) {
 	for (let index = 1; index <= ___OBJECT_8.length; ++index) {
 		let name = ___OBJECT_8[index - 1];
 		if (name === undefined) break;
-		if (name === "") {
-			continue;
-		}
 		let file = cur.file[name];
 		if (file === undefined) {
 			return;
@@ -306,7 +303,7 @@ JavaScript.File_MakeDir = function(path) {
 	let file = {};
 	file.is_directory = true;
 	file.name = list[list_len - 1];
-	file.parent = cur_file;
+	file.parent = cur;
 	cur.file[list[list_len - 1]] = file;
 	return true;
 }

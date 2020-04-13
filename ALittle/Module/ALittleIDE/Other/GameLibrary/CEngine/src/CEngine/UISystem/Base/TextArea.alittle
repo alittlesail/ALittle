@@ -36,6 +36,8 @@ public class TextArea : DisplayObject
     
         // 创建text对象
         this._show = new lua.__CPPAPITextArea();
+        
+        [Language(Lua)]
         A_LoadTextureManager.RegisterRedrawControl(this);
     }
     

@@ -215,7 +215,6 @@ public static File_DeleteDeepDir(string path, [Nullable] bool log_path)
     var cur = root;
     for (var index, name in list)
     {
-        if (name == "") continue;
         var file = cur.file[name];
         if (file == null) return;
         if (!file.is_directory) return;
@@ -247,7 +246,7 @@ public static File_MakeDir(string path) : bool
     var file = new FileInfo();
     file.is_directory = true;
     file.name = list[list_len];
-    file.parent = cur_file;
+    file.parent = cur;
     cur.file[list[list_len]] = file;
     return true;
 }

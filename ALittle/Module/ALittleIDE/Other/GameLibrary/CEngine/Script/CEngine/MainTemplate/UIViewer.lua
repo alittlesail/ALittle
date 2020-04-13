@@ -13,19 +13,19 @@ option_map = {}
 
 g_Control = nil
 g_LayerGroup = nil
-g_BasePath = nil
-function __Module_Setup(layer_group, control, base_path, debug)
+g_ModuleBasePath = nil
+function __Module_Setup(layer_group, control, module_base_path, script_base_path, debug)
 	g_Control = control
 	g_LayerGroup = layer_group
-	g_BasePath = base_path
-	local error, info = Lua.TCall(json.decode, debug)
+	g_ModuleBasePath = module_base_path
+	local error, info = Lua.TCall(String_JsonDecode, debug)
 	local screen_width = System_GetScreenWidth()
 	local screen_height = System_GetScreenHeight()
 	local window_width = info.window_width
 	local window_height = info.window_height
 	local rate = 1.0
 	if System_GetPlatform() ~= "Windows" then
-		window_width = math.floor(screen_width / screen_height * window_height)
+		window_width = Math_Floor(screen_width / screen_height * window_height)
 	else
 		if window_width > screen_width or window_height > screen_height then
 			rate = 0.5
@@ -56,7 +56,7 @@ function __Module_GetInfo(control, base_path)
 	return info
 end
 
-function __Plugin_Setup(control, base_path, debug)
+function __Plugin_Setup(control, module_base_path, script_base_path, debug)
 end
 
 function __Plugin_Shutdown()

@@ -561,7 +561,7 @@ ALittle.RichEdit = JavaScript.Class(ALittle.DisplayLayout, {
 		this._default_text_area.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
 		this._default_text_area.y = 0;
 		this.AddChild(this._default_text_area);
-		this._link_map = {};
+		this._link_map = ALittle.CreateValueWeakMap();
 		this._pickup_rect = true;
 		this._pickup_child = false;
 		this._pickup_this = true;
@@ -599,7 +599,7 @@ ALittle.RichEdit = JavaScript.Class(ALittle.DisplayLayout, {
 		return this._link_map;
 	},
 	ClearLinkMap : function() {
-		this._link_map = {};
+		this._link_map = ALittle.CreateValueWeakMap();
 	},
 	get real_height() {
 		return this._line_list[this._line_count - 1].acc_height;

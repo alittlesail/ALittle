@@ -24,7 +24,6 @@ G2048.GCenter = JavaScript.Class(undefined, {
 	},
 	Setup : function() {
 		G2048.g_GConfig = ALittle.CreateConfigSystem(G2048.g_ModuleBasePath + "/User.cfg");
-		ALittle.Log("asd", lua.json.encode(ALittle.File_GetFileAttr("Enter.ali")));
 		ALittle.Math_RandomSeed(ALittle.Time_GetCurTime());
 		ALittle.System_SetThreadCount(5, 2);
 		this._main_layer = ALittle.NewObject(ALittle.DisplayLayout, G2048.g_Control);

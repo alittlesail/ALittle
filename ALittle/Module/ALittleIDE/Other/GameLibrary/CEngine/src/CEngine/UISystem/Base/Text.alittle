@@ -35,6 +35,8 @@ public class Text : DisplayObject
         this._show = new lua.__CPPAPIText();
         [Language(JavaScript)]
         this._show = new JavaScript.JText();
+        
+        [Language(Lua)]
         A_LoadTextureManager.RegisterRedrawControl(this);
     }
     

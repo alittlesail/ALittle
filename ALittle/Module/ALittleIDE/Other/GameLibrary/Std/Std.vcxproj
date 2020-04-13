@@ -26,6 +26,7 @@
     <None Include="src\Adapter\JavaScript\JMessageFactory.alittle" />
     <None Include="src\Adapter\JavaScript\JMsgInterface.alittle" />
     <None Include="src\Adapter\JavaScript\JSchedule.alittle" />
+    <None Include="src\Adapter\JavaScript\jweakmap.alittle" />
     <None Include="src\Adapter\JavaScript\md5.alittle" />
     <None Include="src\Adapter\JavaScript\Timer.alittle" />
     <None Include="src\Adapter\Lua\base64.alittle" />
@@ -73,6 +74,7 @@
     <None Include="src\Std\Utility\ISchedule.alittle" />
     <None Include="src\Std\Utility\Schedule.alittle" />
     <None Include="src\Std\Utility\String.alittle" />
+    <None Include="src\Std\Utility\WeakRef.alittle" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

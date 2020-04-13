@@ -337,13 +337,13 @@ function CreateHttpSender(ip, port)
 	return Lua.Template(HttpSenderTemplate, "ALittle.HttpSenderTemplate<lua.__CPPAPIHttpInterface>", __CPPAPIHttpInterface)(ip, port)
 end
 
-function HttpRequest(ip, port, path)
+function HttpRequest(ip, port, method)
 local ___COROUTINE = coroutine.running()
 	local sender = CreateHttpSender(ip, port)
 	if ___COROUTINE == nil then
 		return "当前不是协程", nil
 	end
-	sender:SendRPC(___COROUTINE, path, nil)
+	sender:SendRPC(___COROUTINE, method, nil)
 	return coroutine.yield()
 end
 
@@ -351,13 +351,13 @@ function CreateHttpFileSender(ip, port, file_path, start_size, callback)
 	return Lua.Template(HttpFileSenderTemplate, "ALittle.HttpFileSenderTemplate<lua.__CPPAPIHttpFileInterface>", __CPPAPIHttpFileInterface)(ip, port, file_path, start_size, callback)
 end
 
-function HttpDownloadRequest(ip, port, file_path, callback)
+function HttpDownloadRequest(ip, port, file_path, method, callback)
 local ___COROUTINE = coroutine.running()
 	local sender = CreateHttpFileSender(ip, port, file_path, 0, callback)
 	if ___COROUTINE == nil then
-		return "当前不是协程", nil
+		return "当前不是协程"
 	end
-	sender:SendDownloadRPC(___COROUTINE, file_path, nil)
+	sender:SendDownloadRPC(___COROUTINE, method, nil)
 	return coroutine.yield()
 end
 

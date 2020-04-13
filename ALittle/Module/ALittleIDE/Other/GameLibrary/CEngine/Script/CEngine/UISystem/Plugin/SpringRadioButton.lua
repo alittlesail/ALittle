@@ -37,11 +37,11 @@ function SpringRadioButton:HandleLButtonUp(event)
 			self._selected = true
 			local group = A_TextRadioButtonManager:GetGroupByName(self._group_name)
 			if group ~= nil then
-				for k, v in ___pairs(group) do
-					if k ~= self and v._selected == true then
-						v._selected = false
-						v:ShowUp()
-						v:DispatchEvent(___all_struct[958494922], {})
+				for k, _ in ___pairs(group) do
+					if k ~= self and k._selected == true then
+						k._selected = false
+						k:ShowUp()
+						k:DispatchEvent(___all_struct[958494922], {})
 					end
 				end
 			end
@@ -78,10 +78,10 @@ function SpringRadioButton.__setter:selected(value)
 	end
 	local group = A_TextRadioButtonManager:GetGroupByName(self._group_name)
 	if group ~= nil then
-		for k, v in ___pairs(group) do
-			if k ~= self and v._selected == true then
-				v._selected = false
-				v:ShowUp()
+		for k, _ in ___pairs(group) do
+			if k ~= self and k._selected == true then
+				k._selected = false
+				k:ShowUp()
 			end
 		end
 	end

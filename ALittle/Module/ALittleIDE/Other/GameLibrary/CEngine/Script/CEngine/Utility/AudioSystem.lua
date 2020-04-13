@@ -19,8 +19,7 @@ type_list = {"ALittle.EventDispatcher"},
 option_map = {}
 })
 
-assert(ALittle.EventListener, " extends class:ALittle.EventListener is nil")
-AudioSystem = Lua.Class(ALittle.EventListener, "ALittle.AudioSystem")
+AudioSystem = Lua.Class(nil, "ALittle.AudioSystem")
 
 function AudioSystem:Ctor()
 	___rawset(self, "_chunk_map", {})
@@ -36,7 +35,6 @@ function AudioSystem:Setup()
 end
 
 function AudioSystem:Shutdown()
-	self:RemoveFromDispatcher()
 end
 
 function AudioSystem:HandleDidEnterBackground(event)

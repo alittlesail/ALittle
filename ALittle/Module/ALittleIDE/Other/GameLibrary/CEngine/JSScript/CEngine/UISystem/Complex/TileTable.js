@@ -16,7 +16,7 @@ ALittle.TileTable = JavaScript.Class(ALittle.DisplayGroup, {
 		this._clip_right_index = 0;
 		this._clip_top_index = 0;
 		this._clip_bottom_index = 0;
-		this._show_child_map = new Map();
+		this._show_child_map = ALittle.CreateKeyWeakMap();
 		this._pickup_rect = false;
 		this._pickup_child = true;
 		this._width = 0;
@@ -112,7 +112,7 @@ ALittle.TileTable = JavaScript.Class(ALittle.DisplayGroup, {
 			if (child === undefined) break;
 			child.RemoveEventListener(___all_struct.get(-431205740), this);
 		}
-		this._show_child_map = new Map();
+		this._show_child_map = ALittle.CreateKeyWeakMap();
 		this._clip_left_index = 0;
 		this._clip_right_index = 0;
 		this._clip_top_index = 0;
@@ -206,7 +206,7 @@ ALittle.TileTable = JavaScript.Class(ALittle.DisplayGroup, {
 			return;
 		}
 		let childs = this.childs;
-		let new_show_map = new Map();
+		let new_show_map = ALittle.CreateKeyWeakMap();
 		this._show.RemoveAllChild();
 		let max_index = this._col_count;
 		if (this._child_count < max_index) {

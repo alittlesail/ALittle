@@ -49,6 +49,7 @@ public class Sprite : DisplayObject
     
         this._flip = 0;
     
+        [Language(Lua)]
         A_LoadTextureManager.RegisterRedrawControl(this);
     
         this.AddEventListener(this, this.HandleLButtonUp);

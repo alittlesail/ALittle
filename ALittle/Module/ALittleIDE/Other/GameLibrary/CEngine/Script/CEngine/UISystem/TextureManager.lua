@@ -64,10 +64,10 @@ LoadTextureManager = Lua.Class(nil, "ALittle.LoadTextureManager")
 
 function LoadTextureManager:Ctor()
 	___rawset(self, "_id_map_info", {})
-	___rawset(self, "_path_map_texture_cut", {})
+	___rawset(self, "_path_map_texture_cut", CreateValueWeakMap())
 	___rawset(self, "_path_map_objects_cut", {})
-	___rawset(self, "_redraw_map_redraw", {})
-	___rawset(self, "_texmgr_map_texmgr", {})
+	___rawset(self, "_redraw_map_redraw", CreateKeyWeakMap())
+	___rawset(self, "_texmgr_map_texmgr", CreateKeyWeakMap())
 end
 
 function LoadTextureManager:CreateTexture(texture_mgr, atlas)
@@ -148,7 +148,7 @@ function LoadTextureManager:SetTextureCut(object, path, max_width, max_height, c
 	loading_info = {}
 	loading_info.cache = cache
 	self._path_map_objects_cut[texture_id] = loading_info
-	loading_info.object_map = {}
+	loading_info.object_map = CreateKeyWeakMap()
 	local object_info = {}
 	object_info.callback = callback
 	loading_info.object_map[object] = object_info
@@ -217,19 +217,19 @@ function LoadTextureManager:HandleTextureCutLoadFailed(loader)
 end
 
 function LoadTextureManager:RegisterRedrawControl(control)
-	self._redraw_map_redraw[control] = control
+	self._redraw_map_redraw[control] = true
 end
 
 function LoadTextureManager:RegisterTexmgrControl(control)
-	self._texmgr_map_texmgr[control] = control
+	self._texmgr_map_texmgr[control] = nil
 end
 
 function LoadTextureManager:HandleRenderDeviceReset()
-	self._path_map_texture_cut = {}
-	for key, texmgr in ___pairs(self._texmgr_map_texmgr) do
+	self._path_map_texture_cut = CreateValueWeakMap()
+	for texmgr, _ in ___pairs(self._texmgr_map_texmgr) do
 		texmgr:ClearCache()
 	end
-	for key, control in ___pairs(self._redraw_map_redraw) do
+	for control, _ in ___pairs(self._redraw_map_redraw) do
 		control:Redraw()
 	end
 end
@@ -364,7 +364,7 @@ function TextureManager:Ctor(module_name, crypt_mode)
 	___rawset(self, "_cache_texture", true)
 	___rawset(self, "_base_path", "Module/" .. module_name .. "/Texture/")
 	___rawset(self, "_crypt_mode", crypt_mode or false)
-	___rawset(self, "_path_map_texture", {})
+	___rawset(self, "_path_map_texture", CreateValueWeakMap())
 	___rawset(self, "_prepare_map", {})
 	___rawset(self, "_path_map_objects", {})
 	self:LoadAtlas()
@@ -447,7 +447,7 @@ function TextureManager.__getter:crypt_mode()
 end
 
 function TextureManager:ClearCache()
-	self._path_map_texture = {}
+	self._path_map_texture = CreateValueWeakMap()
 	self._prepare_map = {}
 end
 
@@ -460,7 +460,7 @@ function TextureManager:PrepareTexture(name_map, callback)
 			if texture == nil then
 				local loading_map = self._path_map_objects[atlas.big_path]
 				if loading_map == nil then
-					loading_map = {}
+					loading_map = CreateKeyWeakMap()
 					self._path_map_objects[atlas.big_path] = loading_map
 				end
 				A_LoadTextureManager:CreateTexture(self, atlas)
@@ -503,7 +503,7 @@ function TextureManager:SetTexture(object, name)
 		loading_map[object] = name
 		return
 	end
-	loading_map = {}
+	loading_map = CreateKeyWeakMap()
 	self._path_map_objects[atlas.big_path] = loading_map
 	loading_map[object] = name
 	A_LoadTextureManager:CreateTexture(self, atlas)

@@ -64,7 +64,7 @@ function LuaMessageWriteFactory:WriteDouble(value)
 	return writedouble(self._factory, value)
 end
 
-local gettotalsize = net.rfactorygettotalsize
+local getdatasize = net.rfactorygetdatasize
 local readbool = net.rfactoryreadbool
 local readint = net.rfactoryreadint
 local readlong = net.rfactoryreadlong
@@ -78,8 +78,8 @@ function LuaMessageReadFactory:SetFactory(factory)
 	self._factory = factory
 end
 
-function LuaMessageReadFactory:GetTotalSize()
-	return gettotalsize(self._factory)
+function LuaMessageReadFactory:GetDataSize()
+	return getdatasize(self._factory)
 end
 
 function LuaMessageReadFactory:ReadBool()

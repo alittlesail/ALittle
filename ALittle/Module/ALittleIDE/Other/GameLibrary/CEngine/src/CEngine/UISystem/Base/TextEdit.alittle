@@ -94,6 +94,7 @@ public class TextEdit : DisplayObject
         this.AddEventListener(this, this.HandleDrag);
         this.AddEventListener(this, this.HandleMButtonWheel);
     
+        [Language(Lua)]
         A_LoadTextureManager.RegisterRedrawControl(this);
     }
     

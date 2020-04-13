@@ -188,5 +188,11 @@
     <None Include="src\Adapter\Lua\sqlte3.alittle">
       <Filter>Adapter\Lua</Filter>
     </None>
+    <None Include="src\Std\Utility\WeakRef.alittle">
+      <Filter>Std\Utility</Filter>
+    </None>
+    <None Include="src\Adapter\JavaScript\jweakmap.alittle">
+      <Filter>Adapter\JavaScript</Filter>
+    </None>
   </ItemGroup>
 </Project>

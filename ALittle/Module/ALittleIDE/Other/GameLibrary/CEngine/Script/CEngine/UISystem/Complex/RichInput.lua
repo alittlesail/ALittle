@@ -442,7 +442,7 @@ function RichInput:Ctor(ctrl_sys)
 	self._default_text.y_value = 0
 	self._display_view:AddChild(self._default_text)
 	___rawset(self, "_default_font_height", 20)
-	___rawset(self, "_link_map", {})
+	___rawset(self, "_link_map", CreateValueWeakMap())
 	___rawset(self, "_pickup_rect", true)
 	___rawset(self, "_pickup_child", false)
 	___rawset(self, "_pickup_this", true)
@@ -478,7 +478,7 @@ function RichInput:GetCursor()
 end
 
 function RichInput:ClearLinkMap()
-	self._link_map = {}
+	self._link_map = CreateValueWeakMap()
 end
 
 function RichInput.__getter:real_width()

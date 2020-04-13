@@ -66,14 +66,14 @@ ALittle.RichArea = JavaScript.Class(ALittle.DisplayLayout, {
 		this._line_list = [];
 		this._line_count = 0;
 		this._real_height = 0;
-		this._link_map = {};
+		this._link_map = ALittle.CreateValueWeakMap();
 		this._max_line_count = 0;
 	},
 	get link_map() {
 		return this._link_map;
 	},
 	ClearLinkMap : function() {
-		this._link_map = {};
+		this._link_map = ALittle.CreateValueWeakMap();
 	},
 	set width(value) {
 		if (this.width === value) {

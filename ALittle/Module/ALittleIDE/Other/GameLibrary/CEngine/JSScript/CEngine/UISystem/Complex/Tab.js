@@ -13,7 +13,7 @@ if (ALittle.Grid3 === undefined) throw new Error(" extends class:ALittle.Grid3 i
 ALittle.Tab = JavaScript.Class(ALittle.Grid3, {
 	Ctor : function(ctrl_sys) {
 		this._button_inner_gap = 8;
-		this._child_id_map = new Map();
+		this._child_id_map = ALittle.CreateKeyWeakMap();
 		this._group_name = A_TextRadioButtonManager.CreateGroupName();
 		this.type = ALittle.UIEnumTypes.TYPE_V;
 		this._view = ALittle.NewObject(ALittle.DisplayView, this._ctrl_sys);

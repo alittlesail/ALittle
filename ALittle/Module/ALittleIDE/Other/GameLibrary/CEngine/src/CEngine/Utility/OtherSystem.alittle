@@ -94,7 +94,7 @@ class OtherSystem : EventDispatcher
     
     // 重载侦听函数
     // 对于侦听特殊服务的，侦听事件之后再启动
-    public fun AddEventListener<T:Event>(EventListener object, Functor<(EventListener, T)> callback) : bool
+    public fun AddEventListener<T:Event>(any object, Functor<(any, T)> callback) : bool
     {
         [Language(Lua)]
         {

@@ -27,6 +27,10 @@ end
 function LoopObject:SetCompleted()
 end
 
+function LoopObject:Dispose(deep)
+	self:Stop()
+end
+
 function LoopObject:Start()
 	A_LuaLoopSystem:AddUpdater(self)
 end

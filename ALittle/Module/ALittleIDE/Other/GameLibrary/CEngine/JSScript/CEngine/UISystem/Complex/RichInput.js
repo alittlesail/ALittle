@@ -436,7 +436,7 @@ ALittle.RichInput = JavaScript.Class(ALittle.DisplayLayout, {
 		this._default_text.y_value = 0;
 		this._display_view.AddChild(this._default_text);
 		this._default_font_height = 20;
-		this._link_map = {};
+		this._link_map = ALittle.CreateValueWeakMap();
 		this._pickup_rect = true;
 		this._pickup_child = false;
 		this._pickup_this = true;
@@ -470,7 +470,7 @@ ALittle.RichInput = JavaScript.Class(ALittle.DisplayLayout, {
 		return this._cursor;
 	},
 	ClearLinkMap : function() {
-		this._link_map = {};
+		this._link_map = ALittle.CreateValueWeakMap();
 	},
 	get real_width() {
 		return this._char_info_list[this._char_count - 1].acc_width;

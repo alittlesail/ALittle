@@ -12,9 +12,9 @@ ALittle.Linear = JavaScript.Class(ALittle.DisplayGroup, {
 		this._gap = 0;
 		this._clip_up_index = 0;
 		this._clip_down_index = 0;
-		this._child_width_map = new Map();
-		this._child_height_map = new Map();
-		this._show_child_map = new Map();
+		this._child_width_map = ALittle.CreateKeyWeakMap();
+		this._child_height_map = ALittle.CreateKeyWeakMap();
+		this._show_child_map = ALittle.CreateKeyWeakMap();
 		this._pickup_rect = false;
 		this._pickup_child = true;
 	},
@@ -98,9 +98,9 @@ ALittle.Linear = JavaScript.Class(ALittle.DisplayGroup, {
 			if (child === undefined) break;
 			child.RemoveEventListener(___all_struct.get(-431205740), this);
 		}
-		this._child_width_map = new Map();
-		this._child_height_map = new Map();
-		this._show_child_map = new Map();
+		this._child_width_map = ALittle.CreateKeyWeakMap();
+		this._child_height_map = ALittle.CreateKeyWeakMap();
+		this._show_child_map = ALittle.CreateKeyWeakMap();
 		this._clip_up_index = 0;
 		this._clip_down_index = 0;
 		ALittle.DisplayGroup.RemoveAllChild.call(this);

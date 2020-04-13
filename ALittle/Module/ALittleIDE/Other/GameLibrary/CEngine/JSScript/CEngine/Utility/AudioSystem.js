@@ -15,8 +15,7 @@ type_list : ["ALittle.EventDispatcher"],
 option_map : {}
 })
 
-if (ALittle.EventListener === undefined) throw new Error(" extends class:ALittle.EventListener is undefined");
-ALittle.AudioSystem = JavaScript.Class(ALittle.EventListener, {
+ALittle.AudioSystem = JavaScript.Class(undefined, {
 	Ctor : function() {
 		this._chunk_map = new Map();
 		this._app_background = false;
@@ -29,7 +28,6 @@ ALittle.AudioSystem = JavaScript.Class(ALittle.EventListener, {
 		A_OtherSystem.AddEventListener(___all_struct.get(760325696), this, this.HandleDidEnterForeground);
 	},
 	Shutdown : function() {
-		this.RemoveFromDispatcher();
 	},
 	HandleDidEnterBackground : function(event) {
 		this._app_background = true;

@@ -3,12 +3,12 @@ namespace ALittle;
 
 class TextRadioButtonManager
 {
-    private Map<string, Map<DisplayObject, DisplayObject> > _name_map_group;
+    private Map<string, Map<DisplayObject, bool> > _name_map_group;
     private int _group_id;
     
     public ctor()
     {
-        this._name_map_group = new Map<string, Map<DisplayObject, DisplayObject> >();
+        this._name_map_group = new Map<string, Map<DisplayObject, bool> >();
 
         // 系统分配的group_name
         this._group_id = 0;
@@ -33,15 +33,14 @@ class TextRadioButtonManager
             var group = this._name_map_group[new_name];
             if (group == null)
             {
-                group = new Map<DisplayObject, DisplayObject>();
-                // Setweak(group, true, true);
+                group = CreateKeyWeakMap();
                 this._name_map_group[new_name] = group;
             }
-            group[object] = object;
+            group[object] = true;
         }
     }
 
-    protected fun GetGroupByName(string name) : Map<DisplayObject, DisplayObject>
+    protected fun GetGroupByName(string name) : Map<DisplayObject, bool>
     {
         return this._name_map_group[name];
     }
@@ -80,14 +79,14 @@ public class TextRadioButton : TextCheckButton
                 var group = A_TextRadioButtonManager.GetGroupByName(this._group_name);
                 if (group != null)
                 {
-                    for (var k, v:TextRadioButton in group)
+                    for (var k:TextRadioButton, _ in group)
                     {
                         // 设置为false
-                        if (k != this && v._selected == true)
+                        if (k != this && k._selected == true)
                         {
-                            v._selected = false;
-                            v.ShowUp();
-                            v.DispatchEvent(new UIChangedEvent());
+                            k._selected = false;
+                            k.ShowUp();
+                            k.DispatchEvent(new UIChangedEvent());
                         }
                     }
                 }
@@ -123,13 +122,13 @@ public class TextRadioButton : TextCheckButton
         var group = A_TextRadioButtonManager.GetGroupByName(this._group_name);
         if (group != null)
         {
-            for (var k, v:TextRadioButton in group)
+            for (var k:TextRadioButton, _ in group)
             {
                 // 设置为false
-                if (k != this && v._selected == true)
+                if (k != this && k._selected == true)
                 {
-                    v._selected = false;
-                    v.ShowUp();
+                    k._selected = false;
+                    k.ShowUp();
                 }
             }
         }

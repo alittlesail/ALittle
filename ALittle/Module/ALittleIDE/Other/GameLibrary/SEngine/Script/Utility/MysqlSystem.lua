@@ -4,19 +4,31 @@ module("ALittle", package.seeall)
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___coroutine = coroutine
 
 RegStruct(1358089220, "ALittle.MysqlExecuteInfo", {
 name = "ALittle.MysqlExecuteInfo", ns_name = "ALittle", rl_name = "MysqlExecuteInfo", hash_code = 1358089220,
-name_list = {"co","query"},
-type_list = {"lua.thread","ALittle.MysqlStatementQuery"},
+name_list = {"thread","query"},
+type_list = {"ALittle.Thread","ALittle.MysqlStatementQuery"},
+option_map = {}
+})
+RegStruct(-930447138, "ALittle.Thread", {
+name = "ALittle.Thread", ns_name = "ALittle", rl_name = "Thread", hash_code = -930447138,
+name_list = {},
+type_list = {},
 option_map = {}
 })
 
-MysqlStatementQuery = Class(nil, "ALittle.MysqlStatementQuery")
+MysqlStatementQuery = Lua.Class(nil, "ALittle.MysqlStatementQuery")
 
 function MysqlStatementQuery:Ctor()
 	___rawset(self, "_query", __CPPAPIMysqlStatementQuery())
+end
+
+function MysqlStatementQuery.__setter:sql(value)
+	if value == nil then
+		value = ""
+	end
+	self._query:SetSQL(value)
 end
 
 function MysqlStatementQuery.__getter:sql()
@@ -31,20 +43,57 @@ function MysqlStatementQuery.__getter:affect_count()
 	return self._query:GetAffectCount()
 end
 
+function MysqlStatementQuery:Execute(thread_id)
+local ___COROUTINE = coroutine.running()
+	return A_MysqlSystem:ExecuteStatement(self, thread_id)
+end
+
 function MysqlStatementQuery.__getter:String()
 	return self._query:ReadString()
+end
+
+function MysqlStatementQuery.__setter:String(value)
+	if value == nil then
+		self._query:PushString("")
+	else
+		self._query:PushString(value)
+	end
 end
 
 function MysqlStatementQuery.__getter:Int()
 	return self._query:ReadInt()
 end
 
+function MysqlStatementQuery.__setter:Int(value)
+	if value == nil then
+		self._query:PushInt(0)
+	else
+		self._query:PushInt(value)
+	end
+end
+
 function MysqlStatementQuery.__getter:Long()
 	return self._query:ReadI64()
 end
 
+function MysqlStatementQuery.__setter:Long(value)
+	if value == nil then
+		self._query:PushI64(0)
+	else
+		self._query:PushI64(value)
+	end
+end
+
 function MysqlStatementQuery.__getter:Double()
 	return self._query:ReadDouble()
+end
+
+function MysqlStatementQuery.__setter:Double(value)
+	if value == nil then
+		self._query:PushDouble(0)
+	else
+		self._query:PushDouble(value)
+	end
 end
 
 function MysqlStatementQuery.__getter:value()
@@ -76,45 +125,6 @@ function MysqlStatementQuery.__getter:value()
 	return nil
 end
 
-function MysqlStatementQuery.__setter:sql(value)
-	if value == nil then
-		value = ""
-	end
-	self._query:SetSQL(value)
-end
-
-function MysqlStatementQuery.__setter:String(value)
-	if value == nil then
-		self._query:PushString("")
-	else
-		self._query:PushString(value)
-	end
-end
-
-function MysqlStatementQuery.__setter:Int(value)
-	if value == nil then
-		self._query:PushInt(0)
-	else
-		self._query:PushInt(value)
-	end
-end
-
-function MysqlStatementQuery.__setter:Long(value)
-	if value == nil then
-		self._query:PushI64(0)
-	else
-		self._query:PushI64(value)
-	end
-end
-
-function MysqlStatementQuery.__setter:Double(value)
-	if value == nil then
-		self._query:PushDouble(0)
-	else
-		self._query:PushDouble(value)
-	end
-end
-
 function MysqlStatementQuery.__setter:value(v)
 	local type_str = type(v)
 	if type_str == "number" then
@@ -138,25 +148,21 @@ function MysqlStatementQuery.__setter:value(v)
 	end
 end
 
-function MysqlStatementQuery:Execute(thread_id)
-	return A_MysqlSystem:ExecuteStatement(self, thread_id)
-end
-
 function MysqlStatementQuery:SelectPageBegin(field, condition, table_name, key, asc)
 	local asc_str = " DESC"
 	if not asc then
 		asc_str = " ASC"
 	end
 	local sql = nil
-	local cross = Find(table_name, ",")
+	local cross = String_Find(table_name, ",")
 	if cross ~= nil then
 		local field_list = String_Split(table_name, ",")
 		local as_name_list = {}
 		local field_name_list = {}
 		for k, v in ___ipairs(field_list) do
 			local as_name = "tt" .. k
-			Push(as_name_list, as_name)
-			Push(field_name_list, v .. " as " .. as_name)
+			List_Push(as_name_list, as_name)
+			List_Push(field_name_list, v .. " as " .. as_name)
 		end
 		field = String_Join(field_name_list, ",")
 		local as_field = String_Join(as_name_list, ",")
@@ -203,7 +209,7 @@ __TypeMap["int"] = 2
 __TypeMap["long"] = 3
 __TypeMap["double"] = 4
 __TypeMap["string"] = 5
-MysqlSystem = Class(nil, "ALittle.MysqlSystem")
+MysqlSystem = Lua.Class(nil, "ALittle.MysqlSystem")
 
 function MysqlSystem:Ctor()
 	___rawset(self, "_id_creator", SafeIDCreator())
@@ -218,28 +224,28 @@ function MysqlSystem:HandleMysqlQueryTask(id, reason)
 	end
 	self._id_creator:ReleaseID(id)
 	self._info_map[id] = nil
-	local result, error = coroutine.resume(info.co, reason)
+	local result, error = coroutine.resume(info.thread, reason)
 	if result ~= true then
 		Error(error)
 	end
 end
 
 function MysqlSystem:HandleMysqlEmptyTask(id, reason)
-	local co = self._execute_empty_map[id]
-	if co == nil then
+	local thread = self._execute_empty_map[id]
+	if thread == nil then
 		return
 	end
 	self._id_creator:ReleaseID(id)
 	self._execute_empty_map[id] = nil
-	local result, error = coroutine.resume(co, reason)
+	local result, error = coroutine.resume(thread, reason)
 	if result ~= true then
 		Error(error)
 	end
 end
 
 function MysqlSystem:ExecuteStatement(query, thread_id)
-	local co = coroutine.running()
-	if co == nil then
+local ___COROUTINE = coroutine.running()
+	if ___COROUTINE == nil then
 		return "当前不是协程"
 	end
 	if thread_id == nil then
@@ -251,15 +257,15 @@ function MysqlSystem:ExecuteStatement(query, thread_id)
 		return "任务添加失败"
 	end
 	local info = {}
-	info.co = co
+	info.thread = ___COROUTINE
 	info.query = query
 	self._info_map[id] = info
-	return ___coroutine.yield()
+	return coroutine.yield()
 end
 
 function MysqlSystem:ExecuteNormal(sql, thread_id)
-	local co = coroutine.running()
-	if co == nil then
+local ___COROUTINE = coroutine.running()
+	if ___COROUTINE == nil then
 		return "当前不是协程"
 	end
 	if thread_id == nil then
@@ -271,14 +277,14 @@ function MysqlSystem:ExecuteNormal(sql, thread_id)
 		return "任务添加失败"
 	end
 	local info = {}
-	info.co = co
+	info.thread = ___COROUTINE
 	self._info_map[id] = info
-	return ___coroutine.yield()
+	return coroutine.yield()
 end
 
 function MysqlSystem:ExecuteEmpty(thread_id)
-	local co = coroutine.running()
-	if co == nil then
+local ___COROUTINE = coroutine.running()
+	if ___COROUTINE == nil then
 		return "当前不是协程"
 	end
 	if thread_id == nil then
@@ -289,11 +295,12 @@ function MysqlSystem:ExecuteEmpty(thread_id)
 		self._id_creator:ReleaseID(id)
 		return "任务添加失败"
 	end
-	self._execute_empty_map[id] = co
-	return ___coroutine.yield()
+	self._execute_empty_map[id] = ___COROUTINE
+	return coroutine.yield()
 end
 
 function MysqlSystem:SelectCountByReflect(info, key, value, thread_id)
+local ___COROUTINE = coroutine.running()
 	if value == nil then
 		return "value == null", 0
 	end
@@ -313,17 +320,19 @@ function MysqlSystem:SelectCountByReflect(info, key, value, thread_id)
 end
 
 function MysqlSystem:SelectCount(T, key, value, thread_id)
+local ___COROUTINE = coroutine.running()
 	return self:SelectCountByReflect(T, key, value, thread_id)
 end
 
 function MysqlSystem:SelectOneFromByKeyByReflect(info, key, value, thread_id)
+local ___COROUTINE = coroutine.running()
 	if value == nil then
 		return "value == null", nil
 	end
 	local sql = "SELECT "
 	local field_list = {}
 	for i, name in ___ipairs(info.name_list) do
-		Push(field_list, "`" .. name .. "`")
+		List_Push(field_list, "`" .. name .. "`")
 	end
 	sql = sql .. String_Join(field_list, ",")
 	sql = sql .. " FROM `"
@@ -357,10 +366,10 @@ function MysqlSystem:SelectOneFromByKeyByReflect(info, key, value, thread_id)
 		else
 			local value = query.String
 			if value == "" then
-				map[name] = Create()
+				map[name] = {}
 			else
 				local content = nil
-				error, content = TCall(ajson.decode, value)
+				error, content = Lua.TCall(ajson.decode, value)
 				if error ~= nil then
 					return error, nil
 				else
@@ -373,14 +382,16 @@ function MysqlSystem:SelectOneFromByKeyByReflect(info, key, value, thread_id)
 end
 
 function MysqlSystem:SelectOneFromByKey(T, key, value, thread_id)
+local ___COROUTINE = coroutine.running()
 	return self:SelectOneFromByKeyByReflect(T, key, value, thread_id)
 end
 
 function MysqlSystem:SelectListFromByMapByReflect(info, value_map, thread_id)
+local ___COROUTINE = coroutine.running()
 	local sql = "SELECT "
 	local field_list = {}
 	for i, name in ___ipairs(info.name_list) do
-		Push(field_list, "`" .. name .. "`")
+		List_Push(field_list, "`" .. name .. "`")
 	end
 	sql = sql .. String_Join(field_list, ",")
 	sql = sql .. " FROM `"
@@ -414,7 +425,9 @@ function MysqlSystem:SelectListFromByMapByReflect(info, value_map, thread_id)
 		return nil, {}
 	end
 	local list = {}
-	for row = 0, query.count, 1 do
+	local row = 1
+	while true do
+		if not(row <= query.count) then break end
 		local map = {}
 		for i, name in ___ipairs(info.name_list) do
 			local type = __TypeMap[info.type_list[i]]
@@ -431,10 +444,10 @@ function MysqlSystem:SelectListFromByMapByReflect(info, value_map, thread_id)
 			else
 				local value = query.String
 				if value == "" then
-					map[name] = Create()
+					map[name] = {}
 				else
 					local content = nil
-					error, content = TCall(ajson.decode, value)
+					error, content = Lua.TCall(ajson.decode, value)
 					if error ~= nil then
 						return error, nil
 					else
@@ -444,15 +457,18 @@ function MysqlSystem:SelectListFromByMapByReflect(info, value_map, thread_id)
 			end
 		end
 		list[row] = map
+		row = row+(1)
 	end
 	return nil, list
 end
 
 function MysqlSystem:SelectListFromByMap(T, value_map, thread_id)
+local ___COROUTINE = coroutine.running()
 	return self:SelectListFromByMapByReflect(T, value_map, thread_id)
 end
 
 function MysqlSystem:InsertIntoByReflect(info, map, table_name, thread_id)
+local ___COROUTINE = coroutine.running()
 	local sql = "INSERT INTO `"
 	if table_name == nil then
 		sql = sql .. info.rl_name
@@ -462,13 +478,13 @@ function MysqlSystem:InsertIntoByReflect(info, map, table_name, thread_id)
 	sql = sql .. "` ("
 	local field_list = {}
 	for i, name in ___ipairs(info.name_list) do
-		Push(field_list, "`" .. name .. "`")
+		List_Push(field_list, "`" .. name .. "`")
 	end
 	sql = sql .. String_Join(field_list, ",")
 	sql = sql .. ") VALUES ("
 	local value_list = {}
 	for i, name in ___ipairs(info.name_list) do
-		Push(value_list, "?")
+		List_Push(value_list, "?")
 	end
 	sql = sql .. String_Join(value_list, ",")
 	sql = sql .. ")"
@@ -519,10 +535,12 @@ function MysqlSystem:InsertIntoByReflect(info, map, table_name, thread_id)
 end
 
 function MysqlSystem:InsertInto(T, value, table_name, thread_id)
+local ___COROUTINE = coroutine.running()
 	return self:InsertIntoByReflect(T, value, table_name, thread_id)
 end
 
 function MysqlSystem:UpdateOneByReflect(info, map, key, key_value, thread_id)
+local ___COROUTINE = coroutine.running()
 	if key_value == nil then
 		return "key_value == null"
 	end
@@ -532,7 +550,7 @@ function MysqlSystem:UpdateOneByReflect(info, map, key, key_value, thread_id)
 	local set_list = {}
 	for i, name in ___ipairs(info.name_list) do
 		if key ~= name then
-			Push(set_list, "`" .. name .. "`=?")
+			List_Push(set_list, "`" .. name .. "`=?")
 		end
 	end
 	sql = sql .. String_Join(set_list, ",")
@@ -589,10 +607,12 @@ function MysqlSystem:UpdateOneByReflect(info, map, key, key_value, thread_id)
 end
 
 function MysqlSystem:UpdateOne(T, value, key, key_value, thread_id)
+local ___COROUTINE = coroutine.running()
 	return self:UpdateOneByReflect(T, value, key, key_value, thread_id)
 end
 
 function MysqlSystem:UpdateSetByReflect(info, field, field_value, key, key_value, thread_id)
+local ___COROUTINE = coroutine.running()
 	if field_value == nil then
 		return "field_value == null"
 	end
@@ -615,10 +635,12 @@ function MysqlSystem:UpdateSetByReflect(info, field, field_value, key, key_value
 end
 
 function MysqlSystem:UpdateSet(T, field, field_value, key, key_value, thread_id)
+local ___COROUTINE = coroutine.running()
 	return self:UpdateSetByReflect(T, field, field_value, key, key_value, thread_id)
 end
 
 function MysqlSystem:DeleteFromByMapByReflect(info, value_map, thread_id)
+local ___COROUTINE = coroutine.running()
 	local sql = "DELETE FROM `"
 	sql = sql .. info.rl_name
 	sql = sql .. "`"
@@ -646,10 +668,12 @@ function MysqlSystem:DeleteFromByMapByReflect(info, value_map, thread_id)
 end
 
 function MysqlSystem:DeleteFromByMap(T, value_map, thread_id)
+local ___COROUTINE = coroutine.running()
 	return self:DeleteFromByMapByReflect(T, value_map, thread_id)
 end
 
 function MysqlSystem:DeleteFromByKeyByReflect(info, key, value, thread_id)
+local ___COROUTINE = coroutine.running()
 	local sql = "DELETE FROM `"
 	sql = sql .. info.rl_name
 	sql = sql .. "` WHERE `"
@@ -662,10 +686,12 @@ function MysqlSystem:DeleteFromByKeyByReflect(info, key, value, thread_id)
 end
 
 function MysqlSystem:DeleteFromByKey(T, key, value, thread_id)
+local ___COROUTINE = coroutine.running()
 	return self:DeleteFromByKeyByReflect(T, key, value, thread_id)
 end
 
 function MysqlSystem:CreateIfNotExitByReflect(info, table_name, thread_id)
+local ___COROUTINE = coroutine.running()
 	local name_map = {}
 	for index, name in ___ipairs(info.name_list) do
 		name_map[name] = true
@@ -712,17 +738,17 @@ function MysqlSystem:CreateIfNotExitByReflect(info, table_name, thread_id)
 	for i, name in ___ipairs(info.name_list) do
 		local type = __TypeMap[info.type_list[i]]
 		if type == 1 then
-			Push(sql_list, "`" .. name .. "` tinyint(4) NOT NULL DEFAULT 0")
+			List_Push(sql_list, "`" .. name .. "` tinyint(4) NOT NULL DEFAULT 0")
 		elseif type == 2 then
-			Push(sql_list, "`" .. name .. "` int(11) NOT NULL DEFAULT 0")
+			List_Push(sql_list, "`" .. name .. "` int(11) NOT NULL DEFAULT 0")
 		elseif type == 3 then
-			Push(sql_list, "`" .. name .. "` bigint(20) NOT NULL DEFAULT 0")
+			List_Push(sql_list, "`" .. name .. "` bigint(20) NOT NULL DEFAULT 0")
 		elseif type == 4 then
-			Push(sql_list, "`" .. name .. "` double NOT NULL DEFAULT 0")
+			List_Push(sql_list, "`" .. name .. "` double NOT NULL DEFAULT 0")
 		elseif type == 5 then
-			Push(sql_list, "`" .. name .. "` varchar(250) NOT NULL DEFAULT ''")
+			List_Push(sql_list, "`" .. name .. "` varchar(250) NOT NULL DEFAULT ''")
 		else
-			Push(sql_list, "`" .. name .. "` text")
+			List_Push(sql_list, "`" .. name .. "` text")
 		end
 	end
 	sql = sql .. String_Join(sql_list, ",")
@@ -740,6 +766,7 @@ function MysqlSystem:CreateIfNotExitByReflect(info, table_name, thread_id)
 end
 
 function MysqlSystem:CreateIfNotExit(T, table_name, thread_id)
+local ___COROUTINE = coroutine.running()
 	return self:CreateIfNotExitByReflect(T, table_name, thread_id)
 end
 

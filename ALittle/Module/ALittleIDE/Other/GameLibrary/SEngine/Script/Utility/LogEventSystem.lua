@@ -4,7 +4,6 @@ module("ALittle", package.seeall)
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___coroutine = coroutine
 local ___all_struct = GetAllStruct()
 
 RegStruct(976782632, "LogServer.LogEventInfo", {
@@ -34,7 +33,7 @@ LogEventSubType = {
 	LEST_OPS_ADDRES = 1,
 }
 
-LogEventSystem = Class(nil, "ALittle.LogEventSystem")
+LogEventSystem = Lua.Class(nil, "ALittle.LogEventSystem")
 
 function LogEventSystem:Ctor()
 	___rawset(self, "_init", false)
@@ -49,7 +48,7 @@ function LogEventSystem:HandleSessionConnected(event)
 	self._session = event.session
 	self:Flush()
 end
-LogEventSystem.HandleSessionConnected = CoWrap(LogEventSystem.HandleSessionConnected)
+LogEventSystem.HandleSessionConnected = Lua.CoWrap(LogEventSystem.HandleSessionConnected)
 
 function LogEventSystem:HandleSessionDisconnected(event)
 	if event.route_num ~= RouteType.RT_LOG and event.route_num ~= RouteNum.RN_DEFAULT then
@@ -59,6 +58,7 @@ function LogEventSystem:HandleSessionDisconnected(event)
 end
 
 function LogEventSystem:Flush()
+local ___COROUTINE = coroutine.running()
 	for index, info in ___ipairs(self._list) do
 		self:Send(info)
 	end
@@ -67,7 +67,8 @@ function LogEventSystem:Flush()
 end
 
 function LogEventSystem:Send(info)
-	local error, result = IMsgCommon.InvokeRPC(976782632, self._session, info)
+local ___COROUTINE = coroutine.running()
+	local error, result = Lua.IMsgCommon.InvokeRPC(976782632, self._session, info)
 	if error ~= nil then
 		Warn("日志发送失败:" .. error .. " 数据:" .. json.encode(info))
 	end
@@ -81,7 +82,7 @@ function LogEventSystem:SendLogEvent(info)
 		self._init = true
 	end
 	if self._session == nil then
-		Push(self._list, info)
+		List_Push(self._list, info)
 		self._count = self._count + 1
 		if self._count > 1000 then
 			Warn("消息队列太大，移除掉第一个, 数据:" .. json.encode(self._list[1]))
@@ -92,6 +93,6 @@ function LogEventSystem:SendLogEvent(info)
 		self:Send(info)
 	end
 end
-LogEventSystem.SendLogEvent = CoWrap(LogEventSystem.SendLogEvent)
+LogEventSystem.SendLogEvent = Lua.CoWrap(LogEventSystem.SendLogEvent)
 
 _G.A_LogEventSystem = LogEventSystem()

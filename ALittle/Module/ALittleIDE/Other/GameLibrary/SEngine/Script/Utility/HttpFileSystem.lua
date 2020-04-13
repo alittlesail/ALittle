@@ -4,11 +4,10 @@ module("ALittle", package.seeall)
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___coroutine = coroutine
 
 
-assert(IHttpFileReceiverNative, " extends class:IHttpFileReceiverNative is nil")
-HttpFileReceiverNative = Class(IHttpFileReceiverNative, "ALittle.HttpFileReceiverNative")
+assert(ALittle.IHttpFileReceiverNative, " extends class:ALittle.IHttpFileReceiverNative is nil")
+HttpFileReceiverNative = Lua.Class(ALittle.IHttpFileReceiverNative, "ALittle.HttpFileReceiverNative")
 
 function HttpFileReceiverNative:Close(http_id)
 	__CPPAPI_ServerSchedule:HttpClose(http_id)
@@ -22,22 +21,28 @@ function HttpFileReceiverNative:StartReceiveFile(http_id, file_path, start_size)
 	__CPPAPI_ServerSchedule:HttpStartReceiveFile(http_id, file_path, start_size)
 end
 
-local HttpFileReceiver = Template(HttpFileReceiverTemplate, "ALittle.HttpFileReceiverTemplate<ALittle.HttpFileReceiverNative>", HttpFileReceiverNative);
-HttpFileSystem = Class(nil, "ALittle.HttpFileSystem")
+local HttpFileReceiver = Lua.Template(HttpFileReceiverTemplate, "ALittle.HttpFileReceiverTemplate<ALittle.HttpFileReceiverNative>", HttpFileReceiverNative);
+HttpFileSystem = Lua.Class(nil, "ALittle.HttpFileSystem")
 
 function HttpFileSystem:Ctor()
 	___rawset(self, "_http_file_map", {})
 end
 
 function HttpFileSystem:HandleHttpFileTask(http_id, path, callback, value_map)
-	local file_client = HttpFileReceiver(http_id, coroutine.running())
+	self:HandleHttpFileTaskImpl(http_id, path, callback, value_map)
+end
+HttpFileSystem.HandleHttpFileTask = Lua.CoWrap(HttpFileSystem.HandleHttpFileTask)
+
+function HttpFileSystem:HandleHttpFileTaskImpl(http_id, path, callback, value_map)
+local ___COROUTINE = coroutine.running()
+	local file_client = HttpFileReceiver(http_id, ___COROUTINE)
 	self._http_file_map[http_id] = file_client
 	local error = nil
 	local result = nil
 	if callback == nil then
 		error = file_client:StartReceiveFile("", 0)
 	else
-		error, result = TCall(callback, file_client, value_map)
+		error, result = Lua.TCall(callback, file_client, value_map)
 	end
 	if not file_client.received then
 		error = file_client:StartReceiveFile("", 0)
@@ -57,7 +62,6 @@ function HttpFileSystem:HandleHttpFileTask(http_id, path, callback, value_map)
 	end
 	file_client:SendString(json.encode(result))
 end
-HttpFileSystem.HandleHttpFileTask = CoWrap(HttpFileSystem.HandleHttpFileTask)
 
 function HttpFileSystem:HandleHttpFileCompletedTask(http_id, reason)
 	local file_client = self._http_file_map[http_id]

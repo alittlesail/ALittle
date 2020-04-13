@@ -4,7 +4,6 @@ module("ALittle", package.seeall)
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___coroutine = coroutine
 local ___all_struct = GetAllStruct()
 
 RegStruct(1715346212, "ALittle.Event", {
@@ -44,7 +43,7 @@ type_list = {"int","int"},
 option_map = {}
 })
 
-GatewayUpdateRoute = Class(nil, "ALittle.GatewayUpdateRoute")
+GatewayUpdateRoute = Lua.Class(nil, "ALittle.GatewayUpdateRoute")
 
 function GatewayUpdateRoute:Ctor(client_yun_ip, client_ip, client_port, http_yun_ip, http_ip, http_port, weight)
 	___rawset(self, "_info", {})
@@ -92,7 +91,7 @@ function GatewayUpdateRoute:UpdateRouteWeight(weight)
 	self._session:SendMsg(___all_struct[1006278988], self._weight)
 end
 
-GatewaySystem = Class(nil, "ALittle.GatewaySystem")
+GatewaySystem = Lua.Class(nil, "ALittle.GatewaySystem")
 
 function GatewaySystem:Ctor()
 	A_SessionSystem:AddEventListener(___all_struct[888437463], self, self.HandleAnySessionConnected)

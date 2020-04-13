@@ -1,0 +1,48 @@
+
+namespace DataServer;
+
+public struct GW2DATA_QLogin
+{
+    int account_id;     // 账号ID
+}
+
+public struct GW2DATA_ALogin
+{
+    string client_ip;   // GameServer的IP
+    int client_port;    // GameServer的端口
+    string session_id;  // 会话ID
+}
+
+[Msg]
+public await static HandleQLogin(ALittle.IMsgCommon client, GW2DATA_QLogin msg) : GW2DATA_ALogin
+{
+    // 获取租约信息
+    var info = g_LeaseManager.GetLease(msg.account_id);
+    assert(info, "租约信息获取失败"); 
+    
+    // 获取GameServer
+    var gs_info = g_LeaseManager.GetGameServerInfo(info.gs_route_num);
+    assert(gs_info, "GS连接不存在");
+    
+    // 检查租约是否到达
+    if (!info.confirm)
+    {
+        var error, result = ALittle.HandleQEmpty(gs_info.session, new ALittle.DATA2GS_QEmpty());
+        if (error != null) throw("GS空包发送失败:"..error);
+        // 标记为确定到达
+        info.confirm = true;
+    }
+    
+    // 发送session
+    var q_save_session = new ALittle.DATA2GS_QSaveSession();
+    q_save_session.account_id = msg.account_id;
+    q_save_session.session = lua.tostring(lua.math.random(10000, 99999));
+    var error, a_save_session = ALittle.HandleQSaveSession(gs_info.session, q_save_session);
+    if (error != null) throw("会话ID保存失败:"..error);
+    
+    var param = new GW2DATA_ALogin();
+    param.client_ip = gs_info.client_ip;
+    param.client_port = gs_info.client_port;
+    param.session_id = q_save_session.session;
+    return param;
+}

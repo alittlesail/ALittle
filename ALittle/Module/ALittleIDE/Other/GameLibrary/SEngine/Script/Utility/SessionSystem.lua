@@ -4,7 +4,6 @@ module("ALittle", package.seeall)
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___coroutine = coroutine
 local ___all_struct = GetAllStruct()
 
 RegStruct(1715346212, "ALittle.Event", {
@@ -16,13 +15,13 @@ option_map = {}
 RegStruct(888437463, "ALittle.SessionConnectEvent", {
 name = "ALittle.SessionConnectEvent", ns_name = "ALittle", rl_name = "SessionConnectEvent", hash_code = 888437463,
 name_list = {"target","connect_key","route_type","route_num","session"},
-type_list = {"ALittle.EventDispatcher","int","int","int","ALittle.MsgSessionTemplate<ALittle.MsgSessionNative>"},
+type_list = {"ALittle.EventDispatcher","int","int","int","ALittle.MsgSessionTemplate<ALittle.MsgSessionNative,lua.__CPPAPIMessageWriteFactory>"},
 option_map = {}
 })
 RegStruct(-36908822, "ALittle.SessionDisconnectEvent", {
 name = "ALittle.SessionDisconnectEvent", ns_name = "ALittle", rl_name = "SessionDisconnectEvent", hash_code = -36908822,
 name_list = {"target","connect_key","route_type","route_num","session"},
-type_list = {"ALittle.EventDispatcher","int","int","int","ALittle.MsgSessionTemplate<ALittle.MsgSessionNative>"},
+type_list = {"ALittle.EventDispatcher","int","int","int","ALittle.MsgSessionTemplate<ALittle.MsgSessionNative,lua.__CPPAPIMessageWriteFactory>"},
 option_map = {}
 })
 RegStruct(-1417161474, "ALittle.ConnectSessionInfo", {
@@ -32,8 +31,8 @@ type_list = {"int","int","int","bool"},
 option_map = {}
 })
 
-assert(IMsgCommonNative, " extends class:IMsgCommonNative is nil")
-MsgSessionNative = Class(IMsgCommonNative, "ALittle.MsgSessionNative")
+assert(ALittle.IMsgCommonNative, " extends class:ALittle.IMsgCommonNative is nil")
+MsgSessionNative = Lua.Class(ALittle.IMsgCommonNative, "ALittle.MsgSessionNative")
 
 function MsgSessionNative:SetID(id)
 	self._connect_key = id
@@ -52,9 +51,9 @@ function MsgSessionNative:Close()
 	A_SessionSystem:RemoveSessionServer(self._connect_key)
 end
 
-MsgSession = Template(MsgSessionTemplate, "ALittle.MsgSessionTemplate<ALittle.MsgSessionNative>", MsgSessionNative);
-assert(EventDispatcher, " extends class:EventDispatcher is nil")
-SessionSystem = Class(EventDispatcher, "ALittle.SessionSystem")
+MsgSession = Lua.Template(MsgSessionTemplate, "ALittle.MsgSessionTemplate<ALittle.MsgSessionNative, lua.__CPPAPIMessageWriteFactory>", MsgSessionNative, __CPPAPIMessageWriteFactory);
+assert(ALittle.EventDispatcher, " extends class:ALittle.EventDispatcher is nil")
+SessionSystem = Lua.Class(ALittle.EventDispatcher, "ALittle.SessionSystem")
 
 function SessionSystem:Ctor()
 	___rawset(self, "_session_map", {})
@@ -91,8 +90,8 @@ function SessionSystem:AddConnectSession(route_type, route_num)
 end
 
 function SessionSystem:ConnectSession(route_type, route_num)
-	local co = coroutine.running()
-	if co == nil then
+local ___COROUTINE = coroutine.running()
+	if ___COROUTINE == nil then
 		return "当前不是协程", nil
 	end
 	local key = route_type .. "_" .. route_num
@@ -118,8 +117,8 @@ function SessionSystem:ConnectSession(route_type, route_num)
 		list = {}
 		self._invoke_map[key] = list
 	end
-	Push(list, co)
-	return ___coroutine.yield()
+	List_Push(list, ___COROUTINE)
+	return coroutine.yield()
 end
 
 function SessionSystem:HandleSessionConnect(connect_key, route_type, route_num)
@@ -152,7 +151,7 @@ function SessionSystem:HandleSessionDisconnect(connect_key, route_type, route_nu
 	local info = self._connect_map[key]
 	if info ~= nil and info.connect_key == connect_key then
 		info.is_connecting = true
-		A_LoopSystem:AddTimer(1000, Bind(self.ConnectSessionImpl, self, info), nil, nil)
+		A_LoopSystem:AddTimer(1000, Lua.Bind(self.ConnectSessionImpl, self, info), nil, nil)
 	end
 end
 
@@ -161,8 +160,8 @@ function SessionSystem:HandleConnectSessionFailed(route_type, route_num, reason)
 	local list = self._invoke_map[key]
 	if list ~= nil then
 		self._invoke_map[key] = nil
-		for index, co in ___ipairs(list) do
-			local result, error = coroutine.resume(co, reason)
+		for index, thread in ___ipairs(list) do
+			local result, error = coroutine.resume(thread, reason)
 			if result ~= true then
 				Error(error)
 			end
@@ -171,7 +170,7 @@ function SessionSystem:HandleConnectSessionFailed(route_type, route_num, reason)
 	local info = self._connect_map[key]
 	if info ~= nil then
 		info.is_connecting = true
-		A_LoopSystem:AddTimer(1000, Bind(self.ConnectSessionImpl, self, info), nil, nil)
+		A_LoopSystem:AddTimer(1000, Lua.Bind(self.ConnectSessionImpl, self, info), nil, nil)
 	end
 end
 
@@ -190,8 +189,8 @@ function SessionSystem:HandleConnectSessionSucceed(connect_key, route_type, rout
 			error = "连接居然不存在"
 		end
 		self._invoke_map[key] = nil
-		for index, co in ___ipairs(list) do
-			local result, reason = coroutine.resume(co, error, session)
+		for index, thread in ___ipairs(list) do
+			local result, reason = coroutine.resume(thread, error, session)
 			if result ~= true then
 				Error(reason)
 			end

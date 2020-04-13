@@ -4,7 +4,6 @@ module("ALittle", package.seeall)
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___coroutine = coroutine
 local ___all_struct = GetAllStruct()
 
 RegStruct(799192036, "ALittle.SessionInfo", {
@@ -38,7 +37,7 @@ type_list = {"string"},
 option_map = {}
 })
 
-WebAccount = Class(nil, "ALittle.WebAccount")
+WebAccount = Lua.Class(nil, "ALittle.WebAccount")
 
 function WebAccount:Ctor(client, base_info, role_info)
 	___rawset(self, "_session_info", {})
@@ -79,6 +78,7 @@ function WebAccount:GetClient()
 end
 
 function WebAccount:UpdateRoleInfo()
+local ___COROUTINE = coroutine.running()
 	do
 		local error, base_info = A_MysqlSystem:SelectOneFromByKey(___all_struct[-192825113], "account_id", self._base_info.account_id)
 		if error ~= nil then

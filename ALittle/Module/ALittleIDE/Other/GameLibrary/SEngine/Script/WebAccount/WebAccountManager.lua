@@ -4,7 +4,6 @@ module("ALittle", package.seeall)
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___coroutine = coroutine
 local ___all_struct = GetAllStruct()
 
 RegStruct(-192825113, "ALittle.WebBaseInfo", {
@@ -62,7 +61,7 @@ type_list = {},
 option_map = {}
 })
 
-WebAccountManager = Class(nil, "ALittle.WebAccountManager")
+WebAccountManager = Lua.Class(nil, "ALittle.WebAccountManager")
 
 function WebAccountManager:Ctor()
 	___rawset(self, "_id_map_account", {})
@@ -71,10 +70,11 @@ function WebAccountManager:Ctor()
 end
 
 function WebAccountManager:Setup()
+local ___COROUTINE = coroutine.running()
 	local error = A_MysqlSystem:CreateIfNotExit(___all_struct[-192825113])
-	Assert(error == nil, error)
+	Lua.Assert(error == nil, error)
 	error = A_MysqlSystem:CreateIfNotExit(___all_struct[-699725823])
-	Assert(error == nil, error)
+	Lua.Assert(error == nil, error)
 	local count = 0
 	error, count = A_MysqlSystem:SelectCount(___all_struct[-699725823], "role_id", "alittle")
 	if error ~= nil then
@@ -159,14 +159,14 @@ end
 
 function WebAccountManager:CheckLoginById(account_id, session_id)
 	local account = self:GetAccountById(account_id)
-	Assert(account ~= nil, "请先登录")
-	Assert(account:CheckSessionCodeAndSync(session_id), "请先登录")
+	Lua.Assert(account ~= nil, "请先登录")
+	Lua.Assert(account:CheckSessionCodeAndSync(session_id), "请先登录")
 	return account
 end
 
 function WebAccountManager:CheckLoginByClient(client)
 	local account = self:GetAccountByClient(client)
-	Assert(account ~= nil, "请先登录")
+	Lua.Assert(account ~= nil, "请先登录")
 	return account
 end
 
@@ -189,27 +189,28 @@ end
 
 _G.A_WebAccountManager = WebAccountManager()
 function HandleQWebLogin(client, msg)
+local ___COROUTINE = coroutine.running()
 	local receiver = client
-	Assert(receiver._web_account_id == "" or receiver._web_account_id == nil, "当前连接已经登录")
+	Lua.Assert(receiver._web_account_id == "" or receiver._web_account_id == nil, "当前连接已经登录")
 	local error = nil
 	local base_info = nil
 	error, base_info = A_MysqlSystem:SelectOneFromByKey(___all_struct[-192825113], "account_name", msg.account_name)
 	if error ~= nil then
-		Throw("数据库操作失败:" .. error)
+		Lua.Throw("数据库操作失败:" .. error)
 	end
-	Assert(base_info ~= nil, "账号或密码错误")
-	Assert(base_info.account_pwd == String_MD5("ALittle" .. msg.account_pwd .. "ALittle"), "账号或密码错误")
+	Lua.Assert(base_info ~= nil, "账号或密码错误")
+	Lua.Assert(base_info.account_pwd == String_MD5("ALittle" .. msg.account_pwd .. "ALittle"), "账号或密码错误")
 	local role_info = nil
 	error, role_info = A_MysqlSystem:SelectOneFromByKey(___all_struct[-699725823], "role_id", base_info.role_id)
 	if error ~= nil then
-		Throw("数据库操作失败:" .. error)
+		Lua.Throw("数据库操作失败:" .. error)
 	end
-	Assert(role_info ~= nil, "您没有登录权限")
+	Lua.Assert(role_info ~= nil, "您没有登录权限")
 	local permission_map = {}
 	for i, permission in ___ipairs(role_info.permission) do
 		permission_map[permission] = true
 	end
-	Assert(msg.account_name == "alittle" or permission_map[WebPermission.PERMISSION_ACCOUNT_LOGIN] ~= nil, "您没有登录权限")
+	Lua.Assert(msg.account_name == "alittle" or permission_map[WebPermission.PERMISSION_ACCOUNT_LOGIN] ~= nil, "您没有登录权限")
 	local other_account = A_WebAccountManager:GetAccountById(base_info.account_id)
 	if other_account ~= nil then
 		other_account:ForceLogout("您的账号再另一个地方登录了")
@@ -226,10 +227,11 @@ end
 
 RegMsgRpcCallback(898014419, HandleQWebLogin, -303211063)
 function HandleQWebLogout(client, msg)
+local ___COROUTINE = coroutine.running()
 	local receiver = client
-	Assert(receiver._web_account_id ~= nil and receiver._web_account_id ~= "", "当前连接还未登录")
+	Lua.Assert(receiver._web_account_id ~= nil and receiver._web_account_id ~= "", "当前连接还未登录")
 	local web_account = A_WebAccountManager:GetAccountByClient(receiver)
-	Assert(web_account ~= nil, "账号还未登录")
+	Lua.Assert(web_account ~= nil, "账号还未登录")
 	receiver._web_account_id = ""
 	web_account:LogoutActionSystem()
 	A_WebAccountManager:RemoveAccount(web_account:GetID())
@@ -238,19 +240,20 @@ end
 
 RegMsgRpcCallback(1598450085, HandleQWebLogout, -344058063)
 function HandleQWebChangePassword(client, msg)
+local ___COROUTINE = coroutine.running()
 	local web_account = A_WebAccountManager:CheckLoginByClient(client)
 	local error = nil
 	local base_info = nil
 	error, base_info = A_MysqlSystem:SelectOneFromByKey(___all_struct[-192825113], "account_id", web_account:GetID())
 	if error ~= nil then
-		Throw("数据库操作失败:" .. error)
+		Lua.Throw("数据库操作失败:" .. error)
 	end
-	Assert(base_info ~= nil, "账号不存在")
-	Assert(String_MD5("ALittle" .. msg.old_password .. "ALittle") == base_info.account_pwd, "原密码错误")
+	Lua.Assert(base_info ~= nil, "账号不存在")
+	Lua.Assert(String_MD5("ALittle" .. msg.old_password .. "ALittle") == base_info.account_pwd, "原密码错误")
 	local new_password = String_MD5("ALittle" .. msg.new_password .. "ALittle")
 	error = A_MysqlSystem:UpdateSet(___all_struct[-192825113], "account_pwd", new_password, "account_id", base_info.account_id)
 	if error ~= nil then
-		Throw("数据库操作失败:" .. error)
+		Lua.Throw("数据库操作失败:" .. error)
 	end
 	return {}
 end

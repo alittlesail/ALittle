@@ -4,7 +4,6 @@ module("ALittle", package.seeall)
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___coroutine = coroutine
 local ___all_struct = GetAllStruct()
 
 RegStruct(1715346212, "ALittle.Event", {
@@ -62,7 +61,7 @@ type_list = {},
 option_map = {}
 })
 
-GameAccountManager = Class(nil, "ALittle.GameAccountManager")
+GameAccountManager = Lua.Class(nil, "ALittle.GameAccountManager")
 
 function GameAccountManager:Ctor()
 	___rawset(self, "_account_map", {})
@@ -133,7 +132,7 @@ function GameAccountManager:SendModuleReflect(session, rflt_list, table_map)
 	param.table_map = table_map
 	session:SendMsg(___all_struct[-1010453448], param)
 end
-GameAccountManager.SendModuleReflect = CoWrap(GameAccountManager.SendModuleReflect)
+GameAccountManager.SendModuleReflect = Lua.CoWrap(GameAccountManager.SendModuleReflect)
 
 function GameAccountManager:SetAccountClient(account, client)
 	local old_client = account:GetClient()
@@ -218,9 +217,10 @@ end
 
 _G.A_GameAccountManager = GameAccountManager()
 function HandleQLogin(client, msg)
+local ___COROUTINE = coroutine.running()
 	local lease_info = g_GameLeaseManager:GetLease(msg.account_id)
-	Assert(lease_info, "没有租约信息:" .. msg.account_id)
-	Assert(g_GameLoginManager:ChcekSession(msg.account_id, msg.session), "会话ID错误")
+	Lua.Assert(lease_info, "没有租约信息:" .. msg.account_id)
+	Lua.Assert(g_GameLoginManager:ChcekSession(msg.account_id, msg.session), "会话ID错误")
 	g_GameLoginManager:RemoveSession(msg.account_id)
 	local account = A_GameAccountManager:CreateAccount(msg.account_id)
 	local status = account:GetStatus()
@@ -256,14 +256,15 @@ function HandleQLogin(client, msg)
 		account:LoginAction()
 		return {}
 	end
-	Throw("未知的账号状态")
+	Lua.Throw("未知的账号状态")
 end
 
 RegMsgRpcCallback(-1162432155, HandleQLogin, 1569725693)
 function HandleQCheckSessionCode(client, msg)
+local ___COROUTINE = coroutine.running()
 	local account = A_GameAccountManager:GetAccountById(msg.account_id)
-	Assert(account, "账号不存在")
-	Assert(account:GetSession() == msg.session_code, "验证码错误")
+	Lua.Assert(account, "账号不存在")
+	Lua.Assert(account:GetSession() == msg.session_code, "验证码错误")
 	return {}
 end
 

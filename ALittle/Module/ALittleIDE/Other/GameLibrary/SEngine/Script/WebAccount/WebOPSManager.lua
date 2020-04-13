@@ -3,7 +3,6 @@ module("ALittle", package.seeall)
 
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___coroutine = coroutine
 local ___all_struct = GetAllStruct()
 
 RegStruct(-1334237987, "ALittle.QVersionCreateAccount", {
@@ -92,14 +91,15 @@ option_map = {}
 })
 
 function HandleQVersionCreateAccount(client, msg)
+local ___COROUTINE = coroutine.running()
 	local web_account = A_WebAccountManager:CheckLoginByClient(client)
-	Assert(msg.account_name ~= nil and msg.account_name ~= "", "账号名不能为空")
-	Assert(msg.account_pwd ~= nil and msg.account_pwd ~= "", "密码不能为空")
+	Lua.Assert(msg.account_name ~= nil and msg.account_name ~= "", "账号名不能为空")
+	Lua.Assert(msg.account_pwd ~= nil and msg.account_pwd ~= "", "密码不能为空")
 	local error, count = A_MysqlSystem:SelectCount(___all_struct[-192825113], "account_name", msg.account_name)
 	if error ~= nil then
-		Throw("数据库操作失败:" .. error)
+		Lua.Throw("数据库操作失败:" .. error)
 	end
-	Assert(count == 0, "账号名已存在")
+	Lua.Assert(count == 0, "账号名已存在")
 	local base_info = {}
 	base_info.account_id = String_GenerateID("account_id")
 	base_info.account_name = msg.account_name
@@ -111,63 +111,66 @@ function HandleQVersionCreateAccount(client, msg)
 	base_info.update_index = index
 	error = A_MysqlSystem:InsertInto(___all_struct[-192825113], base_info)
 	if error ~= nil then
-		Throw("数据库操作失败:" .. error)
+		Lua.Throw("数据库操作失败:" .. error)
 	end
 	return {}
 end
 
 RegMsgRpcCallback(-1334237987, HandleQVersionCreateAccount, -52328307)
 function HandleQVersionDeleteAccount(client, msg)
+local ___COROUTINE = coroutine.running()
 	local web_account = A_WebAccountManager:CheckLoginByClient(client)
 	local error, base_info = A_MysqlSystem:SelectOneFromByKey(___all_struct[-192825113], "account_id", msg.account_id)
 	if error ~= nil then
-		Throw("数据库操作失败:" .. error)
+		Lua.Throw("数据库操作失败:" .. error)
 	end
-	Assert(base_info ~= nil, "账号不存在")
-	Assert(base_info.account_name ~= "alittle", "超级管理员不能删除")
+	Lua.Assert(base_info ~= nil, "账号不存在")
+	Lua.Assert(base_info.account_name ~= "alittle", "超级管理员不能删除")
 	error = A_MysqlSystem:DeleteFromByKey(___all_struct[-192825113], "account_id", msg.account_id)
 	if error ~= nil then
-		Throw("数据库操作失败:" .. error)
+		Lua.Throw("数据库操作失败:" .. error)
 	end
 	return {}
 end
 
 RegMsgRpcCallback(-216744240, HandleQVersionDeleteAccount, -1217701648)
 function HandleQVersionSetAccountPwd(client, msg)
+local ___COROUTINE = coroutine.running()
 	local web_account = A_WebAccountManager:CheckLoginByClient(client)
 	local error, base_info = A_MysqlSystem:SelectOneFromByKey(___all_struct[-192825113], "account_id", msg.account_id)
 	if error ~= nil then
-		Throw("数据库操作失败:" .. error)
+		Lua.Throw("数据库操作失败:" .. error)
 	end
-	Assert(base_info ~= nil, "账号不存在")
+	Lua.Assert(base_info ~= nil, "账号不存在")
 	local password = String_MD5("ALittle" .. String_MD5(msg.account_pwd) .. "ALittle")
 	error = A_MysqlSystem:UpdateSet(___all_struct[-192825113], "account_pwd", password, "account_id", msg.account_id)
 	if error ~= nil then
-		Throw("数据库操作失败:" .. error)
+		Lua.Throw("数据库操作失败:" .. error)
 	end
 	return {}
 end
 
 RegMsgRpcCallback(-1670031053, HandleQVersionSetAccountPwd, 1908089542)
 function HandleQVersionSetAccountRole(client, msg)
+local ___COROUTINE = coroutine.running()
 	local web_account = A_WebAccountManager:CheckLoginByClient(client)
 	local error = nil
 	local base_info = nil
 	error, base_info = A_MysqlSystem:SelectOneFromByKey(___all_struct[-192825113], "account_id", msg.account_id)
 	if error ~= nil then
-		Throw("数据库操作失败:" .. error)
+		Lua.Throw("数据库操作失败:" .. error)
 	end
-	Assert(base_info ~= nil, "账号不存在")
-	Assert(base_info.account_name ~= "alittle", "超级管理员不能修改角色")
+	Lua.Assert(base_info ~= nil, "账号不存在")
+	Lua.Assert(base_info.account_name ~= "alittle", "超级管理员不能修改角色")
 	local role_info = nil
 	error, role_info = A_MysqlSystem:SelectOneFromByKey(___all_struct[-699725823], "role_id", msg.role_id)
 	if error ~= nil then
-		Throw("数据库操作失败:" .. error)
+		Lua.Throw("数据库操作失败:" .. error)
 	end
-	Assert(role_info ~= nil, "角色不存在")
+	Lua.Assert(role_info ~= nil, "角色不存在")
 	error = A_MysqlSystem:UpdateSet(___all_struct[-192825113], "role_id", msg.role_id, "account_id", msg.account_id)
 	if error ~= nil then
-		Throw("数据库操作失败:" .. error)
+		Lua.Throw("数据库操作失败:" .. error)
 	end
 	web_account:UpdateRoleInfo()
 	return {}
@@ -175,10 +178,11 @@ end
 
 RegMsgRpcCallback(-2090346221, HandleQVersionSetAccountRole, -1565382514)
 function HandleQVersionCreateRole(client, msg)
+local ___COROUTINE = coroutine.running()
 	local web_account = A_WebAccountManager:CheckLoginByClient(client)
 	local permission_list = {}
 	for permission, _ in ___pairs(msg.role_permission) do
-		Push(permission_list, permission)
+		List_Push(permission_list, permission)
 	end
 	local role_info = {}
 	role_info.role_id = String_GenerateID("role_id")
@@ -191,30 +195,31 @@ function HandleQVersionCreateRole(client, msg)
 	role_info.update_index = index
 	local error = A_MysqlSystem:InsertInto(___all_struct[-699725823], role_info)
 	if error ~= nil then
-		Throw("数据库操作失败:" .. error)
+		Lua.Throw("数据库操作失败:" .. error)
 	end
 	return {}
 end
 
 RegMsgRpcCallback(-813534860, HandleQVersionCreateRole, 662928143)
 function HandleQVersionUpdateRole(client, msg)
+local ___COROUTINE = coroutine.running()
 	local web_account = A_WebAccountManager:CheckLoginByClient(client)
 	local error, role_info = A_MysqlSystem:SelectOneFromByKey(___all_struct[-699725823], "role_id", msg.role_id)
 	if error ~= nil then
-		Throw("数据库操作失败:" .. error)
+		Lua.Throw("数据库操作失败:" .. error)
 	end
-	Assert(role_info ~= nil, "角色不存在")
+	Lua.Assert(role_info ~= nil, "角色不存在")
 	local permission_list = {}
 	for permission, _ in ___pairs(msg.role_permission) do
-		Push(permission_list, permission)
+		List_Push(permission_list, permission)
 	end
 	error = A_MysqlSystem:UpdateSet(___all_struct[-699725823], "role_name", msg.role_name, "role_id", msg.role_id)
 	if error ~= nil then
-		Throw("数据库操作失败:" .. error)
+		Lua.Throw("数据库操作失败:" .. error)
 	end
 	error = A_MysqlSystem:UpdateSet(___all_struct[-699725823], "permission", permission_list, "role_id", msg.role_id)
 	if error ~= nil then
-		Throw("数据库操作失败:" .. error)
+		Lua.Throw("数据库操作失败:" .. error)
 	end
 	local sql = "SELECT `account_id` FROM `WebBaseInfo` WHERE `role_id`=?"
 	local query = MysqlStatementQuery()
@@ -222,29 +227,33 @@ function HandleQVersionUpdateRole(client, msg)
 	query.value = msg.role_id
 	error = query:Execute()
 	if error ~= nil then
-		Throw("数据库操作失败:" .. error)
+		Lua.Throw("数据库操作失败:" .. error)
 	end
-	for i = 1, query.count, 1 do
+	local i = 1
+	while true do
+		if not(i <= query.count) then break end
 		local account_id = query.String
 		local account = A_WebAccountManager:GetAccountById(account_id)
 		if account ~= nil then
 			account:UpdateRoleInfo()
 		end
+		i = i+(1)
 	end
 	return {}
 end
 
 RegMsgRpcCallback(1102339341, HandleQVersionUpdateRole, -1341503137)
 function HandleQVersionDeleteRole(client, msg)
+local ___COROUTINE = coroutine.running()
 	local web_account = A_WebAccountManager:CheckLoginByClient(client)
 	local error, count = A_MysqlSystem:SelectCount(___all_struct[-192825113], "role_id", msg.role_id)
 	if error ~= nil then
-		Throw("数据库操作失败:" .. error)
+		Lua.Throw("数据库操作失败:" .. error)
 	end
-	Assert(count == 0, "角色正在使用不能删除")
+	Lua.Assert(count == 0, "角色正在使用不能删除")
 	error = A_MysqlSystem:DeleteFromByKey(___all_struct[-699725823], "role_id", msg.role_id)
 	if error ~= nil then
-		Throw("数据库操作失败:" .. error)
+		Lua.Throw("数据库操作失败:" .. error)
 	end
 	return {}
 end

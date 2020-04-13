@@ -4,7 +4,6 @@ module("ALittle", package.seeall)
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___coroutine = coroutine
 
 RegStruct(-1864322361, "ALittle.LoginSessionInfo", {
 name = "ALittle.LoginSessionInfo", ns_name = "ALittle", rl_name = "LoginSessionInfo", hash_code = -1864322361,
@@ -25,7 +24,7 @@ type_list = {},
 option_map = {}
 })
 
-GameLoginManager = Class(nil, "ALittle.GameLoginManager")
+GameLoginManager = Lua.Class(nil, "ALittle.GameLoginManager")
 
 function GameLoginManager:Ctor()
 	___rawset(self, "_session_map", {})
@@ -70,7 +69,7 @@ function GameLoginManager:HandleQSaveSession(msg)
 	info = {}
 	info.account_id = msg.account_id
 	info.session = msg.session
-	info.timer = A_LoopSystem:AddTimer(30 * 1000, Bind(self.HandleSessionTimeout, self, msg.account_id))
+	info.timer = A_LoopSystem:AddTimer(30 * 1000, Lua.Bind(self.HandleSessionTimeout, self, msg.account_id))
 	self._session_map[msg.account_id] = info
 end
 
@@ -80,6 +79,7 @@ end
 
 g_GameLoginManager = GameLoginManager()
 function HandleQSaveSession(client, msg)
+local ___COROUTINE = coroutine.running()
 	g_GameLoginManager:HandleQSaveSession(msg)
 	return {}
 end

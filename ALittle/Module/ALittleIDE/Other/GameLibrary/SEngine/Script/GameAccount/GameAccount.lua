@@ -4,7 +4,6 @@ module("ALittle", package.seeall)
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___coroutine = coroutine
 local ___all_struct = GetAllStruct()
 
 RegStruct(-1121683527, "DataServer.GS2DATA_QLoadStruct", {
@@ -39,7 +38,7 @@ GameAccountStatus = {
 	ONLINE = 4,
 }
 
-GameModule = Class(nil, "ALittle.GameModule")
+GameModule = Lua.Class(nil, "ALittle.GameModule")
 
 function GameModule:Ctor(account)
 	___rawset(self, "_account", account)
@@ -59,7 +58,7 @@ end
 
 function GameModule:LoadData(session)
 end
-GameModule.LoadData = CoWrap(GameModule.LoadData)
+GameModule.LoadData = Lua.CoWrap(GameModule.LoadData)
 
 function GameModule:BackupData(session)
 end
@@ -73,8 +72,8 @@ end
 function GameModule:OnLogout()
 end
 
-assert(GameModule, " extends class:GameModule is nil")
-GameModuleTemplate = Class(GameModule, "ALittle.GameModuleTemplate")
+assert(ALittle.GameModule, " extends class:ALittle.GameModule is nil")
+GameModuleTemplate = Lua.Class(ALittle.GameModule, "ALittle.GameModuleTemplate")
 
 function GameModuleTemplate:GetDataReflect()
 	return self.__class.__element[1]
@@ -103,7 +102,7 @@ function GameModuleTemplate:LoadData(session)
 	local param = {}
 	param.account_id = self._account:GetId()
 	param.hash_code = rflt.hash_code
-	local error, result = IMsgCommon.InvokeRPC(-1121683527, session, param)
+	local error, result = Lua.IMsgCommon.InvokeRPC(-1121683527, session, param)
 	if error ~= nil then
 		Error(tostring(self) .. " DataServer.HandleQLoadStruct() failed:" .. error)
 		self._account:LoadOneCompleted(false)
@@ -112,7 +111,7 @@ function GameModuleTemplate:LoadData(session)
 	self._data = result.value
 	self._account:LoadOneCompleted(true)
 end
-GameModuleTemplate.LoadData = CoWrap(GameModuleTemplate.LoadData)
+GameModuleTemplate.LoadData = Lua.CoWrap(GameModuleTemplate.LoadData)
 
 function GameModuleTemplate:BackupData(session)
 	if session == nil then
@@ -132,7 +131,7 @@ function GameModuleTemplate:BackupData(session)
 	session:SendMsg(___all_struct[1463647694], param)
 end
 
-GameAccount = Class(nil, "ALittle.GameAccount")
+GameAccount = Lua.Class(nil, "ALittle.GameAccount")
 
 function GameAccount:Ctor(id)
 	___rawset(self, "_id", id)
@@ -256,7 +255,7 @@ function GameAccount:StartBackupTimer()
 	if self._backup_timer ~= nil then
 		A_LoopSystem:RemoveTimer(self._backup_timer)
 	end
-	self._backup_timer = A_LoopSystem:AddTimer(self._BACKUP_INTERVAL, Bind(self.Backup, self), 0, self._BACKUP_INTERVAL)
+	self._backup_timer = A_LoopSystem:AddTimer(self._BACKUP_INTERVAL, Lua.Bind(self.Backup, self), 0, self._BACKUP_INTERVAL)
 end
 
 function GameAccount:StopBackupTimer()
@@ -273,7 +272,7 @@ function GameAccount:StartCacheTimer()
 	if self._cache_timer ~= nil then
 		A_LoopSystem:RemoveTimer(self._cache_timer)
 	end
-	self._cache_timer = A_LoopSystem:AddTimer(self._CACHE_INTERVAL, Bind(self.CacheTimeout, self))
+	self._cache_timer = A_LoopSystem:AddTimer(self._CACHE_INTERVAL, Lua.Bind(self.CacheTimeout, self))
 end
 
 function GameAccount:StopCacheTimer()

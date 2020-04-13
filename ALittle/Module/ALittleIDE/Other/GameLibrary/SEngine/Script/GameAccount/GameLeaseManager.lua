@@ -4,13 +4,12 @@ module("ALittle", package.seeall)
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___coroutine = coroutine
 local ___all_struct = GetAllStruct()
 
 RegStruct(1860871079, "ALittle.GameLeaseInfo", {
 name = "ALittle.GameLeaseInfo", ns_name = "ALittle", rl_name = "GameLeaseInfo", hash_code = 1860871079,
 name_list = {"account_id","session","timer"},
-type_list = {"int","ALittle.MsgSessionTemplate<ALittle.MsgSessionNative>","int"},
+type_list = {"int","ALittle.MsgSessionTemplate<ALittle.MsgSessionNative,lua.__CPPAPIMessageWriteFactory>","int"},
 option_map = {}
 })
 RegStruct(-1970485469, "DataServer.GS2DATA_NReleaseLease", {
@@ -51,7 +50,7 @@ option_map = {}
 })
 
 GS_LEASE_INTERVAL = 20 * 1000
-GameLeaseManager = Class(nil, "ALittle.GameLeaseManager")
+GameLeaseManager = Lua.Class(nil, "ALittle.GameLeaseManager")
 
 function GameLeaseManager:Ctor()
 	___rawset(self, "_lease_map", {})
@@ -84,7 +83,7 @@ function GameLeaseManager:NewLease(session, msg)
 	if info.timer ~= nil then
 		A_LoopSystem:RemoveTimer(info.timer)
 	end
-	info.timer = A_LoopSystem:AddTimer(GS_LEASE_INTERVAL, Bind(self.HandleRenewLease, self, msg.account_id))
+	info.timer = A_LoopSystem:AddTimer(GS_LEASE_INTERVAL, Lua.Bind(self.HandleRenewLease, self, msg.account_id))
 end
 
 function GameLeaseManager:ReleaseLease(account_id)
@@ -114,7 +113,7 @@ function GameLeaseManager:HandleRenewLease(account_id)
 	local begin_time = os.time()
 	local param = {}
 	param.account_id = account_id
-	local error, result = IMsgCommon.InvokeRPC(-1057357327, info.session, param)
+	local error, result = Lua.IMsgCommon.InvokeRPC(-1057357327, info.session, param)
 	info = self._lease_map[account_id]
 	if info == nil then
 		return
@@ -127,9 +126,9 @@ function GameLeaseManager:HandleRenewLease(account_id)
 		self._lease_map[account_id] = nil
 		return
 	end
-	info.timer = A_LoopSystem:AddTimer(GS_LEASE_INTERVAL, Bind(self.HandleRenewLease, self, account_id))
+	info.timer = A_LoopSystem:AddTimer(GS_LEASE_INTERVAL, Lua.Bind(self.HandleRenewLease, self, account_id))
 end
-GameLeaseManager.HandleRenewLease = CoWrap(GameLeaseManager.HandleRenewLease)
+GameLeaseManager.HandleRenewLease = Lua.CoWrap(GameLeaseManager.HandleRenewLease)
 
 g_GameLeaseManager = GameLeaseManager()
 function HandleNNewLease(client, msg)
@@ -138,6 +137,7 @@ end
 
 RegMsgCallback(370639724, HandleNNewLease)
 function HandleQEmpty(client, msg)
+local ___COROUTINE = coroutine.running()
 	return {}
 end
 

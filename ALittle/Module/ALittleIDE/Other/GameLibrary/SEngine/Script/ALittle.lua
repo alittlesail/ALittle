@@ -1,21 +1,21 @@
 
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___coroutine = coroutine
 
 
-function __LUAAPI_Core_Init()
-	A_ScriptSystem:RunEngineScript("Utility/System")
-	A_ScriptSystem:RunEngineScript("Utility/HttpSystem")
-	A_ScriptSystem:RunEngineScript("Utility/HttpFileSystem")
-	A_ScriptSystem:RunEngineScript("Utility/ClientSystem")
-	A_ScriptSystem:RunEngineScript("Utility/SessionSystem")
-	A_ScriptSystem:RunEngineScript("Utility/MysqlSystem")
-	A_ScriptSystem:RunEngineScript("CacheData/CacheDataSet")
-	A_ScriptSystem:RunEngineScript("CacheData/FullDataSet")
-	A_ScriptSystem:RunEngineScript("Utility/LogEventSystem")
-	A_ScriptSystem:RunEngineScript("Utility/GatewaySystem")
+function __LUAAPI_SEngine_Init(script_base_path)
+	Require(script_base_path .. "Utility/System")
+	Require(script_base_path .. "Utility/HttpSystem")
+	Require(script_base_path .. "Utility/HttpFileSystem")
+	Require(script_base_path .. "Utility/ClientSystem")
+	Require(script_base_path .. "Utility/SessionSystem")
+	Require(script_base_path .. "Utility/MysqlSystem")
+	Require(script_base_path .. "CacheData/CacheDataSet")
+	Require(script_base_path .. "CacheData/FullDataSet")
+	Require(script_base_path .. "Utility/LogEventSystem")
+	Require(script_base_path .. "Utility/GatewaySystem")
 end
+__LUAAPI_SEngine_Init = Lua.CoWrap(__LUAAPI_SEngine_Init)
 
 function __LUAAPI_SetupMainModule(module_name, config_path)
 	ALittle.Log("module_name:" .. module_name)
@@ -48,7 +48,6 @@ end
 
 function __LUAAPI_Update(frame_time)
 	A_LoopSystem:Update(frame_time)
-	A_WeakLoopSystem:Update(frame_time)
 end
 
 function __LUAAPI_HandleMysqlQueryTask(id, reason)

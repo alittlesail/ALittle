@@ -4,7 +4,6 @@ module("ALittle", package.seeall)
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___coroutine = coroutine
 
 RegStruct(244548997, "ALittle.FullData", {
 name = "ALittle.FullData", ns_name = "ALittle", rl_name = "FullData", hash_code = 244548997,
@@ -13,7 +12,7 @@ type_list = {"int"},
 option_map = {primary="id"}
 })
 
-FullDataSet = Class(nil, "ALittle.FullDataSet")
+FullDataSet = Lua.Class(nil, "ALittle.FullDataSet")
 
 function FullDataSet:Ctor(submit_interval_ms)
 	___rawset(self, "_submit_interval_ms", submit_interval_ms)
@@ -23,6 +22,7 @@ function FullDataSet:Ctor(submit_interval_ms)
 end
 
 function FullDataSet:Init()
+local ___COROUTINE = coroutine.running()
 	local rflt = self.__class.__element[1]
 	self._primary = rflt.option_map["primary"]
 	if self._primary == nil then
@@ -45,7 +45,7 @@ function FullDataSet:Init()
 	if self._submit_timer ~= nil then
 		A_LoopSystem:RemoveTimer(self._submit_timer)
 	end
-	self._submit_timer = A_LoopSystem:AddTimer(self._submit_interval_ms, Bind(self.Submit, self, true))
+	self._submit_timer = A_LoopSystem:AddTimer(self._submit_interval_ms, Lua.Bind(self.Submit, self, true))
 	return nil
 end
 
@@ -78,12 +78,13 @@ function FullDataSet:Submit(loop)
 	end
 	self._dirty_map = {}
 	if loop then
-		self._submit_timer = A_LoopSystem:AddTimer(self._submit_interval_ms, Bind(self.Submit, self, true))
+		self._submit_timer = A_LoopSystem:AddTimer(self._submit_interval_ms, Lua.Bind(self.Submit, self, true))
 	end
 end
-FullDataSet.Submit = CoWrap(FullDataSet.Submit)
+FullDataSet.Submit = Lua.CoWrap(FullDataSet.Submit)
 
 function FullDataSet:GetDataAndDirty(id)
+local ___COROUTINE = coroutine.running()
 	local data = self:GetData(id)
 	if data ~= nil then
 		self._dirty_map[id] = true
@@ -92,6 +93,7 @@ function FullDataSet:GetDataAndDirty(id)
 end
 
 function FullDataSet:GetData(id)
+local ___COROUTINE = coroutine.running()
 	if self._release then
 		return nil
 	end
@@ -123,6 +125,7 @@ function FullDataSet:GetData(id)
 end
 
 function FullDataSet:CreateData(data)
+local ___COROUTINE = coroutine.running()
 	if self._release then
 		return "数据集已经被释放"
 	end
@@ -144,6 +147,7 @@ function FullDataSet:CreateData(data)
 end
 
 function FullDataSet:DeleteData(id)
+local ___COROUTINE = coroutine.running()
 	if self._release then
 		return "数据集已经被释放"
 	end

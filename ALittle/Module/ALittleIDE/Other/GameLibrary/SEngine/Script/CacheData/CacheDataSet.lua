@@ -4,7 +4,6 @@ module("ALittle", package.seeall)
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___coroutine = coroutine
 
 RegStruct(-1164907202, "ALittle.CacheData", {
 name = "ALittle.CacheData", ns_name = "ALittle", rl_name = "CacheData", hash_code = -1164907202,
@@ -13,7 +12,7 @@ type_list = {"int"},
 option_map = {primary="id"}
 })
 
-CacheDataSet = Class(nil, "ALittle.CacheDataSet")
+CacheDataSet = Lua.Class(nil, "ALittle.CacheDataSet")
 
 function CacheDataSet:Ctor(submit_interval_ms, cache_interval_ms)
 	___rawset(self, "_submit_interval_ms", submit_interval_ms)
@@ -25,6 +24,7 @@ function CacheDataSet:Ctor(submit_interval_ms, cache_interval_ms)
 end
 
 function CacheDataSet:Init()
+local ___COROUTINE = coroutine.running()
 	local rflt = self.__class.__element[1]
 	self._primary = rflt.option_map["primary"]
 	if self._primary == nil then
@@ -37,7 +37,7 @@ function CacheDataSet:Init()
 	if self._submit_timer ~= nil then
 		A_LoopSystem:RemoveTimer(self._submit_timer)
 	end
-	self._submit_timer = A_LoopSystem:AddTimer(self._submit_interval_ms, Bind(self.Submit, self, true))
+	self._submit_timer = A_LoopSystem:AddTimer(self._submit_interval_ms, Lua.Bind(self.Submit, self, true))
 	return nil
 end
 
@@ -74,12 +74,13 @@ function CacheDataSet:Submit(loop)
 	end
 	self._dirty_map = {}
 	if loop then
-		self._submit_timer = A_LoopSystem:AddTimer(self._submit_interval_ms, Bind(self.Submit, self, true))
+		self._submit_timer = A_LoopSystem:AddTimer(self._submit_interval_ms, Lua.Bind(self.Submit, self, true))
 	end
 end
-CacheDataSet.Submit = CoWrap(CacheDataSet.Submit)
+CacheDataSet.Submit = Lua.CoWrap(CacheDataSet.Submit)
 
 function CacheDataSet:GetDataAndDirty(id)
+local ___COROUTINE = coroutine.running()
 	local data = self:GetData(id)
 	if data ~= nil then
 		self._dirty_map[id] = true
@@ -88,6 +89,7 @@ function CacheDataSet:GetDataAndDirty(id)
 end
 
 function CacheDataSet:GetData(id)
+local ___COROUTINE = coroutine.running()
 	if self._release then
 		return nil
 	end
@@ -118,7 +120,7 @@ function CacheDataSet:GetData(id)
 	if self._timer_map[id] ~= nil then
 		A_LoopSystem:RemoveTimer(self._timer_map[id])
 	end
-	self._timer_map[id] = A_LoopSystem:AddTimer(self._cache_interval_ms, Bind(self.RemoveCache, self, id))
+	self._timer_map[id] = A_LoopSystem:AddTimer(self._cache_interval_ms, Lua.Bind(self.RemoveCache, self, id))
 	return new_data
 end
 
@@ -144,9 +146,10 @@ function CacheDataSet:SubmitData(data)
 		Error(error)
 	end
 end
-CacheDataSet.SubmitData = CoWrap(CacheDataSet.SubmitData)
+CacheDataSet.SubmitData = Lua.CoWrap(CacheDataSet.SubmitData)
 
 function CacheDataSet:CreateData(data)
+local ___COROUTINE = coroutine.running()
 	if self._release then
 		return "数据集已经被释放"
 	end
@@ -163,7 +166,7 @@ function CacheDataSet:CreateData(data)
 	if self._timer_map[data.id] ~= nil then
 		A_LoopSystem:RemoveTimer(self._timer_map[data.id])
 	end
-	self._timer_map[data.id] = A_LoopSystem:AddTimer(self._cache_interval_ms, Bind(self.RemoveCache, self, data.id))
+	self._timer_map[data.id] = A_LoopSystem:AddTimer(self._cache_interval_ms, Lua.Bind(self.RemoveCache, self, data.id))
 	local error = A_MysqlSystem:InsertInto(self.__class.__element[1], data, nil, data.id)
 	if error ~= nil then
 		Error(error)
@@ -172,6 +175,7 @@ function CacheDataSet:CreateData(data)
 end
 
 function CacheDataSet:DeleteData(id)
+local ___COROUTINE = coroutine.running()
 	if self._release then
 		return "数据集已经被释放"
 	end

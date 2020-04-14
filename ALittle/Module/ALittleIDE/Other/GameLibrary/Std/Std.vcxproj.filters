@@ -194,5 +194,11 @@
     <None Include="src\Adapter\JavaScript\jweakmap.alittle">
       <Filter>Adapter\JavaScript</Filter>
     </None>
+    <None Include="src\Adapter\JavaScript\jbit.alittle">
+      <Filter>Adapter\JavaScript</Filter>
+    </None>
+    <None Include="src\Std\Utility\Bit.alittle">
+      <Filter>Std\Utility</Filter>
+    </None>
   </ItemGroup>
 </Project>

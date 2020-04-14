@@ -687,7 +687,7 @@ public class IDETabChild
 	public fun HandleHandleQuadKeyDown(ALittle.UIKeyDownEvent event)
     {
 	//处理Ctrl+C////////////////////////////////////////////////////////////////////////
-		if (event.sym == 99 && lua.bit.band(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) != 0)
+		if (event.sym == 99 && ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) != 0)
         {
             var copy_list = new List<IDEControlCopyInfo>();
             var copy_list_count = 0;
@@ -710,7 +710,7 @@ public class IDETabChild
             return;
 		}
 	//处理Ctrl+X////////////////////////////////////////////////////////////////////////
-		if (event.sym == 120 && lua.bit.band(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) != 0)
+		if (event.sym == 120 && ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) != 0)
         {
             var copy_list = new List<IDEControlCopyInfo>();
             var copy_list_count = 0;
@@ -752,7 +752,7 @@ public class IDETabChild
             return;
 		}
 	//处理Ctrl+V////////////////////////////////////////////////////////////////////////
-		if (event.sym == 118 && lua.bit.band(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) != 0)
+		if (event.sym == 118 && ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) != 0)
         {
             var handle_info:IDETabChildHandleInfo = event.target._user_data;
 			// 获取父控件

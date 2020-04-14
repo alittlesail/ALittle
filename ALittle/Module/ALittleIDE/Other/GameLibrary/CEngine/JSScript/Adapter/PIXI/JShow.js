@@ -333,23 +333,63 @@ JavaScript.JImage = JavaScript.Class(JavaScript.JDisplayObject, {
 if (JavaScript.JDisplayObject === undefined) throw new Error(" extends class:JavaScript.JDisplayObject is undefined");
 JavaScript.JGrid9Image = JavaScript.Class(JavaScript.JDisplayObject, {
 	Ctor : function() {
-		this._native = new PIXI.Sprite();
+		this._native = new PIXI.Container();
+		this._leftWidth = 0;
+		this._rightWidth = 0;
+		this._topHeight = 0;
+		this._bottomHeight = 0;
 	},
 	ClearTexture : function() {
-		this._native.texture = undefined;
+		this._native.removeChildren(0);
+		this._nine = undefined;
 	},
 	SetTexture : function(texture) {
-		this._native.texture = texture.native;
+		if (this._nine === undefined) {
+			this._nine = new PIXI.NineSlicePlane(texture.native, this._leftWidth, this._topHeight, this._rightWidth, this._bottomHeight);
+			this._native.addChild(this._nine);
+			this._nine.width = this._native.width;
+			this._nine.height = this._native.height;
+		} else {
+			this._native.texture = texture.native;
+		}
 	},
 	SetTextureCoord : function(t, b, l, r) {
 	},
+	SetWidth : function(width) {
+		this._native.width = width;
+		if (this._nine !== undefined) {
+			this._nine.width = width;
+		}
+	},
+	SetHeight : function(height) {
+		this._native.height = height;
+		if (this._nine !== undefined) {
+			this._nine.height = height;
+		}
+	},
 	SetLeftSize : function(value) {
+		this._leftWidth = value;
+		if (this._nine !== undefined) {
+			this._nine.leftWidth = value;
+		}
 	},
 	SetRightSize : function(value) {
+		this._rightWidth = value;
+		if (this._nine !== undefined) {
+			this._nine.rightWidth = value;
+		}
 	},
 	SetTopSize : function(value) {
+		this._topHeight = value;
+		if (this._nine !== undefined) {
+			this._nine.topHeight = value;
+		}
 	},
 	SetBottomSize : function(value) {
+		this._bottomHeight = value;
+		if (this._nine !== undefined) {
+			this._nine.bottomHeight = value;
+		}
 	},
 }, "JavaScript.JGrid9Image");
 

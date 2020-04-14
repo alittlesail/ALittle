@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Adapter\JavaScript\FileSystem.alittle" />
+    <None Include="src\Adapter\JavaScript\jbit.alittle" />
     <None Include="src\Adapter\JavaScript\JCsvFile.alittle" />
     <None Include="src\Adapter\JavaScript\JHttpFileInterface.alittle" />
     <None Include="src\Adapter\JavaScript\JHttpInterface.alittle" />
@@ -65,6 +66,7 @@
     <None Include="src\Std\Reflect\ReflectCmd.alittle" />
     <None Include="src\Std\Reflect\ReflectCsv.alittle" />
     <None Include="src\Std\Reflect\ReflectMessage.alittle" />
+    <None Include="src\Std\Utility\Bit.alittle" />
     <None Include="src\Std\Utility\JsonConfig.alittle" />
     <None Include="src\Std\Utility\CsvConfig.alittle" />
     <None Include="src\Std\Utility\EventDispatcher.alittle" />

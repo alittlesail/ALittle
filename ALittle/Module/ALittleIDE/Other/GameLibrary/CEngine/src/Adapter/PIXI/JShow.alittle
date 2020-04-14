@@ -263,28 +263,79 @@ public class JImage : JDisplayObject
 
 public class JGrid9Image : JDisplayObject
 {
+    private double _leftWidth;
+    private double _rightWidth;
+    private double _topHeight;
+    private double _bottomHeight;
+
+    private PIXI.NineSlicePlane _nine;
+
     public ctor()
     {
-        this._native = new PIXI.Sprite();
+        this._native = new PIXI.Container();
+        this._leftWidth = 0;
+        this._rightWidth = 0;
+        this._topHeight = 0;
+        this._bottomHeight = 0;
     }
     
     public fun ClearTexture()
     {
-        cast<PIXI.Sprite>(this._native).texture = null;
+        cast<PIXI.Container>(this._native).removeChildren(0);
+        this._nine = null;
     }
     public fun SetTexture(ALittle.ITexture texture)
     {
-        cast<PIXI.Sprite>(this._native).texture = cast<JTexture>(texture).native;
+        if (this._nine == null)
+        {
+            this._nine = new PIXI.NineSlicePlane(cast<JTexture>(texture).native
+                            , this._leftWidth, this._topHeight, this._rightWidth, this._bottomHeight);
+            cast<PIXI.Container>(this._native).addChild(this._nine);
+            this._nine.width = this._native.width;
+            this._nine.height = this._native.height;
+        }
+        else
+        {
+            cast<PIXI.NineSlicePlane>(this._native).texture = cast<JTexture>(texture).native;
+        }
     }
     public fun SetTextureCoord(double t, double b, double l, double r)
     {
         // 因为Web版本的图片都是散装的，所以不需要处理
     }
-    
-    public fun SetLeftSize(double value) {}
-    public fun SetRightSize(double value) {}
-    public fun SetTopSize(double value) {}
-    public fun SetBottomSize(double value) {}
+
+    public fun SetWidth(double width)
+    {
+        this._native.width = width;
+        if (this._nine != null) this._nine.width = width;
+    }
+
+    public fun SetHeight(double height)
+    {
+        this._native.height = height;
+        if (this._nine != null) this._nine.height = height;
+    }
+
+    public fun SetLeftSize(double value)
+    {
+        this._leftWidth = value;
+        if (this._nine != null) this._nine.leftWidth = value;
+    }
+    public fun SetRightSize(double value)
+    {
+        this._rightWidth = value;
+        if (this._nine != null) this._nine.rightWidth = value;
+    }
+    public fun SetTopSize(double value)
+    {
+        this._topHeight = value;
+        if (this._nine != null) this._nine.topHeight = value;
+    }
+    public fun SetBottomSize(double value)
+    {
+        this._bottomHeight = value;
+        if (this._nine != null) this._nine.bottomHeight = value;
+    }
 }
 
 public class JText : JDisplayObject

@@ -87,6 +87,32 @@ public class Sprite : Container
 }
 
 [Native]
+public class Mesh : Container
+{
+    public get texture() : Texture {}
+    public set texture(Texture texture) {}    
+}
+
+[Native]
+public class SimplePlane : Mesh
+{
+}
+
+[Native]
+public class NineSlicePlane : SimplePlane
+{
+    public ctor(Texture texutre, double leftWidth, double topHeight, double rightWidth, double bottomHeight) {}
+    public get leftWidth() : double {}
+    public set leftWidth(double v) {}
+    public get topHeight() : double {}
+    public set topHeight(double v) {}
+    public get rightWidth() : double {}
+    public set rightWidth(double v) {}
+    public get bottomHeight() : double {}
+    public set bottomHeight(double v) {}
+}
+
+[Native]
 public class Text : Sprite
 {
     public get text() : string {}

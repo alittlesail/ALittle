@@ -10,7 +10,6 @@ public class __CPPAPIScheduleSystem
     public fun SetAppPauseInterval(int interval) : bool {}
     public fun GetAppPauseInterval() : int {}
     public fun GetCurrentMS() : int {}
-    public fun StartServerSystem(string core_path, string modules) : bool {}
 }
 
 public var __CPPAPI_ScheduleSystem:__CPPAPIScheduleSystem;

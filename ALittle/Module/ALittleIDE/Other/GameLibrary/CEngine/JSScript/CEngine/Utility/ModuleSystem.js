@@ -152,7 +152,7 @@ ALittle.ModuleSystem = JavaScript.Class(undefined, {
 			___COROUTINE();
 		}).bind(this));
 	},
-	MainSetup : async function(base_path, debug, module_name, sengine_path, server_modules) {
+	MainSetup : async function(base_path, debug, module_name) {
 		if (this._main_module !== undefined) {
 			return;
 		}

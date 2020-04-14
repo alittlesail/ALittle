@@ -258,23 +258,8 @@ class ModuleSystem
         return true;
     }
     
-    public async fun MainSetup(string base_path, string debug, string module_name, string sengine_path, string server_modules)
+    public async fun MainSetup(string base_path, string debug, string module_name)
     {
-        // 启动服务器模块
-        [Language(Lua)]
-        if (sengine_path != null && sengine_path != "" && server_modules != null && server_modules != "")
-        {
-            var module_map = new Map<string, string>();
-            var module_list = String_Split(server_modules, ";");
-            for (var index, module in module_list)
-            {
-                var split = String_Split(module, ",");
-                if (lua.table.maxn(split) == 2)
-                    module_map[split[1]] = split[2];
-            }
-            System_StartServerSystem(sengine_path, module_map);
-        }
-
         // 检查主模块是否已经加载
         if (this._main_module != null)
             return;

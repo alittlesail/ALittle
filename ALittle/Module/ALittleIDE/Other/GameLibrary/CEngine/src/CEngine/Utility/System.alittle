@@ -155,14 +155,7 @@ public static System_SetFPS(int fps)
 public static System_SetAppPauseInterval(int interval) { __CPPAPI_ScheduleSystem.SetAppPauseInterval(interval); }
 // 获取每个死循环的睡眠时间，单位毫秒
 public static System_GetAppPauseInterval() : int { return __CPPAPI_ScheduleSystem.GetAppPauseInterval(); }
-// 启动服务器模块
-public static System_StartServerSystem(string core_path, Map<string, string> modules) : bool
-{
-    var module_list = new List<string>();
-    for (var name, path in modules)
-        List_Push(module_list, name..","..path);
-    return __CPPAPI_ScheduleSystem.StartServerSystem(core_path, String_Join(module_list, ";"));
-}
+
 ////线程部分//////////////////////////////////////////////////////////////////////
 public enum SystemThreadType // 这里的枚举值和C++部分一致，不要修改
 {

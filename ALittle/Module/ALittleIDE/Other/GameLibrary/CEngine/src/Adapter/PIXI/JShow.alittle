@@ -350,6 +350,84 @@ public class JGrid9Image : JDisplayObject
     }
 }
 
+public class JSprite : JDisplayObject
+{
+    private int _row_count;
+    private int _col_count;
+    private int _row;
+    private int _col;
+    private int _tex_width;
+    private int _tex_height;
+
+    private PIXI.Texture _texture;
+
+    public ctor()
+    {
+        this._row_count = 1;
+        this._col_count = 1;
+        this._row = 1;
+        this._col = 1;
+        this._tex_width = 0;
+        this._tex_height = 0;
+        this._native = new PIXI.Sprite();
+    }
+    
+    public fun ClearTexture()
+    {
+        this._texture = null;
+        this._tex_width = 0;
+        this._tex_height = 0;
+        cast<PIXI.Sprite>(this._native).texture = null;
+    }
+    public fun SetTexture(ALittle.ITexture texture)
+    {
+        this._tex_width = texture.GetWidth();
+        this._tex_height = texture.GetHeight();
+        var tile_width = this._tex_width / this._col_count;
+        var tile_height = this._tex_height / this._row_count;
+        var frame = new PIXI.Rectangle((this._col - 1)*tile_width, (this._row - 1)*tile_height, tile_width, tile_height);
+        this._texture = new PIXI.Texture(cast<JTexture>(texture).native.baseTexture, frame
+                            , cast<JTexture>(texture).native.orig, cast<JTexture>(texture).native.trim
+                            , cast<JTexture>(texture).native.rotate);
+        cast<PIXI.Sprite>(this._native).texture = this._texture;
+    }
+    public fun SetTextureCoord(double t, double b, double l, double r)
+    {
+        // 因为Web版本的图片都是散装的，所以不需要处理
+    }
+
+    public fun SetRowColCount(int row_count, int col_count)
+    {
+        this._row_count = row_count;
+        if (this._row_count < 1) this._row_count = 1;
+        this._col_count = col_count;
+        if (this._col_count < 1) this._col_count = 1;
+        if (this._row < 1 || this._row > this._row_count) this._row = 1;
+        if (this._col < 1 || this._col > this._col_count) this._col = 1;
+        
+        this.UpdateFrame();
+    }
+    public fun SetRowColIndex(int row, int col)
+    {
+        this._row = row;
+        this._col = col;
+        if (this._row < 1 || this._row > this._row_count) this._row = 1;
+        if (this._col < 1 || this._col > this._col_count) this._col = 1;
+
+        this.UpdateFrame();
+    }
+
+    private fun UpdateFrame()
+    {
+        if (this._texture == null) return;
+
+        var tile_width = this._tex_width / this._col_count;
+        var tile_height = this._tex_height / this._row_count;
+        var frame = new PIXI.Rectangle((this._col - 1)*tile_width, (this._row - 1)*tile_height, tile_width, tile_height);
+        this._texture.frame = new PIXI.Rectangle((this._col - 1)*tile_width, (this._row - 1)*tile_height, tile_width, tile_height);
+    }
+}
+
 public class JText : JDisplayObject
 {
     private PIXI.TextStyle _style;
@@ -437,8 +515,8 @@ public class JTexture : ALittle.ITexture
     }
     public get native() : PIXI.Texture { return this._texture; }
     public fun GetTexture() : ALittle.ITexture { return this; }
-    public fun GetWidth() : int { return 0; }
-    public fun GetHeight() : int { return 0; }
+    public fun GetWidth() : int { return this._width; }
+    public fun GetHeight() : int { return this._height; }
 }
 
 public class JTextureLoader : ALittle.ITextureLoader
@@ -503,7 +581,7 @@ public class JTextureLoader : ALittle.ITextureLoader
         
         var func = cast<Map<string, Functor<(ALittle.ITextureLoader, ALittle.ITexture)>>>(window)["__ALITTLEAPI_TextureLoadSucceed"];
         if (func == null) return;
-        func(this, new JTexture(resource.texture, this._width, this._height));
+        func(this, new JTexture(resource.texture, cast<int>(resource.texture.orig.width), cast<int>(resource.texture.orig.height)));
     }
        
     private fun HandleLoadFailed()

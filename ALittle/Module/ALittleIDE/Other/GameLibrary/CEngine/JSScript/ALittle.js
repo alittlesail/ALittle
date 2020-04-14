@@ -31,6 +31,7 @@ __ALITTLEAPI_CEngine_Init = function(base_path) {
 		await Require(base_path + "CEngine/UISystem/Base/DisplayView");
 		await Require(base_path + "CEngine/UISystem/Base/Quad");
 		await Require(base_path + "CEngine/UISystem/Base/Image");
+		await Require(base_path + "CEngine/UISystem/Base/Sprite");
 		await Require(base_path + "CEngine/UISystem/Base/Text");
 		await Require(base_path + "CEngine/UISystem/Complex/Grid9Image");
 		await Require(base_path + "CEngine/UISystem/UISystem");
@@ -203,9 +204,9 @@ __ALITTLEAPI_SystemSaveFile = function(path) {
 	A_OtherSystem.HandleSystemSaveFile(path);
 }
 
-__ALITTLEAPI_SetupMainModule = function(base_path, debug, module_name, sengine_path, modules) {
+__ALITTLEAPI_SetupMainModule = function(base_path, debug, module_name) {
 	A_AudioSystem.Setup();
-	A_ModuleSystem.MainSetup(base_path, debug, module_name, sengine_path, modules);
+	A_ModuleSystem.MainSetup(base_path, debug, module_name);
 }
 
 __ALITTLEAPI_ShutdownMainModule = function() {

@@ -6,7 +6,7 @@ let ___all_struct = ALittle.GetAllStruct();
 if (ALittle.DisplayObject === undefined) throw new Error(" extends class:ALittle.DisplayObject is undefined");
 ALittle.Sprite = JavaScript.Class(ALittle.DisplayObject, {
 	Ctor : function(ctrl_sys) {
-		this._show = ALittle.NewObject(lua.__CPPAPISprite);
+		this._show = ALittle.NewObject(JavaScript.JSprite);
 		this._texture_width = 0;
 		this._texture_height = 0;
 		this._tex_coord_t = 0;

@@ -5,7 +5,7 @@ public class Sprite : DisplayObject
 {
     private string _texture_name;
     private TextureCutInfo _texture_cut;
-    private lua.__CPPAPITextureWrap _texture;
+    private ITexture _texture;
 
     private int _texture_width;
     private int _texture_height;
@@ -25,7 +25,10 @@ public class Sprite : DisplayObject
     public ctor(ControlSystem ctrl_sys)
     {
         // 创建image显示对象
+        [Language(Lua)]
         this._show = new lua.__CPPAPISprite();
+        [Language(JavaScript)]
+        this._show = new JavaScript.JSprite();
     
         // 当前的纹理名称
         // this._texture_name = null;
@@ -180,14 +183,14 @@ public class Sprite : DisplayObject
         return this._texture_name;
     }
     
-    public set texture(lua.__CPPAPITextureWrap value)
+    public set texture(ITexture value)
     {
         this._show.SetTexture(value.GetTexture());
         this._texture_width = value.GetWidth();
         this._texture_height = value.GetHeight();
         this._texture = value;
     }
-    public get texture() : lua.__CPPAPITextureWrap
+    public get texture() : ITexture
     {
         return this._texture;
     }

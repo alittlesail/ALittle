@@ -33,9 +33,9 @@ local ___COROUTINE = coroutine.running()
 	Require(base_path .. "CEngine/UISystem/Base/DisplayView")
 	Require(base_path .. "CEngine/UISystem/Base/Quad")
 	Require(base_path .. "CEngine/UISystem/Base/Image")
+	Require(base_path .. "CEngine/UISystem/Base/Sprite")
 	Require(base_path .. "CEngine/UISystem/Base/Text")
 	do
-		Require(base_path .. "CEngine/UISystem/Base/Sprite")
 		Require(base_path .. "CEngine/UISystem/Base/TextArea")
 		Require(base_path .. "CEngine/UISystem/Base/TextEdit")
 		Require(base_path .. "CEngine/UISystem/Base/TextInput")
@@ -248,9 +248,9 @@ function __ALITTLEAPI_SystemSaveFile(path)
 	A_OtherSystem:HandleSystemSaveFile(path)
 end
 
-function __ALITTLEAPI_SetupMainModule(base_path, debug, module_name, sengine_path, modules)
+function __ALITTLEAPI_SetupMainModule(base_path, debug, module_name)
 	A_AudioSystem:Setup()
-	A_ModuleSystem:MainSetup(base_path, debug, module_name, sengine_path, modules)
+	A_ModuleSystem:MainSetup(base_path, debug, module_name)
 end
 
 function __ALITTLEAPI_ShutdownMainModule()

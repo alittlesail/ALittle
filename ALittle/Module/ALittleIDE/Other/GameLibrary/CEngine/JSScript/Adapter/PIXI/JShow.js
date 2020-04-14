@@ -237,9 +237,8 @@ JavaScript.JDisplayObjects = JavaScript.Class(JavaScript.JDisplayObject, {
 if (JavaScript.JDisplayObjects === undefined) throw new Error(" extends class:JavaScript.JDisplayObjects is undefined");
 JavaScript.JDisplayView = JavaScript.Class(JavaScript.JDisplayObjects, {
 	Ctor : function() {
-		this._mask = new PIXI.MaskData();
-		this._mask.type = 1;
-		this._native.mask = this._mask;
+		this._graphics = new PIXI.Graphics();
+		this._native.mask = this._graphics;
 	},
 }, "JavaScript.JDisplayView");
 
@@ -403,6 +402,73 @@ JavaScript.JGrid9Image = JavaScript.Class(JavaScript.JDisplayObject, {
 }, "JavaScript.JGrid9Image");
 
 if (JavaScript.JDisplayObject === undefined) throw new Error(" extends class:JavaScript.JDisplayObject is undefined");
+JavaScript.JSprite = JavaScript.Class(JavaScript.JDisplayObject, {
+	Ctor : function() {
+		this._row_count = 1;
+		this._col_count = 1;
+		this._row = 1;
+		this._col = 1;
+		this._tex_width = 0;
+		this._tex_height = 0;
+		this._native = new PIXI.Sprite();
+	},
+	ClearTexture : function() {
+		this._texture = undefined;
+		this._tex_width = 0;
+		this._tex_height = 0;
+		this._native.texture = undefined;
+	},
+	SetTexture : function(texture) {
+		this._tex_width = texture.GetWidth();
+		this._tex_height = texture.GetHeight();
+		let tile_width = this._tex_width / this._col_count;
+		let tile_height = this._tex_height / this._row_count;
+		let frame = new PIXI.Rectangle((this._col - 1) * tile_width, (this._row - 1) * tile_height, tile_width, tile_height);
+		this._texture = new PIXI.Texture(texture.native.baseTexture, frame, texture.native.orig, texture.native.trim, texture.native.rotate);
+		this._native.texture = this._texture;
+	},
+	SetTextureCoord : function(t, b, l, r) {
+	},
+	SetRowColCount : function(row_count, col_count) {
+		this._row_count = row_count;
+		if (this._row_count < 1) {
+			this._row_count = 1;
+		}
+		this._col_count = col_count;
+		if (this._col_count < 1) {
+			this._col_count = 1;
+		}
+		if (this._row < 1 || this._row > this._row_count) {
+			this._row = 1;
+		}
+		if (this._col < 1 || this._col > this._col_count) {
+			this._col = 1;
+		}
+		this.UpdateFrame();
+	},
+	SetRowColIndex : function(row, col) {
+		this._row = row;
+		this._col = col;
+		if (this._row < 1 || this._row > this._row_count) {
+			this._row = 1;
+		}
+		if (this._col < 1 || this._col > this._col_count) {
+			this._col = 1;
+		}
+		this.UpdateFrame();
+	},
+	UpdateFrame : function() {
+		if (this._texture === undefined) {
+			return;
+		}
+		let tile_width = this._tex_width / this._col_count;
+		let tile_height = this._tex_height / this._row_count;
+		let frame = new PIXI.Rectangle((this._col - 1) * tile_width, (this._row - 1) * tile_height, tile_width, tile_height);
+		this._texture.frame = new PIXI.Rectangle((this._col - 1) * tile_width, (this._row - 1) * tile_height, tile_width, tile_height);
+	},
+}, "JavaScript.JSprite");
+
+if (JavaScript.JDisplayObject === undefined) throw new Error(" extends class:JavaScript.JDisplayObject is undefined");
 JavaScript.JText = JavaScript.Class(JavaScript.JDisplayObject, {
 	Ctor : function() {
 		this._native = new PIXI.Text();
@@ -471,10 +537,10 @@ JavaScript.JTexture = JavaScript.Class(ALittle.ITexture, {
 		return this;
 	},
 	GetWidth : function() {
-		return 0;
+		return this._width;
 	},
 	GetHeight : function() {
-		return 0;
+		return this._height;
 	},
 }, "JavaScript.JTexture");
 
@@ -531,7 +597,7 @@ JavaScript.JTextureLoader = JavaScript.Class(ALittle.ITextureLoader, {
 		if (func === undefined) {
 			return;
 		}
-		func(this, ALittle.NewObject(JavaScript.JTexture, resource.texture, this._width, this._height));
+		func(this, ALittle.NewObject(JavaScript.JTexture, resource.texture, resource.texture.orig.width, resource.texture.orig.height));
 	},
 	HandleLoadFailed : function() {
 		if (this._load_failed) {

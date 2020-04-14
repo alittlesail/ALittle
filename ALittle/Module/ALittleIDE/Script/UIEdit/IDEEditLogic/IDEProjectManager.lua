@@ -314,33 +314,9 @@ function IDEProjectManager:RunProject()
 		g_IDETool:ShowNotice("提示", "当前没有打开的项目")
 		return
 	end
-	local server_module = ""
-	local core_path = g_IDEProject.project.config:GetConfig("core_path", "")
-	if core_path ~= "" then
-		if ALittle.File_GetFileAttr(core_path) == nil then
-			g_IDETool:ShowNotice("提示", "服务端引擎路径不存在:" .. core_path)
-			return
-		end
-		local modules = g_IDEProject.project.config:GetConfig("modules", "")
-		local module_split = ALittle.String_SplitSepList(modules, {"\n", "\r"})
-		local new_modules = {}
-		for index, module in ___ipairs(module_split) do
-			local split = ALittle.String_Split(module, ",")
-			if ALittle.List_MaxN(split) ~= 2 then
-				g_IDETool:ShowNotice("提示", "服务端模块格式错误:" .. module)
-				return
-			end
-			if ALittle.File_GetFileAttr(split[1]) == nil then
-				g_IDETool:ShowNotice("提示", "服务端模块路径不存在:" .. split[1])
-				return
-			end
-			ALittle.List_Push(new_modules, module)
-		end
-		if ALittle.List_MaxN(new_modules) > 0 then
-			server_module = " \"" .. core_path .. "\" \"" .. ALittle.String_Join(new_modules, ";") .. "\""
-		end
-	end
-	os.execute("start ALittleClient.exe debug " .. g_IDEProject.project.name .. server_module)
+	local module_name = g_IDEProject.project.name
+	local module_path = "Module/" .. module_name .. "/Script/"
+	os.execute("start ALittleClientd.exe " .. module_path .. " debug " .. module_name)
 end
 
 g_IDEProjectManager = IDEProjectManager()

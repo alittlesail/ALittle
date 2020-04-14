@@ -159,18 +159,7 @@ local ___COROUTINE = coroutine.running()
 	return true
 end
 
-function ModuleSystem:MainSetup(base_path, debug, module_name, sengine_path, server_modules)
-	if sengine_path ~= nil and sengine_path ~= "" and server_modules ~= nil and server_modules ~= "" then
-		local module_map = {}
-		local module_list = String_Split(server_modules, ";")
-		for index, module in ___ipairs(module_list) do
-			local split = String_Split(module, ",")
-			if table.maxn(split) == 2 then
-				module_map[split[1]] = split[2]
-			end
-		end
-		System_StartServerSystem(sengine_path, module_map)
-	end
+function ModuleSystem:MainSetup(base_path, debug, module_name)
 	if self._main_module ~= nil then
 		return
 	end

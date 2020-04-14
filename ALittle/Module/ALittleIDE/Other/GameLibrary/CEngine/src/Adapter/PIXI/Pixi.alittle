@@ -89,6 +89,12 @@ public class Sprite : Container
 }
 
 [Native]
+public class TilingSprite : Sprite
+{
+    
+}
+
+[Native]
 public class Mesh : Container
 {
     public get texture() : Texture {}
@@ -146,9 +152,26 @@ public class TextMetrics
 }
 
 [Native]
-public class Texture
+public class BaseTexture
 {
     
+}
+
+[Native]
+public class Texture
+{
+    public ctor([Nullable] BaseTexture baseTexture, [Nullable]Rectangle frame, [Nullable] Rectangle orig, [Nullable] Rectangle trim, [Nullable] double rotate, [Nullable] Point anchor) {}
+    
+    public set baseTexture(BaseTexture v) {}
+    public get baseTexture() : BaseTexture {}
+    public set frame(Rectangle v) {}
+    public get frame() : Rectangle {}
+    public set orig(Rectangle v) {}
+    public get orig() : Rectangle {}
+    public set trim(Rectangle v) {}
+    public get trim() : Rectangle {}
+    public set rotate(double v) {}
+    public get rotate() : double {}
 }
 
 [Native]
@@ -178,4 +201,14 @@ public class Loader
 public class Ticker
 {
     public fun add(Functor<(double)> func) {}
+}
+
+[Native]
+public class Rectangle
+{
+    public ctor(double x, double y, double width, double height) {}
+    public get width() : double {}
+    public get height() : double {}
+    public get x() : double {}
+    public get y() : double {}
 }

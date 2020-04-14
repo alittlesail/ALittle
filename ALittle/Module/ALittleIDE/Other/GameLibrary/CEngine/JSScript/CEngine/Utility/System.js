@@ -71,17 +71,6 @@ ALittle.System_GetAppPauseInterval = function() {
 	return __CPPAPI_ScheduleSystem.GetAppPauseInterval();
 }
 
-ALittle.System_StartServerSystem = function(core_path, modules) {
-	let module_list = [];
-	let ___OBJECT_1 = modules;
-	for (let name in ___OBJECT_1) {
-		let path = ___OBJECT_1[name];
-		if (path === undefined) continue;
-		ALittle.List_Push(module_list, name + "," + path);
-	}
-	return __CPPAPI_ScheduleSystem.StartServerSystem(core_path, ALittle.String_Join(module_list, ";"));
-}
-
 ALittle.SystemThreadType = {
 	FAST : 0,
 	MIDDLE : 1,

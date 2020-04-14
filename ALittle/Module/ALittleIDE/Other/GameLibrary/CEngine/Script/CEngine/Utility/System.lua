@@ -73,14 +73,6 @@ function System_GetAppPauseInterval()
 	return __CPPAPI_ScheduleSystem:GetAppPauseInterval()
 end
 
-function System_StartServerSystem(core_path, modules)
-	local module_list = {}
-	for name, path in ___pairs(modules) do
-		List_Push(module_list, name .. "," .. path)
-	end
-	return __CPPAPI_ScheduleSystem:StartServerSystem(core_path, String_Join(module_list, ";"))
-end
-
 SystemThreadType = {
 	FAST = 0,
 	MIDDLE = 1,

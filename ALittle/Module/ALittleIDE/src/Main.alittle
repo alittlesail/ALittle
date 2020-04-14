@@ -13,10 +13,7 @@ public async static __Browser_Setup(ALittle.DisplayLayout layer_group
     var window_width = 1200;
     var window_height = 600;
     var rate = 1.0;
-    var flag = 0;
-    [Language(Lua)]
-    flag = lua.bit.bor(ALittle.UIEnumTypes.VIEW_MAXIMIZED, ALittle.UIEnumTypes.VIEW_RESIZABLE);
-    [Language(Lua)]
+    var flag = ALittle.BitOr(ALittle.UIEnumTypes.VIEW_MAXIMIZED, ALittle.UIEnumTypes.VIEW_RESIZABLE);
     if (ALittle.System_GetPlatform() != "Windows")
     {
         var screen_width = ALittle.System_GetScreenWidth();
@@ -24,7 +21,7 @@ public async static __Browser_Setup(ALittle.DisplayLayout layer_group
         rate = screen_height / screen_width;
         window_height = ALittle.Math_Floor(rate * window_width);
         
-        flag = lua.bit.bor(flag, ALittle.UIEnumTypes.VIEW_FULLSCREEN);
+        flag = ALittle.BitOr(flag, ALittle.UIEnumTypes.VIEW_FULLSCREEN);
     }
     ALittle.System_CreateView("ALittleIDE", window_width, window_height, flag, rate);
     ALittle.System_SetViewIcon(module_base_path.."/Other/ic_launcher.png");

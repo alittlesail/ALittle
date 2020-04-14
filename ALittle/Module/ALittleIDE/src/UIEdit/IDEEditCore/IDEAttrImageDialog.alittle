@@ -197,25 +197,23 @@ public class IDEAttrImageDialog
 		var item_list_dir = new List<ALittle.DisplayObject>();
 		var item_list_img = new List<ALittle.DisplayObject>();
 		// 遍历文件夹
-		for (var file in lua.lfs.dir(browser_path))
+		var file_map = ALittle.File_GetFileNameListByDir(browser_path);
+		for (var file, info in file_map)
 		{
-			if (file != "." && file != "..")
+			var path = browser_path.."/"..file;
+			// 获取相对路劲
+			var rel_path = ALittle.String_Sub(path, ALittle.String_Len(this._base_path) + 2);
+			// 检查路径类型
+			var attr = ALittle.File_GetFileAttr(path);
+			if (attr.mode == "directory")
 			{
-				var path = browser_path.."/"..file;
-				// 获取相对路劲
-				var rel_path = ALittle.String_Sub(path, ALittle.String_Len(this._base_path) + 2);
-				// 检查路径类型
-				var attr = ALittle.File_GetFileAttr(path);
-				if (attr.mode == "directory")
-				{
-					var item = this.CreateDirItem(file, rel_path, path);
-					if (item != null) ALittle.List_Push(item_list_dir, item);
-				}
-				else
-				{
-					var item = this.CreateImgItem(file, rel_path, path);
-					if (item != null) ALittle.List_Push(item_list_img, item);
-				}
+				var item = this.CreateDirItem(file, rel_path, path);
+				if (item != null) ALittle.List_Push(item_list_dir, item);
+			}
+			else
+			{
+				var item = this.CreateImgItem(file, rel_path, path);
+				if (item != null) ALittle.List_Push(item_list_img, item);
 			}
 		}
 		return item_list_dir, item_list_img;
@@ -233,29 +231,27 @@ public class IDEAttrImageDialog
 		if (name == "" || name == null) return item_list, run_time;
 	
 		// 遍历文件夹
-		for (var file in lua.lfs.dir(search_path))
+		var file_map = ALittle.File_GetFileNameListByDir(search_path);
+		for (var file, info in file_map)
 		{
-			if (file != "." && file != "..")
+			var path = search_path.."/"..file;
+			// 获取相对路劲
+			var rel_path = ALittle.String_Sub(path, ALittle.String_Len(this._base_path) + 2);
+			// 检查路径类型
+			var attr = ALittle.File_GetFileAttr(path);
+			if (attr.mode == "directory")
+				this.SearchCollect(path, name, item_list, run_time);
+			elseif (ALittle.String_Find(file, name) != null)
 			{
-				var path = search_path.."/"..file;
-				// 获取相对路劲
-				var rel_path = ALittle.String_Sub(path, ALittle.String_Len(this._base_path) + 2);
-				// 检查路径类型
-				var attr = ALittle.File_GetFileAttr(path);
-				if (attr.mode == "directory")
-					this.SearchCollect(path, name, item_list, run_time);
-				elseif (ALittle.String_Find(file, name) != null)
+				var item = this.CreateImgItem(file, rel_path, path);
+				if (item != null)
 				{
-					var item = this.CreateImgItem(file, rel_path, path);
-					if (item != null)
-					{
-						run_time.cur_count = run_time.cur_count + 1;
-						ALittle.List_Push(item_list, item);
-					}
+					run_time.cur_count = run_time.cur_count + 1;
+					ALittle.List_Push(item_list, item);
 				}
-				if (run_time.cur_count >= run_time.total_count)
-					return item_list, run_time;
 			}
+			if (run_time.cur_count >= run_time.total_count)
+				return item_list, run_time;
 		}
 	
 		return item_list, run_time;

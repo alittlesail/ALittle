@@ -10,14 +10,13 @@ function __Browser_Setup(layer_group, control, module_base_path, script_base_pat
 	local window_width = 1200
 	local window_height = 600
 	local rate = 1.0
-	local flag = 0
-	flag = bit.bor(0x00000080, 0x00000020)
+	local flag = ALittle.BitOr(0x00000080, 0x00000020)
 	if ALittle.System_GetPlatform() ~= "Windows" then
 		local screen_width = ALittle.System_GetScreenWidth()
 		local screen_height = ALittle.System_GetScreenHeight()
 		rate = screen_height / screen_width
 		window_height = ALittle.Math_Floor(rate * window_width)
-		flag = bit.bor(flag, 0x00000001)
+		flag = ALittle.BitOr(flag, 0x00000001)
 	end
 	ALittle.System_CreateView("ALittleIDE", window_width, window_height, flag, rate)
 	ALittle.System_SetViewIcon(module_base_path .. "/Other/ic_launcher.png")

@@ -172,6 +172,49 @@ public static File_GetFileAttrByDir(string path, [Nullable] Map<string, lua.file
     return file_map;  
 }
 
+public static File_GetFileNameListByDir(string path, [Nullable] Map<string, lua.fileattr> file_map) : Map<string, lua.fileattr>
+{
+    if (file_map == null) file_map = new Map<string, lua.fileattr>();
+    
+    var list = Path_FilterEmpty(ALittle.String_SplitSepList(path, ["/", "\\"]));
+    var cur = root;
+    for (var index, name in list)
+    {
+        if (cur.file == null) return file_map;
+        var file = cur.file[name];
+        if (file == null) return file_map;
+        if (!file.is_directory) return file_map;
+        cur = file;
+    }
+    if (cur.file == null) return file_map;
+    
+    // 遍历路径
+    for (var name, value in cur.file)
+    {
+        // 生成文件目录
+        var file_path = cur_dir .. name;
+        // 如果是目录，那么就递归遍历
+        if (value.is_directory)
+        {
+            var attr = new lua.fileattr();
+            attr.mode = "directory";
+            attr.size = 0;
+            file_map[name] = attr;
+        }
+        // 如果是文件，那么就直接获取属性
+        else
+        {    
+            var attr = new lua.fileattr();
+            attr.mode = "file";
+            attr.size = ALittle.String_Len(value.content);
+            file_map[name] = attr;
+        }
+    }
+    
+    // 返回结果
+    return file_map;  
+}
+
 public static File_DeleteDir(string path) : bool
 {
     var list = Path_FilterEmpty(ALittle.String_SplitSepList(path, ["/", "\\"]));

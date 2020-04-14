@@ -131,21 +131,21 @@ ALittleIDE.IDEProject = JavaScript.Class(ALittle.EventDispatcher, {
 		for (let file_path in ___OBJECT_1) {
 			let attr = ___OBJECT_1[file_path];
 			if (attr === undefined) continue;
-			let rel_path = lua.String.sub(file_path, lua.String.len(base_path) + 1);
+			let rel_path = ALittle.String_Sub(file_path, ALittle.String_Len(base_path) + 1);
 			let full_path = target_path + rel_path;
 			full_path = ALittle.String_Replace(full_path, "abcd@module_name@abcd", name);
-			full_path = ALittle.String_Replace(full_path, "abcd@upper_module_name@abcd", lua.String.upper(name));
-			full_path = ALittle.String_Replace(full_path, "abcd@lower_module_name@abcd", lua.String.lower(name));
+			full_path = ALittle.String_Replace(full_path, "abcd@upper_module_name@abcd", ALittle.String_Upper(name));
+			full_path = ALittle.String_Replace(full_path, "abcd@lower_module_name@abcd", ALittle.String_Lower(name));
 			ALittle.File_MakeDeepDir(ALittle.File_GetFilePathByPath(full_path));
-			let ext = lua.String.upper(ALittle.File_GetFileExtByPath(file_path));
+			let ext = ALittle.String_Upper(ALittle.File_GetFileExtByPath(file_path));
 			if (ext === "JSON" || ext === "LUA" || ext === "CFG" || ext === "TXT" || ext === "ALITTLE" || ext === "XML" || ext === "NAME") {
 				let content = ALittle.File_ReadTextFromFile(file_path);
 				if (content !== undefined) {
 					content = ALittle.String_Replace(content, "abcd@module_name@abcd", name);
-					content = ALittle.String_Replace(content, "abcd@upper_module_name@abcd", lua.String.upper(name));
-					content = ALittle.String_Replace(content, "abcd@lower_module_name@abcd", lua.String.lower(name));
-					content = ALittle.String_Replace(content, "abcd@view_width@abcd", lua.tostring(window_width));
-					content = ALittle.String_Replace(content, "abcd@view_height@abcd", lua.tostring(window_height));
+					content = ALittle.String_Replace(content, "abcd@upper_module_name@abcd", ALittle.String_Upper(name));
+					content = ALittle.String_Replace(content, "abcd@lower_module_name@abcd", ALittle.String_Lower(name));
+					content = ALittle.String_Replace(content, "abcd@view_width@abcd", "" + window_width);
+					content = ALittle.String_Replace(content, "abcd@view_height@abcd", "" + window_height);
 					content = ALittle.String_Replace(content, "abcd@font_path@abcd", font_path);
 					ALittle.File_WriteTextToFile(content, full_path);
 				}
@@ -181,11 +181,11 @@ ALittleIDE.IDEProject = JavaScript.Class(ALittle.EventDispatcher, {
 		for (let file_path in ___OBJECT_2) {
 			let attr = ___OBJECT_2[file_path];
 			if (attr === undefined) continue;
-			let ext = lua.String.upper(ALittle.File_GetFileExtByPath(file_path));
+			let ext = ALittle.String_Upper(ALittle.File_GetFileExtByPath(file_path));
 			if (ext === "JSON") {
 				let content = ALittle.File_ReadTextFromFile(file_path);
 				if (content !== undefined) {
-					let [error, content_info_map] = (function() { try { let ___VALUE = lua.json.decode.call(undefined, content); return [undefined, ___VALUE]; } catch (___ERROR) { return [___ERROR.message]; } }).call(this);
+					let [error, content_info_map] = (function() { try { let ___VALUE = ALittle.String_JsonDecode.call(undefined, content); return [undefined, ___VALUE]; } catch (___ERROR) { return [___ERROR.message]; } }).call(this);
 					if (error === undefined) {
 						let ___OBJECT_3 = content_info_map;
 						for (let control_name in ___OBJECT_3) {
@@ -267,7 +267,7 @@ ALittleIDE.IDEProject = JavaScript.Class(ALittle.EventDispatcher, {
 		let file_path = this._project.base_path + "UI/" + name + ".json";
 		let save_info = {};
 		save_info[name] = info;
-		if (ALittle.File_SaveFile(file_path, lua.json.encode(save_info), -1) === false) {
+		if (ALittle.File_SaveFile(file_path, ALittle.String_JsonEncode(save_info), -1) === false) {
 			return [false, "文件保存失败:" + file_path];
 		}
 		let all_info = this._project.control_map[name];
@@ -347,7 +347,7 @@ ALittleIDE.IDEProject = JavaScript.Class(ALittle.EventDispatcher, {
 			return [result, content];
 		}
 		let file_path = this._project.base_path + "UI/" + name + ".json";
-		lua.os.remove(file_path);
+		ALittle.File_DeleteFile(file_path);
 		let all_info = this._project.control_map[name];
 		let ___OBJECT_11 = all_info.extends_other;
 		for (let other_name in ___OBJECT_11) {
@@ -383,14 +383,14 @@ ALittleIDE.IDEProject = JavaScript.Class(ALittle.EventDispatcher, {
 		delete this._project.control_map[old_name];
 		this._project.control.UnRegisterInfo(old_name);
 		let file_path = this._project.base_path + "UI/" + old_name + ".json";
-		lua.os.remove(file_path);
+		ALittle.File_DeleteFile(file_path);
 		all_info.name = new_name;
 		this._project.control_map[new_name] = all_info;
 		this._project.control.RegisterInfo(new_name, ALittle.String_CopyTable(all_info.info));
 		file_path = this._project.base_path + "UI/" + new_name + ".json";
 		let save_info = {};
 		save_info[new_name] = all_info.info;
-		ALittle.File_SaveFile(file_path, lua.json.encode(save_info), -1);
+		ALittle.File_SaveFile(file_path, ALittle.String_JsonEncode(save_info), -1);
 		let ce = {};
 		ce.name = new_name;
 		this.DispatchEvent(___all_struct.get(-93681239), ce);

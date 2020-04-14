@@ -100,6 +100,7 @@ class IDEExport
 	public await fun PackagePlatform(string project_name, IDEVersionInfo version_info, IDEInstallInfo install_info, string platform)
 	{
 		ALittle.Log("========PackagePlatform"..project_name.."========");
+		
 		// 计算工程路径
 		var project_path = ALittle.File_BaseFilePath().."Module/"..project_name;
 		

@@ -48,7 +48,7 @@ ALittleIDE.IDEUtility_CalcTextureName = function(info, map) {
 		if (v === undefined) continue;
 		if (k === "texture_name") {
 			map[v] = true;
-		} else if (lua.type(v) === "table") {
+		} else if (ALittle.String_Type(v) === "table") {
 			ALittleIDE.IDEUtility_CalcTextureName(v, map);
 		}
 	}
@@ -63,7 +63,7 @@ ALittleIDE.IDEUtility_GetExtends = function(info, map) {
 	for (let k in ___OBJECT_2) {
 		let v = ___OBJECT_2[k];
 		if (v === undefined) continue;
-		if (lua.type(v) === "table") {
+		if (ALittle.String_Type(v) === "table") {
 			ALittleIDE.IDEUtility_GetExtends(v, map);
 		} else if (k === "__extends" || k === "__include") {
 			map[v] = true;

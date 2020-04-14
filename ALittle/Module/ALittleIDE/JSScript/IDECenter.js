@@ -35,7 +35,7 @@ ALittleIDE.IDECenter = JavaScript.Class(undefined, {
 			this.ShowPhoneStatusLine(106, 106, 106);
 			ALittleIDE.g_Control.CreateControl("ide_main_scene", this, this._main_layer);
 			this.UpdateProjectList();
-			ALittleIDE.g_IDEUICenter.Setup(this._edit_container);
+			await ALittleIDE.g_IDEUICenter.Setup(this._edit_container);
 			ALittleIDE.g_IDEUICenter.Show();
 			A_UISystem.keydown_callback = this.HandleShortcutKey.bind(this);
 			ALittleIDE.g_IDEIMEManager.Setup();
@@ -105,7 +105,7 @@ ALittleIDE.IDECenter = JavaScript.Class(undefined, {
 			++ data_list_count;
 			data_list[data_list_count - 1] = v;
 		}
-		lua.table.sort(data_list);
+		ALittle.List_Sort(data_list);
 		let text = this._current_project_name.text;
 		this._current_project_name.data_list = data_list;
 		this._current_project_name.text = text;
@@ -136,7 +136,7 @@ ALittleIDE.IDECenter = JavaScript.Class(undefined, {
 		let tab_index = ALittleIDE.g_IDETabManager.GetCurTabIndex();
 		this.CloseProject();
 		this.OpenProject(project_name);
-		let count = lua.table.maxn(name_list);
+		let count = ALittle.List_MaxN(name_list);
 		if (count > 0) {
 			for (let i = count; count >= 1; i += -1) {
 				let control_info = ALittleIDE.g_IDEProject.project.control_map[name_list[i - 1]];

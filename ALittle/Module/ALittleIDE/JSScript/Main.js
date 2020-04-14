@@ -7,13 +7,13 @@ ALittleIDE.__Browser_Setup = async function(layer_group, control, module_base_pa
 	let window_width = 1200;
 	let window_height = 600;
 	let rate = 1.0;
-	let flag = lua.bit.bor(0x00000080, 0x00000020);
+	let flag = ALittle.BitOr(0x00000080, 0x00000020);
 	if (ALittle.System_GetPlatform() !== "Windows") {
 		let screen_width = ALittle.System_GetScreenWidth();
 		let screen_height = ALittle.System_GetScreenHeight();
 		rate = screen_height / screen_width;
-		window_height = lua.math.floor(rate * window_width);
-		flag = lua.bit.bor(flag, 0x00000001);
+		window_height = ALittle.Math_Floor(rate * window_width);
+		flag = ALittle.BitOr(flag, 0x00000001);
 	}
 	ALittle.System_CreateView("ALittleIDE", window_width, window_height, flag, rate);
 	ALittle.System_SetViewIcon(module_base_path + "/Other/ic_launcher.png");
@@ -39,7 +39,7 @@ ALittleIDE.__Module_Setup = async function(layer_group, control, module_base_pat
 	ALittleIDE.g_ModuleBasePathEx = ALittle.File_BaseFilePath() + module_base_path;
 	ALittleIDE.g_ScriptBasePath = script_base_path;
 	await Require(script_base_path + "IDECenter");
-	await ALittleIDE.g_IDECenter.Setup(script_base_path, debug);
+	await ALittleIDE.g_IDECenter.Setup(debug);
 }
 
 ALittleIDE.__Module_Shutdown = function() {

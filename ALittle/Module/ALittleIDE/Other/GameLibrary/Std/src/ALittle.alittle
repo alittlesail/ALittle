@@ -44,6 +44,7 @@ public await static __ALITTLEAPI_Std_Init(string base_path)
         Require(base_path.."Adapter/JavaScript/JCsvFile");
         Require(base_path.."../../JSNative/md5.min");
         Require(base_path.."../../JSNative/jweakmap");
+        Require(base_path.."../../JSNative/bit");
     }
     
     [Language(Lua)]

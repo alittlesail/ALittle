@@ -275,7 +275,7 @@ ALittleIDE.IDEUICenter = JavaScript.Class(undefined, {
 		if (tab_child === undefined) {
 			return;
 		}
-		let scale = lua.tonumber(this._tool_scale_input.text);
+		let scale = ALittle.Math_ToDouble(this._tool_scale_input.text);
 		if (scale === undefined) {
 			scale = 1;
 		}
@@ -297,7 +297,7 @@ ALittleIDE.IDEUICenter = JavaScript.Class(undefined, {
 		if (tab_child === undefined) {
 			return;
 		}
-		let scale = lua.tonumber(this._tool_scale_input.text);
+		let scale = ALittle.Math_ToDouble(this._tool_scale_input.text);
 		if (scale === undefined) {
 			scale = 1;
 		}

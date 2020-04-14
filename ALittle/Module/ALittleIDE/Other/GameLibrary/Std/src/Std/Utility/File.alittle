@@ -161,6 +161,34 @@ public static File_GetFileAttrByDir(string path, [Nullable] Map<string, lua.file
     return JavaScript.File_GetFileAttrByDir(path, file_map);
 }
 
+// 获取某个目录以及子目录下的所有文件属性
+public static File_GetFileNameListByDir(string path, [Nullable] Map<string, lua.fileattr> file_map) : Map<string, lua.fileattr>
+{
+    // 初始化参数
+    [Language(Lua)]
+    {
+        if (file_map == null)
+            file_map = new Map<string, lua.fileattr>();
+        // 遍历路径
+        for (var file in dir(path))
+        {
+            // 跳过当前目录，父级目录
+            if (file != "." && file != "..")
+            {
+                // 生成文件目录
+                var file_path = path .. "/" .. file;
+                // 获取文件属性
+                file_map[file] = attributes(file_path);
+            }
+        }
+        // 返回结果
+        return file_map;   
+    }
+    
+    [Language(JavaScript)]
+    return JavaScript.File_GetFileNameListByDir(path, file_map);
+}
+
 // 删除文件夹(只对空文件夹有效)
 public static File_DeleteDir(string path) : bool
 {

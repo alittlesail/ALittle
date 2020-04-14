@@ -468,7 +468,11 @@ public class IDEProjectManager
 				server_module = " \""..core_path.."\" \""..ALittle.String_Join(new_modules, ";").."\"";
 		}
 
+		[Language(JavaScript)]
+		g_IDETool.ShowAlertDialog("提示", "JavaScript不支持运行项目");
+
 		// 第二个参数 debug 表示是调试模式
+		[Language(Lua)]
 		lua.os.execute("start ALittleClient.exe debug "..g_IDEProject.project.name..server_module);
 	}
 }

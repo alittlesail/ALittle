@@ -558,6 +558,9 @@ public class IDEVersionWindows : ALittle.DisplayLayout
 		var export_info = g_IDEProject.project.config.GetConfig{IDEPackageInfo}(this.config_key, null);
 		if (export_info == null) return;
 	
+		[Language(JavaScript)]
+		g_IDETool.ShowNotice("提示", "JavaScript版本不支持导出项目功能");
+		[Language(Lua)]
 		g_IDEExport.PackagePlatform(g_IDEProject.project.name, export_info.version_info, export_info.install_info, "Windows");
 	}
 	
@@ -686,6 +689,10 @@ public class IDEVersionAndroid : ALittle.DisplayLayout
 		var export_info = g_IDEProject.project.config.GetConfig{IDEPackageInfo}(this.config_key, null);
 		if (export_info == null) return;
 	
+		[Language(JavaScript)]
+		g_IDETool.ShowNotice("提示", "JavaScript版本不支持导出项目功能");
+
+		[Language(Lua)]
 		g_IDEExport.PackagePlatform(g_IDEProject.project.name, export_info.version_info, export_info.install_info, "Android");
 	}
 	
@@ -818,6 +825,10 @@ public class IDEVersioniOS : ALittle.DisplayLayout
 		var export_info = g_IDEProject.project.config.GetConfig{IDEPackageInfo}(this.config_key, null);
 		if (export_info == null) return;
 	
+		[Language(JavaScript)]
+		g_IDETool.ShowNotice("提示", "JavaScript版本不支持导出项目功能");
+
+		[Language(Lua)]
 		g_IDEExport.PackagePlatform(g_IDEProject.project.name, export_info.version_info, export_info.install_info, "iOS");
 	}
 	

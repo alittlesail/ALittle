@@ -1,0 +1,68 @@
+{
+if (typeof ALittleIDE === "undefined") ALittleIDE = {};
+
+
+if (ALittleIDE.DisplayLayoutS === undefined) throw new Error(" extends class:ALittleIDE.DisplayLayoutS is undefined");
+ALittleIDE.DialogS = JavaScript.Class(ALittleIDE.DisplayLayoutS, {
+	Ctor : function(user_info, tab_child, tree_logic) {
+		this._layer_name = "ide_setting_dialog";
+	},
+	LoadNatureBase : function() {
+		ALittleIDE.DisplayLayoutS.LoadNatureBase.call(this);
+		this.LoadValueData("head_size");
+		this.LoadDefaultNilString("title");
+		this.LoadShowTypeDataForImage("show_background");
+		this.LoadShowTypeDataForImage("show_head_drag");
+		this.LoadShowTypeDataForExtends("show_close_button");
+		this.LoadShowTypeNoNilData("show_title");
+	},
+	HandleHeadSizeFOCUSOUT : function(event) {
+		this.ValueNumInputChange("head_size", false);
+	},
+	HandleTitleFOCUSOUT : function(event) {
+		this.DefaultNoStringInputChange("title", false);
+	},
+	HandleShowBackgroundFOCUSOUT : function(event) {
+		if (event.target._user_data !== undefined) {
+			if (event.target._user_data === event.target.text) {
+				return;
+			}
+			event.target._user_data = event.target.text;
+		}
+		this.RemoverToNilShowSetForImage("show_background", this._show_background.text, this._show_background_grid9.selected, false);
+	},
+	HandleShowBackgroundSelect : function(event) {
+		let func = this.ImagePathSelectCallback.bind(this, "show_background", this.HandleShowBackgroundFOCUSOUT, undefined);
+		ALittleIDE.g_IDEAttrImageDialog.ShowDialog(undefined, func);
+	},
+	HandleShowHeadDragFOCUSOUT : function(event) {
+		if (event.target._user_data !== undefined) {
+			if (event.target._user_data === event.target.text) {
+				return;
+			}
+			event.target._user_data = event.target.text;
+		}
+		this.RemoverToNilShowSetForImage("show_head_drag", this._show_head_drag.text, this._show_head_drag_grid9.selected, false);
+	},
+	HandleShowHeadDragSelect : function(event) {
+		let func = this.ImagePathSelectCallback.bind(this, "show_head_drag", this.HandleShowHeadDragFOCUSOUT, undefined);
+		ALittleIDE.g_IDEAttrImageDialog.ShowDialog(undefined, func);
+	},
+	HandleShowCloseButtonFOCUSOUT : function(event) {
+		if (event.target._user_data !== undefined) {
+			if (event.target._user_data === event.target.text) {
+				return;
+			}
+			event.target._user_data = event.target.text;
+		}
+		this.RemoverToNilShowSetForExtends("show_close_button", this._show_close_button.text, false);
+	},
+	HandleShowTitleFOCUSOUT : function(event) {
+		ALittleIDE.g_IDEAttrTextDialog.ShowDialog(this, "show_title", false);
+	},
+	HandleShowTitleClear : function(event) {
+		this.RemoverToNilShowSet("show_title", "", true);
+	},
+}, "ALittleIDE.DialogS");
+
+}

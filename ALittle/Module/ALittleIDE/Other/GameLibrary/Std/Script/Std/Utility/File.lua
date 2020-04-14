@@ -92,6 +92,21 @@ function File_GetFileAttrByDir(path, file_map)
 	end
 end
 
+function File_GetFileNameListByDir(path, file_map)
+	do
+		if file_map == nil then
+			file_map = {}
+		end
+		for file in dir(path) do
+			if file ~= "." and file ~= ".." then
+				local file_path = path .. "/" .. file
+				file_map[file] = attributes(file_path)
+			end
+		end
+		return file_map
+	end
+end
+
 function File_DeleteDir(path)
 	return rmdir(path)
 end

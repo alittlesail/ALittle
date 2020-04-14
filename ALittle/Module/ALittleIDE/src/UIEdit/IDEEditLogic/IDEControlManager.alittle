@@ -581,6 +581,11 @@ public class IDEControlManager
 		this._control_right_menu._user_data = null;
 
 		var user_data:IDEControlItemUserData = target._user_data;
+
+		[Language(JavaScript)]
+		g_IDETool.ShowAlertDialog("提示", "JavaScript不支持运行");
+
+		[Language(Lua)]
 		this.ControlRunImpl(user_data.control_info.name);
 	}
 	

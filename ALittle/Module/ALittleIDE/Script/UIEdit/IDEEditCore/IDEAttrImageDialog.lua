@@ -213,21 +213,20 @@ end
 function IDEAttrImageDialog:BrowserCollect(browser_path)
 	local item_list_dir = {}
 	local item_list_img = {}
-	for file in lfs.dir(browser_path) do
-		if file ~= "." and file ~= ".." then
-			local path = browser_path .. "/" .. file
-			local rel_path = ALittle.String_Sub(path, ALittle.String_Len(self._base_path) + 2)
-			local attr = ALittle.File_GetFileAttr(path)
-			if attr.mode == "directory" then
-				local item = self:CreateDirItem(file, rel_path, path)
-				if item ~= nil then
-					ALittle.List_Push(item_list_dir, item)
-				end
-			else
-				local item = self:CreateImgItem(file, rel_path, path)
-				if item ~= nil then
-					ALittle.List_Push(item_list_img, item)
-				end
+	local file_map = ALittle.File_GetFileNameListByDir(browser_path)
+	for file, info in ___pairs(file_map) do
+		local path = browser_path .. "/" .. file
+		local rel_path = ALittle.String_Sub(path, ALittle.String_Len(self._base_path) + 2)
+		local attr = ALittle.File_GetFileAttr(path)
+		if attr.mode == "directory" then
+			local item = self:CreateDirItem(file, rel_path, path)
+			if item ~= nil then
+				ALittle.List_Push(item_list_dir, item)
+			end
+		else
+			local item = self:CreateImgItem(file, rel_path, path)
+			if item ~= nil then
+				ALittle.List_Push(item_list_img, item)
 			end
 		end
 	end
@@ -246,23 +245,22 @@ function IDEAttrImageDialog:SearchCollect(search_path, name, item_list, run_time
 	if name == "" or name == nil then
 		return item_list, run_time
 	end
-	for file in lfs.dir(search_path) do
-		if file ~= "." and file ~= ".." then
-			local path = search_path .. "/" .. file
-			local rel_path = ALittle.String_Sub(path, ALittle.String_Len(self._base_path) + 2)
-			local attr = ALittle.File_GetFileAttr(path)
-			if attr.mode == "directory" then
-				self:SearchCollect(path, name, item_list, run_time)
-			elseif ALittle.String_Find(file, name) ~= nil then
-				local item = self:CreateImgItem(file, rel_path, path)
-				if item ~= nil then
-					run_time.cur_count = run_time.cur_count + 1
-					ALittle.List_Push(item_list, item)
-				end
+	local file_map = ALittle.File_GetFileNameListByDir(search_path)
+	for file, info in ___pairs(file_map) do
+		local path = search_path .. "/" .. file
+		local rel_path = ALittle.String_Sub(path, ALittle.String_Len(self._base_path) + 2)
+		local attr = ALittle.File_GetFileAttr(path)
+		if attr.mode == "directory" then
+			self:SearchCollect(path, name, item_list, run_time)
+		elseif ALittle.String_Find(file, name) ~= nil then
+			local item = self:CreateImgItem(file, rel_path, path)
+			if item ~= nil then
+				run_time.cur_count = run_time.cur_count + 1
+				ALittle.List_Push(item_list, item)
 			end
-			if run_time.cur_count >= run_time.total_count then
-				return item_list, run_time
-			end
+		end
+		if run_time.cur_count >= run_time.total_count then
+			return item_list, run_time
 		end
 	end
 	return item_list, run_time

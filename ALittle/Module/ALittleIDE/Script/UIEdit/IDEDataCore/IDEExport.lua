@@ -264,7 +264,7 @@ local ___COROUTINE = coroutine.running()
 		param.__account_id = g_IDELoginManager.account_id
 		param.__session_id = g_IDELoginManager.session_id
 		local client = ALittle.CreateHttpSender(g_IDELoginManager.http_ip, g_IDELoginManager.http_port)
-		local error, result = Lua.IHttpSender.Invoke("VersionServer.QNewUpdateTimeIndex", client, param)
+		local error, result = ALittle.IHttpSender.Invoke("VersionServer.QNewUpdateTimeIndex", client, param)
 		self:HandleAskNewUpdateTimeIndex(error, result, package_info, true)
 	else
 		self:HandleAskNewUpdateTimeIndexImpl(package_info, false, ALittle.Time_GetCurTime(), 0)
@@ -291,7 +291,7 @@ local ___COROUTINE = coroutine.running()
 		param.platform = package_info.platform
 		param.module_name = package_info.project_name
 		local client = ALittle.CreateHttpSender(g_IDELoginManager.http_ip, g_IDELoginManager.http_port)
-		local error, result = Lua.IHttpSender.Invoke("VersionServer.QNewCurVersion", client, param)
+		local error, result = ALittle.IHttpSender.Invoke("VersionServer.QNewCurVersion", client, param)
 		self:HandleQueryNewCurVersion(error, result, package_info, is_login, update_time, update_index)
 	else
 		self:HandleQueryNewCurVersionImpl(package_info, is_login, update_time, update_index, nil)
@@ -316,7 +316,7 @@ local ___COROUTINE = coroutine.running()
 		param.version_id = result.version_info.version_id
 		param.file_path = "CurVersion.db"
 		local client = ALittle.CreateHttpFileSender(result.http_ip, result.http_port, target_path, 0)
-		local error = Lua.IHttpFileSender.InvokeDownload("VersionServer.QDownloadVersionFile", client, param)
+		local error = ALittle.IHttpFileSender.InvokeDownload("VersionServer.QDownloadVersionFile", client, param)
 		self:HandleDownloadCurVersion(error, package_info, is_login, update_time, update_index)
 	end
 end
@@ -611,7 +611,7 @@ local ___COROUTINE = coroutine.running()
 		param.update_time = submit_info.update_time
 		param.update_index = submit_info.update_index
 		local client = ALittle.CreateHttpSender(g_IDELoginManager.http_ip, g_IDELoginManager.http_port)
-		local error, result = Lua.IHttpSender.Invoke("VersionServer.QNewVersionInfo", client, param)
+		local error, result = ALittle.IHttpSender.Invoke("VersionServer.QNewVersionInfo", client, param)
 		self:HandleNewVersionInfo(error, result, submit_info)
 	else
 		self:HandleNewVersionInfoImpl(submit_info)
@@ -660,7 +660,7 @@ local ___COROUTINE = coroutine.running()
 		while repeat_count < 1 do
 			repeat_count = repeat_count + 1
 			self._submit_client = ALittle.CreateHttpFileSender(g_IDELoginManager.http_ip, g_IDELoginManager.http_port, submit_info.export_module_path .. "/" .. file_path, 0, Lua.Bind(self.HandleSubmitVersionUpload, self, upload_index, total_count, self._submit_client))
-			error = Lua.IHttpFileSender.InvokeUpload("VersionServer.QUploadVersionFile", self._submit_client, param)
+			error = ALittle.IHttpFileSender.InvokeUpload("VersionServer.QUploadVersionFile", self._submit_client, param)
 			if error == nil then
 				break
 			end
@@ -681,7 +681,7 @@ local ___COROUTINE = coroutine.running()
 		while repeat_count < 100 do
 			repeat_count = repeat_count + 1
 			self._submit_client = ALittle.CreateHttpFileSender(g_IDELoginManager.http_ip, g_IDELoginManager.http_port, submit_info.project_path .. "/Export/" .. submit_info.install_name, 0, Lua.Bind(self.HandleSubmitVersionUpload, self, upload_index, total_count, self._submit_client))
-			error = Lua.IHttpFileSender.InvokeUpload("VersionServer.QUploadVersionFile", self._submit_client, param)
+			error = ALittle.IHttpFileSender.InvokeUpload("VersionServer.QUploadVersionFile", self._submit_client, param)
 			if error == nil then
 				break
 			end
@@ -702,7 +702,7 @@ local ___COROUTINE = coroutine.running()
 		while repeat_count < 100 do
 			repeat_count = repeat_count + 1
 			self._submit_client = ALittle.CreateHttpFileSender(g_IDELoginManager.http_ip, g_IDELoginManager.http_port, submit_info.export_module_path .. "/CurVersion.db", 0, Lua.Bind(self.HandleSubmitVersionUpload, self, upload_index, total_count, self._submit_client))
-			error = Lua.IHttpFileSender.InvokeUpload("VersionServer.QUploadVersionFile", self._submit_client, param)
+			error = ALittle.IHttpFileSender.InvokeUpload("VersionServer.QUploadVersionFile", self._submit_client, param)
 			if error == nil then
 				break
 			end

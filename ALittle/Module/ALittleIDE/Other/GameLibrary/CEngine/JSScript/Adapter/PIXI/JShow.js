@@ -234,6 +234,15 @@ JavaScript.JDisplayObjects = JavaScript.Class(JavaScript.JDisplayObject, {
 	},
 }, "JavaScript.JDisplayObjects");
 
+if (JavaScript.JDisplayObjects === undefined) throw new Error(" extends class:JavaScript.JDisplayObjects is undefined");
+JavaScript.JDisplayView = JavaScript.Class(JavaScript.JDisplayObjects, {
+	Ctor : function() {
+		this._mask = new PIXI.MaskData();
+		this._mask.type = 1;
+		this._native.mask = this._mask;
+	},
+}, "JavaScript.JDisplayView");
+
 if (ALittle.IDisplaySystem === undefined) throw new Error(" extends class:ALittle.IDisplaySystem is undefined");
 JavaScript.JDisplaySystem = JavaScript.Class(ALittle.IDisplaySystem, {
 	Ctor : function() {

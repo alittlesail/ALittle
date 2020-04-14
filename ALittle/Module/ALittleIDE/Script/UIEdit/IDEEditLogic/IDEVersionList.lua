@@ -118,7 +118,7 @@ function IDEVersionList:HandleRefreshVersionList(event)
 	param.platform = self._platform
 	param.module_name = g_IDEProject.project.name
 	local client = ALittle.CreateHttpSender(g_IDELoginManager.http_ip, g_IDELoginManager.http_port)
-	local error, result = Lua.IHttpSender.Invoke("VersionServer.QVersionInfo", client, param)
+	local error, result = ALittle.IHttpSender.Invoke("VersionServer.QVersionInfo", client, param)
 	self._export_refresh_btn.disabled = false
 	if error ~= nil then
 		g_IDETool:ShowNotice("错误", "刷新失败:" .. error)
@@ -209,7 +209,7 @@ function IDEVersionList:VersionDeleteImpl(version_info)
 	param.module_name = g_IDEProject.project.name
 	param.version_id = version_info.data.version_id
 	local client = ALittle.CreateHttpSender(g_IDELoginManager.http_ip, g_IDELoginManager.http_port)
-	local error, result = Lua.IHttpSender.Invoke("VersionServer.QDeleteVersionInfo", client, param)
+	local error, result = ALittle.IHttpSender.Invoke("VersionServer.QDeleteVersionInfo", client, param)
 	if error ~= nil then
 		g_IDETool:ShowNotice("提示", "删除失败:" .. error)
 		return
@@ -292,7 +292,7 @@ function IDEVersionList:VersionCloseDeleteImpl(version_info)
 	param.module_name = g_IDEProject.project.name
 	param.close_version = version_info.data.close_version
 	local client = ALittle.CreateHttpSender(g_IDELoginManager.http_ip, g_IDELoginManager.http_port)
-	local error, result = Lua.IHttpSender.Invoke("VersionServer.QDeleteVersionClose", client, param)
+	local error, result = ALittle.IHttpSender.Invoke("VersionServer.QDeleteVersionClose", client, param)
 	if error ~= nil then
 		g_IDETool:ShowNotice("提示", "删除失败:" .. error)
 		return
@@ -322,7 +322,7 @@ function IDEVersionList:HandleAddVersionCloseClick(event)
 	param.close_version = self._version_close_version.text
 	param.submit_platform = self._version_submit_platform.text
 	local client = ALittle.CreateHttpSender(g_IDELoginManager.http_ip, g_IDELoginManager.http_port)
-	local error, result = Lua.IHttpSender.Invoke("VersionServer.QAddVersionClose", client, param)
+	local error, result = ALittle.IHttpSender.Invoke("VersionServer.QAddVersionClose", client, param)
 	if error ~= nil then
 		g_IDETool:ShowNotice("提示", "添加失败:" .. error)
 		return

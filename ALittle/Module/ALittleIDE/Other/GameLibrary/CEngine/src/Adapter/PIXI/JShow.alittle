@@ -125,6 +125,18 @@ public class JDisplayObjects : JDisplayObject
     }
 }
 
+
+public class JDisplayView : JDisplayObjects
+{
+    private PIXI.Graphics _graphics;
+
+    public ctor()
+    {
+        this._graphics = new PIXI.Graphics();
+        this._native.mask = this._graphics;
+    }
+}
+
 public class JDisplaySystem : ALittle.IDisplaySystem
 {
     private PIXI.Container _layer;

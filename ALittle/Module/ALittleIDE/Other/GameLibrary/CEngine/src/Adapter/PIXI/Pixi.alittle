@@ -56,6 +56,8 @@ public class DisplayObject
     
     public get alpha() : double {}
     public set alpha(double v) {}
+
+    public set mask(PIXI.Graphics v) {}
 }
 
 [Native]

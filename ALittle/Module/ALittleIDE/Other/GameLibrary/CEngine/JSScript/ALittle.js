@@ -28,6 +28,7 @@ __ALITTLEAPI_CEngine_Init = function(base_path) {
 		await Require(base_path + "CEngine/UISystem/Base/DisplayObject");
 		await Require(base_path + "CEngine/UISystem/Base/DisplayGroup");
 		await Require(base_path + "CEngine/UISystem/Base/DisplayLayout");
+		await Require(base_path + "CEngine/UISystem/Base/DisplayView");
 		await Require(base_path + "CEngine/UISystem/Base/Quad");
 		await Require(base_path + "CEngine/UISystem/Base/Image");
 		await Require(base_path + "CEngine/UISystem/Base/Text");

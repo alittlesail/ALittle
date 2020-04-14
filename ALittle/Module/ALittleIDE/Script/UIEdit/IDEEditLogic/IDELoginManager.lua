@@ -111,7 +111,7 @@ function IDELoginManager:Connect()
 	local param = {}
 	param.route_type = 3
 	local client = ALittle.CreateHttpSender(self._logingate_ip, self._logingate_port)
-	local error, result = Lua.IHttpSender.Invoke("GatewayServer.QRouteInfo", client, param)
+	local error, result = ALittle.IHttpSender.Invoke("GatewayServer.QRouteInfo", client, param)
 	if error ~= nil then
 		ALittle.Log(error)
 		self._msg_client = nil
@@ -209,7 +209,7 @@ function IDELoginManager:Logout()
 		return
 	end
 	local param = {}
-	local error, result = Lua.IMsgCommon.InvokeRPC(1598450085, self._msg_client, param)
+	local error, result = ALittle.IMsgCommon.InvokeRPC(1598450085, self._msg_client, param)
 	if error ~= nil then
 		ALittle.Error(error)
 		return
@@ -264,7 +264,7 @@ function IDELoginManager:LoginImpl()
 	param.client_platform = ALittle.System_GetPlatform()
 	param.account_name = self._account_name
 	param.account_pwd = self._account_pwd
-	local error, result = Lua.IMsgCommon.InvokeRPC(898014419, self._msg_client, param)
+	local error, result = ALittle.IMsgCommon.InvokeRPC(898014419, self._msg_client, param)
 	if self._login_button ~= nil then
 		self._login_button.disabled = false
 	end
@@ -296,7 +296,7 @@ function IDELoginManager:HandlePasswordAlterClick(event)
 	local param = {}
 	param.old_password = ALittle.String_MD5(old_password)
 	param.new_password = ALittle.String_MD5(new_password)
-	local error, result = Lua.IMsgCommon.InvokeRPC(-1373673802, self._msg_client, param)
+	local error, result = ALittle.IMsgCommon.InvokeRPC(-1373673802, self._msg_client, param)
 	self._change_pas_confirm.disabled = false
 	if g_IDELoginManager._change_pas_confirm ~= nil then
 		g_IDELoginManager._change_pas_confirm.disabled = false

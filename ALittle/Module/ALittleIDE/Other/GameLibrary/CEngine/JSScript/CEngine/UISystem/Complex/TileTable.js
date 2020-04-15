@@ -3,7 +3,7 @@ if (typeof ALittle === "undefined") ALittle = {};
 let ___all_struct = ALittle.GetAllStruct();
 
 
-let __ceil = lua.math.ceil;
+let __ceil = ALittle.Math_Ceil;
 if (ALittle.DisplayGroup === undefined) throw new Error(" extends class:ALittle.DisplayGroup is undefined");
 ALittle.TileTable = JavaScript.Class(ALittle.DisplayGroup, {
 	Ctor : function(ctrl_sys) {

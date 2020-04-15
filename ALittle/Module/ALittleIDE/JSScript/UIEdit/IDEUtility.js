@@ -213,43 +213,43 @@ ALittleIDE.IDEUtility_GetBaseInfo = function(info) {
 }
 
 ALittleIDE.IDEUtility_GetDefaultInfo = function(info) {
-	let default = {};
+	let default_v = {};
 	if (info.__extends !== undefined) {
-		default = ALittleIDE.IDEUtility_GetDefaultInfo(ALittleIDE.g_IDEProject.project.control_map[info.__extends].info);
+		default_v = ALittleIDE.IDEUtility_GetDefaultInfo(ALittleIDE.g_IDEProject.project.control_map[info.__extends].info);
 		let ___OBJECT_7 = info;
 		for (let k in ___OBJECT_7) {
 			let v = ___OBJECT_7[k];
 			if (v === undefined) continue;
 			if (k !== "__extends") {
-				default[k] = v;
+				default_v[k] = v;
 			}
 		}
 	} else if (info.__include !== undefined) {
-		default = ALittleIDE.IDEUtility_GetDefaultInfo(ALittleIDE.g_IDEProject.project.control_map[info.__include].info);
+		default_v = ALittleIDE.IDEUtility_GetDefaultInfo(ALittleIDE.g_IDEProject.project.control_map[info.__include].info);
 	} else if (info.__class !== undefined) {
 		let class_default = ALittleIDE.g_IDEEnum.type_default_map[info.__class];
-		default = {};
+		default_v = {};
 		let ___OBJECT_8 = class_default;
 		for (let k in ___OBJECT_8) {
 			let v = ___OBJECT_8[k];
 			if (v === undefined) continue;
 			if (ALittle.String_Type(v) !== "table") {
-				default[k] = v;
+				default_v[k] = v;
 			}
 		}
 		let ___OBJECT_9 = info;
 		for (let k in ___OBJECT_9) {
 			let v = ___OBJECT_9[k];
 			if (v === undefined) continue;
-			default[k] = v;
+			default_v[k] = v;
 		}
 	} else {
 		ALittle.Log("error GetDefaultInfo: there have not extends, include, class");
 	}
-	return default;
+	return default_v;
 }
 
-ALittleIDE.IDEUtility_CreateTree = function(control, extends, object, child_type, tab_child, root) {
+ALittleIDE.IDEUtility_CreateTree = function(control, extends_v, object, child_type, tab_child, root) {
 	let user_info = {};
 	user_info.base = ALittleIDE.IDEUtility_GetBaseInfo(control);
 	if (control.__extends !== undefined) {
@@ -283,7 +283,7 @@ ALittleIDE.IDEUtility_CreateTree = function(control, extends, object, child_type
 	user_info.child_type = child_type;
 	user_info.root = root;
 	user_info.object = object;
-	user_info.extends = extends;
+	user_info.extends = extends_v;
 	user_info.extends_root = control.__extends !== undefined;
 	let tree_logic = undefined;
 	if (ALittleIDE.g_IDEEnum.can_add_child_map[user_info.default.__class] || ALittleIDE.g_IDEEnum.child_show_map[user_info.default.__class] !== undefined) {
@@ -298,7 +298,7 @@ ALittleIDE.IDEUtility_CreateTree = function(control, extends, object, child_type
 			for (let k = 1; k <= ___OBJECT_11.length; ++k) {
 				let v = ___OBJECT_11[k - 1];
 				if (v === undefined) break;
-				tree_logic.AddChild(ALittleIDE.IDEUtility_CreateTree(v, extends, object.childs[k - 1], "child", tab_child, false));
+				tree_logic.AddChild(ALittleIDE.IDEUtility_CreateTree(v, extends_v, object.childs[k - 1], "child", tab_child, false));
 			}
 		} else if (user_info.default.__childs !== undefined && ALittle.List_MaxN(user_info.default.__childs) > 0) {
 			let childs = user_info.default.__childs;
@@ -318,7 +318,7 @@ ALittleIDE.IDEUtility_CreateTree = function(control, extends, object, child_type
 			if (name === undefined) break;
 			if (object[name] !== undefined) {
 				if (control[name] !== undefined) {
-					tree_logic.AddChild(ALittleIDE.IDEUtility_CreateTree(control[name], extends, object[name], name, tab_child, false));
+					tree_logic.AddChild(ALittleIDE.IDEUtility_CreateTree(control[name], extends_v, object[name], name, tab_child, false));
 				} else if (user_info.default[name] !== undefined) {
 					tree_logic.AddChild(ALittleIDE.IDEUtility_CreateTree(user_info.default[name], true, object[name], name, tab_child, false));
 				}

@@ -210,12 +210,57 @@ JavaScript.File_GetFileAttrByDir = function(path, file_map) {
 	return file_map;
 }
 
-JavaScript.File_DeleteDir = function(path) {
+JavaScript.File_GetFileNameListByDir = function(path, file_map) {
+	if (file_map === undefined) {
+		file_map = {};
+	}
 	let list = Path_FilterEmpty(ALittle.String_SplitSepList(path, ["/", "\\"]));
 	let cur = root;
 	let ___OBJECT_5 = list;
 	for (let index = 1; index <= ___OBJECT_5.length; ++index) {
 		let name = ___OBJECT_5[index - 1];
+		if (name === undefined) break;
+		if (cur.file === undefined) {
+			return file_map;
+		}
+		let file = cur.file[name];
+		if (file === undefined) {
+			return file_map;
+		}
+		if (!file.is_directory) {
+			return file_map;
+		}
+		cur = file;
+	}
+	if (cur.file === undefined) {
+		return file_map;
+	}
+	let ___OBJECT_6 = cur.file;
+	for (let name in ___OBJECT_6) {
+		let value = ___OBJECT_6[name];
+		if (value === undefined) continue;
+		let file_path = cur_dir + name;
+		if (value.is_directory) {
+			let attr = {};
+			attr.mode = "directory";
+			attr.size = 0;
+			file_map[name] = attr;
+		} else {
+			let attr = {};
+			attr.mode = "file";
+			attr.size = ALittle.String_Len(value.content);
+			file_map[name] = attr;
+		}
+	}
+	return file_map;
+}
+
+JavaScript.File_DeleteDir = function(path) {
+	let list = Path_FilterEmpty(ALittle.String_SplitSepList(path, ["/", "\\"]));
+	let cur = root;
+	let ___OBJECT_7 = list;
+	for (let index = 1; index <= ___OBJECT_7.length; ++index) {
+		let name = ___OBJECT_7[index - 1];
 		if (name === undefined) break;
 		if (cur.file === undefined) {
 			return false;
@@ -231,9 +276,9 @@ JavaScript.File_DeleteDir = function(path) {
 	}
 	let can = true;
 	if (cur.file !== undefined) {
-		let ___OBJECT_6 = cur.file;
-		for (let index in ___OBJECT_6) {
-			let value = ___OBJECT_6[index];
+		let ___OBJECT_8 = cur.file;
+		for (let index in ___OBJECT_8) {
+			let value = ___OBJECT_8[index];
 			if (value === undefined) continue;
 			can = false;
 			break;
@@ -250,18 +295,18 @@ JavaScript.File_DeleteDir = function(path) {
 JavaScript.File_DeleteDeepDir = function(path, log_path) {
 	if (log_path) {
 		let file_map = JavaScript.File_GetFileAttrByDir(path);
-		let ___OBJECT_7 = file_map;
-		for (let file_path in ___OBJECT_7) {
-			let attr = ___OBJECT_7[file_path];
+		let ___OBJECT_9 = file_map;
+		for (let file_path in ___OBJECT_9) {
+			let attr = ___OBJECT_9[file_path];
 			if (attr === undefined) continue;
 			ALittle.Log("delete file:", file_path);
 		}
 	}
 	let list = Path_FilterEmpty(ALittle.String_SplitSepList(path, ["/", "\\"]));
 	let cur = root;
-	let ___OBJECT_8 = list;
-	for (let index = 1; index <= ___OBJECT_8.length; ++index) {
-		let name = ___OBJECT_8[index - 1];
+	let ___OBJECT_10 = list;
+	for (let index = 1; index <= ___OBJECT_10.length; ++index) {
+		let name = ___OBJECT_10[index - 1];
 		if (name === undefined) break;
 		let file = cur.file[name];
 		if (file === undefined) {
@@ -379,9 +424,9 @@ JavaScript.File_CopyDeepDir = function(src_path, dest_path, ext, log) {
 	}
 	let list = Path_FilterEmpty(ALittle.String_SplitSepList(src_path, ["/", "\\"]));
 	let cur = root;
-	let ___OBJECT_9 = list;
-	for (let index = 1; index <= ___OBJECT_9.length; ++index) {
-		let name = ___OBJECT_9[index - 1];
+	let ___OBJECT_11 = list;
+	for (let index = 1; index <= ___OBJECT_11.length; ++index) {
+		let name = ___OBJECT_11[index - 1];
 		if (name === undefined) break;
 		if (cur.file === undefined) {
 			return;
@@ -398,9 +443,9 @@ JavaScript.File_CopyDeepDir = function(src_path, dest_path, ext, log) {
 	if (cur.file === undefined) {
 		return;
 	}
-	let ___OBJECT_10 = cur.file;
-	for (let file in ___OBJECT_10) {
-		let info = ___OBJECT_10[file];
+	let ___OBJECT_12 = cur.file;
+	for (let file in ___OBJECT_12) {
+		let info = ___OBJECT_12[file];
 		if (info === undefined) continue;
 		let src_file_path = src_path + "/" + file;
 		let dest_file_path = dest_path + "/" + file;

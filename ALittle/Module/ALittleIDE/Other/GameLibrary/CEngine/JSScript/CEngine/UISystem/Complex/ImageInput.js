@@ -3,8 +3,8 @@ if (typeof ALittle === "undefined") ALittle = {};
 let ___all_struct = ALittle.GetAllStruct();
 
 
-let __cos = lua.math.cos;
-let __sin = lua.math.sin;
+let __cos = ALittle.Math_Cos;
+let __sin = ALittle.Math_Sin;
 if (ALittle.DisplayLayout === undefined) throw new Error(" extends class:ALittle.DisplayLayout is undefined");
 ALittle.ImageInput = JavaScript.Class(ALittle.DisplayLayout, {
 	Ctor : function(ctrl_sys) {
@@ -198,7 +198,7 @@ ALittle.ImageInput = JavaScript.Class(ALittle.DisplayLayout, {
 	},
 	set ims_padding(value) {
 		this._ims_padding = value;
-		this._show_input.ims_padding = lua.math.floor(value + this._logic_bottom);
+		this._show_input.ims_padding = ALittle.Math_Floor(value + this._logic_bottom);
 	},
 	get ims_padding() {
 		return this._ims_padding;
@@ -435,7 +435,7 @@ ALittle.ImageInput = JavaScript.Class(ALittle.DisplayLayout, {
 	set margin_bottom(value) {
 		this._logic_bottom = value;
 		this.Layout();
-		this._show_input.ims_padding = lua.math.floor(this._ims_padding + this._logic_bottom);
+		this._show_input.ims_padding = ALittle.Math_Floor(this._ims_padding + this._logic_bottom);
 	},
 	get margin_bottom() {
 		return this._logic_bottom;

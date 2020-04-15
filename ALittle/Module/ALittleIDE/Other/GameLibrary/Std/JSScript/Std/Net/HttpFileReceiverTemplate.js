@@ -27,7 +27,6 @@ ALittle.HttpFileReceiverTemplate = JavaScript.Class(ALittle.IHttpFileReceiver, {
 			this._received = true;
 			this._interface.StartReceiveFile(this._http_id, file_path, start_size);
 			return;
-			___COROUTINE();
 		}).bind(this));
 	},
 	HandleReceiveResult : function(reason) {

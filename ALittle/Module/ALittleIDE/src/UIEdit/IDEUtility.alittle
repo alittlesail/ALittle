@@ -214,44 +214,44 @@ public static IDEUtility_GetBaseInfo(ALittle.DisplayInfo info) : ALittle.Display
 public static IDEUtility_GetDefaultInfo(ALittle.DisplayInfo info) : ALittle.DisplayInfo
 {
 	// 默认属性
-	var default = new ALittle.DisplayInfo();
+	var default_v = new ALittle.DisplayInfo();
 	// 处理继承
 	if (info.__extends != null)
 	{
 		// 获取控件默认数据
-		default = IDEUtility_GetDefaultInfo(g_IDEProject.project.control_map[info.__extends].info);
+		default_v = IDEUtility_GetDefaultInfo(g_IDEProject.project.control_map[info.__extends].info);
 		// 覆盖其他属性
 		for (var k, v in cast<Map<string, any> >(info))
 		{
 			if (k != "__extends")
-				cast<Map<string, any> >(default)[k] = v;
+				cast<Map<string, any> >(default_v)[k] = v;
 		}
 	}
 	// 处理包含
 	elseif (info.__include != null)
 		// 获取控件默认属性 
-		default = IDEUtility_GetDefaultInfo(g_IDEProject.project.control_map[info.__include].info);
+		default_v = IDEUtility_GetDefaultInfo(g_IDEProject.project.control_map[info.__include].info);
 	// 处理class
 	elseif (info.__class != null)
 	{
 		// 获取默认属性
 		var class_default = g_IDEEnum.type_default_map[info.__class];
 		// 复制属性
-		default = new ALittle.DisplayInfo();
+		default_v = new ALittle.DisplayInfo();
 		for (var k, v in cast<Map<string, any> >(class_default))
 		{
 			if (ALittle.String_Type(v) != "table")
-				cast<Map<string, any> >(default)[k] = v;
+				cast<Map<string, any> >(default_v)[k] = v;
 		}
 		// 覆盖属性
 		for (var k, v in cast<Map<string, any> >(info))
-			cast<Map<string, any> >(default)[k] = v;
+			cast<Map<string, any> >(default_v)[k] = v;
 	}
 	else
 		ALittle.Log("error GetDefaultInfo: there have not extends, include, class");
 
 	// 返回结果
-	return default;
+	return default_v;
 }
 
 // 控件树节点信息
@@ -273,7 +273,7 @@ public struct IDETreeUserInfo
 	// parent 父控件
 	// child_type 子控件类型
 	// group_name 单选按键组名
-public static IDEUtility_CreateTree(ALittle.DisplayInfo control, bool extends, ALittle.DisplayObject object, string child_type, IDETabChild tab_child, bool root) : IDETreeLogic
+public static IDEUtility_CreateTree(ALittle.DisplayInfo control, bool extends_v, ALittle.DisplayObject object, string child_type, IDETabChild tab_child, bool root) : IDETreeLogic
 {
 	// 创建核心数据
 	var user_info = new IDETreeUserInfo();
@@ -325,7 +325,7 @@ public static IDEUtility_CreateTree(ALittle.DisplayInfo control, bool extends, A
 	user_info.object = object;
 
 	// 设置是否是继承
-	user_info.extends = extends;
+	user_info.extends = extends_v;
 	// 标记是否是继承的根节点
 	user_info.extends_root = control.__extends != null;
 //////////////////////////////////////////////////////////////////////////////////////////////////////////-
@@ -347,7 +347,7 @@ public static IDEUtility_CreateTree(ALittle.DisplayInfo control, bool extends, A
 		{
 			var childs = control.__childs;
 			for (var k, v in childs)
-				tree_logic.AddChild(IDEUtility_CreateTree(v, extends, object.childs[k], "child", tab_child, false));
+				tree_logic.AddChild(IDEUtility_CreateTree(v, extends_v, object.childs[k], "child", tab_child, false));
 		}
 		// 如果继承就有子控件，那么都是继承
 		elseif (user_info.default.__childs != null && ALittle.List_MaxN(user_info.default.__childs) > 0)
@@ -369,7 +369,7 @@ public static IDEUtility_CreateTree(ALittle.DisplayInfo control, bool extends, A
 			{
 				// 如果这个show是当前控件的，那么是否继承由extends决定
 				if (cast<Map<string, any> >(control)[name] != null)
-					tree_logic.AddChild(IDEUtility_CreateTree(cast<Map<string, any> >(control)[name], extends, cast<Map<string,any>>(object)[name], name, tab_child, false));
+					tree_logic.AddChild(IDEUtility_CreateTree(cast<Map<string, any> >(control)[name], extends_v, cast<Map<string,any>>(object)[name], name, tab_child, false));
 				// 如果这个show是继承的，那么都是继承
 				elseif (cast<Map<string, any> >(user_info.default)[name] != null)
 					tree_logic.AddChild(IDEUtility_CreateTree(cast<Map<string, any> >(user_info.default)[name], true, cast<Map<string,any>>(object)[name], name, tab_child, false));

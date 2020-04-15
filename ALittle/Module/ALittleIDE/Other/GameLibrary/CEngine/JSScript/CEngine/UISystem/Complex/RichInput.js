@@ -45,13 +45,13 @@ type_list : ["ALittle.DisplayObject","double","double","double","double"],
 option_map : {}
 })
 
-let __byte = lua.String.byte;
-let __sub = lua.String.sub;
+let __byte = ALittle.String_Byte;
+let __sub = ALittle.String_Sub;
 let __find = ALittle.String_Find;
-let __floor = lua.math.floor;
-let __len = lua.String.len;
-let __abs = lua.math.abs;
-let __type = lua.type;
+let __floor = ALittle.Math_Floor;
+let __len = ALittle.String_Len;
+let __abs = ALittle.Math_Abs;
+let __type = ALittle.String_Type;
 if (ALittle.DisplayLayout === undefined) throw new Error(" extends class:ALittle.DisplayLayout is undefined");
 ALittle.RichInput = JavaScript.Class(ALittle.DisplayLayout, {
 	CheckDisplayList : function(content) {

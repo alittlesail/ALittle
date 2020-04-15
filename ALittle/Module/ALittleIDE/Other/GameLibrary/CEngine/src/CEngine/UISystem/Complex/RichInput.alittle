@@ -1,13 +1,13 @@
 
 namespace ALittle;
 
-private var __byte = lua.String.byte;
-private var __sub = lua.String.sub;
+private var __byte = String_Byte;
+private var __sub = String_Sub;
 private var __find = String_Find;
-private var __floor = lua.math.floor;
-private var __len = lua.String.len;
-private var __abs = lua.math.abs;
-private var __type = lua.type;
+private var __floor = Math_Floor;
+private var __len = String_Len;
+private var __abs = Math_Abs;
+private var __type = String_Type;
 
 struct RichInputCharInfo
 {

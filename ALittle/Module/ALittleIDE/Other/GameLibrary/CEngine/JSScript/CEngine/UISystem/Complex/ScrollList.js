@@ -3,9 +3,9 @@ if (typeof ALittle === "undefined") ALittle = {};
 let ___all_struct = ALittle.GetAllStruct();
 
 
-let __floor = lua.math.floor;
-let __remove = lua.table.remove;
-let __sin = lua.math.sin;
+let __floor = ALittle.Math_Floor;
+let __remove = ALittle.List_Remove;
+let __sin = ALittle.Math_Sin;
 if (ALittle.DisplayView === undefined) throw new Error(" extends class:ALittle.DisplayView is undefined");
 ALittle.ScrollList = JavaScript.Class(ALittle.DisplayView, {
 	Ctor : function(ctrl_sys) {

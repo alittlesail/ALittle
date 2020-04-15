@@ -1,8 +1,8 @@
 
 namespace ALittle;
 
-private var __cos = lua.math.cos;
-private var __sin = lua.math.sin;
+private var __cos = Math_Cos;
+private var __sin = Math_Sin;
 
 public class ImageInput : DisplayLayout
 {
@@ -311,7 +311,7 @@ public class ImageInput : DisplayLayout
     public set ims_padding(int value)
     {
         this._ims_padding = value;
-        this._show_input.ims_padding = lua.math.floor(value + this._logic_bottom);
+        this._show_input.ims_padding = Math_Floor(value + this._logic_bottom);
     }
     
     public get ims_padding() : int
@@ -556,7 +556,7 @@ public class ImageInput : DisplayLayout
     {
         this._logic_bottom = value;
         this.Layout();
-        this._show_input.ims_padding = lua.math.floor(this._ims_padding + this._logic_bottom);
+        this._show_input.ims_padding = Math_Floor(this._ims_padding + this._logic_bottom);
     }
     public get margin_bottom() : double
     {

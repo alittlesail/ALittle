@@ -13,7 +13,10 @@ public async static __Browser_Setup(ALittle.DisplayLayout layer_group
     var window_width = 1200;
     var window_height = 600;
     var rate = 1.0;
-    var flag = ALittle.BitOr(ALittle.UIEnumTypes.VIEW_MAXIMIZED, ALittle.UIEnumTypes.VIEW_RESIZABLE);
+    var flag = 0;
+    [Language(Lua)]
+    flag = ALittle.BitOr(ALittle.UIEnumTypes.VIEW_MAXIMIZED, ALittle.UIEnumTypes.VIEW_RESIZABLE);
+    [Language(Lua)]
     if (ALittle.System_GetPlatform() != "Windows")
     {
         var screen_width = ALittle.System_GetScreenWidth();

@@ -483,10 +483,10 @@ ALittleIDE.IDETabManager = JavaScript.Class(undefined, {
 		tab_child.ShowHandleQuad(tab_child.tree_object);
 		return tab_child;
 	},
-	StartEditControlByExtends : function(name, extends) {
+	StartEditControlByExtends : function(name, extends_v) {
 		let child_from = this._main_tab.tab;
 		let tab_child = ALittle.NewObject(ALittleIDE.IDETabChild, name, false);
-		tab_child.CreateByExtends(extends);
+		tab_child.CreateByExtends(extends_v);
 		this._main_tab.AddChild(tab_child.tab_body);
 		this._main_tree.AddChild(tab_child.tree_screen);
 		this._main_control.AddChild(tab_child.control_screen);

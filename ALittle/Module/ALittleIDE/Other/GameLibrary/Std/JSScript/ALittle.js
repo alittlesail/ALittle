@@ -12,7 +12,7 @@ __ALITTLEAPI_Std_Init = function(base_path) {
 		await Require(base_path + "Std/Loop/LoopGroup");
 		await Require(base_path + "Std/Loop/LoopList");
 		await Require(base_path + "Std/Loop/LoopTimer");
-		await Require(base_path + "Std/Utility/Time");
+		await Require(base_path + "Std/Utility/Bit");
 		await Require(base_path + "Std/Utility/WeakRef");
 		await Require(base_path + "Std/Utility/IHeapTimer");
 		await Require(base_path + "Std/Utility/ISchedule");
@@ -41,6 +41,7 @@ __ALITTLEAPI_Std_Init = function(base_path) {
 			await Require(base_path + "Adapter/JavaScript/JCsvFile");
 			await Require(base_path + "../../JSNative/md5.min");
 			await Require(base_path + "../../JSNative/jweakmap");
+			await Require(base_path + "../../JSNative/bit");
 		}
 		await Require(base_path + "Std/Loop/LoopSystem");
 		await Require(base_path + "Std/Utility/Schedule");

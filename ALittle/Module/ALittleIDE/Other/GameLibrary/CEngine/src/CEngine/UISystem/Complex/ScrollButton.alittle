@@ -1,7 +1,7 @@
 
 namespace ALittle;
 
-private var __abs = lua.math.abs;
+private var __abs = Math_Abs;
 
 public struct ScrollButtonDragBeginEvent : UIButtonDragEvent {}
 public struct ScrollButtonDragEvent : UIButtonDragEvent {}

@@ -1,9 +1,9 @@
 
 namespace ALittle;
 
-private var __type = lua.type;
-private var __tonumber = lua.tonumber;
-private var __tostring = lua.tostring;
+private var __type = String_Type;
+private var __tonumber = Math_ToDouble;
+private var __tostring = String_ToString;
 private var __floor = Math_Floor;
 private var __sub = String_Sub;
 private var __find = String_Find;
@@ -46,7 +46,10 @@ public class TextInput : DisplayObject
     public ctor(ControlSystem ctrl_sys)
     {
         // 创建text对象
+        [Language(Lua)]
         this._show = new lua.__CPPAPITextInput();
+        [Language(JavaScript)]
+        this._show = new JavaScript.JText();
     
         this._cursor_red = 1;
         this._cursor_green = 1;
@@ -456,7 +459,7 @@ public class TextInput : DisplayObject
         if (event.sym == 1073741904)
         {
             // 左键
-            if (lua.bit.band(event.mod, UIEnumTypes.KMOD_SHIFT) == 0)
+            if (BitAnd(event.mod, UIEnumTypes.KMOD_SHIFT) == 0)
             {
                 this._is_selecting = false;
                 this._show.CursorOffset(true);
@@ -471,7 +474,7 @@ public class TextInput : DisplayObject
         elseif (event.sym == 1073741903)
         {
             // 右键
-            if (lua.bit.band(event.mod, UIEnumTypes.KMOD_SHIFT) == 0)
+            if (BitAnd(event.mod, UIEnumTypes.KMOD_SHIFT) == 0)
             {
                 this._is_selecting = false;
                 this._show.CursorOffset(false);
@@ -527,7 +530,7 @@ public class TextInput : DisplayObject
 				event.handled = true;
             }
         }
-        elseif (event.sym == 120 && lua.bit.band(event.mod, UIEnumTypes.KMOD_CTRL) != 0)
+        elseif (event.sym == 120 && BitAnd(event.mod, UIEnumTypes.KMOD_CTRL) != 0)
         {
             // x键
             if (this._editable || event.custom)
@@ -543,7 +546,7 @@ public class TextInput : DisplayObject
 				event.handled = true;
             }
         }
-        elseif (event.sym == 99 && lua.bit.band(event.mod, UIEnumTypes.KMOD_CTRL) != 0)
+        elseif (event.sym == 99 && BitAnd(event.mod, UIEnumTypes.KMOD_CTRL) != 0)
         {
             // c键
             // 如果是密码模式，是不能复制的
@@ -552,7 +555,7 @@ public class TextInput : DisplayObject
                 System_SetClipboardText(select_text);
 			event.handled = true;
         }
-        elseif (event.sym == 118 && lua.bit.band(event.mod, UIEnumTypes.KMOD_CTRL) != 0)
+        elseif (event.sym == 118 && BitAnd(event.mod, UIEnumTypes.KMOD_CTRL) != 0)
         {
             // v键
             if (this._editable || event.custom)
@@ -568,7 +571,7 @@ public class TextInput : DisplayObject
 				event.handled = true;
             }
         }
-        elseif (event.sym == 97 && lua.bit.band(event.mod, UIEnumTypes.KMOD_CTRL) != 0)
+        elseif (event.sym == 97 && BitAnd(event.mod, UIEnumTypes.KMOD_CTRL) != 0)
         {
             // a键
             this._is_selecting = true;

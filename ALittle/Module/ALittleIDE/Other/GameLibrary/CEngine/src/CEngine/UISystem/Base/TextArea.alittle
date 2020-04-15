@@ -1,7 +1,7 @@
 
 namespace ALittle;
 
-private var __tostring = lua.tostring;
+private var __tostring = String_ToString;
 
 public class TextArea : DisplayObject
 {
@@ -35,7 +35,10 @@ public class TextArea : DisplayObject
         this._valign_type = UIEnumTypes.VALIGN_TOP;
     
         // 创建text对象
+        [Language(Lua)]
         this._show = new lua.__CPPAPITextArea();
+        [Language(JavaScript)]
+        this._show = new JavaScript.JTextArea();
         
         [Language(Lua)]
         A_LoadTextureManager.RegisterRedrawControl(this);
@@ -75,8 +78,7 @@ public class TextArea : DisplayObject
     // 设置文本
     public set text(any value)
     {
-        if (value == null)
-            return;
+        if (value == null) return;
         value = __tostring(value);
         // 判定如果文本与当前一致，则直接返回不做处理
         if (this._text == value)

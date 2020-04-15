@@ -3,8 +3,8 @@ if (typeof ALittle === "undefined") ALittle = {};
 let ___all_struct = ALittle.GetAllStruct();
 
 
-let __cos = lua.math.cos;
-let __sin = lua.math.sin;
+let __cos = ALittle.Math_Cos;
+let __sin = ALittle.Math_Sin;
 if (ALittle.DisplayLayout === undefined) throw new Error(" extends class:ALittle.DisplayLayout is undefined");
 ALittle.ImageEdit = JavaScript.Class(ALittle.DisplayLayout, {
 	Ctor : function(ctrl_sys) {

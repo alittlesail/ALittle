@@ -308,7 +308,7 @@ ALittleIDE.IDEExport = JavaScript.Class(undefined, {
 		}).bind(this));
 	},
 	HandleQueryNewCurVersion : function(error, result, package_info, is_login, update_time, update_index) {
-		return new Promise((function(___COROUTINE, ___) {
+		return new Promise((async function(___COROUTINE, ___) {
 			ALittleIDE.g_IDETool.HideAlertDialog();
 			if (error !== undefined) {
 				ALittleIDE.g_IDETool.ShowNotice("错误", "CurVersion.db的文件的位置获取失败:" + error);
@@ -653,7 +653,7 @@ ALittleIDE.IDEExport = JavaScript.Class(undefined, {
 		}).bind(this));
 	},
 	HandleNewVersionInfoImpl : function(submit_info) {
-		return new Promise((function(___COROUTINE, ___) {
+		return new Promise((async function(___COROUTINE, ___) {
 			if (this._submit_dialog === undefined) {
 				this._submit_dialog = ALittleIDE.g_Control.CreateControl("ide_submit_dialog", this);
 				A_LayerManager.AddToModal(this._submit_dialog);

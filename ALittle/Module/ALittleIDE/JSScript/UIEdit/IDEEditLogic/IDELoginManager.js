@@ -312,20 +312,20 @@ ALittleIDE.HandleMsgNForceLogout = function(client, msg) {
 	ALittleIDE.g_IDELoginManager.HandleMsgNForceLogout();
 }
 
-ALittle.RegMsgCallback(1391512615, HandleMsgNForceLogout)
+ALittle.RegMsgCallback(1391512615, ALittleIDE.HandleMsgNForceLogout)
 ALittleIDE.HandleMsgNWebSession = function(client, msg) {
 	ALittleIDE.g_IDELoginManager.HandleMsgNWebSession(msg);
 }
 
-ALittle.RegMsgCallback(1809602374, HandleMsgNWebSession)
+ALittle.RegMsgCallback(1809602374, ALittleIDE.HandleMsgNWebSession)
 ALittleIDE.HandleMsgNWebAccountInfo = function(client, msg) {
 	ALittleIDE.g_IDELoginManager.HandleMsgNWebAccountInfo(msg);
 }
 
-ALittle.RegMsgCallback(-417093574, HandleMsgNWebAccountInfo)
+ALittle.RegMsgCallback(-417093574, ALittleIDE.HandleMsgNWebAccountInfo)
 ALittleIDE.HandleMsgNWebServerInfo = function(client, msg) {
 	ALittleIDE.g_IDELoginManager.HandleMsgNWebServerInfo(msg);
 }
 
-ALittle.RegMsgCallback(-300988017, HandleMsgNWebServerInfo)
+ALittle.RegMsgCallback(-300988017, ALittleIDE.HandleMsgNWebServerInfo)
 }

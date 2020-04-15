@@ -77,6 +77,7 @@ class IDECenter
 		g_IDEProjectManager.OpenLastProject();
 
 		// 如果不是debug模式，那么就检查版本
+		[Language(Lua)]
 		if (debug != "debug")
 			g_IDEVersionManager.CheckVersionUpdate();
 
@@ -87,6 +88,7 @@ class IDECenter
 	public fun Shutdown()
 	{
 		g_IDEUICenter.Shutdown();
+		[Language(Lua)]
 		g_IDEVersionManager.Shutdown();
 		g_IDELoginManager.Shutdown();
 		g_IDEIMEManager.Shutdown();
@@ -227,7 +229,7 @@ class IDECenter
 	// 处理工具菜单
 	public fun HandleToolMenuClick(ALittle.UIClickEvent event) { g_IDEMainMenu.ShowToolMenu(event); }
 	// 处理版本菜单
-	public fun HandleVersionMenuClick(ALittle.UIClickEvent event) { g_IDEVersionManager.ShowDialog(); }
+	public fun HandleVersionMenuClick(ALittle.UIClickEvent event) { [Language(Lua)]g_IDEVersionManager.ShowDialog(); }
 	// 处理运行
 	public fun HandleRunMenuClick(ALittle.UIClickEvent event) { g_IDEProjectManager.RunProject(); }
 	////////////////////////////////////////////////////////////////////////////////////////

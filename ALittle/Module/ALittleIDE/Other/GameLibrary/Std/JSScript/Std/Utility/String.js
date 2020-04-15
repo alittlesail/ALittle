@@ -96,4 +96,18 @@ ALittle.String_HttpAnalysisValueMap = function(param, content) {
 	return value_map;
 }
 
+ALittle.String_IsPhoneNumber = function(number) {
+	let l = ALittle.String_Len(number);
+	for (let i = 1; i <= l; i += 1) {
+		let value = ALittle.String_Byte(number, i);
+		if (value < 48) {
+			return false;
+		}
+		if (value > 57) {
+			return false;
+		}
+	}
+	return true;
+}
+
 }

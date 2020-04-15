@@ -57,7 +57,7 @@ let __find = ALittle.String_Find;
 let __floor = ALittle.Math_Floor;
 let __len = ALittle.String_Len;
 let __abs = ALittle.Math_Abs;
-let __type = lua.type;
+let __type = ALittle.String_Type;
 if (ALittle.DisplayLayout === undefined) throw new Error(" extends class:ALittle.DisplayLayout is undefined");
 ALittle.RichEdit = JavaScript.Class(ALittle.DisplayLayout, {
 	CharIsNumber : function(str) {

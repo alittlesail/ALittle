@@ -6,7 +6,6 @@ ALittle.IHttpFileReceiver = JavaScript.Class(undefined, {
 	StartReceiveFile : function(file_path, start_size) {
 		return new Promise((function(___COROUTINE, ___) {
 			___COROUTINE("not impl"); return;
-			___COROUTINE();
 		}).bind(this));
 	},
 }, "ALittle.IHttpFileReceiver");

@@ -59,7 +59,6 @@ ALittle.ModuleSystem = JavaScript.Class(undefined, {
 			}
 			info.layer_group = ALittle.NewObject(ALittle.DisplayLayout, control);
 			___COROUTINE(info); return;
-			___COROUTINE();
 		}).bind(this));
 	},
 	RemoveModule : function(name) {
@@ -107,7 +106,6 @@ ALittle.ModuleSystem = JavaScript.Class(undefined, {
 			info.plugin_loaded = true;
 			setup_func(info.control, module_base_path, module_base_path + "JSScript/", this._debug);
 			___COROUTINE(true); return;
-			___COROUTINE();
 		}).bind(this));
 	},
 	LoadModule : function(module_base_path, module_name) {
@@ -149,7 +147,6 @@ ALittle.ModuleSystem = JavaScript.Class(undefined, {
 			}
 			setup_func(info.layer_group, info.control, module_base_path, module_base_path + "JSScript/", this._debug);
 			___COROUTINE(true); return;
-			___COROUTINE();
 		}).bind(this));
 	},
 	MainSetup : async function(base_path, debug, module_name) {

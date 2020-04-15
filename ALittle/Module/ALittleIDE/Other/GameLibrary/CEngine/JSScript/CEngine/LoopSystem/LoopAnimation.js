@@ -128,7 +128,6 @@ ALittle.LoopAnimation = JavaScript.Class(undefined, {
 			}
 			this._group.Start();
 			return;
-			___COROUTINE();
 		}).bind(this));
 	},
 	ReleaseCo : function(reason) {

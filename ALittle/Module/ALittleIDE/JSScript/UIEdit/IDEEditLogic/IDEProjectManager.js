@@ -297,35 +297,6 @@ ALittleIDE.IDEProjectManager = JavaScript.Class(undefined, {
 			ALittleIDE.g_IDETool.ShowNotice("提示", "当前没有打开的项目");
 			return;
 		}
-		let server_module = "";
-		let core_path = ALittleIDE.g_IDEProject.project.config.GetConfig("core_path", "");
-		if (core_path !== "") {
-			if (ALittle.File_GetFileAttr(core_path) === undefined) {
-				ALittleIDE.g_IDETool.ShowNotice("提示", "服务端引擎路径不存在:" + core_path);
-				return;
-			}
-			let modules = ALittleIDE.g_IDEProject.project.config.GetConfig("modules", "");
-			let module_split = ALittle.String_SplitSepList(modules, ["\n", "\r"]);
-			let new_modules = [];
-			let ___OBJECT_3 = module_split;
-			for (let index = 1; index <= ___OBJECT_3.length; ++index) {
-				let module = ___OBJECT_3[index - 1];
-				if (module === undefined) break;
-				let split = ALittle.String_Split(module, ",");
-				if (ALittle.List_MaxN(split) !== 2) {
-					ALittleIDE.g_IDETool.ShowNotice("提示", "服务端模块格式错误:" + module);
-					return;
-				}
-				if (ALittle.File_GetFileAttr(split[1 - 1]) === undefined) {
-					ALittleIDE.g_IDETool.ShowNotice("提示", "服务端模块路径不存在:" + split[1 - 1]);
-					return;
-				}
-				ALittle.List_Push(new_modules, module);
-			}
-			if (ALittle.List_MaxN(new_modules) > 0) {
-				server_module = " \"" + core_path + "\" \"" + ALittle.String_Join(new_modules, ";") + "\"";
-			}
-		}
 		ALittleIDE.g_IDETool.ShowAlertDialog("提示", "JavaScript不支持运行项目");
 	},
 }, "ALittleIDE.IDEProjectManager");

@@ -18,7 +18,6 @@ Require = function(url) {
 	return new Promise(function(___COROUTINE, ___) {
 		JSRequire(url, ___COROUTINE);
 		return;
-		___COROUTINE();
 	});
 }
 

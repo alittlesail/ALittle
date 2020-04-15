@@ -9,6 +9,17 @@ ALittle.IHttpFileSender = JavaScript.Class(undefined, {
 	},
 	HandleFailed : function(reason) {
 	},
+	Stop : function() {
+	},
+	GetFilePath : function() {
+		return undefined;
+	},
+	GetTotalSize : function() {
+		return 0;
+	},
+	GetCurSize : function() {
+		return 0;
+	},
 	SendDownloadRPC : function(thread, method, content) {
 		throw new Error("not impl");
 	},
@@ -22,7 +33,6 @@ ALittle.IHttpFileSender = JavaScript.Class(undefined, {
 			}
 			client.SendDownloadRPC(___COROUTINE, method, content);
 			return;
-			___COROUTINE();
 		});
 	},
 	InvokeUpload : function(method, client, content) {
@@ -32,7 +42,6 @@ ALittle.IHttpFileSender = JavaScript.Class(undefined, {
 			}
 			client.SendUploadRPC(___COROUTINE, method, content);
 			return;
-			___COROUTINE();
 		});
 	},
 }, "ALittle.IHttpFileSender");

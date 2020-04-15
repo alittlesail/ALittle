@@ -1,8 +1,6 @@
 
 namespace ALittle;
 
-private var __max = lua.math.max;
-
 public class Triangle : DisplayObject
 {
     // 纹理数据
@@ -34,7 +32,10 @@ public class Triangle : DisplayObject
     public ctor(ControlSystem ctrl_sys)
     {
     	// 创建image显示对象
+        [Language(Lua)]
     	this._show = new lua.__CPPAPITriangle();
+        [Language(JavaScript)]
+        this._show = new JavaScript.JSprite();
     
     	// 纹理数据
     	this._u1 = 0;
@@ -209,8 +210,15 @@ public class Triangle : DisplayObject
 
     public fun RejuseSize()
     {
-    	this.width = __max(this._x1, __max(this._x2, this._x3));
-    	this.height = __max(this._y1, __max(this._y2, this._y3));
+        var max = this._x1;
+        if (max < this._x2) max = this._x2;
+        if (max < this._x3) max = this._x3;
+    	this.width = max;
+        
+        max = this._y1;
+        if (max < this._y2) max = this._y2;
+        if (max < this._y3) max = this._y3;
+    	this.height = max;
     	this.UpdateLayout();
     }
 }

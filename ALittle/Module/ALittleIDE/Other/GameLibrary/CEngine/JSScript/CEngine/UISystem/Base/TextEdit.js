@@ -3,8 +3,8 @@ if (typeof ALittle === "undefined") ALittle = {};
 let ___all_struct = ALittle.GetAllStruct();
 
 
-let __type = lua.type;
-let __tonumber = lua.tonumber;
+let __type = ALittle.String_Type;
+let __tonumber = ALittle.Math_ToDouble;
 let __tostring = ALittle.String_ToString;
 let __floor = ALittle.Math_Floor;
 let __sub = ALittle.String_Sub;
@@ -12,7 +12,7 @@ let __find = ALittle.String_Find;
 if (ALittle.DisplayObject === undefined) throw new Error(" extends class:ALittle.DisplayObject is undefined");
 ALittle.TextEdit = JavaScript.Class(ALittle.DisplayObject, {
 	Ctor : function(ctrl_sys) {
-		this._show = ALittle.NewObject(lua.__CPPAPITextEdit);
+		this._show = ALittle.NewObject(JavaScript.JTextArea);
 		this._cursor_red = 1;
 		this._cursor_green = 1;
 		this._cursor_blue = 1;
@@ -333,7 +333,7 @@ ALittle.TextEdit = JavaScript.Class(ALittle.DisplayObject, {
 				event.handled = true;
 			}
 		} else if (event.sym === 1073741904) {
-			if (lua.bit.band(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) === 0) {
+			if (ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) === 0) {
 				this._is_selecting = false;
 				this._show.CursorOffsetLR(true);
 			} else {
@@ -342,7 +342,7 @@ ALittle.TextEdit = JavaScript.Class(ALittle.DisplayObject, {
 			}
 			event.handled = true;
 		} else if (event.sym === 1073741903) {
-			if (lua.bit.band(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) === 0) {
+			if (ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) === 0) {
 				this._is_selecting = false;
 				this._show.CursorOffsetLR(false);
 			} else {
@@ -351,7 +351,7 @@ ALittle.TextEdit = JavaScript.Class(ALittle.DisplayObject, {
 			}
 			event.handled = true;
 		} else if (event.sym === 1073741906) {
-			if (lua.bit.band(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) === 0) {
+			if (ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) === 0) {
 				this._is_selecting = false;
 				this._show.CursorOffsetUD(true);
 			} else {
@@ -360,7 +360,7 @@ ALittle.TextEdit = JavaScript.Class(ALittle.DisplayObject, {
 			}
 			event.handled = true;
 		} else if (event.sym === 1073741905) {
-			if (lua.bit.band(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) === 0) {
+			if (ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) === 0) {
 				this._is_selecting = false;
 				this._show.CursorOffsetUD(false);
 			} else {
@@ -400,7 +400,7 @@ ALittle.TextEdit = JavaScript.Class(ALittle.DisplayObject, {
 				}
 				event.handled = true;
 			}
-		} else if (event.sym === 120 && lua.bit.band(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) !== 0) {
+		} else if (event.sym === 120 && ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) !== 0) {
 			if (this._editable || event.custom) {
 				this._is_selecting = false;
 				let select_text = this._show.GetSelectText();
@@ -410,13 +410,13 @@ ALittle.TextEdit = JavaScript.Class(ALittle.DisplayObject, {
 				}
 				event.handled = true;
 			}
-		} else if (event.sym === 99 && lua.bit.band(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) !== 0) {
+		} else if (event.sym === 99 && ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) !== 0) {
 			let select_text = this._show.GetSelectText();
 			if (select_text !== "") {
 				ALittle.System_SetClipboardText(select_text);
 			}
 			event.handled = true;
-		} else if (event.sym === 118 && lua.bit.band(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) !== 0) {
+		} else if (event.sym === 118 && ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) !== 0) {
 			if (this._editable || event.custom) {
 				this._is_selecting = false;
 				if (ALittle.System_HasClipboardText()) {
@@ -428,7 +428,7 @@ ALittle.TextEdit = JavaScript.Class(ALittle.DisplayObject, {
 				}
 				event.handled = true;
 			}
-		} else if (event.sym === 97 && lua.bit.band(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) !== 0) {
+		} else if (event.sym === 97 && ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) !== 0) {
 			this._is_selecting = true;
 			this._show.SelectAll();
 			event.handled = true;

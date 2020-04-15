@@ -52,6 +52,10 @@ ALittle.File_GetFileAttrByDir = function(path, file_map) {
 	return JavaScript.File_GetFileAttrByDir(path, file_map);
 }
 
+ALittle.File_GetFileNameListByDir = function(path, file_map) {
+	return JavaScript.File_GetFileNameListByDir(path, file_map);
+}
+
 ALittle.File_DeleteDir = function(path) {
 	return JavaScript.File_DeleteDir(path);
 }

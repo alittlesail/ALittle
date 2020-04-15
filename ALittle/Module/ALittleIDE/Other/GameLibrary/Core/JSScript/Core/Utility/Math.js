@@ -18,6 +18,14 @@ ALittle.Math_Floor = function(v) {
 	return Math.floor(v);
 }
 
+ALittle.Math_Ceil = function(v) {
+	return Math.ceil(v);
+}
+
+ALittle.Math_Sqrt = function(v) {
+	return Math.sqrt(v);
+}
+
 ALittle.Math_ToInt = function(s) {
 	let value = parseInt(s);
 	if (isNaN(value)) {

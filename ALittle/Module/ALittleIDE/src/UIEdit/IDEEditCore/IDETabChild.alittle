@@ -431,13 +431,13 @@ public class IDETabChild
         this._anti_panel.Init(this);
 	}
 	
-	public fun CreateByExtends(string extends)
+	public fun CreateByExtends(string extends_v)
     {
 		// 创建初始信息
         var info = new ALittle.DisplayInfo();
-        info.__extends = extends;
+        info.__extends = extends_v;
 		// 新建控件对象
-        var object = g_IDEProject.project.control.CreateControl{ALittle.DisplayObject}(extends);
+        var object = g_IDEProject.project.control.CreateControl{ALittle.DisplayObject}(extends_v);
 		// 添加到标签页
         this._tab_object_container.AddChild(object);
 		//控件树

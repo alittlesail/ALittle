@@ -144,7 +144,6 @@ ALittle.DownloadFile = function(ip, port, method, file_path) {
 		let sender = undefined;
 		sender = ALittle.NewObject(JavaScript.Template(ALittle.HttpFileSenderTemplate, "ALittle.HttpFileSenderTemplate<JavaScript.JHttpFileInterface>", JavaScript.JHttpFileInterface), ip, port, file_path, 0);
 		___COROUTINE(await ALittle.IHttpFileSender.InvokeDownload(method, sender, undefined)); return;
-		___COROUTINE();
 	});
 }
 
@@ -154,7 +153,6 @@ ALittle.UploadFile = function(ip, port, method, file_path) {
 		sender = ALittle.NewObject(JavaScript.Template(ALittle.HttpFileSenderTemplate, "ALittle.HttpFileSenderTemplate<JavaScript.JHttpFileInterface>", JavaScript.JHttpFileInterface), ip, port, file_path, 0);
 		let error = await ALittle.IHttpFileSender.InvokeUpload(method, sender, undefined);
 		___COROUTINE(error); return;
-		___COROUTINE();
 	});
 }
 

@@ -2,11 +2,10 @@
 if (typeof ALittle === "undefined") ALittle = {};
 
 
-let __max = lua.math.max;
 if (ALittle.DisplayObject === undefined) throw new Error(" extends class:ALittle.DisplayObject is undefined");
 ALittle.Triangle = JavaScript.Class(ALittle.DisplayObject, {
 	Ctor : function(ctrl_sys) {
-		this._show = ALittle.NewObject(lua.__CPPAPITriangle);
+		this._show = ALittle.NewObject(JavaScript.JSprite);
 		this._u1 = 0;
 		this._v1 = 0;
 		this._u2 = 0;
@@ -190,8 +189,22 @@ ALittle.Triangle = JavaScript.Class(ALittle.DisplayObject, {
 		this._show.SetPosXY(2, this._x3, this._y3);
 	},
 	RejuseSize : function() {
-		this.width = __max(this._x1, __max(this._x2, this._x3));
-		this.height = __max(this._y1, __max(this._y2, this._y3));
+		let max = this._x1;
+		if (max < this._x2) {
+			max = this._x2;
+		}
+		if (max < this._x3) {
+			max = this._x3;
+		}
+		this.width = max;
+		max = this._y1;
+		if (max < this._y2) {
+			max = this._y2;
+		}
+		if (max < this._y3) {
+			max = this._y3;
+		}
+		this.height = max;
 		this.UpdateLayout();
 	},
 }, "ALittle.Triangle");

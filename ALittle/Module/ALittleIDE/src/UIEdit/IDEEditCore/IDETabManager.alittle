@@ -530,13 +530,13 @@ public class IDETabManager
 	}
 	
 	// 继承控件，并编辑
-	public fun StartEditControlByExtends(string name, string extends) : IDETabChild
+	public fun StartEditControlByExtends(string name, string extends_v) : IDETabChild
 	{
 		// 获取当前正在编辑的分页
 		var child_from = this._main_tab.tab;
 		// 创建Tab子控件
 		var tab_child = new IDETabChild(name, false);
-		tab_child.CreateByExtends(extends);
+		tab_child.CreateByExtends(extends_v);
 		// 添加到界面中去
 		this._main_tab.AddChild(tab_child.tab_body);
 		this._main_tree.AddChild(tab_child.tree_screen);

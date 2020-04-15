@@ -145,7 +145,7 @@ ALittle.DropDown = JavaScript.Class(ALittle.TextCheckButton, {
 		this._button_style = undefined;
 		this._data_list = value;
 		this.button_style = button_style;
-		if (lua.table.maxn(value) > 0) {
+		if (ALittle.List_MaxN(value) > 0) {
 			this.text = value[1 - 1];
 		} else {
 			this.text = "";

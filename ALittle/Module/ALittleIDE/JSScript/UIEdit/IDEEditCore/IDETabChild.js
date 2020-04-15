@@ -404,10 +404,10 @@ ALittleIDE.IDETabChild = JavaScript.Class(undefined, {
 		this._tree_screen.AddChild(this._tree_object);
 		this._anti_panel.Init(this);
 	},
-	CreateByExtends : function(extends) {
+	CreateByExtends : function(extends_v) {
 		let info = {};
-		info.__extends = extends;
-		let object = ALittleIDE.g_IDEProject.project.control.CreateControl(extends);
+		info.__extends = extends_v;
+		let object = ALittleIDE.g_IDEProject.project.control.CreateControl(extends_v);
 		this._tab_object_container.AddChild(object);
 		this._tree_object = ALittleIDE.IDEUtility_CreateTree(info, false, object, undefined, this, true);
 		this._tree_object.AddEventListener(___all_struct.get(-431205740), this, this.HandleTreeSizeChanged);

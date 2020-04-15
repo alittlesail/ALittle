@@ -40,16 +40,12 @@ ALittleIDE.IDECenter = JavaScript.Class(undefined, {
 			A_UISystem.keydown_callback = this.HandleShortcutKey.bind(this);
 			ALittleIDE.g_IDEIMEManager.Setup();
 			ALittleIDE.g_IDEProjectManager.OpenLastProject();
-			if (debug !== "debug") {
-				ALittleIDE.g_IDEVersionManager.CheckVersionUpdate();
-			}
 			ALittleIDE.g_IDELoginManager.Setup();
 			___COROUTINE();
 		}).bind(this));
 	},
 	Shutdown : function() {
 		ALittleIDE.g_IDEUICenter.Shutdown();
-		ALittleIDE.g_IDEVersionManager.Shutdown();
 		ALittleIDE.g_IDELoginManager.Shutdown();
 		ALittleIDE.g_IDEIMEManager.Shutdown();
 	},
@@ -157,7 +153,6 @@ ALittleIDE.IDECenter = JavaScript.Class(undefined, {
 		ALittleIDE.g_IDEMainMenu.ShowToolMenu(event);
 	},
 	HandleVersionMenuClick : function(event) {
-		ALittleIDE.g_IDEVersionManager.ShowDialog();
 	},
 	HandleRunMenuClick : function(event) {
 		ALittleIDE.g_IDEProjectManager.RunProject();

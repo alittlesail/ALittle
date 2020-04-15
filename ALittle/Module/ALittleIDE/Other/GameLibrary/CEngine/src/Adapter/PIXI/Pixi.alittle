@@ -133,12 +133,19 @@ public class Text : Sprite
 [Native]
 public class TextStyle
 {
+    public fun clone() : TextStyle {}
     public get fontFamily() : string {}
     public set fontFamily(string value) {}
     public get fontSize() : int {}
     public set fontSize(int value) {}
-    public get fill() : string {}
-    public set fill(string value) {}
+    public get fill() : int {}
+    public set fill(int value) {}
+    public get wordWrap() : bool {}
+    public set wordWrap(bool v) {}
+    public get breakWords() : bool {}
+    public set breakWords(bool v) {}
+    public get wordWrapWidth() : double {}
+    public set wordWrapWidth(double v) {}
 }
 
 [Native]

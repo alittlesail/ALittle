@@ -167,5 +167,4 @@ ALittleIDE.IDEVersionManager = JavaScript.Class(undefined, {
 	},
 }, "ALittleIDE.IDEVersionManager");
 
-ALittleIDE.g_IDEVersionManager = ALittle.NewObject(ALittleIDE.IDEVersionManager);
 }

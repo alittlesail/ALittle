@@ -197,7 +197,7 @@ public class DropDown : TextCheckButton
         this._data_list = value;
         this.button_style = button_style;
     
-        if (lua.table.maxn(value) > 0)
+        if (List_MaxN(value) > 0)
             this.text = value[1];
         else
             this.text = "";

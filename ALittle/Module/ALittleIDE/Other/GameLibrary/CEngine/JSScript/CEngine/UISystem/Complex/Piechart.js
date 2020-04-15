@@ -146,8 +146,6 @@ ALittle.Piechart = JavaScript.Class(ALittle.DisplayLayout, {
 			if (v === undefined) break;
 			v.visible = false;
 		}
-		let end_c = end_c;
-		let start_c = start_c;
 		let e_offset = 0.0;
 		let s_offset = 0.0;
 		if (end_c >= 0 && end_c <= 45) {

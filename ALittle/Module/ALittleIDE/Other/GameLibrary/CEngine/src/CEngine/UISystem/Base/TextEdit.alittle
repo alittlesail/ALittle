@@ -1,8 +1,8 @@
 
 namespace ALittle;
 
-private var __type = lua.type;
-private var __tonumber = lua.tonumber;
+private var __type = String_Type;
+private var __tonumber = Math_ToDouble;
 private var __tostring = String_ToString;
 private var __floor = Math_Floor;
 private var __sub = String_Sub;
@@ -47,7 +47,10 @@ public class TextEdit : DisplayObject
     public ctor(ControlSystem ctrl_sys)
     {
         // 创建text对象
+        [Language(Lua)]
         this._show = new lua.__CPPAPITextEdit();
+        [Language(JavaScript)]
+        this._show = new JavaScript.JTextArea();
     
         this._cursor_red = 1;
         this._cursor_green = 1;
@@ -161,7 +164,7 @@ public class TextEdit : DisplayObject
     public set default_text_alpha(double value)
     {
         if (__type(value) != "number")
-            value = __tonumber(value);
+            value = __tonumber(cast<any>(value));
 
         if (value == null || this._default_text_alpha == value)
             return;
@@ -500,7 +503,7 @@ public class TextEdit : DisplayObject
         elseif (event.sym == 1073741904)
         {
             // 左键
-            if (lua.bit.band(event.mod, UIEnumTypes.KMOD_SHIFT) == 0)
+            if (BitAnd(event.mod, UIEnumTypes.KMOD_SHIFT) == 0)
             {
                 this._is_selecting = false;
                 this._show.CursorOffsetLR(true);
@@ -515,7 +518,7 @@ public class TextEdit : DisplayObject
         elseif (event.sym == 1073741903)
         {
             // 右键
-            if (lua.bit.band(event.mod, UIEnumTypes.KMOD_SHIFT) == 0)
+            if (BitAnd(event.mod, UIEnumTypes.KMOD_SHIFT) == 0)
             {
                 this._is_selecting = false;
                 this._show.CursorOffsetLR(false);
@@ -530,7 +533,7 @@ public class TextEdit : DisplayObject
         elseif (event.sym == 1073741906)
         {
             // 上键
-            if (lua.bit.band(event.mod, UIEnumTypes.KMOD_SHIFT) == 0)
+            if (BitAnd(event.mod, UIEnumTypes.KMOD_SHIFT) == 0)
             {
                 this._is_selecting = false;
                 this._show.CursorOffsetUD(true);
@@ -545,7 +548,7 @@ public class TextEdit : DisplayObject
         elseif (event.sym == 1073741905)
         {
             // 下键
-            if (lua.bit.band(event.mod, UIEnumTypes.KMOD_SHIFT) == 0)
+            if (BitAnd(event.mod, UIEnumTypes.KMOD_SHIFT) == 0)
             {
                 this._is_selecting = false;
                 this._show.CursorOffsetUD(false);
@@ -605,7 +608,7 @@ public class TextEdit : DisplayObject
 				event.handled = true;
             }
         }
-        elseif (event.sym == 120 && lua.bit.band(event.mod, UIEnumTypes.KMOD_CTRL) != 0)
+        elseif (event.sym == 120 && BitAnd(event.mod, UIEnumTypes.KMOD_CTRL) != 0)
         {
             // x键
             if (this._editable || event.custom)
@@ -620,7 +623,7 @@ public class TextEdit : DisplayObject
 				event.handled = true;
             }
         }
-        elseif (event.sym == 99 && lua.bit.band(event.mod, UIEnumTypes.KMOD_CTRL) != 0)
+        elseif (event.sym == 99 && BitAnd(event.mod, UIEnumTypes.KMOD_CTRL) != 0)
         {
             // c键
             var select_text = this._show.GetSelectText();
@@ -628,7 +631,7 @@ public class TextEdit : DisplayObject
                 System_SetClipboardText(select_text);
 			event.handled = true;
         }
-        elseif (event.sym == 118 && lua.bit.band(event.mod, UIEnumTypes.KMOD_CTRL) != 0)
+        elseif (event.sym == 118 && BitAnd(event.mod, UIEnumTypes.KMOD_CTRL) != 0)
         {
             // v键
             if (this._editable || event.custom)
@@ -644,7 +647,7 @@ public class TextEdit : DisplayObject
 				event.handled = true;
             }
         }
-        elseif (event.sym == 97 && lua.bit.band(event.mod, UIEnumTypes.KMOD_CTRL) != 0)
+        elseif (event.sym == 97 && BitAnd(event.mod, UIEnumTypes.KMOD_CTRL) != 0)
         {
             // a键
             this._is_selecting = true;

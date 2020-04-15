@@ -1,7 +1,7 @@
 
 namespace ALittle;
 
-private var __ceil = lua.math.ceil;
+private var __ceil = Math_Ceil;
 
 public class Grid9 : DisplayGroup
 {

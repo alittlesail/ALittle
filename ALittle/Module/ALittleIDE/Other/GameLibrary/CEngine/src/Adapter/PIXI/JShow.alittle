@@ -2,6 +2,11 @@
 [Language(JavaScript)]
 namespace JavaScript;
 
+public static RGBToHex(int r, int g, int b) : int
+{
+    return r * 65536 + g * 256 + b;
+}
+
 public class JDisplayObject : ALittle.IDisplayObject
 {
     private PIXI.DisplayObject _native;
@@ -124,7 +129,6 @@ public class JDisplayObjects : JDisplayObject
         cast<PIXI.Container>(this._native).removeChildren(0);
     }
 }
-
 
 public class JDisplayView : JDisplayObjects
 {
@@ -447,7 +451,7 @@ public class JText : JDisplayObject
         this._red = 255;
         this._green = 255;
         this._blue = 255;
-        this._style.fill = "#"..cast<javascript.Number>((this._red * 65536 + this._green * 256 + this._blue)).toString(16);
+        this._style.fill = RGBToHex(this._red, this._green, this._blue);
         this._text = "";
     }
     
@@ -473,25 +477,99 @@ public class JText : JDisplayObject
     public fun SetRed(double value)
     {
         this._red = javascript.Math.floor(value * 255);
-        this._style.fill = "#"..cast<javascript.Number>((this._red * 65536 + this._green * 256 + this._blue)).toString(16);
+        this._style.fill = RGBToHex(this._red, this._green, this._blue);
         cast<PIXI.Text>(this._native).style = this._style;
     }
     
     public fun SetGreen(double value)
     {
         this._green = javascript.Math.floor(value * 255);
-        this._style.fill = "#"..cast<javascript.Number>((this._red * 65536 + this._green * 256 + this._blue)).toString(16);
+        this._style.fill = RGBToHex(this._red, this._green, this._blue);
         cast<PIXI.Text>(this._native).style = this._style;
     }
     public fun SetBlue(double value)
     {
         this._blue = javascript.Math.floor(value * 255);
-        this._style.fill = "#"..cast<javascript.Number>((this._red * 65536 + this._green * 256 + this._blue)).toString(16);
+        this._style.fill = RGBToHex(this._red, this._green, this._blue);
         cast<PIXI.Text>(this._native).style = this._style;
     }
     
     public fun GetRealWidth() : int { return this._real_width; }
     public fun GetRealHeight() : int { return this._real_height; }
+}
+
+
+public class JTextArea : JDisplayObject
+{
+    private PIXI.TextStyle _style;
+    private int _red;
+    private int _green;
+    private int _blue;
+    private string _text;
+    
+    public ctor()
+    {
+        this._native = new PIXI.Text();
+        this._style = new PIXI.TextStyle();
+        this._red = 255;
+        this._green = 255;
+        this._blue = 255;
+        this._style.fill = RGBToHex(this._red, this._green, this._blue);
+        this._style.wordWrap = true;
+        this._style.breakWords = true;
+        this._text = "";
+    }
+
+    public fun SetWidth(double width)
+    {
+        this._native.width = width;
+        this._style.wordWrapWidth = width;
+        cast<PIXI.Text>(this._native).style = this._style;
+    }
+    
+    public fun SetHeight(double height)
+    {
+    }
+    
+    public fun SetText(string value)
+    {
+        this._text = value;
+        cast<PIXI.Text>(this._native).text = value;
+        cast<PIXI.Text>(this._native).style = this._style;
+    }
+        
+    public fun SetFont(string path, int size)
+    {
+        this._style.fontFamily = path;
+        this._style.fontSize = size;
+        cast<PIXI.Text>(this._native).style = this._style;
+    }
+    
+    public fun SetRed(double value)
+    {
+        this._red = javascript.Math.floor(value * 255);
+        this._style.fill = RGBToHex(this._red, this._green, this._blue);
+        cast<PIXI.Text>(this._native).style = this._style;
+    }
+    
+    public fun SetGreen(double value)
+    {
+        this._green = javascript.Math.floor(value * 255);
+        this._style.fill = RGBToHex(this._red, this._green, this._blue);
+        cast<PIXI.Text>(this._native).style = this._style;
+    }
+    public fun SetBlue(double value)
+    {
+        this._blue = javascript.Math.floor(value * 255);
+        this._style.fill = RGBToHex(this._red, this._green, this._blue);
+        cast<PIXI.Text>(this._native).style = this._style;
+    }
+
+    public fun GetRealHeight() : int
+    {
+        var m = PIXI.TextMetrics.measureText(this._text, this._style);
+        return m.height;
+    }
 }
 
 private var __TEXTURELOADER_MAXID = 0;

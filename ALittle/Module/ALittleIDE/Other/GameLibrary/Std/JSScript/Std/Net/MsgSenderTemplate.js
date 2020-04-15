@@ -35,7 +35,6 @@ ALittle.MsgSenderTemplate = JavaScript.Class(ALittle.IMsgCommonTemplate, {
 			this._port = port;
 			this._interface.Connect(ip, port);
 			return;
-			___COROUTINE();
 		}).bind(this));
 	},
 	HandleConnectSucceed : function() {

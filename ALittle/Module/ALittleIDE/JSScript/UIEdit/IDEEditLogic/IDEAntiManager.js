@@ -399,7 +399,7 @@ ALittleIDE.IDEAntiFrameAntiItem = JavaScript.Class(ALittle.DisplayLayout, {
 		}
 		let child_index = this._container.GetChildIndex(loop_item);
 		ALittle.List_Insert(this._info.childs, child_index, child);
-		let loop_item = ALittleIDE.g_Control.CreateControl("ide_anti_screen_loop_item");
+		loop_item = ALittleIDE.g_Control.CreateControl("ide_anti_screen_loop_item");
 		loop_item.Init(this, child);
 		this._container.AddChild(loop_item, child_index);
 		let revoke = ALittle.NewObject(ALittleIDE.IDEAntiInsertLoopRevoke, this, child, loop_item, child_index);

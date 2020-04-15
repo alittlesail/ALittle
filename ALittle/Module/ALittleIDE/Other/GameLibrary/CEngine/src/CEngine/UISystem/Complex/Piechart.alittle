@@ -155,8 +155,6 @@ public class Piechart : DisplayLayout
     	for (var k, v in this._tri_list)
     		v.visible = false;
 
-		var end_c = end_c;
-		var start_c = start_c;
 		var e_offset = 0.0; // 结束度数u、v的偏移量（0~1）
 		var s_offset = 0.0; // 开始度数u、v的偏移量（0~1）
     	if (end_c >= 0 && end_c <= 45)

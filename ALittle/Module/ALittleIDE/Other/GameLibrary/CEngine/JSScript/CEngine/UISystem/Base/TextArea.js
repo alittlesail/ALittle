@@ -2,7 +2,7 @@
 if (typeof ALittle === "undefined") ALittle = {};
 
 
-let __tostring = lua.tostring;
+let __tostring = ALittle.String_ToString;
 if (ALittle.DisplayObject === undefined) throw new Error(" extends class:ALittle.DisplayObject is undefined");
 ALittle.TextArea = JavaScript.Class(ALittle.DisplayObject, {
 	Ctor : function(ctrl_sys) {
@@ -15,7 +15,7 @@ ALittle.TextArea = JavaScript.Class(ALittle.DisplayObject, {
 		this._flip = 0;
 		this._halign_type = ALittle.UIEnumTypes.HALIGN_LEFT;
 		this._valign_type = ALittle.UIEnumTypes.VALIGN_TOP;
-		this._show = ALittle.NewObject(lua.__CPPAPITextArea);
+		this._show = ALittle.NewObject(JavaScript.JTextArea);
 	},
 	Redraw : function() {
 		this._show.NeedDraw();

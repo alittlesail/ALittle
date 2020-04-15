@@ -93,11 +93,13 @@ public class ControlSystem
         for (var name, value in json)
         {
             this.RegisterInfo(name, value);
-            
+        }
+        for (var name, value in json)
+        {
             var info = this.CreateInfo(this._name_map_info[name]);
             this._name_map_info[name] = info;
             this._name_map_info_cache[name] = true;
-        }   
+        }
     }
     
     public fun RegisterInfo(string name, DisplayInfo info)
@@ -229,7 +231,10 @@ public class ControlSystem
     protected fun SetFont(DisplayObject object, string font_path, int font_size)
     {
         var dst = this._font_map[font_path];
+        [Language(Lua)]
         if (dst == null) dst = font_path;
+        [Language(JavaScript)]
+        if (dst == null) dst = "Arial";
         
         [Language(Lua)]
         object.native_show.SetFont(this._font_path .. dst, font_size);

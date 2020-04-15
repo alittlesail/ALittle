@@ -41,6 +41,11 @@ ALittle.IMsgCommonTemplate = JavaScript.Class(ALittle.IMsgCommon, {
 	GetID : function() {
 		return this._interface.GetID();
 	},
+	Connect : function(ip, port) {
+		return new Promise((function(___COROUTINE, ___) {
+			___COROUTINE("not impl"); return;
+		}).bind(this));
+	},
 	IsConnected : function() {
 		return this._interface.IsConnected();
 	},

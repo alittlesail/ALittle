@@ -238,4 +238,5 @@ public class IDEVersionManager
 	}
 }
 
+[Language(Lua)]
 protected var g_IDEVersionManager = new IDEVersionManager();

@@ -1,7 +1,7 @@
 
 namespace ALittle;
 
-private var __sin = lua.math.sin;
+private var __sin = Math_Sin;
 
 public class ScrollScreen : DisplayGroup
 {

@@ -2,7 +2,7 @@
 if (typeof ALittle === "undefined") ALittle = {};
 
 
-let __ceil = lua.math.ceil;
+let __ceil = ALittle.Math_Ceil;
 if (ALittle.DisplayGroup === undefined) throw new Error(" extends class:ALittle.DisplayGroup is undefined");
 ALittle.Grid9 = JavaScript.Class(ALittle.DisplayGroup, {
 	Ctor : function(ctrl_sys) {

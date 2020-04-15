@@ -7,14 +7,7 @@ ALittleIDE.__Browser_Setup = async function(layer_group, control, module_base_pa
 	let window_width = 1200;
 	let window_height = 600;
 	let rate = 1.0;
-	let flag = ALittle.BitOr(0x00000080, 0x00000020);
-	if (ALittle.System_GetPlatform() !== "Windows") {
-		let screen_width = ALittle.System_GetScreenWidth();
-		let screen_height = ALittle.System_GetScreenHeight();
-		rate = screen_height / screen_width;
-		window_height = ALittle.Math_Floor(rate * window_width);
-		flag = ALittle.BitOr(flag, 0x00000001);
-	}
+	let flag = 0;
 	ALittle.System_CreateView("ALittleIDE", window_width, window_height, flag, rate);
 	ALittle.System_SetViewIcon(module_base_path + "/Other/ic_launcher.png");
 	await A_ModuleSystem.LoadModule(module_base_path, "ALittleIDE");

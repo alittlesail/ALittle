@@ -17,7 +17,6 @@ ALittle.IHttpSender = JavaScript.Class(undefined, {
 			}
 			client.SendRPC(___COROUTINE, method, content);
 			return;
-			___COROUTINE();
 		});
 	},
 }, "ALittle.IHttpSender");

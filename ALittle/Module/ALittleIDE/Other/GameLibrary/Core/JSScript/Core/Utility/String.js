@@ -6,6 +6,10 @@ ALittle.String_Upper = function(s) {
 	return s.toUpperCase();
 }
 
+ALittle.String_Lower = function(s) {
+	return s.toLowerCase();
+}
+
 ALittle.String_ToString = function(s) {
 	if (s === undefined) {
 		return "nil";

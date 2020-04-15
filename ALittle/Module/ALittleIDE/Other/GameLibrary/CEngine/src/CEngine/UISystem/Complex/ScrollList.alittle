@@ -1,9 +1,9 @@
 
 namespace ALittle;
 
-private var __floor = lua.math.floor;
-private var __remove = lua.table.remove;
-private var __sin = lua.math.sin;
+private var __floor = Math_Floor;
+private var __remove = List_Remove;
+private var __sin = Math_Sin;
 
 public class ScrollList : DisplayView
 {

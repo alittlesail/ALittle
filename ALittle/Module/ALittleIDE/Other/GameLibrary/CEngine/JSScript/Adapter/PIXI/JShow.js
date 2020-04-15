@@ -2,6 +2,10 @@
 if (typeof JavaScript === "undefined") JavaScript = {};
 
 
+JavaScript.RGBToHex = function(r, g, b) {
+	return r * 65536 + g * 256 + b;
+}
+
 if (ALittle.IDisplayObject === undefined) throw new Error(" extends class:ALittle.IDisplayObject is undefined");
 JavaScript.JDisplayObject = JavaScript.Class(ALittle.IDisplayObject, {
 	Ctor : function() {
@@ -478,7 +482,7 @@ JavaScript.JText = JavaScript.Class(JavaScript.JDisplayObject, {
 		this._red = 255;
 		this._green = 255;
 		this._blue = 255;
-		this._style.fill = "#" + ((this._red * 65536 + this._green * 256 + this._blue).toString(16));
+		this._style.fill = JavaScript.RGBToHex(this._red, this._green, this._blue);
 		this._text = "";
 	},
 	SetText : function(value) {
@@ -498,17 +502,17 @@ JavaScript.JText = JavaScript.Class(JavaScript.JDisplayObject, {
 	},
 	SetRed : function(value) {
 		this._red = Math.floor(value * 255);
-		this._style.fill = "#" + ((this._red * 65536 + this._green * 256 + this._blue).toString(16));
+		this._style.fill = JavaScript.RGBToHex(this._red, this._green, this._blue);
 		this._native.style = this._style;
 	},
 	SetGreen : function(value) {
 		this._green = Math.floor(value * 255);
-		this._style.fill = "#" + ((this._red * 65536 + this._green * 256 + this._blue).toString(16));
+		this._style.fill = JavaScript.RGBToHex(this._red, this._green, this._blue);
 		this._native.style = this._style;
 	},
 	SetBlue : function(value) {
 		this._blue = Math.floor(value * 255);
-		this._style.fill = "#" + ((this._red * 65536 + this._green * 256 + this._blue).toString(16));
+		this._style.fill = JavaScript.RGBToHex(this._red, this._green, this._blue);
 		this._native.style = this._style;
 	},
 	GetRealWidth : function() {
@@ -518,6 +522,57 @@ JavaScript.JText = JavaScript.Class(JavaScript.JDisplayObject, {
 		return this._real_height;
 	},
 }, "JavaScript.JText");
+
+if (JavaScript.JDisplayObject === undefined) throw new Error(" extends class:JavaScript.JDisplayObject is undefined");
+JavaScript.JTextArea = JavaScript.Class(JavaScript.JDisplayObject, {
+	Ctor : function() {
+		this._native = new PIXI.Text();
+		this._style = new PIXI.TextStyle();
+		this._red = 255;
+		this._green = 255;
+		this._blue = 255;
+		this._style.fill = JavaScript.RGBToHex(this._red, this._green, this._blue);
+		this._style.wordWrap = true;
+		this._style.breakWords = true;
+		this._text = "";
+	},
+	SetWidth : function(width) {
+		this._native.width = width;
+		this._style.wordWrapWidth = width;
+		this._native.style = this._style;
+	},
+	SetHeight : function(height) {
+	},
+	SetText : function(value) {
+		this._text = value;
+		this._native.text = value;
+		this._native.style = this._style;
+	},
+	SetFont : function(path, size) {
+		this._style.fontFamily = path;
+		this._style.fontSize = size;
+		this._native.style = this._style;
+	},
+	SetRed : function(value) {
+		this._red = Math.floor(value * 255);
+		this._style.fill = JavaScript.RGBToHex(this._red, this._green, this._blue);
+		this._native.style = this._style;
+	},
+	SetGreen : function(value) {
+		this._green = Math.floor(value * 255);
+		this._style.fill = JavaScript.RGBToHex(this._red, this._green, this._blue);
+		this._native.style = this._style;
+	},
+	SetBlue : function(value) {
+		this._blue = Math.floor(value * 255);
+		this._style.fill = JavaScript.RGBToHex(this._red, this._green, this._blue);
+		this._native.style = this._style;
+	},
+	GetRealHeight : function() {
+		let m = PIXI.TextMetrics.measureText(this._text, this._style);
+		return m.height;
+	},
+}, "JavaScript.JTextArea");
 
 let __TEXTURELOADER_MAXID = 0;
 if (ALittle.ITexture === undefined) throw new Error(" extends class:ALittle.ITexture is undefined");

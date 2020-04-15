@@ -21,7 +21,7 @@ type_list : ["ALittle.DisplayObject","double","double","double","double","double
 option_map : {}
 })
 
-let __abs = lua.math.abs;
+let __abs = ALittle.Math_Abs;
 if (ALittle.TextButton === undefined) throw new Error(" extends class:ALittle.TextButton is undefined");
 ALittle.ScrollButton = JavaScript.Class(ALittle.TextButton, {
 	Ctor : function(ctrl_sys) {

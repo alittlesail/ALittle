@@ -1054,14 +1054,14 @@ ALittleIDE.DisplayObjectS = JavaScript.Class(undefined, {
 			}
 		}
 	},
-	RemoverToNilShowSetForExtends : function(text, extends, need_reset, revoke_bind) {
-		if (extends !== "") {
-			if (ALittleIDE.g_IDEProject.IsControlExist(extends) === false) {
-				ALittleIDE.g_IDETool.ShowNotice("错误", "要继承的控件不存在:" + extends);
+	RemoverToNilShowSetForExtends : function(text, extends_v, need_reset, revoke_bind) {
+		if (extends_v !== "") {
+			if (ALittleIDE.g_IDEProject.IsControlExist(extends_v) === false) {
+				ALittleIDE.g_IDETool.ShowNotice("错误", "要继承的控件不存在:" + extends_v);
 				return;
 			}
 			let display_info = {};
-			display_info.__extends = extends;
+			display_info.__extends = extends_v;
 			this.RemoverToNilShowSet(text, ALittle.String_JsonEncode(display_info), need_reset, revoke_bind);
 		} else {
 			this.RemoverToNilShowSet(text, "", need_reset, revoke_bind);

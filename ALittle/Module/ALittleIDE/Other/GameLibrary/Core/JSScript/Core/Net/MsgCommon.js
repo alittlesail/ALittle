@@ -59,6 +59,8 @@ ALittle.IMsgCommon = JavaScript.Class(undefined, {
 	IsConnected : function() {
 		return false;
 	},
+	Close : function(reason) {
+	},
 	HandleConnectSucceed : function() {
 	},
 	HandleDisconnect : function() {
@@ -89,7 +91,6 @@ ALittle.IMsgCommon = JavaScript.Class(undefined, {
 			}
 			client.SendRPC(___COROUTINE, msg_id, msg_body);
 			return;
-			___COROUTINE();
 		});
 	},
 }, "ALittle.IMsgCommon");

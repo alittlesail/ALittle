@@ -234,8 +234,8 @@ int md5_file(const char* file_path, char output[HASHSIZE])
 {
     if (file_path == 0) return 0;
 
-#ifdef _WIN32
     FILE* file = 0;
+#ifdef _WIN32
     fopen_s(&file, file_path, "rb");
 #else
     file = fopen(file_path, "rb");

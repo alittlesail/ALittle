@@ -30,6 +30,7 @@
 #include <string.h>
 #include <assert.h>
 
+#define LUA_COMPAT_APIINTCASTS
 #include "lua.h"
 #include "lauxlib.h"
 

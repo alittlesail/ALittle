@@ -67,7 +67,7 @@ int csv_addrow(csv* c, csvrow* rowdata, kstring_t* error)
 
     if (kv_size(*rowdata) != c->col_count)
     {
-        if (error) ksprintf(error, "row(%d) col(%d) != %d:%s", c->row_count + 1, kv_size(*rowdata), c->path->s);
+        if (error) ksprintf(error, "row(%d) col(%d) != %d:%s", c->row_count + 1, kv_size(*rowdata), c->col_count, c->path->s);
         return 0;
     }
 

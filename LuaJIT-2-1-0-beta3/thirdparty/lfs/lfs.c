@@ -57,6 +57,7 @@
 #endif
 
 #include "lfs.h"
+#define LUA_COMPAT_APIINTCASTS
 #include "lua.h"
 #include "lualib.h"
 #include "lauxlib.h"

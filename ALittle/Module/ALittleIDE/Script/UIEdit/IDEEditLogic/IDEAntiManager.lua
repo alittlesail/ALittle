@@ -424,7 +424,7 @@ function IDEAntiFrameAntiItem:InsertBefore(loop_item, clazz)
 	end
 	local child_index = self._container:GetChildIndex(loop_item)
 	ALittle.List_Insert(self._info.childs, child_index, child)
-	local loop_item = g_Control:CreateControl("ide_anti_screen_loop_item")
+	loop_item = g_Control:CreateControl("ide_anti_screen_loop_item")
 	loop_item:Init(self, child)
 	self._container:AddChild(loop_item, child_index)
 	local revoke = IDEAntiInsertLoopRevoke(self, child, loop_item, child_index)

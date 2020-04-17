@@ -481,10 +481,10 @@ function IDETabManager:StartEditControlByNew(name, type)
 	return tab_child
 end
 
-function IDETabManager:StartEditControlByExtends(name, extends)
+function IDETabManager:StartEditControlByExtends(name, extends_v)
 	local child_from = self._main_tab.tab
 	local tab_child = IDETabChild(name, false)
-	tab_child:CreateByExtends(extends)
+	tab_child:CreateByExtends(extends_v)
 	self._main_tab:AddChild(tab_child.tab_body)
 	self._main_tree:AddChild(tab_child.tree_screen)
 	self._main_control:AddChild(tab_child.control_screen)

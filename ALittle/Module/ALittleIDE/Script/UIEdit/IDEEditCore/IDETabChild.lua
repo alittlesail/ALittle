@@ -418,10 +418,10 @@ function IDETabChild:CreateByNew(type)
 	self._anti_panel:Init(self)
 end
 
-function IDETabChild:CreateByExtends(extends)
+function IDETabChild:CreateByExtends(extends_v)
 	local info = {}
-	info.__extends = extends
-	local object = g_IDEProject.project.control:CreateControl(extends)
+	info.__extends = extends_v
+	local object = g_IDEProject.project.control:CreateControl(extends_v)
 	self._tab_object_container:AddChild(object)
 	self._tree_object = IDEUtility_CreateTree(info, false, object, nil, self, true)
 	self._tree_object:AddEventListener(___all_struct[-431205740], self, self.HandleTreeSizeChanged)

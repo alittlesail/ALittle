@@ -201,34 +201,34 @@ function IDEUtility_GetBaseInfo(info)
 end
 
 function IDEUtility_GetDefaultInfo(info)
-	local default = {}
+	local default_v = {}
 	if info.__extends ~= nil then
-		default = IDEUtility_GetDefaultInfo(g_IDEProject.project.control_map[info.__extends].info)
+		default_v = IDEUtility_GetDefaultInfo(g_IDEProject.project.control_map[info.__extends].info)
 		for k, v in ___pairs(info) do
 			if k ~= "__extends" then
-				default[k] = v
+				default_v[k] = v
 			end
 		end
 	elseif info.__include ~= nil then
-		default = IDEUtility_GetDefaultInfo(g_IDEProject.project.control_map[info.__include].info)
+		default_v = IDEUtility_GetDefaultInfo(g_IDEProject.project.control_map[info.__include].info)
 	elseif info.__class ~= nil then
 		local class_default = g_IDEEnum.type_default_map[info.__class]
-		default = {}
+		default_v = {}
 		for k, v in ___pairs(class_default) do
 			if ALittle.String_Type(v) ~= "table" then
-				default[k] = v
+				default_v[k] = v
 			end
 		end
 		for k, v in ___pairs(info) do
-			default[k] = v
+			default_v[k] = v
 		end
 	else
 		ALittle.Log("error GetDefaultInfo: there have not extends, include, class")
 	end
-	return default
+	return default_v
 end
 
-function IDEUtility_CreateTree(control, extends, object, child_type, tab_child, root)
+function IDEUtility_CreateTree(control, extends_v, object, child_type, tab_child, root)
 	local user_info = {}
 	user_info.base = IDEUtility_GetBaseInfo(control)
 	if control.__extends ~= nil then
@@ -259,7 +259,7 @@ function IDEUtility_CreateTree(control, extends, object, child_type, tab_child, 
 	user_info.child_type = child_type
 	user_info.root = root
 	user_info.object = object
-	user_info.extends = extends
+	user_info.extends = extends_v
 	user_info.extends_root = control.__extends ~= nil
 	local tree_logic = nil
 	if g_IDEEnum.can_add_child_map[user_info.default.__class] or g_IDEEnum.child_show_map[user_info.default.__class] ~= nil then
@@ -271,7 +271,7 @@ function IDEUtility_CreateTree(control, extends, object, child_type, tab_child, 
 		if control.__childs ~= nil and ALittle.List_MaxN(control.__childs) > 0 then
 			local childs = control.__childs
 			for k, v in ___ipairs(childs) do
-				tree_logic:AddChild(IDEUtility_CreateTree(v, extends, object.childs[k], "child", tab_child, false))
+				tree_logic:AddChild(IDEUtility_CreateTree(v, extends_v, object.childs[k], "child", tab_child, false))
 			end
 		elseif user_info.default.__childs ~= nil and ALittle.List_MaxN(user_info.default.__childs) > 0 then
 			local childs = user_info.default.__childs
@@ -285,7 +285,7 @@ function IDEUtility_CreateTree(control, extends, object, child_type, tab_child, 
 		for index, name in ___ipairs(show_list) do
 			if object[name] ~= nil then
 				if control[name] ~= nil then
-					tree_logic:AddChild(IDEUtility_CreateTree(control[name], extends, object[name], name, tab_child, false))
+					tree_logic:AddChild(IDEUtility_CreateTree(control[name], extends_v, object[name], name, tab_child, false))
 				elseif user_info.default[name] ~= nil then
 					tree_logic:AddChild(IDEUtility_CreateTree(user_info.default[name], true, object[name], name, tab_child, false))
 				end

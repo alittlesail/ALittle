@@ -1166,14 +1166,14 @@ function DisplayObjectS:RemoverToNilShowSetForImage(text, image_path, grid9, nee
 	end
 end
 
-function DisplayObjectS:RemoverToNilShowSetForExtends(text, extends, need_reset, revoke_bind)
-	if extends ~= "" then
-		if g_IDEProject:IsControlExist(extends) == false then
-			g_IDETool:ShowNotice("错误", "要继承的控件不存在:" .. extends)
+function DisplayObjectS:RemoverToNilShowSetForExtends(text, extends_v, need_reset, revoke_bind)
+	if extends_v ~= "" then
+		if g_IDEProject:IsControlExist(extends_v) == false then
+			g_IDETool:ShowNotice("错误", "要继承的控件不存在:" .. extends_v)
 			return
 		end
 		local display_info = {}
-		display_info.__extends = extends
+		display_info.__extends = extends_v
 		self:RemoverToNilShowSet(text, ALittle.String_JsonEncode(display_info), need_reset, revoke_bind)
 	else
 		self:RemoverToNilShowSet(text, "", need_reset, revoke_bind)

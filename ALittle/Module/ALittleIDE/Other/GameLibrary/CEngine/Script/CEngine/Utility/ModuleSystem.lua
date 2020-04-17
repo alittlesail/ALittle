@@ -43,7 +43,9 @@ local ___COROUTINE = coroutine.running()
 		return nil
 	end
 	local version_system = VersionSystem.CreateVersionSystem("", name)
-	version_system:UpdateModule()
+	if version_system ~= nil then
+		version_system:UpdateModule()
+	end
 	local info = {}
 	info.name = name
 	info.crypt_mode = (File_ReadTextFromFile("Module/" .. name .. "/NoCrypt.ali", false) == nil)

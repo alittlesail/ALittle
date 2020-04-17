@@ -52,6 +52,8 @@ public await static __ALITTLEAPI_Core_Init(string base_path)
         Require(base_path.."Core/Lua/LuaBind");
         Require(base_path.."Core/Lua/LuaClass");
         Require(base_path.."Core/Lua/LuaException");
+
+        if (_G["bit"] == null) _G["bit"] = _G["bit32"];
     }
     
     Require(base_path.."Core/Utility/Log");

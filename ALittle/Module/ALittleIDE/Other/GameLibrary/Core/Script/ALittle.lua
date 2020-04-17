@@ -22,6 +22,9 @@ local ___COROUTINE = coroutine.running()
 		Require(base_path .. "Core/Lua/LuaBind")
 		Require(base_path .. "Core/Lua/LuaClass")
 		Require(base_path .. "Core/Lua/LuaException")
+		if _G["bit"] == nil then
+			_G["bit"] = _G["bit32"]
+		end
 	end
 	Require(base_path .. "Core/Utility/Log")
 	Require(base_path .. "Core/Utility/List")

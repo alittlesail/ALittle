@@ -378,9 +378,11 @@ function IDEExport:HandleQueryNewCurVersionImpl(package_info, is_login, update_t
 		return
 	end
 	if package_info.platform == "Android" then
-		ALittle.File_SaveFile(package_info.export_path .. "/assets/Enter.ali", package_info.project_name, -1)
+		ALittle.File_MakeDir(package_info.export_path .. "/assets/Module")
+		ALittle.File_SaveFile(package_info.export_path .. "/assets/Module/Enter.ali", package_info.project_name, -1)
 	else
-		ALittle.File_SaveFile(package_info.export_path .. "/Enter.ali", package_info.project_name, -1)
+		ALittle.File_MakeDir(package_info.export_path .. "/Module")
+		ALittle.File_SaveFile(package_info.export_path .. "/Module/Enter.ali", package_info.project_name, -1)
 	end
 	ALittle.File_CopyDeepDir(package_info.project_path .. "/Export/Common", package_info.export_module_path)
 	local submit_info = {}

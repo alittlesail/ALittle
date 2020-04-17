@@ -75,7 +75,7 @@ class ModuleSystem
         [Language(Lua)]
         var version_system = VersionSystem.CreateVersionSystem("", name);
         [Language(Lua)]
-        version_system.UpdateModule();
+        if (version_system != null) version_system.UpdateModule();
         
         // 创建信息
         var info = new ModuleInfo();

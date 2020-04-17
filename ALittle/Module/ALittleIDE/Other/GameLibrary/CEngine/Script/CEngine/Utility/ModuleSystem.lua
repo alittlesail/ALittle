@@ -166,12 +166,13 @@ function ModuleSystem:MainSetup(base_path, debug, module_name)
 		return
 	end
 	if module_name == nil then
-		module_name = File_ReadTextFromFile("Enter.ali", false)
+		module_name = File_ReadTextFromFile("Module/Enter.ali", false)
 	end
 	if module_name == nil then
 		Log("Load Enter.ali failed!")
 		return
 	end
+	ALittle.Log("MainSetup222222")
 	local info = self:LoadModuleImpl(base_path, module_name)
 	if info == nil then
 		Log("Module:" .. module_name .. " load failed!")

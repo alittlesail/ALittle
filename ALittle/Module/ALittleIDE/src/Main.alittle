@@ -17,7 +17,7 @@ public async static __Browser_Setup(ALittle.DisplayLayout layer_group
     [Language(Lua)]
     flag = ALittle.BitOr(ALittle.UIEnumTypes.VIEW_MAXIMIZED, ALittle.UIEnumTypes.VIEW_RESIZABLE);
     [Language(Lua)]
-    if (ALittle.System_GetPlatform() != "Windows")
+    if (ALittle.System_IsPhone())
     {
         var screen_width = ALittle.System_GetScreenWidth();
         var screen_height = ALittle.System_GetScreenHeight();

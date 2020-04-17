@@ -13,13 +13,13 @@ public async static __Browser_Setup(ALittle.DisplayLayout layer_group
 	var rate = 0.5;
 	var flag = ALittle.UIEnumTypes.VIEW_RESIZABLE;
     [Language(Lua)]
-	if (ALittle.System_GetPlatform() != "Windows")
+	if (ALittle.System_IsPhone())
 	{
 		var screen_width = ALittle.System_GetScreenWidth();
 		var screen_height  = ALittle.System_GetScreenHeight();
-		window_height = lua.math.floor(screen_height / screen_width * window_width);
+		window_height = ALittle.Math_Floor(screen_height / screen_width * window_width);
         
-		flag = lua.bit.bor(flag, ALittle.UIEnumTypes.VIEW_FULLSCREEN);
+		flag = ALittle.BitOr(flag, ALittle.UIEnumTypes.VIEW_FULLSCREEN);
 	}
 	ALittle.System_CreateView("2048", window_width, window_height, flag, rate);
 	ALittle.System_SetViewIcon(module_base_path.."/Other/ic_launcher.png");

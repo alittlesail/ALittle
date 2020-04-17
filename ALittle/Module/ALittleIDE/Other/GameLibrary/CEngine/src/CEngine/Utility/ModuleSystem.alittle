@@ -147,6 +147,7 @@ class ModuleSystem
         package.loaded[name] = null;
         cast<Map<string, any>>(_G)[name] = null;
         // 执行垃圾回收
+        [Language(Lua)]
         lua.collectgarbage("collect");
         return true;
     }
@@ -266,7 +267,7 @@ class ModuleSystem
         
         // 读取启动文件
         if (module_name == null)
-            module_name = File_ReadTextFromFile("Enter.ali", false);
+            module_name = File_ReadTextFromFile("Module/Enter.ali", false);
         if (module_name == null)
         {
             Log("Load Enter.ali failed!");
@@ -280,6 +281,7 @@ class ModuleSystem
             Log("Module:" .. module_name .. " load failed!");
             return;
         }
+
         // 把组模块的层组放进层管理器
         A_LayerManager.AddChild(info.layer_group, A_LayerManager.group_count - 1);
         this._main_module = info;

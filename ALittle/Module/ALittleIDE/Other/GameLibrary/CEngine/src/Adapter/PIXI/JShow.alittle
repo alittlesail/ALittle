@@ -24,8 +24,8 @@ public class JDisplayObject : ALittle.IDisplayObject
     }
     
     public get native() : PIXI.DisplayObject { return this._native; }
-    public fun SetX(double value) { this._native.x = value; }
-    public fun SetY(double value) { this._native.y = value; }
+    public fun SetX(double x) { this._native.x = javascript.Math.floor(x); }
+    public fun SetY(double y) { this._native.y = javascript.Math.floor(y); }
     public fun SetScaleX(double value) { this._scale.x = value; this._native.scale = this._scale; }
     public fun SetScaleY(double value) { this._scale.y = value; this._native.scale = this._scale; }
     public fun SetCenterX(double value) { this._pivot.x = value; this._native.pivot = this._pivot; }
@@ -570,7 +570,7 @@ public class JTextArea : JDisplayObject
 
     public fun SetWidth(double width)
     {
-        this._style.wordWrapWidth = width;
+        this._style.wordWrapWidth = javascript.Math.floor(width);
         cast<PIXI.Text>(this._native).style = this._style;
     }
     

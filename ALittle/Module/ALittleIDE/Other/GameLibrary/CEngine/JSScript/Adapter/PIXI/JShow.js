@@ -17,11 +17,11 @@ JavaScript.JDisplayObject = JavaScript.Class(ALittle.IDisplayObject, {
 	get native() {
 		return this._native;
 	},
-	SetX : function(value) {
-		this._native.x = value;
+	SetX : function(x) {
+		this._native.x = Math.floor(x);
 	},
-	SetY : function(value) {
-		this._native.y = value;
+	SetY : function(y) {
+		this._native.y = Math.floor(y);
 	},
 	SetScaleX : function(value) {
 		this._scale.x = value;
@@ -572,7 +572,7 @@ JavaScript.JTextArea = JavaScript.Class(JavaScript.JDisplayObject, {
 		this._text = "";
 	},
 	SetWidth : function(width) {
-		this._style.wordWrapWidth = width;
+		this._style.wordWrapWidth = Math.floor(width);
 		this._native.style = this._style;
 	},
 	SetText : function(value) {

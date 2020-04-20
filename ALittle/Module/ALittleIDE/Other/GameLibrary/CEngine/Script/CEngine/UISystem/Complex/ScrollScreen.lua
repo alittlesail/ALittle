@@ -7,7 +7,7 @@ local ___ipairs = ipairs
 local ___all_struct = GetAllStruct()
 
 
-local __sin = math.sin
+local __sin = Math_Sin
 assert(ALittle.DisplayGroup, " extends class:ALittle.DisplayGroup is nil")
 ScrollScreen = Lua.Class(ALittle.DisplayGroup, "ALittle.ScrollScreen")
 

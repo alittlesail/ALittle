@@ -163,7 +163,7 @@ function DropDown.__setter:data_list(value)
 	self._button_style = nil
 	self._data_list = value
 	self.button_style = button_style
-	if table.maxn(value) > 0 then
+	if List_MaxN(value) > 0 then
 		self.text = value[1]
 	else
 		self.text = ""

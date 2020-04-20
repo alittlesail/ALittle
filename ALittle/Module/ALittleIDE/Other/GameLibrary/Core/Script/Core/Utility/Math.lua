@@ -39,7 +39,11 @@ function Math_Sqrt(v)
 end
 
 function Math_ToInt(s)
-	return floor(tonumber(s))
+	local n = tonumber(s)
+	if n == nil then
+		return nil
+	end
+	return floor(n)
 end
 
 function Math_ToDouble(s)

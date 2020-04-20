@@ -18,7 +18,8 @@ function System_GetLocalIPList()
 end
 
 function System_IsPhone()
-	return (__CPPAPI_GetPlatform() ~= "Windows")
+	local platform = __CPPAPI_GetPlatform()
+	return platform ~= "Windows" and platform ~= "Emscripten"
 end
 
 function System_InstallProgram(file_path)

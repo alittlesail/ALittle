@@ -7,9 +7,9 @@ local ___ipairs = ipairs
 local ___all_struct = GetAllStruct()
 
 
-local __type = type
-local __tonumber = tonumber
-local __tostring = tostring
+local __type = String_Type
+local __tonumber = Math_ToDouble
+local __tostring = String_ToString
 local __floor = Math_Floor
 local __sub = String_Sub
 local __find = String_Find
@@ -350,7 +350,7 @@ end
 function TextInput:HandleKeyDown(event)
 	local is_change = false
 	if event.sym == 1073741904 then
-		if bit.band(event.mod, UIEnumTypes.KMOD_SHIFT) == 0 then
+		if BitAnd(event.mod, UIEnumTypes.KMOD_SHIFT) == 0 then
 			self._is_selecting = false
 			self._show:CursorOffset(true)
 		else
@@ -359,7 +359,7 @@ function TextInput:HandleKeyDown(event)
 		end
 		event.handled = true
 	elseif event.sym == 1073741903 then
-		if bit.band(event.mod, UIEnumTypes.KMOD_SHIFT) == 0 then
+		if BitAnd(event.mod, UIEnumTypes.KMOD_SHIFT) == 0 then
 			self._is_selecting = false
 			self._show:CursorOffset(false)
 		else
@@ -392,7 +392,7 @@ function TextInput:HandleKeyDown(event)
 			self:DispatchEvent(___all_struct[776398171], {})
 			event.handled = true
 		end
-	elseif event.sym == 120 and bit.band(event.mod, UIEnumTypes.KMOD_CTRL) ~= 0 then
+	elseif event.sym == 120 and BitAnd(event.mod, UIEnumTypes.KMOD_CTRL) ~= 0 then
 		if self._editable or event.custom then
 			self._is_selecting = false
 			local select_text = self._show:GetSelectText()
@@ -402,13 +402,13 @@ function TextInput:HandleKeyDown(event)
 			end
 			event.handled = true
 		end
-	elseif event.sym == 99 and bit.band(event.mod, UIEnumTypes.KMOD_CTRL) ~= 0 then
+	elseif event.sym == 99 and BitAnd(event.mod, UIEnumTypes.KMOD_CTRL) ~= 0 then
 		local select_text = self._show:GetSelectText()
 		if select_text ~= "" and (not self._password_mode) then
 			System_SetClipboardText(select_text)
 		end
 		event.handled = true
-	elseif event.sym == 118 and bit.band(event.mod, UIEnumTypes.KMOD_CTRL) ~= 0 then
+	elseif event.sym == 118 and BitAnd(event.mod, UIEnumTypes.KMOD_CTRL) ~= 0 then
 		if self._editable or event.custom then
 			self._is_selecting = false
 			if System_HasClipboardText() then
@@ -420,7 +420,7 @@ function TextInput:HandleKeyDown(event)
 			end
 			event.handled = true
 		end
-	elseif event.sym == 97 and bit.band(event.mod, UIEnumTypes.KMOD_CTRL) ~= 0 then
+	elseif event.sym == 97 and BitAnd(event.mod, UIEnumTypes.KMOD_CTRL) ~= 0 then
 		self._is_selecting = true
 		self._show:SelectAll()
 		event.handled = true

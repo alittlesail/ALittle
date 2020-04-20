@@ -37,7 +37,8 @@ public static System_GetLocalIPList() : string
 public static System_IsPhone() : bool
 {
     [Language(Lua)]
-    return (lua.__CPPAPI_GetPlatform() != "Windows");
+    var platform = lua.__CPPAPI_GetPlatform();
+    return platform != "Windows" && platform != "Emscripten";
     
     [Language(JavaScript)]
     var user_agent = navigator.userAgent;

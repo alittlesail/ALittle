@@ -61,7 +61,7 @@ local __find = String_Find
 local __floor = Math_Floor
 local __len = String_Len
 local __abs = Math_Abs
-local __type = type
+local __type = String_Type
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
 RichEdit = Lua.Class(ALittle.DisplayLayout, "ALittle.RichEdit")
 

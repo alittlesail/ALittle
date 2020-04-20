@@ -76,7 +76,11 @@ public static Math_Sqrt(double v) : double
 public static Math_ToInt(string s) : int
 {
     [Language(Lua)]
-    return floor(tonumber(s));
+    var n = tonumber(s);
+    [Language(Lua)]
+    if (n == null) return null;
+    [Language(Lua)]
+    return floor(n);
     
     [Language(JavaScript)]
     var value = javascript.parseInt(s);

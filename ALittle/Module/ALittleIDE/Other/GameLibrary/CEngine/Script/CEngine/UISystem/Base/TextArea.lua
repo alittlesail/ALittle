@@ -6,7 +6,7 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-local __tostring = tostring
+local __tostring = String_ToString
 assert(ALittle.DisplayObject, " extends class:ALittle.DisplayObject is nil")
 TextArea = Lua.Class(ALittle.DisplayObject, "ALittle.TextArea")
 

@@ -7,8 +7,8 @@ local ___ipairs = ipairs
 local ___all_struct = GetAllStruct()
 
 
-local __cos = math.cos
-local __sin = math.sin
+local __cos = Math_Cos
+local __sin = Math_Sin
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
 ImageInput = Lua.Class(ALittle.DisplayLayout, "ALittle.ImageInput")
 
@@ -250,7 +250,7 @@ end
 
 function ImageInput.__setter:ims_padding(value)
 	self._ims_padding = value
-	self._show_input.ims_padding = math.floor(value + self._logic_bottom)
+	self._show_input.ims_padding = Math_Floor(value + self._logic_bottom)
 end
 
 function ImageInput.__getter:ims_padding()
@@ -525,7 +525,7 @@ end
 function ImageInput.__setter:margin_bottom(value)
 	self._logic_bottom = value
 	self:Layout()
-	self._show_input.ims_padding = math.floor(self._ims_padding + self._logic_bottom)
+	self._show_input.ims_padding = Math_Floor(self._ims_padding + self._logic_bottom)
 end
 
 function ImageInput.__getter:margin_bottom()

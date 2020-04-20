@@ -7,8 +7,8 @@ local ___ipairs = ipairs
 local ___all_struct = GetAllStruct()
 
 
-local __type = type
-local __tonumber = tonumber
+local __type = String_Type
+local __tonumber = Math_ToDouble
 local __tostring = String_ToString
 local __floor = Math_Floor
 local __sub = String_Sub
@@ -384,7 +384,7 @@ function TextEdit:HandleKeyDown(event)
 			event.handled = true
 		end
 	elseif event.sym == 1073741904 then
-		if bit.band(event.mod, UIEnumTypes.KMOD_SHIFT) == 0 then
+		if BitAnd(event.mod, UIEnumTypes.KMOD_SHIFT) == 0 then
 			self._is_selecting = false
 			self._show:CursorOffsetLR(true)
 		else
@@ -393,7 +393,7 @@ function TextEdit:HandleKeyDown(event)
 		end
 		event.handled = true
 	elseif event.sym == 1073741903 then
-		if bit.band(event.mod, UIEnumTypes.KMOD_SHIFT) == 0 then
+		if BitAnd(event.mod, UIEnumTypes.KMOD_SHIFT) == 0 then
 			self._is_selecting = false
 			self._show:CursorOffsetLR(false)
 		else
@@ -402,7 +402,7 @@ function TextEdit:HandleKeyDown(event)
 		end
 		event.handled = true
 	elseif event.sym == 1073741906 then
-		if bit.band(event.mod, UIEnumTypes.KMOD_SHIFT) == 0 then
+		if BitAnd(event.mod, UIEnumTypes.KMOD_SHIFT) == 0 then
 			self._is_selecting = false
 			self._show:CursorOffsetUD(true)
 		else
@@ -411,7 +411,7 @@ function TextEdit:HandleKeyDown(event)
 		end
 		event.handled = true
 	elseif event.sym == 1073741905 then
-		if bit.band(event.mod, UIEnumTypes.KMOD_SHIFT) == 0 then
+		if BitAnd(event.mod, UIEnumTypes.KMOD_SHIFT) == 0 then
 			self._is_selecting = false
 			self._show:CursorOffsetUD(false)
 		else
@@ -451,7 +451,7 @@ function TextEdit:HandleKeyDown(event)
 			end
 			event.handled = true
 		end
-	elseif event.sym == 120 and bit.band(event.mod, UIEnumTypes.KMOD_CTRL) ~= 0 then
+	elseif event.sym == 120 and BitAnd(event.mod, UIEnumTypes.KMOD_CTRL) ~= 0 then
 		if self._editable or event.custom then
 			self._is_selecting = false
 			local select_text = self._show:GetSelectText()
@@ -461,13 +461,13 @@ function TextEdit:HandleKeyDown(event)
 			end
 			event.handled = true
 		end
-	elseif event.sym == 99 and bit.band(event.mod, UIEnumTypes.KMOD_CTRL) ~= 0 then
+	elseif event.sym == 99 and BitAnd(event.mod, UIEnumTypes.KMOD_CTRL) ~= 0 then
 		local select_text = self._show:GetSelectText()
 		if select_text ~= "" then
 			System_SetClipboardText(select_text)
 		end
 		event.handled = true
-	elseif event.sym == 118 and bit.band(event.mod, UIEnumTypes.KMOD_CTRL) ~= 0 then
+	elseif event.sym == 118 and BitAnd(event.mod, UIEnumTypes.KMOD_CTRL) ~= 0 then
 		if self._editable or event.custom then
 			self._is_selecting = false
 			if System_HasClipboardText() then
@@ -479,7 +479,7 @@ function TextEdit:HandleKeyDown(event)
 			end
 			event.handled = true
 		end
-	elseif event.sym == 97 and bit.band(event.mod, UIEnumTypes.KMOD_CTRL) ~= 0 then
+	elseif event.sym == 97 and BitAnd(event.mod, UIEnumTypes.KMOD_CTRL) ~= 0 then
 		self._is_selecting = true
 		self._show:SelectAll()
 		event.handled = true

@@ -15,7 +15,9 @@ function __Browser_Setup(layer_group, control, module_base_path, script_base_pat
 	if ALittle.System_IsPhone() then
 		local screen_width = ALittle.System_GetScreenWidth()
 		local screen_height = ALittle.System_GetScreenHeight()
-		rate = screen_height / screen_width
+		if screen_width > 0 then
+			rate = screen_height / screen_width
+		end
 		window_height = ALittle.Math_Floor(rate * window_width)
 		flag = ALittle.BitOr(flag, 0x00000001)
 	end

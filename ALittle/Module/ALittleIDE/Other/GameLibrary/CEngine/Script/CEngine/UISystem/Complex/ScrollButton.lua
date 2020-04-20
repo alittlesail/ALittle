@@ -25,7 +25,7 @@ type_list = {"ALittle.DisplayObject","double","double","double","double","double
 option_map = {}
 })
 
-local __abs = math.abs
+local __abs = Math_Abs
 assert(ALittle.TextButton, " extends class:ALittle.TextButton is nil")
 ScrollButton = Lua.Class(ALittle.TextButton, "ALittle.ScrollButton")
 

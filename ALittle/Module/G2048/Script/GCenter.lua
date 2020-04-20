@@ -29,13 +29,9 @@ function GCenter:ClearAnti()
 end
 
 function GCenter:Setup()
-	ALittle.Log("Setup111111")
 	g_GConfig = ALittle.CreateConfigSystem(g_ModuleBasePath .. "/User.cfg")
-	ALittle.Log("Setup22222")
 	ALittle.Math_RandomSeed(ALittle.Time_GetCurTime())
-	ALittle.Log("Setup333333")
 	ALittle.System_SetThreadCount(5, 2)
-	ALittle.Log("Setup4444444")
 	self._main_layer = ALittle.DisplayLayout(g_Control)
 	self._main_layer.width_type = 4
 	self._main_layer.height_type = 4
@@ -44,13 +40,10 @@ function GCenter:Setup()
 	self._dialog_layer.width_type = 4
 	self._dialog_layer.height_type = 4
 	g_LayerGroup:AddChild(self._dialog_layer, nil)
-	ALittle.Log("Setup55555")
 	g_Control:CreateControl("main_scene", self, self._main_layer)
-	ALittle.Log("Setup66666")
 	self._max_score_text._user_data = g_GConfig:GetConfig("max_score", 0)
 	self._max_score_text.text = self._max_score_text._user_data
 	self:Restart()
-	ALittle.Log("Setup777777")
 end
 
 function GCenter:ShowMainMenu(content, show_back)

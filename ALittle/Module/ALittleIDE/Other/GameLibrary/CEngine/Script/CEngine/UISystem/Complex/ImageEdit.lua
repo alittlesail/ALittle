@@ -7,8 +7,8 @@ local ___ipairs = ipairs
 local ___all_struct = GetAllStruct()
 
 
-local __cos = math.cos
-local __sin = math.sin
+local __cos = Math_Cos
+local __sin = Math_Sin
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
 ImageEdit = Lua.Class(ALittle.DisplayLayout, "ALittle.ImageEdit")
 

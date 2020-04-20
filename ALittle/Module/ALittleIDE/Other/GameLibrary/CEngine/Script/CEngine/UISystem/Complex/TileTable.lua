@@ -7,7 +7,7 @@ local ___ipairs = ipairs
 local ___all_struct = GetAllStruct()
 
 
-local __ceil = math.ceil
+local __ceil = Math_Ceil
 assert(ALittle.DisplayGroup, " extends class:ALittle.DisplayGroup is nil")
 TileTable = Lua.Class(ALittle.DisplayGroup, "ALittle.TileTable")
 

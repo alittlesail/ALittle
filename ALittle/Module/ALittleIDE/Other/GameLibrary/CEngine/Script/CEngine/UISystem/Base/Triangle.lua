@@ -6,7 +6,6 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-local __max = math.max
 assert(ALittle.DisplayObject, " extends class:ALittle.DisplayObject is nil")
 Triangle = Lua.Class(ALittle.DisplayObject, "ALittle.Triangle")
 
@@ -232,8 +231,22 @@ function Triangle.__setter:y3(v)
 end
 
 function Triangle:RejuseSize()
-	self.width = __max(self._x1, __max(self._x2, self._x3))
-	self.height = __max(self._y1, __max(self._y2, self._y3))
+	local max = self._x1
+	if max < self._x2 then
+		max = self._x2
+	end
+	if max < self._x3 then
+		max = self._x3
+	end
+	self.width = max
+	max = self._y1
+	if max < self._y2 then
+		max = self._y2
+	end
+	if max < self._y3 then
+		max = self._y3
+	end
+	self.height = max
 	self:UpdateLayout()
 end
 

@@ -7,9 +7,9 @@ local ___ipairs = ipairs
 local ___all_struct = GetAllStruct()
 
 
-local __floor = math.floor
-local __remove = table.remove
-local __sin = math.sin
+local __floor = Math_Floor
+local __remove = List_Remove
+local __sin = Math_Sin
 assert(ALittle.DisplayView, " extends class:ALittle.DisplayView is nil")
 ScrollList = Lua.Class(ALittle.DisplayView, "ALittle.ScrollList")
 

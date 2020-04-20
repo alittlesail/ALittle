@@ -51,6 +51,8 @@ local ___COROUTINE = coroutine.running()
 	end
 	for name, value in ___pairs(json) do
 		self:RegisterInfo(name, value)
+	end
+	for name, value in ___pairs(json) do
 		local info = self:CreateInfo(self._name_map_info[name])
 		self._name_map_info[name] = info
 		self._name_map_info_cache[name] = true

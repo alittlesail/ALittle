@@ -6,7 +6,7 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-local __ceil = math.ceil
+local __ceil = Math_Ceil
 assert(ALittle.DisplayGroup, " extends class:ALittle.DisplayGroup is nil")
 Grid9 = Lua.Class(ALittle.DisplayGroup, "ALittle.Grid9")
 

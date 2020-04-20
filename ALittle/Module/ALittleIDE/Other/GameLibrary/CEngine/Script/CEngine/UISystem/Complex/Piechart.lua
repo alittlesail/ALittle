@@ -163,8 +163,6 @@ function Piechart:SetDegree(start_c, end_c)
 	for k, v in ___ipairs(self._tri_list) do
 		v.visible = false
 	end
-	local end_c = end_c
-	local start_c = start_c
 	local e_offset = 0.0
 	local s_offset = 0.0
 	if end_c >= 0 and end_c <= 45 then

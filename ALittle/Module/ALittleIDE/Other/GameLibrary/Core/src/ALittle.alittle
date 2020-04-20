@@ -53,6 +53,7 @@ public await static __ALITTLEAPI_Core_Init(string base_path)
         Require(base_path.."Core/Lua/LuaClass");
         Require(base_path.."Core/Lua/LuaException");
 
+        // 这个是为了兼容lua5.2或以上版本
         if (_G["bit"] == null) _G["bit"] = _G["bit32"];
     }
     

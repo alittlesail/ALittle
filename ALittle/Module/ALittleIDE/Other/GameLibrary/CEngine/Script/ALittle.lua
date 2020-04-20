@@ -245,11 +245,8 @@ function __ALITTLEAPI_SystemSaveFile(path)
 end
 
 function __ALITTLEAPI_SetupMainModule(base_path, debug, module_name)
-	ALittle.Log("__ALITTLEAPI_SetupMainModule111111")
 	A_AudioSystem:Setup()
-	ALittle.Log("__ALITTLEAPI_SetupMainModule222222")
 	A_ModuleSystem:MainSetup(base_path, debug, module_name)
-	ALittle.Log("__ALITTLEAPI_SetupMainModule333333")
 end
 
 function __ALITTLEAPI_ShutdownMainModule()

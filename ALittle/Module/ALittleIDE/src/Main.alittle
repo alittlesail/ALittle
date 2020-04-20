@@ -21,7 +21,8 @@ public async static __Browser_Setup(ALittle.DisplayLayout layer_group
     {
         var screen_width = ALittle.System_GetScreenWidth();
         var screen_height = ALittle.System_GetScreenHeight();
-        rate = screen_height / screen_width;
+        if (screen_width > 0)
+            rate = screen_height / screen_width;
         window_height = ALittle.Math_Floor(rate * window_width);
         
         flag = ALittle.BitOr(flag, ALittle.UIEnumTypes.VIEW_FULLSCREEN);

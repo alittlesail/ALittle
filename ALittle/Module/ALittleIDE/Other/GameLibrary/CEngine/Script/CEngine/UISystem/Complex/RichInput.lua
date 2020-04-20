@@ -49,13 +49,13 @@ type_list = {"ALittle.DisplayObject","double","double","double","double"},
 option_map = {}
 })
 
-local __byte = string.byte
-local __sub = string.sub
+local __byte = String_Byte
+local __sub = String_Sub
 local __find = String_Find
-local __floor = math.floor
-local __len = string.len
-local __abs = math.abs
-local __type = type
+local __floor = Math_Floor
+local __len = String_Len
+local __abs = Math_Abs
+local __type = String_Type
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
 RichInput = Lua.Class(ALittle.DisplayLayout, "ALittle.RichInput")
 

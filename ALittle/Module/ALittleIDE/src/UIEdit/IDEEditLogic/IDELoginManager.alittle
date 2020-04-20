@@ -82,6 +82,8 @@ class IDELoginManager
 			this._account_name = g_IDEConfig.GetConfig("account_name", "");
 			this._account_pwd = ALittle.String_DecryptPassword(this._account_name, g_IDEConfig.GetConfig("account_pwd", ""));
 		}
+
+		[Language(Lua)]
 		this.Connect();
 	}
 	

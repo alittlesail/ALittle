@@ -90,7 +90,6 @@ ALittleIDE.IDELoginManager = JavaScript.Class(undefined, {
 			this._account_name = ALittleIDE.g_IDEConfig.GetConfig("account_name", "");
 			this._account_pwd = ALittle.String_DecryptPassword(this._account_name, ALittleIDE.g_IDEConfig.GetConfig("account_pwd", ""));
 		}
-		this.Connect();
 	},
 	Shutdown : function() {
 		if (this._msg_client !== undefined) {

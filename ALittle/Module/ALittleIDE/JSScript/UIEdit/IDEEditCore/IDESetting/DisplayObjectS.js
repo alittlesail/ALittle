@@ -556,7 +556,7 @@ ALittleIDE.DisplayObjectS = JavaScript.Class(undefined, {
 		this._center_y.text = center_y;
 		this.ValueNumInputChange("center_y", true, revoke_bind);
 	},
-	HandlevarCenter : function(event) {
+	HandleAutoCenter : function(event) {
 		this._center_x.text = this._object.width / 2;
 		this.ValueNumInputChange("center_x", true);
 		this._center_y.text = this._object.height / 2;

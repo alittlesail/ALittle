@@ -602,7 +602,7 @@ public class DisplayObjectS
 		this.ValueNumInputChange("center_y", true, revoke_bind);
 	}
 	// 自动获取中心锚点
-	public fun HandlevarCenter(ALittle.UIEvent event)
+	public fun HandleAutoCenter(ALittle.UIEvent event)
 	{
 		this._center_x.text = this._object.width / 2;
 		this.ValueNumInputChange("center_x", true);

@@ -636,7 +636,7 @@ function DisplayObjectS:SetCenterY(center_y, revoke_bind)
 	self:ValueNumInputChange("center_y", true, revoke_bind)
 end
 
-function DisplayObjectS:HandlevarCenter(event)
+function DisplayObjectS:HandleAutoCenter(event)
 	self._center_x.text = self._object.width / 2
 	self:ValueNumInputChange("center_x", true)
 	self._center_y.text = self._object.height / 2

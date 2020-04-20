@@ -306,7 +306,7 @@ ALittle.Linear = JavaScript.Class(ALittle.DisplayGroup, {
 			return;
 		}
 		let childs = this.childs;
-		let new_show_map = new Map();
+		let new_show_map = ALittle.CreateKeyWeakMap();
 		this._show.RemoveAllChild();
 		let max_index = child_count;
 		let min_index = 1;

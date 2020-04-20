@@ -372,8 +372,7 @@ public class Linear : DisplayGroup
             return;
         var childs = this.childs;
 
-        var new_show_map = new Map<DisplayObject, bool>();
-        // Setweak(new_show_map, true, false);
+        var new_show_map:Map<DisplayObject, bool> = CreateKeyWeakMap();
         this._show.RemoveAllChild(); // 移除所有显示列表
         var max_index = child_count;
         var min_index = 1;

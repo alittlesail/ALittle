@@ -350,6 +350,8 @@ JavaScript.JGrid9Image = JavaScript.Class(JavaScript.JDisplayObject, {
 		this._rightWidth = 0;
 		this._topHeight = 0;
 		this._bottomHeight = 0;
+		this._width = 0;
+		this._height = 0;
 	},
 	ClearTexture : function() {
 		this._native.removeChildren(0);
@@ -359,8 +361,8 @@ JavaScript.JGrid9Image = JavaScript.Class(JavaScript.JDisplayObject, {
 		if (this._nine === undefined) {
 			this._nine = new PIXI.NineSlicePlane(texture.native, this._leftWidth, this._topHeight, this._rightWidth, this._bottomHeight);
 			this._native.addChild(this._nine);
-			this._nine.width = this._native.width;
-			this._nine.height = this._native.height;
+			this._nine.width = this._width;
+			this._nine.height = this._height;
 		} else {
 			this._native.texture = texture.native;
 		}
@@ -368,12 +370,14 @@ JavaScript.JGrid9Image = JavaScript.Class(JavaScript.JDisplayObject, {
 	SetTextureCoord : function(t, b, l, r) {
 	},
 	SetWidth : function(width) {
+		this._width = width;
 		this._native.width = width;
 		if (this._nine !== undefined) {
 			this._nine.width = width;
 		}
 	},
 	SetHeight : function(height) {
+		this._height = height;
 		this._native.height = height;
 		if (this._nine !== undefined) {
 			this._nine.height = height;
@@ -521,6 +525,9 @@ JavaScript.JText = JavaScript.Class(JavaScript.JDisplayObject, {
 	GetRealHeight : function() {
 		return this._real_height;
 	},
+	GetFontHeight : function() {
+		return this._real_height;
+	},
 }, "JavaScript.JText");
 
 if (JavaScript.JDisplayObject === undefined) throw new Error(" extends class:JavaScript.JDisplayObject is undefined");
@@ -537,7 +544,6 @@ JavaScript.JTextArea = JavaScript.Class(JavaScript.JDisplayObject, {
 		this._text = "";
 	},
 	SetWidth : function(width) {
-		this._native.width = width;
 		this._style.wordWrapWidth = width;
 		this._native.style = this._style;
 	},

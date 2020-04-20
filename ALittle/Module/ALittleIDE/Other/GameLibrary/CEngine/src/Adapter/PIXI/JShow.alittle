@@ -283,6 +283,8 @@ public class JGrid9Image : JDisplayObject
     private double _rightWidth;
     private double _topHeight;
     private double _bottomHeight;
+    private double _width;
+    private double _height;
 
     private PIXI.NineSlicePlane _nine;
 
@@ -293,6 +295,8 @@ public class JGrid9Image : JDisplayObject
         this._rightWidth = 0;
         this._topHeight = 0;
         this._bottomHeight = 0;
+        this._width = 0;
+        this._height = 0;
     }
     
     public fun ClearTexture()
@@ -307,8 +311,8 @@ public class JGrid9Image : JDisplayObject
             this._nine = new PIXI.NineSlicePlane(cast<JTexture>(texture).native
                             , this._leftWidth, this._topHeight, this._rightWidth, this._bottomHeight);
             cast<PIXI.Container>(this._native).addChild(this._nine);
-            this._nine.width = this._native.width;
-            this._nine.height = this._native.height;
+            this._nine.width = this._width;
+            this._nine.height = this._height;
         }
         else
         {
@@ -322,12 +326,14 @@ public class JGrid9Image : JDisplayObject
 
     public fun SetWidth(double width)
     {
+        this._width = width;
         this._native.width = width;
         if (this._nine != null) this._nine.width = width;
     }
 
     public fun SetHeight(double height)
     {
+        this._height = height;
         this._native.height = height;
         if (this._nine != null) this._nine.height = height;
     }
@@ -454,7 +460,7 @@ public class JText : JDisplayObject
         this._style.fill = RGBToHex(this._red, this._green, this._blue);
         this._text = "";
     }
-    
+
     public fun SetText(string value)
     {
         this._text = value;
@@ -496,8 +502,9 @@ public class JText : JDisplayObject
     
     public fun GetRealWidth() : int { return this._real_width; }
     public fun GetRealHeight() : int { return this._real_height; }
-}
 
+    public fun GetFontHeight() : int { return this._real_height; }
+}
 
 public class JTextArea : JDisplayObject
 {
@@ -522,7 +529,6 @@ public class JTextArea : JDisplayObject
 
     public fun SetWidth(double width)
     {
-        this._native.width = width;
         this._style.wordWrapWidth = width;
         cast<PIXI.Text>(this._native).style = this._style;
     }

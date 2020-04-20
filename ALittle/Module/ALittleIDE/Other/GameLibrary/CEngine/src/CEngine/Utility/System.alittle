@@ -38,6 +38,7 @@ public static System_IsPhone() : bool
 {
     [Language(Lua)]
     var platform = lua.__CPPAPI_GetPlatform();
+    [Language(Lua)]
     return platform != "Windows" && platform != "Emscripten";
     
     [Language(JavaScript)]

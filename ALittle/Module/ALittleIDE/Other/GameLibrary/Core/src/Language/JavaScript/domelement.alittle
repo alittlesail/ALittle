@@ -4,6 +4,7 @@ register namespace javascript;
 
 public struct DomElementOnTouchEvent
 {
+    DomElement srcElement;
     string type;
     int pageX;
     int pageY;
@@ -11,6 +12,7 @@ public struct DomElementOnTouchEvent
 
 public struct DomElementOnMouseEvent
 {
+    DomElement srcElement;
     int which;
     int pageX;
     int pageY;
@@ -18,12 +20,14 @@ public struct DomElementOnMouseEvent
 
 public struct DomElementOnMouseWheelEvent
 {
+    DomElement srcElement;
     int wheelDelta;
     int detail;
 }
 
 public struct DomElementOnKeyEvent
 {
+    DomElement srcElement;
     int keyCode;
 }
 
@@ -43,4 +47,7 @@ public class DomElement
     public set onmouseout(Functor<(DomElementOnMouseEvent)> func) {}
     public set onkeydown(Functor<(DomElementOnKeyEvent)> func) {}
     public set onkeyup(Functor<(DomElementOnKeyEvent)> func) {}
+
+    public get offsetLeft() : int {}
+    public get offsetTop() : int {}
 }

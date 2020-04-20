@@ -34,7 +34,7 @@ let JSystem_FingerDown = function(event) {
 	if (func === undefined) {
 		return;
 	}
-	func(event.pageX, event.pageY, 1, 1);
+	func(event.pageX - event.srcElement.offsetLeft, event.pageY - event.srcElement.offsetTop, 1, 1);
 }
 
 let JSystem_FingerUp = function(event) {
@@ -42,7 +42,7 @@ let JSystem_FingerUp = function(event) {
 	if (func === undefined) {
 		return;
 	}
-	func(event.pageX, event.pageY, 1, 1);
+	func(event.pageX - event.srcElement.offsetLeft, event.pageY - event.srcElement.offsetTop, 1, 1);
 }
 
 let JSystem_FingerMoved = function(event) {
@@ -50,7 +50,7 @@ let JSystem_FingerMoved = function(event) {
 	if (func === undefined) {
 		return;
 	}
-	func(event.pageX, event.pageY, 1, 1);
+	func(event.pageX - event.srcElement.offsetLeft, event.pageY - event.srcElement.offsetTop, 1, 1);
 }
 
 let JSystem_MouseMoved = function(event) {
@@ -58,7 +58,7 @@ let JSystem_MouseMoved = function(event) {
 	if (func === undefined) {
 		return;
 	}
-	func(event.pageX, event.pageY);
+	func(event.pageX - event.srcElement.offsetLeft, event.pageY - event.srcElement.offsetTop);
 }
 
 let JSystem_MouseDown = function(event) {
@@ -73,7 +73,7 @@ let JSystem_MouseDown = function(event) {
 	if (func === undefined) {
 		return;
 	}
-	func(event.pageX, event.pageY, 1);
+	func(event.pageX - event.srcElement.offsetLeft, event.pageY - event.srcElement.offsetTop, 1);
 }
 
 let JSystem_MouseUp = function(event) {
@@ -88,7 +88,7 @@ let JSystem_MouseUp = function(event) {
 	if (func === undefined) {
 		return;
 	}
-	func(event.pageX, event.pageY);
+	func(event.pageX - event.srcElement.offsetLeft, event.pageY - event.srcElement.offsetTop);
 }
 
 let JSystem_MouseWheel = function(event) {
@@ -112,14 +112,8 @@ let JSystem_MouseOut = function(event) {
 	if (func === undefined) {
 		return;
 	}
-	if (event.pageX > 0 && event.pageY > 0) {
+	if (event.pageX - event.srcElement.offsetLeft > 0 && event.pageY - event.srcElement.offsetTop > 0) {
 		return;
-	}
-	if (event.pageX < 0) {
-		event.pageX = 0;
-	}
-	if (event.pageY < 0) {
-		event.pageY = 0;
 	}
 	func();
 }

@@ -77,7 +77,6 @@ ALittle.ModuleSystem = JavaScript.Class(undefined, {
 		A_LayerManager.RemoveChild(info.layer_group);
 		delete package.loaded[name];
 		delete _G[name];
-		lua.collectgarbage("collect");
 		return true;
 	},
 	LoadPlugin : function(module_base_path, module_name) {
@@ -154,7 +153,7 @@ ALittle.ModuleSystem = JavaScript.Class(undefined, {
 			return;
 		}
 		if (module_name === undefined) {
-			module_name = ALittle.File_ReadTextFromFile("Enter.ali", false);
+			module_name = ALittle.File_ReadTextFromFile("Module/Enter.ali", false);
 		}
 		if (module_name === undefined) {
 			ALittle.Log("Load Enter.ali failed!");

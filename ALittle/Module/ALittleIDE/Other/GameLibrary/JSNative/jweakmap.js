@@ -79,7 +79,7 @@ else
         {
             const ref = this.map.get(key);
             if (!ref) return undefined;
-            return entry.deref();
+            return ref.deref();
         }
 
         this.delete = function(key)

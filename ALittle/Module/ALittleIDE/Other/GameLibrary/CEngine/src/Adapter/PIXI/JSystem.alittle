@@ -34,7 +34,7 @@ private static JSystem_FingerDown(javascript.DomElementOnTouchEvent event)
     var func = cast<Map<string, Functor<(double, double, int, int)>>>(window)["__ALITTLEAPI_FingerDown"];
     if (func == null) return;
     
-    func(event.pageX, event.pageY, 1, 1);
+    func(event.pageX - event.srcElement.offsetLeft, event.pageY - event.srcElement.offsetTop, 1, 1);
 }
 
 private static JSystem_FingerUp(javascript.DomElementOnTouchEvent event)
@@ -42,7 +42,7 @@ private static JSystem_FingerUp(javascript.DomElementOnTouchEvent event)
     var func = cast<Map<string, Functor<(double, double, int, int)>>>(window)["__ALITTLEAPI_FingerUp"];
     if (func == null) return;
     
-    func(event.pageX, event.pageY, 1, 1);
+    func(event.pageX - event.srcElement.offsetLeft, event.pageY - event.srcElement.offsetTop, 1, 1);
 }
 
 private static JSystem_FingerMoved(javascript.DomElementOnTouchEvent event)
@@ -50,7 +50,7 @@ private static JSystem_FingerMoved(javascript.DomElementOnTouchEvent event)
     var func = cast<Map<string, Functor<(double, double, int, int)>>>(window)["__ALITTLEAPI_FingerMoved"];
     if (func == null) return;
     
-    func(event.pageX, event.pageY, 1, 1);
+    func(event.pageX - event.srcElement.offsetLeft, event.pageY - event.srcElement.offsetTop, 1, 1);
 }
 
 private static JSystem_MouseMoved(javascript.DomElementOnMouseEvent event)
@@ -58,7 +58,7 @@ private static JSystem_MouseMoved(javascript.DomElementOnMouseEvent event)
     var func = cast<Map<string, Functor<(double, double)>>>(window)["__ALITTLEAPI_MouseMoved"];
     if (func == null) return;
     
-    func(event.pageX, event.pageY);
+    func(event.pageX - event.srcElement.offsetLeft, event.pageY - event.srcElement.offsetTop);
 }
 
 private static JSystem_MouseDown(javascript.DomElementOnMouseEvent event)
@@ -72,7 +72,7 @@ private static JSystem_MouseDown(javascript.DomElementOnMouseEvent event)
         func = cast<Map<string, Functor<(double, double, int)>>>(window)["__ALITTLEAPI_RButtonDown"];
     if (func == null) return;
     
-    func(event.pageX, event.pageY, 1);
+    func(event.pageX - event.srcElement.offsetLeft, event.pageY - event.srcElement.offsetTop, 1);
 }
 
 private static JSystem_MouseUp(javascript.DomElementOnMouseEvent event)
@@ -85,7 +85,7 @@ private static JSystem_MouseUp(javascript.DomElementOnMouseEvent event)
     elseif (event.which == 3)
         func = cast<Map<string, Functor<(double, double)>>>(window)["__ALITTLEAPI_RButtonUp"];
     if (func == null) return;
-    func(event.pageX, event.pageY);
+    func(event.pageX - event.srcElement.offsetLeft, event.pageY - event.srcElement.offsetTop);
 }
 
 private static JSystem_MouseWheel(javascript.DomElementOnMouseWheelEvent event)
@@ -105,9 +105,8 @@ private static JSystem_MouseOut(javascript.DomElementOnMouseEvent event)
     var func = cast<Map<string, Functor<()>>>(window)["__ALITTLEAPI_WindowLeave"];
     if (func == null) return;
     
-	if (event.pageX > 0 && event.pageY > 0) return;
-	if (event.pageX < 0) event.pageX = 0; 
-	if (event.pageY < 0) event.pageY = 0;
+	if (event.pageX - event.srcElement.offsetLeft > 0
+        && event.pageY - event.srcElement.offsetTop > 0) return;
     
     func();
 }

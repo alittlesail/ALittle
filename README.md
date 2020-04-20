@@ -41,9 +41,9 @@ ALittleScript是一门兼顾强类型和弱类型的语言。
   
 ## G2048 一个小游戏
 * 线上 demo
-  * [2048小游戏(PixiJS移植)](http://139.159.176.119/G2048.html)
-  * [2048小游戏(Emscripten移植)](http://139.159.176.119/Emscripten/G2048.html)
-  * [ALittleIDE(Emscripten移植)](http://139.159.176.119/Emscripten/ALittleIDE.html)
+  * ![2048小游戏 PixiJS移植](http://139.159.176.119/G2048.html)
+  * ![2048小游戏 Emscripten移植](http://139.159.176.119/Emscripten/G2048.html)
+  * ![ALittleIDE Emscripten移植](http://139.159.176.119/Emscripten/ALittleIDE.html)
 * 本地运行
   * 运行nginx-1.16.1目录下的start.bat
   * 打开浏览器，输入地址localhost/ALittle/G2048.html
@@ -51,7 +51,7 @@ ALittleScript是一门兼顾强类型和弱类型的语言。
   * 打开浏览器，输入地址localhost/Emcc/G2048.html
   * ![G2048](https://github.com/alittlesail/ALittle/blob/master/Emcc/G2048.emcc.png)
   * 打开浏览器，输入地址localhost/Emcc/ALittleIDE.html
-  * ![ALittleIDE](https://github.com/alittlesail/ALittle/blob/master/Emcc/ALittle.emcc.png)
+  * ![ALittleIDE](https://github.com/alittlesail/ALittle/blob/master/Emcc/ALittleIDE.emcc.png)
   
 # 语言快速入门
 

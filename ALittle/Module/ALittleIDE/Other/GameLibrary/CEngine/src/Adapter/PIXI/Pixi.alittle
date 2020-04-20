@@ -58,6 +58,10 @@ public class DisplayObject
     public set alpha(double v) {}
 
     public set mask(PIXI.Graphics v) {}
+
+    public get parent() : Container {}
+
+    public fun getLocalBounds() : Rectangle {}
 }
 
 [Native]

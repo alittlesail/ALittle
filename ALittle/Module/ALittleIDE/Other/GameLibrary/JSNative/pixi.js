@@ -8558,6 +8558,7 @@ var PIXI = (function (exports) {
 	        {
 	            this.scale.x = 1;
 	        }
+	        console.log("this.scale.x", this.scale.x);
 
 	        this._width = value;
 	    };

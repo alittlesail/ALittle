@@ -43,10 +43,8 @@ JavaScript.JDisplayObject = JavaScript.Class(ALittle.IDisplayObject, {
 		this._native.rotation = value;
 	},
 	SetWidth : function(value) {
-		this._native.width = value;
 	},
 	SetHeight : function(value) {
-		this._native.height = value;
 	},
 	SetVisible : function(value) {
 		this._visible = value;
@@ -371,14 +369,12 @@ JavaScript.JGrid9Image = JavaScript.Class(JavaScript.JDisplayObject, {
 	},
 	SetWidth : function(width) {
 		this._width = width;
-		this._native.width = width;
 		if (this._nine !== undefined) {
 			this._nine.width = width;
 		}
 	},
 	SetHeight : function(height) {
 		this._height = height;
-		this._native.height = height;
 		if (this._nine !== undefined) {
 			this._nine.height = height;
 		}
@@ -546,8 +542,6 @@ JavaScript.JTextArea = JavaScript.Class(JavaScript.JDisplayObject, {
 	SetWidth : function(width) {
 		this._style.wordWrapWidth = width;
 		this._native.style = this._style;
-	},
-	SetHeight : function(height) {
 	},
 	SetText : function(value) {
 		this._text = value;

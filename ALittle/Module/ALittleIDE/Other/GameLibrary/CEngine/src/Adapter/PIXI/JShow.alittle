@@ -31,8 +31,8 @@ public class JDisplayObject : ALittle.IDisplayObject
     public fun SetCenterX(double value) { this._pivot.x = value; this._native.pivot = this._pivot; }
     public fun SetCenterY(double value) { this._pivot.y = value; this._native.pivot = this._pivot; }
     public fun SetAngle(double value) { this._native.rotation = value; }
-    public fun SetWidth(double value) { this._native.width = value; }
-    public fun SetHeight(double value) { this._native.height = value; }
+    public fun SetWidth(double value) { }
+    public fun SetHeight(double value) { }
     public fun SetVisible(bool value) { this._visible = value; this._native.visible = value && !this._clip; }
     public fun SetClip(bool value) { this._clip = value; this._native.visible = value && this._visible; }
     public fun SetAlpha(double value) { this._native.alpha = value; }
@@ -113,7 +113,7 @@ public class JDisplayObjects : JDisplayObject
     {
         this._native = new PIXI.Container();
     }
-    
+
     public fun RemoveChild(ALittle.IDisplayObject value)
     {
         cast<PIXI.Container>(this._native).removeChild(cast<JDisplayObject>(value)._native);
@@ -327,14 +327,12 @@ public class JGrid9Image : JDisplayObject
     public fun SetWidth(double width)
     {
         this._width = width;
-        this._native.width = width;
         if (this._nine != null) this._nine.width = width;
     }
 
     public fun SetHeight(double height)
     {
         this._height = height;
-        this._native.height = height;
         if (this._nine != null) this._nine.height = height;
     }
 
@@ -531,10 +529,6 @@ public class JTextArea : JDisplayObject
     {
         this._style.wordWrapWidth = width;
         cast<PIXI.Text>(this._native).style = this._style;
-    }
-    
-    public fun SetHeight(double height)
-    {
     }
     
     public fun SetText(string value)

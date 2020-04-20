@@ -8558,7 +8558,6 @@ var PIXI = (function (exports) {
 	        {
 	            this.scale.x = 1;
 	        }
-	        console.log("this.scale.x", this.scale.x);
 
 	        this._width = value;
 	    };
@@ -21798,7 +21797,7 @@ var PIXI = (function (exports) {
 	         * @member {boolean}
 	         * @readonly
 	         */
-	        this.enableScissor = false;
+	        this.enableScissor = true;
 
 	        /**
 	         * Pool of used sprite mask filters

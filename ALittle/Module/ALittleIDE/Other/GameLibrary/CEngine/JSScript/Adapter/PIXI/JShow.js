@@ -239,8 +239,40 @@ JavaScript.JDisplayObjects = JavaScript.Class(JavaScript.JDisplayObject, {
 if (JavaScript.JDisplayObjects === undefined) throw new Error(" extends class:JavaScript.JDisplayObjects is undefined");
 JavaScript.JDisplayView = JavaScript.Class(JavaScript.JDisplayObjects, {
 	Ctor : function() {
+		this._container = new PIXI.Container();
 		this._graphics = new PIXI.Graphics();
-		this._native.mask = this._graphics;
+		this._container.mask = this._graphics;
+		this._native.addChild(this._graphics);
+		this._native.addChild(this._container);
+		this._width = 0;
+		this._height = 0;
+	},
+	SetWidth : function(width) {
+		this._width = width;
+		this.Draw();
+	},
+	SetHeight : function(height) {
+		this._height = height;
+		this.Draw();
+	},
+	Draw : function() {
+		this._graphics.clear();
+		this._graphics.beginFill();
+		this._graphics.drawRect(0, 0, this._width, this._height);
+		this._graphics.endFill();
+	},
+	RemoveChild : function(value) {
+		this._container.removeChild(value._native);
+	},
+	AddChild : function(value) {
+		this._container.addChild(value._native);
+	},
+	AddChildBefore : function(back, value) {
+		let index = this._container.getChildAt(value._native);
+		this._container.addChildAt(value._native, index - 1);
+	},
+	RemoveAllChild : function() {
+		this._container.removeChildren(0);
 	},
 }, "JavaScript.JDisplayView");
 

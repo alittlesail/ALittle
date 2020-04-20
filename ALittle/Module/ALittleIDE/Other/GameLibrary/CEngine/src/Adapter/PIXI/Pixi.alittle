@@ -14,8 +14,22 @@ public class Application
     public ctor(ApplicationData data) { }
     public get view() : javascript.DomElement {}
     public fun render() {}
+    public get renderer() : Renderer {}
     public get stage() : Container {}
     public get ticker() : Ticker {}
+}
+
+[Native]
+public class Renderer
+{
+    public get mask() : MaskSystem {}
+}
+
+[Native]
+public class MaskSystem
+{
+    public get enableScissor() : bool {}
+    public set enableScissor(bool v) {}
 }
 
 [Native]
@@ -80,7 +94,7 @@ public class Container : DisplayObject
 public class Graphics : Container
 {
     public fun clear() {}
-    public fun beginFill(int color, double alpha) {}
+    public fun beginFill([Nullable] int color, [Nullable] double alpha) {}
     public fun drawRect(double x, double y, double width, double height) {}
     public fun endFill() {}
 }

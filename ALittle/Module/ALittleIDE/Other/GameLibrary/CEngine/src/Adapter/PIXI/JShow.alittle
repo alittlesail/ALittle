@@ -133,11 +133,54 @@ public class JDisplayObjects : JDisplayObject
 public class JDisplayView : JDisplayObjects
 {
     private PIXI.Graphics _graphics;
+    private PIXI.Container _container;
+    private double _width;
+    private double _height;
 
     public ctor()
     {
+        this._container = new PIXI.Container();
         this._graphics = new PIXI.Graphics();
-        this._native.mask = this._graphics;
+        this._container.mask = this._graphics;
+        cast<PIXI.Container>(this._native).addChild(this._graphics);
+        cast<PIXI.Container>(this._native).addChild(this._container);
+        this._width = 0;
+        this._height = 0;
+    }
+
+    public fun SetWidth(double width)
+    {
+        this._width = width;
+        this.Draw();
+    }
+
+    public fun SetHeight(double height)
+    {
+        this._height = height;
+        this.Draw();
+    }
+    
+    private fun Draw()
+    {
+        this._graphics.clear();
+        this._graphics.beginFill();
+        this._graphics.drawRect(0, 0, this._width, this._height);
+        this._graphics.endFill();
+    }
+
+    public fun RemoveChild(ALittle.IDisplayObject value)
+    {
+        this._container.removeChild(cast<JDisplayObject>(value)._native);
+    }
+    public fun AddChild(ALittle.IDisplayObject value) { this._container.addChild(cast<JDisplayObject>(value)._native); }
+    public fun AddChildBefore(ALittle.IDisplayObject back, ALittle.IDisplayObject value)
+    {
+        var index = this._container.getChildAt(cast<JDisplayObject>(value)._native);
+        this._container.addChildAt(cast<JDisplayObject>(value)._native, index - 1);
+    }
+    public fun RemoveAllChild()
+    {
+        this._container.removeChildren(0);
     }
 }
 

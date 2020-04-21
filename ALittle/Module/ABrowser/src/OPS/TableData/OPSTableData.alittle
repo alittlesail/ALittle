@@ -1,0 +1,221 @@
+
+namespace ABrowser;
+
+protected class OPSTableData : ALittle.DisplayLayout
+{
+	private OPSCenter _center;
+	private OPSSubMenuConfig _table_data_config;
+	private bool _select_mode;
+	private double _screen_x;
+	
+	private OPSTableDataQuery _query;
+	private OPSTableDataSearch _search;
+	
+	private ALittle.Grid3 _grid3;
+	private ALittle.ScrollScreen _screen;
+	private OPSTableDataHead _static_object;
+	private OPSTableDataTail _page_tail;
+	
+	private OPSTableDataSetData _data_object;
+	private OPSTableDataMenu _tab_menu;
+
+    public ctor(ALittle.ControlSystem ctrl_sys, OPSCenter center, [Nullable] OPSSubMenuConfig table_data_config, [Nullable] bool select_mode)
+    {
+    	// 将自身宽高设置成撑满，方便创建后添加
+    	this.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+    	this.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+    
+    	// 保存配置文件和center，方便调用接口
+    	this._center = center;
+    	this._table_data_config = table_data_config;
+    
+    	// 是否是选中模式
+    	this._select_mode = select_mode;
+    
+    	// 当前容器偏移量
+    	this._screen_x = 0;
+    //############创建并初始化各个布局和工具################################################
+    	// 创建查询工具
+    	this._query = new OPSTableDataQuery(this._center, this._table_data_config, this);
+    	
+    	// 创建Grid3
+    	this._grid3 = new ALittle.Grid3(g_Control);
+    	this.AddChild(this._grid3);
+    	this._grid3.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+    	this._grid3.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+    	this._grid3.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+    	this._grid3.width_value = 5;
+    	this._grid3.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+    	this._grid3.height_value = 5;
+    	this._grid3.type = ALittle.UIEnumTypes.TYPE_V;
+    
+    	// 遍历所有搜索条件创建搜索对象
+    	this._search = new OPSTableDataSearch(g_Control, this._center, this._table_data_config, this);
+    	this._search.valign = ALittle.UIEnumTypes.VALIGN_CENTER;
+    	this._search.line_spacing = 2;
+    	this._search.column_spacing = 5;
+    	this._search.AddEventListener(this, this.HandleSearchGroupResize);
+    	this._grid3.show_up = this._search;
+    
+    	// 创建表格容器
+    	this._screen = g_Control.CreateControl{ALittle.ScrollScreen}("abrowser_hv_scroll_screen", this);
+    	this._grid3.show_center = this._screen;
+    
+    	// 创建表格头部
+    	this._static_object = new OPSTableDataHead(g_Control, this._center, this._table_data_config, this);
+    	this._screen.static_object_h = this._static_object;
+    	
+    	// 创建底部查询页码
+    	this._page_tail = new OPSTableDataTail(g_Control, this._center, this._table_data_config, this);
+    	this._grid3.down_size = this._page_tail.height;
+    	this._grid3.show_down = this._page_tail;
+    
+    	this.SendQuery();
+    }
+    
+    //数据搜索工具类提供的接口
+    public get search_param() : Map<string, string> { return this._search.SetQueryInfo(); }
+    // 设置头部全选框的显示
+    public set select_all(bool value) { this._static_object.all_select = value; }
+    // 底部页码提供的接口
+    public set choose_text(string text)  { this._page_tail.choose_text = text; }
+    public set count_text(string text) { this._page_tail.count_text = text; }
+    public set page_count(string text) { this._page_tail.page_count = text; }
+    public get page_index() : ALittle.DisplayObject { return this._page_tail.page_index; }
+    public get count_per_page_text() : string { return this._page_tail.count_per_page_text; }
+    // 查询工具类 提供的接口
+    public get query_info() : OPSTableDataQueryInfo { return this._query.query_info; }
+    
+    // 获取数据表
+    public get select_mode() : bool { return this._select_mode; }
+    
+    //////////////////////////////////////////////////////////////////////////////////////////////
+    // 查询
+    public fun SendQuery()
+    {
+    	// 记录当前容器偏移量
+    	this._screen_x = this._screen.container.x;
+    	this._query.SendQuery();
+    }
+    // 刷新
+    public fun RefreshQuery()
+    {
+    	this._screen_x = this._screen.container.x;
+    	this._query.RefreshQuery();
+    }
+    
+    //////////////////////////////////////////////////////////////////////////////////////////////
+    // 提供OPSTableDataHead调用，当字段的排序发生变化，就会调用这个函数
+    public fun QueryOrder(OPSTableDataHeadOrderInfo order)
+    {
+    	this._query.order = order;
+    	this.RefreshQuery();
+    }
+    // 全选
+    public fun SelectAll()
+    {
+    	this._data_object.SelectAll();
+    	this._page_tail.choose_text = lua.tostring(this._data_object.GetChooseResult().count);
+    }
+    
+    // 全消
+    public fun CancelSelectAll()
+    {
+    	this._data_object.CancelSelectAll();
+    	this._page_tail.choose_text = lua.tostring(this._data_object.GetChooseResult().count);
+    }
+    //////////////////////////////////////////////////////////////////////////////////////////////
+    
+    // 创建数据容器
+    public fun SetDataList(List<Map<string, any>> list)
+    {
+    	var tr_height = 22.0;
+    	var table_config = this._center.config.table[this._table_data_config.table];
+    	if (table_config == null) return;
+    	if (table_config.tr_height != null) tr_height = table_config.tr_height;
+    	var field_offset = this._static_object.field_offset;
+    	var tr_width = this._screen.static_object_h.width - field_offset;
+    	var offset_y = this._screen.static_object_h.height;
+    	var handle_width = this._static_object.handle_width;
+    
+    	var set_param = new OPSTableDataSetDataInfo();
+    	set_param.tr_height = tr_height;
+    	set_param.tr_width = tr_width;
+    	set_param.field_offset = field_offset;
+    	set_param.offset_y = offset_y;
+    	set_param.handle_width = handle_width;
+    
+    	// 创建数据容器对象
+    	this._data_object = new OPSTableDataSetData(g_Control, this._center, this._table_data_config, this, set_param);
+    	this._data_object.AddEventListener(this, this.HandleDataClick);
+    	var static_object_v = this._data_object.static_object_v;
+    	this._screen.static_object_v = static_object_v;
+    	static_object_v.width = field_offset;
+    	// 设置操作数据
+    	this._data_object.SetStaticObjectList(list);
+    	// 设置具体数据
+    	this._data_object.SetConcreteList(list, this._screen);
+    	// 设置screen的偏移位置
+    	this._screen.container_x = this._screen_x;
+    }
+    
+    // 数据点击事件
+    public fun HandleDataClick(OPSTableDataSetDataDataClickEvent event)
+    {
+    	this.DispatchEvent(event);
+    }
+    
+    // 清空数据
+    public fun ClearData()
+    {
+    	if (this._screen.static_object_v == null) return;
+    	var object = this._screen.static_object_v;
+    	object.RemoveAllChild();
+    	this._screen.RemoveAllChild();
+    }
+    
+    // 获取选择结果
+    public fun GetChooseResult() : List<Map<string, any> >
+    {
+    	return this._data_object.GetChooseResult().list;
+    }
+    
+    // 获取选择结果显示控件
+    public fun GetChoseTDIndex() : List<int>
+    {
+    	return this._data_object.GetChooseTDIndex();
+    }
+    
+    //显示下拉菜单
+    public fun ShowOperateMenu(ALittle.DisplayObject target)
+    {
+    	if (this._tab_menu == null)
+    		this._tab_menu = new OPSTableDataMenu(this._center);
+
+    	this._tab_menu.Show(target);
+    }
+    
+    // 显示复制粘贴右键菜单
+    public fun ShowCopyCutPasteMenu(string text, ALittle.DisplayObject target)
+    {
+    	this._center.tool_logic.ShowCopyCutPasteMenu(text, target);
+    }
+    
+    // 显示时间选择
+    public fun ShowTimeSelect(ALittle.DisplayObject target, [Nullable] string select_type, [Nullable] int default_hour, [Nullable] int default_min, [Nullable] int default_sec)
+    {
+    	this._center.tool_logic.ShowDateSelect(target, select_type, default_hour, default_min, default_sec);
+    }
+    
+    // 搜索容器改变大小事件
+    public fun HandleSearchGroupResize(ALittle.UIResizeEvent event)
+    {
+    	this._grid3.up_size = this._grid3.show_up.height + 2;
+    }
+    
+    // 回车查询事件
+    public fun HandleEnterButtonClick(ALittle.UIClickEvent event)
+    {
+    	this._query.SendQuery();
+    }
+}

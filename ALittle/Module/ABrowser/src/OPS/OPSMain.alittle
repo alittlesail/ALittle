@@ -1,0 +1,341 @@
+
+namespace ABrowser;
+
+struct OPSTreeUserData
+{
+	OPSTree parent;
+	OPSSubMenuConfig table_data_config;
+	OPSTableData tab;
+}
+
+protected class OPSMain
+{
+	private OPSCenter _center;                      // center
+
+	private ALittle.DisplayObject _scene;           // 界面
+	private ALittle.ScrollList _icon_container;     // icon容器
+	private ALittle.ScrollList _tree_container;     // 菜单容器
+	private ALittle.Grid3 _g3;                      // 左右结构
+	private ALittle.DisplayObject _ops_name;        // 运维标题空间
+	private ALittle.Tab _tab_container;             // tab标签空间
+	private OPSTableData _tab;                      // 当前表格标签页
+	private ALittle.DisplayObject _tab_close_menu;  // 标签页关闭菜单
+
+	private ALittle.LoopLinear _tab_anti;           // 标签页动画
+	private double _g3_init_up_size;
+	private bool _drag_h_or_v;
+
+	private ALittle.DisplayObject _batch_target;
+	private ALittle.DisplayObject _confrim_btn;
+
+    public ctor(OPSCenter center)
+    {
+    	this._center = center;
+    }
+
+    // 隐藏界面
+    public fun HideScene()
+    {
+    	if (this._scene != null) this._scene.visible = false;
+    }
+    
+    public fun ShowScene()
+    {
+    	// 创建登录场景
+    	if (this._scene == null)
+    	{
+    		// 创建主界面
+    		this._scene = g_Control.CreateControl{ALittle.DisplayObject}("ops_main", this);
+    		this._center.main_layer.AddChild(this._scene);
+    
+    		// 设置ICON
+    		if (this._center.config.base != null)
+    		{
+    			var icon_path = this._center.config.base.icon_path;
+    			var icon = new ALittle.Image(this._center.control);
+    			icon.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+    			icon.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+    			icon.texture_name = this._center.config.base.icon_path;
+    			icon.width = 72;
+    			icon.height = 72;
+    			this._icon_container.AddChild(icon);
+    		}
+    
+    		// 设置运维名称
+    		var ops_name = this._center.config.base.ops_name;
+    		if (ops_name != null) this._ops_name.text = ops_name;
+    
+    		// 记录初始的大小
+    		this._g3_init_up_size = this._g3.up_size;
+    
+    		// 设置为延时裁剪
+    		this._tree_container.clip_atonce = false;
+    		this.CreateModuleList();
+    		// 设置为立即裁剪
+    		this._tree_container.clip_atonce = true;
+    	}
+    	else
+    	{
+    		// 网络断开连接后重新创建
+    		this._tab_container.RemoveAllChild();
+    		this._tree_container.RemoveAllChild();
+    		// 设置为延时裁剪
+    		this._tree_container.clip_atonce = false;
+    		this.CreateModuleList();
+    		// 设置为立即裁剪
+    		this._tree_container.clip_atonce = true;
+    	}
+    	// 显示界面
+    	this._scene.visible = true;
+    }
+    
+    public fun CreateModuleList()
+    {
+    	var menu = this._center.config.menu;
+    	if (menu == null) return;
+    
+    	// 创建一个组名
+    	var group_name = A_TextRadioButtonManager.CreateGroupName();
+    	// 根据配置文件进行创建
+    	for (var k, v in menu)
+    		this.CreateTreeMain(v, group_name);
+    }
+    
+    // config 一级菜单的配置信息
+    public fun CreateTreeMain(OPSMainMenuConfig config, string group_name)
+    {
+    	var childs = config.childs;
+    	if (childs == null) return;
+
+		var tree = g_Control.CreateControl{OPSTree}("ops_tree");
+    	tree.text = config.name;
+    	var has_child = false;
+    	// info 二级菜单的配置信息
+    	for (var k, info in childs)
+    	{
+    		var table_config = this._center.config.table[info.table];
+    		if (this._center.login_logic.CheckPermission(table_config.permission))
+    		{
+    			has_child = true;
+    
+    			// 创建二级对象
+    			var item = g_Control.CreateControl{ALittle.DisplayObject}("ops_tree_body", this);
+    			item.drag_trans_target = this._tree_container;
+    			tree.AddItem(item);
+    
+    			// 设置名字和组
+    			item.text = info.name;
+    			item.group_name = group_name;
+    
+    			// 携带参数
+    			var user_data = new OPSTreeUserData();
+    			user_data.table_data_config = info; 	// 二级菜单
+    			user_data.tab = null; 		// tab对象
+    			item._user_data = user_data;
+    		}
+    	}
+    	if (has_child) this._tree_container.AddChild(tree);
+    }
+    
+    public fun HandleTreeResize(ALittle.UIEvent event)
+    {
+    	this._tree_container.DeepLayout();
+    }
+    
+    public fun HandleItemClick(ALittle.UIEvent event)
+    {
+    	// 获取二级树的携带参数
+		var user_data:OPSTreeUserData = event.target._user_data;
+    
+    	// 如果分页还没创建，那就创建一下
+    	if (user_data.tab == null)
+    		user_data.tab = new OPSTableData(g_Control, this._center, user_data.table_data_config);
+
+    	this._tab = user_data.tab;
+    	// 添加到分页容器
+    	this._tab_container.AddChild(this._tab);
+    	// 设置分页标题
+    	this._tab_container.SetChildText(this._tab, user_data.table_data_config.name);
+    	// 设置显示点击的这个分页
+    	this._tab_container.tab = this._tab;
+    	this._tab._user_data = user_data;
+    
+    	// 处理显示逻辑
+    	this.ShowTab();
+    }
+    
+    //////////////////////////////////////////////////////////////////////////////////////-
+    // PC端的专有
+    public fun ShowTab()
+    {
+    	var tab_index = this._tab_container.tab_index;
+    	var view = this._tab_container.view;
+    	var view_linear = this._tab_container.view_linear;
+    	var child = view_linear.GetChildByIndex(tab_index);
+    	if (child == null) return;
+    	
+    	// 检查是不是超到右边去了
+    	var right = view_linear.x + child.x + child.width;
+    	if (right > view.width)
+    		view_linear.x = view_linear.x - (right - view.width);
+    		
+    	// 检查是不是超到左边去了
+    	var left = view_linear.x + child.x;
+    	if (left < 0)
+    		view_linear.x = view_linear.x - left;
+    }
+    
+    // tab栏点击向右
+    public fun HandleTabHeadRightClick()
+    {
+    	if (this._tab_anti != null && this._tab_anti.IsCompleted() == false)
+    	{
+    		this._tab_anti.SetCompleted();
+    		A_LoopSystem.RemoveUpdater(this._tab_anti);
+    		this._tab_anti = null;
+    	}
+    	var view = this._tab_container.view;
+    	var view_linear = this._tab_container.view_linear;
+    	if (view_linear.x + view_linear.width < view.width) return;
+    
+    	var x = view_linear.x - view.width;
+    	if (x + view_linear.width < view.width)
+    		x = view.width - view_linear.width;
+    	var delta = lua.math.abs(view_linear.x - x) / 4;
+    
+    	this._tab_anti = new ALittle.LoopLinear(view_linear, "x", x, lua.math.floor(delta), 1);
+    	A_LoopSystem.AddUpdater(this._tab_anti);
+    }
+    
+    // tab栏点击向左
+    public fun HandleTabHeadLeftClick()
+    {
+    	if (this._tab_anti != null && this._tab_anti.IsCompleted() == false)
+    	{
+    		this._tab_anti.SetCompleted();
+    		A_LoopSystem.RemoveUpdater(this._tab_anti);
+    		this._tab_anti = null;
+    	}
+    
+    	var view = this._tab_container.view;
+    	var view_linear = this._tab_container.view_linear;
+    	if (view_linear.x >= 0) return;
+    
+    	var x = view_linear.x + view.width;
+    	if (x > 0) x = 0;
+    	var delta = lua.math.abs(view_linear.x - x) / 4;
+    
+    	this._tab_anti = new ALittle.LoopLinear(view_linear, "x", x, lua.math.floor(delta), 1);
+    	A_LoopSystem.AddUpdater(this._tab_anti);
+    }
+    
+    // tab栏关闭
+    public fun HandleCloseHandleClick(ALittle.UIEvent event)
+    {
+    	var object = event.target;
+
+    	if (this._tab_close_menu == null)
+    		this._tab_close_menu = g_Control.CreateControl{ALittle.DisplayObject}("ops_tab_menu", this);
+
+    	var x, y = object.LocalToGlobal();
+    	y = y + object.height;
+    	x = x + object.width;
+    	x = x - this._tab_close_menu.width;
+    	this._tab_close_menu.x = x;
+    	this._tab_close_menu.y = y + 2;
+    	A_LayerManager.ShowFromRight(this._tab_close_menu);
+    }
+    
+    // tab定位
+    public fun HandleShowCurTabClick(ALittle.UIEvent event)
+    {
+    	A_LayerManager.HideFromRight(this._tab_close_menu);
+    	this.ShowTab();
+    }
+    
+    // 关闭当前tab
+    public fun HandleTabCloseCallBack(ALittle.DisplayObject child)
+    {
+		var user_data:OPSTreeUserData = child._user_data;
+    	var parent = user_data.parent;
+    	if (parent == null) return;
+    	user_data = parent._user_data;
+    	user_data.tab = null;
+    	parent.selected = false;
+    }
+    
+    // tab栏关闭全部
+    public fun HandleCloseAllTab(ALittle.UIEvent event)
+    {
+    	A_LayerManager.HideFromRight(this._tab_close_menu);
+    	var childs = this._tab_container.childs;
+    	for (var k, v in childs)
+    		this.HandleTabCloseCallBack(v);
+    	this._tab_container.RemoveAllChild();
+    }
+    
+    // tab栏关闭其他
+    public fun HandleCloseOtherTab(ALittle.UIEvent event)
+    {
+    	A_LayerManager.HideFromRight(this._tab_close_menu);
+    	var tab_index = this._tab_container.tab_index;
+    	var child = this._tab_container.GetChildByIndex(tab_index);
+    	if (child == null) return;
+    
+    	var child_list = new List<ALittle.DisplayObject>();
+    	var child_list_count = 0;
+    	for (var k, v in this._tab_container.childs)
+    	{
+    		if (v != child)
+    		{
+    			++ child_list_count;
+    			child_list[child_list_count] = v;
+    		}
+    	}
+    	for (var k, v in child_list)
+    	{
+    		this.HandleTabCloseCallBack(v);
+    		this._tab_container.RemoveChild(v);
+    	}
+    }
+    
+    ////////////////////////////////////////////////////////////////////////////////////-
+    public fun HandleLogout(ALittle.UIEvent event)
+    {
+    	this._center.login_logic.Logout();
+    }
+    
+    public fun Clear()
+    {
+    	this.HideScene();				// 隐藏本界面
+    	this.HandleCloseAllTab(null);		// 关闭所有tab
+    	this._tree_container.RemoveAllChild();
+    	this._tab_container.RemoveAllChild();
+    	this._center.login_logic.ShowScene();	// 显示登陆界面
+    }
+    
+    //////////////////////////////////////////////////////////////////////////-
+    public fun HandleDefaultDragBegin(ALittle.UIButtonDragEvent event)
+    {
+    	this._drag_h_or_v = (lua.math.abs(event.delta_x) > lua.math.abs(event.delta_y));
+    }
+    
+    public fun HandleDefaultDrag(ALittle.UIButtonDragEvent event)
+    {
+    	if (this._drag_h_or_v == false) return;
+    
+    	this._g3.up_size = this._g3.up_size + event.delta_x;
+    	
+    	if (this._g3.up_size > this._g3_init_up_size) this._g3.up_size = this._g3_init_up_size;
+    	if (this._g3.up_size < 0) this._g3.up_size = 0;
+    }
+    
+    public fun HandleDefaultDragEnd(ALittle.UIButtonDragEvent event)
+    {
+    	if (this._g3.up_size > this._g3_init_up_size / 2)
+    		A_LoopSystem.AddUpdater(new ALittle.LoopLinear(this._g3, "up_size", this._g3_init_up_size, 200, 1));
+    	else
+    		A_LoopSystem.AddUpdater(new ALittle.LoopLinear(this._g3, "up_size", 0, 200, 1));
+    	this._tree_container.Layout(1);
+    }
+}

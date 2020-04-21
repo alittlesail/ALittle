@@ -1,0 +1,268 @@
+
+namespace ABrowser;
+
+protected class OPSBaseDialog : ALittle.DisplayLayout
+{
+	private List<OPSCOMPBase> _ctrl_list;
+
+	private OPSCenter _center;
+	private string _method;
+	private OPSDialogConfig _dialog_config;
+	private Map<string, any> _data;
+	private OPSTableData _table_data;
+	private bool _batch;
+	
+	private int _execute_count;
+	private int _total_count;
+	private int _failed_count;
+    
+    public ctor(ALittle.ControlSystem ctrl_sys)
+    {
+    	this._ctrl_list = new List<OPSCOMPBase>();
+    }
+    
+    public fun SetData(OPSCenter center, string method, Map<string, any> data, OPSTableData table_data, bool batch)
+    {
+    	this._center = center;
+    	this._method = method;
+    	this._dialog_config = center.config.dialog[method];
+    	this._data = data;
+    	this._table_data = table_data;
+    	this._batch = batch;
+    
+    	this._execute_count = 0;
+    	this._total_count = 0;
+    
+    	this._failed_count = 0;
+    }
+    
+    public fun HandleDrag(ALittle.UIButtonDragEvent event)
+    {
+    	this.x = this.x + event.delta_x;
+    	this.y = this.y + event.delta_y;
+    }
+    
+    public fun Clear()
+    {
+    }
+
+    public fun Show()
+    {
+    }
+
+    public fun OtherParam(Map<string, any> param)
+	{
+	}
+    
+    //////////////////////////////////////////////////////////////////////////////////////-
+    // 取消按钮事件
+    public fun HandleCancelButtonClick(ALittle.UIEvent event)
+    {
+    	this.HideFromModal();
+    }
+    // 关闭窗口事件
+    public fun HandleCloseButtonClick(ALittle.UIEvent event)
+    {
+    	this.HideFromModal();
+    }
+    ////////////////////////////////////////////////////////////////////////////-
+    // 显示模态对话框
+    public fun ShowFromModal()
+    {
+    	this._center.dialog_layer.AddChild(this);
+    	this.visible = true;
+    }
+    // 隐藏模态对话框
+    public fun HideFromModal()
+    {
+    	this._center.dialog_layer.RemoveChild(this);
+    	this.Clear();
+    	this._ctrl_list = new List<OPSCOMPBase>();
+    
+    	this._data = null;
+    }
+    ////////////////////////////////////////////////////////////////////////////-
+    public async fun HandleConfirmButtonClick(ALittle.UIEvent event)
+    {
+    	// 批量操作
+    	if (this._batch)
+    	{
+    		var choose_list = this._table_data.GetChooseResult();
+    		this._total_count += lua.table.maxn(choose_list);
+    		for (var k, choose in choose_list)
+    		{
+    			var param = new Map<string, any>();
+    			if (this._dialog_config.send_param != null)
+    			{
+    				for (var k1, v1 in this._dialog_config.send_param)
+    				{
+    					if (choose[v1.key] == null)
+	    					param[k1] = v1;
+	    				else
+	    					param[k1] = choose[v1.key];
+
+	    				if (v1.type == "string")
+	    				    param[k1] = lua.tostring(param[k1]);
+	    				elseif (v1.type == "bool")
+	    				    param[k1] = param[k1] == "true";
+	    				else
+	    				    param[k1] = lua.tonumber(param[k1]);
+    				}
+    			}
+    			for (var k, control in this._ctrl_list)
+    			{
+    				var key, data = control.GetData();
+    				if (key != null && data != null)
+    					param[key] = data;
+    			}
+
+    			this.OtherParam(param);
+
+    			var method = this._method;
+    			if (this._dialog_config.module_invoke)
+    			{
+    				param["__method"] = this._method;
+    				method = "QOPSInvoke";
+    			}
+    			var error, content = this._center.login_logic.HttpPostRequest(method, param);
+                this.HandleRefrshResult(error, content);
+    		}
+    	}
+    	else
+    	{
+    		++ this._total_count;
+    		// 对话框仅仅保存着输入框的内容，如果要添加新的参数 需要设置配置文件里面的send_param参数
+    		var param = new Map<string, any>();
+    		if (this._dialog_config.send_param != null)
+    		{
+    			for (var k, v in this._dialog_config.send_param)
+    			{
+    				if (this._data[v.key] == null)
+    					param[k] = v.key;
+    				else
+	    				param[k] = this._data[v.key];
+
+                    if (v.type == "string")
+                        param[k] = lua.tostring(param[k]);
+                    elseif (v.type == "bool")
+                        param[k] = param[k] == "true";
+                    else
+                        param[k] = lua.tonumber(param[k]);
+    			}
+    		}
+    		for (var k, control in this._ctrl_list)
+    		{
+    			var key, data = control.GetData();
+    			if (key != null && data != null)
+    				param[key] = data;
+    		}
+
+			this.OtherParam(param);
+    		var method = this._method;
+    		if (this._dialog_config.module_invoke)
+    		{
+    			param["__method"] = this._method;
+    			method = "QOPSInvoke";
+    		}
+    		var error, content = this._center.login_logic.HttpPostRequest(method, param);
+            this.HandleRefrshResult(error, content);
+    	}
+    }
+    
+    public fun HandleRefrshResult(string error, any content)
+    {
+    	++ this._execute_count;
+
+    	var succeed = true;
+    	var error_msg = "接口调用失败, 请检查网络或关闭360等管理软件";
+    	// 检查查询结果
+    	if (error != null)
+    		succeed = false;
+    	else
+    	{
+    		// 获取内容
+    		var result, msg:Map<string, any> = tcall(ALittle.String_JsonDecode, content);
+    	   	if (result != null) succeed = false;
+    	   	if (msg["result"] == false)
+    	   	{
+    	   		error_msg = msg["reason"];
+    	   		succeed = false;
+    	   	}
+    	}
+    	if (succeed == false) ++ this._failed_count;
+
+    	var process_msg = "进度:"..this._execute_count.."/"..this._total_count..", 失败数:"..this._failed_count;
+
+    	if (succeed == false && error_msg != null)
+    		this._center.tool_logic.ShowCenterWeakNotice(process_msg..", "..error_msg, false);
+    	else
+    	{
+    		if (this._total_count == 1)
+    			this._center.tool_logic.ShowWeakNotice("操作成功", true);
+    		else
+    			this._center.tool_logic.ShowWeakNotice("操作结果:"..process_msg, true);
+    	}
+
+    	if (this._total_count <= this._execute_count)
+    	{
+    		this._failed_count = 0;
+    		this._total_count = 0;
+    		this._execute_count = 0;
+    		if (this._table_data != null) this._table_data.RefreshQuery();
+
+    		this.HideFromModal();
+    	}
+    }
+}
+
+protected class OPSBaseDialogManager
+{
+	private OPSCenter _center;
+	private Map<string, OPSBaseDialog> _dialog_map;
+	private Map<string, string> _ui_map;
+
+    public ctor(OPSCenter center)
+    {
+    	this._center = center;
+    	this._dialog_map = new Map<string, OPSBaseDialog>();
+
+    	this._ui_map = new Map<string, string>();
+    	this._ui_map["OPSChoiceDialog"] = "ops_choice_dialog";
+    	this._ui_map["OPSCustomDialog"] = "ops_custom_dialog";
+    	this._ui_map["OPSDeleteDialog"] = "ops_delete_dialog";
+    	this._ui_map["OPSRequestDialog"] = "ops_request_dialog";
+    	this._ui_map["OPSRoleDialog"] = "ops_role_dialog";
+    }
+
+    public fun Show(ALittle.DisplayObject target) : OPSBaseDialog
+    {
+		var user_data:OPSTableDataMenuButtonUserData = target._user_data;
+    	var dialog = this._dialog_map[user_data.dialog_config.dialog];
+    	if (dialog == null)
+    	{
+    		// 根据配置引用
+    		var dialog_config = this._center.config.dialog[user_data.dialog_config.dialog];
+    		if (dialog_config == null) return null;
+
+    		var clazz = cast<Map<string, any>>(_G["ABrowser"])[dialog_config.__class];
+    		if (clazz == null)
+    		{
+    			this._center.tool_logic.ShowCenterWeakNotice("没有找到对应的对话框类型:"..dialog_config.__class, false);
+    			return null;
+    		}
+    		dialog = g_Control.CreateControl{OPSBaseDialog}(this._ui_map[dialog_config.__class]);
+    		this._dialog_map[user_data.dialog_config.dialog] = dialog;
+    	}
+
+    	dialog.SetData(this._center, user_data.dialog_config.dialog, user_data.data, user_data.table_data, user_data.batch);
+    	dialog.Show();
+    	return dialog;
+    }
+
+    public fun Close()
+    {
+    	for (var k, v in this._dialog_map)
+    		v.HideFromModal();
+    	this._dialog_map = new Map<string, OPSBaseDialog>();
+    }
+}

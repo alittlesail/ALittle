@@ -1,0 +1,167 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="源文件\OPS">
+      <UniqueIdentifier>{f19b8a75-3eb0-4852-8759-2958c4de7db3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\OPS\Dialog">
+      <UniqueIdentifier>{5be62b7f-5171-4195-b771-b046a98de0ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\OPS\Dialog\Control">
+      <UniqueIdentifier>{5cc7ddbd-19e9-4f2e-87f7-72f19c9883b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\OPS\TableData">
+      <UniqueIdentifier>{c9292c6e-c585-4fa5-8db6-a352693bb9ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\OPS\TableData\Control">
+      <UniqueIdentifier>{3b8828c7-6ee7-44b8-b328-bf365a0dbcdf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\OPS\Tool">
+      <UniqueIdentifier>{b7570aa0-0f9d-42de-918a-54101fc4988e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\AHomePage.alittle">
+      <Filter>源文件</Filter>
+    </None>
+    <None Include="src\AIMEManager.alittle">
+      <Filter>源文件</Filter>
+    </None>
+    <None Include="src\AModuleDownload.alittle">
+      <Filter>源文件</Filter>
+    </None>
+    <None Include="src\ATool.alittle">
+      <Filter>源文件</Filter>
+    </None>
+    <None Include="src\AVersionManager.alittle">
+      <Filter>源文件</Filter>
+    </None>
+    <None Include="src\Main.alittle">
+      <Filter>源文件</Filter>
+    </None>
+    <None Include="src\ABrowser.alittle">
+      <Filter>源文件</Filter>
+    </None>
+    <None Include="src\OPS\OPSLogin.alittle">
+      <Filter>源文件\OPS</Filter>
+    </None>
+    <None Include="src\OPS\OPSMain.alittle">
+      <Filter>源文件\OPS</Filter>
+    </None>
+    <None Include="src\OPS\OPSCenter.alittle">
+      <Filter>源文件\OPS</Filter>
+    </None>
+    <None Include="src\OPS\OPSConfig.alittle">
+      <Filter>源文件\OPS</Filter>
+    </None>
+    <None Include="src\OPS\Dialog\OPSCustomDialog.alittle">
+      <Filter>源文件\OPS\Dialog</Filter>
+    </None>
+    <None Include="src\OPS\Dialog\OPSDeleteDialog.alittle">
+      <Filter>源文件\OPS\Dialog</Filter>
+    </None>
+    <None Include="src\OPS\Dialog\OPSRequestDialog.alittle">
+      <Filter>源文件\OPS\Dialog</Filter>
+    </None>
+    <None Include="src\OPS\Dialog\OPSRoleDialog.alittle">
+      <Filter>源文件\OPS\Dialog</Filter>
+    </None>
+    <None Include="src\OPS\Dialog\OPSBaseDialog.alittle">
+      <Filter>源文件\OPS\Dialog</Filter>
+    </None>
+    <None Include="src\OPS\Dialog\OPSChoiceDialog.alittle">
+      <Filter>源文件\OPS\Dialog</Filter>
+    </None>
+    <None Include="src\OPS\Dialog\Control\OPSCOMPSelectInput.alittle">
+      <Filter>源文件\OPS\Dialog\Control</Filter>
+    </None>
+    <None Include="src\OPS\Dialog\Control\OPSCOMPStringEdit.alittle">
+      <Filter>源文件\OPS\Dialog\Control</Filter>
+    </None>
+    <None Include="src\OPS\Dialog\Control\OPSCOMPStringInput.alittle">
+      <Filter>源文件\OPS\Dialog\Control</Filter>
+    </None>
+    <None Include="src\OPS\Dialog\Control\OPSCOMPTimeSelect.alittle">
+      <Filter>源文件\OPS\Dialog\Control</Filter>
+    </None>
+    <None Include="src\OPS\Dialog\Control\OPSCOMPBase.alittle">
+      <Filter>源文件\OPS\Dialog\Control</Filter>
+    </None>
+    <None Include="src\OPS\Dialog\Control\OPSCOMPDropDownSelect.alittle">
+      <Filter>源文件\OPS\Dialog\Control</Filter>
+    </None>
+    <None Include="src\OPS\Dialog\Control\OPSCOMPNumberInput.alittle">
+      <Filter>源文件\OPS\Dialog\Control</Filter>
+    </None>
+    <None Include="src\OPS\TableData\OPSTableDataQuery.alittle">
+      <Filter>源文件\OPS\TableData</Filter>
+    </None>
+    <None Include="src\OPS\TableData\OPSTableDataRichGroup.alittle">
+      <Filter>源文件\OPS\TableData</Filter>
+    </None>
+    <None Include="src\OPS\TableData\OPSTableDataSearch.alittle">
+      <Filter>源文件\OPS\TableData</Filter>
+    </None>
+    <None Include="src\OPS\TableData\OPSTableDataSetData.alittle">
+      <Filter>源文件\OPS\TableData</Filter>
+    </None>
+    <None Include="src\OPS\TableData\OPSTableDataTail.alittle">
+      <Filter>源文件\OPS\TableData</Filter>
+    </None>
+    <None Include="src\OPS\TableData\OPSTableData.alittle">
+      <Filter>源文件\OPS\TableData</Filter>
+    </None>
+    <None Include="src\OPS\TableData\OPSTableDataHead.alittle">
+      <Filter>源文件\OPS\TableData</Filter>
+    </None>
+    <None Include="src\OPS\TableData\OPSTableDataMenu.alittle">
+      <Filter>源文件\OPS\TableData</Filter>
+    </None>
+    <None Include="src\OPS\TableData\OPSTableDataOrderButton.alittle">
+      <Filter>源文件\OPS\TableData</Filter>
+    </None>
+    <None Include="src\OPS\TableData\Control\OPSTDNumberInput.alittle">
+      <Filter>源文件\OPS\TableData\Control</Filter>
+    </None>
+    <None Include="src\OPS\TableData\Control\OPSTDStringInput.alittle">
+      <Filter>源文件\OPS\TableData\Control</Filter>
+    </None>
+    <None Include="src\OPS\TableData\Control\OPSTDStringOutput.alittle">
+      <Filter>源文件\OPS\TableData\Control</Filter>
+    </None>
+    <None Include="src\OPS\TableData\Control\OPSTDTimeSelect.alittle">
+      <Filter>源文件\OPS\TableData\Control</Filter>
+    </None>
+    <None Include="src\OPS\TableData\Control\OPSTDBase.alittle">
+      <Filter>源文件\OPS\TableData\Control</Filter>
+    </None>
+    <None Include="src\OPS\TableData\Control\OPSTDDropDownSelect.alittle">
+      <Filter>源文件\OPS\TableData\Control</Filter>
+    </None>
+    <None Include="src\OPS\Tool\OPSLoading.alittle">
+      <Filter>源文件\OPS\Tool</Filter>
+    </None>
+    <None Include="src\OPS\Tool\OPSTool.alittle">
+      <Filter>源文件\OPS\Tool</Filter>
+    </None>
+    <None Include="src\OPS\Tool\OPSTree.alittle">
+      <Filter>源文件\OPS\Tool</Filter>
+    </None>
+    <None Include="src\OPS\Tool\OPSWarnNotice.alittle">
+      <Filter>源文件\OPS\Tool</Filter>
+    </None>
+    <None Include="src\OPS\Tool\OPSWeakNotice.alittle">
+      <Filter>源文件\OPS\Tool</Filter>
+    </None>
+    <None Include="src\OPS\Tool\OPSCenterWeakNotice.alittle">
+      <Filter>源文件\OPS\Tool</Filter>
+    </None>
+    <None Include="src\OPS\Tool\OPSDate.alittle">
+      <Filter>源文件\OPS\Tool</Filter>
+    </None>
+  </ItemGroup>
+</Project>

@@ -13,6 +13,9 @@ end
 function IHttpSender:HandleFailed(reason)
 end
 
+function IHttpSender:Stop()
+end
+
 function IHttpSender:SendRPC(thread, method, content)
 	Lua.Throw("not impl")
 end

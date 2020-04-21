@@ -1,0 +1,298 @@
+
+namespace ABrowser;
+
+protected struct OPSTableDataSetDataOperateClickEvent : ALittle.UIEvent {}
+protected struct OPSTableDataSetDataDataClickEvent : ALittle.UIEvent {}
+protected struct OPSTableDataSetDataAllSelect : ALittle.UIEvent {}
+protected struct OPSTableDataSetDataNoAllSelect : ALittle.UIEvent {}
+
+protected struct OPSTableDataCheckButtonData
+{
+	Map<string, any> data;
+	int index;
+}
+
+protected struct OPSTableDataSetDataInfo
+{
+	double tr_height;
+	double offset_y;
+	double handle_width;
+	double field_offset;
+	double tr_width;
+}
+
+protected struct OPSTableDataChooseInfo
+{
+	int count;
+	List<Map<string, any> > list;
+}
+
+protected class OPSTableDataSetData : ALittle.DisplayObject
+{
+	private OPSCenter _center;
+	private OPSSubMenuConfig _table_data_config;
+	private OPSTableData _parent;
+	
+	private Map<ALittle.DisplayObject, OPSTableDataCheckButtonData> _check_btn_map;
+	private ALittle.DisplayLayout _static_object_v;
+	private OPSTableDataSetDataInfo _set_param;
+
+    public ctor(ALittle.ControlSystem ctrl_sys, OPSCenter center, OPSSubMenuConfig table_data_config, OPSTableData parent, OPSTableDataSetDataInfo set_param)
+    {
+    	this._center = center;
+    	this._table_data_config = table_data_config;
+    	this._parent = parent;
+    
+    	this._set_param = set_param;
+    	this._check_btn_map = new Map<ALittle.DisplayObject, OPSTableDataCheckButtonData>();
+    
+    	this._static_object_v = new ALittle.DisplayLayout(g_Control);
+    }
+    
+    public get static_object_v() : ALittle.DisplayLayout
+    {
+    	return this._static_object_v;
+    }
+    
+    // 操作一栏静态框
+    public fun SetStaticObjectList(List<Map<string, any>> data_list)
+    {
+    	var tr_height = this._set_param.tr_height;
+    	var offset_y = this._set_param.offset_y;
+    	var handle_width = this._set_param.handle_width;
+    
+    	for (var k, data in data_list)
+    	{
+    		var single_handle = this._table_data_config.single_handle;
+    		var check_button = g_Control.CreateControl{ALittle.DisplayObject}("ops_common_check");
+    		check_button.y = (tr_height - check_button.height) / 2 + offset_y + 2;
+    		check_button.x = 2;
+    		check_button.AddEventListener(this, this.HandleCheckBtnChange);
+    		this._static_object_v.AddChild(check_button);
+    
+    		var map = new OPSTableDataCheckButtonData();
+    		map.data = data;
+    		map.index = k;
+    		this._check_btn_map[check_button] = map;
+    
+    		if (single_handle != null)
+    		{
+    			var handle_menu = new List<OPSHandleConfig>();
+    			var handle_menu_count = 0;
+    			for (var k, v in single_handle)
+    			{
+    				var dialog = this._center.config.dialog[v.dialog];
+    				if (dialog != null)
+    				{
+						var result = this._center.login_logic.CheckPermission(dialog.permission);
+						if (result)
+						{
+							++ handle_menu_count;
+							handle_menu[handle_menu_count] = v;
+						}
+    				}
+    			}
+    
+    			var handle_button = g_Control.CreateControl{ALittle.DisplayObject}("ops_common_button");
+    			handle_button.height = 20;
+    			handle_button.width = 80;
+    			handle_button.x = (handle_width - handle_button.width) / 2 + check_button.x * 2 + check_button.width;
+    			handle_button.y = (tr_height - handle_button.height) / 2 + offset_y;
+    			handle_button.text = "操作";
+    			// 设置手势
+    			handle_button.hand_cursor = true;
+    			handle_button.AddEventListener(this, this.ShowOperateMenu);
+    			this._static_object_v.AddChild(handle_button);
+    
+    			var user_data = new OPSTableDataBatchButtonUserData();
+    			user_data.single_handle_config_list = handle_menu;
+    			user_data.data = data;
+    			user_data.table_data = this._parent;
+    			user_data.batch = false;
+    			user_data.position = OPSTableDataMenuType.SHOW_RIGHT;
+    			handle_button._user_data = user_data;
+    		}
+    
+    		if (this._parent.select_mode)
+    		{
+    			// 创建按钮用于选择
+    			var select_button = g_Control.CreateControl{ALittle.DisplayObject}("ops_common_button");
+    			select_button.height = 20;
+    			select_button.width = 80;
+    			select_button.x = (handle_width - select_button.width) / 2 + check_button.x * 2 + check_button.width;
+    			select_button.y = (tr_height - select_button.height) / 2 + offset_y;
+    			select_button.text = "选择";
+    			select_button.AddEventListener(this, this.HandleClick);
+
+    			select_button._user_data = data;
+    			this._static_object_v.AddChild(select_button);
+    		}
+    		offset_y = offset_y + tr_height;
+    	}
+    	this._static_object_v.height = offset_y;
+    }
+    //////////////////////////////////////////////////////////////////////////////////////////////-
+    // 操作 按钮点击事件
+    public fun ShowOperateMenu(ALittle.UIClickEvent event)
+    {
+    	this._parent.ShowOperateMenu(event.target);
+    }
+    
+    // 全选
+    public fun SelectAll()
+    {
+    	for (var check_btn, v in this._check_btn_map)
+    		check_btn.selected = true;
+    }
+    
+    // 全消
+    public fun CancelSelectAll()
+    {
+    	for (var check_btn, v in this._check_btn_map)
+    		check_btn.selected = false;
+    }
+    
+    public fun HandleCheckBtnChange(ALittle.UIChangedEvent event)
+    {
+    	var object = event.target;
+    	var selected = object.selected;
+    	// 设置选中条目数量文本
+    	this._parent.choose_text = lua.tostring(this.GetChooseResult().count);
+    	// 是否全选
+    	for (var check_btn, v in this._check_btn_map)
+    	{
+    		if (check_btn.selected == false)
+    		{
+    			this._parent.select_all = false;
+    			return;
+    		}
+    	}
+    	this._parent.select_all = true;
+    }
+    
+    // 获取选择结果
+    public fun GetChooseResult() : OPSTableDataChooseInfo
+    {
+    	var info_map = new OPSTableDataChooseInfo();
+    	info_map.count = 0;
+    	info_map.list = new List<Map<string, any> >();
+    	for (var check_btn, v in this._check_btn_map)
+    	{
+    		if (check_btn.selected)
+    		{
+    			++ info_map.count;
+    			info_map.list[info_map.count] = v.data;
+    		}
+    	}
+    	return info_map;
+    }
+    
+    // 获取选择结果显示控件
+    public fun GetChooseTDIndex() : List<int>
+    {
+    	var index_list = new List<int>();
+    	var index_list_count = 0;
+    	for (var check_btn, v in this._check_btn_map)
+    	{
+    		if (check_btn.selected)
+    		{
+    			++ index_list_count;
+    			index_list[index_list_count] = v.index;
+    		}
+    	}
+    	return index_list;
+    }
+    
+    ////////////////////////////////////////////////////////////////////////////////////////////////////-
+    
+    // 具体数据
+    public fun SetConcreteList(List<Map<string, any>> data_list, ALittle.DisplayGroup container)
+    {
+    	var gray = true;
+    	var offset_y = this._set_param.offset_y;
+    	var field_offset = this._set_param.field_offset;
+    	var tr_width = this._set_param.tr_width;
+    	var tr_height = this._set_param.tr_height;
+    
+    	for (var k, data in data_list)
+    	{
+    		var offset_x = field_offset;
+    
+    		// 行背景
+    		var quad = new ALittle.Quad(g_Control);
+    		quad.width = tr_width + field_offset;
+    		quad.height = tr_height;
+    		quad.y = offset_y;
+    
+    		if (gray)
+    		{
+    			quad.red = 0.90;
+    			quad.green = 0.90;
+    			quad.blue = 0.90;
+    		}
+    		container.AddChild(quad);
+    		gray = !gray;
+    
+    		// 鼠标移入背景
+    		var quad_bkg = g_Control.CreateControl{ALittle.Quad}("abrowser_common_line_background");
+    		quad_bkg.disabled = true;
+    		quad_bkg.visible = false;
+    		quad_bkg.width = tr_width + field_offset;
+    		quad_bkg.height = tr_height;
+    		quad_bkg.y = offset_y;
+    		container.AddChild(quad_bkg);
+
+			var table_td = this._center.config.table[this._table_data_config.table].table_td;
+    		for (var index, field_config in table_td)
+    		{
+    			if (field_config.hidden != true)
+    			{
+    				var control = new OPSTDStringOutput(g_Control, this._center, field_config, data);
+    				control.AddEventListener(this, this.HandleFieldRightClick);
+    				control.AddEventListener(this, this.HandleMouseMoveIn);
+    				control.AddEventListener(this, this.HandleMouseMoveOut);
+    
+    				container.AddChild(control);
+    				control.x = offset_x;
+    				control.y = offset_y;
+    				control.drag_trans_target = container;
+    				control.height = tr_height;
+
+    				control._user_data = quad_bkg;
+    
+    				offset_x = offset_x + field_config.width;
+    			}
+    		}
+    
+    		offset_y = offset_y + tr_height;
+    	}
+    }
+    
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    public fun HandleFieldRightClick(ALittle.UIRButtonDownEvent event)
+    {
+		var object = cast<OPSTDStringOutput>(event.target);
+    	this._center.tool_logic.ShowCopyCutPasteMenu(object.GetCopyString(), null);
+    }
+    
+    // 鼠标移入移出效果
+    public fun HandleMouseMoveIn(ALittle.UIMoveOutEvent event)
+    {
+		var quad_bkg:ALittle.DisplayObject = event.target._user_data;
+    	quad_bkg.visible = true;
+    }
+    public fun HandleMouseMoveOut(ALittle.UIMoveInEvent event)
+    {
+		var quad_bkg:ALittle.DisplayObject = event.target._user_data;
+    	quad_bkg.visible = false;
+    }
+    
+    //////////////////-附加功能//////////////////////////////////////////////////////////-
+    // 数据点击事件，用于选择对话框时候
+    public fun HandleClick(ALittle.UIClickEvent event)
+    {
+    	var e = new OPSTableDataSetDataDataClickEvent();
+    	e.target = event.target;
+    	this.DispatchEvent(e);
+    }
+}

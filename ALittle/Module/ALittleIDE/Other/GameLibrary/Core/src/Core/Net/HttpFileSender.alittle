@@ -18,13 +18,13 @@ public class IHttpFileSender
     protected fun SendUploadRPC(Thread thread, string method, any content) { throw("not impl"); }
     
     // 提供框架调用
-    protected await static InvokeDownload(string method, IHttpFileSender client, any content) : string
+    public await static InvokeDownload(string method, IHttpFileSender client, any content) : string
     {
         if (co == null) return "当前不是协程";
         client.SendDownloadRPC(co, method, content);
         return yield;
     }
-    protected await static InvokeUpload(string method, IHttpFileSender client, any content) : string
+    public await static InvokeUpload(string method, IHttpFileSender client, any content) : string
     {
         if (co == null) return "当前不是协程";
         client.SendUploadRPC(co, method, content);

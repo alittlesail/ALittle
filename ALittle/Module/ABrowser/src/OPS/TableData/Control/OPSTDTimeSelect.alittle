@@ -1,0 +1,83 @@
+
+namespace ABrowser;
+
+class OPSTDTimeSelect : OPSTDBase
+{
+	private OPSCenter _center;
+	private OPSTableQueryConfig _field_config;
+
+	private string _select_type;
+
+	private ALittle.DisplayObject _input;
+
+    public ctor(ALittle.ControlSystem ctrl_sys, OPSCenter center, OPSTableQueryConfig field_config)
+    {
+    	this._center = center;
+    	this._field_config = field_config;
+    
+    	// 配置文件初始化
+    	if (this._field_config.select_day) this._select_type = OPSDateSelectType.SELECT_DAY;
+
+    	// 添加标题
+		var width = 0.0;
+		var height = 0.0;
+    	var title = g_Control.CreateControl{ALittle.DisplayObject}("ops_common_text");
+    	title.text = this._field_config.name;
+    	title.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+    	var input = g_Control.CreateControl{ALittle.DisplayObject}("ops_common_input");
+    	input.x = title.width;
+    	if (this._field_config.width == null)
+    		input.width = 190;
+    	else
+    	   	input.width = this._field_config.width;
+    	input.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+    	input.AddEventListener(this, this.HandleTimeInput);
+    	this._input = input;
+
+    	if (this._field_config.default_value != null)
+    	{
+    	    if (this._field_config.default_value != "")
+    	        this._input.text = this._field_config.default_value;
+    	    else
+    	    {
+    	        if (this._select_type == OPSDateSelectType.SELECT_DAY)
+    	            this._input.text = lua.os.date("%Y-%m-%d", lua.os.time());
+    	        else
+    	            this._input.text = lua.os.date("%Y-%m-%d %H:%M:%S", lua.os.time());
+    	    }
+    	}
+
+    	this.width = input.x + input.width;
+    	this.height = input.height;
+    	this.AddChild(title);
+    	this.AddChild(input);
+    }
+    
+    // 时间选择插件
+    public fun HandleTimeInput(ALittle.UIFocusInEvent event)
+    {
+    	this._center.tool_logic.ShowDateSelect(event.target, this._select_type, this._field_config.default_hour, this._field_config.default_min, this._field_config.default_sec);
+    }
+    
+    public fun GetData() : bool, Map<string, any>, string
+    {
+    	var text = this._input.text;
+    	var time = OPSDate.StringToTime(text);
+    	if (time == null)
+    		return false, null, this._field_config.name.." 格式错误";
+
+    	var map = new Map<string, any>();
+    	map[this._field_config.query_param] = time;
+    	return true, map, null;
+    }
+
+    public fun CanOption() : bool
+    {
+    	return this._field_config.option == true && this._input.text == "";
+    }
+
+    public fun GetCopyString() : string
+    {
+        return this._input.text;
+    }
+}

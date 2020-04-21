@@ -1,0 +1,641 @@
+
+namespace ABrowser;
+
+protected enum OPSDateSelectType
+{
+	SELECT_DAY = "ABrowser_OPS_OPSDate_Select_Day";
+}
+
+protected class OPSDate : ALittle.DisplayLayout
+{
+	private ALittle.DisplayObject _target;
+	
+	private Map<int, int> _mon_map_day;
+	private string _day_container_group_name;
+	private string _select_type;
+
+	private ALittle.DisplayObject _year_container;
+	private ALittle.DisplayObject _mon_container;
+	private ALittle.DisplayObject _sec_container;
+	private ALittle.DisplayObject _min_container;
+	private ALittle.DisplayObject _hour_container;
+
+	private ALittle.DisplayObject _year_container_1;
+
+	private ALittle.DisplayObject _cur_hour_text;
+	private ALittle.DisplayObject _cur_min_text;
+	private ALittle.DisplayObject _cur_sec_text;
+	private ALittle.DisplayObject _cur_year_text;
+	private ALittle.DisplayObject _cur_mon_text;
+
+    public ctor(ALittle.ControlSystem ctrl_sys)
+    {
+    	this._target = null;
+    
+    	this._mon_map_day = new Map<int, int>();
+    	this._mon_map_day[1] = 31;
+    	this._mon_map_day[3] = 31;
+    	this._mon_map_day[5] = 31;
+    	this._mon_map_day[7] = 31;
+    	this._mon_map_day[8] = 31;
+    	this._mon_map_day[10] = 31;
+    	this._mon_map_day[12] = 31;
+    
+    	this._mon_map_day[2] = 28;
+    	this._mon_map_day[4] = 30;
+    	this._mon_map_day[6] = 30;
+    	this._mon_map_day[9] = 30;
+    	this._mon_map_day[11] = 30;
+    
+    	this._day_container_group_name = A_TextRadioButtonManager.CreateGroupName();
+    }
+    
+    public fun TCtor()
+    {
+    	for (var i = 1; i <= 12; 1)
+    	{
+    		var mon_container_x = "_mon_container_"..i;
+			var mon_container = cast<Map<string, ALittle.DisplayObject>>(this)[mon_container_x];
+    		mon_container._user_data = i;
+    	}
+    
+    	var group_name = A_TextRadioButtonManager.CreateGroupName();
+    	for (var i = 0; i <= 23; 1)
+    	{
+    		var hour_container_x = "_hour_container_"..i;
+			var hour_container = cast<Map<string, ALittle.DisplayObject>>(this)[hour_container_x];
+    		hour_container._user_data = i;
+    		hour_container.group_name = group_name;
+    	}
+    
+    	group_name = A_TextRadioButtonManager.CreateGroupName();
+    	for (var i = 0; i <= 59; 1)
+    	{
+    		var min_container_x = "_min_container_"..i;
+			var min_container = cast<Map<string, ALittle.DisplayObject>>(this)[min_container_x];
+    		min_container._user_data = i;
+    		min_container.group_name = group_name;
+    	}
+    
+    	group_name = A_TextRadioButtonManager.CreateGroupName();
+    	for (var i = 0; i <= 59; 1)
+    	{
+    		var sec_container_x = "_sec_container_"..i;
+			var sec_container = cast<Map<string, ALittle.DisplayObject>>(this)[sec_container_x];
+    		sec_container._user_data = i;
+    		sec_container.group_name = group_name;
+    	}
+    
+    	for (var i = 1; i <= 42; 1)
+    	{
+    		var day_container_x = "_day_container_"..i;
+			var day_container = cast<Map<string, ALittle.DisplayObject>>(this)[day_container_x];
+    		day_container.group_name = this._day_container_group_name;
+    	}
+    }
+    
+    public fun GetDayCountByMonth(int year, int month) : int
+    {
+    	if (month == 2)
+    	{
+    		if ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0))
+    			return 29;
+    		else
+    			return 28;
+    	}
+    	else
+    		return this._mon_map_day[month];
+    }
+    
+    public fun Show(ALittle.DisplayObject target, string time_text, string select_type, int default_hour, int default_min, int default_sec)
+    {
+    	this._target = target;
+    	this._select_type = select_type;
+    
+    	var x, y = target.LocalToGlobal();
+    	y = y + target.height;
+    	if (y + this.height > A_UISystem.view_height)
+    		y = A_UISystem.view_height - this.height;
+
+    	if (x + this.width > A_UISystem.view_width)
+    		x = A_UISystem.view_width - this.width;
+
+    	this.x = x;
+    	this.y = y;
+    	var loop = new ALittle.LoopFunction(bind(A_LayerManager.ShowFromRight, A_LayerManager, this, null), 1, 1, 1);
+		loop.Start();
+    
+    	this._year_container.visible = false;
+    	this._mon_container.visible = false;
+    	this._sec_container.visible = false;
+    	this._min_container.visible = false;
+    	this._hour_container.visible = false;
+    	if (this._select_type == OPSDateSelectType.SELECT_DAY)
+    	{
+    		this._cur_hour_text.disabled = true;
+    		this._cur_min_text.disabled = true;
+    		this._cur_sec_text.disabled = true;
+    		this._cur_hour_text.red = 0.6;
+    		this._cur_min_text.red = 0.6;
+    		this._cur_sec_text.red = 0.6;
+    		this._cur_hour_text.green = 0.6;
+    		this._cur_min_text.green = 0.6;
+    		this._cur_sec_text.green = 0.6;
+    		this._cur_hour_text.blue = 0.6;
+    		this._cur_min_text.blue = 0.6;
+    		this._cur_sec_text.blue = 0.6;
+    	}
+    	else
+    	{
+    		this._cur_hour_text.disabled = false;
+    		this._cur_min_text.disabled = false;
+    		this._cur_sec_text.disabled = false;
+    		this._cur_hour_text.red = 0;
+    		this._cur_min_text.red = 0;
+    		this._cur_sec_text.red = 0;
+    		this._cur_hour_text.green = 0.4;
+    		this._cur_min_text.green = 0.4;
+    		this._cur_sec_text.green = 0.4;
+    		this._cur_hour_text.blue = 0.3;
+    		this._cur_min_text.blue = 0.3;
+    		this._cur_sec_text.blue = 0.3;
+    	}
+    
+    	var time = OPSDate.StringToTime(time_text);
+    	if (time == null) time = lua.os.time();
+    	this.SetTime(time, time, default_hour, default_min, default_sec);
+    }
+    
+    public fun SetTime(int time, int no_time, int default_hour, int default_min, int default_sec)
+    {
+    	var cur_year = lua.tonumber(lua.os.date("%Y", time));
+    	this._cur_year_text.text = cur_year.."年";
+    	this._cur_year_text._user_data = cur_year;
+    
+    	var cur_mon = lua.tonumber(lua.os.date("%m", time));
+    	var cur_mon_str = cur_mon.."月";
+    	if (cur_mon < 10) cur_mon_str = "0"..cur_mon.."月";
+    	this._cur_mon_text.text = cur_mon_str;
+    	this._cur_mon_text._user_data = cur_mon;
+    
+    	if (this._select_type == OPSDateSelectType.SELECT_DAY || no_time == null)
+    	{
+    		if (default_hour == null) default_hour = 0;
+    		this._cur_hour_text.text = lua.tostring(default_hour);
+    		this._cur_hour_text._user_data = default_hour;
+
+    		if (default_min == null) default_min = 0;
+    		this._cur_min_text.text = lua.tostring(default_min);
+    		this._cur_min_text._user_data = default_min;
+
+    		if (default_sec == null) default_sec = 0;
+    		this._cur_sec_text.text = lua.tostring(default_sec);
+    		this._cur_sec_text._user_data = default_sec;
+    		this.RefreshDay(lua.math.floor(lua.tonumber(lua.os.date("%d", time))));
+    		return;
+    	}
+    
+    	var cur_hour = lua.tonumber(lua.os.date("%H", time));
+    	var cur_hour_str = lua.tostring(cur_hour);
+    	if (cur_hour < 10) cur_hour_str = "0"..cur_hour;
+    	this._cur_hour_text.text = cur_hour_str;
+    	this._cur_hour_text._user_data = cur_hour;
+    
+    	var cur_min = lua.tonumber(lua.os.date("%M", time));
+    	var cur_min_str = lua.tostring(cur_min);
+    	if (cur_min < 10) cur_min_str = "0"..cur_min;
+    	this._cur_min_text.text = cur_min_str;
+    	this._cur_min_text._user_data = cur_min;
+    
+    	var cur_sec = lua.tonumber(lua.os.date("%S", time));
+    	var cur_sec_str = lua.tostring(cur_sec);
+    	if (cur_sec < 10) cur_sec_str = "0"..cur_sec;
+    	this._cur_sec_text.text = cur_sec_str;
+    	this._cur_sec_text._user_data = cur_sec;
+    
+    	this.RefreshDay(lua.math.floor(lua.tonumber(lua.os.date("%d", time))));
+    }
+    
+    public static StringToTime(string text) : int
+    {
+		var time:int = null;
+
+    	var start_index, end_index, year, mon, day, hour, min, sec = lua.String.find(text, "^(%d%d%d%d)-(%d%d)-(%d%d) (%d%d).(%d%d).(%d%d)$", 1, false);
+    	if (start_index == null)
+    	{
+    		start_index, end_index, year, mon, day = lua.String.find(text, "^(%d%d%d%d)-(%d%d)-(%d%d)$", 1, false);
+    		if (start_index != null)
+    		{
+    			hour = "0";
+    			min = "0";
+    			sec = "0";
+    		}
+    	}
+    	if (year != null && mon != null && day != null && hour != null && min != null && sec != null)
+    	{
+    		var time_table = new lua.dateinfo();
+    		time_table.year = lua.math.floor(lua.tonumber(year));
+    		time_table.month = lua.math.floor(lua.tonumber(mon));
+    		time_table.day = lua.math.floor(lua.tonumber(day));
+    		time_table.hour = lua.math.floor(lua.tonumber(hour));
+    		time_table.min = lua.math.floor(lua.tonumber(min));
+    		time_table.sec = lua.math.floor(lua.tonumber(sec));
+    		time = lua.os.time(time_table);
+    	}
+    	return time;
+    }
+    
+    //////////////////////////////////////////////////////////////////////////
+    public fun HandleCurYearLButtonDown(ALittle.UIEvent event)
+    {
+    	if (this._year_container.visible)
+    	{
+    		this._year_container.visible = false;
+    		return;
+    	}
+    	this._year_container.visible = true;
+    	this._mon_container.visible = false;
+    	this._hour_container.visible = false;
+    	this._min_container.visible = false;
+    	this._sec_container.visible = false;
+
+		var cur_year:int = this._cur_year_text._user_data;
+    	var begin_year = 0;
+    	if (cur_year % 2 == 0)
+    		begin_year = cur_year - 5;
+    	else
+    		begin_year = cur_year - 4;
+
+    	this.RefreshYearContainer(begin_year);
+    }
+    
+    public fun HandleCurYearDescClick(ALittle.UIEvent event)
+    {
+		var cur_year:int = this._cur_year_text._user_data;
+    	cur_year = cur_year - 1;
+    	this._cur_year_text.text = cur_year.."年";
+    	this._cur_year_text._user_data = cur_year;
+    
+    	this.RefreshDay();
+    }
+    
+    public fun HandleCurYearAddClick(ALittle.UIEvent event)
+    {
+		var cur_year:int = this._cur_year_text._user_data;
+    	cur_year = cur_year + 1;
+    	this._cur_year_text.text = cur_year.."年";
+    	this._cur_year_text._user_data = cur_year;
+    
+    	this.RefreshDay();
+    }
+    
+    public fun HandleYearContainerUpClick(ALittle.UIEvent event)
+    {
+		var begin_year:int = this._year_container_1._user_data;
+    	begin_year = begin_year - 10;
+    	this.RefreshYearContainer(begin_year);
+    }
+    
+    public fun HandleYearContainerDownClick(ALittle.UIEvent event)
+    {
+		var begin_year:int = this._year_container_1._user_data;
+    	begin_year = begin_year + 10;
+    	this.RefreshYearContainer(begin_year);
+    }
+    
+    public fun HandleYearContainerSelectClick(ALittle.UIEvent event)
+    {
+    	var object = event.target;
+    	this._cur_year_text.text = object.text;
+    	this._cur_year_text._user_data = object._user_data;
+    	this._year_container.visible = false;
+    
+    	this.RefreshDay();
+    }
+    
+    public fun RefreshYearContainer(int begin_year)
+    {
+    	for (var i = 1; i <= 10; 1)
+    	{
+    		var year_container_x = "_year_container_"..i;
+			var year_container = cast<Map<string, ALittle.DisplayObject>>(this)[year_container_x];
+    		year_container.text = (begin_year + i - 1).."年";
+    		year_container._user_data = begin_year + i - 1;
+    	}
+    }
+    //////////////////////////////////////////////////////////////////////////
+    
+    public fun HandleCurMonLButtonDown(ALittle.UIEvent event)
+    {
+    	if (this._mon_container.visible)
+    	{
+    		this._mon_container.visible = false;
+    		return;
+    	}
+    	this._year_container.visible = false;
+    	this._mon_container.visible = true;
+    	this._hour_container.visible = false;
+    	this._min_container.visible = false;
+    	this._sec_container.visible = false;
+    }
+    
+    public fun HandleMonContainerSelectClick(ALittle.UIEvent event)
+    {
+    	var object = event.target;
+    	this._cur_mon_text.text = object.text;
+    	this._cur_mon_text._user_data = event.target._user_data;
+    	this._mon_container.visible = false;
+    	
+    	this.RefreshDay();
+    }
+    
+    public fun HandleCurMonDescClick(ALittle.UIEvent event)
+    {
+		var cur_mon:int = this._cur_mon_text._user_data;
+    	cur_mon = cur_mon - 1;
+    	if (cur_mon <= 0)
+    	{
+			var cur_year:int = this._cur_year_text._user_data;
+    		cur_year = cur_year - 1;
+    		this._cur_year_text.text = cur_year.."年";
+    		this._cur_year_text._user_data = cur_year;
+    		cur_mon = 12;
+    	}
+    	var cur_mon_str = cur_mon.."月";
+    	if (cur_mon < 10) cur_mon_str = "0"..cur_mon.."月";
+    	this._cur_mon_text.text = cur_mon_str;
+    	this._cur_mon_text._user_data = cur_mon;
+    
+    	this.RefreshDay();
+    }
+    
+    public fun HandleCurMonAddClick(ALittle.UIEvent event)
+    {
+		var cur_mon:int = this._cur_mon_text._user_data;
+    	cur_mon = cur_mon + 1;
+    	if (cur_mon > 12)
+    	{
+			var cur_year:int = this._cur_year_text._user_data;
+    		cur_year = cur_year + 1;
+    		this._cur_year_text.text = cur_year.."年";
+    		this._cur_year_text._user_data = cur_year;
+    		cur_mon = 1;
+    	}
+    	var cur_mon_str = cur_mon.."月";
+    	if (cur_mon < 10) cur_mon_str = "0"..cur_mon.."月";
+    	this._cur_mon_text.text = cur_mon_str;
+    	this._cur_mon_text._user_data = cur_mon;
+    
+    	this.RefreshDay();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    public fun HandleHourContainerCloseClick(ALittle.UIEvent event)
+    {
+    	this._hour_container.visible = false;
+    }
+    
+    public fun HandleCurHourLButtonDown(ALittle.UIEvent event)
+    {
+    	if (this._hour_container.visible)
+    	{
+    		this._hour_container.visible = false;
+    		return;
+    	}
+    	this._year_container.visible = false;
+    	this._mon_container.visible = false;
+    	this._hour_container.visible = true;
+    	this._min_container.visible = false;
+    	this._sec_container.visible = false;
+
+		var cur_hour:int = this._cur_hour_text._user_data;
+    	var hour_container_x = "_hour_container_"..cur_hour;
+		var hour_container = cast<Map<string, ALittle.DisplayObject>>(this)[hour_container_x];
+    	hour_container.selected = true;
+    }
+    
+    public fun HandleHourContainerSelectClick(ALittle.UIEvent event)
+    {
+    	var object = event.target;
+    	if (object.selected == false) return;
+		var target_hour:int = event.target._user_data;
+    	this._cur_hour_text._user_data = target_hour;
+    	if (target_hour < 10)
+    		this._cur_hour_text.text = "0"..target_hour;
+    	else
+    		this._cur_hour_text.text = lua.tostring(target_hour);
+
+    	this._hour_container.visible = false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    public fun HandleMinContainerCloseClick(ALittle.UIEvent event)
+    {
+    	this._min_container.visible = false;
+    }
+    
+    public fun HandleCurMinLButtonDown(ALittle.UIEvent event)
+    {
+    	if (this._min_container.visible)
+    	{
+    		this._min_container.visible = false;
+    		return;
+    	}
+    	this._year_container.visible = false;
+    	this._mon_container.visible = false;
+    	this._hour_container.visible = false;
+    	this._min_container.visible = true;
+    	this._sec_container.visible = false;
+
+		var cur_min:int = this._cur_min_text._user_data;
+    	var min_container_x = "_min_container_"..cur_min;
+		var min_container = cast<Map<string, ALittle.DisplayObject>>(this)[min_container_x];
+    	min_container.selected = true;
+    }
+    
+    public fun HandleMinContainerSelectClick(ALittle.UIEvent event)
+    {
+    	var object = event.target;
+    	if (object.selected == false) return;
+		var target_min:int = event.target._user_data;
+    	this._cur_min_text._user_data = target_min;
+    	if (target_min < 10)
+    		this._cur_min_text.text = "0"..target_min;
+    	else
+    		this._cur_min_text.text = lua.tostring(target_min);
+
+    	this._min_container.visible = false;
+    }
+    
+    //////////////////////////////////////////////////////////////////////////
+    public fun HandleSecContainerCloseClick(ALittle.UIEvent event)
+    {
+    	this._sec_container.visible = false;
+    }
+    
+    public fun HandleCurSecLButtonDown(ALittle.UIEvent event)
+    {
+    	if (this._sec_container.visible)
+    	{
+    		this._sec_container.visible = false;
+    		return;
+    	}
+    	this._year_container.visible = false;
+    	this._mon_container.visible = false;
+    	this._hour_container.visible = false;
+    	this._min_container.visible = false;
+    	this._sec_container.visible = true;
+
+		var cur_sec:int = this._cur_sec_text._user_data;
+    	var sec_container_x = "_sec_container_"..cur_sec;
+		var sec_container = cast<Map<string, ALittle.DisplayObject>>(this)[sec_container_x];
+    	sec_container.selected = true;
+    }
+    
+    public fun HandleSecContainerSelectClick(ALittle.UIEvent event)
+    {
+    	var object = event.target;
+    	if (object.selected == false) return;
+		var target_sec:int = event.target._user_data;
+    	this._cur_sec_text._user_data = target_sec;
+    	if (target_sec < 10)
+    		this._cur_sec_text.text = "0"..target_sec;
+    	else
+    		this._cur_sec_text.text = lua.tostring(target_sec);
+
+    	this._sec_container.visible = false;
+    }
+    
+    //////////////////////////////////////////////////////////////////////-
+    public fun HandleCurClearClick(ALittle.UIEvent event)
+    {
+    	this._target.text = "";
+    	A_LayerManager.HideFromRight(this);
+    }
+    
+    public fun HandleCurNowClick(ALittle.UIEvent event)
+    {
+    	this._target.text = lua.os.date("%Y-%m-%d %H:%M:%S", lua.os.time());
+    	A_LayerManager.HideFromRight(this);
+    }
+    
+    public fun HandleCurConfirmClick(ALittle.UIEvent event)
+    {
+    	var time_table = new lua.dateinfo();
+    	time_table.hour = this._cur_hour_text._user_data;
+    	time_table.min = this._cur_min_text._user_data;
+    	time_table.sec = this._cur_sec_text._user_data;
+    
+    	var group = A_TextRadioButtonManager.GetGroupByName(this._day_container_group_name);
+    	if (group != null)
+    	{
+    		for (var k, v in group)
+    		{
+    			if (k.selected)
+    			{
+					var user_data:lua.dateinfo = k._user_data;
+    				time_table.year = user_data.year;
+    				time_table.month = user_data.month;
+    				time_table.day = user_data.day;
+    				break;
+    			}
+    		}
+    	}
+    
+    	if (this._select_type == OPSDateSelectType.SELECT_DAY)
+    		this._target.text = lua.os.date("%Y-%m-%d", lua.os.time(time_table));
+    	else
+    		this._target.text = lua.os.date("%Y-%m-%d %H:%M:%S", lua.os.time(time_table));
+
+    	A_LayerManager.HideFromRight(this);
+    }
+    
+    //////////////////////////////////////////////////////////////////////-
+    public fun RefreshDay([Nullable] int day)
+    {
+		var cur_year:int = this._cur_year_text._user_data;
+		var cur_mon:int = this._cur_mon_text._user_data;
+    
+    	// 确定当前年和当前月的1号是星期几
+    	var time_table = new lua.dateinfo();
+    	time_table.year = cur_year;
+    	time_table.month = cur_mon;
+    	time_table.day = 1;
+    	time_table.hour = 0;
+    	time_table.min = 0;
+    	time_table.sec = 0;
+    	
+    	var time = lua.os.time(time_table);
+    
+    	// 确定这一天是星期几
+    	time_table = ALittle.DateInfo(time);
+    	var index = time_table.wday;
+    	// 把前面的变成灰色
+    	var target_mon = time_table.month;
+    	var target_year = time_table.year;
+    	if (target_mon == 1)
+    	{
+    		target_mon = 12;
+    		target_year = target_year - 1;
+    	}
+    	else
+    	{
+    		target_mon = target_mon - 1;
+    	}
+    	var day_count = this.GetDayCountByMonth(target_year, target_mon);
+    	var start_day = day_count - (index - 2);
+    	for (var i = 1; i <= index - 1; 1)
+    	{
+    		var day_container_x = "_day_container_"..i;
+			var target = cast<Map<string, ALittle.TextRadioButton>>(this)[day_container_x];
+    		target.text = lua.tostring(start_day);
+    		var user_data = new lua.dateinfo();
+    		target._user_data = user_data;
+    		user_data.year = target_year;
+    		user_data.month = target_mon;
+    		user_data.day = start_day;
+    		target.show_text.red = 153/255;
+    		target.show_text.green = 153/255;
+    		target.show_text.blue = 153/255;
+    		start_day = start_day + 1;
+    	}
+    	day_count = this.GetDayCountByMonth(time_table.year, time_table.month);
+    	for (var i = 1; i <= day_count; 1)
+    	{
+    		var day_container_x = "_day_container_"..(index + i - 1);
+			var target = cast<Map<string, ALittle.TextRadioButton>>(this)[day_container_x];
+    		target.text = lua.tostring(i);
+    		var user_data = new lua.dateinfo();
+    		target._user_data = user_data;
+    		user_data.year = time_table.year;
+    		user_data.month = time_table.month;
+    		user_data.day = i;
+    		if (day != null && i == day) target.selected = true;
+    		target.show_text.red = 0/255;
+    		target.show_text.green = 98/255;
+    		target.show_text.blue = 90/255;
+    	}
+    	target_mon = time_table.month;
+    	target_year = time_table.year;
+    	target_mon = target_mon + 1;
+    	if (target_mon > 12)
+    	{
+    		target_mon = 1;
+    		target_year = time_table.year + 1;
+    	}
+    	start_day = 1;
+    	for (var i = index + day_count; i <= 42; 1)
+    	{
+    		var day_container_x = "_day_container_"..i;
+			var target = cast<Map<string, ALittle.TextRadioButton>>(this)[day_container_x];
+    		target.text = lua.tostring(start_day);
+    		var user_data = new lua.dateinfo();
+    		target._user_data = user_data;
+    		user_data.year = target_year;
+    		user_data.month = target_mon;
+    		user_data.day = start_day;
+    		target.show_text.red = 153/255;
+    		target.show_text.green = 153/255;
+    		target.show_text.blue = 153/255;
+    		start_day = start_day + 1;
+    	}
+    }
+}

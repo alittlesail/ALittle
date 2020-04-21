@@ -1,0 +1,427 @@
+
+namespace ABrowser;
+
+struct S2CWebAccountInfo
+{
+	string account_id;
+	string account_name;
+	string role_id;
+	string role_name;
+	Map<string, bool> permission_map;
+}
+
+struct S2CWebServerInfo
+{
+	string http_protocol;
+	string http_ip;
+	int http_port;
+}
+
+struct C2SWebLogin
+{
+	string account_name;
+	string account_pwd;
+}
+
+struct S2CWebLogin
+{
+	bool result;
+	string reason;
+}
+
+struct C2SWebLogout
+{
+}
+
+struct S2CWebLogout
+{
+}
+
+struct S2CWebForceLogout
+{
+}
+
+struct S2CWebSession
+{
+	string session_id;
+}
+
+protected class OPSLogin
+{
+	private OPSCenter _center;                  // center
+
+	private string _session_id;                 // 会话ID
+	private S2CWebAccountInfo _account_info;       // 账号信息
+	private S2CWebServerInfo _server_info;         // 服务器信息
+	
+	private string _account_name;               // 账号名
+	private string _account_pwd;                // 密码
+	private bool _first_login;                  // 是否第一次登陆
+	private bool _is_login;                     // 是否登录了
+	
+	private ALittle.IMsgCommonTemplate _net_client;    // 长连接
+
+	private ALittle.DisplayObject _scene;
+	private ALittle.DisplayGroup _icon_container;           // icon容器
+	private ALittle.DisplayObject _container;               // 容器，用于做动画
+	private ALittle.LoopGroup _show_loop;
+
+	private ALittle.DisplayObject _login_account;           // 账号输入
+	private ALittle.DisplayObject _login_password;          // 密码输入
+	private ALittle.DisplayObject _save_password_check;     // 是否保存密码
+	private ALittle.DisplayObject _var_login_check;        // 是否自动登录
+	private ALittle.DisplayObject _login_button;            // 登录按钮
+
+	private bool _save_password;    // 是否保存密码
+	private bool _var_login;       // 是否自动登录
+    
+    private string _login_ip;
+    private int _login_port;
+    
+	public ctor(OPSCenter center, string login_ip, int login_port, string module_name)
+	{
+    	this._center = center; 		// 运维中心
+    	this._show_loop = null; 	// 显示动画
+    
+    	//////////////////////////////////////////////////////////////////////////////////-
+    	// 账号信息
+    	this._session_id = "";
+    	this._account_info = new S2CWebAccountInfo();
+    	this._account_info.permission_map = new Map<string, bool>();
+    	this._server_info = new S2CWebServerInfo();
+    	this._server_info.http_ip = "";
+    	this._server_info.http_port = 0;
+    
+    	this._account_name = "";
+    	this._account_pwd = "";
+    	this._first_login = true;
+    	this._is_login = false;
+        
+        this._login_ip = login_ip;
+        this._login_port = login_port;
+    }
+    
+    public async fun Start()
+    {
+    	//////////////////////////////////////////////////////////////////////////////////
+    	// 链接服务器
+    	this._net_client = ALittle.CreateMsgSender(30, false);
+    	this._net_client.Connect(this._login_ip, this._login_port);
+    }
+    
+    public fun Close()
+    {
+    	this._net_client.Close();
+    	this._net_client = null;
+    }
+    
+    public fun HideScene()
+    {
+    	// 隐藏界面
+    	if (this._scene != null) this._scene.visible = false;
+    }
+    
+    public fun ShowScene()
+    {
+    	// 创建登录场景
+    	if (this._scene == null)
+    	{
+    		// 创建登录界面
+    		this._scene = g_Control.CreateControl{ALittle.DisplayObject}("ops_login", this);
+    		this._center.main_layer.AddChild(this._scene);
+    
+    		// 根据运维的ICON信息，创建ICON图片
+    		if (this._center.config != null && this._center.config.base != null)
+    		{
+    			var icon_path = this._center.config.base.icon_path;
+    			var icon = new ALittle.Image(this._center.control);
+    			icon.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+    			icon.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+    			icon.texture_name = icon_path;
+    			if (this._center.config.base.icon_width == null)
+    			    icon.width = this._icon_container.width;
+    			else
+    			    icon.width = this._center.config.base.icon_width;
+    			if (this._center.config.base.icon_height == null)
+    			    icon.height = this._icon_container.height;
+    			else
+    			    icon.height = this._center.config.base.icon_height;
+    			this._icon_container.AddChild(icon);
+    		}
+    
+    		// 从配置中获取记住密码，和自动登录
+    		this._save_password = this._center.config_user.GetConfig("save_password", false);
+    		this._var_login = this._center.config_user.GetConfig("var_login", false);
+    		if (this._save_password)
+    		{
+    			this._account_name = this._center.config_user.GetConfig("account_name", "");
+    			this._account_pwd = ALittle.String_DecryptPassword(this._account_name, this._center.config_user.GetConfig("account_pwd", ""));
+    			if (this._account_pwd == null) this._account_pwd = "";
+    		}
+    
+    		this._login_account.text = this._account_name;
+    		this._login_password.text = "";
+    		this._save_password_check.selected = this._save_password;
+    		this._var_login_check.selected = this._var_login;
+    	}
+    
+    	// 移除显示动画
+    	if (this._show_loop != null)
+    	{
+    		A_LoopSystem.RemoveUpdater(this._show_loop);
+    		this._show_loop = null;
+    	}
+    
+    	// 初始化界面
+    	this._scene.visible = true;
+    	this._container.alpha = 0;
+    	this._container.y_value = -50;
+    
+    	// 创建动画对象
+    	if (this._show_loop == null)
+    	{
+    		this._show_loop = new ALittle.LoopGroup();
+    		this._show_loop.AddUpdater(new ALittle.LoopLinear(this._container, "y_value", 0, 500, 1));
+    		this._show_loop.AddUpdater(new ALittle.LoopLinear(this._container, "alpha", 1, 500, 1));
+    	}
+    
+    	// 添加到循环系统
+    	A_LoopSystem.AddUpdater(this._show_loop);
+    
+    	// 关闭对话框
+    	this._center.dialog_logic.Close();
+    }
+    
+    public fun HandleTabKeyDown(ALittle.UIEvent event)
+    {
+    	if (this._login_password != null) this._login_password.focus = true;
+    }
+    
+    public fun HandleLoginClick(ALittle.UIEvent event)
+    {
+    	// 如果已经禁用那么直接返回
+    	if (this._login_button.disabled) return;
+    
+    	this._login_button.disabled = true;
+    	if (this._net_client.IsConnected() == false) return;
+    
+    	this._account_name = this._login_account.text;
+    	if (this._login_password.text != "")
+    		this._account_pwd = ALittle.String_MD5(this._login_password.text);
+    	this._save_password = this._save_password_check.selected;
+    	this._var_login = this._var_login_check.selected;
+    	this.LoginImpl();
+    }
+    
+    // 执行登录操作
+    public fun LoginImpl()
+    {
+    	if (this._net_client == null) return;
+    	this._first_login = false;
+    	var msg = new C2SWebLogin();
+    	msg.account_name = this._account_name;
+    	msg.account_pwd = this._account_pwd;
+    	this._net_client.SendMsg(msg);
+    }
+    
+    // 执行登出
+    public fun Logout()
+    {
+    	var msg = new C2SWebLogout();
+    	this._net_client.SendMsg(msg);
+    }
+    
+    // 检查权限是否满足
+    public fun CheckPermission(string permission) : bool
+    {
+    	if (permission == null) return false;
+    	if (this._account_info.role_id == "alittle") return true;
+    	return this._account_info.permission_map[permission] == true;
+    }
+    
+    ////////////////////////////////////////////////////////////////////////////////////////////
+    
+    // 通用短连接调用
+    public await fun HttpPostRequest(string method, Map<string, any> param, [Nullable] string target_ip, [Nullable] int target_port) : string, any
+    {
+    	param["__account_id"] = this._account_info.account_id;
+    	param["__session_id"] = this._session_id;
+    
+        var ip = this._server_info.http_ip;
+        var port = this._server_info.http_port;
+    	if (target_ip != null && target_port != null)
+        {
+            ip = target_ip;
+            port = target_port;
+        }
+        var sender = ALittle.CreateHttpSender(ip, port);
+        return ALittle.IHttpSender.Invoke(method, sender, ALittle.String_JsonEncode(param));
+    }
+    
+    // 调用短连接下载文件
+    public await fun HttpFileRequest(string method, Map<string, any> param, string file_path, [Nullable] string target_ip, [Nullable] int target_port) : string
+    {
+    	param["__account_id"] = this._account_info.account_id;
+    	param["__session_id"] = this._session_id;
+    
+        var ip = this._server_info.http_ip;
+        var port = this._server_info.http_port;
+    	if (target_ip != null && target_port != null)
+        {
+            ip = target_ip;
+            port = target_port;
+        }
+        var sender = ALittle.CreateHttpFileSender(ip, port, file_path, 0);
+        return ALittle.IHttpFileSender.InvokeDownload(method, sender, param);
+    }
+    
+    ////////////////////////////////////////////////////////////////////////////////////////////
+    
+    // 连接服务器成功
+    public fun Global_HandleNetConnectSucceed()
+    {
+    	if ((this._first_login && this._var_login)
+			|| (this._login_button != null && this._login_button.disabled)
+			|| this._is_login)
+    		this.LoginImpl();
+    }
+    
+    // 服务器断开连接
+    public fun Global_HandleNetDisconnect()
+    {
+    	// 提示与服务器断开连接
+    	this._center.tool_logic.ShowWeakNotice("网络断开连接，正在重连");
+    }
+    
+    // 处理连接服务器失败回调
+    public fun Global_HandleNetConnectFailed()
+    {
+    	// 提示网络不可用
+    	this._center.tool_logic.ShowWeakNotice("当前网络不可用, 正在尝试重连!");
+    }
+    
+    public async fun Global_JsonHandleS2CWebLoginMessage(S2CWebLogin msg)
+    {
+    	if (this._login_button != null)
+    		this._login_button.disabled = false;
+
+    	this._is_login = msg.result;
+    	if (msg.result == false)
+    	{
+    		this._center.tool_logic.ShowWeakNotice(msg.reason);
+    		return;
+    	}
+    
+    	if (this._save_password)
+    	{
+    		this._center.config_user.SetConfig("account_name", this._account_name);
+    		this._center.config_user.SetConfig("account_pwd", ALittle.String_CryptPassword(this._account_name, this._account_pwd));
+    	}
+    
+    	this._center.config_user.SetConfig("save_password", this._save_password);
+    	this._center.config_user.SetConfig("var_login", this._var_login);
+    	this.SwitchLoginToMain();
+    }
+    
+    public fun Global_JsonHandleS2CWebLogoutMessage(S2CWebLogout msg)
+    {
+    	this._is_login = false;
+    	if (this._login_button != null)
+    	{
+    		this._login_password.text = "";
+    		this._account_name = "";
+    		this._account_pwd = "";
+    	}
+    	this.ShowScene();
+    	this._center.main_logic.HideScene();
+    	this._center.main_logic.Clear();
+    }
+    
+    public fun Global_JsonHandleS2CWebForceLogoutMessage(S2CWebForceLogout msg)
+    {
+    	this._is_login = false;
+    	this._center.tool_logic.ShowWeakNotice("您的账号在另一个地方登录");
+    	if (this._login_button != null)
+    	{
+    		this._login_password.text = "";
+    		this._account_name = "";
+    		this._account_pwd = "";
+    	}
+    	this.ShowScene();
+    	this._center.main_logic.HideScene();
+    	this._center.main_logic.Clear();
+    }
+    
+    public fun Global_JsonHandleS2CWebSessionMessage(S2CWebSession msg)
+    {
+    	this._session_id = msg.session_id;
+    }
+    
+    public fun Global_JsonHandleS2CWebAccountInfoMessage(S2CWebAccountInfo msg)
+    {
+    	this._account_info = msg;
+    }
+    
+    public fun Global_JsonHandleS2CWebServerInfoMessage(S2CWebServerInfo msg)
+    {
+    	this._server_info = msg;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////
+    
+    public await fun SwitchLoginToMain()
+    {
+    	// 检查是否有新的运维配置文件
+    	var config_md5 = "";
+    	if (ALittle.File_GetFileAttr(this._center.temp_path.."Client.cfg") != null)
+    		config_md5 = ALittle.File_MD5(this._center.temp_path.."Client.cfg");
+
+    	// 询问md5值是否一直，如果一致就不用下载
+    	var param = new Map<string, any>();
+    	param["config_md5"] = config_md5;
+    	var error, content = this.HttpPostRequest("QCheckOPSConfig", param);
+    	if (error != null)
+    	{
+    		this.Logout();
+    		this._center.tool_logic.ShowWeakNotice("配置文件检查失败，请稍后再试");
+    		return;
+    	}
+    
+    	var result, json_object:Map<string, any> = tcall(ALittle.String_JsonDecode, content);
+    	if (result != null)
+    	{
+    		this.Logout();
+    		this._center.tool_logic.ShowWeakNotice("配置文件检查失败，请稍后再试");
+    		return;
+    	}
+    
+    	if (json_object["error"] != null)
+    	{
+    		this.Logout();
+    		this._center.tool_logic.ShowWeakNotice(json_object["error"]);
+    		return;
+    	}
+    
+    	if (json_object["result"] == true)
+    	{
+    		this.HideScene();
+    		this._center.main_logic.ShowScene();
+    		return;
+    	}
+    
+    	// 开始下载最新的配置文件
+    	param = new Map<string, any>();
+    	error = this.HttpFileRequest("QDownloadOPSConfig", param, this._center.temp_path.."Client.cfg");
+    	if (error != null)
+    	{
+    		this.Logout();
+    		this._center.tool_logic.ShowWeakNotice("配置文件下载失败，请稍后再试");
+    	}
+        else
+    	{
+    		this._center.ReloadConfig();
+    		this.HideScene();
+    		this._center.main_logic.ShowScene();
+    	}
+    }
+}

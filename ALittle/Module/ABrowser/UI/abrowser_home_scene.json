@@ -1,0 +1,1 @@
+{"abrowser_home_scene":{"__childs":[{"__extends":"abrowser_hv_scroll_screen","container":{"__extends":"abrowser_container_tiletable"},"__link":"_home_screen"}],"width_type":4,"__class":"DisplayLayout","height_type":4}}

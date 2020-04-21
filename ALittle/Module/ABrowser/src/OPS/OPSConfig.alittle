@@ -1,0 +1,185 @@
+
+namespace ABrowser;
+
+//对话框部分/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+protected struct OPSDialogFieldConfig
+{
+	double x;								// x坐标
+	double y;								// y坐标
+	double width;							// 对话框字段宽度
+	double height;							// 对话框字段高度
+	string name;							// 名称
+	string invoke_param;					// 对话框提取输入作为调用用的参数
+	string input_param;						// 读取的字段参数
+	string input_type;						// 输入类型		比如OPSCOMPStringInput
+
+	// 当input_type为OPSCOMPSelectInput，这个参数作为跳出的选择对话框
+	string __select_dialog;
+	string show_field;						// 要显示的字段
+	string select_field;					// 要选择的字段
+	string show_param;                      // 读取字段参数时，显示选择的是什么数据
+
+	// 当input_type为OPSCOMPDropDownSelect，这个参数作为跳出的选择对话框
+	List<string> data_list;     // 下拉菜单的列表文本
+	Map<string, any> data_map;  // 每个文本对应的值
+
+	// 当input_type为OPSCOMPStringEdit,OPSCOMPStringInput,OPSCOMPNumberInput，默认文本
+	string default_value;
+
+	// 单位 当input_type为OPSCOMPStringInput，有效
+	string unit;
+
+	// 当input_type为OPSCOMPTimeSelect有效
+	string select_type;
+	int default_hour;
+	int default_min;
+	int default_sec;
+}
+
+protected struct OPSSendParamConfig
+{
+	string key;         // 在一条数据中的字段名
+	string type;        // 值的类型 (bool, short, int, longlong, double, float, string)
+}
+
+protected struct OPSDialogConfig
+{
+	string __class;							// 类
+	string title;							// 标题
+	string content;							// 当__class为OPSDeleteDialog，这个参数作为内部删除提示的内容
+	string permission;						// 权限
+	Map<string, OPSSendParamConfig> send_param;			// 对话框携带记录数据作为参数
+	List<OPSDialogFieldConfig> field;		// 对话框字段
+
+	string __table_data;					// 当__class为OPSChoiceDialog，这个参数作为内部的表格内容
+
+	bool module_invoke;						// 模块调用
+}
+
+//表格部分///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+protected struct OPSTableQueryConfig
+{
+	string name;							// 输入名称
+	string input_type;						// 输入类型	比如 OPSCOMPStringInput
+	string query_param;						// 条件参数名
+	string field_param;						// 表对应的字段名
+	// 数据库操作 (<, <=, >, >=, !=, LIKE, table_day)
+	// TABLE_DAY：当表名是以日期为后缀，格式为YYYY_MM_DD时。然后真实的表名为OPSTableConfig.table_name + YYYY_MM_DD
+	//				field_param和value_type则无效，字段本身不会作为查询条件
+	//				典型应用是查询日志表。
+	// ACCOUNT_ID：对字段的值进行计算获得对应的DP数据库的编号，然后作为后缀拼接到db_name作为最终的数据库
+	string operation;
+	string value_type;						// 值的类型 (bool, short, int, longlong, double, float, string)
+	double width;							// 宽度
+	bool option;						// 当前参数是否可选
+
+	// 如果input_type=OPSTDDropDownSelect时有效
+	List<string> data_list;     // 下拉菜单的列表文本
+	Map<string, any> data_map;  // 每个文本对应的值
+
+	// 如果input_type=OPSTDStringInput或者OPSTDNumberInput或者OPSTDTimeSelect时有效
+	string default_value;
+
+	// 如果input_type=OPSTDTimeSelect时有效
+	bool select_day;
+	int default_hour;
+	int default_min;
+	int default_sec;
+}
+
+protected struct OPSTableDataStyleConfig
+{
+	string time_format;						// 时间格式 比如%Y-%m-%d %H:%M:%S
+	Map<string, any> enum_map;				// 枚举格式
+	double expand;							// 扩展的倍数
+}
+
+protected struct OPSTableTdConfig
+{
+	double width;							// 列宽度
+	string name;							// 列名称
+	bool hidden;							// 是否显示
+	bool order;								// 是否排序
+	bool data_handle;						// 服务器数据是否要进行转化处理
+	OPSTableDataStyleConfig data_style;		// 数据转化成对应的形式进行显示
+	string field;                           // 字段名
+
+	string cross_db;						// 连表查询的数据库名
+	string cross_table;						// 连表查询的表名
+	string cross_field;						// 连表查询的读取的字段名
+	string cross_key;						// 连表查询的条件字段名
+	string cross_src;						// 连表查询的条件字段值
+	string cross_type;						// 连表查询的条件字段值的类型(bool, short, int, longlong, double, float, string)
+	string cross_operation;					// 操作，与OPSTableQueryConfig的operation同理
+}
+
+protected struct OPSTableConfig
+{
+	string __class;							// 类
+	string db_name;						    // 查询的数据库名，如果没有填，那么就使用默认数据库
+	string table_name;						// 表名
+	string permission;						// 权限
+	string data_handle;						// 服务器对应的函数
+	List<OPSTableQueryConfig> query_info;	// 查询信息
+	List<OPSTableTdConfig> table_td;		// 表字段列表
+	double tr_height;                       // 行高度，如果不填那么就使用默认的高度
+}
+
+//菜单部分///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+protected struct OPSMainMenuConfig
+{
+	string name;					// 主标签页的名称
+	List<OPSSubMenuConfig> childs;	// 子标签页列表
+}
+
+protected struct OPSHandleConfig
+{
+	string name;		// 操作名称
+	string dialog;		// 对话框
+}
+
+protected struct OPSMultiHandleListInfo
+{
+	string name;					// 操作名称
+	List<OPSHandleConfig> childs;	// 操作列表
+}
+
+protected struct OPSSubMenuDefaultOrderConfig
+{
+	string name;
+	bool type;
+}
+
+protected struct OPSSubMenuConfig
+{
+	string name;								// 子标签页的名称
+	string table;								// 对应的表索引
+	List<OPSHandleConfig> single_handle;		// 针对某条记录进行操作
+	List<OPSMultiHandleListInfo> multi_handle;	// 多条记录操作
+	OPSSubMenuDefaultOrderConfig order;			// 默认的排序规则
+}
+
+//基础//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+protected struct OPSBaseConfig
+{
+	string ops_name;        // 显示名称
+	string login_ip;        // 登录IP
+	int login_port;         // 登录端口
+	string icon_path;       // icon路径
+	double icon_width;      // icon宽度
+	double icon_height;     // icon高度
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+protected struct OPSConfig
+{
+	OPSBaseConfig base;                     // 基础
+	List<OPSMainMenuConfig> menu;			// 菜单
+	Map<string, OPSTableConfig> table;		// 表格
+	Map<string, OPSDialogConfig> dialog;	// 对话框
+}

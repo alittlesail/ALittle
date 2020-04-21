@@ -1,0 +1,89 @@
+
+namespace ABrowser;
+
+protected class OPSCOMPTimeSelect : OPSCOMPBase
+{
+	private OPSCenter _center;
+	private OPSDialogFieldConfig _field_config;
+	private Map<string, any> _data;
+
+	private ALittle.DisplayObject _text_ctrl;
+	private ALittle.DisplayObject _input_ctrl;
+
+    public ctor(ALittle.ControlSystem ctrl_sys, OPSCenter center, OPSDialogFieldConfig field_config, Map<string, any> data)
+    {
+    	this._center = center;
+    	this._field_config = field_config;
+    	this._data = data;
+    
+    	// 创建文本控件
+    	this._text_ctrl = g_Control.CreateControl{ALittle.DisplayObject}("ops_common_text");
+    	this._text_ctrl.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+    	// 创建输入框控件
+    	this._input_ctrl = g_Control.CreateControl{ALittle.DisplayObject}("ops_common_input");
+    	this._input_ctrl.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+    	this._input_ctrl.AddEventListener(this, this.HandleTimeInput);
+    
+    	this.UpdateConfig();
+    }
+    
+    // 获取数据
+    public fun GetData() : string, any
+    {
+    	// 转换时间格式
+    	return this._field_config.invoke_param, OPSDate.StringToTime(this._input_ctrl.text);
+    }
+
+    public fun GetCopyString() : string
+    {
+        return this._input_ctrl.text;
+    }
+    
+    // 时间选择插件
+    public fun HandleTimeInput(ALittle.UIFocusInEvent event)
+    {
+    	this._center.tool_logic.ShowDateSelect(event.target, this._field_config.select_type, this._field_config.default_hour, this._field_config.default_min, this._field_config.default_sec);
+    }
+    
+    // 更新配置文件
+    public fun UpdateConfig()
+    {
+    	// 根据配置文件刷新容器
+    	this.RefreshConfig();
+    	// 设置数据
+    	this.RefreshDataInfo();
+    }
+    
+    //[[
+    //	name . 输入框名字
+    //	width . 输入框宽度
+    //]]
+    public fun RefreshConfig()
+    {
+    	var config = this._field_config;
+    
+    	this._text_ctrl.text = config.name;
+    
+    	this._input_ctrl.x = this._text_ctrl.width;
+    	if (config.width == null)
+    		this._input_ctrl.width = 50;
+    	else
+	    	this._input_ctrl.width = config.width;
+    
+    	// 设置容器位置和大小并添加到容器
+    	if (config.x == null) this.x = 0;
+    	else this.x = config.x;
+    	if (config.y == null) this.y = 0;
+    	else this.y = config.y;
+    	this.width = this._input_ctrl.x + this._input_ctrl.width;
+    	this.height = this._input_ctrl.height;
+    	this.AddChild(this._text_ctrl);
+    	this.AddChild(this._input_ctrl);
+    }
+    
+    public fun RefreshDataInfo()
+    {
+    	var txt_time = this._data[this._field_config.input_param];
+    	this._input_ctrl.text = lua.os.date("%Y-%m-%d %H:%M:%S", txt_time);
+    }
+}

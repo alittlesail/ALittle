@@ -1,0 +1,16 @@
+
+namespace ABrowser;
+
+protected class OPSTDNumberInput : OPSTDStringInput
+{
+    public fun GetData() : bool, Map<string, any>, string
+    {
+    	var map = new Map<string, any>();
+    	var value = lua.tonumber(this._input.text);
+    	if (value == null)
+    		return false, null, this._field_config.name.." 不是数字";
+
+    	map[this._field_config.query_param] = value;
+    	return true, map, null;
+    }
+}

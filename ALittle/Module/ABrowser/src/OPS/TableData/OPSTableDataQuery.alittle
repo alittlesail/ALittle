@@ -1,0 +1,145 @@
+
+namespace ABrowser;
+
+protected struct OPSTableDataQueryInfo
+{
+	int page_index;
+	int total_page;
+    bool in_query;
+}
+
+protected class OPSTableDataQuery
+{
+	private OPSCenter _center;
+	private OPSSubMenuConfig _table_data_config;
+	private OPSTableData _parent;
+
+	private OPSTableDataQueryInfo _query_info;
+	private OPSTableDataHeadOrderInfo _order;
+
+	private ALittle.DisplayObject _query_modal;
+	private OPSLoading _query_loading;
+
+    public ctor(OPSCenter center, OPSSubMenuConfig table_data_config, OPSTableData parent)
+    {
+    	this._center = center;
+    	this._table_data_config = table_data_config;
+    	this._parent = parent;
+    
+    	// 数据请求
+    	this._query_info = new OPSTableDataQueryInfo();
+    	this._query_info.page_index = 1;
+    	this._query_info.total_page = 1;
+        this._query_info.in_query = false;
+    
+    	this._order = new OPSTableDataHeadOrderInfo();		// 排序条件
+    
+    	// 搜索过程动画
+    	this._query_modal = g_Control.CreateControl{ALittle.DisplayObject}("ops_query_modal", this);
+    }
+    
+    public set order(OPSTableDataHeadOrderInfo order) { this._order = order; }
+    public get query_info() : OPSTableDataQueryInfo { return this._query_info; }
+    
+    public fun SendQuery()
+    {
+        if (this._query_info.in_query) return;
+    	this._query_info.page_index = 1;
+    	this.RefreshQuery();
+    }
+    
+    // 停止查询
+    public fun StopQuery()
+    {
+    	this.HideQueryModal();
+    	this._query_loading.Stop();
+    }
+    
+    // 取消查询事件
+    public fun HandleQueryCancel(ALittle.UIEvent event)
+    {
+    	this.StopQuery();
+    }
+    
+    public async fun RefreshQuery()
+    {
+        if (this._query_info.in_query) return;
+        this._query_info.in_query = true;
+
+    	var value_map = this._parent.search_param;
+    	if (value_map == null) return;
+    	var param = new Map<string, any>();
+    	param["value_map"] = value_map;
+    	param["__page_index"] = this._query_info.page_index;
+    	param["__page_size"] = lua.tonumber(this._parent.count_per_page_text);
+    	if (param["__page_size"] == null) param["__page_size"] = 20;
+    	param["method"] = this._table_data_config.table;
+
+    	// 默认排序条件
+    	if (this._table_data_config.order != null)
+    	{
+    		var order = this._table_data_config.order;
+    		param["__order_name"] = order.name;
+    		param["__order_type"] = order.type;
+    	}
+    
+    	// 指定的排序条件
+    	var order_param = this._order.order_param;
+    	var order_type = this._order.order_type;
+    	if (order_param != null && order_type != null)
+    	{
+    		param["__order_name"] = order_param;
+    		param["__order_type"] = order_type;
+    	}
+
+    	this.ShowQueryModal();
+    	this._query_loading.Play();
+        var error, content = this._center.login_logic.HttpPostRequest("QOPSOuterQuery", param);
+        this._query_info.in_query = false;
+    	this.HideQueryModal();
+    	this._query_loading.Stop();
+    	
+    	// 检查查询结果
+    	if (error != null)
+    	{
+    		this._center.tool_logic.ShowCenterWeakNotice("查询失败，请检查网络或关闭360等管理软件", false);
+    		return;
+    	}
+    
+    	// 获取内容
+    	var result, msg:Map<string, any> = tcall(ALittle.String_JsonDecode, content);
+       	if (result != null)
+       	{
+    		this._center.tool_logic.ShowCenterWeakNotice("返回数据错误，请联系管理员", false);
+       		return;
+       	}
+       	if (msg["result"] == false) { this._center.tool_logic.ShowCenterWeakNotice(msg["reason"], false); return; }
+
+       	this._center.tool_logic.ShowWeakNotice("操作成功", true);
+       	// 开始处理页数
+       	this._query_info.page_index = msg["page_index"];
+       	if (this._query_info.page_index == null) this._query_info.page_index = 1;
+       	this._parent.count_text = "共"..cast<int>(msg["total_count"]).."条";
+       	var page_total:int = msg["page_count"];
+       	if (page_total == null) page_total = msg["total_count"];
+       	var page_index:int = msg["page_index"];
+       	this._query_info.total_page = page_total;
+       	this._parent.page_count = "第"..page_index.."页/共"..page_total.."页";
+       	this._parent.choose_text = "0";
+       	this._parent.ClearData();
+       	this._parent.SetDataList(msg["list"]);
+    }
+    
+    ////////////////////////////////////////////////////////////////////////////////////////////////////-
+    public fun ShowQueryModal()
+    {
+    	this._parent.AddChild(this._query_modal);
+    	this._query_modal.visible = true;
+    }
+    
+    public fun HideQueryModal()
+    {
+    	this._parent.RemoveChild(this._query_modal);
+    	this._query_modal.visible = false;
+    }
+}

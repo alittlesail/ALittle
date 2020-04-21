@@ -1,0 +1,100 @@
+
+namespace ABrowser;
+
+protected class OPSCOMPStringInput : OPSCOMPBase
+{
+	private OPSCenter _center;
+	private OPSDialogFieldConfig _field_config;
+	private Map<string, any> _data;
+	
+	private ALittle.DisplayObject _text_ctrl;
+	private ALittle.DisplayObject _input_ctrl;
+	private ALittle.DisplayObject _unit_text;
+
+    public ctor(ALittle.ControlSystem ctrl_sys, OPSCenter center, OPSDialogFieldConfig field_config, Map<string, any> data)
+    {
+    	this._center = center;
+    	this._field_config = field_config;
+    	this._data = data;
+    
+    	//创建文本控件
+    	this._text_ctrl = g_Control.CreateControl{ALittle.DisplayObject}("ops_common_text");
+    	this._text_ctrl.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+    	//创建输入框控件
+    	this._input_ctrl = g_Control.CreateControl{ALittle.DisplayObject}("ops_common_input");
+    	this._input_ctrl.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+    	//创建单位控件
+    	this._unit_text = null;
+    
+    	this.UpdateConfig();
+    }
+    
+    ////////////////////////////////////////////////////////////////////-
+    //获取数据
+    public fun GetData() : string, any
+    {
+    	return this._field_config.invoke_param, this._input_ctrl.text;
+    }
+
+    public fun GetCopyString() : string
+    {
+        return this._input_ctrl.text;
+    }
+    
+    //更新配置文件
+    public fun UpdateConfig()
+    {
+    	//加在配置文件
+    	this.RefreshConfig();
+    	//记载数据
+    	this.RefreshDataInfo();
+    }
+    
+    public fun RefreshConfig()
+    {
+    	var config = this._field_config;
+    
+    	this._text_ctrl.text = config.name;
+    
+    	//如果存在数据就填写数据
+    	this._input_ctrl.x = this._text_ctrl.width;
+    	if (config.width == null)
+    		this._input_ctrl.width = 150;
+    	else
+    		this._input_ctrl.width = config.width;
+    
+    	var width = this._input_ctrl.x + this._input_ctrl.width;
+    	var height = this._input_ctrl.height;
+    
+    	//设置单位
+    	if (config.unit != null)
+    	{
+    		this._unit_text = g_Control.CreateControl{ALittle.DisplayObject}("ops_common_text");
+    		this._unit_text.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+    		this._unit_text.text = config.unit;
+    		this._unit_text.x = this._input_ctrl.x + this._input_ctrl.width;
+    		width = this._unit_text.x + this._unit_text.width;
+    	}
+    	// 默认信息
+    	this._input_ctrl.text = config.default_value;
+    	
+    	//设置容器位置和大小并添加到容器
+    	if (config.x == null) this.x = 0;
+    	else this.x = config.x;
+    	if (config.y == null) this.y = 0;
+    	else this.y = config.y;
+    	this.width = width;
+    	this.height = height;
+    	this.AddChild(this._text_ctrl);
+    	this.AddChild(this._input_ctrl);
+    	this.AddChild(this._unit_text);
+    }
+    
+    public fun RefreshDataInfo()
+    {
+    	if (this._data == null) return;
+
+    	var text = this._data[this._field_config.input_param];
+    	this._input_ctrl.text = text;
+    }
+}

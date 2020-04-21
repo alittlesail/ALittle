@@ -1,0 +1,1 @@
+{"abrowser_common_button":{"height_value":28,"width_value":27,"show_over":{"__class":"Image","texture_name":"Abrowser\/button_over.png"},"__class":"TextButton","show_down":{"__class":"Image","texture_name":"Abrowser\/button_down.png"}}}

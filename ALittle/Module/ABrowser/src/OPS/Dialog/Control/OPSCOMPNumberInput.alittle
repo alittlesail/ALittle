@@ -1,0 +1,10 @@
+
+namespace ABrowser;
+
+protected class OPSCOMPNumberInput : OPSCOMPStringInput
+{
+    public fun GetData() : string, any
+    {
+    	return this._field_config.invoke_param, lua.tonumber(this._input_ctrl.text);
+    }
+}

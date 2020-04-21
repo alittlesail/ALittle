@@ -1,0 +1,82 @@
+
+namespace ABrowser;
+
+protected class OPSTableDataOrderButton : OPSTDBase
+{
+	private any _param;
+	private bool _order_type;
+	private int _index;
+	
+	private ALittle.DisplayObject _button;
+	private ALittle.DisplayObject _btn;
+	private ALittle.DisplayObject _quad;
+	private ALittle.DisplayObject _up_icon;
+	private ALittle.DisplayObject _down_icon;
+
+    public  ctor(ALittle.ControlSystem ctrl_sys, any param)
+    {
+    	this._param = param;
+    	this._order_type = null;
+    	this._index = 1;
+    
+    	// 创建按钮
+    	this._button = g_Control.CreateControl{ALittle.DisplayObject}("ops_common_order_button", this);
+    	this._button.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+    	this._button.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+    	this._btn.AddEventListener(this, this.HandleButtonClick);
+    	this._btn.hand_cursor = true;
+    	this.AddChild(this._button);
+    	this.DefaultType();
+    }
+    
+    // 获取当前的排序类型
+    public get order_type() : bool
+    {
+    	return this._order_type;
+    }
+    
+    // 获取排序字段
+    public get order_param() : any
+    {
+    	return this._param;
+    }
+    
+    public fun DefaultType()
+    {
+    	this._quad.visible = false;
+    	this._up_icon.visible = false;
+    	this._down_icon.visible = false;
+    	this._order_type = null;
+    	this._index = 1;
+    }
+    
+    // 切换类型
+    public fun SwitchType()
+    {
+    	++ this._index;
+    	if (this._index > 3) this._index = 1;
+    
+    	if (this._index == 1)	// 默认
+    		this.DefaultType();
+    	elseif (this._index == 2)	// 降序
+    	{
+    		this._quad.visible = true;
+    		this._up_icon.visible = false;
+    		this._down_icon.visible = true;
+    		this._order_type = false;
+    	}
+    	else 							// 升序
+    	{
+    		this._quad.visible = true;
+    		this._up_icon.visible = true;
+    		this._down_icon.visible = false;
+    		this._order_type = true;
+    	}
+    }
+    
+    public fun HandleButtonClick(ALittle.UIClickEvent event)
+    {
+    	this.SwitchType();
+    	this.DispatchEvent(new ALittle.UIChangedEvent());
+    }
+}

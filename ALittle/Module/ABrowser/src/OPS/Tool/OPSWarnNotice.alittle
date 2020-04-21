@@ -1,0 +1,39 @@
+
+namespace ABrowser;
+
+class OPSWarnNotice
+{
+	private OPSCenter _center;
+
+	private ALittle.DisplayObject _warn_notice;
+	private ALittle.DisplayObject _warn_notice_text;
+	private ALittle.LoopLinear _warn_notice_loop;
+
+    public ctor(OPSCenter center)
+    {
+    	this._center = center;
+    }
+    
+    public fun Show(ALittle.DisplayObject target, string content)
+    {
+    	if (this._warn_notice == null)
+    		this._warn_notice = g_Control.CreateControl{ALittle.DisplayObject}("ops_warn_notice", this);
+
+    	this._warn_notice_text.text = content;
+    	this._warn_notice.width = this._warn_notice_text.width + 50;
+    	var x, y = target.LocalToGlobal();
+    	y = y + target.height;
+    	var x_offset = 15;
+    	x = x + target.width / 2 - x_offset;
+    	this._warn_notice.x = x;
+    	this._warn_notice.y = y;
+    	A_LayerManager.ShowFromRight(this._warn_notice);
+    
+    	if (this._warn_notice_loop != null)
+    		A_LoopSystem.RemoveUpdater(this._warn_notice_loop);
+    
+    	this._warn_notice.alpha = 0;
+    	this._warn_notice_loop = new ALittle.LoopLinear(this._warn_notice, "alpha", 1, 300, 0);
+    	A_LoopSystem.AddUpdater(this._warn_notice_loop);
+    }
+}

@@ -1,0 +1,1 @@
+{"ops_date_click_btn_white":{"show_down":{"__class":"Image","texture_name":"OPS\/ops_date_click_cbtn_over.png"},"__class":"TextButton","width_value":36,"show_text":{"font_path":"Miui-Regular.ttf","__class":"Text","font_size":12},"show_over":{"__class":"Image","texture_name":"OPS\/ops_date_click_cbtn_over.png"},"height_value":20,"text":"测试"}}

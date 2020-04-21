@@ -1,0 +1,127 @@
+
+namespace ABrowser;
+
+protected class OPSCOMPSelectInput : OPSCOMPBase
+{
+	private OPSCenter _center;
+	private OPSDialogFieldConfig _field_config;
+	private Map<string, any> _data;
+
+	private ALittle.DisplayObject _text_ctrl;
+	private ALittle.DisplayObject _input_ctrl;
+	private ALittle.DisplayObject _choose_btn;
+
+    public ctor(ALittle.ControlSystem ctrl_sys, OPSCenter center, OPSDialogFieldConfig field_config, Map<string, any> data)
+    {
+    	this._center = center;
+    	this._field_config = field_config;
+    	this._data = data;
+    
+    	// 创建文本控件
+    	this._text_ctrl = g_Control.CreateControl{ALittle.DisplayObject}("ops_common_text");
+    	this._text_ctrl.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+    	// 创建输入框控件
+    	this._input_ctrl = g_Control.CreateControl{ALittle.DisplayObject}("ops_common_input");
+    	this._input_ctrl.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+    	this._input_ctrl.disabled = true;
+    	// 创建选择按钮
+    	this._choose_btn = g_Control.CreateControl{ALittle.DisplayObject}("ops_common_button");
+    	this._choose_btn.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+    	this._choose_btn.AddEventListener(this, this.HandleChooseButtonClick);
+    
+    	this.UpdateConfig();
+    }
+    
+    ////////////////////////////////////////////////////////////////////-
+    // 获取数据
+    public fun GetData() : string, any
+    {
+    	var user_data = this._input_ctrl._user_data;
+    	if (user_data == null) return "", "";
+    	return this._field_config.invoke_param, user_data;
+    }
+
+    public fun GetCopyString() : string
+    {
+        return this._input_ctrl.text;
+    }
+    
+    //////////////////////////////////////////////////////////////////////-
+    // 更新配置文件
+    public fun UpdateConfig()
+    {
+    	// 根据配置文件刷新容器
+    	this.RefreshConfig();
+    	// 设置数据
+    	this.RefreshDataInfo();
+    }
+    
+    public fun RefreshConfig()
+    {
+    	var config = this._field_config;
+    	// 记录容器大小
+		var width:double = null;
+		var height:double = null;
+    
+    	this._text_ctrl.text = config.name;
+    
+    	// 设置输入框控件
+    	this._input_ctrl.x = this._text_ctrl.width;
+    	if (config.width == null)
+    		this._input_ctrl.width = 150;
+    	else
+    		this._input_ctrl.width = config.width;
+    
+    	// 设置选择按钮
+    	this._choose_btn.text = "选择";
+    	this._choose_btn.width = 70;
+    	this._choose_btn.x = this._input_ctrl.x + this._input_ctrl.width + 10;
+    	var user_data = new OPSTableDataMenuButtonUserData();
+    	user_data.dialog_config = new OPSHandleConfig();
+    	user_data.dialog_config.dialog = config.__select_dialog;
+    	user_data.data = this._data;
+    	this._choose_btn._user_data = user_data;
+    
+    	width = this._choose_btn.x + this._choose_btn.width;
+    	height = this._choose_btn.height;
+    
+    	// 设置容器位置和大小并添加到容器
+    	if (config.x == null) this.x = 0;
+    	else this.x = config.x;
+    	if (config.y == null) this.y = 0;
+    	else this.y = config.y;
+    	this.width = width;
+    	this.height = height;
+    	this.AddChild(this._text_ctrl);
+    	this.AddChild(this._input_ctrl);
+    	this.AddChild(this._choose_btn);
+    }
+    
+    public fun RefreshDataInfo()
+    {
+    	if (this._data == null) return;
+
+    	this._input_ctrl.text = this._data[this._field_config.show_param];
+    	this._input_ctrl._user_data = this._data[this._field_config.input_param];
+    }
+    
+    ////////////////////////////////////////////////////////////////////////////
+    // 选择按钮事件
+    public fun HandleChooseButtonClick(ALittle.UIClickEvent event)
+    {
+    	var object = event.target;
+    	var dialog = this._center.dialog_logic.Show(object);
+    	if (dialog != null)
+    	{
+    		dialog.RemoveEventListener(this, this.HandleSelectCallback);
+    		dialog.AddEventListener(this, this.HandleSelectCallback);
+    	}
+    }
+    
+    public fun HandleSelectCallback(OPSTableDataSetDataDataClickEvent event)
+    {
+		var user_data:Map<string, any> = event.target._user_data;
+    	this._input_ctrl.text = user_data[this._field_config.show_field];
+    	this._input_ctrl._user_data = user_data[this._field_config.select_field];
+    }
+}

@@ -1,0 +1,1 @@
+{"abrowser_v_scroll_bar":{"bar_button":{"__extends":"abrowser_v_bar_barbutton"},"up_button":{"__extends":"abrowser_v_bar_upbutton"},"width_value":17,"height_type":4,"total_size":100,"down_size":17,"__class":"ScrollBar","show_size":20,"down_button":{"__extends":"abrowser_v_bar_downbutton"},"bar_background":{"__class":"Image","texture_name":"Abrowser\/bar_bg.png"},"up_size":17}}

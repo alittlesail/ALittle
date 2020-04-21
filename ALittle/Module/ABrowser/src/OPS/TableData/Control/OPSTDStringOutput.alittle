@@ -1,0 +1,120 @@
+
+namespace ABrowser;
+
+protected class OPSTDStringOutput : ALittle.DisplayLayout
+{
+	private OPSCenter _center;
+	private OPSTableTdConfig _field_config;
+	private Map<string, any> _data;
+
+	private string _original_text;
+	private string _export_text;
+
+	private ALittle.DisplayObject _text_ctrl;
+
+    public ctor(ALittle.ControlSystem ctrl_sys, OPSCenter center, OPSTableTdConfig field_config, Map<string, any> data)
+    {
+    	this._center = center;
+    	this._field_config = field_config;
+    	this._data = data;
+    
+    	this._original_text = "";	// 原始数据
+    	this._export_text = "";		// 导出文本(防止得到的文本是被裁切的)
+    
+    	// 创建文本控件
+    	this._text_ctrl = g_Control.CreateControl{ALittle.DisplayObject}("ops_table_textarea");
+    	this._text_ctrl.AddEventListener(this, this.HandleFieldRightClick);
+    	this._text_ctrl.AddEventListener(this, this.HandleMouseMoveIn);
+    	this._text_ctrl.AddEventListener(this, this.HandleMouseMoveOut);
+    	this.AddChild(this._text_ctrl);
+    
+    	this.RefreshConfig();
+    }
+    
+    //////////////////////////////////////////////////////////////////////////-
+    // 设置数据
+    public set data(string text)
+    {
+    	this._text_ctrl.text = text;
+    }
+    
+    // 获取控件上文本(打印使用)
+    public fun GetCopyString() : string
+    {
+    	return this._export_text;
+    }
+    
+    public set drag_trans_target(ALittle.DisplayObject scroll_list)
+    {
+    	this._text_ctrl.drag_trans_target = scroll_list;
+    }
+    
+    public fun HandleFieldRightClick(ALittle.UIRButtonDownEvent event)
+    {
+        event.target = this;
+    	this.DispatchEvent(event);
+    }
+    public fun HandleMouseMoveIn(ALittle.UIMoveInEvent event)
+    {
+        event.target = this;
+    	this.DispatchEvent(event);
+    }
+    public fun HandleMouseMoveOut(ALittle.UIMoveOutEvent event)
+    {
+        event.target = this;
+    	this.DispatchEvent(event);
+    }
+    
+    public fun RefreshConfig()
+    {
+    	// 保存宽高
+		var height = 22.0;
+    	var width = this._field_config.width;
+    	// 保存原始文本
+    	var text = this._data[this._field_config.field];
+    	this._original_text = text;
+    	this._export_text = text;
+    	// 字符串是否被裁剪
+    	var cut_string = false;
+    	// 设置数据样式
+    	
+    	if (this._field_config.data_style != null)
+    	{
+    		var data_style = this._field_config.data_style;
+    		// 设置时间格式
+    		if (data_style.time_format != null)
+    		{
+    			if (text != 0)
+    				text = ALittle.Time_GetCurDate(ALittle.Math_ToInt(text));
+    		}
+    		// 设置枚举
+    		if (data_style.enum_map != null)
+    		{
+    			for (var k, v in data_style.enum_map)
+    			{ 
+    				if (text == v)
+    				{
+    					text = k;
+    					break;
+    				}
+    			}
+    		}
+    		// 设置数值倍数
+    		if (data_style.expand != null)
+    			text = lua.tonumber(text) * data_style.expand;
+    		// 保存导出文本
+    		this._export_text = text;
+    	}
+    
+    	// 设置文本
+    	this._text_ctrl.text = text;
+    
+    	// 设置text_area容器尺寸
+    	this._text_ctrl.height = height;
+    	this._text_ctrl._user_data = this._export_text;
+    	
+    	// 设置容器尺寸
+    	this.width = width;
+    	this.height = height;
+    }
+}

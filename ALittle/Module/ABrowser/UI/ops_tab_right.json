@@ -1,0 +1,1 @@
+{"ops_tab_right":{"__class":"TextButton","show_down":{"__class":"Image","texture_name":"OPS\/tab_right_down.png"},"show_disabled":{"__class":"Image","texture_name":"OPS\/tab_right_down.png"},"width_value":40,"show_over":{"__class":"Image","texture_name":"OPS\/tab_right_down.png"},"show_up":{"__class":"Image","texture_name":"OPS\/tab_right_up.png"},"height_value":41}}

@@ -1,0 +1,15 @@
+
+namespace ABrowser;
+
+protected class OPSCOMPBase : ALittle.DisplayLayout
+{
+    public fun GetData() : string, any
+    {
+        return "", null;
+    }
+
+    public fun GetCopyString() : string
+    {
+        return "";
+    }
+}

@@ -1,0 +1,28 @@
+
+namespace ABrowser;
+
+protected class OPSTDBase : ALittle.DisplayLayout
+{
+    public fun GetData() : bool, Map<string, any>, string
+    {
+        return false, null, null;
+    }
+
+    public fun CanOption() : bool
+    {
+    	return false;
+    }
+
+    public fun GetCopyString() : string
+    {
+        return "";
+    }
+
+    public fun CutText()
+    {
+    }
+
+    public fun PasteText()
+    {
+    }
+}

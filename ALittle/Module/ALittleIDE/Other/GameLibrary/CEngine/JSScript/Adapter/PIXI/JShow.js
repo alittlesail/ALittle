@@ -385,6 +385,12 @@ JavaScript.JImage = JavaScript.Class(JavaScript.JDisplayObject, {
 	Ctor : function() {
 		this._native = new PIXI.Sprite();
 	},
+	SetWidth : function(width) {
+		this._native.width = width;
+	},
+	SetHeight : function(height) {
+		this._native.height = height;
+	},
 	ClearTexture : function() {
 		this._native.texture = undefined;
 	},
@@ -470,6 +476,12 @@ JavaScript.JSprite = JavaScript.Class(JavaScript.JDisplayObject, {
 		this._tex_width = 0;
 		this._tex_height = 0;
 		this._native = new PIXI.Sprite();
+	},
+	SetWidth : function(width) {
+		this._native.width = width;
+	},
+	SetHeight : function(height) {
+		this._native.height = height;
 	},
 	ClearTexture : function() {
 		this._texture = undefined;

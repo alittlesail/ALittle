@@ -317,6 +317,9 @@ public class JImage : JDisplayObject
     {
         this._native = new PIXI.Sprite();
     }
+
+    public fun SetWidth(double width) { this._native.width = width; }
+    public fun SetHeight(double height) { this._native.height = height; }
     
     public fun ClearTexture()
     {
@@ -434,6 +437,9 @@ public class JSprite : JDisplayObject
         this._tex_height = 0;
         this._native = new PIXI.Sprite();
     }
+
+    public fun SetWidth(double width) { this._native.width = width; }
+    public fun SetHeight(double height) { this._native.height = height; }
     
     public fun ClearTexture()
     {

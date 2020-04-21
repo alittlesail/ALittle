@@ -4,7 +4,7 @@ namespace VersionServer;
 protected var g_ConfigSystem:ALittle.IJsonConfig;
 
 // 模块入口函数
-public async static __Module_Setup(string config_path, string script_base_path)
+public async static __Module_Setup(string config_path, string engine_base_path, string script_base_path)
 {
     lua.math.randomseed(lua.os.time());
     if (config_path == null || config_path == "") config_path = "Module/ALittleIDE/Other/GameLibrary/VersionServer.cfg";
@@ -26,10 +26,10 @@ public async static __Module_Setup(string config_path, string script_base_path)
     __CPPAPI_ServerSchedule.CreateClientServer(yun_ip, wan_ip, ALittle.RoutePort.RT_VERSION_CLIENT + port_offset);
     
     alittle.Require(script_base_path.."VersionManager");
-    alittle.Require(script_base_path.."WebAccount/WebPermission");
-    alittle.Require(script_base_path.."WebAccount/WebAccount");
-    alittle.Require(script_base_path.."WebAccount/WebAccountManager");
-    alittle.Require(script_base_path.."WebAccount/WebOPSManager");
+    alittle.Require(engine_base_path.."WebAccount/WebPermission");
+    alittle.Require(engine_base_path.."WebAccount/WebAccount");
+    alittle.Require(engine_base_path.."WebAccount/WebAccountManager");
+    alittle.Require(engine_base_path.."WebAccount/WebOPSManager");
         
     A_WebAccountManager.Setup();
     g_VersionManager.Setup();

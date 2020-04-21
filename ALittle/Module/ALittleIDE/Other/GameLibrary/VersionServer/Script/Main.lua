@@ -6,7 +6,7 @@ local ___ipairs = ipairs
 
 
 g_ConfigSystem = nil
-function __Module_Setup(config_path, script_base_path)
+function __Module_Setup(config_path, engine_base_path, script_base_path)
 	math.randomseed(os.time())
 	if config_path == nil or config_path == "" then
 		config_path = "Module/ALittleIDE/Other/GameLibrary/VersionServer.cfg"
@@ -21,10 +21,10 @@ function __Module_Setup(config_path, script_base_path)
 	__CPPAPI_ServerSchedule:CreateHttpServer(yun_ip, wan_ip, 1100 + port_offset, false)
 	__CPPAPI_ServerSchedule:CreateClientServer(yun_ip, wan_ip, 1101 + port_offset)
 	Require(script_base_path .. "VersionManager")
-	Require(script_base_path .. "WebAccount/WebPermission")
-	Require(script_base_path .. "WebAccount/WebAccount")
-	Require(script_base_path .. "WebAccount/WebAccountManager")
-	Require(script_base_path .. "WebAccount/WebOPSManager")
+	Require(engine_base_path .. "WebAccount/WebPermission")
+	Require(engine_base_path .. "WebAccount/WebAccount")
+	Require(engine_base_path .. "WebAccount/WebAccountManager")
+	Require(engine_base_path .. "WebAccount/WebOPSManager")
 	A_WebAccountManager:Setup()
 	g_VersionManager:Setup()
 end

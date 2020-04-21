@@ -113,7 +113,7 @@ function GameLeaseManager:HandleRenewLease(account_id)
 	local begin_time = os.time()
 	local param = {}
 	param.account_id = account_id
-	local error, result = Lua.IMsgCommon.InvokeRPC(-1057357327, info.session, param)
+	local error, result = ALittle.IMsgCommon.InvokeRPC(-1057357327, info.session, param)
 	info = self._lease_map[account_id]
 	if info == nil then
 		return

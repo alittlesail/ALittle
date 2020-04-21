@@ -68,7 +68,7 @@ end
 
 function LogEventSystem:Send(info)
 local ___COROUTINE = coroutine.running()
-	local error, result = Lua.IMsgCommon.InvokeRPC(976782632, self._session, info)
+	local error, result = ALittle.IMsgCommon.InvokeRPC(976782632, self._session, info)
 	if error ~= nil then
 		Warn("日志发送失败:" .. error .. " 数据:" .. json.encode(info))
 	end

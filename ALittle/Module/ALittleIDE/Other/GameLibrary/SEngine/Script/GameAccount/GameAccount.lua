@@ -102,7 +102,7 @@ function GameModuleTemplate:LoadData(session)
 	local param = {}
 	param.account_id = self._account:GetId()
 	param.hash_code = rflt.hash_code
-	local error, result = Lua.IMsgCommon.InvokeRPC(-1121683527, session, param)
+	local error, result = ALittle.IMsgCommon.InvokeRPC(-1121683527, session, param)
 	if error ~= nil then
 		Error(tostring(self) .. " DataServer.HandleQLoadStruct() failed:" .. error)
 		self._account:LoadOneCompleted(false)

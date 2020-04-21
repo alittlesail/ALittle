@@ -452,10 +452,10 @@ local ___COROUTINE = coroutine.running()
 	table.remove(self._download_list, 1)
 	self._download_list_count = self._download_list_count - 1
 	local file_full_path = File_BaseFilePath() .. self._update_path .. file_info.c_file_path
-	local file_path = File_GetFilePathByPath(file_info.c_file_path)
+	local file_path = File_GetFilePathByPath(file_full_path)
 	Log("begin download remain_count(" .. self._remain_repeat_count .. ")." .. file_full_path, "start size." .. file_info.start_size)
 	if file_path ~= "" then
-		File_MakeDeepDir(File_BaseFilePath() .. self._update_path .. file_path)
+		File_MakeDeepDir(file_path)
 	end
 	self._current_file_size = file_info.start_size
 	local param = {}
@@ -465,8 +465,8 @@ local ___COROUTINE = coroutine.running()
 	param.file_path = file_info.c_file_path
 	self._current_request = HttpFileSender(self._ip, self._port, file_full_path, file_info.start_size, Lua.Bind(self.DownloadUpdateFileCallback, self, file_info))
 	local error = ALittle.IHttpFileSender.InvokeDownload("VersionServer.QDownloadVersionFile", self._current_request, param)
-	self._current_request = nil
 	if error ~= nil then
+		self._current_request = nil
 		if self._remain_repeat_count <= 0 then
 			self._doing = false
 			return VersionProcess.UPDATE_VERSION_FAILED
@@ -486,6 +486,7 @@ local ___COROUTINE = coroutine.running()
 		self._current_update_size = self._current_update_size + self._current_request:GetTotalSize()
 		self._remain_repeat_count = self._total_repeat_count
 		self._current_file_size = 0
+		self._current_request = nil
 	end
 	return self:DownloadNext()
 end

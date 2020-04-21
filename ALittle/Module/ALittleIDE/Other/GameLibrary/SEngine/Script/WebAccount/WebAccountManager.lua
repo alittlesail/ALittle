@@ -213,9 +213,13 @@ local ___COROUTINE = coroutine.running()
 	Lua.Assert(msg.account_name == "alittle" or permission_map[WebPermission.PERMISSION_ACCOUNT_LOGIN] ~= nil, "您没有登录权限")
 	local other_account = A_WebAccountManager:GetAccountById(base_info.account_id)
 	if other_account ~= nil then
+		local other_client = other_account:GetClient()
 		other_account:ForceLogout("您的账号再另一个地方登录了")
 		other_account:LogoutActionSystem()
 		A_WebAccountManager:RemoveAccount(base_info.account_id)
+		if other_client ~= nil then
+			other_client._web_account_id = ""
+		end
 	end
 	local web_account = WebAccount(receiver, base_info, role_info)
 	A_WebAccountManager:AddAccount(web_account)

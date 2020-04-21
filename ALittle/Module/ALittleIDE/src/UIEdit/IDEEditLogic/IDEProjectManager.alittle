@@ -446,7 +446,7 @@ public class IDEProjectManager
 		[Language(Lua)]
 		var module_path = "Module/"..module_name.."/Script/";
 		[Language(Lua)]
-		lua.os.execute("start ALittleClientd.exe "..module_path.." debug "..module_name);
+		lua.os.execute("start ALittleClient.exe "..module_path.." debug "..module_name);
 	}
 }
 ////////////////////////////////////////////////////////////////////////////////////-

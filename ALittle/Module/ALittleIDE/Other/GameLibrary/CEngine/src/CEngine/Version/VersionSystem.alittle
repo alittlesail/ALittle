@@ -670,11 +670,10 @@ public class VersionSystem
         -- this._download_list_count;
         // 开始下载
         var file_full_path = File_BaseFilePath() .. this._update_path .. file_info.c_file_path;
-        var file_path = File_GetFilePathByPath(file_info.c_file_path);
+        var file_path = File_GetFilePathByPath(file_full_path);
         // 获取文件名
         Log("begin download remain_count(" .. this._remain_repeat_count .. ")." .. file_full_path, "start size." .. file_info.start_size);
-        if (file_path != "")
-            File_MakeDeepDir(File_BaseFilePath() .. this._update_path .. file_path);
+        if (file_path != "") File_MakeDeepDir(file_path);
 
         // 再次初始化这个变量
         this._current_file_size = file_info.start_size;
@@ -686,9 +685,9 @@ public class VersionSystem
         param.file_path = file_info.c_file_path;
         this._current_request = new HttpFileSender(this._ip, this._port, file_full_path, file_info.start_size, bind(this.DownloadUpdateFileCallback, this, file_info));
         var error = VersionServer.HandleHttpQDownloadVersionFile(this._current_request, param);
-        this._current_request = null;
         if (error != null)
         {
+            this._current_request = null;
             if (this._remain_repeat_count <= 0)
             {
                 this._doing = false;
@@ -715,6 +714,8 @@ public class VersionSystem
             this._current_update_size = this._current_update_size + this._current_request.GetTotalSize();
             this._remain_repeat_count = this._total_repeat_count;
             this._current_file_size = 0;
+
+            this._current_request = null;
         }
 
         return this.DownloadNext();

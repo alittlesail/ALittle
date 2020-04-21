@@ -316,7 +316,7 @@ function IDEProjectManager:RunProject()
 	end
 	local module_name = g_IDEProject.project.name
 	local module_path = "Module/" .. module_name .. "/Script/"
-	os.execute("start ALittleClientd.exe " .. module_path .. " debug " .. module_name)
+	os.execute("start ALittleClient.exe " .. module_path .. " debug " .. module_name)
 end
 
 g_IDEProjectManager = IDEProjectManager()

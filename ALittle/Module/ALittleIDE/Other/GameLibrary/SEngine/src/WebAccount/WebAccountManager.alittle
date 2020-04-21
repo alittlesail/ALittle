@@ -247,9 +247,11 @@ public await static HandleQWebLogin(IMsgCommon client, QWebLogin msg) : AWebLogi
     var other_account = A_WebAccountManager.GetAccountById(base_info.account_id);
     if (other_account != null)
     {
+        var other_client = other_account.GetClient();
         other_account.ForceLogout("您的账号再另一个地方登录了");
         other_account.LogoutActionSystem();
         A_WebAccountManager.RemoveAccount(base_info.account_id);
+        if (other_client != null) other_client._web_account_id = "";
     }
 
     // 创建账号对象

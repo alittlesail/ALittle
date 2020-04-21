@@ -4,7 +4,6 @@ module("FileServer", package.seeall)
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___coroutine = coroutine
 local ___all_struct = ALittle.GetAllStruct()
 
 ALittle.RegStruct(-1164907202, "ALittle.CacheData", {
@@ -68,17 +67,14 @@ type_list = {},
 option_map = {}
 })
 
-ClanImageManager = ALittle.Class(nil, "FileServer.ClanImageManager")
+ClanImageManager = Lua.Class(nil, "FileServer.ClanImageManager")
 
 function ClanImageManager:Ctor()
-	___rawset(self, "_cache", ALittle.Template(ALittle.CacheDataSet, "ALittle.CacheDataSet<FileServer.ClanImageInfo>", ___all_struct[319415465])(30 * 1000, 60 * 1000))
-end
-
-function ClanImageManager.__getter:cache()
-	return self._cache
+	___rawset(self, "_cache", Lua.Template(ALittle.CacheDataSet, "ALittle.CacheDataSet<FileServer.ClanImageInfo>", ___all_struct[319415465])(30 * 1000, 60 * 1000))
 end
 
 function ClanImageManager:Setup()
+local ___COROUTINE = coroutine.running()
 	local error = self._cache:Init()
 	if error ~= nil then
 		return error
@@ -88,7 +84,7 @@ function ClanImageManager:Setup()
 		ALittle.File_MakeDeepDir(self._base_path)
 	end
 	local delay_time = ALittle.GetNextTodayBeginTime() - os.time()
-	self._timer = A_LoopSystem:AddTimer(delay_time * 1000, ALittle.Bind(self.HandleNewDay, self))
+	self._timer = A_LoopSystem:AddTimer(delay_time * 1000, Lua.Bind(self.HandleNewDay, self))
 	return nil
 end
 
@@ -106,6 +102,10 @@ function ClanImageManager:GetImagePath(id, create_time)
 	return self._base_path .. "/" .. ymd .. "/" .. hms .. "/" .. id .. "_" .. ymd .. "_" .. hms .. ".png"
 end
 
+function ClanImageManager.__getter:cache()
+	return self._cache
+end
+
 function ClanImageManager:HandleNewDay()
 	local error, select_list = A_MysqlSystem:SelectListFromByMap(___all_struct[-1420108834], nil)
 	if error ~= nil then
@@ -115,7 +115,7 @@ function ClanImageManager:HandleNewDay()
 		for index, info in ___ipairs(select_list) do
 			local file_path = self:GetImagePath(info.clan_id, info.create_time)
 			if not ALittle.File_DeleteFile(file_path) then
-				ALittle.Warn("�ļ�ɾ��ʧ��:" .. file_path)
+				ALittle.Warn("文件删除失败:" .. file_path)
 			end
 		end
 	end
@@ -124,15 +124,16 @@ function ClanImageManager:HandleNewDay()
 		ALittle.Error(error)
 	end
 	local delay_time = ALittle.GetNextTodayBeginTime() - os.time()
-	self._timer = A_LoopSystem:AddTimer(delay_time * 1000, ALittle.Bind(self.HandleNewDay, self))
+	self._timer = A_LoopSystem:AddTimer(delay_time * 1000, Lua.Bind(self.HandleNewDay, self))
 end
-ClanImageManager.HandleNewDay = ALittle.CoWrap(ClanImageManager.HandleNewDay)
+ClanImageManager.HandleNewDay = Lua.CoWrap(ClanImageManager.HandleNewDay)
 
 g_ClanImageManager = ClanImageManager()
 function HandleCheckClanImage(client, msg)
+local ___COROUTINE = coroutine.running()
 	local error, session = A_SessionSystem:ConnectSession(7, msg.gs_route_id)
 	if error ~= nil then
-		ALittle.Throw(error)
+		Lua.Throw(error)
 	end
 	do
 		local param = {}
@@ -140,7 +141,7 @@ function HandleCheckClanImage(client, msg)
 		param.session_code = msg.session_code
 		error = ALittle.IMsgCommon.InvokeRPC(-2092316375, session, param)
 		if error ~= nil then
-			ALittle.Throw(error)
+			Lua.Throw(error)
 		end
 	end
 	do
@@ -159,9 +160,10 @@ end
 
 ALittle.RegHttpCallback("FileServer.QCheckClanImage", HandleCheckClanImage)
 function HandleDownloadClanImage(client, msg)
+local ___COROUTINE = coroutine.running()
 	local error, session = A_SessionSystem:ConnectSession(7, msg.gs_route_id)
 	if error ~= nil then
-		ALittle.Throw(error)
+		Lua.Throw(error)
 	end
 	do
 		local param = {}
@@ -169,21 +171,22 @@ function HandleDownloadClanImage(client, msg)
 		param.session_code = msg.session_code
 		error = ALittle.IMsgCommon.InvokeRPC(-2092316375, session, param)
 		if error ~= nil then
-			ALittle.Throw(error)
+			Lua.Throw(error)
 		end
 	end
 	do
 		local data = g_ClanImageManager.cache:GetData(msg.target_clan_id)
-		ALittle.Assert(data, "ͷ�񲻴���")
+		Lua.Assert(data, "头像不存在")
 		return g_ClanImageManager:GetImagePath(data.id, data.create_time), 0
 	end
 end
 
 ALittle.RegHttpDownloadCallback("FileServer.QDownloadClanImage", HandleDownloadClanImage)
 function HandleQUploadClanImage(client, msg)
+local ___COROUTINE = coroutine.running()
 	local error, session = A_SessionSystem:ConnectSession(7, msg.gs_route_id)
 	if error ~= nil then
-		ALittle.Throw(error)
+		Lua.Throw(error)
 	end
 	do
 		local param = {}
@@ -191,21 +194,21 @@ function HandleQUploadClanImage(client, msg)
 		param.session_code = msg.session_code
 		error = ALittle.IMsgCommon.InvokeRPC(-2092316375, session, param)
 		if error ~= nil then
-			ALittle.Throw(error)
+			Lua.Throw(error)
 		end
 	end
 	local create_time = os.time()
 	do
 		local data = g_ClanImageManager.cache:GetData(msg.account_id)
 		if data ~= nil and data.create_time == create_time then
-			ALittle.Throw("�Ѿ���ͷ�������ϴ�")
+			Lua.Throw("已经有头像正在上传")
 		end
 		local file_path = g_ClanImageManager:GetImagePath(msg.account_id, create_time)
 		local file_dir = ALittle.File_GetFilePathByPath(file_path)
 		ALittle.File_MakeDeepDir(file_dir)
 		error = client:StartReceiveFile(file_path, 0)
 		if error ~= nil then
-			ALittle.Throw(error)
+			Lua.Throw(error)
 		end
 	end
 	local data = g_ClanImageManager.cache:GetData(msg.account_id)
@@ -224,7 +227,6 @@ function HandleQUploadClanImage(client, msg)
 	new_data.create_time = create_time
 	new_data.image_md5 = msg.target_image_md5
 	g_ClanImageManager.cache:CreateData(new_data)
-	return {}
 end
 
 ALittle.RegHttpFileCallback("FileServer.QUploadClanImage", HandleQUploadClanImage)

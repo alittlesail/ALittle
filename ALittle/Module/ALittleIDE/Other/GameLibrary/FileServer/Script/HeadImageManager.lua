@@ -4,7 +4,6 @@ module("FileServer", package.seeall)
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___coroutine = coroutine
 local ___all_struct = ALittle.GetAllStruct()
 
 ALittle.RegStruct(-1164907202, "ALittle.CacheData", {
@@ -34,13 +33,13 @@ option_map = {}
 ALittle.RegStruct(-36908822, "ALittle.SessionDisconnectEvent", {
 name = "ALittle.SessionDisconnectEvent", ns_name = "ALittle", rl_name = "SessionDisconnectEvent", hash_code = -36908822,
 name_list = {"target","connect_key","route_type","route_num","session"},
-type_list = {"ALittle.EventDispatcher","int","int","int","ALittle.MsgSessionTemplate<ALittle.MsgSessionNative>"},
+type_list = {"ALittle.EventDispatcher","int","int","int","ALittle.MsgSessionTemplate<ALittle.MsgSessionNative,lua.__CPPAPIMessageWriteFactory>"},
 option_map = {}
 })
 ALittle.RegStruct(888437463, "ALittle.SessionConnectEvent", {
 name = "ALittle.SessionConnectEvent", ns_name = "ALittle", rl_name = "SessionConnectEvent", hash_code = 888437463,
 name_list = {"target","connect_key","route_type","route_num","session"},
-type_list = {"ALittle.EventDispatcher","int","int","int","ALittle.MsgSessionTemplate<ALittle.MsgSessionNative>"},
+type_list = {"ALittle.EventDispatcher","int","int","int","ALittle.MsgSessionTemplate<ALittle.MsgSessionNative,lua.__CPPAPIMessageWriteFactory>"},
 option_map = {}
 })
 ALittle.RegStruct(-370290946, "GatewayServer.NUpdateRouteInfo", {
@@ -98,17 +97,14 @@ type_list = {},
 option_map = {}
 })
 
-HeadImageManager = ALittle.Class(nil, "FileServer.HeadImageManager")
+HeadImageManager = Lua.Class(nil, "FileServer.HeadImageManager")
 
 function HeadImageManager:Ctor()
-	___rawset(self, "_cache", ALittle.Template(ALittle.CacheDataSet, "ALittle.CacheDataSet<FileServer.HeadImageInfo>", ___all_struct[-1925387704])(30 * 1000, 60 * 1000))
-end
-
-function HeadImageManager.__getter:cache()
-	return self._cache
+	___rawset(self, "_cache", Lua.Template(ALittle.CacheDataSet, "ALittle.CacheDataSet<FileServer.HeadImageInfo>", ___all_struct[-1925387704])(30 * 1000, 60 * 1000))
 end
 
 function HeadImageManager:Setup()
+local ___COROUTINE = coroutine.running()
 	local error = self._cache:Init()
 	if error ~= nil then
 		return error
@@ -121,7 +117,7 @@ function HeadImageManager:Setup()
 	A_SessionSystem:AddEventListener(___all_struct[888437463], self, self.HandleSessionConnect)
 	A_SessionSystem:AddConnectSession(1, 1)
 	local delay_time = ALittle.GetNextTodayBeginTime() - os.time()
-	self._timer = A_LoopSystem:AddTimer(delay_time * 1000, ALittle.Bind(self.HandleNewDay, self))
+	self._timer = A_LoopSystem:AddTimer(delay_time * 1000, Lua.Bind(self.HandleNewDay, self))
 	return nil
 end
 
@@ -137,6 +133,10 @@ function HeadImageManager:GetImagePath(id, create_time)
 	local ymd = os.date("%Y-%m-%d", create_time)
 	local hms = os.date("%H-%M-%S", create_time)
 	return self._base_path .. "/" .. ymd .. "/" .. hms .. "/" .. id .. "_" .. ymd .. "_" .. hms .. ".png"
+end
+
+function HeadImageManager.__getter:cache()
+	return self._cache
 end
 
 function HeadImageManager:HandleNewDay()
@@ -157,9 +157,9 @@ function HeadImageManager:HandleNewDay()
 		ALittle.Error(error)
 	end
 	local delay_time = ALittle.GetNextTodayBeginTime() - os.time()
-	self._timer = A_LoopSystem:AddTimer(delay_time * 1000, ALittle.Bind(self.HandleNewDay, self))
+	self._timer = A_LoopSystem:AddTimer(delay_time * 1000, Lua.Bind(self.HandleNewDay, self))
 end
-HeadImageManager.HandleNewDay = ALittle.CoWrap(HeadImageManager.HandleNewDay)
+HeadImageManager.HandleNewDay = Lua.CoWrap(HeadImageManager.HandleNewDay)
 
 function HeadImageManager:HandleSessionDisconnect(event)
 	if event.route_type ~= 1 then
@@ -186,9 +186,10 @@ end
 
 g_HeadImageManager = HeadImageManager()
 function HandleCheckHeadImage(client, msg)
+local ___COROUTINE = coroutine.running()
 	local error, session = A_SessionSystem:ConnectSession(7, msg.gs_route_id)
 	if error ~= nil then
-		ALittle.Throw(error)
+		Lua.Throw(error)
 	end
 	do
 		local param = {}
@@ -196,7 +197,7 @@ function HandleCheckHeadImage(client, msg)
 		param.session_code = msg.session_code
 		error = ALittle.IMsgCommon.InvokeRPC(-2092316375, session, param)
 		if error ~= nil then
-			ALittle.Throw(error)
+			Lua.Throw(error)
 		end
 	end
 	do
@@ -215,9 +216,10 @@ end
 
 ALittle.RegHttpCallback("FileServer.QCheckHeadImage", HandleCheckHeadImage)
 function HandleDownloadHeadImage(client, msg)
+local ___COROUTINE = coroutine.running()
 	local error, session = A_SessionSystem:ConnectSession(7, msg.gs_route_id)
 	if error ~= nil then
-		ALittle.Throw(error)
+		Lua.Throw(error)
 	end
 	do
 		local param = {}
@@ -225,21 +227,22 @@ function HandleDownloadHeadImage(client, msg)
 		param.session_code = msg.session_code
 		error = ALittle.IMsgCommon.InvokeRPC(-2092316375, session, param)
 		if error ~= nil then
-			ALittle.Throw(error)
+			Lua.Throw(error)
 		end
 	end
 	do
 		local data = g_HeadImageManager.cache:GetData(msg.target_account_id)
-		ALittle.Assert(data, "头像不存在")
+		Lua.Assert(data, "头像不存在")
 		return g_HeadImageManager:GetImagePath(data.id, data.create_time), 0
 	end
 end
 
 ALittle.RegHttpDownloadCallback("FileServer.QDownloadHeadImage", HandleDownloadHeadImage)
 function HandleQUploadHeadImage(client, msg)
+local ___COROUTINE = coroutine.running()
 	local error, session = A_SessionSystem:ConnectSession(7, msg.gs_route_id)
 	if error ~= nil then
-		ALittle.Throw(error)
+		Lua.Throw(error)
 	end
 	do
 		local param = {}
@@ -247,21 +250,21 @@ function HandleQUploadHeadImage(client, msg)
 		param.session_code = msg.session_code
 		error = ALittle.IMsgCommon.InvokeRPC(-2092316375, session, param)
 		if error ~= nil then
-			ALittle.Throw(error)
+			Lua.Throw(error)
 		end
 	end
 	local create_time = os.time()
 	do
 		local data = g_HeadImageManager.cache:GetData(msg.account_id)
 		if data ~= nil and data.create_time == create_time then
-			ALittle.Throw("已经有头像正在上传")
+			Lua.Throw("已经有头像正在上传")
 		end
 		local file_path = g_HeadImageManager:GetImagePath(msg.account_id, create_time)
 		local file_dir = ALittle.File_GetFilePathByPath(file_path)
 		ALittle.File_MakeDeepDir(file_dir)
 		error = client:StartReceiveFile(file_path, 0)
 		if error ~= nil then
-			ALittle.Throw(error)
+			Lua.Throw(error)
 		end
 	end
 	local data = g_HeadImageManager.cache:GetData(msg.account_id)
@@ -280,7 +283,6 @@ function HandleQUploadHeadImage(client, msg)
 	new_data.create_time = create_time
 	new_data.image_md5 = msg.target_image_md5
 	g_HeadImageManager.cache:CreateData(new_data)
-	return {}
 end
 
 ALittle.RegHttpFileCallback("FileServer.QUploadHeadImage", HandleQUploadHeadImage)

@@ -132,7 +132,7 @@ public struct ACheckHeadImage
     bool need_download; // 是否需要下载
 }
 
-@Http
+[Http]
 public await static HandleCheckHeadImage(ALittle.IHttpReceiver client, QCheckHeadImage msg) : ACheckHeadImage
 {
     var error, session = A_SessionSystem.ConnectSession(ALittle.RouteType.RT_GAME, msg.gs_route_id);
@@ -170,7 +170,7 @@ public struct QDownloadHeadImage
     int target_account_id;
 }
 
-@HttpDownload
+[HttpDownload]
 public await static HandleDownloadHeadImage(ALittle.IHttpReceiver client, QDownloadHeadImage msg) : string, int
 {
     var error, session = A_SessionSystem.ConnectSession(ALittle.RouteType.RT_GAME, msg.gs_route_id);
@@ -206,8 +206,8 @@ public struct AUploadHeadImage
     
 }
 
-@HttpUpload
-public await static HandleQUploadHeadImage(ALittle.IHttpFileReceiver client, QUploadHeadImage msg) : AUploadHeadImage
+[HttpUpload]
+public await static HandleQUploadHeadImage(ALittle.IHttpFileReceiver client, QUploadHeadImage msg)
 {
     var error, session = A_SessionSystem.ConnectSession(ALittle.RouteType.RT_GAME, msg.gs_route_id);
     if (error != null) throw(error);
@@ -251,6 +251,4 @@ public await static HandleQUploadHeadImage(ALittle.IHttpFileReceiver client, QUp
     new_data.create_time = create_time;
     new_data.image_md5 = msg.target_image_md5;
     g_HeadImageManager.cache.CreateData(new_data);
-    
-    return new AUploadHeadImage();
 }

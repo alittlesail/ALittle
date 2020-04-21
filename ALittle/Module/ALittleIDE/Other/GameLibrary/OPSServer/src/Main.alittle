@@ -1,0 +1,38 @@
+
+namespace OPSServer;
+
+protected var g_ConfigSystem:ALittle.NormalConfigSystem;
+
+// 模块入口函数
+public async static __Module_Setup()
+{
+    lua.math.randomseed(lua.os.time());
+    g_ConfigSystem = new ALittle.NormalConfigSystem("Server/OPSServer/OPSServer.cfg");
+    
+    __CPPAPI_ServerSchedule.StartMysqlQuery(1, g_ConfigSystem.GetString("main_conn_ip", null),
+                                g_ConfigSystem.GetString("main_conn_username", null),
+                                g_ConfigSystem.GetString("main_conn_password", null),
+                                g_ConfigSystem.GetInt("main_conn_port", null),
+                                g_ConfigSystem.GetString("main_conn_dbname", null));
+    
+    __CPPAPI_ServerSchedule.StartRouteSystem(ALittle.RouteType.RT_OPS, ALittle.RouteNum.RN_DEFAULT);
+    
+    __CPPAPI_ServerSchedule.CreateHttpServer("", "127.0.0.1", ALittle.RoutePort.RT_OPS_HTTP, false);
+    __CPPAPI_ServerSchedule.CreateClientServer("", "127.0.0.1", ALittle.RoutePort.RT_OPS_CLIENT);
+    __CPPAPI_ServerSchedule.CreateConnectClient("127.0.0.1", ALittle.RoutePort.RT_GATEWAY_CONNECT);
+    
+    A_ScriptSystem.RunScriptFile("OPSManager");
+    A_ScriptSystem.RunEngineScript("WebAccount/WebPermission");
+    A_ScriptSystem.RunEngineScript("WebAccount/WebAccount");
+    A_ScriptSystem.RunEngineScript("WebAccount/WebAccountManager");
+    A_ScriptSystem.RunEngineScript("WebAccount/WebOPSManager");
+
+    A_WebAccountManager.Setup("VersionServer");
+    g_OPSManager.Setup();
+}
+
+// 模块结束函数
+public static __Module_Shutdown()
+{
+    g_OPSManager.Shutdown();
+}

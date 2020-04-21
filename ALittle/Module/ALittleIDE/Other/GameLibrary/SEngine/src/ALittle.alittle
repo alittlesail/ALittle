@@ -1,5 +1,10 @@
 namespace alittle;
 
+[Language(Lua)]
+private static __Log(string content, int level) { __CPPAPI_ScriptSystem.Log(content, level); }
+[Language(Lua)]
+ALittle.SetLogFunc(__Log);
+
 public await static __ALITTLEAPI_SEngine_Init(string script_base_path)
 {
     alittle.Require(script_base_path.."Utility/Time");

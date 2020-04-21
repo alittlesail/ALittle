@@ -3,6 +3,12 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 
 
+local __Log
+__Log = function(content, level)
+	__CPPAPI_ScriptSystem:Log(content, level)
+end
+
+ALittle.SetLogFunc(__Log)
 function __ALITTLEAPI_SEngine_Init(script_base_path)
 local ___COROUTINE = coroutine.running()
 	Require(script_base_path .. "Utility/Time")

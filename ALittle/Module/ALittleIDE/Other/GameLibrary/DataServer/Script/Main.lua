@@ -9,7 +9,7 @@ g_ConfigSystem = nil
 g_ConnectServerYunIp = ""
 g_ConnectServerWanIp = ""
 g_ConnectServerPort = 0
-function __Module_Setup(config_path, script_base_path)
+function __Module_Setup(config_path, engine_base_path, script_base_path)
 	math.randomseed(os.time())
 	if config_path == nil or config_path == "" then
 		config_path = "Module/ALittleIDE/Other/GameLibrary/DataServer.cfg"

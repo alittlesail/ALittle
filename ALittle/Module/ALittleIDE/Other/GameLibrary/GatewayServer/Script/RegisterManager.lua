@@ -309,7 +309,7 @@ local ___COROUTINE = coroutine.running()
 	Lua.Assert(data_route_info, "没有找到DataServer的路由信息")
 	local param = {}
 	param.account_id = info.account_id
-	local error, result = Lua.IMsgCommon.InvokeRPC(-1343408203, data_route_info.session, param)
+	local error, result = ALittle.IMsgCommon.InvokeRPC(-1343408203, data_route_info.session, param)
 	if error ~= nil then
 		Lua.Throw("error")
 	end

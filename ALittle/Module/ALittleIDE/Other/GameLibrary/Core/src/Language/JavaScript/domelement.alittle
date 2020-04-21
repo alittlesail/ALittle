@@ -50,4 +50,7 @@ public class DomElement
 
     public get offsetLeft() : int {}
     public get offsetTop() : int {}
+
+    public get type() : string {}
+    public set type(string v) {}
 }

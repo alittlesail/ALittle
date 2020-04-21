@@ -50,7 +50,7 @@ public class TextEdit : DisplayObject
         [Language(Lua)]
         this._show = new lua.__CPPAPITextEdit();
         [Language(JavaScript)]
-        this._show = new JavaScript.JTextArea();
+        this._show = new JavaScript.JTextEdit();
     
         this._cursor_red = 1;
         this._cursor_green = 1;

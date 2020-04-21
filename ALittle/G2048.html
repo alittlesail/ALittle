@@ -6,9 +6,10 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 </head>
 
-<body onload="onLoad()" bgcolor="#000000">
+<body onload="onLoad()" bgcolor="#000000" oncontextmenu="doNothing()">
 	<script src="Module/ALittleIDE/Other/GameLibrary/Core/JSScript/ALittle.js"></script>
 	<script type='text/javascript'>
+		function doNothing() { window.event.returnValue=false; return false; }
 		async function onLoad()
 		{
 			await __ALITTLEAPI_Core_Init("Module/ALittleIDE/Other/GameLibrary/Core/JSScript/");

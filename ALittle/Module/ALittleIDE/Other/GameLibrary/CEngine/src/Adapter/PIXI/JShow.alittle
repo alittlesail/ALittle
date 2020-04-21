@@ -2,7 +2,19 @@
 [Language(JavaScript)]
 namespace JavaScript;
 
-public static RGBToHex(int r, int g, int b) : int
+public static RGBToHex(int r, int g, int b) : string
+{
+    var hex = cast<javascript.Number>((r * 65536 + g * 256 + b)).toString(16);
+    if (cast<javascript.String>(hex).length <= 0) return "#000000";
+    if (cast<javascript.String>(hex).length <= 1) return "#00000" .. hex;
+    if (cast<javascript.String>(hex).length <= 2) return "#0000" .. hex;
+    if (cast<javascript.String>(hex).length <= 3) return "#000" .. hex;
+    if (cast<javascript.String>(hex).length <= 4) return "#00" .. hex;
+    if (cast<javascript.String>(hex).length <= 5) return "#0" .. hex;
+    return "#"..hex;
+}
+
+public static RGBCombine(int r, int g, int b) : int
 {
     return r * 65536 + g * 256 + b;
 }
@@ -571,7 +583,7 @@ public class JText : JDisplayObject
         this._red = 255;
         this._green = 255;
         this._blue = 255;
-        this._style.fill = RGBToHex(this._red, this._green, this._blue);
+        this._style.fill = RGBCombine(this._red, this._green, this._blue);
         this._text = "";
     }
     
@@ -587,9 +599,9 @@ public class JText : JDisplayObject
     public fun SetItalic(bool value)
     {
         if (value)
-            this._style.fontWeight = "italic";
+            this._style.fontStyle = "italic";
         else
-            this._style.fontWeight = "normal";   
+            this._style.fontStyle = "normal";   
         cast<PIXI.Text>(this._native).style = this._style;
     }
 
@@ -615,20 +627,20 @@ public class JText : JDisplayObject
     public fun SetRed(double value)
     {
         this._red = javascript.Math.floor(value * 255);
-        this._style.fill = RGBToHex(this._red, this._green, this._blue);
+        this._style.fill = RGBCombine(this._red, this._green, this._blue);
         cast<PIXI.Text>(this._native).style = this._style;
     }
     
     public fun SetGreen(double value)
     {
         this._green = javascript.Math.floor(value * 255);
-        this._style.fill = RGBToHex(this._red, this._green, this._blue);
+        this._style.fill = RGBCombine(this._red, this._green, this._blue);
         cast<PIXI.Text>(this._native).style = this._style;
     }
     public fun SetBlue(double value)
     {
         this._blue = javascript.Math.floor(value * 255);
-        this._style.fill = RGBToHex(this._red, this._green, this._blue);
+        this._style.fill = RGBCombine(this._red, this._green, this._blue);
         cast<PIXI.Text>(this._native).style = this._style;
     }
     
@@ -664,7 +676,7 @@ public class JTextArea : JDisplayObject
         this._red = 255;
         this._green = 255;
         this._blue = 255;
-        this._style.fill = RGBToHex(this._red, this._green, this._blue);
+        this._style.fill = RGBCombine(this._red, this._green, this._blue);
         this._style.wordWrap = true;
         this._style.breakWords = true;
         this._text = "";
@@ -692,9 +704,9 @@ public class JTextArea : JDisplayObject
     public fun SetItalic(bool value)
     {
         if (value)
-            this._style.fontWeight = "italic";
+            this._style.fontStyle = "italic";
         else
-            this._style.fontWeight = "normal";   
+            this._style.fontStyle = "normal";   
         cast<PIXI.Text>(this._native).style = this._style;
     }
 
@@ -775,20 +787,20 @@ public class JTextArea : JDisplayObject
     public fun SetRed(double value)
     {
         this._red = javascript.Math.floor(value * 255);
-        this._style.fill = RGBToHex(this._red, this._green, this._blue);
+        this._style.fill = RGBCombine(this._red, this._green, this._blue);
         cast<PIXI.Text>(this._native).style = this._style;
     }
     
     public fun SetGreen(double value)
     {
         this._green = javascript.Math.floor(value * 255);
-        this._style.fill = RGBToHex(this._red, this._green, this._blue);
+        this._style.fill = RGBCombine(this._red, this._green, this._blue);
         cast<PIXI.Text>(this._native).style = this._style;
     }
     public fun SetBlue(double value)
     {
         this._blue = javascript.Math.floor(value * 255);
-        this._style.fill = RGBToHex(this._red, this._green, this._blue);
+        this._style.fill = RGBCombine(this._red, this._green, this._blue);
         cast<PIXI.Text>(this._native).style = this._style;
     }
 
@@ -812,6 +824,172 @@ public class JTextArea : JDisplayObject
             this._native.y = javascript.Math.floor((this._height - this._real_height) / 2 + this._y);
         else
             this._native.y = javascript.Math.floor(this._height - this._real_height + this._y);
+    }
+}
+
+public class JTextInput : JDisplayObject
+{
+    private bool _is_default_text;
+    private string _default_text;
+    
+    private int _red;
+    private int _green;
+    private int _blue;
+
+    public ctor()
+    {
+        this._is_default_text = false;
+        this._default_text = "";
+
+        var style = new PIXI.TextInputStyle();
+        this._native = new PIXI.TextInput(style);
+    }
+
+    public fun IsDefaultText() : bool { return this._is_default_text; }
+    public fun SetDefaultText(bool value, string text)
+    {
+        this._is_default_text = value;
+        this._default_text = text;
+        if (this._is_default_text)
+            cast<PIXI.TextInput>(this._native).placeholder = text;
+        else
+            cast<PIXI.TextInput>(this._native).placeholder = "";
+    }
+
+    public fun SetPasswordMode(bool value)
+    {
+        if (value)
+            cast<PIXI.TextInput>(this._native).htmlInput.type = "password";
+        else
+            cast<PIXI.TextInput>(this._native).htmlInput.type = "text";
+    }
+
+    public fun SetWidth(double width)
+    {
+        cast<PIXI.TextInput>(this._native).setInputStyle("width", javascript.Math.floor(width).."px");
+    }
+
+    public fun SetBold(bool value)
+    {
+        if (value)
+            cast<PIXI.TextInput>(this._native).setInputStyle("fontWeight", "bold");
+        else
+            cast<PIXI.TextInput>(this._native).setInputStyle("fontWeight", "normal");
+    }
+
+    public fun SetItalic(bool value)
+    {
+        if (value)
+            cast<PIXI.TextInput>(this._native).setInputStyle("fontStyle", "italic");
+        else
+            cast<PIXI.TextInput>(this._native).setInputStyle("fontStyle", "normal");
+    }
+
+    public fun SetText(string value)
+    {
+        cast<PIXI.TextInput>(this._native).text = value;
+    }
+
+    public fun GetText() : string
+    {
+        return cast<PIXI.TextInput>(this._native).text;
+    }
+        
+    public fun SetFont(string path, int size)
+    {
+        cast<PIXI.TextInput>(this._native).setInputStyle("fontSize", size .. "px");
+        cast<PIXI.TextInput>(this._native).setInputStyle("fontFamily", path);
+    }
+    
+    public fun SetRed(double value)
+    {
+        this._red = javascript.Math.floor(value * 255);
+        cast<PIXI.TextInput>(this._native).setInputStyle("color", RGBToHex(this._red, this._green, this._blue));
+    }
+    
+    public fun SetGreen(double value)
+    {
+        this._green = javascript.Math.floor(value * 255);
+        cast<PIXI.TextInput>(this._native).setInputStyle("color", RGBToHex(this._red, this._green, this._blue));
+    }
+    public fun SetBlue(double value)
+    {
+        this._blue = javascript.Math.floor(value * 255);
+        cast<PIXI.TextInput>(this._native).setInputStyle("color", RGBToHex(this._red, this._green, this._blue));
+    }
+}
+
+public class JTextEdit : JDisplayObject
+{
+    private int _red;
+    private int _green;
+    private int _blue;
+
+    public ctor()
+    {
+        var style = new PIXI.TextInputStyle();
+        style.input = new PIXI.TextInputStyleInput();
+        style.input.multiline = true;
+        this._native = new PIXI.TextInput(style);
+    }
+
+    public fun SetWidth(double width)
+    {
+        cast<PIXI.TextInput>(this._native).setInputStyle("width", javascript.Math.floor(width).."px");
+    }
+
+    public fun SetHeight(double height)
+    {
+        cast<PIXI.TextInput>(this._native).setInputStyle("height", javascript.Math.floor(height).."px");
+    }
+
+    public fun SetBold(bool value)
+    {
+        if (value)
+            cast<PIXI.TextInput>(this._native).setInputStyle("fontWeight", "bold");
+        else
+            cast<PIXI.TextInput>(this._native).setInputStyle("fontWeight", "normal");
+    }
+
+    public fun SetItalic(bool value)
+    {
+        if (value)
+            cast<PIXI.TextInput>(this._native).setInputStyle("fontStyle", "italic");
+        else
+            cast<PIXI.TextInput>(this._native).setInputStyle("fontStyle", "normal");
+    }
+
+    public fun SetText(string value)
+    {
+        cast<PIXI.TextInput>(this._native).text = value;
+    }
+
+    public fun GetText() : string
+    {
+        return cast<PIXI.TextInput>(this._native).text;
+    }
+        
+    public fun SetFont(string path, int size)
+    {
+        cast<PIXI.TextInput>(this._native).setInputStyle("fontSize", size .. "px");
+        cast<PIXI.TextInput>(this._native).setInputStyle("fontFamily", path);
+    }
+    
+    public fun SetRed(double value)
+    {
+        this._red = javascript.Math.floor(value * 255);
+        cast<PIXI.TextInput>(this._native).setInputStyle("color", RGBToHex(this._red, this._green, this._blue));
+    }
+    
+    public fun SetGreen(double value)
+    {
+        this._green = javascript.Math.floor(value * 255);
+        cast<PIXI.TextInput>(this._native).setInputStyle("color", RGBToHex(this._red, this._green, this._blue));
+    }
+    public fun SetBlue(double value)
+    {
+        this._blue = javascript.Math.floor(value * 255);
+        cast<PIXI.TextInput>(this._native).setInputStyle("color", RGBToHex(this._red, this._green, this._blue));
     }
 }
 

@@ -12,6 +12,7 @@ public await static __ALITTLEAPI_CEngine_Init(string base_path)
     [Language(JavaScript)]
     {
         Require(base_path.."../../JSNative/pixi");
+        Require(base_path.."../../JSNative/pixi-textinput");
         Require(base_path.."Adapter/PIXI/JSystem");
         Require(base_path.."Adapter/PIXI/JShow");
         Require(base_path.."Adapter/PIXI/JCsvLoader");

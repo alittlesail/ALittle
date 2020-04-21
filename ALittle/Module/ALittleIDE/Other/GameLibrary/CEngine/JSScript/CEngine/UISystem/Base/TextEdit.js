@@ -12,7 +12,7 @@ let __find = ALittle.String_Find;
 if (ALittle.DisplayObject === undefined) throw new Error(" extends class:ALittle.DisplayObject is undefined");
 ALittle.TextEdit = JavaScript.Class(ALittle.DisplayObject, {
 	Ctor : function(ctrl_sys) {
-		this._show = ALittle.NewObject(JavaScript.JTextArea);
+		this._show = ALittle.NewObject(JavaScript.JTextEdit);
 		this._cursor_red = 1;
 		this._cursor_green = 1;
 		this._cursor_blue = 1;

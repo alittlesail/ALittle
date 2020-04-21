@@ -6,6 +6,7 @@ __ALITTLEAPI_CEngine_Init = function(base_path) {
 		await Require(base_path + "CEngine/UISystem/IShow");
 		{
 			await Require(base_path + "../../JSNative/pixi");
+			await Require(base_path + "../../JSNative/pixi-textinput");
 			await Require(base_path + "Adapter/PIXI/JSystem");
 			await Require(base_path + "Adapter/PIXI/JShow");
 			await Require(base_path + "Adapter/PIXI/JCsvLoader");

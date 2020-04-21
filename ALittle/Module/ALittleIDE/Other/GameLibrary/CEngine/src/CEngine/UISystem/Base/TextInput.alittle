@@ -49,7 +49,7 @@ public class TextInput : DisplayObject
         [Language(Lua)]
         this._show = new lua.__CPPAPITextInput();
         [Language(JavaScript)]
-        this._show = new JavaScript.JText();
+        this._show = new JavaScript.JTextInput();
     
         this._cursor_red = 1;
         this._cursor_green = 1;

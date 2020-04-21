@@ -3,6 +3,29 @@ if (typeof JavaScript === "undefined") JavaScript = {};
 
 
 JavaScript.RGBToHex = function(r, g, b) {
+	let hex = (r * 65536 + g * 256 + b).toString(16);
+	if (hex.length <= 0) {
+		return "#000000";
+	}
+	if (hex.length <= 1) {
+		return "#00000" + hex;
+	}
+	if (hex.length <= 2) {
+		return "#0000" + hex;
+	}
+	if (hex.length <= 3) {
+		return "#000" + hex;
+	}
+	if (hex.length <= 4) {
+		return "#00" + hex;
+	}
+	if (hex.length <= 5) {
+		return "#0" + hex;
+	}
+	return "#" + hex;
+}
+
+JavaScript.RGBCombine = function(r, g, b) {
 	return r * 65536 + g * 256 + b;
 }
 
@@ -567,7 +590,7 @@ JavaScript.JText = JavaScript.Class(JavaScript.JDisplayObject, {
 		this._red = 255;
 		this._green = 255;
 		this._blue = 255;
-		this._style.fill = JavaScript.RGBToHex(this._red, this._green, this._blue);
+		this._style.fill = JavaScript.RGBCombine(this._red, this._green, this._blue);
 		this._text = "";
 	},
 	SetBold : function(value) {
@@ -580,9 +603,9 @@ JavaScript.JText = JavaScript.Class(JavaScript.JDisplayObject, {
 	},
 	SetItalic : function(value) {
 		if (value) {
-			this._style.fontWeight = "italic";
+			this._style.fontStyle = "italic";
 		} else {
-			this._style.fontWeight = "normal";
+			this._style.fontStyle = "normal";
 		}
 		this._native.style = this._style;
 	},
@@ -603,17 +626,17 @@ JavaScript.JText = JavaScript.Class(JavaScript.JDisplayObject, {
 	},
 	SetRed : function(value) {
 		this._red = Math.floor(value * 255);
-		this._style.fill = JavaScript.RGBToHex(this._red, this._green, this._blue);
+		this._style.fill = JavaScript.RGBCombine(this._red, this._green, this._blue);
 		this._native.style = this._style;
 	},
 	SetGreen : function(value) {
 		this._green = Math.floor(value * 255);
-		this._style.fill = JavaScript.RGBToHex(this._red, this._green, this._blue);
+		this._style.fill = JavaScript.RGBCombine(this._red, this._green, this._blue);
 		this._native.style = this._style;
 	},
 	SetBlue : function(value) {
 		this._blue = Math.floor(value * 255);
-		this._style.fill = JavaScript.RGBToHex(this._red, this._green, this._blue);
+		this._style.fill = JavaScript.RGBCombine(this._red, this._green, this._blue);
 		this._native.style = this._style;
 	},
 	GetRealWidth : function() {
@@ -635,7 +658,7 @@ JavaScript.JTextArea = JavaScript.Class(JavaScript.JDisplayObject, {
 		this._red = 255;
 		this._green = 255;
 		this._blue = 255;
-		this._style.fill = JavaScript.RGBToHex(this._red, this._green, this._blue);
+		this._style.fill = JavaScript.RGBCombine(this._red, this._green, this._blue);
 		this._style.wordWrap = true;
 		this._style.breakWords = true;
 		this._text = "";
@@ -658,9 +681,9 @@ JavaScript.JTextArea = JavaScript.Class(JavaScript.JDisplayObject, {
 	},
 	SetItalic : function(value) {
 		if (value) {
-			this._style.fontWeight = "italic";
+			this._style.fontStyle = "italic";
 		} else {
-			this._style.fontWeight = "normal";
+			this._style.fontStyle = "normal";
 		}
 		this._native.style = this._style;
 	},
@@ -725,17 +748,17 @@ JavaScript.JTextArea = JavaScript.Class(JavaScript.JDisplayObject, {
 	},
 	SetRed : function(value) {
 		this._red = Math.floor(value * 255);
-		this._style.fill = JavaScript.RGBToHex(this._red, this._green, this._blue);
+		this._style.fill = JavaScript.RGBCombine(this._red, this._green, this._blue);
 		this._native.style = this._style;
 	},
 	SetGreen : function(value) {
 		this._green = Math.floor(value * 255);
-		this._style.fill = JavaScript.RGBToHex(this._red, this._green, this._blue);
+		this._style.fill = JavaScript.RGBCombine(this._red, this._green, this._blue);
 		this._native.style = this._style;
 	},
 	SetBlue : function(value) {
 		this._blue = Math.floor(value * 255);
-		this._style.fill = JavaScript.RGBToHex(this._red, this._green, this._blue);
+		this._style.fill = JavaScript.RGBCombine(this._red, this._green, this._blue);
 		this._native.style = this._style;
 	},
 	GetRealHeight : function() {
@@ -758,6 +781,126 @@ JavaScript.JTextArea = JavaScript.Class(JavaScript.JDisplayObject, {
 		}
 	},
 }, "JavaScript.JTextArea");
+
+if (JavaScript.JDisplayObject === undefined) throw new Error(" extends class:JavaScript.JDisplayObject is undefined");
+JavaScript.JTextInput = JavaScript.Class(JavaScript.JDisplayObject, {
+	Ctor : function() {
+		this._is_default_text = false;
+		this._default_text = "";
+		let style = {};
+		this._native = new PIXI.TextInput(style);
+	},
+	IsDefaultText : function() {
+		return this._is_default_text;
+	},
+	SetDefaultText : function(value, text) {
+		this._is_default_text = value;
+		this._default_text = text;
+		if (this._is_default_text) {
+			this._native.placeholder = text;
+		} else {
+			this._native.placeholder = "";
+		}
+	},
+	SetPasswordMode : function(value) {
+		if (value) {
+			this._native.htmlInput.type = "password";
+		} else {
+			this._native.htmlInput.type = "text";
+		}
+	},
+	SetWidth : function(width) {
+		this._native.setInputStyle("width", Math.floor(width) + "px");
+	},
+	SetBold : function(value) {
+		if (value) {
+			this._native.setInputStyle("fontWeight", "bold");
+		} else {
+			this._native.setInputStyle("fontWeight", "normal");
+		}
+	},
+	SetItalic : function(value) {
+		if (value) {
+			this._native.setInputStyle("fontStyle", "italic");
+		} else {
+			this._native.setInputStyle("fontStyle", "normal");
+		}
+	},
+	SetText : function(value) {
+		this._native.text = value;
+	},
+	GetText : function() {
+		return this._native.text;
+	},
+	SetFont : function(path, size) {
+		this._native.setInputStyle("fontSize", size + "px");
+		this._native.setInputStyle("fontFamily", path);
+	},
+	SetRed : function(value) {
+		this._red = Math.floor(value * 255);
+		this._native.setInputStyle("color", JavaScript.RGBToHex(this._red, this._green, this._blue));
+	},
+	SetGreen : function(value) {
+		this._green = Math.floor(value * 255);
+		this._native.setInputStyle("color", JavaScript.RGBToHex(this._red, this._green, this._blue));
+	},
+	SetBlue : function(value) {
+		this._blue = Math.floor(value * 255);
+		this._native.setInputStyle("color", JavaScript.RGBToHex(this._red, this._green, this._blue));
+	},
+}, "JavaScript.JTextInput");
+
+if (JavaScript.JDisplayObject === undefined) throw new Error(" extends class:JavaScript.JDisplayObject is undefined");
+JavaScript.JTextEdit = JavaScript.Class(JavaScript.JDisplayObject, {
+	Ctor : function() {
+		let style = {};
+		style.input = {};
+		style.input.multiline = true;
+		this._native = new PIXI.TextInput(style);
+	},
+	SetWidth : function(width) {
+		this._native.setInputStyle("width", Math.floor(width) + "px");
+	},
+	SetHeight : function(height) {
+		this._native.setInputStyle("height", Math.floor(height) + "px");
+	},
+	SetBold : function(value) {
+		if (value) {
+			this._native.setInputStyle("fontWeight", "bold");
+		} else {
+			this._native.setInputStyle("fontWeight", "normal");
+		}
+	},
+	SetItalic : function(value) {
+		if (value) {
+			this._native.setInputStyle("fontStyle", "italic");
+		} else {
+			this._native.setInputStyle("fontStyle", "normal");
+		}
+	},
+	SetText : function(value) {
+		this._native.text = value;
+	},
+	GetText : function() {
+		return this._native.text;
+	},
+	SetFont : function(path, size) {
+		this._native.setInputStyle("fontSize", size + "px");
+		this._native.setInputStyle("fontFamily", path);
+	},
+	SetRed : function(value) {
+		this._red = Math.floor(value * 255);
+		this._native.setInputStyle("color", JavaScript.RGBToHex(this._red, this._green, this._blue));
+	},
+	SetGreen : function(value) {
+		this._green = Math.floor(value * 255);
+		this._native.setInputStyle("color", JavaScript.RGBToHex(this._red, this._green, this._blue));
+	},
+	SetBlue : function(value) {
+		this._blue = Math.floor(value * 255);
+		this._native.setInputStyle("color", JavaScript.RGBToHex(this._red, this._green, this._blue));
+	},
+}, "JavaScript.JTextEdit");
 
 let __TEXTURELOADER_MAXID = 0;
 if (ALittle.ITexture === undefined) throw new Error(" extends class:ALittle.ITexture is undefined");

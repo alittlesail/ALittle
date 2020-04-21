@@ -93,7 +93,7 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 				info.__class_func = class_func;
 			}
 			if (class_func !== undefined) {
-				return class_func(this);
+				return ALittle.NewObject(class_func, this);
 			} else {
 				ALittle.Log("unknow target class." + ALittle.String_Join(target_class, "."));
 			}

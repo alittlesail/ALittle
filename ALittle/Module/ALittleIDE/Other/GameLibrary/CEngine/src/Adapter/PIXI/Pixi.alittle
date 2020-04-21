@@ -271,3 +271,37 @@ public class Rectangle
     public get x() : double {}
     public get y() : double {}
 }
+
+public struct TextInputStyleInput
+{
+    string fontSize;
+    string padding;
+    string width;
+    string color;
+    string position;
+    string background;
+    string border;
+    string outline;
+    string transformOrigin;
+    string lineHeight;
+    bool multiline;
+}
+
+public struct TextInputStyle
+{
+    TextInputStyleInput input;
+}
+
+[Native]
+public class TextInput : Container
+{
+    public ctor(TextInputStyle style) {}
+
+    public get placeholder() : string {}
+    public set placeholder(string v) {}
+    public fun setInputStyle(string key, any value) {}
+    public get text() : string {}
+    public set text(string v) {}
+
+    public get htmlInput() : javascript.DomElement {}
+} 

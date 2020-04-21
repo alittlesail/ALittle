@@ -241,12 +241,17 @@ function IDEExport:PackageCommon(project_path)
 			map_list[count] = result
 		end
 	end
-	local result = self:PackagePath(ALittle.File_BaseFilePath() .. "Module/ALittleIDE/Other/GameLibrary/Std/Script", export_common_path .. "/Std", "Std", true)
+	local result = self:PackagePath(ALittle.File_BaseFilePath() .. "Module/ALittleIDE/Other/GameLibrary/Core/Script", export_common_path .. "/Core", "Core", true)
 	if result ~= nil then
 		count = count + 1
 		map_list[count] = result
 	end
-	result = self:PackagePath(ALittle.File_BaseFilePath() .. "Module/ALittleIDE/Other/GameLibrary/Engine/Script", export_common_path .. "/Engine", "Engine", true)
+	result = self:PackagePath(ALittle.File_BaseFilePath() .. "Module/ALittleIDE/Other/GameLibrary/Std/Script", export_common_path .. "/Std", "Std", true)
+	if result ~= nil then
+		count = count + 1
+		map_list[count] = result
+	end
+	result = self:PackagePath(ALittle.File_BaseFilePath() .. "Module/ALittleIDE/Other/GameLibrary/CEngine/Script", export_common_path .. "/CEngine", "CEngine", true)
 	if result ~= nil then
 		count = count + 1
 		map_list[count] = result

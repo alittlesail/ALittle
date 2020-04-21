@@ -290,7 +290,15 @@ class IDEExport
 		}
         
         // 打包基础库脚本
-		var result = this.PackagePath(ALittle.File_BaseFilePath().."Module/ALittleIDE/Other/GameLibrary/Std/Script", export_common_path.."/Std", "Std", true);
+		var result = this.PackagePath(ALittle.File_BaseFilePath().."Module/ALittleIDE/Other/GameLibrary/Core/Script", export_common_path.."/Core", "Core", true);
+		if (result != null)
+		{
+			++count;
+			map_list[count] = result;
+		}
+		
+        // 打包基础库脚本
+		result = this.PackagePath(ALittle.File_BaseFilePath().."Module/ALittleIDE/Other/GameLibrary/Std/Script", export_common_path.."/Std", "Std", true);
 		if (result != null)
 		{
 			++count;
@@ -298,7 +306,7 @@ class IDEExport
 		}
 	
 		// 打包引擎脚本
-		result = this.PackagePath(ALittle.File_BaseFilePath().."Module/ALittleIDE/Other/GameLibrary/Engine/Script", export_common_path.."/Engine", "Engine", true);
+		result = this.PackagePath(ALittle.File_BaseFilePath().."Module/ALittleIDE/Other/GameLibrary/CEngine/Script", export_common_path.."/CEngine", "CEngine", true);
 		if (result != null)
 		{
 			++count;

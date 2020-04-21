@@ -35,6 +35,7 @@
     <None Include="src\Core\Utility\Coroutine.alittle" />
     <None Include="src\Core\Utility\List.alittle" />
     <None Include="src\Core\Utility\Log.alittle" />
+    <None Include="src\Core\Utility\Map.alittle" />
     <None Include="src\Core\Utility\Math.alittle" />
     <None Include="src\Core\Utility\String.alittle" />
     <None Include="src\Core\Utility\Time.alittle" />

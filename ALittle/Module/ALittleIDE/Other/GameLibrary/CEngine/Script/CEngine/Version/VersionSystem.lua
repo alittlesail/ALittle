@@ -423,13 +423,12 @@ local ___COROUTINE = coroutine.running()
 				File_CopyFile(File_BaseFilePath() .. self._update_path .. self._new_in_version, File_BaseFilePath() .. self._update_path .. self._tmp_in_version)
 			end
 			self._remain_repeat_count = self._total_repeat_count
-			self:DownloadNext()
+			return self:DownloadNext()
 		else
 			self._doing = false
 			return VersionProcess.VERSION_NONEED_UPDATE
 		end
 	end
-	return nil
 end
 
 function VersionSystem:DownloadNext()

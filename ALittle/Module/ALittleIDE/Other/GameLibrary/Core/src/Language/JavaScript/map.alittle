@@ -5,6 +5,7 @@ register namespace javascript;
 [Native]
 public class Map
 {
+    public get size() : int {}
 }
 
 [Native]

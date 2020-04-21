@@ -622,7 +622,7 @@ public class VersionSystem
 
                 this._remain_repeat_count = this._total_repeat_count;
                 // 开始下载
-                this.DownloadNext();
+                return this.DownloadNext();
             }
             else
             {
@@ -631,8 +631,6 @@ public class VersionSystem
                 return VersionProcess.VERSION_NONEED_UPDATE;
             }
         }
-
-        return null;
     }
 
     public await fun DownloadNext() : int

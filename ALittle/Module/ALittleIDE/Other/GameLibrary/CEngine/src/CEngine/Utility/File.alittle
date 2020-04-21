@@ -49,6 +49,20 @@ public static File_SaveFile(string target_path, string content, int size) : bool
     return JavaScript.File_SaveFile(target_path, content);
 }
 
+// 文件MD5
+public static File_MD5(string path) : string
+{
+    [Language(Lua)]
+    return __CPPAPI_ScriptSystemEx.FileMD5(path);
+
+    [Language(JavaScript)]
+    var content = JavaScript.File_LoadFile(path);
+    [Language(JavaScript)]
+    if (content == null) return "";
+    [Language(JavaScript)]
+    return javascript.md5(content);
+}
+
 // 深度复制文件夹
 // src_path 原文件夹
 // dest_path 目标文件夹

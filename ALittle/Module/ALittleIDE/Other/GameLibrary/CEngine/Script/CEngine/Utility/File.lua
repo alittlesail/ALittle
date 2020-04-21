@@ -25,6 +25,10 @@ function File_SaveFile(target_path, content, size)
 	return __CPPAPI_SaveFile(target_path, content, size)
 end
 
+function File_MD5(path)
+	return __CPPAPI_ScriptSystemEx:FileMD5(path)
+end
+
 function File_CopyDeepDir(src_path, dest_path, ext, log)
 	do
 		local upper_ext = nil

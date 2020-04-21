@@ -59,6 +59,7 @@ public await static __ALITTLEAPI_Core_Init(string base_path)
     
     Require(base_path.."Core/Utility/Log");
     Require(base_path.."Core/Utility/List");
+    Require(base_path.."Core/Utility/Map");
     Require(base_path.."Core/Utility/Math");
     Require(base_path.."Core/Utility/String");
     Require(base_path.."Core/Utility/Time");

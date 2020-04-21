@@ -28,6 +28,7 @@ local ___COROUTINE = coroutine.running()
 	end
 	Require(base_path .. "Core/Utility/Log")
 	Require(base_path .. "Core/Utility/List")
+	Require(base_path .. "Core/Utility/Map")
 	Require(base_path .. "Core/Utility/Math")
 	Require(base_path .. "Core/Utility/String")
 	Require(base_path .. "Core/Utility/Time")

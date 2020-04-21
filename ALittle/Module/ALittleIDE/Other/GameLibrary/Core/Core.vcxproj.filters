@@ -181,5 +181,8 @@
     <None Include="src\Language\JavaScript\location.alittle">
       <Filter>Language\JavaScript</Filter>
     </None>
+    <None Include="src\Core\Utility\Map.alittle">
+      <Filter>Core\Utility</Filter>
+    </None>
   </ItemGroup>
 </Project>

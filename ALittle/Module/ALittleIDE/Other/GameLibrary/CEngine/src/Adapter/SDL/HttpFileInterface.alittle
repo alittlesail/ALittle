@@ -7,7 +7,7 @@ public class __CPPAPIHttpFileInterface : ALittle.IHttpFileSenderNative
     public fun Start() {}
     public fun Stop() {}
     public fun GetPath() : string {}
-    public fun GetCurrentSize() : int {}
+    public fun GetCurSize() : int {}
     public fun GetTotalSize() : int {}
     public fun GetContent() : string {}
 }

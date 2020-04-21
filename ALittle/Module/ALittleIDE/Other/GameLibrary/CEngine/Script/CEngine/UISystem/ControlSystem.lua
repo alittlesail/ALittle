@@ -89,7 +89,7 @@ function ControlSystem:CreateControlObject(info)
 			info.__class_func = class_func
 		end
 		if class_func ~= nil then
-			return class_func(self)
+			return NewObject(class_func, self)
 		else
 			Log("unknow target class." .. String_Join(target_class, "."))
 		end

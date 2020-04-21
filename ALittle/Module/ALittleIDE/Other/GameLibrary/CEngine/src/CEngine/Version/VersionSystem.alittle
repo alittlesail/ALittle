@@ -684,7 +684,7 @@ public class VersionSystem
         param.start_size = file_info.start_size;
         param.version_id = this._update_info.version_info.version_id;
         param.file_path = file_info.c_file_path;
-        this._current_request = new HttpFileSender(this._ip, this._port, file_full_path, file_info.start_size, bind(this.DownloadUpdateFileCallback, this, file_info, this._current_request));
+        this._current_request = new HttpFileSender(this._ip, this._port, file_full_path, file_info.start_size, bind(this.DownloadUpdateFileCallback, this, file_info));
         var error = VersionServer.HandleHttpQDownloadVersionFile(this._current_request, param);
         this._current_request = null;
         if (error != null)

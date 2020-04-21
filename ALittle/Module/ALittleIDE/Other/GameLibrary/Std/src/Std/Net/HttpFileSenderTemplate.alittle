@@ -25,12 +25,12 @@ public class HttpFileSenderTemplate<NATIVE : IHttpFileSenderNative> : IHttpFileS
     private int _port;
     private string _file_path;
     private int _start_size;
-    private Functor<()> _callback;        // 下载或者上传的进度回调
+    private Functor<(IHttpFileSender)> _callback;        // 下载或者上传的进度回调
     
     private int _cur_size;
     private int _total_size;
     
-    public ctor(string ip, int port, string file_path, int start_size, [Nullable] Functor<()> callback)
+    public ctor(string ip, int port, string file_path, int start_size, [Nullable] Functor<(IHttpFileSender)> callback)
     {
         this._interface = new NATIVE();
         this._ip = ip;
@@ -109,7 +109,7 @@ public class HttpFileSenderTemplate<NATIVE : IHttpFileSenderNative> : IHttpFileS
         this._total_size = total_size;
         
         if (this._callback != null)
-            this._callback();
+            this._callback(this);
     }
     
     // 拼接url

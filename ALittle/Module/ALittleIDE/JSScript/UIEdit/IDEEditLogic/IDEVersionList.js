@@ -97,6 +97,10 @@ ALittleIDE.IDEVersionList = JavaScript.Class(ALittle.DisplayLayout, {
 			ALittleIDE.g_IDETool.ShowNotice("错误", "当前没有打开的项目");
 			return;
 		}
+		if (!ALittleIDE.g_IDELoginManager.IsLogin()) {
+			ALittleIDE.g_IDETool.ShowNotice("错误", "请先登陆");
+			return;
+		}
 		this._export_refresh_btn.disabled = true;
 		this._version_list.RemoveAllChild();
 		this._close_list.RemoveAllChild();

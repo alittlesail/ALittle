@@ -335,7 +335,7 @@ function Linear:ClipRect(left, top, right, bottom, h_move, v_move)
 		return
 	end
 	local childs = self.childs
-	local new_show_map = {}
+	local new_show_map = CreateKeyWeakMap()
 	self._show:RemoveAllChild()
 	local max_index = child_count
 	local min_index = 1

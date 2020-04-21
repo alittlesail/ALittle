@@ -197,10 +197,7 @@ class IDEExport
 	
 		// 检查路径是否存在
         if (ALittle.File_GetFileAttr(src_path) == null)
-        {
-            ALittle.Error("IDEExport:PackagePath src_path is not exist:"..src_path);
-            return null;
-        }
+            return new Map<string, IDEExportFileAttr>();
 	
 		// 检查路径是否存在
 		if (ALittle.File_GetFileAttr(dst_path) == null) ALittle.File_MakeDeepDir(dst_path);
@@ -875,7 +872,7 @@ class IDEExport
 			{
 				++repeat_count;
 				this._submit_client = ALittle.CreateHttpFileSender(g_IDELoginManager.http_ip, g_IDELoginManager.http_port,
-                                      submit_info.export_module_path.."/"..file_path, 0, bind(this.HandleSubmitVersionUpload, this, upload_index, total_count, this._submit_client));
+                                      submit_info.export_module_path.."/"..file_path, 0, bind(this.HandleSubmitVersionUpload, this, upload_index, total_count));
 				error = VersionServer.HandleHttpQUploadVersionFile(this._submit_client, param);
 				if (error == null) break;
 			}
@@ -901,7 +898,7 @@ class IDEExport
 			{
 				++repeat_count;
 				this._submit_client = ALittle.CreateHttpFileSender(g_IDELoginManager.http_ip, g_IDELoginManager.http_port,
-                                      submit_info.project_path.."/Export/"..submit_info.install_name, 0, bind(this.HandleSubmitVersionUpload, this, upload_index, total_count, this._submit_client));
+                                      submit_info.project_path.."/Export/"..submit_info.install_name, 0, bind(this.HandleSubmitVersionUpload, this, upload_index, total_count));
 				error = VersionServer.HandleHttpQUploadVersionFile(this._submit_client, param);
 				if (error == null) break;
 			}
@@ -928,7 +925,7 @@ class IDEExport
 			{
 				++repeat_count;
 				this._submit_client = ALittle.CreateHttpFileSender(g_IDELoginManager.http_ip, g_IDELoginManager.http_port,
-                                      submit_info.export_module_path.."/CurVersion.db", 0, bind(this.HandleSubmitVersionUpload, this, upload_index, total_count, this._submit_client));
+                                      submit_info.export_module_path.."/CurVersion.db", 0, bind(this.HandleSubmitVersionUpload, this, upload_index, total_count));
 				error = VersionServer.HandleHttpQUploadVersionFile(this._submit_client, param);
 				if (error == null) break;
 			}

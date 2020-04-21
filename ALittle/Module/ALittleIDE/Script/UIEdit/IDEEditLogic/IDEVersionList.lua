@@ -109,6 +109,10 @@ function IDEVersionList:HandleRefreshVersionList(event)
 		g_IDETool:ShowNotice("错误", "当前没有打开的项目")
 		return
 	end
+	if not g_IDELoginManager:IsLogin() then
+		g_IDETool:ShowNotice("错误", "请先登陆")
+		return
+	end
 	self._export_refresh_btn.disabled = true
 	self._version_list:RemoveAllChild()
 	self._close_list:RemoveAllChild()

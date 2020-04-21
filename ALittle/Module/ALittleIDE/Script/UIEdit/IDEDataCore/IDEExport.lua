@@ -149,8 +149,7 @@ end
 function IDEExport:PackagePath(src_path, dst_path, file_type, crypt_mode)
 	ALittle.Log("========PackagePath:" .. src_path .. "========")
 	if ALittle.File_GetFileAttr(src_path) == nil then
-		ALittle.Error("IDEExport:PackagePath src_path is not exist:" .. src_path)
-		return nil
+		return {}
 	end
 	if ALittle.File_GetFileAttr(dst_path) == nil then
 		ALittle.File_MakeDeepDir(dst_path)
@@ -661,7 +660,7 @@ local ___COROUTINE = coroutine.running()
 		local repeat_count = 0
 		while repeat_count < 1 do
 			repeat_count = repeat_count + 1
-			self._submit_client = ALittle.CreateHttpFileSender(g_IDELoginManager.http_ip, g_IDELoginManager.http_port, submit_info.export_module_path .. "/" .. file_path, 0, Lua.Bind(self.HandleSubmitVersionUpload, self, upload_index, total_count, self._submit_client))
+			self._submit_client = ALittle.CreateHttpFileSender(g_IDELoginManager.http_ip, g_IDELoginManager.http_port, submit_info.export_module_path .. "/" .. file_path, 0, Lua.Bind(self.HandleSubmitVersionUpload, self, upload_index, total_count))
 			error = ALittle.IHttpFileSender.InvokeUpload("VersionServer.QUploadVersionFile", self._submit_client, param)
 			if error == nil then
 				break
@@ -682,7 +681,7 @@ local ___COROUTINE = coroutine.running()
 		local repeat_count = 0
 		while repeat_count < 100 do
 			repeat_count = repeat_count + 1
-			self._submit_client = ALittle.CreateHttpFileSender(g_IDELoginManager.http_ip, g_IDELoginManager.http_port, submit_info.project_path .. "/Export/" .. submit_info.install_name, 0, Lua.Bind(self.HandleSubmitVersionUpload, self, upload_index, total_count, self._submit_client))
+			self._submit_client = ALittle.CreateHttpFileSender(g_IDELoginManager.http_ip, g_IDELoginManager.http_port, submit_info.project_path .. "/Export/" .. submit_info.install_name, 0, Lua.Bind(self.HandleSubmitVersionUpload, self, upload_index, total_count))
 			error = ALittle.IHttpFileSender.InvokeUpload("VersionServer.QUploadVersionFile", self._submit_client, param)
 			if error == nil then
 				break
@@ -703,7 +702,7 @@ local ___COROUTINE = coroutine.running()
 		local repeat_count = 0
 		while repeat_count < 100 do
 			repeat_count = repeat_count + 1
-			self._submit_client = ALittle.CreateHttpFileSender(g_IDELoginManager.http_ip, g_IDELoginManager.http_port, submit_info.export_module_path .. "/CurVersion.db", 0, Lua.Bind(self.HandleSubmitVersionUpload, self, upload_index, total_count, self._submit_client))
+			self._submit_client = ALittle.CreateHttpFileSender(g_IDELoginManager.http_ip, g_IDELoginManager.http_port, submit_info.export_module_path .. "/CurVersion.db", 0, Lua.Bind(self.HandleSubmitVersionUpload, self, upload_index, total_count))
 			error = ALittle.IHttpFileSender.InvokeUpload("VersionServer.QUploadVersionFile", self._submit_client, param)
 			if error == nil then
 				break

@@ -108,7 +108,7 @@ function HttpFileSenderTemplate:HandleProcess(cur_size, total_size)
 	self._cur_size = cur_size
 	self._total_size = total_size
 	if self._callback ~= nil then
-		self._callback()
+		self._callback(self)
 	end
 end
 

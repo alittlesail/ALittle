@@ -70,6 +70,13 @@ public class IDEVersionList : ALittle.DisplayLayout
 			g_IDETool.ShowNotice("错误", "当前没有打开的项目");
 			return;
 		}
+
+		// 检查登陆
+		if (!g_IDELoginManager.IsLogin())
+		{
+			g_IDETool.ShowNotice("错误", "请先登陆");
+			return;
+        }
 	
 		// 禁用刷新按钮
 		this._export_refresh_btn.disabled = true;

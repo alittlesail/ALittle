@@ -304,4 +304,6 @@ public class TextInput : Container
     public set text(string v) {}
 
     public get htmlInput() : javascript.DomElement {}
+    public get substituteText() : bool {}
+    public set substituteText(bool v) {}
 } 

@@ -552,7 +552,6 @@ JavaScript.JTriangle = JavaScript.Class(JavaScript.JDisplayObject, {
 	SetTexture : function(texture) {
 		if (this._mesh === undefined) {
 			this._mesh = new PIXI.SimpleMesh(texture.native, this._xy, this._uv, this._index);
-			ALittle.Log(this._xy, this._uv, this._mesh);
 			this._native.addChild(this._mesh);
 		} else {
 			this._mesh.texture = texture.native;

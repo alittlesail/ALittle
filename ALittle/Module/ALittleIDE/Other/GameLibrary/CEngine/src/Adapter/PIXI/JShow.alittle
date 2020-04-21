@@ -523,7 +523,6 @@ public class JTriangle : JDisplayObject
         if (this._mesh == null)
         {
             this._mesh = new PIXI.SimpleMesh(cast<JTexture>(texture).native, this._xy, this._uv, this._index);
-            ALittle.Log(this._xy, this._uv, this._mesh);
             cast<PIXI.Container>(this._native).addChild(this._mesh);
         }
         else

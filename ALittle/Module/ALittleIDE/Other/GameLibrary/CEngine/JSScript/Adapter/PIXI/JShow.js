@@ -505,6 +505,59 @@ JavaScript.JSprite = JavaScript.Class(JavaScript.JDisplayObject, {
 }, "JavaScript.JSprite");
 
 if (JavaScript.JDisplayObject === undefined) throw new Error(" extends class:JavaScript.JDisplayObject is undefined");
+JavaScript.JTriangle = JavaScript.Class(JavaScript.JDisplayObject, {
+	Ctor : function() {
+		this._native = new PIXI.Container();
+		this._uv = [];
+		for (let i = 0; i < 6; i += 1) {
+			this._uv[i /*因为使用了Native修饰，下标从0开始，不做减1处理*/] = 0;
+		}
+		this._xy = [];
+		for (let i = 0; i < 6; i += 1) {
+			this._xy[i /*因为使用了Native修饰，下标从0开始，不做减1处理*/] = 0;
+		}
+		this._index = [];
+		for (let i = 0; i < 3; i += 1) {
+			this._index[i /*因为使用了Native修饰，下标从0开始，不做减1处理*/] = i;
+		}
+	},
+	ClearTexture : function() {
+		if (this._mesh !== undefined) {
+			this._mesh.texture = undefined;
+		}
+	},
+	SetTexture : function(texture) {
+		if (this._mesh === undefined) {
+			this._mesh = new PIXI.SimpleMesh(texture.native, this._xy, this._uv, this._index);
+			ALittle.Log(this._xy, this._uv, this._mesh);
+			this._native.addChild(this._mesh);
+		} else {
+			this._mesh.texture = texture.native;
+		}
+	},
+	SetTextureCoord : function(t, b, l, r) {
+	},
+	SetTexUV : function(index, u, v) {
+		if (this._mesh === undefined) {
+			this._uv[index * 2 /*因为使用了Native修饰，下标从0开始，不做减1处理*/] = u;
+			this._uv[index * 2 + 1 /*因为使用了Native修饰，下标从0开始，不做减1处理*/] = v;
+		} else {
+			this._mesh.uvBuffer.data[index * 2 + 1 - 1] = u;
+			this._mesh.uvBuffer.data[(index + 1) * 2 - 1] = v;
+		}
+	},
+	SetPosXY : function(index, x, y) {
+		if (this._mesh === undefined) {
+			this._xy[index * 2 /*因为使用了Native修饰，下标从0开始，不做减1处理*/] = x;
+			this._xy[index * 2 + 1 /*因为使用了Native修饰，下标从0开始，不做减1处理*/] = y;
+		} else {
+			this._mesh.verticesBuffer.data[index * 2 + 1 - 1] = x;
+			this._mesh.verticesBuffer.data[(index + 1) * 2 - 1] = y;
+		}
+	},
+}, "JavaScript.JTriangle");
+
+if (JavaScript.JDisplayObject === undefined) throw new Error(" extends class:JavaScript.JDisplayObject is undefined");
 JavaScript.JText = JavaScript.Class(JavaScript.JDisplayObject, {
 	Ctor : function() {
 		this._native = new PIXI.Text();
@@ -516,6 +569,22 @@ JavaScript.JText = JavaScript.Class(JavaScript.JDisplayObject, {
 		this._blue = 255;
 		this._style.fill = JavaScript.RGBToHex(this._red, this._green, this._blue);
 		this._text = "";
+	},
+	SetBold : function(value) {
+		if (value) {
+			this._style.fontWeight = "bold";
+		} else {
+			this._style.fontWeight = "normal";
+		}
+		this._native.style = this._style;
+	},
+	SetItalic : function(value) {
+		if (value) {
+			this._style.fontWeight = "italic";
+		} else {
+			this._style.fontWeight = "normal";
+		}
+		this._native.style = this._style;
 	},
 	SetText : function(value) {
 		this._text = value;
@@ -570,20 +639,89 @@ JavaScript.JTextArea = JavaScript.Class(JavaScript.JDisplayObject, {
 		this._style.wordWrap = true;
 		this._style.breakWords = true;
 		this._text = "";
+		this._x = 0;
+		this._y = 0;
+		this._width = 0;
+		this._height = 0;
+		this._real_width = 0;
+		this._real_height = 0;
+		this._h_align = 0;
+		this._v_align = 0;
+	},
+	SetBold : function(value) {
+		if (value) {
+			this._style.fontWeight = "bold";
+		} else {
+			this._style.fontWeight = "normal";
+		}
+		this._native.style = this._style;
+	},
+	SetItalic : function(value) {
+		if (value) {
+			this._style.fontWeight = "italic";
+		} else {
+			this._style.fontWeight = "normal";
+		}
+		this._native.style = this._style;
+	},
+	SetHAlign : function(align) {
+		if (this._h_align === align) {
+			return;
+		}
+		this._h_align = align;
+		if (this._h_align === ALittle.UIEnumTypes.HALIGN_LEFT) {
+			this._style.align = "left";
+		} else if (this._h_align === ALittle.UIEnumTypes.HALIGN_CENTER) {
+			this._style.align = "center";
+		} else {
+			this._style.align = "right";
+		}
+		this._native.style = this._style;
+		this.UpdateShow();
+	},
+	SetVAlign : function(align) {
+		if (this._v_align === align) {
+			return;
+		}
+		this._v_align = align;
+		this.UpdateShow();
+	},
+	SetX : function(x) {
+		this._x = x;
+		this.UpdateShow();
+	},
+	SetY : function(y) {
+		this._y = y;
+		this.UpdateShow();
 	},
 	SetWidth : function(width) {
+		this._width = width;
 		this._style.wordWrapWidth = Math.floor(width);
 		this._native.style = this._style;
+		let m = PIXI.TextMetrics.measureText(this._text, this._style);
+		this._real_width = m.width;
+		this._real_height = m.height;
+		this.UpdateShow();
+	},
+	SetHeight : function(height) {
+		this._height = height;
+		this.UpdateShow();
 	},
 	SetText : function(value) {
 		this._text = value;
 		this._native.text = value;
 		this._native.style = this._style;
+		let m = PIXI.TextMetrics.measureText(this._text, this._style);
+		this._real_width = m.width;
+		this._real_height = m.height;
 	},
 	SetFont : function(path, size) {
 		this._style.fontFamily = path;
 		this._style.fontSize = size;
 		this._native.style = this._style;
+		let m = PIXI.TextMetrics.measureText(this._text, this._style);
+		this._real_width = m.width;
+		this._real_height = m.height;
 	},
 	SetRed : function(value) {
 		this._red = Math.floor(value * 255);
@@ -601,8 +739,23 @@ JavaScript.JTextArea = JavaScript.Class(JavaScript.JDisplayObject, {
 		this._native.style = this._style;
 	},
 	GetRealHeight : function() {
-		let m = PIXI.TextMetrics.measureText(this._text, this._style);
-		return m.height;
+		return this._real_height;
+	},
+	UpdateShow : function() {
+		if (this._h_align === ALittle.UIEnumTypes.HALIGN_LEFT) {
+			this._native.x = Math.floor(this._x);
+		} else if (this._h_align === ALittle.UIEnumTypes.HALIGN_CENTER) {
+			this._native.x = Math.floor((this._width - this._real_width) / 2 + this._x);
+		} else {
+			this._native.x = Math.floor(this._width - this._real_width + this._x);
+		}
+		if (this._v_align === ALittle.UIEnumTypes.VALIGN_TOP) {
+			this._native.y = Math.floor(this._y);
+		} else if (this._v_align === ALittle.UIEnumTypes.VALIGN_CENTER) {
+			this._native.y = Math.floor((this._height - this._real_height) / 2 + this._y);
+		} else {
+			this._native.y = Math.floor(this._height - this._real_height + this._y);
+		}
 	},
 }, "JavaScript.JTextArea");
 

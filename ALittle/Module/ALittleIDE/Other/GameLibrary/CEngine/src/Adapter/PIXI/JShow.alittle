@@ -479,6 +479,79 @@ public class JSprite : JDisplayObject
     }
 }
 
+public class JTriangle : JDisplayObject
+{
+    private PIXI.SimpleMesh _mesh;
+
+    [Native]
+    private List<double> _uv;
+    [Native]
+    private List<double> _xy;
+    [Native]
+    private List<int> _index;
+
+    public ctor()
+    {
+        this._native = new PIXI.Container();
+        this._uv = new List<double>();
+        for (var i = 0; i < 6; 1) this._uv[i] = 0;
+        this._xy = new List<double>();
+        for (var i = 0; i < 6; 1) this._xy[i] = 0;
+        this._index = new List<int>();
+        for (var i = 0; i < 3; 1) this._index[i] = i;
+    }
+    
+    public fun ClearTexture()
+    {
+        if (this._mesh != null)
+            this._mesh.texture = null;
+    }
+    public fun SetTexture(ALittle.ITexture texture)
+    {
+        if (this._mesh == null)
+        {
+            this._mesh = new PIXI.SimpleMesh(cast<JTexture>(texture).native, this._xy, this._uv, this._index);
+            ALittle.Log(this._xy, this._uv, this._mesh);
+            cast<PIXI.Container>(this._native).addChild(this._mesh);
+        }
+        else
+        {
+            this._mesh.texture = cast<JTexture>(texture).native;
+        }
+    }
+    public fun SetTextureCoord(double t, double b, double l, double r)
+    {
+        // 因为Web版本的图片都是散装的，所以不需要处理
+    }
+    
+    public fun SetTexUV(int index, double u, double v)
+    {
+        if (this._mesh == null)
+        {
+            this._uv[index*2] = u;
+            this._uv[index*2 + 1] = v;
+        }
+        else
+        {
+            this._mesh.uvBuffer.data[index * 2 + 1] = u;
+            this._mesh.uvBuffer.data[(index + 1) * 2] = v;
+        }
+    }
+    public fun SetPosXY(int index, double x, double y)
+    {
+        if (this._mesh == null)
+        {
+            this._xy[index*2] = x;
+            this._xy[index*2 + 1] = y;
+        }
+        else
+        {
+            this._mesh.verticesBuffer.data[index * 2 + 1] = x;
+            this._mesh.verticesBuffer.data[(index + 1) * 2] = y;
+        }
+    }
+}
+
 public class JText : JDisplayObject
 {
     private PIXI.TextStyle _style;
@@ -500,6 +573,24 @@ public class JText : JDisplayObject
         this._blue = 255;
         this._style.fill = RGBToHex(this._red, this._green, this._blue);
         this._text = "";
+    }
+    
+    public fun SetBold(bool value)
+    {
+        if (value)
+            this._style.fontWeight = "bold";
+        else
+            this._style.fontWeight = "normal";
+        cast<PIXI.Text>(this._native).style = this._style;
+    }
+
+    public fun SetItalic(bool value)
+    {
+        if (value)
+            this._style.fontWeight = "italic";
+        else
+            this._style.fontWeight = "normal";   
+        cast<PIXI.Text>(this._native).style = this._style;
     }
 
     public fun SetText(string value)
@@ -554,6 +645,17 @@ public class JTextArea : JDisplayObject
     private int _green;
     private int _blue;
     private string _text;
+
+    private double _x;
+    private double _y;
+    private double _width;
+    private double _height;
+
+    private int _real_width;
+    private int _real_height;
+
+    private int _h_align;
+    private int _v_align;
     
     public ctor()
     {
@@ -566,12 +668,86 @@ public class JTextArea : JDisplayObject
         this._style.wordWrap = true;
         this._style.breakWords = true;
         this._text = "";
+
+        this._x = 0;
+        this._y = 0;
+        this._width = 0;
+        this._height = 0;
+        this._real_width = 0;
+        this._real_height = 0;
+
+        this._h_align = 0;
+        this._v_align = 0;
+    }
+
+    public fun SetBold(bool value)
+    {
+        if (value)
+            this._style.fontWeight = "bold";
+        else
+            this._style.fontWeight = "normal";
+        cast<PIXI.Text>(this._native).style = this._style;
+    }
+
+    public fun SetItalic(bool value)
+    {
+        if (value)
+            this._style.fontWeight = "italic";
+        else
+            this._style.fontWeight = "normal";   
+        cast<PIXI.Text>(this._native).style = this._style;
+    }
+
+    public fun SetHAlign(int align)
+    {
+        if (this._h_align == align) return;
+        this._h_align = align;
+        if (this._h_align == ALittle.UIEnumTypes.HALIGN_LEFT)
+            this._style.align = "left";
+        elseif (this._h_align == ALittle.UIEnumTypes.HALIGN_CENTER)
+            this._style.align = "center";
+        else
+            this._style.align = "right";
+        cast<PIXI.Text>(this._native).style = this._style;
+        this.UpdateShow();
+    }
+
+    public fun SetVAlign(int align)
+    {
+        if (this._v_align == align) return;
+        this._v_align = align;
+        this.UpdateShow();
+    }
+
+    public fun SetX(double x)
+    {
+        this._x = x;
+        this.UpdateShow();
+    }
+
+    public fun SetY(double y)
+    {
+        this._y = y;
+        this.UpdateShow();
     }
 
     public fun SetWidth(double width)
     {
+        this._width = width;
         this._style.wordWrapWidth = javascript.Math.floor(width);
         cast<PIXI.Text>(this._native).style = this._style;
+        
+        var m = PIXI.TextMetrics.measureText(this._text, this._style);
+        this._real_width = m.width;
+        this._real_height = m.height;
+
+        this.UpdateShow();
+    }
+
+    public fun SetHeight(double height)
+    {
+        this._height = height;
+        this.UpdateShow();
     }
     
     public fun SetText(string value)
@@ -579,6 +755,10 @@ public class JTextArea : JDisplayObject
         this._text = value;
         cast<PIXI.Text>(this._native).text = value;
         cast<PIXI.Text>(this._native).style = this._style;
+        
+        var m = PIXI.TextMetrics.measureText(this._text, this._style);
+        this._real_width = m.width;
+        this._real_height = m.height;
     }
         
     public fun SetFont(string path, int size)
@@ -586,6 +766,10 @@ public class JTextArea : JDisplayObject
         this._style.fontFamily = path;
         this._style.fontSize = size;
         cast<PIXI.Text>(this._native).style = this._style;
+        
+        var m = PIXI.TextMetrics.measureText(this._text, this._style);
+        this._real_width = m.width;
+        this._real_height = m.height;
     }
     
     public fun SetRed(double value)
@@ -610,8 +794,24 @@ public class JTextArea : JDisplayObject
 
     public fun GetRealHeight() : int
     {
-        var m = PIXI.TextMetrics.measureText(this._text, this._style);
-        return m.height;
+        return this._real_height;
+    }
+
+    public fun UpdateShow()
+    {
+        if (this._h_align == ALittle.UIEnumTypes.HALIGN_LEFT)
+            this._native.x = javascript.Math.floor(this._x);
+        elseif (this._h_align == ALittle.UIEnumTypes.HALIGN_CENTER)
+            this._native.x = javascript.Math.floor((this._width - this._real_width) / 2 + this._x);
+        else
+            this._native.x = javascript.Math.floor(this._width - this._real_width + this._x);
+
+        if (this._v_align == ALittle.UIEnumTypes.VALIGN_TOP)
+            this._native.y = javascript.Math.floor(this._y);
+        elseif (this._v_align == ALittle.UIEnumTypes.VALIGN_CENTER)
+            this._native.y = javascript.Math.floor((this._height - this._real_height) / 2 + this._y);
+        else
+            this._native.y = javascript.Math.floor(this._height - this._real_height + this._y);
     }
 }
 

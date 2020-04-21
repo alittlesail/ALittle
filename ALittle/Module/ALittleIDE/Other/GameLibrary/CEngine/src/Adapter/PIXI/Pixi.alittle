@@ -107,7 +107,27 @@ public class Sprite : Container
 }
 
 [Native]
+public class SimpleMesh : Mesh
+{
+    public ctor(Texture texture, List<double> vertices, List<double> uvs, List<int> indices) { }
+    public get vertices() : List<double> {}
+    public set vertices(List<double> v) {}
+}
+
+[Native]
 public class TilingSprite : Sprite
+{
+    
+}
+
+[Native]
+public class Buffer
+{
+    public get data() : List<double> {}
+}
+
+[Native]
+public class MeshMaterial
 {
     
 }
@@ -116,7 +136,13 @@ public class TilingSprite : Sprite
 public class Mesh : Container
 {
     public get texture() : Texture {}
-    public set texture(Texture texture) {}    
+    public set texture(Texture texture) {}
+
+    public get uvBuffer() : Buffer {}
+    public get verticesBuffer() : Buffer {}
+
+    public get material() : MeshMaterial {}
+    public set material(MeshMaterial v) {}
 }
 
 [Native]
@@ -164,6 +190,12 @@ public class TextStyle
     public set breakWords(bool v) {}
     public get wordWrapWidth() : double {}
     public set wordWrapWidth(double v) {}
+    public get align() : string {}
+    public set align(string v) {}
+    public get fontWeight() : string {}
+    public set fontWeight(string v) {}
+    public get fontStyle() : string {}
+    public set fontStyle(string v) {}
 }
 
 [Native]
@@ -174,6 +206,8 @@ public class TextMetrics
     public get text() : string {}
     public get width() : int {}
     public get height() : int {}
+    public get maxLineWidth() : int {}
+    public get lineWidths() : List<double> {}
 }
 
 [Native]

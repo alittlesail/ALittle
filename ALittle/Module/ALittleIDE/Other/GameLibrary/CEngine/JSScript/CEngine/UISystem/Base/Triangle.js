@@ -5,7 +5,7 @@ if (typeof ALittle === "undefined") ALittle = {};
 if (ALittle.DisplayObject === undefined) throw new Error(" extends class:ALittle.DisplayObject is undefined");
 ALittle.Triangle = JavaScript.Class(ALittle.DisplayObject, {
 	Ctor : function(ctrl_sys) {
-		this._show = ALittle.NewObject(JavaScript.JSprite);
+		this._show = ALittle.NewObject(JavaScript.JTriangle);
 		this._u1 = 0;
 		this._v1 = 0;
 		this._u2 = 0;

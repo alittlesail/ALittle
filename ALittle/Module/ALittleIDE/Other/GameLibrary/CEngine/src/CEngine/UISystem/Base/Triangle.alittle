@@ -35,7 +35,7 @@ public class Triangle : DisplayObject
         [Language(Lua)]
     	this._show = new lua.__CPPAPITriangle();
         [Language(JavaScript)]
-        this._show = new JavaScript.JSprite();
+        this._show = new JavaScript.JTriangle();
     
     	// 纹理数据
     	this._u1 = 0;

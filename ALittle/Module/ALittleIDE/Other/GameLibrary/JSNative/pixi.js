@@ -21797,7 +21797,7 @@ var PIXI = (function (exports) {
 	         * @member {boolean}
 	         * @readonly
 	         */
-	        this.enableScissor = true;
+	        this.enableScissor = false;
 
 	        /**
 	         * Pool of used sprite mask filters

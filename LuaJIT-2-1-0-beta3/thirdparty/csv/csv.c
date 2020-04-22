@@ -12,7 +12,7 @@ csv* csv_create()
 
 void csv_init(csv* c)
 {
-    c->path = (kstring_t*)calloc(1, sizeof(kstring_t));
+    c->path = 0;
     kv_init(c->data);
     c->row_count = 0;
     c->col_count = 0;
@@ -60,7 +60,7 @@ int csv_addrow(csv* c, csvrow* rowdata, kstring_t* error)
 {
     if (c->col_count == 0)
     {
-        c->col_count = (int)kv_size(c->data);
+        c->col_count = (int)kv_size(*rowdata);
         kv_push(csvrow*, c->data, rowdata);
         return 1;
     }
@@ -117,6 +117,7 @@ int csv_load(csv* c, const char* path, csv_fread func_read, void* file, kstring_
     }
 
     // 设置路径
+    if (c->path == 0) c->path = (kstring_t*)calloc(1, sizeof(kstring_t));
     kputs(path, c->path);
 
     // 读取下一个字符
@@ -180,7 +181,7 @@ int csv_load(csv* c, const char* path, csv_fread func_read, void* file, kstring_
             {
                 // 添加到行
                 kv_push(kstring_t*, *row, cell);
-                kstring_t* cell = (kstring_t*)calloc(1, sizeof(kstring_t));
+                cell = (kstring_t*)calloc(1, sizeof(kstring_t));
 
                 // 如果后面没有数据了
                 if (next_char == END_OF_FILE)
@@ -194,7 +195,7 @@ int csv_load(csv* c, const char* path, csv_fread func_read, void* file, kstring_
                         break;
                     }
                     // 构建一个新的
-                    csvrow* row = (csvrow*)malloc(sizeof(csvrow));
+                    row = (csvrow*)malloc(sizeof(csvrow));
                     kv_init(*row);
                 }
             }
@@ -221,7 +222,7 @@ int csv_load(csv* c, const char* path, csv_fread func_read, void* file, kstring_
             {
                 // 添加到行
                 kv_push(kstring_t*, *row, cell);
-                kstring_t* cell = (kstring_t*)calloc(1, sizeof(kstring_t));
+                cell = (kstring_t*)calloc(1, sizeof(kstring_t));
 
                 // 添加到表
                 if (!csv_addrow(c, row, error))
@@ -230,7 +231,7 @@ int csv_load(csv* c, const char* path, csv_fread func_read, void* file, kstring_
                     break;
                 }
                 // 构建一个新的
-                csvrow* row = (csvrow*)malloc(sizeof(csvrow));
+                row = (csvrow*)malloc(sizeof(csvrow));
                 kv_init(*row);
             }
         }
@@ -265,7 +266,7 @@ int csv_load(csv* c, const char* path, csv_fread func_read, void* file, kstring_
                     {
                         // 添加到行
                         kv_push(kstring_t*, *row, cell);
-                        kstring_t* cell = (kstring_t*)calloc(1, sizeof(kstring_t));
+                        cell = (kstring_t*)calloc(1, sizeof(kstring_t));
 
                         // 添加到表
                         if (!csv_addrow(c, row, error))
@@ -274,7 +275,7 @@ int csv_load(csv* c, const char* path, csv_fread func_read, void* file, kstring_
                             break;
                         }
                         // 构建一个新的
-                        csvrow* row = (csvrow*)malloc(sizeof(csvrow));
+                        row = (csvrow*)malloc(sizeof(csvrow));
                         kv_init(*row);
                     }
                 }
@@ -329,7 +330,7 @@ int csv_load(csv* c, const char* path, csv_fread func_read, void* file, kstring_
                 if (next_char == END_OF_FILE) {
                     // 添加到行
                     kv_push(kstring_t*, *row, cell);
-                    kstring_t* cell = (kstring_t*)calloc(1, sizeof(kstring_t));
+                    cell = (kstring_t*)calloc(1, sizeof(kstring_t));
 
                     // 添加到表
                     if (!csv_addrow(c, row, error))
@@ -338,7 +339,7 @@ int csv_load(csv* c, const char* path, csv_fread func_read, void* file, kstring_
                         break;
                     }
                     // 构建一个新的
-                    csvrow* row = (csvrow*)malloc(sizeof(csvrow));
+                    row = (csvrow*)malloc(sizeof(csvrow));
                     kv_init(*row);
                 }
             }
@@ -364,6 +365,15 @@ int csv_load(csv* c, const char* path, csv_fread func_read, void* file, kstring_
 
     if (row)
     {
+        for (int col = 0; col < kv_size(*row); ++col)
+        {
+            kstring_t* data = kv_A(*row, col);
+            if (data)
+            {
+                if (data->s) free(data->s);
+                free(data);
+            }
+        }
         kv_destroy(*row);
         free(row);
     }
@@ -373,6 +383,7 @@ int csv_load(csv* c, const char* path, csv_fread func_read, void* file, kstring_
 
 const char* csv_getpath(csv* c)
 {
+    if (c->path == 0) return 0;
     return ks_str(c->path);
 }
 
@@ -382,7 +393,9 @@ const char* csv_readcell(csv* c, int row, int col)
     csvrow* rowdata = kv_A(c->data, row);
     if (rowdata == 0) return 0;
     if (col >= kv_size(*rowdata)) return 0;
-    return ks_str(kv_A(*rowdata, col));
+    kstring_t* cell = kv_A(*rowdata, col);
+    if (cell == 0) return 0;
+    return ks_str(cell);
 }
 
 int csv_rowcount(csv* c)

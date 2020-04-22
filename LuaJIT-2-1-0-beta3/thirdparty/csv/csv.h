@@ -12,7 +12,6 @@ typedef struct _csv
 {
 	kstring_t* path;
 	csvdata data;
-	int row_count;
 	int col_count;
 } csv;
 

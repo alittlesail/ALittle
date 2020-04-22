@@ -14,7 +14,6 @@ void csv_init(csv* c)
 {
     c->path = 0;
     kv_init(c->data);
-    c->row_count = 0;
     c->col_count = 0;
 }
 
@@ -50,7 +49,6 @@ void csv_clear(csv* c)
     }
     kv_destroy(c->data);
     kv_init(c->data);
-    c->row_count = 0;
     c->col_count = 0;
 }
 
@@ -67,7 +65,7 @@ int csv_addrow(csv* c, csvrow* rowdata, kstring_t* error)
 
     if (kv_size(*rowdata) != c->col_count)
     {
-        if (error) ksprintf(error, "row(%d) col(%d) != %d:%s", c->row_count + 1, kv_size(*rowdata), c->col_count, c->path->s);
+        if (error) ksprintf(error, "row(%d) col(%d) != %d:%s", (int)kv_size(c->data) + 1, kv_size(*rowdata), c->col_count, c->path->s);
         return 0;
     }
 
@@ -171,7 +169,7 @@ int csv_load(csv* c, const char* path, csv_fread func_read, void* file, kstring_
                 // 如果后面没有数据了，说明没有关闭引号，报错
                 if (next_char == END_OF_FILE)
                 {
-                    if (error) ksprintf(error, "row(%d) have no close quote:%s", c->row_count, path);
+                    if (error) ksprintf(error, "row(%d) have no close quote:%s", (int)kv_size(c->data), path);
                     result = 0;
                     break;
                 }
@@ -212,7 +210,7 @@ int csv_load(csv* c, const char* path, csv_fread func_read, void* file, kstring_
                 // 如果后面没有数据了，说明没有关闭引号，报错
                 if (next_char == END_OF_FILE)
                 {
-                    if (error) ksprintf(error, "row(%d) have no close quote:%s", c->row_count, path);
+                    if (error) ksprintf(error, "row(%d) have no close quote:%s", (int)kv_size(c->data), path);
                     result = 0;
                     break;
                 }
@@ -252,7 +250,7 @@ int csv_load(csv* c, const char* path, csv_fread func_read, void* file, kstring_
                     // 如果后面没有数据了，说明没有关闭引号，报错
                     if (next_char == END_OF_FILE)
                     {
-                        if (error) ksprintf(error, "row(%d) have no close quote:%s", c->row_count, path);
+                        if (error) ksprintf(error, "row(%d) have no close quote:%s", (int)kv_size(c->data), path);
                         result = 0;
                         break;
                     }
@@ -297,7 +295,7 @@ int csv_load(csv* c, const char* path, csv_fread func_read, void* file, kstring_
                 // 如果后面没有数据了，说明没有关闭引号，报错
                 if (next_char == END_OF_FILE)
                 {
-                    if (error) ksprintf(error, "row(%d) have no close quote:%s", c->row_count, path);
+                    if (error) ksprintf(error, "row(%d) have no close quote:%s", (int)kv_size(c->data), path);
                     result = 0;
                     break;
                 }
@@ -314,7 +312,7 @@ int csv_load(csv* c, const char* path, csv_fread func_read, void* file, kstring_
                 // 如果后面没有数据了，说明没有关闭引号，报错
                 if (next_char == END_OF_FILE)
                 {
-                    if (error) ksprintf(error, "row(%d) have no close quote:%s", c->row_count, path);
+                    if (error) ksprintf(error, "row(%d) have no close quote:%s", (int)kv_size(c->data), path);
                     result = 0;
                     break;
                 }
@@ -400,7 +398,7 @@ const char* csv_readcell(csv* c, int row, int col)
 
 int csv_rowcount(csv* c)
 {
-    return c->row_count;
+    return (int)kv_size(c->data);
 }
 
 int csv_colcount(csv* c)

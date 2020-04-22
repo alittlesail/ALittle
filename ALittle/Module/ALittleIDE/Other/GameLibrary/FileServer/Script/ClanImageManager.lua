@@ -115,7 +115,7 @@ function ClanImageManager:HandleNewDay()
 		for index, info in ___ipairs(select_list) do
 			local file_path = self:GetImagePath(info.clan_id, info.create_time)
 			if not ALittle.File_DeleteFile(file_path) then
-				ALittle.Warn("文件删除失败:" .. file_path)
+				ALittle.Warn("�ļ�ɾ��ʧ��:" .. file_path)
 			end
 		end
 	end
@@ -176,7 +176,7 @@ local ___COROUTINE = coroutine.running()
 	end
 	do
 		local data = g_ClanImageManager.cache:GetData(msg.target_clan_id)
-		Lua.Assert(data, "头像不存在")
+		Lua.Assert(data, "ͷ�񲻴���")
 		return g_ClanImageManager:GetImagePath(data.id, data.create_time), 0
 	end
 end
@@ -201,7 +201,7 @@ local ___COROUTINE = coroutine.running()
 	do
 		local data = g_ClanImageManager.cache:GetData(msg.account_id)
 		if data ~= nil and data.create_time == create_time then
-			Lua.Throw("已经有头像正在上传")
+			Lua.Throw("�Ѿ���ͷ�������ϴ�")
 		end
 		local file_path = g_ClanImageManager:GetImagePath(msg.account_id, create_time)
 		local file_dir = ALittle.File_GetFilePathByPath(file_path)

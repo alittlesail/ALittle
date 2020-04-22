@@ -48,7 +48,7 @@ local ___COROUTINE = coroutine.running()
 	local gs_info = g_LeaseManager:GetGameServerInfo(info.gs_route_num)
 	Lua.Assert(gs_info, "GS连接不存在")
 	if not info.confirm then
-		local error, result = Lua.IMsgCommon.InvokeRPC(-1627449907, gs_info.session, {})
+		local error, result = ALittle.IMsgCommon.InvokeRPC(-1627449907, gs_info.session, {})
 		if error ~= nil then
 			Lua.Throw("GS空包发送失败:" .. error)
 		end
@@ -57,7 +57,7 @@ local ___COROUTINE = coroutine.running()
 	local q_save_session = {}
 	q_save_session.account_id = msg.account_id
 	q_save_session.session = tostring(math.random(10000, 99999))
-	local error, a_save_session = Lua.IMsgCommon.InvokeRPC(-1922773679, gs_info.session, q_save_session)
+	local error, a_save_session = ALittle.IMsgCommon.InvokeRPC(-1922773679, gs_info.session, q_save_session)
 	if error ~= nil then
 		Lua.Throw("会话ID保存失败:" .. error)
 	end

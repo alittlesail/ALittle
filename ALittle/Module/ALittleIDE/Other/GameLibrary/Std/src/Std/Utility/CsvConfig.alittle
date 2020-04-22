@@ -158,7 +158,7 @@ protected class CsvTableConfig<T:struct> : CsvConfig
             if (real == null)
                 value[handle.var_name] = handle.func("", handle);
             else
-                value[handle.var_name] = handle.func(this._csv_file.ReadCell(row + 1, real), handle);
+                value[handle.var_name] = handle.func(this._csv_file.ReadCell(row, real), handle);
         }
         return cast<T>(value);
     }
@@ -191,7 +191,7 @@ public class SingleKeyTableConfig<T:struct, KEY> : CsvTableConfig
             {
                 if (is_int)
                     this._key_map[cast<KEY>(Math_ToInt(value))] = row;
-                if (is_double)
+                elseif (is_double)
                     this._key_map[cast<KEY>(Math_ToDouble(value))] = row;
                 else
                     this._key_map[cast<KEY>(value)] = row;

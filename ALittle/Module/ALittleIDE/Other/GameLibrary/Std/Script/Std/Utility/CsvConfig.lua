@@ -154,7 +154,7 @@ function CsvTableConfig:LoadCell(row)
 		if real == nil then
 			value[handle.var_name] = handle.func("", handle)
 		else
-			value[handle.var_name] = handle.func(self._csv_file:ReadCell(row + 1, real), handle)
+			value[handle.var_name] = handle.func(self._csv_file:ReadCell(row, real), handle)
 		end
 	end
 	return value
@@ -182,8 +182,7 @@ function SingleKeyTableConfig:onInit()
 		if value ~= nil then
 			if is_int then
 				self._key_map[Math_ToInt(value)] = row
-			end
-			if is_double then
+			elseif is_double then
 				self._key_map[Math_ToDouble(value)] = row
 			else
 				self._key_map[value] = row

@@ -21,13 +21,21 @@ void timer_init(timer* ts)
 
 void timer_clear(timer* ts)
 {
-    mini_heap_destory(ts->heap);
-    for (khint_t k = kh_begin(ts->map); k != kh_end(ts->map); ++k)
+    if (ts->heap)
     {
-        if (kh_exist(ts->map, k))
-            free(kh_value(ts->map, k));
+        mini_heap_destory(ts->heap);
+        ts->heap = 0;
     }
-    kh_destroy(node_info, ts->map);
+    if (ts->map)
+    {
+        for (khint_t k = kh_begin(ts->map); k != kh_end(ts->map); ++k)
+        {
+            if (kh_exist(ts->map, k))
+                free(kh_value(ts->map, k));
+        }
+        kh_destroy(node_info, ts->map);
+        ts->map = 0;
+    }
     while (ts->pool != 0)
     {
         node_info* next = ts->pool->next;
@@ -69,14 +77,7 @@ static void timer_node_release(timer* ts, node_info* node)
         return;
     }
 
-    if (ts->pool == 0)
-    {
-        ts->pool = node;
-        ++ts->pool_count;
-        return;
-    }
-
-    ts->pool->next = node;
+    node->next = ts->pool;
     ts->pool = node;
     ++ts->pool_count;
 }
@@ -131,11 +132,12 @@ int timer_remove(timer* ts, int id)
     khint_t node_it = kh_get(node_info, ts->map, id);
     if (node_it == kh_end(ts->map)) return 0;
     node_info* node = kh_value(ts->map, node_it);
-    if (node == 0) return 0;
-
-    mini_heap_erase(ts->heap, node);
-    timer_node_release(ts, node);
-    kh_del(node_info, ts->map, id);
+    if (node != 0)
+    {
+        mini_heap_erase(ts->heap, node);
+        timer_node_release(ts, node);
+    }
+    kh_del(node_info, ts->map, node_it);
     return 1;
 }
 

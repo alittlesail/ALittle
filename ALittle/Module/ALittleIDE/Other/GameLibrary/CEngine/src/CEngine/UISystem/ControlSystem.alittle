@@ -399,7 +399,10 @@ public class ControlSystem
         var target_class = info.__target_class;
         if (target_class != null)
         {
+            [Language(Lua)]
             class_func = _G;
+            [Language(JavaScript)]
+            class_func = window;
             for (var index, value in target_class)
             {
                 class_func = cast<Map<string,any>>(class_func)[value];

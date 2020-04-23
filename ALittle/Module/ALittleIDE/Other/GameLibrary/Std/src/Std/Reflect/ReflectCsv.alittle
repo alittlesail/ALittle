@@ -21,10 +21,11 @@ public struct CsvInvokeInfo
 private var floor = Math_Floor;
 private var tonumber = Math_ToDouble;
 private var maxn = List_MaxN;
+private var upper = String_Upper;
 
 private static Csv_ReadBool(string content, CsvInvokeInfo value) : bool
 {
-    return lua.String.upper(content) == "TRUE";
+    return upper(content) == "TRUE";
 }
 
 private static Csv_ReadInt(string content, CsvInvokeInfo value) : int

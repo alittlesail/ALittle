@@ -14,9 +14,10 @@ option_map = {}
 local floor = Math_Floor
 local tonumber = Math_ToDouble
 local maxn = List_MaxN
+local upper = String_Upper
 local Csv_ReadBool
 Csv_ReadBool = function(content, value)
-	return string.upper(content) == "TRUE"
+	return upper(content) == "TRUE"
 end
 
 local Csv_ReadInt

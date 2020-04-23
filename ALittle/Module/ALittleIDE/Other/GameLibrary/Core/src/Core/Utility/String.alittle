@@ -136,8 +136,7 @@ public static String_Trim(string text) : string
 // 根据分隔符拆分字符串成列表，正常版本
 public static String_Split(string target, string sep) : List<string>
 {
-    if (target == null)
-        return new List<string>();
+    if (target == null || target == "") return new List<string>();
     if (sep == null || sep == "") sep = ",";
     var fields = new List<string>();
     var fields_count = 0;
@@ -161,7 +160,7 @@ public static String_Split(string target, string sep) : List<string>
 // 根据分隔符拆分字符串成列表，正常版本
 public static String_SplitSepList(string target, List<string> sep_list) : List<string>
 {
-    if (target == null) return new List<string>();
+    if (target == null || target == "") return new List<string>();
     if (sep_list == null) sep_list = new List<string>();
     
     var fields = new List<string>();

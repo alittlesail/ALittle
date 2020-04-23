@@ -54,7 +54,7 @@ function String_Trim(text)
 end
 
 function String_Split(target, sep)
-	if target == nil then
+	if target == nil or target == "" then
 		return {}
 	end
 	if sep == nil or sep == "" then
@@ -78,7 +78,7 @@ function String_Split(target, sep)
 end
 
 function String_SplitSepList(target, sep_list)
-	if target == nil then
+	if target == nil or target == "" then
 		return {}
 	end
 	if sep_list == nil then

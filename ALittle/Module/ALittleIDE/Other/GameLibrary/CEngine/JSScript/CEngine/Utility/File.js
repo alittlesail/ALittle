@@ -22,6 +22,14 @@ ALittle.File_SaveFile = function(target_path, content, size) {
 	return JavaScript.File_SaveFile(target_path, content);
 }
 
+ALittle.File_MD5 = function(path) {
+	let content = JavaScript.File_LoadFile(path);
+	if (content === undefined) {
+		return "";
+	}
+	return md5(content);
+}
+
 ALittle.File_CopyDeepDir = function(src_path, dest_path, ext, log) {
 	JavaScript.File_CopyDeepDir(src_path, dest_path, ext, log);
 }

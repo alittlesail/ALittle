@@ -11,8 +11,9 @@ option_map : {}
 let floor = ALittle.Math_Floor;
 let tonumber = ALittle.Math_ToDouble;
 let maxn = ALittle.List_MaxN;
+let upper = ALittle.String_Upper;
 let Csv_ReadBool = function(content, value) {
-	return lua.String.upper(content) === "TRUE";
+	return upper(content) === "TRUE";
 }
 
 let Csv_ReadInt = function(content, value) {

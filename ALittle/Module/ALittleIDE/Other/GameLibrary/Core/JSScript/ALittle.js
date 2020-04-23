@@ -31,6 +31,7 @@ __ALITTLEAPI_Core_Init = function(base_path) {
 		await Require(base_path + "Core/Reflect/ReflectDefine");
 		await Require(base_path + "Core/Utility/Log");
 		await Require(base_path + "Core/Utility/List");
+		await Require(base_path + "Core/Utility/Map");
 		await Require(base_path + "Core/Utility/Math");
 		await Require(base_path + "Core/Utility/String");
 		await Require(base_path + "Core/Utility/Time");

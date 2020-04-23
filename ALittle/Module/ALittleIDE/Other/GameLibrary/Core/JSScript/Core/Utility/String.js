@@ -66,7 +66,7 @@ ALittle.String_Trim = function(text) {
 }
 
 ALittle.String_Split = function(target, sep) {
-	if (target === undefined) {
+	if (target === undefined || target === "") {
 		return [];
 	}
 	if (sep === undefined || sep === "") {
@@ -90,7 +90,7 @@ ALittle.String_Split = function(target, sep) {
 }
 
 ALittle.String_SplitSepList = function(target, sep_list) {
-	if (target === undefined) {
+	if (target === undefined || target === "") {
 		return [];
 	}
 	if (sep_list === undefined) {

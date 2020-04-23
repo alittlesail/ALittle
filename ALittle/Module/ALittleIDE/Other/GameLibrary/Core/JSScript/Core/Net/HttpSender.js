@@ -7,6 +7,8 @@ ALittle.IHttpSender = JavaScript.Class(undefined, {
 	},
 	HandleFailed : function(reason) {
 	},
+	Stop : function() {
+	},
 	SendRPC : function(thread, method, content) {
 		throw new Error("not impl");
 	},

@@ -139,7 +139,7 @@ ALittle.CsvTableConfig = JavaScript.Class(ALittle.CsvConfig, {
 			if (real === undefined) {
 				value[handle.var_name] = handle.func("", handle);
 			} else {
-				value[handle.var_name] = handle.func(this._csv_file.ReadCell(row + 1, real), handle);
+				value[handle.var_name] = handle.func(this._csv_file.ReadCell(row, real), handle);
 			}
 		}
 		return value;
@@ -164,8 +164,7 @@ ALittle.SingleKeyTableConfig = JavaScript.Class(ALittle.CsvTableConfig, {
 			if (value !== undefined) {
 				if (is_int) {
 					this._key_map.set(ALittle.Math_ToInt(value), row);
-				}
-				if (is_double) {
+				} else if (is_double) {
 					this._key_map.set(ALittle.Math_ToDouble(value), row);
 				} else {
 					this._key_map.set(value, row);

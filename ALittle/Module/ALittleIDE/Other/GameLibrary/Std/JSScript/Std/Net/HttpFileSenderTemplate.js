@@ -90,7 +90,7 @@ ALittle.HttpFileSenderTemplate = JavaScript.Class(ALittle.IHttpFileSender, {
 		this._cur_size = cur_size;
 		this._total_size = total_size;
 		if (this._callback !== undefined) {
-			this._callback();
+			this._callback(this);
 		}
 	},
 	HttpUrlAppendParamMap : function(url, param) {

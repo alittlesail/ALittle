@@ -32,5 +32,6 @@ public class WebSocket
     public set onclose(Functor<(WebSocketOnCloseEvent)> func) {}
     public set onerror(Functor<(WebSocketOnErrorEvent)> func) {}
     public fun close() {}
+    public fun send(javascript.ArrayBuffer buffer) {}
 }
     

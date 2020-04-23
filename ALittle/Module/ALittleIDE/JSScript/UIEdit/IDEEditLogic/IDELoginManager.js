@@ -65,9 +65,9 @@ option_map : {}
 ALittleIDE.IDELoginManager = JavaScript.Class(undefined, {
 	Ctor : function() {
 		let config = ALittle.CreateConfigSystem(ALittleIDE.g_ModuleBasePath + "/Other/Server.cfg");
-		this._logingate_ip = config.GetConfig("logingate_ip", "version.alittleide.com");
+		this._logingate_ip = config.GetConfig("logingate_ip", "139.159.176.119");
 		this._logingate_port = config.GetConfig("logingate_port", 1000);
-		this._version_ip = config.GetConfig("version_ip", "version.alittleide.com");
+		this._version_ip = config.GetConfig("version_ip", "139.159.176.119");
 		this._version_port = config.GetConfig("version_port", 1011);
 		this._msg_client = ALittle.CreateMsgSender(30, true);
 		this._session_id = "";
@@ -90,6 +90,7 @@ ALittleIDE.IDELoginManager = JavaScript.Class(undefined, {
 			this._account_name = ALittleIDE.g_IDEConfig.GetConfig("account_name", "");
 			this._account_pwd = ALittle.String_DecryptPassword(this._account_name, ALittleIDE.g_IDEConfig.GetConfig("account_pwd", ""));
 		}
+		this.Connect();
 	},
 	Shutdown : function() {
 		if (this._msg_client !== undefined) {

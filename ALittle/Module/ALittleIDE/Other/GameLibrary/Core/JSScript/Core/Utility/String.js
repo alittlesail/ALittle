@@ -56,8 +56,10 @@ ALittle.String_Find = function(s, t, init) {
 ALittle.String_Sub = function(s, starti, endi) {
 	if (endi === undefined) {
 		return s.slice(starti - 1);
-	} else {
+	} else if (endi >= 0) {
 		return s.slice(starti - 1, endi);
+	} else {
+		return s.slice(starti - 1, s.length + endi + 1);
 	}
 }
 

@@ -209,7 +209,7 @@ public class SessionSystem : EventDispatcher
             // 遍历调用
             for (var index, thread in list)
             {
-                var result, error = lua.coroutine.resume(thread, reason);
+                var result, error = lua.coroutine.resume(thread, reason, null);
                 if (result != true) Error(error);
             }
         }

@@ -93,7 +93,6 @@ public class HttpFileSenderTemplate<NATIVE : IHttpFileSenderNative> : IHttpFileS
         __HttpFileSenderMap[this._interface.GetID()] = null;
         var result, reason = Coroutine.Resume(this._thread, null);
         if (result != true) Error(reason);
-        
     }
     
     protected fun HandleFailed(string reason)

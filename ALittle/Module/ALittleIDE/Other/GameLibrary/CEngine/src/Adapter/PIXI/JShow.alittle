@@ -776,6 +776,7 @@ public class JTextArea : JDisplayObject
         var m = PIXI.TextMetrics.measureText(this._text, this._style);
         this._real_width = m.width;
         this._real_height = m.height;
+        this.UpdateShow();
     }
         
     public fun SetFont(string path, int size)
@@ -787,6 +788,7 @@ public class JTextArea : JDisplayObject
         var m = PIXI.TextMetrics.measureText(this._text, this._style);
         this._real_width = m.width;
         this._real_height = m.height;
+        this.UpdateShow();
     }
     
     public fun SetRed(double value)

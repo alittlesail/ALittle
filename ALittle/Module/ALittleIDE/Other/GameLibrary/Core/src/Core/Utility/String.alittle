@@ -119,8 +119,10 @@ public static String_Sub(string s, int starti, [Nullable] int endi) : string
     [Language(JavaScript)]
     if (endi == null)
         return cast<javascript.String>(s).slice(starti - 1);
-    else
+    elseif (endi >= 0)
         return cast<javascript.String>(s).slice(starti - 1, endi);
+    else
+        return cast<javascript.String>(s).slice(starti - 1, cast<javascript.String>(s).length + endi + 1);
 }
     
 // 去掉前后空格，制表符

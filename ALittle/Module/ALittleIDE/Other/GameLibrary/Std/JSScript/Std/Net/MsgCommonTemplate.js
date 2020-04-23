@@ -102,7 +102,7 @@ ALittle.IMsgCommonTemplate = JavaScript.Class(ALittle.IMsgCommon, {
 		}
 		this._id_map_rpc.delete(rpc_id);
 		if (id === 1) {
-			let [result, reason] = ALittle.Coroutine.Resume(info.thread, factory.ReadString());
+			let [result, reason] = ALittle.Coroutine.Resume(info.thread, factory.ReadString(), undefined);
 			if (result !== true) {
 				ALittle.Error(reason);
 			}
@@ -110,7 +110,7 @@ ALittle.IMsgCommonTemplate = JavaScript.Class(ALittle.IMsgCommon, {
 		}
 		let msg = this.MessageRead(factory, id);
 		if (msg === undefined) {
-			let [result, reason] = ALittle.Coroutine.Resume(info.thread, "MsgSystem.HandleMessage MessageRead failed by id:" + id);
+			let [result, reason] = ALittle.Coroutine.Resume(info.thread, "MsgSystem.HandleMessage MessageRead failed by id:" + id, undefined);
 			if (result !== true) {
 				ALittle.Error(reason);
 			}

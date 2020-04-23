@@ -41,11 +41,11 @@ class IDELoginManager
 		var config = ALittle.CreateConfigSystem(g_ModuleBasePath.."/Other/Server.cfg");
 	
 		// 登录网关
-		this._logingate_ip = config.GetConfig("logingate_ip", "version.alittleide.com");
+		this._logingate_ip = config.GetConfig("logingate_ip", "139.159.176.119");
 		this._logingate_port = config.GetConfig("logingate_port", 1000);
 	
 		// 版本服务器
-		this._version_ip = config.GetConfig("version_ip", "version.alittleide.com");
+		this._version_ip = config.GetConfig("version_ip", "139.159.176.119");
 		this._version_port = config.GetConfig("version_port", 1011);
 	
 		// 创建长连接
@@ -83,7 +83,6 @@ class IDELoginManager
 			this._account_pwd = ALittle.String_DecryptPassword(this._account_name, g_IDEConfig.GetConfig("account_pwd", ""));
 		}
 
-		[Language(Lua)]
 		this.Connect();
 	}
 	
@@ -268,7 +267,6 @@ class IDELoginManager
 		var error, result = ALittle.HandleQWebLogin(this._msg_client, param);
 		if (this._login_button != null)
 			this._login_button.disabled = false;
-
 		this._is_login = (error == null);
 		if (error != null)
 		{

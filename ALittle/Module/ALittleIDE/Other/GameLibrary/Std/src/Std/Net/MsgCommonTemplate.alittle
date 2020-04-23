@@ -130,7 +130,7 @@ public class IMsgCommonTemplate : IMsgCommon
         // 如果是RPC异常包
         if (id == 1)
         {
-            var result, reason = Coroutine.Resume(info.thread, factory.ReadString());
+            var result, reason = Coroutine.Resume(info.thread, factory.ReadString(), null);
             if (result != true) Error(reason);
             return;
         }
@@ -138,7 +138,7 @@ public class IMsgCommonTemplate : IMsgCommon
         var msg = this.MessageRead(factory, id);
         if (msg == null)
         {
-            var result, reason = Coroutine.Resume(info.thread, "MsgSystem.HandleMessage MessageRead failed by id:"..id);
+            var result, reason = Coroutine.Resume(info.thread, "MsgSystem.HandleMessage MessageRead failed by id:"..id, null);
             if (result != true) Error(reason);
             Log("MsgSystem.HandleMessage MessageRead failed by id:"..id);
             return;

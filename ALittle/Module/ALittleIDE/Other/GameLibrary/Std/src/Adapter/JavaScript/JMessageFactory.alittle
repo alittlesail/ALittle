@@ -102,6 +102,18 @@ public class JMessageWriteFactory : ALittle.IMessageWriteFactory
         this._size += 8;
         return 8;
     }
+
+    public fun GetArrayBuffer() : javascript.ArrayBuffer
+    {
+		var new_data = new javascript.ArrayBuffer(this._size + 12);
+		var new_view = new javascript.DataView(new_data);
+        new_view.setInt32(0, this._size, true);
+        new_view.setInt32(4, this._id, true);
+        new_view.setInt32(8, this._rpc_id, true);
+        for (var i = 0; i < this._size; 1)
+            new_view.setUint8(12 + i, this._memory.getUint8(i));
+		return new_data;
+    }
 }
 
 public class JMessageReadFactory : ALittle.IMessageReadFactory
@@ -113,16 +125,18 @@ public class JMessageReadFactory : ALittle.IMessageReadFactory
     private int _data_size;                 // 消息体字节总数
     private int _last_read_size;            // 上一次读取的字节数
     private javascript.DataView _memory;    // 消息头+消息体
+    private int _offset;                    // buffer的偏移位置
     
-    public ctor(javascript.DataView data)
+    public ctor(javascript.DataView data, int offset)
     {
+        this._memory = data;
+        this._offset = offset;
         this._total_size = data.byteLength;
         this._read_size = 0;
         this._data_size = this.ReadInt();
         this._id = this.ReadInt();
         this._rpc_id = this.ReadInt();
         this._last_read_size = 0;
-        this._memory = data;
     }
     
     public fun GetID() : int { return this._id; }
@@ -169,7 +183,7 @@ public class JMessageReadFactory : ALittle.IMessageReadFactory
 		    return "";
 	    }
         // 获取字符串长度，这个长度包括了最后的\0
-	    var len = this._memory.getInt32(this._read_size); // include '\0'
+	    var len = this._memory.getInt32(this._read_size, true); // include '\0'
 	    if (len <= 0)
         {
             this._last_read_size = -1;
@@ -180,7 +194,7 @@ public class JMessageReadFactory : ALittle.IMessageReadFactory
         this._read_size += 4;
         // utf8转为字符串
         var value = "";
-        if (len > 1) value = __TEXTDECODER.decode(new javascript.Uint8Array(this._memory.buffer, this._read_size, len - 1));
+        if (len > 1) value = __TEXTDECODER.decode(new javascript.Uint8Array(this._memory.buffer, this._offset + this._read_size, len - 1));
         // 向前走len
         this._read_size += len;
         this._last_read_size = len + 4;

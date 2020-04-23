@@ -161,7 +161,7 @@ function SessionSystem:HandleConnectSessionFailed(route_type, route_num, reason)
 	if list ~= nil then
 		self._invoke_map[key] = nil
 		for index, thread in ___ipairs(list) do
-			local result, error = coroutine.resume(thread, reason)
+			local result, error = coroutine.resume(thread, reason, nil)
 			if result ~= true then
 				Error(error)
 			end

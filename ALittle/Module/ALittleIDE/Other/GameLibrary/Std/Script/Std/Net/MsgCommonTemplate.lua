@@ -117,7 +117,7 @@ function IMsgCommonTemplate:HandleMessage(id, rpc_id, factory)
 	end
 	self._id_map_rpc[rpc_id] = nil
 	if id == 1 then
-		local result, reason = Coroutine.Resume(info.thread, factory:ReadString())
+		local result, reason = Coroutine.Resume(info.thread, factory:ReadString(), nil)
 		if result ~= true then
 			Error(reason)
 		end
@@ -125,7 +125,7 @@ function IMsgCommonTemplate:HandleMessage(id, rpc_id, factory)
 	end
 	local msg = self:MessageRead(factory, id)
 	if msg == nil then
-		local result, reason = Coroutine.Resume(info.thread, "MsgSystem.HandleMessage MessageRead failed by id:" .. id)
+		local result, reason = Coroutine.Resume(info.thread, "MsgSystem.HandleMessage MessageRead failed by id:" .. id, nil)
 		if result ~= true then
 			Error(reason)
 		end

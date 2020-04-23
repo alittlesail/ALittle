@@ -30,10 +30,10 @@ public class JNetBuffer
 		}
     }
     
-    public fun Read() : javascript.DataView
+    public fun Read() : javascript.DataView, int
     {
         // 如果数据还不足头部大小，那么直接返回
-		if (this._dsize < 12) return null;
+		if (this._dsize < 12) return null, 0;
         
         // 读取头部大小
 		if (this._dsize >= 4)
@@ -42,13 +42,14 @@ public class JNetBuffer
         // 检查协议体大小
         if (this._dsize - 12 >= this._msize)
         {
+            var offset = this._dstart;
             var data = new javascript.DataView(this._memory.buffer, this._dstart, this._msize + 12);
             this._dstart += this._msize + 12;
             this._dsize -= this._msize + 12;
-            return data;
+            return data, offset;
         }
         
-		return null;
+		return null, 0;
     }
     
     // 把后面的数据全部整到前面
@@ -137,8 +138,14 @@ public class JMsgInterface : ALittle.IMsgCommonNative
 		this._net_system.onclose = bind(this.HandleClose, this);
 		this._net_system.onerror = bind(this.HandleError, this);
     }
-    public fun IsConnected() : bool { return false; }      // 是否已经连接
-    public fun SendFactory(ALittle.IMessageWriteFactory factory) {}  // 发送请求
+    public fun IsConnected() : bool
+    {
+        return this._net_status == JConnectStatus.NET_CONNECTED;
+    }
+    public fun SendFactory(ALittle.IMessageWriteFactory factory)
+    {
+		this._net_system.send(cast<JMessageWriteFactory>(factory).GetArrayBuffer());
+    }
     public fun Close()
     {
         if (this._net_status == JConnectStatus.NET_IDLE)
@@ -184,10 +191,10 @@ public class JMsgInterface : ALittle.IMsgCommonNative
         this._net_buffer.Add(event.data);
 		while (true)
 		{
-            var data = this._net_buffer.Read();
+            var data, offset = this._net_buffer.Read();
             if (data == null) break;
             
-			var factory = new JMessageReadFactory(data);
+			var factory = new JMessageReadFactory(data, offset);
             ALittle.__ALITTLEAPI_Message(this._id, factory.GetID(), factory.GetRpcID(), factory);
 		}
         

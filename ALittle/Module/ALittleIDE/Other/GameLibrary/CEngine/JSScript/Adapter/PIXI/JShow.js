@@ -748,6 +748,7 @@ JavaScript.JTextArea = JavaScript.Class(JavaScript.JDisplayObject, {
 		let m = PIXI.TextMetrics.measureText(this._text, this._style);
 		this._real_width = m.width;
 		this._real_height = m.height;
+		this.UpdateShow();
 	},
 	SetFont : function(path, size) {
 		this._style.fontFamily = path;
@@ -756,6 +757,7 @@ JavaScript.JTextArea = JavaScript.Class(JavaScript.JDisplayObject, {
 		let m = PIXI.TextMetrics.measureText(this._text, this._style);
 		this._real_width = m.width;
 		this._real_height = m.height;
+		this.UpdateShow();
 	},
 	SetRed : function(value) {
 		this._red = Math.floor(value * 255);

@@ -20,18 +20,19 @@ JavaScript.JNetBuffer = JavaScript.Class(undefined, {
 	},
 	Read : function() {
 		if (this._dsize < 12) {
-			return undefined;
+			return [undefined, 0];
 		}
 		if (this._dsize >= 4) {
 			this._msize = this._memory.getUint32(this._dstart, true);
 		}
 		if (this._dsize - 12 >= this._msize) {
+			let offset = this._dstart;
 			let data = new DataView(this._memory.buffer, this._dstart, this._msize + 12);
 			this._dstart = this._dstart + (this._msize + 12);
 			this._dsize = this._dsize - (this._msize + 12);
-			return data;
+			return [data, offset];
 		}
-		return undefined;
+		return [undefined, 0];
 	},
 	Optimizes : function() {
 		if (this._dstart < 100) {
@@ -101,9 +102,10 @@ JavaScript.JMsgInterface = JavaScript.Class(ALittle.IMsgCommonNative, {
 		this._net_system.onerror = this.HandleError.bind(this);
 	},
 	IsConnected : function() {
-		return false;
+		return this._net_status === JavaScript.JConnectStatus.NET_CONNECTED;
 	},
 	SendFactory : function(factory) {
+		this._net_system.send(factory.GetArrayBuffer());
 	},
 	Close : function() {
 		if (this._net_status === JavaScript.JConnectStatus.NET_IDLE) {
@@ -142,11 +144,11 @@ JavaScript.JMsgInterface = JavaScript.Class(ALittle.IMsgCommonNative, {
 		}
 		this._net_buffer.Add(event.data);
 		while (true) {
-			let data = this._net_buffer.Read();
+			let [data, offset] = this._net_buffer.Read();
 			if (data === undefined) {
 				break;
 			}
-			let factory = ALittle.NewObject(JavaScript.JMessageReadFactory, data);
+			let factory = ALittle.NewObject(JavaScript.JMessageReadFactory, data, offset);
 			ALittle.__ALITTLEAPI_Message(this._id, factory.GetID(), factory.GetRpcID(), factory);
 		}
 		this._net_buffer.Optimizes();

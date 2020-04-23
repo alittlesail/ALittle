@@ -148,8 +148,7 @@ ALittleIDE.IDEExport = JavaScript.Class(undefined, {
 	PackagePath : function(src_path, dst_path, file_type, crypt_mode) {
 		ALittle.Log("========PackagePath:" + src_path + "========");
 		if (ALittle.File_GetFileAttr(src_path) === undefined) {
-			ALittle.Error("IDEExport:PackagePath src_path is not exist:" + src_path);
-			return undefined;
+			return {};
 		}
 		if (ALittle.File_GetFileAttr(dst_path) === undefined) {
 			ALittle.File_MakeDeepDir(dst_path);
@@ -249,12 +248,17 @@ ALittleIDE.IDEExport = JavaScript.Class(undefined, {
 				map_list[count - 1] = result;
 			}
 		}
-		let result = this.PackagePath(ALittle.File_BaseFilePath() + "Module/ALittleIDE/Other/GameLibrary/Std/Script", export_common_path + "/Std", "Std", true);
+		let result = this.PackagePath(ALittle.File_BaseFilePath() + "Module/ALittleIDE/Other/GameLibrary/Core/Script", export_common_path + "/Core", "Core", true);
 		if (result !== undefined) {
 			++ count;
 			map_list[count - 1] = result;
 		}
-		result = this.PackagePath(ALittle.File_BaseFilePath() + "Module/ALittleIDE/Other/GameLibrary/Engine/Script", export_common_path + "/Engine", "Engine", true);
+		result = this.PackagePath(ALittle.File_BaseFilePath() + "Module/ALittleIDE/Other/GameLibrary/Std/Script", export_common_path + "/Std", "Std", true);
+		if (result !== undefined) {
+			++ count;
+			map_list[count - 1] = result;
+		}
+		result = this.PackagePath(ALittle.File_BaseFilePath() + "Module/ALittleIDE/Other/GameLibrary/CEngine/Script", export_common_path + "/CEngine", "CEngine", true);
 		if (result !== undefined) {
 			++ count;
 			map_list[count - 1] = result;
@@ -387,9 +391,11 @@ ALittleIDE.IDEExport = JavaScript.Class(undefined, {
 			return;
 		}
 		if (package_info.platform === "Android") {
-			ALittle.File_SaveFile(package_info.export_path + "/assets/Enter.ali", package_info.project_name, -1);
+			ALittle.File_MakeDir(package_info.export_path + "/assets/Module");
+			ALittle.File_SaveFile(package_info.export_path + "/assets/Module/Enter.ali", package_info.project_name, -1);
 		} else {
-			ALittle.File_SaveFile(package_info.export_path + "/Enter.ali", package_info.project_name, -1);
+			ALittle.File_MakeDir(package_info.export_path + "/Module");
+			ALittle.File_SaveFile(package_info.export_path + "/Module/Enter.ali", package_info.project_name, -1);
 		}
 		ALittle.File_CopyDeepDir(package_info.project_path + "/Export/Common", package_info.export_module_path);
 		let submit_info = {};
@@ -684,7 +690,7 @@ ALittleIDE.IDEExport = JavaScript.Class(undefined, {
 				let repeat_count = 0;
 				while (repeat_count < 1) {
 					++ repeat_count;
-					this._submit_client = ALittle.CreateHttpFileSender(ALittleIDE.g_IDELoginManager.http_ip, ALittleIDE.g_IDELoginManager.http_port, submit_info.export_module_path + "/" + file_path, 0, this.HandleSubmitVersionUpload.bind(this, upload_index, total_count, this._submit_client));
+					this._submit_client = ALittle.CreateHttpFileSender(ALittleIDE.g_IDELoginManager.http_ip, ALittleIDE.g_IDELoginManager.http_port, submit_info.export_module_path + "/" + file_path, 0, this.HandleSubmitVersionUpload.bind(this, upload_index, total_count));
 					error = await ALittle.IHttpFileSender.InvokeUpload("VersionServer.QUploadVersionFile", this._submit_client, param);
 					if (error === undefined) {
 						break;
@@ -705,7 +711,7 @@ ALittleIDE.IDEExport = JavaScript.Class(undefined, {
 				let repeat_count = 0;
 				while (repeat_count < 100) {
 					++ repeat_count;
-					this._submit_client = ALittle.CreateHttpFileSender(ALittleIDE.g_IDELoginManager.http_ip, ALittleIDE.g_IDELoginManager.http_port, submit_info.project_path + "/Export/" + submit_info.install_name, 0, this.HandleSubmitVersionUpload.bind(this, upload_index, total_count, this._submit_client));
+					this._submit_client = ALittle.CreateHttpFileSender(ALittleIDE.g_IDELoginManager.http_ip, ALittleIDE.g_IDELoginManager.http_port, submit_info.project_path + "/Export/" + submit_info.install_name, 0, this.HandleSubmitVersionUpload.bind(this, upload_index, total_count));
 					error = await ALittle.IHttpFileSender.InvokeUpload("VersionServer.QUploadVersionFile", this._submit_client, param);
 					if (error === undefined) {
 						break;
@@ -726,7 +732,7 @@ ALittleIDE.IDEExport = JavaScript.Class(undefined, {
 				let repeat_count = 0;
 				while (repeat_count < 100) {
 					++ repeat_count;
-					this._submit_client = ALittle.CreateHttpFileSender(ALittleIDE.g_IDELoginManager.http_ip, ALittleIDE.g_IDELoginManager.http_port, submit_info.export_module_path + "/CurVersion.db", 0, this.HandleSubmitVersionUpload.bind(this, upload_index, total_count, this._submit_client));
+					this._submit_client = ALittle.CreateHttpFileSender(ALittleIDE.g_IDELoginManager.http_ip, ALittleIDE.g_IDELoginManager.http_port, submit_info.export_module_path + "/CurVersion.db", 0, this.HandleSubmitVersionUpload.bind(this, upload_index, total_count));
 					error = await ALittle.IHttpFileSender.InvokeUpload("VersionServer.QUploadVersionFile", this._submit_client, param);
 					if (error === undefined) {
 						break;

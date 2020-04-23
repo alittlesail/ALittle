@@ -34,27 +34,18 @@ JavaScript.JCsvFile = JavaScript.Class(ALittle.ICsvFile, {
 		this._data = [];
 		let data_index = 1;
 		let char_index = 0;
-		let cur_char = undefined;
-		let size = content.length;
-		if (size === 0) {
+		if (char_index >= content.length) {
 			ALittle.Error("file is empty:" + this._file_path);
 			return false;
 		}
-		if (cur_char === 0) {
-			ALittle.Error("row(" + ((this._row_count + 1)) + ") has char is 0");
-			return false;
-		}
-		let next_char = undefined;
-		next_char = content.charCodeAt(char_index);
-		if (size === 0) {
+		let cur_char = content.charCodeAt(char_index);
+		++ char_index;
+		if (char_index >= content.length) {
 			this._data[1 - 1] = [];
 			this._data[1 - 1][1 - 1] = String.fromCharCode(cur_char);
 			return true;
 		}
-		if (next_char === 0) {
-			ALittle.Error("row(" + ((this._row_count + 1)) + ") has char is 0");
-			return false;
-		}
+		let next_char = content.charCodeAt(char_index);
 		let in_quote = false;
 		let row = [];
 		let row_index = 0;
@@ -62,7 +53,7 @@ JavaScript.JCsvFile = JavaScript.Class(ALittle.ICsvFile, {
 		while (true) {
 			if (cur_char === 44) {
 				if (in_quote) {
-					cell = cell + String.fromCharCode(cur_char);
+					cell = cell + ",";
 					if (next_char === undefined) {
 						ALittle.Error("row(" + this._row_count + ") have no close quote");
 						return false;
@@ -83,7 +74,7 @@ JavaScript.JCsvFile = JavaScript.Class(ALittle.ICsvFile, {
 				}
 			} else if (cur_char === 10) {
 				if (in_quote) {
-					cell = cell + String.fromCharCode(cur_char);
+					cell = cell + "\n";
 					if (next_char === undefined) {
 						ALittle.Error("row(" + this._row_count + ") have no close quote");
 						return false;
@@ -128,7 +119,7 @@ JavaScript.JCsvFile = JavaScript.Class(ALittle.ICsvFile, {
 					if (cell.length === 0) {
 						in_quote = true;
 					} else {
-						cell = cell + String.fromCharCode(cur_char);
+						cell = cell + "\"";
 					}
 					if (next_char === undefined) {
 						ALittle.Error("row(" + this._row_count + ") have no close quote");

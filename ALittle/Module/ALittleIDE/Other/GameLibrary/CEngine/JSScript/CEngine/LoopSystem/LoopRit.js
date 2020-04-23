@@ -66,7 +66,7 @@ ALittle.LoopRit = JavaScript.Class(ALittle.LoopObject, {
 		time = time - (this._total_delay_time);
 		if (time < this._total_time) {
 			this._accumulate_time = time;
-			let current_value = (this._target_value - this._init_value) * lua.math.sin((this._accumulate_time / this._total_time) * 1.57) + this._init_value;
+			let current_value = (this._target_value - this._init_value) * ALittle.Math_Sin((this._accumulate_time / this._total_time) * 1.57) + this._init_value;
 			this._target[this._property] = current_value;
 			return [0, false];
 		}
@@ -93,7 +93,7 @@ ALittle.LoopRit = JavaScript.Class(ALittle.LoopObject, {
 		if (this._accumulate_time > this._total_time) {
 			this._accumulate_time = this._total_time;
 		}
-		let current_value = (this._target_value - this._init_value) * lua.math.sin((this._accumulate_time / this._total_time) * 1.57) + this._init_value;
+		let current_value = (this._target_value - this._init_value) * ALittle.Math_Sin((this._accumulate_time / this._total_time) * 1.57) + this._init_value;
 		this._target[this._property] = current_value;
 		if (this._func !== undefined) {
 			this._func();

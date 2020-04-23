@@ -227,7 +227,16 @@ private static PS_ReadArray(IMessageReadFactory factory, ProtocolInvokeInfo var_
 private static PS_ReadMap(IMessageReadFactory factory, ProtocolInvokeInfo var_info, any parent, int l) : Map<string, any>, int
 {
     if (l == 0)
+    {
+        [Language(JavaScript)]
+        if (var_info.key_info.rfunc != PS_ReadString)
+            return new Map<any, any>(), 0;
+        else
+            return new Map<string, any>(), 0;
+        [Language(Lua)]
         return new Map<string, any>(), 0;
+    }
+
     var save_len = l;
     if (l < 4)
         return null, -1;
@@ -239,20 +248,60 @@ private static PS_ReadMap(IMessageReadFactory factory, ProtocolInvokeInfo var_in
     var key_func = key_info.rfunc;
     var value_info = var_info.value_info;
     var value_func = value_info.rfunc;
-    var value_map = new Map<string, any>();
-    for (var index = 1; index <= count; 1)
+
+    [Language(Lua)]
     {
-        var key, key_len = key_func(factory, key_info, value_map, l);
-        if (key_len < 0)
-            return null, key_len;
-        l = l - key_len;
-        var value, value_len = value_func(factory, value_info, value_map, l);
-        if (value_len < 0)
-            return null, value_len;
-        l = l - value_len;
-        value_map[key] = value;
+        var value_map = new Map<string, any>();
+        for (var index = 1; index <= count; 1)
+        {
+            var key, key_len = key_func(factory, key_info, value_map, l);
+            if (key_len < 0)
+                return null, key_len;
+            l = l - key_len;
+            var value, value_len = value_func(factory, value_info, value_map, l);
+            if (value_len < 0)
+                return null, value_len;
+            l = l - value_len;
+            value_map[key] = value;
+        }
+        return value_map, save_len - l;
     }
-    return value_map, save_len - l;
+    
+    [Language(JavaScript)]
+    if (var_info.key_info.rfunc != PS_ReadString)
+    {
+        var value_map = new Map<any, any>();
+        for (var index = 1; index <= count; 1)
+        {
+            var key, key_len = key_func(factory, key_info, value_map, l);
+            if (key_len < 0)
+                return null, key_len;
+            l = l - key_len;
+            var value, value_len = value_func(factory, value_info, value_map, l);
+            if (value_len < 0)
+                return null, value_len;
+            l = l - value_len;
+            value_map[key] = value;
+        }
+        return value_map, save_len - l;
+    }
+    else
+    {
+        var value_map = new Map<string, any>();
+        for (var index = 1; index <= count; 1)
+        {
+            var key, key_len = key_func(factory, key_info, value_map, l);
+            if (key_len < 0)
+                return null, key_len;
+            l = l - key_len;
+            var value, value_len = value_func(factory, value_info, value_map, l);
+            if (value_len < 0)
+                return null, value_len;
+            l = l - value_len;
+            value_map[key] = value;
+        }
+        return value_map, save_len - l;
+    }
 }
 
 private static PS_ReadMessage(IMessageReadFactory factory, ProtocolInvokeInfo var_info, any parent, int l) : any, int

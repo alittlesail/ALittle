@@ -147,14 +147,14 @@ ALittle.Sprite = JavaScript.Class(ALittle.DisplayObject, {
 	},
 	set row_index(value) {
 		this._row_index = value;
-		this._show.SetRowColIndex(this._row_index - 1, this._col_index - 1);
+		this._show.SetRowColIndex(this._row_index, this._col_index);
 	},
 	get row_index() {
 		return this._row_index;
 	},
 	set col_index(value) {
 		this._col_index = value;
-		this._show.SetRowColIndex(this._row_index - 1, this._col_index - 1);
+		this._show.SetRowColIndex(this._row_index, this._col_index);
 	},
 	get col_index() {
 		return this._col_index;
@@ -162,7 +162,7 @@ ALittle.Sprite = JavaScript.Class(ALittle.DisplayObject, {
 	SetRowCol : function(row, col) {
 		this._row_index = row;
 		this._col_index = col;
-		this._show.SetRowColIndex(this._row_index - 1, this._col_index - 1);
+		this._show.SetRowColIndex(this._row_index, this._col_index);
 	},
 	get flip() {
 		return this._flip;

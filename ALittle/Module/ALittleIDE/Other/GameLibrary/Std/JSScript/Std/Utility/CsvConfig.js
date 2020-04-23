@@ -234,6 +234,9 @@ ALittle.DoubleKeyTableConfig = JavaScript.Class(ALittle.CsvTableConfig, {
 					}
 				}
 			}
+			if (tmp === undefined) {
+				continue;
+			}
 			value = this._csv_file.ReadCell(row, second_key_index);
 			if (value !== undefined) {
 				if (second_is_int) {

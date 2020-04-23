@@ -15,8 +15,10 @@ JavaScript.JCsvFileLoader = JavaScript.Class(ALittle.ICsvFileLoader, {
 	StartImpl : async function() {
 		let host = location.host;
 		let port = ALittle.Math_ToInt(location.port);
-		let base_url = ALittle.File_GetFilePathByPath(location.pathname) + "/";
-		let path = base_url + this._file_path;
+		if (port === undefined) {
+			port = 80;
+		}
+		let path = this._file_path;
 		ALittle.File_MakeDeepDir(ALittle.File_GetFilePathByPath(path));
 		let error = await ALittle.HttpDownloadRequest(host, port, path, path);
 		if (error !== undefined) {
@@ -26,16 +28,8 @@ JavaScript.JCsvFileLoader = JavaScript.Class(ALittle.ICsvFileLoader, {
 			}
 			return;
 		}
-		let content = JavaScript.File_LoadFile(path);
-		if (content === undefined) {
-			let func = window["__ALITTLEAPI_CsvFileLoadFailed"];
-			if (func !== undefined) {
-				func(this);
-			}
-			return;
-		}
 		let file = ALittle.NewObject(JavaScript.JCsvFile);
-		if (!file.Load(content)) {
+		if (!file.Load(path)) {
 			let func = window["__ALITTLEAPI_CsvFileLoadFailed"];
 			if (func !== undefined) {
 				func(this);

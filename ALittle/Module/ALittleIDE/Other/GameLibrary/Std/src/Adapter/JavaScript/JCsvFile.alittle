@@ -61,34 +61,23 @@ public class JCsvFile : ALittle.ICsvFile
         // 字符游标
         var char_index = 0;
         
-        // 读取第一个字符
-        var cur_char:int = null;
-        var size = cast<javascript.String>(content).length;
-        if (size == 0)
+        if (char_index >= cast<javascript.String>(content).length)
         {
             ALittle.Error("file is empty:"..this._file_path);
             return false;
         }
-        if (cur_char == 0)
-        {
-            ALittle.Error("row("..(this._row_count + 1)..") has char is 0");
-            return false;
-        }
+        // 读取第一个字符
+        var cur_char:int = cast<javascript.String>(content).charCodeAt(char_index);
+        ++char_index;
             
         // 读取下一个字符
-        var next_char:int = null;
-        next_char = cast<javascript.String>(content).charCodeAt(char_index);
-        if (size == 0)
+        if (char_index >= cast<javascript.String>(content).length)
         {
             this._data[1] = new List<string>();
             this._data[1][1] = javascript.String.fromCharCode(cur_char);
             return true;
         }
-        if (next_char == 0)
-        {
-            ALittle.Error("row("..(this._row_count + 1)..") has char is 0");
-            return false;
-        }
+        var next_char:int = cast<javascript.String>(content).charCodeAt(char_index);
         
         // 标记当前是否在引号中
         var in_quote = false;
@@ -108,7 +97,7 @@ public class JCsvFile : ALittle.ICsvFile
                 if (in_quote)
                 {
                     // 添加到列
-                    cell = cell..javascript.String.fromCharCode(cur_char);
+                    cell = cell..",";
                     
                     // 如果后面没有数据了，说明没有关闭引号，报错
                     if (next_char == null)
@@ -145,7 +134,7 @@ public class JCsvFile : ALittle.ICsvFile
                 if (in_quote)
                 {
                     // 添加到列
-                    cell = cell..javascript.String.fromCharCode(cur_char);
+                    cell = cell.."\n";
                     
                     // 如果后面没有数据了，说明没有关闭引号，报错
                     if (next_char == null)
@@ -223,7 +212,7 @@ public class JCsvFile : ALittle.ICsvFile
                     // 如果当前已经有数据了，那么直接当做普通字符
                     else
                     {
-                        cell = cell..javascript.String.fromCharCode(cur_char);
+                        cell = cell .."\"";
                     }
 
         

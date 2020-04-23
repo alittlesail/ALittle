@@ -257,6 +257,9 @@ function DoubleKeyTableConfig:onInit()
 				end
 			end
 		end
+		if tmp == nil then
+			goto continue_1
+		end
 		value = self._csv_file:ReadCell(row, second_key_index)
 		if value ~= nil then
 			if second_is_int then
@@ -267,6 +270,7 @@ function DoubleKeyTableConfig:onInit()
 				tmp[value] = row
 			end
 		end
+		::continue_1::
 		row = row+(1)
 	end
 end

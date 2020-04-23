@@ -237,7 +237,7 @@ public class Sprite : DisplayObject
     public set row_index(int value)
     {
         this._row_index = value;
-        this._show.SetRowColIndex(this._row_index - 1, this._col_index - 1);
+        this._show.SetRowColIndex(this._row_index, this._col_index);
     }
     public get row_index() : int
     {
@@ -247,7 +247,7 @@ public class Sprite : DisplayObject
     public set col_index(int value)
     {
         this._col_index = value;
-        this._show.SetRowColIndex(this._row_index - 1, this._col_index - 1);
+        this._show.SetRowColIndex(this._row_index, this._col_index);
     }
     public get col_index() : int
     {
@@ -258,7 +258,7 @@ public class Sprite : DisplayObject
     {
         this._row_index = row;
         this._col_index = col;
-        this._show.SetRowColIndex(this._row_index - 1, this._col_index - 1);
+        this._show.SetRowColIndex(this._row_index, this._col_index);
     }
     
     public get flip() : int

@@ -231,7 +231,11 @@ let PS_ReadArray = function(factory, var_info, parent, l) {
 
 let PS_ReadMap = function(factory, var_info, parent, l) {
 	if (l === 0) {
-		return [{}, 0];
+		if (var_info.key_info.rfunc !== PS_ReadString) {
+			return [new Map(), 0];
+		} else {
+			return [{}, 0];
+		}
 	}
 	let save_len = l;
 	if (l < 4) {
@@ -246,21 +250,39 @@ let PS_ReadMap = function(factory, var_info, parent, l) {
 	let key_func = key_info.rfunc;
 	let value_info = var_info.value_info;
 	let value_func = value_info.rfunc;
-	let value_map = {};
-	for (let index = 1; index <= count; index += 1) {
-		let [key, key_len] = key_func(factory, key_info, value_map, l);
-		if (key_len < 0) {
-			return [undefined, key_len];
+	if (var_info.key_info.rfunc !== PS_ReadString) {
+		let value_map = new Map();
+		for (let index = 1; index <= count; index += 1) {
+			let [key, key_len] = key_func(factory, key_info, value_map, l);
+			if (key_len < 0) {
+				return [undefined, key_len];
+			}
+			l = l - key_len;
+			let [value, value_len] = value_func(factory, value_info, value_map, l);
+			if (value_len < 0) {
+				return [undefined, value_len];
+			}
+			l = l - value_len;
+			value_map.set(key, value);
 		}
-		l = l - key_len;
-		let [value, value_len] = value_func(factory, value_info, value_map, l);
-		if (value_len < 0) {
-			return [undefined, value_len];
+		return [value_map, save_len - l];
+	} else {
+		let value_map = {};
+		for (let index = 1; index <= count; index += 1) {
+			let [key, key_len] = key_func(factory, key_info, value_map, l);
+			if (key_len < 0) {
+				return [undefined, key_len];
+			}
+			l = l - key_len;
+			let [value, value_len] = value_func(factory, value_info, value_map, l);
+			if (value_len < 0) {
+				return [undefined, value_len];
+			}
+			l = l - value_len;
+			value_map[key] = value;
 		}
-		l = l - value_len;
-		value_map[key] = value;
+		return [value_map, save_len - l];
 	}
-	return [value_map, save_len - l];
 }
 
 let PS_ReadMessage = function(factory, var_info, parent, l) {

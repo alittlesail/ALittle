@@ -301,7 +301,7 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 		let class_func = undefined;
 		let target_class = info.__target_class;
 		if (target_class !== undefined) {
-			class_func = _G;
+			class_func = window;
 			let ___OBJECT_11 = target_class;
 			for (let index = 1; index <= ___OBJECT_11.length; ++index) {
 				let value = ___OBJECT_11[index - 1];

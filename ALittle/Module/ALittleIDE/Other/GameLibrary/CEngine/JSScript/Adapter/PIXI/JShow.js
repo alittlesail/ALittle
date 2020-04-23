@@ -36,15 +36,19 @@ JavaScript.JDisplayObject = JavaScript.Class(ALittle.IDisplayObject, {
 		this._pivot = new PIXI.Point(0, 0);
 		this._clip = false;
 		this._visible = true;
+		this._x = 0;
+		this._y = 0;
 	},
 	get native() {
 		return this._native;
 	},
 	SetX : function(x) {
-		this._native.x = Math.floor(x);
+		this._x = x;
+		this._native.x = Math.floor(x + this._pivot.x);
 	},
 	SetY : function(y) {
-		this._native.y = Math.floor(y);
+		this._y = y;
+		this._native.y = Math.floor(y + this._pivot.y);
 	},
 	SetScaleX : function(value) {
 		this._scale.x = value;
@@ -57,13 +61,15 @@ JavaScript.JDisplayObject = JavaScript.Class(ALittle.IDisplayObject, {
 	SetCenterX : function(value) {
 		this._pivot.x = value;
 		this._native.pivot = this._pivot;
+		this._native.x = Math.floor(this._x + this._pivot.x);
 	},
 	SetCenterY : function(value) {
 		this._pivot.y = value;
 		this._native.pivot = this._pivot;
+		this._native.y = Math.floor(this._y + this._pivot.y);
 	},
 	SetAngle : function(value) {
-		this._native.rotation = value;
+		this._native.angle = value;
 	},
 	SetWidth : function(value) {
 	},
@@ -471,8 +477,8 @@ JavaScript.JSprite = JavaScript.Class(JavaScript.JDisplayObject, {
 	Ctor : function() {
 		this._row_count = 1;
 		this._col_count = 1;
-		this._row = 1;
-		this._col = 1;
+		this._row = 0;
+		this._col = 0;
 		this._tex_width = 0;
 		this._tex_height = 0;
 		this._native = new PIXI.Sprite();
@@ -494,7 +500,15 @@ JavaScript.JSprite = JavaScript.Class(JavaScript.JDisplayObject, {
 		this._tex_height = texture.GetHeight();
 		let tile_width = this._tex_width / this._col_count;
 		let tile_height = this._tex_height / this._row_count;
-		let frame = new PIXI.Rectangle((this._col - 1) * tile_width, (this._row - 1) * tile_height, tile_width, tile_height);
+		let row = this._row;
+		let col = this._col;
+		if (row < 0 || row >= this._row_count) {
+			row = 0;
+		}
+		if (col < 0 || col >= this._col_count) {
+			col = 0;
+		}
+		let frame = new PIXI.Rectangle(col * tile_width, row * tile_height, tile_width, tile_height);
 		this._texture = new PIXI.Texture(texture.native.baseTexture, frame, texture.native.orig, texture.native.trim, texture.native.rotate);
 		this._native.texture = this._texture;
 	},
@@ -509,23 +523,11 @@ JavaScript.JSprite = JavaScript.Class(JavaScript.JDisplayObject, {
 		if (this._col_count < 1) {
 			this._col_count = 1;
 		}
-		if (this._row < 1 || this._row > this._row_count) {
-			this._row = 1;
-		}
-		if (this._col < 1 || this._col > this._col_count) {
-			this._col = 1;
-		}
 		this.UpdateFrame();
 	},
 	SetRowColIndex : function(row, col) {
-		this._row = row;
-		this._col = col;
-		if (this._row < 1 || this._row > this._row_count) {
-			this._row = 1;
-		}
-		if (this._col < 1 || this._col > this._col_count) {
-			this._col = 1;
-		}
+		this._row = row - 1;
+		this._col = col - 1;
 		this.UpdateFrame();
 	},
 	UpdateFrame : function() {
@@ -534,8 +536,15 @@ JavaScript.JSprite = JavaScript.Class(JavaScript.JDisplayObject, {
 		}
 		let tile_width = this._tex_width / this._col_count;
 		let tile_height = this._tex_height / this._row_count;
-		let frame = new PIXI.Rectangle((this._col - 1) * tile_width, (this._row - 1) * tile_height, tile_width, tile_height);
-		this._texture.frame = new PIXI.Rectangle((this._col - 1) * tile_width, (this._row - 1) * tile_height, tile_width, tile_height);
+		let row = this._row;
+		let col = this._col;
+		if (row < 0 || row >= this._row_count) {
+			row = 0;
+		}
+		if (col < 0 || col >= this._col_count) {
+			col = 0;
+		}
+		this._texture.frame = new PIXI.Rectangle(col * tile_width, row * tile_height, tile_width, tile_height);
 	},
 }, "JavaScript.JSprite");
 
@@ -673,8 +682,6 @@ JavaScript.JTextArea = JavaScript.Class(JavaScript.JDisplayObject, {
 		this._style.wordWrap = true;
 		this._style.breakWords = true;
 		this._text = "";
-		this._x = 0;
-		this._y = 0;
 		this._width = 0;
 		this._height = 0;
 		this._real_width = 0;

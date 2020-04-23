@@ -97,7 +97,7 @@ public class LoopRit : LoopObject
         {
             this._accumulate_time = time;
             // 计算当前值
-            var current_value = (this._target_value - this._init_value) * lua.math.sin((this._accumulate_time / this._total_time) * 1.57) + this._init_value;
+            var current_value = (this._target_value - this._init_value) * Math_Sin((this._accumulate_time / this._total_time) * 1.57) + this._init_value;
             // 设置当前值
             cast<Map<string, any>>(this._target)[this._property] = current_value;
             return 0, false;
@@ -127,7 +127,7 @@ public class LoopRit : LoopObject
         this._accumulate_time += frame_time;
         if (this._accumulate_time > this._total_time)
             this._accumulate_time = this._total_time;
-        var current_value = (this._target_value - this._init_value) * lua.math.sin((this._accumulate_time / this._total_time) * 1.57) + this._init_value;
+        var current_value = (this._target_value - this._init_value) * Math_Sin((this._accumulate_time / this._total_time) * 1.57) + this._init_value;
         cast<Map<string, any>>(this._target)[this._property] = current_value;
         if (this._func != null) this._func();
     }

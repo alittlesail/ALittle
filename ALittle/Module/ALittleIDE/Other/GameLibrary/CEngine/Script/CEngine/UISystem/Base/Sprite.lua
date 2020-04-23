@@ -171,7 +171,7 @@ end
 
 function Sprite.__setter:row_index(value)
 	self._row_index = value
-	self._show:SetRowColIndex(self._row_index - 1, self._col_index - 1)
+	self._show:SetRowColIndex(self._row_index, self._col_index)
 end
 
 function Sprite.__getter:row_index()
@@ -180,7 +180,7 @@ end
 
 function Sprite.__setter:col_index(value)
 	self._col_index = value
-	self._show:SetRowColIndex(self._row_index - 1, self._col_index - 1)
+	self._show:SetRowColIndex(self._row_index, self._col_index)
 end
 
 function Sprite.__getter:col_index()
@@ -190,7 +190,7 @@ end
 function Sprite:SetRowCol(row, col)
 	self._row_index = row
 	self._col_index = col
-	self._show:SetRowColIndex(self._row_index - 1, self._col_index - 1)
+	self._show:SetRowColIndex(self._row_index, self._col_index)
 end
 
 function Sprite.__getter:flip()

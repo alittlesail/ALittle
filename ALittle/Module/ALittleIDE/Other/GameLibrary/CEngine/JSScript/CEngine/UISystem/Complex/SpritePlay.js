@@ -39,7 +39,7 @@ ALittle.SpritePlay = JavaScript.Class(ALittle.Sprite, {
 		let total_count = this._row_count * this._col_count;
 		++ this._play_index;
 		this._play_index = this._play_index % total_count;
-		this.row_index = lua.math.floor(this._play_index / this._row_count) + 1;
+		this.row_index = ALittle.Math_Floor(this._play_index / this._row_count) + 1;
 		this.col_index = this._play_index % this._col_count + 1;
 	},
 }, "ALittle.SpritePlay");

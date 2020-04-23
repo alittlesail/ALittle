@@ -249,24 +249,26 @@ PS_ReadMap = function(factory, var_info, parent, l)
 	local key_func = key_info.rfunc
 	local value_info = var_info.value_info
 	local value_func = value_info.rfunc
-	local value_map = {}
-	local index = 1
-	while true do
-		if not(index <= count) then break end
-		local key, key_len = key_func(factory, key_info, value_map, l)
-		if key_len < 0 then
-			return nil, key_len
+	do
+		local value_map = {}
+		local index = 1
+		while true do
+			if not(index <= count) then break end
+			local key, key_len = key_func(factory, key_info, value_map, l)
+			if key_len < 0 then
+				return nil, key_len
+			end
+			l = l - key_len
+			local value, value_len = value_func(factory, value_info, value_map, l)
+			if value_len < 0 then
+				return nil, value_len
+			end
+			l = l - value_len
+			value_map[key] = value
+			index = index+(1)
 		end
-		l = l - key_len
-		local value, value_len = value_func(factory, value_info, value_map, l)
-		if value_len < 0 then
-			return nil, value_len
-		end
-		l = l - value_len
-		value_map[key] = value
-		index = index+(1)
+		return value_map, save_len - l
 	end
-	return value_map, save_len - l
 end
 
 local PS_ReadMessage

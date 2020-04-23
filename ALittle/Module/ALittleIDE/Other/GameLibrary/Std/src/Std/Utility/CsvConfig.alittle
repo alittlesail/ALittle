@@ -279,6 +279,8 @@ public class DoubleKeyTableConfig<T:struct, KEY1, KEY2> : CsvTableConfig
                     }
                 }
             }
+
+            if (tmp == null) continue;
             
             value = this._csv_file.ReadCell(row, second_key_index);
             if (value != null)

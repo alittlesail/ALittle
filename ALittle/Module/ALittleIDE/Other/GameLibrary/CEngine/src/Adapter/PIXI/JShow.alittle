@@ -26,6 +26,8 @@ public class JDisplayObject : ALittle.IDisplayObject
     private PIXI.Point _pivot;
     private bool _clip;
     private bool _visible;
+    private double _x;
+    private double _y;
     
     public ctor()
     {
@@ -33,16 +35,34 @@ public class JDisplayObject : ALittle.IDisplayObject
         this._pivot = new PIXI.Point(0, 0);
         this._clip = false;
         this._visible = true;
+        this._x = 0;
+        this._y = 0;
     }
     
     public get native() : PIXI.DisplayObject { return this._native; }
-    public fun SetX(double x) { this._native.x = javascript.Math.floor(x); }
-    public fun SetY(double y) { this._native.y = javascript.Math.floor(y); }
+    public fun SetX(double x)
+    {
+        this._x = x;
+        this._native.x = javascript.Math.floor(x + this._pivot.x);
+    }
+    public fun SetY(double y)
+    {
+        this._y = y;
+        this._native.y = javascript.Math.floor(y + this._pivot.y);
+    }
     public fun SetScaleX(double value) { this._scale.x = value; this._native.scale = this._scale; }
     public fun SetScaleY(double value) { this._scale.y = value; this._native.scale = this._scale; }
-    public fun SetCenterX(double value) { this._pivot.x = value; this._native.pivot = this._pivot; }
-    public fun SetCenterY(double value) { this._pivot.y = value; this._native.pivot = this._pivot; }
-    public fun SetAngle(double value) { this._native.rotation = value; }
+    public fun SetCenterX(double value)
+    {
+        this._pivot.x = value; this._native.pivot = this._pivot;
+        this._native.x = javascript.Math.floor(this._x + this._pivot.x);
+    }
+    public fun SetCenterY(double value)
+    {
+        this._pivot.y = value; this._native.pivot = this._pivot;
+        this._native.y = javascript.Math.floor(this._y + this._pivot.y);
+    }
+    public fun SetAngle(double value) { this._native.angle = value; }
     public fun SetWidth(double value) { }
     public fun SetHeight(double value) { }
     public fun SetVisible(bool value) { this._visible = value; this._native.visible = value && !this._clip; }
@@ -431,8 +451,8 @@ public class JSprite : JDisplayObject
     {
         this._row_count = 1;
         this._col_count = 1;
-        this._row = 1;
-        this._col = 1;
+        this._row = 0;
+        this._col = 0;
         this._tex_width = 0;
         this._tex_height = 0;
         this._native = new PIXI.Sprite();
@@ -454,7 +474,13 @@ public class JSprite : JDisplayObject
         this._tex_height = texture.GetHeight();
         var tile_width = this._tex_width / this._col_count;
         var tile_height = this._tex_height / this._row_count;
-        var frame = new PIXI.Rectangle((this._col - 1)*tile_width, (this._row - 1)*tile_height, tile_width, tile_height);
+        
+        var row = this._row;
+        var col = this._col;
+        if (row < 0 || row >= this._row_count) row = 0;
+        if (col < 0 || col >= this._col_count) col = 0;
+
+        var frame = new PIXI.Rectangle(col*tile_width, row*tile_height, tile_width, tile_height);
         this._texture = new PIXI.Texture(cast<JTexture>(texture).native.baseTexture, frame
                             , cast<JTexture>(texture).native.orig, cast<JTexture>(texture).native.trim
                             , cast<JTexture>(texture).native.rotate);
@@ -471,17 +497,13 @@ public class JSprite : JDisplayObject
         if (this._row_count < 1) this._row_count = 1;
         this._col_count = col_count;
         if (this._col_count < 1) this._col_count = 1;
-        if (this._row < 1 || this._row > this._row_count) this._row = 1;
-        if (this._col < 1 || this._col > this._col_count) this._col = 1;
         
         this.UpdateFrame();
     }
     public fun SetRowColIndex(int row, int col)
     {
-        this._row = row;
-        this._col = col;
-        if (this._row < 1 || this._row > this._row_count) this._row = 1;
-        if (this._col < 1 || this._col > this._col_count) this._col = 1;
+        this._row = row - 1;
+        this._col = col - 1;
 
         this.UpdateFrame();
     }
@@ -492,8 +514,12 @@ public class JSprite : JDisplayObject
 
         var tile_width = this._tex_width / this._col_count;
         var tile_height = this._tex_height / this._row_count;
-        var frame = new PIXI.Rectangle((this._col - 1)*tile_width, (this._row - 1)*tile_height, tile_width, tile_height);
-        this._texture.frame = new PIXI.Rectangle((this._col - 1)*tile_width, (this._row - 1)*tile_height, tile_width, tile_height);
+
+        var row = this._row;
+        var col = this._col;
+        if (row < 0 || row >= this._row_count) row = 0;
+        if (col < 0 || col >= this._col_count) col = 0;
+        this._texture.frame = new PIXI.Rectangle(col*tile_width, row*tile_height, tile_width, tile_height);
     }
 }
 
@@ -663,8 +689,6 @@ public class JTextArea : JDisplayObject
     private int _blue;
     private string _text;
 
-    private double _x;
-    private double _y;
     private double _width;
     private double _height;
 
@@ -686,8 +710,6 @@ public class JTextArea : JDisplayObject
         this._style.breakWords = true;
         this._text = "";
 
-        this._x = 0;
-        this._y = 0;
         this._width = 0;
         this._height = 0;
         this._real_width = 0;

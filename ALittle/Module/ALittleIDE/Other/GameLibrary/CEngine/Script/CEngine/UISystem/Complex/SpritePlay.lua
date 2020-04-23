@@ -49,7 +49,7 @@ function SpritePlay:PlayUpdate()
 	local total_count = self._row_count * self._col_count
 	self._play_index = self._play_index + 1
 	self._play_index = self._play_index % total_count
-	self.row_index = math.floor(self._play_index / self._row_count) + 1
+	self.row_index = Math_Floor(self._play_index / self._row_count) + 1
 	self.col_index = self._play_index % self._col_count + 1
 end
 

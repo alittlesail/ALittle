@@ -78,7 +78,7 @@ function LoopRit:SetTime(time)
 	time = time - (self._total_delay_time)
 	if time < self._total_time then
 		self._accumulate_time = time
-		local current_value = (self._target_value - self._init_value) * math.sin((self._accumulate_time / self._total_time) * 1.57) + self._init_value
+		local current_value = (self._target_value - self._init_value) * Math_Sin((self._accumulate_time / self._total_time) * 1.57) + self._init_value
 		self._target[self._property] = current_value
 		return 0, false
 	end
@@ -106,7 +106,7 @@ function LoopRit:Update(frame_time)
 	if self._accumulate_time > self._total_time then
 		self._accumulate_time = self._total_time
 	end
-	local current_value = (self._target_value - self._init_value) * math.sin((self._accumulate_time / self._total_time) * 1.57) + self._init_value
+	local current_value = (self._target_value - self._init_value) * Math_Sin((self._accumulate_time / self._total_time) * 1.57) + self._init_value
 	self._target[self._property] = current_value
 	if self._func ~= nil then
 		self._func()

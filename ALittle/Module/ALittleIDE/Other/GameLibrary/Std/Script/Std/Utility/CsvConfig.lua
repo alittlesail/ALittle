@@ -154,7 +154,12 @@ function CsvTableConfig:LoadCell(row)
 		if real == nil then
 			value[handle.var_name] = handle.func("", handle)
 		else
-			value[handle.var_name] = handle.func(self._csv_file:ReadCell(row, real), handle)
+			local read = self._csv_file:ReadCell(row, real)
+			if read == nil then
+				value[handle.var_name] = handle.func("", handle)
+			else
+				value[handle.var_name] = handle.func(read, handle)
+			end
 		end
 	end
 	return value

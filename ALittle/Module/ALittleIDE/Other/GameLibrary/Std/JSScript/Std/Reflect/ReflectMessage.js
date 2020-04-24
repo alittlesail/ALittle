@@ -88,13 +88,22 @@ let PS_WriteMap = function(factory, var_info, parent, var_value) {
 	let value_info = var_info.value_info;
 	let value_func = value_info.wfunc;
 	let count = 0;
-	let ___OBJECT_2 = var_value;
-	for (let key in ___OBJECT_2) {
-		let value = ___OBJECT_2[key];
-		if (value === undefined) continue;
-		l = l + key_func(factory, key_info, var_value, key);
-		l = l + value_func(factory, value_info, var_value, value);
-		count = count + 1;
+	if (key_func === PS_WriteString) {
+		let ___OBJECT_2 = var_value;
+		for (let key in ___OBJECT_2) {
+			let value = ___OBJECT_2[key];
+			if (value === undefined) continue;
+			l = l + key_func(factory, key_info, var_value, key);
+			l = l + value_func(factory, value_info, var_value, value);
+			count = count + 1;
+		}
+	} else {
+		for (let [key, value] of var_value) {
+			if (value === undefined) continue;
+			l = l + key_func(factory, key_info, var_value, key);
+			l = l + value_func(factory, value_info, var_value, value);
+			count = count + 1;
+		}
 	}
 	factory.SetInt(offset, count);
 	return l;
@@ -231,10 +240,10 @@ let PS_ReadArray = function(factory, var_info, parent, l) {
 
 let PS_ReadMap = function(factory, var_info, parent, l) {
 	if (l === 0) {
-		if (var_info.key_info.rfunc !== PS_ReadString) {
-			return [new Map(), 0];
-		} else {
+		if (var_info.key_info.rfunc === PS_ReadString) {
 			return [{}, 0];
+		} else {
+			return [new Map(), 0];
 		}
 	}
 	let save_len = l;
@@ -250,23 +259,7 @@ let PS_ReadMap = function(factory, var_info, parent, l) {
 	let key_func = key_info.rfunc;
 	let value_info = var_info.value_info;
 	let value_func = value_info.rfunc;
-	if (var_info.key_info.rfunc !== PS_ReadString) {
-		let value_map = new Map();
-		for (let index = 1; index <= count; index += 1) {
-			let [key, key_len] = key_func(factory, key_info, value_map, l);
-			if (key_len < 0) {
-				return [undefined, key_len];
-			}
-			l = l - key_len;
-			let [value, value_len] = value_func(factory, value_info, value_map, l);
-			if (value_len < 0) {
-				return [undefined, value_len];
-			}
-			l = l - value_len;
-			value_map.set(key, value);
-		}
-		return [value_map, save_len - l];
-	} else {
+	if (key_func === PS_ReadString) {
 		let value_map = {};
 		for (let index = 1; index <= count; index += 1) {
 			let [key, key_len] = key_func(factory, key_info, value_map, l);
@@ -280,6 +273,22 @@ let PS_ReadMap = function(factory, var_info, parent, l) {
 			}
 			l = l - value_len;
 			value_map[key] = value;
+		}
+		return [value_map, save_len - l];
+	} else {
+		let value_map = new Map();
+		for (let index = 1; index <= count; index += 1) {
+			let [key, key_len] = key_func(factory, key_info, value_map, l);
+			if (key_len < 0) {
+				return [undefined, key_len];
+			}
+			l = l - key_len;
+			let [value, value_len] = value_func(factory, value_info, value_map, l);
+			if (value_len < 0) {
+				return [undefined, value_len];
+			}
+			l = l - value_len;
+			value_map.set(key, value);
 		}
 		return [value_map, save_len - l];
 	}

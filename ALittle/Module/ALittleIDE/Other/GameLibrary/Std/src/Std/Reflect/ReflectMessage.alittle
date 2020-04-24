@@ -87,7 +87,7 @@ private static PS_WriteArray(IMessageWriteFactory factory, ProtocolInvokeInfo va
     return l;
 }
 
-private static PS_WriteMap(IMessageWriteFactory factory, ProtocolInvokeInfo var_info, any parent, Map<string, any> var_value) : int
+private static PS_WriteMap(IMessageWriteFactory factory, ProtocolInvokeInfo var_info, any parent, Map<any, any> var_value) : int
 {
     if (var_value == null)
         return factory.WriteInt(0);
@@ -99,11 +99,31 @@ private static PS_WriteMap(IMessageWriteFactory factory, ProtocolInvokeInfo var_
     var value_info = var_info.value_info;
     var value_func = value_info.wfunc;
     var count = 0;
+    [Language(Lua)]
     for (var key, value in var_value)
     {
         l = l + key_func(factory, key_info, var_value, key);
         l = l + value_func(factory, value_info, var_value, value);
         count = count + 1;
+    }
+    [Language(JavaScript)]
+    if (key_func == PS_WriteString)
+    {
+        for (var key, value in cast<Map<string, any>>(var_value))
+        {
+            l = l + key_func(factory, key_info, var_value, key);
+            l = l + value_func(factory, value_info, var_value, value);
+            count = count + 1;
+        }
+    }
+    else
+    {
+        for (var key, value in var_value)
+        {
+            l = l + key_func(factory, key_info, var_value, key);
+            l = l + value_func(factory, value_info, var_value, value);
+            count = count + 1;
+        }
     }
     factory.SetInt(offset, count);
     return l;
@@ -224,17 +244,17 @@ private static PS_ReadArray(IMessageReadFactory factory, ProtocolInvokeInfo var_
     return value_list, save_len - l;
 }
 
-private static PS_ReadMap(IMessageReadFactory factory, ProtocolInvokeInfo var_info, any parent, int l) : Map<string, any>, int
+private static PS_ReadMap(IMessageReadFactory factory, ProtocolInvokeInfo var_info, any parent, int l) : Map<any, any>, int
 {
     if (l == 0)
     {
         [Language(JavaScript)]
-        if (var_info.key_info.rfunc != PS_ReadString)
-            return new Map<any, any>(), 0;
-        else
+        if (var_info.key_info.rfunc == PS_ReadString)
             return new Map<string, any>(), 0;
+        else
+            return new Map<any, any>(), 0;
         [Language(Lua)]
-        return new Map<string, any>(), 0;
+        return new Map<any, any>(), 0;
     }
 
     var save_len = l;
@@ -251,7 +271,7 @@ private static PS_ReadMap(IMessageReadFactory factory, ProtocolInvokeInfo var_in
 
     [Language(Lua)]
     {
-        var value_map = new Map<string, any>();
+        var value_map = new Map<any, any>();
         for (var index = 1; index <= count; 1)
         {
             var key, key_len = key_func(factory, key_info, value_map, l);
@@ -268,9 +288,9 @@ private static PS_ReadMap(IMessageReadFactory factory, ProtocolInvokeInfo var_in
     }
     
     [Language(JavaScript)]
-    if (var_info.key_info.rfunc != PS_ReadString)
+    if (key_func == PS_ReadString)
     {
-        var value_map = new Map<any, any>();
+        var value_map = new Map<string, any>();
         for (var index = 1; index <= count; 1)
         {
             var key, key_len = key_func(factory, key_info, value_map, l);
@@ -287,7 +307,7 @@ private static PS_ReadMap(IMessageReadFactory factory, ProtocolInvokeInfo var_in
     }
     else
     {
-        var value_map = new Map<string, any>();
+        var value_map = new Map<any, any>();
         for (var index = 1; index <= count; 1)
         {
             var key, key_len = key_func(factory, key_info, value_map, l);

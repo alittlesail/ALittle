@@ -139,7 +139,12 @@ ALittle.CsvTableConfig = JavaScript.Class(ALittle.CsvConfig, {
 			if (real === undefined) {
 				value[handle.var_name] = handle.func("", handle);
 			} else {
-				value[handle.var_name] = handle.func(this._csv_file.ReadCell(row, real), handle);
+				let read = this._csv_file.ReadCell(row, real);
+				if (read === undefined) {
+					value[handle.var_name] = handle.func("", handle);
+				} else {
+					value[handle.var_name] = handle.func(read, handle);
+				}
 			}
 		}
 		return value;

@@ -158,7 +158,14 @@ protected class CsvTableConfig<T:struct> : CsvConfig
             if (real == null)
                 value[handle.var_name] = handle.func("", handle);
             else
-                value[handle.var_name] = handle.func(this._csv_file.ReadCell(row, real), handle);
+            {
+                var read = this._csv_file.ReadCell(row, real);
+                if (read == null)
+                    value[handle.var_name] = handle.func("", handle);
+                else
+                    value[handle.var_name] = handle.func(read, handle);
+            }
+                
         }
         return cast<T>(value);
     }

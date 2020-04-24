@@ -18,7 +18,11 @@ ALittle.RegCmdCallback = function(method, callback, var_list, name_list, desc) {
 	info.callback = callback;
 	info.var_list = var_list;
 	info.name_list = name_list;
-	info.desc = desc;
+	if (desc === undefined) {
+		info.desc = "";
+	} else {
+		info.desc = desc;
+	}
 	__all_callback[method] = info;
 }
 
@@ -55,13 +59,14 @@ ALittle.ExecuteCommand = function(cmd) {
 			if (method_name === undefined) break;
 			let info = __all_callback[method_name];
 			let detail = method_name + " ";
+			let param_list = [];
 			let ___OBJECT_3 = info.var_list;
 			for (let i = 1; i <= ___OBJECT_3.length; ++i) {
 				let v = ___OBJECT_3[i - 1];
 				if (v === undefined) break;
-				detail = detail + v + " " + info.name_list[i - 1] + " ";
+				ALittle.List_Push(param_list, info.name_list[i - 1] + ":" + v);
 			}
-			detail = detail + info.desc;
+			detail = method_name + " " + ALittle.String_Join(param_list, ", ") + " " + info.desc;
 			ALittle.List_Push(out_list, detail);
 		}
 		ALittle.Log(ALittle.String_Join(out_list, "\n"));

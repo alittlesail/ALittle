@@ -21,7 +21,10 @@ protected static RegCmdCallback(string method, Functor<(...)> callback, List<str
     info.callback = callback;
     info.var_list = var_list;
     info.name_list = name_list;
-    info.desc = desc;
+    if (desc == null)
+        info.desc = "";
+    else
+        info.desc = desc;
     __all_callback[method] = info;
 }
 
@@ -61,9 +64,10 @@ public static ExecuteCommand(string cmd)
         {
             var info = __all_callback[method_name];
             var detail = method_name.." ";
+            var param_list = new List<string>();
             for (var i, v in info.var_list)
-                detail = detail..v.." "..info.name_list[i].." ";
-            detail = detail..info.desc;
+                ALittle.List_Push(param_list, info.name_list[i]..":"..v);
+            detail = method_name.." "..ALittle.String_Join(param_list, ", ").." "..info.desc;
             List_Push(out_list, detail);
         }
         Log(String_Join(out_list, "\n"));

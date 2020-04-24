@@ -21,7 +21,11 @@ function RegCmdCallback(method, callback, var_list, name_list, desc)
 	info.callback = callback
 	info.var_list = var_list
 	info.name_list = name_list
-	info.desc = desc
+	if desc == nil then
+		info.desc = ""
+	else
+		info.desc = desc
+	end
 	__all_callback[method] = info
 end
 
@@ -52,10 +56,11 @@ function ExecuteCommand(cmd)
 		for index, method_name in ___ipairs(method_list) do
 			local info = __all_callback[method_name]
 			local detail = method_name .. " "
+			local param_list = {}
 			for i, v in ___ipairs(info.var_list) do
-				detail = detail .. v .. " " .. info.name_list[i] .. " "
+				ALittle.List_Push(param_list, info.name_list[i] .. ":" .. v)
 			end
-			detail = detail .. info.desc
+			detail = method_name .. " " .. ALittle.String_Join(param_list, ", ") .. " " .. info.desc
 			List_Push(out_list, detail)
 		end
 		Log(String_Join(out_list, "\n"))

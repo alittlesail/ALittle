@@ -872,6 +872,12 @@ public class JTextInput : JDisplayObject
 
         var style = new PIXI.TextInputStyle();
         this._native = new PIXI.TextInput(style);
+        cast<PIXI.TextInput>(this._native).disabled = true;
+    }
+
+    public fun SetDisabled(bool value)
+    {
+        cast<PIXI.TextInput>(this._native).disabled = value;
     }
 
     public fun IsDefaultText() : bool { return this._is_default_text; }
@@ -960,6 +966,12 @@ public class JTextEdit : JDisplayObject
         style.input = new PIXI.TextInputStyleInput();
         style.input.multiline = true;
         this._native = new PIXI.TextInput(style);
+        cast<PIXI.TextInput>(this._native).disabled = true;
+    }
+
+    public fun SetDisabled(bool value)
+    {
+        cast<PIXI.TextInput>(this._native).disabled = value;
     }
 
     public fun SetWidth(double width)

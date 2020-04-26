@@ -43,6 +43,11 @@ public class TextInput : DisplayObject
 
     private LoopFunction _loop; // 光标动画
 
+    [Language(JavaScript)]
+    private bool _move_in;
+    [Language(JavaScript)]
+    private bool _focus_in;
+
     public ctor(ControlSystem ctrl_sys)
     {
         // 创建text对象
@@ -92,7 +97,12 @@ public class TextInput : DisplayObject
         this.AddEventListener(this, this.HandleKeyDown);
         this.AddEventListener(this, this.HandleDragBegin);
         this.AddEventListener(this, this.HandleDrag);
-    
+
+        [Language(JavaScript)]
+        this._move_in = false;
+        [Language(JavaScript)]
+        this._focus_in = false;
+
         [Language(Lua)]
         A_LoadTextureManager.RegisterRedrawControl(this);
     }
@@ -354,11 +364,23 @@ public class TextInput : DisplayObject
     
         if (this._show.IsDefaultText())
             this._show.SetDefaultText(false, "");
+        
+        [Language(JavaScript)]
+        this._focus_in = true;
+
+        [Language(JavaScript)]
+        cast<JavaScript.JTextInput>(this._show).SetDisabled(false);
     }
     
     // 处理失去焦点事件
     protected fun HandleFocusOut(UIFocusOutEvent event)
     {
+        [Language(JavaScript)]
+        this._focus_in = false;
+
+        [Language(JavaScript)]
+        cast<JavaScript.JTextInput>(this._show).SetDisabled(!this._move_in);
+
         this._is_selecting = false;
         this._show.ShowCursor(false);
         A_LoopSystem.RemoveUpdater(this._loop);
@@ -693,11 +715,23 @@ public class TextInput : DisplayObject
     // 鼠标移入
     protected fun HandleMoveIn(UIMoveInEvent event)
     {
+        [Language(JavaScript)]
+        this._move_in = true;
+        
+        [Language(JavaScript)]
+        cast<JavaScript.JTextInput>(this._show).SetDisabled(false);
+
         System_SetEditCursor();
     }
     // 鼠标移出
     protected fun HandleMoveOut(UIMoveOutEvent event)
     {
+        [Language(JavaScript)]
+        this._move_in = false;
+        
+        [Language(JavaScript)]
+        cast<JavaScript.JTextInput>(this._show).SetDisabled(!this._focus_in);
+
         System_SetNormalCursor();
     }
     

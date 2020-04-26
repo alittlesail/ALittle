@@ -809,6 +809,10 @@ JavaScript.JTextInput = JavaScript.Class(JavaScript.JDisplayObject, {
 		this._default_text = "";
 		let style = {};
 		this._native = new PIXI.TextInput(style);
+		this._native.disabled = true;
+	},
+	SetDisabled : function(value) {
+		this._native.disabled = value;
 	},
 	IsDefaultText : function() {
 		return this._is_default_text;
@@ -877,6 +881,10 @@ JavaScript.JTextEdit = JavaScript.Class(JavaScript.JDisplayObject, {
 		style.input = {};
 		style.input.multiline = true;
 		this._native = new PIXI.TextInput(style);
+		this._native.disabled = true;
+	},
+	SetDisabled : function(value) {
+		this._native.disabled = value;
 	},
 	SetWidth : function(width) {
 		this._native.setInputStyle("width", Math.floor(width) + "px");

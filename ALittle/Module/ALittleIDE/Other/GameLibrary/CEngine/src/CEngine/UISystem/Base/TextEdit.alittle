@@ -43,6 +43,11 @@ public class TextEdit : DisplayObject
     private int _limit_len;    // 文本长度限制
 
     private LoopFunction _loop; // 光标动画
+    
+    [Language(JavaScript)]
+    private bool _move_in;
+    [Language(JavaScript)]
+    private bool _focus_in;
         
     public ctor(ControlSystem ctrl_sys)
     {
@@ -97,6 +102,11 @@ public class TextEdit : DisplayObject
         this.AddEventListener(this, this.HandleDrag);
         this.AddEventListener(this, this.HandleMButtonWheel);
     
+        [Language(JavaScript)]
+        this._move_in = false;
+        [Language(JavaScript)]
+        this._focus_in = false;
+
         [Language(Lua)]
         A_LoadTextureManager.RegisterRedrawControl(this);
     }
@@ -385,11 +395,23 @@ public class TextEdit : DisplayObject
     
         if (this._show.IsDefaultText())
             this._show.SetDefaultText(false, "");
+        
+        [Language(JavaScript)]
+        this._focus_in = true;
+
+        [Language(JavaScript)]
+        cast<JavaScript.JTextEdit>(this._show).SetDisabled(false);
     }
     
     // 处理失去焦点事件
     protected fun HandleFocusOut(UIFocusOutEvent event)
     {
+        [Language(JavaScript)]
+        this._focus_in = false;
+
+        [Language(JavaScript)]
+        cast<JavaScript.JTextEdit>(this._show).SetDisabled(!this._move_in);
+
         this._is_selecting = false;
         this._show.ShowCursor(false);
         A_LoopSystem.RemoveUpdater(this._loop);
@@ -774,11 +796,23 @@ public class TextEdit : DisplayObject
     // 鼠标移入
     protected fun HandleMoveIn(UIMoveInEvent event)
     {
+        [Language(JavaScript)]
+        this._move_in = true;
+        
+        [Language(JavaScript)]
+        cast<JavaScript.JTextEdit>(this._show).SetDisabled(false);
+
         System_SetEditCursor();
     }
     // 鼠标移出
     protected fun HandleMoveOut(UIMoveOutEvent event)
     {
+        [Language(JavaScript)]
+        this._move_in = false;
+        
+        [Language(JavaScript)]
+        cast<JavaScript.JTextEdit>(this._show).SetDisabled(!this._focus_in);
+
         System_SetNormalCursor();
     }
     

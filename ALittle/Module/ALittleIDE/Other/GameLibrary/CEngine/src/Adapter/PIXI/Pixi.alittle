@@ -302,6 +302,10 @@ public class TextInput : Container
     public fun setInputStyle(string key, any value) {}
     public get text() : string {}
     public set text(string v) {}
+    public get disabled() : bool {}
+    public set disabled(bool v) {}
+    public fun focus() {}
+    public fun blur() {}
 
     public get htmlInput() : javascript.DomElement {}
     public get substituteText() : bool {}

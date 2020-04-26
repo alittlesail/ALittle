@@ -41,6 +41,8 @@ ALittle.TextInput = JavaScript.Class(ALittle.DisplayObject, {
 		this.AddEventListener(___all_struct.get(-1604617962), this, this.HandleKeyDown);
 		this.AddEventListener(___all_struct.get(1301789264), this, this.HandleDragBegin);
 		this.AddEventListener(___all_struct.get(1337289812), this, this.HandleDrag);
+		this._move_in = false;
+		this._focus_in = false;
 	},
 	Redraw : function() {
 		this._show.NeedDraw();
@@ -234,8 +236,12 @@ ALittle.TextInput = JavaScript.Class(ALittle.DisplayObject, {
 		if (this._show.IsDefaultText()) {
 			this._show.SetDefaultText(false, "");
 		}
+		this._focus_in = true;
+		this._show.SetDisabled(false);
 	},
 	HandleFocusOut : function(event) {
+		this._focus_in = false;
+		this._show.SetDisabled(!this._move_in);
 		this._is_selecting = false;
 		this._show.ShowCursor(false);
 		A_LoopSystem.RemoveUpdater(this._loop);
@@ -459,9 +465,13 @@ ALittle.TextInput = JavaScript.Class(ALittle.DisplayObject, {
 		this._show.DragCursor(event.rel_x, event.rel_y);
 	},
 	HandleMoveIn : function(event) {
+		this._move_in = true;
+		this._show.SetDisabled(false);
 		ALittle.System_SetEditCursor();
 	},
 	HandleMoveOut : function(event) {
+		this._move_in = false;
+		this._show.SetDisabled(!this._focus_in);
 		ALittle.System_SetNormalCursor();
 	},
 	set cursor_red(value) {

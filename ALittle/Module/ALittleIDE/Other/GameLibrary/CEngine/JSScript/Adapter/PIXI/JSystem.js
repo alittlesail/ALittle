@@ -34,7 +34,7 @@ let JSystem_FingerDown = function(event) {
 	if (func === undefined) {
 		return;
 	}
-	func(event.pageX - event.srcElement.offsetLeft, event.pageY - event.srcElement.offsetTop, 1, 1);
+	func((event.pageX - event.srcElement.offsetLeft) / A_PixiApp.stage.scale.x, (event.pageY - event.srcElement.offsetTop) / A_PixiApp.stage.scale.y, 1, 1);
 }
 
 let JSystem_FingerUp = function(event) {
@@ -42,7 +42,7 @@ let JSystem_FingerUp = function(event) {
 	if (func === undefined) {
 		return;
 	}
-	func(event.pageX - event.srcElement.offsetLeft, event.pageY - event.srcElement.offsetTop, 1, 1);
+	func((event.pageX - event.srcElement.offsetLeft) / A_PixiApp.stage.scale.x, (event.pageY - event.srcElement.offsetTop) / A_PixiApp.stage.scale.y, 1, 1);
 }
 
 let JSystem_FingerMoved = function(event) {
@@ -50,7 +50,7 @@ let JSystem_FingerMoved = function(event) {
 	if (func === undefined) {
 		return;
 	}
-	func(event.pageX - event.srcElement.offsetLeft, event.pageY - event.srcElement.offsetTop, 1, 1);
+	func((event.pageX - event.srcElement.offsetLeft) / A_PixiApp.stage.scale.x, (event.pageY - event.srcElement.offsetTop) / A_PixiApp.stage.scale.y, 1, 1);
 }
 
 let JSystem_MouseMoved = function(event) {
@@ -58,7 +58,7 @@ let JSystem_MouseMoved = function(event) {
 	if (func === undefined) {
 		return;
 	}
-	func(event.pageX - event.srcElement.offsetLeft, event.pageY - event.srcElement.offsetTop);
+	func((event.pageX - event.srcElement.offsetLeft) / A_PixiApp.stage.scale.x, (event.pageY - event.srcElement.offsetTop) / A_PixiApp.stage.scale.y);
 }
 
 let JSystem_MouseDown = function(event) {
@@ -73,7 +73,7 @@ let JSystem_MouseDown = function(event) {
 	if (func === undefined) {
 		return;
 	}
-	func(event.pageX - event.srcElement.offsetLeft, event.pageY - event.srcElement.offsetTop, 1);
+	func((event.pageX - event.srcElement.offsetLeft) / A_PixiApp.stage.scale.x, (event.pageY - event.srcElement.offsetTop) / A_PixiApp.stage.scale.y, 1);
 }
 
 let JSystem_MouseUp = function(event) {
@@ -88,7 +88,7 @@ let JSystem_MouseUp = function(event) {
 	if (func === undefined) {
 		return;
 	}
-	func(event.pageX - event.srcElement.offsetLeft, event.pageY - event.srcElement.offsetTop);
+	func((event.pageX - event.srcElement.offsetLeft) / A_PixiApp.stage.scale.x, (event.pageY - event.srcElement.offsetTop) / A_PixiApp.stage.scale.y);
 }
 
 let JSystem_MouseWheel = function(event) {
@@ -139,11 +139,13 @@ JavaScript.JSystem_CreateView = function(title, width, height, flag, scale) {
 		return true;
 	}
 	let data = {};
-	data.width = width;
-	data.height = height;
+	data.width = ALittle.Math_Floor(width * scale);
+	data.height = ALittle.Math_Floor(height * scale);
 	A_PixiApp = new PIXI.Application(data);
 	document.body.appendChild(A_PixiApp.view);
 	document.title = title;
+	A_PixiApp.stage.scale.x = scale;
+	A_PixiApp.stage.scale.y = scale;
 	if (ALittle.System_IsPhone()) {
 		A_PixiApp.view.ontouchstart = JSystem_FingerDown;
 		A_PixiApp.view.ontouchmove = JSystem_FingerMoved;

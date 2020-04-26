@@ -24,16 +24,27 @@ ALittle.HttpSenderTemplate = JavaScript.Class(ALittle.IHttpSender, {
 		this._interface = ALittle.NewObject(this.__class.__element[0]);
 		this._ip = ip;
 		this._port = port;
+		if (this._port === undefined) {
+			if (location.protocol === "https:") {
+				this._port = 443;
+			} else {
+				this._port = 80;
+			}
+		}
 	},
 	SendRPC : function(thread, method, content) {
 		this._thread = thread;
 		__HttpSenderMap.set(this._interface.GetID(), this);
 		let url = this._ip + ":" + this._port + "/" + method;
 		if (ALittle.String_Find(this._ip, "http://") !== 1 && ALittle.String_Find(this._ip, "https://") !== 1) {
-			if (this._port === 443) {
-				url = "https://" + url;
+			if (location.host === this._ip) {
+				url = location.protocol + "//" + url;
 			} else {
-				url = "http://" + url;
+				if (this._port === 443) {
+					url = "https://" + url;
+				} else {
+					url = "http://" + url;
+				}
 			}
 		}
 		if (content === undefined) {

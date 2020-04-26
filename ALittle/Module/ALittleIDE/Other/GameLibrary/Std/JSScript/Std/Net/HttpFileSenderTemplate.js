@@ -25,7 +25,11 @@ ALittle.HttpFileSenderTemplate = JavaScript.Class(ALittle.IHttpFileSender, {
 		this._ip = ip;
 		this._port = port;
 		if (this._port === undefined) {
-			this._port = 80;
+			if (location.protocol === "https:") {
+				this._port = 443;
+			} else {
+				this._port = 80;
+			}
 		}
 		this._file_path = file_path;
 		this._start_size = start_size;
@@ -41,10 +45,14 @@ ALittle.HttpFileSenderTemplate = JavaScript.Class(ALittle.IHttpFileSender, {
 		}
 		let url = this._ip + ":" + this._port + "/" + method;
 		if (ALittle.String_Find(this._ip, "http://") !== 1 && ALittle.String_Find(this._ip, "https://") !== 1) {
-			if (this._port === 443) {
-				url = "https://" + url;
+			if (location.host === this._ip) {
+				url = location.protocol + "//" + url;
 			} else {
-				url = "http://" + url;
+				if (this._port === 443) {
+					url = "https://" + url;
+				} else {
+					url = "http://" + url;
+				}
 			}
 		}
 		this._interface.SetURL(this.HttpUrlAppendParamMap(url, content), this._file_path, true, this._start_size);

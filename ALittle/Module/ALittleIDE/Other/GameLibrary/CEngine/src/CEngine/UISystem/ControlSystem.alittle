@@ -13,7 +13,7 @@ public class ControlSystem
     private bool                _crypt_mode;
     
     private string              _host;
-    private string              _port;
+    private int                  _port;
     private string              _base_url;
     
     private string              _base_path;
@@ -44,7 +44,15 @@ public class ControlSystem
         [Language(JavaScript)]
         this._host = location.host;
         [Language(JavaScript)]
-        this._port = location.port;
+        this._port = Math_ToInt(location.port);
+        [Language(JavaScript)]
+        if (this._port == null)
+        {
+            if (location.protocol == "https:")
+                this._port = 443;
+            else
+                this._port = 80;
+        }
         [Language(JavaScript)]
         this._base_url = File_GetFilePathByPath(location.pathname).."/";
         
@@ -71,7 +79,7 @@ public class ControlSystem
     {
         var path = this._ui_path.."../ui_all_in_one.json";
         ALittle.File_MakeDeepDir(ALittle.File_GetFilePathByPath(path));
-		var error = ALittle.HttpDownloadRequest(this._host, Math_ToInt(this._port), path, path);
+		var error = ALittle.HttpDownloadRequest(this._host, this._port, path, path);
         if (error != null)
         {
             ALittle.Error("ui load failed:"..error);

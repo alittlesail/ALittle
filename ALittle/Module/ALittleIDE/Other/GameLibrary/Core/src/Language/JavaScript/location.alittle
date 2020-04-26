@@ -8,6 +8,7 @@ public class Location
     public get host() : string {}
     public get port() : string {}
     public get pathname() : string {}
+    public get protocol() : string {}
 }
 
 public var location:Location;

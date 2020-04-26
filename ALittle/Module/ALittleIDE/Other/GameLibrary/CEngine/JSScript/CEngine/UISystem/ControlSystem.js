@@ -12,7 +12,14 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 		this._module_name = module_name;
 		this._crypt_mode = crypt_mode || false;
 		this._host = location.host;
-		this._port = location.port;
+		this._port = ALittle.Math_ToInt(location.port);
+		if (this._port === undefined) {
+			if (location.protocol === "https:") {
+				this._port = 443;
+			} else {
+				this._port = 80;
+			}
+		}
 		this._base_url = ALittle.File_GetFilePathByPath(location.pathname) + "/";
 		this._base_path = "Module/" + module_name + "/";
 		this._base_path = this._base_url + this._base_path;
@@ -30,7 +37,7 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 		return new Promise((async function(___COROUTINE, ___) {
 			let path = this._ui_path + "../ui_all_in_one.json";
 			ALittle.File_MakeDeepDir(ALittle.File_GetFilePathByPath(path));
-			let error = await ALittle.HttpDownloadRequest(this._host, ALittle.Math_ToInt(this._port), path, path);
+			let error = await ALittle.HttpDownloadRequest(this._host, this._port, path, path);
 			if (error !== undefined) {
 				ALittle.Error("ui load failed:" + error);
 				___COROUTINE(); return;

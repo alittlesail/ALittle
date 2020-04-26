@@ -24,6 +24,17 @@ public class HttpSenderTemplate<NATIVE : IHttpSenderNative> : IHttpSender
         this._interface = new NATIVE();
         this._ip = ip;
         this._port = port;
+        if (this._port == null)
+        {
+            [Language(JavaScript)]
+            if (location.protocol == "https:")
+                this._port = 443;
+            else
+                this._port = 80;
+
+            [Language(Lua)]
+            this._port = 80;
+        }
     }
     
     protected fun SendRPC(Thread thread, string method, any content)
@@ -34,6 +45,18 @@ public class HttpSenderTemplate<NATIVE : IHttpSenderNative> : IHttpSender
         var url = this._ip..":"..this._port.."/"..method;
         if (String_Find(this._ip, "http://") != 1 && String_Find(this._ip, "https://") != 1)
         {
+            [Language(JavaScript)]
+            if (location.host == this._ip)
+                url = location.protocol.."//"..url;
+            else
+            {
+                if (this._port == 443)
+                    url = "https://"..url;
+                else
+                    url = "http://"..url;
+            }
+
+            [Language(Lua)]
             if (this._port == 443)
                 url = "https://"..url;
             else

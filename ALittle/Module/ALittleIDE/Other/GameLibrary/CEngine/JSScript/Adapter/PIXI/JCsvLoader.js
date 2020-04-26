@@ -16,7 +16,11 @@ JavaScript.JCsvFileLoader = JavaScript.Class(ALittle.ICsvFileLoader, {
 		let host = location.host;
 		let port = ALittle.Math_ToInt(location.port);
 		if (port === undefined) {
-			port = 80;
+			if (location.protocol === "https:") {
+				port = 443;
+			} else {
+				port = 80;
+			}
 		}
 		let path = this._file_path;
 		ALittle.File_MakeDeepDir(ALittle.File_GetFilePathByPath(path));

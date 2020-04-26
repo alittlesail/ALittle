@@ -21,7 +21,13 @@ public class JCsvFileLoader : ALittle.ICsvFileLoader
     {
         var host = location.host;
         var port = ALittle.Math_ToInt(location.port);
-        if (port == null) port = 80;
+        if (port == null)
+        {
+            if (location.protocol == "https:")
+                port = 443;
+            else
+                port = 80;
+        }
         var path = this._file_path;
         ALittle.File_MakeDeepDir(ALittle.File_GetFilePathByPath(path));
 		var error = ALittle.HttpDownloadRequest(host, port, path, path);

@@ -8,12 +8,33 @@ ALittle.SpringRadioButton = JavaScript.Class(ALittle.SpringCheckButton, {
 	Ctor : function(ctrl_sys) {
 		this._cancel_select = false;
 	},
-	set group_name(value) {
-		A_TextRadioButtonManager.SetGroupName(this, this._group_name, value);
-		this._group_name = value;
+	set group(group) {
+		if (this._group === group) {
+			return;
+		}
+		if (this._group !== undefined) {
+			this._group.delete(this);
+		}
+		this._group = group;
+		if (this._group !== undefined) {
+			this._group.delete(this);
+		}
 	},
-	get group_name() {
-		return this._group_name;
+	get group() {
+		return this._group;
+	},
+	SetGroup : function(list) {
+		let group = ALittle.CreateKeyWeakMap();
+		let ___OBJECT_1 = list;
+		for (let index = 1; index <= ___OBJECT_1.length; ++index) {
+			let button = ___OBJECT_1[index - 1];
+			if (button === undefined) break;
+			if (button._group !== undefined) {
+				button._group.delete(button);
+			}
+			button._group = group;
+			group.set(button, true);
+		}
 	},
 	set cancel_select(value) {
 		this._cancel_select = value;
@@ -25,9 +46,8 @@ ALittle.SpringRadioButton = JavaScript.Class(ALittle.SpringCheckButton, {
 		if (event.rel_x >= 0 && event.rel_y >= 0 && event.rel_x < event.target._width && event.rel_y < event.target._height) {
 			if (this._selected === false) {
 				this._selected = true;
-				let group = A_TextRadioButtonManager.GetGroupByName(this._group_name);
-				if (group !== undefined) {
-					for (let [k, _] of group) {
+				if (this._group !== undefined) {
+					for (let [k, _] of this._group) {
 						if (_ === undefined) continue;
 						if (k !== this && k._selected === true) {
 							k._selected = false;
@@ -66,9 +86,8 @@ ALittle.SpringRadioButton = JavaScript.Class(ALittle.SpringCheckButton, {
 		if (this._selected === false) {
 			return;
 		}
-		let group = A_TextRadioButtonManager.GetGroupByName(this._group_name);
-		if (group !== undefined) {
-			for (let [k, _] of group) {
+		if (this._group !== undefined) {
+			for (let [k, _] of this._group) {
 				if (_ === undefined) continue;
 				if (k !== this && k._selected === true) {
 					k._selected = false;

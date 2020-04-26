@@ -314,8 +314,8 @@ public class DisplayObject : UIEventDispatcher
     public get native_show() : IDisplayObject { return this._show; }
     public get text() : string { return null; }
     public set text(any value) {}
-    public get group_name() : string { return null; }
-    public set group_name(string value) { }
+    public get group() : Map<any, bool> { return null; }
+    public set group(Map<any, bool> group) { }
     public get selected() : bool { return null; }
     public set selected(bool value) {}
     public get font_height() : int { return null; }

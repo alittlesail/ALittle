@@ -143,7 +143,7 @@ ALittleIDE.IDEAntiFrameLoopItem = JavaScript.Class(ALittle.DisplayLayout, {
 		this._button.drag_trans_target = this._item.panel.anti_screen;
 		this._bg_quad.drag_trans_target = this._item.panel.anti_screen;
 		this._info = info;
-		this._button.group_name = this._item.panel.loop_group_name;
+		this._button.group = this._item.panel.loop_group;
 		this.UpdateText();
 		this.UpdateShow();
 	},
@@ -444,8 +444,8 @@ ALittleIDE.IDEAntiPanel = JavaScript.Class(ALittle.DisplayLayout, {
 	get anti_screen() {
 		return this._anti_screen;
 	},
-	get loop_group_name() {
-		return this._loop_group_name;
+	get loop_group() {
+		return this._loop_group;
 	},
 	get anti_scroll_list() {
 		return this._anti_scroll_list;
@@ -482,8 +482,8 @@ ALittleIDE.IDEAntiPanel = JavaScript.Class(ALittle.DisplayLayout, {
 	},
 	Init : function(tab_child) {
 		this._tab_child = tab_child;
-		this._list_group_name = A_TextRadioButtonManager.CreateGroupName();
-		this._loop_group_name = A_TextRadioButtonManager.CreateGroupName();
+		this._list_group = ALittle.CreateKeyWeakMap();
+		this._loop_group = ALittle.CreateKeyWeakMap();
 		let user_info = this._tab_child.tree_object.user_info;
 		if (user_info.base.loop_map !== undefined) {
 			let ___OBJECT_3 = user_info.base.loop_map;
@@ -492,7 +492,7 @@ ALittleIDE.IDEAntiPanel = JavaScript.Class(ALittle.DisplayLayout, {
 				if (info === undefined) continue;
 				let item = ALittleIDE.g_Control.CreateControl("ide_common_item_radiobutton");
 				item.text = name;
-				item.group_name = this._list_group_name;
+				item.group = this._list_group;
 				item.AddEventListener(___all_struct.get(-1479093282), this, this.HandleAntiListItemRButtonDown);
 				item.AddEventListener(___all_struct.get(958494922), this, this.HandleAntiListItemChanged);
 				this._anti_scroll_list.AddChild(item);
@@ -551,7 +551,7 @@ ALittleIDE.IDEAntiPanel = JavaScript.Class(ALittle.DisplayLayout, {
 		user_info.base.loop_map[name] = root;
 		let item = ALittleIDE.g_Control.CreateControl("ide_common_item_radiobutton");
 		item.text = name;
-		item.group_name = this._list_group_name;
+		item.group = this._list_group;
 		item.AddEventListener(___all_struct.get(-1479093282), this, this.HandleAntiListItemRButtonDown);
 		item.AddEventListener(___all_struct.get(-449066808), this, this.HandleAntiListItemClick);
 		this._anti_scroll_list.AddChild(item);
@@ -576,6 +576,7 @@ ALittleIDE.IDEAntiPanel = JavaScript.Class(ALittle.DisplayLayout, {
 			let item = ___OBJECT_4[index - 1];
 			if (item === undefined) break;
 			if (item.text === name) {
+				item.group = undefined;
 				this._anti_scroll_list.RemoveChild(item);
 				let revoke = ALittle.NewObject(ALittleIDE.IDEDeleteAntiRevoke, this, name, root, item, index);
 				this._tab_child.revoke_list.PushRevoke(revoke);
@@ -612,7 +613,7 @@ ALittleIDE.IDEAntiPanel = JavaScript.Class(ALittle.DisplayLayout, {
 		user_info.base.loop_map[new_name] = new_root;
 		let item = ALittleIDE.g_Control.CreateControl("ide_common_item_radiobutton");
 		item.text = new_name;
-		item.group_name = this._list_group_name;
+		item.group = this._list_group;
 		item.AddEventListener(___all_struct.get(-1479093282), this, this.HandleAntiListItemRButtonDown);
 		item.AddEventListener(___all_struct.get(-449066808), this, this.HandleAntiListItemClick);
 		this._anti_scroll_list.AddChild(item);

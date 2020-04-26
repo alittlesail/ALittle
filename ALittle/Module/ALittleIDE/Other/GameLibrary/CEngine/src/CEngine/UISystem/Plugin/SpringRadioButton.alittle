@@ -3,24 +3,39 @@ namespace ALittle;
 
 public class SpringRadioButton : SpringCheckButton
 {
-    private string  _group_name;
+    private Map<SpringRadioButton, bool> _group;
     private bool    _cancel_select;
     
     public ctor(ControlSystem ctrl_sys)
     {
-        // this._group_name = null;
         this._cancel_select = false;   // 是否允许取消选择
     }
-    
-    public set group_name(string value)
+
+    public set group(Map<SpringRadioButton, bool> group)
     {
-        A_TextRadioButtonManager.SetGroupName(this, this._group_name, value);
-        this._group_name = value;
+        if (this._group == group) return;
+        if (this._group != null)
+            this._group[this] = null;
+        this._group = group;
+        if (this._group != null)
+            this._group[this] = null;
     }
-    
-    public get group_name() : string
+
+    public get group() : Map<SpringRadioButton, bool>
     {
-        return this._group_name;
+        return this._group;
+    }
+
+    public static SetGroup(List<SpringRadioButton> list)
+    {
+        var group:Map<SpringRadioButton, bool> = CreateKeyWeakMap();
+        for (var index, button in list)
+        {
+            if (button._group != null)
+                button._group[button] = null;
+            button._group = group;
+            group[button] = true;
+        }
     }
     
     public set cancel_select(bool value)
@@ -41,10 +56,9 @@ public class SpringRadioButton : SpringCheckButton
             {
                 this._selected = true;
                 // 获取同组的单选按钮
-                var group = A_TextRadioButtonManager.GetGroupByName(this._group_name);
-                if (group != null)
+                if (this._group != null)
                 {
-                    for (var k:SpringRadioButton, _ in group)
+                    for (var k, _ in this._group)
                     {
                         // 设置为false
                         if (k != this && k._selected == true)
@@ -92,10 +106,9 @@ public class SpringRadioButton : SpringCheckButton
             return;
 
         // 获取同组的单选按钮
-        var group = A_TextRadioButtonManager.GetGroupByName(this._group_name);
-        if (group != null)
+        if (this._group != null)
         {
-            for (var k:SpringRadioButton, _ in group)
+            for (var k, _ in this._group)
             {
                 // 设置为false
                 if (k != this && k._selected == true)

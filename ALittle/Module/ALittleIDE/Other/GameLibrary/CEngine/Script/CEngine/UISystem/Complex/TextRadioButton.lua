@@ -1,69 +1,51 @@
 
 module("ALittle", package.seeall)
 
-local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = GetAllStruct()
 
 
-TextRadioButtonManager = Lua.Class(nil, "ALittle.TextRadioButtonManager")
-
-function TextRadioButtonManager:Ctor()
-	___rawset(self, "_name_map_group", {})
-	___rawset(self, "_group_id", 0)
-end
-
-function TextRadioButtonManager:CreateGroupName()
-	self._group_id = self._group_id + 1
-	return "__TextRadioButtonManager_" .. self._group_id
-end
-
-function TextRadioButtonManager:SetGroupName(object, old_name, new_name)
-	if old_name ~= nil then
-		local group = self._name_map_group[old_name]
-		if group ~= nil then
-			group[object] = nil
-		end
-	end
-	if new_name ~= nil then
-		local group = self._name_map_group[new_name]
-		if group == nil then
-			group = CreateKeyWeakMap()
-			self._name_map_group[new_name] = group
-		end
-		group[object] = true
-	end
-end
-
-function TextRadioButtonManager:GetGroupByName(name)
-	return self._name_map_group[name]
-end
-
-_G.A_TextRadioButtonManager = TextRadioButtonManager()
 assert(ALittle.TextCheckButton, " extends class:ALittle.TextCheckButton is nil")
 TextRadioButton = Lua.Class(ALittle.TextCheckButton, "ALittle.TextRadioButton")
 
 function TextRadioButton:Ctor(ctrl_sys)
-	___rawset(self, "_group_name", nil)
 end
 
-function TextRadioButton.__setter:group_name(name)
-	A_TextRadioButtonManager:SetGroupName(self, self._group_name, name)
-	self._group_name = name
+function TextRadioButton.__setter:group(group)
+	if self._group == group then
+		return
+	end
+	if self._group ~= nil then
+		self._group[self] = nil
+	end
+	self._group = group
+	if self._group ~= nil then
+		self._group[self] = nil
+	end
 end
 
-function TextRadioButton.__getter:group_name()
-	return self._group_name
+function TextRadioButton.__getter:group()
+	return self._group
+end
+
+function TextRadioButton.SetGroup(list)
+	local group = CreateKeyWeakMap()
+	for index, button in ___ipairs(list) do
+		if button._group ~= nil then
+			button._group[button] = nil
+		end
+		button._group = group
+		group[button] = true
+	end
 end
 
 function TextRadioButton:HandleLButtonUp(event)
 	if event.rel_x >= 0 and event.rel_y >= 0 and event.rel_x < event.target._width and event.rel_y < event.target._height then
 		if self._selected == false then
 			self._selected = true
-			local group = A_TextRadioButtonManager:GetGroupByName(self._group_name)
-			if group ~= nil then
-				for k, _ in ___pairs(group) do
+			if self._group ~= nil then
+				for k, _ in ___pairs(self._group) do
 					if k ~= self and k._selected == true then
 						k._selected = false
 						k:ShowUp()
@@ -99,9 +81,8 @@ function TextRadioButton.__setter:selected(value)
 	if self._selected == false then
 		return
 	end
-	local group = A_TextRadioButtonManager:GetGroupByName(self._group_name)
-	if group ~= nil then
-		for k, _ in ___pairs(group) do
+	if self._group ~= nil then
+		for k, _ in ___pairs(self._group) do
 			if k ~= self and k._selected == true then
 				k._selected = false
 				k:ShowUp()

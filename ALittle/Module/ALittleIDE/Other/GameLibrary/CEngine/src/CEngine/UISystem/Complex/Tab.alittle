@@ -15,7 +15,7 @@ public class Tab : Grid3
 
     
     private Map<DisplayObject, string> _child_id_map;
-    private string _group_name;
+    private Map<TextRadioButton, bool> _group;
     
     private DisplayView _view;
     private Linear _linear;
@@ -49,7 +49,7 @@ public class Tab : Grid3
         // 控件映射ID
         this._child_id_map = CreateKeyWeakMap();
         // 单选按钮组名
-        this._group_name = A_TextRadioButtonManager.CreateGroupName();
+        this._group = CreateKeyWeakMap();
 
         this.type = UIEnumTypes.TYPE_V;
     
@@ -108,7 +108,7 @@ public class Tab : Grid3
             childs[1].RemoveEventListener(this, this.HandleRadioButtonKeyDown);
             childs[3].RemoveEventListener(this, this.HandleCloseButtonClick);
             childs[5].RemoveEventListener(this, this.HandleCloseButtonClick);
-            childs[1].group_name = null;
+            childs[1].group = null;
         }
         this._linear.RemoveAllChild();
 
@@ -133,7 +133,7 @@ public class Tab : Grid3
                 radiobutton.AddEventListener(this, this.HandleRadioButtonMClick);
                 radiobutton.AddEventListener(this, this.HandleRadioButtonRButtonDown);
                 radiobutton.AddEventListener(this, this.HandleRadioButtonKeyDown);
-                radiobutton.group_name = this._group_name;
+                radiobutton.group = this._group;
                 radiobutton.width_type = UIEnumTypes.SIZE_MARGIN;
                 radiobutton.height_type = UIEnumTypes.SIZE_MARGIN;
                 v.visible = radiobutton.selected;
@@ -479,7 +479,7 @@ public class Tab : Grid3
             radiobutton.AddEventListener(this, this.HandleRadioButtonRButtonDown);
             radiobutton.AddEventListener(this, this.HandleRadioButtonKeyDown);
 
-            radiobutton.group_name = this._group_name;
+            radiobutton.group = this._group;
             radiobutton.width_type = UIEnumTypes.SIZE_MARGIN;
             radiobutton.width_value = 0;
             radiobutton.height_type = UIEnumTypes.SIZE_MARGIN;
@@ -564,7 +564,7 @@ public class Tab : Grid3
             layout_childs[1].RemoveEventListener(this, this.HandleRadioButtonKeyDown);
             layout_childs[3].RemoveEventListener(this, this.HandleCloseButtonClick);
             layout_childs[5].RemoveEventListener(this, this.HandleCloseButtonClick);
-            layout_childs[1].group_name = null;
+            layout_childs[1].group = null;
 
             this._linear.RemoveChild(simplelayout);
         }

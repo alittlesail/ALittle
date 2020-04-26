@@ -85,7 +85,7 @@ ALittleIDE.IDETree = JavaScript.Class(ALittleIDE.IDETreeLogic, {
 		}
 		ALittle.DisplayGroup.AddChild.call(this, this._head);
 		this._item_button.selected = false;
-		this._item_button.group_name = this._tab_child.group_name;
+		this._item_button.group = this._tab_child.group;
 		this._item_button.AddEventListener(___all_struct.get(1883782801), this, this.HandleLButtonDown);
 		this._item_button.AddEventListener(___all_struct.get(-449066808), this, this.HandleClick);
 		this._item_button.AddEventListener(___all_struct.get(544684311), this, this.HandleMoveIn);

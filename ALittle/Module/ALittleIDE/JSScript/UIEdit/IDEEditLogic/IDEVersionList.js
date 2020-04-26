@@ -104,6 +104,7 @@ ALittleIDE.IDEVersionList = JavaScript.Class(ALittle.DisplayLayout, {
 		this._export_refresh_btn.disabled = true;
 		this._version_list.RemoveAllChild();
 		this._close_list.RemoveAllChild();
+		let group = ALittle.CreateKeyWeakMap();
 		let param = {};
 		param.__account_id = ALittleIDE.g_IDELoginManager.account_id;
 		param.__session_id = ALittleIDE.g_IDELoginManager.session_id;
@@ -116,7 +117,6 @@ ALittleIDE.IDEVersionList = JavaScript.Class(ALittle.DisplayLayout, {
 			ALittleIDE.g_IDETool.ShowNotice("错误", "刷新失败:" + error);
 			return;
 		}
-		let group_name = A_TextRadioButtonManager.CreateGroupName();
 		let version_list = result.version_list;
 		if (version_list === undefined) {
 			version_list = [];
@@ -129,7 +129,7 @@ ALittleIDE.IDEVersionList = JavaScript.Class(ALittle.DisplayLayout, {
 			if (v === undefined) break;
 			let control_line = {};
 			let item = this._ctrl_sys.CreateControl("ide_common_tree_item", control_line, this._version_list);
-			control_line._item_button.group_name = group_name;
+			control_line._item_button.group = group;
 			let user_data = {};
 			control_line._item_button._user_data = user_data;
 			user_data.info = result;
@@ -157,7 +157,7 @@ ALittleIDE.IDEVersionList = JavaScript.Class(ALittle.DisplayLayout, {
 			if (v === undefined) break;
 			let control_line = {};
 			let item = this._ctrl_sys.CreateControl("ide_common_tree_item", control_line, this._close_list);
-			control_line._item_button.group_name = group_name;
+			control_line._item_button.group = group;
 			let user_data = {};
 			control_line._item_button._user_data = user_data;
 			user_data.info = result;

@@ -14,7 +14,7 @@ ALittle.Tab = JavaScript.Class(ALittle.Grid3, {
 	Ctor : function(ctrl_sys) {
 		this._button_inner_gap = 8;
 		this._child_id_map = ALittle.CreateKeyWeakMap();
-		this._group_name = A_TextRadioButtonManager.CreateGroupName();
+		this._group = ALittle.CreateKeyWeakMap();
 		this.type = ALittle.UIEnumTypes.TYPE_V;
 		this._view = ALittle.NewObject(ALittle.DisplayView, this._ctrl_sys);
 		this._view.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
@@ -54,7 +54,7 @@ ALittle.Tab = JavaScript.Class(ALittle.Grid3, {
 			childs[1 - 1].RemoveEventListener(___all_struct.get(-1604617962), this, this.HandleRadioButtonKeyDown);
 			childs[3 - 1].RemoveEventListener(___all_struct.get(-449066808), this, this.HandleCloseButtonClick);
 			childs[5 - 1].RemoveEventListener(___all_struct.get(-449066808), this, this.HandleCloseButtonClick);
-			childs[1 - 1].group_name = undefined;
+			childs[1 - 1].group = undefined;
 		}
 		this._linear.RemoveAllChild();
 		let show_center = this.show_center;
@@ -78,7 +78,7 @@ ALittle.Tab = JavaScript.Class(ALittle.Grid3, {
 				radiobutton.AddEventListener(___all_struct.get(-1330840), this, this.HandleRadioButtonMClick);
 				radiobutton.AddEventListener(___all_struct.get(-641444818), this, this.HandleRadioButtonRButtonDown);
 				radiobutton.AddEventListener(___all_struct.get(-1604617962), this, this.HandleRadioButtonKeyDown);
-				radiobutton.group_name = this._group_name;
+				radiobutton.group = this._group;
 				radiobutton.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
 				radiobutton.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
 				v.visible = radiobutton.selected;
@@ -336,7 +336,7 @@ ALittle.Tab = JavaScript.Class(ALittle.Grid3, {
 			radiobutton.AddEventListener(___all_struct.get(-1330840), this, this.HandleRadioButtonMClick);
 			radiobutton.AddEventListener(___all_struct.get(-641444818), this, this.HandleRadioButtonRButtonDown);
 			radiobutton.AddEventListener(___all_struct.get(-1604617962), this, this.HandleRadioButtonKeyDown);
-			radiobutton.group_name = this._group_name;
+			radiobutton.group = this._group;
 			radiobutton.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
 			radiobutton.width_value = 0;
 			radiobutton.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
@@ -406,7 +406,7 @@ ALittle.Tab = JavaScript.Class(ALittle.Grid3, {
 			layout_childs[1 - 1].RemoveEventListener(___all_struct.get(-1604617962), this, this.HandleRadioButtonKeyDown);
 			layout_childs[3 - 1].RemoveEventListener(___all_struct.get(-449066808), this, this.HandleCloseButtonClick);
 			layout_childs[5 - 1].RemoveEventListener(___all_struct.get(-449066808), this, this.HandleCloseButtonClick);
-			layout_childs[1 - 1].group_name = undefined;
+			layout_childs[1 - 1].group = undefined;
 			this._linear.RemoveChild(simplelayout);
 		}
 		let new_index = 0;

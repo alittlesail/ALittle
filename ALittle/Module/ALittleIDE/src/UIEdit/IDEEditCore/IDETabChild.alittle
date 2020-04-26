@@ -47,7 +47,7 @@ public class IDETabChild
 {
 	private string _name;           // 当前控件名
 	private bool _save;             // 是否已保存
-	private string _group_name;     // 组名称
+	private Map<ALittle.TextRadioButton, bool> _group;     // 组名称
 
 	private ALittle.DisplayLayout _tab_body;        // 标签页
 	private ALittle.ScrollScreen _tree_screen;      // 控件树滚动屏
@@ -103,7 +103,7 @@ public class IDETabChild
 		this._save = save;
 	
 		// 组名
-		this._group_name = A_TextRadioButtonManager.CreateGroupName();
+		this._group = ALittle.CreateKeyWeakMap();
 	
 		// 创建编辑容器
 		this._tab_body = g_Control.CreateControl{ALittle.DisplayLayout}("ide_edit_tab_screen", this);
@@ -165,7 +165,7 @@ public class IDETabChild
 	public get tree_screen() : ALittle.ScrollScreen { return this._tree_screen; }
 	public get control_screen() : ALittle.ScrollScreen { return this._control_screen; }
     public get anti_panel() : IDEAntiPanel { return this._anti_panel; }
-	public get group_name() : string { return this._group_name; }
+	public get group() : Map<ALittle.TextRadioButton, bool> { return this._group; }
 	public get revoke_list() : IDERevokeList { return this._revoke_list; }
 	public get tree_object() : IDETreeLogic  { return this._tree_object; }
 	public get save() : bool { return this._save; }
@@ -686,7 +686,7 @@ public class IDETabChild
 	
 	public fun HandleHandleQuadKeyDown(ALittle.UIKeyDownEvent event)
     {
-	//处理Ctrl+C////////////////////////////////////////////////////////////////////////
+	    //处理Ctrl+C////////////////////////////////////////////////////////////////////////
 		if (event.sym == 99 && ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) != 0)
         {
             var copy_list = new List<IDEControlCopyInfo>();
@@ -709,7 +709,7 @@ public class IDETabChild
 			}
             return;
 		}
-	//处理Ctrl+X////////////////////////////////////////////////////////////////////////
+	    //处理Ctrl+X////////////////////////////////////////////////////////////////////////
 		if (event.sym == 120 && ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) != 0)
         {
             var copy_list = new List<IDEControlCopyInfo>();
@@ -733,7 +733,7 @@ public class IDETabChild
 			}
             return;
 		}
-	//处理Delete键
+	    //处理Delete键
 		if (event.sym == 127)
         {
             var revoke_bind = new IDERevokeBind();
@@ -751,7 +751,7 @@ public class IDETabChild
 			}
             return;
 		}
-	//处理Ctrl+V////////////////////////////////////////////////////////////////////////
+	    //处理Ctrl+V////////////////////////////////////////////////////////////////////////
 		if (event.sym == 118 && ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) != 0)
         {
             var handle_info:IDETabChildHandleInfo = event.target._user_data;
@@ -766,7 +766,7 @@ public class IDETabChild
             this.RightControlTreePasteImpl(cast<IDETreeLogic>(common_parent), null, child_index);
             return;
 		}
-	//处理键盘上下左右//////////////////////////////////////////////////////////////////
+	    //处理键盘上下左右//////////////////////////////////////////////////////////////////
         var delta_x = 0;
         var delta_y = 0;
 		if (event.sym == 1073741904) // 左键

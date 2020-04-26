@@ -106,11 +106,11 @@ end
 function DisplayObject.__setter:text(value)
 end
 
-function DisplayObject.__getter:group_name()
+function DisplayObject.__getter:group()
 	return nil
 end
 
-function DisplayObject.__setter:group_name(value)
+function DisplayObject.__setter:group(group)
 end
 
 function DisplayObject.__getter:selected()

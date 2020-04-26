@@ -3,56 +3,44 @@ if (typeof ALittle === "undefined") ALittle = {};
 let ___all_struct = ALittle.GetAllStruct();
 
 
-ALittle.TextRadioButtonManager = JavaScript.Class(undefined, {
-	Ctor : function() {
-		this._name_map_group = {};
-		this._group_id = 0;
-	},
-	CreateGroupName : function() {
-		++ this._group_id;
-		return "__TextRadioButtonManager_" + this._group_id;
-	},
-	SetGroupName : function(object, old_name, new_name) {
-		if (old_name !== undefined) {
-			let group = this._name_map_group[old_name];
-			if (group !== undefined) {
-				group.delete(object);
-			}
-		}
-		if (new_name !== undefined) {
-			let group = this._name_map_group[new_name];
-			if (group === undefined) {
-				group = ALittle.CreateKeyWeakMap();
-				this._name_map_group[new_name] = group;
-			}
-			group.set(object, true);
-		}
-	},
-	GetGroupByName : function(name) {
-		return this._name_map_group[name];
-	},
-}, "ALittle.TextRadioButtonManager");
-
-window.A_TextRadioButtonManager = ALittle.NewObject(ALittle.TextRadioButtonManager);
 if (ALittle.TextCheckButton === undefined) throw new Error(" extends class:ALittle.TextCheckButton is undefined");
 ALittle.TextRadioButton = JavaScript.Class(ALittle.TextCheckButton, {
 	Ctor : function(ctrl_sys) {
-		this._group_name = undefined;
 	},
-	set group_name(name) {
-		A_TextRadioButtonManager.SetGroupName(this, this._group_name, name);
-		this._group_name = name;
+	set group(group) {
+		if (this._group === group) {
+			return;
+		}
+		if (this._group !== undefined) {
+			this._group.delete(this);
+		}
+		this._group = group;
+		if (this._group !== undefined) {
+			this._group.delete(this);
+		}
 	},
-	get group_name() {
-		return this._group_name;
+	get group() {
+		return this._group;
+	},
+	SetGroup : function(list) {
+		let group = ALittle.CreateKeyWeakMap();
+		let ___OBJECT_1 = list;
+		for (let index = 1; index <= ___OBJECT_1.length; ++index) {
+			let button = ___OBJECT_1[index - 1];
+			if (button === undefined) break;
+			if (button._group !== undefined) {
+				button._group.delete(button);
+			}
+			button._group = group;
+			group.set(button, true);
+		}
 	},
 	HandleLButtonUp : function(event) {
 		if (event.rel_x >= 0 && event.rel_y >= 0 && event.rel_x < event.target._width && event.rel_y < event.target._height) {
 			if (this._selected === false) {
 				this._selected = true;
-				let group = A_TextRadioButtonManager.GetGroupByName(this._group_name);
-				if (group !== undefined) {
-					for (let [k, _] of group) {
+				if (this._group !== undefined) {
+					for (let [k, _] of this._group) {
 						if (_ === undefined) continue;
 						if (k !== this && k._selected === true) {
 							k._selected = false;
@@ -88,9 +76,8 @@ ALittle.TextRadioButton = JavaScript.Class(ALittle.TextCheckButton, {
 		if (this._selected === false) {
 			return;
 		}
-		let group = A_TextRadioButtonManager.GetGroupByName(this._group_name);
-		if (group !== undefined) {
-			for (let [k, _] of group) {
+		if (this._group !== undefined) {
+			for (let [k, _] of this._group) {
 				if (_ === undefined) continue;
 				if (k !== this && k._selected === true) {
 					k._selected = false;

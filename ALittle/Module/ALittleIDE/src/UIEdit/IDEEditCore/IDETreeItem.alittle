@@ -3,7 +3,6 @@ namespace ALittleIDE;
 
 public class IDETreeItem : IDETreeLogic
 {
-
 	public ctor(ALittle.ControlSystem ctrl_sys, IDETreeUserInfo user_info, IDETabChild tab_child)
 	{
 		if (this._user_info.extends)
@@ -16,7 +15,7 @@ public class IDETreeItem : IDETreeLogic
 	
 		// this._item_button.drag_trans_target = this._tab_child.tree_screen
 		this._item_button.selected = false;
-		this._item_button.group_name = this._tab_child.group_name;
+		this._item_button.group = this._tab_child.group;
 		this._item_button.AddEventListener(this, this.HandleClick);
 		this._item_button.AddEventListener(this, this.HandleMoveIn);
 		this._item_button.AddEventListener(this, this.HandleMouseMove);

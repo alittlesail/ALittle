@@ -120,7 +120,7 @@ IDETabChild = Lua.Class(nil, "ALittleIDE.IDETabChild")
 function IDETabChild:Ctor(name, save)
 	___rawset(self, "_name", name)
 	___rawset(self, "_save", save)
-	___rawset(self, "_group_name", A_TextRadioButtonManager:CreateGroupName())
+	___rawset(self, "_group", ALittle.CreateKeyWeakMap())
 	___rawset(self, "_tab_body", g_Control:CreateControl("ide_edit_tab_screen", self))
 	___rawset(self, "_tree_screen", g_Control:CreateControl("ide_edit_tree_screen", self))
 	___rawset(self, "_control_screen", g_Control:CreateControl("ide_edit_control_screen", self))
@@ -179,8 +179,8 @@ function IDETabChild.__getter:anti_panel()
 	return self._anti_panel
 end
 
-function IDETabChild.__getter:group_name()
-	return self._group_name
+function IDETabChild.__getter:group()
+	return self._group
 end
 
 function IDETabChild.__getter:revoke_list()

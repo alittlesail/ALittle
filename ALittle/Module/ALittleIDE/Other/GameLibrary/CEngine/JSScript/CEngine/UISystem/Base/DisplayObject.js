@@ -93,10 +93,10 @@ ALittle.DisplayObject = JavaScript.Class(ALittle.UIEventDispatcher, {
 	},
 	set text(value) {
 	},
-	get group_name() {
+	get group() {
 		return undefined;
 	},
-	set group_name(value) {
+	set group(group) {
 	},
 	get selected() {
 		return undefined;

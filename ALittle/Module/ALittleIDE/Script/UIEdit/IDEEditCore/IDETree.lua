@@ -90,7 +90,7 @@ function IDETree:Ctor(ctrl_sys, user_info, tab_child)
 	end
 	ALittle.DisplayGroup.AddChild(self, self._head)
 	self._item_button.selected = false
-	self._item_button.group_name = self._tab_child.group_name
+	self._item_button.group = self._tab_child.group
 	self._item_button:AddEventListener(___all_struct[1883782801], self, self.HandleLButtonDown)
 	self._item_button:AddEventListener(___all_struct[-449066808], self, self.HandleClick)
 	self._item_button:AddEventListener(___all_struct[544684311], self, self.HandleMoveIn)

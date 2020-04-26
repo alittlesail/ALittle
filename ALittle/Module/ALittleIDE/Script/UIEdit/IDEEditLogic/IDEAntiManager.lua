@@ -151,7 +151,7 @@ function IDEAntiFrameLoopItem:Init(item, info)
 	self._button.drag_trans_target = self._item.panel.anti_screen
 	self._bg_quad.drag_trans_target = self._item.panel.anti_screen
 	self._info = info
-	self._button.group_name = self._item.panel.loop_group_name
+	self._button.group = self._item.panel.loop_group
 	self:UpdateText()
 	self:UpdateShow()
 end
@@ -474,8 +474,8 @@ function IDEAntiPanel.__getter:anti_screen()
 	return self._anti_screen
 end
 
-function IDEAntiPanel.__getter:loop_group_name()
-	return self._loop_group_name
+function IDEAntiPanel.__getter:loop_group()
+	return self._loop_group
 end
 
 function IDEAntiPanel.__getter:anti_scroll_list()
@@ -524,14 +524,14 @@ end
 
 function IDEAntiPanel:Init(tab_child)
 	self._tab_child = tab_child
-	self._list_group_name = A_TextRadioButtonManager:CreateGroupName()
-	self._loop_group_name = A_TextRadioButtonManager:CreateGroupName()
+	self._list_group = ALittle.CreateKeyWeakMap()
+	self._loop_group = ALittle.CreateKeyWeakMap()
 	local user_info = self._tab_child.tree_object.user_info
 	if user_info.base.loop_map ~= nil then
 		for name, info in ___pairs(user_info.base.loop_map) do
 			local item = g_Control:CreateControl("ide_common_item_radiobutton")
 			item.text = name
-			item.group_name = self._list_group_name
+			item.group = self._list_group
 			item:AddEventListener(___all_struct[-1479093282], self, self.HandleAntiListItemRButtonDown)
 			item:AddEventListener(___all_struct[958494922], self, self.HandleAntiListItemChanged)
 			self._anti_scroll_list:AddChild(item)
@@ -596,7 +596,7 @@ function IDEAntiPanel:CreateAnti(name)
 	user_info.base.loop_map[name] = root
 	local item = g_Control:CreateControl("ide_common_item_radiobutton")
 	item.text = name
-	item.group_name = self._list_group_name
+	item.group = self._list_group
 	item:AddEventListener(___all_struct[-1479093282], self, self.HandleAntiListItemRButtonDown)
 	item:AddEventListener(___all_struct[-449066808], self, self.HandleAntiListItemClick)
 	self._anti_scroll_list:AddChild(item)
@@ -619,6 +619,7 @@ function IDEAntiPanel:DeleteAnti(name)
 	user_info.base.loop_map[name] = nil
 	for index, item in ___ipairs(self._anti_scroll_list.childs) do
 		if item.text == name then
+			item.group = nil
 			self._anti_scroll_list:RemoveChild(item)
 			local revoke = IDEDeleteAntiRevoke(self, name, root, item, index)
 			self._tab_child.revoke_list:PushRevoke(revoke)
@@ -656,7 +657,7 @@ function IDEAntiPanel:CopyAndNewAnti(old_name, new_name)
 	user_info.base.loop_map[new_name] = new_root
 	local item = g_Control:CreateControl("ide_common_item_radiobutton")
 	item.text = new_name
-	item.group_name = self._list_group_name
+	item.group = self._list_group
 	item:AddEventListener(___all_struct[-1479093282], self, self.HandleAntiListItemRButtonDown)
 	item:AddEventListener(___all_struct[-449066808], self, self.HandleAntiListItemClick)
 	self._anti_scroll_list:AddChild(item)

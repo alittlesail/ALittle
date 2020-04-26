@@ -116,6 +116,7 @@ function IDEVersionList:HandleRefreshVersionList(event)
 	self._export_refresh_btn.disabled = true
 	self._version_list:RemoveAllChild()
 	self._close_list:RemoveAllChild()
+	local group = ALittle.CreateKeyWeakMap()
 	local param = {}
 	param.__account_id = g_IDELoginManager.account_id
 	param.__session_id = g_IDELoginManager.session_id
@@ -128,7 +129,6 @@ function IDEVersionList:HandleRefreshVersionList(event)
 		g_IDETool:ShowNotice("错误", "刷新失败:" .. error)
 		return
 	end
-	local group_name = A_TextRadioButtonManager:CreateGroupName()
 	local version_list = result.version_list
 	if version_list == nil then
 		version_list = {}
@@ -138,7 +138,7 @@ function IDEVersionList:HandleRefreshVersionList(event)
 	for k, v in ___ipairs(version_list) do
 		local control_line = {}
 		local item = self._ctrl_sys:CreateControl("ide_common_tree_item", control_line, self._version_list)
-		control_line._item_button.group_name = group_name
+		control_line._item_button.group = group
 		local user_data = {}
 		control_line._item_button._user_data = user_data
 		user_data.info = result
@@ -163,7 +163,7 @@ function IDEVersionList:HandleRefreshVersionList(event)
 	for k, v in ___ipairs(close_list) do
 		local control_line = {}
 		local item = self._ctrl_sys:CreateControl("ide_common_tree_item", control_line, self._close_list)
-		control_line._item_button.group_name = group_name
+		control_line._item_button.group = group
 		local user_data = {}
 		control_line._item_button._user_data = user_data
 		user_data.info = result

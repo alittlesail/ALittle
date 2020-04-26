@@ -129,7 +129,7 @@ public class IDEAntiFrameLoopItem : ALittle.DisplayLayout
 		this._bg_quad.drag_trans_target = this._item.panel.anti_screen;
 		this._info = info;
 
-		this._button.group_name = this._item.panel.loop_group_name;
+		this._button.group = this._item.panel.loop_group;
 
 		this.UpdateText();
 		this.UpdateShow();
@@ -483,8 +483,8 @@ public class IDEAntiPanel : ALittle.DisplayLayout
 	private ALittle.DisplayObject _copy_btn;
 
 	private ALittle.ScrollList _anti_scroll_list;
-	private string _list_group_name;
-	private string _loop_group_name;
+	private Map<any, bool> _list_group;
+	private Map<any, bool> _loop_group;
 
 	private ALittle.ScrollScreen _anti_screen;
 	private ALittle.Linear _anti_frame_linear;
@@ -535,7 +535,7 @@ public class IDEAntiPanel : ALittle.DisplayLayout
 	public get anti_link_linear() : ALittle.Linear { return this._anti_link_linear; }
 	public get anti_anti_linear() : ALittle.Linear { return this._anti_anti_linear; }
 	public get anti_screen() : ALittle.ScrollScreen { return this._anti_screen; }
-	public get loop_group_name() : string { return this._loop_group_name; }
+	public get loop_group() : Map<any, bool> { return this._loop_group; }
 	public get anti_scroll_list() : ALittle.ScrollList { return this._anti_scroll_list; }
 	public get cur_show() : string { return this._cur_show; }
 	public get cur_loop_item() : IDEAntiFrameLoopItem { return this._cur_loop_item; }
@@ -552,8 +552,8 @@ public class IDEAntiPanel : ALittle.DisplayLayout
 	public fun Init(IDETabChild tab_child)
 	{
 		this._tab_child = tab_child;
-		this._list_group_name = A_TextRadioButtonManager.CreateGroupName();
-		this._loop_group_name = A_TextRadioButtonManager.CreateGroupName();
+		this._list_group = ALittle.CreateKeyWeakMap();
+		this._loop_group = ALittle.CreateKeyWeakMap();
 
 		var user_info = this._tab_child.tree_object.user_info;
 		if (user_info.base.loop_map != null)
@@ -562,7 +562,7 @@ public class IDEAntiPanel : ALittle.DisplayLayout
 			{
 				var item = g_Control.CreateControl{ALittle.DisplayObject}("ide_common_item_radiobutton");
 				item.text = name;
-				item.group_name = this._list_group_name;
+				item.group = this._list_group;
 				item.AddEventListener(this, this.HandleAntiListItemRButtonDown);
 				item.AddEventListener(this, this.HandleAntiListItemChanged);
 				this._anti_scroll_list.AddChild(item);
@@ -640,7 +640,7 @@ public class IDEAntiPanel : ALittle.DisplayLayout
 		// 创建控件
 		var item = g_Control.CreateControl{ALittle.DisplayObject}("ide_common_item_radiobutton");
 		item.text = name;
-		item.group_name = this._list_group_name;
+		item.group = this._list_group;
 		item.AddEventListener(this, this.HandleAntiListItemRButtonDown);
 		item.AddEventListener(this, this.HandleAntiListItemClick);
 		this._anti_scroll_list.AddChild(item);
@@ -669,6 +669,7 @@ public class IDEAntiPanel : ALittle.DisplayLayout
 		{
 			if (item.text == name)
 			{
+				item.group = null;
 				this._anti_scroll_list.RemoveChild(item);
 				var revoke = new IDEDeleteAntiRevoke(this, name, root, item, index);
 				this._tab_child.revoke_list.PushRevoke(revoke);
@@ -716,7 +717,7 @@ public class IDEAntiPanel : ALittle.DisplayLayout
 		// 创建控件
 		var item = g_Control.CreateControl{ALittle.DisplayObject}("ide_common_item_radiobutton");
 		item.text = new_name;
-		item.group_name = this._list_group_name;
+		item.group = this._list_group;
 		item.AddEventListener(this, this.HandleAntiListItemRButtonDown);
 		item.AddEventListener(this, this.HandleAntiListItemClick);
 		this._anti_scroll_list.AddChild(item);

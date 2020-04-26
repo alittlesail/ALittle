@@ -84,7 +84,9 @@ public class IDEVersionList : ALittle.DisplayLayout
 		// 清空版本列表
 		this._version_list.RemoveAllChild();
 		this._close_list.RemoveAllChild();
-	
+		// 创建组
+		var group:Map<any, bool> = ALittle.CreateKeyWeakMap();
+
 		// 发送HTTP请求
 		var param = new VersionServer.QVersionInfo();
 		param.__account_id = g_IDELoginManager.account_id;
@@ -101,9 +103,6 @@ public class IDEVersionList : ALittle.DisplayLayout
 			return;
 		}
 
-		// 创建组名
-		var group_name = A_TextRadioButtonManager.CreateGroupName();
-
 		// 遍历结果
 		var version_list = result.version_list;
 		if (version_list == null) version_list = new List<VersionServer.D_VersionInfo>();
@@ -116,7 +115,7 @@ public class IDEVersionList : ALittle.DisplayLayout
 			// 创建子控件
 			var control_line = new IDEVersionInfoItem();
 			var item = this._ctrl_sys.CreateControl{ALittle.DisplayObject}("ide_common_tree_item", control_line, this._version_list);
-			control_line._item_button.group_name = group_name;
+			control_line._item_button.group = group;
 			var user_data = new IDEVersionInfoItemUserData();
 			control_line._item_button._user_data = user_data;
 			user_data.info = result;
@@ -143,7 +142,7 @@ public class IDEVersionList : ALittle.DisplayLayout
 			// 创建子控件
 			var control_line = new IDEVersionInfoItem();
 			var item = this._ctrl_sys.CreateControl{ALittle.DisplayObject}("ide_common_tree_item", control_line, this._close_list);
-			control_line._item_button.group_name = group_name;
+			control_line._item_button.group = group;
 			var user_data = new IDEVersionCloseItemUserData();
 			control_line._item_button._user_data = user_data;
 			user_data.info = result;

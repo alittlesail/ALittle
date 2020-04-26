@@ -19,7 +19,7 @@ Tab = Lua.Class(ALittle.Grid3, "ALittle.Tab")
 function Tab:Ctor(ctrl_sys)
 	___rawset(self, "_button_inner_gap", 8)
 	___rawset(self, "_child_id_map", CreateKeyWeakMap())
-	___rawset(self, "_group_name", A_TextRadioButtonManager:CreateGroupName())
+	___rawset(self, "_group", CreateKeyWeakMap())
 	self.type = UIEnumTypes.TYPE_V
 	___rawset(self, "_view", DisplayView(self._ctrl_sys))
 	self._view.height_type = UIEnumTypes.SIZE_MARGIN
@@ -57,7 +57,7 @@ function Tab:RefreshView()
 		childs[1]:RemoveEventListener(___all_struct[-1604617962], self, self.HandleRadioButtonKeyDown)
 		childs[3]:RemoveEventListener(___all_struct[-449066808], self, self.HandleCloseButtonClick)
 		childs[5]:RemoveEventListener(___all_struct[-449066808], self, self.HandleCloseButtonClick)
-		childs[1].group_name = nil
+		childs[1].group = nil
 	end
 	self._linear:RemoveAllChild()
 	local show_center = self.show_center
@@ -78,7 +78,7 @@ function Tab:RefreshView()
 			radiobutton:AddEventListener(___all_struct[-1330840], self, self.HandleRadioButtonMClick)
 			radiobutton:AddEventListener(___all_struct[-641444818], self, self.HandleRadioButtonRButtonDown)
 			radiobutton:AddEventListener(___all_struct[-1604617962], self, self.HandleRadioButtonKeyDown)
-			radiobutton.group_name = self._group_name
+			radiobutton.group = self._group
 			radiobutton.width_type = UIEnumTypes.SIZE_MARGIN
 			radiobutton.height_type = UIEnumTypes.SIZE_MARGIN
 			v.visible = radiobutton.selected
@@ -374,7 +374,7 @@ function Tab:AddChild(child, index)
 		radiobutton:AddEventListener(___all_struct[-1330840], self, self.HandleRadioButtonMClick)
 		radiobutton:AddEventListener(___all_struct[-641444818], self, self.HandleRadioButtonRButtonDown)
 		radiobutton:AddEventListener(___all_struct[-1604617962], self, self.HandleRadioButtonKeyDown)
-		radiobutton.group_name = self._group_name
+		radiobutton.group = self._group
 		radiobutton.width_type = UIEnumTypes.SIZE_MARGIN
 		radiobutton.width_value = 0
 		radiobutton.height_type = UIEnumTypes.SIZE_MARGIN
@@ -445,7 +445,7 @@ function Tab:RemoveChild(child)
 		layout_childs[1]:RemoveEventListener(___all_struct[-1604617962], self, self.HandleRadioButtonKeyDown)
 		layout_childs[3]:RemoveEventListener(___all_struct[-449066808], self, self.HandleCloseButtonClick)
 		layout_childs[5]:RemoveEventListener(___all_struct[-449066808], self, self.HandleCloseButtonClick)
-		layout_childs[1].group_name = nil
+		layout_childs[1].group = nil
 		self._linear:RemoveChild(simplelayout)
 	end
 	local new_index = 0

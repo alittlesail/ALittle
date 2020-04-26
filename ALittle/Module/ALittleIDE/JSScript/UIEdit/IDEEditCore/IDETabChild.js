@@ -115,7 +115,7 @@ ALittleIDE.IDETabChild = JavaScript.Class(undefined, {
 	Ctor : function(name, save) {
 		this._name = name;
 		this._save = save;
-		this._group_name = A_TextRadioButtonManager.CreateGroupName();
+		this._group = ALittle.CreateKeyWeakMap();
 		this._tab_body = ALittleIDE.g_Control.CreateControl("ide_edit_tab_screen", this);
 		this._tree_screen = ALittleIDE.g_Control.CreateControl("ide_edit_tree_screen", this);
 		this._control_screen = ALittleIDE.g_Control.CreateControl("ide_edit_control_screen", this);
@@ -166,8 +166,8 @@ ALittleIDE.IDETabChild = JavaScript.Class(undefined, {
 	get anti_panel() {
 		return this._anti_panel;
 	},
-	get group_name() {
-		return this._group_name;
+	get group() {
+		return this._group;
 	},
 	get revoke_list() {
 		return this._revoke_list;

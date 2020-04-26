@@ -80,7 +80,7 @@ function IDETreeItem:Ctor(ctrl_sys, user_info, tab_child)
 	self.width = self._item.width
 	self.height = self._item.height
 	self._item_button.selected = false
-	self._item_button.group_name = self._tab_child.group_name
+	self._item_button.group = self._tab_child.group
 	self._item_button:AddEventListener(___all_struct[-449066808], self, self.HandleClick)
 	self._item_button:AddEventListener(___all_struct[544684311], self, self.HandleMoveIn)
 	self._item_button:AddEventListener(___all_struct[-1001723540], self, self.HandleMouseMove)

@@ -17,7 +17,7 @@ public class IDETree : IDETreeLogic
 	
 		// this._item_button.drag_trans_target = this._tab_child.tree_screen
 		this._item_button.selected = false;
-		this._item_button.group_name = this._tab_child.group_name;
+		this._item_button.group = this._tab_child.group;
 		this._item_button.AddEventListener(this, this.HandleLButtonDown);
 		this._item_button.AddEventListener(this, this.HandleClick);
 		this._item_button.AddEventListener(this, this.HandleMoveIn);

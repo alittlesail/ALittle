@@ -16,7 +16,7 @@ ALittle.TextRadioButton = JavaScript.Class(ALittle.TextCheckButton, {
 		}
 		this._group = group;
 		if (this._group !== undefined) {
-			this._group.delete(this);
+			this._group.set(this, true);
 		}
 	},
 	get group() {

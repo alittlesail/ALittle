@@ -16,7 +16,7 @@ public class TextRadioButton : TextCheckButton
             this._group[this] = null;
         this._group = group;
         if (this._group != null)
-            this._group[this] = null;
+            this._group[this] = true;
     }
 
     public get group() : Map<TextRadioButton, bool>

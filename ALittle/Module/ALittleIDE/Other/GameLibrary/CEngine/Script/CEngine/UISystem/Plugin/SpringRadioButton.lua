@@ -23,7 +23,7 @@ function SpringRadioButton.__setter:group(group)
 	end
 	self._group = group
 	if self._group ~= nil then
-		self._group[self] = nil
+		self._group[self] = true
 	end
 end
 

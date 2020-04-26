@@ -559,35 +559,6 @@ public class IDEControlManager
 		copy_list[1] = info;
 		ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list));
 	}
-	// 运行控件
-	public fun ControlRunImpl(string name)
-	{
-		var debug = new Map<string, any>();
-		debug["title"] = name;
-		debug["window_width"] = g_IDEProject.project.config.GetConfig("default_show_width", 800);
-		debug["window_height"] = g_IDEProject.project.config.GetConfig("default_show_height", 600);
-		debug["ui_name"] = name;
-		debug["module_name"] = g_IDEProject.project.name;
-		var debug_str = ALittle.String_JsonEncode(debug);
-		debug_str = "\""..ALittle.String_Replace(debug_str, "\"", "\\\"").."\"";
-
-		lua.os.execute("start ALittleClientWin32.exe "..debug_str.." "..g_IDEProject.project.name.." Engine/MainTemplate/UIViewer");
-	}
-	
-	public fun HandleControlRightMenuRun(ALittle.UIEvent event)
-	{
-		A_LayerManager.HideFromRight(this._control_right_menu);
-		var target:ALittle.DisplayObject = this._control_right_menu._user_data;
-		this._control_right_menu._user_data = null;
-
-		var user_data:IDEControlItemUserData = target._user_data;
-
-		[Language(JavaScript)]
-		g_IDETool.ShowAlertDialog("提示", "JavaScript不支持运行");
-
-		[Language(Lua)]
-		this.ControlRunImpl(user_data.control_info.name);
-	}
 	
 	public fun HandleControlRightMenuFlagQuickImage(ALittle.UIEvent event)
 	{

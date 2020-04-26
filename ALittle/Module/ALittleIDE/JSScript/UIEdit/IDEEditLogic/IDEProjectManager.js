@@ -145,8 +145,6 @@ ALittleIDE.IDEProjectManager = JavaScript.Class(undefined, {
 		this._default_show_height.text = ALittleIDE.g_IDEProject.project.config.GetConfig("default_show_height", 600);
 		this._default_font_path.text = ALittleIDE.g_IDEProject.project.config.GetConfig("default_font_path", "");
 		this._default_font_size.text = ALittleIDE.g_IDEProject.project.config.GetConfig("default_font_size", 15);
-		this._core_path_input.text = "Module/ALittleIDE/Other/Server/Core/";
-		this._modules_edit.text = "Module/ALittleIDE/Other/Server/GatewayServer/\n" + "Module/ALittleIDE/Other/Server/VersionServer/";
 	},
 	HandleSettingProjectCancel : function(event) {
 		this._project_setting_dialog.visible = false;
@@ -168,35 +166,10 @@ ALittleIDE.IDEProjectManager = JavaScript.Class(undefined, {
 			ALittleIDE.g_IDETool.ShowNotice("错误", "默认字体大小不合法");
 			return;
 		}
-		let core_path = this._core_path_input.text;
-		if (core_path !== "" && ALittle.File_GetFileAttr(core_path) === undefined) {
-			ALittleIDE.g_IDETool.ShowNotice("错误", "服务端引擎路径不存在");
-			return;
-		}
-		let modules = this._modules_edit.text;
-		if (core_path !== "") {
-			let module_split = ALittle.String_SplitSepList(modules, ["\n", "\r"]);
-			let ___OBJECT_2 = module_split;
-			for (let index = 1; index <= ___OBJECT_2.length; ++index) {
-				let module = ___OBJECT_2[index - 1];
-				if (module === undefined) break;
-				let split = ALittle.String_Split(module, ",");
-				if (ALittle.List_MaxN(split) !== 2) {
-					ALittleIDE.g_IDETool.ShowNotice("错误", "服务端模块格式错误:" + module);
-					return;
-				}
-				if (ALittle.File_GetFileAttr(split[1 - 1]) === undefined) {
-					ALittleIDE.g_IDETool.ShowNotice("错误", "服务端模块路径不存在:" + split[1 - 1]);
-					return;
-				}
-			}
-		}
 		ALittleIDE.g_IDEProject.project.config.SetConfig("default_show_width", default_show_width);
 		ALittleIDE.g_IDEProject.project.config.SetConfig("default_show_height", default_show_height);
 		ALittleIDE.g_IDEProject.project.config.SetConfig("default_font_path", default_font_path);
 		ALittleIDE.g_IDEProject.project.config.SetConfig("default_font_size", default_font_size);
-		ALittleIDE.g_IDEProject.project.config.SetConfig("core_path", core_path);
-		ALittleIDE.g_IDEProject.project.config.SetConfig("modules", modules);
 		ALittleIDE.g_IDETabManager.SetTabChildWH(default_show_width, default_show_height);
 		this._project_setting_dialog.visible = false;
 	},

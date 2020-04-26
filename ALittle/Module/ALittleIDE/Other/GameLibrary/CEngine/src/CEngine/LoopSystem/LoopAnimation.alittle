@@ -41,7 +41,7 @@ public class LoopAnimation
     
     public fun Init([Nullable] Map<string, DisplayObject> map) : string
     {
-        this.Close();
+        this.Stop();
 
         this._group = new LoopGroup();
         this._group.complete_callback = bind(this.Completed, this);
@@ -196,9 +196,9 @@ public class LoopAnimation
     }
     
     // restore 表示是否还原到动画之前的状态
-    public fun Close()
+    public fun Stop()
     {
-        this.ReleaseCo("Close被调用");
+        this.ReleaseCo("Stop被调用");
         
         if (this._group != null) { this._group.Stop(); this._group = null; }
         // 还原属性

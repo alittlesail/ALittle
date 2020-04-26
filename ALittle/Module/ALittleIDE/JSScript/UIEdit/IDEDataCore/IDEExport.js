@@ -813,7 +813,7 @@ ALittleIDE.IDEExport = JavaScript.Class(undefined, {
 		guid = ALittle.String_Sub(guid, 1, 8) + "-" + ALittle.String_Sub(guid, 9, 13) + "-" + ALittle.String_Sub(guid, 14, 18) + "-" + ALittle.String_Sub(guid, 19, 23) + "-" + ALittle.String_Sub(guid, 24, 32);
 		template = ALittle.String_Replace(template, "INSTALL_GUID", guid);
 		if (package_info.install_info.auto_start === true) {
-			template = template + "[Registry]\nRoot: HKLM; Subkey: \"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run\"; ValueType: string; ValueName: \"" + install_name_gbk + "\"; ValueData: \"{app}\\ALittleClientWin32.exe\"";
+			template = template + "[Registry]\nRoot: HKLM; Subkey: \"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run\"; ValueType: string; ValueName: \"" + install_name_gbk + "\"; ValueData: \"{app}\\ALittleClientWin.exe\"";
 		}
 		if (ALittle.File_SaveFile(package_info.project_path + "/Export/Install.iss", template, -1) === false) {
 			return undefined;

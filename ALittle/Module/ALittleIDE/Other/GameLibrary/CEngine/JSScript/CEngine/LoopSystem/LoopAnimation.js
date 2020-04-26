@@ -26,7 +26,7 @@ ALittle.LoopAnimation = JavaScript.Class(undefined, {
 		this._info = info;
 	},
 	Init : function(map) {
-		this.Close();
+		this.Stop();
 		this._group = ALittle.NewObject(ALittle.LoopGroup);
 		this._group.complete_callback = this.Completed.bind(this);
 		this._save_value_map = new Map();
@@ -175,8 +175,8 @@ ALittle.LoopAnimation = JavaScript.Class(undefined, {
 		}
 		this._group.SetTime(time);
 	},
-	Close : function() {
-		this.ReleaseCo("Close被调用");
+	Stop : function() {
+		this.ReleaseCo("Stop被调用");
 		if (this._group !== undefined) {
 			this._group.Stop();
 			this._group = undefined;

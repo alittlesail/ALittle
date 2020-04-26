@@ -32,7 +32,7 @@ function LoopAnimation:Ctor(from, info)
 end
 
 function LoopAnimation:Init(map)
-	self:Close()
+	self:Stop()
 	self._group = LoopGroup()
 	self._group.complete_callback = Lua.Bind(self.Completed, self)
 	self._save_value_map = {}
@@ -173,8 +173,8 @@ function LoopAnimation:SetTime(time)
 	self._group:SetTime(time)
 end
 
-function LoopAnimation:Close()
-	self:ReleaseCo("Close被调用")
+function LoopAnimation:Stop()
+	self:ReleaseCo("Stop被调用")
 	if self._group ~= nil then
 		self._group:Stop()
 		self._group = nil

@@ -534,7 +534,7 @@ ALittleIDE.IDEControlManager = JavaScript.Class(undefined, {
 		debug["module_name"] = ALittleIDE.g_IDEProject.project.name;
 		let debug_str = ALittle.String_JsonEncode(debug);
 		debug_str = "\"" + ALittle.String_Replace(debug_str, "\"", "\\\"") + "\"";
-		lua.os.execute("start ALittleClientWin32.exe " + debug_str + " " + ALittleIDE.g_IDEProject.project.name + " Engine/MainTemplate/UIViewer");
+		lua.os.execute("start ALittleClientWin.exe Module/ALittleIDE/Script/ " + debug_str + " " + ALittleIDE.g_IDEProject.project.name + " Engine/MainTemplate/UIViewer");
 	},
 	HandleControlRightMenuRun : function(event) {
 		A_LayerManager.HideFromRight(this._control_right_menu);

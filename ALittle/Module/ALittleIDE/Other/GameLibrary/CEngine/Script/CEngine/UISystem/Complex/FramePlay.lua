@@ -77,19 +77,19 @@ end
 
 function FramePlay:Play()
 	if self._play_loop ~= nil then
-		A_LoopSystem:RemoveUpdater(self._play_loop)
+		A_WeakLoopSystem:RemoveUpdater(self._play_loop)
 		self._play_loop = nil
 	end
 	self._play_child_index = 0
 	self._play_loop_index = 0
 	self:HideAllChild()
 	self._play_loop = LoopFunction(Lua.Bind(self.PlayUpdateLoop, self), -1, self._interval, 0)
-	A_LoopSystem:AddUpdater(self._play_loop)
+	A_WeakLoopSystem:AddUpdater(self._play_loop)
 end
 
 function FramePlay:Stop()
 	if self._play_loop ~= nil then
-		A_LoopSystem:RemoveUpdater(self._play_loop)
+		A_WeakLoopSystem:RemoveUpdater(self._play_loop)
 		self._play_loop = nil
 	end
 end

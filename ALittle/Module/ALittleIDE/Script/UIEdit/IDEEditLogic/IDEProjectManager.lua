@@ -155,8 +155,6 @@ function IDEProjectManager:ShowSettingProject(event)
 	self._default_show_height.text = g_IDEProject.project.config:GetConfig("default_show_height", 600)
 	self._default_font_path.text = g_IDEProject.project.config:GetConfig("default_font_path", "")
 	self._default_font_size.text = g_IDEProject.project.config:GetConfig("default_font_size", 15)
-	self._core_path_input.text = "Module/ALittleIDE/Other/Server/Core/"
-	self._modules_edit.text = "Module/ALittleIDE/Other/Server/GatewayServer/\n" .. "Module/ALittleIDE/Other/Server/VersionServer/"
 end
 
 function IDEProjectManager:HandleSettingProjectCancel(event)
@@ -180,32 +178,10 @@ function IDEProjectManager:HandleSettingProjectConfirm(event)
 		g_IDETool:ShowNotice("错误", "默认字体大小不合法")
 		return
 	end
-	local core_path = self._core_path_input.text
-	if core_path ~= "" and ALittle.File_GetFileAttr(core_path) == nil then
-		g_IDETool:ShowNotice("错误", "服务端引擎路径不存在")
-		return
-	end
-	local modules = self._modules_edit.text
-	if core_path ~= "" then
-		local module_split = ALittle.String_SplitSepList(modules, {"\n", "\r"})
-		for index, module in ___ipairs(module_split) do
-			local split = ALittle.String_Split(module, ",")
-			if ALittle.List_MaxN(split) ~= 2 then
-				g_IDETool:ShowNotice("错误", "服务端模块格式错误:" .. module)
-				return
-			end
-			if ALittle.File_GetFileAttr(split[1]) == nil then
-				g_IDETool:ShowNotice("错误", "服务端模块路径不存在:" .. split[1])
-				return
-			end
-		end
-	end
 	g_IDEProject.project.config:SetConfig("default_show_width", default_show_width)
 	g_IDEProject.project.config:SetConfig("default_show_height", default_show_height)
 	g_IDEProject.project.config:SetConfig("default_font_path", default_font_path)
 	g_IDEProject.project.config:SetConfig("default_font_size", default_font_size)
-	g_IDEProject.project.config:SetConfig("core_path", core_path)
-	g_IDEProject.project.config:SetConfig("modules", modules)
 	g_IDETabManager:SetTabChildWH(default_show_width, default_show_height)
 	self._project_setting_dialog.visible = false
 end

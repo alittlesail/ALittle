@@ -163,7 +163,8 @@ function __ALITTLEAPI_WindowLeave()
 end
 
 function __ALITTLEAPI_Update(frame_time)
-	A_LuaLoopSystem:Update(frame_time)
+	A_LoopSystem:Update(frame_time)
+	A_WeakLoopSystem:Update(frame_time)
 end
 
 function __ALITTLEAPI_WillEnterBackground()

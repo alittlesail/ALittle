@@ -203,10 +203,8 @@ public static __ALITTLEAPI_WindowLeave()
 //////////////////////////////////////////////////////////////////-
 public static __ALITTLEAPI_Update(int frame_time)
 {
-    [Language(Lua)]
-    A_LuaLoopSystem.Update(frame_time);
-    [Language(JavaScript)]
-    A_JLoopSystem.Update(frame_time);
+    A_LoopSystem.Update(frame_time);
+    A_WeakLoopSystem.Update(frame_time);
 }
 //////////////////////////////////////////////////////////////////-
     

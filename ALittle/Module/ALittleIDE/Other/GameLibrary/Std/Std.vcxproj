@@ -49,6 +49,7 @@
     <None Include="src\Adapter\Lua\utf8.alittle" />
     <None Include="src\ALittle.alittle" />
     <None Include="src\Std\Loop\ILoopSystem.alittle" />
+    <None Include="src\Std\Loop\LoopFrame.alittle" />
     <None Include="src\Std\Loop\LoopObject.alittle" />
     <None Include="src\Std\Loop\LoopFunction.alittle" />
     <None Include="src\Std\Loop\LoopGroup.alittle" />

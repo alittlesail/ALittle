@@ -19,7 +19,7 @@ function ImagePlay.__setter:path_list(value)
 	self:RemoveAllChild()
 	if self._path_list == nil then
 		if self._play_loop ~= nil then
-			A_LoopSystem:RemoveUpdater(self._play_loop)
+			A_WeakLoopSystem:RemoveUpdater(self._play_loop)
 			self._play_loop = nil
 		end
 		return
@@ -53,7 +53,7 @@ end
 
 function ImagePlay:Play()
 	if self._play_loop ~= nil then
-		A_LoopSystem:RemoveUpdater(self._play_loop)
+		A_WeakLoopSystem:RemoveUpdater(self._play_loop)
 		self._play_loop = nil
 	end
 	if self._path_list == nil then
@@ -64,12 +64,12 @@ function ImagePlay:Play()
 		v.visible = false
 	end
 	self._play_loop = LoopFunction(Lua.Bind(self.PlayUpdate, self), -1, self._interval, 0)
-	A_LoopSystem:AddUpdater(self._play_loop)
+	A_WeakLoopSystem:AddUpdater(self._play_loop)
 end
 
 function ImagePlay:Stop()
 	if self._play_loop ~= nil then
-		A_LoopSystem:RemoveUpdater(self._play_loop)
+		A_WeakLoopSystem:RemoveUpdater(self._play_loop)
 		self._play_loop = nil
 	end
 end

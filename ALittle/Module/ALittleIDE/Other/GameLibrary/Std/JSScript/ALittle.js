@@ -8,6 +8,7 @@ __ALITTLEAPI_Std_Init = function(base_path) {
 		await Require(base_path + "Std/Reflect/ReflectMessage");
 		await Require(base_path + "Std/Loop/LoopObject");
 		await Require(base_path + "Std/Loop/ILoopSystem");
+		await Require(base_path + "Std/Loop/LoopFrame");
 		await Require(base_path + "Std/Loop/LoopFunction");
 		await Require(base_path + "Std/Loop/LoopGroup");
 		await Require(base_path + "Std/Loop/LoopList");

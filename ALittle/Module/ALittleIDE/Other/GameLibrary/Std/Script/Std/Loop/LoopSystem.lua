@@ -9,8 +9,12 @@ local ___ipairs = ipairs
 assert(ALittle.ILoopSystem, " extends class:ALittle.ILoopSystem is nil")
 LoopSystem = Lua.Class(ALittle.ILoopSystem, "ALittle.LoopSystem")
 
-function LoopSystem:Ctor()
-	___rawset(self, "_loop_updaters", {})
+function LoopSystem:Ctor(weak)
+	if weak then
+		___rawset(self, "_loop_updaters", CreateKeyWeakMap())
+	else
+		___rawset(self, "_loop_updaters", {})
+	end
 	___rawset(self, "_in_update", false)
 	___rawset(self, "_loop_cache", {})
 	___rawset(self, "_cache_empty", true)
@@ -122,9 +126,16 @@ function LoopSystem:Update(frame_time)
 end
 
 _G.A_LuaLoopSystem = Lua.Template(LoopSystem, "ALittle.LoopSystem<Lua.LuaHeapTimer>", Lua.LuaHeapTimer)()
+_G.A_LuaWeakLoopSystem = Lua.Template(LoopSystem, "ALittle.LoopSystem<Lua.LuaHeapTimer>", Lua.LuaHeapTimer)()
 local GetLoopSystem
 GetLoopSystem = function()
 	return A_LuaLoopSystem
 end
 
+local GetWeakLoopSystem
+GetWeakLoopSystem = function()
+	return A_LuaWeakLoopSystem
+end
+
 _G.A_LoopSystem = GetLoopSystem()
+_G.A_WeakLoopSystem = GetWeakLoopSystem()

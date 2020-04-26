@@ -158,7 +158,8 @@ __ALITTLEAPI_WindowLeave = function() {
 }
 
 __ALITTLEAPI_Update = function(frame_time) {
-	A_JLoopSystem.Update(frame_time);
+	A_LoopSystem.Update(frame_time);
+	A_WeakLoopSystem.Update(frame_time);
 }
 
 __ALITTLEAPI_WillEnterBackground = function() {

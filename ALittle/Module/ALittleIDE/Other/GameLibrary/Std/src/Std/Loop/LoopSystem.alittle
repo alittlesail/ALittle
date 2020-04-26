@@ -11,9 +11,12 @@ public class LoopSystem<HT : IHeapTimer> : ILoopSystem
     private HT _timer;
     private Map<int, Functor<()>> _handler_map;
     
-    public ctor()
+    public ctor([Nullable] bool weak)
     {
-        this._loop_updaters = new Map<LoopObject, bool>();
+        if (weak)
+            this._loop_updaters = CreateKeyWeakMap();
+        else
+            this._loop_updaters = new Map<LoopObject, bool>();
         this._in_update = false;
         this._loop_cache = new Map<LoopObject, bool>();
         this._cache_empty = true;
@@ -155,9 +158,13 @@ public class LoopSystem<HT : IHeapTimer> : ILoopSystem
 
 [Language(Lua)]
 public var A_LuaLoopSystem = new LoopSystem<Lua.LuaHeapTimer>();
+[Language(Lua)]
+public var A_LuaWeakLoopSystem = new LoopSystem<Lua.LuaHeapTimer>();
 
 [Language(JavaScript)]
-public var A_JLoopSystem = new LoopSystem<JavaScript.JHeapTimer>();
+public var A_JLoopSystem = new LoopSystem<JavaScript.JHeapTimer>(true);
+[Language(JavaScript)]
+public var A_JWeakLoopSystem = new LoopSystem<JavaScript.JHeapTimer>(true);
 
 private static GetLoopSystem() : ILoopSystem
 {
@@ -167,4 +174,13 @@ private static GetLoopSystem() : ILoopSystem
     return A_JLoopSystem;
 }
 
+private static GetWeakLoopSystem() : ILoopSystem
+{
+    [Language(Lua)]
+    return A_LuaWeakLoopSystem;
+    [Language(JavaScript)]
+    return A_JWeakLoopSystem;
+}
+
 public var A_LoopSystem = GetLoopSystem();
+public var A_WeakLoopSystem = GetWeakLoopSystem();

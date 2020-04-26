@@ -8,6 +8,7 @@ public await static __ALITTLEAPI_Std_Init(string base_path)
     
     Require(base_path.."Std/Loop/LoopObject");
     Require(base_path.."Std/Loop/ILoopSystem");
+    Require(base_path.."Std/Loop/LoopFrame");
     Require(base_path.."Std/Loop/LoopFunction");
     Require(base_path.."Std/Loop/LoopGroup");
     Require(base_path.."Std/Loop/LoopList");

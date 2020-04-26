@@ -4,8 +4,12 @@ if (typeof ALittle === "undefined") ALittle = {};
 
 if (ALittle.ILoopSystem === undefined) throw new Error(" extends class:ALittle.ILoopSystem is undefined");
 ALittle.LoopSystem = JavaScript.Class(ALittle.ILoopSystem, {
-	Ctor : function() {
-		this._loop_updaters = new Map();
+	Ctor : function(weak) {
+		if (weak) {
+			this._loop_updaters = ALittle.CreateKeyWeakMap();
+		} else {
+			this._loop_updaters = new Map();
+		}
 		this._in_update = false;
 		this._loop_cache = new Map();
 		this._cache_empty = true;
@@ -114,10 +118,16 @@ ALittle.LoopSystem = JavaScript.Class(ALittle.ILoopSystem, {
 	},
 }, "ALittle.LoopSystem");
 
-window.A_JLoopSystem = ALittle.NewObject(JavaScript.Template(ALittle.LoopSystem, "ALittle.LoopSystem<JavaScript.JHeapTimer>", JavaScript.JHeapTimer));
+window.A_JLoopSystem = ALittle.NewObject(JavaScript.Template(ALittle.LoopSystem, "ALittle.LoopSystem<JavaScript.JHeapTimer>", JavaScript.JHeapTimer), true);
+window.A_JWeakLoopSystem = ALittle.NewObject(JavaScript.Template(ALittle.LoopSystem, "ALittle.LoopSystem<JavaScript.JHeapTimer>", JavaScript.JHeapTimer), true);
 let GetLoopSystem = function() {
 	return A_JLoopSystem;
 }
 
+let GetWeakLoopSystem = function() {
+	return A_JWeakLoopSystem;
+}
+
 window.A_LoopSystem = GetLoopSystem();
+window.A_WeakLoopSystem = GetWeakLoopSystem();
 }

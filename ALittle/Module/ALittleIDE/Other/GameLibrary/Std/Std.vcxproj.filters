@@ -200,5 +200,8 @@
     <None Include="src\Std\Utility\Bit.alittle">
       <Filter>Std\Utility</Filter>
     </None>
+    <None Include="src\Std\Loop\LoopFrame.alittle">
+      <Filter>Std\Loop</Filter>
+    </None>
   </ItemGroup>
 </Project>

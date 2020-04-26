@@ -545,26 +545,6 @@ function IDEControlManager:HandleControlRightMenuCopyExtends(event)
 	ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list))
 end
 
-function IDEControlManager:ControlRunImpl(name)
-	local debug = {}
-	debug["title"] = name
-	debug["window_width"] = g_IDEProject.project.config:GetConfig("default_show_width", 800)
-	debug["window_height"] = g_IDEProject.project.config:GetConfig("default_show_height", 600)
-	debug["ui_name"] = name
-	debug["module_name"] = g_IDEProject.project.name
-	local debug_str = ALittle.String_JsonEncode(debug)
-	debug_str = "\"" .. ALittle.String_Replace(debug_str, "\"", "\\\"") .. "\""
-	os.execute("start ALittleClientWin32.exe " .. debug_str .. " " .. g_IDEProject.project.name .. " Engine/MainTemplate/UIViewer")
-end
-
-function IDEControlManager:HandleControlRightMenuRun(event)
-	A_LayerManager:HideFromRight(self._control_right_menu)
-	local target = self._control_right_menu._user_data
-	self._control_right_menu._user_data = nil
-	local user_data = target._user_data
-	self:ControlRunImpl(user_data.control_info.name)
-end
-
 function IDEControlManager:HandleControlRightMenuFlagQuickImage(event)
 	A_LayerManager:HideFromRight(self._control_right_menu)
 	local target = self._control_right_menu._user_data

@@ -24,7 +24,7 @@ public class ImagePlay : DisplayLayout
         {
             if (this._play_loop != null)
             {
-                A_LoopSystem.RemoveUpdater(this._play_loop);
+                A_WeakLoopSystem.RemoveUpdater(this._play_loop);
                 this._play_loop = null;
             }
             return;
@@ -65,7 +65,7 @@ public class ImagePlay : DisplayLayout
     {
         if (this._play_loop != null)
         {
-            A_LoopSystem.RemoveUpdater(this._play_loop);
+            A_WeakLoopSystem.RemoveUpdater(this._play_loop);
             this._play_loop = null;
         }
         if (this._path_list == null)
@@ -77,14 +77,14 @@ public class ImagePlay : DisplayLayout
             v.visible = false;
         // 更新循环
         this._play_loop = new LoopFunction(bind(this.PlayUpdate, this), -1, this._interval, 0);
-        A_LoopSystem.AddUpdater(this._play_loop);
+        A_WeakLoopSystem.AddUpdater(this._play_loop);
     }
     
     public fun Stop()
     {
         if (this._play_loop != null)
         {
-            A_LoopSystem.RemoveUpdater(this._play_loop);
+            A_WeakLoopSystem.RemoveUpdater(this._play_loop);
             this._play_loop = null;
         }
     }

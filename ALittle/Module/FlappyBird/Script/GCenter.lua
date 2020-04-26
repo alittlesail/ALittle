@@ -160,10 +160,11 @@ function GCenter:ShowGameOver()
 	self._game_title.visible = false
 	self._bird:Stop()
 	self._frame_anti:Stop()
-	if self._max_score_text._user_data < self._score_text._user_data then
-		self._max_score_text._user_data = self._score_text._user_data
+	local cur_socre = ALittle.Math_Floor(self._score_text._user_data / 100)
+	if self._max_score_text._user_data < cur_socre then
+		self._max_score_text._user_data = cur_socre
 		self._max_score_text.text = self._max_score_text._user_data
-		g_GConfig:SetConfig("max_score", ALittle.Math_Floor(self._max_score_text._user_data / 100), nil)
+		g_GConfig:SetConfig("max_score", cur_socre, nil)
 	end
 	return true
 end

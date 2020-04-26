@@ -155,10 +155,11 @@ FlappyBird.GCenter = JavaScript.Class(undefined, {
 		this._game_title.visible = false;
 		this._bird.Stop();
 		this._frame_anti.Stop();
-		if (this._max_score_text._user_data < this._score_text._user_data) {
-			this._max_score_text._user_data = this._score_text._user_data;
+		let cur_socre = ALittle.Math_Floor(this._score_text._user_data / 100);
+		if (this._max_score_text._user_data < cur_socre) {
+			this._max_score_text._user_data = cur_socre;
 			this._max_score_text.text = this._max_score_text._user_data;
-			FlappyBird.g_GConfig.SetConfig("max_score", ALittle.Math_Floor(this._max_score_text._user_data / 100), undefined);
+			FlappyBird.g_GConfig.SetConfig("max_score", cur_socre, undefined);
 		}
 		return true;
 	},

@@ -255,12 +255,13 @@ class GCenter
         
         this._bird.Stop();
         this._frame_anti.Stop();
-
-        if (cast<int>(this._max_score_text._user_data) < cast<int>(this._score_text._user_data))
+        
+        var cur_socre = ALittle.Math_Floor(cast<int>(this._score_text._user_data) / 100);
+        if (cast<int>(this._max_score_text._user_data) < cur_socre)
         {
-            this._max_score_text._user_data = this._score_text._user_data;
+            this._max_score_text._user_data = cur_socre;
             this._max_score_text.text = this._max_score_text._user_data;
-            g_GConfig.SetConfig("max_score", ALittle.Math_Floor(cast<int>(this._max_score_text._user_data) / 100), null);
+            g_GConfig.SetConfig("max_score", cur_socre, null);
         }
         return true;
     }

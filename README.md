@@ -39,11 +39,13 @@ ALittleScript是一门兼顾强类型和弱类型的语言。
   * 使用浏览器打开HelloWorld.html。按F12打开浏览器调试界面，就可以看到HelloWorld
   * ![HelloWorld](https://github.com/alittlesail/ALittle/blob/master/ALittle/Module/ALittleIDE/Other/GameLibrary/HelloWorld/HelloWorld.js.png)
   
-## G2048 一个小游戏
+## 小游戏
 * 线上 demo
-  * [2048小游戏 PixiJS移植](http://139.159.176.119/G2048.html)
-  * [2048小游戏 Emscripten移植](http://139.159.176.119/Emscripten/G2048.html)
-  * [ALittleIDE Emscripten移植](http://139.159.176.119/Emscripten/ALittleIDE.html)
+  * [2048 PixiJS移植](http://alittlesail.github.io/G2048.html)
+  * [FlappyBird PixiJS移植](http://alittlesail.github.io/FlappyBird.html)
+  * [ALittleIDE PixiJS移植](http://alittlesail.github.io/ALittleIDE.html)
+  * [2048 Emscripten移植](https://alittlesail.github.io/Emscripten/G2048.html)
+  * [ALittleIDE Emscripten移植](https://alittlesail.github.io/Emscripten/ALittleIDE.html)
 * 本地运行
   * 运行nginx-1.16.1目录下的start.bat
   * 打开浏览器，输入地址localhost/ALittle/G2048.html

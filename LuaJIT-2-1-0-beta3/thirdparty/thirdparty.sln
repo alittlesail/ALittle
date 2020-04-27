@@ -25,6 +25,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sqlite3", "sqlite3\sqlite3.
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ajson", "json\ajson.vcxproj", "{EDE23648-CACA-4F5B-8E31-E4FD19F2031D}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "deeplearning", "deeplearning\deeplearning.vcxproj", "{2BAAFF59-A403-491D-A42A-F27E766BB487}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -121,6 +123,14 @@ Global
 		{EDE23648-CACA-4F5B-8E31-E4FD19F2031D}.Release|x64.Build.0 = Release|x64
 		{EDE23648-CACA-4F5B-8E31-E4FD19F2031D}.Release|x86.ActiveCfg = Release|Win32
 		{EDE23648-CACA-4F5B-8E31-E4FD19F2031D}.Release|x86.Build.0 = Release|Win32
+		{2BAAFF59-A403-491D-A42A-F27E766BB487}.Debug|x64.ActiveCfg = Debug|x64
+		{2BAAFF59-A403-491D-A42A-F27E766BB487}.Debug|x64.Build.0 = Debug|x64
+		{2BAAFF59-A403-491D-A42A-F27E766BB487}.Debug|x86.ActiveCfg = Debug|Win32
+		{2BAAFF59-A403-491D-A42A-F27E766BB487}.Debug|x86.Build.0 = Debug|Win32
+		{2BAAFF59-A403-491D-A42A-F27E766BB487}.Release|x64.ActiveCfg = Release|x64
+		{2BAAFF59-A403-491D-A42A-F27E766BB487}.Release|x64.Build.0 = Release|x64
+		{2BAAFF59-A403-491D-A42A-F27E766BB487}.Release|x86.ActiveCfg = Release|Win32
+		{2BAAFF59-A403-491D-A42A-F27E766BB487}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

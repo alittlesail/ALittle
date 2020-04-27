@@ -141,6 +141,7 @@ JavaScript.JSystem_CreateView = function(title, width, height, flag, scale) {
 	let data = {};
 	data.width = ALittle.Math_Floor(width * scale);
 	data.height = ALittle.Math_Floor(height * scale);
+	data.forceCanvas = !PIXI.utils.isWebGLSupported();
 	A_PixiApp = new PIXI.Application(data);
 	document.body.appendChild(A_PixiApp.view);
 	document.title = title;

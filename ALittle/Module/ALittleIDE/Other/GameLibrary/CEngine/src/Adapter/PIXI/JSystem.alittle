@@ -132,6 +132,7 @@ public static JSystem_CreateView(string title, int width, int height, int flag, 
     var data = new PIXI.ApplicationData();
     data.width = ALittle.Math_Floor(width * scale);
     data.height = ALittle.Math_Floor(height * scale);
+    data.forceCanvas = !PIXI.utils.isWebGLSupported();
     A_PixiApp = new PIXI.Application(data);
     document.body.appendChild(A_PixiApp.view);
     document.title = title;

@@ -6,6 +6,12 @@ public struct ApplicationData
     int width;
     int height;
     int backgroundColor;
+    bool forceCanvas;
+}
+
+public class utils
+{
+    public static isWebGLSupported() : bool {}
 }
 
 [Native]

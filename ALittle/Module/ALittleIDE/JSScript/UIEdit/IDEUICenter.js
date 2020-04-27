@@ -94,6 +94,7 @@ ALittleIDE.IDEUICenter = JavaScript.Class(undefined, {
 			ALittleIDE.g_IDEAttributeManager.Setup(this._control_edit_tab, attr_displaylayout);
 			ALittleIDE.g_IDETabManager.Setup(this._main_edit_tab, tree_displaylayout, attr_displaylayout, anti_displaylayout);
 			ALittleIDE.g_IDEAttrImageDialog.Setup();
+			ALittle.TextRadioButton.SetGroup([this._tool_singleselect, this._tool_handdrag, this._tool_scale, this._tool_presee]);
 			___COROUTINE();
 		}).bind(this));
 	},

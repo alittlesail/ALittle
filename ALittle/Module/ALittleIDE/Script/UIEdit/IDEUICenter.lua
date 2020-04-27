@@ -100,6 +100,7 @@ local ___COROUTINE = coroutine.running()
 	g_IDEAttributeManager:Setup(self._control_edit_tab, attr_displaylayout)
 	g_IDETabManager:Setup(self._main_edit_tab, tree_displaylayout, attr_displaylayout, anti_displaylayout)
 	g_IDEAttrImageDialog:Setup()
+	ALittle.TextRadioButton.SetGroup({self._tool_singleselect, self._tool_handdrag, self._tool_scale, self._tool_presee})
 end
 
 function IDEUICenter:Shutdown()

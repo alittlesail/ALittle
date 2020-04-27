@@ -32,9 +32,10 @@ class IDEUICenter
 	
 	private ALittle.DisplayObject _tool_scale_text;				// 缩放标题
 	private ALittle.DisplayObject _tool_scale_input;			// 缩放输入框
-	private ALittle.DisplayObject _tool_singleselect;			// 选择模式
-	private ALittle.DisplayObject _tool_handdrag;				// 拖拽模式
-	private ALittle.DisplayObject _tool_scale;					// 缩放模式
+	private ALittle.TextRadioButton _tool_singleselect;			// 选择模式
+	private ALittle.TextRadioButton _tool_handdrag;				// 拖拽模式
+	private ALittle.TextRadioButton _tool_scale;				// 缩放模式
+	private ALittle.TextRadioButton _tool_presee;				// 预览模式
 
 	public ctor()
 	{
@@ -144,6 +145,8 @@ class IDEUICenter
 		g_IDEAttributeManager.Setup(this._control_edit_tab, attr_displaylayout);
 		g_IDETabManager.Setup(this._main_edit_tab, tree_displaylayout, attr_displaylayout, anti_displaylayout);
 		g_IDEAttrImageDialog.Setup();
+
+		ALittle.TextRadioButton.SetGroup([this._tool_singleselect, this._tool_handdrag, this._tool_scale, this._tool_presee]);
 	}
 	
 	public fun Shutdown()

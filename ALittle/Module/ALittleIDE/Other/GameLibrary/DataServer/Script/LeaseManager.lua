@@ -175,7 +175,7 @@ function LeaseManager:HandleLeaseRenew(session, msg)
 		return nil
 	end
 	if info.gs_route_num ~= session.route_num then
-		return "��Լʧ��"
+		return "续约失败"
 	end
 	info.confirm = true
 	if info.timer ~= nil then

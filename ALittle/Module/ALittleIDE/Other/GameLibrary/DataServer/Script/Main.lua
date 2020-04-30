@@ -26,9 +26,9 @@ function __Module_Setup(config_path, engine_base_path, script_base_path)
 	g_ConnectServerPort = 1600 + port_offset + route_offset
 	__CPPAPI_ServerSchedule:CreateConnectServer(g_ConnectServerYunIp, g_ConnectServerWanIp, g_ConnectServerPort)
 	__CPPAPI_ServerSchedule:CreateConnectClient(wan_ip, 1001 + port_offset)
-	Require(script_base_path .. "DataManager")
-	Require(script_base_path .. "LoginManager")
-	Require(script_base_path .. "LeaseManager")
+	Require(script_base_path, "DataManager")
+	Require(script_base_path, "LoginManager")
+	Require(script_base_path, "LeaseManager")
 	g_LeaseManager:Setup()
 end
 __Module_Setup = Lua.CoWrap(__Module_Setup)

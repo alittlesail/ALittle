@@ -30,9 +30,9 @@ public async static __Module_Setup(string config_path, string engine_base_path, 
     __CPPAPI_ServerSchedule.CreateConnectServer(g_ConnectServerYunIp, g_ConnectServerWanIp, g_ConnectServerPort);
     __CPPAPI_ServerSchedule.CreateConnectClient(wan_ip, ALittle.RoutePort.RT_GATEWAY_CONNECT + port_offset);
     
-    alittle.Require(script_base_path.."DataManager");
-    alittle.Require(script_base_path.."LoginManager");
-    alittle.Require(script_base_path.."LeaseManager");
+    alittle.Require(script_base_path, "DataManager");
+    alittle.Require(script_base_path, "LoginManager");
+    alittle.Require(script_base_path, "LeaseManager");
     
     g_LeaseManager.Setup();
 }

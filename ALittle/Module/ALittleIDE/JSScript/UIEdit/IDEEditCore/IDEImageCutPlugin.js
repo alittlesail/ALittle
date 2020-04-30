@@ -1,5 +1,5 @@
 {
-if (typeof ALittleIDE === "undefined") ALittleIDE = {};
+if (typeof ALittleIDE === "undefined") window.ALittleIDE = {};
 
 
 if (ALittle.DisplayLayout === undefined) throw new Error(" extends class:ALittle.DisplayLayout is undefined");

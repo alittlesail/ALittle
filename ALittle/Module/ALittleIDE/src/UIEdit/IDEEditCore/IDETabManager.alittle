@@ -447,11 +447,6 @@ public class IDETabManager
 				this.CloseTab(child_v);
 			return;
 		}
-		if (handle_name == "运行")
-		{
-			g_IDEControlManager.ControlRunImpl(tab_child.name);
-			return;
-		}
 		if (handle_name == "修改控件名")
 		{
 			this.ControlRenameImpl(child);

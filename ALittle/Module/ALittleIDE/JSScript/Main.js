@@ -1,5 +1,5 @@
 {
-if (typeof ALittleIDE === "undefined") ALittleIDE = {};
+if (typeof ALittleIDE === "undefined") window.ALittleIDE = {};
 
 
 ALittleIDE.__Browser_Setup = async function(layer_group, control, module_base_path, script_base_path, debug) {
@@ -44,7 +44,7 @@ ALittleIDE.__Module_Setup = async function(layer_group, control, module_base_pat
 	ALittleIDE.g_ModuleBasePath = module_base_path;
 	ALittleIDE.g_ModuleBasePathEx = ALittle.File_BaseFilePath() + module_base_path;
 	ALittleIDE.g_ScriptBasePath = script_base_path;
-	await Require(script_base_path + "IDECenter");
+	await Require(script_base_path, "IDECenter");
 	await ALittleIDE.g_IDECenter.Setup(debug);
 }
 

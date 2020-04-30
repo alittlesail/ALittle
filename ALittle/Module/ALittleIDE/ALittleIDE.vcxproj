@@ -21,7 +21,7 @@
   <ItemGroup>
     <None Include="src\IDECenter.alittle" />
     <None Include="src\IDEProject.alittle" />
-    <None Include="src\Main.alittle" />
+    <None Include="src\ALittle.alittle" />
     <None Include="src\UIEdit\IDEDataCore\IDEEnum.alittle" />
     <None Include="src\UIEdit\IDEDataCore\IDEExport.alittle" />
     <None Include="src\UIEdit\IDEEditCore\IDEAttrEventDialog.alittle" />

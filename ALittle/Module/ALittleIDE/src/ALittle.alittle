@@ -1,0 +1,54 @@
+namespace ALittleIDE;
+
+require("../../CEngine/Script/ALittle");
+
+require("IDECenter");
+
+protected var g_Control:ALittle.ControlSystem;
+protected var g_LayerGroup:ALittle.DisplayLayout;
+protected var g_ModuleBasePath:string;
+protected var g_ScriptBasePath:string;
+protected var g_ModuleBasePathEx:string;
+protected var g_IDEConfig:ALittle.IJsonConfig;
+
+// 模块入口函数
+private await static Init(string module_path, ALittle.DisplayLayout layer_group, ALittle.ControlSystem control)
+{
+    // 把resource, layer_group变量保存到全局，便于使用
+    g_Control = control;
+    g_LayerGroup = layer_group;
+    g_ModuleBasePath = module_path;
+    g_ModuleBasePathEx = ALittle.File_BaseFilePath()..module_path;
+    
+        // 删除7天前的日志
+    ALittle.DeleteLog(7);
+    
+    // 创建窗口
+    var window_width = 1200;
+    var window_height = 600;
+    var rate = 1.0;
+    var flag = ALittle.BitOr(ALittle.UIEnumTypes.VIEW_MAXIMIZED, ALittle.UIEnumTypes.VIEW_RESIZABLE);
+    
+	if (ALittle.System_GetPlatform() != "Windows" && ALittle.System_GetPlatform() != "Web")
+	{
+        var screen_width = ALittle.System_GetScreenWidth();
+        var screen_height = ALittle.System_GetScreenHeight();
+        if (screen_width > 0)
+            rate = screen_height / screen_width;
+        window_height = ALittle.Math_Floor(rate * window_width);
+        flag = ALittle.BitOr(flag, ALittle.UIEnumTypes.VIEW_FULLSCREEN);
+	}
+
+	if (ALittle.System_GetPlatform() == "Web")
+	{
+        window_width = ALittle.System_GetScreenWidth();
+        window_height = ALittle.System_GetScreenHeight();
+    }
+    ALittle.System_CreateView("ALittleIDE", window_width, window_height, flag, rate);
+    ALittle.System_SetViewIcon(module_path.."/Other/ic_launcher.png");
+
+    g_IDECenter.Setup();
+}
+
+g_Application.Setup("ALittleIDE", Init);
+g_Application.Run();

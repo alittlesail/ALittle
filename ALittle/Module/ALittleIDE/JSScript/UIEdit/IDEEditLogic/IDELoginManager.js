@@ -1,5 +1,5 @@
 {
-if (typeof ALittleIDE === "undefined") ALittleIDE = {};
+if (typeof ALittleIDE === "undefined") window.ALittleIDE = {};
 
 ALittle.RegStruct(1598450085, "ALittle.QWebLogout", {
 name : "ALittle.QWebLogout", ns_name : "ALittle", rl_name : "QWebLogout", hash_code : 1598450085,

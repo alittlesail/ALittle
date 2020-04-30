@@ -1,6 +1,7 @@
-
+-- ALittle Generate Lua
 module("ALittleIDE", package.seeall)
 
+local ___thispath = select('1', ...):match("(.+[/\\]).+$") or ""
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs

@@ -1,6 +1,7 @@
-
+-- ALittle Generate Lua
 module("ALittleIDE", package.seeall)
 
+local ___thispath = select('1', ...):match("(.+[/\\]).+$") or ""
 local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = ALittle.GetAllStruct()
@@ -414,10 +415,6 @@ function IDETabManager:HandleTabRightMenu(event)
 		for index, child_v in ___ipairs(close_list) do
 			self:CloseTab(child_v)
 		end
-		return
-	end
-	if handle_name == "运行" then
-		g_IDEControlManager:ControlRunImpl(tab_child.name)
 		return
 	end
 	if handle_name == "修改控件名" then

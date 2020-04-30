@@ -1,5 +1,5 @@
 {
-if (typeof ALittleIDE === "undefined") ALittleIDE = {};
+if (typeof ALittleIDE === "undefined") window.ALittleIDE = {};
 let ___all_struct = ALittle.GetAllStruct();
 
 ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
@@ -420,10 +420,6 @@ ALittleIDE.IDETabManager = JavaScript.Class(undefined, {
 				if (child_v === undefined) break;
 				this.CloseTab(child_v);
 			}
-			return;
-		}
-		if (handle_name === "运行") {
-			ALittleIDE.g_IDEControlManager.ControlRunImpl(tab_child.name);
 			return;
 		}
 		if (handle_name === "修改控件名") {

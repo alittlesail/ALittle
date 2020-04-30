@@ -1,5 +1,5 @@
 {
-if (typeof ALittleIDE === "undefined") ALittleIDE = {};
+if (typeof ALittleIDE === "undefined") window.ALittleIDE = {};
 
 
 if (ALittleIDE.TextCheckButtonS === undefined) throw new Error(" extends class:ALittleIDE.TextCheckButtonS is undefined");

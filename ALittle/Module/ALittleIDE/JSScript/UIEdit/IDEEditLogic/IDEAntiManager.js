@@ -1,5 +1,5 @@
 {
-if (typeof ALittleIDE === "undefined") ALittleIDE = {};
+if (typeof ALittleIDE === "undefined") window.ALittleIDE = {};
 let ___all_struct = ALittle.GetAllStruct();
 
 ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
@@ -670,7 +670,7 @@ ALittleIDE.IDEAntiPanel = JavaScript.Class(ALittle.DisplayLayout, {
 		this._loop_rit.visible = false;
 		this._cur_loop_item = undefined;
 		if (this._cur_anti !== undefined) {
-			this._cur_anti.Close();
+			this._cur_anti.Stop();
 			this._cur_anti = undefined;
 		}
 		if (this._anti_dialog !== undefined) {

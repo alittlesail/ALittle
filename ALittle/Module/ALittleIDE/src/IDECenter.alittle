@@ -1,6 +1,9 @@
 
 namespace ALittleIDE;
 
+require("IDEProject");
+require("UIEdit/IDEUICenter");
+	
 class IDECenter
 {
 	private ALittle.DisplayObject _phone_status_quad;	// 手机头底色
@@ -30,11 +33,8 @@ class IDECenter
 		return this._dialog_layer;
 	}
 	
-	public await fun Setup(string debug)
+	public await fun Setup()
 	{
-		alittle.Require(g_ScriptBasePath.."IDEProject");
-		alittle.Require(g_ScriptBasePath.."UIEdit/IDEUICenter");
-	
 		// 获取配置信息
 		g_IDEConfig = ALittle.CreateConfigSystem("ALittleIDE.cfg");
 		// 生成随机数种子
@@ -78,7 +78,7 @@ class IDECenter
 
 		// 如果不是debug模式，那么就检查版本
 		[Language(Lua)]
-		if (debug != "debug")
+		if (!g_Control.crypt_mode)
 			g_IDEVersionManager.CheckVersionUpdate();
 
 		// 初始化登录

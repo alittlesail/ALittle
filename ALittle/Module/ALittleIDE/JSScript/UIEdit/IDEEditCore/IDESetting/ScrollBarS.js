@@ -1,5 +1,5 @@
 {
-if (typeof ALittleIDE === "undefined") ALittleIDE = {};
+if (typeof ALittleIDE === "undefined") window.ALittleIDE = {};
 
 
 if (ALittleIDE.Grid3S === undefined) throw new Error(" extends class:ALittleIDE.Grid3S is undefined");

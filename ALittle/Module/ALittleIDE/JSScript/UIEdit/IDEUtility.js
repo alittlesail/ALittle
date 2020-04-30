@@ -1,5 +1,5 @@
 {
-if (typeof ALittleIDE === "undefined") ALittleIDE = {};
+if (typeof ALittleIDE === "undefined") window.ALittleIDE = {};
 
 ALittle.RegStruct(-1105378563, "ALittleIDE.IDETreeUserInfo", {
 name : "ALittleIDE.IDETreeUserInfo", ns_name : "ALittleIDE", rl_name : "IDETreeUserInfo", hash_code : -1105378563,

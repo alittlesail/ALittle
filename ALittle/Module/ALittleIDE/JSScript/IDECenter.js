@@ -1,5 +1,5 @@
 {
-if (typeof ALittleIDE === "undefined") ALittleIDE = {};
+if (typeof ALittleIDE === "undefined") window.ALittleIDE = {};
 
 
 ALittleIDE.IDECenter = JavaScript.Class(undefined, {
@@ -13,8 +13,8 @@ ALittleIDE.IDECenter = JavaScript.Class(undefined, {
 	},
 	Setup : function(debug) {
 		return new Promise((async function(___COROUTINE, ___) {
-			await Require(ALittleIDE.g_ScriptBasePath + "IDEProject");
-			await Require(ALittleIDE.g_ScriptBasePath + "UIEdit/IDEUICenter");
+			await Require(ALittleIDE.g_ScriptBasePath, "IDEProject");
+			await Require(ALittleIDE.g_ScriptBasePath, "UIEdit/IDEUICenter");
 			ALittleIDE.g_IDEConfig = ALittle.CreateConfigSystem("ALittleIDE.cfg");
 			ALittle.Math_RandomSeed(ALittle.Time_GetCurTime());
 			ALittle.System_SetThreadCount(5);

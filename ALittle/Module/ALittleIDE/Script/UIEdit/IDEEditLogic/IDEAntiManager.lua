@@ -1,6 +1,7 @@
-
+-- ALittle Generate Lua
 module("ALittleIDE", package.seeall)
 
+local ___thispath = select('1', ...):match("(.+[/\\]).+$") or ""
 local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = ALittle.GetAllStruct()
@@ -713,7 +714,7 @@ function IDEAntiPanel:HideAnti()
 	self._loop_rit.visible = false
 	self._cur_loop_item = nil
 	if self._cur_anti ~= nil then
-		self._cur_anti:Close()
+		self._cur_anti:Stop()
 		self._cur_anti = nil
 	end
 	if self._anti_dialog ~= nil then

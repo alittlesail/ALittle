@@ -781,7 +781,7 @@ public class IDEAntiPanel : ALittle.DisplayLayout
 		this._loop_attribute.visible = false;
 		this._loop_rit.visible = false;
 		this._cur_loop_item = null;
-		if (this._cur_anti != null) { this._cur_anti.Close(); this._cur_anti = null; }
+		if (this._cur_anti != null) { this._cur_anti.Stop(); this._cur_anti = null; }
 		if (this._anti_dialog != null) { this._anti_dialog.visible = false; }
 	}
 

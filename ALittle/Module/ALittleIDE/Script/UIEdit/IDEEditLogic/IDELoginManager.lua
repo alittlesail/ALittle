@@ -1,7 +1,7 @@
-
+-- ALittle Generate Lua
 module("ALittleIDE", package.seeall)
 
-local ___rawset = rawset
+local ___thispath = select('1', ...):match("(.+[/\\]).+$") or ""
 local ___pairs = pairs
 local ___ipairs = ipairs
 
@@ -69,21 +69,6 @@ option_map = {}
 IDELoginManager = Lua.Class(nil, "ALittleIDE.IDELoginManager")
 
 function IDELoginManager:Ctor()
-	local config = ALittle.CreateConfigSystem(g_ModuleBasePath .. "/Other/Server.cfg")
-	___rawset(self, "_logingate_ip", config:GetConfig("logingate_ip", "139.159.176.119"))
-	___rawset(self, "_logingate_port", config:GetConfig("logingate_port", 1000))
-	___rawset(self, "_version_ip", config:GetConfig("version_ip", "139.159.176.119"))
-	___rawset(self, "_version_port", config:GetConfig("version_port", 1011))
-	___rawset(self, "_msg_client", ALittle.CreateMsgSender(30, true))
-	___rawset(self, "_session_id", "")
-	___rawset(self, "_account_info", {})
-	___rawset(self, "_server_info", {})
-	self._server_info.http_ip = ""
-	self._server_info.http_port = 0
-	___rawset(self, "_account_name", "")
-	___rawset(self, "_account_pwd", "")
-	___rawset(self, "_first_login", true)
-	___rawset(self, "_is_login", false)
 end
 
 function IDELoginManager.__getter:account_name()
@@ -91,6 +76,21 @@ function IDELoginManager.__getter:account_name()
 end
 
 function IDELoginManager:Setup()
+	local config = ALittle.CreateConfigSystem(g_ModuleBasePath .. "/Other/Server.cfg")
+	self._logingate_ip = config:GetConfig("logingate_ip", "139.159.176.119")
+	self._logingate_port = config:GetConfig("logingate_port", 1000)
+	self._version_ip = config:GetConfig("version_ip", "139.159.176.119")
+	self._version_port = config:GetConfig("version_port", 1011)
+	self._msg_client = ALittle.CreateMsgSender(30, true)
+	self._session_id = ""
+	self._account_info = {}
+	self._server_info = {}
+	self._server_info.http_ip = ""
+	self._server_info.http_port = 0
+	self._account_name = ""
+	self._account_pwd = ""
+	self._first_login = true
+	self._is_login = false
 	self._save_password = g_IDEConfig:GetConfig("save_password", false)
 	self._auto_login = g_IDEConfig:GetConfig("auto_login", false)
 	if self._save_password then

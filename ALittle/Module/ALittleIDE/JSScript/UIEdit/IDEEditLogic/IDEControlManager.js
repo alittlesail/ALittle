@@ -1,5 +1,5 @@
 {
-if (typeof ALittleIDE === "undefined") ALittleIDE = {};
+if (typeof ALittleIDE === "undefined") window.ALittleIDE = {};
 let ___all_struct = ALittle.GetAllStruct();
 
 ALittle.RegStruct(-11865120, "ALittleIDE.IDEControlItemUserData", {
@@ -524,24 +524,6 @@ ALittleIDE.IDEControlManager = JavaScript.Class(undefined, {
 		info["info"] = save_info;
 		copy_list[1 - 1] = info;
 		ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list));
-	},
-	ControlRunImpl : function(name) {
-		let debug = {};
-		debug["title"] = name;
-		debug["window_width"] = ALittleIDE.g_IDEProject.project.config.GetConfig("default_show_width", 800);
-		debug["window_height"] = ALittleIDE.g_IDEProject.project.config.GetConfig("default_show_height", 600);
-		debug["ui_name"] = name;
-		debug["module_name"] = ALittleIDE.g_IDEProject.project.name;
-		let debug_str = ALittle.String_JsonEncode(debug);
-		debug_str = "\"" + ALittle.String_Replace(debug_str, "\"", "\\\"") + "\"";
-		lua.os.execute("start ALittleClientWin.exe Module/ALittleIDE/Script/ " + debug_str + " " + ALittleIDE.g_IDEProject.project.name + " Engine/MainTemplate/UIViewer");
-	},
-	HandleControlRightMenuRun : function(event) {
-		A_LayerManager.HideFromRight(this._control_right_menu);
-		let target = this._control_right_menu._user_data;
-		this._control_right_menu._user_data = undefined;
-		let user_data = target._user_data;
-		ALittleIDE.g_IDETool.ShowAlertDialog("提示", "JavaScript不支持运行");
 	},
 	HandleControlRightMenuFlagQuickImage : function(event) {
 		A_LayerManager.HideFromRight(this._control_right_menu);

@@ -37,6 +37,15 @@ class IDELoginManager
 
 	public ctor()
 	{
+	}
+
+	public get account_name() : string
+	{
+		return this._account_name;
+	}
+	
+	public fun Setup()
+	{
 		// 获取配置信息
 		var config = ALittle.CreateConfigSystem(g_ModuleBasePath.."/Other/Server.cfg");
 	
@@ -65,18 +74,10 @@ class IDELoginManager
 		this._account_pwd = "";
 		this._first_login = true;
 		this._is_login = false;
-	}
-
-	public get account_name() : string
-	{
-		return this._account_name;
-	}
-	
-	public fun Setup()
-	{
 		// 从配置中获取记住密码，和自动登录
 		this._save_password = g_IDEConfig.GetConfig("save_password", false);
 		this._auto_login = g_IDEConfig.GetConfig("auto_login", false);
+
 		if (this._save_password)
 		{
 			this._account_name = g_IDEConfig.GetConfig("account_name", "");

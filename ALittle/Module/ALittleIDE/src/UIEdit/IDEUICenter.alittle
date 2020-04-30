@@ -1,5 +1,75 @@
 
 namespace ALittleIDE;
+require("IDEUtility");
+	
+require("IDEDataCore/IDEEnum");
+require("IDEDataCore/IDEExport");
+	
+require("IDEEditCore/IDETabChild");
+require("IDEEditCore/IDETabManager");
+require("IDEEditCore/IDETreeLogic");
+require("IDEEditCore/IDETree");
+require("IDEEditCore/IDETreeItem");
+require("IDEEditCore/IDERevocation");
+require("IDEEditCore/IDEAttrTextDialog");
+require("IDEEditCore/IDEAttrEventDialog");
+	
+require("IDEEditCore/IDEAttrImageDialog");
+require("IDEEditCore/IDEEditImageDialog");
+require("IDEEditCore/IDEImageCutPlugin");
+	
+require("IDEEditCore/IDESetting/DisplayObjectS");
+require("IDEEditCore/IDESetting/DisplayLayoutS");
+require("IDEEditCore/IDESetting/DisplayViewS");
+require("IDEEditCore/IDESetting/TextCheckButtonS");
+require("IDEEditCore/IDESetting/DialogS");
+require("IDEEditCore/IDESetting/DropDownS");
+require("IDEEditCore/IDESetting/Grid3S");
+require("IDEEditCore/IDESetting/Grid9S");
+require("IDEEditCore/IDESetting/Grid9ImageS");
+require("IDEEditCore/IDESetting/TextS");
+require("IDEEditCore/IDESetting/TextEditS");
+require("IDEEditCore/IDESetting/ImageEditS");
+require("IDEEditCore/IDESetting/TextInputS");
+require("IDEEditCore/IDESetting/ImageInputS");
+require("IDEEditCore/IDESetting/ImageS");
+require("IDEEditCore/IDESetting/TriangleS");
+require("IDEEditCore/IDESetting/ImagePlayS");
+require("IDEEditCore/IDESetting/FramePlayS");
+require("IDEEditCore/IDESetting/SpriteS");
+require("IDEEditCore/IDESetting/SpritePlayS");
+require("IDEEditCore/IDESetting/LinearS");
+require("IDEEditCore/IDESetting/QuadS");
+require("IDEEditCore/IDESetting/RichAreaS");
+require("IDEEditCore/IDESetting/RichInputS");
+require("IDEEditCore/IDESetting/RichEditS");
+require("IDEEditCore/IDESetting/SliderS");
+require("IDEEditCore/IDESetting/ScrollBarS");
+require("IDEEditCore/IDESetting/ScrollButtonS");
+require("IDEEditCore/IDESetting/ScrollListS");
+require("IDEEditCore/IDESetting/ScrollScreenS");
+require("IDEEditCore/IDESetting/TabS");
+require("IDEEditCore/IDESetting/TextAreaS");
+require("IDEEditCore/IDESetting/TextButtonS");
+require("IDEEditCore/IDESetting/SpringTextButtonS");
+require("IDEEditCore/IDESetting/TextRadioButtonS");
+require("IDEEditCore/IDESetting/TileTableS");
+require("IDEEditCore/IDESetting/PiechartS");
+		
+require("IDEEditLogic/IDETool");
+	
+require("IDEEditLogic/IDEMainMenu");
+require("IDEEditLogic/IDEAttributeManager");
+require("IDEEditLogic/IDEControlManager");
+require("IDEEditLogic/IDEQuickManager");
+require("IDEEditLogic/IDEAntiManager");
+require("IDEEditLogic/IDEControlTree");
+require("IDEEditLogic/IDEImageManager");
+require("IDEEditLogic/IDEProjectManager");
+require("IDEEditLogic/IDEVersionList");
+require("IDEEditLogic/IDEVersionManager");
+require("IDEEditLogic/IDELoginManager");
+require("IDEEditLogic/IDEIMEManager");
 
 class IDEUICenter
 {
@@ -45,77 +115,6 @@ class IDEUICenter
 	
 	public await fun Setup(ALittle.DisplayLayout edit_container)
 	{
-		alittle.Require(g_ScriptBasePath.."UIEdit/IDEUtility");
-	
-		alittle.Require(g_ScriptBasePath.."UIEdit/IDEDataCore/IDEEnum");
-		alittle.Require(g_ScriptBasePath.."UIEdit/IDEDataCore/IDEExport");
-	
-		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDETabChild");
-		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDETabManager");
-		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDETreeLogic");
-		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDETree");
-		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDETreeItem");
-		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDERevocation");
-		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDEAttrTextDialog");
-		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDEAttrEventDialog");
-	
-		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDEAttrImageDialog");
-		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDEEditImageDialog");
-		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDEImageCutPlugin");
-	
-		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/DisplayObjectS");
-		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/DisplayLayoutS");
-		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/DisplayViewS");
-		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/TextCheckButtonS");
-		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/DialogS");
-		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/DropDownS");
-		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/Grid3S");
-		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/Grid9S");
-		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/Grid9ImageS");
-		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/TextS");
-		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/TextEditS");
-		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/ImageEditS");
-		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/TextInputS");
-		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/ImageInputS");
-		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/ImageS");
-		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/TriangleS");
-		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/ImagePlayS");
-		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/FramePlayS");
-		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/SpriteS");
-		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/SpritePlayS");
-		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/LinearS");
-		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/QuadS");
-		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/RichAreaS");
-		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/RichInputS");
-		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/RichEditS");
-		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/SliderS");
-		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/ScrollBarS");
-		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/ScrollButtonS");
-		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/ScrollListS");
-		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/ScrollScreenS");
-		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/TabS");
-		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/TextAreaS");
-		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/TextButtonS");
-		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/SpringTextButtonS");
-		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/TextRadioButtonS");
-		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/TileTableS");
-		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditCore/IDESetting/PiechartS");
-		
-		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditLogic/IDETool");
-	
-		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditLogic/IDEMainMenu");
-		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditLogic/IDEAttributeManager");
-		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditLogic/IDEControlManager");
-		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditLogic/IDEQuickManager");
-		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditLogic/IDEAntiManager");
-		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditLogic/IDEControlTree");
-		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditLogic/IDEImageManager");
-		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditLogic/IDEProjectManager");
-		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditLogic/IDEVersionList");
-		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditLogic/IDEVersionManager");
-		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditLogic/IDELoginManager");
-		alittle.Require(g_ScriptBasePath.."UIEdit/IDEEditLogic/IDEIMEManager");
-
 		// 创建UI编辑器主界面
 		this._ui_edit_container = g_Control.CreateControl{ALittle.DisplayLayout}("ide_ui_edit_container", this, edit_container);
 

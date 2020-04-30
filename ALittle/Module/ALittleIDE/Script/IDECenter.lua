@@ -1,10 +1,13 @@
-
+-- ALittle Generate Lua
 module("ALittleIDE", package.seeall)
 
+local ___thispath = select('1', ...):match("(.+[/\\]).+$") or ""
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
+require(___thispath.."IDEProject")
+require(___thispath.."UIEdit/IDEUICenter")
 IDECenter = Lua.Class(nil, "ALittleIDE.IDECenter")
 
 function IDECenter:Ctor()
@@ -18,10 +21,8 @@ function IDECenter.__getter:dialog_layer()
 	return self._dialog_layer
 end
 
-function IDECenter:Setup(debug)
+function IDECenter:Setup()
 local ___COROUTINE = coroutine.running()
-	Require(g_ScriptBasePath .. "IDEProject")
-	Require(g_ScriptBasePath .. "UIEdit/IDEUICenter")
 	g_IDEConfig = ALittle.CreateConfigSystem("ALittleIDE.cfg")
 	ALittle.Math_RandomSeed(ALittle.Time_GetCurTime())
 	ALittle.System_SetThreadCount(5)
@@ -47,7 +48,7 @@ local ___COROUTINE = coroutine.running()
 	A_UISystem.keydown_callback = Lua.Bind(self.HandleShortcutKey, self)
 	g_IDEIMEManager:Setup()
 	g_IDEProjectManager:OpenLastProject()
-	if debug ~= "debug" then
+	if not g_Control.crypt_mode then
 		g_IDEVersionManager:CheckVersionUpdate()
 	end
 	g_IDELoginManager:Setup()

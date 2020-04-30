@@ -1,0 +1,588 @@
+
+namespace ALittle;
+
+////操作系统部分////////////////////////////////////////////////////////////////////
+// 获取平台
+public static System_GetPlatform() : string
+{
+    [Language(Lua)]
+    return lua.__CPPAPI_GetPlatform();
+    
+    [Language(JavaScript)]
+    return "Web";
+}
+
+// 获取设备唯一性
+public static System_GetDeviceID() : string
+{
+    [Language(Lua)]
+    return lua.__CPPAPI_GetDeviceID();
+    
+    // 先从cookie获取，如果没有就随机生成一个
+    [Language(JavaScript)]
+    return JavaScript.JSystem_GetDeviceID();
+}
+
+// 获取局域网的IP列表，比如["127.0.0.1","192.168.1.10"]
+public static System_GetLocalIPList() : string
+{
+    [Language(Lua)]
+    return lua.__CPPAPI_GetLocalIPList();
+    
+    [Language(JavaScript)]
+    return "[]";
+}
+
+// 获取是不是移动平台
+public static System_IsPhone() : bool
+{
+    [Language(Lua)]
+    var platform = lua.__CPPAPI_GetPlatform();
+    [Language(Lua)]
+    return platform != "Windows" && platform != "Emscripten";
+    
+    [Language(JavaScript)]
+    var user_agent = navigator.userAgent;
+    [Language(JavaScript)]
+    return String_Find(user_agent, "Android") != null
+        || String_Find(user_agent, "iPhone") != null
+        || String_Find(user_agent, "iPad") != null
+        || String_Find(user_agent, "iPod") != null;
+}
+
+// 执行一个安装包
+public static System_InstallProgram(string file_path)
+{
+    [Language(Lua)]
+    lua.__CPPAPI_InstallProgram(file_path);
+}
+
+// 清理AI簇数据
+public static System_ClearAIFamily()
+{
+    [Language(Lua)]
+    lua.__CPPAPI_ClearAIFamily();
+}
+
+// 启动进程
+public static System_StartProgram(string package_name)
+{
+    [Language(Lua)]
+    lua.__CPPAPI_StartProgram(package_name);
+}
+// 切到后台
+public static System_BackProgram()
+{
+    [Language(Lua)]
+    lua.__CPPAPI_BackProgram();
+}
+
+// 获取屏幕宽度
+public static System_GetScreenWidth() : int
+{
+    [Language(Lua)]
+    return lua.__CPPAPI_GetScreenWidth();
+    
+    [Language(JavaScript)]
+    return window.innerWidth;
+}
+// 获取屏幕高度
+public static System_GetScreenHeight() : int
+{
+    [Language(Lua)]
+    return lua.__CPPAPI_GetScreenHeight();
+    
+    [Language(JavaScript)]
+    return window.innerHeight;
+}
+
+public static System_GetStatusBarHeight() : int
+{
+    [Language(Lua)]
+    return lua.__CPPAPI_GetStatusBarHeight();
+    
+    [Language(JavaScript)]
+    return 0;
+}
+
+////调度系统部分////////////////////////////////////////////////////////////////////-
+// 强制退出
+public static System_ForceExit()
+{
+    [Language(Lua)]
+    __CPPAPI_ScheduleSystem.ForceExit();
+}
+// 正常退出
+public static System_Exit()
+{
+    [Language(Lua)]
+    __CPPAPI_ScheduleSystem.Exit();
+}
+// 重启
+public static System_Restart()
+{
+    [Language(Lua)]
+    __CPPAPI_ScheduleSystem.Restart();
+}
+// 设置FPS
+public static System_SetFPS(int fps)
+{
+    [Language(Lua)]
+    __CPPAPI_ScheduleSystem.SetFPS(fps);
+}
+// 设置框架在切到后台之后，死循环的每个循环的睡眠时间，单位毫秒（这个接口主要用于省电）
+public static System_SetAppPauseInterval(int interval)
+{
+    [Language(Lua)]
+    __CPPAPI_ScheduleSystem.SetAppPauseInterval(interval);
+}
+// 获取每个死循环的睡眠时间，单位毫秒
+public static System_GetAppPauseInterval() : int
+{
+    [Language(Lua)]
+    return __CPPAPI_ScheduleSystem.GetAppPauseInterval();
+
+    [Language(JavaScript)]
+    return 0;
+}
+
+////线程部分//////////////////////////////////////////////////////////////////////
+public enum SystemThreadType // 这里的枚举值和C++部分一致，不要修改
+{
+    FAST = 0;
+    MIDDLE = 1;
+    SLOW = 2;
+}
+// 设置线程数
+public static System_SetThreadCount(int count, [Nullable] int thread_type)
+{
+    if (thread_type == null) thread_type = SystemThreadType.SLOW;
+    [Language(Lua)]
+    __CPPAPI_ThreadSystem.SetThreadCount(count, thread_type);
+}
+// 获取线程数
+public static System_GetThreadCount(int thread_type) : int
+{
+    if (thread_type == null) thread_type = SystemThreadType.SLOW;
+    [Language(Lua)]
+    return __CPPAPI_ThreadSystem.GetThreadCount(thread_type);
+    [Language(JavaScript)]
+    return 0;
+}
+
+////输入法部分////////////////////////////////////////////////////////////////////-
+// 获取输入法候选框内容
+public static System_GetIMESelectList() : string
+{
+    [Language(Lua)]
+    return lua.__CPPAPI_GetIMESelectList();
+
+    [Language(JavaScript)]
+    return "";
+}
+// 设置IME候选框的位置
+public static System_SetIMEPos(int x, int y)
+{
+    [Language(Lua)]
+    lua.__CPPAPI_SetIMSPos(x, y);
+}
+// 设置IME候选框的位置，以及大小
+public static System_SetIMERect(int x, int y, int w, int h)
+{
+    [Language(Lua)]
+    lua.__CPPAPI_SetIMSRect(x, y, w, h);
+}
+// 打开IME
+public static System_OpenIME()
+{
+    [Language(Lua)]
+    lua.__CPPAPI_OpenIME();
+}
+// 关闭IME
+public static System_CloseIME()
+{
+    [Language(Lua)]
+    lua.__CPPAPI_CloseIME();
+}
+
+////光标部分////////////////////////////////////////////////////////////////////-
+// 获取鼠标的位置
+public static System_GetCursorX() : int
+{
+    [Language(Lua)]
+    return lua.__CPPAPI_GetCursorX();
+    [Language(JavaScript)]
+    return 0;
+}
+public static System_GetCursorY() : int
+{
+    [Language(Lua)]
+    return lua.__CPPAPI_GetCursorY();
+    [Language(JavaScript)]
+    return 0;
+}
+// 设置光标类型
+public static System_SetEditCursor() { [Language(Lua)]lua.__CPPAPI_SetEditCursor(); }            // 编辑光标
+public static System_SetNormalCursor() { [Language(Lua)]lua.__CPPAPI_SetNormalCursor(); }        // 普通光标
+public static System_SetHandCursor() { [Language(Lua)]lua.__CPPAPI_SetHandCursor(); }            // 手势光标
+public static System_SetHDragCursor() { [Language(Lua)]lua.__CPPAPI_SetHDragCursor(); }        // 水平光标
+public static System_SetVDragCursor() { [Language(Lua)]lua.__CPPAPI_SetVDragCursor(); }        // 垂直光标
+public static System_SetHVDragCursor() { [Language(Lua)]lua.__CPPAPI_SetHVDragCursor(); }        // 反斜杠光标
+public static System_SetHV2DragCursor() { [Language(Lua)]lua.__CPPAPI_SetHV2DragCursor(); }    // 正斜杠光标
+public static System_SetCrossDragCursor() { [Language(Lua)]lua.__CPPAPI_SetCrossDragCursor(); } // 十字光标
+
+////窗口部分////////////////////////////////////////////////////////////////////-
+// 创建窗口
+public static System_CreateView(string title, int width, int height, int flag, double scale) : bool
+{
+    [Language(Lua)]
+    return __CPPAPI_RenderSystem.CreateView(title, width, height, flag, scale);
+    
+    [Language(JavaScript)]
+    return JavaScript.JSystem_CreateView(title, width, height, flag, scale);
+}
+// 设置窗口标题
+public static System_SetViewTitle(string title) : bool
+{
+    [Language(Lua)]
+    return __CPPAPI_RenderSystem.SetViewTitle(title);
+    [Language(JavaScript)]
+    return JavaScript.JSystem_SetViewTitle(title);
+}
+// 设置窗口图标
+public static System_SetViewIcon(string path) : bool
+{
+    [Language(Lua)]
+    return __CPPAPI_RenderSystem.SetViewIcon(path);
+    
+    [Language(JavaScript)]
+    return false;
+}
+// 设置窗口形状，path是形状路径图片
+public static System_SetViewShape(string path) : bool
+{
+    [Language(Lua)]
+    return __CPPAPI_RenderSystem.SetViewShape(path);
+    
+    [Language(JavaScript)]
+    return false;
+}
+// 操作窗口大小
+public static System_SetViewSize(int width, int height)
+{
+    [Language(Lua)]
+    __CPPAPI_RenderSystem.SetViewSize(width, height);
+}
+public static System_SetMaxViewSize()
+{
+    [Language(Lua)]
+    __CPPAPI_RenderSystem.SetMaxViewSize();
+}
+public static System_SetMinViewSize()
+{
+    [Language(Lua)]
+    __CPPAPI_RenderSystem.SetMinViewSize();
+}
+public static System_SetRestoreViewSize()
+{
+    [Language(Lua)]
+    __CPPAPI_RenderSystem.SetRestoreViewSize();
+}
+public static System_RaiseView()
+{
+    [Language(Lua)]
+    __CPPAPI_RenderSystem.RaiseView();
+}
+public static System_ShowView()
+{
+    [Language(Lua)]
+    __CPPAPI_RenderSystem.ShowView();
+}
+public static System_HideView()
+{
+    [Language(Lua)]
+    __CPPAPI_RenderSystem.HideView();
+}
+// 获取窗口的位置
+public static System_GetViewX() : int
+{
+    [Language(Lua)]
+    return __CPPAPI_RenderSystem.GetViewX();
+    
+    [Language(JavaScript)]
+    return 0;
+}
+public static System_GetViewY() : int
+{
+    [Language(Lua)]
+    return __CPPAPI_RenderSystem.GetViewY();
+    
+    [Language(JavaScript)]
+    return 0;
+}
+public static System_SetViewPosition(int x, int y)
+{
+    [Language(Lua)]
+    __CPPAPI_RenderSystem.SetViewPosition(x, y);
+}
+public static System_GetMaxTextureWidth() : int
+{
+    [Language(Lua)]
+    return __CPPAPI_RenderSystem.GetMaxTextureWidth();
+    
+    [Language(JavaScript)]
+    return 1024;
+}
+public static System_GetMaxTextureHeight() : int
+{
+    [Language(Lua)]
+    return __CPPAPI_RenderSystem.GetMaxTextureHeight();
+    
+    [Language(JavaScript)]
+    return 1024;
+}
+// 强制渲染
+public static System_Render() : bool
+{
+    [Language(Lua)]
+    return __CPPAPI_RenderSystem.Render();
+    
+    [Language(JavaScript)]
+    return JavaScript.JSystem_Render();
+}
+
+////剪切板//////////////////////////////////////////////////////////////////////-
+// 获取剪切板的文本内容
+public static System_GetClipboardText() : string
+{
+    [Language(Lua)]
+    return lua.__CPPAPI_GetClipboardText();
+    [Language(JavaScript)]
+    return "";
+}
+// 设置剪切板的文本内容
+public static System_SetClipboardText(string content)
+{
+    [Language(Lua)]
+    lua.__CPPAPI_SetClipboardText(content);
+}
+// 剪切板是否有文本
+public static System_HasClipboardText() : bool
+{
+    [Language(Lua)]
+    return lua.__CPPAPI_HasClipboardText();
+    [Language(JavaScript)]
+    return false;    
+}
+
+// 获取剪切板的图片内容，返回的是surface，最后必须使用__CPPAPI_FreeSurface释放
+public static System_GetClipboardImage() : lua.__CPPAPISurface
+{
+    [Language(Lua)]
+    return lua.__CPPAPI_GetClipboardImage();
+    [Language(JavaScript)]
+    return null;    
+}
+// 设置剪切板的图片内容，参数是surface
+public static System_SetClipboardImage(lua.__CPPAPISurface surface)
+{
+    [Language(Lua)]
+    lua.__CPPAPI_SetClipboardImage(surface);
+}
+// 剪切板是否有图片
+public static System_HasClipboardImage() : bool
+{
+    [Language(Lua)]
+    return lua.__CPPAPI_HasClipboardImage();
+    [Language(JavaScript)]
+    return false;
+}
+
+////系统提示////////////////////////////////////////////////////////////////////////-
+
+// 横竖屏枚举
+public enum SystemOrientationType
+{
+    SDL_ORIENTATION_UNKNOWN = 0;            //**< The display orientation can't be determined */
+    SDL_ORIENTATION_LANDSCAPE = 1;          //**< The display is in landscape mode, with the right side up, relative to portrait mode */
+    SDL_ORIENTATION_LANDSCAPE_FLIPPED = 2;  //**< The display is in landscape mode, with the left side up, relative to portrait mode */
+    SDL_ORIENTATION_PORTRAIT = 3;           //**< The display is in portrait mode */
+    SDL_ORIENTATION_PORTRAIT_FLIPPED = 4;   ///**< The display is in portrait mode, upside down */
+}
+
+// 获取横屏竖屏
+// 返回SystemOrientationType
+public static System_GetDisplayOrientation() : int
+{
+    [Language(Lua)]
+    return lua.__CPPAPI_GetDisplayOrientation();
+    
+    [Language(JavaScript)]
+    var match = javascript.matchMedia("(orientation: portrait)");
+    [Language(JavaScript)]
+    if (match != null && match.matches) return SystemOrientationType.SDL_ORIENTATION_PORTRAIT;
+    [Language(JavaScript)]
+    return SystemOrientationType.SDL_ORIENTATION_LANDSCAPE;
+}
+
+// 允许手机休眠
+public static System_EnableScreenSaver()
+{
+    [Language(Lua)]
+    lua.__CPPAPI_EnableScreenSaver();
+}
+// 阻止手机休眠
+public static System_DisableScreenSaver()
+{
+    [Language(Lua)]
+    lua.__CPPAPI_DisableScreenSaver();
+}
+
+// 使用系统浏览器打开某个网址
+// url 地址，一定要以http或者https开头，否则在android，ios平台是无效的
+public static System_OpenUrlBySystemBrowser(string url)
+{
+    [Language(Lua)]
+    lua.__CPPAPI_OpenUrlBySystemBrowser(url);
+    [Language(JavaScript)]
+    javascript.open(url);
+}
+
+// 原声警告对话框
+// message
+public static System_Alert(string msg)
+{
+    [Language(Lua)]
+    lua.__CPPAPI_Alert(msg);
+    [Language(JavaScript)]
+    javascript.alert(msg);
+}
+
+////表面信息////////////////////////////////////////////////////////////////////////-
+
+public static System_LoadSurface(string path) : lua.__CPPAPISurface
+{
+    [Language(Lua)]
+    return lua.__CPPAPI_LoadSurface(path);
+    
+    [Language(JavaScript)]
+    return null;
+}
+public static System_CreateSurface(int width, int height) : lua.__CPPAPISurface
+{
+    [Language(Lua)]
+    return lua.__CPPAPI_CreateSurface(width, height);
+    [Language(JavaScript)]
+    return null;
+}
+public static System_SaveSurface(lua.__CPPAPISurface surface, string path) : bool
+{
+    [Language(Lua)]
+    return lua.__CPPAPI_SaveSurface(surface, path);
+    [Language(JavaScript)]
+    return false;
+}
+public static System_FreeSurface(lua.__CPPAPISurface surface)
+{
+    [Language(Lua)]
+    lua.__CPPAPI_FreeSurface(surface);
+}
+public static System_GetSurfaceWidth(lua.__CPPAPISurface surface) : int
+{
+    [Language(Lua)]
+    return lua.__CPPAPI_GetSurfaceWidth(surface);
+    [Language(JavaScript)]
+    return 0;
+}
+public static System_GetSurfaceHeight(lua.__CPPAPISurface surface) : int
+{
+    [Language(Lua)]
+    return lua.__CPPAPI_GetSurfaceHeight(surface);
+    [Language(JavaScript)]
+    return 0;
+}
+public static System_CutBlitSurface(lua.__CPPAPISurface new_surface, lua.__CPPAPISurface surface, string to, string from) : bool
+{
+    [Language(Lua)]
+    return lua.__CPPAPI_CutBlitSurface(new_surface, surface, to, from);
+    [Language(JavaScript)]
+    return false;
+}
+public static System_SetSurfacePixel(lua.__CPPAPISurface surface, int x, int y, int color) : bool
+{
+    [Language(Lua)]
+    return lua.__CPPAPI_SetSurfacePixel(surface, x, y, color);
+    [Language(JavaScript)]
+    return false;
+}
+public static System_GetSurfacePixel(lua.__CPPAPISurface surface, int x, int y) : int
+{
+    [Language(Lua)]
+    return lua.__CPPAPI_GetSurfacePixel(surface, x, y);
+    [Language(JavaScript)]
+    return 0;
+}
+public static System_GetPixelAlpha(int color) : int
+{
+    [Language(Lua)]
+    return lua.__CPPAPI_GetPixelAlpha(color);
+    [Language(JavaScript)]
+    return 0;
+}
+public static System_SetPixelAlpha(int color, int alpha) : int
+{
+    [Language(Lua)]
+    return lua.__CPPAPI_SetPixelAlpha(color, alpha);
+    [Language(JavaScript)]
+    return 0;
+}
+public static System_GetSurfaceGrid9(lua.__CPPAPISurface surface, string type) : int
+{
+    [Language(Lua)]
+    return lua.__CPPAPI_GetSurfaceGrid9(surface, type);
+    [Language(JavaScript)]
+    return 0;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+public static CreateMsgSender(int heartbeat, bool check_heartbeat, [Nullable] Functor<()> callback) : IMsgCommonTemplate
+{
+    [Language(Lua)]
+    return new MsgSenderTemplate<lua.__CPPAPIMsgInterface, lua.__CPPAPIMessageWriteFactory>(heartbeat, check_heartbeat, A_LuaLoopSystem, callback);
+    [Language(JavaScript)]
+    return new MsgSenderTemplate<JavaScript.JMsgInterface, JavaScript.JMessageWriteFactory>(heartbeat, check_heartbeat, A_JLoopSystem, callback);
+}
+
+public static CreateHttpSender(string ip, int port) : IHttpSender
+{
+    [Language(Lua)]
+    return new HttpSenderTemplate<lua.__CPPAPIHttpInterface>(ip, port);
+    [Language(JavaScript)]
+    return new HttpSenderTemplate<JavaScript.JHttpInterface>(ip, port);
+}
+
+public await static HttpRequest(string ip, int port, string method) : string, string
+{
+    var sender = CreateHttpSender(ip, port);
+    
+    if (co == null) return "当前不是协程", null;
+    sender.SendRPC(co, method, null);
+    return yield;
+}
+
+public static CreateHttpFileSender(string ip, int port, string file_path, int start_size, [Nullable] Functor<(IHttpFileSender)> callback) : IHttpFileSender
+{
+    [Language(Lua)]
+    return new HttpFileSenderTemplate<lua.__CPPAPIHttpFileInterface>(ip, port, file_path, start_size, callback);
+    [Language(JavaScript)]
+    return new HttpFileSenderTemplate<JavaScript.JHttpFileInterface>(ip, port, file_path, start_size, callback);
+}
+
+public await static HttpDownloadRequest(string ip, int port, string file_path, string method, [Nullable] Functor<(IHttpFileSender)> callback) : string
+{
+    var sender = CreateHttpFileSender(ip, port, file_path, 0, callback);
+    
+    if (co == null) return "当前不是协程";
+    sender.SendDownloadRPC(co, method, null);
+    return yield;
+}

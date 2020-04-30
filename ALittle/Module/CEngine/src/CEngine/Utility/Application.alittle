@@ -1,0 +1,27 @@
+
+namespace ALittle;
+
+public class Application : ISchedule
+{
+    private Functor<(ControlSystem, DisplayLayout)> _init;
+
+    public async fun Setup(string name, Functor<await (string, DisplayLayout, ControlSystem)> init)
+    {
+        // 刷新模块
+        [Language(Lua)]
+        var version_system = ALittle.VersionSystem.CreateVersionSystem("", name);
+        [Language(Lua)]
+        if (version_system != null) version_system.UpdateModule();
+    
+        // 加载UI文件
+        var control = new ALittle.ControlSystem(name);
+        [Language(JavaScript)]
+        control.RegisterInfoByHttp();
+        var layer_group = new ALittle.DisplayLayout(control);
+        A_LayerManager.AddChild(layer_group);
+
+        if (init != null) init("Module/"..name.."/", layer_group, control);
+    }
+}
+
+public var g_Application = new Application();

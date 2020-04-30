@@ -1,0 +1,123 @@
+
+namespace ALittle;
+
+struct CsvPreloadInfoDetail
+{
+    ALittle.ICsvFileLoader loader;
+    CsvConfig config;
+}
+
+struct CsvPreloadInfo
+{
+    int total;
+    int succeed;
+    int failed;
+    Map<int, CsvPreloadInfoDetail> loader_map;
+    Functor<(int, int, int)> callback;
+}
+
+class CsvConfigManager
+{
+    private Map<CsvPreloadInfo, bool> _preload_map;
+
+    public ctor()
+    {
+        // csv预加载映射表
+        this._preload_map = new Map<CsvPreloadInfo, bool>();
+    }
+    
+    public fun PrepareCsv(Map<string, CsvConfig> csv_map, Functor<(int, int, int)> callback)
+    {
+        var preload_info = new CsvPreloadInfo();
+        preload_info.total = 0;
+        preload_info.succeed = 0;
+        preload_info.failed = 0;
+        preload_info.loader_map = new Map<int, CsvPreloadInfoDetail>();
+        preload_info.callback = callback;
+
+        for (var file_path, config in csv_map)
+        {
+            var loader:ALittle.ICsvFileLoader;
+            [Language(Lua)]
+            loader = new lua.__CPPAPICsvFileLoader();
+            [Language(JavaScript)]
+            loader = new JavaScript.JCsvFileLoader();
+            
+            loader.SetPath(file_path, false);
+            var detail = new CsvPreloadInfoDetail();
+            detail.loader = loader;
+            detail.config = config;
+            preload_info.loader_map[loader.GetID()] = detail;
+            loader.Start();
+
+            ++ preload_info.total;
+        }
+        if (preload_info.total > preload_info.succeed + preload_info.failed)
+            this._preload_map[preload_info] = true;
+        
+        // 调用回调通知
+        if (callback != null)
+            callback(preload_info.total, preload_info.succeed, preload_info.failed);
+    }
+
+    protected fun HandleCsvFileLoadSucceed(ALittle.ICsvFileLoader loader, ALittle.ICsvFile file)
+    {
+        var id = loader.GetID();
+        for (var info, value in this._preload_map)
+        {
+            var detail = info.loader_map[id];
+            if (detail != null)
+            {
+                ++info.succeed;
+
+                if (detail.config != null)
+                {
+                    [Language(Lua)]
+                    var wrap = new lua.__CPPAPICsvFileWrap();
+                    [Language(Lua)]
+                    wrap.SetCsvFile(file);
+                    [Language(Lua)]
+                    detail.config.Init(wrap);
+                    
+                    [Language(JavaScript)]
+                    detail.config.Init(file);
+                }
+                
+                if (info.callback != null)
+                    info.callback(info.total, info.succeed, info.failed);
+                
+                if (info.total == info.succeed + info.failed)
+                    this._preload_map[info] = null;
+                
+                return;
+            }
+        }
+    }
+    
+    protected fun HandleCsvFileLoadFailed(ALittle.ICsvFileLoader loader)
+    {
+        Error("csv load failed! path:"..loader.GetPath());
+        var id = loader.GetID();
+        for (var info, value in this._preload_map)
+        {
+            var detail = info.loader_map[id];
+            if (detail != null)
+            {
+                ++info.failed;
+
+                if (detail.config != null)
+                    detail.config.Init(null);
+
+                if (info.callback != null)
+                    info.callback(info.total, info.succeed, info.failed);
+
+                if (info.total == info.succeed + info.failed)
+                    this._preload_map[info] = null;
+
+                return;
+            }
+        }
+    }
+}
+
+public var A_CsvConfigManager = new CsvConfigManager();

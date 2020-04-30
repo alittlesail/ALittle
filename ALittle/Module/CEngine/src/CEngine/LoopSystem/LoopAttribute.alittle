@@ -1,0 +1,109 @@
+
+namespace ALittle;
+
+public class LoopAttribute : LoopObject
+{
+    private DisplayObject _target;          // 动画对象
+    private string _property;               // 属性字符串
+    private any _target_value;              // 目标值
+    private int _total_delay_time;          // 总延时的时间
+    private int _accumulate_count;          // 调用次数
+    private int _accumulate_delay_time;     // 延时累计时间
+    private Functor<()> _complete_callback; // 完成后调用这个函数
+
+    public ctor(DisplayObject target, string property, any target_value, int delay_time)
+    {
+        this._target = target;
+        this._property = property;
+        this._target_value = target_value;
+        
+        // 调整参数
+        if (delay_time == null || delay_time < 0) delay_time = 0;
+        
+        // 保存间隔时间，延时时间
+        this._total_delay_time = delay_time;
+
+        // 初始化调用次数，累积时间，延时累积时间
+        this._accumulate_count = 0;
+        this._accumulate_delay_time = 0;
+
+        this._complete_callback = null;    // 完成后会调用这个函数
+    }
+
+    public get complete_callback() : Functor<()>
+    {
+        return this._complete_callback;
+    }
+
+    public set complete_callback(Functor<()> value)
+    {
+        this._complete_callback = value;
+    }
+
+    // 重置
+    public fun Reset()
+    {
+        this._accumulate_count = 0;
+        this._accumulate_delay_time = 0;
+    }
+
+    public fun Completed()
+    {
+        if (this._complete_callback != null)
+            this._complete_callback();
+    }
+
+    //  如果次数小于0，那么永远都是false，否则计算累积次数是否达到总次数
+    public fun IsCompleted() : bool
+    {
+        return this._accumulate_count >= 1;
+    }
+
+    // 直接设置为完成
+    public fun SetCompleted()
+    {
+        if (this._accumulate_count >= 1) return;
+        // 累积次数直接等于总次数
+        this._accumulate_count = 1;
+        this._accumulate_delay_time = this._total_delay_time;
+        cast<Map<string, any>>(this._target)[this._property] = this._target_value;
+    }
+
+    public fun SetTime(int time):int, bool
+    {
+        // 初始化累积时间
+        this._accumulate_count = 0;
+        this._accumulate_delay_time = 0;
+        // 时间小于0则直接返回
+        if (time <= 0) return 0, false;
+
+        // 扣除延时时间
+        if (time <= this._total_delay_time)
+        {
+            this._accumulate_delay_time = time;
+            return 0, false;
+        }
+        this._accumulate_delay_time = this._total_delay_time;
+        this._accumulate_count = 1;
+        cast<Map<string, any>>(this._target)[this._property] = this._target_value;
+
+        return time - this._total_delay_time, true;
+    }
+
+    // 更新
+    protected fun Update(int frame_time)
+    {
+        // 扣除延时时间
+        if (this._accumulate_delay_time < this._total_delay_time)
+        {
+            this._accumulate_delay_time += frame_time;
+            if (this._accumulate_delay_time < this._total_delay_time)
+                return;
+            this._accumulate_delay_time = this._total_delay_time;
+        }
+
+        if (this._accumulate_count >= 1) return;
+        this._accumulate_count = 1;
+        cast<Map<string, any>>(this._target)[this._property] = this._target_value;
+    }
+}

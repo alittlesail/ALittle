@@ -1,0 +1,8 @@
+
+register namespace lua;
+
+public static __CPPAPI_GetIMESelectList() : string {}
+public static __CPPAPI_SetIMSPos(int x, int y) {}
+public static __CPPAPI_SetIMSRect(int x, int y, int w, int h) {}
+public static __CPPAPI_OpenIME() {}
+public static __CPPAPI_CloseIME() {}

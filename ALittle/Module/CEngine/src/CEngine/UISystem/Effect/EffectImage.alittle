@@ -1,0 +1,50 @@
+
+namespace ALittle;
+
+public class EffectImage : DisplayObject
+{
+    private lua.__CPPAPIRenderTexture _texture;
+
+    public ctor(ControlSystem ctrl_sys)
+    {
+        // this._texture = null;
+        // this._show = null;
+    }
+    
+    public fun Action(DisplayObject control)
+    {
+        if (control == null)
+            return;
+    
+        // 创建显示对象
+        this._show = new lua.__CPPAPIImage();
+        // 可渲染纹理
+        this._texture = new lua.__CPPAPIRenderTexture();
+    
+        this.x = control.x;
+        this.y = control.y;
+        this.width = control.width;
+        this.height = control.height;
+    
+        control._show.SetX(0);
+        control._show.SetY(0);
+        control.visible = true;
+        control.clip = false;
+        var result = this._texture.Draw(control._show, lua.math.floor(this.width), lua.math.floor(this.height), 1);
+        control._show.SetX(this._x);
+        control._show.SetY(this._y);
+        if (result)
+            this._show.SetTexture(this._texture);
+        this._show.SetTextureCoord(0, 1, 0, 1);
+    
+        // 禁用自己
+        this.disabled = true;
+    }
+    
+    public fun Clear()
+    {
+        if (this._texture == null)
+            return;
+        this._texture.Clear();
+    }
+}

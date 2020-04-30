@@ -1,0 +1,31 @@
+
+register namespace GatewayServer;
+
+// 连接信息
+public struct ConnectInfo
+{
+    string client_ip;
+    int client_port;
+    string http_ip;
+    int http_port;
+}
+
+// 上报连接信息
+public struct NUpdateRouteInfo
+{
+    int route_weight;
+    ConnectInfo route_info;
+}
+
+// 上报权重变化
+public struct NUpdateRouteWeight
+{
+    int route_weight;
+}
+
+// 当某个连接到GW，那么GW会广播
+public struct NRouteConnected
+{
+    int route_type;
+    int route_num;
+}

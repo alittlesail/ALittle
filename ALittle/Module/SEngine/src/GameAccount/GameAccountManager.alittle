@@ -1,0 +1,334 @@
+namespace ALittle;
+
+// 账号管理器
+public class GameAccountManager
+{   
+    private Map<int, GameAccount> _account_map;
+    private int _account_count;
+    private Map<IMsgCommon, GameAccount> _client_map;
+    private Map<IMsgCommon, bool> _reg_struct_map;
+    private GatewayUpdateRoute _update_route;
+    private Functor<(int):GameAccount> _create_callback;
+    
+    public ctor()
+    {
+        this._account_map = new Map<int, GameAccount>();
+        this._account_count = 0;
+        this._client_map = new Map<IMsgCommon, GameAccount>();
+        this._reg_struct_map = new Map<IMsgCommon, bool>();
+    }
+    
+    public fun Setup(Functor<(int):GameAccount> create_callback)
+    {
+        g_GameLeaseManager.Setup();
+        g_GameLoginManager.Setup();
+        
+        this._create_callback = create_callback;
+        
+        A_ClientSystem.AddEventListener(this, this.HandleClientDisconnected);
+        A_SessionSystem.AddEventListener(this, this.HandleAnySessionDisconnected);
+        
+        this._update_route = new GatewayUpdateRoute(__CPPAPI_ServerSchedule.GetClientServerYunIp()
+                                                    , __CPPAPI_ServerSchedule.GetClientServerIp()
+                                                    , __CPPAPI_ServerSchedule.GetClientServerPort()
+                                                    , __CPPAPI_ServerSchedule.GetHttpServerYunIp()
+                                                    , __CPPAPI_ServerSchedule.GetHttpServerIp()
+                                                    , __CPPAPI_ServerSchedule.GetHttpServerPort()
+                                                    , this._account_count);
+    }
+    
+    public fun Shutdown()
+    {
+        g_GameLoginManager.Shutdown();
+        g_GameLeaseManager.Shutdown();
+    }
+    
+    public fun GetAccountByClient<T>(IMsgCommon client) : T
+    {
+        return cast<T>(this._client_map[client]);
+    }
+    
+    public fun GetAccountById<T>(int account_id) : T
+    {
+        return cast<T>(this._account_map[account_id]);
+    }
+    
+    // 获取账号对象，没有就创建
+    protected fun CreateAccount(int account_id) : GameAccount
+    {
+        var account = this._account_map[account_id];
+        if (account == null)
+        {
+            if (this._create_callback != null)
+                account = this._create_callback(account_id);
+            if (account == null)
+                account = new GameAccount(account_id);
+            this._account_map[account_id] = account;
+            ++ this._account_count;
+            this._update_route.UpdateRouteWeight(this._account_count);
+        }
+        return account;
+    }
+    
+    // 删除账号
+    protected fun DeleteAccount(GameAccount account)
+    {
+        var cur_account = this._account_map[account.GetId()];
+        if (cur_account == account)
+        {
+            account.Release();
+            -- this._account_count;
+            this._account_map[account.GetId()] = null;
+            this._update_route.UpdateRouteWeight(this._account_count);
+        }
+    }
+    
+    // 判断是否已经发送反射信息
+    protected fun IsSendModuleReflect(IMsgCommon session) : bool
+    {
+        return this._reg_struct_map[session] == true;
+    }
+    
+    // 发送模块反射信息
+    protected async fun SendModuleReflect(IMsgCommon session, List<ALittle.StructInfo> rflt_list, Map<int, bool> table_map)
+    {
+        if (this._reg_struct_map[session]) return;
+        this._reg_struct_map[session] = true;
+        
+        var param = new DataServer.GS2DATA_NRegStruct();
+        param.rflt_list = rflt_list;
+        param.table_map = table_map;
+        session.SendMsg(param);
+    }
+    
+    // 设置连接
+    protected fun SetAccountClient(GameAccount account, IMsgCommon client)
+    {
+        var old_client = account.GetClient();
+        if (old_client != null) this._client_map[old_client] = null;
+        account.SetClient(client);
+        if (client != null) this._client_map[client] = account;
+    }
+    
+    // 处理客户端连接断开
+    protected fun HandleClientDisconnected(ClientDisconnectEvent event)
+    {
+        var account = this._client_map[event.msg_receiver];
+        if (account == null) return;
+        
+        var status = account.GetStatus();
+        
+        // 如果刚刚创建
+        if (status == GameAccountStatus.CREATE)
+        {
+            this.SetAccountClient(account, null);
+            return;
+        }
+        
+        // 如果正在加载
+        if (status == GameAccountStatus.LOADING)
+        {
+            this.SetAccountClient(account, null);
+            return;    
+        }
+        
+        // 如果有缓存
+        if (status == GameAccountStatus.CACHE)
+        {
+            account.Backup();
+            this.SetAccountClient(account, null);
+            return;
+        }
+        
+        // 如果是在线
+        if (status == GameAccountStatus.ONLINE)
+        {
+            account.LogoutAction();
+            account.SetStatus(GameAccountStatus.CACHE);
+            account.StartCacheTimer();
+            this.SetAccountClient(account, null);
+            return;    
+        }
+        
+        this.SetAccountClient(account, null);
+    }
+        
+    // 连接断开了
+    protected fun HandleAnySessionDisconnected(SessionDisconnectEvent event)
+    {
+        if (event.route_type != RouteType.RT_DATA) return;
+        this._reg_struct_map[event.session] = null;
+    }
+    
+    // 租约超时
+    protected fun HandleLeaseTimeout(int account_id)
+    {
+        var account = this._account_map[account_id];
+        if (account == null) return;
+        
+        var status = account.GetStatus();
+        
+        // 如果刚刚创建
+        if (status == GameAccountStatus.CREATE)
+        {
+            this.SetAccountClient(account, null);
+            this.DeleteAccount(account);
+            return;
+        }
+        
+        // 如果正在加载
+        if (status == GameAccountStatus.LOADING)
+        {
+            this.SetAccountClient(account, null);
+            this.DeleteAccount(account);
+            return;    
+        }
+        
+        // 如果有缓存
+        if (status == GameAccountStatus.CACHE)
+        {
+            account.Backup();
+            this.SetAccountClient(account, null);
+            this.DeleteAccount(account);
+            return;
+        }
+        
+        // 如果是在线
+        if (status == GameAccountStatus.ONLINE)
+        {
+            account.LogoutAction();
+            var param = new GS2C_NForceLogout();
+            param.reason = "租约超时";
+            account.SendMsg(param);
+            this.SetAccountClient(account, null);
+            this.DeleteAccount(account);
+            return;    
+        }
+        
+        this.DeleteAccount(account);
+    }
+}
+        
+public var A_GameAccountManager = new GameAccountManager();
+
+public struct C2GS_QLogin
+{
+    int account_id;
+    string session;
+    string device;    // 设备类型
+}
+
+public struct GS2C_ALogin
+{
+    
+}
+
+public struct GS2C_NForceLogout
+{
+    string reason;
+}
+
+public struct GS2C_NDataReady
+{
+    
+}
+
+[Msg]
+public await static HandleQLogin(IMsgCommon client, C2GS_QLogin msg) : GS2C_ALogin
+{
+    // 检查租约
+    var lease_info = g_GameLeaseManager.GetLease(msg.account_id);
+    assert(lease_info, "没有租约信息:"..msg.account_id);
+    
+    // 检查会话ID，如果正确那么就删除会话ID
+    assert(g_GameLoginManager.ChcekSession(msg.account_id, msg.session), "会话ID错误");
+    g_GameLoginManager.RemoveSession(msg.account_id);
+    
+    // 获取账号
+    var account = A_GameAccountManager.CreateAccount(msg.account_id);
+       
+    // 获取当前状态
+    var status = account.GetStatus();
+    
+    // 如果是刚刚创建
+    if (status == GameAccountStatus.CREATE)
+    {
+        // 设置为正在加载
+        account.SetStatus(GameAccountStatus.LOADING);
+        // 设置连接
+        A_GameAccountManager.SetAccountClient(account, client);
+        // 开始加载数据
+        account.StartLoading(lease_info.session);
+        return new GS2C_ALogin();
+    }
+    
+    // 如果是正在加载
+    if (status == GameAccountStatus.LOADING)
+    {
+        // 如果当前已经有连接，那么就踢掉
+        var param = new GS2C_NForceLogout();
+        param.reason = "您的账号在另一个地方登录";
+        account.SendMsg(param);
+        // 设置连接
+        A_GameAccountManager.SetAccountClient(account, client);
+        return new GS2C_ALogin();
+    }
+    
+    // 如果当前是缓存
+    if (status == GameAccountStatus.CACHE)
+    {
+        // 如果当前已经有连接，那么就踢掉
+        var param = new GS2C_NForceLogout();
+        param.reason = "您的账号在另一个地方登录";
+        account.SendMsg(param);
+        // 设置连接
+        A_GameAccountManager.SetAccountClient(account, client);
+        // 设置为在线状态
+        account.SetStatus(GameAccountStatus.ONLINE);
+        // 停止cache超时
+        account.StopCacheTimer();
+        // 执行登录操作
+        account.LoginAction();
+        return new GS2C_ALogin();
+    }
+    
+    // 如果当前是在线
+    if (status == GameAccountStatus.ONLINE)
+    {   
+        // 执行登出操作
+        account.LogoutAction();
+        // 如果当前已经有连接，那么就踢掉
+        var param = new GS2C_NForceLogout();
+        param.reason = "您的账号在另一个地方登录";
+        account.SendMsg(param);
+        // 设置连接
+        A_GameAccountManager.SetAccountClient(account, client);
+        // 执行登录操作
+        account.LoginAction();
+        
+        return new GS2C_ALogin();
+    }
+    
+    throw("未知的账号状态");
+}
+
+public struct SS2GS_QCheckSessionCode
+{
+    int account_id;
+    string session_code;
+}
+
+public struct GS2SS_ACheckSessionCode
+{
+    
+}
+
+[Msg]
+public await static HandleQCheckSessionCode(IMsgCommon client, SS2GS_QCheckSessionCode msg) : GS2SS_ACheckSessionCode
+{
+    var account = A_GameAccountManager.GetAccountById{GameAccount}(msg.account_id);
+    assert(account, "账号不存在");
+    
+    assert(account.GetSession() == msg.session_code, "验证码错误");
+    return new GS2SS_ACheckSessionCode();
+}

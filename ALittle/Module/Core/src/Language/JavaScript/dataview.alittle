@@ -1,0 +1,31 @@
+
+[Language(JavaScript)]
+register namespace javascript;
+      
+[Native]                 
+public class DataView
+{
+    public ctor(ArrayBuffer buffer, [Nullable] int offset, [Nullable] int length) {}
+    
+    public fun setInt8(int offset, int value) {}
+    public fun setUint8(int offset, int value) {}
+    public fun getUint8(int offset) : int {}
+    
+    public fun setInt16(int offset, int value, [Nullable] bool little_endian) {}
+    public fun setUint16(int offset, int value, [Nullable] bool little_endian) {}
+    public fun getInt16(int offset, [Nullable] bool little_endian) : int {}
+    public fun getUint16(int offset, [Nullable] bool little_endian) : int {}
+    
+    public fun setInt32(int offset, int value, [Nullable] bool little_endian) {}
+    public fun setUint32(int offset, int value, [Nullable] bool little_endian) {}
+    public fun getInt32(int offset, [Nullable] bool little_endian) : int {}
+    public fun getUint32(int offset, [Nullable] bool little_endian) : int {}
+    
+    public fun setFloat32(int offset, double value, [Nullable] bool little_endian) {}
+    public fun setFloat64(int offset, double value, [Nullable] bool little_endian) {}
+    public fun getFloat32(int offset, [Nullable] bool little_endian) : double {}
+    public fun getFloat64(int offset, [Nullable] bool little_endian) : double {}
+    
+    public get byteLength() : int {}
+    public get buffer() : javascript.ArrayBuffer {}
+}

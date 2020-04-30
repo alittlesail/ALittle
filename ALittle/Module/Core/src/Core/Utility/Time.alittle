@@ -1,0 +1,70 @@
+namespace ALittle;
+
+// 获取当前时间（秒）
+public static Time_GetCurTime() : int
+{
+    [Language(Lua)]
+    return lua.os.time();
+    
+    [Language(JavaScript)]
+    return Math_Floor(javascript.Date.now() / 1000);
+}
+
+// 获取当前时间字符串%Y-%m-%d-%H-%M-%S
+public static Time_GetCurDate([Nullable] int time) : string
+{
+    [Language(Lua)]
+    return lua.os.date("%Y-%m-%d-%H-%M-%S", time);
+
+    [Language(JavaScript)]
+    {
+        var date = new javascript.Date();
+        if (time != null) date.setTime(time * 1000);
+        var result = date.getFullYear().."-";
+
+        var month = (date.getMonth() + 1);
+        if (month < 10) result = result.."-0"..month;
+        else result = result.."-"..month;
+
+        var day = date.getDate();
+        if (day < 10) result = result.."-0"..day;
+        else result = result.."-"..day;
+        
+        var hours = date.getHours();
+        if (hours < 10) result = result.."-0"..hours;
+        else result = result.."-"..hours;
+        
+        var minutes = date.getMinutes();
+        if (minutes < 10) result = result.."-0"..minutes;
+        else result = result.."-"..minutes;
+        
+        var seconds = date.getSeconds();
+        if (seconds < 10) result = result.."-0"..seconds;
+        else result = result.."-"..seconds;
+
+        return result;
+    }
+}
+
+// 获取当前时间字符串%Y-%m-%d
+public static Time_GetCurYMD([Nullable] int time) : string
+{
+    [Language(Lua)]
+    return lua.os.date("%Y-%m-%d", time);
+
+    [Language(JavaScript)]
+    {
+        var date = new javascript.Date();
+        if (time != null) date.setTime(time * 1000);
+        var result = date.getFullYear().."-";
+
+        var month = (date.getMonth() + 1);
+        if (month < 10) result = result.."-0"..month;
+        else result = result.."-"..month;
+
+        var day = date.getDate();
+        if (day < 10) result = result.."-0"..day;
+        else result = result.."-"..day;
+        return result;
+    }
+}

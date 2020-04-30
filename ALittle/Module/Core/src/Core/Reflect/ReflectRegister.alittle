@@ -1,0 +1,32 @@
+
+namespace ALittle;
+
+private var __all_name_struct = new Map<string, StructInfo>();
+private var __all_id_struct = new Map<int, StructInfo>();
+
+public static RegStruct(int hash, string name, StructInfo info)
+{
+    if (__all_name_struct[name] != null) return;
+    
+    var old_info = __all_id_struct[hash];
+    if (old_info != null)
+        throw("RegReflect 名字为"..name.."和名字为"..old_info.name.."哈希值冲突, 请为"..name.."修改名字来避开冲突！");
+    
+    __all_name_struct[name] = info;
+    __all_id_struct[hash] = info;
+}
+
+protected static FindStructByName(string name) : StructInfo
+{
+    return __all_name_struct[name];
+}
+
+public static FindStructById(int id) : StructInfo
+{
+    return __all_id_struct[id];
+}
+
+protected static GetAllStruct() : Map<int, StructInfo>
+{
+    return __all_id_struct;
+}

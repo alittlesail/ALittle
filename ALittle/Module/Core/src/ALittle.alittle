@@ -1,0 +1,60 @@
+namespace alittle;
+
+[Language(JavaScript)]
+public static Require(string url)
+{
+    if (javascript.typeof(javascript.require) != "undefined")
+    {
+        javascript.require(url);
+        return;
+    }
+
+    var this_path = "";
+    var last_script = document.scripts[cast<javascript.Array>(document.scripts).length];
+    if (last_script != null)
+        this_path = cast<javascript.String>(last_script.src).substring(0, cast<javascript.String>(last_script.src).lastIndexOf("/") + 1);
+    javascript.console.log(this_path, url);
+    var script = cast<javascript.ScriptElement>(document.createElement("script"));
+    script.type = "text/javascript";
+    script.src = this_path..url..".js";
+    document.body.appendChild(script);
+}
+
+[Language(JavaScript)]
+require("Core/JavaScript/JavaScriptClass");
+[Language(JavaScript)]
+require("Core/JavaScript/JavaScriptException");
+    
+require("Core/Reflect/ReflectRegister");
+require("Core/Reflect/ReflectDefine");
+    
+[Language(Lua)]
+require("Core/Lua/LuaBind");
+[Language(Lua)]
+require("Core/Lua/LuaClass");
+[Language(Lua)]
+require("Core/Lua/LuaException");
+
+// 这个是为了兼容lua5.2或以上版本
+[Language(Lua)]
+private static BitAdapter()
+{
+    if (_G["bit"] == null)
+        _G["bit"] = _G["bit32"];
+}
+[Language(Lua)]
+BitAdapter();
+
+require("Core/Utility/Log");
+require("Core/Utility/List");
+require("Core/Utility/Map");
+require("Core/Utility/Math");
+require("Core/Utility/String");
+require("Core/Utility/Time");
+require("Core/Utility/Coroutine");
+    
+require("Core/Net/HttpFileReceiver");
+require("Core/Net/HttpFileSender");
+require("Core/Net/HttpReceiver");
+require("Core/Net/HttpSender");
+require("Core/Net/MsgCommon");

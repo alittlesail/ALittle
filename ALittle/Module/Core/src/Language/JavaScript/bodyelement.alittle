@@ -1,0 +1,9 @@
+
+[Language(JavaScript)]
+register namespace javascript;
+    
+[Native]
+public class BodyElement : DomElement
+{
+    public set onload(Functor<()> func) {}
+}

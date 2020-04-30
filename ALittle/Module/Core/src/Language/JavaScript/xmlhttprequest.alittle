@@ -1,0 +1,37 @@
+
+[Language(JavaScript)]
+register namespace javascript;
+    
+public struct WebSocketOnMessageEvent
+{
+    ArrayBuffer data;
+}
+
+public struct WebSocketOnOpenEvent
+{
+    
+}
+
+public struct WebSocketOnCloseEvent
+{
+    
+}
+
+public struct WebSocketOnErrorEvent
+{
+    
+}
+  
+[Native]       
+public class WebSocket
+{
+    public ctor(string url) {}
+    public set binaryType(string type) {}
+    public set onmessage(Functor<(WebSocketOnMessageEvent)> func) {}
+    public set onopen(Functor<(WebSocketOnOpenEvent)> func) {}
+    public set onclose(Functor<(WebSocketOnCloseEvent)> func) {}
+    public set onerror(Functor<(WebSocketOnErrorEvent)> func) {}
+    public fun close() {}
+    public fun send(javascript.ArrayBuffer buffer) {}
+}
+    

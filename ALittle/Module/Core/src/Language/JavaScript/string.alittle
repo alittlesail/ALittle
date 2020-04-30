@@ -1,0 +1,21 @@
+
+[Language(JavaScript)]
+register namespace javascript;
+      
+[Native]                 
+public class String
+{
+    public fun indexOf(string target, [Nullable] int start) : int {}
+    public fun lastIndexOf(string target) : int {}
+    public get length() : int {}
+    public fun slice(int start, [Nullable] int end) : string {}
+    public fun trim() : string {}
+    public fun replace(string os, string ns) : string {}
+    public fun charCodeAt(int index) : int {}
+    public fun toUpperCase() : string {}
+    public fun toLowerCase() : string {}
+    public fun endsWith(string v) : bool {}
+    public fun substring(int startv, int endv) : string {}
+    
+    public static fromCharCode(int code) : string {}
+}

@@ -1,0 +1,20 @@
+namespace ALittle;
+
+// Http协议接口类，负责请求发送
+public class IHttpSender
+{
+    protected fun HandleSucceed() {}
+    protected fun HandleFailed(string reason) {}
+    public fun Stop() {}
+    
+    // 提供子类继承
+    protected fun SendRPC(Thread thread, string method, any content) { throw("not impl"); }
+    
+    // 提供框架调用
+    public await static Invoke(string method, IHttpSender client, any content) : string, any
+    {
+        if (co == null) return "当前不是协程", null;
+        client.SendRPC(co, method, content);
+        return yield;
+    }
+}

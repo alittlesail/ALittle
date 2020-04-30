@@ -1,0 +1,56 @@
+
+[Language(JavaScript)]
+register namespace javascript;
+
+public struct DomElementOnTouchEvent
+{
+    DomElement srcElement;
+    string type;
+    int pageX;
+    int pageY;
+}
+
+public struct DomElementOnMouseEvent
+{
+    DomElement srcElement;
+    int which;
+    int pageX;
+    int pageY;
+}
+
+public struct DomElementOnMouseWheelEvent
+{
+    DomElement srcElement;
+    int wheelDelta;
+    int detail;
+}
+
+public struct DomElementOnKeyEvent
+{
+    DomElement srcElement;
+    int keyCode;
+}
+
+[Native]
+public class DomElement
+{
+    public fun appendChild(DomElement element) {}
+    
+    public set ontouchstart(Functor<(DomElementOnTouchEvent)> func) {}
+    public set ontouchmove(Functor<(DomElementOnTouchEvent)> func) {}
+    public set ontouchend(Functor<(DomElementOnTouchEvent)> func) {}
+    
+    public set onmousedown(Functor<(DomElementOnMouseEvent)> func) {}
+    public set onmousemove(Functor<(DomElementOnMouseEvent)> func) {}
+    public set onmouseup(Functor<(DomElementOnMouseEvent)> func) {}
+    public set onmousewheel(Functor<(DomElementOnMouseWheelEvent)> func) {}
+    public set onmouseout(Functor<(DomElementOnMouseEvent)> func) {}
+    public set onkeydown(Functor<(DomElementOnKeyEvent)> func) {}
+    public set onkeyup(Functor<(DomElementOnKeyEvent)> func) {}
+
+    public get offsetLeft() : int {}
+    public get offsetTop() : int {}
+
+    public get type() : string {}
+    public set type(string v) {}
+}

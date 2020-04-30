@@ -1,0 +1,89 @@
+
+[Language(JavaScript)]
+namespace JavaScript;
+
+private var __JHTTPFILE_MAXID:int = 0;
+
+public class JHttpFileInterface : ALittle.IHttpFileSenderNative
+{
+    private int _id;
+    private string _url;
+    private string _file_path;
+    private bool _download;
+    private javascript.XMLHttpRequest _request;
+    
+    public ctor()
+    {
+        ++ __JHTTPFILE_MAXID;
+        this._id = __JHTTPFILE_MAXID;
+    }
+    public fun GetID() : int { return this._id; }
+    
+    // start_size暂时不支持
+    public fun SetURL(string url, string file_path, bool download, int start_size)
+    {
+        this._url = url;
+        this._file_path = file_path;
+        this._download = download;
+    }
+    public fun Start()
+    {
+        var content:string;
+        if (!this._download)
+        {
+            content = File_LoadFile(this._file_path);
+            if (content == null)
+            {
+                ALittle.__ALITTLEAPI_HttpFileFailed(this._id, "file is not exist:" .. this._file_path);
+                return;
+            }
+        }
+            
+        this._request = new javascript.XMLHttpRequest();
+        if (this._download)
+            this._request.open("GET", this._url, true);
+        else
+            this._request.open("POST", this._url, true);
+        
+		var error_func = bind(this.HandleError, this);
+        this._request.onerror = error_func;
+		this._request.ontimeout = error_func;
+        this._request.onload = bind(this.HandleCompleted, this);
+        this._request.onprogress = bind(this.HandleOnProgress, this);
+        
+        if (this._download)
+            this._request.send(null);
+        else
+            this._request.send(content);
+    }
+    public fun Stop()
+    {
+        if (this._request != null)
+            this._request.abort();
+    }
+    
+    public fun GetPath() : string { return this._file_path; }
+    
+    public fun GetContent() : string { return this._request.responseText; }
+    
+    private fun HandleError()
+	{
+        ALittle.__ALITTLEAPI_HttpFileFailed(this._id, this._request.statusText);
+	}
+    
+	private fun HandleCompleted()
+	{
+        if (this._download && !File_SaveFile(this._file_path, this._request.responseText))
+        {
+            ALittle.__ALITTLEAPI_HttpFileFailed(this._id, "file save failed:" .. this._file_path);
+            return;
+        }
+        
+        ALittle.__ALITTLEAPI_HttpFileSucceed(this._id);
+	}
+    
+    private fun HandleOnProgress(javascript.XMLHttpRequestOnProgressEvent event)
+    {
+        ALittle.__ALITTLEAPI_HttpFileProcess(this._id, event.loaded, event.total);
+    }
+}

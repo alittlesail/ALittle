@@ -1,0 +1,12 @@
+
+namespace ALittle;
+
+private static GetSchedule() : ISchedule
+{
+    [Language(Lua)]
+    return A_LuaSchedule;
+    [Language(JavaScript)]
+    return A_JSchedule;
+}
+
+public var A_Schedule = GetSchedule();

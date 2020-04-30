@@ -1,0 +1,207 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Std">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Std\Utility">
+      <UniqueIdentifier>{707c22fb-256b-47ce-abdc-2af5faec20f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Std\Loop">
+      <UniqueIdentifier>{641c7dec-0e3d-43c2-bb04-4e84c6d68da4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Std\Reflect">
+      <UniqueIdentifier>{a9cf95fd-6d37-445d-a0f8-b9efd1a06d98}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Std\Net">
+      <UniqueIdentifier>{638ef73b-420c-4547-988b-1621503f01aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Adapter">
+      <UniqueIdentifier>{d946872b-6fb4-47b4-b225-e0d86d1739ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Adapter\Lua">
+      <UniqueIdentifier>{80b79e99-d532-444f-b8b7-3054f1f0b95a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Adapter\JavaScript">
+      <UniqueIdentifier>{82b42735-79d5-4932-8819-1ba676106666}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\Std\Loop\LoopSystem.alittle">
+      <Filter>Std\Loop</Filter>
+    </None>
+    <None Include="src\Std\Loop\LoopTimer.alittle">
+      <Filter>Std\Loop</Filter>
+    </None>
+    <None Include="src\Std\Loop\LoopFunction.alittle">
+      <Filter>Std\Loop</Filter>
+    </None>
+    <None Include="src\Std\Loop\LoopGroup.alittle">
+      <Filter>Std\Loop</Filter>
+    </None>
+    <None Include="src\Std\Loop\LoopList.alittle">
+      <Filter>Std\Loop</Filter>
+    </None>
+    <None Include="src\Std\Utility\SafeIDCreator.alittle">
+      <Filter>Std\Utility</Filter>
+    </None>
+    <None Include="src\Std\Reflect\ReflectMessage.alittle">
+      <Filter>Std\Reflect</Filter>
+    </None>
+    <None Include="src\Std\Reflect\ReflectCmd.alittle">
+      <Filter>Std\Reflect</Filter>
+    </None>
+    <None Include="src\Std\Reflect\ReflectCsv.alittle">
+      <Filter>Std\Reflect</Filter>
+    </None>
+    <None Include="src\Std\Net\HttpFileReceiverTemplate.alittle">
+      <Filter>Std\Net</Filter>
+    </None>
+    <None Include="src\Std\Net\HttpFileSenderTemplate.alittle">
+      <Filter>Std\Net</Filter>
+    </None>
+    <None Include="src\Std\Net\HttpReceiverTemplate.alittle">
+      <Filter>Std\Net</Filter>
+    </None>
+    <None Include="src\Std\Net\HttpSenderTemplate.alittle">
+      <Filter>Std\Net</Filter>
+    </None>
+    <None Include="src\Std\Net\MsgCommonTemplate.alittle">
+      <Filter>Std\Net</Filter>
+    </None>
+    <None Include="src\Std\Net\MsgReceiverTemplate.alittle">
+      <Filter>Std\Net</Filter>
+    </None>
+    <None Include="src\Std\Net\MsgSenderTemplate.alittle">
+      <Filter>Std\Net</Filter>
+    </None>
+    <None Include="src\Std\Net\MsgSessionTemplate.alittle">
+      <Filter>Std\Net</Filter>
+    </None>
+    <None Include="src\Adapter\Lua\json.alittle">
+      <Filter>Adapter\Lua</Filter>
+    </None>
+    <None Include="src\Adapter\Lua\lfs.alittle">
+      <Filter>Adapter\Lua</Filter>
+    </None>
+    <None Include="src\Adapter\JavaScript\Timer.alittle">
+      <Filter>Adapter\JavaScript</Filter>
+    </None>
+    <None Include="src\Std\Utility\String.alittle">
+      <Filter>Std\Utility</Filter>
+    </None>
+    <None Include="src\Std\Utility\EventDispatcher.alittle">
+      <Filter>Std\Utility</Filter>
+    </None>
+    <None Include="src\Std\Utility\CsvConfig.alittle">
+      <Filter>Std\Utility</Filter>
+    </None>
+    <None Include="src\ALittle.alittle" />
+    <None Include="src\Std\Loop\LoopObject.alittle">
+      <Filter>Std\Loop</Filter>
+    </None>
+    <None Include="src\Std\Loop\ILoopSystem.alittle">
+      <Filter>Std\Loop</Filter>
+    </None>
+    <None Include="src\Std\Utility\IHeapTimer.alittle">
+      <Filter>Std\Utility</Filter>
+    </None>
+    <None Include="src\Std\Utility\File.alittle">
+      <Filter>Std\Utility</Filter>
+    </None>
+    <None Include="src\Adapter\Lua\timer.alittle">
+      <Filter>Adapter\Lua</Filter>
+    </None>
+    <None Include="src\Adapter\Lua\base64.alittle">
+      <Filter>Adapter\Lua</Filter>
+    </None>
+    <None Include="src\Adapter\Lua\md5.alittle">
+      <Filter>Adapter\Lua</Filter>
+    </None>
+    <None Include="src\Adapter\Lua\utf8.alittle">
+      <Filter>Adapter\Lua</Filter>
+    </None>
+    <None Include="src\Adapter\JavaScript\FileSystem.alittle">
+      <Filter>Adapter\JavaScript</Filter>
+    </None>
+    <None Include="src\Std\Utility\JsonConfig.alittle">
+      <Filter>Std\Utility</Filter>
+    </None>
+    <None Include="src\Adapter\Lua\csv.alittle">
+      <Filter>Adapter\Lua</Filter>
+    </None>
+    <None Include="src\Adapter\JavaScript\JCsvFile.alittle">
+      <Filter>Adapter\JavaScript</Filter>
+    </None>
+    <None Include="src\Adapter\Lua\LuaCsvFile.alittle">
+      <Filter>Adapter\Lua</Filter>
+    </None>
+    <None Include="src\Adapter\JavaScript\md5.alittle">
+      <Filter>Adapter\JavaScript</Filter>
+    </None>
+    <None Include="src\Adapter\JavaScript\JHttpInterface.alittle">
+      <Filter>Adapter\JavaScript</Filter>
+    </None>
+    <None Include="src\Adapter\JavaScript\JHttpFileInterface.alittle">
+      <Filter>Adapter\JavaScript</Filter>
+    </None>
+    <None Include="src\Adapter\JavaScript\JMsgInterface.alittle">
+      <Filter>Adapter\JavaScript</Filter>
+    </None>
+    <None Include="src\Adapter\JavaScript\JMessageFactory.alittle">
+      <Filter>Adapter\JavaScript</Filter>
+    </None>
+    <None Include="src\Adapter\Lua\net.alittle">
+      <Filter>Adapter\Lua</Filter>
+    </None>
+    <None Include="src\Adapter\Lua\LuaHttpInterface.alittle">
+      <Filter>Adapter\Lua</Filter>
+    </None>
+    <None Include="src\Adapter\Lua\LuaHttpFileInterface.alittle">
+      <Filter>Adapter\Lua</Filter>
+    </None>
+    <None Include="src\Adapter\Lua\LuaHeapTimer.alittle">
+      <Filter>Adapter\Lua</Filter>
+    </None>
+    <None Include="src\Adapter\JavaScript\JSchedule.alittle">
+      <Filter>Adapter\JavaScript</Filter>
+    </None>
+    <None Include="src\Adapter\Lua\LuaSchedule.alittle">
+      <Filter>Adapter\Lua</Filter>
+    </None>
+    <None Include="src\Adapter\Lua\LuaMsgInterface.alittle">
+      <Filter>Adapter\Lua</Filter>
+    </None>
+    <None Include="src\Adapter\Lua\LuaMessageFactory.alittle">
+      <Filter>Adapter\Lua</Filter>
+    </None>
+    <None Include="src\Std\Utility\ISchedule.alittle">
+      <Filter>Std\Utility</Filter>
+    </None>
+    <None Include="src\Adapter\Lua\dump.alittle">
+      <Filter>Adapter\Lua</Filter>
+    </None>
+    <None Include="src\Std\Utility\Schedule.alittle">
+      <Filter>Std\Utility</Filter>
+    </None>
+    <None Include="src\Adapter\Lua\sqlte3.alittle">
+      <Filter>Adapter\Lua</Filter>
+    </None>
+    <None Include="src\Std\Utility\WeakRef.alittle">
+      <Filter>Std\Utility</Filter>
+    </None>
+    <None Include="src\Adapter\JavaScript\jweakmap.alittle">
+      <Filter>Adapter\JavaScript</Filter>
+    </None>
+    <None Include="src\Adapter\JavaScript\jbit.alittle">
+      <Filter>Adapter\JavaScript</Filter>
+    </None>
+    <None Include="src\Std\Utility\Bit.alittle">
+      <Filter>Std\Utility</Filter>
+    </None>
+    <None Include="src\Std\Loop\LoopFrame.alittle">
+      <Filter>Std\Loop</Filter>
+    </None>
+  </ItemGroup>
+</Project>

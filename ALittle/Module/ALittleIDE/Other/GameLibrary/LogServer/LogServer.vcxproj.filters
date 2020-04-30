@@ -7,7 +7,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\Main.alittle">
+    <None Include="src\ALittle.alittle">
       <Filter>源文件</Filter>
     </None>
   </ItemGroup>

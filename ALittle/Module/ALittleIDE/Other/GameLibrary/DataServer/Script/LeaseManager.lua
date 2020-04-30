@@ -1,6 +1,7 @@
-
+-- ALittle Generate Lua
 module("DataServer", package.seeall)
 
+local ___thispath = select('1', ...):match("(.+[/\\]).+$") or ""
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
@@ -175,7 +176,7 @@ function LeaseManager:HandleLeaseRenew(session, msg)
 		return nil
 	end
 	if info.gs_route_num ~= session.route_num then
-		return "续约失败"
+		return "��Լʧ��"
 	end
 	info.confirm = true
 	if info.timer ~= nil then

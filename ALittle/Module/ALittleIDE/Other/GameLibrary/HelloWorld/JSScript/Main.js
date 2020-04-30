@@ -1,19 +1,13 @@
 {
-if (typeof HelloWorld === "undefined") HelloWorld = {};
+if (typeof HelloWorld === "undefined") window.HelloWorld = {};
+let ___lastscript = document.scripts[document.scripts.length - 1]
+let ___thispath = "";
+if (___lastscript !== undefined) ___thispath = ___lastscript.src.substring(0, ___lastscript.src.lastIndexOf("/") + 1);
 
 
-HelloWorld.DownloadTest = async function() {
-	let error = await ALittle.DownloadFile("marketplace.visualstudio.com", 443, "items?itemName=AProtobuf.ALittleAProtobuf", "text.txt");
-	if (error !== undefined) {
-		ALittle.Log(error);
-	} else {
-		ALittle.Log("download succeed");
-	}
-}
-
+Require(___thispath, "../../../../../Std/JSScript/ALittle");
 HelloWorld.Main = function() {
 	ALittle.Log("HelloWorld");
-	HelloWorld.DownloadTest();
 	A_Schedule.Run();
 }
 

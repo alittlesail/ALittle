@@ -10,10 +10,10 @@
     <None Include="src\HeadImageManager.alittle">
       <Filter>源文件</Filter>
     </None>
-    <None Include="src\Main.alittle">
+    <None Include="src\ClanImageManager.alittle">
       <Filter>源文件</Filter>
     </None>
-    <None Include="src\ClanImageManager.alittle">
+    <None Include="src\ALittle.alittle">
       <Filter>源文件</Filter>
     </None>
   </ItemGroup>

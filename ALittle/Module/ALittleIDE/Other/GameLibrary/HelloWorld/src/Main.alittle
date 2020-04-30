@@ -1,21 +1,12 @@
 namespace HelloWorld;
 
+[Language(Lua)]
+require("../../../../../Std/Script/ALittle");
+[Language(JavaScript)]
+require("../../../../../Std/JSScript/ALittle");
+
 public static Main()
 {
     ALittle.Log("HelloWorld");
-
-    var all_in_one = new Map<string, any>();
-
-    var map = ALittle.File_GetFileAttrByDir("ALittle/Module/G2048/UI");
-    for (var path, _ in map)
-    {
-        var json:Map<string, any> = ALittle.File_ReadJsonFromStdFile(path);
-        for (var name, o in json)
-        {
-            all_in_one[name] = o;
-        }
-    }
-    ALittle.File_WriteJsonFromStdFile(all_in_one, "ALittle/Module/G2048/ui_all_in_one.json");
-    
     A_Schedule.Run();
 }

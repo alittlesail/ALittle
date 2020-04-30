@@ -1,6 +1,7 @@
-
+-- ALittle Generate Lua
 module("FileServer", package.seeall)
 
+local ___thispath = select('1', ...):match("(.+[/\\]).+$") or ""
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
@@ -148,7 +149,7 @@ function HeadImageManager:HandleNewDay()
 		for index, info in ___ipairs(select_list) do
 			local file_path = self:GetImagePath(info.account_id, info.create_time)
 			if not ALittle.File_DeleteFile(file_path) then
-				ALittle.Warn("文件删除失败:" .. file_path)
+				ALittle.Warn("�ļ�ɾ��ʧ��:" .. file_path)
 			end
 		end
 	end
@@ -232,7 +233,7 @@ local ___COROUTINE = coroutine.running()
 	end
 	do
 		local data = g_HeadImageManager.cache:GetData(msg.target_account_id)
-		Lua.Assert(data, "头像不存在")
+		Lua.Assert(data, "ͷ�񲻴���")
 		return g_HeadImageManager:GetImagePath(data.id, data.create_time), 0
 	end
 end
@@ -257,7 +258,7 @@ local ___COROUTINE = coroutine.running()
 	do
 		local data = g_HeadImageManager.cache:GetData(msg.account_id)
 		if data ~= nil and data.create_time == create_time then
-			Lua.Throw("已经有头像正在上传")
+			Lua.Throw("�Ѿ���ͷ�������ϴ�")
 		end
 		local file_path = g_HeadImageManager:GetImagePath(msg.account_id, create_time)
 		local file_dir = ALittle.File_GetFilePathByPath(file_path)

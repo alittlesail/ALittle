@@ -91,10 +91,10 @@ public struct D_VersionClose
     string platform;            // 终端平台
     string close_version;       // 关闭的版本
     string submit_platform;     // 提交的平台，比如taptap，ios
-    int create_time;              // 创建时间
-    int create_index;                // 创建时间序列
-    int update_time;              // 更新时间
-    int update_index;                // 更新时间序列
+    int create_time;            // 创建时间
+    int create_index;           // 创建时间序列
+    int update_time;            // 更新时间
+    int update_index;           // 更新时间序列
 }
 
 public struct D_VersionLog
@@ -104,10 +104,10 @@ public struct D_VersionLog
     string module_name;			// 模块名
     string platform;            // 终端平台
     string content;             // 日志内容
-    int create_time;              // 创建时间
-    int create_index;                // 创建时间序列
-    int update_time;              // 更新时间
-    int update_index;                // 更新时间序列
+    int create_time;            // 创建时间
+    int create_index;           // 创建时间序列
+    int update_time;            // 更新时间
+    int update_index;           // 更新时间序列
 }
 
 // 应答版本信息

@@ -7,9 +7,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\Main.alittle">
-      <Filter>源文件</Filter>
-    </None>
     <None Include="src\DataManager.alittle">
       <Filter>源文件</Filter>
     </None>
@@ -17,6 +14,9 @@
       <Filter>源文件</Filter>
     </None>
     <None Include="src\LeaseManager.alittle">
+      <Filter>源文件</Filter>
+    </None>
+    <None Include="src\ALittle.alittle">
       <Filter>源文件</Filter>
     </None>
   </ItemGroup>

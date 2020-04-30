@@ -1,5 +1,5 @@
 {
-if (typeof G2048 === "undefined") G2048 = {};
+if (typeof G2048 === "undefined") window.G2048 = {};
 
 
 G2048.__Browser_Setup = async function(layer_group, control, module_base_path, script_base_path, debug) {
@@ -34,7 +34,7 @@ G2048.__Module_Setup = async function(layer_group, control, module_base_path, sc
 	G2048.g_Control = control;
 	G2048.g_LayerGroup = layer_group;
 	G2048.g_ModuleBasePath = module_base_path;
-	await Require(script_base_path + "GCenter");
+	await Require(script_base_path, "GCenter");
 	G2048.g_GCenter.Setup();
 }
 

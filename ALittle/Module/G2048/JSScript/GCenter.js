@@ -1,5 +1,5 @@
 {
-if (typeof G2048 === "undefined") G2048 = {};
+if (typeof G2048 === "undefined") window.G2048 = {};
 
 ALittle.RegStruct(-1842382794, "G2048.ItemInfo", {
 name : "G2048.ItemInfo", ns_name : "G2048", rl_name : "ItemInfo", hash_code : -1842382794,

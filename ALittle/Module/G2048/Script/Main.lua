@@ -5,16 +5,20 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 
 
+require("GCenter.lua")
 function __Browser_Setup(layer_group, control, module_base_path, script_base_path, debug)
 	local window_width = 720
 	local window_height = 1280
 	local rate = 0.5
 	local flag = 0x00000020
-	if ALittle.System_IsPhone() then
+	if ALittle.System_GetPlatform() ~= "Windows" and ALittle.System_GetPlatform() ~= "Web" then
 		local screen_width = ALittle.System_GetScreenWidth()
 		local screen_height = ALittle.System_GetScreenHeight()
 		window_height = ALittle.Math_Floor(screen_height / screen_width * window_width)
 		flag = ALittle.BitOr(flag, 0x00000001)
+	end
+	if ALittle.System_GetPlatform() == "Web" then
+		rate = ALittle.System_GetScreenHeight() / window_height
 	end
 	ALittle.System_CreateView("2048", window_width, window_height, flag, rate)
 	ALittle.System_SetViewIcon(module_base_path .. "/Other/ic_launcher.png")
@@ -35,7 +39,6 @@ function __Module_Setup(layer_group, control, module_base_path, script_base_path
 	g_Control = control
 	g_LayerGroup = layer_group
 	g_ModuleBasePath = module_base_path
-	Require(script_base_path .. "GCenter")
 	g_GCenter:Setup()
 end
 __Module_Setup = Lua.CoWrap(__Module_Setup)

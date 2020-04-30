@@ -1,6 +1,8 @@
 
 namespace G2048;
 
+require("GCenter");
+
 // 壳入口函数
 public async static __Browser_Setup(ALittle.DisplayLayout layer_group
                               , ALittle.ControlSystem control
@@ -54,8 +56,7 @@ public async static __Module_Setup(ALittle.DisplayLayout layer_group, ALittle.Co
 	g_Control = control;
 	g_LayerGroup = layer_group;
 	g_ModuleBasePath = module_base_path;
-    
-	alittle.Require(script_base_path.."GCenter");
+
 	g_GCenter.Setup();
 }
 

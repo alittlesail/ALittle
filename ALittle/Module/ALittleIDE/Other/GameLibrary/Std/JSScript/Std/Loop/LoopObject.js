@@ -1,5 +1,5 @@
 {
-if (typeof ALittle === "undefined") ALittle = {};
+if (typeof ALittle === "undefined") window.ALittle = {};
 
 
 ALittle.LoopObject = JavaScript.Class(undefined, {

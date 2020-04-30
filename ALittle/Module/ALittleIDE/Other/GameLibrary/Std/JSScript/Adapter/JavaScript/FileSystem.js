@@ -1,5 +1,5 @@
 {
-if (typeof JavaScript === "undefined") JavaScript = {};
+if (typeof JavaScript === "undefined") window.JavaScript = {};
 
 ALittle.RegStruct(-1393456776, "JavaScript.FileInfo", {
 name : "JavaScript.FileInfo", ns_name : "JavaScript", rl_name : "FileInfo", hash_code : -1393456776,

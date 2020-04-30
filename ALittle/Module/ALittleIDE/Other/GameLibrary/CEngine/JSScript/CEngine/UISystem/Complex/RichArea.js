@@ -1,5 +1,5 @@
 {
-if (typeof ALittle === "undefined") ALittle = {};
+if (typeof ALittle === "undefined") window.ALittle = {};
 
 ALittle.RegStruct(485812343, "ALittle.RichAreaLineInfo", {
 name : "ALittle.RichAreaLineInfo", ns_name : "ALittle", rl_name : "RichAreaLineInfo", hash_code : 485812343,

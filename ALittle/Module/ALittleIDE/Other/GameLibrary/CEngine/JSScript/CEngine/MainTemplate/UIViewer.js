@@ -1,5 +1,5 @@
 {
-if (typeof ALittle === "undefined") ALittle = {};
+if (typeof ALittle === "undefined") window.ALittle = {};
 
 ALittle.RegStruct(1225542858, "ALittle.UIViewModuleDebugInfo", {
 name : "ALittle.UIViewModuleDebugInfo", ns_name : "ALittle", rl_name : "UIViewModuleDebugInfo", hash_code : 1225542858,

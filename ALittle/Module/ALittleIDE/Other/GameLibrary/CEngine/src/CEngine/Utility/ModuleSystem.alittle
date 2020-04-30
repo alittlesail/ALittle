@@ -92,10 +92,7 @@ class ModuleSystem
         [Language(JavaScript)]
         info.control.RegisterInfoByHttp();
         // 加载Main文件
-        [Language(Lua)]
-        alittle.Require(module_base_path.."Main");
-        [Language(JavaScript)]
-        alittle.Require(module_base_path.."Main");
+        alittle.Require(module_base_path, "Main");
         // 检查是否有这个模块
         [Language(Lua)]
         info.module = package.loaded[name];
@@ -144,8 +141,12 @@ class ModuleSystem
         A_LayerManager.RemoveChild(info.layer_group);
     
         // 释放项目
+        [Language(Lua)]
         package.loaded[name] = null;
+        [Language(Lua)]
         cast<Map<string, any>>(_G)[name] = null;
+        [Language(JavaScript)]
+        cast<Map<string, any>>(window)[name] = null;
         // 执行垃圾回收
         [Language(Lua)]
         lua.collectgarbage("collect");

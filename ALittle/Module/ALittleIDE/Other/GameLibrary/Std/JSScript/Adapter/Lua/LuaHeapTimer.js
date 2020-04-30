@@ -1,5 +1,5 @@
 {
-if (typeof Lua === "undefined") Lua = {};
+if (typeof Lua === "undefined") window.Lua = {};
 
 
 if (ALittle.IHeapTimer === undefined) throw new Error(" extends class:ALittle.IHeapTimer is undefined");

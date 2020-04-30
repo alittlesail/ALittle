@@ -33,6 +33,9 @@ function HttpSenderTemplate:Ctor(ip, port)
 	___rawset(self, "_interface", self.__class.__element[1]())
 	___rawset(self, "_ip", ip)
 	___rawset(self, "_port", port)
+	if self._port == nil then
+		___rawset(self, "_port", 80)
+	end
 end
 
 function HttpSenderTemplate:SendRPC(thread, method, content)

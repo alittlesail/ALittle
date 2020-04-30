@@ -16,7 +16,6 @@ function ControlSystem:Ctor(module_name, crypt_mode)
 	___rawset(self, "_name_map_info_cache", {})
 	___rawset(self, "_module_name", module_name)
 	___rawset(self, "_crypt_mode", crypt_mode or false)
-	ALittle.Log(location)
 	___rawset(self, "_base_path", "Module/" .. module_name .. "/")
 	___rawset(self, "_ui_path", self._base_path .. "UI/")
 	___rawset(self, "_font_path", self._base_path .. "Font/")
@@ -34,7 +33,7 @@ function ControlSystem:RegisterInfoByHttp()
 local ___COROUTINE = coroutine.running()
 	local path = self._ui_path .. "../ui_all_in_one.json"
 	ALittle.File_MakeDeepDir(ALittle.File_GetFilePathByPath(path))
-	local error = ALittle.HttpDownloadRequest(self._host, Math_ToInt(self._port), path, path)
+	local error = ALittle.HttpDownloadRequest(self._host, self._port, path, path)
 	if error ~= nil then
 		ALittle.Error("ui load failed:" .. error)
 		return

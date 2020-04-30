@@ -1,5 +1,5 @@
 {
-if (typeof ALittle === "undefined") ALittle = {};
+if (typeof ALittle === "undefined") window.ALittle = {};
 
 
 if (ALittle.DisplayLayout === undefined) throw new Error(" extends class:ALittle.DisplayLayout is undefined");
@@ -62,18 +62,18 @@ ALittle.FramePlay = JavaScript.Class(ALittle.DisplayLayout, {
 	},
 	Play : function() {
 		if (this._play_loop !== undefined) {
-			A_LoopSystem.RemoveUpdater(this._play_loop);
+			A_WeakLoopSystem.RemoveUpdater(this._play_loop);
 			this._play_loop = undefined;
 		}
 		this._play_child_index = 0;
 		this._play_loop_index = 0;
 		this.HideAllChild();
 		this._play_loop = ALittle.NewObject(ALittle.LoopFunction, this.PlayUpdateLoop.bind(this), -1, this._interval, 0);
-		A_LoopSystem.AddUpdater(this._play_loop);
+		A_WeakLoopSystem.AddUpdater(this._play_loop);
 	},
 	Stop : function() {
 		if (this._play_loop !== undefined) {
-			A_LoopSystem.RemoveUpdater(this._play_loop);
+			A_WeakLoopSystem.RemoveUpdater(this._play_loop);
 			this._play_loop = undefined;
 		}
 	},

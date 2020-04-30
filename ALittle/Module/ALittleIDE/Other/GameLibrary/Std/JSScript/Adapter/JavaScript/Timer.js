@@ -1,5 +1,5 @@
 {
-if (typeof JavaScript === "undefined") JavaScript = {};
+if (typeof JavaScript === "undefined") window.JavaScript = {};
 let ___all_struct = ALittle.GetAllStruct();
 
 ALittle.RegStruct(1961635951, "JavaScript.MiniHeapNodeInfo", {

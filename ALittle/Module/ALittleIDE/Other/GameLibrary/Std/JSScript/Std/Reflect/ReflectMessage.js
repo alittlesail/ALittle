@@ -1,5 +1,5 @@
 {
-if (typeof ALittle === "undefined") ALittle = {};
+if (typeof ALittle === "undefined") window.ALittle = {};
 
 ALittle.RegStruct(-1602043290, "ALittle.ProtocolInvokeInfo", {
 name : "ALittle.ProtocolInvokeInfo", ns_name : "ALittle", rl_name : "ProtocolInvokeInfo", hash_code : -1602043290,

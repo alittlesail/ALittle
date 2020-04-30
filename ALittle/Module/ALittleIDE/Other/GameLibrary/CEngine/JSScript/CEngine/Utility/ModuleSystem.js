@@ -1,5 +1,5 @@
 {
-if (typeof ALittle === "undefined") ALittle = {};
+if (typeof ALittle === "undefined") window.ALittle = {};
 
 ALittle.RegStruct(1376035901, "ALittle.ModuleInfo", {
 name : "ALittle.ModuleInfo", ns_name : "ALittle", rl_name : "ModuleInfo", hash_code : 1376035901,
@@ -39,7 +39,7 @@ ALittle.ModuleSystem = JavaScript.Class(undefined, {
 			info.crypt_mode = false;
 			info.control = ALittle.NewObject(ALittle.ControlSystem, name, info.crypt_mode);
 			await info.control.RegisterInfoByHttp();
-			await Require(module_base_path + "Main");
+			await Require(module_base_path, "Main");
 			info.module = window[name];
 			if (info.module === undefined) {
 				___COROUTINE(undefined); return;
@@ -75,8 +75,7 @@ ALittle.ModuleSystem = JavaScript.Class(undefined, {
 		}
 		delete this._name_module_map[name];
 		A_LayerManager.RemoveChild(info.layer_group);
-		delete package.loaded[name];
-		delete _G[name];
+		delete window[name];
 		return true;
 	},
 	LoadPlugin : function(module_base_path, module_name) {

@@ -1,5 +1,5 @@
 {
-if (typeof JavaScript === "undefined") JavaScript = {};
+if (typeof JavaScript === "undefined") window.JavaScript = {};
 
 
 JavaScript.JSystem_GetDeviceID = function() {

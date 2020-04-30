@@ -1,5 +1,5 @@
 {
-if (typeof JavaScript === "undefined") JavaScript = {};
+if (typeof JavaScript === "undefined") window.JavaScript = {};
 
 
 if (ALittle.ISchedule === undefined) throw new Error(" extends class:ALittle.ISchedule is undefined");

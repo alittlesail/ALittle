@@ -1,5 +1,5 @@
 {
-if (typeof ALittle === "undefined") ALittle = {};
+if (typeof ALittle === "undefined") window.ALittle = {};
 
 
 if (ALittle.LoopObject === undefined) throw new Error(" extends class:ALittle.LoopObject is undefined");

@@ -1,5 +1,5 @@
 {
-if (typeof ALittle === "undefined") ALittle = {};
+if (typeof ALittle === "undefined") window.ALittle = {};
 
 ALittle.RegStruct(-930447138, "ALittle.Thread", {
 name : "ALittle.Thread", ns_name : "ALittle", rl_name : "Thread", hash_code : -930447138,

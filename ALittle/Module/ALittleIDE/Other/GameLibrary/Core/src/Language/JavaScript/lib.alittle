@@ -25,3 +25,5 @@ public static webkitRequestAnimationFrame (Functor<(int)> callback) : int {}
 public static msRequestAnimationFrame(Functor<(int)> callback) : int {}
 public static cancelAnimationFrame(int id) {}
 public static mozCancelAnimationFrame(int id) {}
+
+public static require(string path) {}

@@ -1,5 +1,5 @@
 {
-if (typeof ALittle === "undefined") ALittle = {};
+if (typeof ALittle === "undefined") window.ALittle = {};
 
 ALittle.RegStruct(-1155101349, "ALittle.CsvInvokeInfo", {
 name : "ALittle.CsvInvokeInfo", ns_name : "ALittle", rl_name : "CsvInvokeInfo", hash_code : -1155101349,

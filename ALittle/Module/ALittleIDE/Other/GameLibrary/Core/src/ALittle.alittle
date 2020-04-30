@@ -1,8 +1,15 @@
 namespace alittle;
 
 [Language(JavaScript)]
-private static JSRequire(string url, ALittle.Thread thread)
+private static JSRequire(string base_path, string url, ALittle.Thread thread)
 {
+    if (javascript.typeof(javascript.require) != "undefined")
+    {
+        javascript.require(url);
+        cast<Functor<(string)>>(thread)(null);
+        return;
+    }
+
     var script = cast<javascript.ScriptElement>(document.createElement("script"));
     script.type = "text/javascript";
     script.async = "async";
@@ -17,21 +24,15 @@ private static JSRequire(string url, ALittle.Thread thread)
     document.body.appendChild(script);
 }
 
-[Language(Lua)]
-private static LuaRequire(string path)
-{
-    lua.require(path);
-}
-
-public await static Require(string url) : string
+public await static Require(string base_path, string url) : string
 {
     [Language(JavaScript)]
-    JSRequire(url, co);
+    JSRequire(base_path, url, co);
     [Language(JavaScript)]
     return yield;
     
     [Language(Lua)]
-    lua.require(url);
+    lua.require(base_path..url);
     [Language(Lua)]
     return null;
 }
@@ -40,34 +41,34 @@ public await static __ALITTLEAPI_Core_Init(string base_path)
 {
     [Language(JavaScript)]
     {
-        Require(base_path.."Core/JavaScript/JavaScriptClass");
-        Require(base_path.."Core/JavaScript/JavaScriptException");
+        Require(base_path, "Core/JavaScript/JavaScriptClass");
+        Require(base_path, "Core/JavaScript/JavaScriptException");
     }
     
-    Require(base_path.."Core/Reflect/ReflectRegister");
-    Require(base_path.."Core/Reflect/ReflectDefine");
+    Require(base_path, "Core/Reflect/ReflectRegister");
+    Require(base_path, "Core/Reflect/ReflectDefine");
     
     [Language(Lua)]
     {
-        Require(base_path.."Core/Lua/LuaBind");
-        Require(base_path.."Core/Lua/LuaClass");
-        Require(base_path.."Core/Lua/LuaException");
+        Require(base_path, "Core/Lua/LuaBind");
+        Require(base_path, "Core/Lua/LuaClass");
+        Require(base_path, "Core/Lua/LuaException");
 
         // 这个是为了兼容lua5.2或以上版本
         if (_G["bit"] == null) _G["bit"] = _G["bit32"];
     }
     
-    Require(base_path.."Core/Utility/Log");
-    Require(base_path.."Core/Utility/List");
-    Require(base_path.."Core/Utility/Map");
-    Require(base_path.."Core/Utility/Math");
-    Require(base_path.."Core/Utility/String");
-    Require(base_path.."Core/Utility/Time");
-    Require(base_path.."Core/Utility/Coroutine");
+    Require(base_path, "Core/Utility/Log");
+    Require(base_path, "Core/Utility/List");
+    Require(base_path, "Core/Utility/Map");
+    Require(base_path, "Core/Utility/Math");
+    Require(base_path, "Core/Utility/String");
+    Require(base_path, "Core/Utility/Time");
+    Require(base_path, "Core/Utility/Coroutine");
     
-    Require(base_path.."Core/Net/HttpFileReceiver");
-    Require(base_path.."Core/Net/HttpFileSender");
-    Require(base_path.."Core/Net/HttpReceiver");
-    Require(base_path.."Core/Net/HttpSender");
-    Require(base_path.."Core/Net/MsgCommon");
+    Require(base_path, "Core/Net/HttpFileReceiver");
+    Require(base_path, "Core/Net/HttpFileSender");
+    Require(base_path, "Core/Net/HttpReceiver");
+    Require(base_path, "Core/Net/HttpSender");
+    Require(base_path, "Core/Net/MsgCommon");
 }

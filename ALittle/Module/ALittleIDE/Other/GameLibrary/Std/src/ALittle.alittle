@@ -2,68 +2,68 @@ namespace alittle;
 
 public await static __ALITTLEAPI_Std_Init(string base_path)
 {
-    Require(base_path.."Std/Reflect/ReflectCmd");
-    Require(base_path.."Std/Reflect/ReflectCsv");
-    Require(base_path.."Std/Reflect/ReflectMessage");
+    Require(base_path, "Std/Reflect/ReflectCmd");
+    Require(base_path, "Std/Reflect/ReflectCsv");
+    Require(base_path, "Std/Reflect/ReflectMessage");
     
-    Require(base_path.."Std/Loop/LoopObject");
-    Require(base_path.."Std/Loop/ILoopSystem");
-    Require(base_path.."Std/Loop/LoopFrame");
-    Require(base_path.."Std/Loop/LoopFunction");
-    Require(base_path.."Std/Loop/LoopGroup");
-    Require(base_path.."Std/Loop/LoopList");
-    Require(base_path.."Std/Loop/LoopTimer");
+    Require(base_path, "Std/Loop/LoopObject");
+    Require(base_path, "Std/Loop/ILoopSystem");
+    Require(base_path, "Std/Loop/LoopFrame");
+    Require(base_path, "Std/Loop/LoopFunction");
+    Require(base_path, "Std/Loop/LoopGroup");
+    Require(base_path, "Std/Loop/LoopList");
+    Require(base_path, "Std/Loop/LoopTimer");
     
-    Require(base_path.."Std/Utility/Bit");
-    Require(base_path.."Std/Utility/WeakRef");
-    Require(base_path.."Std/Utility/IHeapTimer");
-    Require(base_path.."Std/Utility/ISchedule");
-    Require(base_path.."Std/Utility/CsvConfig");
-    Require(base_path.."Std/Utility/EventDispatcher");
-    Require(base_path.."Std/Utility/SafeIDCreator");
-    Require(base_path.."Std/Utility/String");
-    Require(base_path.."Std/Utility/File");
-    Require(base_path.."Std/Utility/JsonConfig");
+    Require(base_path, "Std/Utility/Bit");
+    Require(base_path, "Std/Utility/WeakRef");
+    Require(base_path, "Std/Utility/IHeapTimer");
+    Require(base_path, "Std/Utility/ISchedule");
+    Require(base_path, "Std/Utility/CsvConfig");
+    Require(base_path, "Std/Utility/EventDispatcher");
+    Require(base_path, "Std/Utility/SafeIDCreator");
+    Require(base_path, "Std/Utility/String");
+    Require(base_path, "Std/Utility/File");
+    Require(base_path, "Std/Utility/JsonConfig");
     
-    Require(base_path.."Std/Net/HttpFileReceiverTemplate");
-    Require(base_path.."Std/Net/HttpFileSenderTemplate");
-    Require(base_path.."Std/Net/HttpReceiverTemplate");
-    Require(base_path.."Std/Net/HttpSenderTemplate");
-    Require(base_path.."Std/Net/MsgCommonTemplate");
-    Require(base_path.."Std/Net/MsgReceiverTemplate");
-    Require(base_path.."Std/Net/MsgSenderTemplate");
-    Require(base_path.."Std/Net/MsgSessionTemplate");
+    Require(base_path, "Std/Net/HttpFileReceiverTemplate");
+    Require(base_path, "Std/Net/HttpFileSenderTemplate");
+    Require(base_path, "Std/Net/HttpReceiverTemplate");
+    Require(base_path, "Std/Net/HttpSenderTemplate");
+    Require(base_path, "Std/Net/MsgCommonTemplate");
+    Require(base_path, "Std/Net/MsgReceiverTemplate");
+    Require(base_path, "Std/Net/MsgSenderTemplate");
+    Require(base_path, "Std/Net/MsgSessionTemplate");
     
     [Language(JavaScript)]
     {
-        Require(base_path.."Adapter/JavaScript/Timer");
-        Require(base_path.."Adapter/JavaScript/FileSystem");
-        Require(base_path.."Adapter/JavaScript/JHttpFileInterface");
-        Require(base_path.."Adapter/JavaScript/JHttpInterface");
-        Require(base_path.."Adapter/JavaScript/JMessageFactory");
-        Require(base_path.."Adapter/JavaScript/JMsgInterface");
-        Require(base_path.."Adapter/JavaScript/JSchedule");
-        Require(base_path.."Adapter/JavaScript/JCsvFile");
-        Require(base_path.."../../JSNative/md5.min");
-        Require(base_path.."../../JSNative/jweakmap");
-        Require(base_path.."../../JSNative/bit");
+        Require(base_path, "Adapter/JavaScript/Timer");
+        Require(base_path, "Adapter/JavaScript/FileSystem");
+        Require(base_path, "Adapter/JavaScript/JHttpFileInterface");
+        Require(base_path, "Adapter/JavaScript/JHttpInterface");
+        Require(base_path, "Adapter/JavaScript/JMessageFactory");
+        Require(base_path, "Adapter/JavaScript/JMsgInterface");
+        Require(base_path, "Adapter/JavaScript/JSchedule");
+        Require(base_path, "Adapter/JavaScript/JCsvFile");
+        Require(base_path, "../../JSNative/md5.min");
+        Require(base_path, "../../JSNative/jweakmap");
+        Require(base_path, "../../JSNative/bit");
     }
     
     [Language(Lua)]
     {
-        Require(base_path.."Adapter/Lua/LuaHeapTimer");
-        Require(base_path.."Adapter/Lua/LuaCsvFile");
+        Require(base_path, "Adapter/Lua/LuaHeapTimer");
+        Require(base_path, "Adapter/Lua/LuaCsvFile");
         
         if (lua.net != null)
         {
-            Require(base_path.."Adapter/Lua/LuaHttpFileInterface");
-            Require(base_path.."Adapter/Lua/LuaHttpInterface");
-            Require(base_path.."Adapter/Lua/LuaMsgInterface");
-            Require(base_path.."Adapter/Lua/LuaMessageFactory");
-            Require(base_path.."Adapter/Lua/LuaSchedule");
+            Require(base_path, "Adapter/Lua/LuaHttpFileInterface");
+            Require(base_path, "Adapter/Lua/LuaHttpInterface");
+            Require(base_path, "Adapter/Lua/LuaMsgInterface");
+            Require(base_path, "Adapter/Lua/LuaMessageFactory");
+            Require(base_path, "Adapter/Lua/LuaSchedule");
         }
     }
     
-    Require(base_path.."Std/Loop/LoopSystem");
-    Require(base_path.."Std/Utility/Schedule");
+    Require(base_path, "Std/Loop/LoopSystem");
+    Require(base_path, "Std/Utility/Schedule");
 }

@@ -1,5 +1,5 @@
 {
-if (typeof ALittle === "undefined") ALittle = {};
+if (typeof ALittle === "undefined") window.ALittle = {};
 
 ALittle.RegStruct(1715346212, "ALittle.Event", {
 name : "ALittle.Event", ns_name : "ALittle", rl_name : "Event", hash_code : 1715346212,

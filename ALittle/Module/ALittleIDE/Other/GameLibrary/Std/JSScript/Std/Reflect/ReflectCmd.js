@@ -1,5 +1,5 @@
 {
-if (typeof ALittle === "undefined") ALittle = {};
+if (typeof ALittle === "undefined") window.ALittle = {};
 
 ALittle.RegStruct(2073949729, "ALittle.CmdCallbackInfo", {
 name : "ALittle.CmdCallbackInfo", ns_name : "ALittle", rl_name : "CmdCallbackInfo", hash_code : 2073949729,

@@ -1,4 +1,4 @@
-
+-- ALittle Generate Lua
 module("ALittle", package.seeall)
 
 local ___rawset = rawset

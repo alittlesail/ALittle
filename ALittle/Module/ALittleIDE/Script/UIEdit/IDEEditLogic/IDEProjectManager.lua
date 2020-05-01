@@ -290,9 +290,7 @@ function IDEProjectManager:RunProject()
 		g_IDETool:ShowNotice("提示", "当前没有打开的项目")
 		return
 	end
-	local module_name = g_IDEProject.project.name
-	local module_path = "Module/" .. module_name .. "/Script/"
-	os.execute("start ALittleClient.exe " .. module_path .. " debug " .. module_name)
+	os.execute("start ALittleClient.exe " .. g_IDEProject.project.name)
 end
 
 g_IDEProjectManager = IDEProjectManager()

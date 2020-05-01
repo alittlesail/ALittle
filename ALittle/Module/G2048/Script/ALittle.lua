@@ -1,11 +1,10 @@
-
+-- ALittle Generate Lua
 module("G2048", package.seeall)
 
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-require("GCenter.lua")
 function __Browser_Setup(layer_group, control, module_base_path, script_base_path, debug)
 	local window_width = 720
 	local window_height = 1280
@@ -39,6 +38,7 @@ function __Module_Setup(layer_group, control, module_base_path, script_base_path
 	g_Control = control
 	g_LayerGroup = layer_group
 	g_ModuleBasePath = module_base_path
+	Require(script_base_path, "GCenter")
 	g_GCenter:Setup()
 end
 __Module_Setup = Lua.CoWrap(__Module_Setup)

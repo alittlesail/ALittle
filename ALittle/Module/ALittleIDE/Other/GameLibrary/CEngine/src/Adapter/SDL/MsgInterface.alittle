@@ -1,0 +1,10 @@
+register namespace lua;
+
+public class __CPPAPIMsgInterface : ALittle.IMsgCommonNative
+{
+    public fun GetID() : int {}
+    public fun Connect(string ip, int port) {}
+    public fun Close() {}
+    public fun IsConnected() : bool {}
+    public fun SendFactory(ALittle.IMessageWriteFactory factory) {}
+}

@@ -1,0 +1,17 @@
+
+[Language(JavaScript)]
+register namespace javascript;
+    
+[Native]
+public class ScriptElement : DomElement
+{
+    public set type(string t) {}
+    public set src(string v) {}
+    public get src() : string {}
+    public set async(string v) {}
+    
+    public set onabort(Functor<()> func) {}
+    public set onerror(Functor<()> func) {}
+    public set ontimeout(Functor<()> func) {}
+    public set onload(Functor<()> func) {}
+}

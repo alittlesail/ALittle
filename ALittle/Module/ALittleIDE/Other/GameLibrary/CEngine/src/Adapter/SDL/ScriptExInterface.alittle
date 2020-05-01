@@ -1,0 +1,13 @@
+
+register namespace lua;
+
+public class __CPPAPIScriptSystemEx
+{
+    public fun Log(string c, int level) {}
+    public fun Require(string path) {}
+    public fun FileMD5(string path) : string {}
+    public fun BaseFilePath() : string {}
+    public fun ExternalFilePath() : string {}
+}
+
+public var __CPPAPI_ScriptSystemEx:__CPPAPIScriptSystemEx;

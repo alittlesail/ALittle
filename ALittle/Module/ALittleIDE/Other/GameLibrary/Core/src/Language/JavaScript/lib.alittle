@@ -1,0 +1,29 @@
+
+[Language(JavaScript)]
+register namespace javascript;
+
+public static btoa(string text) : string {}
+public static atob(string text) : string {}
+public static alert(string text) {}
+public static open(string url) {}
+
+public struct MediaQueryList
+{
+    string media;
+    bool matches;
+}
+
+public static matchMedia(string text) : MediaQueryList {}
+
+public static typeof(any text) : string {}
+
+public static isNaN(double v) : bool {}
+
+public static requestAnimationFrame(Functor<(int)> callback) : int {}
+public static mozRequestAnimationFrame(Functor<(int)> callback) : int {}
+public static webkitRequestAnimationFrame (Functor<(int)> callback) : int {}
+public static msRequestAnimationFrame(Functor<(int)> callback) : int {}
+public static cancelAnimationFrame(int id) {}
+public static mozCancelAnimationFrame(int id) {}
+
+public static require(string path) {}

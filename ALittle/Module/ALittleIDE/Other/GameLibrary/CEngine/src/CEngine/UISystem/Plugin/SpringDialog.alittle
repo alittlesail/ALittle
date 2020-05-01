@@ -1,0 +1,77 @@
+
+namespace ALittle;
+
+public class SpringDialog : DisplayLayout
+{
+    private DisplayObject   _show_dialog;
+
+    private LoopList        _anti_loop;
+    private bool            _is_show;
+    
+    public ctor(ControlSystem ctrl_sys)
+    {
+        // this._anti_loop = null;
+    
+        this._is_show = false;
+        this.visible = false;
+    }
+    
+    public get show() : bool
+    {
+        return this._is_show;
+    }
+    
+    public set show(bool value)
+    {
+        if (this._is_show == value) return;
+        this._is_show = value;
+        if (this._anti_loop != null) { this._anti_loop.SetCompleted(); this._anti_loop.Stop(); this._anti_loop = null; }
+    
+        if (value)
+            this.ShowAnti(1.1, 200, 200);
+        else
+            this.HideAnti(1.1, 200);
+    }
+
+    protected fun ShowAnti(double scale, int scale_big_ms, int scale_return_ms)
+    {
+        if (this._show_dialog == null) return;
+    
+        this.visible = true;
+        this.alpha = 0;
+        this._show_dialog.scale_x = 1;
+        this._show_dialog.scale_y = 1;
+    
+        this._anti_loop = new LoopList();
+
+        var group = new LoopGroup();
+        group.AddUpdater(new LoopLinear(this._show_dialog, "scale_x", scale, scale_big_ms, 1));
+        group.AddUpdater(new LoopLinear(this._show_dialog, "scale_y", scale, scale_big_ms, 1));
+        group.AddUpdater(new LoopLinear(this, "alpha", 1, scale_big_ms, 1));
+        this._anti_loop.AddUpdater(group);
+    
+        group = new LoopGroup();
+        group.AddUpdater(new LoopLinear(this._show_dialog, "scale_x", 1, scale_return_ms, 1));
+        group.AddUpdater(new LoopLinear(this._show_dialog, "scale_y", 1, scale_return_ms, 1));
+        this._anti_loop.AddUpdater(group);
+    
+        this._anti_loop.Start();
+    }
+
+    protected fun HideAnti(double scale, int scale_big_ms)
+    {
+        if (this._show_dialog == null) return;
+    
+        this._anti_loop = new LoopList();
+
+        var group = new LoopGroup();
+        group.AddUpdater(new LoopLinear(this._show_dialog, "scale_x", scale, scale_big_ms, 1));
+        group.AddUpdater(new LoopLinear(this._show_dialog, "scale_y", scale, scale_big_ms, 1));
+        group.AddUpdater(new LoopLinear(this, "alpha", 0, scale_big_ms, 1));
+        this._anti_loop.AddUpdater(group);
+    
+        this._anti_loop.AddUpdater(new LoopAttribute(this, "visible", false, 1));
+    
+        this._anti_loop.Start();
+    }
+}

@@ -1,0 +1,134 @@
+
+namespace ALittle;
+
+public class LoopRit : LoopObject
+{
+    private DisplayObject _target;              // 控件对象
+    private double _target_value;               // 目标值
+    private int _total_time;                    // 动画的总时间 单位毫秒
+    private int _total_delay_time;              // 动画的延时时间，就是延时多久才开始动画
+    private int _accumulate_time;               // 当前累积的时间
+    private int _accumulate_delay_time;         // 当前累积的延时时间
+    private string _property;                   // 速度
+    private Functor<()> _func;                  // 每次动画都会调用这个函数，用于外部逻辑同步，可以不填
+    private Functor<()> _complete_callback;     // 完成后会调用这个函数
+    private double _init_value;                 // 起始值
+    
+    public ctor(DisplayObject target, string property, double target_value, int total_time, int delay_time, [Nullable] Functor<()> func)
+    {
+        this._target = target;
+        this._target_value = target_value;
+        this._func = func;
+        if (total_time == null || total_time < 0) total_time = 0;
+        this._total_time = total_time;
+        if (delay_time == null || delay_time < 0) delay_time = 0;
+        this._total_delay_time = delay_time;
+    
+        this._accumulate_time = 0;
+        this._accumulate_delay_time = 0;
+        // 检查参数有效性
+        if (target == null || cast<Map<string, any>>(target)[property] == null)
+        {
+            this._accumulate_time = this._total_time;
+            Log("LoopRit create failed:loop_target is nil or property is nil");
+            return;
+        }
+    
+        this._property = property;
+        this._init_value = null;
+        this._complete_callback = null;    // 完成后会调用这个函数
+    }
+
+    public get complete_callback() : Functor<()>
+    {
+        return this._complete_callback;
+    }
+
+    public set complete_callback(Functor<()> value)
+    {
+        this._complete_callback = value;
+    }
+
+    public fun Reset()
+    {
+        this._accumulate_time = 0;
+        this._accumulate_delay_time = 0;
+        this._init_value = null;
+    }
+
+    public fun Completed()
+    {
+        if (this._complete_callback != null)
+            this._complete_callback();
+    }
+
+    public fun IsCompleted() : bool
+    {
+        return this._accumulate_time >= this._total_time;
+    }
+
+    // 设置完成
+    public fun SetCompleted()
+    {
+        if (this._accumulate_time >= this._total_time)
+            return;
+        this.SetTime(this._total_time + this._total_delay_time);
+    }
+
+    // 设置时间
+    public fun SetTime(int time):int, bool
+    {
+        // 初始化累积时间
+        this._accumulate_delay_time = 0;
+        this._accumulate_time = 0;
+    
+        // 如果时间为0，直接返回
+        if (time <= 0) return 0, false;
+        // 扣除延时时间
+        if (time <= this._total_delay_time)
+        {
+            this._accumulate_delay_time = time;
+            return 0, false;
+        }
+        this._accumulate_delay_time = this._total_delay_time;
+        time -= this._total_delay_time;
+        // 进行差值计算
+        if (time < this._total_time)
+        {
+            this._accumulate_time = time;
+            // 计算当前值
+            var current_value = (this._target_value - this._init_value) * Math_Sin((this._accumulate_time / this._total_time) * 1.57) + this._init_value;
+            // 设置当前值
+            cast<Map<string, any>>(this._target)[this._property] = current_value;
+            return 0, false;
+        }
+        // 如果已经到总时间，那么直接设置为目标值
+        cast<Map<string, any>>(this._target)[this._property] = this._target_value;
+        this._accumulate_time = this._total_time;
+    
+        if (this._func != null) this._func();
+    
+        // 返回剩余时间
+        return time - this._total_time, true;
+    }
+
+    protected fun Update(int frame_time)
+    {
+        if (this._accumulate_delay_time < this._total_delay_time)
+        {
+            this._accumulate_delay_time += frame_time;
+            if (this._accumulate_delay_time < this._total_delay_time)
+                return;
+            frame_time = this._accumulate_delay_time - this._total_delay_time;
+            this._accumulate_delay_time = this._total_delay_time;
+        }
+        if (this._init_value == null)
+            this._init_value = cast<Map<string, any>>(this._target)[this._property];
+        this._accumulate_time += frame_time;
+        if (this._accumulate_time > this._total_time)
+            this._accumulate_time = this._total_time;
+        var current_value = (this._target_value - this._init_value) * Math_Sin((this._accumulate_time / this._total_time) * 1.57) + this._init_value;
+        cast<Map<string, any>>(this._target)[this._property] = current_value;
+        if (this._func != null) this._func();
+    }
+}

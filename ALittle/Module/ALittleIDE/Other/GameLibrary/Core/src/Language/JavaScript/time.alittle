@@ -1,0 +1,19 @@
+
+[Language(JavaScript)]
+register namespace javascript;
+        
+[Native]               
+public class Date
+{
+    public static now() : int {}
+    public fun setTime(int time) {}
+
+    public fun getFullYear() : int {}
+    public fun getMonth() : int {}
+    public fun getDate() : int {}
+    public fun getDay() : int {}
+
+    public fun getHours() : int {}
+    public fun getMinutes() : int {}
+    public fun getSeconds() : int {}
+}

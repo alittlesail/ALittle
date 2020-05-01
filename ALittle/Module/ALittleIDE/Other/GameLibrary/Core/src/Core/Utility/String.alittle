@@ -1,0 +1,293 @@
+namespace ALittle;
+
+[Language(Lua)]
+private var byte = lua.String.byte;
+[Language(Lua)]
+private var sub = lua.String.sub;
+[Language(Lua)]
+private var len = lua.String.len;
+[Language(Lua)]
+private var find = lua.String.find;
+[Language(Lua)]
+private var upper = lua.String.upper;
+[Language(Lua)]
+private var lower = lua.String.lower;
+[Language(Lua)]
+private var match = lua.String.match;
+[Language(Lua)]
+private var concat = lua.table.concat;
+[Language(Lua)]
+private var tostring = lua.tostring;
+[Language(Lua)]
+private var tonumber = lua.tonumber;
+[Language(Lua)]
+private var floor = lua.math.floor;
+
+// 转为大写
+public static String_Upper(string s) : string
+{
+    [Language(Lua)]
+    return upper(s);
+    
+    [Language(JavaScript)]
+    return cast<javascript.String>(s).toUpperCase();
+}
+
+// 转为小写
+public static String_Lower(string s) : string
+{
+    [Language(Lua)]
+    return lower(s);
+    
+    [Language(JavaScript)]
+    return cast<javascript.String>(s).toLowerCase();
+}
+
+// 转字符串
+public static String_ToString(any s) : string
+{
+    [Language(Lua)]
+    return tostring(s);
+    
+    [Language(JavaScript)]
+    if (s == null) return "nil";
+    else return cast<javascript.Object>(s).toString();
+}
+
+// 把指定字符转为整数
+public static String_Byte(string s, int index) : int
+{
+    [Language(Lua)]
+    return byte(s, index);
+    
+    [Language(JavaScript)]
+    return cast<javascript.String>(s).charCodeAt(index - 1);
+}
+
+// 获取类型
+public static String_Type(any v) : string
+{
+    [Language(Lua)]
+    return lua.type(v);
+    
+    [Language(JavaScript)]
+    var value = javascript.typeof(v);
+    [Language(JavaScript)]
+    if (value == "object") return "table";
+    else return value;
+}
+
+// 获取子串长度
+public static String_Len(string s) : int
+{
+    [Language(Lua)]
+    return len(s);
+    
+    [Language(JavaScript)]
+    return cast<javascript.String>(s).length;
+}
+
+// 子串查找
+public static String_Find(string s, string t, [Nullable] int init) : int
+{
+    [Language(Lua)]
+    var result = find(s, t, init, true);
+    [Language(Lua)]
+    return result;
+    
+    [Language(JavaScript)]
+    if (init == null)
+    {
+        var index = cast<javascript.String>(s).indexOf(t);
+        if (index >= 0) return index + 1;
+        else return null;
+    }
+    else
+    {
+        var index = cast<javascript.String>(s).indexOf(t, init - 1);
+        if (index >= 0) return index + 1;
+        else return null;    
+    }
+}
+
+// 切割子串
+public static String_Sub(string s, int starti, [Nullable] int endi) : string
+{
+    [Language(Lua)]
+    return sub(s, starti, endi);
+    
+    [Language(JavaScript)]
+    if (endi == null)
+        return cast<javascript.String>(s).slice(starti - 1);
+    elseif (endi >= 0)
+        return cast<javascript.String>(s).slice(starti - 1, endi);
+    else
+        return cast<javascript.String>(s).slice(starti - 1, cast<javascript.String>(s).length + endi + 1);
+}
+    
+// 去掉前后空格，制表符
+public static String_Trim(string text) : string
+{
+    [Language(Lua)]
+    return lua.String.gsub(text, "^%s*(.-)%s*$", "%1");
+    
+    [Language(JavaScript)]
+    return cast<javascript.String>(text).trim();
+}
+
+// 根据分隔符拆分字符串成列表，正常版本
+public static String_Split(string target, string sep) : List<string>
+{
+    if (target == null || target == "") return new List<string>();
+    if (sep == null || sep == "") sep = ",";
+    var fields = new List<string>();
+    var fields_count = 0;
+    var start_pos = 1;
+    while (true)
+    {
+        var start_index = String_Find(target, sep, start_pos);
+        if (start_index == null)
+        {
+            ++fields_count;
+            fields[fields_count] = String_Sub(target, start_pos);
+            break;
+        }
+        ++fields_count;
+        fields[fields_count] = String_Sub(target, start_pos, start_index - 1);
+        start_pos = start_index + String_Len(sep);
+    }
+    return fields;
+}
+
+// 根据分隔符拆分字符串成列表，正常版本
+public static String_SplitSepList(string target, List<string> sep_list) : List<string>
+{
+    if (target == null || target == "") return new List<string>();
+    if (sep_list == null) sep_list = new List<string>();
+    
+    var fields = new List<string>();
+    var fields_count = 0;
+    var start_pos = 1;
+    while (true)
+    {
+        var start_index:int;
+        var end_index:int;
+        for (var _, sep in sep_list)
+        {
+            var start_index_tmp = String_Find(target, sep, start_pos);
+            if (start_index_tmp != null)
+            {
+                if (start_index == null || start_index_tmp < start_index)
+                {
+                    start_index = start_index_tmp;
+                    end_index = start_index + String_Len(sep) - 1;
+                }
+            }
+        }
+        if (start_index == null)
+        {
+            var value = String_Sub(target, start_pos);
+            if (String_Len(value) > 0)
+            {
+                ++ fields_count;
+                fields[fields_count] = String_Sub(target, start_pos);
+            }
+            break;
+        }
+        
+        var value = String_Sub(target, start_pos, start_index - 1);
+        if (String_Len(value) > 0)
+        {
+            ++ fields_count;
+            fields[fields_count] = String_Sub(target, start_pos, start_index - 1);
+        }
+        start_pos = end_index + 1;
+    }
+    return fields;
+}
+
+// 把列表以分隔符合并成字符串
+public static String_Join<T>(List<T> list, string sep) : string
+{
+    [Language(Lua)]
+    if (sep == null) sep = ",";
+    [Language(Lua)]
+    return concat(list, sep);
+    
+    [Language(JavaScript)]
+    return cast<javascript.Array>(list).join(sep);
+}
+
+// 替换
+public static String_Replace(string s, string os, string ns) : string
+{
+    [Language(Lua)]
+    return String_Join(String_Split(s, os), ns);
+    
+    [Language(JavaScript)]
+    return cast<javascript.String>(s).replace(os, ns);
+}
+
+// 拷贝
+public static String_CopyTable<T>(T info) : T
+{
+    [Language(Lua)]
+    {
+        var new_info = new Map<any, any>();
+        for (var key, value in cast<Map<any, any>>(info))
+        {
+            if (lua.type(value) != "table")
+                new_info[key] = value;
+            else
+                new_info[key] = String_CopyTable(value);
+        }
+        return cast<T>(new_info);   
+    }
+    
+    [Language(JavaScript)]
+    {
+        if (javascript.typeof(info) == "object")
+        {
+            if (cast<javascript.Object>(info).__proto__.constructor == javascript.Array)
+            {
+                var new_info = new List<any>();
+                for (var key, value in cast<List<any>>(info))
+                {
+                    if (javascript.typeof(info) != "object")
+                        new_info[key] = value;
+                    else
+                        new_info[key] = String_CopyTable(value);
+                }
+                return cast<T>(new_info); 
+            }
+            
+            if (cast<javascript.Object>(info).__proto__.constructor == javascript.Map)
+            {
+                var new_info = new Map<any, any>();
+                for (var key, value in cast<Map<any, any>>(info))
+                {
+                    if (javascript.typeof(info) != "object")
+                        new_info[key] = value;
+                    else
+                        new_info[key] = String_CopyTable(value);
+                }
+                return cast<T>(new_info); 
+            }
+            
+            if (cast<javascript.Object>(info).__proto__.constructor == javascript.Object)
+            {
+                var new_info = new Map<string, any>();
+                for (var key, value in cast<Map<string, any>>(info))
+                {
+                    if (javascript.typeof(info) != "object")
+                        new_info[key] = value;
+                    else
+                        new_info[key] = String_CopyTable(value);
+                }
+                return cast<T>(new_info); 
+            }
+        }
+        
+        return info;
+    }
+}

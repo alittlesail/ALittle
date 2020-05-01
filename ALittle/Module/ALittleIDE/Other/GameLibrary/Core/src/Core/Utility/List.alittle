@@ -1,0 +1,65 @@
+
+namespace ALittle;
+
+[Language(Lua)]
+private var insert = lua.table.insert;
+[Language(Lua)]
+private var remove = lua.table.remove;
+[Language(Lua)]
+private var maxn = lua.table.maxn;
+[Language(Lua)]
+private var sort = lua.table.sort;
+
+public static List_MaxN<T>(List<T> list) : int
+{
+    [Language(Lua)]
+    return maxn(list);
+    
+    [Language(JavaScript)]
+    return cast<javascript.Array>(list).length;
+}
+
+public static List_Push<T>(List<T> list, T object)
+{
+    [Language(Lua)]
+    insert(list, cast<int>(object));
+    
+    [Language(JavaScript)]
+    for (var i = 1; i <= cast<javascript.Array>(list).length; 1)
+    {
+        if (list[i] == null)
+        {
+            list[i] = object;
+            return;        
+        }
+    }
+    [Language(JavaScript)]
+    cast<javascript.Array>(list).push(object);
+}
+
+public static List_Insert<T>(List<T> list, int index, T object)
+{
+    [Language(Lua)]
+    insert(list, index, object);
+    
+    [Language(JavaScript)]
+    cast<javascript.Array>(list).splice(index - 1, 0, object);
+}
+
+public static List_Remove<T>(List<T> list, int index)
+{
+    [Language(Lua)]
+    remove(list, index);
+    
+    [Language(JavaScript)]
+    cast<javascript.Array>(list).splice(index - 1, 1);
+}
+
+public static List_Sort<T>(List<T> list, [Nullable] Functor<(T, T) : bool> cmp)
+{
+    [Language(Lua)]
+    sort(list, cmp);
+    
+    [Language(JavaScript)]
+    cast<javascript.Array>(list).sort(cast<Functor<(T, T) : int>>(cmp));
+}

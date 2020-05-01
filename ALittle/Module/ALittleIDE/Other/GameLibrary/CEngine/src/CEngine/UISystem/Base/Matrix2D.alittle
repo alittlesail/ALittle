@@ -1,0 +1,150 @@
+
+namespace ALittle;
+
+private var __cos = Math_Cos;
+private var __sin = Math_Sin;
+
+public class Matrix2D
+{
+    public Map<int, Map<int, double>> _m;
+
+    public ctor()
+    {
+        var m = new Map<int, Map<int, double>>();
+        m[0] = new Map<int, double>();
+        m[1] = new Map<int, double>();
+        m[2] = new Map<int, double>();
+
+        this._m = m;
+        this.SetIdentity();
+    }
+
+    public fun SetIdentity()
+    {
+        var m = this._m;
+
+        m[0][0] = 1;
+        m[0][1] = 0;
+        m[0][2] = 0;
+        m[1][0] = 0;
+        m[1][1] = 1;
+        m[1][2] = 0;
+        m[2][0] = 0;
+        m[2][1] = 0;
+        m[2][2] = 1;
+    }
+
+    public fun SetRotate(double rad)
+    {
+        var m = this._m;
+
+        m[0][0] = __cos(rad);
+        m[0][1] = __sin(rad);
+        m[0][2] = 0;
+        m[1][0] = -m[0][1];
+        m[1][1] = m[0][0];
+        m[1][2] = 0;
+        m[2][0] = 0;
+        m[2][1] = 0;
+        m[2][2] = 1;
+    }
+
+    public fun Rotate(double rad)
+    {
+        var m = new Matrix2D();
+        m.SetRotate(rad);
+        this.Multiply(m);
+    }
+
+    public fun SetTranslation(double x, double y)
+    {
+        var m = this._m;
+
+        m[0][0] = 1;
+        m[0][1] = 0;
+        m[0][2] = 0;
+        m[1][0] = 0;
+        m[1][1] = 1;
+        m[1][2] = 0;
+        m[2][0] = x;
+        m[2][1] = y;
+        m[2][2] = 1;
+    }
+
+    public fun Translation(double x, double y)
+    {
+        var m = new Matrix2D();
+        m.SetTranslation(x, y);
+        this.Multiply(m);
+    }
+
+    public fun SetScale(double x, double y)
+    {
+        var m = this._m;
+
+        m[0][0] = x;
+        m[0][1] = 0;
+        m[0][2] = 0;
+        m[1][0] = 0;
+        m[1][1] = y;
+        m[1][2] = 0;
+        m[2][0] = 0;
+        m[2][1] = 0;
+        m[2][2] = 1;
+    }
+
+    public fun Scale(double x, double y)
+    {
+        var m = new Matrix2D();
+        m.SetScale(x, y);
+        this.Multiply(m);
+    }
+
+    public fun Multiply(Matrix2D right)
+    {
+        var r = new Map<int, Map<int, double>>();
+        var m = this._m;
+        var rm = right._m;
+
+        r[0] = new Map<int, double>();
+        r[0][0] = m[0][0] * rm[0][0] + m[0][1] * rm[1][0] + m[0][2] * rm[2][0];
+        r[0][1] = m[0][0] * rm[0][1] + m[0][1] * rm[1][1] + m[0][2] * rm[2][1];
+        r[0][2] = m[0][0] * rm[0][2] + m[0][1] * rm[1][2] + m[0][2] * rm[2][2];
+
+        r[1] = new Map<int, double>();
+        r[1][0] = m[1][0] * rm[0][0] + m[1][1] * rm[1][0] + m[1][2] * rm[2][0];
+        r[1][1] = m[1][0] * rm[0][1] + m[1][1] * rm[1][1] + m[1][2] * rm[2][1];
+        r[1][2] = m[1][0] * rm[0][2] + m[1][1] * rm[1][2] + m[1][2] * rm[2][2];
+
+        r[2] = new Map<int, double>();
+        r[2][0] = m[2][0] * rm[0][0] + m[2][1] * rm[1][0] + m[2][2] * rm[2][0];
+        r[2][1] = m[2][0] * rm[0][1] + m[2][1] * rm[1][1] + m[2][2] * rm[2][1];
+        r[2][2] = m[2][0] * rm[0][2] + m[2][1] * rm[1][2] + m[2][2] * rm[2][2];
+
+        this._m = r;
+    }
+}
+
+
+public class Vector2D
+{
+    private double _x;
+    private double _y;
+
+    public ctor(double xx, double yy)
+    {
+        this._x = xx;
+        this._y = yy;
+    }
+
+    public fun Multiply(Matrix2D right)
+    {
+        var rm = right._m;
+
+        var xx = this._x * rm[0][0] + this._y * rm[1][0] + 1 * rm[2][0];
+        var yy = this._x * rm[0][1] + this._y * rm[1][1] + 1 * rm[2][1];
+
+        this._x = xx;
+        this._y = yy;
+    }
+}

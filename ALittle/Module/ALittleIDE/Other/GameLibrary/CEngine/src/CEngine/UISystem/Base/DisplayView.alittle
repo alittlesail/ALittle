@@ -1,0 +1,16 @@
+
+namespace ALittle;
+
+public class DisplayView : DisplayLayout
+{
+    public ctor(ControlSystem ctrl_sys)
+    {
+        [Language(Lua)]
+        this._show = new lua.__CPPAPIDisplayView();    // 创建显示控件
+        [Language(JavaScript)]
+        this._show = new JavaScript.JDisplayView();
+
+        this._pickup_rect = true;
+        this._pickup_child = true;
+    }
+}

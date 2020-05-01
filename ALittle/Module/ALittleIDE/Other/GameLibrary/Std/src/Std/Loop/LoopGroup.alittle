@@ -1,0 +1,161 @@
+
+namespace ALittle;
+
+public class LoopGroup : LoopObject
+{
+    private int _total_count;         // updater总数
+    private int _complete_count;      // updater完成数量
+    private Map<LoopObject, bool> _loop_updaters;       // 未完成的updater集合
+    private Map<LoopObject, bool> _complete_updaters;   // 已完成的updater集合
+    private Functor<()> _complete_callback;   // 完成后会调用这个函数
+
+    public ctor()
+    {
+        this._total_count = 0;
+        this._complete_count = 0;
+        this._loop_updaters = new Map<LoopObject, bool>();
+        this._complete_updaters = new Map<LoopObject, bool>();
+        this._complete_callback = null;
+    }
+    
+    public get complete_callback() : Functor<()>
+    {
+        return this._complete_callback;
+    }
+
+    public set complete_callback(Functor<()> value)
+    {
+        this._complete_callback = value;
+    }
+
+    public get total_count() : int
+    {
+        return this._total_count;
+    }
+
+    // 添加updater
+    public fun AddUpdater(LoopObject value)
+    {
+        if (value == null) return;
+
+        // 检查是否已经在集合内部
+        if (this._complete_updaters[value] || this._loop_updaters[value]) return;
+        // 添加到待完成集合
+        this._loop_updaters[value] = true;
+        // 总数+1
+        ++ this._total_count;
+    }
+
+    // 移除updater
+    public fun RemoveUpdater(LoopObject value)
+    {
+        if (this._loop_updaters[value])
+        {
+            this._loop_updaters[value] = null;
+            -- this._total_count;
+            return;
+        }
+        if (this._complete_updaters[value])
+        {
+            this._complete_updaters[value] = null;
+            -- this._total_count;
+            -- this._complete_count;
+        }
+    }
+    
+    // 重置所有updater
+    public fun Reset()
+    {
+        this._complete_count = 0;
+        for (var updater, v in this._loop_updaters)
+            updater.Reset();
+
+        for (var updater, v in this._complete_updaters)
+        {
+            this._loop_updaters[updater] = true;
+            updater.Reset();
+        }
+    }
+
+    // 设置时间
+    public fun SetTime(int time) : int, bool
+    {
+        // 如果当前集合没有updater，直接返回
+        if (this._total_count == 0) return time, true;
+
+        // 合并所有updater
+        var total_updater = new Map<LoopObject, bool>();
+        for (var updater, v in this._loop_updaters)
+            total_updater[updater] = true;
+        for (var updater, v in this._complete_updaters)
+            total_updater[updater] = true;
+        // 清空所有updater
+        this._loop_updaters = new Map<LoopObject, bool>();
+        this._complete_updaters = new Map<LoopObject, bool>();
+        this._complete_count = 0;
+        // 对每个updater设置时间，然后确定他们是否完成
+        var min_time:int = null;
+        for (var updater, v in total_updater)
+        {
+            var remain_time, completed = updater.SetTime(time);
+            if (completed)
+            {
+                this._complete_updaters[updater] = true;
+                ++ this._complete_count;
+            }
+            else
+            {
+                this._loop_updaters[updater] = true;
+            }
+            if (min_time == null || min_time > remain_time)
+                min_time = remain_time;
+        }
+
+        return min_time, this._complete_count == this._total_count;
+    }
+
+    public fun IsCompleted() : bool
+    {
+        return this._complete_count >= this._total_count;
+    }
+
+    public fun Completed()
+    {
+        if (this._complete_callback != null)
+            this._complete_callback();
+    }
+
+    // 设置为完成
+    public fun SetCompleted()
+    {
+        this._complete_count = this._total_count;
+        for (var updater, v in this._loop_updaters)
+        {
+            updater.SetCompleted();
+            this._complete_updaters[updater] = true;
+        }
+        this._loop_updaters = new Map<LoopObject, bool>();
+    }
+
+    // 更新
+    protected fun Update(int frame_time)
+    {
+        if (this._complete_count >= this._total_count) return;
+
+        var remove_map = new Map<LoopObject, bool>();
+        for (var updater, v in this._loop_updaters)
+        {
+            if (updater.IsCompleted())
+                remove_map[updater] = true;
+            else
+                updater.Update(frame_time);
+        }
+        for (var updater, v in remove_map)
+        {
+            this._loop_updaters[updater] = null;
+            this._complete_updaters[updater] = true;
+            ++ this._complete_count;
+            updater.Completed();
+        }
+    }
+}

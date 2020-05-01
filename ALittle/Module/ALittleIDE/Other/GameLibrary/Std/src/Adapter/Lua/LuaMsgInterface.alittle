@@ -1,0 +1,21 @@
+
+[Language(Lua)]
+namespace Lua;
+
+private var __LUAMSG_MAXID:int = 0;
+public class LuaMsgInterface : ALittle.IMsgCommonNative
+{
+    private int _id;
+    
+    public ctor()
+    {
+        ++__LUAMSG_MAXID;
+        this._id = __LUAMSG_MAXID;
+    }
+    
+    public fun GetID() : int { return this._id; }
+    public fun Connect(string ip, int port) { lua.net.connect(A_LuaSchedule._net, this._id, ip, port); }
+    public fun Close() { lua.net.close(A_LuaSchedule._net, this._id); }
+    public fun IsConnected() : bool { return lua.net.isconnected(A_LuaSchedule._net, this._id); }
+    public fun SendFactory(ALittle.IMessageWriteFactory factory) { lua.net.send(A_LuaSchedule._net, this._id, cast<LuaMessageWriteFactory>(factory)._factory); }
+}

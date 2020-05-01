@@ -1,0 +1,27 @@
+
+namespace ALittle;
+
+public static IsEmpty(any object) : bool
+{
+    [Language(Lua)]
+    return lua.next(object) == null;
+
+    [Language(JavaScript)]
+    if (cast<javascript.Object>(object).__proto__.constructor == javascript.Map)
+        return cast<javascript.Map>(object).size == 0;
+        
+    [Language(JavaScript)]
+    if (cast<javascript.Object>(object).__proto__.constructor == javascript.Object)
+    {
+        var has = true;
+        for (var key, value in cast<Map<string, any>>(object))
+        {
+            has = false;
+            break;
+        }
+        return has;
+    }
+    
+    [Language(JavaScript)]
+    return false;
+}

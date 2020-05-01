@@ -1,0 +1,77 @@
+namespace alittle;
+
+public await static RequireStd(string base_path)
+{
+    ALittle.Require(base_path, "Std/Reflect/ReflectCmd");
+    ALittle.Require(base_path, "Std/Reflect/ReflectCsv");
+    ALittle.Require(base_path, "Std/Reflect/ReflectMessage");
+
+    ALittle.Require(base_path, "Std/Loop/LoopObject");
+    ALittle.Require(base_path, "Std/Loop/ILoopSystem");
+    ALittle.Require(base_path, "Std/Loop/LoopFrame");
+    ALittle.Require(base_path, "Std/Loop/LoopFunction");
+    ALittle.Require(base_path, "Std/Loop/LoopGroup");
+    ALittle.Require(base_path, "Std/Loop/LoopList");
+    ALittle.Require(base_path, "Std/Loop/LoopTimer");
+
+    ALittle.Require(base_path, "Std/Utility/Bit");
+    ALittle.Require(base_path, "Std/Utility/WeakRef");
+    ALittle.Require(base_path, "Std/Utility/IHeapTimer");
+    ALittle.Require(base_path, "Std/Utility/ISchedule");
+    ALittle.Require(base_path, "Std/Utility/CsvConfig");
+    ALittle.Require(base_path, "Std/Utility/EventDispatcher");
+    ALittle.Require(base_path, "Std/Utility/SafeIDCreator");
+    ALittle.Require(base_path, "Std/Utility/String");
+    ALittle.Require(base_path, "Std/Utility/File");
+    ALittle.Require(base_path, "Std/Utility/JsonConfig");
+
+    ALittle.Require(base_path, "Std/Net/HttpFileReceiverTemplate");
+    ALittle.Require(base_path, "Std/Net/HttpFileSenderTemplate");
+    ALittle.Require(base_path, "Std/Net/HttpReceiverTemplate");
+    ALittle.Require(base_path, "Std/Net/HttpSenderTemplate");
+    ALittle.Require(base_path, "Std/Net/MsgCommonTemplate");
+    ALittle.Require(base_path, "Std/Net/MsgReceiverTemplate");
+    ALittle.Require(base_path, "Std/Net/MsgSenderTemplate");
+    ALittle.Require(base_path, "Std/Net/MsgSessionTemplate");
+    
+    [Language(JavaScript)]
+    ALittle.Require(base_path, "Adapter/JavaScript/Timer");
+    [Language(JavaScript)]
+    ALittle.Require(base_path, "Adapter/JavaScript/FileSystem");
+    [Language(JavaScript)]
+    ALittle.Require(base_path, "Adapter/JavaScript/JHttpFileInterface");
+    [Language(JavaScript)]
+    ALittle.Require(base_path, "Adapter/JavaScript/JHttpInterface");
+    [Language(JavaScript)]
+    ALittle.Require(base_path, "Adapter/JavaScript/JMessageFactory");
+    [Language(JavaScript)]
+    ALittle.Require(base_path, "Adapter/JavaScript/JMsgInterface");
+    [Language(JavaScript)]
+    ALittle.Require(base_path, "Adapter/JavaScript/JSchedule");
+    [Language(JavaScript)]
+    ALittle.Require(base_path, "Adapter/JavaScript/JCsvFile");
+    [Language(JavaScript)]
+    ALittle.Require(base_path, "../JSNative/md5.min");
+    [Language(JavaScript)]
+    ALittle.Require(base_path, "../JSNative/jweakmap");
+    [Language(JavaScript)]
+    ALittle.Require(base_path, "../JSNative/bit");
+
+    [Language(Lua)]
+    ALittle.Require(base_path, "Adapter/Lua/LuaHeapTimer");
+    [Language(Lua)]
+    ALittle.Require(base_path, "Adapter/Lua/LuaCsvFile");
+
+    [Language(Lua)]
+    if (lua.net != null)
+    {
+        ALittle.Require(base_path, "Adapter/Lua/LuaHttpFileInterface");
+        ALittle.Require(base_path, "Adapter/Lua/LuaHttpInterface");
+        ALittle.Require(base_path, "Adapter/Lua/LuaMsgInterface");
+        ALittle.Require(base_path, "Adapter/Lua/LuaMessageFactory");
+        ALittle.Require(base_path, "Adapter/Lua/LuaSchedule");
+    }
+    
+    ALittle.Require(base_path, "Std/Loop/LoopSystem");
+    ALittle.Require(base_path, "Std/Utility/Schedule");
+}

@@ -1,0 +1,35 @@
+
+namespace ALittle;
+
+public class LoopObject
+{
+    public fun IsCompleted() : bool { return true; }
+    public fun Completed() {}
+    protected fun Update(int frame_time) {}
+    public fun Reset() {}
+    public fun SetTime(int time) : int, bool { return time, true; }
+    public fun SetCompleted() {}
+    
+    public fun Dispose([Nullable] bool deep)
+    {
+        this.Stop();
+    }
+    
+    public fun Start()
+    {
+        [Language(Lua)]
+        A_LuaLoopSystem.AddUpdater(this);
+        
+        [Language(JavaScript)]
+        A_JLoopSystem.AddUpdater(this);
+    }
+    
+    public fun Stop()
+    {
+        [Language(Lua)]
+        A_LuaLoopSystem.RemoveUpdater(this);
+        
+        [Language(JavaScript)]
+        A_JLoopSystem.RemoveUpdater(this);
+    }
+}

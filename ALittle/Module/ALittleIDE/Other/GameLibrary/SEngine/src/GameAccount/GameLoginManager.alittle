@@ -1,0 +1,86 @@
+namespace ALittle;
+
+struct LoginSessionInfo
+{
+    int account_id;
+    string session;
+    int timer;
+}
+
+// 账号管理器
+public class GameLoginManager
+{   
+    private Map<int, LoginSessionInfo> _session_map;
+    
+    public ctor()
+    {
+        this._session_map = new Map<int, LoginSessionInfo>();
+    }
+    
+    protected fun Setup()
+    {
+    }
+    
+    protected fun Shutdown()
+    {
+        for (var account_id, info in this._session_map)
+        {
+            if (info.timer != null)
+                A_LoopSystem.RemoveTimer(info.timer);
+        }
+        this._session_map = new Map<int, LoginSessionInfo>();
+    }
+    
+    protected fun ChcekSession(int account_id, string session) : bool
+    {
+        var info = this._session_map[account_id];
+        if (info == null) return false;
+        return info.session == session;
+    }
+    
+    protected fun RemoveSession(int account_id)
+    {
+        var info = this._session_map[account_id];
+        if (info == null) return;
+        
+        if (info.timer != null) A_LoopSystem.RemoveTimer(info.timer);
+        this._session_map[account_id] = null;
+    }
+    
+    protected fun HandleQSaveSession(DATA2GS_QSaveSession msg)
+    {
+        var info = this._session_map[msg.account_id];
+        if (info != null && info.timer != null)
+            A_LoopSystem.RemoveTimer(info.timer);
+        
+        info = new LoginSessionInfo();
+        info.account_id = msg.account_id;
+        info.session = msg.session;
+        info.timer = A_LoopSystem.AddTimer(30 * 1000, bind(this.HandleSessionTimeout, this, msg.account_id));
+        this._session_map[msg.account_id] = info;
+    }
+        
+    private fun HandleSessionTimeout(int account_id)
+    {
+        this._session_map[account_id] = null;
+    }
+}
+        
+protected var g_GameLoginManager = new GameLoginManager();
+
+public struct DATA2GS_QSaveSession
+{
+    int account_id;
+    string session;
+}
+
+public struct GS2DATA_ASaveSession
+{
+}
+
+[Msg]
+public await static HandleQSaveSession(ALittle.IMsgCommon client, DATA2GS_QSaveSession msg) : GS2DATA_ASaveSession
+{
+    g_GameLoginManager.HandleQSaveSession(msg);
+    return new GS2DATA_ASaveSession();
+}

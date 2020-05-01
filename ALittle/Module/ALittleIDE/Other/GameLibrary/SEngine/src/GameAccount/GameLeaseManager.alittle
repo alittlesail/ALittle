@@ -1,0 +1,144 @@
+namespace ALittle;
+
+protected struct GameLeaseInfo
+{
+    int account_id;     // 账号ID
+    ALittle.MsgSession session;
+    int timer;          // 定时器
+}
+
+protected var GS_LEASE_INTERVAL = 20 * 1000;
+
+// 账号管理器
+public class GameLeaseManager
+{
+    // 租约信息，KEY:账号ID，Value:租约信息
+    private Map<int, GameLeaseInfo> _lease_map;
+    
+    public ctor()
+    {
+        this._lease_map = new Map<int, GameLeaseInfo>();
+    }
+    
+    protected fun Setup()
+    {
+    }
+    
+    protected fun Shutdown()
+    {
+        for (var account_id, info in this._lease_map)
+        {
+            if (info.timer != null)
+                A_LoopSystem.RemoveTimer(info.timer);
+        }
+        this._lease_map = new Map<int, GameLeaseInfo>();
+    }
+    
+    protected fun GetLease(int account_id) : GameLeaseInfo
+    {
+        return this._lease_map[account_id];
+    }
+    
+    // 被分配租约
+    private fun NewLease(MsgSession session, DATA2GS_NNewLease msg)
+    {
+        var info = this._lease_map[msg.account_id];
+        if (info == null)
+        {
+            info = new GameLeaseInfo();
+            this._lease_map[msg.account_id] = info;
+        }
+        // 保存连接
+        info.session = session;
+        // 保存账号ID
+        info.account_id = msg.account_id;
+        
+        // 租约定时
+        if (info.timer != null) A_LoopSystem.RemoveTimer(info.timer);
+        info.timer = A_LoopSystem.AddTimer(GS_LEASE_INTERVAL, bind(this.HandleRenewLease, this, msg.account_id));
+    }
+    
+    // 放弃租约
+    protected fun ReleaseLease(int account_id)
+    {
+        var info = this._lease_map[account_id];
+        if (info == null) return;
+        
+        // 发送放弃租约消息
+        if (info.session != null)
+        {
+            var param = new DataServer.GS2DATA_NReleaseLease();
+            param.account_id = account_id;
+            info.session.SendMsg(param);
+        }
+        
+        // 直接删除租约信息
+        this._lease_map[account_id] = null;
+    }
+    
+    // 续约
+    private async fun HandleRenewLease(int account_id)
+    {
+        // 获取租约信息
+        var info = this._lease_map[account_id];
+        if (info == null) return;
+        
+        // 如果连接断了，表示续约失败
+        if (info.session == null)
+        {
+            A_GameAccountManager.HandleLeaseTimeout(account_id);
+            this._lease_map[account_id] = null;
+            return;
+        }
+        
+        // 这里标记为null，表示正在续约
+        info.timer = null;
+        
+        // 记录当前时间
+        var begin_time = lua.os.time();
+        
+        // 调用续约
+        var param = new DataServer.GS2DATA_QRenewLease();
+        param.account_id = account_id;
+        var error, result = DataServer.HandleQLeaseRenew(info.session, param);
+        
+        // 如果已经没有了，说明已经放弃租约了
+        info = this._lease_map[account_id];
+        if (info == null) return;
+        
+        // 如果有定时器了，说明被重新分配了
+        if (info.timer != null) return;
+        
+        // 如果续约失败，或者超时，就认为是失败
+        if (error != null || lua.os.time() - begin_time >= 5)
+        {
+            A_GameAccountManager.HandleLeaseTimeout(account_id);
+            this._lease_map[account_id] = null;
+            return;
+        }
+        
+        // 定时续约
+        info.timer = A_LoopSystem.AddTimer(GS_LEASE_INTERVAL, bind(this.HandleRenewLease, this, account_id));
+    }
+}
+        
+protected var g_GameLeaseManager = new GameLeaseManager();
+
+public struct DATA2GS_NNewLease
+{
+    int account_id;
+}
+[Msg]
+public static HandleNNewLease(IMsgCommon client, DATA2GS_NNewLease msg)
+{
+    g_GameLeaseManager.NewLease(cast<MsgSession>(client), msg);
+}
+
+public struct DATA2GS_QEmpty { }
+public struct GS2DATA_AEmpty { }
+[Msg]
+public await static HandleQEmpty(ALittle.IMsgCommon client, DATA2GS_QEmpty msg) : GS2DATA_AEmpty
+{
+    return new GS2DATA_AEmpty();
+}
+

@@ -1,0 +1,150 @@
+
+namespace ALittle;
+
+public class LoopFunction : LoopObject
+{
+    private Functor<()> _func;
+    private int _total_count;
+    private bool _force_completed;
+    private int _total_interval_time;
+    private int _total_delay_time;
+    private int _accumulate_count;
+    private int _accumulate_time;
+    private int _accumulate_delay_time;
+    private Functor<()> _complete_callback;
+
+    public any _user_data;
+    
+    public ctor(Functor<()> func, int count, int interval_time, int delay_time)
+    {
+        this._func = func;                // 保存函数
+        this._total_count = count;        // 保存次数，如果小于0则表示无限调用
+        this._force_completed = false;
+    
+        // 调整参数
+        if (delay_time == null || delay_time < 0) delay_time = 0;
+        if (interval_time < 0) interval_time = 0;
+
+        // 保存间隔时间，延时时间
+        this._total_interval_time = interval_time;
+        this._total_delay_time = delay_time;
+    
+        // 初始化调用次数，累积时间，延时累积时间
+        this._accumulate_count = 0;
+        this._accumulate_time = 0;
+        this._accumulate_delay_time = 0;
+    
+        // 如果调用的函数无效，那么直接初始化为结束
+        if (this._func == null)
+        {
+            this._accumulate_count = 0;
+            this._total_count = 0;
+            Log("LoopFunction create failed:function is nil or not a function");
+            return;
+        }
+
+        this._complete_callback = null;    // 完成后会调用这个函数
+    }
+    
+    public get complete_callback() : Functor<()>
+    {
+        return this._complete_callback;
+    }
+
+    public set complete_callback(Functor<()> value)
+    {
+        this._complete_callback = value;
+    }
+
+    // 重置
+    public fun Reset()
+    {
+        this._accumulate_count = 0;
+        this._accumulate_time = 0;
+        this._accumulate_delay_time = 0;
+    }
+
+    public fun Completed()
+    {
+        if (this._complete_callback != null)
+            this._complete_callback();
+    }
+
+    public fun IsCompleted() : bool
+    {
+        if (this._force_completed) return true;
+        if (this._total_count < 0) return false;
+        return this._total_count <= this._accumulate_count;
+    }
+
+    // 直接设置为完成
+    public fun SetCompleted()
+    {
+        if (this._total_count < 0)
+        {
+            // 标记为强制完成
+            this._force_completed = true;
+            return;
+        }
+        // 累积次数直接等于总次数
+        this._accumulate_count = this._total_count;
+    }
+
+    // 设置时间
+    public fun SetTime(int time) : int, bool
+    {
+        // 初始化累计时间
+        this._accumulate_count = 0;
+        this._accumulate_delay_time = 0;
+        this._accumulate_time = 0;
+        // 时间小于0则直接返回
+        if (time <= 0) return 0, false;
+        // 如果是无限次，那么直接返回
+        if (this._total_count < 0) return 0, false;
+    
+        // 扣除延时时间
+        if (time <= this._total_delay_time)
+        {
+            this._accumulate_delay_time = time;
+            return 0, false;
+        }
+        this._accumulate_delay_time = this._total_delay_time;
+        time -= this._total_delay_time;
+        // 计算执行到第几次和累积时间
+        var total_time = this._total_interval_time * this._total_count;
+        if (time < total_time)
+        {
+            var float_count = total_time / this._total_interval_time;
+            var count = Math_Floor(float_count);
+            this._accumulate_count = count;
+            this._accumulate_time = Math_Floor((float_count - count) * this._total_interval_time);
+            return 0, false;
+        }
+        // 设置累积次数为总次数
+        this._accumulate_count = this._total_count;
+        // 返回剩余时间
+        return time - total_time, true;
+    }
+
+    // 更新
+    protected fun Update(int frame_time)
+    {
+        // 扣除延时时间
+        if (this._accumulate_delay_time < this._total_delay_time)
+        {
+            this._accumulate_delay_time += frame_time;
+            if (this._accumulate_delay_time < this._total_delay_time)
+                return;
+            frame_time = this._accumulate_delay_time - this._total_delay_time;
+            this._accumulate_delay_time = this._total_delay_time;
+        }
+        // 扣除累积时间
+        this._accumulate_time += frame_time;
+        if (this._accumulate_time > this._total_interval_time)
+        {
+            this._accumulate_time = 0;
+            ++ this._accumulate_count;
+            this._func();
+        }
+    }
+}

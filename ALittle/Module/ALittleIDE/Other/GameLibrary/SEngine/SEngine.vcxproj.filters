@@ -1,0 +1,104 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="源文件\WebAccount">
+      <UniqueIdentifier>{62b03281-c488-4f66-9da5-cddcd9dfb66e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Utility">
+      <UniqueIdentifier>{7689cb7b-5114-4cca-8945-dc673a1ab0be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Register">
+      <UniqueIdentifier>{89820724-2c27-4743-b0e9-addc7d79cfdb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Protocol">
+      <UniqueIdentifier>{5d0d0652-cfd1-45c0-aa0d-89718fa22764}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\GameAccount">
+      <UniqueIdentifier>{445795cf-91df-4ae0-aa6d-28cd686c96d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\CacheData">
+      <UniqueIdentifier>{6adef846-9cd6-41a5-a9df-9ea38f1ba85f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\ALittle.alittle">
+      <Filter>源文件</Filter>
+    </None>
+    <None Include="src\WebAccount\WebOPSManager.alittle">
+      <Filter>源文件\WebAccount</Filter>
+    </None>
+    <None Include="src\WebAccount\WebPermission.alittle">
+      <Filter>源文件\WebAccount</Filter>
+    </None>
+    <None Include="src\WebAccount\WebAccount.alittle">
+      <Filter>源文件\WebAccount</Filter>
+    </None>
+    <None Include="src\WebAccount\WebAccountManager.alittle">
+      <Filter>源文件\WebAccount</Filter>
+    </None>
+    <None Include="src\Utility\LogEventSystem.alittle">
+      <Filter>源文件\Utility</Filter>
+    </None>
+    <None Include="src\Utility\MysqlSystem.alittle">
+      <Filter>源文件\Utility</Filter>
+    </None>
+    <None Include="src\Utility\SessionSystem.alittle">
+      <Filter>源文件\Utility</Filter>
+    </None>
+    <None Include="src\Utility\System.alittle">
+      <Filter>源文件\Utility</Filter>
+    </None>
+    <None Include="src\Utility\ClientSystem.alittle">
+      <Filter>源文件\Utility</Filter>
+    </None>
+    <None Include="src\Utility\HttpFileSystem.alittle">
+      <Filter>源文件\Utility</Filter>
+    </None>
+    <None Include="src\Utility\HttpSystem.alittle">
+      <Filter>源文件\Utility</Filter>
+    </None>
+    <None Include="src\Protocol\LogServerProtocol.alittle">
+      <Filter>源文件\Protocol</Filter>
+    </None>
+    <None Include="src\Protocol\GatewayServerProtocol.alittle">
+      <Filter>源文件\Protocol</Filter>
+    </None>
+    <None Include="src\GameAccount\GameAccountManager.alittle">
+      <Filter>源文件\GameAccount</Filter>
+    </None>
+    <None Include="src\GameAccount\GameAccount.alittle">
+      <Filter>源文件\GameAccount</Filter>
+    </None>
+    <None Include="src\GameAccount\GameLeaseManager.alittle">
+      <Filter>源文件\GameAccount</Filter>
+    </None>
+    <None Include="src\Utility\GatewaySystem.alittle">
+      <Filter>源文件\Utility</Filter>
+    </None>
+    <None Include="src\GameAccount\GameLoginManager.alittle">
+      <Filter>源文件\GameAccount</Filter>
+    </None>
+    <None Include="src\CacheData\CacheDataSet.alittle">
+      <Filter>源文件\CacheData</Filter>
+    </None>
+    <None Include="src\CacheData\FullDataSet.alittle">
+      <Filter>源文件\CacheData</Filter>
+    </None>
+    <None Include="src\Register\ScriptInterface.alittle">
+      <Filter>源文件\Register</Filter>
+    </None>
+    <None Include="src\Register\MysqlInterface.alittle">
+      <Filter>源文件\Register</Filter>
+    </None>
+    <None Include="src\Register\ScheduleInterface.alittle">
+      <Filter>源文件\Register</Filter>
+    </None>
+    <None Include="src\Utility\Time.alittle">
+      <Filter>源文件\Utility</Filter>
+    </None>
+  </ItemGroup>
+</Project>

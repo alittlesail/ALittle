@@ -1,0 +1,232 @@
+
+namespace ALittle;
+
+public struct CacheData
+{
+    option primary = "id";
+    
+    int id;
+}
+
+public class CacheDataSet<T:CacheData>
+{
+    private bool _release;          // 用于标记是否已经释放
+    private int _submit_interval_ms;    // 提交脏数据的间隔时间
+    private int _cache_interval_ms;    // cache的缓存时间
+    private int _submit_timer;
+    private string _primary;        // 主键
+    
+    private Map<int, T> _data_map;         // 当前内存中的数据
+    private Map<int, bool> _loading_map;   // 标记数据
+    private Map<int, int> _timer_map;      // 定时器
+    private Map<int, bool> _dirty_map;     // 标脏
+    
+    public ctor(int submit_interval_ms, int cache_interval_ms)
+    {
+        this._submit_interval_ms = submit_interval_ms;
+        this._cache_interval_ms = cache_interval_ms;
+        
+		this._data_map = new Map<int, T>();
+        this._loading_map = new Map<int, bool>();
+        this._timer_map = new Map<int, int>();
+        this._dirty_map = new Map<int, bool>();
+    }
+    
+    public await fun Init() : string
+    {
+		// 获取对应的静态信息
+        var rflt = reflect<T>;
+        this._primary = rflt.option_map["primary"];
+        if (this._primary == null) return rflt.name.."没有定义主键";
+        
+        // 创建表结构
+        var error = A_MysqlSystem.CreateIfNotExit{T}();
+        if (error != null) return error;
+        
+		// 间隔30秒，进行一次脏数据提交
+        if (this._submit_timer != null) A_LoopSystem.RemoveTimer(this._submit_timer);
+        this._submit_timer = A_LoopSystem.AddTimer(this._submit_interval_ms, bind(this.Submit, this, true));
+        
+        return null;
+    }
+    
+    public fun Release()
+    {
+		// 释放定时器
+		if (this._submit_timer != null)
+		{
+            A_LoopSystem.RemoveTimer(this._submit_timer);
+            this._submit_timer = null;
+		}
+        
+        // 直接提交脏数据
+        this.Submit(false);
+        
+		// 直接释放内存
+		this._data_map = new Map<int, T>();
+        this._loading_map = new Map<int, bool>();
+        for (var id, timer in this._timer_map)
+            A_LoopSystem.RemoveTimer(timer);
+        this._timer_map = new Map<int, int>();
+        this._dirty_map = new Map<int, bool>();
+        
+        // 标记为已释放
+        this._release = true;
+        
+		// 打印日志，操作完毕
+        var rflt = reflect<T>;
+		Log(rflt.name.."操作完毕");
+    }
+    
+    public async fun Submit(bool loop)
+    {
+        this._submit_timer = null;
+        
+        // 这里故意保存数据引用
+        var data_map = this._data_map;
+        var dirty_map = this._dirty_map;
+        // 使用持有的引用来处理
+        for (var id, _ in dirty_map)
+        {
+            var data = data_map[id];
+            if (data != null)
+            {
+                var error = A_MysqlSystem.UpdateOne(data, this._primary, data.id, data.id);
+                if (error != null) Error(error);
+            }
+        }
+        
+        this._dirty_map = new Map<int, bool>();
+        if (loop) this._submit_timer = A_LoopSystem.AddTimer(this._submit_interval_ms, bind(this.Submit, this, true));
+    }
+    
+    public await fun GetDataAndDirty(int id) : T
+    {
+        var data = this.GetData(id);
+        if (data != null) this._dirty_map[id] = true;
+        return cast<T>(data);
+    }
+    
+    public await fun GetData(int id) : const T
+    {
+        // 如果已经释放那么就直接返回
+        if (this._release) return null;
+        
+        // 检查缓存是否有
+		var data = this._data_map[id];
+		if (data != null) return data;   
+        
+        // 如果已经正在加载了，那么就等待
+        if (this._loading_map[id])
+        {
+            A_MysqlSystem.ExecuteEmpty(id);
+            if (this._release) return null;
+            // 获取数据
+            return this._data_map[id];
+        }
+        
+        // 标记为正在加载
+        this._loading_map[id] = true;
+		var error, new_data = A_MysqlSystem.SelectOneFromByKey{T}(this._primary, id, id);
+        if (error != null) Error(error);
+        if (this._release) return null;
+        // 清楚正在加载的标记
+		this._loading_map[id] = null;
+        if (new_data == null) return null;            
+
+        // 标脏并保存数据
+        this._data_map[id] = new_data;
+        
+        // 创建定时器
+        if (this._timer_map[id] != null) A_LoopSystem.RemoveTimer(this._timer_map[id]);
+        this._timer_map[id] = A_LoopSystem.AddTimer(this._cache_interval_ms, bind(this.RemoveCache, this, id));
+			
+        return new_data;
+    }
+    
+    private fun RemoveCache(int id)
+    {
+        // 检查数据集是否已经被释放
+        if (this._release) return;
+        // 定时器置空
+        this._timer_map[id] = null;
+        
+        // 检查数据
+        var data = this._data_map[id];
+        if (data == null) return;
+
+        // 清除数据
+        this._data_map[id] = null;
+        
+        // 处理标脏
+        if (this._dirty_map[id])
+        {
+            this._dirty_map[data.id] = null;
+            this.SubmitData(data);
+        }
+    }                            
+    
+    private async fun SubmitData(T data)
+    {
+        var error = A_MysqlSystem.UpdateOne(data, this._primary, data.id, data.id);
+        if (error != null) Error(error);
+    }
+    
+    public await fun CreateData(T data) : string
+    {
+        if (this._release) return "数据集已经被释放";
+        
+        // 如果正在加载，那么就等待之后再检查
+        if (this._loading_map[data.id])
+        {
+            A_MysqlSystem.ExecuteEmpty(data.id);
+            if (this._release) return "数据集已经被释放";
+        }
+        
+        // 检查数据是否存在
+        if (this._data_map[data.id] != null) return "数据已存在";
+        
+        // 保存数据
+        this._data_map[data.id] = data;
+        if (this._timer_map[data.id] != null) A_LoopSystem.RemoveTimer(this._timer_map[data.id]);
+        this._timer_map[data.id] = A_LoopSystem.AddTimer(this._cache_interval_ms, bind(this.RemoveCache, this, data.id));
+        
+        // 插入数据
+		var error = A_MysqlSystem.InsertInto{T}(data, null, data.id);
+        if (error != null) Error(error);
+        
+        return null;
+    }
+    
+    public await fun DeleteData(int id) : string
+    {
+        if (this._release) return "数据集已经被释放";
+        
+        // 如果正在加载，那么就等待之后在删除
+        if (this._loading_map[id])
+        {
+            A_MysqlSystem.ExecuteEmpty(id);
+            if (this._release) return "数据集已经被释放";
+        }
+        
+        // 删除标脏
+        this._dirty_map[id] = null;
+        
+        // 删除定时器
+        var timer = this._timer_map[id];
+        if (timer != null)
+        {
+            A_LoopSystem.RemoveTimer(timer);
+            this._timer_map[id] = null;   
+        }
+        
+        // 删除数据
+        this._data_map[id] = null;
+        
+        // 执行删除，这个是必须执行的，因为要删除的对象也可能不再内存中
+        var error = A_MysqlSystem.DeleteFromByKey{T}(this._primary, id, id);
+        if (error != null) Error(error);
+        
+        return null;
+    }
+}

@@ -1,0 +1,193 @@
+
+[Language(Lua)]
+namespace Lua;
+
+private var rawget = lua.rawget;
+private var rawset = lua.rawset;
+private var tostring = lua.tostring;
+private var setmetatable = lua.setmetatable;
+private var type = lua.type;
+private var select = lua.select;
+
+private struct ObjectInfo
+{
+    ALittle.ClassInfo __class;
+}
+
+// 从对象里面取值
+private static __object_index_function(ObjectInfo object, string key) : any
+{
+    // 先判断是否在class，有则查找
+    var clazz:ALittle.ClassInfo = rawget(object, "__class");
+    // 如果没有那么判断是否有getter (比如获取属性_x，那么函数名为__getter:x)
+    var getter:Functor<(ObjectInfo):any> = clazz.__getter[key];
+    if (getter != null) return getter(object);
+
+    // 取到的值，一般情况下都是funciton
+    var value:any = cast<Map<string, any>>(clazz)[key];
+    if (value != null)
+    {
+        // 保存起来，便于快速查找
+        rawset(object, key, value);
+        // 返回值
+        return value;
+    }
+    
+    // 没有的话，就是没有了
+    return null;
+}
+
+// 把值设置到对象里面
+private static __object_newindex_function(ObjectInfo object, string key, any value)
+{
+    // 获取class
+    var clazz:ALittle.ClassInfo = rawget(object, "__class");
+    // 判断是否有setter (比如设置属性_x，那么函数名为__setter:x)
+    var setter:Functor<(ObjectInfo, any)> = clazz.__setter[key];
+    if (setter != null)
+    {
+        setter(object, value);
+        return;
+    }
+    // 如果没有就只能设置属性
+    rawset(object, key, value);
+}
+
+private static __object_tostring_function(ObjectInfo object) : string
+{
+    var clazz:ALittle.ClassInfo = rawget(object, "__class");
+    return "[ALittle Object instance of " .. tostring(clazz.__name) .. "]";
+}
+
+// 创建所有实例对象的元表
+private struct ObjectMetatable
+{
+    Functor<(ObjectInfo, string):any> __index;
+    Functor<(ObjectInfo, string, any)> __newindex;
+    Functor<(ObjectInfo):string> __tostring;
+}
+private var __object_mt = new ObjectMetatable();
+__object_mt.__index = __object_index_function;
+__object_mt.__newindex = __object_newindex_function;
+__object_mt.__tostring = __object_tostring_function;
+
+// 递归调用构造函数
+private static __class_create_function(ALittle.ClassInfo clazz, ObjectInfo object, ...)
+{
+    // 检查是否有父类，如果有则调用父类的构造函数。
+    var super:ALittle.ClassInfo = rawget(clazz, "__super");
+    if (super != null) __class_create_function(super, object, ...);
+    // 如果当前类有定义Ctor函数，则调用。
+    var fctor:Functor<(ObjectInfo, any)> = rawget(clazz, "Ctor");
+    if (fctor != null)
+        fctor(object, ...);
+}
+
+// 从类模板里面取值
+private static __class_index_function(ALittle.ClassInfo clazz, string key) : any
+{
+    // 能执行到这里，说明class本身没有，那么到父类里面找
+    var super:ALittle.ClassInfo = rawget(clazz, "__super");
+    // 如果没有父类，那么就直接返回
+    if (super == null) return null;
+
+    // 获取值
+    var value:any = cast<Map<string, any>>(super)[key];
+    // 保存起来，便于快速查找
+    rawset(clazz, key, value);
+    // 返回结果
+    return value;
+}
+
+private static __class_call_function(ALittle.ClassInfo clazz, ...) : ObjectInfo
+{
+    // 创建类实例对象
+    var object = new ObjectInfo();
+    // 保存类
+    object.__class = clazz;
+    // 设置实例对象的元表
+    setmetatable(object, __object_mt);
+    // 向父类模版递归调用Ctor函数。这里模拟C++的构造函数。
+    __class_create_function(clazz, object, ...);
+    // 返回创建的实例对象
+    return object;
+}
+
+private static __class_tostring_function(ALittle.ClassInfo clazz) : string
+{
+    return "[ALittle Class:" .. tostring(clazz.__name) .. "]";
+}
+
+private struct ClassMetatable
+{
+    Functor<(ALittle.ClassInfo, string):any> __index;
+    any __call;
+    Functor<(ALittle.ClassInfo):string> __tostring;
+}
+private var __class_mt = new ClassMetatable();
+__class_mt.__index = __class_index_function;
+__class_mt.__call = __class_call_function;
+__class_mt.__tostring = __class_tostring_function;
+
+// 定义类
+// 参数super 父类对象
+// 参数name 类名字
+protected static Class(ALittle.ClassInfo super, string name) : ALittle.ClassInfo
+{
+    // 定义类模版
+    var clazz = new ALittle.ClassInfo();
+    // 设置类模版的父类模版
+    clazz.__super = super;
+    // 设置类模版的类名
+    clazz.__name = name;
+    // 设置属性映射表函数
+    var setter = new Map<string, Functor<(ObjectInfo, any)>>();
+    var getter = new Map<string, Functor<(ObjectInfo):any>>();
+    if (super != null)
+    {
+        for (var k, v in super.__setter)
+            setter[k] = v;
+        for (var k, v in super.__getter)
+            getter[k] = v;
+    }
+    clazz.__setter = setter;
+    clazz.__getter = getter;
+    // 设置类模版的元表
+    setmetatable(clazz, __class_mt);
+    // 返回类模版
+    return clazz;
+}
+
+// 定义模板
+protected static Template(ALittle.ClassInfo clazz, string name, ...) : ALittle.ClassInfo
+{
+    var child = clazz.__child;
+    if (child == null)
+    {
+        child = new Map<string, ALittle.ClassInfo>();
+        clazz.__child = child;
+    }
+    var template = child[name];
+    if (template != null) return template;
+
+    // 定义模板
+    template = new ALittle.ClassInfo();
+    child[name] = template;
+    // 复制
+    for (var key, value in cast<Map<string,any>>(clazz))
+    {
+        if (type(value) == "function" || IsCoWrap(value))
+            cast<Map<string,any>>(template)[key] = value;
+    }
+    template.__super = clazz.__super;
+    template.__name = name;
+    template.__setter = clazz.__setter;
+    template.__getter = clazz.__getter;
+    // 复制模板
+    template.__element = [cast<ALittle.ClassInfo>(...)];
+    
+    // 设置类模版的元表
+    setmetatable(template, __class_mt);
+    // 返回模板
+    return template;
+}

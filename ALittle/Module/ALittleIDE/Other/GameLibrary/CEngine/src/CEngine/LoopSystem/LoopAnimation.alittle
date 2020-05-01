@@ -1,0 +1,215 @@
+
+namespace ALittle;
+
+public struct LoopChildInfo
+{
+    string clazz;               // 类型
+    any target;                 // 目标值
+    int total_time;             // 时长
+    int delay_time;             // 延时
+}
+
+public struct LoopListInfo
+{
+    string link;                // 绑定名
+    string attribute;           // 属性名
+    any init;                   // 初始值
+    List<LoopChildInfo> childs;  // 子循环信息
+}
+
+public struct LoopGroupInfo
+{
+    List<LoopListInfo> childs;  // 子循环信息
+}
+
+public class LoopAnimation
+{
+    private DisplayObject _from;
+    private LoopGroupInfo _info;
+    private LoopGroup _group;
+    private int _loop;          // 循环次数
+    private Thread _co;
+    
+    private Map<DisplayObject, Map<string, any>> _save_value_map;
+    private Map<DisplayObject, Map<string, any>> _init_value_map;
+    
+    public ctor(DisplayObject from, LoopGroupInfo info)
+    {
+        this._from = from;
+        this._info = info;
+    }
+    
+    public fun Init([Nullable] Map<string, DisplayObject> map) : string
+    {
+        this.Stop();
+
+        this._group = new LoopGroup();
+        this._group.complete_callback = bind(this.Completed, this);
+        this._save_value_map = new Map<DisplayObject, Map<string, any>>();
+        this._init_value_map = new Map<DisplayObject, Map<string, any>>();
+        for (var _, list in this._info.childs)
+        {
+            // 计算操作对象
+            var target:DisplayObject;
+            if (map != null) target = map[list.link];
+            if (target == null && this._from != null) target = cast<Map<string, DisplayObject>>(this._from)[list.link];
+            if (target == null)
+            {
+                this._group = null;
+                this._save_value_map = null;
+                this._init_value_map = null;
+                return "can't find link:"..list.link.." from map or object";
+            }
+
+            // 把初始值保存起来
+            var value_map = this._save_value_map[target];
+            if (value_map == null)
+            {
+                value_map = new Map<string, any>();
+                this._save_value_map[target] = value_map;
+            }
+            value_map[list.attribute] = cast<Map<string,any>>(target)[list.attribute];
+
+            // 如果有初始化值，那么就直接初始化
+            if (list.init != null)
+            {
+                cast<Map<string,any>>(target)[list.attribute] = list.init;
+                value_map = this._init_value_map[target];
+                if (value_map == null)
+                {
+                    value_map = new Map<string, any>();
+                    this._init_value_map[target] = value_map;
+                }
+                value_map[list.attribute] = list.init;
+            }
+
+            var loop_list = new LoopList();
+            for (var index, info in list.childs)
+            {
+                if (info.clazz == "LoopLinear")
+                    loop_list.AddUpdater(new LoopLinear(target, list.attribute, info.target, info.total_time, info.delay_time));
+                elseif (info.clazz == "LoopAttribute")
+                    loop_list.AddUpdater(new LoopAttribute(target, list.attribute, info.target, info.delay_time));
+                elseif (info.clazz == "LoopRit")
+                    loop_list.AddUpdater(new LoopRit(target, list.attribute, info.target, info.total_time, info.delay_time));
+            }
+            this._group.AddUpdater(loop_list);
+        }
+        return null;
+    }
+
+    private fun Completed()
+    {
+        if (this._loop == 0)
+        {
+            this.ReleaseCo(null);
+            return;   
+        }
+
+        if (this._loop > 0)
+        {
+            -- this._loop;
+            if (this._loop <= 0)
+            {
+                this.ReleaseCo(null);
+                return;
+            }
+        }
+        
+        this.SetTime(0);
+        this._group.Start();
+    }
+
+    // 填1或者不填表示播放一次
+    // 填2或者2以上的表示播放的次数
+    // 0或者填小于0表示无限播放
+    public fun Play([Nullable] int loop)
+    {
+        this.ReleaseCo("Play被调用");
+     
+        if (this._group == null) return;
+        
+        if (loop == null)
+            this._loop = 1;
+        elseif (loop == 0)
+            this._loop = -1;
+        else
+            this._loop = loop;
+        this._group.Start();
+    }
+    
+    public await fun AsyncPlay([Nullable] int loop) : string
+    {
+        this.ReleaseCo("AsyncPlay被调用");
+     
+        if (this._group == null) return "this._group == null";
+           
+        if (co == null) return "当前不是协程";
+        this._co = co;
+        
+        if (loop == null)
+            this._loop = 1;
+        elseif (loop == 0)
+            this._loop = -1;
+        else
+            this._loop = loop;
+        this._group.Start();
+        
+        return yield;
+    }
+    
+    private fun ReleaseCo(string reason)
+    {
+        if (this._co == null) return;
+        
+        var result, error = Coroutine.Resume(this._co, reason);
+        if (result != true) Error(error);
+        this._co = null;
+    }
+    
+    public fun Pause()
+    {
+        if (this._group == null) return;
+        this._group.Stop();
+    }
+
+    public fun SetTime(int time)
+    {
+        this.ReleaseCo("SetTime被调用");
+        
+        if (this._group == null) return;
+        
+        // 还原属性
+        if (this._save_value_map != null)
+        {
+            for (var object, value_map in this._save_value_map)
+                for (var attr, param in value_map)
+                    cast<Map<string,any>>(object)[attr] = param;
+        }
+        if (this._init_value_map != null)
+        {
+            for (var object, value_map in this._init_value_map)
+                for (var attr, param in value_map)
+                    cast<Map<string,any>>(object)[attr] = param;
+        }
+        this._group.SetTime(time);
+    }
+    
+    // restore 表示是否还原到动画之前的状态
+    public fun Stop()
+    {
+        this.ReleaseCo("Stop被调用");
+        
+        if (this._group != null) { this._group.Stop(); this._group = null; }
+        // 还原属性
+        if (this._save_value_map != null)
+        {
+            for (var object, value_map in this._save_value_map)
+                for (var attr, param in value_map)
+                    cast<Map<string,any>>(object)[attr] = param;
+            this._save_value_map = null;
+        }
+        // 清理
+        this._init_value_map = null;
+    }
+}

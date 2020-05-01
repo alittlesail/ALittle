@@ -1,55 +1,37 @@
 namespace alittle;
 
-[Language(JavaScript)]
-public static Require(string this_path, string url)
+public await static RequireCore(string base_path)
 {
-    if (javascript.typeof(javascript.require) != "undefined")
-    {
-        javascript.require(url);
-        return;
-    }
+    [Language(JavaScript)]
+    ALittle.Require(base_path, "Core/JavaScript/JavaScriptClass");
+    [Language(JavaScript)]
+    ALittle.Require(base_path, "Core/JavaScript/JavaScriptException");
+    
+    ALittle.Require(base_path, "Core/Reflect/ReflectRegister");
+    ALittle.Require(base_path, "Core/Reflect/ReflectDefine");
+    
+    [Language(Lua)]
+    ALittle.Require(base_path, "Core/Lua/LuaBind");
+    [Language(Lua)]
+    ALittle.Require(base_path, "Core/Lua/LuaClass");
+    [Language(Lua)]
+    ALittle.Require(base_path, "Core/Lua/LuaException");
 
-    var script = cast<javascript.ScriptElement>(document.createElement("script"));
-    script.type = "text/javascript";
-    script.src = this_path..url..".js";
-    document.body.appendChild(script);
+    // 这个是为了兼容lua5.2或以上版本
+    [Language(Lua)]
+    if (_G["bit"] == null) _G["bit"] = _G["bit32"];
+
+    ALittle.Require(base_path, "Core/Utility/Log");
+    ALittle.Require(base_path, "Core/Utility/List");
+    ALittle.Require(base_path, "Core/Utility/Map");
+    ALittle.Require(base_path, "Core/Utility/Math");
+    ALittle.Require(base_path, "Core/Utility/String");
+    ALittle.Require(base_path, "Core/Utility/Time");
+    ALittle.Require(base_path, "Core/Utility/Coroutine");
+    
+    ALittle.Require(base_path, "Core/Net/HttpFileReceiver");
+    ALittle.Require(base_path, "Core/Net/HttpFileSender");
+    ALittle.Require(base_path, "Core/Net/HttpReceiver");
+    ALittle.Require(base_path, "Core/Net/HttpSender");
+    ALittle.Require(base_path, "Core/Net/MsgCommon");
 }
-
-[Language(JavaScript)]
-require("Core/JavaScript/JavaScriptClass");
-[Language(JavaScript)]
-require("Core/JavaScript/JavaScriptException");
-    
-require("Core/Reflect/ReflectRegister");
-require("Core/Reflect/ReflectDefine");
-    
-[Language(Lua)]
-require("Core/Lua/LuaBind");
-[Language(Lua)]
-require("Core/Lua/LuaClass");
-[Language(Lua)]
-require("Core/Lua/LuaException");
-
-// 这个是为了兼容lua5.2或以上版本
-[Language(Lua)]
-private static BitAdapter()
-{
-    if (_G["bit"] == null)
-        _G["bit"] = _G["bit32"];
-}
-[Language(Lua)]
-BitAdapter();
-
-require("Core/Utility/Log");
-require("Core/Utility/List");
-require("Core/Utility/Map");
-require("Core/Utility/Math");
-require("Core/Utility/String");
-require("Core/Utility/Time");
-require("Core/Utility/Coroutine");
-    
-require("Core/Net/HttpFileReceiver");
-require("Core/Net/HttpFileSender");
-require("Core/Net/HttpReceiver");
-require("Core/Net/HttpSender");
-require("Core/Net/MsgCommon");

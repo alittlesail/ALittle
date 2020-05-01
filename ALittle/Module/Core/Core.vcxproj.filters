@@ -184,5 +184,8 @@
     <None Include="src\Core\Utility\Map.alittle">
       <Filter>Core\Utility</Filter>
     </None>
+    <None Include="src\Core\Utility\Require.alittle">
+      <Filter>Core\Utility</Filter>
+    </None>
   </ItemGroup>
 </Project>

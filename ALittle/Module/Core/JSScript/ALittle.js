@@ -1,34 +1,26 @@
 {
-let ___lastscript = document.scripts[document.scripts.length - 1]
-let ___thispath = "";
-if (___lastscript !== undefined) ___thispath = ___lastscript.src.substring(0, ___lastscript.src.lastIndexOf("/") + 1);
 
 
-window.Require = function(this_path, url) {
-	if (typeof(require) !== "undefined") {
-		require(url);
-		return;
-	}
-	let script = document.createElement("script");
-	script.type = "text/javascript";
-	script.src = this_path + url + ".js";
-	document.body.appendChild(script);
+window.RequireCore = function(base_path) {
+	return new Promise(async function(___COROUTINE, ___) {
+		await ALittle.Require(base_path, "Core/JavaScript/JavaScriptClass");
+		await ALittle.Require(base_path, "Core/JavaScript/JavaScriptException");
+		await ALittle.Require(base_path, "Core/Reflect/ReflectRegister");
+		await ALittle.Require(base_path, "Core/Reflect/ReflectDefine");
+		await ALittle.Require(base_path, "Core/Utility/Log");
+		await ALittle.Require(base_path, "Core/Utility/List");
+		await ALittle.Require(base_path, "Core/Utility/Map");
+		await ALittle.Require(base_path, "Core/Utility/Math");
+		await ALittle.Require(base_path, "Core/Utility/String");
+		await ALittle.Require(base_path, "Core/Utility/Time");
+		await ALittle.Require(base_path, "Core/Utility/Coroutine");
+		await ALittle.Require(base_path, "Core/Net/HttpFileReceiver");
+		await ALittle.Require(base_path, "Core/Net/HttpFileSender");
+		await ALittle.Require(base_path, "Core/Net/HttpReceiver");
+		await ALittle.Require(base_path, "Core/Net/HttpSender");
+		await ALittle.Require(base_path, "Core/Net/MsgCommon");
+		___COROUTINE();
+	});
 }
 
-Require(___thispath, "Core/JavaScript/JavaScriptClass");
-Require(___thispath, "Core/JavaScript/JavaScriptException");
-Require(___thispath, "Core/Reflect/ReflectRegister");
-Require(___thispath, "Core/Reflect/ReflectDefine");
-Require(___thispath, "Core/Utility/Log");
-Require(___thispath, "Core/Utility/List");
-Require(___thispath, "Core/Utility/Map");
-Require(___thispath, "Core/Utility/Math");
-Require(___thispath, "Core/Utility/String");
-Require(___thispath, "Core/Utility/Time");
-Require(___thispath, "Core/Utility/Coroutine");
-Require(___thispath, "Core/Net/HttpFileReceiver");
-Require(___thispath, "Core/Net/HttpFileSender");
-Require(___thispath, "Core/Net/HttpReceiver");
-Require(___thispath, "Core/Net/HttpSender");
-Require(___thispath, "Core/Net/MsgCommon");
 }

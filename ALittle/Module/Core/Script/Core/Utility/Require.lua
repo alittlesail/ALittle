@@ -5,7 +5,9 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-function IsEmpty(object)
-	return next(object) == nil
+function Require(base_path, url)
+local ___COROUTINE = coroutine.running()
+	require(base_path .. url)
+	return nil
 end
 

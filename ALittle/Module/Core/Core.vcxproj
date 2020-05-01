@@ -37,6 +37,7 @@
     <None Include="src\Core\Utility\Log.alittle" />
     <None Include="src\Core\Utility\Map.alittle" />
     <None Include="src\Core\Utility\Math.alittle" />
+    <None Include="src\Core\Utility\Require.alittle" />
     <None Include="src\Core\Utility\String.alittle" />
     <None Include="src\Core\Utility\Time.alittle" />
     <None Include="src\Language\JavaScript\array.alittle" />

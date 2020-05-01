@@ -28,7 +28,7 @@ public class ControlSystem
     
     // @param module_name 模块名
     // @param crypt_mode 是否是加密模式
-    public ctor(string module_name)
+    public ctor(string module_name, [Nullable] bool crypt_mode)
     {
         // 字体映射
         this._font_map = new Map<string, string>();
@@ -39,12 +39,7 @@ public class ControlSystem
     
         // 保存模块名
         this._module_name = module_name;
-
-        // 设置是否是加密模式     
-        [Language(Lua)]
-        this._crypt_mode = (ALittle.File_ReadTextFromFile("Module/"..module_name.."/NoCrypt.ali", false) == null);
-        [Language(JavaScript)]
-        this._crypt_mode = false;
+        this._crypt_mode = crypt_mode || false;
    
         [Language(JavaScript)]
         this._host = location.host;

@@ -95,11 +95,11 @@
     <None Include="src\CEngine\UISystem\UIEnumTypes.alittle" />
     <None Include="src\CEngine\UISystem\UIEventDispatcher.alittle" />
     <None Include="src\CEngine\UISystem\UISystem.alittle" />
-    <None Include="src\CEngine\Utility\Application.alittle" />
     <None Include="src\CEngine\Utility\AudioSystem.alittle" />
     <None Include="src\CEngine\Utility\ConfigSystem.alittle" />
     <None Include="src\CEngine\Utility\CsvConfigManager.alittle" />
     <None Include="src\CEngine\Utility\File.alittle" />
+    <None Include="src\CEngine\Utility\ModuleSystem.alittle" />
     <None Include="src\CEngine\Utility\OtherSystem.alittle" />
     <None Include="src\CEngine\Utility\String.alittle" />
     <None Include="src\CEngine\Utility\System.alittle" />

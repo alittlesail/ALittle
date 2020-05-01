@@ -64,6 +64,11 @@ option_map : {}
 
 ALittleIDE.IDELoginManager = JavaScript.Class(undefined, {
 	Ctor : function() {
+	},
+	get account_name() {
+		return this._account_name;
+	},
+	Setup : function() {
 		let config = ALittle.CreateConfigSystem(ALittleIDE.g_ModuleBasePath + "/Other/Server.cfg");
 		this._logingate_ip = config.GetConfig("logingate_ip", "139.159.176.119");
 		this._logingate_port = config.GetConfig("logingate_port", 1000);
@@ -79,11 +84,6 @@ ALittleIDE.IDELoginManager = JavaScript.Class(undefined, {
 		this._account_pwd = "";
 		this._first_login = true;
 		this._is_login = false;
-	},
-	get account_name() {
-		return this._account_name;
-	},
-	Setup : function() {
 		this._save_password = ALittleIDE.g_IDEConfig.GetConfig("save_password", false);
 		this._auto_login = ALittleIDE.g_IDEConfig.GetConfig("auto_login", false);
 		if (this._save_password) {

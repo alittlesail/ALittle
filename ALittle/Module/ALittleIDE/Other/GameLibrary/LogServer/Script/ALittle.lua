@@ -1,7 +1,6 @@
 -- ALittle Generate Lua
 module("LogServer", package.seeall)
 
-local ___thispath = select('1', ...):match("(.+[/\\]).+$") or ""
 local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = ALittle.GetAllStruct()
@@ -19,9 +18,8 @@ type_list = {},
 option_map = {}
 })
 
-require(___thispath.."../../../../../SEngine/Script/ALittle")
 g_ConfigSystem = nil
-function __Module_Setup(module_path)
+function __Module_Setup(sengine_path, module_path)
 	math.randomseed(os.time(nil))
 	g_ConfigSystem = ALittle.CreateJsonConfig("Module/ALittleIDE/Other/GameLibrary/LogServer.cfg", true)
 	local wan_ip = g_ConfigSystem:GetConfig("wan_ip", "127.0.0.1")

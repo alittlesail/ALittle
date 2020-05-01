@@ -1,16 +1,14 @@
 -- ALittle Generate Lua
 module("FileServer", package.seeall)
 
-local ___thispath = select('1', ...):match("(.+[/\\]).+$") or ""
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-require(___thispath.."../../../../../SEngine/Script/ALittle")
-require(___thispath.."HeadImageManager")
-require(___thispath.."ClanImageManager")
 g_ConfigSystem = nil
-function __Module_Setup(module_path)
+function __Module_Setup(sengine_path, module_path)
+	Require(module_path, "Script/HeadImageManager")
+	Require(module_path, "Script/ClanImageManager")
 	math.randomseed(os.time())
 	g_ConfigSystem = ALittle.CreateJsonConfig("Module/ALittleIDE/Other/GameLibrary/FileServer.cfg", true)
 	local wan_ip = g_ConfigSystem:GetConfig("wan_ip", "127.0.0.1")

@@ -1,24 +1,23 @@
 {
 
 
-window.__ALITTLEAPI_CEngine_Init = function(base_path) {
+window.RequireCEngine = function(base_path) {
 	return new Promise(async function(___COROUTINE, ___) {
 		await Require(base_path, "CEngine/UISystem/IShow");
-		{
-			await Require(base_path, "../../JSNative/pixi.min");
-			await Require(base_path, "../../JSNative/pixi-textinput");
-			await Require(base_path, "Adapter/PIXI/JSystem");
-			await Require(base_path, "Adapter/PIXI/JShow");
-			await Require(base_path, "Adapter/PIXI/JCsvLoader");
-		}
+		await Require(base_path, "../JSNative/pixi.min");
+		await Require(base_path, "../JSNative/pixi-textinput");
+		await Require(base_path, "Adapter/PIXI/JSystem");
+		await Require(base_path, "Adapter/PIXI/JShow");
+		await Require(base_path, "Adapter/PIXI/JCsvLoader");
 		await Require(base_path, "CEngine/Utility/String");
 		await Require(base_path, "CEngine/Utility/File");
-		await Require(base_path, "CEngine/Utility/ModuleSystem");
 		await Require(base_path, "CEngine/Utility/System");
 		await Require(base_path, "CEngine/Utility/ConfigSystem");
-		await Require(base_path, "CEngine/Utility/AudioSystem");
 		await Require(base_path, "CEngine/Utility/OtherSystem");
+		await Require(base_path, "CEngine/Utility/AudioSystem");
+		await Require(base_path, "CEngine/Utility/ModuleSystem");
 		await Require(base_path, "CEngine/Utility/CsvConfigManager");
+		await Require(base_path, "CEngine/Utility/Application");
 		await Require(base_path, "CEngine/LoopSystem/LoopAnimation");
 		await Require(base_path, "CEngine/LoopSystem/LoopAttribute");
 		await Require(base_path, "CEngine/LoopSystem/LoopLinear");
@@ -240,14 +239,11 @@ window.__ALITTLEAPI_SystemSaveFile = function(path) {
 	A_OtherSystem.HandleSystemSaveFile(path);
 }
 
-window.__ALITTLEAPI_SetupMainModule = function(base_path, debug, module_name) {
-	A_AudioSystem.Setup();
-	A_ModuleSystem.MainSetup(base_path, debug, module_name);
+window.__LUAAPI_SetupMainModule = function(base_path, module_name) {
+	A_ModuleSystem.MainSetup(base_path, module_name);
 }
 
-window.__ALITTLEAPI_ShutdownMainModule = function() {
-	A_LayerManager.Shutdown();
-	A_AudioSystem.Shutdown();
+window.__LUAAPI_ShutdownMainModule = function() {
 	A_ModuleSystem.MainShutdown();
 }
 

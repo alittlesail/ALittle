@@ -1,19 +1,17 @@
 -- ALittle Generate Lua
 module("VersionServer", package.seeall)
 
-local ___thispath = select('1', ...):match("(.+[/\\]).+$") or ""
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-require(___thispath.."../../../../../SEngine/Script/ALittle")
-require(___thispath.."VersionManager")
-require(___thispath.."../../../../../SEngine/Script/WebAccount/WebPermission")
-require(___thispath.."../../../../../SEngine/Script/WebAccount/WebAccount")
-require(___thispath.."../../../../../SEngine/Script/WebAccount/WebAccountManager")
-require(___thispath.."../../../../../SEngine/Script/WebAccount/WebOPSManager")
 g_ConfigSystem = nil
-function __Module_Setup(module_path)
+function __Module_Setup(sengine_path, module_path)
+	Require(sengine_path, "Script/WebAccount/WebPermission")
+	Require(sengine_path, "Script/WebAccount/WebAccount")
+	Require(sengine_path, "Script/WebAccount/WebAccountManager")
+	Require(sengine_path, "Script/WebAccount/WebOPSManager")
+	Require(module_path, "Script/VersionManager")
 	math.randomseed(os.time())
 	g_ConfigSystem = ALittle.CreateJsonConfig("Module/ALittleIDE/Other/GameLibrary/VersionServer.cfg", true)
 	local wan_ip = g_ConfigSystem:GetConfig("wan_ip", "127.0.0.1")

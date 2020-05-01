@@ -11,7 +11,7 @@ ALittleIDE.IDECenter = JavaScript.Class(undefined, {
 	get dialog_layer() {
 		return this._dialog_layer;
 	},
-	Setup : function(debug) {
+	Setup : function() {
 		return new Promise((async function(___COROUTINE, ___) {
 			await Require(ALittleIDE.g_ScriptBasePath, "IDEProject");
 			await Require(ALittleIDE.g_ScriptBasePath, "UIEdit/IDEUICenter");

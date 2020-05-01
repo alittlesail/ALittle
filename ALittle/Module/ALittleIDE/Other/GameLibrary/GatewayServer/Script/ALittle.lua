@@ -1,18 +1,16 @@
 -- ALittle Generate Lua
 module("GatewayServer", package.seeall)
 
-local ___thispath = select('1', ...):match("(.+[/\\]).+$") or ""
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-require(___thispath.."../../../../../SEngine/Script/ALittle")
-require(___thispath.."ModuleRouteManager")
-require(___thispath.."DataRouteManager")
-require(___thispath.."PhoneCodeManager")
-require(___thispath.."RegisterManager")
 g_ConfigSystem = nil
 function __Module_Setup(module_path)
+	Require(module_path, "Script/ModuleRouteManager")
+	Require(module_path, "Script/DataRouteManager")
+	Require(module_path, "Script/PhoneCodeManager")
+	Require(module_path, "Script/RegisterManager")
 	math.randomseed(os.time())
 	g_ConfigSystem = ALittle.CreateJsonConfig("Module/ALittleIDE/Other/GameLibrary/FileServer.cfg", true)
 	local wan_ip = g_ConfigSystem:GetConfig("wan_ip", "127.0.0.1")

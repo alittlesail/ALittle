@@ -1,18 +1,16 @@
 
 namespace GatewayServer;        // 命名域
 
-require("../../../../../SEngine/Script/ALittle");
-
-require("ModuleRouteManager");
-require("DataRouteManager");
-require("PhoneCodeManager");
-require("RegisterManager");
-    
 protected var g_ConfigSystem:ALittle.IJsonConfig;
 
 // 模块入口函数
 public async static __Module_Setup(string module_path)
 {
+    alittle.Require(module_path, "Script/ModuleRouteManager");
+    alittle.Require(module_path, "Script/DataRouteManager");
+    alittle.Require(module_path, "Script/PhoneCodeManager");
+    alittle.Require(module_path, "Script/RegisterManager");
+
     lua.math.randomseed(lua.os.time());
     g_ConfigSystem = ALittle.CreateJsonConfig("Module/ALittleIDE/Other/GameLibrary/FileServer.cfg", true);
     var wan_ip = g_ConfigSystem.GetConfig("wan_ip", "127.0.0.1");

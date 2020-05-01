@@ -1,7 +1,6 @@
 -- ALittle Generate Lua
 module("ALittle", package.seeall)
 
-local ___thispath = select('1', ...):match("(.+[/\\]).+$") or ""
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
@@ -11,12 +10,12 @@ local __byte = String_Byte
 local __type = String_Type
 ControlSystem = Lua.Class(nil, "ALittle.ControlSystem")
 
-function ControlSystem:Ctor(module_name)
+function ControlSystem:Ctor(module_name, crypt_mode)
 	___rawset(self, "_font_map", {})
 	___rawset(self, "_name_map_info", {})
 	___rawset(self, "_name_map_info_cache", {})
 	___rawset(self, "_module_name", module_name)
-	___rawset(self, "_crypt_mode", (ALittle.File_ReadTextFromFile("Module/" .. module_name .. "/NoCrypt.ali", false) == nil))
+	___rawset(self, "_crypt_mode", crypt_mode or false)
 	___rawset(self, "_base_path", "Module/" .. module_name .. "/")
 	___rawset(self, "_ui_path", self._base_path .. "UI/")
 	___rawset(self, "_font_path", self._base_path .. "Font/")

@@ -1,9 +1,6 @@
 
 namespace ALittleIDE;
 
-require("IDEProject");
-require("UIEdit/IDEUICenter");
-	
 class IDECenter
 {
 	private ALittle.DisplayObject _phone_status_quad;	// 手机头底色
@@ -35,6 +32,9 @@ class IDECenter
 	
 	public await fun Setup()
 	{
+		alittle.Require(g_ScriptBasePath, "IDEProject");
+		alittle.Require(g_ScriptBasePath, "UIEdit/IDEUICenter");
+	
 		// 获取配置信息
 		g_IDEConfig = ALittle.CreateConfigSystem("ALittleIDE.cfg");
 		// 生成随机数种子

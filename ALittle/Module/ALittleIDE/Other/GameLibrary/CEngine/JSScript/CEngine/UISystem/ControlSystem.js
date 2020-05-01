@@ -30,6 +30,9 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 		this._texture_mgr = ALittle.NewObject(ALittle.TextureManager, module_name, this._crypt_mode);
 		A_LoadTextureManager.RegisterTexmgrControl(this._texture_mgr);
 	},
+	get crypt_mode() {
+		return this._crypt_mode;
+	},
 	RegisterFont : function(src, dst) {
 		this._font_map[src] = dst;
 	},

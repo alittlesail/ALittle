@@ -3,27 +3,33 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 
 
+function Require(base_path, url)
+local ___COROUTINE = coroutine.running()
+	require(base_path .. url)
+	return nil
+end
+
 function RequireCore(base_path)
 local ___COROUTINE = coroutine.running()
-	ALittle.Require(base_path, "Core/Reflect/ReflectRegister")
-	ALittle.Require(base_path, "Core/Reflect/ReflectDefine")
-	ALittle.Require(base_path, "Core/Lua/LuaBind")
-	ALittle.Require(base_path, "Core/Lua/LuaClass")
-	ALittle.Require(base_path, "Core/Lua/LuaException")
+	Require(base_path, "Core/Reflect/ReflectRegister")
+	Require(base_path, "Core/Reflect/ReflectDefine")
+	Require(base_path, "Core/Lua/LuaBind")
+	Require(base_path, "Core/Lua/LuaClass")
+	Require(base_path, "Core/Lua/LuaException")
 	if _G["bit"] == nil then
 		_G["bit"] = _G["bit32"]
 	end
-	ALittle.Require(base_path, "Core/Utility/Log")
-	ALittle.Require(base_path, "Core/Utility/List")
-	ALittle.Require(base_path, "Core/Utility/Map")
-	ALittle.Require(base_path, "Core/Utility/Math")
-	ALittle.Require(base_path, "Core/Utility/String")
-	ALittle.Require(base_path, "Core/Utility/Time")
-	ALittle.Require(base_path, "Core/Utility/Coroutine")
-	ALittle.Require(base_path, "Core/Net/HttpFileReceiver")
-	ALittle.Require(base_path, "Core/Net/HttpFileSender")
-	ALittle.Require(base_path, "Core/Net/HttpReceiver")
-	ALittle.Require(base_path, "Core/Net/HttpSender")
-	ALittle.Require(base_path, "Core/Net/MsgCommon")
+	Require(base_path, "Core/Utility/Log")
+	Require(base_path, "Core/Utility/List")
+	Require(base_path, "Core/Utility/Map")
+	Require(base_path, "Core/Utility/Math")
+	Require(base_path, "Core/Utility/String")
+	Require(base_path, "Core/Utility/Time")
+	Require(base_path, "Core/Utility/Coroutine")
+	Require(base_path, "Core/Net/HttpFileReceiver")
+	Require(base_path, "Core/Net/HttpFileSender")
+	Require(base_path, "Core/Net/HttpReceiver")
+	Require(base_path, "Core/Net/HttpSender")
+	Require(base_path, "Core/Net/MsgCommon")
 end
 

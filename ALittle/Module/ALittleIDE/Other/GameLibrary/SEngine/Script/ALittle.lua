@@ -1,28 +1,30 @@
 -- ALittle Generate Lua
-local ___thispath = select('1', ...):match("(.+[/\\]).+$") or ""
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-require(___thispath.."../../Std/Script/ALittle")
 local __Log
 __Log = function(content, level)
 	__CPPAPI_ScriptSystem:Log(content, level)
 end
 
 ALittle.SetLogFunc(__Log)
-require(___thispath.."Utility/Time")
-require(___thispath.."Utility/System")
-require(___thispath.."Utility/HttpSystem")
-require(___thispath.."Utility/HttpFileSystem")
-require(___thispath.."Utility/ClientSystem")
-require(___thispath.."Utility/SessionSystem")
-require(___thispath.."Utility/MysqlSystem")
-require(___thispath.."CacheData/CacheDataSet")
-require(___thispath.."CacheData/FullDataSet")
-require(___thispath.."Utility/LogEventSystem")
-require(___thispath.."Utility/GatewaySystem")
-function __ALITTLEAPI_SetupMainModule(module_path, module_name)
+function RequireSEngine(base_path)
+local ___COROUTINE = coroutine.running()
+	Require(base_path, "Utility/Time")
+	Require(base_path, "Utility/System")
+	Require(base_path, "Utility/HttpSystem")
+	Require(base_path, "Utility/HttpFileSystem")
+	Require(base_path, "Utility/ClientSystem")
+	Require(base_path, "Utility/SessionSystem")
+	Require(base_path, "Utility/MysqlSystem")
+	Require(base_path, "CacheData/CacheDataSet")
+	Require(base_path, "CacheData/FullDataSet")
+	Require(base_path, "Utility/LogEventSystem")
+	Require(base_path, "Utility/GatewaySystem")
+end
+
+function __ALITTLEAPI_SetupMainModule(sengine_path, module_path, module_name)
 	ALittle.Log("module_name:" .. module_name)
 	local module = _G[module_name]
 	if module == nil then
@@ -34,7 +36,7 @@ function __ALITTLEAPI_SetupMainModule(module_path, module_name)
 		ALittle.Log("找不到模块__Module_Setup函数:" .. module_name)
 		return
 	end
-	setup_module(module_path)
+	setup_module(sengine_path, module_path)
 end
 
 function __ALITTLEAPI_ShutdownMainModule(module_name)

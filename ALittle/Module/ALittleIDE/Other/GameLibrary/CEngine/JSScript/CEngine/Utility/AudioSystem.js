@@ -22,12 +22,8 @@ ALittle.AudioSystem = JavaScript.Class(undefined, {
 		this._all_chunk_mute = false;
 		this._music_mute = false;
 		this._music_valume = 1;
-	},
-	Setup : function() {
 		A_OtherSystem.AddEventListener(___all_struct.get(521107426), this, this.HandleDidEnterBackground);
 		A_OtherSystem.AddEventListener(___all_struct.get(760325696), this, this.HandleDidEnterForeground);
-	},
-	Shutdown : function() {
 	},
 	HandleDidEnterBackground : function(event) {
 		this._app_background = true;

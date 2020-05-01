@@ -17,13 +17,13 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FileServer", "Other\GameLib
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "服务器", "服务器", "{7F836FBF-2C88-4D7D-8235-39702EFB326A}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Core", "..\Core\Core.vcxproj", "{1B7F1BCD-474E-48C3-933E-52CE349922B7}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Core", "Other\GameLibrary\Core\Core.vcxproj", "{1B7F1BCD-474E-48C3-933E-52CE349922B7}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Std", "..\Std\Std.vcxproj", "{D8283CA8-73F5-4984-B9B1-E1A8065095CF}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Std", "Other\GameLibrary\Std\Std.vcxproj", "{D8283CA8-73F5-4984-B9B1-E1A8065095CF}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CEngine", "..\CEngine\CEngine.vcxproj", "{E839D32A-6208-4230-822E-7606C14B35F6}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CEngine", "Other\GameLibrary\CEngine\CEngine.vcxproj", "{E839D32A-6208-4230-822E-7606C14B35F6}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SEngine", "..\SEngine\SEngine.vcxproj", "{DD0E4B87-3C52-4802-86A1-19130B9D23F7}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SEngine", "Other\GameLibrary\SEngine\SEngine.vcxproj", "{DD0E4B87-3C52-4802-86A1-19130B9D23F7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

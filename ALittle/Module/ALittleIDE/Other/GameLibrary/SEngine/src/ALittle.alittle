@@ -1,27 +1,28 @@
 namespace alittle;
 
-require("../../Std/Script/ALittle");
-
 [Language(Lua)]
 private static __Log(string content, int level) { __CPPAPI_ScriptSystem.Log(content, level); }
 [Language(Lua)]
 ALittle.SetLogFunc(__Log);
 
-require("Utility/Time");
-require("Utility/System");
-require("Utility/HttpSystem");
-require("Utility/HttpFileSystem");
-require("Utility/ClientSystem");
-require("Utility/SessionSystem");
-require("Utility/MysqlSystem");
+public await static RequireSEngine(string base_path)
+{
+    Require(base_path, "Utility/Time");
+    Require(base_path, "Utility/System");
+    Require(base_path, "Utility/HttpSystem");
+    Require(base_path, "Utility/HttpFileSystem");
+    Require(base_path, "Utility/ClientSystem");
+    Require(base_path, "Utility/SessionSystem");
+    Require(base_path, "Utility/MysqlSystem");
     
-require("CacheData/CacheDataSet");
-require("CacheData/FullDataSet");
+    Require(base_path, "CacheData/CacheDataSet");
+    Require(base_path, "CacheData/FullDataSet");
     
-require("Utility/LogEventSystem");
-require("Utility/GatewaySystem");
+    Require(base_path, "Utility/LogEventSystem");
+    Require(base_path, "Utility/GatewaySystem");
+}
 
-public static __ALITTLEAPI_SetupMainModule(string module_path, string module_name)
+public static __ALITTLEAPI_SetupMainModule(string sengine_path, string module_path, string module_name)
 {
     ALittle.Log("module_name:"..module_name);
     var module = cast<Map<string, any>>(_G)[module_name];
@@ -31,14 +32,14 @@ public static __ALITTLEAPI_SetupMainModule(string module_path, string module_nam
         return;
     }
     
-    var setup_module:Functor<(string)> = cast<Map<string, any>>(module)["__Module_Setup"];
+    var setup_module:Functor<(string, string)> = cast<Map<string, any>>(module)["__Module_Setup"];
     if (setup_module == null)
     {
         ALittle.Log("找不到模块__Module_Setup函数:"..module_name);
         return;
     }
     
-    setup_module(module_path);
+    setup_module(sengine_path, module_path);
 }
 
 public static __ALITTLEAPI_ShutdownMainModule(string module_name)

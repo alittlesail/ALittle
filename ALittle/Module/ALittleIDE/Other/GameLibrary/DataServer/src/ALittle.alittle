@@ -1,23 +1,20 @@
 
 namespace DataServer;
 
-require("../../../../../SEngine/Script/ALittle");
-
-require("DataManager");
-require("LoginManager");
-require("LeaseManager");
-    
 protected var g_ConfigSystem:ALittle.IJsonConfig;
 protected var g_ConnectServerYunIp = "";
 protected var g_ConnectServerWanIp = "";
 protected var g_ConnectServerPort = 0;
 
 // 模块入口函数
-public async static __Module_Setup(string config_path, string engine_base_path, string script_base_path)
+public async static __Module_Setup(string sengine_path, string module_path)
 {
+    alittle.Require(module_path, "Script/DataManager");
+    alittle.Require(module_path, "Script/LoginManager");
+    alittle.Require(module_path, "Script/LeaseManager");
+
     lua.math.randomseed(lua.os.time());
-    if (config_path == null || config_path == "") config_path = "Module/ALittleIDE/Other/GameLibrary/DataServer.cfg";
-    g_ConfigSystem = ALittle.CreateJsonConfig(config_path, true);
+    g_ConfigSystem = ALittle.CreateJsonConfig("Module/ALittleIDE/Other/GameLibrary/DataServer.cfg", true);
     var wan_ip = g_ConfigSystem.GetConfig("wan_ip", "127.0.0.1");
     var yun_ip = g_ConfigSystem.GetConfig("yun_ip", "");
     var port_offset = g_ConfigSystem.GetConfig("port_offset", 0);

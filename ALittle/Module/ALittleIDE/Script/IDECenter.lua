@@ -1,13 +1,10 @@
 -- ALittle Generate Lua
 module("ALittleIDE", package.seeall)
 
-local ___thispath = select('1', ...):match("(.+[/\\]).+$") or ""
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-require(___thispath.."IDEProject")
-require(___thispath.."UIEdit/IDEUICenter")
 IDECenter = Lua.Class(nil, "ALittleIDE.IDECenter")
 
 function IDECenter:Ctor()
@@ -23,6 +20,8 @@ end
 
 function IDECenter:Setup()
 local ___COROUTINE = coroutine.running()
+	Require(g_ScriptBasePath, "IDEProject")
+	Require(g_ScriptBasePath, "UIEdit/IDEUICenter")
 	g_IDEConfig = ALittle.CreateConfigSystem("ALittleIDE.cfg")
 	ALittle.Math_RandomSeed(ALittle.Time_GetCurTime())
 	ALittle.System_SetThreadCount(5)

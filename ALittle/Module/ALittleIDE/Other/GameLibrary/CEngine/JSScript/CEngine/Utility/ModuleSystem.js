@@ -4,7 +4,7 @@ if (typeof ALittle === "undefined") window.ALittle = {};
 ALittle.RegStruct(1376035901, "ALittle.ModuleInfo", {
 name : "ALittle.ModuleInfo", ns_name : "ALittle", rl_name : "ModuleInfo", hash_code : 1376035901,
 name_list : ["name","crypt_mode","control","module","plugin_loaded","module_loaded","browser_loaded","layer_group","browser_setup","browser_addmodule","browser_shutdown","module_setup","module_shutdown","module_getinfo","plugin_setup","plugin_shutdown"],
-type_list : ["string","bool","ALittle.ControlSystem","any","bool","bool","bool","ALittle.DisplayLayout","Functor<(ALittle.DisplayLayout,ALittle.ControlSystem,string,string,string)>","Functor<(string,ALittle.DisplayLayout,ALittle.ModuleShortInfo):bool>","Functor<()>","Functor<(ALittle.DisplayLayout,ALittle.ControlSystem,string,string,string)>","Functor<()>","Functor<(ALittle.ControlSystem,string):ALittle.ModuleShortInfo>","Functor<(ALittle.ControlSystem,string,string,string)>","Functor<()>"],
+type_list : ["string","bool","ALittle.ControlSystem","any","bool","bool","bool","ALittle.DisplayLayout","Functor<(ALittle.DisplayLayout,ALittle.ControlSystem,string,string)>","Functor<(string,ALittle.DisplayLayout,ALittle.ModuleShortInfo):bool>","Functor<()>","Functor<(ALittle.DisplayLayout,ALittle.ControlSystem,string,string)>","Functor<()>","Functor<(ALittle.ControlSystem,string):ALittle.ModuleShortInfo>","Functor<(ALittle.ControlSystem,string,string)>","Functor<()>"],
 option_map : {}
 })
 ALittle.RegStruct(-1652314301, "ALittle.ModuleShortInfo", {
@@ -18,10 +18,6 @@ ALittle.ModuleSystem = JavaScript.Class(undefined, {
 	Ctor : function() {
 		this._name_module_map = {};
 		this._main_module = undefined;
-		this._debug = undefined;
-	},
-	get debug() {
-		return this._debug;
 	},
 	GetMainModuleName : function() {
 		if (this._main_module === undefined) {
@@ -39,7 +35,7 @@ ALittle.ModuleSystem = JavaScript.Class(undefined, {
 			info.crypt_mode = false;
 			info.control = ALittle.NewObject(ALittle.ControlSystem, name, info.crypt_mode);
 			await info.control.RegisterInfoByHttp();
-			await Require(module_base_path, "Main");
+			await Require(module_base_path, "JSScript/ALittle");
 			info.module = window[name];
 			if (info.module === undefined) {
 				___COROUTINE(undefined); return;
@@ -102,7 +98,7 @@ ALittle.ModuleSystem = JavaScript.Class(undefined, {
 				___COROUTINE(false); return;
 			}
 			info.plugin_loaded = true;
-			setup_func(info.control, module_base_path, module_base_path + "JSScript/", this._debug);
+			setup_func(info.control, module_base_path, module_base_path + "JSScript/");
 			___COROUTINE(true); return;
 		}).bind(this));
 	},
@@ -143,11 +139,11 @@ ALittle.ModuleSystem = JavaScript.Class(undefined, {
 					A_LayerManager.AddChild(info.layer_group, A_LayerManager.group_count - 1);
 				}
 			}
-			setup_func(info.layer_group, info.control, module_base_path, module_base_path + "JSScript/", this._debug);
+			setup_func(info.layer_group, info.control, module_base_path, module_base_path + "JSScript/");
 			___COROUTINE(true); return;
 		}).bind(this));
 	},
-	MainSetup : async function(base_path, debug, module_name) {
+	MainSetup : async function(base_path, module_name) {
 		if (this._main_module !== undefined) {
 			return;
 		}
@@ -165,7 +161,6 @@ ALittle.ModuleSystem = JavaScript.Class(undefined, {
 		}
 		A_LayerManager.AddChild(info.layer_group, A_LayerManager.group_count - 1);
 		this._main_module = info;
-		this._debug = debug;
 		let module_base_path = "Module/" + module_name + "/";
 		this._main_module.browser_loaded = true;
 		let setup_func = this._main_module.browser_setup;
@@ -173,7 +168,7 @@ ALittle.ModuleSystem = JavaScript.Class(undefined, {
 			await this.LoadModule(module_base_path, this._main_module.name);
 			return;
 		}
-		setup_func(this._main_module.layer_group, this._main_module.control, module_base_path, module_base_path + "JSScript/", this._debug);
+		setup_func(this._main_module.layer_group, this._main_module.control, module_base_path, module_base_path + "JSScript/");
 	},
 	MainShutdown : function() {
 		if (this._main_module === undefined) {

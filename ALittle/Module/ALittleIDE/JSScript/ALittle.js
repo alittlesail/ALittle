@@ -45,7 +45,7 @@ ALittleIDE.__Module_Setup = async function(layer_group, control, module_base_pat
 	ALittleIDE.g_ModuleBasePathEx = ALittle.File_BaseFilePath() + module_base_path;
 	ALittleIDE.g_ScriptBasePath = script_base_path;
 	await Require(script_base_path, "IDECenter");
-	await ALittleIDE.g_IDECenter.Setup(debug);
+	await ALittleIDE.g_IDECenter.Setup();
 }
 
 ALittleIDE.__Module_Shutdown = function() {

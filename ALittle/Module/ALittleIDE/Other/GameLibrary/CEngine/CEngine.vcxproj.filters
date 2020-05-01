@@ -305,7 +305,7 @@
     <None Include="src\Adapter\SDL\MessageFactoryInterface.alittle">
       <Filter>Adapter\SDL</Filter>
     </None>
-    <None Include="src\CEngine\Utility\Application.alittle">
+    <None Include="src\CEngine\Utility\ModuleSystem.alittle">
       <Filter>CEngine\Utility</Filter>
     </None>
   </ItemGroup>

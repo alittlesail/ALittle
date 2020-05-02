@@ -1,4 +1,4 @@
-
+-- ALittle Generate Lua
 module("G2048", package.seeall)
 
 local ___rawset = rawset

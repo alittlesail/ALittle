@@ -7,16 +7,18 @@
 </head>
 
 <body onload="onLoad()" bgcolor="#000000" oncontextmenu="doNothing()">
-	<script src="Module/ALittleIDE/Other/GameLibrary/Core/JSScript/ALittle.js"></script>
-	<script src="Module/ALittleIDE/Other/GameLibrary/Std/JSScript/ALittle.js"></script>
+	<script src="Module/ALittleIDE/Other/GameLibrary/Core/Core.js"></script>
+	<script src="Module/ALittleIDE/Other/GameLibrary/Std/JSNative/md5.min.js"></script>
+	<script src="Module/ALittleIDE/Other/GameLibrary/Std/JSNative/bit.js"></script>
+	<script src="Module/ALittleIDE/Other/GameLibrary/Std/JSNative/jweakmap.js"></script>
+	<script src="Module/ALittleIDE/Other/GameLibrary/Std/Std.js"></script>
+	<script src="Module/ALittleIDE/Other/GameLibrary/CEngine/JSNative/pixi.min.js"></script>
+	<script src="Module/ALittleIDE/Other/GameLibrary/CEngine/JSNative/pixi-textinput.js"></script>
+	<script src="Module/ALittleIDE/Other/GameLibrary/CEngine/CEngine.js"></script>
 	<script type='text/javascript'>
 		function doNothing() { window.event.returnValue=false; return false; }
 		async function onLoad()
 		{
-			await RequireCore("Module/ALittleIDE/Other/GameLibrary/Core/JSScript/");
-			await RequireStd("Module/ALittleIDE/Other/GameLibrary/Std/JSScript/");
-			await Require("", "Module/ALittleIDE/Other/GameLibrary/CEngine/JSScript/ALittle");
-			await RequireCEngine("Module/ALittleIDE/Other/GameLibrary/CEngine/JSScript/");
 			__ALITTLEAPI_SetupMainModule("Module/FlappyBird/", "FlappyBird")
 		}
 	</script>

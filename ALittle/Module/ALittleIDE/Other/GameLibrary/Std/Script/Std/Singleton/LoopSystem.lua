@@ -126,7 +126,7 @@ function LoopSystem:Update(frame_time)
 end
 
 _G.A_LuaLoopSystem = Lua.Template(LoopSystem, "ALittle.LoopSystem<Lua.LuaHeapTimer>", Lua.LuaHeapTimer)()
-_G.A_LuaWeakLoopSystem = Lua.Template(LoopSystem, "ALittle.LoopSystem<Lua.LuaHeapTimer>", Lua.LuaHeapTimer)()
+_G.A_LuaWeakLoopSystem = Lua.Template(LoopSystem, "ALittle.LoopSystem<Lua.LuaHeapTimer>", Lua.LuaHeapTimer)(true)
 local GetLoopSystem
 GetLoopSystem = function()
 	return A_LuaLoopSystem

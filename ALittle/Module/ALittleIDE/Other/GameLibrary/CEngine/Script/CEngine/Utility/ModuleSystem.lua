@@ -34,22 +34,21 @@ end
 
 function ModuleSystem:LoadModuleImpl(module_base_path, name)
 local ___COROUTINE = coroutine.running()
-	if package.loaded[name] ~= nil then
-		return nil
-	end
 	local version_system = VersionSystem.CreateVersionSystem("", name)
 	if version_system ~= nil then
 		version_system:UpdateModule()
 	end
 	local info = {}
 	info.name = name
-	info.crypt_mode = (File_ReadTextFromFile("Module/" .. name .. "/NoCrypt.ali", false) == nil)
-	info.control = ControlSystem(name, info.crypt_mode)
-	Require(module_base_path, "Script/Main")
-	info.module = package.loaded[name]
+	if package.loaded[name] == nil then
+		Require(module_base_path, "Script/Main")
+		info.module = package.loaded[name]
+	end
 	if info.module == nil then
 		return nil
 	end
+	info.crypt_mode = (File_ReadTextFromFile("Module/" .. name .. "/NoCrypt.ali", false) == nil)
+	info.control = ControlSystem(name, info.crypt_mode)
 	self._name_module_map[name] = info
 	info.browser_setup = info.module["__Browser_Setup"]
 	info.browser_addmodule = info.module["__Browser_AddModule"]

@@ -42,7 +42,7 @@ local ___COROUTINE = coroutine.running()
 		Require(base_path, "Adapter/Lua/LuaMessageFactory")
 		Require(base_path, "Adapter/Lua/LuaSchedule")
 	end
-	Require(base_path, "Std/Loop/LoopSystem")
-	Require(base_path, "Std/Utility/Schedule")
+	Require(base_path, "Std/Singleton/LoopSystem")
+	Require(base_path, "Std/Singleton/Schedule")
 end
 

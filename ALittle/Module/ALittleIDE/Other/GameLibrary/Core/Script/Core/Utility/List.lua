@@ -17,6 +17,12 @@ function List_Push(list, object)
 	insert(list, object)
 end
 
+function List_PushList(list, other_list)
+	for index, other in ___ipairs(other_list) do
+		List_Push(list, other)
+	end
+end
+
 function List_Insert(list, index, object)
 	insert(list, index, object)
 end

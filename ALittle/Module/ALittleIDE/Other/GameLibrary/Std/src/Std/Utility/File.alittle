@@ -162,6 +162,40 @@ public static File_GetFileAttrByDir(string path, [Nullable] Map<string, lua.file
 }
 
 // 获取某个目录以及子目录下的所有文件属性
+public static File_GetFileListByDir(string path, [Nullable] List<string> file_list) : List<string>
+{
+    // 初始化参数
+    [Language(Lua)]
+    {
+        if (file_list == null)
+            file_list = new List<string>();
+        // 遍历路径
+        for (var file in dir(path))
+        {
+            // 跳过当前目录，父级目录
+            if (file != "." && file != "..")
+            {
+                // 生成文件目录
+                var file_path = path .. "/" .. file;
+                // 获取文件属性
+                var attr = attributes(file_path);
+                // 如果是目录，那么就递归遍历
+                if (attr.mode == "directory")
+                    File_GetFileListByDir(file_path, file_list);
+                    // 如果是文件，那么就直接获取属性
+                else
+                    List_Push(file_list, file_path);
+            }
+        }
+        // 返回结果
+        return file_list;   
+    }
+    
+    [Language(JavaScript)]
+    return JavaScript.File_GetFileListByDir(path, file_list);
+}
+
+// 获取某个目录所有文件属性
 public static File_GetFileNameListByDir(string path, [Nullable] Map<string, lua.fileattr> file_map) : Map<string, lua.fileattr>
 {
     // 初始化参数
@@ -360,7 +394,7 @@ public static File_WriteJsonFromStdFile(any content, string file_path) : bool
     }
 }
 
-public static File_ReadTextFromStdFile(string file_path) : any, string
+public static File_ReadTextFromStdFile(string file_path) : string, string
 {
     // 读取文件
     [Language(Lua)]

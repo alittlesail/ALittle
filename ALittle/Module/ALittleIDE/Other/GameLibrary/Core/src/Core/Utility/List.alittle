@@ -37,6 +37,12 @@ public static List_Push<T>(List<T> list, T object)
     cast<javascript.Array>(list).push(object);
 }
 
+public static List_PushList<T>(List<T> list, List<T> other_list)
+{
+    for (var index, other in other_list)
+        List_Push(list, other);
+}
+
 public static List_Insert<T>(List<T> list, int index, T object)
 {
     [Language(Lua)]

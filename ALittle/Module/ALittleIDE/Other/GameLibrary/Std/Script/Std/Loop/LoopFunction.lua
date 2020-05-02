@@ -100,6 +100,9 @@ function LoopFunction:SetTime(time)
 end
 
 function LoopFunction:Update(frame_time)
+	if self._total_interval_time == 60 then
+		ALittle.Log("Update")
+	end
 	if self._accumulate_delay_time < self._total_delay_time then
 		self._accumulate_delay_time = self._accumulate_delay_time + (frame_time)
 		if self._accumulate_delay_time < self._total_delay_time then

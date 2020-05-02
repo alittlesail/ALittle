@@ -54,7 +54,6 @@
     <None Include="src\Std\Loop\LoopFunction.alittle" />
     <None Include="src\Std\Loop\LoopGroup.alittle" />
     <None Include="src\Std\Loop\LoopList.alittle" />
-    <None Include="src\Std\Loop\LoopSystem.alittle" />
     <None Include="src\Std\Loop\LoopTimer.alittle" />
     <None Include="src\Std\Net\HttpFileReceiverTemplate.alittle" />
     <None Include="src\Std\Net\HttpFileSenderTemplate.alittle" />
@@ -67,6 +66,8 @@
     <None Include="src\Std\Reflect\ReflectCmd.alittle" />
     <None Include="src\Std\Reflect\ReflectCsv.alittle" />
     <None Include="src\Std\Reflect\ReflectMessage.alittle" />
+    <None Include="src\Std\Singleton\LoopSystem.alittle" />
+    <None Include="src\Std\Singleton\Schedule.alittle" />
     <None Include="src\Std\Utility\Bit.alittle" />
     <None Include="src\Std\Utility\JsonConfig.alittle" />
     <None Include="src\Std\Utility\CsvConfig.alittle" />
@@ -75,7 +76,6 @@
     <None Include="src\Std\Utility\IHeapTimer.alittle" />
     <None Include="src\Std\Utility\SafeIDCreator.alittle" />
     <None Include="src\Std\Utility\ISchedule.alittle" />
-    <None Include="src\Std\Utility\Schedule.alittle" />
     <None Include="src\Std\Utility\String.alittle" />
     <None Include="src\Std\Utility\WeakRef.alittle" />
   </ItemGroup>

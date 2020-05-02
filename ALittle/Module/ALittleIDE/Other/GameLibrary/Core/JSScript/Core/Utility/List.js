@@ -16,6 +16,15 @@ ALittle.List_Push = function(list, object) {
 	list.push(object);
 }
 
+ALittle.List_PushList = function(list, other_list) {
+	let ___OBJECT_1 = other_list;
+	for (let index = 1; index <= ___OBJECT_1.length; ++index) {
+		let other = ___OBJECT_1[index - 1];
+		if (other === undefined) break;
+		ALittle.List_Push(list, other);
+	}
+}
+
 ALittle.List_Insert = function(list, index, object) {
 	list.splice(index - 1, 0, object);
 }

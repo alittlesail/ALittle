@@ -129,7 +129,6 @@ public class LoopFunction : LoopObject
     // 更新
     protected fun Update(int frame_time)
     {
-        if (this._total_interval_time == 60) ALittle.Log("Update");
         // 扣除延时时间
         if (this._accumulate_delay_time < this._total_delay_time)
         {

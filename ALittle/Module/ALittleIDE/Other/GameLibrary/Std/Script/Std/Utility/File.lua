@@ -92,6 +92,26 @@ function File_GetFileAttrByDir(path, file_map)
 	end
 end
 
+function File_GetFileListByDir(path, file_list)
+	do
+		if file_list == nil then
+			file_list = {}
+		end
+		for file in dir(path) do
+			if file ~= "." and file ~= ".." then
+				local file_path = path .. "/" .. file
+				local attr = attributes(file_path)
+				if attr.mode == "directory" then
+					File_GetFileListByDir(file_path, file_list)
+				else
+					List_Push(file_list, file_path)
+				end
+			end
+		end
+		return file_list
+	end
+end
+
 function File_GetFileNameListByDir(path, file_map)
 	do
 		if file_map == nil then

@@ -57,12 +57,6 @@ class ModuleSystem
     
     public await fun LoadModuleImpl(string module_base_path, string name) : ModuleInfo
     {
-        // 检查模块是否已被加载
-        [Language(Lua)]
-        if (package.loaded[name] != null) return null;
-        [Language(JavaScript)]
-        if (cast<Map<string, any>>(window)[name] != null) return null;
-    
         // 刷新模块
         [Language(Lua)]
         var version_system = VersionSystem.CreateVersionSystem("", name);
@@ -73,6 +67,21 @@ class ModuleSystem
         var info = new ModuleInfo();
         info.name = name; // 保存模块名
     
+        // 加载Main文件
+        [Language(Lua)]
+        if (package.loaded[name] == null)
+        {
+            alittle.Require(module_base_path, "Script/Main");
+            info.module = package.loaded[name];
+        }
+        [Language(JavaScript)]
+        if (cast<Map<string, any>>(window)[name] == null)
+        {
+            alittle.Require(module_base_path, "JSScript/Main");
+            info.module = cast<Map<string, any>>(window)[name];
+        }
+        if (info.module == null) return null;
+
         // 判断是不是加密模式
         [Language(Lua)]
         info.crypt_mode = (File_ReadTextFromFile("Module/" .. name .. "/NoCrypt.ali", false) == null);
@@ -83,18 +92,7 @@ class ModuleSystem
         info.control = new ControlSystem(name, info.crypt_mode);
         [Language(JavaScript)]
         info.control.RegisterInfoByHttp();
-        // 加载Main文件
-        [Language(Lua)]
-        alittle.Require(module_base_path, "Script/Main");
-        [Language(JavaScript)]
-        alittle.Require(module_base_path, "JSScript/Main");
-        // 检查是否有这个模块
-        [Language(Lua)]
-        info.module = package.loaded[name];
-        [Language(JavaScript)]
-        info.module = cast<Map<string, any>>(window)[name];
         
-        if (info.module == null) return null;
         this._name_module_map[name] = info;
     
         // 获取壳和模块的启动和结束函数

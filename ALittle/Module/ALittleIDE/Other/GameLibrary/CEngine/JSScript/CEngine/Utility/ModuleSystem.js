@@ -27,19 +27,18 @@ ALittle.ModuleSystem = JavaScript.Class(undefined, {
 	},
 	LoadModuleImpl : function(module_base_path, name) {
 		return new Promise((async function(___COROUTINE, ___) {
-			if (window[name] !== undefined) {
-				___COROUTINE(undefined); return;
-			}
 			let info = {};
 			info.name = name;
-			info.crypt_mode = false;
-			info.control = ALittle.NewObject(ALittle.ControlSystem, name, info.crypt_mode);
-			await info.control.RegisterInfoByHttp();
-			await Require(module_base_path, "JSScript/Main");
-			info.module = window[name];
+			if (window[name] === undefined) {
+				await Require(module_base_path, "JSScript/Main");
+				info.module = window[name];
+			}
 			if (info.module === undefined) {
 				___COROUTINE(undefined); return;
 			}
+			info.crypt_mode = false;
+			info.control = ALittle.NewObject(ALittle.ControlSystem, name, info.crypt_mode);
+			await info.control.RegisterInfoByHttp();
 			this._name_module_map[name] = info;
 			info.browser_setup = info.module["__Browser_Setup"];
 			info.browser_addmodule = info.module["__Browser_AddModule"];

@@ -26,11 +26,11 @@
     <Filter Include="Adapter\JavaScript">
       <UniqueIdentifier>{82b42735-79d5-4932-8819-1ba676106666}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Std\Singleton">
+      <UniqueIdentifier>{a4e5893d-a4ed-4d27-986a-65427edb8c4f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\Std\Loop\LoopSystem.alittle">
-      <Filter>Std\Loop</Filter>
-    </None>
     <None Include="src\Std\Loop\LoopTimer.alittle">
       <Filter>Std\Loop</Filter>
     </None>
@@ -182,9 +182,6 @@
     <None Include="src\Adapter\Lua\dump.alittle">
       <Filter>Adapter\Lua</Filter>
     </None>
-    <None Include="src\Std\Utility\Schedule.alittle">
-      <Filter>Std\Utility</Filter>
-    </None>
     <None Include="src\Adapter\Lua\sqlte3.alittle">
       <Filter>Adapter\Lua</Filter>
     </None>
@@ -202,6 +199,12 @@
     </None>
     <None Include="src\Std\Loop\LoopFrame.alittle">
       <Filter>Std\Loop</Filter>
+    </None>
+    <None Include="src\Std\Singleton\LoopSystem.alittle">
+      <Filter>Std\Singleton</Filter>
+    </None>
+    <None Include="src\Std\Singleton\Schedule.alittle">
+      <Filter>Std\Singleton</Filter>
     </None>
   </ItemGroup>
 </Project>

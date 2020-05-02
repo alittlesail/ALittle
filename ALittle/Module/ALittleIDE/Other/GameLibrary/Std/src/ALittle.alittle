@@ -72,6 +72,6 @@ public await static RequireStd(string base_path)
         Require(base_path, "Adapter/Lua/LuaSchedule");
     }
     
-    Require(base_path, "Std/Loop/LoopSystem");
-    Require(base_path, "Std/Utility/Schedule");
+    Require(base_path, "Std/Singleton/LoopSystem");
+    Require(base_path, "Std/Singleton/Schedule");
 }

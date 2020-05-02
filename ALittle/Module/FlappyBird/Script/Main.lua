@@ -1,4 +1,4 @@
-
+-- ALittle Generate Lua
 module("FlappyBird", package.seeall)
 
 local ___pairs = pairs
@@ -38,7 +38,7 @@ function __Module_Setup(layer_group, control, module_base_path, script_base_path
 	g_Control = control
 	g_LayerGroup = layer_group
 	g_ModuleBasePath = module_base_path
-	Require(script_base_path .. "GCenter")
+	Require(script_base_path, "GCenter")
 	g_GCenter:Setup()
 end
 __Module_Setup = Lua.CoWrap(__Module_Setup)

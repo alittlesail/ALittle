@@ -22,9 +22,10 @@ public await static RequireSEngine(string base_path)
     Require(base_path, "Utility/GatewaySystem");
 }
 
-public static __ALITTLEAPI_SetupMainModule(string sengine_path, string module_path, string module_name)
+public await static __ALITTLEAPI_SetupMainModule(string sengine_path, string module_path, string module_name)
 {
     ALittle.Log("module_name:"..module_name);
+    alittle.Require(module_path, "Script/Main");
     var module = cast<Map<string, any>>(_G)[module_name];
     if (module == null)
     {

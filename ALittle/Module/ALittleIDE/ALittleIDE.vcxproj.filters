@@ -223,7 +223,7 @@
     <None Include="src\UIEdit\IDEDataCore\IDEEnum.alittle">
       <Filter>源文件\UIEdit\IDEDataCore</Filter>
     </None>
-    <None Include="src\ALittle.alittle">
+    <None Include="src\Main.alittle">
       <Filter>源文件</Filter>
     </None>
   </ItemGroup>

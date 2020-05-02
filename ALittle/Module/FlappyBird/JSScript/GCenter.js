@@ -1,5 +1,5 @@
 {
-if (typeof FlappyBird === "undefined") FlappyBird = {};
+if (typeof FlappyBird === "undefined") window.FlappyBird = {};
 
 
 FlappyBird.g_GConfig = undefined;

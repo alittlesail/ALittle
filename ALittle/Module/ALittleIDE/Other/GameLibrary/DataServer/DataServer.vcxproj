@@ -22,7 +22,7 @@
     <None Include="src\DataManager.alittle" />
     <None Include="src\LeaseManager.alittle" />
     <None Include="src\LoginManager.alittle" />
-    <None Include="src\ALittle.alittle" />
+    <None Include="src\Main.alittle" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

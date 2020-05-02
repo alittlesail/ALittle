@@ -1,10 +1,5 @@
 namespace HelloWorld;
 
-[Language(Lua)]
-require("../../../../../Std/Script/ALittle");
-[Language(JavaScript)]
-require("../../../../../Std/JSScript/ALittle");
-
 public static Main()
 {
     ALittle.Log("HelloWorld");

@@ -85,9 +85,9 @@ class ModuleSystem
         info.control.RegisterInfoByHttp();
         // 加载Main文件
         [Language(Lua)]
-        alittle.Require(module_base_path, "Script/ALittle");
+        alittle.Require(module_base_path, "Script/Main");
         [Language(JavaScript)]
-        alittle.Require(module_base_path, "JSScript/ALittle");
+        alittle.Require(module_base_path, "JSScript/Main");
         // 检查是否有这个模块
         [Language(Lua)]
         info.module = package.loaded[name];

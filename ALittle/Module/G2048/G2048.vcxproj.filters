@@ -2,6 +2,6 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <None Include="src\GCenter.alittle" />
-    <None Include="src\ALittle.alittle" />
+    <None Include="src\Main.alittle" />
   </ItemGroup>
 </Project>

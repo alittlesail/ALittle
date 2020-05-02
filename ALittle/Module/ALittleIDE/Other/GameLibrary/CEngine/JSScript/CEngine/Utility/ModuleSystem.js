@@ -35,7 +35,7 @@ ALittle.ModuleSystem = JavaScript.Class(undefined, {
 			info.crypt_mode = false;
 			info.control = ALittle.NewObject(ALittle.ControlSystem, name, info.crypt_mode);
 			await info.control.RegisterInfoByHttp();
-			await Require(module_base_path, "JSScript/ALittle");
+			await Require(module_base_path, "JSScript/Main");
 			info.module = window[name];
 			if (info.module === undefined) {
 				___COROUTINE(undefined); return;

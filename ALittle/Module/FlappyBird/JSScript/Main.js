@@ -1,5 +1,5 @@
 {
-if (typeof FlappyBird === "undefined") FlappyBird = {};
+if (typeof FlappyBird === "undefined") window.FlappyBird = {};
 
 
 FlappyBird.__Browser_Setup = async function(layer_group, control, module_base_path, script_base_path, debug) {
@@ -34,7 +34,7 @@ FlappyBird.__Module_Setup = async function(layer_group, control, module_base_pat
 	FlappyBird.g_Control = control;
 	FlappyBird.g_LayerGroup = layer_group;
 	FlappyBird.g_ModuleBasePath = module_base_path;
-	await Require(script_base_path + "GCenter");
+	await Require(script_base_path, "GCenter");
 	FlappyBird.g_GCenter.Setup();
 }
 

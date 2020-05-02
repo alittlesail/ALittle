@@ -1,5 +1,5 @@
 
-namespace FlappyBird;
+namespace G2048;
 
 // 壳入口函数
 public async static __Browser_Setup(ALittle.DisplayLayout layer_group
@@ -8,9 +8,9 @@ public async static __Browser_Setup(ALittle.DisplayLayout layer_group
                               , string debug)
 {
 	// 创建窗口
-	var window_width = 288;
-	var window_height = 512;
-	var rate = 1.0;
+	var window_width = 720;
+	var window_height = 1280;
+	var rate = 0.5;
 	var flag = ALittle.UIEnumTypes.VIEW_RESIZABLE;
 	if (ALittle.System_GetPlatform() != "Windows" && ALittle.System_GetPlatform() != "Web")
 	{
@@ -24,11 +24,11 @@ public async static __Browser_Setup(ALittle.DisplayLayout layer_group
 	{
 		rate = ALittle.System_GetScreenHeight() / window_height;
     }
-	ALittle.System_CreateView("FlappyBird", window_width, window_height, flag, rate);
+	ALittle.System_CreateView("2048", window_width, window_height, flag, rate);
 	ALittle.System_SetViewIcon(module_base_path.."/Other/ic_launcher.png");
     
 	// 加载模块
-	A_ModuleSystem.LoadModule(module_base_path, "FlappyBird");
+	A_ModuleSystem.LoadModule(module_base_path, "G2048");
 }
 
 // 壳处理添加模块，layer_group是模块的层组
@@ -54,7 +54,7 @@ public async static __Module_Setup(ALittle.DisplayLayout layer_group, ALittle.Co
 	g_Control = control;
 	g_LayerGroup = layer_group;
 	g_ModuleBasePath = module_base_path;
-    
+
 	alittle.Require(script_base_path, "GCenter");
 	g_GCenter.Setup();
 }
@@ -69,11 +69,11 @@ public static __Module_Shutdown()
 public static __Module_GetInfo(ALittle.ControlSystem control, string module_base_path, string script_base_path) : ALittle.ModuleShortInfo
 {
 	var info = new ALittle.ModuleShortInfo();
-	info.title = "FlappyBird";
+	info.title = "2048";
 	info.icon = null;
 	info.width_type = ALittle.UIEnumTypes.SIZE_ABS;
-	info.width_value = 288;
+	info.width_value = 720;
 	info.height_type = ALittle.UIEnumTypes.SIZE_ABS;
-	info.height_value = 512;
+	info.height_value = 1280;
 	return info;
 }

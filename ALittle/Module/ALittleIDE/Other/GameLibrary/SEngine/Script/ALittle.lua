@@ -25,7 +25,9 @@ local ___COROUTINE = coroutine.running()
 end
 
 function __ALITTLEAPI_SetupMainModule(sengine_path, module_path, module_name)
+local ___COROUTINE = coroutine.running()
 	ALittle.Log("module_name:" .. module_name)
+	Require(module_path, "Script/Main")
 	local module = _G[module_name]
 	if module == nil then
 		ALittle.Log("找不到模块:" .. module_name)

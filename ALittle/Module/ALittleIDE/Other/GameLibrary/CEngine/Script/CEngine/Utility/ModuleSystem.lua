@@ -45,7 +45,7 @@ local ___COROUTINE = coroutine.running()
 	info.name = name
 	info.crypt_mode = (File_ReadTextFromFile("Module/" .. name .. "/NoCrypt.ali", false) == nil)
 	info.control = ControlSystem(name, info.crypt_mode)
-	Require(module_base_path, "Script/ALittle")
+	Require(module_base_path, "Script/Main")
 	info.module = package.loaded[name]
 	if info.module == nil then
 		return nil

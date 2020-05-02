@@ -20,7 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="src\DataRouteManager.alittle" />
-    <None Include="src\ALittle.alittle" />
+    <None Include="src\Main.alittle" />
     <None Include="src\ModuleRouteManager.alittle" />
     <None Include="src\PhoneCodeManager.alittle" />
     <None Include="src\RegisterManager.alittle" />

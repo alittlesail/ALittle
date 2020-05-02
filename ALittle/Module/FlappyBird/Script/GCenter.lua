@@ -1,4 +1,4 @@
-
+-- ALittle Generate Lua
 module("FlappyBird", package.seeall)
 
 local ___pairs = pairs

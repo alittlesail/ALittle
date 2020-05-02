@@ -118,7 +118,7 @@ ALittle.LoopSystem = JavaScript.Class(ALittle.ILoopSystem, {
 	},
 }, "ALittle.LoopSystem");
 
-window.A_JLoopSystem = ALittle.NewObject(JavaScript.Template(ALittle.LoopSystem, "ALittle.LoopSystem<JavaScript.JHeapTimer>", JavaScript.JHeapTimer), true);
+window.A_JLoopSystem = ALittle.NewObject(JavaScript.Template(ALittle.LoopSystem, "ALittle.LoopSystem<JavaScript.JHeapTimer>", JavaScript.JHeapTimer));
 window.A_JWeakLoopSystem = ALittle.NewObject(JavaScript.Template(ALittle.LoopSystem, "ALittle.LoopSystem<JavaScript.JHeapTimer>", JavaScript.JHeapTimer), true);
 let GetLoopSystem = function() {
 	return A_JLoopSystem;

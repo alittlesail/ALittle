@@ -197,5 +197,7 @@ public static JSystem_MainLoop(double delta)
     var cur_time = javascript.Date.now();
     var delta_time = cur_time - LOOP_LAST_TIME;
     LOOP_LAST_TIME = cur_time;
-    A_LoopSystem.Update(delta_time);
+    
+    var func = cast<Map<string, Functor<(int)>>>(window)["__ALITTLEAPI_Update"];
+    if (func != null) func(delta_time);
 }

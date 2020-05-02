@@ -91,13 +91,10 @@ public class ImagePlay : DisplayLayout
     
     public fun PlayUpdate()
     {
-        if (this._child_count == 0)
-            return;
+        if (this._child_count == 0) return;
         // 隐藏当前的图片
         if (this._play_index > 0)
-        {
             this._childs[this._play_index].visible = false;
-        }
         // 索引向前加1
         this._play_index = this._play_index + 1;
         if (this._play_index > this._child_count)

@@ -7,11 +7,14 @@
 </head>
 
 <body onload="onLoad()">
-	<script src="ALittle/Module/Core/JSScript/ALittle.js"></script>
+	<script src="ALittle/Module/ALittleIDE/Other/GameLibrary/Core/JSScript/ALittle.js"></script>
+	<script src="ALittle/Module/ALittleIDE/Other/GameLibrary/Std/JSScript/ALittle.js"></script>
+	<script src="ALittle/Module/ALittleIDE/Other/GameLibrary/HelloWorld/JSScript/Main.js"></script>
 	<script type='text/javascript'>
-		function onLoad()
+		async function onLoad()
 		{
-			Require("", "ALittle/Module/ALittleIDE/Other/GameLibrary/HelloWorld/JSScript/Main");
+			await RequireCore("ALittle/Module/ALittleIDE/Other/GameLibrary/Core/JSScript/");
+			await RequireStd("ALittle/Module/ALittleIDE/Other/GameLibrary/Std/JSScript/");
 			HelloWorld.Main();
 		}
 	</script>

@@ -87,6 +87,9 @@ ALittle.LoopFunction = JavaScript.Class(ALittle.LoopObject, {
 		return [time - total_time, true];
 	},
 	Update : function(frame_time) {
+		if (this._total_interval_time === 60) {
+			ALittle.Log("Update");
+		}
 		if (this._accumulate_delay_time < this._total_delay_time) {
 			this._accumulate_delay_time = this._accumulate_delay_time + (frame_time);
 			if (this._accumulate_delay_time < this._total_delay_time) {

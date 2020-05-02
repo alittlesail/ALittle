@@ -28,7 +28,6 @@ public await static RequireCEngine(string base_path)
     Require(base_path, "CEngine/Utility/AudioSystem");
     Require(base_path, "CEngine/Utility/ModuleSystem");
     Require(base_path, "CEngine/Utility/CsvConfigManager");
-    Require(base_path, "CEngine/Utility/Application");
     
     Require(base_path, "CEngine/LoopSystem/LoopAnimation");
     Require(base_path, "CEngine/LoopSystem/LoopAttribute");
@@ -310,12 +309,12 @@ public static __ALITTLEAPI_SystemSaveFile(string path)
 }
 //////////////////////////////////////////////////////////////////////////////////////-
 // 启动核心模块资源
-public static __LUAAPI_SetupMainModule(string base_path, string module_name)
+public static __ALITTLEAPI_SetupMainModule(string base_path, string module_name)
 {
     A_ModuleSystem.MainSetup(base_path, module_name);
 }
 // 释放核心模块资源
-public static __LUAAPI_ShutdownMainModule()
+public static __ALITTLEAPI_ShutdownMainModule()
 {
     A_ModuleSystem.MainShutdown();
 }

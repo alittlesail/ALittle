@@ -8,16 +8,16 @@
 
 <body onload="onLoad()" bgcolor="#000000" oncontextmenu="doNothing()">
 	<script src="Module/ALittleIDE/Other/GameLibrary/Core/JSScript/ALittle.js"></script>
+	<script src="Module/ALittleIDE/Other/GameLibrary/Std/JSScript/ALittle.js"></script>
 	<script type='text/javascript'>
 		function doNothing() { window.event.returnValue=false; return false; }
 		async function onLoad()
 		{
-			await __ALITTLEAPI_Core_Init("Module/ALittleIDE/Other/GameLibrary/Core/JSScript/");
-			await Require("Module/ALittleIDE/Other/GameLibrary/Std/JSScript/ALittle");
-			await __ALITTLEAPI_Std_Init("Module/ALittleIDE/Other/GameLibrary/Std/JSScript/");
-			await Require("Module/ALittleIDE/Other/GameLibrary/CEngine/JSScript/ALittle");
-			await __ALITTLEAPI_CEngine_Init("Module/ALittleIDE/Other/GameLibrary/CEngine/JSScript/");
-			__ALITTLEAPI_SetupMainModule("Module/G2048/JSScript/", "debug", "G2048")
+			await RequireCore("Module/ALittleIDE/Other/GameLibrary/Core/JSScript/");
+			await RequireStd("Module/ALittleIDE/Other/GameLibrary/Std/JSScript/");
+			await Require("", "Module/ALittleIDE/Other/GameLibrary/CEngine/JSScript/ALittle");
+			await RequireCEngine("Module/ALittleIDE/Other/GameLibrary/CEngine/JSScript/");
+			__ALITTLEAPI_SetupMainModule("Module/G2048/", "G2048")
 		}
 	</script>
 </body>

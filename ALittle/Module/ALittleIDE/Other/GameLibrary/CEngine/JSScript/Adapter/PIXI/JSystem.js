@@ -198,7 +198,10 @@ JavaScript.JSystem_MainLoop = function(delta) {
 	let cur_time = Date.now();
 	let delta_time = cur_time - LOOP_LAST_TIME;
 	LOOP_LAST_TIME = cur_time;
-	A_LoopSystem.Update(delta_time);
+	let func = window["__ALITTLEAPI_Update"];
+	if (func !== undefined) {
+		func(delta_time);
+	}
 }
 
 }

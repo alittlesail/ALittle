@@ -243,11 +243,11 @@ function __ALITTLEAPI_SystemSaveFile(path)
 	A_OtherSystem:HandleSystemSaveFile(path)
 end
 
-function __LUAAPI_SetupMainModule(base_path, module_name)
+function __ALITTLEAPI_SetupMainModule(base_path, module_name)
 	A_ModuleSystem:MainSetup(base_path, module_name)
 end
 
-function __LUAAPI_ShutdownMainModule()
+function __ALITTLEAPI_ShutdownMainModule()
 	A_ModuleSystem:MainShutdown()
 end
 

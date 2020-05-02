@@ -238,11 +238,11 @@ window.__ALITTLEAPI_SystemSaveFile = function(path) {
 	A_OtherSystem.HandleSystemSaveFile(path);
 }
 
-window.__LUAAPI_SetupMainModule = function(base_path, module_name) {
+window.__ALITTLEAPI_SetupMainModule = function(base_path, module_name) {
 	A_ModuleSystem.MainSetup(base_path, module_name);
 }
 
-window.__LUAAPI_ShutdownMainModule = function() {
+window.__ALITTLEAPI_ShutdownMainModule = function() {
 	A_ModuleSystem.MainShutdown();
 }
 

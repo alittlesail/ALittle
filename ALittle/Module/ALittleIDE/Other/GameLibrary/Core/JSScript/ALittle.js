@@ -15,7 +15,7 @@ let JSRequire = function(base_path, url, thread) {
 	script.onerror = error;
 	script.ontimeout = error;
 	script.onload = thread.bind(undefined);
-	script.src = url + ".js";
+	script.src = base_path + url + ".js";
 	document.body.appendChild(script);
 }
 

@@ -20,7 +20,7 @@ private static JSRequire(string base_path, string url, ALittle.Thread thread)
     script.ontimeout = error;
     script.onload = bind(cast<Functor<(string)>>(thread), null);
         
-    script.src = url..".js";
+    script.src = base_path..url..".js";
     document.body.appendChild(script);
 }
 

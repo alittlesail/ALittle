@@ -42,9 +42,20 @@ public class ControlSystem
         this._crypt_mode = crypt_mode || false;
    
         [Language(JavaScript)]
-        this._host = location.host;
+        if (cast<Map<string, string>>(window)["alittle_hostname"] != null)
+            this._host = cast<Map<string, string>>(window)["alittle_hostname"];
+        else
+            this._host = location.hostname;
         [Language(JavaScript)]
-        this._port = Math_ToInt(location.port);
+        if (cast<Map<string, int>>(window)["alittle_port"] != null)
+            this._port = cast<Map<string, int>>(window)["alittle_port"];
+        else
+            this._port = Math_ToInt(location.port);
+        [Language(JavaScript)]
+        if (cast<Map<string, string>>(window)["alittle_base_url"] != null)
+            this._base_url = cast<Map<string, string>>(window)["alittle_base_url"];
+        else
+            this._base_url = File_GetFilePathByPath(location.pathname).."/";
         [Language(JavaScript)]
         if (this._port == null)
         {
@@ -53,9 +64,7 @@ public class ControlSystem
             else
                 this._port = 80;
         }
-        [Language(JavaScript)]
-        this._base_url = File_GetFilePathByPath(location.pathname).."/";
-        
+
         // 基本路径
         this._base_path = "Module/" .. module_name .. "/";
         [Language(JavaScript)]

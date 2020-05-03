@@ -4,6 +4,7 @@
 window.RequireCEngine = function(base_path) {
 	return new Promise(async function(___COROUTINE, ___) {
 		await Require(base_path, "CEngine/UISystem/IShow");
+		await Require(base_path, "CEngine/Utility/Options");
 		await Require(base_path, "../JSNative/pixi.min");
 		await Require(base_path, "../JSNative/pixi-textinput");
 		await Require(base_path, "Adapter/PIXI/JSystem");
@@ -553,6 +554,7 @@ ALittle.ITextureCutLoader = JavaScript.Class(undefined, {
 if (typeof JavaScript === "undefined") window.JavaScript = {};
 
 
+let __pixel_ratio = 1;
 JavaScript.JSystem_GetDeviceID = function() {
 	let id = undefined;
 	let json = undefined;
@@ -585,7 +587,17 @@ let JSystem_FingerDown = function(event) {
 	if (func === undefined) {
 		return;
 	}
-	func((event.pageX - event.srcElement.offsetLeft) / A_PixiApp.stage.scale.x, (event.pageY - event.srcElement.offsetTop) / A_PixiApp.stage.scale.y, 1, 1);
+	let offsetLeft = 0;
+	let offsetTop = 0;
+	if (event.srcElement !== undefined) {
+		offsetLeft = event.srcElement.offsetLeft;
+		offsetTop = event.srcElement.offsetTop;
+	}
+	func((event.pageX - offsetLeft) / A_PixiApp.stage.scale.x * __pixel_ratio, (event.pageY - offsetTop) / A_PixiApp.stage.scale.y * __pixel_ratio, 1, 1);
+}
+
+let JSystem_WXFingerDown = function(event) {
+	JSystem_FingerDown(event.touches[1 - 1]);
 }
 
 let JSystem_FingerUp = function(event) {
@@ -593,7 +605,17 @@ let JSystem_FingerUp = function(event) {
 	if (func === undefined) {
 		return;
 	}
-	func((event.pageX - event.srcElement.offsetLeft) / A_PixiApp.stage.scale.x, (event.pageY - event.srcElement.offsetTop) / A_PixiApp.stage.scale.y, 1, 1);
+	let offsetLeft = 0;
+	let offsetTop = 0;
+	if (event.srcElement !== undefined) {
+		offsetLeft = event.srcElement.offsetLeft;
+		offsetTop = event.srcElement.offsetTop;
+	}
+	func((event.pageX - offsetLeft) / A_PixiApp.stage.scale.x * __pixel_ratio, (event.pageY - offsetTop) / A_PixiApp.stage.scale.y * __pixel_ratio, 1, 1);
+}
+
+let JSystem_WXFingerUp = function(event) {
+	JSystem_FingerUp(event.changedTouches[1 - 1]);
 }
 
 let JSystem_FingerMoved = function(event) {
@@ -601,7 +623,17 @@ let JSystem_FingerMoved = function(event) {
 	if (func === undefined) {
 		return;
 	}
-	func((event.pageX - event.srcElement.offsetLeft) / A_PixiApp.stage.scale.x, (event.pageY - event.srcElement.offsetTop) / A_PixiApp.stage.scale.y, 1, 1);
+	let offsetLeft = 0;
+	let offsetTop = 0;
+	if (event.srcElement !== undefined) {
+		offsetLeft = event.srcElement.offsetLeft;
+		offsetTop = event.srcElement.offsetTop;
+	}
+	func((event.pageX - offsetLeft) / A_PixiApp.stage.scale.x * __pixel_ratio, (event.pageY - offsetTop) / A_PixiApp.stage.scale.y * __pixel_ratio, 1, 1);
+}
+
+let JSystem_WXFingerMoved = function(event) {
+	JSystem_FingerMoved(event.touches[1 - 1]);
 }
 
 let JSystem_MouseMoved = function(event) {
@@ -690,15 +722,31 @@ JavaScript.JSystem_CreateView = function(title, width, height, flag, scale) {
 		return true;
 	}
 	let data = {};
-	data.width = ALittle.Math_Floor(width * scale);
-	data.height = ALittle.Math_Floor(height * scale);
-	data.forceCanvas = !PIXI.utils.isWebGLSupported();
+	let wx = window["wx"];
+	if (wx !== undefined) {
+		let info = wx["getSystemInfoSync"]();
+		__pixel_ratio = info["pixelRatio"];
+		data.width = info["windowWidth"] * __pixel_ratio;
+		data.height = info["windowHeight"] * __pixel_ratio;
+		data.view = window["canvas"];
+		width = data.width;
+		height = data.height;
+		scale = 1;
+	} else {
+		data.forceCanvas = !PIXI.utils.isWebGLSupported();
+		data.width = ALittle.Math_Floor(width * scale);
+		data.height = ALittle.Math_Floor(height * scale);
+	}
 	A_PixiApp = new PIXI.Application(data);
 	document.body.appendChild(A_PixiApp.view);
 	document.title = title;
 	A_PixiApp.stage.scale.x = scale;
 	A_PixiApp.stage.scale.y = scale;
-	if (ALittle.System_IsPhone()) {
+	if (wx !== undefined) {
+		wx["onTouchStart"](JSystem_WXFingerDown);
+		wx["onTouchMove"](JSystem_WXFingerMoved);
+		wx["onTouchEnd"](JSystem_WXFingerUp);
+	} else if (ALittle.System_IsPhone()) {
 		A_PixiApp.view.ontouchstart = JSystem_FingerDown;
 		A_PixiApp.view.ontouchmove = JSystem_FingerMoved;
 		A_PixiApp.view.ontouchend = JSystem_FingerUp;
@@ -1821,7 +1869,7 @@ JavaScript.JCsvFileLoader = JavaScript.Class(ALittle.ICsvFileLoader, {
 		this.StartImpl();
 	},
 	StartImpl : async function() {
-		let host = location.host;
+		let host = location.hostname;
 		let port = ALittle.Math_ToInt(location.port);
 		if (port === undefined) {
 			if (location.protocol === "https:") {
@@ -2724,8 +2772,8 @@ ALittle.ModuleSystem = JavaScript.Class(undefined, {
 			info.name = name;
 			if (window[name] === undefined) {
 				await Require(module_base_path, "JSScript/Main");
-				info.module = window[name];
 			}
+			info.module = window[name];
 			if (info.module === undefined) {
 				___COROUTINE(undefined); return;
 			}
@@ -23911,8 +23959,21 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 		this._name_map_info_cache = {};
 		this._module_name = module_name;
 		this._crypt_mode = crypt_mode || false;
-		this._host = location.host;
-		this._port = ALittle.Math_ToInt(location.port);
+		if (window["alittle_hostname"] !== undefined) {
+			this._host = window["alittle_hostname"];
+		} else {
+			this._host = location.hostname;
+		}
+		if (window["alittle_port"] !== undefined) {
+			this._port = window["alittle_port"];
+		} else {
+			this._port = ALittle.Math_ToInt(location.port);
+		}
+		if (window["alittle_base_url"] !== undefined) {
+			this._base_url = window["alittle_base_url"];
+		} else {
+			this._base_url = ALittle.File_GetFilePathByPath(location.pathname) + "/";
+		}
 		if (this._port === undefined) {
 			if (location.protocol === "https:") {
 				this._port = 443;
@@ -23920,7 +23981,6 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 				this._port = 80;
 			}
 		}
-		this._base_url = ALittle.File_GetFilePathByPath(location.pathname) + "/";
 		this._base_path = "Module/" + module_name + "/";
 		this._base_path = this._base_url + this._base_path;
 		this._ui_path = this._base_path + "UI/";

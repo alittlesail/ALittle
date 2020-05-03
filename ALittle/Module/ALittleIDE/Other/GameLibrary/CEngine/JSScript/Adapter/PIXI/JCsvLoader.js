@@ -13,7 +13,7 @@ JavaScript.JCsvFileLoader = JavaScript.Class(ALittle.ICsvFileLoader, {
 		this.StartImpl();
 	},
 	StartImpl : async function() {
-		let host = location.host;
+		let host = location.hostname;
 		let port = ALittle.Math_ToInt(location.port);
 		if (port === undefined) {
 			if (location.protocol === "https:") {

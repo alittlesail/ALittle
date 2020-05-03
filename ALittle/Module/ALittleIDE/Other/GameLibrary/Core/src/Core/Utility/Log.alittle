@@ -33,7 +33,7 @@ public static Log(...)
     lua.print(...);
     
     [Language(JavaScript)]
-    javascript.console.log(...);
+    javascript.console.trace(...);
 }
 
 public static Warn(...)

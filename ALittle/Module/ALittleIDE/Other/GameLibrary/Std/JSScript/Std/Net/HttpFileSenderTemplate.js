@@ -45,7 +45,7 @@ ALittle.HttpFileSenderTemplate = JavaScript.Class(ALittle.IHttpFileSender, {
 		}
 		let url = this._ip + ":" + this._port + "/" + method;
 		if (ALittle.String_Find(this._ip, "http://") !== 1 && ALittle.String_Find(this._ip, "https://") !== 1) {
-			if (location.host === this._ip) {
+			if (location.hostname === this._ip) {
 				url = location.protocol + "//" + url;
 			} else {
 				if (this._port === 443) {

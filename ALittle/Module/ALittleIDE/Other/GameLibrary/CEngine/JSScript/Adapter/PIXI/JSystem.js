@@ -2,6 +2,7 @@
 if (typeof JavaScript === "undefined") window.JavaScript = {};
 
 
+let __pixel_ratio = 1;
 JavaScript.JSystem_GetDeviceID = function() {
 	let id = undefined;
 	let json = undefined;
@@ -34,7 +35,17 @@ let JSystem_FingerDown = function(event) {
 	if (func === undefined) {
 		return;
 	}
-	func((event.pageX - event.srcElement.offsetLeft) / A_PixiApp.stage.scale.x, (event.pageY - event.srcElement.offsetTop) / A_PixiApp.stage.scale.y, 1, 1);
+	let offsetLeft = 0;
+	let offsetTop = 0;
+	if (event.srcElement !== undefined) {
+		offsetLeft = event.srcElement.offsetLeft;
+		offsetTop = event.srcElement.offsetTop;
+	}
+	func((event.pageX - offsetLeft) / A_PixiApp.stage.scale.x * __pixel_ratio, (event.pageY - offsetTop) / A_PixiApp.stage.scale.y * __pixel_ratio, 1, 1);
+}
+
+let JSystem_WXFingerDown = function(event) {
+	JSystem_FingerDown(event.touches[1 - 1]);
 }
 
 let JSystem_FingerUp = function(event) {
@@ -42,7 +53,17 @@ let JSystem_FingerUp = function(event) {
 	if (func === undefined) {
 		return;
 	}
-	func((event.pageX - event.srcElement.offsetLeft) / A_PixiApp.stage.scale.x, (event.pageY - event.srcElement.offsetTop) / A_PixiApp.stage.scale.y, 1, 1);
+	let offsetLeft = 0;
+	let offsetTop = 0;
+	if (event.srcElement !== undefined) {
+		offsetLeft = event.srcElement.offsetLeft;
+		offsetTop = event.srcElement.offsetTop;
+	}
+	func((event.pageX - offsetLeft) / A_PixiApp.stage.scale.x * __pixel_ratio, (event.pageY - offsetTop) / A_PixiApp.stage.scale.y * __pixel_ratio, 1, 1);
+}
+
+let JSystem_WXFingerUp = function(event) {
+	JSystem_FingerUp(event.changedTouches[1 - 1]);
 }
 
 let JSystem_FingerMoved = function(event) {
@@ -50,7 +71,17 @@ let JSystem_FingerMoved = function(event) {
 	if (func === undefined) {
 		return;
 	}
-	func((event.pageX - event.srcElement.offsetLeft) / A_PixiApp.stage.scale.x, (event.pageY - event.srcElement.offsetTop) / A_PixiApp.stage.scale.y, 1, 1);
+	let offsetLeft = 0;
+	let offsetTop = 0;
+	if (event.srcElement !== undefined) {
+		offsetLeft = event.srcElement.offsetLeft;
+		offsetTop = event.srcElement.offsetTop;
+	}
+	func((event.pageX - offsetLeft) / A_PixiApp.stage.scale.x * __pixel_ratio, (event.pageY - offsetTop) / A_PixiApp.stage.scale.y * __pixel_ratio, 1, 1);
+}
+
+let JSystem_WXFingerMoved = function(event) {
+	JSystem_FingerMoved(event.touches[1 - 1]);
 }
 
 let JSystem_MouseMoved = function(event) {
@@ -139,15 +170,31 @@ JavaScript.JSystem_CreateView = function(title, width, height, flag, scale) {
 		return true;
 	}
 	let data = {};
-	data.width = ALittle.Math_Floor(width * scale);
-	data.height = ALittle.Math_Floor(height * scale);
-	data.forceCanvas = !PIXI.utils.isWebGLSupported();
+	let wx = window["wx"];
+	if (wx !== undefined) {
+		let info = wx["getSystemInfoSync"]();
+		__pixel_ratio = info["pixelRatio"];
+		data.width = info["windowWidth"] * __pixel_ratio;
+		data.height = info["windowHeight"] * __pixel_ratio;
+		data.view = window["canvas"];
+		width = data.width;
+		height = data.height;
+		scale = 1;
+	} else {
+		data.forceCanvas = !PIXI.utils.isWebGLSupported();
+		data.width = ALittle.Math_Floor(width * scale);
+		data.height = ALittle.Math_Floor(height * scale);
+	}
 	A_PixiApp = new PIXI.Application(data);
 	document.body.appendChild(A_PixiApp.view);
 	document.title = title;
 	A_PixiApp.stage.scale.x = scale;
 	A_PixiApp.stage.scale.y = scale;
-	if (ALittle.System_IsPhone()) {
+	if (wx !== undefined) {
+		wx["onTouchStart"](JSystem_WXFingerDown);
+		wx["onTouchMove"](JSystem_WXFingerMoved);
+		wx["onTouchEnd"](JSystem_WXFingerUp);
+	} else if (ALittle.System_IsPhone()) {
 		A_PixiApp.view.ontouchstart = JSystem_FingerDown;
 		A_PixiApp.view.ontouchmove = JSystem_FingerMoved;
 		A_PixiApp.view.ontouchend = JSystem_FingerUp;

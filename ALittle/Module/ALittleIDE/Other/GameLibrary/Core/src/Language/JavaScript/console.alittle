@@ -6,6 +6,7 @@ register namespace javascript;
 public class console
 {
     public static log(...) {}
+    public static trace(...) {}
     public static warn(...) {}
     public static error(...) {}
 }

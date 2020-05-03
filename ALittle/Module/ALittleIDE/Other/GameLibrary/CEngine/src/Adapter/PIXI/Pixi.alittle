@@ -7,6 +7,7 @@ public struct ApplicationData
     int height;
     int backgroundColor;
     bool forceCanvas;
+    any view;
 }
 
 public class utils

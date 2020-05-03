@@ -31,8 +31,8 @@ ALittle.ModuleSystem = JavaScript.Class(undefined, {
 			info.name = name;
 			if (window[name] === undefined) {
 				await Require(module_base_path, "JSScript/Main");
-				info.module = window[name];
 			}
+			info.module = window[name];
 			if (info.module === undefined) {
 				___COROUTINE(undefined); return;
 			}

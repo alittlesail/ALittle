@@ -11,8 +11,21 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 		this._name_map_info_cache = {};
 		this._module_name = module_name;
 		this._crypt_mode = crypt_mode || false;
-		this._host = location.host;
-		this._port = ALittle.Math_ToInt(location.port);
+		if (window["alittle_hostname"] !== undefined) {
+			this._host = window["alittle_hostname"];
+		} else {
+			this._host = location.hostname;
+		}
+		if (window["alittle_port"] !== undefined) {
+			this._port = window["alittle_port"];
+		} else {
+			this._port = ALittle.Math_ToInt(location.port);
+		}
+		if (window["alittle_base_url"] !== undefined) {
+			this._base_url = window["alittle_base_url"];
+		} else {
+			this._base_url = ALittle.File_GetFilePathByPath(location.pathname) + "/";
+		}
 		if (this._port === undefined) {
 			if (location.protocol === "https:") {
 				this._port = 443;
@@ -20,7 +33,6 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 				this._port = 80;
 			}
 		}
-		this._base_url = ALittle.File_GetFilePathByPath(location.pathname) + "/";
 		this._base_path = "Module/" + module_name + "/";
 		this._base_path = this._base_url + this._base_path;
 		this._ui_path = this._base_path + "UI/";

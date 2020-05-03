@@ -2,6 +2,13 @@
 [Language(JavaScript)]
 register namespace javascript;
 
+// Î¢ÐÅ´¥ÆÁÊÂ¼þ
+public struct WXDomElementOnTouchEvent
+{
+    List<DomElementOnTouchEvent> touches;
+    List<DomElementOnTouchEvent> changedTouches;
+}
+
 public struct DomElementOnTouchEvent
 {
     DomElement srcElement;

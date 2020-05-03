@@ -3,7 +3,7 @@
 
 let JSRequire = function(base_path, url, thread) {
 	if (typeof(require) !== "undefined") {
-		require(url);
+		require("../" + base_path + url);
 		thread(undefined);
 		return;
 	}
@@ -330,7 +330,7 @@ ALittle.Log = function(...___args) {
 		__LOG_FUNC(s, 0);
 		return;
 	}
-	console.log(...___args);
+	console.trace(...___args);
 }
 
 ALittle.Warn = function(...___args) {

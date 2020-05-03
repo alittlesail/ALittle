@@ -8,6 +8,7 @@ ALittle.SetLogFunc(__Log);
 public await static RequireCEngine(string base_path)
 {
     Require(base_path, "CEngine/UISystem/IShow");
+    Require(base_path, "CEngine/Utility/Options");
     
     [Language(JavaScript)]
     Require(base_path, "../JSNative/pixi.min");

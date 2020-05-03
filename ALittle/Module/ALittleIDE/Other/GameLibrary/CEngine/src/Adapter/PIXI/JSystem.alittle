@@ -2,6 +2,8 @@
 [Language(JavaScript)]
 namespace JavaScript;
 
+private var __pixel_ratio = 1;
+
 public static JSystem_GetDeviceID() : string
 {
     // 先从cookie获取，如果没有就随机生成一个
@@ -34,7 +36,19 @@ private static JSystem_FingerDown(javascript.DomElementOnTouchEvent event)
     var func = cast<Map<string, Functor<(double, double, int, int)>>>(window)["__ALITTLEAPI_FingerDown"];
     if (func == null) return;
     
-    func((event.pageX - event.srcElement.offsetLeft) / A_PixiApp.stage.scale.x, (event.pageY - event.srcElement.offsetTop) / A_PixiApp.stage.scale.y, 1, 1);
+	var offsetLeft = 0;
+	var offsetTop = 0;
+    if (event.srcElement != null)
+    {
+        offsetLeft = event.srcElement.offsetLeft;
+        offsetTop = event.srcElement.offsetTop;
+    }
+    func((event.pageX - offsetLeft) / A_PixiApp.stage.scale.x * __pixel_ratio
+        , (event.pageY - offsetTop) / A_PixiApp.stage.scale.y * __pixel_ratio, 1, 1);
+}
+private static JSystem_WXFingerDown(javascript.WXDomElementOnTouchEvent event)
+{
+    JSystem_FingerDown(event.touches[1]);
 }
 
 private static JSystem_FingerUp(javascript.DomElementOnTouchEvent event)
@@ -42,7 +56,19 @@ private static JSystem_FingerUp(javascript.DomElementOnTouchEvent event)
     var func = cast<Map<string, Functor<(double, double, int, int)>>>(window)["__ALITTLEAPI_FingerUp"];
     if (func == null) return;
     
-    func((event.pageX - event.srcElement.offsetLeft) / A_PixiApp.stage.scale.x, (event.pageY - event.srcElement.offsetTop) / A_PixiApp.stage.scale.y, 1, 1);
+	var offsetLeft = 0;
+	var offsetTop = 0;
+    if (event.srcElement != null)
+    {
+        offsetLeft = event.srcElement.offsetLeft;
+        offsetTop = event.srcElement.offsetTop;
+    }
+    func((event.pageX - offsetLeft) / A_PixiApp.stage.scale.x * __pixel_ratio
+        , (event.pageY - offsetTop) / A_PixiApp.stage.scale.y * __pixel_ratio, 1, 1);
+}
+private static JSystem_WXFingerUp(javascript.WXDomElementOnTouchEvent event)
+{
+    JSystem_FingerUp(event.changedTouches[1]);
 }
 
 private static JSystem_FingerMoved(javascript.DomElementOnTouchEvent event)
@@ -50,7 +76,19 @@ private static JSystem_FingerMoved(javascript.DomElementOnTouchEvent event)
     var func = cast<Map<string, Functor<(double, double, int, int)>>>(window)["__ALITTLEAPI_FingerMoved"];
     if (func == null) return;
     
-    func((event.pageX - event.srcElement.offsetLeft) / A_PixiApp.stage.scale.x, (event.pageY - event.srcElement.offsetTop) / A_PixiApp.stage.scale.y, 1, 1);
+	var offsetLeft = 0;
+	var offsetTop = 0;
+    if (event.srcElement != null)
+    {
+        offsetLeft = event.srcElement.offsetLeft;
+        offsetTop = event.srcElement.offsetTop;
+    }
+    func((event.pageX - offsetLeft) / A_PixiApp.stage.scale.x * __pixel_ratio
+        , (event.pageY - offsetTop) / A_PixiApp.stage.scale.y * __pixel_ratio, 1, 1);
+}
+private static JSystem_WXFingerMoved(javascript.WXDomElementOnTouchEvent event)
+{
+    JSystem_FingerMoved(event.touches[1]);
 }
 
 private static JSystem_MouseMoved(javascript.DomElementOnMouseEvent event)
@@ -130,9 +168,25 @@ public static JSystem_CreateView(string title, int width, int height, int flag, 
     if (A_PixiApp != null) return true;
     
     var data = new PIXI.ApplicationData();
-    data.width = ALittle.Math_Floor(width * scale);
-    data.height = ALittle.Math_Floor(height * scale);
-    data.forceCanvas = !PIXI.utils.isWebGLSupported();
+    var wx = cast<Map<string, any>>(window)["wx"];
+    if (wx != null)
+    {
+        var info = cast<Map<string, Functor<():Map<string, int>>>>(wx)["getSystemInfoSync"]();
+        __pixel_ratio = info["pixelRatio"];
+        data.width = info["windowWidth"] * __pixel_ratio;
+        data.height = info["windowHeight"] * __pixel_ratio;
+        data.view = cast<Map<string, any>>(window)["canvas"];
+
+        width = data.width;
+        height = data.height;
+        scale = 1;
+    }
+    else
+    {
+        data.forceCanvas = !PIXI.utils.isWebGLSupported();
+        data.width = ALittle.Math_Floor(width * scale);
+        data.height = ALittle.Math_Floor(height * scale);
+    }
     A_PixiApp = new PIXI.Application(data);
     document.body.appendChild(A_PixiApp.view);
     document.title = title;
@@ -140,7 +194,13 @@ public static JSystem_CreateView(string title, int width, int height, int flag, 
     A_PixiApp.stage.scale.y = scale;
     
 	// 监听鼠标基本事件
-	if (ALittle.System_IsPhone())
+    if (wx != null)
+    {
+        cast<Map<string, Functor<(any)>>>(wx)["onTouchStart"](JSystem_WXFingerDown);
+        cast<Map<string, Functor<(any)>>>(wx)["onTouchMove"](JSystem_WXFingerMoved);
+        cast<Map<string, Functor<(any)>>>(wx)["onTouchEnd"](JSystem_WXFingerUp);
+    }
+	elseif (ALittle.System_IsPhone())
 	{
 		A_PixiApp.view.ontouchstart = JSystem_FingerDown;
 		A_PixiApp.view.ontouchmove = JSystem_FingerMoved;

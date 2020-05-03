@@ -5,7 +5,7 @@ private static JSRequire(string base_path, string url, ALittle.Thread thread)
 {
     if (javascript.typeof(javascript.require) != "undefined")
     {
-        javascript.require(url);
+        javascript.require("../"..base_path..url);
         cast<Functor<(string)>>(thread)(null);
         return;
     }

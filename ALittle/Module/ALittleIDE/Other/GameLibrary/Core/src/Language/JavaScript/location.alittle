@@ -6,6 +6,7 @@ register namespace javascript;
 public class Location
 {
     public get host() : string {}
+    public get hostname() : string {}
     public get port() : string {}
     public get pathname() : string {}
     public get protocol() : string {}

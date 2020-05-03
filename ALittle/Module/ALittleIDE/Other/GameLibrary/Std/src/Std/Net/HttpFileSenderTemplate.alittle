@@ -67,7 +67,7 @@ public class HttpFileSenderTemplate<NATIVE : IHttpFileSenderNative> : IHttpFileS
         if (String_Find(this._ip, "http://") != 1 && String_Find(this._ip, "https://") != 1)
         {
             [Language(JavaScript)]
-            if (location.host == this._ip)
+            if (location.hostname == this._ip)
                 url = location.protocol.."//"..url;
             else
             {

@@ -19,7 +19,7 @@ public class JCsvFileLoader : ALittle.ICsvFileLoader
     
     private async fun StartImpl()
     {
-        var host = location.host;
+        var host = location.hostname;
         var port = ALittle.Math_ToInt(location.port);
         if (port == null)
         {

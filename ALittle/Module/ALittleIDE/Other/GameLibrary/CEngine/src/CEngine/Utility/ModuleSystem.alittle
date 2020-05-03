@@ -70,16 +70,14 @@ class ModuleSystem
         // 加载Main文件
         [Language(Lua)]
         if (package.loaded[name] == null)
-        {
             alittle.Require(module_base_path, "Script/Main");
-            info.module = package.loaded[name];
-        }
+        [Language(Lua)]
+        info.module = package.loaded[name];
         [Language(JavaScript)]
         if (cast<Map<string, any>>(window)[name] == null)
-        {
             alittle.Require(module_base_path, "JSScript/Main");
-            info.module = cast<Map<string, any>>(window)[name];
-        }
+        [Language(JavaScript)]
+        info.module = cast<Map<string, any>>(window)[name];
         if (info.module == null) return null;
 
         // 判断是不是加密模式

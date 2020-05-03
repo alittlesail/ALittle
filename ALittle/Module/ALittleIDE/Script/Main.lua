@@ -7,24 +7,8 @@ local ___ipairs = ipairs
 
 function __Browser_Setup(layer_group, control, module_base_path, script_base_path, debug)
 	ALittle.DeleteLog(7)
-	local window_width = 1200
-	local window_height = 600
-	local rate = 1.0
-	local flag = ALittle.BitOr(0x00000080, 0x00000020)
-	if ALittle.System_GetPlatform() ~= "Windows" and ALittle.System_GetPlatform() ~= "Web" then
-		local screen_width = ALittle.System_GetScreenWidth()
-		local screen_height = ALittle.System_GetScreenHeight()
-		if screen_width > 0 then
-			rate = screen_height / screen_width
-		end
-		window_height = ALittle.Math_Floor(rate * window_width)
-		flag = ALittle.BitOr(flag, 0x00000001)
-	end
-	if ALittle.System_GetPlatform() == "Web" then
-		window_width = ALittle.System_GetScreenWidth() - 100
-		window_height = ALittle.System_GetScreenHeight() - 100
-	end
-	ALittle.System_CreateView("ALittleIDE", window_width, window_height, flag, rate)
+	local window_width, window_height, flag, scale = ALittle.System_CalcLandscape(1200, 600, ALittle.BitOr(0x00000080, 0x00000020))
+	ALittle.System_CreateView("ALittleIDE", window_width, window_height, flag, scale)
 	ALittle.System_SetViewIcon(module_base_path .. "/Other/ic_launcher.png")
 	A_ModuleSystem:LoadModule(module_base_path, "ALittleIDE")
 end

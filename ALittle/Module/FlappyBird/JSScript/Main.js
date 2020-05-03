@@ -3,20 +3,8 @@ if (typeof FlappyBird === "undefined") window.FlappyBird = {};
 
 
 FlappyBird.__Browser_Setup = async function(layer_group, control, module_base_path, script_base_path, debug) {
-	let window_width = 288;
-	let window_height = 512;
-	let rate = 1.0;
-	let flag = 0x00000020;
-	if (ALittle.System_GetPlatform() !== "Windows" && ALittle.System_GetPlatform() !== "Web") {
-		let screen_width = ALittle.System_GetScreenWidth();
-		let screen_height = ALittle.System_GetScreenHeight();
-		window_height = ALittle.Math_Floor(screen_height / screen_width * window_width);
-		flag = ALittle.BitOr(flag, 0x00000001);
-	}
-	if (ALittle.System_GetPlatform() === "Web") {
-		rate = ALittle.System_GetScreenHeight() / window_height;
-	}
-	ALittle.System_CreateView("FlappyBird", window_width, window_height, flag, rate);
+	let [window_width, window_height, flag, scale] = ALittle.System_CalcPortrait(288, 512, 0);
+	ALittle.System_CreateView("FlappyBird", window_width, window_height, flag, scale);
 	ALittle.System_SetViewIcon(module_base_path + "/Other/ic_launcher.png");
 	await A_ModuleSystem.LoadModule(module_base_path, "FlappyBird");
 }

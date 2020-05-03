@@ -2,6 +2,80 @@
 namespace ALittle;
 
 ////操作系统部分////////////////////////////////////////////////////////////////////
+// 竖屏游戏比例计算
+public static System_CalcPortrait(int src_width, int src_height, int flag) : int, int, int, double
+{
+    var scale = 1.0;
+    var platform = System_GetPlatform();
+    if (platform == "iOS" || platform == "Android")
+    {
+		var screen_width = System_GetScreenWidth();
+		var screen_height  = System_GetScreenHeight();
+		src_height = Math_Floor(screen_height / screen_width * src_width);
+        
+		flag = BitOr(flag, UIEnumTypes.VIEW_FULLSCREEN);
+    }
+    elseif (platform == "Web")
+    {
+        // 比例不变，只做单纯的缩放
+	    scale = System_GetScreenHeight() / src_height;
+    }
+    elseif (platform == "WeChat")
+    {
+        // 调整为屏幕的比例大小
+		var screen_width = System_GetScreenWidth();
+		var screen_height  = System_GetScreenHeight();
+		src_height = Math_Floor(screen_height / screen_width * src_width);
+
+        // 然后缩放
+        scale = screen_width / src_width;
+    }
+    elseif (platform == "Windows")
+    {
+        if (src_height > System_GetScreenHeight())
+            scale = 0.5;
+    }
+
+    return src_width, src_height, flag, scale;
+}
+
+// 横屏游戏比例计算
+public static System_CalcLandscape(int src_width, int src_height, int flag) : int, int, int, double
+{
+    var scale = 1.0;
+    var platform = System_GetPlatform();
+    if (platform == "iOS" || platform == "Android")
+    {
+		var screen_width = System_GetScreenWidth();
+		var screen_height  = System_GetScreenHeight();
+		src_width = Math_Floor(screen_width / screen_height * src_height);
+        
+		flag = BitOr(flag, UIEnumTypes.VIEW_FULLSCREEN);
+    }
+    elseif (platform == "Web")
+    {
+        // 比例不变，只做单纯的缩放
+	    scale = System_GetScreenWidth() / src_width;
+    }
+    elseif (platform == "WeChat")
+    {
+        // 调整为屏幕的比例大小
+		var screen_width = System_GetScreenWidth();
+		var screen_height  = System_GetScreenHeight();
+		src_width = Math_Floor(screen_width / screen_height * src_height);
+
+        // 然后缩放
+        scale = screen_height / src_height;
+    }
+    elseif (platform == "Windows")
+    {
+        if (src_width > System_GetScreenWidth())
+            scale = 0.5;
+    }
+
+    return src_width, src_height, flag, scale;
+}
+
 // 获取平台
 public static System_GetPlatform() : string
 {
@@ -9,7 +83,10 @@ public static System_GetPlatform() : string
     return lua.__CPPAPI_GetPlatform();
     
     [Language(JavaScript)]
-    return "Web";
+    if (cast<Map<string, any>>(window)["wx"] != null)
+        return "WeChat";
+    else
+        return "Web";
 }
 
 // 获取设备唯一性
@@ -84,7 +161,14 @@ public static System_GetScreenWidth() : int
     return lua.__CPPAPI_GetScreenWidth();
     
     [Language(JavaScript)]
-    return window.innerWidth;
+    if (cast<Map<string, any>>(window)["wx"] != null)
+    {
+        var wx = cast<Map<string, any>>(window)["wx"];
+        var info = cast<Map<string, Functor<():Map<string, int>>>>(wx)["getSystemInfoSync"]();
+        return info["windowWidth"] * info["pixelRatio"];
+    }
+    else
+        return window.innerWidth;
 }
 // 获取屏幕高度
 public static System_GetScreenHeight() : int
@@ -93,7 +177,14 @@ public static System_GetScreenHeight() : int
     return lua.__CPPAPI_GetScreenHeight();
     
     [Language(JavaScript)]
-    return window.innerHeight;
+    if (cast<Map<string, any>>(window)["wx"] != null)
+    {
+        var wx = cast<Map<string, any>>(window)["wx"];
+        var info = cast<Map<string, Functor<():Map<string, int>>>>(wx)["getSystemInfoSync"]();
+        return info["windowHeight"] * info["pixelRatio"];
+    }
+    else
+        return window.innerHeight;
 }
 
 public static System_GetStatusBarHeight() : int

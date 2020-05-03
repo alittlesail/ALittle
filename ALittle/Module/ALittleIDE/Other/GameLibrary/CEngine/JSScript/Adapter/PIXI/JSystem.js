@@ -174,17 +174,12 @@ JavaScript.JSystem_CreateView = function(title, width, height, flag, scale) {
 	if (wx !== undefined) {
 		let info = wx["getSystemInfoSync"]();
 		__pixel_ratio = info["pixelRatio"];
-		data.width = info["windowWidth"] * __pixel_ratio;
-		data.height = info["windowHeight"] * __pixel_ratio;
 		data.view = window["canvas"];
-		width = data.width;
-		height = data.height;
-		scale = 1;
 	} else {
 		data.forceCanvas = !PIXI.utils.isWebGLSupported();
-		data.width = ALittle.Math_Floor(width * scale);
-		data.height = ALittle.Math_Floor(height * scale);
 	}
+	data.width = ALittle.Math_Floor(width * scale);
+	data.height = ALittle.Math_Floor(height * scale);
 	A_PixiApp = new PIXI.Application(data);
 	document.body.appendChild(A_PixiApp.view);
 	document.title = title;

@@ -8,25 +8,9 @@ public async static __Browser_Setup(ALittle.DisplayLayout layer_group
                               , string debug)
 {
 	// 创建窗口
-	var window_width = 288;
-	var window_height = 512;
-	var rate = 1.0;
-	var flag = ALittle.UIEnumTypes.VIEW_RESIZABLE;
-	if (ALittle.System_GetPlatform() != "Windows" && ALittle.System_GetPlatform() != "Web")
-	{
-		var screen_width = ALittle.System_GetScreenWidth();
-		var screen_height  = ALittle.System_GetScreenHeight();
-		window_height = ALittle.Math_Floor(screen_height / screen_width * window_width);
-        
-		flag = ALittle.BitOr(flag, ALittle.UIEnumTypes.VIEW_FULLSCREEN);
-	}
-	if (ALittle.System_GetPlatform() == "Web")
-	{
-		rate = ALittle.System_GetScreenHeight() / window_height;
-    }
-	ALittle.System_CreateView("FlappyBird", window_width, window_height, flag, rate);
+	var window_width, window_height, flag, scale = ALittle.System_CalcPortrait(288, 512, 0);
+	ALittle.System_CreateView("FlappyBird", window_width, window_height, flag, scale);
 	ALittle.System_SetViewIcon(module_base_path.."/Other/ic_launcher.png");
-    
 	// 加载模块
 	A_ModuleSystem.LoadModule(module_base_path, "FlappyBird");
 }

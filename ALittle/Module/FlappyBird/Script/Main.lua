@@ -6,20 +6,8 @@ local ___ipairs = ipairs
 
 
 function __Browser_Setup(layer_group, control, module_base_path, script_base_path, debug)
-	local window_width = 288
-	local window_height = 512
-	local rate = 1.0
-	local flag = 0x00000020
-	if ALittle.System_GetPlatform() ~= "Windows" and ALittle.System_GetPlatform() ~= "Web" then
-		local screen_width = ALittle.System_GetScreenWidth()
-		local screen_height = ALittle.System_GetScreenHeight()
-		window_height = ALittle.Math_Floor(screen_height / screen_width * window_width)
-		flag = ALittle.BitOr(flag, 0x00000001)
-	end
-	if ALittle.System_GetPlatform() == "Web" then
-		rate = ALittle.System_GetScreenHeight() / window_height
-	end
-	ALittle.System_CreateView("FlappyBird", window_width, window_height, flag, rate)
+	local window_width, window_height, flag, scale = ALittle.System_CalcPortrait(288, 512, 0)
+	ALittle.System_CreateView("FlappyBird", window_width, window_height, flag, scale)
 	ALittle.System_SetViewIcon(module_base_path .. "/Other/ic_launcher.png")
 	A_ModuleSystem:LoadModule(module_base_path, "FlappyBird")
 end

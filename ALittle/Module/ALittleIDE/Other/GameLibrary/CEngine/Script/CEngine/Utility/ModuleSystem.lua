@@ -42,8 +42,8 @@ local ___COROUTINE = coroutine.running()
 	info.name = name
 	if package.loaded[name] == nil then
 		Require(module_base_path, "Script/Main")
-		info.module = package.loaded[name]
 	end
+	info.module = package.loaded[name]
 	if info.module == nil then
 		return nil
 	end

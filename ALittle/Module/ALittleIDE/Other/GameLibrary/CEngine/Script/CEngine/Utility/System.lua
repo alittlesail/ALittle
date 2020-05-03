@@ -5,6 +5,52 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 
 
+function System_CalcPortrait(src_width, src_height, flag)
+	local scale = 1.0
+	local platform = System_GetPlatform()
+	if platform == "iOS" or platform == "Android" then
+		local screen_width = System_GetScreenWidth()
+		local screen_height = System_GetScreenHeight()
+		src_height = Math_Floor(screen_height / screen_width * src_width)
+		flag = BitOr(flag, UIEnumTypes.VIEW_FULLSCREEN)
+	elseif platform == "Web" then
+		scale = System_GetScreenHeight() / src_height
+	elseif platform == "WeChat" then
+		local screen_width = System_GetScreenWidth()
+		local screen_height = System_GetScreenHeight()
+		src_height = Math_Floor(screen_height / screen_width * src_width)
+		scale = screen_width / src_width
+	elseif platform == "Windows" then
+		if src_height > System_GetScreenHeight() then
+			scale = 0.5
+		end
+	end
+	return src_width, src_height, flag, scale
+end
+
+function System_CalcLandscape(src_width, src_height, flag)
+	local scale = 1.0
+	local platform = System_GetPlatform()
+	if platform == "iOS" or platform == "Android" then
+		local screen_width = System_GetScreenWidth()
+		local screen_height = System_GetScreenHeight()
+		src_width = Math_Floor(screen_width / screen_height * src_height)
+		flag = BitOr(flag, UIEnumTypes.VIEW_FULLSCREEN)
+	elseif platform == "Web" then
+		scale = System_GetScreenWidth() / src_width
+	elseif platform == "WeChat" then
+		local screen_width = System_GetScreenWidth()
+		local screen_height = System_GetScreenHeight()
+		src_width = Math_Floor(screen_width / screen_height * src_height)
+		scale = screen_height / src_height
+	elseif platform == "Windows" then
+		if src_width > System_GetScreenWidth() then
+			scale = 0.5
+		end
+	end
+	return src_width, src_height, flag, scale
+end
+
 function System_GetPlatform()
 	return __CPPAPI_GetPlatform()
 end

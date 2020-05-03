@@ -2,8 +2,58 @@
 if (typeof ALittle === "undefined") window.ALittle = {};
 
 
+ALittle.System_CalcPortrait = function(src_width, src_height, flag) {
+	let scale = 1.0;
+	let platform = ALittle.System_GetPlatform();
+	if (platform === "iOS" || platform === "Android") {
+		let screen_width = ALittle.System_GetScreenWidth();
+		let screen_height = ALittle.System_GetScreenHeight();
+		src_height = ALittle.Math_Floor(screen_height / screen_width * src_width);
+		flag = ALittle.BitOr(flag, ALittle.UIEnumTypes.VIEW_FULLSCREEN);
+	} else if (platform === "Web") {
+		scale = ALittle.System_GetScreenHeight() / src_height;
+	} else if (platform === "WeChat") {
+		let screen_width = ALittle.System_GetScreenWidth();
+		let screen_height = ALittle.System_GetScreenHeight();
+		src_height = ALittle.Math_Floor(screen_height / screen_width * src_width);
+		scale = screen_width / src_width;
+	} else if (platform === "Windows") {
+		if (src_height > ALittle.System_GetScreenHeight()) {
+			scale = 0.5;
+		}
+	}
+	return [src_width, src_height, flag, scale];
+}
+
+ALittle.System_CalcLandscape = function(src_width, src_height, flag) {
+	let scale = 1.0;
+	let platform = ALittle.System_GetPlatform();
+	if (platform === "iOS" || platform === "Android") {
+		let screen_width = ALittle.System_GetScreenWidth();
+		let screen_height = ALittle.System_GetScreenHeight();
+		src_width = ALittle.Math_Floor(screen_width / screen_height * src_height);
+		flag = ALittle.BitOr(flag, ALittle.UIEnumTypes.VIEW_FULLSCREEN);
+	} else if (platform === "Web") {
+		scale = ALittle.System_GetScreenWidth() / src_width;
+	} else if (platform === "WeChat") {
+		let screen_width = ALittle.System_GetScreenWidth();
+		let screen_height = ALittle.System_GetScreenHeight();
+		src_width = ALittle.Math_Floor(screen_width / screen_height * src_height);
+		scale = screen_height / src_height;
+	} else if (platform === "Windows") {
+		if (src_width > ALittle.System_GetScreenWidth()) {
+			scale = 0.5;
+		}
+	}
+	return [src_width, src_height, flag, scale];
+}
+
 ALittle.System_GetPlatform = function() {
-	return "Web";
+	if (window["wx"] !== undefined) {
+		return "WeChat";
+	} else {
+		return "Web";
+	}
 }
 
 ALittle.System_GetDeviceID = function() {
@@ -32,11 +82,23 @@ ALittle.System_BackProgram = function() {
 }
 
 ALittle.System_GetScreenWidth = function() {
-	return window.innerWidth;
+	if (window["wx"] !== undefined) {
+		let wx = window["wx"];
+		let info = wx["getSystemInfoSync"]();
+		return info["windowWidth"] * info["pixelRatio"];
+	} else {
+		return window.innerWidth;
+	}
 }
 
 ALittle.System_GetScreenHeight = function() {
-	return window.innerHeight;
+	if (window["wx"] !== undefined) {
+		let wx = window["wx"];
+		let info = wx["getSystemInfoSync"]();
+		return info["windowHeight"] * info["pixelRatio"];
+	} else {
+		return window.innerHeight;
+	}
 }
 
 ALittle.System_GetStatusBarHeight = function() {

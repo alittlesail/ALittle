@@ -4,7 +4,6 @@
 window.RequireCEngine = function(base_path) {
 	return new Promise(async function(___COROUTINE, ___) {
 		await Require(base_path, "CEngine/UISystem/IShow");
-		await Require(base_path, "CEngine/Utility/Options");
 		await Require(base_path, "../JSNative/pixi.min");
 		await Require(base_path, "../JSNative/pixi-textinput");
 		await Require(base_path, "Adapter/PIXI/JSystem");
@@ -726,17 +725,12 @@ JavaScript.JSystem_CreateView = function(title, width, height, flag, scale) {
 	if (wx !== undefined) {
 		let info = wx["getSystemInfoSync"]();
 		__pixel_ratio = info["pixelRatio"];
-		data.width = info["windowWidth"] * __pixel_ratio;
-		data.height = info["windowHeight"] * __pixel_ratio;
 		data.view = window["canvas"];
-		width = data.width;
-		height = data.height;
-		scale = 1;
 	} else {
 		data.forceCanvas = !PIXI.utils.isWebGLSupported();
-		data.width = ALittle.Math_Floor(width * scale);
-		data.height = ALittle.Math_Floor(height * scale);
 	}
+	data.width = ALittle.Math_Floor(width * scale);
+	data.height = ALittle.Math_Floor(height * scale);
 	A_PixiApp = new PIXI.Application(data);
 	document.body.appendChild(A_PixiApp.view);
 	document.title = title;
@@ -2025,8 +2019,58 @@ ALittle.DeleteLog = function(day_count_before) {
 if (typeof ALittle === "undefined") window.ALittle = {};
 
 
+ALittle.System_CalcPortrait = function(src_width, src_height, flag) {
+	let scale = 1.0;
+	let platform = ALittle.System_GetPlatform();
+	if (platform === "iOS" || platform === "Android") {
+		let screen_width = ALittle.System_GetScreenWidth();
+		let screen_height = ALittle.System_GetScreenHeight();
+		src_height = ALittle.Math_Floor(screen_height / screen_width * src_width);
+		flag = ALittle.BitOr(flag, ALittle.UIEnumTypes.VIEW_FULLSCREEN);
+	} else if (platform === "Web") {
+		scale = ALittle.System_GetScreenHeight() / src_height;
+	} else if (platform === "WeChat") {
+		let screen_width = ALittle.System_GetScreenWidth();
+		let screen_height = ALittle.System_GetScreenHeight();
+		src_height = ALittle.Math_Floor(screen_height / screen_width * src_width);
+		scale = screen_width / src_width;
+	} else if (platform === "Windows") {
+		if (src_height > ALittle.System_GetScreenHeight()) {
+			scale = 0.5;
+		}
+	}
+	return [src_width, src_height, flag, scale];
+}
+
+ALittle.System_CalcLandscape = function(src_width, src_height, flag) {
+	let scale = 1.0;
+	let platform = ALittle.System_GetPlatform();
+	if (platform === "iOS" || platform === "Android") {
+		let screen_width = ALittle.System_GetScreenWidth();
+		let screen_height = ALittle.System_GetScreenHeight();
+		src_width = ALittle.Math_Floor(screen_width / screen_height * src_height);
+		flag = ALittle.BitOr(flag, ALittle.UIEnumTypes.VIEW_FULLSCREEN);
+	} else if (platform === "Web") {
+		scale = ALittle.System_GetScreenWidth() / src_width;
+	} else if (platform === "WeChat") {
+		let screen_width = ALittle.System_GetScreenWidth();
+		let screen_height = ALittle.System_GetScreenHeight();
+		src_width = ALittle.Math_Floor(screen_width / screen_height * src_height);
+		scale = screen_height / src_height;
+	} else if (platform === "Windows") {
+		if (src_width > ALittle.System_GetScreenWidth()) {
+			scale = 0.5;
+		}
+	}
+	return [src_width, src_height, flag, scale];
+}
+
 ALittle.System_GetPlatform = function() {
-	return "Web";
+	if (window["wx"] !== undefined) {
+		return "WeChat";
+	} else {
+		return "Web";
+	}
 }
 
 ALittle.System_GetDeviceID = function() {
@@ -2055,11 +2099,23 @@ ALittle.System_BackProgram = function() {
 }
 
 ALittle.System_GetScreenWidth = function() {
-	return window.innerWidth;
+	if (window["wx"] !== undefined) {
+		let wx = window["wx"];
+		let info = wx["getSystemInfoSync"]();
+		return info["windowWidth"] * info["pixelRatio"];
+	} else {
+		return window.innerWidth;
+	}
 }
 
 ALittle.System_GetScreenHeight = function() {
-	return window.innerHeight;
+	if (window["wx"] !== undefined) {
+		let wx = window["wx"];
+		let info = wx["getSystemInfoSync"]();
+		return info["windowHeight"] * info["pixelRatio"];
+	} else {
+		return window.innerHeight;
+	}
 }
 
 ALittle.System_GetStatusBarHeight = function() {

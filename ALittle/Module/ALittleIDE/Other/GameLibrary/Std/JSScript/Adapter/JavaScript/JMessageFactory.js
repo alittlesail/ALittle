@@ -2,8 +2,6 @@
 if (typeof JavaScript === "undefined") window.JavaScript = {};
 
 
-let __TEXTENCODER = new TextEncoder("utf-8");
-let __TEXTDECODER = new TextDecoder("utf-8");
 if (ALittle.IMessageWriteFactory === undefined) throw new Error(" extends class:ALittle.IMessageWriteFactory is undefined");
 JavaScript.JMessageWriteFactory = JavaScript.Class(ALittle.IMessageWriteFactory, {
 	Ctor : function(init_size) {
@@ -65,7 +63,7 @@ JavaScript.JMessageWriteFactory = JavaScript.Class(ALittle.IMessageWriteFactory,
 		this.ResizeMemory(value.length * 4 + 5);
 		let old_size = this._size;
 		this._size = this._size + (4);
-		let new_data = __TEXTENCODER.encode(value);
+		let new_data = StringToUTF8Array(value);
 		let new_memory = new DataView(new_data.buffer);
 		for (let i = 0; i < new_memory.byteLength; i += 1) {
 			this._memory.setUint8(this._size, new_memory.getUint8(i));
@@ -158,7 +156,7 @@ JavaScript.JMessageReadFactory = JavaScript.Class(ALittle.IMessageReadFactory, {
 		this._read_size = this._read_size + (4);
 		let value = "";
 		if (len > 1) {
-			value = __TEXTDECODER.decode(new Uint8Array(this._memory.buffer, this._offset + this._read_size, len - 1));
+			value = UTF8ArrayToString(new Uint8Array(this._memory.buffer, this._offset + this._read_size, len - 1));
 		}
 		this._read_size = this._read_size + (len);
 		this._last_read_size = len + 4;

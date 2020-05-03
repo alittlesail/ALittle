@@ -27,6 +27,7 @@
     <None Include="src\Adapter\JavaScript\JMessageFactory.alittle" />
     <None Include="src\Adapter\JavaScript\JMsgInterface.alittle" />
     <None Include="src\Adapter\JavaScript\JSchedule.alittle" />
+    <None Include="src\Adapter\JavaScript\jutf8.alittle" />
     <None Include="src\Adapter\JavaScript\jweakmap.alittle" />
     <None Include="src\Adapter\JavaScript\md5.alittle" />
     <None Include="src\Adapter\JavaScript\Timer.alittle" />

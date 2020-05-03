@@ -206,5 +206,8 @@
     <None Include="src\Std\Singleton\Schedule.alittle">
       <Filter>Std\Singleton</Filter>
     </None>
+    <None Include="src\Adapter\JavaScript\jutf8.alittle">
+      <Filter>Adapter\JavaScript</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -53,9 +53,7 @@ public await static RequireStd(string base_path)
     [Language(JavaScript)]
     Require(base_path, "../JSNative/md5.min");
     [Language(JavaScript)]
-    Require(base_path, "../JSNative/jweakmap");
-    [Language(JavaScript)]
-    Require(base_path, "../JSNative/bit");
+    Require(base_path, "../JSNative/native");
 
     [Language(Lua)]
     Require(base_path, "Adapter/Lua/LuaHeapTimer");

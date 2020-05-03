@@ -104,3 +104,87 @@ else
     }
 }
 
+
+window.bit = {}
+
+bit.band = function(x, y) { return x & y }
+bit.bor = function(x, y) { return x | y; }
+
+
+if (typeof TextDecoder !== "undefined")
+    window.__TEXTDECODER = new TextDecoder("utf-8");
+
+if (typeof TextEncoder !== "undefined")
+    window.__TEXTENCODER = new TextEncoder("utf-8");
+
+window.UTF8ArrayToString = function(array)
+{
+    if (window.__TEXTDECODER)
+        return window.__TEXTDECODER.decode(array);
+
+    var out, i, len, c;
+    var char2, char3;
+
+    out = [];
+    len = array.length;
+    i = 0;
+    while(i < len)
+    {
+        c = array[i++];
+        switch(c >> 4)
+        {
+        case 0: case 1: case 2: case 3: case 4: case 5: case 6: case 7:
+            // 0xxxxxxx
+            out.push(String.fromCharCode(c));
+            break;
+        case 12: case 13:
+            // 110x xxxx   10xx xxxx
+            char2 = array[i++];
+            out.push(String.fromCharCode(((c & 0x1F) << 6) | (char2 & 0x3F)));
+            break;
+        case 14:
+            // 1110 xxxx  10xx xxxx  10xx xxxx
+            char2 = array[i++];
+            char3 = array[i++];
+            out.push(String.fromCharCode(((c & 0x0F) << 12) |
+                        ((char2 & 0x3F) << 6) |
+                        ((char3 & 0x3F) << 0)));
+            break;
+        }
+    }
+
+    return out.join('');
+}
+
+window.StringToUTF8Array = function(str)
+{
+    if (window.__TEXTENCODER)
+        return window.__TEXTENCODER.encode(str);
+
+    var array = new Array();
+
+    var cc = 0;
+    for(var i = 0, l = str.length; i < l; ++i)
+    {
+        cc = str.charCodeAt(i);
+        if (cc > 0x80)
+        {
+            if (cc < 0x07FF)
+            {
+                array.push((cc >>>  6) | 0xC0);
+                array.push((cc & 0x3F) | 0x80);
+            }
+            else
+            {
+                array.push((cc >>> 12)         | 0xE0);
+                array.push(((cc >>>  6) & 0x3F) | 0x80);
+                array.push((cc         & 0x3F) | 0x80);
+            }
+        }
+        else
+        {
+            array.push(cc & 0xff);
+        }
+    }
+    return new Uint8Array(array);
+}

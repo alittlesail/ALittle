@@ -2,9 +2,6 @@
 [Language(JavaScript)]
 namespace JavaScript;
 
-private var __TEXTENCODER:javascript.TextEncoder = new javascript.TextEncoder("utf-8");
-private var __TEXTDECODER:javascript.TextDecoder = new javascript.TextDecoder("utf-8");
-
 public class JMessageWriteFactory : ALittle.IMessageWriteFactory
 {
     private int _id;
@@ -77,7 +74,7 @@ public class JMessageWriteFactory : ALittle.IMessageWriteFactory
         // 向前偏移4个字节
         this._size += 4;
         // 转为utf8，然后拷贝到内存
-		var new_data = __TEXTENCODER.encode(value);
+		var new_data = javascript.StringToUTF8Array(value);
 		var new_memory = new javascript.DataView(new_data.buffer);
 		for (var i = 0; i < new_memory.byteLength; 1)
 		{
@@ -194,7 +191,7 @@ public class JMessageReadFactory : ALittle.IMessageReadFactory
         this._read_size += 4;
         // utf8转为字符串
         var value = "";
-        if (len > 1) value = __TEXTDECODER.decode(new javascript.Uint8Array(this._memory.buffer, this._offset + this._read_size, len - 1));
+        if (len > 1) value = javascript.UTF8ArrayToString(new javascript.Uint8Array(this._memory.buffer, this._offset + this._read_size, len - 1));
         // 向前走len
         this._read_size += len;
         this._last_read_size = len + 4;

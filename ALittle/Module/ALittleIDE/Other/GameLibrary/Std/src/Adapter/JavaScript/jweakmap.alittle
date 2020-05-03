@@ -1,9 +1,6 @@
 
-[Language(JavaScript)]
 register namespace javascript;
 
-// 请在html添加script标签
-// <script src="ALittle/Module/ALittleIDE/Other/GameLibrary/JSNative/jweakmap.js"></script>
 // key必须是object类型
 [Native]
 public class jkeyweakmap
@@ -12,6 +9,8 @@ public class jkeyweakmap
     public fun set(any key, any value) {}
     public fun delete(any key) {}
 }
+
+// value必须是object类型
 [Native]
 public class jvalueweakmap
 {

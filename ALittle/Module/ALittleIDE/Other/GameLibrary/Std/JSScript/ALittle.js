@@ -40,8 +40,7 @@ window.RequireStd = function(base_path) {
 		await Require(base_path, "Adapter/JavaScript/JSchedule");
 		await Require(base_path, "Adapter/JavaScript/JCsvFile");
 		await Require(base_path, "../JSNative/md5.min");
-		await Require(base_path, "../JSNative/jweakmap");
-		await Require(base_path, "../JSNative/bit");
+		await Require(base_path, "../JSNative/native");
 		await Require(base_path, "Std/Singleton/LoopSystem");
 		await Require(base_path, "Std/Singleton/Schedule");
 		___COROUTINE();

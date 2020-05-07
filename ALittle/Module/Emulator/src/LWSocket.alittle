@@ -1,0 +1,76 @@
+
+namespace Emulator;
+
+protected class LWSocket : Lua.ISocket
+{
+	public async fun ReadMessage()
+	{
+        var msg_type = 0;
+        var msg_size = 0;
+        var server_id = 0;
+        var server_type = 0;
+        var protobuf_msg:any = null;
+        var error:string = null;
+
+        while (this.IsConnected())
+		{
+            error, msg_type = this.ReadUint16();
+            if (error != null) break;
+            
+            error, msg_size = this.ReadUint16();
+            if (error != null) break;
+
+            error, server_id = this.ReadUint16();
+            if (error != null) break;
+            
+            error, server_type = this.ReadUint16();
+            if (error != null) break;
+            
+            var name = this.MsgId2ProtobufName(msg_type);
+            if (name == null)
+            {
+                name = "";
+                // 提示未知类型的协议
+            }
+
+            if (msg_size > 0)
+            {
+                error, protobuf_msg = this.ReadProtobuf(name, msg_size);
+                if (error != null) break;
+            }
+            else
+            {
+                protobuf_msg = new Map<string, any>();
+            }
+
+            this.HandleMessage(msg_type, name, protobuf_msg);
+        }
+    }
+
+    public fun WriteMessage(string name, any msg)
+    {
+        var msg_type = this.ProtobufName2MsgId(name);
+        if (msg_type == null) return;
+
+        this.WriteUint16(msg_type);
+        this.WriteUint16(this.CalcProtobufSize(name, msg));
+        this.WriteUint16(1);
+        this.WriteUint16(1);
+        this.WriteProtobuf(name, msg);
+    }
+
+    private fun MsgId2ProtobufName(int id) : string
+    {
+        return null;
+    }
+    
+    private fun ProtobufName2MsgId(string name) : int
+    {
+        return null;
+    }
+
+    private fun HandleMessage(int id, string name, any msg)
+    {
+        
+    }
+}

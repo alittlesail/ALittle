@@ -1,0 +1,95 @@
+
+namespace Emulator;
+
+protected var g_GConfig:ALittle.IJsonConfig;
+
+class GCenter
+{
+    private ALittle.DisplayLayout _main_layer;
+    private ALittle.DisplayLayout _dialog_layer;
+
+    private ALittle.Dialog _setting_dialog;
+    private ALittle.DisplayObject _proto_root_input;
+
+    private ALittle.LoopFrame _frame_loop;
+    private lua.socket _socket_system;
+    
+    public ctor()
+    {
+	}
+
+    public fun Setup()
+    {
+        // 获取配置信息
+        g_GConfig = ALittle.CreateConfigSystem(g_ModuleBasePath.."/User.cfg");
+        // 生成随机数种子
+        ALittle.Math_RandomSeed(ALittle.Time_GetCurTime());
+        // 设置1个线程
+        ALittle.System_SetThreadCount(1, ALittle.SystemThreadType.SLOW);
+    
+        // 创建主层
+        this._main_layer = new ALittle.DisplayLayout(g_Control);
+        this._main_layer.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+        this._main_layer.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+        g_LayerGroup.AddChild(this._main_layer, null);
+        this._dialog_layer = new ALittle.DisplayLayout(g_Control);
+        this._dialog_layer.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+        this._dialog_layer.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+        g_LayerGroup.AddChild(this._dialog_layer, null);
+    
+        // 创建主界面
+        g_Control.CreateControl{ALittle.DisplayObject}("main_scene", this, this._main_layer);
+
+        // 设置界面
+        this._setting_dialog = g_Control.CreateControl{ALittle.Dialog}("main_setting_dialog", this);
+        A_LayerManager.AddToModal(this._setting_dialog);
+
+        // 每帧处理
+        this._socket_system = lua.socket.create();
+        this._frame_loop = new ALittle.LoopFrame(bind(this.UpdateFrame, this));
+        this._frame_loop.Start();
+    }
+
+    public fun UpdateFrame(int frame_time)
+    {
+        while (true)
+        {
+            var event = lua.socket.poll(this._socket_system);
+            if (event == null) break;
+            
+        }
+    }
+
+    // 显示对话框
+    public fun HandleShowSettingDialog(ALittle.UIClickEvent event)
+    {
+        this._setting_dialog.visible = true;
+        this._proto_root_input.text = g_GConfig.GetString("proto_root", "");
+    }
+
+    // 处理设置
+    public fun HandleSettingConfirmClick(ALittle.UIClickEvent event)
+    {
+        var attr = ALittle.File_GetFileAttr(this._proto_root_input.text);
+        if (attr == null || attr.mode != "directory")
+        {
+            g_IDETool.ShowNotice("错误", "文件夹不存在");
+            return;
+        }
+
+        this._setting_dialog.visible = false;
+        g_GConfig.SetConfig("proto_root", this._proto_root_input.text);
+    }
+    // 处理设置
+    public fun HandleSettingCancelClick(ALittle.UIClickEvent event)
+    {
+        this._setting_dialog.visible = false;
+    }
+    
+    public fun Shutdown()
+    {
+        this._frame_loop.Stop();
+    }
+}
+    
+protected var g_GCenter = new GCenter();

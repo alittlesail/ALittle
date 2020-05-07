@@ -34,6 +34,7 @@
     <None Include="src\Adapter\Lua\base64.alittle" />
     <None Include="src\Adapter\Lua\csv.alittle" />
     <None Include="src\Adapter\Lua\dump.alittle" />
+    <None Include="src\Adapter\Lua\ISocket.alittle" />
     <None Include="src\Adapter\Lua\LuaHeapTimer.alittle" />
     <None Include="src\Adapter\Lua\json.alittle" />
     <None Include="src\Adapter\Lua\lfs.alittle" />
@@ -45,6 +46,8 @@
     <None Include="src\Adapter\Lua\md5.alittle" />
     <None Include="src\Adapter\Lua\LuaMessageFactory.alittle" />
     <None Include="src\Adapter\Lua\net.alittle" />
+    <None Include="src\Adapter\Lua\socket.alittle" />
+    <None Include="src\Adapter\Lua\LuaSocketSchedule.alittle" />
     <None Include="src\Adapter\Lua\sqlte3.alittle" />
     <None Include="src\Adapter\Lua\timer.alittle" />
     <None Include="src\Adapter\Lua\utf8.alittle" />

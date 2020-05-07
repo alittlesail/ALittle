@@ -209,5 +209,14 @@
     <None Include="src\Adapter\JavaScript\jutf8.alittle">
       <Filter>Adapter\JavaScript</Filter>
     </None>
+    <None Include="src\Adapter\Lua\socket.alittle">
+      <Filter>Adapter\Lua</Filter>
+    </None>
+    <None Include="src\Adapter\Lua\ISocket.alittle">
+      <Filter>Adapter\Lua</Filter>
+    </None>
+    <None Include="src\Adapter\Lua\LuaSocketSchedule.alittle">
+      <Filter>Adapter\Lua</Filter>
+    </None>
   </ItemGroup>
 </Project>

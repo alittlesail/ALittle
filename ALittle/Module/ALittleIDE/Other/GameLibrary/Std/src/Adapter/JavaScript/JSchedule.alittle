@@ -20,9 +20,14 @@ public class JSchedule : ALittle.ISchedule
         
         this._run = false;
     }
-    
+
     // 在JS版本下Run直接退出，因为JS有自己的事件系统
     public fun Run()
+    {
+        this.RunInFrame();
+    }
+
+    public fun RunInFrame()
     {
         if (this._run) return;
         this._run = true;

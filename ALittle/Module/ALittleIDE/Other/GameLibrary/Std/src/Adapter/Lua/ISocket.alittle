@@ -1,0 +1,342 @@
+
+[Language(Lua)]
+namespace Lua;
+
+protected enum SocketStatus
+{
+    SS_IDLE = 0;
+	SS_CONNECTING = 1;
+	SS_CONNECTED = 2;
+}
+
+private var __MAX_ID = 0;
+private var __SOCKET_MAP = new Map<int, ISocket>();
+
+public class ISocket
+{
+	private int _id;
+	private int _status;
+	private Functor<()> _disconnected_callback;
+	private ALittle.Thread _connect_thread;
+	private ALittle.Thread _read_thread;
+	private lua.socket _socket;
+
+	public ctor(Functor<()> disconnected_callback)
+	{
+        ++__MAX_ID;
+		this._id = __MAX_ID;
+		this._status = SocketStatus.SS_IDLE;
+		this._disconnected_callback = disconnected_callback;
+		this._socket = A_LuaSocketSchedule._socket;
+    }
+
+	public fun IsConnected() : bool { return this._status == SocketStatus.SS_CONNECTED; }
+	public fun IsConnecting() : bool { return this._status == SocketStatus.SS_CONNECTING; }
+
+	public await fun Connect(string ip, int port) : string
+	{
+        if (this.IsConnecting()) return "已经正在连接";
+		if (this.IsConnected()) return "已经连接，请先关闭连接";
+
+		this._status = SocketStatus.SS_CONNECTING;
+		lua.socket.connect(this._socket, this._id, ip, port);
+		this._connect_thread = co;
+		__SOCKET_MAP[this._id] = this;
+		return yield;
+    }
+
+	public fun Close()
+	{
+		lua.socket.close(this._socket, this._id);
+		__SOCKET_MAP[this._id] = null;
+		this._status = SocketStatus.SS_IDLE;
+		
+		if (this._connect_thread != null)
+		{
+			var result, error = ALittle.Coroutine.Resume(this._connect_thread, "closed");
+			if (result != true) ALittle.Error(error);
+			this._connect_thread = null;
+        }
+
+		if (this._read_thread != null)
+		{
+			var result, error = ALittle.Coroutine.Resume(this._read_thread, "closed");
+			if (result != true) ALittle.Error(error);
+			this._read_thread = null;
+        }
+    }
+
+	// 读取开始循环读取，由子类实现
+	public async fun ReadMessage()
+	{
+        
+    }
+
+	// 计算protobuf字节大小
+	public fun CalcProtobufSize(string name, any table) : int
+	{
+        return lua.socket.calcprotobufsize(this._socket, name, table);
+    }
+
+	public await fun ReadUint8() : any, int
+	{
+		if (!this.IsConnected()) return "还未连接成功", 0;
+        if (this._read_thread != null) return "已经正在读取", 0;
+
+		this._read_thread = co;
+		lua.socket.readuint8(this._socket, this._id);
+		return yield;
+    }
+
+	public await fun ReadInt8() : any, int
+	{
+		if (!this.IsConnected()) return "还未连接成功", 0;
+        if (this._read_thread != null) return "已经正在读取", 0;
+
+		this._read_thread = co;
+		lua.socket.readint8(this._socket, this._id);
+		return yield;
+    }
+
+	public await fun ReadUint16() : any, int
+	{
+		if (!this.IsConnected()) return "还未连接成功", 0;
+        if (this._read_thread != null) return "已经正在读取", 0;
+
+		this._read_thread = co;
+		lua.socket.readuint16(this._socket, this._id);
+		return yield;
+    }
+
+	public await fun ReadInt16() : any, int
+	{
+		if (!this.IsConnected()) return "还未连接成功", 0;
+        if (this._read_thread != null) return "已经正在读取", 0;
+
+		this._read_thread = co;
+		lua.socket.readint16(this._socket, this._id);
+		return yield;
+    }
+
+	public await fun ReadUint32() : any, int
+	{
+		if (!this.IsConnected()) return "还未连接成功", 0;
+        if (this._read_thread != null) return "已经正在读取", 0;
+
+		this._read_thread = co;
+		lua.socket.readuint32(this._socket, this._id);
+		return yield;
+    }
+
+	public await fun ReadInt32() : any, int
+	{
+		if (!this.IsConnected()) return "还未连接成功", 0;
+        if (this._read_thread != null) return "已经正在读取", 0;
+
+		this._read_thread = co;
+		lua.socket.readint32(this._socket, this._id);
+		return yield;
+    }
+
+	public await fun ReadUint64() : any, int
+	{
+		if (!this.IsConnected()) return "还未连接成功", 0;
+        if (this._read_thread != null) return "已经正在读取", 0;
+
+		this._read_thread = co;
+		lua.socket.readuint64(this._socket, this._id);
+		return yield;
+    }
+
+	public await fun ReadInt64() : any, int
+	{
+		if (!this.IsConnected()) return "还未连接成功", 0;
+        if (this._read_thread != null) return "已经正在读取", 0;
+
+		this._read_thread = co;
+		lua.socket.readint64(this._socket, this._id);
+		return yield;
+    }
+
+	public await fun ReadFloat() : any, double
+	{
+		if (!this.IsConnected()) return "还未连接成功", 0;
+        if (this._read_thread != null) return "已经正在读取", 0;
+
+		this._read_thread = co;
+		lua.socket.readfloat(this._socket, this._id);
+		return yield;
+    }
+
+	public await fun ReadDouble() : any, int
+	{
+		if (!this.IsConnected()) return "还未连接成功", 0;
+        if (this._read_thread != null) return "已经正在读取", 0;
+
+		this._read_thread = co;
+		lua.socket.readdouble(this._socket, this._id);
+		return yield;
+    }
+
+	public await fun ReadProtobuf(string name, int len) : any, any
+	{
+		if (!this.IsConnected()) return "还未连接成功", 0;
+        if (this._read_thread != null) return "已经正在读取", 0;
+
+		this._read_thread = co;
+		lua.socket.readprotobuf(this._socket, this._id, name, len);
+		return yield;
+    }
+	
+	public fun WriteUint8(int value)
+	{
+		if (!this.IsConnected()) return;
+		lua.socket.writeuint8(this._socket, this._id, value);
+    }
+	
+	public fun WriteInt8(int value)
+	{
+		if (!this.IsConnected()) return;
+		lua.socket.writeint8(this._socket, this._id, value);
+    }
+	
+	public fun WriteUint16(int value)
+	{
+		if (!this.IsConnected()) return;
+		lua.socket.writeuint16(this._socket, this._id, value);
+    }
+	
+	public fun WriteInt16(int value)
+	{
+		if (!this.IsConnected()) return;
+		lua.socket.writeint16(this._socket, this._id, value);
+    }
+	
+	public fun WriteUint32(int value)
+	{
+		if (!this.IsConnected()) return;
+		lua.socket.writeuint32(this._socket, this._id, value);
+    }
+	
+	public fun WriteInt32(int value)
+	{
+		if (!this.IsConnected()) return;
+		lua.socket.writeint32(this._socket, this._id, value);
+    }
+	
+	public fun WriteUint64(int value)
+	{
+		if (!this.IsConnected()) return;
+		lua.socket.writeuint64(this._socket, this._id, value);
+    }
+	
+	public fun WriteInt64(int value)
+	{
+		if (!this.IsConnected()) return;
+		lua.socket.writeint64(this._socket, this._id, value);
+    }
+
+	public fun WriteFloat(double value)
+	{
+		if (!this.IsConnected()) return;
+		lua.socket.writefloat(this._socket, this._id, value);
+    }
+
+	public fun WriteDouble(double value)
+	{
+		if (!this.IsConnected()) return;
+		lua.socket.writedouble(this._socket, this._id, value);
+    }
+
+	public fun WriteProtobuf(string name, any table)
+	{
+		if (!this.IsConnected()) return;
+		lua.socket.writeprotobuf(this._socket, this._id, name, table);
+    }
+
+	public static HandleConnectFailed(int id)
+	{
+        var socket = __SOCKET_MAP[id];
+		if (socket == null) return;
+		__SOCKET_MAP[id] = null;
+		
+		socket._status = SocketStatus.SS_IDLE;
+        var result, error = ALittle.Coroutine.Resume(socket._connect_thread, "connect failed");
+        if (result != true) ALittle.Error(error);
+		socket._connect_thread = null;
+    }
+
+	public static HandleConnectSucceed(int id)
+	{
+        var socket = __SOCKET_MAP[id];
+		if (socket == null) return;
+
+		socket._status = SocketStatus.SS_CONNECTED;
+		var result, error = ALittle.Coroutine.Resume(socket._connect_thread, null);
+        if (result != true) ALittle.Error(error);
+		socket._connect_thread = null;
+
+		// 开始读取
+		socket.ReadMessage();
+    }
+
+	public static HandleDisconnected(int id)
+	{
+        var socket = __SOCKET_MAP[id];
+		if (socket == null) return;
+		__SOCKET_MAP[id] = null;
+		
+		socket._status = SocketStatus.SS_IDLE;
+		if (socket._read_thread != null)
+		{
+			var result, error = ALittle.Coroutine.Resume(socket._read_thread, "disconnected");
+			if (result != true) ALittle.Error(error);
+			socket._read_thread = null;
+        }
+
+		if (socket._disconnected_callback != null)
+			socket._disconnected_callback();
+    }
+
+	public static HandleReadInt(int id, int value)
+	{
+        var socket = __SOCKET_MAP[id];
+		if (socket == null) return;
+		__SOCKET_MAP[id] = null;
+
+		if (socket._read_thread != null)
+		{
+			var result, error = ALittle.Coroutine.Resume(socket._read_thread, value);
+			if (result != true) ALittle.Error(error);
+			socket._read_thread = null;
+        }
+    }
+
+	public static HandleReadDouble(int id, double value)
+	{
+        var socket = __SOCKET_MAP[id];
+		if (socket == null) return;
+		__SOCKET_MAP[id] = null;
+
+		if (socket._read_thread != null)
+		{
+			var result, error = ALittle.Coroutine.Resume(socket._read_thread, value);
+			if (result != true) ALittle.Error(error);
+			socket._read_thread = null;
+        }
+    }
+
+	public static HandleReadProtobuf(int id, any value)
+	{
+        var socket = __SOCKET_MAP[id];
+		if (socket == null) return;
+		__SOCKET_MAP[id] = null;
+
+		if (socket._read_thread != null)
+		{
+			var result, error = ALittle.Coroutine.Resume(socket._read_thread, value);
+			if (result != true) ALittle.Error(error);
+			socket._read_thread = null;
+        }
+    }
+}

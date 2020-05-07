@@ -212,7 +212,7 @@ class IDECenter
 		var count = ALittle.List_MaxN(name_list);
 		if (count > 0)
 		{
-			for (var i = count; count >= 1; -1)
+			for (var i = count; i >= 1; -1)
 			{
 				var control_info = g_IDEProject.project.control_map[name_list[i]];
 				if (control_info != null)

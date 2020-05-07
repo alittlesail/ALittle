@@ -70,6 +70,12 @@ public await static RequireStd(string base_path)
         Require(base_path, "Adapter/Lua/LuaSchedule");
     }
     
+    [Language(Lua)]
+    if (lua.socket != null)
+    {
+        Require(base_path, "Adapter/Lua/LuaSocketSchedule");
+    }
+    
     Require(base_path, "Std/Singleton/LoopSystem");
     Require(base_path, "Std/Singleton/Schedule");
 }

@@ -1,4 +1,4 @@
--- ALittle Generate Lua
+-- ALittle Generate Lua And Do Not Edit This Line!
 local ___pairs = pairs
 local ___ipairs = ipairs
 
@@ -41,6 +41,9 @@ local ___COROUTINE = coroutine.running()
 		Require(base_path, "Adapter/Lua/LuaMsgInterface")
 		Require(base_path, "Adapter/Lua/LuaMessageFactory")
 		Require(base_path, "Adapter/Lua/LuaSchedule")
+	end
+	if socket ~= nil then
+		Require(base_path, "Adapter/Lua/LuaSocketSchedule")
 	end
 	Require(base_path, "Std/Singleton/LoopSystem")
 	Require(base_path, "Std/Singleton/Schedule")

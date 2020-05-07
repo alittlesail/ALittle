@@ -29,6 +29,18 @@ public class LuaSchedule : ALittle.ISchedule
     {
         this._net = lua.net.create();
     }
+
+    // 在帧中运行
+    public fun RunInFrame()
+    {
+        while (true)
+        {
+            var event = lua.net.poll(this._net);
+            if (event == null) break;
+            
+            this.HandleEvent(event);
+        }
+    }
     
     // 在Lua版本下Run直接阻塞，等待所有事件全部处理完毕才退出
     public fun Run()
@@ -42,49 +54,44 @@ public class LuaSchedule : ALittle.ISchedule
             if (event.type == net_type.TIMER)
             {
                 if (this._last_time != null)
+                {
                     A_LuaLoopSystem.Update(event.time - this._last_time);
+                    A_LuaWeakLoopSystem.Update(event.time - this._last_time);
+                }
                 this._last_time = event.time;
                 lua.net.timer(this._net, 16);
             }
-            elseif (event.type == net_type.MSG_MESSAGE)
+            else
             {
-                this._factory.SetFactory(event.factory);
-                ALittle.__ALITTLEAPI_Message(event.id, event.msg_id, event.rpc_id, this._factory);
-                lua.net.rfactoryrelease(this._net, event.factory);
-            }
-            elseif (event.type == net_type.HTTP_SUCCEED)
-            {
-                ALittle.__ALITTLEAPI_HttpClientSucceed(event.id);
-            }
-            elseif (event.type == net_type.HTTP_FAILED)
-            {
-                ALittle.__ALITTLEAPI_HttpClientFailed(event.id, event.error);
-            }
-            elseif (event.type == net_type.HTTP_FILE_SUCCEED)
-            {
-                ALittle.__ALITTLEAPI_HttpFileSucceed(event.id);
-            }
-            elseif (event.type == net_type.HTTP_FILE_FAILED)
-            {
-                ALittle.__ALITTLEAPI_HttpFileFailed(event.id, event.error);
-            }
-            elseif (event.type == net_type.HTTP_FILE_PROGRESS)
-            {
-                ALittle.__ALITTLEAPI_HttpFileProcess(event.id, event.cur_size, event.total_size);
-            }
-            elseif (event.type == net_type.MSG_CONNECT_SUCCEED)
-            {
-                ALittle.__ALITTLEAPI_ConnectSucceed(event.id);
-            }
-            elseif (event.type == net_type.MSG_CONNECT_FAILED)
-            {
-                ALittle.__ALITTLEAPI_ConnectFailed(event.id);
-            }
-            elseif (event.type == net_type.MSG_DISCONNECTED)
-            {
-                ALittle.__ALITTLEAPI_Disconnect(event.id);
+                this.HandleEvent(event);
             }
         }
+    }
+
+    private fun HandleEvent(lua.net_event event)
+    {
+        if (event.type == net_type.MSG_MESSAGE)
+        {
+            this._factory.SetFactory(event.factory);
+            ALittle.__ALITTLEAPI_Message(event.id, event.msg_id, event.rpc_id, this._factory);
+            lua.net.rfactoryrelease(this._net, event.factory);
+        }
+        elseif (event.type == net_type.HTTP_SUCCEED)
+            ALittle.__ALITTLEAPI_HttpClientSucceed(event.id);
+        elseif (event.type == net_type.HTTP_FAILED)
+            ALittle.__ALITTLEAPI_HttpClientFailed(event.id, event.error);
+        elseif (event.type == net_type.HTTP_FILE_SUCCEED)
+            ALittle.__ALITTLEAPI_HttpFileSucceed(event.id);
+        elseif (event.type == net_type.HTTP_FILE_FAILED)
+            ALittle.__ALITTLEAPI_HttpFileFailed(event.id, event.error);
+        elseif (event.type == net_type.HTTP_FILE_PROGRESS)
+            ALittle.__ALITTLEAPI_HttpFileProcess(event.id, event.cur_size, event.total_size);
+        elseif (event.type == net_type.MSG_CONNECT_SUCCEED)
+            ALittle.__ALITTLEAPI_ConnectSucceed(event.id);
+        elseif (event.type == net_type.MSG_CONNECT_FAILED)
+            ALittle.__ALITTLEAPI_ConnectFailed(event.id);
+        elseif (event.type == net_type.MSG_DISCONNECTED)
+            ALittle.__ALITTLEAPI_Disconnect(event.id);
     }
 }
 

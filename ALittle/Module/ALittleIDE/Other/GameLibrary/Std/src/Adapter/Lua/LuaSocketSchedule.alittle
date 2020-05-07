@@ -1,0 +1,106 @@
+
+[Language(Lua)]
+namespace Lua;
+
+public enum socket_type
+{
+    TIMER = 21;     // 定时器
+    
+    MSG_CONNECT_SUCCEED = 31;   // 连接成功
+    MSG_CONNECT_FAILED = 32;    // 连接失败
+    MSG_DISCONNECTED = 33;      // 断开连接
+
+	MSG_READ_UINT8 = 34;
+	MSG_READ_INT8 = 35;
+	MSG_READ_UINT16 = 36;
+	MSG_READ_INT16 = 37;
+	MSG_READ_UINT32 = 38;
+	MSG_READ_INT32 = 39;
+	MSG_READ_UINT64 = 40;
+	MSG_READ_INT64 = 41;
+	MSG_READ_FLOAT = 42;
+	MSG_READ_DOUBLE = 43;
+	MSG_READ_PROTOBUF = 44;
+}
+
+public class LuaSocketSchedule : ALittle.ISchedule
+{
+    public lua.socket _socket;
+    private int _last_time;
+    
+    public ctor()
+    {
+        this._socket = lua.socket.create();
+    }
+
+    public fun LoadProto(string root_path) : string
+    {
+        var result = lua.socket.setprotobufroot(this._socket, root_path);
+        if (!result) return "根路径设置失败";
+
+        var file_map = ALittle.File_GetFileAttrByDir(root_path);
+        for (var file_path, _ in file_map)
+        {
+            if (ALittle.File_GetFileExtByPathAndUpper(file_path) != "PROTO")
+                continue;
+            result = lua.socket.loadprotobuffile(this._socket, file_path);
+            if (!result) return "文件加载失败:"..file_path;
+        }
+        return null;
+    }
+
+    public fun RunInFrame()
+    {
+        while (true)
+        {
+            var event = lua.socket.poll(this._socket);
+            if (event == null) break;
+            
+            this.HandleEvent(event);
+        }
+    }
+    
+    // 在Lua版本下Run直接阻塞，等待所有事件全部处理完毕才退出
+    public fun Run()
+    {   
+        lua.socket.timer(this._socket, 16);
+        while (true)
+        {
+            var event = lua.socket.poll(this._socket);
+            if (event == null) break;
+            
+            if (event.type == socket_type.TIMER)
+            {
+                if (this._last_time != null)
+                {
+                    A_LuaLoopSystem.Update(event.time - this._last_time);
+                    A_LuaWeakLoopSystem.Update(event.time - this._last_time);
+                }
+                this._last_time = event.time;
+                lua.socket.timer(this._socket, 16);
+            }
+            else
+            {
+                this.HandleEvent(event);
+            }
+        }
+    }
+
+    private fun HandleEvent(lua.socket_event event)
+    {
+        if (event.type == socket_type.MSG_CONNECT_FAILED)
+            ISocket.HandleConnectFailed(event.id);
+        elseif (event.type == socket_type.MSG_CONNECT_SUCCEED)
+            ISocket.HandleConnectSucceed(event.id);
+        elseif (event.type == socket_type.MSG_DISCONNECTED)
+            ISocket.HandleDisconnected(event.id);
+        elseif (event.type >= socket_type.MSG_READ_INT8 && event.type <= socket_type.MSG_READ_INT64)
+            ISocket.HandleReadInt(event.id, event.int_value);
+        elseif (event.type >= socket_type.MSG_READ_FLOAT && event.type <= socket_type.MSG_READ_DOUBLE)
+            ISocket.HandleReadDouble(event.id, event.double_value);
+        elseif (event.type >= socket_type.MSG_READ_PROTOBUF)
+            ISocket.HandleReadProtobuf(event.id, event.protobuf_value);
+    }
+}
+
+public var A_LuaSocketSchedule = new LuaSocketSchedule();

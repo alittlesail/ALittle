@@ -1,4 +1,4 @@
--- ALittle Generate Lua
+-- ALittle Generate Lua And Do Not Edit This Line!
 module("Lua", package.seeall)
 
 local ___rawset = rawset
@@ -26,6 +26,16 @@ function LuaSchedule:Ctor()
 	___rawset(self, "_net", net.create())
 end
 
+function LuaSchedule:RunInFrame()
+	while true do
+		local event = net.poll(self._net)
+		if event == nil then
+			break
+		end
+		self:HandleEvent(event)
+	end
+end
+
 function LuaSchedule:Run()
 	net.timer(self._net, 16)
 	while true do
@@ -36,30 +46,37 @@ function LuaSchedule:Run()
 		if event.type == net_type.TIMER then
 			if self._last_time ~= nil then
 				A_LuaLoopSystem:Update(event.time - self._last_time)
+				A_LuaWeakLoopSystem:Update(event.time - self._last_time)
 			end
 			self._last_time = event.time
 			net.timer(self._net, 16)
-		elseif event.type == net_type.MSG_MESSAGE then
-			self._factory:SetFactory(event.factory)
-			ALittle.__ALITTLEAPI_Message(event.id, event.msg_id, event.rpc_id, self._factory)
-			net.rfactoryrelease(self._net, event.factory)
-		elseif event.type == net_type.HTTP_SUCCEED then
-			ALittle.__ALITTLEAPI_HttpClientSucceed(event.id)
-		elseif event.type == net_type.HTTP_FAILED then
-			ALittle.__ALITTLEAPI_HttpClientFailed(event.id, event.error)
-		elseif event.type == net_type.HTTP_FILE_SUCCEED then
-			ALittle.__ALITTLEAPI_HttpFileSucceed(event.id)
-		elseif event.type == net_type.HTTP_FILE_FAILED then
-			ALittle.__ALITTLEAPI_HttpFileFailed(event.id, event.error)
-		elseif event.type == net_type.HTTP_FILE_PROGRESS then
-			ALittle.__ALITTLEAPI_HttpFileProcess(event.id, event.cur_size, event.total_size)
-		elseif event.type == net_type.MSG_CONNECT_SUCCEED then
-			ALittle.__ALITTLEAPI_ConnectSucceed(event.id)
-		elseif event.type == net_type.MSG_CONNECT_FAILED then
-			ALittle.__ALITTLEAPI_ConnectFailed(event.id)
-		elseif event.type == net_type.MSG_DISCONNECTED then
-			ALittle.__ALITTLEAPI_Disconnect(event.id)
+		else
+			self:HandleEvent(event)
 		end
+	end
+end
+
+function LuaSchedule:HandleEvent(event)
+	if event.type == net_type.MSG_MESSAGE then
+		self._factory:SetFactory(event.factory)
+		ALittle.__ALITTLEAPI_Message(event.id, event.msg_id, event.rpc_id, self._factory)
+		net.rfactoryrelease(self._net, event.factory)
+	elseif event.type == net_type.HTTP_SUCCEED then
+		ALittle.__ALITTLEAPI_HttpClientSucceed(event.id)
+	elseif event.type == net_type.HTTP_FAILED then
+		ALittle.__ALITTLEAPI_HttpClientFailed(event.id, event.error)
+	elseif event.type == net_type.HTTP_FILE_SUCCEED then
+		ALittle.__ALITTLEAPI_HttpFileSucceed(event.id)
+	elseif event.type == net_type.HTTP_FILE_FAILED then
+		ALittle.__ALITTLEAPI_HttpFileFailed(event.id, event.error)
+	elseif event.type == net_type.HTTP_FILE_PROGRESS then
+		ALittle.__ALITTLEAPI_HttpFileProcess(event.id, event.cur_size, event.total_size)
+	elseif event.type == net_type.MSG_CONNECT_SUCCEED then
+		ALittle.__ALITTLEAPI_ConnectSucceed(event.id)
+	elseif event.type == net_type.MSG_CONNECT_FAILED then
+		ALittle.__ALITTLEAPI_ConnectFailed(event.id)
+	elseif event.type == net_type.MSG_DISCONNECTED then
+		ALittle.__ALITTLEAPI_Disconnect(event.id)
 	end
 end
 

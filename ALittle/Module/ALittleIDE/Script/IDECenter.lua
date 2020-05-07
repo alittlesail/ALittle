@@ -1,4 +1,4 @@
--- ALittle Generate Lua
+-- ALittle Generate Lua And Do Not Edit This Line!
 module("ALittleIDE", package.seeall)
 
 local ___pairs = pairs
@@ -150,7 +150,7 @@ function IDECenter:RefreshProject()
 	if count > 0 then
 		local i = count
 		while true do
-			if not(count >= 1) then break end
+			if not(i >= 1) then break end
 			local control_info = g_IDEProject.project.control_map[name_list[i]]
 			if control_info ~= nil then
 				g_IDETabManager:StartEditControlBySelect(control_info.name, control_info.info)

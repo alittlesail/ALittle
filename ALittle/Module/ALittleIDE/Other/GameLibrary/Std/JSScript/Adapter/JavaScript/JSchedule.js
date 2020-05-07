@@ -20,6 +20,9 @@ JavaScript.JSchedule = JavaScript.Class(ALittle.ISchedule, {
 		this._run = false;
 	},
 	Run : function() {
+		this.RunInFrame();
+	},
+	RunInFrame : function() {
 		if (this._run) {
 			return;
 		}

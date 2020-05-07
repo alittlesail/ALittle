@@ -1,0 +1,66 @@
+
+register namespace lua;
+
+public struct socket_event
+{
+    int type;
+    int id;
+    
+    // 当type为TIMER时有效，当前的时间戳，单位是毫秒
+    int time;
+
+    // 当type为MSG_READ_XXX时，整型值，浮点值，protobuf值
+    int int_value;
+    double double_value;
+    any protobuf_value;
+}
+
+public class socket
+{
+    public static create() : socket {}
+    
+    // 如果返回null，表示所有socket全部处理结束
+    public static poll(socket c) : socket_event {}
+    
+    // 启动一个定时器
+    public static timer(socket c, int delay_ms) {}
+    
+    // 长连接相关接口
+    public static connect(socket c, int id, string ip, int port) {}
+    public static close(socket c, int id) {}
+
+    // 读取数据
+    public static readuint8(socket c, int id) {}
+    public static readint8(socket c, int id) {}
+    public static readuint16(socket c, int id) {}
+    public static readint16(socket c, int id) {}
+    public static readuint32(socket c, int id) {}
+    public static readint32(socket c, int id) {}
+    public static readuint64(socket c, int id) {}
+    public static readint64(socket c, int id) {}
+    public static readfloat(socket c, int id) {}
+    public static readdouble(socket c, int id) {}
+    public static readprotobuf(socket c, int id, string name, int len) {}
+    
+    // 发送数据
+    public static writeuint8(socket c, int id, int value) {}
+    public static writeint8(socket c, int id, int value) {}
+    public static writeuint16(socket c, int id, int value) {}
+    public static writeint16(socket c, int id, int value) {}
+    public static writeuint32(socket c, int id, int value) {}
+    public static writeint32(socket c, int id, int value) {}
+    public static writeuint64(socket c, int id, int value) {}
+    public static writeint64(socket c, int id, int value) {}
+    public static writefloat(socket c, int id, double value) {}
+    public static writedouble(socket c, int id, double value) {}
+    public static writeprotobuf(socket c, int id, string name, any table) {}
+
+    // 计算某个protobuf大小
+    public static calcprotobufsize(socket c, string name, any table) : int {}
+    // 设置当前proto根路径
+    public static setprotobufroot(socket c, string path) : bool {}
+    // 加载proto文件
+    public static loadprotobuffile(socket c, string path) : bool {}
+    
+    public static exit(net c) {}
+}

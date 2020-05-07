@@ -296,3 +296,15 @@ int socket_calcprotobufsize(struct _socket* c, const char* name, lua_State* L, i
     ALittle::SocketSchedule* schedule = (ALittle::SocketSchedule*)(c->schedule);
     return 0;
 }
+
+int socket_setprotobufroot(struct _socket* c, const char* path)
+{
+    ALittle::SocketSchedule* schedule = (ALittle::SocketSchedule*)(c->schedule);
+    return 0;
+}
+
+int socket_loadprotobuffile(struct _socket* c, const char* path)
+{
+    ALittle::SocketSchedule* schedule = (ALittle::SocketSchedule*)(c->schedule);
+    return 0;
+}

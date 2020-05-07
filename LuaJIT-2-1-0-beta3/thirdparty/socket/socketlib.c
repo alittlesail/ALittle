@@ -267,6 +267,24 @@ static int socketlib_calcprotobufsize(lua_State* L)
     return 1;
 }
 
+static int socketlib_setprotobufroot(lua_State* L)
+{
+    struct _socket* c = (struct _socket*)lua_touserdata(L, 1);
+    luaL_argcheck(L, c != 0, 1, "socket object is null");
+    const char* path = luaL_checkstring(L, 2);
+    lua_pushboolean(L, socket_setprotobufroot(c, path));
+    return 1;
+}
+
+static int socketlib_loadprotobuffile(lua_State* L)
+{
+    struct _socket* c = (struct _socket*)lua_touserdata(L, 1);
+    luaL_argcheck(L, c != 0, 1, "socket object is null");
+    const char* path = luaL_checkstring(L, 2);
+    lua_pushboolean(L, socket_loadprotobuffile(c, path));
+    return 1;
+}
+
 static int socketlib_timer(lua_State* L)
 {
     struct _socket* c = (struct _socket*)lua_touserdata(L, 1);
@@ -358,6 +376,8 @@ static struct luaL_Reg socketlib[] = {
     {"writeprotobuf", socketlib_writeprotobuf},
 
     {"calcprotobufsize", socketlib_calcprotobufsize},
+    {"setprotobufroot", socketlib_setprotobufroot},
+    {"loadprotobuffile", socketlib_loadprotobuffile},
 
     {NULL, NULL}
 };

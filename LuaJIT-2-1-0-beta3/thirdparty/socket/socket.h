@@ -96,6 +96,8 @@ void socket_writedouble(struct _socket* c, int id, double value);
 void socket_writeprotobuf(struct _socket* c, int id, const char* name, lua_State* L, int index);
 
 int socket_calcprotobufsize(struct _socket* c, const char* name, lua_State* L, int index);
+int socket_setprotobufroot(struct _socket* c, const char* path);
+int socket_loadprotobuffile(struct _socket* c, const char* path);
 
 
 #endif // _ALITTLE_socket_H_

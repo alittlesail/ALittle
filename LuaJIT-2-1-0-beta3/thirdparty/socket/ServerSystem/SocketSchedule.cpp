@@ -12,9 +12,8 @@ extern "C" {
 namespace ALittle
 {
 
-SocketSchedule::SocketSchedule()
+SocketSchedule::SocketSchedule() : m_importer(0), m_is_exit(0), m_factory(0)
 {
-    m_is_exit = false;
 }
 
 SocketSchedule::~SocketSchedule()
@@ -63,6 +62,16 @@ ConnectClientPtr SocketSchedule::GetClient(int id)
 	if (it == m_connect_map.end())
 		return nullptr;
 	return it->second;
+}
+
+bool SocketSchedule::SetProtobufRoot(const std::string& path)
+{
+	return false;
+}
+
+bool SocketSchedule::LoadProtobufFile(const std::string& path)
+{
+	return false;
 }
 
 void SocketSchedule::Timer(_socket* c, int delay_ms)

@@ -1,9 +1,9 @@
 
+#include "SocketSchedule.h"
+#include "SocketClient.h"
 extern "C" {
     #include "socket.h"
 }
-#include "../ServerSystem/SocketSchedule.h"
-#include "../ClientSystem/ConnectClient.h"
 
 struct _socket* socket_create()
 {

@@ -34,7 +34,6 @@ protected class LWProtobuf
 				this._id_map_name[field_number] = field_name;
 				this._name_map_id[field_name] = field_number;    
             }
-			
         }
     }
 }

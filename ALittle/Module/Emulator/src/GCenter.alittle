@@ -12,7 +12,6 @@ class GCenter
     private ALittle.DisplayObject _proto_root_input;
 
     private ALittle.LoopFrame _frame_loop;
-    private lua.socket _socket_system;
     
     public ctor()
     {
@@ -44,20 +43,17 @@ class GCenter
         this._setting_dialog = g_Control.CreateControl{ALittle.Dialog}("main_setting_dialog", this);
         A_LayerManager.AddToModal(this._setting_dialog);
 
+        A_LuaSocketSchedule.Setup();
+        A_LuaSocketSchedule.LoadProto("D:/Server_02/LW_Server/Project/Depend/Common/include/ProtoCommon/Proto/");
+
         // 每帧处理
-        this._socket_system = lua.socket.create();
         this._frame_loop = new ALittle.LoopFrame(bind(this.UpdateFrame, this));
         this._frame_loop.Start();
     }
 
     public fun UpdateFrame(int frame_time)
     {
-        while (true)
-        {
-            var event = lua.socket.poll(this._socket_system);
-            if (event == null) break;
-            
-        }
+        A_LuaSocketSchedule.RunInFrame();
     }
 
     // 显示对话框

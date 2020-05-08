@@ -201,7 +201,7 @@ local ___COROUTINE = coroutine.running()
 	return coroutine.yield()
 end
 
-function ISocket:ReadProtobuf(name, len)
+function ISocket:ReadBinary(len)
 local ___COROUTINE = coroutine.running()
 	if not self:IsConnected() then
 		return "还未连接成功", 0
@@ -212,6 +212,22 @@ local ___COROUTINE = coroutine.running()
 	self._read_thread = ___COROUTINE
 	socket.readbinary(self._socket, self._id, len)
 	return coroutine.yield()
+end
+
+function ISocket:ReadProtobuf(name, len)
+local ___COROUTINE = coroutine.running()
+	local error, binary_value = self:ReadBinary(len)
+	if error ~= nil then
+		return error, nil
+	end
+	local protobuf_msg = A_LuaSocketSchedule:CreateMessage(name)
+	if protobuf_msg ~= nil then
+		if not protobuf.message_parsefromarray(protobuf_msg, binary_value, len) then
+			protobuf.freemessage(protobuf_msg)
+			protobuf_msg = nil
+		end
+	end
+	return nil, protobuf_msg
 end
 
 function ISocket:WriteUint8(value)

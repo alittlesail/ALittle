@@ -28,9 +28,12 @@ assert(ALittle.ISchedule, " extends class:ALittle.ISchedule is nil")
 LuaSocketSchedule = Lua.Class(ALittle.ISchedule, "Lua.LuaSocketSchedule")
 
 function LuaSocketSchedule:Ctor()
-	___rawset(self, "_socket", socket.create())
 	___rawset(self, "_message_map", {})
 	___rawset(self, "_enum_map", {})
+end
+
+function LuaSocketSchedule:Setup()
+	self._socket = socket.create()
 end
 
 function LuaSocketSchedule:LoadProto(root_path)
@@ -40,42 +43,52 @@ function LuaSocketSchedule:LoadProto(root_path)
 	self._factory = protobuf.createfactory()
 	local file_map = ALittle.File_GetFileAttrByDir(root_path)
 	for file_path, _ in ___pairs(file_map) do
-		if ALittle.File_GetFileExtByPathAndUpper(file_path) ~= "PROTO" then
-			goto continue_1
-		end
-		local file_descriptor = protobuf.importer_import(self._importer, file_path)
-		if file_descriptor == nil then
-			return "文件加载失败:" .. file_path
-		end
-		local message_count = protobuf.filedescriptor_messagetypecount(file_descriptor)
-		local i = 0
-		while true do
-			if not(i < message_count) then break end
-			local message_descriptor = protobuf.filedescriptor_messagetype(file_descriptor, i)
-			if message_descriptor == nil then
-				goto continue_2
+		if ALittle.File_GetFileExtByPathAndUpper(file_path) == "PROTO" then
+			ALittle.Log(file_path)
+			local file_descriptor = protobuf.importer_import(self._importer, file_path)
+			if file_descriptor == nil then
+				return "文件加载失败:" .. file_path
 			end
-			local message_full_name = protobuf.messagedescriptor_fullname(message_descriptor)
-			self._message_map[message_full_name] = message_descriptor
-			::continue_2::
-			i = i+(1)
-		end
-		local enum_count = protobuf.filedescriptor_enumtypecount(file_descriptor)
-		local i = 0
-		while true do
-			if not(i < enum_count) then break end
-			local enum_descriptor = protobuf.filedescriptor_enumtype(file_descriptor, i)
-			if enum_descriptor == nil then
-				goto continue_2
+			local message_count = protobuf.filedescriptor_messagetypecount(file_descriptor)
+			local i = 0
+			while true do
+				if not(i < message_count) then break end
+				local message_descriptor = protobuf.filedescriptor_messagetype(file_descriptor, i)
+				if message_descriptor ~= nil then
+					local message_full_name = protobuf.messagedescriptor_fullname(message_descriptor)
+					self._message_map[message_full_name] = message_descriptor
+				end
+				i = i+(1)
 			end
-			local enum_full_name = protobuf.enumdescriptor_fullname(enum_descriptor)
-			self._enum_map[enum_full_name] = enum_descriptor
-			::continue_2::
-			i = i+(1)
+			local enum_count = protobuf.filedescriptor_enumtypecount(file_descriptor)
+			local i = 0
+			while true do
+				if not(i < enum_count) then break end
+				local enum_descriptor = protobuf.filedescriptor_enumtype(file_descriptor, i)
+				if enum_descriptor ~= nil then
+					local enum_full_name = protobuf.enumdescriptor_fullname(enum_descriptor)
+					self._enum_map[enum_full_name] = enum_descriptor
+				end
+				i = i+(1)
+			end
 		end
-		::continue_1::
 	end
 	return nil
+end
+
+function LuaSocketSchedule:GetEnumDescriptor(full_name)
+	return self._enum_map[full_name]
+end
+
+function LuaSocketSchedule:CreateMessage(full_name)
+	if self._factory == nil then
+		return nil
+	end
+	local descriptor = self._message_map[full_name]
+	if descriptor == nil then
+		return nil
+	end
+	return protobuf.createmessage(self._factory, descriptor)
 end
 
 function LuaSocketSchedule:RunInFrame()

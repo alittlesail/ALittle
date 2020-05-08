@@ -1,0 +1,42 @@
+
+namespace Emulator;
+
+protected class LWProtobuf
+{
+	private Map<int, string> _id_map_name;
+	private Map<string, int> _name_map_id;
+
+	public ctor()
+	{
+		this._id_map_name = new Map<int, string>();
+		this._name_map_id = new Map<string, int>();
+    }
+
+	public fun Refresh()
+	{
+		this._id_map_name = new Map<int, string>();
+		this._name_map_id = new Map<string, int>();
+
+        var enum_descriptor = A_LuaSocketSchedule.GetEnumDescriptor("EMsgTypes");
+		if (enum_descriptor == null) return;
+
+		var count = lua.protobuf.enumdescriptor_valuecount(enum_descriptor);
+		for (var i = 0; i < count; 1)
+		{
+            var enumvalue_descriptor = lua.protobuf.enumdescriptor_value(enum_descriptor, i);
+			if (enumvalue_descriptor != null)
+			{
+				var field_name = lua.protobuf.enumvaluedescriptor_name(enumvalue_descriptor);
+				var field_number = lua.protobuf.enumvaluedescriptor_number(enumvalue_descriptor);
+
+				ALittle.Log(field_name, field_number);
+
+				this._id_map_name[field_number] = field_name;
+				this._name_map_id[field_name] = field_number;    
+            }
+			
+        }
+    }
+}
+
+protected var g_LWProtobuf = new LWProtobuf();

@@ -1,0 +1,14 @@
+
+[Language(Lua)]
+namespace Lua;
+
+public static Protobuf2Table(lua.protobuf_message message) : any
+{
+    return null;
+}
+
+
+public static Table2Protobuf(string full_name) : lua.protobuf_message
+{
+    return null;
+}

@@ -28,17 +28,6 @@ public enum protobuf_cpptype
                        // indexed by CppType.
 }
 
-/*
-    {"reflection_addrepeatedmessage", protobuflib_reflection_addrepeatedmessage},
-    {"reflection_addrepeatedbool", protobuflib_reflection_addrepeatedbool},
-    {"reflection_addrepeatedint32", protobuflib_reflection_addrepeatedint32},
-    {"reflection_addrepeateduint32", protobuflib_reflection_addrepeateduint32},
-    {"reflection_addrepeatedint64", protobuflib_reflection_addrepeatedint64},
-    {"reflection_addrepeateduint64", protobuflib_reflection_addrepeateduint64},
-    {"reflection_addrepeateddouble", protobuflib_reflection_addrepeateddouble},
-    {"reflection_addrepeatedfloat", protobuflib_reflection_addrepeatedfloat},
-    {"reflection_addrepeatedstring", protobuflib_reflection_addrepeatedstring},
-*/
 public class protobuf
 {
     public static createimporter(string path) : protobuf_importer {}
@@ -58,10 +47,10 @@ public class protobuf
 
     public static enumdescriptor_name(protobuf_enum_descriptor descriptor) : string {}
     public static enumdescriptor_fullname(protobuf_enum_descriptor descriptor) : string {}
-    public static enumdescriptor_fieldcount(protobuf_enum_descriptor descriptor) : int {}
-    public static enumdescriptor_field(protobuf_enum_descriptor descriptor, int index) : protobuf_enum_value_descriptor {}
-    public static enumdescriptor_findfieldbyname(protobuf_enum_descriptor descriptor, string name) : protobuf_enum_value_descriptor {}
-    public static enumdescriptor_findfieldbynumber(protobuf_enum_descriptor descriptor, int number) : protobuf_enum_value_descriptor {}
+    public static enumdescriptor_valuecount(protobuf_enum_descriptor descriptor) : int {}
+    public static enumdescriptor_value(protobuf_enum_descriptor descriptor, int index) : protobuf_enum_value_descriptor {}
+    public static enumdescriptor_findvaluebyname(protobuf_enum_descriptor descriptor, string name) : protobuf_enum_value_descriptor {}
+    public static enumdescriptor_findvaluebynumber(protobuf_enum_descriptor descriptor, int number) : protobuf_enum_value_descriptor {}
     
     public static enumvaluedescriptor_name(protobuf_enum_value_descriptor descriptor) : string {}
     public static enumvaluedescriptor_number(protobuf_enum_value_descriptor descriptor) : int {}
@@ -82,7 +71,8 @@ public class protobuf
     public static message_getdescriptor(protobuf_message msg) : protobuf_descriptor {}
     public static message_getreflection(protobuf_message msg) : protobuf_reflection {}
     public static message_getbytesize(protobuf_message msg) : int {}
-    public static message_serializetoarray(protobuf_message msg, )
+    public static message_serializetoarray(protobuf_message msg, any buffer, int size) : bool {}
+    public static message_parsefromarray(protobuf_message msg, any buffer, int size) : bool {}
 
     public static reflection_clearfield(protobuf_reflection reflection, protobuf_field_descriptor descriptor) {}
 

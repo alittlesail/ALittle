@@ -28,7 +28,11 @@ function __Module_Setup(layer_group, control, module_base_path, script_base_path
 	g_ModuleBasePath = module_base_path
 	Require(script_base_path, "GCenter")
 	Require(script_base_path, "IDETool")
-	Require(script_base_path, "ISocket")
+	Require(script_base_path, "LWProtobuf")
+	Require(script_base_path, "LWSocket")
+	luarequire("memory")
+	luarequire("protobuf")
+	luarequire("socket")
 	g_GCenter:Setup()
 end
 __Module_Setup = Lua.CoWrap(__Module_Setup)

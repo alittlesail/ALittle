@@ -34,9 +34,13 @@ public class LuaSocketSchedule : ALittle.ISchedule
     
     public ctor()
     {
-        this._socket = lua.socket.create();
         this._message_map = new Map<string, lua.protobuf_descriptor>();
         this._enum_map = new Map<string, lua.protobuf_enum_descriptor>();
+    }
+
+    public fun Setup()
+    {
+        this._socket = lua.socket.create();
     }
 
     public fun LoadProto(string root_path) : string
@@ -50,30 +54,50 @@ public class LuaSocketSchedule : ALittle.ISchedule
         var file_map = ALittle.File_GetFileAttrByDir(root_path);
         for (var file_path, _ in file_map)
         {
-            if (ALittle.File_GetFileExtByPathAndUpper(file_path) != "PROTO")
-                continue;
-            var file_descriptor = lua.protobuf.importer_import(this._importer, file_path);
-            if (file_descriptor == null) return "文件加载失败:"..file_path;
+            if (ALittle.File_GetFileExtByPathAndUpper(file_path) == "PROTO")
+            {
+                ALittle.Log(file_path);
+                var file_descriptor = lua.protobuf.importer_import(this._importer, file_path);
+                if (file_descriptor == null) return "文件加载失败:"..file_path;
 
-            var message_count = lua.protobuf.filedescriptor_messagetypecount(file_descriptor);
-            for (var i = 0; i < message_count; 1)
-            {
-                var message_descriptor = lua.protobuf.filedescriptor_messagetype(file_descriptor, i);
-                if (message_descriptor == null) continue;
-                var message_full_name = lua.protobuf.messagedescriptor_fullname(message_descriptor);
-                this._message_map[message_full_name] = message_descriptor;
-            }
+                var message_count = lua.protobuf.filedescriptor_messagetypecount(file_descriptor);
+                for (var i = 0; i < message_count; 1)
+                {
+                    var message_descriptor = lua.protobuf.filedescriptor_messagetype(file_descriptor, i);
+                    if (message_descriptor != null)
+                    {
+                        var message_full_name = lua.protobuf.messagedescriptor_fullname(message_descriptor);
+                        this._message_map[message_full_name] = message_descriptor;   
+                    }
+                }
             
-            var enum_count = lua.protobuf.filedescriptor_enumtypecount(file_descriptor);
-            for (var i = 0; i < enum_count; 1)
-            {
-                var enum_descriptor = lua.protobuf.filedescriptor_enumtype(file_descriptor, i);
-                if (enum_descriptor == null) continue;
-                var enum_full_name = lua.protobuf.enumdescriptor_fullname(enum_descriptor);
-                this._enum_map[enum_full_name] = enum_descriptor;
+                var enum_count = lua.protobuf.filedescriptor_enumtypecount(file_descriptor);
+                for (var i = 0; i < enum_count; 1)
+                {
+                    var enum_descriptor = lua.protobuf.filedescriptor_enumtype(file_descriptor, i);
+                    if (enum_descriptor != null)
+                    {
+                        var enum_full_name = lua.protobuf.enumdescriptor_fullname(enum_descriptor);
+                        this._enum_map[enum_full_name] = enum_descriptor;   
+                    }
+                }
             }
         }
         return null;
+    }
+
+    public fun GetEnumDescriptor(string full_name) : lua.protobuf_enum_descriptor
+    {
+        return this._enum_map[full_name];
+    }
+
+    public fun CreateMessage(string full_name) : lua.protobuf_message
+    {
+        if (this._factory == null) return null;
+        var descriptor = this._message_map[full_name];
+        if (descriptor == null) return null;
+
+        return lua.protobuf.createmessage(this._factory, descriptor);
     }
 
     public fun RunInFrame()

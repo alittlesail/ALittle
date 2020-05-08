@@ -9,7 +9,7 @@ protected class LWSocket : Lua.ISocket
         var msg_size = 0;
         var server_id = 0;
         var server_type = 0;
-        var protobuf_msg:any = null;
+        var protobuf_msg:lua.protobuf_message = null;
         var error:string = null;
 
         while (this.IsConnected())
@@ -26,57 +26,62 @@ protected class LWSocket : Lua.ISocket
             error, server_type = this.ReadUint16();
             if (error != null) break;
             
-            var name = this.MsgId2ProtobufName(msg_type);
-            if (name == null)
-            {
-                name = "";
-                // 提示未知类型的协议
-            }
+            var name = this.MsgId2MsgFullName(msg_type);
 
             if (msg_size > 0)
             {
-                var binary_value:any = null;
-                error, binary_value = this.ReadProtobuf(name, msg_size);
-                if (error != null) break;
-
-                // 处理反序列化
+                error, protobuf_msg = this.ReadProtobuf(name, msg_size);
+                if (error != null) break;   
             }
-            else
-            {
-                protobuf_msg = new Map<string, any>();
-            }
-
+            
             this.HandleMessage(msg_type, name, protobuf_msg);
+
+            if (protobuf_msg != null)
+            {
+                lua.protobuf.freemessage(protobuf_msg);
+                protobuf_msg = null;
+            }
         }
     }
 
-    public fun WriteMessage(string name, any msg)
+    public fun WriteMessage(string name, any msg) : bool
     {
-        var msg_type = this.ProtobufName2MsgId(name);
-        if (msg_type == null) return;
+        var msg_type = this.MsgFullName2MsgId(name);
+        if (msg_type == null) return false;
+        
+        var protobuf_msg = Lua.Table2Protobuf(name);
+        if (protobuf_msg == null) return false;
 
-        // 创建message，处理序列化
-        var size = 0;
-        var buffer = null;
+        var msg_size = lua.protobuf.message_getbytesize(protobuf_msg);
+        var binary_value = lua.memory.create(msg_size);
 
-        this.WriteUint16(msg_type);
-        this.WriteUint16(size);
-        this.WriteUint16(1);
-        this.WriteUint16(1);
-        this.WriteBinary(buffer, size);
+        var result = lua.protobuf.message_serializetoarray(protobuf_msg, binary_value, msg_size);
+        if (result)
+        {
+            this.WriteUint16(msg_type);
+            this.WriteUint16(msg_size);
+            this.WriteUint16(1);
+            this.WriteUint16(1);
+            this.WriteBinary(binary_value, msg_size);
+        }
+
+        lua.protobuf.freemessage(protobuf_msg);
+        lua.memory.free(binary_value);
+
+        return result;
     }
 
-    private fun MsgId2ProtobufName(int id) : string
+    private fun MsgId2MsgFullName(int id) : string
     {
-        return null;
+        return "";
     }
     
-    private fun ProtobufName2MsgId(string name) : int
+    private fun MsgFullName2MsgId(string name) : int
     {
         return null;
     }
 
-    private fun HandleMessage(int id, string name, any msg)
+    private fun HandleMessage(int id, string name, lua.protobuf_message msg)
     {
         
     }

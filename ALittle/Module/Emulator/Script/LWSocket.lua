@@ -32,43 +32,51 @@ function LWSocket:ReadMessage()
 		if error ~= nil then
 			break
 		end
-		local name = self:MsgId2ProtobufName(msg_type)
-		if name == nil then
-			name = ""
-		end
+		local name = self:MsgId2MsgFullName(msg_type)
 		if msg_size > 0 then
-			local binary_value = nil
-			error, binary_value = self:ReadProtobuf(name, msg_size)
+			error, protobuf_msg = self:ReadProtobuf(name, msg_size)
 			if error ~= nil then
 				break
 			end
-		else
-			protobuf_msg = {}
 		end
 		self:HandleMessage(msg_type, name, protobuf_msg)
+		if protobuf_msg ~= nil then
+			protobuf.freemessage(protobuf_msg)
+			protobuf_msg = nil
+		end
 	end
 end
 LWSocket.ReadMessage = Lua.CoWrap(LWSocket.ReadMessage)
 
 function LWSocket:WriteMessage(name, msg)
-	local msg_type = self:ProtobufName2MsgId(name)
+	local msg_type = self:MsgFullName2MsgId(name)
 	if msg_type == nil then
-		return
+		return false
 	end
-	local size = 0
-	local buffer = nil
-	self:WriteUint16(msg_type)
-	self:WriteUint16(size)
-	self:WriteUint16(1)
-	self:WriteUint16(1)
-	self:WriteBinary(buffer, size)
+	local protobuf_msg = Lua.Table2Protobuf(name)
+	if protobuf_msg == nil then
+		return false
+	end
+	local msg_size = protobuf.message_getbytesize(protobuf_msg)
+	local binary_value = memory.create(msg_size)
+	local result = protobuf.message_serializetoarray(protobuf_msg, binary_value, msg_size)
+	if result then
+		self:WriteUint16(msg_type)
+		self:WriteUint16(msg_size)
+		self:WriteUint16(1)
+		self:WriteUint16(1)
+		self:WriteBinary(binary_value, msg_size)
+	end
+	protobuf.freemessage(protobuf_msg)
+	memory.free(binary_value)
+	return result
 end
 
-function LWSocket:MsgId2ProtobufName(id)
-	return nil
+function LWSocket:MsgId2MsgFullName(id)
+	return ""
 end
 
-function LWSocket:ProtobufName2MsgId(name)
+function LWSocket:MsgFullName2MsgId(name)
 	return nil
 end
 

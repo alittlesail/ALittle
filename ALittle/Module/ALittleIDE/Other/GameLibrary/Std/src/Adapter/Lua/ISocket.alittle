@@ -72,7 +72,7 @@ public class ISocket
         
     }
 
-	public await fun ReadUint8() : any, int
+	public await fun ReadUint8() : string, int
 	{
 		if (!this.IsConnected()) return "还未连接成功", 0;
         if (this._read_thread != null) return "已经正在读取", 0;
@@ -82,7 +82,7 @@ public class ISocket
 		return yield;
     }
 
-	public await fun ReadInt8() : any, int
+	public await fun ReadInt8() : string, int
 	{
 		if (!this.IsConnected()) return "还未连接成功", 0;
         if (this._read_thread != null) return "已经正在读取", 0;
@@ -92,7 +92,7 @@ public class ISocket
 		return yield;
     }
 
-	public await fun ReadUint16() : any, int
+	public await fun ReadUint16() : string, int
 	{
 		if (!this.IsConnected()) return "还未连接成功", 0;
         if (this._read_thread != null) return "已经正在读取", 0;
@@ -102,7 +102,7 @@ public class ISocket
 		return yield;
     }
 
-	public await fun ReadInt16() : any, int
+	public await fun ReadInt16() : string, int
 	{
 		if (!this.IsConnected()) return "还未连接成功", 0;
         if (this._read_thread != null) return "已经正在读取", 0;
@@ -112,7 +112,7 @@ public class ISocket
 		return yield;
     }
 
-	public await fun ReadUint32() : any, int
+	public await fun ReadUint32() : string, int
 	{
 		if (!this.IsConnected()) return "还未连接成功", 0;
         if (this._read_thread != null) return "已经正在读取", 0;
@@ -122,7 +122,7 @@ public class ISocket
 		return yield;
     }
 
-	public await fun ReadInt32() : any, int
+	public await fun ReadInt32() : string, int
 	{
 		if (!this.IsConnected()) return "还未连接成功", 0;
         if (this._read_thread != null) return "已经正在读取", 0;
@@ -132,7 +132,7 @@ public class ISocket
 		return yield;
     }
 
-	public await fun ReadUint64() : any, int
+	public await fun ReadUint64() : string, int
 	{
 		if (!this.IsConnected()) return "还未连接成功", 0;
         if (this._read_thread != null) return "已经正在读取", 0;
@@ -142,7 +142,7 @@ public class ISocket
 		return yield;
     }
 
-	public await fun ReadInt64() : any, int
+	public await fun ReadInt64() : string, int
 	{
 		if (!this.IsConnected()) return "还未连接成功", 0;
         if (this._read_thread != null) return "已经正在读取", 0;
@@ -152,7 +152,7 @@ public class ISocket
 		return yield;
     }
 
-	public await fun ReadFloat() : any, double
+	public await fun ReadFloat() : string, double
 	{
 		if (!this.IsConnected()) return "还未连接成功", 0;
         if (this._read_thread != null) return "已经正在读取", 0;
@@ -162,7 +162,7 @@ public class ISocket
 		return yield;
     }
 
-	public await fun ReadDouble() : any, int
+	public await fun ReadDouble() : string, int
 	{
 		if (!this.IsConnected()) return "还未连接成功", 0;
         if (this._read_thread != null) return "已经正在读取", 0;
@@ -172,7 +172,7 @@ public class ISocket
 		return yield;
     }
 
-	public await fun ReadProtobuf(string name, int len) : any, any
+	public await fun ReadBinary(int len) : string, any
 	{
 		if (!this.IsConnected()) return "还未连接成功", 0;
         if (this._read_thread != null) return "已经正在读取", 0;
@@ -180,6 +180,24 @@ public class ISocket
 		this._read_thread = co;
 		lua.socket.readbinary(this._socket, this._id, len);
 		return yield;
+    }
+
+	public await fun ReadProtobuf(string name, int len) : string, any
+	{
+		var error, binary_value = this.ReadBinary(len);
+        if (error != null) return error, null;
+
+        var protobuf_msg = A_LuaSocketSchedule.CreateMessage(name);
+        if (protobuf_msg != null)
+        {
+            if (!lua.protobuf.message_parsefromarray(protobuf_msg, binary_value, len))
+            {
+                lua.protobuf.freemessage(protobuf_msg);
+                protobuf_msg = null;
+            }
+        }
+
+		return null, protobuf_msg;
     }
 	
 	public fun WriteUint8(int value)

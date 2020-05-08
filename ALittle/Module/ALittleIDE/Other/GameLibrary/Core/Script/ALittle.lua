@@ -11,9 +11,6 @@ end
 
 function RequireCore(base_path)
 local ___COROUTINE = coroutine.running()
-	if luarequire == nil then
-		_G["luarequire"] = require
-	end
 	Require(base_path, "Core/Reflect/ReflectRegister")
 	Require(base_path, "Core/Reflect/ReflectDefine")
 	Require(base_path, "Core/Lua/LuaBind")

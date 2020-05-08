@@ -32,7 +32,7 @@ static int protobuflib_importer_import(lua_State* L)
     void** c = (void**)lua_touserdata(L, 1);
     luaL_argcheck(L, c != 0, 1, "importer object is null");
     const char* path = luaL_checkstring(L, 2);
-    lua_pushlightuserdata(L, protobuf_importer_import(c, path));
+    lua_pushlightuserdata(L, protobuf_importer_import(*c, path));
     return 1;
 }
 
@@ -266,7 +266,7 @@ static int protobuflib_factory_createmessage(lua_State* L)
     luaL_argcheck(L, c != 0, 1, "factory object is null");
     void* descriptor = lua_touserdata(L, 2);
     luaL_argcheck(L, descriptor != 0, 2, "descriptor object is null");
-    lua_pushlightuserdata(L, protobuf_factory_createmessage(c, descriptor));
+    lua_pushlightuserdata(L, protobuf_factory_createmessage(*c, descriptor));
     return 1;
 }
 

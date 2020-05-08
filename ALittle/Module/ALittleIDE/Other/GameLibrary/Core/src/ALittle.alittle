@@ -39,10 +39,6 @@ public await static Require(string base_path, string url) : string
 
 public await static RequireCore(string base_path)
 {
-    [Language(Lua)]
-    if (lua.luarequire == null)
-        _G["luarequire"] = lua.require;
-
     [Language(JavaScript)]
     Require(base_path, "Core/JavaScript/JavaScriptClass");
     [Language(JavaScript)]

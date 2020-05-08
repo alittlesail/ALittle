@@ -44,9 +44,6 @@ public async static __Module_Setup(ALittle.DisplayLayout layer_group, ALittle.Co
 	alittle.Require(script_base_path, "IDETool");
 	alittle.Require(script_base_path, "LWProtobuf");
 	alittle.Require(script_base_path, "LWSocket");
-	lua.luarequire("memory");
-	lua.luarequire("protobuf");
-	lua.luarequire("socket");
 	g_GCenter.Setup();
 }
 

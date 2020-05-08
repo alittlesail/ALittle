@@ -4,6 +4,13 @@
 
 #include "lua.h"
 
+typedef struct _importer
+{
+	void* source_tree;
+	void* error_collector;
+	void* importer;
+} importer;
+
 // importer
 void* protobuf_createimporter(const char* path);
 void protobuf_freeimporter(void* c);

@@ -224,5 +224,8 @@
     <None Include="src\Adapter\Lua\memory.alittle">
       <Filter>Adapter\Lua</Filter>
     </None>
+    <None Include="src\Adapter\Lua\LuaProtobuf.alittle">
+      <Filter>Adapter\Lua</Filter>
+    </None>
   </ItemGroup>
 </Project>

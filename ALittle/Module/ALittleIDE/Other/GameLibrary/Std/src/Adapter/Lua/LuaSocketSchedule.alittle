@@ -56,8 +56,7 @@ public class LuaSocketSchedule : ALittle.ISchedule
         {
             if (ALittle.File_GetFileExtByPathAndUpper(file_path) == "PROTO")
             {
-                ALittle.Log(file_path);
-                var file_descriptor = lua.protobuf.importer_import(this._importer, file_path);
+                var file_descriptor = lua.protobuf.importer_import(this._importer, ALittle.String_Sub(file_path, ALittle.String_Len(root_path) + 2));
                 if (file_descriptor == null) return "ÎÄ¼þ¼ÓÔØÊ§°Ü:"..file_path;
 
                 var message_count = lua.protobuf.filedescriptor_messagetypecount(file_descriptor);

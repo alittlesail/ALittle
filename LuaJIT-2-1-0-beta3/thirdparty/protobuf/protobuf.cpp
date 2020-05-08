@@ -6,21 +6,38 @@ extern "C" {
 #include "google/protobuf/compiler/importer.h"
 #include "google/protobuf/dynamic_message.h"
 
+class MultiFileErrorCollector : public google::protobuf::compiler::MultiFileErrorCollector
+{
+public:
+    void AddError(const std::string& filename, int line, int column,
+        const std::string& message) {}
+};
+
 void* protobuf_createimporter(const char* path)
 {
-    google::protobuf::compiler::DiskSourceTree sourceTree;
-    sourceTree.MapPath("", path);
-    return new google::protobuf::compiler::Importer(&sourceTree, nullptr);
+    importer* m = (importer*)malloc(sizeof(importer));
+    auto source_tree = new google::protobuf::compiler::DiskSourceTree();
+    auto error_collector = new MultiFileErrorCollector();
+    m->source_tree = source_tree;
+    m->error_collector = error_collector;
+    source_tree->MapPath("", path);
+    m->importer = new google::protobuf::compiler::Importer(source_tree, error_collector);
+    return m;
 }
 
 void protobuf_freeimporter(void* c)
 {
-    delete ((google::protobuf::compiler::Importer*)c);
+    importer* m = (importer*)c;
+    delete ((MultiFileErrorCollector*)m->error_collector);
+    delete ((google::protobuf::compiler::DiskSourceTree*)m->source_tree);
+    delete ((google::protobuf::compiler::Importer*)m->importer);
+    free(m);
 }
 
 void* protobuf_importer_import(void* c, const char* path)
 {
-    return (void*)((google::protobuf::compiler::Importer*)c)->Import(path);
+    importer* m = (importer*)c;
+    return (void*)((google::protobuf::compiler::Importer*)m->importer)->Import(path);
 }
 
 int protobuf_filedescriptor_messagetypecount(void* descriptor)

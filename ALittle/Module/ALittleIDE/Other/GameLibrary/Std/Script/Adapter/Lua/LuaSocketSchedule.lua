@@ -44,8 +44,7 @@ function LuaSocketSchedule:LoadProto(root_path)
 	local file_map = ALittle.File_GetFileAttrByDir(root_path)
 	for file_path, _ in ___pairs(file_map) do
 		if ALittle.File_GetFileExtByPathAndUpper(file_path) == "PROTO" then
-			ALittle.Log(file_path)
-			local file_descriptor = protobuf.importer_import(self._importer, file_path)
+			local file_descriptor = protobuf.importer_import(self._importer, ALittle.String_Sub(file_path, ALittle.String_Len(root_path) + 2))
 			if file_descriptor == nil then
 				return "文件加载失败:" .. file_path
 			end

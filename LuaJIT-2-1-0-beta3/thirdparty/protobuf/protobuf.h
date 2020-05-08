@@ -11,6 +11,8 @@ typedef struct _importer
 	void* importer;
 } importer;
 
+void protobuf_shutdown();
+
 // importer
 void* protobuf_createimporter(const char* path);
 void protobuf_freeimporter(void* c);

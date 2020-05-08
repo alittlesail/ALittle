@@ -7,6 +7,12 @@
 
 #define PROTOBUF_MODNAME "protobuf"
 
+static int protobuflib_shutdown(lua_State* L)
+{
+    protobuf_shutdown();
+    return 0;
+}
+
 // importer
 static int protobuflib_destroyimporter(lua_State* L)
 {
@@ -843,6 +849,8 @@ static void set_info(lua_State* L) {
 }
 
 static struct luaL_Reg protobuflib[] = {
+    {"shutdown", protobuflib_shutdown},
+
     {"createimporter", protobuflib_createimporter},
     {"importer_import", protobuflib_importer_import},
 

@@ -13,6 +13,11 @@ public:
         const std::string& message) {}
 };
 
+void protobuf_shutdown()
+{
+    google::protobuf::ShutdownProtobufLibrary();
+}
+
 void* protobuf_createimporter(const char* path)
 {
     importer* m = (importer*)malloc(sizeof(importer));

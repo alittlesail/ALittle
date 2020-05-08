@@ -1,6 +1,6 @@
 
 #include "SocketSchedule.h"
-#include "ConnectClient.h"
+#include "SocketClient.h"
 extern "C" {
     #include "socket.h"
 }

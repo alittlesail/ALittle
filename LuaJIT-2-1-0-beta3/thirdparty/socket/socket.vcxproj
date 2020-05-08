@@ -19,16 +19,16 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ClientSystem\ConnectClient.cpp" />
-    <ClCompile Include="ServerSystem\SocketSchedule.cpp" />
     <ClCompile Include="socket.cpp" />
+    <ClCompile Include="SocketClient.cpp" />
     <ClCompile Include="socketlib.c" />
+    <ClCompile Include="SocketSchedule.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ClientSystem\ConnectClient.h" />
-    <ClInclude Include="ServerSystem\SocketSchedule.h" />
     <ClInclude Include="socket.h" />
+    <ClInclude Include="SocketClient.h" />
     <ClInclude Include="socketlib.h" />
+    <ClInclude Include="SocketSchedule.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

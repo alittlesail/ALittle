@@ -281,7 +281,91 @@ static int socketlib_loadprotobuffile(lua_State* L)
     struct _socket* c = (struct _socket*)lua_touserdata(L, 1);
     luaL_argcheck(L, c != 0, 1, "socket object is null");
     const char* path = luaL_checkstring(L, 2);
-    lua_pushboolean(L, socket_loadprotobuffile(c, path));
+    lua_pushlightuserdata(L, socket_loadprotobuffile(c, path));
+    return 1;
+}
+
+static int socketlib_getfiledescriptmessagetypecount(lua_State* L)
+{
+    void* descriptor = lua_touserdata(L, 1);
+    luaL_argcheck(L, descriptor != 0, 1, "descriptor object is null");
+    lua_pushinteger(L, socket_getfiledescriptmessagetypecount(descriptor));
+    return 1;
+}
+
+static int socketlib_getfiledescriptmessagetype(lua_State* L)
+{
+    void* descriptor = lua_touserdata(L, 1);
+    luaL_argcheck(L, descriptor != 0, 1, "descriptor object is null");
+    int index = (int)luaL_checkinteger(L, 2);
+    lua_pushlightuserdata(L, socket_getfiledescriptmessagetype(descriptor, index));
+    return 1;
+}
+
+static int socketlib_getmessagename(lua_State* L)
+{
+    void* descriptor = lua_touserdata(L, 1);
+    luaL_argcheck(L, descriptor != 0, 1, "descriptor object is null");
+    lua_pushstring(L, socket_getmessagename(descriptor));
+    return 1;
+}
+
+static int socketlib_getmessagefullname(lua_State* L)
+{
+    void* descriptor = lua_touserdata(L, 1);
+    luaL_argcheck(L, descriptor != 0, 1, "descriptor object is null");
+    lua_pushstring(L, socket_getmessagefullname(descriptor));
+    return 1;
+}
+
+static int socketlib_getmessagefieldcount(lua_State* L)
+{
+    void* descriptor = lua_touserdata(L, 1);
+    luaL_argcheck(L, descriptor != 0, 1, "descriptor object is null");
+    lua_pushinteger(L, socket_getmessagefieldcount(descriptor));
+    return 1;
+}
+
+static int socketlib_getmessagefield(lua_State* L)
+{
+    void* descriptor = lua_touserdata(L, 1);
+    luaL_argcheck(L, descriptor != 0, 1, "descriptor object is null");
+    int index = (int)luaL_checkinteger(L, 2);
+    lua_pushlightuserdata(L, socket_getmessagefield(descriptor, index));
+    return 1;
+}
+
+static int socketlib_findmessagefieldbyname(lua_State* L)
+{
+    void* descriptor = lua_touserdata(L, 1);
+    luaL_argcheck(L, descriptor != 0, 1, "descriptor object is null");
+    const char* name = luaL_checkstring(L, 2);
+    lua_pushlightuserdata(L, socket_findmessagefieldbyname(descriptor, name));
+    return 1;
+}
+
+static int socketlib_createmessage(lua_State* L)
+{
+    void* descriptor = lua_touserdata(L, 1);
+    luaL_argcheck(L, descriptor != 0, 1, "descriptor object is null");
+    lua_pushlightuserdata(L, socket_createmessage(descriptor));
+    return 1;
+}
+
+static int socketlib_getfiledescriptenumtypecount(lua_State* L)
+{
+    void* descriptor = lua_touserdata(L, 1);
+    luaL_argcheck(L, descriptor != 0, 1, "descriptor object is null");
+    lua_pushinteger(L, socket_getfiledescriptenumtypecount(descriptor));
+    return 1;
+}
+
+static int socketlib_getfiledescriptenumtype(lua_State* L)
+{
+    void* descriptor = lua_touserdata(L, 1);
+    luaL_argcheck(L, descriptor != 0, 1, "descriptor object is null");
+    int index = (int)luaL_checkinteger(L, 2);
+    lua_pushlightuserdata(L, socket_getfiledescriptenumtype(descriptor, index));
     return 1;
 }
 
@@ -378,6 +462,18 @@ static struct luaL_Reg socketlib[] = {
     {"calcprotobufsize", socketlib_calcprotobufsize},
     {"setprotobufroot", socketlib_setprotobufroot},
     {"loadprotobuffile", socketlib_loadprotobuffile},
+
+    {"get_file_descript_message_type_count", socketlib_getfiledescriptmessagetypecount},
+    {"get_file_descript_message_type", socketlib_getfiledescriptmessagetype},
+    {"get_message_name", socketlib_getmessagename},
+    {"get_message_full_name", socketlib_getmessagefullname},
+    {"get_message_field_count", socketlib_getmessagefieldcount},
+    {"get_message_field", socketlib_getmessagefield},
+    {"find_message_field_by_name", socketlib_findmessagefieldbyname},
+    {"create_message", socketlib_createmessage},
+
+    {"get_file_descript_enum_type_count", socketlib_getfiledescriptenumtypecount},
+    {"get_file_descript_enum_type", socketlib_getfiledescriptenumtype},
 
     {NULL, NULL}
 };

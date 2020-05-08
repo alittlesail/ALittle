@@ -1,6 +1,6 @@
 
-#ifndef _ALITTLE_socket_H_
-#define _ALITTLE_socket_H_
+#ifndef _ALITTLE_SOCKET_H_
+#define _ALITTLE_SOCKET_H_
 
 #include "../klib/kstring.h"
 #include "../klib/kvec.h"
@@ -97,7 +97,18 @@ void socket_writeprotobuf(struct _socket* c, int id, const char* name, lua_State
 
 int socket_calcprotobufsize(struct _socket* c, const char* name, lua_State* L, int index);
 int socket_setprotobufroot(struct _socket* c, const char* path);
-int socket_loadprotobuffile(struct _socket* c, const char* path);
+void* socket_loadprotobuffile(struct _socket* c, const char* path);
 
+int socket_getfiledescriptmessagetypecount(void* descriptor);
+void* socket_getfiledescriptmessagetype(void* descriptor, int index);
+const char* socket_getmessagename(void* descriptor);
+const char* socket_getmessagefullname(void* descriptor);
+int socket_getmessagefieldcount(void* descriptor);
+void* socket_getmessagefield(void* descriptor, int index);
+void* socket_findmessagefieldbyname(void* descriptor, const char* name);
+void* socket_createmessage(struct _socket* c, void* descriptor);
 
-#endif // _ALITTLE_socket_H_
+int socket_getfiledescriptenumtypecount(void* file_descriptor);
+void* socket_getfiledescriptenumtype(void* file_descriptor, int index);
+
+#endif // _ALITTLE_SOCKET_H_

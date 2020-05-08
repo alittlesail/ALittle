@@ -47,7 +47,8 @@ public:
 
 public:
 	bool SetProtobufRoot(const std::string& path);
-	bool LoadProtobufFile(const std::string& path);
+	const google::protobuf::FileDescriptor* LoadProtobufFile(const std::string& path);
+	google::protobuf::Message* CreateMessage(const google::protobuf::Descriptor* descriptor);
 
 public:
 	void Timer(struct _socket* c, int delay_ms);

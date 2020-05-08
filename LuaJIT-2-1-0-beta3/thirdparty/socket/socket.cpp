@@ -5,6 +5,9 @@ extern "C" {
 #include "../ServerSystem/SocketSchedule.h"
 #include "../ClientSystem/ConnectClient.h"
 
+#include "google/protobuf/compiler/importer.h"
+#include "google/protobuf/dynamic_message.h"
+
 struct _socket* socket_create()
 {
     struct _socket* c = (struct _socket*)malloc(sizeof(struct _socket));
@@ -300,11 +303,54 @@ int socket_calcprotobufsize(struct _socket* c, const char* name, lua_State* L, i
 int socket_setprotobufroot(struct _socket* c, const char* path)
 {
     ALittle::SocketSchedule* schedule = (ALittle::SocketSchedule*)(c->schedule);
-    return 0;
+    return schedule->SetProtobufRoot(path) ? 1 : 0;
 }
 
-int socket_loadprotobuffile(struct _socket* c, const char* path)
+void* socket_loadprotobuffile(struct _socket* c, const char* path)
 {
     ALittle::SocketSchedule* schedule = (ALittle::SocketSchedule*)(c->schedule);
-    return 0;
+    return (void*)schedule->LoadProtobufFile(path);
+}
+
+int socket_getfiledescriptmessagetypecount(void* descriptor)
+{
+    return ((const google::protobuf::FileDescriptor*)descriptor)->message_type_count();
+}
+void* socket_getfiledescriptmessagetype(void* descriptor, int index)
+{
+    return (void*)((const google::protobuf::FileDescriptor*)descriptor)->message_type(index);
+}
+const char* socket_getmessagename(void* descriptor)
+{
+    return ((const google::protobuf::Descriptor*)descriptor)->name().c_str();
+}
+const char* socket_getmessagefullname(void* descriptor)
+{
+    return ((const google::protobuf::Descriptor*)descriptor)->full_name().c_str();
+}
+int socket_getmessagefieldcount(void* descriptor)
+{
+    return ((const google::protobuf::Descriptor*)descriptor)->field_count();
+}
+void* socket_getmessagefield(void* descriptor, int index)
+{
+    return (void*)((const google::protobuf::Descriptor*)descriptor)->field(index);
+}
+void* socket_findmessagefieldbyname(void* descriptor, const char* name)
+{
+    return (void*)((const google::protobuf::Descriptor*)descriptor)->FindFieldByName(name);
+}
+void* socket_createmessage(struct _socket* c, void* descriptor)
+{
+    ALittle::SocketSchedule* schedule = (ALittle::SocketSchedule*)(c->schedule);
+
+}
+
+int socket_getfiledescriptenumtypecount(void* file_descriptor)
+{
+    return ((const google::protobuf::FileDescriptor*)file_descriptor)->enum_type_count();
+}
+void* socket_getfiledescriptenumtype(void* file_descriptor, int index)
+{
+    return (void*)((const google::protobuf::FileDescriptor*)file_descriptor)->enum_type(index);
 }

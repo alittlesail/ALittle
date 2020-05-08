@@ -15,6 +15,12 @@ public struct socket_event
     any protobuf_value;
 }
 
+public struct protobuf_file_descriptor {}
+public struct protobuf_descriptor {}
+public struct protobuf_enum_descriptor {}
+public struct protobuf_field_descriptor {}
+public struct protobuf_message {}
+
 public class socket
 {
     public static create() : socket {}
@@ -60,7 +66,20 @@ public class socket
     // 设置当前proto根路径
     public static setprotobufroot(socket c, string path) : bool {}
     // 加载proto文件
-    public static loadprotobuffile(socket c, string path) : bool {}
+    public static loadprotobuffile(socket c, string path) : protobuf_file_descriptor {}
+
+    // file_descriptor相关接口
+    public static get_file_descript_message_type_count(protobuf_file_descriptor descriptor) : int {}
+    public static get_file_descript_message_type(protobuf_file_descriptor descriptor, int index) : protobuf_descriptor {}
+    public static get_message_name(protobuf_descriptor descriptor) : string {}
+    public static get_message_full_name(protobuf_descriptor descriptor) : string {}
+    public static get_message_field_count(protobuf_descriptor descriptor) : int {}
+    public static get_message_field(protobuf_descriptor descriptor, int index) : protobuf_field_descriptor {}
+    public static find_message_field_by_name(protobuf_descriptor descriptor, string name) : protobuf_field_descriptor {}
+    public static create_message(protobuf_descriptor descriptor, string full_name) : protobuf_message {}
+
+    public static get_file_descript_enum_type_count(protobuf_file_descriptor descriptor) : int {}
+    public static get_file_descript_enum_type(protobuf_file_descriptor descriptor, int index) : protobuf_enum_descriptor {}
     
     public static exit(net c) {}
 }

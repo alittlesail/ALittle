@@ -30,6 +30,8 @@ public enum protobuf_cpptype
 
 public class protobuf
 {
+    public static shutdown() {}
+
     public static createimporter(string path) : protobuf_importer {}
     public static importer_import(protobuf_importer importer, string path) : protobuf_file_descriptor {}
 

@@ -1,4 +1,4 @@
--- ALittle Generate Lua And Do Not Edit This Line!
+-- ALittle Generate Lua
 module("Emulator", package.seeall)
 
 local ___pairs = pairs
@@ -6,7 +6,7 @@ local ___ipairs = ipairs
 
 
 function __Browser_Setup(layer_group, control, module_base_path, script_base_path, debug)
-	local window_width, window_height, flag, scale = ALittle.System_CalcLandscape(1200, 800, 0x00000020)
+	local window_width, window_height, flag, scale = ALittle.System_CalcLandscape(1200, 600, 0x00000020)
 	ALittle.System_CreateView("Emulator", window_width, window_height, flag, scale)
 	ALittle.System_SetViewIcon(module_base_path .. "/Other/ic_launcher.png")
 	A_ModuleSystem:LoadModule(module_base_path, "Emulator")
@@ -45,7 +45,7 @@ function __Module_GetInfo(control, module_base_path, script_base_path)
 	info.width_type = 1
 	info.width_value = 1200
 	info.height_type = 1
-	info.height_value = 800
+	info.height_value = 600
 	return info
 end
 

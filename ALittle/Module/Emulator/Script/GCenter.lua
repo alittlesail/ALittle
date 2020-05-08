@@ -1,4 +1,4 @@
--- ALittle Generate Lua And Do Not Edit This Line!
+-- ALittle Generate Lua
 module("Emulator", package.seeall)
 
 local ___pairs = pairs
@@ -27,11 +27,16 @@ function GCenter:Setup()
 	self._setting_dialog = g_Control:CreateControl("main_setting_dialog", self)
 	A_LayerManager:AddToModal(self._setting_dialog)
 	A_LuaSocketSchedule:Setup()
+	local error = A_LuaSocketSchedule:LoadProto("D:/Server_02/LW_Server/Project/Depend/Common/include/ProtoCommon/Proto")
+	if error ~= nil then
+		ALittle.Error(error)
+	end
 	self._frame_loop = ALittle.LoopFrame(Lua.Bind(self.UpdateFrame, self))
 	self._frame_loop:Start()
 end
 
 function GCenter:UpdateFrame(frame_time)
+	A_LuaSocketSchedule:RunInFrame()
 end
 
 function GCenter:HandleShowSettingDialog(event)

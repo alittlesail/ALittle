@@ -1,4 +1,4 @@
--- ALittle Generate Lua And Do Not Edit This Line!
+-- ALittle Generate Lua
 local ___pairs = pairs
 local ___ipairs = ipairs
 

@@ -8,7 +8,7 @@ public async static __Browser_Setup(ALittle.DisplayLayout layer_group
                               , string debug)
 {
 	// 创建窗口
-	var window_width, window_height, flag, scale = ALittle.System_CalcLandscape(1200, 800, ALittle.UIEnumTypes.VIEW_RESIZABLE);
+	var window_width, window_height, flag, scale = ALittle.System_CalcLandscape(1200, 600, ALittle.UIEnumTypes.VIEW_RESIZABLE);
 	ALittle.System_CreateView("Emulator", window_width, window_height, flag, scale);
 	ALittle.System_SetViewIcon(module_base_path.."/Other/ic_launcher.png");
     
@@ -62,6 +62,6 @@ public static __Module_GetInfo(ALittle.ControlSystem control, string module_base
 	info.width_type = ALittle.UIEnumTypes.SIZE_ABS;
 	info.width_value = 1200;
 	info.height_type = ALittle.UIEnumTypes.SIZE_ABS;
-	info.height_value = 800;
+	info.height_value = 600;
 	return info;
 }

@@ -20,3 +20,6 @@ require("ALittle/Module/ALittleIDE/Other/GameLibrary/Std/Script/ALittle");
 RequireStd("ALittle/Module/ALittleIDE/Other/GameLibrary/Std/Script/");
 require("ALittle/Module/ALittleIDE/Other/GameLibrary/HelloWorld/Script/Main");
 HelloWorld.Main();
+
+-- 最后释放protobuf
+protobuf.shutdown();

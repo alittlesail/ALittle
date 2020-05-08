@@ -44,8 +44,8 @@ class GCenter
         A_LayerManager.AddToModal(this._setting_dialog);
 
         A_LuaSocketSchedule.Setup();
-        // var error = A_LuaSocketSchedule.LoadProto("D:/Server_02/LW_Server/Project/Depend/Common/include/ProtoCommon/Proto");
-        // if (error != null) ALittle.Error(error);
+        var error = A_LuaSocketSchedule.LoadProto("D:/Server_02/LW_Server/Project/Depend/Common/include/ProtoCommon/Proto");
+        if (error != null) ALittle.Error(error);
 
         // 每帧处理
         this._frame_loop = new ALittle.LoopFrame(bind(this.UpdateFrame, this));
@@ -54,7 +54,7 @@ class GCenter
 
     public fun UpdateFrame(int frame_time)
     {
-        // A_LuaSocketSchedule.RunInFrame();
+        A_LuaSocketSchedule.RunInFrame();
     }
 
     // 显示对话框

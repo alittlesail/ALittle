@@ -135,14 +135,20 @@ static int socketlib_readdouble(lua_State* L)
     return 0;
 }
 
-static int socketlib_readprotobuf(lua_State* L)
+static int socketlib_readbinary(lua_State* L)
 {
     struct _socket* c = (struct _socket*)lua_touserdata(L, 1);
     luaL_argcheck(L, c != 0, 1, "socket object is null");
     int id = (int)luaL_checkinteger(L, 2);
-    const char* name = luaL_checkstring(L, 3);
-    int len = (int)luaL_checkinteger(L, 4);
-    socket_readprotobuf(c, id, name, len);
+    int len = (int)luaL_checkinteger(L, 3);
+    socket_readbinary(c, id, len);
+    return 0;
+}
+
+static int socketlib_freebinary(lua_State* L)
+{
+    void* c = lua_touserdata(L, 1);
+    if (c) free(c);
     return 0;
 }
 
@@ -246,127 +252,16 @@ static int socketlib_writedouble(lua_State* L)
     return 0;
 }
 
-static int socketlib_writeprotobuf(lua_State* L)
+static int socketlib_writebinary(lua_State* L)
 {
     struct _socket* c = (struct _socket*)lua_touserdata(L, 1);
     luaL_argcheck(L, c != 0, 1, "socket object is null");
     int id = (int)luaL_checkinteger(L, 2);
-    const char* name = luaL_checkstring(L, 3);
-    luaL_argcheck(L, lua_istable(L, 4), 4, "table is null");
-    socket_writeprotobuf(c, id, name, L, 4);
+    void* buffer = lua_touserdata(L, 3);
+    luaL_argcheck(L, buffer != 0, 3, "buffer is null");
+    int size = (int)luaL_checkinteger(L, 4);
+    socket_writebinary(c, id, buffer, size);
     return 0;
-}
-
-static int socketlib_calcprotobufsize(lua_State* L)
-{
-    struct _socket* c = (struct _socket*)lua_touserdata(L, 1);
-    luaL_argcheck(L, c != 0, 1, "socket object is null");
-    const char* name = luaL_checkstring(L, 2);
-    luaL_argcheck(L, lua_istable(L, 3), 3, "table is null");
-    lua_pushinteger(L, socket_calcprotobufsize(c, name, L, 3));
-    return 1;
-}
-
-static int socketlib_setprotobufroot(lua_State* L)
-{
-    struct _socket* c = (struct _socket*)lua_touserdata(L, 1);
-    luaL_argcheck(L, c != 0, 1, "socket object is null");
-    const char* path = luaL_checkstring(L, 2);
-    lua_pushboolean(L, socket_setprotobufroot(c, path));
-    return 1;
-}
-
-static int socketlib_loadprotobuffile(lua_State* L)
-{
-    struct _socket* c = (struct _socket*)lua_touserdata(L, 1);
-    luaL_argcheck(L, c != 0, 1, "socket object is null");
-    const char* path = luaL_checkstring(L, 2);
-    lua_pushlightuserdata(L, socket_loadprotobuffile(c, path));
-    return 1;
-}
-
-static int socketlib_getfiledescriptmessagetypecount(lua_State* L)
-{
-    void* descriptor = lua_touserdata(L, 1);
-    luaL_argcheck(L, descriptor != 0, 1, "descriptor object is null");
-    lua_pushinteger(L, socket_getfiledescriptmessagetypecount(descriptor));
-    return 1;
-}
-
-static int socketlib_getfiledescriptmessagetype(lua_State* L)
-{
-    void* descriptor = lua_touserdata(L, 1);
-    luaL_argcheck(L, descriptor != 0, 1, "descriptor object is null");
-    int index = (int)luaL_checkinteger(L, 2);
-    lua_pushlightuserdata(L, socket_getfiledescriptmessagetype(descriptor, index));
-    return 1;
-}
-
-static int socketlib_getmessagename(lua_State* L)
-{
-    void* descriptor = lua_touserdata(L, 1);
-    luaL_argcheck(L, descriptor != 0, 1, "descriptor object is null");
-    lua_pushstring(L, socket_getmessagename(descriptor));
-    return 1;
-}
-
-static int socketlib_getmessagefullname(lua_State* L)
-{
-    void* descriptor = lua_touserdata(L, 1);
-    luaL_argcheck(L, descriptor != 0, 1, "descriptor object is null");
-    lua_pushstring(L, socket_getmessagefullname(descriptor));
-    return 1;
-}
-
-static int socketlib_getmessagefieldcount(lua_State* L)
-{
-    void* descriptor = lua_touserdata(L, 1);
-    luaL_argcheck(L, descriptor != 0, 1, "descriptor object is null");
-    lua_pushinteger(L, socket_getmessagefieldcount(descriptor));
-    return 1;
-}
-
-static int socketlib_getmessagefield(lua_State* L)
-{
-    void* descriptor = lua_touserdata(L, 1);
-    luaL_argcheck(L, descriptor != 0, 1, "descriptor object is null");
-    int index = (int)luaL_checkinteger(L, 2);
-    lua_pushlightuserdata(L, socket_getmessagefield(descriptor, index));
-    return 1;
-}
-
-static int socketlib_findmessagefieldbyname(lua_State* L)
-{
-    void* descriptor = lua_touserdata(L, 1);
-    luaL_argcheck(L, descriptor != 0, 1, "descriptor object is null");
-    const char* name = luaL_checkstring(L, 2);
-    lua_pushlightuserdata(L, socket_findmessagefieldbyname(descriptor, name));
-    return 1;
-}
-
-static int socketlib_createmessage(lua_State* L)
-{
-    void* descriptor = lua_touserdata(L, 1);
-    luaL_argcheck(L, descriptor != 0, 1, "descriptor object is null");
-    lua_pushlightuserdata(L, socket_createmessage(descriptor));
-    return 1;
-}
-
-static int socketlib_getfiledescriptenumtypecount(lua_State* L)
-{
-    void* descriptor = lua_touserdata(L, 1);
-    luaL_argcheck(L, descriptor != 0, 1, "descriptor object is null");
-    lua_pushinteger(L, socket_getfiledescriptenumtypecount(descriptor));
-    return 1;
-}
-
-static int socketlib_getfiledescriptenumtype(lua_State* L)
-{
-    void* descriptor = lua_touserdata(L, 1);
-    luaL_argcheck(L, descriptor != 0, 1, "descriptor object is null");
-    int index = (int)luaL_checkinteger(L, 2);
-    lua_pushlightuserdata(L, socket_getfiledescriptenumtype(descriptor, index));
-    return 1;
 }
 
 static int socketlib_timer(lua_State* L)
@@ -398,6 +293,22 @@ static int socketlib_poll(lua_State* L)
         {
             lua_pushinteger(L, event->time);
             lua_setfield(L, -2, "time");
+        }
+        else if (event->type >= MSG_READ_UINT8 && event->type <= MSG_READ_INT64)
+        {
+            lua_pushinteger(L, event->int_value);
+            lua_setfield(L, -2, "int_value");
+        }
+        else if (event->type >= MSG_READ_FLOAT && event->type <= MSG_READ_DOUBLE)
+        {
+            lua_pushnumber(L, event->double_value);
+            lua_setfield(L, -2, "double_value");
+        }
+        else if (event->type == MSG_READ_BINARY)
+        {
+            lua_pushlightuserdata(L, event->binary_value);
+            lua_setfield(L, -2, "binary_value");
+            event->binary_value = 0;
         }
         socket_releaseevent(c, event);
     }
@@ -445,7 +356,8 @@ static struct luaL_Reg socketlib[] = {
     {"readint64", socketlib_readint64},
     {"readfloat", socketlib_readfloat},
     {"readdouble", socketlib_readdouble},
-    {"readprotobuf", socketlib_readprotobuf},
+    {"readbinary", socketlib_readbinary},
+    {"freebinary", socketlib_freebinary},
 
     {"writeuint8", socketlib_writeuint8},
     {"writeint8", socketlib_writeint8},
@@ -457,23 +369,7 @@ static struct luaL_Reg socketlib[] = {
     {"writeint64", socketlib_writeint64},
     {"writefloat", socketlib_writefloat},
     {"writedouble", socketlib_writedouble},
-    {"writeprotobuf", socketlib_writeprotobuf},
-
-    {"calcprotobufsize", socketlib_calcprotobufsize},
-    {"setprotobufroot", socketlib_setprotobufroot},
-    {"loadprotobuffile", socketlib_loadprotobuffile},
-
-    {"get_file_descript_message_type_count", socketlib_getfiledescriptmessagetypecount},
-    {"get_file_descript_message_type", socketlib_getfiledescriptmessagetype},
-    {"get_message_name", socketlib_getmessagename},
-    {"get_message_full_name", socketlib_getmessagefullname},
-    {"get_message_field_count", socketlib_getmessagefieldcount},
-    {"get_message_field", socketlib_getmessagefield},
-    {"find_message_field_by_name", socketlib_findmessagefieldbyname},
-    {"create_message", socketlib_createmessage},
-
-    {"get_file_descript_enum_type_count", socketlib_getfiledescriptenumtypecount},
-    {"get_file_descript_enum_type", socketlib_getfiledescriptenumtype},
+    {"writebinary", socketlib_writebinary},
 
     {NULL, NULL}
 };

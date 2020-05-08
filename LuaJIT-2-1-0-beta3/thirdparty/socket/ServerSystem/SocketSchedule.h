@@ -12,9 +12,6 @@
 
 #include "lua.hpp"
 
-#include "google/protobuf/compiler/importer.h"
-#include "google/protobuf/dynamic_message.h"
-
 struct _socket;
 
 namespace ALittle
@@ -46,11 +43,6 @@ public:
 	size_t GetConnectCount() { return m_connect_map.size(); }
 
 public:
-	bool SetProtobufRoot(const std::string& path);
-	const google::protobuf::FileDescriptor* LoadProtobufFile(const std::string& path);
-	google::protobuf::Message* CreateMessage(const google::protobuf::Descriptor* descriptor);
-
-public:
 	void Timer(struct _socket* c, int delay_ms);
 private:
 	void Update(const asio::error_code& ec, _socket* c);
@@ -68,11 +60,6 @@ private:
 
 private:
 	std::unordered_map<int, ConnectClientPtr> m_connect_map;
-
-private:
-	// 导入信息
-	google::protobuf::compiler::Importer* m_importer;
-	google::protobuf::DynamicMessageFactory* m_factory;
 };
 
 } // ALittle

@@ -78,8 +78,8 @@ public:
 	// 读取协议
 	void ReadNumber(int size, int type);
 	void HandleReadNumber(const asio::error_code& ec, std::size_t actual_size, int type);
-	void ReadBinary(const std::string& name, int len, int type);
-	void HandleReadBinary(const asio::error_code& ec, std::size_t actual_size, const std::string& name, int type);
+	void ReadBinary(int len, int type);
+	void HandleReadBinary(const asio::error_code& ec, std::size_t actual_size, int type);
 
 public:
 	SocketPtr m_socket;					// socket
@@ -96,9 +96,12 @@ public:
 	}
 
 	// 发送字节流
-	void WriteBinary(void* memory, int memory_size)
+	void WriteBinary(void* buffer, int size)
 	{
-		SendPocket(memory, memory_size);
+		if (size <= 0) return;
+		void* memory = malloc(size);
+		memcpy(memory, buffer, size);
+		SendPocket(memory, size);
 	}
 
 private:

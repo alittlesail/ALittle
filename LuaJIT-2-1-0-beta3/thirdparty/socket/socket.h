@@ -23,7 +23,7 @@ typedef enum
 	MSG_READ_INT64 = 41,
 	MSG_READ_FLOAT = 42,
 	MSG_READ_DOUBLE = 43,
-	MSG_READ_PROTOBUF = 44,
+	MSG_READ_BINARY = 44,
 } socket_event_types;
 
 typedef struct _socket_event
@@ -33,8 +33,7 @@ typedef struct _socket_event
 	int time;
 	long long int_value;
 	double double_value;
-	char* protobuf_name;
-	void* protobuf_value;
+	void* binary_value;
 	struct _socket_event* next;
 } socket_event;
 
@@ -81,7 +80,7 @@ void socket_readuint64(struct _socket* c, int id);
 void socket_readint64(struct _socket* c, int id);
 void socket_readfloat(struct _socket* c, int id);
 void socket_readdouble(struct _socket* c, int id);
-void socket_readprotobuf(struct _socket* c, int id, const char* name, int len);
+void socket_readbinary(struct _socket* c, int id, int len);
 
 void socket_writeuint8(struct _socket* c, int id, unsigned char value);
 void socket_writeint8(struct _socket* c, int id, char value);
@@ -93,22 +92,6 @@ void socket_writeuint64(struct _socket* c, int id, unsigned long long value);
 void socket_writeint64(struct _socket* c, int id, long long value);
 void socket_writefloat(struct _socket* c, int id, float value);
 void socket_writedouble(struct _socket* c, int id, double value);
-void socket_writeprotobuf(struct _socket* c, int id, const char* name, lua_State* L, int index);
-
-int socket_calcprotobufsize(struct _socket* c, const char* name, lua_State* L, int index);
-int socket_setprotobufroot(struct _socket* c, const char* path);
-void* socket_loadprotobuffile(struct _socket* c, const char* path);
-
-int socket_getfiledescriptmessagetypecount(void* descriptor);
-void* socket_getfiledescriptmessagetype(void* descriptor, int index);
-const char* socket_getmessagename(void* descriptor);
-const char* socket_getmessagefullname(void* descriptor);
-int socket_getmessagefieldcount(void* descriptor);
-void* socket_getmessagefield(void* descriptor, int index);
-void* socket_findmessagefieldbyname(void* descriptor, const char* name);
-void* socket_createmessage(struct _socket* c, void* descriptor);
-
-int socket_getfiledescriptenumtypecount(void* file_descriptor);
-void* socket_getfiledescriptenumtype(void* file_descriptor, int index);
+void socket_writebinary(struct _socket* c, int id, void* buffer, int size);
 
 #endif // _ALITTLE_SOCKET_H_

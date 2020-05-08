@@ -12,23 +12,12 @@ extern "C" {
 namespace ALittle
 {
 
-SocketSchedule::SocketSchedule() : m_importer(0), m_is_exit(0), m_factory(0)
+SocketSchedule::SocketSchedule() : m_is_exit(false)
 {
 }
 
 SocketSchedule::~SocketSchedule()
 {
-	if (m_factory != nullptr)
-	{
-		delete m_factory;
-		m_factory = nullptr;
-	}
-
-	if (m_importer != nullptr)
-	{
-		delete m_importer;
-		m_importer = nullptr;
-	}
 }
 
 void SocketSchedule::RunOne()
@@ -73,41 +62,6 @@ ConnectClientPtr SocketSchedule::GetClient(int id)
 	if (it == m_connect_map.end())
 		return nullptr;
 	return it->second;
-}
-
-bool SocketSchedule::SetProtobufRoot(const std::string& path)
-{
-	if (m_factory != nullptr)
-	{
-		delete m_factory;
-		m_factory = nullptr;
-	}
-
-	if (m_importer != nullptr)
-	{
-		delete m_importer;
-		m_importer = nullptr;
-	}
-
-	m_factory = new google::protobuf::DynamicMessageFactory();
-
-	google::protobuf::compiler::DiskSourceTree sourceTree;
-	sourceTree.MapPath("", path);
-	m_importer = new google::protobuf::compiler::Importer(&sourceTree, nullptr);
-
-	return true;
-}
-
-const google::protobuf::FileDescriptor* SocketSchedule::LoadProtobufFile(const std::string& path)
-{
-	if (m_importer == nullptr) return nullptr;
-	return m_importer->Import(path);
-}
-
-google::protobuf::Message* SocketSchedule::CreateMessage(const google::protobuf::Descriptor* descriptor)
-{
-	if (m_factory == nullptr) return nullptr;
-	return m_factory->GetPrototype(descriptor)->New();
 }
 
 void SocketSchedule::Timer(_socket* c, int delay_ms)

@@ -31,6 +31,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "socket", "socket\socket.vcx
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "protobuf", "protobuf\protobuf.vcxproj", "{952DA7D2-9E24-4426-B991-EFCDB2455EF1}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "memory", "memory\memory.vcxproj", "{D318B4BC-AAD2-46E6-BBA1-F8379BEC10EF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -151,6 +153,14 @@ Global
 		{952DA7D2-9E24-4426-B991-EFCDB2455EF1}.Release|x64.Build.0 = Release|x64
 		{952DA7D2-9E24-4426-B991-EFCDB2455EF1}.Release|x86.ActiveCfg = Release|Win32
 		{952DA7D2-9E24-4426-B991-EFCDB2455EF1}.Release|x86.Build.0 = Release|Win32
+		{D318B4BC-AAD2-46E6-BBA1-F8379BEC10EF}.Debug|x64.ActiveCfg = Debug|x64
+		{D318B4BC-AAD2-46E6-BBA1-F8379BEC10EF}.Debug|x64.Build.0 = Debug|x64
+		{D318B4BC-AAD2-46E6-BBA1-F8379BEC10EF}.Debug|x86.ActiveCfg = Debug|Win32
+		{D318B4BC-AAD2-46E6-BBA1-F8379BEC10EF}.Debug|x86.Build.0 = Debug|Win32
+		{D318B4BC-AAD2-46E6-BBA1-F8379BEC10EF}.Release|x64.ActiveCfg = Release|x64
+		{D318B4BC-AAD2-46E6-BBA1-F8379BEC10EF}.Release|x64.Build.0 = Release|x64
+		{D318B4BC-AAD2-46E6-BBA1-F8379BEC10EF}.Release|x86.ActiveCfg = Release|Win32
+		{D318B4BC-AAD2-46E6-BBA1-F8379BEC10EF}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

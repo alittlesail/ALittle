@@ -184,7 +184,7 @@ void ConnectClient::HandleReadNumber(const asio::error_code& ec, std::size_t act
 	socket_addevent(m__socket, event, 0);
 }
 
-void ConnectClient::ReadBinary(const std::string& name, int size, int read_type)
+void ConnectClient::ReadBinary(int size, int read_type)
 {
 	// 如果已经释放了就直接返回
 	if (!m_socket) return;
@@ -195,10 +195,10 @@ void ConnectClient::ReadBinary(const std::string& name, int size, int read_type)
 	// 开始接受协议头
 	asio::async_read(*m_socket, asio::buffer(m_binary_value, size)
 		, std::bind(&ConnectClient::HandleReadBinary, this->shared_from_this()
-			, std::placeholders::_1, std::placeholders::_2, name, read_type));
+			, std::placeholders::_1, std::placeholders::_2, read_type));
 }
 
-void ConnectClient::HandleReadBinary(const asio::error_code& ec, std::size_t actual_size, const std::string& name, int type)
+void ConnectClient::HandleReadBinary(const asio::error_code& ec, std::size_t actual_size, int type)
 {
 	if (ec)
 	{
@@ -210,10 +210,7 @@ void ConnectClient::HandleReadBinary(const asio::error_code& ec, std::size_t act
 
 	socket_event* event = socket_createevent(m__socket);
 	event->type = (socket_event_types)type;
-	event->protobuf_name = (char*)malloc(name.size() + 1);
-	memcpy(event->protobuf_name, name.c_str(), name.size());
-	event->protobuf_name[name.size()] = 0;
-	event->protobuf_value = m_binary_value;
+	event->binary_value = m_binary_value;
 	m_binary_value = 0;
 	socket_addevent(m__socket, event, 0);
 }

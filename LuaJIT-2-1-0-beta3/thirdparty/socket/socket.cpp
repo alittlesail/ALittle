@@ -5,9 +5,6 @@ extern "C" {
 #include "../ServerSystem/SocketSchedule.h"
 #include "../ClientSystem/ConnectClient.h"
 
-#include "google/protobuf/compiler/importer.h"
-#include "google/protobuf/dynamic_message.h"
-
 struct _socket* socket_create()
 {
     struct _socket* c = (struct _socket*)malloc(sizeof(struct _socket));
@@ -83,13 +80,10 @@ socket_event* socket_runone(struct _socket* c)
 
 void socket_clearevent(socket_event* event)
 {
-    if (event->protobuf_name)
+    if (event->binary_value)
     {
-        free(event->protobuf_name);
-    }
-    if (event->protobuf_value)
-    {
-        free(event->protobuf_value);
+        free(event->binary_value);
+        event->binary_value = 0;
     }
 }
 
@@ -217,11 +211,11 @@ void socket_readdouble(struct _socket* c, int id)
     auto client = schedule->GetClient(id);
     if (client) client->ReadNumber(sizeof(double), socket_event_types::MSG_READ_DOUBLE);
 }
-void socket_readprotobuf(struct _socket* c, int id, const char* name, int len)
+void socket_readbinary(struct _socket* c, int id, int len)
 {
     ALittle::SocketSchedule* schedule = (ALittle::SocketSchedule*)(c->schedule);
     auto client = schedule->GetClient(id);
-    if (client) client->ReadBinary(name, len, socket_event_types::MSG_READ_PROTOBUF);
+    if (client) client->ReadBinary(len, socket_event_types::MSG_READ_BINARY);
 }
 
 void socket_writeuint8(struct _socket* c, int id, unsigned char value)
@@ -284,73 +278,11 @@ void socket_writedouble(struct _socket* c, int id, double value)
     auto client = schedule->GetClient(id);
     if (client) client->WriteNumber(value);
 }
-void socket_writeprotobuf(struct _socket* c, int id, const char* name, lua_State* L, int index)
+void socket_writebinary(struct _socket* c, int id, void* buffer, int size)
 {
     ALittle::SocketSchedule* schedule = (ALittle::SocketSchedule*)(c->schedule);
     auto client = schedule->GetClient(id);
     if (!client) return;
 
-    void* memory = malloc(10);
-    client->WriteBinary(memory, 10);
-}
-
-int socket_calcprotobufsize(struct _socket* c, const char* name, lua_State* L, int index)
-{
-    ALittle::SocketSchedule* schedule = (ALittle::SocketSchedule*)(c->schedule);
-    return 0;
-}
-
-int socket_setprotobufroot(struct _socket* c, const char* path)
-{
-    ALittle::SocketSchedule* schedule = (ALittle::SocketSchedule*)(c->schedule);
-    return schedule->SetProtobufRoot(path) ? 1 : 0;
-}
-
-void* socket_loadprotobuffile(struct _socket* c, const char* path)
-{
-    ALittle::SocketSchedule* schedule = (ALittle::SocketSchedule*)(c->schedule);
-    return (void*)schedule->LoadProtobufFile(path);
-}
-
-int socket_getfiledescriptmessagetypecount(void* descriptor)
-{
-    return ((const google::protobuf::FileDescriptor*)descriptor)->message_type_count();
-}
-void* socket_getfiledescriptmessagetype(void* descriptor, int index)
-{
-    return (void*)((const google::protobuf::FileDescriptor*)descriptor)->message_type(index);
-}
-const char* socket_getmessagename(void* descriptor)
-{
-    return ((const google::protobuf::Descriptor*)descriptor)->name().c_str();
-}
-const char* socket_getmessagefullname(void* descriptor)
-{
-    return ((const google::protobuf::Descriptor*)descriptor)->full_name().c_str();
-}
-int socket_getmessagefieldcount(void* descriptor)
-{
-    return ((const google::protobuf::Descriptor*)descriptor)->field_count();
-}
-void* socket_getmessagefield(void* descriptor, int index)
-{
-    return (void*)((const google::protobuf::Descriptor*)descriptor)->field(index);
-}
-void* socket_findmessagefieldbyname(void* descriptor, const char* name)
-{
-    return (void*)((const google::protobuf::Descriptor*)descriptor)->FindFieldByName(name);
-}
-void* socket_createmessage(struct _socket* c, void* descriptor)
-{
-    ALittle::SocketSchedule* schedule = (ALittle::SocketSchedule*)(c->schedule);
-
-}
-
-int socket_getfiledescriptenumtypecount(void* file_descriptor)
-{
-    return ((const google::protobuf::FileDescriptor*)file_descriptor)->enum_type_count();
-}
-void* socket_getfiledescriptenumtype(void* file_descriptor, int index)
-{
-    return (void*)((const google::protobuf::FileDescriptor*)file_descriptor)->enum_type(index);
+    client->WriteBinary(buffer, size);
 }

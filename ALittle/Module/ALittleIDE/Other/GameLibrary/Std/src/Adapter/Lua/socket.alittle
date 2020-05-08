@@ -12,14 +12,8 @@ public struct socket_event
     // 当type为MSG_READ_XXX时，整型值，浮点值，protobuf值
     int int_value;
     double double_value;
-    any protobuf_value;
+    any binary_value;
 }
-
-public struct protobuf_file_descriptor {}
-public struct protobuf_descriptor {}
-public struct protobuf_enum_descriptor {}
-public struct protobuf_field_descriptor {}
-public struct protobuf_message {}
 
 public class socket
 {
@@ -46,7 +40,10 @@ public class socket
     public static readint64(socket c, int id) {}
     public static readfloat(socket c, int id) {}
     public static readdouble(socket c, int id) {}
-    public static readprotobuf(socket c, int id, string name, int len) {}
+    // 读取到的二进制数据，必须使用freebinary释放
+    public static readbinary(socket c, int id, int len) {}
+    // 释放二进制数据
+    public static freebinary(any buffer) {}
     
     // 发送数据
     public static writeuint8(socket c, int id, int value) {}
@@ -59,27 +56,7 @@ public class socket
     public static writeint64(socket c, int id, int value) {}
     public static writefloat(socket c, int id, double value) {}
     public static writedouble(socket c, int id, double value) {}
-    public static writeprotobuf(socket c, int id, string name, any table) {}
+    public static writebinary(socket c, int id, any buffer, int size) {}
 
-    // 计算某个protobuf大小
-    public static calcprotobufsize(socket c, string name, any table) : int {}
-    // 设置当前proto根路径
-    public static setprotobufroot(socket c, string path) : bool {}
-    // 加载proto文件
-    public static loadprotobuffile(socket c, string path) : protobuf_file_descriptor {}
-
-    // file_descriptor相关接口
-    public static get_file_descript_message_type_count(protobuf_file_descriptor descriptor) : int {}
-    public static get_file_descript_message_type(protobuf_file_descriptor descriptor, int index) : protobuf_descriptor {}
-    public static get_message_name(protobuf_descriptor descriptor) : string {}
-    public static get_message_full_name(protobuf_descriptor descriptor) : string {}
-    public static get_message_field_count(protobuf_descriptor descriptor) : int {}
-    public static get_message_field(protobuf_descriptor descriptor, int index) : protobuf_field_descriptor {}
-    public static find_message_field_by_name(protobuf_descriptor descriptor, string name) : protobuf_field_descriptor {}
-    public static create_message(protobuf_descriptor descriptor, string full_name) : protobuf_message {}
-
-    public static get_file_descript_enum_type_count(protobuf_file_descriptor descriptor) : int {}
-    public static get_file_descript_enum_type(protobuf_file_descriptor descriptor, int index) : protobuf_enum_descriptor {}
-    
     public static exit(net c) {}
 }

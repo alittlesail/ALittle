@@ -4,6 +4,7 @@ register namespace lua;
 
 // require a script
 public static require(string path) {}
+public static luarequire(string path) {}
 
 // Returns the type of its only argument, coded as a string.
 // The possible results of this function are

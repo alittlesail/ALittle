@@ -71,7 +71,7 @@ public await static RequireStd(string base_path)
     }
     
     [Language(Lua)]
-    if (lua.socket != null)
+    if (lua.socket != null && lua.protobuf != null && lua.memory != null)
     {
         Require(base_path, "Adapter/Lua/LuaSocketSchedule");
     }

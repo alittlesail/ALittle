@@ -35,8 +35,11 @@ protected class LWSocket : Lua.ISocket
 
             if (msg_size > 0)
             {
-                error, protobuf_msg = this.ReadProtobuf(name, msg_size);
+                var binary_value:any = null;
+                error, binary_value = this.ReadProtobuf(name, msg_size);
                 if (error != null) break;
+
+                // 处理反序列化
             }
             else
             {
@@ -52,11 +55,15 @@ protected class LWSocket : Lua.ISocket
         var msg_type = this.ProtobufName2MsgId(name);
         if (msg_type == null) return;
 
+        // 创建message，处理序列化
+        var size = 0;
+        var buffer = null;
+
         this.WriteUint16(msg_type);
-        this.WriteUint16(this.CalcProtobufSize(name, msg));
+        this.WriteUint16(size);
         this.WriteUint16(1);
         this.WriteUint16(1);
-        this.WriteProtobuf(name, msg);
+        this.WriteBinary(buffer, size);
     }
 
     private fun MsgId2ProtobufName(int id) : string

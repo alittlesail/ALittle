@@ -71,10 +71,6 @@ function ISocket:ReadMessage()
 end
 ISocket.ReadMessage = Lua.CoWrap(ISocket.ReadMessage)
 
-function ISocket:CalcProtobufSize(name, table)
-	return socket.calcprotobufsize(self._socket, name, table)
-end
-
 function ISocket:ReadUint8()
 local ___COROUTINE = coroutine.running()
 	if not self:IsConnected() then
@@ -214,7 +210,7 @@ local ___COROUTINE = coroutine.running()
 		return "已经正在读取", 0
 	end
 	self._read_thread = ___COROUTINE
-	socket.readprotobuf(self._socket, self._id, name, len)
+	socket.readbinary(self._socket, self._id, len)
 	return coroutine.yield()
 end
 
@@ -288,11 +284,11 @@ function ISocket:WriteDouble(value)
 	socket.writedouble(self._socket, self._id, value)
 end
 
-function ISocket:WriteProtobuf(name, table)
+function ISocket:WriteBinary(buffer, size)
 	if not self:IsConnected() then
 		return
 	end
-	socket.writeprotobuf(self._socket, self._id, name, table)
+	socket.writebinary(self._socket, self._id, buffer, size)
 end
 
 function ISocket.HandleConnectFailed(id)

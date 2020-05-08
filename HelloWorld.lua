@@ -1,3 +1,6 @@
+require("memory");
+require("protobuf");
+require("socket");
 require("base64");
 require("csv");
 require("dump");

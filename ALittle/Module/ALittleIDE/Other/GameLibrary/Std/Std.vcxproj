@@ -45,7 +45,9 @@
     <None Include="src\Adapter\Lua\LuaSchedule.alittle" />
     <None Include="src\Adapter\Lua\md5.alittle" />
     <None Include="src\Adapter\Lua\LuaMessageFactory.alittle" />
+    <None Include="src\Adapter\Lua\memory.alittle" />
     <None Include="src\Adapter\Lua\net.alittle" />
+    <None Include="src\Adapter\Lua\protobuf.alittle" />
     <None Include="src\Adapter\Lua\socket.alittle" />
     <None Include="src\Adapter\Lua\LuaSocketSchedule.alittle" />
     <None Include="src\Adapter\Lua\sqlte3.alittle" />

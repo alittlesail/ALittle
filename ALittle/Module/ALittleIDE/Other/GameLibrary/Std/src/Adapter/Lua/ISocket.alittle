@@ -72,12 +72,6 @@ public class ISocket
         
     }
 
-	// 计算protobuf字节大小
-	public fun CalcProtobufSize(string name, any table) : int
-	{
-        return lua.socket.calcprotobufsize(this._socket, name, table);
-    }
-
 	public await fun ReadUint8() : any, int
 	{
 		if (!this.IsConnected()) return "还未连接成功", 0;
@@ -184,7 +178,7 @@ public class ISocket
         if (this._read_thread != null) return "已经正在读取", 0;
 
 		this._read_thread = co;
-		lua.socket.readprotobuf(this._socket, this._id, name, len);
+		lua.socket.readbinary(this._socket, this._id, len);
 		return yield;
     }
 	
@@ -248,10 +242,10 @@ public class ISocket
 		lua.socket.writedouble(this._socket, this._id, value);
     }
 
-	public fun WriteProtobuf(string name, any table)
+	public fun WriteBinary(lua.memory buffer, int size)
 	{
 		if (!this.IsConnected()) return;
-		lua.socket.writeprotobuf(this._socket, this._id, name, table);
+		lua.socket.writebinary(this._socket, this._id, buffer, size);
     }
 
 	public static HandleConnectFailed(int id)
@@ -326,7 +320,7 @@ public class ISocket
         }
     }
 
-	public static HandleReadProtobuf(int id, any value)
+	public static HandleReadProtobuf(int id, lua.memory value)
 	{
         var socket = __SOCKET_MAP[id];
 		if (socket == null) return;

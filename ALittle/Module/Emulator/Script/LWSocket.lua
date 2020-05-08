@@ -37,7 +37,8 @@ function LWSocket:ReadMessage()
 			name = ""
 		end
 		if msg_size > 0 then
-			error, protobuf_msg = self:ReadProtobuf(name, msg_size)
+			local binary_value = nil
+			error, binary_value = self:ReadProtobuf(name, msg_size)
 			if error ~= nil then
 				break
 			end
@@ -54,11 +55,13 @@ function LWSocket:WriteMessage(name, msg)
 	if msg_type == nil then
 		return
 	end
+	local size = 0
+	local buffer = nil
 	self:WriteUint16(msg_type)
-	self:WriteUint16(self:CalcProtobufSize(name, msg))
+	self:WriteUint16(size)
 	self:WriteUint16(1)
 	self:WriteUint16(1)
-	self:WriteProtobuf(name, msg)
+	self:WriteBinary(buffer, size)
 end
 
 function LWSocket:MsgId2ProtobufName(id)

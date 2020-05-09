@@ -23,122 +23,8 @@ public static UtilityCreateTreeMessage(lua.protobuf_message msg, string msg_fiel
 
         if (lua.protobuf.fielddescriptor_ismap(field_descriptor))
         {
-            var msg_count = lua.protobuf.reflection_getrepeatedmessagecount(rflct, msg, field_descriptor);
-            
-            var map_descriptor = lua.protobuf.fielddescriptor_messagetype(field_descriptor);
-            var key_descriptor = lua.protobuf.messagedescriptor_findfieldbyname(map_descriptor, "key");
-            var key_type = lua.protobuf.fielddescriptor_cpptypename(key_descriptor);
-            var value_descriptor = lua.protobuf.messagedescriptor_findfieldbyname(map_descriptor, "value");
-            var value_type = lua.protobuf.fielddescriptor_cpptypename(value_descriptor);
-
-            var tree_map = new IDETreeMap(g_Control, field_name, key_type, value_type);
+            var tree_map = new IDETreeMap(g_Control, field_name, rflct, msg, field_descriptor);
             detail_info.tree.AddChild(tree_map);
-
-            for (var index = 0; index < msg_count; 1)
-            {
-                var sub_msg = lua.protobuf.reflection_getrepeatedmessage(rflct, msg, field_descriptor, index);
-                var sub_rflct = lua.protobuf.message_getreflection(sub_msg);
-                
-                var key_cpp_type = lua.protobuf.fielddescriptor_cpptype(key_descriptor);
-                if (key_cpp_type == lua.protobuf_cpptype.CPPTYPE_BOOL)
-                {
-                    var value = lua.protobuf.reflection_getbool(sub_rflct, sub_msg, key_descriptor);
-                
-                }
-                elseif (key_cpp_type == lua.protobuf_cpptype.CPPTYPE_INT32)
-                {
-                    var value = lua.protobuf.reflection_getint32(sub_rflct, sub_msg, key_descriptor);
-                
-                }
-                elseif (key_cpp_type == lua.protobuf_cpptype.CPPTYPE_UINT32)
-                {
-                    var value = lua.protobuf.reflection_getuint32(sub_rflct, sub_msg, key_descriptor);
-                
-                }
-                elseif (key_cpp_type == lua.protobuf_cpptype.CPPTYPE_INT64)
-                {
-                    var value = lua.protobuf.reflection_getint64(sub_rflct, sub_msg, key_descriptor);
-                
-                }
-                elseif (key_cpp_type == lua.protobuf_cpptype.CPPTYPE_UINT64)
-                {
-                    var value = lua.protobuf.reflection_getuint64(sub_rflct, sub_msg, key_descriptor);
-                
-                }
-                elseif (key_cpp_type == lua.protobuf_cpptype.CPPTYPE_DOUBLE)
-                {
-                    var value = lua.protobuf.reflection_getdouble(sub_rflct, sub_msg, key_descriptor);
-                
-                }
-                elseif (key_cpp_type == lua.protobuf_cpptype.CPPTYPE_FLOAT)
-                {
-                    var value = lua.protobuf.reflection_getfloat(sub_rflct, sub_msg, key_descriptor);
-                
-                }
-                elseif (key_cpp_type == lua.protobuf_cpptype.CPPTYPE_ENUM)
-                {
-                    var value = lua.protobuf.reflection_getenumvalue(sub_rflct, sub_msg, key_descriptor);
-                
-                }
-                elseif (key_cpp_type == lua.protobuf_cpptype.CPPTYPE_STRING)
-                {
-                    var value = lua.protobuf.reflection_getstring(sub_rflct, sub_msg, key_descriptor);
-                
-                }
-
-                var value_cpp_type = lua.protobuf.fielddescriptor_cpptype(value_descriptor);
-                if (value_cpp_type == lua.protobuf_cpptype.CPPTYPE_BOOL)
-                {
-                    var value = lua.protobuf.reflection_getbool(sub_rflct, sub_msg, value_descriptor);
-                
-                }
-                elseif (value_cpp_type == lua.protobuf_cpptype.CPPTYPE_INT32)
-                {
-                    var value = lua.protobuf.reflection_getint32(sub_rflct, sub_msg, value_descriptor);
-                
-                }
-                elseif (value_cpp_type == lua.protobuf_cpptype.CPPTYPE_UINT32)
-                {
-                    var value = lua.protobuf.reflection_getuint32(sub_rflct, sub_msg, value_descriptor);
-                
-                }
-                elseif (value_cpp_type == lua.protobuf_cpptype.CPPTYPE_INT64)
-                {
-                    var value = lua.protobuf.reflection_getint64(sub_rflct, sub_msg, value_descriptor);
-                
-                }
-                elseif (value_cpp_type == lua.protobuf_cpptype.CPPTYPE_UINT64)
-                {
-                    var value = lua.protobuf.reflection_getuint64(sub_rflct, sub_msg, value_descriptor);
-                
-                }
-                elseif (value_cpp_type == lua.protobuf_cpptype.CPPTYPE_DOUBLE)
-                {
-                    var value = lua.protobuf.reflection_getdouble(sub_rflct, sub_msg, value_descriptor);
-                
-                }
-                elseif (value_cpp_type == lua.protobuf_cpptype.CPPTYPE_FLOAT)
-                {
-                    var value = lua.protobuf.reflection_getfloat(sub_rflct, sub_msg, value_descriptor);
-                
-                }
-                elseif (value_cpp_type == lua.protobuf_cpptype.CPPTYPE_ENUM)
-                {
-                    var value = lua.protobuf.reflection_getenumvalue(sub_rflct, sub_msg, value_descriptor);
-                
-                }
-                elseif (value_cpp_type == lua.protobuf_cpptype.CPPTYPE_STRING)
-                {
-                    var value = lua.protobuf.reflection_getstring(sub_rflct, sub_msg, value_descriptor);
-                
-                }
-                elseif (value_cpp_type == lua.protobuf_cpptype.CPPTYPE_MESSAGE)
-                {
-                    var value = lua.protobuf.reflection_getmessage(sub_rflct, sub_msg, value_descriptor);
-                    detail_info.tree.AddChild(UtilityCreateTreeMessage(value, field_name));
-                }
-            }
-
         }
         elseif (lua.protobuf.fielddescriptor_isrepeated(field_descriptor))
         {
@@ -147,8 +33,6 @@ public static UtilityCreateTreeMessage(lua.protobuf_message msg, string msg_fiel
         }
         else
         {
-            var value_type = lua.protobuf.fielddescriptor_cpptypename(field_descriptor);
-            
             var cpp_type = lua.protobuf.fielddescriptor_cpptype(field_descriptor);
             if (cpp_type == lua.protobuf_cpptype.CPPTYPE_BOOL)
             {

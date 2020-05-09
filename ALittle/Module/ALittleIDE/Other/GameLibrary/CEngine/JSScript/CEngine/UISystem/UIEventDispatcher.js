@@ -377,6 +377,7 @@ ALittle.UIEventDispatcher = JavaScript.Class(undefined, {
 			if (rflt.name === "ALittle.UIButtonDragEvent" || rflt.name === "ALittle.UIButtonDragBeginEvent") {
 				event_target = this._trans_target.get("drag");
 			} else if (rflt.name === "ALittle.UIButtonDragEndEvent") {
+				event_target = this._trans_target.get("drag");
 				A_UISystem.focus = this._trans_target.get("drag");
 			}
 		}

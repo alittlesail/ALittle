@@ -134,7 +134,7 @@ ALittleIDE.IDECenter = JavaScript.Class(undefined, {
 		this.OpenProject(project_name);
 		let count = ALittle.List_MaxN(name_list);
 		if (count > 0) {
-			for (let i = count; count >= 1; i += -1) {
+			for (let i = count; i >= 1; i += -1) {
 				let control_info = ALittleIDE.g_IDEProject.project.control_map[name_list[i - 1]];
 				if (control_info !== undefined) {
 					ALittleIDE.g_IDETabManager.StartEditControlBySelect(control_info.name, control_info.info);

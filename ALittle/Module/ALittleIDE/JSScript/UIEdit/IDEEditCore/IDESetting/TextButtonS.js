@@ -10,6 +10,8 @@ ALittleIDE.TextButtonS = JavaScript.Class(ALittleIDE.DisplayLayoutS, {
 	LoadNatureBase : function() {
 		ALittleIDE.DisplayLayoutS.LoadNatureBase.call(this);
 		this.LoadValueData("text");
+		this.LoadEnumData("text_x_type", ALittleIDE.g_IDEEnum.xy_type);
+		this.LoadValueData("text_x_value");
 		this.LoadShowTypeDataForImage("show_up");
 		this.LoadShowTypeDataForImage("show_over");
 		this.LoadShowTypeDataForImage("show_down");
@@ -22,6 +24,18 @@ ALittleIDE.TextButtonS = JavaScript.Class(ALittleIDE.DisplayLayoutS, {
 	},
 	HandleMTextFOCUSOUT : function(event) {
 		this.DefaultNoStringInputChange("text", false);
+	},
+	HandleTextXTypeSELECT_CHANGE : function(event) {
+		let object = this._object;
+		let target_x = object.text_x_type;
+		let new_x = target_x;
+		let list = ALittleIDE.g_IDEEnum.xy_rtype;
+		let revoke_bind = ALittle.NewObject(ALittleIDE.IDERevokeBind);
+		this.TypeSelectChange("text_x_type", list, false, revoke_bind);
+	},
+	HandleTextXValueFOCUSOUT : function(event) {
+		this._base.text_x_value = undefined;
+		this.ValueNumInputChange("text_x_value", true);
 	},
 	HandleShowUpFOCUSOUT : function(event) {
 		if (event.target._user_data !== undefined) {

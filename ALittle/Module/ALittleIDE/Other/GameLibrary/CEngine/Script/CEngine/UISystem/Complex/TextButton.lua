@@ -15,21 +15,29 @@ function TextButton:Ctor(ctrl_sys)
 	self._show_text.width = 0
 	self._show_text.height = 0
 	self._show_text.text = ""
+	self._show_text.x_type = UIEnumTypes.POS_ALIGN_CENTER
+	self._show_text.x_value = 0
 	self._show_text.visible = true
 	___rawset(self, "_show_down_text", ({}))
 	self._show_down_text.width = 0
 	self._show_down_text.height = 0
 	self._show_down_text.text = ""
+	self._show_down_text.x_type = UIEnumTypes.POS_ALIGN_CENTER
+	self._show_down_text.x_value = 0
 	self._show_down_text.visible = false
 	___rawset(self, "_show_over_text", ({}))
 	self._show_over_text.width = 0
 	self._show_over_text.height = 0
 	self._show_over_text.text = ""
+	self._show_over_text.x_type = UIEnumTypes.POS_ALIGN_CENTER
+	self._show_over_text.x_value = 0
 	self._show_over_text.visible = false
 	___rawset(self, "_show_disabled_text", ({}))
 	self._show_disabled_text.width = 0
 	self._show_disabled_text.height = 0
 	self._show_disabled_text.text = ""
+	self._show_disabled_text.x_type = UIEnumTypes.POS_ALIGN_CENTER
+	self._show_disabled_text.x_value = 0
 	self._show_disabled_text.visible = false
 	___rawset(self, "_file_select", false)
 	self:AddEventListener(___all_struct[544684311], self, self.HandleMoveIn)
@@ -129,6 +137,28 @@ end
 
 function TextButton.__getter:text()
 	return self._show_text.text
+end
+
+function TextButton.__setter:text_x_type(value)
+	self._show_text.x_type = value
+	self._show_over_text.x_type = value
+	self._show_disabled_text.x_type = value
+	self._show_down_text.x_type = value
+end
+
+function TextButton.__getter:text_x_type()
+	return self._show_text.x_type
+end
+
+function TextButton.__setter:text_x_value(value)
+	self._show_text.x_value = value
+	self._show_over_text.x_value = value
+	self._show_disabled_text.x_value = value
+	self._show_down_text.x_value = value
+end
+
+function TextButton.__getter:text_x_value()
+	return self._show_text.x_value
 end
 
 function TextButton:ShowUp(event)
@@ -234,13 +264,16 @@ function TextButton.__setter:show_text(value)
 		self._show_text.height = 0
 		self._show_text.text = show.text
 		self._show_text.visible = show.visible
+		self._show_text.x_type = show.x_type
+		self._show_text.x_value = show.x_value
 		return
 	end
 	value.text = self._show_text.text
 	value.visible = self._show_text.visible
+	value.x_type = self._show_text.x_type
+	value.x_value = self._show_text.x_value
 	self:RemoveChild(self._show_text)
 	self._show_text = value
-	self._show_text.x_type = UIEnumTypes.POS_ALIGN_CENTER
 	self._show_text.y_type = UIEnumTypes.POS_ALIGN_CENTER
 	self:AddChild(self._show_text, 6)
 end
@@ -261,13 +294,16 @@ function TextButton.__setter:show_over_text(value)
 		self._show_over_text.height = 0
 		self._show_over_text.text = show.text
 		self._show_over_text.visible = show.visible
+		self._show_over_text.x_type = show.x_type
+		self._show_over_text.x_value = show.x_value
 		return
 	end
 	value.text = self._show_over_text.text
 	value.visible = self._show_over_text.visible
+	value.x_type = self._show_over_text.x_type
+	value.x_value = self._show_over_text.x_value
 	self:RemoveChild(self._show_over_text)
 	self._show_over_text = value
-	self._show_over_text.x_type = UIEnumTypes.POS_ALIGN_CENTER
 	self._show_over_text.y_type = UIEnumTypes.POS_ALIGN_CENTER
 	self:AddChild(self._show_over_text, 6)
 end
@@ -288,13 +324,16 @@ function TextButton.__setter:show_down_text(value)
 		self._show_down_text.height = 0
 		self._show_down_text.text = show.text
 		self._show_down_text.visible = show.visible
+		self._show_down_text.x_type = show.x_type
+		self._show_down_text.x_value = show.x_value
 		return
 	end
 	value.text = self._show_down_text.text
 	value.visible = self._show_down_text.visible
+	value.x_type = self._show_down_text.x_type
+	value.x_value = self._show_down_text.x_value
 	self:RemoveChild(self._show_down_text)
 	self._show_down_text = value
-	self._show_down_text.x_type = UIEnumTypes.POS_ALIGN_CENTER
 	self._show_down_text.y_type = UIEnumTypes.POS_ALIGN_CENTER
 	self:AddChild(self._show_down_text, 6)
 end
@@ -315,13 +354,16 @@ function TextButton.__setter:show_disabled_text(value)
 		self._show_disabled_text.height = 0
 		self._show_disabled_text.text = show.text
 		self._show_disabled_text.visible = show.visible
+		self._show_disabled_text.x_type = show.x_type
+		self._show_disabled_text.x_value = show.x_value
 		return
 	end
 	value.text = self._show_disabled_text.text
 	value.visible = self._show_disabled_text.visible
+	value.x_type = self._show_disabled_text.x_type
+	value.x_value = self._show_disabled_text.x_value
 	self:RemoveChild(self._show_disabled_text)
 	self._show_disabled_text = value
-	self._show_disabled_text.x_type = UIEnumTypes.POS_ALIGN_CENTER
 	self._show_disabled_text.y_type = UIEnumTypes.POS_ALIGN_CENTER
 	self:AddChild(self._show_disabled_text, 6)
 end

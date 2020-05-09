@@ -1,4 +1,4 @@
--- ALittle Generate Lua
+-- ALittle Generate Lua And Do Not Edit This Line!
 module("ALittleIDE", package.seeall)
 
 local ___rawset = rawset
@@ -16,6 +16,8 @@ end
 function TextCheckButtonS:LoadNatureBase()
 	DisplayLayoutS.LoadNatureBase(self)
 	self:LoadValueData("text")
+	self:LoadEnumData("text_x_type", g_IDEEnum.xy_type)
+	self:LoadValueData("text_x_value")
 	self:LoadBoolData("selected", false, g_IDEEnum.yn_type)
 	self:LoadShowTypeDataForImage("show_up")
 	self:LoadShowTypeDataForImage("show_over")
@@ -37,6 +39,20 @@ end
 
 function TextCheckButtonS:HandleMTextFOCUSOUT(event)
 	self:DefaultNoStringInputChange("text", false)
+end
+
+function TextCheckButtonS:HandleTextXTypeSELECT_CHANGE(event)
+	local object = self._object
+	local target_x = object.text_x_type
+	local new_x = target_x
+	local list = g_IDEEnum.xy_rtype
+	local revoke_bind = IDERevokeBind()
+	self:TypeSelectChange("text_x_type", list, false, revoke_bind)
+end
+
+function TextCheckButtonS:HandleTextXValueFOCUSOUT(event)
+	self._base.text_x_value = nil
+	self:ValueNumInputChange("text_x_value", true)
 end
 
 function TextCheckButtonS:HandleSelectedSELECT_CHANGE(event)

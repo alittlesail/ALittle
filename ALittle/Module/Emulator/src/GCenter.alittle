@@ -8,13 +8,23 @@ class GCenter
     private ALittle.DisplayLayout _main_layer;
     private ALittle.DisplayLayout _dialog_layer;
 
+    // 设置界面
     private ALittle.Dialog _setting_dialog;
     private ALittle.DisplayObject _proto_root_input;
 
+    // 帧循环
     private ALittle.LoopFrame _frame_loop;
     
+    // 协议列表
+    private ALittle.DisplayObject _proto_search_key;
+    private ALittle.ScrollScreen _protobuf_scroll_screen;
+    private Map<ALittle.TextRadioButton, bool> _proto_search_group;
+    private Map<string, ALittle.TextRadioButton> _proto_search_item_pool;
+
     public ctor()
     {
+        this._proto_search_item_pool = new Map<string, ALittle.TextRadioButton>();
+        this._proto_search_group = new Map<ALittle.TextRadioButton, bool>();
 	}
 
     public fun Setup()
@@ -44,8 +54,16 @@ class GCenter
         A_LayerManager.AddToModal(this._setting_dialog);
 
         A_LuaSocketSchedule.Setup();
-        var error = A_LuaSocketSchedule.LoadProto("D:/Server_02/LW_Server/Project/Depend/Common/include/ProtoCommon/Proto");
-        if (error != null) ALittle.Error(error);
+        var proto_root = g_GConfig.GetString("proto_root", "");
+        if (proto_root != "" && ALittle.File_GetFileAttr(proto_root) != null)
+        {
+            var error = A_LuaSocketSchedule.LoadProto(proto_root);
+            if (error == null)
+            {
+                g_LWProtobuf.Refresh();
+                this.RefreshProtoList();
+            }
+        }
 
         // 每帧处理
         this._frame_loop = new ALittle.LoopFrame(bind(this.UpdateFrame, this));
@@ -76,11 +94,59 @@ class GCenter
 
         this._setting_dialog.visible = false;
         g_GConfig.SetConfig("proto_root", this._proto_root_input.text);
+        
+        g_LWProtobuf.Clear();
+        var error = A_LuaSocketSchedule.LoadProto(this._proto_root_input.text);
+        if (error != null)
+        {
+            g_IDETool.ShowNotice("错误", error);
+            return;
+        }
+        g_LWProtobuf.Refresh();
+        this._protobuf_scroll_screen.RemoveAllChild();
+        this._proto_search_item_pool = new Map<string, ALittle.TextRadioButton>();
+        this._proto_search_group = new Map<ALittle.TextRadioButton, bool>();
+        this.RefreshProtoList();
     }
+
     // 处理设置
     public fun HandleSettingCancelClick(ALittle.UIClickEvent event)
     {
         this._setting_dialog.visible = false;
+    }
+
+    // 处理消息
+    private fun HandleProtoSearchClick(ALittle.UIEvent event) { this.RefreshProtoList(); }
+
+    // 处理
+    private fun RefreshProtoList()
+    {
+        // 获取key
+        var key = this._proto_search_key.text;
+        key = ALittle.String_Upper(key);
+
+        // 清理
+        for (var index, child in this._protobuf_scroll_screen.childs)
+            child.group = null;
+        this._protobuf_scroll_screen.RemoveAllChild();
+
+        // 搜索
+        var list = A_LuaSocketSchedule.FindMessageByUpperKey(key);
+        for (var index, info in list)
+        {
+            var item = this._proto_search_item_pool[info.name];
+            if (item == null)
+            {
+                item = g_Control.CreateControl{ALittle.TextRadioButton}("emulator_common_item_radiobutton");
+                item.text = info.name;
+                this._proto_search_item_pool[info.name] = item;
+                item.drag_trans_target = this._protobuf_scroll_screen;
+            }
+            item.group = this._proto_search_group;
+            this._protobuf_scroll_screen.AddChild(item);
+        }
+
+        this._protobuf_scroll_screen.RejustScrollBar();
     }
     
     public fun Shutdown()

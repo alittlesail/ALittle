@@ -327,7 +327,10 @@ public class UIEventDispatcher
             if (rflt.name == "ALittle.UIButtonDragEvent" || rflt.name == "ALittle.UIButtonDragBeginEvent")
                 event_target = this._trans_target["drag"];
             elseif (rflt.name == "ALittle.UIButtonDragEndEvent")
+            {
+                event_target = this._trans_target["drag"];
                 A_UISystem.focus = this._trans_target["drag"];
+            }
         }
         
         // 如果是禁用状态，那么就什么都不做

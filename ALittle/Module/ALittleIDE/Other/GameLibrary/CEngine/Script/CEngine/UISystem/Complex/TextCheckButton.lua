@@ -15,41 +15,57 @@ function TextCheckButton:Ctor(ctrl_sys)
 	self._show_text.width = 0
 	self._show_text.height = 0
 	self._show_text.text = ""
+	self._show_text.x_type = UIEnumTypes.POS_ALIGN_CENTER
+	self._show_text.x_value = 0
 	self._show_text.visible = true
 	___rawset(self, "_show_over_text", ({}))
 	self._show_over_text.width = 0
 	self._show_over_text.height = 0
 	self._show_over_text.text = ""
+	self._show_over_text.x_type = UIEnumTypes.POS_ALIGN_CENTER
+	self._show_over_text.x_value = 0
 	self._show_over_text.visible = false
 	___rawset(self, "_show_down_text", ({}))
 	self._show_down_text.width = 0
 	self._show_down_text.height = 0
 	self._show_down_text.text = ""
+	self._show_down_text.x_type = UIEnumTypes.POS_ALIGN_CENTER
+	self._show_down_text.x_value = 0
 	self._show_down_text.visible = false
 	___rawset(self, "_show_disabled_text", ({}))
 	self._show_disabled_text.width = 0
 	self._show_disabled_text.height = 0
 	self._show_disabled_text.text = ""
+	self._show_disabled_text.x_type = UIEnumTypes.POS_ALIGN_CENTER
+	self._show_disabled_text.x_value = 0
 	self._show_disabled_text.visible = false
 	___rawset(self, "_show_selected_text", ({}))
 	self._show_selected_text.width = 0
 	self._show_selected_text.height = 0
 	self._show_selected_text.text = ""
+	self._show_selected_text.x_type = UIEnumTypes.POS_ALIGN_CENTER
+	self._show_selected_text.x_value = 0
 	self._show_selected_text.visible = false
 	___rawset(self, "_show_selected_over_text", ({}))
 	self._show_selected_over_text.width = 0
 	self._show_selected_over_text.height = 0
 	self._show_selected_over_text.text = ""
+	self._show_selected_over_text.x_type = UIEnumTypes.POS_ALIGN_CENTER
+	self._show_selected_over_text.x_value = 0
 	self._show_selected_over_text.visible = false
 	___rawset(self, "_show_selected_down_text", ({}))
 	self._show_selected_down_text.width = 0
 	self._show_selected_down_text.height = 0
 	self._show_selected_down_text.text = ""
+	self._show_selected_down_text.x_type = UIEnumTypes.POS_ALIGN_CENTER
+	self._show_selected_down_text.x_value = 0
 	self._show_selected_down_text.visible = false
 	___rawset(self, "_show_selected_disabled_text", ({}))
 	self._show_selected_disabled_text.width = 0
 	self._show_selected_disabled_text.height = 0
 	self._show_selected_disabled_text.text = ""
+	self._show_selected_disabled_text.x_type = UIEnumTypes.POS_ALIGN_CENTER
+	self._show_selected_disabled_text.x_value = 0
 	self._show_selected_disabled_text.visible = false
 	___rawset(self, "_selected", false)
 	self:AddEventListener(___all_struct[544684311], self, self.HandleMoveIn)
@@ -132,6 +148,36 @@ end
 
 function TextCheckButton.__getter:text()
 	return self._show_text.text
+end
+
+function TextCheckButton.__setter:text_x_type(value)
+	self._show_text.x_type = value
+	self._show_over_text.x_type = value
+	self._show_down_text.x_type = value
+	self._show_disabled_text.x_type = value
+	self._show_selected_text.x_type = value
+	self._show_selected_over_text.x_type = value
+	self._show_selected_down_text.x_type = value
+	self._show_selected_disabled_text.x_type = value
+end
+
+function TextCheckButton.__getter:text_x_type()
+	return self._show_text.x_type
+end
+
+function TextCheckButton.__setter:text_x_value(value)
+	self._show_text.x_value = value
+	self._show_over_text.x_value = value
+	self._show_down_text.x_value = value
+	self._show_disabled_text.x_value = value
+	self._show_selected_text.x_value = value
+	self._show_selected_over_text.x_value = value
+	self._show_selected_down_text.x_value = value
+	self._show_selected_disabled_text.x_value = value
+end
+
+function TextCheckButton.__getter:text_x_value()
+	return self._show_text.x_value
 end
 
 function TextCheckButton.__setter:selected(value)
@@ -368,15 +414,18 @@ function TextCheckButton.__setter:show_text(value)
 		self._show_text.height = 0
 		self._show_text.text = show.text
 		self._show_text.visible = show.visible
+		self._show_text.x_type = show.x_type
+		self._show_text.x_value = show.x_value
 		return
 	end
 	if self._show_text ~= nil and self._show_text.text ~= "" then
 		value.text = self._show_text.text
 	end
 	value.visible = self._show_text.visible
+	value.x_type = self._show_text.x_type
+	value.x_value = self._show_text.x_value
 	self:RemoveChild(self._show_text)
 	self._show_text = value
-	self._show_text.x_type = UIEnumTypes.POS_ALIGN_CENTER
 	self._show_text.y_type = UIEnumTypes.POS_ALIGN_CENTER
 	self:AddChild(self._show_text, 10)
 end
@@ -397,15 +446,18 @@ function TextCheckButton.__setter:show_over_text(value)
 		self._show_over_text.height = 0
 		self._show_over_text.text = show.text
 		self._show_over_text.visible = show.visible
+		self._show_over_text.x_type = show.x_type
+		self._show_over_text.x_value = show.x_value
 		return
 	end
 	if self._show_over_text ~= nil and self._show_over_text.text ~= "" then
 		value.text = self._show_over_text.text
 	end
 	value.visible = self._show_over_text.visible
+	value.x_type = self._show_over_text.x_type
+	value.x_value = self._show_over_text.x_value
 	self:RemoveChild(self._show_over_text)
 	self._show_over_text = value
-	self._show_over_text.x_type = UIEnumTypes.POS_ALIGN_CENTER
 	self._show_over_text.y_type = UIEnumTypes.POS_ALIGN_CENTER
 	self:AddChild(self._show_over_text, 10)
 end
@@ -426,15 +478,18 @@ function TextCheckButton.__setter:show_down_text(value)
 		self._show_down_text.height = 0
 		self._show_down_text.text = show.text
 		self._show_down_text.visible = show.visible
+		self._show_down_text.x_type = show.x_type
+		self._show_down_text.x_value = show.x_value
 		return
 	end
 	if self._show_down_text ~= nil and self._show_down_text.text ~= "" then
 		value.text = self._show_down_text.text
 	end
 	value.visible = self._show_down_text.visible
+	value.x_type = self._show_down_text.x_type
+	value.x_value = self._show_down_text.x_value
 	self:RemoveChild(self._show_down_text)
 	self._show_down_text = value
-	self._show_down_text.x_type = UIEnumTypes.POS_ALIGN_CENTER
 	self._show_down_text.y_type = UIEnumTypes.POS_ALIGN_CENTER
 	self:AddChild(self._show_down_text, 10)
 end
@@ -455,15 +510,18 @@ function TextCheckButton.__setter:show_disabled_text(value)
 		self._show_disabled_text.height = 0
 		self._show_disabled_text.text = show.text
 		self._show_disabled_text.visible = show.visible
+		self._show_disabled_text.x_type = show.x_type
+		self._show_disabled_text.x_value = show.x_value
 		return
 	end
 	if self._show_disabled_text ~= nil and self._show_disabled_text.text ~= "" then
 		value.text = self._show_disabled_text.text
 	end
 	value.visible = self._show_disabled_text.visible
+	value.x_type = self._show_disabled_text.x_type
+	value.x_value = self._show_disabled_text.x_value
 	self:RemoveChild(self._show_disabled_text)
 	self._show_disabled_text = value
-	self._show_disabled_text.x_type = UIEnumTypes.POS_ALIGN_CENTER
 	self._show_disabled_text.y_type = UIEnumTypes.POS_ALIGN_CENTER
 	self:AddChild(self._show_disabled_text, 10)
 end
@@ -484,15 +542,18 @@ function TextCheckButton.__setter:show_selected_text(value)
 		self._show_selected_text.height = 0
 		self._show_selected_text.text = show.text
 		self._show_selected_text.visible = show.visible
+		self._show_selected_text.x_type = show.x_type
+		self._show_selected_text.x_value = show.x_value
 		return
 	end
 	if self._show_selected_text ~= nil and self._show_selected_text.text ~= "" then
 		value.text = self._show_selected_text.text
 	end
 	value.visible = self._show_selected_text.visible
+	value.x_type = self._show_selected_text.x_type
+	value.x_value = self._show_selected_text.x_value
 	self:RemoveChild(self._show_selected_text)
 	self._show_selected_text = value
-	self._show_selected_text.x_type = UIEnumTypes.POS_ALIGN_CENTER
 	self._show_selected_text.y_type = UIEnumTypes.POS_ALIGN_CENTER
 	self:AddChild(self._show_selected_text, 10)
 end
@@ -513,15 +574,18 @@ function TextCheckButton.__setter:show_selected_over_text(value)
 		self._show_selected_over_text.height = 0
 		self._show_selected_over_text.text = show.text
 		self._show_selected_over_text.visible = show.visible
+		self._show_selected_over_text.x_type = show.x_type
+		self._show_selected_over_text.x_value = show.x_value
 		return
 	end
 	if self._show_selected_over_text ~= nil and self._show_selected_over_text.text ~= "" then
 		value.text = self._show_selected_over_text.text
 	end
 	value.visible = self._show_selected_over_text.visible
+	value.x_type = self._show_selected_over_text.x_type
+	value.x_value = self._show_selected_over_text.x_value
 	self:RemoveChild(self._show_selected_over_text)
 	self._show_selected_over_text = value
-	self._show_selected_over_text.x_type = UIEnumTypes.POS_ALIGN_CENTER
 	self._show_selected_over_text.y_type = UIEnumTypes.POS_ALIGN_CENTER
 	self:AddChild(self._show_selected_over_text, 10)
 end
@@ -542,15 +606,18 @@ function TextCheckButton.__setter:show_selected_down_text(value)
 		self._show_selected_down_text.height = 0
 		self._show_selected_down_text.text = show.text
 		self._show_selected_down_text.visible = show.visible
+		self._show_selected_down_text.x_type = show.x_type
+		self._show_selected_down_text.x_value = show.x_value
 		return
 	end
 	if self._show_selected_down_text ~= nil and self._show_selected_down_text.text ~= "" then
 		value.text = self._show_selected_down_text.text
 	end
 	value.visible = self._show_selected_down_text.visible
+	value.x_type = self._show_selected_down_text.x_type
+	value.x_value = self._show_selected_down_text.x_value
 	self:RemoveChild(self._show_selected_down_text)
 	self._show_selected_down_text = value
-	self._show_selected_down_text.x_type = UIEnumTypes.POS_ALIGN_CENTER
 	self._show_selected_down_text.y_type = UIEnumTypes.POS_ALIGN_CENTER
 	self:AddChild(self._show_selected_down_text, 10)
 end
@@ -571,15 +638,18 @@ function TextCheckButton.__setter:show_selected_disabled_text(value)
 		self._show_selected_disabled_text.height = 0
 		self._show_selected_disabled_text.text = show.text
 		self._show_selected_disabled_text.visible = show.visible
+		self._show_selected_disabled_text.x_type = show.x_type
+		self._show_selected_disabled_text.x_value = show.x_value
 		return
 	end
 	if self._show_selected_disabled_text ~= nil and self._show_selected_disabled_text.text ~= "" then
 		value.text = self._show_selected_disabled_text.text
 	end
 	value.visible = self._show_selected_disabled_text.visible
+	value.x_type = self._show_selected_disabled_text.x_type
+	value.x_value = self._show_selected_disabled_text.x_value
 	self:RemoveChild(self._show_selected_disabled_text)
 	self._show_selected_disabled_text = value
-	self._show_selected_disabled_text.x_type = UIEnumTypes.POS_ALIGN_CENTER
 	self._show_selected_disabled_text.y_type = UIEnumTypes.POS_ALIGN_CENTER
 	self:AddChild(self._show_selected_disabled_text, 10)
 end

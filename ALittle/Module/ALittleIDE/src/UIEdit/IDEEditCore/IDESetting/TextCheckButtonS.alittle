@@ -19,6 +19,9 @@ public class TextCheckButtonS : DisplayLayoutS
 	private ALittle.DisplayObject _show_selected_down_grid9;
 	private ALittle.DisplayObject _show_selected_disabled;
 	private ALittle.DisplayObject _show_selected_disabled_grid9;
+	
+	private ALittle.DisplayObject _text_x_type;
+	private ALittle.ImageInput _text_x_value;
 
 	public ctor(IDETreeUserInfo user_info, IDETabChild tab_child, IDETreeLogic tree_logic)
 	{
@@ -30,6 +33,8 @@ public class TextCheckButtonS : DisplayLayoutS
 		DisplayLayoutS.LoadNatureBase(this);
 
 		this.LoadValueData("text");
+		this.LoadEnumData("text_x_type", cast<Map<string, any>>(g_IDEEnum.xy_type));
+		this.LoadValueData("text_x_value");
 		this.LoadBoolData("selected", false, g_IDEEnum.yn_type);
 		this.LoadShowTypeDataForImage("show_up");
 		this.LoadShowTypeDataForImage("show_over");
@@ -54,6 +59,24 @@ public class TextCheckButtonS : DisplayLayoutS
 		this.DefaultNoStringInputChange("text", false);
 	}
 	
+	// text_x_type
+	public fun HandleTextXTypeSELECT_CHANGE(ALittle.UIEvent event)
+	{
+		var object = cast<ALittle.TextCheckButton>(this._object);
+		var target_x = object.text_x_type;
+		var new_x = target_x;
+	
+		var list = g_IDEEnum.xy_rtype;
+		var revoke_bind = new IDERevokeBind();
+		this.TypeSelectChange("text_x_type", cast<Map<string, any>>(list), false, revoke_bind);
+	}
+	//text_x_value
+	public fun HandleTextXValueFOCUSOUT(ALittle.UIEvent event)
+	{
+		cast<ALittle.TextButton>(this._base).text_x_value = null;
+		this.ValueNumInputChange("text_x_value", true);
+	}
+
 	public fun HandleSelectedSELECT_CHANGE(ALittle.UIEvent event)
 	{
 		this.BoolSelectChange("selected", false, g_IDEEnum.yn_type);

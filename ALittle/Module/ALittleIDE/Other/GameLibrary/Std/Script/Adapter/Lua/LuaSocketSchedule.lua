@@ -5,6 +5,30 @@ local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
+ALittle.RegStruct(1628431371, "Lua.lua_socket_schedule_message_info", {
+name = "Lua.lua_socket_schedule_message_info", ns_name = "Lua", rl_name = "lua_socket_schedule_message_info", hash_code = 1628431371,
+name_list = {"descriptor","full_name","name"},
+type_list = {"lua.protobuf_descriptor","string","string"},
+option_map = {}
+})
+ALittle.RegStruct(-297098024, "lua.protobuf_descriptor", {
+name = "lua.protobuf_descriptor", ns_name = "lua", rl_name = "protobuf_descriptor", hash_code = -297098024,
+name_list = {},
+type_list = {},
+option_map = {}
+})
+ALittle.RegStruct(-1908889092, "Lua.lua_socket_schedule_enum_info", {
+name = "Lua.lua_socket_schedule_enum_info", ns_name = "Lua", rl_name = "lua_socket_schedule_enum_info", hash_code = -1908889092,
+name_list = {"descriptor","full_name","name"},
+type_list = {"lua.protobuf_enum_descriptor","string","string"},
+option_map = {}
+})
+ALittle.RegStruct(1415684675, "lua.protobuf_enum_descriptor", {
+name = "lua.protobuf_enum_descriptor", ns_name = "lua", rl_name = "protobuf_enum_descriptor", hash_code = 1415684675,
+name_list = {},
+type_list = {},
+option_map = {}
+})
 
 socket_type = {
 	TIMER = 21,
@@ -29,7 +53,9 @@ LuaSocketSchedule = Lua.Class(ALittle.ISchedule, "Lua.LuaSocketSchedule")
 
 function LuaSocketSchedule:Ctor()
 	___rawset(self, "_message_map", {})
+	___rawset(self, "_upper_message_map", {})
 	___rawset(self, "_enum_map", {})
+	___rawset(self, "_upper_enum_map", {})
 end
 
 function LuaSocketSchedule:Setup()
@@ -38,7 +64,9 @@ end
 
 function LuaSocketSchedule:LoadProto(root_path)
 	self._message_map = {}
+	self._upper_message_map = {}
 	self._enum_map = {}
+	self._upper_enum_map = {}
 	self._importer = protobuf.createimporter(root_path)
 	self._factory = protobuf.createfactory()
 	local file_map = ALittle.File_GetFileAttrByDir(root_path)
@@ -54,8 +82,12 @@ function LuaSocketSchedule:LoadProto(root_path)
 				if not(i < message_count) then break end
 				local message_descriptor = protobuf.filedescriptor_messagetype(file_descriptor, i)
 				if message_descriptor ~= nil then
-					local message_full_name = protobuf.messagedescriptor_fullname(message_descriptor)
-					self._message_map[message_full_name] = message_descriptor
+					local info = {}
+					info.descriptor = message_descriptor
+					info.full_name = protobuf.messagedescriptor_fullname(message_descriptor)
+					info.name = protobuf.messagedescriptor_name(message_descriptor)
+					self._message_map[info.full_name] = info
+					self._upper_message_map[ALittle.String_Upper(info.name)] = info
 				end
 				i = i+(1)
 			end
@@ -65,8 +97,12 @@ function LuaSocketSchedule:LoadProto(root_path)
 				if not(i < enum_count) then break end
 				local enum_descriptor = protobuf.filedescriptor_enumtype(file_descriptor, i)
 				if enum_descriptor ~= nil then
-					local enum_full_name = protobuf.enumdescriptor_fullname(enum_descriptor)
-					self._enum_map[enum_full_name] = enum_descriptor
+					local info = {}
+					info.descriptor = enum_descriptor
+					info.full_name = protobuf.enumdescriptor_fullname(enum_descriptor)
+					info.name = protobuf.enumdescriptor_name(enum_descriptor)
+					self._enum_map[info.full_name] = info
+					self._upper_enum_map[ALittle.String_Upper(info.name)] = info
 				end
 				i = i+(1)
 			end
@@ -75,19 +111,35 @@ function LuaSocketSchedule:LoadProto(root_path)
 	return nil
 end
 
+function LuaSocketSchedule:FindMessageByUpperKey(key)
+	local result = {}
+	local count = 0
+	for name, info in ___pairs(self._upper_message_map) do
+		if ALittle.String_Find(name, key) ~= nil then
+			count = count + 1
+			result[count] = info
+		end
+	end
+	return result
+end
+
 function LuaSocketSchedule:GetEnumDescriptor(full_name)
-	return self._enum_map[full_name]
+	local info = self._enum_map[full_name]
+	if info == nil then
+		return nil
+	end
+	return info.descriptor
 end
 
 function LuaSocketSchedule:CreateMessage(full_name)
 	if self._factory == nil then
 		return nil
 	end
-	local descriptor = self._message_map[full_name]
-	if descriptor == nil then
+	local info = self._message_map[full_name]
+	if info == nil then
 		return nil
 	end
-	return protobuf.createmessage(self._factory, descriptor)
+	return protobuf.createmessage(self._factory, info.descriptor)
 end
 
 function LuaSocketSchedule:RunInFrame()

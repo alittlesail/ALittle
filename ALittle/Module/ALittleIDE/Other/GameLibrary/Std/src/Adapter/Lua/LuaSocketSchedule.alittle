@@ -23,19 +23,37 @@ public enum socket_type
 	MSG_READ_BINARY = 44;
 }
 
+public struct lua_socket_schedule_message_info
+{
+    lua.protobuf_descriptor descriptor;
+    string full_name;
+    string name;
+}
+
+public struct lua_socket_schedule_enum_info
+{
+    lua.protobuf_enum_descriptor descriptor;
+    string full_name;
+    string name;
+}
+
 public class LuaSocketSchedule : ALittle.ISchedule
 {
     public lua.socket _socket;
     private lua.protobuf_importer _importer;
     private lua.protobuf_factory _factory;
-    private Map<string, lua.protobuf_descriptor> _message_map;
-    private Map<string, lua.protobuf_enum_descriptor> _enum_map;
+    private Map<string, lua_socket_schedule_message_info> _message_map;
+    private Map<string, lua_socket_schedule_message_info> _upper_message_map;
+    private Map<string, lua_socket_schedule_enum_info> _enum_map;
+    private Map<string, lua_socket_schedule_enum_info> _upper_enum_map;
     private int _last_time;
     
     public ctor()
     {
-        this._message_map = new Map<string, lua.protobuf_descriptor>();
-        this._enum_map = new Map<string, lua.protobuf_enum_descriptor>();
+        this._message_map = new Map<string, lua_socket_schedule_message_info>();
+        this._upper_message_map = new Map<string, lua_socket_schedule_message_info>();
+        this._enum_map = new Map<string, lua_socket_schedule_enum_info>();
+        this._upper_enum_map = new Map<string, lua_socket_schedule_enum_info>();
     }
 
     public fun Setup()
@@ -45,8 +63,10 @@ public class LuaSocketSchedule : ALittle.ISchedule
 
     public fun LoadProto(string root_path) : string
     {
-        this._message_map = new Map<string, lua.protobuf_descriptor>();
-        this._enum_map = new Map<string, lua.protobuf_enum_descriptor>();
+        this._message_map = new Map<string, lua_socket_schedule_message_info>();
+        this._upper_message_map = new Map<string, lua_socket_schedule_message_info>();
+        this._enum_map = new Map<string, lua_socket_schedule_enum_info>();
+        this._upper_enum_map = new Map<string, lua_socket_schedule_enum_info>();
 
         this._importer = lua.protobuf.createimporter(root_path);
         this._factory = lua.protobuf.createfactory();
@@ -65,8 +85,12 @@ public class LuaSocketSchedule : ALittle.ISchedule
                     var message_descriptor = lua.protobuf.filedescriptor_messagetype(file_descriptor, i);
                     if (message_descriptor != null)
                     {
-                        var message_full_name = lua.protobuf.messagedescriptor_fullname(message_descriptor);
-                        this._message_map[message_full_name] = message_descriptor;   
+                        var info = new lua_socket_schedule_message_info();
+                        info.descriptor = message_descriptor;
+                        info.full_name = lua.protobuf.messagedescriptor_fullname(message_descriptor);
+                        info.name = lua.protobuf.messagedescriptor_name(message_descriptor);
+                        this._message_map[info.full_name] = info;
+                        this._upper_message_map[ALittle.String_Upper(info.name)] = info;
                     }
                 }
             
@@ -76,8 +100,12 @@ public class LuaSocketSchedule : ALittle.ISchedule
                     var enum_descriptor = lua.protobuf.filedescriptor_enumtype(file_descriptor, i);
                     if (enum_descriptor != null)
                     {
-                        var enum_full_name = lua.protobuf.enumdescriptor_fullname(enum_descriptor);
-                        this._enum_map[enum_full_name] = enum_descriptor;   
+                        var info = new lua_socket_schedule_enum_info();
+                        info.descriptor = enum_descriptor;
+                        info.full_name = lua.protobuf.enumdescriptor_fullname(enum_descriptor);
+                        info.name = lua.protobuf.enumdescriptor_name(enum_descriptor);
+                        this._enum_map[info.full_name] = info;
+                        this._upper_enum_map[ALittle.String_Upper(info.name)] = info;
                     }
                 }
             }
@@ -85,18 +113,36 @@ public class LuaSocketSchedule : ALittle.ISchedule
         return null;
     }
 
+    // 根据key查找名称
+    public fun FindMessageByUpperKey(string key) : List<lua_socket_schedule_message_info>
+    {
+        var result = new List<lua_socket_schedule_message_info>();
+        var count = 0;
+        for (var name, info in this._upper_message_map)
+        {
+            if (ALittle.String_Find(name, key) != null)
+            {
+                ++count;
+                result[count] = info;
+            }
+        }
+        return result;
+    }
+
     public fun GetEnumDescriptor(string full_name) : lua.protobuf_enum_descriptor
     {
-        return this._enum_map[full_name];
+        var info = this._enum_map[full_name];
+        if (info == null) return null;
+        return info.descriptor;
     }
 
     public fun CreateMessage(string full_name) : lua.protobuf_message
     {
         if (this._factory == null) return null;
-        var descriptor = this._message_map[full_name];
-        if (descriptor == null) return null;
+        var info = this._message_map[full_name];
+        if (info == null) return null;
 
-        return lua.protobuf.createmessage(this._factory, descriptor);
+        return lua.protobuf.createmessage(this._factory, info.descriptor);
     }
 
     public fun RunInFrame()

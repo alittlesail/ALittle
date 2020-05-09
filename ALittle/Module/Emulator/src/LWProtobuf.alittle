@@ -12,10 +12,15 @@ protected class LWProtobuf
 		this._name_map_id = new Map<string, int>();
     }
 
+	public fun Clear()
+	{
+        this._id_map_name = new Map<int, string>();
+		this._name_map_id = new Map<string, int>();
+    }
+
 	public fun Refresh()
 	{
-		this._id_map_name = new Map<int, string>();
-		this._name_map_id = new Map<string, int>();
+		this.Clear();
 
         var enum_descriptor = A_LuaSocketSchedule.GetEnumDescriptor("EMsgTypes");
 		if (enum_descriptor == null) return;
@@ -28,8 +33,6 @@ protected class LWProtobuf
 			{
 				var field_name = lua.protobuf.enumvaluedescriptor_name(enumvalue_descriptor);
 				var field_number = lua.protobuf.enumvaluedescriptor_number(enumvalue_descriptor);
-
-				ALittle.Log(field_name, field_number);
 
 				this._id_map_name[field_number] = field_name;
 				this._name_map_id[field_name] = field_number;    

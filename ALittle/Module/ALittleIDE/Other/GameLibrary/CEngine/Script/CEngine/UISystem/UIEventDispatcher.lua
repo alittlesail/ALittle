@@ -393,6 +393,7 @@ function UIEventDispatcher:DispatchEvent(T, event)
 		if rflt.name == "ALittle.UIButtonDragEvent" or rflt.name == "ALittle.UIButtonDragBeginEvent" then
 			event_target = self._trans_target["drag"]
 		elseif rflt.name == "ALittle.UIButtonDragEndEvent" then
+			event_target = self._trans_target["drag"]
 			A_UISystem.focus = self._trans_target["drag"]
 		end
 	end

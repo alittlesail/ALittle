@@ -1,0 +1,16 @@
+
+namespace Emulator;
+
+public class IDETreeMap : IDETree
+{
+	public ctor(ALittle.ControlSystem ctrl_sys, string field_name, string key_type, string value_type)
+	{
+		// 对树的头部进行处理
+		this._head = ctrl_sys.CreateControl{ALittle.DisplayObject}("ide_common_tree_map", this);
+		ALittle.DisplayGroup.AddChild(this, this._head, 1);
+
+		this._item_title.text = "[Map<"..key_type..", "..value_type..">] "..field_name;
+		
+		this.Init();
+	}
+}

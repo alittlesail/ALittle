@@ -20,7 +20,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="src\GCenter.alittle" />
+    <None Include="src\GUtility.alittle" />
+    <None Include="src\IDEIMEManager.alittle" />
     <None Include="src\IDETool.alittle" />
+    <None Include="src\IDETree.alittle" />
+    <None Include="src\IDETreeMessage.alittle" />
+    <None Include="src\IDETreeItem.alittle" />
+    <None Include="src\IDETreeLogic.alittle" />
+    <None Include="src\IDETreeMap.alittle" />
+    <None Include="src\IDETreeRepeated.alittle" />
     <None Include="src\LWProtobuf.alittle" />
     <None Include="src\LWSocket.alittle" />
     <None Include="src\Main.alittle" />

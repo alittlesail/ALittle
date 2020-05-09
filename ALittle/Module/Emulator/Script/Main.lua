@@ -28,6 +28,13 @@ function __Module_Setup(layer_group, control, module_base_path, script_base_path
 	g_ModuleBasePath = module_base_path
 	Require(script_base_path, "GCenter")
 	Require(script_base_path, "IDETool")
+	Require(script_base_path, "IDETreeLogic")
+	Require(script_base_path, "IDETreeItem")
+	Require(script_base_path, "IDETree")
+	Require(script_base_path, "IDETreeMessage")
+	Require(script_base_path, "IDETreeMap")
+	Require(script_base_path, "IDETreeRepeated")
+	Require(script_base_path, "GUtility")
 	Require(script_base_path, "IDEIMEManager")
 	Require(script_base_path, "LWProtobuf")
 	Require(script_base_path, "LWSocket")

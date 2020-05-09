@@ -2,6 +2,15 @@
 namespace Emulator;
 
 protected var g_GConfig:ALittle.IJsonConfig;
+protected var g_GProtoCache:ALittle.IJsonConfig;
+
+protected struct DetailInfo
+{
+    IDETreeLogic tree;
+    lua.protobuf_message message;
+    lua.protobuf_reflection reflection;
+    Lua.lua_socket_schedule_message_info info;
+}
 
 class GCenter
 {
@@ -21,16 +30,23 @@ class GCenter
     private Map<ALittle.TextRadioButton, bool> _proto_search_group;
     private Map<string, ALittle.TextRadioButton> _proto_search_item_pool;
 
+    // 详细信息
+    private ALittle.ScrollScreen _detail_scroll_screen;
+    private Map<string, DetailInfo> _detail_tree_item_pool;
+
     public ctor()
     {
         this._proto_search_item_pool = new Map<string, ALittle.TextRadioButton>();
         this._proto_search_group = new Map<ALittle.TextRadioButton, bool>();
+
+        this._detail_tree_item_pool = new Map<string, DetailInfo>();
 	}
 
     public fun Setup()
     {
         // 获取配置信息
         g_GConfig = ALittle.CreateConfigSystem(g_ModuleBasePath.."/User.cfg");
+        g_GProtoCache = ALittle.CreateConfigSystem(g_ModuleBasePath.."/ProtoCache.cfg");
         // 生成随机数种子
         ALittle.Math_RandomSeed(ALittle.Time_GetCurTime());
         // 设置1个线程
@@ -103,9 +119,16 @@ class GCenter
             return;
         }
         g_LWProtobuf.Refresh();
+        
         this._protobuf_scroll_screen.RemoveAllChild();
         this._proto_search_item_pool = new Map<string, ALittle.TextRadioButton>();
         this._proto_search_group = new Map<ALittle.TextRadioButton, bool>();
+
+        this._detail_scroll_screen.RemoveAllChild();
+        for (var key, info in this._detail_tree_item_pool)
+            lua.protobuf.freemessage(info.message);
+        this._detail_tree_item_pool = new Map<string, DetailInfo>();
+        
         this.RefreshProtoList();
     }
 
@@ -141,6 +164,8 @@ class GCenter
                 item.text = info.name;
                 this._proto_search_item_pool[info.name] = item;
                 item.drag_trans_target = this._protobuf_scroll_screen;
+                item._user_data = info;
+                item.AddEventListener(this, this.HandleProtoItemSelected);
             }
             item.group = this._proto_search_group;
             this._protobuf_scroll_screen.AddChild(item);
@@ -148,10 +173,31 @@ class GCenter
 
         this._protobuf_scroll_screen.RejustScrollBar();
     }
+
+    // 处理proto被选中
+    private fun HandleProtoItemSelected(ALittle.UIChangedEvent event)
+    {
+        var info = cast<Lua.lua_socket_schedule_message_info>(event.target._user_data);
+
+        this._detail_scroll_screen.RemoveAllChild();
+        var detail_info = this._detail_tree_item_pool[info.full_name];
+        if (detail_info == null)
+        {
+            detail_info = Utility_CreateTree(info);
+            if (detail_info == null) return;
+            this._detail_tree_item_pool[info.full_name] = detail_info;
+        }
+        this._detail_scroll_screen.AddChild(detail_info.tree);
+        this._detail_scroll_screen.RejustScrollBar();
+    }
     
     public fun Shutdown()
     {
         this._frame_loop.Stop();
+        
+        for (var key, info in this._detail_tree_item_pool)
+            lua.protobuf.freemessage(info.message);
+        this._detail_tree_item_pool = new Map<string, DetailInfo>();
     }
 }
     

@@ -27,7 +27,6 @@ public class IDETreeLogic : ALittle.DisplayLayout
 
 	public get user_info() : IDETreeUserInfo { return this._user_info; }
 	public get tab_child() : IDETabChild { return this._tab_child; }
-	public get user_info() : IDETreeUserInfo { return this._user_info; }
 	public fun IsRoot() : bool { return this._user_info.root; }
 	public fun IsTree() : bool { return false; }
 	public get attr_panel() : DisplayObjectS { return this._attr_panel; }

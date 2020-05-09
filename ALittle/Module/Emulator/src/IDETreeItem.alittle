@@ -1,0 +1,45 @@
+
+namespace Emulator;
+
+public class IDETreeItem : IDETreeLogic
+{
+	public ctor(ALittle.ControlSystem ctrl_sys, string field_name, string value_type)
+	{
+		this._item = ctrl_sys.CreateControl{ALittle.DisplayObject}("ide_common_tree_item", this);
+		this.AddChild(this._item);
+		this.width = this._item.width;
+		this.height = this._item.height;
+	
+		// this._item_button.drag_trans_target = this._tab_child.tree_screen
+		this._item_button.selected = false;
+		this._item_button.AddEventListener(this, this.HandleClick);
+		this._item_button.AddEventListener(this, this.HandleMoveIn);
+		this._item_button.AddEventListener(this, this.HandleMouseMove);
+		this._item_button.AddEventListener(this, this.HandleMoveOut);
+		this._item_button._user_data = this;
+
+		this._item_title.text = "["..value_type.."] "..field_name;
+	}
+	
+	public fun IsTree() : bool { return false; }
+	public get fold() : bool { return false; }
+	public set fold(bool value) { }
+	public fun GetDataListForAdd() : List<string> { return new List<string>(); }
+
+	// 搜索description
+	public fun SearchDescription(string name, [Nullable] List<IDETreeLogic> list) : List<IDETreeLogic>
+	{
+		if (list == null) list = new List<IDETreeLogic>();
+	
+		var description = "";
+		if (description != null)
+		{
+			if (ALittle.String_Find(description, name) != null)
+			{
+				ALittle.List_Push(list, this);
+				return list;
+			}
+		}
+		return list;
+	}
+}

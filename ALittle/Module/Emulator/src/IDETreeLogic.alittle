@@ -1,0 +1,43 @@
+
+namespace Emulator;
+
+public class IDETreeLogic : ALittle.DisplayLayout
+{
+	private ALittle.DisplayObject _item_title;	// 标题
+	private ALittle.DisplayObject _item_button;	// 按钮
+
+	private ALittle.DisplayObject _head;		// 头部
+	private ALittle.DisplayObject _item;		// item部分
+
+	public ctor(ALittle.ControlSystem ctrl_sys)
+	{
+	}
+
+	public get title() : string	{ return this._item_title.text; }
+	public set fold(bool value) { }
+
+	// 处理控件点击
+	public fun HandleClick(ALittle.UIClickEvent event)
+	{
+	}
+
+	// 鼠标移入，显示绑定信息
+	public fun HandleMoveIn(ALittle.UIMoveInEvent event)
+	{
+	}
+
+	// 鼠标移动，也移动绑定信息
+	public fun HandleMouseMove(ALittle.UIMouseMoveEvent event)
+	{
+	}
+
+	// 鼠标移除，也移除绑定信息
+	public fun HandleMoveOut(ALittle.UIMoveOutEvent event)
+	{
+	}
+    
+	public fun SearchDescription(string name, [Nullable] List<IDETreeLogic> list) : List<IDETreeLogic>
+	{
+		return null;
+	}
+}

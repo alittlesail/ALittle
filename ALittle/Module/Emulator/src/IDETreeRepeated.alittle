@@ -1,0 +1,16 @@
+
+namespace Emulator;
+
+public class IDETreeRepeated : IDETree
+{
+	public ctor(ALittle.ControlSystem ctrl_sys, string field_name, string sub_type)
+	{
+		// 对树的头部进行处理
+		this._head = ctrl_sys.CreateControl{ALittle.DisplayObject}("ide_common_tree_repeated", this);
+		ALittle.DisplayGroup.AddChild(this, this._head, 1);
+
+		this._item_title.text = "[repeated "..sub_type.."] "..field_name;
+		
+		this.Init();
+	}
+}

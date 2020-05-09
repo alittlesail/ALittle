@@ -42,6 +42,13 @@ public async static __Module_Setup(ALittle.DisplayLayout layer_group, ALittle.Co
 
 	alittle.Require(script_base_path, "GCenter");
 	alittle.Require(script_base_path, "IDETool");
+	alittle.Require(script_base_path, "IDETreeLogic");
+	alittle.Require(script_base_path, "IDETreeItem");
+	alittle.Require(script_base_path, "IDETree");
+	alittle.Require(script_base_path, "IDETreeMessage");
+	alittle.Require(script_base_path, "IDETreeMap");
+	alittle.Require(script_base_path, "IDETreeRepeated");
+	alittle.Require(script_base_path, "GUtility");
 	alittle.Require(script_base_path, "IDEIMEManager");
 	alittle.Require(script_base_path, "LWProtobuf");
 	alittle.Require(script_base_path, "LWSocket");

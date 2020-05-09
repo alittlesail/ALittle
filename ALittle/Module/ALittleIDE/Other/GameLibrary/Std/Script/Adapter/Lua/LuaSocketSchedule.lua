@@ -111,6 +111,10 @@ function LuaSocketSchedule:LoadProto(root_path)
 	return nil
 end
 
+function LuaSocketSchedule:GetMessageInfo(full_name)
+	return self._message_map[full_name]
+end
+
 function LuaSocketSchedule:FindMessageByUpperKey(key)
 	local result = {}
 	local count = 0

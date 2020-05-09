@@ -113,6 +113,12 @@ public class LuaSocketSchedule : ALittle.ISchedule
         return null;
     }
 
+    // 获取协议类型
+    public fun GetMessageInfo(string full_name) : lua_socket_schedule_message_info
+    {
+        return this._message_map[full_name];
+    }
+
     // 根据key查找名称
     public fun FindMessageByUpperKey(string key) : List<lua_socket_schedule_message_info>
     {

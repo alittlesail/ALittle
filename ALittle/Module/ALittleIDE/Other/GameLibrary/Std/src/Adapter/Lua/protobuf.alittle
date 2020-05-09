@@ -75,48 +75,50 @@ public class protobuf
     public static message_getbytesize(protobuf_message msg) : int {}
     public static message_serializetoarray(protobuf_message msg, any buffer, int size) : bool {}
     public static message_parsefromarray(protobuf_message msg, any buffer, int size) : bool {}
+    public static message_jsonencode(protobuf_message msg) : string {}
+    public static message_jsondecode(protobuf_message msg, string json) : bool {}
 
-    public static reflection_clearfield(protobuf_reflection reflection, protobuf_field_descriptor descriptor) {}
+    public static reflection_clearfield(protobuf_reflection reflection, protobuf_message message, protobuf_field_descriptor descriptor) {}
 
-    public static reflection_getmessage(protobuf_reflection reflection, protobuf_field_descriptor descriptor) : protobuf_message {}
-    public static reflection_getbool(protobuf_reflection reflection, protobuf_field_descriptor descriptor) : bool {}
-    public static reflection_getint32(protobuf_reflection reflection, protobuf_field_descriptor descriptor) : int {}
-    public static reflection_getuint32(protobuf_reflection reflection, protobuf_field_descriptor descriptor) : int {}
-    public static reflection_getint64(protobuf_reflection reflection, protobuf_field_descriptor descriptor) : long {}
-    public static reflection_getuint64(protobuf_reflection reflection, protobuf_field_descriptor descriptor) : long {}
-    public static reflection_getdouble(protobuf_reflection reflection, protobuf_field_descriptor descriptor) : double {}
-    public static reflection_getfloat(protobuf_reflection reflection, protobuf_field_descriptor descriptor) : double {}
-    public static reflection_getenumvalue(protobuf_reflection reflection, protobuf_field_descriptor descriptor) : int {}
-    public static reflection_getstring(protobuf_reflection reflection, protobuf_field_descriptor descriptor) : string {}
+    public static reflection_getmessage(protobuf_reflection reflection, protobuf_message message, protobuf_field_descriptor descriptor) : protobuf_message {}
+    public static reflection_getbool(protobuf_reflection reflection, protobuf_message message, protobuf_field_descriptor descriptor) : bool {}
+    public static reflection_getint32(protobuf_reflection reflection, protobuf_message message, protobuf_field_descriptor descriptor) : int {}
+    public static reflection_getuint32(protobuf_reflection reflection, protobuf_message message, protobuf_field_descriptor descriptor) : int {}
+    public static reflection_getint64(protobuf_reflection reflection, protobuf_message message, protobuf_field_descriptor descriptor) : long {}
+    public static reflection_getuint64(protobuf_reflection reflection, protobuf_message message, protobuf_field_descriptor descriptor) : long {}
+    public static reflection_getdouble(protobuf_reflection reflection, protobuf_message message, protobuf_field_descriptor descriptor) : double {}
+    public static reflection_getfloat(protobuf_reflection reflection, protobuf_message message, protobuf_field_descriptor descriptor) : double {}
+    public static reflection_getenumvalue(protobuf_reflection reflection, protobuf_message message, protobuf_field_descriptor descriptor) : int {}
+    public static reflection_getstring(protobuf_reflection reflection, protobuf_message message, protobuf_field_descriptor descriptor) : string {}
     
-    public static reflection_setmessage(protobuf_reflection reflection, protobuf_field_descriptor descriptor, protobuf_message value) {}
-    public static reflection_setbool(protobuf_reflection reflection, protobuf_field_descriptor descriptor, bool value) {}
-    public static reflection_setint32(protobuf_reflection reflection, protobuf_field_descriptor descriptor, int value) {}
-    public static reflection_setuint32(protobuf_reflection reflection, protobuf_field_descriptor descriptor, int value) {}
-    public static reflection_setint64(protobuf_reflection reflection, protobuf_field_descriptor descriptor, long value) {}
-    public static reflection_setuint64(protobuf_reflection reflection, protobuf_field_descriptor descriptor, long value) {}
-    public static reflection_setdouble(protobuf_reflection reflection, protobuf_field_descriptor descriptor, double value) {}
-    public static reflection_setfloat(protobuf_reflection reflection, protobuf_field_descriptor descriptor, double value) {}
-    public static reflection_setenumvalue(protobuf_reflection reflection, protobuf_field_descriptor descriptor, int value) {}
-    public static reflection_setstring(protobuf_reflection reflection, protobuf_field_descriptor descriptor, string value) {}
+    public static reflection_setmessage(protobuf_reflection reflection, protobuf_message message, protobuf_field_descriptor descriptor, protobuf_message value) {}
+    public static reflection_setbool(protobuf_reflection reflection, protobuf_message message, protobuf_field_descriptor descriptor, bool value) {}
+    public static reflection_setint32(protobuf_reflection reflection, protobuf_message message, protobuf_field_descriptor descriptor, int value) {}
+    public static reflection_setuint32(protobuf_reflection reflection, protobuf_message message, protobuf_field_descriptor descriptor, int value) {}
+    public static reflection_setint64(protobuf_reflection reflection, protobuf_message message, protobuf_field_descriptor descriptor, long value) {}
+    public static reflection_setuint64(protobuf_reflection reflection, protobuf_message message, protobuf_field_descriptor descriptor, long value) {}
+    public static reflection_setdouble(protobuf_reflection reflection, protobuf_message message, protobuf_field_descriptor descriptor, double value) {}
+    public static reflection_setfloat(protobuf_reflection reflection, protobuf_message message, protobuf_field_descriptor descriptor, double value) {}
+    public static reflection_setenumvalue(protobuf_reflection reflection, protobuf_message message, protobuf_field_descriptor descriptor, int value) {}
+    public static reflection_setstring(protobuf_reflection reflection, protobuf_message message, protobuf_field_descriptor descriptor, string value) {}
 
-    public static reflection_getrepeatedmessage(protobuf_reflection reflection, protobuf_field_descriptor descriptor) : List<protobuf_message> {}
-    public static reflection_getrepeatedbool(protobuf_reflection reflection, protobuf_field_descriptor descriptor) : List<bool> {}
-    public static reflection_getrepeatedint32(protobuf_reflection reflection, protobuf_field_descriptor descriptor) : List<int> {}
-    public static reflection_getrepeateduint32(protobuf_reflection reflection, protobuf_field_descriptor descriptor) : List<int> {}
-    public static reflection_getrepeatedint64(protobuf_reflection reflection, protobuf_field_descriptor descriptor) : List<long> {}
-    public static reflection_getrepeateduint64(protobuf_reflection reflection, protobuf_field_descriptor descriptor) : List<long> {}
-    public static reflection_getrepeateddouble(protobuf_reflection reflection, protobuf_field_descriptor descriptor) : List<double> {}
-    public static reflection_getrepeatedfloat(protobuf_reflection reflection, protobuf_field_descriptor descriptor) : List<double> {}
-    public static reflection_getrepeatedstring(protobuf_reflection reflection, protobuf_field_descriptor descriptor) : List<string> {}
+    public static reflection_getrepeatedmessage(protobuf_reflection reflection, protobuf_message message, protobuf_field_descriptor descriptor) : List<protobuf_message> {}
+    public static reflection_getrepeatedbool(protobuf_reflection reflection, protobuf_message message, protobuf_field_descriptor descriptor) : List<bool> {}
+    public static reflection_getrepeatedint32(protobuf_reflection reflection, protobuf_message message, protobuf_field_descriptor descriptor) : List<int> {}
+    public static reflection_getrepeateduint32(protobuf_reflection reflection, protobuf_message message, protobuf_field_descriptor descriptor) : List<int> {}
+    public static reflection_getrepeatedint64(protobuf_reflection reflection, protobuf_message message, protobuf_field_descriptor descriptor) : List<long> {}
+    public static reflection_getrepeateduint64(protobuf_reflection reflection, protobuf_message message, protobuf_field_descriptor descriptor) : List<long> {}
+    public static reflection_getrepeateddouble(protobuf_reflection reflection, protobuf_message message, protobuf_field_descriptor descriptor) : List<double> {}
+    public static reflection_getrepeatedfloat(protobuf_reflection reflection, protobuf_message message, protobuf_field_descriptor descriptor) : List<double> {}
+    public static reflection_getrepeatedstring(protobuf_reflection reflection, protobuf_message message, protobuf_field_descriptor descriptor) : List<string> {}
     
-    public static reflection_addrepeatedmessage(protobuf_reflection reflection, protobuf_field_descriptor descriptor, protobuf_message value) {}
-    public static reflection_addrepeatedbool(protobuf_reflection reflection, protobuf_field_descriptor descriptor, bool value) {}
-    public static reflection_addrepeatedint32(protobuf_reflection reflection, protobuf_field_descriptor descriptor, int value) {}
-    public static reflection_addrepeateduint32(protobuf_reflection reflection, protobuf_field_descriptor descriptor, int value) {}
-    public static reflection_addrepeatedint64(protobuf_reflection reflection, protobuf_field_descriptor descriptor, long value) {}
-    public static reflection_addrepeateduint64(protobuf_reflection reflection, protobuf_field_descriptor descriptor, long value) {}
-    public static reflection_addrepeateddouble(protobuf_reflection reflection, protobuf_field_descriptor descriptor, double value) {}
-    public static reflection_addrepeatedfloat(protobuf_reflection reflection, protobuf_field_descriptor descriptor, double value) {}
-    public static reflection_addrepeatedstring(protobuf_reflection reflection, protobuf_field_descriptor descriptor, string value) {}
+    public static reflection_addrepeatedmessage(protobuf_reflection reflection, protobuf_message message, protobuf_field_descriptor descriptor, protobuf_message value) {}
+    public static reflection_addrepeatedbool(protobuf_reflection reflection, protobuf_message message, protobuf_field_descriptor descriptor, bool value) {}
+    public static reflection_addrepeatedint32(protobuf_reflection reflection, protobuf_message message, protobuf_field_descriptor descriptor, int value) {}
+    public static reflection_addrepeateduint32(protobuf_reflection reflection, protobuf_message message, protobuf_field_descriptor descriptor, int value) {}
+    public static reflection_addrepeatedint64(protobuf_reflection reflection, protobuf_message message, protobuf_field_descriptor descriptor, long value) {}
+    public static reflection_addrepeateduint64(protobuf_reflection reflection, protobuf_message message, protobuf_field_descriptor descriptor, long value) {}
+    public static reflection_addrepeateddouble(protobuf_reflection reflection, protobuf_message message, protobuf_field_descriptor descriptor, double value) {}
+    public static reflection_addrepeatedfloat(protobuf_reflection reflection, protobuf_message message, protobuf_field_descriptor descriptor, double value) {}
+    public static reflection_addrepeatedstring(protobuf_reflection reflection, protobuf_message message, protobuf_field_descriptor descriptor, string value) {}
 }

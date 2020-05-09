@@ -1,4 +1,4 @@
--- ALittle Generate Lua
+-- ALittle Generate Lua And Do Not Edit This Line!
 module("ALittleIDE", package.seeall)
 
 local ___rawset = rawset
@@ -48,10 +48,6 @@ end
 
 function IDETreeLogic.__getter:tab_child()
 	return self._tab_child
-end
-
-function IDETreeLogic.__getter:user_info()
-	return self._user_info
 end
 
 function IDETreeLogic:IsRoot()

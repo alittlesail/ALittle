@@ -1,0 +1,296 @@
+
+namespace Emulator;
+
+private static UtilityCreateTreeMessage(lua.protobuf_message msg, string msg_field_name) : IDETreeMessage
+{
+    var rflct = lua.protobuf.message_getreflection(msg);
+    var descriptor = lua.protobuf.message_getdescriptor(msg);
+    
+    // 创建信息
+    var detail_info = new DetailInfo();
+    detail_info.message = msg;
+    detail_info.reflection = rflct;
+    detail_info.info = A_LuaSocketSchedule.GetMessageInfo(lua.protobuf.messagedescriptor_fullname(descriptor));
+    var tree = new IDETreeMessage(g_Control, msg_field_name, detail_info);
+    detail_info.tree = tree;
+
+    // 遍历消息结构
+    var field_count = lua.protobuf.messagedescriptor_fieldcount(detail_info.info.descriptor);
+    for (var i = 0; i < field_count; 1)
+    {
+        var field_descriptor = lua.protobuf.messagedescriptor_field(detail_info.info.descriptor, i);
+        var field_name = lua.protobuf.fielddescriptor_name(field_descriptor);
+
+        if (lua.protobuf.fielddescriptor_ismap(field_descriptor))
+        {
+            var msg_list = lua.protobuf.reflection_getrepeatedmessage(rflct, msg, field_descriptor);
+            
+            var map_descriptor = lua.protobuf.fielddescriptor_messagetype(field_descriptor);
+            var key_descriptor = lua.protobuf.messagedescriptor_findfieldbyname(map_descriptor, "key");
+            var key_type = lua.protobuf.fielddescriptor_cpptypename(key_descriptor);
+            var value_descriptor = lua.protobuf.messagedescriptor_findfieldbyname(map_descriptor, "value");
+            var value_type = lua.protobuf.fielddescriptor_cpptypename(value_descriptor);
+
+            var tree_map = new IDETreeMap(g_Control, field_name, key_type, value_type);
+            detail_info.tree.AddChild(tree_map);
+
+            for (var index, sub_msg in msg_list)
+            {
+                var sub_rflct = lua.protobuf.message_getreflection(sub_msg);
+                
+                var key_cpp_type = lua.protobuf.fielddescriptor_cpptype(key_descriptor);
+                if (key_cpp_type == lua.protobuf_cpptype.CPPTYPE_BOOL)
+                {
+                    var value = lua.protobuf.reflection_getbool(sub_rflct, sub_msg, key_descriptor);
+                
+                }
+                elseif (key_cpp_type == lua.protobuf_cpptype.CPPTYPE_INT32)
+                {
+                    var value = lua.protobuf.reflection_getint32(sub_rflct, sub_msg, key_descriptor);
+                
+                }
+                elseif (key_cpp_type == lua.protobuf_cpptype.CPPTYPE_UINT32)
+                {
+                    var value = lua.protobuf.reflection_getuint32(sub_rflct, sub_msg, key_descriptor);
+                
+                }
+                elseif (key_cpp_type == lua.protobuf_cpptype.CPPTYPE_INT64)
+                {
+                    var value = lua.protobuf.reflection_getint64(sub_rflct, sub_msg, key_descriptor);
+                
+                }
+                elseif (key_cpp_type == lua.protobuf_cpptype.CPPTYPE_UINT64)
+                {
+                    var value = lua.protobuf.reflection_getuint64(sub_rflct, sub_msg, key_descriptor);
+                
+                }
+                elseif (key_cpp_type == lua.protobuf_cpptype.CPPTYPE_DOUBLE)
+                {
+                    var value = lua.protobuf.reflection_getdouble(sub_rflct, sub_msg, key_descriptor);
+                
+                }
+                elseif (key_cpp_type == lua.protobuf_cpptype.CPPTYPE_FLOAT)
+                {
+                    var value = lua.protobuf.reflection_getfloat(sub_rflct, sub_msg, key_descriptor);
+                
+                }
+                elseif (key_cpp_type == lua.protobuf_cpptype.CPPTYPE_ENUM)
+                {
+                    var value = lua.protobuf.reflection_getenumvalue(sub_rflct, sub_msg, key_descriptor);
+                
+                }
+                elseif (key_cpp_type == lua.protobuf_cpptype.CPPTYPE_STRING)
+                {
+                    var value = lua.protobuf.reflection_getstring(sub_rflct, sub_msg, key_descriptor);
+                
+                }
+
+                var value_cpp_type = lua.protobuf.fielddescriptor_cpptype(value_descriptor);
+                if (value_cpp_type == lua.protobuf_cpptype.CPPTYPE_BOOL)
+                {
+                    var value = lua.protobuf.reflection_getbool(sub_rflct, sub_msg, value_descriptor);
+                
+                }
+                elseif (value_cpp_type == lua.protobuf_cpptype.CPPTYPE_INT32)
+                {
+                    var value = lua.protobuf.reflection_getint32(sub_rflct, sub_msg, value_descriptor);
+                
+                }
+                elseif (value_cpp_type == lua.protobuf_cpptype.CPPTYPE_UINT32)
+                {
+                    var value = lua.protobuf.reflection_getuint32(sub_rflct, sub_msg, value_descriptor);
+                
+                }
+                elseif (value_cpp_type == lua.protobuf_cpptype.CPPTYPE_INT64)
+                {
+                    var value = lua.protobuf.reflection_getint64(sub_rflct, sub_msg, value_descriptor);
+                
+                }
+                elseif (value_cpp_type == lua.protobuf_cpptype.CPPTYPE_UINT64)
+                {
+                    var value = lua.protobuf.reflection_getuint64(sub_rflct, sub_msg, value_descriptor);
+                
+                }
+                elseif (value_cpp_type == lua.protobuf_cpptype.CPPTYPE_DOUBLE)
+                {
+                    var value = lua.protobuf.reflection_getdouble(sub_rflct, sub_msg, value_descriptor);
+                
+                }
+                elseif (value_cpp_type == lua.protobuf_cpptype.CPPTYPE_FLOAT)
+                {
+                    var value = lua.protobuf.reflection_getfloat(sub_rflct, sub_msg, value_descriptor);
+                
+                }
+                elseif (value_cpp_type == lua.protobuf_cpptype.CPPTYPE_ENUM)
+                {
+                    var value = lua.protobuf.reflection_getenumvalue(sub_rflct, sub_msg, value_descriptor);
+                
+                }
+                elseif (value_cpp_type == lua.protobuf_cpptype.CPPTYPE_STRING)
+                {
+                    var value = lua.protobuf.reflection_getstring(sub_rflct, sub_msg, value_descriptor);
+                
+                }
+                elseif (value_cpp_type == lua.protobuf_cpptype.CPPTYPE_MESSAGE)
+                {
+                    var value = lua.protobuf.reflection_getmessage(sub_rflct, sub_msg, value_descriptor);
+                    detail_info.tree.AddChild(UtilityCreateTreeMessage(value, field_name));
+                }
+            }
+
+        }
+        elseif (lua.protobuf.fielddescriptor_isrepeated(field_descriptor))
+        {
+            var sub_type = lua.protobuf.fielddescriptor_cpptypename(field_descriptor);
+            var tree_repeated = new IDETreeRepeated(g_Control, field_name, sub_type);
+            detail_info.tree.AddChild(tree_repeated);
+
+            var cpp_type = lua.protobuf.fielddescriptor_cpptype(field_descriptor);
+            if (cpp_type == lua.protobuf_cpptype.CPPTYPE_BOOL)
+            {
+                var value_list = lua.protobuf.reflection_getrepeatedbool(rflct, msg, field_descriptor);
+            }
+            elseif (cpp_type == lua.protobuf_cpptype.CPPTYPE_INT32)
+            {
+                var value_list = lua.protobuf.reflection_getrepeatedint32(rflct, msg, field_descriptor);
+                
+            }
+            elseif (cpp_type == lua.protobuf_cpptype.CPPTYPE_UINT32)
+            {
+                var value_list = lua.protobuf.reflection_getrepeateduint32(rflct, msg, field_descriptor);
+                
+            }
+            elseif (cpp_type == lua.protobuf_cpptype.CPPTYPE_INT64)
+            {
+                var value_list = lua.protobuf.reflection_getrepeatedint64(rflct, msg, field_descriptor);
+                
+            }
+            elseif (cpp_type == lua.protobuf_cpptype.CPPTYPE_UINT64)
+            {
+                var value_list = lua.protobuf.reflection_getrepeateduint64(rflct, msg, field_descriptor);
+                
+            }
+            elseif (cpp_type == lua.protobuf_cpptype.CPPTYPE_DOUBLE)
+            {
+                var value_list = lua.protobuf.reflection_getrepeateddouble(rflct, msg, field_descriptor);
+                
+            }
+            elseif (cpp_type == lua.protobuf_cpptype.CPPTYPE_FLOAT)
+            {
+                var value_list = lua.protobuf.reflection_getrepeatedfloat(rflct, msg, field_descriptor);
+                
+            }
+            elseif (cpp_type == lua.protobuf_cpptype.CPPTYPE_ENUM)
+            {
+                var value_list = lua.protobuf.reflection_getrepeatedint32(rflct, msg, field_descriptor);
+                
+            }
+            elseif (cpp_type == lua.protobuf_cpptype.CPPTYPE_STRING)
+            {
+                var value_list = lua.protobuf.reflection_getrepeatedstring(rflct, msg, field_descriptor);
+                
+            }
+            elseif (cpp_type == lua.protobuf_cpptype.CPPTYPE_MESSAGE)
+            {
+                var value_list = lua.protobuf.reflection_getrepeatedmessage(rflct, msg, field_descriptor);
+                for (var index, value in value_list)
+                    detail_info.tree.AddChild(UtilityCreateTreeMessage(value, field_name));
+            }
+        }
+        else
+        {
+            var value_type = lua.protobuf.fielddescriptor_cpptypename(field_descriptor);
+            
+            var cpp_type = lua.protobuf.fielddescriptor_cpptype(field_descriptor);
+            if (cpp_type == lua.protobuf_cpptype.CPPTYPE_BOOL)
+            {
+                var value = lua.protobuf.reflection_getbool(rflct, msg, field_descriptor);
+                var tree_item = new IDETreeItem(g_Control, field_name, value_type);
+                detail_info.tree.AddChild(tree_item);
+    
+            }
+            elseif (cpp_type == lua.protobuf_cpptype.CPPTYPE_INT32)
+            {
+                var value = lua.protobuf.reflection_getint32(rflct, msg, field_descriptor);
+                var tree_item = new IDETreeItem(g_Control, field_name, value_type);
+                detail_info.tree.AddChild(tree_item);
+
+            }
+            elseif (cpp_type == lua.protobuf_cpptype.CPPTYPE_UINT32)
+            {
+                var value = lua.protobuf.reflection_getuint32(rflct, msg, field_descriptor);
+                var tree_item = new IDETreeItem(g_Control, field_name, value_type);
+                detail_info.tree.AddChild(tree_item);
+            }
+            elseif (cpp_type == lua.protobuf_cpptype.CPPTYPE_INT64)
+            {
+                var value = lua.protobuf.reflection_getint64(rflct, msg, field_descriptor);
+                var tree_item = new IDETreeItem(g_Control, field_name, value_type);
+                detail_info.tree.AddChild(tree_item);
+                
+            }
+            elseif (cpp_type == lua.protobuf_cpptype.CPPTYPE_UINT64)
+            {
+                var value = lua.protobuf.reflection_getuint64(rflct, msg, field_descriptor);
+                var tree_item = new IDETreeItem(g_Control, field_name, value_type);
+                detail_info.tree.AddChild(tree_item);
+                
+                
+            }
+            elseif (cpp_type == lua.protobuf_cpptype.CPPTYPE_DOUBLE)
+            {
+                var value = lua.protobuf.reflection_getdouble(rflct, msg, field_descriptor);
+                var tree_item = new IDETreeItem(g_Control, field_name, value_type);
+                detail_info.tree.AddChild(tree_item);
+                
+                
+            }
+            elseif (cpp_type == lua.protobuf_cpptype.CPPTYPE_FLOAT)
+            {
+                var value = lua.protobuf.reflection_getfloat(rflct, msg, field_descriptor);
+                var tree_item = new IDETreeItem(g_Control, field_name, value_type);
+                detail_info.tree.AddChild(tree_item);
+                
+                
+            }
+            elseif (cpp_type == lua.protobuf_cpptype.CPPTYPE_ENUM)
+            {
+                var value = lua.protobuf.reflection_getenumvalue(rflct, msg, field_descriptor);
+                var tree_item = new IDETreeItem(g_Control, field_name, value_type);
+                detail_info.tree.AddChild(tree_item);
+                
+                
+            }
+            elseif (cpp_type == lua.protobuf_cpptype.CPPTYPE_STRING)
+            {
+                var value = lua.protobuf.reflection_getstring(rflct, msg, field_descriptor);
+                var tree_item = new IDETreeItem(g_Control, field_name, value_type);
+                detail_info.tree.AddChild(tree_item);
+                
+                
+            }
+            elseif (cpp_type == lua.protobuf_cpptype.CPPTYPE_MESSAGE)
+            {
+                var value = lua.protobuf.reflection_getmessage(rflct, msg, field_descriptor);
+                detail_info.tree.AddChild(UtilityCreateTreeMessage(value, field_name));
+            }
+        }
+    }
+
+    return tree;
+}
+
+public static Utility_CreateTree(Lua.lua_socket_schedule_message_info info) : DetailInfo
+{
+    // 创建消息包
+    var msg = A_LuaSocketSchedule.CreateMessage(info.full_name);
+    if (msg == null) return null;
+    
+    // 从配置中获取记录的信息
+    var json = g_GProtoCache.GetConfig(info.full_name, "{}");
+    lua.protobuf.message_jsondecode(msg, json);
+
+    var tree = UtilityCreateTreeMessage(msg, "[ROOT]");
+    tree.fold = true;
+    return tree.GetDetailInfo();
+}

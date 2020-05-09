@@ -1,0 +1,38 @@
+
+namespace Emulator;
+
+public class IDETreeBool : IDETreeLogic
+{
+	private ALittle.DropDown _value_dropdown;
+	private lua.protobuf_message _msg;
+	private lua.protobuf_reflection _rflct;
+	private lua.protobuf_field_descriptor _field;
+
+	public ctor(ALittle.ControlSystem ctrl_sys, string field_name, lua.protobuf_reflection rflct, lua.protobuf_message msg, lua.protobuf_field_descriptor field)
+	{
+		this._rflct = rflct;
+		this._msg = msg;
+		this._field = field;
+
+		var value = lua.protobuf.reflection_getbool(this._rflct, this._msg, this._field);
+
+		this._item = ctrl_sys.CreateControl{ALittle.DisplayObject}("ide_common_tree_bool", this);
+		this.AddChild(this._item);
+		this.width = this._item.width;
+		this.height = this._item.height;
+		
+		this._item_title.text = "["..lua.protobuf.fielddescriptor_cpptypename(field).."] "..field_name..": ";
+		if (value) this._value_dropdown.text = "true";
+		else this._value_dropdown.text = "false";
+		this._value_dropdown.width = this.width - this._item_title.width - this._item_title.x - 2;
+		this._value_dropdown.x = this._item_title.width + this._item_title.x;
+	}
+
+	public fun HandleSelectChanegd(ALittle.UISelectChangedEvent event)
+	{
+        if (this._value_dropdown.text == "true")
+			lua.protobuf.reflection_setbool(this._rflct, this._msg, this._field, true);
+		else
+			lua.protobuf.reflection_setbool(this._rflct, this._msg, this._field, false);
+    }
+}

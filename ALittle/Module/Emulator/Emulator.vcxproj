@@ -24,10 +24,12 @@
     <None Include="src\IDEIMEManager.alittle" />
     <None Include="src\IDETool.alittle" />
     <None Include="src\IDETree.alittle" />
+    <None Include="src\IDETreeBool.alittle" />
     <None Include="src\IDETreeMessage.alittle" />
-    <None Include="src\IDETreeItem.alittle" />
+    <None Include="src\IDETreeEnum.alittle" />
     <None Include="src\IDETreeLogic.alittle" />
     <None Include="src\IDETreeMap.alittle" />
+    <None Include="src\IDETreeValue.alittle" />
     <None Include="src\IDETreeRepeated.alittle" />
     <None Include="src\LWProtobuf.alittle" />
     <None Include="src\LWSocket.alittle" />

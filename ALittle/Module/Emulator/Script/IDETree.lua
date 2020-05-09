@@ -94,15 +94,11 @@ function IDETree:IsTree()
 	return true
 end
 
-function IDETree:GetDescription()
-	return self._item_title.text
-end
-
 function IDETree:SearchDescription(name, list)
 	if list == nil then
 		list = {}
 	end
-	local description = self:GetDescription()
+	local description = self._item_title.text
 	if description ~= nil then
 		if ALittle.String_Find(description, name) ~= nil then
 			ALittle.List_Push(list, self)

@@ -46,8 +46,24 @@ function Math_ToInt(s)
 	return floor(n)
 end
 
+function Math_ToIntOrZero(s)
+	local value = Math_ToInt(s)
+	if value == nil then
+		return 0
+	end
+	return value
+end
+
 function Math_ToDouble(s)
 	return tonumber(s)
+end
+
+function Math_ToDoubleOrZero(s)
+	local value = Math_ToDouble(s)
+	if value == nil then
+		return 0
+	end
+	return value
 end
 
 function Math_RandomSeed(seed)

@@ -5,6 +5,7 @@ public class IDETree : IDETreeLogic
 {
 	private ALittle.Linear _body;
 	private ALittle.DisplayObject _item_checkbutton;
+	private ALittle.DisplayObject _item_button;	// 按钮
 	private string _field_name;
 
 	public ctor(ALittle.ControlSystem ctrl_sys, string field_name)
@@ -48,14 +49,12 @@ public class IDETree : IDETreeLogic
 	
 	public fun IsTree() : bool { return true; }
 	
-	public fun GetDescription() : string { return this._item_title.text; }
-	
 	// 搜索description
 	public fun SearchDescription(string name, [Nullable] List<IDETreeLogic> list) : List<IDETreeLogic>
 	{
 		if (list == null) list = new List<IDETreeLogic>();
 	
-		var description = this.GetDescription();
+		var description = this._item_title.text;
 		if (description != null)
 		{
 			if (ALittle.String_Find(description, name) != null)

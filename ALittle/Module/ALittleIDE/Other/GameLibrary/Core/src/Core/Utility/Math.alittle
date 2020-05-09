@@ -89,6 +89,13 @@ public static Math_ToInt(string s) : int
     else return value;
 }
 
+public static Math_ToIntOrZero(string s) : int
+{
+    var value = Math_ToInt(s);
+    if (value == null) return 0;
+    return value;
+}
+
 public static Math_ToDouble(string s) : double
 {
     [Language(Lua)]
@@ -99,6 +106,13 @@ public static Math_ToDouble(string s) : double
     [Language(JavaScript)]
     if (javascript.isNaN(value)) return null;
     else return value;
+}
+
+public static Math_ToDoubleOrZero(string s) : double
+{
+    var value = Math_ToDouble(s);
+    if (value == null) return 0;
+    return value;
 }
 
 public static Math_RandomSeed(int seed)

@@ -4,7 +4,6 @@ namespace Emulator;
 public class IDETreeLogic : ALittle.DisplayLayout
 {
 	private ALittle.DisplayObject _item_title;	// 标题
-	private ALittle.DisplayObject _item_button;	// 按钮
 
 	private ALittle.DisplayObject _head;		// 头部
 	private ALittle.DisplayObject _item;		// item部分
@@ -12,9 +11,11 @@ public class IDETreeLogic : ALittle.DisplayLayout
 	public ctor(ALittle.ControlSystem ctrl_sys)
 	{
 	}
-
+	
+	public fun IsTree() : bool { return false; }
 	public get title() : string	{ return this._item_title.text; }
 	public set fold(bool value) { }
+	public get fold() : bool { return false; }
 
 	// 处理控件点击
 	public fun HandleClick(ALittle.UIClickEvent event)

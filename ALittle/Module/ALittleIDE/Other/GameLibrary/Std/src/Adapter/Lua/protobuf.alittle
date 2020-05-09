@@ -63,6 +63,7 @@ public class protobuf
     public static fielddescriptor_ismap(protobuf_field_descriptor descriptor) : bool {}
     public static fielddescriptor_isrepeated(protobuf_field_descriptor descriptor) : bool {}
     public static fielddescriptor_messagetype(protobuf_field_descriptor descriptor) : protobuf_descriptor {}
+    public static fielddescriptor_enumtype(protobuf_field_descriptor descriptor) : protobuf_enum_descriptor {}
 
     public static createfactory() : protobuf_factory {}
     // 根据描述创建一个消息，最后一定要使用freemessage释放

@@ -859,7 +859,7 @@ function DisplayObject:DeserializeLinkEvent(info, target_logic)
 			local func = nil
 			if einfo.func ~= nil then
 				func = target_logic[einfo.func]
-				if func == nil then
+				if func == nil and self._ctrl_sys.log_error then
 					Log("can't find event func:\"" .. einfo.func .. "\" in " .. String_ToString(target_logic))
 				end
 			end

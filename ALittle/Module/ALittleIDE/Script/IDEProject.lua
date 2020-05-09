@@ -1,4 +1,4 @@
--- ALittle Generate Lua
+-- ALittle Generate Lua And Do Not Edit This Line!
 module("ALittleIDE", package.seeall)
 
 local ___pairs = pairs
@@ -176,6 +176,7 @@ function IDEProject:OpenProject(name)
 	self._project.base_path = ALittle.File_BaseFilePath() .. "Module/" .. name .. "/"
 	self._project.save = true
 	self._project.control = ALittle.ControlSystem(name)
+	self._project.control.log_error = false
 	self._project.control.cache_texture = false
 	self._project.config = ALittle.CreateConfigSystem("Module/" .. name .. "/ALittleIDE.cfg")
 	local control_map = {}

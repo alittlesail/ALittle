@@ -11,6 +11,7 @@ public class ControlSystem
     
     private string              _module_name;
     private bool                _crypt_mode;
+    private bool                _log_error;
     
     private string              _host;
     private int                  _port;
@@ -30,6 +31,9 @@ public class ControlSystem
     // @param crypt_mode 是否是加密模式
     public ctor(string module_name, [Nullable] bool crypt_mode)
     {
+        // 是否打印创建控件的错误信息
+        this._log_error = true;
+
         // 字体映射
         this._font_map = new Map<string, string>();
         
@@ -80,6 +84,8 @@ public class ControlSystem
     }
 
     public get crypt_mode() : bool { return this._crypt_mode; }
+    public get log_error() : bool { return this._log_error; }
+    public set log_error(bool value) { this._log_error = value; }
     
     public fun RegisterFont(string src, string dst)
     {

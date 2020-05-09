@@ -11,6 +11,7 @@ local __type = String_Type
 ControlSystem = Lua.Class(nil, "ALittle.ControlSystem")
 
 function ControlSystem:Ctor(module_name, crypt_mode)
+	___rawset(self, "_log_error", true)
 	___rawset(self, "_font_map", {})
 	___rawset(self, "_name_map_info", {})
 	___rawset(self, "_name_map_info_cache", {})
@@ -27,6 +28,14 @@ end
 
 function ControlSystem.__getter:crypt_mode()
 	return self._crypt_mode
+end
+
+function ControlSystem.__getter:log_error()
+	return self._log_error
+end
+
+function ControlSystem.__setter:log_error(value)
+	self._log_error = value
 end
 
 function ControlSystem:RegisterFont(src, dst)

@@ -1116,7 +1116,7 @@ public class DisplayObject : UIEventDispatcher
                 if (einfo.func != null)
                 {
                     func = cast<Map<string, Functor<(any, UIEvent)>>>(target_logic)[einfo.func];
-                    if (func == null)
+                    if (func == null && this._ctrl_sys.log_error)
                         Log("can't find event func:\"" .. einfo.func .. "\" in "..String_ToString(target_logic));
                 }
                 // 把这三个串起来

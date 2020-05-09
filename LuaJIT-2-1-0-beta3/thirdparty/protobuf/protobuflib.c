@@ -239,6 +239,13 @@ static int protobuflib_fielddescriptor_messagetype(lua_State* L)
     lua_pushlightuserdata(L, protobuf_fielddescriptor_messagetype(c));
     return 1;
 }
+static int protobuflib_fielddescriptor_enumtype(lua_State* L)
+{
+    void* c = lua_touserdata(L, 1);
+    luaL_argcheck(L, c != 0, 1, "field descriptor object is null");
+    lua_pushlightuserdata(L, protobuf_fielddescriptor_enumtype(c));
+    return 1;
+}
 
 // factory
 static int protobuflib_destroyfactory(lua_State* L)
@@ -316,6 +323,25 @@ static int protobuflib_message_parsefromarray(lua_State* L)
     luaL_argcheck(L, buffer != 0, 2, "buffer object is null");
     int size = (int)luaL_checkinteger(L, 3);
     lua_pushboolean(L, protobuf_message_parsefromarray(m, buffer, size));
+    return 1;
+}
+
+static int protobuflib_message_jsonencode(lua_State* L)
+{
+    void* m = lua_touserdata(L, 1);
+    luaL_argcheck(L, m != 0, 1, "message object is null");
+    const char* json = protobuf_message_jsonencode(m);
+    if (json) lua_pushstring(L, json);
+    else lua_pushnil(L);
+    return 1;
+}
+
+static int protobuflib_message_jsondecode(lua_State* L)
+{
+    void* m = lua_touserdata(L, 1);
+    luaL_argcheck(L, m != 0, 1, "message object is null");
+    const char* json = luaL_checkstring(L, 2);
+    lua_pushboolean(L, protobuf_message_jsondecode(m, json));
     return 1;
 }
 
@@ -539,7 +565,108 @@ static int protobuflib_reflection_setstring(lua_State* L)
     return 0;
 }
 
-// repeated
+// repeated count
+static int protobuflib_reflection_getrepeatedmessagecount(lua_State* L)
+{
+    void* r = lua_touserdata(L, 1);
+    luaL_argcheck(L, r != 0, 1, "reflection object is null");
+    void* m = lua_touserdata(L, 2);
+    luaL_argcheck(L, m != 0, 2, "message object is null");
+    void* field = lua_touserdata(L, 3);
+    luaL_argcheck(L, field != 0, 3, "field descriptor object is null");
+    lua_pushinteger(L, protobuf_reflection_getrepeatedmessagecount(r, m, field));
+    return 1;
+}
+static int protobuflib_reflection_getrepeatedboolcount(lua_State* L)
+{
+    void* r = lua_touserdata(L, 1);
+    luaL_argcheck(L, r != 0, 1, "reflection object is null");
+    void* m = lua_touserdata(L, 2);
+    luaL_argcheck(L, m != 0, 2, "message object is null");
+    void* field = lua_touserdata(L, 3);
+    luaL_argcheck(L, field != 0, 3, "field descriptor object is null");
+    lua_pushinteger(L, protobuf_reflection_getrepeatedboolcount(r, m, field));
+    return 1;
+}
+static int protobuflib_reflection_getrepeatedint32count(lua_State* L)
+{
+    void* r = lua_touserdata(L, 1);
+    luaL_argcheck(L, r != 0, 1, "reflection object is null");
+    void* m = lua_touserdata(L, 2);
+    luaL_argcheck(L, m != 0, 2, "message object is null");
+    void* field = lua_touserdata(L, 3);
+    luaL_argcheck(L, field != 0, 3, "field descriptor object is null");
+    lua_pushinteger(L, protobuf_reflection_getrepeatedint32count(r, m, field));
+    return 1;
+}
+static int protobuflib_reflection_getrepeateduint32count(lua_State* L)
+{
+    void* r = lua_touserdata(L, 1);
+    luaL_argcheck(L, r != 0, 1, "reflection object is null");
+    void* m = lua_touserdata(L, 2);
+    luaL_argcheck(L, m != 0, 2, "message object is null");
+    void* field = lua_touserdata(L, 3);
+    luaL_argcheck(L, field != 0, 3, "field descriptor object is null");
+    lua_pushinteger(L, protobuf_reflection_getrepeateduint32count(r, m, field));
+    return 1;
+}
+static int protobuflib_reflection_getrepeatedint64count(lua_State* L)
+{
+    void* r = lua_touserdata(L, 1);
+    luaL_argcheck(L, r != 0, 1, "reflection object is null");
+    void* m = lua_touserdata(L, 2);
+    luaL_argcheck(L, m != 0, 2, "message object is null");
+    void* field = lua_touserdata(L, 3);
+    luaL_argcheck(L, field != 0, 3, "field descriptor object is null");
+    lua_pushinteger(L, protobuf_reflection_getrepeatedint64count(r, m, field));
+    return 1;
+}
+static int protobuflib_reflection_getrepeateduint64count(lua_State* L)
+{
+    void* r = lua_touserdata(L, 1);
+    luaL_argcheck(L, r != 0, 1, "reflection object is null");
+    void* m = lua_touserdata(L, 2);
+    luaL_argcheck(L, m != 0, 2, "message object is null");
+    void* field = lua_touserdata(L, 3);
+    luaL_argcheck(L, field != 0, 3, "field descriptor object is null");
+    lua_pushinteger(L, protobuf_reflection_getrepeateduint64count(r, m, field));
+    return 1;
+}
+static int protobuflib_reflection_getrepeateddoublecount(lua_State* L)
+{
+    void* r = lua_touserdata(L, 1);
+    luaL_argcheck(L, r != 0, 1, "reflection object is null");
+    void* m = lua_touserdata(L, 2);
+    luaL_argcheck(L, m != 0, 2, "message object is null");
+    void* field = lua_touserdata(L, 3);
+    luaL_argcheck(L, field != 0, 3, "field descriptor object is null");
+    lua_pushinteger(L, protobuf_reflection_getrepeateddoublecount(r, m, field));
+    return 1;
+}
+static int protobuflib_reflection_getrepeatedfloatcount(lua_State* L)
+{
+    void* r = lua_touserdata(L, 1);
+    luaL_argcheck(L, r != 0, 1, "reflection object is null");
+    void* m = lua_touserdata(L, 2);
+    luaL_argcheck(L, m != 0, 2, "message object is null");
+    void* field = lua_touserdata(L, 3);
+    luaL_argcheck(L, field != 0, 3, "field descriptor object is null");
+    lua_pushinteger(L, protobuf_reflection_getrepeatedfloatcount(r, m, field));
+    return 1;
+}
+static int protobuflib_reflection_getrepeatedstringcount(lua_State* L)
+{
+    void* r = lua_touserdata(L, 1);
+    luaL_argcheck(L, r != 0, 1, "reflection object is null");
+    void* m = lua_touserdata(L, 2);
+    luaL_argcheck(L, m != 0, 2, "message object is null");
+    void* field = lua_touserdata(L, 3);
+    luaL_argcheck(L, field != 0, 3, "field descriptor object is null");
+    lua_pushinteger(L, protobuf_reflection_getrepeatedstringcount(r, m, field));
+    return 1;
+}
+
+// repeated get
 static int protobuflib_reflection_getrepeatedmessage(lua_State* L)
 {
     void* r = lua_touserdata(L, 1);
@@ -548,14 +675,8 @@ static int protobuflib_reflection_getrepeatedmessage(lua_State* L)
     luaL_argcheck(L, m != 0, 2, "message object is null");
     void* field = lua_touserdata(L, 3);
     luaL_argcheck(L, field != 0, 3, "field descriptor object is null");
-    int size = 0;
-    void** vector = protobuf_reflection_getrepeatedmessage(r, m, field, &size);
-    lua_newtable(L);
-    for (int i = 0; i < size; ++i)
-    {
-        lua_pushlightuserdata(L, vector[i]);
-        lua_rawseti(L, -2, i + 1);
-    }
+    int index = (int)luaL_checkinteger(L, 4);
+    lua_pushlightuserdata(L, protobuf_reflection_getrepeatedmessage(r, m, field, index));
     return 1;
 }
 static int protobuflib_reflection_getrepeatedbool(lua_State* L)
@@ -566,14 +687,8 @@ static int protobuflib_reflection_getrepeatedbool(lua_State* L)
     luaL_argcheck(L, m != 0, 2, "message object is null");
     void* field = lua_touserdata(L, 3);
     luaL_argcheck(L, field != 0, 3, "field descriptor object is null");
-    int size = 0;
-    int* vector = protobuf_reflection_getrepeatedbool(r, m, field, &size);
-    lua_newtable(L);
-    for (int i = 0; i < size; ++i)
-    {
-        lua_pushboolean(L, vector[i]);
-        lua_rawseti(L, -2, i + 1);
-    }
+    int index = (int)luaL_checkinteger(L, 4);
+    lua_pushboolean(L, protobuf_reflection_getrepeatedbool(r, m, field, index));
     return 1;
 }
 static int protobuflib_reflection_getrepeatedint32(lua_State* L)
@@ -584,14 +699,8 @@ static int protobuflib_reflection_getrepeatedint32(lua_State* L)
     luaL_argcheck(L, m != 0, 2, "message object is null");
     void* field = lua_touserdata(L, 3);
     luaL_argcheck(L, field != 0, 3, "field descriptor object is null");
-    int size = 0;
-    int* vector = protobuf_reflection_getrepeatedint32(r, m, field, &size);
-    lua_newtable(L);
-    for (int i = 0; i < size; ++i)
-    {
-        lua_pushinteger(L, vector[i]);
-        lua_rawseti(L, -2, i + 1);
-    }
+    int index = (int)luaL_checkinteger(L, 4);
+    lua_pushinteger(L, protobuf_reflection_getrepeatedint32(r, m, field, index));
     return 1;
 }
 static int protobuflib_reflection_getrepeateduint32(lua_State* L)
@@ -602,14 +711,8 @@ static int protobuflib_reflection_getrepeateduint32(lua_State* L)
     luaL_argcheck(L, m != 0, 2, "message object is null");
     void* field = lua_touserdata(L, 3);
     luaL_argcheck(L, field != 0, 3, "field descriptor object is null");
-    int size = 0;
-    unsigned int* vector = protobuf_reflection_getrepeateduint32(r, m, field, &size);
-    lua_newtable(L);
-    for (int i = 0; i < size; ++i)
-    {
-        lua_pushinteger(L, vector[i]);
-        lua_rawseti(L, -2, i + 1);
-    }
+    int index = (int)luaL_checkinteger(L, 4);
+    lua_pushinteger(L, protobuf_reflection_getrepeateduint32(r, m, field, index));
     return 1;
 }
 static int protobuflib_reflection_getrepeatedint64(lua_State* L)
@@ -620,14 +723,8 @@ static int protobuflib_reflection_getrepeatedint64(lua_State* L)
     luaL_argcheck(L, m != 0, 2, "message object is null");
     void* field = lua_touserdata(L, 3);
     luaL_argcheck(L, field != 0, 3, "field descriptor object is null");
-    int size = 0;
-    long long* vector = protobuf_reflection_getrepeatedint64(r, m, field, &size);
-    lua_newtable(L);
-    for (int i = 0; i < size; ++i)
-    {
-        lua_pushinteger(L, vector[i]);
-        lua_rawseti(L, -2, i + 1);
-    }
+    int index = (int)luaL_checkinteger(L, 4);
+    lua_pushinteger(L, protobuf_reflection_getrepeatedint64(r, m, field, index));
     return 1;
 }
 static int protobuflib_reflection_getrepeateduint64(lua_State* L)
@@ -638,14 +735,8 @@ static int protobuflib_reflection_getrepeateduint64(lua_State* L)
     luaL_argcheck(L, m != 0, 2, "message object is null");
     void* field = lua_touserdata(L, 3);
     luaL_argcheck(L, field != 0, 3, "field descriptor object is null");
-    int size = 0;
-    unsigned long long* vector = protobuf_reflection_getrepeateduint64(r, m, field, &size);
-    lua_newtable(L);
-    for (int i = 0; i < size; ++i)
-    {
-        lua_pushinteger(L, vector[i]);
-        lua_rawseti(L, -2, i + 1);
-    }
+    int index = (int)luaL_checkinteger(L, 4);
+    lua_pushinteger(L, protobuf_reflection_getrepeateduint64(r, m, field, index));
     return 1;
 }
 static int protobuflib_reflection_getrepeateddouble(lua_State* L)
@@ -656,14 +747,8 @@ static int protobuflib_reflection_getrepeateddouble(lua_State* L)
     luaL_argcheck(L, m != 0, 2, "message object is null");
     void* field = lua_touserdata(L, 3);
     luaL_argcheck(L, field != 0, 3, "field descriptor object is null");
-    int size = 0;
-    double* vector = protobuf_reflection_getrepeateddouble(r, m, field, &size);
-    lua_newtable(L);
-    for (int i = 0; i < size; ++i)
-    {
-        lua_pushnumber(L, vector[i]);
-        lua_rawseti(L, -2, i + 1);
-    }
+    int index = (int)luaL_checkinteger(L, 4);
+    lua_pushnumber(L, protobuf_reflection_getrepeateddouble(r, m, field, index));
     return 1;
 }
 static int protobuflib_reflection_getrepeatedfloat(lua_State* L)
@@ -674,14 +759,8 @@ static int protobuflib_reflection_getrepeatedfloat(lua_State* L)
     luaL_argcheck(L, m != 0, 2, "message object is null");
     void* field = lua_touserdata(L, 3);
     luaL_argcheck(L, field != 0, 3, "field descriptor object is null");
-    int size = 0;
-    float* vector = protobuf_reflection_getrepeatedfloat(r, m, field, &size);
-    lua_newtable(L);
-    for (int i = 0; i < size; ++i)
-    {
-        lua_pushnumber(L, vector[i]);
-        lua_rawseti(L, -2, i + 1);
-    }
+    int index = (int)luaL_checkinteger(L, 4);
+    lua_pushnumber(L, protobuf_reflection_getrepeatedfloat(r, m, field, index));
     return 1;
 }
 static int protobuflib_reflection_getrepeatedstring(lua_State* L)
@@ -692,15 +771,114 @@ static int protobuflib_reflection_getrepeatedstring(lua_State* L)
     luaL_argcheck(L, m != 0, 2, "message object is null");
     void* field = lua_touserdata(L, 3);
     luaL_argcheck(L, field != 0, 3, "field descriptor object is null");
-    int size = 0;
-    const char** vector = protobuf_reflection_getrepeatedstring(r, m, field, &size);
-    lua_newtable(L);
-    for (int i = 0; i < size; ++i)
-    {
-        lua_pushstring(L, vector[i]);
-        lua_rawseti(L, -2, i + 1);
-    }
+    int index = (int)luaL_checkinteger(L, 4);
+    lua_pushstring(L, protobuf_reflection_getrepeatedstring(r, m, field, index));
     return 1;
+}
+
+static int protobuflib_reflection_setrepeatedbool(lua_State* L)
+{
+    void* r = lua_touserdata(L, 1);
+    luaL_argcheck(L, r != 0, 1, "reflection object is null");
+    void* m = lua_touserdata(L, 2);
+    luaL_argcheck(L, m != 0, 2, "message object is null");
+    void* field = lua_touserdata(L, 3);
+    luaL_argcheck(L, field != 0, 3, "field descriptor object is null");
+    int index = (int)luaL_checkinteger(L, 4);
+    int value = (int)luaL_checkinteger(L, 5);
+    protobuf_reflection_setrepeatedbool(r, m, field, index, value);
+    return 0;
+}
+static int protobuflib_reflection_setrepeatedint32(lua_State* L)
+{
+    void* r = lua_touserdata(L, 1);
+    luaL_argcheck(L, r != 0, 1, "reflection object is null");
+    void* m = lua_touserdata(L, 2);
+    luaL_argcheck(L, m != 0, 2, "message object is null");
+    void* field = lua_touserdata(L, 3);
+    luaL_argcheck(L, field != 0, 3, "field descriptor object is null");
+    int index = (int)luaL_checkinteger(L, 4);
+    int value = (int)luaL_checkinteger(L, 5);
+    protobuf_reflection_setrepeatedint32(r, m, field, index, value);
+    return 0;
+}
+static int protobuflib_reflection_setrepeateduint32(lua_State* L)
+{
+    void* r = lua_touserdata(L, 1);
+    luaL_argcheck(L, r != 0, 1, "reflection object is null");
+    void* m = lua_touserdata(L, 2);
+    luaL_argcheck(L, m != 0, 2, "message object is null");
+    void* field = lua_touserdata(L, 3);
+    luaL_argcheck(L, field != 0, 3, "field descriptor object is null");
+    int index = (int)luaL_checkinteger(L, 4);
+    unsigned int value = (unsigned int)luaL_checkinteger(L, 5);
+    protobuf_reflection_setrepeateduint32(r, m, field, index, value);
+    return 0;
+}
+static int protobuflib_reflection_setrepeatedint64(lua_State* L)
+{
+    void* r = lua_touserdata(L, 1);
+    luaL_argcheck(L, r != 0, 1, "reflection object is null");
+    void* m = lua_touserdata(L, 2);
+    luaL_argcheck(L, m != 0, 2, "message object is null");
+    void* field = lua_touserdata(L, 3);
+    luaL_argcheck(L, field != 0, 3, "field descriptor object is null");
+    int index = (int)luaL_checkinteger(L, 4);
+    long long value = (long long)luaL_checkinteger(L, 5);
+    protobuf_reflection_setrepeatedint64(r, m, field, index, value);
+    return 0;
+}
+static int protobuflib_reflection_setrepeateduint64(lua_State* L)
+{
+    void* r = lua_touserdata(L, 1);
+    luaL_argcheck(L, r != 0, 1, "reflection object is null");
+    void* m = lua_touserdata(L, 2);
+    luaL_argcheck(L, m != 0, 2, "message object is null");
+    void* field = lua_touserdata(L, 3);
+    luaL_argcheck(L, field != 0, 3, "field descriptor object is null");
+    int index = (int)luaL_checkinteger(L, 4);
+    unsigned long long value = (unsigned long long)luaL_checkinteger(L, 5);
+    protobuf_reflection_setrepeateduint64(r, m, field, index, value);
+    return 0;
+}
+static int protobuflib_reflection_setrepeateddouble(lua_State* L)
+{
+    void* r = lua_touserdata(L, 1);
+    luaL_argcheck(L, r != 0, 1, "reflection object is null");
+    void* m = lua_touserdata(L, 2);
+    luaL_argcheck(L, m != 0, 2, "message object is null");
+    void* field = lua_touserdata(L, 3);
+    luaL_argcheck(L, field != 0, 3, "field descriptor object is null");
+    int index = (int)luaL_checkinteger(L, 4);
+    double value = (double)luaL_checknumber(L, 5);
+    protobuf_reflection_setrepeateddouble(r, m, field, index, value);
+    return 0;
+}
+static int protobuflib_reflection_setrepeatedfloat(lua_State* L)
+{
+    void* r = lua_touserdata(L, 1);
+    luaL_argcheck(L, r != 0, 1, "reflection object is null");
+    void* m = lua_touserdata(L, 2);
+    luaL_argcheck(L, m != 0, 2, "message object is null");
+    void* field = lua_touserdata(L, 3);
+    luaL_argcheck(L, field != 0, 3, "field descriptor object is null");
+    int index = (int)luaL_checkinteger(L, 4);
+    float value = (float)luaL_checknumber(L, 5);
+    protobuf_reflection_setrepeatedfloat(r, m, field, index, value);
+    return 0;
+}
+static int protobuflib_reflection_setrepeatedstring(lua_State* L)
+{
+    void* r = lua_touserdata(L, 1);
+    luaL_argcheck(L, r != 0, 1, "reflection object is null");
+    void* m = lua_touserdata(L, 2);
+    luaL_argcheck(L, m != 0, 2, "message object is null");
+    void* field = lua_touserdata(L, 3);
+    luaL_argcheck(L, field != 0, 3, "field descriptor object is null");
+    int index = (int)luaL_checkinteger(L, 4);
+    const char* value = luaL_checkstring(L, 5);
+    protobuf_reflection_setrepeatedstring(r, m, field, index, value);
+    return 0;
 }
 
 static int protobuflib_reflection_clearfield(lua_State* L)
@@ -715,7 +893,7 @@ static int protobuflib_reflection_clearfield(lua_State* L)
     return 0;
 }
 
-static int protobuflib_reflection_addrepeatedmessage(lua_State* L)
+static int protobuflib_reflection_insertrepeatedmessage(lua_State* L)
 {
     void* r = lua_touserdata(L, 1);
     luaL_argcheck(L, r != 0, 1, "reflection object is null");
@@ -723,13 +901,12 @@ static int protobuflib_reflection_addrepeatedmessage(lua_State* L)
     luaL_argcheck(L, m != 0, 2, "message object is null");
     void* field = lua_touserdata(L, 3);
     luaL_argcheck(L, field != 0, 3, "field descriptor object is null");
-    void* value = lua_touserdata(L, 4);
-    luaL_argcheck(L, value != 0, 4, "message object is null");
-    protobuf_reflection_addrepeatedmessage(r, m, field, value);
-    return 0;
+    int index = (int)luaL_checkinteger(L, 4);
+    lua_pushlightuserdata(L, protobuf_reflection_insertrepeatedmessage(r, m, field, index));
+    return 1;
 }
 
-static int protobuflib_reflection_addrepeatedbool(lua_State* L)
+static int protobuflib_reflection_insertrepeatedbool(lua_State* L)
 {
     void* r = lua_touserdata(L, 1);
     luaL_argcheck(L, r != 0, 1, "reflection object is null");
@@ -737,12 +914,13 @@ static int protobuflib_reflection_addrepeatedbool(lua_State* L)
     luaL_argcheck(L, m != 0, 2, "message object is null");
     void* field = lua_touserdata(L, 3);
     luaL_argcheck(L, field != 0, 3, "field descriptor object is null");
-    int value = (int)luaL_checkinteger(L, 4);
-    protobuf_reflection_addrepeatedbool(r, m, field, value);
+    int index = (int)luaL_checkinteger(L, 4);
+    int value = (int)luaL_checkinteger(L, 5);
+    protobuf_reflection_insertrepeatedbool(r, m, field, index, value);
     return 0;
 }
 
-static int protobuflib_reflection_addrepeatedint32(lua_State* L)
+static int protobuflib_reflection_insertrepeatedint32(lua_State* L)
 {
     void* r = lua_touserdata(L, 1);
     luaL_argcheck(L, r != 0, 1, "reflection object is null");
@@ -750,12 +928,137 @@ static int protobuflib_reflection_addrepeatedint32(lua_State* L)
     luaL_argcheck(L, m != 0, 2, "message object is null");
     void* field = lua_touserdata(L, 3);
     luaL_argcheck(L, field != 0, 3, "field descriptor object is null");
-    int value = (int)luaL_checkinteger(L, 4);
-    protobuf_reflection_addrepeatedint32(r, m, field, value);
+    int index = (int)luaL_checkinteger(L, 4);
+    int value = (int)luaL_checkinteger(L, 5);
+    protobuf_reflection_insertrepeatedint32(r, m, field, index, value);
     return 0;
 }
 
-static int protobuflib_reflection_addrepeateduint32(lua_State* L)
+static int protobuflib_reflection_insertrepeateduint32(lua_State* L)
+{
+    void* r = lua_touserdata(L, 1);
+    luaL_argcheck(L, r != 0, 1, "reflection object is null");
+    void* m = lua_touserdata(L, 2);
+    luaL_argcheck(L, m != 0, 2, "message object is null");
+    void* field = lua_touserdata(L, 3);
+    luaL_argcheck(L, field != 0, 3, "field descriptor object is null");
+    int index = (int)luaL_checkinteger(L, 4);
+    unsigned int value = (unsigned int)luaL_checkinteger(L, 5);
+    protobuf_reflection_insertrepeateduint32(r, m, field, index, value);
+    return 0;
+}
+
+static int protobuflib_reflection_insertrepeatedint64(lua_State* L)
+{
+    void* r = lua_touserdata(L, 1);
+    luaL_argcheck(L, r != 0, 1, "reflection object is null");
+    void* m = lua_touserdata(L, 2);
+    luaL_argcheck(L, m != 0, 2, "message object is null");
+    void* field = lua_touserdata(L, 3);
+    luaL_argcheck(L, field != 0, 3, "field descriptor object is null");
+    int index = (int)luaL_checkinteger(L, 4);
+    long long value = (long long)luaL_checkinteger(L, 5);
+    protobuf_reflection_insertrepeatedint64(r, m, field, index, value);
+    return 0;
+}
+
+static int protobuflib_reflection_insertrepeateduint64(lua_State* L)
+{
+    void* r = lua_touserdata(L, 1);
+    luaL_argcheck(L, r != 0, 1, "reflection object is null");
+    void* m = lua_touserdata(L, 2);
+    luaL_argcheck(L, m != 0, 2, "message object is null");
+    void* field = lua_touserdata(L, 3);
+    luaL_argcheck(L, field != 0, 3, "field descriptor object is null");
+    int index = (int)luaL_checkinteger(L, 4);
+    unsigned long long value = (unsigned long long)luaL_checkinteger(L, 5);
+    protobuf_reflection_insertrepeateduint64(r, m, field, index, value);
+    return 0;
+}
+
+static int protobuflib_reflection_insertrepeateddouble(lua_State* L)
+{
+    void* r = lua_touserdata(L, 1);
+    luaL_argcheck(L, r != 0, 1, "reflection object is null");
+    void* m = lua_touserdata(L, 2);
+    luaL_argcheck(L, m != 0, 2, "message object is null");
+    void* field = lua_touserdata(L, 3);
+    luaL_argcheck(L, field != 0, 3, "field descriptor object is null");
+    int index = (int)luaL_checkinteger(L, 4);
+    double value = (double)luaL_checknumber(L, 5);
+    protobuf_reflection_insertrepeateddouble(r, m, field, index, value);
+    return 0;
+}
+
+static int protobuflib_reflection_insertrepeatedfloat(lua_State* L)
+{
+    void* r = lua_touserdata(L, 1);
+    luaL_argcheck(L, r != 0, 1, "reflection object is null");
+    void* m = lua_touserdata(L, 2);
+    luaL_argcheck(L, m != 0, 2, "message object is null");
+    void* field = lua_touserdata(L, 3);
+    luaL_argcheck(L, field != 0, 3, "field descriptor object is null");
+    int index = (int)luaL_checkinteger(L, 4);
+    float value = (float)luaL_checknumber(L, 5);
+    protobuf_reflection_insertrepeatedfloat(r, m, field, index, value);
+    return 0;
+}
+
+static int protobuflib_reflection_insertrepeatedstring(lua_State* L)
+{
+    void* r = lua_touserdata(L, 1);
+    luaL_argcheck(L, r != 0, 1, "reflection object is null");
+    void* m = lua_touserdata(L, 2);
+    luaL_argcheck(L, m != 0, 2, "message object is null");
+    void* field = lua_touserdata(L, 3);
+    luaL_argcheck(L, field != 0, 3, "field descriptor object is null");
+    int index = (int)luaL_checkinteger(L, 4);
+    const char* value = luaL_checkstring(L, 5);
+    protobuf_reflection_insertrepeatedstring(r, m, field, index, value);
+    return 0;
+}
+
+
+static int protobuflib_reflection_removerepeatedmessage(lua_State* L)
+{
+    void* r = lua_touserdata(L, 1);
+    luaL_argcheck(L, r != 0, 1, "reflection object is null");
+    void* m = lua_touserdata(L, 2);
+    luaL_argcheck(L, m != 0, 2, "message object is null");
+    void* field = lua_touserdata(L, 3);
+    luaL_argcheck(L, field != 0, 3, "field descriptor object is null");
+    int index = (int)luaL_checkinteger(L, 4);
+    protobuf_reflection_removerepeatedmessage(r, m, field, index);
+    return 0;
+}
+
+static int protobuflib_reflection_removerepeatedbool(lua_State* L)
+{
+    void* r = lua_touserdata(L, 1);
+    luaL_argcheck(L, r != 0, 1, "reflection object is null");
+    void* m = lua_touserdata(L, 2);
+    luaL_argcheck(L, m != 0, 2, "message object is null");
+    void* field = lua_touserdata(L, 3);
+    luaL_argcheck(L, field != 0, 3, "field descriptor object is null");
+    int index = (int)luaL_checkinteger(L, 4);
+    protobuf_reflection_removerepeatedbool(r, m, field, index);
+    return 0;
+}
+
+static int protobuflib_reflection_removerepeatedint32(lua_State* L)
+{
+    void* r = lua_touserdata(L, 1);
+    luaL_argcheck(L, r != 0, 1, "reflection object is null");
+    void* m = lua_touserdata(L, 2);
+    luaL_argcheck(L, m != 0, 2, "message object is null");
+    void* field = lua_touserdata(L, 3);
+    luaL_argcheck(L, field != 0, 3, "field descriptor object is null");
+    int index = (int)luaL_checkinteger(L, 4);
+    protobuf_reflection_removerepeatedint32(r, m, field, index);
+    return 0;
+}
+
+static int protobuflib_reflection_removerepeateduint32(lua_State* L)
 {
     void* r = lua_touserdata(L, 1);
     luaL_argcheck(L, r != 0, 1, "reflection object is null");
@@ -764,11 +1067,12 @@ static int protobuflib_reflection_addrepeateduint32(lua_State* L)
     void* field = lua_touserdata(L, 3);
     luaL_argcheck(L, field != 0, 3, "field descriptor object is null");
     unsigned int value = (unsigned int)luaL_checkinteger(L, 4);
-    protobuf_reflection_addrepeateduint32(r, m, field, value);
+    int index = (int)luaL_checkinteger(L, 4);
+    protobuf_reflection_removerepeateduint32(r, m, field, index);
     return 0;
 }
 
-static int protobuflib_reflection_addrepeatedint64(lua_State* L)
+static int protobuflib_reflection_removerepeatedint64(lua_State* L)
 {
     void* r = lua_touserdata(L, 1);
     luaL_argcheck(L, r != 0, 1, "reflection object is null");
@@ -776,12 +1080,12 @@ static int protobuflib_reflection_addrepeatedint64(lua_State* L)
     luaL_argcheck(L, m != 0, 2, "message object is null");
     void* field = lua_touserdata(L, 3);
     luaL_argcheck(L, field != 0, 3, "field descriptor object is null");
-    long long value = (long long)luaL_checkinteger(L, 4);
-    protobuf_reflection_addrepeatedint64(r, m, field, value);
+    int index = (int)luaL_checkinteger(L, 4);
+    protobuf_reflection_removerepeatedint64(r, m, field, index);
     return 0;
 }
 
-static int protobuflib_reflection_addrepeateduint64(lua_State* L)
+static int protobuflib_reflection_removerepeateduint64(lua_State* L)
 {
     void* r = lua_touserdata(L, 1);
     luaL_argcheck(L, r != 0, 1, "reflection object is null");
@@ -789,12 +1093,12 @@ static int protobuflib_reflection_addrepeateduint64(lua_State* L)
     luaL_argcheck(L, m != 0, 2, "message object is null");
     void* field = lua_touserdata(L, 3);
     luaL_argcheck(L, field != 0, 3, "field descriptor object is null");
-    unsigned long long value = (unsigned long long)luaL_checkinteger(L, 4);
-    protobuf_reflection_addrepeateduint64(r, m, field, value);
+    int index = (int)luaL_checkinteger(L, 4);
+    protobuf_reflection_removerepeateduint64(r, m, field, index);
     return 0;
 }
 
-static int protobuflib_reflection_addrepeateddouble(lua_State* L)
+static int protobuflib_reflection_removerepeateddouble(lua_State* L)
 {
     void* r = lua_touserdata(L, 1);
     luaL_argcheck(L, r != 0, 1, "reflection object is null");
@@ -802,12 +1106,12 @@ static int protobuflib_reflection_addrepeateddouble(lua_State* L)
     luaL_argcheck(L, m != 0, 2, "message object is null");
     void* field = lua_touserdata(L, 3);
     luaL_argcheck(L, field != 0, 3, "field descriptor object is null");
-    double value = (double)luaL_checknumber(L, 4);
-    protobuf_reflection_addrepeateddouble(r, m, field, value);
+    int index = (int)luaL_checkinteger(L, 4);
+    protobuf_reflection_removerepeateddouble(r, m, field, index);
     return 0;
 }
 
-static int protobuflib_reflection_addrepeatedfloat(lua_State* L)
+static int protobuflib_reflection_removerepeatedfloat(lua_State* L)
 {
     void* r = lua_touserdata(L, 1);
     luaL_argcheck(L, r != 0, 1, "reflection object is null");
@@ -815,12 +1119,12 @@ static int protobuflib_reflection_addrepeatedfloat(lua_State* L)
     luaL_argcheck(L, m != 0, 2, "message object is null");
     void* field = lua_touserdata(L, 3);
     luaL_argcheck(L, field != 0, 3, "field descriptor object is null");
-    float value = (float)luaL_checknumber(L, 4);
-    protobuf_reflection_addrepeatedfloat(r, m, field, value);
+    int index = (int)luaL_checkinteger(L, 4);
+    protobuf_reflection_removerepeatedfloat(r, m, field, index);
     return 0;
 }
 
-static int protobuflib_reflection_addrepeatedstring(lua_State* L)
+static int protobuflib_reflection_removerepeatedstring(lua_State* L)
 {
     void* r = lua_touserdata(L, 1);
     luaL_argcheck(L, r != 0, 1, "reflection object is null");
@@ -828,11 +1132,10 @@ static int protobuflib_reflection_addrepeatedstring(lua_State* L)
     luaL_argcheck(L, m != 0, 2, "message object is null");
     void* field = lua_touserdata(L, 3);
     luaL_argcheck(L, field != 0, 3, "field descriptor object is null");
-    const char* value = luaL_checkstring(L, 4);
-    protobuf_reflection_addrepeatedstring(r, m, field, value);
+    int index = (int)luaL_checkinteger(L, 4);
+    protobuf_reflection_removerepeatedstring(r, m, field, index);
     return 0;
 }
-
 /*
 ** Assumes the table is on top of the stack.
 */
@@ -882,6 +1185,7 @@ static struct luaL_Reg protobuflib[] = {
     {"fielddescriptor_ismap", protobuflib_fielddescriptor_ismap},
     {"fielddescriptor_isrepeated", protobuflib_fielddescriptor_isrepeated},
     {"fielddescriptor_messagetype", protobuflib_fielddescriptor_messagetype},
+    {"fielddescriptor_enumtype", protobuflib_fielddescriptor_enumtype},
 
     {"createfactory", protobuflib_createfactory},
     {"createmessage", protobuflib_factory_createmessage},
@@ -892,6 +1196,8 @@ static struct luaL_Reg protobuflib[] = {
     {"message_getbytesize", protobuflib_message_getbytesize},
     {"message_serializetoarray", protobuflib_message_serializetoarray},
     {"message_parsefromarray", protobuflib_message_parsefromarray},
+    {"message_jsonencode", protobuflib_message_jsonencode},
+    {"message_jsondecode", protobuflib_message_jsondecode},
 
     {"reflection_getmessage", protobuflib_reflection_getmessage},
     {"reflection_getbool", protobuflib_reflection_getbool},
@@ -914,6 +1220,16 @@ static struct luaL_Reg protobuflib[] = {
     {"reflection_setenumvalue", protobuflib_reflection_setenumvalue},
     {"reflection_setstring", protobuflib_reflection_setstring},
 
+    {"reflection_getrepeatedmessagecount", protobuflib_reflection_getrepeatedmessagecount},
+    {"reflection_getrepeatedboolcount", protobuflib_reflection_getrepeatedboolcount},
+    {"reflection_getrepeatedint32count", protobuflib_reflection_getrepeatedint32count},
+    {"reflection_getrepeateduint32count", protobuflib_reflection_getrepeateduint32count},
+    {"reflection_getrepeatedint64count", protobuflib_reflection_getrepeatedint64count},
+    {"reflection_getrepeateduint64count", protobuflib_reflection_getrepeateduint64count},
+    {"reflection_getrepeateddoublecount", protobuflib_reflection_getrepeateddoublecount},
+    {"reflection_getrepeatedfloatcount", protobuflib_reflection_getrepeatedfloatcount},
+    {"reflection_getrepeatedstringcount", protobuflib_reflection_getrepeatedstringcount},
+
     {"reflection_getrepeatedmessage", protobuflib_reflection_getrepeatedmessage},
     {"reflection_getrepeatedbool", protobuflib_reflection_getrepeatedbool},
     {"reflection_getrepeatedint32", protobuflib_reflection_getrepeatedint32},
@@ -924,16 +1240,36 @@ static struct luaL_Reg protobuflib[] = {
     {"reflection_getrepeatedfloat", protobuflib_reflection_getrepeatedfloat},
     {"reflection_getrepeatedstring", protobuflib_reflection_getrepeatedstring},
 
+    {"reflection_setrepeatedbool", protobuflib_reflection_setrepeatedbool},
+    {"reflection_setrepeatedint32", protobuflib_reflection_setrepeatedint32},
+    {"reflection_setrepeateduint32", protobuflib_reflection_setrepeateduint32},
+    {"reflection_setrepeatedint64", protobuflib_reflection_setrepeatedint64},
+    {"reflection_setrepeateduint64", protobuflib_reflection_setrepeateduint64},
+    {"reflection_setrepeateddouble", protobuflib_reflection_setrepeateddouble},
+    {"reflection_setrepeatedfloat", protobuflib_reflection_setrepeatedfloat},
+    {"reflection_setrepeatedstring", protobuflib_reflection_setrepeatedstring},
+
     {"reflection_clearfield", protobuflib_reflection_clearfield},
-    {"reflection_addrepeatedmessage", protobuflib_reflection_addrepeatedmessage},
-    {"reflection_addrepeatedbool", protobuflib_reflection_addrepeatedbool},
-    {"reflection_addrepeatedint32", protobuflib_reflection_addrepeatedint32},
-    {"reflection_addrepeateduint32", protobuflib_reflection_addrepeateduint32},
-    {"reflection_addrepeatedint64", protobuflib_reflection_addrepeatedint64},
-    {"reflection_addrepeateduint64", protobuflib_reflection_addrepeateduint64},
-    {"reflection_addrepeateddouble", protobuflib_reflection_addrepeateddouble},
-    {"reflection_addrepeatedfloat", protobuflib_reflection_addrepeatedfloat},
-    {"reflection_addrepeatedstring", protobuflib_reflection_addrepeatedstring},
+
+    {"reflection_insertrepeatedmessage", protobuflib_reflection_insertrepeatedmessage},
+    {"reflection_insertrepeatedbool", protobuflib_reflection_insertrepeatedbool},
+    {"reflection_insertrepeatedint32", protobuflib_reflection_insertrepeatedint32},
+    {"reflection_insertrepeateduint32", protobuflib_reflection_insertrepeateduint32},
+    {"reflection_insertrepeatedint64", protobuflib_reflection_insertrepeatedint64},
+    {"reflection_insertrepeateduint64", protobuflib_reflection_insertrepeateduint64},
+    {"reflection_insertrepeateddouble", protobuflib_reflection_insertrepeateddouble},
+    {"reflection_insertrepeatedfloat", protobuflib_reflection_insertrepeatedfloat},
+    {"reflection_insertrepeatedstring", protobuflib_reflection_insertrepeatedstring},
+
+    {"reflection_removerepeatedmessage", protobuflib_reflection_removerepeatedmessage},
+    {"reflection_removerepeatedbool", protobuflib_reflection_removerepeatedbool},
+    {"reflection_removerepeatedint32", protobuflib_reflection_removerepeatedint32},
+    {"reflection_removerepeateduint32", protobuflib_reflection_removerepeateduint32},
+    {"reflection_removerepeatedint64", protobuflib_reflection_removerepeatedint64},
+    {"reflection_removerepeateduint64", protobuflib_reflection_removerepeateduint64},
+    {"reflection_removerepeateddouble", protobuflib_reflection_removerepeateddouble},
+    {"reflection_removerepeatedfloat", protobuflib_reflection_removerepeatedfloat},
+    {"reflection_removerepeatedstring", protobuflib_reflection_removerepeatedstring},
 
     {NULL, NULL}
 };

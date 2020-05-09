@@ -5,6 +5,7 @@ extern "C" {
 
 #include "google/protobuf/compiler/importer.h"
 #include "google/protobuf/dynamic_message.h"
+#include "google/protobuf/util/json_util.h"
 
 class MultiFileErrorCollector : public google::protobuf::compiler::MultiFileErrorCollector
 {
@@ -147,6 +148,11 @@ void* protobuf_fielddescriptor_messagetype(void* descriptor)
     return (void*)((const google::protobuf::FieldDescriptor*)descriptor)->message_type();
 }
 
+void* protobuf_fielddescriptor_enumtype(void* descriptor)
+{
+    return (void*)((const google::protobuf::FieldDescriptor*)descriptor)->enum_type();
+}
+
 void* protobuf_createfactory()
 {
     return new google::protobuf::DynamicMessageFactory();
@@ -190,6 +196,19 @@ int protobuf_message_serializetoarray(void* m, void* buffer, int size)
 int protobuf_message_parsefromarray(void* m, void* buffer, int size)
 {
     return ((google::protobuf::Message*)m)->ParseFromArray(buffer, size) ? 1 : 0;
+}
+
+const char* protobuf_message_jsonencode(void* m)
+{
+    static std::string temp;
+    if (google::protobuf::util::MessageToJsonString(*(const google::protobuf::Message*)m, &temp).ok())
+        return temp.c_str();
+    return nullptr;
+}
+
+int protobuf_message_jsondecode(void* m, const char* json)
+{
+    return google::protobuf::util::JsonStringToMessage(json, (google::protobuf::Message*)m).ok() ? 1 : 0;
 }
 
 int protobuf_reflection_getbool(void* r, void* m, void* field)
@@ -289,108 +308,136 @@ void protobuf_reflection_setstring(void* r, void* m, void* field, const char* va
     return ((google::protobuf::Reflection*)r)->SetString((google::protobuf::Message*)m, (const google::protobuf::FieldDescriptor*)field, value);
 }
 
-void** protobuf_reflection_getrepeatedmessage(void* r, void* m, void* field, int* size)
+int protobuf_reflection_getrepeatedmessagecount(void* r, void* m, void* field)
 {
-    static std::vector<const google::protobuf::Message*> temp;
-    temp.clear();
-    auto repeated = ((google::protobuf::Reflection*)r)->GetRepeatedFieldRef<google::protobuf::Message>(*(const google::protobuf::Message*)m, (const google::protobuf::FieldDescriptor*)field);
-    for (auto it = repeated.begin(); it != repeated.end(); ++it)
-        temp.push_back(&(*it));
-    if (size != nullptr) *size = (int)temp.size();
-    return (void**)temp.data();
+    return ((google::protobuf::Reflection*)r)->GetRepeatedFieldRef<google::protobuf::Message>(*(const google::protobuf::Message*)m, (const google::protobuf::FieldDescriptor*)field).size();
 }
 
-int* protobuf_reflection_getrepeatedbool(void* r, void* m, void* field, int* size)
+int protobuf_reflection_getrepeatedboolcount(void* r, void* m, void* field)
 {
-    static std::vector<int> temp;
-    temp.clear();
-    auto repeated = ((google::protobuf::Reflection*)r)->GetRepeatedFieldRef<bool>(*(const google::protobuf::Message*)m, (const google::protobuf::FieldDescriptor*)field);
-    for (auto it = repeated.begin(); it != repeated.end(); ++it)
-        temp.push_back(*it ? 1 : 0);
-    if (size != nullptr) *size = (int)temp.size();
-    return temp.data();
+    return ((google::protobuf::Reflection*)r)->GetRepeatedFieldRef<bool>(*(const google::protobuf::Message*)m, (const google::protobuf::FieldDescriptor*)field).size();
 }
 
-int* protobuf_reflection_getrepeatedint32(void* r, void* m, void* field, int* size)
+int protobuf_reflection_getrepeatedint32count(void* r, void* m, void* field)
 {
-    static std::vector<int> temp;
-    temp.clear();
-    auto repeated = ((google::protobuf::Reflection*)r)->GetRepeatedFieldRef<google::protobuf::int32>(*(const google::protobuf::Message*)m, (const google::protobuf::FieldDescriptor*)field);
-    for (auto it = repeated.begin(); it != repeated.end(); ++it)
-        temp.push_back(*it);
-    if (size != nullptr) *size = (int)temp.size();
-    return temp.data();
+    return ((google::protobuf::Reflection*)r)->GetRepeatedFieldRef<google::protobuf::int32>(*(const google::protobuf::Message*)m, (const google::protobuf::FieldDescriptor*)field).size();
 }
 
-unsigned int* protobuf_reflection_getrepeateduint32(void* r, void* m, void* field, int* size)
+int protobuf_reflection_getrepeateduint32count(void* r, void* m, void* field)
 {
-    static std::vector<unsigned int> temp;
-    temp.clear();
-    auto repeated = ((google::protobuf::Reflection*)r)->GetRepeatedFieldRef<google::protobuf::uint32>(*(const google::protobuf::Message*)m, (const google::protobuf::FieldDescriptor*)field);
-    for (auto it = repeated.begin(); it != repeated.end(); ++it)
-        temp.push_back(*it);
-    if (size != nullptr) *size = (int)temp.size();
-    return temp.data();
+    return ((google::protobuf::Reflection*)r)->GetRepeatedFieldRef<google::protobuf::uint32>(*(const google::protobuf::Message*)m, (const google::protobuf::FieldDescriptor*)field).size();
 }
 
-long long* protobuf_reflection_getrepeatedint64(void* r, void* m, void* field, int* size)
+int protobuf_reflection_getrepeatedint64count(void* r, void* m, void* field)
 {
-    static std::vector<long long> temp;
-    temp.clear();
-    auto repeated = ((google::protobuf::Reflection*)r)->GetRepeatedFieldRef<google::protobuf::int64>(*(const google::protobuf::Message*)m, (const google::protobuf::FieldDescriptor*)field);
-    for (auto it = repeated.begin(); it != repeated.end(); ++it)
-        temp.push_back(*it);
-    if (size != nullptr) *size = (int)temp.size();
-    return temp.data();
+    return ((google::protobuf::Reflection*)r)->GetRepeatedFieldRef<google::protobuf::int64>(*(const google::protobuf::Message*)m, (const google::protobuf::FieldDescriptor*)field).size();
 }
 
-unsigned long long* protobuf_reflection_getrepeateduint64(void* r, void* m, void* field, int* size)
+int protobuf_reflection_getrepeateduint64count(void* r, void* m, void* field)
 {
-    static std::vector<unsigned long long> temp;
-    temp.clear();
-    auto repeated = ((google::protobuf::Reflection*)r)->GetRepeatedFieldRef<google::protobuf::uint64>(*(const google::protobuf::Message*)m, (const google::protobuf::FieldDescriptor*)field);
-    for (auto it = repeated.begin(); it != repeated.end(); ++it)
-        temp.push_back(*it);
-    if (size != nullptr) *size = (int)temp.size();
-    return temp.data();
+    return ((google::protobuf::Reflection*)r)->GetRepeatedFieldRef<google::protobuf::uint64>(*(const google::protobuf::Message*)m, (const google::protobuf::FieldDescriptor*)field).size();
 }
 
-double* protobuf_reflection_getrepeateddouble(void* r, void* m, void* field, int* size)
+int protobuf_reflection_getrepeateddoublecount(void* r, void* m, void* field)
 {
-    static std::vector<double> temp;
-    temp.clear();
-    auto repeated = ((google::protobuf::Reflection*)r)->GetRepeatedFieldRef<double>(*(const google::protobuf::Message*)m, (const google::protobuf::FieldDescriptor*)field);
-    for (auto it = repeated.begin(); it != repeated.end(); ++it)
-        temp.push_back(*it);
-    if (size != nullptr) *size = (int)temp.size();
-    return temp.data();
+    return ((google::protobuf::Reflection*)r)->GetRepeatedFieldRef<double>(*(const google::protobuf::Message*)m, (const google::protobuf::FieldDescriptor*)field).size();
 }
 
-float* protobuf_reflection_getrepeatedfloat(void* r, void* m, void* field, int* size)
+int protobuf_reflection_getrepeatedfloatcount(void* r, void* m, void* field)
 {
-    static std::vector<float> temp;
-    temp.clear();
-    auto repeated = ((google::protobuf::Reflection*)r)->GetRepeatedFieldRef<float>(*(const google::protobuf::Message*)m, (const google::protobuf::FieldDescriptor*)field);
-    for (auto it = repeated.begin(); it != repeated.end(); ++it)
-        temp.push_back(*it);
-    if (size != nullptr) *size = (int)temp.size();
-    return temp.data();
+    return ((google::protobuf::Reflection*)r)->GetRepeatedFieldRef<float>(*(const google::protobuf::Message*)m, (const google::protobuf::FieldDescriptor*)field).size();
 }
 
-const char** protobuf_reflection_getrepeatedstring(void* r, void* m, void* field, int* size)
+int protobuf_reflection_getrepeatedstringcount(void* r, void* m, void* field)
 {
-    static std::vector<std::string> temp1;
-    static std::vector<const char*> temp2;
-    temp1.clear();
-    temp2.clear();
-    auto repeated = ((google::protobuf::Reflection*)r)->GetRepeatedFieldRef<std::string>(*(const google::protobuf::Message*)m, (const google::protobuf::FieldDescriptor*)field);
-    for (auto it = repeated.begin(); it != repeated.end(); ++it)
-    {
-        temp1.push_back(*it);
-        temp2.push_back(temp1.back().c_str());
-    }
-    if (size != nullptr) *size = (int)temp2.size();
-    return temp2.data();
+    return ((google::protobuf::Reflection*)r)->GetRepeatedFieldRef<std::string>(*(const google::protobuf::Message*)m, (const google::protobuf::FieldDescriptor*)field).size();
+}
+
+void* protobuf_reflection_getrepeatedmessage(void* r, void* m, void* field, int index)
+{
+    return ((google::protobuf::Reflection*)r)->MutableRepeatedMessage((google::protobuf::Message*)m, (const google::protobuf::FieldDescriptor*)field, index);
+}
+
+int protobuf_reflection_getrepeatedbool(void* r, void* m, void* field, int index)
+{
+    return ((google::protobuf::Reflection*)r)->GetRepeatedBool(*(const google::protobuf::Message*)m, (const google::protobuf::FieldDescriptor*)field, index) ? 1 : 0;
+}
+
+int protobuf_reflection_getrepeatedint32(void* r, void* m, void* field, int index)
+{
+    return ((google::protobuf::Reflection*)r)->GetRepeatedInt32(*(const google::protobuf::Message*)m, (const google::protobuf::FieldDescriptor*)field, index);
+}
+
+unsigned int protobuf_reflection_getrepeateduint32(void* r, void* m, void* field, int index)
+{
+    return ((google::protobuf::Reflection*)r)->GetRepeatedUInt32(*(const google::protobuf::Message*)m, (const google::protobuf::FieldDescriptor*)field, index);
+}
+
+long long protobuf_reflection_getrepeatedint64(void* r, void* m, void* field, int index)
+{
+    return ((google::protobuf::Reflection*)r)->GetRepeatedInt64(*(const google::protobuf::Message*)m, (const google::protobuf::FieldDescriptor*)field, index);
+}
+
+unsigned long long protobuf_reflection_getrepeateduint64(void* r, void* m, void* field, int index)
+{
+    return ((google::protobuf::Reflection*)r)->GetRepeatedUInt64(*(const google::protobuf::Message*)m, (const google::protobuf::FieldDescriptor*)field, index);
+}
+
+double protobuf_reflection_getrepeateddouble(void* r, void* m, void* field, int index)
+{
+    return ((google::protobuf::Reflection*)r)->GetRepeatedDouble(*(const google::protobuf::Message*)m, (const google::protobuf::FieldDescriptor*)field, index);
+}
+
+float protobuf_reflection_getrepeatedfloat(void* r, void* m, void* field, int index)
+{
+    return ((google::protobuf::Reflection*)r)->GetRepeatedFloat(*(const google::protobuf::Message*)m, (const google::protobuf::FieldDescriptor*)field, index);
+}
+
+const char* protobuf_reflection_getrepeatedstring(void* r, void* m, void* field, int index)
+{
+    static std::string temp;
+    temp = ((google::protobuf::Reflection*)r)->GetRepeatedString(*(const google::protobuf::Message*)m, (const google::protobuf::FieldDescriptor*)field, index);
+    return temp.c_str();
+}
+
+void protobuf_reflection_setrepeatedbool(void* r, void* m, void* field, int index, int value)
+{
+    ((google::protobuf::Reflection*)r)->SetRepeatedBool((google::protobuf::Message*)m, (const google::protobuf::FieldDescriptor*)field, index, value != 0);
+}
+
+void protobuf_reflection_setrepeatedint32(void* r, void* m, void* field, int index, int value)
+{
+    ((google::protobuf::Reflection*)r)->SetRepeatedInt32((google::protobuf::Message*)m, (const google::protobuf::FieldDescriptor*)field, index, value);
+}
+
+void protobuf_reflection_setrepeateduint32(void* r, void* m, void* field, int index, unsigned int value)
+{
+    ((google::protobuf::Reflection*)r)->SetRepeatedUInt32((google::protobuf::Message*)m, (const google::protobuf::FieldDescriptor*)field, index, value);
+}
+
+void protobuf_reflection_setrepeatedint64(void* r, void* m, void* field, int index, long long value)
+{
+    ((google::protobuf::Reflection*)r)->SetRepeatedInt64((google::protobuf::Message*)m, (const google::protobuf::FieldDescriptor*)field, index, value);
+}
+
+void protobuf_reflection_setrepeateduint64(void* r, void* m, void* field, int index, unsigned long long value)
+{
+    ((google::protobuf::Reflection*)r)->SetRepeatedUInt64((google::protobuf::Message*)m, (const google::protobuf::FieldDescriptor*)field, index, value);
+}
+
+void protobuf_reflection_setrepeateddouble(void* r, void* m, void* field, int index, double value)
+{
+    ((google::protobuf::Reflection*)r)->SetRepeatedDouble((google::protobuf::Message*)m, (const google::protobuf::FieldDescriptor*)field, index, value);
+}
+
+void protobuf_reflection_setrepeatedfloat(void* r, void* m, void* field, int index, float value)
+{
+    ((google::protobuf::Reflection*)r)->SetRepeatedFloat((google::protobuf::Message*)m, (const google::protobuf::FieldDescriptor*)field, index, value);
+}
+
+void protobuf_reflection_setrepeatedstring(void* r, void* m, void* field, int index, const char* value)
+{
+    ((google::protobuf::Reflection*)r)->SetRepeatedString((google::protobuf::Message*)m, (const google::protobuf::FieldDescriptor*)field, index, value);
 }
 
 void protobuf_reflection_clearfield(void* r, void* m, void* field)
@@ -398,47 +445,165 @@ void protobuf_reflection_clearfield(void* r, void* m, void* field)
     ((google::protobuf::Reflection*)r)->ClearField((google::protobuf::Message*)m, (const google::protobuf::FieldDescriptor*)field);
 }
 
-void protobuf_reflection_addrepeatedmessage(void* r, void* m, void* field, void* value)
+void* protobuf_reflection_insertrepeatedmessage(void* r, void* m, void* field, int index)
 {
-    ((google::protobuf::Reflection*)r)->GetMutableRepeatedFieldRef<google::protobuf::Message>((google::protobuf::Message*)m, (const google::protobuf::FieldDescriptor*)field).Add(*((const google::protobuf::Message*)value));
+    auto message = ((google::protobuf::Reflection*)r)->AddMessage((google::protobuf::Message*)m, (const google::protobuf::FieldDescriptor*)field);
+    auto repeated = ((google::protobuf::Reflection*)r)->GetMutableRepeatedFieldRef<google::protobuf::Message>((google::protobuf::Message*)m, (const google::protobuf::FieldDescriptor*)field);
+    if (index < 0 || index >= repeated.size() - 1) return message;
+    for (int i = repeated.size() - 1; i > index; --i)
+        repeated.SwapElements(i, i - 1);
+    return message;
 }
 
-void protobuf_reflection_addrepeatedbool(void* r, void* m, void* field, int value)
+void protobuf_reflection_insertrepeatedbool(void* r, void* m, void* field, int index, int value)
 {
-    ((google::protobuf::Reflection*)r)->GetMutableRepeatedFieldRef<bool>((google::protobuf::Message*)m, (const google::protobuf::FieldDescriptor*)field).Add(value != 0);
+    auto repeated = ((google::protobuf::Reflection*)r)->GetMutableRepeatedFieldRef<bool>((google::protobuf::Message*)m, (const google::protobuf::FieldDescriptor*)field);
+    repeated.Add(value != 0);
+    if (index < 0 || index >= repeated.size() - 1) return;
+    for (int i = repeated.size() - 1; i > index; --i)
+        repeated.SwapElements(i, i - 1);
 }
 
-void protobuf_reflection_addrepeatedint32(void* r, void* m, void* field, int value)
+void protobuf_reflection_insertrepeatedint32(void* r, void* m, void* field, int index, int value)
 {
-    ((google::protobuf::Reflection*)r)->GetMutableRepeatedFieldRef<google::protobuf::int32>((google::protobuf::Message*)m, (const google::protobuf::FieldDescriptor*)field).Add(value);
+    auto repeated = ((google::protobuf::Reflection*)r)->GetMutableRepeatedFieldRef<google::protobuf::int32>((google::protobuf::Message*)m, (const google::protobuf::FieldDescriptor*)field);
+    repeated.Add(value);
+    if (index < 0 || index >= repeated.size() - 1) return;
+    for (int i = repeated.size() - 1; i > index; --i)
+        repeated.SwapElements(i, i - 1);
 }
 
-void protobuf_reflection_addrepeateduint32(void* r, void* m, void* field, unsigned int value)
+void protobuf_reflection_insertrepeateduint32(void* r, void* m, void* field, int index, unsigned int value)
 {
-    ((google::protobuf::Reflection*)r)->GetMutableRepeatedFieldRef<google::protobuf::uint32>((google::protobuf::Message*)m, (const google::protobuf::FieldDescriptor*)field).Add(value);
+    auto repeated = ((google::protobuf::Reflection*)r)->GetMutableRepeatedFieldRef<google::protobuf::uint32>((google::protobuf::Message*)m, (const google::protobuf::FieldDescriptor*)field);
+    repeated.Add(value);
+    if (index < 0 || index >= repeated.size() - 1) return;
+    for (int i = repeated.size() - 1; i > index; --i)
+        repeated.SwapElements(i, i - 1);
 }
 
-void protobuf_reflection_addrepeatedint64(void* r, void* m, void* field, long long value)
+void protobuf_reflection_insertrepeatedint64(void* r, void* m, void* field, int index, long long value)
 {
-    ((google::protobuf::Reflection*)r)->GetMutableRepeatedFieldRef<google::protobuf::int64>((google::protobuf::Message*)m, (const google::protobuf::FieldDescriptor*)field).Add(value);
+    auto repeated = ((google::protobuf::Reflection*)r)->GetMutableRepeatedFieldRef<google::protobuf::int64>((google::protobuf::Message*)m, (const google::protobuf::FieldDescriptor*)field);
+    repeated.Add(value);
+    if (index < 0 || index >= repeated.size() - 1) return;
+    for (int i = repeated.size() - 1; i > index; --i)
+        repeated.SwapElements(i, i - 1);
 }
 
-void protobuf_reflection_addrepeateduint64(void* r, void* m, void* field, unsigned long long value)
+void protobuf_reflection_insertrepeateduint64(void* r, void* m, void* field, int index, unsigned long long value)
 {
-    ((google::protobuf::Reflection*)r)->GetMutableRepeatedFieldRef<google::protobuf::uint64>((google::protobuf::Message*)m, (const google::protobuf::FieldDescriptor*)field).Add(value);
+    auto repeated = ((google::protobuf::Reflection*)r)->GetMutableRepeatedFieldRef<google::protobuf::uint64>((google::protobuf::Message*)m, (const google::protobuf::FieldDescriptor*)field);
+    repeated.Add(value);
+    if (index < 0 || index >= repeated.size() - 1) return;
+    for (int i = repeated.size() - 1; i > index; --i)
+        repeated.SwapElements(i, i - 1);
 }
 
-void protobuf_reflection_addrepeateddouble(void* r, void* m, void* field, double value)
+void protobuf_reflection_insertrepeateddouble(void* r, void* m, void* field, int index, double value)
 {
-    ((google::protobuf::Reflection*)r)->GetMutableRepeatedFieldRef<double>((google::protobuf::Message*)m, (const google::protobuf::FieldDescriptor*)field).Add(value);
+    auto repeated = ((google::protobuf::Reflection*)r)->GetMutableRepeatedFieldRef<double>((google::protobuf::Message*)m, (const google::protobuf::FieldDescriptor*)field);
+    repeated.Add(value);
+    if (index < 0 || index >= repeated.size() - 1) return;
+    for (int i = repeated.size() - 1; i > index; --i)
+        repeated.SwapElements(i, i - 1);
 }
 
-void protobuf_reflection_addrepeatedfloat(void* r, void* m, void* field, float value)
+void protobuf_reflection_insertrepeatedfloat(void* r, void* m, void* field, int index, float value)
 {
-    ((google::protobuf::Reflection*)r)->GetMutableRepeatedFieldRef<float>((google::protobuf::Message*)m, (const google::protobuf::FieldDescriptor*)field).Add(value);
+    auto repeated = ((google::protobuf::Reflection*)r)->GetMutableRepeatedFieldRef<float>((google::protobuf::Message*)m, (const google::protobuf::FieldDescriptor*)field);
+    repeated.Add(value);
+    if (index < 0 || index >= repeated.size() - 1) return;
+    for (int i = repeated.size() - 1; i > index; --i)
+        repeated.SwapElements(i, i - 1);
 }
 
-void protobuf_reflection_addrepeatedstring(void* r, void* m, void* field, const char* value)
+void protobuf_reflection_insertrepeatedstring(void* r, void* m, void* field, int index, const char* value)
 {
-    ((google::protobuf::Reflection*)r)->GetMutableRepeatedFieldRef<std::string>((google::protobuf::Message*)m, (const google::protobuf::FieldDescriptor*)field).Add(value);
+    auto repeated = ((google::protobuf::Reflection*)r)->GetMutableRepeatedFieldRef<std::string>((google::protobuf::Message*)m, (const google::protobuf::FieldDescriptor*)field);
+    repeated.Add(value);
+    if (index < 0 || index >= repeated.size() - 1) return;
+    for (int i = repeated.size() - 1; i > index; --i)
+        repeated.SwapElements(i, i - 1);
+}
+
+void protobuf_reflection_removerepeatedmessage(void* r, void* m, void* field, int index)
+{
+    auto repeated = ((google::protobuf::Reflection*)r)->GetMutableRepeatedFieldRef<google::protobuf::Message>((google::protobuf::Message*)m, (const google::protobuf::FieldDescriptor*)field);
+    if (repeated.size() <= 0 || index < 0 || index >= repeated.size()) return;
+    for (int i = index; i < repeated.size() - 1; ++i)
+        repeated.SwapElements(i, i + 1);
+    repeated.RemoveLast();
+}
+
+void protobuf_reflection_removerepeatedbool(void* r, void* m, void* field, int index)
+{
+    auto repeated = ((google::protobuf::Reflection*)r)->GetMutableRepeatedFieldRef<bool>((google::protobuf::Message*)m, (const google::protobuf::FieldDescriptor*)field);
+    if (repeated.size() <= 0 || index < 0 || index >= repeated.size()) return;
+    for (int i = index; i < repeated.size() - 1; ++i)
+        repeated.SwapElements(i, i + 1);
+    repeated.RemoveLast();
+}
+
+void protobuf_reflection_removerepeatedint32(void* r, void* m, void* field, int index)
+{
+    auto repeated = ((google::protobuf::Reflection*)r)->GetMutableRepeatedFieldRef<google::protobuf::int32>((google::protobuf::Message*)m, (const google::protobuf::FieldDescriptor*)field);
+    if (repeated.size() <= 0 || index < 0 || index >= repeated.size()) return;
+    for (int i = index; i < repeated.size() - 1; ++i)
+        repeated.SwapElements(i, i + 1);
+    repeated.RemoveLast();
+}
+
+void protobuf_reflection_removerepeateduint32(void* r, void* m, void* field, int index)
+{
+    auto repeated = ((google::protobuf::Reflection*)r)->GetMutableRepeatedFieldRef<google::protobuf::uint32>((google::protobuf::Message*)m, (const google::protobuf::FieldDescriptor*)field);
+    if (repeated.size() <= 0 || index < 0 || index >= repeated.size()) return;
+    for (int i = index; i < repeated.size() - 1; ++i)
+        repeated.SwapElements(i, i + 1);
+    repeated.RemoveLast();
+}
+
+void protobuf_reflection_removerepeatedint64(void* r, void* m, void* field, int index)
+{
+    auto repeated = ((google::protobuf::Reflection*)r)->GetMutableRepeatedFieldRef<google::protobuf::int64>((google::protobuf::Message*)m, (const google::protobuf::FieldDescriptor*)field);
+    if (repeated.size() <= 0 || index < 0 || index >= repeated.size()) return;
+    for (int i = index; i < repeated.size() - 1; ++i)
+        repeated.SwapElements(i, i + 1);
+    repeated.RemoveLast();
+}
+
+void protobuf_reflection_removerepeateduint64(void* r, void* m, void* field, int index)
+{
+    auto repeated = ((google::protobuf::Reflection*)r)->GetMutableRepeatedFieldRef<google::protobuf::uint64>((google::protobuf::Message*)m, (const google::protobuf::FieldDescriptor*)field);
+    if (repeated.size() <= 0 || index < 0 || index >= repeated.size()) return;
+    for (int i = index; i < repeated.size() - 1; ++i)
+        repeated.SwapElements(i, i + 1);
+    repeated.RemoveLast();
+}
+
+void protobuf_reflection_removerepeateddouble(void* r, void* m, void* field, int index)
+{
+    auto repeated = ((google::protobuf::Reflection*)r)->GetMutableRepeatedFieldRef<double>((google::protobuf::Message*)m, (const google::protobuf::FieldDescriptor*)field);
+    if (repeated.size() <= 0 || index < 0 || index >= repeated.size()) return;
+    for (int i = index; i < repeated.size() - 1; ++i)
+        repeated.SwapElements(i, i + 1);
+    repeated.RemoveLast();
+}
+
+void protobuf_reflection_removerepeatedfloat(void* r, void* m, void* field, int index)
+{
+    auto repeated = ((google::protobuf::Reflection*)r)->GetMutableRepeatedFieldRef<float>((google::protobuf::Message*)m, (const google::protobuf::FieldDescriptor*)field);
+    if (repeated.size() <= 0 || index < 0 || index >= repeated.size()) return;
+    for (int i = index; i < repeated.size() - 1; ++i)
+        repeated.SwapElements(i, i + 1);
+    repeated.RemoveLast();
+}
+
+void protobuf_reflection_removerepeatedstring(void* r, void* m, void* field, int index)
+{
+    auto repeated = ((google::protobuf::Reflection*)r)->GetMutableRepeatedFieldRef<std::string>((google::protobuf::Message*)m, (const google::protobuf::FieldDescriptor*)field);
+    if (repeated.size() <= 0 || index < 0 || index >= repeated.size()) return;
+    for (int i = index; i < repeated.size() - 1; ++i)
+        repeated.SwapElements(i, i + 1);
+    repeated.RemoveLast();
 }

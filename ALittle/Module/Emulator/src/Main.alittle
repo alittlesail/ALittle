@@ -45,7 +45,10 @@ public async static __Module_Setup(ALittle.DisplayLayout layer_group, ALittle.Co
 	alittle.Require(script_base_path, "IDETreeLogic");
 	alittle.Require(script_base_path, "IDETreeValue");
 	alittle.Require(script_base_path, "IDETreeEnum");;
-	alittle.Require(script_base_path, "IDETreeBool");
+	alittle.Require(script_base_path, "IDETreeBool");;
+	alittle.Require(script_base_path, "IDETreeRepeatedValue");
+	alittle.Require(script_base_path, "IDETreeRepeatedEnum");;
+	alittle.Require(script_base_path, "IDETreeRepeatedBool");
 	alittle.Require(script_base_path, "IDETree");
 	alittle.Require(script_base_path, "IDETreeMessage");
 	alittle.Require(script_base_path, "IDETreeMap");

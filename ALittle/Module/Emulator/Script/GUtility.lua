@@ -21,7 +21,7 @@ function UtilityCreateTreeMessage(msg, msg_field_name)
 		local field_descriptor = protobuf.messagedescriptor_field(detail_info.info.descriptor, i)
 		local field_name = protobuf.fielddescriptor_name(field_descriptor)
 		if protobuf.fielddescriptor_ismap(field_descriptor) then
-			local msg_list = protobuf.reflection_getrepeatedmessage(rflct, msg, field_descriptor)
+			local msg_count = protobuf.reflection_getrepeatedmessagecount(rflct, msg, field_descriptor)
 			local map_descriptor = protobuf.fielddescriptor_messagetype(field_descriptor)
 			local key_descriptor = protobuf.messagedescriptor_findfieldbyname(map_descriptor, "key")
 			local key_type = protobuf.fielddescriptor_cpptypename(key_descriptor)
@@ -29,7 +29,10 @@ function UtilityCreateTreeMessage(msg, msg_field_name)
 			local value_type = protobuf.fielddescriptor_cpptypename(value_descriptor)
 			local tree_map = IDETreeMap(g_Control, field_name, key_type, value_type)
 			detail_info.tree:AddChild(tree_map)
-			for index, sub_msg in ___ipairs(msg_list) do
+			local index = 0
+			while true do
+				if not(index < msg_count) then break end
+				local sub_msg = protobuf.reflection_getrepeatedmessage(rflct, msg, field_descriptor, index)
 				local sub_rflct = protobuf.message_getreflection(sub_msg)
 				local key_cpp_type = protobuf.fielddescriptor_cpptype(key_descriptor)
 				if key_cpp_type == 7 then
@@ -74,9 +77,9 @@ function UtilityCreateTreeMessage(msg, msg_field_name)
 					local value = protobuf.reflection_getmessage(sub_rflct, sub_msg, value_descriptor)
 					detail_info.tree:AddChild(UtilityCreateTreeMessage(value, field_name))
 				end
+				index = index+(1)
 			end
 		elseif protobuf.fielddescriptor_isrepeated(field_descriptor) then
-			local sub_type = protobuf.fielddescriptor_cpptypename(field_descriptor)
 			local tree_repeated = IDETreeRepeated(g_Control, field_name, rflct, msg, field_descriptor)
 			detail_info.tree:AddChild(tree_repeated)
 		else

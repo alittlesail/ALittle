@@ -16,5 +16,8 @@
     <None Include="src\IDETreeValue.alittle" />
     <None Include="src\IDETreeEnum.alittle" />
     <None Include="src\IDETreeBool.alittle" />
+    <None Include="src\IDETreeRepeatedBool.alittle" />
+    <None Include="src\IDETreeRepeatedValue.alittle" />
+    <None Include="src\IDETreeRepeatedEnum.alittle" />
   </ItemGroup>
 </Project>

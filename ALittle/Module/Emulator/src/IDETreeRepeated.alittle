@@ -12,87 +12,182 @@ public class IDETreeRepeated : IDETree
 
 	public ctor(ALittle.ControlSystem ctrl_sys, string field_name, lua.protobuf_reflection rflct, lua.protobuf_message msg, lua.protobuf_field_descriptor field)
 	{
+		this._rflct = rflct;
+		this._msg = msg;
+		this._field = field;
+
 		// 对树的头部进行处理
 		this._head = ctrl_sys.CreateControl{ALittle.DisplayObject}("ide_common_tree_repeated", this);
 		ALittle.DisplayGroup.AddChild(this, this._head, 1);
 
-		this._add_button.x = this._item_title.x + this._item_title.width;
-
-		this._head.width = this._add_button.x + this._add_button.width + 2;
-		
 		this.Init();
 
 		this._cpp_type = lua.protobuf.fielddescriptor_cpptype(field);
+        var sub_type = lua.protobuf.fielddescriptor_cpptypename(field);
 		if (this._cpp_type == lua.protobuf_cpptype.CPPTYPE_BOOL)
         {
-            var value_list = lua.protobuf.reflection_getrepeatedbool(rflct, msg, field);
-            for (var index, value in value_list)
-            {
-                this.AddChild(new IDETreeRepeatedBool(g_Control, this));
-            }
+            var value_count = lua.protobuf.reflection_getrepeatedboolcount(rflct, msg, field);
+            for (var index = 0; index < value_count; 1)
+                this.AddChild(new IDETreeRepeatedBool(g_Control, this, rflct, msg, field, index));
         }
         elseif (this._cpp_type == lua.protobuf_cpptype.CPPTYPE_INT32)
         {
-            var value_list = lua.protobuf.reflection_getrepeatedint32(rflct, msg, field);
-                
+            var value_count = lua.protobuf.reflection_getrepeatedint32count(rflct, msg, field);
+            for (var index = 0; index < value_count; 1)
+                this.AddChild(new IDETreeRepeatedValue(g_Control, this, rflct, msg, field, index));
         }
         elseif (this._cpp_type == lua.protobuf_cpptype.CPPTYPE_UINT32)
         {
-            var value_list = lua.protobuf.reflection_getrepeateduint32(rflct, msg, field);
-                
+            var value_count = lua.protobuf.reflection_getrepeateduint32count(rflct, msg, field);
+            for (var index = 0; index < value_count; 1)
+                this.AddChild(new IDETreeRepeatedValue(g_Control, this, rflct, msg, field, index));
         }
         elseif (this._cpp_type == lua.protobuf_cpptype.CPPTYPE_INT64)
         {
-            var value_list = lua.protobuf.reflection_getrepeatedint64(rflct, msg, field);
-                
+            var value_count = lua.protobuf.reflection_getrepeatedint64count(rflct, msg, field);
+            for (var index = 0; index < value_count; 1)
+                this.AddChild(new IDETreeRepeatedValue(g_Control, this, rflct, msg, field, index));
         }
         elseif (this._cpp_type == lua.protobuf_cpptype.CPPTYPE_UINT64)
         {
-            var value_list = lua.protobuf.reflection_getrepeateduint64(rflct, msg, field);
-                
+            var value_count = lua.protobuf.reflection_getrepeateduint64count(rflct, msg, field);
+            for (var index = 0; index < value_count; 1)
+                this.AddChild(new IDETreeRepeatedValue(g_Control, this, rflct, msg, field, index));
         }
         elseif (this._cpp_type == lua.protobuf_cpptype.CPPTYPE_DOUBLE)
         {
-            var value_list = lua.protobuf.reflection_getrepeateddouble(rflct, msg, field);
-                
+            var value_count = lua.protobuf.reflection_getrepeateddoublecount(rflct, msg, field);
+            for (var index = 0; index < value_count; 1)
+                this.AddChild(new IDETreeRepeatedValue(g_Control, this, rflct, msg, field, index));
         }
         elseif (this._cpp_type == lua.protobuf_cpptype.CPPTYPE_FLOAT)
         {
-            var value_list = lua.protobuf.reflection_getrepeatedfloat(rflct, msg, field);
-                
+            var value_count = lua.protobuf.reflection_getrepeatedfloatcount(rflct, msg, field);
+            for (var index = 0; index < value_count; 1)
+                this.AddChild(new IDETreeRepeatedValue(g_Control, this, rflct, msg, field, index));
         }
         elseif (this._cpp_type == lua.protobuf_cpptype.CPPTYPE_ENUM)
         {
-            var value_list = lua.protobuf.reflection_getrepeatedint32(rflct, msg, field);
-                
+            var value_count = lua.protobuf.reflection_getrepeatedint32count(rflct, msg, field);
+            for (var index = 0; index < value_count; 1)
+                this.AddChild(new IDETreeRepeatedEnum(g_Control, this, rflct, msg, field, index));
         }
         elseif (this._cpp_type == lua.protobuf_cpptype.CPPTYPE_STRING)
         {
-            var value_list = lua.protobuf.reflection_getrepeatedstring(rflct, msg, field);
+            var value_count = lua.protobuf.reflection_getrepeatedstringcount(rflct, msg, field);
+            for (var index = 0; index < value_count; 1)
+                this.AddChild(new IDETreeRepeatedValue(g_Control, this, rflct, msg, field, index));
         }
         elseif (this._cpp_type == lua.protobuf_cpptype.CPPTYPE_MESSAGE)
         {
-            var value_list = lua.protobuf.reflection_getrepeatedmessage(rflct, msg, field);
-            for (var index, value in value_list)
-                this.AddChild(UtilityCreateTreeMessage(value, field_name));
+            var message_type = lua.protobuf.fielddescriptor_messagetype(field);
+            sub_type = lua.protobuf.messagedescriptor_name(message_type);
+
+            var value_count = lua.protobuf.reflection_getrepeatedmessagecount(rflct, msg, field);
+            for (var index = 0; index < value_count; 1)
+            {
+                var value = lua.protobuf.reflection_getrepeatedmessage(rflct, msg, field, index);
+                this.AddChild(UtilityCreateTreeMessage(value, ""));
+            }
         }
 
 		this._item_title.text = "[repeated "..sub_type.."] "..field_name.." ";
+        
+		this._add_button.x = this._item_title.x + this._item_title.width;
 
+		this._head.width = this._add_button.x + this._add_button.width + 2;
 	}
 
 	private fun HandleAddClick(ALittle.UIClickEvent event)
 	{
-        
+        this.AddLine(this.child_count);
+        this.fold = true;
+    }
+
+    public fun AddLine(int index)
+    {   
+        if (this._cpp_type == lua.protobuf_cpptype.CPPTYPE_BOOL)
+        {
+            lua.protobuf.reflection_insertrepeatedbool(this._rflct, this._msg, this._field, index, false);
+            this.AddChild(new IDETreeRepeatedBool(g_Control, this, this._rflct, this._msg, this._field, index), index + 1);
+        }
+        elseif (this._cpp_type == lua.protobuf_cpptype.CPPTYPE_INT32)
+        {
+            lua.protobuf.reflection_insertrepeatedint32(this._rflct, this._msg, this._field, index, 0);
+            this.AddChild(new IDETreeRepeatedValue(g_Control, this, this._rflct, this._msg, this._field, index), index + 1);
+        }
+        elseif (this._cpp_type == lua.protobuf_cpptype.CPPTYPE_UINT32)
+        {
+            lua.protobuf.reflection_insertrepeateduint32(this._rflct, this._msg, this._field, index, 0);
+            this.AddChild(new IDETreeRepeatedValue(g_Control, this, this._rflct, this._msg, this._field, index), index + 1);
+        }
+        elseif (this._cpp_type == lua.protobuf_cpptype.CPPTYPE_INT64)
+        {
+            lua.protobuf.reflection_insertrepeatedint64(this._rflct, this._msg, this._field, index, 0);
+            this.AddChild(new IDETreeRepeatedValue(g_Control, this, this._rflct, this._msg, this._field, index), index + 1);
+        }
+        elseif (this._cpp_type == lua.protobuf_cpptype.CPPTYPE_UINT64)
+        {
+            lua.protobuf.reflection_insertrepeateduint64(this._rflct, this._msg, this._field, index, 0);
+            this.AddChild(new IDETreeRepeatedValue(g_Control, this, this._rflct, this._msg, this._field, index), index + 1);
+        }
+        elseif (this._cpp_type == lua.protobuf_cpptype.CPPTYPE_DOUBLE)
+        {
+            lua.protobuf.reflection_insertrepeateddouble(this._rflct, this._msg, this._field, index, 0);
+            this.AddChild(new IDETreeRepeatedValue(g_Control, this, this._rflct, this._msg, this._field, index), index + 1);
+        }
+        elseif (this._cpp_type == lua.protobuf_cpptype.CPPTYPE_FLOAT)
+        {
+            lua.protobuf.reflection_insertrepeatedfloat(this._rflct, this._msg, this._field, index, 0);
+            this.AddChild(new IDETreeRepeatedValue(g_Control, this, this._rflct, this._msg, this._field, index), index + 1);
+        }
+        elseif (this._cpp_type == lua.protobuf_cpptype.CPPTYPE_ENUM)
+        {
+            lua.protobuf.reflection_insertrepeatedint32(this._rflct, this._msg, this._field, index, 0);
+            this.AddChild(new IDETreeRepeatedEnum(g_Control, this, this._rflct, this._msg, this._field, index), index + 1);
+        }
+        elseif (this._cpp_type == lua.protobuf_cpptype.CPPTYPE_STRING)
+        {
+            lua.protobuf.reflection_insertrepeatedstring(this._rflct, this._msg, this._field, index, "");
+            this.AddChild(new IDETreeRepeatedValue(g_Control, this, this._rflct, this._msg, this._field, index), index + 1);
+        }
+        elseif (this._cpp_type == lua.protobuf_cpptype.CPPTYPE_MESSAGE)
+        {
+            var value = lua.protobuf.reflection_insertrepeatedmessage(this._rflct, this._msg, this._field, index);
+            this.AddChild(UtilityCreateTreeMessage(value, ""), index + 1);
+        }
     }
 
     public fun CreateOneBefore(ALittle.DisplayObject child)
     {
-        
+        var index = this.GetChildIndex(child) - 1;
+        this.AddLine(index);
     }
 
     public fun Delete(ALittle.DisplayObject child)
     {
-        
+        var index = this.GetChildIndex(child) - 1;
+        this.RemoveChild(child);
+
+        if (this._cpp_type == lua.protobuf_cpptype.CPPTYPE_BOOL)
+            lua.protobuf.reflection_removerepeatedbool(this._rflct, this._msg, this._field, index);
+        elseif (this._cpp_type == lua.protobuf_cpptype.CPPTYPE_INT32)
+            lua.protobuf.reflection_removerepeatedint32(this._rflct, this._msg, this._field, index);
+        elseif (this._cpp_type == lua.protobuf_cpptype.CPPTYPE_UINT32)
+            lua.protobuf.reflection_removerepeateduint32(this._rflct, this._msg, this._field, index);
+        elseif (this._cpp_type == lua.protobuf_cpptype.CPPTYPE_INT64)
+            lua.protobuf.reflection_removerepeatedint64(this._rflct, this._msg, this._field, index);
+        elseif (this._cpp_type == lua.protobuf_cpptype.CPPTYPE_UINT64)
+            lua.protobuf.reflection_removerepeateduint64(this._rflct, this._msg, this._field, index);
+        elseif (this._cpp_type == lua.protobuf_cpptype.CPPTYPE_DOUBLE)
+            lua.protobuf.reflection_removerepeateddouble(this._rflct, this._msg, this._field, index);
+        elseif (this._cpp_type == lua.protobuf_cpptype.CPPTYPE_FLOAT)
+            lua.protobuf.reflection_removerepeatedfloat(this._rflct, this._msg, this._field, index);
+        elseif (this._cpp_type == lua.protobuf_cpptype.CPPTYPE_ENUM)
+            lua.protobuf.reflection_removerepeatedint32(this._rflct, this._msg, this._field, index);
+        elseif (this._cpp_type == lua.protobuf_cpptype.CPPTYPE_STRING)
+            lua.protobuf.reflection_removerepeatedstring(this._rflct, this._msg, this._field, index);
+        elseif (this._cpp_type == lua.protobuf_cpptype.CPPTYPE_MESSAGE)
+            lua.protobuf.reflection_removerepeatedmessage(this._rflct, this._msg, this._field, index);
     }
 }

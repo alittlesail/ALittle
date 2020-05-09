@@ -23,7 +23,7 @@ public static UtilityCreateTreeMessage(lua.protobuf_message msg, string msg_fiel
 
         if (lua.protobuf.fielddescriptor_ismap(field_descriptor))
         {
-            var msg_list = lua.protobuf.reflection_getrepeatedmessage(rflct, msg, field_descriptor);
+            var msg_count = lua.protobuf.reflection_getrepeatedmessagecount(rflct, msg, field_descriptor);
             
             var map_descriptor = lua.protobuf.fielddescriptor_messagetype(field_descriptor);
             var key_descriptor = lua.protobuf.messagedescriptor_findfieldbyname(map_descriptor, "key");
@@ -34,8 +34,9 @@ public static UtilityCreateTreeMessage(lua.protobuf_message msg, string msg_fiel
             var tree_map = new IDETreeMap(g_Control, field_name, key_type, value_type);
             detail_info.tree.AddChild(tree_map);
 
-            for (var index, sub_msg in msg_list)
+            for (var index = 0; index < msg_count; 1)
             {
+                var sub_msg = lua.protobuf.reflection_getrepeatedmessage(rflct, msg, field_descriptor, index);
                 var sub_rflct = lua.protobuf.message_getreflection(sub_msg);
                 
                 var key_cpp_type = lua.protobuf.fielddescriptor_cpptype(key_descriptor);
@@ -141,7 +142,6 @@ public static UtilityCreateTreeMessage(lua.protobuf_message msg, string msg_fiel
         }
         elseif (lua.protobuf.fielddescriptor_isrepeated(field_descriptor))
         {
-            var sub_type = lua.protobuf.fielddescriptor_cpptypename(field_descriptor);
             var tree_repeated = new IDETreeRepeated(g_Control, field_name, rflct, msg, field_descriptor);
             detail_info.tree.AddChild(tree_repeated);
         }

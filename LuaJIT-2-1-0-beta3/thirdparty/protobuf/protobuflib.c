@@ -464,7 +464,8 @@ static int protobuflib_reflection_setbool(lua_State* L)
     luaL_argcheck(L, m != 0, 2, "message object is null");
     void* field = lua_touserdata(L, 3);
     luaL_argcheck(L, field != 0, 3, "field descriptor object is null");
-    int value = (int)luaL_checkinteger(L, 4);
+    luaL_argcheck(L, lua_isboolean(L, 4), 4, "not a boolean value");
+    int value = (int)lua_toboolean(L, 4);
     protobuf_reflection_setbool(r, m, field, value);
     return 0;
 }
@@ -785,7 +786,8 @@ static int protobuflib_reflection_setrepeatedbool(lua_State* L)
     void* field = lua_touserdata(L, 3);
     luaL_argcheck(L, field != 0, 3, "field descriptor object is null");
     int index = (int)luaL_checkinteger(L, 4);
-    int value = (int)luaL_checkinteger(L, 5);
+    luaL_argcheck(L, lua_isboolean(L, 5), 5, "not a boolean value");
+    int value = (int)lua_toboolean(L, 5);
     protobuf_reflection_setrepeatedbool(r, m, field, index, value);
     return 0;
 }
@@ -915,7 +917,8 @@ static int protobuflib_reflection_insertrepeatedbool(lua_State* L)
     void* field = lua_touserdata(L, 3);
     luaL_argcheck(L, field != 0, 3, "field descriptor object is null");
     int index = (int)luaL_checkinteger(L, 4);
-    int value = (int)luaL_checkinteger(L, 5);
+    luaL_argcheck(L, lua_isboolean(L, 5), 5, "not a boolean value");
+    int value = (int)lua_toboolean(L, 5);
     protobuf_reflection_insertrepeatedbool(r, m, field, index, value);
     return 0;
 }

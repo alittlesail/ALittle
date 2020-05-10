@@ -5,12 +5,13 @@ public class IDETreeMap : IDETree
 {
 	private ALittle.TextButton _add_button;
 
-	private int _cpp_type;
 	private lua.protobuf_reflection _rflct;
 	private lua.protobuf_message _msg;
 	private lua.protobuf_field_descriptor _field;
 
     private lua.protobuf_field_descriptor _key_descriptor;
+    private int _key_cpp_type;
+    private int _value_cpp_type;
     private lua.protobuf_field_descriptor _value_descriptor;
 
 	public ctor(ALittle.ControlSystem ctrl_sys, string field_name, lua.protobuf_reflection rflct, lua.protobuf_message msg, lua.protobuf_field_descriptor field)
@@ -22,133 +23,66 @@ public class IDETreeMap : IDETree
         var map_descriptor = lua.protobuf.fielddescriptor_messagetype(field);
         this._key_descriptor = lua.protobuf.messagedescriptor_findfieldbyname(map_descriptor, "key");
         this._value_descriptor = lua.protobuf.messagedescriptor_findfieldbyname(map_descriptor, "value");
+        this._key_cpp_type = lua.protobuf.fielddescriptor_cpptype(this._key_descriptor);
+        this._value_cpp_type = lua.protobuf.fielddescriptor_cpptype(this._value_descriptor);
         
+        var key_type_name = lua.protobuf.fielddescriptor_cpptypename(this._key_descriptor);
+        var value_type_name = lua.protobuf.fielddescriptor_cpptypename(this._value_descriptor);
+        if (this._value_cpp_type == lua.protobuf_cpptype.CPPTYPE_MESSAGE)
+        {
+            var value_msg_descriptor = lua.protobuf.fielddescriptor_messagetype(this._key_descriptor);
+            value_type_name = lua.protobuf.messagedescriptor_name(value_msg_descriptor);
+        }
+
 		// 对树的头部进行处理
 		this._head = ctrl_sys.CreateControl{ALittle.DisplayObject}("ide_common_tree_map", this);
 		ALittle.DisplayGroup.AddChild(this, this._head, 1);
 
 		this.Init();
-        /*
-		
-            var msg_count = lua.protobuf.reflection_getrepeatedmessagecount(rflct, msg, field_descriptor);
+        
+        var msg_count = lua.protobuf.reflection_getrepeatedmessagecount(rflct, msg, field);
+        for (var index = 0; index < msg_count; 1)
+        {
+            var sub_msg = lua.protobuf.reflection_getrepeatedmessage(rflct, msg, field, index);
+            var sub_rflct = lua.protobuf.message_getreflection(sub_msg);
             
-            var map_descriptor = lua.protobuf.fielddescriptor_messagetype(field_descriptor);
-            var key_descriptor = lua.protobuf.messagedescriptor_findfieldbyname(map_descriptor, "key");
-            var key_type = lua.protobuf.fielddescriptor_cpptypename(key_descriptor);
-            var value_descriptor = lua.protobuf.messagedescriptor_findfieldbyname(map_descriptor, "value");
-            var value_type = lua.protobuf.fielddescriptor_cpptypename(value_descriptor);
-
-            var tree_map = new IDETreeMap(g_Control, field_name, key_type, value_type);
-            detail_info.tree.AddChild(tree_map);
-
-            for (var index = 0; index < msg_count; 1)
+            if (this._key_cpp_type == lua.protobuf_cpptype.CPPTYPE_BOOL)
             {
-                var sub_msg = lua.protobuf.reflection_getrepeatedmessage(rflct, msg, field_descriptor, index);
-                var sub_rflct = lua.protobuf.message_getreflection(sub_msg);
-                
-                var key_cpp_type = lua.protobuf.fielddescriptor_cpptype(key_descriptor);
-                if (key_cpp_type == lua.protobuf_cpptype.CPPTYPE_BOOL)
-                {
-                    var value = lua.protobuf.reflection_getbool(sub_rflct, sub_msg, key_descriptor);
-                
-                }
-                elseif (key_cpp_type == lua.protobuf_cpptype.CPPTYPE_INT32)
-                {
-                    var value = lua.protobuf.reflection_getint32(sub_rflct, sub_msg, key_descriptor);
-                
-                }
-                elseif (key_cpp_type == lua.protobuf_cpptype.CPPTYPE_UINT32)
-                {
-                    var value = lua.protobuf.reflection_getuint32(sub_rflct, sub_msg, key_descriptor);
-                
-                }
-                elseif (key_cpp_type == lua.protobuf_cpptype.CPPTYPE_INT64)
-                {
-                    var value = lua.protobuf.reflection_getint64(sub_rflct, sub_msg, key_descriptor);
-                
-                }
-                elseif (key_cpp_type == lua.protobuf_cpptype.CPPTYPE_UINT64)
-                {
-                    var value = lua.protobuf.reflection_getuint64(sub_rflct, sub_msg, key_descriptor);
-                
-                }
-                elseif (key_cpp_type == lua.protobuf_cpptype.CPPTYPE_DOUBLE)
-                {
-                    var value = lua.protobuf.reflection_getdouble(sub_rflct, sub_msg, key_descriptor);
-                
-                }
-                elseif (key_cpp_type == lua.protobuf_cpptype.CPPTYPE_FLOAT)
-                {
-                    var value = lua.protobuf.reflection_getfloat(sub_rflct, sub_msg, key_descriptor);
-                
-                }
-                elseif (key_cpp_type == lua.protobuf_cpptype.CPPTYPE_ENUM)
-                {
-                    var value = lua.protobuf.reflection_getenumvalue(sub_rflct, sub_msg, key_descriptor);
-                
-                }
-                elseif (key_cpp_type == lua.protobuf_cpptype.CPPTYPE_STRING)
-                {
-                    var value = lua.protobuf.reflection_getstring(sub_rflct, sub_msg, key_descriptor);
-                
-                }
-
-                var value_cpp_type = lua.protobuf.fielddescriptor_cpptype(value_descriptor);
-                if (value_cpp_type == lua.protobuf_cpptype.CPPTYPE_BOOL)
-                {
-                    var value = lua.protobuf.reflection_getbool(sub_rflct, sub_msg, value_descriptor);
-                
-                }
-                elseif (value_cpp_type == lua.protobuf_cpptype.CPPTYPE_INT32)
-                {
-                    var value = lua.protobuf.reflection_getint32(sub_rflct, sub_msg, value_descriptor);
-                
-                }
-                elseif (value_cpp_type == lua.protobuf_cpptype.CPPTYPE_UINT32)
-                {
-                    var value = lua.protobuf.reflection_getuint32(sub_rflct, sub_msg, value_descriptor);
-                
-                }
-                elseif (value_cpp_type == lua.protobuf_cpptype.CPPTYPE_INT64)
-                {
-                    var value = lua.protobuf.reflection_getint64(sub_rflct, sub_msg, value_descriptor);
-                
-                }
-                elseif (value_cpp_type == lua.protobuf_cpptype.CPPTYPE_UINT64)
-                {
-                    var value = lua.protobuf.reflection_getuint64(sub_rflct, sub_msg, value_descriptor);
-                
-                }
-                elseif (value_cpp_type == lua.protobuf_cpptype.CPPTYPE_DOUBLE)
-                {
-                    var value = lua.protobuf.reflection_getdouble(sub_rflct, sub_msg, value_descriptor);
-                
-                }
-                elseif (value_cpp_type == lua.protobuf_cpptype.CPPTYPE_FLOAT)
-                {
-                    var value = lua.protobuf.reflection_getfloat(sub_rflct, sub_msg, value_descriptor);
-                
-                }
-                elseif (value_cpp_type == lua.protobuf_cpptype.CPPTYPE_ENUM)
-                {
-                    var value = lua.protobuf.reflection_getenumvalue(sub_rflct, sub_msg, value_descriptor);
-                
-                }
-                elseif (value_cpp_type == lua.protobuf_cpptype.CPPTYPE_STRING)
-                {
-                    var value = lua.protobuf.reflection_getstring(sub_rflct, sub_msg, value_descriptor);
-                
-                }
-                elseif (value_cpp_type == lua.protobuf_cpptype.CPPTYPE_MESSAGE)
-                {
-                    var value = lua.protobuf.reflection_getmessage(sub_rflct, sub_msg, value_descriptor);
-                    detail_info.tree.AddChild(UtilityCreateTreeMessage(value, field_name));
-                }
+                if (this._value_cpp_type == lua.protobuf_cpptype.CPPTYPE_BOOL)
+                    this.AddChild(new IDETreeBoolMapBool(g_Control, this, sub_rflct, sub_msg, this._key_descriptor, this._value_descriptor, index));
+                elseif (this._value_cpp_type == lua.protobuf_cpptype.CPPTYPE_ENUM)
+                    this.AddChild(new IDETreeBoolMapEnum(g_Control, this, sub_rflct, sub_msg, this._key_descriptor, this._value_descriptor, index));
+                elseif (this._value_cpp_type == lua.protobuf_cpptype.CPPTYPE_MESSAGE)
+                    this.AddChild(new IDETreeBoolMapMessage(g_Control, this, sub_rflct, sub_msg, this._key_descriptor, this._value_descriptor, index));
+                else
+                    this.AddChild(new IDETreeBoolMapValue(g_Control, this, sub_rflct, sub_msg, this._key_descriptor, this._value_descriptor, index));
             }
+            elseif (this._key_cpp_type == lua.protobuf_cpptype.CPPTYPE_ENUM)
+            {
+                if (this._value_cpp_type == lua.protobuf_cpptype.CPPTYPE_BOOL)
+                    this.AddChild(new IDETreeEnumMapBool(g_Control, this, sub_rflct, sub_msg, this._key_descriptor, this._value_descriptor, index));
+                elseif (this._value_cpp_type == lua.protobuf_cpptype.CPPTYPE_ENUM)
+                    this.AddChild(new IDETreeEnumMapEnum(g_Control, this, sub_rflct, sub_msg, this._key_descriptor, this._value_descriptor, index));
+                elseif (this._value_cpp_type == lua.protobuf_cpptype.CPPTYPE_MESSAGE)
+                    this.AddChild(new IDETreeEnumMapMessage(g_Control, this, sub_rflct, sub_msg, this._key_descriptor, this._value_descriptor, index));
+                else
+                    this.AddChild(new IDETreeEnumMapValue(g_Control, this, sub_rflct, sub_msg, this._key_descriptor, this._value_descriptor, index));
+            }
+            else
+            {
+                if (this._value_cpp_type == lua.protobuf_cpptype.CPPTYPE_BOOL)
+                    this.AddChild(new IDETreeValueMapBool(g_Control, this, sub_rflct, sub_msg, this._key_descriptor, this._value_descriptor, index));
+                elseif (this._value_cpp_type == lua.protobuf_cpptype.CPPTYPE_ENUM)
+                    this.AddChild(new IDETreeValueMapEnum(g_Control, this, sub_rflct, sub_msg, this._key_descriptor, this._value_descriptor, index));
+                elseif (this._value_cpp_type == lua.protobuf_cpptype.CPPTYPE_MESSAGE)
+                    this.AddChild(new IDETreeValueMapMessage(g_Control, this, sub_rflct, sub_msg, this._key_descriptor, this._value_descriptor, index));
+                else
+                    this.AddChild(new IDETreeValueMapValue(g_Control, this, sub_rflct, sub_msg, this._key_descriptor, this._value_descriptor, index));
+            }
+        }
 
 
-		this._item_title.text = "[repeated "..sub_type.."] "..field_name.." ";
-        */
+		this._item_title.text = "[map<"..key_type_name..","..value_type_name..">] "..field_name..": ";
 		this._add_button.x = this._item_title.x + this._item_title.width;
 
 		this._head.width = this._add_button.x + this._add_button.width + 2;
@@ -161,57 +95,42 @@ public class IDETreeMap : IDETree
     }
 
     public fun AddLine(int index)
-    {   /*
-        if (this._cpp_type == lua.protobuf_cpptype.CPPTYPE_BOOL)
+    {
+        var sub_msg = lua.protobuf.reflection_insertrepeatedmessage(this._rflct, this._msg, this._field, index);
+        var sub_rflct = lua.protobuf.message_getreflection(sub_msg);
+        if (this._key_cpp_type == lua.protobuf_cpptype.CPPTYPE_BOOL)
         {
-            lua.protobuf.reflection_insertrepeatedbool(this._rflct, this._msg, this._field, index, false);
-            this.AddChild(new IDETreeRepeatedBool(g_Control, this, this._rflct, this._msg, this._field, index), index + 1);
+            if (this._value_cpp_type == lua.protobuf_cpptype.CPPTYPE_BOOL)
+                this.AddChild(new IDETreeBoolMapBool(g_Control, this, sub_rflct, sub_msg, this._key_descriptor, this._value_descriptor, index));
+            elseif (this._value_cpp_type == lua.protobuf_cpptype.CPPTYPE_ENUM)
+                this.AddChild(new IDETreeBoolMapEnum(g_Control, this, sub_rflct, sub_msg, this._key_descriptor, this._value_descriptor, index));
+            elseif (this._value_cpp_type == lua.protobuf_cpptype.CPPTYPE_MESSAGE)
+                this.AddChild(new IDETreeBoolMapMessage(g_Control, this, sub_rflct, sub_msg, this._key_descriptor, this._value_descriptor, index));
+            else
+                this.AddChild(new IDETreeBoolMapValue(g_Control, this, sub_rflct, sub_msg, this._key_descriptor, this._value_descriptor, index));
         }
-        elseif (this._cpp_type == lua.protobuf_cpptype.CPPTYPE_INT32)
+        elseif (this._key_cpp_type == lua.protobuf_cpptype.CPPTYPE_ENUM)
         {
-            lua.protobuf.reflection_insertrepeatedint32(this._rflct, this._msg, this._field, index, 0);
-            this.AddChild(new IDETreeRepeatedValue(g_Control, this, this._rflct, this._msg, this._field, index), index + 1);
+            if (this._value_cpp_type == lua.protobuf_cpptype.CPPTYPE_BOOL)
+                this.AddChild(new IDETreeEnumMapBool(g_Control, this, sub_rflct, sub_msg, this._key_descriptor, this._value_descriptor, index));
+            elseif (this._value_cpp_type == lua.protobuf_cpptype.CPPTYPE_ENUM)
+                this.AddChild(new IDETreeEnumMapEnum(g_Control, this, sub_rflct, sub_msg, this._key_descriptor, this._value_descriptor, index));
+            elseif (this._value_cpp_type == lua.protobuf_cpptype.CPPTYPE_MESSAGE)
+                this.AddChild(new IDETreeEnumMapMessage(g_Control, this, sub_rflct, sub_msg, this._key_descriptor, this._value_descriptor, index));
+            else
+                this.AddChild(new IDETreeEnumMapValue(g_Control, this, sub_rflct, sub_msg, this._key_descriptor, this._value_descriptor, index));
         }
-        elseif (this._cpp_type == lua.protobuf_cpptype.CPPTYPE_UINT32)
+        else
         {
-            lua.protobuf.reflection_insertrepeateduint32(this._rflct, this._msg, this._field, index, 0);
-            this.AddChild(new IDETreeRepeatedValue(g_Control, this, this._rflct, this._msg, this._field, index), index + 1);
+            if (this._value_cpp_type == lua.protobuf_cpptype.CPPTYPE_BOOL)
+                this.AddChild(new IDETreeValueMapBool(g_Control, this, sub_rflct, sub_msg, this._key_descriptor, this._value_descriptor, index));
+            elseif (this._value_cpp_type == lua.protobuf_cpptype.CPPTYPE_ENUM)
+                this.AddChild(new IDETreeValueMapEnum(g_Control, this, sub_rflct, sub_msg, this._key_descriptor, this._value_descriptor, index));
+            elseif (this._value_cpp_type == lua.protobuf_cpptype.CPPTYPE_MESSAGE)
+                this.AddChild(new IDETreeValueMapMessage(g_Control, this, sub_rflct, sub_msg, this._key_descriptor, this._value_descriptor, index));
+            else
+                this.AddChild(new IDETreeValueMapValue(g_Control, this, sub_rflct, sub_msg, this._key_descriptor, this._value_descriptor, index));
         }
-        elseif (this._cpp_type == lua.protobuf_cpptype.CPPTYPE_INT64)
-        {
-            lua.protobuf.reflection_insertrepeatedint64(this._rflct, this._msg, this._field, index, 0);
-            this.AddChild(new IDETreeRepeatedValue(g_Control, this, this._rflct, this._msg, this._field, index), index + 1);
-        }
-        elseif (this._cpp_type == lua.protobuf_cpptype.CPPTYPE_UINT64)
-        {
-            lua.protobuf.reflection_insertrepeateduint64(this._rflct, this._msg, this._field, index, 0);
-            this.AddChild(new IDETreeRepeatedValue(g_Control, this, this._rflct, this._msg, this._field, index), index + 1);
-        }
-        elseif (this._cpp_type == lua.protobuf_cpptype.CPPTYPE_DOUBLE)
-        {
-            lua.protobuf.reflection_insertrepeateddouble(this._rflct, this._msg, this._field, index, 0);
-            this.AddChild(new IDETreeRepeatedValue(g_Control, this, this._rflct, this._msg, this._field, index), index + 1);
-        }
-        elseif (this._cpp_type == lua.protobuf_cpptype.CPPTYPE_FLOAT)
-        {
-            lua.protobuf.reflection_insertrepeatedfloat(this._rflct, this._msg, this._field, index, 0);
-            this.AddChild(new IDETreeRepeatedValue(g_Control, this, this._rflct, this._msg, this._field, index), index + 1);
-        }
-        elseif (this._cpp_type == lua.protobuf_cpptype.CPPTYPE_ENUM)
-        {
-            lua.protobuf.reflection_insertrepeatedint32(this._rflct, this._msg, this._field, index, 0);
-            this.AddChild(new IDETreeRepeatedEnum(g_Control, this, this._rflct, this._msg, this._field, index), index + 1);
-        }
-        elseif (this._cpp_type == lua.protobuf_cpptype.CPPTYPE_STRING)
-        {
-            lua.protobuf.reflection_insertrepeatedstring(this._rflct, this._msg, this._field, index, "");
-            this.AddChild(new IDETreeRepeatedValue(g_Control, this, this._rflct, this._msg, this._field, index), index + 1);
-        }
-        elseif (this._cpp_type == lua.protobuf_cpptype.CPPTYPE_MESSAGE)
-        {
-            var value = lua.protobuf.reflection_insertrepeatedmessage(this._rflct, this._msg, this._field, index);
-            this.AddChild(UtilityCreateTreeMessage(value, ""), index + 1);
-        }*/
     }
 
     public fun CreateOneBefore(ALittle.DisplayObject child)
@@ -224,26 +143,6 @@ public class IDETreeMap : IDETree
     {
         var index = this.GetChildIndex(child) - 1;
         this.RemoveChild(child);
-
-        if (this._cpp_type == lua.protobuf_cpptype.CPPTYPE_BOOL)
-            lua.protobuf.reflection_removerepeatedbool(this._rflct, this._msg, this._field, index);
-        elseif (this._cpp_type == lua.protobuf_cpptype.CPPTYPE_INT32)
-            lua.protobuf.reflection_removerepeatedint32(this._rflct, this._msg, this._field, index);
-        elseif (this._cpp_type == lua.protobuf_cpptype.CPPTYPE_UINT32)
-            lua.protobuf.reflection_removerepeateduint32(this._rflct, this._msg, this._field, index);
-        elseif (this._cpp_type == lua.protobuf_cpptype.CPPTYPE_INT64)
-            lua.protobuf.reflection_removerepeatedint64(this._rflct, this._msg, this._field, index);
-        elseif (this._cpp_type == lua.protobuf_cpptype.CPPTYPE_UINT64)
-            lua.protobuf.reflection_removerepeateduint64(this._rflct, this._msg, this._field, index);
-        elseif (this._cpp_type == lua.protobuf_cpptype.CPPTYPE_DOUBLE)
-            lua.protobuf.reflection_removerepeateddouble(this._rflct, this._msg, this._field, index);
-        elseif (this._cpp_type == lua.protobuf_cpptype.CPPTYPE_FLOAT)
-            lua.protobuf.reflection_removerepeatedfloat(this._rflct, this._msg, this._field, index);
-        elseif (this._cpp_type == lua.protobuf_cpptype.CPPTYPE_ENUM)
-            lua.protobuf.reflection_removerepeatedint32(this._rflct, this._msg, this._field, index);
-        elseif (this._cpp_type == lua.protobuf_cpptype.CPPTYPE_STRING)
-            lua.protobuf.reflection_removerepeatedstring(this._rflct, this._msg, this._field, index);
-        elseif (this._cpp_type == lua.protobuf_cpptype.CPPTYPE_MESSAGE)
-            lua.protobuf.reflection_removerepeatedmessage(this._rflct, this._msg, this._field, index);
+        lua.protobuf.reflection_removerepeatedmessage(this._rflct, this._msg, this._field, index);
     }
 }

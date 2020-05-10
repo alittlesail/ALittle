@@ -1,0 +1,42 @@
+
+namespace Emulator;
+
+public class IDETreeRepeatedMessage : IDETree
+{
+	private IDETreeRepeated _parent;
+
+	private DetailInfo _detail_info;
+	private ALittle.TextButton _insert_button;
+	private ALittle.TextButton _delete_button;
+
+	public ctor(ALittle.ControlSystem ctrl_sys, IDETreeRepeated parent, DetailInfo detail_info)
+	{
+		this._parent = parent;
+		this._detail_info = detail_info;
+
+		// 对树的头部进行处理
+		this._head = ctrl_sys.CreateControl{ALittle.DisplayObject}("ide_common_tree_repeated_message", this);
+		ALittle.DisplayGroup.AddChild(this, this._head, 1);
+
+		this._item_title.text = "["..detail_info.info.name.."] ";
+		
+		this._insert_button.x = this._item_title.x + this._item_title.width + 1;
+		this._delete_button.x = this._insert_button.x + this._insert_button.width + 1;
+
+		this._head.width = this._delete_button.x + this._delete_button.width + 1;
+		this.Init();
+	}
+
+	public fun GetDetailInfo() : DetailInfo { return this._detail_info; }
+	
+
+	public fun HandleInsertClick(ALittle.UIClickEvent event)
+	{
+		this._parent.CreateOneBefore(this);
+    }
+	
+	public fun HandleDeleteClick(ALittle.UIClickEvent event)
+	{
+		this._parent.Delete(this);
+    }
+}

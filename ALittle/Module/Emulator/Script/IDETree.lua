@@ -1,7 +1,6 @@
--- ALittle Generate Lua And Do Not Edit This Line!
+-- ALittle Generate Lua
 module("Emulator", package.seeall)
 
-local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = ALittle.GetAllStruct()
@@ -58,8 +57,7 @@ option_map = {}
 assert(Emulator.IDETreeLogic, " extends class:Emulator.IDETreeLogic is nil")
 IDETree = Lua.Class(Emulator.IDETreeLogic, "Emulator.IDETree")
 
-function IDETree:Ctor(ctrl_sys, field_name)
-	___rawset(self, "_field_name", field_name)
+function IDETree:Ctor(ctrl_sys)
 end
 
 function IDETree:Init()

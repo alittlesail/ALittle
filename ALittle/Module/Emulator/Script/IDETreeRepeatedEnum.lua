@@ -1,4 +1,4 @@
--- ALittle Generate Lua And Do Not Edit This Line!
+-- ALittle Generate Lua
 module("Emulator", package.seeall)
 
 local ___rawset = rawset
@@ -19,12 +19,17 @@ function IDETreeRepeatedEnum:Ctor(ctrl_sys, parent, rflct, msg, field, index)
 	local value_count = protobuf.enumdescriptor_valuecount(enum_descriptor)
 	local data_list = {}
 	___rawset(self, "_enum_value_map", {})
+	local value_string = ""
 	local i = 0
 	while true do
 		if not(i < value_count) then break end
 		local enum_value = protobuf.enumdescriptor_value(enum_descriptor, i)
 		data_list[i + 1] = protobuf.enumvaluedescriptor_name(enum_value)
-		self._enum_value_map[data_list[i + 1]] = protobuf.enumvaluedescriptor_number(enum_value)
+		local number = protobuf.enumvaluedescriptor_number(enum_value)
+		self._enum_value_map[data_list[i + 1]] = number
+		if value == number then
+			value_string = data_list[i + 1]
+		end
 		i = i+(1)
 	end
 	___rawset(self, "_item", ctrl_sys:CreateControl("ide_common_tree_repeated_enum", self))
@@ -33,6 +38,7 @@ function IDETreeRepeatedEnum:Ctor(ctrl_sys, parent, rflct, msg, field, index)
 	self.height = self._item.height
 	self._item_title.text = "[" .. protobuf.fielddescriptor_cpptypename(field) .. "] : "
 	self._value_dropdown.data_list = data_list
+	self._value_dropdown.text = value_string
 	self._value_dropdown.width = self.width - self._item_title.width - self._item_title.x - 2 - self._insert_button.width - self._delete_button.width - 1
 	self._value_dropdown.x = self._item_title.width + self._item_title.x
 	self._insert_button.x = self._value_dropdown.x + self._value_dropdown.width + 1

@@ -1,4 +1,4 @@
--- ALittle Generate Lua And Do Not Edit This Line!
+-- ALittle Generate Lua
 module("Emulator", package.seeall)
 
 local ___rawset = rawset
@@ -98,7 +98,7 @@ function IDETreeRepeated:Ctor(ctrl_sys, field_name, rflct, msg, field)
 		while true do
 			if not(index < value_count) then break end
 			local value = protobuf.reflection_getrepeatedmessage(rflct, msg, field, index)
-			self:AddChild(UtilityCreateTreeMessage(value, ""))
+			self:AddChild(UtilityCreateTreeRepeatedMessage(self, value))
 			index = index+(1)
 		end
 	end
@@ -142,7 +142,7 @@ function IDETreeRepeated:AddLine(index)
 		self:AddChild(IDETreeRepeatedValue(g_Control, self, self._rflct, self._msg, self._field, index), index + 1)
 	elseif self._cpp_type == 10 then
 		local value = protobuf.reflection_insertrepeatedmessage(self._rflct, self._msg, self._field, index)
-		self:AddChild(UtilityCreateTreeMessage(value, ""), index + 1)
+		self:AddChild(UtilityCreateTreeRepeatedMessage(self, value), index + 1)
 	end
 end
 

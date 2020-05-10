@@ -87,7 +87,7 @@ public class IDETreeRepeated : IDETree
             for (var index = 0; index < value_count; 1)
             {
                 var value = lua.protobuf.reflection_getrepeatedmessage(rflct, msg, field, index);
-                this.AddChild(UtilityCreateTreeMessage(value, ""));
+                this.AddChild(UtilityCreateTreeRepeatedMessage(this, value));
             }
         }
 
@@ -154,7 +154,7 @@ public class IDETreeRepeated : IDETree
         elseif (this._cpp_type == lua.protobuf_cpptype.CPPTYPE_MESSAGE)
         {
             var value = lua.protobuf.reflection_insertrepeatedmessage(this._rflct, this._msg, this._field, index);
-            this.AddChild(UtilityCreateTreeMessage(value, ""), index + 1);
+            this.AddChild(UtilityCreateTreeRepeatedMessage(this, value), index + 1);
         }
     }
 

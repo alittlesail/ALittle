@@ -1,4 +1,4 @@
--- ALittle Generate Lua And Do Not Edit This Line!
+-- ALittle Generate Lua
 module("Emulator", package.seeall)
 
 local ___pairs = pairs
@@ -29,13 +29,17 @@ function __Module_Setup(layer_group, control, module_base_path, script_base_path
 	Require(script_base_path, "GCenter")
 	Require(script_base_path, "IDETool")
 	Require(script_base_path, "IDETreeLogic")
+	Require(script_base_path, "IDETree")
 	Require(script_base_path, "IDETreeValue")
 	Require(script_base_path, "IDETreeEnum")
 	Require(script_base_path, "IDETreeBool")
 	Require(script_base_path, "IDETreeRepeatedValue")
 	Require(script_base_path, "IDETreeRepeatedEnum")
 	Require(script_base_path, "IDETreeRepeatedBool")
-	Require(script_base_path, "IDETree")
+	Require(script_base_path, "IDETreeRepeatedMessage")
+	Require(script_base_path, "IDETreeBooMapBool")
+	Require(script_base_path, "IDETreeBooMapEnum")
+	Require(script_base_path, "IDETreeBooMapValue")
 	Require(script_base_path, "IDETreeMessage")
 	Require(script_base_path, "IDETreeMap")
 	Require(script_base_path, "IDETreeRepeated")

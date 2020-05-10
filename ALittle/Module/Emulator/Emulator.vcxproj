@@ -25,12 +25,16 @@
     <None Include="src\IDETool.alittle" />
     <None Include="src\IDETree.alittle" />
     <None Include="src\IDETreeBool.alittle" />
+    <None Include="src\IDETreeBoolMapBool.alittle" />
+    <None Include="src\IDETreeBoolMapEnum.alittle" />
+    <None Include="src\IDETreeBoolMapValue.alittle" />
     <None Include="src\IDETreeMessage.alittle" />
     <None Include="src\IDETreeEnum.alittle" />
     <None Include="src\IDETreeLogic.alittle" />
     <None Include="src\IDETreeMap.alittle" />
     <None Include="src\IDETreeRepeatedBool.alittle" />
     <None Include="src\IDETreeRepeatedEnum.alittle" />
+    <None Include="src\IDETreeRepeatedMessage.alittle" />
     <None Include="src\IDETreeRepeatedValue.alittle" />
     <None Include="src\IDETreeValue.alittle" />
     <None Include="src\IDETreeRepeated.alittle" />

@@ -6,11 +6,9 @@ public class IDETree : IDETreeLogic
 	private ALittle.Linear _body;
 	private ALittle.DisplayObject _item_checkbutton;
 	private ALittle.DisplayObject _item_button;	// 按钮
-	private string _field_name;
-
-	public ctor(ALittle.ControlSystem ctrl_sys, string field_name)
+	
+	public ctor(ALittle.ControlSystem ctrl_sys)
 	{
-		this._field_name = field_name;
 	}
 
 	private fun Init()

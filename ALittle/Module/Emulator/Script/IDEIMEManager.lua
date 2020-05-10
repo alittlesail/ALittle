@@ -1,4 +1,4 @@
--- ALittle Generate Lua And Do Not Edit This Line!
+-- ALittle Generate Lua
 module("Emulator", package.seeall)
 
 local ___pairs = pairs

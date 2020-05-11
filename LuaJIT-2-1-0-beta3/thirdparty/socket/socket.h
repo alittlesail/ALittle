@@ -53,6 +53,7 @@ void socket_init(struct _socket* c);
 void socket_clear(struct _socket* c);
 void socket_destroy(struct _socket* c);
 void socket_exit(struct _socket* c);
+socket_event* socket_pollone(struct _socket* c);
 socket_event* socket_runone(struct _socket* c);
 
 // 事件相关

@@ -277,6 +277,48 @@ static int socketlib_poll(lua_State* L)
 {
     struct _socket* c = (struct _socket*)lua_touserdata(L, 1);
     luaL_argcheck(L, c != 0, 1, "socket object is null");
+    socket_event* event = socket_pollone(c);
+    if (event == 0)
+    {
+        lua_pushnil(L);
+    }
+    else
+    {
+        lua_newtable(L);
+        lua_pushinteger(L, event->type);
+        lua_setfield(L, -2, "type");
+        lua_pushinteger(L, event->id);
+        lua_setfield(L, -2, "id");
+        if (event->type == TIMER)
+        {
+            lua_pushinteger(L, event->time);
+            lua_setfield(L, -2, "time");
+        }
+        else if (event->type >= MSG_READ_UINT8 && event->type <= MSG_READ_INT64)
+        {
+            lua_pushinteger(L, event->int_value);
+            lua_setfield(L, -2, "int_value");
+        }
+        else if (event->type >= MSG_READ_FLOAT && event->type <= MSG_READ_DOUBLE)
+        {
+            lua_pushnumber(L, event->double_value);
+            lua_setfield(L, -2, "double_value");
+        }
+        else if (event->type == MSG_READ_BINARY)
+        {
+            lua_pushlightuserdata(L, event->binary_value);
+            lua_setfield(L, -2, "binary_value");
+            event->binary_value = 0;
+        }
+        socket_releaseevent(c, event);
+    }
+    return 1;
+}
+
+static int socketlib_run(lua_State* L)
+{
+    struct _socket* c = (struct _socket*)lua_touserdata(L, 1);
+    luaL_argcheck(L, c != 0, 1, "socket object is null");
     socket_event* event = socket_runone(c);
     if (event == 0)
     {
@@ -341,6 +383,7 @@ static void set_info(lua_State* L) {
 static struct luaL_Reg socketlib[] = {
     {"create", socketlib_create},
     {"poll", socketlib_poll},
+    {"run", socketlib_run},
     {"timer", socketlib_timer},
 
     {"connect", socketlib_connect},

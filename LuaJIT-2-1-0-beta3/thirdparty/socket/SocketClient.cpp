@@ -10,7 +10,8 @@ namespace ALittle
 {
 	 
 SocketClient::SocketClient(_socket* c, SocketSchedule* schedule, int id)
-: m_port(0), m_binary_value(0), m_excuting(false), m_is_connecting(false), m_id(id)
+: m_port(0), m_binary_value(0), m_simple_value()
+, m_excuting(false), m_is_connecting(false), m_id(id), m_schedule(schedule), m__socket(c)
 {
 }
 
@@ -169,6 +170,7 @@ void SocketClient::HandleReadNumber(const asio::error_code& ec, std::size_t actu
 
 	socket_event* event = socket_createevent(m__socket);
 	event->type = (socket_event_types)type;
+	event->id = m_id;
 	switch (event->type)
 	{
 	case socket_event_types::MSG_READ_UINT8: event->int_value = *((unsigned char*)m_simple_value); break;
@@ -210,6 +212,7 @@ void SocketClient::HandleReadBinary(const asio::error_code& ec, std::size_t actu
 	}
 
 	socket_event* event = socket_createevent(m__socket);
+	event->id = m_id;
 	event->type = (socket_event_types)type;
 	event->binary_value = m_binary_value;
 	m_binary_value = 0;

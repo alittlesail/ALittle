@@ -273,6 +273,14 @@ static int protobuflib_freemessage(lua_State* L)
     return 0;
 }
 
+static int protobuflib_clonemessage(lua_State* L)
+{
+    void* m = lua_touserdata(L, 1);
+    luaL_argcheck(L, m != 0, 1, "factory object is null");
+    lua_pushlightuserdata(L, protobuf_clonemessage(L, m));
+    return 1;
+}
+
 static int protobuflib_factory_createmessage(lua_State* L)
 {
     void** c = (void**)lua_touserdata(L, 1);
@@ -341,7 +349,7 @@ static int protobuflib_message_jsondecode(lua_State* L)
     void* m = lua_touserdata(L, 1);
     luaL_argcheck(L, m != 0, 1, "message object is null");
     const char* json = luaL_checkstring(L, 2);
-    lua_pushboolean(L, protobuf_message_jsondecode(m, json));
+    lua_pushstring(L, protobuf_message_jsondecode(m, json));
     return 1;
 }
 
@@ -1193,6 +1201,7 @@ static struct luaL_Reg protobuflib[] = {
     {"createfactory", protobuflib_createfactory},
     {"createmessage", protobuflib_factory_createmessage},
     {"freemessage", protobuflib_freemessage},
+    {"clonemessage", protobuflib_clonemessage},
 
     {"message_getdescriptor", protobuflib_message_getdescriptor},
     {"message_getreflection", protobuflib_message_getreflection},

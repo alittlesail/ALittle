@@ -60,13 +60,14 @@ void* protobuf_factory_createmessage(void* c, void* message_descriptor);
 
 // message
 void protobuf_freemessage(void* m);
+void* protobuf_clonemessage(void* m);
 void* protobuf_message_getdescriptor(void* m);
 void* protobuf_message_getreflection(void* m);
 int protobuf_message_getbytesize(void* m);
 int protobuf_message_serializetoarray(void* m, void* buffer, int size);
 int protobuf_message_parsefromarray(void* m, void* buffer, int size);
 const char* protobuf_message_jsonencode(void* m);
-int protobuf_message_jsondecode(void* m, const char* json);
+const char* protobuf_message_jsondecode(void* m, const char* json);
 
 // reflection
 void* protobuf_reflection_getmessage(void* r, void* m, void* field);

@@ -173,6 +173,13 @@ void protobuf_freemessage(void* m)
     delete ((google::protobuf::Message*)m);
 }
 
+void* protobuf_clonemessage(void* m)
+{
+    auto* new_msg = ((google::protobuf::Message*)m)->New();
+    new_msg->CopyFrom(*(google::protobuf::Message*)m);
+    return new_msg;
+}
+
 void* protobuf_message_getdescriptor(void* m)
 {
     return (void*)((google::protobuf::Message*)m)->GetDescriptor();
@@ -201,14 +208,23 @@ int protobuf_message_parsefromarray(void* m, void* buffer, int size)
 const char* protobuf_message_jsonencode(void* m)
 {
     static std::string temp;
+    temp.clear();
     if (google::protobuf::util::MessageToJsonString(*(const google::protobuf::Message*)m, &temp).ok())
         return temp.c_str();
     return nullptr;
 }
 
-int protobuf_message_jsondecode(void* m, const char* json)
+const char* protobuf_message_jsondecode(void* m, const char* json)
 {
-    return google::protobuf::util::JsonStringToMessage(json, (google::protobuf::Message*)m).ok() ? 1 : 0;
+    static std::string temp;
+    temp.clear();
+    google::protobuf::util::JsonParseOptions option;
+    option.ignore_unknown_fields = true;
+    auto status = google::protobuf::util::JsonStringToMessage(json, (google::protobuf::Message*)m, option);
+    if (status.ok()) return nullptr;
+
+    temp = status.error_message();
+    return temp.c_str();
 }
 
 int protobuf_reflection_getbool(void* r, void* m, void* field)

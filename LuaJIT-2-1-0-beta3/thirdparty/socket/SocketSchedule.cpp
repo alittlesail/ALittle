@@ -29,6 +29,16 @@ void SocketSchedule::RunOne()
 	}
 }
 
+void SocketSchedule::PollOne()
+{
+	asio::error_code ec;
+	if (m_io_service.poll_one(ec) == 0)
+	{
+		m_io_service.restart();
+		m_io_service.poll_one(ec);
+	}
+}
+
 void SocketSchedule::Exit()
 {
 	if (m_is_exit) return;
@@ -43,7 +53,10 @@ void SocketSchedule::Connect(_socket* c, int id, const char* ip, int port)
 	if (it != m_connect_map.end())
 		client = it->second;
 	else
+	{
 		client = SocketClientPtr(new SocketClient(c, this, id));
+		m_connect_map[id] = client;
+	}
 	client->Connect(ip, port);
 }
 

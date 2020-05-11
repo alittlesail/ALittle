@@ -64,9 +64,31 @@ socket_event* socket_runone(struct _socket* c)
     }
 
     ALittle::SocketSchedule* schedule = (ALittle::SocketSchedule*)(c->schedule);
-    while ((c->wait_count > 0 || schedule->GetConnectCount() > 0)
-        && c->events == 0 && !schedule->IsExit())
+    while ((c->wait_count > 0 || schedule->GetConnectCount() > 0) && c->events == 0 && !schedule->IsExit())
         schedule->RunOne();
+
+    if (c->events)
+    {
+        socket_event* event = c->events;
+        c->events = c->events->next;
+        return event;
+    }
+
+    return 0;
+}
+
+socket_event* socket_pollone(struct _socket* c)
+{
+    if (c->events)
+    {
+        socket_event* event = c->events;
+        c->events = c->events->next;
+        return event;
+    }
+
+    ALittle::SocketSchedule* schedule = (ALittle::SocketSchedule*)(c->schedule);
+    if ((c->wait_count > 0 || schedule->GetConnectCount() > 0) && c->events == 0 && !schedule->IsExit())
+        schedule->PollOne();
 
     if (c->events)
     {

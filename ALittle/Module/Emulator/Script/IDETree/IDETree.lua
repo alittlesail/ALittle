@@ -1,6 +1,7 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
 module("Emulator", package.seeall)
 
+local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = ALittle.GetAllStruct()
@@ -22,17 +23,17 @@ assert(Emulator.IDETreeLogic, " extends class:Emulator.IDETreeLogic is nil")
 IDETree = Lua.Class(Emulator.IDETreeLogic, "Emulator.IDETree")
 
 function IDETree:Ctor(ctrl_sys, root)
+	___rawset(self, "_body", ALittle.Linear(self._ctrl_sys))
+	self._body.type = 2
+	self._body.x = 8
+	ALittle.DisplayGroup.AddChild(self, self._body)
+	self._body:AddEventListener(___all_struct[-431205740], self, self.HandleChildResize)
 end
 
 function IDETree:Init()
-	self._body = ALittle.Linear(self._ctrl_sys)
-	self._body.type = 2
-	self._body.x = 8
 	self._body.y = self._head.height
 	self._body.width = self._head.width
 	self._item_checkbutton.selected = true
-	ALittle.DisplayGroup.AddChild(self, self._body)
-	self._body:AddEventListener(___all_struct[-431205740], self, self.HandleChildResize)
 	self._pickup_rect = false
 	self._pickup_child = true
 	self.fold = false

@@ -8,19 +8,19 @@ public class IDETree : IDETreeLogic
 	
 	public ctor(ALittle.ControlSystem ctrl_sys, RootInfo root)
 	{
-	}
-
-	private fun Init()
-	{
 		// 对数的身体部分进行处理
 		this._body = new ALittle.Linear(this._ctrl_sys);
 		this._body.type = ALittle.UIEnumTypes.TYPE_V;
 		this._body.x = 8;
+		ALittle.DisplayGroup.AddChild(this, this._body);
+		this._body.AddEventListener(this, this.HandleChildResize);
+	}
+
+	private fun Init()
+	{
 		this._body.y = this._head.height;
 		this._body.width = this._head.width;
 		this._item_checkbutton.selected = true;
-		ALittle.DisplayGroup.AddChild(this, this._body);
-		this._body.AddEventListener(this, this.HandleChildResize);
 	
 		// 设置一下拾取属性
 		this._pickup_rect = false;

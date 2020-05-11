@@ -1,4 +1,4 @@
--- ALittle Generate Lua
+-- ALittle Generate Lua And Do Not Edit This Line!
 module("Emulator", package.seeall)
 
 local ___rawset = rawset

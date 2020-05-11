@@ -1,0 +1,73 @@
+
+namespace Emulator;
+
+public class IDETreeRepeatedEnum : IDETreeLogic
+{
+	IDETreeRepeated _parent;
+
+	private ALittle.DropDown _value_dropdown;
+	private ALittle.TextButton _insert_button;
+	private ALittle.TextButton _delete_button;
+
+	private lua.protobuf_message _msg;
+	private lua.protobuf_reflection _rflct;
+	private lua.protobuf_field_descriptor _field;
+
+	private Map<string, int> _enum_value_map;
+
+	public ctor(ALittle.ControlSystem ctrl_sys, RootInfo root, IDETreeRepeated parent, lua.protobuf_reflection rflct, lua.protobuf_message msg, lua.protobuf_field_descriptor field, int index)
+	{
+		this._parent = parent;
+		this._rflct = rflct;
+		this._msg = msg;
+		this._field = field;
+
+		var value = lua.protobuf.reflection_getrepeatedint32(this._rflct, this._msg, this._field, index);
+		var enum_descriptor = lua.protobuf.fielddescriptor_enumtype(field);
+		var value_count = lua.protobuf.enumdescriptor_valuecount(enum_descriptor);
+		var data_list = new List<string>();
+		this._enum_value_map = new Map<string, int>();
+		var value_string = "";
+		for (var i = 0; i < value_count; 1)
+		{
+			var enum_value = lua.protobuf.enumdescriptor_value(enum_descriptor, i);
+            data_list[i + 1] = lua.protobuf.enumvaluedescriptor_name(enum_value);
+			var number = lua.protobuf.enumvaluedescriptor_number(enum_value);
+			this._enum_value_map[data_list[i + 1]] = number;
+			if (value == number) value_string = data_list[i + 1];
+        }
+		
+		this._item = ctrl_sys.CreateControl{ALittle.DisplayObject}("ide_common_tree_repeated_enum", this);
+		this.AddChild(this._item);
+		this.width = this._item.width;
+		this.height = this._item.height;
+
+		this._item_title.text = "["..lua.protobuf.fielddescriptor_cpptypename(field).."] : ";
+		this._value_dropdown.data_list = data_list;
+		this._value_dropdown.text = value_string;
+		this._value_dropdown.width = this.width - this._item_title.width - this._item_title.x - 2 - this._insert_button.width - this._delete_button.width - 1;
+		this._value_dropdown.x = this._item_title.width + this._item_title.x;
+		this._insert_button.x = this._value_dropdown.x + this._value_dropdown.width + 1;
+		this._delete_button.x = this._insert_button.x + this._insert_button.width + 1;
+	}
+
+	public fun HandleSelectChanegd(ALittle.UISelectChangedEvent event)
+	{
+		var value = this._enum_value_map[event.target.text];
+		if (value == null) return;
+
+		var index = this._parent.GetChildIndex(this) - 1;
+		lua.protobuf.reflection_setrepeatedint32(this._rflct, this._msg, this._field, index, value);
+		this.Save();
+    }
+	
+	public fun HandleInsertClick(ALittle.UIClickEvent event)
+	{
+		this._parent.CreateOneBefore(this);
+    }
+	
+	public fun HandleDeleteClick(ALittle.UIClickEvent event)
+	{
+		this._parent.Delete(this);
+    }
+}

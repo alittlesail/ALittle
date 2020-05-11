@@ -1,4 +1,4 @@
--- ALittle Generate Lua
+-- ALittle Generate Lua And Do Not Edit This Line!
 module("Emulator", package.seeall)
 
 local ___rawset = rawset
@@ -34,6 +34,12 @@ ALittle.RegStruct(-297098024, "lua.protobuf_descriptor", {
 name = "lua.protobuf_descriptor", ns_name = "lua", rl_name = "protobuf_descriptor", hash_code = -297098024,
 name_list = {},
 type_list = {},
+option_map = {}
+})
+ALittle.RegStruct(398889456, "Emulator.RootInfo", {
+name = "Emulator.RootInfo", ns_name = "Emulator", rl_name = "RootInfo", hash_code = 398889456,
+name_list = {"detail_info"},
+type_list = {"Emulator.DetailInfo"},
 option_map = {}
 })
 ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
@@ -157,7 +163,6 @@ end
 
 function GCenter:HandleProtoItemSelected(event)
 	local info = event.target._user_data
-	self._detail_scroll_screen:RemoveAllChild()
 	local detail_info = self._detail_tree_item_pool[info.full_name]
 	if detail_info == nil then
 		detail_info = Utility_CreateTree(info)
@@ -166,7 +171,7 @@ function GCenter:HandleProtoItemSelected(event)
 		end
 		self._detail_tree_item_pool[info.full_name] = detail_info
 	end
-	self._detail_scroll_screen:AddChild(detail_info.tree)
+	self._detail_scroll_screen:SetContainer(detail_info.tree)
 	self._detail_scroll_screen:RejustScrollBar()
 end
 

@@ -1,0 +1,143 @@
+
+namespace Emulator;
+
+public class IDETree : IDETreeLogic
+{
+	private ALittle.Linear _body;
+	private ALittle.DisplayObject _item_checkbutton;
+	
+	public ctor(ALittle.ControlSystem ctrl_sys, RootInfo root)
+	{
+	}
+
+	private fun Init()
+	{
+		// 对数的身体部分进行处理
+		this._body = new ALittle.Linear(this._ctrl_sys);
+		this._body.type = ALittle.UIEnumTypes.TYPE_V;
+		this._body.x = 8;
+		this._body.y = this._head.height;
+		this._body.width = this._head.width;
+		this._item_checkbutton.selected = true;
+		ALittle.DisplayGroup.AddChild(this, this._body);
+		this._body.AddEventListener(this, this.HandleChildResize);
+	
+		// 设置一下拾取属性
+		this._pickup_rect = false;
+		this._pickup_child = true;
+	
+		this.fold = false;        
+    }
+	
+	public fun HandleLButtonDown(ALittle.UILButtonDownEvent event)
+	{
+		if (event.count == 1) return;
+		this.fold = !this.fold;
+	}
+	
+	public fun IsTree() : bool { return true; }
+	
+	// 搜索description
+	public fun SearchDescription(string name, [Nullable] List<IDETreeLogic> list) : List<IDETreeLogic>
+	{
+		if (list == null) list = new List<IDETreeLogic>();
+	
+		var description = this._item_title.text;
+		if (description != null)
+		{
+			if (ALittle.String_Find(description, name) != null)
+				ALittle.List_Push(list, this);
+		}
+		for (var k, child:IDETreeLogic in this._body.childs)
+			child.SearchDescription(name, list);
+
+		return list;
+	}
+	
+	public fun HandleChildResize(ALittle.UIResizeEvent event)
+	{
+		this.DispatchEvent(new ALittle.UIResizeEvent());
+	}
+	
+	public fun HandleHeadChanged(ALittle.UIEvent event)
+	{
+		this._body.visible = event.target.selected;
+		this.DispatchEvent(new ALittle.UIResizeEvent());
+	}
+	//////////////////////////////////////////////////////////////////////////////////////
+	public fun GetChildIndex(ALittle.DisplayObject child) : int	{ return this._body.GetChildIndex(child);	}
+	public fun SetChildIndex(ALittle.DisplayObject child, int index) : bool { return this._body.SetChildIndex(child, index); }
+	public fun GetChildByIndex(int index) : ALittle.DisplayObject {	return this._body.GetChildByIndex(index); }
+	public fun GetChildIndex(ALittle.DisplayObject child) : int	{ return this._body.GetChildIndex(child);	}
+	public get childs() : List<ALittle.DisplayObject> { return this._body.childs; }
+	public get child_count() : int { return this._body.child_count;	}
+	public fun HasChild(ALittle.DisplayObject child) : bool { return this._body.HasChild(child); }
+
+	public fun AddChild(ALittle.DisplayObject child, [Nullable] int index) : bool
+	{
+		if (this._body.width < child.width)
+			this._body.width = child.width;
+		if (this._body.AddChild(child, index) == false)
+			return false;
+		child._logic_parent = this;
+		this.DispatchEvent(new ALittle.UIResizeEvent());
+		return true;
+	}
+	
+	public fun RemoveChild(ALittle.DisplayObject child) : bool
+	{
+		if (this._body.RemoveChild(child) == false)
+			return false;
+		this.DispatchEvent(new ALittle.UIResizeEvent());
+
+		return true;
+	}
+	
+	public fun RemoveAllChild()
+	{
+		this._body.RemoveAllChild();
+		this.DispatchEvent(new ALittle.UIResizeEvent());
+	}
+	
+	//////////////////////////////////////////////////////////////////////
+	public get width() : double
+	{
+		var head_width = 0.0;
+		if (this._head != null) head_width = this._head.width;
+		var body_width = 0.0;
+		if (this._body.visible)
+		{
+			var start_x = this._body.x;
+			body_width = start_x + this._body.width;
+			var childs = this._body.childs;
+			for (var k, v in childs)
+			{
+				var child_width = start_x + v.x + v.width;
+				if (body_width < child_width) body_width = child_width;
+			}
+		}
+		if (head_width > body_width) return head_width;
+		return body_width;
+	}
+	
+	public get height() : double
+	{
+		var head_height = 0.0;
+		if (this._head != null) head_height = this._head.height;
+		if (this._body.visible) return head_height + this._body.height;
+		return head_height;
+	}
+	
+	public get fold() : bool { return this._body.visible; }
+	public set fold(bool value)
+	{
+		if (value == this._body.visible) return;
+	
+		this._body.visible = value;
+		this._item_checkbutton.selected = value;
+		this.DispatchEvent(new ALittle.UIResizeEvent());
+	}
+	
+	public get max_right() : double	{ return this.width; }
+	public get max_bottom() : double { return this.height; }
+}

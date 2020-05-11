@@ -1,0 +1,58 @@
+
+namespace Emulator;
+
+public class IDETreeRepeatedBool : IDETreeLogic
+{
+	private IDETreeRepeated _parent;
+
+	private ALittle.DropDown _value_dropdown;
+	private ALittle.TextButton _insert_button;
+	private ALittle.TextButton _delete_button;
+
+	private lua.protobuf_message _msg;
+	private lua.protobuf_reflection _rflct;
+	private lua.protobuf_field_descriptor _field;
+
+	public ctor(ALittle.ControlSystem ctrl_sys, RootInfo root, IDETreeRepeated parent, lua.protobuf_reflection rflct, lua.protobuf_message msg, lua.protobuf_field_descriptor field, int index)
+	{
+		this._parent = parent;
+		this._rflct = rflct;
+		this._msg = msg;
+		this._field = field;
+
+		var value = lua.protobuf.reflection_getrepeatedbool(this._rflct, this._msg, this._field, index);
+
+		this._item = ctrl_sys.CreateControl{ALittle.DisplayObject}("ide_common_tree_repeated_bool", this);
+		this.AddChild(this._item);
+		this.width = this._item.width;
+		this.height = this._item.height;
+		
+		this._item_title.text = "["..lua.protobuf.fielddescriptor_cpptypename(field).."] : ";
+		if (value) this._value_dropdown.text = "true";
+		else this._value_dropdown.text = "false";
+		this._value_dropdown.width = this.width - this._item_title.width - this._item_title.x - 2 - this._insert_button.width - this._delete_button.width - 1;
+		this._value_dropdown.x = this._item_title.width + this._item_title.x;
+		this._insert_button.x = this._value_dropdown.x + this._value_dropdown.width + 1;
+		this._delete_button.x = this._insert_button.x + this._insert_button.width + 1;
+	}
+
+	public fun HandleSelectChanegd(ALittle.UISelectChangedEvent event)
+	{
+		var index = this._parent.GetChildIndex(this) - 1;
+        if (this._value_dropdown.text == "true")
+			lua.protobuf.reflection_setrepeatedbool(this._rflct, this._msg, this._field, index, true);
+		else
+			lua.protobuf.reflection_setrepeatedbool(this._rflct, this._msg, this._field, index, false);
+		this.Save();
+    }
+
+	public fun HandleInsertClick(ALittle.UIClickEvent event)
+	{
+		this._parent.CreateOneBefore(this);
+    }
+	
+	public fun HandleDeleteClick(ALittle.UIClickEvent event)
+	{
+		this._parent.Delete(this);
+    }
+}

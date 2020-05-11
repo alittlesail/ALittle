@@ -82,6 +82,18 @@ function ScrollScreen.__setter:container(value)
 	self:RejustScrollBar()
 end
 
+function ScrollScreen:SetContainer(value)
+	if value == nil then
+		value = DisplayGroup(self._ctrl_sys)
+	end
+	self._scroll_content:RemoveEventListener(___all_struct[-431205740], self, self.HandleContainerResize)
+	self._scroll_view:RemoveChild(self._scroll_content)
+	self._scroll_content = value
+	self._scroll_content:AddEventListener(___all_struct[-431205740], self, self.HandleContainerResize)
+	self._scroll_view:AddChild(self._scroll_content, 1)
+	self:RejustScrollBar()
+end
+
 function ScrollScreen.__setter:container_y(value)
 	if self._scroll_content == nil then
 		return

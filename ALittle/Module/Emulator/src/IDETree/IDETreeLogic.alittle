@@ -1,0 +1,38 @@
+
+namespace Emulator;
+
+public class IDETreeLogic : ALittle.DisplayLayout
+{
+	private ALittle.DisplayObject _item_title;	// 标题
+	private ALittle.DisplayObject _light;		// 高亮框
+
+	private ALittle.DisplayObject _head;		// 头部
+	private ALittle.DisplayObject _item;		// item部分
+
+	private RootInfo _root;		// 根数据
+
+	public ctor(ALittle.ControlSystem ctrl_sys, RootInfo root)
+	{
+		this._root = root;
+	}
+	
+	public fun IsTree() : bool { return false; }
+	public get title() : string	{ return this._item_title.text; }
+	public set fold(bool value) { }
+	public get fold() : bool { return false; }
+	public set light(bool value) { this._light.visible = value; }
+	public get light() : bool { return this._light.visible; }
+
+	public fun SearchDescription(string name, [Nullable] List<IDETreeLogic> list) : List<IDETreeLogic>
+	{
+		return null;
+	}
+
+	public fun Save()
+	{
+        var content = lua.protobuf.message_jsonencode(this._root.detail_info.message);
+		if (content == null) return;
+		
+		g_GProtoCache.SetConfig(this._root.detail_info.info.full_name, content);
+    }
+}

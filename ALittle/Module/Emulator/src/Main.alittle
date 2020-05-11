@@ -42,21 +42,32 @@ public async static __Module_Setup(ALittle.DisplayLayout layer_group, ALittle.Co
 
 	alittle.Require(script_base_path, "GCenter");
 	alittle.Require(script_base_path, "IDETool");
-	alittle.Require(script_base_path, "IDETreeLogic");
-	alittle.Require(script_base_path, "IDETree");
-	alittle.Require(script_base_path, "IDETreeValue");
-	alittle.Require(script_base_path, "IDETreeEnum");;
-	alittle.Require(script_base_path, "IDETreeBool");;
-	alittle.Require(script_base_path, "IDETreeRepeatedValue");
-	alittle.Require(script_base_path, "IDETreeRepeatedEnum");
-	alittle.Require(script_base_path, "IDETreeRepeatedBool");
-	alittle.Require(script_base_path, "IDETreeRepeatedMessage");
-	alittle.Require(script_base_path, "IDETreeBooMapBool");
-	alittle.Require(script_base_path, "IDETreeBooMapEnum");
-	alittle.Require(script_base_path, "IDETreeBooMapValue");
-	alittle.Require(script_base_path, "IDETreeMessage");
-	alittle.Require(script_base_path, "IDETreeMap");
-	alittle.Require(script_base_path, "IDETreeRepeated");
+
+	alittle.Require(script_base_path, "IDETree/IDETreeLogic");
+	alittle.Require(script_base_path, "IDETree/IDETree");
+	alittle.Require(script_base_path, "IDETree/IDETreeValue");
+	alittle.Require(script_base_path, "IDETree/IDETreeEnum");
+	alittle.Require(script_base_path, "IDETree/IDETreeBool");
+	alittle.Require(script_base_path, "IDETree/IDETreeRepeatedValue");
+	alittle.Require(script_base_path, "IDETree/IDETreeRepeatedEnum");
+	alittle.Require(script_base_path, "IDETree/IDETreeRepeatedBool");
+	alittle.Require(script_base_path, "IDETree/IDETreeRepeatedMessage");
+	alittle.Require(script_base_path, "IDETree/IDETreeBoolMapBool");
+	alittle.Require(script_base_path, "IDETree/IDETreeBoolMapEnum");
+	alittle.Require(script_base_path, "IDETree/IDETreeBoolMapValue");
+	alittle.Require(script_base_path, "IDETree/IDETreeBoolMapMessage");
+	alittle.Require(script_base_path, "IDETree/IDETreeEnumMapBool");
+	alittle.Require(script_base_path, "IDETree/IDETreeEnumMapEnum");
+	alittle.Require(script_base_path, "IDETree/IDETreeEnumMapValue");
+	alittle.Require(script_base_path, "IDETree/IDETreeEnumMapMessage");
+	alittle.Require(script_base_path, "IDETree/IDETreeValueMapBool");
+	alittle.Require(script_base_path, "IDETree/IDETreeValueMapEnum");
+	alittle.Require(script_base_path, "IDETree/IDETreeValueMapValue");
+	alittle.Require(script_base_path, "IDETree/IDETreeValueMapMessage");
+	alittle.Require(script_base_path, "IDETree/IDETreeMessage");
+	alittle.Require(script_base_path, "IDETree/IDETreeMap");
+	alittle.Require(script_base_path, "IDETree/IDETreeRepeated");
+
 	alittle.Require(script_base_path, "GUtility");
 	alittle.Require(script_base_path, "IDEIMEManager");
 	alittle.Require(script_base_path, "LWProtobuf");

@@ -8,20 +8,83 @@
     <None Include="src\LWProtobuf.alittle" />
     <None Include="src\IDEIMEManager.alittle" />
     <None Include="src\GUtility.alittle" />
-    <None Include="src\IDETreeLogic.alittle" />
-    <None Include="src\IDETreeRepeated.alittle" />
-    <None Include="src\IDETreeMap.alittle" />
-    <None Include="src\IDETreeMessage.alittle" />
     <None Include="src\IDETree.alittle" />
-    <None Include="src\IDETreeValue.alittle" />
-    <None Include="src\IDETreeEnum.alittle" />
-    <None Include="src\IDETreeBool.alittle" />
-    <None Include="src\IDETreeRepeatedBool.alittle" />
-    <None Include="src\IDETreeRepeatedValue.alittle" />
-    <None Include="src\IDETreeRepeatedEnum.alittle" />
-    <None Include="src\IDETreeRepeatedMessage.alittle" />
-    <None Include="src\IDETreeBoolMapBool.alittle" />
-    <None Include="src\IDETreeBoolMapValue.alittle" />
-    <None Include="src\IDETreeBoolMapEnum.alittle" />
+    <None Include="src\IDETree\IDETreeEnum.alittle">
+      <Filter>IDETree</Filter>
+    </None>
+    <None Include="src\IDETree\IDETreeEnumMapBool.alittle">
+      <Filter>IDETree</Filter>
+    </None>
+    <None Include="src\IDETree\IDETreeEnumMapEnum.alittle">
+      <Filter>IDETree</Filter>
+    </None>
+    <None Include="src\IDETree\IDETreeEnumMapMessage.alittle">
+      <Filter>IDETree</Filter>
+    </None>
+    <None Include="src\IDETree\IDETreeEnumMapValue.alittle">
+      <Filter>IDETree</Filter>
+    </None>
+    <None Include="src\IDETree\IDETreeLogic.alittle">
+      <Filter>IDETree</Filter>
+    </None>
+    <None Include="src\IDETree\IDETreeMap.alittle">
+      <Filter>IDETree</Filter>
+    </None>
+    <None Include="src\IDETree\IDETreeMessage.alittle">
+      <Filter>IDETree</Filter>
+    </None>
+    <None Include="src\IDETree\IDETreeRepeated.alittle">
+      <Filter>IDETree</Filter>
+    </None>
+    <None Include="src\IDETree\IDETreeRepeatedBool.alittle">
+      <Filter>IDETree</Filter>
+    </None>
+    <None Include="src\IDETree\IDETreeRepeatedEnum.alittle">
+      <Filter>IDETree</Filter>
+    </None>
+    <None Include="src\IDETree\IDETreeRepeatedMessage.alittle">
+      <Filter>IDETree</Filter>
+    </None>
+    <None Include="src\IDETree\IDETreeRepeatedValue.alittle">
+      <Filter>IDETree</Filter>
+    </None>
+    <None Include="src\IDETree\IDETreeValue.alittle">
+      <Filter>IDETree</Filter>
+    </None>
+    <None Include="src\IDETree\IDETreeValueMapBool.alittle">
+      <Filter>IDETree</Filter>
+    </None>
+    <None Include="src\IDETree\IDETreeValueMapEnum.alittle">
+      <Filter>IDETree</Filter>
+    </None>
+    <None Include="src\IDETree\IDETreeValueMapMessage.alittle">
+      <Filter>IDETree</Filter>
+    </None>
+    <None Include="src\IDETree\IDETreeValueMapValue.alittle">
+      <Filter>IDETree</Filter>
+    </None>
+    <None Include="src\IDETree\IDETree.alittle">
+      <Filter>IDETree</Filter>
+    </None>
+    <None Include="src\IDETree\IDETreeBool.alittle">
+      <Filter>IDETree</Filter>
+    </None>
+    <None Include="src\IDETree\IDETreeBoolMapBool.alittle">
+      <Filter>IDETree</Filter>
+    </None>
+    <None Include="src\IDETree\IDETreeBoolMapEnum.alittle">
+      <Filter>IDETree</Filter>
+    </None>
+    <None Include="src\IDETree\IDETreeBoolMapMessage.alittle">
+      <Filter>IDETree</Filter>
+    </None>
+    <None Include="src\IDETree\IDETreeBoolMapValue.alittle">
+      <Filter>IDETree</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="IDETree">
+      <UniqueIdentifier>{2a6a9c9f-527c-413d-b571-5cfcbcf12be6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

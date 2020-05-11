@@ -1,7 +1,35 @@
 
 namespace Emulator;
 
-public static UtilityCreateTreeMessage(lua.protobuf_message msg, string msg_field_name) : IDETreeMessage
+public static UitlityCreateChildMessage(RootInfo root, IDETree tree, lua.protobuf_descriptor descriptor, lua.protobuf_reflection rflct, lua.protobuf_message msg)
+{
+    // 遍历消息结构
+    var field_count = lua.protobuf.messagedescriptor_fieldcount(descriptor);
+    for (var i = 0; i < field_count; 1)
+    {
+        var field_descriptor = lua.protobuf.messagedescriptor_field(descriptor, i);
+        var field_name = lua.protobuf.fielddescriptor_name(field_descriptor);
+
+        if (lua.protobuf.fielddescriptor_ismap(field_descriptor))
+            tree.AddChild(new IDETreeMap(g_Control, root, field_name, rflct, msg, field_descriptor));
+        elseif (lua.protobuf.fielddescriptor_isrepeated(field_descriptor))
+            tree.AddChild(new IDETreeRepeated(g_Control, root, field_name, rflct, msg, field_descriptor));
+        else
+        {
+            var cpp_type = lua.protobuf.fielddescriptor_cpptype(field_descriptor);
+            if (cpp_type == lua.protobuf_cpptype.CPPTYPE_BOOL)
+                tree.AddChild(new IDETreeBool(g_Control, root, field_name, rflct, msg, field_descriptor));
+            elseif (cpp_type == lua.protobuf_cpptype.CPPTYPE_ENUM)
+                tree.AddChild(new IDETreeEnum(g_Control, root, field_name, rflct, msg, field_descriptor));
+            elseif (cpp_type == lua.protobuf_cpptype.CPPTYPE_MESSAGE)
+                tree.AddChild(UtilityCreateTreeMessage(root, lua.protobuf.reflection_getmessage(rflct, msg, field_descriptor), field_name));
+            else
+                tree.AddChild(new IDETreeValue(g_Control, root, field_name, rflct, msg, field_descriptor));
+        }
+    }
+}
+
+public static UtilityCreateTreeMessage(RootInfo root, lua.protobuf_message msg, string msg_field_name) : IDETreeMessage
 {
     var rflct = lua.protobuf.message_getreflection(msg);
     var descriptor = lua.protobuf.message_getdescriptor(msg);
@@ -11,86 +39,16 @@ public static UtilityCreateTreeMessage(lua.protobuf_message msg, string msg_fiel
     detail_info.message = msg;
     detail_info.reflection = rflct;
     detail_info.info = A_LuaSocketSchedule.GetMessageInfo(lua.protobuf.messagedescriptor_fullname(descriptor));
-    var tree = new IDETreeMessage(g_Control, msg_field_name, detail_info);
+    var tree = new IDETreeMessage(g_Control, root, msg_field_name, detail_info);
     detail_info.tree = tree;
 
     // 遍历消息结构
-    var field_count = lua.protobuf.messagedescriptor_fieldcount(detail_info.info.descriptor);
-    for (var i = 0; i < field_count; 1)
-    {
-        var field_descriptor = lua.protobuf.messagedescriptor_field(detail_info.info.descriptor, i);
-        var field_name = lua.protobuf.fielddescriptor_name(field_descriptor);
-
-        if (lua.protobuf.fielddescriptor_ismap(field_descriptor))
-        {
-            var tree_map = new IDETreeMap(g_Control, field_name, rflct, msg, field_descriptor);
-            detail_info.tree.AddChild(tree_map);
-        }
-        elseif (lua.protobuf.fielddescriptor_isrepeated(field_descriptor))
-        {
-            var tree_repeated = new IDETreeRepeated(g_Control, field_name, rflct, msg, field_descriptor);
-            detail_info.tree.AddChild(tree_repeated);
-        }
-        else
-        {
-            var cpp_type = lua.protobuf.fielddescriptor_cpptype(field_descriptor);
-            if (cpp_type == lua.protobuf_cpptype.CPPTYPE_BOOL)
-            {
-                var tree_item = new IDETreeBool(g_Control, field_name, rflct, msg, field_descriptor);
-                detail_info.tree.AddChild(tree_item);
-            }
-            elseif (cpp_type == lua.protobuf_cpptype.CPPTYPE_INT32)
-            {
-                var tree_item = new IDETreeValue(g_Control, field_name, rflct, msg, field_descriptor);
-                detail_info.tree.AddChild(tree_item);
-            }
-            elseif (cpp_type == lua.protobuf_cpptype.CPPTYPE_UINT32)
-            {
-                var tree_item = new IDETreeValue(g_Control, field_name, rflct, msg, field_descriptor);
-                detail_info.tree.AddChild(tree_item);
-            }
-            elseif (cpp_type == lua.protobuf_cpptype.CPPTYPE_INT64)
-            {
-                var tree_item = new IDETreeValue(g_Control, field_name, rflct, msg, field_descriptor);
-                detail_info.tree.AddChild(tree_item);
-            }
-            elseif (cpp_type == lua.protobuf_cpptype.CPPTYPE_UINT64)
-            {
-                var tree_item = new IDETreeValue(g_Control, field_name, rflct, msg, field_descriptor);
-                detail_info.tree.AddChild(tree_item);
-            }
-            elseif (cpp_type == lua.protobuf_cpptype.CPPTYPE_DOUBLE)
-            {
-                var tree_item = new IDETreeValue(g_Control, field_name, rflct, msg, field_descriptor);
-                detail_info.tree.AddChild(tree_item);
-            }
-            elseif (cpp_type == lua.protobuf_cpptype.CPPTYPE_FLOAT)
-            {
-                var tree_item = new IDETreeValue(g_Control, field_name, rflct, msg, field_descriptor);
-                detail_info.tree.AddChild(tree_item);   
-            }
-            elseif (cpp_type == lua.protobuf_cpptype.CPPTYPE_ENUM)
-            {
-                var tree_item = new IDETreeEnum(g_Control, field_name, rflct, msg, field_descriptor);
-                detail_info.tree.AddChild(tree_item);
-            }
-            elseif (cpp_type == lua.protobuf_cpptype.CPPTYPE_STRING)
-            {
-                var tree_item = new IDETreeValue(g_Control, field_name, rflct, msg, field_descriptor);
-                detail_info.tree.AddChild(tree_item);
-            }
-            elseif (cpp_type == lua.protobuf_cpptype.CPPTYPE_MESSAGE)
-            {
-                var value = lua.protobuf.reflection_getmessage(rflct, msg, field_descriptor);
-                detail_info.tree.AddChild(UtilityCreateTreeMessage(value, field_name));
-            }
-        }
-    }
+    UitlityCreateChildMessage(root, tree, descriptor, rflct, msg);
 
     return tree;
 }
 
-public static UtilityCreateTreeRepeatedMessage(IDETreeRepeated parent, lua.protobuf_message msg) : IDETreeRepeatedMessage
+public static UtilityCreateTreeRepeatedMessage(RootInfo root, IDETreeRepeated parent, lua.protobuf_message msg) : IDETreeRepeatedMessage
 {
     var rflct = lua.protobuf.message_getreflection(msg);
     var descriptor = lua.protobuf.message_getdescriptor(msg);
@@ -100,81 +58,68 @@ public static UtilityCreateTreeRepeatedMessage(IDETreeRepeated parent, lua.proto
     detail_info.message = msg;
     detail_info.reflection = rflct;
     detail_info.info = A_LuaSocketSchedule.GetMessageInfo(lua.protobuf.messagedescriptor_fullname(descriptor));
-    var tree = new IDETreeRepeatedMessage(g_Control, parent, detail_info);
+    var tree = new IDETreeRepeatedMessage(g_Control, root, parent, detail_info);
     detail_info.tree = tree;
-
+    
     // 遍历消息结构
-    var field_count = lua.protobuf.messagedescriptor_fieldcount(detail_info.info.descriptor);
-    for (var i = 0; i < field_count; 1)
-    {
-        var field_descriptor = lua.protobuf.messagedescriptor_field(detail_info.info.descriptor, i);
-        var field_name = lua.protobuf.fielddescriptor_name(field_descriptor);
+    UitlityCreateChildMessage(root, tree, descriptor, rflct, msg);
 
-        if (lua.protobuf.fielddescriptor_ismap(field_descriptor))
-        {
-            var tree_map = new IDETreeMap(g_Control, field_name, rflct, msg, field_descriptor);
-            detail_info.tree.AddChild(tree_map);
-        }
-        elseif (lua.protobuf.fielddescriptor_isrepeated(field_descriptor))
-        {
-            var tree_repeated = new IDETreeRepeated(g_Control, field_name, rflct, msg, field_descriptor);
-            detail_info.tree.AddChild(tree_repeated);
-        }
-        else
-        {
-            var cpp_type = lua.protobuf.fielddescriptor_cpptype(field_descriptor);
-            if (cpp_type == lua.protobuf_cpptype.CPPTYPE_BOOL)
-            {
-                var tree_item = new IDETreeBool(g_Control, field_name, rflct, msg, field_descriptor);
-                detail_info.tree.AddChild(tree_item);
-            }
-            elseif (cpp_type == lua.protobuf_cpptype.CPPTYPE_INT32)
-            {
-                var tree_item = new IDETreeValue(g_Control, field_name, rflct, msg, field_descriptor);
-                detail_info.tree.AddChild(tree_item);
-            }
-            elseif (cpp_type == lua.protobuf_cpptype.CPPTYPE_UINT32)
-            {
-                var tree_item = new IDETreeValue(g_Control, field_name, rflct, msg, field_descriptor);
-                detail_info.tree.AddChild(tree_item);
-            }
-            elseif (cpp_type == lua.protobuf_cpptype.CPPTYPE_INT64)
-            {
-                var tree_item = new IDETreeValue(g_Control, field_name, rflct, msg, field_descriptor);
-                detail_info.tree.AddChild(tree_item);
-            }
-            elseif (cpp_type == lua.protobuf_cpptype.CPPTYPE_UINT64)
-            {
-                var tree_item = new IDETreeValue(g_Control, field_name, rflct, msg, field_descriptor);
-                detail_info.tree.AddChild(tree_item);
-            }
-            elseif (cpp_type == lua.protobuf_cpptype.CPPTYPE_DOUBLE)
-            {
-                var tree_item = new IDETreeValue(g_Control, field_name, rflct, msg, field_descriptor);
-                detail_info.tree.AddChild(tree_item);
-            }
-            elseif (cpp_type == lua.protobuf_cpptype.CPPTYPE_FLOAT)
-            {
-                var tree_item = new IDETreeValue(g_Control, field_name, rflct, msg, field_descriptor);
-                detail_info.tree.AddChild(tree_item);   
-            }
-            elseif (cpp_type == lua.protobuf_cpptype.CPPTYPE_ENUM)
-            {
-                var tree_item = new IDETreeEnum(g_Control, field_name, rflct, msg, field_descriptor);
-                detail_info.tree.AddChild(tree_item);
-            }
-            elseif (cpp_type == lua.protobuf_cpptype.CPPTYPE_STRING)
-            {
-                var tree_item = new IDETreeValue(g_Control, field_name, rflct, msg, field_descriptor);
-                detail_info.tree.AddChild(tree_item);
-            }
-            elseif (cpp_type == lua.protobuf_cpptype.CPPTYPE_MESSAGE)
-            {
-                var value = lua.protobuf.reflection_getmessage(rflct, msg, field_descriptor);
-                detail_info.tree.AddChild(UtilityCreateTreeMessage(value, field_name));
-            }
-        }
-    }
+    return tree;
+}
+
+public static UtilityCreateTreeBoolMapMessage(RootInfo root, IDETreeMap parent, lua.protobuf_message msg, lua.protobuf_field_descriptor key_field, lua.protobuf_field_descriptor value_field) : IDETreeBoolMapMessage
+{
+    var rflct = lua.protobuf.message_getreflection(msg);
+    var descriptor = lua.protobuf.message_getdescriptor(msg);
+    
+    // 创建信息
+    var detail_info = new DetailInfo();
+    detail_info.message = lua.protobuf.reflection_getmessage(rflct, msg, value_field);
+    detail_info.reflection = lua.protobuf.message_getreflection(detail_info.message);
+    detail_info.info = A_LuaSocketSchedule.GetMessageInfo(lua.protobuf.messagedescriptor_fullname(lua.protobuf.message_getdescriptor(detail_info.message)));
+    var tree = new IDETreeBoolMapMessage(g_Control, root, parent, rflct, msg, key_field, detail_info);
+    detail_info.tree = tree;
+    
+    // 遍历消息结构
+    UitlityCreateChildMessage(root, tree, descriptor, rflct, msg);
+
+    return tree;
+}
+
+public static UtilityCreateTreeEnumMapMessage(RootInfo root, IDETreeMap parent, lua.protobuf_message msg, lua.protobuf_field_descriptor key_field, lua.protobuf_field_descriptor value_field) : IDETreeEnumMapMessage
+{
+    var rflct = lua.protobuf.message_getreflection(msg);
+    var descriptor = lua.protobuf.message_getdescriptor(msg);
+    
+    // 创建信息
+    var detail_info = new DetailInfo();
+    detail_info.message = lua.protobuf.reflection_getmessage(rflct, msg, value_field);
+    detail_info.reflection = lua.protobuf.message_getreflection(detail_info.message);
+    detail_info.info = A_LuaSocketSchedule.GetMessageInfo(lua.protobuf.messagedescriptor_fullname(lua.protobuf.message_getdescriptor(detail_info.message)));
+    var tree = new IDETreeEnumMapMessage(g_Control, root, parent, rflct, msg, key_field, detail_info);
+    detail_info.tree = tree;
+    
+    // 遍历消息结构
+    UitlityCreateChildMessage(root, tree, descriptor, rflct, msg);
+
+    return tree;
+}
+
+public static UtilityCreateTreeValueMapMessage(RootInfo root, IDETreeMap parent, lua.protobuf_message msg, lua.protobuf_field_descriptor key_field, lua.protobuf_field_descriptor value_field) : IDETreeValueMapMessage
+{
+    var rflct = lua.protobuf.message_getreflection(msg);
+    var descriptor = lua.protobuf.message_getdescriptor(msg);
+    
+    // 创建信息
+    var detail_info = new DetailInfo();
+    detail_info.message = lua.protobuf.reflection_getmessage(rflct, msg, value_field);
+    detail_info.reflection = lua.protobuf.message_getreflection(detail_info.message);
+    detail_info.info = A_LuaSocketSchedule.GetMessageInfo(lua.protobuf.messagedescriptor_fullname(lua.protobuf.message_getdescriptor(detail_info.message)));
+    var tree = new IDETreeValueMapMessage(g_Control, root, parent, rflct, msg, key_field, detail_info);
+    detail_info.tree = tree;
+    
+    // 遍历消息结构
+    UitlityCreateChildMessage(root, tree, descriptor, rflct, msg);
 
     return tree;
 }
@@ -186,10 +131,13 @@ public static Utility_CreateTree(Lua.lua_socket_schedule_message_info info) : De
     if (msg == null) return null;
     
     // 从配置中获取记录的信息
-    var json = g_GProtoCache.GetConfig(info.full_name, "{}");
+    var json = g_GProtoCache.GetString(info.full_name, "{}");
     lua.protobuf.message_jsondecode(msg, json);
 
-    var tree = UtilityCreateTreeMessage(msg, "[ROOT]");
+    var root = new RootInfo();
+
+    var tree = UtilityCreateTreeMessage(root, msg, "");
     tree.fold = true;
-    return tree.GetDetailInfo();
+    root.detail_info = tree.GetDetailInfo();
+    return root.detail_info;
 }

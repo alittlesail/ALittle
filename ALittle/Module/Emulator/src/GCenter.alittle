@@ -12,6 +12,11 @@ protected struct DetailInfo
     Lua.lua_socket_schedule_message_info info;
 }
 
+protected struct RootInfo
+{
+    DetailInfo detail_info;
+}
+
 class GCenter
 {
     private ALittle.DisplayLayout _main_layer;
@@ -179,7 +184,6 @@ class GCenter
     {
         var info = cast<Lua.lua_socket_schedule_message_info>(event.target._user_data);
 
-        this._detail_scroll_screen.RemoveAllChild();
         var detail_info = this._detail_tree_item_pool[info.full_name];
         if (detail_info == null)
         {
@@ -187,10 +191,10 @@ class GCenter
             if (detail_info == null) return;
             this._detail_tree_item_pool[info.full_name] = detail_info;
         }
-        this._detail_scroll_screen.AddChild(detail_info.tree);
+        this._detail_scroll_screen.SetContainer(detail_info.tree);
         this._detail_scroll_screen.RejustScrollBar();
     }
-    
+
     public fun Shutdown()
     {
         this._frame_loop.Stop();

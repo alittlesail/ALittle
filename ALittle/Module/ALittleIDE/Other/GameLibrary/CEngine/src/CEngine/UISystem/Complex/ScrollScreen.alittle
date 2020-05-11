@@ -138,6 +138,20 @@ public class ScrollScreen : DisplayGroup
         this._scroll_view.AddChild(this._scroll_content, 1);
         this.RejustScrollBar();
     }
+
+    // 单纯更换container
+    public fun SetContainer(DisplayGroup value)
+    {
+        if (value == null) value = new DisplayGroup(this._ctrl_sys);
+
+        this._scroll_content.RemoveEventListener(this, this.HandleContainerResize);
+        this._scroll_view.RemoveChild(this._scroll_content);
+        this._scroll_content = value;
+        
+        this._scroll_content.AddEventListener(this, this.HandleContainerResize);
+        this._scroll_view.AddChild(this._scroll_content, 1);   
+        this.RejustScrollBar();
+    }
     
     // 设置容器的Y轴相对位置
     public set container_y(double value)

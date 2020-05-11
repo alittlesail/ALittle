@@ -17,6 +17,20 @@ protected struct RootInfo
     DetailInfo detail_info;
 }
 
+protected struct LogItemUserData
+{
+    lua.protobuf_message msg;
+    lua.protobuf_descriptor descriptor;
+    string name;
+}
+
+protected enum LoginStatus
+{
+    EMULATOR_IDLE = 0;
+    EMULATOR_LOGINING = 1;
+    EMULATOR_LOGINED = 2;
+}
+
 class GCenter
 {
     private ALittle.DisplayLayout _main_layer;
@@ -25,6 +39,7 @@ class GCenter
     // 设置界面
     private ALittle.Dialog _setting_dialog;
     private ALittle.DisplayObject _proto_root_input;
+    private ALittle.DisplayObject _login_proto_input;
 
     // 帧循环
     private ALittle.LoopFrame _frame_loop;
@@ -34,10 +49,30 @@ class GCenter
     private ALittle.ScrollScreen _protobuf_scroll_screen;
     private Map<ALittle.TextRadioButton, bool> _proto_search_group;
     private Map<string, ALittle.TextRadioButton> _proto_search_item_pool;
+    
+    // 日志列表
+    private ALittle.DisplayObject _log_search_key;
+    private ALittle.ScrollScreen _log_scroll_screen;
+    private Map<ALittle.TextRadioButton, bool> _log_search_group;
+    private List<ALittle.TextRadioButton> _log_item_list;
+    private int _log_item_count;
 
-    // 详细信息
+    // 协议内容
     private ALittle.ScrollScreen _detail_scroll_screen;
     private Map<string, DetailInfo> _detail_tree_item_pool;
+
+    // 详细信息
+    private LogItemUserData _cur_item_user_data;
+
+    // 登陆界面
+    private ALittle.ScrollScreen _login_scroll_screen;
+    private ALittle.DisplayObject _login_ip_input;
+    private ALittle.DisplayObject _login_port_input;
+    private DetailInfo _login_detail_info;
+    private ALittle.TextButton _login_button;
+    private ALittle.TextButton _logout_button;
+
+    private int _login_status;
 
     public ctor()
     {
@@ -45,6 +80,12 @@ class GCenter
         this._proto_search_group = new Map<ALittle.TextRadioButton, bool>();
 
         this._detail_tree_item_pool = new Map<string, DetailInfo>();
+        
+        this._log_search_group = new Map<ALittle.TextRadioButton, bool>();
+        this._log_item_list = new List<ALittle.TextRadioButton>();
+        this._log_item_count = 0;
+
+        this._login_status = LoginStatus.EMULATOR_IDLE;
 	}
 
     public fun Setup()
@@ -75,6 +116,8 @@ class GCenter
         A_LayerManager.AddToModal(this._setting_dialog);
 
         A_LuaSocketSchedule.Setup();
+
+        // 协议列表
         var proto_root = g_GConfig.GetString("proto_root", "");
         if (proto_root != "" && ALittle.File_GetFileAttr(proto_root) != null)
         {
@@ -85,6 +128,21 @@ class GCenter
                 this.RefreshProtoList();
             }
         }
+
+        // 登陆部分
+        var login_proto = g_GConfig.GetString("login_proto", "");
+        var msg_info = A_LuaSocketSchedule.GetMessageInfo(login_proto);
+        if (msg_info != null)
+        {
+            this._login_detail_info = Utility_CreateTree(msg_info);
+            this._login_scroll_screen.SetContainer(this._login_detail_info.tree);
+        }
+
+        // 界面初始化
+        this._login_button.visible = true;
+        this._logout_button.visible = false;
+        this._login_ip_input.text = g_GConfig.GetString("login_ip", "127.0.0.1");
+        this._login_port_input.text = ALittle.String_ToString(g_GConfig.GetInt("login_port", 0));
 
         // 每帧处理
         this._frame_loop = new ALittle.LoopFrame(bind(this.UpdateFrame, this));
@@ -101,6 +159,7 @@ class GCenter
     {
         this._setting_dialog.visible = true;
         this._proto_root_input.text = g_GConfig.GetString("proto_root", "");
+        this._login_proto_input.text = g_GConfig.GetString("login_proto", "");
     }
 
     // 处理设置
@@ -125,16 +184,49 @@ class GCenter
         }
         g_LWProtobuf.Refresh();
         
+        // 协议列表
         this._protobuf_scroll_screen.RemoveAllChild();
         this._proto_search_item_pool = new Map<string, ALittle.TextRadioButton>();
         this._proto_search_group = new Map<ALittle.TextRadioButton, bool>();
+        this.RefreshProtoList();
 
-        this._detail_scroll_screen.RemoveAllChild();
+        // 协议内容
+        this._detail_scroll_screen.SetContainer(null);
         for (var key, info in this._detail_tree_item_pool)
             lua.protobuf.freemessage(info.message);
         this._detail_tree_item_pool = new Map<string, DetailInfo>();
         
-        this.RefreshProtoList();
+        // 日志列表
+        this._log_search_group = new Map<ALittle.TextRadioButton, bool>();
+        for (var index, button in this._log_item_list)
+        {
+            var user_data = cast<LogItemUserData>(button._user_data);
+            lua.protobuf.freemessage(user_data.msg);
+        }
+        this._log_item_list = new List<ALittle.TextRadioButton>();
+        this._log_item_count = 0;
+        this._log_scroll_screen.RemoveAllChild();
+        this.RefreshLogList();
+
+        // 登录界面
+        if (this._login_detail_info != null)
+        {
+            lua.protobuf.freemessage(this._login_detail_info.message);
+            this._login_detail_info = null;
+        }
+
+        var login_proto = this._login_proto_input.text;
+        var msg_info = A_LuaSocketSchedule.GetMessageInfo(login_proto);
+        if (msg_info != null)
+        {
+            this._login_detail_info = Utility_CreateTree(msg_info);
+            this._login_scroll_screen.SetContainer(this._login_detail_info.tree);
+        }
+        else
+            this._login_scroll_screen.SetContainer(null);
+
+        // 保存配置
+        g_GConfig.SetConfig("login_proto", login_proto);
     }
 
     // 处理设置
@@ -194,14 +286,173 @@ class GCenter
         this._detail_scroll_screen.SetContainer(detail_info.tree);
         this._detail_scroll_screen.RejustScrollBar();
     }
+    
+    // 处理消息
+    private fun HandleLogSearchClick(ALittle.UIEvent event) { this.RefreshLogList(); }
+    
+    // 处理
+    private fun RefreshLogList()
+    {
+        // 获取key
+        var key = this._log_search_key.text;
+        key = ALittle.String_Upper(key);
+
+        // 清理
+        for (var index, child in this._log_scroll_screen.childs)
+            child.group = null;
+        this._log_scroll_screen.RemoveAllChild();
+
+        // 搜索
+        for (var index, button in this._log_item_list)
+        {
+            var user_data = cast<LogItemUserData>(button._user_data);
+            button.group = this._proto_search_group;
+            this._protobuf_scroll_screen.AddChild(button);
+        }
+        this._protobuf_scroll_screen.RejustScrollBar();
+    }
+
+    // 添加消息
+    public fun AddLogMessage(lua.protobuf_message msg)
+    {
+        // 如果数量太多，那么就移除
+        if (this._log_item_count > 500)
+        {
+            var item = this._log_item_list[1];
+            var user_data = cast<LogItemUserData>(item._user_data);
+            if (this._cur_item_user_data == user_data)
+            {
+                // TODO 移除详细滚动屏内的信息
+                lua.protobuf.freemessage(user_data.msg);
+            }
+            this._log_scroll_screen.RemoveChild(item);
+            item.group = null;
+            ALittle.List_Remove(this._log_item_list, 1);
+        }
+
+        var user_data = new LogItemUserData();
+        user_data.msg = lua.protobuf.clonemessage(msg);
+        user_data.descriptor = lua.protobuf.message_getdescriptor(user_data.msg);
+        user_data.name = lua.protobuf.messagedescriptor_name(user_data.descriptor);
+        var upper_name = ALittle.String_Upper(user_data.name);
+
+        // 添加新的
+        var item = g_Control.CreateControl{ALittle.TextRadioButton}("emulator_common_item_radiobutton");
+        item.text = user_data.name;
+        item.drag_trans_target = this._protobuf_scroll_screen;
+        item._user_data = user_data;
+        item.AddEventListener(this, this.HandleLogItemSelected);
+
+        ++ this._log_item_count;
+        this._log_item_list[this._log_item_count] = item;
+        
+        // 获取key
+        var key = this._log_search_key.text;
+        key = ALittle.String_Upper(key);
+        if (ALittle.String_Find(upper_name, key) != null)
+        {
+            item.group = this._log_search_group;
+            this._log_scroll_screen.AddChild(item);
+        }
+    }
+
+    private fun HandleLogItemSelected(ALittle.UISelectChangedEvent event)
+    {
+        
+    }
+
+    // 处理断开连接
+    public fun HandleSocketDisconnected()
+    {
+        this._login_button.text = "登陆";
+        this._login_status = LoginStatus.EMULATOR_IDLE;
+    }
+
+    // 执行登陆
+    private async fun HandleLoginClick(ALittle.UIClickEvent event)
+    {
+        var ip = this._login_ip_input.text;
+        var port = ALittle.Math_ToInt(this._login_port_input.text);
+        if (port == null || port <= 0)
+        {
+            g_IDETool.ShowNotice("提示", "请使用正确的端口");
+            return;
+        }
+
+        // 获取协议msg
+        if (this._login_detail_info == null)
+        {
+            g_IDETool.ShowNotice("提示", "请设置登陆协议");
+            return;
+        }
+
+        // 如果正在登陆，那么就稍后
+        if (this._login_status == LoginStatus.EMULATOR_LOGINING)
+        {
+            g_IDETool.ShowNotice("提示", "当前正在登陆，请先断开");
+            return;
+        }
+
+        if (this._login_status == LoginStatus.EMULATOR_LOGINED)
+        {
+            g_IDETool.ShowNotice("提示", "当前已登录，请先断开");
+            return;
+        }
+        
+        g_GConfig.SetConfig("login_ip", ip);
+        g_GConfig.SetConfig("login_port", port);
+        
+        this._login_button.visible = false;
+        this._logout_button.visible = true;
+
+        // 标记为正在登陆
+        this._login_status = LoginStatus.EMULATOR_LOGINING;
+
+        // 开始登陆
+        var error = g_LWProtobuf.StartLogin(ip, port, this._login_detail_info.message);
+        if (error == null)
+        {
+            this._login_status = LoginStatus.EMULATOR_LOGINED;
+            this._login_button.text = "登陆成功";
+        }
+        else
+        {
+            g_IDETool.ShowNotice("提示", error);
+            this._login_status = LoginStatus.EMULATOR_IDLE;
+            this._login_button.text = "登陆";
+            
+            this._login_button.visible = true;
+            this._logout_button.visible = false;
+        }
+    }
+
+    // 执行断开
+    private fun HandleLogoutClick(ALittle.UIClickEvent event)
+    {
+        g_LWProtobuf.CloseConnect();
+        this._login_button.visible = true;
+        this._logout_button.visible = false;
+    }
 
     public fun Shutdown()
     {
         this._frame_loop.Stop();
         
+        // 协议内容
+        this._detail_scroll_screen.SetContainer(null);
         for (var key, info in this._detail_tree_item_pool)
             lua.protobuf.freemessage(info.message);
         this._detail_tree_item_pool = new Map<string, DetailInfo>();
+
+        // 登陆界面        
+        if (this._login_detail_info != null)
+        {
+            lua.protobuf.freemessage(this._login_detail_info.message);
+            this._login_detail_info = null;
+        }
+
+        // 详细信息
+        this._cur_item_user_data = null;
     }
 }
     

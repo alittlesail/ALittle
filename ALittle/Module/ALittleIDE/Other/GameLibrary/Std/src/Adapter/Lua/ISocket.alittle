@@ -65,12 +65,28 @@ public class ISocket
 			this._read_thread = null;
         }
     }
+	
+	////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	// 读取开始循环读取，由子类实现
-	public async fun ReadMessage()
+	// 写入消息需要重载，由子类实现
+    private fun WriteMessage(string full_name, lua.protobuf_message protobuf_msg, any protobuf_binary, int protobuf_size) : string
+	{
+        return "not implement";
+    }
+
+	// 读取一个消息包，由子类实现
+	private await fun ReadMessage() : string, lua.protobuf_message
+	{
+        return "not implement", null;
+    }
+	
+	// 开始循环读取消息包之后，收到消息
+	private fun HandleMessage(lua.protobuf_message msg)
 	{
         
     }
+
+	////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public await fun ReadUint8() : string, int
 	{
@@ -199,6 +215,27 @@ public class ISocket
 
 		return null, protobuf_msg;
     }
+
+	public async fun ReceiveMessage()
+	{
+        while (this.IsConnected())
+		{
+            var error, protobuf_msg = this.ReadMessage();
+			if (error != null)
+			{
+				ALittle.Log(error);
+                break;
+            }
+            
+			this.HandleMessage(protobuf_msg);
+
+            if (protobuf_msg != null)
+            {
+                lua.protobuf.freemessage(protobuf_msg);
+                protobuf_msg = null;
+            }
+        }
+    }
 	
 	public fun WriteUint8(int value)
 	{
@@ -265,7 +302,56 @@ public class ISocket
 		if (!this.IsConnected()) return;
 		lua.socket.writebinary(this._socket, this._id, buffer, size);
     }
+	
+    public fun SendMessage(lua.protobuf_message msg) : string
+    {
+		var descriptor = lua.protobuf.message_getdescriptor(msg);
+		var full_name = lua.protobuf.messagedescriptor_fullname(descriptor);
 
+        var msg_size = lua.protobuf.message_getbytesize(msg);
+        var binary_value = lua.memory.create(msg_size);
+
+		var error:string = null;
+        var result = lua.protobuf.message_serializetoarray(msg, binary_value, msg_size);
+        if (result)
+			error = this.WriteMessage(full_name, msg, binary_value, msg_size);
+		else
+			error = "message_serializetoarray failed";
+
+        lua.memory.free(binary_value);
+
+        return error;
+    }
+	
+    public fun SendStruct<T:struct>(string full_name, T msg) : string
+    {   
+        var protobuf_json = lua.json.encode(msg);
+        
+        var protobuf_msg = A_LuaSocketSchedule.CreateMessage(full_name);
+        if (protobuf_msg == null) return "CreateMessage failed";
+
+        var error = lua.protobuf.message_jsondecode(protobuf_msg, protobuf_json);
+        if (error != null)
+        {
+            lua.protobuf.freemessage(protobuf_msg);
+            return error;
+        }
+
+        var msg_size = lua.protobuf.message_getbytesize(protobuf_msg);
+        var binary_value = lua.memory.create(msg_size);
+
+        var result = lua.protobuf.message_serializetoarray(protobuf_msg, binary_value, msg_size);
+        if (result)
+			error = this.WriteMessage(full_name, protobuf_msg, binary_value, msg_size);
+		else
+			error = "message_serializetoarray failed";
+
+        lua.protobuf.freemessage(protobuf_msg);
+        lua.memory.free(binary_value);
+
+        return error;
+    }
+	
 	public static HandleConnectFailed(int id)
 	{
         var socket = __SOCKET_MAP[id];
@@ -287,9 +373,6 @@ public class ISocket
 		var result, error = ALittle.Coroutine.Resume(socket._connect_thread, null);
         if (result != true) ALittle.Error(error);
 		socket._connect_thread = null;
-
-		// 开始读取
-		socket.ReadMessage();
     }
 
 	public static HandleDisconnected(int id)

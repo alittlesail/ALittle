@@ -157,7 +157,7 @@ public class LuaSocketSchedule : ALittle.ISchedule
         {
             var event = lua.socket.poll(this._socket);
             if (event == null) break;
-            
+
             this.HandleEvent(event);
         }
     }

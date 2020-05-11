@@ -68,7 +68,9 @@ public class protobuf
     public static createfactory() : protobuf_factory {}
     // 根据描述创建一个消息，最后一定要使用freemessage释放
     public static createmessage(protobuf_factory factory, protobuf_descriptor descriptor) : protobuf_message {}
-    // 只能释放createmessage创建的消息
+    // 创建一个同样的消息包，并复制数据
+    public static clonemessage(protobuf_message msg) : protobuf_message {}
+    // 只能释放createmessage, clonemessage创建的消息
     public static freemessage(protobuf_message msg) {}
 
     public static message_getdescriptor(protobuf_message msg) : protobuf_descriptor {}

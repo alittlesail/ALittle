@@ -3,86 +3,67 @@ namespace Emulator;
 
 protected class LWSocket : Lua.ISocket
 {
-	public async fun ReadMessage()
-	{
+    public await fun ReadMessage() : string, lua.protobuf_message
+    {
         var msg_type = 0;
         var msg_size = 0;
         var server_id = 0;
         var server_type = 0;
         var protobuf_msg:lua.protobuf_message = null;
         var error:string = null;
-
-        while (this.IsConnected())
-		{
-            error, msg_type = this.ReadUint16();
-            if (error != null) break;
-            
-            error, msg_size = this.ReadUint16();
-            if (error != null) break;
-
-            error, server_id = this.ReadUint16();
-            if (error != null) break;
-            
-            error, server_type = this.ReadUint16();
-            if (error != null) break;
-            
-            var name = this.MsgId2MsgFullName(msg_type);
-
-            if (msg_size > 0)
-            {
-                error, protobuf_msg = this.ReadProtobuf(name, msg_size);
-                if (error != null) break;   
-            }
-            
-            this.HandleMessage(msg_type, name, protobuf_msg);
-
-            if (protobuf_msg != null)
-            {
-                lua.protobuf.freemessage(protobuf_msg);
-                protobuf_msg = null;
-            }
-        }
-    }
-
-    public fun WriteMessage(string name, any msg) : bool
-    {
-        var msg_type = this.MsgFullName2MsgId(name);
-        if (msg_type == null) return false;
         
-        var protobuf_msg = Lua.Table2Protobuf(name);
-        if (protobuf_msg == null) return false;
-
-        var msg_size = lua.protobuf.message_getbytesize(protobuf_msg);
-        var binary_value = lua.memory.create(msg_size);
-
-        var result = lua.protobuf.message_serializetoarray(protobuf_msg, binary_value, msg_size);
-        if (result)
+        ALittle.Log("ReadMessage");
+        error, msg_size = this.ReadUint16();
+        if (error != null) return error, null;
+        ALittle.Log("ReadMessage111", msg_size);
+        
+        error, msg_type = this.ReadUint16();
+        if (error != null) return error, null;
+        ALittle.Log("ReadMessage222", msg_type);
+            
+        error, server_id = this.ReadUint16();
+        if (error != null) return error, null;
+        ALittle.Log("ReadMessage333", server_id);
+            
+        error, server_type = this.ReadUint16();
+        if (error != null) return error, null;
+        ALittle.Log("ReadMessage444", server_type);
+        
+        if (msg_size <= 0)
         {
-            this.WriteUint16(msg_type);
-            this.WriteUint16(msg_size);
-            this.WriteUint16(1);
-            this.WriteUint16(1);
-            this.WriteBinary(binary_value, msg_size);
+            var full_name = g_LWProtobuf.MsgId2MsgFullName(msg_type);
+            if (full_name == null)
+                return "unknow msg type:"..msg_type, null;
+            return null, A_LuaSocketSchedule.CreateMessage(full_name);
         }
-
-        lua.protobuf.freemessage(protobuf_msg);
-        lua.memory.free(binary_value);
-
-        return result;
+        else
+        {
+            var full_name = g_LWProtobuf.MsgId2MsgFullName(msg_type);
+            if (full_name == null) full_name = "";
+            error, protobuf_msg = this.ReadProtobuf(full_name, msg_size);
+            if (error != null) return error, null;
+            if (protobuf_msg == null)
+                return "unknow msg type:"..msg_type, null;
+            return null, protobuf_msg;
+        }   
     }
 
-    private fun MsgId2MsgFullName(int id) : string
+    private fun WriteMessage(string full_name, lua.protobuf_message protobuf_msg, any protobuf_binary, int protobuf_size) : string
     {
-        return "";
-    }
-    
-    private fun MsgFullName2MsgId(string name) : int
-    {
+        var msg_type = g_LWProtobuf.MsgFullName2MsgId(full_name);
+        if (msg_type == null) return "MsgFullName2MsgId failed, full_name:"..full_name;
+        this.WriteUint16(protobuf_size + 8);
+        this.WriteUint16(msg_type);
+        this.WriteUint16(1);
+        this.WriteUint16(1);
+        this.WriteBinary(protobuf_binary, protobuf_size);
+        // g_GCenter.AddLogMessage(protobuf_msg);
         return null;
     }
 
-    private fun HandleMessage(int id, string name, lua.protobuf_message msg)
+    private fun HandleMessage(lua.protobuf_message msg)
     {
+        // g_GCenter.AddLogMessage(msg);
         
     }
 }

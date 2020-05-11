@@ -21,6 +21,7 @@ public class socket
     
     // 如果返回null，表示所有socket全部处理结束
     public static poll(socket c) : socket_event {}
+    public static run(socket c) : socket_event {}
     
     // 启动一个定时器
     public static timer(socket c, int delay_ms) {}

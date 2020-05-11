@@ -44,7 +44,6 @@ local ___COROUTINE = coroutine.running()
 	end
 	if socket ~= nil and protobuf ~= nil and memory ~= nil then
 		Require(base_path, "Adapter/Lua/ISocket")
-		Require(base_path, "Adapter/Lua/LuaProtobuf")
 		Require(base_path, "Adapter/Lua/LuaSocketSchedule")
 	end
 	Require(base_path, "Std/Singleton/LoopSystem")

@@ -23,7 +23,6 @@
     <None Include="src\GUtility.alittle" />
     <None Include="src\IDEIMEManager.alittle" />
     <None Include="src\IDETool.alittle" />
-    <None Include="src\IDETree.alittle" />
     <None Include="src\IDETree\IDETree.alittle" />
     <None Include="src\IDETree\IDETreeBool.alittle" />
     <None Include="src\IDETree\IDETreeBoolMapBool.alittle" />

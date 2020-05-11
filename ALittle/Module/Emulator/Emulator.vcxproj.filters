@@ -8,7 +8,6 @@
     <None Include="src\LWProtobuf.alittle" />
     <None Include="src\IDEIMEManager.alittle" />
     <None Include="src\GUtility.alittle" />
-    <None Include="src\IDETree.alittle" />
     <None Include="src\IDETree\IDETreeEnum.alittle">
       <Filter>IDETree</Filter>
     </None>

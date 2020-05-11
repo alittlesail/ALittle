@@ -42,6 +42,12 @@ name_list = {"detail_info"},
 type_list = {"Emulator.DetailInfo"},
 option_map = {}
 })
+ALittle.RegStruct(-888044440, "Emulator.LogItemUserData", {
+name = "Emulator.LogItemUserData", ns_name = "Emulator", rl_name = "LogItemUserData", hash_code = -888044440,
+name_list = {"msg","descriptor","name"},
+type_list = {"lua.protobuf_message","lua.protobuf_descriptor","string"},
+option_map = {}
+})
 ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
 name = "ALittle.UIEvent", ns_name = "ALittle", rl_name = "UIEvent", hash_code = -1479093282,
 name_list = {"target"},
@@ -54,15 +60,31 @@ name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
+ALittle.RegStruct(444989011, "ALittle.UISelectChangedEvent", {
+name = "ALittle.UISelectChangedEvent", ns_name = "ALittle", rl_name = "UISelectChangedEvent", hash_code = 444989011,
+name_list = {"target"},
+type_list = {"ALittle.DisplayObject"},
+option_map = {}
+})
 
 g_GConfig = nil
 g_GProtoCache = nil
+LoginStatus = {
+	EMULATOR_IDLE = 0,
+	EMULATOR_LOGINING = 1,
+	EMULATOR_LOGINED = 2,
+}
+
 GCenter = Lua.Class(nil, "Emulator.GCenter")
 
 function GCenter:Ctor()
 	___rawset(self, "_proto_search_item_pool", {})
 	___rawset(self, "_proto_search_group", {})
 	___rawset(self, "_detail_tree_item_pool", {})
+	___rawset(self, "_log_search_group", {})
+	___rawset(self, "_log_item_list", {})
+	___rawset(self, "_log_item_count", 0)
+	___rawset(self, "_login_status", LoginStatus.EMULATOR_IDLE)
 end
 
 function GCenter:Setup()
@@ -90,6 +112,16 @@ function GCenter:Setup()
 			self:RefreshProtoList()
 		end
 	end
+	local login_proto = g_GConfig:GetString("login_proto", "")
+	local msg_info = A_LuaSocketSchedule:GetMessageInfo(login_proto)
+	if msg_info ~= nil then
+		self._login_detail_info = Utility_CreateTree(msg_info)
+		self._login_scroll_screen:SetContainer(self._login_detail_info.tree)
+	end
+	self._login_button.visible = true
+	self._logout_button.visible = false
+	self._login_ip_input.text = g_GConfig:GetString("login_ip", "127.0.0.1")
+	self._login_port_input.text = ALittle.String_ToString(g_GConfig:GetInt("login_port", 0))
 	self._frame_loop = ALittle.LoopFrame(Lua.Bind(self.UpdateFrame, self))
 	self._frame_loop:Start()
 end
@@ -101,6 +133,7 @@ end
 function GCenter:HandleShowSettingDialog(event)
 	self._setting_dialog.visible = true
 	self._proto_root_input.text = g_GConfig:GetString("proto_root", "")
+	self._login_proto_input.text = g_GConfig:GetString("login_proto", "")
 end
 
 function GCenter:HandleSettingConfirmClick(event)
@@ -121,12 +154,34 @@ function GCenter:HandleSettingConfirmClick(event)
 	self._protobuf_scroll_screen:RemoveAllChild()
 	self._proto_search_item_pool = {}
 	self._proto_search_group = {}
-	self._detail_scroll_screen:RemoveAllChild()
+	self:RefreshProtoList()
+	self._detail_scroll_screen:SetContainer(nil)
 	for key, info in ___pairs(self._detail_tree_item_pool) do
 		protobuf.freemessage(info.message)
 	end
 	self._detail_tree_item_pool = {}
-	self:RefreshProtoList()
+	self._log_search_group = {}
+	for index, button in ___ipairs(self._log_item_list) do
+		local user_data = button._user_data
+		protobuf.freemessage(user_data.msg)
+	end
+	self._log_item_list = {}
+	self._log_item_count = 0
+	self._log_scroll_screen:RemoveAllChild()
+	self:RefreshLogList()
+	if self._login_detail_info ~= nil then
+		protobuf.freemessage(self._login_detail_info.message)
+		self._login_detail_info = nil
+	end
+	local login_proto = self._login_proto_input.text
+	local msg_info = A_LuaSocketSchedule:GetMessageInfo(login_proto)
+	if msg_info ~= nil then
+		self._login_detail_info = Utility_CreateTree(msg_info)
+		self._login_scroll_screen:SetContainer(self._login_detail_info.tree)
+	else
+		self._login_scroll_screen:SetContainer(nil)
+	end
+	g_GConfig:SetConfig("login_proto", login_proto)
 end
 
 function GCenter:HandleSettingCancelClick(event)
@@ -175,12 +230,120 @@ function GCenter:HandleProtoItemSelected(event)
 	self._detail_scroll_screen:RejustScrollBar()
 end
 
+function GCenter:HandleLogSearchClick(event)
+	self:RefreshLogList()
+end
+
+function GCenter:RefreshLogList()
+	local key = self._log_search_key.text
+	key = ALittle.String_Upper(key)
+	for index, child in ___ipairs(self._log_scroll_screen.childs) do
+		child.group = nil
+	end
+	self._log_scroll_screen:RemoveAllChild()
+	for index, button in ___ipairs(self._log_item_list) do
+		local user_data = button._user_data
+		button.group = self._proto_search_group
+		self._protobuf_scroll_screen:AddChild(button)
+	end
+	self._protobuf_scroll_screen:RejustScrollBar()
+end
+
+function GCenter:AddLogMessage(msg)
+	if self._log_item_count > 500 then
+		local item = self._log_item_list[1]
+		local user_data = item._user_data
+		if self._cur_item_user_data == user_data then
+			protobuf.freemessage(user_data.msg)
+		end
+		self._log_scroll_screen:RemoveChild(item)
+		item.group = nil
+		ALittle.List_Remove(self._log_item_list, 1)
+	end
+	local user_data = {}
+	user_data.msg = protobuf.clonemessage(msg)
+	user_data.descriptor = protobuf.message_getdescriptor(user_data.msg)
+	user_data.name = protobuf.messagedescriptor_name(user_data.descriptor)
+	local upper_name = ALittle.String_Upper(user_data.name)
+	local item = g_Control:CreateControl("emulator_common_item_radiobutton")
+	item.text = user_data.name
+	item.drag_trans_target = self._protobuf_scroll_screen
+	item._user_data = user_data
+	item:AddEventListener(___all_struct[444989011], self, self.HandleLogItemSelected)
+	self._log_item_count = self._log_item_count + 1
+	self._log_item_list[self._log_item_count] = item
+	local key = self._log_search_key.text
+	key = ALittle.String_Upper(key)
+	if ALittle.String_Find(upper_name, key) ~= nil then
+		item.group = self._log_search_group
+		self._log_scroll_screen:AddChild(item)
+	end
+end
+
+function GCenter:HandleLogItemSelected(event)
+end
+
+function GCenter:HandleSocketDisconnected()
+	self._login_button.text = "登陆"
+	self._login_status = LoginStatus.EMULATOR_IDLE
+end
+
+function GCenter:HandleLoginClick(event)
+	local ip = self._login_ip_input.text
+	local port = ALittle.Math_ToInt(self._login_port_input.text)
+	if port == nil or port <= 0 then
+		g_IDETool:ShowNotice("提示", "请使用正确的端口")
+		return
+	end
+	if self._login_detail_info == nil then
+		g_IDETool:ShowNotice("提示", "请设置登陆协议")
+		return
+	end
+	if self._login_status == LoginStatus.EMULATOR_LOGINING then
+		g_IDETool:ShowNotice("提示", "当前正在登陆，请先断开")
+		return
+	end
+	if self._login_status == LoginStatus.EMULATOR_LOGINED then
+		g_IDETool:ShowNotice("提示", "当前已登录，请先断开")
+		return
+	end
+	g_GConfig:SetConfig("login_ip", ip)
+	g_GConfig:SetConfig("login_port", port)
+	self._login_button.visible = false
+	self._logout_button.visible = true
+	self._login_status = LoginStatus.EMULATOR_LOGINING
+	local error = g_LWProtobuf:StartLogin(ip, port, self._login_detail_info.message)
+	if error == nil then
+		self._login_status = LoginStatus.EMULATOR_LOGINED
+		self._login_button.text = "登陆成功"
+	else
+		g_IDETool:ShowNotice("提示", error)
+		self._login_status = LoginStatus.EMULATOR_IDLE
+		self._login_button.text = "登陆"
+		self._login_button.visible = true
+		self._logout_button.visible = false
+	end
+end
+GCenter.HandleLoginClick = Lua.CoWrap(GCenter.HandleLoginClick)
+
+function GCenter:HandleLogoutClick(event)
+	g_LWProtobuf:CloseConnect()
+	self._login_button.visible = true
+	self._logout_button.visible = false
+end
+
 function GCenter:Shutdown()
 	self._frame_loop:Stop()
+	self._detail_scroll_screen:SetContainer(nil)
 	for key, info in ___pairs(self._detail_tree_item_pool) do
 		protobuf.freemessage(info.message)
 	end
 	self._detail_tree_item_pool = {}
+	if self._login_detail_info ~= nil then
+		protobuf.freemessage(self._login_detail_info.message)
+		self._login_detail_info = nil
+	end
+	self._cur_item_user_data = nil
 end
 
 g_GCenter = GCenter()

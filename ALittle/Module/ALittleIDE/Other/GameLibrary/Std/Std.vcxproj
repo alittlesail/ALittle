@@ -42,7 +42,6 @@
     <None Include="src\Adapter\Lua\LuaHttpFileInterface.alittle" />
     <None Include="src\Adapter\Lua\LuaHttpInterface.alittle" />
     <None Include="src\Adapter\Lua\LuaMsgInterface.alittle" />
-    <None Include="src\Adapter\Lua\LuaProtobuf.alittle" />
     <None Include="src\Adapter\Lua\LuaSchedule.alittle" />
     <None Include="src\Adapter\Lua\md5.alittle" />
     <None Include="src\Adapter\Lua\LuaMessageFactory.alittle" />

@@ -451,7 +451,7 @@ function UISystem:HandleMouseWheel(x, y)
 		return false
 	end
 	if self._wfc == nil then
-		local control = self._sfc
+		local control = self._mfc
 		while control ~= nil do
 			if control.can_scroll == true then
 				self._wfc = control
@@ -494,6 +494,7 @@ function UISystem:UpdateMoveFocus(x, y)
 		mfc:DispatchEvent(___all_struct[544684311], {})
 	end
 	self._mfc = mfc
+	self._wfc = nil
 end
 
 function UISystem:HandleViewResized(width, height)

@@ -651,7 +651,7 @@ class UISystem
         // 检查是否有现成的滚动焦点
         if (this._wfc == null)
         {
-            var control = this._sfc;
+            var control = this._mfc;
             while (control != null)
             {
                 if (control.can_scroll == true)
@@ -713,6 +713,7 @@ class UISystem
     
         // 保存新的移动焦点控件和移动焦点对话框
         this._mfc = mfc;
+        this._wfc = null;
     }
     
     // 处理窗口大小变化

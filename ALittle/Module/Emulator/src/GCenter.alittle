@@ -22,6 +22,7 @@ protected struct LogItemUserData
     lua.protobuf_message msg;
     lua.protobuf_descriptor descriptor;
     string name;
+    string upper_name;
 }
 
 protected enum LoginStatus
@@ -60,9 +61,12 @@ class GCenter
     // 协议内容
     private ALittle.ScrollScreen _detail_scroll_screen;
     private Map<string, DetailInfo> _detail_tree_item_pool;
+    private ALittle.DisplayObject _send_button;
 
     // 详细信息
     private LogItemUserData _cur_item_user_data;
+
+    private ALittle.Grid3 _right_grad3_ud;
 
     // 登陆界面
     private ALittle.ScrollScreen _login_scroll_screen;
@@ -143,6 +147,9 @@ class GCenter
         this._logout_button.visible = false;
         this._login_ip_input.text = g_GConfig.GetString("login_ip", "127.0.0.1");
         this._login_port_input.text = ALittle.String_ToString(g_GConfig.GetInt("login_port", 0));
+        
+        this._right_grad3_ud.up_size = g_GConfig.GetDouble("right_grid3_up_size", this._right_grad3_ud.up_size);
+        this._send_button.disabled = true;
 
         // 每帧处理
         this._frame_loop = new ALittle.LoopFrame(bind(this.UpdateFrame, this));
@@ -306,10 +313,13 @@ class GCenter
         for (var index, button in this._log_item_list)
         {
             var user_data = cast<LogItemUserData>(button._user_data);
-            button.group = this._proto_search_group;
-            this._protobuf_scroll_screen.AddChild(button);
+            if (ALittle.String_Find(user_data.upper_name, key) != null)
+            {
+                button.group = this._log_search_group;
+                this._log_scroll_screen.AddChild(button);   
+            }
         }
-        this._protobuf_scroll_screen.RejustScrollBar();
+        this._log_scroll_screen.RejustScrollBar();
     }
 
     // 添加消息
@@ -331,15 +341,16 @@ class GCenter
         }
 
         var user_data = new LogItemUserData();
+        user_data.descriptor = lua.protobuf.message_getdescriptor(msg);
         user_data.msg = lua.protobuf.clonemessage(msg);
         user_data.descriptor = lua.protobuf.message_getdescriptor(user_data.msg);
         user_data.name = lua.protobuf.messagedescriptor_name(user_data.descriptor);
-        var upper_name = ALittle.String_Upper(user_data.name);
+        user_data.upper_name = ALittle.String_Upper(user_data.name);
 
         // 添加新的
         var item = g_Control.CreateControl{ALittle.TextRadioButton}("emulator_common_item_radiobutton");
         item.text = user_data.name;
-        item.drag_trans_target = this._protobuf_scroll_screen;
+        item.drag_trans_target = this._log_scroll_screen;
         item._user_data = user_data;
         item.AddEventListener(this, this.HandleLogItemSelected);
 
@@ -349,10 +360,16 @@ class GCenter
         // 获取key
         var key = this._log_search_key.text;
         key = ALittle.String_Upper(key);
-        if (ALittle.String_Find(upper_name, key) != null)
+        if (ALittle.String_Find(user_data.upper_name, key) != null)
         {
+            // 判断是否是底部
+            var bottom = this._log_scroll_screen.right_scrollbar.offset_rate >= 0.95
+                || this._log_scroll_screen.container.height < this._log_scroll_screen.view_height;
+
             item.group = this._log_search_group;
             this._log_scroll_screen.AddChild(item);
+
+            if (bottom) this._log_scroll_screen.ScrollToBottom();
         }
     }
 
@@ -364,8 +381,20 @@ class GCenter
     // 处理断开连接
     public fun HandleSocketDisconnected()
     {
-        this._login_button.text = "登陆";
+        this._send_button.disabled = true;
+        this._login_button.visible = true;
+        this._logout_button.visible = false;
         this._login_status = LoginStatus.EMULATOR_IDLE;
+    }
+
+    // 发送消息包
+    private fun HandleSendClick(ALittle.UIClickEvent event)
+    {
+        var tree = cast<IDETreeMessage>(this._detail_scroll_screen.container);
+        if (tree == null) return;
+
+        var detail_info = tree.GetDetailInfo();
+        g_LWProtobuf.SendMessage(detail_info.message);
     }
 
     // 执行登陆
@@ -413,13 +442,12 @@ class GCenter
         if (error == null)
         {
             this._login_status = LoginStatus.EMULATOR_LOGINED;
-            this._login_button.text = "登陆成功";
+            this._send_button.disabled = false;
         }
         else
         {
             g_IDETool.ShowNotice("提示", error);
             this._login_status = LoginStatus.EMULATOR_IDLE;
-            this._login_button.text = "登陆";
             
             this._login_button.visible = true;
             this._logout_button.visible = false;
@@ -430,8 +458,32 @@ class GCenter
     private fun HandleLogoutClick(ALittle.UIClickEvent event)
     {
         g_LWProtobuf.CloseConnect();
+        this._send_button.disabled = true;
         this._login_button.visible = true;
         this._logout_button.visible = false;
+        this._login_status = LoginStatus.EMULATOR_IDLE;
+    }
+
+    // 日志列表和详细列表之间的上下调整
+    private fun HandleDragRightQuadUD(ALittle.UIButtonDragEvent event)
+    {
+        this._right_grad3_ud.up_size += event.delta_y;
+    }
+    private fun HandleDragEndRightQuadUD(ALittle.UIButtonDragEndEvent event)
+    {
+        g_GConfig.SetConfig("right_grid3_up_size", this._right_grad3_ud.up_size);
+    }
+
+    // 移动光标
+    private fun HandleSetVDragCursor(ALittle.UIMoveInEvent event)
+    {
+        ALittle.System_SetVDragCursor();
+    }
+    
+    // 普通光标
+    private fun HandleSetNormalCursor(ALittle.UIMoveInEvent event)
+    {
+        ALittle.System_SetNormalCursor();
     }
 
     public fun Shutdown()

@@ -8,6 +8,7 @@ protected enum LWLoginStatus
     CONNECT_GS = 2;
 }
 
+///////////////////////////////////////////////////////////
 protected struct NetAddress
 {
     string domain_name;        // 域名
@@ -27,6 +28,48 @@ protected struct MSG_SERVER_REGIST_REQ
 {
     MsgRegServerInfo info;
 }
+
+protected struct MSG_LS2CL_LOGIN_RSP
+{
+    long player_id;
+    string login_session;
+    NetAddress net_addr;
+    int ret_code;
+}
+
+protected struct ClientVersion
+{
+    int major;
+    int minor;
+    int patch;
+}
+
+protected struct MSG_CL2GS_LOGIN_REQ
+{
+    long player_id;
+    string login_session;
+    string account;
+    ClientVersion client_version;        // Current client version
+    int protocol_version;        // 通訊協定版本號
+}
+
+protected struct MSG_GS2CL_LOGIN_RSP
+{
+    int ret_code;
+    int flag;        // 第三方充值入口，0 关闭，非0 显示
+    long player_id;
+    int kingdom_id;
+}
+
+protected struct MSG_CLIENT_KEEP_LIVE_REQ
+{
+}
+
+// 客户端心跳应答包
+protected struct MSG_CLIENT_KEEP_LIVE_RSP
+{
+}
+///////////////////////////////////////////////////////////////
 
 protected class LWProtobuf
 {
@@ -69,8 +112,11 @@ protected class LWProtobuf
 				var field_name = lua.protobuf.enumvaluedescriptor_name(enumvalue_descriptor);
 				var field_number = lua.protobuf.enumvaluedescriptor_number(enumvalue_descriptor);
 
-				this._id_map_name[field_number] = field_name;
-				this._name_map_id[field_name] = field_number;
+				var msg_name = ALittle.String_Sub(field_name, 2);
+				var full_name = "ProtoMsg."..msg_name;
+
+				this._id_map_name[field_number] = full_name;
+				this._name_map_id[full_name] = field_number;
 			}
 		}
     }
@@ -82,9 +128,7 @@ protected class LWProtobuf
 
 	public fun MsgFullName2MsgId(string full_name) : int
 	{
-		var list = ALittle.String_Split(full_name, ".");
-		if (list[2] == null) return null;
-        return this._name_map_id["_"..list[2]];
+        return this._name_map_id[full_name];
     }
 
 	// 断开连接
@@ -100,6 +144,7 @@ protected class LWProtobuf
             this._gs_socket.Close();
 			this._gs_socket = null;
         }
+		this._login_status = LWLoginStatus.CONNECT_IDLE;
     }
 
 	private fun HandleDisconnected(int status)
@@ -125,32 +170,81 @@ protected class LWProtobuf
 	{
         this.CloseConnect();
 
+		var error:string = null;
+
 		this._login_status = LWLoginStatus.CONNECT_LS;
 		this._ls_socket = new LWSocket(bind(this.HandleDisconnected, this, LWLoginStatus.CONNECT_LS));
-		var error = this._ls_socket.Connect(ip, port);
-		if (error != null) return error;
+		{
+			error = this._ls_socket.Connect(ip, port);
+			if (error != null) return error;
+        }
 
 		// 发送注册包
-		var register_req = new MSG_SERVER_REGIST_REQ();
-		register_req.info = new MsgRegServerInfo();
-		register_req.info.server_type = 1;
-		error = this._ls_socket.SendStruct("ProtoMsg.MSG_SERVER_REGIST_REQ", register_req);
-		if (error != null) return error;
+		{
+			var register_req = new MSG_SERVER_REGIST_REQ();
+			register_req.info = new MsgRegServerInfo();
+			register_req.info.server_type = 1;
+			error = this._ls_socket.SendStruct("ProtoMsg.MSG_SERVER_REGIST_REQ", register_req);
+			if (error != null) return error;   
+        }
 		
 		// 发送消息包
-		this._ls_socket.SendMessage(msg);
-		var json = lua.protobuf.message_jsonencode(msg);
-		ALittle.Log(json);
+		{
+			this._ls_socket.SendMessage(msg);   
+        }
+
 		// 读取消息包
-		error, msg = this._ls_socket.ReadMessage();
-		if (error != null) return error;
+		var ls_rsp:MSG_LS2CL_LOGIN_RSP = null;
+		{
+			error, ls_rsp = this._ls_socket.ReadStruct{MSG_LS2CL_LOGIN_RSP}();
+			if (error != null) return error;
 
-		json = lua.protobuf.message_jsonencode(msg);
-		ALittle.Log(json);
+			if (ls_rsp.ret_code != null && ls_rsp.ret_code != 0) return "login server login failed, ret code:"..ls_rsp.ret_code;
+			this._login_status = LWLoginStatus.CONNECT_GS;
+			this._gs_socket = new LWSocket(bind(this.HandleDisconnected, this, LWLoginStatus.CONNECT_GS));
+			error = this._gs_socket.Connect(ls_rsp.net_addr.ip, ls_rsp.net_addr.port);
+			if (error != null) return error;
+        }
+		this._ls_socket.Close();
+		this._ls_socket = null;
+		
+		// 发送注册包
+		{
+			var register_req = new MSG_SERVER_REGIST_REQ();
+			register_req.info = new MsgRegServerInfo();
+			register_req.info.server_type = 1;
+			error = this._gs_socket.SendStruct("ProtoMsg.MSG_SERVER_REGIST_REQ", register_req);
+			if (error != null) return error;
+        }
 
-		this._login_status = LWLoginStatus.CONNECT_GS;
+		// 发送登录包
+		{
+            var login_req = new MSG_CL2GS_LOGIN_REQ();
+			login_req.player_id = ls_rsp.player_id;
+			login_req.account = ALittle.String_ToString(ls_rsp.player_id);
+			login_req.login_session = ls_rsp.login_session;
+			error = this._gs_socket.SendStruct("ProtoMsg.MSG_CL2GS_LOGIN_REQ", login_req);
+			if (error != null) return error;
+        }
 
+		// 处理登陆应答包
+		var gs_rsp:MSG_GS2CL_LOGIN_RSP = null;
+		{
+			error, gs_rsp = this._gs_socket.ReadStruct{MSG_GS2CL_LOGIN_RSP}();
+			if (error != null) return error;
+
+			if (gs_rsp.ret_code != null && gs_rsp.ret_code != 0) return "game server login failed, ret code:"..gs_rsp.ret_code;
+        }
+
+		this._gs_socket.ReceiveMessage();
 		return null;
+    }
+
+	// 发送消息
+	public fun SendMessage(lua.protobuf_message msg)
+	{
+        if (this._gs_socket == null) return;
+		this._gs_socket.SendMessage(msg);
     }
 }
 

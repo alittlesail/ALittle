@@ -509,6 +509,22 @@ public class ScrollScreen : DisplayGroup
     {
         return this._right_scroll_bar;
     }
+
+    public fun ScrollToBottom()
+    {
+        if (this._right_scroll_bar == null) return;
+
+        this._right_scroll_bar.offset_rate = 1;
+        this._right_scroll_bar.DispatchEvent(new UIChangedEvent());
+    }
+
+    public fun ScrollToRight()
+    {
+        if (this._bottom_scroll_bar == null) return;
+
+        this._bottom_scroll_bar.offset_rate = 1;
+        this._bottom_scroll_bar.DispatchEvent(new UIChangedEvent());
+    }
     
     public set bottom_scrollbar(ScrollBar value)
     {

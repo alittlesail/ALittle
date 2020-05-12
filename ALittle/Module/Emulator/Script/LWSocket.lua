@@ -3,6 +3,7 @@ module("Emulator", package.seeall)
 
 local ___pairs = pairs
 local ___ipairs = ipairs
+local ___all_struct = ALittle.GetAllStruct()
 
 
 assert(Lua.ISocket, " extends class:Lua.ISocket is nil")
@@ -16,27 +17,23 @@ local ___COROUTINE = coroutine.running()
 	local server_type = 0
 	local protobuf_msg = nil
 	local error = nil
-	ALittle.Log("ReadMessage")
 	error, msg_size = self:ReadUint16()
 	if error ~= nil then
 		return error, nil
 	end
-	ALittle.Log("ReadMessage111", msg_size)
+	msg_size = msg_size - (8)
 	error, msg_type = self:ReadUint16()
 	if error ~= nil then
 		return error, nil
 	end
-	ALittle.Log("ReadMessage222", msg_type)
 	error, server_id = self:ReadUint16()
 	if error ~= nil then
 		return error, nil
 	end
-	ALittle.Log("ReadMessage333", server_id)
 	error, server_type = self:ReadUint16()
 	if error ~= nil then
 		return error, nil
 	end
-	ALittle.Log("ReadMessage444", server_type)
 	if msg_size <= 0 then
 		local full_name = g_LWProtobuf:MsgId2MsgFullName(msg_type)
 		if full_name == nil then
@@ -69,9 +66,19 @@ function LWSocket:WriteMessage(full_name, protobuf_msg, protobuf_binary, protobu
 	self:WriteUint16(1)
 	self:WriteUint16(1)
 	self:WriteBinary(protobuf_binary, protobuf_size)
+	if full_name ~= "ProtoMsg.MSG_CLIENT_KEEP_LIVE_RSP" then
+		g_GCenter:AddLogMessage(protobuf_msg)
+	end
 	return nil
 end
 
 function LWSocket:HandleMessage(msg)
+	local descriptor = protobuf.message_getdescriptor(msg)
+	local name = protobuf.messagedescriptor_name(descriptor)
+	if name == "MSG_CLIENT_KEEP_LIVE_REQ" then
+		self:SendStruct(___all_struct[754290029], "ProtoMsg.MSG_CLIENT_KEEP_LIVE_RSP", {})
+		return
+	end
+	g_GCenter:AddLogMessage(msg)
 end
 

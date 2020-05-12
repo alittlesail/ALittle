@@ -403,6 +403,22 @@ function ScrollScreen.__getter:right_scrollbar()
 	return self._right_scroll_bar
 end
 
+function ScrollScreen:ScrollToBottom()
+	if self._right_scroll_bar == nil then
+		return
+	end
+	self._right_scroll_bar.offset_rate = 1
+	self._right_scroll_bar:DispatchEvent(___all_struct[958494922], {})
+end
+
+function ScrollScreen:ScrollToRight()
+	if self._bottom_scroll_bar == nil then
+		return
+	end
+	self._bottom_scroll_bar.offset_rate = 1
+	self._bottom_scroll_bar:DispatchEvent(___all_struct[958494922], {})
+end
+
 function ScrollScreen.__setter:bottom_scrollbar(value)
 	if self._bottom_scroll_bar ~= nil then
 		DisplayGroup.RemoveChild(self, self._bottom_scroll_bar)

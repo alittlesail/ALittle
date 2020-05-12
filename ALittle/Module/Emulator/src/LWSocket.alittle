@@ -12,22 +12,18 @@ protected class LWSocket : Lua.ISocket
         var protobuf_msg:lua.protobuf_message = null;
         var error:string = null;
         
-        ALittle.Log("ReadMessage");
         error, msg_size = this.ReadUint16();
         if (error != null) return error, null;
-        ALittle.Log("ReadMessage111", msg_size);
+        msg_size -= 8;
         
         error, msg_type = this.ReadUint16();
         if (error != null) return error, null;
-        ALittle.Log("ReadMessage222", msg_type);
             
         error, server_id = this.ReadUint16();
         if (error != null) return error, null;
-        ALittle.Log("ReadMessage333", server_id);
             
         error, server_type = this.ReadUint16();
         if (error != null) return error, null;
-        ALittle.Log("ReadMessage444", server_type);
         
         if (msg_size <= 0)
         {
@@ -57,13 +53,23 @@ protected class LWSocket : Lua.ISocket
         this.WriteUint16(1);
         this.WriteUint16(1);
         this.WriteBinary(protobuf_binary, protobuf_size);
-        // g_GCenter.AddLogMessage(protobuf_msg);
+        
+        if (full_name != "ProtoMsg.MSG_CLIENT_KEEP_LIVE_RSP")
+            g_GCenter.AddLogMessage(protobuf_msg);
         return null;
     }
 
     private fun HandleMessage(lua.protobuf_message msg)
     {
-        // g_GCenter.AddLogMessage(msg);
-        
+        // 如果是心跳包，那么就要应答
+        var descriptor = lua.protobuf.message_getdescriptor(msg);
+        var name = lua.protobuf.messagedescriptor_name(descriptor);
+        if (name == "MSG_CLIENT_KEEP_LIVE_REQ")
+        {
+            this.SendStruct("ProtoMsg.MSG_CLIENT_KEEP_LIVE_RSP", new MSG_CLIENT_KEEP_LIVE_RSP());
+            return;
+        }
+
+        g_GCenter.AddLogMessage(msg);
     }
 }

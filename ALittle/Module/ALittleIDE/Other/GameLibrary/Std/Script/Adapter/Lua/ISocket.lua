@@ -79,6 +79,21 @@ end
 function ISocket:HandleMessage(msg)
 end
 
+function ISocket:ReadStruct(T)
+local ___COROUTINE = coroutine.running()
+	local error, msg = self:ReadMessage()
+	if error ~= nil then
+		return error, nil
+	end
+	local content = protobuf.message_jsonencode(msg)
+	protobuf.freemessage(msg)
+	local result, object = Lua.TCall(json.decode, content)
+	if result ~= nil then
+		return result, nil
+	end
+	return nil, object
+end
+
 function ISocket:ReadUint8()
 local ___COROUTINE = coroutine.running()
 	if not self:IsConnected() then
@@ -422,13 +437,13 @@ function ISocket.HandleReadInt(id, value)
 	if socket == nil then
 		return
 	end
-	__SOCKET_MAP[id] = nil
 	if socket._read_thread ~= nil then
-		local result, error = ALittle.Coroutine.Resume(socket._read_thread, value)
+		local thread = socket._read_thread
+		socket._read_thread = nil
+		local result, error = ALittle.Coroutine.Resume(thread, nil, value)
 		if result ~= true then
 			ALittle.Error(error)
 		end
-		socket._read_thread = nil
 	end
 end
 
@@ -437,13 +452,13 @@ function ISocket.HandleReadDouble(id, value)
 	if socket == nil then
 		return
 	end
-	__SOCKET_MAP[id] = nil
 	if socket._read_thread ~= nil then
-		local result, error = ALittle.Coroutine.Resume(socket._read_thread, value)
+		local thread = socket._read_thread
+		socket._read_thread = nil
+		local result, error = ALittle.Coroutine.Resume(thread, nil, value)
 		if result ~= true then
 			ALittle.Error(error)
 		end
-		socket._read_thread = nil
 	end
 end
 
@@ -452,13 +467,13 @@ function ISocket.HandleReadProtobuf(id, value)
 	if socket == nil then
 		return
 	end
-	__SOCKET_MAP[id] = nil
 	if socket._read_thread ~= nil then
-		local result, error = ALittle.Coroutine.Resume(socket._read_thread, value)
+		local thread = socket._read_thread
+		socket._read_thread = nil
+		local result, error = ALittle.Coroutine.Resume(thread, nil, value)
 		if result ~= true then
 			ALittle.Error(error)
 		end
-		socket._read_thread = nil
 	end
 end
 

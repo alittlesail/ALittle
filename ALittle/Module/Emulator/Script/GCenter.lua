@@ -44,8 +44,8 @@ option_map = {}
 })
 ALittle.RegStruct(-888044440, "Emulator.LogItemUserData", {
 name = "Emulator.LogItemUserData", ns_name = "Emulator", rl_name = "LogItemUserData", hash_code = -888044440,
-name_list = {"msg","descriptor","name"},
-type_list = {"lua.protobuf_message","lua.protobuf_descriptor","string"},
+name_list = {"msg","descriptor","name","upper_name"},
+type_list = {"lua.protobuf_message","lua.protobuf_descriptor","string","string"},
 option_map = {}
 })
 ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
@@ -122,6 +122,8 @@ function GCenter:Setup()
 	self._logout_button.visible = false
 	self._login_ip_input.text = g_GConfig:GetString("login_ip", "127.0.0.1")
 	self._login_port_input.text = ALittle.String_ToString(g_GConfig:GetInt("login_port", 0))
+	self._right_grad3_ud.up_size = g_GConfig:GetDouble("right_grid3_up_size", self._right_grad3_ud.up_size)
+	self._send_button.disabled = true
 	self._frame_loop = ALittle.LoopFrame(Lua.Bind(self.UpdateFrame, self))
 	self._frame_loop:Start()
 end
@@ -243,10 +245,12 @@ function GCenter:RefreshLogList()
 	self._log_scroll_screen:RemoveAllChild()
 	for index, button in ___ipairs(self._log_item_list) do
 		local user_data = button._user_data
-		button.group = self._proto_search_group
-		self._protobuf_scroll_screen:AddChild(button)
+		if ALittle.String_Find(user_data.upper_name, key) ~= nil then
+			button.group = self._log_search_group
+			self._log_scroll_screen:AddChild(button)
+		end
 	end
-	self._protobuf_scroll_screen:RejustScrollBar()
+	self._log_scroll_screen:RejustScrollBar()
 end
 
 function GCenter:AddLogMessage(msg)
@@ -261,22 +265,27 @@ function GCenter:AddLogMessage(msg)
 		ALittle.List_Remove(self._log_item_list, 1)
 	end
 	local user_data = {}
+	user_data.descriptor = protobuf.message_getdescriptor(msg)
 	user_data.msg = protobuf.clonemessage(msg)
 	user_data.descriptor = protobuf.message_getdescriptor(user_data.msg)
 	user_data.name = protobuf.messagedescriptor_name(user_data.descriptor)
-	local upper_name = ALittle.String_Upper(user_data.name)
+	user_data.upper_name = ALittle.String_Upper(user_data.name)
 	local item = g_Control:CreateControl("emulator_common_item_radiobutton")
 	item.text = user_data.name
-	item.drag_trans_target = self._protobuf_scroll_screen
+	item.drag_trans_target = self._log_scroll_screen
 	item._user_data = user_data
 	item:AddEventListener(___all_struct[444989011], self, self.HandleLogItemSelected)
 	self._log_item_count = self._log_item_count + 1
 	self._log_item_list[self._log_item_count] = item
 	local key = self._log_search_key.text
 	key = ALittle.String_Upper(key)
-	if ALittle.String_Find(upper_name, key) ~= nil then
+	if ALittle.String_Find(user_data.upper_name, key) ~= nil then
+		local bottom = self._log_scroll_screen.right_scrollbar.offset_rate >= 0.95 or self._log_scroll_screen.container.height < self._log_scroll_screen.view_height
 		item.group = self._log_search_group
 		self._log_scroll_screen:AddChild(item)
+		if bottom then
+			self._log_scroll_screen:ScrollToBottom()
+		end
 	end
 end
 
@@ -284,8 +293,19 @@ function GCenter:HandleLogItemSelected(event)
 end
 
 function GCenter:HandleSocketDisconnected()
-	self._login_button.text = "登陆"
+	self._send_button.disabled = true
+	self._login_button.visible = true
+	self._logout_button.visible = false
 	self._login_status = LoginStatus.EMULATOR_IDLE
+end
+
+function GCenter:HandleSendClick(event)
+	local tree = self._detail_scroll_screen.container
+	if tree == nil then
+		return
+	end
+	local detail_info = tree:GetDetailInfo()
+	g_LWProtobuf:SendMessage(detail_info.message)
 end
 
 function GCenter:HandleLoginClick(event)
@@ -315,11 +335,10 @@ function GCenter:HandleLoginClick(event)
 	local error = g_LWProtobuf:StartLogin(ip, port, self._login_detail_info.message)
 	if error == nil then
 		self._login_status = LoginStatus.EMULATOR_LOGINED
-		self._login_button.text = "登陆成功"
+		self._send_button.disabled = false
 	else
 		g_IDETool:ShowNotice("提示", error)
 		self._login_status = LoginStatus.EMULATOR_IDLE
-		self._login_button.text = "登陆"
 		self._login_button.visible = true
 		self._logout_button.visible = false
 	end
@@ -328,8 +347,26 @@ GCenter.HandleLoginClick = Lua.CoWrap(GCenter.HandleLoginClick)
 
 function GCenter:HandleLogoutClick(event)
 	g_LWProtobuf:CloseConnect()
+	self._send_button.disabled = true
 	self._login_button.visible = true
 	self._logout_button.visible = false
+	self._login_status = LoginStatus.EMULATOR_IDLE
+end
+
+function GCenter:HandleDragRightQuadUD(event)
+	self._right_grad3_ud.up_size = self._right_grad3_ud.up_size + (event.delta_y)
+end
+
+function GCenter:HandleDragEndRightQuadUD(event)
+	g_GConfig:SetConfig("right_grid3_up_size", self._right_grad3_ud.up_size)
+end
+
+function GCenter:HandleSetVDragCursor(event)
+	ALittle.System_SetVDragCursor()
+end
+
+function GCenter:HandleSetNormalCursor(event)
+	ALittle.System_SetNormalCursor()
 end
 
 function GCenter:Shutdown()

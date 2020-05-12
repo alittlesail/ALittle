@@ -88,6 +88,20 @@ public class ISocket
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	public await fun ReadStruct<T:struct>() : string, T
+	{
+        var error, msg = this.ReadMessage();
+		if (error != null) return error, null;
+
+		var content = lua.protobuf.message_jsonencode(msg);
+		lua.protobuf.freemessage(msg);
+		
+		var result, object = tcall(lua.json.decode, content);
+		if (result != null) return result, null;
+
+		return null, object;
+    }
+
 	public await fun ReadUint8() : string, int
 	{
 		if (!this.IsConnected()) return "还未连接成功", 0;
@@ -397,13 +411,13 @@ public class ISocket
 	{
         var socket = __SOCKET_MAP[id];
 		if (socket == null) return;
-		__SOCKET_MAP[id] = null;
 
 		if (socket._read_thread != null)
 		{
-			var result, error = ALittle.Coroutine.Resume(socket._read_thread, value);
-			if (result != true) ALittle.Error(error);
+			var thread = socket._read_thread;
 			socket._read_thread = null;
+			var result, error = ALittle.Coroutine.Resume(thread, null, value);
+			if (result != true) ALittle.Error(error);
         }
     }
 
@@ -411,13 +425,13 @@ public class ISocket
 	{
         var socket = __SOCKET_MAP[id];
 		if (socket == null) return;
-		__SOCKET_MAP[id] = null;
 
 		if (socket._read_thread != null)
 		{
-			var result, error = ALittle.Coroutine.Resume(socket._read_thread, value);
-			if (result != true) ALittle.Error(error);
+			var thread = socket._read_thread;
 			socket._read_thread = null;
+			var result, error = ALittle.Coroutine.Resume(thread, null, value);
+			if (result != true) ALittle.Error(error);
         }
     }
 
@@ -425,13 +439,13 @@ public class ISocket
 	{
         var socket = __SOCKET_MAP[id];
 		if (socket == null) return;
-		__SOCKET_MAP[id] = null;
 
 		if (socket._read_thread != null)
 		{
-			var result, error = ALittle.Coroutine.Resume(socket._read_thread, value);
-			if (result != true) ALittle.Error(error);
+			var thread = socket._read_thread;
 			socket._read_thread = null;
+			var result, error = ALittle.Coroutine.Resume(thread, null, value);
+			if (result != true) ALittle.Error(error);
         }
     }
 }

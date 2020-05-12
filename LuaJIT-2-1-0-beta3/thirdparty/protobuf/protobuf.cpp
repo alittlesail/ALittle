@@ -175,8 +175,8 @@ void protobuf_freemessage(void* m)
 
 void* protobuf_clonemessage(void* m)
 {
-    auto* new_msg = ((google::protobuf::Message*)m)->New();
-    new_msg->CopyFrom(*(google::protobuf::Message*)m);
+    auto* new_msg = ((const google::protobuf::Message*)m)->New();
+    new_msg->CopyFrom(*(const google::protobuf::Message*)m);
     return new_msg;
 }
 
@@ -209,7 +209,9 @@ const char* protobuf_message_jsonencode(void* m)
 {
     static std::string temp;
     temp.clear();
-    if (google::protobuf::util::MessageToJsonString(*(const google::protobuf::Message*)m, &temp).ok())
+    google::protobuf::util::JsonOptions option;
+    option.preserve_proto_field_names = true;
+    if (google::protobuf::util::MessageToJsonString(*(const google::protobuf::Message*)m, &temp, option).ok())
         return temp.c_str();
     return nullptr;
 }

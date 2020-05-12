@@ -276,8 +276,8 @@ static int protobuflib_freemessage(lua_State* L)
 static int protobuflib_clonemessage(lua_State* L)
 {
     void* m = lua_touserdata(L, 1);
-    luaL_argcheck(L, m != 0, 1, "factory object is null");
-    lua_pushlightuserdata(L, protobuf_clonemessage(L, m));
+    luaL_argcheck(L, m != 0, 1, "message object is null");
+    lua_pushlightuserdata(L, protobuf_clonemessage(m));
     return 1;
 }
 

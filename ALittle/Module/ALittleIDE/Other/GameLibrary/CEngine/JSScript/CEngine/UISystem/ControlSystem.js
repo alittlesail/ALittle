@@ -6,6 +6,7 @@ let __byte = ALittle.String_Byte;
 let __type = ALittle.String_Type;
 ALittle.ControlSystem = JavaScript.Class(undefined, {
 	Ctor : function(module_name, crypt_mode) {
+		this._log_error = true;
 		this._font_map = {};
 		this._name_map_info = {};
 		this._name_map_info_cache = {};
@@ -44,6 +45,12 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 	},
 	get crypt_mode() {
 		return this._crypt_mode;
+	},
+	get log_error() {
+		return this._log_error;
+	},
+	set log_error(value) {
+		this._log_error = value;
 	},
 	RegisterFont : function(src, dst) {
 		this._font_map[src] = dst;

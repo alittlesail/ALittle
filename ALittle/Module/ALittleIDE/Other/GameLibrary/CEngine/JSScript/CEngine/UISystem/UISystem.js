@@ -419,7 +419,7 @@ ALittle.UISystem = JavaScript.Class(undefined, {
 			return false;
 		}
 		if (this._wfc === undefined) {
-			let control = this._sfc;
+			let control = this._mfc;
 			while (control !== undefined) {
 				if (control.can_scroll === true) {
 					this._wfc = control;
@@ -461,6 +461,7 @@ ALittle.UISystem = JavaScript.Class(undefined, {
 			mfc.DispatchEvent(___all_struct.get(544684311), {});
 		}
 		this._mfc = mfc;
+		this._wfc = undefined;
 	},
 	HandleViewResized : function(width, height) {
 		if (this._view_width === width && this._view_height === height) {

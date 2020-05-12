@@ -76,6 +76,17 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 		this._scroll_view.AddChild(this._scroll_content, 1);
 		this.RejustScrollBar();
 	},
+	SetContainer : function(value) {
+		if (value === undefined) {
+			value = ALittle.NewObject(ALittle.DisplayGroup, this._ctrl_sys);
+		}
+		this._scroll_content.RemoveEventListener(___all_struct.get(-431205740), this, this.HandleContainerResize);
+		this._scroll_view.RemoveChild(this._scroll_content);
+		this._scroll_content = value;
+		this._scroll_content.AddEventListener(___all_struct.get(-431205740), this, this.HandleContainerResize);
+		this._scroll_view.AddChild(this._scroll_content, 1);
+		this.RejustScrollBar();
+	},
 	set container_y(value) {
 		if (this._scroll_content === undefined) {
 			return;
@@ -359,6 +370,20 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 	},
 	get right_scrollbar() {
 		return this._right_scroll_bar;
+	},
+	ScrollToBottom : function() {
+		if (this._right_scroll_bar === undefined) {
+			return;
+		}
+		this._right_scroll_bar.offset_rate = 1;
+		this._right_scroll_bar.DispatchEvent(___all_struct.get(958494922), {});
+	},
+	ScrollToRight : function() {
+		if (this._bottom_scroll_bar === undefined) {
+			return;
+		}
+		this._bottom_scroll_bar.offset_rate = 1;
+		this._bottom_scroll_bar.DispatchEvent(___all_struct.get(958494922), {});
 	},
 	set bottom_scrollbar(value) {
 		if (this._bottom_scroll_bar !== undefined) {

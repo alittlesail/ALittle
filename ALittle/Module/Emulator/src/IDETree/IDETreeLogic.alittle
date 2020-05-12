@@ -10,11 +10,17 @@ public class IDETreeLogic : ALittle.DisplayLayout
 	private ALittle.DisplayObject _item;		// item部分
 
 	private RootInfo _root;		// 根数据
+	private string _upper_description;
 
 	public ctor(ALittle.ControlSystem ctrl_sys, RootInfo root)
 	{
 		this._root = root;
 	}
+
+	private fun Init()
+	{
+        this._upper_description = ALittle.String_Upper(this._item_title.text);
+    }
 	
 	public fun IsTree() : bool { return false; }
 	public get title() : string	{ return this._item_title.text; }
@@ -22,10 +28,39 @@ public class IDETreeLogic : ALittle.DisplayLayout
 	public get fold() : bool { return false; }
 	public set light(bool value) { this._light.visible = value; }
 	public get light() : bool { return this._light.visible; }
+	
+	// 搜索准备
+	public fun SearchBegin()
+	{
+		this.light = false;
+    }
+
+	public fun SearchEnd(List<IDETreeLogic> list)
+	{
+        for (var index, parent in list)
+		{
+			parent.light = true;
+			if (parent != this)
+			{
+				parent = cast<IDETreeLogic>(parent.logic_parent);
+				while (parent != null)
+				{
+					parent.fold = true;
+					if (parent == this) break;
+					parent = cast<IDETreeLogic>(parent.logic_parent);
+				}   
+            }
+        }
+    }
 
 	public fun SearchDescription(string name, [Nullable] List<IDETreeLogic> list) : List<IDETreeLogic>
 	{
-		return null;
+		if (list == null) list = new List<IDETreeLogic>();
+		this.light = false;
+	
+		if (ALittle.String_Find(this._upper_description, name) != null)
+			ALittle.List_Push(list, this);
+		return list;
 	}
 
 	public fun Save()

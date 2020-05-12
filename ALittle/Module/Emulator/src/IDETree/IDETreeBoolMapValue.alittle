@@ -46,6 +46,7 @@ public class IDETreeBoolMapValue : IDETreeLogic
 		this._item.width = this._delete_button.x + this._delete_button.width + 1;
 		this.width = this._item.width;
 		
+		this.Init();
 		this._key_dropdown.disabled = root.for_show;
 		this._value_input.editable = !root.for_show;
 		this._insert_button.disabled = root.for_show;

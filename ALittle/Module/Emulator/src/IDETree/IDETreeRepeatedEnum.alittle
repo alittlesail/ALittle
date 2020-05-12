@@ -50,6 +50,8 @@ public class IDETreeRepeatedEnum : IDETreeLogic
 		this._insert_button.x = this._value_dropdown.x + this._value_dropdown.width + 1;
 		this._delete_button.x = this._insert_button.x + this._insert_button.width + 1;
 		
+		this.Init();
+		this._value_dropdown.disabled = root.for_show;
 		this._insert_button.disabled = root.for_show;
 		this._delete_button.disabled = root.for_show;
 	}

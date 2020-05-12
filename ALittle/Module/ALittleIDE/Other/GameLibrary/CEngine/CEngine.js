@@ -4038,6 +4038,7 @@ ALittle.UIEventDispatcher = JavaScript.Class(undefined, {
 			if (rflt.name === "ALittle.UIButtonDragEvent" || rflt.name === "ALittle.UIButtonDragBeginEvent") {
 				event_target = this._trans_target.get("drag");
 			} else if (rflt.name === "ALittle.UIButtonDragEndEvent") {
+				event_target = this._trans_target.get("drag");
 				A_UISystem.focus = this._trans_target.get("drag");
 			}
 		}
@@ -4929,7 +4930,7 @@ ALittle.DisplayObject = JavaScript.Class(ALittle.UIEventDispatcher, {
 				let func = undefined;
 				if (einfo.func !== undefined) {
 					func = target_logic[einfo.func];
-					if (func === undefined) {
+					if (func === undefined && this._ctrl_sys.log_error) {
 						ALittle.Log("can't find event func:\"" + einfo.func + "\" in " + ALittle.String_ToString(target_logic));
 					}
 				}
@@ -7663,21 +7664,29 @@ ALittle.TextButton = JavaScript.Class(ALittle.DisplayLayout, {
 		this._show_text.width = 0;
 		this._show_text.height = 0;
 		this._show_text.text = "";
+		this._show_text.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+		this._show_text.x_value = 0;
 		this._show_text.visible = true;
 		this._show_down_text = ({});
 		this._show_down_text.width = 0;
 		this._show_down_text.height = 0;
 		this._show_down_text.text = "";
+		this._show_down_text.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+		this._show_down_text.x_value = 0;
 		this._show_down_text.visible = false;
 		this._show_over_text = ({});
 		this._show_over_text.width = 0;
 		this._show_over_text.height = 0;
 		this._show_over_text.text = "";
+		this._show_over_text.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+		this._show_over_text.x_value = 0;
 		this._show_over_text.visible = false;
 		this._show_disabled_text = ({});
 		this._show_disabled_text.width = 0;
 		this._show_disabled_text.height = 0;
 		this._show_disabled_text.text = "";
+		this._show_disabled_text.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+		this._show_disabled_text.x_value = 0;
 		this._show_disabled_text.visible = false;
 		this._file_select = false;
 		this.AddEventListener(___all_struct.get(544684311), this, this.HandleMoveIn);
@@ -7766,6 +7775,24 @@ ALittle.TextButton = JavaScript.Class(ALittle.DisplayLayout, {
 	},
 	get text() {
 		return this._show_text.text;
+	},
+	set text_x_type(value) {
+		this._show_text.x_type = value;
+		this._show_over_text.x_type = value;
+		this._show_disabled_text.x_type = value;
+		this._show_down_text.x_type = value;
+	},
+	get text_x_type() {
+		return this._show_text.x_type;
+	},
+	set text_x_value(value) {
+		this._show_text.x_value = value;
+		this._show_over_text.x_value = value;
+		this._show_disabled_text.x_value = value;
+		this._show_down_text.x_value = value;
+	},
+	get text_x_value() {
+		return this._show_text.x_value;
 	},
 	ShowUp : function(event) {
 		if (this._abs_disabled || this._disabled) {
@@ -7866,13 +7893,16 @@ ALittle.TextButton = JavaScript.Class(ALittle.DisplayLayout, {
 			this._show_text.height = 0;
 			this._show_text.text = show.text;
 			this._show_text.visible = show.visible;
+			this._show_text.x_type = show.x_type;
+			this._show_text.x_value = show.x_value;
 			return;
 		}
 		value.text = this._show_text.text;
 		value.visible = this._show_text.visible;
+		value.x_type = this._show_text.x_type;
+		value.x_value = this._show_text.x_value;
 		this.RemoveChild(this._show_text);
 		this._show_text = value;
-		this._show_text.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
 		this._show_text.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
 		this.AddChild(this._show_text, 6);
 	},
@@ -7891,13 +7921,16 @@ ALittle.TextButton = JavaScript.Class(ALittle.DisplayLayout, {
 			this._show_over_text.height = 0;
 			this._show_over_text.text = show.text;
 			this._show_over_text.visible = show.visible;
+			this._show_over_text.x_type = show.x_type;
+			this._show_over_text.x_value = show.x_value;
 			return;
 		}
 		value.text = this._show_over_text.text;
 		value.visible = this._show_over_text.visible;
+		value.x_type = this._show_over_text.x_type;
+		value.x_value = this._show_over_text.x_value;
 		this.RemoveChild(this._show_over_text);
 		this._show_over_text = value;
-		this._show_over_text.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
 		this._show_over_text.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
 		this.AddChild(this._show_over_text, 6);
 	},
@@ -7916,13 +7949,16 @@ ALittle.TextButton = JavaScript.Class(ALittle.DisplayLayout, {
 			this._show_down_text.height = 0;
 			this._show_down_text.text = show.text;
 			this._show_down_text.visible = show.visible;
+			this._show_down_text.x_type = show.x_type;
+			this._show_down_text.x_value = show.x_value;
 			return;
 		}
 		value.text = this._show_down_text.text;
 		value.visible = this._show_down_text.visible;
+		value.x_type = this._show_down_text.x_type;
+		value.x_value = this._show_down_text.x_value;
 		this.RemoveChild(this._show_down_text);
 		this._show_down_text = value;
-		this._show_down_text.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
 		this._show_down_text.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
 		this.AddChild(this._show_down_text, 6);
 	},
@@ -7941,13 +7977,16 @@ ALittle.TextButton = JavaScript.Class(ALittle.DisplayLayout, {
 			this._show_disabled_text.height = 0;
 			this._show_disabled_text.text = show.text;
 			this._show_disabled_text.visible = show.visible;
+			this._show_disabled_text.x_type = show.x_type;
+			this._show_disabled_text.x_value = show.x_value;
 			return;
 		}
 		value.text = this._show_disabled_text.text;
 		value.visible = this._show_disabled_text.visible;
+		value.x_type = this._show_disabled_text.x_type;
+		value.x_value = this._show_disabled_text.x_value;
 		this.RemoveChild(this._show_disabled_text);
 		this._show_disabled_text = value;
-		this._show_disabled_text.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
 		this._show_disabled_text.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
 		this.AddChild(this._show_disabled_text, 6);
 	},
@@ -8054,41 +8093,57 @@ ALittle.TextCheckButton = JavaScript.Class(ALittle.DisplayLayout, {
 		this._show_text.width = 0;
 		this._show_text.height = 0;
 		this._show_text.text = "";
+		this._show_text.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+		this._show_text.x_value = 0;
 		this._show_text.visible = true;
 		this._show_over_text = ({});
 		this._show_over_text.width = 0;
 		this._show_over_text.height = 0;
 		this._show_over_text.text = "";
+		this._show_over_text.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+		this._show_over_text.x_value = 0;
 		this._show_over_text.visible = false;
 		this._show_down_text = ({});
 		this._show_down_text.width = 0;
 		this._show_down_text.height = 0;
 		this._show_down_text.text = "";
+		this._show_down_text.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+		this._show_down_text.x_value = 0;
 		this._show_down_text.visible = false;
 		this._show_disabled_text = ({});
 		this._show_disabled_text.width = 0;
 		this._show_disabled_text.height = 0;
 		this._show_disabled_text.text = "";
+		this._show_disabled_text.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+		this._show_disabled_text.x_value = 0;
 		this._show_disabled_text.visible = false;
 		this._show_selected_text = ({});
 		this._show_selected_text.width = 0;
 		this._show_selected_text.height = 0;
 		this._show_selected_text.text = "";
+		this._show_selected_text.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+		this._show_selected_text.x_value = 0;
 		this._show_selected_text.visible = false;
 		this._show_selected_over_text = ({});
 		this._show_selected_over_text.width = 0;
 		this._show_selected_over_text.height = 0;
 		this._show_selected_over_text.text = "";
+		this._show_selected_over_text.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+		this._show_selected_over_text.x_value = 0;
 		this._show_selected_over_text.visible = false;
 		this._show_selected_down_text = ({});
 		this._show_selected_down_text.width = 0;
 		this._show_selected_down_text.height = 0;
 		this._show_selected_down_text.text = "";
+		this._show_selected_down_text.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+		this._show_selected_down_text.x_value = 0;
 		this._show_selected_down_text.visible = false;
 		this._show_selected_disabled_text = ({});
 		this._show_selected_disabled_text.width = 0;
 		this._show_selected_disabled_text.height = 0;
 		this._show_selected_disabled_text.text = "";
+		this._show_selected_disabled_text.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+		this._show_selected_disabled_text.x_value = 0;
 		this._show_selected_disabled_text.visible = false;
 		this._selected = false;
 		this.AddEventListener(___all_struct.get(544684311), this, this.HandleMoveIn);
@@ -8162,6 +8217,32 @@ ALittle.TextCheckButton = JavaScript.Class(ALittle.DisplayLayout, {
 	},
 	get text() {
 		return this._show_text.text;
+	},
+	set text_x_type(value) {
+		this._show_text.x_type = value;
+		this._show_over_text.x_type = value;
+		this._show_down_text.x_type = value;
+		this._show_disabled_text.x_type = value;
+		this._show_selected_text.x_type = value;
+		this._show_selected_over_text.x_type = value;
+		this._show_selected_down_text.x_type = value;
+		this._show_selected_disabled_text.x_type = value;
+	},
+	get text_x_type() {
+		return this._show_text.x_type;
+	},
+	set text_x_value(value) {
+		this._show_text.x_value = value;
+		this._show_over_text.x_value = value;
+		this._show_down_text.x_value = value;
+		this._show_disabled_text.x_value = value;
+		this._show_selected_text.x_value = value;
+		this._show_selected_over_text.x_value = value;
+		this._show_selected_down_text.x_value = value;
+		this._show_selected_disabled_text.x_value = value;
+	},
+	get text_x_value() {
+		return this._show_text.x_value;
 	},
 	set selected(value) {
 		if (this._selected === value) {
@@ -8390,15 +8471,18 @@ ALittle.TextCheckButton = JavaScript.Class(ALittle.DisplayLayout, {
 			this._show_text.height = 0;
 			this._show_text.text = show.text;
 			this._show_text.visible = show.visible;
+			this._show_text.x_type = show.x_type;
+			this._show_text.x_value = show.x_value;
 			return;
 		}
 		if (this._show_text !== undefined && this._show_text.text !== "") {
 			value.text = this._show_text.text;
 		}
 		value.visible = this._show_text.visible;
+		value.x_type = this._show_text.x_type;
+		value.x_value = this._show_text.x_value;
 		this.RemoveChild(this._show_text);
 		this._show_text = value;
-		this._show_text.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
 		this._show_text.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
 		this.AddChild(this._show_text, 10);
 	},
@@ -8417,15 +8501,18 @@ ALittle.TextCheckButton = JavaScript.Class(ALittle.DisplayLayout, {
 			this._show_over_text.height = 0;
 			this._show_over_text.text = show.text;
 			this._show_over_text.visible = show.visible;
+			this._show_over_text.x_type = show.x_type;
+			this._show_over_text.x_value = show.x_value;
 			return;
 		}
 		if (this._show_over_text !== undefined && this._show_over_text.text !== "") {
 			value.text = this._show_over_text.text;
 		}
 		value.visible = this._show_over_text.visible;
+		value.x_type = this._show_over_text.x_type;
+		value.x_value = this._show_over_text.x_value;
 		this.RemoveChild(this._show_over_text);
 		this._show_over_text = value;
-		this._show_over_text.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
 		this._show_over_text.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
 		this.AddChild(this._show_over_text, 10);
 	},
@@ -8444,15 +8531,18 @@ ALittle.TextCheckButton = JavaScript.Class(ALittle.DisplayLayout, {
 			this._show_down_text.height = 0;
 			this._show_down_text.text = show.text;
 			this._show_down_text.visible = show.visible;
+			this._show_down_text.x_type = show.x_type;
+			this._show_down_text.x_value = show.x_value;
 			return;
 		}
 		if (this._show_down_text !== undefined && this._show_down_text.text !== "") {
 			value.text = this._show_down_text.text;
 		}
 		value.visible = this._show_down_text.visible;
+		value.x_type = this._show_down_text.x_type;
+		value.x_value = this._show_down_text.x_value;
 		this.RemoveChild(this._show_down_text);
 		this._show_down_text = value;
-		this._show_down_text.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
 		this._show_down_text.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
 		this.AddChild(this._show_down_text, 10);
 	},
@@ -8471,15 +8561,18 @@ ALittle.TextCheckButton = JavaScript.Class(ALittle.DisplayLayout, {
 			this._show_disabled_text.height = 0;
 			this._show_disabled_text.text = show.text;
 			this._show_disabled_text.visible = show.visible;
+			this._show_disabled_text.x_type = show.x_type;
+			this._show_disabled_text.x_value = show.x_value;
 			return;
 		}
 		if (this._show_disabled_text !== undefined && this._show_disabled_text.text !== "") {
 			value.text = this._show_disabled_text.text;
 		}
 		value.visible = this._show_disabled_text.visible;
+		value.x_type = this._show_disabled_text.x_type;
+		value.x_value = this._show_disabled_text.x_value;
 		this.RemoveChild(this._show_disabled_text);
 		this._show_disabled_text = value;
-		this._show_disabled_text.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
 		this._show_disabled_text.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
 		this.AddChild(this._show_disabled_text, 10);
 	},
@@ -8498,15 +8591,18 @@ ALittle.TextCheckButton = JavaScript.Class(ALittle.DisplayLayout, {
 			this._show_selected_text.height = 0;
 			this._show_selected_text.text = show.text;
 			this._show_selected_text.visible = show.visible;
+			this._show_selected_text.x_type = show.x_type;
+			this._show_selected_text.x_value = show.x_value;
 			return;
 		}
 		if (this._show_selected_text !== undefined && this._show_selected_text.text !== "") {
 			value.text = this._show_selected_text.text;
 		}
 		value.visible = this._show_selected_text.visible;
+		value.x_type = this._show_selected_text.x_type;
+		value.x_value = this._show_selected_text.x_value;
 		this.RemoveChild(this._show_selected_text);
 		this._show_selected_text = value;
-		this._show_selected_text.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
 		this._show_selected_text.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
 		this.AddChild(this._show_selected_text, 10);
 	},
@@ -8525,15 +8621,18 @@ ALittle.TextCheckButton = JavaScript.Class(ALittle.DisplayLayout, {
 			this._show_selected_over_text.height = 0;
 			this._show_selected_over_text.text = show.text;
 			this._show_selected_over_text.visible = show.visible;
+			this._show_selected_over_text.x_type = show.x_type;
+			this._show_selected_over_text.x_value = show.x_value;
 			return;
 		}
 		if (this._show_selected_over_text !== undefined && this._show_selected_over_text.text !== "") {
 			value.text = this._show_selected_over_text.text;
 		}
 		value.visible = this._show_selected_over_text.visible;
+		value.x_type = this._show_selected_over_text.x_type;
+		value.x_value = this._show_selected_over_text.x_value;
 		this.RemoveChild(this._show_selected_over_text);
 		this._show_selected_over_text = value;
-		this._show_selected_over_text.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
 		this._show_selected_over_text.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
 		this.AddChild(this._show_selected_over_text, 10);
 	},
@@ -8552,15 +8651,18 @@ ALittle.TextCheckButton = JavaScript.Class(ALittle.DisplayLayout, {
 			this._show_selected_down_text.height = 0;
 			this._show_selected_down_text.text = show.text;
 			this._show_selected_down_text.visible = show.visible;
+			this._show_selected_down_text.x_type = show.x_type;
+			this._show_selected_down_text.x_value = show.x_value;
 			return;
 		}
 		if (this._show_selected_down_text !== undefined && this._show_selected_down_text.text !== "") {
 			value.text = this._show_selected_down_text.text;
 		}
 		value.visible = this._show_selected_down_text.visible;
+		value.x_type = this._show_selected_down_text.x_type;
+		value.x_value = this._show_selected_down_text.x_value;
 		this.RemoveChild(this._show_selected_down_text);
 		this._show_selected_down_text = value;
-		this._show_selected_down_text.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
 		this._show_selected_down_text.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
 		this.AddChild(this._show_selected_down_text, 10);
 	},
@@ -8579,15 +8681,18 @@ ALittle.TextCheckButton = JavaScript.Class(ALittle.DisplayLayout, {
 			this._show_selected_disabled_text.height = 0;
 			this._show_selected_disabled_text.text = show.text;
 			this._show_selected_disabled_text.visible = show.visible;
+			this._show_selected_disabled_text.x_type = show.x_type;
+			this._show_selected_disabled_text.x_value = show.x_value;
 			return;
 		}
 		if (this._show_selected_disabled_text !== undefined && this._show_selected_disabled_text.text !== "") {
 			value.text = this._show_selected_disabled_text.text;
 		}
 		value.visible = this._show_selected_disabled_text.visible;
+		value.x_type = this._show_selected_disabled_text.x_type;
+		value.x_value = this._show_selected_disabled_text.x_value;
 		this.RemoveChild(this._show_selected_disabled_text);
 		this._show_selected_disabled_text = value;
-		this._show_selected_disabled_text.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
 		this._show_selected_disabled_text.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
 		this.AddChild(this._show_selected_disabled_text, 10);
 	},
@@ -11472,6 +11577,17 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 		this._scroll_view.AddChild(this._scroll_content, 1);
 		this.RejustScrollBar();
 	},
+	SetContainer : function(value) {
+		if (value === undefined) {
+			value = ALittle.NewObject(ALittle.DisplayGroup, this._ctrl_sys);
+		}
+		this._scroll_content.RemoveEventListener(___all_struct.get(-431205740), this, this.HandleContainerResize);
+		this._scroll_view.RemoveChild(this._scroll_content);
+		this._scroll_content = value;
+		this._scroll_content.AddEventListener(___all_struct.get(-431205740), this, this.HandleContainerResize);
+		this._scroll_view.AddChild(this._scroll_content, 1);
+		this.RejustScrollBar();
+	},
 	set container_y(value) {
 		if (this._scroll_content === undefined) {
 			return;
@@ -11755,6 +11871,20 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 	},
 	get right_scrollbar() {
 		return this._right_scroll_bar;
+	},
+	ScrollToBottom : function() {
+		if (this._right_scroll_bar === undefined) {
+			return;
+		}
+		this._right_scroll_bar.offset_rate = 1;
+		this._right_scroll_bar.DispatchEvent(___all_struct.get(958494922), {});
+	},
+	ScrollToRight : function() {
+		if (this._bottom_scroll_bar === undefined) {
+			return;
+		}
+		this._bottom_scroll_bar.offset_rate = 1;
+		this._bottom_scroll_bar.DispatchEvent(___all_struct.get(958494922), {});
 	},
 	set bottom_scrollbar(value) {
 		if (this._bottom_scroll_bar !== undefined) {
@@ -23016,7 +23146,7 @@ ALittle.UISystem = JavaScript.Class(undefined, {
 			return false;
 		}
 		if (this._wfc === undefined) {
-			let control = this._sfc;
+			let control = this._mfc;
 			while (control !== undefined) {
 				if (control.can_scroll === true) {
 					this._wfc = control;
@@ -23058,6 +23188,7 @@ ALittle.UISystem = JavaScript.Class(undefined, {
 			mfc.DispatchEvent(___all_struct.get(544684311), {});
 		}
 		this._mfc = mfc;
+		this._wfc = undefined;
 	},
 	HandleViewResized : function(width, height) {
 		if (this._view_width === width && this._view_height === height) {
@@ -24010,6 +24141,7 @@ let __byte = ALittle.String_Byte;
 let __type = ALittle.String_Type;
 ALittle.ControlSystem = JavaScript.Class(undefined, {
 	Ctor : function(module_name, crypt_mode) {
+		this._log_error = true;
 		this._font_map = {};
 		this._name_map_info = {};
 		this._name_map_info_cache = {};
@@ -24048,6 +24180,12 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 	},
 	get crypt_mode() {
 		return this._crypt_mode;
+	},
+	get log_error() {
+		return this._log_error;
+	},
+	set log_error(value) {
+		this._log_error = value;
 	},
 	RegisterFont : function(src, dst) {
 		this._font_map[src] = dst;

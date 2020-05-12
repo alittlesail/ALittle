@@ -37,6 +37,7 @@ function IDETree:Init()
 	self._pickup_rect = false
 	self._pickup_child = true
 	self.fold = false
+	self._upper_description = ALittle.String_Upper(self._item_title.text)
 end
 
 function IDETree:HandleLButtonDown(event)
@@ -50,15 +51,20 @@ function IDETree:IsTree()
 	return true
 end
 
+function IDETree:SearchBegin()
+	self.fold = false
+	self.light = false
+	for k, child in ___ipairs(self._body.childs) do
+		child:SearchBegin()
+	end
+end
+
 function IDETree:SearchDescription(name, list)
 	if list == nil then
 		list = {}
 	end
-	local description = self._item_title.text
-	if description ~= nil then
-		if ALittle.String_Find(description, name) ~= nil then
-			ALittle.List_Push(list, self)
-		end
+	if ALittle.String_Find(self._upper_description, name) ~= nil then
+		ALittle.List_Push(list, self)
 	end
 	for k, child in ___ipairs(self._body.childs) do
 		child:SearchDescription(name, list)

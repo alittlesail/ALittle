@@ -30,7 +30,7 @@ public class IDETreeMap : IDETree
         var value_type_name = lua.protobuf.fielddescriptor_cpptypename(this._value_descriptor);
         if (this._value_cpp_type == lua.protobuf_cpptype.CPPTYPE_MESSAGE)
         {
-            var value_msg_descriptor = lua.protobuf.fielddescriptor_messagetype(this._key_descriptor);
+            var value_msg_descriptor = lua.protobuf.fielddescriptor_messagetype(this._value_descriptor);
             value_type_name = lua.protobuf.messagedescriptor_name(value_msg_descriptor);
         }
 
@@ -86,7 +86,6 @@ public class IDETreeMap : IDETree
 		this._head.width = this._add_button.x + this._add_button.width + 2;
         
 		this.Init();
-
         this._add_button.disabled = root.for_show;
 	}
 

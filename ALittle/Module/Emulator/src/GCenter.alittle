@@ -374,7 +374,15 @@ class GCenter
     // 处理搜索
     private fun HandleShowSearchClick(ALittle.UIClickEvent event)
     {
-        
+        if (this._cur_item_user_data == null) return;
+
+        var key = this._show_search_key.text;
+        key = ALittle.String_Upper(key);
+
+        var tree = this._cur_item_user_data.detail_info.tree;
+        tree.SearchBegin();
+        var list = tree.SearchDescription(key);
+        tree.SearchEnd(list);
     }
 
     // 处理断开连接

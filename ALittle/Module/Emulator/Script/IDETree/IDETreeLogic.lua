@@ -13,6 +13,10 @@ function IDETreeLogic:Ctor(ctrl_sys, root)
 	___rawset(self, "_root", root)
 end
 
+function IDETreeLogic:Init()
+	self._upper_description = ALittle.String_Upper(self._item_title.text)
+end
+
 function IDETreeLogic:IsTree()
 	return false
 end
@@ -36,8 +40,35 @@ function IDETreeLogic.__getter:light()
 	return self._light.visible
 end
 
+function IDETreeLogic:SearchBegin()
+	self.light = false
+end
+
+function IDETreeLogic:SearchEnd(list)
+	for index, parent in ___ipairs(list) do
+		parent.light = true
+		if parent ~= self then
+			parent = parent.logic_parent
+			while parent ~= nil do
+				parent.fold = true
+				if parent == self then
+					break
+				end
+				parent = parent.logic_parent
+			end
+		end
+	end
+end
+
 function IDETreeLogic:SearchDescription(name, list)
-	return nil
+	if list == nil then
+		list = {}
+	end
+	self.light = false
+	if ALittle.String_Find(self._upper_description, name) ~= nil then
+		ALittle.List_Push(list, self)
+	end
+	return list
 end
 
 function IDETreeLogic:Save()

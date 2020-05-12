@@ -282,6 +282,15 @@ function GCenter:HandleLogItemSelected(event)
 end
 
 function GCenter:HandleShowSearchClick(event)
+	if self._cur_item_user_data == nil then
+		return
+	end
+	local key = self._show_search_key.text
+	key = ALittle.String_Upper(key)
+	local tree = self._cur_item_user_data.detail_info.tree
+	tree:SearchBegin()
+	local list = tree:SearchDescription(key)
+	tree:SearchEnd(list)
 end
 
 function GCenter:HandleSocketDisconnected()

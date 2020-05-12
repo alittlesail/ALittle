@@ -42,7 +42,8 @@ public class IDETreeEnum : IDETreeLogic
 		this._value_dropdown.width = this.width - this._item_title.width - this._item_title.x - 2;
 		this._value_dropdown.x = this._item_title.width + this._item_title.x;
 		
-		this.disabled = root.for_show;
+		this.Init();
+		this._value_dropdown.disabled = root.for_show;
 	}
 
 	public fun HandleSelectChanegd(ALittle.UISelectChangedEvent event)

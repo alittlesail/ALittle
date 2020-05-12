@@ -2023,6 +2023,8 @@ if (typeof ALittle === "undefined") window.ALittle = {};
 ALittle.ISchedule = JavaScript.Class(undefined, {
 	Run : function() {
 	},
+	RunInFrame : function() {
+	},
 }, "ALittle.ISchedule");
 
 }
@@ -4294,6 +4296,9 @@ JavaScript.JSchedule = JavaScript.Class(ALittle.ISchedule, {
 		this._run = false;
 	},
 	Run : function() {
+		this.RunInFrame();
+	},
+	RunInFrame : function() {
 		if (this._run) {
 			return;
 		}

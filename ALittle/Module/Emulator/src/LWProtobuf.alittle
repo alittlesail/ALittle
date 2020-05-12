@@ -190,9 +190,9 @@ protected class LWProtobuf
 		
 		// 发送消息包
 		{
-			this._ls_socket.SendMessage(msg);   
+			this._ls_socket.SendMessage(msg);
         }
-
+		
 		// 读取消息包
 		var ls_rsp:MSG_LS2CL_LOGIN_RSP = null;
 		{

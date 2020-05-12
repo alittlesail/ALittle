@@ -755,7 +755,7 @@ ALittle.DisplayObject = JavaScript.Class(ALittle.UIEventDispatcher, {
 				let func = undefined;
 				if (einfo.func !== undefined) {
 					func = target_logic[einfo.func];
-					if (func === undefined) {
+					if (func === undefined && this._ctrl_sys.log_error) {
 						ALittle.Log("can't find event func:\"" + einfo.func + "\" in " + ALittle.String_ToString(target_logic));
 					}
 				}

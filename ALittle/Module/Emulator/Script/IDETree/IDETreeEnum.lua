@@ -40,7 +40,8 @@ function IDETreeEnum:Ctor(ctrl_sys, root, field_name, rflct, msg, field)
 	self._value_dropdown.text = value_string
 	self._value_dropdown.width = self.width - self._item_title.width - self._item_title.x - 2
 	self._value_dropdown.x = self._item_title.width + self._item_title.x
-	self.disabled = root.for_show
+	self:Init()
+	self._value_dropdown.disabled = root.for_show
 end
 
 function IDETreeEnum:HandleSelectChanegd(event)

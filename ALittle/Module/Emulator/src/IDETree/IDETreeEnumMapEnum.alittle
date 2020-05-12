@@ -74,7 +74,9 @@ public class IDETreeEnumMapEnum : IDETreeLogic
 		this._item.width = this._delete_button.x + this._delete_button.width + 1;
 		this.width = this._item.width;
 		
-		this.disabled = root.for_show;
+		this.Init();
+		this._key_dropdown.disabled = root.for_show;
+		this._value_dropdown.disabled = root.for_show;
 		this._insert_button.disabled = root.for_show;
 		this._delete_button.disabled = root.for_show;
 	}

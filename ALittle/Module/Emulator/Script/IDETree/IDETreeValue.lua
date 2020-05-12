@@ -13,7 +13,6 @@ function IDETreeValue:Ctor(ctrl_sys, root, field_name, rflct, msg, field)
 	___rawset(self, "_rflct", rflct)
 	___rawset(self, "_msg", msg)
 	___rawset(self, "_field", field)
-	self.disabled = root.for_show
 	___rawset(self, "_cpp_type", protobuf.fielddescriptor_cpptype(field))
 	local value = self:RefreshValue()
 	___rawset(self, "_item", ctrl_sys:CreateControl("ide_common_tree_value", self))
@@ -24,6 +23,8 @@ function IDETreeValue:Ctor(ctrl_sys, root, field_name, rflct, msg, field)
 	self._value_input.text = ALittle.String_ToString(value)
 	self._value_input.width = self.width - self._item_title.width - self._item_title.x - 2
 	self._value_input.x = self._item_title.width + self._item_title.x
+	self:Init()
+	self._value_input.editable = not root.for_show
 end
 
 function IDETreeValue:RefreshValue()

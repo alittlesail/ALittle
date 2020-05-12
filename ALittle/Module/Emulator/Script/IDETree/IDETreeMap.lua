@@ -13,7 +13,6 @@ function IDETreeMap:Ctor(ctrl_sys, root, field_name, rflct, msg, field)
 	___rawset(self, "_rflct", rflct)
 	___rawset(self, "_msg", msg)
 	___rawset(self, "_field", field)
-	self._add_button.disabled = root.for_show
 	local map_descriptor = protobuf.fielddescriptor_messagetype(field)
 	___rawset(self, "_key_descriptor", protobuf.messagedescriptor_findfieldbyname(map_descriptor, "key"))
 	___rawset(self, "_value_descriptor", protobuf.messagedescriptor_findfieldbyname(map_descriptor, "value"))
@@ -22,7 +21,7 @@ function IDETreeMap:Ctor(ctrl_sys, root, field_name, rflct, msg, field)
 	local key_type_name = protobuf.fielddescriptor_cpptypename(self._key_descriptor)
 	local value_type_name = protobuf.fielddescriptor_cpptypename(self._value_descriptor)
 	if self._value_cpp_type == 10 then
-		local value_msg_descriptor = protobuf.fielddescriptor_messagetype(self._key_descriptor)
+		local value_msg_descriptor = protobuf.fielddescriptor_messagetype(self._value_descriptor)
 		value_type_name = protobuf.messagedescriptor_name(value_msg_descriptor)
 	end
 	___rawset(self, "_head", ctrl_sys:CreateControl("ide_common_tree_map", self))
@@ -70,6 +69,7 @@ function IDETreeMap:Ctor(ctrl_sys, root, field_name, rflct, msg, field)
 	self._add_button.x = self._item_title.x + self._item_title.width
 	self._head.width = self._add_button.x + self._add_button.width + 2
 	self:Init()
+	self._add_button.disabled = root.for_show
 end
 
 function IDETreeMap:HandleAddClick(event)

@@ -26,7 +26,8 @@ public class IDETree : IDETreeLogic
 		this._pickup_rect = false;
 		this._pickup_child = true;
 	
-		this.fold = false;        
+		this.fold = false;
+        this._upper_description = ALittle.String_Upper(this._item_title.text);
     }
 	
 	public fun HandleLButtonDown(ALittle.UILButtonDownEvent event)
@@ -37,17 +38,24 @@ public class IDETree : IDETreeLogic
 	
 	public fun IsTree() : bool { return true; }
 	
+	// 搜索准备
+	public fun SearchBegin()
+	{
+        this.fold = false;
+		this.light = false;
+		
+		for (var k, child:IDETreeLogic in this._body.childs)
+			child.SearchBegin();
+    }
+
 	// 搜索description
 	public fun SearchDescription(string name, [Nullable] List<IDETreeLogic> list) : List<IDETreeLogic>
 	{
 		if (list == null) list = new List<IDETreeLogic>();
 	
-		var description = this._item_title.text;
-		if (description != null)
-		{
-			if (ALittle.String_Find(description, name) != null)
-				ALittle.List_Push(list, this);
-		}
+		if (ALittle.String_Find(this._upper_description, name) != null)
+			ALittle.List_Push(list, this);
+
 		for (var k, child:IDETreeLogic in this._body.childs)
 			child.SearchDescription(name, list);
 
@@ -137,7 +145,7 @@ public class IDETree : IDETreeLogic
 		this._item_checkbutton.selected = value;
 		this.DispatchEvent(new ALittle.UIResizeEvent());
 	}
-	
+
 	public get max_right() : double	{ return this.width; }
 	public get max_bottom() : double { return this.height; }
 }

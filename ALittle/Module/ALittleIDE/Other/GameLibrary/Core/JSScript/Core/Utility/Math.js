@@ -35,6 +35,14 @@ ALittle.Math_ToInt = function(s) {
 	}
 }
 
+ALittle.Math_ToIntOrZero = function(s) {
+	let value = ALittle.Math_ToInt(s);
+	if (value === undefined) {
+		return 0;
+	}
+	return value;
+}
+
 ALittle.Math_ToDouble = function(s) {
 	let value = parseFloat(s);
 	if (isNaN(value)) {
@@ -42,6 +50,14 @@ ALittle.Math_ToDouble = function(s) {
 	} else {
 		return value;
 	}
+}
+
+ALittle.Math_ToDoubleOrZero = function(s) {
+	let value = ALittle.Math_ToDouble(s);
+	if (value === undefined) {
+		return 0;
+	}
+	return value;
 }
 
 ALittle.Math_RandomSeed = function(seed) {

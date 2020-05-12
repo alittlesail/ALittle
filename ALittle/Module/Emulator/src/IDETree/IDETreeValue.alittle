@@ -28,7 +28,8 @@ public class IDETreeValue : IDETreeLogic
 		this._value_input.width = this.width - this._item_title.width - this._item_title.x - 2;
 		this._value_input.x = this._item_title.width + this._item_title.x;
 		
-		this.disabled = root.for_show;
+		this.Init();
+		this._value_input.editable = !root.for_show;
 	}
 
 	private fun RefreshValue() : any

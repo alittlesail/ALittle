@@ -374,7 +374,9 @@ static int protobuflib_reflection_getmessage(lua_State* L)
     luaL_argcheck(L, m != 0, 2, "message object is null");
     void* field = lua_touserdata(L, 3);
     luaL_argcheck(L, field != 0, 3, "field descriptor object is null");
-    lua_pushlightuserdata(L, protobuf_reflection_getmessage(r, *m, field));
+    void** sm = (void**)lua_newuserdata(L, sizeof(void**));
+    *sm = protobuf_reflection_getmessage(r, *m, field);
+    lua_pushlightuserdata(L, sm);
     return 1;
 }
 static int protobuflib_reflection_getbool(lua_State* L)
@@ -697,7 +699,9 @@ static int protobuflib_reflection_getrepeatedmessage(lua_State* L)
     void* field = lua_touserdata(L, 3);
     luaL_argcheck(L, field != 0, 3, "field descriptor object is null");
     int index = (int)luaL_checkinteger(L, 4);
-    lua_pushlightuserdata(L, protobuf_reflection_getrepeatedmessage(r, *m, field, index));
+    void** sm = (void**)lua_newuserdata(L, sizeof(void**));
+    *sm = protobuf_reflection_getrepeatedmessage(r, *m, field, index);
+    lua_pushlightuserdata(L, sm);
     return 1;
 }
 static int protobuflib_reflection_getrepeatedbool(lua_State* L)
@@ -924,7 +928,9 @@ static int protobuflib_reflection_insertrepeatedmessage(lua_State* L)
     void* field = lua_touserdata(L, 3);
     luaL_argcheck(L, field != 0, 3, "field descriptor object is null");
     int index = (int)luaL_checkinteger(L, 4);
-    lua_pushlightuserdata(L, protobuf_reflection_insertrepeatedmessage(r, *m, field, index));
+    void** sm = (void**)lua_newuserdata(L, sizeof(void**));
+    *sm = protobuf_reflection_insertrepeatedmessage(r, *m, field, index);
+    lua_pushlightuserdata(L, sm);
     return 1;
 }
 

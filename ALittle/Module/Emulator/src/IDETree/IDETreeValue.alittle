@@ -27,6 +27,8 @@ public class IDETreeValue : IDETreeLogic
 		this._value_input.text = ALittle.String_ToString(value);
 		this._value_input.width = this.width - this._item_title.width - this._item_title.x - 2;
 		this._value_input.x = this._item_title.width + this._item_title.x;
+		
+		this.disabled = root.for_show;
 	}
 
 	private fun RefreshValue() : any

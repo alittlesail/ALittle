@@ -86,7 +86,6 @@ local ___COROUTINE = coroutine.running()
 		return error, nil
 	end
 	local content = protobuf.message_jsonencode(msg)
-	protobuf.freemessage(msg)
 	local result, object = Lua.TCall(json.decode, content)
 	if result ~= nil then
 		return result, nil
@@ -246,7 +245,6 @@ local ___COROUTINE = coroutine.running()
 	local protobuf_msg = A_LuaSocketSchedule:CreateMessage(name)
 	if protobuf_msg ~= nil then
 		if not protobuf.message_parsefromarray(protobuf_msg, binary_value, len) then
-			protobuf.freemessage(protobuf_msg)
 			protobuf_msg = nil
 		end
 	end
@@ -261,10 +259,6 @@ function ISocket:ReceiveMessage()
 			break
 		end
 		self:HandleMessage(protobuf_msg)
-		if protobuf_msg ~= nil then
-			protobuf.freemessage(protobuf_msg)
-			protobuf_msg = nil
-		end
 	end
 end
 ISocket.ReceiveMessage = Lua.CoWrap(ISocket.ReceiveMessage)
@@ -370,7 +364,6 @@ function ISocket:SendStruct(T, full_name, msg)
 	end
 	local error = protobuf.message_jsondecode(protobuf_msg, protobuf_json)
 	if error ~= nil then
-		protobuf.freemessage(protobuf_msg)
 		return error
 	end
 	local msg_size = protobuf.message_getbytesize(protobuf_msg)
@@ -381,7 +374,6 @@ function ISocket:SendStruct(T, full_name, msg)
 	else
 		error = "message_serializetoarray failed"
 	end
-	protobuf.freemessage(protobuf_msg)
 	memory.free(binary_value)
 	return error
 end

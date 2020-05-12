@@ -43,6 +43,9 @@ function IDETreeEnumMapMessage:Ctor(ctrl_sys, root, parent, rflct, msg, key_fiel
 	self._delete_button.x = self._insert_button.x + self._insert_button.width + 1
 	self._head.width = self._delete_button.x + self._delete_button.width + 1
 	self:Init()
+	self._key_dropdown.disabled = root.for_show
+	self._insert_button.disabled = root.for_show
+	self._delete_button.disabled = root.for_show
 end
 
 function IDETreeEnumMapMessage:GetDetailInfo()

@@ -43,6 +43,8 @@ function IDETreeRepeatedEnum:Ctor(ctrl_sys, root, parent, rflct, msg, field, ind
 	self._value_dropdown.x = self._item_title.width + self._item_title.x
 	self._insert_button.x = self._value_dropdown.x + self._value_dropdown.width + 1
 	self._delete_button.x = self._insert_button.x + self._insert_button.width + 1
+	self._insert_button.disabled = root.for_show
+	self._delete_button.disabled = root.for_show
 end
 
 function IDETreeRepeatedEnum:HandleSelectChanegd(event)

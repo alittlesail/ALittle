@@ -124,7 +124,7 @@ public static UtilityCreateTreeValueMapMessage(RootInfo root, IDETreeMap parent,
     return tree;
 }
 
-public static Utility_CreateTree(Lua.lua_socket_schedule_message_info info) : DetailInfo
+public static Utility_CreateTreeForEdit(Lua.lua_socket_schedule_message_info info) : DetailInfo
 {
     // 创建消息包
     var msg = A_LuaSocketSchedule.CreateMessage(info.full_name);
@@ -135,6 +135,18 @@ public static Utility_CreateTree(Lua.lua_socket_schedule_message_info info) : De
     lua.protobuf.message_jsondecode(msg, json);
 
     var root = new RootInfo();
+    root.for_show = false;
+
+    var tree = UtilityCreateTreeMessage(root, msg, "");
+    tree.fold = true;
+    root.detail_info = tree.GetDetailInfo();
+    return root.detail_info;
+}
+
+public static Utility_CreateTreeForShow(lua.protobuf_message msg) : DetailInfo
+{
+    var root = new RootInfo();
+    root.for_show = true;
 
     var tree = UtilityCreateTreeMessage(root, msg, "");
     tree.fold = true;

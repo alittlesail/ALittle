@@ -19,7 +19,7 @@ public class IDETreeMap : IDETree
 		this._rflct = rflct;
 		this._msg = msg;
 		this._field = field;
-        
+                
         var map_descriptor = lua.protobuf.fielddescriptor_messagetype(field);
         this._key_descriptor = lua.protobuf.messagedescriptor_findfieldbyname(map_descriptor, "key");
         this._value_descriptor = lua.protobuf.messagedescriptor_findfieldbyname(map_descriptor, "value");
@@ -86,6 +86,8 @@ public class IDETreeMap : IDETree
 		this._head.width = this._add_button.x + this._add_button.width + 2;
         
 		this.Init();
+
+        this._add_button.disabled = root.for_show;
 	}
 
 	private fun HandleAddClick(ALittle.UIClickEvent event)

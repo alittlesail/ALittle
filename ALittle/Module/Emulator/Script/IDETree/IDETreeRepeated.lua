@@ -105,6 +105,7 @@ function IDETreeRepeated:Ctor(ctrl_sys, root, field_name, rflct, msg, field)
 	self._add_button.x = self._item_title.x + self._item_title.width
 	self._head.width = self._add_button.x + self._add_button.width + 2
 	self:Init()
+	self._add_button.disabled = root.for_show
 end
 
 function IDETreeRepeated:HandleAddClick(event)

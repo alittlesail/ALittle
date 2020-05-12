@@ -41,6 +41,10 @@ public class IDETreeValueMapMessage : IDETree
 		this._head.width = this._delete_button.x + this._delete_button.width + 1;
 
 		this.Init();
+		
+		this._key_input.editable = !root.for_show;
+		this._insert_button.disabled = root.for_show;
+		this._delete_button.disabled = root.for_show;
 	}
 
 	public fun GetDetailInfo() : DetailInfo { return this._detail_info; }

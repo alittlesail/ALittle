@@ -27,7 +27,7 @@ public class IDETreeEnumMapValue : IDETreeLogic
 		this._key_field = key_field;
 		this._value_field = value_field;
 		this._value_cpp_type = lua.protobuf.fielddescriptor_cpptype(value_field);
-		
+				
 		var key = lua.protobuf.reflection_getenumvalue(this._rflct, this._msg, this._key_field);
 		var enum_descriptor = lua.protobuf.fielddescriptor_enumtype(this._key_field);
 		var value_count = lua.protobuf.enumdescriptor_valuecount(enum_descriptor);
@@ -61,6 +61,11 @@ public class IDETreeEnumMapValue : IDETreeLogic
 		this._delete_button.x = this._insert_button.x + this._insert_button.width + 1;
 		this._item.width = this._delete_button.x + this._delete_button.width + 1;
 		this.width = this._item.width;
+		
+		this._key_dropdown.disabled = root.for_show;
+		this._value_input.editable = !root.for_show;
+		this._insert_button.disabled = root.for_show;
+		this._delete_button.disabled = root.for_show;
 	}
 	
 	private fun RefreshValue() : any

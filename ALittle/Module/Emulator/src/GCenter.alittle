@@ -15,14 +15,15 @@ protected struct DetailInfo
 protected struct RootInfo
 {
     DetailInfo detail_info;
+    bool for_show;  // false表示可编辑
 }
 
 protected struct LogItemUserData
 {
     lua.protobuf_message msg;
-    lua.protobuf_descriptor descriptor;
-    string name;
+    Lua.lua_socket_schedule_message_info info;
     string upper_name;
+    DetailInfo detail_info;
 }
 
 protected enum LoginStatus
@@ -65,8 +66,11 @@ class GCenter
 
     // 详细信息
     private LogItemUserData _cur_item_user_data;
+    private ALittle.DisplayObject _show_search_key;
+    private ALittle.ScrollScreen _show_scroll_screen;
 
     private ALittle.Grid3 _right_grad3_ud;
+    private ALittle.Grid3 _main_grid3_lr;
 
     // 登陆界面
     private ALittle.ScrollScreen _login_scroll_screen;
@@ -138,7 +142,7 @@ class GCenter
         var msg_info = A_LuaSocketSchedule.GetMessageInfo(login_proto);
         if (msg_info != null)
         {
-            this._login_detail_info = Utility_CreateTree(msg_info);
+            this._login_detail_info = Utility_CreateTreeForEdit(msg_info);
             this._login_scroll_screen.SetContainer(this._login_detail_info.tree);
         }
 
@@ -149,6 +153,7 @@ class GCenter
         this._login_port_input.text = ALittle.String_ToString(g_GConfig.GetInt("login_port", 0));
         
         this._right_grad3_ud.up_size = g_GConfig.GetDouble("right_grid3_up_size", this._right_grad3_ud.up_size);
+        this._main_grid3_lr.down_size = g_GConfig.GetDouble("main_grid3_down_size", this._main_grid3_lr.down_size);
         this._send_button.disabled = true;
 
         // 每帧处理
@@ -199,34 +204,23 @@ class GCenter
 
         // 协议内容
         this._detail_scroll_screen.SetContainer(null);
-        for (var key, info in this._detail_tree_item_pool)
-            lua.protobuf.freemessage(info.message);
         this._detail_tree_item_pool = new Map<string, DetailInfo>();
         
         // 日志列表
         this._log_search_group = new Map<ALittle.TextRadioButton, bool>();
-        for (var index, button in this._log_item_list)
-        {
-            var user_data = cast<LogItemUserData>(button._user_data);
-            lua.protobuf.freemessage(user_data.msg);
-        }
         this._log_item_list = new List<ALittle.TextRadioButton>();
         this._log_item_count = 0;
         this._log_scroll_screen.RemoveAllChild();
         this.RefreshLogList();
 
         // 登录界面
-        if (this._login_detail_info != null)
-        {
-            lua.protobuf.freemessage(this._login_detail_info.message);
-            this._login_detail_info = null;
-        }
+        this._login_detail_info = null;
 
         var login_proto = this._login_proto_input.text;
         var msg_info = A_LuaSocketSchedule.GetMessageInfo(login_proto);
         if (msg_info != null)
         {
-            this._login_detail_info = Utility_CreateTree(msg_info);
+            this._login_detail_info = Utility_CreateTreeForEdit(msg_info);
             this._login_scroll_screen.SetContainer(this._login_detail_info.tree);
         }
         else
@@ -286,7 +280,7 @@ class GCenter
         var detail_info = this._detail_tree_item_pool[info.full_name];
         if (detail_info == null)
         {
-            detail_info = Utility_CreateTree(info);
+            detail_info = Utility_CreateTreeForEdit(info);
             if (detail_info == null) return;
             this._detail_tree_item_pool[info.full_name] = detail_info;
         }
@@ -331,25 +325,20 @@ class GCenter
             var item = this._log_item_list[1];
             var user_data = cast<LogItemUserData>(item._user_data);
             if (this._cur_item_user_data == user_data)
-            {
-                // TODO 移除详细滚动屏内的信息
-                lua.protobuf.freemessage(user_data.msg);
-            }
+                this._show_scroll_screen.SetContainer(null);
             this._log_scroll_screen.RemoveChild(item);
             item.group = null;
             ALittle.List_Remove(this._log_item_list, 1);
         }
 
         var user_data = new LogItemUserData();
-        user_data.descriptor = lua.protobuf.message_getdescriptor(msg);
+        user_data.info = A_LuaSocketSchedule.GetMessageInfoByMessage(msg);
         user_data.msg = lua.protobuf.clonemessage(msg);
-        user_data.descriptor = lua.protobuf.message_getdescriptor(user_data.msg);
-        user_data.name = lua.protobuf.messagedescriptor_name(user_data.descriptor);
-        user_data.upper_name = ALittle.String_Upper(user_data.name);
+        user_data.upper_name = ALittle.String_Upper(user_data.info.name);
 
         // 添加新的
         var item = g_Control.CreateControl{ALittle.TextRadioButton}("emulator_common_item_radiobutton");
-        item.text = user_data.name;
+        item.text = user_data.info.name;
         item.drag_trans_target = this._log_scroll_screen;
         item._user_data = user_data;
         item.AddEventListener(this, this.HandleLogItemSelected);
@@ -373,7 +362,17 @@ class GCenter
         }
     }
 
-    private fun HandleLogItemSelected(ALittle.UISelectChangedEvent event)
+    private fun HandleLogItemSelected(ALittle.UIChangedEvent event)
+    {
+        this._show_search_key.text = "";
+        this._cur_item_user_data = cast<LogItemUserData>(event.target._user_data);
+        if (this._cur_item_user_data.detail_info == null)
+            this._cur_item_user_data.detail_info = Utility_CreateTreeForShow(this._cur_item_user_data.msg);
+        this._show_scroll_screen.SetContainer(this._cur_item_user_data.detail_info.tree);
+    }
+
+    // 处理搜索
+    private fun HandleShowSearchClick(ALittle.UIClickEvent event)
     {
         
     }
@@ -473,13 +472,26 @@ class GCenter
     {
         g_GConfig.SetConfig("right_grid3_up_size", this._right_grad3_ud.up_size);
     }
+    // 中间部分和右边部分之间的左右调整
+    private fun HandleDragRightQuadLR(ALittle.UIButtonDragEvent event)
+    {
+        this._main_grid3_lr.down_size -= event.delta_x;
+    }
+    private fun HandleDragEndRightQuadLR(ALittle.UIButtonDragEndEvent event)
+    {
+        g_GConfig.SetConfig("main_grid3_down_size", this._main_grid3_lr.down_size);
+    }
 
     // 移动光标
     private fun HandleSetVDragCursor(ALittle.UIMoveInEvent event)
     {
         ALittle.System_SetVDragCursor();
     }
-    
+    private fun HandleSetHDragCursor(ALittle.UIMoveInEvent event)
+    {
+        ALittle.System_SetHDragCursor();
+    }
+        
     // 普通光标
     private fun HandleSetNormalCursor(ALittle.UIMoveInEvent event)
     {
@@ -489,22 +501,6 @@ class GCenter
     public fun Shutdown()
     {
         this._frame_loop.Stop();
-        
-        // 协议内容
-        this._detail_scroll_screen.SetContainer(null);
-        for (var key, info in this._detail_tree_item_pool)
-            lua.protobuf.freemessage(info.message);
-        this._detail_tree_item_pool = new Map<string, DetailInfo>();
-
-        // 登陆界面        
-        if (this._login_detail_info != null)
-        {
-            lua.protobuf.freemessage(this._login_detail_info.message);
-            this._login_detail_info = null;
-        }
-
-        // 详细信息
-        this._cur_item_user_data = null;
     }
 }
     

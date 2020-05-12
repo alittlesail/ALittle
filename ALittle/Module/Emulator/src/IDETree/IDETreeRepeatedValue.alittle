@@ -20,7 +20,7 @@ public class IDETreeRepeatedValue : IDETreeLogic
 		this._rflct = rflct;
 		this._msg = msg;
 		this._field = field;
-		
+
 		this._cpp_type = lua.protobuf.fielddescriptor_cpptype(field);
 		var value = this.RefreshValue(index);
 
@@ -35,6 +35,9 @@ public class IDETreeRepeatedValue : IDETreeLogic
 		this._value_input.x = this._item_title.width + this._item_title.x;
 		this._insert_button.x = this._value_input.x + this._value_input.width + 1;
 		this._delete_button.x = this._insert_button.x + this._insert_button.width + 1;
+		
+		this._insert_button.disabled = root.for_show;
+		this._delete_button.disabled = root.for_show;
 	}
 	
 	private fun RefreshValue(int index) : any

@@ -44,6 +44,11 @@ public class IDETreeValueMapBool : IDETreeLogic
 		this._delete_button.x = this._insert_button.x + this._insert_button.width + 1;
 		this._item.width = this._delete_button.x + this._delete_button.width + 1;
 		this.width = this._item.width;
+		
+		this._key_input.editable = !root.for_show;
+		this._value_dropdown.disabled = root.for_show;
+		this._insert_button.disabled = root.for_show;
+		this._delete_button.disabled = root.for_show;
 	}
 	
 	private fun RefreshValue() : any

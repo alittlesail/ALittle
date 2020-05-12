@@ -26,6 +26,9 @@ function IDETreeValueMapMessage:Ctor(ctrl_sys, root, parent, rflct, msg, key_fie
 	self._delete_button.x = self._insert_button.x + self._insert_button.width + 1
 	self._head.width = self._delete_button.x + self._delete_button.width + 1
 	self:Init()
+	self._key_input.editable = not root.for_show
+	self._insert_button.disabled = root.for_show
+	self._delete_button.disabled = root.for_show
 end
 
 function IDETreeValueMapMessage:GetDetailInfo()

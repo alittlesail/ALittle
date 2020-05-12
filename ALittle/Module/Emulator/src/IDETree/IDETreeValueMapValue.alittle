@@ -46,7 +46,11 @@ public class IDETreeValueMapValue : IDETreeLogic
 		this._delete_button.x = this._insert_button.x + this._insert_button.width + 1;
 		this._item.width = this._delete_button.x + this._delete_button.width + 1;
 		this.width = this._item.width;
-		ALittle.Log(this.width, this._item.width, this._delete_button.x, this._delete_button.width);
+		
+		this._key_input.editable = !root.for_show;
+		this._value_input.disabled = root.for_show;
+		this._insert_button.disabled = root.for_show;
+		this._delete_button.disabled = root.for_show;
 	}
 	
 	private fun RefreshKey() : any

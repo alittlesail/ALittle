@@ -17,7 +17,6 @@ public class IDETreeBoolMapMessage : IDETree
 	public ctor(ALittle.ControlSystem ctrl_sys, RootInfo root, IDETreeMap parent, lua.protobuf_reflection rflct, lua.protobuf_message msg, lua.protobuf_field_descriptor key_field, DetailInfo detail_info)
 	{
 		this._detail_info = detail_info;
-		
 		this._parent = parent;
 		this._rflct = rflct;
 		this._msg = msg;
@@ -37,8 +36,12 @@ public class IDETreeBoolMapMessage : IDETree
 		this._insert_button.x = this._key_dropdown.x + this._key_dropdown.width + 1;
 		this._delete_button.x = this._insert_button.x + this._insert_button.width + 1;
 		this._head.width = this._delete_button.x + this._delete_button.width + 1;
-
+		
 		this.Init();
+		
+		this._key_dropdown.disabled = root.for_show;
+		this._insert_button.disabled = root.for_show;
+		this._delete_button.disabled = root.for_show;
 	}
 
 	public fun GetDetailInfo() : DetailInfo { return this._detail_info; }

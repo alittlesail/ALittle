@@ -34,6 +34,9 @@ public class IDETreeRepeatedBool : IDETreeLogic
 		this._value_dropdown.x = this._item_title.width + this._item_title.x;
 		this._insert_button.x = this._value_dropdown.x + this._value_dropdown.width + 1;
 		this._delete_button.x = this._insert_button.x + this._insert_button.width + 1;
+		
+		this._insert_button.disabled = root.for_show;
+		this._delete_button.disabled = root.for_show;
 	}
 
 	public fun HandleSelectChanegd(ALittle.UISelectChangedEvent event)

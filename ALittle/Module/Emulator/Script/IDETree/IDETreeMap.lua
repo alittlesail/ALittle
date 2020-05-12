@@ -13,6 +13,7 @@ function IDETreeMap:Ctor(ctrl_sys, root, field_name, rflct, msg, field)
 	___rawset(self, "_rflct", rflct)
 	___rawset(self, "_msg", msg)
 	___rawset(self, "_field", field)
+	self._add_button.disabled = root.for_show
 	local map_descriptor = protobuf.fielddescriptor_messagetype(field)
 	___rawset(self, "_key_descriptor", protobuf.messagedescriptor_findfieldbyname(map_descriptor, "key"))
 	___rawset(self, "_value_descriptor", protobuf.messagedescriptor_findfieldbyname(map_descriptor, "value"))

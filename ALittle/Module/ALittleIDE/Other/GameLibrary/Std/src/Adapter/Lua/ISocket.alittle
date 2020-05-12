@@ -94,7 +94,6 @@ public class ISocket
 		if (error != null) return error, null;
 
 		var content = lua.protobuf.message_jsonencode(msg);
-		lua.protobuf.freemessage(msg);
 		
 		var result, object = tcall(lua.json.decode, content);
 		if (result != null) return result, null;
@@ -221,10 +220,7 @@ public class ISocket
         if (protobuf_msg != null)
         {
             if (!lua.protobuf.message_parsefromarray(protobuf_msg, binary_value, len))
-            {
-                lua.protobuf.freemessage(protobuf_msg);
                 protobuf_msg = null;
-            }
         }
 
 		return null, protobuf_msg;
@@ -242,12 +238,6 @@ public class ISocket
             }
             
 			this.HandleMessage(protobuf_msg);
-
-            if (protobuf_msg != null)
-            {
-                lua.protobuf.freemessage(protobuf_msg);
-                protobuf_msg = null;
-            }
         }
     }
 	
@@ -345,11 +335,7 @@ public class ISocket
         if (protobuf_msg == null) return "CreateMessage failed";
 
         var error = lua.protobuf.message_jsondecode(protobuf_msg, protobuf_json);
-        if (error != null)
-        {
-            lua.protobuf.freemessage(protobuf_msg);
-            return error;
-        }
+        if (error != null) return error;
 
         var msg_size = lua.protobuf.message_getbytesize(protobuf_msg);
         var binary_value = lua.memory.create(msg_size);
@@ -360,7 +346,6 @@ public class ISocket
 		else
 			error = "message_serializetoarray failed";
 
-        lua.protobuf.freemessage(protobuf_msg);
         lua.memory.free(binary_value);
 
         return error;

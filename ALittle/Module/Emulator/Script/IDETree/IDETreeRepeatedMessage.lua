@@ -19,6 +19,8 @@ function IDETreeRepeatedMessage:Ctor(ctrl_sys, root, parent, detail_info)
 	self._delete_button.x = self._insert_button.x + self._insert_button.width + 1
 	self._head.width = self._delete_button.x + self._delete_button.width + 1
 	self:Init()
+	self._insert_button.disabled = root.for_show
+	self._delete_button.disabled = root.for_show
 end
 
 function IDETreeRepeatedMessage:GetDetailInfo()

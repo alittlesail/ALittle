@@ -24,7 +24,7 @@ public class IDETreeEnumMapMessage : IDETree
 		this._rflct = rflct;
 		this._msg = msg;
 		this._key_field = key_field;
-		
+				
 		var value = lua.protobuf.reflection_getenumvalue(this._rflct, this._msg, this._key_field);
 		var enum_descriptor = lua.protobuf.fielddescriptor_enumtype(this._key_field);
 		var value_count = lua.protobuf.enumdescriptor_valuecount(enum_descriptor);
@@ -54,6 +54,10 @@ public class IDETreeEnumMapMessage : IDETree
 		this._head.width = this._delete_button.x + this._delete_button.width + 1;
 
 		this.Init();
+
+		this._key_dropdown.disabled = root.for_show;
+		this._insert_button.disabled = root.for_show;
+		this._delete_button.disabled = root.for_show;
 	}
 
 	public fun GetDetailInfo() : DetailInfo { return this._detail_info; }

@@ -97,7 +97,7 @@ function UtilityCreateTreeValueMapMessage(root, parent, msg, key_field, value_fi
 	return tree
 end
 
-function Utility_CreateTree(info)
+function Utility_CreateTreeForEdit(info)
 	local msg = A_LuaSocketSchedule:CreateMessage(info.full_name)
 	if msg == nil then
 		return nil
@@ -105,6 +105,16 @@ function Utility_CreateTree(info)
 	local json = g_GProtoCache:GetString(info.full_name, "{}")
 	protobuf.message_jsondecode(msg, json)
 	local root = {}
+	root.for_show = false
+	local tree = UtilityCreateTreeMessage(root, msg, "")
+	tree.fold = true
+	root.detail_info = tree:GetDetailInfo()
+	return root.detail_info
+end
+
+function Utility_CreateTreeForShow(msg)
+	local root = {}
+	root.for_show = true
 	local tree = UtilityCreateTreeMessage(root, msg, "")
 	tree.fold = true
 	root.detail_info = tree:GetDetailInfo()

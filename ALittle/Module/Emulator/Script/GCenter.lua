@@ -38,14 +38,14 @@ option_map = {}
 })
 ALittle.RegStruct(398889456, "Emulator.RootInfo", {
 name = "Emulator.RootInfo", ns_name = "Emulator", rl_name = "RootInfo", hash_code = 398889456,
-name_list = {"detail_info"},
-type_list = {"Emulator.DetailInfo"},
+name_list = {"detail_info","for_show"},
+type_list = {"Emulator.DetailInfo","bool"},
 option_map = {}
 })
 ALittle.RegStruct(-888044440, "Emulator.LogItemUserData", {
 name = "Emulator.LogItemUserData", ns_name = "Emulator", rl_name = "LogItemUserData", hash_code = -888044440,
-name_list = {"msg","descriptor","name","upper_name"},
-type_list = {"lua.protobuf_message","lua.protobuf_descriptor","string","string"},
+name_list = {"msg","info","upper_name","detail_info"},
+type_list = {"lua.protobuf_message","Lua.lua_socket_schedule_message_info","string","Emulator.DetailInfo"},
 option_map = {}
 })
 ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
@@ -56,12 +56,6 @@ option_map = {}
 })
 ALittle.RegStruct(958494922, "ALittle.UIChangedEvent", {
 name = "ALittle.UIChangedEvent", ns_name = "ALittle", rl_name = "UIChangedEvent", hash_code = 958494922,
-name_list = {"target"},
-type_list = {"ALittle.DisplayObject"},
-option_map = {}
-})
-ALittle.RegStruct(444989011, "ALittle.UISelectChangedEvent", {
-name = "ALittle.UISelectChangedEvent", ns_name = "ALittle", rl_name = "UISelectChangedEvent", hash_code = 444989011,
 name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
 option_map = {}
@@ -115,7 +109,7 @@ function GCenter:Setup()
 	local login_proto = g_GConfig:GetString("login_proto", "")
 	local msg_info = A_LuaSocketSchedule:GetMessageInfo(login_proto)
 	if msg_info ~= nil then
-		self._login_detail_info = Utility_CreateTree(msg_info)
+		self._login_detail_info = Utility_CreateTreeForEdit(msg_info)
 		self._login_scroll_screen:SetContainer(self._login_detail_info.tree)
 	end
 	self._login_button.visible = true
@@ -123,6 +117,7 @@ function GCenter:Setup()
 	self._login_ip_input.text = g_GConfig:GetString("login_ip", "127.0.0.1")
 	self._login_port_input.text = ALittle.String_ToString(g_GConfig:GetInt("login_port", 0))
 	self._right_grad3_ud.up_size = g_GConfig:GetDouble("right_grid3_up_size", self._right_grad3_ud.up_size)
+	self._main_grid3_lr.down_size = g_GConfig:GetDouble("main_grid3_down_size", self._main_grid3_lr.down_size)
 	self._send_button.disabled = true
 	self._frame_loop = ALittle.LoopFrame(Lua.Bind(self.UpdateFrame, self))
 	self._frame_loop:Start()
@@ -158,27 +153,17 @@ function GCenter:HandleSettingConfirmClick(event)
 	self._proto_search_group = {}
 	self:RefreshProtoList()
 	self._detail_scroll_screen:SetContainer(nil)
-	for key, info in ___pairs(self._detail_tree_item_pool) do
-		protobuf.freemessage(info.message)
-	end
 	self._detail_tree_item_pool = {}
 	self._log_search_group = {}
-	for index, button in ___ipairs(self._log_item_list) do
-		local user_data = button._user_data
-		protobuf.freemessage(user_data.msg)
-	end
 	self._log_item_list = {}
 	self._log_item_count = 0
 	self._log_scroll_screen:RemoveAllChild()
 	self:RefreshLogList()
-	if self._login_detail_info ~= nil then
-		protobuf.freemessage(self._login_detail_info.message)
-		self._login_detail_info = nil
-	end
+	self._login_detail_info = nil
 	local login_proto = self._login_proto_input.text
 	local msg_info = A_LuaSocketSchedule:GetMessageInfo(login_proto)
 	if msg_info ~= nil then
-		self._login_detail_info = Utility_CreateTree(msg_info)
+		self._login_detail_info = Utility_CreateTreeForEdit(msg_info)
 		self._login_scroll_screen:SetContainer(self._login_detail_info.tree)
 	else
 		self._login_scroll_screen:SetContainer(nil)
@@ -222,7 +207,7 @@ function GCenter:HandleProtoItemSelected(event)
 	local info = event.target._user_data
 	local detail_info = self._detail_tree_item_pool[info.full_name]
 	if detail_info == nil then
-		detail_info = Utility_CreateTree(info)
+		detail_info = Utility_CreateTreeForEdit(info)
 		if detail_info == nil then
 			return
 		end
@@ -258,23 +243,21 @@ function GCenter:AddLogMessage(msg)
 		local item = self._log_item_list[1]
 		local user_data = item._user_data
 		if self._cur_item_user_data == user_data then
-			protobuf.freemessage(user_data.msg)
+			self._show_scroll_screen:SetContainer(nil)
 		end
 		self._log_scroll_screen:RemoveChild(item)
 		item.group = nil
 		ALittle.List_Remove(self._log_item_list, 1)
 	end
 	local user_data = {}
-	user_data.descriptor = protobuf.message_getdescriptor(msg)
+	user_data.info = A_LuaSocketSchedule:GetMessageInfoByMessage(msg)
 	user_data.msg = protobuf.clonemessage(msg)
-	user_data.descriptor = protobuf.message_getdescriptor(user_data.msg)
-	user_data.name = protobuf.messagedescriptor_name(user_data.descriptor)
-	user_data.upper_name = ALittle.String_Upper(user_data.name)
+	user_data.upper_name = ALittle.String_Upper(user_data.info.name)
 	local item = g_Control:CreateControl("emulator_common_item_radiobutton")
-	item.text = user_data.name
+	item.text = user_data.info.name
 	item.drag_trans_target = self._log_scroll_screen
 	item._user_data = user_data
-	item:AddEventListener(___all_struct[444989011], self, self.HandleLogItemSelected)
+	item:AddEventListener(___all_struct[958494922], self, self.HandleLogItemSelected)
 	self._log_item_count = self._log_item_count + 1
 	self._log_item_list[self._log_item_count] = item
 	local key = self._log_search_key.text
@@ -290,6 +273,15 @@ function GCenter:AddLogMessage(msg)
 end
 
 function GCenter:HandleLogItemSelected(event)
+	self._show_search_key.text = ""
+	self._cur_item_user_data = event.target._user_data
+	if self._cur_item_user_data.detail_info == nil then
+		self._cur_item_user_data.detail_info = Utility_CreateTreeForShow(self._cur_item_user_data.msg)
+	end
+	self._show_scroll_screen:SetContainer(self._cur_item_user_data.detail_info.tree)
+end
+
+function GCenter:HandleShowSearchClick(event)
 end
 
 function GCenter:HandleSocketDisconnected()
@@ -361,8 +353,20 @@ function GCenter:HandleDragEndRightQuadUD(event)
 	g_GConfig:SetConfig("right_grid3_up_size", self._right_grad3_ud.up_size)
 end
 
+function GCenter:HandleDragRightQuadLR(event)
+	self._main_grid3_lr.down_size = self._main_grid3_lr.down_size - (event.delta_x)
+end
+
+function GCenter:HandleDragEndRightQuadLR(event)
+	g_GConfig:SetConfig("main_grid3_down_size", self._main_grid3_lr.down_size)
+end
+
 function GCenter:HandleSetVDragCursor(event)
 	ALittle.System_SetVDragCursor()
+end
+
+function GCenter:HandleSetHDragCursor(event)
+	ALittle.System_SetHDragCursor()
 end
 
 function GCenter:HandleSetNormalCursor(event)
@@ -371,16 +375,6 @@ end
 
 function GCenter:Shutdown()
 	self._frame_loop:Stop()
-	self._detail_scroll_screen:SetContainer(nil)
-	for key, info in ___pairs(self._detail_tree_item_pool) do
-		protobuf.freemessage(info.message)
-	end
-	self._detail_tree_item_pool = {}
-	if self._login_detail_info ~= nil then
-		protobuf.freemessage(self._login_detail_info.message)
-		self._login_detail_info = nil
-	end
-	self._cur_item_user_data = nil
 end
 
 g_GCenter = GCenter()

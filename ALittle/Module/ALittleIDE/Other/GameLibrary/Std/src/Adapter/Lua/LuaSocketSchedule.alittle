@@ -119,6 +119,15 @@ public class LuaSocketSchedule : ALittle.ISchedule
         return this._message_map[full_name];
     }
 
+    // 根据message获取协议类型
+    public fun GetMessageInfoByMessage(lua.protobuf_message msg) : lua_socket_schedule_message_info
+    {
+        var descriptor = lua.protobuf.message_getdescriptor(msg);
+        if (descriptor == null) return null;
+        var full_name = lua.protobuf.messagedescriptor_fullname(descriptor);
+        return this._message_map[full_name];
+    }
+
     // 根据key查找名称
     public fun FindMessageByUpperKey(string key) : List<lua_socket_schedule_message_info>
     {

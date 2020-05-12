@@ -26,6 +26,8 @@ function IDETreeRepeatedValue:Ctor(ctrl_sys, root, parent, rflct, msg, field, in
 	self._value_input.x = self._item_title.width + self._item_title.x
 	self._insert_button.x = self._value_input.x + self._value_input.width + 1
 	self._delete_button.x = self._insert_button.x + self._insert_button.width + 1
+	self._insert_button.disabled = root.for_show
+	self._delete_button.disabled = root.for_show
 end
 
 function IDETreeRepeatedValue:RefreshValue(index)

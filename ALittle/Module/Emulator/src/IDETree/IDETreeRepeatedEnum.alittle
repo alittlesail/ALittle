@@ -21,7 +21,7 @@ public class IDETreeRepeatedEnum : IDETreeLogic
 		this._rflct = rflct;
 		this._msg = msg;
 		this._field = field;
-
+		
 		var value = lua.protobuf.reflection_getrepeatedint32(this._rflct, this._msg, this._field, index);
 		var enum_descriptor = lua.protobuf.fielddescriptor_enumtype(field);
 		var value_count = lua.protobuf.enumdescriptor_valuecount(enum_descriptor);
@@ -49,6 +49,9 @@ public class IDETreeRepeatedEnum : IDETreeLogic
 		this._value_dropdown.x = this._item_title.width + this._item_title.x;
 		this._insert_button.x = this._value_dropdown.x + this._value_dropdown.width + 1;
 		this._delete_button.x = this._insert_button.x + this._insert_button.width + 1;
+		
+		this._insert_button.disabled = root.for_show;
+		this._delete_button.disabled = root.for_show;
 	}
 
 	public fun HandleSelectChanegd(ALittle.UISelectChangedEvent event)

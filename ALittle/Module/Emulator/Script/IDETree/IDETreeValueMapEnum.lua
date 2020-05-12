@@ -49,6 +49,10 @@ function IDETreeValueMapEnum:Ctor(ctrl_sys, root, parent, rflct, msg, key_field,
 	self._delete_button.x = self._insert_button.x + self._insert_button.width + 1
 	self._item.width = self._delete_button.x + self._delete_button.width + 1
 	self.width = self._item.width
+	self._key_input.editable = not root.for_show
+	self._value_dropdown.disabled = root.for_show
+	self._insert_button.disabled = root.for_show
+	self._delete_button.disabled = root.for_show
 end
 
 function IDETreeValueMapEnum:RefreshValue()

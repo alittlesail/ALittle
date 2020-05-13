@@ -71,7 +71,7 @@ function ISocket.__setter:disconnect_callback(disconnected_callback)
 	self._disconnected_callback = disconnected_callback
 end
 
-function ISocket:WriteMessage(full_name, protobuf_msg, protobuf_binary, protobuf_size)
+function ISocket:WriteMessage(full_name, protobuf_msg)
 	return "not implement"
 end
 
@@ -83,7 +83,7 @@ end
 function ISocket:HandleMessage(msg)
 end
 
-function ISocket:ReadStruct(T)
+function ISocket:ReadStruct()
 local ___COROUTINE = coroutine.running()
 	local error, msg = self:ReadMessage()
 	if error ~= nil then
@@ -227,6 +227,19 @@ local ___COROUTINE = coroutine.running()
 	return coroutine.yield()
 end
 
+function ISocket:ReadString(len)
+local ___COROUTINE = coroutine.running()
+	if not self:IsConnected() then
+		return "还未连接成功", ""
+	end
+	if self._read_thread ~= nil then
+		return "已经正在读取", ""
+	end
+	self._read_thread = ___COROUTINE
+	socket.readstring(self._socket, self._id, len)
+	return coroutine.yield()
+end
+
 function ISocket:ReadBinary(len)
 local ___COROUTINE = coroutine.running()
 	if not self:IsConnected() then
@@ -338,6 +351,13 @@ function ISocket:WriteDouble(value)
 	socket.writedouble(self._socket, self._id, value)
 end
 
+function ISocket:WriteString(value)
+	if not self:IsConnected() then
+		return
+	end
+	socket.writestring(self._socket, self._id, value)
+end
+
 function ISocket:WriteBinary(buffer, size)
 	if not self:IsConnected() then
 		return
@@ -345,15 +365,15 @@ function ISocket:WriteBinary(buffer, size)
 	socket.writebinary(self._socket, self._id, buffer, size)
 end
 
-function ISocket:SendMessage(msg)
-	local descriptor = protobuf.message_getdescriptor(msg)
-	local full_name = protobuf.messagedescriptor_fullname(descriptor)
+function ISocket:WriteProtobuf(msg)
+	if not self:IsConnected() then
+		return "is not connected"
+	end
 	local msg_size = protobuf.message_getbytesize(msg)
 	local binary_value = memory.create(msg_size)
 	local error = nil
-	local result = protobuf.message_serializetoarray(msg, binary_value, msg_size)
-	if result then
-		error = self:WriteMessage(full_name, msg, binary_value, msg_size)
+	if protobuf.message_serializetoarray(msg, binary_value, msg_size) then
+		socket.writebinary(self._socket, self._id, binary_value, msg_size)
 	else
 		error = "message_serializetoarray failed"
 	end
@@ -361,7 +381,13 @@ function ISocket:SendMessage(msg)
 	return error
 end
 
-function ISocket:SendStruct(T, full_name, msg)
+function ISocket:SendMessage(msg)
+	local descriptor = protobuf.message_getdescriptor(msg)
+	local full_name = protobuf.messagedescriptor_fullname(descriptor)
+	return self:WriteMessage(full_name, msg)
+end
+
+function ISocket:SendStruct(full_name, msg)
 	local protobuf_json = json.encode(msg)
 	local protobuf_msg = A_LuaSocketSchedule:CreateMessage(full_name)
 	if protobuf_msg == nil then
@@ -375,7 +401,7 @@ function ISocket:SendStruct(T, full_name, msg)
 	local binary_value = memory.create(msg_size)
 	local result = protobuf.message_serializetoarray(protobuf_msg, binary_value, msg_size)
 	if result then
-		error = self:WriteMessage(full_name, protobuf_msg, binary_value, msg_size)
+		error = self:WriteMessage(full_name, protobuf_msg)
 	else
 		error = "message_serializetoarray failed"
 	end
@@ -445,6 +471,21 @@ function ISocket.HandleReadInt(id, value)
 end
 
 function ISocket.HandleReadDouble(id, value)
+	local socket = __SOCKET_MAP[id]
+	if socket == nil then
+		return
+	end
+	if socket._read_thread ~= nil then
+		local thread = socket._read_thread
+		socket._read_thread = nil
+		local result, error = ALittle.Coroutine.Resume(thread, nil, value)
+		if result ~= true then
+			ALittle.Error(error)
+		end
+	end
+end
+
+function ISocket.HandleReadString(id, value)
 	local socket = __SOCKET_MAP[id]
 	if socket == nil then
 		return

@@ -50,14 +50,13 @@ Emulator.__Module_Setup = async function(layer_group, control, module_base_path,
 	await Require(script_base_path, "IDETree/IDETreeRepeated");
 	await Require(script_base_path, "GUtility");
 	await Require(script_base_path, "IDEIMEManager");
-	await Require(script_base_path, "LWProtobuf");
-	await Require(script_base_path, "LWSocket");
+	await Require(script_base_path, "PluginSocket");
 	Emulator.g_IDEIMEManager.Setup();
-	Emulator.g_GCenter.Setup();
+	g_GCenter.Setup();
 }
 
 Emulator.__Module_Shutdown = function() {
-	Emulator.g_GCenter.Shutdown();
+	g_GCenter.Shutdown();
 	Emulator.g_IDEIMEManager.Shutdown();
 }
 

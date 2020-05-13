@@ -234,6 +234,10 @@ window.__ALITTLEAPI_SystemSelectFile = function(path) {
 	A_OtherSystem.HandleSystemSelectFile(path);
 }
 
+window.__ALITTLEAPI_SystemSelectDirectory = function(path) {
+	A_OtherSystem.HandleSystemSelectDirectory(path);
+}
+
 window.__ALITTLEAPI_SystemSaveFile = function(path) {
 	A_OtherSystem.HandleSystemSaveFile(path);
 }

@@ -73,10 +73,9 @@ if (ALittle.EventDispatcher === undefined) throw new Error(" extends class:ALitt
 ALittle.OtherSystem = JavaScript.Class(ALittle.EventDispatcher, {
 	Ctor : function() {
 		this._network_started = false;
+		this._system_select_directory = undefined;
 		this._system_select_file = undefined;
-		this._system_select_ing = false;
 		this._system_save_file = undefined;
-		this._system_save_ing = false;
 		this._third_share_callback = undefined;
 		this._third_login_callback = undefined;
 		this._third_login_ing = false;
@@ -129,6 +128,20 @@ ALittle.OtherSystem = JavaScript.Class(ALittle.EventDispatcher, {
 		event.method = content.method;
 		event.param = content.param;
 		this.DispatchEvent(___all_struct.get(-840570937), event);
+	},
+	SystemSelectDirectory : function(target, init_dir) {
+		ALittle.Error("not support SystemSelectDirectory");
+	},
+	HandleSystemSelectDirectory : function(path) {
+		if (this._system_select_directory === undefined) {
+			return;
+		}
+		let tmp = this._system_select_directory;
+		this._system_select_directory = undefined;
+		let event = {};
+		event.target = tmp;
+		event.path = path;
+		tmp.DispatchEvent(___all_struct.get(1800966813), event);
 	},
 	SystemSelectFile : function(target, init_dir) {
 		ALittle.Error("not support SystemSelectFile");

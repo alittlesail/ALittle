@@ -47,7 +47,6 @@
     <None Include="src\IDETree\IDETreeValueMapEnum.alittle" />
     <None Include="src\IDETree\IDETreeValueMapMessage.alittle" />
     <None Include="src\IDETree\IDETreeValueMapValue.alittle" />
-    <None Include="src\LWPlugin.alittle" />
     <None Include="src\PluginSocket.alittle" />
     <None Include="src\Main.alittle" />
   </ItemGroup>

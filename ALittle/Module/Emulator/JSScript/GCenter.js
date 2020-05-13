@@ -92,15 +92,27 @@ Emulator.GCenter = JavaScript.Class(undefined, {
 		this._setting_dialog = Emulator.g_Control.CreateControl("main_setting_dialog", this);
 		A_LayerManager.AddToModal(this._setting_dialog);
 		A_LuaSocketSchedule.Setup();
+		let plugin_path = Emulator.g_GConfig.GetString("plugin_script", "");
+		if (ALittle.File_GetFileExtByPathAndUpper(plugin_path) === "LUA") {
+			let plugin_script = ALittle.File_ReadTextFromStdFile(plugin_path);
+			if (plugin_script !== undefined) {
+				__CPPAPI_ScriptSystemEx.RunScript(plugin_script, plugin_path);
+			} else {
+				this.HandleShowSettingDialog(undefined);
+			}
+		} else {
+			this.HandleShowSettingDialog(undefined);
+		}
 		let proto_root = Emulator.g_GConfig.GetString("proto_root", "");
 		if (proto_root !== "" && ALittle.File_GetFileAttr(proto_root) !== undefined) {
 			let error = A_LuaSocketSchedule.LoadProto(proto_root);
 			if (error === undefined) {
-				Emulator.g_LWProtobuf.Refresh();
 				let func = _G["__PLUGIN_ProtoRefresh"];
 				if (func !== undefined) {
 					error = (function() { try { func.call(); return undefined; } catch (___ERROR) { return ___ERROR.message; } }).call(this);
-					ALittle.Log(error);
+					if (error !== undefined) {
+						ALittle.Log(error);
+					}
 				}
 				this.RefreshProtoList();
 			}
@@ -128,6 +140,21 @@ Emulator.GCenter = JavaScript.Class(undefined, {
 		this._setting_dialog.visible = true;
 		this._proto_root_input.text = Emulator.g_GConfig.GetString("proto_root", "");
 		this._login_proto_input.text = Emulator.g_GConfig.GetString("login_proto", "");
+		this._plugin_file_input.text = Emulator.g_GConfig.GetString("plugin_script", "");
+	},
+	HandleSettingSelectPluginScriptClick : function(event) {
+		if (event.path === undefined) {
+			return;
+		}
+		this._plugin_file_input.text = event.path;
+	},
+	HandleSettingGeneratePluginScriptClick : function(event) {
+		if (event.path === undefined) {
+			return;
+		}
+		this._plugin_file_input.text = event.path + "\\TemplatePlugin.lua";
+		Emulator.g_GConfig.SetConfig("plugin_script", this._plugin_file_input.text);
+		ALittle.File_CopyFile(Emulator.g_ModuleBasePath + "Other/TemplatePlugin.lua", this._plugin_file_input.text);
 	},
 	HandleSettingConfirmClick : function(event) {
 		let attr = ALittle.File_GetFileAttr(this._proto_root_input.text);
@@ -135,15 +162,34 @@ Emulator.GCenter = JavaScript.Class(undefined, {
 			Emulator.g_IDETool.ShowNotice("错误", "文件夹不存在");
 			return;
 		}
+		if (ALittle.File_GetFileExtByPathAndUpper(this._plugin_file_input.text) === "LUA") {
+			delete _G["__PLUGIN_ProtoRefresh"];
+			delete _G["__PLUGIN_StartLogin"];
+			delete _G["__SOCKET_ReadMessage"];
+			delete _G["__SOCKET_WriteMessage"];
+			delete _G["__SOCKET_HandleMessage"];
+			let plugin_script = ALittle.File_ReadTextFromStdFile(this._plugin_file_input.text);
+			if (plugin_script !== undefined) {
+				__CPPAPI_ScriptSystemEx.RunScript(plugin_script, this._plugin_file_input.text);
+			}
+		} else {
+			Emulator.g_IDETool.ShowNotice("错误", "插件脚本必须是lua脚本");
+			return;
+		}
 		this._setting_dialog.visible = false;
 		Emulator.g_GConfig.SetConfig("proto_root", this._proto_root_input.text);
-		Emulator.g_LWProtobuf.Clear();
 		let error = A_LuaSocketSchedule.LoadProto(this._proto_root_input.text);
+		let func = _G["__PLUGIN_ProtoRefresh"];
+		if (func !== undefined) {
+			error = (function() { try { func.call(); return undefined; } catch (___ERROR) { return ___ERROR.message; } }).call(this);
+			if (error !== undefined) {
+				ALittle.Log(error);
+			}
+		}
 		if (error !== undefined) {
 			Emulator.g_IDETool.ShowNotice("错误", error);
 			return;
 		}
-		Emulator.g_LWProtobuf.Refresh();
 		this._protobuf_scroll_screen.RemoveAllChild();
 		this._proto_search_item_pool = {};
 		this._proto_search_group = new Map();
@@ -165,6 +211,7 @@ Emulator.GCenter = JavaScript.Class(undefined, {
 			this._login_scroll_screen.SetContainer(undefined);
 		}
 		Emulator.g_GConfig.SetConfig("login_proto", login_proto);
+		Emulator.g_GConfig.SetConfig("plugin_script", this._plugin_file_input.text);
 	},
 	HandleSettingCancelClick : function(event) {
 		this._setting_dialog.visible = false;
@@ -291,7 +338,8 @@ Emulator.GCenter = JavaScript.Class(undefined, {
 		let list = tree.SearchDescription(key);
 		tree.SearchEnd(list);
 	},
-	HandleSocketDisconnected : function() {
+	HandleClientSocketDisconnected : function(socket) {
+		this._client_socket = undefined;
 		this._send_button.disabled = true;
 		this._login_button.visible = true;
 		this._logout_button.visible = false;
@@ -303,7 +351,9 @@ Emulator.GCenter = JavaScript.Class(undefined, {
 			return;
 		}
 		let detail_info = tree.GetDetailInfo();
-		Emulator.g_LWProtobuf.SendMessage(detail_info.message);
+		if (this._client_socket !== undefined) {
+			this._client_socket.SendMessage(detail_info.message);
+		}
 	},
 	HandleLoginClick : async function(event) {
 		let ip = this._login_ip_input.text;
@@ -329,8 +379,26 @@ Emulator.GCenter = JavaScript.Class(undefined, {
 		this._login_button.visible = false;
 		this._logout_button.visible = true;
 		this._login_status = Emulator.LoginStatus.EMULATOR_LOGINING;
-		let error = await Emulator.g_LWProtobuf.StartLogin(ip, port, this._login_detail_info.message);
+		let error = undefined;
+		if (this._client_socket !== undefined) {
+			this._client_socket.Close();
+			this._client_socket = undefined;
+		}
+		let login_func = _G["__PLUGIN_StartLogin"];
+		if (login_func === undefined) {
+			error = "还未加载插件";
+		} else {
+			let call_error = undefined;
+			[call_error, error, this._client_socket] = await (async function() { try { let ___VALUE = await login_func.call(ip, port, this._login_detail_info.message); ___VALUE.splice(0, 0, undefined);  return ___VALUE; } catch (___ERROR) { return [___ERROR.message]; } }).call(this);
+			if (call_error !== undefined) {
+				error = call_error;
+			}
+		}
 		if (error === undefined) {
+			if (this._client_socket !== undefined) {
+				this._client_socket.disconnect_callback = this.HandleClientSocketDisconnected.bind(this);
+				this._client_socket.ReceiveMessage();
+			}
 			this._login_status = Emulator.LoginStatus.EMULATOR_LOGINED;
 			this._send_button.disabled = false;
 		} else {
@@ -341,7 +409,10 @@ Emulator.GCenter = JavaScript.Class(undefined, {
 		}
 	},
 	HandleLogoutClick : function(event) {
-		Emulator.g_LWProtobuf.CloseConnect();
+		if (this._client_socket !== undefined) {
+			this._client_socket.Close();
+			this._client_socket = undefined;
+		}
 		this._send_button.disabled = true;
 		this._login_button.visible = true;
 		this._logout_button.visible = false;
@@ -373,5 +444,5 @@ Emulator.GCenter = JavaScript.Class(undefined, {
 	},
 }, "Emulator.GCenter");
 
-Emulator.g_GCenter = ALittle.NewObject(Emulator.GCenter);
+window.g_GCenter = ALittle.NewObject(Emulator.GCenter);
 }

@@ -12,6 +12,7 @@ public struct socket_event
     // 当type为MSG_READ_XXX时，整型值，浮点值，protobuf值
     int int_value;
     double double_value;
+    string string_value;
     any binary_value;
 }
 
@@ -41,6 +42,7 @@ public class socket
     public static readint64(socket c, int id) {}
     public static readfloat(socket c, int id) {}
     public static readdouble(socket c, int id) {}
+    public static readstring(socket c, int id, int len) {}
     // 读取到的二进制数据，必须使用freebinary释放
     public static readbinary(socket c, int id, int len) {}
     // 释放二进制数据
@@ -57,6 +59,7 @@ public class socket
     public static writeint64(socket c, int id, int value) {}
     public static writefloat(socket c, int id, double value) {}
     public static writedouble(socket c, int id, double value) {}
+    public static writestring(socket c, int id, string value) {}
     public static writebinary(socket c, int id, any buffer, int size) {}
 
     public static exit(net c) {}

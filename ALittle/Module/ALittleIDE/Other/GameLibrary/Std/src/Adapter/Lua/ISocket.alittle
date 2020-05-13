@@ -71,7 +71,7 @@ public class ISocket
 	////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	// 写入消息需要重载，由子类实现
-    private fun WriteMessage(string full_name, lua.protobuf_message protobuf_msg, any protobuf_binary, int protobuf_size) : string
+    private fun WriteMessage(string full_name, lua.protobuf_message protobuf_msg) : string
 	{
         return "not implement";
     }
@@ -90,7 +90,7 @@ public class ISocket
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public await fun ReadStruct<T:struct>() : string, T
+	public await fun ReadStruct<T>() : string, T
 	{
         var error, msg = this.ReadMessage();
 		if (error != null) return error, null;
@@ -203,6 +203,16 @@ public class ISocket
 		return yield;
     }
 
+	public await fun ReadString(int len) : string, string
+	{
+		if (!this.IsConnected()) return "还未连接成功", "";
+        if (this._read_thread != null) return "已经正在读取", "";
+
+		this._read_thread = co;
+		lua.socket.readstring(this._socket, this._id, len);
+		return yield;
+    }
+
 	public await fun ReadBinary(int len) : string, any
 	{
 		if (!this.IsConnected()) return "还未连接成功", 0;
@@ -213,7 +223,7 @@ public class ISocket
 		return yield;
     }
 
-	public await fun ReadProtobuf(string full_name, int len) : string, any
+	public await fun ReadProtobuf(string full_name, int len) : string, lua.protobuf_message
 	{
 		var error, binary_value = this.ReadBinary(len);
         if (error != null) return error, null;
@@ -302,10 +312,32 @@ public class ISocket
 		lua.socket.writedouble(this._socket, this._id, value);
     }
 
+	public fun WriteString(string value)
+	{
+		if (!this.IsConnected()) return;
+		lua.socket.writestring(this._socket, this._id, value);
+    }
+
 	public fun WriteBinary(lua.memory buffer, int size)
 	{
 		if (!this.IsConnected()) return;
 		lua.socket.writebinary(this._socket, this._id, buffer, size);
+    }
+
+	public fun WriteProtobuf(lua.protobuf_message msg) : string
+	{
+		if (!this.IsConnected()) return "is not connected";
+		
+        var msg_size = lua.protobuf.message_getbytesize(msg);
+        var binary_value = lua.memory.create(msg_size);
+
+		var error:string = null;
+		if (lua.protobuf.message_serializetoarray(msg, binary_value, msg_size))
+			lua.socket.writebinary(this._socket, this._id, binary_value, msg_size);
+		else
+			error = "message_serializetoarray failed";
+        lua.memory.free(binary_value);
+		return error;
     }
 	
     public fun SendMessage(lua.protobuf_message msg) : string
@@ -313,22 +345,10 @@ public class ISocket
 		var descriptor = lua.protobuf.message_getdescriptor(msg);
 		var full_name = lua.protobuf.messagedescriptor_fullname(descriptor);
 
-        var msg_size = lua.protobuf.message_getbytesize(msg);
-        var binary_value = lua.memory.create(msg_size);
-
-		var error:string = null;
-        var result = lua.protobuf.message_serializetoarray(msg, binary_value, msg_size);
-        if (result)
-			error = this.WriteMessage(full_name, msg, binary_value, msg_size);
-		else
-			error = "message_serializetoarray failed";
-
-        lua.memory.free(binary_value);
-
-        return error;
+		return this.WriteMessage(full_name, msg);
     }
 	
-    public fun SendStruct<T:struct>(string full_name, T msg) : string
+    public fun SendStruct<T>(string full_name, T msg) : string
     {   
         var protobuf_json = lua.json.encode(msg);
         
@@ -343,7 +363,7 @@ public class ISocket
 
         var result = lua.protobuf.message_serializetoarray(protobuf_msg, binary_value, msg_size);
         if (result)
-			error = this.WriteMessage(full_name, protobuf_msg, binary_value, msg_size);
+			error = this.WriteMessage(full_name, protobuf_msg);
 		else
 			error = "message_serializetoarray failed";
 
@@ -408,6 +428,20 @@ public class ISocket
     }
 
 	public static HandleReadDouble(int id, double value)
+	{
+        var socket = __SOCKET_MAP[id];
+		if (socket == null) return;
+
+		if (socket._read_thread != null)
+		{
+			var thread = socket._read_thread;
+			socket._read_thread = null;
+			var result, error = ALittle.Coroutine.Resume(thread, null, value);
+			if (result != true) ALittle.Error(error);
+        }
+    }
+
+	public static HandleReadString(int id, string value)
 	{
         var socket = __SOCKET_MAP[id];
 		if (socket == null) return;

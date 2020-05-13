@@ -21,12 +21,12 @@ local ___COROUTINE = coroutine.running()
 	return error, msg
 end
 
-function PluginSocket:WriteMessage(full_name, protobuf_msg, protobuf_binary, protobuf_size)
+function PluginSocket:WriteMessage(full_name, protobuf_msg)
 	local func = _G["__SOCKET_WriteMessage"]
 	if func == nil then
 		return "can't find __SOCKET_WriteMessage"
 	end
-	local call_error, error = Lua.TCall(func, self, full_name, protobuf_msg, protobuf_binary, protobuf_size)
+	local call_error, error = Lua.TCall(func, self, full_name, protobuf_msg)
 	if call_error ~= nil then
 		return call_error
 	end

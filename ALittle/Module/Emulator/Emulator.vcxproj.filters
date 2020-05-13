@@ -78,7 +78,6 @@
     <None Include="src\IDETree\IDETreeBoolMapValue.alittle">
       <Filter>IDETree</Filter>
     </None>
-    <None Include="src\LWPlugin.alittle" />
     <None Include="src\PluginSocket.alittle" />
   </ItemGroup>
   <ItemGroup>

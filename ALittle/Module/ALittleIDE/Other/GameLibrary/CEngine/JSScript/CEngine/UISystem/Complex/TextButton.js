@@ -34,7 +34,7 @@ ALittle.TextButton = JavaScript.Class(ALittle.DisplayLayout, {
 		this._show_disabled_text.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
 		this._show_disabled_text.x_value = 0;
 		this._show_disabled_text.visible = false;
-		this._file_select = false;
+		this._file_select = ALittle.UIEnumTypes.SELECT_NONE;
 		this.AddEventListener(___all_struct.get(544684311), this, this.HandleMoveIn);
 		this.AddEventListener(___all_struct.get(-1202439334), this, this.HandleMoveOut);
 		this.AddEventListener(___all_struct.get(1883782801), this, this.HandleLButtonDown);
@@ -69,8 +69,10 @@ ALittle.TextButton = JavaScript.Class(ALittle.DisplayLayout, {
 			let e = {};
 			e.is_drag = event.is_drag;
 			this.DispatchEvent(___all_struct.get(-449066808), e);
-			if (this._file_select) {
+			if (this._file_select === ALittle.UIEnumTypes.SELECT_FILE) {
 				A_OtherSystem.SystemSelectFile(this);
+			} else if (this._file_select === ALittle.UIEnumTypes.SELECT_DIR) {
+				A_OtherSystem.SystemSelectDirectory(this);
 			}
 			if (ALittle.System_IsPhone === false) {
 				this.ShowOver();

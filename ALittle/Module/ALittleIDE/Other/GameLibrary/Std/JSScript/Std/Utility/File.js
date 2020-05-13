@@ -159,11 +159,7 @@ ALittle.File_WriteJsonFromStdFile = function(content, file_path) {
 
 ALittle.File_ReadTextFromStdFile = function(file_path) {
 	{
-		let content = JavaScript.File_LoadFile(file_path);
-		if (content === undefined) {
-			return [undefined, file_path + " load failed"];
-		}
-		return [undefined, content];
+		return JavaScript.File_LoadFile(file_path);
 	}
 }
 

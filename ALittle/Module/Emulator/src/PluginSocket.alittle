@@ -13,12 +13,12 @@ public class PluginSocket : Lua.ISocket
         return error, msg;
     }
 
-    private fun WriteMessage(string full_name, lua.protobuf_message protobuf_msg, any protobuf_binary, int protobuf_size) : string
+    private fun WriteMessage(string full_name, lua.protobuf_message protobuf_msg) : string
     {
         var func = cast<Map<string, Functor<(Lua.ISocket, string, lua.protobuf_message, any, int) : string>>>(_G)["__SOCKET_WriteMessage"];
         if (func == null) return "can't find __SOCKET_WriteMessage";
 
-        var call_error, error = tcall(func, this, full_name, protobuf_msg, protobuf_binary, protobuf_size);
+        var call_error, error = tcall(func, this, full_name, protobuf_msg);
         if (call_error != null) return call_error;
         if (error != null) return error;
 

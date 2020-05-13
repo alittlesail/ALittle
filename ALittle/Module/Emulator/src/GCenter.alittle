@@ -207,7 +207,7 @@ class GCenter
         this._plugin_file_input.text = event.path.."\\TemplatePlugin.lua";
         g_GConfig.SetConfig("plugin_script", this._plugin_file_input.text);
 
-        // 生成
+        ALittle.File_CopyFile(g_ModuleBasePath.."Other/TemplatePlugin.lua", this._plugin_file_input.text);
     }
 
     // 处理设置
@@ -217,6 +217,23 @@ class GCenter
         if (attr == null || attr.mode != "directory")
         {
             g_IDETool.ShowNotice("错误", "文件夹不存在");
+            return;
+        }
+        
+        // 清理接口，并重新加载
+        if (ALittle.File_GetFileExtByPathAndUpper(this._plugin_file_input.text) == "LUA")
+        {
+            cast<Map<string, any>>(_G)["__PLUGIN_ProtoRefresh"] = null;
+            cast<Map<string, any>>(_G)["__PLUGIN_StartLogin"] = null;
+            cast<Map<string, any>>(_G)["__SOCKET_ReadMessage"] = null;
+            cast<Map<string, any>>(_G)["__SOCKET_WriteMessage"] = null;
+            cast<Map<string, any>>(_G)["__SOCKET_HandleMessage"] = null;
+            var plugin_script = ALittle.File_ReadTextFromStdFile(this._plugin_file_input.text);
+            if (plugin_script != null) __CPPAPI_ScriptSystemEx.RunScript(plugin_script, this._plugin_file_input.text);   
+        }
+        else
+        {
+            g_IDETool.ShowNotice("错误", "插件脚本必须是lua脚本");
             return;
         }
 
@@ -271,22 +288,6 @@ class GCenter
 
         // 保存路径
         g_GConfig.SetConfig("plugin_script", this._plugin_file_input.text);
-
-        // 清理接口，并重新加载
-        if (ALittle.File_GetFileExtByPathAndUpper(this._plugin_file_input.text) == "LUA")
-        {
-            cast<Map<string, any>>(_G)["__PLUGIN_ProtoRefresh"] = null;
-            cast<Map<string, any>>(_G)["__PLUGIN_StartLogin"] = null;
-            cast<Map<string, any>>(_G)["__SOCKET_ReadMessage"] = null;
-            cast<Map<string, any>>(_G)["__SOCKET_WriteMessage"] = null;
-            cast<Map<string, any>>(_G)["__SOCKET_HandleMessage"] = null;
-            var plugin_script = ALittle.File_ReadTextFromStdFile(this._plugin_file_input.text);
-            if (plugin_script != null) __CPPAPI_ScriptSystemEx.RunScript(plugin_script, this._plugin_file_input.text);   
-        }
-        else
-        {
-            g_IDETool.ShowNotice("错误", "插件脚本必须是lua脚本");
-        }
     }
 
     // 处理设置

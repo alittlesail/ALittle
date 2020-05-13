@@ -164,12 +164,27 @@ function GCenter:HandleSettingGeneratePluginScriptClick(event)
 	end
 	self._plugin_file_input.text = event.path .. "\\TemplatePlugin.lua"
 	g_GConfig:SetConfig("plugin_script", self._plugin_file_input.text)
+	ALittle.File_CopyFile(g_ModuleBasePath .. "Other/TemplatePlugin.lua", self._plugin_file_input.text)
 end
 
 function GCenter:HandleSettingConfirmClick(event)
 	local attr = ALittle.File_GetFileAttr(self._proto_root_input.text)
 	if attr == nil or attr.mode ~= "directory" then
 		g_IDETool:ShowNotice("错误", "文件夹不存在")
+		return
+	end
+	if ALittle.File_GetFileExtByPathAndUpper(self._plugin_file_input.text) == "LUA" then
+		_G["__PLUGIN_ProtoRefresh"] = nil
+		_G["__PLUGIN_StartLogin"] = nil
+		_G["__SOCKET_ReadMessage"] = nil
+		_G["__SOCKET_WriteMessage"] = nil
+		_G["__SOCKET_HandleMessage"] = nil
+		local plugin_script = ALittle.File_ReadTextFromStdFile(self._plugin_file_input.text)
+		if plugin_script ~= nil then
+			__CPPAPI_ScriptSystemEx:RunScript(plugin_script, self._plugin_file_input.text)
+		end
+	else
+		g_IDETool:ShowNotice("错误", "插件脚本必须是lua脚本")
 		return
 	end
 	self._setting_dialog.visible = false
@@ -208,19 +223,6 @@ function GCenter:HandleSettingConfirmClick(event)
 	end
 	g_GConfig:SetConfig("login_proto", login_proto)
 	g_GConfig:SetConfig("plugin_script", self._plugin_file_input.text)
-	if ALittle.File_GetFileExtByPathAndUpper(self._plugin_file_input.text) == "LUA" then
-		_G["__PLUGIN_ProtoRefresh"] = nil
-		_G["__PLUGIN_StartLogin"] = nil
-		_G["__SOCKET_ReadMessage"] = nil
-		_G["__SOCKET_WriteMessage"] = nil
-		_G["__SOCKET_HandleMessage"] = nil
-		local plugin_script = ALittle.File_ReadTextFromStdFile(self._plugin_file_input.text)
-		if plugin_script ~= nil then
-			__CPPAPI_ScriptSystemEx:RunScript(plugin_script, self._plugin_file_input.text)
-		end
-	else
-		g_IDETool:ShowNotice("错误", "插件脚本必须是lua脚本")
-	end
 end
 
 function GCenter:HandleSettingCancelClick(event)

@@ -20,7 +20,8 @@ public enum socket_type
 	MSG_READ_INT64 = 41;
 	MSG_READ_FLOAT = 42;
 	MSG_READ_DOUBLE = 43;
-	MSG_READ_BINARY = 44;
+	MSG_READ_STRING = 44;
+	MSG_READ_BINARY = 45;
 }
 
 public struct lua_socket_schedule_message_info
@@ -151,6 +152,13 @@ public class LuaSocketSchedule : ALittle.ISchedule
         return info.descriptor;
     }
 
+    public fun GetMessageDescriptor(string full_name) : lua.protobuf_descriptor
+    {
+        var info = this._message_map[full_name];
+        if (info == null) return null;
+        return info.descriptor;
+    }
+
     public fun CreateMessage(string full_name) : lua.protobuf_message
     {
         if (full_name == null) return null;
@@ -210,7 +218,9 @@ public class LuaSocketSchedule : ALittle.ISchedule
             ISocket.HandleReadInt(event.id, event.int_value);
         elseif (event.type >= socket_type.MSG_READ_FLOAT && event.type <= socket_type.MSG_READ_DOUBLE)
             ISocket.HandleReadDouble(event.id, event.double_value);
-        elseif (event.type >= socket_type.MSG_READ_BINARY)
+        elseif (event.type == socket_type.MSG_READ_STRING)
+            ISocket.HandleReadString(event.id, event.string_value);
+        elseif (event.type == socket_type.MSG_READ_BINARY)
         {
             ISocket.HandleReadProtobuf(event.id, event.binary_value);
             lua.socket.freebinary(event.binary_value);

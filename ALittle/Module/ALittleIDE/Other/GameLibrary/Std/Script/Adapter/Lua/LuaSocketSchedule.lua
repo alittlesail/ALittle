@@ -45,7 +45,8 @@ socket_type = {
 	MSG_READ_INT64 = 41,
 	MSG_READ_FLOAT = 42,
 	MSG_READ_DOUBLE = 43,
-	MSG_READ_BINARY = 44,
+	MSG_READ_STRING = 44,
+	MSG_READ_BINARY = 45,
 }
 
 assert(ALittle.ISchedule, " extends class:ALittle.ISchedule is nil")
@@ -74,7 +75,7 @@ function LuaSocketSchedule:LoadProto(root_path)
 		if ALittle.File_GetFileExtByPathAndUpper(file_path) == "PROTO" then
 			local file_descriptor = protobuf.importer_import(self._importer, ALittle.String_Sub(file_path, ALittle.String_Len(root_path) + 2))
 			if file_descriptor == nil then
-				return "�ļ�����ʧ��:" .. file_path
+				return "文件加载失败:" .. file_path
 			end
 			local message_count = protobuf.filedescriptor_messagetypecount(file_descriptor)
 			local i = 0
@@ -144,6 +145,14 @@ function LuaSocketSchedule:GetEnumDescriptor(full_name)
 	return info.descriptor
 end
 
+function LuaSocketSchedule:GetMessageDescriptor(full_name)
+	local info = self._message_map[full_name]
+	if info == nil then
+		return nil
+	end
+	return info.descriptor
+end
+
 function LuaSocketSchedule:CreateMessage(full_name)
 	if full_name == nil then
 		return nil
@@ -199,7 +208,9 @@ function LuaSocketSchedule:HandleEvent(event)
 		ISocket.HandleReadInt(event.id, event.int_value)
 	elseif event.type >= socket_type.MSG_READ_FLOAT and event.type <= socket_type.MSG_READ_DOUBLE then
 		ISocket.HandleReadDouble(event.id, event.double_value)
-	elseif event.type >= socket_type.MSG_READ_BINARY then
+	elseif event.type == socket_type.MSG_READ_STRING then
+		ISocket.HandleReadString(event.id, event.string_value)
+	elseif event.type == socket_type.MSG_READ_BINARY then
 		ISocket.HandleReadProtobuf(event.id, event.binary_value)
 		socket.freebinary(event.binary_value)
 	end

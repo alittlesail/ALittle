@@ -3,7 +3,6 @@ require("protobuf");
 require("socket");
 require("base64");
 require("csv");
-require("dump");
 require("json");
 require("ajson");
 require("sqlite3");
@@ -12,7 +11,6 @@ require("md5");
 require("net");
 require("timer");
 require("utf8");
-dump.setup("HelloWorld");
 
 require("ALittle/Module/ALittleIDE/Other/GameLibrary/Core/Script/ALittle");
 RequireCore("ALittle/Module/ALittleIDE/Other/GameLibrary/Core/Script/");

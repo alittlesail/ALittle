@@ -11,7 +11,7 @@ end
 -- 开始执行登陆流程【在协程内被调用，这个函数内可以使用带await的函数】
 -- param ip[string] 目标IP
 -- param port[int] 目标端口
--- param login_msg[lua.protobuf_message] 登陆消息包
+-- param login_msg[protobuf_message] 登陆消息包
 -- return error[string] 如果执行错误，那么就返回错误原因，否则返回
 -- return socket[Emulator.PluginSocket] 日志登陆执行成功，返回socket对象
 function __PLUGIN_StartLogin(ip, port, login_msg)

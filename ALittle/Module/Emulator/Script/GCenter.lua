@@ -151,6 +151,13 @@ function GCenter:HandleShowSettingDialog(event)
 	self._plugin_file_input.text = g_GConfig:GetString("plugin_script", "")
 end
 
+function GCenter:HandleSettingSelectProtoRootClick(event)
+	if event.path == nil then
+		return
+	end
+	self._proto_root_input.text = event.path
+end
+
 function GCenter:HandleSettingSelectPluginScriptClick(event)
 	if event.path == nil then
 		return

@@ -32,7 +32,6 @@ public class PluginSocket : Lua.ISocket
 
         var func = cast<Map<string, Functor<(Lua.ISocket, lua.protobuf_message)>>>(_G)["__SOCKET_HandleMessage"];
         if (func == null) return;
-
         var error = tcall(func, this, msg);
     }
 }

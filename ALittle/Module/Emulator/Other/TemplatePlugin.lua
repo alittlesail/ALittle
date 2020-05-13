@@ -13,11 +13,11 @@ end
 -- param port[int] 目标端口
 -- param login_msg[lua.protobuf_message] 登陆消息包
 -- return error[string] 如果执行错误，那么就返回错误原因，否则返回
--- return socket[PluginSocket] 日志登陆执行成功，返回socket对象
+-- return socket[Emulator.PluginSocket] 日志登陆执行成功，返回socket对象
 function __PLUGIN_StartLogin(ip, port, login_msg)
 	--[[ 这个是范例
 	-- 创建一个socket
-	local socket = PluginSocket()
+	local socket = Emulator.PluginSocket()
 	-- 开始连接
 	local error = socket:Connect(ip, port)
 	if (error ~= nil) then return error, nil end
@@ -36,7 +36,7 @@ function __PLUGIN_StartLogin(ip, port, login_msg)
 end
 
 -- 根据项目的消息结构来读取一个消息包【在协程内被调用，这个函数内可以使用带await的函数】
--- param socket[PluginSocket] 消息对象
+-- param socket[Emulator.PluginSocket] 消息对象
 -- return error[string] 如果读取错误，那么就返回错误原因，如果正确那么就返回null
 -- return protobuf_msg[protobuf_message] 如果读取正确，返回protobuf消息对象
 function __SOCKET_ReadMessage(socket)
@@ -57,7 +57,7 @@ function __SOCKET_ReadMessage(socket)
 end
 
 -- 根据项目的消息结构来发送一个消息包。当UI界面选中某个消息并发送时，会调用这个函数
--- param socket[PluginSocket] socket对象
+-- param socket[Emulator.PluginSocket] socket对象
 -- param full_name[string] protobuf消息全称
 -- param protobuf_msg[protobuf_message] protobuf消息对象
 -- return error[string] 如果发送失败，就返回失败原因，否则返回null
@@ -78,7 +78,7 @@ function __SOCKET_WriteMessage(socket, full_name, protobuf_msg)
 end
 
 -- 当服务器向客户端发送消息时，客户端收到了消息就会调用这个函数
--- param socket[PluginSocket] socket对象
+-- param socket[Emulator.PluginSocket] socket对象
 -- param protobuf_msg[protobuf_message] protobuf的消息对象
 function __SOCKET_HandleMessage(socket, protobuf_msg)
 	--[[ 这个是范例
@@ -110,9 +110,14 @@ await：表示必须在协程函数中调用
     // 根据消息的全称获取枚举描述对象
     public fun GetMessageDescriptor(string full_name) : protobuf_descriptor
 
-类       PluginSocket
-创建一个实例：local socket = PluginSocket()
+类       Emulator.PluginSocket
+创建一个实例：local socket = Emulator.PluginSocket()
 成员函数
+	// 连接服务器
+	// return error[string] 如果连接失败，那么表示错误信息，否则为null
+	public await fun Connect() : string
+	// 关闭连接
+	public fun Close()
 	// 读取一个消息包，并且把消息转为lua的table
 	// return error[string] 如果读取失败，那么表示错误信息，否则为null
 	// return table[any] 如果读取成功表示返回的table

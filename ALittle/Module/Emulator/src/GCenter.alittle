@@ -193,6 +193,13 @@ class GCenter
         this._plugin_file_input.text = g_GConfig.GetString("plugin_script", "");
     }
 
+    // 选择协议跟路径
+    private fun HandleSettingSelectProtoRootClick(ALittle.UISystemSelectDirectoryEvent event)
+    {
+        if (event.path == null) return;
+        this._proto_root_input.text = event.path;
+    }
+
     // 选择插件代码
     private fun HandleSettingSelectPluginScriptClick(ALittle.UISystemSelectFileEvent event)
     {

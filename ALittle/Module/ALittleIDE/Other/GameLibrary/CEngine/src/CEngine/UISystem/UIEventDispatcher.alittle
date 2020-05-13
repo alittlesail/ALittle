@@ -180,6 +180,12 @@ public struct UISystemSelectFileEvent : UIEvent
     string path;    
 }
 
+// 系统选择文件夹
+public struct UISystemSelectDirectoryEvent : UIEvent
+{
+    string path;    
+}
+
 // 系统保存文件，而选择的文件完毕
 public struct UISystemSaveFileEvent : UIEvent
 {

@@ -255,11 +255,11 @@ function File_ReadTextFromStdFile(file_path)
 	do
 		local file = io.open(file_path, "rb")
 		if file == nil then
-			return nil, file_path .. " load failed"
+			return nil
 		end
 		local content = file:read("*a")
 		file:close()
-		return nil, content
+		return content
 	end
 end
 

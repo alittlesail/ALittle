@@ -1,0 +1,38 @@
+
+namespace Emulator;
+
+public class PluginSocket : Lua.ISocket
+{
+    public await fun ReadMessage() : string, lua.protobuf_message
+    {
+        var func = cast<Map<string, Functor<(Lua.ISocket) : string, lua.protobuf_message>>>(_G)["__SOCKET_ReadMessage"];
+        if (func == null) return "can't find __SOCKET_ReadMessage", null;
+
+        var call_error, error, msg = tcall(func, this);
+        if (call_error != null) return call_error, null;
+        return error, msg;
+    }
+
+    private fun WriteMessage(string full_name, lua.protobuf_message protobuf_msg, any protobuf_binary, int protobuf_size) : string
+    {
+        var func = cast<Map<string, Functor<(Lua.ISocket, string, lua.protobuf_message, any, int) : string>>>(_G)["__SOCKET_WriteMessage"];
+        if (func == null) return "can't find __SOCKET_WriteMessage";
+
+        var call_error, error = tcall(func, this, full_name, protobuf_msg, protobuf_binary, protobuf_size);
+        if (call_error != null) return call_error;
+        if (error != null) return error;
+
+        g_GCenter.AddLogMessage(protobuf_msg);
+        return null;
+    }
+
+    private fun HandleMessage(lua.protobuf_message msg)
+    {
+        g_GCenter.AddLogMessage(msg);
+
+        var func = cast<Map<string, Functor<(Lua.ISocket, lua.protobuf_message)>>>(_G)["__SOCKET_HandleMessage"];
+        if (func == null) return;
+
+        var error = tcall(func, this, msg);
+    }
+}

@@ -39,7 +39,7 @@ function TextButton:Ctor(ctrl_sys)
 	self._show_disabled_text.x_type = UIEnumTypes.POS_ALIGN_CENTER
 	self._show_disabled_text.x_value = 0
 	self._show_disabled_text.visible = false
-	___rawset(self, "_file_select", false)
+	___rawset(self, "_file_select", UIEnumTypes.SELECT_NONE)
 	self:AddEventListener(___all_struct[544684311], self, self.HandleMoveIn)
 	self:AddEventListener(___all_struct[-1202439334], self, self.HandleMoveOut)
 	self:AddEventListener(___all_struct[1883782801], self, self.HandleLButtonDown)
@@ -79,8 +79,10 @@ function TextButton:HandleLButtonUp(event)
 		local e = {}
 		e.is_drag = event.is_drag
 		self:DispatchEvent(___all_struct[-449066808], e)
-		if self._file_select then
+		if self._file_select == UIEnumTypes.SELECT_FILE then
 			A_OtherSystem:SystemSelectFile(self)
+		elseif self._file_select == UIEnumTypes.SELECT_DIR then
+			A_OtherSystem:SystemSelectDirectory(self)
 		end
 		if System_IsPhone == false then
 			self:ShowOver()

@@ -70,8 +70,7 @@ public async static __Module_Setup(ALittle.DisplayLayout layer_group, ALittle.Co
 
 	alittle.Require(script_base_path, "GUtility");
 	alittle.Require(script_base_path, "IDEIMEManager");
-	alittle.Require(script_base_path, "LWProtobuf");
-	alittle.Require(script_base_path, "LWSocket");
+	alittle.Require(script_base_path, "PluginSocket");
 	g_IDEIMEManager.Setup();
 	g_GCenter.Setup();
 }

@@ -42,6 +42,7 @@ class GCenter
     private ALittle.Dialog _setting_dialog;
     private ALittle.DisplayObject _proto_root_input;
     private ALittle.DisplayObject _login_proto_input;
+    private ALittle.DisplayObject _plugin_file_input;
 
     // 帧循环
     private ALittle.LoopFrame _frame_loop;
@@ -80,7 +81,9 @@ class GCenter
     private ALittle.TextButton _login_button;
     private ALittle.TextButton _logout_button;
 
+    // 登陆信息
     private int _login_status;
+    private Lua.ISocket _client_socket;
 
     public ctor()
     {
@@ -124,6 +127,16 @@ class GCenter
         A_LayerManager.AddToModal(this._setting_dialog);
 
         A_LuaSocketSchedule.Setup();
+        
+        // 加载插件
+        var plugin_path = g_GConfig.GetString("plugin_script", "");
+        if (ALittle.File_GetFileExtByPathAndUpper(plugin_path) == "LUA")
+        {
+            var plugin_script = ALittle.File_ReadTextFromStdFile(plugin_path);
+            if (plugin_script != null) __CPPAPI_ScriptSystemEx.RunScript(plugin_script, plugin_path);
+            else this.HandleShowSettingDialog(null);   
+        }
+        else this.HandleShowSettingDialog(null);
 
         // 协议列表
         var proto_root = g_GConfig.GetString("proto_root", "");
@@ -132,7 +145,12 @@ class GCenter
             var error = A_LuaSocketSchedule.LoadProto(proto_root);
             if (error == null)
             {
-                g_LWProtobuf.Refresh();
+                var func = cast<Map<string, Functor<()>>>(_G)["__PLUGIN_ProtoRefresh"];
+                if (func != null)
+                {
+                    error = tcall(func);
+                    if (error != null) ALittle.Log(error);
+                }
                 this.RefreshProtoList();
             }
         }
@@ -155,7 +173,7 @@ class GCenter
         this._right_grad3_ud.up_size = g_GConfig.GetDouble("right_grid3_up_size", this._right_grad3_ud.up_size);
         this._main_grid3_lr.down_size = g_GConfig.GetDouble("main_grid3_down_size", this._main_grid3_lr.down_size);
         this._send_button.disabled = true;
-
+        
         // 每帧处理
         this._frame_loop = new ALittle.LoopFrame(bind(this.UpdateFrame, this));
         this._frame_loop.Start();
@@ -172,6 +190,24 @@ class GCenter
         this._setting_dialog.visible = true;
         this._proto_root_input.text = g_GConfig.GetString("proto_root", "");
         this._login_proto_input.text = g_GConfig.GetString("login_proto", "");
+        this._plugin_file_input.text = g_GConfig.GetString("plugin_script", "");
+    }
+
+    // 选择插件代码
+    private fun HandleSettingSelectPluginScriptClick(ALittle.UISystemSelectFileEvent event)
+    {
+        if (event.path == null) return;
+        this._plugin_file_input.text = event.path;
+    }
+    
+    // 生成模板代码
+    private fun HandleSettingGeneratePluginScriptClick(ALittle.UISystemSelectDirectoryEvent event)
+    {
+        if (event.path == null) return;
+        this._plugin_file_input.text = event.path.."\\TemplatePlugin.lua";
+        g_GConfig.SetConfig("plugin_script", this._plugin_file_input.text);
+
+        // 生成
     }
 
     // 处理设置
@@ -187,14 +223,18 @@ class GCenter
         this._setting_dialog.visible = false;
         g_GConfig.SetConfig("proto_root", this._proto_root_input.text);
         
-        g_LWProtobuf.Clear();
         var error = A_LuaSocketSchedule.LoadProto(this._proto_root_input.text);
+        var func = cast<Map<string, Functor<()>>>(_G)["__PLUGIN_ProtoRefresh"];
+        if (func != null)
+        {
+            error = tcall(func);
+            if (error != null) ALittle.Log(error);
+        }
         if (error != null)
         {
             g_IDETool.ShowNotice("错误", error);
             return;
         }
-        g_LWProtobuf.Refresh();
         
         // 协议列表
         this._protobuf_scroll_screen.RemoveAllChild();
@@ -228,6 +268,25 @@ class GCenter
 
         // 保存配置
         g_GConfig.SetConfig("login_proto", login_proto);
+
+        // 保存路径
+        g_GConfig.SetConfig("plugin_script", this._plugin_file_input.text);
+
+        // 清理接口，并重新加载
+        if (ALittle.File_GetFileExtByPathAndUpper(this._plugin_file_input.text) == "LUA")
+        {
+            cast<Map<string, any>>(_G)["__PLUGIN_ProtoRefresh"] = null;
+            cast<Map<string, any>>(_G)["__PLUGIN_StartLogin"] = null;
+            cast<Map<string, any>>(_G)["__SOCKET_ReadMessage"] = null;
+            cast<Map<string, any>>(_G)["__SOCKET_WriteMessage"] = null;
+            cast<Map<string, any>>(_G)["__SOCKET_HandleMessage"] = null;
+            var plugin_script = ALittle.File_ReadTextFromStdFile(this._plugin_file_input.text);
+            if (plugin_script != null) __CPPAPI_ScriptSystemEx.RunScript(plugin_script, this._plugin_file_input.text);   
+        }
+        else
+        {
+            g_IDETool.ShowNotice("错误", "插件脚本必须是lua脚本");
+        }
     }
 
     // 处理设置
@@ -386,8 +445,9 @@ class GCenter
     }
 
     // 处理断开连接
-    public fun HandleSocketDisconnected()
+    public fun HandleClientSocketDisconnected(Lua.ISocket socket)
     {
+        this._client_socket = null;
         this._send_button.disabled = true;
         this._login_button.visible = true;
         this._logout_button.visible = false;
@@ -401,7 +461,7 @@ class GCenter
         if (tree == null) return;
 
         var detail_info = tree.GetDetailInfo();
-        g_LWProtobuf.SendMessage(detail_info.message);
+        if (this._client_socket != null) this._client_socket.SendMessage(detail_info.message);
     }
 
     // 执行登陆
@@ -445,9 +505,38 @@ class GCenter
         this._login_status = LoginStatus.EMULATOR_LOGINING;
 
         // 开始登陆
-        var error = g_LWProtobuf.StartLogin(ip, port, this._login_detail_info.message);
+        var error:string = null;
+        
+        // 先关闭所有连接
+        if (this._client_socket != null)
+        {
+            this._client_socket.Close();
+            this._client_socket = null;
+        }
+
+        // 开始重新登录
+        var login_func = cast<Map<string, Functor<await(string, int, lua.protobuf_message):string,Lua.ISocket>>>(_G)["__PLUGIN_StartLogin"];
+        if (login_func == null)
+        {
+            error = "还未加载插件";
+        }
+        else
+        {
+            var call_error:string = null;
+            call_error, error, this._client_socket = tcall(login_func, ip, port, this._login_detail_info.message);
+            if (call_error != null) error = call_error;
+        }
+
+        // 判断错误
         if (error == null)
         {
+            if (this._client_socket != null)
+            {
+                // 设置断开的回调函数
+                this._client_socket.disconnect_callback = bind(this.HandleClientSocketDisconnected, this);
+                // 开始循环接收消息包
+                this._client_socket.ReceiveMessage();
+            }
             this._login_status = LoginStatus.EMULATOR_LOGINED;
             this._send_button.disabled = false;
         }
@@ -464,7 +553,11 @@ class GCenter
     // 执行断开
     private fun HandleLogoutClick(ALittle.UIClickEvent event)
     {
-        g_LWProtobuf.CloseConnect();
+        if (this._client_socket != null)
+        {
+            this._client_socket.Close();
+            this._client_socket = null;
+        }
         this._send_button.disabled = true;
         this._login_button.visible = true;
         this._logout_button.visible = false;
@@ -512,4 +605,4 @@ class GCenter
     }
 }
     
-protected var g_GCenter = new GCenter();
+public var g_GCenter = new GCenter();

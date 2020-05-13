@@ -153,6 +153,7 @@ public class LuaSocketSchedule : ALittle.ISchedule
 
     public fun CreateMessage(string full_name) : lua.protobuf_message
     {
+        if (full_name == null) return null;
         if (this._factory == null) return null;
         var info = this._message_map[full_name];
         if (info == null) return null;

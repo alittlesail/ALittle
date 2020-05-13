@@ -78,10 +78,9 @@ OtherSystem = Lua.Class(ALittle.EventDispatcher, "ALittle.OtherSystem")
 
 function OtherSystem:Ctor()
 	___rawset(self, "_network_started", false)
+	___rawset(self, "_system_select_directory", nil)
 	___rawset(self, "_system_select_file", nil)
-	___rawset(self, "_system_select_ing", false)
 	___rawset(self, "_system_save_file", nil)
-	___rawset(self, "_system_save_ing", false)
 	___rawset(self, "_third_share_callback", nil)
 	___rawset(self, "_third_login_callback", nil)
 	___rawset(self, "_third_login_ing", false)
@@ -154,6 +153,23 @@ function OtherSystem:HandleALittleJsonRPC(json)
 	event.method = content.method
 	event.param = content.param
 	self:DispatchEvent(___all_struct[-840570937], event)
+end
+
+function OtherSystem:SystemSelectDirectory(target, init_dir)
+	self._system_select_directory = target
+	__CPPAPI_SystemSelectDirectory(init_dir)
+end
+
+function OtherSystem:HandleSystemSelectDirectory(path)
+	if self._system_select_directory == nil then
+		return
+	end
+	local tmp = self._system_select_directory
+	self._system_select_directory = nil
+	local event = {}
+	event.target = tmp
+	event.path = path
+	tmp:DispatchEvent(___all_struct[1800966813], event)
 end
 
 function OtherSystem:SystemSelectFile(target, init_dir)

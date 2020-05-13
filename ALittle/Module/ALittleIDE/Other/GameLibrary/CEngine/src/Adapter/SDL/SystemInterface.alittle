@@ -2,6 +2,7 @@
 register namespace lua;
 
 public static __CPPAPI_SystemSelectFile(string init_dir) {}
+public static __CPPAPI_SystemSelectDirectory(string init_dir) {}
 public static __CPPAPI_SystemSaveFile(string file_name, string init_dir) {}
 
 public static __CPPAPI_GetPlatform() : string {}

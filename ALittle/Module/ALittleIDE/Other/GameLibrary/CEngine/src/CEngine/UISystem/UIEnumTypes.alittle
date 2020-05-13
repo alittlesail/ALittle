@@ -42,6 +42,10 @@ public enum UIEnumTypes
     FREE = 1; //平滑移动
     FIXED = 2;
 
+    SELECT_NONE = 0;    // 没有选择
+    SELECT_FILE = 1;    // 选择文件
+    SELECT_DIR = 2;     // 选择文件夹
+
     KMOD_NONE = 0x0000;
     KMOD_LSHIFT = 0x0001;
     KMOD_RSHIFT = 0x0002;

@@ -145,6 +145,9 @@ function LuaSocketSchedule:GetEnumDescriptor(full_name)
 end
 
 function LuaSocketSchedule:CreateMessage(full_name)
+	if full_name == nil then
+		return nil
+	end
 	if self._factory == nil then
 		return nil
 	end

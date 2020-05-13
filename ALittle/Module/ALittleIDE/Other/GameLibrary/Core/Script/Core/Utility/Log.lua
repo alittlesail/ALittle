@@ -18,9 +18,13 @@ end
 
 function Log(...)
 	if __LOG_FUNC ~= nil then
-		local slist = {...}
-		for index, value in ___ipairs(slist) do
-			slist[index] = String_ToString(value)
+		local scount = select("#", ...)
+		local slist = {}
+		local i = 1
+		while true do
+			if not(i <= scount) then break end
+			slist[i] = String_ToString(select(i, ...))
+			i = i+(1)
 		end
 		local s = String_Join(slist, "\t")
 		__LOG_FUNC(s, 0)
@@ -31,9 +35,13 @@ end
 
 function Warn(...)
 	if __LOG_FUNC ~= nil then
-		local slist = {...}
-		for index, value in ___ipairs(slist) do
-			slist[index] = String_ToString(value)
+		local scount = select("#", ...)
+		local slist = {}
+		local i = 1
+		while true do
+			if not(i <= scount) then break end
+			slist[i] = String_ToString(select(i, ...))
+			i = i+(1)
 		end
 		local s = String_Join(slist, "\t")
 		__LOG_FUNC(s, 1)
@@ -44,9 +52,13 @@ end
 
 function Error(...)
 	if __LOG_FUNC ~= nil then
-		local slist = {...}
-		for index, value in ___ipairs(slist) do
-			slist[index] = String_ToString(value)
+		local scount = select("#", ...)
+		local slist = {}
+		local i = 1
+		while true do
+			if not(i <= scount) then break end
+			slist[i] = String_ToString(select(i, ...))
+			i = i+(1)
 		end
 		local s = String_Join(slist, "\t")
 		__LOG_FUNC(s, 2)

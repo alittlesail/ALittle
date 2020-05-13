@@ -303,6 +303,11 @@ public static __ALITTLEAPI_SystemSelectFile(string path)
     A_OtherSystem.HandleSystemSelectFile(path);
 }
 
+public static __ALITTLEAPI_SystemSelectDirectory(string path)
+{
+    A_OtherSystem.HandleSystemSelectDirectory(path);
+}
+
 public static __ALITTLEAPI_SystemSaveFile(string path)
 {
     A_OtherSystem.HandleSystemSaveFile(path);

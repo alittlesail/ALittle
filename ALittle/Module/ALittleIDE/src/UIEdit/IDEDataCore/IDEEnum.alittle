@@ -29,6 +29,9 @@ class IDEEnum
 
 	public Map<int, string> flip_type;
 	public Map<string, int> flip_rtype;
+	
+	public Map<int, string> select_type;
+	public Map<string, int> select_rtype;
 
 	public List<string> event_type_list;
 	public Map<string, bool> add_child_change_map;
@@ -138,6 +141,16 @@ class IDEEnum
 		this.flip_rtype["水平"] = ALittle.UIEnumTypes.FLIP_H;
 		this.flip_rtype["垂直"] = ALittle.UIEnumTypes.FLIP_V;
 		this.flip_rtype["水平+垂直"] = ALittle.UIEnumTypes.FLIP_HV;
+		
+		this.select_type = new Map<int, string>();
+		this.select_type[ALittle.UIEnumTypes.SELECT_NONE] = "无";
+		this.select_type[ALittle.UIEnumTypes.SELECT_FILE] = "选择文件";
+		this.select_type[ALittle.UIEnumTypes.SELECT_DIR] = "选择文件夹";
+
+		this.select_rtype = new Map<string, int>();
+		this.select_rtype["无"] = ALittle.UIEnumTypes.SELECT_NONE;
+		this.select_rtype["选择文件"] = ALittle.UIEnumTypes.SELECT_FILE;
+		this.select_rtype["选择文件夹"] = ALittle.UIEnumTypes.SELECT_DIR;
 
 		this.event_type_list = [ 
 			"UIClickEvent",

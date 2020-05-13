@@ -69,12 +69,9 @@ Emulator.LWProtobuf = JavaScript.Class(undefined, {
 		this._name_map_id = {};
 		this._login_status = Emulator.LWLoginStatus.CONNECT_IDLE;
 	},
-	Clear : function() {
+	Refresh : function() {
 		this._id_map_name = new Map();
 		this._name_map_id = {};
-	},
-	Refresh : function() {
-		this.Clear();
 		let enum_descriptor = A_LuaSocketSchedule.GetEnumDescriptor("EMsgTypes");
 		if (enum_descriptor !== undefined) {
 			this.AddEnumKeyValue(enum_descriptor);
@@ -207,5 +204,5 @@ Emulator.LWProtobuf = JavaScript.Class(undefined, {
 	},
 }, "Emulator.LWProtobuf");
 
-Emulator.g_LWProtobuf = ALittle.NewObject(Emulator.LWProtobuf);
+window.g_LWProtobuf = ALittle.NewObject(Emulator.LWProtobuf);
 }

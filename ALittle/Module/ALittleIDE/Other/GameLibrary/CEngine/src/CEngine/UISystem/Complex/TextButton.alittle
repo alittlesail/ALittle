@@ -13,7 +13,7 @@ public class TextButton : DisplayLayout
     private DisplayObject _show_down;
     private DisplayObject _show_disabled;
 
-    private bool _file_select;
+    private int _file_select;
     
     public ctor(ControlSystem ctrl_sys)
     {
@@ -55,7 +55,7 @@ public class TextButton : DisplayLayout
         // this._show_disabled = null;
     
         // 兼容html，如果为true，那么按钮被点击的时候会调用文件选择框；如果为false，那么就是普通的按钮
-        this._file_select = false;
+        this._file_select = UIEnumTypes.SELECT_NONE;
     
         this.AddEventListener(this, this.HandleMoveIn);
         this.AddEventListener(this, this.HandleMoveOut);
@@ -104,8 +104,10 @@ public class TextButton : DisplayLayout
             var e = new UIClickEvent();
             e.is_drag = event.is_drag;
             this.DispatchEvent(e);
-            if (this._file_select)
+            if (this._file_select == UIEnumTypes.SELECT_FILE)
                 A_OtherSystem.SystemSelectFile(this);
+            elseif (this._file_select == UIEnumTypes.SELECT_DIR)
+                A_OtherSystem.SystemSelectDirectory(this);
                 
             if (System_IsPhone == false)
                 this.ShowOver();
@@ -475,12 +477,12 @@ public class TextButton : DisplayLayout
         return this._show_disabled;
     }
     
-    public set file_select(bool value)
+    public set file_select(int value)
     {
         this._file_select = value;
     }
     
-    public get file_select() : bool
+    public get file_select() : int
     {
         return this._file_select;
     }

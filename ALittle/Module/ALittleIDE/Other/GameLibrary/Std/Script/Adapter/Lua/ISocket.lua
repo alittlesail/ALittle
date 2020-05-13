@@ -67,6 +67,10 @@ function ISocket:Close()
 	end
 end
 
+function ISocket.__setter:disconnect_callback(disconnected_callback)
+	self._disconnected_callback = disconnected_callback
+end
+
 function ISocket:WriteMessage(full_name, protobuf_msg, protobuf_binary, protobuf_size)
 	return "not implement"
 end
@@ -236,17 +240,18 @@ local ___COROUTINE = coroutine.running()
 	return coroutine.yield()
 end
 
-function ISocket:ReadProtobuf(name, len)
+function ISocket:ReadProtobuf(full_name, len)
 local ___COROUTINE = coroutine.running()
 	local error, binary_value = self:ReadBinary(len)
 	if error ~= nil then
 		return error, nil
 	end
-	local protobuf_msg = A_LuaSocketSchedule:CreateMessage(name)
-	if protobuf_msg ~= nil then
-		if not protobuf.message_parsefromarray(protobuf_msg, binary_value, len) then
-			protobuf_msg = nil
-		end
+	local protobuf_msg = A_LuaSocketSchedule:CreateMessage(full_name)
+	if protobuf_msg == nil then
+		return "CreateMessage(" .. full_name .. ") failed", nil
+	end
+	if not protobuf.message_parsefromarray(protobuf_msg, binary_value, len) then
+		return "message_parsefromarray failed, full_name:" .. full_name, nil
 	end
 	return nil, protobuf_msg
 end
@@ -420,7 +425,7 @@ function ISocket.HandleDisconnected(id)
 		socket._read_thread = nil
 	end
 	if socket._disconnected_callback ~= nil then
-		socket._disconnected_callback()
+		socket._disconnected_callback(socket)
 	end
 end
 

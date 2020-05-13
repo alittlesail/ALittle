@@ -97,6 +97,11 @@ Emulator.GCenter = JavaScript.Class(undefined, {
 			let error = A_LuaSocketSchedule.LoadProto(proto_root);
 			if (error === undefined) {
 				Emulator.g_LWProtobuf.Refresh();
+				let func = _G["__PLUGIN_ProtoRefresh"];
+				if (func !== undefined) {
+					error = (function() { try { func.call(); return undefined; } catch (___ERROR) { return ___ERROR.message; } }).call(this);
+					ALittle.Log(error);
+				}
 				this.RefreshProtoList();
 			}
 		}

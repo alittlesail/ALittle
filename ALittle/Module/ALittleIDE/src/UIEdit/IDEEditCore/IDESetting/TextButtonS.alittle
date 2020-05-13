@@ -36,7 +36,7 @@ public class TextButtonS : DisplayLayoutS
 		this.LoadShowTypeNoNilData("show_down_text");
 		this.LoadShowTypeNoNilData("show_disabled_text");
 	
-		this.LoadBoolData("file_select", false, g_IDEEnum.yn_type);
+		this.LoadEnumData("file_select", cast<Map<string, any>>(g_IDEEnum.select_type));
 	}
 	
 	public fun HandleMTextFOCUSOUT(ALittle.UIEvent event)
@@ -159,6 +159,8 @@ public class TextButtonS : DisplayLayoutS
 	}
 	public fun HandleHandFileSelectSELECT_CHANGE(ALittle.UIEvent event)
 	{
-		this.BoolSelectChange("file_select", false, g_IDEEnum.yn_type);
+		var list = g_IDEEnum.select_rtype;
+		var revoke_bind = new IDERevokeBind();
+		this.TypeSelectChange("file_select", cast<Map<string, any>>(list), false, revoke_bind);
 	}
 }

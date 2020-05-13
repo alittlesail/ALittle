@@ -394,23 +394,21 @@ public static File_WriteJsonFromStdFile(any content, string file_path) : bool
     }
 }
 
-public static File_ReadTextFromStdFile(string file_path) : string, string
+public static File_ReadTextFromStdFile(string file_path) : string
 {
     // 读取文件
     [Language(Lua)]
     {
         var file = lua.io.open(file_path, "rb");
-        if (file == null) return null, file_path.." load failed";
+        if (file == null) return null;
         var content = file.read("*a");
         file.close();
-        return null, content;
+        return content;
     }
     
     [Language(JavaScript)]
     {
-        var content = JavaScript.File_LoadFile(file_path);
-        if (content == null) return null, file_path.." load failed";
-        return null, content;
+        return JavaScript.File_LoadFile(file_path);
     }
 }
 

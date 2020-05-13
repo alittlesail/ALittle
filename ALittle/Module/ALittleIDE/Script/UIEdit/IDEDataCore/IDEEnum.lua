@@ -1,4 +1,4 @@
--- ALittle Generate Lua
+-- ALittle Generate Lua And Do Not Edit This Line!
 module("ALittleIDE", package.seeall)
 
 local ___rawset = rawset
@@ -83,6 +83,14 @@ function IDEEnum:Ctor()
 	self.flip_rtype["水平"] = 1
 	self.flip_rtype["垂直"] = 2
 	self.flip_rtype["水平+垂直"] = 3
+	___rawset(self, "select_type", {})
+	self.select_type[0] = "无"
+	self.select_type[1] = "选择文件"
+	self.select_type[2] = "选择文件夹"
+	___rawset(self, "select_rtype", {})
+	self.select_rtype["无"] = 0
+	self.select_rtype["选择文件"] = 1
+	self.select_rtype["选择文件夹"] = 2
 	___rawset(self, "event_type_list", {"UIClickEvent", "UIChangedEvent", "UISelectChangedEvent", "UIFocusInEvent", "UIFocusOutEvent", "UIButtonDragEvent", "UIButtonDragBeginEvent", "UIButtonDragEndEvent", "UILongButtonDownEvent", "UIEnterKeyEvent", "UIDragDownEvent", "UIDragUpEvent", "UIDragLeftEvent", "UIDragRightEvent", "UIMoveInEvent", "UIMoveOutEvent", "UIMouseMoveEvent", "UIDropEvent", "UIDropFileEvent", "UIKeyDownEvent", "UILButtonDownEvent", "UILButtonUpEvent", "UIRButtonDownEvent", "UIRButtonUpEvent", "UIMButtonDownEvent", "UIMButtonUpEvent", "UIMButtonWheelEvent", "UIFClickEvent", "UIMClickEvent", "UITextInputEvent", "UIResizeEvent", "UIShowEvent", "UIHideEvent", "UITabKeyEvent", "UIAtKeyEvent", "UITabCloseEvent", "UIFButtonDownEvent", "UIFButtonUpEvent", "UIFDragBeginEvent", "UIFDragEvent", "UIFDragEndEvent", "UISystemSelectFileEvent", "UISystemSelectSaveEvent"})
 	___rawset(self, "add_child_change_map", {})
 	self.add_child_change_map["Linear"] = true

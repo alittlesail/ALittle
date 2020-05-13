@@ -239,6 +239,10 @@ function __ALITTLEAPI_SystemSelectFile(path)
 	A_OtherSystem:HandleSystemSelectFile(path)
 end
 
+function __ALITTLEAPI_SystemSelectDirectory(path)
+	A_OtherSystem:HandleSystemSelectDirectory(path)
+end
+
 function __ALITTLEAPI_SystemSaveFile(path)
 	A_OtherSystem:HandleSystemSaveFile(path)
 end

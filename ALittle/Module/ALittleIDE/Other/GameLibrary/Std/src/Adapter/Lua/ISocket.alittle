@@ -16,12 +16,12 @@ public class ISocket
 {
 	private int _id;
 	private int _status;
-	private Functor<()> _disconnected_callback;
+	private Functor<(ISocket)> _disconnected_callback;
 	private ALittle.Thread _connect_thread;
 	private ALittle.Thread _read_thread;
 	private lua.socket _socket;
 
-	public ctor(Functor<()> disconnected_callback)
+	public ctor([Nullable] Functor<(ISocket)> disconnected_callback)
 	{
         ++__MAX_ID;
 		this._id = __MAX_ID;
@@ -65,6 +65,8 @@ public class ISocket
 			this._read_thread = null;
         }
     }
+
+	public set disconnect_callback(Functor<(ISocket)> disconnected_callback) { this._disconnected_callback = disconnected_callback; }
 	
 	////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -211,18 +213,17 @@ public class ISocket
 		return yield;
     }
 
-	public await fun ReadProtobuf(string name, int len) : string, any
+	public await fun ReadProtobuf(string full_name, int len) : string, any
 	{
 		var error, binary_value = this.ReadBinary(len);
         if (error != null) return error, null;
 
-        var protobuf_msg = A_LuaSocketSchedule.CreateMessage(name);
-        if (protobuf_msg != null)
-        {
-            if (!lua.protobuf.message_parsefromarray(protobuf_msg, binary_value, len))
-                protobuf_msg = null;
-        }
+        var protobuf_msg = A_LuaSocketSchedule.CreateMessage(full_name);
+		if (protobuf_msg == null) return "CreateMessage("..full_name..") failed", null;
 
+        if (!lua.protobuf.message_parsefromarray(protobuf_msg, binary_value, len))
+			return "message_parsefromarray failed, full_name:"..full_name, null;
+    
 		return null, protobuf_msg;
     }
 
@@ -389,7 +390,7 @@ public class ISocket
         }
 
 		if (socket._disconnected_callback != null)
-			socket._disconnected_callback();
+			socket._disconnected_callback(socket);
     }
 
 	public static HandleReadInt(int id, int value)

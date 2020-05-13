@@ -287,6 +287,12 @@ name_list = {"target","path"},
 type_list = {"ALittle.DisplayObject","string"},
 option_map = {}
 })
+RegStruct(1800966813, "ALittle.UISystemSelectDirectoryEvent", {
+name = "ALittle.UISystemSelectDirectoryEvent", ns_name = "ALittle", rl_name = "UISystemSelectDirectoryEvent", hash_code = 1800966813,
+name_list = {"target","path"},
+type_list = {"ALittle.DisplayObject","string"},
+option_map = {}
+})
 RegStruct(-1676610185, "ALittle.UISystemSaveFileEvent", {
 name = "ALittle.UISystemSaveFileEvent", ns_name = "ALittle", rl_name = "UISystemSaveFileEvent", hash_code = -1676610185,
 name_list = {"target","path"},

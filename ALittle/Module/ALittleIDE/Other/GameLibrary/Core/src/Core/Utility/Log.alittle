@@ -19,11 +19,24 @@ public static SetLogFunc(Functor<(string, int)> func)
 
 public static Log(...)
 {
+    [Language(JavaScript)]
     if (__LOG_FUNC != null)
     {
         var slist = [cast<string>(...)];
         for (var index, value in slist)
             slist[index] = String_ToString(value);
+        var s = String_Join(slist, "\t");
+        __LOG_FUNC(s, 0);
+        return;    
+    }
+    
+    [Language(Lua)]
+    if (__LOG_FUNC != null)
+    {
+        var scount:int = lua.select("#", ...);
+        var slist = new List<string>();
+        for (var i = 1; i <= scount; 1)
+            slist[i] = String_ToString(lua.select(i, ...));
         var s = String_Join(slist, "\t");
         __LOG_FUNC(s, 0);
         return;    
@@ -38,11 +51,24 @@ public static Log(...)
 
 public static Warn(...)
 {
+    [Language(JavaScript)]
     if (__LOG_FUNC != null)
     {
         var slist = [cast<string>(...)];
         for (var index, value in slist)
             slist[index] = String_ToString(value);
+        var s = String_Join(slist, "\t");
+        __LOG_FUNC(s, 1);
+        return;    
+    }
+    
+    [Language(Lua)]
+    if (__LOG_FUNC != null)
+    {
+        var scount:int = lua.select("#", ...);
+        var slist = new List<string>();
+        for (var i = 1; i <= scount; 1)
+            slist[i] = String_ToString(lua.select(i, ...));
         var s = String_Join(slist, "\t");
         __LOG_FUNC(s, 1);
         return;    
@@ -57,11 +83,24 @@ public static Warn(...)
 
 public static Error(...)
 {
+    [Language(JavaScript)]
     if (__LOG_FUNC != null)
     {
         var slist = [cast<string>(...)];
         for (var index, value in slist)
             slist[index] = String_ToString(value);
+        var s = String_Join(slist, "\t");
+        __LOG_FUNC(s, 2);
+        return;    
+    }
+    
+    [Language(Lua)]
+    if (__LOG_FUNC != null)
+    {
+        var scount:int = lua.select("#", ...);
+        var slist = new List<string>();
+        for (var i = 1; i <= scount; 1)
+            slist[i] = String_ToString(lua.select(i, ...));
         var s = String_Join(slist, "\t");
         __LOG_FUNC(s, 2);
         return;    

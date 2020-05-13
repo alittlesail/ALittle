@@ -4,8 +4,6 @@
     <None Include="src\Main.alittle" />
     <None Include="src\GCenter.alittle" />
     <None Include="src\IDETool.alittle" />
-    <None Include="src\LWSocket.alittle" />
-    <None Include="src\LWProtobuf.alittle" />
     <None Include="src\IDEIMEManager.alittle" />
     <None Include="src\GUtility.alittle" />
     <None Include="src\IDETree\IDETreeEnum.alittle">
@@ -80,6 +78,8 @@
     <None Include="src\IDETree\IDETreeBoolMapValue.alittle">
       <Filter>IDETree</Filter>
     </None>
+    <None Include="src\LWPlugin.alittle" />
+    <None Include="src\PluginSocket.alittle" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="IDETree">

@@ -98,11 +98,28 @@ function GCenter:Setup()
 	self._setting_dialog = g_Control:CreateControl("main_setting_dialog", self)
 	A_LayerManager:AddToModal(self._setting_dialog)
 	A_LuaSocketSchedule:Setup()
+	local plugin_path = g_GConfig:GetString("plugin_script", "")
+	if ALittle.File_GetFileExtByPathAndUpper(plugin_path) == "LUA" then
+		local plugin_script = ALittle.File_ReadTextFromStdFile(plugin_path)
+		if plugin_script ~= nil then
+			__CPPAPI_ScriptSystemEx:RunScript(plugin_script, plugin_path)
+		else
+			self:HandleShowSettingDialog(nil)
+		end
+	else
+		self:HandleShowSettingDialog(nil)
+	end
 	local proto_root = g_GConfig:GetString("proto_root", "")
 	if proto_root ~= "" and ALittle.File_GetFileAttr(proto_root) ~= nil then
 		local error = A_LuaSocketSchedule:LoadProto(proto_root)
 		if error == nil then
-			g_LWProtobuf:Refresh()
+			local func = _G["__PLUGIN_ProtoRefresh"]
+			if func ~= nil then
+				error = Lua.TCall(func)
+				if error ~= nil then
+					ALittle.Log(error)
+				end
+			end
 			self:RefreshProtoList()
 		end
 	end
@@ -131,6 +148,22 @@ function GCenter:HandleShowSettingDialog(event)
 	self._setting_dialog.visible = true
 	self._proto_root_input.text = g_GConfig:GetString("proto_root", "")
 	self._login_proto_input.text = g_GConfig:GetString("login_proto", "")
+	self._plugin_file_input.text = g_GConfig:GetString("plugin_script", "")
+end
+
+function GCenter:HandleSettingSelectPluginScriptClick(event)
+	if event.path == nil then
+		return
+	end
+	self._plugin_file_input.text = event.path
+end
+
+function GCenter:HandleSettingGeneratePluginScriptClick(event)
+	if event.path == nil then
+		return
+	end
+	self._plugin_file_input.text = event.path .. "\\TemplatePlugin.lua"
+	g_GConfig:SetConfig("plugin_script", self._plugin_file_input.text)
 end
 
 function GCenter:HandleSettingConfirmClick(event)
@@ -141,13 +174,18 @@ function GCenter:HandleSettingConfirmClick(event)
 	end
 	self._setting_dialog.visible = false
 	g_GConfig:SetConfig("proto_root", self._proto_root_input.text)
-	g_LWProtobuf:Clear()
 	local error = A_LuaSocketSchedule:LoadProto(self._proto_root_input.text)
+	local func = _G["__PLUGIN_ProtoRefresh"]
+	if func ~= nil then
+		error = Lua.TCall(func)
+		if error ~= nil then
+			ALittle.Log(error)
+		end
+	end
 	if error ~= nil then
 		g_IDETool:ShowNotice("错误", error)
 		return
 	end
-	g_LWProtobuf:Refresh()
 	self._protobuf_scroll_screen:RemoveAllChild()
 	self._proto_search_item_pool = {}
 	self._proto_search_group = {}
@@ -169,6 +207,20 @@ function GCenter:HandleSettingConfirmClick(event)
 		self._login_scroll_screen:SetContainer(nil)
 	end
 	g_GConfig:SetConfig("login_proto", login_proto)
+	g_GConfig:SetConfig("plugin_script", self._plugin_file_input.text)
+	if ALittle.File_GetFileExtByPathAndUpper(self._plugin_file_input.text) == "LUA" then
+		_G["__PLUGIN_ProtoRefresh"] = nil
+		_G["__PLUGIN_StartLogin"] = nil
+		_G["__SOCKET_ReadMessage"] = nil
+		_G["__SOCKET_WriteMessage"] = nil
+		_G["__SOCKET_HandleMessage"] = nil
+		local plugin_script = ALittle.File_ReadTextFromStdFile(self._plugin_file_input.text)
+		if plugin_script ~= nil then
+			__CPPAPI_ScriptSystemEx:RunScript(plugin_script, self._plugin_file_input.text)
+		end
+	else
+		g_IDETool:ShowNotice("错误", "插件脚本必须是lua脚本")
+	end
 end
 
 function GCenter:HandleSettingCancelClick(event)
@@ -293,7 +345,8 @@ function GCenter:HandleShowSearchClick(event)
 	tree:SearchEnd(list)
 end
 
-function GCenter:HandleSocketDisconnected()
+function GCenter:HandleClientSocketDisconnected(socket)
+	self._client_socket = nil
 	self._send_button.disabled = true
 	self._login_button.visible = true
 	self._logout_button.visible = false
@@ -306,7 +359,9 @@ function GCenter:HandleSendClick(event)
 		return
 	end
 	local detail_info = tree:GetDetailInfo()
-	g_LWProtobuf:SendMessage(detail_info.message)
+	if self._client_socket ~= nil then
+		self._client_socket:SendMessage(detail_info.message)
+	end
 end
 
 function GCenter:HandleLoginClick(event)
@@ -333,8 +388,26 @@ function GCenter:HandleLoginClick(event)
 	self._login_button.visible = false
 	self._logout_button.visible = true
 	self._login_status = LoginStatus.EMULATOR_LOGINING
-	local error = g_LWProtobuf:StartLogin(ip, port, self._login_detail_info.message)
+	local error = nil
+	if self._client_socket ~= nil then
+		self._client_socket:Close()
+		self._client_socket = nil
+	end
+	local login_func = _G["__PLUGIN_StartLogin"]
+	if login_func == nil then
+		error = "还未加载插件"
+	else
+		local call_error = nil
+		call_error, error, self._client_socket = Lua.TCall(login_func, ip, port, self._login_detail_info.message)
+		if call_error ~= nil then
+			error = call_error
+		end
+	end
 	if error == nil then
+		if self._client_socket ~= nil then
+			self._client_socket.disconnect_callback = Lua.Bind(self.HandleClientSocketDisconnected, self)
+			self._client_socket:ReceiveMessage()
+		end
 		self._login_status = LoginStatus.EMULATOR_LOGINED
 		self._send_button.disabled = false
 	else
@@ -347,7 +420,10 @@ end
 GCenter.HandleLoginClick = Lua.CoWrap(GCenter.HandleLoginClick)
 
 function GCenter:HandleLogoutClick(event)
-	g_LWProtobuf:CloseConnect()
+	if self._client_socket ~= nil then
+		self._client_socket:Close()
+		self._client_socket = nil
+	end
 	self._send_button.disabled = true
 	self._login_button.visible = true
 	self._logout_button.visible = false
@@ -386,4 +462,4 @@ function GCenter:Shutdown()
 	self._frame_loop:Stop()
 end
 
-g_GCenter = GCenter()
+_G.g_GCenter = GCenter()

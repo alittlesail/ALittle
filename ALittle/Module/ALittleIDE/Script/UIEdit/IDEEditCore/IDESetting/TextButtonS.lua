@@ -26,7 +26,7 @@ function TextButtonS:LoadNatureBase()
 	self:LoadShowTypeNoNilData("show_over_text")
 	self:LoadShowTypeNoNilData("show_down_text")
 	self:LoadShowTypeNoNilData("show_disabled_text")
-	self:LoadBoolData("file_select", false, g_IDEEnum.yn_type)
+	self:LoadEnumData("file_select", g_IDEEnum.select_type)
 end
 
 function TextButtonS:HandleMTextFOCUSOUT(event)
@@ -140,6 +140,8 @@ function TextButtonS:HandleShowDisabledTextClear(event)
 end
 
 function TextButtonS:HandleHandFileSelectSELECT_CHANGE(event)
-	self:BoolSelectChange("file_select", false, g_IDEEnum.yn_type)
+	local list = g_IDEEnum.select_rtype
+	local revoke_bind = IDERevokeBind()
+	self:TypeSelectChange("file_select", list, false, revoke_bind)
 end
 

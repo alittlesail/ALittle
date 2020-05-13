@@ -54,8 +54,7 @@ function __Module_Setup(layer_group, control, module_base_path, script_base_path
 	Require(script_base_path, "IDETree/IDETreeRepeated")
 	Require(script_base_path, "GUtility")
 	Require(script_base_path, "IDEIMEManager")
-	Require(script_base_path, "LWProtobuf")
-	Require(script_base_path, "LWSocket")
+	Require(script_base_path, "PluginSocket")
 	g_IDEIMEManager:Setup()
 	g_GCenter:Setup()
 end

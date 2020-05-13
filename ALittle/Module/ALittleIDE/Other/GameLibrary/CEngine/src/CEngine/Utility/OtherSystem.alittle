@@ -40,11 +40,10 @@ public struct ALittleJsonRPCInfo
 class OtherSystem : EventDispatcher
 {
     private bool                _network_started;
+    
+    private UIEventDispatcher   _system_select_directory;
     private UIEventDispatcher   _system_select_file;
-    private bool                _system_select_ing;
-
     private UIEventDispatcher   _system_save_file;
-    private bool                _system_save_ing;
 
     private Functor<(bool)>     _third_share_callback;
     private Functor<(bool)>     _third_login_callback;
@@ -54,11 +53,9 @@ class OtherSystem : EventDispatcher
     {
         this._network_started = false;
     
+        this._system_select_directory = null;
         this._system_select_file = null;
-        this._system_select_ing = false;
-
         this._system_save_file = null;
-        this._system_save_ing = false;
     
         this._third_share_callback = null;
         this._third_login_callback = null;
@@ -144,6 +141,31 @@ class OtherSystem : EventDispatcher
         this.DispatchEvent(event);
     }
     
+    // 系统选择文件夹
+    public fun SystemSelectDirectory(DisplayObject target, [Nullable] string init_dir)
+    {
+        [Language(Lua)]
+        this._system_select_directory = target;
+        [Language(Lua)]
+        lua.__CPPAPI_SystemSelectDirectory(init_dir);
+        
+        [Language(JavaScript)]
+        Error("not support SystemSelectDirectory");
+    }
+    
+    // 处理系统文件选择结果
+    public fun HandleSystemSelectDirectory(string path)
+    {
+        if (this._system_select_directory == null) return;
+        // 这样写为了处理SYSTEM_SELECT_DIRECTORY事件的时候，还可以调用A_OtherSystem:SystemSelectDirectory()
+        var tmp = this._system_select_directory;
+        this._system_select_directory = null;
+        var event = new UISystemSelectDirectoryEvent();
+        event.target = cast<DisplayObject>(tmp);
+        event.path = path;
+        tmp.DispatchEvent(event);
+    }
+    
     // 系统选择文件
     public fun SystemSelectFile(DisplayObject target, [Nullable] string init_dir)
     {
@@ -159,8 +181,7 @@ class OtherSystem : EventDispatcher
     // 处理系统文件选择结果
     public fun HandleSystemSelectFile(string path)
     {
-        if (this._system_select_file == null)
-            return;
+        if (this._system_select_file == null) return;
         // 这样写为了处理SYSTEM_SELECT_FILE事件的时候，还可以调用A_OtherSystem:SystemSelectFile()
         var tmp = this._system_select_file;
         this._system_select_file = null;
@@ -185,8 +206,7 @@ class OtherSystem : EventDispatcher
     // 处理系统文件保存结果
     public fun HandleSystemSaveFile(string path)
     {
-        if (this._system_save_file == null)
-            return;
+        if (this._system_save_file == null) return;
         // 这样写为了处理SYSTEM_SAVE_FILE事件的时候，还可以调用A_OtherSystem:SystemSaveFile()
         var tmp = this._system_save_file;
         this._system_save_file = null;

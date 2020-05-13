@@ -23,7 +23,8 @@ typedef enum
 	MSG_READ_INT64 = 41,
 	MSG_READ_FLOAT = 42,
 	MSG_READ_DOUBLE = 43,
-	MSG_READ_BINARY = 44,
+	MSG_READ_STRING = 44,
+	MSG_READ_BINARY = 45,
 } socket_event_types;
 
 typedef struct _socket_event
@@ -34,6 +35,7 @@ typedef struct _socket_event
 	long long int_value;
 	double double_value;
 	void* binary_value;
+	char* string_value;
 	struct _socket_event* next;
 } socket_event;
 
@@ -81,6 +83,7 @@ void socket_readuint64(struct _socket* c, int id);
 void socket_readint64(struct _socket* c, int id);
 void socket_readfloat(struct _socket* c, int id);
 void socket_readdouble(struct _socket* c, int id);
+void socket_readstring(struct _socket* c, int id, int len);
 void socket_readbinary(struct _socket* c, int id, int len);
 
 void socket_writeuint8(struct _socket* c, int id, unsigned char value);

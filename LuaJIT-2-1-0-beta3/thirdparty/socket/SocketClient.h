@@ -75,6 +75,8 @@ public:
 	void HandleReadNumber(const asio::error_code& ec, std::size_t actual_size, int type);
 	void ReadBinary(int len, int type);
 	void HandleReadBinary(const asio::error_code& ec, std::size_t actual_size, int type);
+	void ReadString(int len, int type);
+	void HandleReadString(const asio::error_code& ec, std::size_t actual_size, int type);
 
 public:
 	SocketPtr m_socket;					// socket

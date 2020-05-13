@@ -107,6 +107,12 @@ void socket_clearevent(socket_event* event)
         free(event->binary_value);
         event->binary_value = 0;
     }
+
+    if (event->string_value)
+    {
+        free(event->string_value);
+        event->string_value = 0;
+    }
 }
 
 void socket_freeevent(socket_event* event)
@@ -238,6 +244,12 @@ void socket_readbinary(struct _socket* c, int id, int len)
     ALittle::SocketSchedule* schedule = (ALittle::SocketSchedule*)(c->schedule);
     auto client = schedule->GetClient(id);
     if (client) client->ReadBinary(len, socket_event_types::MSG_READ_BINARY);
+}
+void socket_readstring(struct _socket* c, int id, int len)
+{
+    ALittle::SocketSchedule* schedule = (ALittle::SocketSchedule*)(c->schedule);
+    auto client = schedule->GetClient(id);
+    if (client) client->ReadString(len, socket_event_types::MSG_READ_STRING);
 }
 
 void socket_writeuint8(struct _socket* c, int id, unsigned char value)

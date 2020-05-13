@@ -135,6 +135,16 @@ static int socketlib_readdouble(lua_State* L)
     return 0;
 }
 
+static int socketlib_readstring(lua_State* L)
+{
+    struct _socket* c = (struct _socket*)lua_touserdata(L, 1);
+    luaL_argcheck(L, c != 0, 1, "socket object is null");
+    int id = (int)luaL_checkinteger(L, 2);
+    int len = (int)luaL_checkinteger(L, 3);
+    socket_readstring(c, id, len);
+    return 0;
+}
+
 static int socketlib_readbinary(lua_State* L)
 {
     struct _socket* c = (struct _socket*)lua_touserdata(L, 1);
@@ -252,6 +262,17 @@ static int socketlib_writedouble(lua_State* L)
     return 0;
 }
 
+static int socketlib_writestring(lua_State* L)
+{
+    struct _socket* c = (struct _socket*)lua_touserdata(L, 1);
+    luaL_argcheck(L, c != 0, 1, "socket object is null");
+    int id = (int)luaL_checkinteger(L, 2);
+    size_t l;
+    const char* value = luaL_checklstring(L, 3, &l);
+    socket_writebinary(c, id, (void*)value, (int)l);
+    return 0;
+}
+
 static int socketlib_writebinary(lua_State* L)
 {
     struct _socket* c = (struct _socket*)lua_touserdata(L, 1);
@@ -273,11 +294,8 @@ static int socketlib_timer(lua_State* L)
     return 0;
 }
 
-static int socketlib_poll(lua_State* L)
+static int socketlib_handleevent(struct _socket* c, socket_event* event, lua_State* L)
 {
-    struct _socket* c = (struct _socket*)lua_touserdata(L, 1);
-    luaL_argcheck(L, c != 0, 1, "socket object is null");
-    socket_event* event = socket_pollone(c);
     if (event == 0)
     {
         lua_pushnil(L);
@@ -303,6 +321,11 @@ static int socketlib_poll(lua_State* L)
         {
             lua_pushnumber(L, event->double_value);
             lua_setfield(L, -2, "double_value");
+        }
+        else if (event->type == MSG_READ_STRING)
+        {
+            lua_pushstring(L, event->string_value);
+            lua_setfield(L, -2, "string_value");
         }
         else if (event->type == MSG_READ_BINARY)
         {
@@ -315,46 +338,20 @@ static int socketlib_poll(lua_State* L)
     return 1;
 }
 
+static int socketlib_poll(lua_State* L)
+{
+    struct _socket* c = (struct _socket*)lua_touserdata(L, 1);
+    luaL_argcheck(L, c != 0, 1, "socket object is null");
+    socket_event* event = socket_pollone(c);
+    return socketlib_handleevent(c, event, L);
+}
+
 static int socketlib_run(lua_State* L)
 {
     struct _socket* c = (struct _socket*)lua_touserdata(L, 1);
     luaL_argcheck(L, c != 0, 1, "socket object is null");
     socket_event* event = socket_runone(c);
-    if (event == 0)
-    {
-        lua_pushnil(L);
-    }
-    else
-    {
-        lua_newtable(L);
-        lua_pushinteger(L, event->type);
-        lua_setfield(L, -2, "type");
-        lua_pushinteger(L, event->id);
-        lua_setfield(L, -2, "id");
-        if (event->type == TIMER)
-        {
-            lua_pushinteger(L, event->time);
-            lua_setfield(L, -2, "time");
-        }
-        else if (event->type >= MSG_READ_UINT8 && event->type <= MSG_READ_INT64)
-        {
-            lua_pushinteger(L, event->int_value);
-            lua_setfield(L, -2, "int_value");
-        }
-        else if (event->type >= MSG_READ_FLOAT && event->type <= MSG_READ_DOUBLE)
-        {
-            lua_pushnumber(L, event->double_value);
-            lua_setfield(L, -2, "double_value");
-        }
-        else if (event->type == MSG_READ_BINARY)
-        {
-            lua_pushlightuserdata(L, event->binary_value);
-            lua_setfield(L, -2, "binary_value");
-            event->binary_value = 0;
-        }
-        socket_releaseevent(c, event);
-    }
-    return 1;
+    return socketlib_handleevent(c, event, L);
 }
 
 static int socketlib_exit(lua_State* L)
@@ -399,6 +396,7 @@ static struct luaL_Reg socketlib[] = {
     {"readint64", socketlib_readint64},
     {"readfloat", socketlib_readfloat},
     {"readdouble", socketlib_readdouble},
+    {"readstring", socketlib_readstring},
     {"readbinary", socketlib_readbinary},
     {"freebinary", socketlib_freebinary},
 
@@ -412,6 +410,7 @@ static struct luaL_Reg socketlib[] = {
     {"writeint64", socketlib_writeint64},
     {"writefloat", socketlib_writefloat},
     {"writedouble", socketlib_writedouble},
+    {"writestring", socketlib_writestring},
     {"writebinary", socketlib_writebinary},
 
     {NULL, NULL}

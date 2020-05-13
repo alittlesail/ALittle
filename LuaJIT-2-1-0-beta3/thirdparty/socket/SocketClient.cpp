@@ -219,6 +219,39 @@ void SocketClient::HandleReadBinary(const asio::error_code& ec, std::size_t actu
 	socket_addevent(m__socket, event, 0);
 }
 
+void SocketClient::ReadString(int size, int read_type)
+{
+	// 如果已经释放了就直接返回
+	if (!m_socket) return;
+	if (m_binary_value != 0) return;
+
+	m_binary_value = (char*)malloc(size + 1);
+	
+	// 开始接受协议头
+	asio::async_read(*m_socket, asio::buffer(m_binary_value, size)
+		, std::bind(&SocketClient::HandleReadString, this->shared_from_this()
+			, std::placeholders::_1, std::placeholders::_2, read_type));
+}
+
+void SocketClient::HandleReadString(const asio::error_code& ec, std::size_t actual_size, int type)
+{
+	if (ec)
+	{
+		// 释放内存
+		if (m_binary_value) { free(m_binary_value); m_binary_value = 0; }
+		ExecuteDisconnectCallback();
+		return;
+	}
+
+	socket_event* event = socket_createevent(m__socket);
+	event->id = m_id;
+	event->type = (socket_event_types)type;
+	event->string_value = m_binary_value;
+	event->string_value[actual_size] = 0;
+	m_binary_value = 0;
+	socket_addevent(m__socket, event, 0);
+}
+
 void SocketClient::SendPocket(void* memory, int memory_size)
 {
 	// 构建内存结构

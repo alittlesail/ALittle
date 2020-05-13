@@ -163,11 +163,8 @@ static int netlib_timer(lua_State* L)
     return 0;
 }
 
-static int netlib_poll(lua_State* L)
+static int netlib_handleevent(net* c, net_event* event, lua_State* L)
 {
-    net* c = (net*)lua_touserdata(L, 1);
-    luaL_argcheck(L, c != 0, 1, "net object is null");
-    net_event* event = net_runone(c);
     if (event == 0)
     {
         lua_pushnil(L);
@@ -215,6 +212,22 @@ static int netlib_poll(lua_State* L)
         net_releaseevent(c, event);
     }
     return 1;
+}
+
+static int netlib_poll(lua_State* L)
+{
+    net* c = (net*)lua_touserdata(L, 1);
+    luaL_argcheck(L, c != 0, 1, "net object is null");
+    net_event* event = net_pollone(c);
+    return netlib_handleevent(c, event, L);
+}
+
+static int netlib_run(lua_State* L)
+{
+    net* c = (net*)lua_touserdata(L, 1);
+    luaL_argcheck(L, c != 0, 1, "net object is null");
+    net_event* event = net_runone(c);
+    return netlib_handleevent(c, event, L);
 }
 
 static int netlib_exit(lua_State* L)
@@ -417,6 +430,7 @@ static void set_info(lua_State* L) {
 static struct luaL_Reg netlib[] = {
     {"create", netlib_create},
     {"poll", netlib_poll},
+    {"run", netlib_run},
     {"exit", netlib_exit},
 
     {"get", netlib_httpget},

@@ -80,6 +80,7 @@ void net_clear(net* c);
 void net_destroy(net* c);
 void net_exit(net* c);
 net_event* net_runone(net* c);
+net_event* net_pollone(net* c);
 
 // 事件相关
 void net_addevent(net* c, net_event* event, int dec_wait);

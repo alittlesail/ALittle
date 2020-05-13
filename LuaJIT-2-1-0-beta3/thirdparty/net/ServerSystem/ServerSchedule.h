@@ -37,6 +37,7 @@ public:
 
 public:
 	void RunOne();
+	void PollOne();
 	void Exit();
 
 public:

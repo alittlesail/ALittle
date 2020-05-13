@@ -89,6 +89,30 @@ net_event* net_runone(net* c)
     return 0;
 }
 
+net_event* net_pollone(net* c)
+{
+    if (c->events)
+    {
+        net_event* event = c->events;
+        c->events = c->events->next;
+        return event;
+    }
+
+    ALittle::ServerSchedule* schedule = (ALittle::ServerSchedule*)(c->schedule);
+    if ((c->wait_count > 0 || schedule->GetConnectCount() > 0)
+        && c->events == 0 && !schedule->IsExit())
+        schedule->PollOne();
+
+    if (c->events)
+    {
+        net_event* event = c->events;
+        c->events = c->events->next;
+        return event;
+    }
+
+    return 0;
+}
+
 void net_clearevent(net_event* event)
 {
     if (event->content)

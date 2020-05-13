@@ -37,6 +37,16 @@ void ServerSchedule::RunOne()
 	}
 }
 
+void ServerSchedule::PollOne()
+{
+	asio::error_code ec;
+	if (m_io_service.poll_one(ec) == 0)
+	{
+		m_io_service.restart();
+		m_io_service.poll_one(ec);
+	}
+}
+
 void ServerSchedule::Exit()
 {
 	if (m_is_exit) return;

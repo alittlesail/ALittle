@@ -28,7 +28,7 @@ function HttpFileReceiverTemplate:Ctor(http_id, thread)
 end
 
 function HttpFileReceiverTemplate:StartReceiveFile(file_path, start_size)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	if self._received then
 		return "StartReceiveFile已经被调用过"
 	end

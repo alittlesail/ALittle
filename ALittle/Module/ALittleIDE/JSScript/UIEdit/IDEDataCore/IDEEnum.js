@@ -78,6 +78,14 @@ ALittleIDE.IDEEnum = JavaScript.Class(undefined, {
 		this.flip_rtype["水平"] = 1;
 		this.flip_rtype["垂直"] = 2;
 		this.flip_rtype["水平+垂直"] = 3;
+		this.select_type = new Map();
+		this.select_type.set(0, "无");
+		this.select_type.set(1, "选择文件");
+		this.select_type.set(2, "选择文件夹");
+		this.select_rtype = {};
+		this.select_rtype["无"] = 0;
+		this.select_rtype["选择文件"] = 1;
+		this.select_rtype["选择文件夹"] = 2;
 		this.event_type_list = ["UIClickEvent", "UIChangedEvent", "UISelectChangedEvent", "UIFocusInEvent", "UIFocusOutEvent", "UIButtonDragEvent", "UIButtonDragBeginEvent", "UIButtonDragEndEvent", "UILongButtonDownEvent", "UIEnterKeyEvent", "UIDragDownEvent", "UIDragUpEvent", "UIDragLeftEvent", "UIDragRightEvent", "UIMoveInEvent", "UIMoveOutEvent", "UIMouseMoveEvent", "UIDropEvent", "UIDropFileEvent", "UIKeyDownEvent", "UILButtonDownEvent", "UILButtonUpEvent", "UIRButtonDownEvent", "UIRButtonUpEvent", "UIMButtonDownEvent", "UIMButtonUpEvent", "UIMButtonWheelEvent", "UIFClickEvent", "UIMClickEvent", "UITextInputEvent", "UIResizeEvent", "UIShowEvent", "UIHideEvent", "UITabKeyEvent", "UIAtKeyEvent", "UITabCloseEvent", "UIFButtonDownEvent", "UIFButtonUpEvent", "UIFDragBeginEvent", "UIFDragEvent", "UIFDragEndEvent", "UISystemSelectFileEvent", "UISystemSelectSaveEvent"];
 		this.add_child_change_map = {};
 		this.add_child_change_map["Linear"] = true;

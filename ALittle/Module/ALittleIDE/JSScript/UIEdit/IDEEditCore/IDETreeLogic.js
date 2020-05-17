@@ -42,9 +42,6 @@ ALittleIDE.IDETreeLogic = JavaScript.Class(ALittle.DisplayLayout, {
 	get tab_child() {
 		return this._tab_child;
 	},
-	get user_info() {
-		return this._user_info;
-	},
 	IsRoot : function() {
 		return this._user_info.root;
 	},

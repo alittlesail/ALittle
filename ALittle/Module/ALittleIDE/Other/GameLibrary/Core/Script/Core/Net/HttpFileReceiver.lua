@@ -8,7 +8,7 @@ local ___ipairs = ipairs
 IHttpFileReceiver = Lua.Class(nil, "ALittle.IHttpFileReceiver")
 
 function IHttpFileReceiver:StartReceiveFile(file_path, start_size)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	return "not impl"
 end
 

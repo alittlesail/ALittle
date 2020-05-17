@@ -54,7 +54,7 @@ function IMsgCommonTemplate:GetID()
 end
 
 function IMsgCommonTemplate:Connect(ip, port)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	return "not impl"
 end
 

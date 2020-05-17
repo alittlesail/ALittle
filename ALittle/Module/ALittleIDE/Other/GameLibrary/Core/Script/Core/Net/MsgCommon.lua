@@ -111,7 +111,7 @@ function IMsgCommon.Invoke(msg_id, client, msg_body)
 end
 
 function IMsgCommon.InvokeRPC(msg_id, client, msg_body)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	if ___COROUTINE == nil then
 		return "当前不是协程", nil
 	end

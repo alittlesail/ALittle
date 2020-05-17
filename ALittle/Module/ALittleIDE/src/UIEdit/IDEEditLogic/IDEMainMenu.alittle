@@ -201,11 +201,10 @@ class IDEMainMenu
 		ALittle.List_PushList(file_list, ALittle.File_GetFileListByDir(base_path.."Core/Net/"));
 		for (var index, path in file_list)
 		{
-			var error:string = null;
-			error, all_in_one[index] = ALittle.File_ReadTextFromStdFile(path);
-			if (error != null)
+			all_in_one[index] = ALittle.File_ReadTextFromStdFile(path);
+			if (all_in_one[index] == null)
 			{
-				g_IDETool.ShowNotice("提示", "生成失败:"..error);
+				g_IDETool.ShowNotice("提示", "生成失败");
 				return;
             }
 		}
@@ -240,11 +239,10 @@ class IDEMainMenu
 		ALittle.List_PushList(file_list, ALittle.File_GetFileListByDir(base_path.."Std/Singleton/"));
 		for (var index, path in file_list)
 		{
-			var error:string = null;
-			error, all_in_one[index] = ALittle.File_ReadTextFromStdFile(path);
-			if (error != null)
+			all_in_one[index] = ALittle.File_ReadTextFromStdFile(path);
+			if (all_in_one[index] == null)
 			{
-				g_IDETool.ShowNotice("提示", "生成失败:"..error);
+				g_IDETool.ShowNotice("提示", "生成失败");
 				return;
             }
 		}
@@ -327,11 +325,10 @@ class IDEMainMenu
 		ALittle.List_Push(file_list, base_path.."CEngine/UISystem/ControlSystem.js");
 		for (var index, path in file_list)
 		{
-			var error:string = null;
-			error, all_in_one[index] = ALittle.File_ReadTextFromStdFile(path);
-			if (error != null)
+			all_in_one[index] = ALittle.File_ReadTextFromStdFile(path);
+			if (all_in_one[index] == null)
 			{
-				g_IDETool.ShowNotice("提示", "生成失败:"..error);
+				g_IDETool.ShowNotice("提示", "生成失败");
 				return;
             }
 		}

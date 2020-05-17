@@ -10,7 +10,7 @@ end
 
 ALittle.SetLogFunc(__Log)
 function RequireCEngine(base_path)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	Require(base_path, "CEngine/UISystem/IShow")
 	Require(base_path, "CEngine/Utility/String")
 	Require(base_path, "CEngine/Utility/File")

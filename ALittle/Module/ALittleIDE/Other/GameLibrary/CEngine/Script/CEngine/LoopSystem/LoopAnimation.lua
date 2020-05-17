@@ -113,7 +113,7 @@ function LoopAnimation:Play(loop)
 end
 
 function LoopAnimation:AsyncPlay(loop)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	self:ReleaseCo("AsyncPlay被调用")
 	if self._group == nil then
 		return "this._group == null"

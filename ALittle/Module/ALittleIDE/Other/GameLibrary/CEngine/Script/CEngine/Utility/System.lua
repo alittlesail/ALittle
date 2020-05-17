@@ -377,7 +377,7 @@ function CreateHttpSender(ip, port)
 end
 
 function HttpRequest(ip, port, method)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	local sender = CreateHttpSender(ip, port)
 	if ___COROUTINE == nil then
 		return "当前不是协程", nil
@@ -391,7 +391,7 @@ function CreateHttpFileSender(ip, port, file_path, start_size, callback)
 end
 
 function HttpDownloadRequest(ip, port, file_path, method, callback)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	local sender = CreateHttpFileSender(ip, port, file_path, 0, callback)
 	if ___COROUTINE == nil then
 		return "当前不是协程"

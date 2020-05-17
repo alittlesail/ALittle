@@ -1,4 +1,4 @@
--- ALittle Generate Lua
+-- ALittle Generate Lua And Do Not Edit This Line!
 module("ALittleIDE", package.seeall)
 
 local ___rawset = rawset
@@ -80,7 +80,7 @@ function IDEExport:Ctor()
 end
 
 function IDEExport:PackagePlatform(project_name, version_info, install_info, platform)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	ALittle.Log("========PackagePlatform" .. project_name .. "========")
 	local project_path = ALittle.File_BaseFilePath() .. "Module/" .. project_name
 	Lua.Assert(ALittle.File_GetFileAttr(project_path) ~= nil, "项目文件夹不存在:" .. project_path)
@@ -260,7 +260,7 @@ function IDEExport:PackageCommon(project_path)
 end
 
 function IDEExport:PackageVersion(package_info)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	ALittle.Log("========PackageVersion========")
 	if g_IDELoginManager:IsLogin() then
 		g_IDETool:ShowAlertDialog("提示", "正在请求新的版本号")
@@ -276,7 +276,7 @@ local ___COROUTINE = coroutine.running()
 end
 
 function IDEExport:HandleAskNewUpdateTimeIndex(error, result, package_info, is_login)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	g_IDETool:HideAlertDialog()
 	if error ~= nil then
 		g_IDETool:ShowNotice("错误", "新版本号获取失败:" .. error)
@@ -286,7 +286,7 @@ local ___COROUTINE = coroutine.running()
 end
 
 function IDEExport:HandleAskNewUpdateTimeIndexImpl(package_info, is_login, update_time, update_index)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	if is_login then
 		g_IDETool:ShowAlertDialog("提示", "正在请求CurVersion.db的文件的位置")
 		local param = {}
@@ -303,7 +303,7 @@ local ___COROUTINE = coroutine.running()
 end
 
 function IDEExport:HandleQueryNewCurVersion(error, result, package_info, is_login, update_time, update_index)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	g_IDETool:HideAlertDialog()
 	if error ~= nil then
 		g_IDETool:ShowNotice("错误", "CurVersion.db的文件的位置获取失败:" .. error)
@@ -571,7 +571,7 @@ function IDEExport:HandleQueryNewCurVersionImpl(package_info, is_login, update_t
 end
 
 function IDEExport:SubmitPlatform(project_name, platform)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	if self._is_in_submit == true then
 		self._submit_dialog.visible = true
 		return
@@ -625,7 +625,7 @@ local ___COROUTINE = coroutine.running()
 end
 
 function IDEExport:HandleNewVersionInfo(error, result, submit_info)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	g_IDETool:HideAlertDialog()
 	if error ~= nil then
 		g_IDETool:ShowNotice("错误", "版本创建失败:" .. error)
@@ -637,7 +637,7 @@ local ___COROUTINE = coroutine.running()
 end
 
 function IDEExport:HandleNewVersionInfoImpl(submit_info)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	if self._submit_dialog == nil then
 		self._submit_dialog = g_Control:CreateControl("ide_submit_dialog", self)
 		A_LayerManager:AddToModal(self._submit_dialog)

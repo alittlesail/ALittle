@@ -39,6 +39,15 @@ public async static __Module_Setup(ALittle.DisplayLayout layer_group, ALittle.Co
 	g_Control = control;
 	g_LayerGroup = layer_group;
 	g_ModuleBasePath = module_base_path;
+	
+	[Language(Lua)]
+	if (ALittle.System_GetPlatform() == "Windows")
+	{
+		package.path = package.path..";./"..module_base_path.."Other/?.dll";
+        lua.require("memory");
+        lua.require("protobuf");
+        lua.require("socket");
+    }
 
 	alittle.Require(script_base_path, "GCenter");
 	alittle.Require(script_base_path, "IDETool");

@@ -20,7 +20,7 @@ ALittleIDE.TextButtonS = JavaScript.Class(ALittleIDE.DisplayLayoutS, {
 		this.LoadShowTypeNoNilData("show_over_text");
 		this.LoadShowTypeNoNilData("show_down_text");
 		this.LoadShowTypeNoNilData("show_disabled_text");
-		this.LoadBoolData("file_select", false, ALittleIDE.g_IDEEnum.yn_type);
+		this.LoadEnumData("file_select", ALittleIDE.g_IDEEnum.select_type);
 	},
 	HandleMTextFOCUSOUT : function(event) {
 		this.DefaultNoStringInputChange("text", false);
@@ -114,7 +114,9 @@ ALittleIDE.TextButtonS = JavaScript.Class(ALittleIDE.DisplayLayoutS, {
 		this.RemoverToNilShowSet("show_disabled_text", "", true);
 	},
 	HandleHandFileSelectSELECT_CHANGE : function(event) {
-		this.BoolSelectChange("file_select", false, ALittleIDE.g_IDEEnum.yn_type);
+		let list = ALittleIDE.g_IDEEnum.select_rtype;
+		let revoke_bind = ALittle.NewObject(ALittleIDE.IDERevokeBind);
+		this.TypeSelectChange("file_select", list, false, revoke_bind);
 	},
 }, "ALittleIDE.TextButtonS");
 

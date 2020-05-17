@@ -25,7 +25,7 @@ function MsgSenderTemplate:Ctor(heartbeat, check_heartbeat, loop_system, callbac
 end
 
 function MsgSenderTemplate:Connect(ip, port)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	if ip == nil then
 		ip = ""
 	end

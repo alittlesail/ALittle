@@ -1,4 +1,4 @@
--- ALittle Generate Lua
+-- ALittle Generate Lua And Do Not Edit This Line!
 module("ALittleIDE", package.seeall)
 
 local ___pairs = pairs
@@ -133,10 +133,9 @@ function IDEMainMenu:HandleGenCoreAllInOneClick(event)
 	ALittle.List_PushList(file_list, ALittle.File_GetFileListByDir(base_path .. "Core/Utility/"))
 	ALittle.List_PushList(file_list, ALittle.File_GetFileListByDir(base_path .. "Core/Net/"))
 	for index, path in ___ipairs(file_list) do
-		local error = nil
-		error, all_in_one[index] = ALittle.File_ReadTextFromStdFile(path)
-		if error ~= nil then
-			g_IDETool:ShowNotice("提示", "生成失败:" .. error)
+		all_in_one[index] = ALittle.File_ReadTextFromStdFile(path)
+		if all_in_one[index] == nil then
+			g_IDETool:ShowNotice("提示", "生成失败")
 			return
 		end
 	end
@@ -167,10 +166,9 @@ function IDEMainMenu:HandleGenStdAllInOneClick(event)
 	ALittle.List_PushList(file_list, ALittle.File_GetFileListByDir(base_path .. "Adapter/JavaScript/"))
 	ALittle.List_PushList(file_list, ALittle.File_GetFileListByDir(base_path .. "Std/Singleton/"))
 	for index, path in ___ipairs(file_list) do
-		local error = nil
-		error, all_in_one[index] = ALittle.File_ReadTextFromStdFile(path)
-		if error ~= nil then
-			g_IDETool:ShowNotice("提示", "生成失败:" .. error)
+		all_in_one[index] = ALittle.File_ReadTextFromStdFile(path)
+		if all_in_one[index] == nil then
+			g_IDETool:ShowNotice("提示", "生成失败")
 			return
 		end
 	end
@@ -249,10 +247,9 @@ function IDEMainMenu:HandleGenCEngineAllInOneClick(event)
 	ALittle.List_Push(file_list, base_path .. "CEngine/UISystem/TextureManager.js")
 	ALittle.List_Push(file_list, base_path .. "CEngine/UISystem/ControlSystem.js")
 	for index, path in ___ipairs(file_list) do
-		local error = nil
-		error, all_in_one[index] = ALittle.File_ReadTextFromStdFile(path)
-		if error ~= nil then
-			g_IDETool:ShowNotice("提示", "生成失败:" .. error)
+		all_in_one[index] = ALittle.File_ReadTextFromStdFile(path)
+		if all_in_one[index] == nil then
+			g_IDETool:ShowNotice("提示", "生成失败")
 			return
 		end
 	end

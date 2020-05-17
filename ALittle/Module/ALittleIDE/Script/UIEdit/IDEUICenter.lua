@@ -1,4 +1,4 @@
--- ALittle Generate Lua
+-- ALittle Generate Lua And Do Not Edit This Line!
 module("ALittleIDE", package.seeall)
 
 local ___pairs = pairs
@@ -15,7 +15,7 @@ function IDEUICenter.__getter:image_scroll_screen()
 end
 
 function IDEUICenter:Setup(edit_container)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	Require(g_ScriptBasePath, "UIEdit/IDEUtility")
 	Require(g_ScriptBasePath, "UIEdit/IDEDataCore/IDEEnum")
 	Require(g_ScriptBasePath, "UIEdit/IDEDataCore/IDEExport")

@@ -1,7 +1,6 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
 module("Lua", package.seeall)
 
-local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
@@ -23,10 +22,12 @@ assert(ALittle.ISchedule, " extends class:ALittle.ISchedule is nil")
 LuaSchedule = Lua.Class(ALittle.ISchedule, "Lua.LuaSchedule")
 
 function LuaSchedule:Ctor()
-	___rawset(self, "_net", net.create())
 end
 
 function LuaSchedule:RunInFrame()
+	if self._net == nil then
+		self._net = net.create()
+	end
 	while true do
 		local event = net.poll(self._net)
 		if event == nil then
@@ -37,6 +38,9 @@ function LuaSchedule:RunInFrame()
 end
 
 function LuaSchedule:Run()
+	if self._net == nil then
+		self._net = net.create()
+	end
 	net.timer(self._net, 16)
 	while true do
 		local event = net.poll(self._net)

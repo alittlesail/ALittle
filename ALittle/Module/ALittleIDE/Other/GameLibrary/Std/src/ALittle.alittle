@@ -61,7 +61,6 @@ public await static RequireStd(string base_path)
     Require(base_path, "Adapter/Lua/LuaCsvFile");
 
     [Language(Lua)]
-    if (lua.net != null)
     {
         Require(base_path, "Adapter/Lua/LuaHttpFileInterface");
         Require(base_path, "Adapter/Lua/LuaHttpInterface");
@@ -71,7 +70,6 @@ public await static RequireStd(string base_path)
     }
     
     [Language(Lua)]
-    if (lua.socket != null && lua.protobuf != null && lua.memory != null)
     {
         Require(base_path, "Adapter/Lua/ISocket");
         Require(base_path, "Adapter/Lua/LuaSocketSchedule");

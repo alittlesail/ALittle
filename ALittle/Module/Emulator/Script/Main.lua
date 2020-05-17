@@ -26,6 +26,12 @@ function __Module_Setup(layer_group, control, module_base_path, script_base_path
 	g_Control = control
 	g_LayerGroup = layer_group
 	g_ModuleBasePath = module_base_path
+	if ALittle.System_GetPlatform() == "Windows" then
+		package.path = package.path .. ";./" .. module_base_path .. "Other/?.dll"
+		require("memory")
+		require("protobuf")
+		require("socket")
+	end
 	Require(script_base_path, "GCenter")
 	Require(script_base_path, "IDETool")
 	Require(script_base_path, "IDETree/IDETreeLogic")

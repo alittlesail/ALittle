@@ -258,7 +258,7 @@ function VersionSystem:UpdateModule()
 end
 
 function VersionSystem:UpdateVersion(ip, port, callback, check, repeat_count)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	if self._doing == true then
 		Log("VersionSystem.UpdateVersion, already in updating!")
 		return VersionProcess.UPDATE_VERSION_FAILED
@@ -429,7 +429,7 @@ local ___COROUTINE = coroutine.running()
 end
 
 function VersionSystem:DownloadNext()
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	local count = self._download_list_count
 	if count == 0 then
 		self._doing = false

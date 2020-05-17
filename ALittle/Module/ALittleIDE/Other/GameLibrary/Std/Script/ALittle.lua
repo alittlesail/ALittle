@@ -4,7 +4,7 @@ local ___ipairs = ipairs
 
 
 function RequireStd(base_path)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	Require(base_path, "Std/Reflect/ReflectCmd")
 	Require(base_path, "Std/Reflect/ReflectCsv")
 	Require(base_path, "Std/Reflect/ReflectMessage")
@@ -35,14 +35,14 @@ local ___COROUTINE = coroutine.running()
 	Require(base_path, "Std/Net/MsgSessionTemplate")
 	Require(base_path, "Adapter/Lua/LuaHeapTimer")
 	Require(base_path, "Adapter/Lua/LuaCsvFile")
-	if net ~= nil then
+	do
 		Require(base_path, "Adapter/Lua/LuaHttpFileInterface")
 		Require(base_path, "Adapter/Lua/LuaHttpInterface")
 		Require(base_path, "Adapter/Lua/LuaMsgInterface")
 		Require(base_path, "Adapter/Lua/LuaMessageFactory")
 		Require(base_path, "Adapter/Lua/LuaSchedule")
 	end
-	if socket ~= nil and protobuf ~= nil and memory ~= nil then
+	do
 		Require(base_path, "Adapter/Lua/ISocket")
 		Require(base_path, "Adapter/Lua/LuaSocketSchedule")
 	end

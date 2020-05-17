@@ -91,7 +91,6 @@ Emulator.GCenter = JavaScript.Class(undefined, {
 		Emulator.g_Control.CreateControl("main_scene", this, this._main_layer);
 		this._setting_dialog = Emulator.g_Control.CreateControl("main_setting_dialog", this);
 		A_LayerManager.AddToModal(this._setting_dialog);
-		A_LuaSocketSchedule.Setup();
 		let plugin_path = Emulator.g_GConfig.GetString("plugin_script", "");
 		if (ALittle.File_GetFileExtByPathAndUpper(plugin_path) === "LUA") {
 			let plugin_script = ALittle.File_ReadTextFromStdFile(plugin_path);
@@ -141,6 +140,12 @@ Emulator.GCenter = JavaScript.Class(undefined, {
 		this._proto_root_input.text = Emulator.g_GConfig.GetString("proto_root", "");
 		this._login_proto_input.text = Emulator.g_GConfig.GetString("login_proto", "");
 		this._plugin_file_input.text = Emulator.g_GConfig.GetString("plugin_script", "");
+	},
+	HandleSettingSelectProtoRootClick : function(event) {
+		if (event.path === undefined) {
+			return;
+		}
+		this._proto_root_input.text = event.path;
 	},
 	HandleSettingSelectPluginScriptClick : function(event) {
 		if (event.path === undefined) {

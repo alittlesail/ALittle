@@ -155,14 +155,14 @@ function __ALITTLEAPI_HttpFileProcess(id, cur_size, total_size)
 end
 
 function DownloadFile(ip, port, method, file_path)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	local sender
 	sender = Lua.Template(HttpFileSenderTemplate, "ALittle.HttpFileSenderTemplate<Lua.LuaHttpFileInterface>", Lua.LuaHttpFileInterface)(ip, port, file_path, 0)
 	return IHttpFileSender.InvokeDownload(method, sender, nil)
 end
 
 function UploadFile(ip, port, method, file_path)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	local sender
 	sender = Lua.Template(HttpFileSenderTemplate, "ALittle.HttpFileSenderTemplate<Lua.LuaHttpFileInterface>", Lua.LuaHttpFileInterface)(ip, port, file_path, 0)
 	local error = IHttpFileSender.InvokeUpload(method, sender, nil)

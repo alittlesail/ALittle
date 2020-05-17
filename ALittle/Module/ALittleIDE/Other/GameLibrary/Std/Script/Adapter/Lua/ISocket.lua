@@ -33,12 +33,12 @@ function ISocket:IsConnecting()
 end
 
 function ISocket:Connect(ip, port)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	if self:IsConnecting() then
-		return "已经正在连接"
+		return "�Ѿ���������"
 	end
 	if self:IsConnected() then
-		return "已经连接，请先关闭连接"
+		return "�Ѿ����ӣ����ȹر�����"
 	end
 	self._status = SocketStatus.SS_CONNECTING
 	socket.connect(self._socket, self._id, ip, port)
@@ -76,7 +76,7 @@ function ISocket:WriteMessage(full_name, protobuf_msg)
 end
 
 function ISocket:ReadMessage()
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	return "not implement", nil
 end
 
@@ -84,7 +84,7 @@ function ISocket:HandleMessage(msg)
 end
 
 function ISocket:ReadStruct()
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	local error, msg = self:ReadMessage()
 	if error ~= nil then
 		return error, nil
@@ -98,12 +98,12 @@ local ___COROUTINE = coroutine.running()
 end
 
 function ISocket:ReadUint8()
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	if not self:IsConnected() then
-		return "还未连接成功", 0
+		return "��δ���ӳɹ�", 0
 	end
 	if self._read_thread ~= nil then
-		return "已经正在读取", 0
+		return "�Ѿ����ڶ�ȡ", 0
 	end
 	self._read_thread = ___COROUTINE
 	socket.readuint8(self._socket, self._id)
@@ -111,12 +111,12 @@ local ___COROUTINE = coroutine.running()
 end
 
 function ISocket:ReadInt8()
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	if not self:IsConnected() then
-		return "还未连接成功", 0
+		return "��δ���ӳɹ�", 0
 	end
 	if self._read_thread ~= nil then
-		return "已经正在读取", 0
+		return "�Ѿ����ڶ�ȡ", 0
 	end
 	self._read_thread = ___COROUTINE
 	socket.readint8(self._socket, self._id)
@@ -124,12 +124,12 @@ local ___COROUTINE = coroutine.running()
 end
 
 function ISocket:ReadUint16()
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	if not self:IsConnected() then
-		return "还未连接成功", 0
+		return "��δ���ӳɹ�", 0
 	end
 	if self._read_thread ~= nil then
-		return "已经正在读取", 0
+		return "�Ѿ����ڶ�ȡ", 0
 	end
 	self._read_thread = ___COROUTINE
 	socket.readuint16(self._socket, self._id)
@@ -137,12 +137,12 @@ local ___COROUTINE = coroutine.running()
 end
 
 function ISocket:ReadInt16()
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	if not self:IsConnected() then
-		return "还未连接成功", 0
+		return "��δ���ӳɹ�", 0
 	end
 	if self._read_thread ~= nil then
-		return "已经正在读取", 0
+		return "�Ѿ����ڶ�ȡ", 0
 	end
 	self._read_thread = ___COROUTINE
 	socket.readint16(self._socket, self._id)
@@ -150,12 +150,12 @@ local ___COROUTINE = coroutine.running()
 end
 
 function ISocket:ReadUint32()
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	if not self:IsConnected() then
-		return "还未连接成功", 0
+		return "��δ���ӳɹ�", 0
 	end
 	if self._read_thread ~= nil then
-		return "已经正在读取", 0
+		return "�Ѿ����ڶ�ȡ", 0
 	end
 	self._read_thread = ___COROUTINE
 	socket.readuint32(self._socket, self._id)
@@ -163,12 +163,12 @@ local ___COROUTINE = coroutine.running()
 end
 
 function ISocket:ReadInt32()
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	if not self:IsConnected() then
-		return "还未连接成功", 0
+		return "��δ���ӳɹ�", 0
 	end
 	if self._read_thread ~= nil then
-		return "已经正在读取", 0
+		return "�Ѿ����ڶ�ȡ", 0
 	end
 	self._read_thread = ___COROUTINE
 	socket.readint32(self._socket, self._id)
@@ -176,12 +176,12 @@ local ___COROUTINE = coroutine.running()
 end
 
 function ISocket:ReadUint64()
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	if not self:IsConnected() then
-		return "还未连接成功", 0
+		return "��δ���ӳɹ�", 0
 	end
 	if self._read_thread ~= nil then
-		return "已经正在读取", 0
+		return "�Ѿ����ڶ�ȡ", 0
 	end
 	self._read_thread = ___COROUTINE
 	socket.readuint64(self._socket, self._id)
@@ -189,12 +189,12 @@ local ___COROUTINE = coroutine.running()
 end
 
 function ISocket:ReadInt64()
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	if not self:IsConnected() then
-		return "还未连接成功", 0
+		return "��δ���ӳɹ�", 0
 	end
 	if self._read_thread ~= nil then
-		return "已经正在读取", 0
+		return "�Ѿ����ڶ�ȡ", 0
 	end
 	self._read_thread = ___COROUTINE
 	socket.readint64(self._socket, self._id)
@@ -202,12 +202,12 @@ local ___COROUTINE = coroutine.running()
 end
 
 function ISocket:ReadFloat()
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	if not self:IsConnected() then
-		return "还未连接成功", 0
+		return "��δ���ӳɹ�", 0
 	end
 	if self._read_thread ~= nil then
-		return "已经正在读取", 0
+		return "�Ѿ����ڶ�ȡ", 0
 	end
 	self._read_thread = ___COROUTINE
 	socket.readfloat(self._socket, self._id)
@@ -215,12 +215,12 @@ local ___COROUTINE = coroutine.running()
 end
 
 function ISocket:ReadDouble()
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	if not self:IsConnected() then
-		return "还未连接成功", 0
+		return "��δ���ӳɹ�", 0
 	end
 	if self._read_thread ~= nil then
-		return "已经正在读取", 0
+		return "�Ѿ����ڶ�ȡ", 0
 	end
 	self._read_thread = ___COROUTINE
 	socket.readdouble(self._socket, self._id)
@@ -228,12 +228,12 @@ local ___COROUTINE = coroutine.running()
 end
 
 function ISocket:ReadString(len)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	if not self:IsConnected() then
-		return "还未连接成功", ""
+		return "��δ���ӳɹ�", ""
 	end
 	if self._read_thread ~= nil then
-		return "已经正在读取", ""
+		return "�Ѿ����ڶ�ȡ", ""
 	end
 	self._read_thread = ___COROUTINE
 	socket.readstring(self._socket, self._id, len)
@@ -241,12 +241,12 @@ local ___COROUTINE = coroutine.running()
 end
 
 function ISocket:ReadBinary(len)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	if not self:IsConnected() then
-		return "还未连接成功", 0
+		return "��δ���ӳɹ�", 0
 	end
 	if self._read_thread ~= nil then
-		return "已经正在读取", 0
+		return "�Ѿ����ڶ�ȡ", 0
 	end
 	self._read_thread = ___COROUTINE
 	socket.readbinary(self._socket, self._id, len)
@@ -254,7 +254,7 @@ local ___COROUTINE = coroutine.running()
 end
 
 function ISocket:ReadProtobuf(full_name, len)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	local error, binary_value = self:ReadBinary(len)
 	if error ~= nil then
 		return error, nil

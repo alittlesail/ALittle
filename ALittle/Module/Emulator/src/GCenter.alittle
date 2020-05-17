@@ -126,8 +126,6 @@ class GCenter
         this._setting_dialog = g_Control.CreateControl{ALittle.Dialog}("main_setting_dialog", this);
         A_LayerManager.AddToModal(this._setting_dialog);
 
-        A_LuaSocketSchedule.Setup();
-        
         // 加载插件
         var plugin_path = g_GConfig.GetString("plugin_script", "");
         if (ALittle.File_GetFileExtByPathAndUpper(plugin_path) == "LUA")

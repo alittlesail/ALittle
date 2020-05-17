@@ -27,12 +27,14 @@ public class LuaSchedule : ALittle.ISchedule
     
     public ctor()
     {
-        this._net = lua.net.create();
     }
 
     // 在帧中运行
     public fun RunInFrame()
     {
+        if (this._net == null)
+            this._net = lua.net.create();
+
         while (true)
         {
             var event = lua.net.poll(this._net);
@@ -45,6 +47,9 @@ public class LuaSchedule : ALittle.ISchedule
     // 在Lua版本下Run直接阻塞，等待所有事件全部处理完毕才退出
     public fun Run()
     {   
+        if (this._net == null)
+            this._net = lua.net.create();
+
         lua.net.timer(this._net, 16);
         while (true)
         {

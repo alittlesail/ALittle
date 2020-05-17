@@ -59,10 +59,6 @@ function LuaSocketSchedule:Ctor()
 	___rawset(self, "_upper_enum_map", {})
 end
 
-function LuaSocketSchedule:Setup()
-	self._socket = socket.create()
-end
-
 function LuaSocketSchedule:LoadProto(root_path)
 	self._message_map = {}
 	self._upper_message_map = {}
@@ -168,6 +164,9 @@ function LuaSocketSchedule:CreateMessage(full_name)
 end
 
 function LuaSocketSchedule:RunInFrame()
+	if self._socket == nil then
+		self._socket = socket.create()
+	end
 	while true do
 		local event = socket.poll(self._socket)
 		if event == nil then
@@ -178,6 +177,9 @@ function LuaSocketSchedule:RunInFrame()
 end
 
 function LuaSocketSchedule:Run()
+	if self._socket == nil then
+		self._socket = socket.create()
+	end
 	socket.timer(self._socket, 16)
 	while true do
 		local event = socket.poll(self._socket)

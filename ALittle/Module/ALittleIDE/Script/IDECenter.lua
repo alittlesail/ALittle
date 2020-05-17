@@ -19,7 +19,7 @@ function IDECenter.__getter:dialog_layer()
 end
 
 function IDECenter:Setup()
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	Require(g_ScriptBasePath, "IDEProject")
 	Require(g_ScriptBasePath, "UIEdit/IDEUICenter")
 	g_IDEConfig = ALittle.CreateConfigSystem("ALittleIDE.cfg")

@@ -4,13 +4,17 @@ local ___ipairs = ipairs
 
 
 function Require(base_path, url)
-local ___COROUTINE = coroutine.running()
-	require(base_path .. url)
+	local ___COROUTINE = coroutine.running()
+	if _G["core_require"] ~= nil then
+		_G["core_require"](base_path .. url)
+	else
+		require(base_path .. url)
+	end
 	return nil
 end
 
 function RequireCore(base_path)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	Require(base_path, "Core/Reflect/ReflectRegister")
 	Require(base_path, "Core/Reflect/ReflectDefine")
 	Require(base_path, "Core/Lua/LuaBind")

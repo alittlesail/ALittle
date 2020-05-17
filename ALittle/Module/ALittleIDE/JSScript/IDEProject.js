@@ -171,6 +171,7 @@ ALittleIDE.IDEProject = JavaScript.Class(ALittle.EventDispatcher, {
 		this._project.base_path = ALittle.File_BaseFilePath() + "Module/" + name + "/";
 		this._project.save = true;
 		this._project.control = ALittle.NewObject(ALittle.ControlSystem, name);
+		this._project.control.log_error = false;
 		this._project.control.cache_texture = false;
 		this._project.config = ALittle.CreateConfigSystem("Module/" + name + "/ALittleIDE.cfg");
 		let control_map = {};

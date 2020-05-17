@@ -57,11 +57,6 @@ public class LuaSocketSchedule : ALittle.ISchedule
         this._upper_enum_map = new Map<string, lua_socket_schedule_enum_info>();
     }
 
-    public fun Setup()
-    {
-        this._socket = lua.socket.create();
-    }
-
     public fun LoadProto(string root_path) : string
     {
         this._message_map = new Map<string, lua_socket_schedule_message_info>();
@@ -171,6 +166,9 @@ public class LuaSocketSchedule : ALittle.ISchedule
 
     public fun RunInFrame()
     {
+        if (this._socket == null)
+            this._socket = lua.socket.create();
+
         while (true)
         {
             var event = lua.socket.poll(this._socket);
@@ -183,6 +181,9 @@ public class LuaSocketSchedule : ALittle.ISchedule
     // 在Lua版本下Run直接阻塞，等待所有事件全部处理完毕才退出
     public fun Run()
     {   
+        if (this._socket == null)
+            this._socket = lua.socket.create();
+
         lua.socket.timer(this._socket, 16);
         while (true)
         {

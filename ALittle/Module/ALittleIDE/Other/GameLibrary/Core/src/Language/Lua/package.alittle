@@ -10,6 +10,7 @@ public class Package
     public Map<string, any> loaded;
 
     public string path;
+    public string cpath;
 }
 
 public var package:Package;

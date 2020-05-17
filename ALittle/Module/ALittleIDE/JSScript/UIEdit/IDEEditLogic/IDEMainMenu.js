@@ -124,10 +124,9 @@ ALittleIDE.IDEMainMenu = JavaScript.Class(undefined, {
 		for (let index = 1; index <= ___OBJECT_3.length; ++index) {
 			let path = ___OBJECT_3[index - 1];
 			if (path === undefined) break;
-			let error = undefined;
-			[error, all_in_one[index - 1]] = ALittle.File_ReadTextFromStdFile(path);
-			if (error !== undefined) {
-				ALittleIDE.g_IDETool.ShowNotice("提示", "生成失败:" + error);
+			all_in_one[index - 1] = ALittle.File_ReadTextFromStdFile(path);
+			if (all_in_one[index - 1] === undefined) {
+				ALittleIDE.g_IDETool.ShowNotice("提示", "生成失败");
 				return;
 			}
 		}
@@ -160,10 +159,9 @@ ALittleIDE.IDEMainMenu = JavaScript.Class(undefined, {
 		for (let index = 1; index <= ___OBJECT_4.length; ++index) {
 			let path = ___OBJECT_4[index - 1];
 			if (path === undefined) break;
-			let error = undefined;
-			[error, all_in_one[index - 1]] = ALittle.File_ReadTextFromStdFile(path);
-			if (error !== undefined) {
-				ALittleIDE.g_IDETool.ShowNotice("提示", "生成失败:" + error);
+			all_in_one[index - 1] = ALittle.File_ReadTextFromStdFile(path);
+			if (all_in_one[index - 1] === undefined) {
+				ALittleIDE.g_IDETool.ShowNotice("提示", "生成失败");
 				return;
 			}
 		}
@@ -244,10 +242,9 @@ ALittleIDE.IDEMainMenu = JavaScript.Class(undefined, {
 		for (let index = 1; index <= ___OBJECT_5.length; ++index) {
 			let path = ___OBJECT_5[index - 1];
 			if (path === undefined) break;
-			let error = undefined;
-			[error, all_in_one[index - 1]] = ALittle.File_ReadTextFromStdFile(path);
-			if (error !== undefined) {
-				ALittleIDE.g_IDETool.ShowNotice("提示", "生成失败:" + error);
+			all_in_one[index - 1] = ALittle.File_ReadTextFromStdFile(path);
+			if (all_in_one[index - 1] === undefined) {
+				ALittleIDE.g_IDETool.ShowNotice("提示", "生成失败");
 				return;
 			}
 		}

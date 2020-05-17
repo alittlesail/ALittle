@@ -33,7 +33,7 @@ function ModuleSystem:GetMainModuleName()
 end
 
 function ModuleSystem:LoadModuleImpl(module_base_path, name)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	local version_system = VersionSystem.CreateVersionSystem("", name)
 	if version_system ~= nil then
 		version_system:UpdateModule()
@@ -87,7 +87,7 @@ function ModuleSystem:RemoveModule(name)
 end
 
 function ModuleSystem:LoadPlugin(module_base_path, module_name)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	if module_name == nil then
 		Log("module_name is null!")
 		return false
@@ -115,7 +115,7 @@ local ___COROUTINE = coroutine.running()
 end
 
 function ModuleSystem:LoadModule(module_base_path, module_name)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	if module_name == nil then
 		Log("module_name is null!")
 		return false

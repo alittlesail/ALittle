@@ -9,7 +9,7 @@ assert(Lua.ISocket, " extends class:Lua.ISocket is nil")
 PluginSocket = Lua.Class(Lua.ISocket, "Emulator.PluginSocket")
 
 function PluginSocket:ReadMessage()
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	local func = _G["__SOCKET_ReadMessage"]
 	if func == nil then
 		return "can't find __SOCKET_ReadMessage", nil

@@ -40,7 +40,7 @@ function IHttpFileSender:SendUploadRPC(thread, method, content)
 end
 
 function IHttpFileSender.InvokeDownload(method, client, content)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	if ___COROUTINE == nil then
 		return "当前不是协程"
 	end
@@ -49,7 +49,7 @@ local ___COROUTINE = coroutine.running()
 end
 
 function IHttpFileSender.InvokeUpload(method, client, content)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	if ___COROUTINE == nil then
 		return "当前不是协程"
 	end

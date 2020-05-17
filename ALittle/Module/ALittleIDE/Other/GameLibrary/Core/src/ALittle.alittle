@@ -32,7 +32,10 @@ public await static Require(string base_path, string url) : string
     return yield;
     
     [Language(Lua)]
-    lua.require(base_path..url);
+    if (_G["core_require"] != null)
+        cast<Functor<(string):bool>>(_G["core_require"])(base_path..url);
+    else
+        lua.require(base_path..url);
     [Language(Lua)]
     return null;
 }

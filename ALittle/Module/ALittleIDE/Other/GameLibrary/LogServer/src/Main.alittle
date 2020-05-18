@@ -4,10 +4,10 @@ namespace LogServer;
 protected var g_ConfigSystem:ALittle.IJsonConfig;
 
 // 模块入口函数
-public async static __Module_Setup(string sengine_path, string module_path)
+public async static __Module_Setup(string sengine_path, string module_path, string config_path)
 {
     lua.math.randomseed(lua.os.time(null));
-    g_ConfigSystem = ALittle.CreateJsonConfig("Module/ALittleIDE/Other/GameLibrary/LogServer.cfg", true);
+    g_ConfigSystem = ALittle.CreateJsonConfig(config_path, true);
     var wan_ip = g_ConfigSystem.GetConfig("wan_ip", "127.0.0.1");
     var yun_ip = g_ConfigSystem.GetConfig("yun_ip", "");
     var port_offset = g_ConfigSystem.GetConfig("port_offset", 0);

@@ -1,4 +1,4 @@
--- ALittle Generate Lua
+-- ALittle Generate Lua And Do Not Edit This Line!
 local ___pairs = pairs
 local ___ipairs = ipairs
 
@@ -10,7 +10,7 @@ end
 
 ALittle.SetLogFunc(__Log)
 function RequireSEngine(base_path)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	Require(base_path, "Utility/Time")
 	Require(base_path, "Utility/System")
 	Require(base_path, "Utility/HttpSystem")
@@ -24,8 +24,8 @@ local ___COROUTINE = coroutine.running()
 	Require(base_path, "Utility/GatewaySystem")
 end
 
-function __ALITTLEAPI_SetupMainModule(sengine_path, module_path, module_name)
-local ___COROUTINE = coroutine.running()
+function __ALITTLEAPI_SetupMainModule(sengine_path, module_path, module_name, config_path)
+	local ___COROUTINE = coroutine.running()
 	ALittle.Log("module_name:" .. module_name)
 	Require(module_path, "Script/Main")
 	local module = _G[module_name]
@@ -38,7 +38,7 @@ local ___COROUTINE = coroutine.running()
 		ALittle.Log("找不到模块__Module_Setup函数:" .. module_name)
 		return
 	end
-	setup_module(sengine_path, module_path)
+	setup_module(sengine_path, module_path, config_path)
 end
 
 function __ALITTLEAPI_ShutdownMainModule(module_name)

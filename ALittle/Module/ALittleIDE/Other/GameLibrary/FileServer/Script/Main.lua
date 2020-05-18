@@ -1,4 +1,4 @@
--- ALittle Generate Lua
+-- ALittle Generate Lua And Do Not Edit This Line!
 module("FileServer", package.seeall)
 
 local ___pairs = pairs
@@ -6,11 +6,11 @@ local ___ipairs = ipairs
 
 
 g_ConfigSystem = nil
-function __Module_Setup(sengine_path, module_path)
+function __Module_Setup(sengine_path, module_path, config_path)
 	Require(module_path, "Script/HeadImageManager")
 	Require(module_path, "Script/ClanImageManager")
 	math.randomseed(os.time())
-	g_ConfigSystem = ALittle.CreateJsonConfig("Module/ALittleIDE/Other/GameLibrary/FileServer.cfg", true)
+	g_ConfigSystem = ALittle.CreateJsonConfig(config_path, true)
 	local wan_ip = g_ConfigSystem:GetConfig("wan_ip", "127.0.0.1")
 	local yun_ip = g_ConfigSystem:GetConfig("yun_ip", "")
 	local port_offset = g_ConfigSystem:GetConfig("port_offset", 0)

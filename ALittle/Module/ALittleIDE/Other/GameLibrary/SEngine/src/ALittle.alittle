@@ -22,7 +22,7 @@ public await static RequireSEngine(string base_path)
     Require(base_path, "Utility/GatewaySystem");
 }
 
-public await static __ALITTLEAPI_SetupMainModule(string sengine_path, string module_path, string module_name)
+public await static __ALITTLEAPI_SetupMainModule(string sengine_path, string module_path, string module_name, string config_path)
 {
     ALittle.Log("module_name:"..module_name);
     alittle.Require(module_path, "Script/Main");
@@ -33,14 +33,14 @@ public await static __ALITTLEAPI_SetupMainModule(string sengine_path, string mod
         return;
     }
     
-    var setup_module:Functor<(string, string)> = cast<Map<string, any>>(module)["__Module_Setup"];
+    var setup_module:Functor<(string, string, string)> = cast<Map<string, any>>(module)["__Module_Setup"];
     if (setup_module == null)
     {
         ALittle.Log("找不到模块__Module_Setup函数:"..module_name);
         return;
     }
     
-    setup_module(sengine_path, module_path);
+    setup_module(sengine_path, module_path, config_path);
 }
 
 public static __ALITTLEAPI_ShutdownMainModule(string module_name)

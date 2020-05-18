@@ -1,4 +1,4 @@
--- ALittle Generate Lua
+-- ALittle Generate Lua And Do Not Edit This Line!
 module("DataServer", package.seeall)
 
 local ___pairs = pairs
@@ -9,12 +9,12 @@ g_ConfigSystem = nil
 g_ConnectServerYunIp = ""
 g_ConnectServerWanIp = ""
 g_ConnectServerPort = 0
-function __Module_Setup(sengine_path, module_path)
+function __Module_Setup(sengine_path, module_path, config_path)
 	Require(module_path, "Script/DataManager")
 	Require(module_path, "Script/LoginManager")
 	Require(module_path, "Script/LeaseManager")
 	math.randomseed(os.time())
-	g_ConfigSystem = ALittle.CreateJsonConfig("Module/ALittleIDE/Other/GameLibrary/DataServer.cfg", true)
+	g_ConfigSystem = ALittle.CreateJsonConfig(config_path, true)
 	local wan_ip = g_ConfigSystem:GetConfig("wan_ip", "127.0.0.1")
 	local yun_ip = g_ConfigSystem:GetConfig("yun_ip", "")
 	local port_offset = g_ConfigSystem:GetConfig("port_offset", 0)

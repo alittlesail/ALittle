@@ -1,4 +1,4 @@
--- ALittle Generate Lua
+-- ALittle Generate Lua And Do Not Edit This Line!
 module("LogServer", package.seeall)
 
 local ___pairs = pairs
@@ -19,9 +19,9 @@ option_map = {}
 })
 
 g_ConfigSystem = nil
-function __Module_Setup(sengine_path, module_path)
+function __Module_Setup(sengine_path, module_path, config_path)
 	math.randomseed(os.time(nil))
-	g_ConfigSystem = ALittle.CreateJsonConfig("Module/ALittleIDE/Other/GameLibrary/LogServer.cfg", true)
+	g_ConfigSystem = ALittle.CreateJsonConfig(config_path, true)
 	local wan_ip = g_ConfigSystem:GetConfig("wan_ip", "127.0.0.1")
 	local yun_ip = g_ConfigSystem:GetConfig("yun_ip", "")
 	local port_offset = g_ConfigSystem:GetConfig("port_offset", 0)
@@ -36,7 +36,7 @@ end
 
 local g_CurDate = ""
 function HandleLogEventInfo(client, msg)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	msg.log_time = os.time(nil)
 	local cur_date = os.date("%Y_%m_%d", msg.create_time)
 	local info = ___all_struct[976782632]

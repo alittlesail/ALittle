@@ -8,7 +8,7 @@ public class IDETreeLogic : ALittle.DisplayLayout
 	private DisplayObjectS _attr_panel;			// 当前控件对应的属性面板
 	
 	private ALittle.EffectImage _drag_effect;	// 拖拽特效
-	private bool _drag_shift;					// 拖拽时是否按下shift
+	private bool _drag_ctrl;					// 拖拽时是否按下ctrl
 
 	private ALittle.DisplayObject _item_title;	// 标题
 	private ALittle.DisplayObject _item_button;	// 按钮
@@ -22,7 +22,7 @@ public class IDETreeLogic : ALittle.DisplayLayout
 		this._user_info = user_info;	// 这个是当子控件信息对象
 		this._attr_panel = null;		// 属性设置面板
 		this._drag_effect = null;
-		this._drag_shift = false;
+		this._drag_ctrl = false;
 	}
 
 	public get user_info() : IDETreeUserInfo { return this._user_info; }
@@ -171,8 +171,8 @@ public class IDETreeLogic : ALittle.DisplayLayout
 	// 拖拽item
 	public fun HandleDragBegin(ALittle.UIButtonDragBeginEvent event)
 	{
-		this._drag_shift = (A_UISystem.sym_map[1073742049] != null || A_UISystem.sym_map[1073742053] != null);
-		if (this._drag_shift == false)
+		this._drag_ctrl = (A_UISystem.sym_map[1073742048] != null || A_UISystem.sym_map[1073742052] != null);
+		if (this._drag_ctrl == false)
 		{
 			event.target = this._tab_child.tree_screen;
 			this._tab_child.tree_screen.DispatchEvent(event);
@@ -192,7 +192,7 @@ public class IDETreeLogic : ALittle.DisplayLayout
 	}
 	public fun HandleDrag(ALittle.UIButtonDragEvent event)
 	{
-		if (this._drag_shift == false)
+		if (this._drag_ctrl == false)
 		{
 			event.target = this._tab_child.tree_screen;
 			this._tab_child.tree_screen.DispatchEvent(event);
@@ -204,7 +204,7 @@ public class IDETreeLogic : ALittle.DisplayLayout
 	}
 	public fun HandleDragEnd(ALittle.UIButtonDragEndEvent event)
 	{
-		if (this._drag_shift == false)
+		if (this._drag_ctrl == false)
 		{
 			event.target = this._tab_child.tree_screen;
 			this._tab_child.tree_screen.DispatchEvent(event);

@@ -39,7 +39,7 @@ function IDETreeLogic:Ctor(ctrl_sys, user_info, tab_child)
 	___rawset(self, "_user_info", user_info)
 	___rawset(self, "_attr_panel", nil)
 	___rawset(self, "_drag_effect", nil)
-	___rawset(self, "_drag_shift", false)
+	___rawset(self, "_drag_ctrl", false)
 end
 
 function IDETreeLogic.__getter:user_info()
@@ -194,8 +194,8 @@ function IDETreeLogic:HandleMoveOut(event)
 end
 
 function IDETreeLogic:HandleDragBegin(event)
-	self._drag_shift = (A_UISystem.sym_map[1073742049] ~= nil or A_UISystem.sym_map[1073742053] ~= nil)
-	if self._drag_shift == false then
+	self._drag_ctrl = (A_UISystem.sym_map[1073742048] ~= nil or A_UISystem.sym_map[1073742052] ~= nil)
+	if self._drag_ctrl == false then
 		event.target = self._tab_child.tree_screen
 		self._tab_child.tree_screen:DispatchEvent(___all_struct[1301789264], event)
 		return
@@ -214,7 +214,7 @@ function IDETreeLogic:HandleDragBegin(event)
 end
 
 function IDETreeLogic:HandleDrag(event)
-	if self._drag_shift == false then
+	if self._drag_ctrl == false then
 		event.target = self._tab_child.tree_screen
 		self._tab_child.tree_screen:DispatchEvent(___all_struct[1337289812], event)
 		return
@@ -227,7 +227,7 @@ function IDETreeLogic:HandleDrag(event)
 end
 
 function IDETreeLogic:HandleDragEnd(event)
-	if self._drag_shift == false then
+	if self._drag_ctrl == false then
 		event.target = self._tab_child.tree_screen
 		self._tab_child.tree_screen:DispatchEvent(___all_struct[150587926], event)
 		return

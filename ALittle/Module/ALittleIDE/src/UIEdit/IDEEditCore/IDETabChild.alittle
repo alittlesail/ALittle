@@ -80,6 +80,8 @@ public class IDETabChild
     private ALittle.DisplayObject _tab_right_exlinear;      // 右键菜单的菜单容器Linear
     
     private ALittle.DisplayObject _control_tabchild_menu;           // 对选中控件显示的右键菜单
+    private ALittle.DisplayObject _right_control_tree_focus;
+    private ALittle.DisplayObject _right_control_tree_pickparent;
     private ALittle.DisplayObject _right_control_tree_textedit;
     private ALittle.DisplayObject _right_control_tree_up;
     private ALittle.DisplayObject _right_control_tree_down;
@@ -486,10 +488,6 @@ public class IDETabChild
             this._tab_quad_map = new Map<IDETreeLogic, IDETabChildHandleInfo>();
             this._tab_quad_container.RemoveAllChild();
 		}
-	
-		// 如果已经存在，那么直接返回
-        var handle_info = this._tab_quad_map[target];
-        if (handle_info != null) return;
 
 		// 不是同一个父控件的不能同时选中
         var common_parent:IDETreeLogic = null;
@@ -501,66 +499,103 @@ public class IDETabChild
             break;
 		}
 		if (has_target && common_parent != target.logic_parent)
-            return;
-	
-        var control_line = new IDETabChildControlLine();
-        var handle_quad = g_Control.CreateControl{ALittle.DisplayObject}("ide_common_handle_quad", control_line);
-        control_line.quad.AddEventListener(this, this.HandleHandleQuadLButtonUp);
-        control_line.quad.AddEventListener(this, this.HandleHandleQuadLButtonDown);
-        control_line.quad.AddEventListener(this, this.HandleHandleQuadDragBegin);
-        control_line.quad.AddEventListener(this, this.HandleHandleQuadDrag);
-        control_line.quad.AddEventListener(this, this.HandleHandleQuadDragEnd);
-        control_line.quad.AddEventListener(this, this.HandleHandleQuadRButtonDown);
-        control_line.quad.AddEventListener(this, this.HandleHandleQuadKeyDown);
-	
-		// control_line.size_quad_container.visible = false
-        control_line.size_quad.AddEventListener(this, this.HandleHandleSizeQuadKeyDown);
-        control_line.size_quad.AddEventListener(this, this.HandleHandleSizeQuadDragBegin);
-        control_line.size_quad.AddEventListener(this, this.HandleHandleSizeQuadDrag);
-        control_line.size_quad.AddEventListener(this, this.HandleHandleSizeQuadDragEnd);
-        control_line.size_quad.AddEventListener(this, this.HandleHandleSizeQuadMoveIn);
-        control_line.size_quad.AddEventListener(this, this.HandleHandleSizeQuadMoveOut);
-
-        handle_info = new IDETabChildHandleInfo();
-	
-        var target_parent = target.user_info.object;
-        var quad_parent = handle_quad;
-		while (target_parent != null)
         {
-            quad_parent.x = target_parent.x;
-            quad_parent.y = target_parent.y;
-            quad_parent.width = target_parent.width;
-            quad_parent.height = target_parent.height;
-            quad_parent.scale_x = target_parent.scale_x;
-            quad_parent.scale_y = target_parent.scale_y;
-            quad_parent.center_x = target_parent.center_x;
-            quad_parent.center_y = target_parent.center_y;
-            quad_parent.angle = target_parent.angle;
-	
-            var display_group = new ALittle.DisplayGroup(g_Control);
-            display_group.AddChild(quad_parent);
-	
-			if (target_parent.show_parent == this._tab_object_container)
+            var parent = target.logic_parent;
+            while (parent != null && common_parent != parent)
             {
-                handle_info.display_group = display_group;
-                this._tab_quad_container.AddChild(display_group);
-                break;
-			}
+                target = cast<IDETreeLogic>(parent);
+                parent = parent.logic_parent;
+            }
+            if (parent == null) return;
+        }
+
+        // 需要处理的列表
+        var list = new List<IDETreeLogic>();
+        if (!has_target || common_parent == null)
+        {
+            list[1] = target;
+        }
+        else
+        {
+            // 找到最小的子控件下标
+            var max_index = common_parent.GetChildIndex(target);
+            var min_index = max_index;
+            for (var target, info in this._tab_quad_map)
+            {
+                var index = common_parent.GetChildIndex(target);
+                if (index < min_index) min_index = index;
+                elseif (index > max_index) max_index = index;
+            }
+            for (var index = min_index; index <= max_index; 1)
+            {
+                var child = cast<IDETreeLogic>(common_parent.GetChildByIndex(index));
+                if (this._tab_quad_map[child] == null)
+                    ALittle.List_Push(list, child);
+            }
+        }
+
+        for (var index, child in list)
+        {
+            var control_line = new IDETabChildControlLine();
+            var handle_quad = g_Control.CreateControl{ALittle.DisplayObject}("ide_common_handle_quad", control_line);
+            control_line.quad.AddEventListener(this, this.HandleHandleQuadLButtonUp);
+            control_line.quad.AddEventListener(this, this.HandleHandleQuadLButtonDown);
+            control_line.quad.AddEventListener(this, this.HandleHandleQuadDragBegin);
+            control_line.quad.AddEventListener(this, this.HandleHandleQuadDrag);
+            control_line.quad.AddEventListener(this, this.HandleHandleQuadDragEnd);
+            control_line.quad.AddEventListener(this, this.HandleHandleQuadRButtonDown);
+            control_line.quad.AddEventListener(this, this.HandleHandleQuadKeyDown);
 	
-            quad_parent = display_group;
-            target_parent = target_parent.show_parent;
-		}
-		
-        handle_info.handle_quad = handle_quad;
-        handle_info.focus_quad = control_line.quad;
-        handle_info.size_quad_container = control_line.size_quad_container;
-        control_line.quad._user_data = handle_info;
-        control_line.size_quad._user_data = handle_info;
+		    // control_line.size_quad_container.visible = false
+            control_line.size_quad.AddEventListener(this, this.HandleHandleSizeQuadKeyDown);
+            control_line.size_quad.AddEventListener(this, this.HandleHandleSizeQuadDragBegin);
+            control_line.size_quad.AddEventListener(this, this.HandleHandleSizeQuadDrag);
+            control_line.size_quad.AddEventListener(this, this.HandleHandleSizeQuadDragEnd);
+            control_line.size_quad.AddEventListener(this, this.HandleHandleSizeQuadMoveIn);
+            control_line.size_quad.AddEventListener(this, this.HandleHandleSizeQuadMoveOut);
+
+            var handle_info = new IDETabChildHandleInfo();
 	
-        target.ShowAttributePanel();
+            var target_parent = child.user_info.object;
+            var quad_parent = handle_quad;
+		    while (target_parent != null)
+            {
+                quad_parent.x = target_parent.x;
+                quad_parent.y = target_parent.y;
+                quad_parent.width = target_parent.width;
+                quad_parent.height = target_parent.height;
+                quad_parent.scale_x = target_parent.scale_x;
+                quad_parent.scale_y = target_parent.scale_y;
+                quad_parent.center_x = target_parent.center_x;
+                quad_parent.center_y = target_parent.center_y;
+                quad_parent.angle = target_parent.angle;
+	
+                var display_group = new ALittle.DisplayGroup(g_Control);
+                display_group.AddChild(quad_parent);
+	
+			    if (target_parent.show_parent == this._tab_object_container)
+                {
+                    handle_info.display_group = display_group;
+                    this._tab_quad_container.AddChild(display_group);
+                    break;
+			    }
+	
+                quad_parent = display_group;
+                target_parent = target_parent.show_parent;
+		    }
 		
-        handle_info.target = target;
-        this._tab_quad_map[target] = handle_info;
+            handle_info.handle_quad = handle_quad;
+            handle_info.focus_quad = control_line.quad;
+            handle_info.size_quad_container = control_line.size_quad_container;
+            control_line.quad._user_data = handle_info;
+            control_line.size_quad._user_data = handle_info;
+	
+            child.ShowAttributePanel();
+		
+            handle_info.target = child;
+            this._tab_quad_map[child] = handle_info;
+        }
+	
         var loop = new ALittle.LoopFunction(bind(this.FocusInHandleQuad, this, target), 1, 0, 1);
         loop.Start();
 	}
@@ -665,6 +700,7 @@ public class IDETabChild
 	
 	public fun HandleHandleQuadLButtonDown(ALittle.UILButtonDownEvent event)
     {
+        ALittle.Log(event.count);
 		// 获取信息
         var handle_info:IDETabChildHandleInfo = event.target._user_data;
         handle_info.buttondown_lock = true;
@@ -915,6 +951,7 @@ public class IDETabChild
             this._control_tabchild_menu = g_Control.CreateControl{ALittle.DisplayObject}("ide_control_tabchild_menu", this);
 	
         this._right_control_tree_textedit.disabled = g_IDEEnum.text_edit_display_map[target.user_info.default.__class] == null;
+        this._right_control_tree_pickparent.disabled = target.user_info.root;
         this._right_control_tree_up.disabled = target.user_info.root || target.user_info.child_type != "child";
         this._right_control_tree_down.disabled = target.user_info.root || target.user_info.child_type != "child";
         this._right_control_tree_add.disabled = !target.IsTree();
@@ -1367,6 +1404,19 @@ public class IDETabChild
 	
         this.ShowTreeItemFocus(target);
 	}
+    // 拾取控件父节点
+    public fun HandleRightControlTreePickParent(ALittle.UIEvent event)
+    {
+		// 隐藏右键菜单
+        A_LayerManager.HideFromRight(this._control_tabchild_menu);
+        var target:IDETreeLogic = this._control_tabchild_menu._user_data;
+        this._control_tabchild_menu._user_data = null;
+
+        var parent = cast<IDETreeLogic>(target.logic_parent);
+        if (parent == null) return;
+
+        this.ShowHandleQuad(parent);
+    }
 	// 处理文本编辑结果
 	public fun HandleRenameConfirm(ALittle.UIEvent event)
     {

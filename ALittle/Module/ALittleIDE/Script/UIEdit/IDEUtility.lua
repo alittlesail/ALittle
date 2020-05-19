@@ -138,6 +138,24 @@ function IDEUtility_CheckName(name)
 	return true, nil
 end
 
+function IDEUtility_CheckResourceName(name)
+	local len = ALittle.String_Len(name)
+	if len == 0 then
+		return false, "命名只能支持字母数字下划线"
+	end
+	local i = 1
+	while true do
+		if not(i <= len) then break end
+		local byte = ALittle.String_Byte(name, i)
+		local check_all = byte >= 65 and byte <= 90 or byte >= 97 and byte <= 122 or byte >= 48 and byte <= 57 or byte == 95
+		if check_all == false then
+			return false, "命名只能支持字母数字下划线"
+		end
+		i = i+(1)
+	end
+	return true, nil
+end
+
 function IDEUtility_NewGiveBaseCase(info, object)
 	if g_IDEEnum.text_type_display_map[info.__class] then
 		info.font_path = g_IDEProject.project.config:GetConfig("default_font_path", nil)

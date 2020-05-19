@@ -459,10 +459,6 @@ function IDETabChild:ShowHandleQuad(target, force_shift)
 		self._tab_quad_map = {}
 		self._tab_quad_container:RemoveAllChild()
 	end
-	local handle_info = self._tab_quad_map[target]
-	if handle_info ~= nil then
-		return
-	end
 	local common_parent = nil
 	local has_target = false
 	for tree_target, handle_info in ___pairs(self._tab_quad_map) do
@@ -471,54 +467,87 @@ function IDETabChild:ShowHandleQuad(target, force_shift)
 		break
 	end
 	if has_target and common_parent ~= target.logic_parent then
-		return
-	end
-	local control_line = {}
-	local handle_quad = g_Control:CreateControl("ide_common_handle_quad", control_line)
-	control_line.quad:AddEventListener(___all_struct[40651933], self, self.HandleHandleQuadLButtonUp)
-	control_line.quad:AddEventListener(___all_struct[1883782801], self, self.HandleHandleQuadLButtonDown)
-	control_line.quad:AddEventListener(___all_struct[1301789264], self, self.HandleHandleQuadDragBegin)
-	control_line.quad:AddEventListener(___all_struct[1337289812], self, self.HandleHandleQuadDrag)
-	control_line.quad:AddEventListener(___all_struct[150587926], self, self.HandleHandleQuadDragEnd)
-	control_line.quad:AddEventListener(___all_struct[-641444818], self, self.HandleHandleQuadRButtonDown)
-	control_line.quad:AddEventListener(___all_struct[-1604617962], self, self.HandleHandleQuadKeyDown)
-	control_line.size_quad:AddEventListener(___all_struct[-1604617962], self, self.HandleHandleSizeQuadKeyDown)
-	control_line.size_quad:AddEventListener(___all_struct[1301789264], self, self.HandleHandleSizeQuadDragBegin)
-	control_line.size_quad:AddEventListener(___all_struct[1337289812], self, self.HandleHandleSizeQuadDrag)
-	control_line.size_quad:AddEventListener(___all_struct[150587926], self, self.HandleHandleSizeQuadDragEnd)
-	control_line.size_quad:AddEventListener(___all_struct[544684311], self, self.HandleHandleSizeQuadMoveIn)
-	control_line.size_quad:AddEventListener(___all_struct[-1202439334], self, self.HandleHandleSizeQuadMoveOut)
-	handle_info = {}
-	local target_parent = target.user_info.object
-	local quad_parent = handle_quad
-	while target_parent ~= nil do
-		quad_parent.x = target_parent.x
-		quad_parent.y = target_parent.y
-		quad_parent.width = target_parent.width
-		quad_parent.height = target_parent.height
-		quad_parent.scale_x = target_parent.scale_x
-		quad_parent.scale_y = target_parent.scale_y
-		quad_parent.center_x = target_parent.center_x
-		quad_parent.center_y = target_parent.center_y
-		quad_parent.angle = target_parent.angle
-		local display_group = ALittle.DisplayGroup(g_Control)
-		display_group:AddChild(quad_parent)
-		if target_parent.show_parent == self._tab_object_container then
-			handle_info.display_group = display_group
-			self._tab_quad_container:AddChild(display_group)
-			break
+		local parent = target.logic_parent
+		while parent ~= nil and common_parent ~= parent do
+			target = parent
+			parent = parent.logic_parent
 		end
-		quad_parent = display_group
-		target_parent = target_parent.show_parent
+		if parent == nil then
+			return
+		end
 	end
-	handle_info.handle_quad = handle_quad
-	handle_info.focus_quad = control_line.quad
-	handle_info.size_quad_container = control_line.size_quad_container
-	control_line.quad._user_data = handle_info
-	control_line.size_quad._user_data = handle_info
-	target:ShowAttributePanel()
-	handle_info.target = target
-	self._tab_quad_map[target] = handle_info
+	local list = {}
+	if not has_target or common_parent == nil then
+		list[1] = target
+	else
+		local max_index = common_parent:GetChildIndex(target)
+		local min_index = max_index
+		for target, info in ___pairs(self._tab_quad_map) do
+			local index = common_parent:GetChildIndex(target)
+			if index < min_index then
+				min_index = index
+			elseif index > max_index then
+				max_index = index
+			end
+		end
+		local index = min_index
+		while true do
+			if not(index <= max_index) then break end
+			local child = common_parent:GetChildByIndex(index)
+			if self._tab_quad_map[child] == nil then
+				ALittle.List_Push(list, child)
+			end
+			index = index+(1)
+		end
+	end
+	for index, child in ___ipairs(list) do
+		local control_line = {}
+		local handle_quad = g_Control:CreateControl("ide_common_handle_quad", control_line)
+		control_line.quad:AddEventListener(___all_struct[40651933], self, self.HandleHandleQuadLButtonUp)
+		control_line.quad:AddEventListener(___all_struct[1883782801], self, self.HandleHandleQuadLButtonDown)
+		control_line.quad:AddEventListener(___all_struct[1301789264], self, self.HandleHandleQuadDragBegin)
+		control_line.quad:AddEventListener(___all_struct[1337289812], self, self.HandleHandleQuadDrag)
+		control_line.quad:AddEventListener(___all_struct[150587926], self, self.HandleHandleQuadDragEnd)
+		control_line.quad:AddEventListener(___all_struct[-641444818], self, self.HandleHandleQuadRButtonDown)
+		control_line.quad:AddEventListener(___all_struct[-1604617962], self, self.HandleHandleQuadKeyDown)
+		control_line.size_quad:AddEventListener(___all_struct[-1604617962], self, self.HandleHandleSizeQuadKeyDown)
+		control_line.size_quad:AddEventListener(___all_struct[1301789264], self, self.HandleHandleSizeQuadDragBegin)
+		control_line.size_quad:AddEventListener(___all_struct[1337289812], self, self.HandleHandleSizeQuadDrag)
+		control_line.size_quad:AddEventListener(___all_struct[150587926], self, self.HandleHandleSizeQuadDragEnd)
+		control_line.size_quad:AddEventListener(___all_struct[544684311], self, self.HandleHandleSizeQuadMoveIn)
+		control_line.size_quad:AddEventListener(___all_struct[-1202439334], self, self.HandleHandleSizeQuadMoveOut)
+		local handle_info = {}
+		local target_parent = child.user_info.object
+		local quad_parent = handle_quad
+		while target_parent ~= nil do
+			quad_parent.x = target_parent.x
+			quad_parent.y = target_parent.y
+			quad_parent.width = target_parent.width
+			quad_parent.height = target_parent.height
+			quad_parent.scale_x = target_parent.scale_x
+			quad_parent.scale_y = target_parent.scale_y
+			quad_parent.center_x = target_parent.center_x
+			quad_parent.center_y = target_parent.center_y
+			quad_parent.angle = target_parent.angle
+			local display_group = ALittle.DisplayGroup(g_Control)
+			display_group:AddChild(quad_parent)
+			if target_parent.show_parent == self._tab_object_container then
+				handle_info.display_group = display_group
+				self._tab_quad_container:AddChild(display_group)
+				break
+			end
+			quad_parent = display_group
+			target_parent = target_parent.show_parent
+		end
+		handle_info.handle_quad = handle_quad
+		handle_info.focus_quad = control_line.quad
+		handle_info.size_quad_container = control_line.size_quad_container
+		control_line.quad._user_data = handle_info
+		control_line.size_quad._user_data = handle_info
+		child:ShowAttributePanel()
+		handle_info.target = child
+		self._tab_quad_map[child] = handle_info
+	end
 	local loop = ALittle.LoopFunction(Lua.Bind(self.FocusInHandleQuad, self, target), 1, 0, 1)
 	loop:Start()
 end
@@ -617,6 +646,7 @@ function IDETabChild:GetScale()
 end
 
 function IDETabChild:HandleHandleQuadLButtonDown(event)
+	ALittle.Log(event.count)
 	local handle_info = event.target._user_data
 	handle_info.buttondown_lock = true
 end
@@ -817,6 +847,7 @@ function IDETabChild:HandleHandleQuadRButtonDown(event)
 		self._control_tabchild_menu = g_Control:CreateControl("ide_control_tabchild_menu", self)
 	end
 	self._right_control_tree_textedit.disabled = g_IDEEnum.text_edit_display_map[target.user_info.default.__class] == nil
+	self._right_control_tree_pickparent.disabled = target.user_info.root
 	self._right_control_tree_up.disabled = target.user_info.root or target.user_info.child_type ~= "child"
 	self._right_control_tree_down.disabled = target.user_info.root or target.user_info.child_type ~= "child"
 	self._right_control_tree_add.disabled = not target:IsTree()
@@ -1150,6 +1181,17 @@ function IDETabChild:HandleRightControlTreeFocus(event)
 	local target = self._control_tabchild_menu._user_data
 	self._control_tabchild_menu._user_data = nil
 	self:ShowTreeItemFocus(target)
+end
+
+function IDETabChild:HandleRightControlTreePickParent(event)
+	A_LayerManager:HideFromRight(self._control_tabchild_menu)
+	local target = self._control_tabchild_menu._user_data
+	self._control_tabchild_menu._user_data = nil
+	local parent = target.logic_parent
+	if parent == nil then
+		return
+	end
+	self:ShowHandleQuad(parent)
 end
 
 function IDETabChild:HandleRenameConfirm(event)

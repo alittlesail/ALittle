@@ -122,11 +122,17 @@ function IDEAttrImageDialog:ShowDialog(path, callback)
 	end
 	if self._dialog == nil then
 		self._dialog = g_Control:CreateControl("ide_image_select_dialog", self)
-		A_LayerManager:AddToModal(self._dialog)
 		self._src_title = self._dialog.title
 		if self._src_title == nil then
 			self._src_title = "图片选择器"
 		end
+	end
+	if callback ~= nil then
+		g_IDECenter.dialog_layer:RemoveChild(self._dialog)
+		A_LayerManager:AddToModal(self._dialog)
+	else
+		A_LayerManager:RemoveFromModal(self._dialog)
+		g_IDECenter.dialog_layer:AddChild(self._dialog)
 	end
 	if path ~= nil or self._real_path == nil then
 		if self:SetPath(path) == false then
@@ -367,6 +373,7 @@ function IDEAttrImageDialog:HandleSearchClick(event)
 end
 
 function IDEAttrImageDialog:HandleItemRButtonDown(event)
+	A_LayerManager:RemoveFromTip(self._image_pre_dialog)
 	if self._image_select_menu == nil then
 		self._image_select_menu = g_Control:CreateControl("ide_image_select_menu", self)
 	end
@@ -376,7 +383,57 @@ function IDEAttrImageDialog:HandleItemRButtonDown(event)
 	self._image_select_menu.y = A_UISystem.mouse_y
 	self._image_select_cut.disabled = user_data.directory
 	self._image_select_del.disabled = false
+	self._image_select_copyimagecode.disabled = user_data.directory
+	self._image_select_copygrid9imagecode.disabled = user_data.directory
 	self._image_select_menu._user_data = user_data
+end
+
+function IDEAttrImageDialog:HandleImageCopyGrid9ImageCodeClick(event)
+	A_LayerManager:HideFromRight(self._image_select_menu)
+	local user_data = self._image_select_menu._user_data
+	self._image_select_menu._user_data = nil
+	local display_info = IDEUtility_GenerateGrid9ImageInfo(g_IDEProject.project.base_path .. "Texture/", user_data.path)
+	if display_info == nil then
+		g_IDETool:ShowNotice("错误", "图片加载失败:" .. user_data.path)
+		return
+	end
+	local copy_list = {}
+	local info = {}
+	info.index = 1
+	info.info = display_info
+	copy_list[1] = info
+	ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list))
+end
+
+function IDEAttrImageDialog:HandleImageCopyImageCodeClick(event)
+	A_LayerManager:HideFromRight(self._image_select_menu)
+	local user_data = self._image_select_menu._user_data
+	self._image_select_menu._user_data = nil
+	self:CopyImageCodeImpl(user_data.path)
+end
+
+function IDEAttrImageDialog:CopyImageCodeImpl(file_path)
+	local width = 100
+	local height = 100
+	local surface = ALittle.System_LoadSurface(g_IDEProject.project.base_path .. "Texture/" .. file_path)
+	if surface ~= nil then
+		width = ALittle.System_GetSurfaceWidth(surface)
+		height = ALittle.System_GetSurfaceHeight(surface)
+		ALittle.System_FreeSurface(surface)
+	end
+	local display_info = {}
+	display_info.__class = "Image"
+	display_info.texture_name = file_path
+	display_info.width_type = 1
+	display_info.width_value = width
+	display_info.height_type = 1
+	display_info.height_value = height
+	local info = {}
+	info.index = 1
+	info.info = display_info
+	local copy_list = {}
+	copy_list[1] = info
+	ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list))
 end
 
 function IDEAttrImageDialog:HandleImageEditClick(event)
@@ -420,7 +477,7 @@ function IDEAttrImageDialog:HandleImageDropFile(event)
 		return
 	end
 	if attr.mode == "directory" then
-		local check, error = IDEUtility_CheckName(name)
+		local check, error = IDEUtility_CheckResourceName(name)
 		if not check then
 			g_IDETool:ShowNotice("提示", error)
 			return
@@ -434,7 +491,7 @@ function IDEAttrImageDialog:HandleImageDropFile(event)
 			g_IDETool:ShowNotice("提示", "只能接收png或者jpg文件")
 			return
 		end
-		local check, error = IDEUtility_CheckName(ALittle.File_GetJustFileNameByPath(event.path))
+		local check, error = IDEUtility_CheckResourceName(ALittle.File_GetJustFileNameByPath(event.path))
 		if not check then
 			g_IDETool:ShowNotice("提示", error)
 			return
@@ -453,7 +510,7 @@ function IDEAttrImageDialog:HandleCreateDirectory(name)
 	if name == "" then
 		return
 	end
-	local check, error = IDEUtility_CheckName(name)
+	local check, error = IDEUtility_CheckResourceName(name)
 	if not check then
 		g_IDETool:ShowNotice("错误", error)
 		return
@@ -549,8 +606,18 @@ function IDEAttrImageDialog:HandleDialogDrag(event)
 	elseif event.target == self._drag_ud_quad then
 		delta_x = 0
 	end
+	if self._dialog.width + delta_x < 506 then
+		delta_x = 506 - self._dialog.width
+	end
+	if self._dialog.height + delta_y < 200 then
+		delta_y = 200 - self._dialog.height
+	end
 	self._dialog.width = self._dialog.width + delta_x
 	self._dialog.height = self._dialog.height + delta_y
+end
+
+function IDEAttrImageDialog:HandleDialogDragEnd(event)
+	self:Refresh()
 end
 
 g_IDEAttrImageDialog = IDEAttrImageDialog()

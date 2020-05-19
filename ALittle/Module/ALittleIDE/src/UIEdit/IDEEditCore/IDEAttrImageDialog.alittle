@@ -42,6 +42,8 @@ public class IDEAttrImageDialog
 	private ALittle.DisplayObject _drag_ud_quad;
 	private ALittle.DisplayObject _image_select_cut;
 	private ALittle.DisplayObject _image_select_del;
+	private ALittle.DisplayObject _image_select_copyimagecode;
+	private ALittle.DisplayObject _image_select_copygrid9imagecode;
 
 	public ctor()
 	{
@@ -94,10 +96,20 @@ public class IDEAttrImageDialog
 		if (this._dialog == null)
 		{
 			this._dialog = g_Control.CreateControl{ALittle.Dialog}("ide_image_select_dialog", this);
-			A_LayerManager.AddToModal(this._dialog);
 			this._src_title = this._dialog.title;
 			if (this._src_title == null) this._src_title = "图片选择器";
 		}
+
+		if (callback != null)
+		{
+			g_IDECenter.dialog_layer.RemoveChild(this._dialog);
+            A_LayerManager.AddToModal(this._dialog);
+		}
+		else
+		{
+            A_LayerManager.RemoveFromModal(this._dialog);
+			g_IDECenter.dialog_layer.AddChild(this._dialog);
+        }
 	
 		if (path != null || this._real_path == null)
 		{
@@ -381,6 +393,8 @@ public class IDEAttrImageDialog
 	
 	public fun HandleItemRButtonDown(ALittle.UIRButtonDownEvent event)
 	{
+		A_LayerManager.RemoveFromTip(this._image_pre_dialog);
+
 		if (this._image_select_menu == null)
 			this._image_select_menu = g_Control.CreateControl{ALittle.DisplayObject}("ide_image_select_menu", this);
 
@@ -392,8 +406,69 @@ public class IDEAttrImageDialog
 		this._image_select_menu.y = A_UISystem.mouse_y;
 		this._image_select_cut.disabled = user_data.directory;
 		this._image_select_del.disabled = false;
+		this._image_select_copyimagecode.disabled = user_data.directory;
+		this._image_select_copygrid9imagecode.disabled = user_data.directory;
 	
 		this._image_select_menu._user_data = user_data;
+	}
+	
+	public fun HandleImageCopyGrid9ImageCodeClick(ALittle.UIEvent event)
+	{
+		A_LayerManager.HideFromRight(this._image_select_menu);
+
+		var user_data:IDEAttrImageSelectItemUserData = this._image_select_menu._user_data;
+		this._image_select_menu._user_data = null;
+	
+		var display_info = IDEUtility_GenerateGrid9ImageInfo(g_IDEProject.project.base_path.."Texture/", user_data.path);
+		if (display_info == null)
+		{
+			g_IDETool.ShowNotice("错误", "图片加载失败:"..cast<string>(user_data.path));
+			return;
+		}
+		var copy_list = new List<IDEControlCopyInfo>();
+		var info  = new IDEControlCopyInfo();
+		info.index = 1;
+		info.info = display_info;
+		copy_list[1] = info;
+		ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list));
+	}
+	
+	public fun HandleImageCopyImageCodeClick(ALittle.UIEvent event)
+	{
+		A_LayerManager.HideFromRight(this._image_select_menu);
+
+		var user_data:IDEAttrImageSelectItemUserData = this._image_select_menu._user_data;
+		this._image_select_menu._user_data = null;
+	
+		this.CopyImageCodeImpl(user_data.path);
+	}
+	
+	public fun CopyImageCodeImpl(string file_path)
+	{
+		var width = 100;
+		var height = 100;
+		var surface = ALittle.System_LoadSurface(g_IDEProject.project.base_path.."Texture/"..file_path);
+		if (surface != null)
+		{
+			width = ALittle.System_GetSurfaceWidth(surface);
+			height = ALittle.System_GetSurfaceHeight(surface);
+			ALittle.System_FreeSurface(surface);
+		}
+
+		var display_info = new ALittle.DisplayInfo();
+		display_info.__class = "Image";
+		display_info.texture_name = file_path;
+		display_info.width_type = ALittle.UIEnumTypes.POS_ABS;
+		display_info.width_value = width;
+		display_info.height_type = ALittle.UIEnumTypes.POS_ABS;
+		display_info.height_value = height;
+
+		var info = new IDEControlCopyInfo();
+		info.index = 1;
+		info.info = display_info;
+		var copy_list = new List<IDEControlCopyInfo>();
+		copy_list[1] = info;
+		ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list));
 	}
 	
 	public fun HandleImageEditClick(ALittle.UIEvent event)
@@ -450,7 +525,7 @@ public class IDEAttrImageDialog
 
 		if (attr.mode == "directory")
 		{
-			var check, error = IDEUtility_CheckName(name);
+			var check, error = IDEUtility_CheckResourceName(name);
 			if (!check)
 			{
 				g_IDETool.ShowNotice("提示", error);
@@ -471,7 +546,7 @@ public class IDEAttrImageDialog
 				return;
             }
 			
-			var check, error = IDEUtility_CheckName(ALittle.File_GetJustFileNameByPath(event.path));
+			var check, error = IDEUtility_CheckResourceName(ALittle.File_GetJustFileNameByPath(event.path));
 			if (!check)
 			{
 				g_IDETool.ShowNotice("提示", error);
@@ -494,7 +569,7 @@ public class IDEAttrImageDialog
 	{
 		if (name == "") return;
 
-		var check, error = IDEUtility_CheckName(name);
+		var check, error = IDEUtility_CheckResourceName(name);
 		if (!check)
 		{
             g_IDETool.ShowNotice("错误", error);
@@ -605,9 +680,19 @@ public class IDEAttrImageDialog
 			delta_y = 0;
 		elseif (event.target == this._drag_ud_quad)
 			delta_x = 0;
+
+		if (this._dialog.width + delta_x < 506)
+			delta_x = 506 - this._dialog.width;
+		if (this._dialog.height + delta_y < 200)
+			delta_y = 200 - this._dialog.height;
 	
 		this._dialog.width = this._dialog.width + delta_x;
 		this._dialog.height = this._dialog.height + delta_y;
+	}
+	
+	public fun HandleDialogDragEnd(ALittle.UIButtonDragEndEvent event)
+	{
+		this.Refresh();
 	}
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

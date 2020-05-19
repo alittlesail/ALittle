@@ -420,6 +420,10 @@ function IDETabManager:HandleTabRightMenu(event)
 		self:ControlRenameImpl(child)
 		return
 	end
+	if handle_name == "截图导出" then
+		A_OtherSystem:SystemSaveFile(tab_child, tab_child.name .. ".png", nil)
+		return
+	end
 end
 
 function IDETabManager:ControlRenameImpl(child)

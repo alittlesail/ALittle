@@ -48,6 +48,12 @@ name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
 type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
 option_map = {}
 })
+ALittle.RegStruct(-1676610185, "ALittle.UISystemSaveFileEvent", {
+name = "ALittle.UISystemSaveFileEvent", ns_name = "ALittle", rl_name = "UISystemSaveFileEvent", hash_code = -1676610185,
+name_list = {"target","path"},
+type_list = {"ALittle.DisplayObject","string"},
+option_map = {}
+})
 ALittle.RegStruct(-431205740, "ALittle.UIResizeEvent", {
 name = "ALittle.UIResizeEvent", ns_name = "ALittle", rl_name = "UIResizeEvent", hash_code = -431205740,
 name_list = {"target"},
@@ -115,7 +121,8 @@ type_list = {"ALittle.DisplayObject","bool"},
 option_map = {}
 })
 
-IDETabChild = Lua.Class(nil, "ALittleIDE.IDETabChild")
+assert(ALittle.UIEventDispatcher, " extends class:ALittle.UIEventDispatcher is nil")
+IDETabChild = Lua.Class(ALittle.UIEventDispatcher, "ALittleIDE.IDETabChild")
 
 function IDETabChild:Ctor(name, save)
 	___rawset(self, "_name", name)
@@ -149,10 +156,16 @@ function IDETabChild:Ctor(name, save)
 	___rawset(self, "_revoke_list", IDERevokeList())
 	___rawset(self, "_tree_loop_x", nil)
 	___rawset(self, "_tree_loop_y", nil)
+	self:AddEventListener(___all_struct[-1676610185], self, self.HandleSavePng)
 end
 
 function IDETabChild:HandleTreeSizeChanged(event)
 	self._tree_screen:RejustScrollBar()
+end
+
+function IDETabChild:HandleSavePng(event)
+	ALittle.Log(event.path)
+	g_Control:SaveControlToFile(self._tree_object.user_info.object, event.path)
 end
 
 function IDETabChild.__getter:name()
@@ -455,7 +468,11 @@ function IDETabChild:ShowHandleQuad(target, force_shift)
 	if force_shift then
 		shift = true
 	end
-	if shift == false then
+	local ctrl = (A_UISystem.sym_map[1073742048] ~= nil or A_UISystem.sym_map[1073742052] ~= nil)
+	if shift then
+		ctrl = false
+	end
+	if shift == false and ctrl == false then
 		self._tab_quad_map = {}
 		self._tab_quad_container:RemoveAllChild()
 	end
@@ -477,7 +494,7 @@ function IDETabChild:ShowHandleQuad(target, force_shift)
 		end
 	end
 	local list = {}
-	if not has_target or common_parent == nil then
+	if not has_target or common_parent == nil or ctrl then
 		list[1] = target
 	else
 		local max_index = common_parent:GetChildIndex(target)
@@ -560,7 +577,11 @@ function IDETabChild:HideHandleQuad(target, shift)
 	if shift == nil then
 		shift = (A_UISystem.sym_map[1073742049] ~= nil or A_UISystem.sym_map[1073742053] ~= nil)
 	end
-	if shift == false then
+	local ctrl = (A_UISystem.sym_map[1073742048] ~= nil or A_UISystem.sym_map[1073742052] ~= nil)
+	if shift then
+		ctrl = false
+	end
+	if shift == false and ctrl == false then
 		self._tab_quad_map = {}
 		self._tab_quad_container:RemoveAllChild()
 		target:ShowAttributePanel()
@@ -646,7 +667,6 @@ function IDETabChild:GetScale()
 end
 
 function IDETabChild:HandleHandleQuadLButtonDown(event)
-	ALittle.Log(event.count)
 	local handle_info = event.target._user_data
 	handle_info.buttondown_lock = true
 end

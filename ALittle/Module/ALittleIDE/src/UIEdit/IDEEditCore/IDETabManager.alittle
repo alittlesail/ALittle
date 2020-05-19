@@ -452,6 +452,11 @@ public class IDETabManager
 			this.ControlRenameImpl(child);
 			return;
 		}
+		if (handle_name == "截图导出")
+		{
+            A_OtherSystem.SystemSaveFile(tab_child, tab_child.name..".png", null);
+			return;
+        }
 	}
 	
 	// 修改控件名

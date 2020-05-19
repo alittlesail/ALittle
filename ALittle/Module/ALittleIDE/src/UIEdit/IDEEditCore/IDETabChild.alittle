@@ -43,7 +43,7 @@ struct IDETabChildQuickDragAddUserData
     string control_name;    // 拖拽的控件名称
 }
 
-public class IDETabChild
+public class IDETabChild : ALittle.UIEventDispatcher
 {
 	private string _name;           // 当前控件名
 	private bool _save;             // 是否已保存
@@ -153,12 +153,20 @@ public class IDETabChild
 		// 左侧控件树滚动Loop
 		this._tree_loop_x = null;
 		this._tree_loop_y = null;
+
+        this.AddEventListener(this, this.HandleSavePng);
     }
 	
 	public fun HandleTreeSizeChanged(ALittle.UIResizeEvent event)
 	{
 		this._tree_screen.RejustScrollBar();
 	}
+
+    private fun HandleSavePng(ALittle.UISystemSaveFileEvent event)
+    {
+        ALittle.Log(event.path);
+        g_Control.SaveControlToFile(this._tree_object.user_info.object, event.path);
+    }
 	
 	////////////////////////////////////////////////////////////////////////////////////////////-
 	public get name() : string { return this._name; }
@@ -481,9 +489,11 @@ public class IDETabChild
 		// 检查是否有按下shift键
         var shift = (A_UISystem.sym_map[1073742049] != null || A_UISystem.sym_map[1073742053] != null);
         if (force_shift) shift = true;
+		var ctrl = (A_UISystem.sym_map[1073742048] != null || A_UISystem.sym_map[1073742052] != null);
+        if (shift) ctrl = false;
 	
 		// 如果没有按下shift键，那么就直接清空所有的
-		if (shift == false)
+		if (shift == false && ctrl == false)
         {
             this._tab_quad_map = new Map<IDETreeLogic, IDETabChildHandleInfo>();
             this._tab_quad_container.RemoveAllChild();
@@ -511,7 +521,7 @@ public class IDETabChild
 
         // 需要处理的列表
         var list = new List<IDETreeLogic>();
-        if (!has_target || common_parent == null)
+        if (!has_target || common_parent == null || ctrl)
         {
             list[1] = target;
         }
@@ -607,8 +617,10 @@ public class IDETabChild
 	
 		if (shift == null)
             shift = (A_UISystem.sym_map[1073742049] != null || A_UISystem.sym_map[1073742053] != null);
+		var ctrl = (A_UISystem.sym_map[1073742048] != null || A_UISystem.sym_map[1073742052] != null);
+        if (shift) ctrl = false;
 
-		if (shift == false)
+		if (shift == false && ctrl == false)
         {
             this._tab_quad_map = new Map<IDETreeLogic, IDETabChildHandleInfo>();
             this._tab_quad_container.RemoveAllChild();
@@ -700,7 +712,6 @@ public class IDETabChild
 	
 	public fun HandleHandleQuadLButtonDown(ALittle.UILButtonDownEvent event)
     {
-        ALittle.Log(event.count);
 		// 获取信息
         var handle_info:IDETabChildHandleInfo = event.target._user_data;
         handle_info.buttondown_lock = true;

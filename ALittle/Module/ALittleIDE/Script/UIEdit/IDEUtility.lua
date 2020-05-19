@@ -126,11 +126,11 @@ function IDEUtility_CheckName(name)
 		if i == 1 then
 			local check_first = byte >= 65 and byte <= 90 or byte >= 97 and byte <= 122 or byte == 95
 			if check_first == false then
-				return false, "命名只能支持字母数字，不能以数字开头"
+				return false, "命名只能支持字母数字下划线，不能以数字开头"
 			end
 		else
 			if check_all == false then
-				return false, "命名只能支持字母数字，不能以数字开头"
+				return false, "命名只能支持字母数字下划线，不能以数字开头"
 			end
 		end
 		i = i+(1)

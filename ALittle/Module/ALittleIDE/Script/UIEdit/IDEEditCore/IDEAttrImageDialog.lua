@@ -72,6 +72,12 @@ name_list = {"target","abs_x","abs_y","rel_x","rel_y"},
 type_list = {"ALittle.DisplayObject","double","double","double","double"},
 option_map = {}
 })
+ALittle.RegStruct(-338112738, "ALittle.UIDropFileEvent", {
+name = "ALittle.UIDropFileEvent", ns_name = "ALittle", rl_name = "UIDropFileEvent", hash_code = -338112738,
+name_list = {"target","path"},
+type_list = {"ALittle.DisplayObject","string"},
+option_map = {}
+})
 
 IDEAttrImageDialog = Lua.Class(nil, "ALittleIDE.IDEAttrImageDialog")
 
@@ -186,6 +192,7 @@ function IDEAttrImageDialog:CreateImgItem(file_name, rel_path, abs_path)
 		info.button:AddEventListener(___all_struct[544684311], self, self.HandleItemMoveIn)
 		info.button:AddEventListener(___all_struct[-1202439334], self, self.HandleItemMoveOut)
 		info.button:AddEventListener(___all_struct[-1001723540], self, self.HandleItemMouseMove)
+		info.button:AddEventListener(___all_struct[-338112738], self, self.HandleImageDropFile)
 		local user_data = {}
 		user_data.path = rel_path
 		user_data.directory = false
@@ -202,6 +209,8 @@ function IDEAttrImageDialog:CreateDirItem(file_name, rel_path, abs_path)
 	info.name.text = file_name
 	info.button.drag_trans_target = self._scroll_list
 	info.button:AddEventListener(___all_struct[-449066808], self, self.HandleItemClick)
+	info.button:AddEventListener(___all_struct[-641444818], self, self.HandleItemRButtonDown)
+	info.button:AddEventListener(___all_struct[-338112738], self, self.HandleImageDropFile)
 	local user_data = {}
 	user_data.path = rel_path
 	user_data.directory = true
@@ -362,9 +371,12 @@ function IDEAttrImageDialog:HandleItemRButtonDown(event)
 		self._image_select_menu = g_Control:CreateControl("ide_image_select_menu", self)
 	end
 	A_LayerManager:ShowFromRight(self._image_select_menu)
+	local user_data = event.target._user_data
 	self._image_select_menu.x = A_UISystem.mouse_x
 	self._image_select_menu.y = A_UISystem.mouse_y
-	self._image_select_menu._user_data = event.target._user_data
+	self._image_select_cut.disabled = user_data.directory
+	self._image_select_del.disabled = false
+	self._image_select_menu._user_data = user_data
 end
 
 function IDEAttrImageDialog:HandleImageEditClick(event)
@@ -378,7 +390,79 @@ function IDEAttrImageDialog:HandleImageDeleteClick(event)
 	A_LayerManager:HideFromRight(self._image_select_menu)
 	local user_data = self._image_select_menu._user_data
 	self._image_select_menu._user_data = nil
-	ALittle.File_DeleteFile(g_IDEProject.project.base_path .. "Texture/" .. user_data.path)
+	if user_data.directory then
+		g_IDETool:DeleteNotice("删除", "确定要永久删除该文件夹，以及子文件和图片吗？", Lua.Bind(self.HandleImageDeleteConfirm, self, user_data))
+	else
+		g_IDETool:DeleteNotice("删除", "确定要永久删除该图片吗？", Lua.Bind(self.HandleImageDeleteConfirm, self, user_data))
+	end
+end
+
+function IDEAttrImageDialog:HandleImageDeleteConfirm(user_data)
+	if user_data.directory then
+		ALittle.File_DeleteDeepDir(g_IDEProject.project.base_path .. "Texture/" .. user_data.path)
+	else
+		ALittle.File_DeleteFile(g_IDEProject.project.base_path .. "Texture/" .. user_data.path)
+	end
+	self:Refresh()
+end
+
+function IDEAttrImageDialog:HandleImageDropFile(event)
+	local real_path = self._real_path
+	local user_data = event.target._user_data
+	if user_data ~= nil and user_data.directory then
+		real_path = g_IDEProject.project.base_path .. "Texture/" .. user_data.path
+	end
+	local name = ALittle.File_GetFileNameByPath(event.path)
+	local ansi_path = event.path
+	ansi_path = utf8.ansi2utf8(ansi_path)
+	local attr = ALittle.File_GetFileAttr(ansi_path)
+	if attr == nil then
+		return
+	end
+	if attr.mode == "directory" then
+		local check, error = IDEUtility_CheckName(name)
+		if not check then
+			g_IDETool:ShowNotice("提示", error)
+			return
+		end
+		ALittle.File_MakeDir(real_path .. "/" .. name)
+		ALittle.File_CopyDeepDir(ansi_path, real_path .. "/" .. name, "PNG")
+		ALittle.File_CopyDeepDir(ansi_path, real_path .. "/" .. name, "JPG")
+	else
+		local upper_ext = ALittle.File_GetFileExtByPathAndUpper(event.path)
+		if upper_ext ~= "PNG" and upper_ext ~= "JPG" then
+			g_IDETool:ShowNotice("提示", "只能接收png或者jpg文件")
+			return
+		end
+		local check, error = IDEUtility_CheckName(ALittle.File_GetJustFileNameByPath(event.path))
+		if not check then
+			g_IDETool:ShowNotice("提示", error)
+			return
+		end
+		ALittle.File_CopyFile(event.path, real_path .. "/" .. name)
+	end
+	self:Refresh()
+end
+
+function IDEAttrImageDialog:HandleNewDirectoryClick(event)
+	local x, y = event.target:LocalToGlobal()
+	g_IDETool:ShowRename(Lua.Bind(self.HandleCreateDirectory, self), "", x, y + event.target.height, 200)
+end
+
+function IDEAttrImageDialog:HandleCreateDirectory(name)
+	if name == "" then
+		return
+	end
+	local check, error = IDEUtility_CheckName(name)
+	if not check then
+		g_IDETool:ShowNotice("错误", error)
+		return
+	end
+	local result = ALittle.File_MakeDir(self._real_path .. "/" .. name)
+	if not result then
+		g_IDETool:ShowNotice("错误", "文件夹创建失败")
+		return
+	end
 	self:Refresh()
 end
 

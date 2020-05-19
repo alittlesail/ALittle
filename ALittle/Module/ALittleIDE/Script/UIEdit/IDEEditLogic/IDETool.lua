@@ -128,7 +128,9 @@ function IDETool:ShowRename(callback, text, x, y, width)
 	self._rename_input.y = y
 	self._rename_input.width = width
 	self._rename_input.text = text
-	self._rename_input:SelectAll()
+	if text ~= "" then
+		self._rename_input:SelectAll()
+	end
 	self._rename_input._user_data = callback
 end
 
@@ -141,6 +143,15 @@ function IDETool:HandleRenameConfirm(event)
 	self._rename_input.visible = false
 	local text = self._rename_input.text
 	callback(text)
+end
+
+function IDETool:HandleRenameCancel(event)
+	if event.sym ~= 27 then
+		return
+	end
+	local callback = self._rename_input._user_data
+	self._rename_input._user_data = nil
+	self._rename_input.visible = false
 end
 
 function IDETool:VersionNotice(title, content, confirm_callback)

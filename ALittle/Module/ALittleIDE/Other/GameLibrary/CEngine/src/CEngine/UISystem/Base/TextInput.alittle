@@ -153,6 +153,7 @@ public class TextInput : DisplayObject
         }
         else
             this._current_flash_alpha = 0.5;
+
         this._show.SetCursorAlpha(this._current_flash_alpha);
     }
     

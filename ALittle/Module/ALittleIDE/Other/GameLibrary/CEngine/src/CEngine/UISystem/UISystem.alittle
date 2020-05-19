@@ -738,7 +738,7 @@ class UISystem
         this.HandleMouseMoved(x, y);
     
         if (this._mfc == null) return;
-
+        
         var event = new UIDropFileEvent();
         event.target = this._mfc;
         event.path = path;

@@ -193,7 +193,8 @@ public class IDETool
 		this._rename_input.y = y;
 		this._rename_input.width = width;
 		this._rename_input.text = text;
-		this._rename_input.SelectAll();
+		// 如果不为空串，那么才选择全选
+		if (text != "") this._rename_input.SelectAll();
 	
 		// 保存目标
 		this._rename_input._user_data = callback;
@@ -215,6 +216,18 @@ public class IDETool
 		// 调用重命名函数
 		callback(text);
 	}
+	// 重命名取消
+	public fun HandleRenameCancel(ALittle.UIKeyDownEvent event)
+	{
+		if (event.sym != 27) return;
+
+		// 获取目标
+		var callback:Functor<(string)> = this._rename_input._user_data;
+		this._rename_input._user_data = null;
+		
+		// 隐藏输入框
+		this._rename_input.visible = false;
+    }
 
 	////////////////////////////////////////////////////////////////////////////////////////
 	// 显示版本提示对话框

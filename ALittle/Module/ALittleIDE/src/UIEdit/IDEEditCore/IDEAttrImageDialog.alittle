@@ -40,6 +40,8 @@ public class IDEAttrImageDialog
 	private ALittle.Image _pre_image;
 	private ALittle.DisplayObject _drag_lr_quad;
 	private ALittle.DisplayObject _drag_ud_quad;
+	private ALittle.DisplayObject _image_select_cut;
+	private ALittle.DisplayObject _image_select_del;
 
 	public ctor()
 	{
@@ -162,6 +164,7 @@ public class IDEAttrImageDialog
 			info.button.AddEventListener(this, this.HandleItemMoveIn);
 			info.button.AddEventListener(this, this.HandleItemMoveOut);
 			info.button.AddEventListener(this, this.HandleItemMouseMove);
+			info.button.AddEventListener(this, this.HandleImageDropFile);
 	
 			var user_data = new IDEAttrImageSelectItemUserData();
 			user_data.path = rel_path;
@@ -182,6 +185,8 @@ public class IDEAttrImageDialog
 		info.name.text = file_name;
 		info.button.drag_trans_target = this._scroll_list;
 		info.button.AddEventListener(this, this.HandleItemClick);
+		info.button.AddEventListener(this, this.HandleItemRButtonDown);
+		info.button.AddEventListener(this, this.HandleImageDropFile);
 	
 		var user_data = new IDEAttrImageSelectItemUserData();
 		user_data.path = rel_path;
@@ -380,11 +385,15 @@ public class IDEAttrImageDialog
 			this._image_select_menu = g_Control.CreateControl{ALittle.DisplayObject}("ide_image_select_menu", this);
 
 		A_LayerManager.ShowFromRight(this._image_select_menu);
+
+		var user_data:IDEAttrImageSelectItemUserData = event.target._user_data;
 	
 		this._image_select_menu.x = A_UISystem.mouse_x;
 		this._image_select_menu.y = A_UISystem.mouse_y;
+		this._image_select_cut.disabled = user_data.directory;
+		this._image_select_del.disabled = false;
 	
-		this._image_select_menu._user_data = event.target._user_data;
+		this._image_select_menu._user_data = user_data;
 	}
 	
 	public fun HandleImageEditClick(ALittle.UIEvent event)
@@ -404,11 +413,101 @@ public class IDEAttrImageDialog
 		var user_data:IDEAttrImageSelectItemUserData = this._image_select_menu._user_data;
 		this._image_select_menu._user_data = null;
 
-		ALittle.File_DeleteFile(g_IDEProject.project.base_path.."Texture/"..user_data.path);
-		this.Refresh();
+		if (user_data.directory)
+			g_IDETool.DeleteNotice("删除", "确定要永久删除该文件夹，以及子文件和图片吗？", bind(this.HandleImageDeleteConfirm, this, user_data));
+		else
+			g_IDETool.DeleteNotice("删除", "确定要永久删除该图片吗？", bind(this.HandleImageDeleteConfirm, this, user_data));
 	}
+
+	private fun HandleImageDeleteConfirm(IDEAttrImageSelectItemUserData user_data)
+	{
+		if (user_data.directory)
+			ALittle.File_DeleteDeepDir(g_IDEProject.project.base_path.."Texture/"..user_data.path);
+		else
+			ALittle.File_DeleteFile(g_IDEProject.project.base_path.."Texture/"..user_data.path);
+		this.Refresh();
+    }
 	
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public fun HandleImageDropFile(ALittle.UIDropFileEvent event)
+	{
+		var real_path = this._real_path;
+		var user_data:IDEAttrImageSelectItemUserData = event.target._user_data;
+		if (user_data != null && user_data.directory)
+			real_path = g_IDEProject.project.base_path.."Texture/"..user_data.path;
+
+		var name = ALittle.File_GetFileNameByPath(event.path);
+		
+		// 因为lua内部文件系统以来ansi编码
+		var ansi_path = event.path;
+		[Language(Lua)]
+		ansi_path = lua.utf8.ansi2utf8(ansi_path);
+
+		// 判断是文件夹还是文件名
+		var attr = ALittle.File_GetFileAttr(ansi_path);
+		if (attr == null) return;
+
+		if (attr.mode == "directory")
+		{
+			var check, error = IDEUtility_CheckName(name);
+			if (!check)
+			{
+				g_IDETool.ShowNotice("提示", error);
+				return;
+			}
+
+            // 拷贝文件夹
+			ALittle.File_MakeDir(real_path.."/"..name);
+			ALittle.File_CopyDeepDir(ansi_path, real_path.."/"..name, "PNG");
+			ALittle.File_CopyDeepDir(ansi_path, real_path.."/"..name, "JPG");
+        }
+		else
+		{
+			var upper_ext = ALittle.File_GetFileExtByPathAndUpper(event.path);
+			if (upper_ext != "PNG" && upper_ext != "JPG")
+			{
+				g_IDETool.ShowNotice("提示", "只能接收png或者jpg文件");
+				return;
+            }
+			
+			var check, error = IDEUtility_CheckName(ALittle.File_GetJustFileNameByPath(event.path));
+			if (!check)
+			{
+				g_IDETool.ShowNotice("提示", error);
+				return;
+			}
+
+            ALittle.File_CopyFile(event.path, real_path.."/"..name);
+        }
+
+		this.Refresh();
+    }
+
+	public fun HandleNewDirectoryClick(ALittle.UIClickEvent event)
+	{
+		var x, y = event.target.LocalToGlobal();
+		g_IDETool.ShowRename(bind(this.HandleCreateDirectory, this), "", x, y + event.target.height, 200);
+    }
+
+	private fun HandleCreateDirectory(string name)
+	{
+		if (name == "") return;
+
+		var check, error = IDEUtility_CheckName(name);
+		if (!check)
+		{
+            g_IDETool.ShowNotice("错误", error);
+			return;
+        }
+		var result = ALittle.File_MakeDir(this._real_path.."/"..name);
+		if (!result)
+		{
+            g_IDETool.ShowNotice("错误", "文件夹创建失败");
+			return;
+        }
+		this.Refresh();
+    }
 	
 	public fun HandleItemClick(ALittle.UIClickEvent event)
 	{

@@ -104,8 +104,7 @@ PS_WriteMap = function(factory, var_info, parent, var_value)
 	return l
 end
 
-local PS_WriteMessage
-PS_WriteMessage = function(factory, var_info, parent, var_value)
+function PS_WriteMessage(factory, var_info, parent, var_value)
 	if var_value == nil then
 		local offset = factory:GetOffset()
 		local pre_size = factory:WriteInt(0)
@@ -271,8 +270,7 @@ PS_ReadMap = function(factory, var_info, parent, l)
 	end
 end
 
-local PS_ReadMessage
-PS_ReadMessage = function(factory, var_info, parent, l)
+function PS_ReadMessage(factory, var_info, parent, l)
 	if l == 0 then
 		local value_map = {}
 		local sub_len = 0

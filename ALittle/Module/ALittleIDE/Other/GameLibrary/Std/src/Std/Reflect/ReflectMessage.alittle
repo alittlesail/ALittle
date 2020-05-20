@@ -129,7 +129,7 @@ private static PS_WriteMap(IMessageWriteFactory factory, ProtocolInvokeInfo var_
     return l;
 }
 
-private static PS_WriteMessage(IMessageWriteFactory factory, ProtocolInvokeInfo var_info, any parent, any var_value) : int
+public static PS_WriteMessage(IMessageWriteFactory factory, ProtocolInvokeInfo var_info, any parent, any var_value) : int
 {
     if (var_value == null)
     {
@@ -324,7 +324,7 @@ private static PS_ReadMap(IMessageReadFactory factory, ProtocolInvokeInfo var_in
     }
 }
 
-private static PS_ReadMessage(IMessageReadFactory factory, ProtocolInvokeInfo var_info, any parent, int l) : any, int
+public static PS_ReadMessage(IMessageReadFactory factory, ProtocolInvokeInfo var_info, any parent, int l) : any, int
 {
     if (l == 0)
     {
@@ -463,7 +463,7 @@ protected static CreateMapInfo(string var_type) : ProtocolInvokeInfo
     return invoke_info;
 }
 
-protected static CreateMessageInfo(string var_type) : ProtocolInvokeInfo
+public static CreateMessageInfo(string var_type) : ProtocolInvokeInfo
 {
     var invoke = __all_name_invoke[var_type];
     if (invoke != null) return invoke;

@@ -1,6 +1,8 @@
 
 namespace ALittle;
 
+public using TextRadioButtonGroup = Map<TextRadioButton, bool>;
+
 public class TextRadioButton : TextCheckButton
 {
     private Map<TextRadioButton, bool> _group;

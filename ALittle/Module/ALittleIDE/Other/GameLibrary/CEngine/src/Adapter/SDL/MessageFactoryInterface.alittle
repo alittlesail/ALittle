@@ -17,6 +17,7 @@ public class __CPPAPIMessageWriteFactory : ALittle.IMessageWriteFactory
 
 public class __CPPAPIMessageReadFactory : ALittle.IMessageReadFactory
 {
+    public fun ReadFromStdFile(string file_path) : bool {}
     public fun GetDataSize() : int {}
 
     public fun ReadBool() : bool {}

@@ -309,9 +309,6 @@ function IDETree:EditPickUp(x, y)
 	local offset_x, offset_y = object:GetChildOffset()
 	rel_x = rel_x - offset_x
 	rel_y = rel_y - offset_y
-	if offset_x > 0 or offset_y > 0 then
-		ALittle.Log(offset_x, offset_y)
-	end
 	local child_count = self._body.child_count
 	local child_list = self._body.childs
 	local i = child_count

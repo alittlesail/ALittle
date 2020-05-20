@@ -266,9 +266,7 @@ public class IDETree : IDETreeLogic
 		var offset_x, offset_y = object.GetChildOffset();
 		rel_x = rel_x - offset_x;
 		rel_y = rel_y - offset_y;
-		if (offset_x > 0 || offset_y > 0)
-			ALittle.Log(offset_x, offset_y);
-	
+		
 		var child_count = this._body.child_count;
 		var child_list = this._body.childs;
 		for (var i = child_count; i >= 1; -1)

@@ -333,6 +333,7 @@ public class DisplayObject : UIEventDispatcher
     public fun AddChild(DisplayObject child, [Nullable] int index) : bool { return false; }
     public fun RemoveChild(DisplayObject child) : bool { return false; }
     public fun RemoveAllChild() {}
+    public fun GetChildOffset() : double, double { return 0, 0; }
 
     // 是否可编辑
     public get editable() : bool { return false; }

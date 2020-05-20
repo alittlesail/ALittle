@@ -59,6 +59,8 @@ public class Dialog : DisplayLayout
         // 将三宫格添加进来
         DisplayLayout.AddChild(this, this._grid3);
     }
+
+    public fun GetChildOffset() : double, double { return 0, this._grid3.up_size; }
     
     //////////////////////////////////////////////////////////////////////////////////////////////-
     public set head_size(double value)

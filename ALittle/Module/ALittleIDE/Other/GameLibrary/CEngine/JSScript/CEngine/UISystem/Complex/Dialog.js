@@ -39,6 +39,9 @@ ALittle.Dialog = JavaScript.Class(ALittle.DisplayLayout, {
 		this._grid3.show_center = this._body;
 		ALittle.DisplayLayout.AddChild.call(this, this._grid3);
 	},
+	GetChildOffset : function() {
+		return [0, this._grid3.up_size];
+	},
 	set head_size(value) {
 		this._grid3.up_size = value;
 		if (this._background !== undefined) {

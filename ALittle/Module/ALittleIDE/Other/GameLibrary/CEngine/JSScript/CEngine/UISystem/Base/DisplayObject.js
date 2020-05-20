@@ -137,6 +137,9 @@ ALittle.DisplayObject = JavaScript.Class(ALittle.UIEventDispatcher, {
 	},
 	RemoveAllChild : function() {
 	},
+	GetChildOffset : function() {
+		return [0, 0];
+	},
 	get editable() {
 		return false;
 	},

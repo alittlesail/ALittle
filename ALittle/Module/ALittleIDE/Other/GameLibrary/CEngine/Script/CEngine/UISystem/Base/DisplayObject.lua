@@ -167,6 +167,10 @@ end
 function DisplayObject:RemoveAllChild()
 end
 
+function DisplayObject:GetChildOffset()
+	return 0, 0
+end
+
 function DisplayObject.__getter:editable()
 	return false
 end

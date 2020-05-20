@@ -323,6 +323,9 @@ ALittleIDE.IDETree = JavaScript.Class(ALittleIDE.IDETreeLogic, {
 		}
 		let object = this._user_info.object;
 		let [pick_this, rel_x, rel_y] = object.PickUpSelf(x, y);
+		let [offset_x, offset_y] = object.GetChildOffset();
+		rel_x = rel_x - offset_x;
+		rel_y = rel_y - offset_y;
 		let child_count = this._body.child_count;
 		let child_list = this._body.childs;
 		for (let i = child_count; i >= 1; i += -1) {

@@ -45,6 +45,10 @@ function Dialog:Ctor(ctrl_sys)
 	DisplayLayout.AddChild(self, self._grid3)
 end
 
+function Dialog:GetChildOffset()
+	return 0, self._grid3.up_size
+end
+
 function Dialog.__setter:head_size(value)
 	self._grid3.up_size = value
 	if self._background ~= nil then

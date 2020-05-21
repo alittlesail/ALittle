@@ -43,7 +43,7 @@ public async static __Module_Setup(ALittle.DisplayLayout layer_group, ALittle.Co
 	[Language(Lua)]
 	if (ALittle.System_GetPlatform() == "Windows")
 	{
-		package.path = package.path..";./"..module_base_path.."Other/?.dll";
+		package.cpath = package.cpath..";./"..module_base_path.."Other/?.dll";
         lua.require("memory");
         lua.require("protobuf");
         lua.require("socket");

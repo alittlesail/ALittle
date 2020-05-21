@@ -457,6 +457,15 @@ class GCenter
         this._send_button.disabled = true;
         this._login_button.visible = true;
         this._logout_button.visible = false;
+        if (this._login_status == LoginStatus.EMULATOR_LOGINED)
+        {
+            var func = cast<Map<string, Functor<()>>>(_G)["__PLUGIN_HandleLogout"];   
+            if (func != null)
+            {   
+                var error = tcall(func);
+                if (error != null) ALittle.Log(error);
+            }
+        }
         this._login_status = LoginStatus.EMULATOR_IDLE;
     }
 

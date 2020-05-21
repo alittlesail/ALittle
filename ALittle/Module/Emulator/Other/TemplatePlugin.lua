@@ -35,6 +35,10 @@ function __PLUGIN_StartLogin(ip, port, login_msg)
 	return "not implement", nil
 end
 
+-- 当客户端与服务器断开连接而引起的登出
+function __PLUGIN_HandleLogout()
+end
+
 -- 根据项目的消息结构来读取一个消息包【在协程内被调用，这个函数内可以使用带await的函数】
 -- param socket[Emulator.PluginSocket] 消息对象
 -- return error[string] 如果读取错误，那么就返回错误原因，如果正确那么就返回null

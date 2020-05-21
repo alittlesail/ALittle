@@ -35,7 +35,7 @@ function __PLUGIN_StartLogin(ip, port, login_msg)
 	return "not implement", nil
 end
 
--- 当客户端与服务器断开连接而引起的登出
+-- 当客户端与服务器断开连接或主动登出而引起的登出
 function __PLUGIN_HandleLogout()
 end
 

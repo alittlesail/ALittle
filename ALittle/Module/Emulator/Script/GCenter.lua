@@ -444,6 +444,15 @@ function GCenter:HandleLogoutClick(event)
 	self._send_button.disabled = true
 	self._login_button.visible = true
 	self._logout_button.visible = false
+	if self._login_status == LoginStatus.EMULATOR_LOGINED then
+		local func = _G["__PLUGIN_HandleLogout"]
+		if func ~= nil then
+			local error = Lua.TCall(func)
+			if error ~= nil then
+				ALittle.Log(error)
+			end
+		end
+	end
 	self._login_status = LoginStatus.EMULATOR_IDLE
 end
 

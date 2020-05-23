@@ -38,7 +38,9 @@ static int protobuflib_importer_import(lua_State* L)
     void** c = (void**)lua_touserdata(L, 1);
     luaL_argcheck(L, c != 0, 1, "importer object is null");
     const char* path = luaL_checkstring(L, 2);
-    lua_pushlightuserdata(L, protobuf_importer_import(*c, path));
+    void* r = protobuf_importer_import(*c, path);
+    if (r) lua_pushlightuserdata(L, r);
+    else lua_pushnil(L);
     return 1;
 }
 
@@ -56,7 +58,9 @@ static int protobuflib_filedescriptor_messagetype(lua_State* L)
     void* c = lua_touserdata(L, 1);
     luaL_argcheck(L, c != 0, 1, "file descriptor object is null");
     int index = (int)luaL_checkinteger(L, 2);
-    lua_pushlightuserdata(L, protobuf_filedescriptor_messagetype(c, index));
+    void* r = protobuf_filedescriptor_messagetype(c, index);
+    if (r) lua_pushlightuserdata(L, r);
+    else lua_pushnil(L);
     return 1;
 }
 static int protobuflib_filedescriptor_enumtypecount(lua_State* L)
@@ -72,7 +76,9 @@ static int protobuflib_filedescriptor_enumtype(lua_State* L)
     void* c = lua_touserdata(L, 1);
     luaL_argcheck(L, c != 0, 1, "file descriptor object is null");
     int index = (int)luaL_checkinteger(L, 2);
-    lua_pushlightuserdata(L, protobuf_filedescriptor_enumtype(c, index));
+    void* r = protobuf_filedescriptor_enumtype(c, index);
+    if (r) lua_pushlightuserdata(L, r);
+    else lua_pushnil(L);
     return 1;
 }
 
@@ -106,7 +112,9 @@ static int protobuflib_messagedescriptor_field(lua_State* L)
     void* c = lua_touserdata(L, 1);
     luaL_argcheck(L, c != 0, 1, "descriptor object is null");
     int index = (int)luaL_checkinteger(L, 2);
-    lua_pushlightuserdata(L, protobuf_messagedescriptor_field(c, index));
+    void* r = protobuf_messagedescriptor_field(c, index);
+    if (r) lua_pushlightuserdata(L, r);
+    else lua_pushnil(L);
     return 1;
 }
 
@@ -115,7 +123,9 @@ static int protobuflib_messagedescriptor_findfieldbyname(lua_State* L)
     void* c = lua_touserdata(L, 1);
     luaL_argcheck(L, c != 0, 1, "descriptor object is null");
     const char* name = luaL_checkstring(L, 2);
-    lua_pushlightuserdata(L, protobuf_messagedescriptor_findfieldbyname(c, name));
+    void* r = protobuf_messagedescriptor_findfieldbyname(c, name);
+    if (r) lua_pushlightuserdata(L, r);
+    else lua_pushnil(L);
     return 1;
 }
 
@@ -124,7 +134,9 @@ static int protobuflib_messagedescriptor_findfieldbynumber(lua_State* L)
     void* c = lua_touserdata(L, 1);
     luaL_argcheck(L, c != 0, 1, "descriptor object is null");
     int number = (int)luaL_checkinteger(L, 2);
-    lua_pushlightuserdata(L, protobuf_messagedescriptor_findfieldbynumber(c, number));
+    void* r = protobuf_messagedescriptor_findfieldbynumber(c, number);
+    if (r) lua_pushlightuserdata(L, r);
+    else lua_pushnil(L);
     return 1;
 }
 
@@ -158,7 +170,9 @@ static int protobuflib_enumdescriptor_value(lua_State* L)
     void* c = lua_touserdata(L, 1);
     luaL_argcheck(L, c != 0, 1, "descriptor object is null");
     int index = (int)luaL_checkinteger(L, 2);
-    lua_pushlightuserdata(L, protobuf_enumdescriptor_value(c, index));
+    void* r = protobuf_enumdescriptor_value(c, index);
+    if (r) lua_pushlightuserdata(L, r);
+    else lua_pushnil(L);
     return 1;
 }
 
@@ -167,7 +181,9 @@ static int protobuflib_enumdescriptor_findvaluebyname(lua_State* L)
     void* c = lua_touserdata(L, 1);
     luaL_argcheck(L, c != 0, 1, "descriptor object is null");
     const char* name = luaL_checkstring(L, 2);
-    lua_pushlightuserdata(L, protobuf_enumdescriptor_findvaluebyname(c, name));
+    void* r = protobuf_enumdescriptor_findvaluebyname(c, name);
+    if (r) lua_pushlightuserdata(L, r);
+    else lua_pushnil(L);
     return 1;
 }
 
@@ -176,7 +192,9 @@ static int protobuflib_enumdescriptor_findvaluebynumber(lua_State* L)
     void* c = lua_touserdata(L, 1);
     luaL_argcheck(L, c != 0, 1, "descriptor object is null");
     int number = (int)luaL_checkinteger(L, 2);
-    lua_pushlightuserdata(L, protobuf_enumdescriptor_findvaluebynumber(c, number));
+    void* r = protobuf_enumdescriptor_findvaluebynumber(c, number);
+    if (r) lua_pushlightuserdata(L, r);
+    else lua_pushnil(L);
     return 1;
 }
 
@@ -236,14 +254,18 @@ static int protobuflib_fielddescriptor_messagetype(lua_State* L)
 {
     void* c = lua_touserdata(L, 1);
     luaL_argcheck(L, c != 0, 1, "field descriptor object is null");
-    lua_pushlightuserdata(L, protobuf_fielddescriptor_messagetype(c));
+    void* r = protobuf_fielddescriptor_messagetype(c);
+    if (r) lua_pushlightuserdata(L, r);
+    else lua_pushnil(L);
     return 1;
 }
 static int protobuflib_fielddescriptor_enumtype(lua_State* L)
 {
     void* c = lua_touserdata(L, 1);
     luaL_argcheck(L, c != 0, 1, "field descriptor object is null");
-    lua_pushlightuserdata(L, protobuf_fielddescriptor_enumtype(c));
+    void* r = protobuf_fielddescriptor_enumtype(c);
+    if (r) lua_pushlightuserdata(L, r);
+    else lua_pushnil(L);
     return 1;
 }
 
@@ -308,14 +330,18 @@ static int protobuflib_message_getdescriptor(lua_State* L)
 {
     void** m = (void**)lua_touserdata(L, 1);
     luaL_argcheck(L, m != 0, 1, "message object is null");
-    lua_pushlightuserdata(L, protobuf_message_getdescriptor(*m));
+    void* r = protobuf_message_getdescriptor(*m);
+    if (r) lua_pushlightuserdata(L, r);
+    else lua_pushnil(L);
     return 1;
 }
 static int protobuflib_message_getreflection(lua_State* L)
 {
     void** m = (void**)lua_touserdata(L, 1);
     luaL_argcheck(L, m != 0, 1, "message object is null");
-    lua_pushlightuserdata(L, protobuf_message_getreflection(*m));
+    void* r = protobuf_message_getreflection(*m);
+    if (r) lua_pushlightuserdata(L, r);
+    else lua_pushnil(L);
     return 1;
 }
 static int protobuflib_message_getbytesize(lua_State* L)

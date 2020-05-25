@@ -126,6 +126,19 @@ class GCenter
     private ALittle.ScrollScreen _edit_scroll_screen;
     private ALittle.DisplayObject _edit_title;
 
+    // 工具区
+    private ALittle.DisplayObject _tool_brush;
+    private ALittle.DisplayLayout _layer_brush_info;
+
+    private ALittle.DisplayObject _tool_select;
+    private ALittle.DisplayLayout _layer_select_info;
+
+    private ALittle.DisplayObject _tool_scale;
+    private ALittle.DisplayLayout _layer_scale_info;
+
+    private ALittle.DisplayObject _tool_drag;
+    private ALittle.DisplayLayout _layer_drag_info;
+
     // 当前正在编辑
     private FileSelectItemInfo _cur_edit;
 
@@ -158,6 +171,18 @@ class GCenter
         
         // 创建主界面
         g_Control.CreateControl{ALittle.DisplayObject}("main_scene", this, this._main_layer);
+
+        var tool_group = new ALittle.TextRadioButtonGroup();
+        this._tool_brush.group = tool_group;
+        this._tool_select.group = tool_group;
+        this._tool_scale.group = tool_group;
+        this._tool_drag.group = tool_group;
+        
+        this._tool_brush.selected = true;
+        this._layer_brush_info.visible = true;
+        this._layer_drag_info.visible = false;
+        this._layer_scale_info.visible = false;
+        this._layer_select_info.visible = false;
 
         A_UISystem.keydown_callback = bind(this.HandleKeyDown, this);
 
@@ -681,6 +706,15 @@ class GCenter
         }
         return layer;
     }
+
+    // 选中笔刷工具
+    private fun HandleToolBrushSelect(ALittle.UIChangedEvent event) { this._layer_brush_info.visible = event.target.selected; }
+    // 选中选择工具
+    private fun HandleToolSelectSelect(ALittle.UIChangedEvent event) { this._layer_select_info.visible = event.target.selected; }
+    // 选中缩放工具
+    private fun HandleToolScaleSelect(ALittle.UIChangedEvent event) { this._layer_scale_info.visible = event.target.selected; }
+    // 选中拖拽工具
+    private fun HandleToolDragSelect(ALittle.UIChangedEvent event) { this._layer_drag_info.visible = event.target.selected; }
 
     //其他////////////////////////////////////////////////////////////////////////
 

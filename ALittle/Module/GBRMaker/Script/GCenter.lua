@@ -99,6 +99,16 @@ function GCenter:Setup()
 	self._setting_dialog = g_Control:CreateControl("main_setting_dialog", self)
 	A_LayerManager:AddToModal(self._setting_dialog)
 	g_Control:CreateControl("main_scene", self, self._main_layer)
+	local tool_group = {}
+	self._tool_brush.group = tool_group
+	self._tool_select.group = tool_group
+	self._tool_scale.group = tool_group
+	self._tool_drag.group = tool_group
+	self._tool_brush.selected = true
+	self._layer_brush_info.visible = true
+	self._layer_drag_info.visible = false
+	self._layer_scale_info.visible = false
+	self._layer_select_info.visible = false
 	A_UISystem.keydown_callback = Lua.Bind(self.HandleKeyDown, self)
 	self._setting_project_name_input.text = g_GConfig:GetString("project_name", "")
 	self._setting_texture_path_input.text = g_GConfig:GetString("texture_path", "")
@@ -538,6 +548,22 @@ function GCenter:CreateFloorEdit(info)
 		end
 	end
 	return layer
+end
+
+function GCenter:HandleToolBrushSelect(event)
+	self._layer_brush_info.visible = event.target.selected
+end
+
+function GCenter:HandleToolSelectSelect(event)
+	self._layer_select_info.visible = event.target.selected
+end
+
+function GCenter:HandleToolScaleSelect(event)
+	self._layer_scale_info.visible = event.target.selected
+end
+
+function GCenter:HandleToolDragSelect(event)
+	self._layer_drag_info.visible = event.target.selected
 end
 
 function GCenter:SaveCurEdit(save)

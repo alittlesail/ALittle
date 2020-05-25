@@ -1,0 +1,22 @@
+
+namespace GBRMaker;
+
+// 检查资源名是否合法
+public static IDEUtility_CheckResourceName(string name) : bool, string
+{
+	// 检查合法性
+	var len = ALittle.String_Len(name);
+	if (len == 0) return false, "命名只能支持字母数字下划线";
+	for (var i = 1; i <= len; 1)
+	{
+		var byte = ALittle.String_Byte(name, i);
+		var check_all = byte >= 65 && byte <= 90
+					 || byte >= 97 && byte <= 122
+					 || byte >= 48 && byte <= 57
+				     || byte == 95;
+		if (check_all == false)
+			return false, "命名只能支持字母数字下划线";
+	}
+
+	return true, null;
+}

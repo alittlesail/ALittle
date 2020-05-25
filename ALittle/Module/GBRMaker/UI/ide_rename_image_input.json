@@ -1,0 +1,1 @@
+{"ide_rename_image_input":{"__event":[{"type":"ALittle.UIEnterKeyEvent","func":"HandleRenameConfirm"},{"type":"ALittle.UIKeyDownEvent","func":"HandleRenameCancel"},{"type":"ALittle.UIFocusOutEvent","func":"HandleRenameConfirm"}],"__extends":"ide_common_image_input"}}

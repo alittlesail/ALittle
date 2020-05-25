@@ -21,7 +21,7 @@ protected struct FloorData
 protected struct MapData
 {
     List<FloorData> floor_list; // 层
-    Map<string, int> tex_map;   // 纹理映射ID
+    Map<int, string> tex_map;   // 纹理映射ID
     int tex_max_id;
     int y_max;                // y坐标最大值
     int x_max;                // x坐标最大值
@@ -95,6 +95,14 @@ class GCenter
     private ALittle.DisplayObject _unit_top_input;
     private ALittle.DisplayObject _unit_bottom_input;
     private ALittle.ControlSystem _control;
+    private int _unit_width;
+    private int _unit_height;
+    private int _unit_left;
+    private int _unit_right;
+    private int _unit_top;
+    private int _unit_bottom;
+    private int _unit_real_width;
+    private int _unit_real_height;
     
     // 纹理列表
     private ALittle.ScrollList _texture_scroll_list;
@@ -158,12 +166,14 @@ class GCenter
         this._unit_empty_name_input.text = g_GConfig.GetString("empty_name", "");
         this._setting_data_path_input.text = g_GConfig.GetString("data_path", "");
 
-        this._unit_width_input.text = g_GConfig.GetInt("unit_width", 100);
-        this._unit_height_input.text = g_GConfig.GetInt("unit_height", 100);
-        this._unit_left_input.text = g_GConfig.GetInt("unit_left", 0);
-        this._unit_right_input.text = g_GConfig.GetInt("unit_right", 0);
-        this._unit_top_input.text = g_GConfig.GetInt("unit_top", 0);
-        this._unit_bottom_input.text = g_GConfig.GetInt("unit_bottom", 0);
+        this._unit_width = g_GConfig.GetInt("unit_width", 100); this._unit_width_input.text = this._unit_width;
+        this._unit_height = g_GConfig.GetInt("unit_height", 100); this._unit_height_input.text = this._unit_height;
+        this._unit_left = g_GConfig.GetInt("unit_left", 0); this._unit_left_input.text = this._unit_left;
+        this._unit_right = g_GConfig.GetInt("unit_right", 0); this._unit_right_input.text = this._unit_right;
+        this._unit_top = g_GConfig.GetInt("unit_top", 0); this._unit_top_input.text = this._unit_top;
+        this._unit_bottom = g_GConfig.GetInt("unit_bottom", 0); this._unit_bottom_input.text = this._unit_bottom;
+        this._unit_real_width = this._unit_width - this._unit_left - this._unit_right;
+        this._unit_real_height = this._unit_height - this._unit_top - this._unit_bottom;
         
         var module_path = "Module/"..this._setting_project_name_input.text;
         if (ALittle.File_GetFileAttr(module_path) == null
@@ -179,7 +189,7 @@ class GCenter
             // 固定配置值
             this._real_size = 100;
             this._file_base_path = module_path.."/Other/"..this._setting_data_path_input.text;
-            this._tex_name_base_path = this._setting_texture_path_input.text;
+            this._tex_name_base_path = this._setting_texture_path_input.text.."/";
             this._texture_base_path = module_path.."/Texture/"..this._setting_texture_path_input.text;
 
             this.RefreshTexture();
@@ -221,15 +231,24 @@ class GCenter
         { g_IDETool.ShowNotice("提示", "空格子图片不存在"); return; }
 
         this._file_base_path = module_path.."/Other/"..this._setting_data_path_input.text;
-        this._tex_name_base_path = this._setting_texture_path_input.text;
+        this._tex_name_base_path = this._setting_texture_path_input.text.."/";
         this._texture_base_path = module_path.."/Texture/"..this._setting_texture_path_input.text;
 
-        g_GConfig.SetConfig("unit_width", unit_width);
-        g_GConfig.SetConfig("unit_height", unit_height);
-        g_GConfig.SetConfig("unit_left", unit_left);
-        g_GConfig.SetConfig("unit_right", unit_right);
-        g_GConfig.SetConfig("unit_top", unit_top);
-        g_GConfig.SetConfig("unit_bottom", unit_bottom);
+        this._unit_width = unit_width;
+        this._unit_height = unit_height;
+        this._unit_left = unit_left;
+        this._unit_right = unit_right;
+        this._unit_top = unit_top;
+        this._unit_bottom = unit_bottom;
+        this._unit_real_width = this._unit_width - this._unit_left - this._unit_right;
+        this._unit_real_height = this._unit_height - this._unit_top - this._unit_bottom;
+
+        g_GConfig.SetConfig("unit_width", this._unit_width);
+        g_GConfig.SetConfig("unit_height", this._unit_height);
+        g_GConfig.SetConfig("unit_left", this._unit_left);
+        g_GConfig.SetConfig("unit_right", this._unit_right);
+        g_GConfig.SetConfig("unit_top", this._unit_top);
+        g_GConfig.SetConfig("unit_bottom", this._unit_bottom);
         g_GConfig.SetConfig("project_name", this._setting_project_name_input.text);
         g_GConfig.SetConfig("texture_path", this._setting_texture_path_input.text);
         g_GConfig.SetConfig("empty_name", this._unit_empty_name_input.text);
@@ -369,7 +388,7 @@ class GCenter
         for (var index, file_path in file_list)
         {
             var rel_path = ALittle.String_Sub(file_path, ALittle.String_Len(this._texture_base_path) + 2);
-            var texture_name = this._tex_name_base_path.."/"..rel_path;
+            var texture_name = this._tex_name_base_path..rel_path;
 
             var info = new ImageSelectItemInfo();
             info.item = g_Control.CreateControl{ALittle.DisplayLayout}("ide_image_select_item", info);
@@ -570,23 +589,59 @@ class GCenter
         // 清理编辑器
         this._edit_scroll_screen.RemoveAllChild();
 
-        // TODO 构建底图网格
+        var x_max = file_info.map_data.x_max;
+        if (x_max < 100) x_max = 100;
+        var y_max = file_info.map_data.y_max;
+        if (y_max < 100) y_max = 100;
+        var nx_max = file_info.map_data.nx_max;
+        if (nx_max > -100) nx_max = -100;
+
+        var layer_width = 0.0;
+        var layer_height = 0.0;
         var grid_layer = new ALittle.DisplayLayout(g_Control);
-        for (var x = 0; x < file_info.map_data.x_max; 1)
+        grid_layer.disabled = true;
+        for (var x = 0; x < x_max; 1)
         {
-            for (var y = 0; y < file_info.map_data.y_max; 1)
+            for (var y = 0; y < y_max; 1)
             {
+                var image = new ALittle.Image(this._control);
+                image.texture_name = this._tex_name_base_path..this._unit_empty_name_input.text;
+                image.width = this._unit_width;
+                image.height = this._unit_height;
+                image.x = y * this._unit_real_width / 2 + x * this._unit_real_width - this._unit_width / 2;
+                image.y = y * this._unit_real_height * 2 / 3 - this._unit_height / 2;
+                grid_layer.AddChild(image);
                 
+                if (image.x + image.width > layer_width) layer_width = image.x + image.width;
+                if (image.y + image.height > layer_height) layer_height = image.y + image.height;
             }
         }
-        for (var x = file_info.map_data.nx_max; x < 0; 1)
+        for (var x = -1; x > nx_max; -1)
         {
-            for (var y = 0; y < file_info.map_data.y_max; 1)
+            for (var y = 0; y < y_max; 1)
             {
-                
+                var offset_x = y * this._unit_real_width / 2 + x * this._unit_real_width - this._unit_width / 2;
+                if (offset_x + this._unit_width / 2 >= 0)
+                {
+                    var image = new ALittle.Image(this._control);
+                    image.texture_name = this._tex_name_base_path..this._unit_empty_name_input.text;
+                    image.width = this._unit_width;
+                    image.height = this._unit_height;
+                    image.x = offset_x;
+                    image.y = y * this._unit_real_height * 2 / 3 - this._unit_height / 2;
+                    grid_layer.AddChild(image);
+                    
+                    if (image.x + image.width > layer_width) layer_width = image.x + image.width;
+                    if (image.y + image.height > layer_height) layer_height = image.y + image.height;
+                }
             }
         }
+        this._edit_scroll_screen.container.width = layer_width;
+        this._edit_scroll_screen.container.height = layer_height;
+        grid_layer.width = layer_width;
+        grid_layer.height = layer_height;
         this._edit_scroll_screen.AddChild(grid_layer);
+        this._edit_scroll_screen.RejustScrollBar();
 
         // 构建图层和编辑区
         var group = new ALittle.TextRadioButtonGroup();
@@ -609,15 +664,22 @@ class GCenter
     
     private fun CreateFloorEdit(FloorSelectItemInfo info) : ALittle.DisplayLayout
     {
+        var layer = new ALittle.DisplayLayout(this._control);
         // 填充格子
-        for (var row, col_info in info.floor_info.data.data)
+        for (var x, col_info in info.floor_info.data.data)
         {
-            for (var col, cell in col_info)
+            for (var y, cell in col_info)
             {
-
+                var image = new ALittle.Image(this._control);
+                image.texture_name = info.floor_info.parent.map_data.tex_map[cell.tex_id];
+                image.width = this._unit_width;
+                image.height = this._unit_height;
+                image.x = y * this._unit_real_width / 2 + x * this._unit_real_width - this._unit_width / 2;
+                image.y = y * this._unit_real_height * 2 / 3 - this._unit_height / 2;
+                layer.AddChild(image);
             }
         }
-        return null;
+        return layer;
     }
 
     //其他////////////////////////////////////////////////////////////////////////

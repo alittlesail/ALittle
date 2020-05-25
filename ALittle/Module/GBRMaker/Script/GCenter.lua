@@ -20,7 +20,7 @@ option_map = {}
 ALittle.RegStruct(-1481607580, "GBRMaker.MapData", {
 name = "GBRMaker.MapData", ns_name = "GBRMaker", rl_name = "MapData", hash_code = -1481607580,
 name_list = {"floor_list","tex_map","tex_max_id","y_max","x_max","nx_max"},
-type_list = {"List<GBRMaker.FloorData>","Map<string,int>","int","int","int","int"},
+type_list = {"List<GBRMaker.FloorData>","Map<int,string>","int","int","int","int"},
 option_map = {}
 })
 ALittle.RegStruct(-1328202806, "GBRMaker.FloorInfo", {
@@ -104,12 +104,20 @@ function GCenter:Setup()
 	self._setting_texture_path_input.text = g_GConfig:GetString("texture_path", "")
 	self._unit_empty_name_input.text = g_GConfig:GetString("empty_name", "")
 	self._setting_data_path_input.text = g_GConfig:GetString("data_path", "")
-	self._unit_width_input.text = g_GConfig:GetInt("unit_width", 100)
-	self._unit_height_input.text = g_GConfig:GetInt("unit_height", 100)
-	self._unit_left_input.text = g_GConfig:GetInt("unit_left", 0)
-	self._unit_right_input.text = g_GConfig:GetInt("unit_right", 0)
-	self._unit_top_input.text = g_GConfig:GetInt("unit_top", 0)
-	self._unit_bottom_input.text = g_GConfig:GetInt("unit_bottom", 0)
+	self._unit_width = g_GConfig:GetInt("unit_width", 100)
+	self._unit_width_input.text = self._unit_width
+	self._unit_height = g_GConfig:GetInt("unit_height", 100)
+	self._unit_height_input.text = self._unit_height
+	self._unit_left = g_GConfig:GetInt("unit_left", 0)
+	self._unit_left_input.text = self._unit_left
+	self._unit_right = g_GConfig:GetInt("unit_right", 0)
+	self._unit_right_input.text = self._unit_right
+	self._unit_top = g_GConfig:GetInt("unit_top", 0)
+	self._unit_top_input.text = self._unit_top
+	self._unit_bottom = g_GConfig:GetInt("unit_bottom", 0)
+	self._unit_bottom_input.text = self._unit_bottom
+	self._unit_real_width = self._unit_width - self._unit_left - self._unit_right
+	self._unit_real_height = self._unit_height - self._unit_top - self._unit_bottom
 	local module_path = "Module/" .. self._setting_project_name_input.text
 	if ALittle.File_GetFileAttr(module_path) == nil or ALittle.File_GetFileAttr(module_path .. "/Texture/" .. self._setting_texture_path_input.text) == nil or ALittle.File_GetFileAttr(module_path .. "/Texture/" .. self._setting_texture_path_input.text .. "/" .. self._unit_empty_name_input.text) == nil or ALittle.File_GetFileAttr(module_path .. "/Other/" .. self._setting_data_path_input.text) == nil then
 		self._setting_dialog.visible = true
@@ -117,7 +125,7 @@ function GCenter:Setup()
 		self._control = ALittle.ControlSystem(self._setting_project_name_input.text)
 		self._real_size = 100
 		self._file_base_path = module_path .. "/Other/" .. self._setting_data_path_input.text
-		self._tex_name_base_path = self._setting_texture_path_input.text
+		self._tex_name_base_path = self._setting_texture_path_input.text .. "/"
 		self._texture_base_path = module_path .. "/Texture/" .. self._setting_texture_path_input.text
 		self:RefreshTexture()
 		self:RefreshFile()
@@ -161,14 +169,22 @@ function GCenter:HandleSettingConfirmClick(event)
 		return
 	end
 	self._file_base_path = module_path .. "/Other/" .. self._setting_data_path_input.text
-	self._tex_name_base_path = self._setting_texture_path_input.text
+	self._tex_name_base_path = self._setting_texture_path_input.text .. "/"
 	self._texture_base_path = module_path .. "/Texture/" .. self._setting_texture_path_input.text
-	g_GConfig:SetConfig("unit_width", unit_width)
-	g_GConfig:SetConfig("unit_height", unit_height)
-	g_GConfig:SetConfig("unit_left", unit_left)
-	g_GConfig:SetConfig("unit_right", unit_right)
-	g_GConfig:SetConfig("unit_top", unit_top)
-	g_GConfig:SetConfig("unit_bottom", unit_bottom)
+	self._unit_width = unit_width
+	self._unit_height = unit_height
+	self._unit_left = unit_left
+	self._unit_right = unit_right
+	self._unit_top = unit_top
+	self._unit_bottom = unit_bottom
+	self._unit_real_width = self._unit_width - self._unit_left - self._unit_right
+	self._unit_real_height = self._unit_height - self._unit_top - self._unit_bottom
+	g_GConfig:SetConfig("unit_width", self._unit_width)
+	g_GConfig:SetConfig("unit_height", self._unit_height)
+	g_GConfig:SetConfig("unit_left", self._unit_left)
+	g_GConfig:SetConfig("unit_right", self._unit_right)
+	g_GConfig:SetConfig("unit_top", self._unit_top)
+	g_GConfig:SetConfig("unit_bottom", self._unit_bottom)
 	g_GConfig:SetConfig("project_name", self._setting_project_name_input.text)
 	g_GConfig:SetConfig("texture_path", self._setting_texture_path_input.text)
 	g_GConfig:SetConfig("empty_name", self._unit_empty_name_input.text)
@@ -277,7 +293,7 @@ function GCenter:RefreshTexture()
 	ALittle.List_Sort(file_list)
 	for index, file_path in ___ipairs(file_list) do
 		local rel_path = ALittle.String_Sub(file_path, ALittle.String_Len(self._texture_base_path) + 2)
-		local texture_name = self._tex_name_base_path .. "/" .. rel_path
+		local texture_name = self._tex_name_base_path .. rel_path
 		local info = {}
 		info.item = g_Control:CreateControl("ide_image_select_item", info)
 		info.button._user_data = info
@@ -421,28 +437,77 @@ function GCenter:StartEdit(file_info)
 	self._edit_title.text = file_info.item.text
 	self._floor_scroll_screen:RemoveAllChild()
 	self._edit_scroll_screen:RemoveAllChild()
+	local x_max = file_info.map_data.x_max
+	if x_max < 100 then
+		x_max = 100
+	end
+	local y_max = file_info.map_data.y_max
+	if y_max < 100 then
+		y_max = 100
+	end
+	local nx_max = file_info.map_data.nx_max
+	if nx_max > -100 then
+		nx_max = -100
+	end
+	local layer_width = 0.0
+	local layer_height = 0.0
 	local grid_layer = ALittle.DisplayLayout(g_Control)
+	grid_layer.disabled = true
 	local x = 0
 	while true do
-		if not(x < file_info.map_data.x_max) then break end
+		if not(x < x_max) then break end
 		local y = 0
 		while true do
-			if not(y < file_info.map_data.y_max) then break end
+			if not(y < y_max) then break end
+			local image = ALittle.Image(self._control)
+			image.texture_name = self._tex_name_base_path .. self._unit_empty_name_input.text
+			image.width = self._unit_width
+			image.height = self._unit_height
+			image.x = y * self._unit_real_width / 2 + x * self._unit_real_width - self._unit_width / 2
+			image.y = y * self._unit_real_height * 2 / 3 - self._unit_height / 2
+			grid_layer:AddChild(image)
+			if image.x + image.width > layer_width then
+				layer_width = image.x + image.width
+			end
+			if image.y + image.height > layer_height then
+				layer_height = image.y + image.height
+			end
 			y = y+(1)
 		end
 		x = x+(1)
 	end
-	local x = file_info.map_data.nx_max
+	local x = -1
 	while true do
-		if not(x < 0) then break end
+		if not(x > nx_max) then break end
 		local y = 0
 		while true do
-			if not(y < file_info.map_data.y_max) then break end
+			if not(y < y_max) then break end
+			local offset_x = y * self._unit_real_width / 2 + x * self._unit_real_width - self._unit_width / 2
+			if offset_x + self._unit_width / 2 >= 0 then
+				local image = ALittle.Image(self._control)
+				image.texture_name = self._tex_name_base_path .. self._unit_empty_name_input.text
+				image.width = self._unit_width
+				image.height = self._unit_height
+				image.x = offset_x
+				image.y = y * self._unit_real_height * 2 / 3 - self._unit_height / 2
+				grid_layer:AddChild(image)
+				if image.x + image.width > layer_width then
+					layer_width = image.x + image.width
+				end
+				if image.y + image.height > layer_height then
+					layer_height = image.y + image.height
+				end
+			end
 			y = y+(1)
 		end
-		x = x+(1)
+		x = x+(-1)
 	end
+	self._edit_scroll_screen.container.width = layer_width
+	self._edit_scroll_screen.container.height = layer_height
+	grid_layer.width = layer_width
+	grid_layer.height = layer_height
 	self._edit_scroll_screen:AddChild(grid_layer)
+	self._edit_scroll_screen:RejustScrollBar()
 	local group = {}
 	for index, floor_info in ___ipairs(self._cur_edit.map_info.floor_list) do
 		local info = {}
@@ -460,11 +525,19 @@ function GCenter:StartEdit(file_info)
 end
 
 function GCenter:CreateFloorEdit(info)
-	for row, col_info in ___pairs(info.floor_info.data.data) do
-		for col, cell in ___pairs(col_info) do
+	local layer = ALittle.DisplayLayout(self._control)
+	for x, col_info in ___pairs(info.floor_info.data.data) do
+		for y, cell in ___pairs(col_info) do
+			local image = ALittle.Image(self._control)
+			image.texture_name = info.floor_info.parent.map_data.tex_map[cell.tex_id]
+			image.width = self._unit_width
+			image.height = self._unit_height
+			image.x = y * self._unit_real_width / 2 + x * self._unit_real_width - self._unit_width / 2
+			image.y = y * self._unit_real_height * 2 / 3 - self._unit_height / 2
+			layer:AddChild(image)
 		end
 	end
-	return nil
+	return layer
 end
 
 function GCenter:SaveCurEdit(save)

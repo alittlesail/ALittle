@@ -160,6 +160,7 @@ class GCenter
     private FloorSelectItemInfo _cur_floor;
     private ALittle.DisplayLayout _cur_layer;
     private ALittle.DisplayLayout _cur_grid_layer;
+    private ALittle.DisplayLayout _cur_edit_layer;
     private ALittle.Quad _cur_brush_quad;
     private ALittle.Quad _cur_erase_quad;
     private ALittle.Quad _cur_drag_quad;
@@ -747,7 +748,7 @@ class GCenter
         this._floor_scroll_screen.AddChild(info.select_item, 1);
         
         info.edit_item = this.CreateFloorEdit(info);
-        this._edit_scroll_screen.AddChild(info.edit_item, 1);
+        this._cur_edit_layer.AddChild(info.edit_item, 1);
 
         this.SaveCurEdit(false);
     }
@@ -796,7 +797,7 @@ class GCenter
         {
             // 移动控件
             this._floor_scroll_screen.SetChildIndex(info.select_item, index - 1);
-            this._edit_scroll_screen.SetChildIndex(info.edit_item, index - 1);
+            this._cur_edit_layer.SetChildIndex(info.edit_item, index - 1);
             // 移动数据
             var floor_data = info.floor_info.file_info.map_data.floor_list[index];
             ALittle.List_Remove(info.floor_info.file_info.map_data.floor_list, index);
@@ -811,7 +812,7 @@ class GCenter
         {
             // 移动控件
             this._floor_scroll_screen.SetChildIndex(info.select_item, index + 1);
-            this._edit_scroll_screen.SetChildIndex(info.edit_item, index + 1);
+            this._cur_edit_layer.SetChildIndex(info.edit_item, index + 1);
             // 移动数据
             var floor_data = info.floor_info.file_info.map_data.floor_list[index];
             ALittle.List_Remove(info.floor_info.file_info.map_data.floor_list, index);
@@ -838,7 +839,7 @@ class GCenter
         {
             // 删除Item
             this._floor_scroll_screen.RemoveChild(info.select_item);
-            this._edit_scroll_screen.RemoveChild(info.edit_item);
+            this._cur_edit_layer.RemoveChild(info.edit_item);
             // 移除数据
             ALittle.List_Remove(info.floor_info.file_info.map_data.floor_list, index);
             ALittle.List_Remove(info.floor_info.file_info.map_info.floor_list, index);
@@ -861,11 +862,11 @@ class GCenter
         this._edit_scroll_screen.RemoveAllChild();
 
         var x_max = file_info.map_data.x_max;
-        if (x_max < 100) x_max = 100;
+        if (x_max < 10) x_max = 10;
         var y_max = file_info.map_data.y_max;
-        if (y_max < 100) y_max = 100;
+        if (y_max < 10) y_max = 10;
         var nx_max = file_info.map_data.nx_max;
-        if (nx_max > -100) nx_max = -100;
+        if (nx_max > -10) nx_max = -10;
 
         var layer_width = 0.0;
         var layer_height = 0.0;
@@ -943,6 +944,11 @@ class GCenter
         this._cur_layer.AddChild(this._cur_drag_quad);
         this._cur_drag_quad.drag_trans_target = this._edit_scroll_screen;
 
+        this._cur_edit_layer = new ALittle.DisplayLayout(g_Control);
+        this._cur_edit_layer.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+        this._cur_edit_layer.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+        this._cur_layer.AddChild(this._cur_edit_layer);
+        this._cur_edit_layer.disabled = true;
 
         this._edit_scroll_screen.container.width = layer_width;
         this._edit_scroll_screen.container.height = layer_height;
@@ -966,7 +972,7 @@ class GCenter
             this._floor_scroll_screen.AddChild(info.select_item);
 
             info.edit_item = this.CreateFloorEdit(info);
-            this._edit_scroll_screen.AddChild(info.edit_item);
+            this._cur_edit_layer.AddChild(info.edit_item);
             info.edit_item.alpha = 0.5;
 
             if (index == 1)
@@ -1007,25 +1013,47 @@ class GCenter
         return layer;
     }
 
+    // 更新透明度
+    private fun UpdateFloorAlpha()
+    {
+        for (var index, child in this._floor_scroll_screen.childs)
+        {
+            var info:FloorSelectItemInfo = child._user_data;
+            if (info.select_item.selected)
+                info.edit_item.alpha = 1;
+            else
+                info.edit_item.alpha = 0.5;
+        }
+    }
+
     // 选中笔刷工具
     private fun HandleToolBrushSelect(ALittle.UIChangedEvent event)
     {
         this._layer_brush_info.visible = event.target.selected;
         if (this._cur_brush_quad != null) this._cur_brush_quad.visible = event.target.selected;
+        this.UpdateFloorAlpha();
     }
     // 选中选择工具
     private fun HandleToolEraseSelect(ALittle.UIChangedEvent event)
     {
         this._layer_erase_info.visible = event.target.selected;
         if (this._cur_erase_quad != null) this._cur_erase_quad.visible = event.target.selected;
+        this.UpdateFloorAlpha();
     }
     // 选中缩放工具
-    private fun HandleToolScaleSelect(ALittle.UIChangedEvent event) { this._layer_scale_info.visible = event.target.selected; }
+    private fun HandleToolScaleSelect(ALittle.UIChangedEvent event)
+    {
+        this._layer_scale_info.visible = event.target.selected;
+        this.UpdateFloorAlpha();
+    }
+
     // 选中拖拽工具
     private fun HandleToolDragSelect(ALittle.UIChangedEvent event)
     {
         this._layer_drag_info.visible = event.target.selected;
         if (this._cur_drag_quad != null) this._cur_drag_quad.visible = event.target.selected;
+        for (var index, child in this._cur_edit_layer.childs)
+            child.alpha = 1;
     }
 
     //其他////////////////////////////////////////////////////////////////////////
@@ -1082,7 +1110,7 @@ class GCenter
             this._tool_drag.DispatchEvent(new ALittle.UIChangedEvent());
             this._tool_brush.DispatchEvent(new ALittle.UIChangedEvent());
             this._tool_erase.DispatchEvent(new ALittle.UIChangedEvent());
-            this._tool_scale.DispatchEvent(new ALittle.UIChangedEvent());    
+            this._tool_scale.DispatchEvent(new ALittle.UIChangedEvent());
         }
         // ALittle.Log(lua.ajson.encode(A_UISystem.sym_map));
     }

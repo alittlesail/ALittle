@@ -591,7 +591,7 @@ function GCenter:HandleNewFloor(name)
 	info.floor_info = floor_info
 	self._floor_scroll_screen:AddChild(info.select_item, 1)
 	info.edit_item = self:CreateFloorEdit(info)
-	self._edit_scroll_screen:AddChild(info.edit_item, 1)
+	self._cur_edit_layer:AddChild(info.edit_item, 1)
 	self:SaveCurEdit(false)
 end
 
@@ -625,7 +625,7 @@ function GCenter:HandleFloorRightMenu(event)
 	local index = self._floor_scroll_screen:GetChildIndex(info.select_item)
 	if event.target.text == "上移" then
 		self._floor_scroll_screen:SetChildIndex(info.select_item, index - 1)
-		self._edit_scroll_screen:SetChildIndex(info.edit_item, index - 1)
+		self._cur_edit_layer:SetChildIndex(info.edit_item, index - 1)
 		local floor_data = info.floor_info.file_info.map_data.floor_list[index]
 		ALittle.List_Remove(info.floor_info.file_info.map_data.floor_list, index)
 		ALittle.List_Insert(info.floor_info.file_info.map_data.floor_list, index - 1, floor_data)
@@ -635,7 +635,7 @@ function GCenter:HandleFloorRightMenu(event)
 		self:SaveCurEdit(false)
 	elseif event.target.text == "下移" then
 		self._floor_scroll_screen:SetChildIndex(info.select_item, index + 1)
-		self._edit_scroll_screen:SetChildIndex(info.edit_item, index + 1)
+		self._cur_edit_layer:SetChildIndex(info.edit_item, index + 1)
 		local floor_data = info.floor_info.file_info.map_data.floor_list[index]
 		ALittle.List_Remove(info.floor_info.file_info.map_data.floor_list, index)
 		ALittle.List_Insert(info.floor_info.file_info.map_data.floor_list, index + 1, floor_data)
@@ -653,7 +653,7 @@ function GCenter:HandleFloorRightMenu(event)
 		info.floor_info.visible = true
 	elseif event.target.text == "删除" then
 		self._floor_scroll_screen:RemoveChild(info.select_item)
-		self._edit_scroll_screen:RemoveChild(info.edit_item)
+		self._cur_edit_layer:RemoveChild(info.edit_item)
 		ALittle.List_Remove(info.floor_info.file_info.map_data.floor_list, index)
 		ALittle.List_Remove(info.floor_info.file_info.map_info.floor_list, index)
 		self:SaveCurEdit(false)
@@ -667,16 +667,16 @@ function GCenter:StartEdit(file_info)
 	self._floor_scroll_screen:RemoveAllChild()
 	self._edit_scroll_screen:RemoveAllChild()
 	local x_max = file_info.map_data.x_max
-	if x_max < 100 then
-		x_max = 100
+	if x_max < 10 then
+		x_max = 10
 	end
 	local y_max = file_info.map_data.y_max
-	if y_max < 100 then
-		y_max = 100
+	if y_max < 10 then
+		y_max = 10
 	end
 	local nx_max = file_info.map_data.nx_max
-	if nx_max > -100 then
-		nx_max = -100
+	if nx_max > -10 then
+		nx_max = -10
 	end
 	local layer_width = 0.0
 	local layer_height = 0.0
@@ -760,6 +760,11 @@ function GCenter:StartEdit(file_info)
 	self._cur_drag_quad.height_type = 4
 	self._cur_layer:AddChild(self._cur_drag_quad)
 	self._cur_drag_quad.drag_trans_target = self._edit_scroll_screen
+	self._cur_edit_layer = ALittle.DisplayLayout(g_Control)
+	self._cur_edit_layer.width_type = 4
+	self._cur_edit_layer.height_type = 4
+	self._cur_layer:AddChild(self._cur_edit_layer)
+	self._cur_edit_layer.disabled = true
 	self._edit_scroll_screen.container.width = layer_width
 	self._edit_scroll_screen.container.height = layer_height
 	self._cur_layer.width = layer_width
@@ -778,7 +783,7 @@ function GCenter:StartEdit(file_info)
 		info.floor_info = floor_info
 		self._floor_scroll_screen:AddChild(info.select_item)
 		info.edit_item = self:CreateFloorEdit(info)
-		self._edit_scroll_screen:AddChild(info.edit_item)
+		self._cur_edit_layer:AddChild(info.edit_item)
 		info.edit_item.alpha = 0.5
 		if index == 1 then
 			info.select_item.selected = true
@@ -811,11 +816,23 @@ function GCenter:CreateFloorEdit(info)
 	return layer
 end
 
+function GCenter:UpdateFloorAlpha()
+	for index, child in ___ipairs(self._floor_scroll_screen.childs) do
+		local info = child._user_data
+		if info.select_item.selected then
+			info.edit_item.alpha = 1
+		else
+			info.edit_item.alpha = 0.5
+		end
+	end
+end
+
 function GCenter:HandleToolBrushSelect(event)
 	self._layer_brush_info.visible = event.target.selected
 	if self._cur_brush_quad ~= nil then
 		self._cur_brush_quad.visible = event.target.selected
 	end
+	self:UpdateFloorAlpha()
 end
 
 function GCenter:HandleToolEraseSelect(event)
@@ -823,16 +840,21 @@ function GCenter:HandleToolEraseSelect(event)
 	if self._cur_erase_quad ~= nil then
 		self._cur_erase_quad.visible = event.target.selected
 	end
+	self:UpdateFloorAlpha()
 end
 
 function GCenter:HandleToolScaleSelect(event)
 	self._layer_scale_info.visible = event.target.selected
+	self:UpdateFloorAlpha()
 end
 
 function GCenter:HandleToolDragSelect(event)
 	self._layer_drag_info.visible = event.target.selected
 	if self._cur_drag_quad ~= nil then
 		self._cur_drag_quad.visible = event.target.selected
+	end
+	for index, child in ___ipairs(self._cur_edit_layer.childs) do
+		child.alpha = 1
 	end
 end
 

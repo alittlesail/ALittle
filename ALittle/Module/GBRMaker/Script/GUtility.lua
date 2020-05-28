@@ -30,13 +30,10 @@ function IDECoordVirtual2Show(x, y, unit_real_width, unit_width, unit_real_heigh
 end
 
 function IDECoordShow2Virtual(x, y, unit_real_width, unit_width, unit_real_height, unit_height)
-	local abs_k = ALittle.Math_Sin(3.14159265 / 6)
-	local b1 = y + abs_k * (x % unit_real_width)
-	local b1_mod = ALittle.Math_Floor(b1 / (unit_real_height / 2)) + 1
-	local virtual_y = ALittle.Math_Floor(b1_mod / 2)
-	local offset_x = (virtual_y - 1) * (unit_real_width / 2)
-	ALittle.Log(offset_x)
-	local virtual_x = ALittle.Math_Floor((x - offset_x) / unit_real_width)
-	return virtual_x, virtual_y
+	local yy = y / ALittle.Math_Cos(3.1415926 / 6)
+	local offset_yy = yy + unit_real_width / 2
+	local virutal_y = ALittle.Math_Floor(offset_yy / unit_real_width)
+	local virtual_x = ALittle.Math_Floor(((x + unit_width / 2) - virutal_y * unit_real_width / 2) / unit_real_width)
+	return virtual_x, virutal_y
 end
 

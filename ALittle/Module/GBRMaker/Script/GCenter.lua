@@ -107,12 +107,6 @@ name_list = {"target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"},
 type_list = {"ALittle.DisplayObject","double","double","double","double","double","double"},
 option_map = {}
 })
-ALittle.RegStruct(150587926, "ALittle.UIButtonDragEndEvent", {
-name = "ALittle.UIButtonDragEndEvent", ns_name = "ALittle", rl_name = "UIButtonDragEndEvent", hash_code = 150587926,
-name_list = {"target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"},
-type_list = {"ALittle.DisplayObject","double","double","double","double","double","double"},
-option_map = {}
-})
 
 g_GConfig = nil
 GCenter = Lua.Class(nil, "GBRMaker.GCenter")
@@ -139,14 +133,14 @@ function GCenter:Setup()
 	self._main_grid3_lr.down_size = g_GConfig:GetDouble("main_grid3_down_size", self._main_grid3_lr.down_size)
 	local tool_group = {}
 	self._tool_brush.group = tool_group
-	self._tool_select.group = tool_group
+	self._tool_erase.group = tool_group
 	self._tool_scale.group = tool_group
 	self._tool_drag.group = tool_group
 	self._tool_brush.selected = true
 	self._layer_brush_info.visible = true
 	self._layer_drag_info.visible = false
 	self._layer_scale_info.visible = false
-	self._layer_select_info.visible = false
+	self._layer_erase_info.visible = false
 	A_UISystem.keydown_callback = Lua.Bind(self.HandleKeyDown, self)
 	self._setting_project_name_input.text = g_GConfig:GetString("project_name", "")
 	self._setting_texture_path_input.text = g_GConfig:GetString("texture_path", "")
@@ -393,6 +387,10 @@ function GCenter:HandleTextureSearchClick(event)
 end
 
 function GCenter:HandleTextureSelectClick(event)
+	local ctrl = A_UISystem.sym_map[1073742048]
+	if ctrl == nil then
+		self._brush_scroll_screen:RemoveAllChild()
+	end
 	local image_info = event.target._user_data
 	local rel_path = ALittle.String_Sub(image_info.file_path, ALittle.String_Len(self._texture_base_path) + 2)
 	local texture_name = self._tex_name_base_path .. rel_path
@@ -425,51 +423,44 @@ function GCenter:HandleBrushAllCancelClick(event)
 	self._brush_scroll_screen:RemoveAllChild()
 end
 
-function GCenter:HandleBrushQuadLButtonDown(event)
-	if self._brush_scroll_screen.child_count == 0 then
+function GCenter:EraseCell(floor, virtual_x, virtual_y)
+	if floor == nil then
 		return
 	end
-	if self._cur_edit == nil then
-		return
-	end
-	if self._cur_floor == nil then
-		return
-	end
-	local virtual_x, virtual_y = IDECoordShow2Virtual(event.rel_x, event.rel_y, self._unit_real_width, self._unit_width, self._unit_real_height, self._unit_height)
-	ALittle.Log(virtual_x, virtual_y)
 	do
-		local y_info = self._cur_floor.floor_info.child_map[virtual_x]
+		local y_info = floor.floor_info.child_map[virtual_x]
 		if y_info ~= nil and y_info[virtual_y] ~= nil then
-			self._cur_floor.edit_item:RemoveChild(y_info[virtual_y])
+			floor.edit_item:RemoveChild(y_info[virtual_y])
 			y_info[virtual_y] = nil
 			if ALittle.IsEmpty(y_info) then
-				self._cur_floor.floor_info.child_map[virtual_x] = nil
+				floor.floor_info.child_map[virtual_x] = nil
 			end
 		end
 	end
 	do
-		local y_data = self._cur_floor.floor_info.floor_data.data[virtual_x]
+		local y_data = floor.floor_info.floor_data.data[virtual_x]
 		if y_data ~= nil then
 			y_data[virtual_y] = nil
 			if ALittle.IsEmpty(y_data) then
-				self._cur_floor.floor_info.floor_data.data[virtual_x] = nil
+				floor.floor_info.floor_data.data[virtual_x] = nil
 			end
 		end
 	end
-	local index = ALittle.Math_RandomInt(1, self._brush_scroll_screen.child_count)
-	local info = self._brush_scroll_screen.childs[index]._user_data
-	local tex_id = self._cur_edit.map_info.tex_map[info.texture_name]
+end
+
+function GCenter:SetCell(file, floor, virtual_x, virtual_y, info)
+	local tex_id = file.map_info.tex_map[info.texture_name]
 	if tex_id == nil then
-		self._cur_edit.map_info.tex_max_id = self._cur_edit.map_info.tex_max_id + 1
-		tex_id = self._cur_edit.map_info.tex_max_id
-		self._cur_edit.map_info.tex_map[info.texture_name] = tex_id
-		self._cur_edit.map_data.tex_map[tex_id] = info.texture_name
+		file.map_info.tex_max_id = file.map_info.tex_max_id + 1
+		tex_id = file.map_info.tex_max_id
+		file.map_info.tex_map[info.texture_name] = tex_id
+		file.map_data.tex_map[tex_id] = info.texture_name
 	end
 	do
-		local y_info = self._cur_floor.floor_info.child_map[virtual_x]
+		local y_info = floor.floor_info.child_map[virtual_x]
 		if y_info == nil then
 			y_info = {}
-			self._cur_floor.floor_info.child_map[virtual_x] = y_info
+			floor.floor_info.child_map[virtual_x] = y_info
 		end
 		local image = ALittle.Image(self._control)
 		image.texture_name = info.texture_name
@@ -478,31 +469,93 @@ function GCenter:HandleBrushQuadLButtonDown(event)
 		local show_x, show_y = IDECoordVirtual2Show(virtual_x, virtual_y, self._unit_real_width, self._unit_width, self._unit_real_height, self._unit_height)
 		image.x = show_x
 		image.y = show_y
-		self._cur_floor.edit_item:AddChild(image)
+		floor.edit_item:AddChild(image)
 		y_info[virtual_y] = image
 	end
 	do
-		local y_data = self._cur_floor.floor_info.floor_data.data[virtual_x]
+		local y_data = floor.floor_info.floor_data.data[virtual_x]
 		if y_data == nil then
 			y_data = {}
-			self._cur_floor.floor_info.floor_data.data[virtual_x] = y_data
+			floor.floor_info.floor_data.data[virtual_x] = y_data
 		end
 		y_data[virtual_y] = tex_id
 	end
 	self:SaveCurEdit(false)
 end
 
+function GCenter:OverWriteCell(file, floor, virtual_x, virtual_y)
+	self:EraseCell(floor, virtual_x, virtual_y)
+	local index = ALittle.Math_RandomInt(1, self._brush_scroll_screen.child_count)
+	local info = self._brush_scroll_screen.childs[index]._user_data
+	self:SetCell(file, floor, virtual_x, virtual_y, info)
+end
+
+function GCenter:HandleBrushQuadLButtonDown(event)
+	if self._brush_scroll_screen.child_count == 0 then
+		return
+	end
+	if self._cur_file == nil then
+		return
+	end
+	if self._cur_floor == nil then
+		return
+	end
+	local virtual_x, virtual_y = IDECoordShow2Virtual(event.rel_x, event.rel_y, self._unit_real_width, self._unit_width, self._unit_real_height, self._unit_height)
+	self:OverWriteCell(self._cur_file, self._cur_floor, virtual_x, virtual_y)
+end
+
 function GCenter:HandleBrushQuadDragBegin(event)
+	self._cur_brush_virtual_x = nil
+	self._cur_brush_virtual_y = nil
 end
 
 function GCenter:HandleBrushQuadDrag(event)
+	if self._brush_scroll_screen.child_count == 0 then
+		return
+	end
+	if self._cur_file == nil then
+		return
+	end
+	if self._cur_floor == nil then
+		return
+	end
+	local virtual_x, virtual_y = IDECoordShow2Virtual(event.rel_x, event.rel_y, self._unit_real_width, self._unit_width, self._unit_real_height, self._unit_height)
+	if self._cur_brush_virtual_x == virtual_x and self._cur_brush_virtual_y == virtual_y then
+		return
+	end
+	self._cur_brush_virtual_x = virtual_x
+	self._cur_brush_virtual_y = virtual_y
+	self:OverWriteCell(self._cur_file, self._cur_floor, virtual_x, virtual_y)
 end
 
-function GCenter:HandleBrushQuadDragEnd(event)
+function GCenter:HandleEraseQuadLButtonDown(event)
+	if self._cur_floor == nil then
+		return
+	end
+	local virtual_x, virtual_y = IDECoordShow2Virtual(event.rel_x, event.rel_y, self._unit_real_width, self._unit_width, self._unit_real_height, self._unit_height)
+	self:EraseCell(self._cur_floor, virtual_x, virtual_y)
+end
+
+function GCenter:HandleEraseQuadDragBegin(event)
+	self._cur_erase_virtual_x = nil
+	self._cur_erase_virtual_y = nil
+end
+
+function GCenter:HandleEraseQuadDrag(event)
+	if self._cur_floor == nil then
+		return
+	end
+	local virtual_x, virtual_y = IDECoordShow2Virtual(event.rel_x, event.rel_y, self._unit_real_width, self._unit_width, self._unit_real_height, self._unit_height)
+	if self._cur_erase_virtual_x == virtual_x and self._cur_erase_virtual_y == virtual_y then
+		return
+	end
+	self._cur_erase_virtual_x = virtual_x
+	self._cur_erase_virtual_y = virtual_y
+	self:EraseCell(self._cur_floor, virtual_x, virtual_y)
 end
 
 function GCenter:HandleNewFloorClick(event)
-	if self._cur_edit == nil then
+	if self._cur_file == nil then
 		g_IDETool:ShowNotice("提示", "请先打开文件")
 		return
 	end
@@ -518,10 +571,10 @@ function GCenter:HandleNewFloor(name)
 	floor_data.name = name
 	local floor_info = {}
 	floor_info.floor_data = floor_data
-	floor_info.file_info = self._cur_edit
+	floor_info.file_info = self._cur_file
 	floor_info.visible = true
-	ALittle.List_Insert(self._cur_edit.map_data.floor_list, 1, floor_data)
-	ALittle.List_Insert(self._cur_edit.map_info.floor_list, 1, floor_info)
+	ALittle.List_Insert(self._cur_file.map_data.floor_list, 1, floor_data)
+	ALittle.List_Insert(self._cur_file.map_info.floor_list, 1, floor_info)
 	local group = nil
 	if self._floor_scroll_screen.child_count > 0 then
 		group = self._floor_scroll_screen.childs[1].group
@@ -537,6 +590,8 @@ function GCenter:HandleNewFloor(name)
 	info.select_item:AddEventListener(___all_struct[-641444818], self, self.HandleFloorRButtonDown)
 	info.floor_info = floor_info
 	self._floor_scroll_screen:AddChild(info.select_item, 1)
+	info.edit_item = self:CreateFloorEdit(info)
+	self._edit_scroll_screen:AddChild(info.edit_item, 1)
 	self:SaveCurEdit(false)
 end
 
@@ -606,7 +661,7 @@ function GCenter:HandleFloorRightMenu(event)
 end
 
 function GCenter:StartEdit(file_info)
-	self._cur_edit = file_info
+	self._cur_file = file_info
 	self._cur_floor = nil
 	self._edit_title.text = file_info.item.text
 	self._floor_scroll_screen:RemoveAllChild()
@@ -689,7 +744,22 @@ function GCenter:StartEdit(file_info)
 	self._cur_brush_quad:AddEventListener(___all_struct[1883782801], self, self.HandleBrushQuadLButtonDown)
 	self._cur_brush_quad:AddEventListener(___all_struct[1301789264], self, self.HandleBrushQuadDragBegin)
 	self._cur_brush_quad:AddEventListener(___all_struct[1337289812], self, self.HandleBrushQuadDrag)
-	self._cur_brush_quad:AddEventListener(___all_struct[150587926], self, self.HandleBrushQuadDragEnd)
+	self._cur_erase_quad = ALittle.Quad(g_Control)
+	self._cur_erase_quad.alpha = 0
+	self._cur_erase_quad.visible = false
+	self._cur_erase_quad.width_type = 4
+	self._cur_erase_quad.height_type = 4
+	self._cur_layer:AddChild(self._cur_erase_quad)
+	self._cur_erase_quad:AddEventListener(___all_struct[1883782801], self, self.HandleEraseQuadLButtonDown)
+	self._cur_erase_quad:AddEventListener(___all_struct[1301789264], self, self.HandleEraseQuadDragBegin)
+	self._cur_erase_quad:AddEventListener(___all_struct[1337289812], self, self.HandleEraseQuadDrag)
+	self._cur_drag_quad = ALittle.Quad(g_Control)
+	self._cur_drag_quad.alpha = 0
+	self._cur_drag_quad.visible = false
+	self._cur_drag_quad.width_type = 4
+	self._cur_drag_quad.height_type = 4
+	self._cur_layer:AddChild(self._cur_drag_quad)
+	self._cur_drag_quad.drag_trans_target = self._edit_scroll_screen
 	self._edit_scroll_screen.container.width = layer_width
 	self._edit_scroll_screen.container.height = layer_height
 	self._cur_layer.width = layer_width
@@ -697,7 +767,7 @@ function GCenter:StartEdit(file_info)
 	self._edit_scroll_screen:AddChild(self._cur_layer)
 	self._edit_scroll_screen:RejustScrollBar()
 	local group = {}
-	for index, floor_info in ___ipairs(self._cur_edit.map_info.floor_list) do
+	for index, floor_info in ___ipairs(self._cur_file.map_info.floor_list) do
 		local info = {}
 		info.select_item = g_Control:CreateControl("ide_common_item_radiobutton", info)
 		info.select_item._user_data = info
@@ -709,6 +779,12 @@ function GCenter:StartEdit(file_info)
 		self._floor_scroll_screen:AddChild(info.select_item)
 		info.edit_item = self:CreateFloorEdit(info)
 		self._edit_scroll_screen:AddChild(info.edit_item)
+		info.edit_item.alpha = 0.5
+		if index == 1 then
+			info.select_item.selected = true
+			info.edit_item.alpha = 1
+			self._cur_floor = info
+		end
 	end
 end
 
@@ -737,10 +813,16 @@ end
 
 function GCenter:HandleToolBrushSelect(event)
 	self._layer_brush_info.visible = event.target.selected
+	if self._cur_brush_quad ~= nil then
+		self._cur_brush_quad.visible = event.target.selected
+	end
 end
 
-function GCenter:HandleToolSelectSelect(event)
-	self._layer_select_info.visible = event.target.selected
+function GCenter:HandleToolEraseSelect(event)
+	self._layer_erase_info.visible = event.target.selected
+	if self._cur_erase_quad ~= nil then
+		self._cur_erase_quad.visible = event.target.selected
+	end
 end
 
 function GCenter:HandleToolScaleSelect(event)
@@ -749,18 +831,21 @@ end
 
 function GCenter:HandleToolDragSelect(event)
 	self._layer_drag_info.visible = event.target.selected
+	if self._cur_drag_quad ~= nil then
+		self._cur_drag_quad.visible = event.target.selected
+	end
 end
 
 function GCenter:SaveCurEdit(save)
-	if self._cur_edit == nil then
+	if self._cur_file == nil then
 		return
 	end
-	if self._cur_edit.save == save then
+	if self._cur_file.save == save then
 		return
 	end
 	if not save then
-		self._cur_edit.save = false
-		self._edit_title.text = self._cur_edit.item.text .. "*"
+		self._cur_file.save = false
+		self._edit_title.text = self._cur_file.item.text .. "*"
 		return
 	end
 	local rflct = ___all_struct[-1481607580]
@@ -769,18 +854,38 @@ function GCenter:SaveCurEdit(save)
 	if invoke_info == nil then
 		return
 	end
-	ALittle.PS_WriteMessage(factory, invoke_info, nil, self._cur_edit.map_data)
-	if not factory:WriteToStdFile(self._cur_edit.file_path) then
+	ALittle.PS_WriteMessage(factory, invoke_info, nil, self._cur_file.map_data)
+	if not factory:WriteToStdFile(self._cur_file.file_path) then
 		g_IDETool:ShowNotice("提示", "保存失败")
 		return
 	end
-	self._cur_edit.save = true
-	self._edit_title.text = self._cur_edit.item.text
+	self._cur_file.save = true
+	self._edit_title.text = self._cur_file.item.text
 end
 
 function GCenter:HandleKeyDown(mod, sym, scancode)
 	if sym == 115 and ALittle.BitAnd(mod, 0x00c0) ~= 0 then
 		self:SaveCurEdit(true)
+	end
+	local tool_changed = false
+	if A_UISystem.sym_map[32] ~= nil then
+		self._tool_drag.selected = true
+		tool_changed = true
+	elseif A_UISystem.sym_map[98] ~= nil then
+		self._tool_brush.selected = true
+		tool_changed = true
+	elseif A_UISystem.sym_map[101] ~= nil then
+		self._tool_erase.selected = true
+		tool_changed = true
+	elseif A_UISystem.sym_map[122] ~= nil then
+		self._tool_scale.selected = true
+		tool_changed = true
+	end
+	if tool_changed then
+		self._tool_drag:DispatchEvent(___all_struct[958494922], {})
+		self._tool_brush:DispatchEvent(___all_struct[958494922], {})
+		self._tool_erase:DispatchEvent(___all_struct[958494922], {})
+		self._tool_scale:DispatchEvent(___all_struct[958494922], {})
 	end
 end
 

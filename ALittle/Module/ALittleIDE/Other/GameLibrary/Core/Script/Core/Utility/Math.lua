@@ -13,9 +13,14 @@ local randomseed = math.randomseed
 local abs = math.abs
 local cos = math.cos
 local sin = math.sin
+local tan = math.tan
 local sqrt = math.sqrt
 function Math_Sin(v)
 	return sin(v)
+end
+
+function Math_Tan(v)
+	return tan(v)
 end
 
 function Math_Cos(v)

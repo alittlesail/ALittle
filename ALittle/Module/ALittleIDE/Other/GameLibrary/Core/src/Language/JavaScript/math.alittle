@@ -15,6 +15,7 @@ public class Math
     public static abs(double v) : double {}
     public static cos(double v) : double {}
     public static sin(double v) : double {}
+    public static tan(double v) : double {}
 }
 
 [Native]

@@ -32,17 +32,13 @@ public static IDECoordVirtual2Show(int x, int y, double unit_real_width, double 
 // 显示坐标转虚拟坐标
 public static IDECoordShow2Virtual(double x, double y, double unit_real_width, double unit_width, double unit_real_height, double unit_height) : int, int
 {
+	// 将y投影到六边形坐标系
+	var yy = y / ALittle.Math_Cos(3.1415926/ 6);
+	// 原点偏移unit_real_width / 2
+	var offset_yy = yy + unit_real_width / 2;
+	// 算出格子坐标
+	var virutal_y = ALittle.Math_Floor(offset_yy / unit_real_width);
 
-	var abs_k = ALittle.Math_Sin(3.14159265 / 6);
-	// 负斜率的截距
-	var b1 = y + abs_k * (x % unit_real_width);
-	var b1_mod = ALittle.Math_Floor(b1 / (unit_real_height / 2)) + 1;
-	var virtual_y = ALittle.Math_Floor(b1_mod / 2);
-
-	var offset_x = (virtual_y - 1) * (unit_real_width / 2);
-	ALittle.Log(offset_x);
-	// 垂直切割
-    var virtual_x = ALittle.Math_Floor((x - offset_x) / unit_real_width);
-
-	return virtual_x, virtual_y;
+    var virtual_x = ALittle.Math_Floor(((x + unit_width / 2) - virutal_y * unit_real_width / 2) / unit_real_width);
+	return virtual_x, virutal_y;
 }

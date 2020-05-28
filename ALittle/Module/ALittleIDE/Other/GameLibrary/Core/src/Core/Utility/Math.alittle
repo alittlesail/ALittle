@@ -17,6 +17,8 @@ private var cos = lua.math.cos;
 [Language(Lua)]
 private var sin = lua.math.sin;
 [Language(Lua)]
+private var tan = lua.math.tan;
+[Language(Lua)]
 private var sqrt = lua.math.sqrt;
 
 public static Math_Sin(double v) : double
@@ -26,6 +28,15 @@ public static Math_Sin(double v) : double
     
     [Language(JavaScript)]
     return javascript.Math.sin(v);
+}
+
+public static Math_Tan(double v) : double
+{
+    [Language(Lua)]
+    return tan(v);
+    
+    [Language(JavaScript)]
+    return javascript.Math.tan(v);
 }
 
 public static Math_Cos(double v) : double

@@ -120,6 +120,8 @@ function GCenter:Setup()
 				end
 			end
 			self:RefreshProtoList()
+		else
+			self:HandleShowSettingDialog(nil)
 		end
 	end
 	local login_proto = g_GConfig:GetString("login_proto", "")
@@ -179,6 +181,11 @@ function GCenter:HandleSettingConfirmClick(event)
 		g_IDETool:ShowNotice("错误", "文件夹不存在")
 		return
 	end
+	local error = A_LuaSocketSchedule:LoadProto(self._proto_root_input.text)
+	if error ~= nil then
+		g_IDETool:ShowNotice("错误", error)
+		return
+	end
 	if ALittle.File_GetFileExtByPathAndUpper(self._plugin_file_input.text) == "LUA" then
 		_G["__PLUGIN_ProtoRefresh"] = nil
 		_G["__PLUGIN_StartLogin"] = nil
@@ -195,7 +202,6 @@ function GCenter:HandleSettingConfirmClick(event)
 	end
 	self._setting_dialog.visible = false
 	g_GConfig:SetConfig("proto_root", self._proto_root_input.text)
-	local error = A_LuaSocketSchedule:LoadProto(self._proto_root_input.text)
 	local func = _G["__PLUGIN_ProtoRefresh"]
 	if func ~= nil then
 		error = Lua.TCall(func)

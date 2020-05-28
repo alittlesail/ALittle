@@ -20,3 +20,29 @@ public static IDEUtility_CheckResourceName(string name) : bool, string
 
 	return true, null;
 }
+
+// 虚拟坐标转显示坐标
+public static IDECoordVirtual2Show(int x, int y, double unit_real_width, double unit_width, double unit_real_height, double unit_height) : double, double
+{
+    var show_x = y * unit_real_width / 2 + x * unit_real_width - unit_width / 2;
+	var show_y = y * unit_real_height * 3 / 4 - unit_height / 2;
+	return show_x, show_y;
+}
+
+// 显示坐标转虚拟坐标
+public static IDECoordShow2Virtual(double x, double y, double unit_real_width, double unit_width, double unit_real_height, double unit_height) : int, int
+{
+
+	var abs_k = ALittle.Math_Sin(3.14159265 / 6);
+	// 负斜率的截距
+	var b1 = y + abs_k * (x % unit_real_width);
+	var b1_mod = ALittle.Math_Floor(b1 / (unit_real_height / 2)) + 1;
+	var virtual_y = ALittle.Math_Floor(b1_mod / 2);
+
+	var offset_x = (virtual_y - 1) * (unit_real_width / 2);
+	ALittle.Log(offset_x);
+	// 垂直切割
+    var virtual_x = ALittle.Math_Floor((x - offset_x) / unit_real_width);
+
+	return virtual_x, virtual_y;
+}

@@ -5,28 +5,22 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = ALittle.GetAllStruct()
 
-ALittle.RegStruct(2142748786, "GBRMaker.CellData", {
-name = "GBRMaker.CellData", ns_name = "GBRMaker", rl_name = "CellData", hash_code = 2142748786,
-name_list = {"tex_id","mask"},
-type_list = {"int","int"},
-option_map = {}
-})
 ALittle.RegStruct(-869410065, "GBRMaker.FloorData", {
 name = "GBRMaker.FloorData", ns_name = "GBRMaker", rl_name = "FloorData", hash_code = -869410065,
 name_list = {"name","data"},
-type_list = {"string","Map<int,Map<int,GBRMaker.CellData>>"},
+type_list = {"string","Map<int,Map<int,int>>"},
 option_map = {}
 })
 ALittle.RegStruct(-1481607580, "GBRMaker.MapData", {
 name = "GBRMaker.MapData", ns_name = "GBRMaker", rl_name = "MapData", hash_code = -1481607580,
-name_list = {"floor_list","tex_map","tex_max_id","y_max","x_max","nx_max"},
-type_list = {"List<GBRMaker.FloorData>","Map<int,string>","int","int","int","int"},
+name_list = {"floor_list","tex_map","y_max","x_max","nx_max"},
+type_list = {"List<GBRMaker.FloorData>","Map<int,string>","int","int","int"},
 option_map = {}
 })
 ALittle.RegStruct(-1328202806, "GBRMaker.FloorInfo", {
 name = "GBRMaker.FloorInfo", ns_name = "GBRMaker", rl_name = "FloorInfo", hash_code = -1328202806,
-name_list = {"parent","data","visible"},
-type_list = {"GBRMaker.FileSelectItemInfo","GBRMaker.FloorData","bool"},
+name_list = {"file_info","floor_data","visible","child_map"},
+type_list = {"GBRMaker.FileSelectItemInfo","GBRMaker.FloorData","bool","Map<int,Map<int,ALittle.Image>>"},
 option_map = {}
 })
 ALittle.RegStruct(-838616264, "GBRMaker.FileSelectItemInfo", {
@@ -37,8 +31,8 @@ option_map = {}
 })
 ALittle.RegStruct(339827246, "GBRMaker.MapInfo", {
 name = "GBRMaker.MapInfo", ns_name = "GBRMaker", rl_name = "MapInfo", hash_code = 339827246,
-name_list = {"floor_list"},
-type_list = {"List<GBRMaker.FloorInfo>"},
+name_list = {"floor_list","tex_map","tex_max_id"},
+type_list = {"List<GBRMaker.FloorInfo>","Map<string,int>","int"},
 option_map = {}
 })
 ALittle.RegStruct(1988329150, "GBRMaker.FloorSelectItemInfo", {
@@ -49,8 +43,14 @@ option_map = {}
 })
 ALittle.RegStruct(-1261197262, "GBRMaker.ImageSelectItemInfo", {
 name = "GBRMaker.ImageSelectItemInfo", ns_name = "GBRMaker", rl_name = "ImageSelectItemInfo", hash_code = -1261197262,
-name_list = {"item","image","name","button","frame","upper_file_name"},
-type_list = {"ALittle.DisplayLayout","ALittle.Image","ALittle.DisplayObject","ALittle.DisplayObject","ALittle.DisplayLayout","string"},
+name_list = {"item","image","name","button","frame","upper_file_name","file_path"},
+type_list = {"ALittle.DisplayLayout","ALittle.Image","ALittle.DisplayObject","ALittle.DisplayObject","ALittle.DisplayLayout","string","string"},
+option_map = {}
+})
+ALittle.RegStruct(996973755, "GBRMaker.BrushSelectItemInfo", {
+name = "GBRMaker.BrushSelectItemInfo", ns_name = "GBRMaker", rl_name = "BrushSelectItemInfo", hash_code = 996973755,
+name_list = {"item","image","name","button","frame","upper_file_name","texture_name"},
+type_list = {"ALittle.DisplayLayout","ALittle.Image","ALittle.DisplayObject","ALittle.DisplayObject","ALittle.DisplayLayout","string","string"},
 option_map = {}
 })
 ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
@@ -65,8 +65,20 @@ name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
+ALittle.RegStruct(-449066808, "ALittle.UIClickEvent", {
+name = "ALittle.UIClickEvent", ns_name = "ALittle", rl_name = "UIClickEvent", hash_code = -449066808,
+name_list = {"target","is_drag"},
+type_list = {"ALittle.DisplayObject","bool"},
+option_map = {}
+})
 ALittle.RegStruct(-1347278145, "ALittle.UIButtonEvent", {
 name = "ALittle.UIButtonEvent", ns_name = "ALittle", rl_name = "UIButtonEvent", hash_code = -1347278145,
+name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
+type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
+option_map = {}
+})
+ALittle.RegStruct(-439548260, "ALittle.UILongButtonDownEvent", {
+name = "ALittle.UILongButtonDownEvent", ns_name = "ALittle", rl_name = "UILongButtonDownEvent", hash_code = -439548260,
 name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
 type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
 option_map = {}
@@ -75,6 +87,30 @@ ALittle.RegStruct(-641444818, "ALittle.UIRButtonDownEvent", {
 name = "ALittle.UIRButtonDownEvent", ns_name = "ALittle", rl_name = "UIRButtonDownEvent", hash_code = -641444818,
 name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
 type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
+option_map = {}
+})
+ALittle.RegStruct(1883782801, "ALittle.UILButtonDownEvent", {
+name = "ALittle.UILButtonDownEvent", ns_name = "ALittle", rl_name = "UILButtonDownEvent", hash_code = 1883782801,
+name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
+type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
+option_map = {}
+})
+ALittle.RegStruct(1337289812, "ALittle.UIButtonDragEvent", {
+name = "ALittle.UIButtonDragEvent", ns_name = "ALittle", rl_name = "UIButtonDragEvent", hash_code = 1337289812,
+name_list = {"target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"},
+type_list = {"ALittle.DisplayObject","double","double","double","double","double","double"},
+option_map = {}
+})
+ALittle.RegStruct(1301789264, "ALittle.UIButtonDragBeginEvent", {
+name = "ALittle.UIButtonDragBeginEvent", ns_name = "ALittle", rl_name = "UIButtonDragBeginEvent", hash_code = 1301789264,
+name_list = {"target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"},
+type_list = {"ALittle.DisplayObject","double","double","double","double","double","double"},
+option_map = {}
+})
+ALittle.RegStruct(150587926, "ALittle.UIButtonDragEndEvent", {
+name = "ALittle.UIButtonDragEndEvent", ns_name = "ALittle", rl_name = "UIButtonDragEndEvent", hash_code = 150587926,
+name_list = {"target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"},
+type_list = {"ALittle.DisplayObject","double","double","double","double","double","double"},
 option_map = {}
 })
 
@@ -99,6 +135,8 @@ function GCenter:Setup()
 	self._setting_dialog = g_Control:CreateControl("main_setting_dialog", self)
 	A_LayerManager:AddToModal(self._setting_dialog)
 	g_Control:CreateControl("main_scene", self, self._main_layer)
+	self._right_grad3_ud.up_size = g_GConfig:GetDouble("right_grid3_up_size", self._right_grad3_ud.up_size)
+	self._main_grid3_lr.down_size = g_GConfig:GetDouble("main_grid3_down_size", self._main_grid3_lr.down_size)
 	local tool_group = {}
 	self._tool_brush.group = tool_group
 	self._tool_select.group = tool_group
@@ -245,13 +283,26 @@ function GCenter:HandleSelectFile(event)
 		end
 		info.map_data = ALittle.PS_ReadMessage(factory, invoke_info, nil, factory:GetDataSize())
 		info.map_info = {}
+		info.map_info.tex_map = {}
+		info.map_info.tex_max_id = 0
+		for id, path in ___pairs(info.map_data.tex_map) do
+			info.map_info.tex_map[path] = id
+			if info.map_info.tex_max_id < id then
+				info.map_info.tex_max_id = id
+			end
+		end
 		info.map_info.floor_list = {}
 		for index, floor_data in ___ipairs(info.map_data.floor_list) do
 			local floor_info = {}
-			floor_info.data = floor_data
-			floor_info.parent = info
+			floor_info.floor_data = floor_data
+			floor_info.file_info = info
 			floor_info.visible = true
+			floor_info.child_map = {}
 			ALittle.List_Push(info.map_info.floor_list, floor_info)
+			for x, y_map in ___pairs(floor_data.data) do
+				for y, cell in ___pairs(y_map) do
+				end
+			end
 		end
 	end
 	self:StartEdit(info)
@@ -310,7 +361,9 @@ function GCenter:RefreshTexture()
 		info.image:SetTextureCut(file_path, ALittle.Math_Floor(info.frame.width), ALittle.Math_Floor(info.frame.height), true)
 		info.name.text = ALittle.File_GetJustFileNameByPath(rel_path)
 		info.upper_file_name = ALittle.String_Upper(info.name.text)
+		info.file_path = file_path
 		info.button.drag_trans_target = self._texture_scroll_list
+		info.button:AddEventListener(___all_struct[-449066808], self, self.HandleTextureSelectClick)
 		self._image_cache_list[index] = info
 	end
 	self:HandleTextureSearchClick(nil)
@@ -339,6 +392,115 @@ function GCenter:HandleTextureSearchClick(event)
 	end
 end
 
+function GCenter:HandleTextureSelectClick(event)
+	local image_info = event.target._user_data
+	local rel_path = ALittle.String_Sub(image_info.file_path, ALittle.String_Len(self._texture_base_path) + 2)
+	local texture_name = self._tex_name_base_path .. rel_path
+	for index, child in ___ipairs(self._brush_scroll_screen.childs) do
+		local info = child._user_data
+		if info.texture_name == texture_name then
+			return
+		end
+	end
+	local info = {}
+	info.item = g_Control:CreateControl("ide_image_select_item", info)
+	info.button._user_data = info
+	info.item._user_data = info
+	info.image:SetTextureCut(image_info.file_path, ALittle.Math_Floor(info.frame.width), ALittle.Math_Floor(info.frame.height), true)
+	info.name.text = ALittle.File_GetJustFileNameByPath(rel_path)
+	info.upper_file_name = ALittle.String_Upper(info.name.text)
+	info.texture_name = texture_name
+	info.button.drag_trans_target = self._brush_scroll_screen
+	info.button:AddEventListener(___all_struct[-449066808], self, self.HandleBrushCancelClick)
+	info.button:AddEventListener(___all_struct[-439548260], self, self.HandleBrushAllCancelClick)
+	self._brush_scroll_screen:AddChild(info.item)
+end
+
+function GCenter:HandleBrushCancelClick(event)
+	local info = event.target._user_data
+	self._brush_scroll_screen:RemoveChild(info.item)
+end
+
+function GCenter:HandleBrushAllCancelClick(event)
+	self._brush_scroll_screen:RemoveAllChild()
+end
+
+function GCenter:HandleBrushQuadLButtonDown(event)
+	if self._brush_scroll_screen.child_count == 0 then
+		return
+	end
+	if self._cur_edit == nil then
+		return
+	end
+	if self._cur_floor == nil then
+		return
+	end
+	local virtual_x, virtual_y = IDECoordShow2Virtual(event.rel_x, event.rel_y, self._unit_real_width, self._unit_width, self._unit_real_height, self._unit_height)
+	ALittle.Log(virtual_x, virtual_y)
+	do
+		local y_info = self._cur_floor.floor_info.child_map[virtual_x]
+		if y_info ~= nil and y_info[virtual_y] ~= nil then
+			self._cur_floor.edit_item:RemoveChild(y_info[virtual_y])
+			y_info[virtual_y] = nil
+			if ALittle.IsEmpty(y_info) then
+				self._cur_floor.floor_info.child_map[virtual_x] = nil
+			end
+		end
+	end
+	do
+		local y_data = self._cur_floor.floor_info.floor_data.data[virtual_x]
+		if y_data ~= nil then
+			y_data[virtual_y] = nil
+			if ALittle.IsEmpty(y_data) then
+				self._cur_floor.floor_info.floor_data.data[virtual_x] = nil
+			end
+		end
+	end
+	local index = ALittle.Math_RandomInt(1, self._brush_scroll_screen.child_count)
+	local info = self._brush_scroll_screen.childs[index]._user_data
+	local tex_id = self._cur_edit.map_info.tex_map[info.texture_name]
+	if tex_id == nil then
+		self._cur_edit.map_info.tex_max_id = self._cur_edit.map_info.tex_max_id + 1
+		tex_id = self._cur_edit.map_info.tex_max_id
+		self._cur_edit.map_info.tex_map[info.texture_name] = tex_id
+		self._cur_edit.map_data.tex_map[tex_id] = info.texture_name
+	end
+	do
+		local y_info = self._cur_floor.floor_info.child_map[virtual_x]
+		if y_info == nil then
+			y_info = {}
+			self._cur_floor.floor_info.child_map[virtual_x] = y_info
+		end
+		local image = ALittle.Image(self._control)
+		image.texture_name = info.texture_name
+		image.width = self._unit_width
+		image.height = self._unit_height
+		local show_x, show_y = IDECoordVirtual2Show(virtual_x, virtual_y, self._unit_real_width, self._unit_width, self._unit_real_height, self._unit_height)
+		image.x = show_x
+		image.y = show_y
+		self._cur_floor.edit_item:AddChild(image)
+		y_info[virtual_y] = image
+	end
+	do
+		local y_data = self._cur_floor.floor_info.floor_data.data[virtual_x]
+		if y_data == nil then
+			y_data = {}
+			self._cur_floor.floor_info.floor_data.data[virtual_x] = y_data
+		end
+		y_data[virtual_y] = tex_id
+	end
+	self:SaveCurEdit(false)
+end
+
+function GCenter:HandleBrushQuadDragBegin(event)
+end
+
+function GCenter:HandleBrushQuadDrag(event)
+end
+
+function GCenter:HandleBrushQuadDragEnd(event)
+end
+
 function GCenter:HandleNewFloorClick(event)
 	if self._cur_edit == nil then
 		g_IDETool:ShowNotice("提示", "请先打开文件")
@@ -355,8 +517,8 @@ function GCenter:HandleNewFloor(name)
 	local floor_data = {}
 	floor_data.name = name
 	local floor_info = {}
-	floor_info.data = floor_data
-	floor_info.parent = self._cur_edit
+	floor_info.floor_data = floor_data
+	floor_info.file_info = self._cur_edit
 	floor_info.visible = true
 	ALittle.List_Insert(self._cur_edit.map_data.floor_list, 1, floor_data)
 	ALittle.List_Insert(self._cur_edit.map_info.floor_list, 1, floor_info)
@@ -370,7 +532,7 @@ function GCenter:HandleNewFloor(name)
 	info.select_item = g_Control:CreateControl("ide_common_item_radiobutton", info)
 	info.select_item._user_data = info
 	info.select_item.group = group
-	info.select_item.text = floor_info.data.name
+	info.select_item.text = floor_info.floor_data.name
 	info.select_item:AddEventListener(___all_struct[958494922], self, self.HandleSelectFloor)
 	info.select_item:AddEventListener(___all_struct[-641444818], self, self.HandleFloorRButtonDown)
 	info.floor_info = floor_info
@@ -385,6 +547,7 @@ function GCenter:HandleSelectFloor(event)
 	else
 		info.edit_item.alpha = 0.5
 	end
+	self._cur_floor = info
 end
 
 function GCenter:HandleFloorRButtonDown(event)
@@ -408,42 +571,43 @@ function GCenter:HandleFloorRightMenu(event)
 	if event.target.text == "上移" then
 		self._floor_scroll_screen:SetChildIndex(info.select_item, index - 1)
 		self._edit_scroll_screen:SetChildIndex(info.edit_item, index - 1)
-		local floor_data = info.floor_info.parent.map_data.floor_list[index]
-		ALittle.List_Remove(info.floor_info.parent.map_data.floor_list, index)
-		ALittle.List_Insert(info.floor_info.parent.map_data.floor_list, index - 1, floor_data)
-		local floor_info = info.floor_info.parent.map_info.floor_list[index]
-		ALittle.List_Remove(info.floor_info.parent.map_info.floor_list, index)
-		ALittle.List_Insert(info.floor_info.parent.map_info.floor_list, index - 1, floor_info)
+		local floor_data = info.floor_info.file_info.map_data.floor_list[index]
+		ALittle.List_Remove(info.floor_info.file_info.map_data.floor_list, index)
+		ALittle.List_Insert(info.floor_info.file_info.map_data.floor_list, index - 1, floor_data)
+		local floor_info = info.floor_info.file_info.map_info.floor_list[index]
+		ALittle.List_Remove(info.floor_info.file_info.map_info.floor_list, index)
+		ALittle.List_Insert(info.floor_info.file_info.map_info.floor_list, index - 1, floor_info)
 		self:SaveCurEdit(false)
 	elseif event.target.text == "下移" then
 		self._floor_scroll_screen:SetChildIndex(info.select_item, index + 1)
 		self._edit_scroll_screen:SetChildIndex(info.edit_item, index + 1)
-		local floor_data = info.floor_info.parent.map_data.floor_list[index]
-		ALittle.List_Remove(info.floor_info.parent.map_data.floor_list, index)
-		ALittle.List_Insert(info.floor_info.parent.map_data.floor_list, index + 1, floor_data)
-		local floor_info = info.floor_info.parent.map_info.floor_list[index]
-		ALittle.List_Remove(info.floor_info.parent.map_info.floor_list, index)
-		ALittle.List_Insert(info.floor_info.parent.map_info.floor_list, index + 1, floor_info)
+		local floor_data = info.floor_info.file_info.map_data.floor_list[index]
+		ALittle.List_Remove(info.floor_info.file_info.map_data.floor_list, index)
+		ALittle.List_Insert(info.floor_info.file_info.map_data.floor_list, index + 1, floor_data)
+		local floor_info = info.floor_info.file_info.map_info.floor_list[index]
+		ALittle.List_Remove(info.floor_info.file_info.map_info.floor_list, index)
+		ALittle.List_Insert(info.floor_info.file_info.map_info.floor_list, index + 1, floor_info)
 		self:SaveCurEdit(false)
 	elseif event.target.text == "隐藏" then
-		info.select_item.text = info.floor_info.data.name .. "(隐藏)"
+		info.select_item.text = info.floor_info.floor_data.name .. "(隐藏)"
 		info.edit_item.visible = false
 		info.floor_info.visible = false
 	elseif event.target.text == "显示" then
-		info.select_item.text = info.floor_info.data.name
+		info.select_item.text = info.floor_info.floor_data.name
 		info.edit_item.visible = true
 		info.floor_info.visible = true
 	elseif event.target.text == "删除" then
 		self._floor_scroll_screen:RemoveChild(info.select_item)
 		self._edit_scroll_screen:RemoveChild(info.edit_item)
-		ALittle.List_Remove(info.floor_info.parent.map_data.floor_list, index)
-		ALittle.List_Remove(info.floor_info.parent.map_info.floor_list, index)
+		ALittle.List_Remove(info.floor_info.file_info.map_data.floor_list, index)
+		ALittle.List_Remove(info.floor_info.file_info.map_info.floor_list, index)
 		self:SaveCurEdit(false)
 	end
 end
 
 function GCenter:StartEdit(file_info)
 	self._cur_edit = file_info
+	self._cur_floor = nil
 	self._edit_title.text = file_info.item.text
 	self._floor_scroll_screen:RemoveAllChild()
 	self._edit_scroll_screen:RemoveAllChild()
@@ -461,8 +625,12 @@ function GCenter:StartEdit(file_info)
 	end
 	local layer_width = 0.0
 	local layer_height = 0.0
-	local grid_layer = ALittle.DisplayLayout(g_Control)
-	grid_layer.disabled = true
+	self._cur_layer = ALittle.DisplayLayout(g_Control)
+	self._cur_grid_layer = ALittle.DisplayLayout(g_Control)
+	self._cur_grid_layer.width_type = 4
+	self._cur_grid_layer.height_type = 4
+	self._cur_layer:AddChild(self._cur_grid_layer)
+	self._cur_grid_layer.disabled = true
 	local x = 0
 	while true do
 		if not(x < x_max) then break end
@@ -473,9 +641,10 @@ function GCenter:StartEdit(file_info)
 			image.texture_name = self._tex_name_base_path .. self._unit_empty_name_input.text
 			image.width = self._unit_width
 			image.height = self._unit_height
-			image.x = y * self._unit_real_width / 2 + x * self._unit_real_width - self._unit_width / 2
-			image.y = y * self._unit_real_height * 2 / 3 - self._unit_height / 2
-			grid_layer:AddChild(image)
+			local show_x, show_y = IDECoordVirtual2Show(x, y, self._unit_real_width, self._unit_width, self._unit_real_height, self._unit_height)
+			image.x = show_x
+			image.y = show_y
+			self._cur_grid_layer:AddChild(image)
 			if image.x + image.width > layer_width then
 				layer_width = image.x + image.width
 			end
@@ -492,15 +661,15 @@ function GCenter:StartEdit(file_info)
 		local y = 0
 		while true do
 			if not(y < y_max) then break end
-			local offset_x = y * self._unit_real_width / 2 + x * self._unit_real_width - self._unit_width / 2
-			if offset_x + self._unit_width / 2 >= 0 then
+			local show_x, show_y = IDECoordVirtual2Show(x, y, self._unit_real_width, self._unit_width, self._unit_real_height, self._unit_height)
+			if show_x + self._unit_width / 2 >= 0 then
 				local image = ALittle.Image(self._control)
 				image.texture_name = self._tex_name_base_path .. self._unit_empty_name_input.text
 				image.width = self._unit_width
 				image.height = self._unit_height
-				image.x = offset_x
-				image.y = y * self._unit_real_height * 2 / 3 - self._unit_height / 2
-				grid_layer:AddChild(image)
+				image.x = show_x
+				image.y = show_y
+				self._cur_grid_layer:AddChild(image)
 				if image.x + image.width > layer_width then
 					layer_width = image.x + image.width
 				end
@@ -512,11 +681,20 @@ function GCenter:StartEdit(file_info)
 		end
 		x = x+(-1)
 	end
+	self._cur_brush_quad = ALittle.Quad(g_Control)
+	self._cur_brush_quad.alpha = 0
+	self._cur_brush_quad.width_type = 4
+	self._cur_brush_quad.height_type = 4
+	self._cur_layer:AddChild(self._cur_brush_quad)
+	self._cur_brush_quad:AddEventListener(___all_struct[1883782801], self, self.HandleBrushQuadLButtonDown)
+	self._cur_brush_quad:AddEventListener(___all_struct[1301789264], self, self.HandleBrushQuadDragBegin)
+	self._cur_brush_quad:AddEventListener(___all_struct[1337289812], self, self.HandleBrushQuadDrag)
+	self._cur_brush_quad:AddEventListener(___all_struct[150587926], self, self.HandleBrushQuadDragEnd)
 	self._edit_scroll_screen.container.width = layer_width
 	self._edit_scroll_screen.container.height = layer_height
-	grid_layer.width = layer_width
-	grid_layer.height = layer_height
-	self._edit_scroll_screen:AddChild(grid_layer)
+	self._cur_layer.width = layer_width
+	self._cur_layer.height = layer_height
+	self._edit_scroll_screen:AddChild(self._cur_layer)
 	self._edit_scroll_screen:RejustScrollBar()
 	local group = {}
 	for index, floor_info in ___ipairs(self._cur_edit.map_info.floor_list) do
@@ -524,27 +702,34 @@ function GCenter:StartEdit(file_info)
 		info.select_item = g_Control:CreateControl("ide_common_item_radiobutton", info)
 		info.select_item._user_data = info
 		info.select_item.group = group
-		info.select_item.text = floor_info.data.name
+		info.select_item.text = floor_info.floor_data.name
 		info.select_item:AddEventListener(___all_struct[958494922], self, self.HandleSelectFloor)
 		info.select_item:AddEventListener(___all_struct[-641444818], self, self.HandleFloorRButtonDown)
 		info.floor_info = floor_info
 		self._floor_scroll_screen:AddChild(info.select_item)
 		info.edit_item = self:CreateFloorEdit(info)
-		self._floor_scroll_screen:AddChild(info.edit_item)
+		self._edit_scroll_screen:AddChild(info.edit_item)
 	end
 end
 
 function GCenter:CreateFloorEdit(info)
 	local layer = ALittle.DisplayLayout(self._control)
-	for x, col_info in ___pairs(info.floor_info.data.data) do
-		for y, cell in ___pairs(col_info) do
+	for x, y_data in ___pairs(info.floor_info.floor_data.data) do
+		for y, tex_id in ___pairs(y_data) do
 			local image = ALittle.Image(self._control)
-			image.texture_name = info.floor_info.parent.map_data.tex_map[cell.tex_id]
+			image.texture_name = info.floor_info.file_info.map_data.tex_map[tex_id]
 			image.width = self._unit_width
 			image.height = self._unit_height
-			image.x = y * self._unit_real_width / 2 + x * self._unit_real_width - self._unit_width / 2
-			image.y = y * self._unit_real_height * 2 / 3 - self._unit_height / 2
+			local show_x, show_y = IDECoordVirtual2Show(x, y, self._unit_real_width, self._unit_width, self._unit_real_height, self._unit_height)
+			image.x = show_x
+			image.y = show_y
 			layer:AddChild(image)
+			local y_info = info.floor_info.child_map[x]
+			if y_info == nil then
+				y_info = {}
+				info.floor_info.child_map[x] = y_info
+			end
+			y_info[y] = image
 		end
 	end
 	return layer
@@ -597,6 +782,34 @@ function GCenter:HandleKeyDown(mod, sym, scancode)
 	if sym == 115 and ALittle.BitAnd(mod, 0x00c0) ~= 0 then
 		self:SaveCurEdit(true)
 	end
+end
+
+function GCenter:HandleDragRightQuadUD(event)
+	self._right_grad3_ud.up_size = self._right_grad3_ud.up_size + (event.delta_y)
+end
+
+function GCenter:HandleDragEndRightQuadUD(event)
+	g_GConfig:SetConfig("right_grid3_up_size", self._right_grad3_ud.up_size)
+end
+
+function GCenter:HandleDragRightQuadLR(event)
+	self._main_grid3_lr.down_size = self._main_grid3_lr.down_size - (event.delta_x)
+end
+
+function GCenter:HandleDragEndRightQuadLR(event)
+	g_GConfig:SetConfig("main_grid3_down_size", self._main_grid3_lr.down_size)
+end
+
+function GCenter:HandleSetVDragCursor(event)
+	ALittle.System_SetVDragCursor()
+end
+
+function GCenter:HandleSetHDragCursor(event)
+	ALittle.System_SetHDragCursor()
+end
+
+function GCenter:HandleSetNormalCursor(event)
+	ALittle.System_SetNormalCursor()
 end
 
 function GCenter:Shutdown()

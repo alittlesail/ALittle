@@ -151,6 +151,10 @@ class GCenter
                 }
                 this.RefreshProtoList();
             }
+            else
+            {
+                this.HandleShowSettingDialog(null);
+            }
         }
 
         // 登陆部分
@@ -225,6 +229,13 @@ class GCenter
             return;
         }
         
+        var error = A_LuaSocketSchedule.LoadProto(this._proto_root_input.text);
+        if (error != null)
+        {
+            g_IDETool.ShowNotice("错误", error);
+            return;
+        }
+
         // 清理接口，并重新加载
         if (ALittle.File_GetFileExtByPathAndUpper(this._plugin_file_input.text) == "LUA")
         {
@@ -245,7 +256,6 @@ class GCenter
         this._setting_dialog.visible = false;
         g_GConfig.SetConfig("proto_root", this._proto_root_input.text);
         
-        var error = A_LuaSocketSchedule.LoadProto(this._proto_root_input.text);
         var func = cast<Map<string, Functor<()>>>(_G)["__PLUGIN_ProtoRefresh"];
         if (func != null)
         {

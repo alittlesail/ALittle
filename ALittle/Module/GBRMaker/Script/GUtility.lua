@@ -23,3 +23,20 @@ function IDEUtility_CheckResourceName(name)
 	return true, nil
 end
 
+function IDECoordVirtual2Show(x, y, unit_real_width, unit_width, unit_real_height, unit_height)
+	local show_x = y * unit_real_width / 2 + x * unit_real_width - unit_width / 2
+	local show_y = y * unit_real_height * 3 / 4 - unit_height / 2
+	return show_x, show_y
+end
+
+function IDECoordShow2Virtual(x, y, unit_real_width, unit_width, unit_real_height, unit_height)
+	local abs_k = ALittle.Math_Sin(3.14159265 / 6)
+	local b1 = y + abs_k * (x % unit_real_width)
+	local b1_mod = ALittle.Math_Floor(b1 / (unit_real_height / 2)) + 1
+	local virtual_y = ALittle.Math_Floor(b1_mod / 2)
+	local offset_x = (virtual_y - 1) * (unit_real_width / 2)
+	ALittle.Log(offset_x)
+	local virtual_x = ALittle.Math_Floor((x - offset_x) / unit_real_width)
+	return virtual_x, virtual_y
+end
+

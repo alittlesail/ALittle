@@ -3,18 +3,11 @@ namespace GBRMaker;
 
 protected var g_GConfig:ALittle.IJsonConfig;
 
-// 单位数据
-protected struct CellData
-{
-    int tex_id;     // 纹理ID
-    int mask;       // 掩码信息
-}
-
 // 层级数据
 protected struct FloorData
 {
     string name;                // 名称
-    Map<int, Map<int, CellData>> data;  // 地图信息
+    Map<int, Map<int, int>> data;  // 地图信息
 }
 
 // 地图数据
@@ -22,7 +15,6 @@ protected struct MapData
 {
     List<FloorData> floor_list; // 层
     Map<int, string> tex_map;   // 纹理映射ID
-    int tex_max_id;
     int y_max;                // y坐标最大值
     int x_max;                // x坐标最大值
     int nx_max;               // x负坐标最小值（是负数)
@@ -31,15 +23,18 @@ protected struct MapData
 // 层级信息
 protected struct FloorInfo
 {
-    FileSelectItemInfo parent;
-    FloorData data;
+    FileSelectItemInfo file_info;
+    FloorData floor_data;
     bool visible;
+    Map<int, Map<int, ALittle.Image>> child_map;
 }
 
 // 地图信息
 protected struct MapInfo
 {
     List<FloorInfo> floor_list;
+    Map<string, int> tex_map;   // 纹理映射ID
+    int tex_max_id;
 }
 
 // 层级信息
@@ -70,6 +65,19 @@ protected struct ImageSelectItemInfo
     ALittle.DisplayObject button;
     ALittle.DisplayLayout frame;
     string upper_file_name;
+    string file_path;
+}
+
+// 笔刷信息
+protected struct BrushSelectItemInfo
+{
+    ALittle.DisplayLayout item;
+    ALittle.Image image;
+    ALittle.DisplayObject name;
+    ALittle.DisplayObject button;
+    ALittle.DisplayLayout frame;
+    string upper_file_name;
+    string texture_name;
 }
 
 class GCenter
@@ -81,6 +89,9 @@ class GCenter
 
     private ALittle.DisplayLayout _main_layer;
     private ALittle.DisplayLayout _dialog_layer;
+
+    private ALittle.Grid3 _right_grad3_ud;
+    private ALittle.Grid3 _main_grid3_lr;
 
     // 设置界面
     private ALittle.Dialog _setting_dialog;
@@ -129,6 +140,7 @@ class GCenter
     // 工具区
     private ALittle.DisplayObject _tool_brush;
     private ALittle.DisplayLayout _layer_brush_info;
+    private ALittle.ScrollScreen _brush_scroll_screen;
 
     private ALittle.DisplayObject _tool_select;
     private ALittle.DisplayLayout _layer_select_info;
@@ -141,6 +153,10 @@ class GCenter
 
     // 当前正在编辑
     private FileSelectItemInfo _cur_edit;
+    private FloorSelectItemInfo _cur_floor;
+    private ALittle.DisplayLayout _cur_layer;
+    private ALittle.DisplayLayout _cur_grid_layer;
+    private ALittle.Quad _cur_brush_quad;
 
     public ctor()
     {
@@ -171,6 +187,9 @@ class GCenter
         
         // 创建主界面
         g_Control.CreateControl{ALittle.DisplayObject}("main_scene", this, this._main_layer);
+
+        this._right_grad3_ud.up_size = g_GConfig.GetDouble("right_grid3_up_size", this._right_grad3_ud.up_size);
+        this._main_grid3_lr.down_size = g_GConfig.GetDouble("main_grid3_down_size", this._main_grid3_lr.down_size);
 
         var tool_group = new ALittle.TextRadioButtonGroup();
         this._tool_brush.group = tool_group;
@@ -338,14 +357,32 @@ class GCenter
 
             // 构建信息
             info.map_info = new MapInfo();
+            info.map_info.tex_map = new Map<string, int>();
+            info.map_info.tex_max_id = 0;
+            for (var id, path in info.map_data.tex_map)
+            {
+                info.map_info.tex_map[path] = id;
+                if (info.map_info.tex_max_id < id)
+                    info.map_info.tex_max_id = id;
+            }
+
             info.map_info.floor_list = new List<FloorInfo>();
             for (var index, floor_data in info.map_data.floor_list)
             {
                 var floor_info = new FloorInfo();
-                floor_info.data = floor_data;
-                floor_info.parent = info;
+                floor_info.floor_data = floor_data;
+                floor_info.file_info = info;
                 floor_info.visible = true;
+                floor_info.child_map = new Map<int, Map<int, ALittle.Image>>();
                 ALittle.List_Push(info.map_info.floor_list, floor_info);
+
+                for (var x, y_map in floor_data.data)
+                {
+                    for (var y, cell in y_map)
+                    {
+                        
+                    }
+                }
             }
         }
 
@@ -421,8 +458,10 @@ class GCenter
 			info.image.SetTextureCut(file_path, ALittle.Math_Floor(info.frame.width), ALittle.Math_Floor(info.frame.height), true);
             info.name.text = ALittle.File_GetJustFileNameByPath(rel_path);
             info.upper_file_name = ALittle.String_Upper(info.name.text);
+            info.file_path = file_path;
 
             info.button.drag_trans_target = this._texture_scroll_list;
+            info.button.AddEventListener(this, this.HandleTextureSelectClick);
 
             this._image_cache_list[index] = info;
         }
@@ -462,6 +501,141 @@ class GCenter
 		}
     }
 
+    private fun HandleTextureSelectClick(ALittle.UIClickEvent event)
+    {
+        var image_info:ImageSelectItemInfo = event.target._user_data;
+        
+        var rel_path = ALittle.String_Sub(image_info.file_path, ALittle.String_Len(this._texture_base_path) + 2);
+        var texture_name = this._tex_name_base_path..rel_path;
+
+        for (var index, child in this._brush_scroll_screen.childs)
+        {
+            var info:BrushSelectItemInfo = child._user_data;
+            if (info.texture_name == texture_name) return;
+        }
+
+        var info = new BrushSelectItemInfo();
+        info.item = g_Control.CreateControl{ALittle.DisplayLayout}("ide_image_select_item", info);
+        info.button._user_data = info;
+        info.item._user_data = info;
+		info.image.SetTextureCut(image_info.file_path, ALittle.Math_Floor(info.frame.width), ALittle.Math_Floor(info.frame.height), true);
+        info.name.text = ALittle.File_GetJustFileNameByPath(rel_path);
+        info.upper_file_name = ALittle.String_Upper(info.name.text);
+        info.texture_name = texture_name;
+
+        info.button.drag_trans_target = this._brush_scroll_screen;
+        info.button.AddEventListener(this, this.HandleBrushCancelClick);
+        info.button.AddEventListener(this, this.HandleBrushAllCancelClick);
+
+        this._brush_scroll_screen.AddChild(info.item);
+    }
+
+    private fun HandleBrushCancelClick(ALittle.UIClickEvent event)
+    {
+        var info:BrushSelectItemInfo = event.target._user_data;
+        this._brush_scroll_screen.RemoveChild(info.item);
+    }
+
+    private fun HandleBrushAllCancelClick(ALittle.UILongButtonDownEvent event)
+    {
+        this._brush_scroll_screen.RemoveAllChild();
+    }
+
+    private fun HandleBrushQuadLButtonDown(ALittle.UILButtonDownEvent event)
+    {
+        if (this._brush_scroll_screen.child_count == 0) return;
+        
+        // 获取当前编辑
+        if (this._cur_edit == null) return;
+        // 获取当前层
+        if (this._cur_floor == null) return;
+
+        // 计算坐标
+        var virtual_x, virtual_y = IDECoordShow2Virtual(event.rel_x, event.rel_y, this._unit_real_width, this._unit_width, this._unit_real_height, this._unit_height);
+        ALittle.Log(virtual_x, virtual_y);
+
+        // 检查原来是否有，有则清理
+        {
+            var y_info = this._cur_floor.floor_info.child_map[virtual_x];
+            if (y_info != null && y_info[virtual_y] != null)
+            {
+                this._cur_floor.edit_item.RemoveChild(y_info[virtual_y]);
+                y_info[virtual_y] = null;
+                if (ALittle.IsEmpty(y_info))
+                    this._cur_floor.floor_info.child_map[virtual_x] = null;
+            }   
+        }
+        {
+            var y_data = this._cur_floor.floor_info.floor_data.data[virtual_x];
+            if (y_data != null)
+            {
+                y_data[virtual_y] = null;
+                if (ALittle.IsEmpty(y_data))
+                    this._cur_floor.floor_info.floor_data.data[virtual_x] = null;
+            }
+        }
+
+        // 获取笔刷
+        var index = ALittle.Math_RandomInt(1, this._brush_scroll_screen.child_count);
+        var info:BrushSelectItemInfo = this._brush_scroll_screen.childs[index]._user_data;
+
+        // 计算纹理ID
+        var tex_id = this._cur_edit.map_info.tex_map[info.texture_name];
+        if (tex_id == null)
+        {
+            ++ this._cur_edit.map_info.tex_max_id;
+            tex_id = this._cur_edit.map_info.tex_max_id;
+            this._cur_edit.map_info.tex_map[info.texture_name] = tex_id;
+            this._cur_edit.map_data.tex_map[tex_id] = info.texture_name;
+        }
+
+        // 添加数据
+        {
+            var y_info = this._cur_floor.floor_info.child_map[virtual_x];
+            if (y_info == null)
+            {
+                y_info = new Map<int, ALittle.Image>();
+                this._cur_floor.floor_info.child_map[virtual_x] = y_info;
+            }
+            
+            var image = new ALittle.Image(this._control);
+            image.texture_name = info.texture_name;
+            image.width = this._unit_width;
+            image.height = this._unit_height;
+            var show_x, show_y = IDECoordVirtual2Show(virtual_x, virtual_y, this._unit_real_width, this._unit_width, this._unit_real_height, this._unit_height);
+            image.x = show_x;
+            image.y = show_y;
+            this._cur_floor.edit_item.AddChild(image);
+            y_info[virtual_y] = image;   
+        }
+        {
+            var y_data = this._cur_floor.floor_info.floor_data.data[virtual_x];
+            if (y_data == null)
+            {
+                y_data = new Map<int, int>();
+                this._cur_floor.floor_info.floor_data.data[virtual_x] = y_data;
+            }
+            y_data[virtual_y] = tex_id;
+        }
+
+        this.SaveCurEdit(false);
+    }
+
+    private fun HandleBrushQuadDragBegin(ALittle.UIButtonDragBeginEvent event)
+    {
+        
+    }
+
+    private fun HandleBrushQuadDrag(ALittle.UIButtonDragEvent event)
+    {
+        
+    }
+
+    private fun HandleBrushQuadDragEnd(ALittle.UIButtonDragEndEvent event)
+    {
+        
+    }
+
     //图层列表//////////////////////////////////////////////////////////////////////
     private fun HandleNewFloorClick(ALittle.UIClickEvent event)
     {
@@ -483,8 +657,8 @@ class GCenter
         var floor_data = new FloorData();
         floor_data.name = name;
         var floor_info = new FloorInfo();
-        floor_info.data = floor_data;
-        floor_info.parent = this._cur_edit;
+        floor_info.floor_data = floor_data;
+        floor_info.file_info = this._cur_edit;
         floor_info.visible = true;
 
         ALittle.List_Insert(this._cur_edit.map_data.floor_list, 1, floor_data);
@@ -500,7 +674,7 @@ class GCenter
         info.select_item = g_Control.CreateControl{ALittle.TextRadioButton}("ide_common_item_radiobutton", info);
         info.select_item._user_data = info;
         info.select_item.group = group;
-        info.select_item.text = floor_info.data.name;
+        info.select_item.text = floor_info.floor_data.name;
         info.select_item.AddEventListener(this, this.HandleSelectFloor);
         info.select_item.AddEventListener(this, this.HandleFloorRButtonDown);
         info.floor_info = floor_info;
@@ -517,6 +691,8 @@ class GCenter
             info.edit_item.alpha = 1;
         else
             info.edit_item.alpha = 0.5;
+
+        this._cur_floor = info;
     }
 
     private fun HandleFloorRButtonDown(ALittle.UIRButtonDownEvent event)
@@ -553,12 +729,12 @@ class GCenter
             this._floor_scroll_screen.SetChildIndex(info.select_item, index - 1);
             this._edit_scroll_screen.SetChildIndex(info.edit_item, index - 1);
             // 移动数据
-            var floor_data = info.floor_info.parent.map_data.floor_list[index];
-            ALittle.List_Remove(info.floor_info.parent.map_data.floor_list, index);
-            ALittle.List_Insert(info.floor_info.parent.map_data.floor_list, index - 1, floor_data);
-            var floor_info = info.floor_info.parent.map_info.floor_list[index];
-            ALittle.List_Remove(info.floor_info.parent.map_info.floor_list, index);
-            ALittle.List_Insert(info.floor_info.parent.map_info.floor_list, index - 1, floor_info);
+            var floor_data = info.floor_info.file_info.map_data.floor_list[index];
+            ALittle.List_Remove(info.floor_info.file_info.map_data.floor_list, index);
+            ALittle.List_Insert(info.floor_info.file_info.map_data.floor_list, index - 1, floor_data);
+            var floor_info = info.floor_info.file_info.map_info.floor_list[index];
+            ALittle.List_Remove(info.floor_info.file_info.map_info.floor_list, index);
+            ALittle.List_Insert(info.floor_info.file_info.map_info.floor_list, index - 1, floor_info);
 
             this.SaveCurEdit(false);
         }
@@ -568,24 +744,24 @@ class GCenter
             this._floor_scroll_screen.SetChildIndex(info.select_item, index + 1);
             this._edit_scroll_screen.SetChildIndex(info.edit_item, index + 1);
             // 移动数据
-            var floor_data = info.floor_info.parent.map_data.floor_list[index];
-            ALittle.List_Remove(info.floor_info.parent.map_data.floor_list, index);
-            ALittle.List_Insert(info.floor_info.parent.map_data.floor_list, index + 1, floor_data);
-            var floor_info = info.floor_info.parent.map_info.floor_list[index];
-            ALittle.List_Remove(info.floor_info.parent.map_info.floor_list, index);
-            ALittle.List_Insert(info.floor_info.parent.map_info.floor_list, index + 1, floor_info);
+            var floor_data = info.floor_info.file_info.map_data.floor_list[index];
+            ALittle.List_Remove(info.floor_info.file_info.map_data.floor_list, index);
+            ALittle.List_Insert(info.floor_info.file_info.map_data.floor_list, index + 1, floor_data);
+            var floor_info = info.floor_info.file_info.map_info.floor_list[index];
+            ALittle.List_Remove(info.floor_info.file_info.map_info.floor_list, index);
+            ALittle.List_Insert(info.floor_info.file_info.map_info.floor_list, index + 1, floor_info);
 
             this.SaveCurEdit(false);
         }
         elseif (event.target.text == "隐藏")
         {
-            info.select_item.text = info.floor_info.data.name.."(隐藏)";
+            info.select_item.text = info.floor_info.floor_data.name.."(隐藏)";
             info.edit_item.visible = false;
             info.floor_info.visible = false;
         }
         elseif (event.target.text == "显示")
         {
-            info.select_item.text = info.floor_info.data.name;
+            info.select_item.text = info.floor_info.floor_data.name;
             info.edit_item.visible = true;
             info.floor_info.visible = true;
         }
@@ -595,8 +771,8 @@ class GCenter
             this._floor_scroll_screen.RemoveChild(info.select_item);
             this._edit_scroll_screen.RemoveChild(info.edit_item);
             // 移除数据
-            ALittle.List_Remove(info.floor_info.parent.map_data.floor_list, index);
-            ALittle.List_Remove(info.floor_info.parent.map_info.floor_list, index);
+            ALittle.List_Remove(info.floor_info.file_info.map_data.floor_list, index);
+            ALittle.List_Remove(info.floor_info.file_info.map_info.floor_list, index);
 
             this.SaveCurEdit(false);
         }
@@ -607,6 +783,7 @@ class GCenter
     {
         // 设置当前编辑信息
         this._cur_edit = file_info;
+        this._cur_floor = null;
         // 设置标题
         this._edit_title.text = file_info.item.text;
         // 清理图层
@@ -623,8 +800,12 @@ class GCenter
 
         var layer_width = 0.0;
         var layer_height = 0.0;
-        var grid_layer = new ALittle.DisplayLayout(g_Control);
-        grid_layer.disabled = true;
+        this._cur_layer = new ALittle.DisplayLayout(g_Control);
+        this._cur_grid_layer = new ALittle.DisplayLayout(g_Control);
+        this._cur_grid_layer.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+        this._cur_grid_layer.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+        this._cur_layer.AddChild(this._cur_grid_layer);
+        this._cur_grid_layer.disabled = true;
         for (var x = 0; x < x_max; 1)
         {
             for (var y = 0; y < y_max; 1)
@@ -633,9 +814,10 @@ class GCenter
                 image.texture_name = this._tex_name_base_path..this._unit_empty_name_input.text;
                 image.width = this._unit_width;
                 image.height = this._unit_height;
-                image.x = y * this._unit_real_width / 2 + x * this._unit_real_width - this._unit_width / 2;
-                image.y = y * this._unit_real_height * 2 / 3 - this._unit_height / 2;
-                grid_layer.AddChild(image);
+                var show_x, show_y = IDECoordVirtual2Show(x, y, this._unit_real_width, this._unit_width, this._unit_real_height, this._unit_height);
+                image.x = show_x;
+                image.y = show_y;
+                this._cur_grid_layer.AddChild(image);
                 
                 if (image.x + image.width > layer_width) layer_width = image.x + image.width;
                 if (image.y + image.height > layer_height) layer_height = image.y + image.height;
@@ -645,27 +827,39 @@ class GCenter
         {
             for (var y = 0; y < y_max; 1)
             {
-                var offset_x = y * this._unit_real_width / 2 + x * this._unit_real_width - this._unit_width / 2;
-                if (offset_x + this._unit_width / 2 >= 0)
+                var show_x, show_y = IDECoordVirtual2Show(x, y, this._unit_real_width, this._unit_width, this._unit_real_height, this._unit_height);
+                if (show_x + this._unit_width / 2 >= 0)
                 {
                     var image = new ALittle.Image(this._control);
                     image.texture_name = this._tex_name_base_path..this._unit_empty_name_input.text;
                     image.width = this._unit_width;
                     image.height = this._unit_height;
-                    image.x = offset_x;
-                    image.y = y * this._unit_real_height * 2 / 3 - this._unit_height / 2;
-                    grid_layer.AddChild(image);
+                    image.x = show_x;
+                    image.y = show_y;
+                    this._cur_grid_layer.AddChild(image);
                     
                     if (image.x + image.width > layer_width) layer_width = image.x + image.width;
                     if (image.y + image.height > layer_height) layer_height = image.y + image.height;
                 }
             }
         }
+
+        this._cur_brush_quad = new ALittle.Quad(g_Control);
+        this._cur_brush_quad.alpha = 0;
+        this._cur_brush_quad.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+        this._cur_brush_quad.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+        this._cur_layer.AddChild(this._cur_brush_quad);
+
+        this._cur_brush_quad.AddEventListener(this, this.HandleBrushQuadLButtonDown);
+        this._cur_brush_quad.AddEventListener(this, this.HandleBrushQuadDragBegin);
+        this._cur_brush_quad.AddEventListener(this, this.HandleBrushQuadDrag);
+        this._cur_brush_quad.AddEventListener(this, this.HandleBrushQuadDragEnd);
+
         this._edit_scroll_screen.container.width = layer_width;
         this._edit_scroll_screen.container.height = layer_height;
-        grid_layer.width = layer_width;
-        grid_layer.height = layer_height;
-        this._edit_scroll_screen.AddChild(grid_layer);
+        this._cur_layer.width = layer_width;
+        this._cur_layer.height = layer_height;
+        this._edit_scroll_screen.AddChild(this._cur_layer);
         this._edit_scroll_screen.RejustScrollBar();
 
         // 构建图层和编辑区
@@ -676,14 +870,14 @@ class GCenter
             info.select_item = g_Control.CreateControl{ALittle.TextRadioButton}("ide_common_item_radiobutton", info);
             info.select_item._user_data = info;
             info.select_item.group = group;
-            info.select_item.text = floor_info.data.name;
+            info.select_item.text = floor_info.floor_data.name;
             info.select_item.AddEventListener(this, this.HandleSelectFloor);
             info.select_item.AddEventListener(this, this.HandleFloorRButtonDown);
             info.floor_info = floor_info;
             this._floor_scroll_screen.AddChild(info.select_item);
 
             info.edit_item = this.CreateFloorEdit(info);
-            this._floor_scroll_screen.AddChild(info.edit_item);
+            this._edit_scroll_screen.AddChild(info.edit_item);
         }
     }
     
@@ -691,17 +885,26 @@ class GCenter
     {
         var layer = new ALittle.DisplayLayout(this._control);
         // 填充格子
-        for (var x, col_info in info.floor_info.data.data)
+        for (var x, y_data in info.floor_info.floor_data.data)
         {
-            for (var y, cell in col_info)
+            for (var y, tex_id in y_data)
             {
                 var image = new ALittle.Image(this._control);
-                image.texture_name = info.floor_info.parent.map_data.tex_map[cell.tex_id];
+                image.texture_name = info.floor_info.file_info.map_data.tex_map[tex_id];
                 image.width = this._unit_width;
                 image.height = this._unit_height;
-                image.x = y * this._unit_real_width / 2 + x * this._unit_real_width - this._unit_width / 2;
-                image.y = y * this._unit_real_height * 2 / 3 - this._unit_height / 2;
+                var show_x, show_y = IDECoordVirtual2Show(x, y, this._unit_real_width, this._unit_width, this._unit_real_height, this._unit_height);
+                image.x = show_x;
+                image.y = show_y;
                 layer.AddChild(image);
+
+                var y_info = info.floor_info.child_map[x];
+                if (y_info == null)
+                {
+                    y_info = new Map<int, ALittle.Image>();
+                    info.floor_info.child_map[x] = y_info;
+                }
+                y_info[y] = image;
             }
         }
         return layer;
@@ -760,6 +963,19 @@ class GCenter
             this.SaveCurEdit(true);
         }
     }
+    
+    // 日志列表和详细列表之间的上下调整
+    private fun HandleDragRightQuadUD(ALittle.UIButtonDragEvent event) { this._right_grad3_ud.up_size += event.delta_y; }
+    private fun HandleDragEndRightQuadUD(ALittle.UIButtonDragEndEvent event) { g_GConfig.SetConfig("right_grid3_up_size", this._right_grad3_ud.up_size); }
+    // 中间部分和右边部分之间的左右调整
+    private fun HandleDragRightQuadLR(ALittle.UIButtonDragEvent event) { this._main_grid3_lr.down_size -= event.delta_x; }
+    private fun HandleDragEndRightQuadLR(ALittle.UIButtonDragEndEvent event) { g_GConfig.SetConfig("main_grid3_down_size", this._main_grid3_lr.down_size); }
+
+    // 移动光标
+    private fun HandleSetVDragCursor(ALittle.UIMoveInEvent event) { ALittle.System_SetVDragCursor(); }
+    private fun HandleSetHDragCursor(ALittle.UIMoveInEvent event) { ALittle.System_SetHDragCursor(); }
+    // 普通光标
+    private fun HandleSetNormalCursor(ALittle.UIMoveInEvent event) { ALittle.System_SetNormalCursor(); }
 
     //释放
     public fun Shutdown()

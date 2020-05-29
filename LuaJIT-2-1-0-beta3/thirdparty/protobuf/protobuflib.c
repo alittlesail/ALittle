@@ -305,7 +305,6 @@ static int protobuflib_clonemessage(lua_State* L)
     lua_setfield(L, -2, "__gc");
     lua_setmetatable(L, -2);
     *nm = protobuf_clonemessage(*m);
-    lua_pushlightuserdata(L, nm);
     return 1;
 }
 
@@ -321,7 +320,6 @@ static int protobuflib_factory_createmessage(lua_State* L)
     lua_setfield(L, -2, "__gc");
     lua_setmetatable(L, -2);
     *m = protobuf_factory_createmessage(*c, descriptor);
-    lua_pushlightuserdata(L, m);
     return 1;
 }
 
@@ -402,7 +400,6 @@ static int protobuflib_reflection_getmessage(lua_State* L)
     luaL_argcheck(L, field != 0, 3, "field descriptor object is null");
     void** sm = (void**)lua_newuserdata(L, sizeof(void**));
     *sm = protobuf_reflection_getmessage(r, *m, field);
-    lua_pushlightuserdata(L, sm);
     return 1;
 }
 static int protobuflib_reflection_getbool(lua_State* L)
@@ -727,7 +724,6 @@ static int protobuflib_reflection_getrepeatedmessage(lua_State* L)
     int index = (int)luaL_checkinteger(L, 4);
     void** sm = (void**)lua_newuserdata(L, sizeof(void**));
     *sm = protobuf_reflection_getrepeatedmessage(r, *m, field, index);
-    lua_pushlightuserdata(L, sm);
     return 1;
 }
 static int protobuflib_reflection_getrepeatedbool(lua_State* L)
@@ -956,7 +952,6 @@ static int protobuflib_reflection_insertrepeatedmessage(lua_State* L)
     int index = (int)luaL_checkinteger(L, 4);
     void** sm = (void**)lua_newuserdata(L, sizeof(void**));
     *sm = protobuf_reflection_insertrepeatedmessage(r, *m, field, index);
-    lua_pushlightuserdata(L, sm);
     return 1;
 }
 

@@ -293,10 +293,6 @@ function GCenter:HandleSelectFile(event)
 			floor_info.visible = true
 			floor_info.child_map = {}
 			ALittle.List_Push(info.map_info.floor_list, floor_info)
-			for x, y_map in ___pairs(floor_data.data) do
-				for y, cell in ___pairs(y_map) do
-				end
-			end
 		end
 	end
 	self:StartEdit(info)

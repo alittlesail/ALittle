@@ -589,7 +589,15 @@ end
 
 function ScrollList:HandleMButtonWheel(event)
 	if self._scroll_bar ~= nil and event.delta_y ~= 0 then
-		self._scroll_bar.offset_rate = self._scroll_bar.offset_rate - 0.1 * event.delta_y
+		local offset = self._scroll_linear.height * 0.1 * event.delta_y
+		if offset > 40 then
+			offset = 40
+		elseif offset < -40 then
+			offset = -40
+		end
+		if offset ~= 0 then
+			self._scroll_bar.offset_rate = self._scroll_bar.offset_rate - offset / self._scroll_linear.height
+		end
 		self:HandleRightScrollBarChange(nil)
 		self:HideRightScrollBar()
 	end

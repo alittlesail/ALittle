@@ -374,6 +374,7 @@ class GCenter
                     info.map_info.tex_max_id = id;
             }
 
+            // 构建层信息
             info.map_info.floor_list = new List<FloorInfo>();
             for (var index, floor_data in info.map_data.floor_list)
             {
@@ -383,14 +384,6 @@ class GCenter
                 floor_info.visible = true;
                 floor_info.child_map = new Map<int, Map<int, ALittle.Image>>();
                 ALittle.List_Push(info.map_info.floor_list, floor_info);
-
-                for (var x, y_map in floor_data.data)
-                {
-                    for (var y, cell in y_map)
-                    {
-                        
-                    }
-                }
             }
         }
 

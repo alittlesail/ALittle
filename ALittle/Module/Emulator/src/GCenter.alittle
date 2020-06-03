@@ -340,6 +340,8 @@ class GCenter
                 item._user_data = info;
                 item.AddEventListener(this, this.HandleProtoItemSelected);
             }
+            var detail_info = this._detail_tree_item_pool[info.full_name];
+            item.selected = detail_info != null && detail_info.tree == this._detail_scroll_screen.container;
             item.group = this._proto_search_group;
             this._protobuf_scroll_screen.AddChild(item);
         }
@@ -364,7 +366,21 @@ class GCenter
     }
     
     // 处理消息
-    private fun HandleLogSearchClick(ALittle.UIEvent event) { this.RefreshLogList(); }
+    private fun HandleLogSearchClick(ALittle.UIEvent event)
+    {
+        this.RefreshLogList();
+    }
+
+    // 清空消息
+    private fun HandleLogClearClick(ALittle.UIEvent event)
+    {
+        this._log_search_key.text = "";
+        this._log_item_list = new List<ALittle.TextRadioButton>();
+        this._log_item_count = 0;
+        this._log_scroll_screen.RemoveAllChild();
+        this._cur_item_user_data = null;
+        this._show_scroll_screen.SetContainer(null);
+    }
     
     // 处理
     private fun RefreshLogList()

@@ -263,6 +263,8 @@ function GCenter:RefreshProtoList()
 			item._user_data = info
 			item:AddEventListener(___all_struct[958494922], self, self.HandleProtoItemSelected)
 		end
+		local detail_info = self._detail_tree_item_pool[info.full_name]
+		item.selected = detail_info ~= nil and detail_info.tree == self._detail_scroll_screen.container
 		item.group = self._proto_search_group
 		self._protobuf_scroll_screen:AddChild(item)
 	end
@@ -285,6 +287,15 @@ end
 
 function GCenter:HandleLogSearchClick(event)
 	self:RefreshLogList()
+end
+
+function GCenter:HandleLogClearClick(event)
+	self._log_search_key.text = ""
+	self._log_item_list = {}
+	self._log_item_count = 0
+	self._log_scroll_screen:RemoveAllChild()
+	self._cur_item_user_data = nil
+	self._show_scroll_screen:SetContainer(nil)
 end
 
 function GCenter:RefreshLogList()

@@ -44,6 +44,14 @@ class GCenter
     private ALittle.DisplayObject _login_proto_input;
     private ALittle.DisplayObject _plugin_file_input;
 
+    private ALittle.Dialog _log_fliter_dialog;
+    private ALittle.ImageEdit _log_fliter_edit;
+    private Map<string, bool> _fliter_map;
+
+    // 消息右键菜单
+    private ALittle.DisplayLayout _proto_item_msg_menu;
+    private ALittle.DisplayLayout _log_item_msg_menu;
+
     // 帧循环
     private ALittle.LoopFrame _frame_loop;
     
@@ -125,6 +133,18 @@ class GCenter
         // 设置界面
         this._setting_dialog = g_Control.CreateControl{ALittle.Dialog}("main_setting_dialog", this);
         A_LayerManager.AddToModal(this._setting_dialog);
+
+        // 右键菜单
+        this._proto_item_msg_menu = g_Control.CreateControl{ALittle.DisplayLayout}("main_msg_menu", this);
+        this._log_item_msg_menu = g_Control.CreateControl{ALittle.DisplayLayout}("main_msg_menu", this);
+
+        // 过滤界面
+        this._log_fliter_dialog = g_Control.CreateControl{ALittle.Dialog}("main_log_fliter_dialog", this);
+        this._dialog_layer.AddChild(this._log_fliter_dialog);
+        this._log_fliter_dialog.visible = false;
+        this._fliter_map = new Map<string, bool>();
+        var fliter_list = g_GConfig.GetConfig("fliter_list", new List<string>());
+        for (var index, fliter in fliter_list) this._fliter_map[fliter] = true;
 
         // 加载插件
         var plugin_path = g_GConfig.GetString("plugin_script", "");
@@ -339,6 +359,7 @@ class GCenter
                 item.drag_trans_target = this._protobuf_scroll_screen;
                 item._user_data = info;
                 item.AddEventListener(this, this.HandleProtoItemSelected);
+                item.AddEventListener(this, this.HandleProtoItemRButtonDown);
             }
             var detail_info = this._detail_tree_item_pool[info.full_name];
             item.selected = detail_info != null && detail_info.tree == this._detail_scroll_screen.container;
@@ -364,6 +385,15 @@ class GCenter
         this._detail_scroll_screen.SetContainer(detail_info.tree);
         this._detail_scroll_screen.RejustScrollBar();
     }
+
+    // 右键菜单
+    private fun HandleProtoItemRButtonDown(ALittle.UIRButtonDownEvent event)
+    {
+        A_LayerManager.ShowFromRight(this._proto_item_msg_menu);
+        this._proto_item_msg_menu.x = A_UISystem.mouse_x;
+        this._proto_item_msg_menu.y = A_UISystem.mouse_y;
+        this._proto_item_msg_menu._user_data = event.target._user_data;
+    }
     
     // 处理消息
     private fun HandleLogSearchClick(ALittle.UIEvent event)
@@ -380,6 +410,30 @@ class GCenter
         this._log_scroll_screen.RemoveAllChild();
         this._cur_item_user_data = null;
         this._show_scroll_screen.SetContainer(null);
+    }
+
+    // 过滤对话框
+    private fun HandleLogFliterClick(ALittle.UIEvent event)
+    {
+        this._log_fliter_dialog.visible = true;
+        var fliter_list = g_GConfig.GetConfig{List<string>}("fliter_list", new List<string>());
+        this._log_fliter_edit.text = ALittle.String_Join(fliter_list, "\n");
+    }
+
+    // 取消设置过滤
+    private fun HandleLogFliterCancelClick(ALittle.UIEvent event)
+    {
+        this._log_fliter_dialog.visible = false;
+    }
+
+    // 确定设置过滤
+    private fun HandleLogFliterConfirmClick(ALittle.UIEvent event)
+    {
+        this._log_fliter_dialog.visible = false;
+        var fliter_list = ALittle.String_SplitSepList(this._log_fliter_edit.text, ["\r","\n"]);
+        g_GConfig.SetConfig("fliter_list", fliter_list);
+        this._fliter_map = new Map<string, bool>();
+        for (var index, fliter in fliter_list) this._fliter_map[fliter] = true;
     }
     
     // 处理
@@ -410,6 +464,11 @@ class GCenter
     // 添加消息
     public fun AddLogMessage(lua.protobuf_message msg)
     {
+        var descriptor = lua.protobuf.message_getdescriptor(msg);
+        var full_name = lua.protobuf.messagedescriptor_fullname(descriptor);
+        // 过滤
+        if (this._fliter_map[full_name] != null) return;
+
         // 如果数量太多，那么就移除
         if (this._log_item_count > 500)
         {
@@ -433,6 +492,7 @@ class GCenter
         item.drag_trans_target = this._log_scroll_screen;
         item._user_data = user_data;
         item.AddEventListener(this, this.HandleLogItemSelected);
+        item.AddEventListener(this, this.HandleProtoLogRButtonDown);
 
         ++ this._log_item_count;
         this._log_item_list[this._log_item_count] = item;
@@ -461,6 +521,15 @@ class GCenter
             this._cur_item_user_data.detail_info = Utility_CreateTreeForShow(this._cur_item_user_data.msg);
         this._show_scroll_screen.SetContainer(this._cur_item_user_data.detail_info.tree);
     }
+    
+    // 右键菜单
+    private fun HandleProtoLogRButtonDown(ALittle.UIRButtonDownEvent event)
+    {
+        A_LayerManager.ShowFromRight(this._log_item_msg_menu);
+        this._log_item_msg_menu.x = A_UISystem.mouse_x;
+        this._log_item_msg_menu.y = A_UISystem.mouse_y;
+        this._log_item_msg_menu._user_data = event.target._user_data;
+    }
 
     // 处理搜索
     private fun HandleShowSearchClick(ALittle.UIClickEvent event)
@@ -474,6 +543,63 @@ class GCenter
         tree.SearchBegin();
         var list = tree.SearchDescription(key);
         tree.SearchEnd(list);
+    }
+
+    // 处理消息右键菜单，复制全称
+    private fun HandleMsgCopyFullName(ALittle.UIClickEvent event)
+    {
+        if (A_LayerManager.IsCurrentRight(this._proto_item_msg_menu))
+        {
+            var info = cast<Lua.lua_socket_schedule_message_info>(this._proto_item_msg_menu._user_data);
+            ALittle.System_SetClipboardText(info.full_name);
+        }
+        elseif (A_LayerManager.IsCurrentRight(this._log_item_msg_menu))
+        {
+            var info = cast<LogItemUserData>(this._log_item_msg_menu._user_data);
+            ALittle.System_SetClipboardText(info.info.full_name);
+        }
+
+        A_LayerManager.HideCurrentFromRight();
+    }
+
+    // 处理消息右键菜单，复制名
+    private fun HandleMsgCopyName(ALittle.UIClickEvent event)
+    {
+        if (A_LayerManager.IsCurrentRight(this._proto_item_msg_menu))
+        {
+            var info = cast<Lua.lua_socket_schedule_message_info>(this._proto_item_msg_menu._user_data);
+            ALittle.System_SetClipboardText(info.name);
+        }
+        elseif (A_LayerManager.IsCurrentRight(this._log_item_msg_menu))
+        {
+            var info = cast<LogItemUserData>(this._log_item_msg_menu._user_data);
+            ALittle.System_SetClipboardText(info.info.name);
+        }
+
+        A_LayerManager.HideCurrentFromRight();
+    }
+
+    // 处理消息右键菜单，添加过滤
+    private fun HandleMsgAddToFliter(ALittle.UIClickEvent event)
+    {
+        var full_name:string = null;
+        if (A_LayerManager.IsCurrentRight(this._proto_item_msg_menu))
+        {
+            var info = cast<Lua.lua_socket_schedule_message_info>(this._proto_item_msg_menu._user_data);
+            full_name = info.full_name;
+        }
+        elseif (A_LayerManager.IsCurrentRight(this._log_item_msg_menu))
+        {
+            var info = cast<LogItemUserData>(this._log_item_msg_menu._user_data);
+            full_name = info.info.full_name;
+        }
+
+        this._fliter_map[full_name] = true;
+        var list = new List<string>();
+        for (var name, _ in this._fliter_map)
+            ALittle.List_Push(list, name);
+        g_GConfig.SetConfig("fliter_list", list);
+        A_LayerManager.HideCurrentFromRight();
     }
 
     // 处理断开连接

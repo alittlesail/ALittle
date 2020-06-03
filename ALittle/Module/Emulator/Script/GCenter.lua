@@ -60,6 +60,18 @@ name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
+ALittle.RegStruct(-1347278145, "ALittle.UIButtonEvent", {
+name = "ALittle.UIButtonEvent", ns_name = "ALittle", rl_name = "UIButtonEvent", hash_code = -1347278145,
+name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
+type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
+option_map = {}
+})
+ALittle.RegStruct(-641444818, "ALittle.UIRButtonDownEvent", {
+name = "ALittle.UIRButtonDownEvent", ns_name = "ALittle", rl_name = "UIRButtonDownEvent", hash_code = -641444818,
+name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
+type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
+option_map = {}
+})
 
 g_GConfig = nil
 g_GProtoCache = nil
@@ -97,6 +109,16 @@ function GCenter:Setup()
 	g_Control:CreateControl("main_scene", self, self._main_layer)
 	self._setting_dialog = g_Control:CreateControl("main_setting_dialog", self)
 	A_LayerManager:AddToModal(self._setting_dialog)
+	self._proto_item_msg_menu = g_Control:CreateControl("main_msg_menu", self)
+	self._log_item_msg_menu = g_Control:CreateControl("main_msg_menu", self)
+	self._log_fliter_dialog = g_Control:CreateControl("main_log_fliter_dialog", self)
+	self._dialog_layer:AddChild(self._log_fliter_dialog)
+	self._log_fliter_dialog.visible = false
+	self._fliter_map = {}
+	local fliter_list = g_GConfig:GetConfig("fliter_list", {})
+	for index, fliter in ___ipairs(fliter_list) do
+		self._fliter_map[fliter] = true
+	end
 	local plugin_path = g_GConfig:GetString("plugin_script", "")
 	if ALittle.File_GetFileExtByPathAndUpper(plugin_path) == "LUA" then
 		local plugin_script = ALittle.File_ReadTextFromStdFile(plugin_path)
@@ -262,6 +284,7 @@ function GCenter:RefreshProtoList()
 			item.drag_trans_target = self._protobuf_scroll_screen
 			item._user_data = info
 			item:AddEventListener(___all_struct[958494922], self, self.HandleProtoItemSelected)
+			item:AddEventListener(___all_struct[-641444818], self, self.HandleProtoItemRButtonDown)
 		end
 		local detail_info = self._detail_tree_item_pool[info.full_name]
 		item.selected = detail_info ~= nil and detail_info.tree == self._detail_scroll_screen.container
@@ -285,6 +308,13 @@ function GCenter:HandleProtoItemSelected(event)
 	self._detail_scroll_screen:RejustScrollBar()
 end
 
+function GCenter:HandleProtoItemRButtonDown(event)
+	A_LayerManager:ShowFromRight(self._proto_item_msg_menu)
+	self._proto_item_msg_menu.x = A_UISystem.mouse_x
+	self._proto_item_msg_menu.y = A_UISystem.mouse_y
+	self._proto_item_msg_menu._user_data = event.target._user_data
+end
+
 function GCenter:HandleLogSearchClick(event)
 	self:RefreshLogList()
 end
@@ -296,6 +326,26 @@ function GCenter:HandleLogClearClick(event)
 	self._log_scroll_screen:RemoveAllChild()
 	self._cur_item_user_data = nil
 	self._show_scroll_screen:SetContainer(nil)
+end
+
+function GCenter:HandleLogFliterClick(event)
+	self._log_fliter_dialog.visible = true
+	local fliter_list = g_GConfig:GetConfig("fliter_list", {})
+	self._log_fliter_edit.text = ALittle.String_Join(fliter_list, "\n")
+end
+
+function GCenter:HandleLogFliterCancelClick(event)
+	self._log_fliter_dialog.visible = false
+end
+
+function GCenter:HandleLogFliterConfirmClick(event)
+	self._log_fliter_dialog.visible = false
+	local fliter_list = ALittle.String_SplitSepList(self._log_fliter_edit.text, {"\r", "\n"})
+	g_GConfig:SetConfig("fliter_list", fliter_list)
+	self._fliter_map = {}
+	for index, fliter in ___ipairs(fliter_list) do
+		self._fliter_map[fliter] = true
+	end
 end
 
 function GCenter:RefreshLogList()
@@ -316,6 +366,11 @@ function GCenter:RefreshLogList()
 end
 
 function GCenter:AddLogMessage(msg)
+	local descriptor = protobuf.message_getdescriptor(msg)
+	local full_name = protobuf.messagedescriptor_fullname(descriptor)
+	if self._fliter_map[full_name] ~= nil then
+		return
+	end
 	if self._log_item_count > 500 then
 		local item = self._log_item_list[1]
 		local user_data = item._user_data
@@ -335,6 +390,7 @@ function GCenter:AddLogMessage(msg)
 	item.drag_trans_target = self._log_scroll_screen
 	item._user_data = user_data
 	item:AddEventListener(___all_struct[958494922], self, self.HandleLogItemSelected)
+	item:AddEventListener(___all_struct[-641444818], self, self.HandleProtoLogRButtonDown)
 	self._log_item_count = self._log_item_count + 1
 	self._log_item_list[self._log_item_count] = item
 	local key = self._log_search_key.text
@@ -358,6 +414,13 @@ function GCenter:HandleLogItemSelected(event)
 	self._show_scroll_screen:SetContainer(self._cur_item_user_data.detail_info.tree)
 end
 
+function GCenter:HandleProtoLogRButtonDown(event)
+	A_LayerManager:ShowFromRight(self._log_item_msg_menu)
+	self._log_item_msg_menu.x = A_UISystem.mouse_x
+	self._log_item_msg_menu.y = A_UISystem.mouse_y
+	self._log_item_msg_menu._user_data = event.target._user_data
+end
+
 function GCenter:HandleShowSearchClick(event)
 	if self._cur_item_user_data == nil then
 		return
@@ -368,6 +431,46 @@ function GCenter:HandleShowSearchClick(event)
 	tree:SearchBegin()
 	local list = tree:SearchDescription(key)
 	tree:SearchEnd(list)
+end
+
+function GCenter:HandleMsgCopyFullName(event)
+	if A_LayerManager:IsCurrentRight(self._proto_item_msg_menu) then
+		local info = self._proto_item_msg_menu._user_data
+		ALittle.System_SetClipboardText(info.full_name)
+	elseif A_LayerManager:IsCurrentRight(self._log_item_msg_menu) then
+		local info = self._log_item_msg_menu._user_data
+		ALittle.System_SetClipboardText(info.info.full_name)
+	end
+	A_LayerManager:HideCurrentFromRight()
+end
+
+function GCenter:HandleMsgCopyName(event)
+	if A_LayerManager:IsCurrentRight(self._proto_item_msg_menu) then
+		local info = self._proto_item_msg_menu._user_data
+		ALittle.System_SetClipboardText(info.name)
+	elseif A_LayerManager:IsCurrentRight(self._log_item_msg_menu) then
+		local info = self._log_item_msg_menu._user_data
+		ALittle.System_SetClipboardText(info.info.name)
+	end
+	A_LayerManager:HideCurrentFromRight()
+end
+
+function GCenter:HandleMsgAddToFliter(event)
+	local full_name = nil
+	if A_LayerManager:IsCurrentRight(self._proto_item_msg_menu) then
+		local info = self._proto_item_msg_menu._user_data
+		full_name = info.full_name
+	elseif A_LayerManager:IsCurrentRight(self._log_item_msg_menu) then
+		local info = self._log_item_msg_menu._user_data
+		full_name = info.info.full_name
+	end
+	self._fliter_map[full_name] = true
+	local list = {}
+	for name, _ in ___pairs(self._fliter_map) do
+		ALittle.List_Push(list, name)
+	end
+	g_GConfig:SetConfig("fliter_list", list)
+	A_LayerManager:HideCurrentFromRight()
 end
 
 function GCenter:HandleClientSocketDisconnected(socket)

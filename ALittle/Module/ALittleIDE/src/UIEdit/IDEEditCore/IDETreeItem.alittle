@@ -34,16 +34,30 @@ public class IDETreeItem : IDETreeLogic
 		var name_map = new Map<string, ALittle.DisplayObject>();
 		name_map["Text"] = this._text_icon;
 		name_map["TextArea"] = this._text_icon;
+		name_map["RichArea"] = this._text_icon;
 		name_map["TextInput"] = this._input_icon;
 		name_map["TextEdit"] = this._input_icon;
 		name_map["ImageInput"] = this._input_icon;
 		name_map["ImageEdit"] = this._input_icon;
+		name_map["RichEdit"] = this._input_icon;
+		name_map["RichInput"] = this._input_icon;
 		
 		name_map["Quad"] = this._quad_icon;
+
 		name_map["Image"] = this._image_icon;
 		name_map["Grid9Image"] = this._image_icon;
+		name_map["Sprite"] = this._image_icon;
+		name_map["ImagePlay"] = this._image_icon;
+		name_map["SpritePlay"] = this._image_icon;
+		name_map["FramePlay"] = this._image_icon;
+		name_map["Piechart"] = this._image_icon;
+		name_map["Triangle"] = this._image_icon;
 		
 		name_map["TextButton"] = this._button_icon;
+		name_map["ScrollButton"] = this._button_icon;
+		name_map["SpringTextButton"] = this._button_icon;
+		name_map["Slider"] = this._button_icon;
+
 		name_map["TextCheckButton"] = this._check_icon;
 		name_map["TextRadioButton"] = this._radio_icon;
 		name_map["DropDown"] = this._dropdown_icon;

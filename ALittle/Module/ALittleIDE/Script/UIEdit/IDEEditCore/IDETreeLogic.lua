@@ -95,27 +95,6 @@ function IDETreeLogic:SetDesc(text)
 end
 
 function IDETreeLogic:UpdateDesc()
-	local title = ""
-	if self._user_info.extends_root then
-		title = "[E]" .. title
-	end
-	if self._user_info.child_type ~= nil and self._user_info.child_type ~= "child" then
-		title = title .. "[" .. self._user_info.child_type .. "]"
-	end
-	title = title .. "[" .. self._user_info.default.__class .. "]"
-	if self._user_info.base.description ~= nil then
-		title = title .. self._user_info.base.description
-	elseif self._user_info.default.description ~= nil then
-		title = title .. self._user_info.default.description
-	elseif self._user_info.base.text ~= nil then
-		title = title .. self._user_info.base.text
-	elseif self._user_info.default.text ~= nil then
-		title = title .. self._user_info.default.text
-	end
-	self._item_title.text = title
-	if self._user_info.child_type == nil then
-		self._tab_child:UpdateTitle()
-	end
 end
 
 function IDETreeLogic:RemoveAttributePanel()
@@ -160,37 +139,12 @@ function IDETreeLogic:HandleClick(event)
 end
 
 function IDETreeLogic:HandleMoveIn(event)
-	local link = self._user_info.base.__link
-	if link == nil then
-		link = self._user_info.default.__link
-	end
-	if link == nil then
-		return
-	end
-	g_IDEControlTree:ShowTip(link)
-	g_IDEControlTree:MoveTip(A_UISystem.mouse_x + 10, A_UISystem.mouse_y + 20)
 end
 
 function IDETreeLogic:HandleMouseMove(event)
-	local link = self._user_info.base.__link
-	if link == nil then
-		link = self._user_info.default.__link
-	end
-	if link == nil then
-		return
-	end
-	g_IDEControlTree:MoveTip(A_UISystem.mouse_x + 10, A_UISystem.mouse_y + 20)
 end
 
 function IDETreeLogic:HandleMoveOut(event)
-	local link = self._user_info.base.__link
-	if link == nil then
-		link = self._user_info.default.__link
-	end
-	if link == nil then
-		return
-	end
-	g_IDEControlTree:HideTip()
 end
 
 function IDETreeLogic:HandleDragBegin(event)

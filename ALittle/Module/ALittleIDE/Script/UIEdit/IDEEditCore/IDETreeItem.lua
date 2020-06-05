@@ -79,6 +79,33 @@ function IDETreeItem:Ctor(ctrl_sys, user_info, tab_child)
 	self:AddChild(self._item)
 	self.width = self._item.width
 	self.height = self._item.height
+	self._text_icon.visible = false
+	self._image_icon.visible = false
+	self._check_icon.visible = false
+	self._button_icon.visible = false
+	self._radio_icon.visible = false
+	self._quad_icon.visible = false
+	self._dropdown_icon.visible = false
+	self._input_icon.visible = false
+	local name_map = {}
+	name_map["Text"] = self._text_icon
+	name_map["TextArea"] = self._text_icon
+	name_map["TextInput"] = self._input_icon
+	name_map["TextEdit"] = self._input_icon
+	name_map["ImageInput"] = self._input_icon
+	name_map["ImageEdit"] = self._input_icon
+	name_map["Quad"] = self._quad_icon
+	name_map["Image"] = self._image_icon
+	name_map["Grid9Image"] = self._image_icon
+	name_map["TextButton"] = self._button_icon
+	name_map["TextCheckButton"] = self._check_icon
+	name_map["TextRadioButton"] = self._radio_icon
+	name_map["DropDown"] = self._dropdown_icon
+	local icon = name_map[self._user_info.default.__class]
+	if icon ~= nil then
+		icon.visible = true
+	end
+	self._extends_icon.visible = self._user_info.extends_root
 	self._item_button.selected = false
 	self._item_button.group = self._tab_child.group
 	self._item_button:AddEventListener(___all_struct[-449066808], self, self.HandleClick)
@@ -90,6 +117,32 @@ function IDETreeItem:Ctor(ctrl_sys, user_info, tab_child)
 	self._item_button:AddEventListener(___all_struct[150587926], self, self.HandleDragEnd)
 	self._item_button:AddEventListener(___all_struct[-641444818], g_IDEControlTree, g_IDEControlTree.HandleControlTreeItemRightClick)
 	self._item_button._user_data = self
+end
+
+function IDETreeItem:UpdateDesc()
+	local title = ""
+	if self._user_info.child_type ~= nil and self._user_info.child_type ~= "child" then
+		title = title .. "[" .. self._user_info.child_type .. "]"
+	end
+	local link = self._user_info.base.__link
+	if link == nil then
+		link = self._user_info.default.__link
+	end
+	if self._user_info.base.description ~= nil then
+		title = title .. self._user_info.base.description
+	elseif self._user_info.default.description ~= nil then
+		title = title .. self._user_info.default.description
+	elseif link ~= nil then
+		title = title .. link
+	elseif self._user_info.base.text ~= nil then
+		title = title .. self._user_info.base.text
+	elseif self._user_info.default.text ~= nil then
+		title = title .. self._user_info.default.text
+	end
+	self._item_title.text = title
+	if self._user_info.child_type == nil then
+		self._tab_child:UpdateTitle()
+	end
 end
 
 function IDETreeItem:IsTree()

@@ -427,6 +427,7 @@ function IDETabChild:CreateByNew(type)
 	self._tab_object_container:AddChild(object)
 	self._tree_object = IDEUtility_CreateTree(info, false, object, nil, self, true)
 	self._tree_object:AddEventListener(___all_struct[-431205740], self, self.HandleTreeSizeChanged)
+	self._tree_object.fold = true
 	self._tree_screen:AddChild(self._tree_object)
 	self._anti_panel:Init(self)
 end
@@ -438,6 +439,7 @@ function IDETabChild:CreateByExtends(extends_v)
 	self._tab_object_container:AddChild(object)
 	self._tree_object = IDEUtility_CreateTree(info, false, object, nil, self, true)
 	self._tree_object:AddEventListener(___all_struct[-431205740], self, self.HandleTreeSizeChanged)
+	self._tree_object.fold = true
 	self._tree_screen:AddChild(self._tree_object)
 	self._anti_panel:Init(self)
 end
@@ -447,6 +449,7 @@ function IDETabChild:CreateBySelect(info)
 	self._tab_object_container:AddChild(object)
 	self._tree_object = IDEUtility_CreateTree(info, false, object, nil, self, true)
 	self._tree_object:AddEventListener(___all_struct[-431205740], self, self.HandleTreeSizeChanged)
+	self._tree_object.fold = true
 	self._tree_screen:AddChild(self._tree_object)
 	self._anti_panel:Init(self)
 end

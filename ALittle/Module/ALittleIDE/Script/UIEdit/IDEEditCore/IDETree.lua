@@ -89,6 +89,7 @@ function IDETree:Ctor(ctrl_sys, user_info, tab_child)
 		___rawset(self, "_head", ctrl_sys:CreateControl("ide_common_tree_head", self))
 	end
 	ALittle.DisplayGroup.AddChild(self, self._head)
+	self._extends_icon.visible = self._user_info.extends_root
 	self._item_button.selected = false
 	self._item_button.group = self._tab_child.group
 	self._item_button:AddEventListener(___all_struct[1883782801], self, self.HandleLButtonDown)
@@ -112,6 +113,27 @@ function IDETree:Ctor(ctrl_sys, user_info, tab_child)
 	___rawset(self, "_pickup_rect", false)
 	___rawset(self, "_pickup_child", true)
 	self.fold = false
+end
+
+function IDETree:UpdateDesc()
+	local title = ""
+	if self._user_info.child_type ~= nil and self._user_info.child_type ~= "child" then
+		title = title .. "[" .. self._user_info.child_type .. "]"
+	end
+	title = title .. "[" .. self._user_info.default.__class .. "]"
+	if self._user_info.base.description ~= nil then
+		title = title .. self._user_info.base.description
+	elseif self._user_info.default.description ~= nil then
+		title = title .. self._user_info.default.description
+	elseif self._user_info.base.text ~= nil then
+		title = title .. self._user_info.base.text
+	elseif self._user_info.default.text ~= nil then
+		title = title .. self._user_info.default.text
+	end
+	self._item_title.text = title
+	if self._user_info.child_type == nil then
+		self._tab_child:UpdateTitle()
+	end
 end
 
 function IDETree:HandleLButtonDown(event)

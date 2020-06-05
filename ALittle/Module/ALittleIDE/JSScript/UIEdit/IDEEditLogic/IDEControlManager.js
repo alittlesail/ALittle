@@ -62,18 +62,6 @@ name_list : ["target","abs_x","abs_y","rel_x","rel_y","count","is_drag"],
 type_list : ["ALittle.DisplayObject","double","double","double","double","int","bool"],
 option_map : {}
 })
-ALittle.RegStruct(544684311, "ALittle.UIMoveInEvent", {
-name : "ALittle.UIMoveInEvent", ns_name : "ALittle", rl_name : "UIMoveInEvent", hash_code : 544684311,
-name_list : ["target"],
-type_list : ["ALittle.DisplayObject"],
-option_map : {}
-})
-ALittle.RegStruct(-1202439334, "ALittle.UIMoveOutEvent", {
-name : "ALittle.UIMoveOutEvent", ns_name : "ALittle", rl_name : "UIMoveOutEvent", hash_code : -1202439334,
-name_list : ["target"],
-type_list : ["ALittle.DisplayObject"],
-option_map : {}
-})
 ALittle.RegStruct(882286932, "ALittle.UIKeyEvent", {
 name : "ALittle.UIKeyEvent", ns_name : "ALittle", rl_name : "UIKeyEvent", hash_code : 882286932,
 name_list : ["target","mod","sym","scancode","custom","handled"],
@@ -175,8 +163,6 @@ ALittleIDE.IDEControlManager = JavaScript.Class(undefined, {
 				item = ALittleIDE.g_Control.CreateControl("ide_common_item_checkbutton");
 				item.AddEventListener(___all_struct.get(-449066808), this, this.HandleControlItemClick);
 				item.AddEventListener(___all_struct.get(-641444818), this, this.HandleControlItemRightClick);
-				item.AddEventListener(___all_struct.get(544684311), this, this.HandleControlPreseeMoveIn);
-				item.AddEventListener(___all_struct.get(-1202439334), this, this.HandleControlPreseeMoveOut);
 				item.AddEventListener(___all_struct.get(-1604617962), this, this.HandleControlKeyDown);
 				item.AddEventListener(___all_struct.get(1301789264), this, this.HandleControlDragBegin);
 				item.AddEventListener(___all_struct.get(1337289812), this, this.HandleControlDrag);

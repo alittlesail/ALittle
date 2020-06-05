@@ -623,9 +623,11 @@ ALittleIDE.DisplayObjectS = JavaScript.Class(undefined, {
 		}
 		this._description.text = description;
 		this.DefaultNilStringInputChange("description", false, revoke_bind);
+		this._tree_logic.UpdateDesc();
 	},
 	HandleDescriptionFOCUSOUT : function(event) {
 		this.DefaultNilStringInputChange("description", false);
+		this._tree_logic.UpdateDesc();
 	},
 	HandleDescriptionTabKey : function(event) {
 		this.___target_class.focus = true;
@@ -637,9 +639,11 @@ ALittleIDE.DisplayObjectS = JavaScript.Class(undefined, {
 		}
 		this.___link.text = link;
 		this.DefaultNilStringInputChange("__link", false, revoke_bind);
+		this._tree_logic.UpdateDesc();
 	},
 	HandleLinkFOCUSOUT : function(event) {
 		this.DefaultNilStringInputChange("__link", false);
+		this._tree_logic.UpdateDesc();
 	},
 	HandleLinkTabKey : function(event) {
 		this._id.focus = true;

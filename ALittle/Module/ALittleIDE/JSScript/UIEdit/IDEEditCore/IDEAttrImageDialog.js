@@ -68,6 +68,12 @@ name_list : ["target","abs_x","abs_y","rel_x","rel_y"],
 type_list : ["ALittle.DisplayObject","double","double","double","double"],
 option_map : {}
 })
+ALittle.RegStruct(-338112738, "ALittle.UIDropFileEvent", {
+name : "ALittle.UIDropFileEvent", ns_name : "ALittle", rl_name : "UIDropFileEvent", hash_code : -338112738,
+name_list : ["target","path"],
+type_list : ["ALittle.DisplayObject","string"],
+option_map : {}
+})
 
 ALittleIDE.IDEAttrImageDialog = JavaScript.Class(undefined, {
 	Ctor : function() {
@@ -106,11 +112,17 @@ ALittleIDE.IDEAttrImageDialog = JavaScript.Class(undefined, {
 		}
 		if (this._dialog === undefined) {
 			this._dialog = ALittleIDE.g_Control.CreateControl("ide_image_select_dialog", this);
-			A_LayerManager.AddToModal(this._dialog);
 			this._src_title = this._dialog.title;
 			if (this._src_title === undefined) {
 				this._src_title = "图片选择器";
 			}
+		}
+		if (callback !== undefined) {
+			ALittleIDE.g_IDECenter.dialog_layer.RemoveChild(this._dialog);
+			A_LayerManager.AddToModal(this._dialog);
+		} else {
+			A_LayerManager.RemoveFromModal(this._dialog);
+			ALittleIDE.g_IDECenter.dialog_layer.AddChild(this._dialog);
 		}
 		if (path !== undefined || this._real_path === undefined) {
 			if (this.SetPath(path) === false) {
@@ -171,6 +183,7 @@ ALittleIDE.IDEAttrImageDialog = JavaScript.Class(undefined, {
 			info.button.AddEventListener(___all_struct.get(544684311), this, this.HandleItemMoveIn);
 			info.button.AddEventListener(___all_struct.get(-1202439334), this, this.HandleItemMoveOut);
 			info.button.AddEventListener(___all_struct.get(-1001723540), this, this.HandleItemMouseMove);
+			info.button.AddEventListener(___all_struct.get(-338112738), this, this.HandleImageDropFile);
 			let user_data = {};
 			user_data.path = rel_path;
 			user_data.directory = false;
@@ -186,6 +199,8 @@ ALittleIDE.IDEAttrImageDialog = JavaScript.Class(undefined, {
 		info.name.text = file_name;
 		info.button.drag_trans_target = this._scroll_list;
 		info.button.AddEventListener(___all_struct.get(-449066808), this, this.HandleItemClick);
+		info.button.AddEventListener(___all_struct.get(-641444818), this, this.HandleItemRButtonDown);
+		info.button.AddEventListener(___all_struct.get(-338112738), this, this.HandleImageDropFile);
 		let user_data = {};
 		user_data.path = rel_path;
 		user_data.directory = true;
@@ -346,13 +361,64 @@ ALittleIDE.IDEAttrImageDialog = JavaScript.Class(undefined, {
 		this.Search(this._search_input.text);
 	},
 	HandleItemRButtonDown : function(event) {
+		A_LayerManager.RemoveFromTip(this._image_pre_dialog);
 		if (this._image_select_menu === undefined) {
 			this._image_select_menu = ALittleIDE.g_Control.CreateControl("ide_image_select_menu", this);
 		}
 		A_LayerManager.ShowFromRight(this._image_select_menu);
+		let user_data = event.target._user_data;
 		this._image_select_menu.x = A_UISystem.mouse_x;
 		this._image_select_menu.y = A_UISystem.mouse_y;
-		this._image_select_menu._user_data = event.target._user_data;
+		this._image_select_cut.disabled = user_data.directory;
+		this._image_select_del.disabled = false;
+		this._image_select_copyimagecode.disabled = user_data.directory;
+		this._image_select_copygrid9imagecode.disabled = user_data.directory;
+		this._image_select_menu._user_data = user_data;
+	},
+	HandleImageCopyGrid9ImageCodeClick : function(event) {
+		A_LayerManager.HideFromRight(this._image_select_menu);
+		let user_data = this._image_select_menu._user_data;
+		this._image_select_menu._user_data = undefined;
+		let display_info = ALittleIDE.IDEUtility_GenerateGrid9ImageInfo(ALittleIDE.g_IDEProject.project.base_path + "Texture/", user_data.path);
+		if (display_info === undefined) {
+			ALittleIDE.g_IDETool.ShowNotice("错误", "图片加载失败:" + user_data.path);
+			return;
+		}
+		let copy_list = [];
+		let info = {};
+		info.index = 1;
+		info.info = display_info;
+		copy_list[1 - 1] = info;
+		ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list));
+	},
+	HandleImageCopyImageCodeClick : function(event) {
+		A_LayerManager.HideFromRight(this._image_select_menu);
+		let user_data = this._image_select_menu._user_data;
+		this._image_select_menu._user_data = undefined;
+		this.CopyImageCodeImpl(user_data.path);
+	},
+	CopyImageCodeImpl : function(file_path) {
+		let width = 100;
+		let height = 100;
+		let surface = ALittle.System_LoadSurface(ALittleIDE.g_IDEProject.project.base_path + "Texture/" + file_path);
+		if (surface !== undefined) {
+			width = ALittle.System_GetSurfaceWidth(surface);
+			height = ALittle.System_GetSurfaceHeight(surface);
+			ALittle.System_FreeSurface(surface);
+		}
+		let display_info = {};
+		display_info.__class = "Image";
+		display_info.texture_name = file_path;
+		display_info.width_type = 1;
+		display_info.width_value = width;
+		display_info.height_type = 1;
+		display_info.height_value = height;
+		let info = {};
+		info.index = 1;
+		info.info = display_info;
+		let copy_list = [];
+		copy_list[1 - 1] = info;
+		ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list));
 	},
 	HandleImageEditClick : function(event) {
 		A_LayerManager.HideFromRight(this._image_select_menu);
@@ -364,7 +430,74 @@ ALittleIDE.IDEAttrImageDialog = JavaScript.Class(undefined, {
 		A_LayerManager.HideFromRight(this._image_select_menu);
 		let user_data = this._image_select_menu._user_data;
 		this._image_select_menu._user_data = undefined;
-		ALittle.File_DeleteFile(ALittleIDE.g_IDEProject.project.base_path + "Texture/" + user_data.path);
+		if (user_data.directory) {
+			ALittleIDE.g_IDETool.DeleteNotice("删除", "确定要永久删除该文件夹，以及子文件和图片吗？", this.HandleImageDeleteConfirm.bind(this, user_data));
+		} else {
+			ALittleIDE.g_IDETool.DeleteNotice("删除", "确定要永久删除该图片吗？", this.HandleImageDeleteConfirm.bind(this, user_data));
+		}
+	},
+	HandleImageDeleteConfirm : function(user_data) {
+		if (user_data.directory) {
+			ALittle.File_DeleteDeepDir(ALittleIDE.g_IDEProject.project.base_path + "Texture/" + user_data.path);
+		} else {
+			ALittle.File_DeleteFile(ALittleIDE.g_IDEProject.project.base_path + "Texture/" + user_data.path);
+		}
+		this.Refresh();
+	},
+	HandleImageDropFile : function(event) {
+		let real_path = this._real_path;
+		let user_data = event.target._user_data;
+		if (user_data !== undefined && user_data.directory) {
+			real_path = ALittleIDE.g_IDEProject.project.base_path + "Texture/" + user_data.path;
+		}
+		let name = ALittle.File_GetFileNameByPath(event.path);
+		let ansi_path = event.path;
+		let attr = ALittle.File_GetFileAttr(ansi_path);
+		if (attr === undefined) {
+			return;
+		}
+		if (attr.mode === "directory") {
+			let [check, error] = ALittleIDE.IDEUtility_CheckResourceName(name);
+			if (!check) {
+				ALittleIDE.g_IDETool.ShowNotice("提示", error);
+				return;
+			}
+			ALittle.File_MakeDir(real_path + "/" + name);
+			ALittle.File_CopyDeepDir(ansi_path, real_path + "/" + name, "PNG");
+			ALittle.File_CopyDeepDir(ansi_path, real_path + "/" + name, "JPG");
+		} else {
+			let upper_ext = ALittle.File_GetFileExtByPathAndUpper(event.path);
+			if (upper_ext !== "PNG" && upper_ext !== "JPG") {
+				ALittleIDE.g_IDETool.ShowNotice("提示", "只能接收png或者jpg文件");
+				return;
+			}
+			let [check, error] = ALittleIDE.IDEUtility_CheckResourceName(ALittle.File_GetJustFileNameByPath(event.path));
+			if (!check) {
+				ALittleIDE.g_IDETool.ShowNotice("提示", error);
+				return;
+			}
+			ALittle.File_CopyFile(event.path, real_path + "/" + name);
+		}
+		this.Refresh();
+	},
+	HandleNewDirectoryClick : function(event) {
+		let [x, y] = event.target.LocalToGlobal();
+		ALittleIDE.g_IDETool.ShowRename(this.HandleCreateDirectory.bind(this), "", x, y + event.target.height, 200);
+	},
+	HandleCreateDirectory : function(name) {
+		if (name === "") {
+			return;
+		}
+		let [check, error] = ALittleIDE.IDEUtility_CheckResourceName(name);
+		if (!check) {
+			ALittleIDE.g_IDETool.ShowNotice("错误", error);
+			return;
+		}
+		let result = ALittle.File_MakeDir(this._real_path + "/" + name);
+		if (!result) {
+			ALittleIDE.g_IDETool.ShowNotice("错误", "文件夹创建失败");
+			return;
+		}
 		this.Refresh();
 	},
 	HandleItemClick : function(event) {
@@ -444,8 +577,17 @@ ALittleIDE.IDEAttrImageDialog = JavaScript.Class(undefined, {
 		} else if (event.target === this._drag_ud_quad) {
 			delta_x = 0;
 		}
+		if (this._dialog.width + delta_x < 506) {
+			delta_x = 506 - this._dialog.width;
+		}
+		if (this._dialog.height + delta_y < 200) {
+			delta_y = 200 - this._dialog.height;
+		}
 		this._dialog.width = this._dialog.width + delta_x;
 		this._dialog.height = this._dialog.height + delta_y;
+	},
+	HandleDialogDragEnd : function(event) {
+		this.Refresh();
 	},
 }, "ALittleIDE.IDEAttrImageDialog");
 

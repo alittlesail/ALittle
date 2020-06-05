@@ -74,6 +74,33 @@ ALittleIDE.IDETreeItem = JavaScript.Class(ALittleIDE.IDETreeLogic, {
 		this.AddChild(this._item);
 		this.width = this._item.width;
 		this.height = this._item.height;
+		this._text_icon.visible = false;
+		this._image_icon.visible = false;
+		this._check_icon.visible = false;
+		this._button_icon.visible = false;
+		this._radio_icon.visible = false;
+		this._quad_icon.visible = false;
+		this._dropdown_icon.visible = false;
+		this._input_icon.visible = false;
+		let name_map = {};
+		name_map["Text"] = this._text_icon;
+		name_map["TextArea"] = this._text_icon;
+		name_map["TextInput"] = this._input_icon;
+		name_map["TextEdit"] = this._input_icon;
+		name_map["ImageInput"] = this._input_icon;
+		name_map["ImageEdit"] = this._input_icon;
+		name_map["Quad"] = this._quad_icon;
+		name_map["Image"] = this._image_icon;
+		name_map["Grid9Image"] = this._image_icon;
+		name_map["TextButton"] = this._button_icon;
+		name_map["TextCheckButton"] = this._check_icon;
+		name_map["TextRadioButton"] = this._radio_icon;
+		name_map["DropDown"] = this._dropdown_icon;
+		let icon = name_map[this._user_info.default.__class];
+		if (icon !== undefined) {
+			icon.visible = true;
+		}
+		this._extends_icon.visible = this._user_info.extends_root;
 		this._item_button.selected = false;
 		this._item_button.group = this._tab_child.group;
 		this._item_button.AddEventListener(___all_struct.get(-449066808), this, this.HandleClick);
@@ -85,6 +112,31 @@ ALittleIDE.IDETreeItem = JavaScript.Class(ALittleIDE.IDETreeLogic, {
 		this._item_button.AddEventListener(___all_struct.get(150587926), this, this.HandleDragEnd);
 		this._item_button.AddEventListener(___all_struct.get(-641444818), ALittleIDE.g_IDEControlTree, ALittleIDE.g_IDEControlTree.HandleControlTreeItemRightClick);
 		this._item_button._user_data = this;
+	},
+	UpdateDesc : function() {
+		let title = "";
+		if (this._user_info.child_type !== undefined && this._user_info.child_type !== "child") {
+			title = title + "[" + this._user_info.child_type + "]";
+		}
+		let link = this._user_info.base.__link;
+		if (link === undefined) {
+			link = this._user_info.default.__link;
+		}
+		if (this._user_info.base.description !== undefined) {
+			title = title + this._user_info.base.description;
+		} else if (this._user_info.default.description !== undefined) {
+			title = title + this._user_info.default.description;
+		} else if (link !== undefined) {
+			title = title + link;
+		} else if (this._user_info.base.text !== undefined) {
+			title = title + this._user_info.base.text;
+		} else if (this._user_info.default.text !== undefined) {
+			title = title + this._user_info.default.text;
+		}
+		this._item_title.text = title;
+		if (this._user_info.child_type === undefined) {
+			this._tab_child.UpdateTitle();
+		}
 	},
 	IsTree : function() {
 		return false;

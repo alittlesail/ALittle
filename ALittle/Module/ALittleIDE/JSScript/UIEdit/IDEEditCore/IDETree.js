@@ -84,6 +84,7 @@ ALittleIDE.IDETree = JavaScript.Class(ALittleIDE.IDETreeLogic, {
 			this._head = ctrl_sys.CreateControl("ide_common_tree_head", this);
 		}
 		ALittle.DisplayGroup.AddChild.call(this, this._head);
+		this._extends_icon.visible = this._user_info.extends_root;
 		this._item_button.selected = false;
 		this._item_button.group = this._tab_child.group;
 		this._item_button.AddEventListener(___all_struct.get(1883782801), this, this.HandleLButtonDown);
@@ -107,6 +108,26 @@ ALittleIDE.IDETree = JavaScript.Class(ALittleIDE.IDETreeLogic, {
 		this._pickup_rect = false;
 		this._pickup_child = true;
 		this.fold = false;
+	},
+	UpdateDesc : function() {
+		let title = "";
+		if (this._user_info.child_type !== undefined && this._user_info.child_type !== "child") {
+			title = title + "[" + this._user_info.child_type + "]";
+		}
+		title = title + "[" + this._user_info.default.__class + "]";
+		if (this._user_info.base.description !== undefined) {
+			title = title + this._user_info.base.description;
+		} else if (this._user_info.default.description !== undefined) {
+			title = title + this._user_info.default.description;
+		} else if (this._user_info.base.text !== undefined) {
+			title = title + this._user_info.base.text;
+		} else if (this._user_info.default.text !== undefined) {
+			title = title + this._user_info.default.text;
+		}
+		this._item_title.text = title;
+		if (this._user_info.child_type === undefined) {
+			this._tab_child.UpdateTitle();
+		}
 	},
 	HandleLButtonDown : function(event) {
 		if (event.count === 1) {

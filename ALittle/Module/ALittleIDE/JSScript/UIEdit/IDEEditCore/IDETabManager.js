@@ -426,6 +426,10 @@ ALittleIDE.IDETabManager = JavaScript.Class(undefined, {
 			this.ControlRenameImpl(child);
 			return;
 		}
+		if (handle_name === "截图导出") {
+			A_OtherSystem.SystemSaveFile(tab_child, tab_child.name + ".png", undefined);
+			return;
+		}
 	},
 	ControlRenameImpl : function(child) {
 		let tab_child = child._user_data;

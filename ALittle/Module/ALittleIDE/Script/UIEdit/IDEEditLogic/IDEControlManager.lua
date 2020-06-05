@@ -66,18 +66,6 @@ name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
 type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
 option_map = {}
 })
-ALittle.RegStruct(544684311, "ALittle.UIMoveInEvent", {
-name = "ALittle.UIMoveInEvent", ns_name = "ALittle", rl_name = "UIMoveInEvent", hash_code = 544684311,
-name_list = {"target"},
-type_list = {"ALittle.DisplayObject"},
-option_map = {}
-})
-ALittle.RegStruct(-1202439334, "ALittle.UIMoveOutEvent", {
-name = "ALittle.UIMoveOutEvent", ns_name = "ALittle", rl_name = "UIMoveOutEvent", hash_code = -1202439334,
-name_list = {"target"},
-type_list = {"ALittle.DisplayObject"},
-option_map = {}
-})
 ALittle.RegStruct(882286932, "ALittle.UIKeyEvent", {
 name = "ALittle.UIKeyEvent", ns_name = "ALittle", rl_name = "UIKeyEvent", hash_code = 882286932,
 name_list = {"target","mod","sym","scancode","custom","handled"},
@@ -173,8 +161,6 @@ function IDEControlManager:HandleControlSearchClick(event)
 			item = g_Control:CreateControl("ide_common_item_checkbutton")
 			item:AddEventListener(___all_struct[-449066808], self, self.HandleControlItemClick)
 			item:AddEventListener(___all_struct[-641444818], self, self.HandleControlItemRightClick)
-			item:AddEventListener(___all_struct[544684311], self, self.HandleControlPreseeMoveIn)
-			item:AddEventListener(___all_struct[-1202439334], self, self.HandleControlPreseeMoveOut)
 			item:AddEventListener(___all_struct[-1604617962], self, self.HandleControlKeyDown)
 			item:AddEventListener(___all_struct[1301789264], self, self.HandleControlDragBegin)
 			item:AddEventListener(___all_struct[1337289812], self, self.HandleControlDrag)

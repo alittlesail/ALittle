@@ -34,7 +34,7 @@ ALittleIDE.IDETreeLogic = JavaScript.Class(ALittle.DisplayLayout, {
 		this._user_info = user_info;
 		this._attr_panel = undefined;
 		this._drag_effect = undefined;
-		this._drag_shift = false;
+		this._drag_ctrl = false;
 	},
 	get user_info() {
 		return this._user_info;
@@ -79,27 +79,6 @@ ALittleIDE.IDETreeLogic = JavaScript.Class(ALittle.DisplayLayout, {
 		this.UpdateDesc();
 	},
 	UpdateDesc : function() {
-		let title = "";
-		if (this._user_info.extends_root) {
-			title = "[E]" + title;
-		}
-		if (this._user_info.child_type !== undefined && this._user_info.child_type !== "child") {
-			title = title + "[" + this._user_info.child_type + "]";
-		}
-		title = title + "[" + this._user_info.default.__class + "]";
-		if (this._user_info.base.description !== undefined) {
-			title = title + this._user_info.base.description;
-		} else if (this._user_info.default.description !== undefined) {
-			title = title + this._user_info.default.description;
-		} else if (this._user_info.base.text !== undefined) {
-			title = title + this._user_info.base.text;
-		} else if (this._user_info.default.text !== undefined) {
-			title = title + this._user_info.default.text;
-		}
-		this._item_title.text = title;
-		if (this._user_info.child_type === undefined) {
-			this._tab_child.UpdateTitle();
-		}
 	},
 	RemoveAttributePanel : function() {
 		if (this._attr_panel === undefined) {
@@ -139,39 +118,14 @@ ALittleIDE.IDETreeLogic = JavaScript.Class(ALittle.DisplayLayout, {
 		}
 	},
 	HandleMoveIn : function(event) {
-		let link = this._user_info.base.__link;
-		if (link === undefined) {
-			link = this._user_info.default.__link;
-		}
-		if (link === undefined) {
-			return;
-		}
-		ALittleIDE.g_IDEControlTree.ShowTip(link);
-		ALittleIDE.g_IDEControlTree.MoveTip(A_UISystem.mouse_x + 10, A_UISystem.mouse_y + 20);
 	},
 	HandleMouseMove : function(event) {
-		let link = this._user_info.base.__link;
-		if (link === undefined) {
-			link = this._user_info.default.__link;
-		}
-		if (link === undefined) {
-			return;
-		}
-		ALittleIDE.g_IDEControlTree.MoveTip(A_UISystem.mouse_x + 10, A_UISystem.mouse_y + 20);
 	},
 	HandleMoveOut : function(event) {
-		let link = this._user_info.base.__link;
-		if (link === undefined) {
-			link = this._user_info.default.__link;
-		}
-		if (link === undefined) {
-			return;
-		}
-		ALittleIDE.g_IDEControlTree.HideTip();
 	},
 	HandleDragBegin : function(event) {
-		this._drag_shift = (A_UISystem.sym_map.get(1073742049) !== undefined || A_UISystem.sym_map.get(1073742053) !== undefined);
-		if (this._drag_shift === false) {
+		this._drag_ctrl = (A_UISystem.sym_map.get(1073742048) !== undefined || A_UISystem.sym_map.get(1073742052) !== undefined);
+		if (this._drag_ctrl === false) {
 			event.target = this._tab_child.tree_screen;
 			this._tab_child.tree_screen.DispatchEvent(___all_struct.get(1301789264), event);
 			return;
@@ -189,7 +143,7 @@ ALittleIDE.IDETreeLogic = JavaScript.Class(ALittle.DisplayLayout, {
 		this._drag_effect.alpha = 0.6;
 	},
 	HandleDrag : function(event) {
-		if (this._drag_shift === false) {
+		if (this._drag_ctrl === false) {
 			event.target = this._tab_child.tree_screen;
 			this._tab_child.tree_screen.DispatchEvent(___all_struct.get(1337289812), event);
 			return;
@@ -201,7 +155,7 @@ ALittleIDE.IDETreeLogic = JavaScript.Class(ALittle.DisplayLayout, {
 		this._drag_effect.y = this._drag_effect.y + event.delta_y;
 	},
 	HandleDragEnd : function(event) {
-		if (this._drag_shift === false) {
+		if (this._drag_ctrl === false) {
 			event.target = this._tab_child.tree_screen;
 			this._tab_child.tree_screen.DispatchEvent(___all_struct.get(150587926), event);
 			return;

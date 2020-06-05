@@ -437,6 +437,7 @@ public class IDETabChild : ALittle.UIEventDispatcher
 		// 添加控件树
         this._tree_object = IDEUtility_CreateTree(info, false, object, null, this, true);
         this._tree_object.AddEventListener(this, this.HandleTreeSizeChanged);
+        this._tree_object.fold = true;
         this._tree_screen.AddChild(this._tree_object);
         this._anti_panel.Init(this);
 	}
@@ -453,6 +454,7 @@ public class IDETabChild : ALittle.UIEventDispatcher
 		//控件树
         this._tree_object = IDEUtility_CreateTree(info, false, object, null, this, true);
         this._tree_object.AddEventListener(this, this.HandleTreeSizeChanged);
+        this._tree_object.fold = true;
         this._tree_screen.AddChild(this._tree_object);
         this._anti_panel.Init(this);
 	}
@@ -466,6 +468,7 @@ public class IDETabChild : ALittle.UIEventDispatcher
 		//控件树
         this._tree_object = IDEUtility_CreateTree(info, false, object, null, this, true);
         this._tree_object.AddEventListener(this, this.HandleTreeSizeChanged);
+        this._tree_object.fold = true;
         this._tree_screen.AddChild(this._tree_object);
         // this.ShowHandleQuad(this._tree_object);
         this._anti_panel.Init(this);

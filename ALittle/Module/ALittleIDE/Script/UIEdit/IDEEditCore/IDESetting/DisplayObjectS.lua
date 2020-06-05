@@ -715,10 +715,12 @@ function DisplayObjectS:SetDescription(description, revoke_bind)
 	end
 	self._description.text = description
 	self:DefaultNilStringInputChange("description", false, revoke_bind)
+	self._tree_logic:UpdateDesc()
 end
 
 function DisplayObjectS:HandleDescriptionFOCUSOUT(event)
 	self:DefaultNilStringInputChange("description", false)
+	self._tree_logic:UpdateDesc()
 end
 
 function DisplayObjectS:HandleDescriptionTabKey(event)
@@ -732,10 +734,12 @@ function DisplayObjectS:SetLink(link, revoke_bind)
 	end
 	self.___link.text = link
 	self:DefaultNilStringInputChange("__link", false, revoke_bind)
+	self._tree_logic:UpdateDesc()
 end
 
 function DisplayObjectS:HandleLinkFOCUSOUT(event)
 	self:DefaultNilStringInputChange("__link", false)
+	self._tree_logic:UpdateDesc()
 end
 
 function DisplayObjectS:HandleLinkTabKey(event)

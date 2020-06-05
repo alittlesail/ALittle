@@ -44,6 +44,12 @@ name_list : ["target","abs_x","abs_y","rel_x","rel_y","count","is_drag"],
 type_list : ["ALittle.DisplayObject","double","double","double","double","int","bool"],
 option_map : {}
 })
+ALittle.RegStruct(-1676610185, "ALittle.UISystemSaveFileEvent", {
+name : "ALittle.UISystemSaveFileEvent", ns_name : "ALittle", rl_name : "UISystemSaveFileEvent", hash_code : -1676610185,
+name_list : ["target","path"],
+type_list : ["ALittle.DisplayObject","string"],
+option_map : {}
+})
 ALittle.RegStruct(-431205740, "ALittle.UIResizeEvent", {
 name : "ALittle.UIResizeEvent", ns_name : "ALittle", rl_name : "UIResizeEvent", hash_code : -431205740,
 name_list : ["target"],
@@ -111,7 +117,8 @@ type_list : ["ALittle.DisplayObject","bool"],
 option_map : {}
 })
 
-ALittleIDE.IDETabChild = JavaScript.Class(undefined, {
+if (ALittle.UIEventDispatcher === undefined) throw new Error(" extends class:ALittle.UIEventDispatcher is undefined");
+ALittleIDE.IDETabChild = JavaScript.Class(ALittle.UIEventDispatcher, {
 	Ctor : function(name, save) {
 		this._name = name;
 		this._save = save;
@@ -144,9 +151,14 @@ ALittleIDE.IDETabChild = JavaScript.Class(undefined, {
 		this._revoke_list = ALittle.NewObject(ALittleIDE.IDERevokeList);
 		this._tree_loop_x = undefined;
 		this._tree_loop_y = undefined;
+		this.AddEventListener(___all_struct.get(-1676610185), this, this.HandleSavePng);
 	},
 	HandleTreeSizeChanged : function(event) {
 		this._tree_screen.RejustScrollBar();
+	},
+	HandleSavePng : function(event) {
+		ALittle.Log(event.path);
+		ALittleIDE.g_Control.SaveControlToFile(this._tree_object.user_info.object, event.path);
 	},
 	get name() {
 		return this._name;
@@ -401,6 +413,7 @@ ALittleIDE.IDETabChild = JavaScript.Class(undefined, {
 		this._tab_object_container.AddChild(object);
 		this._tree_object = ALittleIDE.IDEUtility_CreateTree(info, false, object, undefined, this, true);
 		this._tree_object.AddEventListener(___all_struct.get(-431205740), this, this.HandleTreeSizeChanged);
+		this._tree_object.fold = true;
 		this._tree_screen.AddChild(this._tree_object);
 		this._anti_panel.Init(this);
 	},
@@ -411,6 +424,7 @@ ALittleIDE.IDETabChild = JavaScript.Class(undefined, {
 		this._tab_object_container.AddChild(object);
 		this._tree_object = ALittleIDE.IDEUtility_CreateTree(info, false, object, undefined, this, true);
 		this._tree_object.AddEventListener(___all_struct.get(-431205740), this, this.HandleTreeSizeChanged);
+		this._tree_object.fold = true;
 		this._tree_screen.AddChild(this._tree_object);
 		this._anti_panel.Init(this);
 	},
@@ -419,6 +433,7 @@ ALittleIDE.IDETabChild = JavaScript.Class(undefined, {
 		this._tab_object_container.AddChild(object);
 		this._tree_object = ALittleIDE.IDEUtility_CreateTree(info, false, object, undefined, this, true);
 		this._tree_object.AddEventListener(___all_struct.get(-431205740), this, this.HandleTreeSizeChanged);
+		this._tree_object.fold = true;
 		this._tree_screen.AddChild(this._tree_object);
 		this._anti_panel.Init(this);
 	},
@@ -437,13 +452,13 @@ ALittleIDE.IDETabChild = JavaScript.Class(undefined, {
 		if (force_shift) {
 			shift = true;
 		}
-		if (shift === false) {
+		let ctrl = (A_UISystem.sym_map.get(1073742048) !== undefined || A_UISystem.sym_map.get(1073742052) !== undefined);
+		if (shift) {
+			ctrl = false;
+		}
+		if (shift === false && ctrl === false) {
 			this._tab_quad_map = new Map();
 			this._tab_quad_container.RemoveAllChild();
-		}
-		let handle_info = this._tab_quad_map.get(target);
-		if (handle_info !== undefined) {
-			return;
 		}
 		let common_parent = undefined;
 		let has_target = false;
@@ -454,54 +469,88 @@ ALittleIDE.IDETabChild = JavaScript.Class(undefined, {
 			break;
 		}
 		if (has_target && common_parent !== target.logic_parent) {
-			return;
-		}
-		let control_line = {};
-		let handle_quad = ALittleIDE.g_Control.CreateControl("ide_common_handle_quad", control_line);
-		control_line.quad.AddEventListener(___all_struct.get(40651933), this, this.HandleHandleQuadLButtonUp);
-		control_line.quad.AddEventListener(___all_struct.get(1883782801), this, this.HandleHandleQuadLButtonDown);
-		control_line.quad.AddEventListener(___all_struct.get(1301789264), this, this.HandleHandleQuadDragBegin);
-		control_line.quad.AddEventListener(___all_struct.get(1337289812), this, this.HandleHandleQuadDrag);
-		control_line.quad.AddEventListener(___all_struct.get(150587926), this, this.HandleHandleQuadDragEnd);
-		control_line.quad.AddEventListener(___all_struct.get(-641444818), this, this.HandleHandleQuadRButtonDown);
-		control_line.quad.AddEventListener(___all_struct.get(-1604617962), this, this.HandleHandleQuadKeyDown);
-		control_line.size_quad.AddEventListener(___all_struct.get(-1604617962), this, this.HandleHandleSizeQuadKeyDown);
-		control_line.size_quad.AddEventListener(___all_struct.get(1301789264), this, this.HandleHandleSizeQuadDragBegin);
-		control_line.size_quad.AddEventListener(___all_struct.get(1337289812), this, this.HandleHandleSizeQuadDrag);
-		control_line.size_quad.AddEventListener(___all_struct.get(150587926), this, this.HandleHandleSizeQuadDragEnd);
-		control_line.size_quad.AddEventListener(___all_struct.get(544684311), this, this.HandleHandleSizeQuadMoveIn);
-		control_line.size_quad.AddEventListener(___all_struct.get(-1202439334), this, this.HandleHandleSizeQuadMoveOut);
-		handle_info = {};
-		let target_parent = target.user_info.object;
-		let quad_parent = handle_quad;
-		while (target_parent !== undefined) {
-			quad_parent.x = target_parent.x;
-			quad_parent.y = target_parent.y;
-			quad_parent.width = target_parent.width;
-			quad_parent.height = target_parent.height;
-			quad_parent.scale_x = target_parent.scale_x;
-			quad_parent.scale_y = target_parent.scale_y;
-			quad_parent.center_x = target_parent.center_x;
-			quad_parent.center_y = target_parent.center_y;
-			quad_parent.angle = target_parent.angle;
-			let display_group = ALittle.NewObject(ALittle.DisplayGroup, ALittleIDE.g_Control);
-			display_group.AddChild(quad_parent);
-			if (target_parent.show_parent === this._tab_object_container) {
-				handle_info.display_group = display_group;
-				this._tab_quad_container.AddChild(display_group);
-				break;
+			let parent = target.logic_parent;
+			while (parent !== undefined && common_parent !== parent) {
+				target = parent;
+				parent = parent.logic_parent;
 			}
-			quad_parent = display_group;
-			target_parent = target_parent.show_parent;
+			if (parent === undefined) {
+				return;
+			}
 		}
-		handle_info.handle_quad = handle_quad;
-		handle_info.focus_quad = control_line.quad;
-		handle_info.size_quad_container = control_line.size_quad_container;
-		control_line.quad._user_data = handle_info;
-		control_line.size_quad._user_data = handle_info;
-		target.ShowAttributePanel();
-		handle_info.target = target;
-		this._tab_quad_map.set(target, handle_info);
+		let list = [];
+		if (!has_target || common_parent === undefined || ctrl) {
+			list[1 - 1] = target;
+		} else {
+			let max_index = common_parent.GetChildIndex(target);
+			let min_index = max_index;
+			for (let [target, info] of this._tab_quad_map) {
+				if (info === undefined) continue;
+				let index = common_parent.GetChildIndex(target);
+				if (index < min_index) {
+					min_index = index;
+				} else if (index > max_index) {
+					max_index = index;
+				}
+			}
+			for (let index = min_index; index <= max_index; index += 1) {
+				let child = common_parent.GetChildByIndex(index);
+				if (this._tab_quad_map.get(child) === undefined) {
+					ALittle.List_Push(list, child);
+				}
+			}
+		}
+		let ___OBJECT_1 = list;
+		for (let index = 1; index <= ___OBJECT_1.length; ++index) {
+			let child = ___OBJECT_1[index - 1];
+			if (child === undefined) break;
+			let control_line = {};
+			let handle_quad = ALittleIDE.g_Control.CreateControl("ide_common_handle_quad", control_line);
+			control_line.quad.AddEventListener(___all_struct.get(40651933), this, this.HandleHandleQuadLButtonUp);
+			control_line.quad.AddEventListener(___all_struct.get(1883782801), this, this.HandleHandleQuadLButtonDown);
+			control_line.quad.AddEventListener(___all_struct.get(1301789264), this, this.HandleHandleQuadDragBegin);
+			control_line.quad.AddEventListener(___all_struct.get(1337289812), this, this.HandleHandleQuadDrag);
+			control_line.quad.AddEventListener(___all_struct.get(150587926), this, this.HandleHandleQuadDragEnd);
+			control_line.quad.AddEventListener(___all_struct.get(-641444818), this, this.HandleHandleQuadRButtonDown);
+			control_line.quad.AddEventListener(___all_struct.get(-1604617962), this, this.HandleHandleQuadKeyDown);
+			control_line.size_quad.AddEventListener(___all_struct.get(-1604617962), this, this.HandleHandleSizeQuadKeyDown);
+			control_line.size_quad.AddEventListener(___all_struct.get(1301789264), this, this.HandleHandleSizeQuadDragBegin);
+			control_line.size_quad.AddEventListener(___all_struct.get(1337289812), this, this.HandleHandleSizeQuadDrag);
+			control_line.size_quad.AddEventListener(___all_struct.get(150587926), this, this.HandleHandleSizeQuadDragEnd);
+			control_line.size_quad.AddEventListener(___all_struct.get(544684311), this, this.HandleHandleSizeQuadMoveIn);
+			control_line.size_quad.AddEventListener(___all_struct.get(-1202439334), this, this.HandleHandleSizeQuadMoveOut);
+			let handle_info = {};
+			let target_parent = child.user_info.object;
+			let quad_parent = handle_quad;
+			while (target_parent !== undefined) {
+				quad_parent.x = target_parent.x;
+				quad_parent.y = target_parent.y;
+				quad_parent.width = target_parent.width;
+				quad_parent.height = target_parent.height;
+				quad_parent.scale_x = target_parent.scale_x;
+				quad_parent.scale_y = target_parent.scale_y;
+				quad_parent.center_x = target_parent.center_x;
+				quad_parent.center_y = target_parent.center_y;
+				quad_parent.angle = target_parent.angle;
+				let display_group = ALittle.NewObject(ALittle.DisplayGroup, ALittleIDE.g_Control);
+				display_group.AddChild(quad_parent);
+				if (target_parent.show_parent === this._tab_object_container) {
+					handle_info.display_group = display_group;
+					this._tab_quad_container.AddChild(display_group);
+					break;
+				}
+				quad_parent = display_group;
+				target_parent = target_parent.show_parent;
+			}
+			handle_info.handle_quad = handle_quad;
+			handle_info.focus_quad = control_line.quad;
+			handle_info.size_quad_container = control_line.size_quad_container;
+			control_line.quad._user_data = handle_info;
+			control_line.size_quad._user_data = handle_info;
+			child.ShowAttributePanel();
+			handle_info.target = child;
+			this._tab_quad_map.set(child, handle_info);
+		}
 		let loop = ALittle.NewObject(ALittle.LoopFunction, this.FocusInHandleQuad.bind(this, target), 1, 0, 1);
 		loop.Start();
 	},
@@ -513,7 +562,11 @@ ALittleIDE.IDETabChild = JavaScript.Class(undefined, {
 		if (shift === undefined) {
 			shift = (A_UISystem.sym_map.get(1073742049) !== undefined || A_UISystem.sym_map.get(1073742053) !== undefined);
 		}
-		if (shift === false) {
+		let ctrl = (A_UISystem.sym_map.get(1073742048) !== undefined || A_UISystem.sym_map.get(1073742052) !== undefined);
+		if (shift) {
+			ctrl = false;
+		}
+		if (shift === false && ctrl === false) {
 			this._tab_quad_map = new Map();
 			this._tab_quad_container.RemoveAllChild();
 			target.ShowAttributePanel();
@@ -795,6 +848,7 @@ ALittleIDE.IDETabChild = JavaScript.Class(undefined, {
 			this._control_tabchild_menu = ALittleIDE.g_Control.CreateControl("ide_control_tabchild_menu", this);
 		}
 		this._right_control_tree_textedit.disabled = ALittleIDE.g_IDEEnum.text_edit_display_map[target.user_info.default.__class] === undefined;
+		this._right_control_tree_pickparent.disabled = target.user_info.root;
 		this._right_control_tree_up.disabled = target.user_info.root || target.user_info.child_type !== "child";
 		this._right_control_tree_down.disabled = target.user_info.root || target.user_info.child_type !== "child";
 		this._right_control_tree_add.disabled = !target.IsTree();
@@ -974,9 +1028,9 @@ ALittleIDE.IDETabChild = JavaScript.Class(undefined, {
 			}
 			copy_list = copy_list_tmp;
 		}
-		let ___OBJECT_1 = copy_list;
-		for (let k = 1; k <= ___OBJECT_1.length; ++k) {
-			let info = ___OBJECT_1[k - 1];
+		let ___OBJECT_2 = copy_list;
+		for (let k = 1; k <= ___OBJECT_2.length; ++k) {
+			let info = ___OBJECT_2[k - 1];
 			if (info === undefined) break;
 			if (info.info.__class === undefined && info.info.__extends === undefined) {
 				ALittleIDE.g_IDETool.ShowNotice("错误", "剪切板的内容不能粘帖");
@@ -991,9 +1045,9 @@ ALittleIDE.IDETabChild = JavaScript.Class(undefined, {
 			let add_list = [];
 			let add_list_count = 0;
 			let inner_revoke_bind = ALittle.NewObject(ALittleIDE.IDERevokeBind);
-			let ___OBJECT_2 = copy_list;
-			for (let k = 1; k <= ___OBJECT_2.length; ++k) {
-				let info = ___OBJECT_2[k - 1];
+			let ___OBJECT_3 = copy_list;
+			for (let k = 1; k <= ___OBJECT_3.length; ++k) {
+				let info = ___OBJECT_3[k - 1];
 				if (info === undefined) break;
 				if (k === 1) {
 					let tree_object = target.TreePaste(info.info, "child", child_index, false, inner_revoke_bind);
@@ -1118,6 +1172,16 @@ ALittleIDE.IDETabChild = JavaScript.Class(undefined, {
 		let target = this._control_tabchild_menu._user_data;
 		this._control_tabchild_menu._user_data = undefined;
 		this.ShowTreeItemFocus(target);
+	},
+	HandleRightControlTreePickParent : function(event) {
+		A_LayerManager.HideFromRight(this._control_tabchild_menu);
+		let target = this._control_tabchild_menu._user_data;
+		this._control_tabchild_menu._user_data = undefined;
+		let parent = target.logic_parent;
+		if (parent === undefined) {
+			return;
+		}
+		this.ShowHandleQuad(parent);
 	},
 	HandleRenameConfirm : function(event) {
 		let target = this._control_tabchild_textinput._user_data;
@@ -1288,9 +1352,9 @@ ALittleIDE.IDETabChild = JavaScript.Class(undefined, {
 			this._quick_right_exmenu = ALittleIDE.g_Control.CreateControl("ide_quick_drag_menu", this);
 		}
 		this._quick_right_exlinear.RemoveAllChild();
-		let ___OBJECT_3 = list;
-		for (let index = 1; index <= ___OBJECT_3.length; ++index) {
-			let tree = ___OBJECT_3[index - 1];
+		let ___OBJECT_4 = list;
+		for (let index = 1; index <= ___OBJECT_4.length; ++index) {
+			let tree = ___OBJECT_4[index - 1];
 			if (tree === undefined) break;
 			let item = ALittleIDE.g_Control.CreateControl("ide_common_item_button");
 			item.AddEventListener(___all_struct.get(-449066808), this, this.HandleQuickRightExItemClick);
@@ -1338,9 +1402,9 @@ ALittleIDE.IDETabChild = JavaScript.Class(undefined, {
 			return;
 		}
 		let [global_x, global_y] = tree.user_info.object.LocalToGlobal();
-		let ___OBJECT_4 = add_list;
-		for (let k = 1; k <= ___OBJECT_4.length; ++k) {
-			let tree_object = ___OBJECT_4[k - 1];
+		let ___OBJECT_5 = add_list;
+		for (let k = 1; k <= ___OBJECT_5.length; ++k) {
+			let tree_object = ___OBJECT_5[k - 1];
 			if (tree_object === undefined) break;
 			tree_object.attr_panel.SetXType(1, revoke_bind);
 			tree_object.attr_panel.SetYType(1, revoke_bind);

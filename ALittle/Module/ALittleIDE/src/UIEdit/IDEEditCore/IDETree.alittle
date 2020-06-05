@@ -14,6 +14,8 @@ public class IDETree : IDETreeLogic
 		else
 			this._head = ctrl_sys.CreateControl{ALittle.DisplayObject}("ide_common_tree_head", this);
 		ALittle.DisplayGroup.AddChild(this, this._head);
+		
+		this._extends_icon.visible = this._user_info.extends_root;
 	
 		// this._item_button.drag_trans_target = this._tab_child.tree_screen
 		this._item_button.selected = false;
@@ -44,6 +46,32 @@ public class IDETree : IDETreeLogic
 		this._pickup_child = true;
 	
 		this.fold = false;
+	}
+	
+
+	// 更新描述
+	public fun UpdateDesc()
+	{
+		var title = "";
+		
+		if (this._user_info.child_type != null && this._user_info.child_type != "child")
+			title = title.."["..this._user_info.child_type.."]";
+		
+		title = title.."["..this._user_info.default.__class.."]";
+		
+		if (this._user_info.base.description != null)
+			title = title..this._user_info.base.description;
+		elseif (this._user_info.default.description != null)
+			title = title..this._user_info.default.description;
+		elseif (this._user_info.base.text != null)
+			title = title..this._user_info.base.text;
+		elseif (this._user_info.default.text != null)
+			title = title..this._user_info.default.text;
+
+		this._item_title.text = title;
+	
+		if (this._user_info.child_type == null)
+			this._tab_child.UpdateTitle();
 	}
 	
 	public fun HandleLButtonDown(ALittle.UILButtonDownEvent event)

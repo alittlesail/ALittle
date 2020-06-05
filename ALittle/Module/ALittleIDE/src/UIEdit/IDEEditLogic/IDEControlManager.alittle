@@ -122,8 +122,8 @@ public class IDEControlManager
 				// 添加点击事件
 				item.AddEventListener(this, this.HandleControlItemClick);
 				item.AddEventListener(this, this.HandleControlItemRightClick);
-				item.AddEventListener(this, this.HandleControlPreseeMoveIn);
-				item.AddEventListener(this, this.HandleControlPreseeMoveOut);
+				// item.AddEventListener(this, this.HandleControlPreseeMoveIn);
+				// item.AddEventListener(this, this.HandleControlPreseeMoveOut);
 				item.AddEventListener(this, this.HandleControlKeyDown);
 	
 				item.AddEventListener(this, this.HandleControlDragBegin);

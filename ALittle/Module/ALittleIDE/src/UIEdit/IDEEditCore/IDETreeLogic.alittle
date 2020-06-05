@@ -15,6 +15,7 @@ public class IDETreeLogic : ALittle.DisplayLayout
 
 	private ALittle.DisplayObject _head;		// 头部
 	private ALittle.DisplayObject _item;		// item部分
+	private ALittle.DisplayObject _extends_icon;	// 继承图标
 
 	public ctor(ALittle.ControlSystem ctrl_sys, IDETreeUserInfo user_info, IDETabChild tab_child)
 	{
@@ -61,28 +62,6 @@ public class IDETreeLogic : ALittle.DisplayLayout
 	// 更新描述
 	public fun UpdateDesc()
 	{
-		var title = "";
-		if (this._user_info.extends_root)
-			title = "[E]"..title;
-		
-		if (this._user_info.child_type != null && this._user_info.child_type != "child")
-			title = title.."["..this._user_info.child_type.."]";
-
-		title = title.."["..this._user_info.default.__class.."]";
-	
-		if (this._user_info.base.description != null)
-			title = title..this._user_info.base.description;
-		elseif (this._user_info.default.description != null)
-			title = title..this._user_info.default.description;
-		elseif (this._user_info.base.text != null)
-			title = title..this._user_info.base.text;
-		elseif (this._user_info.default.text != null)
-			title = title..this._user_info.default.text;
-
-		this._item_title.text = title;
-	
-		if (this._user_info.child_type == null)
-			this._tab_child.UpdateTitle();
 	}
 
 	// 移除属性面板
@@ -140,32 +119,20 @@ public class IDETreeLogic : ALittle.DisplayLayout
 	// 鼠标移入，显示绑定信息
 	public fun HandleMoveIn(ALittle.UIMoveInEvent event)
 	{
-		var link = this._user_info.base.__link;
-		if (link == null) link = this._user_info.default.__link;
-		if (link == null) return;
-	
-		g_IDEControlTree.ShowTip(link);
-		g_IDEControlTree.MoveTip(A_UISystem.mouse_x + 10, A_UISystem.mouse_y + 20);
+		// g_IDEControlTree.ShowTip(this._user_info.default.__class);
+		// g_IDEControlTree.MoveTip(A_UISystem.mouse_x + 10, A_UISystem.mouse_y + 20);
 	}
 
 	// 鼠标移动，也移动绑定信息
 	public fun HandleMouseMove(ALittle.UIMouseMoveEvent event)
 	{
-		var link = this._user_info.base.__link;
-		if (link == null) link = this._user_info.default.__link;
-		if (link == null) return;
-	
-		g_IDEControlTree.MoveTip(A_UISystem.mouse_x + 10, A_UISystem.mouse_y + 20);
+		// g_IDEControlTree.MoveTip(A_UISystem.mouse_x + 10, A_UISystem.mouse_y + 20);
 	}
 
 	// 鼠标移除，也移除绑定信息
 	public fun HandleMoveOut(ALittle.UIMoveOutEvent event)
 	{
-		var link = this._user_info.base.__link;
-		if (link == null) link = this._user_info.default.__link;
-		if (link == null) return;
-	
-		g_IDEControlTree.HideTip();
+		// g_IDEControlTree.HideTip();
 	}
 
 	// 拖拽item

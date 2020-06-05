@@ -673,11 +673,15 @@ public class DisplayObjectS
 		if (description == null) return;
 		this._description.text = description;
 		this.DefaultNilStringInputChange("description", false, revoke_bind);
+		// 更新标题
+		this._tree_logic.UpdateDesc();
 	}
 	//description
 	public fun HandleDescriptionFOCUSOUT(ALittle.UIEvent event)
 	{
 		this.DefaultNilStringInputChange("description", false);
+		// 更新标题
+		this._tree_logic.UpdateDesc();
 	}
 	public fun HandleDescriptionTabKey(ALittle.UIEvent event) { this.___target_class.focus = true; this.___target_class.SelectAll(); }
 	
@@ -688,11 +692,15 @@ public class DisplayObjectS
 		if (link == null) return;
 		this.___link.text = link;
 		this.DefaultNilStringInputChange("__link", false, revoke_bind);
+		// 更新标题
+		this._tree_logic.UpdateDesc();
 	}
 	//__link
 	public fun HandleLinkFOCUSOUT(ALittle.UIEvent event)
 	{
 		this.DefaultNilStringInputChange("__link", false);
+		// 更新标题
+		this._tree_logic.UpdateDesc();
 	}
 	public fun HandleLinkTabKey(ALittle.UIEvent event) { this._id.focus = true; this._id.SelectAll(); }
 	// 绑定下拉菜单，便捷选择

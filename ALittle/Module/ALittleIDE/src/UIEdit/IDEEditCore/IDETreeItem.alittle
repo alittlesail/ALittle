@@ -3,6 +3,15 @@ namespace ALittleIDE;
 
 public class IDETreeItem : IDETreeLogic
 {
+	private ALittle.DisplayObject _text_icon;
+	private ALittle.DisplayObject _image_icon;
+	private ALittle.DisplayObject _check_icon;
+	private ALittle.DisplayObject _button_icon;
+	private ALittle.DisplayObject _radio_icon;
+	private ALittle.DisplayObject _quad_icon;
+	private ALittle.DisplayObject _dropdown_icon;
+	private ALittle.DisplayObject _input_icon;
+
 	public ctor(ALittle.ControlSystem ctrl_sys, IDETreeUserInfo user_info, IDETabChild tab_child)
 	{
 		if (this._user_info.extends)
@@ -12,7 +21,38 @@ public class IDETreeItem : IDETreeLogic
 		this.AddChild(this._item);
 		this.width = this._item.width;
 		this.height = this._item.height;
-	
+
+		this._text_icon.visible = false;
+		this._image_icon.visible = false;
+		this._check_icon.visible = false;
+		this._button_icon.visible = false;
+		this._radio_icon.visible = false;
+		this._quad_icon.visible = false;
+		this._dropdown_icon.visible = false;
+		this._input_icon.visible = false;
+
+		var name_map = new Map<string, ALittle.DisplayObject>();
+		name_map["Text"] = this._text_icon;
+		name_map["TextArea"] = this._text_icon;
+		name_map["TextInput"] = this._input_icon;
+		name_map["TextEdit"] = this._input_icon;
+		name_map["ImageInput"] = this._input_icon;
+		name_map["ImageEdit"] = this._input_icon;
+		
+		name_map["Quad"] = this._quad_icon;
+		name_map["Image"] = this._image_icon;
+		name_map["Grid9Image"] = this._image_icon;
+		
+		name_map["TextButton"] = this._button_icon;
+		name_map["TextCheckButton"] = this._check_icon;
+		name_map["TextRadioButton"] = this._radio_icon;
+		name_map["DropDown"] = this._dropdown_icon;
+
+		var icon = name_map[this._user_info.default.__class];
+		if (icon != null) icon.visible = true;
+
+		this._extends_icon.visible = this._user_info.extends_root;
+
 		// this._item_button.drag_trans_target = this._tab_child.tree_screen
 		this._item_button.selected = false;
 		this._item_button.group = this._tab_child.group;
@@ -25,6 +65,33 @@ public class IDETreeItem : IDETreeLogic
 		this._item_button.AddEventListener(this, this.HandleDragEnd);
 		this._item_button.AddEventListener(g_IDEControlTree, g_IDEControlTree.HandleControlTreeItemRightClick);
 		this._item_button._user_data = this;
+	}
+	
+	// 更新描述
+	public fun UpdateDesc()
+	{
+		var title = "";
+		if (this._user_info.child_type != null && this._user_info.child_type != "child")
+			title = title.."["..this._user_info.child_type.."]";
+		
+		var link = this._user_info.base.__link;
+		if (link == null) link = this._user_info.default.__link;
+	
+		if (this._user_info.base.description != null)
+			title = title..this._user_info.base.description;
+		elseif (this._user_info.default.description != null)
+			title = title..this._user_info.default.description;
+		elseif (link != null)
+			title = title..link;
+		elseif (this._user_info.base.text != null)
+			title = title..this._user_info.base.text;
+		elseif (this._user_info.default.text != null)
+			title = title..this._user_info.default.text;
+
+		this._item_title.text = title;
+	
+		if (this._user_info.child_type == null)
+			this._tab_child.UpdateTitle();
 	}
 	
 	public fun IsTree() : bool { return false; }

@@ -113,7 +113,9 @@ ALittleIDE.IDETool = JavaScript.Class(undefined, {
 		this._rename_input.y = y;
 		this._rename_input.width = width;
 		this._rename_input.text = text;
-		this._rename_input.SelectAll();
+		if (text !== "") {
+			this._rename_input.SelectAll();
+		}
 		this._rename_input._user_data = callback;
 	},
 	HandleRenameConfirm : function(event) {
@@ -125,6 +127,14 @@ ALittleIDE.IDETool = JavaScript.Class(undefined, {
 		this._rename_input.visible = false;
 		let text = this._rename_input.text;
 		callback(text);
+	},
+	HandleRenameCancel : function(event) {
+		if (event.sym !== 27) {
+			return;
+		}
+		let callback = this._rename_input._user_data;
+		this._rename_input._user_data = undefined;
+		this._rename_input.visible = false;
 	},
 	VersionNotice : function(title, content, confirm_callback) {
 		if (this._version_dialog === undefined) {

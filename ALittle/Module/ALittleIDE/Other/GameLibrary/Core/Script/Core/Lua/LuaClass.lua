@@ -4,16 +4,16 @@ module("Lua", package.seeall)
 local ___pairs = pairs
 local ___ipairs = ipairs
 
-ALittle.RegStruct(1652320227, "Lua.ObjectInfo", {
-name = "Lua.ObjectInfo", ns_name = "Lua", rl_name = "ObjectInfo", hash_code = 1652320227,
-name_list = {"__class"},
-type_list = {"ALittle.ClassInfo"},
-option_map = {}
-})
 ALittle.RegStruct(1620637943, "Lua.ObjectMetatable", {
 name = "Lua.ObjectMetatable", ns_name = "Lua", rl_name = "ObjectMetatable", hash_code = 1620637943,
 name_list = {"__index","__newindex","__tostring"},
 type_list = {"Functor<(Lua.ObjectInfo,string):any>","Functor<(Lua.ObjectInfo,string,any)>","Functor<(Lua.ObjectInfo):string>"},
+option_map = {}
+})
+ALittle.RegStruct(1652320227, "Lua.ObjectInfo", {
+name = "Lua.ObjectInfo", ns_name = "Lua", rl_name = "ObjectInfo", hash_code = 1652320227,
+name_list = {"__class"},
+type_list = {"ALittle.ClassInfo"},
 option_map = {}
 })
 ALittle.RegStruct(-1535459145, "Lua.ClassMetatable", {

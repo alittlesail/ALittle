@@ -10,10 +10,10 @@ name_list = {"__call","__tostring"},
 type_list = {"any","Functor<(Lua.FunctorObject):string>"},
 option_map = {}
 })
-ALittle.RegStruct(-1456681653, "Lua.FunctorObject", {
-name = "Lua.FunctorObject", ns_name = "Lua", rl_name = "FunctorObject", hash_code = -1456681653,
-name_list = {"_arg","_arg_count","_func"},
-type_list = {"List<any>","int","Functor<(any):any>"},
+ALittle.RegStruct(1817653851, "Lua.CoFunctorObject", {
+name = "Lua.CoFunctorObject", ns_name = "Lua", rl_name = "CoFunctorObject", hash_code = 1817653851,
+name_list = {"_func"},
+type_list = {"Functor<(any):any>"},
 option_map = {}
 })
 ALittle.RegStruct(-2114130826, "Lua.CoFunctorMetatable", {
@@ -22,10 +22,10 @@ name_list = {"__call","__tostring"},
 type_list = {"any","Functor<(Lua.CoFunctorObject):string>"},
 option_map = {}
 })
-ALittle.RegStruct(1817653851, "Lua.CoFunctorObject", {
-name = "Lua.CoFunctorObject", ns_name = "Lua", rl_name = "CoFunctorObject", hash_code = 1817653851,
-name_list = {"_func"},
-type_list = {"Functor<(any):any>"},
+ALittle.RegStruct(-1456681653, "Lua.FunctorObject", {
+name = "Lua.FunctorObject", ns_name = "Lua", rl_name = "FunctorObject", hash_code = -1456681653,
+name_list = {"_arg","_arg_count","_func"},
+type_list = {"List<any>","int","Functor<(any):any>"},
 option_map = {}
 })
 

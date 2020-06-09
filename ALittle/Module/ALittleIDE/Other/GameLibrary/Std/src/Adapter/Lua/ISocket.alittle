@@ -35,8 +35,8 @@ public class ISocket
 
 	public await fun Connect(string ip, int port) : string
 	{
-        if (this.IsConnecting()) return "ÒÑ¾­ÕıÔÚÁ¬½Ó";
-		if (this.IsConnected()) return "ÒÑ¾­Á¬½Ó£¬ÇëÏÈ¹Ø±ÕÁ¬½Ó";
+        if (this.IsConnecting()) return "å·²ç»æ­£åœ¨è¿æ¥";
+		if (this.IsConnected()) return "å·²ç»è¿æ¥ï¼Œè¯·å…ˆå…³é—­è¿æ¥";
 
 		this._status = SocketStatus.SS_CONNECTING;
 		lua.socket.connect(this._socket, this._id, ip, port);
@@ -70,19 +70,19 @@ public class ISocket
 	
 	////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	// Ğ´ÈëÏûÏ¢ĞèÒªÖØÔØ£¬ÓÉ×ÓÀàÊµÏÖ
+	// å†™å…¥æ¶ˆæ¯éœ€è¦é‡è½½ï¼Œç”±å­ç±»å®ç°
     private fun WriteMessage(string full_name, lua.protobuf_message protobuf_msg) : string
 	{
         return "not implement";
     }
 
-	// ¶ÁÈ¡Ò»¸öÏûÏ¢°ü£¬ÓÉ×ÓÀàÊµÏÖ
+	// è¯»å–ä¸€ä¸ªæ¶ˆæ¯åŒ…ï¼Œç”±å­ç±»å®ç°
 	private await fun ReadMessage() : string, lua.protobuf_message
 	{
         return "not implement", null;
     }
 	
-	// ¿ªÊ¼Ñ­»·¶ÁÈ¡ÏûÏ¢°üÖ®ºó£¬ÊÕµ½ÏûÏ¢
+	// å¼€å§‹å¾ªç¯è¯»å–æ¶ˆæ¯åŒ…ä¹‹åï¼Œæ”¶åˆ°æ¶ˆæ¯
 	private fun HandleMessage(lua.protobuf_message msg)
 	{
         
@@ -105,8 +105,8 @@ public class ISocket
 
 	public await fun ReadUint8() : string, int
 	{
-		if (!this.IsConnected()) return "»¹Î´Á¬½Ó³É¹¦", 0;
-        if (this._read_thread != null) return "ÒÑ¾­ÕıÔÚ¶ÁÈ¡", 0;
+		if (!this.IsConnected()) return "è¿˜æœªè¿æ¥æˆåŠŸ", 0;
+        if (this._read_thread != null) return "å·²ç»æ­£åœ¨è¯»å–", 0;
 
 		this._read_thread = co;
 		lua.socket.readuint8(this._socket, this._id);
@@ -115,8 +115,8 @@ public class ISocket
 
 	public await fun ReadInt8() : string, int
 	{
-		if (!this.IsConnected()) return "»¹Î´Á¬½Ó³É¹¦", 0;
-        if (this._read_thread != null) return "ÒÑ¾­ÕıÔÚ¶ÁÈ¡", 0;
+		if (!this.IsConnected()) return "è¿˜æœªè¿æ¥æˆåŠŸ", 0;
+        if (this._read_thread != null) return "å·²ç»æ­£åœ¨è¯»å–", 0;
 
 		this._read_thread = co;
 		lua.socket.readint8(this._socket, this._id);
@@ -125,8 +125,8 @@ public class ISocket
 
 	public await fun ReadUint16() : string, int
 	{
-		if (!this.IsConnected()) return "»¹Î´Á¬½Ó³É¹¦", 0;
-        if (this._read_thread != null) return "ÒÑ¾­ÕıÔÚ¶ÁÈ¡", 0;
+		if (!this.IsConnected()) return "è¿˜æœªè¿æ¥æˆåŠŸ", 0;
+        if (this._read_thread != null) return "å·²ç»æ­£åœ¨è¯»å–", 0;
 
 		this._read_thread = co;
 		lua.socket.readuint16(this._socket, this._id);
@@ -135,8 +135,8 @@ public class ISocket
 
 	public await fun ReadInt16() : string, int
 	{
-		if (!this.IsConnected()) return "»¹Î´Á¬½Ó³É¹¦", 0;
-        if (this._read_thread != null) return "ÒÑ¾­ÕıÔÚ¶ÁÈ¡", 0;
+		if (!this.IsConnected()) return "è¿˜æœªè¿æ¥æˆåŠŸ", 0;
+        if (this._read_thread != null) return "å·²ç»æ­£åœ¨è¯»å–", 0;
 
 		this._read_thread = co;
 		lua.socket.readint16(this._socket, this._id);
@@ -145,8 +145,8 @@ public class ISocket
 
 	public await fun ReadUint32() : string, int
 	{
-		if (!this.IsConnected()) return "»¹Î´Á¬½Ó³É¹¦", 0;
-        if (this._read_thread != null) return "ÒÑ¾­ÕıÔÚ¶ÁÈ¡", 0;
+		if (!this.IsConnected()) return "è¿˜æœªè¿æ¥æˆåŠŸ", 0;
+        if (this._read_thread != null) return "å·²ç»æ­£åœ¨è¯»å–", 0;
 
 		this._read_thread = co;
 		lua.socket.readuint32(this._socket, this._id);
@@ -155,8 +155,8 @@ public class ISocket
 
 	public await fun ReadInt32() : string, int
 	{
-		if (!this.IsConnected()) return "»¹Î´Á¬½Ó³É¹¦", 0;
-        if (this._read_thread != null) return "ÒÑ¾­ÕıÔÚ¶ÁÈ¡", 0;
+		if (!this.IsConnected()) return "è¿˜æœªè¿æ¥æˆåŠŸ", 0;
+        if (this._read_thread != null) return "å·²ç»æ­£åœ¨è¯»å–", 0;
 
 		this._read_thread = co;
 		lua.socket.readint32(this._socket, this._id);
@@ -165,8 +165,8 @@ public class ISocket
 
 	public await fun ReadUint64() : string, int
 	{
-		if (!this.IsConnected()) return "»¹Î´Á¬½Ó³É¹¦", 0;
-        if (this._read_thread != null) return "ÒÑ¾­ÕıÔÚ¶ÁÈ¡", 0;
+		if (!this.IsConnected()) return "è¿˜æœªè¿æ¥æˆåŠŸ", 0;
+        if (this._read_thread != null) return "å·²ç»æ­£åœ¨è¯»å–", 0;
 
 		this._read_thread = co;
 		lua.socket.readuint64(this._socket, this._id);
@@ -175,8 +175,8 @@ public class ISocket
 
 	public await fun ReadInt64() : string, int
 	{
-		if (!this.IsConnected()) return "»¹Î´Á¬½Ó³É¹¦", 0;
-        if (this._read_thread != null) return "ÒÑ¾­ÕıÔÚ¶ÁÈ¡", 0;
+		if (!this.IsConnected()) return "è¿˜æœªè¿æ¥æˆåŠŸ", 0;
+        if (this._read_thread != null) return "å·²ç»æ­£åœ¨è¯»å–", 0;
 
 		this._read_thread = co;
 		lua.socket.readint64(this._socket, this._id);
@@ -185,8 +185,8 @@ public class ISocket
 
 	public await fun ReadFloat() : string, double
 	{
-		if (!this.IsConnected()) return "»¹Î´Á¬½Ó³É¹¦", 0;
-        if (this._read_thread != null) return "ÒÑ¾­ÕıÔÚ¶ÁÈ¡", 0;
+		if (!this.IsConnected()) return "è¿˜æœªè¿æ¥æˆåŠŸ", 0;
+        if (this._read_thread != null) return "å·²ç»æ­£åœ¨è¯»å–", 0;
 
 		this._read_thread = co;
 		lua.socket.readfloat(this._socket, this._id);
@@ -195,8 +195,8 @@ public class ISocket
 
 	public await fun ReadDouble() : string, int
 	{
-		if (!this.IsConnected()) return "»¹Î´Á¬½Ó³É¹¦", 0;
-        if (this._read_thread != null) return "ÒÑ¾­ÕıÔÚ¶ÁÈ¡", 0;
+		if (!this.IsConnected()) return "è¿˜æœªè¿æ¥æˆåŠŸ", 0;
+        if (this._read_thread != null) return "å·²ç»æ­£åœ¨è¯»å–", 0;
 
 		this._read_thread = co;
 		lua.socket.readdouble(this._socket, this._id);
@@ -205,8 +205,8 @@ public class ISocket
 
 	public await fun ReadString(int len) : string, string
 	{
-		if (!this.IsConnected()) return "»¹Î´Á¬½Ó³É¹¦", "";
-        if (this._read_thread != null) return "ÒÑ¾­ÕıÔÚ¶ÁÈ¡", "";
+		if (!this.IsConnected()) return "è¿˜æœªè¿æ¥æˆåŠŸ", "";
+        if (this._read_thread != null) return "å·²ç»æ­£åœ¨è¯»å–", "";
 
 		this._read_thread = co;
 		lua.socket.readstring(this._socket, this._id, len);
@@ -215,8 +215,8 @@ public class ISocket
 
 	public await fun ReadBinary(int len) : string, any
 	{
-		if (!this.IsConnected()) return "»¹Î´Á¬½Ó³É¹¦", 0;
-        if (this._read_thread != null) return "ÒÑ¾­ÕıÔÚ¶ÁÈ¡", 0;
+		if (!this.IsConnected()) return "è¿˜æœªè¿æ¥æˆåŠŸ", 0;
+        if (this._read_thread != null) return "å·²ç»æ­£åœ¨è¯»å–", 0;
 
 		this._read_thread = co;
 		lua.socket.readbinary(this._socket, this._id, len);

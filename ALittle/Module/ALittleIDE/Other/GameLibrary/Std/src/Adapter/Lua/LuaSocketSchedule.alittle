@@ -4,11 +4,11 @@ namespace Lua;
 
 public enum socket_type
 {
-    TIMER = 21;     // ¶¨Ê±Æ÷
+    TIMER = 21;     // å®šæ—¶å™¨
     
-    MSG_CONNECT_SUCCEED = 31;   // Á¬½Ó³É¹¦
-    MSG_CONNECT_FAILED = 32;    // Á¬½ÓÊ§°Ü
-    MSG_DISCONNECTED = 33;      // ¶Ï¿ªÁ¬½Ó
+    MSG_CONNECT_SUCCEED = 31;   // è¿æ¥æˆåŠŸ
+    MSG_CONNECT_FAILED = 32;    // è¿æ¥å¤±è´¥
+    MSG_DISCONNECTED = 33;      // æ–­å¼€è¿æ¥
 
 	MSG_READ_UINT8 = 34;
 	MSG_READ_INT8 = 35;
@@ -73,7 +73,7 @@ public class LuaSocketSchedule : ALittle.ISchedule
             if (ALittle.File_GetFileExtByPathAndUpper(file_path) == "PROTO")
             {
                 var file_descriptor = lua.protobuf.importer_import(this._importer, ALittle.String_Sub(file_path, ALittle.String_Len(root_path) + 2));
-                if (file_descriptor == null) return "ÎÄ¼ş¼ÓÔØÊ§°Ü:"..file_path;
+                if (file_descriptor == null) return "æ–‡ä»¶åŠ è½½å¤±è´¥:"..file_path;
 
                 var message_count = lua.protobuf.filedescriptor_messagetypecount(file_descriptor);
                 for (var i = 0; i < message_count; 1)
@@ -109,13 +109,13 @@ public class LuaSocketSchedule : ALittle.ISchedule
         return null;
     }
 
-    // »ñÈ¡Ğ­ÒéÀàĞÍ
+    // è·å–åè®®ç±»å‹
     public fun GetMessageInfo(string full_name) : lua_socket_schedule_message_info
     {
         return this._message_map[full_name];
     }
 
-    // ¸ù¾İmessage»ñÈ¡Ğ­ÒéÀàĞÍ
+    // æ ¹æ®messageè·å–åè®®ç±»å‹
     public fun GetMessageInfoByMessage(lua.protobuf_message msg) : lua_socket_schedule_message_info
     {
         var descriptor = lua.protobuf.message_getdescriptor(msg);
@@ -124,7 +124,7 @@ public class LuaSocketSchedule : ALittle.ISchedule
         return this._message_map[full_name];
     }
 
-    // ¸ù¾İkey²éÕÒÃû³Æ
+    // æ ¹æ®keyæŸ¥æ‰¾åç§°
     public fun FindMessageByUpperKey(string key) : List<lua_socket_schedule_message_info>
     {
         var result = new List<lua_socket_schedule_message_info>();
@@ -178,7 +178,7 @@ public class LuaSocketSchedule : ALittle.ISchedule
         }
     }
     
-    // ÔÚLua°æ±¾ÏÂRunÖ±½Ó×èÈû£¬µÈ´ıËùÓĞÊÂ¼şÈ«²¿´¦ÀíÍê±Ï²ÅÍË³ö
+    // åœ¨Luaç‰ˆæœ¬ä¸‹Runç›´æ¥é˜»å¡ï¼Œç­‰å¾…æ‰€æœ‰äº‹ä»¶å…¨éƒ¨å¤„ç†å®Œæ¯•æ‰é€€å‡º
     public fun Run()
     {   
         if (this._socket == null)

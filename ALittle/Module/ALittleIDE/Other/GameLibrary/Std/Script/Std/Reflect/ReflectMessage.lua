@@ -4,10 +4,10 @@ module("ALittle", package.seeall)
 local ___pairs = pairs
 local ___ipairs = ipairs
 
-RegStruct(-1602043290, "ALittle.ProtocolInvokeInfo", {
-name = "ALittle.ProtocolInvokeInfo", ns_name = "ALittle", rl_name = "ProtocolInvokeInfo", hash_code = -1602043290,
-name_list = {"wfunc","rfunc","rflt","var_name","key_info","value_info","sub_info","handle"},
-type_list = {"Functor<(ALittle.IMessageWriteFactory,ALittle.ProtocolInvokeInfo,any,any):int>","Functor<(ALittle.IMessageReadFactory,ALittle.ProtocolInvokeInfo,any,int):any,int>","ALittle.StructInfo","string","ALittle.ProtocolInvokeInfo","ALittle.ProtocolInvokeInfo","ALittle.ProtocolInvokeInfo","List<ALittle.ProtocolInvokeInfo>"},
+RegStruct(1821069430, "ALittle.ProtocolAnyStruct", {
+name = "ALittle.ProtocolAnyStruct", ns_name = "ALittle", rl_name = "ProtocolAnyStruct", hash_code = 1821069430,
+name_list = {"hash_code","value"},
+type_list = {"int","any"},
 option_map = {}
 })
 RegStruct(1847150134, "ALittle.StructInfo", {
@@ -16,10 +16,10 @@ name_list = {"name","ns_name","rl_name","hash_code","name_list","type_list","opt
 type_list = {"string","string","string","int","List<string>","List<string>","Map<string,string>"},
 option_map = {}
 })
-RegStruct(1821069430, "ALittle.ProtocolAnyStruct", {
-name = "ALittle.ProtocolAnyStruct", ns_name = "ALittle", rl_name = "ProtocolAnyStruct", hash_code = 1821069430,
-name_list = {"hash_code","value"},
-type_list = {"int","any"},
+RegStruct(-1602043290, "ALittle.ProtocolInvokeInfo", {
+name = "ALittle.ProtocolInvokeInfo", ns_name = "ALittle", rl_name = "ProtocolInvokeInfo", hash_code = -1602043290,
+name_list = {"wfunc","rfunc","rflt","var_name","key_info","value_info","sub_info","handle"},
+type_list = {"Functor<(ALittle.IMessageWriteFactory,ALittle.ProtocolInvokeInfo,any,any):int>","Functor<(ALittle.IMessageReadFactory,ALittle.ProtocolInvokeInfo,any,int):any,int>","ALittle.StructInfo","string","ALittle.ProtocolInvokeInfo","ALittle.ProtocolInvokeInfo","ALittle.ProtocolInvokeInfo","List<ALittle.ProtocolInvokeInfo>"},
 option_map = {}
 })
 

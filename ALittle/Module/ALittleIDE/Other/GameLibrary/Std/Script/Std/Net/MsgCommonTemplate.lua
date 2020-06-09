@@ -5,16 +5,16 @@ local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
-RegStruct(361433949, "ALittle.MsgRPCInfo", {
-name = "ALittle.MsgRPCInfo", ns_name = "ALittle", rl_name = "MsgRPCInfo", hash_code = 361433949,
-name_list = {"rpc_id","thread"},
-type_list = {"int","ALittle.Thread"},
-option_map = {}
-})
 RegStruct(-930447138, "ALittle.Thread", {
 name = "ALittle.Thread", ns_name = "ALittle", rl_name = "Thread", hash_code = -930447138,
 name_list = {},
 type_list = {},
+option_map = {}
+})
+RegStruct(361433949, "ALittle.MsgRPCInfo", {
+name = "ALittle.MsgRPCInfo", ns_name = "ALittle", rl_name = "MsgRPCInfo", hash_code = 361433949,
+name_list = {"rpc_id","thread"},
+type_list = {"int","ALittle.Thread"},
 option_map = {}
 })
 

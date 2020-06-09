@@ -99,7 +99,7 @@ public class KeyValueConfig<T:struct> : CsvConfig
         return rflt.name_list;
     }
     
-    [Const]
+    [Constant]
     public fun GetData() : const T
     {
         return this._data;

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/../ALittleIDE/Other/GameLibrary/CEngine/CEngine.iml" filepath="$PROJECT_DIR$/../ALittleIDE/Other/GameLibrary/CEngine/CEngine.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../ALittleIDE/Other/GameLibrary/Core/Core.iml" filepath="$PROJECT_DIR$/../ALittleIDE/Other/GameLibrary/Core/Core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Emulator.iml" filepath="$PROJECT_DIR$/Emulator.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../ALittleIDE/Other/GameLibrary/Std/Std.iml" filepath="$PROJECT_DIR$/../ALittleIDE/Other/GameLibrary/Std/Std.iml" />
+    </modules>
+  </component>
+</project>

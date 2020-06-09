@@ -2,16 +2,16 @@
 if (typeof JavaScript === "undefined") window.JavaScript = {};
 let ___all_struct = ALittle.GetAllStruct();
 
-ALittle.RegStruct(1961635951, "JavaScript.MiniHeapNodeInfo", {
-name : "JavaScript.MiniHeapNodeInfo", ns_name : "JavaScript", rl_name : "MiniHeapNodeInfo", hash_code : 1961635951,
-name_list : ["heap_index","end_time"],
-type_list : ["int","int"],
-option_map : {}
-})
 ALittle.RegStruct(979480799, "JavaScript.TimerInfo", {
 name : "JavaScript.TimerInfo", ns_name : "JavaScript", rl_name : "TimerInfo", hash_code : 979480799,
 name_list : ["heap_index","end_time","id","loop","interval_ms"],
 type_list : ["int","int","int","int","int"],
+option_map : {}
+})
+ALittle.RegStruct(1961635951, "JavaScript.MiniHeapNodeInfo", {
+name : "JavaScript.MiniHeapNodeInfo", ns_name : "JavaScript", rl_name : "MiniHeapNodeInfo", hash_code : 1961635951,
+name_list : ["heap_index","end_time"],
+type_list : ["int","int"],
 option_map : {}
 })
 

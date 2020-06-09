@@ -2,38 +2,14 @@
 if (typeof ALittle === "undefined") window.ALittle = {};
 let ___all_struct = ALittle.GetAllStruct();
 
-ALittle.RegStruct(1715346212, "ALittle.Event", {
-name : "ALittle.Event", ns_name : "ALittle", rl_name : "Event", hash_code : 1715346212,
-name_list : ["target"],
-type_list : ["ALittle.EventDispatcher"],
-option_map : {}
-})
-ALittle.RegStruct(-1440165311, "ALittle.AppWillEnterBackground", {
-name : "ALittle.AppWillEnterBackground", ns_name : "ALittle", rl_name : "AppWillEnterBackground", hash_code : -1440165311,
-name_list : ["target"],
-type_list : ["ALittle.EventDispatcher"],
+ALittle.RegStruct(-840570937, "ALittle.NotifyJsonRPCEvent", {
+name : "ALittle.NotifyJsonRPCEvent", ns_name : "ALittle", rl_name : "NotifyJsonRPCEvent", hash_code : -840570937,
+name_list : ["target","method","param"],
+type_list : ["ALittle.EventDispatcher","string","any"],
 option_map : {}
 })
 ALittle.RegStruct(521107426, "ALittle.AppDidEnterBackground", {
 name : "ALittle.AppDidEnterBackground", ns_name : "ALittle", rl_name : "AppDidEnterBackground", hash_code : 521107426,
-name_list : ["target"],
-type_list : ["ALittle.EventDispatcher"],
-option_map : {}
-})
-ALittle.RegStruct(812594882, "ALittle.AppWillEnterForeground", {
-name : "ALittle.AppWillEnterForeground", ns_name : "ALittle", rl_name : "AppWillEnterForeground", hash_code : 812594882,
-name_list : ["target"],
-type_list : ["ALittle.EventDispatcher"],
-option_map : {}
-})
-ALittle.RegStruct(760325696, "ALittle.AppDidEnterForeground", {
-name : "ALittle.AppDidEnterForeground", ns_name : "ALittle", rl_name : "AppDidEnterForeground", hash_code : 760325696,
-name_list : ["target"],
-type_list : ["ALittle.EventDispatcher"],
-option_map : {}
-})
-ALittle.RegStruct(1452333751, "ALittle.AppLowMemory", {
-name : "ALittle.AppLowMemory", ns_name : "ALittle", rl_name : "AppLowMemory", hash_code : 1452333751,
 name_list : ["target"],
 type_list : ["ALittle.EventDispatcher"],
 option_map : {}
@@ -44,22 +20,46 @@ name_list : ["target","net_type"],
 type_list : ["ALittle.EventDispatcher","int"],
 option_map : {}
 })
+ALittle.RegStruct(760325696, "ALittle.AppDidEnterForeground", {
+name : "ALittle.AppDidEnterForeground", ns_name : "ALittle", rl_name : "AppDidEnterForeground", hash_code : 760325696,
+name_list : ["target"],
+type_list : ["ALittle.EventDispatcher"],
+option_map : {}
+})
+ALittle.RegStruct(812594882, "ALittle.AppWillEnterForeground", {
+name : "ALittle.AppWillEnterForeground", ns_name : "ALittle", rl_name : "AppWillEnterForeground", hash_code : 812594882,
+name_list : ["target"],
+type_list : ["ALittle.EventDispatcher"],
+option_map : {}
+})
+ALittle.RegStruct(1452333751, "ALittle.AppLowMemory", {
+name : "ALittle.AppLowMemory", ns_name : "ALittle", rl_name : "AppLowMemory", hash_code : 1452333751,
+name_list : ["target"],
+type_list : ["ALittle.EventDispatcher"],
+option_map : {}
+})
+ALittle.RegStruct(1715346212, "ALittle.Event", {
+name : "ALittle.Event", ns_name : "ALittle", rl_name : "Event", hash_code : 1715346212,
+name_list : ["target"],
+type_list : ["ALittle.EventDispatcher"],
+option_map : {}
+})
 ALittle.RegStruct(1720966934, "ALittle.NewIntentEvent", {
 name : "ALittle.NewIntentEvent", ns_name : "ALittle", rl_name : "NewIntentEvent", hash_code : 1720966934,
 name_list : ["target","url"],
 type_list : ["ALittle.EventDispatcher","string"],
 option_map : {}
 })
-ALittle.RegStruct(-840570937, "ALittle.NotifyJsonRPCEvent", {
-name : "ALittle.NotifyJsonRPCEvent", ns_name : "ALittle", rl_name : "NotifyJsonRPCEvent", hash_code : -840570937,
-name_list : ["target","method","param"],
-type_list : ["ALittle.EventDispatcher","string","any"],
-option_map : {}
-})
 ALittle.RegStruct(1755750412, "ALittle.ALittleJsonRPCInfo", {
 name : "ALittle.ALittleJsonRPCInfo", ns_name : "ALittle", rl_name : "ALittleJsonRPCInfo", hash_code : 1755750412,
 name_list : ["method","param"],
 type_list : ["string","any"],
+option_map : {}
+})
+ALittle.RegStruct(-1440165311, "ALittle.AppWillEnterBackground", {
+name : "ALittle.AppWillEnterBackground", ns_name : "ALittle", rl_name : "AppWillEnterBackground", hash_code : -1440165311,
+name_list : ["target"],
+type_list : ["ALittle.EventDispatcher"],
 option_map : {}
 })
 

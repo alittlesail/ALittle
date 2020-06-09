@@ -1,16 +1,16 @@
 {
 if (typeof ALittle === "undefined") window.ALittle = {};
 
-ALittle.RegStruct(361433949, "ALittle.MsgRPCInfo", {
-name : "ALittle.MsgRPCInfo", ns_name : "ALittle", rl_name : "MsgRPCInfo", hash_code : 361433949,
-name_list : ["rpc_id","thread"],
-type_list : ["int","ALittle.Thread"],
-option_map : {}
-})
 ALittle.RegStruct(-930447138, "ALittle.Thread", {
 name : "ALittle.Thread", ns_name : "ALittle", rl_name : "Thread", hash_code : -930447138,
 name_list : [],
 type_list : [],
+option_map : {}
+})
+ALittle.RegStruct(361433949, "ALittle.MsgRPCInfo", {
+name : "ALittle.MsgRPCInfo", ns_name : "ALittle", rl_name : "MsgRPCInfo", hash_code : 361433949,
+name_list : ["rpc_id","thread"],
+type_list : ["int","ALittle.Thread"],
 option_map : {}
 })
 

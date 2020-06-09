@@ -1,10 +1,10 @@
 {
 if (typeof ALittle === "undefined") window.ALittle = {};
 
-ALittle.RegStruct(-1602043290, "ALittle.ProtocolInvokeInfo", {
-name : "ALittle.ProtocolInvokeInfo", ns_name : "ALittle", rl_name : "ProtocolInvokeInfo", hash_code : -1602043290,
-name_list : ["wfunc","rfunc","rflt","var_name","key_info","value_info","sub_info","handle"],
-type_list : ["Functor<(ALittle.IMessageWriteFactory,ALittle.ProtocolInvokeInfo,any,any):int>","Functor<(ALittle.IMessageReadFactory,ALittle.ProtocolInvokeInfo,any,int):any,int>","ALittle.StructInfo","string","ALittle.ProtocolInvokeInfo","ALittle.ProtocolInvokeInfo","ALittle.ProtocolInvokeInfo","List<ALittle.ProtocolInvokeInfo>"],
+ALittle.RegStruct(1821069430, "ALittle.ProtocolAnyStruct", {
+name : "ALittle.ProtocolAnyStruct", ns_name : "ALittle", rl_name : "ProtocolAnyStruct", hash_code : 1821069430,
+name_list : ["hash_code","value"],
+type_list : ["int","any"],
 option_map : {}
 })
 ALittle.RegStruct(1847150134, "ALittle.StructInfo", {
@@ -13,10 +13,10 @@ name_list : ["name","ns_name","rl_name","hash_code","name_list","type_list","opt
 type_list : ["string","string","string","int","List<string>","List<string>","Map<string,string>"],
 option_map : {}
 })
-ALittle.RegStruct(1821069430, "ALittle.ProtocolAnyStruct", {
-name : "ALittle.ProtocolAnyStruct", ns_name : "ALittle", rl_name : "ProtocolAnyStruct", hash_code : 1821069430,
-name_list : ["hash_code","value"],
-type_list : ["int","any"],
+ALittle.RegStruct(-1602043290, "ALittle.ProtocolInvokeInfo", {
+name : "ALittle.ProtocolInvokeInfo", ns_name : "ALittle", rl_name : "ProtocolInvokeInfo", hash_code : -1602043290,
+name_list : ["wfunc","rfunc","rflt","var_name","key_info","value_info","sub_info","handle"],
+type_list : ["Functor<(ALittle.IMessageWriteFactory,ALittle.ProtocolInvokeInfo,any,any):int>","Functor<(ALittle.IMessageReadFactory,ALittle.ProtocolInvokeInfo,any,int):any,int>","ALittle.StructInfo","string","ALittle.ProtocolInvokeInfo","ALittle.ProtocolInvokeInfo","ALittle.ProtocolInvokeInfo","List<ALittle.ProtocolInvokeInfo>"],
 option_map : {}
 })
 
@@ -109,7 +109,7 @@ let PS_WriteMap = function(factory, var_info, parent, var_value) {
 	return l;
 }
 
-let PS_WriteMessage = function(factory, var_info, parent, var_value) {
+ALittle.PS_WriteMessage = function(factory, var_info, parent, var_value) {
 	if (var_value === undefined) {
 		let offset = factory.GetOffset();
 		let pre_size = factory.WriteInt(0);
@@ -138,7 +138,7 @@ let PS_WriteMessage = function(factory, var_info, parent, var_value) {
 
 ALittle.PS_WriteAny = function(factory, var_info, parent, var_value) {
 	let invoke_info = ALittle.CreateProtocolInvokeInfo(parent.hash_code);
-	return PS_WriteMessage(factory, invoke_info, parent, var_value);
+	return ALittle.PS_WriteMessage(factory, invoke_info, parent, var_value);
 }
 
 ALittle.PS_WriteMessageForSend = function(factory, var_info, parent, var_value) {
@@ -294,7 +294,7 @@ let PS_ReadMap = function(factory, var_info, parent, l) {
 	}
 }
 
-let PS_ReadMessage = function(factory, var_info, parent, l) {
+ALittle.PS_ReadMessage = function(factory, var_info, parent, l) {
 	if (l === 0) {
 		let value_map = {};
 		let sub_len = 0;
@@ -333,7 +333,7 @@ let PS_ReadMessage = function(factory, var_info, parent, l) {
 
 ALittle.PS_ReadAny = function(factory, var_info, parent, l) {
 	let invoke_info = ALittle.CreateProtocolInvokeInfo(parent.hash_code);
-	return [PS_ReadMessage(factory, invoke_info, parent, l)];
+	return [ALittle.PS_ReadMessage(factory, invoke_info, parent, l)];
 }
 
 ALittle.PS_ReadMessageForReceive = function(factory, var_info, parent, l) {
@@ -448,8 +448,8 @@ ALittle.CreateMessageInfo = function(var_type) {
 
 ALittle.CreateMessageInfoImpl = function(rflt) {
 	let invoke_info = {};
-	invoke_info.wfunc = PS_WriteMessage;
-	invoke_info.rfunc = PS_ReadMessage;
+	invoke_info.wfunc = ALittle.PS_WriteMessage;
+	invoke_info.rfunc = ALittle.PS_ReadMessage;
 	invoke_info.rflt = rflt;
 	let handle = [];
 	invoke_info.handle = handle;

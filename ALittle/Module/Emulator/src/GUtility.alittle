@@ -4,7 +4,7 @@ namespace Emulator;
 public static UitlityCreateChildMessage(RootInfo root, IDETree tree, lua.protobuf_descriptor descriptor, lua.protobuf_reflection rflct, lua.protobuf_message msg)
 {
     // 遍历消息结构
-    var field_count = lua.protobuf.messagedescriptor_fieldcount(descriptor);
+    var field_count = lua.protobuf.messagedescriptor_fieldcount(descriptor); 
     for (var i = 0; i < field_count; 1)
     {
         var field_descriptor = lua.protobuf.messagedescriptor_field(descriptor, i);
@@ -25,6 +25,7 @@ public static UitlityCreateChildMessage(RootInfo root, IDETree tree, lua.protobu
                 tree.AddChild(UtilityCreateTreeMessage(root, lua.protobuf.reflection_getmessage(rflct, msg, field_descriptor), field_name));
             else
                 tree.AddChild(new IDETreeValue(g_Control, root, field_name, rflct, msg, field_descriptor));
+        
         }
     }
 }

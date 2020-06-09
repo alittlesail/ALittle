@@ -545,7 +545,15 @@ ALittle.ScrollList = JavaScript.Class(ALittle.DisplayView, {
 	},
 	HandleMButtonWheel : function(event) {
 		if (this._scroll_bar !== undefined && event.delta_y !== 0) {
-			this._scroll_bar.offset_rate = this._scroll_bar.offset_rate - 0.1 * event.delta_y;
+			let offset = this._scroll_linear.height * 0.1 * event.delta_y;
+			if (offset > 40) {
+				offset = 40;
+			} else if (offset < -40) {
+				offset = -40;
+			}
+			if (offset !== 0) {
+				this._scroll_bar.offset_rate = this._scroll_bar.offset_rate - offset / this._scroll_linear.height;
+			}
 			this.HandleRightScrollBarChange(undefined);
 			this.HideRightScrollBar();
 		}

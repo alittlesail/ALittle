@@ -21,9 +21,10 @@ public class IDETreeBoolMapMessage : IDETree
 		this._rflct = rflct;
 		this._msg = msg;
 		this._key_field = key_field;
-
+		
 		var key = lua.protobuf.reflection_getbool(this._rflct, this._msg, this._key_field);
 
+		
 		// 对树的头部进行处理
 		this._head = ctrl_sys.CreateControl{ALittle.DisplayObject}("ide_common_tree_bool_map_message", this);
 		ALittle.DisplayGroup.AddChild(this, this._head, 1);

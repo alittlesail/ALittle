@@ -6,6 +6,10 @@ ALittle.Math_Sin = function(v) {
 	return Math.sin(v);
 }
 
+ALittle.Math_Tan = function(v) {
+	return Math.tan(v);
+}
+
 ALittle.Math_Cos = function(v) {
 	return Math.cos(v);
 }

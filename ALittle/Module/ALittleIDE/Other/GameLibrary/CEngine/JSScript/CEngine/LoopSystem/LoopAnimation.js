@@ -1,10 +1,10 @@
 {
 if (typeof ALittle === "undefined") window.ALittle = {};
 
-ALittle.RegStruct(-925381158, "ALittle.LoopChildInfo", {
-name : "ALittle.LoopChildInfo", ns_name : "ALittle", rl_name : "LoopChildInfo", hash_code : -925381158,
-name_list : ["clazz","target","total_time","delay_time"],
-type_list : ["string","any","int","int"],
+ALittle.RegStruct(1653869333, "ALittle.LoopGroupInfo", {
+name : "ALittle.LoopGroupInfo", ns_name : "ALittle", rl_name : "LoopGroupInfo", hash_code : 1653869333,
+name_list : ["childs"],
+type_list : ["List<ALittle.LoopListInfo>"],
 option_map : {}
 })
 ALittle.RegStruct(-1741432339, "ALittle.LoopListInfo", {
@@ -13,10 +13,10 @@ name_list : ["link","attribute","init","childs"],
 type_list : ["string","string","any","List<ALittle.LoopChildInfo>"],
 option_map : {}
 })
-ALittle.RegStruct(1653869333, "ALittle.LoopGroupInfo", {
-name : "ALittle.LoopGroupInfo", ns_name : "ALittle", rl_name : "LoopGroupInfo", hash_code : 1653869333,
-name_list : ["childs"],
-type_list : ["List<ALittle.LoopListInfo>"],
+ALittle.RegStruct(-925381158, "ALittle.LoopChildInfo", {
+name : "ALittle.LoopChildInfo", ns_name : "ALittle", rl_name : "LoopChildInfo", hash_code : -925381158,
+name_list : ["clazz","target","total_time","delay_time"],
+type_list : ["string","any","int","int"],
 option_map : {}
 })
 

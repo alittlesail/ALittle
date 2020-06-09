@@ -33,7 +33,15 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 			this._bottom_scroll_bar.offset_rate = this._bottom_scroll_bar.offset_rate - 0.1 * event.delta_x;
 		}
 		if (this._right_scroll_bar !== undefined && event.delta_y !== 0) {
-			this._right_scroll_bar.offset_rate = this._right_scroll_bar.offset_rate - 0.1 * event.delta_y;
+			let offset = this._content_height * 0.1 * event.delta_y;
+			if (offset > 40) {
+				offset = 40;
+			} else if (offset < -40) {
+				offset = -40;
+			}
+			if (offset !== 0) {
+				this._right_scroll_bar.offset_rate = this._right_scroll_bar.offset_rate - offset / this._content_height;
+			}
 		}
 		this.RejustScrollBar();
 	},

@@ -8,20 +8,8 @@ name_list : ["acc_width","pre_width","text_info","text_object","text","ctrl_info
 type_list : ["double","double","ALittle.DisplayInfo","ALittle.Text","string","ALittle.DisplayInfo","ALittle.DisplayObject"],
 option_map : {}
 })
-ALittle.RegStruct(556044369, "ALittle.RichEditLineInfo", {
-name : "ALittle.RichEditLineInfo", ns_name : "ALittle", rl_name : "RichEditLineInfo", hash_code : 556044369,
-name_list : ["char_list","char_count","child_list","child_count","container","acc_height","pre_height","force_line"],
-type_list : ["List<ALittle.RichEditCharInfo>","int","List<ALittle.DisplayObject>","int","ALittle.DisplayLayout","double","double","bool"],
-option_map : {}
-})
-ALittle.RegStruct(1949279026, "ALittle.RichEditFontChangedEvent", {
-name : "ALittle.RichEditFontChangedEvent", ns_name : "ALittle", rl_name : "RichEditFontChangedEvent", hash_code : 1949279026,
-name_list : ["target"],
-type_list : ["ALittle.DisplayObject"],
-option_map : {}
-})
-ALittle.RegStruct(-1053992999, "ALittle.RichEditCursorClickEvent", {
-name : "ALittle.RichEditCursorClickEvent", ns_name : "ALittle", rl_name : "RichEditCursorClickEvent", hash_code : -1053992999,
+ALittle.RegStruct(-203792390, "ALittle.RichEditMultiDragEndEvent", {
+name : "ALittle.RichEditMultiDragEndEvent", ns_name : "ALittle", rl_name : "RichEditMultiDragEndEvent", hash_code : -203792390,
 name_list : ["target"],
 type_list : ["ALittle.DisplayObject"],
 option_map : {}
@@ -38,16 +26,28 @@ name_list : ["target"],
 type_list : ["ALittle.DisplayObject"],
 option_map : {}
 })
-ALittle.RegStruct(-203792390, "ALittle.RichEditMultiDragEndEvent", {
-name : "ALittle.RichEditMultiDragEndEvent", ns_name : "ALittle", rl_name : "RichEditMultiDragEndEvent", hash_code : -203792390,
-name_list : ["target"],
-type_list : ["ALittle.DisplayObject"],
+ALittle.RegStruct(556044369, "ALittle.RichEditLineInfo", {
+name : "ALittle.RichEditLineInfo", ns_name : "ALittle", rl_name : "RichEditLineInfo", hash_code : 556044369,
+name_list : ["char_list","char_count","child_list","child_count","container","acc_height","pre_height","force_line"],
+type_list : ["List<ALittle.RichEditCharInfo>","int","List<ALittle.DisplayObject>","int","ALittle.DisplayLayout","double","double","bool"],
 option_map : {}
 })
 ALittle.RegStruct(774620468, "ALittle.UIRichEditLongClickEvent", {
 name : "ALittle.UIRichEditLongClickEvent", ns_name : "ALittle", rl_name : "UIRichEditLongClickEvent", hash_code : 774620468,
 name_list : ["target","abs_x","abs_y","rel_x","rel_y"],
 type_list : ["ALittle.DisplayObject","double","double","double","double"],
+option_map : {}
+})
+ALittle.RegStruct(1949279026, "ALittle.RichEditFontChangedEvent", {
+name : "ALittle.RichEditFontChangedEvent", ns_name : "ALittle", rl_name : "RichEditFontChangedEvent", hash_code : 1949279026,
+name_list : ["target"],
+type_list : ["ALittle.DisplayObject"],
+option_map : {}
+})
+ALittle.RegStruct(-1053992999, "ALittle.RichEditCursorClickEvent", {
+name : "ALittle.RichEditCursorClickEvent", ns_name : "ALittle", rl_name : "RichEditCursorClickEvent", hash_code : -1053992999,
+name_list : ["target"],
+type_list : ["ALittle.DisplayObject"],
 option_map : {}
 })
 

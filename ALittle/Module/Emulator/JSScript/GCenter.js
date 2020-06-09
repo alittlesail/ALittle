@@ -2,30 +2,6 @@
 if (typeof Emulator === "undefined") window.Emulator = {};
 let ___all_struct = ALittle.GetAllStruct();
 
-ALittle.RegStruct(1618605759, "Emulator.DetailInfo", {
-name : "Emulator.DetailInfo", ns_name : "Emulator", rl_name : "DetailInfo", hash_code : 1618605759,
-name_list : ["tree","message","reflection","info"],
-type_list : ["Emulator.IDETreeLogic","lua.protobuf_message","lua.protobuf_reflection","Lua.lua_socket_schedule_message_info"],
-option_map : {}
-})
-ALittle.RegStruct(-628015380, "lua.protobuf_message", {
-name : "lua.protobuf_message", ns_name : "lua", rl_name : "protobuf_message", hash_code : -628015380,
-name_list : [],
-type_list : [],
-option_map : {}
-})
-ALittle.RegStruct(1835920059, "lua.protobuf_reflection", {
-name : "lua.protobuf_reflection", ns_name : "lua", rl_name : "protobuf_reflection", hash_code : 1835920059,
-name_list : [],
-type_list : [],
-option_map : {}
-})
-ALittle.RegStruct(1628431371, "Lua.lua_socket_schedule_message_info", {
-name : "Lua.lua_socket_schedule_message_info", ns_name : "Lua", rl_name : "lua_socket_schedule_message_info", hash_code : 1628431371,
-name_list : ["descriptor","full_name","name"],
-type_list : ["lua.protobuf_descriptor","string","string"],
-option_map : {}
-})
 ALittle.RegStruct(-297098024, "lua.protobuf_descriptor", {
 name : "lua.protobuf_descriptor", ns_name : "lua", rl_name : "protobuf_descriptor", hash_code : -297098024,
 name_list : [],
@@ -38,10 +14,28 @@ name_list : ["detail_info","for_show"],
 type_list : ["Emulator.DetailInfo","bool"],
 option_map : {}
 })
-ALittle.RegStruct(-888044440, "Emulator.LogItemUserData", {
-name : "Emulator.LogItemUserData", ns_name : "Emulator", rl_name : "LogItemUserData", hash_code : -888044440,
-name_list : ["msg","info","upper_name","detail_info"],
-type_list : ["lua.protobuf_message","Lua.lua_socket_schedule_message_info","string","Emulator.DetailInfo"],
+ALittle.RegStruct(958494922, "ALittle.UIChangedEvent", {
+name : "ALittle.UIChangedEvent", ns_name : "ALittle", rl_name : "UIChangedEvent", hash_code : 958494922,
+name_list : ["target"],
+type_list : ["ALittle.DisplayObject"],
+option_map : {}
+})
+ALittle.RegStruct(1618605759, "Emulator.DetailInfo", {
+name : "Emulator.DetailInfo", ns_name : "Emulator", rl_name : "DetailInfo", hash_code : 1618605759,
+name_list : ["tree","message","reflection","info"],
+type_list : ["Emulator.IDETreeLogic","lua.protobuf_message","lua.protobuf_reflection","Lua.lua_socket_schedule_message_info"],
+option_map : {}
+})
+ALittle.RegStruct(1628431371, "Lua.lua_socket_schedule_message_info", {
+name : "Lua.lua_socket_schedule_message_info", ns_name : "Lua", rl_name : "lua_socket_schedule_message_info", hash_code : 1628431371,
+name_list : ["descriptor","full_name","name"],
+type_list : ["lua.protobuf_descriptor","string","string"],
+option_map : {}
+})
+ALittle.RegStruct(1835920059, "lua.protobuf_reflection", {
+name : "lua.protobuf_reflection", ns_name : "lua", rl_name : "protobuf_reflection", hash_code : 1835920059,
+name_list : [],
+type_list : [],
 option_map : {}
 })
 ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
@@ -50,10 +44,28 @@ name_list : ["target"],
 type_list : ["ALittle.DisplayObject"],
 option_map : {}
 })
-ALittle.RegStruct(958494922, "ALittle.UIChangedEvent", {
-name : "ALittle.UIChangedEvent", ns_name : "ALittle", rl_name : "UIChangedEvent", hash_code : 958494922,
-name_list : ["target"],
-type_list : ["ALittle.DisplayObject"],
+ALittle.RegStruct(-1347278145, "ALittle.UIButtonEvent", {
+name : "ALittle.UIButtonEvent", ns_name : "ALittle", rl_name : "UIButtonEvent", hash_code : -1347278145,
+name_list : ["target","abs_x","abs_y","rel_x","rel_y","count","is_drag"],
+type_list : ["ALittle.DisplayObject","double","double","double","double","int","bool"],
+option_map : {}
+})
+ALittle.RegStruct(-888044440, "Emulator.LogItemUserData", {
+name : "Emulator.LogItemUserData", ns_name : "Emulator", rl_name : "LogItemUserData", hash_code : -888044440,
+name_list : ["msg","info","upper_name","detail_info"],
+type_list : ["lua.protobuf_message","Lua.lua_socket_schedule_message_info","string","Emulator.DetailInfo"],
+option_map : {}
+})
+ALittle.RegStruct(-641444818, "ALittle.UIRButtonDownEvent", {
+name : "ALittle.UIRButtonDownEvent", ns_name : "ALittle", rl_name : "UIRButtonDownEvent", hash_code : -641444818,
+name_list : ["target","abs_x","abs_y","rel_x","rel_y","count","is_drag"],
+type_list : ["ALittle.DisplayObject","double","double","double","double","int","bool"],
+option_map : {}
+})
+ALittle.RegStruct(-628015380, "lua.protobuf_message", {
+name : "lua.protobuf_message", ns_name : "lua", rl_name : "protobuf_message", hash_code : -628015380,
+name_list : [],
+type_list : [],
 option_map : {}
 })
 
@@ -91,6 +103,19 @@ Emulator.GCenter = JavaScript.Class(undefined, {
 		Emulator.g_Control.CreateControl("main_scene", this, this._main_layer);
 		this._setting_dialog = Emulator.g_Control.CreateControl("main_setting_dialog", this);
 		A_LayerManager.AddToModal(this._setting_dialog);
+		this._proto_item_msg_menu = Emulator.g_Control.CreateControl("main_msg_menu", this);
+		this._log_item_msg_menu = Emulator.g_Control.CreateControl("main_msg_menu", this);
+		this._log_fliter_dialog = Emulator.g_Control.CreateControl("main_log_fliter_dialog", this);
+		this._dialog_layer.AddChild(this._log_fliter_dialog);
+		this._log_fliter_dialog.visible = false;
+		this._fliter_map = {};
+		let fliter_list = Emulator.g_GConfig.GetConfig("fliter_list", []);
+		let ___OBJECT_1 = fliter_list;
+		for (let index = 1; index <= ___OBJECT_1.length; ++index) {
+			let fliter = ___OBJECT_1[index - 1];
+			if (fliter === undefined) break;
+			this._fliter_map[fliter] = true;
+		}
 		let plugin_path = Emulator.g_GConfig.GetString("plugin_script", "");
 		if (ALittle.File_GetFileExtByPathAndUpper(plugin_path) === "LUA") {
 			let plugin_script = ALittle.File_ReadTextFromStdFile(plugin_path);
@@ -114,6 +139,8 @@ Emulator.GCenter = JavaScript.Class(undefined, {
 					}
 				}
 				this.RefreshProtoList();
+			} else {
+				this.HandleShowSettingDialog(undefined);
 			}
 		}
 		let login_proto = Emulator.g_GConfig.GetString("login_proto", "");
@@ -167,6 +194,11 @@ Emulator.GCenter = JavaScript.Class(undefined, {
 			Emulator.g_IDETool.ShowNotice("错误", "文件夹不存在");
 			return;
 		}
+		let error = A_LuaSocketSchedule.LoadProto(this._proto_root_input.text);
+		if (error !== undefined) {
+			Emulator.g_IDETool.ShowNotice("错误", error);
+			return;
+		}
 		if (ALittle.File_GetFileExtByPathAndUpper(this._plugin_file_input.text) === "LUA") {
 			delete _G["__PLUGIN_ProtoRefresh"];
 			delete _G["__PLUGIN_StartLogin"];
@@ -183,7 +215,6 @@ Emulator.GCenter = JavaScript.Class(undefined, {
 		}
 		this._setting_dialog.visible = false;
 		Emulator.g_GConfig.SetConfig("proto_root", this._proto_root_input.text);
-		let error = A_LuaSocketSchedule.LoadProto(this._proto_root_input.text);
 		let func = _G["__PLUGIN_ProtoRefresh"];
 		if (func !== undefined) {
 			error = (function() { try { func.call(); return undefined; } catch (___ERROR) { return ___ERROR.message; } }).call(this);
@@ -227,17 +258,17 @@ Emulator.GCenter = JavaScript.Class(undefined, {
 	RefreshProtoList : function() {
 		let key = this._proto_search_key.text;
 		key = ALittle.String_Upper(key);
-		let ___OBJECT_1 = this._protobuf_scroll_screen.childs;
-		for (let index = 1; index <= ___OBJECT_1.length; ++index) {
-			let child = ___OBJECT_1[index - 1];
+		let ___OBJECT_2 = this._protobuf_scroll_screen.childs;
+		for (let index = 1; index <= ___OBJECT_2.length; ++index) {
+			let child = ___OBJECT_2[index - 1];
 			if (child === undefined) break;
 			child.group = undefined;
 		}
 		this._protobuf_scroll_screen.RemoveAllChild();
 		let list = A_LuaSocketSchedule.FindMessageByUpperKey(key);
-		let ___OBJECT_2 = list;
-		for (let index = 1; index <= ___OBJECT_2.length; ++index) {
-			let info = ___OBJECT_2[index - 1];
+		let ___OBJECT_3 = list;
+		for (let index = 1; index <= ___OBJECT_3.length; ++index) {
+			let info = ___OBJECT_3[index - 1];
 			if (info === undefined) break;
 			let item = this._proto_search_item_pool[info.name];
 			if (item === undefined) {
@@ -247,7 +278,10 @@ Emulator.GCenter = JavaScript.Class(undefined, {
 				item.drag_trans_target = this._protobuf_scroll_screen;
 				item._user_data = info;
 				item.AddEventListener(___all_struct.get(958494922), this, this.HandleProtoItemSelected);
+				item.AddEventListener(___all_struct.get(-641444818), this, this.HandleProtoItemRButtonDown);
 			}
+			let detail_info = this._detail_tree_item_pool[info.full_name];
+			item.selected = detail_info !== undefined && detail_info.tree === this._detail_scroll_screen.container;
 			item.group = this._proto_search_group;
 			this._protobuf_scroll_screen.AddChild(item);
 		}
@@ -266,22 +300,56 @@ Emulator.GCenter = JavaScript.Class(undefined, {
 		this._detail_scroll_screen.SetContainer(detail_info.tree);
 		this._detail_scroll_screen.RejustScrollBar();
 	},
+	HandleProtoItemRButtonDown : function(event) {
+		A_LayerManager.ShowFromRight(this._proto_item_msg_menu);
+		this._proto_item_msg_menu.x = A_UISystem.mouse_x;
+		this._proto_item_msg_menu.y = A_UISystem.mouse_y;
+		this._proto_item_msg_menu._user_data = event.target._user_data;
+	},
 	HandleLogSearchClick : function(event) {
 		this.RefreshLogList();
+	},
+	HandleLogClearClick : function(event) {
+		this._log_search_key.text = "";
+		this._log_item_list = [];
+		this._log_item_count = 0;
+		this._log_scroll_screen.RemoveAllChild();
+		this._cur_item_user_data = undefined;
+		this._show_scroll_screen.SetContainer(undefined);
+	},
+	HandleLogFliterClick : function(event) {
+		this._log_fliter_dialog.visible = true;
+		let fliter_list = Emulator.g_GConfig.GetConfig("fliter_list", []);
+		this._log_fliter_edit.text = ALittle.String_Join(fliter_list, "\n");
+	},
+	HandleLogFliterCancelClick : function(event) {
+		this._log_fliter_dialog.visible = false;
+	},
+	HandleLogFliterConfirmClick : function(event) {
+		this._log_fliter_dialog.visible = false;
+		let fliter_list = ALittle.String_SplitSepList(this._log_fliter_edit.text, ["\r", "\n"]);
+		Emulator.g_GConfig.SetConfig("fliter_list", fliter_list);
+		this._fliter_map = {};
+		let ___OBJECT_4 = fliter_list;
+		for (let index = 1; index <= ___OBJECT_4.length; ++index) {
+			let fliter = ___OBJECT_4[index - 1];
+			if (fliter === undefined) break;
+			this._fliter_map[fliter] = true;
+		}
 	},
 	RefreshLogList : function() {
 		let key = this._log_search_key.text;
 		key = ALittle.String_Upper(key);
-		let ___OBJECT_3 = this._log_scroll_screen.childs;
-		for (let index = 1; index <= ___OBJECT_3.length; ++index) {
-			let child = ___OBJECT_3[index - 1];
+		let ___OBJECT_5 = this._log_scroll_screen.childs;
+		for (let index = 1; index <= ___OBJECT_5.length; ++index) {
+			let child = ___OBJECT_5[index - 1];
 			if (child === undefined) break;
 			child.group = undefined;
 		}
 		this._log_scroll_screen.RemoveAllChild();
-		let ___OBJECT_4 = this._log_item_list;
-		for (let index = 1; index <= ___OBJECT_4.length; ++index) {
-			let button = ___OBJECT_4[index - 1];
+		let ___OBJECT_6 = this._log_item_list;
+		for (let index = 1; index <= ___OBJECT_6.length; ++index) {
+			let button = ___OBJECT_6[index - 1];
 			if (button === undefined) break;
 			let user_data = button._user_data;
 			if (ALittle.String_Find(user_data.upper_name, key) !== undefined) {
@@ -292,6 +360,11 @@ Emulator.GCenter = JavaScript.Class(undefined, {
 		this._log_scroll_screen.RejustScrollBar();
 	},
 	AddLogMessage : function(msg) {
+		let descriptor = lua.protobuf.message_getdescriptor(msg);
+		let full_name = lua.protobuf.messagedescriptor_fullname(descriptor);
+		if (this._fliter_map[full_name] !== undefined) {
+			return;
+		}
 		if (this._log_item_count > 500) {
 			let item = this._log_item_list[1 - 1];
 			let user_data = item._user_data;
@@ -311,6 +384,7 @@ Emulator.GCenter = JavaScript.Class(undefined, {
 		item.drag_trans_target = this._log_scroll_screen;
 		item._user_data = user_data;
 		item.AddEventListener(___all_struct.get(958494922), this, this.HandleLogItemSelected);
+		item.AddEventListener(___all_struct.get(-641444818), this, this.HandleProtoLogRButtonDown);
 		++ this._log_item_count;
 		this._log_item_list[this._log_item_count - 1] = item;
 		let key = this._log_search_key.text;
@@ -332,6 +406,12 @@ Emulator.GCenter = JavaScript.Class(undefined, {
 		}
 		this._show_scroll_screen.SetContainer(this._cur_item_user_data.detail_info.tree);
 	},
+	HandleProtoLogRButtonDown : function(event) {
+		A_LayerManager.ShowFromRight(this._log_item_msg_menu);
+		this._log_item_msg_menu.x = A_UISystem.mouse_x;
+		this._log_item_msg_menu.y = A_UISystem.mouse_y;
+		this._log_item_msg_menu._user_data = event.target._user_data;
+	},
 	HandleShowSearchClick : function(event) {
 		if (this._cur_item_user_data === undefined) {
 			return;
@@ -343,11 +423,60 @@ Emulator.GCenter = JavaScript.Class(undefined, {
 		let list = tree.SearchDescription(key);
 		tree.SearchEnd(list);
 	},
+	HandleMsgCopyFullName : function(event) {
+		if (A_LayerManager.IsCurrentRight(this._proto_item_msg_menu)) {
+			let info = this._proto_item_msg_menu._user_data;
+			ALittle.System_SetClipboardText(info.full_name);
+		} else if (A_LayerManager.IsCurrentRight(this._log_item_msg_menu)) {
+			let info = this._log_item_msg_menu._user_data;
+			ALittle.System_SetClipboardText(info.info.full_name);
+		}
+		A_LayerManager.HideCurrentFromRight();
+	},
+	HandleMsgCopyName : function(event) {
+		if (A_LayerManager.IsCurrentRight(this._proto_item_msg_menu)) {
+			let info = this._proto_item_msg_menu._user_data;
+			ALittle.System_SetClipboardText(info.name);
+		} else if (A_LayerManager.IsCurrentRight(this._log_item_msg_menu)) {
+			let info = this._log_item_msg_menu._user_data;
+			ALittle.System_SetClipboardText(info.info.name);
+		}
+		A_LayerManager.HideCurrentFromRight();
+	},
+	HandleMsgAddToFliter : function(event) {
+		let full_name = undefined;
+		if (A_LayerManager.IsCurrentRight(this._proto_item_msg_menu)) {
+			let info = this._proto_item_msg_menu._user_data;
+			full_name = info.full_name;
+		} else if (A_LayerManager.IsCurrentRight(this._log_item_msg_menu)) {
+			let info = this._log_item_msg_menu._user_data;
+			full_name = info.info.full_name;
+		}
+		this._fliter_map[full_name] = true;
+		let list = [];
+		let ___OBJECT_7 = this._fliter_map;
+		for (let name in ___OBJECT_7) {
+			let _ = ___OBJECT_7[name];
+			if (_ === undefined) continue;
+			ALittle.List_Push(list, name);
+		}
+		Emulator.g_GConfig.SetConfig("fliter_list", list);
+		A_LayerManager.HideCurrentFromRight();
+	},
 	HandleClientSocketDisconnected : function(socket) {
 		this._client_socket = undefined;
 		this._send_button.disabled = true;
 		this._login_button.visible = true;
 		this._logout_button.visible = false;
+		if (this._login_status === Emulator.LoginStatus.EMULATOR_LOGINED) {
+			let func = _G["__PLUGIN_HandleLogout"];
+			if (func !== undefined) {
+				let error = (function() { try { func.call(); return undefined; } catch (___ERROR) { return ___ERROR.message; } }).call(this);
+				if (error !== undefined) {
+					ALittle.Log(error);
+				}
+			}
+		}
 		this._login_status = Emulator.LoginStatus.EMULATOR_IDLE;
 	},
 	HandleSendClick : function(event) {
@@ -421,6 +550,15 @@ Emulator.GCenter = JavaScript.Class(undefined, {
 		this._send_button.disabled = true;
 		this._login_button.visible = true;
 		this._logout_button.visible = false;
+		if (this._login_status === Emulator.LoginStatus.EMULATOR_LOGINED) {
+			let func = _G["__PLUGIN_HandleLogout"];
+			if (func !== undefined) {
+				let error = (function() { try { func.call(); return undefined; } catch (___ERROR) { return ___ERROR.message; } }).call(this);
+				if (error !== undefined) {
+					ALittle.Log(error);
+				}
+			}
+		}
 		this._login_status = Emulator.LoginStatus.EMULATOR_IDLE;
 	},
 	HandleDragRightQuadUD : function(event) {

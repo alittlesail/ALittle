@@ -1,4 +1,3 @@
-
 namespace Emulator;
 
 protected var g_GConfig:ALittle.IJsonConfig;
@@ -54,13 +53,13 @@ class GCenter
 
     // 帧循环
     private ALittle.LoopFrame _frame_loop;
-    
+
     // 协议列表
     private ALittle.DisplayObject _proto_search_key;
     private ALittle.ScrollScreen _protobuf_scroll_screen;
     private Map<ALittle.TextRadioButton, bool> _proto_search_group;
     private Map<string, ALittle.TextRadioButton> _proto_search_item_pool;
-    
+
     // 日志列表
     private ALittle.DisplayObject _log_search_key;
     private ALittle.ScrollScreen _log_scroll_screen;
@@ -99,13 +98,13 @@ class GCenter
         this._proto_search_group = new Map<ALittle.TextRadioButton, bool>();
 
         this._detail_tree_item_pool = new Map<string, DetailInfo>();
-        
+
         this._log_search_group = new Map<ALittle.TextRadioButton, bool>();
         this._log_item_list = new List<ALittle.TextRadioButton>();
         this._log_item_count = 0;
 
         this._login_status = LoginStatus.EMULATOR_IDLE;
-	}
+    }
 
     public fun Setup()
     {
@@ -116,7 +115,7 @@ class GCenter
         ALittle.Math_RandomSeed(ALittle.Time_GetCurTime());
         // 设置1个线程
         ALittle.System_SetThreadCount(1, ALittle.SystemThreadType.SLOW);
-    
+
         // 创建主层
         this._main_layer = new ALittle.DisplayLayout(g_Control);
         this._main_layer.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
@@ -126,20 +125,20 @@ class GCenter
         this._dialog_layer.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
         this._dialog_layer.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
         g_LayerGroup.AddChild(this._dialog_layer, null);
-    
+
         // 创建主界面
-        g_Control.CreateControl{ALittle.DisplayObject}("main_scene", this, this._main_layer);
+        g_Control.CreateControl{ALittle.DisplayObject }("main_scene", this, this._main_layer);
 
         // 设置界面
-        this._setting_dialog = g_Control.CreateControl{ALittle.Dialog}("main_setting_dialog", this);
+        this._setting_dialog = g_Control.CreateControl{ALittle.Dialog }("main_setting_dialog", this);
         A_LayerManager.AddToModal(this._setting_dialog);
 
         // 右键菜单
-        this._proto_item_msg_menu = g_Control.CreateControl{ALittle.DisplayLayout}("main_msg_menu", this);
-        this._log_item_msg_menu = g_Control.CreateControl{ALittle.DisplayLayout}("main_msg_menu", this);
+        this._proto_item_msg_menu = g_Control.CreateControl{ALittle.DisplayLayout }("main_msg_menu", this);
+        this._log_item_msg_menu = g_Control.CreateControl{ALittle.DisplayLayout }("main_msg_menu", this);
 
         // 过滤界面
-        this._log_fliter_dialog = g_Control.CreateControl{ALittle.Dialog}("main_log_fliter_dialog", this);
+        this._log_fliter_dialog = g_Control.CreateControl{ALittle.Dialog }("main_log_fliter_dialog", this);
         this._dialog_layer.AddChild(this._log_fliter_dialog);
         this._log_fliter_dialog.visible = false;
         this._fliter_map = new Map<string, bool>();
@@ -152,7 +151,7 @@ class GCenter
         {
             var plugin_script = ALittle.File_ReadTextFromStdFile(plugin_path);
             if (plugin_script != null) __CPPAPI_ScriptSystemEx.RunScript(plugin_script, plugin_path);
-            else this.HandleShowSettingDialog(null);   
+            else this.HandleShowSettingDialog(null);
         }
         else this.HandleShowSettingDialog(null);
 
@@ -191,11 +190,11 @@ class GCenter
         this._logout_button.visible = false;
         this._login_ip_input.text = g_GConfig.GetString("login_ip", "127.0.0.1");
         this._login_port_input.text = ALittle.String_ToString(g_GConfig.GetInt("login_port", 0));
-        
+
         this._right_grad3_ud.up_size = g_GConfig.GetDouble("right_grid3_up_size", this._right_grad3_ud.up_size);
         this._main_grid3_lr.down_size = g_GConfig.GetDouble("main_grid3_down_size", this._main_grid3_lr.down_size);
         this._send_button.disabled = true;
-        
+
         // 每帧处理
         this._frame_loop = new ALittle.LoopFrame(bind(this.UpdateFrame, this));
         this._frame_loop.Start();
@@ -228,7 +227,7 @@ class GCenter
         if (event.path == null) return;
         this._plugin_file_input.text = event.path;
     }
-    
+
     // 生成模板代码
     private fun HandleSettingGeneratePluginScriptClick(ALittle.UISystemSelectDirectoryEvent event)
     {
@@ -248,7 +247,7 @@ class GCenter
             g_IDETool.ShowNotice("错误", "文件夹不存在");
             return;
         }
-        
+
         var error = A_LuaSocketSchedule.LoadProto(this._proto_root_input.text);
         if (error != null)
         {
@@ -265,7 +264,7 @@ class GCenter
             cast<Map<string, any>>(_G)["__SOCKET_WriteMessage"] = null;
             cast<Map<string, any>>(_G)["__SOCKET_HandleMessage"] = null;
             var plugin_script = ALittle.File_ReadTextFromStdFile(this._plugin_file_input.text);
-            if (plugin_script != null) __CPPAPI_ScriptSystemEx.RunScript(plugin_script, this._plugin_file_input.text);   
+            if (plugin_script != null) __CPPAPI_ScriptSystemEx.RunScript(plugin_script, this._plugin_file_input.text);
         }
         else
         {
@@ -275,7 +274,7 @@ class GCenter
 
         this._setting_dialog.visible = false;
         g_GConfig.SetConfig("proto_root", this._proto_root_input.text);
-        
+
         var func = cast<Map<string, Functor<()>>>(_G)["__PLUGIN_ProtoRefresh"];
         if (func != null)
         {
@@ -287,7 +286,7 @@ class GCenter
             g_IDETool.ShowNotice("错误", error);
             return;
         }
-        
+
         // 协议列表
         this._protobuf_scroll_screen.RemoveAllChild();
         this._proto_search_item_pool = new Map<string, ALittle.TextRadioButton>();
@@ -297,7 +296,7 @@ class GCenter
         // 协议内容
         this._detail_scroll_screen.SetContainer(null);
         this._detail_tree_item_pool = new Map<string, DetailInfo>();
-        
+
         // 日志列表
         this._log_search_group = new Map<ALittle.TextRadioButton, bool>();
         this._log_item_list = new List<ALittle.TextRadioButton>();
@@ -353,7 +352,7 @@ class GCenter
             var item = this._proto_search_item_pool[info.name];
             if (item == null)
             {
-                item = g_Control.CreateControl{ALittle.TextRadioButton}("emulator_common_item_radiobutton");
+                item = g_Control.CreateControl{ALittle.TextRadioButton }("emulator_common_item_radiobutton");
                 item.text = info.name;
                 this._proto_search_item_pool[info.name] = item;
                 item.drag_trans_target = this._protobuf_scroll_screen;
@@ -394,7 +393,7 @@ class GCenter
         this._proto_item_msg_menu.y = A_UISystem.mouse_y;
         this._proto_item_msg_menu._user_data = event.target._user_data;
     }
-    
+
     // 处理消息
     private fun HandleLogSearchClick(ALittle.UIEvent event)
     {
@@ -416,7 +415,7 @@ class GCenter
     private fun HandleLogFliterClick(ALittle.UIEvent event)
     {
         this._log_fliter_dialog.visible = true;
-        var fliter_list = g_GConfig.GetConfig{List<string>}("fliter_list", new List<string>());
+        var fliter_list = g_GConfig.GetConfig{List<string> }("fliter_list", new List<string>());
         this._log_fliter_edit.text = ALittle.String_Join(fliter_list, "\n");
     }
 
@@ -435,7 +434,7 @@ class GCenter
         this._fliter_map = new Map<string, bool>();
         for (var index, fliter in fliter_list) this._fliter_map[fliter] = true;
     }
-    
+
     // 处理
     private fun RefreshLogList()
     {
@@ -455,7 +454,7 @@ class GCenter
             if (ALittle.String_Find(user_data.upper_name, key) != null)
             {
                 button.group = this._log_search_group;
-                this._log_scroll_screen.AddChild(button);   
+                this._log_scroll_screen.AddChild(button);
             }
         }
         this._log_scroll_screen.RejustScrollBar();
@@ -487,7 +486,7 @@ class GCenter
         user_data.upper_name = ALittle.String_Upper(user_data.info.name);
 
         // 添加新的
-        var item = g_Control.CreateControl{ALittle.TextRadioButton}("emulator_common_item_radiobutton");
+        var item = g_Control.CreateControl{ALittle.TextRadioButton }("emulator_common_item_radiobutton");
         item.text = user_data.info.name;
         item.drag_trans_target = this._log_scroll_screen;
         item._user_data = user_data;
@@ -496,7 +495,7 @@ class GCenter
 
         ++ this._log_item_count;
         this._log_item_list[this._log_item_count] = item;
-        
+
         // 获取key
         var key = this._log_search_key.text;
         key = ALittle.String_Upper(key);
@@ -504,7 +503,7 @@ class GCenter
         {
             // 判断是否是底部
             var bottom = this._log_scroll_screen.right_scrollbar.offset_rate >= 0.95
-                || this._log_scroll_screen.container.height < this._log_scroll_screen.view_height;
+                                                                             || this._log_scroll_screen.container.height < this._log_scroll_screen.view_height;
 
             item.group = this._log_search_group;
             this._log_scroll_screen.AddChild(item);
@@ -521,7 +520,7 @@ class GCenter
             this._cur_item_user_data.detail_info = Utility_CreateTreeForShow(this._cur_item_user_data.msg);
         this._show_scroll_screen.SetContainer(this._cur_item_user_data.detail_info.tree);
     }
-    
+
     // 右键菜单
     private fun HandleProtoLogRButtonDown(ALittle.UIRButtonDownEvent event)
     {
@@ -611,9 +610,9 @@ class GCenter
         this._logout_button.visible = false;
         if (this._login_status == LoginStatus.EMULATOR_LOGINED)
         {
-            var func = cast<Map<string, Functor<()>>>(_G)["__PLUGIN_HandleLogout"];   
+            var func = cast<Map<string, Functor<()>>>(_G)["__PLUGIN_HandleLogout"];
             if (func != null)
-            {   
+            {
                 var error = tcall(func);
                 if (error != null) ALittle.Log(error);
             }
@@ -661,10 +660,10 @@ class GCenter
             g_IDETool.ShowNotice("提示", "当前已登录，请先断开");
             return;
         }
-        
+
         g_GConfig.SetConfig("login_ip", ip);
         g_GConfig.SetConfig("login_port", port);
-        
+
         this._login_button.visible = false;
         this._logout_button.visible = true;
 
@@ -673,7 +672,7 @@ class GCenter
 
         // 开始登陆
         var error:string = null;
-        
+
         // 先关闭所有连接
         if (this._client_socket != null)
         {
@@ -711,7 +710,7 @@ class GCenter
         {
             g_IDETool.ShowNotice("提示", error);
             this._login_status = LoginStatus.EMULATOR_IDLE;
-            
+
             this._login_button.visible = true;
             this._logout_button.visible = false;
         }
@@ -730,9 +729,9 @@ class GCenter
         this._logout_button.visible = false;
         if (this._login_status == LoginStatus.EMULATOR_LOGINED)
         {
-            var func = cast<Map<string, Functor<()>>>(_G)["__PLUGIN_HandleLogout"];   
+            var func = cast<Map<string, Functor<()>>>(_G)["__PLUGIN_HandleLogout"];
             if (func != null)
-            {   
+            {
                 var error = tcall(func);
                 if (error != null) ALittle.Log(error);
             }
@@ -768,7 +767,7 @@ class GCenter
     {
         ALittle.System_SetHDragCursor();
     }
-        
+
     // 普通光标
     private fun HandleSetNormalCursor(ALittle.UIMoveInEvent event)
     {
@@ -780,5 +779,5 @@ class GCenter
         this._frame_loop.Stop();
     }
 }
-    
+
 public var g_GCenter = new GCenter();

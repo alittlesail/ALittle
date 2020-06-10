@@ -39,12 +39,6 @@ function IDEIMEManager:HandleImeEditingCallback(open, text, start, list, target)
 	if self._ime_dialog == nil then
 		return
 	end
-	if open and target ~= nil then
-		local class_info = (target).__class
-		if class_info.__name == "ALittle.TextInput" and target.password_mode then
-			return
-		end
-	end
 	self._ime_dialog.visible = open
 	if open and target ~= nil then
 		self._ime_dialog.title = text

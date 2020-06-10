@@ -6,16 +6,16 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = ALittle.GetAllStruct()
 
-ALittle.RegStruct(-590627586, "ALittleIDE.IDEVersionInfoItem", {
-name = "ALittleIDE.IDEVersionInfoItem", ns_name = "ALittleIDE", rl_name = "IDEVersionInfoItem", hash_code = -590627586,
-name_list = {"_item_button","_item_title"},
-type_list = {"ALittle.TextRadioButton","ALittle.DisplayObject"},
-option_map = {}
-})
 ALittle.RegStruct(-1510712093, "ALittleIDE.IDEVersionInfoItemUserData", {
 name = "ALittleIDE.IDEVersionInfoItemUserData", ns_name = "ALittleIDE", rl_name = "IDEVersionInfoItemUserData", hash_code = -1510712093,
 name_list = {"info","data"},
 type_list = {"VersionServer.AVersionInfo","VersionServer.D_VersionInfo"},
+option_map = {}
+})
+ALittle.RegStruct(-590627586, "ALittleIDE.IDEVersionInfoItem", {
+name = "ALittleIDE.IDEVersionInfoItem", ns_name = "ALittleIDE", rl_name = "IDEVersionInfoItem", hash_code = -590627586,
+name_list = {"_item_button","_item_title"},
+type_list = {"ALittle.TextRadioButton","ALittle.DisplayObject"},
 option_map = {}
 })
 ALittle.RegStruct(129933683, "VersionServer.AVersionInfo", {
@@ -24,22 +24,16 @@ name_list = {"version_list","close_list","log_list"},
 type_list = {"List<VersionServer.D_VersionInfo>","List<VersionServer.D_VersionClose>","List<VersionServer.D_VersionLog>"},
 option_map = {}
 })
-ALittle.RegStruct(1657250345, "VersionServer.D_VersionInfo", {
-name = "VersionServer.D_VersionInfo", ns_name = "VersionServer", rl_name = "D_VersionInfo", hash_code = 1657250345,
-name_list = {"version_id","account_id","module_name","platform","big_version","version_number","install_version","install_size","status","small_version_time","small_version_index","create_time","create_index","update_time","update_index"},
-type_list = {"string","string","string","string","string","string","string","int","int","int","int","int","int","int","int"},
-option_map = {}
-})
 ALittle.RegStruct(929252339, "VersionServer.D_VersionClose", {
 name = "VersionServer.D_VersionClose", ns_name = "VersionServer", rl_name = "D_VersionClose", hash_code = 929252339,
 name_list = {"account_id","module_name","platform","close_version","submit_platform","create_time","create_index","update_time","update_index"},
 type_list = {"string","string","string","string","string","int","int","int","int"},
 option_map = {}
 })
-ALittle.RegStruct(-637772875, "VersionServer.D_VersionLog", {
-name = "VersionServer.D_VersionLog", ns_name = "VersionServer", rl_name = "D_VersionLog", hash_code = -637772875,
-name_list = {"version_id","account_id","module_name","platform","content","create_time","create_index","update_time","update_index"},
-type_list = {"string","string","string","string","string","int","int","int","int"},
+ALittle.RegStruct(1657250345, "VersionServer.D_VersionInfo", {
+name = "VersionServer.D_VersionInfo", ns_name = "VersionServer", rl_name = "D_VersionInfo", hash_code = 1657250345,
+name_list = {"version_id","account_id","module_name","platform","big_version","version_number","install_version","install_size","status","small_version_time","small_version_index","create_time","create_index","update_time","update_index"},
+type_list = {"string","string","string","string","string","string","string","int","int","int","int","int","int","int","int"},
 option_map = {}
 })
 ALittle.RegStruct(-1810358206, "ALittleIDE.IDEVersionCloseItemUserData", {
@@ -52,6 +46,12 @@ ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
 name = "ALittle.UIEvent", ns_name = "ALittle", rl_name = "UIEvent", hash_code = -1479093282,
 name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
+option_map = {}
+})
+ALittle.RegStruct(-637772875, "VersionServer.D_VersionLog", {
+name = "VersionServer.D_VersionLog", ns_name = "VersionServer", rl_name = "D_VersionLog", hash_code = -637772875,
+name_list = {"version_id","account_id","module_name","platform","content","create_time","create_index","update_time","update_index"},
+type_list = {"string","string","string","string","string","int","int","int","int"},
 option_map = {}
 })
 ALittle.RegStruct(958494922, "ALittle.UIChangedEvent", {

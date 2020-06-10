@@ -6,28 +6,16 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = ALittle.GetAllStruct()
 
-ALittle.RegStruct(1290936016, "ALittleIDE.IDETabChildHandleInfo", {
-name = "ALittleIDE.IDETabChildHandleInfo", ns_name = "ALittleIDE", rl_name = "IDETabChildHandleInfo", hash_code = 1290936016,
-name_list = {"display_group","handle_quad","focus_quad","size_quad_container","target","buttondown_lock","delta_x","delta_y","lock_x_or_y","delta_width","delta_height","lock_width_or_height"},
-type_list = {"ALittle.DisplayObject","ALittle.DisplayObject","ALittle.DisplayObject","ALittle.DisplayObject","ALittleIDE.IDETreeLogic","bool","double","double","bool","double","double","bool"},
+ALittle.RegStruct(-1676610185, "ALittle.UISystemSaveFileEvent", {
+name = "ALittle.UISystemSaveFileEvent", ns_name = "ALittle", rl_name = "UISystemSaveFileEvent", hash_code = -1676610185,
+name_list = {"target","path"},
+type_list = {"ALittle.DisplayObject","string"},
 option_map = {}
 })
-ALittle.RegStruct(322885752, "ALittleIDE.IDETabChildControlLine", {
-name = "ALittleIDE.IDETabChildControlLine", ns_name = "ALittleIDE", rl_name = "IDETabChildControlLine", hash_code = 322885752,
-name_list = {"quad","size_quad","size_quad_container"},
-type_list = {"ALittle.DisplayObject","ALittle.DisplayObject","ALittle.DisplayObject"},
-option_map = {}
-})
-ALittle.RegStruct(-1328054622, "ALittleIDE.IDETabChildSearchInfo", {
-name = "ALittleIDE.IDETabChildSearchInfo", ns_name = "ALittleIDE", rl_name = "IDETabChildSearchInfo", hash_code = -1328054622,
-name_list = {"name","index"},
-type_list = {"string","int"},
-option_map = {}
-})
-ALittle.RegStruct(-1068858139, "ALittleIDE.IDETabChildQuickDragAddUserData", {
-name = "ALittleIDE.IDETabChildQuickDragAddUserData", ns_name = "ALittleIDE", rl_name = "IDETabChildQuickDragAddUserData", hash_code = -1068858139,
-name_list = {"abs_x","abs_y","control_name"},
-type_list = {"double","double","string"},
+ALittle.RegStruct(-1604617962, "ALittle.UIKeyDownEvent", {
+name = "ALittle.UIKeyDownEvent", ns_name = "ALittle", rl_name = "UIKeyDownEvent", hash_code = -1604617962,
+name_list = {"target","mod","sym","scancode","custom","handled"},
+type_list = {"ALittle.DisplayObject","int","int","int","bool","bool"},
 option_map = {}
 })
 ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
@@ -42,16 +30,34 @@ name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
 type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
 option_map = {}
 })
-ALittle.RegStruct(1883782801, "ALittle.UILButtonDownEvent", {
-name = "ALittle.UILButtonDownEvent", ns_name = "ALittle", rl_name = "UILButtonDownEvent", hash_code = 1883782801,
+ALittle.RegStruct(-1328054622, "ALittleIDE.IDETabChildSearchInfo", {
+name = "ALittleIDE.IDETabChildSearchInfo", ns_name = "ALittleIDE", rl_name = "IDETabChildSearchInfo", hash_code = -1328054622,
+name_list = {"name","index"},
+type_list = {"string","int"},
+option_map = {}
+})
+ALittle.RegStruct(-1202439334, "ALittle.UIMoveOutEvent", {
+name = "ALittle.UIMoveOutEvent", ns_name = "ALittle", rl_name = "UIMoveOutEvent", hash_code = -1202439334,
+name_list = {"target"},
+type_list = {"ALittle.DisplayObject"},
+option_map = {}
+})
+ALittle.RegStruct(-1068858139, "ALittleIDE.IDETabChildQuickDragAddUserData", {
+name = "ALittleIDE.IDETabChildQuickDragAddUserData", ns_name = "ALittleIDE", rl_name = "IDETabChildQuickDragAddUserData", hash_code = -1068858139,
+name_list = {"abs_x","abs_y","control_name"},
+type_list = {"double","double","string"},
+option_map = {}
+})
+ALittle.RegStruct(-641444818, "ALittle.UIRButtonDownEvent", {
+name = "ALittle.UIRButtonDownEvent", ns_name = "ALittle", rl_name = "UIRButtonDownEvent", hash_code = -641444818,
 name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
 type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
 option_map = {}
 })
-ALittle.RegStruct(-1676610185, "ALittle.UISystemSaveFileEvent", {
-name = "ALittle.UISystemSaveFileEvent", ns_name = "ALittle", rl_name = "UISystemSaveFileEvent", hash_code = -1676610185,
-name_list = {"target","path"},
-type_list = {"ALittle.DisplayObject","string"},
+ALittle.RegStruct(-449066808, "ALittle.UIClickEvent", {
+name = "ALittle.UIClickEvent", ns_name = "ALittle", rl_name = "UIClickEvent", hash_code = -449066808,
+name_list = {"target","is_drag"},
+type_list = {"ALittle.DisplayObject","bool"},
 option_map = {}
 })
 ALittle.RegStruct(-431205740, "ALittle.UIResizeEvent", {
@@ -66,40 +72,16 @@ name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
 type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
 option_map = {}
 })
-ALittle.RegStruct(1337289812, "ALittle.UIButtonDragEvent", {
-name = "ALittle.UIButtonDragEvent", ns_name = "ALittle", rl_name = "UIButtonDragEvent", hash_code = 1337289812,
-name_list = {"target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"},
-type_list = {"ALittle.DisplayObject","double","double","double","double","double","double"},
-option_map = {}
-})
-ALittle.RegStruct(1301789264, "ALittle.UIButtonDragBeginEvent", {
-name = "ALittle.UIButtonDragBeginEvent", ns_name = "ALittle", rl_name = "UIButtonDragBeginEvent", hash_code = 1301789264,
-name_list = {"target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"},
-type_list = {"ALittle.DisplayObject","double","double","double","double","double","double"},
-option_map = {}
-})
 ALittle.RegStruct(150587926, "ALittle.UIButtonDragEndEvent", {
 name = "ALittle.UIButtonDragEndEvent", ns_name = "ALittle", rl_name = "UIButtonDragEndEvent", hash_code = 150587926,
 name_list = {"target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"},
 type_list = {"ALittle.DisplayObject","double","double","double","double","double","double"},
 option_map = {}
 })
-ALittle.RegStruct(-641444818, "ALittle.UIRButtonDownEvent", {
-name = "ALittle.UIRButtonDownEvent", ns_name = "ALittle", rl_name = "UIRButtonDownEvent", hash_code = -641444818,
-name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
-type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
-option_map = {}
-})
-ALittle.RegStruct(882286932, "ALittle.UIKeyEvent", {
-name = "ALittle.UIKeyEvent", ns_name = "ALittle", rl_name = "UIKeyEvent", hash_code = 882286932,
-name_list = {"target","mod","sym","scancode","custom","handled"},
-type_list = {"ALittle.DisplayObject","int","int","int","bool","bool"},
-option_map = {}
-})
-ALittle.RegStruct(-1604617962, "ALittle.UIKeyDownEvent", {
-name = "ALittle.UIKeyDownEvent", ns_name = "ALittle", rl_name = "UIKeyDownEvent", hash_code = -1604617962,
-name_list = {"target","mod","sym","scancode","custom","handled"},
-type_list = {"ALittle.DisplayObject","int","int","int","bool","bool"},
+ALittle.RegStruct(322885752, "ALittleIDE.IDETabChildControlLine", {
+name = "ALittleIDE.IDETabChildControlLine", ns_name = "ALittleIDE", rl_name = "IDETabChildControlLine", hash_code = 322885752,
+name_list = {"quad","size_quad","size_quad_container"},
+type_list = {"ALittle.DisplayObject","ALittle.DisplayObject","ALittle.DisplayObject"},
 option_map = {}
 })
 ALittle.RegStruct(544684311, "ALittle.UIMoveInEvent", {
@@ -108,16 +90,34 @@ name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
-ALittle.RegStruct(-1202439334, "ALittle.UIMoveOutEvent", {
-name = "ALittle.UIMoveOutEvent", ns_name = "ALittle", rl_name = "UIMoveOutEvent", hash_code = -1202439334,
-name_list = {"target"},
-type_list = {"ALittle.DisplayObject"},
+ALittle.RegStruct(882286932, "ALittle.UIKeyEvent", {
+name = "ALittle.UIKeyEvent", ns_name = "ALittle", rl_name = "UIKeyEvent", hash_code = 882286932,
+name_list = {"target","mod","sym","scancode","custom","handled"},
+type_list = {"ALittle.DisplayObject","int","int","int","bool","bool"},
 option_map = {}
 })
-ALittle.RegStruct(-449066808, "ALittle.UIClickEvent", {
-name = "ALittle.UIClickEvent", ns_name = "ALittle", rl_name = "UIClickEvent", hash_code = -449066808,
-name_list = {"target","is_drag"},
-type_list = {"ALittle.DisplayObject","bool"},
+ALittle.RegStruct(1290936016, "ALittleIDE.IDETabChildHandleInfo", {
+name = "ALittleIDE.IDETabChildHandleInfo", ns_name = "ALittleIDE", rl_name = "IDETabChildHandleInfo", hash_code = 1290936016,
+name_list = {"display_group","handle_quad","focus_quad","size_quad_container","target","buttondown_lock","delta_x","delta_y","lock_x_or_y","delta_width","delta_height","lock_width_or_height"},
+type_list = {"ALittle.DisplayObject","ALittle.DisplayObject","ALittle.DisplayObject","ALittle.DisplayObject","ALittleIDE.IDETreeLogic","bool","double","double","bool","double","double","bool"},
+option_map = {}
+})
+ALittle.RegStruct(1301789264, "ALittle.UIButtonDragBeginEvent", {
+name = "ALittle.UIButtonDragBeginEvent", ns_name = "ALittle", rl_name = "UIButtonDragBeginEvent", hash_code = 1301789264,
+name_list = {"target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"},
+type_list = {"ALittle.DisplayObject","double","double","double","double","double","double"},
+option_map = {}
+})
+ALittle.RegStruct(1337289812, "ALittle.UIButtonDragEvent", {
+name = "ALittle.UIButtonDragEvent", ns_name = "ALittle", rl_name = "UIButtonDragEvent", hash_code = 1337289812,
+name_list = {"target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"},
+type_list = {"ALittle.DisplayObject","double","double","double","double","double","double"},
+option_map = {}
+})
+ALittle.RegStruct(1883782801, "ALittle.UILButtonDownEvent", {
+name = "ALittle.UILButtonDownEvent", ns_name = "ALittle", rl_name = "UILButtonDownEvent", hash_code = 1883782801,
+name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
+type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
 option_map = {}
 })
 

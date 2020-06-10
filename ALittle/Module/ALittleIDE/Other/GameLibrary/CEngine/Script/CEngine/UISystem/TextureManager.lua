@@ -17,18 +17,6 @@ name_list = {"loader","cut_loader","texture_mgr"},
 type_list = {"ALittle.ITextureLoader","ALittle.ITextureCutLoader","ALittle.TextureManager"},
 option_map = {}
 })
-RegStruct(1305876767, "ALittle.PrepareInfo", {
-name = "ALittle.PrepareInfo", ns_name = "ALittle", rl_name = "PrepareInfo", hash_code = 1305876767,
-name_list = {"total","succeed","failed","map","callback"},
-type_list = {"int","int","int","Map<string,bool>","Functor<(int,int,int)>"},
-option_map = {}
-})
-RegStruct(1390702448, "ALittle.AltasCollectInfo", {
-name = "ALittle.AltasCollectInfo", ns_name = "ALittle", rl_name = "AltasCollectInfo", hash_code = 1390702448,
-name_list = {"count","list"},
-type_list = {"int","List<List<any>>"},
-option_map = {}
-})
 RegStruct(1754262532, "ALittle.LoadingTextureInfo", {
 name = "ALittle.LoadingTextureInfo", ns_name = "ALittle", rl_name = "LoadingTextureInfo", hash_code = 1754262532,
 name_list = {"cache","object_map"},
@@ -57,6 +45,18 @@ RegStruct(-60039899, "ALittle.AltasInfo", {
 name = "ALittle.AltasInfo", ns_name = "ALittle", rl_name = "AltasInfo", hash_code = -60039899,
 name_list = {"big_path","atlas","big_width","big_height","t","b","l","r"},
 type_list = {"string","List<string>","int","int","double","double","double","double"},
+option_map = {}
+})
+RegStruct(1305876767, "ALittle.PrepareInfo", {
+name = "ALittle.PrepareInfo", ns_name = "ALittle", rl_name = "PrepareInfo", hash_code = 1305876767,
+name_list = {"total","succeed","failed","map","callback"},
+type_list = {"int","int","int","Map<string,bool>","Functor<(int,int,int)>"},
+option_map = {}
+})
+RegStruct(1390702448, "ALittle.AltasCollectInfo", {
+name = "ALittle.AltasCollectInfo", ns_name = "ALittle", rl_name = "AltasCollectInfo", hash_code = 1390702448,
+name_list = {"count","list"},
+type_list = {"int","List<List<any>>"},
 option_map = {}
 })
 

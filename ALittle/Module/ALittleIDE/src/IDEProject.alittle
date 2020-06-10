@@ -80,7 +80,6 @@ public class IDEProject : ALittle.EventDispatcher
 		ALittle.File_MakeDir(ALittle.File_BaseFilePath().."Module/"..name.."/Font");
 		ALittle.File_MakeDir(ALittle.File_BaseFilePath().."Module/"..name.."/Sound");
 		ALittle.File_MakeDir(ALittle.File_BaseFilePath().."Module/"..name.."/Other");
-		ALittle.File_MakeDir(ALittle.File_BaseFilePath().."Module/"..name.."/Protocol");
 		ALittle.File_MakeDir(ALittle.File_BaseFilePath().."Module/"..name.."/Script");
 		ALittle.File_MakeDir(ALittle.File_BaseFilePath().."Module/"..name.."/UI");
 		ALittle.File_MakeDir(ALittle.File_BaseFilePath().."Module/"..name.."/Icon");
@@ -108,7 +107,9 @@ public class IDEProject : ALittle.EventDispatcher
 
 			// 对一下后缀进行文件内容处理
 			var ext = ALittle.String_Upper(ALittle.File_GetFileExtByPath(file_path));
-			if (ext == "JSON" || ext == "LUA" || ext == "CFG" || ext == "TXT" || ext == "ALITTLE" || ext == "XML" || ext == "NAME")
+			if (ext == "JSON" || ext == "LUA" || ext == "CFG" || ext == "TXT"
+				|| ext == "ALITTLE" || ext == "XML" || ext == "NAME"
+				|| ext == "SLN" || ext == "VCXPROJ" || ext == "FILTERS" || ext == "USER")
 			{
 				// 读出文件
 				var content = ALittle.File_ReadTextFromFile(file_path);

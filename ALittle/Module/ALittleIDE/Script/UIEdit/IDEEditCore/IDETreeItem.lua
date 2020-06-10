@@ -12,14 +12,8 @@ name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
-ALittle.RegStruct(-449066808, "ALittle.UIClickEvent", {
-name = "ALittle.UIClickEvent", ns_name = "ALittle", rl_name = "UIClickEvent", hash_code = -449066808,
-name_list = {"target","is_drag"},
-type_list = {"ALittle.DisplayObject","bool"},
-option_map = {}
-})
-ALittle.RegStruct(544684311, "ALittle.UIMoveInEvent", {
-name = "ALittle.UIMoveInEvent", ns_name = "ALittle", rl_name = "UIMoveInEvent", hash_code = 544684311,
+ALittle.RegStruct(-1202439334, "ALittle.UIMoveOutEvent", {
+name = "ALittle.UIMoveOutEvent", ns_name = "ALittle", rl_name = "UIMoveOutEvent", hash_code = -1202439334,
 name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
 option_map = {}
@@ -30,16 +24,22 @@ name_list = {"target","abs_x","abs_y","rel_x","rel_y"},
 type_list = {"ALittle.DisplayObject","double","double","double","double"},
 option_map = {}
 })
-ALittle.RegStruct(-1202439334, "ALittle.UIMoveOutEvent", {
-name = "ALittle.UIMoveOutEvent", ns_name = "ALittle", rl_name = "UIMoveOutEvent", hash_code = -1202439334,
-name_list = {"target"},
-type_list = {"ALittle.DisplayObject"},
+ALittle.RegStruct(-449066808, "ALittle.UIClickEvent", {
+name = "ALittle.UIClickEvent", ns_name = "ALittle", rl_name = "UIClickEvent", hash_code = -449066808,
+name_list = {"target","is_drag"},
+type_list = {"ALittle.DisplayObject","bool"},
 option_map = {}
 })
-ALittle.RegStruct(1337289812, "ALittle.UIButtonDragEvent", {
-name = "ALittle.UIButtonDragEvent", ns_name = "ALittle", rl_name = "UIButtonDragEvent", hash_code = 1337289812,
+ALittle.RegStruct(150587926, "ALittle.UIButtonDragEndEvent", {
+name = "ALittle.UIButtonDragEndEvent", ns_name = "ALittle", rl_name = "UIButtonDragEndEvent", hash_code = 150587926,
 name_list = {"target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"},
 type_list = {"ALittle.DisplayObject","double","double","double","double","double","double"},
+option_map = {}
+})
+ALittle.RegStruct(544684311, "ALittle.UIMoveInEvent", {
+name = "ALittle.UIMoveInEvent", ns_name = "ALittle", rl_name = "UIMoveInEvent", hash_code = 544684311,
+name_list = {"target"},
+type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
 ALittle.RegStruct(1301789264, "ALittle.UIButtonDragBeginEvent", {
@@ -48,8 +48,8 @@ name_list = {"target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"},
 type_list = {"ALittle.DisplayObject","double","double","double","double","double","double"},
 option_map = {}
 })
-ALittle.RegStruct(150587926, "ALittle.UIButtonDragEndEvent", {
-name = "ALittle.UIButtonDragEndEvent", ns_name = "ALittle", rl_name = "UIButtonDragEndEvent", hash_code = 150587926,
+ALittle.RegStruct(1337289812, "ALittle.UIButtonDragEvent", {
+name = "ALittle.UIButtonDragEvent", ns_name = "ALittle", rl_name = "UIButtonDragEvent", hash_code = 1337289812,
 name_list = {"target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"},
 type_list = {"ALittle.DisplayObject","double","double","double","double","double","double"},
 option_map = {}
@@ -90,14 +90,26 @@ function IDETreeItem:Ctor(ctrl_sys, user_info, tab_child)
 	local name_map = {}
 	name_map["Text"] = self._text_icon
 	name_map["TextArea"] = self._text_icon
+	name_map["RichArea"] = self._text_icon
 	name_map["TextInput"] = self._input_icon
 	name_map["TextEdit"] = self._input_icon
 	name_map["ImageInput"] = self._input_icon
 	name_map["ImageEdit"] = self._input_icon
+	name_map["RichEdit"] = self._input_icon
+	name_map["RichInput"] = self._input_icon
 	name_map["Quad"] = self._quad_icon
 	name_map["Image"] = self._image_icon
 	name_map["Grid9Image"] = self._image_icon
+	name_map["Sprite"] = self._image_icon
+	name_map["ImagePlay"] = self._image_icon
+	name_map["SpritePlay"] = self._image_icon
+	name_map["FramePlay"] = self._image_icon
+	name_map["Piechart"] = self._image_icon
+	name_map["Triangle"] = self._image_icon
 	name_map["TextButton"] = self._button_icon
+	name_map["ScrollButton"] = self._button_icon
+	name_map["SpringTextButton"] = self._button_icon
+	name_map["Slider"] = self._button_icon
 	name_map["TextCheckButton"] = self._check_icon
 	name_map["TextRadioButton"] = self._radio_icon
 	name_map["DropDown"] = self._dropdown_icon

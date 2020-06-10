@@ -6,6 +6,18 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = GetAllStruct()
 
+RegStruct(1949279026, "ALittle.RichEditFontChangedEvent", {
+name = "ALittle.RichEditFontChangedEvent", ns_name = "ALittle", rl_name = "RichEditFontChangedEvent", hash_code = 1949279026,
+name_list = {"target"},
+type_list = {"ALittle.DisplayObject"},
+option_map = {}
+})
+RegStruct(-1053992999, "ALittle.RichEditCursorClickEvent", {
+name = "ALittle.RichEditCursorClickEvent", ns_name = "ALittle", rl_name = "RichEditCursorClickEvent", hash_code = -1053992999,
+name_list = {"target"},
+type_list = {"ALittle.DisplayObject"},
+option_map = {}
+})
 RegStruct(-923963966, "ALittle.RichEditCharInfo", {
 name = "ALittle.RichEditCharInfo", ns_name = "ALittle", rl_name = "RichEditCharInfo", hash_code = -923963966,
 name_list = {"acc_width","pre_width","text_info","text_object","text","ctrl_info","ctrl"},
@@ -40,18 +52,6 @@ RegStruct(774620468, "ALittle.UIRichEditLongClickEvent", {
 name = "ALittle.UIRichEditLongClickEvent", ns_name = "ALittle", rl_name = "UIRichEditLongClickEvent", hash_code = 774620468,
 name_list = {"target","abs_x","abs_y","rel_x","rel_y"},
 type_list = {"ALittle.DisplayObject","double","double","double","double"},
-option_map = {}
-})
-RegStruct(1949279026, "ALittle.RichEditFontChangedEvent", {
-name = "ALittle.RichEditFontChangedEvent", ns_name = "ALittle", rl_name = "RichEditFontChangedEvent", hash_code = 1949279026,
-name_list = {"target"},
-type_list = {"ALittle.DisplayObject"},
-option_map = {}
-})
-RegStruct(-1053992999, "ALittle.RichEditCursorClickEvent", {
-name = "ALittle.RichEditCursorClickEvent", ns_name = "ALittle", rl_name = "RichEditCursorClickEvent", hash_code = -1053992999,
-name_list = {"target"},
-type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
 

@@ -24,22 +24,16 @@ name_list = {"childs"},
 type_list = {"List<ALittle.LoopListInfo>"},
 option_map = {}
 })
-ALittle.RegStruct(-1741432339, "ALittle.LoopListInfo", {
-name = "ALittle.LoopListInfo", ns_name = "ALittle", rl_name = "LoopListInfo", hash_code = -1741432339,
-name_list = {"link","attribute","init","childs"},
-type_list = {"string","string","any","List<ALittle.LoopChildInfo>"},
-option_map = {}
-})
-ALittle.RegStruct(-925381158, "ALittle.LoopChildInfo", {
-name = "ALittle.LoopChildInfo", ns_name = "ALittle", rl_name = "LoopChildInfo", hash_code = -925381158,
-name_list = {"clazz","target","total_time","delay_time"},
-type_list = {"string","any","int","int"},
-option_map = {}
-})
 ALittle.RegStruct(-2110455927, "ALittle.EventInfo", {
 name = "ALittle.EventInfo", ns_name = "ALittle", rl_name = "EventInfo", hash_code = -2110455927,
 name_list = {"type","func"},
 type_list = {"string","string"},
+option_map = {}
+})
+ALittle.RegStruct(-1741432339, "ALittle.LoopListInfo", {
+name = "ALittle.LoopListInfo", ns_name = "ALittle", rl_name = "LoopListInfo", hash_code = -1741432339,
+name_list = {"link","attribute","init","childs"},
+type_list = {"string","string","any","List<ALittle.LoopChildInfo>"},
 option_map = {}
 })
 ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
@@ -48,16 +42,16 @@ name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
-ALittle.RegStruct(-449066808, "ALittle.UIClickEvent", {
-name = "ALittle.UIClickEvent", ns_name = "ALittle", rl_name = "UIClickEvent", hash_code = -449066808,
-name_list = {"target","is_drag"},
-type_list = {"ALittle.DisplayObject","bool"},
-option_map = {}
-})
 ALittle.RegStruct(-1347278145, "ALittle.UIButtonEvent", {
 name = "ALittle.UIButtonEvent", ns_name = "ALittle", rl_name = "UIButtonEvent", hash_code = -1347278145,
 name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
 type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
+option_map = {}
+})
+ALittle.RegStruct(-925381158, "ALittle.LoopChildInfo", {
+name = "ALittle.LoopChildInfo", ns_name = "ALittle", rl_name = "LoopChildInfo", hash_code = -925381158,
+name_list = {"clazz","target","total_time","delay_time"},
+type_list = {"string","any","int","int"},
 option_map = {}
 })
 ALittle.RegStruct(-641444818, "ALittle.UIRButtonDownEvent", {
@@ -66,16 +60,22 @@ name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
 type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
 option_map = {}
 })
+ALittle.RegStruct(-449066808, "ALittle.UIClickEvent", {
+name = "ALittle.UIClickEvent", ns_name = "ALittle", rl_name = "UIClickEvent", hash_code = -449066808,
+name_list = {"target","is_drag"},
+type_list = {"ALittle.DisplayObject","bool"},
+option_map = {}
+})
 ALittle.RegStruct(882286932, "ALittle.UIKeyEvent", {
 name = "ALittle.UIKeyEvent", ns_name = "ALittle", rl_name = "UIKeyEvent", hash_code = 882286932,
 name_list = {"target","mod","sym","scancode","custom","handled"},
 type_list = {"ALittle.DisplayObject","int","int","int","bool","bool"},
 option_map = {}
 })
-ALittle.RegStruct(-1604617962, "ALittle.UIKeyDownEvent", {
-name = "ALittle.UIKeyDownEvent", ns_name = "ALittle", rl_name = "UIKeyDownEvent", hash_code = -1604617962,
-name_list = {"target","mod","sym","scancode","custom","handled"},
-type_list = {"ALittle.DisplayObject","int","int","int","bool","bool"},
+ALittle.RegStruct(1301789264, "ALittle.UIButtonDragBeginEvent", {
+name = "ALittle.UIButtonDragBeginEvent", ns_name = "ALittle", rl_name = "UIButtonDragBeginEvent", hash_code = 1301789264,
+name_list = {"target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"},
+type_list = {"ALittle.DisplayObject","double","double","double","double","double","double"},
 option_map = {}
 })
 ALittle.RegStruct(1337289812, "ALittle.UIButtonDragEvent", {
@@ -84,10 +84,10 @@ name_list = {"target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"},
 type_list = {"ALittle.DisplayObject","double","double","double","double","double","double"},
 option_map = {}
 })
-ALittle.RegStruct(1301789264, "ALittle.UIButtonDragBeginEvent", {
-name = "ALittle.UIButtonDragBeginEvent", ns_name = "ALittle", rl_name = "UIButtonDragBeginEvent", hash_code = 1301789264,
-name_list = {"target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"},
-type_list = {"ALittle.DisplayObject","double","double","double","double","double","double"},
+ALittle.RegStruct(-1604617962, "ALittle.UIKeyDownEvent", {
+name = "ALittle.UIKeyDownEvent", ns_name = "ALittle", rl_name = "UIKeyDownEvent", hash_code = -1604617962,
+name_list = {"target","mod","sym","scancode","custom","handled"},
+type_list = {"ALittle.DisplayObject","int","int","int","bool","bool"},
 option_map = {}
 })
 ALittle.RegStruct(150587926, "ALittle.UIButtonDragEndEvent", {

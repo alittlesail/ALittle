@@ -234,12 +234,16 @@ window.__ALITTLEAPI_SystemSelectFile = function(path) {
 	A_OtherSystem.HandleSystemSelectFile(path);
 }
 
+window.__ALITTLEAPI_SystemSelectDirectory = function(path) {
+	A_OtherSystem.HandleSystemSelectDirectory(path);
+}
+
 window.__ALITTLEAPI_SystemSaveFile = function(path) {
 	A_OtherSystem.HandleSystemSaveFile(path);
 }
 
-window.__ALITTLEAPI_SetupMainModule = function(base_path, module_name) {
-	A_ModuleSystem.MainSetup(base_path, module_name);
+window.__ALITTLEAPI_SetupMainModule = function(base_path, module_name, debug_info) {
+	A_ModuleSystem.MainSetup(base_path, module_name, debug_info);
 }
 
 window.__ALITTLEAPI_ShutdownMainModule = function() {
@@ -2472,14 +2476,20 @@ name_list : ["target"],
 type_list : ["ALittle.EventDispatcher"],
 option_map : {}
 })
-ALittle.RegStruct(812594882, "ALittle.AppWillEnterForeground", {
-name : "ALittle.AppWillEnterForeground", ns_name : "ALittle", rl_name : "AppWillEnterForeground", hash_code : 812594882,
-name_list : ["target"],
-type_list : ["ALittle.EventDispatcher"],
+ALittle.RegStruct(708183011, "ALittle.NetChangeEvent", {
+name : "ALittle.NetChangeEvent", ns_name : "ALittle", rl_name : "NetChangeEvent", hash_code : 708183011,
+name_list : ["target","net_type"],
+type_list : ["ALittle.EventDispatcher","int"],
 option_map : {}
 })
 ALittle.RegStruct(760325696, "ALittle.AppDidEnterForeground", {
 name : "ALittle.AppDidEnterForeground", ns_name : "ALittle", rl_name : "AppDidEnterForeground", hash_code : 760325696,
+name_list : ["target"],
+type_list : ["ALittle.EventDispatcher"],
+option_map : {}
+})
+ALittle.RegStruct(812594882, "ALittle.AppWillEnterForeground", {
+name : "ALittle.AppWillEnterForeground", ns_name : "ALittle", rl_name : "AppWillEnterForeground", hash_code : 812594882,
 name_list : ["target"],
 type_list : ["ALittle.EventDispatcher"],
 option_map : {}
@@ -2490,28 +2500,22 @@ name_list : ["target"],
 type_list : ["ALittle.EventDispatcher"],
 option_map : {}
 })
-ALittle.RegStruct(708183011, "ALittle.NetChangeEvent", {
-name : "ALittle.NetChangeEvent", ns_name : "ALittle", rl_name : "NetChangeEvent", hash_code : 708183011,
-name_list : ["target","net_type"],
-type_list : ["ALittle.EventDispatcher","int"],
-option_map : {}
-})
 ALittle.RegStruct(1720966934, "ALittle.NewIntentEvent", {
 name : "ALittle.NewIntentEvent", ns_name : "ALittle", rl_name : "NewIntentEvent", hash_code : 1720966934,
 name_list : ["target","url"],
 type_list : ["ALittle.EventDispatcher","string"],
 option_map : {}
 })
-ALittle.RegStruct(-840570937, "ALittle.NotifyJsonRPCEvent", {
-name : "ALittle.NotifyJsonRPCEvent", ns_name : "ALittle", rl_name : "NotifyJsonRPCEvent", hash_code : -840570937,
-name_list : ["target","method","param"],
-type_list : ["ALittle.EventDispatcher","string","any"],
-option_map : {}
-})
 ALittle.RegStruct(1755750412, "ALittle.ALittleJsonRPCInfo", {
 name : "ALittle.ALittleJsonRPCInfo", ns_name : "ALittle", rl_name : "ALittleJsonRPCInfo", hash_code : 1755750412,
 name_list : ["method","param"],
 type_list : ["string","any"],
+option_map : {}
+})
+ALittle.RegStruct(-840570937, "ALittle.NotifyJsonRPCEvent", {
+name : "ALittle.NotifyJsonRPCEvent", ns_name : "ALittle", rl_name : "NotifyJsonRPCEvent", hash_code : -840570937,
+name_list : ["target","method","param"],
+type_list : ["ALittle.EventDispatcher","string","any"],
 option_map : {}
 })
 
@@ -2525,10 +2529,9 @@ if (ALittle.EventDispatcher === undefined) throw new Error(" extends class:ALitt
 ALittle.OtherSystem = JavaScript.Class(ALittle.EventDispatcher, {
 	Ctor : function() {
 		this._network_started = false;
+		this._system_select_directory = undefined;
 		this._system_select_file = undefined;
-		this._system_select_ing = false;
 		this._system_save_file = undefined;
-		this._system_save_ing = false;
 		this._third_share_callback = undefined;
 		this._third_login_callback = undefined;
 		this._third_login_ing = false;
@@ -2581,6 +2584,20 @@ ALittle.OtherSystem = JavaScript.Class(ALittle.EventDispatcher, {
 		event.method = content.method;
 		event.param = content.param;
 		this.DispatchEvent(___all_struct.get(-840570937), event);
+	},
+	SystemSelectDirectory : function(target, init_dir) {
+		ALittle.Error("not support SystemSelectDirectory");
+	},
+	HandleSystemSelectDirectory : function(path) {
+		if (this._system_select_directory === undefined) {
+			return;
+		}
+		let tmp = this._system_select_directory;
+		this._system_select_directory = undefined;
+		let event = {};
+		event.target = tmp;
+		event.path = path;
+		tmp.DispatchEvent(___all_struct.get(1800966813), event);
 	},
 	SystemSelectFile : function(target, init_dir) {
 		ALittle.Error("not support SystemSelectFile");
@@ -2822,6 +2839,9 @@ ALittle.ModuleSystem = JavaScript.Class(undefined, {
 		}
 		return this._main_module.name;
 	},
+	GetDebugInfo : function() {
+		return this._debug_info;
+	},
 	LoadModuleImpl : function(module_base_path, name) {
 		return new Promise((async function(___COROUTINE, ___) {
 			let info = {};
@@ -2939,7 +2959,7 @@ ALittle.ModuleSystem = JavaScript.Class(undefined, {
 			___COROUTINE(true); return;
 		}).bind(this));
 	},
-	MainSetup : async function(base_path, module_name) {
+	MainSetup : async function(base_path, module_name, debug_info) {
 		if (this._main_module !== undefined) {
 			return;
 		}
@@ -2957,6 +2977,7 @@ ALittle.ModuleSystem = JavaScript.Class(undefined, {
 		}
 		A_LayerManager.AddChild(info.layer_group, A_LayerManager.group_count - 1);
 		this._main_module = info;
+		this._debug_info = debug_info;
 		let module_base_path = "Module/" + module_name + "/";
 		this._main_module.browser_loaded = true;
 		let setup_func = this._main_module.browser_setup;
@@ -3002,16 +3023,16 @@ window.A_ModuleSystem = ALittle.NewObject(ALittle.ModuleSystem);
 {
 if (typeof ALittle === "undefined") window.ALittle = {};
 
-ALittle.RegStruct(332955965, "ALittle.CsvPreloadInfoDetail", {
-name : "ALittle.CsvPreloadInfoDetail", ns_name : "ALittle", rl_name : "CsvPreloadInfoDetail", hash_code : 332955965,
-name_list : ["loader","config"],
-type_list : ["ALittle.ICsvFileLoader","ALittle.CsvConfig"],
-option_map : {}
-})
 ALittle.RegStruct(-1040774381, "ALittle.CsvPreloadInfo", {
 name : "ALittle.CsvPreloadInfo", ns_name : "ALittle", rl_name : "CsvPreloadInfo", hash_code : -1040774381,
 name_list : ["total","succeed","failed","loader_map","callback"],
 type_list : ["int","int","int","Map<int,ALittle.CsvPreloadInfoDetail>","Functor<(int,int,int)>"],
+option_map : {}
+})
+ALittle.RegStruct(332955965, "ALittle.CsvPreloadInfoDetail", {
+name : "ALittle.CsvPreloadInfoDetail", ns_name : "ALittle", rl_name : "CsvPreloadInfoDetail", hash_code : 332955965,
+name_list : ["loader","config"],
+type_list : ["ALittle.ICsvFileLoader","ALittle.CsvConfig"],
 option_map : {}
 })
 
@@ -3095,10 +3116,10 @@ window.A_CsvConfigManager = ALittle.NewObject(ALittle.CsvConfigManager);
 {
 if (typeof ALittle === "undefined") window.ALittle = {};
 
-ALittle.RegStruct(-925381158, "ALittle.LoopChildInfo", {
-name : "ALittle.LoopChildInfo", ns_name : "ALittle", rl_name : "LoopChildInfo", hash_code : -925381158,
-name_list : ["clazz","target","total_time","delay_time"],
-type_list : ["string","any","int","int"],
+ALittle.RegStruct(1653869333, "ALittle.LoopGroupInfo", {
+name : "ALittle.LoopGroupInfo", ns_name : "ALittle", rl_name : "LoopGroupInfo", hash_code : 1653869333,
+name_list : ["childs"],
+type_list : ["List<ALittle.LoopListInfo>"],
 option_map : {}
 })
 ALittle.RegStruct(-1741432339, "ALittle.LoopListInfo", {
@@ -3107,10 +3128,10 @@ name_list : ["link","attribute","init","childs"],
 type_list : ["string","string","any","List<ALittle.LoopChildInfo>"],
 option_map : {}
 })
-ALittle.RegStruct(1653869333, "ALittle.LoopGroupInfo", {
-name : "ALittle.LoopGroupInfo", ns_name : "ALittle", rl_name : "LoopGroupInfo", hash_code : 1653869333,
-name_list : ["childs"],
-type_list : ["List<ALittle.LoopListInfo>"],
+ALittle.RegStruct(-925381158, "ALittle.LoopChildInfo", {
+name : "ALittle.LoopChildInfo", ns_name : "ALittle", rl_name : "LoopChildInfo", hash_code : -925381158,
+name_list : ["clazz","target","total_time","delay_time"],
+type_list : ["string","any","int","int"],
 option_map : {}
 })
 
@@ -3623,6 +3644,9 @@ ALittle.UIEnumTypes = {
 	DIR_RIGHT : 4,
 	FREE : 1,
 	FIXED : 2,
+	SELECT_NONE : 0,
+	SELECT_FILE : 1,
+	SELECT_DIR : 2,
 	KMOD_NONE : 0x0000,
 	KMOD_LSHIFT : 0x0001,
 	KMOD_RSHIFT : 0x0002,
@@ -3662,86 +3686,26 @@ ALittle.UIEnumTypes = {
 {
 if (typeof ALittle === "undefined") window.ALittle = {};
 
-ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
-name : "ALittle.UIEvent", ns_name : "ALittle", rl_name : "UIEvent", hash_code : -1479093282,
-name_list : ["target"],
-type_list : ["ALittle.DisplayObject"],
-option_map : {}
-})
-ALittle.RegStruct(292776509, "ALittle.UIFocusOutEvent", {
-name : "ALittle.UIFocusOutEvent", ns_name : "ALittle", rl_name : "UIFocusOutEvent", hash_code : 292776509,
-name_list : ["target"],
-type_list : ["ALittle.DisplayObject"],
-option_map : {}
-})
-ALittle.RegStruct(-644464135, "ALittle.UIFocusInEvent", {
-name : "ALittle.UIFocusInEvent", ns_name : "ALittle", rl_name : "UIFocusInEvent", hash_code : -644464135,
-name_list : ["target"],
-type_list : ["ALittle.DisplayObject"],
-option_map : {}
-})
-ALittle.RegStruct(-1202439334, "ALittle.UIMoveOutEvent", {
-name : "ALittle.UIMoveOutEvent", ns_name : "ALittle", rl_name : "UIMoveOutEvent", hash_code : -1202439334,
-name_list : ["target"],
-type_list : ["ALittle.DisplayObject"],
-option_map : {}
-})
 ALittle.RegStruct(544684311, "ALittle.UIMoveInEvent", {
 name : "ALittle.UIMoveInEvent", ns_name : "ALittle", rl_name : "UIMoveInEvent", hash_code : 544684311,
 name_list : ["target"],
 type_list : ["ALittle.DisplayObject"],
 option_map : {}
 })
-ALittle.RegStruct(348388800, "ALittle.UIHideEvent", {
-name : "ALittle.UIHideEvent", ns_name : "ALittle", rl_name : "UIHideEvent", hash_code : 348388800,
-name_list : ["target"],
-type_list : ["ALittle.DisplayObject"],
+ALittle.RegStruct(683647260, "ALittle.UIMButtonUpEvent", {
+name : "ALittle.UIMButtonUpEvent", ns_name : "ALittle", rl_name : "UIMButtonUpEvent", hash_code : 683647260,
+name_list : ["target","abs_x","abs_y","rel_x","rel_y","count","is_drag"],
+type_list : ["ALittle.DisplayObject","double","double","double","double","int","bool"],
 option_map : {}
 })
-ALittle.RegStruct(1862557463, "ALittle.UIShowEvent", {
-name : "ALittle.UIShowEvent", ns_name : "ALittle", rl_name : "UIShowEvent", hash_code : 1862557463,
-name_list : ["target"],
-type_list : ["ALittle.DisplayObject"],
-option_map : {}
-})
-ALittle.RegStruct(958494922, "ALittle.UIChangedEvent", {
-name : "ALittle.UIChangedEvent", ns_name : "ALittle", rl_name : "UIChangedEvent", hash_code : 958494922,
-name_list : ["target"],
-type_list : ["ALittle.DisplayObject"],
-option_map : {}
-})
-ALittle.RegStruct(1309977874, "ALittle.UIChangedEndEvent", {
-name : "ALittle.UIChangedEndEvent", ns_name : "ALittle", rl_name : "UIChangedEndEvent", hash_code : 1309977874,
-name_list : ["target"],
-type_list : ["ALittle.DisplayObject"],
-option_map : {}
-})
-ALittle.RegStruct(444989011, "ALittle.UISelectChangedEvent", {
-name : "ALittle.UISelectChangedEvent", ns_name : "ALittle", rl_name : "UISelectChangedEvent", hash_code : 444989011,
-name_list : ["target"],
-type_list : ["ALittle.DisplayObject"],
-option_map : {}
-})
-ALittle.RegStruct(-431205740, "ALittle.UIResizeEvent", {
-name : "ALittle.UIResizeEvent", ns_name : "ALittle", rl_name : "UIResizeEvent", hash_code : -431205740,
-name_list : ["target"],
-type_list : ["ALittle.DisplayObject"],
-option_map : {}
-})
-ALittle.RegStruct(2024735182, "ALittle.UITabKeyEvent", {
-name : "ALittle.UITabKeyEvent", ns_name : "ALittle", rl_name : "UITabKeyEvent", hash_code : 2024735182,
-name_list : ["target"],
-type_list : ["ALittle.DisplayObject"],
+ALittle.RegStruct(734860930, "ALittle.UIFingerUpEvent", {
+name : "ALittle.UIFingerUpEvent", ns_name : "ALittle", rl_name : "UIFingerUpEvent", hash_code : 734860930,
+name_list : ["target","abs_x","abs_y","rel_x","rel_y","finger_key","is_sfc","is_drag"],
+type_list : ["ALittle.DisplayObject","double","double","double","double","string","bool","bool"],
 option_map : {}
 })
 ALittle.RegStruct(776398171, "ALittle.UIEnterKeyEvent", {
 name : "ALittle.UIEnterKeyEvent", ns_name : "ALittle", rl_name : "UIEnterKeyEvent", hash_code : 776398171,
-name_list : ["target"],
-type_list : ["ALittle.DisplayObject"],
-option_map : {}
-})
-ALittle.RegStruct(1816229739, "ALittle.UIAtKeyEvent", {
-name : "ALittle.UIAtKeyEvent", ns_name : "ALittle", rl_name : "UIAtKeyEvent", hash_code : 1816229739,
 name_list : ["target"],
 type_list : ["ALittle.DisplayObject"],
 option_map : {}
@@ -3752,20 +3716,32 @@ name_list : ["target"],
 type_list : ["ALittle.DisplayObject"],
 option_map : {}
 })
-ALittle.RegStruct(1848466169, "ALittle.UIDragDownEvent", {
-name : "ALittle.UIDragDownEvent", ns_name : "ALittle", rl_name : "UIDragDownEvent", hash_code : 1848466169,
+ALittle.RegStruct(882286932, "ALittle.UIKeyEvent", {
+name : "ALittle.UIKeyEvent", ns_name : "ALittle", rl_name : "UIKeyEvent", hash_code : 882286932,
+name_list : ["target","mod","sym","scancode","custom","handled"],
+type_list : ["ALittle.DisplayObject","int","int","int","bool","bool"],
+option_map : {}
+})
+ALittle.RegStruct(958494922, "ALittle.UIChangedEvent", {
+name : "ALittle.UIChangedEvent", ns_name : "ALittle", rl_name : "UIChangedEvent", hash_code : 958494922,
 name_list : ["target"],
 type_list : ["ALittle.DisplayObject"],
 option_map : {}
 })
-ALittle.RegStruct(-567702959, "ALittle.UIDragLeftEvent", {
-name : "ALittle.UIDragLeftEvent", ns_name : "ALittle", rl_name : "UIDragLeftEvent", hash_code : -567702959,
-name_list : ["target"],
-type_list : ["ALittle.DisplayObject"],
+ALittle.RegStruct(1213009422, "ALittle.UIKeyUpEvent", {
+name : "ALittle.UIKeyUpEvent", ns_name : "ALittle", rl_name : "UIKeyUpEvent", hash_code : 1213009422,
+name_list : ["target","mod","sym","scancode","custom","handled"],
+type_list : ["ALittle.DisplayObject","int","int","int","bool","bool"],
 option_map : {}
 })
-ALittle.RegStruct(-839083637, "ALittle.UIDragRightEvent", {
-name : "ALittle.UIDragRightEvent", ns_name : "ALittle", rl_name : "UIDragRightEvent", hash_code : -839083637,
+ALittle.RegStruct(1301789264, "ALittle.UIButtonDragBeginEvent", {
+name : "ALittle.UIButtonDragBeginEvent", ns_name : "ALittle", rl_name : "UIButtonDragBeginEvent", hash_code : 1301789264,
+name_list : ["target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"],
+type_list : ["ALittle.DisplayObject","double","double","double","double","double","double"],
+option_map : {}
+})
+ALittle.RegStruct(1309977874, "ALittle.UIChangedEndEvent", {
+name : "ALittle.UIChangedEndEvent", ns_name : "ALittle", rl_name : "UIChangedEndEvent", hash_code : 1309977874,
 name_list : ["target"],
 type_list : ["ALittle.DisplayObject"],
 option_map : {}
@@ -3776,22 +3752,10 @@ name_list : ["target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"],
 type_list : ["ALittle.DisplayObject","double","double","double","double","double","double"],
 option_map : {}
 })
-ALittle.RegStruct(1301789264, "ALittle.UIButtonDragBeginEvent", {
-name : "ALittle.UIButtonDragBeginEvent", ns_name : "ALittle", rl_name : "UIButtonDragBeginEvent", hash_code : 1301789264,
-name_list : ["target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"],
-type_list : ["ALittle.DisplayObject","double","double","double","double","double","double"],
-option_map : {}
-})
-ALittle.RegStruct(150587926, "ALittle.UIButtonDragEndEvent", {
-name : "ALittle.UIButtonDragEndEvent", ns_name : "ALittle", rl_name : "UIButtonDragEndEvent", hash_code : 150587926,
-name_list : ["target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"],
-type_list : ["ALittle.DisplayObject","double","double","double","double","double","double"],
-option_map : {}
-})
-ALittle.RegStruct(-51419723, "ALittle.UIFingerDragEvent", {
-name : "ALittle.UIFingerDragEvent", ns_name : "ALittle", rl_name : "UIFingerDragEvent", hash_code : -51419723,
-name_list : ["target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y","finger_key","is_sfc"],
-type_list : ["ALittle.DisplayObject","double","double","double","double","double","double","string","bool"],
+ALittle.RegStruct(1354499457, "ALittle.UIDropEvent", {
+name : "ALittle.UIDropEvent", ns_name : "ALittle", rl_name : "UIDropEvent", hash_code : 1354499457,
+name_list : ["target","drop_target"],
+type_list : ["ALittle.DisplayObject","ALittle.DisplayObject"],
 option_map : {}
 })
 ALittle.RegStruct(1598008698, "ALittle.UIFingerDragBeginEvent", {
@@ -3800,28 +3764,28 @@ name_list : ["target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y","finge
 type_list : ["ALittle.DisplayObject","double","double","double","double","double","double","string","bool"],
 option_map : {}
 })
-ALittle.RegStruct(-2050069067, "ALittle.UIFingerDragEndEvent", {
-name : "ALittle.UIFingerDragEndEvent", ns_name : "ALittle", rl_name : "UIFingerDragEndEvent", hash_code : -2050069067,
-name_list : ["target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y","finger_key","is_sfc"],
-type_list : ["ALittle.DisplayObject","double","double","double","double","double","double","string","bool"],
+ALittle.RegStruct(1800966813, "ALittle.UISystemSelectDirectoryEvent", {
+name : "ALittle.UISystemSelectDirectoryEvent", ns_name : "ALittle", rl_name : "UISystemSelectDirectoryEvent", hash_code : 1800966813,
+name_list : ["target","path"],
+type_list : ["ALittle.DisplayObject","string"],
 option_map : {}
 })
-ALittle.RegStruct(1354499457, "ALittle.UIDropEvent", {
-name : "ALittle.UIDropEvent", ns_name : "ALittle", rl_name : "UIDropEvent", hash_code : 1354499457,
-name_list : ["target","drop_target"],
-type_list : ["ALittle.DisplayObject","ALittle.DisplayObject"],
+ALittle.RegStruct(1816229739, "ALittle.UIAtKeyEvent", {
+name : "ALittle.UIAtKeyEvent", ns_name : "ALittle", rl_name : "UIAtKeyEvent", hash_code : 1816229739,
+name_list : ["target"],
+type_list : ["ALittle.DisplayObject"],
 option_map : {}
 })
-ALittle.RegStruct(-1347278145, "ALittle.UIButtonEvent", {
-name : "ALittle.UIButtonEvent", ns_name : "ALittle", rl_name : "UIButtonEvent", hash_code : -1347278145,
-name_list : ["target","abs_x","abs_y","rel_x","rel_y","count","is_drag"],
-type_list : ["ALittle.DisplayObject","double","double","double","double","int","bool"],
+ALittle.RegStruct(1848466169, "ALittle.UIDragDownEvent", {
+name : "ALittle.UIDragDownEvent", ns_name : "ALittle", rl_name : "UIDragDownEvent", hash_code : 1848466169,
+name_list : ["target"],
+type_list : ["ALittle.DisplayObject"],
 option_map : {}
 })
-ALittle.RegStruct(-439548260, "ALittle.UILongButtonDownEvent", {
-name : "ALittle.UILongButtonDownEvent", ns_name : "ALittle", rl_name : "UILongButtonDownEvent", hash_code : -439548260,
-name_list : ["target","abs_x","abs_y","rel_x","rel_y","count","is_drag"],
-type_list : ["ALittle.DisplayObject","double","double","double","double","int","bool"],
+ALittle.RegStruct(1862557463, "ALittle.UIShowEvent", {
+name : "ALittle.UIShowEvent", ns_name : "ALittle", rl_name : "UIShowEvent", hash_code : 1862557463,
+name_list : ["target"],
+type_list : ["ALittle.DisplayObject"],
 option_map : {}
 })
 ALittle.RegStruct(1883782801, "ALittle.UILButtonDownEvent", {
@@ -3830,22 +3794,82 @@ name_list : ["target","abs_x","abs_y","rel_x","rel_y","count","is_drag"],
 type_list : ["ALittle.DisplayObject","double","double","double","double","int","bool"],
 option_map : {}
 })
-ALittle.RegStruct(40651933, "ALittle.UILButtonUpEvent", {
-name : "ALittle.UILButtonUpEvent", ns_name : "ALittle", rl_name : "UILButtonUpEvent", hash_code : 40651933,
+ALittle.RegStruct(2024735182, "ALittle.UITabKeyEvent", {
+name : "ALittle.UITabKeyEvent", ns_name : "ALittle", rl_name : "UITabKeyEvent", hash_code : 2024735182,
+name_list : ["target"],
+type_list : ["ALittle.DisplayObject"],
+option_map : {}
+})
+ALittle.RegStruct(-2050069067, "ALittle.UIFingerDragEndEvent", {
+name : "ALittle.UIFingerDragEndEvent", ns_name : "ALittle", rl_name : "UIFingerDragEndEvent", hash_code : -2050069067,
+name_list : ["target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y","finger_key","is_sfc"],
+type_list : ["ALittle.DisplayObject","double","double","double","double","double","double","string","bool"],
+option_map : {}
+})
+ALittle.RegStruct(-1737121315, "ALittle.UIMButtonWheelEvent", {
+name : "ALittle.UIMButtonWheelEvent", ns_name : "ALittle", rl_name : "UIMButtonWheelEvent", hash_code : -1737121315,
+name_list : ["target","delta_x","delta_y"],
+type_list : ["ALittle.DisplayObject","double","double"],
+option_map : {}
+})
+ALittle.RegStruct(-1676610185, "ALittle.UISystemSaveFileEvent", {
+name : "ALittle.UISystemSaveFileEvent", ns_name : "ALittle", rl_name : "UISystemSaveFileEvent", hash_code : -1676610185,
+name_list : ["target","path"],
+type_list : ["ALittle.DisplayObject","string"],
+option_map : {}
+})
+ALittle.RegStruct(-1604617962, "ALittle.UIKeyDownEvent", {
+name : "ALittle.UIKeyDownEvent", ns_name : "ALittle", rl_name : "UIKeyDownEvent", hash_code : -1604617962,
+name_list : ["target","mod","sym","scancode","custom","handled"],
+type_list : ["ALittle.DisplayObject","int","int","int","bool","bool"],
+option_map : {}
+})
+ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
+name : "ALittle.UIEvent", ns_name : "ALittle", rl_name : "UIEvent", hash_code : -1479093282,
+name_list : ["target"],
+type_list : ["ALittle.DisplayObject"],
+option_map : {}
+})
+ALittle.RegStruct(-1347278145, "ALittle.UIButtonEvent", {
+name : "ALittle.UIButtonEvent", ns_name : "ALittle", rl_name : "UIButtonEvent", hash_code : -1347278145,
 name_list : ["target","abs_x","abs_y","rel_x","rel_y","count","is_drag"],
 type_list : ["ALittle.DisplayObject","double","double","double","double","int","bool"],
 option_map : {}
 })
-ALittle.RegStruct(349963892, "ALittle.UIMButtonDownEvent", {
-name : "ALittle.UIMButtonDownEvent", ns_name : "ALittle", rl_name : "UIMButtonDownEvent", hash_code : 349963892,
-name_list : ["target","abs_x","abs_y","rel_x","rel_y","count","is_drag"],
-type_list : ["ALittle.DisplayObject","double","double","double","double","int","bool"],
+ALittle.RegStruct(-1234078962, "ALittle.UITextInputEvent", {
+name : "ALittle.UITextInputEvent", ns_name : "ALittle", rl_name : "UITextInputEvent", hash_code : -1234078962,
+name_list : ["target","text","custom"],
+type_list : ["ALittle.DisplayObject","string","bool"],
 option_map : {}
 })
-ALittle.RegStruct(683647260, "ALittle.UIMButtonUpEvent", {
-name : "ALittle.UIMButtonUpEvent", ns_name : "ALittle", rl_name : "UIMButtonUpEvent", hash_code : 683647260,
-name_list : ["target","abs_x","abs_y","rel_x","rel_y","count","is_drag"],
-type_list : ["ALittle.DisplayObject","double","double","double","double","int","bool"],
+ALittle.RegStruct(-1233353463, "ALittle.UIFingerDownEvent", {
+name : "ALittle.UIFingerDownEvent", ns_name : "ALittle", rl_name : "UIFingerDownEvent", hash_code : -1233353463,
+name_list : ["target","abs_x","abs_y","rel_x","rel_y","finger_key","is_sfc","is_drag"],
+type_list : ["ALittle.DisplayObject","double","double","double","double","string","bool","bool"],
+option_map : {}
+})
+ALittle.RegStruct(-1202439334, "ALittle.UIMoveOutEvent", {
+name : "ALittle.UIMoveOutEvent", ns_name : "ALittle", rl_name : "UIMoveOutEvent", hash_code : -1202439334,
+name_list : ["target"],
+type_list : ["ALittle.DisplayObject"],
+option_map : {}
+})
+ALittle.RegStruct(-1001723540, "ALittle.UIMouseMoveEvent", {
+name : "ALittle.UIMouseMoveEvent", ns_name : "ALittle", rl_name : "UIMouseMoveEvent", hash_code : -1001723540,
+name_list : ["target","abs_x","abs_y","rel_x","rel_y"],
+type_list : ["ALittle.DisplayObject","double","double","double","double"],
+option_map : {}
+})
+ALittle.RegStruct(-839083637, "ALittle.UIDragRightEvent", {
+name : "ALittle.UIDragRightEvent", ns_name : "ALittle", rl_name : "UIDragRightEvent", hash_code : -839083637,
+name_list : ["target"],
+type_list : ["ALittle.DisplayObject"],
+option_map : {}
+})
+ALittle.RegStruct(-644464135, "ALittle.UIFocusInEvent", {
+name : "ALittle.UIFocusInEvent", ns_name : "ALittle", rl_name : "UIFocusInEvent", hash_code : -644464135,
+name_list : ["target"],
+type_list : ["ALittle.DisplayObject"],
 option_map : {}
 })
 ALittle.RegStruct(-641444818, "ALittle.UIRButtonDownEvent", {
@@ -3860,26 +3884,14 @@ name_list : ["target","abs_x","abs_y","rel_x","rel_y","count","is_drag"],
 type_list : ["ALittle.DisplayObject","double","double","double","double","int","bool"],
 option_map : {}
 })
-ALittle.RegStruct(-1737121315, "ALittle.UIMButtonWheelEvent", {
-name : "ALittle.UIMButtonWheelEvent", ns_name : "ALittle", rl_name : "UIMButtonWheelEvent", hash_code : -1737121315,
-name_list : ["target","delta_x","delta_y"],
-type_list : ["ALittle.DisplayObject","double","double"],
+ALittle.RegStruct(-567702959, "ALittle.UIDragLeftEvent", {
+name : "ALittle.UIDragLeftEvent", ns_name : "ALittle", rl_name : "UIDragLeftEvent", hash_code : -567702959,
+name_list : ["target"],
+type_list : ["ALittle.DisplayObject"],
 option_map : {}
 })
 ALittle.RegStruct(-525850898, "ALittle.UIFingerEvent", {
 name : "ALittle.UIFingerEvent", ns_name : "ALittle", rl_name : "UIFingerEvent", hash_code : -525850898,
-name_list : ["target","abs_x","abs_y","rel_x","rel_y","finger_key","is_sfc","is_drag"],
-type_list : ["ALittle.DisplayObject","double","double","double","double","string","bool","bool"],
-option_map : {}
-})
-ALittle.RegStruct(-1233353463, "ALittle.UIFingerDownEvent", {
-name : "ALittle.UIFingerDownEvent", ns_name : "ALittle", rl_name : "UIFingerDownEvent", hash_code : -1233353463,
-name_list : ["target","abs_x","abs_y","rel_x","rel_y","finger_key","is_sfc","is_drag"],
-type_list : ["ALittle.DisplayObject","double","double","double","double","string","bool","bool"],
-option_map : {}
-})
-ALittle.RegStruct(734860930, "ALittle.UIFingerUpEvent", {
-name : "ALittle.UIFingerUpEvent", ns_name : "ALittle", rl_name : "UIFingerUpEvent", hash_code : 734860930,
 name_list : ["target","abs_x","abs_y","rel_x","rel_y","finger_key","is_sfc","is_drag"],
 type_list : ["ALittle.DisplayObject","double","double","double","double","string","bool","bool"],
 option_map : {}
@@ -3890,46 +3902,16 @@ name_list : ["target","is_drag"],
 type_list : ["ALittle.DisplayObject","bool"],
 option_map : {}
 })
-ALittle.RegStruct(-1330840, "ALittle.UIMClickEvent", {
-name : "ALittle.UIMClickEvent", ns_name : "ALittle", rl_name : "UIMClickEvent", hash_code : -1330840,
-name_list : ["target","is_drag"],
-type_list : ["ALittle.DisplayObject","bool"],
+ALittle.RegStruct(-439548260, "ALittle.UILongButtonDownEvent", {
+name : "ALittle.UILongButtonDownEvent", ns_name : "ALittle", rl_name : "UILongButtonDownEvent", hash_code : -439548260,
+name_list : ["target","abs_x","abs_y","rel_x","rel_y","count","is_drag"],
+type_list : ["ALittle.DisplayObject","double","double","double","double","int","bool"],
 option_map : {}
 })
-ALittle.RegStruct(286797479, "ALittle.UIFClickEvent", {
-name : "ALittle.UIFClickEvent", ns_name : "ALittle", rl_name : "UIFClickEvent", hash_code : 286797479,
-name_list : ["target","is_drag"],
-type_list : ["ALittle.DisplayObject","bool"],
-option_map : {}
-})
-ALittle.RegStruct(-1234078962, "ALittle.UITextInputEvent", {
-name : "ALittle.UITextInputEvent", ns_name : "ALittle", rl_name : "UITextInputEvent", hash_code : -1234078962,
-name_list : ["target","text","custom"],
-type_list : ["ALittle.DisplayObject","string","bool"],
-option_map : {}
-})
-ALittle.RegStruct(882286932, "ALittle.UIKeyEvent", {
-name : "ALittle.UIKeyEvent", ns_name : "ALittle", rl_name : "UIKeyEvent", hash_code : 882286932,
-name_list : ["target","mod","sym","scancode","custom","handled"],
-type_list : ["ALittle.DisplayObject","int","int","int","bool","bool"],
-option_map : {}
-})
-ALittle.RegStruct(-1604617962, "ALittle.UIKeyDownEvent", {
-name : "ALittle.UIKeyDownEvent", ns_name : "ALittle", rl_name : "UIKeyDownEvent", hash_code : -1604617962,
-name_list : ["target","mod","sym","scancode","custom","handled"],
-type_list : ["ALittle.DisplayObject","int","int","int","bool","bool"],
-option_map : {}
-})
-ALittle.RegStruct(1213009422, "ALittle.UIKeyUpEvent", {
-name : "ALittle.UIKeyUpEvent", ns_name : "ALittle", rl_name : "UIKeyUpEvent", hash_code : 1213009422,
-name_list : ["target","mod","sym","scancode","custom","handled"],
-type_list : ["ALittle.DisplayObject","int","int","int","bool","bool"],
-option_map : {}
-})
-ALittle.RegStruct(-1001723540, "ALittle.UIMouseMoveEvent", {
-name : "ALittle.UIMouseMoveEvent", ns_name : "ALittle", rl_name : "UIMouseMoveEvent", hash_code : -1001723540,
-name_list : ["target","abs_x","abs_y","rel_x","rel_y"],
-type_list : ["ALittle.DisplayObject","double","double","double","double"],
+ALittle.RegStruct(-431205740, "ALittle.UIResizeEvent", {
+name : "ALittle.UIResizeEvent", ns_name : "ALittle", rl_name : "UIResizeEvent", hash_code : -431205740,
+name_list : ["target"],
+type_list : ["ALittle.DisplayObject"],
 option_map : {}
 })
 ALittle.RegStruct(-338112738, "ALittle.UIDropFileEvent", {
@@ -3938,16 +3920,64 @@ name_list : ["target","path"],
 type_list : ["ALittle.DisplayObject","string"],
 option_map : {}
 })
+ALittle.RegStruct(-51419723, "ALittle.UIFingerDragEvent", {
+name : "ALittle.UIFingerDragEvent", ns_name : "ALittle", rl_name : "UIFingerDragEvent", hash_code : -51419723,
+name_list : ["target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y","finger_key","is_sfc"],
+type_list : ["ALittle.DisplayObject","double","double","double","double","double","double","string","bool"],
+option_map : {}
+})
+ALittle.RegStruct(-1330840, "ALittle.UIMClickEvent", {
+name : "ALittle.UIMClickEvent", ns_name : "ALittle", rl_name : "UIMClickEvent", hash_code : -1330840,
+name_list : ["target","is_drag"],
+type_list : ["ALittle.DisplayObject","bool"],
+option_map : {}
+})
+ALittle.RegStruct(40651933, "ALittle.UILButtonUpEvent", {
+name : "ALittle.UILButtonUpEvent", ns_name : "ALittle", rl_name : "UILButtonUpEvent", hash_code : 40651933,
+name_list : ["target","abs_x","abs_y","rel_x","rel_y","count","is_drag"],
+type_list : ["ALittle.DisplayObject","double","double","double","double","int","bool"],
+option_map : {}
+})
 ALittle.RegStruct(124598654, "ALittle.UISystemSelectFileEvent", {
 name : "ALittle.UISystemSelectFileEvent", ns_name : "ALittle", rl_name : "UISystemSelectFileEvent", hash_code : 124598654,
 name_list : ["target","path"],
 type_list : ["ALittle.DisplayObject","string"],
 option_map : {}
 })
-ALittle.RegStruct(-1676610185, "ALittle.UISystemSaveFileEvent", {
-name : "ALittle.UISystemSaveFileEvent", ns_name : "ALittle", rl_name : "UISystemSaveFileEvent", hash_code : -1676610185,
-name_list : ["target","path"],
-type_list : ["ALittle.DisplayObject","string"],
+ALittle.RegStruct(150587926, "ALittle.UIButtonDragEndEvent", {
+name : "ALittle.UIButtonDragEndEvent", ns_name : "ALittle", rl_name : "UIButtonDragEndEvent", hash_code : 150587926,
+name_list : ["target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"],
+type_list : ["ALittle.DisplayObject","double","double","double","double","double","double"],
+option_map : {}
+})
+ALittle.RegStruct(286797479, "ALittle.UIFClickEvent", {
+name : "ALittle.UIFClickEvent", ns_name : "ALittle", rl_name : "UIFClickEvent", hash_code : 286797479,
+name_list : ["target","is_drag"],
+type_list : ["ALittle.DisplayObject","bool"],
+option_map : {}
+})
+ALittle.RegStruct(292776509, "ALittle.UIFocusOutEvent", {
+name : "ALittle.UIFocusOutEvent", ns_name : "ALittle", rl_name : "UIFocusOutEvent", hash_code : 292776509,
+name_list : ["target"],
+type_list : ["ALittle.DisplayObject"],
+option_map : {}
+})
+ALittle.RegStruct(348388800, "ALittle.UIHideEvent", {
+name : "ALittle.UIHideEvent", ns_name : "ALittle", rl_name : "UIHideEvent", hash_code : 348388800,
+name_list : ["target"],
+type_list : ["ALittle.DisplayObject"],
+option_map : {}
+})
+ALittle.RegStruct(349963892, "ALittle.UIMButtonDownEvent", {
+name : "ALittle.UIMButtonDownEvent", ns_name : "ALittle", rl_name : "UIMButtonDownEvent", hash_code : 349963892,
+name_list : ["target","abs_x","abs_y","rel_x","rel_y","count","is_drag"],
+type_list : ["ALittle.DisplayObject","double","double","double","double","int","bool"],
+option_map : {}
+})
+ALittle.RegStruct(444989011, "ALittle.UISelectChangedEvent", {
+name : "ALittle.UISelectChangedEvent", ns_name : "ALittle", rl_name : "UISelectChangedEvent", hash_code : 444989011,
+name_list : ["target"],
+type_list : ["ALittle.DisplayObject"],
 option_map : {}
 })
 
@@ -4312,6 +4342,9 @@ ALittle.DisplayObject = JavaScript.Class(ALittle.UIEventDispatcher, {
 	},
 	RemoveAllChild : function() {
 	},
+	GetChildOffset : function() {
+		return [0, 0];
+	},
 	get editable() {
 		return false;
 	},
@@ -4326,6 +4359,13 @@ ALittle.DisplayObject = JavaScript.Class(ALittle.UIEventDispatcher, {
 	},
 	get is_focus() {
 		return A_UISystem.focus === this;
+	},
+	DelayFocus : function() {
+		let loop = ALittle.NewObject(ALittle.LoopTimer, this.HandleDelayFocus.bind(this), 1);
+		loop.Start();
+	},
+	HandleDelayFocus : function() {
+		this.focus = true;
 	},
 	set focus(value) {
 		if (value) {
@@ -7688,7 +7728,7 @@ ALittle.TextButton = JavaScript.Class(ALittle.DisplayLayout, {
 		this._show_disabled_text.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
 		this._show_disabled_text.x_value = 0;
 		this._show_disabled_text.visible = false;
-		this._file_select = false;
+		this._file_select = ALittle.UIEnumTypes.SELECT_NONE;
 		this.AddEventListener(___all_struct.get(544684311), this, this.HandleMoveIn);
 		this.AddEventListener(___all_struct.get(-1202439334), this, this.HandleMoveOut);
 		this.AddEventListener(___all_struct.get(1883782801), this, this.HandleLButtonDown);
@@ -7723,8 +7763,10 @@ ALittle.TextButton = JavaScript.Class(ALittle.DisplayLayout, {
 			let e = {};
 			e.is_drag = event.is_drag;
 			this.DispatchEvent(___all_struct.get(-449066808), e);
-			if (this._file_select) {
+			if (this._file_select === ALittle.UIEnumTypes.SELECT_FILE) {
 				A_OtherSystem.SystemSelectFile(this);
+			} else if (this._file_select === ALittle.UIEnumTypes.SELECT_DIR) {
+				A_OtherSystem.SystemSelectDirectory(this);
 			}
 			if (ALittle.System_IsPhone === false) {
 				this.ShowOver();
@@ -11534,7 +11576,15 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 			this._bottom_scroll_bar.offset_rate = this._bottom_scroll_bar.offset_rate - 0.1 * event.delta_x;
 		}
 		if (this._right_scroll_bar !== undefined && event.delta_y !== 0) {
-			this._right_scroll_bar.offset_rate = this._right_scroll_bar.offset_rate - 0.1 * event.delta_y;
+			let offset = this._content_height * 0.1 * event.delta_y;
+			if (offset > 40) {
+				offset = 40;
+			} else if (offset < -40) {
+				offset = -40;
+			}
+			if (offset !== 0) {
+				this._right_scroll_bar.offset_rate = this._right_scroll_bar.offset_rate - offset / this._content_height;
+			}
 		}
 		this.RejustScrollBar();
 	},
@@ -12372,6 +12422,9 @@ ALittle.Dialog = JavaScript.Class(ALittle.DisplayLayout, {
 		this._grid3.show_up = this._head;
 		this._grid3.show_center = this._body;
 		ALittle.DisplayLayout.AddChild.call(this, this._grid3);
+	},
+	GetChildOffset : function() {
+		return [0, this._grid3.up_size];
 	},
 	set head_size(value) {
 		this._grid3.up_size = value;
@@ -14900,18 +14953,6 @@ ALittle.RichArea = JavaScript.Class(ALittle.DisplayLayout, {
 if (typeof ALittle === "undefined") window.ALittle = {};
 let ___all_struct = ALittle.GetAllStruct();
 
-ALittle.RegStruct(-923963966, "ALittle.RichEditCharInfo", {
-name : "ALittle.RichEditCharInfo", ns_name : "ALittle", rl_name : "RichEditCharInfo", hash_code : -923963966,
-name_list : ["acc_width","pre_width","text_info","text_object","text","ctrl_info","ctrl"],
-type_list : ["double","double","ALittle.DisplayInfo","ALittle.Text","string","ALittle.DisplayInfo","ALittle.DisplayObject"],
-option_map : {}
-})
-ALittle.RegStruct(556044369, "ALittle.RichEditLineInfo", {
-name : "ALittle.RichEditLineInfo", ns_name : "ALittle", rl_name : "RichEditLineInfo", hash_code : 556044369,
-name_list : ["char_list","char_count","child_list","child_count","container","acc_height","pre_height","force_line"],
-type_list : ["List<ALittle.RichEditCharInfo>","int","List<ALittle.DisplayObject>","int","ALittle.DisplayLayout","double","double","bool"],
-option_map : {}
-})
 ALittle.RegStruct(1949279026, "ALittle.RichEditFontChangedEvent", {
 name : "ALittle.RichEditFontChangedEvent", ns_name : "ALittle", rl_name : "RichEditFontChangedEvent", hash_code : 1949279026,
 name_list : ["target"],
@@ -14920,6 +14961,18 @@ option_map : {}
 })
 ALittle.RegStruct(-1053992999, "ALittle.RichEditCursorClickEvent", {
 name : "ALittle.RichEditCursorClickEvent", ns_name : "ALittle", rl_name : "RichEditCursorClickEvent", hash_code : -1053992999,
+name_list : ["target"],
+type_list : ["ALittle.DisplayObject"],
+option_map : {}
+})
+ALittle.RegStruct(-923963966, "ALittle.RichEditCharInfo", {
+name : "ALittle.RichEditCharInfo", ns_name : "ALittle", rl_name : "RichEditCharInfo", hash_code : -923963966,
+name_list : ["acc_width","pre_width","text_info","text_object","text","ctrl_info","ctrl"],
+type_list : ["double","double","ALittle.DisplayInfo","ALittle.Text","string","ALittle.DisplayInfo","ALittle.DisplayObject"],
+option_map : {}
+})
+ALittle.RegStruct(-203792390, "ALittle.RichEditMultiDragEndEvent", {
+name : "ALittle.RichEditMultiDragEndEvent", ns_name : "ALittle", rl_name : "RichEditMultiDragEndEvent", hash_code : -203792390,
 name_list : ["target"],
 type_list : ["ALittle.DisplayObject"],
 option_map : {}
@@ -14936,10 +14989,10 @@ name_list : ["target"],
 type_list : ["ALittle.DisplayObject"],
 option_map : {}
 })
-ALittle.RegStruct(-203792390, "ALittle.RichEditMultiDragEndEvent", {
-name : "ALittle.RichEditMultiDragEndEvent", ns_name : "ALittle", rl_name : "RichEditMultiDragEndEvent", hash_code : -203792390,
-name_list : ["target"],
-type_list : ["ALittle.DisplayObject"],
+ALittle.RegStruct(556044369, "ALittle.RichEditLineInfo", {
+name : "ALittle.RichEditLineInfo", ns_name : "ALittle", rl_name : "RichEditLineInfo", hash_code : 556044369,
+name_list : ["char_list","char_count","child_list","child_count","container","acc_height","pre_height","force_line"],
+type_list : ["List<ALittle.RichEditCharInfo>","int","List<ALittle.DisplayObject>","int","ALittle.DisplayLayout","double","double","bool"],
 option_map : {}
 })
 ALittle.RegStruct(774620468, "ALittle.UIRichEditLongClickEvent", {
@@ -18353,20 +18406,8 @@ ALittle.RichEdit = JavaScript.Class(ALittle.DisplayLayout, {
 if (typeof ALittle === "undefined") window.ALittle = {};
 let ___all_struct = ALittle.GetAllStruct();
 
-ALittle.RegStruct(1818243950, "ALittle.RichInputCharInfo", {
-name : "ALittle.RichInputCharInfo", ns_name : "ALittle", rl_name : "RichInputCharInfo", hash_code : 1818243950,
-name_list : ["acc_width","pre_width","text_info","text","password_text","text_object","ctrl_info","ctrl"],
-type_list : ["double","double","ALittle.DisplayInfo","string","string","ALittle.Text","ALittle.DisplayInfo","ALittle.DisplayObject"],
-option_map : {}
-})
 ALittle.RegStruct(-256576702, "ALittle.RichInputFontChangedEvent", {
 name : "ALittle.RichInputFontChangedEvent", ns_name : "ALittle", rl_name : "RichInputFontChangedEvent", hash_code : -256576702,
-name_list : ["target"],
-type_list : ["ALittle.DisplayObject"],
-option_map : {}
-})
-ALittle.RegStruct(-683607428, "ALittle.RichInputCursorClickEvent", {
-name : "ALittle.RichInputCursorClickEvent", ns_name : "ALittle", rl_name : "RichInputCursorClickEvent", hash_code : -683607428,
 name_list : ["target"],
 type_list : ["ALittle.DisplayObject"],
 option_map : {}
@@ -18377,10 +18418,16 @@ name_list : ["target"],
 type_list : ["ALittle.DisplayObject"],
 option_map : {}
 })
-ALittle.RegStruct(-605767802, "ALittle.RichInputMultiDragEvent", {
-name : "ALittle.RichInputMultiDragEvent", ns_name : "ALittle", rl_name : "RichInputMultiDragEvent", hash_code : -605767802,
-name_list : ["target"],
-type_list : ["ALittle.DisplayObject"],
+ALittle.RegStruct(1640499878, "ALittle.UIRichInputLongClickEvent", {
+name : "ALittle.UIRichInputLongClickEvent", ns_name : "ALittle", rl_name : "UIRichInputLongClickEvent", hash_code : 1640499878,
+name_list : ["target","abs_x","abs_y","rel_x","rel_y"],
+type_list : ["ALittle.DisplayObject","double","double","double","double"],
+option_map : {}
+})
+ALittle.RegStruct(1818243950, "ALittle.RichInputCharInfo", {
+name : "ALittle.RichInputCharInfo", ns_name : "ALittle", rl_name : "RichInputCharInfo", hash_code : 1818243950,
+name_list : ["acc_width","pre_width","text_info","text","password_text","text_object","ctrl_info","ctrl"],
+type_list : ["double","double","ALittle.DisplayInfo","string","string","ALittle.Text","ALittle.DisplayInfo","ALittle.DisplayObject"],
 option_map : {}
 })
 ALittle.RegStruct(-884368490, "ALittle.RichInputMultiDragEndEvent", {
@@ -18389,10 +18436,16 @@ name_list : ["target"],
 type_list : ["ALittle.DisplayObject"],
 option_map : {}
 })
-ALittle.RegStruct(1640499878, "ALittle.UIRichInputLongClickEvent", {
-name : "ALittle.UIRichInputLongClickEvent", ns_name : "ALittle", rl_name : "UIRichInputLongClickEvent", hash_code : 1640499878,
-name_list : ["target","abs_x","abs_y","rel_x","rel_y"],
-type_list : ["ALittle.DisplayObject","double","double","double","double"],
+ALittle.RegStruct(-683607428, "ALittle.RichInputCursorClickEvent", {
+name : "ALittle.RichInputCursorClickEvent", ns_name : "ALittle", rl_name : "RichInputCursorClickEvent", hash_code : -683607428,
+name_list : ["target"],
+type_list : ["ALittle.DisplayObject"],
+option_map : {}
+})
+ALittle.RegStruct(-605767802, "ALittle.RichInputMultiDragEvent", {
+name : "ALittle.RichInputMultiDragEvent", ns_name : "ALittle", rl_name : "RichInputMultiDragEvent", hash_code : -605767802,
+name_list : ["target"],
+type_list : ["ALittle.DisplayObject"],
 option_map : {}
 })
 
@@ -21224,7 +21277,15 @@ ALittle.ScrollList = JavaScript.Class(ALittle.DisplayView, {
 	},
 	HandleMButtonWheel : function(event) {
 		if (this._scroll_bar !== undefined && event.delta_y !== 0) {
-			this._scroll_bar.offset_rate = this._scroll_bar.offset_rate - 0.1 * event.delta_y;
+			let offset = this._scroll_linear.height * 0.1 * event.delta_y;
+			if (offset > 40) {
+				offset = 40;
+			} else if (offset < -40) {
+				offset = -40;
+			}
+			if (offset !== 0) {
+				this._scroll_bar.offset_rate = this._scroll_bar.offset_rate - offset / this._scroll_linear.height;
+			}
 			this.HandleRightScrollBarChange(undefined);
 			this.HideRightScrollBar();
 		}
@@ -21709,6 +21770,12 @@ ALittle.ScrollList = JavaScript.Class(ALittle.DisplayView, {
 if (typeof ALittle === "undefined") window.ALittle = {};
 let ___all_struct = ALittle.GetAllStruct();
 
+ALittle.RegStruct(2101017097, "ALittle.ScrollButtonDragEndEvent", {
+name : "ALittle.ScrollButtonDragEndEvent", ns_name : "ALittle", rl_name : "ScrollButtonDragEndEvent", hash_code : 2101017097,
+name_list : ["target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"],
+type_list : ["ALittle.DisplayObject","double","double","double","double","double","double"],
+option_map : {}
+})
 ALittle.RegStruct(-2129379001, "ALittle.ScrollButtonDragBeginEvent", {
 name : "ALittle.ScrollButtonDragBeginEvent", ns_name : "ALittle", rl_name : "ScrollButtonDragBeginEvent", hash_code : -2129379001,
 name_list : ["target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"],
@@ -21717,12 +21784,6 @@ option_map : {}
 })
 ALittle.RegStruct(-646882501, "ALittle.ScrollButtonDragEvent", {
 name : "ALittle.ScrollButtonDragEvent", ns_name : "ALittle", rl_name : "ScrollButtonDragEvent", hash_code : -646882501,
-name_list : ["target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"],
-type_list : ["ALittle.DisplayObject","double","double","double","double","double","double"],
-option_map : {}
-})
-ALittle.RegStruct(2101017097, "ALittle.ScrollButtonDragEndEvent", {
-name : "ALittle.ScrollButtonDragEndEvent", ns_name : "ALittle", rl_name : "ScrollButtonDragEndEvent", hash_code : 2101017097,
 name_list : ["target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"],
 type_list : ["ALittle.DisplayObject","double","double","double","double","double","double"],
 option_map : {}
@@ -23581,16 +23642,16 @@ window.A_LayerManager = ALittle.NewObject(ALittle.LayerManager);
 {
 if (typeof ALittle === "undefined") window.ALittle = {};
 
-ALittle.RegStruct(1266404893, "ALittle.LoadTextureInfo", {
-name : "ALittle.LoadTextureInfo", ns_name : "ALittle", rl_name : "LoadTextureInfo", hash_code : 1266404893,
-name_list : ["loader","cut_loader","texture_mgr"],
-type_list : ["ALittle.ITextureLoader","ALittle.ITextureCutLoader","ALittle.TextureManager"],
-option_map : {}
-})
 ALittle.RegStruct(1002517605, "ALittle.LoadingTextureObjectInfo", {
 name : "ALittle.LoadingTextureObjectInfo", ns_name : "ALittle", rl_name : "LoadingTextureObjectInfo", hash_code : 1002517605,
 name_list : ["callback"],
 type_list : ["Functor<(ALittle.DisplayObject,bool)>"],
+option_map : {}
+})
+ALittle.RegStruct(1266404893, "ALittle.LoadTextureInfo", {
+name : "ALittle.LoadTextureInfo", ns_name : "ALittle", rl_name : "LoadTextureInfo", hash_code : 1266404893,
+name_list : ["loader","cut_loader","texture_mgr"],
+type_list : ["ALittle.ITextureLoader","ALittle.ITextureCutLoader","ALittle.TextureManager"],
 option_map : {}
 })
 ALittle.RegStruct(1754262532, "ALittle.LoadingTextureInfo", {
@@ -23617,10 +23678,10 @@ name_list : ["width","height","path"],
 type_list : ["int","int","string"],
 option_map : {}
 })
-ALittle.RegStruct(1390702448, "ALittle.AltasCollectInfo", {
-name : "ALittle.AltasCollectInfo", ns_name : "ALittle", rl_name : "AltasCollectInfo", hash_code : 1390702448,
-name_list : ["count","list"],
-type_list : ["int","List<List<any>>"],
+ALittle.RegStruct(-60039899, "ALittle.AltasInfo", {
+name : "ALittle.AltasInfo", ns_name : "ALittle", rl_name : "AltasInfo", hash_code : -60039899,
+name_list : ["big_path","atlas","big_width","big_height","t","b","l","r"],
+type_list : ["string","List<string>","int","int","double","double","double","double"],
 option_map : {}
 })
 ALittle.RegStruct(1305876767, "ALittle.PrepareInfo", {
@@ -23629,10 +23690,10 @@ name_list : ["total","succeed","failed","map","callback"],
 type_list : ["int","int","int","Map<string,bool>","Functor<(int,int,int)>"],
 option_map : {}
 })
-ALittle.RegStruct(-60039899, "ALittle.AltasInfo", {
-name : "ALittle.AltasInfo", ns_name : "ALittle", rl_name : "AltasInfo", hash_code : -60039899,
-name_list : ["big_path","atlas","big_width","big_height","t","b","l","r"],
-type_list : ["string","List<string>","int","int","double","double","double","double"],
+ALittle.RegStruct(1390702448, "ALittle.AltasCollectInfo", {
+name : "ALittle.AltasCollectInfo", ns_name : "ALittle", rl_name : "AltasCollectInfo", hash_code : 1390702448,
+name_list : ["count","list"],
+type_list : ["int","List<List<any>>"],
 option_map : {}
 })
 

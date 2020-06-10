@@ -25,6 +25,9 @@ ALittle.ModuleSystem = JavaScript.Class(undefined, {
 		}
 		return this._main_module.name;
 	},
+	GetDebugInfo : function() {
+		return this._debug_info;
+	},
 	LoadModuleImpl : function(module_base_path, name) {
 		return new Promise((async function(___COROUTINE, ___) {
 			let info = {};
@@ -142,7 +145,7 @@ ALittle.ModuleSystem = JavaScript.Class(undefined, {
 			___COROUTINE(true); return;
 		}).bind(this));
 	},
-	MainSetup : async function(base_path, module_name) {
+	MainSetup : async function(base_path, module_name, debug_info) {
 		if (this._main_module !== undefined) {
 			return;
 		}
@@ -160,6 +163,7 @@ ALittle.ModuleSystem = JavaScript.Class(undefined, {
 		}
 		A_LayerManager.AddChild(info.layer_group, A_LayerManager.group_count - 1);
 		this._main_module = info;
+		this._debug_info = debug_info;
 		let module_base_path = "Module/" + module_name + "/";
 		this._main_module.browser_loaded = true;
 		let setup_func = this._main_module.browser_setup;

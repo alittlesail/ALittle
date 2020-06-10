@@ -1,6 +1,90 @@
 {
 if (typeof ALittle === "undefined") window.ALittle = {};
 
+ALittle.RegStruct(544684311, "ALittle.UIMoveInEvent", {
+name : "ALittle.UIMoveInEvent", ns_name : "ALittle", rl_name : "UIMoveInEvent", hash_code : 544684311,
+name_list : ["target"],
+type_list : ["ALittle.DisplayObject"],
+option_map : {}
+})
+ALittle.RegStruct(683647260, "ALittle.UIMButtonUpEvent", {
+name : "ALittle.UIMButtonUpEvent", ns_name : "ALittle", rl_name : "UIMButtonUpEvent", hash_code : 683647260,
+name_list : ["target","abs_x","abs_y","rel_x","rel_y","count","is_drag"],
+type_list : ["ALittle.DisplayObject","double","double","double","double","int","bool"],
+option_map : {}
+})
+ALittle.RegStruct(734860930, "ALittle.UIFingerUpEvent", {
+name : "ALittle.UIFingerUpEvent", ns_name : "ALittle", rl_name : "UIFingerUpEvent", hash_code : 734860930,
+name_list : ["target","abs_x","abs_y","rel_x","rel_y","finger_key","is_sfc","is_drag"],
+type_list : ["ALittle.DisplayObject","double","double","double","double","string","bool","bool"],
+option_map : {}
+})
+ALittle.RegStruct(776398171, "ALittle.UIEnterKeyEvent", {
+name : "ALittle.UIEnterKeyEvent", ns_name : "ALittle", rl_name : "UIEnterKeyEvent", hash_code : 776398171,
+name_list : ["target"],
+type_list : ["ALittle.DisplayObject"],
+option_map : {}
+})
+ALittle.RegStruct(809518110, "ALittle.UIDragUpEvent", {
+name : "ALittle.UIDragUpEvent", ns_name : "ALittle", rl_name : "UIDragUpEvent", hash_code : 809518110,
+name_list : ["target"],
+type_list : ["ALittle.DisplayObject"],
+option_map : {}
+})
+ALittle.RegStruct(882286932, "ALittle.UIKeyEvent", {
+name : "ALittle.UIKeyEvent", ns_name : "ALittle", rl_name : "UIKeyEvent", hash_code : 882286932,
+name_list : ["target","mod","sym","scancode","custom","handled"],
+type_list : ["ALittle.DisplayObject","int","int","int","bool","bool"],
+option_map : {}
+})
+ALittle.RegStruct(958494922, "ALittle.UIChangedEvent", {
+name : "ALittle.UIChangedEvent", ns_name : "ALittle", rl_name : "UIChangedEvent", hash_code : 958494922,
+name_list : ["target"],
+type_list : ["ALittle.DisplayObject"],
+option_map : {}
+})
+ALittle.RegStruct(1213009422, "ALittle.UIKeyUpEvent", {
+name : "ALittle.UIKeyUpEvent", ns_name : "ALittle", rl_name : "UIKeyUpEvent", hash_code : 1213009422,
+name_list : ["target","mod","sym","scancode","custom","handled"],
+type_list : ["ALittle.DisplayObject","int","int","int","bool","bool"],
+option_map : {}
+})
+ALittle.RegStruct(1301789264, "ALittle.UIButtonDragBeginEvent", {
+name : "ALittle.UIButtonDragBeginEvent", ns_name : "ALittle", rl_name : "UIButtonDragBeginEvent", hash_code : 1301789264,
+name_list : ["target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"],
+type_list : ["ALittle.DisplayObject","double","double","double","double","double","double"],
+option_map : {}
+})
+ALittle.RegStruct(1309977874, "ALittle.UIChangedEndEvent", {
+name : "ALittle.UIChangedEndEvent", ns_name : "ALittle", rl_name : "UIChangedEndEvent", hash_code : 1309977874,
+name_list : ["target"],
+type_list : ["ALittle.DisplayObject"],
+option_map : {}
+})
+ALittle.RegStruct(1337289812, "ALittle.UIButtonDragEvent", {
+name : "ALittle.UIButtonDragEvent", ns_name : "ALittle", rl_name : "UIButtonDragEvent", hash_code : 1337289812,
+name_list : ["target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"],
+type_list : ["ALittle.DisplayObject","double","double","double","double","double","double"],
+option_map : {}
+})
+ALittle.RegStruct(1354499457, "ALittle.UIDropEvent", {
+name : "ALittle.UIDropEvent", ns_name : "ALittle", rl_name : "UIDropEvent", hash_code : 1354499457,
+name_list : ["target","drop_target"],
+type_list : ["ALittle.DisplayObject","ALittle.DisplayObject"],
+option_map : {}
+})
+ALittle.RegStruct(1598008698, "ALittle.UIFingerDragBeginEvent", {
+name : "ALittle.UIFingerDragBeginEvent", ns_name : "ALittle", rl_name : "UIFingerDragBeginEvent", hash_code : 1598008698,
+name_list : ["target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y","finger_key","is_sfc"],
+type_list : ["ALittle.DisplayObject","double","double","double","double","double","double","string","bool"],
+option_map : {}
+})
+ALittle.RegStruct(1800966813, "ALittle.UISystemSelectDirectoryEvent", {
+name : "ALittle.UISystemSelectDirectoryEvent", ns_name : "ALittle", rl_name : "UISystemSelectDirectoryEvent", hash_code : 1800966813,
+name_list : ["target","path"],
+type_list : ["ALittle.DisplayObject","string"],
+option_map : {}
+})
 ALittle.RegStruct(1816229739, "ALittle.UIAtKeyEvent", {
 name : "ALittle.UIAtKeyEvent", ns_name : "ALittle", rl_name : "UIAtKeyEvent", hash_code : 1816229739,
 name_list : ["target"],
@@ -9,6 +93,12 @@ option_map : {}
 })
 ALittle.RegStruct(1848466169, "ALittle.UIDragDownEvent", {
 name : "ALittle.UIDragDownEvent", ns_name : "ALittle", rl_name : "UIDragDownEvent", hash_code : 1848466169,
+name_list : ["target"],
+type_list : ["ALittle.DisplayObject"],
+option_map : {}
+})
+ALittle.RegStruct(1862557463, "ALittle.UIShowEvent", {
+name : "ALittle.UIShowEvent", ns_name : "ALittle", rl_name : "UIShowEvent", hash_code : 1862557463,
 name_list : ["target"],
 type_list : ["ALittle.DisplayObject"],
 option_map : {}
@@ -23,6 +113,12 @@ ALittle.RegStruct(2024735182, "ALittle.UITabKeyEvent", {
 name : "ALittle.UITabKeyEvent", ns_name : "ALittle", rl_name : "UITabKeyEvent", hash_code : 2024735182,
 name_list : ["target"],
 type_list : ["ALittle.DisplayObject"],
+option_map : {}
+})
+ALittle.RegStruct(-2050069067, "ALittle.UIFingerDragEndEvent", {
+name : "ALittle.UIFingerDragEndEvent", ns_name : "ALittle", rl_name : "UIFingerDragEndEvent", hash_code : -2050069067,
+name_list : ["target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y","finger_key","is_sfc"],
+type_list : ["ALittle.DisplayObject","double","double","double","double","double","double","string","bool"],
 option_map : {}
 })
 ALittle.RegStruct(-1737121315, "ALittle.UIMButtonWheelEvent", {
@@ -197,102 +293,6 @@ ALittle.RegStruct(444989011, "ALittle.UISelectChangedEvent", {
 name : "ALittle.UISelectChangedEvent", ns_name : "ALittle", rl_name : "UISelectChangedEvent", hash_code : 444989011,
 name_list : ["target"],
 type_list : ["ALittle.DisplayObject"],
-option_map : {}
-})
-ALittle.RegStruct(544684311, "ALittle.UIMoveInEvent", {
-name : "ALittle.UIMoveInEvent", ns_name : "ALittle", rl_name : "UIMoveInEvent", hash_code : 544684311,
-name_list : ["target"],
-type_list : ["ALittle.DisplayObject"],
-option_map : {}
-})
-ALittle.RegStruct(683647260, "ALittle.UIMButtonUpEvent", {
-name : "ALittle.UIMButtonUpEvent", ns_name : "ALittle", rl_name : "UIMButtonUpEvent", hash_code : 683647260,
-name_list : ["target","abs_x","abs_y","rel_x","rel_y","count","is_drag"],
-type_list : ["ALittle.DisplayObject","double","double","double","double","int","bool"],
-option_map : {}
-})
-ALittle.RegStruct(734860930, "ALittle.UIFingerUpEvent", {
-name : "ALittle.UIFingerUpEvent", ns_name : "ALittle", rl_name : "UIFingerUpEvent", hash_code : 734860930,
-name_list : ["target","abs_x","abs_y","rel_x","rel_y","finger_key","is_sfc","is_drag"],
-type_list : ["ALittle.DisplayObject","double","double","double","double","string","bool","bool"],
-option_map : {}
-})
-ALittle.RegStruct(776398171, "ALittle.UIEnterKeyEvent", {
-name : "ALittle.UIEnterKeyEvent", ns_name : "ALittle", rl_name : "UIEnterKeyEvent", hash_code : 776398171,
-name_list : ["target"],
-type_list : ["ALittle.DisplayObject"],
-option_map : {}
-})
-ALittle.RegStruct(809518110, "ALittle.UIDragUpEvent", {
-name : "ALittle.UIDragUpEvent", ns_name : "ALittle", rl_name : "UIDragUpEvent", hash_code : 809518110,
-name_list : ["target"],
-type_list : ["ALittle.DisplayObject"],
-option_map : {}
-})
-ALittle.RegStruct(882286932, "ALittle.UIKeyEvent", {
-name : "ALittle.UIKeyEvent", ns_name : "ALittle", rl_name : "UIKeyEvent", hash_code : 882286932,
-name_list : ["target","mod","sym","scancode","custom","handled"],
-type_list : ["ALittle.DisplayObject","int","int","int","bool","bool"],
-option_map : {}
-})
-ALittle.RegStruct(958494922, "ALittle.UIChangedEvent", {
-name : "ALittle.UIChangedEvent", ns_name : "ALittle", rl_name : "UIChangedEvent", hash_code : 958494922,
-name_list : ["target"],
-type_list : ["ALittle.DisplayObject"],
-option_map : {}
-})
-ALittle.RegStruct(1213009422, "ALittle.UIKeyUpEvent", {
-name : "ALittle.UIKeyUpEvent", ns_name : "ALittle", rl_name : "UIKeyUpEvent", hash_code : 1213009422,
-name_list : ["target","mod","sym","scancode","custom","handled"],
-type_list : ["ALittle.DisplayObject","int","int","int","bool","bool"],
-option_map : {}
-})
-ALittle.RegStruct(1301789264, "ALittle.UIButtonDragBeginEvent", {
-name : "ALittle.UIButtonDragBeginEvent", ns_name : "ALittle", rl_name : "UIButtonDragBeginEvent", hash_code : 1301789264,
-name_list : ["target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"],
-type_list : ["ALittle.DisplayObject","double","double","double","double","double","double"],
-option_map : {}
-})
-ALittle.RegStruct(1309977874, "ALittle.UIChangedEndEvent", {
-name : "ALittle.UIChangedEndEvent", ns_name : "ALittle", rl_name : "UIChangedEndEvent", hash_code : 1309977874,
-name_list : ["target"],
-type_list : ["ALittle.DisplayObject"],
-option_map : {}
-})
-ALittle.RegStruct(1337289812, "ALittle.UIButtonDragEvent", {
-name : "ALittle.UIButtonDragEvent", ns_name : "ALittle", rl_name : "UIButtonDragEvent", hash_code : 1337289812,
-name_list : ["target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"],
-type_list : ["ALittle.DisplayObject","double","double","double","double","double","double"],
-option_map : {}
-})
-ALittle.RegStruct(1354499457, "ALittle.UIDropEvent", {
-name : "ALittle.UIDropEvent", ns_name : "ALittle", rl_name : "UIDropEvent", hash_code : 1354499457,
-name_list : ["target","drop_target"],
-type_list : ["ALittle.DisplayObject","ALittle.DisplayObject"],
-option_map : {}
-})
-ALittle.RegStruct(1598008698, "ALittle.UIFingerDragBeginEvent", {
-name : "ALittle.UIFingerDragBeginEvent", ns_name : "ALittle", rl_name : "UIFingerDragBeginEvent", hash_code : 1598008698,
-name_list : ["target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y","finger_key","is_sfc"],
-type_list : ["ALittle.DisplayObject","double","double","double","double","double","double","string","bool"],
-option_map : {}
-})
-ALittle.RegStruct(1800966813, "ALittle.UISystemSelectDirectoryEvent", {
-name : "ALittle.UISystemSelectDirectoryEvent", ns_name : "ALittle", rl_name : "UISystemSelectDirectoryEvent", hash_code : 1800966813,
-name_list : ["target","path"],
-type_list : ["ALittle.DisplayObject","string"],
-option_map : {}
-})
-ALittle.RegStruct(1862557463, "ALittle.UIShowEvent", {
-name : "ALittle.UIShowEvent", ns_name : "ALittle", rl_name : "UIShowEvent", hash_code : 1862557463,
-name_list : ["target"],
-type_list : ["ALittle.DisplayObject"],
-option_map : {}
-})
-ALittle.RegStruct(-2050069067, "ALittle.UIFingerDragEndEvent", {
-name : "ALittle.UIFingerDragEndEvent", ns_name : "ALittle", rl_name : "UIFingerDragEndEvent", hash_code : -2050069067,
-name_list : ["target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y","finger_key","is_sfc"],
-type_list : ["ALittle.DisplayObject","double","double","double","double","double","double","string","bool"],
 option_map : {}
 })
 

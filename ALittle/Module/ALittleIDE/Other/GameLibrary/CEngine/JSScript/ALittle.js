@@ -242,8 +242,8 @@ window.__ALITTLEAPI_SystemSaveFile = function(path) {
 	A_OtherSystem.HandleSystemSaveFile(path);
 }
 
-window.__ALITTLEAPI_SetupMainModule = function(base_path, module_name) {
-	A_ModuleSystem.MainSetup(base_path, module_name);
+window.__ALITTLEAPI_SetupMainModule = function(base_path, module_name, debug_info) {
+	A_ModuleSystem.MainSetup(base_path, module_name, debug_info);
 }
 
 window.__ALITTLEAPI_ShutdownMainModule = function() {

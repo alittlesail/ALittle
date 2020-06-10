@@ -2,10 +2,16 @@
 if (typeof ALittle === "undefined") window.ALittle = {};
 let ___all_struct = ALittle.GetAllStruct();
 
-ALittle.RegStruct(-840570937, "ALittle.NotifyJsonRPCEvent", {
-name : "ALittle.NotifyJsonRPCEvent", ns_name : "ALittle", rl_name : "NotifyJsonRPCEvent", hash_code : -840570937,
-name_list : ["target","method","param"],
-type_list : ["ALittle.EventDispatcher","string","any"],
+ALittle.RegStruct(1715346212, "ALittle.Event", {
+name : "ALittle.Event", ns_name : "ALittle", rl_name : "Event", hash_code : 1715346212,
+name_list : ["target"],
+type_list : ["ALittle.EventDispatcher"],
+option_map : {}
+})
+ALittle.RegStruct(-1440165311, "ALittle.AppWillEnterBackground", {
+name : "ALittle.AppWillEnterBackground", ns_name : "ALittle", rl_name : "AppWillEnterBackground", hash_code : -1440165311,
+name_list : ["target"],
+type_list : ["ALittle.EventDispatcher"],
 option_map : {}
 })
 ALittle.RegStruct(521107426, "ALittle.AppDidEnterBackground", {
@@ -38,12 +44,6 @@ name_list : ["target"],
 type_list : ["ALittle.EventDispatcher"],
 option_map : {}
 })
-ALittle.RegStruct(1715346212, "ALittle.Event", {
-name : "ALittle.Event", ns_name : "ALittle", rl_name : "Event", hash_code : 1715346212,
-name_list : ["target"],
-type_list : ["ALittle.EventDispatcher"],
-option_map : {}
-})
 ALittle.RegStruct(1720966934, "ALittle.NewIntentEvent", {
 name : "ALittle.NewIntentEvent", ns_name : "ALittle", rl_name : "NewIntentEvent", hash_code : 1720966934,
 name_list : ["target","url"],
@@ -56,10 +56,10 @@ name_list : ["method","param"],
 type_list : ["string","any"],
 option_map : {}
 })
-ALittle.RegStruct(-1440165311, "ALittle.AppWillEnterBackground", {
-name : "ALittle.AppWillEnterBackground", ns_name : "ALittle", rl_name : "AppWillEnterBackground", hash_code : -1440165311,
-name_list : ["target"],
-type_list : ["ALittle.EventDispatcher"],
+ALittle.RegStruct(-840570937, "ALittle.NotifyJsonRPCEvent", {
+name : "ALittle.NotifyJsonRPCEvent", ns_name : "ALittle", rl_name : "NotifyJsonRPCEvent", hash_code : -840570937,
+name_list : ["target","method","param"],
+type_list : ["ALittle.EventDispatcher","string","any"],
 option_map : {}
 })
 

@@ -32,6 +32,10 @@ function ModuleSystem:GetMainModuleName()
 	return self._main_module.name
 end
 
+function ModuleSystem:GetDebugInfo()
+	return self._debug_info
+end
+
 function ModuleSystem:LoadModuleImpl(module_base_path, name)
 	local ___COROUTINE = coroutine.running()
 	local version_system = VersionSystem.CreateVersionSystem("", name)
@@ -155,7 +159,7 @@ function ModuleSystem:LoadModule(module_base_path, module_name)
 	return true
 end
 
-function ModuleSystem:MainSetup(base_path, module_name)
+function ModuleSystem:MainSetup(base_path, module_name, debug_info)
 	if self._main_module ~= nil then
 		return
 	end
@@ -173,6 +177,7 @@ function ModuleSystem:MainSetup(base_path, module_name)
 	end
 	A_LayerManager:AddChild(info.layer_group, A_LayerManager.group_count - 1)
 	self._main_module = info
+	self._debug_info = debug_info
 	local module_base_path = "Module/" .. module_name .. "/"
 	self._main_module.browser_loaded = true
 	local setup_func = self._main_module.browser_setup

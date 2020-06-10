@@ -1,0 +1,115 @@
+
+namespace ABrowser;
+
+protected struct AModuleInfo
+{
+	string ip;
+	int port;
+	string account_name;
+}
+
+class AModuleDownload
+{
+	private ALittle.VersionSystem _version_system;			// 版本系统
+	private string _cur_module_name;						// 当前模块名称
+	private Map<string, AModuleInfo> _module_map_info;		// 模块名称对模块信息的映射
+
+	private ALittle.Dialog _version_dialog;					// 版本对话框
+	private ALittle.DisplayObject _process_bg;				// 进度背景
+	private ALittle.DisplayObject _process_bar;				// 进度条
+	private ALittle.DisplayObject _notice_content;			// 对话框内容
+
+    public ctor()
+    {
+    	this._version_system = null;
+    	this._cur_module_name = null;
+    
+    	this._module_map_info = new Map<string, AModuleInfo>();
+    }
+    
+    public get is_doing() : bool
+    {
+    	return this._version_system != null;
+    }
+    
+    public fun GetDownloadInfo(string module_name) : AModuleInfo
+    {
+    	return this._module_map_info[module_name];
+    }
+    
+    // module_name 模块名
+    // ip
+    // port
+    // account_name 模块归属的账号名
+    public async fun Download(string module_name, string ip, int port, string account_name)
+    {
+    	if (this._version_system != null) return;
+    
+    	var info = new AModuleInfo();
+    	info.ip = ip;
+    	info.port = port;
+    	info.account_name = account_name;
+    	this._module_map_info[module_name] = info;
+    
+    	if (this._version_dialog == null)
+    	{
+    		this._version_dialog = g_Control.CreateControl{ALittle.Dialog}(g_ABrowser.ui_pre.."abrowser_module_download_dialog", this);
+    		A_LayerManager.AddToModal(this._version_dialog);
+    	}
+    	this._version_dialog.visible = true;
+    	this._version_dialog.show_close_button.visible = false;
+    	this._process_bg.visible = false;
+    	this._process_bar.visible = false;
+    
+    	this._version_system = ALittle.VersionSystem.CreateVersionSystem(account_name, module_name);
+    	this._cur_module_name = module_name;
+    
+    	var result = this._version_system.UpdateVersion(ip, port, bind(this.HandleUpdateVersion, this), false);
+		if (result == ALittle.VersionProcess.VERSION_NEED_UPDATE_ADD
+			|| result == ALittle.VersionProcess.VERSION_NEED_UPDATE_FORCE)
+		{
+		}
+		elseif (result == ALittle.VersionProcess.VERSION_NONEED_UPDATE)
+		{
+			g_ABrowser.LoadModule(this._cur_module_name);
+
+			this._version_dialog.visible = false;
+			this._version_system = null;
+		}
+		elseif (result == ALittle.VersionProcess.UPDATE_VERSION_FAILED)
+		{
+			this._version_dialog.show_close_button.visible = true;
+			this._notice_content.text = "下载失败";
+			this._process_bg.visible = false;
+			this._process_bar.visible = false;
+			this._version_system = null;
+
+			if (ALittle.File_GetFileAttr(ALittle.File_BaseFilePath().."Module/"..this._cur_module_name) != null)
+				g_ABrowser.LoadModule(this._cur_module_name);
+		}
+		elseif (result == ALittle.VersionProcess.UPDATE_VERSION_SUCCEED)
+		{
+			this._version_dialog.show_close_button.visible = true;
+			// 加载模块
+			g_ABrowser.LoadModule(this._cur_module_name);
+			this._version_dialog.visible = false;
+			this._version_system = null;
+		}
+		elseif (result == ALittle.VersionProcess.UPDATE_VERSION_INSTALL)
+		{
+			// 因为要下载的不是主模块，那么不可能出现这个情况
+		}
+    }
+    
+    // 处理版本更新事件
+    public fun HandleUpdateVersion(string file_name, int cur_size, int total_size, int cur_file_index, int file_count)
+	{
+		this._notice_content.text = "模块正在下载..."..ALittle.Math_Floor(this._version_system.current_update_size / this._version_system.total_update_size * 100).."%";
+		this._process_bg.visible = true;
+		this._process_bar.visible = true;
+		this._process_bar.x = this._process_bg.x;
+		this._process_bar.width = (this._version_system.current_update_size / this._version_system.total_update_size) * this._process_bg.width;
+    }
+}
+
+protected var g_AModuleDownload = new AModuleDownload();

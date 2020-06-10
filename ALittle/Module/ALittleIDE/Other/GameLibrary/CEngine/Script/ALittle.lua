@@ -247,8 +247,8 @@ function __ALITTLEAPI_SystemSaveFile(path)
 	A_OtherSystem:HandleSystemSaveFile(path)
 end
 
-function __ALITTLEAPI_SetupMainModule(base_path, module_name)
-	A_ModuleSystem:MainSetup(base_path, module_name)
+function __ALITTLEAPI_SetupMainModule(base_path, module_name, debug_info)
+	A_ModuleSystem:MainSetup(base_path, module_name, debug_info)
 end
 
 function __ALITTLEAPI_ShutdownMainModule()

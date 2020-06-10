@@ -1,0 +1,1 @@
+{"ops_area":{"__childs":[{"__class":"Quad","green":0.94901960784314,"red":0.94901960784314,"width_type":4,"height_type":4,"blue":0.94901960784314},{"col_count":6,"y_start_gap":5,"x_gap":5,"width_type":4,"y_gap":10,"__class":"TileTable","x_start_gap":5,"__link":"_tile_table","height_type":4}],"__class":"DisplayLayout","__target_class":["ABrowser","OPS","OPSArea"]}}

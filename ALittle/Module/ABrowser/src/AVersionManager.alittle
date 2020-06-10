@@ -1,0 +1,245 @@
+
+namespace ABrowser;
+
+class AVersionManager
+{
+	private string _debug;
+    private int _timer;
+	private ALittle.VersionSystem _version_system;
+
+	private ALittle.DisplayObject _dialog;
+
+	private ALittle.DisplayObject _notice_content;
+	private ALittle.DisplayObject _process_bg;
+	private ALittle.DisplayObject _process_bar;
+	private ALittle.DisplayObject _noupdate_btn;
+	private ALittle.DisplayObject _update_btn;
+	private ALittle.DisplayObject _check_btn;
+	private ALittle.DisplayObject _install_btn;
+	private ALittle.DisplayObject _restart_btn;
+	
+	public fun Setup(string debug)
+	{
+		this._debug = debug;
+		if (this._debug != "debug")
+			this.CheckVersionUpdate();
+	}
+
+	public fun Shutdown()
+	{
+        if (this._timer != null)
+        {
+            A_LoopSystem.RemoveTimer(this._timer);
+            this._timer = null;
+        }
+		if (this._version_system == null) return;
+		this._version_system.StopUpdate();
+	}
+    
+	// 创建对话框
+	public fun CreateDialog()
+	{
+		if (this._dialog == null)
+		{
+			this._dialog = g_Control.CreateControl{ALittle.DisplayObject}(g_ABrowser.ui_pre.."abrowser_version_download_dialog", this);
+			A_LayerManager.AddToModal(this._dialog);
+			this._dialog.visible = false;
+
+			this._notice_content.text = "";
+			this._process_bg.visible = false;
+			this._process_bar.visible = false;
+
+			this._noupdate_btn.visible = false;
+			this._update_btn.visible = false;
+			this._check_btn.visible = false;
+			this._install_btn.visible = false;
+			this._restart_btn.visible = false;
+		}
+	}
+
+	// 处理图片搜索
+	public fun ShowDialog()
+	{
+		// 创建对话框
+		this.CreateDialog();
+		// 显示对话框
+		this._dialog.visible = true;
+
+		// 检查版本
+		this.UpdateVersion(true);
+	}
+
+////////////////////////////////////////////////////////////////////////////////////////
+
+	// 检查版本
+	public fun HandleCheckClick(ALittle.UIEvent event)
+	{
+		this.UpdateVersion(true);
+	}
+	// 立即更新
+	public fun HandleUpdateClick(ALittle.UIEvent event)
+	{
+		this.UpdateVersion(false);
+	}
+	// 暂不更新
+	public fun HandleNoUpdateClick(ALittle.UIEvent event)
+	{
+		this._dialog.visible = false;
+	}
+	// 安装
+	public fun HandleInstallClick(ALittle.UIEvent event)
+	{
+		this._version_system.Install();
+	}
+	// 重启
+	public fun HandleRestartClick(ALittle.UIEvent event)
+	{
+		ALittle.System_Restart();
+	}
+
+	////////////////////////////////////////////////////////////////////////////////////////
+	// 处理版本更新事件
+	public fun HandleUpdateVersion(string file_name, int cur_size, int total_size, int cur_file_index, int file_count)
+	{
+		this._notice_content.text = "版本正在更新..."..ALittle.Math_Floor(this._version_system.current_update_size / this._version_system.total_update_size * 100).."%";
+		this._process_bg.visible = true;
+		this._process_bar.visible = true;
+		this._process_bar.x = this._process_bg.x;
+		this._process_bar.width = (this._version_system.current_update_size / this._version_system.total_update_size) * this._process_bg.width;
+		this._noupdate_btn.visible = false;
+		this._update_btn.visible = false;
+		this._check_btn.visible = false;
+		this._install_btn.visible = false;
+		this._restart_btn.visible = false;
+	}
+	
+	// 定时检查版本
+	public fun CheckVersionUpdate()
+	{
+        if (this._timer != null) return;
+        this._timer = A_LoopSystem.AddTimer(1, bind(this.CheckVersionUpdateImpl, this), 0, 3600000);
+	}
+	
+	public async fun CheckVersionUpdateImpl()
+	{
+		// 创建版本系统对象
+		if (this._version_system == null)
+			this._version_system = ALittle.VersionSystem.CreateVersionSystem("alittle", "ABrowser");
+
+		if (this._version_system.doing) return;
+	
+		var result = this._version_system.UpdateVersion("139.159.176.119", 1100, null, true);
+		if (result == ALittle.VersionProcess.VERSION_NEED_UPDATE_ADD
+			|| result == ALittle.VersionProcess.VERSION_NEED_UPDATE_FORCE) //需要强制更新
+		{
+			var platform = ALittle.System_GetPlatform();
+			if (platform == "Windows" || A_OtherSystem.GetNetworkType() == ALittle.NetworkType.WIFI)
+			{
+				if (this._debug == "debug")
+					this.ShowDialog();
+				else
+				{
+					// 创建对话框
+					this.CreateDialog();
+					// 显示对话框
+					this._dialog.visible = true;
+					// 检查版本
+					this.UpdateVersion(false);
+				}
+			}
+		}
+	}
+	
+	// 处理版本更新问题
+	public async fun UpdateVersion(bool check)
+	{
+		// 创建对话框
+		this.CreateDialog();
+		// 创建版本系统对象
+		if (this._version_system == null)
+			this._version_system = ALittle.VersionSystem.CreateVersionSystem("alittle", "ABrowser");
+		// 如果版本系统正在处理，那么久直接返回
+		if (this._version_system.doing) return;
+
+		if (check)
+		{
+			this._notice_content.text = "正在检查版本...";
+			this._process_bg.visible = false;
+			this._process_bar.visible = false;
+			this._noupdate_btn.visible = false;
+			this._update_btn.visible = false;
+			this._check_btn.visible = true;
+			this._install_btn.visible = false;
+		}
+		else
+		{
+			this._notice_content.text = "正在更新版本...";
+			this._process_bg.visible = false;
+			this._process_bar.visible = false;
+			this._noupdate_btn.visible = false;
+			this._update_btn.visible = false;
+			this._check_btn.visible = false;
+			this._install_btn.visible = false;
+		}
+	
+		var result = this._version_system.UpdateVersion("139.159.176.119", 1100, bind(this.HandleUpdateVersion, this), check);
+		if (result == ALittle.VersionProcess.VERSION_NEED_UPDATE_ADD
+			|| result == ALittle.VersionProcess.VERSION_NEED_UPDATE_FORCE) //需要强制更新
+		{
+			this._notice_content.text = "有最新版本，您是否更新?";
+			this._process_bg.visible = false;
+			this._process_bar.visible = false;
+			this._noupdate_btn.visible = true;
+			this._update_btn.visible = true;
+			this._check_btn.visible = false;
+			this._install_btn.visible = false;
+			this._restart_btn.visible = false;
+		}
+		elseif (result == ALittle.VersionProcess.VERSION_NONEED_UPDATE) //已经是最新版本
+		{
+			this._notice_content.text = "您当前已经是最新版本";
+			this._process_bg.visible = false;
+			this._process_bar.visible = false;
+			this._noupdate_btn.visible = false;
+			this._update_btn.visible = false;
+			this._check_btn.visible = true;
+			this._install_btn.visible = false;
+			this._restart_btn.visible = false;
+		}
+		elseif (result == ALittle.VersionProcess.UPDATE_VERSION_FAILED)
+		{
+			this._notice_content.text = "版本更新失败";
+			this._process_bg.visible = false;
+			this._process_bar.visible = false;
+			this._noupdate_btn.visible = false;
+			this._update_btn.visible = false;
+			this._check_btn.visible = true;
+			this._install_btn.visible = false;
+			this._restart_btn.visible = false;
+		}
+		elseif (result == ALittle.VersionProcess.UPDATE_VERSION_SUCCEED)
+		{
+			this._notice_content.text = "版本更新成功，重启软件生效";
+			this._process_bg.visible = true;
+			this._process_bar.visible = true;
+			this._noupdate_btn.visible = false;
+			this._update_btn.visible = false;
+			this._check_btn.visible = false;
+			this._install_btn.visible = false;
+			this._restart_btn.visible = true;
+		}
+		elseif (result == ALittle.VersionProcess.UPDATE_VERSION_INSTALL)
+		{
+			this._notice_content.text = "版本更新成功，需要重新安装";
+			this._process_bg.visible = true;
+			this._process_bar.visible = true;
+			this._noupdate_btn.visible = false;
+			this._update_btn.visible = false;
+			this._check_btn.visible = false;
+			this._install_btn.visible = true;
+			this._restart_btn.visible = false;
+		}
+	}
+}
+
+protected var g_AVersionManager = new AVersionManager();

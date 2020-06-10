@@ -1,0 +1,90 @@
+
+namespace ABrowser;
+
+//[[
+//	编辑器中心逻辑，主要处理主界面逻辑
+//]]
+
+protected struct CopyCutPasteUserData
+{
+	ALittle.DisplayObject target;
+	string text;
+}
+
+class ATool
+{
+	private ALittle.Dialog _notice_dialog;			// 提示对话框
+	private ALittle.DisplayObject _notice_content;	// 提示内容
+
+	private ALittle.DisplayObject _ccp_menu;		// 赋值黏贴菜单
+
+	public ctor()
+	{
+	}
+	
+	public fun ShowNotice(string title, string content)
+	{
+		if (this._notice_dialog == null)
+		{
+			this._notice_dialog = g_Control.CreateControl{ALittle.Dialog}(g_ABrowser.ui_pre.."abrowser_notice_dialog", this);
+			A_LayerManager.AddToModal(this._notice_dialog);
+		}
+		this._notice_dialog.visible = true;
+		this._notice_dialog.title = title;
+		this._notice_content.text = content;
+	}
+	
+	// 复制剪切黏贴
+	public fun ShowCopyCutPasteMenu(string text, ALittle.DisplayObject target)
+	{
+		if (this._ccp_menu == null)
+			this._ccp_menu = g_Control.CreateControl{ALittle.Dialog}(g_ABrowser.ui_pre.."abrowser_ccp_menu", this);
+		var x = A_UISystem.mouse_x;
+		var y = A_UISystem.mouse_y;
+		if (y + this._ccp_menu.height > A_UISystem.view_height)
+		{
+			this._ccp_menu.x = x;
+			this._ccp_menu.y = A_UISystem.view_height - this._ccp_menu.height;
+		}
+		else
+		{
+			this._ccp_menu.x = x;
+			this._ccp_menu.y = y;
+		}
+		var user_data = new CopyCutPasteUserData();
+		user_data.target = target;
+		user_data.text = text;
+		this._ccp_menu._user_data = user_data;
+		A_LayerManager.ShowFromRight(this._ccp_menu, false);
+	}
+	
+	public fun HandleCopyCutPasteMenuCopy(ALittle.UIEvent event)
+	{
+		var user_data:CopyCutPasteUserData = this._ccp_menu._user_data;
+		this._ccp_menu._user_data = null;
+		var text = user_data.text;
+		if (text != null && text != "")
+			ALittle.System_SetClipboardText(text);
+		A_LayerManager.HideFromRight(this._ccp_menu);
+	}
+	
+	public fun HandleCopyCutPasteMenuCut(ALittle.UIEvent event)
+	{
+		var user_data:CopyCutPasteUserData = this._ccp_menu._user_data;
+		this._ccp_menu._user_data = null;
+		if (user_data.target != null && cast<Map<string, Functor<(ALittle.DisplayObject)>>>(user_data.target)["CutText"] != null)
+			cast<Map<string, Functor<(ALittle.DisplayObject)>>>(user_data.target)["CutText"](user_data.target);
+		A_LayerManager.HideFromRight(this._ccp_menu);
+	}
+	
+	public fun HandleCopyCutPasteMenuPaste(ALittle.UIEvent event)
+	{
+		var user_data:CopyCutPasteUserData = this._ccp_menu._user_data;
+		this._ccp_menu._user_data = null;
+		if (user_data.target != null && cast<Map<string, Functor<(ALittle.DisplayObject)>>>(user_data.target)["PasteText"] != null)
+			cast<Map<string, Functor<(ALittle.DisplayObject)>>>(user_data.target)["PasteText"](user_data.target);
+		A_LayerManager.HideFromRight(this._ccp_menu);
+	}
+}
+
+protected var g_ATool = new ATool();

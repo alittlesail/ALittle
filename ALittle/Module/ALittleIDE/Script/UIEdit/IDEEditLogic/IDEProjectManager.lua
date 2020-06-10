@@ -122,7 +122,21 @@ function IDEProjectManager:ShowOpenProject()
 	end
 	self._project_open_name.text = ""
 	self._project_open_dialog.visible = true
+	local module_list = {}
+	local file_map = ALittle.File_GetFileNameListByDir(g_ModuleBasePath .. "..")
+	for name, info in ___pairs(file_map) do
+		if info.mode == "directory" then
+			ALittle.List_Push(module_list, name)
+		end
+	end
+	self._project_dropdown.data_list = module_list
+	self._project_dropdown.text = ""
 	A_UISystem.focus = self._project_open_name.show_input
+end
+
+function IDEProjectManager:HandleOpenProjectSelect(event)
+	self._project_open_name.text = event.target.text
+	event.target.text = ""
 end
 
 function IDEProjectManager:HandleOpenProjectCancel(event)
@@ -290,7 +304,7 @@ function IDEProjectManager:RunProject()
 		g_IDETool:ShowNotice("提示", "当前没有打开的项目")
 		return
 	end
-	os.execute("start ALittleClient.exe " .. g_IDEProject.project.name)
+	os.execute("start ALittleClient.exe " .. g_IDEProject.project.name .. " debug")
 end
 
 g_IDEProjectManager = IDEProjectManager()

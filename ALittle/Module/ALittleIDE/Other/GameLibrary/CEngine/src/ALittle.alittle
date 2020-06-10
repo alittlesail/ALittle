@@ -314,9 +314,9 @@ public static __ALITTLEAPI_SystemSaveFile(string path)
 }
 //////////////////////////////////////////////////////////////////////////////////////-
 // 启动核心模块资源
-public static __ALITTLEAPI_SetupMainModule(string base_path, string module_name)
+public static __ALITTLEAPI_SetupMainModule(string base_path, string module_name, string debug_info)
 {
-    A_ModuleSystem.MainSetup(base_path, module_name);
+    A_ModuleSystem.MainSetup(base_path, module_name, debug_info);
 }
 // 释放核心模块资源
 public static __ALITTLEAPI_ShutdownMainModule()

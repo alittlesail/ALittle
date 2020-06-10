@@ -5,7 +5,7 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-function __Browser_Setup(layer_group, control, module_base_path, script_base_path, debug)
+function __Browser_Setup(layer_group, control, module_base_path, script_base_path)
 	ALittle.DeleteLog(7)
 	local window_width, window_height, flag, scale = ALittle.System_CalcLandscape(1200, 600, ALittle.BitOr(0x00000080, 0x00000020))
 	ALittle.System_CreateView("ALittleIDE", window_width, window_height, flag, scale)
@@ -26,7 +26,7 @@ g_ModuleBasePath = nil
 g_ScriptBasePath = nil
 g_ModuleBasePathEx = nil
 g_IDEConfig = nil
-function __Module_Setup(layer_group, control, module_base_path, script_base_path, debug)
+function __Module_Setup(layer_group, control, module_base_path, script_base_path)
 	g_Control = control
 	g_LayerGroup = layer_group
 	g_ModuleBasePath = module_base_path

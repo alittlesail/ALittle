@@ -4,16 +4,16 @@ module("ALittleIDE", package.seeall)
 local ___pairs = pairs
 local ___ipairs = ipairs
 
-ALittle.RegStruct(1255897792, "ALittleIDE.IDEMainMenuImageInfo", {
-name = "ALittleIDE.IDEMainMenuImageInfo", ns_name = "ALittleIDE", rl_name = "IDEMainMenuImageInfo", hash_code = 1255897792,
-name_list = {"file_name","x","y","width","height"},
-type_list = {"string","double","double","double","double"},
-option_map = {}
-})
 ALittle.RegStruct(1020446174, "ALittleIDE.IDEMainMenuFramePlayInfo", {
 name = "ALittleIDE.IDEMainMenuFramePlayInfo", ns_name = "ALittleIDE", rl_name = "IDEMainMenuFramePlayInfo", hash_code = 1020446174,
 name_list = {"width","height","root_path","image_list","image_count"},
 type_list = {"double","double","string","List<ALittleIDE.IDEMainMenuImageInfo>","int"},
+option_map = {}
+})
+ALittle.RegStruct(1255897792, "ALittleIDE.IDEMainMenuImageInfo", {
+name = "ALittleIDE.IDEMainMenuImageInfo", ns_name = "ALittleIDE", rl_name = "IDEMainMenuImageInfo", hash_code = 1255897792,
+name_list = {"file_name","x","y","width","height"},
+type_list = {"string","double","double","double","double"},
 option_map = {}
 })
 

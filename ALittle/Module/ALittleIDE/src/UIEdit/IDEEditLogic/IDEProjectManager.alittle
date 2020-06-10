@@ -14,6 +14,7 @@ public class IDEProjectManager
 
 	private ALittle.DisplayObject _project_open_dialog;		// 打开项目对话框
 	private ALittle.ImageInput _project_open_name;			// 项目名称
+	private ALittle.DropDown _project_dropdown;				// 项目列表
 
 	private ALittle.DisplayObject _project_setting_dialog;	// 项目设置对话框
 	private ALittle.DisplayObject _default_show_width;		// 界面宽
@@ -162,9 +163,25 @@ public class IDEProjectManager
 		this._project_open_name.text = "";
 		// 显示对话框
 		this._project_open_dialog.visible = true;
+		// 显示项目列表
+		var module_list = new List<string>();
+		var file_map = ALittle.File_GetFileNameListByDir(g_ModuleBasePath.."..");
+		for (var name, info in file_map)
+		{
+			if (info.mode == "directory")
+				ALittle.List_Push(module_list, name);
+        }
+		this._project_dropdown.data_list = module_list;
+		this._project_dropdown.text = "";
 		// 把输入框设置为焦点
 		A_UISystem.focus = this._project_open_name.show_input;
 	}
+	// 处理选中
+	public fun HandleOpenProjectSelect(ALittle.UISelectChangedEvent event)
+	{
+        this._project_open_name.text = event.target.text;
+		event.target.text = "";
+    }
 	// 处理打开项目-取消
 	public fun HandleOpenProjectCancel(ALittle.UIEvent event)
 	{
@@ -408,7 +425,7 @@ public class IDEProjectManager
 		g_IDETool.ShowAlertDialog("提示", "JavaScript不支持运行项目");
 
 		[Language(Lua)]
-		lua.os.execute("start ALittleClient.exe "..g_IDEProject.project.name);
+		lua.os.execute("start ALittleClient.exe "..g_IDEProject.project.name.." debug");
 	}
 }
 ////////////////////////////////////////////////////////////////////////////////////-

@@ -1,0 +1,192 @@
+
+namespace ABrowser;
+
+struct AHomePageQuickInfo
+{
+    ALittle.DisplayObject _quick;
+	ALittle.Image _quick_image;
+	ALittle.DisplayObject _quick_button;
+	ALittle.DisplayObject _quick_title;
+    ALittle.DisplayObject _quick_close;
+}
+
+struct AHomePageScreenSaveInfoDetail
+{
+	string module_name;
+	string title;
+	AModuleInfo download_info;
+	string file_path;
+}
+
+struct AHomePageScreenSaveInfo
+{
+	List<AHomePageScreenSaveInfoDetail> list;
+}
+
+struct AHomePageQuickUserData
+{
+	AHomePageQuickInfo control_line;
+	AHomePageScreenSaveInfoDetail module_info;
+}
+
+class AHomePage
+{
+	private ALittle.DisplayObject _home_scene;		// 主页
+	private ALittle.ScrollScreen _home_screen;		// 主页的滚动屏
+
+	public ctor()
+	{
+    }
+    
+    public fun Setup()
+    {
+    	// 创建home界面
+    	this._home_scene = g_Control.CreateControl{ALittle.DisplayObject}("abrowser_home_scene", this);
+    	g_ABrowser.browser_tab.AddChild(this._home_scene);
+    	g_ABrowser.browser_tab.SetChildText(this._home_scene, "首页");
+    	g_ABrowser.browser_tab.DisableCloseButton(this._home_scene);
+    	g_ABrowser.browser_tab.tab = this._home_scene;
+
+		var screen_save = g_ConfigSystemUser.GetConfig("screen_save", new AHomePageScreenSaveInfo());
+    	if (screen_save.list == null) screen_save.list = new List<AHomePageScreenSaveInfoDetail>();
+        
+        var module_map = this.GetExistModuleMap();
+    	for (var k, v in screen_save.list)
+            module_map[v.module_name] = null;
+        var new_add = false;
+        for (var module_name, _ in module_map)
+        {
+            var info = new AHomePageScreenSaveInfoDetail();
+            info.module_name = module_name;
+            info.title = module_name;
+            ALittle.List_Push(screen_save.list, info);
+            new_add = true;
+        }
+        if (new_add) g_ConfigSystemUser.SetConfig("screen_save", screen_save);
+        for (var k, v in screen_save.list)
+            this.CreateQuickItem(v);
+    }
+
+    // 获取当前已存在的模块列表
+    public fun GetExistModuleMap() : Map<string, bool>
+    {
+        var module_map = new Map<string, bool>();
+        var file_map = ALittle.File_GetFileNameListByDir(g_ModuleBasePath.."..");
+        for (var name, info in file_map)
+        {
+            if (info.mode == "directory")
+                module_map[name] = true;
+        }
+        return module_map;
+    }
+
+    private fun CreateQuickItem(AHomePageScreenSaveInfoDetail info)
+    {
+    	var control_line = new AHomePageQuickInfo();
+    	control_line._quick = g_Control.CreateControl{ALittle.DisplayObject}("abrowser_home_quick", control_line);
+    	control_line._quick_title.text = info.title;
+    	this._home_screen.AddChild(control_line._quick);
+        if (info.file_path != null && ALittle.File_GetFileAttr(info.file_path) != null)
+    	    control_line._quick_image.SetTextureCut(info.file_path, ALittle.Math_Floor(control_line._quick_image.width), ALittle.Math_Floor(control_line._quick_image.height), false);
+    	control_line._quick_button.AddEventListener(this, this.HandleQuickLoadClick);
+        control_line._quick_close.AddEventListener(this, this.HandleQuickDeleteClick);
+    	var user_data = new AHomePageQuickUserData();
+    	user_data.control_line = control_line;
+    	user_data.module_info = info;
+        control_line._quick_close._user_data = user_data;
+    	control_line._quick_button._user_data = user_data;
+    	control_line._quick._user_data = user_data;
+    }
+    
+    public fun ShowHomeScene()
+    {
+    	g_ABrowser.browser_tab.tab = this._home_scene;
+    }
+    
+    public async fun HandleQuickLoadClick(ALittle.UIClickEvent event)
+    {
+		var user_data:AHomePageQuickUserData = event.target._user_data;
+    	if (user_data.module_info.download_info == null) user_data.module_info.download_info = new AModuleInfo();
+    	g_ABrowser.LoadModule(user_data.module_info.module_name
+                , user_data.module_info.download_info.ip, user_data.module_info.download_info.port
+                , user_data.module_info.download_info.account_name);
+    }
+    
+    public async fun HandleQuickDeleteClick(ALittle.UIClickEvent event)
+    {
+		var user_data:AHomePageQuickUserData = event.target._user_data;
+        var index = this._home_screen.GetChildIndex(user_data.control_line._quick);
+        this._home_screen.RemoveChild(user_data.control_line._quick);
+        
+		var screen_save = g_ConfigSystemUser.GetConfig("screen_save", new AHomePageScreenSaveInfo());
+    	if (screen_save.list == null) screen_save.list = new List<AHomePageScreenSaveInfoDetail>();
+        ALittle.List_Remove(screen_save.list, index);
+    }
+    
+    public fun RefreshQuick(string module_name, AHomePageScreenSaveInfoDetail module_info)
+    {
+        var find = false;
+    	for (var k, v in this._home_screen.childs)
+    	{
+			var user_data:AHomePageQuickUserData = v._user_data;
+    		if (user_data.module_info.module_name == module_name)
+            {
+    		    user_data.module_info = module_info;
+    		    var control_line = user_data.control_line;
+    		    control_line._quick_title.text = module_info.title;
+    		    control_line._quick_image.SetTextureCut(module_info.file_path
+                        , ALittle.Math_Floor(control_line._quick_image.width), ALittle.Math_Floor(control_line._quick_image.height), false);
+                break;
+    		}
+    	}
+        if (!find)
+            this.CreateQuickItem(module_info);
+    }
+
+    public fun SaveModuleScreen(ALittle.DisplayObject child)
+    {
+    	var loop = new ALittle.LoopFunction(bind(this.SaveModuleScreenImpl, this, child), 1, 1, 2000);
+		loop.Start();
+    }
+
+    // 截图
+    public fun SaveModuleScreenImpl(ALittle.DisplayObject child)
+    {
+		var user_data:ABrowserTabChildUserData = child._user_data;
+
+    	ALittle.File_MakeDir(g_ModuleBasePathEx.."/ModuleScreenSave");
+		var file_path = g_ModuleBasePathEx.."/ModuleScreenSave/"..ALittle.String_MD5(user_data.module_name)..".png";
+
+    	var result = g_Control.SaveControlToFile(child, file_path, 720 / ALittle.System_GetScreenWidth());
+    	if (result)
+    	{
+			var screen_save = g_ConfigSystemUser.GetConfig("screen_save", new AHomePageScreenSaveInfo());
+    		if (screen_save.list == null) screen_save.list = new List<AHomePageScreenSaveInfoDetail>();
+    		// 从list里面移除
+    		for (var k, v in screen_save.list)
+    		{
+    			if (v.module_name == user_data.module_name)
+    			{
+    				ALittle.List_Remove(screen_save.list, k);
+                    this._home_screen.RemoveChild(this._home_screen.GetChildByIndex(k));
+    				break;
+    			}
+    		}
+    		// 信息
+    		var info = new AHomePageScreenSaveInfoDetail();
+    		info.module_name = user_data.module_name;
+    		info.title = user_data.module_name;
+    		if (user_data.module_info != null && user_data.module_info.title != null)
+    			info.title = user_data.module_info.title;
+    		info.download_info = g_AModuleDownload.GetDownloadInfo(user_data.module_name);
+    		if (info.download_info == null) info.download_info = new AModuleInfo();
+    		info.file_path = file_path;
+    		ALittle.List_Insert(screen_save.list, 1, info);
+    		g_ConfigSystemUser.SetConfig("screen_save", screen_save);
+
+    		this.RefreshQuick(user_data.module_name, info);
+    	}
+    }
+}
+            
+protected var g_AHomePage = new AHomePage();

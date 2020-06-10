@@ -4,6 +4,66 @@ module("ALittleIDE", package.seeall)
 local ___pairs = pairs
 local ___ipairs = ipairs
 
+ALittle.RegStruct(-344058063, "ALittle.AWebLogout", {
+name = "ALittle.AWebLogout", ns_name = "ALittle", rl_name = "AWebLogout", hash_code = -344058063,
+name_list = {},
+type_list = {},
+option_map = {}
+})
+ALittle.RegStruct(-303211063, "ALittle.AWebLogin", {
+name = "ALittle.AWebLogin", ns_name = "ALittle", rl_name = "AWebLogin", hash_code = -303211063,
+name_list = {},
+type_list = {},
+option_map = {}
+})
+ALittle.RegStruct(898014419, "ALittle.QWebLogin", {
+name = "ALittle.QWebLogin", ns_name = "ALittle", rl_name = "QWebLogin", hash_code = 898014419,
+name_list = {"device_id","client_platform","third_platform","account_name","account_pwd"},
+type_list = {"string","string","string","string","string"},
+option_map = {}
+})
+ALittle.RegStruct(1391512615, "ALittle.S2CWebForceLogout", {
+name = "ALittle.S2CWebForceLogout", ns_name = "ALittle", rl_name = "S2CWebForceLogout", hash_code = 1391512615,
+name_list = {"reason"},
+type_list = {"string"},
+option_map = {}
+})
+ALittle.RegStruct(1598450085, "ALittle.QWebLogout", {
+name = "ALittle.QWebLogout", ns_name = "ALittle", rl_name = "QWebLogout", hash_code = 1598450085,
+name_list = {},
+type_list = {},
+option_map = {}
+})
+ALittle.RegStruct(1652964636, "ALittle.AWebChangePassword", {
+name = "ALittle.AWebChangePassword", ns_name = "ALittle", rl_name = "AWebChangePassword", hash_code = 1652964636,
+name_list = {},
+type_list = {},
+option_map = {}
+})
+ALittle.RegStruct(1809602374, "ALittle.S2CWebSession", {
+name = "ALittle.S2CWebSession", ns_name = "ALittle", rl_name = "S2CWebSession", hash_code = 1809602374,
+name_list = {"session_id"},
+type_list = {"string"},
+option_map = {}
+})
+ALittle.RegStruct(-1373673802, "ALittle.QWebChangePassword", {
+name = "ALittle.QWebChangePassword", ns_name = "ALittle", rl_name = "QWebChangePassword", hash_code = -1373673802,
+name_list = {"old_password","new_password"},
+type_list = {"string","string"},
+option_map = {}
+})
+ALittle.RegStruct(-417093574, "ALittle.S2CWebAccountInfo", {
+name = "ALittle.S2CWebAccountInfo", ns_name = "ALittle", rl_name = "S2CWebAccountInfo", hash_code = -417093574,
+name_list = {"account_id","account_name","role_id","role_name","permission_map"},
+type_list = {"string","string","string","string","Map<string,bool>"},
+option_map = {}
+})
+ALittle.RegStruct(-300988017, "ALittle.S2CWebServerInfo", {
+name = "ALittle.S2CWebServerInfo", ns_name = "ALittle", rl_name = "S2CWebServerInfo", hash_code = -300988017,
+name_list = {"http_ip","http_port"},
+type_list = {"string","int"},
+option_map = {}
+})
 
 IDELoginManager = Lua.Class(nil, "ALittleIDE.IDELoginManager")
 
@@ -48,7 +108,7 @@ end
 
 function IDELoginManager:Connect()
 	local param = {}
-	param.route_type = ALittle.RouteType.RT_VERSION
+	param.route_type = 3
 	local client = ALittle.CreateHttpSender(self._logingate_ip, self._logingate_port)
 	local error, result = ALittle.IHttpSender.Invoke("GatewayServer.QRouteInfo", client, param)
 	if error ~= nil then
@@ -99,6 +159,7 @@ function IDELoginManager:ShowLoginDialog()
 		self._auto_login_check.selected = self._auto_login
 	end
 	self._login_dialog.visible = true
+	self._login_account:DelayFocus()
 end
 
 function IDELoginManager:HideLoginDialog()
@@ -114,6 +175,7 @@ function IDELoginManager:ShowPasswordDialog()
 		g_IDECenter.dialog_layer:AddChild(self._password_dialog)
 	end
 	self._password_dialog.visible = true
+	self._pas_old_password.focus = true
 	self._pas_old_password.text = ""
 	self._pas_new_password.text = ""
 	self._pas_repeat_password.text = ""
@@ -141,6 +203,22 @@ function IDELoginManager:HandleLoginClick(event)
 	self._save_password = self._save_password_check.selected
 	self._auto_login = self._auto_login_check.selected
 	self:LoginImpl()
+end
+
+function IDELoginManager:HandleLoginAccountTabKey(event)
+	self._login_password.focus = true
+end
+
+function IDELoginManager:HandleLoginPasswordTabKey(event)
+	self._login_account.focus = true
+end
+
+function IDELoginManager:HandleOldPasswordTabKey(event)
+	self._pas_new_password.focus = true
+end
+
+function IDELoginManager:HandleNewPasswordTabKey(event)
+	self._pas_repeat_password.focus = true
 end
 
 function IDELoginManager:Logout()

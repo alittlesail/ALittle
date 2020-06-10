@@ -1,0 +1,1 @@
+{"m_abrowser_notice_dialog":{"__childs":[{"valign":1,"width_type":4,"font_path":"Miui-Regular.ttf","__class":"TextArea","y_value":-9,"__link":"_notice_content","blue":0,"height_value":30,"width_value":20,"red":0,"height_type":4,"text":"提示内容","y_type":3,"green":0,"font_size":30,"x_type":3,"halign":1}],"__extends":"m_abrowser_common_dialog","title":"提示","width_type":4}}

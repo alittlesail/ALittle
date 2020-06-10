@@ -1,0 +1,264 @@
+
+namespace ABrowser;
+
+protected struct ABrowserTabChildUserData
+{
+	string module_name;
+	ALittle.ModuleShortInfo module_info;
+}
+
+class ABrowserMain
+{
+	private Map<string, ALittle.DisplayGroup> _module_name_map_tab;	// 模块名称映射对应的标签页
+	private string _ui_pre;												// 浏览器ui前缀
+	private string _debug;												// 是否是调试模式
+	
+	private ALittle.DisplayLayout _main_layer;			// 主层
+	private ALittle.DisplayLayout _dialog_layer;		// 对话框层
+	private ALittle.Tab _browser_tab;					// tab控件
+	private ALittle.DisplayObject _main_menu;			// 主菜单列表
+	private ALittle.DisplayObject _main_menu_button;	// 主菜单按钮
+
+	public ctor()
+	{
+    	this._module_name_map_tab = new Map<string, ALittle.DisplayLayout>();
+    
+    	this._ui_pre = "";
+    	if (ALittle.System_IsPhone()) this._ui_pre = "m_";
+    }
+
+	public get ui_pre() : string { return this._ui_pre; }
+	public get browser_tab() : ALittle.Tab { return this._browser_tab; }
+    
+    public await fun Setup(string debug)
+    {
+    	this._debug = debug;
+    
+    	alittle.Require(g_ScriptBasePath, "ATool");
+    	alittle.Require(g_ScriptBasePath, "AHomePage");
+    	alittle.Require(g_ScriptBasePath, "AModuleDownload");
+    	alittle.Require(g_ScriptBasePath, "AVersionManager");
+    	alittle.Require(g_ScriptBasePath, "AIMEManager");
+    
+    	// 获取配置信息
+    	g_ConfigSystem = ALittle.CreateConfigSystem(g_ModuleBasePath.."/Other/ABrowserSysem.cfg");
+    	g_ConfigSystemUser = ALittle.CreateConfigSystem(g_ModuleBasePath.."/ABrowserUser.cfg");
+    	// 生成随机数种子
+    	ALittle.Math_RandomSeed(ALittle.Time_GetCurTime());
+    	// 设置5个线程
+    	ALittle.System_SetThreadCount(5);
+    
+    	// 创建主层
+    	this._main_layer = new ALittle.DisplayLayout(g_Control);
+    	this._main_layer.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+    	this._main_layer.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+    	g_LayerGroup.AddChild(this._main_layer);
+    	this._dialog_layer = new ALittle.DisplayLayout(g_Control);
+    	this._dialog_layer.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+    	this._dialog_layer.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+    	g_LayerGroup.AddChild(this._dialog_layer);
+    
+    	// 创建主界面
+    	g_Control.CreateControl{ALittle.DisplayObject}(this._ui_pre.."abrowser_main_scene", this, this._main_layer);
+    	this._browser_tab.close_post_callback = bind(this.HandleTabRemoved, this);
+    	this._browser_tab.AddEventListener(this, this.HandleTabChanged);
+
+    	g_AIMEManager.Setup();
+    	g_AHomePage.Setup();
+    	g_AVersionManager.Setup(debug);
+    }
+	
+    // 执行地址栏上面的逻辑
+    public async fun HandleAddressLoad(ALittle.UIEvent event)
+    {
+    	var object = event.target;
+    	var url_list = ALittle.String_Split(object.text, "/");
+    	if (ALittle.List_MaxN(url_list) < 1)
+    	{
+    		g_ATool.ShowNotice("提示", "地址格式不正确，正确格式为->IP或者域名:端口/账号名/模块名");
+    		return;
+    	}
+    
+    	if (ALittle.List_MaxN(url_list) == 1)
+    	{
+    		this.LoadModule(url_list[1]);
+    		return;
+    	}
+    
+    	var account_name = "alittle";
+    	var module_name = "";
+    	var ip = "139.159.176.119";
+    	var port = 1011;
+    
+    	if (ALittle.List_MaxN(url_list) == 2)
+    	{
+    		account_name = url_list[1];
+    		module_name = url_list[2];
+    	}
+    	else
+    	{
+    		account_name = url_list[2];
+    		module_name = url_list[3];
+    		var address_list = ALittle.String_Split(url_list[1], ":");
+    		if (address_list[1] != null && address_list[1] != "") ip = address_list[1];
+    		if (address_list[2] != null) port = ALittle.Math_ToIntOrZero(address_list[2]);
+    	}
+
+    	if (ip == null || port == null || account_name == null || module_name == null)
+    	{
+    		g_ATool.ShowNotice("提示", "地址格式不正确，正确格式为->IP或者域名:端口/账号名/模块名");
+    		return;
+    	}
+    
+    	this.LoadModule(module_name, ip, port, account_name);
+    }
+    
+    public fun HandleShowHomeScene(ALittle.UIEvent event)
+    {
+    	g_AHomePage.ShowHomeScene();
+    }
+    
+    public fun HandleShowMainMenu(ALittle.UIEvent event)
+    {
+    	if (this._main_menu == null)
+    		this._main_menu = g_Control.CreateControl{ALittle.DisplayObject}(this._ui_pre.."abrowser_main_menu", this);
+    		
+    	A_LayerManager.ShowFromRight(this._main_menu);
+    	var x, y = this._main_menu_button.LocalToGlobal();
+    	y = y + this._main_menu_button.height;
+    	x = A_UISystem.view_width - this._main_menu.width;
+    	this._main_menu.x = x;
+    	this._main_menu.y = y;
+    }
+    
+    public fun HandleMainMenuUpdateVersion(ALittle.UIEvent event)
+    {
+    	A_LayerManager.HideFromRight(this._main_menu);
+    	g_AVersionManager.ShowDialog();
+    }
+    
+    public fun HandleMainMenuHelp(ALittle.UIEvent event)
+    {
+    	A_LayerManager.HideFromRight(this._main_menu);
+    	// 这里先留着后面开发
+    }
+    
+    //////////////////////////////////////////////////////////////////////////////////-
+    
+    public await fun LoadModule(string module_name, [Nullable] string ip, [Nullable] int port, [Nullable] string account_name)
+    {
+    	var tab_child = this._module_name_map_tab[module_name];
+    	if (tab_child != null)
+    	{
+    		this._browser_tab.tab = tab_child;
+    		return;
+    	}
+    	// 检查是否已存在
+    	if (ip != null && this._debug != "debug")
+    	{
+    		// 开始下载
+    		g_AModuleDownload.Download(module_name, ip, port, account_name);
+    	}
+    	else
+    	{
+    		var result = A_ModuleSystem.LoadModule("Module/"..module_name.."/", module_name);
+    		if (result == false)
+    			g_ATool.ShowNotice("错误", "模块加载失败");
+    	}
+    }
+    
+    public fun AddModule(string module_name, ALittle.DisplayGroup layer_group, ALittle.ModuleShortInfo module_info) : bool
+    {
+    	var child = layer_group;
+    	layer_group.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+    	layer_group.width_value = 0;
+    	layer_group.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+    	layer_group.height_value = 0;
+    	if (module_info != null)
+    	{
+    		if (module_info.width_type == ALittle.UIEnumTypes.SIZE_ABS
+    			&& module_info.height_type == ALittle.UIEnumTypes.SIZE_ABS)
+    		{
+				var screen = g_Control.CreateControl{ALittle.ScrollScreen}("abrowser_hv_scroll_screen");
+				var container = new ALittle.DisplayView(g_Control);
+    			container.width = module_info.width_value;
+    			container.height = module_info.height_value;
+    			screen.container = container;
+    			screen.AddChild(layer_group);
+    			child = screen;
+    		}
+    		elseif (module_info.width_type == ALittle.UIEnumTypes.SIZE_ABS
+    			&& module_info.height_type != ALittle.UIEnumTypes.SIZE_ABS)
+    		{
+				var screen = g_Control.CreateControl{ALittle.ScrollScreen}("abrowser_h_scroll_screen");
+    			var container = new ALittle.DisplayView(g_Control);
+    			container.width = module_info.width_value;
+    			container.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+    			container.height_value = 0;
+    			screen.container = container;
+    			screen.AddChild(layer_group);
+    			child = screen;
+    		}
+    		elseif (module_info.width_type != ALittle.UIEnumTypes.SIZE_ABS
+    			&& module_info.height_type == ALittle.UIEnumTypes.SIZE_ABS)
+    		{
+				var screen = g_Control.CreateControl{ALittle.ScrollScreen}("abrowser_v_scroll_screen");
+    			var container = new ALittle.DisplayView(g_Control);
+    			container.height = module_info.height_value;
+    			container.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+    			container.width_value = 0;
+    			screen.container = container;
+    			screen.AddChild(layer_group);
+    			child = screen;
+    		}
+    	}
+
+    	var user_data = new ABrowserTabChildUserData();
+    	user_data.module_name = module_name;
+    	user_data.module_info = module_info;
+    	child._user_data = user_data;
+    	this._browser_tab.AddChild(child);
+    	this._browser_tab.tab = child;
+    	this._module_name_map_tab[module_name] = child;
+    
+    	g_AHomePage.SaveModuleScreen(child);
+
+		var title = module_name;
+    	if (module_info != null && module_info.title != null) title = module_info.title;
+    	this._browser_tab.SetChildText(child, title);
+    	return true;
+    }
+    
+    // 当标签也发生变化
+    public fun HandleTabChanged(ALittle.UISelectChangedEvent event)
+    {
+		var object = cast<ALittle.Tab>(event.target);
+    	var tab = object.tab;
+    	if (tab == null) return;
+    	// 首页不会出现user_data
+    	if (tab._user_data == null) return;
+        
+		var user_data:ABrowserTabChildUserData = tab._user_data;
+    }
+    
+    // 当标签页关闭时移除控件
+    public fun HandleTabRemoved(ALittle.DisplayObject child)
+    {
+		var user_data:ABrowserTabChildUserData = child._user_data;
+    	A_ModuleSystem.RemoveModule(user_data.module_name);
+    	this._module_name_map_tab[user_data.module_name] = null;
+    }
+
+    public fun HandleAddressRightMenu(ALittle.UIEvent event)
+    {
+        var object = event.target;
+     	g_ATool.ShowCopyCutPasteMenu(object.text, object);
+    }
+
+    public fun Shutdown()
+    {
+        g_AIMEManager.Shutdown();
+    }
+}
+
+protected var g_ABrowser = new ABrowserMain();

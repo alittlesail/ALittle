@@ -75,10 +75,10 @@ function __Module_GetInfo(control, module_base_path, script_base_path)
 	local info = {}
 	info.title = "Emulator"
 	info.icon = nil
-	info.width_type = 1
-	info.width_value = 1200
-	info.height_type = 1
-	info.height_value = 600
+	info.width_type = 4
+	info.width_value = 0
+	info.height_type = 4
+	info.height_value = 0
 	return info
 end
 

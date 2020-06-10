@@ -97,9 +97,9 @@ public static __Module_GetInfo(ALittle.ControlSystem control, string module_base
 	var info = new ALittle.ModuleShortInfo();
 	info.title = "Emulator";
 	info.icon = null;
-	info.width_type = ALittle.UIEnumTypes.SIZE_ABS;
-	info.width_value = 1200;
-	info.height_type = ALittle.UIEnumTypes.SIZE_ABS;
-	info.height_value = 600;
+	info.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+	info.width_value = 0;
+	info.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+	info.height_value = 0;
 	return info;
 }

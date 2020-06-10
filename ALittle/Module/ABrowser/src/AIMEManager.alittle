@@ -1,0 +1,100 @@
+
+namespace ABrowser;
+
+public class AIMEManager
+{
+	private ALittle.Dialog _ime_dialog;
+	private double _ime_dialog_init_width;
+	private ALittle.DisplayObject _ime_editing_list;
+	
+	private Functor<(bool, string, int, List<string>, ALittle.DisplayObject)> _callback;
+
+	public ctor()
+	{
+	
+	}
+	
+	public fun Setup()
+	{
+		// 如果已经有输入法了，那么就直接返回
+		if (A_UISystem.ime_callback != null) return;
+		// 创建输入法界面
+		if (this._ime_dialog == null)
+		{
+			this._ime_dialog = g_Control.CreateControl{ALittle.Dialog}("abrowser_ime_dialog", this);
+			A_LayerManager.AddToTip(this._ime_dialog);
+			this._ime_dialog.visible = false;
+	
+			this._ime_dialog_init_width = this._ime_dialog.width;
+		}
+		this._callback = bind(this.HandleImeEditingCallback, this);
+		A_UISystem.ime_callback = this._callback;
+	}
+	
+	public fun Shutdown()
+	{
+		if (this._ime_dialog != null)
+		{
+			A_LayerManager.RemoveFromTip(this._ime_dialog);
+			this._ime_dialog = null;
+		}
+		if (A_UISystem.ime_callback == this._callback)
+			A_UISystem.ime_callback = null;
+		
+		this._callback = null;
+	}
+	
+	// 参数：open开关，text正在编辑的文本，start光标偏移，list候选字符串列表, target目标控件
+	public fun HandleImeEditingCallback(bool open, string text, int start, List<string> list, ALittle.DisplayObject target)
+	{
+		if (this._ime_dialog == null) return;
+
+		// 如果target是TextInput，并且是密码状态，那么就返回
+		if (open && target != null)
+		{
+			var class_info = reflect(target);
+			if (class_info.__name == "ALittle.TextInput" && cast<ALittle.TextInput>(target).password_mode)
+				return;   
+        }
+	
+		this._ime_dialog.visible = open;
+	
+		if (open && target != null)
+		{
+			this._ime_dialog.title = text;
+	
+			var new_list = new List<string>();
+			var new_list_count = 0;
+			for (var k, v in list)
+			{
+				++new_list_count;
+				new_list[new_list_count] = k.."."..v;
+			}
+			this._ime_editing_list.text = ALittle.String_Join(new_list, " ");
+	
+			// 获取目标控件的绝对位置
+	
+			var global_x, global_y = target.LocalToGlobal();
+			var height = target.height;
+	
+			this._ime_dialog.x = global_x;
+			this._ime_dialog.y = global_y + height;
+	
+			var width = this._ime_editing_list.width +  this._ime_editing_list.x * 2;
+			if (width < this._ime_dialog_init_width)
+				width = this._ime_dialog_init_width;
+
+			if (this._ime_dialog.width != width)
+				this._ime_dialog.width = width;
+	
+			// 根据窗口大小，调整位置
+			if (this._ime_dialog.y + this._ime_dialog.height > A_UISystem.view_height)
+				this._ime_dialog.y = global_y - this._ime_dialog.height;
+
+			if (this._ime_dialog.x + this._ime_dialog.width > A_UISystem.view_width)
+				this._ime_dialog.x = A_UISystem.view_width - this._ime_dialog.width;
+		}
+	}
+}
+
+protected var g_AIMEManager = new AIMEManager();

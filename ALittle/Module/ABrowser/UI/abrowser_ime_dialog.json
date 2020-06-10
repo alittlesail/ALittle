@@ -1,0 +1,1 @@
+{"abrowser_ime_dialog":{"height_value":69,"width_value":281,"__childs":[{"red":0,"font_path":"Miui-Regular.ttf","blue":0,"__class":"Text","font_size":15,"green":0,"text":"候选的部分","__link":"_ime_editing_list","x_value":9}],"__extends":"abrowser_common_dialog_without_close","title":"输入法"}}

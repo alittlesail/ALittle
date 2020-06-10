@@ -1,0 +1,78 @@
+
+namespace ABrowser;
+
+// 壳入口函数
+public async static __Browser_Setup(ALittle.DisplayLayout layer_group
+                             , ALittle.ControlSystem control
+                             , string module_base_path, string script_base_path
+                             , string debug)
+{
+    // 创建窗口
+    var window_width, window_height, flag, scale = ALittle.System_CalcLandscape(1200, 600
+        , ALittle.BitOr(ALittle.UIEnumTypes.VIEW_MAXIMIZED, ALittle.UIEnumTypes.VIEW_RESIZABLE));
+    ALittle.System_CreateView("ABrowser", window_width, window_height, flag, scale);
+    ALittle.System_SetViewIcon(module_base_path.."/Other/ic_launcher.png");
+    
+    // 加载模块
+    A_ModuleSystem.LoadModule(module_base_path, "ABrowser");
+}
+
+// 壳处理添加模块，layer_group是模块的层组
+// 返回false，或者nil，表示不处理，否则下面的层直接挂接在壳下面
+public static __Browser_AddModule(string module_name, ALittle.DisplayLayout layer_group, ALittle.ModuleShortInfo module_info) : bool
+{
+	return g_ABrowser.AddModule(module_name, layer_group, module_info);
+}
+
+// 壳结束函数
+public static __Browser_Shutdown()
+{
+}
+
+protected var g_Control:ALittle.ControlSystem;
+protected var g_LayerGroup:ALittle.DisplayLayout;
+protected var g_ModuleBasePath:string;
+protected var g_ScriptBasePath:string;
+protected var g_ModuleBasePathEx:string;
+protected var g_ConfigSystem:ALittle.IJsonConfig;
+protected var g_ConfigSystemUser:ALittle.IJsonConfig;
+
+// 模块入口函数
+public async static __Module_Setup(ALittle.DisplayLayout layer_group, ALittle.ControlSystem control
+                            , string module_base_path, string script_base_path)
+{
+    // 把resource, layer_group变量保存到全局，便于使用
+    g_Control = control;
+    g_LayerGroup = layer_group;
+    g_ModuleBasePath = module_base_path;
+    g_ModuleBasePathEx = ALittle.File_BaseFilePath()..module_base_path;
+    g_ScriptBasePath = script_base_path;
+
+	// 这里加载必要的代码，最好把所有的都加载进来
+	alittle.Require(script_base_path, "ABrowser");
+	g_ABrowser.Setup(A_ModuleSystem.GetDebugInfo());
+}
+
+// 模块结束函数
+public static __Module_Shutdown()
+{
+	g_ABrowser.Shutdown();
+}
+
+// 提供给壳的模块信息
+public static __Module_GetInfo(ALittle.ControlSystem control, string module_base_path, string script_base_path) : ALittle.ModuleShortInfo
+{
+	var info = new ALittle.ModuleShortInfo();
+	info.title = "A浏览器";
+	info.icon = null;
+	info.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+	info.width_value = 0;
+	info.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+	info.height_value = 0;
+	return info;
+}
+
+// 插件入口函数
+public static __Plugin_Setup(ALittle.ControlSystem control, string module_base_path, string script_base_path)
+{
+}

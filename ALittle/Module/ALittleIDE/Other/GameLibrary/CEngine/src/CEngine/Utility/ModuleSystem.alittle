@@ -37,6 +37,7 @@ class ModuleSystem
 {
     private Map<string, ModuleInfo> _name_module_map;
     private ModuleInfo              _main_module;
+    private string                  _debug_info;
 
     public ctor()
     {
@@ -53,6 +54,12 @@ class ModuleSystem
             return null;
 
         return this._main_module.name;
+    }
+
+    // 获取调试信息
+    public fun GetDebugInfo() : string
+    {
+        return this._debug_info;
     }
     
     public await fun LoadModuleImpl(string module_base_path, string name) : ModuleInfo
@@ -251,7 +258,7 @@ class ModuleSystem
         return true;
     }
     
-    public async fun MainSetup(string base_path, string module_name)
+    public async fun MainSetup(string base_path, string module_name, string debug_info)
     {
         // 检查主模块是否已经加载
         if (this._main_module != null)
@@ -277,6 +284,7 @@ class ModuleSystem
         // 把组模块的层组放进层管理器
         A_LayerManager.AddChild(info.layer_group, A_LayerManager.group_count - 1);
         this._main_module = info;
+        this._debug_info = debug_info;
     
         // 模块基本路径
         var module_base_path = "Module/" .. module_name.."/";

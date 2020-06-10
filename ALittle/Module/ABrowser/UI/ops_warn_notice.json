@@ -1,0 +1,1 @@
+{"ops_warn_notice":{"__childs":[{"top_size":18,"bottom_size":21,"__class":"Grid9Image","width_type":4,"left_size":27,"height_type":4,"right_size":6,"texture_name":"OPS\/warn_notice.png"},{"y_type":3,"y_value":2,"x_value":33,"__extends":"ops_common_text","__link":"_warn_notice_text","text":"提示，请输入密码"}],"__class":"DisplayLayout","height_value":43,"width_value":200}}

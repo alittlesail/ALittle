@@ -347,6 +347,15 @@ public class DisplayObject : UIEventDispatcher
         return A_UISystem.focus == this;
     }
 
+    // 下一帧获取焦点
+    public fun DelayFocus()
+    {
+        var loop = new LoopTimer(bind(this.HandleDelayFocus, this), 1);
+        loop.Start();
+    }
+
+    private fun HandleDelayFocus() { this.focus = true; }
+
     // 控件焦点
     public set focus(bool value)
     {

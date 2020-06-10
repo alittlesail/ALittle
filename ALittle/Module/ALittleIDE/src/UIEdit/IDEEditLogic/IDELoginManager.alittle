@@ -161,6 +161,7 @@ class IDELoginManager
 			this._auto_login_check.selected = this._auto_login;
 		}
 		this._login_dialog.visible = true;
+		this._login_account.DelayFocus();
 	}
 	
 	public fun HideLoginDialog()
@@ -178,6 +179,7 @@ class IDELoginManager
 			g_IDECenter.dialog_layer.AddChild(this._password_dialog);
 		}
 		this._password_dialog.visible = true;
+		this._pas_old_password.focus = true;
 		this._pas_old_password.text = "";
 		this._pas_new_password.text = "";
 		this._pas_repeat_password.text = "";
@@ -206,6 +208,12 @@ class IDELoginManager
 		this._auto_login = this._auto_login_check.selected;
 		this.LoginImpl();
 	}
+
+	// 执行tab按钮
+	private fun HandleLoginAccountTabKey(ALittle.UITabKeyEvent event) { this._login_password.focus = true; }
+	private fun HandleLoginPasswordTabKey(ALittle.UITabKeyEvent event) { this._login_account.focus = true; }
+	private fun HandleOldPasswordTabKey(ALittle.UITabKeyEvent event) { this._pas_new_password.focus = true; }
+	private fun HandleNewPasswordTabKey(ALittle.UITabKeyEvent event) { this._pas_repeat_password.focus = true; }
 	
 	// 登出
 	public async fun Logout()

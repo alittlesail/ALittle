@@ -621,7 +621,7 @@ class UISystem
                 this._ime_editing_callback(false, null, null, null, null);
             return;
         }
-
+        
         // 向焦点控件发送键盘按键事件
         var event = new UIKeyDownEvent();
         event.target = this._sfc;

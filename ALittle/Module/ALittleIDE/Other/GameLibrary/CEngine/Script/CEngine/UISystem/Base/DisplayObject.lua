@@ -191,6 +191,15 @@ function DisplayObject.__getter:is_focus()
 	return A_UISystem.focus == self
 end
 
+function DisplayObject:DelayFocus()
+	local loop = LoopTimer(Lua.Bind(self.HandleDelayFocus, self), 1)
+	loop:Start()
+end
+
+function DisplayObject:HandleDelayFocus()
+	self.focus = true
+end
+
 function DisplayObject.__setter:focus(value)
 	if value then
 		A_UISystem.focus = self

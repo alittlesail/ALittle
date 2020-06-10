@@ -57,7 +57,7 @@ public await static RequireCore(string base_path)
     [Language(Lua)]
     Require(base_path, "Core/Lua/LuaException");
 
-    // Õâ¸öÊÇÎªÁË¼æÈİlua5.2»òÒÔÉÏ°æ±¾
+    // è¿™ä¸ªæ˜¯ä¸ºäº†å…¼å®¹lua5.2æˆ–ä»¥ä¸Šç‰ˆæœ¬
     [Language(Lua)]
     if (_G["bit"] == null) _G["bit"] = _G["bit32"];
 

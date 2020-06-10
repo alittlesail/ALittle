@@ -48,6 +48,14 @@ public class IDEIMEManager
 	public fun HandleImeEditingCallback(bool open, string text, int start, List<string> list, ALittle.DisplayObject target)
 	{
 		if (this._ime_dialog == null) return;
+
+		// 如果target是TextInput，并且是密码状态，那么就返回
+		if (open && target != null)
+		{
+			var class_info = reflect(target);
+			if (class_info.__name == "ALittle.TextInput" && cast<ALittle.TextInput>(target).password_mode)
+				return;   
+        }
 	
 		this._ime_dialog.visible = open;
 	

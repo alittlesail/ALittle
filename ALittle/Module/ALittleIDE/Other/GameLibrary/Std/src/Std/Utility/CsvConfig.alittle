@@ -19,10 +19,10 @@ public class ICsvFileLoader
 
 public class CsvConfig
 {
-    // Ö±½Ó×èÈû¼ÓÔØ
+    // ç›´æ¥é˜»å¡åŠ è½½
     public fun Load(string file_path)
     {
-        // Lua¼ÓÔØcsv
+        // LuaåŠ è½½csv
         [Language(Lua)]
         var lua_file = new Lua.LuaCsvFile();
         [Language(Lua)]
@@ -30,7 +30,7 @@ public class CsvConfig
         [Language(Lua)]
         this.Init(lua_file);
         
-        // JavaScript¼ÓÔØcsv
+        // JavaScriptåŠ è½½csv
         [Language(JavaScript)]
         var js_file = new JavaScript.JCsvFile();
         [Language(JavaScript)]
@@ -38,11 +38,11 @@ public class CsvConfig
         [Language(JavaScript)]
         this.Init(js_file);
         
-        // ´òÓ¡¼ÓÔØ³É¹¦
+        // æ‰“å°åŠ è½½æˆåŠŸ
         Log(file_path.." load succeed!");
     }
     
-    // ³õÊ¼»¯Êı¾İ
+    // åˆå§‹åŒ–æ•°æ®
     public fun Init(ICsvFile file) {}
 }
 
@@ -114,12 +114,12 @@ protected class CsvTableConfig<T:struct> : CsvConfig
     
     public ctor()
     {
-        // »ñÈ¡csv·´ÉäĞÅÏ¢
+        // è·å–csvåå°„ä¿¡æ¯
         var error:string = null;
         error, this._csv_info = tcall(CreateCsvInfo, reflect<T>);
         if (error != null) Error(error);
         
-        // »ñÈ¡csvÁĞÓ³ÉäĞÅÏ¢
+        // è·å–csvåˆ—æ˜ å°„ä¿¡æ¯
         this._col_map = new Map<int, int>();
     }
     
@@ -129,13 +129,13 @@ protected class CsvTableConfig<T:struct> : CsvConfig
         this._csv_file = file;
         if (this._csv_file == null) return;
         
-        // ÊÕ¼¯×Ö¶ÎÁĞĞÅÏ¢
+        // æ”¶é›†å­—æ®µåˆ—ä¿¡æ¯
         var rflt = reflect<T>;
         var name_map = new Map<string, int>();
         for (var index, name in rflt.name_list)
             name_map[name] = index;
         
-        // ×Ö¶ÎµÄÁĞÓ³ÉäcsvµÄÁĞ
+        // å­—æ®µçš„åˆ—æ˜ å°„csvçš„åˆ—
         for (var i = 1; i <= this._csv_file.GetColCount(); 1)
         {
             var name = this._csv_file.ReadCell(1, i);
@@ -239,13 +239,13 @@ public class DoubleKeyTableConfig<T:struct, KEY1, KEY2> : CsvTableConfig
     {   
         var rflt = reflect<T>;
         
-        // µÚÒ»¸ökey
+        // ç¬¬ä¸€ä¸ªkey
         var first_key_type = rflt.type_list[1];
         var first_key_index = this._col_map[1];
         var first_is_int = first_key_type == "int" || first_key_type == "long";
         var first_is_double = first_key_type == "double";
         
-        // µÚ¶ş¸ökey
+        // ç¬¬äºŒä¸ªkey
         var second_key_type = rflt.type_list[2];
         var second_key_index = this._col_map[2];
         var second_is_int = second_key_type == "int" || second_key_type == "long";

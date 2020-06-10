@@ -1,0 +1,1 @@
+{"ide_common_tab_closebutton":{"height_value":11,"show_down":{"__class":"Image","texture_name":"tab_close_down.png"},"show_disabled":{"__class":"Image","texture_name":"tab_close_up.png"},"width_value":14,"show_over":{"__class":"Image","texture_name":"tab_close_over.png"},"show_up":{"__class":"Image","texture_name":"tab_close_up.png"},"__class":"TextButton"}}

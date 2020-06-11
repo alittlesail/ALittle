@@ -6,5 +6,9 @@
     <None Include="src\AUIVersionManager.alittle" />
     <None Include="src\AUITool.alittle" />
     <None Include="src\AUIRightMenu.alittle" />
+    <None Include="src\AUIWebLoginManager.alittle" />
+    <None Include="src\AUIImageCutPlugin.alittle" />
+    <None Include="src\AUIEditImageDialog.alittle" />
+    <None Include="src\AUIFileSelectDialog.alittle" />
   </ItemGroup>
 </Project>

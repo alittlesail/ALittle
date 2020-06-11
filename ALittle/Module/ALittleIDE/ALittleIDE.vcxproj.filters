@@ -34,9 +34,6 @@
     <None Include="src\UIEdit\IDEUICenter.alittle">
       <Filter>源文件\UIEdit</Filter>
     </None>
-    <None Include="src\UIEdit\IDEEditLogic\IDELoginManager.alittle">
-      <Filter>源文件\UIEdit\IDEEditLogic</Filter>
-    </None>
     <None Include="src\UIEdit\IDEEditLogic\IDEMainMenu.alittle">
       <Filter>源文件\UIEdit\IDEEditLogic</Filter>
     </None>
@@ -60,15 +57,6 @@
     </None>
     <None Include="src\UIEdit\IDEEditLogic\IDEControlTree.alittle">
       <Filter>源文件\UIEdit\IDEEditLogic</Filter>
-    </None>
-    <None Include="src\UIEdit\IDEEditLogic\IDEImageManager.alittle">
-      <Filter>源文件\UIEdit\IDEEditLogic</Filter>
-    </None>
-    <None Include="src\UIEdit\IDEEditCore\IDEEditImageDialog.alittle">
-      <Filter>源文件\UIEdit\IDEEditCore</Filter>
-    </None>
-    <None Include="src\UIEdit\IDEEditCore\IDEImageCutPlugin.alittle">
-      <Filter>源文件\UIEdit\IDEEditCore</Filter>
     </None>
     <None Include="src\UIEdit\IDEEditCore\IDERevocation.alittle">
       <Filter>源文件\UIEdit\IDEEditCore</Filter>

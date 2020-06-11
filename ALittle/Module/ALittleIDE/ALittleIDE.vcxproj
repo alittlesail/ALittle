@@ -27,8 +27,6 @@
     <None Include="src\UIEdit\IDEEditCore\IDEAttrEventDialog.alittle" />
     <None Include="src\UIEdit\IDEEditCore\IDEAttrImageDialog.alittle" />
     <None Include="src\UIEdit\IDEEditCore\IDEAttrTextDialog.alittle" />
-    <None Include="src\UIEdit\IDEEditCore\IDEEditImageDialog.alittle" />
-    <None Include="src\UIEdit\IDEEditCore\IDEImageCutPlugin.alittle" />
     <None Include="src\UIEdit\IDEEditCore\IDERevocation.alittle" />
     <None Include="src\UIEdit\IDEEditCore\IDESetting\DialogS.alittle" />
     <None Include="src\UIEdit\IDEEditCore\IDESetting\DisplayLayoutS.alittle" />
@@ -76,8 +74,6 @@
     <None Include="src\UIEdit\IDEEditLogic\IDEAttributeManager.alittle" />
     <None Include="src\UIEdit\IDEEditLogic\IDEControlManager.alittle" />
     <None Include="src\UIEdit\IDEEditLogic\IDEControlTree.alittle" />
-    <None Include="src\UIEdit\IDEEditLogic\IDEImageManager.alittle" />
-    <None Include="src\UIEdit\IDEEditLogic\IDELoginManager.alittle" />
     <None Include="src\UIEdit\IDEEditLogic\IDEMainMenu.alittle" />
     <None Include="src\UIEdit\IDEEditLogic\IDEProjectManager.alittle" />
     <None Include="src\UIEdit\IDEEditLogic\IDEQuickManager.alittle" />

@@ -10,10 +10,6 @@ IDEUICenter = Lua.Class(nil, "ALittleIDE.IDEUICenter")
 function IDEUICenter:Ctor()
 end
 
-function IDEUICenter.__getter:image_scroll_screen()
-	return self._image_scroll_screen
-end
-
 function IDEUICenter:Setup(edit_container)
 	local ___COROUTINE = coroutine.running()
 	Require(g_ScriptBasePath, "UIEdit/IDEUtility")
@@ -71,13 +67,11 @@ function IDEUICenter:Setup(edit_container)
 	Require(g_ScriptBasePath, "UIEdit/IDEEditLogic/IDEQuickManager")
 	Require(g_ScriptBasePath, "UIEdit/IDEEditLogic/IDEAntiManager")
 	Require(g_ScriptBasePath, "UIEdit/IDEEditLogic/IDEControlTree")
-	Require(g_ScriptBasePath, "UIEdit/IDEEditLogic/IDEImageManager")
 	Require(g_ScriptBasePath, "UIEdit/IDEEditLogic/IDEProjectManager")
 	Require(g_ScriptBasePath, "UIEdit/IDEEditLogic/IDEVersionList")
 	self._ui_edit_container = g_Control:CreateControl("ide_ui_edit_container", self, edit_container)
 	local tree_displaylayout = g_Control:CreateControl("ide_main_tab_tree_displaylayout", g_IDEControlTree, self._control_tree_tab)
 	g_Control:CreateControl("ide_main_tab_control_scroll_screen", g_IDEControlManager, self._project_edit_tab)
-	g_Control:CreateControl("ide_main_tab_image_scroll_screen", g_IDEImageManager, self._project_edit_tab)
 	g_Control:CreateControl("ide_main_tab_project_scroll_screen", g_IDEProjectManager, self._project_edit_tab)
 	self._project_edit_tab:DisableAllCloseButton()
 	self._project_edit_tab.tab_index = 1

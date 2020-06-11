@@ -10,7 +10,6 @@ class IDEUICenter
 	private ALittle.Tab _project_edit_tab;			// 项目库，图片库，控件库标签容器
 	private ALittle.Tab _control_edit_tab;			// 属性面板标签容器
 	private ALittle.Tab _project_quick_tab;			// 便利控件查找，动画容器
-	private ALittle.ScrollScreen _image_scroll_screen;			// 图片库的滚动屏
 
 	private ALittle.Grid3 _right_edit_grid3;		// 下面全部三宫格
 	private ALittle.Grid3 _control_edit_grid3;		// 左边三宫格
@@ -41,8 +40,6 @@ class IDEUICenter
 	{
 	}
     
-	public get image_scroll_screen() : ALittle.ScrollScreen { return this._image_scroll_screen; }
-	
 	public await fun Setup(ALittle.DisplayLayout edit_container)
 	{
 		alittle.Require(g_ScriptBasePath, "UIEdit/IDEUtility");
@@ -58,7 +55,6 @@ class IDEUICenter
 		alittle.Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDERevocation");
 		alittle.Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDEAttrTextDialog");
 		alittle.Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDEAttrEventDialog");
-	
 		alittle.Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDEAttrImageDialog");
 	
 		alittle.Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDESetting/DisplayObjectS");
@@ -105,7 +101,6 @@ class IDEUICenter
 		alittle.Require(g_ScriptBasePath, "UIEdit/IDEEditLogic/IDEQuickManager");
 		alittle.Require(g_ScriptBasePath, "UIEdit/IDEEditLogic/IDEAntiManager");
 		alittle.Require(g_ScriptBasePath, "UIEdit/IDEEditLogic/IDEControlTree");
-		alittle.Require(g_ScriptBasePath, "UIEdit/IDEEditLogic/IDEImageManager");
 		alittle.Require(g_ScriptBasePath, "UIEdit/IDEEditLogic/IDEProjectManager");
 		alittle.Require(g_ScriptBasePath, "UIEdit/IDEEditLogic/IDEVersionList");
 
@@ -115,7 +110,6 @@ class IDEUICenter
 		// 初始化左下角数据管理的标签页
 		var tree_displaylayout = g_Control.CreateControl{ALittle.DisplayLayout}("ide_main_tab_tree_displaylayout", g_IDEControlTree, this._control_tree_tab);
 		g_Control.CreateControl{ALittle.DisplayObject}("ide_main_tab_control_scroll_screen", g_IDEControlManager, this._project_edit_tab);
-		g_Control.CreateControl{ALittle.DisplayObject}("ide_main_tab_image_scroll_screen", g_IDEImageManager, this._project_edit_tab);
 		g_Control.CreateControl{ALittle.DisplayObject}("ide_main_tab_project_scroll_screen", g_IDEProjectManager, this._project_edit_tab);
 		this._project_edit_tab.DisableAllCloseButton();
 		this._project_edit_tab.tab_index = 1;

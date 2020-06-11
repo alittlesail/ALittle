@@ -164,7 +164,6 @@ end
 
 function IDECenter:CloseProject()
 	self._current_project_name.text = "当前没有打开的项目"
-	g_IDEImageManager:ClearImageItem()
 	g_IDEControlManager:ClearControlItem()
 	g_IDETabManager:CloseAllTab()
 	g_IDEProject:CloseProject()

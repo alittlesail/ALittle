@@ -989,7 +989,7 @@ function IDETabChild:HandleRightControlTreeAddImage(event)
 	A_LayerManager:HideFromRight(self._control_tabchild_menu)
 	local target = self._control_tabchild_menu._user_data
 	self._control_tabchild_menu._user_data = nil
-	g_IDEImageSelectDialog:SetBasePath(g_IDEProject.project.base_path .. "Texture")
+	g_IDEImageSelectDialog:SetBasePath(g_IDEProject.project.texture_path)
 	local path = g_IDEImageSelectDialog:ShowSelect()
 	if path == nil then
 		return

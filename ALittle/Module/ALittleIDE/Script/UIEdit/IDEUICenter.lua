@@ -360,7 +360,7 @@ function IDEUICenter:HandleImageSelectClick(event)
 		g_AUITool:ShowNotice("提示", "请先打开项目")
 		return
 	end
-	g_IDEImageManagerDialog:SetBasePath(g_IDEProject.project.base_path .. "Texture")
+	g_IDEImageManagerDialog:SetBasePath(g_IDEProject.project.texture_path)
 	g_IDEImageManagerDialog:ShowDialog()
 end
 

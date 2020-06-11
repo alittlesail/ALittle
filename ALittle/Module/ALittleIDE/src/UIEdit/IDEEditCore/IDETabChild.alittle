@@ -1137,7 +1137,7 @@ public class IDETabChild : ALittle.UIEventDispatcher
         this._control_tabchild_menu._user_data = null;
 	
 		// 直接显示图片选择框
-        g_IDEImageSelectDialog.SetBasePath(g_IDEProject.project.base_path.."Texture");
+        g_IDEImageSelectDialog.SetBasePath(g_IDEProject.project.texture_path);
         var path = g_IDEImageSelectDialog.ShowSelect();
         if (path == null) return;
 	

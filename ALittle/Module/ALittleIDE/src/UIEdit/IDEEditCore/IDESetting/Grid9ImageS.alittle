@@ -38,7 +38,7 @@ public class Grid9ImageS : Grid9S
     public fun HandleAutoCut(ALittle.UIEvent event)
     {
         var image_path = this._texture_name.text;
-        var display_info = IDEUtility_GenerateGrid9ImageInfo(g_IDEProject.project.base_path.."Texture/", image_path);
+        var display_info = IDEUtility_GenerateGrid9ImageInfo(g_IDEProject.project.texture_path.."/", image_path);
         if (display_info == null) return;
         var revoke_bind = new IDERevokeBind();
         this._left_size.text = display_info.left_size;

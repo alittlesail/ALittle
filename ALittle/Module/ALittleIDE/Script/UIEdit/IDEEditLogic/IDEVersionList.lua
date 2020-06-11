@@ -186,21 +186,12 @@ function IDEVersionList.VersionInfoCmp(a, b)
 end
 
 function IDEVersionList:HandleVersionListMenu(event)
-	if self._version_menu == nil then
-		self._version_menu = self._ctrl_sys:CreateControl("ide_version_menu", self)
-	end
-	A_LayerManager:ShowFromRight(self._version_menu)
-	self._version_menu.x = A_UISystem.mouse_x
-	self._version_menu.y = A_UISystem.mouse_y
-	self._version_menu._user_data = event.target._user_data
+	local menu = AUIPlugin.AUIRightMenu()
+	menu:AddItem("删除", Lua.Bind(self.HandleVersionDelete, self, event.target._user_data))
+	menu:Show()
 end
 
-function IDEVersionList:HandleVersionDelete(event)
-	A_LayerManager:HideFromRight(self._version_menu)
-	local version_info = self._version_menu._user_data
-	if version_info == nil then
-		return
-	end
+function IDEVersionList:HandleVersionDelete(version_info)
 	local result = g_AUITool:DeleteNotice("删除", "确定要删除" .. ALittle.Time_GetCurDate(version_info.data.update_time) .. "(版本时间)这个版本吗?")
 	if result ~= "YES" then
 		return
@@ -268,21 +259,12 @@ function IDEVersionList:ShowVersionInfo(version_info)
 end
 
 function IDEVersionList:HandleVersionCloseListMenu(event)
-	if self._version_close_menu == nil then
-		self._version_close_menu = self._ctrl_sys:CreateControl("ide_version_close_menu", self)
-	end
-	A_LayerManager:ShowFromRight(self._version_close_menu)
-	self._version_close_menu.x = A_UISystem.mouse_x
-	self._version_close_menu.y = A_UISystem.mouse_y
-	self._version_close_menu._user_data = event.target._user_data
+	local menu = AUIPlugin.AUIRightMenu()
+	menu:AddItem("删除", Lua.Bind(self.HandleVersionCloseDelete, self, event.target._user_data))
+	menu:Show()
 end
 
-function IDEVersionList:HandleVersionCloseDelete(event)
-	A_LayerManager:HideFromRight(self._version_close_menu)
-	local version_info = self._version_close_menu._user_data
-	if version_info == nil then
-		return
-	end
+function IDEVersionList:HandleVersionCloseDelete(version_info)
 	local result = g_AUITool:DeleteNotice("删除", "确定要删除" .. version_info.data.close_version .. "(" .. version_info.data.submit_platform .. ")这个拦截版本吗?")
 	if result ~= "YES" then
 		return

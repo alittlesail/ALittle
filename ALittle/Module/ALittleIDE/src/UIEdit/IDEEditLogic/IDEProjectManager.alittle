@@ -20,8 +20,6 @@ public class IDEProjectManager
 	private ALittle.DisplayObject _default_show_width;		// 界面宽
 	private ALittle.DisplayObject _default_show_height;		// 界面高
 
-	private ALittle.DisplayObject _project_search_menu;		// 项目菜单
-
 	private ALittle.DisplayObject _export_dialog;			// 导出项目
 	private ALittle.Tab _main_export_tab;					// 导出Tab控件
 	private IDEVersionWindows _export_windows_official;		// 导出Windows分页
@@ -276,23 +274,15 @@ public class IDEProjectManager
 	// 处理项目搜索，右键菜单
 	public fun HandleProjectItemRightClick(ALittle.UIRButtonDownEvent event)
 	{
-		if (this._project_search_menu == null)
-			this._project_search_menu = g_Control.CreateControl{ALittle.DisplayObject}("ide_search_project_menu", this);
-
-		this._project_search_menu.x = A_UISystem.mouse_x;
-		this._project_search_menu.y = A_UISystem.mouse_y;
-		if (this._project_search_menu.y + this._project_search_menu.height > A_UISystem.view_height)
-			this._project_search_menu.y = A_UISystem.view_height - this._project_search_menu.height;
-
-		this._project_search_menu._user_data = event.target;
-		A_LayerManager.ShowFromRight(this._project_search_menu);
+		var menu = new AUIPlugin.AUIRightMenu();
+		menu.AddItem("打开", bind(this.HandleRightProjectOpen, this, event.target));
+		menu.AddItem("关闭", bind(this.HandleRightProjectClose, this, event.target));
+		menu.AddItem("刷新", bind(this.HandleRightProjectRefresh, this, event.target));
+		menu.AddItem("移除", bind(this.HandleRightProjectRemove, this, event.target));
 	}
 	
-	public async fun HandleRightProjectOpen(ALittle.UIEvent event)
+	public async fun HandleRightProjectOpen(ALittle.DisplayObject target)
 	{
-		A_LayerManager.HideFromRight(this._project_search_menu);
-		var target:ALittle.DisplayObject = this._project_search_menu._user_data;
-		this._project_search_menu._user_data = null;
 		var project_name = target.text;
 	
 		// 检查当前是否有项目并且是否保存
@@ -306,11 +296,8 @@ public class IDEProjectManager
 		this.OpenProjectImpl(project_name);
 	}
 	
-	public fun HandleRightProjectRemove(ALittle.UIEvent event)
+	public fun HandleRightProjectRemove(ALittle.DisplayObject target)
 	{
-		A_LayerManager.HideFromRight(this._project_search_menu);
-		var target:ALittle.DisplayObject = this._project_search_menu._user_data;
-		this._project_search_menu._user_data = null;
 		var project_name = target.text;
 	
 		// 检查当前是否有项目并且是否保存
@@ -325,11 +312,8 @@ public class IDEProjectManager
 		g_IDECenter.UpdateProjectList();
 	}
 	
-	public async fun HandleRightProjectClose(ALittle.UIEvent event)
+	public async fun HandleRightProjectClose(ALittle.DisplayObject target)
 	{
-		A_LayerManager.HideFromRight(this._project_search_menu);
-		var target:ALittle.DisplayObject = this._project_search_menu._user_data;
-		this._project_search_menu._user_data = null;
 		var project_name = target.text;
 	
 		// 检查当前是否有项目并且是否保存
@@ -357,11 +341,8 @@ public class IDEProjectManager
 		// 刷新当前
 		g_IDECenter.RefreshProject();
 	}
-	public fun HandleRightProjectRefresh(ALittle.UIEvent event)
+	public fun HandleRightProjectRefresh(ALittle.DisplayObject target)
 	{
-		A_LayerManager.HideFromRight(this._project_search_menu);
-		var target:ALittle.DisplayObject = this._project_search_menu._user_data;
-		this._project_search_menu._user_data = null;
 		var project_name = target.text;
 	
 		// 检查当前是否有项目并且是否保存

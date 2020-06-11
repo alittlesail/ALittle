@@ -202,22 +202,14 @@ function IDEProjectManager:HandleSettingProjectConfirm(event)
 end
 
 function IDEProjectManager:HandleProjectItemRightClick(event)
-	if self._project_search_menu == nil then
-		self._project_search_menu = g_Control:CreateControl("ide_search_project_menu", self)
-	end
-	self._project_search_menu.x = A_UISystem.mouse_x
-	self._project_search_menu.y = A_UISystem.mouse_y
-	if self._project_search_menu.y + self._project_search_menu.height > A_UISystem.view_height then
-		self._project_search_menu.y = A_UISystem.view_height - self._project_search_menu.height
-	end
-	self._project_search_menu._user_data = event.target
-	A_LayerManager:ShowFromRight(self._project_search_menu)
+	local menu = AUIPlugin.AUIRightMenu()
+	menu:AddItem("打开", Lua.Bind(self.HandleRightProjectOpen, self, event.target))
+	menu:AddItem("关闭", Lua.Bind(self.HandleRightProjectClose, self, event.target))
+	menu:AddItem("刷新", Lua.Bind(self.HandleRightProjectRefresh, self, event.target))
+	menu:AddItem("移除", Lua.Bind(self.HandleRightProjectRemove, self, event.target))
 end
 
-function IDEProjectManager:HandleRightProjectOpen(event)
-	A_LayerManager:HideFromRight(self._project_search_menu)
-	local target = self._project_search_menu._user_data
-	self._project_search_menu._user_data = nil
+function IDEProjectManager:HandleRightProjectOpen(target)
 	local project_name = target.text
 	if not g_IDETabManager:IsSaveAll() then
 		local result = g_AUITool:SaveNotice("提示", "是否保存当前项目?")
@@ -229,10 +221,7 @@ function IDEProjectManager:HandleRightProjectOpen(event)
 end
 IDEProjectManager.HandleRightProjectOpen = Lua.CoWrap(IDEProjectManager.HandleRightProjectOpen)
 
-function IDEProjectManager:HandleRightProjectRemove(event)
-	A_LayerManager:HideFromRight(self._project_search_menu)
-	local target = self._project_search_menu._user_data
-	self._project_search_menu._user_data = nil
+function IDEProjectManager:HandleRightProjectRemove(target)
 	local project_name = target.text
 	if g_IDEProject.project ~= nil and g_IDEProject.project.name == project_name then
 		g_AUITool:ShowNotice("提示", "当前项目正在编辑，请先关闭")
@@ -243,10 +232,7 @@ function IDEProjectManager:HandleRightProjectRemove(event)
 	g_IDECenter:UpdateProjectList()
 end
 
-function IDEProjectManager:HandleRightProjectClose(event)
-	A_LayerManager:HideFromRight(self._project_search_menu)
-	local target = self._project_search_menu._user_data
-	self._project_search_menu._user_data = nil
+function IDEProjectManager:HandleRightProjectClose(target)
 	local project_name = target.text
 	if g_IDEProject.project == nil or g_IDEProject.project.name ~= project_name then
 		return
@@ -272,10 +258,7 @@ function IDEProjectManager:RefreshProject()
 end
 IDEProjectManager.RefreshProject = Lua.CoWrap(IDEProjectManager.RefreshProject)
 
-function IDEProjectManager:HandleRightProjectRefresh(event)
-	A_LayerManager:HideFromRight(self._project_search_menu)
-	local target = self._project_search_menu._user_data
-	self._project_search_menu._user_data = nil
+function IDEProjectManager:HandleRightProjectRefresh(target)
 	local project_name = target.text
 	if g_IDEProject.project == nil or g_IDEProject.project.name ~= project_name then
 		return

@@ -33,9 +33,6 @@ public class IDEVersionList : ALittle.DisplayLayout
 	private ALittle.ScrollList _version_list;				// 版本列表滚动屏
 	private ALittle.ScrollList _close_list;					// 版本屏蔽滚动屏
 
-	private ALittle.DisplayObject _version_menu;			// 版本菜单菜单
-	private ALittle.DisplayObject _version_close_menu;		// 版本屏蔽菜单
-
 	private ALittle.DisplayObject _export_big_version;		// 大版本输入框
 	private ALittle.DisplayObject _export_install_version;	// 安装版本输入框
 	private ALittle.DisplayObject _export_version_number;	// 版本号输入框
@@ -169,22 +166,13 @@ public class IDEVersionList : ALittle.DisplayLayout
 	// 打开版本列表菜单
 	public fun HandleVersionListMenu(ALittle.UIRButtonDownEvent event)
 	{
-		if (this._version_menu == null)
-			this._version_menu = this._ctrl_sys.CreateControl{ALittle.DisplayObject}("ide_version_menu", this);
-
-		A_LayerManager.ShowFromRight(this._version_menu);
-		this._version_menu.x = A_UISystem.mouse_x;
-		this._version_menu.y = A_UISystem.mouse_y;
-	
-		this._version_menu._user_data = event.target._user_data;
+		var menu = new AUIPlugin.AUIRightMenu();
+		menu.AddItem("删除", bind(this.HandleVersionDelete, this, event.target._user_data));
+		menu.Show();
 	}
 	// 请求删除版本
-	public async fun HandleVersionDelete(ALittle.UIEvent event)
-	{
-		A_LayerManager.HideFromRight(this._version_menu);
-		var version_info:IDEVersionInfoItemUserData = this._version_menu._user_data;
-		if (version_info == null) return;
-        
+	public async fun HandleVersionDelete(IDEVersionInfoItemUserData version_info)
+	{   
 		var result = g_AUITool.DeleteNotice("删除", "确定要删除"..ALittle.Time_GetCurDate(version_info.data.update_time).."(版本时间)这个版本吗?");
 		if (result != AUIPlugin.AUIToolOption.YES) return;
 
@@ -261,22 +249,13 @@ public class IDEVersionList : ALittle.DisplayLayout
 	// 打开版本屏蔽列表
 	public fun HandleVersionCloseListMenu(ALittle.UIRButtonDownEvent event)
 	{
-		if (this._version_close_menu == null)
-			this._version_close_menu = this._ctrl_sys.CreateControl{ALittle.DisplayObject}("ide_version_close_menu", this);
-        
-		A_LayerManager.ShowFromRight(this._version_close_menu);
-		this._version_close_menu.x = A_UISystem.mouse_x;
-		this._version_close_menu.y = A_UISystem.mouse_y;
-	
-		this._version_close_menu._user_data = event.target._user_data;
+		var menu = new AUIPlugin.AUIRightMenu();
+		menu.AddItem("删除", bind(this.HandleVersionCloseDelete, this, event.target._user_data));
+		menu.Show();
 	}
 	// 请求删除某个版本的屏蔽
-	public async fun HandleVersionCloseDelete(ALittle.UIEvent event)
+	public async fun HandleVersionCloseDelete(IDEVersionCloseItemUserData version_info)
 	{
-		A_LayerManager.HideFromRight(this._version_close_menu);
-		var version_info:IDEVersionCloseItemUserData = this._version_close_menu._user_data;
-		if (version_info == null) return;
-
 		var result = g_AUITool.DeleteNotice("删除", "确定要删除"..version_info.data.close_version.."("..version_info.data.submit_platform..")这个拦截版本吗?");
 		if (result != AUIPlugin.AUIToolOption.YES) return;
 

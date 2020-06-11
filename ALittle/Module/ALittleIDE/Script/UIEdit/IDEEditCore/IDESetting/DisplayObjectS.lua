@@ -1155,7 +1155,7 @@ function DisplayObjectS:RemoverToNilShowSetForImage(text, image_path, grid9, nee
 		self:RemoverToNilShowSet(text, "", need_reset, revoke_bind)
 	else
 		if grid9 then
-			local display_info = IDEUtility_GenerateGrid9ImageInfo(g_IDEProject.project.base_path .. "Texture/", image_path)
+			local display_info = IDEUtility_GenerateGrid9ImageInfo(g_IDEProject.project.texture_path .. "/", image_path)
 			if display_info == nil then
 				g_AUITool:ShowNotice("错误", "图片不存在:" .. image_path)
 				return
@@ -1595,7 +1595,7 @@ function DisplayObjectS:ImagePathSelectCallback(text, callback, revoke_bind, pat
 	local e = {}
 	e.target = display_object
 	callback(self, e)
-	local surface = ALittle.System_LoadSurface(g_IDEProject.project.base_path .. "Texture/" .. path)
+	local surface = ALittle.System_LoadSurface(g_IDEProject.project.texture_path .. "/" .. path)
 	if surface == nil then
 		return
 	end

@@ -1150,7 +1150,7 @@ public class DisplayObjectS
 		{
 			if (grid9)
 			{
-				var display_info = IDEUtility_GenerateGrid9ImageInfo(g_IDEProject.project.base_path.."Texture/", image_path);
+				var display_info = IDEUtility_GenerateGrid9ImageInfo(g_IDEProject.project.texture_path.."/", image_path);
 				if (display_info == null)
 				{
 					g_AUITool.ShowNotice("错误", "图片不存在:"..image_path);
@@ -1660,7 +1660,7 @@ public class DisplayObjectS
 		callback(this, e);
 	
 		// 获取图片大小
-		var surface = ALittle.System_LoadSurface(g_IDEProject.project.base_path.."Texture/"..path);
+		var surface = ALittle.System_LoadSurface(g_IDEProject.project.texture_path.."/"..path);
 		if (surface == null) return;
 		var w = ALittle.System_GetSurfaceWidth(surface);
 		var h = ALittle.System_GetSurfaceHeight(surface);

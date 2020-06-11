@@ -110,7 +110,6 @@ class IDEUICenter
 		alittle.Require(g_ScriptBasePath, "UIEdit/IDEEditLogic/IDEImageManager");
 		alittle.Require(g_ScriptBasePath, "UIEdit/IDEEditLogic/IDEProjectManager");
 		alittle.Require(g_ScriptBasePath, "UIEdit/IDEEditLogic/IDEVersionList");
-		alittle.Require(g_ScriptBasePath, "UIEdit/IDEEditLogic/IDELoginManager");
 
 		// 创建UI编辑器主界面
 		this._ui_edit_container = g_Control.CreateControl{ALittle.DisplayLayout}("ide_ui_edit_container", this, edit_container);

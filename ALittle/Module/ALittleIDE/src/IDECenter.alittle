@@ -91,7 +91,12 @@ class IDECenter
 			this._version_manager.CheckVersionUpdate();
 
 		// 初始化登录
-		g_IDELoginManager.Setup();
+		var logingate_ip = g_IDEServerConfig.GetConfig("logingate_ip", "139.159.176.119");
+		var logingate_port = g_IDEServerConfig.GetConfig("logingate_port", 1000);
+		g_IDEWebLoginManager.AddEventListener(this, this.AccountInReconnect);
+		g_IDEWebLoginManager.AddEventListener(this, this.AccountInLogout);
+		g_IDEWebLoginManager.AddEventListener(this, this.AccountInLogin);
+		g_IDEWebLoginManager.Setup(logingate_ip, logingate_port, g_IDEConfig);
 	}
 	
 	public fun Shutdown()
@@ -99,7 +104,6 @@ class IDECenter
 		g_IDEUICenter.Shutdown();
 		[Language(Lua)]
 		this._version_manager.Shutdown();
-		g_IDELoginManager.Shutdown();
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////
@@ -256,10 +260,10 @@ class IDECenter
 	// 处理账号登录
 	public fun HandleAccountLoginLB(ALittle.UILButtonDownEvent event)
 	{
-		g_IDELoginManager.ShowLoginDialog();
+		g_IDEWebLoginManager.ShowLoginDialog();
 	}
 	// 已登录
-	public fun AccountInLogin()
+	public fun AccountInLogin(AUIPlugin.AUIWebAccountLoginEvent event)
 	{
 		this._account_login.visible = false;
 		this._account_dropdown.visible = true;
@@ -268,12 +272,12 @@ class IDECenter
 		data_list[1] = "修改密码";
 		data_list[2] = "登出";
 		this._account_dropdown.data_list = data_list;
-		this._account_dropdown.text = g_IDELoginManager.account_name;
+		this._account_dropdown.text = g_IDEWebLoginManager.account_name;
 	
 		this._account_icon.x_value = this._account_dropdown.x_value + this._account_dropdown.width + 5;
 	}
 	// 已登出
-	public fun AccountInLogout()
+	public fun AccountInLogout(AUIPlugin.AUIWebAccountLogoutEvent event)
 	{
 		this._account_login.text = "请登录";
 		this._account_login.underline = true;
@@ -284,7 +288,7 @@ class IDECenter
 		this._account_icon.x_value = this._account_login.x_value + this._account_login.width + 5;
 	}
 	// 正在重连
-	public fun AccountInReConnect()
+	public fun AccountInReconnect(AUIPlugin.AUIWebAccountReconnectEvent event)
 	{
 		this._account_login.text = "正在重连";
 		this._account_login.underline = false;
@@ -298,13 +302,14 @@ class IDECenter
 	public fun HandleAccountDropdownChange(ALittle.UISelectChangedEvent event)
 	{
 		if (event.target.text == "登出")
-			g_IDELoginManager.Logout();
+			g_IDEWebLoginManager.Logout();
 		elseif (event.target.text == "修改密码")
-			g_IDELoginManager.ShowPasswordDialog();
+			g_IDEWebLoginManager.ShowPasswordDialog();
 		
-		this._account_dropdown.text = g_IDELoginManager.account_name;
+		this._account_dropdown.text = g_IDEWebLoginManager.account_name;
 	}
 	//////////////////////////////////////////////////////////////////////////////////////// 
 }
 
 protected var g_IDECenter = new IDECenter();
+protected var g_IDEWebLoginManager = new AUIPlugin.AUIWebLoginManager();

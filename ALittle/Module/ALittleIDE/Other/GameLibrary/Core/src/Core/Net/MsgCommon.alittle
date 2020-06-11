@@ -30,6 +30,8 @@ public class IMessageReadFactory
 
 public class IMsgCommon
 {
+    public any _user_data;
+
     public fun IsConnected() : bool { return false; }
     public fun Close([Nullable] string reason) {}
     protected fun HandleConnectSucceed() {}

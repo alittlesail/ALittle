@@ -72,7 +72,7 @@ public class IDEVersionList : ALittle.DisplayLayout
 		}
 
 		// 检查登陆
-		if (!g_IDELoginManager.IsLogin())
+		if (!g_IDEWebLoginManager.IsLogin())
 		{
 			g_AUITool.ShowNotice("错误", "请先登陆");
 			return;
@@ -89,11 +89,11 @@ public class IDEVersionList : ALittle.DisplayLayout
 
 		// 发送HTTP请求
 		var param = new VersionServer.QVersionInfo();
-		param.__account_id = g_IDELoginManager.account_id;
-		param.__session_id = g_IDELoginManager.session_id;
+		param.__account_id = g_IDEWebLoginManager.account_id;
+		param.__session_id = g_IDEWebLoginManager.session_id;
 		param.platform = this._platform;
 		param.module_name = g_IDEProject.project.name;
-		var client = ALittle.CreateHttpSender(g_IDELoginManager.http_ip, g_IDELoginManager.http_port);
+		var client = ALittle.CreateHttpSender(g_IDEWebLoginManager.http_ip, g_IDEWebLoginManager.http_port);
 		var error, result = VersionServer.HandleHttpQVersionInfo(client, param);
 		// 解禁刷新按钮
 		this._export_refresh_btn.disabled = false;
@@ -190,13 +190,13 @@ public class IDEVersionList : ALittle.DisplayLayout
 
 		// 发送HTTP请求
 		var param = new VersionServer.QDeleteVersionInfo();
-		param.__account_id = g_IDELoginManager.account_id;
-		param.__session_id = g_IDELoginManager.session_id;
+		param.__account_id = g_IDEWebLoginManager.account_id;
+		param.__session_id = g_IDEWebLoginManager.session_id;
 		param.platform = this._platform;
 		param.module_name = g_IDEProject.project.name;
 		param.version_id = version_info.data.version_id;
 
-		var client = ALittle.CreateHttpSender(g_IDELoginManager.http_ip, g_IDELoginManager.http_port);
+		var client = ALittle.CreateHttpSender(g_IDEWebLoginManager.http_ip, g_IDEWebLoginManager.http_port);
 		var error, result = VersionServer.HandleHttpQDeleteVersionInfo(client, param);
 		if (error != null)
 		{
@@ -282,12 +282,12 @@ public class IDEVersionList : ALittle.DisplayLayout
 
 		// 发送HTTP请求
 		var param = new VersionServer.QDeleteVersionClose();
-		param.__account_id = g_IDELoginManager.account_id;
-		param.__session_id = g_IDELoginManager.session_id;
+		param.__account_id = g_IDEWebLoginManager.account_id;
+		param.__session_id = g_IDEWebLoginManager.session_id;
 		param.platform = this._platform;
 		param.module_name = g_IDEProject.project.name;
 		param.close_version = version_info.data.close_version;
-		var client = ALittle.CreateHttpSender(g_IDELoginManager.http_ip, g_IDELoginManager.http_port);
+		var client = ALittle.CreateHttpSender(g_IDEWebLoginManager.http_ip, g_IDEWebLoginManager.http_port);
 		var error, result = VersionServer.HandleHttpQDeleteVersionClose(client, param);
 		if (error != null)
 		{
@@ -320,13 +320,13 @@ public class IDEVersionList : ALittle.DisplayLayout
 	
 		// 发送HTTP请求
 		var param = new VersionServer.QAddVersionClose();
-		param.__account_id = g_IDELoginManager.account_id;
-		param.__session_id = g_IDELoginManager.session_id;
+		param.__account_id = g_IDEWebLoginManager.account_id;
+		param.__session_id = g_IDEWebLoginManager.session_id;
 		param.platform = this._platform;
 		param.module_name = g_IDEProject.project.name;
 		param.close_version = this._version_close_version.text;
 		param.submit_platform = this._version_submit_platform.text;
-		var client = ALittle.CreateHttpSender(g_IDELoginManager.http_ip, g_IDELoginManager.http_port);
+		var client = ALittle.CreateHttpSender(g_IDEWebLoginManager.http_ip, g_IDEWebLoginManager.http_port);
 		var error, result = VersionServer.HandleHttpQAddVersionClose(client, param);
 		if (error != null)
 		{

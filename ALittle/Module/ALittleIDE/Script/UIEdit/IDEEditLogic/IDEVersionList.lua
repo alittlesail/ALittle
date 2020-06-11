@@ -109,7 +109,7 @@ function IDEVersionList:HandleRefreshVersionList(event)
 		g_AUITool:ShowNotice("错误", "当前没有打开的项目")
 		return
 	end
-	if not g_IDELoginManager:IsLogin() then
+	if not g_IDEWebLoginManager:IsLogin() then
 		g_AUITool:ShowNotice("错误", "请先登陆")
 		return
 	end
@@ -118,11 +118,11 @@ function IDEVersionList:HandleRefreshVersionList(event)
 	self._close_list:RemoveAllChild()
 	local group = ALittle.CreateKeyWeakMap()
 	local param = {}
-	param.__account_id = g_IDELoginManager.account_id
-	param.__session_id = g_IDELoginManager.session_id
+	param.__account_id = g_IDEWebLoginManager.account_id
+	param.__session_id = g_IDEWebLoginManager.session_id
 	param.platform = self._platform
 	param.module_name = g_IDEProject.project.name
-	local client = ALittle.CreateHttpSender(g_IDELoginManager.http_ip, g_IDELoginManager.http_port)
+	local client = ALittle.CreateHttpSender(g_IDEWebLoginManager.http_ip, g_IDEWebLoginManager.http_port)
 	local error, result = ALittle.IHttpSender.Invoke("VersionServer.QVersionInfo", client, param)
 	self._export_refresh_btn.disabled = false
 	if error ~= nil then
@@ -206,12 +206,12 @@ function IDEVersionList:HandleVersionDelete(event)
 		return
 	end
 	local param = {}
-	param.__account_id = g_IDELoginManager.account_id
-	param.__session_id = g_IDELoginManager.session_id
+	param.__account_id = g_IDEWebLoginManager.account_id
+	param.__session_id = g_IDEWebLoginManager.session_id
 	param.platform = self._platform
 	param.module_name = g_IDEProject.project.name
 	param.version_id = version_info.data.version_id
-	local client = ALittle.CreateHttpSender(g_IDELoginManager.http_ip, g_IDELoginManager.http_port)
+	local client = ALittle.CreateHttpSender(g_IDEWebLoginManager.http_ip, g_IDEWebLoginManager.http_port)
 	local error, result = ALittle.IHttpSender.Invoke("VersionServer.QDeleteVersionInfo", client, param)
 	if error ~= nil then
 		g_AUITool:ShowNotice("提示", "删除失败:" .. error)
@@ -288,12 +288,12 @@ function IDEVersionList:HandleVersionCloseDelete(event)
 		return
 	end
 	local param = {}
-	param.__account_id = g_IDELoginManager.account_id
-	param.__session_id = g_IDELoginManager.session_id
+	param.__account_id = g_IDEWebLoginManager.account_id
+	param.__session_id = g_IDEWebLoginManager.session_id
 	param.platform = self._platform
 	param.module_name = g_IDEProject.project.name
 	param.close_version = version_info.data.close_version
-	local client = ALittle.CreateHttpSender(g_IDELoginManager.http_ip, g_IDELoginManager.http_port)
+	local client = ALittle.CreateHttpSender(g_IDEWebLoginManager.http_ip, g_IDEWebLoginManager.http_port)
 	local error, result = ALittle.IHttpSender.Invoke("VersionServer.QDeleteVersionClose", client, param)
 	if error ~= nil then
 		g_AUITool:ShowNotice("提示", "删除失败:" .. error)
@@ -317,13 +317,13 @@ end
 function IDEVersionList:HandleAddVersionCloseClick(event)
 	self._version_close_dialog.visible = false
 	local param = {}
-	param.__account_id = g_IDELoginManager.account_id
-	param.__session_id = g_IDELoginManager.session_id
+	param.__account_id = g_IDEWebLoginManager.account_id
+	param.__session_id = g_IDEWebLoginManager.session_id
 	param.platform = self._platform
 	param.module_name = g_IDEProject.project.name
 	param.close_version = self._version_close_version.text
 	param.submit_platform = self._version_submit_platform.text
-	local client = ALittle.CreateHttpSender(g_IDELoginManager.http_ip, g_IDELoginManager.http_port)
+	local client = ALittle.CreateHttpSender(g_IDEWebLoginManager.http_ip, g_IDEWebLoginManager.http_port)
 	local error, result = ALittle.IHttpSender.Invoke("VersionServer.QAddVersionClose", client, param)
 	if error ~= nil then
 		g_AUITool:ShowNotice("提示", "添加失败:" .. error)

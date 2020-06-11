@@ -1,9 +1,34 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittleIDE", package.seeall)
+module("AUIPlugin", package.seeall)
 
 local ___pairs = pairs
 local ___ipairs = ipairs
+local ___all_struct = ALittle.GetAllStruct()
 
+ALittle.RegStruct(-262794256, "AUIPlugin.AUIWebAccountReconnectEvent", {
+name = "AUIPlugin.AUIWebAccountReconnectEvent", ns_name = "AUIPlugin", rl_name = "AUIWebAccountReconnectEvent", hash_code = -262794256,
+name_list = {"target"},
+type_list = {"ALittle.EventDispatcher"},
+option_map = {}
+})
+ALittle.RegStruct(1715346212, "ALittle.Event", {
+name = "ALittle.Event", ns_name = "ALittle", rl_name = "Event", hash_code = 1715346212,
+name_list = {"target"},
+type_list = {"ALittle.EventDispatcher"},
+option_map = {}
+})
+ALittle.RegStruct(-1848509213, "AUIPlugin.AUIWebAccountLogoutEvent", {
+name = "AUIPlugin.AUIWebAccountLogoutEvent", ns_name = "AUIPlugin", rl_name = "AUIWebAccountLogoutEvent", hash_code = -1848509213,
+name_list = {"target"},
+type_list = {"ALittle.EventDispatcher"},
+option_map = {}
+})
+ALittle.RegStruct(-420010531, "AUIPlugin.AUIWebAccountLoginEvent", {
+name = "AUIPlugin.AUIWebAccountLoginEvent", ns_name = "AUIPlugin", rl_name = "AUIWebAccountLoginEvent", hash_code = -420010531,
+name_list = {"target"},
+type_list = {"ALittle.EventDispatcher"},
+option_map = {}
+})
 ALittle.RegStruct(-344058063, "ALittle.AWebLogout", {
 name = "ALittle.AWebLogout", ns_name = "ALittle", rl_name = "AWebLogout", hash_code = -344058063,
 name_list = {},
@@ -65,19 +90,15 @@ type_list = {"string","int"},
 option_map = {}
 })
 
-IDELoginManager = Lua.Class(nil, "ALittleIDE.IDELoginManager")
+assert(ALittle.EventDispatcher, " extends class:ALittle.EventDispatcher is nil")
+AUIWebLoginManager = Lua.Class(ALittle.EventDispatcher, "AUIPlugin.AUIWebLoginManager")
 
-function IDELoginManager:Ctor()
-end
-
-function IDELoginManager.__getter:account_name()
-	return self._account_name
-end
-
-function IDELoginManager:Setup()
-	self._logingate_ip = g_IDEServerConfig:GetConfig("logingate_ip", "139.159.176.119")
-	self._logingate_port = g_IDEServerConfig:GetConfig("logingate_port", 1000)
+function AUIWebLoginManager:Setup(ip, port, config)
+	self._logingate_ip = ip
+	self._logingate_port = port
+	self._config = config
 	self._msg_client = ALittle.CreateMsgSender(30, true)
+	self._msg_client._user_data = self
 	self._session_id = ""
 	self._account_info = {}
 	self._server_info = {}
@@ -87,23 +108,23 @@ function IDELoginManager:Setup()
 	self._account_pwd = ""
 	self._first_login = true
 	self._is_login = false
-	self._save_password = g_IDEConfig:GetConfig("save_password", false)
-	self._auto_login = g_IDEConfig:GetConfig("auto_login", false)
+	self._save_password = config:GetConfig("save_password", false)
+	self._auto_login = config:GetConfig("auto_login", false)
 	if self._save_password then
-		self._account_name = g_IDEConfig:GetConfig("account_name", "")
-		self._account_pwd = ALittle.String_DecryptPassword(self._account_name, g_IDEConfig:GetConfig("account_pwd", ""))
+		self._account_name = config:GetConfig("account_name", "")
+		self._account_pwd = ALittle.String_DecryptPassword(self._account_name, config:GetConfig("account_pwd", ""))
 	end
 	self:Connect()
 end
 
-function IDELoginManager:Shutdown()
+function AUIWebLoginManager:Shutdown()
 	if self._msg_client ~= nil then
 		self._msg_client:Close()
 		self._msg_client = nil
 	end
 end
 
-function IDELoginManager:Connect()
+function AUIWebLoginManager:Connect()
 	local param = {}
 	param.route_type = 3
 	local client = ALittle.CreateHttpSender(self._logingate_ip, self._logingate_port)
@@ -125,31 +146,31 @@ function IDELoginManager:Connect()
 	end
 	self:OnConnectSucceed()
 end
-IDELoginManager.Connect = Lua.CoWrap(IDELoginManager.Connect)
+AUIWebLoginManager.Connect = Lua.CoWrap(AUIWebLoginManager.Connect)
 
-function IDELoginManager:OnConnectFailed()
-	g_IDECenter:AccountInReConnect()
+function AUIWebLoginManager:OnConnectFailed()
+	self:DispatchEvent(___all_struct[-262794256], {})
 	self:HidePasswordDialog()
 end
 
-function IDELoginManager:OnConnectSucceed()
+function AUIWebLoginManager:OnConnectSucceed()
 	if (self._first_login and self._auto_login) or (self._login_button ~= nil and self._login_button.disabled) or self._is_login then
 		self:LoginImpl()
 	else
-		g_IDECenter:AccountInLogout()
+		self:DispatchEvent(___all_struct[-1848509213], {})
 	end
 end
 
-function IDELoginManager:OnDisconnected()
-	g_IDECenter:AccountInReConnect()
+function AUIWebLoginManager:OnDisconnected()
+	self:DispatchEvent(___all_struct[-262794256], {})
 	self:HidePasswordDialog()
 	A_LoopSystem:AddTimer(5000, Lua.Bind(self.Connect, self))
 end
 
-function IDELoginManager:ShowLoginDialog()
+function AUIWebLoginManager:ShowLoginDialog()
 	if self._login_dialog == nil then
 		self._login_dialog = g_Control:CreateControl("ide_account_login_dialog", self)
-		g_IDECenter.dialog_layer:AddChild(self._login_dialog)
+		A_LayerManager:AddToModal(self._login_dialog)
 		self._login_account.text = self._account_name
 		self._login_password.text = ""
 		self._save_password_check.selected = self._save_password
@@ -159,17 +180,17 @@ function IDELoginManager:ShowLoginDialog()
 	self._login_account:DelayFocus()
 end
 
-function IDELoginManager:HideLoginDialog()
+function AUIWebLoginManager:HideLoginDialog()
 	if self._login_dialog == nil then
 		return
 	end
 	self._login_dialog.visible = false
 end
 
-function IDELoginManager:ShowPasswordDialog()
+function AUIWebLoginManager:ShowPasswordDialog()
 	if self._password_dialog == nil then
 		self._password_dialog = g_Control:CreateControl("ide_account_password_dialog", self)
-		g_IDECenter.dialog_layer:AddChild(self._password_dialog)
+		A_LayerManager:AddToModal(self._password_dialog)
 	end
 	self._password_dialog.visible = true
 	self._pas_old_password.focus = true
@@ -178,14 +199,14 @@ function IDELoginManager:ShowPasswordDialog()
 	self._pas_repeat_password.text = ""
 end
 
-function IDELoginManager:HidePasswordDialog()
+function AUIWebLoginManager:HidePasswordDialog()
 	if self._password_dialog == nil then
 		return
 	end
 	self._password_dialog.visible = false
 end
 
-function IDELoginManager:HandleLoginClick(event)
+function AUIWebLoginManager:HandleLoginClick(event)
 	if self._login_button.disabled then
 		return
 	end
@@ -202,23 +223,23 @@ function IDELoginManager:HandleLoginClick(event)
 	self:LoginImpl()
 end
 
-function IDELoginManager:HandleLoginAccountTabKey(event)
+function AUIWebLoginManager:HandleLoginAccountTabKey(event)
 	self._login_password.focus = true
 end
 
-function IDELoginManager:HandleLoginPasswordTabKey(event)
+function AUIWebLoginManager:HandleLoginPasswordTabKey(event)
 	self._login_account.focus = true
 end
 
-function IDELoginManager:HandleOldPasswordTabKey(event)
+function AUIWebLoginManager:HandleOldPasswordTabKey(event)
 	self._pas_new_password.focus = true
 end
 
-function IDELoginManager:HandleNewPasswordTabKey(event)
+function AUIWebLoginManager:HandleNewPasswordTabKey(event)
 	self._pas_repeat_password.focus = true
 end
 
-function IDELoginManager:Logout()
+function AUIWebLoginManager:Logout()
 	if self._msg_client == nil then
 		return
 	end
@@ -237,11 +258,11 @@ function IDELoginManager:Logout()
 	if self._change_pas_confirm ~= nil then
 		self._change_pas_confirm.disabled = false
 	end
-	g_IDECenter:AccountInLogout()
+	self:DispatchEvent(___all_struct[-1848509213], {})
 end
-IDELoginManager.Logout = Lua.CoWrap(IDELoginManager.Logout)
+AUIWebLoginManager.Logout = Lua.CoWrap(AUIWebLoginManager.Logout)
 
-function IDELoginManager:HandleMsgNForceLogout()
+function AUIWebLoginManager:HandleMsgNForceLogout()
 	self._is_login = false
 	g_AUITool:ShowNotice("提示", "您的账号在另一个地方登录")
 	if self._login_button ~= nil then
@@ -252,22 +273,22 @@ function IDELoginManager:HandleMsgNForceLogout()
 	if self._change_pas_confirm ~= nil then
 		self._change_pas_confirm.disabled = false
 	end
-	g_IDECenter:AccountInLogout()
+	self:DispatchEvent(___all_struct[-1848509213], {})
 end
 
-function IDELoginManager:HandleMsgNWebSession(msg)
+function AUIWebLoginManager:HandleMsgNWebSession(msg)
 	self._session_id = msg.session_id
 end
 
-function IDELoginManager:HandleMsgNWebAccountInfo(msg)
+function AUIWebLoginManager:HandleMsgNWebAccountInfo(msg)
 	self._account_info = msg
 end
 
-function IDELoginManager:HandleMsgNWebServerInfo(msg)
+function AUIWebLoginManager:HandleMsgNWebServerInfo(msg)
 	self._server_info = msg
 end
 
-function IDELoginManager:LoginImpl()
+function AUIWebLoginManager:LoginImpl()
 	if self._msg_client == nil then
 		return
 	end
@@ -288,17 +309,17 @@ function IDELoginManager:LoginImpl()
 		return
 	end
 	if self._save_password then
-		g_IDEConfig:SetConfig("account_name", self._account_name)
-		g_IDEConfig:SetConfig("account_pwd", ALittle.String_CryptPassword(self._account_name, self._account_pwd))
+		self._config:SetConfig("account_name", self._account_name)
+		self._config:SetConfig("account_pwd", ALittle.String_CryptPassword(self._account_name, self._account_pwd))
 	end
-	g_IDEConfig:SetConfig("save_password", self._save_password)
-	g_IDEConfig:SetConfig("auto_login", self._auto_login)
+	self._config:SetConfig("save_password", self._save_password)
+	self._config:SetConfig("auto_login", self._auto_login)
 	self:HideLoginDialog()
-	g_IDECenter:AccountInLogin()
+	self:DispatchEvent(___all_struct[-420010531], {})
 end
-IDELoginManager.LoginImpl = Lua.CoWrap(IDELoginManager.LoginImpl)
+AUIWebLoginManager.LoginImpl = Lua.CoWrap(AUIWebLoginManager.LoginImpl)
 
-function IDELoginManager:HandlePasswordAlterClick(event)
+function AUIWebLoginManager:HandlePasswordAlterClick(event)
 	local old_password = self._pas_old_password.text
 	local new_password = self._pas_new_password.text
 	local repeat_password = self._pas_repeat_password.text
@@ -312,68 +333,87 @@ function IDELoginManager:HandlePasswordAlterClick(event)
 	param.new_password = ALittle.String_MD5(new_password)
 	local error, result = ALittle.IMsgCommon.InvokeRPC(-1373673802, self._msg_client, param)
 	self._change_pas_confirm.disabled = false
-	if g_IDELoginManager._change_pas_confirm ~= nil then
-		g_IDELoginManager._change_pas_confirm.disabled = false
+	if self._change_pas_confirm ~= nil then
+		self._change_pas_confirm.disabled = false
 	end
 	if error ~= nil then
 		g_AUITool:ShowNotice("提示", error)
 		return
 	end
 	g_AUITool:ShowNotice("提示", "密码修改成功")
-	g_IDELoginManager:HidePasswordDialog()
+	self:HidePasswordDialog()
 end
-IDELoginManager.HandlePasswordAlterClick = Lua.CoWrap(IDELoginManager.HandlePasswordAlterClick)
+AUIWebLoginManager.HandlePasswordAlterClick = Lua.CoWrap(AUIWebLoginManager.HandlePasswordAlterClick)
 
-function IDELoginManager:HandlePasswordCancelClick(event)
+function AUIWebLoginManager:HandlePasswordCancelClick(event)
 	self:HidePasswordDialog()
 end
 
-function IDELoginManager:IsLogin()
+function AUIWebLoginManager:IsLogin()
 	return self._is_login
 end
 
-function IDELoginManager.__getter:account_id()
+function AUIWebLoginManager.__getter:account_name()
+	return self._account_name
+end
+
+function AUIWebLoginManager.__getter:account_id()
 	return self._account_info.account_id
 end
 
-function IDELoginManager.__getter:session_id()
+function AUIWebLoginManager.__getter:session_id()
 	return self._session_id
 end
 
-function IDELoginManager.__getter:http_ip()
+function AUIWebLoginManager.__getter:http_ip()
 	return self._server_info.http_ip
 end
 
-function IDELoginManager.__getter:http_port()
+function AUIWebLoginManager.__getter:http_port()
 	return self._server_info.http_port
 end
 
-function IDELoginManager.__getter:version_ip()
+function AUIWebLoginManager.__getter:version_ip()
 	return self._version_ip
 end
 
-function IDELoginManager.__getter:version_port()
+function AUIWebLoginManager.__getter:version_port()
 	return self._version_port
 end
 
-g_IDELoginManager = IDELoginManager()
 function HandleMsgNForceLogout(client, msg)
-	g_IDELoginManager:HandleMsgNForceLogout()
+	local manager = client._user_data
+	if manager == nil then
+		return
+	end
+	manager:HandleMsgNForceLogout()
 end
 
 ALittle.RegMsgCallback(1391512615, HandleMsgNForceLogout)
 function HandleMsgNWebSession(client, msg)
-	g_IDELoginManager:HandleMsgNWebSession(msg)
+	local manager = client._user_data
+	if manager == nil then
+		return
+	end
+	manager:HandleMsgNWebSession(msg)
 end
 
 ALittle.RegMsgCallback(1809602374, HandleMsgNWebSession)
 function HandleMsgNWebAccountInfo(client, msg)
-	g_IDELoginManager:HandleMsgNWebAccountInfo(msg)
+	local manager = client._user_data
+	if manager == nil then
+		return
+	end
+	manager:HandleMsgNWebAccountInfo(msg)
 end
 
 ALittle.RegMsgCallback(-417093574, HandleMsgNWebAccountInfo)
 function HandleMsgNWebServerInfo(client, msg)
-	g_IDELoginManager:HandleMsgNWebServerInfo(msg)
+	local manager = client._user_data
+	if manager == nil then
+		return
+	end
+	manager:HandleMsgNWebServerInfo(msg)
 end
 
 ALittle.RegMsgCallback(-300988017, HandleMsgNWebServerInfo)

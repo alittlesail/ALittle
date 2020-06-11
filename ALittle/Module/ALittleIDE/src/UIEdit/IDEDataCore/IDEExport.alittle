@@ -323,13 +323,13 @@ class IDEExport
 		ALittle.Log("========PackageVersion========");
 	
 		// 请求获取一个新的版本号
-		if (g_IDELoginManager.IsLogin())
+		if (g_IDEWebLoginManager.IsLogin())
 		{
 			g_AUITool.ShowAlertDialog("提示", "正在请求新的版本号");
 			var param = new VersionServer.QNewUpdateTimeIndex();
-			param.__account_id = g_IDELoginManager.account_id;
-			param.__session_id = g_IDELoginManager.session_id;
-			var client = ALittle.CreateHttpSender(g_IDELoginManager.http_ip, g_IDELoginManager.http_port);
+			param.__account_id = g_IDEWebLoginManager.account_id;
+			param.__session_id = g_IDEWebLoginManager.session_id;
+			var client = ALittle.CreateHttpSender(g_IDEWebLoginManager.http_ip, g_IDEWebLoginManager.http_port);
 			var error, result = VersionServer.HandleHttpQNewUpdateTimeIndex(client, param);
 			this.HandleAskNewUpdateTimeIndex(error, result, package_info, true);
 		}
@@ -357,11 +357,11 @@ class IDEExport
 		{
 			g_AUITool.ShowAlertDialog("提示", "正在请求CurVersion.db的文件的位置");
 			var param = new VersionServer.QNewCurVersion();
-			param.__account_id = g_IDELoginManager.account_id;
-			param.__session_id = g_IDELoginManager.session_id;
+			param.__account_id = g_IDEWebLoginManager.account_id;
+			param.__session_id = g_IDEWebLoginManager.session_id;
 			param.platform = package_info.platform;
 			param.module_name = package_info.project_name;
-			var client = ALittle.CreateHttpSender(g_IDELoginManager.http_ip, g_IDELoginManager.http_port);
+			var client = ALittle.CreateHttpSender(g_IDEWebLoginManager.http_ip, g_IDEWebLoginManager.http_port);
 			var error, result = VersionServer.HandleHttpQNewCurVersion(client, param);
 			this.HandleQueryNewCurVersion(error, result, package_info, is_login, update_time, update_index);
 		}
@@ -766,7 +766,7 @@ class IDEExport
 		ALittle.Log("==================SubmitPlatform:"..platform.."==================");
 	
 		// 通知服务器构建一个新的版本
-		if (g_IDELoginManager.IsLogin() == false)
+		if (g_IDEWebLoginManager.IsLogin() == false)
 		{
 			g_AUITool.ShowNotice("错误", "您还未登录，无法上传版本");
 			return;
@@ -805,8 +805,8 @@ class IDEExport
 			g_AUITool.ShowAlertDialog("提示", "正在创建一个新的版本");
 			// 请求一个新的版本
 			var param = new VersionServer.QNewVersionInfo();
-			param.__account_id = g_IDELoginManager.account_id;
-			param.__session_id = g_IDELoginManager.session_id;
+			param.__account_id = g_IDEWebLoginManager.account_id;
+			param.__session_id = g_IDEWebLoginManager.session_id;
 			param.module_name = submit_info.module_name;
 			param.platform = submit_info.platform;
 			param.big_version = submit_info.big_version;
@@ -818,7 +818,7 @@ class IDEExport
 			param.small_version_index = submit_info.small_version_index;
 			param.update_time = submit_info.update_time;
 			param.update_index = submit_info.update_index;
-			var client = ALittle.CreateHttpSender(g_IDELoginManager.http_ip, g_IDELoginManager.http_port);
+			var client = ALittle.CreateHttpSender(g_IDEWebLoginManager.http_ip, g_IDEWebLoginManager.http_port);
 			var error, result = VersionServer.HandleHttpQNewVersionInfo(client, param);
 			this.HandleNewVersionInfo(error, result, submit_info);
 		}
@@ -858,8 +858,8 @@ class IDEExport
         var total_count = ALittle.List_MaxN(submit_info.upload_list) + 2;
 
         var param = new VersionServer.QUploadVersionFile();
-		param.__account_id = g_IDELoginManager.account_id;
-		param.__session_id = g_IDELoginManager.session_id;
+		param.__account_id = g_IDEWebLoginManager.account_id;
+		param.__session_id = g_IDEWebLoginManager.session_id;
 		param.platform = submit_info.platform;
 		param.module_name = submit_info.module_name;
 		param.version_id = submit_info.version_id;
@@ -872,14 +872,14 @@ class IDEExport
             this._submit_content.text = "正在上传:"..upload_index.."/"..total_count;
 
 			param.file_path = file_path;
-			param.__account_id = g_IDELoginManager.account_id;
-			param.__session_id = g_IDELoginManager.session_id;
+			param.__account_id = g_IDEWebLoginManager.account_id;
+			param.__session_id = g_IDEWebLoginManager.session_id;
 
 			var repeat_count = 0;
 			while (repeat_count < 1)
 			{
 				++repeat_count;
-				this._submit_client = ALittle.CreateHttpFileSender(g_IDELoginManager.http_ip, g_IDELoginManager.http_port,
+				this._submit_client = ALittle.CreateHttpFileSender(g_IDEWebLoginManager.http_ip, g_IDEWebLoginManager.http_port,
                                       submit_info.export_module_path.."/"..file_path, 0, bind(this.HandleSubmitVersionUpload, this, upload_index, total_count));
 				error = VersionServer.HandleHttpQUploadVersionFile(this._submit_client, param);
 				if (error == null) break;
@@ -898,14 +898,14 @@ class IDEExport
             this._submit_content.text = "正在上传:"..upload_index.."/"..total_count;
 
 			param.file_path = submit_info.install_name;
-			param.__account_id = g_IDELoginManager.account_id;
-			param.__session_id = g_IDELoginManager.session_id;
+			param.__account_id = g_IDEWebLoginManager.account_id;
+			param.__session_id = g_IDEWebLoginManager.session_id;
 
 			var repeat_count = 0;
 			while (repeat_count < 100)
 			{
 				++repeat_count;
-				this._submit_client = ALittle.CreateHttpFileSender(g_IDELoginManager.http_ip, g_IDELoginManager.http_port,
+				this._submit_client = ALittle.CreateHttpFileSender(g_IDEWebLoginManager.http_ip, g_IDEWebLoginManager.http_port,
                                       submit_info.project_path.."/Export/"..submit_info.install_name, 0, bind(this.HandleSubmitVersionUpload, this, upload_index, total_count));
 				error = VersionServer.HandleHttpQUploadVersionFile(this._submit_client, param);
 				if (error == null) break;
@@ -925,14 +925,14 @@ class IDEExport
             this._submit_content.text = "正在上传:"..upload_index.."/"..total_count;
 
 			param.file_path = "CurVersion.db";
-			param.__account_id = g_IDELoginManager.account_id;
-			param.__session_id = g_IDELoginManager.session_id;
+			param.__account_id = g_IDEWebLoginManager.account_id;
+			param.__session_id = g_IDEWebLoginManager.session_id;
 
 			var repeat_count = 0;
 			while (repeat_count < 100)
 			{
 				++repeat_count;
-				this._submit_client = ALittle.CreateHttpFileSender(g_IDELoginManager.http_ip, g_IDELoginManager.http_port,
+				this._submit_client = ALittle.CreateHttpFileSender(g_IDEWebLoginManager.http_ip, g_IDEWebLoginManager.http_port,
                                       submit_info.export_module_path.."/CurVersion.db", 0, bind(this.HandleSubmitVersionUpload, this, upload_index, total_count));
 				error = VersionServer.HandleHttpQUploadVersionFile(this._submit_client, param);
 				if (error == null) break;

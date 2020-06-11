@@ -262,12 +262,12 @@ end
 function IDEExport:PackageVersion(package_info)
 	local ___COROUTINE = coroutine.running()
 	ALittle.Log("========PackageVersion========")
-	if g_IDELoginManager:IsLogin() then
+	if g_IDEWebLoginManager:IsLogin() then
 		g_AUITool:ShowAlertDialog("提示", "正在请求新的版本号")
 		local param = {}
-		param.__account_id = g_IDELoginManager.account_id
-		param.__session_id = g_IDELoginManager.session_id
-		local client = ALittle.CreateHttpSender(g_IDELoginManager.http_ip, g_IDELoginManager.http_port)
+		param.__account_id = g_IDEWebLoginManager.account_id
+		param.__session_id = g_IDEWebLoginManager.session_id
+		local client = ALittle.CreateHttpSender(g_IDEWebLoginManager.http_ip, g_IDEWebLoginManager.http_port)
 		local error, result = ALittle.IHttpSender.Invoke("VersionServer.QNewUpdateTimeIndex", client, param)
 		self:HandleAskNewUpdateTimeIndex(error, result, package_info, true)
 	else
@@ -290,11 +290,11 @@ function IDEExport:HandleAskNewUpdateTimeIndexImpl(package_info, is_login, updat
 	if is_login then
 		g_AUITool:ShowAlertDialog("提示", "正在请求CurVersion.db的文件的位置")
 		local param = {}
-		param.__account_id = g_IDELoginManager.account_id
-		param.__session_id = g_IDELoginManager.session_id
+		param.__account_id = g_IDEWebLoginManager.account_id
+		param.__session_id = g_IDEWebLoginManager.session_id
 		param.platform = package_info.platform
 		param.module_name = package_info.project_name
-		local client = ALittle.CreateHttpSender(g_IDELoginManager.http_ip, g_IDELoginManager.http_port)
+		local client = ALittle.CreateHttpSender(g_IDEWebLoginManager.http_ip, g_IDEWebLoginManager.http_port)
 		local error, result = ALittle.IHttpSender.Invoke("VersionServer.QNewCurVersion", client, param)
 		self:HandleQueryNewCurVersion(error, result, package_info, is_login, update_time, update_index)
 	else
@@ -577,7 +577,7 @@ function IDEExport:SubmitPlatform(project_name, platform)
 		return
 	end
 	ALittle.Log("==================SubmitPlatform:" .. platform .. "==================")
-	if g_IDELoginManager:IsLogin() == false then
+	if g_IDEWebLoginManager:IsLogin() == false then
 		g_AUITool:ShowNotice("错误", "您还未登录，无法上传版本")
 		return
 	end
@@ -603,8 +603,8 @@ function IDEExport:SubmitPlatform(project_name, platform)
 	if submit_info.version_id == nil then
 		g_AUITool:ShowAlertDialog("提示", "正在创建一个新的版本")
 		local param = {}
-		param.__account_id = g_IDELoginManager.account_id
-		param.__session_id = g_IDELoginManager.session_id
+		param.__account_id = g_IDEWebLoginManager.account_id
+		param.__session_id = g_IDEWebLoginManager.session_id
 		param.module_name = submit_info.module_name
 		param.platform = submit_info.platform
 		param.big_version = submit_info.big_version
@@ -616,7 +616,7 @@ function IDEExport:SubmitPlatform(project_name, platform)
 		param.small_version_index = submit_info.small_version_index
 		param.update_time = submit_info.update_time
 		param.update_index = submit_info.update_index
-		local client = ALittle.CreateHttpSender(g_IDELoginManager.http_ip, g_IDELoginManager.http_port)
+		local client = ALittle.CreateHttpSender(g_IDEWebLoginManager.http_ip, g_IDEWebLoginManager.http_port)
 		local error, result = ALittle.IHttpSender.Invoke("VersionServer.QNewVersionInfo", client, param)
 		self:HandleNewVersionInfo(error, result, submit_info)
 	else
@@ -649,8 +649,8 @@ function IDEExport:HandleNewVersionInfoImpl(submit_info)
 	local upload_index = 0
 	local total_count = ALittle.List_MaxN(submit_info.upload_list) + 2
 	local param = {}
-	param.__account_id = g_IDELoginManager.account_id
-	param.__session_id = g_IDELoginManager.session_id
+	param.__account_id = g_IDEWebLoginManager.account_id
+	param.__session_id = g_IDEWebLoginManager.session_id
 	param.platform = submit_info.platform
 	param.module_name = submit_info.module_name
 	param.version_id = submit_info.version_id
@@ -660,12 +660,12 @@ function IDEExport:HandleNewVersionInfoImpl(submit_info)
 		upload_index = upload_index + 1
 		self._submit_content.text = "正在上传:" .. upload_index .. "/" .. total_count
 		param.file_path = file_path
-		param.__account_id = g_IDELoginManager.account_id
-		param.__session_id = g_IDELoginManager.session_id
+		param.__account_id = g_IDEWebLoginManager.account_id
+		param.__session_id = g_IDEWebLoginManager.session_id
 		local repeat_count = 0
 		while repeat_count < 1 do
 			repeat_count = repeat_count + 1
-			self._submit_client = ALittle.CreateHttpFileSender(g_IDELoginManager.http_ip, g_IDELoginManager.http_port, submit_info.export_module_path .. "/" .. file_path, 0, Lua.Bind(self.HandleSubmitVersionUpload, self, upload_index, total_count))
+			self._submit_client = ALittle.CreateHttpFileSender(g_IDEWebLoginManager.http_ip, g_IDEWebLoginManager.http_port, submit_info.export_module_path .. "/" .. file_path, 0, Lua.Bind(self.HandleSubmitVersionUpload, self, upload_index, total_count))
 			error = ALittle.IHttpFileSender.InvokeUpload("VersionServer.QUploadVersionFile", self._submit_client, param)
 			if error == nil then
 				break
@@ -681,12 +681,12 @@ function IDEExport:HandleNewVersionInfoImpl(submit_info)
 		upload_index = upload_index + 1
 		self._submit_content.text = "正在上传:" .. upload_index .. "/" .. total_count
 		param.file_path = submit_info.install_name
-		param.__account_id = g_IDELoginManager.account_id
-		param.__session_id = g_IDELoginManager.session_id
+		param.__account_id = g_IDEWebLoginManager.account_id
+		param.__session_id = g_IDEWebLoginManager.session_id
 		local repeat_count = 0
 		while repeat_count < 100 do
 			repeat_count = repeat_count + 1
-			self._submit_client = ALittle.CreateHttpFileSender(g_IDELoginManager.http_ip, g_IDELoginManager.http_port, submit_info.project_path .. "/Export/" .. submit_info.install_name, 0, Lua.Bind(self.HandleSubmitVersionUpload, self, upload_index, total_count))
+			self._submit_client = ALittle.CreateHttpFileSender(g_IDEWebLoginManager.http_ip, g_IDEWebLoginManager.http_port, submit_info.project_path .. "/Export/" .. submit_info.install_name, 0, Lua.Bind(self.HandleSubmitVersionUpload, self, upload_index, total_count))
 			error = ALittle.IHttpFileSender.InvokeUpload("VersionServer.QUploadVersionFile", self._submit_client, param)
 			if error == nil then
 				break
@@ -702,12 +702,12 @@ function IDEExport:HandleNewVersionInfoImpl(submit_info)
 		upload_index = upload_index + 1
 		self._submit_content.text = "正在上传:" .. upload_index .. "/" .. total_count
 		param.file_path = "CurVersion.db"
-		param.__account_id = g_IDELoginManager.account_id
-		param.__session_id = g_IDELoginManager.session_id
+		param.__account_id = g_IDEWebLoginManager.account_id
+		param.__session_id = g_IDEWebLoginManager.session_id
 		local repeat_count = 0
 		while repeat_count < 100 do
 			repeat_count = repeat_count + 1
-			self._submit_client = ALittle.CreateHttpFileSender(g_IDELoginManager.http_ip, g_IDELoginManager.http_port, submit_info.export_module_path .. "/CurVersion.db", 0, Lua.Bind(self.HandleSubmitVersionUpload, self, upload_index, total_count))
+			self._submit_client = ALittle.CreateHttpFileSender(g_IDEWebLoginManager.http_ip, g_IDEWebLoginManager.http_port, submit_info.export_module_path .. "/CurVersion.db", 0, Lua.Bind(self.HandleSubmitVersionUpload, self, upload_index, total_count))
 			error = ALittle.IHttpFileSender.InvokeUpload("VersionServer.QUploadVersionFile", self._submit_client, param)
 			if error == nil then
 				break

@@ -54,6 +54,3 @@ function __Module_GetInfo(control, module_base_path, script_base_path)
 	return info
 end
 
-function __Plugin_Setup(control, module_base_path, script_base_path)
-end
-

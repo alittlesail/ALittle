@@ -74,8 +74,3 @@ public static __Module_GetInfo(ALittle.ControlSystem control, string module_base
     info.height_value = 0;
     return info;
 }
-
-// 插件入口函数
-public static __Plugin_Setup(ALittle.ControlSystem control, string module_base_path, string script_base_path)
-{
-}

@@ -95,28 +95,27 @@ function ModuleSystem:LoadPlugin(module_name)
 	local module_base_path = "Module/" .. module_name .. "/"
 	if module_name == nil then
 		Log("module_name is null!")
-		return false
+		return nil
 	end
 	local info = self._name_module_map[module_name]
 	if info == nil then
 		info = self:LoadModuleImpl(module_base_path, module_name)
 		if info == nil then
 			Log("Module:" .. module_name .. " load failed!")
-			return false
+			return nil
 		end
 	end
 	if info.plugin_loaded then
-		Log(module_name .. ":__Plugin_Setup already invoked!")
-		return false
+		return info.control
 	end
 	local setup_func = info.plugin_setup
 	if setup_func == nil then
 		Log("can't find Plugin_Setup funciton in Module:" .. module_name)
-		return false
+		return nil
 	end
 	info.plugin_loaded = true
 	setup_func(info.control, module_base_path, module_base_path .. "Script/")
-	return true
+	return info.control
 end
 
 function ModuleSystem:LoadModule(module_base_path, module_name)

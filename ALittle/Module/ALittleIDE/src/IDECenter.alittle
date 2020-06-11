@@ -230,11 +230,11 @@ class IDECenter
 	}
 	//////////////////////////////////////////////////////////////////////////////////////////-
 	// 处理文件菜单
-	public fun HandleFileMenuClick(ALittle.UIClickEvent event) { g_IDEMainMenu.ShowFileMenu(event); }
+	public fun HandleFileMenuClick(ALittle.UIClickEvent event) { g_IDEMainMenu.ShowFileMenu(event.target); }
 	// 处理编辑菜单
-	public fun HandleEditMenuClick(ALittle.UIClickEvent event) { g_IDEMainMenu.ShowEditMenu(event); }
+	public fun HandleEditMenuClick(ALittle.UIClickEvent event) { g_IDEMainMenu.ShowEditMenu(event.target); }
 	// 处理工具菜单
-	public fun HandleToolMenuClick(ALittle.UIClickEvent event) { g_IDEMainMenu.ShowToolMenu(event); }
+	public fun HandleToolMenuClick(ALittle.UIClickEvent event) { g_IDEMainMenu.ShowToolMenu(event.target); }
 	// 处理版本菜单
 	public fun HandleVersionMenuClick(ALittle.UIClickEvent event) { [Language(Lua)]this._version_manager.ShowDialog(); }
 	// 处理运行

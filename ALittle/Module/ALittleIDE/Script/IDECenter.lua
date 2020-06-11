@@ -167,15 +167,15 @@ function IDECenter:RefreshProject()
 end
 
 function IDECenter:HandleFileMenuClick(event)
-	g_IDEMainMenu:ShowFileMenu(event)
+	g_IDEMainMenu:ShowFileMenu(event.target)
 end
 
 function IDECenter:HandleEditMenuClick(event)
-	g_IDEMainMenu:ShowEditMenu(event)
+	g_IDEMainMenu:ShowEditMenu(event.target)
 end
 
 function IDECenter:HandleToolMenuClick(event)
-	g_IDEMainMenu:ShowToolMenu(event)
+	g_IDEMainMenu:ShowToolMenu(event.target)
 end
 
 function IDECenter:HandleVersionMenuClick(event)

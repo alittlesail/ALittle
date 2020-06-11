@@ -1,168 +1,45 @@
 
 namespace ALittleIDE;
 
-struct IDEMainMenuImageInfo
-{
-	string file_name;
-	double x;
-	double y;
-	double width;
-	double height;
-}
-
-struct IDEMainMenuFramePlayInfo
-{
-	double width;
-	double height;
-	string root_path;
-	List<IDEMainMenuImageInfo> image_list;
-	int image_count;
-}
-
 class IDEMainMenu
 {
-	private ALittle.DisplayObject _menu_file_menu;
-	private ALittle.DisplayObject _menu_edit_menu;
-	private ALittle.DisplayObject _menu_tool_menu;
-
-	private ALittle.DisplayObject _frameplay_plist_dialog;
-	private ALittle.DisplayObject _plist_path;
-	private ALittle.DisplayObject _view_log_dialog;
-	private ALittle.DisplayObject _view_log_content;
-	private ALittle.DisplayObject _robot_chat_dialog;
-	private ALittle.DisplayObject _robot_chat_content;
-	private ALittle.DisplayObject _robot_chat_url;
-
 	////////////////////////////////////////////////////////////////////////////////////////
 	// 显示文件菜单
-	public fun ShowFileMenu(ALittle.UIEvent event)
+	public fun ShowFileMenu(ALittle.DisplayObject target)
 	{
-		// 创建菜单界面
-		if (this._menu_file_menu == null)
-			this._menu_file_menu = g_Control.CreateControl{ALittle.DisplayObject}("ide_file_menu", this);
-
-		// 设置菜单的位置
-		var x, y = event.target.LocalToGlobal();
-		this._menu_file_menu.x = x;
-		this._menu_file_menu.y = y + event.target.height;
-		// 显示菜单
-		A_LayerManager.ShowFromRight(this._menu_file_menu);
-	}
-	// 处理文件菜单中的新建项目
-	public fun HandleNewProject(ALittle.UIEvent event)
-	{
-		// 隐藏文件菜单
-		A_LayerManager.HideFromRight(this._menu_file_menu);
-		// 显示对话框
-		g_IDEProjectManager.ShowNewProject();
-	}
-	// 处理文件菜单中的打开项目
-	public fun HandleOpenProject(ALittle.UIEvent event)
-	{
-		// 隐藏文件菜单
-		A_LayerManager.HideFromRight(this._menu_file_menu);
-		// 显示对话框
-		g_IDEProjectManager.ShowOpenProject();
-	}
-	// 处理文件菜单中的打开项目
-	public fun HandleSettingProject(ALittle.UIEvent event)
-	{
-		// 隐藏文件菜单
-		A_LayerManager.HideFromRight(this._menu_file_menu);
-		// 显示对话框
-		g_IDEProjectManager.ShowSettingProject(null);
-	}
-	// 处理保存项目
-	public fun HandleSaveProject(ALittle.UIEvent event)
-	{
-		A_LayerManager.HideFromRight(this._menu_file_menu);
-		g_IDETabManager.SaveAllTab();
-	}
-	
-	// 处理刷新项目
-	public fun HandleRefreshProject(ALittle.UIEvent event)
-	{
-		A_LayerManager.HideFromRight(this._menu_file_menu);
-		g_IDEProjectManager.RefreshProject();
-	}
-	
-	// 处理导出项目
-	public fun HandleExportProject(ALittle.UIEvent event)
-	{
-		// 隐藏文件菜单
-		A_LayerManager.HideFromRight(this._menu_file_menu);
-		// 显示对话框
-		g_IDEProjectManager.ShowExportProject();
-	}
-	
-	// 处理运行项目
-	public fun HandleRun(ALittle.UIEvent event)
-	{
-		// 隐藏文件菜单
-		A_LayerManager.HideFromRight(this._menu_file_menu);
-		// 显示对话框
-		g_IDEProjectManager.RunProject();
+		var menu = new AUIPlugin.AUIRightMenu();
+		menu.AddItem("新建", bind(g_IDEProjectManager.ShowNewProject, g_IDEProjectManager));
+		menu.AddItem("打开", bind(g_IDEProjectManager.ShowOpenProject, g_IDEProjectManager));
+		menu.AddItem("设置", bind(g_IDEProjectManager.ShowSettingProject, g_IDEProjectManager, null));
+		menu.AddItem("保存", bind(g_IDETabManager.SaveAllTab, g_IDETabManager));
+		menu.AddItem("刷新", bind(g_IDEProjectManager.RefreshProject, g_IDEProjectManager));
+		menu.AddItem("导出项目", bind(g_IDEProjectManager.ShowExportProject, g_IDEProjectManager));
+		menu.Show(target);
 	}
 	//////////////////////////////////////////////////////////////////////////////-
 	// 显示编辑菜单
-	public fun ShowEditMenu(ALittle.UIEvent event)
+	public fun ShowEditMenu(ALittle.DisplayObject target)
 	{
-		// 创建菜单界面
-		if (this._menu_edit_menu == null)
-			this._menu_edit_menu = g_Control.CreateControl{ALittle.DisplayObject}("ide_edit_menu", this);
-
-		// 设置菜单的位置
-		var x, y = event.target.LocalToGlobal();
-		this._menu_edit_menu.x = x;
-		this._menu_edit_menu.y = y + event.target.height;
-		// 显示菜单
-		A_LayerManager.ShowFromRight(this._menu_edit_menu);
-	}
-	// 处理新建控件
-	public fun HandleNewControl(ALittle.UIEvent event)
-	{
-		// 隐藏文件菜单
-		A_LayerManager.HideFromRight(this._menu_edit_menu);
-		// 显示对话框
-		g_IDEControlManager.ShowNewControl();
-	}
-	// 处理撤销
-	public fun HandleUndoRevoke(ALittle.UIEvent event)
-	{
-		// 隐藏文件菜单
-		A_LayerManager.HideFromRight(this._menu_edit_menu);
-		// 撤销
-		g_IDEUICenter.HandleUndoRevoke(null);
-	}
-	// 处理重做
-	public fun HandleDoRevoke(ALittle.UIEvent event)
-	{
-		// 隐藏文件菜单
-		A_LayerManager.HideFromRight(this._menu_edit_menu);
-		// 撤销
-		g_IDEUICenter.HandleDoRevoke(null);
+		var menu = new AUIPlugin.AUIRightMenu();
+		menu.AddItem("新建控件", bind(g_IDEControlManager.ShowNewControl, g_IDEControlManager));
+		menu.AddItem("重做", bind(g_IDEUICenter.HandleDoRevoke, g_IDEUICenter, null));
+		menu.AddItem("撤销", bind(g_IDEUICenter.HandleUndoRevoke, g_IDEUICenter, null));
+		menu.Show(target);
 	}
 	//////////////////////////////////////////////////////////////////////////////-
 	// 显示工具菜单
-	public fun ShowToolMenu(ALittle.UIEvent event)
+	public fun ShowToolMenu(ALittle.DisplayObject target)
 	{
-		// 创建工具界面
-		if (this._menu_tool_menu == null)
-			this._menu_tool_menu = g_Control.CreateControl{ALittle.DisplayObject}("ide_tool_menu", this);
-
-		// 设置菜单的位置
-		var x, y = event.target.LocalToGlobal();
-		this._menu_tool_menu.x = x;
-		this._menu_tool_menu.y = y + event.target.height;
-		// 显示菜单
-		A_LayerManager.ShowFromRight(this._menu_tool_menu);
+		var menu = new AUIPlugin.AUIRightMenu();
+		menu.AddItem("生成ui_all_in_one", bind(this.HandleGenUIAllInOneClick, this));
+		menu.AddItem("生成core_all_in_one", bind(this.HandleGenCoreAllInOneClick, this));
+		menu.AddItem("生成std_all_in_one", bind(this.HandleGenStdAllInOneClick, this));
+		menu.AddItem("生成cengine_all_in_one", bind(this.HandleGenCEngineAllInOneClick, this));
+		menu.Show(target);
 	}
 	// 生成Json模板代码
-	public fun HandleGenUIAllInOneClick(ALittle.UIClickEvent event)
+	public fun HandleGenUIAllInOneClick()
 	{
-		// 隐藏文件菜单
-		A_LayerManager.HideFromRight(this._menu_tool_menu);
-
 		if (g_IDEProject.project == null)
 		{
 			g_AUITool.ShowNotice("提示", "没有加载项目");
@@ -184,11 +61,8 @@ class IDEMainMenu
 			g_AUITool.ShowNotice("提示", "生成失败");
     }
 	// 生成核心库Core
-	public fun HandleGenCoreAllInOneClick(ALittle.UIClickEvent event)
+	public fun HandleGenCoreAllInOneClick()
 	{
-		// 隐藏文件菜单
-		A_LayerManager.HideFromRight(this._menu_tool_menu);
-
 		var all_in_one = new List<string>();
 
 		var base_path = "Module/ALittleIDE/Other/GameLibrary/Core/JSScript/";
@@ -215,11 +89,8 @@ class IDEMainMenu
 			g_AUITool.ShowNotice("提示", "生成失败");
     }
 	// 生成标准库Std
-	public fun HandleGenStdAllInOneClick(ALittle.UIClickEvent event)
+	public fun HandleGenStdAllInOneClick()
 	{
-		// 隐藏文件菜单
-		A_LayerManager.HideFromRight(this._menu_tool_menu);
-
 		var all_in_one = new List<string>();
 
 		var base_path = "Module/ALittleIDE/Other/GameLibrary/Std/JSScript/";
@@ -253,11 +124,8 @@ class IDEMainMenu
 			g_AUITool.ShowNotice("提示", "生成失败");
     }
 	// 生成客户端引起CEngine
-	public fun HandleGenCEngineAllInOneClick(ALittle.UIClickEvent event)
+	public fun HandleGenCEngineAllInOneClick()
 	{
-		// 隐藏文件菜单
-		A_LayerManager.HideFromRight(this._menu_tool_menu);
-
 		var all_in_one = new List<string>();
 
 		var base_path = "Module/ALittleIDE/Other/GameLibrary/CEngine/JSScript/";
@@ -338,65 +206,6 @@ class IDEMainMenu
 		else
 			g_AUITool.ShowNotice("提示", "生成失败");
     }
-	// 处理转换
-	public fun HandleFramePlayFromPList(ALittle.UIEvent event)
-	{
-		// 隐藏文件菜单
-		A_LayerManager.HideFromRight(this._menu_tool_menu);
-	
-		if (this._frameplay_plist_dialog == null)
-			this._frameplay_plist_dialog = g_Control.CreateControl{ALittle.DisplayObject}("ide_frameplay_plist_dialog", this, g_IDECenter.dialog_layer);
-		
-		this._frameplay_plist_dialog.visible = true;
-	}
-
-	public static ImageListInFramePlayCmp(IDEMainMenuImageInfo a, IDEMainMenuFramePlayInfo b) : bool
-	{
-		return a.file_name < a.file_name;
-	}
-
-	// 处理查看日志
-	public fun HandleViewLog(ALittle.UIEvent event)
-	{
-		// 隐藏文件菜单
-		A_LayerManager.HideFromRight(this._menu_tool_menu);
-	
-		if (this._view_log_dialog == null)
-		{
-			this._view_log_dialog = g_Control.CreateControl{ALittle.DisplayObject}("ide_view_log_dialog", this, g_IDECenter.dialog_layer);
-			this.HandleViewLogRefresh(null);
-		}
-		this._view_log_dialog.visible = true;
-	}
-	// 刷新日志内容
-	public fun HandleViewLogRefresh(ALittle.UIEvent event)
-	{
-		// 读取日志
-		var file_name = ALittle.Time_GetCurYMD(ALittle.Time_GetCurTime())..".log";
-		var file_path = ALittle.File_BaseFilePath().."Log/"..file_name;
-		var content = ALittle.File_ReadTextFromFile(file_path, false);
-		if (content == null) return;
-
-		var content_list = ALittle.String_Split(content, "\n");
-		var content_len = ALittle.List_MaxN(content_list);
-		var copy_len = content_len - 100;
-		if (copy_len < 1) copy_len = 1;
-	
-		var log_list = new List<string>();
-		var log_list_count = 0;
-		for (var i = content_len; i >= copy_len; -1)
-		{
-			++ log_list_count;
-			log_list[log_list_count] = content_list[i];
-		}
-	
-		this._view_log_content.text = ALittle.String_Join(log_list, "\n");
-	}
-	// 关闭日志内容
-	public fun HandleViewLogClose(ALittle.UIEvent event)
-	{
-		this._view_log_dialog.visible = false;
-	}
 }
 //////////////////////////////////////////////////////////////////////////////
 

@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="src\AUIIMEManager.alittle" />
+    <None Include="src\AUIRightMenu.alittle" />
     <None Include="src\AUITool.alittle" />
     <None Include="src\AUIVersionManager.alittle" />
     <None Include="src\Main.alittle" />

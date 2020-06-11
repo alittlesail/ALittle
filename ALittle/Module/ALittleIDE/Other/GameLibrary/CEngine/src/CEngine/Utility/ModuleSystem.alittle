@@ -151,7 +151,7 @@ class ModuleSystem
         return true;
     }
     
-    public await fun LoadPlugin(string module_name) : bool
+    public await fun LoadPlugin(string module_name) : ControlSystem
     {
         // 固定模块路径
         var module_base_path = "Module/"..module_name.."/";
@@ -160,7 +160,7 @@ class ModuleSystem
         if (module_name == null)
         {
             Log("module_name is null!");
-            return false;
+            return null;
         }
         // 检查是否已经加载
         var info = this._name_module_map[module_name];
@@ -171,22 +171,18 @@ class ModuleSystem
             if (info == null)
             {
                 Log("Module:" .. module_name .. " load failed!");
-                return false;
+                return null;
             }
         }
         // 检查__Plugin_Setup是否已经调用过了
-        if (info.plugin_loaded)
-        {
-            Log(module_name .. ":__Plugin_Setup already invoked!");
-            return false;
-        }
+        if (info.plugin_loaded) return info.control;
     
         // 调用启动函数
         var setup_func = info.plugin_setup;
         if (setup_func == null)
         {
             Log("can't find Plugin_Setup funciton in Module:" .. module_name);
-            return false;
+            return null;
         }
         info.plugin_loaded = true;
     
@@ -196,7 +192,7 @@ class ModuleSystem
         [Language(JavaScript)]
         setup_func(info.control, module_base_path, module_base_path.."JSScript/");
     
-        return true;
+        return info.control;
     }
     
     public await fun LoadModule(string module_base_path, string module_name) : bool

@@ -628,7 +628,7 @@ public class IDEAntiPanel : ALittle.DisplayLayout
 		if (user_info.base.loop_map == null) user_info.base.loop_map = new Map<string, ALittle.LoopGroupInfo>();
 		if (user_info.base.loop_map[name] != null)
 		{
-			g_IDETool.ShowNotice("错误", "动画名称已存在");
+			g_AUITool.ShowNotice("错误", "动画名称已存在");
 			return;
 		}
 
@@ -680,7 +680,6 @@ public class IDEAntiPanel : ALittle.DisplayLayout
 		if (this._anti_scroll_list.child_count == 0)
 			user_info.base.loop_map = null;
 
-
 		// 标记为还未保存
 		this._tab_child.Save(false);
 
@@ -706,7 +705,7 @@ public class IDEAntiPanel : ALittle.DisplayLayout
 
 		if (user_info.base.loop_map[new_name] != null)
 		{
-			g_IDETool.ShowNotice("错误", "新建的动画名称已存在");
+			g_AUITool.ShowNotice("错误", "新建的动画名称已存在");
 			return;
 		}
 
@@ -1028,7 +1027,7 @@ public class IDEAntiPanel : ALittle.DisplayLayout
 			var error = anti.Init(map);
 			if (error != null)
 			{
-				g_IDETool.ShowNotice("错误", error);
+				g_AUITool.ShowNotice("错误", error);
 				return;
 			}
 
@@ -1177,7 +1176,7 @@ public class IDEAntiManager
 		user_data.panel.DeleteAnti(user_data.name);
 	}
 
-	public fun HandleAntiListRightMenuCopyAnNew(ALittle.UIEvent event)
+	public async fun HandleAntiListRightMenuCopyAnNew(ALittle.UIEvent event)
 	{
 		A_LayerManager.HideFromRight(this._anti_list_right_menu);
 		var user_data:IDEAntiListMenuUserData = this._anti_list_right_menu._user_data;
@@ -1193,13 +1192,10 @@ public class IDEAntiManager
 			}
 		}
 
-		var name = user_data.name;
-		var callback = bind(this.CopyAndNew, this, name, user_data);
-		g_IDETool.ShowRename(callback, name, x, y, event.target.width);
-	}
-        
-	public fun CopyAndNew(string old_name, IDEAntiListMenuUserData user_data, string new_name)
-	{
+		var old_name = user_data.name;
+		var new_name = g_AUITool.ShowRename(old_name, x, y, event.target.width);
+		if (new_name == null || old_name == new_name) return;
+		
 		user_data.panel.CopyAndNewAnti(old_name, new_name);
 	}
 

@@ -58,7 +58,7 @@ public class IDEControlManager
 		var project = g_IDEProject.project;
 		if (project == null)
 		{
-			g_IDETool.ShowNotice("提示", "当前没有打开的项目");
+			g_AUITool.ShowNotice("提示", "当前没有打开的项目");
 			return;
 		}
 	
@@ -180,7 +180,7 @@ public class IDEControlManager
 		g_IDETabManager.CloseTab(child);
 		if (info.pre_index != null) g_IDETabManager.SetCurTabIndex(info.pre_index);
 	}
-	public fun HandleControlKeyDown(ALittle.UIKeyDownEvent event)
+	public async fun HandleControlKeyDown(ALittle.UIKeyDownEvent event)
 	{
 		// 判断F2
 		if (event.sym == 1073741883)
@@ -273,7 +273,7 @@ public class IDEControlManager
 			var common_parent = tree.logic_parent;
 			if (common_parent == null)
 			{
-				g_IDETool.ShowNotice("提示", "当前是根节点，并且不是容器，粘帖失败");
+				g_AUITool.ShowNotice("提示", "当前是根节点，并且不是容器，粘帖失败");
 				return;
 			}
 			var child_index = common_parent.GetChildIndex(tree);
@@ -294,7 +294,7 @@ public class IDEControlManager
 		// 检查当前是否打开项目
 		if (g_IDEProject.project == null)
 		{
-			g_IDETool.ShowNotice("提示", "当前没有打开的项目");
+			g_AUITool.ShowNotice("提示", "当前没有打开的项目");
 			return;
 		}
 		
@@ -328,39 +328,39 @@ public class IDEControlManager
 		var project = g_IDEProject.project;
 		if (project == null)
 		{
-			g_IDETool.ShowNotice("错误", "当前没有打开的项目");
+			g_AUITool.ShowNotice("错误", "当前没有打开的项目");
 			return;
 		}
 		// 获取控件名字
 		var name = this._control_new_name.text;
 		if (name == "")
 		{
-			g_IDETool.ShowNotice("错误", "请输入控件名");
+			g_AUITool.ShowNotice("错误", "请输入控件名");
 			return;
 		}
 		// 检查控件名
 		if (IDEUtility_CheckName(name) == false)
 		{
-			g_IDETool.ShowNotice("错误", "控件名不合法:"..name);
+			g_AUITool.ShowNotice("错误", "控件名不合法:"..name);
 			return;
 		}
 		// 检查控件是否存在
 		if (project.control_map[name] != null)
 		{
-			g_IDETool.ShowNotice("错误", "控件已存在:"..name);
+			g_AUITool.ShowNotice("错误", "控件已存在:"..name);
 			return;
 		}
 		// 检查控件名是否已经正在编辑了
 		if (g_IDETabManager.GetTabByName(name) != null)
 		{
-			g_IDETool.ShowNotice("错误", "控件名已存在:"..name);
+			g_AUITool.ShowNotice("错误", "控件名已存在:"..name);
 			return;
 		}
 		// 获取控件类型
 		var control_type = this._control_new_type.text;
 		if (control_type == "")
 		{
-			g_IDETool.ShowNotice("错误", "请选择控件类型");
+			g_AUITool.ShowNotice("错误", "请选择控件类型");
 			return;
 		}
 		// 获取继承控件名
@@ -389,24 +389,8 @@ public class IDEControlManager
 
 		this._control_right_menu._user_data = event.target;
 	}
-	// 处理删除
-	public fun DeleteControlImpl(ALittle.DisplayObject target)
-	{
-		this._control_scroll_screen.RemoveChild(target);
-		var user_data:IDEControlItemUserData = target._user_data;
-		var result, content = g_IDEProject.DeleteControl(user_data.control_info.name);
-		if (result == false)
-		{
-			g_IDETool.ShowNotice("提示", content);
-			return;
-		}
-	
-		var tab = g_IDETabManager.GetTabByName(user_data.control_info.name);
-		if (tab == null) return;
-		g_IDETabManager.CloseTab(tab);
-	}
 	// 处理删除信息
-	public fun HandleControlRightMenuDelete(ALittle.UIEvent event)
+	public async fun HandleControlRightMenuDelete(ALittle.UIEvent event)
 	{
 		A_LayerManager.HideFromRight(this._control_right_menu);
 		var target:ALittle.DisplayObject = this._control_right_menu._user_data;
@@ -417,18 +401,31 @@ public class IDEControlManager
 		var result, content = g_IDEProject.CanDelete(name);
 		if (result == false)
 		{
-			g_IDETool.ShowNotice("错误", content);
+			g_AUITool.ShowNotice("错误", content);
 			return;
 		}
 		result, content = g_IDETabManager.CanDelete(name);
 		if (result == false)
 		{
-			g_IDETool.ShowNotice("错误", content);
+			g_AUITool.ShowNotice("错误", content);
 			return;
 		}
         
-		var callback = bind(this.DeleteControlImpl, this, target);
-		g_IDETool.DeleteNotice("提示", "确定要删除"..target.text.."吗?", callback);
+		var del_result = g_AUITool.DeleteNotice("提示", "确定要删除"..target.text.."吗?");
+		if (del_result == AUIPlugin.AUIToolOption.YES)
+		{
+			this._control_scroll_screen.RemoveChild(target);
+			result, content = g_IDEProject.DeleteControl(user_data.control_info.name);
+			if (result == false)
+			{
+				g_AUITool.ShowNotice("提示", content);
+				return;
+			}
+	
+			var tab = g_IDETabManager.GetTabByName(user_data.control_info.name);
+			if (tab == null) return;
+			g_IDETabManager.CloseTab(tab);
+        }
 	}
 	// 处理复制控件名
 	public fun HandleControlRightMenuCopyName(ALittle.UIEvent event)
@@ -442,17 +439,18 @@ public class IDEControlManager
 		ALittle.System_SetClipboardText(name);
 	}
 	// 处理复制控件
-	public fun HandleControlRightMenuCopyInfo(ALittle.UIEvent event)
+	public async fun HandleControlRightMenuCopyInfo(ALittle.UIEvent event)
 	{
 		A_LayerManager.HideFromRight(this._control_right_menu);
 		var target:ALittle.DisplayObject = this._control_right_menu._user_data;
 		this._control_right_menu._user_data = null;
 
 		var user_data:IDEControlItemUserData = target._user_data;
-		var name = user_data.control_info.name;
+		var old_name = user_data.control_info.name;
 		var x, y = target.LocalToGlobal();
-		var callback = bind(this.ControlCopyInfo, this, name);
-		g_IDETool.ShowRename(callback, name, x, y, target.width);
+		var new_name = g_AUITool.ShowRename(old_name, x, y, target.width);
+		if (new_name == null || old_name == new_name) return;
+		this.ControlCopyInfo(old_name, new_name);
 	}
 	
 	// 复制控件信息
@@ -461,26 +459,26 @@ public class IDEControlManager
 		var result, content = IDEUtility_CheckName(new_name);
 		if (result == false)
 		{
-			g_IDETool.ShowNotice("错误", content);
+			g_AUITool.ShowNotice("错误", content);
 			return;
 		}
 		var info = g_IDEProject.project.control_map[new_name];
 		if (info != null)
 		{
-			g_IDETool.ShowNotice("错误", "控件名已存在:"..new_name);
+			g_AUITool.ShowNotice("错误", "控件名已存在:"..new_name);
 			return;
 		}
 		info = g_IDEProject.project.control_map[target_name];
 		if (info == null)
 		{
-			g_IDETool.ShowNotice("错误", "控件不存在:"..target_name);
+			g_AUITool.ShowNotice("错误", "控件不存在:"..target_name);
 			return;
 		}
 		g_IDEProject.SaveControl(new_name, ALittle.String_CopyTable(info.info));
 		info = g_IDEProject.project.control_map[new_name];
 		if (info == null)
 		{
-			g_IDETool.ShowNotice("错误", "控件新建失败:"..new_name);
+			g_AUITool.ShowNotice("错误", "控件新建失败:"..new_name);
 			return;
 		}
 		// 直接打开这个控件
@@ -496,7 +494,7 @@ public class IDEControlManager
 		var result, content = g_IDEProject.RenameControl(old_name, new_name);
 		if (result == false)
 		{
-			g_IDETool.ShowNotice("错误", content);
+			g_AUITool.ShowNotice("错误", content);
 			return;
 		}
 	
@@ -510,30 +508,31 @@ public class IDEControlManager
 	}
 	
 	// 修改控件名事件处理
-	public fun ControlRenameImpl(ALittle.DisplayObject target)
+	public await fun ControlRenameImpl(ALittle.DisplayObject target)
 	{
 		var user_data:IDEControlItemUserData = target._user_data;
-		var name = user_data.control_info.name;
-		var result, content = g_IDEProject.CanDelete(name);
+		var old_name = user_data.control_info.name;
+		var result, content = g_IDEProject.CanDelete(old_name);
 		if (result == false)
 		{
-			g_IDETool.ShowNotice("错误", content);
+			g_AUITool.ShowNotice("错误", content);
 			return;
 		}
-		result, content = g_IDETabManager.CanDelete(name);
+		result, content = g_IDETabManager.CanDelete(old_name);
 		if (result == false)
 		{
-			g_IDETool.ShowNotice("错误", content);
+			g_AUITool.ShowNotice("错误", content);
 			return;
 		}
 	
 		var x, y = target.LocalToGlobal();
-		var callback = bind(this.ControlRename, this, target, name);
-		g_IDETool.ShowRename(callback, name, x, y, target.width);
+		var new_name = g_AUITool.ShowRename(old_name, x, y, target.width);
+		if (new_name == null || old_name == new_name) return;
+		this.ControlRename(target, old_name, new_name);
 	}
 	
 	// 修改控件名
-	public fun HandleControlRightMenuRename(ALittle.UIEvent event)
+	public async fun HandleControlRightMenuRename(ALittle.UIEvent event)
 	{
 		A_LayerManager.HideFromRight(this._control_right_menu);
 		var target:ALittle.DisplayObject = this._control_right_menu._user_data;

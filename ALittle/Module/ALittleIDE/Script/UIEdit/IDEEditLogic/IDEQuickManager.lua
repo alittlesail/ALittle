@@ -287,7 +287,7 @@ function IDEQuickManager:SearchCollect(search_type, key, item_list, run_time)
 	end
 	local project = g_IDEProject.project
 	if project == nil then
-		g_IDETool:ShowNotice("提示", "当前没有打开的项目")
+		g_AUITool:ShowNotice("提示", "当前没有打开的项目")
 		return nil, nil
 	end
 	local control_map = project.control_map

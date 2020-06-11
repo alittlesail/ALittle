@@ -69,15 +69,15 @@ end
 function IDEProjectManager:HandleNewProjectConfirm(event)
 	local name = self._project_new_name.text
 	if name == "" then
-		g_IDETool:ShowNotice("错误", "请输入项目名")
+		g_AUITool:ShowNotice("错误", "请输入项目名")
 		return
 	end
 	if IDEUtility_CheckName(name) == false then
-		g_IDETool:ShowNotice("错误", "项目名不合法:" .. name)
+		g_AUITool:ShowNotice("错误", "项目名不合法:" .. name)
 		return
 	end
 	if ALittle.File_GetFileAttr(ALittle.File_BaseFilePath() .. name) ~= nil then
-		g_IDETool:ShowNotice("错误", "项目已存在:" .. name)
+		g_AUITool:ShowNotice("错误", "项目已存在:" .. name)
 		return
 	end
 	local size_list = ALittle.String_Split(self._view_size_dropdown.text, "x")
@@ -104,11 +104,11 @@ end
 
 function IDEProjectManager:OpenProjectImpl(name)
 	if name == "" then
-		g_IDETool:ShowNotice("错误", "请输入项目名")
+		g_AUITool:ShowNotice("错误", "请输入项目名")
 		return
 	end
 	if ALittle.File_GetFileAttr(ALittle.File_BaseFilePath() .. "Module/" .. name) == nil then
-		g_IDETool:ShowNotice("错误", "项目不存在:" .. name)
+		g_AUITool:ShowNotice("错误", "项目不存在:" .. name)
 		return
 	end
 	g_IDECenter:CloseProject()
@@ -146,18 +146,19 @@ end
 function IDEProjectManager:HandleOpenProjectConfirm(event)
 	self._project_open_dialog.visible = false
 	local name = self._project_open_name.text
-	if g_IDETabManager:IsSaveAll() then
-		self:OpenProjectImpl(name)
-		return
+	if not g_IDETabManager:IsSaveAll() then
+		local result = g_AUITool:SaveNotice("提示", "是否保存当前项目?")
+		if result == "YES" then
+			g_IDETabManager:SaveAllTab()
+		end
 	end
-	local cancel_callback = Lua.Bind(self.OpenProjectImpl, self, name)
-	local confirm_callback = Lua.Bind(g_IDETabManager.SaveAllTab, g_IDETabManager)
-	g_IDETool:SaveNotice("提示", "是否保存当前项目?", cancel_callback, confirm_callback)
+	self:OpenProjectImpl(name)
 end
+IDEProjectManager.HandleOpenProjectConfirm = Lua.CoWrap(IDEProjectManager.HandleOpenProjectConfirm)
 
 function IDEProjectManager:ShowSettingProject(event)
 	if g_IDEProject.project == nil then
-		g_IDETool:ShowNotice("错误", "当前没有打开的项目")
+		g_AUITool:ShowNotice("错误", "当前没有打开的项目")
 		return
 	end
 	if self._project_setting_dialog == nil then
@@ -178,18 +179,18 @@ end
 function IDEProjectManager:HandleSettingProjectConfirm(event)
 	local default_show_width = ALittle.Math_ToInt(self._default_show_width.text)
 	if default_show_width == nil or default_show_width <= 0 then
-		g_IDETool:ShowNotice("错误", "默认宽度不合法")
+		g_AUITool:ShowNotice("错误", "默认宽度不合法")
 		return
 	end
 	local default_show_height = ALittle.Math_ToInt(self._default_show_height.text)
 	if default_show_height == nil or default_show_height <= 0 then
-		g_IDETool:ShowNotice("错误", "默认高度不合法")
+		g_AUITool:ShowNotice("错误", "默认高度不合法")
 		return
 	end
 	local default_font_path = self._default_font_path.text
 	local default_font_size = ALittle.Math_ToInt(self._default_font_size.text)
 	if default_font_size == nil or default_font_size <= 0 then
-		g_IDETool:ShowNotice("错误", "默认字体大小不合法")
+		g_AUITool:ShowNotice("错误", "默认字体大小不合法")
 		return
 	end
 	g_IDEProject.project.config:SetConfig("default_show_width", default_show_width)
@@ -218,14 +219,15 @@ function IDEProjectManager:HandleRightProjectOpen(event)
 	local target = self._project_search_menu._user_data
 	self._project_search_menu._user_data = nil
 	local project_name = target.text
-	if g_IDETabManager:IsSaveAll() then
-		self:OpenProjectImpl(project_name)
-		return
+	if not g_IDETabManager:IsSaveAll() then
+		local result = g_AUITool:SaveNotice("提示", "是否保存当前项目?")
+		if result == "YES" then
+			g_IDETabManager:SaveAllTab()
+		end
 	end
-	local cancel_callback = Lua.Bind(self.OpenProjectImpl, self, project_name)
-	local confirm_callback = Lua.Bind(g_IDETabManager.SaveAllTab, g_IDETabManager)
-	g_IDETool:SaveNotice("提示", "是否保存当前项目?", cancel_callback, confirm_callback)
+	self:OpenProjectImpl(project_name)
 end
+IDEProjectManager.HandleRightProjectOpen = Lua.CoWrap(IDEProjectManager.HandleRightProjectOpen)
 
 function IDEProjectManager:HandleRightProjectRemove(event)
 	A_LayerManager:HideFromRight(self._project_search_menu)
@@ -233,7 +235,7 @@ function IDEProjectManager:HandleRightProjectRemove(event)
 	self._project_search_menu._user_data = nil
 	local project_name = target.text
 	if g_IDEProject.project ~= nil and g_IDEProject.project.name == project_name then
-		g_IDETool:ShowNotice("提示", "当前项目正在编辑，请先关闭")
+		g_AUITool:ShowNotice("提示", "当前项目正在编辑，请先关闭")
 		return
 	end
 	g_IDEProject:RemoveProject(project_name)
@@ -249,24 +251,26 @@ function IDEProjectManager:HandleRightProjectClose(event)
 	if g_IDEProject.project == nil or g_IDEProject.project.name ~= project_name then
 		return
 	end
-	if g_IDETabManager:IsSaveAll() then
-		g_IDECenter:CloseProject()
-		return
+	if not g_IDETabManager:IsSaveAll() then
+		local result = g_AUITool:SaveNotice("提示", "是否保存当前项目?")
+		if result == "YES" then
+			g_IDETabManager:SaveAllTab()
+		end
 	end
-	local cancel_callback = Lua.Bind(g_IDECenter.CloseProject, g_IDECenter)
-	local confirm_callback = Lua.Bind(g_IDETabManager.SaveAllTab, g_IDETabManager)
-	g_IDETool:SaveNotice("提示", "是否保存当前项目?", cancel_callback, confirm_callback)
+	g_IDECenter:CloseProject()
 end
+IDEProjectManager.HandleRightProjectClose = Lua.CoWrap(IDEProjectManager.HandleRightProjectClose)
 
 function IDEProjectManager:RefreshProject()
-	if g_IDETabManager:IsSaveAll() then
-		g_IDECenter:RefreshProject()
-		return
+	if not g_IDETabManager:IsSaveAll() then
+		local result = g_AUITool:SaveNotice("提示", "是否保存当前项目?")
+		if result == "YES" then
+			g_IDETabManager:SaveAllTab()
+		end
 	end
-	local cancel_callback = Lua.Bind(g_IDECenter.RefreshProject, g_IDECenter)
-	local confirm_callback = Lua.Bind(g_IDETabManager.SaveAllTab, g_IDETabManager)
-	g_IDETool:SaveNotice("提示", "是否保存当前项目?", cancel_callback, confirm_callback)
+	g_IDECenter:RefreshProject()
 end
+IDEProjectManager.RefreshProject = Lua.CoWrap(IDEProjectManager.RefreshProject)
 
 function IDEProjectManager:HandleRightProjectRefresh(event)
 	A_LayerManager:HideFromRight(self._project_search_menu)
@@ -281,7 +285,7 @@ end
 
 function IDEProjectManager:ShowExportProject()
 	if g_IDEProject.project == nil then
-		g_IDETool:ShowNotice("错误", "当前没有打开的项目")
+		g_AUITool:ShowNotice("错误", "当前没有打开的项目")
 		return
 	end
 	if self._export_dialog == nil then
@@ -301,7 +305,7 @@ end
 
 function IDEProjectManager:RunProject()
 	if g_IDEProject.project == nil then
-		g_IDETool:ShowNotice("提示", "当前没有打开的项目")
+		g_AUITool:ShowNotice("提示", "当前没有打开的项目")
 		return
 	end
 	os.execute("start ALittleClient.exe " .. g_IDEProject.project.name .. " debug")

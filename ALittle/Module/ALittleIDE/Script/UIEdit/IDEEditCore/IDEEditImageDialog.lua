@@ -33,7 +33,7 @@ end
 
 function IDEEditImageDialog:HandleSaveToClick(event)
 	if g_IDEProject.project == nil then
-		g_IDETool:ShowNotice("提示", "当前没有打开项目")
+		g_AUITool:ShowNotice("提示", "当前没有打开项目")
 		return
 	end
 	A_OtherSystem:SystemSaveFile(event.target, "input_file_name.png", g_IDEProject.project.base_path .. "Texture")

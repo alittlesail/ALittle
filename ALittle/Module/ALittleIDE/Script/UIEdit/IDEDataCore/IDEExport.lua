@@ -263,7 +263,7 @@ function IDEExport:PackageVersion(package_info)
 	local ___COROUTINE = coroutine.running()
 	ALittle.Log("========PackageVersion========")
 	if g_IDELoginManager:IsLogin() then
-		g_IDETool:ShowAlertDialog("提示", "正在请求新的版本号")
+		g_AUITool:ShowAlertDialog("提示", "正在请求新的版本号")
 		local param = {}
 		param.__account_id = g_IDELoginManager.account_id
 		param.__session_id = g_IDELoginManager.session_id
@@ -277,9 +277,9 @@ end
 
 function IDEExport:HandleAskNewUpdateTimeIndex(error, result, package_info, is_login)
 	local ___COROUTINE = coroutine.running()
-	g_IDETool:HideAlertDialog()
+	g_AUITool:HideAlertDialog()
 	if error ~= nil then
-		g_IDETool:ShowNotice("错误", "新版本号获取失败:" .. error)
+		g_AUITool:ShowNotice("错误", "新版本号获取失败:" .. error)
 		return
 	end
 	self:HandleAskNewUpdateTimeIndexImpl(package_info, is_login, result.update_time, result.update_index)
@@ -288,7 +288,7 @@ end
 function IDEExport:HandleAskNewUpdateTimeIndexImpl(package_info, is_login, update_time, update_index)
 	local ___COROUTINE = coroutine.running()
 	if is_login then
-		g_IDETool:ShowAlertDialog("提示", "正在请求CurVersion.db的文件的位置")
+		g_AUITool:ShowAlertDialog("提示", "正在请求CurVersion.db的文件的位置")
 		local param = {}
 		param.__account_id = g_IDELoginManager.account_id
 		param.__session_id = g_IDELoginManager.session_id
@@ -304,15 +304,15 @@ end
 
 function IDEExport:HandleQueryNewCurVersion(error, result, package_info, is_login, update_time, update_index)
 	local ___COROUTINE = coroutine.running()
-	g_IDETool:HideAlertDialog()
+	g_AUITool:HideAlertDialog()
 	if error ~= nil then
-		g_IDETool:ShowNotice("错误", "CurVersion.db的文件的位置获取失败:" .. error)
+		g_AUITool:ShowNotice("错误", "CurVersion.db的文件的位置获取失败:" .. error)
 		return
 	end
 	if result.version_info == nil or result.version_info.version_id == nil or result.version_info.version_id == "" then
 		self:HandleQueryNewCurVersionImpl(package_info, is_login, update_time, update_index, false)
 	else
-		g_IDETool:ShowAlertDialog("提示", "下载最新的版本文件")
+		g_AUITool:ShowAlertDialog("提示", "下载最新的版本文件")
 		ALittle.File_MakeDeepDir(package_info.project_path .. "/Export")
 		local target_path = package_info.project_path .. "/Export" .. "/CurVersionOld_" .. package_info.platform .. ".db"
 		local param = {}
@@ -327,34 +327,34 @@ end
 
 function IDEExport:HandleDownloadCurVersion(error, package_info, is_login, update_time, update_index)
 	if error ~= nil then
-		g_IDETool:HideAlertDialog()
-		g_IDETool:ShowNotice("错误", "最新版本文件下载失败:" .. error)
+		g_AUITool:HideAlertDialog()
+		g_AUITool:ShowNotice("错误", "最新版本文件下载失败:" .. error)
 		return
 	end
-	g_IDETool:HideAlertDialog()
+	g_AUITool:HideAlertDialog()
 	self:HandleQueryNewCurVersionImpl(package_info, is_login, update_time, update_index, true)
 end
 
 function IDEExport:HandleQueryNewCurVersionImpl(package_info, is_login, update_time, update_index, has_db_version)
-	g_IDETool:ShowAlertDialog("提示", "正在生成版本")
+	g_AUITool:ShowAlertDialog("提示", "正在生成版本")
 	ALittle.System_Render()
 	local small_version_time = update_time
 	local small_version_index = update_index
 	local version_info = nil
 	if has_db_version then
-		g_IDETool:ShowAlertDialog("提示", "获取上一个版本的信息")
+		g_AUITool:ShowAlertDialog("提示", "获取上一个版本的信息")
 		ALittle.System_Render()
 		local db_version_path = package_info.project_path .. "/Export/CurVersionOld_" .. package_info.platform .. ".db"
 		local sqlite = sqlite3.open(db_version_path)
 		if sqlite == nil then
-			g_IDETool:ShowNotice("错误", "CurVersion.db文件打开失败")
+			g_AUITool:ShowNotice("错误", "CurVersion.db文件打开失败")
 			return
 		end
 		version_info = {}
 		local stmt = sqlite:prepare("SELECT * FROM BigVersion")
 		if stmt == nil then
 			sqlite:close()
-			g_IDETool:ShowNotice("错误", "CurVersion.db中BigVersion读取失败")
+			g_AUITool:ShowNotice("错误", "CurVersion.db中BigVersion读取失败")
 			return
 		end
 		for row in stmt:nrows() do
@@ -364,7 +364,7 @@ function IDEExport:HandleQueryNewCurVersionImpl(package_info, is_login, update_t
 		stmt = sqlite:prepare("SELECT * FROM SmallVersion")
 		if stmt == nil then
 			sqlite:close()
-			g_IDETool:ShowNotice("错误", "CurVersion.db中SmallVersion读取失败")
+			g_AUITool:ShowNotice("错误", "CurVersion.db中SmallVersion读取失败")
 			return
 		end
 		version_info.small_version = {}
@@ -374,11 +374,11 @@ function IDEExport:HandleQueryNewCurVersionImpl(package_info, is_login, update_t
 		stmt:reset()
 		sqlite:close()
 	end
-	g_IDETool:ShowAlertDialog("提示", "打包当前版本")
+	g_AUITool:ShowAlertDialog("提示", "打包当前版本")
 	ALittle.System_Render()
 	local error, version_info_list = Lua.TCall(self.PackageCommon, self, package_info.project_path)
 	if error ~= nil then
-		g_IDETool:ShowNotice("错误", "PackageCommon 调用失败:" .. error)
+		g_AUITool:ShowNotice("错误", "PackageCommon 调用失败:" .. error)
 		return
 	end
 	if package_info.platform == "Android" then
@@ -392,7 +392,7 @@ function IDEExport:HandleQueryNewCurVersionImpl(package_info, is_login, update_t
 	local submit_info = {}
 	submit_info.upload_list = {}
 	local update_list_count = 0
-	g_IDETool:ShowAlertDialog("提示", "生成新的CurVersion.db")
+	g_AUITool:ShowAlertDialog("提示", "生成新的CurVersion.db")
 	ALittle.System_Render()
 	local package_notice = ""
 	ALittle.File_DeleteFile(package_info.export_module_path .. "/CurVersion.db")
@@ -497,7 +497,7 @@ function IDEExport:HandleQueryNewCurVersionImpl(package_info, is_login, update_t
 		ALittle.File_CopyFile(package_info.export_module_path .. "/CurVersion.db", package_info.export_module_path .. "/CurVersionNoDelete.db")
 		local sqlite_no_delete = sqlite3.open(package_info.export_module_path .. "/CurVersionNoDelete.db")
 		if sqlite_no_delete == nil then
-			g_IDETool:ShowNotice("错误", "CurVersionNoDelete.db文件生成失败:" .. package_info.export_module_path .. "/CurVersionNoDelete.db")
+			g_AUITool:ShowNotice("错误", "CurVersionNoDelete.db文件生成失败:" .. package_info.export_module_path .. "/CurVersionNoDelete.db")
 			return
 		end
 		sqlite_no_delete:exec("DELETE FROM SmallVersion WHERE c_is_delete=1")
@@ -526,15 +526,15 @@ function IDEExport:HandleQueryNewCurVersionImpl(package_info, is_login, update_t
 			ALittle.File_DeleteFile(package_info.export_module_path .. "/CurVersionNodelete.db")
 		end
 		if has_change == false then
-			g_IDETool:HideAlertDialog()
-			g_IDETool:ShowNotice("提示", "当前没有任何变化，不需要制作版本")
+			g_AUITool:HideAlertDialog()
+			g_AUITool:ShowNotice("提示", "当前没有任何变化，不需要制作版本")
 			return
 		end
 	else
-		g_IDETool:ShowNotice("错误", "CurVersion.db文件生成失败:" .. package_info.export_module_path .. "/CurVersion.db")
+		g_AUITool:ShowNotice("错误", "CurVersion.db文件生成失败:" .. package_info.export_module_path .. "/CurVersion.db")
 		return
 	end
-	g_IDETool:ShowAlertDialog("提示", "开始打包安装包")
+	g_AUITool:ShowAlertDialog("提示", "开始打包安装包")
 	ALittle.System_Render()
 	local install_name = nil
 	if package_info.platform == "Windows" then
@@ -560,14 +560,14 @@ function IDEExport:HandleQueryNewCurVersionImpl(package_info, is_login, update_t
 	submit_info.install_name = install_name
 	local install_attr = ALittle.File_GetFileAttr(package_info.project_path .. "/Export/" .. install_name)
 	if install_attr == nil then
-		g_IDETool:ShowNotice("提示", "版本生成失败")
+		g_AUITool:ShowNotice("提示", "版本生成失败")
 		return
 	end
 	submit_info.install_size = install_attr.size
 	ALittle.File_WriteJsonToFile(submit_info, package_info.project_path .. "/Export/SubmitInfo_" .. package_info.platform .. ".json")
 	ALittle.Log("版本生成成功")
-	g_IDETool:HideAlertDialog()
-	g_IDETool:ShowNotice("提示", "版本生成成功" .. package_notice)
+	g_AUITool:HideAlertDialog()
+	g_AUITool:ShowNotice("提示", "版本生成成功" .. package_notice)
 end
 
 function IDEExport:SubmitPlatform(project_name, platform)
@@ -578,30 +578,30 @@ function IDEExport:SubmitPlatform(project_name, platform)
 	end
 	ALittle.Log("==================SubmitPlatform:" .. platform .. "==================")
 	if g_IDELoginManager:IsLogin() == false then
-		g_IDETool:ShowNotice("错误", "您还未登录，无法上传版本")
+		g_AUITool:ShowNotice("错误", "您还未登录，无法上传版本")
 		return
 	end
 	local project_path = ALittle.File_BaseFilePath() .. "Module/" .. project_name
 	local submit_info_path = project_path .. "/Export/SubmitInfo_" .. platform .. ".json"
 	if ALittle.File_GetFileAttr(submit_info_path) == nil then
-		g_IDETool:ShowNotice("错误", "版本PackageInfo_" .. platform .. ".json不存在")
+		g_AUITool:ShowNotice("错误", "版本PackageInfo_" .. platform .. ".json不存在")
 		return
 	end
 	local submit_info = ALittle.File_ReadJsonFromFile(submit_info_path)
 	if submit_info == nil then
-		g_IDETool:ShowNotice("错误", "PackageInfo_" .. platform .. ".json文件解析失败")
+		g_AUITool:ShowNotice("错误", "PackageInfo_" .. platform .. ".json文件解析失败")
 		return
 	end
 	if submit_info.is_login ~= true then
-		g_IDETool:ShowNotice("错误", "当前打包的版本不是在登录的状态下打包的，请登录之后重新打包")
+		g_AUITool:ShowNotice("错误", "当前打包的版本不是在登录的状态下打包的，请登录之后重新打包")
 		return
 	end
 	if submit_info.completed == true then
-		g_IDETool:ShowNotice("错误", "版本已经上传成功了，不能重复上传")
+		g_AUITool:ShowNotice("错误", "版本已经上传成功了，不能重复上传")
 		return
 	end
 	if submit_info.version_id == nil then
-		g_IDETool:ShowAlertDialog("提示", "正在创建一个新的版本")
+		g_AUITool:ShowAlertDialog("提示", "正在创建一个新的版本")
 		local param = {}
 		param.__account_id = g_IDELoginManager.account_id
 		param.__session_id = g_IDELoginManager.session_id
@@ -626,9 +626,9 @@ end
 
 function IDEExport:HandleNewVersionInfo(error, result, submit_info)
 	local ___COROUTINE = coroutine.running()
-	g_IDETool:HideAlertDialog()
+	g_AUITool:HideAlertDialog()
 	if error ~= nil then
-		g_IDETool:ShowNotice("错误", "版本创建失败:" .. error)
+		g_AUITool:ShowNotice("错误", "版本创建失败:" .. error)
 		return
 	end
 	submit_info.version_id = result.version_id

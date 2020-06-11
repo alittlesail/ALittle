@@ -1153,7 +1153,7 @@ public class DisplayObjectS
 				var display_info = IDEUtility_GenerateGrid9ImageInfo(g_IDEProject.project.base_path.."Texture/", image_path);
 				if (display_info == null)
 				{
-					g_IDETool.ShowNotice("错误", "图片不存在:"..image_path);
+					g_AUITool.ShowNotice("错误", "图片不存在:"..image_path);
 					return;
 				}
 				this.RemoverToNilShowSet(text, ALittle.String_JsonEncode(display_info), need_reset, revoke_bind);
@@ -1173,7 +1173,7 @@ public class DisplayObjectS
 		{
 			if (g_IDEProject.IsControlExist(extends_v) == false)
 			{
-				g_IDETool.ShowNotice("错误", "要继承的控件不存在:"..extends_v);
+				g_AUITool.ShowNotice("错误", "要继承的控件不存在:"..extends_v);
 				return ;
 			}
 			var display_info = new ALittle.DisplayInfo();
@@ -1225,7 +1225,7 @@ public class DisplayObjectS
 				{
 					if (g_IDEProject.project.control_map[include] == null)
 					{
-						g_IDETool.ShowNotice("错误", "指定__include或__extends不存在");
+						g_AUITool.ShowNotice("错误", "指定__include或__extends不存在");
 						return;
 					}
 				}
@@ -1239,7 +1239,7 @@ public class DisplayObjectS
 			}
 			else
 			{
-				g_IDETool.ShowNotice("错误", "输入show设置错误");
+				g_AUITool.ShowNotice("错误", "输入show设置错误");
 				return;
 			}
 		}
@@ -1304,7 +1304,7 @@ public class DisplayObjectS
 				{
 					if (g_IDEProject.project.control_map[include] == null)
 					{
-						g_IDETool.ShowNotice("错误", "指定__include或__extends不存在");
+						g_AUITool.ShowNotice("错误", "指定__include或__extends不存在");
 						display_object.text = "";
 						return;
 					}
@@ -1319,7 +1319,7 @@ public class DisplayObjectS
 			}
 			else
 			{
-				g_IDETool.ShowNotice("错误", "输入show设置错误");
+				g_AUITool.ShowNotice("错误", "输入show设置错误");
 				display_object.text = "";
 				return;
 			}
@@ -1374,7 +1374,7 @@ public class DisplayObjectS
 			}
 			else
 			{
-				g_IDETool.ShowNotice("输入错误", "输入数据错误");
+				g_AUITool.ShowNotice("输入错误", "输入数据错误");
 				display_object.text = "";
 				return;
 			}

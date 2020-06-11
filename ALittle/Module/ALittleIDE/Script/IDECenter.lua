@@ -23,6 +23,7 @@ function IDECenter:Setup()
 	Require(g_ScriptBasePath, "IDEProject")
 	Require(g_ScriptBasePath, "UIEdit/IDEUICenter")
 	g_IDEConfig = ALittle.CreateConfigSystem("ALittleIDE.cfg")
+	g_IDEServerConfig = ALittle.CreateConfigSystem(g_ModuleBasePath .. "/Other/Server.cfg")
 	ALittle.Math_RandomSeed(ALittle.Time_GetCurTime())
 	ALittle.System_SetThreadCount(5)
 	local background_quad = ALittle.Quad(g_Control)
@@ -45,19 +46,20 @@ function IDECenter:Setup()
 	g_IDEUICenter:Setup(self._edit_container)
 	g_IDEUICenter:Show()
 	A_UISystem.keydown_callback = Lua.Bind(self.HandleShortcutKey, self)
-	g_IDEIMEManager:Setup()
 	g_IDEProjectManager:OpenLastProject()
+	local version_ip = g_IDEServerConfig:GetConfig("version_ip", "139.159.176.119")
+	local version_port = g_IDEServerConfig:GetConfig("version_port", 1011)
+	self._version_manager = AUIPlugin.AUIVersionManager(version_ip, version_port, "alittle", "ALittleIDE")
 	if not g_Control.crypt_mode then
-		g_IDEVersionManager:CheckVersionUpdate()
+		self._version_manager:CheckVersionUpdate()
 	end
 	g_IDELoginManager:Setup()
 end
 
 function IDECenter:Shutdown()
 	g_IDEUICenter:Shutdown()
-	g_IDEVersionManager:Shutdown()
+	self._version_manager:Shutdown()
 	g_IDELoginManager:Shutdown()
-	g_IDEIMEManager:Shutdown()
 end
 
 function IDECenter:ShowPhoneStatusLine(r, g, b)
@@ -96,10 +98,13 @@ function IDECenter:HandlePeojectSelectChange(event)
 		return
 	end
 	event.target.text = name
-	local cancel_callback = Lua.Bind(g_IDEProjectManager.OpenProjectImpl, g_IDEProjectManager, new_name)
-	local confirm_callback = Lua.Bind(g_IDETabManager.SaveAllTab, g_IDETabManager)
-	g_IDETool:SaveNotice("提示", "是否保存当前项目?", cancel_callback, confirm_callback)
+	local result = g_AUITool:SaveNotice("提示", "是否保存当前项目?")
+	if result == "YES" then
+		g_IDETabManager:SaveAllTab()
+	end
+	g_IDEProjectManager:OpenProjectImpl(new_name)
 end
+IDECenter.HandlePeojectSelectChange = Lua.CoWrap(IDECenter.HandlePeojectSelectChange)
 
 function IDECenter:UpdateProjectList()
 	if self._current_project_name == nil then
@@ -174,7 +179,7 @@ function IDECenter:HandleToolMenuClick(event)
 end
 
 function IDECenter:HandleVersionMenuClick(event)
-	g_IDEVersionManager:ShowDialog()
+	self._version_manager:ShowDialog()
 end
 
 function IDECenter:HandleRunMenuClick(event)

@@ -18,6 +18,12 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="src\AUIIMEManager.alittle" />
+    <None Include="src\AUITool.alittle" />
+    <None Include="src\AUIVersionManager.alittle" />
+    <None Include="src\Main.alittle" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <ProjectGuid>{1514AC3D-CD9B-41CC-8E91-A357ABE1499E}</ProjectGuid>

@@ -202,13 +202,13 @@ public class IDETreeLogic : ALittle.DisplayLayout
 		// 不能是自己的子控件
 		if (tree.IsGrandParent(this))
 		{
-			g_IDETool.ShowNotice("提示", "目标是自己的子控件，移动失败");
+			g_AUITool.ShowNotice("提示", "目标是自己的子控件，移动失败");
 			return;
 		}
 		// 如果目标是继承的控件，那么不能操作
 		if (tree._user_info.extends)
 		{
-			g_IDETool.ShowNotice("提示", "目标控件不能操作，移动失败");
+			g_AUITool.ShowNotice("提示", "目标控件不能操作，移动失败");
 			return;
 		}
 	
@@ -229,7 +229,7 @@ public class IDETreeLogic : ALittle.DisplayLayout
 			var common_parent = tree._logic_parent;
 			if (common_parent == null)
 			{
-				g_IDETool.ShowNotice("提示", "当前是根节点，并且不是容器，移动失败");
+				g_AUITool.ShowNotice("提示", "当前是根节点，并且不是容器，移动失败");
 				return;
 			}
 			var child_index = common_parent.GetChildIndex(tree);

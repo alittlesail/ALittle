@@ -102,7 +102,7 @@ end
 function IDEMainMenu:HandleGenUIAllInOneClick(event)
 	A_LayerManager:HideFromRight(self._menu_tool_menu)
 	if g_IDEProject.project == nil then
-		g_IDETool:ShowNotice("提示", "没有加载项目")
+		g_AUITool:ShowNotice("提示", "没有加载项目")
 		return
 	end
 	local all_in_one = {}
@@ -115,9 +115,9 @@ function IDEMainMenu:HandleGenUIAllInOneClick(event)
 	end
 	local result = ALittle.File_WriteJsonFromStdFile(all_in_one, "Module/" .. g_IDEProject.project.name .. "/ui_all_in_one.json")
 	if result then
-		g_IDETool:ShowNotice("提示", "生成成功")
+		g_AUITool:ShowNotice("提示", "生成成功")
 	else
-		g_IDETool:ShowNotice("提示", "生成失败")
+		g_AUITool:ShowNotice("提示", "生成失败")
 	end
 end
 
@@ -135,15 +135,15 @@ function IDEMainMenu:HandleGenCoreAllInOneClick(event)
 	for index, path in ___ipairs(file_list) do
 		all_in_one[index] = ALittle.File_ReadTextFromStdFile(path)
 		if all_in_one[index] == nil then
-			g_IDETool:ShowNotice("提示", "生成失败")
+			g_AUITool:ShowNotice("提示", "生成失败")
 			return
 		end
 	end
 	local result = ALittle.File_WriteTextFromStdFile(ALittle.String_Join(all_in_one, "\n"), "Module/ALittleIDE/Other/GameLibrary/Core/Core.js")
 	if result then
-		g_IDETool:ShowNotice("提示", "生成成功")
+		g_AUITool:ShowNotice("提示", "生成成功")
 	else
-		g_IDETool:ShowNotice("提示", "生成失败")
+		g_AUITool:ShowNotice("提示", "生成失败")
 	end
 end
 
@@ -168,15 +168,15 @@ function IDEMainMenu:HandleGenStdAllInOneClick(event)
 	for index, path in ___ipairs(file_list) do
 		all_in_one[index] = ALittle.File_ReadTextFromStdFile(path)
 		if all_in_one[index] == nil then
-			g_IDETool:ShowNotice("提示", "生成失败")
+			g_AUITool:ShowNotice("提示", "生成失败")
 			return
 		end
 	end
 	local result = ALittle.File_WriteTextFromStdFile(ALittle.String_Join(all_in_one, "\n"), "Module/ALittleIDE/Other/GameLibrary/Std/Std.js")
 	if result then
-		g_IDETool:ShowNotice("提示", "生成成功")
+		g_AUITool:ShowNotice("提示", "生成成功")
 	else
-		g_IDETool:ShowNotice("提示", "生成失败")
+		g_AUITool:ShowNotice("提示", "生成失败")
 	end
 end
 
@@ -249,15 +249,15 @@ function IDEMainMenu:HandleGenCEngineAllInOneClick(event)
 	for index, path in ___ipairs(file_list) do
 		all_in_one[index] = ALittle.File_ReadTextFromStdFile(path)
 		if all_in_one[index] == nil then
-			g_IDETool:ShowNotice("提示", "生成失败")
+			g_AUITool:ShowNotice("提示", "生成失败")
 			return
 		end
 	end
 	local result = ALittle.File_WriteTextFromStdFile(ALittle.String_Join(all_in_one, "\n"), "Module/ALittleIDE/Other/GameLibrary/CEngine/CEngine.js")
 	if result then
-		g_IDETool:ShowNotice("提示", "生成成功")
+		g_AUITool:ShowNotice("提示", "生成成功")
 	else
-		g_IDETool:ShowNotice("提示", "生成失败")
+		g_AUITool:ShowNotice("提示", "生成失败")
 	end
 end
 

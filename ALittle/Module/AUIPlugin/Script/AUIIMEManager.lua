@@ -75,4 +75,4 @@ function AUIIMEManager:HandleImeEditingCallback(open, text, start, list, target)
 	end
 end
 
-_G.g_AUIIMEManager = AUIIMEManager()
+g_AUIIMEManager = AUIIMEManager()

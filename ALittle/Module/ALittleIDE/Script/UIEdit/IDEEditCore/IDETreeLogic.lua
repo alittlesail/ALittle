@@ -204,11 +204,11 @@ function IDETreeLogic:HandleDragEnd(event)
 	end
 	local tree = target._user_data
 	if tree:IsGrandParent(self) then
-		g_IDETool:ShowNotice("提示", "目标是自己的子控件，移动失败")
+		g_AUITool:ShowNotice("提示", "目标是自己的子控件，移动失败")
 		return
 	end
 	if tree._user_info.extends then
-		g_IDETool:ShowNotice("提示", "目标控件不能操作，移动失败")
+		g_AUITool:ShowNotice("提示", "目标控件不能操作，移动失败")
 		return
 	end
 	local copy_list = {}
@@ -223,7 +223,7 @@ function IDETreeLogic:HandleDragEnd(event)
 	else
 		local common_parent = tree._logic_parent
 		if common_parent == nil then
-			g_IDETool:ShowNotice("提示", "当前是根节点，并且不是容器，移动失败")
+			g_AUITool:ShowNotice("提示", "当前是根节点，并且不是容器，移动失败")
 			return
 		end
 		local child_index = common_parent:GetChildIndex(tree)

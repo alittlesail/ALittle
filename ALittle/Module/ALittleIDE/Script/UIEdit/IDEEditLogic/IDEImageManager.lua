@@ -48,7 +48,7 @@ function IDEImageManager:HandleImageSearchClick(event)
 	self._image_scroll_screen:RemoveAllChild()
 	local project = g_IDEProject.project
 	if project == nil then
-		g_IDETool:ShowNotice("提示", "当前没有打开的项目")
+		g_AUITool:ShowNotice("提示", "当前没有打开的项目")
 		return
 	end
 	local key = self._image_search_key.text
@@ -129,18 +129,17 @@ function IDEImageManager:HandleImageItemRightClick(event)
 	self._image_right_menu._user_data = event.target
 end
 
-function IDEImageManager:DeleteControlImpl(target)
-	g_IDEUICenter.image_scroll_screen:RemoveChild(target)
-	ALittle.File_DeleteFile(target._user_data)
-end
-
 function IDEImageManager:HandleImageRightMenuDelete(event)
 	A_LayerManager:HideFromRight(self._image_right_menu)
 	local target = self._image_right_menu._user_data
 	self._image_right_menu._user_data = nil
-	local callback = Lua.Bind(self.DeleteControlImpl, self, target)
-	g_IDETool:DeleteNotice("提示", "确定要删除" .. target.text .. "吗?", callback)
+	local result = g_AUITool:DeleteNotice("提示", "确定要删除" .. target.text .. "吗?")
+	if result == "YES" then
+		g_IDEUICenter.image_scroll_screen:RemoveChild(target)
+		ALittle.File_DeleteFile(target._user_data)
+	end
 end
+IDEImageManager.HandleImageRightMenuDelete = Lua.CoWrap(IDEImageManager.HandleImageRightMenuDelete)
 
 function IDEImageManager:HandleImageRightMenuCopyPath(event)
 	A_LayerManager:HideFromRight(self._image_right_menu)
@@ -186,7 +185,7 @@ function IDEImageManager:HandleImageRightMenuGrid9(event)
 	self._image_right_menu._user_data = nil
 	local display_info = IDEUtility_GenerateGrid9ImageInfo(g_IDEProject.project.base_path .. "Texture/", target._user_data)
 	if display_info == nil then
-		g_IDETool:ShowNotice("错误", "图片加载失败:" .. target._user_data)
+		g_AUITool:ShowNotice("错误", "图片加载失败:" .. target._user_data)
 		return
 	end
 	local copy_list = {}

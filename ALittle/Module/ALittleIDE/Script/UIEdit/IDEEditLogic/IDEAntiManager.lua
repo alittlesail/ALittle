@@ -588,7 +588,7 @@ function IDEAntiPanel:CreateAnti(name)
 		user_info.base.loop_map = {}
 	end
 	if user_info.base.loop_map[name] ~= nil then
-		g_IDETool:ShowNotice("错误", "动画名称已存在")
+		g_AUITool:ShowNotice("错误", "动画名称已存在")
 		return
 	end
 	local root = {}
@@ -650,7 +650,7 @@ function IDEAntiPanel:CopyAndNewAnti(old_name, new_name)
 		return
 	end
 	if user_info.base.loop_map[new_name] ~= nil then
-		g_IDETool:ShowNotice("错误", "新建的动画名称已存在")
+		g_AUITool:ShowNotice("错误", "新建的动画名称已存在")
 		return
 	end
 	local new_root = ALittle.String_CopyTable(root)
@@ -930,7 +930,7 @@ function IDEAntiPanel:PlayImpl(loop)
 		local anti = ALittle.LoopAnimation(object, cur_loop_info)
 		local error = anti:Init(map)
 		if error ~= nil then
-			g_IDETool:ShowNotice("错误", error)
+			g_AUITool:ShowNotice("错误", error)
 			return
 		end
 		self._anti_play_container:RemoveAllChild()
@@ -1041,14 +1041,14 @@ function IDEAntiManager:HandleAntiListRightMenuCopyAnNew(event)
 			break
 		end
 	end
-	local name = user_data.name
-	local callback = Lua.Bind(self.CopyAndNew, self, name, user_data)
-	g_IDETool:ShowRename(callback, name, x, y, event.target.width)
-end
-
-function IDEAntiManager:CopyAndNew(old_name, user_data, new_name)
+	local old_name = user_data.name
+	local new_name = g_AUITool:ShowRename(old_name, x, y, event.target.width)
+	if new_name == nil or old_name == new_name then
+		return
+	end
 	user_data.panel:CopyAndNewAnti(old_name, new_name)
 end
+IDEAntiManager.HandleAntiListRightMenuCopyAnNew = Lua.CoWrap(IDEAntiManager.HandleAntiListRightMenuCopyAnNew)
 
 function IDEAntiManager:ShowAntiAntiMenu(item, child_index, rel_x)
 	if self._anti_anti_right_menu == nil then

@@ -90,20 +90,20 @@ public class IDEProjectManager
 		var name = this._project_new_name.text;
 		if (name == "")
 		{
-			g_IDETool.ShowNotice("错误", "请输入项目名");
+			g_AUITool.ShowNotice("错误", "请输入项目名");
 			return;
 		}
 	
 		// 检查项目名称
 		if (IDEUtility_CheckName(name) == false)
 		{
-			g_IDETool.ShowNotice("错误", "项目名不合法:"..name);
+			g_AUITool.ShowNotice("错误", "项目名不合法:"..name);
 			return;
 		}
 		// 检查项目是否存在
 		if (ALittle.File_GetFileAttr(ALittle.File_BaseFilePath()..name) != null)
 		{
-			g_IDETool.ShowNotice("错误", "项目已存在:"..name);
+			g_AUITool.ShowNotice("错误", "项目已存在:"..name);
 			return;
 		}
 		// 窗口大小
@@ -136,13 +136,13 @@ public class IDEProjectManager
 		// 检查项目名
 		if (name == "")
 		{
-			g_IDETool.ShowNotice("错误", "请输入项目名");
+			g_AUITool.ShowNotice("错误", "请输入项目名");
 			return;
 		}
 		// 检查项目是否存在
 		if (ALittle.File_GetFileAttr(ALittle.File_BaseFilePath().."Module/"..name) == null)
 		{
-			g_IDETool.ShowNotice("错误", "项目不存在:"..name);
+			g_AUITool.ShowNotice("错误", "项目不存在:"..name);
 			return;
 		}
 		// 关闭当前项目
@@ -188,7 +188,7 @@ public class IDEProjectManager
 		this._project_open_dialog.visible = false;
 	}
 	// 处理打开项目-确定
-	public fun HandleOpenProjectConfirm(ALittle.UIEvent event)
+	public async fun HandleOpenProjectConfirm(ALittle.UIEvent event)
 	{
 		// 关闭对话框
 		this._project_open_dialog.visible = false;
@@ -196,17 +196,16 @@ public class IDEProjectManager
 		var name = this._project_open_name.text;
 	
 		// 检查当前是否有项目并且是否保存
-		if (g_IDETabManager.IsSaveAll())
+		if (!g_IDETabManager.IsSaveAll())
 		{
-			// 打开项目
-			this.OpenProjectImpl(name);
-			return;
+			// 如果没有保存，那么走保存提示流程
+			var result = g_AUITool.SaveNotice("提示", "是否保存当前项目?");
+			if (result == AUIPlugin.AUIToolOption.YES)
+				g_IDETabManager.SaveAllTab();
 		}
-	
-		// 如果没有保存，那么走保存提示流程
-		var cancel_callback = bind(this.OpenProjectImpl, this, name);
-		var confirm_callback = bind(g_IDETabManager.SaveAllTab, g_IDETabManager);
-		g_IDETool.SaveNotice("提示", "是否保存当前项目?", cancel_callback, confirm_callback);
+		
+		// 打开项目
+		this.OpenProjectImpl(name);
 	}
 	////////////////////////////////////////////////////////////////////////////////////-
 	
@@ -214,7 +213,7 @@ public class IDEProjectManager
 	{
 		if (g_IDEProject.project == null)
 		{
-			g_IDETool.ShowNotice("错误", "当前没有打开的项目");
+			g_AUITool.ShowNotice("错误", "当前没有打开的项目");
 			return;
 		}
 	
@@ -245,20 +244,20 @@ public class IDEProjectManager
 		var default_show_width = ALittle.Math_ToInt(this._default_show_width.text);
 		if (default_show_width == null || default_show_width <= 0)
 		{
-			g_IDETool.ShowNotice("错误", "默认宽度不合法");
+			g_AUITool.ShowNotice("错误", "默认宽度不合法");
 			return;
 		}
 		var default_show_height = ALittle.Math_ToInt(this._default_show_height.text);
 		if (default_show_height == null || default_show_height <= 0)
 		{
-			g_IDETool.ShowNotice("错误", "默认高度不合法");
+			g_AUITool.ShowNotice("错误", "默认高度不合法");
 			return;
 		}
 		var default_font_path = this._default_font_path.text;
 		var default_font_size = ALittle.Math_ToInt(this._default_font_size.text);
 		if (default_font_size == null || default_font_size <= 0)
 		{
-			g_IDETool.ShowNotice("错误", "默认字体大小不合法");
+			g_AUITool.ShowNotice("错误", "默认字体大小不合法");
 			return;
 		}
 		
@@ -289,7 +288,7 @@ public class IDEProjectManager
 		A_LayerManager.ShowFromRight(this._project_search_menu);
 	}
 	
-	public fun HandleRightProjectOpen(ALittle.UIEvent event)
+	public async fun HandleRightProjectOpen(ALittle.UIEvent event)
 	{
 		A_LayerManager.HideFromRight(this._project_search_menu);
 		var target:ALittle.DisplayObject = this._project_search_menu._user_data;
@@ -297,17 +296,14 @@ public class IDEProjectManager
 		var project_name = target.text;
 	
 		// 检查当前是否有项目并且是否保存
-		if (g_IDETabManager.IsSaveAll())
+		if (!g_IDETabManager.IsSaveAll())
 		{
-			// 打开项目
-			this.OpenProjectImpl(project_name);
-			return;
+			var result = g_AUITool.SaveNotice("提示", "是否保存当前项目?");
+			if (result == AUIPlugin.AUIToolOption.YES)
+				g_IDETabManager.SaveAllTab();
 		}
-	
-		// 如果没有保存，那么走保存提示流程
-		var cancel_callback = bind(this.OpenProjectImpl, this, project_name);
-		var confirm_callback = bind(g_IDETabManager.SaveAllTab, g_IDETabManager);
-		g_IDETool.SaveNotice("提示", "是否保存当前项目?", cancel_callback, confirm_callback);
+		// 打开项目
+		this.OpenProjectImpl(project_name);
 	}
 	
 	public fun HandleRightProjectRemove(ALittle.UIEvent event)
@@ -320,7 +316,7 @@ public class IDEProjectManager
 		// 检查当前是否有项目并且是否保存
 		if (g_IDEProject.project != null && g_IDEProject.project.name == project_name)
 		{
-			g_IDETool.ShowNotice("提示", "当前项目正在编辑，请先关闭");
+			g_AUITool.ShowNotice("提示", "当前项目正在编辑，请先关闭");
 			return;
 		}
 		// 移除项目
@@ -329,7 +325,7 @@ public class IDEProjectManager
 		g_IDECenter.UpdateProjectList();
 	}
 	
-	public fun HandleRightProjectClose(ALittle.UIEvent event)
+	public async fun HandleRightProjectClose(ALittle.UIEvent event)
 	{
 		A_LayerManager.HideFromRight(this._project_search_menu);
 		var target:ALittle.DisplayObject = this._project_search_menu._user_data;
@@ -341,31 +337,25 @@ public class IDEProjectManager
 			return;
         
 		// 如果都保存了，就直接关闭项目
-		if (g_IDETabManager.IsSaveAll())
+		if (!g_IDETabManager.IsSaveAll())
 		{
-			g_IDECenter.CloseProject();
-			return;
+			var result = g_AUITool.SaveNotice("提示", "是否保存当前项目?");
+			if (result == AUIPlugin.AUIToolOption.YES)
+				g_IDETabManager.SaveAllTab();
 		}
-	
-		// 如果没有保存，那么走保存提示流程
-		var cancel_callback = bind(g_IDECenter.CloseProject, g_IDECenter);
-		var confirm_callback = bind(g_IDETabManager.SaveAllTab, g_IDETabManager);
-		g_IDETool.SaveNotice("提示", "是否保存当前项目?", cancel_callback, confirm_callback);
+		g_IDECenter.CloseProject();
 	}
-	public fun RefreshProject()
+	public async fun RefreshProject()
 	{
 		// 检查是否都保存了
-		if (g_IDETabManager.IsSaveAll())
+		if (!g_IDETabManager.IsSaveAll())
 		{
-			// 刷新当前
-			g_IDECenter.RefreshProject();
-			return;
+			var result = g_AUITool.SaveNotice("提示", "是否保存当前项目?");
+			if (result == AUIPlugin.AUIToolOption.YES)
+				g_IDETabManager.SaveAllTab();
 		}
-	
-		// 如果没有保存，那么走保存提示流程
-		var cancel_callback = bind(g_IDECenter.RefreshProject, g_IDECenter);
-		var confirm_callback = bind(g_IDETabManager.SaveAllTab, g_IDETabManager);
-		g_IDETool.SaveNotice("提示", "是否保存当前项目?", cancel_callback, confirm_callback);
+		// 刷新当前
+		g_IDECenter.RefreshProject();
 	}
 	public fun HandleRightProjectRefresh(ALittle.UIEvent event)
 	{
@@ -388,7 +378,7 @@ public class IDEProjectManager
 	{
 		if (g_IDEProject.project == null)
 		{
-			g_IDETool.ShowNotice("错误", "当前没有打开的项目");
+			g_AUITool.ShowNotice("错误", "当前没有打开的项目");
 			return;
 		}
 	
@@ -417,12 +407,12 @@ public class IDEProjectManager
 	{
 		if (g_IDEProject.project == null)
 		{
-			g_IDETool.ShowNotice("提示", "当前没有打开的项目");
+			g_AUITool.ShowNotice("提示", "当前没有打开的项目");
 			return;
 		}
 
 		[Language(JavaScript)]
-		g_IDETool.ShowAlertDialog("提示", "JavaScript不支持运行项目");
+		g_AUITool.ShowAlertDialog("提示", "JavaScript不支持运行项目");
 
 		[Language(Lua)]
 		lua.os.execute("start ALittleClient.exe "..g_IDEProject.project.name.." debug");

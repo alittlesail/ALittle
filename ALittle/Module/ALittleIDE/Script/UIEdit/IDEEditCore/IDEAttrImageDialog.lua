@@ -117,7 +117,7 @@ end
 
 function IDEAttrImageDialog:ShowDialog(path, callback)
 	if g_IDEProject.project == nil then
-		g_IDETool:ShowNotice("错误", "当前没有项目打开")
+		g_AUITool:ShowNotice("错误", "当前没有项目打开")
 		return
 	end
 	if self._dialog == nil then
@@ -335,7 +335,7 @@ end
 
 function IDEAttrImageDialog:SetPath(path)
 	if g_IDEProject.project == nil then
-		g_IDETool:ShowNotice("错误", "当前没有项目打开")
+		g_AUITool:ShowNotice("错误", "当前没有项目打开")
 		return false
 	end
 	local real_path = g_IDEProject.project.base_path .. "Texture"
@@ -347,7 +347,7 @@ function IDEAttrImageDialog:SetPath(path)
 	end
 	local attr = ALittle.File_GetFileAttr(real_path)
 	if attr == nil or attr.mode ~= "directory" then
-		g_IDETool:ShowNotice("错误", "无效路径")
+		g_AUITool:ShowNotice("错误", "无效路径")
 		return false
 	end
 	self._base_path = g_IDEProject.project.base_path .. "Texture"
@@ -394,7 +394,7 @@ function IDEAttrImageDialog:HandleImageCopyGrid9ImageCodeClick(event)
 	self._image_select_menu._user_data = nil
 	local display_info = IDEUtility_GenerateGrid9ImageInfo(g_IDEProject.project.base_path .. "Texture/", user_data.path)
 	if display_info == nil then
-		g_IDETool:ShowNotice("错误", "图片加载失败:" .. user_data.path)
+		g_AUITool:ShowNotice("错误", "图片加载失败:" .. user_data.path)
 		return
 	end
 	local copy_list = {}
@@ -447,21 +447,21 @@ function IDEAttrImageDialog:HandleImageDeleteClick(event)
 	A_LayerManager:HideFromRight(self._image_select_menu)
 	local user_data = self._image_select_menu._user_data
 	self._image_select_menu._user_data = nil
+	local tittle = "确定要永久删除该图片吗？"
 	if user_data.directory then
-		g_IDETool:DeleteNotice("删除", "确定要永久删除该文件夹，以及子文件和图片吗？", Lua.Bind(self.HandleImageDeleteConfirm, self, user_data))
-	else
-		g_IDETool:DeleteNotice("删除", "确定要永久删除该图片吗？", Lua.Bind(self.HandleImageDeleteConfirm, self, user_data))
+		tittle = "确定要永久删除该文件夹，以及子文件和图片吗？"
+	end
+	local result = g_AUITool:DeleteNotice("删除", tittle)
+	if result == "YES" then
+		if user_data.directory then
+			ALittle.File_DeleteDeepDir(g_IDEProject.project.base_path .. "Texture/" .. user_data.path)
+		else
+			ALittle.File_DeleteFile(g_IDEProject.project.base_path .. "Texture/" .. user_data.path)
+		end
+		self:Refresh()
 	end
 end
-
-function IDEAttrImageDialog:HandleImageDeleteConfirm(user_data)
-	if user_data.directory then
-		ALittle.File_DeleteDeepDir(g_IDEProject.project.base_path .. "Texture/" .. user_data.path)
-	else
-		ALittle.File_DeleteFile(g_IDEProject.project.base_path .. "Texture/" .. user_data.path)
-	end
-	self:Refresh()
-end
+IDEAttrImageDialog.HandleImageDeleteClick = Lua.CoWrap(IDEAttrImageDialog.HandleImageDeleteClick)
 
 function IDEAttrImageDialog:HandleImageDropFile(event)
 	local real_path = self._real_path
@@ -479,7 +479,7 @@ function IDEAttrImageDialog:HandleImageDropFile(event)
 	if attr.mode == "directory" then
 		local check, error = IDEUtility_CheckResourceName(name)
 		if not check then
-			g_IDETool:ShowNotice("提示", error)
+			g_AUITool:ShowNotice("提示", error)
 			return
 		end
 		ALittle.File_MakeDir(real_path .. "/" .. name)
@@ -488,12 +488,12 @@ function IDEAttrImageDialog:HandleImageDropFile(event)
 	else
 		local upper_ext = ALittle.File_GetFileExtByPathAndUpper(event.path)
 		if upper_ext ~= "PNG" and upper_ext ~= "JPG" then
-			g_IDETool:ShowNotice("提示", "只能接收png或者jpg文件")
+			g_AUITool:ShowNotice("提示", "只能接收png或者jpg文件")
 			return
 		end
 		local check, error = IDEUtility_CheckResourceName(ALittle.File_GetJustFileNameByPath(event.path))
 		if not check then
-			g_IDETool:ShowNotice("提示", error)
+			g_AUITool:ShowNotice("提示", error)
 			return
 		end
 		ALittle.File_CopyFile(event.path, real_path .. "/" .. name)
@@ -503,25 +503,23 @@ end
 
 function IDEAttrImageDialog:HandleNewDirectoryClick(event)
 	local x, y = event.target:LocalToGlobal()
-	g_IDETool:ShowRename(Lua.Bind(self.HandleCreateDirectory, self), "", x, y + event.target.height, 200)
-end
-
-function IDEAttrImageDialog:HandleCreateDirectory(name)
-	if name == "" then
+	local name = g_AUITool:ShowRename("", x, y + event.target.height, 200)
+	if name == nil or name == "" then
 		return
 	end
 	local check, error = IDEUtility_CheckResourceName(name)
 	if not check then
-		g_IDETool:ShowNotice("错误", error)
+		g_AUITool:ShowNotice("错误", error)
 		return
 	end
 	local result = ALittle.File_MakeDir(self._real_path .. "/" .. name)
 	if not result then
-		g_IDETool:ShowNotice("错误", "文件夹创建失败")
+		g_AUITool:ShowNotice("错误", "文件夹创建失败")
 		return
 	end
 	self:Refresh()
 end
+IDEAttrImageDialog.HandleNewDirectoryClick = Lua.CoWrap(IDEAttrImageDialog.HandleNewDirectoryClick)
 
 function IDEAttrImageDialog:HandleItemClick(event)
 	local user_data = event.target._user_data

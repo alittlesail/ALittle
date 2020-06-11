@@ -34,11 +34,14 @@ function __Plugin_Setup(control, module_base_path, script_base_path)
 	g_ModuleBasePath = module_base_path
 	g_ScriptBasePath = script_base_path
 	Require(script_base_path, "AUIIMEManager")
+	Require(script_base_path, "AUIVersionManager")
+	Require(script_base_path, "AUITool")
 	g_AUIIMEManager:Setup()
 end
 __Plugin_Setup = Lua.CoWrap(__Plugin_Setup)
 
 function __Plugin_Shutdown()
 	g_AUIIMEManager:Shutdown()
+	g_AUITool:Shutdown()
 end
 

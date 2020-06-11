@@ -77,14 +77,11 @@
     <None Include="src\UIEdit\IDEEditLogic\IDEControlManager.alittle" />
     <None Include="src\UIEdit\IDEEditLogic\IDEControlTree.alittle" />
     <None Include="src\UIEdit\IDEEditLogic\IDEImageManager.alittle" />
-    <None Include="src\UIEdit\IDEEditLogic\IDEIMEManager.alittle" />
     <None Include="src\UIEdit\IDEEditLogic\IDELoginManager.alittle" />
     <None Include="src\UIEdit\IDEEditLogic\IDEMainMenu.alittle" />
     <None Include="src\UIEdit\IDEEditLogic\IDEProjectManager.alittle" />
     <None Include="src\UIEdit\IDEEditLogic\IDEQuickManager.alittle" />
-    <None Include="src\UIEdit\IDEEditLogic\IDETool.alittle" />
     <None Include="src\UIEdit\IDEEditLogic\IDEVersionList.alittle" />
-    <None Include="src\UIEdit\IDEEditLogic\IDEVersionManager.alittle" />
     <None Include="src\UIEdit\IDEUICenter.alittle" />
     <None Include="src\UIEdit\IDEUtility.alittle" />
   </ItemGroup>

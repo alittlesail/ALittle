@@ -16,6 +16,9 @@ class IDECenter
 	private ALittle.DropDown _account_dropdown;
 	private ALittle.DisplayObject _account_icon;
 
+	// 版本管理器
+	private AUIPlugin.AUIVersionManager _version_manager;
+
 	public ctor()
 	{
 	}
@@ -37,6 +40,9 @@ class IDECenter
 	
 		// 获取配置信息
 		g_IDEConfig = ALittle.CreateConfigSystem("ALittleIDE.cfg");
+		// 获取配置信息
+		g_IDEServerConfig = ALittle.CreateConfigSystem(g_ModuleBasePath.."/Other/Server.cfg");
+	
 		// 生成随机数种子
 		ALittle.Math_RandomSeed(ALittle.Time_GetCurTime());
 		// 设置5个线程
@@ -71,15 +77,18 @@ class IDECenter
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// 初始化组合键
 		A_UISystem.keydown_callback = bind(this.HandleShortcutKey, this);
-		// 初始化输入法
-		g_IDEIMEManager.Setup();
 		// 打开上次工程
 		g_IDEProjectManager.OpenLastProject();
+
+		// 版本服务器
+		var version_ip = g_IDEServerConfig.GetConfig("version_ip", "139.159.176.119");
+		var version_port = g_IDEServerConfig.GetConfig("version_port", 1011);
+		this._version_manager = new AUIPlugin.AUIVersionManager(version_ip, version_port, "alittle", "ALittleIDE");
 
 		// 如果不是debug模式，那么就检查版本
 		[Language(Lua)]
 		if (!g_Control.crypt_mode)
-			g_IDEVersionManager.CheckVersionUpdate();
+			this._version_manager.CheckVersionUpdate();
 
 		// 初始化登录
 		g_IDELoginManager.Setup();
@@ -89,9 +98,8 @@ class IDECenter
 	{
 		g_IDEUICenter.Shutdown();
 		[Language(Lua)]
-		g_IDEVersionManager.Shutdown();
+		this._version_manager.Shutdown();
 		g_IDELoginManager.Shutdown();
-		g_IDEIMEManager.Shutdown();
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////
@@ -122,7 +130,7 @@ class IDECenter
 	
 	////////////////////////////////////////////////////////////////////////////////////////
 	// 打开另一个工程
-	public fun HandlePeojectSelectChange(ALittle.UISelectChangedEvent event)
+	public async fun HandlePeojectSelectChange(ALittle.UISelectChangedEvent event)
 	{
 		// 当前项目
 		var name = "";
@@ -144,10 +152,9 @@ class IDECenter
 		// 设置新的项目名称
 		event.target.text = name;
 	
-		// 如果没有保存，那么走保存提示流程
-		var cancel_callback = bind(g_IDEProjectManager.OpenProjectImpl, g_IDEProjectManager, new_name);
-		var confirm_callback = bind(g_IDETabManager.SaveAllTab, g_IDETabManager);
-		g_IDETool.SaveNotice("提示", "是否保存当前项目?", cancel_callback, confirm_callback);
+		var result = g_AUITool.SaveNotice("提示", "是否保存当前项目?");
+		if (result == AUIPlugin.AUIToolOption.YES) g_IDETabManager.SaveAllTab();
+		g_IDEProjectManager.OpenProjectImpl(new_name);
 	}
     
 	// 更新项目下拉菜单
@@ -229,7 +236,7 @@ class IDECenter
 	// 处理工具菜单
 	public fun HandleToolMenuClick(ALittle.UIClickEvent event) { g_IDEMainMenu.ShowToolMenu(event); }
 	// 处理版本菜单
-	public fun HandleVersionMenuClick(ALittle.UIClickEvent event) { [Language(Lua)]g_IDEVersionManager.ShowDialog(); }
+	public fun HandleVersionMenuClick(ALittle.UIClickEvent event) { [Language(Lua)]this._version_manager.ShowDialog(); }
 	// 处理运行
 	public fun HandleRunMenuClick(ALittle.UIClickEvent event) { g_IDEProjectManager.RunProject(); }
 	////////////////////////////////////////////////////////////////////////////////////////

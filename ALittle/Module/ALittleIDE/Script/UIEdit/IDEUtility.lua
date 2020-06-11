@@ -252,13 +252,13 @@ function IDEUtility_CreateTree(control, extends_v, object, child_type, tab_child
 	if control.__extends ~= nil then
 		local control_info = g_IDEProject.project.control_map[control.__extends]
 		if control_info == nil then
-			g_IDETool:ShowNotice("错误", "extends 的控件不存在:" .. control.__extends)
+			g_AUITool:ShowNotice("错误", "extends 的控件不存在:" .. control.__extends)
 		end
 		user_info.default = IDEUtility_GetDefaultInfo(control_info.info)
 	elseif control.__include ~= nil then
 		local control_info = g_IDEProject.project.control_map[control.__include]
 		if control_info == nil then
-			g_IDETool:ShowNotice("错误", "include 的控件不存在:" .. control.__include)
+			g_AUITool:ShowNotice("错误", "include 的控件不存在:" .. control.__include)
 		end
 		user_info.default = IDEUtility_GetDefaultInfo(control_info.info)
 	elseif control.__class ~= nil then

@@ -75,11 +75,8 @@ function IDELoginManager.__getter:account_name()
 end
 
 function IDELoginManager:Setup()
-	local config = ALittle.CreateConfigSystem(g_ModuleBasePath .. "/Other/Server.cfg")
-	self._logingate_ip = config:GetConfig("logingate_ip", "139.159.176.119")
-	self._logingate_port = config:GetConfig("logingate_port", 1000)
-	self._version_ip = config:GetConfig("version_ip", "139.159.176.119")
-	self._version_port = config:GetConfig("version_port", 1011)
+	self._logingate_ip = g_IDEServerConfig:GetConfig("logingate_ip", "139.159.176.119")
+	self._logingate_port = g_IDEServerConfig:GetConfig("logingate_port", 1000)
 	self._msg_client = ALittle.CreateMsgSender(30, true)
 	self._session_id = ""
 	self._account_info = {}
@@ -246,7 +243,7 @@ IDELoginManager.Logout = Lua.CoWrap(IDELoginManager.Logout)
 
 function IDELoginManager:HandleMsgNForceLogout()
 	self._is_login = false
-	g_IDETool:ShowNotice("提示", "您的账号在另一个地方登录")
+	g_AUITool:ShowNotice("提示", "您的账号在另一个地方登录")
 	if self._login_button ~= nil then
 		self._login_password.text = ""
 		self._account_name = ""
@@ -287,7 +284,7 @@ function IDELoginManager:LoginImpl()
 	end
 	self._is_login = (error == nil)
 	if error ~= nil then
-		g_IDETool:ShowNotice("提示", error)
+		g_AUITool:ShowNotice("提示", error)
 		return
 	end
 	if self._save_password then
@@ -306,7 +303,7 @@ function IDELoginManager:HandlePasswordAlterClick(event)
 	local new_password = self._pas_new_password.text
 	local repeat_password = self._pas_repeat_password.text
 	if new_password ~= repeat_password then
-		g_IDETool:ShowNotice("提示", "新密码和重复密码不一致")
+		g_AUITool:ShowNotice("提示", "新密码和重复密码不一致")
 		return
 	end
 	self._change_pas_confirm.disabled = true
@@ -319,10 +316,10 @@ function IDELoginManager:HandlePasswordAlterClick(event)
 		g_IDELoginManager._change_pas_confirm.disabled = false
 	end
 	if error ~= nil then
-		g_IDETool:ShowNotice("提示", error)
+		g_AUITool:ShowNotice("提示", error)
 		return
 	end
-	g_IDETool:ShowNotice("提示", "密码修改成功")
+	g_AUITool:ShowNotice("提示", "密码修改成功")
 	g_IDELoginManager:HidePasswordDialog()
 end
 IDELoginManager.HandlePasswordAlterClick = Lua.CoWrap(IDELoginManager.HandlePasswordAlterClick)

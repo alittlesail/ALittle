@@ -995,12 +995,12 @@ end
 
 function IDETabChild:ImagePathSelectCallback(target, path)
 	if target:CanAddChild() == false then
-		g_IDETool:ShowNotice("提示", "当前控件不能添加子控件")
+		g_AUITool:ShowNotice("提示", "当前控件不能添加子控件")
 		return
 	end
 	local tree_object = target:TreeAdd("", "Image", "child")
 	if tree_object == nil then
-		g_IDETool:ShowNotice("提示", "添加失败")
+		g_AUITool:ShowNotice("提示", "添加失败")
 		return
 	end
 	tree_object.attr_panel:SetTextureName(path, nil)
@@ -1012,12 +1012,12 @@ function IDETabChild:HandleRightControlTreeAddText(event)
 	local target = self._control_tabchild_menu._user_data
 	self._control_tabchild_menu._user_data = nil
 	if target:CanAddChild() == false then
-		g_IDETool:ShowNotice("提示", "当前控件不能添加子控件")
+		g_AUITool:ShowNotice("提示", "当前控件不能添加子控件")
 		return
 	end
 	local tree_object = target:TreeAdd("", "Text", "child")
 	if tree_object == nil then
-		g_IDETool:ShowNotice("提示", "添加失败")
+		g_AUITool:ShowNotice("提示", "添加失败")
 		return
 	end
 	tree_object:ShowFocus(false)
@@ -1046,7 +1046,7 @@ function IDETabChild:RightControlTreePasteImpl(target, copy_list, child_index, r
 	if copy_list == nil then
 		local text_info = ALittle.System_GetClipboardText()
 		if text_info == nil then
-			g_IDETool:ShowNotice("错误", "剪切板的内容不能粘帖")
+			g_AUITool:ShowNotice("错误", "剪切板的内容不能粘帖")
 			if callback ~= nil then
 				callback(false, nil)
 			end
@@ -1054,7 +1054,7 @@ function IDETabChild:RightControlTreePasteImpl(target, copy_list, child_index, r
 		end
 		local error, copy_list_tmp = Lua.TCall(ALittle.String_JsonDecode, text_info)
 		if error ~= nil or ALittle.List_MaxN(copy_list_tmp) == 0 then
-			g_IDETool:ShowNotice("错误", "剪切板的内容不能粘帖")
+			g_AUITool:ShowNotice("错误", "剪切板的内容不能粘帖")
 			if callback ~= nil then
 				callback(false, nil)
 			end
@@ -1064,7 +1064,7 @@ function IDETabChild:RightControlTreePasteImpl(target, copy_list, child_index, r
 	end
 	for k, info in ___ipairs(copy_list) do
 		if info.info.__class == nil and info.info.__extends == nil then
-			g_IDETool:ShowNotice("错误", "剪切板的内容不能粘帖")
+			g_AUITool:ShowNotice("错误", "剪切板的内容不能粘帖")
 			if callback ~= nil then
 				callback(false, nil)
 			end
@@ -1166,7 +1166,7 @@ function IDETabChild:HandleRightControlTreeJump(event)
 	local extends_name = target.user_info.base.__extends
 	local control_info = g_IDEProject.project.control_map[extends_name]
 	if control_info == nil then
-		g_IDETool:ShowNotice("错误", "控件不存在:" .. extends_name)
+		g_AUITool:ShowNotice("错误", "控件不存在:" .. extends_name)
 		return
 	end
 	g_IDETabManager:StartEditControlBySelect(control_info.name, control_info.info)

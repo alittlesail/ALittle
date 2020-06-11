@@ -1,25 +1,31 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittleIDE", package.seeall)
+module("AUIPlugin", package.seeall)
 
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-IDEVersionManager = Lua.Class(nil, "ALittleIDE.IDEVersionManager")
+AUIVersionManager = Lua.Class(nil, "AUIPlugin.AUIVersionManager")
 
-function IDEVersionManager:Ctor()
-	___rawset(self, "_version_system", ALittle.VersionSystem.CreateVersionSystem("alittle", "ALittleIDE"))
+function AUIVersionManager:Ctor(ip, port, account, module_name)
+	___rawset(self, "_version_ip", ip)
+	___rawset(self, "_version_port", port)
+	___rawset(self, "_version_system", ALittle.VersionSystem.CreateVersionSystem(account, module_name))
 end
 
-function IDEVersionManager:Shutdown()
+function AUIVersionManager:Shutdown()
+	if self._dialog ~= nil then
+		A_LayerManager:RemoveFromModal(self._dialog)
+		self._dialog = nil
+	end
 	if self._version_system == nil then
 		return
 	end
 	self._version_system:StopUpdate()
 end
 
-function IDEVersionManager:CreateDialog()
+function AUIVersionManager:CreateDialog()
 	if self._dialog == nil then
 		self._dialog = g_Control:CreateControl("ide_version_dialog", self)
 		A_LayerManager:AddToModal(self._dialog)
@@ -37,49 +43,49 @@ function IDEVersionManager:CreateDialog()
 	end
 end
 
-function IDEVersionManager:ShowDialog()
+function AUIVersionManager:ShowDialog()
 	self:CreateDialog()
 	self._dialog.visible = true
 	self:UpdateVersion(true)
 end
 
-function IDEVersionManager:HandleCheckClick(event)
+function AUIVersionManager:HandleCheckClick(event)
 	self:UpdateVersion(true)
 end
 
-function IDEVersionManager:HandleUpdateClick(event)
+function AUIVersionManager:HandleUpdateClick(event)
 	self:UpdateVersion(false)
 end
 
-function IDEVersionManager:HandleNoUpdateClick(event)
+function AUIVersionManager:HandleNoUpdateClick(event)
 	self._dialog.visible = false
 end
 
-function IDEVersionManager:HandleInstallClick(event)
+function AUIVersionManager:HandleInstallClick(event)
 	self._version_system:Install(nil)
 end
 
-function IDEVersionManager:HandleRestartClick(event)
+function AUIVersionManager:HandleRestartClick(event)
 	ALittle.System_Restart()
 end
 
-function IDEVersionManager:CheckVersionUpdate()
+function AUIVersionManager:CheckVersionUpdate()
 	local loop = ALittle.LoopFunction(Lua.Bind(self.CheckVersionUpdateImpl, self), -1, 3600000, 0)
 	loop:Start()
 end
 
-function IDEVersionManager:CheckVersionUpdateImpl()
+function AUIVersionManager:CheckVersionUpdateImpl()
 	if self._version_system.doing then
 		return
 	end
-	local result = self._version_system:UpdateVersion(g_IDELoginManager.version_ip, g_IDELoginManager.version_port, nil, true)
+	local result = self._version_system:UpdateVersion(self._version_ip, self._version_port, nil, true)
 	if result == 2 or result == 3 then
-		g_IDETool:ShowTipHelp("有最新版本，需要就更新~", 10000)
+		g_AUITool:ShowTipHelp("有最新版本，需要就更新~", 10000)
 	end
 end
-IDEVersionManager.CheckVersionUpdateImpl = Lua.CoWrap(IDEVersionManager.CheckVersionUpdateImpl)
+AUIVersionManager.CheckVersionUpdateImpl = Lua.CoWrap(AUIVersionManager.CheckVersionUpdateImpl)
 
-function IDEVersionManager:UpdateVersion(check)
+function AUIVersionManager:UpdateVersion(check)
 	self:CreateDialog()
 	if self._version_system.doing then
 		return
@@ -105,7 +111,7 @@ function IDEVersionManager:UpdateVersion(check)
 		self._check_btn.visible = false
 		self._install_btn.visible = false
 	end
-	local result = self._version_system:UpdateVersion(g_IDELoginManager.version_ip, g_IDELoginManager.version_port, Lua.Bind(self.HandleUpdateVersion, self), check)
+	local result = self._version_system:UpdateVersion(self._version_ip, self._version_port, Lua.Bind(self.HandleUpdateVersion, self), check)
 	if result == 2 or result == 3 then
 		local text = "有最新版本，您是否更新?"
 		local new_big_version, new_small_version, new_log_list = self._version_system:GetNewVersion(5)
@@ -168,9 +174,9 @@ function IDEVersionManager:UpdateVersion(check)
 		self._restart_btn.visible = false
 	end
 end
-IDEVersionManager.UpdateVersion = Lua.CoWrap(IDEVersionManager.UpdateVersion)
+AUIVersionManager.UpdateVersion = Lua.CoWrap(AUIVersionManager.UpdateVersion)
 
-function IDEVersionManager:HandleUpdateVersion(file_name, cur_size, total_size, cur_file_index, file_count)
+function AUIVersionManager:HandleUpdateVersion(file_name, cur_size, total_size, cur_file_index, file_count)
 	self._notice_content.text = "版本正在更新..." .. ALittle.Math_Floor(self._version_system.current_update_size / self._version_system.total_update_size * 100) .. "%"
 	self._notice_content.visible = true
 	self._notice_edit.visible = false
@@ -185,4 +191,3 @@ function IDEVersionManager:HandleUpdateVersion(file_name, cur_size, total_size, 
 	self._restart_btn.visible = false
 end
 
-g_IDEVersionManager = IDEVersionManager()

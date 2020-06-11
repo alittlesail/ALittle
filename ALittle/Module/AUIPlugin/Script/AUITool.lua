@@ -1,19 +1,46 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittleIDE", package.seeall)
+module("AUIPlugin", package.seeall)
 
 local ___pairs = pairs
 local ___ipairs = ipairs
 
-ALittle.RegStruct(-125023360, "ALittleIDE.IDECallbackUserData", {
-name = "ALittleIDE.IDECallbackUserData", ns_name = "ALittleIDE", rl_name = "IDECallbackUserData", hash_code = -125023360,
-name_list = {"cancel_callback","confirm_callback"},
-type_list = {"Functor<()>","Functor<()>"},
-option_map = {}
-})
 
-IDETool = Lua.Class(nil, "ALittleIDE.IDETool")
+AUIToolOption = {
+	NO = "NO",
+	YES = "YES",
+	CANCEL = "CANCEL",
+}
 
-function IDETool:ShowAlertDialog(title, content)
+AUITool = Lua.Class(nil, "AUIPlugin.AUITool")
+
+function AUITool:Shutdown()
+	if self._alert_dialog ~= nil then
+		A_LayerManager:RemoveFromModal(self._alert_dialog)
+		self._alert_dialog = nil
+	end
+	if self._notice_dialog ~= nil then
+		A_LayerManager:RemoveFromModal(self._notice_dialog)
+		self._notice_dialog = nil
+	end
+	if self._save_dialog ~= nil then
+		A_LayerManager:RemoveFromModal(self._save_dialog)
+		self._save_dialog = nil
+	end
+	if self._delete_dialog ~= nil then
+		A_LayerManager:RemoveFromModal(self._delete_dialog)
+		self._delete_dialog = nil
+	end
+	if self._rename_input ~= nil then
+		A_LayerManager:RemoveFromModal(self._rename_input)
+		self._rename_input = nil
+	end
+	if self._tip_help_dialog ~= nil then
+		A_LayerManager:RemoveFromTip(self._tip_help_dialog)
+		self._tip_help_dialog = nil
+	end
+end
+
+function AUITool:ShowAlertDialog(title, content)
 	if self._alert_dialog == nil then
 		self._alert_dialog = g_Control:CreateControl("ide_alert_dialog", self)
 		A_LayerManager:AddToModal(self._alert_dialog)
@@ -24,11 +51,11 @@ function IDETool:ShowAlertDialog(title, content)
 	self._content.text = content
 end
 
-function IDETool:HideAlertDialog()
+function AUITool:HideAlertDialog()
 	self._alert_dialog.visible = false
 end
 
-function IDETool:ShowNotice(title, content)
+function AUITool:ShowNotice(title, content)
 	if self._notice_dialog == nil then
 		self._notice_dialog = g_Control:CreateControl("ide_notice_dialog", self)
 		A_LayerManager:AddToModal(self._notice_dialog)
@@ -46,11 +73,12 @@ function IDETool:ShowNotice(title, content)
 	self._notice_dialog.height = dialog_body_height + self._notice_dialog.head_size
 end
 
-function IDETool:HandleNoticeConfirmClick(event)
+function AUITool:HandleNoticeConfirmClick(event)
 	self._notice_dialog.visible = false
 end
 
-function IDETool:SaveNotice(title, content, cancel_callback, confirm_callback)
+function AUITool:SaveNotice(title, content)
+	local ___COROUTINE = coroutine.running()
 	if self._save_dialog == nil then
 		self._save_dialog = g_Control:CreateControl("ide_save_dialog", self)
 		A_LayerManager:AddToModal(self._save_dialog)
@@ -59,39 +87,33 @@ function IDETool:SaveNotice(title, content, cancel_callback, confirm_callback)
 	self._save_dialog:MoveToTop()
 	self._save_dialog.title = title
 	self._save_content.text = content
-	local user_data = {}
-	user_data.cancel_callback = cancel_callback
-	user_data.confirm_callback = confirm_callback
-	self._save_dialog._user_data = user_data
+	self._save_dialog._user_data = ___COROUTINE
+	return coroutine.yield()
 end
 
-function IDETool:HandleSaveConfirmClick(event)
+function AUITool:HandleSaveConfirmClick(event)
 	self._save_dialog.visible = false
-	local user_data = self._save_dialog._user_data
-	if user_data.confirm_callback ~= nil then
-		user_data.confirm_callback()
-	end
-	if user_data.cancel_callback ~= nil then
-		user_data.cancel_callback()
-	end
+	local thread = self._save_dialog._user_data
 	self._save_dialog._user_data = nil
+	ALittle.Coroutine.Resume(thread, AUIToolOption.YES)
 end
 
-function IDETool:HandleNoSaveClick(event)
+function AUITool:HandleNoSaveClick(event)
 	self._save_dialog.visible = false
-	local user_data = self._save_dialog._user_data
-	if user_data.cancel_callback ~= nil then
-		user_data.cancel_callback()
-	end
+	local thread = self._save_dialog._user_data
 	self._save_dialog._user_data = nil
+	ALittle.Coroutine.Resume(thread, AUIToolOption.NO)
 end
 
-function IDETool:HandleSaveCancelClick(event)
+function AUITool:HandleSaveCancelClick(event)
 	self._save_dialog.visible = false
+	local thread = self._save_dialog._user_data
 	self._save_dialog._user_data = nil
+	ALittle.Coroutine.Resume(thread, AUIToolOption.CANCEL)
 end
 
-function IDETool:DeleteNotice(title, content, confirm_callback)
+function AUITool:DeleteNotice(title, content)
+	local ___COROUTINE = coroutine.running()
 	if self._delete_dialog == nil then
 		self._delete_dialog = g_Control:CreateControl("ide_delete_dialog", self)
 		A_LayerManager:AddToModal(self._delete_dialog)
@@ -100,24 +122,26 @@ function IDETool:DeleteNotice(title, content, confirm_callback)
 	self._delete_dialog:MoveToTop()
 	self._delete_dialog.title = title
 	self._delete_content.text = content
-	self._delete_dialog._user_data = confirm_callback
+	self._delete_dialog._user_data = ___COROUTINE
+	return coroutine.yield()
 end
 
-function IDETool:HandleDeleteConfirmClick(event)
+function AUITool:HandleDeleteConfirmClick(event)
 	self._delete_dialog.visible = false
-	local callback = self._delete_dialog._user_data
-	if callback ~= nil then
-		callback()
-	end
+	local thread = self._save_dialog._user_data
 	self._delete_dialog._user_data = nil
+	ALittle.Coroutine.Resume(thread, AUIToolOption.YES)
 end
 
-function IDETool:HandleDeleteCancelClick(event)
+function AUITool:HandleDeleteCancelClick(event)
 	self._delete_dialog.visible = false
+	local thread = self._save_dialog._user_data
 	self._delete_dialog._user_data = nil
+	ALittle.Coroutine.Resume(thread, AUIToolOption.CANCEL)
 end
 
-function IDETool:ShowRename(callback, text, x, y, width)
+function AUITool:ShowRename(text, x, y, width)
+	local ___COROUTINE = coroutine.running()
 	if self._rename_input == nil then
 		self._rename_input = g_Control:CreateControl("ide_rename_image_input", self)
 		A_LayerManager:AddToModal(self._rename_input)
@@ -131,59 +155,32 @@ function IDETool:ShowRename(callback, text, x, y, width)
 	if text ~= "" then
 		self._rename_input:SelectAll()
 	end
-	self._rename_input._user_data = callback
+	self._rename_input._user_data = ___COROUTINE
+	return coroutine.yield()
 end
 
-function IDETool:HandleRenameConfirm(event)
-	local callback = self._rename_input._user_data
+function AUITool:HandleRenameConfirm(event)
+	local thread = self._save_dialog._user_data
 	self._rename_input._user_data = nil
-	if callback == nil then
-		return
-	end
 	self._rename_input.visible = false
 	local text = self._rename_input.text
-	callback(text)
+	ALittle.Coroutine.Resume(thread, text)
 end
 
-function IDETool:HandleRenameCancel(event)
+function AUITool:HandleRenameCancel(event)
 	if event.sym ~= 27 then
 		return
 	end
-	local callback = self._rename_input._user_data
+	local thread = self._save_dialog._user_data
 	self._rename_input._user_data = nil
 	self._rename_input.visible = false
+	ALittle.Coroutine.Resume(thread, nil)
 end
 
-function IDETool:VersionNotice(title, content, confirm_callback)
-	if self._version_dialog == nil then
-		self._version_dialog = g_Control:CreateControl("ide_version_dialog", self)
-		A_LayerManager:AddToModal(self._version_dialog)
-	end
-	self._version_dialog.visible = true
-	self._version_dialog:MoveToTop()
-	self._version_dialog.title = title
-	self._version_content.text = content
-	self._version_dialog._user_data = confirm_callback
-end
-
-function IDETool:HandleVersionConfirmClick(event)
-	self._version_dialog.visible = false
-	local callback = self._version_dialog._user_data
-	if callback ~= nil then
-		callback()
-	end
-	self._version_dialog._user_data = nil
-end
-
-function IDETool:HandleVersionCancelClick(event)
-	self._version_dialog.visible = false
-	self._version_dialog._user_data = nil
-end
-
-function IDETool:ShowTipHelp(content, show_time)
+function AUITool:ShowTipHelp(content, show_time)
 	if self._tip_help_dialog == nil then
 		self._tip_help_dialog = g_Control:CreateControl("ide_tip_help", self)
-		g_IDECenter.dialog_layer:AddChild(self._tip_help_dialog)
+		A_LayerManager:AddToTip(self._tip_help_dialog)
 	end
 	if self._tip_help_loop ~= nil then
 		if A_LoopSystem:HasUpdater(self._tip_help_loop) then
@@ -210,7 +207,7 @@ function IDETool:ShowTipHelp(content, show_time)
 	A_LoopSystem:AddUpdater(self._tip_help_loop)
 end
 
-function IDETool:HandleTipHelpCloseClick(event)
+function AUITool:HandleTipHelpCloseClick(event)
 	if self._tip_help_loop ~= nil then
 		if A_LoopSystem:HasUpdater(self._tip_help_loop) then
 			self._tip_help_loop:SetCompleted()
@@ -221,4 +218,4 @@ function IDETool:HandleTipHelpCloseClick(event)
 	self._tip_help_dialog.visible = false
 end
 
-g_IDETool = IDETool()
+_G.g_AUITool = AUITool()

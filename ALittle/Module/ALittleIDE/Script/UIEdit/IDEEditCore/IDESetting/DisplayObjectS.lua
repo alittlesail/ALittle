@@ -1157,7 +1157,7 @@ function DisplayObjectS:RemoverToNilShowSetForImage(text, image_path, grid9, nee
 		if grid9 then
 			local display_info = IDEUtility_GenerateGrid9ImageInfo(g_IDEProject.project.base_path .. "Texture/", image_path)
 			if display_info == nil then
-				g_IDETool:ShowNotice("错误", "图片不存在:" .. image_path)
+				g_AUITool:ShowNotice("错误", "图片不存在:" .. image_path)
 				return
 			end
 			self:RemoverToNilShowSet(text, ALittle.String_JsonEncode(display_info), need_reset, revoke_bind)
@@ -1173,7 +1173,7 @@ end
 function DisplayObjectS:RemoverToNilShowSetForExtends(text, extends_v, need_reset, revoke_bind)
 	if extends_v ~= "" then
 		if g_IDEProject:IsControlExist(extends_v) == false then
-			g_IDETool:ShowNotice("错误", "要继承的控件不存在:" .. extends_v)
+			g_AUITool:ShowNotice("错误", "要继承的控件不存在:" .. extends_v)
 			return
 		end
 		local display_info = {}
@@ -1214,7 +1214,7 @@ function DisplayObjectS:RemoverToNilShowSet(text, json_content, need_reset, revo
 			end
 			if include ~= nil then
 				if g_IDEProject.project.control_map[include] == nil then
-					g_IDETool:ShowNotice("错误", "指定__include或__extends不存在")
+					g_AUITool:ShowNotice("错误", "指定__include或__extends不存在")
 					return
 				end
 			end
@@ -1226,7 +1226,7 @@ function DisplayObjectS:RemoverToNilShowSet(text, json_content, need_reset, revo
 			self._object[text] = temp
 			g_IDEProject.project.control:UnRegisterInfo(name)
 		else
-			g_IDETool:ShowNotice("错误", "输入show设置错误")
+			g_AUITool:ShowNotice("错误", "输入show设置错误")
 			return
 		end
 	end
@@ -1278,7 +1278,7 @@ function DisplayObjectS:RemoverToNilNoNilShowSet(text, need_reset, revoke_bind)
 			end
 			if include ~= nil then
 				if g_IDEProject.project.control_map[include] == nil then
-					g_IDETool:ShowNotice("错误", "指定__include或__extends不存在")
+					g_AUITool:ShowNotice("错误", "指定__include或__extends不存在")
 					display_object.text = ""
 					return
 				end
@@ -1291,7 +1291,7 @@ function DisplayObjectS:RemoverToNilNoNilShowSet(text, need_reset, revoke_bind)
 			self._object[text] = temp
 			g_IDEProject.project.control:UnRegisterInfo(name)
 		else
-			g_IDETool:ShowNotice("错误", "输入show设置错误")
+			g_AUITool:ShowNotice("错误", "输入show设置错误")
 			display_object.text = ""
 			return
 		end
@@ -1334,7 +1334,7 @@ function DisplayObjectS:TableDataSet(text, need_reset, revoke_bind)
 			self._base[text] = content
 			self._object[text] = content
 		else
-			g_IDETool:ShowNotice("输入错误", "输入数据错误")
+			g_AUITool:ShowNotice("输入错误", "输入数据错误")
 			display_object.text = ""
 			return
 		end

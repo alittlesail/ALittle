@@ -1,7 +1,7 @@
 
 namespace AUIPlugin;
 
-public class AUIIMEManager
+protected class AUIIMEManager
 {
 	private ALittle.Dialog _ime_dialog;
 	private double _ime_dialog_init_width;
@@ -73,7 +73,6 @@ public class AUIIMEManager
 			this._ime_editing_list.text = ALittle.String_Join(new_list, " ");
 	
 			// 获取目标控件的绝对位置
-	
 			var global_x, global_y = target.LocalToGlobal();
 			var height = target.height;
 	
@@ -97,4 +96,4 @@ public class AUIIMEManager
 	}
 }
 
-public var g_AUIIMEManager = new AUIIMEManager();
+protected var g_AUIIMEManager = new AUIIMEManager();

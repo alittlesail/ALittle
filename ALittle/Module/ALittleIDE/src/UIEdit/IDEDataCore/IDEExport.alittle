@@ -325,7 +325,7 @@ class IDEExport
 		// 请求获取一个新的版本号
 		if (g_IDELoginManager.IsLogin())
 		{
-			g_IDETool.ShowAlertDialog("提示", "正在请求新的版本号");
+			g_AUITool.ShowAlertDialog("提示", "正在请求新的版本号");
 			var param = new VersionServer.QNewUpdateTimeIndex();
 			param.__account_id = g_IDELoginManager.account_id;
 			param.__session_id = g_IDELoginManager.session_id;
@@ -340,10 +340,10 @@ class IDEExport
 	// 获取一个新版本
 	public await fun HandleAskNewUpdateTimeIndex(string error, VersionServer.ANewUpdateTimeIndex result, IDEPackageInfo package_info, bool is_login)
 	{
-		g_IDETool.HideAlertDialog();
+		g_AUITool.HideAlertDialog();
 		if (error != null)
 		{
-			g_IDETool.ShowNotice("错误", "新版本号获取失败:"..error);
+			g_AUITool.ShowNotice("错误", "新版本号获取失败:"..error);
 			return;
 		}
 
@@ -355,7 +355,7 @@ class IDEExport
 		// 询问执行版本下载的位置
 		if (is_login)
 		{
-			g_IDETool.ShowAlertDialog("提示", "正在请求CurVersion.db的文件的位置");
+			g_AUITool.ShowAlertDialog("提示", "正在请求CurVersion.db的文件的位置");
 			var param = new VersionServer.QNewCurVersion();
 			param.__account_id = g_IDELoginManager.account_id;
 			param.__session_id = g_IDELoginManager.session_id;
@@ -371,11 +371,11 @@ class IDEExport
 	
 	public await fun HandleQueryNewCurVersion(string error, VersionServer.ANewCurVersion result, IDEPackageInfo package_info, bool is_login, int update_time, int update_index)
 	{
-		g_IDETool.HideAlertDialog();
+		g_AUITool.HideAlertDialog();
 	
 		if (error != null)
 		{
-			g_IDETool.ShowNotice("错误", "CurVersion.db的文件的位置获取失败:"..error);
+			g_AUITool.ShowNotice("错误", "CurVersion.db的文件的位置获取失败:"..error);
 			return;
 		}
 
@@ -384,7 +384,7 @@ class IDEExport
 			this.HandleQueryNewCurVersionImpl(package_info, is_login, update_time, update_index, false);
 		else
 		{
-			g_IDETool.ShowAlertDialog("提示", "下载最新的版本文件");
+			g_AUITool.ShowAlertDialog("提示", "下载最新的版本文件");
 			ALittle.File_MakeDeepDir(package_info.project_path.."/Export");
 
 			var target_path = package_info.project_path.."/Export".."/CurVersionOld_"..package_info.platform..".db";
@@ -403,18 +403,18 @@ class IDEExport
 	{
 		if (error != null)
 		{
-			g_IDETool.HideAlertDialog();
-			g_IDETool.ShowNotice("错误", "最新版本文件下载失败:"..error);
+			g_AUITool.HideAlertDialog();
+			g_AUITool.ShowNotice("错误", "最新版本文件下载失败:"..error);
 			return;
 		}
 
-		g_IDETool.HideAlertDialog();
+		g_AUITool.HideAlertDialog();
 		this.HandleQueryNewCurVersionImpl(package_info, is_login, update_time, update_index, true);
 	}
 	
 	public fun HandleQueryNewCurVersionImpl(IDEPackageInfo package_info, bool is_login, int update_time, int update_index, bool has_db_version)
 	{
-		g_IDETool.ShowAlertDialog("提示", "正在生成版本");
+		g_AUITool.ShowAlertDialog("提示", "正在生成版本");
 		ALittle.System_Render(); // 强制渲染
 	
 		var small_version_time = update_time;
@@ -424,14 +424,14 @@ class IDEExport
 		// 如果有版本文件，那么就加载内部所有的信息
 		if (has_db_version)
 		{
-			g_IDETool.ShowAlertDialog("提示", "获取上一个版本的信息");
+			g_AUITool.ShowAlertDialog("提示", "获取上一个版本的信息");
 			ALittle.System_Render(); // 强制渲染
 	
 			var db_version_path = package_info.project_path.."/Export/CurVersionOld_"..package_info.platform..".db";
 			var sqlite = lua.sqlite3.open(db_version_path);
 			if (sqlite == null)
 			{
-				g_IDETool.ShowNotice("错误", "CurVersion.db文件打开失败");
+				g_AUITool.ShowNotice("错误", "CurVersion.db文件打开失败");
 				return;
 			}
 	
@@ -442,7 +442,7 @@ class IDEExport
 			if (stmt == null)
 			{
 				sqlite.close();
-				g_IDETool.ShowNotice("错误", "CurVersion.db中BigVersion读取失败");
+				g_AUITool.ShowNotice("错误", "CurVersion.db中BigVersion读取失败");
 				return;
 			}
 			for (var row in stmt.nrows{ALittle.BigVersionInfo}())
@@ -454,7 +454,7 @@ class IDEExport
 			if (stmt == null)
 			{
 				sqlite.close();
-				g_IDETool.ShowNotice("错误", "CurVersion.db中SmallVersion读取失败");
+				g_AUITool.ShowNotice("错误", "CurVersion.db中SmallVersion读取失败");
 				return;
 			}
 			version_info.small_version = new Map<string, ALittle.SmallVersionInfo>();
@@ -467,14 +467,14 @@ class IDEExport
 			sqlite.close();
 		}
 	
-		g_IDETool.ShowAlertDialog("提示", "打包当前版本");
+		g_AUITool.ShowAlertDialog("提示", "打包当前版本");
 		ALittle.System_Render(); // 强制渲染
 	
 		// 打包文件
 		var error, version_info_list = tcall(this.PackageCommon, this, package_info.project_path);
 		if (error != null)
 		{
-			g_IDETool.ShowNotice("错误", "PackageCommon 调用失败:"..error);
+			g_AUITool.ShowNotice("错误", "PackageCommon 调用失败:"..error);
 			return;
 		}
 	
@@ -498,7 +498,7 @@ class IDEExport
 		submit_info.upload_list = new List<string>();
         var update_list_count = 0;
 	
-		g_IDETool.ShowAlertDialog("提示", "生成新的CurVersion.db");
+		g_AUITool.ShowAlertDialog("提示", "生成新的CurVersion.db");
 		ALittle.System_Render(); // 强制渲染
 	
 		var package_notice = ""; // 用于先是打包变化情况
@@ -651,7 +651,7 @@ class IDEExport
 			var sqlite_no_delete = lua.sqlite3.open(package_info.export_module_path.."/CurVersionNoDelete.db");
 			if (sqlite_no_delete == null)
 			{
-				g_IDETool.ShowNotice("错误", "CurVersionNoDelete.db文件生成失败:"..package_info.export_module_path.."/CurVersionNoDelete.db");
+				g_AUITool.ShowNotice("错误", "CurVersionNoDelete.db文件生成失败:"..package_info.export_module_path.."/CurVersionNoDelete.db");
 				return;
 			}
 			// 删除一些记录
@@ -700,18 +700,18 @@ class IDEExport
 	
 			if (has_change == false)
 			{
-				g_IDETool.HideAlertDialog();
-				g_IDETool.ShowNotice("提示", "当前没有任何变化，不需要制作版本");
+				g_AUITool.HideAlertDialog();
+				g_AUITool.ShowNotice("提示", "当前没有任何变化，不需要制作版本");
 				return;
 			}
 		}
 		else
 		{
-			g_IDETool.ShowNotice("错误", "CurVersion.db文件生成失败:"..package_info.export_module_path.."/CurVersion.db");
+			g_AUITool.ShowNotice("错误", "CurVersion.db文件生成失败:"..package_info.export_module_path.."/CurVersion.db");
 			return;
 		}
 	
-		g_IDETool.ShowAlertDialog("提示", "开始打包安装包");
+		g_AUITool.ShowAlertDialog("提示", "开始打包安装包");
 		ALittle.System_Render(); // 强制渲染
 
         var install_name:string = null;
@@ -740,7 +740,7 @@ class IDEExport
 		var install_attr = ALittle.File_GetFileAttr(package_info.project_path.."/Export/"..install_name);
 		if (install_attr == null)
 		{
-			g_IDETool.ShowNotice("提示", "版本生成失败");
+			g_AUITool.ShowNotice("提示", "版本生成失败");
 			return;
 		}
 		submit_info.install_size = install_attr.size;
@@ -748,8 +748,8 @@ class IDEExport
 		ALittle.File_WriteJsonToFile(submit_info, package_info.project_path.."/Export/SubmitInfo_"..package_info.platform..".json");
 	
 		ALittle.Log("版本生成成功");
-		g_IDETool.HideAlertDialog();
-		g_IDETool.ShowNotice("提示", "版本生成成功"..package_notice);
+		g_AUITool.HideAlertDialog();
+		g_AUITool.ShowNotice("提示", "版本生成成功"..package_notice);
 	}
 	
 	// 上传版本文件
@@ -768,7 +768,7 @@ class IDEExport
 		// 通知服务器构建一个新的版本
 		if (g_IDELoginManager.IsLogin() == false)
 		{
-			g_IDETool.ShowNotice("错误", "您还未登录，无法上传版本");
+			g_AUITool.ShowNotice("错误", "您还未登录，无法上传版本");
 			return;
 		}
 		
@@ -779,30 +779,30 @@ class IDEExport
 		var submit_info_path = project_path.."/Export/SubmitInfo_"..platform..".json";
 		if (ALittle.File_GetFileAttr(submit_info_path) == null)
 		{
-			g_IDETool.ShowNotice("错误", "版本PackageInfo_"..platform..".json不存在");
+			g_AUITool.ShowNotice("错误", "版本PackageInfo_"..platform..".json不存在");
 			return;
 		}
         var submit_info:IDEExportSubmitInfo = ALittle.File_ReadJsonFromFile(submit_info_path);
 		if (submit_info == null)
 		{
-			g_IDETool.ShowNotice("错误", "PackageInfo_"..platform..".json文件解析失败");
+			g_AUITool.ShowNotice("错误", "PackageInfo_"..platform..".json文件解析失败");
 			return;
 		}
 		if (submit_info.is_login != true)
 		{
-			g_IDETool.ShowNotice("错误", "当前打包的版本不是在登录的状态下打包的，请登录之后重新打包");
+			g_AUITool.ShowNotice("错误", "当前打包的版本不是在登录的状态下打包的，请登录之后重新打包");
 			return;
 		}
 	
 		if (submit_info.completed == true)
 		{
-			g_IDETool.ShowNotice("错误", "版本已经上传成功了，不能重复上传");
+			g_AUITool.ShowNotice("错误", "版本已经上传成功了，不能重复上传");
 			return;
 		}
 	
 		if (submit_info.version_id == null)
 		{
-			g_IDETool.ShowAlertDialog("提示", "正在创建一个新的版本");
+			g_AUITool.ShowAlertDialog("提示", "正在创建一个新的版本");
 			// 请求一个新的版本
 			var param = new VersionServer.QNewVersionInfo();
 			param.__account_id = g_IDELoginManager.account_id;
@@ -828,11 +828,11 @@ class IDEExport
 	
 	public await fun HandleNewVersionInfo(string error, VersionServer.ANewVersionInfo result, IDEExportSubmitInfo submit_info)
 	{
-		g_IDETool.HideAlertDialog();
+		g_AUITool.HideAlertDialog();
 	
 		if (error != null)
 		{
-			g_IDETool.ShowNotice("错误", "版本创建失败:"..error);
+			g_AUITool.ShowNotice("错误", "版本创建失败:"..error);
 			return;
 		}
 

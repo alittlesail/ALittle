@@ -26,12 +26,14 @@ g_ModuleBasePath = nil
 g_ScriptBasePath = nil
 g_ModuleBasePathEx = nil
 g_IDEConfig = nil
+g_IDEServerConfig = nil
 function __Module_Setup(layer_group, control, module_base_path, script_base_path)
 	g_Control = control
 	g_LayerGroup = layer_group
 	g_ModuleBasePath = module_base_path
 	g_ModuleBasePathEx = ALittle.File_BaseFilePath() .. module_base_path
 	g_ScriptBasePath = script_base_path
+	A_ModuleSystem:LoadPlugin("AUIPlugin")
 	Require(script_base_path, "IDECenter")
 	g_IDECenter:Setup()
 end

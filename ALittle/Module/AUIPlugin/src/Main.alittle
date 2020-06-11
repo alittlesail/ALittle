@@ -49,6 +49,8 @@ public async static __Plugin_Setup(ALittle.ControlSystem control, string module_
     g_ScriptBasePath = script_base_path;
 
     alittle.Require(script_base_path, "AUIIMEManager");
+    alittle.Require(script_base_path, "AUIVersionManager");
+    alittle.Require(script_base_path, "AUITool");
     g_AUIIMEManager.Setup();
 }
 
@@ -56,4 +58,5 @@ public async static __Plugin_Setup(ALittle.ControlSystem control, string module_
 public static __Plugin_Shutdown()
 {
     g_AUIIMEManager.Shutdown();
+    g_AUITool.Shutdown();
 }

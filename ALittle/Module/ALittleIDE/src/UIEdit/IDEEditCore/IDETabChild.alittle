@@ -1146,14 +1146,14 @@ public class IDETabChild : ALittle.UIEventDispatcher
 		// 设置这个下拉菜单
 		if (target.CanAddChild() == false)
         {
-            g_IDETool.ShowNotice("提示", "当前控件不能添加子控件");
+            g_AUITool.ShowNotice("提示", "当前控件不能添加子控件");
             return;
 		}
 		// 添加一个控件
         var tree_object = target.TreeAdd("", "Image", "child");
 		if (tree_object == null)
         {
-            g_IDETool.ShowNotice("提示", "添加失败");
+            g_AUITool.ShowNotice("提示", "添加失败");
             return;
 		}
 		// 对这个新的Image设置纹理
@@ -1172,14 +1172,14 @@ public class IDETabChild : ALittle.UIEventDispatcher
 		// 设置这个下拉菜单
 		if (target.CanAddChild() == false)
         {
-            g_IDETool.ShowNotice("提示", "当前控件不能添加子控件");
+            g_AUITool.ShowNotice("提示", "当前控件不能添加子控件");
             return;
 		}
 		// 添加一个控件
         var tree_object = target.TreeAdd("", "Text", "child");
 		if (tree_object == null)
         {
-            g_IDETool.ShowNotice("提示", "添加失败");
+            g_AUITool.ShowNotice("提示", "添加失败");
             return;
 		}
         tree_object.ShowFocus(false);
@@ -1218,7 +1218,7 @@ public class IDETabChild : ALittle.UIEventDispatcher
             var text_info = ALittle.System_GetClipboardText();
 			if (text_info == null)
             {
-                g_IDETool.ShowNotice("错误", "剪切板的内容不能粘帖");
+                g_AUITool.ShowNotice("错误", "剪切板的内容不能粘帖");
                 if (callback != null) callback(false, null);
                 return;
 			}
@@ -1226,7 +1226,7 @@ public class IDETabChild : ALittle.UIEventDispatcher
             var error, copy_list_tmp:List<IDEControlCopyInfo> = tcall(ALittle.String_JsonDecode, text_info);
 			if (error != null || ALittle.List_MaxN(copy_list_tmp) == 0)
             {
-                g_IDETool.ShowNotice("错误", "剪切板的内容不能粘帖");
+                g_AUITool.ShowNotice("错误", "剪切板的内容不能粘帖");
                 if (callback != null) callback(false, null);
                 return;
 			}
@@ -1237,7 +1237,7 @@ public class IDETabChild : ALittle.UIEventDispatcher
         {
 			if (info.info.__class == null && info.info.__extends == null)
             {
-                g_IDETool.ShowNotice("错误", "剪切板的内容不能粘帖");
+                g_AUITool.ShowNotice("错误", "剪切板的内容不能粘帖");
                 if (callback != null) callback(false, null);
                 return;
 			}
@@ -1364,7 +1364,7 @@ public class IDETabChild : ALittle.UIEventDispatcher
         var control_info = g_IDEProject.project.control_map[extends_name];
 		if (control_info == null)
         {
-            g_IDETool.ShowNotice("错误", "控件不存在:"..extends_name);
+            g_AUITool.ShowNotice("错误", "控件不存在:"..extends_name);
             return;
 		}
 	

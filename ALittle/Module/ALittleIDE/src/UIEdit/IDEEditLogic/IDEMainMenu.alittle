@@ -165,7 +165,7 @@ class IDEMainMenu
 
 		if (g_IDEProject.project == null)
 		{
-			g_IDETool.ShowNotice("提示", "没有加载项目");
+			g_AUITool.ShowNotice("提示", "没有加载项目");
 			return;
         }
 		
@@ -179,9 +179,9 @@ class IDEMainMenu
 		}
 		var result = ALittle.File_WriteJsonFromStdFile(all_in_one, "Module/"..g_IDEProject.project.name.."/ui_all_in_one.json");
 		if (result)
-			g_IDETool.ShowNotice("提示", "生成成功");
+			g_AUITool.ShowNotice("提示", "生成成功");
 		else
-			g_IDETool.ShowNotice("提示", "生成失败");
+			g_AUITool.ShowNotice("提示", "生成失败");
     }
 	// 生成核心库Core
 	public fun HandleGenCoreAllInOneClick(ALittle.UIClickEvent event)
@@ -204,15 +204,15 @@ class IDEMainMenu
 			all_in_one[index] = ALittle.File_ReadTextFromStdFile(path);
 			if (all_in_one[index] == null)
 			{
-				g_IDETool.ShowNotice("提示", "生成失败");
+				g_AUITool.ShowNotice("提示", "生成失败");
 				return;
             }
 		}
 		var result = ALittle.File_WriteTextFromStdFile(ALittle.String_Join(all_in_one, "\n"), "Module/ALittleIDE/Other/GameLibrary/Core/Core.js");
 		if (result)
-			g_IDETool.ShowNotice("提示", "生成成功");
+			g_AUITool.ShowNotice("提示", "生成成功");
 		else
-			g_IDETool.ShowNotice("提示", "生成失败");
+			g_AUITool.ShowNotice("提示", "生成失败");
     }
 	// 生成标准库Std
 	public fun HandleGenStdAllInOneClick(ALittle.UIClickEvent event)
@@ -242,15 +242,15 @@ class IDEMainMenu
 			all_in_one[index] = ALittle.File_ReadTextFromStdFile(path);
 			if (all_in_one[index] == null)
 			{
-				g_IDETool.ShowNotice("提示", "生成失败");
+				g_AUITool.ShowNotice("提示", "生成失败");
 				return;
             }
 		}
 		var result = ALittle.File_WriteTextFromStdFile(ALittle.String_Join(all_in_one, "\n"), "Module/ALittleIDE/Other/GameLibrary/Std/Std.js");
 		if (result)
-			g_IDETool.ShowNotice("提示", "生成成功");
+			g_AUITool.ShowNotice("提示", "生成成功");
 		else
-			g_IDETool.ShowNotice("提示", "生成失败");
+			g_AUITool.ShowNotice("提示", "生成失败");
     }
 	// 生成客户端引起CEngine
 	public fun HandleGenCEngineAllInOneClick(ALittle.UIClickEvent event)
@@ -328,15 +328,15 @@ class IDEMainMenu
 			all_in_one[index] = ALittle.File_ReadTextFromStdFile(path);
 			if (all_in_one[index] == null)
 			{
-				g_IDETool.ShowNotice("提示", "生成失败");
+				g_AUITool.ShowNotice("提示", "生成失败");
 				return;
             }
 		}
 		var result = ALittle.File_WriteTextFromStdFile(ALittle.String_Join(all_in_one, "\n"), "Module/ALittleIDE/Other/GameLibrary/CEngine/CEngine.js");
 		if (result)
-			g_IDETool.ShowNotice("提示", "生成成功");
+			g_AUITool.ShowNotice("提示", "生成成功");
 		else
-			g_IDETool.ShowNotice("提示", "生成失败");
+			g_AUITool.ShowNotice("提示", "生成失败");
     }
 	// 处理转换
 	public fun HandleFramePlayFromPList(ALittle.UIEvent event)

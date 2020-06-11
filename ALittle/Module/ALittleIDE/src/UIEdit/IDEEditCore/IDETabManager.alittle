@@ -255,23 +255,24 @@ public class IDETabManager
 		this.CloseTab(child);
 	}
 
-	// tab_child关闭函数包装
-	public static TabChildSave(IDETabChild tab_child, bool save)
-	{
-		tab_child.Save(save);
-	}
-	
 	// 判断能否直接关闭
 	public fun MainTabTabCloseYesOrNot(ALittle.DisplayObject child) : bool
 	{
 		var tab_child:IDETabChild = child._user_data;
 		if (tab_child.save) return true;
 	
-		var cancel_callback = bind(this.CloseTab, this, child);
-		var confirm_callback = bind(IDETabManager.TabChildSave, tab_child, true);
-		g_IDETool.SaveNotice("提示", "是否保存当前控件?", cancel_callback, confirm_callback);
+		this.MainTabTabCloseImpl(tab_child, child);
 		return false;
 	}
+
+	private async fun MainTabTabCloseImpl(IDETabChild tab_child, ALittle.DisplayObject child)
+	{
+		var cancel_callback = bind(this.CloseTab, this, child);
+		var result = g_AUITool.SaveNotice("提示", "是否保存当前控件?");
+		if (result == AUIPlugin.AUIToolOption.YES)
+			tab_child.Save(true);
+		this.CloseTab(child);    
+    }
 	
 	// Tab右键事件
 	public fun HandleMainTabRightClick(ALittle.UIRButtonDownEvent event)
@@ -280,7 +281,7 @@ public class IDETabManager
 	}
 	
 	// Tab按键事件
-	public fun HandleMainTabKeyDown(ALittle.UIKeyDownEvent event)
+	public async fun HandleMainTabKeyDown(ALittle.UIKeyDownEvent event)
 	{
 		if (event.sym == 1073741883)
 		{
@@ -298,9 +299,11 @@ public class IDETabManager
 				event.handled = true;
 				return;
 			}
-			var cancel_callback = bind(this.RefreshTab, this, child);
-			var confirm_callback = bind(IDETabManager.TabChildSave, tab_child, true);
-			g_IDETool.SaveNotice("提示", "是否保存当前控件?", cancel_callback, confirm_callback);
+			var result = g_AUITool.SaveNotice("提示", "是否保存当前控件?");
+			if (result == AUIPlugin.AUIToolOption.YES)
+				tab_child.Save(true);
+			this.RefreshTab(child);
+
 			event.handled = true;
 			return;
 		}
@@ -361,7 +364,7 @@ public class IDETabManager
 	}
 	
 	// 按下右键菜单，保存
-	public fun HandleTabRightMenu(ALittle.UIEvent event)
+	public async fun HandleTabRightMenu(ALittle.UIEvent event)
 	{
 		var child:ALittle.DisplayObject = this._main_tab_menu._user_data;
 		var tab_child:IDETabChild = child._user_data;
@@ -381,9 +384,10 @@ public class IDETabManager
 				this.RefreshTab(child);
 				return;
 			}
-			var cancel_callback = bind(this.RefreshTab, this, child);
-			var confirm_callback = bind(IDETabManager.TabChildSave, tab_child, true);
-			g_IDETool.SaveNotice("提示", "是否保存当前控件?", cancel_callback, confirm_callback);
+			var result = g_AUITool.SaveNotice("提示", "是否保存当前控件?");
+			if (result == AUIPlugin.AUIToolOption.YES)
+				tab_child.Save(true);
+			this.RefreshTab(child);
 			return;
 		}
 		if (handle_name == "关闭自己")
@@ -393,9 +397,10 @@ public class IDETabManager
 				this.CloseTab(child);
 				return;
 			}
-			var cancel_callback = bind(this.CloseTab, this, child);
-			var confirm_callback = bind(IDETabManager.TabChildSave, tab_child, true);
-			g_IDETool.SaveNotice("提示", "是否保存当前控件?", cancel_callback, confirm_callback);
+			var result = g_AUITool.SaveNotice("提示", "是否保存当前控件?");
+			if (result == AUIPlugin.AUIToolOption.YES)
+				tab_child.Save(true);
+			this.CloseTab(child);
 			return;
 		}
 		if (handle_name == "复制控件名")
@@ -460,20 +465,20 @@ public class IDETabManager
 	}
 	
 	// 修改控件名
-	public fun ControlRenameImpl(ALittle.DisplayObject child)
+	public await fun ControlRenameImpl(ALittle.DisplayObject child)
 	{
 		var tab_child:IDETabChild = child._user_data;
-		var name = tab_child.name;
-		var result, content = g_IDEProject.CanDelete(name);
+		var old_name = tab_child.name;
+		var result, content = g_IDEProject.CanDelete(old_name);
 		if (result == false)
 		{
-			g_IDETool.ShowNotice("错误", content);
+			g_AUITool.ShowNotice("错误", content);
 			return;
 		}
-		result, content = g_IDETabManager.CanDelete(name);
+		result, content = g_IDETabManager.CanDelete(old_name);
 		if (result == false)
 		{
-			g_IDETool.ShowNotice("错误", content);
+			g_AUITool.ShowNotice("错误", content);
 			return;
 		}
 	
@@ -482,26 +487,19 @@ public class IDETabManager
 		var x, y = layout.LocalToGlobal();
 		var width = layout.width;
 		if (width < 150) width = 150;
-		var callback = bind(this.ControlRename, this, name);
-		g_IDETool.ShowRename(callback, name, x, y, width);
-	}
-	// 修改控件名
-	public fun ControlRename(string old_name, string new_name)
-	{
+		var new_name = g_AUITool.ShowRename(old_name, x, y, width);
+		if (new_name == null || old_name == new_name) return;
+
 		// 检查是否有修改
 		if (old_name == new_name) return;
 		// 重命名
-		var result, content = g_IDEProject.RenameControl(old_name, new_name);
+		result, content = g_IDEProject.RenameControl(old_name, new_name);
 		if (result == false)
 		{
-			g_IDETool.ShowNotice("错误", content);
+			g_AUITool.ShowNotice("错误", content);
 			return;
 		}
 	
-		// 检查有没有正在编辑的控件
-		var tab = g_IDETabManager.GetTabByName(old_name);
-		if (tab == null) return;
-		var tab_child:IDETabChild = tab._user_data;
 		tab_child.Rename(new_name);
 	}
 	////////////////////////////////////////////////////////////////////////////////////////////////////////

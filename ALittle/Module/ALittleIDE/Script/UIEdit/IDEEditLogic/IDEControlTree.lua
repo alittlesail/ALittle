@@ -125,12 +125,12 @@ end
 
 function IDEControlTree:ImagePathSelectCallback(target, path)
 	if target:CanAddChild() == false then
-		g_IDETool:ShowNotice("提示", "当前控件不能添加子控件")
+		g_AUITool:ShowNotice("提示", "当前控件不能添加子控件")
 		return
 	end
 	local tree_object = target:TreeAdd("", "Image", "child")
 	if tree_object == nil then
-		g_IDETool:ShowNotice("提示", "添加失败")
+		g_AUITool:ShowNotice("提示", "添加失败")
 		return
 	end
 	tree_object.attr_panel:SetTextureName(path, nil)
@@ -142,12 +142,12 @@ function IDEControlTree:HandleRightControlTreeAddText(event)
 	local target = self._control_tree_menu._user_data
 	self._control_tree_menu._user_data = nil
 	if target:CanAddChild() == false then
-		g_IDETool:ShowNotice("提示", "当前控件不能添加子控件")
+		g_AUITool:ShowNotice("提示", "当前控件不能添加子控件")
 		return
 	end
 	local tree_object = target:TreeAdd("", "Text", "child")
 	if tree_object == nil then
-		g_IDETool:ShowNotice("提示", "添加失败")
+		g_AUITool:ShowNotice("提示", "添加失败")
 		return
 	end
 	tree_object:ShowFocus(false)
@@ -169,7 +169,7 @@ function IDEControlTree:ShowAddDialog(target)
 	end
 	local data_list = target:GetDataListForAdd()
 	if ALittle.List_MaxN(data_list) == 0 then
-		g_IDETool:ShowNotice("提示", "当前控件不能添加子控件")
+		g_AUITool:ShowNotice("提示", "当前控件不能添加子控件")
 		return
 	end
 	self._control_add_dialog._user_data = target
@@ -188,7 +188,7 @@ function IDEControlTree:HandleAddControlConfirm(event)
 	self._control_add_dialog._user_data = nil
 	local extends_name = self._control_add_extends_name.text
 	if extends_name ~= "" and g_IDEProject.project.control_map[extends_name] == nil then
-		g_IDETool:ShowNotice("错误", "继承控件不存在:" .. extends_name)
+		g_AUITool:ShowNotice("错误", "继承控件不存在:" .. extends_name)
 		return
 	end
 	self._control_add_dialog.visible = false
@@ -202,7 +202,7 @@ end
 
 function IDEControlTree:ShowReplaceDialog(target)
 	if target:IsTree() and target.child_count > 0 then
-		g_IDETool:ShowNotice("提示", "当前控件有子控件，不能替换")
+		g_AUITool:ShowNotice("提示", "当前控件有子控件，不能替换")
 		return
 	end
 	local target_parent = target.logic_parent
@@ -243,7 +243,7 @@ function IDEControlTree:HandleReplaceControlConfirm(event)
 	self._control_replace_dialog._user_data = nil
 	local extends_name = self._control_replace_extends_name.text
 	if extends_name ~= "" and g_IDEProject.project.control_map[extends_name] == nil then
-		g_IDETool:ShowNotice("错误", "继承控件不存在:" .. extends_name)
+		g_AUITool:ShowNotice("错误", "继承控件不存在:" .. extends_name)
 		return
 	end
 	self._control_replace_dialog.visible = false
@@ -267,7 +267,7 @@ end
 function IDEControlTree:ShowPasteDialog(target, info, child_index, revoke_bind, callback)
 	local data_list = target:GetDataListForAdd()
 	if ALittle.List_MaxN(data_list) == 0 then
-		g_IDETool:ShowNotice("提示", "当前控件不能添加子控件")
+		g_AUITool:ShowNotice("提示", "当前控件不能添加子控件")
 		if callback ~= nil then
 			callback(false, nil)
 		end
@@ -356,7 +356,7 @@ function IDEControlTree:HandleRightControlTreeJump(event)
 	local extends_name = target.user_info.base.__extends
 	local control_info = g_IDEProject.project.control_map[extends_name]
 	if control_info == nil then
-		g_IDETool:ShowNotice("错误", "控件不存在:" .. extends_name)
+		g_AUITool:ShowNotice("错误", "控件不存在:" .. extends_name)
 		return
 	end
 	g_IDETabManager:StartEditControlBySelect(control_info.name, control_info.info)
@@ -367,10 +367,14 @@ function IDEControlTree:HandleRightControlTreeDesc(event)
 	local target = self._control_tree_menu._user_data
 	self._control_tree_menu._user_data = nil
 	local x, y = target:LocalToGlobal()
-	local callback = Lua.Bind(target.SetDesc, target)
 	local desc = target:GetDesc()
-	g_IDETool:ShowRename(callback, desc, x, y, target.width)
+	local name = g_AUITool:ShowRename(desc, x, y, target.width)
+	if name == nil then
+		return
+	end
+	target:SetDesc(name)
 end
+IDEControlTree.HandleRightControlTreeDesc = Lua.CoWrap(IDEControlTree.HandleRightControlTreeDesc)
 
 function IDEControlTree:HandleTreeSearchClick(event)
 	local tab = g_IDETabManager.cur_tab

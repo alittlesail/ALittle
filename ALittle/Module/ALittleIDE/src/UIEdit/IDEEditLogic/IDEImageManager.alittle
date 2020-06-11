@@ -17,7 +17,7 @@ public class IDEImageManager
 		var project = g_IDEProject.project;
 		if (project == null)
 		{
-			g_IDETool.ShowNotice("提示", "当前没有打开的项目");
+			g_AUITool.ShowNotice("提示", "当前没有打开的项目");
 			return;
 		}
 		// 获取搜索的内容
@@ -110,23 +110,20 @@ public class IDEImageManager
 		this._image_right_menu._user_data = event.target;
 	}
 
-	// 处理删除
-	public fun DeleteControlImpl(ALittle.DisplayObject target)
-	{
-		g_IDEUICenter.image_scroll_screen.RemoveChild(target);
-
-		// 删除图片
-		ALittle.File_DeleteFile(target._user_data);
-	}
 	// 处理删除信息
-	public fun HandleImageRightMenuDelete(ALittle.UIEvent event)
+	public async fun HandleImageRightMenuDelete(ALittle.UIEvent event)
 	{
 		A_LayerManager.HideFromRight(this._image_right_menu);
 		var target:ALittle.DisplayObject = this._image_right_menu._user_data;
 		this._image_right_menu._user_data = null;
         
-		var callback = bind(this.DeleteControlImpl, this, target);
-		g_IDETool.DeleteNotice("提示", "确定要删除"..target.text.."吗?", callback);
+		var result = g_AUITool.DeleteNotice("提示", "确定要删除"..target.text.."吗?");
+		if (result == AUIPlugin.AUIToolOption.YES)
+		{
+			g_IDEUICenter.image_scroll_screen.RemoveChild(target);
+			// 删除图片
+			ALittle.File_DeleteFile(target._user_data);
+        }
 	}
 	// 复制路径
 	public fun HandleImageRightMenuCopyPath(ALittle.UIEvent event)
@@ -183,7 +180,7 @@ public class IDEImageManager
 		var display_info = IDEUtility_GenerateGrid9ImageInfo(g_IDEProject.project.base_path.."Texture/", target._user_data);
 		if (display_info == null)
 		{
-			g_IDETool.ShowNotice("错误", "图片加载失败:"..cast<string>(target._user_data));
+			g_AUITool.ShowNotice("错误", "图片加载失败:"..cast<string>(target._user_data));
 			return;
 		}
 		var copy_list = new List<IDEControlCopyInfo>();

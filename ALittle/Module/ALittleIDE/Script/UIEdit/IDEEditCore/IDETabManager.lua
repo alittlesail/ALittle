@@ -248,20 +248,24 @@ function IDETabManager:MainTabTabClose(child)
 	self:CloseTab(child)
 end
 
-function IDETabManager.TabChildSave(tab_child, save)
-	tab_child:Save(save)
-end
-
 function IDETabManager:MainTabTabCloseYesOrNot(child)
 	local tab_child = child._user_data
 	if tab_child.save then
 		return true
 	end
-	local cancel_callback = Lua.Bind(self.CloseTab, self, child)
-	local confirm_callback = Lua.Bind(IDETabManager.TabChildSave, tab_child, true)
-	g_IDETool:SaveNotice("提示", "是否保存当前控件?", cancel_callback, confirm_callback)
+	self:MainTabTabCloseImpl(tab_child, child)
 	return false
 end
+
+function IDETabManager:MainTabTabCloseImpl(tab_child, child)
+	local cancel_callback = Lua.Bind(self.CloseTab, self, child)
+	local result = g_AUITool:SaveNotice("提示", "是否保存当前控件?")
+	if result == "YES" then
+		tab_child:Save(true)
+	end
+	self:CloseTab(child)
+end
+IDETabManager.MainTabTabCloseImpl = Lua.CoWrap(IDETabManager.MainTabTabCloseImpl)
 
 function IDETabManager:HandleMainTabRightClick(event)
 	self:ShowTabRightMenu(event.target)
@@ -281,13 +285,16 @@ function IDETabManager:HandleMainTabKeyDown(event)
 			event.handled = true
 			return
 		end
-		local cancel_callback = Lua.Bind(self.RefreshTab, self, child)
-		local confirm_callback = Lua.Bind(IDETabManager.TabChildSave, tab_child, true)
-		g_IDETool:SaveNotice("提示", "是否保存当前控件?", cancel_callback, confirm_callback)
+		local result = g_AUITool:SaveNotice("提示", "是否保存当前控件?")
+		if result == "YES" then
+			tab_child:Save(true)
+		end
+		self:RefreshTab(child)
 		event.handled = true
 		return
 	end
 end
+IDETabManager.HandleMainTabKeyDown = Lua.CoWrap(IDETabManager.HandleMainTabKeyDown)
 
 function IDETabManager:ShowTabRightMenu(child)
 	if self._main_tab_menu == nil then
@@ -349,9 +356,11 @@ function IDETabManager:HandleTabRightMenu(event)
 			self:RefreshTab(child)
 			return
 		end
-		local cancel_callback = Lua.Bind(self.RefreshTab, self, child)
-		local confirm_callback = Lua.Bind(IDETabManager.TabChildSave, tab_child, true)
-		g_IDETool:SaveNotice("提示", "是否保存当前控件?", cancel_callback, confirm_callback)
+		local result = g_AUITool:SaveNotice("提示", "是否保存当前控件?")
+		if result == "YES" then
+			tab_child:Save(true)
+		end
+		self:RefreshTab(child)
 		return
 	end
 	if handle_name == "关闭自己" then
@@ -359,9 +368,11 @@ function IDETabManager:HandleTabRightMenu(event)
 			self:CloseTab(child)
 			return
 		end
-		local cancel_callback = Lua.Bind(self.CloseTab, self, child)
-		local confirm_callback = Lua.Bind(IDETabManager.TabChildSave, tab_child, true)
-		g_IDETool:SaveNotice("提示", "是否保存当前控件?", cancel_callback, confirm_callback)
+		local result = g_AUITool:SaveNotice("提示", "是否保存当前控件?")
+		if result == "YES" then
+			tab_child:Save(true)
+		end
+		self:CloseTab(child)
 		return
 	end
 	if handle_name == "复制控件名" then
@@ -425,18 +436,20 @@ function IDETabManager:HandleTabRightMenu(event)
 		return
 	end
 end
+IDETabManager.HandleTabRightMenu = Lua.CoWrap(IDETabManager.HandleTabRightMenu)
 
 function IDETabManager:ControlRenameImpl(child)
+	local ___COROUTINE = coroutine.running()
 	local tab_child = child._user_data
-	local name = tab_child.name
-	local result, content = g_IDEProject:CanDelete(name)
+	local old_name = tab_child.name
+	local result, content = g_IDEProject:CanDelete(old_name)
 	if result == false then
-		g_IDETool:ShowNotice("错误", content)
+		g_AUITool:ShowNotice("错误", content)
 		return
 	end
-	result, content = g_IDETabManager:CanDelete(name)
+	result, content = g_IDETabManager:CanDelete(old_name)
 	if result == false then
-		g_IDETool:ShowNotice("错误", content)
+		g_AUITool:ShowNotice("错误", content)
 		return
 	end
 	local layout = self._main_tab:GetChildHead(child)
@@ -445,24 +458,18 @@ function IDETabManager:ControlRenameImpl(child)
 	if width < 150 then
 		width = 150
 	end
-	local callback = Lua.Bind(self.ControlRename, self, name)
-	g_IDETool:ShowRename(callback, name, x, y, width)
-end
-
-function IDETabManager:ControlRename(old_name, new_name)
+	local new_name = g_AUITool:ShowRename(old_name, x, y, width)
+	if new_name == nil or old_name == new_name then
+		return
+	end
 	if old_name == new_name then
 		return
 	end
-	local result, content = g_IDEProject:RenameControl(old_name, new_name)
+	result, content = g_IDEProject:RenameControl(old_name, new_name)
 	if result == false then
-		g_IDETool:ShowNotice("错误", content)
+		g_AUITool:ShowNotice("错误", content)
 		return
 	end
-	local tab = g_IDETabManager:GetTabByName(old_name)
-	if tab == nil then
-		return
-	end
-	local tab_child = tab._user_data
 	tab_child:Rename(new_name)
 end
 

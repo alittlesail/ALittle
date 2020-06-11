@@ -101,8 +101,6 @@ class IDEUICenter
 		alittle.Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDESetting/TileTableS");
 		alittle.Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDESetting/PiechartS");
 		
-		alittle.Require(g_ScriptBasePath, "UIEdit/IDEEditLogic/IDETool");
-	
 		alittle.Require(g_ScriptBasePath, "UIEdit/IDEEditLogic/IDEMainMenu");
 		alittle.Require(g_ScriptBasePath, "UIEdit/IDEEditLogic/IDEAttributeManager");
 		alittle.Require(g_ScriptBasePath, "UIEdit/IDEEditLogic/IDEControlManager");
@@ -112,9 +110,7 @@ class IDEUICenter
 		alittle.Require(g_ScriptBasePath, "UIEdit/IDEEditLogic/IDEImageManager");
 		alittle.Require(g_ScriptBasePath, "UIEdit/IDEEditLogic/IDEProjectManager");
 		alittle.Require(g_ScriptBasePath, "UIEdit/IDEEditLogic/IDEVersionList");
-		alittle.Require(g_ScriptBasePath, "UIEdit/IDEEditLogic/IDEVersionManager");
 		alittle.Require(g_ScriptBasePath, "UIEdit/IDEEditLogic/IDELoginManager");
-		alittle.Require(g_ScriptBasePath, "UIEdit/IDEEditLogic/IDEIMEManager");
 
 		// 创建UI编辑器主界面
 		this._ui_edit_container = g_Control.CreateControl{ALittle.DisplayLayout}("ide_ui_edit_container", this, edit_container);

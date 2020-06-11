@@ -305,7 +305,7 @@ public static IDEUtility_CreateTree(ALittle.DisplayInfo control, bool extends_v,
 	{
 		var control_info = g_IDEProject.project.control_map[control.__extends];
 		if (control_info == null)
-			g_IDETool.ShowNotice("错误", "extends 的控件不存在:"..control.__extends);
+			g_AUITool.ShowNotice("错误", "extends 的控件不存在:"..control.__extends);
 		// 获取默认信息
 		user_info.default = IDEUtility_GetDefaultInfo(control_info.info);
 	}
@@ -313,7 +313,7 @@ public static IDEUtility_CreateTree(ALittle.DisplayInfo control, bool extends_v,
 	{
 		var control_info = g_IDEProject.project.control_map[control.__include];
 		if (control_info == null)
-			g_IDETool.ShowNotice("错误", "include 的控件不存在:"..control.__include);
+			g_AUITool.ShowNotice("错误", "include 的控件不存在:"..control.__include);
 		// 获取默认信息
 		user_info.default = IDEUtility_GetDefaultInfo(control_info.info);
 	}

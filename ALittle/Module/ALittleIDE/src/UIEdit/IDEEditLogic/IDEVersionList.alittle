@@ -67,14 +67,14 @@ public class IDEVersionList : ALittle.DisplayLayout
 		// 检查当前是否有项目打开
 		if (g_IDEProject.project == null)
 		{
-			g_IDETool.ShowNotice("错误", "当前没有打开的项目");
+			g_AUITool.ShowNotice("错误", "当前没有打开的项目");
 			return;
 		}
 
 		// 检查登陆
 		if (!g_IDELoginManager.IsLogin())
 		{
-			g_IDETool.ShowNotice("错误", "请先登陆");
+			g_AUITool.ShowNotice("错误", "请先登陆");
 			return;
         }
 	
@@ -99,7 +99,7 @@ public class IDEVersionList : ALittle.DisplayLayout
 		this._export_refresh_btn.disabled = false;
 		if (error != null)
 		{
-			g_IDETool.ShowNotice("错误", "刷新失败:"..error);
+			g_AUITool.ShowNotice("错误", "刷新失败:"..error);
 			return;
 		}
 
@@ -179,18 +179,15 @@ public class IDEVersionList : ALittle.DisplayLayout
 		this._version_menu._user_data = event.target._user_data;
 	}
 	// 请求删除版本
-	public fun HandleVersionDelete(ALittle.UIEvent event)
+	public async fun HandleVersionDelete(ALittle.UIEvent event)
 	{
 		A_LayerManager.HideFromRight(this._version_menu);
 		var version_info:IDEVersionInfoItemUserData = this._version_menu._user_data;
 		if (version_info == null) return;
         
-		var callback = bind(this.VersionDeleteImpl, this, version_info);
-		g_IDETool.DeleteNotice("删除", "确定要删除"..ALittle.Time_GetCurDate(version_info.data.update_time).."(版本时间)这个版本吗?", callback);
-	}
-	// 处理版本删除
-	public async fun VersionDeleteImpl(IDEVersionInfoItemUserData version_info)
-	{
+		var result = g_AUITool.DeleteNotice("删除", "确定要删除"..ALittle.Time_GetCurDate(version_info.data.update_time).."(版本时间)这个版本吗?");
+		if (result != AUIPlugin.AUIToolOption.YES) return;
+
 		// 发送HTTP请求
 		var param = new VersionServer.QDeleteVersionInfo();
 		param.__account_id = g_IDELoginManager.account_id;
@@ -203,7 +200,7 @@ public class IDEVersionList : ALittle.DisplayLayout
 		var error, result = VersionServer.HandleHttpQDeleteVersionInfo(client, param);
 		if (error != null)
 		{
-			g_IDETool.ShowNotice("提示", "删除失败:"..error);
+			g_AUITool.ShowNotice("提示", "删除失败:"..error);
 			return;
 		}
         
@@ -274,18 +271,15 @@ public class IDEVersionList : ALittle.DisplayLayout
 		this._version_close_menu._user_data = event.target._user_data;
 	}
 	// 请求删除某个版本的屏蔽
-	public fun HandleVersionCloseDelete(ALittle.UIEvent event)
+	public async fun HandleVersionCloseDelete(ALittle.UIEvent event)
 	{
 		A_LayerManager.HideFromRight(this._version_close_menu);
 		var version_info:IDEVersionCloseItemUserData = this._version_close_menu._user_data;
 		if (version_info == null) return;
 
-		var callback = bind(this.VersionCloseDeleteImpl, this, version_info);
-		g_IDETool.DeleteNotice("删除", "确定要删除"..version_info.data.close_version.."("..version_info.data.submit_platform..")这个拦截版本吗?", callback);
-	}
-	// 处理删除某个版本的屏蔽
-	public async fun VersionCloseDeleteImpl(IDEVersionCloseItemUserData version_info)
-	{
+		var result = g_AUITool.DeleteNotice("删除", "确定要删除"..version_info.data.close_version.."("..version_info.data.submit_platform..")这个拦截版本吗?");
+		if (result != AUIPlugin.AUIToolOption.YES) return;
+
 		// 发送HTTP请求
 		var param = new VersionServer.QDeleteVersionClose();
 		param.__account_id = g_IDELoginManager.account_id;
@@ -297,7 +291,7 @@ public class IDEVersionList : ALittle.DisplayLayout
 		var error, result = VersionServer.HandleHttpQDeleteVersionClose(client, param);
 		if (error != null)
 		{
-			g_IDETool.ShowNotice("提示", "删除失败:"..error);
+			g_AUITool.ShowNotice("提示", "删除失败:"..error);
 			return;
 		}
         
@@ -336,7 +330,7 @@ public class IDEVersionList : ALittle.DisplayLayout
 		var error, result = VersionServer.HandleHttpQAddVersionClose(client, param);
 		if (error != null)
 		{
-			g_IDETool.ShowNotice("提示", "添加失败:"..error);
+			g_AUITool.ShowNotice("提示", "添加失败:"..error);
 			return;
 		}
 
@@ -407,13 +401,13 @@ public class IDEVersionList : ALittle.DisplayLayout
 		version_info.big_version = this._export_big_version.text;
 		if (this.CheckDateString(version_info.big_version) == false)
 		{
-			g_IDETool.ShowNotice("错误", "大版本格式不正确，请调整格式为：YYYY-mm-dd-HH-MM-SS");
+			g_AUITool.ShowNotice("错误", "大版本格式不正确，请调整格式为：YYYY-mm-dd-HH-MM-SS");
 			return null;
 		}
 		version_info.install_version = this._export_install_version.text;
 		if (this.CheckDateString(version_info.install_version) == false)
 		{
-			g_IDETool.ShowNotice("错误", "安装包版本格式不正确，请调整格式为：YYYY-mm-dd-HH-MM-SS");
+			g_AUITool.ShowNotice("错误", "安装包版本格式不正确，请调整格式为：YYYY-mm-dd-HH-MM-SS");
 			return null;
 		}
 	
@@ -421,32 +415,24 @@ public class IDEVersionList : ALittle.DisplayLayout
 		version_info.version_number = this._export_version_number.text;
 		if (this.CheckVersionString(version_info.version_number) == false)
 		{
-			g_IDETool.ShowNotice("错误", "软件版本号格式不正确，请调整格式为：数字.数字.数字");
+			g_AUITool.ShowNotice("错误", "软件版本号格式不正确，请调整格式为：数字.数字.数字");
 			return null;
 		}
 	
 		return version_info;
 	}
 	
-	// 生成大版本
-	public fun HandleGenBigVersionImpl()
+	public async fun HandleGenBigVersion(ALittle.UIEvent event)
 	{
-		this._export_big_version.text = ALittle.Time_GetCurDate();
+		var result = g_AUITool.DeleteNotice("更新大版本号", "更新大版本号会引起强制更新，确定更新吗？");
+		if (result == AUIPlugin.AUIToolOption.YES)
+			this._export_big_version.text = ALittle.Time_GetCurDate();
 	}
-	public fun HandleGenBigVersion(ALittle.UIEvent event)
+	public async fun HandleGenInstallVersion(ALittle.UIEvent event)
 	{
-		var func = bind(this.HandleGenBigVersionImpl, this);
-		g_IDETool.DeleteNotice("更新大版本号", "更新大版本号会引起强制更新，确定更新吗？", func);
-	}
-	// 生成安装包版本
-	public fun HandleGenInstallVersionImpl()
-	{
-		this._export_install_version.text = ALittle.Time_GetCurDate();
-	}
-	public fun HandleGenInstallVersion(ALittle.UIEvent event)
-	{
-		var func = bind(this.HandleGenInstallVersionImpl, this);
-		g_IDETool.DeleteNotice("更新安装包版本号", "更新安装包版本号会引起重新安装，确定更新吗？", func);
+		var result = g_AUITool.DeleteNotice("更新安装包版本号", "更新安装包版本号会引起重新安装，确定更新吗？");
+		if (result == AUIPlugin.AUIToolOption.YES)
+			this._export_install_version.text = ALittle.Time_GetCurDate();
 	}
 }
 
@@ -475,7 +461,7 @@ public class IDEVersionWindows : ALittle.DisplayLayout
 	{
 		if (g_IDEProject.project == null)
 		{
-			g_IDETool.ShowNotice("错误", "当前没有打开的项目");
+			g_AUITool.ShowNotice("错误", "当前没有打开的项目");
 			return false;
 		}
 
@@ -516,7 +502,7 @@ public class IDEVersionWindows : ALittle.DisplayLayout
 	{
 		if (g_IDEProject.project == null)
 		{
-			g_IDETool.ShowNotice("错误", "当前没有打开的项目");
+			g_AUITool.ShowNotice("错误", "当前没有打开的项目");
 			return false;
 		}
 	
@@ -541,7 +527,7 @@ public class IDEVersionWindows : ALittle.DisplayLayout
 		// 检查安装包名
 		if (install_info.install_name == "")
 		{
-			g_IDETool.ShowNotice("错误", "安装包名不能为空");
+			g_AUITool.ShowNotice("错误", "安装包名不能为空");
 			return false;
 		}
 		// 设置新版本日志
@@ -554,7 +540,7 @@ public class IDEVersionWindows : ALittle.DisplayLayout
 	public fun HandleSaveConfig(ALittle.UIEvent event)
 	{
 		if (this.SaveConfigImpl() == false) return;
-		g_IDETool.ShowNotice("提示", "配置保存成功");
+		g_AUITool.ShowNotice("提示", "配置保存成功");
 	}
 	
 	public async fun HandleExport(ALittle.UIEvent event)
@@ -565,7 +551,7 @@ public class IDEVersionWindows : ALittle.DisplayLayout
 		if (export_info == null) return;
 	
 		[Language(JavaScript)]
-		g_IDETool.ShowNotice("提示", "JavaScript版本不支持导出项目功能");
+		g_AUITool.ShowNotice("提示", "JavaScript版本不支持导出项目功能");
 		[Language(Lua)]
 		g_IDEExport.PackagePlatform(g_IDEProject.project.name, export_info.version_info, export_info.install_info, "Windows");
 	}
@@ -603,7 +589,7 @@ public class IDEVersionAndroid : ALittle.DisplayLayout
 	{
 		if (g_IDEProject.project == null)
 		{
-			g_IDETool.ShowNotice("错误", "当前没有打开的项目");
+			g_AUITool.ShowNotice("错误", "当前没有打开的项目");
 			return false;
 		}
 	
@@ -645,7 +631,7 @@ public class IDEVersionAndroid : ALittle.DisplayLayout
 	{
 		if (g_IDEProject.project == null)
 		{
-			g_IDETool.ShowNotice("错误", "当前没有打开的项目");
+			g_AUITool.ShowNotice("错误", "当前没有打开的项目");
 			return false;
 		}
 	
@@ -667,12 +653,12 @@ public class IDEVersionAndroid : ALittle.DisplayLayout
 	
 		if (install_info.install_name == "")
 		{
-			g_IDETool.ShowNotice("错误", "安装包名不能为空");
+			g_AUITool.ShowNotice("错误", "安装包名不能为空");
 			return false;
 		}	
 		if (install_info.package_name == "")
 		{
-			g_IDETool.ShowNotice("错误", "Android包名不能为空");
+			g_AUITool.ShowNotice("错误", "Android包名不能为空");
 			return false;
 		}
 	
@@ -685,7 +671,7 @@ public class IDEVersionAndroid : ALittle.DisplayLayout
 	public fun HandleSaveConfig(ALittle.UIEvent event)
 	{
 		if (this.SaveConfigImpl() == false) return;
-		g_IDETool.ShowNotice("提示", "配置保存成功");
+		g_AUITool.ShowNotice("提示", "配置保存成功");
 	}
 	
 	public async fun HandleExport(ALittle.UIEvent event)
@@ -696,7 +682,7 @@ public class IDEVersionAndroid : ALittle.DisplayLayout
 		if (export_info == null) return;
 	
 		[Language(JavaScript)]
-		g_IDETool.ShowNotice("提示", "JavaScript版本不支持导出项目功能");
+		g_AUITool.ShowNotice("提示", "JavaScript版本不支持导出项目功能");
 
 		[Language(Lua)]
 		g_IDEExport.PackagePlatform(g_IDEProject.project.name, export_info.version_info, export_info.install_info, "Android");
@@ -735,7 +721,7 @@ public class IDEVersioniOS : ALittle.DisplayLayout
 	{
 		if (g_IDEProject.project == null)
 		{
-			g_IDETool.ShowNotice("错误", "当前没有打开的项目");
+			g_AUITool.ShowNotice("错误", "当前没有打开的项目");
 			return false;
 		}
 	
@@ -781,7 +767,7 @@ public class IDEVersioniOS : ALittle.DisplayLayout
 	{
 		if (g_IDEProject.project == null)
 		{
-			g_IDETool.ShowNotice("错误", "当前没有打开的项目");
+			g_AUITool.ShowNotice("错误", "当前没有打开的项目");
 			return false;
 		}
 	
@@ -803,12 +789,12 @@ public class IDEVersioniOS : ALittle.DisplayLayout
 
 		if (install_info.install_name == "")
 		{
-			g_IDETool.ShowNotice("错误", "安装包名不能为空");
+			g_AUITool.ShowNotice("错误", "安装包名不能为空");
 			return false;
 		}	
 		if (install_info.package_name == "")
 		{
-			g_IDETool.ShowNotice("错误", "iOS包名不能为空");
+			g_AUITool.ShowNotice("错误", "iOS包名不能为空");
 			return false;
 		}
 		
@@ -821,7 +807,7 @@ public class IDEVersioniOS : ALittle.DisplayLayout
 	public fun HandleSaveConfig(ALittle.UIEvent event)
 	{
 		if (this.SaveConfigImpl() == false) return;
-		g_IDETool.ShowNotice("提示", "配置保存成功");
+		g_AUITool.ShowNotice("提示", "配置保存成功");
 	}
 	
 	public async fun HandleExport(ALittle.UIEvent event)
@@ -832,7 +818,7 @@ public class IDEVersioniOS : ALittle.DisplayLayout
 		if (export_info == null) return;
 	
 		[Language(JavaScript)]
-		g_IDETool.ShowNotice("提示", "JavaScript版本不支持导出项目功能");
+		g_AUITool.ShowNotice("提示", "JavaScript版本不支持导出项目功能");
 
 		[Language(Lua)]
 		g_IDEExport.PackagePlatform(g_IDEProject.project.name, export_info.version_info, export_info.install_info, "iOS");

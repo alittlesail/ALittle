@@ -151,8 +151,11 @@ class ModuleSystem
         return true;
     }
     
-    public await fun LoadPlugin(string module_base_path, string module_name) : bool
+    public await fun LoadPlugin(string module_name) : bool
     {
+        // 固定模块路径
+        var module_base_path = "Module/"..module_name.."/";
+
         // 检查模块是否是null
         if (module_name == null)
         {
@@ -171,7 +174,7 @@ class ModuleSystem
                 return false;
             }
         }
-        // 检查__Module_Setup是否已经调用过了
+        // 检查__Plugin_Setup是否已经调用过了
         if (info.plugin_loaded)
         {
             Log(module_name .. ":__Plugin_Setup already invoked!");

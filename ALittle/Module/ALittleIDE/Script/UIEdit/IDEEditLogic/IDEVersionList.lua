@@ -106,11 +106,11 @@ end
 
 function IDEVersionList:HandleRefreshVersionList(event)
 	if g_IDEProject.project == nil then
-		g_IDETool:ShowNotice("错误", "当前没有打开的项目")
+		g_AUITool:ShowNotice("错误", "当前没有打开的项目")
 		return
 	end
 	if not g_IDELoginManager:IsLogin() then
-		g_IDETool:ShowNotice("错误", "请先登陆")
+		g_AUITool:ShowNotice("错误", "请先登陆")
 		return
 	end
 	self._export_refresh_btn.disabled = true
@@ -126,7 +126,7 @@ function IDEVersionList:HandleRefreshVersionList(event)
 	local error, result = ALittle.IHttpSender.Invoke("VersionServer.QVersionInfo", client, param)
 	self._export_refresh_btn.disabled = false
 	if error ~= nil then
-		g_IDETool:ShowNotice("错误", "刷新失败:" .. error)
+		g_AUITool:ShowNotice("错误", "刷新失败:" .. error)
 		return
 	end
 	local version_list = result.version_list
@@ -201,11 +201,10 @@ function IDEVersionList:HandleVersionDelete(event)
 	if version_info == nil then
 		return
 	end
-	local callback = Lua.Bind(self.VersionDeleteImpl, self, version_info)
-	g_IDETool:DeleteNotice("删除", "确定要删除" .. ALittle.Time_GetCurDate(version_info.data.update_time) .. "(版本时间)这个版本吗?", callback)
-end
-
-function IDEVersionList:VersionDeleteImpl(version_info)
+	local result = g_AUITool:DeleteNotice("删除", "确定要删除" .. ALittle.Time_GetCurDate(version_info.data.update_time) .. "(版本时间)这个版本吗?")
+	if result ~= "YES" then
+		return
+	end
 	local param = {}
 	param.__account_id = g_IDELoginManager.account_id
 	param.__session_id = g_IDELoginManager.session_id
@@ -215,12 +214,12 @@ function IDEVersionList:VersionDeleteImpl(version_info)
 	local client = ALittle.CreateHttpSender(g_IDELoginManager.http_ip, g_IDELoginManager.http_port)
 	local error, result = ALittle.IHttpSender.Invoke("VersionServer.QDeleteVersionInfo", client, param)
 	if error ~= nil then
-		g_IDETool:ShowNotice("提示", "删除失败:" .. error)
+		g_AUITool:ShowNotice("提示", "删除失败:" .. error)
 		return
 	end
 	self:HandleRefreshVersionList(nil)
 end
-IDEVersionList.VersionDeleteImpl = Lua.CoWrap(IDEVersionList.VersionDeleteImpl)
+IDEVersionList.HandleVersionDelete = Lua.CoWrap(IDEVersionList.HandleVersionDelete)
 
 function IDEVersionList:HandleVersionListSelectChange(event)
 	if g_IDEProject.project == nil then
@@ -284,11 +283,10 @@ function IDEVersionList:HandleVersionCloseDelete(event)
 	if version_info == nil then
 		return
 	end
-	local callback = Lua.Bind(self.VersionCloseDeleteImpl, self, version_info)
-	g_IDETool:DeleteNotice("删除", "确定要删除" .. version_info.data.close_version .. "(" .. version_info.data.submit_platform .. ")这个拦截版本吗?", callback)
-end
-
-function IDEVersionList:VersionCloseDeleteImpl(version_info)
+	local result = g_AUITool:DeleteNotice("删除", "确定要删除" .. version_info.data.close_version .. "(" .. version_info.data.submit_platform .. ")这个拦截版本吗?")
+	if result ~= "YES" then
+		return
+	end
 	local param = {}
 	param.__account_id = g_IDELoginManager.account_id
 	param.__session_id = g_IDELoginManager.session_id
@@ -298,12 +296,12 @@ function IDEVersionList:VersionCloseDeleteImpl(version_info)
 	local client = ALittle.CreateHttpSender(g_IDELoginManager.http_ip, g_IDELoginManager.http_port)
 	local error, result = ALittle.IHttpSender.Invoke("VersionServer.QDeleteVersionClose", client, param)
 	if error ~= nil then
-		g_IDETool:ShowNotice("提示", "删除失败:" .. error)
+		g_AUITool:ShowNotice("提示", "删除失败:" .. error)
 		return
 	end
 	self:HandleRefreshVersionList(nil)
 end
-IDEVersionList.VersionCloseDeleteImpl = Lua.CoWrap(IDEVersionList.VersionCloseDeleteImpl)
+IDEVersionList.HandleVersionCloseDelete = Lua.CoWrap(IDEVersionList.HandleVersionCloseDelete)
 
 function IDEVersionList:HandleAddVersionClose(event)
 	if self._version_close_dialog == nil then
@@ -328,7 +326,7 @@ function IDEVersionList:HandleAddVersionCloseClick(event)
 	local client = ALittle.CreateHttpSender(g_IDELoginManager.http_ip, g_IDELoginManager.http_port)
 	local error, result = ALittle.IHttpSender.Invoke("VersionServer.QAddVersionClose", client, param)
 	if error ~= nil then
-		g_IDETool:ShowNotice("提示", "添加失败:" .. error)
+		g_AUITool:ShowNotice("提示", "添加失败:" .. error)
 		return
 	end
 	self:HandleRefreshVersionList(nil)
@@ -404,39 +402,37 @@ function IDEVersionList:GetConfig()
 	local version_info = {}
 	version_info.big_version = self._export_big_version.text
 	if self:CheckDateString(version_info.big_version) == false then
-		g_IDETool:ShowNotice("错误", "大版本格式不正确，请调整格式为：YYYY-mm-dd-HH-MM-SS")
+		g_AUITool:ShowNotice("错误", "大版本格式不正确，请调整格式为：YYYY-mm-dd-HH-MM-SS")
 		return nil
 	end
 	version_info.install_version = self._export_install_version.text
 	if self:CheckDateString(version_info.install_version) == false then
-		g_IDETool:ShowNotice("错误", "安装包版本格式不正确，请调整格式为：YYYY-mm-dd-HH-MM-SS")
+		g_AUITool:ShowNotice("错误", "安装包版本格式不正确，请调整格式为：YYYY-mm-dd-HH-MM-SS")
 		return nil
 	end
 	version_info.version_number = self._export_version_number.text
 	if self:CheckVersionString(version_info.version_number) == false then
-		g_IDETool:ShowNotice("错误", "软件版本号格式不正确，请调整格式为：数字.数字.数字")
+		g_AUITool:ShowNotice("错误", "软件版本号格式不正确，请调整格式为：数字.数字.数字")
 		return nil
 	end
 	return version_info
 end
 
-function IDEVersionList:HandleGenBigVersionImpl()
-	self._export_big_version.text = ALittle.Time_GetCurDate()
-end
-
 function IDEVersionList:HandleGenBigVersion(event)
-	local func = Lua.Bind(self.HandleGenBigVersionImpl, self)
-	g_IDETool:DeleteNotice("更新大版本号", "更新大版本号会引起强制更新，确定更新吗？", func)
+	local result = g_AUITool:DeleteNotice("更新大版本号", "更新大版本号会引起强制更新，确定更新吗？")
+	if result == "YES" then
+		self._export_big_version.text = ALittle.Time_GetCurDate()
+	end
 end
-
-function IDEVersionList:HandleGenInstallVersionImpl()
-	self._export_install_version.text = ALittle.Time_GetCurDate()
-end
+IDEVersionList.HandleGenBigVersion = Lua.CoWrap(IDEVersionList.HandleGenBigVersion)
 
 function IDEVersionList:HandleGenInstallVersion(event)
-	local func = Lua.Bind(self.HandleGenInstallVersionImpl, self)
-	g_IDETool:DeleteNotice("更新安装包版本号", "更新安装包版本号会引起重新安装，确定更新吗？", func)
+	local result = g_AUITool:DeleteNotice("更新安装包版本号", "更新安装包版本号会引起重新安装，确定更新吗？")
+	if result == "YES" then
+		self._export_install_version.text = ALittle.Time_GetCurDate()
+	end
 end
+IDEVersionList.HandleGenInstallVersion = Lua.CoWrap(IDEVersionList.HandleGenInstallVersion)
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
 IDEVersionWindows = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDEVersionWindows")
@@ -459,7 +455,7 @@ end
 
 function IDEVersionWindows:LoadConfigImpl()
 	if g_IDEProject.project == nil then
-		g_IDETool:ShowNotice("错误", "当前没有打开的项目")
+		g_AUITool:ShowNotice("错误", "当前没有打开的项目")
 		return false
 	end
 	self._version_list:LoadConfig()
@@ -490,7 +486,7 @@ end
 
 function IDEVersionWindows:SaveConfigImpl()
 	if g_IDEProject.project == nil then
-		g_IDETool:ShowNotice("错误", "当前没有打开的项目")
+		g_AUITool:ShowNotice("错误", "当前没有打开的项目")
 		return false
 	end
 	local version_info = self._version_list:GetConfig()
@@ -509,7 +505,7 @@ function IDEVersionWindows:SaveConfigImpl()
 		install_info.auto_start = false
 	end
 	if install_info.install_name == "" then
-		g_IDETool:ShowNotice("错误", "安装包名不能为空")
+		g_AUITool:ShowNotice("错误", "安装包名不能为空")
 		return false
 	end
 	install_info.new_log = self._export_new_log.text
@@ -521,7 +517,7 @@ function IDEVersionWindows:HandleSaveConfig(event)
 	if self:SaveConfigImpl() == false then
 		return
 	end
-	g_IDETool:ShowNotice("提示", "配置保存成功")
+	g_AUITool:ShowNotice("提示", "配置保存成功")
 end
 
 function IDEVersionWindows:HandleExport(event)
@@ -562,7 +558,7 @@ end
 
 function IDEVersionAndroid:LoadConfigImpl()
 	if g_IDEProject.project == nil then
-		g_IDETool:ShowNotice("错误", "当前没有打开的项目")
+		g_AUITool:ShowNotice("错误", "当前没有打开的项目")
 		return false
 	end
 	self._version_list:LoadConfig()
@@ -603,7 +599,7 @@ end
 
 function IDEVersionAndroid:SaveConfigImpl()
 	if g_IDEProject.project == nil then
-		g_IDETool:ShowNotice("错误", "当前没有打开的项目")
+		g_AUITool:ShowNotice("错误", "当前没有打开的项目")
 		return false
 	end
 	local version_info = self._version_list:GetConfig()
@@ -620,11 +616,11 @@ function IDEVersionAndroid:SaveConfigImpl()
 	install_info.screen = self._export_screen.text
 	install_info.fullscreen = (self._export_full_screen.text == "是")
 	if install_info.install_name == "" then
-		g_IDETool:ShowNotice("错误", "安装包名不能为空")
+		g_AUITool:ShowNotice("错误", "安装包名不能为空")
 		return false
 	end
 	if install_info.package_name == "" then
-		g_IDETool:ShowNotice("错误", "Android包名不能为空")
+		g_AUITool:ShowNotice("错误", "Android包名不能为空")
 		return false
 	end
 	install_info.new_log = self._export_new_log.text
@@ -636,7 +632,7 @@ function IDEVersionAndroid:HandleSaveConfig(event)
 	if self:SaveConfigImpl() == false then
 		return
 	end
-	g_IDETool:ShowNotice("提示", "配置保存成功")
+	g_AUITool:ShowNotice("提示", "配置保存成功")
 end
 
 function IDEVersionAndroid:HandleExport(event)
@@ -677,7 +673,7 @@ end
 
 function IDEVersioniOS:LoadConfigImpl()
 	if g_IDEProject.project == nil then
-		g_IDETool:ShowNotice("错误", "当前没有打开的项目")
+		g_AUITool:ShowNotice("错误", "当前没有打开的项目")
 		return false
 	end
 	self._version_list:LoadConfig()
@@ -718,7 +714,7 @@ end
 
 function IDEVersioniOS:SaveConfigImpl()
 	if g_IDEProject.project == nil then
-		g_IDETool:ShowNotice("错误", "当前没有打开的项目")
+		g_AUITool:ShowNotice("错误", "当前没有打开的项目")
 		return false
 	end
 	local version_info = self._version_list:GetConfig()
@@ -735,11 +731,11 @@ function IDEVersioniOS:SaveConfigImpl()
 	install_info.screen = self._export_screen.text
 	install_info.fullscreen = (self._export_full_screen.text == "是")
 	if install_info.install_name == "" then
-		g_IDETool:ShowNotice("错误", "安装包名不能为空")
+		g_AUITool:ShowNotice("错误", "安装包名不能为空")
 		return false
 	end
 	if install_info.package_name == "" then
-		g_IDETool:ShowNotice("错误", "iOS包名不能为空")
+		g_AUITool:ShowNotice("错误", "iOS包名不能为空")
 		return false
 	end
 	install_info.new_log = self._export_new_log.text
@@ -751,7 +747,7 @@ function IDEVersioniOS:HandleSaveConfig(event)
 	if self:SaveConfigImpl() == false then
 		return
 	end
-	g_IDETool:ShowNotice("提示", "配置保存成功")
+	g_AUITool:ShowNotice("提示", "配置保存成功")
 end
 
 function IDEVersioniOS:HandleExport(event)

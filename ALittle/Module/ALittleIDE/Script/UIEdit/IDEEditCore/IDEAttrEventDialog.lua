@@ -75,7 +75,7 @@ function IDEAttrEventDialog:HandleEventConfirm(event)
 		end
 	end
 	if event_data == nil or has_error then
-		g_IDETool:ShowNotice("警告", "事件编辑有错误，请检查")
+		g_AUITool:ShowNotice("警告", "事件编辑有错误，请检查")
 		return
 	end
 	self._dialog.visible = false

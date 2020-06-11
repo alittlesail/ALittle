@@ -90,8 +90,9 @@ function ModuleSystem:RemoveModule(name)
 	return true
 end
 
-function ModuleSystem:LoadPlugin(module_base_path, module_name)
+function ModuleSystem:LoadPlugin(module_name)
 	local ___COROUTINE = coroutine.running()
+	local module_base_path = "Module/" .. module_name .. "/"
 	if module_name == nil then
 		Log("module_name is null!")
 		return false

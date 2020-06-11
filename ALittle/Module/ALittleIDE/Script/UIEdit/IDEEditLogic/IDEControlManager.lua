@@ -121,7 +121,7 @@ function IDEControlManager:HandleControlSearchClick(event)
 	local item_used_count = 0
 	local project = g_IDEProject.project
 	if project == nil then
-		g_IDETool:ShowNotice("提示", "当前没有打开的项目")
+		g_AUITool:ShowNotice("提示", "当前没有打开的项目")
 		return
 	end
 	local key = self._control_search_key.text
@@ -225,6 +225,7 @@ function IDEControlManager:HandleControlKeyDown(event)
 		self:ControlRenameImpl(event.target)
 	end
 end
+IDEControlManager.HandleControlKeyDown = Lua.CoWrap(IDEControlManager.HandleControlKeyDown)
 
 function IDEControlManager:HandleControlDragBegin(event)
 	self._drag_shift = (A_UISystem.sym_map[1073742049] ~= nil or A_UISystem.sym_map[1073742053] ~= nil)
@@ -302,7 +303,7 @@ function IDEControlManager:HandleControlDragEnd(event)
 	else
 		local common_parent = tree.logic_parent
 		if common_parent == nil then
-			g_IDETool:ShowNotice("提示", "当前是根节点，并且不是容器，粘帖失败")
+			g_AUITool:ShowNotice("提示", "当前是根节点，并且不是容器，粘帖失败")
 			return
 		end
 		local child_index = common_parent:GetChildIndex(tree)
@@ -321,7 +322,7 @@ end
 
 function IDEControlManager:ShowNewControl()
 	if g_IDEProject.project == nil then
-		g_IDETool:ShowNotice("提示", "当前没有打开的项目")
+		g_AUITool:ShowNotice("提示", "当前没有打开的项目")
 		return
 	end
 	if self._control_new_dialog == nil then
@@ -342,29 +343,29 @@ end
 function IDEControlManager:HandleNewControlConfirm(event)
 	local project = g_IDEProject.project
 	if project == nil then
-		g_IDETool:ShowNotice("错误", "当前没有打开的项目")
+		g_AUITool:ShowNotice("错误", "当前没有打开的项目")
 		return
 	end
 	local name = self._control_new_name.text
 	if name == "" then
-		g_IDETool:ShowNotice("错误", "请输入控件名")
+		g_AUITool:ShowNotice("错误", "请输入控件名")
 		return
 	end
 	if IDEUtility_CheckName(name) == false then
-		g_IDETool:ShowNotice("错误", "控件名不合法:" .. name)
+		g_AUITool:ShowNotice("错误", "控件名不合法:" .. name)
 		return
 	end
 	if project.control_map[name] ~= nil then
-		g_IDETool:ShowNotice("错误", "控件已存在:" .. name)
+		g_AUITool:ShowNotice("错误", "控件已存在:" .. name)
 		return
 	end
 	if g_IDETabManager:GetTabByName(name) ~= nil then
-		g_IDETool:ShowNotice("错误", "控件名已存在:" .. name)
+		g_AUITool:ShowNotice("错误", "控件名已存在:" .. name)
 		return
 	end
 	local control_type = self._control_new_type.text
 	if control_type == "" then
-		g_IDETool:ShowNotice("错误", "请选择控件类型")
+		g_AUITool:ShowNotice("错误", "请选择控件类型")
 		return
 	end
 	local extends_name = self._control_new_extends_name.text
@@ -392,21 +393,6 @@ function IDEControlManager:HandleControlItemRightClick(event)
 	self._control_right_menu._user_data = event.target
 end
 
-function IDEControlManager:DeleteControlImpl(target)
-	self._control_scroll_screen:RemoveChild(target)
-	local user_data = target._user_data
-	local result, content = g_IDEProject:DeleteControl(user_data.control_info.name)
-	if result == false then
-		g_IDETool:ShowNotice("提示", content)
-		return
-	end
-	local tab = g_IDETabManager:GetTabByName(user_data.control_info.name)
-	if tab == nil then
-		return
-	end
-	g_IDETabManager:CloseTab(tab)
-end
-
 function IDEControlManager:HandleControlRightMenuDelete(event)
 	A_LayerManager:HideFromRight(self._control_right_menu)
 	local target = self._control_right_menu._user_data
@@ -415,17 +401,30 @@ function IDEControlManager:HandleControlRightMenuDelete(event)
 	local name = user_data.control_info.name
 	local result, content = g_IDEProject:CanDelete(name)
 	if result == false then
-		g_IDETool:ShowNotice("错误", content)
+		g_AUITool:ShowNotice("错误", content)
 		return
 	end
 	result, content = g_IDETabManager:CanDelete(name)
 	if result == false then
-		g_IDETool:ShowNotice("错误", content)
+		g_AUITool:ShowNotice("错误", content)
 		return
 	end
-	local callback = Lua.Bind(self.DeleteControlImpl, self, target)
-	g_IDETool:DeleteNotice("提示", "确定要删除" .. target.text .. "吗?", callback)
+	local del_result = g_AUITool:DeleteNotice("提示", "确定要删除" .. target.text .. "吗?")
+	if del_result == "YES" then
+		self._control_scroll_screen:RemoveChild(target)
+		result, content = g_IDEProject:DeleteControl(user_data.control_info.name)
+		if result == false then
+			g_AUITool:ShowNotice("提示", content)
+			return
+		end
+		local tab = g_IDETabManager:GetTabByName(user_data.control_info.name)
+		if tab == nil then
+			return
+		end
+		g_IDETabManager:CloseTab(tab)
+	end
 end
+IDEControlManager.HandleControlRightMenuDelete = Lua.CoWrap(IDEControlManager.HandleControlRightMenuDelete)
 
 function IDEControlManager:HandleControlRightMenuCopyName(event)
 	A_LayerManager:HideFromRight(self._control_right_menu)
@@ -441,32 +440,36 @@ function IDEControlManager:HandleControlRightMenuCopyInfo(event)
 	local target = self._control_right_menu._user_data
 	self._control_right_menu._user_data = nil
 	local user_data = target._user_data
-	local name = user_data.control_info.name
+	local old_name = user_data.control_info.name
 	local x, y = target:LocalToGlobal()
-	local callback = Lua.Bind(self.ControlCopyInfo, self, name)
-	g_IDETool:ShowRename(callback, name, x, y, target.width)
+	local new_name = g_AUITool:ShowRename(old_name, x, y, target.width)
+	if new_name == nil or old_name == new_name then
+		return
+	end
+	self:ControlCopyInfo(old_name, new_name)
 end
+IDEControlManager.HandleControlRightMenuCopyInfo = Lua.CoWrap(IDEControlManager.HandleControlRightMenuCopyInfo)
 
 function IDEControlManager:ControlCopyInfo(target_name, new_name)
 	local result, content = IDEUtility_CheckName(new_name)
 	if result == false then
-		g_IDETool:ShowNotice("错误", content)
+		g_AUITool:ShowNotice("错误", content)
 		return
 	end
 	local info = g_IDEProject.project.control_map[new_name]
 	if info ~= nil then
-		g_IDETool:ShowNotice("错误", "控件名已存在:" .. new_name)
+		g_AUITool:ShowNotice("错误", "控件名已存在:" .. new_name)
 		return
 	end
 	info = g_IDEProject.project.control_map[target_name]
 	if info == nil then
-		g_IDETool:ShowNotice("错误", "控件不存在:" .. target_name)
+		g_AUITool:ShowNotice("错误", "控件不存在:" .. target_name)
 		return
 	end
 	g_IDEProject:SaveControl(new_name, ALittle.String_CopyTable(info.info))
 	info = g_IDEProject.project.control_map[new_name]
 	if info == nil then
-		g_IDETool:ShowNotice("错误", "控件新建失败:" .. new_name)
+		g_AUITool:ShowNotice("错误", "控件新建失败:" .. new_name)
 		return
 	end
 	g_IDETabManager:StartEditControlBySelect(new_name, info.info)
@@ -478,7 +481,7 @@ function IDEControlManager:ControlRename(target, old_name, new_name)
 	end
 	local result, content = g_IDEProject:RenameControl(old_name, new_name)
 	if result == false then
-		g_IDETool:ShowNotice("错误", content)
+		g_AUITool:ShowNotice("错误", content)
 		return
 	end
 	target.text = new_name
@@ -491,21 +494,25 @@ function IDEControlManager:ControlRename(target, old_name, new_name)
 end
 
 function IDEControlManager:ControlRenameImpl(target)
+	local ___COROUTINE = coroutine.running()
 	local user_data = target._user_data
-	local name = user_data.control_info.name
-	local result, content = g_IDEProject:CanDelete(name)
+	local old_name = user_data.control_info.name
+	local result, content = g_IDEProject:CanDelete(old_name)
 	if result == false then
-		g_IDETool:ShowNotice("错误", content)
+		g_AUITool:ShowNotice("错误", content)
 		return
 	end
-	result, content = g_IDETabManager:CanDelete(name)
+	result, content = g_IDETabManager:CanDelete(old_name)
 	if result == false then
-		g_IDETool:ShowNotice("错误", content)
+		g_AUITool:ShowNotice("错误", content)
 		return
 	end
 	local x, y = target:LocalToGlobal()
-	local callback = Lua.Bind(self.ControlRename, self, target, name)
-	g_IDETool:ShowRename(callback, name, x, y, target.width)
+	local new_name = g_AUITool:ShowRename(old_name, x, y, target.width)
+	if new_name == nil or old_name == new_name then
+		return
+	end
+	self:ControlRename(target, old_name, new_name)
 end
 
 function IDEControlManager:HandleControlRightMenuRename(event)
@@ -514,6 +521,7 @@ function IDEControlManager:HandleControlRightMenuRename(event)
 	self._control_right_menu._user_data = nil
 	self:ControlRenameImpl(target)
 end
+IDEControlManager.HandleControlRightMenuRename = Lua.CoWrap(IDEControlManager.HandleControlRightMenuRename)
 
 function IDEControlManager:HandleControlRightMenuCopyExtends(event)
 	A_LayerManager:HideFromRight(self._control_right_menu)

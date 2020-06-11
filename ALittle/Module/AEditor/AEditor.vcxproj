@@ -20,34 +20,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="src\GCenter.alittle" />
-    <None Include="src\GUtility.alittle" />
-    <None Include="src\IDEIMEManager.alittle" />
-    <None Include="src\IDETool.alittle" />
-    <None Include="src\IDETree\IDETree.alittle" />
-    <None Include="src\IDETree\IDETreeBool.alittle" />
-    <None Include="src\IDETree\IDETreeBoolMapBool.alittle" />
-    <None Include="src\IDETree\IDETreeBoolMapEnum.alittle" />
-    <None Include="src\IDETree\IDETreeBoolMapMessage.alittle" />
-    <None Include="src\IDETree\IDETreeBoolMapValue.alittle" />
-    <None Include="src\IDETree\IDETreeEnum.alittle" />
-    <None Include="src\IDETree\IDETreeEnumMapBool.alittle" />
-    <None Include="src\IDETree\IDETreeEnumMapEnum.alittle" />
-    <None Include="src\IDETree\IDETreeEnumMapMessage.alittle" />
-    <None Include="src\IDETree\IDETreeEnumMapValue.alittle" />
-    <None Include="src\IDETree\IDETreeLogic.alittle" />
-    <None Include="src\IDETree\IDETreeMap.alittle" />
-    <None Include="src\IDETree\IDETreeMessage.alittle" />
-    <None Include="src\IDETree\IDETreeRepeated.alittle" />
-    <None Include="src\IDETree\IDETreeRepeatedBool.alittle" />
-    <None Include="src\IDETree\IDETreeRepeatedEnum.alittle" />
-    <None Include="src\IDETree\IDETreeRepeatedMessage.alittle" />
-    <None Include="src\IDETree\IDETreeRepeatedValue.alittle" />
-    <None Include="src\IDETree\IDETreeValue.alittle" />
-    <None Include="src\IDETree\IDETreeValueMapBool.alittle" />
-    <None Include="src\IDETree\IDETreeValueMapEnum.alittle" />
-    <None Include="src\IDETree\IDETreeValueMapMessage.alittle" />
-    <None Include="src\IDETree\IDETreeValueMapValue.alittle" />
-    <None Include="src\PluginSocket.alittle" />
     <None Include="src\Main.alittle" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

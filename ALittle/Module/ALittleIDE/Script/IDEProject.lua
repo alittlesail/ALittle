@@ -126,10 +126,10 @@ function IDEProject:NewProject(name, window_width, window_height, font_path, fon
 	ALittle.File_MakeDir(ALittle.File_BaseFilePath() .. "Module/" .. name .. "/Font")
 	ALittle.File_MakeDir(ALittle.File_BaseFilePath() .. "Module/" .. name .. "/Sound")
 	ALittle.File_MakeDir(ALittle.File_BaseFilePath() .. "Module/" .. name .. "/Other")
+	ALittle.File_MakeDir(ALittle.File_BaseFilePath() .. "Module/" .. name .. "/JSScript")
 	ALittle.File_MakeDir(ALittle.File_BaseFilePath() .. "Module/" .. name .. "/Script")
 	ALittle.File_MakeDir(ALittle.File_BaseFilePath() .. "Module/" .. name .. "/UI")
 	ALittle.File_MakeDir(ALittle.File_BaseFilePath() .. "Module/" .. name .. "/Icon")
-	ALittle.File_WriteTextToFile("", ALittle.File_BaseFilePath() .. "Module/" .. name .. "/NoCrypt.ali")
 	local base_path = ALittle.File_BaseFilePath() .. "Module/ALittleIDE/Other/GameTemplate"
 	local target_path = ALittle.File_BaseFilePath() .. "Module/" .. name .. "/"
 	local file_map = ALittle.File_GetFileAttrByDir(base_path)

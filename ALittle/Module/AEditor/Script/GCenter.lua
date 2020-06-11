@@ -6,7 +6,6 @@ local ___ipairs = ipairs
 
 
 g_GConfig = nil
-g_GProtoCache = nil
 GCenter = Lua.Class(nil, "AEditor.GCenter")
 
 function GCenter:Ctor()
@@ -14,7 +13,6 @@ end
 
 function GCenter:Setup()
 	g_GConfig = ALittle.CreateConfigSystem(g_ModuleBasePath .. "/User.cfg")
-	g_GProtoCache = ALittle.CreateConfigSystem(g_ModuleBasePath .. "/ProtoCache.cfg")
 	ALittle.Math_RandomSeed(ALittle.Time_GetCurTime())
 	ALittle.System_SetThreadCount(1, 2)
 	self._main_layer = ALittle.DisplayLayout(g_Control)

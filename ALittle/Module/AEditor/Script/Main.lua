@@ -27,16 +27,12 @@ function __Module_Setup(layer_group, control, module_base_path, script_base_path
 	g_LayerGroup = layer_group
 	g_ModuleBasePath = module_base_path
 	Require(script_base_path, "GCenter")
-	Require(script_base_path, "IDETool")
-	Require(script_base_path, "IDEIMEManager")
-	g_IDEIMEManager:Setup()
 	g_GCenter:Setup()
 end
 __Module_Setup = Lua.CoWrap(__Module_Setup)
 
 function __Module_Shutdown()
 	g_GCenter:Shutdown()
-	g_IDEIMEManager:Shutdown()
 end
 
 function __Module_GetInfo(control, module_base_path, script_base_path)

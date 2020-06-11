@@ -80,12 +80,10 @@ public class IDEProject : ALittle.EventDispatcher
 		ALittle.File_MakeDir(ALittle.File_BaseFilePath().."Module/"..name.."/Font");
 		ALittle.File_MakeDir(ALittle.File_BaseFilePath().."Module/"..name.."/Sound");
 		ALittle.File_MakeDir(ALittle.File_BaseFilePath().."Module/"..name.."/Other");
+		ALittle.File_MakeDir(ALittle.File_BaseFilePath().."Module/"..name.."/JSScript");
 		ALittle.File_MakeDir(ALittle.File_BaseFilePath().."Module/"..name.."/Script");
 		ALittle.File_MakeDir(ALittle.File_BaseFilePath().."Module/"..name.."/UI");
 		ALittle.File_MakeDir(ALittle.File_BaseFilePath().."Module/"..name.."/Icon");
-
-		// 创建一个未加密文件
-		ALittle.File_WriteTextToFile("", ALittle.File_BaseFilePath().."Module/"..name.."/NoCrypt.ali");
 
 		var base_path = ALittle.File_BaseFilePath().."Module/ALittleIDE/Other/GameTemplate";
 		var target_path = ALittle.File_BaseFilePath().."Module/"..name.."/";

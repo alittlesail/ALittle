@@ -52,9 +52,14 @@ function ImageInputS:HandleShowUpFOCUSOUT(event)
 end
 
 function ImageInputS:HandleShowUpSelect(event)
-	local func = Lua.Bind(self.ImagePathSelectCallback, self, "show_up", self.HandleShowUpFOCUSOUT, nil)
-	g_IDEAttrImageDialog:ShowDialog(nil, func)
+	g_IDEImageSelectDialog:SetBasePath(g_IDEProject.project.texture_path)
+	local path = g_IDEImageSelectDialog:ShowSelect()
+	if path == nil then
+		return
+	end
+	self:ImagePathSelectCallback("show_up", self.HandleShowUpFOCUSOUT, nil, path)
 end
+ImageInputS.HandleShowUpSelect = Lua.CoWrap(ImageInputS.HandleShowUpSelect)
 
 function ImageInputS:HandleShowOverFOCUSOUT(event)
 	if event.target._user_data ~= nil then
@@ -67,9 +72,14 @@ function ImageInputS:HandleShowOverFOCUSOUT(event)
 end
 
 function ImageInputS:HandleShowOverSelect(event)
-	local func = Lua.Bind(self.ImagePathSelectCallback, self, "show_over", self.HandleShowOverFOCUSOUT, nil)
-	g_IDEAttrImageDialog:ShowDialog(nil, func)
+	g_IDEImageSelectDialog:SetBasePath(g_IDEProject.project.texture_path)
+	local path = g_IDEImageSelectDialog:ShowSelect()
+	if path == nil then
+		return
+	end
+	self:ImagePathSelectCallback("show_over", self.HandleShowOverFOCUSOUT, nil, path)
 end
+ImageInputS.HandleShowOverSelect = Lua.CoWrap(ImageInputS.HandleShowOverSelect)
 
 function ImageInputS:HandleShowDownFOCUSOUT(event)
 	if event.target._user_data ~= nil then
@@ -82,9 +92,14 @@ function ImageInputS:HandleShowDownFOCUSOUT(event)
 end
 
 function ImageInputS:HandleShowDownSelect(event)
-	local func = Lua.Bind(self.ImagePathSelectCallback, self, "show_down", self.HandleShowDownFOCUSOUT, nil)
-	g_IDEAttrImageDialog:ShowDialog(nil, func)
+	g_IDEImageSelectDialog:SetBasePath(g_IDEProject.project.texture_path)
+	local path = g_IDEImageSelectDialog:ShowSelect()
+	if path == nil then
+		return
+	end
+	self:ImagePathSelectCallback("show_down", self.HandleShowDownFOCUSOUT, nil, path)
 end
+ImageInputS.HandleShowDownSelect = Lua.CoWrap(ImageInputS.HandleShowDownSelect)
 
 function ImageInputS:HandleShowDisabledFOCUSOUT(event)
 	if event.target._user_data ~= nil then
@@ -97,7 +112,12 @@ function ImageInputS:HandleShowDisabledFOCUSOUT(event)
 end
 
 function ImageInputS:HandleShowDisabledSelect(event)
-	local func = Lua.Bind(self.ImagePathSelectCallback, self, "show_disabled", self.HandleShowDisabledFOCUSOUT, nil)
-	g_IDEAttrImageDialog:ShowDialog(nil, func)
+	g_IDEImageSelectDialog:SetBasePath(g_IDEProject.project.texture_path)
+	local path = g_IDEImageSelectDialog:ShowSelect()
+	if path == nil then
+		return
+	end
+	self:ImagePathSelectCallback("show_disabled", self.HandleShowDisabledFOCUSOUT, nil, path)
 end
+ImageInputS.HandleShowDisabledSelect = Lua.CoWrap(ImageInputS.HandleShowDisabledSelect)
 

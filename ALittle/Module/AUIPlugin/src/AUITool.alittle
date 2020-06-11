@@ -150,6 +150,7 @@ public class AUITool
 		this._save_dialog.visible = false;
 		// 获取协程
 		var thread:ALittle.Thread = this._save_dialog._user_data;
+		if (thread == null) return;
 		// 把携带数据清空
 		this._save_dialog._user_data = null;
 		// 执行协程
@@ -162,6 +163,7 @@ public class AUITool
 		this._save_dialog.visible = false;
 		// 获取协程
 		var thread:ALittle.Thread = this._save_dialog._user_data;
+		if (thread == null) return;
 		// 把携带数据清空
 		this._save_dialog._user_data = null;
 		// 执行协程
@@ -173,6 +175,7 @@ public class AUITool
 		this._save_dialog.visible = false;
 		// 获取协程
 		var thread:ALittle.Thread = this._save_dialog._user_data;
+		if (thread == null) return;
 		this._save_dialog._user_data = null;
 		// 执行协程
 		ALittle.Coroutine.Resume(thread, AUIToolOption.CANCEL);
@@ -202,7 +205,8 @@ public class AUITool
 		// 隐藏对话框
 		this._delete_dialog.visible = false;
 		// 获取协程
-		var thread:ALittle.Thread = this._save_dialog._user_data;
+		var thread:ALittle.Thread = this._delete_dialog._user_data;
+		if (thread == null) return;
 		// 把携带数据清空
 		this._delete_dialog._user_data = null;
 		ALittle.Coroutine.Resume(thread, AUIToolOption.YES);
@@ -212,7 +216,8 @@ public class AUITool
 	{
 		this._delete_dialog.visible = false;
 		// 获取协程
-		var thread:ALittle.Thread = this._save_dialog._user_data;
+		var thread:ALittle.Thread = this._delete_dialog._user_data;
+		if (thread == null) return;
 		this._delete_dialog._user_data = null;
 		ALittle.Coroutine.Resume(thread, AUIToolOption.CANCEL);
 	}
@@ -245,12 +250,13 @@ public class AUITool
 	// 重新名确认
 	public fun HandleRenameConfirm(ALittle.UIEvent event)
 	{
-		// 获取协程
-		var thread:ALittle.Thread = this._save_dialog._user_data;
-		this._rename_input._user_data = null;
-	
 		// 隐藏输入框
 		this._rename_input.visible = false;
+
+		// 获取协程
+		var thread:ALittle.Thread = this._rename_input._user_data;
+		if (thread == null) return;
+		this._rename_input._user_data = null;
 		// 获取输入框文本
 		var text = this._rename_input.text;
 		// 执行协程
@@ -263,7 +269,8 @@ public class AUITool
 		if (event.sym != 27) return;
 
 		// 获取协程
-		var thread:ALittle.Thread = this._save_dialog._user_data;
+		var thread:ALittle.Thread = this._rename_input._user_data;
+		if (thread == null) return;
 		this._rename_input._user_data = null;
 		
 		// 隐藏输入框

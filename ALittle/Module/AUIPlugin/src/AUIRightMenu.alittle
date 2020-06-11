@@ -1,7 +1,7 @@
 
 namespace AUIPlugin;
 
-public struct AUIRightMenuInfo
+protected struct AUIRightMenuInfo
 {
 	string name;
 	bool disabled;

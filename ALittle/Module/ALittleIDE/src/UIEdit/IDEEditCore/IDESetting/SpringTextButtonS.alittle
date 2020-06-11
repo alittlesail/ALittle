@@ -40,10 +40,12 @@ public class SpringTextButtonS : DisplayLayoutS
 		}
 		this.RemoverToNilShowSetForImage("show_up", this._show_up.text, this._show_up_grid9.selected, false);
 	}
-	public fun HandleShowUpSelect(ALittle.UIEvent event)
+	public async fun HandleShowUpSelect(ALittle.UIEvent event)
 	{
-		var func = bind(this.ImagePathSelectCallback, this, "show_up", this.HandleShowUpFOCUSOUT, null);
-		g_IDEAttrImageDialog.ShowDialog(null, func);
+		g_IDEImageSelectDialog.SetBasePath(g_IDEProject.project.texture_path);
+		var path = g_IDEImageSelectDialog.ShowSelect();
+		if (path == null) return;
+		this.ImagePathSelectCallback("show_up", this.HandleShowUpFOCUSOUT, null, path);
 	}
 	
 	public fun HandleShowDisabledFOCUSOUT(ALittle.UIEvent event)
@@ -55,10 +57,12 @@ public class SpringTextButtonS : DisplayLayoutS
 		}
 		this.RemoverToNilShowSetForImage("show_disabled", this._show_disabled.text, this._show_disabled_grid9.selected, false);
 	}
-	public fun HandleShowDisabledSelect(ALittle.UIEvent event)
+	public async fun HandleShowDisabledSelect(ALittle.UIEvent event)
 	{
-		var func = bind(this.ImagePathSelectCallback, this, "show_disabled", this.HandleShowDisabledFOCUSOUT, null);
-		g_IDEAttrImageDialog.ShowDialog(null, func);
+		g_IDEImageSelectDialog.SetBasePath(g_IDEProject.project.texture_path);
+		var path = g_IDEImageSelectDialog.ShowSelect();
+		if (path == null) return;
+		this.ImagePathSelectCallback("show_disabled", this.HandleShowDisabledFOCUSOUT, null, path);
 	}
 	
 	public fun HandleShowTextFOCUSOUT(ALittle.UIEvent event)

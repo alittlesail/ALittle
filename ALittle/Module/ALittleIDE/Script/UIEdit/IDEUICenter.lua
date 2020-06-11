@@ -28,8 +28,6 @@ function IDEUICenter:Setup(edit_container)
 	Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDEAttrTextDialog")
 	Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDEAttrEventDialog")
 	Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDEAttrImageDialog")
-	Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDEEditImageDialog")
-	Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDEImageCutPlugin")
 	Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDESetting/DisplayObjectS")
 	Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDESetting/DisplayLayoutS")
 	Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDESetting/DisplayViewS")
@@ -95,7 +93,10 @@ function IDEUICenter:Setup(edit_container)
 	self._project_quick_tab.tab_index = 1
 	g_IDEAttributeManager:Setup(self._control_edit_tab, attr_displaylayout)
 	g_IDETabManager:Setup(self._main_edit_tab, tree_displaylayout, attr_displaylayout, anti_displaylayout)
-	g_IDEAttrImageDialog:Setup()
+	g_IDEImageSelectDialog = IDEAttrImageDialog("图片选择器", nil, {"PNG", "JPG"})
+	g_IDEImageSelectDialog:Setup()
+	g_IDEImageManagerDialog = IDEAttrImageDialog("图片选择器", g_IDECenter.dialog_layer, {"PNG", "JPG"})
+	g_IDEImageManagerDialog:Setup()
 	ALittle.TextRadioButton.SetGroup({self._tool_singleselect, self._tool_handdrag, self._tool_scale, self._tool_presee})
 end
 
@@ -361,7 +362,12 @@ function IDEUICenter:HandleToolHLAlign(event)
 end
 
 function IDEUICenter:HandleImageSelectClick(event)
-	g_IDEAttrImageDialog:ShowDialog(nil, nil)
+	if g_IDEProject.project == nil then
+		g_AUITool:ShowNotice("提示", "请先打开项目")
+		return
+	end
+	g_IDEImageManagerDialog:SetBasePath(g_IDEProject.project.base_path .. "Texture")
+	g_IDEImageManagerDialog:ShowDialog()
 end
 
 function IDEUICenter:HandleTabRightExMenu(event)

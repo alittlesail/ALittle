@@ -38,9 +38,14 @@ function DropDownS:HandleShowBackGFOCUSOUT(event)
 end
 
 function DropDownS:HandleShowBackGSelect(event)
-	local func = Lua.Bind(self.ImagePathSelectCallback, self, "show_background", self.HandleShowBackGFOCUSOUT, nil)
-	g_IDEAttrImageDialog:ShowDialog(nil, func)
+	g_IDEImageSelectDialog:SetBasePath(g_IDEProject.project.texture_path)
+	local path = g_IDEImageSelectDialog:ShowSelect()
+	if path == nil then
+		return
+	end
+	self:ImagePathSelectCallback("show_background", self.HandleShowBackGFOCUSOUT, nil, path)
 end
+DropDownS.HandleShowBackGSelect = Lua.CoWrap(DropDownS.HandleShowBackGSelect)
 
 function DropDownS:HandleShowScrollBarFOCUSOUT(event)
 	if event.target._user_data ~= nil then

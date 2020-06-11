@@ -122,6 +122,14 @@ function AUIWebLoginManager:Shutdown()
 		self._msg_client:Close()
 		self._msg_client = nil
 	end
+	if self._login_dialog ~= nil then
+		A_LayerManager:RemoveFromModal(self._login_dialog)
+		self._login_dialog = nil
+	end
+	if self._password_dialog ~= nil then
+		A_LayerManager:RemoveFromModal(self._password_dialog)
+		self._password_dialog = nil
+	end
 end
 
 function AUIWebLoginManager:Connect()

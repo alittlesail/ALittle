@@ -94,6 +94,9 @@ end
 function AUITool:HandleSaveConfirmClick(event)
 	self._save_dialog.visible = false
 	local thread = self._save_dialog._user_data
+	if thread == nil then
+		return
+	end
 	self._save_dialog._user_data = nil
 	ALittle.Coroutine.Resume(thread, AUIToolOption.YES)
 end
@@ -101,6 +104,9 @@ end
 function AUITool:HandleNoSaveClick(event)
 	self._save_dialog.visible = false
 	local thread = self._save_dialog._user_data
+	if thread == nil then
+		return
+	end
 	self._save_dialog._user_data = nil
 	ALittle.Coroutine.Resume(thread, AUIToolOption.NO)
 end
@@ -108,6 +114,9 @@ end
 function AUITool:HandleSaveCancelClick(event)
 	self._save_dialog.visible = false
 	local thread = self._save_dialog._user_data
+	if thread == nil then
+		return
+	end
 	self._save_dialog._user_data = nil
 	ALittle.Coroutine.Resume(thread, AUIToolOption.CANCEL)
 end
@@ -128,14 +137,20 @@ end
 
 function AUITool:HandleDeleteConfirmClick(event)
 	self._delete_dialog.visible = false
-	local thread = self._save_dialog._user_data
+	local thread = self._delete_dialog._user_data
+	if thread == nil then
+		return
+	end
 	self._delete_dialog._user_data = nil
 	ALittle.Coroutine.Resume(thread, AUIToolOption.YES)
 end
 
 function AUITool:HandleDeleteCancelClick(event)
 	self._delete_dialog.visible = false
-	local thread = self._save_dialog._user_data
+	local thread = self._delete_dialog._user_data
+	if thread == nil then
+		return
+	end
 	self._delete_dialog._user_data = nil
 	ALittle.Coroutine.Resume(thread, AUIToolOption.CANCEL)
 end
@@ -160,9 +175,12 @@ function AUITool:ShowRename(text, x, y, width)
 end
 
 function AUITool:HandleRenameConfirm(event)
-	local thread = self._save_dialog._user_data
-	self._rename_input._user_data = nil
 	self._rename_input.visible = false
+	local thread = self._rename_input._user_data
+	if thread == nil then
+		return
+	end
+	self._rename_input._user_data = nil
 	local text = self._rename_input.text
 	ALittle.Coroutine.Resume(thread, text)
 end
@@ -171,7 +189,10 @@ function AUITool:HandleRenameCancel(event)
 	if event.sym ~= 27 then
 		return
 	end
-	local thread = self._save_dialog._user_data
+	local thread = self._rename_input._user_data
+	if thread == nil then
+		return
+	end
 	self._rename_input._user_data = nil
 	self._rename_input.visible = false
 	ALittle.Coroutine.Resume(thread, nil)

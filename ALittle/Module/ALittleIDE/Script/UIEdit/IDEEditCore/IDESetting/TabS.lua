@@ -61,9 +61,14 @@ function TabS:HandleShowHeadBFOCUSOUT(event)
 end
 
 function TabS:HandleShowHeadBSelect(event)
-	local func = Lua.Bind(self.ImagePathSelectCallback, self, "show_head_background", self.HandleShowHeadBFOCUSOUT, nil)
-	g_IDEAttrImageDialog:ShowDialog(nil, func)
+	g_IDEImageSelectDialog:SetBasePath(g_IDEProject.project.texture_path)
+	local path = g_IDEImageSelectDialog:ShowSelect()
+	if path == nil then
+		return
+	end
+	self:ImagePathSelectCallback("show_head_background", self.HandleShowHeadBFOCUSOUT, nil, path)
 end
+TabS.HandleShowHeadBSelect = Lua.CoWrap(TabS.HandleShowHeadBSelect)
 
 function TabS:HandleBGapFOCUSOUT(event)
 	self:ValueNumInputChange("button_gap", false)

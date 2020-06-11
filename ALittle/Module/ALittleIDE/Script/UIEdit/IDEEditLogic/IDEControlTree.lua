@@ -119,11 +119,11 @@ function IDEControlTree:HandleRightControlTreeAddImage(event)
 	A_LayerManager:HideFromRight(self._control_tree_menu)
 	local target = self._control_tree_menu._user_data
 	self._control_tree_menu._user_data = nil
-	local func = Lua.Bind(self.ImagePathSelectCallback, self, target)
-	g_IDEAttrImageDialog:ShowDialog(nil, func)
-end
-
-function IDEControlTree:ImagePathSelectCallback(target, path)
+	g_IDEImageSelectDialog:SetBasePath(g_IDEProject.project.base_path .. "Texture")
+	local path = g_IDEImageSelectDialog:ShowSelect()
+	if path == nil then
+		return
+	end
 	if target:CanAddChild() == false then
 		g_AUITool:ShowNotice("提示", "当前控件不能添加子控件")
 		return
@@ -136,6 +136,7 @@ function IDEControlTree:ImagePathSelectCallback(target, path)
 	tree_object.attr_panel:SetTextureName(path, nil)
 	tree_object:ShowFocus(false)
 end
+IDEControlTree.HandleRightControlTreeAddImage = Lua.CoWrap(IDEControlTree.HandleRightControlTreeAddImage)
 
 function IDEControlTree:HandleRightControlTreeAddText(event)
 	A_LayerManager:HideFromRight(self._control_tree_menu)

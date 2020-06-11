@@ -29,6 +29,8 @@ g_IDEConfig = nil
 g_IDEServerConfig = nil
 g_IDEWebLoginManager = nil
 g_IDEEditImageDialog = nil
+g_IDEImageManagerDialog = nil
+g_IDEImageSelectDialog = nil
 function __Module_Setup(layer_group, control, module_base_path, script_base_path)
 	g_Control = control
 	g_LayerGroup = layer_group
@@ -45,6 +47,14 @@ __Module_Setup = Lua.CoWrap(__Module_Setup)
 
 function __Module_Shutdown()
 	g_IDECenter:Shutdown()
+	g_IDEWebLoginManager:Shutdown()
+	g_IDEEditImageDialog:Shutdown()
+	if g_IDEImageManagerDialog ~= nil then
+		g_IDEImageManagerDialog:Shutdown()
+	end
+	if g_IDEImageSelectDialog ~= nil then
+		g_IDEImageSelectDialog:Shutdown()
+	end
 end
 
 function __Module_GetInfo(control, module_base_path, script_base_path)

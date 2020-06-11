@@ -60,8 +60,6 @@ class IDEUICenter
 		alittle.Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDEAttrEventDialog");
 	
 		alittle.Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDEAttrImageDialog");
-		alittle.Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDEEditImageDialog");
-		alittle.Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDEImageCutPlugin");
 	
 		alittle.Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDESetting/DisplayObjectS");
 		alittle.Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDESetting/DisplayLayoutS");
@@ -139,7 +137,11 @@ class IDEUICenter
 		// 初始化主要单件
 		g_IDEAttributeManager.Setup(this._control_edit_tab, attr_displaylayout);
 		g_IDETabManager.Setup(this._main_edit_tab, tree_displaylayout, attr_displaylayout, anti_displaylayout);
-		g_IDEAttrImageDialog.Setup();
+		
+		g_IDEImageSelectDialog = new IDEAttrImageDialog("图片选择器", null, ["PNG", "JPG"]);
+		g_IDEImageSelectDialog.Setup();
+		g_IDEImageManagerDialog = new IDEAttrImageDialog("图片选择器", g_IDECenter.dialog_layer, ["PNG", "JPG"]);
+		g_IDEImageManagerDialog.Setup();
 
 		ALittle.TextRadioButton.SetGroup([this._tool_singleselect, this._tool_handdrag, this._tool_scale, this._tool_presee]);
 	}
@@ -382,7 +384,13 @@ class IDEUICenter
 	
 	public fun HandleImageSelectClick(ALittle.UIEvent event)
 	{
-		g_IDEAttrImageDialog.ShowDialog(null, null);
+		if (g_IDEProject.project == null)
+		{
+            g_AUITool.ShowNotice("提示", "请先打开项目");
+			return;
+        }
+		g_IDEImageManagerDialog.SetBasePath(g_IDEProject.project.base_path.."Texture");
+		g_IDEImageManagerDialog.ShowDialog();
 	}
 
 	// Tab界面右上角菜单按钮

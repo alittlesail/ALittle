@@ -201,7 +201,6 @@ class IDECenter
 	
 		g_IDETabManager.CloseAllTab();
 		g_IDEProject.CloseProject();
-		g_IDEAttrImageDialog.Close();
 	}
 
 	// 项目刷新
@@ -308,6 +307,8 @@ class IDECenter
 		
 		this._account_dropdown.text = g_IDEWebLoginManager.account_name;
 	}
+	//////////////////////////////////////////////////////////////////////////////////////// 
+
 	//////////////////////////////////////////////////////////////////////////////////////// 
 }
 

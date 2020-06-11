@@ -37,10 +37,12 @@ public class DropDownS : TextCheckButtonS
 		}
 		this.RemoverToNilShowSetForImage("show_background", this._show_background.text, this._show_background_grid9.selected, false);
 	}
-	public fun HandleShowBackGSelect(ALittle.UIEvent event)
+	public async fun HandleShowBackGSelect(ALittle.UIEvent event)
 	{
-		var func = bind(this.ImagePathSelectCallback, this, "show_background", this.HandleShowBackGFOCUSOUT, null);
-		g_IDEAttrImageDialog.ShowDialog(null, func);
+		g_IDEImageSelectDialog.SetBasePath(g_IDEProject.project.texture_path);
+		var path = g_IDEImageSelectDialog.ShowSelect();
+		if (path == null) return;
+		this.ImagePathSelectCallback("show_background", this.HandleShowBackGFOCUSOUT, null, path);
 	}
 	
 	public fun HandleShowScrollBarFOCUSOUT(ALittle.UIEvent event)

@@ -32,7 +32,8 @@ public struct IDEControlCopyInfo
 public struct IDEProjectInfo
 {
 	string name;								// 项目名称
-	string base_path;							// 项目基本路径
+	string base_path;							// 项目基本路径，尾部带/
+	string texture_path;						// 纹理路径，尾部不带/
 	bool save;									// 所有信息是否已保存
 	ALittle.ControlSystem control;				// 项目的控件系统
 	ALittle.IJsonConfig config;			// 项目的配置文件系统
@@ -156,6 +157,7 @@ public class IDEProject : ALittle.EventDispatcher
 		this._project = new IDEProjectInfo();
 		this._project.name = name;
 		this._project.base_path = ALittle.File_BaseFilePath().."Module/"..name.."/";
+		this._project.texture_path = this._project.base_path.."Texture";
 		this._project.save = true;
 		this._project.control = new ALittle.ControlSystem(name);
 		this._project.control.log_error = false;

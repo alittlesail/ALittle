@@ -31,10 +31,12 @@ public class TriangleS : DisplayObjectS
 		this.DefaultNilStringInputChange("texture_name", false);
 	}
 	//texture_name
-	public fun HandleImageTextureNameSelect(ALittle.UIEvent event)
+	public async fun HandleImageTextureNameSelect(ALittle.UIEvent event)
 	{
-		var func = bind(this.ImagePathSelectCallback, this, "texture_name", this.HandleImageTextureNameFOCUSOUT, null);
-		g_IDEAttrImageDialog.ShowDialog(null, func);
+		g_IDEImageSelectDialog.SetBasePath(g_IDEProject.project.texture_path);
+		var path = g_IDEImageSelectDialog.ShowSelect();
+		if (path == null) return;
+		this.ImagePathSelectCallback("texture_name", this.HandleImageTextureNameFOCUSOUT, null, path);
 	}
 	//设置texture_name
 	public fun SetTextureName(string texture_name, [Nullable] IDERevokeBind revoke_bind)

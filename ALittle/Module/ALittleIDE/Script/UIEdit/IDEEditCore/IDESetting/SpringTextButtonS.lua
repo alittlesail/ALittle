@@ -38,9 +38,14 @@ function SpringTextButtonS:HandleShowUpFOCUSOUT(event)
 end
 
 function SpringTextButtonS:HandleShowUpSelect(event)
-	local func = Lua.Bind(self.ImagePathSelectCallback, self, "show_up", self.HandleShowUpFOCUSOUT, nil)
-	g_IDEAttrImageDialog:ShowDialog(nil, func)
+	g_IDEImageSelectDialog:SetBasePath(g_IDEProject.project.texture_path)
+	local path = g_IDEImageSelectDialog:ShowSelect()
+	if path == nil then
+		return
+	end
+	self:ImagePathSelectCallback("show_up", self.HandleShowUpFOCUSOUT, nil, path)
 end
+SpringTextButtonS.HandleShowUpSelect = Lua.CoWrap(SpringTextButtonS.HandleShowUpSelect)
 
 function SpringTextButtonS:HandleShowDisabledFOCUSOUT(event)
 	if event.target._user_data ~= nil then
@@ -53,9 +58,14 @@ function SpringTextButtonS:HandleShowDisabledFOCUSOUT(event)
 end
 
 function SpringTextButtonS:HandleShowDisabledSelect(event)
-	local func = Lua.Bind(self.ImagePathSelectCallback, self, "show_disabled", self.HandleShowDisabledFOCUSOUT, nil)
-	g_IDEAttrImageDialog:ShowDialog(nil, func)
+	g_IDEImageSelectDialog:SetBasePath(g_IDEProject.project.texture_path)
+	local path = g_IDEImageSelectDialog:ShowSelect()
+	if path == nil then
+		return
+	end
+	self:ImagePathSelectCallback("show_disabled", self.HandleShowDisabledFOCUSOUT, nil, path)
 end
+SpringTextButtonS.HandleShowDisabledSelect = Lua.CoWrap(SpringTextButtonS.HandleShowDisabledSelect)
 
 function SpringTextButtonS:HandleShowTextFOCUSOUT(event)
 	g_IDEAttrTextDialog:ShowDialog(self, "show_text", false)

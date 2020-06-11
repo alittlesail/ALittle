@@ -25,9 +25,14 @@ function PiechartS:HandleImageTextureNameFOCUSOUT(event)
 end
 
 function PiechartS:HandleImageTextureNameSelect(event)
-	local func = Lua.Bind(self.ImagePathSelectCallback, self, "texture_name", self.HandleImageTextureNameFOCUSOUT, nil)
-	g_IDEAttrImageDialog:ShowDialog(nil, func)
+	g_IDEImageSelectDialog:SetBasePath(g_IDEProject.project.texture_path)
+	local path = g_IDEImageSelectDialog:ShowSelect()
+	if path == nil then
+		return
+	end
+	self:ImagePathSelectCallback("texture_name", self.HandleImageTextureNameFOCUSOUT, nil, path)
 end
+PiechartS.HandleImageTextureNameSelect = Lua.CoWrap(PiechartS.HandleImageTextureNameSelect)
 
 function PiechartS:HandleImageStartDegreeFOCUSOUT(event)
 	self:ValueNumZInputChange("start_degree", false)

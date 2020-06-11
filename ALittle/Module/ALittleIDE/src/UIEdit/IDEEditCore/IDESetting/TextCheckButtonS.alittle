@@ -91,10 +91,12 @@ public class TextCheckButtonS : DisplayLayoutS
 		}
 		this.RemoverToNilShowSetForImage("show_up", this._show_up.text, this._show_up_grid9.selected, false);
 	}
-	public fun HandleShowUpSelect(ALittle.UIEvent event)
+	public async fun HandleShowUpSelect(ALittle.UIEvent event)
 	{
-		var func = bind(this.ImagePathSelectCallback, this, "show_up", this.HandleShowUpFOCUSOUT, null);
-		g_IDEAttrImageDialog.ShowDialog(null, func);
+		g_IDEImageSelectDialog.SetBasePath(g_IDEProject.project.texture_path);
+		var path = g_IDEImageSelectDialog.ShowSelect();
+		if (path == null) return;
+		this.ImagePathSelectCallback("show_up", this.HandleShowUpFOCUSOUT, null, path);
 	}
 	
 	public fun HandleShowOverFOCUSOUT(ALittle.UIEvent event)
@@ -106,10 +108,12 @@ public class TextCheckButtonS : DisplayLayoutS
 		}
 		this.RemoverToNilShowSetForImage("show_over", this._show_over.text, this._show_over_grid9.selected, false);
 	}
-	public fun HandleShowOverSelect(ALittle.UIEvent event)
+	public async fun HandleShowOverSelect(ALittle.UIEvent event)
 	{
-		var func = bind(this.ImagePathSelectCallback, this, "show_over", this.HandleShowOverFOCUSOUT, null);
-		g_IDEAttrImageDialog.ShowDialog(null, func);
+		g_IDEImageSelectDialog.SetBasePath(g_IDEProject.project.texture_path);
+		var path = g_IDEImageSelectDialog.ShowSelect();
+		if (path == null) return;
+		this.ImagePathSelectCallback("show_over", this.HandleShowOverFOCUSOUT, null, path);
 	}
 	
 	public fun HandleShowDownFOCUSOUT(ALittle.UIEvent event)
@@ -121,10 +125,12 @@ public class TextCheckButtonS : DisplayLayoutS
 		}
 		this.RemoverToNilShowSetForImage("show_down", this._show_down.text, this._show_down_grid9.selected, false);
 	}
-	public fun HandleShowDownSelect(ALittle.UIEvent event)
+	public async fun HandleShowDownSelect(ALittle.UIEvent event)
 	{
-		var func = bind(this.ImagePathSelectCallback, this, "show_down", this.HandleShowDownFOCUSOUT, null);
-		g_IDEAttrImageDialog.ShowDialog(null, func);
+		g_IDEImageSelectDialog.SetBasePath(g_IDEProject.project.texture_path);
+		var path = g_IDEImageSelectDialog.ShowSelect();
+		if (path == null) return;
+		this.ImagePathSelectCallback("show_down", this.HandleShowDownFOCUSOUT, null, path);
 	}
 	
 	public fun HandleShowDisabledFOCUSOUT(ALittle.UIEvent event)
@@ -136,10 +142,12 @@ public class TextCheckButtonS : DisplayLayoutS
 		}
 		this.RemoverToNilShowSetForImage("show_disabled", this._show_disabled.text, this._show_disabled_grid9.selected, false);
 	}
-	public fun HandleShowDisabledSelect(ALittle.UIEvent event)
+	public async fun HandleShowDisabledSelect(ALittle.UIEvent event)
 	{
-		var func = bind(this.ImagePathSelectCallback, this, "show_disabled", this.HandleShowDisabledFOCUSOUT, null);
-		g_IDEAttrImageDialog.ShowDialog(null, func);
+		g_IDEImageSelectDialog.SetBasePath(g_IDEProject.project.texture_path);
+		var path = g_IDEImageSelectDialog.ShowSelect();
+		if (path == null) return;
+		this.ImagePathSelectCallback("show_disabled", this.HandleShowDisabledFOCUSOUT, null, path);
 	}
 	
 	public fun HandleShowSUpFOCUSOUT(ALittle.UIEvent event)
@@ -151,10 +159,12 @@ public class TextCheckButtonS : DisplayLayoutS
 		}
 		this.RemoverToNilShowSetForImage("show_selected_up", this._show_selected_up.text, this._show_selected_up_grid9.selected, false);
 	}
-	public fun HandleShowSUpSelect(ALittle.UIEvent event)
+	public async fun HandleShowSUpSelect(ALittle.UIEvent event)
 	{
-		var func = bind(this.ImagePathSelectCallback, this, "show_selected_up", this.HandleShowSUpFOCUSOUT, null);
-		g_IDEAttrImageDialog.ShowDialog(null, func);
+		g_IDEImageSelectDialog.SetBasePath(g_IDEProject.project.texture_path);
+		var path = g_IDEImageSelectDialog.ShowSelect();
+		if (path == null) return;
+		this.ImagePathSelectCallback("show_selected_up", this.HandleShowSUpFOCUSOUT, null, path);
 	}
 	
 	public fun HandleShowSOverFOCUSOUT(ALittle.UIEvent event)
@@ -166,10 +176,12 @@ public class TextCheckButtonS : DisplayLayoutS
 		}
 		this.RemoverToNilShowSetForImage("show_selected_over", this._show_selected_over.text, this._show_selected_over_grid9.selected, false);
 	}
-	public fun HandleShowSOverSelect(ALittle.UIEvent event)
+	public async fun HandleShowSOverSelect(ALittle.UIEvent event)
 	{
-		var func = bind(this.ImagePathSelectCallback, this, "show_selected_over", this.HandleShowSOverFOCUSOUT, null);
-		g_IDEAttrImageDialog.ShowDialog(null, func);
+		g_IDEImageSelectDialog.SetBasePath(g_IDEProject.project.texture_path);
+		var path = g_IDEImageSelectDialog.ShowSelect();
+		if (path == null) return;
+		this.ImagePathSelectCallback("show_selected_over", this.HandleShowSOverFOCUSOUT, null, path);
 	}
 	
 	public fun HandleShowSDownFOCUSOUT(ALittle.UIEvent event)
@@ -181,10 +193,12 @@ public class TextCheckButtonS : DisplayLayoutS
 		}
 		this.RemoverToNilShowSetForImage("show_selected_down", this._show_selected_down.text, this._show_selected_down_grid9.selected, false);
 	}
-	public fun HandleShowSDownSelect(ALittle.UIEvent event)
+	public async fun HandleShowSDownSelect(ALittle.UIEvent event)
 	{
-		var func = bind(this.ImagePathSelectCallback, this, "show_selected_down", this.HandleShowSDownFOCUSOUT, null);
-		g_IDEAttrImageDialog.ShowDialog(null, func);
+		g_IDEImageSelectDialog.SetBasePath(g_IDEProject.project.texture_path);
+		var path = g_IDEImageSelectDialog.ShowSelect();
+		if (path == null) return;
+		this.ImagePathSelectCallback("show_selected_down", this.HandleShowSDownFOCUSOUT, null, path);
 	}
 	
 	public fun HandleShowSDisabledFOCUSOUT(ALittle.UIEvent event)
@@ -196,10 +210,12 @@ public class TextCheckButtonS : DisplayLayoutS
 		}
 		this.RemoverToNilShowSetForImage("show_selected_disabled", this._show_selected_disabled.text, this._show_selected_disabled_grid9.selected, false);
 	}
-	public fun HandleShowSDisabledSelect(ALittle.UIEvent event)
+	public async fun HandleShowSDisabledSelect(ALittle.UIEvent event)
 	{
-		var func = bind(this.ImagePathSelectCallback, this, "show_selected_disabled", this.HandleShowSDisabledFOCUSOUT, null);
-		g_IDEAttrImageDialog.ShowDialog(null, func);
+		g_IDEImageSelectDialog.SetBasePath(g_IDEProject.project.texture_path);
+		var path = g_IDEImageSelectDialog.ShowSelect();
+		if (path == null) return;
+		this.ImagePathSelectCallback("show_selected_disabled", this.HandleShowSDisabledFOCUSOUT, null, path);
 	}
 	
 	public fun HandleShowTextFOCUSOUT(ALittle.UIEvent event)

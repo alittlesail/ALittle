@@ -168,7 +168,6 @@ function IDECenter:CloseProject()
 	g_IDEControlManager:ClearControlItem()
 	g_IDETabManager:CloseAllTab()
 	g_IDEProject:CloseProject()
-	g_IDEAttrImageDialog:Close()
 end
 
 function IDECenter:RefreshProject()

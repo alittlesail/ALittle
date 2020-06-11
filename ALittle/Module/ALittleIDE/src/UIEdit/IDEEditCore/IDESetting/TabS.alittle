@@ -65,10 +65,12 @@ public class TabS : DisplayLayoutS
 		}
 		this.RemoverToNilShowSetForImage("show_head_background", this._show_head_background.text, this._show_head_background.selected, false);
 	}
-	public fun HandleShowHeadBSelect(ALittle.UIEvent event)
+	public async fun HandleShowHeadBSelect(ALittle.UIEvent event)
 	{
-		var func = bind(this.ImagePathSelectCallback, this, "show_head_background", this.HandleShowHeadBFOCUSOUT, null);
-		g_IDEAttrImageDialog.ShowDialog(null, func);
+		g_IDEImageSelectDialog.SetBasePath(g_IDEProject.project.texture_path);
+		var path = g_IDEImageSelectDialog.ShowSelect();
+		if (path == null) return;
+		this.ImagePathSelectCallback("show_head_background", this.HandleShowHeadBFOCUSOUT, null, path);
 	}
 	
 	public fun HandleBGapFOCUSOUT(ALittle.UIEvent event)

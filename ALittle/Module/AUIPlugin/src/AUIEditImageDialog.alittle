@@ -29,6 +29,15 @@ public class AUIEditImageDialog
 		this._cut_plugin.EditTexture(path);
 		this._dialog.visible = true;
 	}
+
+	public fun Shutdown()
+	{
+        if (this._dialog != null)
+		{
+			A_LayerManager.RemoveFromModal(this._dialog);
+			this._dialog = null;
+        }
+    }
 	
 	private fun HandleCancelClick(ALittle.UIEvent event)
 	{

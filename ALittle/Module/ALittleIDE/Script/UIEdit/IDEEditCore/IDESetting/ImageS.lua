@@ -24,9 +24,14 @@ function ImageS:HandleImageTextureNameFOCUSOUT(event)
 end
 
 function ImageS:HandleImageTextureNameSelect(event)
-	local func = Lua.Bind(self.ImagePathSelectCallback, self, "texture_name", self.HandleImageTextureNameFOCUSOUT, nil)
-	g_IDEAttrImageDialog:ShowDialog(nil, func)
+	g_IDEImageSelectDialog:SetBasePath(g_IDEProject.project.texture_path)
+	local path = g_IDEImageSelectDialog:ShowSelect()
+	if path == nil then
+		return
+	end
+	self:ImagePathSelectCallback("texture_name", self.HandleImageTextureNameFOCUSOUT, nil, path)
 end
+ImageS.HandleImageTextureNameSelect = Lua.CoWrap(ImageS.HandleImageTextureNameSelect)
 
 function ImageS:SetTextureName(texture_name, revoke_bind)
 	if texture_name == nil then

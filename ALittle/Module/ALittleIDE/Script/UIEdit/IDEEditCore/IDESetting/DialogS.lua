@@ -42,9 +42,14 @@ function DialogS:HandleShowBackgroundFOCUSOUT(event)
 end
 
 function DialogS:HandleShowBackgroundSelect(event)
-	local func = Lua.Bind(self.ImagePathSelectCallback, self, "show_background", self.HandleShowBackgroundFOCUSOUT, nil)
-	g_IDEAttrImageDialog:ShowDialog(nil, func)
+	g_IDEImageSelectDialog:SetBasePath(g_IDEProject.project.texture_path)
+	local path = g_IDEImageSelectDialog:ShowSelect()
+	if path == nil then
+		return
+	end
+	self:ImagePathSelectCallback("show_background", self.HandleShowBackgroundFOCUSOUT, nil, path)
 end
+DialogS.HandleShowBackgroundSelect = Lua.CoWrap(DialogS.HandleShowBackgroundSelect)
 
 function DialogS:HandleShowHeadDragFOCUSOUT(event)
 	if event.target._user_data ~= nil then
@@ -57,9 +62,14 @@ function DialogS:HandleShowHeadDragFOCUSOUT(event)
 end
 
 function DialogS:HandleShowHeadDragSelect(event)
-	local func = Lua.Bind(self.ImagePathSelectCallback, self, "show_head_drag", self.HandleShowHeadDragFOCUSOUT, nil)
-	g_IDEAttrImageDialog:ShowDialog(nil, func)
+	g_IDEImageSelectDialog:SetBasePath(g_IDEProject.project.texture_path)
+	local path = g_IDEImageSelectDialog:ShowSelect()
+	if path == nil then
+		return
+	end
+	self:ImagePathSelectCallback("show_head_drag", self.HandleShowHeadDragFOCUSOUT, nil, path)
 end
+DialogS.HandleShowHeadDragSelect = Lua.CoWrap(DialogS.HandleShowHeadDragSelect)
 
 function DialogS:HandleShowCloseButtonFOCUSOUT(event)
 	if event.target._user_data ~= nil then

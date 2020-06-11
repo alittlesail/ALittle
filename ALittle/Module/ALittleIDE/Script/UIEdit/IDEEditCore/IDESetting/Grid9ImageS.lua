@@ -25,9 +25,14 @@ function Grid9ImageS:HandleImageTextureNameFOCUSOUT(event)
 end
 
 function Grid9ImageS:HandleImageTextureNameSelect(event)
-	local func = Lua.Bind(self.ImagePathSelectCallback, self, "texture_name", self.HandleImageTextureNameFOCUSOUT, nil)
-	g_IDEAttrImageDialog:ShowDialog(nil, func)
+	g_IDEImageSelectDialog:SetBasePath(g_IDEProject.project.texture_path)
+	local path = g_IDEImageSelectDialog:ShowSelect()
+	if path == nil then
+		return
+	end
+	self:ImagePathSelectCallback("texture_name", self.HandleImageTextureNameFOCUSOUT, nil, path)
 end
+Grid9ImageS.HandleImageTextureNameSelect = Lua.CoWrap(Grid9ImageS.HandleImageTextureNameSelect)
 
 function Grid9ImageS:HandleFlipSELECT_CHANGE(event)
 	local list = g_IDEEnum.flip_rtype

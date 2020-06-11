@@ -23,10 +23,12 @@ public class Grid9ImageS : Grid9S
         this.DefaultNilStringInputChange("texture_name", false);
         this.HandleAutoCut(event);
     }
-    public fun HandleImageTextureNameSelect(ALittle.UIEvent event)
+    public async fun HandleImageTextureNameSelect(ALittle.UIEvent event)
     {
-        var func = bind(this.ImagePathSelectCallback, this, "texture_name", this.HandleImageTextureNameFOCUSOUT, null);
-        g_IDEAttrImageDialog.ShowDialog(null, func);
+		g_IDEImageSelectDialog.SetBasePath(g_IDEProject.project.texture_path);
+		var path = g_IDEImageSelectDialog.ShowSelect();
+		if (path == null) return;
+		this.ImagePathSelectCallback("texture_name", this.HandleImageTextureNameFOCUSOUT, null, path);
     }
     public fun HandleFlipSELECT_CHANGE(ALittle.UIEvent event)
     {

@@ -82,7 +82,12 @@ function ScrollBarS:HandleBarBackFOCUSOUT(event)
 end
 
 function ScrollBarS:HandleBarBackSelect(event)
-	local func = Lua.Bind(self.ImagePathSelectCallback, self, "bar_background", self.HandleBarBackFOCUSOUT, nil)
-	g_IDEAttrImageDialog:ShowDialog(nil, func)
+	g_IDEImageSelectDialog:SetBasePath(g_IDEProject.project.texture_path)
+	local path = g_IDEImageSelectDialog:ShowSelect()
+	if path == nil then
+		return
+	end
+	self:ImagePathSelectCallback("bar_background", self.HandleBarBackFOCUSOUT, nil, path)
 end
+ScrollBarS.HandleBarBackSelect = Lua.CoWrap(ScrollBarS.HandleBarBackSelect)
 

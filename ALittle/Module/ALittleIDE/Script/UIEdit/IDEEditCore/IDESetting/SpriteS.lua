@@ -28,9 +28,14 @@ function SpriteS:HandleImageTextureNameFOCUSOUT(event)
 end
 
 function SpriteS:HandleImageTextureNameSelect(event)
-	local func = Lua.Bind(self.ImagePathSelectCallback, self, "texture_name", self.HandleImageTextureNameFOCUSOUT, nil)
-	g_IDEAttrImageDialog:ShowDialog(nil, func)
+	g_IDEImageSelectDialog:SetBasePath(g_IDEProject.project.texture_path)
+	local path = g_IDEImageSelectDialog:ShowSelect()
+	if path == nil then
+		return
+	end
+	self:ImagePathSelectCallback("texture_name", self.HandleImageTextureNameFOCUSOUT, nil, path)
 end
+SpriteS.HandleImageTextureNameSelect = Lua.CoWrap(SpriteS.HandleImageTextureNameSelect)
 
 function SpriteS:HandleRowCountFOCUSOUT(event)
 	self:ValueNumInputChange("row_count", false)

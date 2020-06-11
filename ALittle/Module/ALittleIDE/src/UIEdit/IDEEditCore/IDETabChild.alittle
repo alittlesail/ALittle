@@ -1128,7 +1128,7 @@ public class IDETabChild : ALittle.UIEventDispatcher
         g_IDEControlTree.ShowAddDialog(target);
 	}
 	// 处理添加
-	public fun HandleRightControlTreeAddImage(ALittle.UIEvent event)
+	public async fun HandleRightControlTreeAddImage(ALittle.UIEvent event)
     {
 		// 隐藏右键菜单
         A_LayerManager.HideFromRight(this._control_tabchild_menu);
@@ -1136,13 +1136,11 @@ public class IDETabChild : ALittle.UIEventDispatcher
         var target:IDETreeLogic = this._control_tabchild_menu._user_data;
         this._control_tabchild_menu._user_data = null;
 	
-        var func = bind(this.ImagePathSelectCallback, this, target);
 		// 直接显示图片选择框
-        g_IDEAttrImageDialog.ShowDialog(null, func);
-	}
-	// 处理选中图片
-	public fun ImagePathSelectCallback(IDETreeLogic target, string path)
-    {
+        g_IDEImageSelectDialog.SetBasePath(g_IDEProject.project.base_path.."Texture");
+        var path = g_IDEImageSelectDialog.ShowSelect();
+        if (path == null) return;
+	
 		// 设置这个下拉菜单
 		if (target.CanAddChild() == false)
         {

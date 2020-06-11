@@ -91,8 +91,8 @@ option_map = {}
 })
 ALittle.RegStruct(934918978, "ALittleIDE.IDEProjectInfo", {
 name = "ALittleIDE.IDEProjectInfo", ns_name = "ALittleIDE", rl_name = "IDEProjectInfo", hash_code = 934918978,
-name_list = {"name","base_path","save","control","config","control_map"},
-type_list = {"string","string","bool","ALittle.ControlSystem","ALittle.IJsonConfig","Map<string,ALittleIDE.IDEControlInfo>"},
+name_list = {"name","base_path","texture_path","save","control","config","control_map"},
+type_list = {"string","string","string","bool","ALittle.ControlSystem","ALittle.IJsonConfig","Map<string,ALittleIDE.IDEControlInfo>"},
 option_map = {}
 })
 
@@ -173,6 +173,7 @@ function IDEProject:OpenProject(name)
 	self._project = {}
 	self._project.name = name
 	self._project.base_path = ALittle.File_BaseFilePath() .. "Module/" .. name .. "/"
+	self._project.texture_path = self._project.base_path .. "Texture"
 	self._project.save = true
 	self._project.control = ALittle.ControlSystem(name)
 	self._project.control.log_error = false

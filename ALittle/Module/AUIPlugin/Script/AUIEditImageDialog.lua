@@ -24,6 +24,13 @@ function AUIEditImageDialog:ShowDialog(path, save_dir)
 	self._dialog.visible = true
 end
 
+function AUIEditImageDialog:Shutdown()
+	if self._dialog ~= nil then
+		A_LayerManager:RemoveFromModal(self._dialog)
+		self._dialog = nil
+	end
+end
+
 function AUIEditImageDialog:HandleCancelClick(event)
 	self:HideDialog()
 end

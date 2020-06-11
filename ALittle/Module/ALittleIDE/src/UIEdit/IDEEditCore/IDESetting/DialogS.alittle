@@ -45,10 +45,12 @@ public class DialogS : DisplayLayoutS
 		}
 		this.RemoverToNilShowSetForImage("show_background", this._show_background.text, this._show_background_grid9.selected, false);
 	}
-	public fun HandleShowBackgroundSelect(ALittle.UIEvent event)
+	public async fun HandleShowBackgroundSelect(ALittle.UIEvent event)
 	{
-		var func = bind(this.ImagePathSelectCallback, this, "show_background", this.HandleShowBackgroundFOCUSOUT, null);
-		g_IDEAttrImageDialog.ShowDialog(null, func);
+		g_IDEImageSelectDialog.SetBasePath(g_IDEProject.project.texture_path);
+		var path = g_IDEImageSelectDialog.ShowSelect();
+		if (path == null) return;
+		this.ImagePathSelectCallback("show_background", this.HandleShowBackgroundFOCUSOUT, null, path);
 	}
 	public fun HandleShowHeadDragFOCUSOUT(ALittle.UIEvent event)
 	{
@@ -59,10 +61,12 @@ public class DialogS : DisplayLayoutS
 		}
 		this.RemoverToNilShowSetForImage("show_head_drag", this._show_head_drag.text, this._show_head_drag_grid9.selected, false);
 	}
-	public fun HandleShowHeadDragSelect(ALittle.UIEvent event)
+	public async fun HandleShowHeadDragSelect(ALittle.UIEvent event)
 	{
-		var func = bind(this.ImagePathSelectCallback, this, "show_head_drag", this.HandleShowHeadDragFOCUSOUT, null);
-		g_IDEAttrImageDialog.ShowDialog(null, func);
+		g_IDEImageSelectDialog.SetBasePath(g_IDEProject.project.texture_path);
+		var path = g_IDEImageSelectDialog.ShowSelect();
+		if (path == null) return;
+		this.ImagePathSelectCallback("show_head_drag", this.HandleShowHeadDragFOCUSOUT, null, path);
 	}
 	
 	public fun HandleShowCloseButtonFOCUSOUT(ALittle.UIEvent event)

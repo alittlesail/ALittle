@@ -87,9 +87,11 @@ public class ScrollBarS : Grid3S
         }
         this.RemoverToNilShowSetForImage("bar_background", this._bar_background.text, this._bar_background_grid9.selected, false);
     }
-    public fun HandleBarBackSelect(ALittle.UIEvent event)
+    public async fun HandleBarBackSelect(ALittle.UIEvent event)
     {
-        var func = bind(this.ImagePathSelectCallback, this, "bar_background", this.HandleBarBackFOCUSOUT, null);
-        g_IDEAttrImageDialog.ShowDialog(null, func);
+		g_IDEImageSelectDialog.SetBasePath(g_IDEProject.project.texture_path);
+		var path = g_IDEImageSelectDialog.ShowSelect();
+		if (path == null) return;
+		this.ImagePathSelectCallback("bar_background", this.HandleBarBackFOCUSOUT, null, path);
     }
 }

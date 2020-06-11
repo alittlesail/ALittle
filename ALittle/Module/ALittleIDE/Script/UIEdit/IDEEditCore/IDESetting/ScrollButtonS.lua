@@ -37,9 +37,14 @@ function ScrollButtonS:HandleShowUpFOCUSOUT(event)
 end
 
 function ScrollButtonS:HandleShowUpSelect(event)
-	local func = Lua.Bind(self.ImagePathSelectCallback, self, "show_up", self.HandleShowUpFOCUSOUT, nil)
-	g_IDEAttrImageDialog:ShowDialog(nil, func)
+	g_IDEImageSelectDialog:SetBasePath(g_IDEProject.project.texture_path)
+	local path = g_IDEImageSelectDialog:ShowSelect()
+	if path == nil then
+		return
+	end
+	self:ImagePathSelectCallback("show_up", self.HandleShowUpFOCUSOUT, nil, path)
 end
+ScrollButtonS.HandleShowUpSelect = Lua.CoWrap(ScrollButtonS.HandleShowUpSelect)
 
 function ScrollButtonS:HandleShowOverFOCUSOUT(event)
 	if event.target._user_data ~= nil then
@@ -52,9 +57,14 @@ function ScrollButtonS:HandleShowOverFOCUSOUT(event)
 end
 
 function ScrollButtonS:HandleShowOverSelect(event)
-	local func = Lua.Bind(self.ImagePathSelectCallback, self, "show_over", self.HandleShowOverFOCUSOUT, nil)
-	g_IDEAttrImageDialog:ShowDialog(nil, func)
+	g_IDEImageSelectDialog:SetBasePath(g_IDEProject.project.texture_path)
+	local path = g_IDEImageSelectDialog:ShowSelect()
+	if path == nil then
+		return
+	end
+	self:ImagePathSelectCallback("show_over", self.HandleShowOverFOCUSOUT, nil, path)
 end
+ScrollButtonS.HandleShowOverSelect = Lua.CoWrap(ScrollButtonS.HandleShowOverSelect)
 
 function ScrollButtonS:HandleShowDownFOCUSOUT(event)
 	if event.target._user_data ~= nil then
@@ -67,9 +77,14 @@ function ScrollButtonS:HandleShowDownFOCUSOUT(event)
 end
 
 function ScrollButtonS:HandleShowDownSelect(event)
-	local func = Lua.Bind(self.ImagePathSelectCallback, self, "show_down", self.HandleShowDownFOCUSOUT, nil)
-	g_IDEAttrImageDialog:ShowDialog(nil, func)
+	g_IDEImageSelectDialog:SetBasePath(g_IDEProject.project.texture_path)
+	local path = g_IDEImageSelectDialog:ShowSelect()
+	if path == nil then
+		return
+	end
+	self:ImagePathSelectCallback("show_down", self.HandleShowDownFOCUSOUT, nil, path)
 end
+ScrollButtonS.HandleShowDownSelect = Lua.CoWrap(ScrollButtonS.HandleShowDownSelect)
 
 function ScrollButtonS:HandleShowDisabledFOCUSOUT(event)
 	if event.target._user_data ~= nil then
@@ -82,9 +97,14 @@ function ScrollButtonS:HandleShowDisabledFOCUSOUT(event)
 end
 
 function ScrollButtonS:HandleShowDisabledSelect(event)
-	local func = Lua.Bind(self.ImagePathSelectCallback, self, "show_disabled", self.HandleShowDisabledFOCUSOUT, nil)
-	g_IDEAttrImageDialog:ShowDialog(nil, func)
+	g_IDEImageSelectDialog:SetBasePath(g_IDEProject.project.texture_path)
+	local path = g_IDEImageSelectDialog:ShowSelect()
+	if path == nil then
+		return
+	end
+	self:ImagePathSelectCallback("show_disabled", self.HandleShowDisabledFOCUSOUT, nil, path)
 end
+ScrollButtonS.HandleShowDisabledSelect = Lua.CoWrap(ScrollButtonS.HandleShowDisabledSelect)
 
 function ScrollButtonS:HandleShowTextFOCUSOUT(event)
 	g_IDEAttrTextDialog:ShowDialog(self, "show_text", false)

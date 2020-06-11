@@ -1,63 +1,16 @@
 
 namespace ALittleIDE;
 
-struct IDEAttrImageSelectItemInfo
+public class IDEAttrImageDialog : AUIPlugin.AUIFileSelectDialog
 {
-	ALittle.DisplayObject name;
-	ALittle.DisplayObject frame;
-	ALittle.Image image;
-	ALittle.DisplayObject button;
-}
-
-struct IDEAttrImageSelectItemUserData
-{
-	string path;
-	bool directory;
-}
-
-struct IDEAttrImageSelectCollectRunTime
-{
-	int cur_count;
-	int total_count;
-}
-
-public class IDEAttrImageDialog
-{
-	private double _real_size;
-	private string _src_title;
-	private Functor<(string)> _callback;
-	private string _base_path;
-	private string _real_path;
-	
-	private ALittle.Dialog _dialog;
-	private ALittle.ScrollList _scroll_list;
-
-	private ALittle.DisplayObject _path_input;
-	private ALittle.DisplayObject _search_input;
-
-	private ALittle.DisplayObject _image_select_menu;
-	private ALittle.Dialog _image_pre_dialog;
-	private ALittle.Image _pre_image;
-	private ALittle.DisplayObject _drag_lr_quad;
-	private ALittle.DisplayObject _drag_ud_quad;
-	private ALittle.DisplayObject _image_select_cut;
-	private ALittle.DisplayObject _image_select_del;
-	private ALittle.DisplayObject _image_select_copyimagecode;
-	private ALittle.DisplayObject _image_select_copygrid9imagecode;
-
-	public ctor()
+	public ctor(string title, ALittle.DisplayLayout layer, List<string> ext_list)
 	{
-		this._real_size = 100;
-		this._src_title = null;
-	
-		this._callback = null;
-		this._base_path = null;
-		this._real_path = null;
 	}
 	
 	public fun Setup()
 	{
 		g_IDEProject.AddEventListener(this, this.HandleCloseProject);
+		this.AddEventListener(this, this.HandleImageSelectRButtonDown);
 	}
 	
 	public fun HandleCloseProject(IDEProjectCloseEvent event)
@@ -67,362 +20,34 @@ public class IDEAttrImageDialog
 		this._scroll_list.RemoveAllChild();
 		this.HideDialog();
 	}
-	
-	////////////////////////////////////////////////////////////////////////////////////////
-	public fun Close()
-	{
-		this._callback = null;
-		this._base_path = null;
-		this._real_path = null;
-		if (this._dialog != null) this._dialog.visible = false;
-	}
-	
-	public fun HideDialog()
-	{
-		this._dialog.visible = false;
-		this._callback = null;
-	}
-	
-	public fun ShowDialog(string path, Functor<(string)> callback)
-	{
-		//- 检查项目是否打开
-		if (g_IDEProject.project == null)
-		{
-			g_AUITool.ShowNotice("错误", "当前没有项目打开");
-			return;
-		}
-	
-		// 创建模态提示对话框，并添加到模态层
-		if (this._dialog == null)
-		{
-			this._dialog = g_Control.CreateControl{ALittle.Dialog}("ide_image_select_dialog", this);
-			this._src_title = this._dialog.title;
-			if (this._src_title == null) this._src_title = "图片选择器";
-		}
 
-		if (callback != null)
-		{
-			g_IDECenter.dialog_layer.RemoveChild(this._dialog);
-            A_LayerManager.AddToModal(this._dialog);
-		}
-		else
-		{
-            A_LayerManager.RemoveFromModal(this._dialog);
-			g_IDECenter.dialog_layer.AddChild(this._dialog);
-        }
-	
-		if (path != null || this._real_path == null)
-		{
-			if (this.SetPath(path) == false) return;
-		}
-	
-		this._callback = callback;
-		this._dialog.visible = true;
-	}
-    
-    public fun System_SetVDragCursor(ALittle.UIEvent event) { ALittle.System_SetVDragCursor(); }
-    public fun System_SetNormalCursor(ALittle.UIEvent event) { ALittle.System_SetNormalCursor(); }
-    public fun System_SetHDragCursor(ALittle.UIEvent event) { ALittle.System_SetHDragCursor(); }
-    public fun System_SetHVDragCursor(ALittle.UIEvent event) { ALittle.System_SetHVDragCursor(); }
-	
-	public fun CreateImgItem(string file_name, string rel_path, string abs_path) : ALittle.DisplayObject
-	{
-		var ext = ALittle.File_GetFileExtByPath(file_name);
-		ext = ALittle.String_Upper(ext);
-		if (ext == "PNG" || ext == "JPG")
-		{
-			var info = new IDEAttrImageSelectItemInfo();
-			var item = g_Control.CreateControl{ALittle.DisplayObject}("ide_image_select_item", info);
-			info.name.text = file_name;
-			// 计算图片的大小
-
-			// 获取图片大小
-			var width:double = null;
-			var height:double = null;
-			var surface = ALittle.System_LoadSurface(abs_path);
-			if (surface != null)
-			{
-				width = ALittle.System_GetSurfaceWidth(surface);
-				height = ALittle.System_GetSurfaceHeight(surface);
-				ALittle.System_FreeSurface(surface);
-			}
-			if (width == null)
-			{
-				width = info.frame.width;
-				height = info.frame.height;
-			}
-			else
-			{
-				if (width < height)
-				{
-					var rate = width / height;
-					height = info.frame.height;
-					width = rate * height;
-				}
-				else
-				{
-					var rate = height / width;
-					width = info.frame.width;
-					height = rate * width;
-				}
-			}
-			info.image.SetTextureCut(abs_path, ALittle.Math_Floor(info.frame.width), ALittle.Math_Floor(info.frame.height), true);
-			info.image.width = width;
-			info.image.height = height;
-			info.image.UpdateLayout();
-			info.button.drag_trans_target = this._scroll_list;
-			info.button.AddEventListener(this, this.HandleItemRButtonDown);
-			info.button.AddEventListener(this, this.HandleItemClick);
-			info.button.AddEventListener(this, this.HandleItemMoveIn);
-			info.button.AddEventListener(this, this.HandleItemMoveOut);
-			info.button.AddEventListener(this, this.HandleItemMouseMove);
-			info.button.AddEventListener(this, this.HandleImageDropFile);
-	
-			var user_data = new IDEAttrImageSelectItemUserData();
-			user_data.path = rel_path;
-			user_data.directory = false;
-			info.button._user_data = user_data;
-			item._user_data = user_data;
-	
-			return item;
-		}
-
-		return null;
-	}
-	
-	public fun CreateDirItem(string file_name, string rel_path, string abs_path) : ALittle.DisplayObject
-	{
-		var info = new IDEAttrImageSelectItemInfo();
-		var item = g_Control.CreateControl{ALittle.DisplayObject}("ide_image_select_item", info);
-		info.name.text = file_name;
-		info.button.drag_trans_target = this._scroll_list;
-		info.button.AddEventListener(this, this.HandleItemClick);
-		info.button.AddEventListener(this, this.HandleItemRButtonDown);
-		info.button.AddEventListener(this, this.HandleImageDropFile);
-	
-		var user_data = new IDEAttrImageSelectItemUserData();
-		user_data.path = rel_path;
-		user_data.directory = true;
-		info.button._user_data = user_data;
-		item._user_data = user_data;
-	
-		return item;
-	}
-	
-	public fun BrowserCollect(string browser_path) : List<ALittle.DisplayObject>, List<ALittle.DisplayObject>
-	{
-		var item_list_dir = new List<ALittle.DisplayObject>();
-		var item_list_img = new List<ALittle.DisplayObject>();
-		// 遍历文件夹
-		var file_map = ALittle.File_GetFileNameListByDir(browser_path);
-		for (var file, info in file_map)
-		{
-			var path = browser_path.."/"..file;
-			// 获取相对路劲
-			var rel_path = ALittle.String_Sub(path, ALittle.String_Len(this._base_path) + 2);
-			// 检查路径类型
-			var attr = ALittle.File_GetFileAttr(path);
-			if (attr.mode == "directory")
-			{
-				var item = this.CreateDirItem(file, rel_path, path);
-				if (item != null) ALittle.List_Push(item_list_dir, item);
-			}
-			else
-			{
-				var item = this.CreateImgItem(file, rel_path, path);
-				if (item != null) ALittle.List_Push(item_list_img, item);
-			}
-		}
-		return item_list_dir, item_list_img;
-	}
-	
-	public fun SearchCollect(string search_path, string name, [Nullable] List<ALittle.DisplayObject> item_list, [Nullable] IDEAttrImageSelectCollectRunTime run_time) : List<ALittle.DisplayObject>, IDEAttrImageSelectCollectRunTime
-	{
-		if (item_list == null) item_list = new List<ALittle.DisplayObject>();
-		if (run_time == null)
-		{
-			run_time = new IDEAttrImageSelectCollectRunTime();
-			run_time.cur_count = 0;
-			run_time.total_count = 100;
-		}
-		if (name == "" || name == null) return item_list, run_time;
-	
-		// 遍历文件夹
-		var file_map = ALittle.File_GetFileNameListByDir(search_path);
-		for (var file, info in file_map)
-		{
-			var path = search_path.."/"..file;
-			// 获取相对路劲
-			var rel_path = ALittle.String_Sub(path, ALittle.String_Len(this._base_path) + 2);
-			// 检查路径类型
-			var attr = ALittle.File_GetFileAttr(path);
-			if (attr.mode == "directory")
-				this.SearchCollect(path, name, item_list, run_time);
-			elseif (ALittle.String_Find(file, name) != null)
-			{
-				var item = this.CreateImgItem(file, rel_path, path);
-				if (item != null)
-				{
-					run_time.cur_count = run_time.cur_count + 1;
-					ALittle.List_Push(item_list, item);
-				}
-			}
-			if (run_time.cur_count >= run_time.total_count)
-				return item_list, run_time;
-		}
-	
-		return item_list, run_time;
-	}
-
-	public static ItemListCmp(ALittle.DisplayObject a, ALittle.DisplayObject b) : bool
-	{
-		var a_user_data:IDEAttrImageSelectItemUserData = a._user_data;
-		var b_user_data:IDEAttrImageSelectItemUserData = b._user_data;
-		return a_user_data.path < b_user_data.path;
-	}
-	
-	public fun CreateItemAndAddToList(List<ALittle.DisplayObject> item_list_dir, List<ALittle.DisplayObject> item_list_img)
-	{
-		// 根据文件名进行排序，文件夹永远你在前面
-		ALittle.List_Sort(item_list_dir, IDEAttrImageDialog.ItemListCmp);
-		ALittle.List_Sort(item_list_img, IDEAttrImageDialog.ItemListCmp);
-		var item_list = new List<ALittle.DisplayObject>();
-		for (var index, item in item_list_dir)
-			ALittle.List_Push(item_list, item);
-        
-		for (var index, item in item_list_img)
-			ALittle.List_Push(item_list, item);
-	
-		var col_count = ALittle.Math_Floor(this._scroll_list.width / this._real_size);
-		var remain_count = 0;
-		var container:ALittle.Linear = null;
-		// 遍历列表
-		for (var index, item in item_list)
-		{
-			if (remain_count == 0)
-			{
-				container = new ALittle.Linear(g_Control);
-				container.type = ALittle.UIEnumTypes.TYPE_H;
-				container.height = item.height;
-				this._scroll_list.AddChild(container);
-				container.AddChild(item);
-	
-				remain_count = col_count - 1;
-			}
-			else
-			{
-				remain_count = remain_count - 1;
-				container.AddChild(item);
-			}
-		}
-	}
-	
-	public fun Refresh()
-	{
-		// 清空所有
-		this._scroll_list.RemoveAllChild();
-	
-		this._path_input.text = ALittle.String_Sub(this._real_path, ALittle.String_Len(this._base_path) + 2);
-		this._search_input.text = "";
-		this._dialog.title = this._src_title;
-		var item_list_dir, item_list_img = this.BrowserCollect(this._real_path);
-	
-		this.CreateItemAndAddToList(item_list_dir, item_list_img);
-	}
-	
-	public fun Search(string name)
-	{
-		// 清空所有
-		this._scroll_list.RemoveAllChild();
-	
-		var item_list_img, run_time = this.SearchCollect(this._real_path, name);
-		// 提示一下只显示前面100个
-		if (run_time.cur_count >= run_time.total_count)
-			this._dialog.title = this._src_title.."(筛选出来的数量太多，只显示前"..run_time.total_count.."个)";
-
-		this.CreateItemAndAddToList(new List<ALittle.DisplayObject>(), item_list_img);
-	}
-	
-	public fun SetPath(string path) : bool
-	{
-		//- 检查项目是否打开
-		if (g_IDEProject.project == null)
-		{
-			g_AUITool.ShowNotice("错误", "当前没有项目打开");
-			return false;
-		}
-	
-		// 查找的图片文件必须在Texture下面
-		var real_path = g_IDEProject.project.base_path.."Texture";
-		if (path == null) path = "";
-		if (path != "") real_path = real_path.."/"..path;
-	
-		// 检查路径是否存在
-		var attr = ALittle.File_GetFileAttr(real_path);
-		if (attr == null || attr.mode != "directory")
-		{
-			g_AUITool.ShowNotice("错误", "无效路径");
-			return false;
-		}
-		// 刷新界面
-		this._base_path = g_IDEProject.project.base_path.."Texture";
-		this._real_path = real_path;
-		this.Refresh();
-
-		return true;
-	}
-	
-	public fun HandleSetPathClick(ALittle.UIEvent event)
-	{
-		this.SetPath(this._path_input.text);
-	}
-	
-	public fun HandleSetPrePathClick(ALittle.UIEvent event)
-	{
-		var rel_path = ALittle.String_Sub(this._real_path, ALittle.String_Len(this._base_path) + 2);
-		if (rel_path == "") return;
-		this.SetPath(ALittle.File_GetFilePathByPath(rel_path));
-	}
-	
-	public fun HandleSearchClick(ALittle.UIEvent event)
-	{
-		this.Search(this._search_input.text);
-	}
-	
-	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	public fun HandleItemRButtonDown(ALittle.UIRButtonDownEvent event)
+	public fun HandleImageSelectRButtonDown(AUIPlugin.AUIFileSelectRightButtonDownEvent event)
 	{
 		A_LayerManager.RemoveFromTip(this._image_pre_dialog);
 
-		if (this._image_select_menu == null)
-			this._image_select_menu = g_Control.CreateControl{ALittle.DisplayObject}("ide_image_select_menu", this);
+		var ext = ALittle.File_GetFileExtByPathAndUpper(event.path);
+		if (ext != "PNG" && ext != "JPG")
+		{
+			var menu = new AUIPlugin.AUIRightMenu();
+			menu.AddItem("删除", bind(this.HandleImageDeleteClick, this, event));
+            menu.Show();
+			return;
+        }
 
-		A_LayerManager.ShowFromRight(this._image_select_menu);
-
-		var user_data:IDEAttrImageSelectItemUserData = event.target._user_data;
-	
-		this._image_select_menu.x = A_UISystem.mouse_x;
-		this._image_select_menu.y = A_UISystem.mouse_y;
-		this._image_select_cut.disabled = user_data.directory;
-		this._image_select_del.disabled = false;
-		this._image_select_copyimagecode.disabled = user_data.directory;
-		this._image_select_copygrid9imagecode.disabled = user_data.directory;
-	
-		this._image_select_menu._user_data = user_data;
+		var menu = new AUIPlugin.AUIRightMenu();
+		menu.AddItem("复制九宫格代码", bind(this.HandleImageCopyGrid9ImageCodeClick, this, event));
+		menu.AddItem("复制图片代码", bind(this.HandleImageCopyImageCodeClick, this, event));
+		menu.AddItem("图片裁剪", bind(this.HandleImageEditClick, this, event));
+		menu.AddItem("删除", bind(this.HandleImageDeleteClick, this, event));
+		menu.Show();
 	}
 	
-	public fun HandleImageCopyGrid9ImageCodeClick(ALittle.UIEvent event)
+	public fun HandleImageCopyGrid9ImageCodeClick(AUIPlugin.AUIFileSelectRightButtonDownEvent event)
 	{
-		A_LayerManager.HideFromRight(this._image_select_menu);
-
-		var user_data:IDEAttrImageSelectItemUserData = this._image_select_menu._user_data;
-		this._image_select_menu._user_data = null;
-	
-		var display_info = IDEUtility_GenerateGrid9ImageInfo(g_IDEProject.project.base_path.."Texture/", user_data.path);
+		var display_info = IDEUtility_GenerateGrid9ImageInfo(g_IDEProject.project.base_path.."Texture/", event.path);
 		if (display_info == null)
 		{
-			g_AUITool.ShowNotice("错误", "图片加载失败:"..cast<string>(user_data.path));
+			g_AUITool.ShowNotice("错误", "图片加载失败:"..cast<string>(event.path));
 			return;
 		}
 		var copy_list = new List<IDEControlCopyInfo>();
@@ -433,21 +58,11 @@ public class IDEAttrImageDialog
 		ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list));
 	}
 	
-	public fun HandleImageCopyImageCodeClick(ALittle.UIEvent event)
-	{
-		A_LayerManager.HideFromRight(this._image_select_menu);
-
-		var user_data:IDEAttrImageSelectItemUserData = this._image_select_menu._user_data;
-		this._image_select_menu._user_data = null;
-	
-		this.CopyImageCodeImpl(user_data.path);
-	}
-	
-	public fun CopyImageCodeImpl(string file_path)
+	public fun HandleImageCopyImageCodeClick(AUIPlugin.AUIFileSelectRightButtonDownEvent event)
 	{
 		var width = 100;
 		var height = 100;
-		var surface = ALittle.System_LoadSurface(g_IDEProject.project.base_path.."Texture/"..file_path);
+		var surface = ALittle.System_LoadSurface(this._base_path.."/"..event.path);
 		if (surface != null)
 		{
 			width = ALittle.System_GetSurfaceWidth(surface);
@@ -457,7 +72,7 @@ public class IDEAttrImageDialog
 
 		var display_info = new ALittle.DisplayInfo();
 		display_info.__class = "Image";
-		display_info.texture_name = file_path;
+		display_info.texture_name = event.path;
 		display_info.width_type = ALittle.UIEnumTypes.POS_ABS;
 		display_info.width_value = width;
 		display_info.height_type = ALittle.UIEnumTypes.POS_ABS;
@@ -471,225 +86,24 @@ public class IDEAttrImageDialog
 		ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list));
 	}
 	
-	public fun HandleImageEditClick(ALittle.UIEvent event)
+	public fun HandleImageEditClick(AUIPlugin.AUIFileSelectRightButtonDownEvent event)
 	{
-		A_LayerManager.HideFromRight(this._image_select_menu);
-
-		var user_data:IDEAttrImageSelectItemUserData = this._image_select_menu._user_data;
-		this._image_select_menu._user_data = null;
-	
-		g_IDEEditImageDialog.ShowDialog(g_IDEProject.project.base_path.."Texture/"..user_data.path, g_IDEProject.project.base_path.."Texture");
+		g_IDEEditImageDialog.ShowDialog(this._base_path.."/"..event.path, this._base_path);
 	}
 	
-	public async fun HandleImageDeleteClick(ALittle.UIEvent event)
+	public async fun HandleImageDeleteClick(AUIPlugin.AUIFileSelectRightButtonDownEvent event)
 	{
-		A_LayerManager.HideFromRight(this._image_select_menu);
-
-		var user_data:IDEAttrImageSelectItemUserData = this._image_select_menu._user_data;
-		this._image_select_menu._user_data = null;
-
-		var tittle = "确定要永久删除该图片吗？";
-		if (user_data.directory) tittle = "确定要永久删除该文件夹，以及子文件和图片吗？";
+		var tittle = "确定要永久删除该文件吗？";
+		if (event.directory) tittle = "确定要永久删除该文件夹，以及子文件吗？";
 
 		var result = g_AUITool.DeleteNotice("删除", tittle);
 		if (result == AUIPlugin.AUIToolOption.YES)
 		{
-			if (user_data.directory)
-				ALittle.File_DeleteDeepDir(g_IDEProject.project.base_path.."Texture/"..user_data.path);
+			if (event.directory)
+				ALittle.File_DeleteDeepDir(this._base_path.."/"..event.path);
 			else
-				ALittle.File_DeleteFile(g_IDEProject.project.base_path.."Texture/"..user_data.path);
+				ALittle.File_DeleteFile(this._base_path.."/"..event.path);
 			this.Refresh();
         }
-	}
-
-	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	public fun HandleImageDropFile(ALittle.UIDropFileEvent event)
-	{
-		var real_path = this._real_path;
-		var user_data:IDEAttrImageSelectItemUserData = event.target._user_data;
-		if (user_data != null && user_data.directory)
-			real_path = g_IDEProject.project.base_path.."Texture/"..user_data.path;
-
-		var name = ALittle.File_GetFileNameByPath(event.path);
-		
-		// 因为lua内部文件系统以来ansi编码
-		var ansi_path = event.path;
-		[Language(Lua)]
-		ansi_path = lua.utf8.ansi2utf8(ansi_path);
-
-		// 判断是文件夹还是文件名
-		var attr = ALittle.File_GetFileAttr(ansi_path);
-		if (attr == null) return;
-
-		if (attr.mode == "directory")
-		{
-			var check, error = IDEUtility_CheckResourceName(name);
-			if (!check)
-			{
-				g_AUITool.ShowNotice("提示", error);
-				return;
-			}
-
-            // 拷贝文件夹
-			ALittle.File_MakeDir(real_path.."/"..name);
-			ALittle.File_CopyDeepDir(ansi_path, real_path.."/"..name, "PNG");
-			ALittle.File_CopyDeepDir(ansi_path, real_path.."/"..name, "JPG");
-        }
-		else
-		{
-			var upper_ext = ALittle.File_GetFileExtByPathAndUpper(event.path);
-			if (upper_ext != "PNG" && upper_ext != "JPG")
-			{
-				g_AUITool.ShowNotice("提示", "只能接收png或者jpg文件");
-				return;
-            }
-			
-			var check, error = IDEUtility_CheckResourceName(ALittle.File_GetJustFileNameByPath(event.path));
-			if (!check)
-			{
-				g_AUITool.ShowNotice("提示", error);
-				return;
-			}
-
-            ALittle.File_CopyFile(event.path, real_path.."/"..name);
-        }
-
-		this.Refresh();
-    }
-
-	public async fun HandleNewDirectoryClick(ALittle.UIClickEvent event)
-	{
-		var x, y = event.target.LocalToGlobal();
-		var name = g_AUITool.ShowRename("", x, y + event.target.height, 200);
-		if (name == null || name == "") return;
-    
-		var check, error = IDEUtility_CheckResourceName(name);
-		if (!check)
-		{
-            g_AUITool.ShowNotice("错误", error);
-			return;
-        }
-		var result = ALittle.File_MakeDir(this._real_path.."/"..name);
-		if (!result)
-		{
-            g_AUITool.ShowNotice("错误", "文件夹创建失败");
-			return;
-        }
-		this.Refresh();
-    }
-	
-	public fun HandleItemClick(ALittle.UIClickEvent event)
-	{
-		var user_data:IDEAttrImageSelectItemUserData = event.target._user_data;
-	
-		if (user_data.directory)
-		{
-			// 刷新界面
-			this._base_path = g_IDEProject.project.base_path.."Texture";
-			this._real_path = g_IDEProject.project.base_path.."Texture/"..user_data.path;
-			this.Refresh();
-		}
-		else
-		{
-			if (this._callback != null)
-			{
-				this._callback(user_data.path);
-				this._callback = null;
-				this._dialog.visible = false;
-			}
-		}
-	}
-	
-	public fun HandleItemMoveIn(ALittle.UIMoveInEvent event)
-	{
-		if (this._image_pre_dialog == null)
-			this._image_pre_dialog = g_Control.CreateControl{ALittle.Dialog}("ide_image_pre_dialog", this);
-        
-		A_LayerManager.AddToTip(this._image_pre_dialog);
-
-		var user_data:IDEAttrImageSelectItemUserData = event.target._user_data;
-		var path = g_IDEProject.project.base_path.."Texture/"..user_data.path;
-		this._pre_image.SetTextureCut(path, 0, 0, true, bind(this.HandleItemPreViewCallback, this));
-	
-		this.UpdateImagePreDialogPos();
-	}
-	
-	public fun HandleItemPreViewCallback(ALittle.Image image, bool result)
-	{
-		var width:double = image.texture_width;
-		image.width = width;
-		if (width < 100) width = 100;
-		if (width > A_UISystem.view_width)
-		{
-			width = A_UISystem.view_width;
-			image.width = width;
-		}
-		this._image_pre_dialog.width = width;
-		image.x = (width - image.width) / 2;
-	
-		var height:double = image.texture_height;
-		image.height = height;
-		if (height < 50) height = 50;
-		if (height > A_UISystem.view_height - this._image_pre_dialog.head_size)
-		{
-			height = A_UISystem.view_height - this._image_pre_dialog.head_size;
-			image.height = height;
-		}
-		image.y = (height - image.height) / 2;
-		this._image_pre_dialog.height = this._image_pre_dialog.head_size + height;
-	}
-	
-	public fun HandleItemMoveOut(ALittle.UIMoveOutEvent event)
-	{
-		A_LayerManager.RemoveFromTip(this._image_pre_dialog);
-	}
-	
-	public fun HandleItemMouseMove(ALittle.UIMouseMoveEvent event)
-	{
-		this.UpdateImagePreDialogPos();
-	}
-	
-	public fun UpdateImagePreDialogPos()
-	{
-		if (this._image_pre_dialog == null) return;
-		var x = A_UISystem.mouse_x + 20;
-		if (x + this._image_pre_dialog.width > A_UISystem.view_width)
-			x = A_UISystem.view_width - this._image_pre_dialog.width;
-
-		var y = A_UISystem.mouse_y + 20;
-		if (y + this._image_pre_dialog.height > A_UISystem.view_height)
-			y = A_UISystem.view_height - this._image_pre_dialog.height;
-	
-		this._image_pre_dialog.x = x;
-		this._image_pre_dialog.y = y;
-	}
-	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	public fun HandleDialogDrag(ALittle.UIButtonDragEvent event)
-	{
-		var delta_x = event.delta_x;
-		var delta_y = event.delta_y;
-	
-		if (event.target == this._drag_lr_quad)
-			delta_y = 0;
-		elseif (event.target == this._drag_ud_quad)
-			delta_x = 0;
-
-		if (this._dialog.width + delta_x < 506)
-			delta_x = 506 - this._dialog.width;
-		if (this._dialog.height + delta_y < 200)
-			delta_y = 200 - this._dialog.height;
-	
-		this._dialog.width = this._dialog.width + delta_x;
-		this._dialog.height = this._dialog.height + delta_y;
-	}
-	
-	public fun HandleDialogDragEnd(ALittle.UIButtonDragEndEvent event)
-	{
-		this.Refresh();
 	}
 }
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-protected var g_IDEAttrImageDialog = new IDEAttrImageDialog();

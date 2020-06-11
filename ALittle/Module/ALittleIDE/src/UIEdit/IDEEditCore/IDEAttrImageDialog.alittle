@@ -478,7 +478,7 @@ public class IDEAttrImageDialog
 		var user_data:IDEAttrImageSelectItemUserData = this._image_select_menu._user_data;
 		this._image_select_menu._user_data = null;
 	
-		g_IDEEditImageDialog.ShowDialog(g_IDEProject.project.base_path.."Texture/"..user_data.path);
+		g_IDEEditImageDialog.ShowDialog(g_IDEProject.project.base_path.."Texture/"..user_data.path, g_IDEProject.project.base_path.."Texture");
 	}
 	
 	public async fun HandleImageDeleteClick(ALittle.UIEvent event)

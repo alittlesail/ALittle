@@ -1,0 +1,52 @@
+
+namespace AUIPlugin;
+
+public class AUIEditImageDialog
+{
+	private ALittle.DisplayObject _dialog;
+	private AUIImageCutPlugin _cut_plugin;
+	private string _save_dir;
+	
+	public fun HideDialog()
+	{
+		if (this._dialog != null)
+		{
+			this._dialog.visible = false;
+			this._cut_plugin.Clear();
+		}
+	}
+	
+	public fun ShowDialog(string path, string save_dir)
+	{
+		// 创建模态提示对话框，并添加到模态层
+		if (this._dialog == null)
+		{
+			this._dialog = g_Control.CreateControl{ALittle.DisplayObject}("ide_image_edit_dialog", this);
+			A_LayerManager.AddToModal(this._dialog);
+		}
+	
+		this._save_dir = save_dir;
+		this._cut_plugin.EditTexture(path);
+		this._dialog.visible = true;
+	}
+	
+	private fun HandleCancelClick(ALittle.UIEvent event)
+	{
+		this.HideDialog();
+	}
+	
+	private fun HandleSaveClick(ALittle.UIEvent event)
+	{
+		this._cut_plugin.Cut();
+	}
+	
+	private fun HandleSaveToClick(ALittle.UIEvent event)
+	{
+		A_OtherSystem.SystemSaveFile(event.target, "input_file_name.png", this._save_dir);
+	}
+	
+	private fun HandleSystemSaveFile(ALittle.UISystemSaveFileEvent event)
+	{
+		this._cut_plugin.Cut(event.path);
+	}
+}

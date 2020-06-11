@@ -27,6 +27,8 @@ g_ScriptBasePath = nil
 g_ModuleBasePathEx = nil
 g_IDEConfig = nil
 g_IDEServerConfig = nil
+g_IDEWebLoginManager = nil
+g_IDEEditImageDialog = nil
 function __Module_Setup(layer_group, control, module_base_path, script_base_path)
 	g_Control = control
 	g_LayerGroup = layer_group
@@ -34,6 +36,8 @@ function __Module_Setup(layer_group, control, module_base_path, script_base_path
 	g_ModuleBasePathEx = ALittle.File_BaseFilePath() .. module_base_path
 	g_ScriptBasePath = script_base_path
 	A_ModuleSystem:LoadPlugin("AUIPlugin")
+	g_IDEWebLoginManager = AUIPlugin.AUIWebLoginManager()
+	g_IDEEditImageDialog = AUIPlugin.AUIEditImageDialog()
 	Require(script_base_path, "IDECenter")
 	g_IDECenter:Setup()
 end

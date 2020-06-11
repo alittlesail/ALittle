@@ -1,5 +1,5 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittleIDE", package.seeall)
+module("AUIPlugin", package.seeall)
 
 local ___rawset = rawset
 local ___pairs = pairs
@@ -7,9 +7,9 @@ local ___ipairs = ipairs
 
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
-IDEImageCutPlugin = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDEImageCutPlugin")
+AUIImageCutPlugin = Lua.Class(ALittle.DisplayLayout, "AUIPlugin.AUIImageCutPlugin")
 
-function IDEImageCutPlugin:Ctor(ctrl_sys)
+function AUIImageCutPlugin:Ctor(ctrl_sys)
 	___rawset(self, "_is_circle", false)
 	___rawset(self, "_cut_size", 200)
 	___rawset(self, "_MAX_WIDTH", 200)
@@ -20,10 +20,7 @@ function IDEImageCutPlugin:Ctor(ctrl_sys)
 	___rawset(self, "_cut_center_h", 0)
 end
 
-function IDEImageCutPlugin:TCtor()
-end
-
-function IDEImageCutPlugin:EditTexture(file_path, is_circle, cut_size)
+function AUIImageCutPlugin:EditTexture(file_path, is_circle, cut_size)
 	self._is_circle = is_circle or false
 	if cut_size == nil then
 		cut_size = 200
@@ -56,7 +53,7 @@ function IDEImageCutPlugin:EditTexture(file_path, is_circle, cut_size)
 	self._src_image:SetTextureCut(file_path, ALittle.Math_Floor(max_width), ALittle.Math_Floor(max_height), false, Lua.Bind(self.LoadTextureCallback, self))
 end
 
-function IDEImageCutPlugin:Clear()
+function AUIImageCutPlugin:Clear()
 	if self._src_image ~= nil then
 		self._image_container:RemoveChild(self._src_image)
 		self._src_image = nil
@@ -64,7 +61,7 @@ function IDEImageCutPlugin:Clear()
 	self._edit_container.visible = false
 end
 
-function IDEImageCutPlugin:Cut(target_path)
+function AUIImageCutPlugin:Cut(target_path)
 	if self._cut_center_w <= 0 then
 		return false
 	end
@@ -131,7 +128,7 @@ function IDEImageCutPlugin:Cut(target_path)
 	return result
 end
 
-function IDEImageCutPlugin:LoadTextureCallback(image, result)
+function AUIImageCutPlugin:LoadTextureCallback(image, result)
 	if result == false then
 		return
 	end
@@ -159,7 +156,7 @@ function IDEImageCutPlugin:LoadTextureCallback(image, result)
 	self:UpdateEditQuad(self._cut_center_x, self._cut_center_y, self._cut_center_w, self._cut_center_h)
 end
 
-function IDEImageCutPlugin:UpdateEditQuad(x, y, w, h)
+function AUIImageCutPlugin:UpdateEditQuad(x, y, w, h)
 	self._edit_grid9.top_size = y
 	self._edit_grid9.bottom_size = ALittle.Math_Ceil(self._edit_container.height - y - h)
 	self._edit_grid9.left_size = x
@@ -174,7 +171,7 @@ function IDEImageCutPlugin:UpdateEditQuad(x, y, w, h)
 	self._right_bottom_drag.y = y + h - self._right_bottom_drag.height / 2
 end
 
-function IDEImageCutPlugin:HandleDrag(event)
+function AUIImageCutPlugin:HandleDrag(event)
 	if event.target == self._left_top_drag then
 		local delta_x = event.delta_x
 		local delta_y = event.delta_y

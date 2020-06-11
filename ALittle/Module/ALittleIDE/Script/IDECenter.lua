@@ -266,4 +266,3 @@ function IDECenter:HandleAccountDropdownChange(event)
 end
 
 g_IDECenter = IDECenter()
-g_IDEWebLoginManager = AUIPlugin.AUIWebLoginManager()

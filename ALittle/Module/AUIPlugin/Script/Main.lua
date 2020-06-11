@@ -38,6 +38,8 @@ function __Plugin_Setup(control, module_base_path, script_base_path)
 	Require(script_base_path, "AUITool")
 	Require(script_base_path, "AUIRightMenu")
 	Require(script_base_path, "AUIWebLoginManager")
+	Require(script_base_path, "AUIImageCutPlugin")
+	Require(script_base_path, "AUIEditImageDialog")
 	g_AUIIMEManager:Setup()
 end
 __Plugin_Setup = Lua.CoWrap(__Plugin_Setup)

@@ -312,4 +312,3 @@ class IDECenter
 }
 
 protected var g_IDECenter = new IDECenter();
-protected var g_IDEWebLoginManager = new AUIPlugin.AUIWebLoginManager();

@@ -440,7 +440,7 @@ function IDEAttrImageDialog:HandleImageEditClick(event)
 	A_LayerManager:HideFromRight(self._image_select_menu)
 	local user_data = self._image_select_menu._user_data
 	self._image_select_menu._user_data = nil
-	g_IDEEditImageDialog:ShowDialog(g_IDEProject.project.base_path .. "Texture/" .. user_data.path)
+	g_IDEEditImageDialog:ShowDialog(g_IDEProject.project.base_path .. "Texture/" .. user_data.path, g_IDEProject.project.base_path .. "Texture")
 end
 
 function IDEAttrImageDialog:HandleImageDeleteClick(event)

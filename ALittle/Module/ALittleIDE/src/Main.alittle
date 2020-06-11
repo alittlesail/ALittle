@@ -37,6 +37,9 @@ protected var g_ModuleBasePathEx:string;
 protected var g_IDEConfig:ALittle.IJsonConfig;
 protected var g_IDEServerConfig:ALittle.IJsonConfig;
 
+protected var g_IDEWebLoginManager:AUIPlugin.AUIWebLoginManager;
+protected var g_IDEEditImageDialog:AUIPlugin.AUIEditImageDialog;
+
 // 模块入口函数
 public async static __Module_Setup(ALittle.DisplayLayout layer_group, ALittle.ControlSystem control
                             , string module_base_path, string script_base_path)
@@ -51,6 +54,9 @@ public async static __Module_Setup(ALittle.DisplayLayout layer_group, ALittle.Co
     // 加载UI插件
     A_ModuleSystem.LoadPlugin("AUIPlugin");
     
+    g_IDEWebLoginManager = new AUIPlugin.AUIWebLoginManager();
+    g_IDEEditImageDialog = new AUIPlugin.AUIEditImageDialog();
+
     // 这里加载必要的代码，最好把所有的都加载进来
     alittle.Require(script_base_path, "IDECenter");
     g_IDECenter.Setup();

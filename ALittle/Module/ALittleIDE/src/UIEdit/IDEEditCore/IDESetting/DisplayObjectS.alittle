@@ -1150,7 +1150,7 @@ public class DisplayObjectS
 		{
 			if (grid9)
 			{
-				var display_info = IDEUtility_GenerateGrid9ImageInfo(g_IDEProject.project.texture_path.."/", image_path);
+				var display_info = IDEUIUtility_GenerateGrid9ImageInfo(g_IDEProject.project.texture_path.."/", image_path);
 				if (display_info == null)
 				{
 					g_AUITool.ShowNotice("错误", "图片不存在:"..image_path);
@@ -1171,7 +1171,7 @@ public class DisplayObjectS
 	{
 		if (extends_v != "")
 		{
-			if (g_IDEProject.IsControlExist(extends_v) == false)
+			if (g_IDEProject.project.ui.control_map[extends_v] == null)
 			{
 				g_AUITool.ShowNotice("错误", "要继承的控件不存在:"..extends_v);
 				return ;
@@ -1223,7 +1223,7 @@ public class DisplayObjectS
 				if (include == null) include = content1.__extends;
 				if (include != null)
 				{
-					if (g_IDEProject.project.control_map[include] == null)
+					if (g_IDEProject.project.ui.control_map[include] == null)
 					{
 						g_AUITool.ShowNotice("错误", "指定__include或__extends不存在");
 						return;
@@ -1302,7 +1302,7 @@ public class DisplayObjectS
 				if (include == null) include = content1.__extends;
 				if (include != null)
 				{
-					if (g_IDEProject.project.control_map[include] == null)
+					if (g_IDEProject.project.ui.control_map[include] == null)
 					{
 						g_AUITool.ShowNotice("错误", "指定__include或__extends不存在");
 						display_object.text = "";

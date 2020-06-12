@@ -158,7 +158,7 @@ public class IDETabManager
 		var tab_index = this._main_tab.GetChildIndex(child);
 		this.CloseTab(child);
 		var name = tab_child.name;
-		var control_info = g_IDEProject.project.control_map[name];
+		var control_info = g_IDEProject.project.ui.control_map[name];
 		var new_tab_child = this.StartEditControlBySelect(control_info.name, control_info.info);
 		this._main_tab.SetChildIndex(new_tab_child.tab_body, tab_index);
 	}
@@ -228,15 +228,15 @@ public class IDETabManager
 	}
 	
 	// 是否允许删除某个控件
-	public fun CanDelete(string name) : bool, string
+	public fun CanDelete(string name) : string
 	{
 		for (var k, child in this._main_tab.childs)
 		{
 			var tab_child:IDETabChild = child._user_data;
-			var result, content = tab_child.CanDeleteControl(name);
-			if (result == false) return result, content;
+			var error = tab_child.CanDeleteControl(name);
+			if (error != null) return error;
 		}
-		return true, null;
+		return null;
 	}
 	
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////-
@@ -431,16 +431,16 @@ public class IDETabManager
 	{
 		var tab_child:IDETabChild = child._user_data;
 		var old_name = tab_child.name;
-		var result, content = g_IDEProject.CanDelete(old_name);
-		if (result == false)
+		var error = g_IDEProject.project.ui.CanDelete(old_name);
+		if (error != null)
 		{
-			g_AUITool.ShowNotice("错误", content);
+			g_AUITool.ShowNotice("错误", error);
 			return;
 		}
-		result, content = g_IDETabManager.CanDelete(old_name);
-		if (result == false)
+		error = g_IDETabManager.CanDelete(old_name);
+		if (error != null)
 		{
-			g_AUITool.ShowNotice("错误", content);
+			g_AUITool.ShowNotice("错误", error);
 			return;
 		}
 	
@@ -455,10 +455,10 @@ public class IDETabManager
 		// 检查是否有修改
 		if (old_name == new_name) return;
 		// 重命名
-		result, content = g_IDEProject.RenameControl(old_name, new_name);
-		if (result == false)
+		error = g_IDEProject.project.ui.RenameControl(old_name, new_name);
+		if (error != null)
 		{
-			g_AUITool.ShowNotice("错误", content);
+			g_AUITool.ShowNotice("错误", error);
 			return;
 		}
 	
@@ -514,7 +514,7 @@ public class IDETabManager
 	}
 	
 	// 选择控件，并编辑
-	public fun StartEditControlBySelect(string name, ALittle.DisplayInfo info) : IDETabChild
+	public fun StartEditControlBySelect(string name, const ALittle.DisplayInfo info) : IDETabChild
 	{
 		// 判断显示tab栏中是否已有该控件
 		var child = this.GetTabByName(name);

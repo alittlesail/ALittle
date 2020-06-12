@@ -8,7 +8,7 @@ public static require(string path) {}
 // Returns the type of its only argument, coded as a string.
 // The possible results of this function are
 //    "nil" (a string, not the value nil), "number", "string", "boolean", "table", "function", "thread", and "userdata".
-public static type(any object) : string {}
+public static type(const any object) : string {}
 
 // This function is a generic interface to the garbage collector.
 // It performs different functions according to its first argument, opt:

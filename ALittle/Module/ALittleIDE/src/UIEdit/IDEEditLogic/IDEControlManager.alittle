@@ -68,7 +68,7 @@ public class IDEControlManager
 		var control_info_count = 0;
 	
 		// 获取当前的项目控件资源路径
-		var control_map = project.control_map;
+		var control_map = project.ui.control_map;
 		for (var control_name, control_info in control_map)
 		{
 			if (search_type == "控件名|描述")
@@ -83,7 +83,7 @@ public class IDEControlManager
 			}
 			elseif (search_type == "插件名")
 			{
-				if (IDEUtility_HasTargetClass(control_info.info, key))
+				if (IDEUIUtility_HasTargetClass(control_info.info, key))
 				{
 					++ control_info_count;
 					control_info_list[control_info_count] = control_info;
@@ -91,7 +91,7 @@ public class IDEControlManager
 			}
 			elseif (search_type == "事件设置")
 			{
-				if (IDEUtility_HasEventCallback(control_info.info, key))
+				if (IDEUIUtility_HasEventCallback(control_info.info, key))
 				{
 					++ control_info_count;
 					control_info_list[control_info_count] = control_info;
@@ -336,13 +336,13 @@ public class IDEControlManager
 			return;
 		}
 		// 检查控件名
-		if (IDEUtility_CheckName(name) == false)
+		if (IDEUIUtility_CheckName(name) == false)
 		{
 			g_AUITool.ShowNotice("错误", "控件名不合法:"..name);
 			return;
 		}
 		// 检查控件是否存在
-		if (project.control_map[name] != null)
+		if (project.ui.control_map[name] != null)
 		{
 			g_AUITool.ShowNotice("错误", "控件已存在:"..name);
 			return;
@@ -391,16 +391,16 @@ public class IDEControlManager
 	{
 		var user_data:IDEControlItemUserData = target._user_data;
 		var name = user_data.control_info.name;
-		var result, content = g_IDEProject.CanDelete(name);
-		if (result == false)
+		var error = g_IDEProject.project.ui.CanDelete(name);
+		if (error != null)
 		{
-			g_AUITool.ShowNotice("错误", content);
+			g_AUITool.ShowNotice("错误", error);
 			return;
 		}
-		result, content = g_IDETabManager.CanDelete(name);
-		if (result == false)
+		error = g_IDETabManager.CanDelete(name);
+		if (error != null)
 		{
-			g_AUITool.ShowNotice("错误", content);
+			g_AUITool.ShowNotice("错误", error);
 			return;
 		}
         
@@ -408,10 +408,10 @@ public class IDEControlManager
 		if (del_result == AUIPlugin.AUIToolOption.YES)
 		{
 			this._control_scroll_screen.RemoveChild(target);
-			result, content = g_IDEProject.DeleteControl(user_data.control_info.name);
-			if (result == false)
+			error = g_IDEProject.project.ui.DeleteControl(user_data.control_info.name);
+			if (error != null)
 			{
-				g_AUITool.ShowNotice("提示", content);
+				g_AUITool.ShowNotice("提示", error);
 				return;
 			}
 	
@@ -441,26 +441,26 @@ public class IDEControlManager
 	// 复制控件信息
 	public fun ControlCopyInfo(string target_name, string new_name)
 	{
-		var result, content = IDEUtility_CheckName(new_name);
+		var result, content = IDEUIUtility_CheckName(new_name);
 		if (result == false)
 		{
 			g_AUITool.ShowNotice("错误", content);
 			return;
 		}
-		var info = g_IDEProject.project.control_map[new_name];
+		var info = g_IDEProject.project.ui.control_map[new_name];
 		if (info != null)
 		{
 			g_AUITool.ShowNotice("错误", "控件名已存在:"..new_name);
 			return;
 		}
-		info = g_IDEProject.project.control_map[target_name];
+		info = g_IDEProject.project.ui.control_map[target_name];
 		if (info == null)
 		{
 			g_AUITool.ShowNotice("错误", "控件不存在:"..target_name);
 			return;
 		}
-		g_IDEProject.SaveControl(new_name, ALittle.String_CopyTable(info.info));
-		info = g_IDEProject.project.control_map[new_name];
+		g_IDEProject.project.ui.SaveControl(new_name, ALittle.String_CopyTable(info.info));
+		info = g_IDEProject.project.ui.control_map[new_name];
 		if (info == null)
 		{
 			g_AUITool.ShowNotice("错误", "控件新建失败:"..new_name);
@@ -475,16 +475,16 @@ public class IDEControlManager
 	{
 		var user_data:IDEControlItemUserData = target._user_data;
 		var old_name = user_data.control_info.name;
-		var result, content = g_IDEProject.CanDelete(old_name);
-		if (result == false)
+		var error = g_IDEProject.project.ui.CanDelete(old_name);
+		if (error != null)
 		{
-			g_AUITool.ShowNotice("错误", content);
+			g_AUITool.ShowNotice("错误", error);
 			return;
 		}
-		result, content = g_IDETabManager.CanDelete(old_name);
-		if (result == false)
+		error = g_IDETabManager.CanDelete(old_name);
+		if (error != null)
 		{
-			g_AUITool.ShowNotice("错误", content);
+			g_AUITool.ShowNotice("错误", error);
 			return;
 		}
 	
@@ -492,10 +492,10 @@ public class IDEControlManager
 		var new_name = g_AUITool.ShowRename(old_name, x, y, target.width);
 		if (new_name == null || old_name == new_name) return;
 		// 重命名
-		result, content = g_IDEProject.RenameControl(old_name, new_name);
-		if (result == false)
+		error = g_IDEProject.project.ui.RenameControl(old_name, new_name);
+		if (error != null)
 		{
-			g_AUITool.ShowNotice("错误", content);
+			g_AUITool.ShowNotice("错误", error);
 			return;
 		}
 	

@@ -55,7 +55,7 @@ function IDEAttrImageDialog:HandleImageSelectRButtonDown(event)
 end
 
 function IDEAttrImageDialog:HandleImageCopyGrid9ImageCodeClick(event)
-	local display_info = IDEUtility_GenerateGrid9ImageInfo(g_IDEProject.project.texture_path .. "/", event.path)
+	local display_info = IDEUIUtility_GenerateGrid9ImageInfo(g_IDEProject.project.texture_path .. "/", event.path)
 	if display_info == nil then
 		g_AUITool:ShowNotice("错误", "图片加载失败:" .. event.path)
 		return

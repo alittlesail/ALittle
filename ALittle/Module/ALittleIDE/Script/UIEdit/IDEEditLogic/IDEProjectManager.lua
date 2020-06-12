@@ -72,7 +72,7 @@ function IDEProjectManager:HandleNewProjectConfirm(event)
 		g_AUITool:ShowNotice("错误", "请输入项目名")
 		return
 	end
-	if IDEUtility_CheckName(name) == false then
+	if IDEUIUtility_CheckName(name) == false then
 		g_AUITool:ShowNotice("错误", "项目名不合法:" .. name)
 		return
 	end

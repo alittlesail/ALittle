@@ -79,7 +79,8 @@
     <None Include="src\UIEdit\IDEEditLogic\IDEQuickManager.alittle" />
     <None Include="src\UIEdit\IDEEditLogic\IDEVersionList.alittle" />
     <None Include="src\UIEdit\IDEUICenter.alittle" />
-    <None Include="src\UIEdit\IDEUtility.alittle" />
+    <None Include="src\UIEdit\IDEUIManager.alittle" />
+    <None Include="src\UIEdit\IDEUIUtility.alittle" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

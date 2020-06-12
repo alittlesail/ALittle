@@ -71,7 +71,7 @@ function LuaSocketSchedule:LoadProto(root_path)
 		if ALittle.File_GetFileExtByPathAndUpper(file_path) == "PROTO" then
 			local file_descriptor = protobuf.importer_import(self._importer, ALittle.String_Sub(file_path, ALittle.String_Len(root_path) + 2))
 			if file_descriptor == nil then
-				return "�ļ�����ʧ��:" .. file_path
+				return "文件加载失败:" .. file_path
 			end
 			local message_count = protobuf.filedescriptor_messagetypecount(file_descriptor)
 			local i = 0

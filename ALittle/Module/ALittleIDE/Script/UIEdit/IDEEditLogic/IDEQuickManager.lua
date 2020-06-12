@@ -290,7 +290,7 @@ function IDEQuickManager:SearchCollect(search_type, key, item_list, run_time)
 		g_AUITool:ShowNotice("提示", "当前没有打开的项目")
 		return nil, nil
 	end
-	local control_map = project.control_map
+	local control_map = project.ui.control_map
 	for control_name, control_info in ___pairs(control_map) do
 		if search_type == "控件名|描述" then
 			if key == "" or ALittle.String_Find(control_name, key) ~= nil or (control_info.info.description ~= nil and ALittle.String_Find(control_info.info.description, key) ~= nil) then
@@ -301,7 +301,7 @@ function IDEQuickManager:SearchCollect(search_type, key, item_list, run_time)
 				end
 			end
 		elseif search_type == "插件名" then
-			if IDEUtility_HasTargetClass(control_info.info, key) then
+			if IDEUIUtility_HasTargetClass(control_info.info, key) then
 				local item = self:CreateItem(control_info, "控件选择器")
 				if item ~= nil then
 					run_time.item_count = run_time.item_count + 1
@@ -309,7 +309,7 @@ function IDEQuickManager:SearchCollect(search_type, key, item_list, run_time)
 				end
 			end
 		elseif search_type == "事件设置" then
-			if IDEUtility_HasEventCallback(control_info.info, key) then
+			if IDEUIUtility_HasEventCallback(control_info.info, key) then
 				local item = self:CreateItem(control_info, "控件选择器")
 				if item ~= nil then
 					run_time.item_count = run_time.item_count + 1
@@ -513,7 +513,7 @@ end
 
 function IDEQuickManager:HandleOpenProject(event)
 	self._base_path = g_IDEProject.project.base_path .. "IDETemp/QuickManager"
-	local control_map = g_IDEProject.project.control_map
+	local control_map = g_IDEProject.project.ui.control_map
 	local cfg_quick_map = g_IDEProject.project.config:GetConfig("quick_map", {})
 	for flag_type, cfg_map in ___pairs(cfg_quick_map) do
 		local quick_info = self._quick_map[flag_type]
@@ -597,7 +597,7 @@ function IDEQuickManager:FlagOther(control_name)
 end
 
 function IDEQuickManager:FlagImpl(flag_type, control_name)
-	local control_map = g_IDEProject.project.control_map
+	local control_map = g_IDEProject.project.ui.control_map
 	local control_info = control_map[control_name]
 	if control_info == nil then
 		return

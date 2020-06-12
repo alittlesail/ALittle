@@ -42,7 +42,8 @@ class IDEUICenter
     
 	public await fun Setup(ALittle.DisplayLayout edit_container)
 	{
-		alittle.Require(g_ScriptBasePath, "UIEdit/IDEUtility");
+		alittle.Require(g_ScriptBasePath, "UIEdit/IDEUIManager");
+		alittle.Require(g_ScriptBasePath, "UIEdit/IDEUIUtility");
 	
 		alittle.Require(g_ScriptBasePath, "UIEdit/IDEDataCore/IDEEnum");
 		alittle.Require(g_ScriptBasePath, "UIEdit/IDEDataCore/IDEExport");

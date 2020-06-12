@@ -10,7 +10,7 @@ private var maxn = lua.table.maxn;
 [Language(Lua)]
 private var sort = lua.table.sort;
 
-public static List_MaxN<T>(List<T> list) : int
+public static List_MaxN<T>(const List<T> list) : int
 {
     [Language(Lua)]
     return maxn(list);

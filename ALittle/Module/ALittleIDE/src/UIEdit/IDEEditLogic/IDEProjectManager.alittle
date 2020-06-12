@@ -93,7 +93,7 @@ public class IDEProjectManager
 		}
 	
 		// 检查项目名称
-		if (IDEUtility_CheckName(name) == false)
+		if (IDEUIUtility_CheckName(name) == false)
 		{
 			g_AUITool.ShowNotice("错误", "项目名不合法:"..name);
 			return;

@@ -172,7 +172,7 @@ function IDETabManager:RefreshTab(child)
 	local tab_index = self._main_tab:GetChildIndex(child)
 	self:CloseTab(child)
 	local name = tab_child.name
-	local control_info = g_IDEProject.project.control_map[name]
+	local control_info = g_IDEProject.project.ui.control_map[name]
 	local new_tab_child = self:StartEditControlBySelect(control_info.name, control_info.info)
 	self._main_tab:SetChildIndex(new_tab_child.tab_body, tab_index)
 end
@@ -226,12 +226,12 @@ end
 function IDETabManager:CanDelete(name)
 	for k, child in ___ipairs(self._main_tab.childs) do
 		local tab_child = child._user_data
-		local result, content = tab_child:CanDeleteControl(name)
-		if result == false then
-			return result, content
+		local error = tab_child:CanDeleteControl(name)
+		if error ~= nil then
+			return error
 		end
 	end
-	return true, nil
+	return nil
 end
 
 function IDETabManager:HandleMainTabSelectChange(event)
@@ -405,14 +405,14 @@ end
 function IDETabManager:ControlRename(child)
 	local tab_child = child._user_data
 	local old_name = tab_child.name
-	local result, content = g_IDEProject:CanDelete(old_name)
-	if result == false then
-		g_AUITool:ShowNotice("错误", content)
+	local error = g_IDEProject.project.ui:CanDelete(old_name)
+	if error ~= nil then
+		g_AUITool:ShowNotice("错误", error)
 		return
 	end
-	result, content = g_IDETabManager:CanDelete(old_name)
-	if result == false then
-		g_AUITool:ShowNotice("错误", content)
+	error = g_IDETabManager:CanDelete(old_name)
+	if error ~= nil then
+		g_AUITool:ShowNotice("错误", error)
 		return
 	end
 	local layout = self._main_tab:GetChildHead(child)
@@ -428,9 +428,9 @@ function IDETabManager:ControlRename(child)
 	if old_name == new_name then
 		return
 	end
-	result, content = g_IDEProject:RenameControl(old_name, new_name)
-	if result == false then
-		g_AUITool:ShowNotice("错误", content)
+	error = g_IDEProject.project.ui:RenameControl(old_name, new_name)
+	if error ~= nil then
+		g_AUITool:ShowNotice("错误", error)
 		return
 	end
 	tab_child:Rename(new_name)

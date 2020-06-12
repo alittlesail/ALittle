@@ -117,7 +117,7 @@ public class IDEQuickManager
 			info.image.SetTextureCut(abs_path, ALittle.Math_Floor(info.frame.width), ALittle.Math_Floor(info.frame.height), true);
 	}
 	
-	public fun CreateItem(IDEControlInfo control_info, string flag_type) : ALittle.DisplayObject
+	public fun CreateItem(const IDEControlInfo control_info, string flag_type) : ALittle.DisplayObject
 	{
 		var info = new IDEQuickItemInfo();
 		var item = g_Control.CreateControl{ALittle.DisplayObject}("ide_quick_select_item", info);
@@ -289,7 +289,7 @@ public class IDEQuickManager
 		}
 	
 		// 获取当前的项目控件资源路径
-		var control_map = project.control_map;
+		var control_map = project.ui.control_map;
 		for (var control_name, control_info in control_map)
 		{
 			if (search_type == "控件名|描述")
@@ -308,7 +308,7 @@ public class IDEQuickManager
 			}
 			elseif (search_type == "插件名")
 			{
-				if (IDEUtility_HasTargetClass(control_info.info, key))
+				if (IDEUIUtility_HasTargetClass(control_info.info, key))
 				{
 					var item = this.CreateItem(control_info, "控件选择器");
 					if (item != null)
@@ -320,7 +320,7 @@ public class IDEQuickManager
 			}
 			elseif (search_type == "事件设置")
 			{
-				if (IDEUtility_HasEventCallback(control_info.info, key))
+				if (IDEUIUtility_HasEventCallback(control_info.info, key))
 				{
 					var item = this.CreateItem(control_info, "控件选择器");
 					if (item != null)
@@ -562,7 +562,7 @@ public class IDEQuickManager
 	public fun HandleOpenProject(IDEProjectOpenEvent event)
 	{
 		this._base_path = g_IDEProject.project.base_path.."IDETemp/QuickManager";
-		var control_map = g_IDEProject.project.control_map;
+		var control_map = g_IDEProject.project.ui.control_map;
 		// 读取配置文件信息，创建控件
 		var cfg_quick_map = g_IDEProject.project.config.GetConfig("quick_map", new Map<string, Map<string, IDEQuickConfigInfo>>());
 		for (var flag_type, cfg_map in cfg_quick_map)
@@ -670,7 +670,7 @@ public class IDEQuickManager
 	public fun FlagImpl(string flag_type, string control_name)
 	{
 		// 获取控件信息
-		var control_map = g_IDEProject.project.control_map;
+		var control_map = g_IDEProject.project.ui.control_map;
 		var control_info = control_map[control_name];
 		if (control_info == null) return;
 	

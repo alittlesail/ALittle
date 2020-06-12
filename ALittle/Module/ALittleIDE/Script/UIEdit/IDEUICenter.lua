@@ -12,7 +12,8 @@ end
 
 function IDEUICenter:Setup(edit_container)
 	local ___COROUTINE = coroutine.running()
-	Require(g_ScriptBasePath, "UIEdit/IDEUtility")
+	Require(g_ScriptBasePath, "UIEdit/IDEUIManager")
+	Require(g_ScriptBasePath, "UIEdit/IDEUIUtility")
 	Require(g_ScriptBasePath, "UIEdit/IDEDataCore/IDEEnum")
 	Require(g_ScriptBasePath, "UIEdit/IDEDataCore/IDEExport")
 	Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDETabChild")

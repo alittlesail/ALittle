@@ -45,8 +45,8 @@ end
 
 function IDECenter:Setup()
 	local ___COROUTINE = coroutine.running()
-	Require(g_ScriptBasePath, "IDEProject")
 	Require(g_ScriptBasePath, "UIEdit/IDEUICenter")
+	Require(g_ScriptBasePath, "IDEProject")
 	g_IDEConfig = ALittle.CreateConfigSystem("ALittleIDE.cfg")
 	g_IDEServerConfig = ALittle.CreateConfigSystem(g_ModuleBasePath .. "/Other/Server.cfg")
 	ALittle.Math_RandomSeed(ALittle.Time_GetCurTime())
@@ -183,7 +183,7 @@ function IDECenter:RefreshProject()
 		local i = count
 		while true do
 			if not(i >= 1) then break end
-			local control_info = g_IDEProject.project.control_map[name_list[i]]
+			local control_info = g_IDEProject.project.ui.control_map[name_list[i]]
 			if control_info ~= nil then
 				g_IDETabManager:StartEditControlBySelect(control_info.name, control_info.info)
 			end

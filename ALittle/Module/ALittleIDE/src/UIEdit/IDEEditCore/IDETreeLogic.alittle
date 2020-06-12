@@ -324,7 +324,7 @@ public class IDETreeLogic : ALittle.DisplayLayout
 			cast<Map<string,any>>(this._user_info.object)[child_type] = object;
 		
 		// 添加控件树
-		var tree_object = IDEUtility_CreateTree(info, false, object, child_type, this._tab_child, false);
+		var tree_object = IDEUIUtility_CreateTree(info, false, object, child_type, this._tab_child, false);
 		this.AddChild(tree_object, child_index);
 		this._tab_child.Save(false);
 		
@@ -346,7 +346,7 @@ public class IDETreeLogic : ALittle.DisplayLayout
 	public fun TreeAdd(string extends_name, string class_name, string child_type) : IDETreeLogic
 	{
 		// 获取继承
-		var extends_info = g_IDEProject.project.control_map[extends_name];
+		var extends_info = g_IDEProject.project.ui.control_map[extends_name];
 		if (extends_name != "" && extends_info == null) return null;
 	
 		// 定义撤销
@@ -381,14 +381,14 @@ public class IDETreeLogic : ALittle.DisplayLayout
 			// 新建控件对象
 			var object = ALittle.NewObject(cast<Map<string,any>>(ALittle)[info.__class], g_IDEProject.project.control);
 			// 初始化一些数据，便于编辑
-			IDEUtility_NewGiveBaseCase(info, object);
+			IDEUIUtility_NewGiveBaseCase(info, object);
 			if (child_type == "child")
 				this._user_info.object.AddChild(object);
 			else
 				cast<Map<string,any>>(this._user_info.object)[child_type] = object;
 
 			// 添加控件树
-			tree_object = IDEUtility_CreateTree(info, false, object, child_type, this._tab_child, false);
+			tree_object = IDEUIUtility_CreateTree(info, false, object, child_type, this._tab_child, false);
 			this.AddChild(tree_object);
 			this._tab_child.Save(false);
 			// 生成撤销类
@@ -410,7 +410,7 @@ public class IDETreeLogic : ALittle.DisplayLayout
 			else
 				cast<Map<string,any>>(this._user_info.object)[child_type] = object;
 
-			tree_object = IDEUtility_CreateTree(info, false, object, child_type, this._tab_child, false);
+			tree_object = IDEUIUtility_CreateTree(info, false, object, child_type, this._tab_child, false);
 			this.AddChild(tree_object);
 			this._tab_child.Save(false);
 			// 生成撤销类
@@ -431,7 +431,7 @@ public class IDETreeLogic : ALittle.DisplayLayout
 	public fun TreeReplace(string extends_name, string class_name, string child_type)
 	{
 		// 获取继承
-		var extends_info = g_IDEProject.project.control_map[extends_name];
+		var extends_info = g_IDEProject.project.ui.control_map[extends_name];
 		if (extends_name != "" && extends_info == null) return;
 	
 		// 定义撤销
@@ -479,14 +479,14 @@ public class IDETreeLogic : ALittle.DisplayLayout
 			// 新建控件对象
 			var object = ALittle.NewObject(cast<Map<string,any>>(ALittle)[info.__class], g_IDEProject.project.control);
 			// 初始化一些数据，便于编辑
-			IDEUtility_NewGiveBaseCase(info, object);
+			IDEUIUtility_NewGiveBaseCase(info, object);
 			if (child_type == "child")
 				target_parent._user_info.object.AddChild(object, child_index);
 			else
 				cast<Map<string,any>>(target_parent._user_info.object)[child_type] = object;
 			
 			// 添加控件树
-			tree_object = IDEUtility_CreateTree(info, false, object, child_type, target_parent._tab_child, false);
+			tree_object = IDEUIUtility_CreateTree(info, false, object, child_type, target_parent._tab_child, false);
 			target_parent.AddChild(tree_object, child_index);
 			target_parent._tab_child.Save(false);
 			// 生成撤销类
@@ -504,7 +504,7 @@ public class IDETreeLogic : ALittle.DisplayLayout
 			else
 				cast<Map<string,any>>(target_parent._user_info.object)[child_type] = object;
 			
-			tree_object = IDEUtility_CreateTree(info, false, object, child_type, target_parent._tab_child, false);
+			tree_object = IDEUIUtility_CreateTree(info, false, object, child_type, target_parent._tab_child, false);
 			target_parent.AddChild(tree_object, child_index);
 			target_parent._tab_child.Save(false);
 			// 生成撤销类

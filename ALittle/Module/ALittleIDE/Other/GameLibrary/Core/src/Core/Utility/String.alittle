@@ -207,7 +207,7 @@ public static String_SplitSepList(string target, List<string> sep_list) : List<s
 }
 
 // 把列表以分隔符合并成字符串
-public static String_Join<T>(List<T> list, string sep) : string
+public static String_Join<T>(const List<T> list, string sep) : string
 {
     [Language(Lua)]
     if (sep == null) sep = ",";
@@ -229,12 +229,12 @@ public static String_Replace(string s, string os, string ns) : string
 }
 
 // 拷贝
-public static String_CopyTable<T>(T info) : T
+public static String_CopyTable<T>(const T info) : T
 {
     [Language(Lua)]
     {
         var new_info = new Map<any, any>();
-        for (var key, value in cast<Map<any, any>>(info))
+        for (var key, value in cast<Map<any, const any>>(info))
         {
             if (lua.type(value) != "table")
                 new_info[key] = value;
@@ -288,6 +288,6 @@ public static String_CopyTable<T>(T info) : T
             }
         }
         
-        return info;
+        return cast<T>(info);
     }
 }

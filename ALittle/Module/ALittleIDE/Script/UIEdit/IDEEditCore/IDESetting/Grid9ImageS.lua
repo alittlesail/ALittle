@@ -41,7 +41,7 @@ end
 
 function Grid9ImageS:HandleAutoCut(event)
 	local image_path = self._texture_name.text
-	local display_info = IDEUtility_GenerateGrid9ImageInfo(g_IDEProject.project.texture_path .. "/", image_path)
+	local display_info = IDEUIUtility_GenerateGrid9ImageInfo(g_IDEProject.project.texture_path .. "/", image_path)
 	if display_info == nil then
 		return
 	end

@@ -1155,7 +1155,7 @@ function DisplayObjectS:RemoverToNilShowSetForImage(text, image_path, grid9, nee
 		self:RemoverToNilShowSet(text, "", need_reset, revoke_bind)
 	else
 		if grid9 then
-			local display_info = IDEUtility_GenerateGrid9ImageInfo(g_IDEProject.project.texture_path .. "/", image_path)
+			local display_info = IDEUIUtility_GenerateGrid9ImageInfo(g_IDEProject.project.texture_path .. "/", image_path)
 			if display_info == nil then
 				g_AUITool:ShowNotice("错误", "图片不存在:" .. image_path)
 				return
@@ -1172,7 +1172,7 @@ end
 
 function DisplayObjectS:RemoverToNilShowSetForExtends(text, extends_v, need_reset, revoke_bind)
 	if extends_v ~= "" then
-		if g_IDEProject:IsControlExist(extends_v) == false then
+		if g_IDEProject.project.ui.control_map[extends_v] == nil then
 			g_AUITool:ShowNotice("错误", "要继承的控件不存在:" .. extends_v)
 			return
 		end
@@ -1213,7 +1213,7 @@ function DisplayObjectS:RemoverToNilShowSet(text, json_content, need_reset, revo
 				include = content1.__extends
 			end
 			if include ~= nil then
-				if g_IDEProject.project.control_map[include] == nil then
+				if g_IDEProject.project.ui.control_map[include] == nil then
 					g_AUITool:ShowNotice("错误", "指定__include或__extends不存在")
 					return
 				end
@@ -1277,7 +1277,7 @@ function DisplayObjectS:RemoverToNilNoNilShowSet(text, need_reset, revoke_bind)
 				include = content1.__extends
 			end
 			if include ~= nil then
-				if g_IDEProject.project.control_map[include] == nil then
+				if g_IDEProject.project.ui.control_map[include] == nil then
 					g_AUITool:ShowNotice("错误", "指定__include或__extends不存在")
 					display_object.text = ""
 					return

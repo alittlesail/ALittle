@@ -35,10 +35,10 @@ end
 function ISocket:Connect(ip, port)
 	local ___COROUTINE = coroutine.running()
 	if self:IsConnecting() then
-		return "�Ѿ���������"
+		return "已经正在连接"
 	end
 	if self:IsConnected() then
-		return "�Ѿ����ӣ����ȹر�����"
+		return "已经连接，请先关闭连接"
 	end
 	self._status = SocketStatus.SS_CONNECTING
 	socket.connect(self._socket, self._id, ip, port)
@@ -100,10 +100,10 @@ end
 function ISocket:ReadUint8()
 	local ___COROUTINE = coroutine.running()
 	if not self:IsConnected() then
-		return "��δ���ӳɹ�", 0
+		return "还未连接成功", 0
 	end
 	if self._read_thread ~= nil then
-		return "�Ѿ����ڶ�ȡ", 0
+		return "已经正在读取", 0
 	end
 	self._read_thread = ___COROUTINE
 	socket.readuint8(self._socket, self._id)
@@ -113,10 +113,10 @@ end
 function ISocket:ReadInt8()
 	local ___COROUTINE = coroutine.running()
 	if not self:IsConnected() then
-		return "��δ���ӳɹ�", 0
+		return "还未连接成功", 0
 	end
 	if self._read_thread ~= nil then
-		return "�Ѿ����ڶ�ȡ", 0
+		return "已经正在读取", 0
 	end
 	self._read_thread = ___COROUTINE
 	socket.readint8(self._socket, self._id)
@@ -126,10 +126,10 @@ end
 function ISocket:ReadUint16()
 	local ___COROUTINE = coroutine.running()
 	if not self:IsConnected() then
-		return "��δ���ӳɹ�", 0
+		return "还未连接成功", 0
 	end
 	if self._read_thread ~= nil then
-		return "�Ѿ����ڶ�ȡ", 0
+		return "已经正在读取", 0
 	end
 	self._read_thread = ___COROUTINE
 	socket.readuint16(self._socket, self._id)
@@ -139,10 +139,10 @@ end
 function ISocket:ReadInt16()
 	local ___COROUTINE = coroutine.running()
 	if not self:IsConnected() then
-		return "��δ���ӳɹ�", 0
+		return "还未连接成功", 0
 	end
 	if self._read_thread ~= nil then
-		return "�Ѿ����ڶ�ȡ", 0
+		return "已经正在读取", 0
 	end
 	self._read_thread = ___COROUTINE
 	socket.readint16(self._socket, self._id)
@@ -152,10 +152,10 @@ end
 function ISocket:ReadUint32()
 	local ___COROUTINE = coroutine.running()
 	if not self:IsConnected() then
-		return "��δ���ӳɹ�", 0
+		return "还未连接成功", 0
 	end
 	if self._read_thread ~= nil then
-		return "�Ѿ����ڶ�ȡ", 0
+		return "已经正在读取", 0
 	end
 	self._read_thread = ___COROUTINE
 	socket.readuint32(self._socket, self._id)
@@ -165,10 +165,10 @@ end
 function ISocket:ReadInt32()
 	local ___COROUTINE = coroutine.running()
 	if not self:IsConnected() then
-		return "��δ���ӳɹ�", 0
+		return "还未连接成功", 0
 	end
 	if self._read_thread ~= nil then
-		return "�Ѿ����ڶ�ȡ", 0
+		return "已经正在读取", 0
 	end
 	self._read_thread = ___COROUTINE
 	socket.readint32(self._socket, self._id)
@@ -178,10 +178,10 @@ end
 function ISocket:ReadUint64()
 	local ___COROUTINE = coroutine.running()
 	if not self:IsConnected() then
-		return "��δ���ӳɹ�", 0
+		return "还未连接成功", 0
 	end
 	if self._read_thread ~= nil then
-		return "�Ѿ����ڶ�ȡ", 0
+		return "已经正在读取", 0
 	end
 	self._read_thread = ___COROUTINE
 	socket.readuint64(self._socket, self._id)
@@ -191,10 +191,10 @@ end
 function ISocket:ReadInt64()
 	local ___COROUTINE = coroutine.running()
 	if not self:IsConnected() then
-		return "��δ���ӳɹ�", 0
+		return "还未连接成功", 0
 	end
 	if self._read_thread ~= nil then
-		return "�Ѿ����ڶ�ȡ", 0
+		return "已经正在读取", 0
 	end
 	self._read_thread = ___COROUTINE
 	socket.readint64(self._socket, self._id)
@@ -204,10 +204,10 @@ end
 function ISocket:ReadFloat()
 	local ___COROUTINE = coroutine.running()
 	if not self:IsConnected() then
-		return "��δ���ӳɹ�", 0
+		return "还未连接成功", 0
 	end
 	if self._read_thread ~= nil then
-		return "�Ѿ����ڶ�ȡ", 0
+		return "已经正在读取", 0
 	end
 	self._read_thread = ___COROUTINE
 	socket.readfloat(self._socket, self._id)
@@ -217,10 +217,10 @@ end
 function ISocket:ReadDouble()
 	local ___COROUTINE = coroutine.running()
 	if not self:IsConnected() then
-		return "��δ���ӳɹ�", 0
+		return "还未连接成功", 0
 	end
 	if self._read_thread ~= nil then
-		return "�Ѿ����ڶ�ȡ", 0
+		return "已经正在读取", 0
 	end
 	self._read_thread = ___COROUTINE
 	socket.readdouble(self._socket, self._id)
@@ -230,10 +230,10 @@ end
 function ISocket:ReadString(len)
 	local ___COROUTINE = coroutine.running()
 	if not self:IsConnected() then
-		return "��δ���ӳɹ�", ""
+		return "还未连接成功", ""
 	end
 	if self._read_thread ~= nil then
-		return "�Ѿ����ڶ�ȡ", ""
+		return "已经正在读取", ""
 	end
 	self._read_thread = ___COROUTINE
 	socket.readstring(self._socket, self._id, len)
@@ -243,10 +243,10 @@ end
 function ISocket:ReadBinary(len)
 	local ___COROUTINE = coroutine.running()
 	if not self:IsConnected() then
-		return "��δ���ӳɹ�", 0
+		return "还未连接成功", 0
 	end
 	if self._read_thread ~= nil then
-		return "�Ѿ����ڶ�ȡ", 0
+		return "已经正在读取", 0
 	end
 	self._read_thread = ___COROUTINE
 	socket.readbinary(self._socket, self._id, len)

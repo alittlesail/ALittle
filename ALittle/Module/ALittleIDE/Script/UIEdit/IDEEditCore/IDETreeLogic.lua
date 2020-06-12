@@ -300,7 +300,7 @@ function IDETreeLogic:TreePaste(info, child_type, child_index, is_group, revoke_
 	else
 		self._user_info.object[child_type] = object
 	end
-	local tree_object = IDEUtility_CreateTree(info, false, object, child_type, self._tab_child, false)
+	local tree_object = IDEUIUtility_CreateTree(info, false, object, child_type, self._tab_child, false)
 	self:AddChild(tree_object, child_index)
 	self._tab_child:Save(false)
 	local index = self:GetChildIndex(tree_object)
@@ -316,7 +316,7 @@ function IDETreeLogic:TreePaste(info, child_type, child_index, is_group, revoke_
 end
 
 function IDETreeLogic:TreeAdd(extends_name, class_name, child_type)
-	local extends_info = g_IDEProject.project.control_map[extends_name]
+	local extends_info = g_IDEProject.project.ui.control_map[extends_name]
 	if extends_name ~= "" and extends_info == nil then
 		return nil
 	end
@@ -337,13 +337,13 @@ function IDETreeLogic:TreeAdd(extends_name, class_name, child_type)
 		local info = {}
 		info.__class = class_name
 		local object = ALittle.NewObject(ALittle[info.__class], g_IDEProject.project.control)
-		IDEUtility_NewGiveBaseCase(info, object)
+		IDEUIUtility_NewGiveBaseCase(info, object)
 		if child_type == "child" then
 			self._user_info.object:AddChild(object)
 		else
 			self._user_info.object[child_type] = object
 		end
-		tree_object = IDEUtility_CreateTree(info, false, object, child_type, self._tab_child, false)
+		tree_object = IDEUIUtility_CreateTree(info, false, object, child_type, self._tab_child, false)
 		self:AddChild(tree_object)
 		self._tab_child:Save(false)
 		local index = self:GetChildIndex(tree_object)
@@ -360,7 +360,7 @@ function IDETreeLogic:TreeAdd(extends_name, class_name, child_type)
 		else
 			self._user_info.object[child_type] = object
 		end
-		tree_object = IDEUtility_CreateTree(info, false, object, child_type, self._tab_child, false)
+		tree_object = IDEUIUtility_CreateTree(info, false, object, child_type, self._tab_child, false)
 		self:AddChild(tree_object)
 		self._tab_child:Save(false)
 		local index = self:GetChildIndex(tree_object)
@@ -374,7 +374,7 @@ function IDETreeLogic:TreeAdd(extends_name, class_name, child_type)
 end
 
 function IDETreeLogic:TreeReplace(extends_name, class_name, child_type)
-	local extends_info = g_IDEProject.project.control_map[extends_name]
+	local extends_info = g_IDEProject.project.ui.control_map[extends_name]
 	if extends_name ~= "" and extends_info == nil then
 		return
 	end
@@ -403,13 +403,13 @@ function IDETreeLogic:TreeReplace(extends_name, class_name, child_type)
 		local info = {}
 		info.__class = class_name
 		local object = ALittle.NewObject(ALittle[info.__class], g_IDEProject.project.control)
-		IDEUtility_NewGiveBaseCase(info, object)
+		IDEUIUtility_NewGiveBaseCase(info, object)
 		if child_type == "child" then
 			target_parent._user_info.object:AddChild(object, child_index)
 		else
 			target_parent._user_info.object[child_type] = object
 		end
-		tree_object = IDEUtility_CreateTree(info, false, object, child_type, target_parent._tab_child, false)
+		tree_object = IDEUIUtility_CreateTree(info, false, object, child_type, target_parent._tab_child, false)
 		target_parent:AddChild(tree_object, child_index)
 		target_parent._tab_child:Save(false)
 		local index = target_parent:GetChildIndex(tree_object)
@@ -424,7 +424,7 @@ function IDETreeLogic:TreeReplace(extends_name, class_name, child_type)
 		else
 			target_parent._user_info.object[child_type] = object
 		end
-		tree_object = IDEUtility_CreateTree(info, false, object, child_type, target_parent._tab_child, false)
+		tree_object = IDEUIUtility_CreateTree(info, false, object, child_type, target_parent._tab_child, false)
 		target_parent:AddChild(tree_object, child_index)
 		target_parent._tab_child:Save(false)
 		local index = target_parent:GetChildIndex(tree_object)

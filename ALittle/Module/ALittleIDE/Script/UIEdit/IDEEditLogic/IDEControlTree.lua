@@ -124,7 +124,7 @@ function IDEControlTree:HandleAddControlConfirm(event)
 	local target = self._control_add_dialog._user_data
 	self._control_add_dialog._user_data = nil
 	local extends_name = self._control_add_extends_name.text
-	if extends_name ~= "" and g_IDEProject.project.control_map[extends_name] == nil then
+	if extends_name ~= "" and g_IDEProject.project.ui.control_map[extends_name] == nil then
 		g_AUITool:ShowNotice("错误", "继承控件不存在:" .. extends_name)
 		return
 	end
@@ -179,7 +179,7 @@ function IDEControlTree:HandleReplaceControlConfirm(event)
 	local target = self._control_replace_dialog._user_data
 	self._control_replace_dialog._user_data = nil
 	local extends_name = self._control_replace_extends_name.text
-	if extends_name ~= "" and g_IDEProject.project.control_map[extends_name] == nil then
+	if extends_name ~= "" and g_IDEProject.project.ui.control_map[extends_name] == nil then
 		g_AUITool:ShowNotice("错误", "继承控件不存在:" .. extends_name)
 		return
 	end
@@ -237,7 +237,7 @@ end
 
 function IDEControlTree:ControlTreeJump(target)
 	local extends_name = target.user_info.base.__extends
-	local control_info = g_IDEProject.project.control_map[extends_name]
+	local control_info = g_IDEProject.project.ui.control_map[extends_name]
 	if control_info == nil then
 		g_AUITool:ShowNotice("错误", "控件不存在:" .. extends_name)
 		return

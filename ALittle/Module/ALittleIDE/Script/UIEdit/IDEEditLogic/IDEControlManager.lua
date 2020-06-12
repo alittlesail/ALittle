@@ -128,7 +128,7 @@ function IDEControlManager:HandleControlSearchClick(event)
 	local search_type = self._control_search_type.text
 	local control_info_list = {}
 	local control_info_count = 0
-	local control_map = project.control_map
+	local control_map = project.ui.control_map
 	for control_name, control_info in ___pairs(control_map) do
 		if search_type == "控件名|描述" then
 			if key == "" or ALittle.String_Find(control_name, key) ~= nil or (control_info.info.description ~= nil and ALittle.String_Find(control_info.info.description, key) ~= nil) then
@@ -136,12 +136,12 @@ function IDEControlManager:HandleControlSearchClick(event)
 				control_info_list[control_info_count] = control_info
 			end
 		elseif search_type == "插件名" then
-			if IDEUtility_HasTargetClass(control_info.info, key) then
+			if IDEUIUtility_HasTargetClass(control_info.info, key) then
 				control_info_count = control_info_count + 1
 				control_info_list[control_info_count] = control_info
 			end
 		elseif search_type == "事件设置" then
-			if IDEUtility_HasEventCallback(control_info.info, key) then
+			if IDEUIUtility_HasEventCallback(control_info.info, key) then
 				control_info_count = control_info_count + 1
 				control_info_list[control_info_count] = control_info
 			end
@@ -351,11 +351,11 @@ function IDEControlManager:HandleNewControlConfirm(event)
 		g_AUITool:ShowNotice("错误", "请输入控件名")
 		return
 	end
-	if IDEUtility_CheckName(name) == false then
+	if IDEUIUtility_CheckName(name) == false then
 		g_AUITool:ShowNotice("错误", "控件名不合法:" .. name)
 		return
 	end
-	if project.control_map[name] ~= nil then
+	if project.ui.control_map[name] ~= nil then
 		g_AUITool:ShowNotice("错误", "控件已存在:" .. name)
 		return
 	end
@@ -395,22 +395,22 @@ end
 function IDEControlManager:Delete(target)
 	local user_data = target._user_data
 	local name = user_data.control_info.name
-	local result, content = g_IDEProject:CanDelete(name)
-	if result == false then
-		g_AUITool:ShowNotice("错误", content)
+	local error = g_IDEProject.project.ui:CanDelete(name)
+	if error ~= nil then
+		g_AUITool:ShowNotice("错误", error)
 		return
 	end
-	result, content = g_IDETabManager:CanDelete(name)
-	if result == false then
-		g_AUITool:ShowNotice("错误", content)
+	error = g_IDETabManager:CanDelete(name)
+	if error ~= nil then
+		g_AUITool:ShowNotice("错误", error)
 		return
 	end
 	local del_result = g_AUITool:DeleteNotice("提示", "确定要删除" .. target.text .. "吗?")
 	if del_result == "YES" then
 		self._control_scroll_screen:RemoveChild(target)
-		result, content = g_IDEProject:DeleteControl(user_data.control_info.name)
-		if result == false then
-			g_AUITool:ShowNotice("提示", content)
+		error = g_IDEProject.project.ui:DeleteControl(user_data.control_info.name)
+		if error ~= nil then
+			g_AUITool:ShowNotice("提示", error)
 			return
 		end
 		local tab = g_IDETabManager:GetTabByName(user_data.control_info.name)
@@ -441,23 +441,23 @@ end
 IDEControlManager.CopyInfo = Lua.CoWrap(IDEControlManager.CopyInfo)
 
 function IDEControlManager:ControlCopyInfo(target_name, new_name)
-	local result, content = IDEUtility_CheckName(new_name)
+	local result, content = IDEUIUtility_CheckName(new_name)
 	if result == false then
 		g_AUITool:ShowNotice("错误", content)
 		return
 	end
-	local info = g_IDEProject.project.control_map[new_name]
+	local info = g_IDEProject.project.ui.control_map[new_name]
 	if info ~= nil then
 		g_AUITool:ShowNotice("错误", "控件名已存在:" .. new_name)
 		return
 	end
-	info = g_IDEProject.project.control_map[target_name]
+	info = g_IDEProject.project.ui.control_map[target_name]
 	if info == nil then
 		g_AUITool:ShowNotice("错误", "控件不存在:" .. target_name)
 		return
 	end
-	g_IDEProject:SaveControl(new_name, ALittle.String_CopyTable(info.info))
-	info = g_IDEProject.project.control_map[new_name]
+	g_IDEProject.project.ui:SaveControl(new_name, ALittle.String_CopyTable(info.info))
+	info = g_IDEProject.project.ui.control_map[new_name]
 	if info == nil then
 		g_AUITool:ShowNotice("错误", "控件新建失败:" .. new_name)
 		return
@@ -468,14 +468,14 @@ end
 function IDEControlManager:ControlRename(target)
 	local user_data = target._user_data
 	local old_name = user_data.control_info.name
-	local result, content = g_IDEProject:CanDelete(old_name)
-	if result == false then
-		g_AUITool:ShowNotice("错误", content)
+	local error = g_IDEProject.project.ui:CanDelete(old_name)
+	if error ~= nil then
+		g_AUITool:ShowNotice("错误", error)
 		return
 	end
-	result, content = g_IDETabManager:CanDelete(old_name)
-	if result == false then
-		g_AUITool:ShowNotice("错误", content)
+	error = g_IDETabManager:CanDelete(old_name)
+	if error ~= nil then
+		g_AUITool:ShowNotice("错误", error)
 		return
 	end
 	local x, y = target:LocalToGlobal()
@@ -483,9 +483,9 @@ function IDEControlManager:ControlRename(target)
 	if new_name == nil or old_name == new_name then
 		return
 	end
-	result, content = g_IDEProject:RenameControl(old_name, new_name)
-	if result == false then
-		g_AUITool:ShowNotice("错误", content)
+	error = g_IDEProject.project.ui:RenameControl(old_name, new_name)
+	if error ~= nil then
+		g_AUITool:ShowNotice("错误", error)
 		return
 	end
 	target.text = new_name

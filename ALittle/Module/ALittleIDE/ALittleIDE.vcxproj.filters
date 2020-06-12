@@ -28,9 +28,6 @@
     <None Include="src\IDECenter.alittle">
       <Filter>源文件</Filter>
     </None>
-    <None Include="src\UIEdit\IDEUtility.alittle">
-      <Filter>源文件\UIEdit</Filter>
-    </None>
     <None Include="src\UIEdit\IDEUICenter.alittle">
       <Filter>源文件\UIEdit</Filter>
     </None>
@@ -204,6 +201,12 @@
     </None>
     <None Include="src\Main.alittle">
       <Filter>源文件</Filter>
+    </None>
+    <None Include="src\UIEdit\IDEUIManager.alittle">
+      <Filter>源文件\UIEdit</Filter>
+    </None>
+    <None Include="src\UIEdit\IDEUIUtility.alittle">
+      <Filter>源文件\UIEdit</Filter>
     </None>
   </ItemGroup>
 </Project>

@@ -221,8 +221,8 @@ function IDETabChild:Save(value)
 		return
 	end
 	local info = self._tree_object:CalcInfo()
-	local result, content = g_IDEProject:SaveControl(self._name, info)
-	if result == false then
+	local error = g_IDEProject.project.ui:SaveControl(self._name, info)
+	if error ~= nil then
 		return
 	end
 	self._save = value
@@ -270,14 +270,14 @@ end
 
 function IDETabChild:CanDeleteControl(name)
 	if self._tree_object == nil then
-		return true, nil
+		return nil
 	end
 	local info = self._tree_object:CalcInfo()
-	local map = IDEUtility_GetExtends(info)
+	local map = IDEUIUtility_GetExtends(info)
 	if map[name] then
-		return false, "被其他控件引用:" .. name
+		return "被其他控件引用:" .. name
 	end
-	return true, nil
+	return nil
 end
 
 function IDETabChild:SelectAlign(align_type)
@@ -422,9 +422,9 @@ function IDETabChild:CreateByNew(type)
 	local info = {}
 	info.__class = type
 	local object = ALittle.NewObject(ALittle[type], g_IDEProject.project.control)
-	IDEUtility_NewGiveBaseCase(info, object)
+	IDEUIUtility_NewGiveBaseCase(info, object)
 	self._tab_object_container:AddChild(object)
-	self._tree_object = IDEUtility_CreateTree(info, false, object, nil, self, true)
+	self._tree_object = IDEUIUtility_CreateTree(info, false, object, nil, self, true)
 	self._tree_object:AddEventListener(___all_struct[-431205740], self, self.HandleTreeSizeChanged)
 	self._tree_object.fold = true
 	self._tree_screen:AddChild(self._tree_object)
@@ -436,7 +436,7 @@ function IDETabChild:CreateByExtends(extends_v)
 	info.__extends = extends_v
 	local object = g_IDEProject.project.control:CreateControl(extends_v)
 	self._tab_object_container:AddChild(object)
-	self._tree_object = IDEUtility_CreateTree(info, false, object, nil, self, true)
+	self._tree_object = IDEUIUtility_CreateTree(info, false, object, nil, self, true)
 	self._tree_object:AddEventListener(___all_struct[-431205740], self, self.HandleTreeSizeChanged)
 	self._tree_object.fold = true
 	self._tree_screen:AddChild(self._tree_object)
@@ -446,7 +446,7 @@ end
 function IDETabChild:CreateBySelect(info)
 	local object = g_IDEProject.project.control:CreateControl(self._name)
 	self._tab_object_container:AddChild(object)
-	self._tree_object = IDEUtility_CreateTree(info, false, object, nil, self, true)
+	self._tree_object = IDEUIUtility_CreateTree(info, false, object, nil, self, true)
 	self._tree_object:AddEventListener(___all_struct[-431205740], self, self.HandleTreeSizeChanged)
 	self._tree_object.fold = true
 	self._tree_screen:AddChild(self._tree_object)
@@ -865,30 +865,22 @@ end
 function IDETabChild:HandleHandleQuadRButtonDown(event)
 	local handle_info = event.target._user_data
 	local target = handle_info.target
-	if self._control_tabchild_menu == nil then
-		self._control_tabchild_menu = g_Control:CreateControl("ide_control_tabchild_menu", self)
-	end
-	self._right_control_tree_textedit.disabled = g_IDEEnum.text_edit_display_map[target.user_info.default.__class] == nil
-	self._right_control_tree_pickparent.disabled = target.user_info.root
-	self._right_control_tree_up.disabled = target.user_info.root or target.user_info.child_type ~= "child"
-	self._right_control_tree_down.disabled = target.user_info.root or target.user_info.child_type ~= "child"
-	self._right_control_tree_add.disabled = not target:IsTree()
-	self._right_control_tree_add_image.disabled = not target:IsTree()
-	self._right_control_tree_add_text.disabled = not target:IsTree()
-	self._right_control_tree_cut.disabled = target.user_info.root
-	self._right_control_tree_jump.disabled = not target.user_info.extends_root
-	self._right_control_tree_delete.disabled = target.user_info.root
-	self._right_control_tree_replace.disabled = target.user_info.root
-	self._control_tabchild_menu._user_data = target
-	self._control_tabchild_menu.x = A_UISystem.mouse_x
-	self._control_tabchild_menu.y = A_UISystem.mouse_y
-	if self._control_tabchild_menu.x + self._control_tabchild_menu.width > A_UISystem.view_width then
-		self._control_tabchild_menu.x = A_UISystem.view_width - self._control_tabchild_menu.width
-	end
-	if self._control_tabchild_menu.y + self._control_tabchild_menu.height > A_UISystem.view_height then
-		self._control_tabchild_menu.y = A_UISystem.view_height - self._control_tabchild_menu.height
-	end
-	A_LayerManager:ShowFromRight(self._control_tabchild_menu)
+	local menu = AUIPlugin.AUIRightMenu()
+	menu:AddItem("获取焦点", Lua.Bind(self.ShowTreeItemFocus, self, target))
+	menu:AddItem("拾取父节点", Lua.Bind(self.PickParent, self, target), target.user_info.root)
+	menu:AddItem("文本编辑", Lua.Bind(self.TextEdit, self, target), g_IDEEnum.text_edit_display_map[target.user_info.default.__class] == nil)
+	menu:AddItem("上移", Lua.Bind(target.TransferUp, target), target.user_info.root or target.user_info.child_type ~= "child")
+	menu:AddItem("下移", Lua.Bind(target.TransferDown, target), target.user_info.root or target.user_info.child_type ~= "child")
+	menu:AddItem("添加", Lua.Bind(g_IDEControlTree.ShowAddDialog, g_IDEControlTree, target), not target:IsTree())
+	menu:AddItem("添加Image", Lua.Bind(g_IDEControlTree.ShowAddImageDialog, g_IDEControlTree, target), not target:IsTree())
+	menu:AddItem("添加Text", Lua.Bind(g_IDEControlTree.ShowAddTextDialog, g_IDEControlTree, target), not target:IsTree())
+	menu:AddItem("复制", Lua.Bind(self.Copy, self, target))
+	menu:AddItem("粘贴", Lua.Bind(self.Paste, self, target))
+	menu:AddItem("剪切", Lua.Bind(self.Cut, self, target), target.user_info.root)
+	menu:AddItem("删除", Lua.Bind(self.Delete, self, target), target.user_info.root)
+	menu:AddItem("替换", Lua.Bind(g_IDEControlTree.ShowReplaceDialog, g_IDEControlTree, target), target.user_info.root)
+	menu:AddItem("跳转", Lua.Bind(self.Jump, self, target), not target.user_info.extends_root)
+	menu:Show()
 end
 
 function IDETabChild:HandleHandleSizeQuadKeyDown(event)
@@ -963,70 +955,7 @@ function IDETabChild:HandleHandleSizeQuadMoveOut(event)
 	ALittle.System_SetNormalCursor()
 end
 
-function IDETabChild:HandleRightControlTreeUp(event)
-	A_LayerManager:HideFromRight(self._control_tabchild_menu)
-	local target = self._control_tabchild_menu._user_data
-	self._control_tabchild_menu._user_data = nil
-	target:TransferUp()
-end
-
-function IDETabChild:HandleRightControlTreeDown(event)
-	A_LayerManager:HideFromRight(self._control_tabchild_menu)
-	local target = self._control_tabchild_menu._user_data
-	self._control_tabchild_menu._user_data = nil
-	target:TransferDown()
-end
-
-function IDETabChild:HandleRightControlTreeAdd(event)
-	A_LayerManager:HideFromRight(self._control_tabchild_menu)
-	local target = self._control_tabchild_menu._user_data
-	self._control_tabchild_menu._user_data = nil
-	g_IDEControlTree:ShowAddDialog(target)
-end
-
-function IDETabChild:HandleRightControlTreeAddImage(event)
-	A_LayerManager:HideFromRight(self._control_tabchild_menu)
-	local target = self._control_tabchild_menu._user_data
-	self._control_tabchild_menu._user_data = nil
-	g_IDEImageSelectDialog:SetBasePath(g_IDEProject.project.texture_path)
-	local path = g_IDEImageSelectDialog:ShowSelect()
-	if path == nil then
-		return
-	end
-	if target:CanAddChild() == false then
-		g_AUITool:ShowNotice("提示", "当前控件不能添加子控件")
-		return
-	end
-	local tree_object = target:TreeAdd("", "Image", "child")
-	if tree_object == nil then
-		g_AUITool:ShowNotice("提示", "添加失败")
-		return
-	end
-	tree_object.attr_panel:SetTextureName(path, nil)
-	tree_object:ShowFocus(false)
-end
-IDETabChild.HandleRightControlTreeAddImage = Lua.CoWrap(IDETabChild.HandleRightControlTreeAddImage)
-
-function IDETabChild:HandleRightControlTreeAddText(event)
-	A_LayerManager:HideFromRight(self._control_tabchild_menu)
-	local target = self._control_tabchild_menu._user_data
-	self._control_tabchild_menu._user_data = nil
-	if target:CanAddChild() == false then
-		g_AUITool:ShowNotice("提示", "当前控件不能添加子控件")
-		return
-	end
-	local tree_object = target:TreeAdd("", "Text", "child")
-	if tree_object == nil then
-		g_AUITool:ShowNotice("提示", "添加失败")
-		return
-	end
-	tree_object:ShowFocus(false)
-end
-
-function IDETabChild:HandleRightControlTreeCopy(event)
-	A_LayerManager:HideFromRight(self._control_tabchild_menu)
-	local target = self._control_tabchild_menu._user_data
-	self._control_tabchild_menu._user_data = nil
+function IDETabChild:Copy(target)
 	local copy_list = {}
 	local copy_list_count = 0
 	for target, handle_info in ___pairs(self._tab_quad_map) do
@@ -1100,10 +1029,7 @@ function IDETabChild:RightControlTreePasteImpl(target, copy_list, child_index, r
 	end
 end
 
-function IDETabChild:HandleRightControlTreePaste(event)
-	A_LayerManager:HideFromRight(self._control_tabchild_menu)
-	local target = self._control_tabchild_menu._user_data
-	self._control_tabchild_menu._user_data = nil
+function IDETabChild:Paste(target)
 	if target:IsTree() then
 		self:RightControlTreePasteImpl(target)
 	else
@@ -1118,10 +1044,7 @@ function IDETabChild:HandleRightControlTreePaste(event)
 	end
 end
 
-function IDETabChild:HandleRightControlTreeDelete(event)
-	A_LayerManager:HideFromRight(self._control_tabchild_menu)
-	local target = self._control_tabchild_menu._user_data
-	self._control_tabchild_menu._user_data = nil
+function IDETabChild:Delete(target)
 	local revoke_bind = IDERevokeBind()
 	local has_target = false
 	for target, handle_info in ___pairs(self._tab_quad_map) do
@@ -1135,10 +1058,7 @@ function IDETabChild:HandleRightControlTreeDelete(event)
 	end
 end
 
-function IDETabChild:HandleRightControlTreeCut(event)
-	A_LayerManager:HideFromRight(self._control_tabchild_menu)
-	local target = self._control_tabchild_menu._user_data
-	self._control_tabchild_menu._user_data = nil
+function IDETabChild:Cut(target)
 	local copy_list = {}
 	local copy_list_count = 0
 	for target, handle_info in ___pairs(self._tab_quad_map) do
@@ -1159,12 +1079,9 @@ function IDETabChild:HandleRightControlTreeCut(event)
 	end
 end
 
-function IDETabChild:HandleRightControlTreeJump(event)
-	A_LayerManager:HideFromRight(self._control_tabchild_menu)
-	local target = self._control_tabchild_menu._user_data
-	self._control_tabchild_menu._user_data = nil
+function IDETabChild:Jump(target)
 	local extends_name = target.user_info.base.__extends
-	local control_info = g_IDEProject.project.control_map[extends_name]
+	local control_info = g_IDEProject.project.ui.control_map[extends_name]
 	if control_info == nil then
 		g_AUITool:ShowNotice("错误", "控件不存在:" .. extends_name)
 		return
@@ -1172,17 +1089,7 @@ function IDETabChild:HandleRightControlTreeJump(event)
 	g_IDETabManager:StartEditControlBySelect(control_info.name, control_info.info)
 end
 
-function IDETabChild:HandleRightControlTreeReplace(event)
-	A_LayerManager:HideFromRight(self._control_tabchild_menu)
-	local target = self._control_tabchild_menu._user_data
-	self._control_tabchild_menu._user_data = nil
-	g_IDEControlTree:ShowReplaceDialog(target)
-end
-
-function IDETabChild:HandleRightControlTreeTextEdit(event)
-	A_LayerManager:HideFromRight(self._control_tabchild_menu)
-	local target = self._control_tabchild_menu._user_data
-	self._control_tabchild_menu._user_data = nil
+function IDETabChild:TextEdit(target)
 	local object = target.user_info.object
 	if self._control_tabchild_textinput == nil then
 		self._control_tabchild_textinput = g_Control:CreateControl("ide_rename_image_input", self)
@@ -1199,17 +1106,7 @@ function IDETabChild:HandleRightControlTreeTextEdit(event)
 	A_UISystem.focus = self._control_tabchild_textinput.show_input
 end
 
-function IDETabChild:HandleRightControlTreeFocus(event)
-	A_LayerManager:HideFromRight(self._control_tabchild_menu)
-	local target = self._control_tabchild_menu._user_data
-	self._control_tabchild_menu._user_data = nil
-	self:ShowTreeItemFocus(target)
-end
-
-function IDETabChild:HandleRightControlTreePickParent(event)
-	A_LayerManager:HideFromRight(self._control_tabchild_menu)
-	local target = self._control_tabchild_menu._user_data
-	self._control_tabchild_menu._user_data = nil
+function IDETabChild:PickParent(target)
 	local parent = target.logic_parent
 	if parent == nil then
 		return

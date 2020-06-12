@@ -4,16 +4,16 @@ module("ALittleIDE", package.seeall)
 local ___pairs = pairs
 local ___ipairs = ipairs
 
-ALittle.RegStruct(-1105378563, "ALittleIDE.IDETreeUserInfo", {
-name = "ALittleIDE.IDETreeUserInfo", ns_name = "ALittleIDE", rl_name = "IDETreeUserInfo", hash_code = -1105378563,
-name_list = {"base","default","child_type","root","object","extends","extends_root"},
-type_list = {"ALittle.DisplayInfo","ALittle.DisplayInfo","string","bool","ALittle.DisplayObject","bool","bool"},
-option_map = {}
-})
 ALittle.RegStruct(-4982446, "ALittle.DisplayInfo", {
 name = "ALittle.DisplayInfo", ns_name = "ALittle", rl_name = "DisplayInfo", hash_code = -4982446,
 name_list = {"__target_class","__class_func","__base_attr","__show_attr","loop_map","__class","__include","__extends","__childs","__event","__link","__shows_included","__childs_included","__extends_included","description","text","font_path","font_size","red","green","blue","alpha","bold","italic","underline","deleteline","outline","x","y","x_type","x_value","y_type","y_value","width","height","width_type","width_value","height_type","height_value","scale_x","scale_y","center_x","center_y","angle","flip","hand_cursor","visible","disabled","left_size","right_size","top_size","bottom_size","texture_name","interval","play_loop_count","var_play","base_y","head_size","gap","up_size","down_size","cursor_red","cursor_green","cursor_blue","default_text_alpha","ims_padding","margin_left","margin_right","margin_top","margin_bottom","show_count","body_margin","screen_margin_left","screen_margin_right","screen_margin_top","screen_margin_bottom","start_degree","end_degree","line_spacing","max_line_count","font_red","font_green","font_blue","margin_halign","margin_valign","cursor_margin_up","cursor_margin_down","total_size","show_size","offset_rate","offset_step","grade","row_count","col_count","row_index","col_index","u1","v1","u2","v2","u3","v3","x1","y1","x2","y2","x3","y3","x_gap","y_gap","x_start_gap","y_start_gap","button_gap","button_start","button_margin","tab_index","view_margin","child_width_margin"},
 type_list = {"List<string>","any","Map<string,any>","Map<string,any>","Map<string,ALittle.LoopGroupInfo>","string","string","string","List<ALittle.DisplayInfo>","List<ALittle.EventInfo>","string","bool","bool","bool","string","string","string","int","double","double","double","double","bool","bool","bool","bool","bool","double","double","int","double","int","double","double","double","int","double","int","double","double","double","double","double","double","int","bool","bool","bool","double","double","double","double","string","int","int","bool","double","double","double","double","double","double","double","double","double","double","double","double","double","double","int","double","double","double","double","double","double","double","double","int","double","double","double","double","double","double","double","double","double","double","double","int","int","int","int","int","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double"},
+option_map = {}
+})
+ALittle.RegStruct(489101099, "ALittleIDE.IDEControlCopyInfo", {
+name = "ALittleIDE.IDEControlCopyInfo", ns_name = "ALittleIDE", rl_name = "IDEControlCopyInfo", hash_code = 489101099,
+name_list = {"index","info"},
+type_list = {"int","ALittle.DisplayInfo"},
 option_map = {}
 })
 ALittle.RegStruct(1653869333, "ALittle.LoopGroupInfo", {
@@ -34,6 +34,12 @@ name_list = {"link","attribute","init","childs"},
 type_list = {"string","string","any","List<ALittle.LoopChildInfo>"},
 option_map = {}
 })
+ALittle.RegStruct(-1105378563, "ALittleIDE.IDETreeUserInfo", {
+name = "ALittleIDE.IDETreeUserInfo", ns_name = "ALittleIDE", rl_name = "IDETreeUserInfo", hash_code = -1105378563,
+name_list = {"base","default","child_type","root","object","extends","extends_root"},
+type_list = {"ALittle.DisplayInfo","ALittle.DisplayInfo","string","bool","ALittle.DisplayObject","bool","bool"},
+option_map = {}
+})
 ALittle.RegStruct(-925381158, "ALittle.LoopChildInfo", {
 name = "ALittle.LoopChildInfo", ns_name = "ALittle", rl_name = "LoopChildInfo", hash_code = -925381158,
 name_list = {"clazz","target","total_time","delay_time"},
@@ -41,7 +47,7 @@ type_list = {"string","any","int","int"},
 option_map = {}
 })
 
-function IDEUtility_CalcTextureName(info, map)
+function IDEUIUtility_CalcTextureName(info, map)
 	if map == nil then
 		map = {}
 	end
@@ -49,19 +55,19 @@ function IDEUtility_CalcTextureName(info, map)
 		if k == "texture_name" then
 			map[v] = true
 		elseif ALittle.String_Type(v) == "table" then
-			IDEUtility_CalcTextureName(v, map)
+			IDEUIUtility_CalcTextureName(v, map)
 		end
 	end
 	return map
 end
 
-function IDEUtility_GetExtends(info, map)
+function IDEUIUtility_GetExtends(info, map)
 	if map == nil then
 		map = {}
 	end
 	for k, v in ___pairs(info) do
 		if ALittle.String_Type(v) == "table" then
-			IDEUtility_GetExtends(v, map)
+			IDEUIUtility_GetExtends(v, map)
 		elseif k == "__extends" or k == "__include" then
 			map[v] = true
 		end
@@ -69,7 +75,7 @@ function IDEUtility_GetExtends(info, map)
 	return map
 end
 
-function IDEUtility_HasTargetClass(info, name)
+function IDEUIUtility_HasTargetClass(info, name)
 	local target_class = info.__target_class
 	if target_class ~= nil then
 		local str = ALittle.String_Join(target_class, ".")
@@ -79,7 +85,7 @@ function IDEUtility_HasTargetClass(info, name)
 	end
 	for k, v in ___pairs(info) do
 		if ALittle.String_Type(v) == "table" then
-			if IDEUtility_HasTargetClass(v, name) then
+			if IDEUIUtility_HasTargetClass(v, name) then
 				return true
 			end
 		end
@@ -87,7 +93,7 @@ function IDEUtility_HasTargetClass(info, name)
 	return false
 end
 
-function IDEUtility_HasEventCallback(info, name)
+function IDEUIUtility_HasEventCallback(info, name)
 	local event = info.__event
 	if event ~= nil then
 		local content_list = {}
@@ -105,7 +111,7 @@ function IDEUtility_HasEventCallback(info, name)
 	end
 	for k, v in ___pairs(info) do
 		if ALittle.String_Type(v) == "table" then
-			if IDEUtility_HasEventCallback(v, name) then
+			if IDEUIUtility_HasEventCallback(v, name) then
 				return true
 			end
 		end
@@ -113,7 +119,7 @@ function IDEUtility_HasEventCallback(info, name)
 	return false
 end
 
-function IDEUtility_CheckName(name)
+function IDEUIUtility_CheckName(name)
 	local len = ALittle.String_Len(name)
 	if len == 0 then
 		return false, "命名只能支持字母数字下划线，不能以数字开头"
@@ -138,7 +144,7 @@ function IDEUtility_CheckName(name)
 	return true, nil
 end
 
-function IDEUtility_CheckResourceName(name)
+function IDEUIUtility_CheckResourceName(name)
 	local len = ALittle.String_Len(name)
 	if len == 0 then
 		return false, "命名只能支持字母数字下划线"
@@ -156,7 +162,7 @@ function IDEUtility_CheckResourceName(name)
 	return true, nil
 end
 
-function IDEUtility_NewGiveBaseCase(info, object)
+function IDEUIUtility_NewGiveBaseCase(info, object)
 	if g_IDEEnum.text_type_display_map[info.__class] then
 		info.font_path = g_IDEProject.project.config:GetConfig("default_font_path", nil)
 		object.font_path = info.font_path
@@ -181,7 +187,7 @@ function IDEUtility_NewGiveBaseCase(info, object)
 	end
 end
 
-function IDEUtility_DragAddGiveBaseCase(info)
+function IDEUIUtility_DragAddGiveBaseCase(info)
 	if g_IDEEnum.text_type_display_map[info.__class] then
 		info.font_path = g_IDEProject.project.config:GetConfig("default_font_path", nil)
 		local size = g_IDEProject.project.config:GetConfig("default_font_size", 15)
@@ -198,7 +204,7 @@ function IDEUtility_DragAddGiveBaseCase(info)
 	end
 end
 
-function IDEUtility_GetBaseInfo(info)
+function IDEUIUtility_GetBaseInfo(info)
 	local base = {}
 	for k, v in ___pairs(info) do
 		if ALittle.String_Type(v) ~= "table" then
@@ -218,17 +224,17 @@ function IDEUtility_GetBaseInfo(info)
 	return base
 end
 
-function IDEUtility_GetDefaultInfo(info)
+function IDEUIUtility_GetDefaultInfo(info)
 	local default_v = {}
 	if info.__extends ~= nil then
-		default_v = IDEUtility_GetDefaultInfo(g_IDEProject.project.control_map[info.__extends].info)
+		default_v = IDEUIUtility_GetDefaultInfo(g_IDEProject.project.ui.control_map[info.__extends].info)
 		for k, v in ___pairs(info) do
 			if k ~= "__extends" then
 				default_v[k] = v
 			end
 		end
 	elseif info.__include ~= nil then
-		default_v = IDEUtility_GetDefaultInfo(g_IDEProject.project.control_map[info.__include].info)
+		default_v = IDEUIUtility_GetDefaultInfo(g_IDEProject.project.ui.control_map[info.__include].info)
 	elseif info.__class ~= nil then
 		local class_default = g_IDEEnum.type_default_map[info.__class]
 		default_v = {}
@@ -246,21 +252,21 @@ function IDEUtility_GetDefaultInfo(info)
 	return default_v
 end
 
-function IDEUtility_CreateTree(control, extends_v, object, child_type, tab_child, root)
+function IDEUIUtility_CreateTree(control, extends_v, object, child_type, tab_child, root)
 	local user_info = {}
-	user_info.base = IDEUtility_GetBaseInfo(control)
+	user_info.base = IDEUIUtility_GetBaseInfo(control)
 	if control.__extends ~= nil then
-		local control_info = g_IDEProject.project.control_map[control.__extends]
+		local control_info = g_IDEProject.project.ui.control_map[control.__extends]
 		if control_info == nil then
 			g_AUITool:ShowNotice("错误", "extends 的控件不存在:" .. control.__extends)
 		end
-		user_info.default = IDEUtility_GetDefaultInfo(control_info.info)
+		user_info.default = IDEUIUtility_GetDefaultInfo(control_info.info)
 	elseif control.__include ~= nil then
-		local control_info = g_IDEProject.project.control_map[control.__include]
+		local control_info = g_IDEProject.project.ui.control_map[control.__include]
 		if control_info == nil then
 			g_AUITool:ShowNotice("错误", "include 的控件不存在:" .. control.__include)
 		end
-		user_info.default = IDEUtility_GetDefaultInfo(control_info.info)
+		user_info.default = IDEUIUtility_GetDefaultInfo(control_info.info)
 	elseif control.__class ~= nil then
 		user_info.default = g_IDEEnum.type_default_map[control.__class]
 	else
@@ -289,12 +295,12 @@ function IDEUtility_CreateTree(control, extends_v, object, child_type, tab_child
 		if control.__childs ~= nil and ALittle.List_MaxN(control.__childs) > 0 then
 			local childs = control.__childs
 			for k, v in ___ipairs(childs) do
-				tree_logic:AddChild(IDEUtility_CreateTree(v, extends_v, object.childs[k], "child", tab_child, false))
+				tree_logic:AddChild(IDEUIUtility_CreateTree(v, extends_v, object.childs[k], "child", tab_child, false))
 			end
 		elseif user_info.default.__childs ~= nil and ALittle.List_MaxN(user_info.default.__childs) > 0 then
 			local childs = user_info.default.__childs
 			for k, v in ___ipairs(childs) do
-				tree_logic:AddChild(IDEUtility_CreateTree(v, true, object.childs[k], "child", tab_child, false))
+				tree_logic:AddChild(IDEUIUtility_CreateTree(v, true, object.childs[k], "child", tab_child, false))
 			end
 		end
 	end
@@ -303,9 +309,9 @@ function IDEUtility_CreateTree(control, extends_v, object, child_type, tab_child
 		for index, name in ___ipairs(show_list) do
 			if object[name] ~= nil then
 				if control[name] ~= nil then
-					tree_logic:AddChild(IDEUtility_CreateTree(control[name], extends_v, object[name], name, tab_child, false))
+					tree_logic:AddChild(IDEUIUtility_CreateTree(control[name], extends_v, object[name], name, tab_child, false))
 				elseif user_info.default[name] ~= nil then
-					tree_logic:AddChild(IDEUtility_CreateTree(user_info.default[name], true, object[name], name, tab_child, false))
+					tree_logic:AddChild(IDEUIUtility_CreateTree(user_info.default[name], true, object[name], name, tab_child, false))
 				end
 			end
 		end
@@ -314,7 +320,7 @@ function IDEUtility_CreateTree(control, extends_v, object, child_type, tab_child
 	return tree_logic
 end
 
-function IDEUtility_GenerateGrid9ImageInfo(base_path, image_path)
+function IDEUIUtility_GenerateGrid9ImageInfo(base_path, image_path)
 	local surface = ALittle.System_LoadSurface(base_path .. image_path)
 	if surface == nil then
 		return nil

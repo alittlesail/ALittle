@@ -79,20 +79,6 @@ public class IDETabChild : ALittle.UIEventDispatcher
     private ALittle.DisplayObject _select_right_exmenu;     // 对选中控件显示的右键菜单
     private ALittle.DisplayObject _tab_right_exlinear;      // 右键菜单的菜单容器Linear
     
-    private ALittle.DisplayObject _control_tabchild_menu;           // 对选中控件显示的右键菜单
-    private ALittle.DisplayObject _right_control_tree_focus;
-    private ALittle.DisplayObject _right_control_tree_pickparent;
-    private ALittle.DisplayObject _right_control_tree_textedit;
-    private ALittle.DisplayObject _right_control_tree_up;
-    private ALittle.DisplayObject _right_control_tree_down;
-    private ALittle.DisplayObject _right_control_tree_add;
-    private ALittle.DisplayObject _right_control_tree_add_image;
-    private ALittle.DisplayObject _right_control_tree_add_text;
-    private ALittle.DisplayObject _right_control_tree_cut;
-    private ALittle.DisplayObject _right_control_tree_jump;
-    private ALittle.DisplayObject _right_control_tree_delete;
-    private ALittle.DisplayObject _right_control_tree_replace;
-
     private ALittle.ImageInput _control_tabchild_textinput;
 
     private ALittle.DisplayObject _quick_right_exmenu;
@@ -192,8 +178,8 @@ public class IDETabChild : ALittle.UIEventDispatcher
         if (this._tree_object == null) return;
 	
         var info = this._tree_object.CalcInfo();
-        var result, content = g_IDEProject.SaveControl(this._name, info);
-        if (result == false) return;
+        var error = g_IDEProject.project.ui.SaveControl(this._name, info);
+        if (error != null) return;
 	
         this._save = value;
         this.UpdateTitle();
@@ -238,15 +224,15 @@ public class IDETabChild : ALittle.UIEventDispatcher
             this.UpdateHandleQuadLayout(target);
 	}
 	
-	public fun CanDeleteControl(string name) : bool, string
+	public fun CanDeleteControl(string name) : string
     {
-        if (this._tree_object == null) return true, null;
+        if (this._tree_object == null) return null;
         var info = this._tree_object.CalcInfo();
-        var map = IDEUtility_GetExtends(info);
+        var map = IDEUIUtility_GetExtends(info);
 		if (map[name])
-            return false, "被其他控件引用:"..name;
+            return "被其他控件引用:"..name;
         
-        return true, null;
+        return null;
 	}
 	
 	// 对选中的控件进行处理
@@ -429,11 +415,11 @@ public class IDETabChild : ALittle.UIEventDispatcher
 		// 新建控件对象
         var object = ALittle.NewObject(cast<Map<string,any>>(ALittle)[type], g_IDEProject.project.control);
 		// 初始化一些数据，便于编辑
-        IDEUtility_NewGiveBaseCase(info, object);
+        IDEUIUtility_NewGiveBaseCase(info, object);
 		// 添加到标签页
         this._tab_object_container.AddChild(object);
 		// 添加控件树
-        this._tree_object = IDEUtility_CreateTree(info, false, object, null, this, true);
+        this._tree_object = IDEUIUtility_CreateTree(info, false, object, null, this, true);
         this._tree_object.AddEventListener(this, this.HandleTreeSizeChanged);
         this._tree_object.fold = true;
         this._tree_screen.AddChild(this._tree_object);
@@ -450,21 +436,21 @@ public class IDETabChild : ALittle.UIEventDispatcher
 		// 添加到标签页
         this._tab_object_container.AddChild(object);
 		//控件树
-        this._tree_object = IDEUtility_CreateTree(info, false, object, null, this, true);
+        this._tree_object = IDEUIUtility_CreateTree(info, false, object, null, this, true);
         this._tree_object.AddEventListener(this, this.HandleTreeSizeChanged);
         this._tree_object.fold = true;
         this._tree_screen.AddChild(this._tree_object);
         this._anti_panel.Init(this);
 	}
 	
-	public fun CreateBySelect(ALittle.DisplayInfo info)
+	public fun CreateBySelect(const ALittle.DisplayInfo info)
     {
 		// 新建控件对象
         var object = g_IDEProject.project.control.CreateControl{ALittle.DisplayObject}(this._name);
 		// 添加到标签页
         this._tab_object_container.AddChild(object);
 		//控件树
-        this._tree_object = IDEUtility_CreateTree(info, false, object, null, this, true);
+        this._tree_object = IDEUIUtility_CreateTree(info, false, object, null, this, true);
         this._tree_object.AddEventListener(this, this.HandleTreeSizeChanged);
         this._tree_object.fold = true;
         this._tree_screen.AddChild(this._tree_object);
@@ -958,33 +944,23 @@ public class IDETabChild : ALittle.UIEventDispatcher
     {
         var handle_info:IDETabChildHandleInfo = event.target._user_data;
         var target = handle_info.target;
-	
-		if (this._control_tabchild_menu == null)
-            this._control_tabchild_menu = g_Control.CreateControl{ALittle.DisplayObject}("ide_control_tabchild_menu", this);
-	
-        this._right_control_tree_textedit.disabled = g_IDEEnum.text_edit_display_map[target.user_info.default.__class] == null;
-        this._right_control_tree_pickparent.disabled = target.user_info.root;
-        this._right_control_tree_up.disabled = target.user_info.root || target.user_info.child_type != "child";
-        this._right_control_tree_down.disabled = target.user_info.root || target.user_info.child_type != "child";
-        this._right_control_tree_add.disabled = !target.IsTree();
-        this._right_control_tree_add_image.disabled = !target.IsTree();
-        this._right_control_tree_add_text.disabled = !target.IsTree();
-        this._right_control_tree_cut.disabled = target.user_info.root;
-        this._right_control_tree_jump.disabled = !target.user_info.extends_root;
-        this._right_control_tree_delete.disabled = target.user_info.root;
-        this._right_control_tree_replace.disabled = target.user_info.root;
-	
-        this._control_tabchild_menu._user_data = target;
-        this._control_tabchild_menu.x = A_UISystem.mouse_x;
-        this._control_tabchild_menu.y = A_UISystem.mouse_y;
-	
-		if (this._control_tabchild_menu.x + this._control_tabchild_menu.width > A_UISystem.view_width)
-            this._control_tabchild_menu.x = A_UISystem.view_width - this._control_tabchild_menu.width;
-
-		if (this._control_tabchild_menu.y + this._control_tabchild_menu.height > A_UISystem.view_height)
-            this._control_tabchild_menu.y = A_UISystem.view_height - this._control_tabchild_menu.height;
-
-        A_LayerManager.ShowFromRight(this._control_tabchild_menu);
+        
+		var menu = new AUIPlugin.AUIRightMenu();
+		menu.AddItem("获取焦点", bind(this.ShowTreeItemFocus, this, target));
+		menu.AddItem("拾取父节点", bind(this.PickParent, this, target), target.user_info.root);
+		menu.AddItem("文本编辑", bind(this.TextEdit, this, target), g_IDEEnum.text_edit_display_map[target.user_info.default.__class] == null);
+		menu.AddItem("上移", bind(target.TransferUp, target), target.user_info.root || target.user_info.child_type != "child");
+		menu.AddItem("下移", bind(target.TransferDown, target), target.user_info.root || target.user_info.child_type != "child");
+		menu.AddItem("添加", bind(g_IDEControlTree.ShowAddDialog, g_IDEControlTree, target), !target.IsTree());
+		menu.AddItem("添加Image", bind(g_IDEControlTree.ShowAddImageDialog, g_IDEControlTree, target), !target.IsTree());
+		menu.AddItem("添加Text", bind(g_IDEControlTree.ShowAddTextDialog, g_IDEControlTree, target), !target.IsTree());
+		menu.AddItem("复制", bind(this.Copy, this, target));
+		menu.AddItem("粘贴", bind(this.Paste, this, target));
+		menu.AddItem("剪切", bind(this.Cut, this, target), target.user_info.root);
+		menu.AddItem("删除", bind(this.Delete, this, target), target.user_info.root);
+		menu.AddItem("替换", bind(g_IDEControlTree.ShowReplaceDialog, g_IDEControlTree, target), target.user_info.root);
+		menu.AddItem("跳转", bind(this.Jump, this, target), !target.user_info.extends_root);
+        menu.Show();
 	}
 	
 	////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1092,102 +1068,9 @@ public class IDETabChild : ALittle.UIEventDispatcher
 	}
 	////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	// 处理上移
-	public fun HandleRightControlTreeUp(ALittle.UIEvent event)
-    {
-		// 隐藏右键菜单
-        A_LayerManager.HideFromRight(this._control_tabchild_menu);
-		// 获取tree对象
-        var target:IDETreeLogic = this._control_tabchild_menu._user_data;
-        this._control_tabchild_menu._user_data = null;
-		// 处理上移
-        target.TransferUp();
-	}
-	// 处理下移
-	public fun HandleRightControlTreeDown(ALittle.UIEvent event)
-    {
-		// 隐藏右键菜单
-        A_LayerManager.HideFromRight(this._control_tabchild_menu);
-		// 获取tree对象
-        var target:IDETreeLogic = this._control_tabchild_menu._user_data;
-        this._control_tabchild_menu._user_data = null;
-		// 处理下移
-        target.TransferDown();
-	}
-	// 处理添加
-	public fun HandleRightControlTreeAdd(ALittle.UIEvent event)
-    {
-		// 隐藏右键菜单
-        A_LayerManager.HideFromRight(this._control_tabchild_menu);
-		// 获取tree对象
-        var target:IDETreeLogic = this._control_tabchild_menu._user_data;
-        this._control_tabchild_menu._user_data = null;
-	
-        g_IDEControlTree.ShowAddDialog(target);
-	}
-	// 处理添加
-	public async fun HandleRightControlTreeAddImage(ALittle.UIEvent event)
-    {
-		// 隐藏右键菜单
-        A_LayerManager.HideFromRight(this._control_tabchild_menu);
-		// 获取tree对象
-        var target:IDETreeLogic = this._control_tabchild_menu._user_data;
-        this._control_tabchild_menu._user_data = null;
-	
-		// 直接显示图片选择框
-        g_IDEImageSelectDialog.SetBasePath(g_IDEProject.project.texture_path);
-        var path = g_IDEImageSelectDialog.ShowSelect();
-        if (path == null) return;
-	
-		// 设置这个下拉菜单
-		if (target.CanAddChild() == false)
-        {
-            g_AUITool.ShowNotice("提示", "当前控件不能添加子控件");
-            return;
-		}
-		// 添加一个控件
-        var tree_object = target.TreeAdd("", "Image", "child");
-		if (tree_object == null)
-        {
-            g_AUITool.ShowNotice("提示", "添加失败");
-            return;
-		}
-		// 对这个新的Image设置纹理
-        tree_object.attr_panel.SetTextureName(path, null);
-        tree_object.ShowFocus(false);
-	}
-	// 处理添加
-	public fun HandleRightControlTreeAddText(ALittle.UIEvent event)
-    {
-		// 隐藏右键菜单
-        A_LayerManager.HideFromRight(this._control_tabchild_menu);
-		// 获取tree对象
-        var target:IDETreeLogic = this._control_tabchild_menu._user_data;
-        this._control_tabchild_menu._user_data = null;
-	
-		// 设置这个下拉菜单
-		if (target.CanAddChild() == false)
-        {
-            g_AUITool.ShowNotice("提示", "当前控件不能添加子控件");
-            return;
-		}
-		// 添加一个控件
-        var tree_object = target.TreeAdd("", "Text", "child");
-		if (tree_object == null)
-        {
-            g_AUITool.ShowNotice("提示", "添加失败");
-            return;
-		}
-        tree_object.ShowFocus(false);
-	}
 	// 处理复制
-	public fun HandleRightControlTreeCopy(ALittle.UIEvent event)
+	public fun Copy(IDETreeLogic target)
     {
-		// 隐藏右键菜单
-        A_LayerManager.HideFromRight(this._control_tabchild_menu);
-		// 获取tree对象
-        var target:IDETreeLogic = this._control_tabchild_menu._user_data;
-        this._control_tabchild_menu._user_data = null;
 		// 计算信息
         var copy_list = new List<IDEControlCopyInfo>();
         var copy_list_count = 0;
@@ -1272,15 +1155,8 @@ public class IDETabChild : ALittle.UIEventDispatcher
             g_IDEControlTree.ShowPasteDialog(target, copy_list[1].info, child_index, revoke_bind, callback);
 	}
 	// 处理粘帖
-	public fun HandleRightControlTreePaste(ALittle.UIEvent event)
+	public fun Paste(IDETreeLogic target)
     {
-		// 隐藏右键菜单
-        A_LayerManager.HideFromRight(this._control_tabchild_menu);
-		// 获取tree对象
-        var target:IDETreeLogic = this._control_tabchild_menu._user_data;
-        this._control_tabchild_menu._user_data = null;
-		// 获取剪切板内容
-	
 		if (target.IsTree())
             this.RightControlTreePasteImpl(target);
 		else
@@ -1296,13 +1172,8 @@ public class IDETabChild : ALittle.UIEventDispatcher
 		}
 	}
 	// 处理删除
-	public fun HandleRightControlTreeDelete(ALittle.UIEvent event)
+	public fun Delete(IDETreeLogic target)
     {
-		// 隐藏右键菜单
-        A_LayerManager.HideFromRight(this._control_tabchild_menu);
-		// 获取tree对象
-        var target:IDETreeLogic = this._control_tabchild_menu._user_data;
-        this._control_tabchild_menu._user_data = null;
 		// 执行删除
         var revoke_bind = new IDERevokeBind();
         var has_target = false;
@@ -1319,14 +1190,8 @@ public class IDETabChild : ALittle.UIEventDispatcher
 		}
 	}
 	// 处理剪切
-	public fun HandleRightControlTreeCut(ALittle.UIEvent event)
+	public fun Cut(IDETreeLogic target)
     {
-		// 隐藏右键菜单
-        A_LayerManager.HideFromRight(this._control_tabchild_menu);
-		// 获取tree对象
-        var target:IDETreeLogic = this._control_tabchild_menu._user_data;
-        this._control_tabchild_menu._user_data = null;
-	
         var copy_list = new List<IDEControlCopyInfo>();
         var copy_list_count = 0;
 		for (var target, handle_info in this._tab_quad_map)
@@ -1348,16 +1213,10 @@ public class IDETabChild : ALittle.UIEventDispatcher
 		}
 	}
 	// 处理跳转
-	public fun HandleRightControlTreeJump(ALittle.UIEvent event)
+	public fun Jump(IDETreeLogic target)
     {
-		// 隐藏右键菜单
-        A_LayerManager.HideFromRight(this._control_tabchild_menu);
-		// 获取tree对象
-        var target:IDETreeLogic = this._control_tabchild_menu._user_data;
-        this._control_tabchild_menu._user_data = null;
-	
         var extends_name = target.user_info.base.__extends;
-        var control_info = g_IDEProject.project.control_map[extends_name];
+        var control_info = g_IDEProject.project.ui.control_map[extends_name];
 		if (control_info == null)
         {
             g_AUITool.ShowNotice("错误", "控件不存在:"..extends_name);
@@ -1366,25 +1225,9 @@ public class IDETabChild : ALittle.UIEventDispatcher
 	
         g_IDETabManager.StartEditControlBySelect(control_info.name, control_info.info);
 	}
-	// 处理处理替换
-	public fun HandleRightControlTreeReplace(ALittle.UIEvent event)
-    {
-		// 隐藏右键菜单
-        A_LayerManager.HideFromRight(this._control_tabchild_menu);
-		// 获取tree对象
-        var target:IDETreeLogic = this._control_tabchild_menu._user_data;
-        this._control_tabchild_menu._user_data = null;
-	
-        g_IDEControlTree.ShowReplaceDialog(target);
-	}
 	// 处理文本编辑
-	public fun HandleRightControlTreeTextEdit(ALittle.UIEvent event)
+	public fun TextEdit(IDETreeLogic target)
     {
-		// 隐藏右键菜单
-        A_LayerManager.HideFromRight(this._control_tabchild_menu);
-        var target:IDETreeLogic = this._control_tabchild_menu._user_data;
-        this._control_tabchild_menu._user_data = null;
-	
         var object = target.user_info.object;
 	
 		// 创建输入框
@@ -1404,24 +1247,9 @@ public class IDETabChild : ALittle.UIEventDispatcher
         this._control_tabchild_textinput.SelectAll();
         A_UISystem.focus = this._control_tabchild_textinput.show_input;
 	}
-	// 处理控件获得焦点
-	public fun HandleRightControlTreeFocus(ALittle.UIEvent event)
-    {
-		// 隐藏右键菜单
-        A_LayerManager.HideFromRight(this._control_tabchild_menu);
-        var target = this._control_tabchild_menu._user_data;
-        this._control_tabchild_menu._user_data = null;
-	
-        this.ShowTreeItemFocus(target);
-	}
     // 拾取控件父节点
-    public fun HandleRightControlTreePickParent(ALittle.UIEvent event)
+    public fun PickParent(IDETreeLogic target)
     {
-		// 隐藏右键菜单
-        A_LayerManager.HideFromRight(this._control_tabchild_menu);
-        var target:IDETreeLogic = this._control_tabchild_menu._user_data;
-        this._control_tabchild_menu._user_data = null;
-
         var parent = cast<IDETreeLogic>(target.logic_parent);
         if (parent == null) return;
 

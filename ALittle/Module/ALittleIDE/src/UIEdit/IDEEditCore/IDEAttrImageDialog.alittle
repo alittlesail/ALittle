@@ -44,7 +44,7 @@ public class IDEAttrImageDialog : AUIPlugin.AUIFileSelectDialog
 	
 	public fun HandleImageCopyGrid9ImageCodeClick(AUIPlugin.AUIFileSelectRightButtonDownEvent event)
 	{
-		var display_info = IDEUtility_GenerateGrid9ImageInfo(g_IDEProject.project.texture_path.."/", event.path);
+		var display_info = IDEUIUtility_GenerateGrid9ImageInfo(g_IDEProject.project.texture_path.."/", event.path);
 		if (display_info == null)
 		{
 			g_AUITool.ShowNotice("错误", "图片加载失败:"..cast<string>(event.path));

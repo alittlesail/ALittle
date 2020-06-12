@@ -40,6 +40,10 @@ public class AUITool
 	private ALittle.LoopList _tip_help_loop;
 	private ALittle.TextArea _tip_help_content;
 
+	// 鼠标跟踪
+	private ALittle.DisplayObject _tip_dialog;
+	private ALittle.Text _tip_text;
+
 	public fun Shutdown()
 	{
         if (this._alert_dialog != null)
@@ -334,6 +338,39 @@ public class AUITool
 		}
 		this._tip_help_dialog.visible = false;
 	}
+
+	// 显示TIP
+	public fun ShowTip(string content)
+	{
+		// 创建模态提示对话框，并添加到模态层
+		if (this._tip_dialog == null)
+		{
+			this._tip_dialog = g_Control.CreateControl{ALittle.DisplayObject}("ide_tool_tip", this);
+			A_LayerManager.AddToTip(this._tip_dialog);
+		}
+		
+		this._tip_dialog.visible = true;
+		this._tip_text.text = content;
+		this._tip_dialog.width = this._tip_text.width + 10;
+		this._tip_dialog.height = this._tip_text.height + 10;
+	}
+	
+	// 移动TIP
+	public fun MoveTip(double x, double y)
+	{
+		if (this._tip_dialog == null) return;
+	
+		this._tip_dialog.x = x;
+		this._tip_dialog.y = y;
+	}
+	
+	// 隐藏TIP
+	public fun HideTip()
+	{
+		if (this._tip_dialog == null) return;
+		this._tip_dialog.visible = false;
+	}
+	
 }
 ////////////////////////////////////////////////////////////////////////////////////////
 

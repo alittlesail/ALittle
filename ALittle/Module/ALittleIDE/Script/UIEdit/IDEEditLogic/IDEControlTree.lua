@@ -43,82 +43,28 @@ option_map = {}
 
 IDEControlTree = Lua.Class(nil, "ALittleIDE.IDEControlTree")
 
-function IDEControlTree:ShowTip(content)
-	if self._tip_dialog == nil then
-		self._tip_dialog = g_Control:CreateControl("ide_tool_tip", self)
-		A_LayerManager:AddToTip(self._tip_dialog)
-	end
-	self._tip_dialog.visible = true
-	self._tip_text.text = content
-	self._tip_dialog.width = self._tip_text.width + 10
-	self._tip_dialog.height = self._tip_text.height + 10
-end
-
-function IDEControlTree:MoveTip(x, y)
-	if self._tip_dialog == nil then
-		return
-	end
-	self._tip_dialog.x = x
-	self._tip_dialog.y = y
-end
-
-function IDEControlTree:HideTip()
-	if self._tip_dialog == nil then
-		return
-	end
-	self._tip_dialog.visible = false
-end
-
 function IDEControlTree:HandleControlTreeItemRightClick(event)
 	local target = event.target._user_data
 	if target.user_info.extends then
 		return
 	end
-	if self._control_tree_menu == nil then
-		self._control_tree_menu = g_Control:CreateControl("ide_control_tree_menu", self)
-	end
-	self._right_control_tree_up.disabled = target.user_info.root or target.user_info.child_type ~= "child"
-	self._right_control_tree_down.disabled = target.user_info.root or target.user_info.child_type ~= "child"
-	self._right_control_tree_add.disabled = not target:IsTree()
-	self._right_control_tree_add_image.disabled = not target:IsTree()
-	self._right_control_tree_add_text.disabled = not target:IsTree()
-	self._right_control_tree_cut.disabled = target.user_info.root
-	self._right_control_tree_jump.disabled = not target.user_info.extends_root
-	self._right_control_tree_delete.disabled = target.user_info.root
-	self._right_control_tree_replace.disabled = target.user_info.root
-	self._control_tree_menu._user_data = target
-	self._control_tree_menu.x = A_UISystem.mouse_x
-	self._control_tree_menu.y = A_UISystem.mouse_y
-	if self._control_tree_menu.x + self._control_tree_menu.width > A_UISystem.view_width then
-		self._control_tree_menu.x = A_UISystem.view_width - self._control_tree_menu.width
-	end
-	if self._control_tree_menu.y + self._control_tree_menu.height > A_UISystem.view_height then
-		self._control_tree_menu.y = A_UISystem.view_height - self._control_tree_menu.height
-	end
-	A_LayerManager:ShowFromRight(self._control_tree_menu)
+	local menu = AUIPlugin.AUIRightMenu()
+	menu:AddItem("上移", Lua.Bind(target.TransferUp, target), target.user_info.root or target.user_info.child_type ~= "child", false)
+	menu:AddItem("下移", Lua.Bind(target.TransferDown, target), target.user_info.root or target.user_info.child_type ~= "child", false)
+	menu:AddItem("添加", Lua.Bind(self.ShowAddDialog, self, target), not target:IsTree())
+	menu:AddItem("添加Image", Lua.Bind(self.ShowAddImageDialog, self, target), not target:IsTree())
+	menu:AddItem("添加Text", Lua.Bind(self.ShowAddTextDialog, self, target), not target:IsTree())
+	menu:AddItem("复制", Lua.Bind(target.CopyToClipboard, target))
+	menu:AddItem("粘贴", Lua.Bind(target.PasteFromClipboard, target))
+	menu:AddItem("剪切", Lua.Bind(target.CutToClipboard, target), target.user_info.root)
+	menu:AddItem("删除", Lua.Bind(target.TreeDelete, target, nil), target.user_info.root)
+	menu:AddItem("跳转", Lua.Bind(self.ControlTreeJump, self, target), not target.user_info.extends_root)
+	menu:AddItem("替换", Lua.Bind(self.ShowReplaceDialog, self, target), target.user_info.root)
+	menu:AddItem("描述", Lua.Bind(self.ControlTreeDesc, self, target))
+	menu:Show()
 end
 
-function IDEControlTree:HandleRightControlTreeUp(event)
-	local target = self._control_tree_menu._user_data
-	target:TransferUp()
-end
-
-function IDEControlTree:HandleRightControlTreeDown(event)
-	local target = self._control_tree_menu._user_data
-	target:TransferDown()
-end
-
-function IDEControlTree:HandleRightControlTreeAdd(event)
-	A_LayerManager:HideFromRight(self._control_tree_menu)
-	local target = self._control_tree_menu._user_data
-	self._control_tree_menu._user_data = nil
-	self:ShowAddDialog(target)
-end
-
-function IDEControlTree:HandleRightControlTreeAddImage(event)
-	A_LayerManager:HideFromRight(self._control_tree_menu)
-	local target = self._control_tree_menu._user_data
-	self._control_tree_menu._user_data = nil
+function IDEControlTree:ShowAddImageDialog(target)
 	g_IDEImageSelectDialog:SetBasePath(g_IDEProject.project.texture_path)
 	local path = g_IDEImageSelectDialog:ShowSelect()
 	if path == nil then
@@ -136,12 +82,9 @@ function IDEControlTree:HandleRightControlTreeAddImage(event)
 	tree_object.attr_panel:SetTextureName(path, nil)
 	tree_object:ShowFocus(false)
 end
-IDEControlTree.HandleRightControlTreeAddImage = Lua.CoWrap(IDEControlTree.HandleRightControlTreeAddImage)
+IDEControlTree.ShowAddImageDialog = Lua.CoWrap(IDEControlTree.ShowAddImageDialog)
 
-function IDEControlTree:HandleRightControlTreeAddText(event)
-	A_LayerManager:HideFromRight(self._control_tree_menu)
-	local target = self._control_tree_menu._user_data
-	self._control_tree_menu._user_data = nil
+function IDEControlTree:ShowAddTextDialog(target)
 	if target:CanAddChild() == false then
 		g_AUITool:ShowNotice("提示", "当前控件不能添加子控件")
 		return
@@ -152,13 +95,6 @@ function IDEControlTree:HandleRightControlTreeAddText(event)
 		return
 	end
 	tree_object:ShowFocus(false)
-end
-
-function IDEControlTree:HandleRightControlTreeReplace(event)
-	A_LayerManager:HideFromRight(self._control_tree_menu)
-	local target = self._control_tree_menu._user_data
-	self._control_tree_menu._user_data = nil
-	self:ShowReplaceDialog(target)
 end
 
 function IDEControlTree:ShowAddDialog(target)
@@ -253,18 +189,6 @@ function IDEControlTree:HandleReplaceControlConfirm(event)
 	target:TreeReplace(extends_name, class_name, child_type)
 end
 
-function IDEControlTree:HandleRightControlTreeCopy(event)
-	A_LayerManager:HideFromRight(self._control_tree_menu)
-	local target = self._control_tree_menu._user_data
-	self._control_tree_menu._user_data = nil
-	local info = {}
-	info.index = 1
-	info.info = target:CalcInfo()
-	local copy_list = {}
-	copy_list[1] = info
-	ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list))
-end
-
 function IDEControlTree:ShowPasteDialog(target, info, child_index, revoke_bind, callback)
 	local data_list = target:GetDataListForAdd()
 	if ALittle.List_MaxN(data_list) == 0 then
@@ -311,49 +235,7 @@ function IDEControlTree:HandlePasteControlConfirm(event)
 	end
 end
 
-function IDEControlTree:HandleRightControlTreePaste(event)
-	A_LayerManager:HideFromRight(self._control_tree_menu)
-	local target = self._control_tree_menu._user_data
-	self._control_tree_menu._user_data = nil
-	if target:IsTree() then
-		target.tab_child:RightControlTreePasteImpl(target, nil, nil)
-	else
-		local common_parent = target.logic_parent
-		local child_index = 1
-		if common_parent == nil then
-			common_parent = target
-		else
-			child_index = common_parent:GetChildIndex(target) + 1
-		end
-		target.tab_child:RightControlTreePasteImpl(common_parent, nil, child_index)
-	end
-end
-
-function IDEControlTree:HandleRightControlTreeDelete(event)
-	A_LayerManager:HideFromRight(self._control_tree_menu)
-	local target = self._control_tree_menu._user_data
-	self._control_tree_menu._user_data = nil
-	target.tab_child:HideHandleQuad(target, true)
-	target:TreeDelete()
-end
-
-function IDEControlTree:HandleRightControlTreeCut(event)
-	A_LayerManager:HideFromRight(self._control_tree_menu)
-	local target = self._control_tree_menu._user_data
-	self._control_tree_menu._user_data = nil
-	local info = {}
-	info.index = 1
-	info.info = target:CalcInfo()
-	local copy_list = {}
-	copy_list[1] = info
-	ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list))
-	target:TreeCut()
-end
-
-function IDEControlTree:HandleRightControlTreeJump(event)
-	A_LayerManager:HideFromRight(self._control_tree_menu)
-	local target = self._control_tree_menu._user_data
-	self._control_tree_menu._user_data = nil
+function IDEControlTree:ControlTreeJump(target)
 	local extends_name = target.user_info.base.__extends
 	local control_info = g_IDEProject.project.control_map[extends_name]
 	if control_info == nil then
@@ -363,10 +245,7 @@ function IDEControlTree:HandleRightControlTreeJump(event)
 	g_IDETabManager:StartEditControlBySelect(control_info.name, control_info.info)
 end
 
-function IDEControlTree:HandleRightControlTreeDesc(event)
-	A_LayerManager:HideFromRight(self._control_tree_menu)
-	local target = self._control_tree_menu._user_data
-	self._control_tree_menu._user_data = nil
+function IDEControlTree:ControlTreeDesc(target)
 	local x, y = target:LocalToGlobal()
 	local desc = target:GetDesc()
 	local name = g_AUITool:ShowRename(desc, x, y, target.width)
@@ -375,7 +254,7 @@ function IDEControlTree:HandleRightControlTreeDesc(event)
 	end
 	target:SetDesc(name)
 end
-IDEControlTree.HandleRightControlTreeDesc = Lua.CoWrap(IDEControlTree.HandleRightControlTreeDesc)
+IDEControlTree.ControlTreeDesc = Lua.CoWrap(IDEControlTree.ControlTreeDesc)
 
 function IDEControlTree:HandleTreeSearchClick(event)
 	local tab = g_IDETabManager.cur_tab

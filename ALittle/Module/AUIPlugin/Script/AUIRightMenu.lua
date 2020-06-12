@@ -14,8 +14,8 @@ option_map = {}
 })
 ALittle.RegStruct(-970735483, "AUIPlugin.AUIRightMenuInfo", {
 name = "AUIPlugin.AUIRightMenuInfo", ns_name = "AUIPlugin", rl_name = "AUIRightMenuInfo", hash_code = -970735483,
-name_list = {"name","disabled","callback"},
-type_list = {"string","bool","Functor<()>"},
+name_list = {"name","disabled","auto_hide","callback"},
+type_list = {"string","bool","bool","Functor<()>"},
 option_map = {}
 })
 ALittle.RegStruct(-449066808, "ALittle.UIClickEvent", {
@@ -31,17 +31,21 @@ function AUIRightMenu:Ctor()
 	___rawset(self, "_info_list", {})
 end
 
-function AUIRightMenu:AddItem(name, callback, disabled)
+function AUIRightMenu:AddItem(name, callback, disabled, auto_hide)
 	if name == nil then
 		name = ""
 	end
 	if disabled == nil then
 		disabled = false
 	end
+	if auto_hide == nil then
+		auto_hide = true
+	end
 	local info = {}
 	info.name = name
 	info.callback = callback
 	info.disabled = disabled
+	info.auto_hide = auto_hide
 	ALittle.List_Push(self._info_list, info)
 end
 
@@ -71,6 +75,12 @@ function AUIRightMenu:Show(target)
 		self._menu.x = A_UISystem.mouse_x
 		self._menu.y = A_UISystem.mouse_y
 	end
+	if self._menu.x + self._menu.width > A_UISystem.view_width then
+		self._menu.x = A_UISystem.view_width - self._menu.width
+	end
+	if self._menu.y + self._menu.height > A_UISystem.view_height then
+		self._menu.y = A_UISystem.view_height - self._menu.height
+	end
 	A_LayerManager:ShowFromRight(self._menu)
 end
 
@@ -81,8 +91,10 @@ function AUIRightMenu:Hide()
 end
 
 function AUIRightMenu:HandleItemClick(event)
-	self:Hide()
 	local info = event.target._user_data
+	if info.auto_hide then
+		self:Hide()
+	end
 	if info.callback ~= nil then
 		info.callback()
 	end

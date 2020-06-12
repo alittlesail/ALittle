@@ -12,20 +12,6 @@ struct IDEPasteControlUserData
 
 public class IDEControlTree
 {
-	private ALittle.DisplayObject _tip_dialog;
-	private ALittle.DisplayObject _tip_text;
-	
-	private ALittle.DisplayObject _control_tree_menu;
-	private ALittle.DisplayObject _right_control_tree_up;
-	private ALittle.DisplayObject _right_control_tree_down;
-	private ALittle.DisplayObject _right_control_tree_add;
-	private ALittle.DisplayObject _right_control_tree_add_image;
-	private ALittle.DisplayObject _right_control_tree_add_text;
-	private ALittle.DisplayObject _right_control_tree_cut;
-	private ALittle.DisplayObject _right_control_tree_jump;
-	private ALittle.DisplayObject _right_control_tree_delete;
-	private ALittle.DisplayObject _right_control_tree_replace;
-
 	private ALittle.DisplayObject _control_add_dialog;
 	private ALittle.DropDown _control_add_new_type;
 	private ALittle.DropDown _control_add_type;
@@ -43,112 +29,31 @@ public class IDEControlTree
 	private ALittle.DisplayObject _tree_search_type;
 
 	////////////////////////////////////////////////////////////////////////////////////////
-	// 显示TIP
-	public fun ShowTip(string content)
-	{
-		// 创建模态提示对话框，并添加到模态层
-		if (this._tip_dialog == null)
-		{
-			this._tip_dialog = g_Control.CreateControl{ALittle.DisplayObject}("ide_tool_tip", this);
-			A_LayerManager.AddToTip(this._tip_dialog);
-		}
-		
-		this._tip_dialog.visible = true;
-		this._tip_text.text = content;
-		this._tip_dialog.width = this._tip_text.width + 10;
-		this._tip_dialog.height = this._tip_text.height + 10;
-	}
-	
-	// 移动TIP
-	public fun MoveTip(double x, double y)
-	{
-		if (this._tip_dialog == null) return;
-	
-		this._tip_dialog.x = x;
-		this._tip_dialog.y = y;
-	}
-	
-	// 隐藏TIP
-	public fun HideTip()
-	{
-		if (this._tip_dialog == null) return;
-		this._tip_dialog.visible = false;
-	}
-	
 	// 处理控件树，右键菜单
 	public fun HandleControlTreeItemRightClick(ALittle.UIRButtonDownEvent event)
 	{
 		var target:IDETreeItem = event.target._user_data;
 		if (target.user_info.extends) return;
 	
-		if (this._control_tree_menu == null)
-			this._control_tree_menu = g_Control.CreateControl{ALittle.DisplayObject}("ide_control_tree_menu", this);
-	
-		this._right_control_tree_up.disabled = target.user_info.root || target.user_info.child_type != "child";
-		this._right_control_tree_down.disabled = target.user_info.root || target.user_info.child_type != "child";
-		this._right_control_tree_add.disabled = !target.IsTree();
-		this._right_control_tree_add_image.disabled = !target.IsTree();
-		this._right_control_tree_add_text.disabled = !target.IsTree();
-		this._right_control_tree_cut.disabled = target.user_info.root;
-		this._right_control_tree_jump.disabled = !target.user_info.extends_root;
-		this._right_control_tree_delete.disabled = target.user_info.root;
-		this._right_control_tree_replace.disabled = target.user_info.root;
-	
-		this._control_tree_menu._user_data = target;
-		this._control_tree_menu.x = A_UISystem.mouse_x;
-		this._control_tree_menu.y = A_UISystem.mouse_y;
-	
-		if (this._control_tree_menu.x + this._control_tree_menu.width > A_UISystem.view_width)
-			this._control_tree_menu.x = A_UISystem.view_width - this._control_tree_menu.width;
-		
-		if (this._control_tree_menu.y + this._control_tree_menu.height > A_UISystem.view_height)
-			this._control_tree_menu.y = A_UISystem.view_height - this._control_tree_menu.height;
-		
-		A_LayerManager.ShowFromRight(this._control_tree_menu);
+		var menu = new AUIPlugin.AUIRightMenu();
+		menu.AddItem("上移", bind(target.TransferUp, target), target.user_info.root || target.user_info.child_type != "child", false);
+		menu.AddItem("下移", bind(target.TransferDown, target), target.user_info.root || target.user_info.child_type != "child", false);
+		menu.AddItem("添加", bind(this.ShowAddDialog, this, target), !target.IsTree());
+		menu.AddItem("添加Image", bind(this.ShowAddImageDialog, this, target), !target.IsTree());
+		menu.AddItem("添加Text", bind(this.ShowAddTextDialog, this, target), !target.IsTree());
+		menu.AddItem("复制", bind(target.CopyToClipboard, target));
+		menu.AddItem("粘贴", bind(target.PasteFromClipboard, target));
+		menu.AddItem("剪切", bind(target.CutToClipboard, target), target.user_info.root);
+		menu.AddItem("删除", bind(target.TreeDelete, target, null), target.user_info.root);
+		menu.AddItem("跳转", bind(this.ControlTreeJump, this, target), !target.user_info.extends_root);
+		menu.AddItem("替换", bind(this.ShowReplaceDialog, this, target), target.user_info.root);
+		menu.AddItem("描述", bind(this.ControlTreeDesc, this, target));
+		menu.Show();
 	}
 	
-	// 处理上移
-	public fun HandleRightControlTreeUp(ALittle.UIEvent event)
-	{
-		// 隐藏右键菜单
-		// A_LayerManager.HideFromRight(this._control_tree_menu)
-		// 获取tree对象
-		var target:IDETreeLogic = this._control_tree_menu._user_data;
-		// this._control_tree_menu._user_data = null
-		// 处理上移
-		target.TransferUp();
-	}
-	// 处理下移
-	public fun HandleRightControlTreeDown(ALittle.UIEvent event)
-	{
-		// 隐藏右键菜单
-		// A_LayerManager.HideFromRight(this._control_tree_menu)
-		// 获取tree对象
-		var target:IDETreeLogic = this._control_tree_menu._user_data;
-		// this._control_tree_menu._user_data = null
-		// 处理下移
-		target.TransferDown();
-	}
 	// 处理添加
-	public fun HandleRightControlTreeAdd(ALittle.UIEvent event)
+	public async fun ShowAddImageDialog(IDETreeLogic target)
 	{
-		// 隐藏右键菜单
-		A_LayerManager.HideFromRight(this._control_tree_menu);
-		// 获取tree对象
-		var target:IDETreeLogic = this._control_tree_menu._user_data;
-		this._control_tree_menu._user_data = null;
-	
-		this.ShowAddDialog(target);
-	}
-	// 处理添加
-	public async fun HandleRightControlTreeAddImage(ALittle.UIEvent event)
-	{
-		// 隐藏右键菜单
-		A_LayerManager.HideFromRight(this._control_tree_menu);
-		// 获取tree对象
-		var target:IDETreeLogic = this._control_tree_menu._user_data;
-		this._control_tree_menu._user_data = null;
-	
 		// 直接显示图片选择框
 		g_IDEImageSelectDialog.SetBasePath(g_IDEProject.project.texture_path);
 		var path = g_IDEImageSelectDialog.ShowSelect();
@@ -172,14 +77,8 @@ public class IDEControlTree
 		tree_object.ShowFocus(false);
 	}
 	// 处理添加
-	public fun HandleRightControlTreeAddText(ALittle.UIEvent event)
+	public fun ShowAddTextDialog(IDETreeLogic target)
 	{
-		// 隐藏右键菜单
-		A_LayerManager.HideFromRight(this._control_tree_menu);
-		// 获取tree对象
-		var target:IDETreeLogic = this._control_tree_menu._user_data;
-		this._control_tree_menu._user_data = null;
-	
 		// 设置这个下拉菜单
 		if (target.CanAddChild() == false)
 		{
@@ -195,18 +94,7 @@ public class IDEControlTree
 		}
 		tree_object.ShowFocus(false);
 	}
-	// 处理替换
-	public fun HandleRightControlTreeReplace(ALittle.UIEvent event)
-	{
-		// 隐藏右键菜单
-		A_LayerManager.HideFromRight(this._control_tree_menu);
-		// 获取tree对象
-		var target:IDETreeLogic = this._control_tree_menu._user_data;
-		this._control_tree_menu._user_data = null;
-	
-		this.ShowReplaceDialog(target);
-	}
-	
+	// 处理添加
 	public fun ShowAddDialog(IDETreeLogic target)
 	{
 		// 打开添加对话框
@@ -231,13 +119,13 @@ public class IDEControlTree
 		this._control_add_dialog.visible = true;
 		this._control_add_extends_name.text = "";
 	}
-	
+	// 添加取消
 	public fun HandleAddControlCancel(ALittle.UIEvent event)
 	{
 		this._control_add_dialog.visible = false;
 		this._control_add_dialog._user_data = null;
 	}
-	
+	// 添加确认
 	public fun HandleAddControlConfirm(ALittle.UIEvent event)
 	{
 		var target:IDETreeLogic = this._control_add_dialog._user_data;
@@ -257,7 +145,7 @@ public class IDEControlTree
 		var tree_object = target.TreeAdd(extends_name, class_name, child_type);
 		if (tree_object != null) tree_object.ShowFocus(false);
 	}
-	
+	// 处理替换
 	public fun ShowReplaceDialog(IDETreeLogic target)
 	{
 		// 如果当前节点是分支节点，那么就要检查是否有子控件
@@ -327,23 +215,7 @@ public class IDEControlTree
 	
 		target.TreeReplace(extends_name, class_name, child_type);
 	}
-	
-	public fun HandleRightControlTreeCopy(ALittle.UIEvent event)
-	{
-		// 隐藏右键菜单
-		A_LayerManager.HideFromRight(this._control_tree_menu);
-		// 获取tree对象
-		var target:IDETreeLogic = this._control_tree_menu._user_data;
-		this._control_tree_menu._user_data = null;
-		// 计算信息
-		var info = new IDEControlCopyInfo();
-		info.index = 1;
-		info.info = target.CalcInfo();
-		var copy_list = new List<IDEControlCopyInfo>();
-		copy_list[1] = info;
-		ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list));
-	}
-	
+	// 处理粘贴
 	public fun ShowPasteDialog(IDETreeLogic target, ALittle.DisplayInfo info, int child_index, IDERevokeBind revoke_bind, Functor<(bool, List<IDETreeLogic>)> callback)
 	{
 		var data_list = target.GetDataListForAdd();
@@ -390,68 +262,9 @@ public class IDEControlTree
 		add_list[1] = tree_object;
 		if (user_data.callback != null) user_data.callback(true, add_list);
 	}
-	
-	public fun HandleRightControlTreePaste(ALittle.UIEvent event)
+	// 处理跳转
+	public fun ControlTreeJump(IDETreeLogic target)
 	{
-		// 隐藏右键菜单
-		A_LayerManager.HideFromRight(this._control_tree_menu);
-		// 获取tree对象
-		var target:IDETreeLogic = this._control_tree_menu._user_data;
-		this._control_tree_menu._user_data = null;
-	
-		if (target.IsTree())
-			target.tab_child.RightControlTreePasteImpl(target, null, null);
-		else
-		{
-			var common_parent = cast<IDETreeLogic>(target.logic_parent);
-			var child_index = 1;
-			if (common_parent == null)
-				common_parent = target;
-			else
-				child_index = common_parent.GetChildIndex(target) + 1;
-
-			target.tab_child.RightControlTreePasteImpl(common_parent, null, child_index);
-		}
-	}
-	
-	public fun HandleRightControlTreeDelete(ALittle.UIEvent event)
-	{
-		// 隐藏右键菜单
-		A_LayerManager.HideFromRight(this._control_tree_menu);
-		// 获取tree对象
-		var target:IDETreeLogic = this._control_tree_menu._user_data;
-		this._control_tree_menu._user_data = null;
-		// 隐藏红色框
-		target.tab_child.HideHandleQuad(target, true);
-		// 执行删除
-		target.TreeDelete();
-	}
-	
-	public fun HandleRightControlTreeCut(ALittle.UIEvent event)
-	{
-		// 隐藏右键菜单
-		A_LayerManager.HideFromRight(this._control_tree_menu);
-		// 获取tree对象
-		var target:IDETreeLogic = this._control_tree_menu._user_data;
-		this._control_tree_menu._user_data = null;
-	
-		var info = new IDEControlCopyInfo();
-		info.index = 1;
-		info.info = target.CalcInfo();
-		var copy_list = new List<IDEControlCopyInfo>();
-		copy_list[1] = info;
-		ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list));
-		target.TreeCut();
-	}
-	
-	public fun HandleRightControlTreeJump(ALittle.UIEvent event)
-	{
-		// 隐藏右键菜单
-		A_LayerManager.HideFromRight(this._control_tree_menu);
-		// 获取tree对象
-		var target:IDETreeLogic = this._control_tree_menu._user_data;
-		this._control_tree_menu._user_data = null;
-	
 		var extends_name = target.user_info.base.__extends;
 		var control_info = g_IDEProject.project.control_map[extends_name];
 		if (control_info == null)
@@ -462,22 +275,16 @@ public class IDEControlTree
 	
 		g_IDETabManager.StartEditControlBySelect(control_info.name, control_info.info);
 	}
-	
-	public async fun HandleRightControlTreeDesc(ALittle.UIEvent event)
+	// 处理描述
+	public async fun ControlTreeDesc(IDETreeLogic target)
 	{
-		// 隐藏右键菜单
-		A_LayerManager.HideFromRight(this._control_tree_menu);
-		// 获取tree对象
-		var target:IDETreeLogic = this._control_tree_menu._user_data;
-		this._control_tree_menu._user_data = null;
-	
 		var x, y = target.LocalToGlobal();
 		var desc = target.GetDesc();
 		var name = g_AUITool.ShowRename(desc, x, y, target.width);
 		if (name == null) return;
 		target.SetDesc(name);
 	}
-	
+	// 处理搜索
 	public fun HandleTreeSearchClick(ALittle.UIEvent event)
 	{
 		var tab = g_IDETabManager.cur_tab;

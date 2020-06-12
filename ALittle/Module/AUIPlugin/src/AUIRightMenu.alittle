@@ -5,6 +5,7 @@ protected struct AUIRightMenuInfo
 {
 	string name;
 	bool disabled;
+	bool auto_hide;
 	Functor<()> callback;
 }
 
@@ -15,14 +16,16 @@ public class AUIRightMenu
 
 	private List<AUIRightMenuInfo> _info_list = new List<AUIRightMenuInfo>();
 
-	public fun AddItem(string name, Functor<()> callback, [Nullable] bool disabled)
+	public fun AddItem(string name, Functor<()> callback, [Nullable] bool disabled, [Nullable] bool auto_hide)
 	{
 		if (name == null) name = "";
 		if (disabled == null) disabled = false;
+		if (auto_hide == null) auto_hide = true;
 		var info = new AUIRightMenuInfo();
 		info.name = name;
 		info.callback = callback;
 		info.disabled = disabled;
+		info.auto_hide = auto_hide;
 		ALittle.List_Push(this._info_list, info);
     }
 
@@ -60,6 +63,12 @@ public class AUIRightMenu
             this._menu.x = A_UISystem.mouse_x;
 			this._menu.y = A_UISystem.mouse_y;
         }
+		
+		if (this._menu.x + this._menu.width > A_UISystem.view_width)
+			this._menu.x = A_UISystem.view_width - this._menu.width;
+		if (this._menu.y + this._menu.height > A_UISystem.view_height)
+			this._menu.y = A_UISystem.view_height - this._menu.height;
+
         A_LayerManager.ShowFromRight(this._menu);
     }
 
@@ -71,9 +80,9 @@ public class AUIRightMenu
 
 	private fun HandleItemClick(ALittle.UIClickEvent event)
 	{
-		this.Hide();
-
         var info:AUIRightMenuInfo = event.target._user_data;
+		if (info.auto_hide) this.Hide();
+
 		if (info.callback != null)
 			info.callback();
     }

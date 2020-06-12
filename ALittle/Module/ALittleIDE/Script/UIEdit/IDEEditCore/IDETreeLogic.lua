@@ -578,6 +578,7 @@ function IDETreeLogic:TreeDelete(revoke_bind)
 	parent:RemoveChild(self)
 	self:RemoveAttributePanel()
 	self._tab_child:UpdateHandleQuadRemove(self)
+	self._tab_child:HideHandleQuad(self, true)
 	parent.tab_child:UpdateHandleQuadLayout(parent)
 end
 
@@ -740,6 +741,40 @@ function IDETreeLogic:DragWH(width, height)
 	if self._attr_panel ~= nil then
 		self._attr_panel.width_value.text = object.width_value
 		self._attr_panel.height_value.text = object.height_value
+	end
+end
+
+function IDETreeLogic:CopyToClipboard()
+	local info = {}
+	info.index = 1
+	info.info = self:CalcInfo()
+	local copy_list = {}
+	copy_list[1] = info
+	ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list))
+end
+
+function IDETreeLogic:CutToClipboard()
+	local info = {}
+	info.index = 1
+	info.info = self:CalcInfo()
+	local copy_list = {}
+	copy_list[1] = info
+	ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list))
+	self:TreeCut()
+end
+
+function IDETreeLogic:PasteFromClipboard()
+	if self:IsTree() then
+		self.tab_child:RightControlTreePasteImpl(self, nil, nil)
+	else
+		local common_parent = self.logic_parent
+		local child_index = 1
+		if common_parent == nil then
+			common_parent = self
+		else
+			child_index = common_parent:GetChildIndex(self) + 1
+		end
+		self.tab_child:RightControlTreePasteImpl(common_parent, nil, child_index)
 	end
 end
 

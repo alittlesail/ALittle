@@ -646,6 +646,8 @@ public class IDETreeLogic : ALittle.DisplayLayout
 		// 移除设置面板
 		this.RemoveAttributePanel();
 		this._tab_child.UpdateHandleQuadRemove(this);
+		// 隐藏红色框
+		this._tab_child.HideHandleQuad(this, true);
 		parent.tab_child.UpdateHandleQuadLayout(parent);
 	}
 	
@@ -826,6 +828,45 @@ public class IDETreeLogic : ALittle.DisplayLayout
             this._attr_panel.height_value.text = object.height_value;
 		}
 	}
+
+	public fun CopyToClipboard()
+	{
+		// 计算信息
+		var info = new IDEControlCopyInfo();
+		info.index = 1;
+		info.info = this.CalcInfo();
+		var copy_list = new List<IDEControlCopyInfo>();
+		copy_list[1] = info;
+		ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list));
+    }
+
+	public fun CutToClipboard()
+	{
+		var info = new IDEControlCopyInfo();
+		info.index = 1;
+		info.info = this.CalcInfo();
+		var copy_list = new List<IDEControlCopyInfo>();
+		copy_list[1] = info;
+		ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list));
+		this.TreeCut();
+    }
+
+	public fun PasteFromClipboard()
+	{
+        if (this.IsTree())
+			this.tab_child.RightControlTreePasteImpl(this, null, null);
+		else
+		{
+			var common_parent = cast<IDETreeLogic>(this.logic_parent);
+			var child_index = 1;
+			if (common_parent == null)
+				common_parent = this;
+			else
+				child_index = common_parent.GetChildIndex(this) + 1;
+
+			this.tab_child.RightControlTreePasteImpl(common_parent, null, child_index);
+		}
+    }
     
 	public fun CalcInfo() : ALittle.DisplayInfo { return null; }
     public fun SearchLink(string name, [Nullable] List<IDETreeLogic> list) : List<IDETreeLogic> { return null; }

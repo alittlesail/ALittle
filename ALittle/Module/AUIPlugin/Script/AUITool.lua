@@ -239,4 +239,30 @@ function AUITool:HandleTipHelpCloseClick(event)
 	self._tip_help_dialog.visible = false
 end
 
+function AUITool:ShowTip(content)
+	if self._tip_dialog == nil then
+		self._tip_dialog = g_Control:CreateControl("ide_tool_tip", self)
+		A_LayerManager:AddToTip(self._tip_dialog)
+	end
+	self._tip_dialog.visible = true
+	self._tip_text.text = content
+	self._tip_dialog.width = self._tip_text.width + 10
+	self._tip_dialog.height = self._tip_text.height + 10
+end
+
+function AUITool:MoveTip(x, y)
+	if self._tip_dialog == nil then
+		return
+	end
+	self._tip_dialog.x = x
+	self._tip_dialog.y = y
+end
+
+function AUITool:HideTip()
+	if self._tip_dialog == nil then
+		return
+	end
+	self._tip_dialog.visible = false
+end
+
 _G.g_AUITool = AUITool()

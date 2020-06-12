@@ -210,24 +210,23 @@ end
 
 function IDETabChild:Save(value)
 	if self._save == value then
-		return true, nil
+		return
 	end
 	if value == false then
 		self._save = false
 		self:UpdateTitle()
-		return true, nil
+		return
 	end
 	if self._tree_object == nil then
-		return false, "根节点不存在，不能保存"
+		return
 	end
 	local info = self._tree_object:CalcInfo()
 	local result, content = g_IDEProject:SaveControl(self._name, info)
 	if result == false then
-		return false, content
+		return
 	end
 	self._save = value
 	self:UpdateTitle()
-	return true, nil
 end
 
 function IDETabChild:Rename(name)

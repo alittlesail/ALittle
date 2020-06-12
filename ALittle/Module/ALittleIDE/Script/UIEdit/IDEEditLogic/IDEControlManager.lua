@@ -222,7 +222,7 @@ end
 
 function IDEControlManager:HandleControlKeyDown(event)
 	if event.sym == 1073741883 then
-		self:ControlRenameImpl(event.target)
+		self:ControlRename(event.target)
 	end
 end
 IDEControlManager.HandleControlKeyDown = Lua.CoWrap(IDEControlManager.HandleControlKeyDown)
@@ -378,25 +378,21 @@ function IDEControlManager:HandleNewControlConfirm(event)
 end
 
 function IDEControlManager:HandleControlItemRightClick(event)
-	if self._control_right_menu == nil then
-		self._control_right_menu = g_Control:CreateControl("ide_control_right_menu", self)
-	end
-	A_LayerManager:ShowFromRight(self._control_right_menu)
-	self._control_right_menu.x = A_UISystem.mouse_x
-	self._control_right_menu.y = A_UISystem.mouse_y
-	if self._control_right_menu.x + self._control_right_menu.width > A_UISystem.view_width then
-		self._control_right_menu.x = A_UISystem.view_width - self._control_right_menu.width
-	end
-	if self._control_right_menu.y + self._control_right_menu.height > A_UISystem.view_height then
-		self._control_right_menu.y = A_UISystem.view_height - self._control_right_menu.height
-	end
-	self._control_right_menu._user_data = event.target
+	local user_data = event.target._user_data
+	local menu = AUIPlugin.AUIRightMenu()
+	menu:AddItem("复制控件名", Lua.Bind(self.CopyName, self, event.target))
+	menu:AddItem("复制并新建控件", Lua.Bind(self.CopyInfo, self, event.target))
+	menu:AddItem("复制继承代码", Lua.Bind(self.CopyExtends, self, event.target))
+	menu:AddItem("修改控件名", Lua.Bind(self.ControlRename, self, event.target))
+	menu:AddItem("标记为常用图片", Lua.Bind(g_IDEQuickManager.FlagImage, g_IDEQuickManager, user_data.control_info.name))
+	menu:AddItem("标记为常用按钮", Lua.Bind(g_IDEQuickManager.FlagButton, g_IDEQuickManager, user_data.control_info.name))
+	menu:AddItem("标记为常用文本", Lua.Bind(g_IDEQuickManager.FlagText, g_IDEQuickManager, user_data.control_info.name))
+	menu:AddItem("标记为其他常用", Lua.Bind(g_IDEQuickManager.FlagOther, g_IDEQuickManager, user_data.control_info.name))
+	menu:AddItem("删除", Lua.Bind(self.Delete, self, event.target))
+	menu:Show()
 end
 
-function IDEControlManager:HandleControlRightMenuDelete(event)
-	A_LayerManager:HideFromRight(self._control_right_menu)
-	local target = self._control_right_menu._user_data
-	self._control_right_menu._user_data = nil
+function IDEControlManager:Delete(target)
 	local user_data = target._user_data
 	local name = user_data.control_info.name
 	local result, content = g_IDEProject:CanDelete(name)
@@ -424,21 +420,15 @@ function IDEControlManager:HandleControlRightMenuDelete(event)
 		g_IDETabManager:CloseTab(tab)
 	end
 end
-IDEControlManager.HandleControlRightMenuDelete = Lua.CoWrap(IDEControlManager.HandleControlRightMenuDelete)
+IDEControlManager.Delete = Lua.CoWrap(IDEControlManager.Delete)
 
-function IDEControlManager:HandleControlRightMenuCopyName(event)
-	A_LayerManager:HideFromRight(self._control_right_menu)
-	local target = self._control_right_menu._user_data
-	self._control_right_menu._user_data = nil
+function IDEControlManager:CopyName(target)
 	local user_data = target._user_data
 	local name = user_data.control_info.name
 	ALittle.System_SetClipboardText(name)
 end
 
-function IDEControlManager:HandleControlRightMenuCopyInfo(event)
-	A_LayerManager:HideFromRight(self._control_right_menu)
-	local target = self._control_right_menu._user_data
-	self._control_right_menu._user_data = nil
+function IDEControlManager:CopyInfo(target)
 	local user_data = target._user_data
 	local old_name = user_data.control_info.name
 	local x, y = target:LocalToGlobal()
@@ -448,7 +438,7 @@ function IDEControlManager:HandleControlRightMenuCopyInfo(event)
 	end
 	self:ControlCopyInfo(old_name, new_name)
 end
-IDEControlManager.HandleControlRightMenuCopyInfo = Lua.CoWrap(IDEControlManager.HandleControlRightMenuCopyInfo)
+IDEControlManager.CopyInfo = Lua.CoWrap(IDEControlManager.CopyInfo)
 
 function IDEControlManager:ControlCopyInfo(target_name, new_name)
 	local result, content = IDEUtility_CheckName(new_name)
@@ -475,26 +465,7 @@ function IDEControlManager:ControlCopyInfo(target_name, new_name)
 	g_IDETabManager:StartEditControlBySelect(new_name, info.info)
 end
 
-function IDEControlManager:ControlRename(target, old_name, new_name)
-	if old_name == new_name then
-		return
-	end
-	local result, content = g_IDEProject:RenameControl(old_name, new_name)
-	if result == false then
-		g_AUITool:ShowNotice("错误", content)
-		return
-	end
-	target.text = new_name
-	local tab = g_IDETabManager:GetTabByName(old_name)
-	if tab == nil then
-		return
-	end
-	local tab_child = tab._user_data
-	tab_child:Rename(new_name)
-end
-
-function IDEControlManager:ControlRenameImpl(target)
-	local ___COROUTINE = coroutine.running()
+function IDEControlManager:ControlRename(target)
 	local user_data = target._user_data
 	local old_name = user_data.control_info.name
 	local result, content = g_IDEProject:CanDelete(old_name)
@@ -512,21 +483,22 @@ function IDEControlManager:ControlRenameImpl(target)
 	if new_name == nil or old_name == new_name then
 		return
 	end
-	self:ControlRename(target, old_name, new_name)
+	result, content = g_IDEProject:RenameControl(old_name, new_name)
+	if result == false then
+		g_AUITool:ShowNotice("错误", content)
+		return
+	end
+	target.text = new_name
+	local tab = g_IDETabManager:GetTabByName(old_name)
+	if tab == nil then
+		return
+	end
+	local tab_child = tab._user_data
+	tab_child:Rename(new_name)
 end
+IDEControlManager.ControlRename = Lua.CoWrap(IDEControlManager.ControlRename)
 
-function IDEControlManager:HandleControlRightMenuRename(event)
-	A_LayerManager:HideFromRight(self._control_right_menu)
-	local target = self._control_right_menu._user_data
-	self._control_right_menu._user_data = nil
-	self:ControlRenameImpl(target)
-end
-IDEControlManager.HandleControlRightMenuRename = Lua.CoWrap(IDEControlManager.HandleControlRightMenuRename)
-
-function IDEControlManager:HandleControlRightMenuCopyExtends(event)
-	A_LayerManager:HideFromRight(self._control_right_menu)
-	local target = self._control_right_menu._user_data
-	self._control_right_menu._user_data = nil
+function IDEControlManager:CopyExtends(target)
 	local user_data = target._user_data
 	local name = user_data.control_info.name
 	local save_info = {}
@@ -537,38 +509,6 @@ function IDEControlManager:HandleControlRightMenuCopyExtends(event)
 	info["info"] = save_info
 	copy_list[1] = info
 	ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list))
-end
-
-function IDEControlManager:HandleControlRightMenuFlagQuickImage(event)
-	A_LayerManager:HideFromRight(self._control_right_menu)
-	local target = self._control_right_menu._user_data
-	self._control_right_menu._user_data = nil
-	local user_data = target._user_data
-	g_IDEQuickManager:FlagImage(user_data.control_info.name)
-end
-
-function IDEControlManager:HandleControlRightMenuFlagQuickButton(event)
-	A_LayerManager:HideFromRight(self._control_right_menu)
-	local target = self._control_right_menu._user_data
-	self._control_right_menu._user_data = nil
-	local user_data = target._user_data
-	g_IDEQuickManager:FlagButton(user_data.control_info.name)
-end
-
-function IDEControlManager:HandleControlRightMenuFlagQuickText(event)
-	A_LayerManager:HideFromRight(self._control_right_menu)
-	local target = self._control_right_menu._user_data
-	self._control_right_menu._user_data = nil
-	local user_data = target._user_data
-	g_IDEQuickManager:FlagText(user_data.control_info.name)
-end
-
-function IDEControlManager:HandleControlRightMenuFlagQuickOther(event)
-	A_LayerManager:HideFromRight(self._control_right_menu)
-	local target = self._control_right_menu._user_data
-	self._control_right_menu._user_data = nil
-	local user_data = target._user_data
-	g_IDEQuickManager:FlagOther(user_data.control_info.name)
 end
 
 g_IDEControlManager = IDEControlManager()

@@ -180,25 +180,23 @@ public class IDETabChild : ALittle.UIEventDispatcher
 	public get tree_object() : IDETreeLogic  { return this._tree_object; }
 	public get save() : bool { return this._save; }
 	////////////////////////////////////////////////////////////////////////////////////////////-
-	public fun Save(bool value) : bool, string
+	public fun Save(bool value)
     {
-        if (this._save == value) return true, null;
+        if (this._save == value) return;
 		if (value == false)
         {
             this._save = false;
             this.UpdateTitle();
-            return true, null;
+            return;
 		}
-        if (this._tree_object == null) return false, "根节点不存在，不能保存";
+        if (this._tree_object == null) return;
 	
         var info = this._tree_object.CalcInfo();
         var result, content = g_IDEProject.SaveControl(this._name, info);
-        if (result == false) return false, content;
+        if (result == false) return;
 	
         this._save = value;
         this.UpdateTitle();
-	
-        return true, null;
 	}
 	
 	public fun Rename(string name)

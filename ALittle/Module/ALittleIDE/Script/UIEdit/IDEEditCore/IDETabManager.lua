@@ -41,12 +41,6 @@ name_list = {"target","mod","sym","scancode","custom","handled"},
 type_list = {"ALittle.DisplayObject","int","int","int","bool","bool"},
 option_map = {}
 })
-ALittle.RegStruct(-449066808, "ALittle.UIClickEvent", {
-name = "ALittle.UIClickEvent", ns_name = "ALittle", rl_name = "UIClickEvent", hash_code = -449066808,
-name_list = {"target","is_drag"},
-type_list = {"ALittle.DisplayObject","bool"},
-option_map = {}
-})
 
 IDETabManager = Lua.Class(nil, "ALittleIDE.IDETabManager")
 
@@ -273,7 +267,7 @@ end
 
 function IDETabManager:HandleMainTabKeyDown(event)
 	if event.sym == 1073741883 then
-		self:ControlRenameImpl(event.target)
+		self:ControlRename(event.target)
 		event.handled = true
 		return
 	end
@@ -297,13 +291,18 @@ end
 IDETabManager.HandleMainTabKeyDown = Lua.CoWrap(IDETabManager.HandleMainTabKeyDown)
 
 function IDETabManager:ShowTabRightMenu(child)
-	if self._main_tab_menu == nil then
-		self._main_tab_menu = g_Control:CreateControl("ide_tab_right_menu", self)
-	end
-	self._main_tab_menu.x = A_UISystem.mouse_x
-	self._main_tab_menu.y = A_UISystem.mouse_y
-	self._main_tab_menu._user_data = child
-	A_LayerManager:ShowFromRight(self._main_tab_menu)
+	local tab_child = child._user_data
+	local menu = AUIPlugin.AUIRightMenu()
+	menu:AddItem("保存", Lua.Bind(tab_child.Save, tab_child, true))
+	menu:AddItem("截图导出", Lua.Bind(A_OtherSystem.SystemSaveFile, A_OtherSystem, tab_child, tab_child.name .. ".png", nil))
+	menu:AddItem("刷新", Lua.Bind(self.RefreshTabWithAsk, self, child))
+	menu:AddItem("复制控件名", Lua.Bind(ALittle.System_SetClipboardText, tab_child.name))
+	menu:AddItem("复制继承代码", Lua.Bind(self.CopyExtends, self, child))
+	menu:AddItem("关闭自己", Lua.Bind(self.CloseTabWithAsk, self, child))
+	menu:AddItem("关闭左侧", Lua.Bind(self.CloseLeftTab, self, child))
+	menu:AddItem("关闭右侧", Lua.Bind(self.CloseRightTab, self, child))
+	menu:AddItem("修改控件名", Lua.Bind(self.ControlRename, self, child))
+	menu:Show()
 end
 
 function IDETabManager:ShowTabRightExMenu(x, y)
@@ -311,135 +310,99 @@ function IDETabManager:ShowTabRightExMenu(x, y)
 	if tab_childs[1] == nil then
 		return
 	end
-	if self._tab_right_exmenu == nil then
-		self._tab_right_exmenu = g_Control:CreateControl("ide_dynamic_menu", self)
-	end
-	self._tab_right_exlinear:RemoveAllChild()
+	local menu = AUIPlugin.AUIRightMenu()
 	for index, child in ___ipairs(tab_childs) do
-		local item = g_Control:CreateControl("ide_common_item_button")
-		item:AddEventListener(___all_struct[-449066808], self, self.HandleTabRightExItemClick)
-		item._user_data = child
 		local tab_child = child._user_data
-		item.text = tab_child.total_title
-		self._tab_right_exlinear:AddChild(item)
+		menu:AddItem(tab_child.total_title, Lua.Bind(self.SelectItemClick, self, child))
 	end
-	self._tab_right_exmenu.height = self._tab_right_exlinear.height + 2
-	if x + self._tab_right_exmenu.width > A_UISystem.view_width then
-		x = A_UISystem.view_width - self._tab_right_exmenu.width
-	end
-	self._tab_right_exmenu.x = x
-	self._tab_right_exmenu.y = y
-	A_LayerManager:ShowFromRight(self._tab_right_exmenu)
+	menu:Show()
 end
 
-function IDETabManager:HandleTabRightExItemClick(event)
-	A_LayerManager:HideFromRight(self._tab_right_exmenu)
+function IDETabManager:SelectItemClick(child_to)
 	local child_from = self._main_tab.tab
-	local child_to = event.target._user_data
 	self._main_tab:SetChildIndex(child_to, 1)
 	self._main_tab.tab = child_to
 	self:ChangeTabEditControl(child_from, child_to)
 end
 
-function IDETabManager:HandleTabRightMenu(event)
-	local child = self._main_tab_menu._user_data
+function IDETabManager:RefreshTabWithAsk(child)
 	local tab_child = child._user_data
-	self._main_tab_menu._user_data = nil
-	A_LayerManager:HideFromRight(self._main_tab_menu)
-	local handle_name = event.target.text
-	if handle_name == "保存" then
-		tab_child:Save(true)
-		return
-	end
-	if handle_name == "刷新" then
-		if tab_child.save then
-			self:RefreshTab(child)
-			return
-		end
-		local result = g_AUITool:SaveNotice("提示", "是否保存当前控件?")
-		if result == "YES" then
-			tab_child:Save(true)
-		end
+	if tab_child.save then
 		self:RefreshTab(child)
 		return
 	end
-	if handle_name == "关闭自己" then
-		if tab_child.save then
-			self:CloseTab(child)
-			return
-		end
-		local result = g_AUITool:SaveNotice("提示", "是否保存当前控件?")
-		if result == "YES" then
-			tab_child:Save(true)
-		end
+	local result = g_AUITool:SaveNotice("提示", "是否保存当前控件?")
+	if result == "YES" then
+		tab_child:Save(true)
+	end
+	self:RefreshTab(child)
+end
+IDETabManager.RefreshTabWithAsk = Lua.CoWrap(IDETabManager.RefreshTabWithAsk)
+
+function IDETabManager:CloseTabWithAsk(child)
+	local tab_child = child._user_data
+	if tab_child.save then
 		self:CloseTab(child)
 		return
 	end
-	if handle_name == "复制控件名" then
-		ALittle.System_SetClipboardText(tab_child.name)
-		return
+	local result = g_AUITool:SaveNotice("提示", "是否保存当前控件?")
+	if result == "YES" then
+		tab_child:Save(true)
 	end
-	if handle_name == "复制继承代码" then
-		local name = tab_child.name
-		local display_info = {}
-		display_info.__extends = name
-		local copy_list = {}
-		local info = {}
-		info.index = 1
-		info.info = display_info
-		copy_list[1] = info
-		ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list))
-		return
-	end
-	if handle_name == "关闭左侧" then
-		local close_list = {}
-		for index, child_v in ___ipairs(self._main_tab.childs) do
-			if child_v == child then
-				break
-			end
-			tab_child = child_v._user_data
-			if tab_child.save then
-				ALittle.List_Push(close_list, child_v)
-			end
+	self:CloseTab(child)
+end
+IDETabManager.CloseTabWithAsk = Lua.CoWrap(IDETabManager.CloseTabWithAsk)
+
+function IDETabManager:CloseLeftTab(child)
+	local close_list = {}
+	for index, child_v in ___ipairs(self._main_tab.childs) do
+		if child_v == child then
+			break
 		end
-		for index, child_v in ___ipairs(close_list) do
-			self:CloseTab(child_v)
+		local tab_child = child_v._user_data
+		if tab_child.save then
+			ALittle.List_Push(close_list, child_v)
 		end
-		return
 	end
-	if handle_name == "关闭右侧" then
-		local close_list = {}
-		local child_list = self._main_tab.childs
-		local cur_index = self._main_tab:GetChildIndex(child)
-		local child_count = self._main_tab.child_count
-		local index = cur_index + 1
-		while true do
-			if not(index <= child_count) then break end
-			local child_v = child_list[index]
-			tab_child = child_v._user_data
-			if tab_child.save then
-				ALittle.List_Push(close_list, child_v)
-			end
-			index = index+(1)
-		end
-		for index, child_v in ___ipairs(close_list) do
-			self:CloseTab(child_v)
-		end
-		return
-	end
-	if handle_name == "修改控件名" then
-		self:ControlRenameImpl(child)
-		return
-	end
-	if handle_name == "截图导出" then
-		A_OtherSystem:SystemSaveFile(tab_child, tab_child.name .. ".png", nil)
-		return
+	for index, child_v in ___ipairs(close_list) do
+		self:CloseTab(child_v)
 	end
 end
-IDETabManager.HandleTabRightMenu = Lua.CoWrap(IDETabManager.HandleTabRightMenu)
 
-function IDETabManager:ControlRenameImpl(child)
-	local ___COROUTINE = coroutine.running()
+function IDETabManager:CloseRightTab(child)
+	local close_list = {}
+	local child_list = self._main_tab.childs
+	local cur_index = self._main_tab:GetChildIndex(child)
+	local child_count = self._main_tab.child_count
+	local index = cur_index + 1
+	while true do
+		if not(index <= child_count) then break end
+		local child_v = child_list[index]
+		local tab_child = child_v._user_data
+		if tab_child.save then
+			ALittle.List_Push(close_list, child_v)
+		end
+		index = index+(1)
+	end
+	for index, child_v in ___ipairs(close_list) do
+		self:CloseTab(child_v)
+	end
+end
+
+function IDETabManager:CopyExtends(child)
+	local tab_child = child._user_data
+	local name = tab_child.name
+	local display_info = {}
+	display_info.__extends = name
+	local copy_list = {}
+	local info = {}
+	info.index = 1
+	info.info = display_info
+	copy_list[1] = info
+	ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list))
+end
+
+function IDETabManager:ControlRename(child)
 	local tab_child = child._user_data
 	local old_name = tab_child.name
 	local result, content = g_IDEProject:CanDelete(old_name)
@@ -472,6 +435,7 @@ function IDETabManager:ControlRenameImpl(child)
 	end
 	tab_child:Rename(new_name)
 end
+IDETabManager.ControlRename = Lua.CoWrap(IDETabManager.ControlRename)
 
 function IDETabManager:StartEditControlByNew(name, type)
 	local child_from = self._main_tab.tab

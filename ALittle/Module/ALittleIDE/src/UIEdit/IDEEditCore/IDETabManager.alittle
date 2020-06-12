@@ -8,9 +8,6 @@ public class IDETabManager
 	private ALittle.DisplayObject _main_control;		// 属性控件容器
 	private ALittle.DisplayObject _main_anti;			// 动画编辑容器
 	private ALittle.DisplayObject _cur_tab;				// 当前标签页
-	private ALittle.DisplayObject _main_tab_menu;		// 标签页按钮菜单
-	private ALittle.DisplayObject _tab_right_exmenu;	// 标签页右上角菜单
-	private ALittle.DisplayObject _tab_right_exlinear;	// 标签页右上角菜单Linear容器
 	
 	public fun Setup(ALittle.Tab tab, ALittle.DisplayObject tree, ALittle.DisplayObject control, ALittle.DisplayObject anti)
 	{
@@ -285,7 +282,7 @@ public class IDETabManager
 	{
 		if (event.sym == 1073741883)
 		{
-			this.ControlRenameImpl(event.target);
+			this.ControlRename(event.target);
 			event.handled = true;
 			return;
 		}
@@ -312,12 +309,19 @@ public class IDETabManager
 	// Tab右键菜单栏
 	public fun ShowTabRightMenu(ALittle.DisplayObject child)
 	{
-		if (this._main_tab_menu == null)
-			this._main_tab_menu = g_Control.CreateControl{ALittle.DisplayObject}("ide_tab_right_menu", this);
-		this._main_tab_menu.x = A_UISystem.mouse_x;
-		this._main_tab_menu.y = A_UISystem.mouse_y;
-		this._main_tab_menu._user_data = child;
-		A_LayerManager.ShowFromRight(this._main_tab_menu);
+		var tab_child:IDETabChild = child._user_data;
+
+		var menu = new AUIPlugin.AUIRightMenu();
+		menu.AddItem("保存", bind(tab_child.Save, tab_child, true));
+		menu.AddItem("截图导出", bind(A_OtherSystem.SystemSaveFile, A_OtherSystem, tab_child, tab_child.name..".png", null));
+		menu.AddItem("刷新", bind(this.RefreshTabWithAsk, this, child));
+		menu.AddItem("复制控件名", bind(ALittle.System_SetClipboardText, tab_child.name));
+		menu.AddItem("复制继承代码", bind(this.CopyExtends, this, child));
+		menu.AddItem("关闭自己", bind(this.CloseTabWithAsk, this, child));
+		menu.AddItem("关闭左侧", bind(this.CloseLeftTab, this, child));
+		menu.AddItem("关闭右侧", bind(this.CloseRightTab, this, child));
+		menu.AddItem("修改控件名", bind(this.ControlRename, this, child));
+		menu.Show();
 	}
 	// Tab扩展菜单栏
 	public fun ShowTabRightExMenu(double x, double y)
@@ -325,147 +329,105 @@ public class IDETabManager
 		//遍历
 		var tab_childs = this._main_tab.childs;
 		if (tab_childs[1] == null) return;
-		// 创建右键菜单
-		if (this._tab_right_exmenu == null)
-			this._tab_right_exmenu = g_Control.CreateControl{ALittle.DisplayObject}("ide_dynamic_menu", this);
 
-		this._tab_right_exlinear.RemoveAllChild();
+		var menu = new AUIPlugin.AUIRightMenu();
 		for (var index, child in tab_childs)
 		{
-			var item = g_Control.CreateControl{ALittle.DisplayObject}("ide_common_item_button");
-			item.AddEventListener(this, this.HandleTabRightExItemClick);
-			item._user_data = child;
 			var tab_child:IDETabChild = child._user_data;
-			item.text = tab_child.total_title;
-			this._tab_right_exlinear.AddChild(item);
+			menu.AddItem(tab_child.total_title, bind(this.SelectItemClick, this, child));
 		}
-		this._tab_right_exmenu.height = this._tab_right_exlinear.height + 2;
-	
-		if (x + this._tab_right_exmenu.width > A_UISystem.view_width)
-			x = A_UISystem.view_width - this._tab_right_exmenu.width;
-	
-		this._tab_right_exmenu.x = x;
-		this._tab_right_exmenu.y = y;
-		A_LayerManager.ShowFromRight(this._tab_right_exmenu);
+		menu.Show();
 	}
 	
-	public fun HandleTabRightExItemClick(ALittle.UIClickEvent event)
+	public fun SelectItemClick(ALittle.DisplayObject child_to)
 	{
-		// 隐藏菜单
-		A_LayerManager.HideFromRight(this._tab_right_exmenu);
 		// 获取当前tab
 		var child_from = this._main_tab.tab;
-		var child_to = event.target._user_data;
 		// 设置索引
 		this._main_tab.SetChildIndex(child_to, 1);
 		this._main_tab.tab = child_to;
 		// 切换
 		this.ChangeTabEditControl(child_from, child_to);
 	}
-	
-	// 按下右键菜单，保存
-	public async fun HandleTabRightMenu(ALittle.UIEvent event)
+
+	private async fun RefreshTabWithAsk(ALittle.DisplayObject child)
 	{
-		var child:ALittle.DisplayObject = this._main_tab_menu._user_data;
 		var tab_child:IDETabChild = child._user_data;
-		this._main_tab_menu._user_data = null;
-		A_LayerManager.HideFromRight(this._main_tab_menu);
-	
-		var handle_name = event.target.text;
-		if (handle_name == "保存")
+        
+		if (tab_child.save)
 		{
-			tab_child.Save(true);
-			return;
-		}
-		if (handle_name == "刷新")
-		{
-			if (tab_child.save)
-			{
-				this.RefreshTab(child);
-				return;
-			}
-			var result = g_AUITool.SaveNotice("提示", "是否保存当前控件?");
-			if (result == AUIPlugin.AUIToolOption.YES)
-				tab_child.Save(true);
 			this.RefreshTab(child);
 			return;
 		}
-		if (handle_name == "关闭自己")
+		var result = g_AUITool.SaveNotice("提示", "是否保存当前控件?");
+		if (result == AUIPlugin.AUIToolOption.YES)
+			tab_child.Save(true);
+		this.RefreshTab(child);
+    }
+
+	private async fun CloseTabWithAsk(ALittle.DisplayObject child)
+	{
+		var tab_child:IDETabChild = child._user_data;
+        
+		if (tab_child.save)
 		{
-			if (tab_child.save)
-			{
-				this.CloseTab(child);
-				return;
-			}
-			var result = g_AUITool.SaveNotice("提示", "是否保存当前控件?");
-			if (result == AUIPlugin.AUIToolOption.YES)
-				tab_child.Save(true);
 			this.CloseTab(child);
 			return;
 		}
-		if (handle_name == "复制控件名")
+		var result = g_AUITool.SaveNotice("提示", "是否保存当前控件?");
+		if (result == AUIPlugin.AUIToolOption.YES)
+			tab_child.Save(true);
+		this.CloseTab(child);
+    }
+
+	private fun CloseLeftTab(ALittle.DisplayObject child)
+	{
+		var close_list = new List<ALittle.DisplayObject>();
+		for (var index, child_v in this._main_tab.childs)
 		{
-			ALittle.System_SetClipboardText(tab_child.name);
-			return;
+			if (child_v == child) break;
+			var tab_child:IDETabChild = child_v._user_data;
+			if (tab_child.save)
+				ALittle.List_Push(close_list, child_v);
 		}
-		if (handle_name == "复制继承代码")
-		{
-			var name = tab_child.name;
-			var display_info = new ALittle.DisplayInfo();
-			display_info.__extends = name;
-			var copy_list = new List<IDEControlCopyInfo>();
-			var info = new IDEControlCopyInfo();
-			info.index = 1;
-			info.info = display_info;
-			copy_list[1] = info;
-			ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list));
-			return;
-		}
-		if (handle_name == "关闭左侧")
-		{
-			var close_list = new List<ALittle.DisplayObject>();
-			for (var index, child_v in this._main_tab.childs)
-			{
-				if (child_v == child) break;
-				tab_child = child_v._user_data;
-				if (tab_child.save)
-					ALittle.List_Push(close_list, child_v);
-			}
-			for (var index, child_v in close_list)
-				this.CloseTab(child_v);
-			return;
-		}
-		if (handle_name == "关闭右侧")
-		{
-			var close_list = new List<ALittle.DisplayObject>();
-			var child_list = this._main_tab.childs;
-			var cur_index = this._main_tab.GetChildIndex(child);
-			var child_count = this._main_tab.child_count;
-			for (var index = cur_index + 1; index <= child_count; 1)
-			{
-				var child_v = child_list[index];
-				tab_child = child_v._user_data;
-				if (tab_child.save)
-					ALittle.List_Push(close_list, child_v);
-			}
-			for (var index, child_v in close_list)
-				this.CloseTab(child_v);
-			return;
-		}
-		if (handle_name == "修改控件名")
-		{
-			this.ControlRenameImpl(child);
-			return;
-		}
-		if (handle_name == "截图导出")
-		{
-            A_OtherSystem.SystemSaveFile(tab_child, tab_child.name..".png", null);
-			return;
-        }
+		for (var index, child_v in close_list)
+			this.CloseTab(child_v);
 	}
-	
+
+	private fun CloseRightTab(ALittle.DisplayObject child)
+	{
+		var close_list = new List<ALittle.DisplayObject>();
+		var child_list = this._main_tab.childs;
+		var cur_index = this._main_tab.GetChildIndex(child);
+		var child_count = this._main_tab.child_count;
+		for (var index = cur_index + 1; index <= child_count; 1)
+		{
+			var child_v = child_list[index];
+			var tab_child:IDETabChild = child_v._user_data;
+			if (tab_child.save)
+				ALittle.List_Push(close_list, child_v);
+		}
+		for (var index, child_v in close_list)
+			this.CloseTab(child_v);
+    }
+
+	private fun CopyExtends(ALittle.DisplayObject child)
+	{
+		var tab_child:IDETabChild = child._user_data;
+
+		var name = tab_child.name;
+		var display_info = new ALittle.DisplayInfo();
+		display_info.__extends = name;
+		var copy_list = new List<IDEControlCopyInfo>();
+		var info = new IDEControlCopyInfo();
+		info.index = 1;
+		info.info = display_info;
+		copy_list[1] = info;
+		ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list));
+    }
+
 	// 修改控件名
-	public await fun ControlRenameImpl(ALittle.DisplayObject child)
+	public async fun ControlRename(ALittle.DisplayObject child)
 	{
 		var tab_child:IDETabChild = child._user_data;
 		var old_name = tab_child.name;

@@ -24,7 +24,6 @@ public class IDEControlManager
 	private ALittle.DropDown _control_new_type;
 	private ALittle.ImageInput _control_new_name;
 	private ALittle.DisplayObject _control_new_extends_name;
-	private ALittle.DisplayObject _control_right_menu;
 
 	public ctor()
 	{
@@ -122,8 +121,6 @@ public class IDEControlManager
 				// 添加点击事件
 				item.AddEventListener(this, this.HandleControlItemClick);
 				item.AddEventListener(this, this.HandleControlItemRightClick);
-				// item.AddEventListener(this, this.HandleControlPreseeMoveIn);
-				// item.AddEventListener(this, this.HandleControlPreseeMoveOut);
 				item.AddEventListener(this, this.HandleControlKeyDown);
 	
 				item.AddEventListener(this, this.HandleControlDragBegin);
@@ -184,7 +181,7 @@ public class IDEControlManager
 	{
 		// 判断F2
 		if (event.sym == 1073741883)
-			this.ControlRenameImpl(event.target);
+			this.ControlRename(event.target);
 	}
 	public fun HandleControlDragBegin(ALittle.UIButtonDragBeginEvent event)
 	{
@@ -375,27 +372,23 @@ public class IDEControlManager
 	// 处理控件搜索右键点击
 	public fun HandleControlItemRightClick(ALittle.UIRButtonDownEvent event)
 	{
-		if (this._control_right_menu == null)
-			this._control_right_menu = g_Control.CreateControl{ALittle.DisplayObject}("ide_control_right_menu", this);
-		A_LayerManager.ShowFromRight(this._control_right_menu);
-	
-		this._control_right_menu.x = A_UISystem.mouse_x;
-		this._control_right_menu.y = A_UISystem.mouse_y;
-		if (this._control_right_menu.x + this._control_right_menu.width > A_UISystem.view_width)
-			this._control_right_menu.x = A_UISystem.view_width - this._control_right_menu.width;
+		var user_data:IDEControlItemUserData = event.target._user_data;
 
-		if (this._control_right_menu.y + this._control_right_menu.height > A_UISystem.view_height)
-			this._control_right_menu.y = A_UISystem.view_height - this._control_right_menu.height;
-
-		this._control_right_menu._user_data = event.target;
+		var menu = new AUIPlugin.AUIRightMenu();
+		menu.AddItem("复制控件名", bind(this.CopyName, this, event.target));
+		menu.AddItem("复制并新建控件", bind(this.CopyInfo, this, event.target));
+		menu.AddItem("复制继承代码", bind(this.CopyExtends, this, event.target));
+		menu.AddItem("修改控件名", bind(this.ControlRename, this, event.target));
+		menu.AddItem("标记为常用图片", bind(g_IDEQuickManager.FlagImage, g_IDEQuickManager, user_data.control_info.name));
+		menu.AddItem("标记为常用按钮", bind(g_IDEQuickManager.FlagButton, g_IDEQuickManager, user_data.control_info.name));
+		menu.AddItem("标记为常用文本", bind(g_IDEQuickManager.FlagText, g_IDEQuickManager, user_data.control_info.name));
+		menu.AddItem("标记为其他常用", bind(g_IDEQuickManager.FlagOther, g_IDEQuickManager, user_data.control_info.name));
+		menu.AddItem("删除", bind(this.Delete, this, event.target));
+		menu.Show();
 	}
 	// 处理删除信息
-	public async fun HandleControlRightMenuDelete(ALittle.UIEvent event)
+	public async fun Delete(ALittle.DisplayObject target)
 	{
-		A_LayerManager.HideFromRight(this._control_right_menu);
-		var target:ALittle.DisplayObject = this._control_right_menu._user_data;
-		this._control_right_menu._user_data = null;
-
 		var user_data:IDEControlItemUserData = target._user_data;
 		var name = user_data.control_info.name;
 		var result, content = g_IDEProject.CanDelete(name);
@@ -428,23 +421,15 @@ public class IDEControlManager
         }
 	}
 	// 处理复制控件名
-	public fun HandleControlRightMenuCopyName(ALittle.UIEvent event)
+	public fun CopyName(ALittle.DisplayObject target)
 	{
-		A_LayerManager.HideFromRight(this._control_right_menu);
-		var target:ALittle.DisplayObject = this._control_right_menu._user_data;
-		this._control_right_menu._user_data = null;
-
 		var user_data:IDEControlItemUserData = target._user_data;
 		var name = user_data.control_info.name;
 		ALittle.System_SetClipboardText(name);
 	}
 	// 处理复制控件
-	public async fun HandleControlRightMenuCopyInfo(ALittle.UIEvent event)
+	public async fun CopyInfo(ALittle.DisplayObject target)
 	{
-		A_LayerManager.HideFromRight(this._control_right_menu);
-		var target:ALittle.DisplayObject = this._control_right_menu._user_data;
-		this._control_right_menu._user_data = null;
-
 		var user_data:IDEControlItemUserData = target._user_data;
 		var old_name = user_data.control_info.name;
 		var x, y = target.LocalToGlobal();
@@ -485,30 +470,8 @@ public class IDEControlManager
 		g_IDETabManager.StartEditControlBySelect(new_name, info.info);
 	}
 	
-	// 修改控件名
-	public fun ControlRename(ALittle.DisplayObject target, string old_name, string new_name)
-	{
-		// 检查是否有修改
-		if (old_name == new_name) return;
-		// 重命名
-		var result, content = g_IDEProject.RenameControl(old_name, new_name);
-		if (result == false)
-		{
-			g_AUITool.ShowNotice("错误", content);
-			return;
-		}
-	
-		target.text = new_name;
-	
-		// 检查有没有正在编辑的控件
-		var tab = g_IDETabManager.GetTabByName(old_name);
-		if (tab == null) return;
-		var tab_child:IDETabChild = tab._user_data;
-		tab_child.Rename(new_name);
-	}
-	
 	// 修改控件名事件处理
-	public await fun ControlRenameImpl(ALittle.DisplayObject target)
+	public async fun ControlRename(ALittle.DisplayObject target)
 	{
 		var user_data:IDEControlItemUserData = target._user_data;
 		var old_name = user_data.control_info.name;
@@ -528,25 +491,25 @@ public class IDEControlManager
 		var x, y = target.LocalToGlobal();
 		var new_name = g_AUITool.ShowRename(old_name, x, y, target.width);
 		if (new_name == null || old_name == new_name) return;
-		this.ControlRename(target, old_name, new_name);
-	}
+		// 重命名
+		result, content = g_IDEProject.RenameControl(old_name, new_name);
+		if (result == false)
+		{
+			g_AUITool.ShowNotice("错误", content);
+			return;
+		}
 	
-	// 修改控件名
-	public async fun HandleControlRightMenuRename(ALittle.UIEvent event)
-	{
-		A_LayerManager.HideFromRight(this._control_right_menu);
-		var target:ALittle.DisplayObject = this._control_right_menu._user_data;
-		this._control_right_menu._user_data = null;
+		target.text = new_name;
 	
-		this.ControlRenameImpl(target);
+		// 检查有没有正在编辑的控件
+		var tab = g_IDETabManager.GetTabByName(old_name);
+		if (tab == null) return;
+		var tab_child:IDETabChild = tab._user_data;
+		tab_child.Rename(new_name);
 	}
 	// 复制继承代码
-	public fun HandleControlRightMenuCopyExtends(ALittle.UIEvent event)
+	public fun CopyExtends(ALittle.DisplayObject target)
 	{
-		A_LayerManager.HideFromRight(this._control_right_menu);
-		var target:ALittle.DisplayObject = this._control_right_menu._user_data;
-		this._control_right_menu._user_data = null;
-
 		var user_data:IDEControlItemUserData = target._user_data;
 		var name = user_data.control_info.name;
 		var save_info = new Map<string, any>();
@@ -557,46 +520,6 @@ public class IDEControlManager
 		info["info"] = save_info;
 		copy_list[1] = info;
 		ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list));
-	}
-	
-	public fun HandleControlRightMenuFlagQuickImage(ALittle.UIEvent event)
-	{
-		A_LayerManager.HideFromRight(this._control_right_menu);
-		var target:ALittle.DisplayObject = this._control_right_menu._user_data;
-		this._control_right_menu._user_data = null;
-
-		var user_data:IDEControlItemUserData = target._user_data;
-		g_IDEQuickManager.FlagImage(user_data.control_info.name);
-	}
-	
-	public fun HandleControlRightMenuFlagQuickButton(ALittle.UIEvent event)
-	{
-		A_LayerManager.HideFromRight(this._control_right_menu);
-		var target:ALittle.DisplayObject = this._control_right_menu._user_data;
-		this._control_right_menu._user_data = null;
-
-		var user_data:IDEControlItemUserData = target._user_data;
-		g_IDEQuickManager.FlagButton(user_data.control_info.name);
-	}
-	
-	public fun HandleControlRightMenuFlagQuickText(ALittle.UIEvent event)
-	{
-		A_LayerManager.HideFromRight(this._control_right_menu);
-		var target:ALittle.DisplayObject = this._control_right_menu._user_data;
-		this._control_right_menu._user_data = null;
-
-		var user_data:IDEControlItemUserData = target._user_data;
-		g_IDEQuickManager.FlagText(user_data.control_info.name);
-	}
-	
-	public fun HandleControlRightMenuFlagQuickOther(ALittle.UIEvent event)
-	{
-		A_LayerManager.HideFromRight(this._control_right_menu);
-		var target:ALittle.DisplayObject = this._control_right_menu._user_data;
-		this._control_right_menu._user_data = null;
-
-		var user_data:IDEControlItemUserData = target._user_data;
-		g_IDEQuickManager.FlagOther(user_data.control_info.name);
 	}
 }
 

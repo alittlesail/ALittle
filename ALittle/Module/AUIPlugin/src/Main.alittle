@@ -48,14 +48,7 @@ public async static __Plugin_Setup(ALittle.ControlSystem control, string module_
 	g_ModuleBasePath = module_base_path;
     g_ScriptBasePath = script_base_path;
 
-    alittle.Require(script_base_path, "AUIIMEManager");
-    alittle.Require(script_base_path, "AUIVersionManager");
-    alittle.Require(script_base_path, "AUITool");
-    alittle.Require(script_base_path, "AUIRightMenu");
-    alittle.Require(script_base_path, "AUIWebLoginManager");
-    alittle.Require(script_base_path, "AUIImageCutPlugin");
-    alittle.Require(script_base_path, "AUIEditImageDialog");
-    alittle.Require(script_base_path, "AUIFileSelectDialog");
+    alittle.RequireFromPaths(script_base_path, "", paths("src"));
     g_AUIIMEManager.Setup();
 }
 

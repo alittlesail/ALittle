@@ -749,7 +749,7 @@ class UISystem
     public fun HandleWindowEnter()
     {
     }
-    
+
     // 处理鼠标移入窗口
     public fun HandleWindowLeave()
     {

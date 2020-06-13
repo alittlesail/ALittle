@@ -1015,7 +1015,7 @@ public class IDEAntiPanel : ALittle.DisplayLayout
 			this._anti_dialog = g_Control.CreateControl{ALittle.Dialog}("ide_anti_play_dialog", this);
 			this._anti_dialog.title = "动画播放窗口";
 			this._anti_dialog.visible = false;
-			g_IDECenter.dialog_layer.AddChild(this._anti_dialog);
+			g_DialogLayer.AddChild(this._anti_dialog);
 		}
 
 		if (save == false || this._cur_anti == null

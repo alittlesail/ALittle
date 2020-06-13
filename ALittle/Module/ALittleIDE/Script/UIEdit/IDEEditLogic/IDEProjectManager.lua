@@ -273,7 +273,7 @@ function IDEProjectManager:ShowExportProject()
 	end
 	if self._export_dialog == nil then
 		self._export_dialog = g_Control:CreateControl("ide_export_dialog", self)
-		g_IDECenter.dialog_layer:AddChild(self._export_dialog)
+		g_DialogLayer:AddChild(self._export_dialog)
 		self._main_export_tab:DisableAllCloseButton()
 		self._main_export_tab.tab_index = 1
 		self._export_windows_official.config_key = "export_windows_official"

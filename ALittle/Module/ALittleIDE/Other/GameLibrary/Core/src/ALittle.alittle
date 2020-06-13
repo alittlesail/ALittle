@@ -24,6 +24,8 @@ private static JSRequire(string base_path, string url, ALittle.Thread thread)
     document.body.appendChild(script);
 }
 
+// base_path 基本路径，如果不为空，那么要/结尾
+// url 文件相对src的路径，不要/开头
 public await static Require(string base_path, string url) : string
 {
     [Language(JavaScript)]
@@ -38,6 +40,24 @@ public await static Require(string base_path, string url) : string
         lua.require(base_path..url);
     [Language(Lua)]
     return null;
+}
+
+// base_path 基本路径，如果不为空，那么要/结尾
+// rel_path 文件相对src的路径，不要/开头，不要/开头
+// file_list 是paths关键字直接的返回结果
+public await static RequireFromPaths(string base_path, string rel_path, List<string> file_list)
+{
+
+    for (var index, path in file_list)
+    {
+        // 去掉文件后缀  .alittle
+        [Language(Lua)]
+        path = lua.String.sub(path, 1, -9);
+        [Language(JavaScript)]
+        path = cast<javascript.String>(path).substring(0, cast<javascript.String>(path).length - 8);
+
+        Require(base_path, rel_path..path);
+    }
 }
 
 public await static RequireCore(string base_path)

@@ -366,7 +366,7 @@ public class IDEProjectManager
 		if (this._export_dialog == null)
 		{
 			this._export_dialog = g_Control.CreateControl{ALittle.DisplayObject}("ide_export_dialog", this);
-			g_IDECenter.dialog_layer.AddChild(this._export_dialog);
+			g_DialogLayer.AddChild(this._export_dialog);
 			this._main_export_tab.DisableAllCloseButton();
 								  this._main_export_tab.tab_index = 1;
 	

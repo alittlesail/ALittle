@@ -17,14 +17,11 @@
     <Filter Include="源文件\UIEdit\IDEEditCore\IDESetting">
       <UniqueIdentifier>{d3939a3a-5eb0-4bc3-ba6c-6a68d1228fdc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="源文件\UIEdit\IDEDataCore">
-      <UniqueIdentifier>{479e4e55-23a1-4490-9676-bc3ea50c8d5c}</UniqueIdentifier>
+    <Filter Include="源文件\Data">
+      <UniqueIdentifier>{8ba5cfa2-cac7-4e79-b176-ec2cb19f8583}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\IDEProject.alittle">
-      <Filter>源文件</Filter>
-    </None>
     <None Include="src\IDECenter.alittle">
       <Filter>源文件</Filter>
     </None>
@@ -193,20 +190,23 @@
     <None Include="src\UIEdit\IDEEditCore\IDESetting\Grid9ImageS.alittle">
       <Filter>源文件\UIEdit\IDEEditCore\IDESetting</Filter>
     </None>
-    <None Include="src\UIEdit\IDEDataCore\IDEExport.alittle">
-      <Filter>源文件\UIEdit\IDEDataCore</Filter>
-    </None>
-    <None Include="src\UIEdit\IDEDataCore\IDEEnum.alittle">
-      <Filter>源文件\UIEdit\IDEDataCore</Filter>
-    </None>
     <None Include="src\Main.alittle">
       <Filter>源文件</Filter>
     </None>
-    <None Include="src\UIEdit\IDEUIManager.alittle">
-      <Filter>源文件\UIEdit</Filter>
-    </None>
     <None Include="src\UIEdit\IDEUIUtility.alittle">
       <Filter>源文件\UIEdit</Filter>
+    </None>
+    <None Include="src\Data\IDEProject.alittle">
+      <Filter>源文件\Data</Filter>
+    </None>
+    <None Include="src\Data\IDEUIManager.alittle">
+      <Filter>源文件\Data</Filter>
+    </None>
+    <None Include="src\Data\IDEEnum.alittle">
+      <Filter>源文件\Data</Filter>
+    </None>
+    <None Include="src\Data\IDEExport.alittle">
+      <Filter>源文件\Data</Filter>
     </None>
   </ItemGroup>
 </Project>

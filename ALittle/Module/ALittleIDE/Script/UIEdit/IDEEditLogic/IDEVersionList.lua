@@ -288,7 +288,7 @@ IDEVersionList.HandleVersionCloseDelete = Lua.CoWrap(IDEVersionList.HandleVersio
 function IDEVersionList:HandleAddVersionClose(event)
 	if self._version_close_dialog == nil then
 		self._version_close_dialog = self._ctrl_sys:CreateControl("ide_add_version_close_dialog", self)
-		g_IDECenter.dialog_layer:AddChild(self._version_close_dialog)
+		g_DialogLayer:AddChild(self._version_close_dialog)
 	end
 	self._version_close_version.text = ""
 	self._version_submit_platform.text = ""

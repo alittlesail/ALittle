@@ -284,7 +284,7 @@ public class IDEVersionList : ALittle.DisplayLayout
 		if (this._version_close_dialog == null)
 		{
 			this._version_close_dialog = this._ctrl_sys.CreateControl{ALittle.Dialog}("ide_add_version_close_dialog", this);
-			g_IDECenter.dialog_layer.AddChild(this._version_close_dialog);
+			g_DialogLayer.AddChild(this._version_close_dialog);
 		}
 		this._version_close_version.text = "";
 		this._version_submit_platform.text = "";

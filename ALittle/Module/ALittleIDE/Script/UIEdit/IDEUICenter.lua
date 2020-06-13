@@ -5,6 +5,9 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 
 
+g_IDEImageManagerDialog = nil
+g_IDEImageSelectDialog = nil
+g_IDEEditImageDialog = nil
 IDEUICenter = Lua.Class(nil, "ALittleIDE.IDEUICenter")
 
 function IDEUICenter:Ctor()
@@ -12,10 +15,7 @@ end
 
 function IDEUICenter:Setup(edit_container)
 	local ___COROUTINE = coroutine.running()
-	Require(g_ScriptBasePath, "UIEdit/IDEUIManager")
 	Require(g_ScriptBasePath, "UIEdit/IDEUIUtility")
-	Require(g_ScriptBasePath, "UIEdit/IDEDataCore/IDEEnum")
-	Require(g_ScriptBasePath, "UIEdit/IDEDataCore/IDEExport")
 	Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDETabChild")
 	Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDETabManager")
 	Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDETreeLogic")
@@ -88,15 +88,19 @@ function IDEUICenter:Setup(edit_container)
 	self._project_quick_tab.tab_index = 1
 	g_IDEAttributeManager:Setup(self._control_edit_tab, attr_displaylayout)
 	g_IDETabManager:Setup(self._main_edit_tab, tree_displaylayout, attr_displaylayout, anti_displaylayout)
+	ALittle.TextRadioButton.SetGroup({self._tool_singleselect, self._tool_handdrag, self._tool_scale, self._tool_presee})
+	g_IDEEditImageDialog = AUIPlugin.AUIEditImageDialog()
 	g_IDEImageSelectDialog = IDEAttrImageDialog("图片选择器", nil, {"PNG", "JPG"})
 	g_IDEImageSelectDialog:Setup()
-	g_IDEImageManagerDialog = IDEAttrImageDialog("图片选择器", g_IDECenter.dialog_layer, {"PNG", "JPG"})
+	g_IDEImageManagerDialog = IDEAttrImageDialog("图片选择器", g_DialogLayer, {"PNG", "JPG"})
 	g_IDEImageManagerDialog:Setup()
-	ALittle.TextRadioButton.SetGroup({self._tool_singleselect, self._tool_handdrag, self._tool_scale, self._tool_presee})
 end
 
 function IDEUICenter:Shutdown()
 	g_IDETabManager:Shutdown()
+	g_IDEImageSelectDialog:Shutdown()
+	g_IDEImageManagerDialog:Shutdown()
+	g_IDEEditImageDialog:Shutdown()
 end
 
 function IDEUICenter:Show()

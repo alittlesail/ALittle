@@ -19,11 +19,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <None Include="src\Data\IDEEnum.alittle" />
+    <None Include="src\Data\IDEExport.alittle" />
+    <None Include="src\Data\IDEProject.alittle" />
+    <None Include="src\Data\IDEUIManager.alittle" />
     <None Include="src\IDECenter.alittle" />
-    <None Include="src\IDEProject.alittle" />
     <None Include="src\Main.alittle" />
-    <None Include="src\UIEdit\IDEDataCore\IDEEnum.alittle" />
-    <None Include="src\UIEdit\IDEDataCore\IDEExport.alittle" />
     <None Include="src\UIEdit\IDEEditCore\IDEAttrEventDialog.alittle" />
     <None Include="src\UIEdit\IDEEditCore\IDEAttrImageDialog.alittle" />
     <None Include="src\UIEdit\IDEEditCore\IDEAttrTextDialog.alittle" />
@@ -79,7 +80,6 @@
     <None Include="src\UIEdit\IDEEditLogic\IDEQuickManager.alittle" />
     <None Include="src\UIEdit\IDEEditLogic\IDEVersionList.alittle" />
     <None Include="src\UIEdit\IDEUICenter.alittle" />
-    <None Include="src\UIEdit\IDEUIManager.alittle" />
     <None Include="src\UIEdit\IDEUIUtility.alittle" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

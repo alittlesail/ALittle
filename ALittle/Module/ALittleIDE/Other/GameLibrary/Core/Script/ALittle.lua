@@ -13,6 +13,14 @@ function Require(base_path, url)
 	return nil
 end
 
+function RequireFromPaths(base_path, rel_path, file_list)
+	local ___COROUTINE = coroutine.running()
+	for index, path in ___ipairs(file_list) do
+		path = string.sub(path, 1, -9)
+		Require(base_path, rel_path .. path)
+	end
+end
+
 function RequireCore(base_path)
 	local ___COROUTINE = coroutine.running()
 	Require(base_path, "Core/Reflect/ReflectRegister")

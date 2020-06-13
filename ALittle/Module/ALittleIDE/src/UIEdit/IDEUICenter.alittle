@@ -1,6 +1,10 @@
 
 namespace ALittleIDE;
 
+protected var g_IDEImageManagerDialog:IDEAttrImageDialog;
+protected var g_IDEImageSelectDialog:IDEAttrImageDialog;
+protected var g_IDEEditImageDialog:AUIPlugin.AUIEditImageDialog;
+
 class IDEUICenter
 {
 	private ALittle.DisplayLayout _ui_edit_container;			// UI编辑器主界面
@@ -42,11 +46,7 @@ class IDEUICenter
     
 	public await fun Setup(ALittle.DisplayLayout edit_container)
 	{
-		alittle.Require(g_ScriptBasePath, "UIEdit/IDEUIManager");
 		alittle.Require(g_ScriptBasePath, "UIEdit/IDEUIUtility");
-	
-		alittle.Require(g_ScriptBasePath, "UIEdit/IDEDataCore/IDEEnum");
-		alittle.Require(g_ScriptBasePath, "UIEdit/IDEDataCore/IDEExport");
 	
 		alittle.Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDETabChild");
 		alittle.Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDETabManager");
@@ -132,18 +132,22 @@ class IDEUICenter
 		// 初始化主要单件
 		g_IDEAttributeManager.Setup(this._control_edit_tab, attr_displaylayout);
 		g_IDETabManager.Setup(this._main_edit_tab, tree_displaylayout, attr_displaylayout, anti_displaylayout);
-		
-		g_IDEImageSelectDialog = new IDEAttrImageDialog("图片选择器", null, ["PNG", "JPG"]);
-		g_IDEImageSelectDialog.Setup();
-		g_IDEImageManagerDialog = new IDEAttrImageDialog("图片选择器", g_IDECenter.dialog_layer, ["PNG", "JPG"]);
-		g_IDEImageManagerDialog.Setup();
 
 		ALittle.TextRadioButton.SetGroup([this._tool_singleselect, this._tool_handdrag, this._tool_scale, this._tool_presee]);
+		
+		g_IDEEditImageDialog = new AUIPlugin.AUIEditImageDialog();
+		g_IDEImageSelectDialog = new IDEAttrImageDialog("图片选择器", null, ["PNG", "JPG"]);
+		g_IDEImageSelectDialog.Setup();
+		g_IDEImageManagerDialog = new IDEAttrImageDialog("图片选择器", g_DialogLayer, ["PNG", "JPG"]);
+		g_IDEImageManagerDialog.Setup();
 	}
 	
 	public fun Shutdown()
 	{
 		g_IDETabManager.Shutdown();
+		g_IDEImageSelectDialog.Shutdown();
+		g_IDEImageManagerDialog.Shutdown();
+		g_IDEEditImageDialog.Shutdown();
 	}
 	
 	public fun Show()

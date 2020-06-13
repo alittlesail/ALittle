@@ -30,43 +30,17 @@ type_list = {"ALittle.EventDispatcher"},
 option_map = {}
 })
 
+g_IDEWebLoginManager = nil
 IDECenter = Lua.Class(nil, "ALittleIDE.IDECenter")
 
 function IDECenter:Ctor()
 end
 
-function IDECenter.__getter:main_layer()
-	return self._main_layer
-end
-
-function IDECenter.__getter:dialog_layer()
-	return self._dialog_layer
-end
-
 function IDECenter:Setup()
 	local ___COROUTINE = coroutine.running()
+	RequireFromPaths(g_ScriptBasePath, "Data/", {"IDEEnum.alittle", "IDEExport.alittle", "IDEProject.alittle", "IDEUIManager.alittle"})
 	Require(g_ScriptBasePath, "UIEdit/IDEUICenter")
-	Require(g_ScriptBasePath, "IDEProject")
-	g_IDEConfig = ALittle.CreateConfigSystem("ALittleIDE.cfg")
-	g_IDEServerConfig = ALittle.CreateConfigSystem(g_ModuleBasePath .. "/Other/Server.cfg")
-	ALittle.Math_RandomSeed(ALittle.Time_GetCurTime())
-	ALittle.System_SetThreadCount(5)
-	local background_quad = ALittle.Quad(g_Control)
-	background_quad.height_type = 4
-	background_quad.width_type = 4
-	background_quad.alpha = 0.8
-	g_LayerGroup:AddChild(background_quad)
-	self._phone_status_quad = background_quad
-	self._main_layer = ALittle.DisplayLayout(g_Control)
-	self._main_layer.width_type = 4
-	self._main_layer.height_type = 4
-	g_LayerGroup:AddChild(self._main_layer)
-	self._dialog_layer = ALittle.DisplayLayout(g_Control)
-	self._dialog_layer.width_type = 4
-	self._dialog_layer.height_type = 4
-	g_LayerGroup:AddChild(self._dialog_layer)
-	self:ShowPhoneStatusLine(106, 106, 106)
-	g_Control:CreateControl("ide_main_scene", self, self._main_layer)
+	g_Control:CreateControl("ide_main_scene", self, g_MainLayer)
 	self:UpdateProjectList()
 	g_IDEUICenter:Setup(self._edit_container)
 	g_IDEUICenter:Show()
@@ -80,37 +54,17 @@ function IDECenter:Setup()
 	end
 	local logingate_ip = g_IDEServerConfig:GetConfig("logingate_ip", "139.159.176.119")
 	local logingate_port = g_IDEServerConfig:GetConfig("logingate_port", 1000)
-	g_IDEWebLoginManager:AddEventListener(___all_struct[-262794256], self, self.AccountInReconnect)
-	g_IDEWebLoginManager:AddEventListener(___all_struct[-1848509213], self, self.AccountInLogout)
-	g_IDEWebLoginManager:AddEventListener(___all_struct[-420010531], self, self.AccountInLogin)
+	g_IDEWebLoginManager = AUIPlugin.AUIWebLoginManager()
+	g_IDEWebLoginManager:AddEventListener(___all_struct[-262794256], self, self.HandleAccountInReconnect)
+	g_IDEWebLoginManager:AddEventListener(___all_struct[-1848509213], self, self.HandleAccountInLogout)
+	g_IDEWebLoginManager:AddEventListener(___all_struct[-420010531], self, self.HandleAccountInLogin)
 	g_IDEWebLoginManager:Setup(logingate_ip, logingate_port, g_IDEConfig)
 end
 
 function IDECenter:Shutdown()
 	g_IDEUICenter:Shutdown()
 	self._version_manager:Shutdown()
-end
-
-function IDECenter:ShowPhoneStatusLine(r, g, b)
-	local background_quad = self._phone_status_quad
-	background_quad.red = r / 255
-	background_quad.green = g / 255
-	background_quad.blue = b / 255
-	background_quad.visible = true
-	local status_h = ALittle.System_GetStatusBarHeight()
-	self._main_layer.height_value = status_h
-	self._main_layer.y = status_h
-	self._dialog_layer.height_value = status_h
-	self._dialog_layer.y = status_h
-end
-
-function IDECenter:HidePhoneStatusLine()
-	local background_quad = self._phone_status_quad
-	background_quad.visible = false
-	self._main_layer.height_value = 0
-	self._main_layer.y = 0
-	self._dialog_layer.height_value = 0
-	self._dialog_layer.y = 0
+	g_IDEWebLoginManager:Shutdown()
 end
 
 function IDECenter:HandlePeojectSelectChange(event)
@@ -225,7 +179,7 @@ function IDECenter:HandleAccountLoginLB(event)
 	g_IDEWebLoginManager:ShowLoginDialog()
 end
 
-function IDECenter:AccountInLogin(event)
+function IDECenter:HandleAccountInLogin(event)
 	self._account_login.visible = false
 	self._account_dropdown.visible = true
 	local data_list = {}
@@ -236,7 +190,7 @@ function IDECenter:AccountInLogin(event)
 	self._account_icon.x_value = self._account_dropdown.x_value + self._account_dropdown.width + 5
 end
 
-function IDECenter:AccountInLogout(event)
+function IDECenter:HandleAccountInLogout(event)
 	self._account_login.text = "请登录"
 	self._account_login.underline = true
 	self._account_login.visible = true
@@ -245,7 +199,7 @@ function IDECenter:AccountInLogout(event)
 	self._account_icon.x_value = self._account_login.x_value + self._account_login.width + 5
 end
 
-function IDECenter:AccountInReconnect(event)
+function IDECenter:HandleAccountInReconnect(event)
 	self._account_login.text = "正在重连"
 	self._account_login.underline = false
 	self._account_login.visible = true

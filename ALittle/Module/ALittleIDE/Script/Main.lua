@@ -27,10 +27,8 @@ g_ScriptBasePath = nil
 g_ModuleBasePathEx = nil
 g_IDEConfig = nil
 g_IDEServerConfig = nil
-g_IDEWebLoginManager = nil
-g_IDEEditImageDialog = nil
-g_IDEImageManagerDialog = nil
-g_IDEImageSelectDialog = nil
+g_MainLayer = nil
+g_DialogLayer = nil
 function __Module_Setup(layer_group, control, module_base_path, script_base_path)
 	g_Control = control
 	g_LayerGroup = layer_group
@@ -38,8 +36,18 @@ function __Module_Setup(layer_group, control, module_base_path, script_base_path
 	g_ModuleBasePathEx = ALittle.File_BaseFilePath() .. module_base_path
 	g_ScriptBasePath = script_base_path
 	A_ModuleSystem:LoadPlugin("AUIPlugin")
-	g_IDEWebLoginManager = AUIPlugin.AUIWebLoginManager()
-	g_IDEEditImageDialog = AUIPlugin.AUIEditImageDialog()
+	g_IDEConfig = ALittle.CreateConfigSystem("ALittleIDE.cfg")
+	g_IDEServerConfig = ALittle.CreateConfigSystem(g_ModuleBasePath .. "/Other/Server.cfg")
+	ALittle.Math_RandomSeed(ALittle.Time_GetCurTime())
+	ALittle.System_SetThreadCount(5)
+	g_MainLayer = ALittle.DisplayLayout(g_Control)
+	g_MainLayer.width_type = 4
+	g_MainLayer.height_type = 4
+	g_LayerGroup:AddChild(g_MainLayer)
+	g_DialogLayer = ALittle.DisplayLayout(g_Control)
+	g_DialogLayer.width_type = 4
+	g_DialogLayer.height_type = 4
+	g_LayerGroup:AddChild(g_DialogLayer)
 	Require(script_base_path, "IDECenter")
 	g_IDECenter:Setup()
 end
@@ -47,14 +55,6 @@ __Module_Setup = Lua.CoWrap(__Module_Setup)
 
 function __Module_Shutdown()
 	g_IDECenter:Shutdown()
-	g_IDEWebLoginManager:Shutdown()
-	g_IDEEditImageDialog:Shutdown()
-	if g_IDEImageManagerDialog ~= nil then
-		g_IDEImageManagerDialog:Shutdown()
-	end
-	if g_IDEImageSelectDialog ~= nil then
-		g_IDEImageSelectDialog:Shutdown()
-	end
 end
 
 function __Module_GetInfo(control, module_base_path, script_base_path)

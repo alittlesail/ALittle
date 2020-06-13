@@ -922,7 +922,7 @@ function IDEAntiPanel:PlayImpl(loop)
 		self._anti_dialog = g_Control:CreateControl("ide_anti_play_dialog", self)
 		self._anti_dialog.title = "动画播放窗口"
 		self._anti_dialog.visible = false
-		g_IDECenter.dialog_layer:AddChild(self._anti_dialog)
+		g_DialogLayer:AddChild(self._anti_dialog)
 	end
 	if save == false or self._cur_anti == nil or self._anti_dialog.visible == false or self._anti_dialog._user_data ~= self._tab_child.name then
 		local map = {}

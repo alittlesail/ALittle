@@ -1,13 +1,10 @@
 
 namespace ALittleIDE;
 
+protected var g_IDEWebLoginManager:AUIPlugin.AUIWebLoginManager;
+
 class IDECenter
 {
-	private ALittle.DisplayObject _phone_status_quad;	// 手机头底色
-    
-	private ALittle.DisplayLayout _main_layer;			// 主层
-	private ALittle.DisplayLayout _dialog_layer;		// 对话框层
-    
 	private ALittle.DisplayLayout _edit_container;		// 编辑器容器
 	private ALittle.DropDown _current_project_name;		// 当前正在编辑的项目
     
@@ -19,58 +16,16 @@ class IDECenter
 	// 版本管理器
 	private AUIPlugin.AUIVersionManager _version_manager;
 
-	public ctor()
-	{
-	}
+	public ctor() { }
 
-	public get main_layer() : ALittle.DisplayLayout
-	{
-		return this._main_layer;
-	}
-
-	public get dialog_layer() : ALittle.DisplayLayout
-	{
-		return this._dialog_layer;
-	}
-	
 	public await fun Setup()
 	{
+		alittle.RequireFromPaths(g_ScriptBasePath, "Data/", paths("src/Data"));
+
 		alittle.Require(g_ScriptBasePath, "UIEdit/IDEUICenter");
-		alittle.Require(g_ScriptBasePath, "IDEProject");
-	
-		// 获取配置信息
-		g_IDEConfig = ALittle.CreateConfigSystem("ALittleIDE.cfg");
-		// 获取配置信息
-		g_IDEServerConfig = ALittle.CreateConfigSystem(g_ModuleBasePath.."/Other/Server.cfg");
-	
-		// 生成随机数种子
-		ALittle.Math_RandomSeed(ALittle.Time_GetCurTime());
-		// 设置5个线程
-		ALittle.System_SetThreadCount(5);
-	
-		// 添加背景
-		var background_quad = new ALittle.Quad(g_Control);
-		background_quad.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
-		background_quad.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
-		background_quad.alpha = 0.8;
-		g_LayerGroup.AddChild(background_quad);
-		this._phone_status_quad = background_quad;
-	
-		// 创建主层
-		this._main_layer = new ALittle.DisplayLayout(g_Control);
-		this._main_layer.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
-		this._main_layer.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
-		g_LayerGroup.AddChild(this._main_layer);
-		this._dialog_layer = new ALittle.DisplayLayout(g_Control);
-		this._dialog_layer.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
-		this._dialog_layer.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
-		g_LayerGroup.AddChild(this._dialog_layer);
-	
-		// 设置标题头颜色
-		this.ShowPhoneStatusLine(106, 106, 106);
 	
 		// 创建主界面
-		g_Control.CreateControl{ALittle.DisplayObject}("ide_main_scene", this, this._main_layer);
+		g_Control.CreateControl{ALittle.DisplayObject}("ide_main_scene", this, g_MainLayer);
 		this.UpdateProjectList();
 		g_IDEUICenter.Setup(this._edit_container);
 		g_IDEUICenter.Show();
@@ -93,9 +48,11 @@ class IDECenter
 		// 初始化登录
 		var logingate_ip = g_IDEServerConfig.GetConfig("logingate_ip", "139.159.176.119");
 		var logingate_port = g_IDEServerConfig.GetConfig("logingate_port", 1000);
-		g_IDEWebLoginManager.AddEventListener(this, this.AccountInReconnect);
-		g_IDEWebLoginManager.AddEventListener(this, this.AccountInLogout);
-		g_IDEWebLoginManager.AddEventListener(this, this.AccountInLogin);
+		
+		g_IDEWebLoginManager = new AUIPlugin.AUIWebLoginManager();
+		g_IDEWebLoginManager.AddEventListener(this, this.HandleAccountInReconnect);
+		g_IDEWebLoginManager.AddEventListener(this, this.HandleAccountInLogout);
+		g_IDEWebLoginManager.AddEventListener(this, this.HandleAccountInLogin);
 		g_IDEWebLoginManager.Setup(logingate_ip, logingate_port, g_IDEConfig);
 	}
 	
@@ -104,34 +61,9 @@ class IDECenter
 		g_IDEUICenter.Shutdown();
 		[Language(Lua)]
 		this._version_manager.Shutdown();
+		g_IDEWebLoginManager.Shutdown();
 	}
 
-	////////////////////////////////////////////////////////////////////////////////////////
-	
-	public fun ShowPhoneStatusLine(int r, int g, int b)
-	{
-		var background_quad = this._phone_status_quad;
-		background_quad.red = r/255;
-		background_quad.green = g/255;
-		background_quad.blue = b/255;
-		background_quad.visible = true;
-		var status_h = ALittle.System_GetStatusBarHeight();
-		this._main_layer.height_value = status_h;
-		this._main_layer.y = status_h;
-		this._dialog_layer.height_value = status_h;
-		this._dialog_layer.y = status_h;
-	}
-	
-	public fun HidePhoneStatusLine()
-	{
-		var background_quad = this._phone_status_quad;
-		background_quad.visible = false;
-		this._main_layer.height_value = 0;
-		this._main_layer.y = 0;
-		this._dialog_layer.height_value = 0;
-		this._dialog_layer.y = 0;
-	}
-	
 	////////////////////////////////////////////////////////////////////////////////////////
 	// 打开另一个工程
 	public async fun HandlePeojectSelectChange(ALittle.UISelectChangedEvent event)
@@ -256,12 +188,12 @@ class IDECenter
 	}
 	////////////////////////////////////////////////////////////////////////////////////////
 	// 处理账号登录
-	public fun HandleAccountLoginLB(ALittle.UILButtonDownEvent event)
+	private fun HandleAccountLoginLB(ALittle.UILButtonDownEvent event)
 	{
 		g_IDEWebLoginManager.ShowLoginDialog();
 	}
 	// 已登录
-	public fun AccountInLogin(AUIPlugin.AUIWebAccountLoginEvent event)
+	private fun HandleAccountInLogin(AUIPlugin.AUIWebAccountLoginEvent event)
 	{
 		this._account_login.visible = false;
 		this._account_dropdown.visible = true;
@@ -275,7 +207,7 @@ class IDECenter
 		this._account_icon.x_value = this._account_dropdown.x_value + this._account_dropdown.width + 5;
 	}
 	// 已登出
-	public fun AccountInLogout(AUIPlugin.AUIWebAccountLogoutEvent event)
+	private fun HandleAccountInLogout(AUIPlugin.AUIWebAccountLogoutEvent event)
 	{
 		this._account_login.text = "请登录";
 		this._account_login.underline = true;
@@ -286,7 +218,7 @@ class IDECenter
 		this._account_icon.x_value = this._account_login.x_value + this._account_login.width + 5;
 	}
 	// 正在重连
-	public fun AccountInReconnect(AUIPlugin.AUIWebAccountReconnectEvent event)
+	private fun HandleAccountInReconnect(AUIPlugin.AUIWebAccountReconnectEvent event)
 	{
 		this._account_login.text = "正在重连";
 		this._account_login.underline = false;
@@ -297,7 +229,7 @@ class IDECenter
 		this._account_icon.x_value = this._account_login.x_value + this._account_login.width + 5;
 	}
 	
-	public fun HandleAccountDropdownChange(ALittle.UISelectChangedEvent event)
+	private fun HandleAccountDropdownChange(ALittle.UISelectChangedEvent event)
 	{
 		if (event.target.text == "登出")
 			g_IDEWebLoginManager.Logout();
@@ -306,9 +238,6 @@ class IDECenter
 		
 		this._account_dropdown.text = g_IDEWebLoginManager.account_name;
 	}
-	//////////////////////////////////////////////////////////////////////////////////////// 
-
-	//////////////////////////////////////////////////////////////////////////////////////// 
 }
 
 protected var g_IDECenter = new IDECenter();

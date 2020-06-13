@@ -48,7 +48,8 @@ function __Module_Setup(layer_group, control, module_base_path, script_base_path
 	g_DialogLayer.width_type = 4
 	g_DialogLayer.height_type = 4
 	g_LayerGroup:AddChild(g_DialogLayer)
-	RequireFromPaths(g_ScriptBasePath, "Data/", {"IDEEnum.alittle", "IDEExport.alittle", "IDEProject.alittle", "IDEUIManager.alittle"})
+	RequireFromPaths(g_ScriptBasePath, "Data/", {"IDEEnum.alittle", "IDEProject.alittle", "IDEUIManager.alittle"})
+	RequireFromPaths(script_base_path, "Dialog/", {"IDEExportDialog.alittle", "IDEVersionList.alittle"})
 	RequireFromPaths(script_base_path, "IDE/", {"IDECenter.alittle", "IDEUIAccount.alittle", "IDEUIMainMenu.alittle", "IDEUIProjectDropdown.alittle"})
 	g_IDECenter:Setup()
 end

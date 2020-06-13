@@ -19,17 +19,14 @@ option_map = {}
 })
 
 assert(AUIPlugin.AUIFileSelectDialog, " extends class:AUIPlugin.AUIFileSelectDialog is nil")
-IDEAttrImageDialog = Lua.Class(AUIPlugin.AUIFileSelectDialog, "ALittleIDE.IDEAttrImageDialog")
+IDEImageSelectDialog = Lua.Class(AUIPlugin.AUIFileSelectDialog, "ALittleIDE.IDEImageSelectDialog")
 
-function IDEAttrImageDialog:Ctor(title, layer, ext_list)
-end
-
-function IDEAttrImageDialog:Setup()
+function IDEImageSelectDialog:Ctor(title, layer, ext_list)
 	g_IDEProject:AddEventListener(___all_struct[-332308624], self, self.HandleCloseProject)
 	self:AddEventListener(___all_struct[1821709712], self, self.HandleImageSelectRButtonDown)
 end
 
-function IDEAttrImageDialog:HandleCloseProject(event)
+function IDEImageSelectDialog:HandleCloseProject(event)
 	if self._dialog == nil then
 		return
 	end
@@ -37,7 +34,7 @@ function IDEAttrImageDialog:HandleCloseProject(event)
 	self:HideDialog()
 end
 
-function IDEAttrImageDialog:HandleImageSelectRButtonDown(event)
+function IDEImageSelectDialog:HandleImageSelectRButtonDown(event)
 	A_LayerManager:RemoveFromTip(self._image_pre_dialog)
 	local ext = ALittle.File_GetFileExtByPathAndUpper(event.path)
 	if ext ~= "PNG" and ext ~= "JPG" then
@@ -54,7 +51,7 @@ function IDEAttrImageDialog:HandleImageSelectRButtonDown(event)
 	menu:Show()
 end
 
-function IDEAttrImageDialog:HandleImageCopyGrid9ImageCodeClick(event)
+function IDEImageSelectDialog:HandleImageCopyGrid9ImageCodeClick(event)
 	local display_info = IDEUIUtility_GenerateGrid9ImageInfo(g_IDEProject.project.texture_path .. "/", event.path)
 	if display_info == nil then
 		g_AUITool:ShowNotice("错误", "图片加载失败:" .. event.path)
@@ -68,7 +65,7 @@ function IDEAttrImageDialog:HandleImageCopyGrid9ImageCodeClick(event)
 	ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list))
 end
 
-function IDEAttrImageDialog:HandleImageCopyImageCodeClick(event)
+function IDEImageSelectDialog:HandleImageCopyImageCodeClick(event)
 	local width = 100
 	local height = 100
 	local surface = ALittle.System_LoadSurface(self._base_path .. "/" .. event.path)
@@ -92,11 +89,11 @@ function IDEAttrImageDialog:HandleImageCopyImageCodeClick(event)
 	ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list))
 end
 
-function IDEAttrImageDialog:HandleImageEditClick(event)
+function IDEImageSelectDialog:HandleImageEditClick(event)
 	g_IDEEditImageDialog:ShowDialog(self._base_path .. "/" .. event.path, self._base_path)
 end
 
-function IDEAttrImageDialog:HandleImageDeleteClick(event)
+function IDEImageSelectDialog:HandleImageDeleteClick(event)
 	local tittle = "确定要永久删除该文件吗？"
 	if event.directory then
 		tittle = "确定要永久删除该文件夹，以及子文件吗？"
@@ -111,5 +108,8 @@ function IDEAttrImageDialog:HandleImageDeleteClick(event)
 		self:Refresh()
 	end
 end
-IDEAttrImageDialog.HandleImageDeleteClick = Lua.CoWrap(IDEAttrImageDialog.HandleImageDeleteClick)
+IDEImageSelectDialog.HandleImageDeleteClick = Lua.CoWrap(IDEImageSelectDialog.HandleImageDeleteClick)
 
+g_IDEImageManagerDialog = IDEImageSelectDialog("图片选择器", nil, {"PNG", "JPG"})
+g_IDEImageSelectDialog = IDEImageSelectDialog("图片选择器", g_DialogLayer, {"PNG", "JPG"})
+g_IDEEditImageDialog = AUIPlugin.AUIEditImageDialog()

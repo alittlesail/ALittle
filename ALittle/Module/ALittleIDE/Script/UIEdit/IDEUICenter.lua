@@ -5,9 +5,6 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-g_IDEImageManagerDialog = nil
-g_IDEImageSelectDialog = nil
-g_IDEEditImageDialog = nil
 IDEUICenter = Lua.Class(nil, "ALittleIDE.IDEUICenter")
 
 function IDEUICenter:Ctor()
@@ -24,7 +21,6 @@ function IDEUICenter:Setup(edit_container)
 	Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDERevocation")
 	Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDEAttrTextDialog")
 	Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDEAttrEventDialog")
-	Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDEAttrImageDialog")
 	Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDESetting/DisplayObjectS")
 	Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDESetting/DisplayLayoutS")
 	Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDESetting/DisplayViewS")
@@ -62,7 +58,6 @@ function IDEUICenter:Setup(edit_container)
 	Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDESetting/TextRadioButtonS")
 	Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDESetting/TileTableS")
 	Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDESetting/PiechartS")
-	Require(g_ScriptBasePath, "UIEdit/IDEEditLogic/IDEMainMenu")
 	Require(g_ScriptBasePath, "UIEdit/IDEEditLogic/IDEAttributeManager")
 	Require(g_ScriptBasePath, "UIEdit/IDEEditLogic/IDEControlManager")
 	Require(g_ScriptBasePath, "UIEdit/IDEEditLogic/IDEQuickManager")
@@ -88,18 +83,10 @@ function IDEUICenter:Setup(edit_container)
 	g_IDEAttributeManager:Setup(self._control_edit_tab, attr_displaylayout)
 	g_IDETabManager:Setup(self._main_edit_tab, tree_displaylayout, attr_displaylayout, anti_displaylayout)
 	ALittle.TextRadioButton.SetGroup({self._tool_singleselect, self._tool_handdrag, self._tool_scale, self._tool_presee})
-	g_IDEEditImageDialog = AUIPlugin.AUIEditImageDialog()
-	g_IDEImageSelectDialog = IDEAttrImageDialog("图片选择器", nil, {"PNG", "JPG"})
-	g_IDEImageSelectDialog:Setup()
-	g_IDEImageManagerDialog = IDEAttrImageDialog("图片选择器", g_DialogLayer, {"PNG", "JPG"})
-	g_IDEImageManagerDialog:Setup()
 end
 
 function IDEUICenter:Shutdown()
 	g_IDETabManager:Shutdown()
-	g_IDEImageSelectDialog:Shutdown()
-	g_IDEImageManagerDialog:Shutdown()
-	g_IDEEditImageDialog:Shutdown()
 end
 
 function IDEUICenter:Show()

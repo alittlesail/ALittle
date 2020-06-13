@@ -1,10 +1,6 @@
 
 namespace ALittleIDE;
 
-protected var g_IDEImageManagerDialog:IDEAttrImageDialog;
-protected var g_IDEImageSelectDialog:IDEAttrImageDialog;
-protected var g_IDEEditImageDialog:AUIPlugin.AUIEditImageDialog;
-
 class IDEUICenter
 {
 	private ALittle.DisplayLayout _ui_edit_container;			// UI编辑器主界面
@@ -56,7 +52,6 @@ class IDEUICenter
 		alittle.Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDERevocation");
 		alittle.Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDEAttrTextDialog");
 		alittle.Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDEAttrEventDialog");
-		alittle.Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDEAttrImageDialog");
 	
 		alittle.Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDESetting/DisplayObjectS");
 		alittle.Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDESetting/DisplayLayoutS");
@@ -96,7 +91,6 @@ class IDEUICenter
 		alittle.Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDESetting/TileTableS");
 		alittle.Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDESetting/PiechartS");
 		
-		alittle.Require(g_ScriptBasePath, "UIEdit/IDEEditLogic/IDEMainMenu");
 		alittle.Require(g_ScriptBasePath, "UIEdit/IDEEditLogic/IDEAttributeManager");
 		alittle.Require(g_ScriptBasePath, "UIEdit/IDEEditLogic/IDEControlManager");
 		alittle.Require(g_ScriptBasePath, "UIEdit/IDEEditLogic/IDEQuickManager");
@@ -133,20 +127,11 @@ class IDEUICenter
 		g_IDETabManager.Setup(this._main_edit_tab, tree_displaylayout, attr_displaylayout, anti_displaylayout);
 
 		ALittle.TextRadioButton.SetGroup([this._tool_singleselect, this._tool_handdrag, this._tool_scale, this._tool_presee]);
-		
-		g_IDEEditImageDialog = new AUIPlugin.AUIEditImageDialog();
-		g_IDEImageSelectDialog = new IDEAttrImageDialog("图片选择器", null, ["PNG", "JPG"]);
-		g_IDEImageSelectDialog.Setup();
-		g_IDEImageManagerDialog = new IDEAttrImageDialog("图片选择器", g_DialogLayer, ["PNG", "JPG"]);
-		g_IDEImageManagerDialog.Setup();
 	}
 	
 	public fun Shutdown()
 	{
 		g_IDETabManager.Shutdown();
-		g_IDEImageSelectDialog.Shutdown();
-		g_IDEImageManagerDialog.Shutdown();
-		g_IDEEditImageDialog.Shutdown();
 	}
 	
 	public fun Show()

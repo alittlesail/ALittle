@@ -86,6 +86,10 @@ public async static __Module_Setup(ALittle.DisplayLayout layer_group, ALittle.Co
 public static __Module_Shutdown()
 {
     g_IDECenter.Shutdown();
+    
+	g_IDEImageSelectDialog.Shutdown();
+	g_IDEImageManagerDialog.Shutdown();
+	g_IDEEditImageDialog.Shutdown();
 }
 
 // 提供给壳的模块信息

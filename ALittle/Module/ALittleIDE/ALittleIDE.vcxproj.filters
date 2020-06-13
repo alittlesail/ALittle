@@ -11,9 +11,6 @@
     <Filter Include="源文件\UIEdit\IDEEditCore">
       <UniqueIdentifier>{9ce72796-1311-47f5-bc76-367fc610ecdb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="源文件\UIEdit\IDEEditCore\IDESetting">
-      <UniqueIdentifier>{d3939a3a-5eb0-4bc3-ba6c-6a68d1228fdc}</UniqueIdentifier>
-    </Filter>
     <Filter Include="源文件\Data">
       <UniqueIdentifier>{8ba5cfa2-cac7-4e79-b176-ec2cb19f8583}</UniqueIdentifier>
     </Filter>
@@ -29,11 +26,11 @@
     <Filter Include="源文件\IDE\UIEdit\Dialog">
       <UniqueIdentifier>{a2c3b9cd-62c3-40b5-9291-f92665c02c19}</UniqueIdentifier>
     </Filter>
+    <Filter Include="源文件\IDE\UIEdit\Setting">
+      <UniqueIdentifier>{b8d16970-7c21-4be0-885b-64a482395a5c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\UIEdit\IDEEditCore\IDERevocation.alittle">
-      <Filter>源文件\UIEdit\IDEEditCore</Filter>
-    </None>
     <None Include="src\UIEdit\IDEEditCore\IDETabChild.alittle">
       <Filter>源文件\UIEdit\IDEEditCore</Filter>
     </None>
@@ -48,117 +45,6 @@
     </None>
     <None Include="src\UIEdit\IDEEditCore\IDETreeLogic.alittle">
       <Filter>源文件\UIEdit\IDEEditCore</Filter>
-    </None>
-    <None Include="src\UIEdit\IDEEditCore\IDESetting\Grid9S.alittle">
-      <Filter>源文件\UIEdit\IDEEditCore\IDESetting</Filter>
-    </None>
-    <None Include="src\UIEdit\IDEEditCore\IDESetting\ImageEditS.alittle">
-      <Filter>源文件\UIEdit\IDEEditCore\IDESetting</Filter>
-    </None>
-    <None Include="src\UIEdit\IDEEditCore\IDESetting\ImageInputS.alittle">
-      <Filter>源文件\UIEdit\IDEEditCore\IDESetting</Filter>
-    </None>
-    <None Include="src\UIEdit\IDEEditCore\IDESetting\ImagePlayS.alittle">
-      <Filter>源文件\UIEdit\IDEEditCore\IDESetting</Filter>
-    </None>
-    <None Include="src\UIEdit\IDEEditCore\IDESetting\ImageS.alittle">
-      <Filter>源文件\UIEdit\IDEEditCore\IDESetting</Filter>
-    </None>
-    <None Include="src\UIEdit\IDEEditCore\IDESetting\LinearS.alittle">
-      <Filter>源文件\UIEdit\IDEEditCore\IDESetting</Filter>
-    </None>
-    <None Include="src\UIEdit\IDEEditCore\IDESetting\PiechartS.alittle">
-      <Filter>源文件\UIEdit\IDEEditCore\IDESetting</Filter>
-    </None>
-    <None Include="src\UIEdit\IDEEditCore\IDESetting\QuadS.alittle">
-      <Filter>源文件\UIEdit\IDEEditCore\IDESetting</Filter>
-    </None>
-    <None Include="src\UIEdit\IDEEditCore\IDESetting\RichAreaS.alittle">
-      <Filter>源文件\UIEdit\IDEEditCore\IDESetting</Filter>
-    </None>
-    <None Include="src\UIEdit\IDEEditCore\IDESetting\RichEditS.alittle">
-      <Filter>源文件\UIEdit\IDEEditCore\IDESetting</Filter>
-    </None>
-    <None Include="src\UIEdit\IDEEditCore\IDESetting\RichInputS.alittle">
-      <Filter>源文件\UIEdit\IDEEditCore\IDESetting</Filter>
-    </None>
-    <None Include="src\UIEdit\IDEEditCore\IDESetting\ScrollBarS.alittle">
-      <Filter>源文件\UIEdit\IDEEditCore\IDESetting</Filter>
-    </None>
-    <None Include="src\UIEdit\IDEEditCore\IDESetting\ScrollButtonS.alittle">
-      <Filter>源文件\UIEdit\IDEEditCore\IDESetting</Filter>
-    </None>
-    <None Include="src\UIEdit\IDEEditCore\IDESetting\ScrollListS.alittle">
-      <Filter>源文件\UIEdit\IDEEditCore\IDESetting</Filter>
-    </None>
-    <None Include="src\UIEdit\IDEEditCore\IDESetting\ScrollScreenS.alittle">
-      <Filter>源文件\UIEdit\IDEEditCore\IDESetting</Filter>
-    </None>
-    <None Include="src\UIEdit\IDEEditCore\IDESetting\SliderS.alittle">
-      <Filter>源文件\UIEdit\IDEEditCore\IDESetting</Filter>
-    </None>
-    <None Include="src\UIEdit\IDEEditCore\IDESetting\SpringTextButtonS.alittle">
-      <Filter>源文件\UIEdit\IDEEditCore\IDESetting</Filter>
-    </None>
-    <None Include="src\UIEdit\IDEEditCore\IDESetting\SpritePlayS.alittle">
-      <Filter>源文件\UIEdit\IDEEditCore\IDESetting</Filter>
-    </None>
-    <None Include="src\UIEdit\IDEEditCore\IDESetting\SpriteS.alittle">
-      <Filter>源文件\UIEdit\IDEEditCore\IDESetting</Filter>
-    </None>
-    <None Include="src\UIEdit\IDEEditCore\IDESetting\TabS.alittle">
-      <Filter>源文件\UIEdit\IDEEditCore\IDESetting</Filter>
-    </None>
-    <None Include="src\UIEdit\IDEEditCore\IDESetting\TextAreaS.alittle">
-      <Filter>源文件\UIEdit\IDEEditCore\IDESetting</Filter>
-    </None>
-    <None Include="src\UIEdit\IDEEditCore\IDESetting\TextButtonS.alittle">
-      <Filter>源文件\UIEdit\IDEEditCore\IDESetting</Filter>
-    </None>
-    <None Include="src\UIEdit\IDEEditCore\IDESetting\TextCheckButtonS.alittle">
-      <Filter>源文件\UIEdit\IDEEditCore\IDESetting</Filter>
-    </None>
-    <None Include="src\UIEdit\IDEEditCore\IDESetting\TextEditS.alittle">
-      <Filter>源文件\UIEdit\IDEEditCore\IDESetting</Filter>
-    </None>
-    <None Include="src\UIEdit\IDEEditCore\IDESetting\TextInputS.alittle">
-      <Filter>源文件\UIEdit\IDEEditCore\IDESetting</Filter>
-    </None>
-    <None Include="src\UIEdit\IDEEditCore\IDESetting\TextRadioButtonS.alittle">
-      <Filter>源文件\UIEdit\IDEEditCore\IDESetting</Filter>
-    </None>
-    <None Include="src\UIEdit\IDEEditCore\IDESetting\TextS.alittle">
-      <Filter>源文件\UIEdit\IDEEditCore\IDESetting</Filter>
-    </None>
-    <None Include="src\UIEdit\IDEEditCore\IDESetting\TileTableS.alittle">
-      <Filter>源文件\UIEdit\IDEEditCore\IDESetting</Filter>
-    </None>
-    <None Include="src\UIEdit\IDEEditCore\IDESetting\TriangleS.alittle">
-      <Filter>源文件\UIEdit\IDEEditCore\IDESetting</Filter>
-    </None>
-    <None Include="src\UIEdit\IDEEditCore\IDESetting\DialogS.alittle">
-      <Filter>源文件\UIEdit\IDEEditCore\IDESetting</Filter>
-    </None>
-    <None Include="src\UIEdit\IDEEditCore\IDESetting\DisplayLayoutS.alittle">
-      <Filter>源文件\UIEdit\IDEEditCore\IDESetting</Filter>
-    </None>
-    <None Include="src\UIEdit\IDEEditCore\IDESetting\DisplayObjectS.alittle">
-      <Filter>源文件\UIEdit\IDEEditCore\IDESetting</Filter>
-    </None>
-    <None Include="src\UIEdit\IDEEditCore\IDESetting\DisplayViewS.alittle">
-      <Filter>源文件\UIEdit\IDEEditCore\IDESetting</Filter>
-    </None>
-    <None Include="src\UIEdit\IDEEditCore\IDESetting\DropDownS.alittle">
-      <Filter>源文件\UIEdit\IDEEditCore\IDESetting</Filter>
-    </None>
-    <None Include="src\UIEdit\IDEEditCore\IDESetting\FramePlayS.alittle">
-      <Filter>源文件\UIEdit\IDEEditCore\IDESetting</Filter>
-    </None>
-    <None Include="src\UIEdit\IDEEditCore\IDESetting\Grid3S.alittle">
-      <Filter>源文件\UIEdit\IDEEditCore\IDESetting</Filter>
-    </None>
-    <None Include="src\UIEdit\IDEEditCore\IDESetting\Grid9ImageS.alittle">
-      <Filter>源文件\UIEdit\IDEEditCore\IDESetting</Filter>
     </None>
     <None Include="src\Main.alittle">
       <Filter>源文件</Filter>
@@ -219,6 +105,123 @@
     </None>
     <None Include="src\IDE\UIEdit\Dialog\IDEAttrEventDialog.alittle">
       <Filter>源文件\IDE\UIEdit\Dialog</Filter>
+    </None>
+    <None Include="src\IDE\IDERevocation.alittle">
+      <Filter>源文件\IDE</Filter>
+    </None>
+    <None Include="src\IDE\UIEdit\IDEUIRevocation.alittle">
+      <Filter>源文件\IDE\UIEdit</Filter>
+    </None>
+    <None Include="src\IDE\UIEdit\Setting\Grid3S.alittle">
+      <Filter>源文件\IDE\UIEdit\Setting</Filter>
+    </None>
+    <None Include="src\IDE\UIEdit\Setting\Grid9ImageS.alittle">
+      <Filter>源文件\IDE\UIEdit\Setting</Filter>
+    </None>
+    <None Include="src\IDE\UIEdit\Setting\Grid9S.alittle">
+      <Filter>源文件\IDE\UIEdit\Setting</Filter>
+    </None>
+    <None Include="src\IDE\UIEdit\Setting\ImageEditS.alittle">
+      <Filter>源文件\IDE\UIEdit\Setting</Filter>
+    </None>
+    <None Include="src\IDE\UIEdit\Setting\ImageInputS.alittle">
+      <Filter>源文件\IDE\UIEdit\Setting</Filter>
+    </None>
+    <None Include="src\IDE\UIEdit\Setting\ImagePlayS.alittle">
+      <Filter>源文件\IDE\UIEdit\Setting</Filter>
+    </None>
+    <None Include="src\IDE\UIEdit\Setting\ImageS.alittle">
+      <Filter>源文件\IDE\UIEdit\Setting</Filter>
+    </None>
+    <None Include="src\IDE\UIEdit\Setting\LinearS.alittle">
+      <Filter>源文件\IDE\UIEdit\Setting</Filter>
+    </None>
+    <None Include="src\IDE\UIEdit\Setting\PiechartS.alittle">
+      <Filter>源文件\IDE\UIEdit\Setting</Filter>
+    </None>
+    <None Include="src\IDE\UIEdit\Setting\QuadS.alittle">
+      <Filter>源文件\IDE\UIEdit\Setting</Filter>
+    </None>
+    <None Include="src\IDE\UIEdit\Setting\RichAreaS.alittle">
+      <Filter>源文件\IDE\UIEdit\Setting</Filter>
+    </None>
+    <None Include="src\IDE\UIEdit\Setting\RichEditS.alittle">
+      <Filter>源文件\IDE\UIEdit\Setting</Filter>
+    </None>
+    <None Include="src\IDE\UIEdit\Setting\RichInputS.alittle">
+      <Filter>源文件\IDE\UIEdit\Setting</Filter>
+    </None>
+    <None Include="src\IDE\UIEdit\Setting\ScrollBarS.alittle">
+      <Filter>源文件\IDE\UIEdit\Setting</Filter>
+    </None>
+    <None Include="src\IDE\UIEdit\Setting\ScrollButtonS.alittle">
+      <Filter>源文件\IDE\UIEdit\Setting</Filter>
+    </None>
+    <None Include="src\IDE\UIEdit\Setting\ScrollListS.alittle">
+      <Filter>源文件\IDE\UIEdit\Setting</Filter>
+    </None>
+    <None Include="src\IDE\UIEdit\Setting\ScrollScreenS.alittle">
+      <Filter>源文件\IDE\UIEdit\Setting</Filter>
+    </None>
+    <None Include="src\IDE\UIEdit\Setting\SliderS.alittle">
+      <Filter>源文件\IDE\UIEdit\Setting</Filter>
+    </None>
+    <None Include="src\IDE\UIEdit\Setting\SpringTextButtonS.alittle">
+      <Filter>源文件\IDE\UIEdit\Setting</Filter>
+    </None>
+    <None Include="src\IDE\UIEdit\Setting\SpritePlayS.alittle">
+      <Filter>源文件\IDE\UIEdit\Setting</Filter>
+    </None>
+    <None Include="src\IDE\UIEdit\Setting\SpriteS.alittle">
+      <Filter>源文件\IDE\UIEdit\Setting</Filter>
+    </None>
+    <None Include="src\IDE\UIEdit\Setting\TabS.alittle">
+      <Filter>源文件\IDE\UIEdit\Setting</Filter>
+    </None>
+    <None Include="src\IDE\UIEdit\Setting\TextAreaS.alittle">
+      <Filter>源文件\IDE\UIEdit\Setting</Filter>
+    </None>
+    <None Include="src\IDE\UIEdit\Setting\TextButtonS.alittle">
+      <Filter>源文件\IDE\UIEdit\Setting</Filter>
+    </None>
+    <None Include="src\IDE\UIEdit\Setting\TextCheckButtonS.alittle">
+      <Filter>源文件\IDE\UIEdit\Setting</Filter>
+    </None>
+    <None Include="src\IDE\UIEdit\Setting\TextEditS.alittle">
+      <Filter>源文件\IDE\UIEdit\Setting</Filter>
+    </None>
+    <None Include="src\IDE\UIEdit\Setting\TextInputS.alittle">
+      <Filter>源文件\IDE\UIEdit\Setting</Filter>
+    </None>
+    <None Include="src\IDE\UIEdit\Setting\TextRadioButtonS.alittle">
+      <Filter>源文件\IDE\UIEdit\Setting</Filter>
+    </None>
+    <None Include="src\IDE\UIEdit\Setting\TextS.alittle">
+      <Filter>源文件\IDE\UIEdit\Setting</Filter>
+    </None>
+    <None Include="src\IDE\UIEdit\Setting\TileTableS.alittle">
+      <Filter>源文件\IDE\UIEdit\Setting</Filter>
+    </None>
+    <None Include="src\IDE\UIEdit\Setting\TriangleS.alittle">
+      <Filter>源文件\IDE\UIEdit\Setting</Filter>
+    </None>
+    <None Include="src\IDE\UIEdit\Setting\DialogS.alittle">
+      <Filter>源文件\IDE\UIEdit\Setting</Filter>
+    </None>
+    <None Include="src\IDE\UIEdit\Setting\DisplayLayoutS.alittle">
+      <Filter>源文件\IDE\UIEdit\Setting</Filter>
+    </None>
+    <None Include="src\IDE\UIEdit\Setting\DisplayObjectS.alittle">
+      <Filter>源文件\IDE\UIEdit\Setting</Filter>
+    </None>
+    <None Include="src\IDE\UIEdit\Setting\DisplayViewS.alittle">
+      <Filter>源文件\IDE\UIEdit\Setting</Filter>
+    </None>
+    <None Include="src\IDE\UIEdit\Setting\DropDownS.alittle">
+      <Filter>源文件\IDE\UIEdit\Setting</Filter>
+    </None>
+    <None Include="src\IDE\UIEdit\Setting\FramePlayS.alittle">
+      <Filter>源文件\IDE\UIEdit\Setting</Filter>
     </None>
   </ItemGroup>
 </Project>

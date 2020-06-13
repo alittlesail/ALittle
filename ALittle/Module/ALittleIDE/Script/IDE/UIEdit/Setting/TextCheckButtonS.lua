@@ -1,0 +1,293 @@
+-- ALittle Generate Lua And Do Not Edit This Line!
+module("ALittleIDE", package.seeall)
+
+local ___rawset = rawset
+local ___pairs = pairs
+local ___ipairs = ipairs
+
+
+assert(ALittleIDE.DisplayLayoutS, " extends class:ALittleIDE.DisplayLayoutS is nil")
+TextCheckButtonS = Lua.Class(ALittleIDE.DisplayLayoutS, "ALittleIDE.TextCheckButtonS")
+
+function TextCheckButtonS:Ctor(user_info, tab_child, tree_logic)
+	___rawset(self, "_layer_name", "ide_setting_textcheckbutton")
+end
+
+function TextCheckButtonS:LoadNatureBase()
+	DisplayLayoutS.LoadNatureBase(self)
+	self:LoadValueData("text")
+	self:LoadEnumData("text_x_type", g_IDEEnum.xy_type)
+	self:LoadValueData("text_x_value")
+	self:LoadBoolData("selected", false, g_IDEEnum.yn_type)
+	self:LoadShowTypeDataForImage("show_up")
+	self:LoadShowTypeDataForImage("show_over")
+	self:LoadShowTypeDataForImage("show_down")
+	self:LoadShowTypeDataForImage("show_disabled")
+	self:LoadShowTypeDataForImage("show_selected_up")
+	self:LoadShowTypeDataForImage("show_selected_over")
+	self:LoadShowTypeDataForImage("show_selected_down")
+	self:LoadShowTypeDataForImage("show_selected_disabled")
+	self:LoadShowTypeNoNilData("show_text")
+	self:LoadShowTypeNoNilData("show_over_text")
+	self:LoadShowTypeNoNilData("show_down_text")
+	self:LoadShowTypeNoNilData("show_disabled_text")
+	self:LoadShowTypeNoNilData("show_selected_text")
+	self:LoadShowTypeNoNilData("show_selected_over_text")
+	self:LoadShowTypeNoNilData("show_selected_down_text")
+	self:LoadShowTypeNoNilData("show_selected_disabled_text")
+end
+
+function TextCheckButtonS:HandleMTextFOCUSOUT(event)
+	self:DefaultNoStringInputChange("text", false)
+end
+
+function TextCheckButtonS:HandleTextXTypeSELECT_CHANGE(event)
+	local object = self._object
+	local target_x = object.text_x_type
+	local new_x = target_x
+	local list = g_IDEEnum.xy_rtype
+	local revoke_bind = IDERevokeBind()
+	self:TypeSelectChange("text_x_type", list, false, revoke_bind)
+end
+
+function TextCheckButtonS:HandleTextXValueFOCUSOUT(event)
+	self._base.text_x_value = nil
+	self:ValueNumInputChange("text_x_value", true)
+end
+
+function TextCheckButtonS:HandleSelectedSELECT_CHANGE(event)
+	self:BoolSelectChange("selected", false, g_IDEEnum.yn_type)
+end
+
+function TextCheckButtonS:HandleShowUpFOCUSOUT(event)
+	if event.target._user_data ~= nil then
+		if event.target._user_data == event.target.text then
+			return
+		end
+		event.target._user_data = event.target.text
+	end
+	self:RemoverToNilShowSetForImage("show_up", self._show_up.text, self._show_up_grid9.selected, false)
+end
+
+function TextCheckButtonS:HandleShowUpSelect(event)
+	g_IDEImageSelectDialog:SetBasePath(g_IDEProject.project.texture_path)
+	local path = g_IDEImageSelectDialog:ShowSelect()
+	if path == nil then
+		return
+	end
+	self:ImagePathSelectCallback("show_up", self.HandleShowUpFOCUSOUT, nil, path)
+end
+TextCheckButtonS.HandleShowUpSelect = Lua.CoWrap(TextCheckButtonS.HandleShowUpSelect)
+
+function TextCheckButtonS:HandleShowOverFOCUSOUT(event)
+	if event.target._user_data ~= nil then
+		if event.target._user_data == event.target.text then
+			return
+		end
+		event.target._user_data = event.target.text
+	end
+	self:RemoverToNilShowSetForImage("show_over", self._show_over.text, self._show_over_grid9.selected, false)
+end
+
+function TextCheckButtonS:HandleShowOverSelect(event)
+	g_IDEImageSelectDialog:SetBasePath(g_IDEProject.project.texture_path)
+	local path = g_IDEImageSelectDialog:ShowSelect()
+	if path == nil then
+		return
+	end
+	self:ImagePathSelectCallback("show_over", self.HandleShowOverFOCUSOUT, nil, path)
+end
+TextCheckButtonS.HandleShowOverSelect = Lua.CoWrap(TextCheckButtonS.HandleShowOverSelect)
+
+function TextCheckButtonS:HandleShowDownFOCUSOUT(event)
+	if event.target._user_data ~= nil then
+		if event.target._user_data == event.target.text then
+			return
+		end
+		event.target._user_data = event.target.text
+	end
+	self:RemoverToNilShowSetForImage("show_down", self._show_down.text, self._show_down_grid9.selected, false)
+end
+
+function TextCheckButtonS:HandleShowDownSelect(event)
+	g_IDEImageSelectDialog:SetBasePath(g_IDEProject.project.texture_path)
+	local path = g_IDEImageSelectDialog:ShowSelect()
+	if path == nil then
+		return
+	end
+	self:ImagePathSelectCallback("show_down", self.HandleShowDownFOCUSOUT, nil, path)
+end
+TextCheckButtonS.HandleShowDownSelect = Lua.CoWrap(TextCheckButtonS.HandleShowDownSelect)
+
+function TextCheckButtonS:HandleShowDisabledFOCUSOUT(event)
+	if event.target._user_data ~= nil then
+		if event.target._user_data == event.target.text then
+			return
+		end
+		event.target._user_data = event.target.text
+	end
+	self:RemoverToNilShowSetForImage("show_disabled", self._show_disabled.text, self._show_disabled_grid9.selected, false)
+end
+
+function TextCheckButtonS:HandleShowDisabledSelect(event)
+	g_IDEImageSelectDialog:SetBasePath(g_IDEProject.project.texture_path)
+	local path = g_IDEImageSelectDialog:ShowSelect()
+	if path == nil then
+		return
+	end
+	self:ImagePathSelectCallback("show_disabled", self.HandleShowDisabledFOCUSOUT, nil, path)
+end
+TextCheckButtonS.HandleShowDisabledSelect = Lua.CoWrap(TextCheckButtonS.HandleShowDisabledSelect)
+
+function TextCheckButtonS:HandleShowSUpFOCUSOUT(event)
+	if event.target._user_data ~= nil then
+		if event.target._user_data == event.target.text then
+			return
+		end
+		event.target._user_data = event.target.text
+	end
+	self:RemoverToNilShowSetForImage("show_selected_up", self._show_selected_up.text, self._show_selected_up_grid9.selected, false)
+end
+
+function TextCheckButtonS:HandleShowSUpSelect(event)
+	g_IDEImageSelectDialog:SetBasePath(g_IDEProject.project.texture_path)
+	local path = g_IDEImageSelectDialog:ShowSelect()
+	if path == nil then
+		return
+	end
+	self:ImagePathSelectCallback("show_selected_up", self.HandleShowSUpFOCUSOUT, nil, path)
+end
+TextCheckButtonS.HandleShowSUpSelect = Lua.CoWrap(TextCheckButtonS.HandleShowSUpSelect)
+
+function TextCheckButtonS:HandleShowSOverFOCUSOUT(event)
+	if event.target._user_data ~= nil then
+		if event.target._user_data == event.target.text then
+			return
+		end
+		event.target._user_data = event.target.text
+	end
+	self:RemoverToNilShowSetForImage("show_selected_over", self._show_selected_over.text, self._show_selected_over_grid9.selected, false)
+end
+
+function TextCheckButtonS:HandleShowSOverSelect(event)
+	g_IDEImageSelectDialog:SetBasePath(g_IDEProject.project.texture_path)
+	local path = g_IDEImageSelectDialog:ShowSelect()
+	if path == nil then
+		return
+	end
+	self:ImagePathSelectCallback("show_selected_over", self.HandleShowSOverFOCUSOUT, nil, path)
+end
+TextCheckButtonS.HandleShowSOverSelect = Lua.CoWrap(TextCheckButtonS.HandleShowSOverSelect)
+
+function TextCheckButtonS:HandleShowSDownFOCUSOUT(event)
+	if event.target._user_data ~= nil then
+		if event.target._user_data == event.target.text then
+			return
+		end
+		event.target._user_data = event.target.text
+	end
+	self:RemoverToNilShowSetForImage("show_selected_down", self._show_selected_down.text, self._show_selected_down_grid9.selected, false)
+end
+
+function TextCheckButtonS:HandleShowSDownSelect(event)
+	g_IDEImageSelectDialog:SetBasePath(g_IDEProject.project.texture_path)
+	local path = g_IDEImageSelectDialog:ShowSelect()
+	if path == nil then
+		return
+	end
+	self:ImagePathSelectCallback("show_selected_down", self.HandleShowSDownFOCUSOUT, nil, path)
+end
+TextCheckButtonS.HandleShowSDownSelect = Lua.CoWrap(TextCheckButtonS.HandleShowSDownSelect)
+
+function TextCheckButtonS:HandleShowSDisabledFOCUSOUT(event)
+	if event.target._user_data ~= nil then
+		if event.target._user_data == event.target.text then
+			return
+		end
+		event.target._user_data = event.target.text
+	end
+	self:RemoverToNilShowSetForImage("show_selected_disabled", self._show_selected_disabled.text, self._show_selected_disabled_grid9.selected, false)
+end
+
+function TextCheckButtonS:HandleShowSDisabledSelect(event)
+	g_IDEImageSelectDialog:SetBasePath(g_IDEProject.project.texture_path)
+	local path = g_IDEImageSelectDialog:ShowSelect()
+	if path == nil then
+		return
+	end
+	self:ImagePathSelectCallback("show_selected_disabled", self.HandleShowSDisabledFOCUSOUT, nil, path)
+end
+TextCheckButtonS.HandleShowSDisabledSelect = Lua.CoWrap(TextCheckButtonS.HandleShowSDisabledSelect)
+
+function TextCheckButtonS:HandleShowTextFOCUSOUT(event)
+	g_IDEAttrTextDialog:ShowDialog(self, "show_text", false)
+end
+
+function TextCheckButtonS:HandleShowTextClear(event)
+	self:RemoverToNilShowSet("show_text", "", false)
+end
+
+function TextCheckButtonS:HandleShowOverTextClear(event)
+	self:RemoverToNilShowSet("show_over_text", "", false)
+end
+
+function TextCheckButtonS:HandleShowOverTextFOCUSOUT(event)
+	g_IDEAttrTextDialog:ShowDialog(self, "show_over_text", false)
+end
+
+function TextCheckButtonS:HandleShowOverTextClear(event)
+	self:RemoverToNilShowSet("show_over_text", "", false)
+end
+
+function TextCheckButtonS:HandleShowDownTextFOCUSOUT(event)
+	g_IDEAttrTextDialog:ShowDialog(self, "show_down_text", false)
+end
+
+function TextCheckButtonS:HandleShowDownTextClear(event)
+	self:RemoverToNilShowSet("show_down_text", "", false)
+end
+
+function TextCheckButtonS:HandleShowDisabledTextFOCUSOUT(event)
+	g_IDEAttrTextDialog:ShowDialog(self, "show_disabled_text", false)
+end
+
+function TextCheckButtonS:HandleShowDisabledTextClear(event)
+	self:RemoverToNilShowSet("show_disabled_text", "", false)
+end
+
+function TextCheckButtonS:HandleShowSelectedTextFOCUSOUT(event)
+	g_IDEAttrTextDialog:ShowDialog(self, "show_selected_text", false)
+end
+
+function TextCheckButtonS:HandleShowSelectedTextClear(event)
+	self:RemoverToNilShowSet("show_selected_text", "", false)
+end
+
+function TextCheckButtonS:HandleShowSelectedOverTextClear(event)
+	self:RemoverToNilShowSet("show_selected_over_text", "", false)
+end
+
+function TextCheckButtonS:HandleShowSelectedOverTextFOCUSOUT(event)
+	g_IDEAttrTextDialog:ShowDialog(self, "show_selected_over_text", false)
+end
+
+function TextCheckButtonS:HandleShowSelectedOverTextClear(event)
+	self:RemoverToNilShowSet("show_selected_over_text", "", false)
+end
+
+function TextCheckButtonS:HandleShowSelectedDownTextFOCUSOUT(event)
+	g_IDEAttrTextDialog:ShowDialog(self, "show_selected_down_text", false)
+end
+
+function TextCheckButtonS:HandleShowSelectedDownTextClear(event)
+	self:RemoverToNilShowSet("show_selected_down_text", "", false)
+end
+
+function TextCheckButtonS:HandleShowSelectedDisabledTextFOCUSOUT(event)
+	g_IDEAttrTextDialog:ShowDialog(self, "show_selected_disabled_text", false)
+end
+
+function TextCheckButtonS:HandleShowSelectedDisabledTextClear(event)
+	self:RemoverToNilShowSet("show_selected_disabled_text", "", false)
+end
+

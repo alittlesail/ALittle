@@ -233,7 +233,7 @@ function IDEAntiFrameLoopItem:HandleKeyDown(event)
 end
 
 function IDEAntiFrameLoopItem:HandleRButtonDown(event)
-	g_IDEAntiManager:ShowAntiLoopMenu(self)
+	g_IDECenter.center.control_anti:ShowAntiLoopMenu(self)
 end
 
 function IDEAntiFrameLoopItem.ValueToString(value)
@@ -355,7 +355,7 @@ function IDEAntiFrameAntiItem:HandleBgRButtonDown(event)
 	if child_index <= 0 then
 		return
 	end
-	g_IDEAntiManager:ShowAntiAntiMenu(self, child_index, event.rel_x)
+	g_IDECenter.center.control_anti:ShowAntiAntiMenu(self, child_index, event.rel_x)
 end
 
 function IDEAntiFrameAntiItem:Insert(rel_x, clazz)
@@ -722,7 +722,7 @@ function IDEAntiPanel:HideAnti()
 end
 
 function IDEAntiPanel:HandleAntiListItemRButtonDown(event)
-	g_IDEAntiManager:ShowAntiListMenu(self, event.target.text)
+	g_IDECenter.center.control_anti:ShowAntiListMenu(self, event.target.text)
 end
 
 function IDEAntiPanel:HandleAntiListItemClick(event)
@@ -734,7 +734,7 @@ function IDEAntiPanel:HandleAntiListItemChanged(event)
 end
 
 function IDEAntiPanel:HandleNewClick(event)
-	g_IDEAntiManager:ShowNewAntiDialog(self)
+	g_IDECenter.center.control_anti:ShowNewAntiDialog(self)
 end
 
 function IDEAntiPanel:HandleCopyAttrLineClick(event)
@@ -974,15 +974,16 @@ function IDEAntiPanel:HandlePauseClick(event)
 	end
 end
 
-IDEAntiManager = Lua.Class(nil, "ALittleIDE.IDEAntiManager")
+assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
+IDEUIControlAnti = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDEUIControlAnti")
 
-function IDEAntiManager:Setup(tab, control)
+function IDEUIControlAnti:Setup(tab, control)
 	self._main_tab = tab
 	self._main_control = control
 	self._main_tab:SetChildText(self._main_control, "动画编辑器")
 end
 
-function IDEAntiManager:ShowNewAntiDialog(panel)
+function IDEUIControlAnti:ShowNewAntiDialog(panel)
 	if self._new_anti_dialog == nil then
 		self._new_anti_dialog = g_Control:CreateControl("ide_new_anti_dialog", self)
 		A_LayerManager:AddToModal(self._new_anti_dialog)
@@ -992,19 +993,19 @@ function IDEAntiManager:ShowNewAntiDialog(panel)
 	self._new_anti_dialog._user_data = panel
 end
 
-function IDEAntiManager:HandleNewAntiCancel(event)
+function IDEUIControlAnti:HandleNewAntiCancel(event)
 	self._new_anti_dialog.visible = false
 	self._new_anti_dialog._user_data = nil
 end
 
-function IDEAntiManager:HandleNewAntiConfirm(event)
+function IDEUIControlAnti:HandleNewAntiConfirm(event)
 	self._new_anti_dialog.visible = false
 	local panel = self._new_anti_dialog._user_data
 	self._new_anti_dialog._user_data = nil
 	panel:CreateAnti(self._new_anti_name_input.text)
 end
 
-function IDEAntiManager:ShowAntiListMenu(panel, name)
+function IDEUIControlAnti:ShowAntiListMenu(panel, name)
 	if self._anti_list_right_menu == nil then
 		self._anti_list_right_menu = g_Control:CreateControl("ide_anti_list_right_menu", self)
 	end
@@ -1023,14 +1024,14 @@ function IDEAntiManager:ShowAntiListMenu(panel, name)
 	self._anti_list_right_menu._user_data = user_data
 end
 
-function IDEAntiManager:HandleAntiListRightMenuDelete(event)
+function IDEUIControlAnti:HandleAntiListRightMenuDelete(event)
 	A_LayerManager:HideFromRight(self._anti_list_right_menu)
 	local user_data = self._anti_list_right_menu._user_data
 	self._anti_list_right_menu._user_data = nil
 	user_data.panel:DeleteAnti(user_data.name)
 end
 
-function IDEAntiManager:HandleAntiListRightMenuCopyAnNew(event)
+function IDEUIControlAnti:HandleAntiListRightMenuCopyAnNew(event)
 	A_LayerManager:HideFromRight(self._anti_list_right_menu)
 	local user_data = self._anti_list_right_menu._user_data
 	self._anti_list_right_menu._user_data = nil
@@ -1048,9 +1049,9 @@ function IDEAntiManager:HandleAntiListRightMenuCopyAnNew(event)
 	end
 	user_data.panel:CopyAndNewAnti(old_name, new_name)
 end
-IDEAntiManager.HandleAntiListRightMenuCopyAnNew = Lua.CoWrap(IDEAntiManager.HandleAntiListRightMenuCopyAnNew)
+IDEUIControlAnti.HandleAntiListRightMenuCopyAnNew = Lua.CoWrap(IDEUIControlAnti.HandleAntiListRightMenuCopyAnNew)
 
-function IDEAntiManager:ShowAntiAntiMenu(item, child_index, rel_x)
+function IDEUIControlAnti:ShowAntiAntiMenu(item, child_index, rel_x)
 	if self._anti_anti_right_menu == nil then
 		self._anti_anti_right_menu = g_Control:CreateControl("ide_anti_anti_right_menu", self)
 	end
@@ -1070,35 +1071,35 @@ function IDEAntiManager:ShowAntiAntiMenu(item, child_index, rel_x)
 	self._anti_anti_right_menu._user_data = user_data
 end
 
-function IDEAntiManager:HandleAntiAntiInsertLinear(event)
+function IDEUIControlAnti:HandleAntiAntiInsertLinear(event)
 	A_LayerManager:HideFromRight(self._anti_anti_right_menu)
 	local user_data = self._anti_anti_right_menu._user_data
 	self._anti_anti_right_menu._user_data = nil
 	user_data.item:Insert(user_data.rel_x, "LoopLinear")
 end
 
-function IDEAntiManager:HandleAntiAntiInsertRit(event)
+function IDEUIControlAnti:HandleAntiAntiInsertRit(event)
 	A_LayerManager:HideFromRight(self._anti_anti_right_menu)
 	local user_data = self._anti_anti_right_menu._user_data
 	self._anti_anti_right_menu._user_data = nil
 	user_data.item:Insert(user_data.rel_x, "LoopRit")
 end
 
-function IDEAntiManager:HandleAntiAntiInsertAttribute(event)
+function IDEUIControlAnti:HandleAntiAntiInsertAttribute(event)
 	A_LayerManager:HideFromRight(self._anti_anti_right_menu)
 	local user_data = self._anti_anti_right_menu._user_data
 	self._anti_anti_right_menu._user_data = nil
 	user_data.item:Insert(user_data.rel_x, "LoopAttribute")
 end
 
-function IDEAntiManager:HandleAntiAntiClear(event)
+function IDEUIControlAnti:HandleAntiAntiClear(event)
 	A_LayerManager:HideFromRight(self._anti_anti_right_menu)
 	local user_data = self._anti_anti_right_menu._user_data
 	self._anti_anti_right_menu._user_data = nil
 	user_data.item:ClearLoop()
 end
 
-function IDEAntiManager:ShowAntiLoopMenu(loop_item)
+function IDEUIControlAnti:ShowAntiLoopMenu(loop_item)
 	if self._anti_loop_right_menu == nil then
 		self._anti_loop_right_menu = g_Control:CreateControl("ide_anti_loop_right_menu", self)
 	end
@@ -1116,28 +1117,28 @@ function IDEAntiManager:ShowAntiLoopMenu(loop_item)
 	self._anti_loop_right_menu._user_data = user_data
 end
 
-function IDEAntiManager:HandleAntiLoopInsertLinear(event)
+function IDEUIControlAnti:HandleAntiLoopInsertLinear(event)
 	A_LayerManager:HideFromRight(self._anti_loop_right_menu)
 	local user_data = self._anti_loop_right_menu._user_data
 	self._anti_loop_right_menu._user_data = nil
 	user_data.loop_item.item:InsertBefore(user_data.loop_item, "LoopLinear")
 end
 
-function IDEAntiManager:HandleAntiLoopInsertRit(event)
+function IDEUIControlAnti:HandleAntiLoopInsertRit(event)
 	A_LayerManager:HideFromRight(self._anti_loop_right_menu)
 	local user_data = self._anti_loop_right_menu._user_data
 	self._anti_loop_right_menu._user_data = nil
 	user_data.loop_item.item:InsertBefore(user_data.loop_item, "LoopRit")
 end
 
-function IDEAntiManager:HandleAntiLoopInsertAttribute(event)
+function IDEUIControlAnti:HandleAntiLoopInsertAttribute(event)
 	A_LayerManager:HideFromRight(self._anti_loop_right_menu)
 	local user_data = self._anti_loop_right_menu._user_data
 	self._anti_loop_right_menu._user_data = nil
 	user_data.loop_item.item:InsertBefore(user_data.loop_item, "LoopAttribute")
 end
 
-function IDEAntiManager:HandleAntiLoopDelete(event)
+function IDEUIControlAnti:HandleAntiLoopDelete(event)
 	A_LayerManager:HideFromRight(self._anti_loop_right_menu)
 	local user_data = self._anti_loop_right_menu._user_data
 	self._anti_loop_right_menu._user_data = nil
@@ -1145,4 +1146,3 @@ function IDEAntiManager:HandleAntiLoopDelete(event)
 	user_data.loop_item.item:DeleteLoop(user_data.loop_item)
 end
 
-g_IDEAntiManager = IDEAntiManager()

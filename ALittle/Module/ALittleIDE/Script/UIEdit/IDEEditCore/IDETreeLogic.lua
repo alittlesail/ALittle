@@ -102,7 +102,7 @@ function IDETreeLogic:RemoveAttributePanel()
 		return
 	end
 	self._tab_child.control_screen:RemoveChild(self._attr_panel.layer)
-	g_IDEAttributeManager:SetTitle("")
+	g_IDECenter.center.control_attr:SetTitle("")
 end
 
 function IDETreeLogic:ShowAttributePanel()
@@ -115,7 +115,7 @@ function IDETreeLogic:ShowAttributePanel()
 		self._attr_panel.layer._user_data = self._attr_panel
 		self._attr_panel.layer.disabled = self._user_info.extends
 	end
-	g_IDEAttributeManager:SetTitle(self._attr_panel.title)
+	g_IDECenter.center.control_attr:SetTitle(self._attr_panel.title)
 	self._tab_child.control_screen:AddChild(self._attr_panel.layer)
 end
 

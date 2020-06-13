@@ -148,6 +148,7 @@ function IDEProject:OpenProject(name)
 	self._project.control = ALittle.ControlSystem(name)
 	self._project.control.log_error = false
 	self._project.control.cache_texture = false
+	self._project.control.use_plugin_class = false
 	self._project.config = ALittle.CreateConfigSystem("Module/" .. name .. "/ALittleIDE.cfg")
 	self._project.ui = IDEUIManager(name, self._project.control)
 	g_IDEConfig:SetConfig("last_project", name)

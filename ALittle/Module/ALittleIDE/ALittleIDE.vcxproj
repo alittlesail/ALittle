@@ -20,17 +20,25 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Data\IDEEnum.alittle" />
-    <None Include="src\Data\IDEExport.alittle" />
     <None Include="src\Data\IDEProject.alittle" />
     <None Include="src\Data\IDEUIManager.alittle" />
+    <None Include="src\Dialog\IDEExportDialog.alittle" />
+    <None Include="src\Dialog\IDEImageSelectDialog.alittle" />
+    <None Include="src\Dialog\IDEVersionList.alittle" />
     <None Include="src\IDE\IDEUIAccount.alittle" />
     <None Include="src\IDE\IDECenter.alittle" />
+    <None Include="src\IDE\IDEUICenter.alittle" />
     <None Include="src\IDE\IDEUIMainMenu.alittle" />
     <None Include="src\IDE\IDEUIProjectDropdown.alittle" />
+    <None Include="src\IDE\UIEdit\Dialog\IDEAttrEventDialog.alittle" />
+    <None Include="src\IDE\UIEdit\Dialog\IDEAttrTextDialog.alittle" />
+    <None Include="src\IDE\UIEdit\IDEUIControlAnti.alittle" />
+    <None Include="src\IDE\UIEdit\IDEUIControlAttr.alittle" />
+    <None Include="src\IDE\UIEdit\IDEUIControlList.alittle" />
+    <None Include="src\IDE\UIEdit\IDEUIControlTree.alittle" />
+    <None Include="src\IDE\UIEdit\IDEUIProjectList.alittle" />
+    <None Include="src\IDE\UIEdit\IDEUIUtility.alittle" />
     <None Include="src\Main.alittle" />
-    <None Include="src\UIEdit\IDEEditCore\IDEAttrEventDialog.alittle" />
-    <None Include="src\UIEdit\IDEEditCore\IDEAttrImageDialog.alittle" />
-    <None Include="src\UIEdit\IDEEditCore\IDEAttrTextDialog.alittle" />
     <None Include="src\UIEdit\IDEEditCore\IDERevocation.alittle" />
     <None Include="src\UIEdit\IDEEditCore\IDESetting\DialogS.alittle" />
     <None Include="src\UIEdit\IDEEditCore\IDESetting\DisplayLayoutS.alittle" />
@@ -74,16 +82,6 @@
     <None Include="src\UIEdit\IDEEditCore\IDETree.alittle" />
     <None Include="src\UIEdit\IDEEditCore\IDETreeItem.alittle" />
     <None Include="src\UIEdit\IDEEditCore\IDETreeLogic.alittle" />
-    <None Include="src\UIEdit\IDEEditLogic\IDEAntiManager.alittle" />
-    <None Include="src\UIEdit\IDEEditLogic\IDEAttributeManager.alittle" />
-    <None Include="src\UIEdit\IDEEditLogic\IDEControlManager.alittle" />
-    <None Include="src\UIEdit\IDEEditLogic\IDEControlTree.alittle" />
-    <None Include="src\UIEdit\IDEEditLogic\IDEMainMenu.alittle" />
-    <None Include="src\UIEdit\IDEEditLogic\IDEProjectManager.alittle" />
-    <None Include="src\UIEdit\IDEEditLogic\IDEQuickManager.alittle" />
-    <None Include="src\UIEdit\IDEEditLogic\IDEVersionList.alittle" />
-    <None Include="src\UIEdit\IDEUICenter.alittle" />
-    <None Include="src\UIEdit\IDEUIUtility.alittle" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

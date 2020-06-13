@@ -7,7 +7,7 @@ local ___ipairs = ipairs
 ALittle.RegStruct(-4982446, "ALittle.DisplayInfo", {
 name = "ALittle.DisplayInfo", ns_name = "ALittle", rl_name = "DisplayInfo", hash_code = -4982446,
 name_list = {"__target_class","__class_func","__base_attr","__show_attr","loop_map","__class","__include","__extends","__childs","__event","__link","__shows_included","__childs_included","__extends_included","description","text","font_path","font_size","red","green","blue","alpha","bold","italic","underline","deleteline","outline","x","y","x_type","x_value","y_type","y_value","width","height","width_type","width_value","height_type","height_value","scale_x","scale_y","center_x","center_y","angle","flip","hand_cursor","visible","disabled","left_size","right_size","top_size","bottom_size","texture_name","interval","play_loop_count","var_play","base_y","head_size","gap","up_size","down_size","cursor_red","cursor_green","cursor_blue","default_text_alpha","ims_padding","margin_left","margin_right","margin_top","margin_bottom","show_count","body_margin","screen_margin_left","screen_margin_right","screen_margin_top","screen_margin_bottom","start_degree","end_degree","line_spacing","max_line_count","font_red","font_green","font_blue","margin_halign","margin_valign","cursor_margin_up","cursor_margin_down","total_size","show_size","offset_rate","offset_step","grade","row_count","col_count","row_index","col_index","u1","v1","u2","v2","u3","v3","x1","y1","x2","y2","x3","y3","x_gap","y_gap","x_start_gap","y_start_gap","button_gap","button_start","button_margin","tab_index","view_margin","child_width_margin"},
-type_list = {"List<string>","any","Map<string,any>","Map<string,any>","Map<string,ALittle.LoopGroupInfo>","string","string","string","List<ALittle.DisplayInfo>","List<ALittle.EventInfo>","string","bool","bool","bool","string","string","string","int","double","double","double","double","bool","bool","bool","bool","bool","double","double","int","double","int","double","double","double","int","double","int","double","double","double","double","double","double","int","bool","bool","bool","double","double","double","double","string","int","int","bool","double","double","double","double","double","double","double","double","double","double","double","double","double","double","int","double","double","double","double","double","double","double","double","int","double","double","double","double","double","double","double","double","double","double","double","int","int","int","int","int","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double"},
+type_list = {"List<string>","any","Map<string,any>","Map<string,ALittle.DisplayInfo>","Map<string,ALittle.LoopGroupInfo>","string","string","string","List<ALittle.DisplayInfo>","List<ALittle.EventInfo>","string","bool","bool","bool","string","string","string","int","double","double","double","double","bool","bool","bool","bool","bool","double","double","int","double","int","double","double","double","int","double","int","double","double","double","double","double","double","int","bool","bool","bool","double","double","double","double","string","int","int","bool","double","double","double","double","double","double","double","double","double","double","double","double","double","double","int","double","double","double","double","double","double","double","double","int","double","double","double","double","double","double","double","double","double","double","double","int","int","int","int","int","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double"},
 option_map = {}
 })
 ALittle.RegStruct(1025287370, "ALittleIDE.IDEPasteControlUserData", {
@@ -41,9 +41,10 @@ type_list = {"string","any","int","int"},
 option_map = {}
 })
 
-IDEControlTree = Lua.Class(nil, "ALittleIDE.IDEControlTree")
+assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
+IDEUIControlTree = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDEUIControlTree")
 
-function IDEControlTree:HandleControlTreeItemRightClick(event)
+function IDEUIControlTree:HandleControlTreeItemRightClick(event)
 	local target = event.target._user_data
 	if target.user_info.extends then
 		return
@@ -64,7 +65,7 @@ function IDEControlTree:HandleControlTreeItemRightClick(event)
 	menu:Show()
 end
 
-function IDEControlTree:ShowAddImageDialog(target)
+function IDEUIControlTree:ShowAddImageDialog(target)
 	g_IDEImageSelectDialog:SetBasePath(g_IDEProject.project.texture_path)
 	local path = g_IDEImageSelectDialog:ShowSelect()
 	if path == nil then
@@ -82,9 +83,9 @@ function IDEControlTree:ShowAddImageDialog(target)
 	tree_object.attr_panel:SetTextureName(path, nil)
 	tree_object:ShowFocus(false)
 end
-IDEControlTree.ShowAddImageDialog = Lua.CoWrap(IDEControlTree.ShowAddImageDialog)
+IDEUIControlTree.ShowAddImageDialog = Lua.CoWrap(IDEUIControlTree.ShowAddImageDialog)
 
-function IDEControlTree:ShowAddTextDialog(target)
+function IDEUIControlTree:ShowAddTextDialog(target)
 	if target:CanAddChild() == false then
 		g_AUITool:ShowNotice("提示", "当前控件不能添加子控件")
 		return
@@ -97,7 +98,7 @@ function IDEControlTree:ShowAddTextDialog(target)
 	tree_object:ShowFocus(false)
 end
 
-function IDEControlTree:ShowAddDialog(target)
+function IDEUIControlTree:ShowAddDialog(target)
 	if self._control_add_dialog == nil then
 		self._control_add_dialog = g_Control:CreateControl("ide_add_control_dialog", self)
 		self._control_add_new_type.data_list = g_IDEEnum.child_type_list
@@ -115,12 +116,12 @@ function IDEControlTree:ShowAddDialog(target)
 	self._control_add_extends_name.text = ""
 end
 
-function IDEControlTree:HandleAddControlCancel(event)
+function IDEUIControlTree:HandleAddControlCancel(event)
 	self._control_add_dialog.visible = false
 	self._control_add_dialog._user_data = nil
 end
 
-function IDEControlTree:HandleAddControlConfirm(event)
+function IDEUIControlTree:HandleAddControlConfirm(event)
 	local target = self._control_add_dialog._user_data
 	self._control_add_dialog._user_data = nil
 	local extends_name = self._control_add_extends_name.text
@@ -137,7 +138,7 @@ function IDEControlTree:HandleAddControlConfirm(event)
 	end
 end
 
-function IDEControlTree:ShowReplaceDialog(target)
+function IDEUIControlTree:ShowReplaceDialog(target)
 	if target:IsTree() and target.child_count > 0 then
 		g_AUITool:ShowNotice("提示", "当前控件有子控件，不能替换")
 		return
@@ -170,12 +171,12 @@ function IDEControlTree:ShowReplaceDialog(target)
 	self._control_replace_extends_name.text = ""
 end
 
-function IDEControlTree:HandleReplaceControlCancel(event)
+function IDEUIControlTree:HandleReplaceControlCancel(event)
 	self._control_replace_dialog.visible = false
 	self._control_replace_dialog._user_data = nil
 end
 
-function IDEControlTree:HandleReplaceControlConfirm(event)
+function IDEUIControlTree:HandleReplaceControlConfirm(event)
 	local target = self._control_replace_dialog._user_data
 	self._control_replace_dialog._user_data = nil
 	local extends_name = self._control_replace_extends_name.text
@@ -189,7 +190,7 @@ function IDEControlTree:HandleReplaceControlConfirm(event)
 	target:TreeReplace(extends_name, class_name, child_type)
 end
 
-function IDEControlTree:ShowPasteDialog(target, info, child_index, revoke_bind, callback)
+function IDEUIControlTree:ShowPasteDialog(target, info, child_index, revoke_bind, callback)
 	local data_list = target:GetDataListForAdd()
 	if ALittle.List_MaxN(data_list) == 0 then
 		g_AUITool:ShowNotice("提示", "当前控件不能添加子控件")
@@ -213,7 +214,7 @@ function IDEControlTree:ShowPasteDialog(target, info, child_index, revoke_bind, 
 	user_data.callback = callback
 end
 
-function IDEControlTree:HandlePasteControlCancel(event)
+function IDEUIControlTree:HandlePasteControlCancel(event)
 	self._paste_control_dialog.visible = false
 	local user_data = self._paste_control_dialog._user_data
 	local callback = user_data.callback
@@ -223,7 +224,7 @@ function IDEControlTree:HandlePasteControlCancel(event)
 	self._paste_control_dialog._user_data = nil
 end
 
-function IDEControlTree:HandlePasteControlConfirm(event)
+function IDEUIControlTree:HandlePasteControlConfirm(event)
 	self._paste_control_dialog.visible = false
 	local user_data = self._paste_control_dialog._user_data
 	self._paste_control_dialog._user_data = nil
@@ -235,7 +236,7 @@ function IDEControlTree:HandlePasteControlConfirm(event)
 	end
 end
 
-function IDEControlTree:ControlTreeJump(target)
+function IDEUIControlTree:ControlTreeJump(target)
 	local extends_name = target.user_info.base.__extends
 	local control_info = g_IDEProject.project.ui.control_map[extends_name]
 	if control_info == nil then
@@ -245,7 +246,7 @@ function IDEControlTree:ControlTreeJump(target)
 	g_IDETabManager:StartEditControlBySelect(control_info.name, control_info.info)
 end
 
-function IDEControlTree:ControlTreeDesc(target)
+function IDEUIControlTree:ControlTreeDesc(target)
 	local x, y = target:LocalToGlobal()
 	local desc = target:GetDesc()
 	local name = g_AUITool:ShowRename(desc, x, y, target.width)
@@ -254,9 +255,9 @@ function IDEControlTree:ControlTreeDesc(target)
 	end
 	target:SetDesc(name)
 end
-IDEControlTree.ControlTreeDesc = Lua.CoWrap(IDEControlTree.ControlTreeDesc)
+IDEUIControlTree.ControlTreeDesc = Lua.CoWrap(IDEUIControlTree.ControlTreeDesc)
 
-function IDEControlTree:HandleTreeSearchClick(event)
+function IDEUIControlTree:HandleTreeSearchClick(event)
 	local tab = g_IDETabManager.cur_tab
 	if tab == nil then
 		return
@@ -277,4 +278,3 @@ function IDEControlTree:HandleTreeSearchClick(event)
 	end
 end
 
-g_IDEControlTree = IDEControlTree()

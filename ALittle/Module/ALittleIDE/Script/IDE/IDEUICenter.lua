@@ -5,96 +5,45 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-IDEUICenter = Lua.Class(nil, "ALittleIDE.IDEUICenter")
+assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
+IDEUICenter = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDEUICenter")
 
-function IDEUICenter:Ctor()
-end
-
-function IDEUICenter:Setup(edit_container)
-	local ___COROUTINE = coroutine.running()
-	Require(g_ScriptBasePath, "UIEdit/IDEUIUtility")
-	Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDETabChild")
-	Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDETabManager")
-	Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDETreeLogic")
-	Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDETree")
-	Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDETreeItem")
-	Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDERevocation")
-	Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDEAttrTextDialog")
-	Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDEAttrEventDialog")
-	Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDESetting/DisplayObjectS")
-	Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDESetting/DisplayLayoutS")
-	Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDESetting/DisplayViewS")
-	Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDESetting/TextCheckButtonS")
-	Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDESetting/DialogS")
-	Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDESetting/DropDownS")
-	Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDESetting/Grid3S")
-	Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDESetting/Grid9S")
-	Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDESetting/Grid9ImageS")
-	Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDESetting/TextS")
-	Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDESetting/TextEditS")
-	Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDESetting/ImageEditS")
-	Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDESetting/TextInputS")
-	Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDESetting/ImageInputS")
-	Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDESetting/ImageS")
-	Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDESetting/TriangleS")
-	Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDESetting/ImagePlayS")
-	Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDESetting/FramePlayS")
-	Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDESetting/SpriteS")
-	Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDESetting/SpritePlayS")
-	Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDESetting/LinearS")
-	Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDESetting/QuadS")
-	Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDESetting/RichAreaS")
-	Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDESetting/RichInputS")
-	Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDESetting/RichEditS")
-	Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDESetting/SliderS")
-	Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDESetting/ScrollBarS")
-	Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDESetting/ScrollButtonS")
-	Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDESetting/ScrollListS")
-	Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDESetting/ScrollScreenS")
-	Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDESetting/TabS")
-	Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDESetting/TextAreaS")
-	Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDESetting/TextButtonS")
-	Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDESetting/SpringTextButtonS")
-	Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDESetting/TextRadioButtonS")
-	Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDESetting/TileTableS")
-	Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDESetting/PiechartS")
-	Require(g_ScriptBasePath, "UIEdit/IDEEditLogic/IDEAttributeManager")
-	Require(g_ScriptBasePath, "UIEdit/IDEEditLogic/IDEControlManager")
-	Require(g_ScriptBasePath, "UIEdit/IDEEditLogic/IDEQuickManager")
-	Require(g_ScriptBasePath, "UIEdit/IDEEditLogic/IDEAntiManager")
-	Require(g_ScriptBasePath, "UIEdit/IDEEditLogic/IDEControlTree")
-	Require(g_ScriptBasePath, "UIEdit/IDEEditLogic/IDEProjectManager")
-	self._ui_edit_container = g_Control:CreateControl("ide_ui_edit_container", self, edit_container)
-	local tree_displaylayout = g_Control:CreateControl("ide_main_tab_tree_displaylayout", g_IDEControlTree, self._control_tree_tab)
-	g_Control:CreateControl("ide_main_tab_control_scroll_screen", g_IDEControlManager, self._project_edit_tab)
-	g_Control:CreateControl("ide_main_tab_project_scroll_screen", g_IDEProjectManager, self._project_edit_tab)
+function IDEUICenter:TCtor()
 	self._project_edit_tab:DisableAllCloseButton()
 	self._project_edit_tab.tab_index = 1
 	self._control_tree_tab:DisableAllCloseButton()
 	self._control_tree_tab.tab_index = 1
-	local attr_displaylayout = g_Control:CreateControl("ide_main_tab_attr_displaylayout", g_IDEAttributeManager, self._control_edit_tab)
 	self._control_edit_tab:DisableAllCloseButton()
 	self._control_edit_tab.tab_index = 1
-	local anti_displaylayout = g_Control:CreateControl("ide_main_project_quick_anti", g_IDEAntiManager, self._project_quick_tab)
-	g_IDEAntiManager:Setup(self._project_quick_tab, anti_displaylayout)
-	g_IDEQuickManager:Setup(self._project_quick_tab)
 	self._project_quick_tab:DisableAllCloseButton()
 	self._project_quick_tab.tab_index = 1
-	g_IDEAttributeManager:Setup(self._control_edit_tab, attr_displaylayout)
-	g_IDETabManager:Setup(self._main_edit_tab, tree_displaylayout, attr_displaylayout, anti_displaylayout)
+	g_IDETabManager:Setup(self._main_edit_tab, self._control_tree, self._control_attr, self._control_anti)
 	ALittle.TextRadioButton.SetGroup({self._tool_singleselect, self._tool_handdrag, self._tool_scale, self._tool_presee})
+	self._project_list:OpenLastProject()
 end
 
 function IDEUICenter:Shutdown()
 	g_IDETabManager:Shutdown()
 end
 
-function IDEUICenter:Show()
-	self._ui_edit_container.visible = true
+function IDEUICenter.__getter:control_tree()
+	return self._control_tree
 end
 
-function IDEUICenter:Hide()
-	self._ui_edit_container.visible = false
+function IDEUICenter.__getter:control_list()
+	return self._control_list
+end
+
+function IDEUICenter.__getter:project_list()
+	return self._project_list
+end
+
+function IDEUICenter.__getter:control_attr()
+	return self._control_attr
+end
+
+function IDEUICenter.__getter:control_anti()
+	return self._control_anti
 end
 
 function IDEUICenter:System_SetVDragCursor(event)
@@ -182,7 +131,7 @@ function IDEUICenter:HandleShortcutKey()
 	end
 	local n = A_UISystem.sym_map[110]
 	if n then
-		g_IDEControlManager:ShowNewControl()
+		g_IDECenter.center.control_list:ShowNewControl()
 		return
 	end
 end
@@ -360,4 +309,3 @@ function IDEUICenter:HandleTabRightExMenu(event)
 	g_IDETabManager:ShowTabRightExMenu(x, y + event.target.height)
 end
 
-g_IDEUICenter = IDEUICenter()

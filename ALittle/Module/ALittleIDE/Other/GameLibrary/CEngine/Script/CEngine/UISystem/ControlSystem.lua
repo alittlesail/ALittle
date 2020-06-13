@@ -12,6 +12,7 @@ ControlSystem = Lua.Class(nil, "ALittle.ControlSystem")
 
 function ControlSystem:Ctor(module_name, crypt_mode)
 	___rawset(self, "_log_error", true)
+	___rawset(self, "_use_plugin_class", true)
 	___rawset(self, "_font_map", {})
 	___rawset(self, "_name_map_info", {})
 	___rawset(self, "_name_map_info_cache", {})
@@ -89,7 +90,7 @@ end
 
 function ControlSystem:CreateControlObject(info)
 	local target_class = info.__target_class
-	if target_class ~= nil then
+	if self._use_plugin_class and target_class ~= nil then
 		local class_func = info.__class_func
 		if class_func == nil then
 			class_func = _G
@@ -168,6 +169,14 @@ end
 
 function ControlSystem.__getter:cache_texture()
 	return self._texture_mgr.cache_texture
+end
+
+function ControlSystem.__setter:use_plugin_class(use)
+	self._use_plugin_class = use
+end
+
+function ControlSystem.__getter:use_plugin_class()
+	return self._use_plugin_class
 end
 
 function ControlSystem:SetFont(object, font_path, font_size)
@@ -304,7 +313,7 @@ function ControlSystem:CollectTextureNameImpl(info, map)
 	end
 	local class_func = nil
 	local target_class = info.__target_class
-	if target_class ~= nil then
+	if self._use_plugin_class and target_class ~= nil then
 		class_func = _G
 		for index, value in ___ipairs(target_class) do
 			class_func = class_func[value]

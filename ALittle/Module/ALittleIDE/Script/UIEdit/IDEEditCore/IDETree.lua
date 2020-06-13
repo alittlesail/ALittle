@@ -100,7 +100,7 @@ function IDETree:Ctor(ctrl_sys, user_info, tab_child)
 	self._item_button:AddEventListener(___all_struct[1301789264], self, self.HandleDragBegin)
 	self._item_button:AddEventListener(___all_struct[1337289812], self, self.HandleDrag)
 	self._item_button:AddEventListener(___all_struct[150587926], self, self.HandleDragEnd)
-	self._item_button:AddEventListener(___all_struct[-641444818], g_IDEControlTree, g_IDEControlTree.HandleControlTreeItemRightClick)
+	self._item_button:AddEventListener(___all_struct[-641444818], g_IDECenter.center.control_tree, g_IDECenter.center.control_tree.HandleControlTreeItemRightClick)
 	self._item_button._user_data = self
 	___rawset(self, "_body", ALittle.Linear(ctrl_sys))
 	self._body.type = 2

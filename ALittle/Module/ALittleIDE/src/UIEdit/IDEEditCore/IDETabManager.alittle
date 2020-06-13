@@ -120,7 +120,7 @@ public class IDETabManager
 			tab_child.control_screen.visible = false;
 			tab_child.anti_panel.visible = false;
 
-			g_IDEAttributeManager.SetTitle("");
+			g_IDECenter.center.control_attr.SetTitle("");
 		}
 	
 		if (child_to != null)
@@ -133,8 +133,8 @@ public class IDETabManager
 	
 			var panel_childs = tab_child.control_screen.childs;
 			if (panel_childs[1] != null)
-				g_IDEAttributeManager.SetTitle(cast<IDETreeLogic>(panel_childs[1]._user_data).title);
-			g_IDEUICenter.UpdateToolScale(tab_child.GetScale());
+				g_IDECenter.center.control_attr.SetTitle(cast<IDETreeLogic>(panel_childs[1]._user_data).title);
+			g_IDECenter.center.UpdateToolScale(tab_child.GetScale());
 		}
 	
 		// 保存当前分页

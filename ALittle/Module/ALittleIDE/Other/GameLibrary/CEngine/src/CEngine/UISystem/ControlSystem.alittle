@@ -12,6 +12,7 @@ public class ControlSystem
     private string              _module_name;
     private bool                _crypt_mode;
     private bool                _log_error;
+    protected bool                _use_plugin_class;
     
     private string              _host;
     private int                  _port;
@@ -33,6 +34,8 @@ public class ControlSystem
     {
         // 是否打印创建控件的错误信息
         this._log_error = true;
+        // 默认使用插件类
+        this._use_plugin_class = true;
 
         // 字体映射
         this._font_map = new Map<string, string>();
@@ -149,7 +152,7 @@ public class ControlSystem
     {
         // 如果默认的插件类没有填写，那么就是用UI编辑的插件类
         var target_class = info.__target_class;
-        if (target_class != null)
+        if (this._use_plugin_class && target_class != null)
         {
             var class_func = info.__class_func;
             if (class_func == null)
@@ -243,15 +246,12 @@ public class ControlSystem
         A_CsvConfigManager.PrepareCsv(new_csv_map, callback);
     }
     
-    public set cache_texture(bool cache)
-    {
-        this._texture_mgr.cache_texture = cache;
-    }
-    
-    public get cache_texture() : bool
-    {
-        return this._texture_mgr.cache_texture;
-    }
+    public set cache_texture(bool cache) { this._texture_mgr.cache_texture = cache; }
+    public get cache_texture() : bool { return this._texture_mgr.cache_texture; }
+
+    public set use_plugin_class(bool use) { this._use_plugin_class = use; }
+    public get use_plugin_class() : bool { return this._use_plugin_class; }
+
 
     protected fun SetFont(DisplayObject object, string font_path, int font_size)
     {
@@ -422,7 +422,7 @@ public class ControlSystem
         // 获取对应的类
         var class_func:any = null;
         var target_class = info.__target_class;
-        if (target_class != null)
+        if (this._use_plugin_class && target_class != null)
         {
             [Language(Lua)]
             class_func = _G;

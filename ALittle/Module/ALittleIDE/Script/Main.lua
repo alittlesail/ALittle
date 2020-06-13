@@ -50,7 +50,7 @@ function __Module_Setup(layer_group, control, module_base_path, script_base_path
 	g_LayerGroup:AddChild(g_DialogLayer)
 	RequireFromPaths(g_ScriptBasePath, "Data/", {"IDEEnum.alittle", "IDEProject.alittle", "IDEUIManager.alittle"})
 	RequireFromPaths(script_base_path, "Dialog/", {"IDEExportDialog.alittle", "IDEImageSelectDialog.alittle", "IDEVersionList.alittle"})
-	RequireFromPaths(script_base_path, "IDE/", {"IDECenter.alittle", "IDEUIAccount.alittle", "IDEUIMainMenu.alittle", "IDEUIProjectDropdown.alittle"})
+	RequireFromPaths(script_base_path, "IDE/", {"IDECenter.alittle", "IDEUIAccount.alittle", "IDEUICenter.alittle", "IDEUIMainMenu.alittle", "IDEUIProjectDropdown.alittle", "UIEdit/IDEUIControlAnti.alittle", "UIEdit/IDEUIControlAttr.alittle", "UIEdit/IDEUIControlList.alittle", "UIEdit/IDEUIControlTree.alittle", "UIEdit/IDEUIProjectList.alittle", "UIEdit/IDEUIUtility.alittle", "UIEdit/Dialog/IDEAttrEventDialog.alittle", "UIEdit/Dialog/IDEAttrTextDialog.alittle"})
 	g_IDECenter:Setup()
 end
 __Module_Setup = Lua.CoWrap(__Module_Setup)

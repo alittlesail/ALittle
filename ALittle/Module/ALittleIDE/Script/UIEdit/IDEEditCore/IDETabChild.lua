@@ -139,14 +139,14 @@ function IDETabChild:Ctor(name, save)
 	self._tab_container.width = g_IDEProject.project.config:GetConfig("default_show_width", 800)
 	self._tab_container.height = g_IDEProject.project.config:GetConfig("default_show_height", 600)
 	self._tab_screen:RejustScrollBar()
-	self._tab_select_container.visible = g_IDEUICenter.singleselect
+	self._tab_select_container.visible = g_IDECenter.center.singleselect
 	self._tab_handle_quad:AddEventListener(___all_struct[1883782801], self, self.HandleHandleContainerLButtonDown)
 	self._tab_quad_container:RemoveAllChild()
 	___rawset(self, "_tab_quad_map", {})
-	self._tab_handdrag_container.visible = g_IDEUICenter.handdrag
+	self._tab_handdrag_container.visible = g_IDECenter.center.handdrag
 	self._tab_handdrag_quad.drag_trans_target = self._tab_screen
 	self._tab_dragadd_container.visible = false
-	self._tab_scale_container.visible = g_IDEUICenter.scale
+	self._tab_scale_container.visible = g_IDECenter.center.scale
 	self._tab_scale_quad:AddEventListener(___all_struct[1883782801], self, self.HandleScaleContainerLButtonDown)
 	___rawset(self, "_tree_search_info", {})
 	self._tree_search_info.name = ""
@@ -655,7 +655,7 @@ function IDETabChild:HandleScaleContainerLButtonDown(event)
 	self._tab_screen.container.scale_x = scale
 	self._tab_screen.container.scale_y = scale
 	self._tab_screen:RejustScrollBar()
-	g_IDEUICenter:UpdateToolScale(scale)
+	g_IDECenter.center:UpdateToolScale(scale)
 end
 
 function IDETabChild:SetScale(scale)
@@ -871,14 +871,14 @@ function IDETabChild:HandleHandleQuadRButtonDown(event)
 	menu:AddItem("文本编辑", Lua.Bind(self.TextEdit, self, target), g_IDEEnum.text_edit_display_map[target.user_info.default.__class] == nil)
 	menu:AddItem("上移", Lua.Bind(target.TransferUp, target), target.user_info.root or target.user_info.child_type ~= "child")
 	menu:AddItem("下移", Lua.Bind(target.TransferDown, target), target.user_info.root or target.user_info.child_type ~= "child")
-	menu:AddItem("添加", Lua.Bind(g_IDEControlTree.ShowAddDialog, g_IDEControlTree, target), not target:IsTree())
-	menu:AddItem("添加Image", Lua.Bind(g_IDEControlTree.ShowAddImageDialog, g_IDEControlTree, target), not target:IsTree())
-	menu:AddItem("添加Text", Lua.Bind(g_IDEControlTree.ShowAddTextDialog, g_IDEControlTree, target), not target:IsTree())
+	menu:AddItem("添加", Lua.Bind(g_IDECenter.center.control_tree.ShowAddDialog, g_IDECenter.center.control_tree, target), not target:IsTree())
+	menu:AddItem("添加Image", Lua.Bind(g_IDECenter.center.control_tree.ShowAddImageDialog, g_IDECenter.center.control_tree, target), not target:IsTree())
+	menu:AddItem("添加Text", Lua.Bind(g_IDECenter.center.control_tree.ShowAddTextDialog, g_IDECenter.center.control_tree, target), not target:IsTree())
 	menu:AddItem("复制", Lua.Bind(self.Copy, self, target))
 	menu:AddItem("粘贴", Lua.Bind(self.Paste, self, target))
 	menu:AddItem("剪切", Lua.Bind(self.Cut, self, target), target.user_info.root)
 	menu:AddItem("删除", Lua.Bind(self.Delete, self, target), target.user_info.root)
-	menu:AddItem("替换", Lua.Bind(g_IDEControlTree.ShowReplaceDialog, g_IDEControlTree, target), target.user_info.root)
+	menu:AddItem("替换", Lua.Bind(g_IDECenter.center.control_tree.ShowReplaceDialog, g_IDECenter.center.control_tree, target), target.user_info.root)
 	menu:AddItem("跳转", Lua.Bind(self.Jump, self, target), not target.user_info.extends_root)
 	menu:Show()
 end
@@ -1025,7 +1025,7 @@ function IDETabChild:RightControlTreePasteImpl(target, copy_list, child_index, r
 			callback(true, add_list)
 		end
 	else
-		g_IDEControlTree:ShowPasteDialog(target, copy_list[1].info, child_index, revoke_bind, callback)
+		g_IDECenter.center.control_tree:ShowPasteDialog(target, copy_list[1].info, child_index, revoke_bind, callback)
 	end
 end
 

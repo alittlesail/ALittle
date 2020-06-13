@@ -149,6 +149,7 @@ public class IDEProject : ALittle.EventDispatcher
 		this._project.control = new ALittle.ControlSystem(name);
 		this._project.control.log_error = false;
 		this._project.control.cache_texture = false;
+		this._project.control.use_plugin_class = false;
 		this._project.config = ALittle.CreateConfigSystem("Module/"..name.."/ALittleIDE.cfg");
 		this._project.ui = new IDEUIManager(name, this._project.control);
 

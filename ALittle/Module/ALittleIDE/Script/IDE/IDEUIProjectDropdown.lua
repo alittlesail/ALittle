@@ -61,7 +61,7 @@ function IDEUIProjectDropdown:HandlePeojectSelectChange(event)
 		return
 	end
 	if g_IDETabManager:IsSaveAll() then
-		g_IDEProjectManager:OpenProjectImpl(new_name)
+		g_IDECenter.center.project_list:OpenProjectImpl(new_name)
 		return
 	end
 	event.target.text = name
@@ -69,7 +69,7 @@ function IDEUIProjectDropdown:HandlePeojectSelectChange(event)
 	if result == "YES" then
 		g_IDETabManager:SaveAllTab()
 	end
-	g_IDEProjectManager:OpenProjectImpl(new_name)
+	g_IDECenter.center.project_list:OpenProjectImpl(new_name)
 end
 IDEUIProjectDropdown.HandlePeojectSelectChange = Lua.CoWrap(IDEUIProjectDropdown.HandlePeojectSelectChange)
 

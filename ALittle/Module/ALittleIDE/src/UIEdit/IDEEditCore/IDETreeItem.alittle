@@ -77,7 +77,7 @@ public class IDETreeItem : IDETreeLogic
 		this._item_button.AddEventListener(this, this.HandleDragBegin);
 		this._item_button.AddEventListener(this, this.HandleDrag);
 		this._item_button.AddEventListener(this, this.HandleDragEnd);
-		this._item_button.AddEventListener(g_IDEControlTree, g_IDEControlTree.HandleControlTreeItemRightClick);
+		this._item_button.AddEventListener(g_IDECenter.center.control_tree, g_IDECenter.center.control_tree.HandleControlTreeItemRightClick);
 		this._item_button._user_data = this;
 	}
 	

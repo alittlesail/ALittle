@@ -8,9 +8,6 @@
     <Filter Include="源文件\UIEdit">
       <UniqueIdentifier>{69670c84-9531-4199-bf20-4c0e81622233}</UniqueIdentifier>
     </Filter>
-    <Filter Include="源文件\UIEdit\IDEEditLogic">
-      <UniqueIdentifier>{8ba3e68a-6441-4547-b647-f80585558c31}</UniqueIdentifier>
-    </Filter>
     <Filter Include="源文件\UIEdit\IDEEditCore">
       <UniqueIdentifier>{9ce72796-1311-47f5-bc76-367fc610ecdb}</UniqueIdentifier>
     </Filter>
@@ -23,35 +20,17 @@
     <Filter Include="源文件\IDE">
       <UniqueIdentifier>{5fe203a1-8725-47c9-bd75-567d1f519df1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="源文件\Dialog">
+      <UniqueIdentifier>{c672f0ac-f543-442a-97b7-9d96e3a5e246}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\IDE\UIEdit">
+      <UniqueIdentifier>{a559ad0d-c7ab-43f6-91f7-49243b50e3dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\IDE\UIEdit\Dialog">
+      <UniqueIdentifier>{a2c3b9cd-62c3-40b5-9291-f92665c02c19}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\UIEdit\IDEUICenter.alittle">
-      <Filter>源文件\UIEdit</Filter>
-    </None>
-    <None Include="src\UIEdit\IDEEditLogic\IDEMainMenu.alittle">
-      <Filter>源文件\UIEdit\IDEEditLogic</Filter>
-    </None>
-    <None Include="src\UIEdit\IDEEditLogic\IDEProjectManager.alittle">
-      <Filter>源文件\UIEdit\IDEEditLogic</Filter>
-    </None>
-    <None Include="src\UIEdit\IDEEditLogic\IDEQuickManager.alittle">
-      <Filter>源文件\UIEdit\IDEEditLogic</Filter>
-    </None>
-    <None Include="src\UIEdit\IDEEditLogic\IDEVersionList.alittle">
-      <Filter>源文件\UIEdit\IDEEditLogic</Filter>
-    </None>
-    <None Include="src\UIEdit\IDEEditLogic\IDEAntiManager.alittle">
-      <Filter>源文件\UIEdit\IDEEditLogic</Filter>
-    </None>
-    <None Include="src\UIEdit\IDEEditLogic\IDEAttributeManager.alittle">
-      <Filter>源文件\UIEdit\IDEEditLogic</Filter>
-    </None>
-    <None Include="src\UIEdit\IDEEditLogic\IDEControlManager.alittle">
-      <Filter>源文件\UIEdit\IDEEditLogic</Filter>
-    </None>
-    <None Include="src\UIEdit\IDEEditLogic\IDEControlTree.alittle">
-      <Filter>源文件\UIEdit\IDEEditLogic</Filter>
-    </None>
     <None Include="src\UIEdit\IDEEditCore\IDERevocation.alittle">
       <Filter>源文件\UIEdit\IDEEditCore</Filter>
     </None>
@@ -68,15 +47,6 @@
       <Filter>源文件\UIEdit\IDEEditCore</Filter>
     </None>
     <None Include="src\UIEdit\IDEEditCore\IDETreeLogic.alittle">
-      <Filter>源文件\UIEdit\IDEEditCore</Filter>
-    </None>
-    <None Include="src\UIEdit\IDEEditCore\IDEAttrEventDialog.alittle">
-      <Filter>源文件\UIEdit\IDEEditCore</Filter>
-    </None>
-    <None Include="src\UIEdit\IDEEditCore\IDEAttrImageDialog.alittle">
-      <Filter>源文件\UIEdit\IDEEditCore</Filter>
-    </None>
-    <None Include="src\UIEdit\IDEEditCore\IDEAttrTextDialog.alittle">
       <Filter>源文件\UIEdit\IDEEditCore</Filter>
     </None>
     <None Include="src\UIEdit\IDEEditCore\IDESetting\Grid9S.alittle">
@@ -193,9 +163,6 @@
     <None Include="src\Main.alittle">
       <Filter>源文件</Filter>
     </None>
-    <None Include="src\UIEdit\IDEUIUtility.alittle">
-      <Filter>源文件\UIEdit</Filter>
-    </None>
     <None Include="src\Data\IDEProject.alittle">
       <Filter>源文件\Data</Filter>
     </None>
@@ -203,9 +170,6 @@
       <Filter>源文件\Data</Filter>
     </None>
     <None Include="src\Data\IDEEnum.alittle">
-      <Filter>源文件\Data</Filter>
-    </None>
-    <None Include="src\Data\IDEExport.alittle">
       <Filter>源文件\Data</Filter>
     </None>
     <None Include="src\IDE\IDECenter.alittle">
@@ -219,6 +183,42 @@
     </None>
     <None Include="src\IDE\IDEUIMainMenu.alittle">
       <Filter>源文件\IDE</Filter>
+    </None>
+    <None Include="src\Dialog\IDEVersionList.alittle">
+      <Filter>源文件\Dialog</Filter>
+    </None>
+    <None Include="src\Dialog\IDEExportDialog.alittle">
+      <Filter>源文件\Dialog</Filter>
+    </None>
+    <None Include="src\Dialog\IDEImageSelectDialog.alittle">
+      <Filter>源文件\Dialog</Filter>
+    </None>
+    <None Include="src\IDE\IDEUICenter.alittle">
+      <Filter>源文件\IDE</Filter>
+    </None>
+    <None Include="src\IDE\UIEdit\IDEUIControlTree.alittle">
+      <Filter>源文件\IDE\UIEdit</Filter>
+    </None>
+    <None Include="src\IDE\UIEdit\IDEUIControlList.alittle">
+      <Filter>源文件\IDE\UIEdit</Filter>
+    </None>
+    <None Include="src\IDE\UIEdit\IDEUIProjectList.alittle">
+      <Filter>源文件\IDE\UIEdit</Filter>
+    </None>
+    <None Include="src\IDE\UIEdit\IDEUIControlAttr.alittle">
+      <Filter>源文件\IDE\UIEdit</Filter>
+    </None>
+    <None Include="src\IDE\UIEdit\IDEUIControlAnti.alittle">
+      <Filter>源文件\IDE\UIEdit</Filter>
+    </None>
+    <None Include="src\IDE\UIEdit\IDEUIUtility.alittle">
+      <Filter>源文件\IDE\UIEdit</Filter>
+    </None>
+    <None Include="src\IDE\UIEdit\Dialog\IDEAttrTextDialog.alittle">
+      <Filter>源文件\IDE\UIEdit\Dialog</Filter>
+    </None>
+    <None Include="src\IDE\UIEdit\Dialog\IDEAttrEventDialog.alittle">
+      <Filter>源文件\IDE\UIEdit\Dialog</Filter>
     </None>
   </ItemGroup>
 </Project>

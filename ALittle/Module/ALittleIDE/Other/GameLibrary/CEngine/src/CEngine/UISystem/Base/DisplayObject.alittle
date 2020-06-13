@@ -18,7 +18,7 @@ public struct DisplayInfo
     any __class_func;               // 缓存target_class的缓存
     
     Map<string, any> __base_attr;   // 缓存基本属性
-    Map<string, any> __show_attr;   // 缓存show属性
+    Map<string, DisplayInfo> __show_attr;   // 缓存show属性
     
     Map<string, LoopGroupInfo> loop_map; // 动画信息
     
@@ -1071,7 +1071,7 @@ public class DisplayObject : UIEventDispatcher
     protected fun DeserializeShowChild(DisplayInfo info, any target_logic)
     {
         // 如果有目标类，就把逻辑对象指向自己
-        if (info.__target_class != null)
+        if (info.__target_class != null && this._ctrl_sys._use_plugin_class)
             target_logic = this;
 
         // 缓存show属性
@@ -1087,7 +1087,7 @@ public class DisplayObject : UIEventDispatcher
             info.__show_attr = show_attr;
         }
 
-        // 反序列化属性
+        // 反序列化show属性
         for (var key, value in show_attr)
         {
             var object = this._ctrl_sys.CreateControlObject(value);
@@ -1098,6 +1098,19 @@ public class DisplayObject : UIEventDispatcher
                 object.DeserializeShowChild(value, target_logic);
                 if (target_logic != null)
                     object.DeserializeLinkEvent(value, target_logic);
+
+                // 如果当前是插件，那么就调用一下初始化函数
+                if (value.__target_class != null && this._ctrl_sys._use_plugin_class)
+                {
+                    var tctor:Functor<(DisplayObject)> = cast<Map<string, Functor<(DisplayObject)>>>(object)["TCtor"]; 
+                    if (tctor != null)
+                    {
+                        [Language(Lua)]
+                        tctor(object);
+                        [Language(JavaScript)]
+                        cast<javascript.Function>(tctor).call(object);
+                    }   
+                }
             }
         }
         // 反序列化子控件
@@ -1168,7 +1181,7 @@ public class DisplayObject : UIEventDispatcher
         }
         
         // 如果当前是插件，那么就调用一下初始化函数
-        if (info.__target_class != null)
+        if (info.__target_class != null && this._ctrl_sys._use_plugin_class)
         {
             var tctor:Functor<(DisplayObject)> = cast<Map<string, Functor<(DisplayObject)>>>(this)["TCtor"]; 
             if (tctor != null)

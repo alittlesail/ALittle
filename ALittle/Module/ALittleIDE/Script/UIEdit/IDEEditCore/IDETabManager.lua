@@ -142,7 +142,7 @@ function IDETabManager:ChangeTabEditControl(child_from, child_to)
 		tab_child.tree_screen.visible = false
 		tab_child.control_screen.visible = false
 		tab_child.anti_panel.visible = false
-		g_IDEAttributeManager:SetTitle("")
+		g_IDECenter.center.control_attr:SetTitle("")
 	end
 	if child_to ~= nil then
 		local tab_child = child_to._user_data
@@ -151,9 +151,9 @@ function IDETabManager:ChangeTabEditControl(child_from, child_to)
 		tab_child.anti_panel.visible = true
 		local panel_childs = tab_child.control_screen.childs
 		if panel_childs[1] ~= nil then
-			g_IDEAttributeManager:SetTitle(panel_childs[1]._user_data.title)
+			g_IDECenter.center.control_attr:SetTitle(panel_childs[1]._user_data.title)
 		end
-		g_IDEUICenter:UpdateToolScale(tab_child:GetScale())
+		g_IDECenter.center:UpdateToolScale(tab_child:GetScale())
 	end
 	self._cur_tab = child_to
 end

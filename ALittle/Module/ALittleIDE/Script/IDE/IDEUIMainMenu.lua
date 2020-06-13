@@ -23,20 +23,20 @@ end
 
 function IDEUIMainMenu:HandleFileMenuClick(event)
 	local menu = AUIPlugin.AUIRightMenu()
-	menu:AddItem("新建", Lua.Bind(g_IDEProjectManager.ShowNewProject, g_IDEProjectManager))
-	menu:AddItem("打开", Lua.Bind(g_IDEProjectManager.ShowOpenProject, g_IDEProjectManager))
-	menu:AddItem("设置", Lua.Bind(g_IDEProjectManager.ShowSettingProject, g_IDEProjectManager, nil))
+	menu:AddItem("新建", Lua.Bind(g_IDECenter.center.project_list.ShowNewProject, g_IDECenter.center.project_list))
+	menu:AddItem("打开", Lua.Bind(g_IDECenter.center.project_list.ShowOpenProject, g_IDECenter.center.project_list))
+	menu:AddItem("设置", Lua.Bind(g_IDECenter.center.project_list.ShowSettingProject, g_IDECenter.center.project_list, nil))
 	menu:AddItem("保存", Lua.Bind(g_IDETabManager.SaveAllTab, g_IDETabManager))
-	menu:AddItem("刷新", Lua.Bind(g_IDEProjectManager.RefreshProject, g_IDEProjectManager))
-	menu:AddItem("导出项目", Lua.Bind(g_IDEProjectManager.ShowExportProject, g_IDEProjectManager))
+	menu:AddItem("刷新", Lua.Bind(g_IDECenter.center.project_list.RefreshProject, g_IDECenter.center.project_list))
+	menu:AddItem("导出项目", Lua.Bind(g_IDECenter.center.project_list.ShowExportProject, g_IDECenter.center.project_list))
 	menu:Show(event.target)
 end
 
 function IDEUIMainMenu:HandleEditMenuClick(event)
 	local menu = AUIPlugin.AUIRightMenu()
-	menu:AddItem("新建控件", Lua.Bind(g_IDEControlManager.ShowNewControl, g_IDEControlManager))
-	menu:AddItem("重做", Lua.Bind(g_IDEUICenter.HandleDoRevoke, g_IDEUICenter, nil))
-	menu:AddItem("撤销", Lua.Bind(g_IDEUICenter.HandleUndoRevoke, g_IDEUICenter, nil))
+	menu:AddItem("新建控件", Lua.Bind(g_IDECenter.center.control_list.ShowNewControl, g_IDECenter.center.control_list))
+	menu:AddItem("重做", Lua.Bind(g_IDECenter.center.HandleDoRevoke, g_IDECenter.center, nil))
+	menu:AddItem("撤销", Lua.Bind(g_IDECenter.center.HandleUndoRevoke, g_IDECenter.center, nil))
 	menu:Show(event.target)
 end
 
@@ -54,7 +54,7 @@ function IDEUIMainMenu:HandleVersionMenuClick(event)
 end
 
 function IDEUIMainMenu:HandleRunMenuClick(event)
-	g_IDEProjectManager:RunProject()
+	g_IDECenter.center.project_list:RunProject()
 end
 
 function IDEUIMainMenu:HandleGenUIAllInOneClick()

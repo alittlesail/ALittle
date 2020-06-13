@@ -20,11 +20,11 @@
     <Filter Include="源文件\Data">
       <UniqueIdentifier>{8ba5cfa2-cac7-4e79-b176-ec2cb19f8583}</UniqueIdentifier>
     </Filter>
+    <Filter Include="源文件\IDE">
+      <UniqueIdentifier>{5fe203a1-8725-47c9-bd75-567d1f519df1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\IDECenter.alittle">
-      <Filter>源文件</Filter>
-    </None>
     <None Include="src\UIEdit\IDEUICenter.alittle">
       <Filter>源文件\UIEdit</Filter>
     </None>
@@ -207,6 +207,18 @@
     </None>
     <None Include="src\Data\IDEExport.alittle">
       <Filter>源文件\Data</Filter>
+    </None>
+    <None Include="src\IDE\IDECenter.alittle">
+      <Filter>源文件\IDE</Filter>
+    </None>
+    <None Include="src\IDE\IDEUIAccount.alittle">
+      <Filter>源文件\IDE</Filter>
+    </None>
+    <None Include="src\IDE\IDEUIProjectDropdown.alittle">
+      <Filter>源文件\IDE</Filter>
+    </None>
+    <None Include="src\IDE\IDEUIMainMenu.alittle">
+      <Filter>源文件\IDE</Filter>
     </None>
   </ItemGroup>
 </Project>

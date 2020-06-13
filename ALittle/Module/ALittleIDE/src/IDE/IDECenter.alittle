@@ -1,0 +1,96 @@
+
+namespace ALittleIDE;
+
+class IDECenter
+{
+	private ALittle.DisplayLayout _edit_container;		// 编辑器容器
+    
+	// 账号登录相关
+	private IDEUIAccount _account;
+	private IDEUIProjectDropdown _project_dropdown;
+	private IDEUIMainMenu _main_menu;
+	
+	public ctor() { }
+
+	public await fun Setup()
+	{
+		alittle.Require(g_ScriptBasePath, "UIEdit/IDEUICenter");
+	
+		// 创建主界面
+		g_Control.CreateControl{ALittle.DisplayObject}("ide_main_scene", this, g_MainLayer);
+		g_IDEUICenter.Setup(this._edit_container);
+		g_IDEUICenter.Show();
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// 初始化组合键
+		A_UISystem.keydown_callback = bind(this.HandleShortcutKey, this);
+		// 打开上次工程
+		g_IDEProjectManager.OpenLastProject();
+	}
+	
+	public fun Shutdown()
+	{
+		if (this._account != null) this._account.Shutdown();
+		if (this._main_menu != null) this._main_menu.Shutdown();
+		g_IDEUICenter.Shutdown();
+	}
+
+	// 项目打开后要初始化界面
+	public fun OpenProject(string name)
+	{
+		g_IDEProject.OpenProject(name);
+	}
+
+	// 项目关闭后要初始化界面
+	public fun CloseProject()
+	{
+		g_IDEControlManager.ClearControlItem();
+	
+		g_IDETabManager.CloseAllTab();
+		g_IDEProject.CloseProject();
+	}
+
+	// 项目刷新
+	public fun RefreshProject()
+	{
+		// 检查当前是否有打开的项目
+		if (g_IDEProject.project == null) return;
+		// 获取项目名
+		var project_name = g_IDEProject.project.name;
+		// 获取tab列表
+		var name_list = g_IDETabManager.GetTabNameList();
+		// 获取当前显示的标签也下标
+		var tab_index = g_IDETabManager.GetCurTabIndex();
+		// 关闭当前项目
+		this.CloseProject();
+		// 打开当前项目
+		this.OpenProject(project_name);
+		// 打开tab
+		var count = ALittle.List_MaxN(name_list);
+		if (count > 0)
+		{
+			for (var i = count; i >= 1; -1)
+			{
+				var control_info = g_IDEProject.project.ui.control_map[name_list[i]];
+				if (control_info != null)
+					g_IDETabManager.StartEditControlBySelect(control_info.name, control_info.info);
+			}
+			g_IDETabManager.SetCurTabIndex(tab_index);
+		}
+	}
+	
+	////////////////////////////////////////////////////////////////////////////////////////
+	// 处理快捷点
+	public fun HandleShortcutKey(int mod, int sym, int scancode)
+	{
+		// 判断F5，运行当前项目快捷键
+		if (A_UISystem.sym_map[1073741886])
+		{
+			g_IDEProjectManager.RunProject();
+			return;
+		}
+
+		g_IDEUICenter.HandleShortcutKey();
+	}
+}
+
+protected var g_IDECenter = new IDECenter();

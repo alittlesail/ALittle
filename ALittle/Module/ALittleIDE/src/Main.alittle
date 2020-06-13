@@ -76,7 +76,8 @@ public async static __Module_Setup(ALittle.DisplayLayout layer_group, ALittle.Co
 	g_LayerGroup.AddChild(g_DialogLayer);
 	
     // 这里加载必要的代码，最好把所有的都加载进来
-    alittle.Require(script_base_path, "IDECenter");
+	alittle.RequireFromPaths(g_ScriptBasePath, "Data/", paths("src/Data"));	
+    alittle.RequireFromPaths(script_base_path, "IDE/", paths("src/IDE"));
     g_IDECenter.Setup();
 }
 

@@ -117,7 +117,6 @@ public class IDEProjectManager
 	
 		// 创建项目
 		g_IDEProject.NewProject(name, ALittle.Math_Floor(window_width), ALittle.Math_Floor(window_height), font_path, ALittle.Math_Floor(font_size));
-		g_IDECenter.UpdateProjectList();
 	
 		// 如果当前没有打开的项目，就直接打开
 		if (g_IDEProject.project == null)
@@ -306,10 +305,9 @@ public class IDEProjectManager
 			g_AUITool.ShowNotice("提示", "当前项目正在编辑，请先关闭");
 			return;
 		}
+		this._project_scroll_screen.RemoveChild(target);
 		// 移除项目
 		g_IDEProject.RemoveProject(project_name);
-		this._project_scroll_screen.RemoveChild(target);
-		g_IDECenter.UpdateProjectList();
 	}
 	
 	public async fun HandleRightProjectClose(ALittle.DisplayObject target)

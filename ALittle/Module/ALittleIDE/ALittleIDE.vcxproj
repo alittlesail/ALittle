@@ -23,7 +23,10 @@
     <None Include="src\Data\IDEExport.alittle" />
     <None Include="src\Data\IDEProject.alittle" />
     <None Include="src\Data\IDEUIManager.alittle" />
-    <None Include="src\IDECenter.alittle" />
+    <None Include="src\IDE\IDEUIAccount.alittle" />
+    <None Include="src\IDE\IDECenter.alittle" />
+    <None Include="src\IDE\IDEUIMainMenu.alittle" />
+    <None Include="src\IDE\IDEUIProjectDropdown.alittle" />
     <None Include="src\Main.alittle" />
     <None Include="src\UIEdit\IDEEditCore\IDEAttrEventDialog.alittle" />
     <None Include="src\UIEdit\IDEEditCore\IDEAttrImageDialog.alittle" />

@@ -8,6 +8,9 @@ struct IDEProjectEvent : ALittle.Event
 }
 public struct IDEProjectOpenEvent : IDEProjectEvent {}
 public struct IDEProjectCloseEvent : IDEProjectEvent {}
+public struct IDEProjectAddEvent : IDEProjectEvent { }
+public struct IDEProjectRemoveEvent : IDEProjectEvent { }
+
 public struct IDEProjectCreateControlEvent : IDEProjectEvent {}
 public struct IDEProjectDeleteControlEvent : IDEProjectEvent {}
 public struct IDEProjectChangeControlEvent : IDEProjectEvent {}
@@ -124,6 +127,10 @@ public class IDEProject : ALittle.EventDispatcher
 
 		// 添加到项目列表
 		this.AddProjectConfig(name);
+
+		var event = new IDEProjectAddEvent();
+		event.name = name;
+		this.DispatchEvent(event);
 		return true;
 	}
 
@@ -163,6 +170,7 @@ public class IDEProject : ALittle.EventDispatcher
 		var e = new IDEProjectCloseEvent();
 		e.name = this._project.name;
 		this.DispatchEvent(e);
+
 		this._project = null;
 		return null;
 	}
@@ -180,6 +188,9 @@ public class IDEProject : ALittle.EventDispatcher
 		if (project_name == name)
 			g_IDEConfig.SetConfig("last_project", "");
 
+		var event = new IDEProjectRemoveEvent();
+		event.name = name;
+		this.DispatchEvent(event);
 		return null;
 	}
 

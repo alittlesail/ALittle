@@ -95,7 +95,6 @@ function IDEProjectManager:HandleNewProjectConfirm(event)
 		font_size = 25
 	end
 	g_IDEProject:NewProject(name, ALittle.Math_Floor(window_width), ALittle.Math_Floor(window_height), font_path, ALittle.Math_Floor(font_size))
-	g_IDECenter:UpdateProjectList()
 	if g_IDEProject.project == nil then
 		g_IDECenter:OpenProject(name)
 	end
@@ -227,9 +226,8 @@ function IDEProjectManager:HandleRightProjectRemove(target)
 		g_AUITool:ShowNotice("提示", "当前项目正在编辑，请先关闭")
 		return
 	end
-	g_IDEProject:RemoveProject(project_name)
 	self._project_scroll_screen:RemoveChild(target)
-	g_IDECenter:UpdateProjectList()
+	g_IDEProject:RemoveProject(project_name)
 end
 
 function IDEProjectManager:HandleRightProjectClose(target)

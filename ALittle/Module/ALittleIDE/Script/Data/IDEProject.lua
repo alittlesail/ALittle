@@ -23,8 +23,20 @@ name_list = {"target","name"},
 type_list = {"ALittle.EventDispatcher","string"},
 option_map = {}
 })
+ALittle.RegStruct(-685984390, "ALittleIDE.IDEProjectAddEvent", {
+name = "ALittleIDE.IDEProjectAddEvent", ns_name = "ALittleIDE", rl_name = "IDEProjectAddEvent", hash_code = -685984390,
+name_list = {"target","name"},
+type_list = {"ALittle.EventDispatcher","string"},
+option_map = {}
+})
 ALittle.RegStruct(-332308624, "ALittleIDE.IDEProjectCloseEvent", {
 name = "ALittleIDE.IDEProjectCloseEvent", ns_name = "ALittleIDE", rl_name = "IDEProjectCloseEvent", hash_code = -332308624,
+name_list = {"target","name"},
+type_list = {"ALittle.EventDispatcher","string"},
+option_map = {}
+})
+ALittle.RegStruct(-277092447, "ALittleIDE.IDEProjectRemoveEvent", {
+name = "ALittleIDE.IDEProjectRemoveEvent", ns_name = "ALittleIDE", rl_name = "IDEProjectRemoveEvent", hash_code = -277092447,
 name_list = {"target","name"},
 type_list = {"ALittle.EventDispatcher","string"},
 option_map = {}
@@ -120,6 +132,9 @@ function IDEProject:NewProject(name, window_width, window_height, font_path, fon
 	config:SetConfig("default_font_size", font_size, true)
 	config:SaveConfig()
 	self:AddProjectConfig(name)
+	local event = {}
+	event.name = name
+	self:DispatchEvent(___all_struct[-685984390], event)
 	return true
 end
 
@@ -162,6 +177,9 @@ function IDEProject:RemoveProject(name)
 	if project_name == name then
 		g_IDEConfig:SetConfig("last_project", "")
 	end
+	local event = {}
+	event.name = name
+	self:DispatchEvent(___all_struct[-277092447], event)
 	return nil
 end
 

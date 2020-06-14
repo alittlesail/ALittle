@@ -819,7 +819,7 @@ function DisplayObjectS:TypeSelectChange(text, list, need_reset, revoke_bind)
 		self._base[text] = nil
 	end
 	self._tab_child:UpdateHandleQuadLayout(self._tree_logic)
-	self._tab_child:Save(false)
+	self._tab_child.save = false
 	local new_base = self._base[text]
 	local new_object = self._object[text]
 	local old_text = nil
@@ -857,7 +857,7 @@ function DisplayObjectS:ValueNumInputChange(text, need_reset, revoke_bind)
 		self._base[text] = nil
 	end
 	self._tab_child:UpdateHandleQuadLayout(self._tree_logic)
-	self._tab_child:Save(false)
+	self._tab_child.save = false
 	local new_base = self._base[text]
 	local new_object = self._object[text]
 	local old_text = nil
@@ -895,7 +895,7 @@ function DisplayObjectS:ValueNumZInputChange(text, need_reset, revoke_bind)
 		self._base[text] = nil
 	end
 	self._tab_child:UpdateHandleQuadLayout(self._tree_logic)
-	self._tab_child:Save(false)
+	self._tab_child.save = false
 	local new_base = self._base[text]
 	local new_object = self._object[text]
 	local old_text = nil
@@ -941,7 +941,7 @@ function DisplayObjectS:ColorValueInputChange(text, need_reset, revoke_bind)
 		self._base[text] = nil
 	end
 	self._tab_child:UpdateHandleQuadLayout(self._tree_logic)
-	self._tab_child:Save(false)
+	self._tab_child.save = false
 	local new_base = self._base[text]
 	local new_object = self._object[text]
 	local old_text = nil
@@ -986,7 +986,7 @@ function DisplayObjectS:Z2OValueInputChange(text, need_reset, revoke_bind)
 		self._base[text] = nil
 	end
 	self._tab_child:UpdateHandleQuadLayout(self._tree_logic)
-	self._tab_child:Save(false)
+	self._tab_child.save = false
 	local new_base = self._base[text]
 	local new_object = self._object[text]
 	local old_text = nil
@@ -1027,7 +1027,7 @@ function DisplayObjectS:DefaultNilStringInputChange(text, need_reset, revoke_bin
 		end
 	end
 	self._tab_child:UpdateHandleQuadLayout(self._tree_logic)
-	self._tab_child:Save(false)
+	self._tab_child.save = false
 	local new_base = self._base[text]
 	local new_object = self._object[text]
 	local old_text = nil
@@ -1055,7 +1055,7 @@ function DisplayObjectS:DefaultNoStringInputChange(text, need_reset, revoke_bind
 		self._base[text] = nil
 	end
 	self._tab_child:UpdateHandleQuadLayout(self._tree_logic)
-	self._tab_child:Save(false)
+	self._tab_child.save = false
 	local new_base = self._base[text]
 	local new_object = self._object[text]
 	local old_text = nil
@@ -1097,7 +1097,7 @@ function DisplayObjectS:SpecialFontPathInputChange(text, need_reset, revoke_bind
 		end
 	end
 	self._tab_child:UpdateHandleQuadLayout(self._tree_logic)
-	self._tab_child:Save(false)
+	self._tab_child.save = false
 	local new_base = self._base[text]
 	local new_object = self._object[text]
 	local old_text = nil
@@ -1135,7 +1135,7 @@ function DisplayObjectS:BoolSelectChange(text, need_reset, list, revoke_bind)
 		self._base[text] = nil
 	end
 	self._tab_child:UpdateHandleQuadLayout(self._tree_logic)
-	self._tab_child:Save(false)
+	self._tab_child.save = false
 	local new_base = self._base[text]
 	local new_object = self._object[text]
 	local old_text = nil
@@ -1231,7 +1231,7 @@ function DisplayObjectS:RemoverToNilShowSet(text, json_content, need_reset, revo
 		end
 	end
 	self._tab_child:UpdateHandleQuadLayout(self._tree_logic)
-	self._tab_child:Save(false)
+	self._tab_child.save = false
 	local new_base = self._base[text]
 	local new_object = self._object[text]
 	local old_text = nil
@@ -1297,7 +1297,7 @@ function DisplayObjectS:RemoverToNilNoNilShowSet(text, need_reset, revoke_bind)
 		end
 	end
 	self._tab_child:UpdateHandleQuadLayout(self._tree_logic)
-	self._tab_child:Save(false)
+	self._tab_child.save = false
 	local new_base = self._base[text]
 	local new_object = self._object[text]
 	local old_text = nil
@@ -1340,7 +1340,7 @@ function DisplayObjectS:TableDataSet(text, need_reset, revoke_bind)
 		end
 	end
 	self._tab_child:UpdateHandleQuadLayout(self._tree_logic)
-	self._tab_child:Save(false)
+	self._tab_child.save = false
 	local new_base = self._base[text]
 	local new_object = self._object[text]
 	local old_text = nil
@@ -1387,7 +1387,7 @@ function DisplayObjectS:TableDataSetForTargetClass(text, need_reset, revoke_bind
 		self._object[text] = content
 	end
 	self._tab_child:UpdateHandleQuadLayout(self._tree_logic)
-	self._tab_child:Save(false)
+	self._tab_child.save = false
 	local new_base = self._base[text]
 	local new_object = self._object[text]
 	local old_text = nil

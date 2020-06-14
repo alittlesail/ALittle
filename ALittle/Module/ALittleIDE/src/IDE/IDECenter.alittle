@@ -15,15 +15,10 @@ class IDECenter
 
 	public await fun Setup()
 	{
-		alittle.Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDETabChild");
-		alittle.Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDETabManager");
-		alittle.Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDETreeLogic");
-		alittle.Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDETree");
-		alittle.Require(g_ScriptBasePath, "UIEdit/IDEEditCore/IDETreeItem");
-	
 		// 创建主界面
 		g_Control.CreateControl{ALittle.DisplayObject}("ide_main_scene", this, g_MainLayer);
-	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// 打开上一次的项目
+		g_IDEProject.OpenLastProject();
 		// 初始化组合键
 		A_UISystem.keydown_callback = bind(this.HandleShortcutKey, this);
 	}
@@ -37,19 +32,6 @@ class IDECenter
 
 	public get center() : IDEUICenter { return this._center; }
 
-	// 项目打开后要初始化界面
-	public fun OpenProject(string name)
-	{
-		g_IDEProject.OpenProject(name);
-	}
-
-	// 项目关闭后要初始化界面
-	public fun CloseProject()
-	{
-		g_IDETabManager.CloseAllTab();
-		g_IDEProject.CloseProject();
-	}
-
 	// 项目刷新
 	public fun RefreshProject()
 	{
@@ -58,13 +40,13 @@ class IDECenter
 		// 获取项目名
 		var project_name = g_IDEProject.project.name;
 		// 获取tab列表
-		var name_list = g_IDETabManager.GetTabNameList();
+		var name_list = g_IDECenter.center.content_edit.GetTabNameList();
 		// 获取当前显示的标签也下标
-		var tab_index = g_IDETabManager.GetCurTabIndex();
+		var tab_index = g_IDECenter.center.content_edit.GetCurTabIndex();
 		// 关闭当前项目
-		this.CloseProject();
+		g_IDEProject.CloseProject();
 		// 打开当前项目
-		this.OpenProject(project_name);
+		g_IDEProject.OpenProject(project_name);
 		// 打开tab
 		var count = ALittle.List_MaxN(name_list);
 		if (count > 0)
@@ -73,9 +55,9 @@ class IDECenter
 			{
 				var control_info = g_IDEProject.project.ui.control_map[name_list[i]];
 				if (control_info != null)
-					g_IDETabManager.StartEditControlBySelect(control_info.name, control_info.info);
+					g_IDECenter.center.content_edit.StartEditControlBySelect(control_info.name, control_info.info);
 			}
-			g_IDETabManager.SetCurTabIndex(tab_index);
+			g_IDECenter.center.content_edit.SetCurTabIndex(tab_index);
 		}
 	}
 	
@@ -86,7 +68,7 @@ class IDECenter
 		// 判断F5，运行当前项目快捷键
 		if (A_UISystem.sym_map[1073741886])
 		{
-			g_IDECenter.center.project_list.RunProject();
+			g_IDEProject.RunProject();
 			return;
 		}
 

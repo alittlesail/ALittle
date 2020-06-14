@@ -59,6 +59,12 @@ name_list = {"name","base_path","texture_path","save","control","config","ui"},
 type_list = {"string","string","string","bool","ALittle.ControlSystem","ALittle.IJsonConfig","ALittleIDE.IDEUIManager"},
 option_map = {}
 })
+ALittle.RegStruct(1787992834, "ALittleIDE.IDEProjectSettingChanged", {
+name = "ALittleIDE.IDEProjectSettingChanged", ns_name = "ALittleIDE", rl_name = "IDEProjectSettingChanged", hash_code = 1787992834,
+name_list = {"target","default_show_width","default_show_height","default_font_path","default_font_size"},
+type_list = {"ALittle.EventDispatcher","double","double","string","int"},
+option_map = {}
+})
 ALittle.RegStruct(1962591044, "ALittleIDE.IDEProjectDeleteControlEvent", {
 name = "ALittleIDE.IDEProjectDeleteControlEvent", ns_name = "ALittleIDE", rl_name = "IDEProjectDeleteControlEvent", hash_code = 1962591044,
 name_list = {"target","name"},
@@ -139,6 +145,13 @@ function IDEProject:NewProject(name, window_width, window_height, font_path, fon
 end
 
 function IDEProject:OpenProject(name)
+	if name == "" or name == nil then
+		return "请输入项目名"
+	end
+	if ALittle.File_GetFileAttr(ALittle.File_BaseFilePath() .. "Module/" .. name) == nil then
+		return "项目不存在:" .. name
+	end
+	self:CloseProject()
 	self:AddProjectConfig(name)
 	self._project = {}
 	self._project.name = name
@@ -155,7 +168,15 @@ function IDEProject:OpenProject(name)
 	local e = {}
 	e.name = name
 	self:DispatchEvent(___all_struct[-975432877], e)
-	return true
+	return nil
+end
+
+function IDEProject:OpenLastProject()
+	local name = g_IDEConfig:GetString("last_project", nil)
+	if name == nil then
+		return
+	end
+	self:OpenProject(name)
 end
 
 function IDEProject:CloseProject()
@@ -182,6 +203,14 @@ function IDEProject:RemoveProject(name)
 	event.name = name
 	self:DispatchEvent(___all_struct[-277092447], event)
 	return nil
+end
+
+function IDEProject:RunProject()
+	if self._project == nil then
+		g_AUITool:ShowNotice("提示", "当前没有打开的项目")
+		return
+	end
+	os.execute("start ALittleClient.exe " .. self._project.name .. " debug")
 end
 
 function IDEProject.__getter:project()

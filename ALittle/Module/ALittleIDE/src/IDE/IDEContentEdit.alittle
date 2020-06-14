@@ -1,27 +1,46 @@
 
 namespace ALittleIDE;
 
-public class IDETabManager
+public struct IDETabChildOpenEvent : ALittle.UIEvent {}
+public struct IDETabChildCloseEvent : ALittle.UIEvent {}
+
+public struct IDETabChildHideEvent : ALittle.UIEvent {}
+public struct IDETabChildShowEvent : ALittle.UIEvent {}
+
+public class IDETabChild : ALittle.UIEventDispatcher
 {
-	private ALittle.Tab _main_tab;						// 标签页容器
-	private ALittle.DisplayObject _main_tree;			// 树形控件容器
-	private ALittle.DisplayObject _main_control;		// 属性控件容器
-	private ALittle.DisplayObject _main_anti;			// 动画编辑容器
-	private ALittle.DisplayObject _cur_tab;				// 当前标签页
+	private string _name;           // 当前控件名
+	private bool _save;             // 是否已保存
 	
-	public fun Setup(ALittle.Tab tab, ALittle.DisplayObject tree, ALittle.DisplayObject control, ALittle.DisplayObject anti)
+	private IDERevokeList _revoke_list;         // 撤销操作列表
+
+	public ctor(ALittle.ControlSystem ctrl_sys, string name, bool save)
 	{
-		// 保存所有分页
-		this._main_tab = tab;
-		this._main_tree = tree;
-		this._main_control = control;
-		this._main_anti = anti;
+		// 保存信息
+		this._name = name;
+		this._save = save;
+    }
 	
+	public get name() : string { return this._name; }
+	public get save() : bool { return this._save; }
+	public set save(bool value) {}
+	public get revoke_list() : IDERevokeList { return this._revoke_list; }
+}
+
+public class IDEContentEdit : ALittle.DisplayLayout
+{
+	private ALittle.DisplayObject _cur_tab;		// 当前标签页
+	private ALittle.Tab _main_tab;				// tab标签管理器
+	
+	public fun TCtor()
+	{
 		this._main_tab.AddEventListener(this, this.HandleMainTabSelectChange);
 		this._main_tab.AddEventListener(this, this.HandleMainTabRightClick);
 		this._main_tab.AddEventListener(this, this.HandleMainTabKeyDown);
 		this._main_tab.close_callback = bind(this.MainTabTabCloseYesOrNot, this);
 		this._main_tab.close_post_callback = bind(this.MainTabTabClose, this);
+
+		g_IDEProject.AddEventListener(this, this.HandleProjectClise);
 	
 		// 设置当前分页
 		this._cur_tab = null;
@@ -30,17 +49,20 @@ public class IDETabManager
 	public fun Shutdown()
 	{
 	}
+
+	private fun HandleProjectClise(IDEProjectCloseEvent event)
+	{
+        this.CloseAllTab();
+    }
 	
-	////////////////////////////////////////////////////////////////////////-
-	public get main_control() : ALittle.DisplayObject {	return this._main_control; }
-	public get main_anti() : ALittle.DisplayObject { return this._main_anti; }
-	public get main_tab() : ALittle.Tab { return this._main_tab; }
 	public get cur_tab() : ALittle.DisplayObject { return this._cur_tab; }
+	public get main_tab() : ALittle.Tab { return this._main_tab; }
 	public get cur_tab_child() : IDETabChild
 	{
 		if (this._cur_tab == null) return null;
 		return this._cur_tab._user_data;
 	}
+
 	////////////////////////////////////////////////////////////////////////-
 	
 	// 按照name遍历Tab是否已存在某个名字的控件
@@ -75,7 +97,7 @@ public class IDETabManager
 		var info = new List<string>();
 		var tab_childs = this._main_tab.childs;
 		for (var index, child in tab_childs)
-			ALittle.List_Push(info, cast<IDETabChild>(child._user_data).name);
+			ALittle.List_Push(info, cast<IDEUITabChild>(child._user_data).name);
 
 		return info;
 	}
@@ -101,7 +123,7 @@ public class IDETabManager
 		var tab_childs = this._main_tab.childs;
 		for (var index, child in tab_childs)
 		{
-			if (cast<IDETabChild>(child._user_data).save == false)
+			if (cast<IDEUITabChild>(child._user_data).save == false)
 				return false;
 		}
 		return true;
@@ -115,26 +137,13 @@ public class IDETabManager
 		if (child_from != null)
 		{
 			var tab_child:IDETabChild = child_from._user_data;
-			// 隐藏属性滚动屏
-			tab_child.tree_screen.visible = false;
-			tab_child.control_screen.visible = false;
-			tab_child.anti_panel.visible = false;
-
-			g_IDECenter.center.control_attr.SetTitle("");
+			tab_child.DispatchEvent(new IDETabChildHideEvent());
 		}
 	
 		if (child_to != null)
 		{
-			var tab_child:IDETabChild = child_to._user_data;
-			// 在控件树区域载入to的结构
-			tab_child.tree_screen.visible = true;
-			tab_child.control_screen.visible = true;
-			tab_child.anti_panel.visible = true;
-	
-			var panel_childs = tab_child.control_screen.childs;
-			if (panel_childs[1] != null)
-				g_IDECenter.center.control_attr.SetTitle(cast<IDETreeLogic>(panel_childs[1]._user_data).title);
-			g_IDECenter.center.UpdateToolScale(tab_child.GetScale());
+			var tab_child:IDEUITabChild = child_to._user_data;
+			tab_child.DispatchEvent(new IDETabChildShowEvent());
 		}
 	
 		// 保存当前分页
@@ -145,12 +154,13 @@ public class IDETabManager
 	public fun CloseTab(ALittle.DisplayObject child)
 	{
 		var tab_child:IDETabChild = child._user_data;
-		this._main_tree.RemoveChild(tab_child.tree_screen);
-		this._main_control.RemoveChild(tab_child.control_screen);
-		this._main_anti.RemoveChild(tab_child.anti_panel);
+		tab_child.DispatchEvent(new IDETabChildCloseEvent());
 		this._main_tab.RemoveChild(child);
-		this.ChangeTabEditControl(child, this._main_tab.tab);
+
+		// 切换到当前标签页
+		this.ChangeTabEditControl(null, this._main_tab.tab);
 	}
+
 	// 刷新某个分页
 	public fun RefreshTab(ALittle.DisplayObject child)
 	{
@@ -160,19 +170,25 @@ public class IDETabManager
 		var name = tab_child.name;
 		var control_info = g_IDEProject.project.ui.control_map[name];
 		var new_tab_child = this.StartEditControlBySelect(control_info.name, control_info.info);
-		this._main_tab.SetChildIndex(new_tab_child.tab_body, tab_index);
+		this._main_tab.SetChildIndex(new_tab_child.tab_screen, tab_index);
 	}
+
+	// 保存某个分页
+	public fun SaveTab(ALittle.DisplayObject child)
+	{
+        var tab_child:IDETabChild = child._user_data;
+		tab_child.save = true;
+    }
 	
 	// 关闭全部分页
 	public fun CloseAllTab()
 	{
 		this.ChangeTabEditControl(this._main_tab.tab, null);
+
 		for (var k, child in this._main_tab.childs)
 		{
 			var tab_child:IDETabChild = child._user_data;
-			this._main_tree.RemoveChild(tab_child.tree_screen);
-			this._main_control.RemoveChild(tab_child.control_screen);
-			this._main_anti.RemoveChild(tab_child.anti_panel);
+			tab_child.DispatchEvent(new IDETabChildCloseEvent());
 		}
 		this._main_tab.RemoveAllChild();
 	}
@@ -183,17 +199,7 @@ public class IDETabManager
 		for (var k, child in this._main_tab.childs)
 		{
 			var tab_child:IDETabChild = child._user_data;
-			tab_child.Save(true);
-		}
-	}
-	
-	// 设置全部分页界面大小
-	public fun SetTabChildWH(double width, double height)
-	{
-		for (var k, child in this._main_tab.childs)
-		{
-			var tab_child:IDETabChild = child._user_data;
-			tab_child.SetEditWH(width, height);
+			tab_child.save = true;
 		}
 	}
 	
@@ -202,7 +208,7 @@ public class IDETabManager
 	{
 		for (var k, child in this._main_tab.childs)
 		{
-			var tab_child:IDETabChild = child._user_data;
+			var tab_child:IDEUITabChild = child._user_data;
 			tab_child.ShowSelectLayer(value);
 		}
 	}
@@ -212,7 +218,7 @@ public class IDETabManager
 	{
 		for (var k, child in this._main_tab.childs)
 		{
-			var tab_child:IDETabChild = child._user_data;
+			var tab_child:IDEUITabChild = child._user_data;
 			tab_child.ShowHandDragLayer(value);
 		}
 	}
@@ -222,7 +228,7 @@ public class IDETabManager
 	{
 		for (var k, child in this._main_tab.childs)
 		{
-			var tab_child:IDETabChild = child._user_data;
+			var tab_child:IDEUITabChild = child._user_data;
 			tab_child.ShowScaleLayer(value);
 		}
 	}
@@ -232,7 +238,7 @@ public class IDETabManager
 	{
 		for (var k, child in this._main_tab.childs)
 		{
-			var tab_child:IDETabChild = child._user_data;
+			var tab_child:IDEUITabChild = child._user_data;
 			var error = tab_child.CanDeleteControl(name);
 			if (error != null) return error;
 		}
@@ -241,38 +247,38 @@ public class IDETabManager
 	
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////-
 	// Tab栏的选中项发生改变时执行的操作
-	public fun HandleMainTabSelectChange(ALittle.UISelectChangedEvent event)
+	private fun HandleMainTabSelectChange(ALittle.UISelectChangedEvent event)
 	{
 		this.ChangeTabEditControl(this._cur_tab, this._main_tab.tab);
 	}
 	
 	// Tab栏中有子控件被关闭执行的操作
-	public fun MainTabTabClose(ALittle.DisplayObject child)
+	private fun MainTabTabClose(ALittle.DisplayObject child)
 	{
 		this.CloseTab(child);
 	}
 
 	// 判断能否直接关闭
-	public fun MainTabTabCloseYesOrNot(ALittle.DisplayObject child) : bool
+	private fun MainTabTabCloseYesOrNot(ALittle.DisplayObject child) : bool
 	{
-		var tab_child:IDETabChild = child._user_data;
+		var tab_child:IDEUITabChild = child._user_data;
 		if (tab_child.save) return true;
 	
 		this.MainTabTabCloseImpl(tab_child, child);
 		return false;
 	}
 
-	private async fun MainTabTabCloseImpl(IDETabChild tab_child, ALittle.DisplayObject child)
+	private async fun MainTabTabCloseImpl(IDEUITabChild tab_child, ALittle.DisplayObject child)
 	{
 		var cancel_callback = bind(this.CloseTab, this, child);
 		var result = g_AUITool.SaveNotice("提示", "是否保存当前控件?");
 		if (result == AUIPlugin.AUIToolOption.YES)
-			tab_child.Save(true);
+			tab_child.save = true;
 		this.CloseTab(child);    
     }
 	
 	// Tab右键事件
-	public fun HandleMainTabRightClick(ALittle.UIRButtonDownEvent event)
+	private fun HandleMainTabRightClick(ALittle.UIRButtonDownEvent event)
 	{
 		this.ShowTabRightMenu(event.target);
 	}
@@ -289,7 +295,7 @@ public class IDETabManager
 		if (event.sym == 1073741886)
 		{
 			var child = event.target;
-			var tab_child:IDETabChild = child._user_data;
+			var tab_child:IDEUITabChild = child._user_data;
 			if (tab_child.save)
 			{
 				this.RefreshTab(child);
@@ -298,7 +304,7 @@ public class IDETabManager
 			}
 			var result = g_AUITool.SaveNotice("提示", "是否保存当前控件?");
 			if (result == AUIPlugin.AUIToolOption.YES)
-				tab_child.Save(true);
+				tab_child.save = true;
 			this.RefreshTab(child);
 
 			event.handled = true;
@@ -312,7 +318,7 @@ public class IDETabManager
 		var tab_child:IDETabChild = child._user_data;
 
 		var menu = new AUIPlugin.AUIRightMenu();
-		menu.AddItem("保存", bind(tab_child.Save, tab_child, true));
+		menu.AddItem("保存", bind(this.SaveTab, this, child));
 		menu.AddItem("截图导出", bind(A_OtherSystem.SystemSaveFile, A_OtherSystem, tab_child, tab_child.name..".png", null));
 		menu.AddItem("刷新", bind(this.RefreshTabWithAsk, this, child));
 		menu.AddItem("复制控件名", bind(ALittle.System_SetClipboardText, tab_child.name));
@@ -333,7 +339,7 @@ public class IDETabManager
 		var menu = new AUIPlugin.AUIRightMenu();
 		for (var index, child in tab_childs)
 		{
-			var tab_child:IDETabChild = child._user_data;
+			var tab_child:IDEUITabChild = child._user_data;
 			menu.AddItem(tab_child.total_title, bind(this.SelectItemClick, this, child));
 		}
 		menu.Show();
@@ -352,7 +358,7 @@ public class IDETabManager
 
 	private async fun RefreshTabWithAsk(ALittle.DisplayObject child)
 	{
-		var tab_child:IDETabChild = child._user_data;
+		var tab_child:IDEUITabChild = child._user_data;
         
 		if (tab_child.save)
 		{
@@ -361,13 +367,13 @@ public class IDETabManager
 		}
 		var result = g_AUITool.SaveNotice("提示", "是否保存当前控件?");
 		if (result == AUIPlugin.AUIToolOption.YES)
-			tab_child.Save(true);
+			tab_child.save = true;
 		this.RefreshTab(child);
     }
 
 	private async fun CloseTabWithAsk(ALittle.DisplayObject child)
 	{
-		var tab_child:IDETabChild = child._user_data;
+		var tab_child:IDEUITabChild = child._user_data;
         
 		if (tab_child.save)
 		{
@@ -376,7 +382,7 @@ public class IDETabManager
 		}
 		var result = g_AUITool.SaveNotice("提示", "是否保存当前控件?");
 		if (result == AUIPlugin.AUIToolOption.YES)
-			tab_child.Save(true);
+			tab_child.save = true;
 		this.CloseTab(child);
     }
 
@@ -386,7 +392,7 @@ public class IDETabManager
 		for (var index, child_v in this._main_tab.childs)
 		{
 			if (child_v == child) break;
-			var tab_child:IDETabChild = child_v._user_data;
+			var tab_child:IDEUITabChild = child_v._user_data;
 			if (tab_child.save)
 				ALittle.List_Push(close_list, child_v);
 		}
@@ -403,7 +409,7 @@ public class IDETabManager
 		for (var index = cur_index + 1; index <= child_count; 1)
 		{
 			var child_v = child_list[index];
-			var tab_child:IDETabChild = child_v._user_data;
+			var tab_child:IDEUITabChild = child_v._user_data;
 			if (tab_child.save)
 				ALittle.List_Push(close_list, child_v);
 		}
@@ -413,7 +419,7 @@ public class IDETabManager
 
 	private fun CopyExtends(ALittle.DisplayObject child)
 	{
-		var tab_child:IDETabChild = child._user_data;
+		var tab_child:IDEUITabChild = child._user_data;
 
 		var name = tab_child.name;
 		var display_info = new ALittle.DisplayInfo();
@@ -429,7 +435,7 @@ public class IDETabManager
 	// 修改控件名
 	public async fun ControlRename(ALittle.DisplayObject child)
 	{
-		var tab_child:IDETabChild = child._user_data;
+		var tab_child:IDEUITabChild = child._user_data;
 		var old_name = tab_child.name;
 		var error = g_IDEProject.project.ui.CanDelete(old_name);
 		if (error != null)
@@ -437,7 +443,7 @@ public class IDETabManager
 			g_AUITool.ShowNotice("错误", error);
 			return;
 		}
-		error = g_IDETabManager.CanDelete(old_name);
+		error = this.CanDelete(old_name);
 		if (error != null)
 		{
 			g_AUITool.ShowNotice("错误", error);
@@ -466,22 +472,21 @@ public class IDETabManager
 	}
 	////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// 新建控件，并编辑
-	public fun StartEditControlByNew(string name, string type) : IDETabChild
+	public fun StartEditControlByNew(string name, string type) : IDEUITabChild
 	{
 		// 获取当前正在编辑的分页
 		var child_from = this._main_tab.tab;
 		// 创建Tab子控件
-		var tab_child = new IDETabChild(name, false);
+		var tab_child = new IDEUITabChild(g_Control, name, false);
 		tab_child.CreateByNew(type);
 		// 添加到界面中去
-		this._main_tab.AddChild(tab_child.tab_body);
-		this._main_tree.AddChild(tab_child.tree_screen);
-		this._main_control.AddChild(tab_child.control_screen);
-		this._main_anti.AddChild(tab_child.anti_panel);
+		this._main_tab.AddChild(tab_child.tab_screen);
+		// 发送打开事件
+		tab_child.DispatchEvent(new IDETabChildOpenEvent());
 		//切换
-		this._main_tab.tab = tab_child.tab_body;
+		this._main_tab.tab = tab_child.tab_screen;
 		//切换时的数据操作
-		this.ChangeTabEditControl(child_from, tab_child.tab_body);
+		this.ChangeTabEditControl(child_from, this._main_tab.tab);
 		// 设置标题
 		tab_child.UpdateTitle();
 		// 设置焦点
@@ -490,22 +495,22 @@ public class IDETabManager
 	}
 	
 	// 继承控件，并编辑
-	public fun StartEditControlByExtends(string name, string extends_v) : IDETabChild
+	public fun StartEditControlByExtends(string name, string extends_v) : IDEUITabChild
 	{
 		// 获取当前正在编辑的分页
 		var child_from = this._main_tab.tab;
 		// 创建Tab子控件
-		var tab_child = new IDETabChild(name, false);
+		var tab_child = new IDEUITabChild(g_Control, name, false);
 		tab_child.CreateByExtends(extends_v);
 		// 添加到界面中去
-		this._main_tab.AddChild(tab_child.tab_body);
-		this._main_tree.AddChild(tab_child.tree_screen);
-		this._main_control.AddChild(tab_child.control_screen);
-		this._main_anti.AddChild(tab_child.anti_panel);
+		this._main_tab.AddChild(tab_child.tab_screen);
+		// 发送打开事件
+		tab_child.DispatchEvent(new IDETabChildOpenEvent());
+
 		//切换
-		this._main_tab.tab = tab_child.tab_body;
+		this._main_tab.tab = tab_child.tab_screen;
 		// 切换时的数据操作
-		this.ChangeTabEditControl(child_from, tab_child.tab_body);
+		this.ChangeTabEditControl(child_from, this._main_tab.tab);
 		// 设置标题
 		tab_child.UpdateTitle();
 		// 设置焦点
@@ -514,7 +519,7 @@ public class IDETabManager
 	}
 	
 	// 选择控件，并编辑
-	public fun StartEditControlBySelect(string name, const ALittle.DisplayInfo info) : IDETabChild
+	public fun StartEditControlBySelect(string name, const ALittle.DisplayInfo info) : IDEUITabChild
 	{
 		// 判断显示tab栏中是否已有该控件
 		var child = this.GetTabByName(name);
@@ -525,33 +530,29 @@ public class IDETabManager
 			// 设置目标标签页
 			this._main_tab.tab = child;
 			// 切换时数据操作
-			this.ChangeTabEditControl(child_from, child);
+			this.ChangeTabEditControl(child_from, this._main_tab.tab);
 			return child._user_data;
 		}
 	
 		// 获取当前正在编辑的标签页
 		var child_from = this._main_tab.tab;
-		var tab_child = new IDETabChild(name, true);
+		var tab_child = new IDEUITabChild(g_Control, name, true);
 		tab_child.CreateBySelect(info);
 	
 		// 添加到界面中去
-		this._main_tab.AddChild(tab_child.tab_body, 1);
-		this._main_tree.AddChild(tab_child.tree_screen);
-		this._main_control.AddChild(tab_child.control_screen);
-		this._main_anti.AddChild(tab_child.anti_panel);
-		
+		this._main_tab.AddChild(tab_child.tab_screen, 1);
+		// 发送打开事件
+		tab_child.DispatchEvent(new IDETabChildOpenEvent());
 		//切换
-		this._main_tab.tab = tab_child.tab_body;
+		this._main_tab.tab = tab_child.tab_screen;
 		// 切换时的数据操作
-		this.ChangeTabEditControl(child_from, tab_child.tab_body);
+		this.ChangeTabEditControl(child_from, this._main_tab.tab);
 		// 设置标题
 		tab_child.UpdateTitle();
 		// 如果根节点不是容器，那么直接设置焦点
-		if (tab_child.tree_object.IsTree() == false)
+		if (!tab_child.tree_object.is_tree)
 			tab_child.ShowHandleQuad(tab_child.tree_object);
 
 		return tab_child;
 	}
 }
-
-protected var g_IDETabManager = new IDETabManager();

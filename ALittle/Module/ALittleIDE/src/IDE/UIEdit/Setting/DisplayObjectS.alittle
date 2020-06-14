@@ -7,8 +7,8 @@ public class DisplayObjectS
 	private ALittle.DisplayInfo _base;
 	private ALittle.DisplayInfo _default;
 	private ALittle.DisplayObject _object;
-	private IDETabChild _tab_child;
-	private IDETreeLogic _tree_logic;
+	private IDEUITabChild _tab_child;
+	private IDEUITreeLogic _tree_logic;
 
 	private ALittle.DisplayLayout _layer;
 
@@ -45,7 +45,7 @@ public class DisplayObjectS
 	private ALittle.DropDown _target_class_dropdown;
 	private ALittle.DropDown _link_dropdown;
     
-	public ctor(IDETreeUserInfo user_info, IDETabChild tab_child, IDETreeLogic tree_logic)
+	public ctor(IDEUITreeUserInfo user_info, IDEUITabChild tab_child, IDEUITreeLogic tree_logic)
 	{
 		// 设置面板的UI
 		this._layer_name = "ide_setting_displayobject";
@@ -782,7 +782,7 @@ public class DisplayObjectS
 		this._tab_child.UpdateHandleQuadLayout(this._tree_logic);
 	
 		// 设置为false
-		this._tab_child.Save(false);
+		this._tab_child.save = false;
 		// 保存新的信息
 		var new_base = cast<Map<string, any> >(this._base)[text];
 		var new_object = cast<Map<string, any>>(this._object)[text];
@@ -824,7 +824,7 @@ public class DisplayObjectS
 		this._tab_child.UpdateHandleQuadLayout(this._tree_logic);
 	
 		// 设置为false
-		this._tab_child.Save(false);
+		this._tab_child.save = false;
 	
 		var new_base = cast<Map<string, any> >(this._base)[text];
 		var new_object = cast<Map<string, any>>(this._object)[text];
@@ -864,7 +864,7 @@ public class DisplayObjectS
 		this._tab_child.UpdateHandleQuadLayout(this._tree_logic);
 	
 		// 设置为false
-		this._tab_child.Save(false);
+		this._tab_child.save = false;
 	
 		var new_base = cast<Map<string, any> >(this._base)[text];
 		var new_object = cast<Map<string, any>>(this._object)[text];
@@ -913,7 +913,7 @@ public class DisplayObjectS
 		this._tab_child.UpdateHandleQuadLayout(this._tree_logic);
 	
 		// 设置为false
-		this._tab_child.Save(false);
+		this._tab_child.save = false;
 	
 		var new_base = cast<Map<string, any> >(this._base)[text];
 		var new_object = cast<Map<string, any>>(this._object)[text];
@@ -961,7 +961,7 @@ public class DisplayObjectS
 		this._tab_child.UpdateHandleQuadLayout(this._tree_logic);
 	
 		// 设置为false
-		this._tab_child.Save(false);
+		this._tab_child.save = false;
 	
 		var new_base = cast<Map<string, any> >(this._base)[text];
 		var new_object = cast<Map<string, any>>(this._object)[text];
@@ -1009,7 +1009,7 @@ public class DisplayObjectS
 		this._tab_child.UpdateHandleQuadLayout(this._tree_logic);
 	
 		// 设置为false
-		this._tab_child.Save(false);
+		this._tab_child.save = false;
 	
 		var new_base = cast<Map<string, any> >(this._base)[text];
 		var new_object = cast<Map<string, any>>(this._object)[text];
@@ -1039,7 +1039,7 @@ public class DisplayObjectS
 		this._tab_child.UpdateHandleQuadLayout(this._tree_logic);
 	
 		// 设置为false
-		this._tab_child.Save(false);
+		this._tab_child.save = false;
 	
 		var new_base = cast<Map<string, any> >(this._base)[text];
 		var new_object = cast<Map<string, any>>(this._object)[text];
@@ -1087,7 +1087,7 @@ public class DisplayObjectS
 		this._tab_child.UpdateHandleQuadLayout(this._tree_logic);
 	
 		// 设置为false
-		this._tab_child.Save(false);
+		this._tab_child.save = false;
 		
 		var new_base = cast<Map<string, any> >(this._base)[text];
 		var new_object = cast<Map<string, any>>(this._object)[text];
@@ -1130,7 +1130,7 @@ public class DisplayObjectS
 		this._tab_child.UpdateHandleQuadLayout(this._tree_logic);
 	
 		// 设置为false
-		this._tab_child.Save(false);
+		this._tab_child.save = false;
 		
 		var new_base = cast<Map<string, any> >(this._base)[text];
 		var new_object = cast<Map<string, any>>(this._object)[text];
@@ -1247,7 +1247,7 @@ public class DisplayObjectS
 		this._tab_child.UpdateHandleQuadLayout(this._tree_logic);
 	
 		// 设置为false
-		this._tab_child.Save(false);
+		this._tab_child.save = false;
 	
 		var new_base = cast<Map<string, any> >(this._base)[text];
 		var new_object = cast<Map<string, any>>(this._object)[text];
@@ -1328,7 +1328,7 @@ public class DisplayObjectS
 		this._tab_child.UpdateHandleQuadLayout(this._tree_logic);
 	
 		// 设置为false
-		this._tab_child.Save(false);
+		this._tab_child.save = false;
 	
 		var new_base = cast<Map<string, any> >(this._base)[text];
 		var new_object = cast<Map<string, any>>(this._object)[text];
@@ -1383,7 +1383,7 @@ public class DisplayObjectS
 		this._tab_child.UpdateHandleQuadLayout(this._tree_logic);
 	
 		// 设置为false
-		this._tab_child.Save(false);
+		this._tab_child.save = false;
 	
 		var new_base = cast<Map<string, any>>(this._base)[text];
 		var new_object = cast<Map<string, any>>(this._object)[text];
@@ -1433,7 +1433,7 @@ public class DisplayObjectS
 		this._tab_child.UpdateHandleQuadLayout(this._tree_logic);
 	
 		// 设置为false
-		this._tab_child.Save(false);
+		this._tab_child.save = false;
 	
 		var new_base = cast<Map<string, any>>(this._base)[text];
 		var new_object = cast<Map<string, any>>(this._object)[text];

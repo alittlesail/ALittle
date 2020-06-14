@@ -34,3 +34,12 @@ public static NewObject(ClassInfo clazz, ...) : any
     [Language(JavaScript)]
     return JavaScript.NewObject(clazz, ...);
 }
+
+// 动态转换
+public static Cast<T:class, O:class>(O object) : T
+{
+    var o_info = reflect(object);
+    var t_info = reflect<T>;
+    if (o_info != t_info) return null;
+    return cast<T>(object);
+}

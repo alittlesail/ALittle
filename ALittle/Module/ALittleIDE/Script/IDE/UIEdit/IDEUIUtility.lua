@@ -4,16 +4,16 @@ module("ALittleIDE", package.seeall)
 local ___pairs = pairs
 local ___ipairs = ipairs
 
+ALittle.RegStruct(-1133828708, "ALittleIDE.IDEUITreeUserInfo", {
+name = "ALittleIDE.IDEUITreeUserInfo", ns_name = "ALittleIDE", rl_name = "IDEUITreeUserInfo", hash_code = -1133828708,
+name_list = {"base","default","child_type","root","object","extends","extends_root"},
+type_list = {"ALittle.DisplayInfo","ALittle.DisplayInfo","string","bool","ALittle.DisplayObject","bool","bool"},
+option_map = {}
+})
 ALittle.RegStruct(-4982446, "ALittle.DisplayInfo", {
 name = "ALittle.DisplayInfo", ns_name = "ALittle", rl_name = "DisplayInfo", hash_code = -4982446,
 name_list = {"__target_class","__class_func","__base_attr","__show_attr","loop_map","__class","__include","__extends","__childs","__event","__link","__shows_included","__childs_included","__extends_included","description","text","font_path","font_size","red","green","blue","alpha","bold","italic","underline","deleteline","outline","x","y","x_type","x_value","y_type","y_value","width","height","width_type","width_value","height_type","height_value","scale_x","scale_y","center_x","center_y","angle","flip","hand_cursor","visible","disabled","left_size","right_size","top_size","bottom_size","texture_name","interval","play_loop_count","var_play","base_y","head_size","gap","up_size","down_size","cursor_red","cursor_green","cursor_blue","default_text_alpha","ims_padding","margin_left","margin_right","margin_top","margin_bottom","show_count","body_margin","screen_margin_left","screen_margin_right","screen_margin_top","screen_margin_bottom","start_degree","end_degree","line_spacing","max_line_count","font_red","font_green","font_blue","margin_halign","margin_valign","cursor_margin_up","cursor_margin_down","total_size","show_size","offset_rate","offset_step","grade","row_count","col_count","row_index","col_index","u1","v1","u2","v2","u3","v3","x1","y1","x2","y2","x3","y3","x_gap","y_gap","x_start_gap","y_start_gap","button_gap","button_start","button_margin","tab_index","view_margin","child_width_margin"},
 type_list = {"List<string>","any","Map<string,any>","Map<string,ALittle.DisplayInfo>","Map<string,ALittle.LoopGroupInfo>","string","string","string","List<ALittle.DisplayInfo>","List<ALittle.EventInfo>","string","bool","bool","bool","string","string","string","int","double","double","double","double","bool","bool","bool","bool","bool","double","double","int","double","int","double","double","double","int","double","int","double","double","double","double","double","double","int","bool","bool","bool","double","double","double","double","string","int","int","bool","double","double","double","double","double","double","double","double","double","double","double","double","double","double","int","double","double","double","double","double","double","double","double","int","double","double","double","double","double","double","double","double","double","double","double","int","int","int","int","int","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double"},
-option_map = {}
-})
-ALittle.RegStruct(489101099, "ALittleIDE.IDEControlCopyInfo", {
-name = "ALittleIDE.IDEControlCopyInfo", ns_name = "ALittleIDE", rl_name = "IDEControlCopyInfo", hash_code = 489101099,
-name_list = {"index","info"},
-type_list = {"int","ALittle.DisplayInfo"},
 option_map = {}
 })
 ALittle.RegStruct(1653869333, "ALittle.LoopGroupInfo", {
@@ -32,12 +32,6 @@ ALittle.RegStruct(-1741432339, "ALittle.LoopListInfo", {
 name = "ALittle.LoopListInfo", ns_name = "ALittle", rl_name = "LoopListInfo", hash_code = -1741432339,
 name_list = {"link","attribute","init","childs"},
 type_list = {"string","string","any","List<ALittle.LoopChildInfo>"},
-option_map = {}
-})
-ALittle.RegStruct(-1105378563, "ALittleIDE.IDETreeUserInfo", {
-name = "ALittleIDE.IDETreeUserInfo", ns_name = "ALittleIDE", rl_name = "IDETreeUserInfo", hash_code = -1105378563,
-name_list = {"base","default","child_type","root","object","extends","extends_root"},
-type_list = {"ALittle.DisplayInfo","ALittle.DisplayInfo","string","bool","ALittle.DisplayObject","bool","bool"},
 option_map = {}
 })
 ALittle.RegStruct(-925381158, "ALittle.LoopChildInfo", {
@@ -117,49 +111,6 @@ function IDEUIUtility_HasEventCallback(info, name)
 		end
 	end
 	return false
-end
-
-function IDEUIUtility_CheckName(name)
-	local len = ALittle.String_Len(name)
-	if len == 0 then
-		return false, "命名只能支持字母数字下划线，不能以数字开头"
-	end
-	local i = 1
-	while true do
-		if not(i <= len) then break end
-		local byte = ALittle.String_Byte(name, i)
-		local check_all = byte >= 65 and byte <= 90 or byte >= 97 and byte <= 122 or byte >= 48 and byte <= 57 or byte == 95
-		if i == 1 then
-			local check_first = byte >= 65 and byte <= 90 or byte >= 97 and byte <= 122 or byte == 95
-			if check_first == false then
-				return false, "命名只能支持字母数字下划线，不能以数字开头"
-			end
-		else
-			if check_all == false then
-				return false, "命名只能支持字母数字下划线，不能以数字开头"
-			end
-		end
-		i = i+(1)
-	end
-	return true, nil
-end
-
-function IDEUIUtility_CheckResourceName(name)
-	local len = ALittle.String_Len(name)
-	if len == 0 then
-		return false, "命名只能支持字母数字下划线"
-	end
-	local i = 1
-	while true do
-		if not(i <= len) then break end
-		local byte = ALittle.String_Byte(name, i)
-		local check_all = byte >= 65 and byte <= 90 or byte >= 97 and byte <= 122 or byte >= 48 and byte <= 57 or byte == 95
-		if check_all == false then
-			return false, "命名只能支持字母数字下划线"
-		end
-		i = i+(1)
-	end
-	return true, nil
 end
 
 function IDEUIUtility_NewGiveBaseCase(info, object)
@@ -287,9 +238,9 @@ function IDEUIUtility_CreateTree(control, extends_v, object, child_type, tab_chi
 	user_info.extends_root = control.__extends ~= nil
 	local tree_logic = nil
 	if g_IDEEnum.can_add_child_map[user_info.default.__class] or g_IDEEnum.child_show_map[user_info.default.__class] ~= nil then
-		tree_logic = IDETree(g_Control, user_info, tab_child)
+		tree_logic = IDEUITree(g_Control, user_info, tab_child)
 	else
-		tree_logic = IDETreeItem(g_Control, user_info, tab_child)
+		tree_logic = IDEUITreeItem(g_Control, user_info, tab_child)
 	end
 	if g_IDEEnum.can_add_child_map[user_info.default.__class] and object.childs ~= nil and ALittle.List_MaxN(object.childs) > 0 then
 		if control.__childs ~= nil and ALittle.List_MaxN(control.__childs) > 0 then

@@ -1,10 +1,10 @@
 
 namespace ALittleIDE;
 
-public class IDETreeLogic : ALittle.DisplayLayout
+public class IDEUITreeLogic : ALittle.DisplayLayout
 {
-	private IDETabChild _tab_child;				// 当前控件所在的编辑页
-	private IDETreeUserInfo _user_info;			// 当前控件所对应的控件数据
+	private IDEUITabChild _tab_child;			// 当前控件所在的编辑页
+	private IDEUITreeUserInfo _user_info;		// 当前控件所对应的控件数据
 	private DisplayObjectS _attr_panel;			// 当前控件对应的属性面板
 	
 	private ALittle.EffectImage _drag_effect;	// 拖拽特效
@@ -13,11 +13,11 @@ public class IDETreeLogic : ALittle.DisplayLayout
 	private ALittle.DisplayObject _item_title;	// 标题
 	private ALittle.DisplayObject _item_button;	// 按钮
 
-	private ALittle.DisplayObject _head;		// 头部
-	private ALittle.DisplayObject _item;		// item部分
+	private ALittle.DisplayObject _head;			// 头部
+	private ALittle.DisplayObject _item;			// item部分
 	private ALittle.DisplayObject _extends_icon;	// 继承图标
 
-	public ctor(ALittle.ControlSystem ctrl_sys, IDETreeUserInfo user_info, IDETabChild tab_child)
+	public ctor(ALittle.ControlSystem ctrl_sys, IDEUITreeUserInfo user_info, IDEUITabChild tab_child)
 	{
 		this._tab_child = tab_child;	// 编辑逻辑对象
 		this._user_info = user_info;	// 这个是当子控件信息对象
@@ -26,10 +26,10 @@ public class IDETreeLogic : ALittle.DisplayLayout
 		this._drag_ctrl = false;
 	}
 
-	public get user_info() : IDETreeUserInfo { return this._user_info; }
-	public get tab_child() : IDETabChild { return this._tab_child; }
-	public fun IsRoot() : bool { return this._user_info.root; }
-	public fun IsTree() : bool { return false; }
+	public get user_info() : IDEUITreeUserInfo { return this._user_info; }
+	public get tab_child() : IDEUITabChild { return this._tab_child; }
+	public get is_root() : bool { return this._user_info.root; }
+	public get is_tree() : bool { return false; }
 	public get attr_panel() : DisplayObjectS { return this._attr_panel; }
 	public get title() : string	{ return this._item_title.text; }
 	public fun CanAddChild() : bool { return false; }
@@ -55,7 +55,7 @@ public class IDETreeLogic : ALittle.DisplayLayout
 			|| this._user_info.base.description == this._user_info.default.description)
 			this._user_info.base.description = null;
 	
-		this._tab_child.Save(false);
+		this._tab_child.save = false;
 		this.UpdateDesc();
 	}
 
@@ -68,8 +68,7 @@ public class IDETreeLogic : ALittle.DisplayLayout
 	public fun RemoveAttributePanel()
 	{
 		if (this._attr_panel == null) return;
-		this._tab_child.control_screen.RemoveChild(this._attr_panel.layer);
-	
+		this._tab_child.attr_screen.RemoveChild(this._attr_panel.layer);
 		g_IDECenter.center.control_attr.SetTitle("");
 	}
 
@@ -77,7 +76,7 @@ public class IDETreeLogic : ALittle.DisplayLayout
 	public fun ShowAttributePanel()
 	{
 		// 移除所有的
-		this._tab_child.control_screen.RemoveAllChild();
+		this._tab_child.attr_screen.RemoveAllChild();
 		// 设置当前
 		this._item_button.selected = true;
 		// 显示当前的
@@ -91,7 +90,7 @@ public class IDETreeLogic : ALittle.DisplayLayout
 		}
 		// 显示标题
 		g_IDECenter.center.control_attr.SetTitle(this._attr_panel.title);
-		this._tab_child.control_screen.AddChild(this._attr_panel.layer);
+		this._tab_child.attr_screen.AddChild(this._attr_panel.layer);
 	}
 	
 	public fun ShowFocus(bool is_group)
@@ -195,10 +194,10 @@ public class IDETreeLogic : ALittle.DisplayLayout
 		var target = this._tab_child.tree_object.PickUp(delta_x, delta_y);
 		if (target == null)
 		{
-			ALittle.Log("IDETreeLogic:HandleDrag} target null");
+			ALittle.Log("IDEUITreeLogic:HandleDrag} target null");
 			return;
 		}
-		var tree:IDETreeLogic = target._user_data;
+		var tree:IDEUITreeLogic = target._user_data;
 		// 不能是自己的子控件
 		if (tree.IsGrandParent(this))
 		{
@@ -221,7 +220,7 @@ public class IDETreeLogic : ALittle.DisplayLayout
 		ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list));
 	
 		var revoke_bind = new IDERevokeBind();
-		if (tree.IsTree())
+		if (tree.is_tree)
 			this._tab_child.RightControlTreePasteImpl(tree, null, 1, revoke_bind, bind(this.HandleDragEndAndCut, this, revoke_bind));
 		else
 		{
@@ -236,12 +235,12 @@ public class IDETreeLogic : ALittle.DisplayLayout
 			x, y = target.LocalToGlobal();
 			y = y + target.height / 2;
 			if (event.abs_y > y) child_index = child_index + 1;
-			this._tab_child.RightControlTreePasteImpl(cast<IDETreeLogic>(common_parent), null, child_index, revoke_bind, bind(this.HandleDragEndAndCut, this, revoke_bind));
+			this._tab_child.RightControlTreePasteImpl(cast<IDEUITreeLogic>(common_parent), null, child_index, revoke_bind, bind(this.HandleDragEndAndCut, this, revoke_bind));
 		}
 	}
 	
 	// 处理Drag的最后一步
-	public fun HandleDragEndAndCut(IDERevokeBind revoke_bind, bool result, List<IDETreeLogic> list)
+	public fun HandleDragEndAndCut(IDERevokeBind revoke_bind, bool result, List<IDEUITreeLogic> list)
 	{
 		if (result == false) return;
 		this.TreeCut(revoke_bind);
@@ -251,7 +250,7 @@ public class IDETreeLogic : ALittle.DisplayLayout
 	// 上移
 	public fun TransferUp()
 	{
-		var parent = cast<IDETree>(this._logic_parent);
+		var parent = cast<IDEUITree>(this._logic_parent);
 		if (parent == null) return;
 		// 向上移
 		var index = parent.GetChildIndex(this);
@@ -259,9 +258,9 @@ public class IDETreeLogic : ALittle.DisplayLayout
 		index = index - 1;
 		parent.SetChildIndex(this, index);
 		parent.user_info.object.SetChildIndex(this._user_info.object, index);
-		this.tab_child.Save(false);
+		this.tab_child.save = false;
 		// 生成撤销类
-		var revoke = new IDEChildUpDownRevoke(parent, cast<IDETreeItem>(this), "up");
+		var revoke = new IDEChildUpDownRevoke(parent, cast<IDEUITreeItem>(this), "up");
 		this._tab_child.revoke_list.PushRevoke(revoke);
 	}
 	
@@ -269,7 +268,7 @@ public class IDETreeLogic : ALittle.DisplayLayout
 	public fun TransferDown()
 	{
 		// 获取当前下标
-		var parent = cast<IDETree>(this._logic_parent);
+		var parent = cast<IDEUITree>(this._logic_parent);
 		if (parent == null) return;
 	
 		var index = parent.GetChildIndex(this);
@@ -277,9 +276,9 @@ public class IDETreeLogic : ALittle.DisplayLayout
 		index = index + 1;
 		parent.SetChildIndex(this, index);
 		parent.user_info.object.SetChildIndex(this._user_info.object, index);
-		this.tab_child.Save(false);
+		this.tab_child.save = false;
 		// 生成撤销类
-		var revoke = new IDEChildUpDownRevoke(parent, cast<IDETreeItem>(this), "down");
+		var revoke = new IDEChildUpDownRevoke(parent, cast<IDEUITreeItem>(this), "down");
 		this._tab_child.revoke_list.PushRevoke(revoke);
 	}
 	
@@ -289,7 +288,7 @@ public class IDETreeLogic : ALittle.DisplayLayout
 	// }
 	
 	// 粘帖
-	public fun TreePaste(ALittle.DisplayInfo info, string child_type, int child_index, bool is_group, IDERevokeBind revoke_bind) : IDETreeLogic
+	public fun TreePaste(ALittle.DisplayInfo info, string child_type, int child_index, bool is_group, IDERevokeBind revoke_bind) : IDEUITreeLogic
 	{
 		// 撤销
 		var inner_revoke_bind = new IDERevokeBind();
@@ -300,12 +299,12 @@ public class IDETreeLogic : ALittle.DisplayLayout
 			// 移除控件对象
 			cast<Map<string,any>>(this._user_info.object)[child_type] = null;
 			// 遍历子控件
-			for (var k, v:IDETreeLogic in this.childs)
+			for (var k, v:IDEUITreeLogic in this.childs)
 			{
 				if (v.user_info.child_type == child_type)
 				{
 					this.RemoveChild(v);
-					var revoke = new IDEDeleteRevoke(cast<IDETree>(this), cast<IDETreeItem>(v), k);
+					var revoke = new IDEDeleteRevoke(cast<IDEUITree>(this), cast<IDEUITreeItem>(v), k);
 					inner_revoke_bind.PushRevoke(revoke);
 					break;
 				}
@@ -326,11 +325,11 @@ public class IDETreeLogic : ALittle.DisplayLayout
 		// 添加控件树
 		var tree_object = IDEUIUtility_CreateTree(info, false, object, child_type, this._tab_child, false);
 		this.AddChild(tree_object, child_index);
-		this._tab_child.Save(false);
+		this._tab_child.save = false;
 		
 		// 生成撤销类
 		var index = this.GetChildIndex(tree_object);
-		var revoke = new IDEChildShowRevoke(cast<IDETree>(this), cast<IDETreeItem>(tree_object), index);
+		var revoke = new IDEChildShowRevoke(cast<IDEUITree>(this), cast<IDEUITreeItem>(tree_object), index);
 		inner_revoke_bind.PushRevoke(revoke);
 		if (revoke_bind != null)
 			revoke_bind.PushRevoke(inner_revoke_bind);
@@ -343,7 +342,7 @@ public class IDETreeLogic : ALittle.DisplayLayout
 	}
 	
 	// 添加
-	public fun TreeAdd(string extends_name, string class_name, string child_type) : IDETreeLogic
+	public fun TreeAdd(string extends_name, string class_name, string child_type) : IDEUITreeLogic
 	{
 		// 获取继承
 		var extends_info = g_IDEProject.project.ui.control_map[extends_name];
@@ -358,19 +357,19 @@ public class IDETreeLogic : ALittle.DisplayLayout
 			// 移除控件对象
 			cast<Map<string,any>>(this._user_info.object)[child_type] = null;
 			// 遍历子控件
-			for (var k, v:IDETreeLogic in this.childs)
+			for (var k, v:IDEUITreeLogic in this.childs)
 			{
 				if (v.user_info.child_type == child_type)
 				{
 					this.RemoveChild(v);
-					var revoke = new IDEDeleteRevoke(cast<IDETree>(this), cast<IDETreeItem>(v), k);
+					var revoke = new IDEDeleteRevoke(cast<IDEUITree>(this), cast<IDEUITreeItem>(v), k);
 					revoke_bind.PushRevoke(revoke);
 					break;
 				}
 			}
 		}
 	
-		var tree_object:IDETreeLogic = null;
+		var tree_object:IDEUITreeLogic = null;
 	
 		// 创建控件
 		if (extends_info == null)
@@ -390,10 +389,10 @@ public class IDETreeLogic : ALittle.DisplayLayout
 			// 添加控件树
 			tree_object = IDEUIUtility_CreateTree(info, false, object, child_type, this._tab_child, false);
 			this.AddChild(tree_object);
-			this._tab_child.Save(false);
+			this._tab_child.save = false;
 			// 生成撤销类
 			var index = this.GetChildIndex(tree_object);
-			var revoke = new IDEChildShowRevoke(cast<IDETree>(this), cast<IDETreeItem>(tree_object), index);
+			var revoke = new IDEChildShowRevoke(cast<IDEUITree>(this), cast<IDEUITreeItem>(tree_object), index);
 			revoke_bind.PushRevoke(revoke);
 			// 新建自动跳出设置面板
 			tree_object.ShowAttributePanel();
@@ -412,10 +411,10 @@ public class IDETreeLogic : ALittle.DisplayLayout
 
 			tree_object = IDEUIUtility_CreateTree(info, false, object, child_type, this._tab_child, false);
 			this.AddChild(tree_object);
-			this._tab_child.Save(false);
+			this._tab_child.save = false;
 			// 生成撤销类
 			var index = this.GetChildIndex(tree_object);
-			var revoke = new IDEChildShowRevoke(cast<IDETree>(this), cast<IDETreeItem>(tree_object), index);
+			var revoke = new IDEChildShowRevoke(cast<IDEUITree>(this), cast<IDEUITreeItem>(tree_object), index);
 			revoke_bind.PushRevoke(revoke);
 			// 新建自动跳出设置面板
 			tree_object.ShowAttributePanel();
@@ -438,7 +437,7 @@ public class IDETreeLogic : ALittle.DisplayLayout
 		var revoke_bind = new IDERevokeBind();
 	
 		// 获取父节点
-		var target_parent = cast<IDETreeLogic>(this._logic_parent);
+		var target_parent = cast<IDEUITreeLogic>(this._logic_parent);
 		// 控件节点下标
 		var child_index:int = null;
 		// 如果是show，那么就移除对应的show
@@ -447,12 +446,12 @@ public class IDETreeLogic : ALittle.DisplayLayout
 			// 移除对象
 			cast<Map<string,any>>(target_parent._user_info.object)[child_type] = null;
 			// 遍历子控件
-			for (var k, v:IDETreeLogic in target_parent.childs)
+			for (var k, v:IDEUITreeLogic in target_parent.childs)
 			{
 				if (v._user_info.child_type == child_type)
 				{
 					target_parent.RemoveChild(v);
-					var revoke = new IDEDeleteRevoke(cast<IDETree>(target_parent), cast<IDETreeItem>(v), k);
+					var revoke = new IDEDeleteRevoke(cast<IDEUITree>(target_parent), cast<IDEUITreeItem>(v), k);
 					revoke_bind.PushRevoke(revoke);
 					break;
 				}
@@ -463,12 +462,12 @@ public class IDETreeLogic : ALittle.DisplayLayout
 			child_index = target_parent.GetChildIndex(this);
 			target_parent._user_info.object.RemoveChild(this._user_info.object);
 			target_parent.RemoveChild(this);
-			var revoke = new IDEDeleteRevoke(cast<IDETree>(target_parent), cast<IDETreeItem>(this), child_index);
+			var revoke = new IDEDeleteRevoke(cast<IDEUITree>(target_parent), cast<IDEUITreeItem>(this), child_index);
 			revoke_bind.PushRevoke(revoke);
 		}
 	
 		// 新建的对象
-		var tree_object:IDETreeLogic = null;
+		var tree_object:IDEUITreeLogic = null;
 	
 		// 创建控件
 		if (extends_info == null)
@@ -488,10 +487,10 @@ public class IDETreeLogic : ALittle.DisplayLayout
 			// 添加控件树
 			tree_object = IDEUIUtility_CreateTree(info, false, object, child_type, target_parent._tab_child, false);
 			target_parent.AddChild(tree_object, child_index);
-			target_parent._tab_child.Save(false);
+			target_parent._tab_child.save = false;
 			// 生成撤销类
 			var index = target_parent.GetChildIndex(tree_object);
-			var revoke = new IDEChildShowRevoke(cast<IDETree>(target_parent), cast<IDETreeItem>(tree_object), index);
+			var revoke = new IDEChildShowRevoke(cast<IDEUITree>(target_parent), cast<IDEUITreeItem>(tree_object), index);
 			revoke_bind.PushRevoke(revoke);
 		}
 		else
@@ -506,10 +505,10 @@ public class IDETreeLogic : ALittle.DisplayLayout
 			
 			tree_object = IDEUIUtility_CreateTree(info, false, object, child_type, target_parent._tab_child, false);
 			target_parent.AddChild(tree_object, child_index);
-			target_parent._tab_child.Save(false);
+			target_parent._tab_child.save = false;
 			// 生成撤销类
 			var index = target_parent.GetChildIndex(tree_object);
-			var revoke = new IDEChildShowRevoke(cast<IDETree>(target_parent), cast<IDETreeItem>(tree_object), index);
+			var revoke = new IDEChildShowRevoke(cast<IDEUITree>(target_parent), cast<IDEUITreeItem>(tree_object), index);
 			revoke_bind.PushRevoke(revoke);
 		}
 		// 新建自动跳出设置面板
@@ -624,7 +623,7 @@ public class IDETreeLogic : ALittle.DisplayLayout
 	// 删除
 	public fun TreeDelete([Nullable] IDERevokeBind revoke_bind)
 	{
-		var parent = cast<IDETreeLogic>(this._logic_parent);
+		var parent = cast<IDEUITreeLogic>(this._logic_parent);
 		if (parent == null) return;
 	
 		var child_type = this._user_info.child_type;
@@ -634,13 +633,13 @@ public class IDETreeLogic : ALittle.DisplayLayout
 			cast<Map<string,any>>(parent.user_info.object)[child_type] = null;
 
 		var index = parent.GetChildIndex(this);
-		var revoke = new IDEDeleteRevoke(cast<IDETree>(parent), cast<IDETreeItem>(this), index);
+		var revoke = new IDEDeleteRevoke(cast<IDEUITree>(parent), cast<IDEUITreeItem>(this), index);
 		if (revoke_bind != null)
 			revoke_bind.PushRevoke(revoke);
 		else
 			this._tab_child.revoke_list.PushRevoke(revoke);
 
-		this._tab_child.Save(false);
+		this._tab_child.save = false;
 		parent.RemoveChild(this);
 	
 		// 移除设置面板
@@ -655,7 +654,7 @@ public class IDETreeLogic : ALittle.DisplayLayout
 	public fun TreeCut([Nullable] IDERevokeBind revoke_bind)
 	{
 		// 删除
-		var parent = cast<IDETreeLogic>(this._logic_parent);
+		var parent = cast<IDEUITreeLogic>(this._logic_parent);
 		if (parent == null) return;
 	
 		var child_type = this._user_info.child_type;
@@ -665,13 +664,13 @@ public class IDETreeLogic : ALittle.DisplayLayout
 			cast<Map<string,any>>(parent._user_info.object)[child_type] = null;
 
 		var index = parent.GetChildIndex(this);
-		var revoke = new IDEDeleteRevoke(cast<IDETree>(parent), cast<IDETreeItem>(this), index);
+		var revoke = new IDEDeleteRevoke(cast<IDEUITree>(parent), cast<IDEUITreeItem>(this), index);
 		if (revoke_bind != null)
 			revoke_bind.PushRevoke(revoke);
 		else
 			this._tab_child.revoke_list.PushRevoke(revoke);
 
-		this._tab_child.Save(false);
+		this._tab_child.save = false;
 		parent.RemoveChild(this);
 	
 		this._tab_child.UpdateHandleQuadRemove(this);
@@ -703,7 +702,7 @@ public class IDETreeLogic : ALittle.DisplayLayout
 		this._tab_child.UpdateHandleQuadLayout(this);
 	
 		// 处理撤销类
-		this._tab_child.Save(false);
+		this._tab_child.save = false;
 	
 		var new_base = this._user_info.base.text;
 		var new_object = object.text;
@@ -853,11 +852,11 @@ public class IDETreeLogic : ALittle.DisplayLayout
 
 	public fun PasteFromClipboard()
 	{
-        if (this.IsTree())
+        if (this.is_tree)
 			this.tab_child.RightControlTreePasteImpl(this, null, null);
 		else
 		{
-			var common_parent = cast<IDETreeLogic>(this.logic_parent);
+			var common_parent = cast<IDEUITreeLogic>(this.logic_parent);
 			var child_index = 1;
 			if (common_parent == null)
 				common_parent = this;
@@ -869,13 +868,13 @@ public class IDETreeLogic : ALittle.DisplayLayout
     }
     
 	public fun CalcInfo() : ALittle.DisplayInfo { return null; }
-    public fun SearchLink(string name, [Nullable] List<IDETreeLogic> list) : List<IDETreeLogic> { return null; }
-    public fun SearchEvent(string name, [Nullable] List<IDETreeLogic> list) : List<IDETreeLogic> { return null; }
-    public fun SearchDescription(string name, [Nullable] List<IDETreeLogic> list) : List<IDETreeLogic> { return null; }
-    public fun SearchTargetClass(string name, [Nullable] List<IDETreeLogic> list) : List<IDETreeLogic> { return null; }
-    public fun SearchTextureName(string name, [Nullable] List<IDETreeLogic> list) : List<IDETreeLogic> { return null; }
-	public fun EditPickUp(double x, double y) : IDETreeLogic { return null; }
-    public fun QuickPickUp(double x, double y, List<IDETreeLogic> list) { }
-    public fun SelectPickUp(double x, double y) : IDETreeLogic, IDETreeLogic { return null, null; }
+    public fun SearchLink(string name, [Nullable] List<IDEUITreeLogic> list) : List<IDEUITreeLogic> { return null; }
+    public fun SearchEvent(string name, [Nullable] List<IDEUITreeLogic> list) : List<IDEUITreeLogic> { return null; }
+    public fun SearchDescription(string name, [Nullable] List<IDEUITreeLogic> list) : List<IDEUITreeLogic> { return null; }
+    public fun SearchTargetClass(string name, [Nullable] List<IDEUITreeLogic> list) : List<IDEUITreeLogic> { return null; }
+    public fun SearchTextureName(string name, [Nullable] List<IDEUITreeLogic> list) : List<IDEUITreeLogic> { return null; }
+	public fun EditPickUp(double x, double y) : IDEUITreeLogic { return null; }
+    public fun QuickPickUp(double x, double y, List<IDEUITreeLogic> list) { }
+    public fun SelectPickUp(double x, double y) : IDEUITreeLogic, IDEUITreeLogic { return null, null; }
 	public fun GetDataListForAdd() : List<string> { return null; }
 }

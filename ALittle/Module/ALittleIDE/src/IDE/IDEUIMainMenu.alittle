@@ -29,12 +29,12 @@ protected class IDEUIMainMenu : ALittle.Linear
 	private fun HandleFileMenuClick(ALittle.UIClickEvent event)
 	{
 		var menu = new AUIPlugin.AUIRightMenu();
-		menu.AddItem("新建", bind(g_IDECenter.center.project_list.ShowNewProject, g_IDECenter.center.project_list));
-		menu.AddItem("打开", bind(g_IDECenter.center.project_list.ShowOpenProject, g_IDECenter.center.project_list));
-		menu.AddItem("设置", bind(g_IDECenter.center.project_list.ShowSettingProject, g_IDECenter.center.project_list, null));
-		menu.AddItem("保存", bind(g_IDETabManager.SaveAllTab, g_IDETabManager));
+		menu.AddItem("新建", bind(g_IDEProjectNewDialog.ShowNewProject, g_IDEProjectNewDialog));
+		menu.AddItem("打开", bind(g_IDEProjectOpenDialog.ShowOpenProject, g_IDEProjectOpenDialog));
+		menu.AddItem("设置", bind(g_IDEProjectSettingDialog.ShowSettingProject, g_IDEProjectSettingDialog));
+		menu.AddItem("保存", bind(g_IDECenter.center.content_edit.SaveAllTab, g_IDECenter.center.content_edit));
 		menu.AddItem("刷新", bind(g_IDECenter.center.project_list.RefreshProject, g_IDECenter.center.project_list));
-		menu.AddItem("导出项目", bind(g_IDECenter.center.project_list.ShowExportProject, g_IDECenter.center.project_list));
+		menu.AddItem("导出项目", bind(g_IDEProjectExportDialog.ShowExportProject, g_IDEProjectExportDialog));
 		menu.Show(event.target);
 	}
 	// 处理编辑菜单
@@ -59,7 +59,7 @@ protected class IDEUIMainMenu : ALittle.Linear
 	// 处理版本菜单
 	private fun HandleVersionMenuClick(ALittle.UIClickEvent event) { [Language(Lua)]this._version_manager.ShowDialog(); }
 	// 处理运行
-	private fun HandleRunMenuClick(ALittle.UIClickEvent event) { g_IDECenter.center.project_list.RunProject(); }
+	private fun HandleRunMenuClick(ALittle.UIClickEvent event) { g_IDEProject.RunProject(); }
 
 	// 生成Json模板代码
 	private fun HandleGenUIAllInOneClick()

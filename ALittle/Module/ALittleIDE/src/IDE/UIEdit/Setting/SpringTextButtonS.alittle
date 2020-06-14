@@ -8,7 +8,7 @@ public class SpringTextButtonS : DisplayLayoutS
 	private ALittle.DisplayObject _show_disabled;
 	private ALittle.DisplayObject _show_disabled_grid9;
 
-	public ctor(IDETreeUserInfo user_info, IDETabChild tab_child, IDETreeLogic tree_logic)
+	public ctor(IDEUITreeUserInfo user_info, IDEUITabChild tab_child, IDEUITreeLogic tree_logic)
 	{
 		this._layer_name = "ide_setting_springtextbutton";
 	}

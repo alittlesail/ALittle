@@ -1,9 +1,14 @@
 
 namespace ALittleIDE;
 
+public struct IDEUICenterScaleChangedEvent : ALittle.UIEvent
+{
+    double scale;
+}
+
 protected class IDEUICenter : ALittle.DisplayLayout
 {
-	private ALittle.Tab _main_edit_tab;				// 编辑区标签容器
+	private ALittle.Tab _main_tab;				// 编辑区标签容器
 	private ALittle.Tab _control_tree_tab;			// 控件树标签容器
 	private ALittle.Tab _project_edit_tab;			// 项目库，图片库，控件库标签容器
 	private ALittle.Tab _control_edit_tab;			// 属性面板标签容器
@@ -39,6 +44,7 @@ protected class IDEUICenter : ALittle.DisplayLayout
 	private IDEUIProjectList _project_list;	// 项目库
 	private IDEUIControlAttr _control_attr;	// 控件属性
 	private IDEUIControlAnti _control_anti;	// 动画编辑器
+	private IDEContentEdit	 _content_edit;	// 内容编辑管理器
 
 	public fun TCtor()
 	{		
@@ -56,18 +62,12 @@ protected class IDEUICenter : ALittle.DisplayLayout
 		this._project_quick_tab.DisableAllCloseButton();
 		this._project_quick_tab.tab_index = 1;
 
-		// 初始化主要单件
-		g_IDETabManager.Setup(this._main_edit_tab, this._control_tree, this._control_attr, this._control_anti);
-
 		ALittle.TextRadioButton.SetGroup([this._tool_singleselect, this._tool_handdrag, this._tool_scale, this._tool_presee]);
-		
-		// 打开上次工程
-		this._project_list.OpenLastProject();
 	}
 	
 	public fun Shutdown()
 	{
-		g_IDETabManager.Shutdown();
+		this._content_edit.Shutdown();
 	}
 
 	public get control_tree() : IDEUIControlTree { return this._control_tree; }
@@ -75,6 +75,7 @@ protected class IDEUICenter : ALittle.DisplayLayout
 	public get project_list() : IDEUIProjectList { return this._project_list; }
 	public get control_attr() : IDEUIControlAttr { return this._control_attr; }
 	public get control_anti() : IDEUIControlAnti { return this._control_anti; }
+	public get content_edit() : IDEContentEdit { return this._content_edit; }
 
 	////////////////////////////////////////////////////////////////////////////////////////
 
@@ -153,53 +154,53 @@ protected class IDEUICenter : ALittle.DisplayLayout
 	// 快捷键 撤销
 	public fun HandleUndoRevoke(ALittle.UIEvent event)
 	{
-		var tab_child = g_IDETabManager.cur_tab_child;
+		var tab_child = g_IDECenter.center.content_edit.cur_tab_child;
 		if (tab_child == null) return;
 		tab_child.revoke_list.UndoRevoke();
 	}
 	// 快捷键 重做
 	public fun HandleDoRevoke(ALittle.UIEvent event)
 	{
-		var tab_child = g_IDETabManager.cur_tab_child;
+		var tab_child = g_IDECenter.center.content_edit.cur_tab_child;
 		if (tab_child == null) return;
 		tab_child.revoke_list.DoRevoke();
 	}
 	// 快捷键 保存
 	public fun HandleSaveCurrent(ALittle.UIEvent event)
 	{
-		var tab_child = g_IDETabManager.cur_tab_child;
+		var tab_child = g_IDECenter.center.content_edit.cur_tab_child;
 		if (tab_child == null) return;
-		tab_child.Save(true);
+		tab_child.save = true;
 	}
 	// 快捷键 撤销
 	public fun HandleUndoRevoke(ALittle.UIEvent event)
 	{
 		// 如果某些对话框打开着那么就直接返回
 		if (g_IDEAttrEventDialog.IsShow()) return;
-		var tab_child = g_IDETabManager.cur_tab_child;
+		var tab_child = g_IDECenter.center.content_edit.cur_tab_child;
 		if (tab_child == null) return;
 		tab_child.revoke_list.UndoRevoke();
 	}
 	// 快捷键 重做
 	public fun HandleDoRevoke(ALittle.UIEvent event)
 	{
-		var tab_child = g_IDETabManager.cur_tab_child;
+		var tab_child = g_IDECenter.center.content_edit.cur_tab_child;
 		if (tab_child == null) return;
 		tab_child.revoke_list.DoRevoke();
 	}
 	// 快捷键 保存
 	public fun HandleSaveCurrent(ALittle.UIEvent event)
 	{
-		var tab_child = g_IDETabManager.cur_tab_child;
+		var tab_child = g_IDECenter.center.content_edit.cur_tab_child;
 		if (tab_child == null) return;
-		tab_child.Save(true);
+		tab_child.save = true;
 	}
 	////////////////////////////////////////////////////////////////////////////////////////
 	// 工具栏按钮发生变化
 	public fun HandleToolSingleSelect(ALittle.UIEvent event)
 	{
 		var object = event.target;
-		g_IDETabManager.ShowTabChildSelectLayer(object.selected);
+		g_IDECenter.center.content_edit.ShowTabChildSelectLayer(object.selected);
 		this._tool_h_align_left.visible = object.selected;
 		this._tool_h_align_center.visible = object.selected;
 		this._tool_h_align_right.visible = object.selected;
@@ -216,14 +217,14 @@ protected class IDEUICenter : ALittle.DisplayLayout
 	}
 	public fun HandleToolHandDrag(ALittle.UIButtonDragEvent event)
 	{
-		g_IDETabManager.ShowTabChildHandDragLayer(event.target.selected);
+		g_IDECenter.center.content_edit.ShowTabChildHandDragLayer(event.target.selected);
 	}
 	public fun HandleToolPreSee(ALittle.UIEvent event)
 	{
 	}
 	public fun HandleToolScale(ALittle.UIEvent event)
 	{
-		g_IDETabManager.ShowTabChildScaleLayer(event.target.selected);
+		g_IDECenter.center.content_edit.ShowTabChildScaleLayer(event.target.selected);
 		this._tool_scale_text.visible = event.target.selected;
 		this._tool_scale_input.visible = event.target.selected;
 	}
@@ -245,15 +246,15 @@ protected class IDEUICenter : ALittle.DisplayLayout
 	}
 	public fun HandleToolScaleDrag(ALittle.UIButtonDragEvent event)
 	{
-		var tab_child = g_IDETabManager.cur_tab_child;
-		if (tab_child == null) return;
-	
 		var scale = ALittle.Math_ToDouble(this._tool_scale_input.text);
 		if (scale == null) scale = 1;
 		scale = scale + event.delta_x * 0.05;
 		if (scale < 0) scale = 0;
 		this._tool_scale_input.text = scale;
-		tab_child.SetScale(scale);
+
+		var scale_event = new IDEUICenterScaleChangedEvent();
+		scale_event.scale = scale;
+		this.DispatchEvent(scale_event);
 	}
 	public fun HandleToolScaleMoveIn(ALittle.UIEvent event)
 	{
@@ -265,7 +266,7 @@ protected class IDEUICenter : ALittle.DisplayLayout
 	}
 	public fun HandleToolScaleInputFOCUSOUT(ALittle.UIEvent event)
 	{
-		var tab_child = g_IDETabManager.cur_tab_child;
+		var tab_child = g_IDECenter.center.content_edit.cur_tab_child;
 		if (tab_child == null) return;
 	
 		var scale = ALittle.Math_ToDouble(this._tool_scale_input.text);
@@ -275,14 +276,16 @@ protected class IDEUICenter : ALittle.DisplayLayout
 			scale = 0;
 			this._tool_scale_input.text = "0";
 		}
-		tab_child.SetScale(scale);
+		var scale_event = new IDEUICenterScaleChangedEvent();
+		scale_event.scale = scale;
+		this.DispatchEvent(scale_event);
 	}
 	
 	public fun HandleToolHLAlign(ALittle.UIEvent event)
 	{
-		var cur_tab = g_IDETabManager.cur_tab;
+		var cur_tab = g_IDECenter.center.content_edit.cur_tab;
 		if (cur_tab == null) return;
-		var tab_child:IDETabChild = cur_tab._user_data;
+		var tab_child:IDEUITabChild = cur_tab._user_data;
 		if (event.target == this._tool_h_align_left)
 			tab_child.SelectAlign("h_align_left");
 		elseif (event.target == this._tool_h_align_center)
@@ -312,6 +315,6 @@ protected class IDEUICenter : ALittle.DisplayLayout
 	public fun HandleTabRightExMenu(ALittle.UIEvent event)
 	{
 		var x, y = event.target.LocalToGlobal();
-		g_IDETabManager.ShowTabRightExMenu(x, y + event.target.height);
+		g_IDECenter.center.content_edit.ShowTabRightExMenu(x, y + event.target.height);
 	}
 }

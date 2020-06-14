@@ -15,6 +15,14 @@ public struct IDEProjectCreateControlEvent : IDEProjectEvent {}
 public struct IDEProjectDeleteControlEvent : IDEProjectEvent {}
 public struct IDEProjectChangeControlEvent : IDEProjectEvent {}
 
+public struct IDEProjectSettingChanged : ALittle.Event
+{
+    double default_show_width;
+	double default_show_height;
+	string default_font_path;
+	int default_font_size;
+}
+
 // 项目信息
 public struct IDEProjectInfo
 {
@@ -135,8 +143,17 @@ public class IDEProject : ALittle.EventDispatcher
 	}
 
 	// 打开项目
-	public fun OpenProject(string name) : bool
+	public fun OpenProject(string name) : string
 	{
+		// 检查项目名
+		if (name == "" || name == null)
+			return "请输入项目名";
+		// 检查项目是否存在
+		if (ALittle.File_GetFileAttr(ALittle.File_BaseFilePath().."Module/"..name) == null)
+			return "项目不存在:"..name;
+
+		this.CloseProject();
+		
 		// 添加到项目列表
 		this.AddProjectConfig(name);
 
@@ -160,8 +177,18 @@ public class IDEProject : ALittle.EventDispatcher
 		e.name = name;
 		this.DispatchEvent(e);
 
-		return true;
+		return null;
 	}
+
+	// 打开上次的项目
+	public fun OpenLastProject()
+	{
+		// 标记上次打开的项目名
+		var name = g_IDEConfig.GetString("last_project", null);
+		if (name == null) return;
+
+		this.OpenProject(name);
+    }
 
 	// 关闭项目
 	public fun CloseProject() : string
@@ -193,6 +220,21 @@ public class IDEProject : ALittle.EventDispatcher
 		event.name = name;
 		this.DispatchEvent(event);
 		return null;
+	}
+
+	public fun RunProject()
+	{
+		if (this._project == null)
+		{
+			g_AUITool.ShowNotice("提示", "当前没有打开的项目");
+			return;
+		}
+
+		[Language(JavaScript)]
+		g_AUITool.ShowAlertDialog("提示", "JavaScript不支持运行项目");
+
+		[Language(Lua)]
+		lua.os.execute("start ALittleClient.exe "..this._project.name.." debug");
 	}
 
 	// 获取当前项目

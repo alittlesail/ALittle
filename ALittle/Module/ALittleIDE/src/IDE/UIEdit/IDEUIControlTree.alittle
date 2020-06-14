@@ -3,11 +3,11 @@ namespace ALittleIDE;
 
 struct IDEPasteControlUserData
 {
-	IDETreeLogic target;
+	IDEUITreeLogic target;
 	ALittle.DisplayInfo info;
 	int child_index;
 	IDERevokeBind revoke_bind;
-	Functor<(bool, List<IDETreeLogic>)> callback;
+	Functor<(bool, List<IDEUITreeLogic>)> callback;
 }
 
 public class IDEUIControlTree : ALittle.DisplayLayout
@@ -32,15 +32,15 @@ public class IDEUIControlTree : ALittle.DisplayLayout
 	// 处理控件树，右键菜单
 	public fun HandleControlTreeItemRightClick(ALittle.UIRButtonDownEvent event)
 	{
-		var target:IDETreeItem = event.target._user_data;
+		var target:IDEUITreeItem = event.target._user_data;
 		if (target.user_info.extends) return;
 	
 		var menu = new AUIPlugin.AUIRightMenu();
 		menu.AddItem("上移", bind(target.TransferUp, target), target.user_info.root || target.user_info.child_type != "child", false);
 		menu.AddItem("下移", bind(target.TransferDown, target), target.user_info.root || target.user_info.child_type != "child", false);
-		menu.AddItem("添加", bind(this.ShowAddDialog, this, target), !target.IsTree());
-		menu.AddItem("添加Image", bind(this.ShowAddImageDialog, this, target), !target.IsTree());
-		menu.AddItem("添加Text", bind(this.ShowAddTextDialog, this, target), !target.IsTree());
+		menu.AddItem("添加", bind(this.ShowAddDialog, this, target), !target.is_tree);
+		menu.AddItem("添加Image", bind(this.ShowAddImageDialog, this, target), !target.is_tree);
+		menu.AddItem("添加Text", bind(this.ShowAddTextDialog, this, target), !target.is_tree);
 		menu.AddItem("复制", bind(target.CopyToClipboard, target));
 		menu.AddItem("粘贴", bind(target.PasteFromClipboard, target));
 		menu.AddItem("剪切", bind(target.CutToClipboard, target), target.user_info.root);
@@ -52,7 +52,7 @@ public class IDEUIControlTree : ALittle.DisplayLayout
 	}
 	
 	// 处理添加
-	public async fun ShowAddImageDialog(IDETreeLogic target)
+	public async fun ShowAddImageDialog(IDEUITreeLogic target)
 	{
 		// 直接显示图片选择框
 		g_IDEImageSelectDialog.SetBasePath(g_IDEProject.project.texture_path);
@@ -77,7 +77,7 @@ public class IDEUIControlTree : ALittle.DisplayLayout
 		tree_object.ShowFocus(false);
 	}
 	// 处理添加
-	public fun ShowAddTextDialog(IDETreeLogic target)
+	public fun ShowAddTextDialog(IDEUITreeLogic target)
 	{
 		// 设置这个下拉菜单
 		if (target.CanAddChild() == false)
@@ -95,7 +95,7 @@ public class IDEUIControlTree : ALittle.DisplayLayout
 		tree_object.ShowFocus(false);
 	}
 	// 处理添加
-	public fun ShowAddDialog(IDETreeLogic target)
+	public fun ShowAddDialog(IDEUITreeLogic target)
 	{
 		// 打开添加对话框
 		if (this._control_add_dialog == null)
@@ -112,7 +112,7 @@ public class IDEUIControlTree : ALittle.DisplayLayout
 			g_AUITool.ShowNotice("提示", "当前控件不能添加子控件");
 			return;
 		}
-		// 这个是IDETree或者IDETreeItem
+		// 这个是IDEUITree或者IDEUITreeItem
 		this._control_add_dialog._user_data = target;
 		// 设置下拉菜单的data_list
 		this._control_add_type.data_list = data_list;
@@ -128,7 +128,7 @@ public class IDEUIControlTree : ALittle.DisplayLayout
 	// 添加确认
 	public fun HandleAddControlConfirm(ALittle.UIEvent event)
 	{
-		var target:IDETreeLogic = this._control_add_dialog._user_data;
+		var target:IDEUITreeLogic = this._control_add_dialog._user_data;
 		this._control_add_dialog._user_data = null;
 		// 检查继承
 		var extends_name = this._control_add_extends_name.text;
@@ -146,16 +146,16 @@ public class IDEUIControlTree : ALittle.DisplayLayout
 		if (tree_object != null) tree_object.ShowFocus(false);
 	}
 	// 处理替换
-	public fun ShowReplaceDialog(IDETreeLogic target)
+	public fun ShowReplaceDialog(IDEUITreeLogic target)
 	{
 		// 如果当前节点是分支节点，那么就要检查是否有子控件
-		if (target.IsTree() && target.child_count > 0)
+		if (target.is_tree && target.child_count > 0)
 		{
 			g_AUITool.ShowNotice("提示", "当前控件有子控件，不能替换");
 			return;
 		}
 		// 获取目标的父节点
-		var target_parent = cast<IDETreeLogic>(target.logic_parent);
+		var target_parent = cast<IDEUITreeLogic>(target.logic_parent);
 		if (target_parent == null) return;
 	
 		// 当前的节点类型
@@ -183,7 +183,7 @@ public class IDEUIControlTree : ALittle.DisplayLayout
 		if (child_type_exist == false)
 			ALittle.List_Push(data_list, child_type);
 
-		// 这个是IDETree或者IDETreeItem
+		// 这个是IDEUITree或者IDEUITreeItem
 		this._control_replace_dialog._user_data = target;
 		// 设置下拉菜单的data_list
 		this._control_replace_type.data_list = data_list;
@@ -199,7 +199,7 @@ public class IDEUIControlTree : ALittle.DisplayLayout
 	
 	public fun HandleReplaceControlConfirm(ALittle.UIEvent event)
 	{
-		var target:IDETreeLogic = this._control_replace_dialog._user_data;
+		var target:IDEUITreeLogic = this._control_replace_dialog._user_data;
 		this._control_replace_dialog._user_data = null;
 		// 检查继承
 		var extends_name = this._control_replace_extends_name.text;
@@ -216,7 +216,7 @@ public class IDEUIControlTree : ALittle.DisplayLayout
 		target.TreeReplace(extends_name, class_name, child_type);
 	}
 	// 处理粘贴
-	public fun ShowPasteDialog(IDETreeLogic target, ALittle.DisplayInfo info, int child_index, IDERevokeBind revoke_bind, Functor<(bool, List<IDETreeLogic>)> callback)
+	public fun ShowPasteDialog(IDEUITreeLogic target, ALittle.DisplayInfo info, int child_index, IDERevokeBind revoke_bind, Functor<(bool, List<IDEUITreeLogic>)> callback)
 	{
 		var data_list = target.GetDataListForAdd();
 		if (ALittle.List_MaxN(data_list) == 0)
@@ -257,13 +257,13 @@ public class IDEUIControlTree : ALittle.DisplayLayout
 		var user_data:IDEPasteControlUserData = this._paste_control_dialog._user_data;
 		this._paste_control_dialog._user_data = null;
 	
-		var add_list = new List<IDETreeLogic>();
+		var add_list = new List<IDEUITreeLogic>();
 		var tree_object = user_data.target.TreePaste(user_data.info, this._control_paste_type.text, user_data.child_index, false, user_data.revoke_bind);
 		add_list[1] = tree_object;
 		if (user_data.callback != null) user_data.callback(true, add_list);
 	}
 	// 处理跳转
-	public fun ControlTreeJump(IDETreeLogic target)
+	public fun ControlTreeJump(IDEUITreeLogic target)
 	{
 		var extends_name = target.user_info.base.__extends;
 		var control_info = g_IDEProject.project.ui.control_map[extends_name];
@@ -273,10 +273,10 @@ public class IDEUIControlTree : ALittle.DisplayLayout
 			return;
 		}
 	
-		g_IDETabManager.StartEditControlBySelect(control_info.name, control_info.info);
+		g_IDECenter.center.content_edit.StartEditControlBySelect(control_info.name, control_info.info);
 	}
 	// 处理描述
-	public async fun ControlTreeDesc(IDETreeLogic target)
+	public async fun ControlTreeDesc(IDEUITreeLogic target)
 	{
 		var x, y = target.LocalToGlobal();
 		var desc = target.GetDesc();
@@ -287,9 +287,9 @@ public class IDEUIControlTree : ALittle.DisplayLayout
 	// 处理搜索
 	public fun HandleTreeSearchClick(ALittle.UIEvent event)
 	{
-		var tab = g_IDETabManager.cur_tab;
+		var tab = g_IDECenter.center.content_edit.cur_tab;
 		if (tab == null) return;
-		var tab_child:IDETabChild = tab._user_data;
+		var tab_child:IDEUITabChild = tab._user_data;
 		var search_key = this._tree_search_key.text;
 		var search_type = this._tree_search_type.text;
 		if (search_type == "描述")

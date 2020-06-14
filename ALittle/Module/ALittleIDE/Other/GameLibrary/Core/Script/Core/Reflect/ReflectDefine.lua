@@ -21,3 +21,12 @@ function NewObject(clazz, ...)
 	return clazz(...)
 end
 
+function Cast(T, O, object)
+	local o_info = (object).__class
+	local t_info = T
+	if o_info ~= t_info then
+		return nil
+	end
+	return object
+end
+

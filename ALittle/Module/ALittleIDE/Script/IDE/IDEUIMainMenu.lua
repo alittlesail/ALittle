@@ -23,12 +23,12 @@ end
 
 function IDEUIMainMenu:HandleFileMenuClick(event)
 	local menu = AUIPlugin.AUIRightMenu()
-	menu:AddItem("新建", Lua.Bind(g_IDECenter.center.project_list.ShowNewProject, g_IDECenter.center.project_list))
-	menu:AddItem("打开", Lua.Bind(g_IDECenter.center.project_list.ShowOpenProject, g_IDECenter.center.project_list))
-	menu:AddItem("设置", Lua.Bind(g_IDECenter.center.project_list.ShowSettingProject, g_IDECenter.center.project_list, nil))
-	menu:AddItem("保存", Lua.Bind(g_IDETabManager.SaveAllTab, g_IDETabManager))
+	menu:AddItem("新建", Lua.Bind(g_IDEProjectNewDialog.ShowNewProject, g_IDEProjectNewDialog))
+	menu:AddItem("打开", Lua.Bind(g_IDEProjectOpenDialog.ShowOpenProject, g_IDEProjectOpenDialog))
+	menu:AddItem("设置", Lua.Bind(g_IDEProjectSettingDialog.ShowSettingProject, g_IDEProjectSettingDialog))
+	menu:AddItem("保存", Lua.Bind(g_IDECenter.center.content_edit.SaveAllTab, g_IDECenter.center.content_edit))
 	menu:AddItem("刷新", Lua.Bind(g_IDECenter.center.project_list.RefreshProject, g_IDECenter.center.project_list))
-	menu:AddItem("导出项目", Lua.Bind(g_IDECenter.center.project_list.ShowExportProject, g_IDECenter.center.project_list))
+	menu:AddItem("导出项目", Lua.Bind(g_IDEProjectExportDialog.ShowExportProject, g_IDEProjectExportDialog))
 	menu:Show(event.target)
 end
 
@@ -54,7 +54,7 @@ function IDEUIMainMenu:HandleVersionMenuClick(event)
 end
 
 function IDEUIMainMenu:HandleRunMenuClick(event)
-	g_IDECenter.center.project_list:RunProject()
+	g_IDEProject:RunProject()
 end
 
 function IDEUIMainMenu:HandleGenUIAllInOneClick()

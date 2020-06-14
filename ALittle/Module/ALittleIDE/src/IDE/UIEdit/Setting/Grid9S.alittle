@@ -8,7 +8,7 @@ public class Grid9S : DisplayLayoutS
     private ALittle.DisplayObject _top_size;
     private ALittle.DisplayObject _bottom_size;
 
-    public ctor(IDETreeUserInfo user_info, IDETabChild tab_child, IDETreeLogic tree_logic)
+    public ctor(IDEUITreeUserInfo user_info, IDEUITabChild tab_child, IDEUITreeLogic tree_logic)
     {
         // 设置面板的UI
         this._layer_name = "ide_setting_grid9";

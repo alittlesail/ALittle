@@ -7,7 +7,7 @@ public class ScrollScreenS : DisplayLayoutS
 	private ALittle.DisplayObject _right_scrollbar;
 	private ALittle.DisplayObject _bottom_scrollbar;
 
-	public ctor(IDETreeUserInfo user_info, IDETabChild tab_child, IDETreeLogic tree_logic)
+	public ctor(IDEUITreeUserInfo user_info, IDEUITabChild tab_child, IDEUITreeLogic tree_logic)
 	{
 		this._layer_name = "ide_setting_scrollscreen";
 	}

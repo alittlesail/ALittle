@@ -67,10 +67,10 @@ type_list = {"ALittle.DisplayObject","double","double","double","double","int","
 option_map = {}
 })
 
-assert(ALittleIDE.IDETreeLogic, " extends class:ALittleIDE.IDETreeLogic is nil")
-IDETreeItem = Lua.Class(ALittleIDE.IDETreeLogic, "ALittleIDE.IDETreeItem")
+assert(ALittleIDE.IDEUITreeLogic, " extends class:ALittleIDE.IDEUITreeLogic is nil")
+IDEUITreeItem = Lua.Class(ALittleIDE.IDEUITreeLogic, "ALittleIDE.IDEUITreeItem")
 
-function IDETreeItem:Ctor(ctrl_sys, user_info, tab_child)
+function IDEUITreeItem:Ctor(ctrl_sys, user_info, tab_child)
 	if self._user_info.extends then
 		___rawset(self, "_item", ctrl_sys:CreateControl("ide_common_tree_item_disabled", self))
 	else
@@ -131,7 +131,7 @@ function IDETreeItem:Ctor(ctrl_sys, user_info, tab_child)
 	self._item_button._user_data = self
 end
 
-function IDETreeItem:UpdateDesc()
+function IDEUITreeItem:UpdateDesc()
 	local title = ""
 	if self._user_info.child_type ~= nil and self._user_info.child_type ~= "child" then
 		title = title .. "[" .. self._user_info.child_type .. "]"
@@ -157,26 +157,26 @@ function IDETreeItem:UpdateDesc()
 	end
 end
 
-function IDETreeItem:IsTree()
+function IDEUITreeItem.__getter:is_tree()
 	return false
 end
 
-function IDETreeItem.__getter:fold()
+function IDEUITreeItem.__getter:fold()
 	return false
 end
 
-function IDETreeItem.__setter:fold(value)
+function IDEUITreeItem.__setter:fold(value)
 end
 
-function IDETreeItem:GetDataListForAdd()
+function IDEUITreeItem:GetDataListForAdd()
 	return {}
 end
 
-function IDETreeItem:CalcInfo()
+function IDEUITreeItem:CalcInfo()
 	return ALittle.String_CopyTable(self._user_info.base)
 end
 
-function IDETreeItem:SearchLink(name, list)
+function IDEUITreeItem:SearchLink(name, list)
 	if list == nil then
 		list = {}
 	end
@@ -193,7 +193,7 @@ function IDETreeItem:SearchLink(name, list)
 	return list
 end
 
-function IDETreeItem:SearchEvent(name, list)
+function IDEUITreeItem:SearchEvent(name, list)
 	if list == nil then
 		list = {}
 	end
@@ -212,7 +212,7 @@ function IDETreeItem:SearchEvent(name, list)
 	return list
 end
 
-function IDETreeItem:SearchDescription(name, list)
+function IDEUITreeItem:SearchDescription(name, list)
 	if list == nil then
 		list = {}
 	end
@@ -229,7 +229,7 @@ function IDETreeItem:SearchDescription(name, list)
 	return list
 end
 
-function IDETreeItem:SearchTargetClass(name, list)
+function IDEUITreeItem:SearchTargetClass(name, list)
 	if list == nil then
 		list = {}
 	end
@@ -247,7 +247,7 @@ function IDETreeItem:SearchTargetClass(name, list)
 	return list
 end
 
-function IDETreeItem:SearchTextureName(name, list)
+function IDEUITreeItem:SearchTextureName(name, list)
 	if list == nil then
 		list = {}
 	end
@@ -264,7 +264,7 @@ function IDETreeItem:SearchTextureName(name, list)
 	return list
 end
 
-function IDETreeItem:EditPickUp(x, y)
+function IDEUITreeItem:EditPickUp(x, y)
 	if self._user_info.extends then
 		return nil
 	end
@@ -276,10 +276,10 @@ function IDETreeItem:EditPickUp(x, y)
 	return nil
 end
 
-function IDETreeItem:QuickPickUp(x, y, list)
+function IDEUITreeItem:QuickPickUp(x, y, list)
 end
 
-function IDETreeItem:SelectPickUp(x, y)
+function IDEUITreeItem:SelectPickUp(x, y)
 	if self._user_info.extends then
 		return nil, nil
 	end

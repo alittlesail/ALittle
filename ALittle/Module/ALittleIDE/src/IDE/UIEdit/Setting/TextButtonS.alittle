@@ -15,7 +15,7 @@ public class TextButtonS : DisplayLayoutS
 	private ALittle.DisplayObject _text_x_type;
 	private ALittle.ImageInput _text_x_value;
 
-	public ctor(IDETreeUserInfo user_info, IDETabChild tab_child, IDETreeLogic tree_logic)
+	public ctor(IDEUITreeUserInfo user_info, IDEUITabChild tab_child, IDEUITreeLogic tree_logic)
 	{
 		this._layer_name = "ide_setting_textbutton";
 	}

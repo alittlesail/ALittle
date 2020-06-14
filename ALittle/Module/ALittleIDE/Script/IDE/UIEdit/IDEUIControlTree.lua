@@ -13,7 +13,7 @@ option_map = {}
 ALittle.RegStruct(1025287370, "ALittleIDE.IDEPasteControlUserData", {
 name = "ALittleIDE.IDEPasteControlUserData", ns_name = "ALittleIDE", rl_name = "IDEPasteControlUserData", hash_code = 1025287370,
 name_list = {"target","info","child_index","revoke_bind","callback"},
-type_list = {"ALittleIDE.IDETreeLogic","ALittle.DisplayInfo","int","ALittleIDE.IDERevokeBind","Functor<(bool,List<ALittleIDE.IDETreeLogic>)>"},
+type_list = {"ALittleIDE.IDEUITreeLogic","ALittle.DisplayInfo","int","ALittleIDE.IDERevokeBind","Functor<(bool,List<ALittleIDE.IDEUITreeLogic>)>"},
 option_map = {}
 })
 ALittle.RegStruct(1653869333, "ALittle.LoopGroupInfo", {
@@ -52,9 +52,9 @@ function IDEUIControlTree:HandleControlTreeItemRightClick(event)
 	local menu = AUIPlugin.AUIRightMenu()
 	menu:AddItem("上移", Lua.Bind(target.TransferUp, target), target.user_info.root or target.user_info.child_type ~= "child", false)
 	menu:AddItem("下移", Lua.Bind(target.TransferDown, target), target.user_info.root or target.user_info.child_type ~= "child", false)
-	menu:AddItem("添加", Lua.Bind(self.ShowAddDialog, self, target), not target:IsTree())
-	menu:AddItem("添加Image", Lua.Bind(self.ShowAddImageDialog, self, target), not target:IsTree())
-	menu:AddItem("添加Text", Lua.Bind(self.ShowAddTextDialog, self, target), not target:IsTree())
+	menu:AddItem("添加", Lua.Bind(self.ShowAddDialog, self, target), not target.is_tree)
+	menu:AddItem("添加Image", Lua.Bind(self.ShowAddImageDialog, self, target), not target.is_tree)
+	menu:AddItem("添加Text", Lua.Bind(self.ShowAddTextDialog, self, target), not target.is_tree)
 	menu:AddItem("复制", Lua.Bind(target.CopyToClipboard, target))
 	menu:AddItem("粘贴", Lua.Bind(target.PasteFromClipboard, target))
 	menu:AddItem("剪切", Lua.Bind(target.CutToClipboard, target), target.user_info.root)
@@ -139,7 +139,7 @@ function IDEUIControlTree:HandleAddControlConfirm(event)
 end
 
 function IDEUIControlTree:ShowReplaceDialog(target)
-	if target:IsTree() and target.child_count > 0 then
+	if target.is_tree and target.child_count > 0 then
 		g_AUITool:ShowNotice("提示", "当前控件有子控件，不能替换")
 		return
 	end
@@ -243,7 +243,7 @@ function IDEUIControlTree:ControlTreeJump(target)
 		g_AUITool:ShowNotice("错误", "控件不存在:" .. extends_name)
 		return
 	end
-	g_IDETabManager:StartEditControlBySelect(control_info.name, control_info.info)
+	g_IDECenter.center.content_edit:StartEditControlBySelect(control_info.name, control_info.info)
 end
 
 function IDEUIControlTree:ControlTreeDesc(target)
@@ -258,7 +258,7 @@ end
 IDEUIControlTree.ControlTreeDesc = Lua.CoWrap(IDEUIControlTree.ControlTreeDesc)
 
 function IDEUIControlTree:HandleTreeSearchClick(event)
-	local tab = g_IDETabManager.cur_tab
+	local tab = g_IDECenter.center.content_edit.cur_tab
 	if tab == nil then
 		return
 	end

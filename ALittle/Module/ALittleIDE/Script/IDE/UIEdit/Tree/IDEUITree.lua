@@ -79,10 +79,10 @@ type_list = {"ALittle.DisplayObject","double","double","double","double","double
 option_map = {}
 })
 
-assert(ALittleIDE.IDETreeLogic, " extends class:ALittleIDE.IDETreeLogic is nil")
-IDETree = Lua.Class(ALittleIDE.IDETreeLogic, "ALittleIDE.IDETree")
+assert(ALittleIDE.IDEUITreeLogic, " extends class:ALittleIDE.IDEUITreeLogic is nil")
+IDEUITree = Lua.Class(ALittleIDE.IDEUITreeLogic, "ALittleIDE.IDEUITree")
 
-function IDETree:Ctor(ctrl_sys, user_info, tab_child)
+function IDEUITree:Ctor(ctrl_sys, user_info, tab_child)
 	if self._user_info.extends then
 		___rawset(self, "_head", ctrl_sys:CreateControl("ide_common_tree_head_disabled", self))
 	else
@@ -115,7 +115,7 @@ function IDETree:Ctor(ctrl_sys, user_info, tab_child)
 	self.fold = false
 end
 
-function IDETree:UpdateDesc()
+function IDEUITree:UpdateDesc()
 	local title = ""
 	if self._user_info.child_type ~= nil and self._user_info.child_type ~= "child" then
 		title = title .. "[" .. self._user_info.child_type .. "]"
@@ -136,18 +136,18 @@ function IDETree:UpdateDesc()
 	end
 end
 
-function IDETree:HandleLButtonDown(event)
+function IDEUITree:HandleLButtonDown(event)
 	if event.count == 1 then
 		return
 	end
 	self.fold = not self.fold
 end
 
-function IDETree:IsTree()
+function IDEUITree.__getter:is_tree()
 	return true
 end
 
-function IDETree:GetDataListForAdd()
+function IDEUITree:GetDataListForAdd()
 	local data_list = {}
 	local data_list_count = 0
 	local clazz = self._user_info.default.__class
@@ -184,7 +184,7 @@ function IDETree:GetDataListForAdd()
 	return data_list
 end
 
-function IDETree:CanAddChild()
+function IDEUITree:CanAddChild()
 	local clazz = self._user_info.default.__class
 	if g_IDEEnum.can_add_child_map[clazz] then
 		local can_add = true
@@ -201,7 +201,7 @@ function IDETree:CanAddChild()
 	return false
 end
 
-function IDETree:CalcInfo()
+function IDEUITree:CalcInfo()
 	local info = ALittle.String_CopyTable(self._user_info.base)
 	info.__childs = nil
 	local child_count = 0
@@ -223,7 +223,7 @@ function IDETree:CalcInfo()
 	return info
 end
 
-function IDETree:SearchLink(name, list)
+function IDEUITree:SearchLink(name, list)
 	if list == nil then
 		list = {}
 	end
@@ -242,7 +242,7 @@ function IDETree:SearchLink(name, list)
 	return list
 end
 
-function IDETree:SearchEvent(name, list)
+function IDEUITree:SearchEvent(name, list)
 	if list == nil then
 		list = {}
 	end
@@ -264,7 +264,7 @@ function IDETree:SearchEvent(name, list)
 	return list
 end
 
-function IDETree:SearchDescription(name, list)
+function IDEUITree:SearchDescription(name, list)
 	if list == nil then
 		list = {}
 	end
@@ -283,7 +283,7 @@ function IDETree:SearchDescription(name, list)
 	return list
 end
 
-function IDETree:SearchTargetClass(name, list)
+function IDEUITree:SearchTargetClass(name, list)
 	if list == nil then
 		list = {}
 	end
@@ -303,7 +303,7 @@ function IDETree:SearchTargetClass(name, list)
 	return list
 end
 
-function IDETree:SearchTextureName(name, list)
+function IDEUITree:SearchTextureName(name, list)
 	if list == nil then
 		list = {}
 	end
@@ -322,7 +322,7 @@ function IDETree:SearchTextureName(name, list)
 	return list
 end
 
-function IDETree:EditPickUp(x, y)
+function IDEUITree:EditPickUp(x, y)
 	if self._user_info.extends then
 		return nil
 	end
@@ -349,7 +349,7 @@ function IDETree:EditPickUp(x, y)
 	return nil
 end
 
-function IDETree:QuickPickUp(x, y, list)
+function IDEUITree:QuickPickUp(x, y, list)
 	if self._user_info.extends then
 		return
 	end
@@ -369,7 +369,7 @@ function IDETree:QuickPickUp(x, y, list)
 	end
 end
 
-function IDETree:SelectPickUp(x, y)
+function IDEUITree:SelectPickUp(x, y)
 	if self._user_info.extends then
 		return nil, nil
 	end
@@ -393,44 +393,44 @@ function IDETree:SelectPickUp(x, y)
 	return nil, nil
 end
 
-function IDETree:HandleChildResize(event)
+function IDEUITree:HandleChildResize(event)
 	self:DispatchEvent(___all_struct[-431205740], {})
 end
 
-function IDETree:HandleHeadChanged(event)
+function IDEUITree:HandleHeadChanged(event)
 	self._body.visible = event.target.selected
 	self:DispatchEvent(___all_struct[-431205740], {})
 end
 
-function IDETree:GetChildIndex(child)
+function IDEUITree:GetChildIndex(child)
 	return self._body:GetChildIndex(child)
 end
 
-function IDETree:SetChildIndex(child, index)
+function IDEUITree:SetChildIndex(child, index)
 	return self._body:SetChildIndex(child, index)
 end
 
-function IDETree:GetChildByIndex(index)
+function IDEUITree:GetChildByIndex(index)
 	return self._body:GetChildByIndex(index)
 end
 
-function IDETree:GetChildIndex(child)
+function IDEUITree:GetChildIndex(child)
 	return self._body:GetChildIndex(child)
 end
 
-function IDETree.__getter:childs()
+function IDEUITree.__getter:childs()
 	return self._body.childs
 end
 
-function IDETree.__getter:child_count()
+function IDEUITree.__getter:child_count()
 	return self._body.child_count
 end
 
-function IDETree:HasChild(child)
+function IDEUITree:HasChild(child)
 	return self._body:HasChild(child)
 end
 
-function IDETree:AddChild(child, index)
+function IDEUITree:AddChild(child, index)
 	if self._body:AddChild(child, index) == false then
 		return false
 	end
@@ -439,7 +439,7 @@ function IDETree:AddChild(child, index)
 	return true
 end
 
-function IDETree:RemoveChild(child)
+function IDEUITree:RemoveChild(child)
 	if self._body:RemoveChild(child) == false then
 		return false
 	end
@@ -447,12 +447,12 @@ function IDETree:RemoveChild(child)
 	return true
 end
 
-function IDETree:RemoveAllChild()
+function IDEUITree:RemoveAllChild()
 	self._body:RemoveAllChild()
 	self:DispatchEvent(___all_struct[-431205740], {})
 end
 
-function IDETree.__getter:width()
+function IDEUITree.__getter:width()
 	local head_width = 0.0
 	if self._head ~= nil then
 		head_width = self._head.width
@@ -475,7 +475,7 @@ function IDETree.__getter:width()
 	return body_width
 end
 
-function IDETree.__getter:height()
+function IDEUITree.__getter:height()
 	local head_height = 0.0
 	if self._head ~= nil then
 		head_height = self._head.height
@@ -486,11 +486,11 @@ function IDETree.__getter:height()
 	return head_height
 end
 
-function IDETree.__getter:fold()
+function IDEUITree.__getter:fold()
 	return self._body.visible
 end
 
-function IDETree.__setter:fold(value)
+function IDEUITree.__setter:fold(value)
 	if value == self._body.visible then
 		return
 	end
@@ -499,11 +499,11 @@ function IDETree.__setter:fold(value)
 	self:DispatchEvent(___all_struct[-431205740], {})
 end
 
-function IDETree.__getter:max_right()
+function IDEUITree.__getter:max_right()
 	return self.width
 end
 
-function IDETree.__getter:max_bottom()
+function IDEUITree.__getter:max_bottom()
 	return self.height
 end
 

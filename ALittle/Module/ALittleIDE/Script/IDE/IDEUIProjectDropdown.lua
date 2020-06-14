@@ -60,16 +60,22 @@ function IDEUIProjectDropdown:HandlePeojectSelectChange(event)
 	if new_name == name then
 		return
 	end
-	if g_IDETabManager:IsSaveAll() then
-		g_IDECenter.center.project_list:OpenProjectImpl(new_name)
+	if g_IDECenter.center.content_edit:IsSaveAll() then
+		local error = g_IDEProject:OpenProject(new_name)
+		if error ~= nil then
+			g_AUITool:ShowNotice("错误", error)
+		end
 		return
 	end
 	event.target.text = name
 	local result = g_AUITool:SaveNotice("提示", "是否保存当前项目?")
 	if result == "YES" then
-		g_IDETabManager:SaveAllTab()
+		g_IDECenter.center.content_edit:SaveAllTab()
 	end
-	g_IDECenter.center.project_list:OpenProjectImpl(new_name)
+	local error = g_IDEProject:OpenProject(new_name)
+	if error ~= nil then
+		g_AUITool:ShowNotice("错误", error)
+	end
 end
 IDEUIProjectDropdown.HandlePeojectSelectChange = Lua.CoWrap(IDEUIProjectDropdown.HandlePeojectSelectChange)
 

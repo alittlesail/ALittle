@@ -110,7 +110,7 @@ public class IDEUIControlList : ALittle.DisplayLayout
 		}
 	
 		// 获取当前已经打开的所有控件名
-		var tabname_map = g_IDETabManager.GetTabNameMap();
+		var tabname_map = g_IDECenter.center.content_edit.GetTabNameMap();
 		var search_count = 0;
 		var last_control_info:IDEControlInfo = null;
 		// 排序
@@ -161,31 +161,31 @@ public class IDEUIControlList : ALittle.DisplayLayout
 		}
 	
 		if (search_count == 1)
-			g_IDETabManager.StartEditControlBySelect(last_control_info.name, last_control_info.info);
+			g_IDECenter.center.content_edit.StartEditControlBySelect(last_control_info.name, last_control_info.info);
 	}
 	public fun HandleControlItemClick(ALittle.UIClickEvent event)
 	{
 		var info:IDEControlItemUserData = event.target._user_data;
 		info.presee = false;
 		event.target.selected = true;
-		g_IDETabManager.StartEditControlBySelect(info.control_info.name, info.control_info.info);
+		g_IDECenter.center.content_edit.StartEditControlBySelect(info.control_info.name, info.control_info.info);
 	}
 	public fun HandleControlPreseeMoveIn(ALittle.UIMoveInEvent event)
 	{
 		var info:IDEControlItemUserData = event.target._user_data;
 		info.presee = true;
-		if (g_IDETabManager.GetTabByName(info.control_info.name) != null) { info.presee = false; return; }
-		info.pre_index = g_IDETabManager.GetCurTabIndex();
-		g_IDETabManager.StartEditControlBySelect(info.control_info.name, info.control_info.info);
+		if (g_IDECenter.center.content_edit.GetTabByName(info.control_info.name) != null) { info.presee = false; return; }
+		info.pre_index = g_IDECenter.center.content_edit.GetCurTabIndex();
+		g_IDECenter.center.content_edit.StartEditControlBySelect(info.control_info.name, info.control_info.info);
 	}
 	public fun HandleControlPreseeMoveOut(ALittle.UIMoveOutEvent event)
 	{
 		var info:IDEControlItemUserData = event.target._user_data;
 		if (info.presee != true) return;
-		var child = g_IDETabManager.GetTabByName(info.control_info.name);
+		var child = g_IDECenter.center.content_edit.GetTabByName(info.control_info.name);
 		if (child == null) return;
-		g_IDETabManager.CloseTab(child);
-		if (info.pre_index != null) g_IDETabManager.SetCurTabIndex(info.pre_index);
+		g_IDECenter.center.content_edit.CloseTab(child);
+		if (info.pre_index != null) g_IDECenter.center.content_edit.SetCurTabIndex(info.pre_index);
 	}
 	public async fun HandleControlKeyDown(ALittle.UIKeyDownEvent event)
 	{
@@ -215,10 +215,10 @@ public class IDEUIControlList : ALittle.DisplayLayout
         
 		var info:IDEControlItemUserData = event.target._user_data;
 		if (info.presee != true) return;
-		var child = g_IDETabManager.GetTabByName(info.control_info.name);
+		var child = g_IDECenter.center.content_edit.GetTabByName(info.control_info.name);
 		if (child == null) return;
-		g_IDETabManager.CloseTab(child);
-		if (info.pre_index != null) g_IDETabManager.SetCurTabIndex(info.pre_index);
+		g_IDECenter.center.content_edit.CloseTab(child);
+		if (info.pre_index != null) g_IDECenter.center.content_edit.SetCurTabIndex(info.pre_index);
 	}
 	public fun HandleControlDrag(ALittle.UIButtonDragEvent event)
 	{
@@ -248,7 +248,9 @@ public class IDEUIControlList : ALittle.DisplayLayout
 			this._drag_effect = null;
 		}
 	
-		var tab_child = g_IDETabManager.cur_tab_child;
+		var tab_child = ALittle.Cast{IDEUITabChild}(g_IDECenter.center.content_edit.cur_tab_child);
+		if (tab_child == null) return;
+
 		var x, y = tab_child.tree_object.LocalToGlobal();
 		var delta_x = event.abs_x - x;
 		var delta_y = event.abs_y - y;
@@ -256,10 +258,10 @@ public class IDEUIControlList : ALittle.DisplayLayout
 		var target = tab_child.tree_object.PickUp(delta_x, delta_y);
 		if (target == null)
 		{
-			ALittle.Log("IDETreeLogic:HandleDrag} target null");
+			ALittle.Log("IDEUITreeLogic:HandleDrag} target null");
 			return;
 		}
-		var tree:IDETreeLogic = target._user_data;
+		var tree:IDEUITreeLogic = target._user_data;
 
 		var user_data:IDEControlItemUserData = event.target._user_data;
 		// 把自己剪切
@@ -272,7 +274,7 @@ public class IDEUIControlList : ALittle.DisplayLayout
 		copy_list[1] = info;
 		ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list));
 	
-		if (tree.IsTree())
+		if (tree.is_tree)
 			tab_child.RightControlTreePasteImpl(tree, null, 1);
 		else
 		{
@@ -287,7 +289,7 @@ public class IDEUIControlList : ALittle.DisplayLayout
 			x, y = target.LocalToGlobal();
 			y = y + target.height / 2;
 			if (event.abs_y > y) child_index = child_index + 1;
-			tab_child.RightControlTreePasteImpl(cast<IDETreeLogic>(common_parent), null, child_index);
+			tab_child.RightControlTreePasteImpl(cast<IDEUITreeLogic>(common_parent), null, child_index);
 		}
 	}
 	
@@ -346,7 +348,7 @@ public class IDEUIControlList : ALittle.DisplayLayout
 			return;
 		}
 		// 检查控件名
-		if (IDEUIUtility_CheckName(name) == false)
+		if (IDEUtility_CheckName(name) != null)
 		{
 			g_AUITool.ShowNotice("错误", "控件名不合法:"..name);
 			return;
@@ -358,7 +360,7 @@ public class IDEUIControlList : ALittle.DisplayLayout
 			return;
 		}
 		// 检查控件名是否已经正在编辑了
-		if (g_IDETabManager.GetTabByName(name) != null)
+		if (g_IDECenter.center.content_edit.GetTabByName(name) != null)
 		{
 			g_AUITool.ShowNotice("错误", "控件名已存在:"..name);
 			return;
@@ -373,9 +375,9 @@ public class IDEUIControlList : ALittle.DisplayLayout
 		// 获取继承控件名
 		var extends_name = this._control_new_extends_name.text;
 		if (extends_name != "")
-			g_IDETabManager.StartEditControlByExtends(name, extends_name);
+			g_IDECenter.center.content_edit.StartEditControlByExtends(name, extends_name);
 		else
-			g_IDETabManager.StartEditControlByNew(name, control_type);
+			g_IDECenter.center.content_edit.StartEditControlByNew(name, control_type);
 		// 关闭对话框
 		this._control_new_dialog.visible = false;
 	}
@@ -407,7 +409,7 @@ public class IDEUIControlList : ALittle.DisplayLayout
 			g_AUITool.ShowNotice("错误", error);
 			return;
 		}
-		error = g_IDETabManager.CanDelete(name);
+		error = g_IDECenter.center.content_edit.CanDelete(name);
 		if (error != null)
 		{
 			g_AUITool.ShowNotice("错误", error);
@@ -425,9 +427,9 @@ public class IDEUIControlList : ALittle.DisplayLayout
 				return;
 			}
 	
-			var tab = g_IDETabManager.GetTabByName(user_data.control_info.name);
+			var tab = g_IDECenter.center.content_edit.GetTabByName(user_data.control_info.name);
 			if (tab == null) return;
-			g_IDETabManager.CloseTab(tab);
+			g_IDECenter.center.content_edit.CloseTab(tab);
         }
 	}
 	// 处理复制控件名
@@ -451,10 +453,10 @@ public class IDEUIControlList : ALittle.DisplayLayout
 	// 复制控件信息
 	public fun ControlCopyInfo(string target_name, string new_name)
 	{
-		var result, content = IDEUIUtility_CheckName(new_name);
-		if (result == false)
+		var error = IDEUtility_CheckName(new_name);
+		if (error != null)
 		{
-			g_AUITool.ShowNotice("错误", content);
+			g_AUITool.ShowNotice("错误", error);
 			return;
 		}
 		var info = g_IDEProject.project.ui.control_map[new_name];
@@ -477,7 +479,7 @@ public class IDEUIControlList : ALittle.DisplayLayout
 			return;
 		}
 		// 直接打开这个控件
-		g_IDETabManager.StartEditControlBySelect(new_name, info.info);
+		g_IDECenter.center.content_edit.StartEditControlBySelect(new_name, info.info);
 	}
 	
 	// 修改控件名事件处理
@@ -491,7 +493,7 @@ public class IDEUIControlList : ALittle.DisplayLayout
 			g_AUITool.ShowNotice("错误", error);
 			return;
 		}
-		error = g_IDETabManager.CanDelete(old_name);
+		error = g_IDECenter.center.content_edit.CanDelete(old_name);
 		if (error != null)
 		{
 			g_AUITool.ShowNotice("错误", error);
@@ -512,9 +514,9 @@ public class IDEUIControlList : ALittle.DisplayLayout
 		target.text = new_name;
 	
 		// 检查有没有正在编辑的控件
-		var tab = g_IDETabManager.GetTabByName(old_name);
+		var tab = g_IDECenter.center.content_edit.GetTabByName(old_name);
 		if (tab == null) return;
-		var tab_child:IDETabChild = tab._user_data;
+		var tab_child:IDEUITabChild = tab._user_data;
 		tab_child.Rename(new_name);
 	}
 	// 复制继承代码

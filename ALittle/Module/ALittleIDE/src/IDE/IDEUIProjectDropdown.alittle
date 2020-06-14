@@ -53,10 +53,11 @@ protected class IDEUIProjectDropdown : ALittle.DisplayLayout
 		if (new_name == name) return;
 	
 		// 检查当前是否有项目并且是否保存
-		if (g_IDETabManager.IsSaveAll())
+		if (g_IDECenter.center.content_edit.IsSaveAll())
 		{
 			// 打开项目
-		    g_IDECenter.center.project_list.OpenProjectImpl(new_name);
+		    var error = g_IDEProject.OpenProject(new_name);
+			if (error != null) g_AUITool.ShowNotice("错误", error);
 			return;
 		}
 
@@ -64,8 +65,9 @@ protected class IDEUIProjectDropdown : ALittle.DisplayLayout
 		event.target.text = name;
 	
 		var result = g_AUITool.SaveNotice("提示", "是否保存当前项目?");
-		if (result == AUIPlugin.AUIToolOption.YES) g_IDETabManager.SaveAllTab();
-		g_IDECenter.center.project_list.OpenProjectImpl(new_name);
+		if (result == AUIPlugin.AUIToolOption.YES) g_IDECenter.center.content_edit.SaveAllTab();
+		var error = g_IDEProject.OpenProject(new_name);
+		if (error != null) g_AUITool.ShowNotice("错误", error);
 	}
     
 }

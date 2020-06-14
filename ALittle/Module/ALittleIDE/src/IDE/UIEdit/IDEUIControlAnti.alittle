@@ -61,7 +61,7 @@ public class IDEAntiFrameLinkItem : ALittle.DisplayLayout
 		var child = info.childs[child_index];
 		child.link = this._link_input.text;
 
-		this._panel.tab_child.Save(false);
+		this._panel.tab_child.save = false;
 	}
 
 	private fun HandleAttributeChanged(ALittle.UIEvent event)
@@ -87,7 +87,7 @@ public class IDEAntiFrameLinkItem : ALittle.DisplayLayout
 				child.init = ALittle.Math_ToDouble(this._init_input.text);
 		}
 
-		this._panel.tab_child.Save(false);
+		this._panel.tab_child.save = false;
 	}
 
 	private fun HandleInitChanged(ALittle.UIEvent event)
@@ -111,7 +111,7 @@ public class IDEAntiFrameLinkItem : ALittle.DisplayLayout
 			else
 				child.init = ALittle.Math_ToDouble(this._init_input.text);
 		}
-		this._panel.tab_child.Save(false);
+		this._panel.tab_child.save = false;
 	}
 }
 
@@ -268,7 +268,7 @@ public class IDEAntiFrameLoopItem : ALittle.DisplayLayout
 
 			var revoke = new IDEAntiLoopTargetValueChangeRevoke(this, old_value_string, new_value_string);
 			this._item.panel.tab_child.revoke_list.PushRevoke(revoke);
-			this._item.panel.tab_child.Save(false);
+			this._item.panel.tab_child.save = false;
 		}
 	}
 
@@ -284,7 +284,7 @@ public class IDEAntiFrameLoopItem : ALittle.DisplayLayout
 
 		var revoke = new IDEAntiLoopTotalTimeChangeRevoke(this, old_time, this._info.total_time);
 		this._item.panel.tab_child.revoke_list.PushRevoke(revoke);
-		this._item.panel.tab_child.Save(false);
+		this._item.panel.tab_child.save = false;
 	}
 
 	public fun SetDelayTime(int time)
@@ -305,7 +305,7 @@ public class IDEAntiFrameLoopItem : ALittle.DisplayLayout
 
 		var revoke = new IDEAntiLoopDelayTimeChangeRevoke(this, old_time, this._info.delay_time);
 		this._item.panel.tab_child.revoke_list.PushRevoke(revoke);
-		this._item.panel.tab_child.Save(false);
+		this._item.panel.tab_child.save = false;
 	}
 }
 
@@ -398,7 +398,7 @@ public class IDEAntiFrameAntiItem : ALittle.DisplayLayout
 		loop_item.button.selected = true;
 		this._panel.ShowAntiLoop(loop_item);
         
-		this._panel.tab_child.Save(false);
+		this._panel.tab_child.save = false;
 	}
     
 	public fun ClearLoop()
@@ -415,7 +415,7 @@ public class IDEAntiFrameAntiItem : ALittle.DisplayLayout
 		this._info.childs = new List<ALittle.LoopChildInfo>();
 		this._container.RemoveAllChild();
         
-		this._panel.tab_child.Save(false);
+		this._panel.tab_child.save = false;
 	}
 
 	public fun InsertBefore(IDEAntiFrameLoopItem loop_item, string clazz)
@@ -453,7 +453,7 @@ public class IDEAntiFrameAntiItem : ALittle.DisplayLayout
 		loop_item.button.selected = true;
 		this._panel.ShowAntiLoop(loop_item);
         
-		this._panel.tab_child.Save(false);
+		this._panel.tab_child.save = false;
 	}
     
 	public fun DeleteLoop(IDEAntiFrameLoopItem loop_item)
@@ -468,13 +468,13 @@ public class IDEAntiFrameAntiItem : ALittle.DisplayLayout
 		var revoke = new IDEAntiDeleteLoopRevoke(this, child, loop_item, child_index);
 		this._panel.tab_child.revoke_list.PushRevoke(revoke);
         
-		this._panel.tab_child.Save(false);
+		this._panel.tab_child.save = false;
 	}
 }
 
 public class IDEAntiPanel : ALittle.DisplayLayout
 {
-	private IDETabChild _tab_child;
+	private IDEUITabChild _tab_child;
 
 	private ALittle.DisplayObject _new_btn;
 
@@ -549,7 +549,7 @@ public class IDEAntiPanel : ALittle.DisplayLayout
 	public get rit_delay_time() : ALittle.DisplayObject { return this._rit_delay_time; }
 
 	// 初始化
-	public fun Init(IDETabChild tab_child)
+	public fun Init(IDEUITabChild tab_child)
 	{
 		this._tab_child = tab_child;
 		this._list_group = ALittle.CreateKeyWeakMap();
@@ -604,7 +604,7 @@ public class IDEAntiPanel : ALittle.DisplayLayout
 		}
 	}
 
-	public get tab_child() : IDETabChild
+	public get tab_child() : IDEUITabChild
 	{
 		return this._tab_child;
 	}
@@ -652,7 +652,7 @@ public class IDEAntiPanel : ALittle.DisplayLayout
 		this._tab_child.revoke_list.PushRevoke(revoke);
 
 		// 标记为还未保存
-		this._tab_child.Save(false);
+		this._tab_child.save = false;
 	}
 
 	// 删除一个动画
@@ -681,7 +681,7 @@ public class IDEAntiPanel : ALittle.DisplayLayout
 			user_info.base.loop_map = null;
 
 		// 标记为还未保存
-		this._tab_child.Save(false);
+		this._tab_child.save = false;
 
 		if (this._cur_show == name)
 		{
@@ -728,7 +728,7 @@ public class IDEAntiPanel : ALittle.DisplayLayout
 		this._tab_child.revoke_list.PushRevoke(revoke);
         
 		// 标记为还未保存
-		this._tab_child.Save(false);
+		this._tab_child.save = false;
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// 显示动画编辑界面
@@ -832,7 +832,7 @@ public class IDEAntiPanel : ALittle.DisplayLayout
 		var revoke = new IDEAntiAddAttrRevoke(this, this._cur_show, child, anti_item, link_item);
 		this._tab_child.revoke_list.PushRevoke(revoke);
         
-		this._tab_child.Save(false);
+		this._tab_child.save = false;
 	}
 
 	public fun HandleAddAttrClick(ALittle.UIEvent event)
@@ -863,7 +863,7 @@ public class IDEAntiPanel : ALittle.DisplayLayout
 		var revoke = new IDEAntiAddAttrRevoke(this, this._cur_show, child, anti_item, link_item);
 		this._tab_child.revoke_list.PushRevoke(revoke);
 
-		this._tab_child.Save(false);
+		this._tab_child.save = false;
 	}
 
 	public fun RemoveAttr(int child_index)
@@ -886,7 +886,7 @@ public class IDEAntiPanel : ALittle.DisplayLayout
 		var revoke = new IDEAntiRemoveAttrRevoke(this, this._cur_show, child, anti_item, link_item, child_index);
 		this._tab_child.revoke_list.PushRevoke(revoke);
 
-		this._tab_child.Save(false);
+		this._tab_child.save = false;
 	}
         
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1008,7 +1008,7 @@ public class IDEAntiPanel : ALittle.DisplayLayout
 		if (cur_loop_info == null) return;
 		// 直接保存
 		var save = this._tab_child.save;
-		this._tab_child.Save(true);
+		this._tab_child.save = true;
 
 		if (this._anti_dialog == null)
 		{

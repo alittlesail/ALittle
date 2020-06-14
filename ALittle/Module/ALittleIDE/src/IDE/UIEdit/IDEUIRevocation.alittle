@@ -32,14 +32,14 @@ public class IDETextEditRevoke : IDERevokeObject
 	//////////删除撤销类//////////-
 public class IDEDeleteRevoke : IDERevokeObject
 {	
-	private IDETree _parent;
-	private IDETreeItem _current;
+	private IDEUITree _parent;
+	private IDEUITreeItem _current;
 	private int _index;
     
 	// parent 树形父控件
 	// current 树形子控件
 	// index 子控件在父控件的位置
-	public ctor(IDETree parent, IDETreeItem current, int index)
+	public ctor(IDEUITree parent, IDEUITreeItem current, int index)
 	{
 		this._parent = parent; // 父控件
 		this._current = current; // 子控件
@@ -66,7 +66,7 @@ public class IDEDeleteRevoke : IDERevokeObject
 		current.tab_child.UpdateHandleQuadRemove(current);
 		parent.tab_child.UpdateHandleQuadLayout(parent);
 		// 设置为未保存
-		current.tab_child.Save(false);
+		current.tab_child.save = false;
 	}
 	
 	public fun Back()
@@ -86,17 +86,17 @@ public class IDEDeleteRevoke : IDERevokeObject
 			cast<Map<string,any>>(parent.user_info.object)[child_type] = current.user_info.object;
 		parent.tab_child.UpdateHandleQuadLayout(parent);
 		// 设置为未保存
-		current.tab_child.Save(false);
+		current.tab_child.save = false;
 	}
 }
 	//////////子控件show撤销类//////////-
 public class IDEChildShowRevoke : IDERevokeObject
 {
-	private IDETree _parent;
-	private IDETreeItem _current;
+	private IDEUITree _parent;
+	private IDEUITreeItem _current;
 	private int _index;
 
-	public ctor(IDETree parent, IDETreeItem current, int index)
+	public ctor(IDEUITree parent, IDEUITreeItem current, int index)
 	{
 		this._parent = parent; // 父控件
 		this._current = current; // 子控件
@@ -121,7 +121,7 @@ public class IDEChildShowRevoke : IDERevokeObject
 
 		parent.tab_child.UpdateHandleQuadLayout(parent);
 		// 设置为未保存
-		current.tab_child.Save(false);
+		current.tab_child.save = false;
 	}
 	
 	public fun Back()
@@ -144,17 +144,17 @@ public class IDEChildShowRevoke : IDERevokeObject
 		current.tab_child.UpdateHandleQuadRemove(current);
 		parent.tab_child.UpdateHandleQuadLayout(parent);
 		// 设置为未保存
-		current.tab_child.Save(false);
+		current.tab_child.save = false;
 	}
 }
 	//////////拖拉撤销类//////////-
 public class IDEDragXYRevoke : IDERevokeObject
 {
-	private IDETreeLogic _target;
+	private IDEUITreeLogic _target;
 	private double _delta_x;
 	private double _delta_y;
 
-	public ctor(IDETreeLogic target, double delta_x, double delta_y)
+	public ctor(IDEUITreeLogic target, double delta_x, double delta_y)
 	{
 		this._target = target; // 当前操作控件
 		this._delta_x = delta_x;
@@ -168,7 +168,7 @@ public class IDEDragXYRevoke : IDERevokeObject
 		// 重置红框大小
 		this._target.tab_child.UpdateHandleQuadLayout(this._target);
 		// 设置为未保存
-		this._target.tab_child.Save(false);
+		this._target.tab_child.save = false;
 	}
 	
 	public fun Back()
@@ -178,18 +178,18 @@ public class IDEDragXYRevoke : IDERevokeObject
 		// 重置红框大小
 		this._target.tab_child.UpdateHandleQuadLayout(this._target);
 		// 设置为未保存
-		this._target.tab_child.Save(false);
+		this._target.tab_child.save = false;
 	}
 }
 	
 	//////////拖拉撤销类//////////-
 public class IDEDragWHRevoke : IDERevokeObject
 {
-	private IDETreeLogic _target;
+	private IDEUITreeLogic _target;
 	private double _delta_x;
 	private double _delta_y;
 
-	public ctor(IDETreeLogic target, double delta_x, double delta_y)
+	public ctor(IDEUITreeLogic target, double delta_x, double delta_y)
 	{
 		this._target = target; // 当前操作控件
 		this._delta_x = delta_x;
@@ -203,7 +203,7 @@ public class IDEDragWHRevoke : IDERevokeObject
 		// 重置红框
 		this._target.tab_child.UpdateHandleQuadLayout(this._target);
 		// 设置为未保存
-		this._target.tab_child.Save(false);
+		this._target.tab_child.save = false;
 	}
 	
 	public fun Back()
@@ -213,18 +213,18 @@ public class IDEDragWHRevoke : IDERevokeObject
 		// 重置红框
 		this._target.tab_child.UpdateHandleQuadLayout(this._target);
 		// 设置为未保存
-		this._target.tab_child.Save(false);
+		this._target.tab_child.save = false;
 	}
 }	
 	//////////控件上移下移撤销类//////////-
 public class IDEChildUpDownRevoke : IDERevokeObject
 {	
-	private IDETree _parent;
-	private IDETreeItem _current;
+	private IDEUITree _parent;
+	private IDEUITreeItem _current;
 	private string _up_down;
 
 	// up_down: 字符串 up 或者 down
-	public ctor(IDETree parent, IDETreeItem current, string up_down)
+	public ctor(IDEUITree parent, IDEUITreeItem current, string up_down)
 	{
 		this._parent = parent; // 父控件
 		this._current = current; // 子控件
@@ -264,7 +264,7 @@ public class IDEChildUpDownRevoke : IDERevokeObject
 	//////////面板修改撤销类//////////-
 public class IDENatureChangeRevoke : IDERevokeObject
 {
-	private IDETreeLogic _target;
+	private IDEUITreeLogic _target;
 	private string _nature;
 	private any _old_base;
 	private any _new_base;
@@ -273,7 +273,7 @@ public class IDENatureChangeRevoke : IDERevokeObject
 	private bool _need_reset;
 	private string _text;
 
-	public ctor(IDETreeLogic target, string nature, any old_base, any new_base, any old_object, any new_object, string text, bool need_reset)
+	public ctor(IDEUITreeLogic target, string nature, any old_base, any new_base, any old_object, any new_object, string text, bool need_reset)
 	{
 		this._target = target; // 操作控件
 		this._nature = nature; // 属性
@@ -300,7 +300,7 @@ public class IDENatureChangeRevoke : IDERevokeObject
 			// 重置红框
 			this._target.tab_child.UpdateHandleQuadLayout(this._target);
 		// 设置为未保存
-		this._target.tab_child.Save(false);
+		this._target.tab_child.save = false;
 	}
 	
 	public fun Back()
@@ -318,7 +318,7 @@ public class IDENatureChangeRevoke : IDERevokeObject
 		if (this._need_reset)
 			this._target.tab_child.UpdateHandleQuadLayout(this._target);
 		// 设置为未保存
-		this._target.tab_child.Save(false);
+		this._target.tab_child.save = false;
 	}
 }
 
@@ -349,7 +349,7 @@ public class IDECreateAntiRevoke : IDERevokeObject
 		this._target.anti_scroll_list.AddChild(this._item);
 
 		// 设置为未保存
-		this._target.tab_child.Save(false);
+		this._target.tab_child.save = false;
 	}
 
 	public fun Back()
@@ -362,7 +362,7 @@ public class IDECreateAntiRevoke : IDERevokeObject
 		this._target.anti_scroll_list.RemoveChild(this._item);
 
 		// 设置为未保存
-		this._target.tab_child.Save(false);
+		this._target.tab_child.save = false;
 	}
 }
 
@@ -393,7 +393,7 @@ public class IDEDeleteAntiRevoke : IDERevokeObject
 		this._target.anti_scroll_list.RemoveChild(this._item);
 
 		// 设置为未保存
-		this._target.tab_child.Save(false);
+		this._target.tab_child.save = false;
 	}
 
 	public fun Back()
@@ -406,7 +406,7 @@ public class IDEDeleteAntiRevoke : IDERevokeObject
 		this._target.anti_scroll_list.AddChild(this._item, this._child_index);
 
 		// 设置为未保存
-		this._target.tab_child.Save(false);
+		this._target.tab_child.save = false;
 	}
 }
 
@@ -447,7 +447,7 @@ public class IDEAntiAddAttrRevoke : IDERevokeObject
 		}
 
 		// 设置为未保存
-		this._target.tab_child.Save(false);
+		this._target.tab_child.save = false;
 	}
 
 	public fun Back()
@@ -470,7 +470,7 @@ public class IDEAntiAddAttrRevoke : IDERevokeObject
 		}
 
 		// 设置为未保存
-		this._target.tab_child.Save(false);
+		this._target.tab_child.save = false;
 	}
 }
 
@@ -513,7 +513,7 @@ public class IDEAntiRemoveAttrRevoke : IDERevokeObject
 		}
 
 		// 设置为未保存
-		this._target.tab_child.Save(false);
+		this._target.tab_child.save = false;
 	}
 
 	public fun Back()
@@ -536,7 +536,7 @@ public class IDEAntiRemoveAttrRevoke : IDERevokeObject
 		}
 
 		// 设置为未保存
-		this._target.tab_child.Save(false);
+		this._target.tab_child.save = false;
 	}
 }
 
@@ -559,7 +559,7 @@ public class IDEAntiInsertLoopRevoke : IDERevokeObject
 	{
 		ALittle.List_Insert(this._target.info.childs, this._child_index, this._info);
 		this._target.container.AddChild(this._loop_item, this._child_index);
-		this._target.panel.tab_child.Save(false);
+		this._target.panel.tab_child.save = false;
 	}
 
 	public fun Back()
@@ -570,7 +570,7 @@ public class IDEAntiInsertLoopRevoke : IDERevokeObject
 		if (this._target.panel.cur_loop_item == this._loop_item)
 			this._target.panel.HideAntiLoop();
 
-		this._target.panel.tab_child.Save(false);
+		this._target.panel.tab_child.save = false;
 	}
 }
 
@@ -597,14 +597,14 @@ public class IDEAntiDeleteLoopRevoke : IDERevokeObject
 		if (this._target.panel.cur_loop_item == this._loop_item)
 		this._target.panel.HideAntiLoop();
 
-		this._target.panel.tab_child.Save(false);
+		this._target.panel.tab_child.save = false;
 	}
 
 	public fun Back()
 	{
 		ALittle.List_Insert(this._target.info.childs, this._child_index, this._info);
 		this._target.container.AddChild(this._loop_item, this._child_index);
-		this._target.panel.tab_child.Save(false);
+		this._target.panel.tab_child.save = false;
 	}
 }
 
@@ -627,7 +627,7 @@ public class IDEAntiClearLoopRevoke : IDERevokeObject
 		this._target.container.RemoveAllChild();
 
 		this._target.panel.HideAntiLoop();
-		this._target.panel.tab_child.Save(false);
+		this._target.panel.tab_child.save = false;
 	}
 
 	public fun Back()
@@ -635,7 +635,7 @@ public class IDEAntiClearLoopRevoke : IDERevokeObject
 		this._target.info.childs = this._info_list;
 		for (var index, child in this._loop_item_list)
 			this._target.container.AddChild(child);
-		this._target.panel.tab_child.Save(false);
+		this._target.panel.tab_child.save = false;
 	}
 }
 
@@ -667,7 +667,7 @@ public class IDEAntiLoopTargetValueChangeRevoke : IDERevokeObject
 				this._target.item.panel.rit_target_value.text = IDEAntiFrameLoopItem.ValueToString(this._target.info.target);
 		}
 
-		this._target.item.panel.tab_child.Save(false);
+		this._target.item.panel.tab_child.save = false;
 	}
 
 	public fun Back()
@@ -685,7 +685,7 @@ public class IDEAntiLoopTargetValueChangeRevoke : IDERevokeObject
 				this._target.item.panel.rit_target_value.text = IDEAntiFrameLoopItem.ValueToString(this._target.info.target);
 		}
 
-		this._target.item.panel.tab_child.Save(false);
+		this._target.item.panel.tab_child.save = false;
 	}
 }
 
@@ -717,7 +717,7 @@ public class IDEAntiLoopTotalTimeChangeRevoke : IDERevokeObject
 
 		this._target.UpdateShow();
 		this._target.DispatchEvent(new ALittle.UIResizeEvent());
-		this._target.item.panel.tab_child.Save(false);
+		this._target.item.panel.tab_child.save = false;
 	}
 
 	public fun Back()
@@ -735,7 +735,7 @@ public class IDEAntiLoopTotalTimeChangeRevoke : IDERevokeObject
 
 		this._target.UpdateShow();
 		this._target.DispatchEvent(new ALittle.UIResizeEvent());
-		this._target.item.panel.tab_child.Save(false);
+		this._target.item.panel.tab_child.save = false;
 	}
 }
 
@@ -769,7 +769,7 @@ public class IDEAntiLoopDelayTimeChangeRevoke : IDERevokeObject
 
 		this._target.UpdateShow();
 		this._target.DispatchEvent(new ALittle.UIResizeEvent());
-		this._target.item.panel.tab_child.Save(false);
+		this._target.item.panel.tab_child.save = false;
 	}
 
 	public fun Back()
@@ -788,7 +788,7 @@ public class IDEAntiLoopDelayTimeChangeRevoke : IDERevokeObject
 		}
 		this._target.UpdateShow();
 		this._target.DispatchEvent(new ALittle.UIResizeEvent());
-		this._target.item.panel.tab_child.Save(false);
+		this._target.item.panel.tab_child.save = false;
 	}
 }
 

@@ -3,7 +3,20 @@ module("ALittleIDE", package.seeall)
 
 local ___pairs = pairs
 local ___ipairs = ipairs
+local ___all_struct = ALittle.GetAllStruct()
 
+ALittle.RegStruct(1408180774, "ALittleIDE.IDEUICenterScaleChangedEvent", {
+name = "ALittleIDE.IDEUICenterScaleChangedEvent", ns_name = "ALittleIDE", rl_name = "IDEUICenterScaleChangedEvent", hash_code = 1408180774,
+name_list = {"target","scale"},
+type_list = {"ALittle.DisplayObject","double"},
+option_map = {}
+})
+ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
+name = "ALittle.UIEvent", ns_name = "ALittle", rl_name = "UIEvent", hash_code = -1479093282,
+name_list = {"target"},
+type_list = {"ALittle.DisplayObject"},
+option_map = {}
+})
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
 IDEUICenter = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDEUICenter")
@@ -17,13 +30,11 @@ function IDEUICenter:TCtor()
 	self._control_edit_tab.tab_index = 1
 	self._project_quick_tab:DisableAllCloseButton()
 	self._project_quick_tab.tab_index = 1
-	g_IDETabManager:Setup(self._main_edit_tab, self._control_tree, self._control_attr, self._control_anti)
 	ALittle.TextRadioButton.SetGroup({self._tool_singleselect, self._tool_handdrag, self._tool_scale, self._tool_presee})
-	self._project_list:OpenLastProject()
 end
 
 function IDEUICenter:Shutdown()
-	g_IDETabManager:Shutdown()
+	self._content_edit:Shutdown()
 end
 
 function IDEUICenter.__getter:control_tree()
@@ -44,6 +55,10 @@ end
 
 function IDEUICenter.__getter:control_anti()
 	return self._control_anti
+end
+
+function IDEUICenter.__getter:content_edit()
+	return self._content_edit
 end
 
 function IDEUICenter:System_SetVDragCursor(event)
@@ -137,7 +152,7 @@ function IDEUICenter:HandleShortcutKey()
 end
 
 function IDEUICenter:HandleUndoRevoke(event)
-	local tab_child = g_IDETabManager.cur_tab_child
+	local tab_child = g_IDECenter.center.content_edit.cur_tab_child
 	if tab_child == nil then
 		return
 	end
@@ -145,7 +160,7 @@ function IDEUICenter:HandleUndoRevoke(event)
 end
 
 function IDEUICenter:HandleDoRevoke(event)
-	local tab_child = g_IDETabManager.cur_tab_child
+	local tab_child = g_IDECenter.center.content_edit.cur_tab_child
 	if tab_child == nil then
 		return
 	end
@@ -153,18 +168,18 @@ function IDEUICenter:HandleDoRevoke(event)
 end
 
 function IDEUICenter:HandleSaveCurrent(event)
-	local tab_child = g_IDETabManager.cur_tab_child
+	local tab_child = g_IDECenter.center.content_edit.cur_tab_child
 	if tab_child == nil then
 		return
 	end
-	tab_child:Save(true)
+	tab_child.save = true
 end
 
 function IDEUICenter:HandleUndoRevoke(event)
 	if g_IDEAttrEventDialog:IsShow() then
 		return
 	end
-	local tab_child = g_IDETabManager.cur_tab_child
+	local tab_child = g_IDECenter.center.content_edit.cur_tab_child
 	if tab_child == nil then
 		return
 	end
@@ -172,7 +187,7 @@ function IDEUICenter:HandleUndoRevoke(event)
 end
 
 function IDEUICenter:HandleDoRevoke(event)
-	local tab_child = g_IDETabManager.cur_tab_child
+	local tab_child = g_IDECenter.center.content_edit.cur_tab_child
 	if tab_child == nil then
 		return
 	end
@@ -180,16 +195,16 @@ function IDEUICenter:HandleDoRevoke(event)
 end
 
 function IDEUICenter:HandleSaveCurrent(event)
-	local tab_child = g_IDETabManager.cur_tab_child
+	local tab_child = g_IDECenter.center.content_edit.cur_tab_child
 	if tab_child == nil then
 		return
 	end
-	tab_child:Save(true)
+	tab_child.save = true
 end
 
 function IDEUICenter:HandleToolSingleSelect(event)
 	local object = event.target
-	g_IDETabManager:ShowTabChildSelectLayer(object.selected)
+	g_IDECenter.center.content_edit:ShowTabChildSelectLayer(object.selected)
 	self._tool_h_align_left.visible = object.selected
 	self._tool_h_align_center.visible = object.selected
 	self._tool_h_align_right.visible = object.selected
@@ -205,14 +220,14 @@ function IDEUICenter:HandleToolSingleSelect(event)
 end
 
 function IDEUICenter:HandleToolHandDrag(event)
-	g_IDETabManager:ShowTabChildHandDragLayer(event.target.selected)
+	g_IDECenter.center.content_edit:ShowTabChildHandDragLayer(event.target.selected)
 end
 
 function IDEUICenter:HandleToolPreSee(event)
 end
 
 function IDEUICenter:HandleToolScale(event)
-	g_IDETabManager:ShowTabChildScaleLayer(event.target.selected)
+	g_IDECenter.center.content_edit:ShowTabChildScaleLayer(event.target.selected)
 	self._tool_scale_text.visible = event.target.selected
 	self._tool_scale_input.visible = event.target.selected
 end
@@ -234,10 +249,6 @@ function IDEUICenter:UpdateToolScale(scale)
 end
 
 function IDEUICenter:HandleToolScaleDrag(event)
-	local tab_child = g_IDETabManager.cur_tab_child
-	if tab_child == nil then
-		return
-	end
 	local scale = ALittle.Math_ToDouble(self._tool_scale_input.text)
 	if scale == nil then
 		scale = 1
@@ -247,7 +258,9 @@ function IDEUICenter:HandleToolScaleDrag(event)
 		scale = 0
 	end
 	self._tool_scale_input.text = scale
-	tab_child:SetScale(scale)
+	local scale_event = {}
+	scale_event.scale = scale
+	self:DispatchEvent(___all_struct[1408180774], scale_event)
 end
 
 function IDEUICenter:HandleToolScaleMoveIn(event)
@@ -259,7 +272,7 @@ function IDEUICenter:HandleToolScaleMoveOut(event)
 end
 
 function IDEUICenter:HandleToolScaleInputFOCUSOUT(event)
-	local tab_child = g_IDETabManager.cur_tab_child
+	local tab_child = g_IDECenter.center.content_edit.cur_tab_child
 	if tab_child == nil then
 		return
 	end
@@ -271,11 +284,13 @@ function IDEUICenter:HandleToolScaleInputFOCUSOUT(event)
 		scale = 0
 		self._tool_scale_input.text = "0"
 	end
-	tab_child:SetScale(scale)
+	local scale_event = {}
+	scale_event.scale = scale
+	self:DispatchEvent(___all_struct[1408180774], scale_event)
 end
 
 function IDEUICenter:HandleToolHLAlign(event)
-	local cur_tab = g_IDETabManager.cur_tab
+	local cur_tab = g_IDECenter.center.content_edit.cur_tab
 	if cur_tab == nil then
 		return
 	end
@@ -306,6 +321,6 @@ end
 
 function IDEUICenter:HandleTabRightExMenu(event)
 	local x, y = event.target:LocalToGlobal()
-	g_IDETabManager:ShowTabRightExMenu(x, y + event.target.height)
+	g_IDECenter.center.content_edit:ShowTabRightExMenu(x, y + event.target.height)
 end
 

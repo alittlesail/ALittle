@@ -5,7 +5,7 @@ public class Grid9ImageS : Grid9S
 {
     private ALittle.DisplayObject _texture_name;
 
-    public ctor(IDETreeUserInfo user_info, IDETabChild tab_child, IDETreeLogic tree_logic)
+    public ctor(IDEUITreeUserInfo user_info, IDEUITabChild tab_child, IDEUITreeLogic tree_logic)
     {
         // 设置面板的UI
         this._layer_name = "ide_setting_grid9image";

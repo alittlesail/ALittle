@@ -61,7 +61,7 @@ function IDEDeleteRevoke:Forward()
 	current:RemoveAttributePanel()
 	current.tab_child:UpdateHandleQuadRemove(current)
 	parent.tab_child:UpdateHandleQuadLayout(parent)
-	current.tab_child:Save(false)
+	current.tab_child.save = false
 end
 
 function IDEDeleteRevoke:Back()
@@ -79,7 +79,7 @@ function IDEDeleteRevoke:Back()
 		parent.user_info.object[child_type] = current.user_info.object
 	end
 	parent.tab_child:UpdateHandleQuadLayout(parent)
-	current.tab_child:Save(false)
+	current.tab_child.save = false
 end
 
 assert(ALittleIDE.IDERevokeObject, " extends class:ALittleIDE.IDERevokeObject is nil")
@@ -106,7 +106,7 @@ function IDEChildShowRevoke:Forward()
 		parent.user_info.object[child_type] = current.user_info.object
 	end
 	parent.tab_child:UpdateHandleQuadLayout(parent)
-	current.tab_child:Save(false)
+	current.tab_child.save = false
 end
 
 function IDEChildShowRevoke:Back()
@@ -125,7 +125,7 @@ function IDEChildShowRevoke:Back()
 	current:RemoveAttributePanel()
 	current.tab_child:UpdateHandleQuadRemove(current)
 	parent.tab_child:UpdateHandleQuadLayout(parent)
-	current.tab_child:Save(false)
+	current.tab_child.save = false
 end
 
 assert(ALittleIDE.IDERevokeObject, " extends class:ALittleIDE.IDERevokeObject is nil")
@@ -140,13 +140,13 @@ end
 function IDEDragXYRevoke:Foward()
 	self._target:DragXY(self._delta_x, self._delta_y)
 	self._target.tab_child:UpdateHandleQuadLayout(self._target)
-	self._target.tab_child:Save(false)
+	self._target.tab_child.save = false
 end
 
 function IDEDragXYRevoke:Back()
 	self._target:DragXY(-self._delta_x, -self._delta_y)
 	self._target.tab_child:UpdateHandleQuadLayout(self._target)
-	self._target.tab_child:Save(false)
+	self._target.tab_child.save = false
 end
 
 assert(ALittleIDE.IDERevokeObject, " extends class:ALittleIDE.IDERevokeObject is nil")
@@ -161,13 +161,13 @@ end
 function IDEDragWHRevoke:Foward()
 	self._target:DragWH(self._delta_x, self._delta_y)
 	self._target.tab_child:UpdateHandleQuadLayout(self._target)
-	self._target.tab_child:Save(false)
+	self._target.tab_child.save = false
 end
 
 function IDEDragWHRevoke:Back()
 	self._target:DragWH(-self._delta_x, -self._delta_y)
 	self._target.tab_child:UpdateHandleQuadLayout(self._target)
-	self._target.tab_child:Save(false)
+	self._target.tab_child.save = false
 end
 
 assert(ALittleIDE.IDERevokeObject, " extends class:ALittleIDE.IDERevokeObject is nil")
@@ -232,7 +232,7 @@ function IDENatureChangeRevoke:Forward()
 	if self._need_reset then
 		self._target.tab_child:UpdateHandleQuadLayout(self._target)
 	end
-	self._target.tab_child:Save(false)
+	self._target.tab_child.save = false
 end
 
 function IDENatureChangeRevoke:Back()
@@ -246,7 +246,7 @@ function IDENatureChangeRevoke:Back()
 	if self._need_reset then
 		self._target.tab_child:UpdateHandleQuadLayout(self._target)
 	end
-	self._target.tab_child:Save(false)
+	self._target.tab_child.save = false
 end
 
 assert(ALittleIDE.IDERevokeObject, " extends class:ALittleIDE.IDERevokeObject is nil")
@@ -266,7 +266,7 @@ function IDECreateAntiRevoke:Forward()
 	end
 	user_info.base.loop_map[self._name] = self._info
 	self._target.anti_scroll_list:AddChild(self._item)
-	self._target.tab_child:Save(false)
+	self._target.tab_child.save = false
 end
 
 function IDECreateAntiRevoke:Back()
@@ -276,7 +276,7 @@ function IDECreateAntiRevoke:Back()
 	end
 	user_info.base.loop_map[self._name] = nil
 	self._target.anti_scroll_list:RemoveChild(self._item)
-	self._target.tab_child:Save(false)
+	self._target.tab_child.save = false
 end
 
 assert(ALittleIDE.IDERevokeObject, " extends class:ALittleIDE.IDERevokeObject is nil")
@@ -297,7 +297,7 @@ function IDEDeleteAntiRevoke:Forward()
 	end
 	user_info.base.loop_map[self._name] = nil
 	self._target.anti_scroll_list:RemoveChild(self._item)
-	self._target.tab_child:Save(false)
+	self._target.tab_child.save = false
 end
 
 function IDEDeleteAntiRevoke:Back()
@@ -307,7 +307,7 @@ function IDEDeleteAntiRevoke:Back()
 	end
 	user_info.base.loop_map[self._name] = self._info
 	self._target.anti_scroll_list:AddChild(self._item, self._child_index)
-	self._target.tab_child:Save(false)
+	self._target.tab_child.save = false
 end
 
 assert(ALittleIDE.IDERevokeObject, " extends class:ALittleIDE.IDERevokeObject is nil")
@@ -338,7 +338,7 @@ function IDEAntiAddAttrRevoke:Forward()
 		static_object_v.height = self._target.anti_link_linear.y + self._target.anti_link_linear.height
 		self._target.anti_screen:RejustScrollBar()
 	end
-	self._target.tab_child:Save(false)
+	self._target.tab_child.save = false
 end
 
 function IDEAntiAddAttrRevoke:Back()
@@ -358,7 +358,7 @@ function IDEAntiAddAttrRevoke:Back()
 		static_object_v.height = self._target.anti_link_linear.y + self._target.anti_link_linear.height
 		self._target.anti_screen:RejustScrollBar()
 	end
-	self._target.tab_child:Save(false)
+	self._target.tab_child.save = false
 end
 
 assert(ALittleIDE.IDERevokeObject, " extends class:ALittleIDE.IDERevokeObject is nil")
@@ -390,7 +390,7 @@ function IDEAntiRemoveAttrRevoke:Forward()
 		static_object_v.height = self._target.anti_link_linear.y + self._target.anti_link_linear.height
 		self._target.anti_screen:RejustScrollBar()
 	end
-	self._target.tab_child:Save(false)
+	self._target.tab_child.save = false
 end
 
 function IDEAntiRemoveAttrRevoke:Back()
@@ -410,7 +410,7 @@ function IDEAntiRemoveAttrRevoke:Back()
 		static_object_v.height = self._target.anti_link_linear.y + self._target.anti_link_linear.height
 		self._target.anti_screen:RejustScrollBar()
 	end
-	self._target.tab_child:Save(false)
+	self._target.tab_child.save = false
 end
 
 assert(ALittleIDE.IDERevokeObject, " extends class:ALittleIDE.IDERevokeObject is nil")
@@ -426,7 +426,7 @@ end
 function IDEAntiInsertLoopRevoke:Forward()
 	ALittle.List_Insert(self._target.info.childs, self._child_index, self._info)
 	self._target.container:AddChild(self._loop_item, self._child_index)
-	self._target.panel.tab_child:Save(false)
+	self._target.panel.tab_child.save = false
 end
 
 function IDEAntiInsertLoopRevoke:Back()
@@ -435,7 +435,7 @@ function IDEAntiInsertLoopRevoke:Back()
 	if self._target.panel.cur_loop_item == self._loop_item then
 		self._target.panel:HideAntiLoop()
 	end
-	self._target.panel.tab_child:Save(false)
+	self._target.panel.tab_child.save = false
 end
 
 assert(ALittleIDE.IDERevokeObject, " extends class:ALittleIDE.IDERevokeObject is nil")
@@ -454,13 +454,13 @@ function IDEAntiDeleteLoopRevoke:Forward()
 	if self._target.panel.cur_loop_item == self._loop_item then
 		self._target.panel:HideAntiLoop()
 	end
-	self._target.panel.tab_child:Save(false)
+	self._target.panel.tab_child.save = false
 end
 
 function IDEAntiDeleteLoopRevoke:Back()
 	ALittle.List_Insert(self._target.info.childs, self._child_index, self._info)
 	self._target.container:AddChild(self._loop_item, self._child_index)
-	self._target.panel.tab_child:Save(false)
+	self._target.panel.tab_child.save = false
 end
 
 assert(ALittleIDE.IDERevokeObject, " extends class:ALittleIDE.IDERevokeObject is nil")
@@ -476,7 +476,7 @@ function IDEAntiClearLoopRevoke:Forward()
 	self._target.info.childs = {}
 	self._target.container:RemoveAllChild()
 	self._target.panel:HideAntiLoop()
-	self._target.panel.tab_child:Save(false)
+	self._target.panel.tab_child.save = false
 end
 
 function IDEAntiClearLoopRevoke:Back()
@@ -484,7 +484,7 @@ function IDEAntiClearLoopRevoke:Back()
 	for index, child in ___ipairs(self._loop_item_list) do
 		self._target.container:AddChild(child)
 	end
-	self._target.panel.tab_child:Save(false)
+	self._target.panel.tab_child.save = false
 end
 
 assert(ALittleIDE.IDERevokeObject, " extends class:ALittleIDE.IDERevokeObject is nil")
@@ -508,7 +508,7 @@ function IDEAntiLoopTargetValueChangeRevoke:Forward()
 			self._target.item.panel.rit_target_value.text = IDEAntiFrameLoopItem.ValueToString(self._target.info.target)
 		end
 	end
-	self._target.item.panel.tab_child:Save(false)
+	self._target.item.panel.tab_child.save = false
 end
 
 function IDEAntiLoopTargetValueChangeRevoke:Back()
@@ -523,7 +523,7 @@ function IDEAntiLoopTargetValueChangeRevoke:Back()
 			self._target.item.panel.rit_target_value.text = IDEAntiFrameLoopItem.ValueToString(self._target.info.target)
 		end
 	end
-	self._target.item.panel.tab_child:Save(false)
+	self._target.item.panel.tab_child.save = false
 end
 
 assert(ALittleIDE.IDERevokeObject, " extends class:ALittleIDE.IDERevokeObject is nil")
@@ -547,7 +547,7 @@ function IDEAntiLoopTotalTimeChangeRevoke:Forward()
 	end
 	self._target:UpdateShow()
 	self._target:DispatchEvent(___all_struct[-431205740], {})
-	self._target.item.panel.tab_child:Save(false)
+	self._target.item.panel.tab_child.save = false
 end
 
 function IDEAntiLoopTotalTimeChangeRevoke:Back()
@@ -562,7 +562,7 @@ function IDEAntiLoopTotalTimeChangeRevoke:Back()
 	end
 	self._target:UpdateShow()
 	self._target:DispatchEvent(___all_struct[-431205740], {})
-	self._target.item.panel.tab_child:Save(false)
+	self._target.item.panel.tab_child.save = false
 end
 
 assert(ALittleIDE.IDERevokeObject, " extends class:ALittleIDE.IDERevokeObject is nil")
@@ -588,7 +588,7 @@ function IDEAntiLoopDelayTimeChangeRevoke:Forward()
 	end
 	self._target:UpdateShow()
 	self._target:DispatchEvent(___all_struct[-431205740], {})
-	self._target.item.panel.tab_child:Save(false)
+	self._target.item.panel.tab_child.save = false
 end
 
 function IDEAntiLoopDelayTimeChangeRevoke:Back()
@@ -605,6 +605,6 @@ function IDEAntiLoopDelayTimeChangeRevoke:Back()
 	end
 	self._target:UpdateShow()
 	self._target:DispatchEvent(___all_struct[-431205740], {})
-	self._target.item.panel.tab_child:Save(false)
+	self._target.item.panel.tab_child.save = false
 end
 

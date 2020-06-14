@@ -32,9 +32,9 @@ option_map = {}
 })
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
-IDETreeLogic = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDETreeLogic")
+IDEUITreeLogic = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDEUITreeLogic")
 
-function IDETreeLogic:Ctor(ctrl_sys, user_info, tab_child)
+function IDEUITreeLogic:Ctor(ctrl_sys, user_info, tab_child)
 	___rawset(self, "_tab_child", tab_child)
 	___rawset(self, "_user_info", user_info)
 	___rawset(self, "_attr_panel", nil)
@@ -42,38 +42,38 @@ function IDETreeLogic:Ctor(ctrl_sys, user_info, tab_child)
 	___rawset(self, "_drag_ctrl", false)
 end
 
-function IDETreeLogic.__getter:user_info()
+function IDEUITreeLogic.__getter:user_info()
 	return self._user_info
 end
 
-function IDETreeLogic.__getter:tab_child()
+function IDEUITreeLogic.__getter:tab_child()
 	return self._tab_child
 end
 
-function IDETreeLogic:IsRoot()
+function IDEUITreeLogic.__getter:is_root()
 	return self._user_info.root
 end
 
-function IDETreeLogic:IsTree()
+function IDEUITreeLogic.__getter:is_tree()
 	return false
 end
 
-function IDETreeLogic.__getter:attr_panel()
+function IDEUITreeLogic.__getter:attr_panel()
 	return self._attr_panel
 end
 
-function IDETreeLogic.__getter:title()
+function IDEUITreeLogic.__getter:title()
 	return self._item_title.text
 end
 
-function IDETreeLogic:CanAddChild()
+function IDEUITreeLogic:CanAddChild()
 	return false
 end
 
-function IDETreeLogic.__setter:fold(value)
+function IDEUITreeLogic.__setter:fold(value)
 end
 
-function IDETreeLogic:GetDesc()
+function IDEUITreeLogic:GetDesc()
 	local desc = self._user_info.base.description
 	if desc ~= nil then
 		return desc
@@ -85,28 +85,28 @@ function IDETreeLogic:GetDesc()
 	return ""
 end
 
-function IDETreeLogic:SetDesc(text)
+function IDEUITreeLogic:SetDesc(text)
 	self._user_info.base.description = text
 	if self._user_info.base.description == "" or self._user_info.base.description == self._user_info.default.description then
 		self._user_info.base.description = nil
 	end
-	self._tab_child:Save(false)
+	self._tab_child.save = false
 	self:UpdateDesc()
 end
 
-function IDETreeLogic:UpdateDesc()
+function IDEUITreeLogic:UpdateDesc()
 end
 
-function IDETreeLogic:RemoveAttributePanel()
+function IDEUITreeLogic:RemoveAttributePanel()
 	if self._attr_panel == nil then
 		return
 	end
-	self._tab_child.control_screen:RemoveChild(self._attr_panel.layer)
+	self._tab_child.attr_screen:RemoveChild(self._attr_panel.layer)
 	g_IDECenter.center.control_attr:SetTitle("")
 end
 
-function IDETreeLogic:ShowAttributePanel()
-	self._tab_child.control_screen:RemoveAllChild()
+function IDEUITreeLogic:ShowAttributePanel()
+	self._tab_child.attr_screen:RemoveAllChild()
 	self._item_button.selected = true
 	if self._attr_panel == nil then
 		local class_name = self._user_info.default.__class .. "S"
@@ -116,16 +116,16 @@ function IDETreeLogic:ShowAttributePanel()
 		self._attr_panel.layer.disabled = self._user_info.extends
 	end
 	g_IDECenter.center.control_attr:SetTitle(self._attr_panel.title)
-	self._tab_child.control_screen:AddChild(self._attr_panel.layer)
+	self._tab_child.attr_screen:AddChild(self._attr_panel.layer)
 end
 
-function IDETreeLogic:ShowFocus(is_group)
+function IDEUITreeLogic:ShowFocus(is_group)
 	self:ShowAttributePanel()
 	self._tab_child:ShowTreeItemFocus(self)
 	self._tab_child:ShowHandleQuad(self, is_group)
 end
 
-function IDETreeLogic:HandleClick(event)
+function IDEUITreeLogic:HandleClick(event)
 	if self._user_info.extends then
 		self:ShowAttributePanel()
 		return
@@ -138,16 +138,16 @@ function IDETreeLogic:HandleClick(event)
 	end
 end
 
-function IDETreeLogic:HandleMoveIn(event)
+function IDEUITreeLogic:HandleMoveIn(event)
 end
 
-function IDETreeLogic:HandleMouseMove(event)
+function IDEUITreeLogic:HandleMouseMove(event)
 end
 
-function IDETreeLogic:HandleMoveOut(event)
+function IDEUITreeLogic:HandleMoveOut(event)
 end
 
-function IDETreeLogic:HandleDragBegin(event)
+function IDEUITreeLogic:HandleDragBegin(event)
 	self._drag_ctrl = (A_UISystem.sym_map[1073742048] ~= nil or A_UISystem.sym_map[1073742052] ~= nil)
 	if self._drag_ctrl == false then
 		event.target = self._tab_child.tree_screen
@@ -167,7 +167,7 @@ function IDETreeLogic:HandleDragBegin(event)
 	self._drag_effect.alpha = 0.6
 end
 
-function IDETreeLogic:HandleDrag(event)
+function IDEUITreeLogic:HandleDrag(event)
 	if self._drag_ctrl == false then
 		event.target = self._tab_child.tree_screen
 		self._tab_child.tree_screen:DispatchEvent(___all_struct[1337289812], event)
@@ -180,7 +180,7 @@ function IDETreeLogic:HandleDrag(event)
 	self._drag_effect.y = self._drag_effect.y + event.delta_y
 end
 
-function IDETreeLogic:HandleDragEnd(event)
+function IDEUITreeLogic:HandleDragEnd(event)
 	if self._drag_ctrl == false then
 		event.target = self._tab_child.tree_screen
 		self._tab_child.tree_screen:DispatchEvent(___all_struct[150587926], event)
@@ -199,7 +199,7 @@ function IDETreeLogic:HandleDragEnd(event)
 	local delta_y = event.abs_y - y
 	local target = self._tab_child.tree_object:PickUp(delta_x, delta_y)
 	if target == nil then
-		ALittle.Log("IDETreeLogic:HandleDrag} target null")
+		ALittle.Log("IDEUITreeLogic:HandleDrag} target null")
 		return
 	end
 	local tree = target._user_data
@@ -218,7 +218,7 @@ function IDETreeLogic:HandleDragEnd(event)
 	copy_list[1] = info
 	ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list))
 	local revoke_bind = IDERevokeBind()
-	if tree:IsTree() then
+	if tree.is_tree then
 		self._tab_child:RightControlTreePasteImpl(tree, nil, 1, revoke_bind, Lua.Bind(self.HandleDragEndAndCut, self, revoke_bind))
 	else
 		local common_parent = tree._logic_parent
@@ -236,7 +236,7 @@ function IDETreeLogic:HandleDragEnd(event)
 	end
 end
 
-function IDETreeLogic:HandleDragEndAndCut(revoke_bind, result, list)
+function IDEUITreeLogic:HandleDragEndAndCut(revoke_bind, result, list)
 	if result == false then
 		return
 	end
@@ -244,7 +244,7 @@ function IDETreeLogic:HandleDragEndAndCut(revoke_bind, result, list)
 	self._tab_child.revoke_list:PushRevoke(revoke_bind)
 end
 
-function IDETreeLogic:TransferUp()
+function IDEUITreeLogic:TransferUp()
 	local parent = self._logic_parent
 	if parent == nil then
 		return
@@ -256,12 +256,12 @@ function IDETreeLogic:TransferUp()
 	index = index - 1
 	parent:SetChildIndex(self, index)
 	parent.user_info.object:SetChildIndex(self._user_info.object, index)
-	self.tab_child:Save(false)
+	self.tab_child.save = false
 	local revoke = IDEChildUpDownRevoke(parent, self, "up")
 	self._tab_child.revoke_list:PushRevoke(revoke)
 end
 
-function IDETreeLogic:TransferDown()
+function IDEUITreeLogic:TransferDown()
 	local parent = self._logic_parent
 	if parent == nil then
 		return
@@ -273,12 +273,12 @@ function IDETreeLogic:TransferDown()
 	index = index + 1
 	parent:SetChildIndex(self, index)
 	parent.user_info.object:SetChildIndex(self._user_info.object, index)
-	self.tab_child:Save(false)
+	self.tab_child.save = false
 	local revoke = IDEChildUpDownRevoke(parent, self, "down")
 	self._tab_child.revoke_list:PushRevoke(revoke)
 end
 
-function IDETreeLogic:TreePaste(info, child_type, child_index, is_group, revoke_bind)
+function IDEUITreeLogic:TreePaste(info, child_type, child_index, is_group, revoke_bind)
 	local inner_revoke_bind = IDERevokeBind()
 	if child_type ~= "child" and self._user_info.object[child_type] ~= nil then
 		self._user_info.object[child_type] = nil
@@ -302,7 +302,7 @@ function IDETreeLogic:TreePaste(info, child_type, child_index, is_group, revoke_
 	end
 	local tree_object = IDEUIUtility_CreateTree(info, false, object, child_type, self._tab_child, false)
 	self:AddChild(tree_object, child_index)
-	self._tab_child:Save(false)
+	self._tab_child.save = false
 	local index = self:GetChildIndex(tree_object)
 	local revoke = IDEChildShowRevoke(self, tree_object, index)
 	inner_revoke_bind:PushRevoke(revoke)
@@ -315,7 +315,7 @@ function IDETreeLogic:TreePaste(info, child_type, child_index, is_group, revoke_
 	return tree_object
 end
 
-function IDETreeLogic:TreeAdd(extends_name, class_name, child_type)
+function IDEUITreeLogic:TreeAdd(extends_name, class_name, child_type)
 	local extends_info = g_IDEProject.project.ui.control_map[extends_name]
 	if extends_name ~= "" and extends_info == nil then
 		return nil
@@ -345,7 +345,7 @@ function IDETreeLogic:TreeAdd(extends_name, class_name, child_type)
 		end
 		tree_object = IDEUIUtility_CreateTree(info, false, object, child_type, self._tab_child, false)
 		self:AddChild(tree_object)
-		self._tab_child:Save(false)
+		self._tab_child.save = false
 		local index = self:GetChildIndex(tree_object)
 		local revoke = IDEChildShowRevoke(self, tree_object, index)
 		revoke_bind:PushRevoke(revoke)
@@ -362,7 +362,7 @@ function IDETreeLogic:TreeAdd(extends_name, class_name, child_type)
 		end
 		tree_object = IDEUIUtility_CreateTree(info, false, object, child_type, self._tab_child, false)
 		self:AddChild(tree_object)
-		self._tab_child:Save(false)
+		self._tab_child.save = false
 		local index = self:GetChildIndex(tree_object)
 		local revoke = IDEChildShowRevoke(self, tree_object, index)
 		revoke_bind:PushRevoke(revoke)
@@ -373,7 +373,7 @@ function IDETreeLogic:TreeAdd(extends_name, class_name, child_type)
 	return tree_object
 end
 
-function IDETreeLogic:TreeReplace(extends_name, class_name, child_type)
+function IDEUITreeLogic:TreeReplace(extends_name, class_name, child_type)
 	local extends_info = g_IDEProject.project.ui.control_map[extends_name]
 	if extends_name ~= "" and extends_info == nil then
 		return
@@ -411,7 +411,7 @@ function IDETreeLogic:TreeReplace(extends_name, class_name, child_type)
 		end
 		tree_object = IDEUIUtility_CreateTree(info, false, object, child_type, target_parent._tab_child, false)
 		target_parent:AddChild(tree_object, child_index)
-		target_parent._tab_child:Save(false)
+		target_parent._tab_child.save = false
 		local index = target_parent:GetChildIndex(tree_object)
 		local revoke = IDEChildShowRevoke(target_parent, tree_object, index)
 		revoke_bind:PushRevoke(revoke)
@@ -426,7 +426,7 @@ function IDETreeLogic:TreeReplace(extends_name, class_name, child_type)
 		end
 		tree_object = IDEUIUtility_CreateTree(info, false, object, child_type, target_parent._tab_child, false)
 		target_parent:AddChild(tree_object, child_index)
-		target_parent._tab_child:Save(false)
+		target_parent._tab_child.save = false
 		local index = target_parent:GetChildIndex(tree_object)
 		local revoke = IDEChildShowRevoke(target_parent, tree_object, index)
 		revoke_bind:PushRevoke(revoke)
@@ -556,7 +556,7 @@ function IDETreeLogic:TreeReplace(extends_name, class_name, child_type)
 	target_parent._tab_child.revoke_list:PushRevoke(revoke_bind)
 end
 
-function IDETreeLogic:TreeDelete(revoke_bind)
+function IDEUITreeLogic:TreeDelete(revoke_bind)
 	local parent = self._logic_parent
 	if parent == nil then
 		return
@@ -574,7 +574,7 @@ function IDETreeLogic:TreeDelete(revoke_bind)
 	else
 		self._tab_child.revoke_list:PushRevoke(revoke)
 	end
-	self._tab_child:Save(false)
+	self._tab_child.save = false
 	parent:RemoveChild(self)
 	self:RemoveAttributePanel()
 	self._tab_child:UpdateHandleQuadRemove(self)
@@ -582,7 +582,7 @@ function IDETreeLogic:TreeDelete(revoke_bind)
 	parent.tab_child:UpdateHandleQuadLayout(parent)
 end
 
-function IDETreeLogic:TreeCut(revoke_bind)
+function IDEUITreeLogic:TreeCut(revoke_bind)
 	local parent = self._logic_parent
 	if parent == nil then
 		return
@@ -600,13 +600,13 @@ function IDETreeLogic:TreeCut(revoke_bind)
 	else
 		self._tab_child.revoke_list:PushRevoke(revoke)
 	end
-	self._tab_child:Save(false)
+	self._tab_child.save = false
 	parent:RemoveChild(self)
 	self._tab_child:UpdateHandleQuadRemove(self)
 	parent.tab_child:UpdateHandleQuadLayout(parent)
 end
 
-function IDETreeLogic:ChangeText(text)
+function IDEUITreeLogic:ChangeText(text)
 	local object = self._user_info.object
 	local old_base = self._user_info.base.text
 	local old_object = object.text
@@ -620,7 +620,7 @@ function IDETreeLogic:ChangeText(text)
 		text_object.text = object.text
 	end
 	self._tab_child:UpdateHandleQuadLayout(self)
-	self._tab_child:Save(false)
+	self._tab_child.save = false
 	local new_base = self._user_info.base.text
 	local new_object = object.text
 	local old_text = nil
@@ -628,7 +628,7 @@ function IDETreeLogic:ChangeText(text)
 	self._tab_child.revoke_list:PushRevoke(revoke)
 end
 
-function IDETreeLogic:DragXY(x, y)
+function IDEUITreeLogic:DragXY(x, y)
 	local object = self._user_info.object
 	local old_x = object.x
 	local old_y = object.y
@@ -702,7 +702,7 @@ function IDETreeLogic:DragXY(x, y)
 	end
 end
 
-function IDETreeLogic:DragWH(width, height)
+function IDEUITreeLogic:DragWH(width, height)
 	local object = self._user_info.object
 	local old_width = object.width
 	local old_height = object.height
@@ -744,7 +744,7 @@ function IDETreeLogic:DragWH(width, height)
 	end
 end
 
-function IDETreeLogic:CopyToClipboard()
+function IDEUITreeLogic:CopyToClipboard()
 	local info = {}
 	info.index = 1
 	info.info = self:CalcInfo()
@@ -753,7 +753,7 @@ function IDETreeLogic:CopyToClipboard()
 	ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list))
 end
 
-function IDETreeLogic:CutToClipboard()
+function IDEUITreeLogic:CutToClipboard()
 	local info = {}
 	info.index = 1
 	info.info = self:CalcInfo()
@@ -763,8 +763,8 @@ function IDETreeLogic:CutToClipboard()
 	self:TreeCut()
 end
 
-function IDETreeLogic:PasteFromClipboard()
-	if self:IsTree() then
+function IDEUITreeLogic:PasteFromClipboard()
+	if self.is_tree then
 		self.tab_child:RightControlTreePasteImpl(self, nil, nil)
 	else
 		local common_parent = self.logic_parent
@@ -778,42 +778,42 @@ function IDETreeLogic:PasteFromClipboard()
 	end
 end
 
-function IDETreeLogic:CalcInfo()
+function IDEUITreeLogic:CalcInfo()
 	return nil
 end
 
-function IDETreeLogic:SearchLink(name, list)
+function IDEUITreeLogic:SearchLink(name, list)
 	return nil
 end
 
-function IDETreeLogic:SearchEvent(name, list)
+function IDEUITreeLogic:SearchEvent(name, list)
 	return nil
 end
 
-function IDETreeLogic:SearchDescription(name, list)
+function IDEUITreeLogic:SearchDescription(name, list)
 	return nil
 end
 
-function IDETreeLogic:SearchTargetClass(name, list)
+function IDEUITreeLogic:SearchTargetClass(name, list)
 	return nil
 end
 
-function IDETreeLogic:SearchTextureName(name, list)
+function IDEUITreeLogic:SearchTextureName(name, list)
 	return nil
 end
 
-function IDETreeLogic:EditPickUp(x, y)
+function IDEUITreeLogic:EditPickUp(x, y)
 	return nil
 end
 
-function IDETreeLogic:QuickPickUp(x, y, list)
+function IDEUITreeLogic:QuickPickUp(x, y, list)
 end
 
-function IDETreeLogic:SelectPickUp(x, y)
+function IDEUITreeLogic:SelectPickUp(x, y)
 	return nil, nil
 end
 
-function IDETreeLogic:GetDataListForAdd()
+function IDEUITreeLogic:GetDataListForAdd()
 	return nil
 end
 

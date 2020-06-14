@@ -12,7 +12,7 @@ public class ImageInputS : TextInputS
     private ALittle.DisplayObject _show_down;
     private ALittle.DisplayObject _show_down_grid9;
     
-    public ctor(IDETreeUserInfo user_info, IDETabChild tab_child, IDETreeLogic tree_logic)
+    public ctor(IDEUITreeUserInfo user_info, IDEUITabChild tab_child, IDEUITreeLogic tree_logic)
     {
         // 设置面板的UI
         this._layer_name = "ide_setting_imageinput";

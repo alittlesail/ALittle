@@ -1,13 +1,6 @@
 
 namespace ALittleIDE;
 
-// 控件拷贝信息
-public struct IDEControlCopyInfo
-{
-	int index;					// 控件位置
-	ALittle.DisplayInfo info;	// 控件信息
-}
-
 // 收集所有引用的纹理路径
 public static IDEUIUtility_CalcTextureName(ALittle.DisplayInfo info, Map<string, bool> map) : Map<string, bool>
 {
@@ -22,7 +15,7 @@ public static IDEUIUtility_CalcTextureName(ALittle.DisplayInfo info, Map<string,
 	return map;
 }
 
-// 手机所有引用的控件名称
+// 收集所有引用的控件名称
 public static IDEUIUtility_GetExtends(const ALittle.DisplayInfo info, [Nullable] Map<string, bool> map) : Map<string, bool>
 {
 	if (map == null) map = new Map<string, bool>();
@@ -85,57 +78,6 @@ public static IDEUIUtility_HasEventCallback(const ALittle.DisplayInfo info, stri
 		}
 	}
 	return false;
-}
-
-// 检查控件名是否合法
-public static IDEUIUtility_CheckName(string name) : bool, string
-{
-	// 检查合法性
-	var len = ALittle.String_Len(name);
-	if (len == 0) return false, "命名只能支持字母数字下划线，不能以数字开头";
-	for (var i = 1; i <= len; 1)
-	{
-		var byte = ALittle.String_Byte(name, i);
-		var check_all = byte >= 65 && byte <= 90
-					 || byte >= 97 && byte <= 122
-					 || byte >= 48 && byte <= 57
-				     || byte == 95;
-		if (i == 1)
-		{
-			var check_first = byte >= 65 && byte <= 90
-							|| byte >= 97 && byte <= 122
-							|| byte == 95;
-			if (check_first == false)
-				return false, "命名只能支持字母数字下划线，不能以数字开头";
-		}
-		else
-		{
-			if (check_all == false)
-				return false, "命名只能支持字母数字下划线，不能以数字开头";
-		}
-	}
-
-	return true, null;
-}
-
-// 检查资源名是否合法
-public static IDEUIUtility_CheckResourceName(string name) : bool, string
-{
-	// 检查合法性
-	var len = ALittle.String_Len(name);
-	if (len == 0) return false, "命名只能支持字母数字下划线";
-	for (var i = 1; i <= len; 1)
-	{
-		var byte = ALittle.String_Byte(name, i);
-		var check_all = byte >= 65 && byte <= 90
-					 || byte >= 97 && byte <= 122
-					 || byte >= 48 && byte <= 57
-				     || byte == 95;
-		if (check_all == false)
-			return false, "命名只能支持字母数字下划线";
-	}
-
-	return true, null;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////-
@@ -282,7 +224,7 @@ public static IDEUIUtility_GetDefaultInfo(const ALittle.DisplayInfo info) : ALit
 }
 
 // 控件树节点信息
-public struct IDETreeUserInfo
+public struct IDEUITreeUserInfo
 {
 	ALittle.DisplayInfo base;       // 控件基本信息
 	ALittle.DisplayInfo default;    // 控件默认信息
@@ -294,16 +236,16 @@ public struct IDETreeUserInfo
 }
 
 // 递归创建控件树
-	// control 控件信息
-	// extends 是否继承
-	// object 控件对象
-	// parent 父控件
-	// child_type 子控件类型
-	// group_name 单选按键组名
-public static IDEUIUtility_CreateTree(const ALittle.DisplayInfo control, bool extends_v, ALittle.DisplayObject object, string child_type, IDETabChild tab_child, bool root) : IDETreeLogic
+// control 控件信息
+// extends 是否继承
+// object 控件对象
+// parent 父控件
+// child_type 子控件类型
+// group_name 单选按键组名
+public static IDEUIUtility_CreateTree(const ALittle.DisplayInfo control, bool extends_v, ALittle.DisplayObject object, string child_type, IDEUITabChild tab_child, bool root) : IDEUITreeLogic
 {
 	// 创建核心数据
-	var user_info = new IDETreeUserInfo();
+	var user_info = new IDEUITreeUserInfo();
 //////////////////////////////////////////////////////////////////////////////////////////////////////////-
 	// 获取基础信息
 	user_info.base = IDEUIUtility_GetBaseInfo(control);
@@ -357,14 +299,14 @@ public static IDEUIUtility_CreateTree(const ALittle.DisplayInfo control, bool ex
 	user_info.extends_root = control.__extends != null;
 //////////////////////////////////////////////////////////////////////////////////////////////////////////-
 	// 创建控件
-	var tree_logic:IDETreeLogic = null;
+	var tree_logic:IDEUITreeLogic = null;
 
 	// 区分是树形控件，还是按钮
 	if (g_IDEEnum.can_add_child_map[user_info.default.__class]
 		|| g_IDEEnum.child_show_map[user_info.default.__class] != null)
-		tree_logic = new IDETree(g_Control, user_info, tab_child);
+		tree_logic = new IDEUITree(g_Control, user_info, tab_child);
 	else
-		tree_logic = new IDETreeItem(g_Control, user_info, tab_child);
+		tree_logic = new IDEUITreeItem(g_Control, user_info, tab_child);
 
 	// 处理子控件
 	if (g_IDEEnum.can_add_child_map[user_info.default.__class] && object.childs != null && ALittle.List_MaxN(object.childs) > 0)

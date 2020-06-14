@@ -5,12 +5,6 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="源文件\UIEdit">
-      <UniqueIdentifier>{69670c84-9531-4199-bf20-4c0e81622233}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="源文件\UIEdit\IDEEditCore">
-      <UniqueIdentifier>{9ce72796-1311-47f5-bc76-367fc610ecdb}</UniqueIdentifier>
-    </Filter>
     <Filter Include="源文件\Data">
       <UniqueIdentifier>{8ba5cfa2-cac7-4e79-b176-ec2cb19f8583}</UniqueIdentifier>
     </Filter>
@@ -29,23 +23,11 @@
     <Filter Include="源文件\IDE\UIEdit\Setting">
       <UniqueIdentifier>{b8d16970-7c21-4be0-885b-64a482395a5c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="源文件\IDE\UIEdit\Tree">
+      <UniqueIdentifier>{7a162a32-da58-4d0b-98bd-fb9fea08da0d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\UIEdit\IDEEditCore\IDETabChild.alittle">
-      <Filter>源文件\UIEdit\IDEEditCore</Filter>
-    </None>
-    <None Include="src\UIEdit\IDEEditCore\IDETabManager.alittle">
-      <Filter>源文件\UIEdit\IDEEditCore</Filter>
-    </None>
-    <None Include="src\UIEdit\IDEEditCore\IDETree.alittle">
-      <Filter>源文件\UIEdit\IDEEditCore</Filter>
-    </None>
-    <None Include="src\UIEdit\IDEEditCore\IDETreeItem.alittle">
-      <Filter>源文件\UIEdit\IDEEditCore</Filter>
-    </None>
-    <None Include="src\UIEdit\IDEEditCore\IDETreeLogic.alittle">
-      <Filter>源文件\UIEdit\IDEEditCore</Filter>
-    </None>
     <None Include="src\Main.alittle">
       <Filter>源文件</Filter>
     </None>
@@ -71,9 +53,6 @@
       <Filter>源文件\IDE</Filter>
     </None>
     <None Include="src\Dialog\IDEVersionList.alittle">
-      <Filter>源文件\Dialog</Filter>
-    </None>
-    <None Include="src\Dialog\IDEExportDialog.alittle">
       <Filter>源文件\Dialog</Filter>
     </None>
     <None Include="src\Dialog\IDEImageSelectDialog.alittle">
@@ -222,6 +201,39 @@
     </None>
     <None Include="src\IDE\UIEdit\Setting\FramePlayS.alittle">
       <Filter>源文件\IDE\UIEdit\Setting</Filter>
+    </None>
+    <None Include="src\IDE\UIEdit\IDEUITabChild.alittle">
+      <Filter>源文件\IDE\UIEdit</Filter>
+    </None>
+    <None Include="src\IDE\IDEContentEdit.alittle">
+      <Filter>源文件\IDE</Filter>
+    </None>
+    <None Include="src\IDE\IDEUtility.alittle">
+      <Filter>源文件\IDE</Filter>
+    </None>
+    <None Include="src\IDE\UIEdit\Tree\IDEUITree.alittle">
+      <Filter>源文件\IDE\UIEdit\Tree</Filter>
+    </None>
+    <None Include="src\IDE\UIEdit\Tree\IDEUITreeItem.alittle">
+      <Filter>源文件\IDE\UIEdit\Tree</Filter>
+    </None>
+    <None Include="src\IDE\UIEdit\Tree\IDEUITreeLogic.alittle">
+      <Filter>源文件\IDE\UIEdit\Tree</Filter>
+    </None>
+    <None Include="src\Dialog\IDEProjectSettingDialog.alittle">
+      <Filter>源文件\Dialog</Filter>
+    </None>
+    <None Include="src\Dialog\IDEProjectNewDialog.alittle">
+      <Filter>源文件\Dialog</Filter>
+    </None>
+    <None Include="src\Dialog\IDEProjectOpenDialog.alittle">
+      <Filter>源文件\Dialog</Filter>
+    </None>
+    <None Include="src\Dialog\IDEExport.alittle">
+      <Filter>源文件\Dialog</Filter>
+    </None>
+    <None Include="src\Dialog\IDEProjectExportDialog.alittle">
+      <Filter>源文件\Dialog</Filter>
     </None>
   </ItemGroup>
 </Project>

@@ -9,7 +9,7 @@ public class ScrollBarS : Grid3S
     private ALittle.DisplayObject _bar_background;
     private ALittle.DisplayObject _bar_background_grid9;
 
-    public ctor(IDETreeUserInfo user_info, IDETabChild tab_child, IDETreeLogic tree_logic)
+    public ctor(IDEUITreeUserInfo user_info, IDEUITabChild tab_child, IDEUITreeLogic tree_logic)
     {
         this._layer_name = "ide_setting_scrollbar";
     }

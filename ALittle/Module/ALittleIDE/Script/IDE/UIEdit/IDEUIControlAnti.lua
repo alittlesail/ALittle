@@ -95,7 +95,7 @@ function IDEAntiFrameLinkItem:HandleLinkChanged(event)
 	end
 	local child = info.childs[child_index]
 	child.link = self._link_input.text
-	self._panel.tab_child:Save(false)
+	self._panel.tab_child.save = false
 end
 
 function IDEAntiFrameLinkItem:HandleAttributeChanged(event)
@@ -118,7 +118,7 @@ function IDEAntiFrameLinkItem:HandleAttributeChanged(event)
 			child.init = ALittle.Math_ToDouble(self._init_input.text)
 		end
 	end
-	self._panel.tab_child:Save(false)
+	self._panel.tab_child.save = false
 end
 
 function IDEAntiFrameLinkItem:HandleInitChanged(event)
@@ -140,7 +140,7 @@ function IDEAntiFrameLinkItem:HandleInitChanged(event)
 			child.init = ALittle.Math_ToDouble(self._init_input.text)
 		end
 	end
-	self._panel.tab_child:Save(false)
+	self._panel.tab_child.save = false
 end
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
@@ -273,7 +273,7 @@ function IDEAntiFrameLoopItem:SetTargetValue(text)
 		local new_value_string = IDEAntiFrameLoopItem.ValueToString(self._info.target)
 		local revoke = IDEAntiLoopTargetValueChangeRevoke(self, old_value_string, new_value_string)
 		self._item.panel.tab_child.revoke_list:PushRevoke(revoke)
-		self._item.panel.tab_child:Save(false)
+		self._item.panel.tab_child.save = false
 	end
 end
 
@@ -290,7 +290,7 @@ function IDEAntiFrameLoopItem:SetTotalTime(time)
 	self:DispatchEvent(___all_struct[-431205740], {})
 	local revoke = IDEAntiLoopTotalTimeChangeRevoke(self, old_time, self._info.total_time)
 	self._item.panel.tab_child.revoke_list:PushRevoke(revoke)
-	self._item.panel.tab_child:Save(false)
+	self._item.panel.tab_child.save = false
 end
 
 function IDEAntiFrameLoopItem:SetDelayTime(time)
@@ -310,7 +310,7 @@ function IDEAntiFrameLoopItem:SetDelayTime(time)
 	self:DispatchEvent(___all_struct[-431205740], {})
 	local revoke = IDEAntiLoopDelayTimeChangeRevoke(self, old_time, self._info.delay_time)
 	self._item.panel.tab_child.revoke_list:PushRevoke(revoke)
-	self._item.panel.tab_child:Save(false)
+	self._item.panel.tab_child.save = false
 end
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
@@ -386,7 +386,7 @@ function IDEAntiFrameAntiItem:Insert(rel_x, clazz)
 	self._panel.tab_child.revoke_list:PushRevoke(revoke)
 	loop_item.button.selected = true
 	self._panel:ShowAntiLoop(loop_item)
-	self._panel.tab_child:Save(false)
+	self._panel.tab_child.save = false
 end
 
 function IDEAntiFrameAntiItem:ClearLoop()
@@ -402,7 +402,7 @@ function IDEAntiFrameAntiItem:ClearLoop()
 	self._panel.tab_child.revoke_list:PushRevoke(revoke)
 	self._info.childs = {}
 	self._container:RemoveAllChild()
-	self._panel.tab_child:Save(false)
+	self._panel.tab_child.save = false
 end
 
 function IDEAntiFrameAntiItem:InsertBefore(loop_item, clazz)
@@ -431,7 +431,7 @@ function IDEAntiFrameAntiItem:InsertBefore(loop_item, clazz)
 	self._panel.tab_child.revoke_list:PushRevoke(revoke)
 	loop_item.button.selected = true
 	self._panel:ShowAntiLoop(loop_item)
-	self._panel.tab_child:Save(false)
+	self._panel.tab_child.save = false
 end
 
 function IDEAntiFrameAntiItem:DeleteLoop(loop_item)
@@ -444,7 +444,7 @@ function IDEAntiFrameAntiItem:DeleteLoop(loop_item)
 	self._container:RemoveChild(loop_item)
 	local revoke = IDEAntiDeleteLoopRevoke(self, child, loop_item, child_index)
 	self._panel.tab_child.revoke_list:PushRevoke(revoke)
-	self._panel.tab_child:Save(false)
+	self._panel.tab_child.save = false
 end
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
@@ -604,7 +604,7 @@ function IDEAntiPanel:CreateAnti(name)
 	self:ShowAnti(name)
 	local revoke = IDECreateAntiRevoke(self, name, root, item)
 	self._tab_child.revoke_list:PushRevoke(revoke)
-	self._tab_child:Save(false)
+	self._tab_child.save = false
 end
 
 function IDEAntiPanel:DeleteAnti(name)
@@ -629,7 +629,7 @@ function IDEAntiPanel:DeleteAnti(name)
 	if self._anti_scroll_list.child_count == 0 then
 		user_info.base.loop_map = nil
 	end
-	self._tab_child:Save(false)
+	self._tab_child.save = false
 	if self._cur_show == name then
 		if self._anti_scroll_list.child_count == 0 then
 			self:HideAnti()
@@ -665,7 +665,7 @@ function IDEAntiPanel:CopyAndNewAnti(old_name, new_name)
 	self:ShowAnti(new_name)
 	local revoke = IDECreateAntiRevoke(self, new_name, new_root, item)
 	self._tab_child.revoke_list:PushRevoke(revoke)
-	self._tab_child:Save(false)
+	self._tab_child.save = false
 end
 
 function IDEAntiPanel:ShowAnti(name)
@@ -758,7 +758,7 @@ function IDEAntiPanel:HandleCopyAttrLineClick(event)
 	self._anti_screen:RejustScrollBar()
 	local revoke = IDEAntiAddAttrRevoke(self, self._cur_show, child, anti_item, link_item)
 	self._tab_child.revoke_list:PushRevoke(revoke)
-	self._tab_child:Save(false)
+	self._tab_child.save = false
 end
 
 function IDEAntiPanel:HandleAddAttrClick(event)
@@ -785,7 +785,7 @@ function IDEAntiPanel:HandleAddAttrClick(event)
 	self._anti_screen:RejustScrollBar()
 	local revoke = IDEAntiAddAttrRevoke(self, self._cur_show, child, anti_item, link_item)
 	self._tab_child.revoke_list:PushRevoke(revoke)
-	self._tab_child:Save(false)
+	self._tab_child.save = false
 end
 
 function IDEAntiPanel:RemoveAttr(child_index)
@@ -807,7 +807,7 @@ function IDEAntiPanel:RemoveAttr(child_index)
 	self._anti_screen:RejustScrollBar()
 	local revoke = IDEAntiRemoveAttrRevoke(self, self._cur_show, child, anti_item, link_item, child_index)
 	self._tab_child.revoke_list:PushRevoke(revoke)
-	self._tab_child:Save(false)
+	self._tab_child.save = false
 end
 
 function IDEAntiPanel:ShowAntiLoop(loop_item)
@@ -917,7 +917,7 @@ function IDEAntiPanel:PlayImpl(loop)
 		return
 	end
 	local save = self._tab_child.save
-	self._tab_child:Save(true)
+	self._tab_child.save = true
 	if self._anti_dialog == nil then
 		self._anti_dialog = g_Control:CreateControl("ide_anti_play_dialog", self)
 		self._anti_dialog.title = "动画播放窗口"

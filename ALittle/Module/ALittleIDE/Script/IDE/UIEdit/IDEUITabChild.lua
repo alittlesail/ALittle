@@ -220,7 +220,12 @@ function IDEUITabChild:CopyExtends()
 end
 
 function IDEUITabChild:HandleProjectSettingChanged(event)
-	self:SetEditWH(event.default_show_width, event.default_show_height)
+	self._tab_container.width = event.default_show_width
+	self._tab_container.height = event.default_show_height
+	self._tab_screen:RejustScrollBar()
+	for target, handle_info in ___pairs(self._tab_quad_map) do
+		self:UpdateHandleQuadLayout(target)
+	end
 end
 
 function IDEUITabChild:HandleTreeSizeChanged(event)
@@ -309,15 +314,6 @@ function IDEUITabChild.__getter:title()
 		return self._name
 	end
 	return self._name .. "(" .. text .. ")"
-end
-
-function IDEUITabChild:SetEditWH(width, height)
-	self._tab_container.width = width
-	self._tab_container.height = height
-	self._tab_screen:RejustScrollBar()
-	for target, handle_info in ___pairs(self._tab_quad_map) do
-		self:UpdateHandleQuadLayout(target)
-	end
 end
 
 function IDEUITabChild:CanDelete(name)

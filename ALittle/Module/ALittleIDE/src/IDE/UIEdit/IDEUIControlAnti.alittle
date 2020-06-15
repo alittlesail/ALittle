@@ -1082,24 +1082,6 @@ public class IDEAntiPanel : ALittle.DisplayLayout
 	}
 }
 
-struct IDEAntiListMenuUserData
-{
-	IDEAntiPanel panel;
-	string name;
-}
-
-struct IDEAntiAntiMenuUserData
-{
-	IDEAntiFrameAntiItem item;
-	int child_index;
-	double rel_x;
-}
-
-struct IDEAntiLoopMenuUserData
-{
-	IDEAntiFrameLoopItem loop_item;
-}
-
 public class IDEUIControlAnti : ALittle.DisplayLayout
 {
 	private ALittle.Tab _main_tab;

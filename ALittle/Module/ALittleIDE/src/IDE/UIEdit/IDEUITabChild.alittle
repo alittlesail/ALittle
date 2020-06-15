@@ -203,7 +203,12 @@ public class IDEUITabChild : IDETabChild
 
     private fun HandleProjectSettingChanged(IDEProjectSettingChanged event)
     {
-        this.SetEditWH(event.default_show_width, event.default_show_height);
+        this._tab_container.width = event.default_show_width;
+        this._tab_container.height = event.default_show_height;
+        this._tab_screen.RejustScrollBar();
+	
+		for (var target, handle_info in this._tab_quad_map)
+            this.UpdateHandleQuadLayout(target);
     }
 	
 	public fun HandleTreeSizeChanged(ALittle.UIResizeEvent event)
@@ -273,16 +278,6 @@ public class IDEUITabChild : IDETabChild
         return this._name.."("..text..")";
 	}
 	
-	public fun SetEditWH(double width, double height)
-    {
-        this._tab_container.width = width;
-        this._tab_container.height = height;
-        this._tab_screen.RejustScrollBar();
-	
-		for (var target, handle_info in this._tab_quad_map)
-            this.UpdateHandleQuadLayout(target);
-	}
-	
 	public fun CanDelete(string name) : string
     {
         if (this._tree_object == null) return null;
@@ -296,12 +291,12 @@ public class IDEUITabChild : IDETabChild
 	
 	// 对选中的控件进行处理
 	// align_type 对齐方式
-		// h_align_left 水平居左
-		// h_align_center 水平居中
-		// h_align_right 水平居右
-		// v_align_top 垂直置顶
-		// v_align_center 垂直居中
-		// v_align_bottom 垂直置底
+	// h_align_left 水平居左
+	// h_align_center 水平居中
+	// h_align_right 水平居右
+	// v_align_top 垂直置顶
+	// v_align_center 垂直居中
+	// v_align_bottom 垂直置底
 	public fun SelectAlign(string align_type)
     {
 		// 计算个数

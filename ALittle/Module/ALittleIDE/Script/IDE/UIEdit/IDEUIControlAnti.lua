@@ -11,12 +11,6 @@ name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
-ALittle.RegStruct(-926666950, "ALittleIDE.IDEAntiAntiMenuUserData", {
-name = "ALittleIDE.IDEAntiAntiMenuUserData", ns_name = "ALittleIDE", rl_name = "IDEAntiAntiMenuUserData", hash_code = -926666950,
-name_list = {"item","child_index","rel_x"},
-type_list = {"ALittleIDE.IDEAntiFrameAntiItem","int","double"},
-option_map = {}
-})
 ALittle.RegStruct(-449066808, "ALittle.UIClickEvent", {
 name = "ALittle.UIClickEvent", ns_name = "ALittle", rl_name = "UIClickEvent", hash_code = -449066808,
 name_list = {"target","is_drag"},
@@ -29,22 +23,10 @@ name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
-ALittle.RegStruct(36084947, "ALittleIDE.IDEAntiListMenuUserData", {
-name = "ALittleIDE.IDEAntiListMenuUserData", ns_name = "ALittleIDE", rl_name = "IDEAntiListMenuUserData", hash_code = 36084947,
-name_list = {"panel","name"},
-type_list = {"ALittleIDE.IDEAntiPanel","string"},
-option_map = {}
-})
 ALittle.RegStruct(958494922, "ALittle.UIChangedEvent", {
 name = "ALittle.UIChangedEvent", ns_name = "ALittle", rl_name = "UIChangedEvent", hash_code = 958494922,
 name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
-option_map = {}
-})
-ALittle.RegStruct(-1347472615, "ALittleIDE.IDEAntiLoopMenuUserData", {
-name = "ALittleIDE.IDEAntiLoopMenuUserData", ns_name = "ALittleIDE", rl_name = "IDEAntiLoopMenuUserData", hash_code = -1347472615,
-name_list = {"loop_item"},
-type_list = {"ALittleIDE.IDEAntiFrameLoopItem"},
 option_map = {}
 })
 

@@ -45,7 +45,7 @@ end
 
 function ControlSystem:RegisterInfoByHttp()
 	local ___COROUTINE = coroutine.running()
-	local path = self._ui_path .. "../ui_all_in_one.json"
+	local path = self._ui_path .. "../JSUI/ui_all_in_one.json"
 	ALittle.File_MakeDeepDir(ALittle.File_GetFilePathByPath(path))
 	local error = ALittle.HttpDownloadRequest(self._host, self._port, path, path)
 	if error ~= nil then

@@ -76,32 +76,32 @@ ALittle.ModuleSystem = JavaScript.Class(undefined, {
 		delete window[name];
 		return true;
 	},
-	LoadPlugin : function(module_base_path, module_name) {
+	LoadPlugin : function(module_name) {
 		return new Promise((async function(___COROUTINE, ___) {
+			let module_base_path = "Module/" + module_name + "/";
 			if (module_name === undefined) {
 				ALittle.Log("module_name is null!");
-				___COROUTINE(false); return;
+				___COROUTINE(undefined); return;
 			}
 			let info = this._name_module_map[module_name];
 			if (info === undefined) {
 				info = await this.LoadModuleImpl(module_base_path, module_name);
 				if (info === undefined) {
 					ALittle.Log("Module:" + module_name + " load failed!");
-					___COROUTINE(false); return;
+					___COROUTINE(undefined); return;
 				}
 			}
 			if (info.plugin_loaded) {
-				ALittle.Log(module_name + ":__Plugin_Setup already invoked!");
-				___COROUTINE(false); return;
+				___COROUTINE(info.control); return;
 			}
 			let setup_func = info.plugin_setup;
 			if (setup_func === undefined) {
 				ALittle.Log("can't find Plugin_Setup funciton in Module:" + module_name);
-				___COROUTINE(false); return;
+				___COROUTINE(undefined); return;
 			}
 			info.plugin_loaded = true;
 			setup_func(info.control, module_base_path, module_base_path + "JSScript/");
-			___COROUTINE(true); return;
+			___COROUTINE(info.control); return;
 		}).bind(this));
 	},
 	LoadModule : function(module_base_path, module_name) {

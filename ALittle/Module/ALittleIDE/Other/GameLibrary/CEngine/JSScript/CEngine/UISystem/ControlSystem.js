@@ -7,6 +7,7 @@ let __type = ALittle.String_Type;
 ALittle.ControlSystem = JavaScript.Class(undefined, {
 	Ctor : function(module_name, crypt_mode) {
 		this._log_error = true;
+		this._use_plugin_class = true;
 		this._font_map = {};
 		this._name_map_info = {};
 		this._name_map_info_cache = {};
@@ -57,7 +58,7 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 	},
 	RegisterInfoByHttp : function() {
 		return new Promise((async function(___COROUTINE, ___) {
-			let path = this._ui_path + "../ui_all_in_one.json";
+			let path = this._ui_path + "../JSUI/ui_all_in_one.json";
 			ALittle.File_MakeDeepDir(ALittle.File_GetFilePathByPath(path));
 			let error = await ALittle.HttpDownloadRequest(this._host, this._port, path, path);
 			if (error !== undefined) {
@@ -106,7 +107,7 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 	},
 	CreateControlObject : function(info) {
 		let target_class = info.__target_class;
-		if (target_class !== undefined) {
+		if (this._use_plugin_class && target_class !== undefined) {
 			let class_func = info.__class_func;
 			if (class_func === undefined) {
 				class_func = window;
@@ -185,6 +186,12 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 	},
 	get cache_texture() {
 		return this._texture_mgr.cache_texture;
+	},
+	set use_plugin_class(use) {
+		this._use_plugin_class = use;
+	},
+	get use_plugin_class() {
+		return this._use_plugin_class;
 	},
 	SetFont : function(object, font_path, font_size) {
 		let dst = this._font_map[font_path];
@@ -329,7 +336,7 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 		}
 		let class_func = undefined;
 		let target_class = info.__target_class;
-		if (target_class !== undefined) {
+		if (this._use_plugin_class && target_class !== undefined) {
 			class_func = window;
 			let ___OBJECT_11 = target_class;
 			for (let index = 1; index <= ___OBJECT_11.length; ++index) {

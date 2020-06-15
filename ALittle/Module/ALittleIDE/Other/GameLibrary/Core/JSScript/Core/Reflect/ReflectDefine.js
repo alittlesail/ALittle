@@ -18,4 +18,13 @@ ALittle.NewObject = function(clazz, ...___args) {
 	return JavaScript.NewObject(clazz, ...___args);
 }
 
+ALittle.Cast = function(T, O, object) {
+	let o_info = (object).__class;
+	let t_info = T;
+	if (o_info !== t_info) {
+		return undefined;
+	}
+	return object;
+}
+
 }

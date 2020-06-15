@@ -182,7 +182,7 @@ function IDEExport:PackagePath(src_path, dst_path, file_type, crypt_mode)
 	return out_file_map
 end
 
-function IDEExport:PackageCommon(export_path, project_path, project_name, is_plugin)
+function IDEExport:PackageCommon(export_path, project_path, project_name, platform, is_plugin)
 	ALittle.Log("========PackageCommon:" .. project_path .. "========")
 	Lua.Assert(ALittle.File_GetFileAttr(project_path) ~= nil, "项目文件夹不存在:" .. project_path)
 	if ALittle.File_GetFileAttr(export_path) == nil then
@@ -208,26 +208,57 @@ function IDEExport:PackageCommon(export_path, project_path, project_name, is_plu
 	file_info.crypt_mode = false
 	count = count + 1
 	file_list[count] = file_info
-	file_info = {}
-	file_info.path = "Script"
-	file_info.crypt_mode = true
-	count = count + 1
-	file_list[count] = file_info
+	if platform == "Web" or platform == "WeChat" then
+		file_info = {}
+		file_info.path = "JSScript"
+		file_info.crypt_mode = false
+		count = count + 1
+		file_list[count] = file_info
+	else
+		file_info = {}
+		file_info.path = "Script"
+		file_info.crypt_mode = true
+		count = count + 1
+		file_list[count] = file_info
+	end
 	file_info = {}
 	file_info.path = "Sound"
 	file_info.crypt_mode = false
 	count = count + 1
 	file_list[count] = file_info
-	file_info = {}
-	file_info.path = "Texture"
-	file_info.crypt_mode = true
-	count = count + 1
-	file_list[count] = file_info
-	file_info = {}
-	file_info.path = "UI"
-	file_info.crypt_mode = true
-	count = count + 1
-	file_list[count] = file_info
+	if platform == "Web" or platform == "WeChat" then
+		file_info = {}
+		file_info.path = "Texture"
+		file_info.crypt_mode = false
+		count = count + 1
+		file_list[count] = file_info
+		local all_in_one = {}
+		local map = ALittle.File_GetFileAttrByDir(ALittle.File_BaseFilePath() .. "Module/" .. project_name .. "/UI")
+		for path, _ in ___pairs(map) do
+			local json = ALittle.File_ReadJsonFromStdFile(path)
+			for name, o in ___pairs(json) do
+				all_in_one[name] = o
+			end
+		end
+		ALittle.File_MakeDeepDir(ALittle.File_BaseFilePath() .. "Module/" .. project_name .. "/JSUI")
+		ALittle.File_WriteJsonFromStdFile(all_in_one, ALittle.File_BaseFilePath() .. "Module/" .. project_name .. "/JSUI/ui_all_in_one.json")
+		file_info = {}
+		file_info.path = "JSUI"
+		file_info.crypt_mode = false
+		count = count + 1
+		file_list[count] = file_info
+	else
+		file_info = {}
+		file_info.path = "Texture"
+		file_info.crypt_mode = true
+		count = count + 1
+		file_list[count] = file_info
+		file_info = {}
+		file_info.path = "UI"
+		file_info.crypt_mode = true
+		count = count + 1
+		file_list[count] = file_info
+	end
 	if ALittle.File_GetFileAttr(project_path .. "/NoCrypt.ali") == nil then
 		for k, v in ___ipairs(file_list) do
 			v.crypt_mode = false
@@ -243,20 +274,38 @@ function IDEExport:PackageCommon(export_path, project_path, project_name, is_plu
 		end
 	end
 	if not is_plugin then
-		local result = self:PackagePath(ALittle.File_BaseFilePath() .. "Module/ALittleIDE/Other/GameLibrary/Core/Script", export_common_path .. "/Core", "Core", true)
-		if result ~= nil then
-			count = count + 1
-			map_list[count] = result
-		end
-		result = self:PackagePath(ALittle.File_BaseFilePath() .. "Module/ALittleIDE/Other/GameLibrary/Std/Script", export_common_path .. "/Std", "Std", true)
-		if result ~= nil then
-			count = count + 1
-			map_list[count] = result
-		end
-		result = self:PackagePath(ALittle.File_BaseFilePath() .. "Module/ALittleIDE/Other/GameLibrary/CEngine/Script", export_common_path .. "/CEngine", "CEngine", true)
-		if result ~= nil then
-			count = count + 1
-			map_list[count] = result
+		if platform == "Web" or platform == "WeChat" then
+			local result = self:PackagePath(ALittle.File_BaseFilePath() .. "Module/ALittleIDE/Other/GameLibrary/Core/JSNative", export_common_path .. "/JSNative", "JSNative", false)
+			if result ~= nil then
+				count = count + 1
+				map_list[count] = result
+			end
+			result = self:PackagePath(ALittle.File_BaseFilePath() .. "Module/ALittleIDE/Other/GameLibrary/Std/JSNative", export_common_path .. "/JSNative", "JSNative", false)
+			if result ~= nil then
+				count = count + 1
+				map_list[count] = result
+			end
+			result = self:PackagePath(ALittle.File_BaseFilePath() .. "Module/ALittleIDE/Other/GameLibrary/CEngine/JSNative", export_common_path .. "/JSNative", "JSNative", false)
+			if result ~= nil then
+				count = count + 1
+				map_list[count] = result
+			end
+		else
+			local result = self:PackagePath(ALittle.File_BaseFilePath() .. "Module/ALittleIDE/Other/GameLibrary/Core/Script", export_common_path .. "/Core", "Core", true)
+			if result ~= nil then
+				count = count + 1
+				map_list[count] = result
+			end
+			result = self:PackagePath(ALittle.File_BaseFilePath() .. "Module/ALittleIDE/Other/GameLibrary/Std/Script", export_common_path .. "/Std", "Std", true)
+			if result ~= nil then
+				count = count + 1
+				map_list[count] = result
+			end
+			result = self:PackagePath(ALittle.File_BaseFilePath() .. "Module/ALittleIDE/Other/GameLibrary/CEngine/Script", export_common_path .. "/CEngine", "CEngine", true)
+			if result ~= nil then
+				count = count + 1
+				map_list[count] = result
+			end
 		end
 	end
 	return map_list
@@ -380,14 +429,14 @@ function IDEExport:HandleQueryNewCurVersionImpl(package_info, is_login, update_t
 	g_AUITool:ShowAlertDialog("提示", "打包当前版本")
 	ALittle.System_Render()
 	ALittle.File_DeleteDeepDir(package_info.project_path .. "/Export/Common")
-	local error, version_info_list = Lua.TCall(self.PackageCommon, self, package_info.project_path .. "/Export/Common", package_info.project_path, package_info.project_name, false)
+	local error, version_info_list = Lua.TCall(self.PackageCommon, self, package_info.project_path .. "/Export/Common", package_info.project_path, package_info.project_name, package_info.platform, false)
 	if error ~= nil then
 		g_AUITool:ShowNotice("错误", "PackageCommon 调用失败:" .. error)
 		return
 	end
 	local plugin_list = ALittle.String_Split(package_info.version_info.plugin_list, ",")
 	for index, plugin in ___ipairs(plugin_list) do
-		local plugin_error, _ = Lua.TCall(self.PackageCommon, self, package_info.project_path .. "/Export/Common", ALittle.File_BaseFilePath() .. "Module/" .. plugin, plugin, true)
+		local plugin_error, _ = Lua.TCall(self.PackageCommon, self, package_info.project_path .. "/Export/Common", ALittle.File_BaseFilePath() .. "Module/" .. plugin, plugin, package_info.platform, true)
 		if plugin_error ~= nil then
 			g_AUITool:ShowNotice("错误", "PackageCommon 调用失败:" .. plugin_error)
 			return
@@ -555,6 +604,8 @@ function IDEExport:HandleQueryNewCurVersionImpl(package_info, is_login, update_t
 		install_name = self:GenerateApk(package_info)
 	elseif package_info.platform == "iOS" then
 		install_name = self:GenerateIpa(package_info)
+	elseif package_info.platform == "Web" then
+		install_name = self:GenerateWeb(package_info)
 	end
 	submit_info.project_path = package_info.project_path
 	submit_info.export_module_path = package_info.export_module_path
@@ -573,6 +624,7 @@ function IDEExport:HandleQueryNewCurVersionImpl(package_info, is_login, update_t
 	submit_info.install_name = install_name
 	local install_attr = ALittle.File_GetFileAttr(package_info.project_path .. "/Export/" .. install_name)
 	if install_attr == nil then
+		g_AUITool:HideAlertDialog()
 		g_AUITool:ShowNotice("提示", "版本生成失败")
 		return
 	end
@@ -1096,6 +1148,29 @@ function IDEExport:GenerateIpa(package_info)
 	end
 	ALittle.File_SaveFile(package_info.project_path .. "/Export/Install.ipa", "Install.ipa", -1)
 	return "Install.ipa"
+end
+
+function IDEExport:GenerateWeb(package_info)
+	ALittle.Log("==================GenerateWeb:" .. package_info.project_name .. "==================")
+	if ALittle.File_GetFileAttr(package_info.project_path) == nil then
+		ALittle.Log("IDEExport:GenerateWeb project_path is not exist:", package_info.project_path)
+		return nil
+	end
+	local install_ico = package_info.project_path .. "/Icon/install.ico"
+	if ALittle.File_GetFileAttr(install_ico) == nil then
+		ALittle.File_CopyFile(ALittle.File_BaseFilePath() .. "Export/Icon/install.ico", package_info.project_path .. "/Export/Web/favicon.ico")
+	else
+		ALittle.File_CopyFile(install_ico, package_info.project_path .. "/Export/Web/favicon.ico")
+	end
+	local file = __CPPAPILocalFile()
+	file:SetPath(ALittle.File_BaseFilePath() .. "Export/Web/index.html")
+	if file:Load() then
+		local content = file:GetContent()
+		content = ALittle.String_Replace(content, "abcd@project_name@abcd", package_info.project_name)
+		ALittle.File_SaveFile(package_info.project_path .. "/Export/Web/" .. package_info.project_name .. ".html", content, -1)
+		ALittle.File_SaveFile(package_info.project_path .. "/Export/Install.html", content, -1)
+	end
+	return "Install.html"
 end
 
 g_IDEExport = IDEExport()

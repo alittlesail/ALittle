@@ -42,7 +42,6 @@ end
 
 function IDEUIMainMenu:HandleToolMenuClick(event)
 	local menu = AUIPlugin.AUIRightMenu()
-	menu:AddItem("生成ui_all_in_one", Lua.Bind(self.HandleGenUIAllInOneClick, self))
 	menu:AddItem("生成core_all_in_one", Lua.Bind(self.HandleGenCoreAllInOneClick, self))
 	menu:AddItem("生成std_all_in_one", Lua.Bind(self.HandleGenStdAllInOneClick, self))
 	menu:AddItem("生成cengine_all_in_one", Lua.Bind(self.HandleGenCEngineAllInOneClick, self))
@@ -55,27 +54,6 @@ end
 
 function IDEUIMainMenu:HandleRunMenuClick(event)
 	g_IDEProject:RunProject()
-end
-
-function IDEUIMainMenu:HandleGenUIAllInOneClick()
-	if g_IDEProject.project == nil then
-		g_AUITool:ShowNotice("提示", "没有加载项目")
-		return
-	end
-	local all_in_one = {}
-	local map = ALittle.File_GetFileAttrByDir("Module/" .. g_IDEProject.project.name .. "/UI")
-	for path, _ in ___pairs(map) do
-		local json = ALittle.File_ReadJsonFromStdFile(path)
-		for name, o in ___pairs(json) do
-			all_in_one[name] = o
-		end
-	end
-	local result = ALittle.File_WriteJsonFromStdFile(all_in_one, "Module/" .. g_IDEProject.project.name .. "/ui_all_in_one.json")
-	if result then
-		g_AUITool:ShowNotice("提示", "生成成功")
-	else
-		g_AUITool:ShowNotice("提示", "生成失败")
-	end
 end
 
 function IDEUIMainMenu:HandleGenCoreAllInOneClick()
@@ -95,7 +73,7 @@ function IDEUIMainMenu:HandleGenCoreAllInOneClick()
 			return
 		end
 	end
-	local result = ALittle.File_WriteTextFromStdFile(ALittle.String_Join(all_in_one, "\n"), "Module/ALittleIDE/Other/GameLibrary/Core/Core.js")
+	local result = ALittle.File_WriteTextFromStdFile(ALittle.String_Join(all_in_one, "\n"), "Module/ALittleIDE/Other/GameLibrary/Core/JSNative/Core.js")
 	if result then
 		g_AUITool:ShowNotice("提示", "生成成功")
 	else
@@ -127,7 +105,7 @@ function IDEUIMainMenu:HandleGenStdAllInOneClick()
 			return
 		end
 	end
-	local result = ALittle.File_WriteTextFromStdFile(ALittle.String_Join(all_in_one, "\n"), "Module/ALittleIDE/Other/GameLibrary/Std/Std.js")
+	local result = ALittle.File_WriteTextFromStdFile(ALittle.String_Join(all_in_one, "\n"), "Module/ALittleIDE/Other/GameLibrary/Std/JSNative/Std.js")
 	if result then
 		g_AUITool:ShowNotice("提示", "生成成功")
 	else
@@ -207,7 +185,7 @@ function IDEUIMainMenu:HandleGenCEngineAllInOneClick()
 			return
 		end
 	end
-	local result = ALittle.File_WriteTextFromStdFile(ALittle.String_Join(all_in_one, "\n"), "Module/ALittleIDE/Other/GameLibrary/CEngine/CEngine.js")
+	local result = ALittle.File_WriteTextFromStdFile(ALittle.String_Join(all_in_one, "\n"), "Module/ALittleIDE/Other/GameLibrary/CEngine/JSNative/CEngine.js")
 	if result then
 		g_AUITool:ShowNotice("提示", "生成成功")
 	else

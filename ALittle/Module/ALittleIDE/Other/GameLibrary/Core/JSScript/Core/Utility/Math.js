@@ -2,6 +2,20 @@
 if (typeof ALittle === "undefined") window.ALittle = {};
 
 
+ALittle.Math_Min = function(x, y) {
+	if (x < y) {
+		return x;
+	}
+	return y;
+}
+
+ALittle.Math_Max = function(x, y) {
+	if (x < y) {
+		return y;
+	}
+	return x;
+}
+
 ALittle.Math_Sin = function(v) {
 	return Math.sin(v);
 }

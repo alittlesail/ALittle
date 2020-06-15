@@ -97,7 +97,7 @@ public class ControlSystem
     
     public await fun RegisterInfoByHttp()
     {
-        var path = this._ui_path.."../ui_all_in_one.json";
+        var path = this._ui_path.."../JSUI/ui_all_in_one.json";
         ALittle.File_MakeDeepDir(ALittle.File_GetFilePathByPath(path));
 		var error = ALittle.HttpDownloadRequest(this._host, this._port, path, path);
         if (error != null)

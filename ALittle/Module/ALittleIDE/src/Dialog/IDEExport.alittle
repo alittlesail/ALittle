@@ -241,7 +241,7 @@ class IDEExport
 	
 	// 打包统一的资源文件
 	// @param project_path 工程目录
-	public fun PackageCommon(string export_path, string project_path, string project_name, bool is_plugin) : List<Map<string, IDEExportFileAttr>>
+	public fun PackageCommon(string export_path, string project_path, string project_name, string platform, bool is_plugin) : List<Map<string, IDEExportFileAttr>>
 	{
 		ALittle.Log("========PackageCommon:"..project_path.."========");
 		// 检查路径是否存在
@@ -266,14 +266,45 @@ class IDEExport
 		++ count; file_list[count] = file_info;
 		file_info = new IDEExportFileInfo(); file_info.path = "Other"; file_info.crypt_mode = false;
 		++ count; file_list[count] = file_info;
-		file_info = new IDEExportFileInfo(); file_info.path = "Script"; file_info.crypt_mode = true;
-		++ count; file_list[count] = file_info;
+		if (platform == "Web" || platform == "WeChat")
+		{
+			file_info = new IDEExportFileInfo(); file_info.path = "JSScript"; file_info.crypt_mode = false;
+			++ count; file_list[count] = file_info;
+        }
+		else
+		{
+			file_info = new IDEExportFileInfo(); file_info.path = "Script"; file_info.crypt_mode = true;
+			++ count; file_list[count] = file_info;   
+        }
 		file_info = new IDEExportFileInfo(); file_info.path = "Sound"; file_info.crypt_mode = false;
 		++ count; file_list[count] = file_info;
-		file_info = new IDEExportFileInfo(); file_info.path = "Texture"; file_info.crypt_mode = true;
-		++ count; file_list[count] = file_info;
-		file_info = new IDEExportFileInfo(); file_info.path = "UI"; file_info.crypt_mode = true;
-		++ count; file_list[count] = file_info;
+		
+		if (platform == "Web" || platform == "WeChat")
+		{
+			file_info = new IDEExportFileInfo(); file_info.path = "Texture"; file_info.crypt_mode = false;
+			++ count; file_list[count] = file_info;
+			
+			var all_in_one = new Map<string, any>();
+			var map = ALittle.File_GetFileAttrByDir(ALittle.File_BaseFilePath().."Module/"..project_name.."/UI");
+			for (var path, _ in map)
+			{
+				var json:Map<string, any> = ALittle.File_ReadJsonFromStdFile(path);
+				for (var name, o in json)
+					all_in_one[name] = o;
+			}
+			ALittle.File_MakeDeepDir(ALittle.File_BaseFilePath().."Module/"..project_name.."/JSUI");
+			ALittle.File_WriteJsonFromStdFile(all_in_one, ALittle.File_BaseFilePath().."Module/"..project_name.."/JSUI/ui_all_in_one.json");
+
+			file_info = new IDEExportFileInfo(); file_info.path = "JSUI"; file_info.crypt_mode = false;
+			++ count; file_list[count] = file_info;
+		}
+		else
+		{
+			file_info = new IDEExportFileInfo(); file_info.path = "Texture"; file_info.crypt_mode = true;
+			++ count; file_list[count] = file_info;
+			file_info = new IDEExportFileInfo(); file_info.path = "UI"; file_info.crypt_mode = true;
+			++ count; file_list[count] = file_info;
+        }
 	
 		// 如果没有NoCrypt.ali文件，说明已经加密过了，那么所有都不要再加密了
 		if (ALittle.File_GetFileAttr(project_path.."/NoCrypt.ali") == null)
@@ -295,29 +326,58 @@ class IDEExport
         
 		if (!is_plugin)
 		{
-            // 打包基础库脚本
-			var result = this.PackagePath(ALittle.File_BaseFilePath().."Module/ALittleIDE/Other/GameLibrary/Core/Script", export_common_path.."/Core", "Core", true);
-			if (result != null)
+			if (platform == "Web" || platform == "WeChat")
 			{
-				++count;
-				map_list[count] = result;
-			}
+                // 打包基础库脚本
+				var result = this.PackagePath(ALittle.File_BaseFilePath().."Module/ALittleIDE/Other/GameLibrary/Core/JSNative", export_common_path.."/JSNative", "JSNative", false);
+				if (result != null)
+				{
+					++count;
+					map_list[count] = result;
+				}
 		
-			// 打包基础库脚本
-			result = this.PackagePath(ALittle.File_BaseFilePath().."Module/ALittleIDE/Other/GameLibrary/Std/Script", export_common_path.."/Std", "Std", true);
-			if (result != null)
-			{
-				++count;
-				map_list[count] = result;
-			}
+				// 打包基础库脚本
+				result = this.PackagePath(ALittle.File_BaseFilePath().."Module/ALittleIDE/Other/GameLibrary/Std/JSNative", export_common_path.."/JSNative", "JSNative", false);
+				if (result != null)
+				{
+					++count;
+					map_list[count] = result;
+				}
 	
-			// 打包引擎脚本
-			result = this.PackagePath(ALittle.File_BaseFilePath().."Module/ALittleIDE/Other/GameLibrary/CEngine/Script", export_common_path.."/CEngine", "CEngine", true);
-			if (result != null)
+				// 打包引擎脚本
+				result = this.PackagePath(ALittle.File_BaseFilePath().."Module/ALittleIDE/Other/GameLibrary/CEngine/JSNative", export_common_path.."/JSNative", "JSNative", false);
+				if (result != null)
+				{
+					++count;
+					map_list[count] = result;
+				}
+            }
+			else
 			{
-				++count;
-				map_list[count] = result;
-			}
+				// 打包基础库脚本
+				var result = this.PackagePath(ALittle.File_BaseFilePath().."Module/ALittleIDE/Other/GameLibrary/Core/Script", export_common_path.."/Core", "Core", true);
+				if (result != null)
+				{
+					++count;
+					map_list[count] = result;
+				}
+		
+				// 打包基础库脚本
+				result = this.PackagePath(ALittle.File_BaseFilePath().."Module/ALittleIDE/Other/GameLibrary/Std/Script", export_common_path.."/Std", "Std", true);
+				if (result != null)
+				{
+					++count;
+					map_list[count] = result;
+				}
+	
+				// 打包引擎脚本
+				result = this.PackagePath(ALittle.File_BaseFilePath().."Module/ALittleIDE/Other/GameLibrary/CEngine/Script", export_common_path.."/CEngine", "CEngine", true);
+				if (result != null)
+				{
+					++count;
+					map_list[count] = result;
+				}
+            }
         }
         
 		// 返回文件列表
@@ -480,7 +540,7 @@ class IDEExport
 		ALittle.File_DeleteDeepDir(package_info.project_path.."/Export/Common");
 
 		// 打包文件
-		var error, version_info_list = tcall(this.PackageCommon, this, package_info.project_path.."/Export/Common", package_info.project_path, package_info.project_name, false);
+		var error, version_info_list = tcall(this.PackageCommon, this, package_info.project_path.."/Export/Common", package_info.project_path, package_info.project_name, package_info.platform, false);
 		if (error != null)
 		{
 			g_AUITool.ShowNotice("错误", "PackageCommon 调用失败:"..error);
@@ -491,7 +551,7 @@ class IDEExport
 		var plugin_list = ALittle.String_Split(package_info.version_info.plugin_list, ",");
 		for (var index, plugin in plugin_list)
 		{
-			var plugin_error, _ = tcall(this.PackageCommon, this, package_info.project_path.."/Export/Common", ALittle.File_BaseFilePath().."Module/"..plugin, plugin, true);
+			var plugin_error, _ = tcall(this.PackageCommon, this, package_info.project_path.."/Export/Common", ALittle.File_BaseFilePath().."Module/"..plugin, plugin, package_info.platform, true);
 			if (plugin_error != null)
 			{
 				g_AUITool.ShowNotice("错误", "PackageCommon 调用失败:"..plugin_error);
@@ -743,6 +803,8 @@ class IDEExport
 			install_name = this.GenerateApk(package_info);
 		elseif (package_info.platform == "iOS")
 			install_name = this.GenerateIpa(package_info);
+		elseif (package_info.platform == "Web")
+			install_name = this.GenerateWeb(package_info);
 	
 		submit_info.project_path = package_info.project_path;
 		submit_info.export_module_path = package_info.export_module_path;
@@ -762,6 +824,7 @@ class IDEExport
 		var install_attr = ALittle.File_GetFileAttr(package_info.project_path.."/Export/"..install_name);
 		if (install_attr == null)
 		{
+			g_AUITool.HideAlertDialog();
 			g_AUITool.ShowNotice("提示", "版本生成失败");
 			return;
 		}
@@ -1466,6 +1529,40 @@ class IDEExport
 		ALittle.File_SaveFile(package_info.project_path.."/Export/Install.ipa", "Install.ipa", -1);
 	
 		return "Install.ipa";
+	}
+	
+	//========================================Web部分=================================================
+	// 生成Web打包文件
+	public fun GenerateWeb(IDEPackageInfo package_info) : string
+	{
+		ALittle.Log("==================GenerateWeb:"..package_info.project_name.."==================");
+		
+		// 检查路径是否存在
+		if (ALittle.File_GetFileAttr(package_info.project_path) == null)
+		{
+			ALittle.Log("IDEExport:GenerateWeb project_path is not exist:", package_info.project_path);
+			return null;
+		}
+	
+		// 先判断是否有install复制Install.ico
+		var install_ico = package_info.project_path.."/Icon/install.ico";
+		if (ALittle.File_GetFileAttr(install_ico) == null)
+			ALittle.File_CopyFile(ALittle.File_BaseFilePath().."Export/Icon/install.ico", package_info.project_path.."/Export/Web/favicon.ico");
+		else
+			ALittle.File_CopyFile(install_ico, package_info.project_path.."/Export/Web/favicon.ico");
+	
+		// 生成html
+		var file = new lua.__CPPAPILocalFile();
+		file.SetPath(ALittle.File_BaseFilePath().."Export/Web/index.html");
+		if (file.Load())
+		{
+			var content = file.GetContent();
+			content = ALittle.String_Replace(content, "abcd@project_name@abcd", package_info.project_name);
+	
+			ALittle.File_SaveFile(package_info.project_path.."/Export/Web/"..package_info.project_name..".html", content, -1);
+			ALittle.File_SaveFile(package_info.project_path.."/Export/Install.html", content, -1);
+		}
+		return "Install.html";
 	}
 }
 

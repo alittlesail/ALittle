@@ -12,36 +12,6 @@ name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
-ALittle.RegStruct(-1155035135, "ALittleIDE.IDETabChildOpenEvent", {
-name = "ALittleIDE.IDETabChildOpenEvent", ns_name = "ALittleIDE", rl_name = "IDETabChildOpenEvent", hash_code = -1155035135,
-name_list = {"target"},
-type_list = {"ALittle.DisplayObject"},
-option_map = {}
-})
-ALittle.RegStruct(-821246321, "ALittleIDE.IDETabChildHideEvent", {
-name = "ALittleIDE.IDETabChildHideEvent", ns_name = "ALittleIDE", rl_name = "IDETabChildHideEvent", hash_code = -821246321,
-name_list = {"target"},
-type_list = {"ALittle.DisplayObject"},
-option_map = {}
-})
-ALittle.RegStruct(-314404225, "ALittleIDE.IDETabChildCloseEvent", {
-name = "ALittleIDE.IDETabChildCloseEvent", ns_name = "ALittleIDE", rl_name = "IDETabChildCloseEvent", hash_code = -314404225,
-name_list = {"target"},
-type_list = {"ALittle.DisplayObject"},
-option_map = {}
-})
-ALittle.RegStruct(444989011, "ALittle.UISelectChangedEvent", {
-name = "ALittle.UISelectChangedEvent", ns_name = "ALittle", rl_name = "UISelectChangedEvent", hash_code = 444989011,
-name_list = {"target"},
-type_list = {"ALittle.DisplayObject"},
-option_map = {}
-})
-ALittle.RegStruct(1371842510, "ALittleIDE.IDETabChildShowEvent", {
-name = "ALittleIDE.IDETabChildShowEvent", ns_name = "ALittleIDE", rl_name = "IDETabChildShowEvent", hash_code = 1371842510,
-name_list = {"target"},
-type_list = {"ALittle.DisplayObject"},
-option_map = {}
-})
 ALittle.RegStruct(-1347278145, "ALittle.UIButtonEvent", {
 name = "ALittle.UIButtonEvent", ns_name = "ALittle", rl_name = "UIButtonEvent", hash_code = -1347278145,
 name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
@@ -52,6 +22,12 @@ ALittle.RegStruct(-641444818, "ALittle.UIRButtonDownEvent", {
 name = "ALittle.UIRButtonDownEvent", ns_name = "ALittle", rl_name = "UIRButtonDownEvent", hash_code = -641444818,
 name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
 type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
+option_map = {}
+})
+ALittle.RegStruct(444989011, "ALittle.UISelectChangedEvent", {
+name = "ALittle.UISelectChangedEvent", ns_name = "ALittle", rl_name = "UISelectChangedEvent", hash_code = 444989011,
+name_list = {"target"},
+type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
 ALittle.RegStruct(882286932, "ALittle.UIKeyEvent", {
@@ -92,8 +68,35 @@ end
 function IDETabChild.__setter:save(value)
 end
 
+function IDETabChild:Save()
+	self.save = true
+end
+
 function IDETabChild.__getter:revoke_list()
 	return self._revoke_list
+end
+
+function IDETabChild:CanDelete(control_name)
+	return nil
+end
+
+function IDETabChild.__getter:title()
+	return self._name
+end
+
+function IDETabChild:OnHide()
+end
+
+function IDETabChild:OnShow()
+end
+
+function IDETabChild:OnClose()
+end
+
+function IDETabChild:OnOpen()
+end
+
+function IDETabChild:OnRightMenu()
 end
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
@@ -105,15 +108,7 @@ function IDEContentEdit:TCtor()
 	self._main_tab:AddEventListener(___all_struct[-1604617962], self, self.HandleMainTabKeyDown)
 	self._main_tab.close_callback = Lua.Bind(self.MainTabTabCloseYesOrNot, self)
 	self._main_tab.close_post_callback = Lua.Bind(self.MainTabTabClose, self)
-	g_IDEProject:AddEventListener(___all_struct[-332308624], self, self.HandleProjectClise)
-	self._cur_tab = nil
-end
-
-function IDEContentEdit:Shutdown()
-end
-
-function IDEContentEdit:HandleProjectClise(event)
-	self:CloseAllTab()
+	g_IDEProject:AddEventListener(___all_struct[-332308624], self, self.HandleProjectClose)
 end
 
 function IDEContentEdit.__getter:cur_tab()
@@ -129,6 +124,10 @@ function IDEContentEdit.__getter:cur_tab_child()
 		return nil
 	end
 	return self._cur_tab._user_data
+end
+
+function IDEContentEdit:HandleProjectClose(event)
+	self:CloseAllTab()
 end
 
 function IDEContentEdit:GetTabByName(name)
@@ -187,30 +186,20 @@ function IDEContentEdit:ChangeTabEditControl(child_from, child_to)
 	end
 	if child_from ~= nil then
 		local tab_child = child_from._user_data
-		tab_child:DispatchEvent(___all_struct[-821246321], {})
+		tab_child:OnHide()
 	end
 	if child_to ~= nil then
 		local tab_child = child_to._user_data
-		tab_child:DispatchEvent(___all_struct[1371842510], {})
+		tab_child:OnShow()
 	end
 	self._cur_tab = child_to
 end
 
 function IDEContentEdit:CloseTab(child)
 	local tab_child = child._user_data
-	tab_child:DispatchEvent(___all_struct[-314404225], {})
+	tab_child:OnClose()
 	self._main_tab:RemoveChild(child)
 	self:ChangeTabEditControl(nil, self._main_tab.tab)
-end
-
-function IDEContentEdit:RefreshTab(child)
-	local tab_child = child._user_data
-	local tab_index = self._main_tab:GetChildIndex(child)
-	self:CloseTab(child)
-	local name = tab_child.name
-	local control_info = g_IDEProject.project.ui.control_map[name]
-	local new_tab_child = self:StartEditControlBySelect(control_info.name, control_info.info)
-	self._main_tab:SetChildIndex(new_tab_child.tab_screen, tab_index)
 end
 
 function IDEContentEdit:SaveTab(child)
@@ -222,7 +211,7 @@ function IDEContentEdit:CloseAllTab()
 	self:ChangeTabEditControl(self._main_tab.tab, nil)
 	for k, child in ___ipairs(self._main_tab.childs) do
 		local tab_child = child._user_data
-		tab_child:DispatchEvent(___all_struct[-314404225], {})
+		tab_child:OnClose()
 	end
 	self._main_tab:RemoveAllChild()
 end
@@ -234,31 +223,10 @@ function IDEContentEdit:SaveAllTab()
 	end
 end
 
-function IDEContentEdit:ShowTabChildSelectLayer(value)
+function IDEContentEdit:CanDelete(control_name)
 	for k, child in ___ipairs(self._main_tab.childs) do
 		local tab_child = child._user_data
-		tab_child:ShowSelectLayer(value)
-	end
-end
-
-function IDEContentEdit:ShowTabChildHandDragLayer(value)
-	for k, child in ___ipairs(self._main_tab.childs) do
-		local tab_child = child._user_data
-		tab_child:ShowHandDragLayer(value)
-	end
-end
-
-function IDEContentEdit:ShowTabChildScaleLayer(value)
-	for k, child in ___ipairs(self._main_tab.childs) do
-		local tab_child = child._user_data
-		tab_child:ShowScaleLayer(value)
-	end
-end
-
-function IDEContentEdit:CanDelete(name)
-	for k, child in ___ipairs(self._main_tab.childs) do
-		local tab_child = child._user_data
-		local error = tab_child:CanDeleteControl(name)
+		local error = tab_child:CanDelete(control_name)
 		if error ~= nil then
 			return error
 		end
@@ -285,7 +253,7 @@ end
 
 function IDEContentEdit:MainTabTabCloseImpl(tab_child, child)
 	local cancel_callback = Lua.Bind(self.CloseTab, self, child)
-	local result = g_AUITool:SaveNotice("提示", "是否保存当前控件?")
+	local result = g_AUITool:SaveNotice("提示", "是否保存?")
 	if result == "YES" then
 		tab_child.save = true
 	end
@@ -294,50 +262,15 @@ end
 IDEContentEdit.MainTabTabCloseImpl = Lua.CoWrap(IDEContentEdit.MainTabTabCloseImpl)
 
 function IDEContentEdit:HandleMainTabRightClick(event)
-	self:ShowTabRightMenu(event.target)
+	local tab_child = event.target._user_data
+	tab_child:OnRightMenu()
 end
 
 function IDEContentEdit:HandleMainTabKeyDown(event)
-	if event.sym == 1073741883 then
-		self:ControlRename(event.target)
-		event.handled = true
-		return
-	end
-	if event.sym == 1073741886 then
-		local child = event.target
-		local tab_child = child._user_data
-		if tab_child.save then
-			self:RefreshTab(child)
-			event.handled = true
-			return
-		end
-		local result = g_AUITool:SaveNotice("提示", "是否保存当前控件?")
-		if result == "YES" then
-			tab_child.save = true
-		end
-		self:RefreshTab(child)
-		event.handled = true
-		return
-	end
 end
 IDEContentEdit.HandleMainTabKeyDown = Lua.CoWrap(IDEContentEdit.HandleMainTabKeyDown)
 
-function IDEContentEdit:ShowTabRightMenu(child)
-	local tab_child = child._user_data
-	local menu = AUIPlugin.AUIRightMenu()
-	menu:AddItem("保存", Lua.Bind(self.SaveTab, self, child))
-	menu:AddItem("截图导出", Lua.Bind(A_OtherSystem.SystemSaveFile, A_OtherSystem, tab_child, tab_child.name .. ".png", nil))
-	menu:AddItem("刷新", Lua.Bind(self.RefreshTabWithAsk, self, child))
-	menu:AddItem("复制控件名", Lua.Bind(ALittle.System_SetClipboardText, tab_child.name))
-	menu:AddItem("复制继承代码", Lua.Bind(self.CopyExtends, self, child))
-	menu:AddItem("关闭自己", Lua.Bind(self.CloseTabWithAsk, self, child))
-	menu:AddItem("关闭左侧", Lua.Bind(self.CloseLeftTab, self, child))
-	menu:AddItem("关闭右侧", Lua.Bind(self.CloseRightTab, self, child))
-	menu:AddItem("修改控件名", Lua.Bind(self.ControlRename, self, child))
-	menu:Show()
-end
-
-function IDEContentEdit:ShowTabRightExMenu(x, y)
+function IDEContentEdit:HandleTabRightExMenu(event)
 	local tab_childs = self._main_tab.childs
 	if tab_childs[1] == nil then
 		return
@@ -345,7 +278,7 @@ function IDEContentEdit:ShowTabRightExMenu(x, y)
 	local menu = AUIPlugin.AUIRightMenu()
 	for index, child in ___ipairs(tab_childs) do
 		local tab_child = child._user_data
-		menu:AddItem(tab_child.total_title, Lua.Bind(self.SelectItemClick, self, child))
+		menu:AddItem(tab_child.title, Lua.Bind(self.SelectItemClick, self, child))
 	end
 	menu:Show()
 end
@@ -357,27 +290,13 @@ function IDEContentEdit:SelectItemClick(child_to)
 	self:ChangeTabEditControl(child_from, child_to)
 end
 
-function IDEContentEdit:RefreshTabWithAsk(child)
-	local tab_child = child._user_data
-	if tab_child.save then
-		self:RefreshTab(child)
-		return
-	end
-	local result = g_AUITool:SaveNotice("提示", "是否保存当前控件?")
-	if result == "YES" then
-		tab_child.save = true
-	end
-	self:RefreshTab(child)
-end
-IDEContentEdit.RefreshTabWithAsk = Lua.CoWrap(IDEContentEdit.RefreshTabWithAsk)
-
 function IDEContentEdit:CloseTabWithAsk(child)
 	local tab_child = child._user_data
 	if tab_child.save then
 		self:CloseTab(child)
 		return
 	end
-	local result = g_AUITool:SaveNotice("提示", "是否保存当前控件?")
+	local result = g_AUITool:SaveNotice("提示", "是否保存当前标签页?")
 	if result == "YES" then
 		tab_child.save = true
 	end
@@ -421,60 +340,12 @@ function IDEContentEdit:CloseRightTab(child)
 	end
 end
 
-function IDEContentEdit:CopyExtends(child)
-	local tab_child = child._user_data
-	local name = tab_child.name
-	local display_info = {}
-	display_info.__extends = name
-	local copy_list = {}
-	local info = {}
-	info.index = 1
-	info.info = display_info
-	copy_list[1] = info
-	ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list))
-end
-
-function IDEContentEdit:ControlRename(child)
-	local tab_child = child._user_data
-	local old_name = tab_child.name
-	local error = g_IDEProject.project.ui:CanDelete(old_name)
-	if error ~= nil then
-		g_AUITool:ShowNotice("错误", error)
-		return
-	end
-	error = self:CanDelete(old_name)
-	if error ~= nil then
-		g_AUITool:ShowNotice("错误", error)
-		return
-	end
-	local layout = self._main_tab:GetChildHead(child)
-	local x, y = layout:LocalToGlobal()
-	local width = layout.width
-	if width < 150 then
-		width = 150
-	end
-	local new_name = g_AUITool:ShowRename(old_name, x, y, width)
-	if new_name == nil or old_name == new_name then
-		return
-	end
-	if old_name == new_name then
-		return
-	end
-	error = g_IDEProject.project.ui:RenameControl(old_name, new_name)
-	if error ~= nil then
-		g_AUITool:ShowNotice("错误", error)
-		return
-	end
-	tab_child:Rename(new_name)
-end
-IDEContentEdit.ControlRename = Lua.CoWrap(IDEContentEdit.ControlRename)
-
 function IDEContentEdit:StartEditControlByNew(name, type)
 	local child_from = self._main_tab.tab
 	local tab_child = IDEUITabChild(g_Control, name, false)
 	tab_child:CreateByNew(type)
 	self._main_tab:AddChild(tab_child.tab_screen)
-	tab_child:DispatchEvent(___all_struct[-1155035135], {})
+	tab_child:OnOpen()
 	self._main_tab.tab = tab_child.tab_screen
 	self:ChangeTabEditControl(child_from, self._main_tab.tab)
 	tab_child:UpdateTitle()
@@ -487,7 +358,7 @@ function IDEContentEdit:StartEditControlByExtends(name, extends_v)
 	local tab_child = IDEUITabChild(g_Control, name, false)
 	tab_child:CreateByExtends(extends_v)
 	self._main_tab:AddChild(tab_child.tab_screen)
-	tab_child:DispatchEvent(___all_struct[-1155035135], {})
+	tab_child:OnOpen()
 	self._main_tab.tab = tab_child.tab_screen
 	self:ChangeTabEditControl(child_from, self._main_tab.tab)
 	tab_child:UpdateTitle()
@@ -507,7 +378,7 @@ function IDEContentEdit:StartEditControlBySelect(name, info)
 	local tab_child = IDEUITabChild(g_Control, name, true)
 	tab_child:CreateBySelect(info)
 	self._main_tab:AddChild(tab_child.tab_screen, 1)
-	tab_child:DispatchEvent(___all_struct[-1155035135], {})
+	tab_child:OnOpen()
 	self._main_tab.tab = tab_child.tab_screen
 	self:ChangeTabEditControl(child_from, self._main_tab.tab)
 	tab_child:UpdateTitle()

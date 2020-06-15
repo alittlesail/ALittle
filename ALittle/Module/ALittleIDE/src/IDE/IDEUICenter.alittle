@@ -6,6 +6,26 @@ public struct IDEUICenterScaleChangedEvent : ALittle.UIEvent
     double scale;
 }
 
+public struct IDEUICenterSelectOpChangedEvent : ALittle.UIEvent
+{
+    bool value;
+}
+
+public struct IDEUICenterHandDragOpChangedEvent : ALittle.UIEvent
+{
+    bool value;
+}
+
+public struct IDEUICenterScaleOpChangedEvent : ALittle.UIEvent
+{
+    bool value;
+}
+
+public struct IDEUICenterPreSeeOpChangedEvent : ALittle.UIEvent
+{
+    bool value;
+}
+
 protected class IDEUICenter : ALittle.DisplayLayout
 {
 	private ALittle.Tab _main_tab;				// 编辑区标签容器
@@ -65,11 +85,6 @@ protected class IDEUICenter : ALittle.DisplayLayout
 		ALittle.TextRadioButton.SetGroup([this._tool_singleselect, this._tool_handdrag, this._tool_scale, this._tool_presee]);
 	}
 	
-	public fun Shutdown()
-	{
-		this._content_edit.Shutdown();
-	}
-
 	public get control_tree() : IDEUIControlTree { return this._control_tree; }
 	public get control_list() : IDEUIControlList { return this._control_list; }
 	public get project_list() : IDEUIProjectList { return this._project_list; }
@@ -200,7 +215,11 @@ protected class IDEUICenter : ALittle.DisplayLayout
 	public fun HandleToolSingleSelect(ALittle.UIEvent event)
 	{
 		var object = event.target;
-		g_IDECenter.center.content_edit.ShowTabChildSelectLayer(object.selected);
+
+		var op_event = new IDEUICenterSelectOpChangedEvent();
+		op_event.value = object.selected;
+		g_IDECenter.center.DispatchEvent(op_event);
+
 		this._tool_h_align_left.visible = object.selected;
 		this._tool_h_align_center.visible = object.selected;
 		this._tool_h_align_right.visible = object.selected;
@@ -217,14 +236,22 @@ protected class IDEUICenter : ALittle.DisplayLayout
 	}
 	public fun HandleToolHandDrag(ALittle.UIButtonDragEvent event)
 	{
-		g_IDECenter.center.content_edit.ShowTabChildHandDragLayer(event.target.selected);
+		var op_event = new IDEUICenterHandDragOpChangedEvent();
+		op_event.value = event.target.selected;
+		g_IDECenter.center.DispatchEvent(op_event);
 	}
 	public fun HandleToolPreSee(ALittle.UIEvent event)
 	{
+		var op_event = new IDEUICenterPreSeeOpChangedEvent();
+		op_event.value = event.target.selected;
+		g_IDECenter.center.DispatchEvent(op_event);
 	}
 	public fun HandleToolScale(ALittle.UIEvent event)
 	{
-		g_IDECenter.center.content_edit.ShowTabChildScaleLayer(event.target.selected);
+		var op_event = new IDEUICenterScaleOpChangedEvent();
+		op_event.value = event.target.selected;
+		g_IDECenter.center.DispatchEvent(op_event);
+
 		this._tool_scale_text.visible = event.target.selected;
 		this._tool_scale_input.visible = event.target.selected;
 	}
@@ -309,12 +336,5 @@ protected class IDEUICenter : ALittle.DisplayLayout
         }
 		g_IDEImageManagerDialog.SetBasePath(g_IDEProject.project.texture_path);
 		g_IDEImageManagerDialog.ShowDialog();
-	}
-
-	// Tab界面右上角菜单按钮
-	public fun HandleTabRightExMenu(ALittle.UIEvent event)
-	{
-		var x, y = event.target.LocalToGlobal();
-		g_IDECenter.center.content_edit.ShowTabRightExMenu(x, y + event.target.height);
 	}
 }

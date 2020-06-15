@@ -24,9 +24,6 @@ function IDECenter:Shutdown()
 	if self._main_menu ~= nil then
 		self._main_menu:Shutdown()
 	end
-	if self._center ~= nil then
-		self._center:Shutdown()
-	end
 end
 
 function IDECenter.__getter:center()

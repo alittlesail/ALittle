@@ -3,10 +3,44 @@ module("ALittleIDE", package.seeall)
 
 local ___pairs = pairs
 local ___ipairs = ipairs
+local ___all_struct = ALittle.GetAllStruct()
 
+ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
+name = "ALittle.UIEvent", ns_name = "ALittle", rl_name = "UIEvent", hash_code = -1479093282,
+name_list = {"target"},
+type_list = {"ALittle.DisplayObject"},
+option_map = {}
+})
+ALittle.RegStruct(-1347278145, "ALittle.UIButtonEvent", {
+name = "ALittle.UIButtonEvent", ns_name = "ALittle", rl_name = "UIButtonEvent", hash_code = -1347278145,
+name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
+type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
+option_map = {}
+})
+ALittle.RegStruct(-641444818, "ALittle.UIRButtonDownEvent", {
+name = "ALittle.UIRButtonDownEvent", ns_name = "ALittle", rl_name = "UIRButtonDownEvent", hash_code = -641444818,
+name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
+type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
+option_map = {}
+})
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
 IDEUIProjectList = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDEUIProjectList")
+
+function IDEUIProjectList:HandleProjectSearchClick(event)
+	self._project_scroll_screen:RemoveAllChild()
+	local key = self._project_search_key.text
+	local project_map = g_IDEConfig:GetConfig("project_map", {})
+	for k, v in ___pairs(project_map) do
+		if key == "" or ALittle.String_Find(v, key) ~= nil then
+			local item = g_Control:CreateControl("ide_common_item_button")
+			item.text = v
+			item.drag_trans_target = self._project_scroll_screen
+			item:AddEventListener(___all_struct[-641444818], self, self.HandleProjectItemRightClick)
+			self._project_scroll_screen:AddChild(item)
+		end
+	end
+end
 
 function IDEUIProjectList:HandleProjectItemRightClick(event)
 	local menu = AUIPlugin.AUIRightMenu()

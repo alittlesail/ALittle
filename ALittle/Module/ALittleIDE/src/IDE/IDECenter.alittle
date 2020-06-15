@@ -27,7 +27,6 @@ class IDECenter
 	{
 		if (this._account != null) this._account.Shutdown();
 		if (this._main_menu != null) this._main_menu.Shutdown();
-		if (this._center != null) this._center.Shutdown();
 	}
 
 	public get center() : IDEUICenter { return this._center; }

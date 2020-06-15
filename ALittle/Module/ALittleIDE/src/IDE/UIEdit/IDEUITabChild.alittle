@@ -82,11 +82,9 @@ public class IDEUITabChild : IDETabChild
 
 	public ctor(ALittle.ControlSystem ctrl_sys, string name, bool save)
 	{
-        // 处理隐藏
-        this.AddEventListener(this, this.HandleTabChildHide);
-        this.AddEventListener(this, this.HandleTabChildShow);
-        this.AddEventListener(this, this.HandleTabChildClose);
-        this.AddEventListener(this, this.HandleTabChildOpen);
+        g_IDECenter.center.AddEventListener(this, this.HandleShowSelectLayer);
+        g_IDECenter.center.AddEventListener(this, this.HandleShowHandDragLayer);
+        g_IDECenter.center.AddEventListener(this, this.HandleShowScaleLayer);
         g_IDEProject.AddEventListener(this, this.HandleProjectSettingChanged);
 	
 		// 组名
@@ -142,7 +140,7 @@ public class IDEUITabChild : IDETabChild
         this.AddEventListener(this, this.HandleSavePng);
     }
 
-    private fun HandleTabChildHide(IDETabChildHideEvent event)
+    private fun OnHide()
     {   
 		// 隐藏属性滚动屏
 		this._tree_screen.visible = false;
@@ -152,7 +150,7 @@ public class IDEUITabChild : IDETabChild
         g_IDECenter.center.RemoveEventListener(this, this.HandleEditScaleChanged);
     }
 
-    private fun HandleTabChildShow(IDETabChildShowEvent event)
+    private fun OnShow()
     {
 		// 在控件树区域载入to的结构
 		this._tree_screen.visible = true;
@@ -167,7 +165,7 @@ public class IDEUITabChild : IDETabChild
         g_IDECenter.center.AddEventListener(this, this.HandleEditScaleChanged);
     }
 
-    private fun HandleTabChildClose(IDETabChildCloseEvent event)
+    private fun OnClose()
     {
         g_IDECenter.center.control_tree.RemoveChild(this._tree_screen);
 		g_IDECenter.center.control_attr.RemoveChild(this._attr_screen);
@@ -176,11 +174,37 @@ public class IDEUITabChild : IDETabChild
         g_IDECenter.center.RemoveEventListener(this, this.HandleEditScaleChanged);
     }
 
-    private fun HandleTabChildOpen(IDETabChildOpenEvent event)
+    private fun OnOpen()
     {
 		g_IDECenter.center.control_tree.AddChild(this._tree_screen);
 		g_IDECenter.center.control_attr.AddChild(this._attr_screen);
 		g_IDECenter.center.control_anti.AddChild(this._anti_panel);
+    }
+
+    private fun OnRightMenu()
+    {
+		var menu = new AUIPlugin.AUIRightMenu();
+		menu.AddItem("保存", bind(this.Save, this));
+		menu.AddItem("截图导出", bind(A_OtherSystem.SystemSaveFile, A_OtherSystem, this, this._name..".png", null));
+		menu.AddItem("复制控件名", bind(ALittle.System_SetClipboardText, this._name));
+		menu.AddItem("复制继承代码", bind(this.CopyExtends, this));
+		menu.AddItem("关闭自己", bind(g_IDECenter.center.content_edit.CloseTabWithAsk, g_IDECenter.center.content_edit, this._tab_screen));
+		menu.AddItem("关闭左侧", bind(g_IDECenter.center.content_edit.CloseLeftTab, g_IDECenter.center.content_edit, this._tab_screen));
+		menu.AddItem("关闭右侧", bind(g_IDECenter.center.content_edit.CloseRightTab, g_IDECenter.center.content_edit, this._tab_screen));
+		menu.Show();
+    }
+    
+	private fun CopyExtends()
+	{
+		var name = this._name;
+		var display_info = new ALittle.DisplayInfo();
+		display_info.__extends = name;
+		var copy_list = new List<IDEControlCopyInfo>();
+		var info = new IDEControlCopyInfo();
+		info.index = 1;
+		info.info = display_info;
+		copy_list[1] = info;
+		ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list));
     }
 
     private fun HandleProjectSettingChanged(IDEProjectSettingChanged event)
@@ -248,7 +272,7 @@ public class IDEUITabChild : IDETabChild
         g_IDECenter.center.content_edit.main_tab.SetChildText(this.tab_screen, text);
 	}
 	
-	public get total_title() : string
+	public get title() : string
     {
         var text = this._tree_object.GetDesc();
         if (text == "") return this._name;
@@ -265,13 +289,13 @@ public class IDEUITabChild : IDETabChild
             this.UpdateHandleQuadLayout(target);
 	}
 	
-	public fun CanDeleteControl(string name) : string
+	public fun CanDelete(string name) : string
     {
         if (this._tree_object == null) return null;
         var info = this._tree_object.CalcInfo();
         var map = IDEUIUtility_GetExtends(info);
 		if (map[name])
-            return "被其他控件引用:"..name;
+            return this._name.." 引用了 "..name;
         
         return null;
 	}
@@ -431,19 +455,19 @@ public class IDEUITabChild : IDETabChild
         this.save = false;
 	}
 	
-	public fun ShowSelectLayer(bool value)
+	private fun HandleShowSelectLayer(IDEUICenterSelectOpChangedEvent event)
     {
-        this._tab_select_container.visible = value;
+        this._tab_select_container.visible = event.value;
 	}
 	
-	public fun ShowHandDragLayer(bool value)
+	private fun HandleShowHandDragLayer(IDEUICenterHandDragOpChangedEvent event)
     {
-        this._tab_handdrag_container.visible = value;
+        this._tab_handdrag_container.visible = event.value;
 	}
 	
-	public fun ShowScaleLayer(bool value)
+	private fun HandleShowScaleLayer(IDEUICenterScaleOpChangedEvent event)
     {
-        this._tab_scale_container.visible = value;
+        this._tab_scale_container.visible = event.value;
 	}
 	
 	////////////////////////////////////////////////////////////////////////////////////////////-

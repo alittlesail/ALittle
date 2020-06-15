@@ -17,6 +17,30 @@ name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
+ALittle.RegStruct(-506107723, "ALittleIDE.IDEUICenterSelectOpChangedEvent", {
+name = "ALittleIDE.IDEUICenterSelectOpChangedEvent", ns_name = "ALittleIDE", rl_name = "IDEUICenterSelectOpChangedEvent", hash_code = -506107723,
+name_list = {"target","value"},
+type_list = {"ALittle.DisplayObject","bool"},
+option_map = {}
+})
+ALittle.RegStruct(516695166, "ALittleIDE.IDEUICenterPreSeeOpChangedEvent", {
+name = "ALittleIDE.IDEUICenterPreSeeOpChangedEvent", ns_name = "ALittleIDE", rl_name = "IDEUICenterPreSeeOpChangedEvent", hash_code = 516695166,
+name_list = {"target","value"},
+type_list = {"ALittle.DisplayObject","bool"},
+option_map = {}
+})
+ALittle.RegStruct(1299500288, "ALittleIDE.IDEUICenterHandDragOpChangedEvent", {
+name = "ALittleIDE.IDEUICenterHandDragOpChangedEvent", ns_name = "ALittleIDE", rl_name = "IDEUICenterHandDragOpChangedEvent", hash_code = 1299500288,
+name_list = {"target","value"},
+type_list = {"ALittle.DisplayObject","bool"},
+option_map = {}
+})
+ALittle.RegStruct(2103672497, "ALittleIDE.IDEUICenterScaleOpChangedEvent", {
+name = "ALittleIDE.IDEUICenterScaleOpChangedEvent", ns_name = "ALittleIDE", rl_name = "IDEUICenterScaleOpChangedEvent", hash_code = 2103672497,
+name_list = {"target","value"},
+type_list = {"ALittle.DisplayObject","bool"},
+option_map = {}
+})
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
 IDEUICenter = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDEUICenter")
@@ -31,10 +55,6 @@ function IDEUICenter:TCtor()
 	self._project_quick_tab:DisableAllCloseButton()
 	self._project_quick_tab.tab_index = 1
 	ALittle.TextRadioButton.SetGroup({self._tool_singleselect, self._tool_handdrag, self._tool_scale, self._tool_presee})
-end
-
-function IDEUICenter:Shutdown()
-	self._content_edit:Shutdown()
 end
 
 function IDEUICenter.__getter:control_tree()
@@ -204,7 +224,9 @@ end
 
 function IDEUICenter:HandleToolSingleSelect(event)
 	local object = event.target
-	g_IDECenter.center.content_edit:ShowTabChildSelectLayer(object.selected)
+	local op_event = {}
+	op_event.value = object.selected
+	g_IDECenter.center:DispatchEvent(___all_struct[-506107723], op_event)
 	self._tool_h_align_left.visible = object.selected
 	self._tool_h_align_center.visible = object.selected
 	self._tool_h_align_right.visible = object.selected
@@ -220,14 +242,21 @@ function IDEUICenter:HandleToolSingleSelect(event)
 end
 
 function IDEUICenter:HandleToolHandDrag(event)
-	g_IDECenter.center.content_edit:ShowTabChildHandDragLayer(event.target.selected)
+	local op_event = {}
+	op_event.value = event.target.selected
+	g_IDECenter.center:DispatchEvent(___all_struct[1299500288], op_event)
 end
 
 function IDEUICenter:HandleToolPreSee(event)
+	local op_event = {}
+	op_event.value = event.target.selected
+	g_IDECenter.center:DispatchEvent(___all_struct[516695166], op_event)
 end
 
 function IDEUICenter:HandleToolScale(event)
-	g_IDECenter.center.content_edit:ShowTabChildScaleLayer(event.target.selected)
+	local op_event = {}
+	op_event.value = event.target.selected
+	g_IDECenter.center:DispatchEvent(___all_struct[2103672497], op_event)
 	self._tool_scale_text.visible = event.target.selected
 	self._tool_scale_input.visible = event.target.selected
 end
@@ -317,10 +346,5 @@ function IDEUICenter:HandleImageSelectClick(event)
 	end
 	g_IDEImageManagerDialog:SetBasePath(g_IDEProject.project.texture_path)
 	g_IDEImageManagerDialog:ShowDialog()
-end
-
-function IDEUICenter:HandleTabRightExMenu(event)
-	local x, y = event.target:LocalToGlobal()
-	g_IDECenter.center.content_edit:ShowTabRightExMenu(x, y + event.target.height)
 end
 

@@ -131,10 +131,9 @@ assert(ALittleIDE.IDETabChild, " extends class:ALittleIDE.IDETabChild is nil")
 IDEUITabChild = Lua.Class(ALittleIDE.IDETabChild, "ALittleIDE.IDEUITabChild")
 
 function IDEUITabChild:Ctor(ctrl_sys, name, save)
-	self:AddEventListener(___all_struct[-821246321], self, self.HandleTabChildHide)
-	self:AddEventListener(___all_struct[1371842510], self, self.HandleTabChildShow)
-	self:AddEventListener(___all_struct[-314404225], self, self.HandleTabChildClose)
-	self:AddEventListener(___all_struct[-1155035135], self, self.HandleTabChildOpen)
+	g_IDECenter.center:AddEventListener(___all_struct[-506107723], self, self.HandleShowSelectLayer)
+	g_IDECenter.center:AddEventListener(___all_struct[1299500288], self, self.HandleShowHandDragLayer)
+	g_IDECenter.center:AddEventListener(___all_struct[2103672497], self, self.HandleShowScaleLayer)
 	g_IDEProject:AddEventListener(___all_struct[1787992834], self, self.HandleProjectSettingChanged)
 	___rawset(self, "_group", ALittle.CreateKeyWeakMap())
 	___rawset(self, "_tab_screen", g_Control:CreateControl("ide_edit_tab_screen", self))
@@ -168,7 +167,7 @@ function IDEUITabChild:Ctor(ctrl_sys, name, save)
 	self:AddEventListener(___all_struct[-1676610185], self, self.HandleSavePng)
 end
 
-function IDEUITabChild:HandleTabChildHide(event)
+function IDEUITabChild:OnHide()
 	self._tree_screen.visible = false
 	self._attr_screen.visible = false
 	self._anti_panel.visible = false
@@ -176,7 +175,7 @@ function IDEUITabChild:HandleTabChildHide(event)
 	g_IDECenter.center:RemoveEventListener(___all_struct[1408180774], self, self.HandleEditScaleChanged)
 end
 
-function IDEUITabChild:HandleTabChildShow(event)
+function IDEUITabChild:OnShow()
 	self._tree_screen.visible = true
 	self._attr_screen.visible = true
 	self._anti_panel.visible = true
@@ -188,7 +187,7 @@ function IDEUITabChild:HandleTabChildShow(event)
 	g_IDECenter.center:AddEventListener(___all_struct[1408180774], self, self.HandleEditScaleChanged)
 end
 
-function IDEUITabChild:HandleTabChildClose(event)
+function IDEUITabChild:OnClose()
 	g_IDECenter.center.control_tree:RemoveChild(self._tree_screen)
 	g_IDECenter.center.control_attr:RemoveChild(self._attr_screen)
 	g_IDECenter.center.control_anti:RemoveChild(self._anti_panel)
@@ -196,10 +195,34 @@ function IDEUITabChild:HandleTabChildClose(event)
 	g_IDECenter.center:RemoveEventListener(___all_struct[1408180774], self, self.HandleEditScaleChanged)
 end
 
-function IDEUITabChild:HandleTabChildOpen(event)
+function IDEUITabChild:OnOpen()
 	g_IDECenter.center.control_tree:AddChild(self._tree_screen)
 	g_IDECenter.center.control_attr:AddChild(self._attr_screen)
 	g_IDECenter.center.control_anti:AddChild(self._anti_panel)
+end
+
+function IDEUITabChild:OnRightMenu()
+	local menu = AUIPlugin.AUIRightMenu()
+	menu:AddItem("保存", Lua.Bind(self.Save, self))
+	menu:AddItem("截图导出", Lua.Bind(A_OtherSystem.SystemSaveFile, A_OtherSystem, self, self._name .. ".png", nil))
+	menu:AddItem("复制控件名", Lua.Bind(ALittle.System_SetClipboardText, self._name))
+	menu:AddItem("复制继承代码", Lua.Bind(self.CopyExtends, self))
+	menu:AddItem("关闭自己", Lua.Bind(g_IDECenter.center.content_edit.CloseTabWithAsk, g_IDECenter.center.content_edit, self._tab_screen))
+	menu:AddItem("关闭左侧", Lua.Bind(g_IDECenter.center.content_edit.CloseLeftTab, g_IDECenter.center.content_edit, self._tab_screen))
+	menu:AddItem("关闭右侧", Lua.Bind(g_IDECenter.center.content_edit.CloseRightTab, g_IDECenter.center.content_edit, self._tab_screen))
+	menu:Show()
+end
+
+function IDEUITabChild:CopyExtends()
+	local name = self._name
+	local display_info = {}
+	display_info.__extends = name
+	local copy_list = {}
+	local info = {}
+	info.index = 1
+	info.info = display_info
+	copy_list[1] = info
+	ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list))
 end
 
 function IDEUITabChild:HandleProjectSettingChanged(event)
@@ -286,7 +309,7 @@ function IDEUITabChild:UpdateTitle()
 	g_IDECenter.center.content_edit.main_tab:SetChildText(self.tab_screen, text)
 end
 
-function IDEUITabChild.__getter:total_title()
+function IDEUITabChild.__getter:title()
 	local text = self._tree_object:GetDesc()
 	if text == "" then
 		return self._name
@@ -303,14 +326,14 @@ function IDEUITabChild:SetEditWH(width, height)
 	end
 end
 
-function IDEUITabChild:CanDeleteControl(name)
+function IDEUITabChild:CanDelete(name)
 	if self._tree_object == nil then
 		return nil
 	end
 	local info = self._tree_object:CalcInfo()
 	local map = IDEUIUtility_GetExtends(info)
 	if map[name] then
-		return "被其他控件引用:" .. name
+		return self._name .. " 引用了 " .. name
 	end
 	return nil
 end
@@ -441,16 +464,16 @@ function IDEUITabChild:SelectAlign(align_type)
 	self.save = false
 end
 
-function IDEUITabChild:ShowSelectLayer(value)
-	self._tab_select_container.visible = value
+function IDEUITabChild:HandleShowSelectLayer(event)
+	self._tab_select_container.visible = event.value
 end
 
-function IDEUITabChild:ShowHandDragLayer(value)
-	self._tab_handdrag_container.visible = value
+function IDEUITabChild:HandleShowHandDragLayer(event)
+	self._tab_handdrag_container.visible = event.value
 end
 
-function IDEUITabChild:ShowScaleLayer(value)
-	self._tab_scale_container.visible = value
+function IDEUITabChild:HandleShowScaleLayer(event)
+	self._tab_scale_container.visible = event.value
 end
 
 function IDEUITabChild:CreateByNew(type)

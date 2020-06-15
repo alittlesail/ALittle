@@ -48,7 +48,7 @@ public async static __Plugin_Setup(ALittle.ControlSystem control, string module_
 	g_ModuleBasePath = module_base_path;
     g_ScriptBasePath = script_base_path;
 
-    alittle.RequireFromPaths(script_base_path, "", paths("src"));
+    alittle.RequireFromPaths(script_base_path, "AUI/", paths("src/AUI"));
     g_AUIIMEManager.Setup();
 }
 

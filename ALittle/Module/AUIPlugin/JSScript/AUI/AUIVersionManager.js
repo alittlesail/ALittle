@@ -1,137 +1,79 @@
-
-namespace AUIPlugin;
-
-public class AUIVersionManager
 {
-	private ALittle.VersionSystem _version_system;		// 版本管理系统
-	private string _version_ip;							// 版本服务器的IP
-	private int	_version_port;							// 版本服务器的端口
-	
-	private ALittle.Dialog _dialog;						// 版本对话框
-	private ALittle.DisplayObject _notice_content;		// 版本提示内容
-	private ALittle.DisplayObject _notice_edit;			// 版本提示编辑框
-	private ALittle.DisplayObject _process_bg;			// 进度条背景
-	private ALittle.DisplayObject _process_bar;			// 进度条
+if (typeof AUIPlugin === "undefined") window.AUIPlugin = {};
 
-	private ALittle.DisplayObject _noupdate_btn;		// 暂不更新按钮
-	private ALittle.DisplayObject _update_btn;			// 立即更新按钮
-	private ALittle.DisplayObject _check_btn;			// 检查更新按钮
-	private ALittle.DisplayObject _install_btn;			// 立即安装按钮
-	private ALittle.DisplayObject _restart_btn;			// 立即重启按钮
 
-	public ctor(string ip, int port, string account, string module_name)
-	{
+AUIPlugin.AUIVersionManager = JavaScript.Class(undefined, {
+	Ctor : function(ip, port, account, module_name) {
 		this._version_ip = ip;
 		this._version_port = port;
 		this._version_system = ALittle.VersionSystem.CreateVersionSystem(account, module_name);
-	}
-	
-	public fun Shutdown()
-	{
-		if (this._dialog != null)
-		{
+	},
+	Shutdown : function() {
+		if (this._dialog !== undefined) {
 			A_LayerManager.RemoveFromModal(this._dialog);
-			this._dialog = null;
+			this._dialog = undefined;
 		}
-
-		if (this._version_system == null) return;
+		if (this._version_system === undefined) {
+			return;
+		}
 		this._version_system.StopUpdate();
-	}
-	
-	// 创建对话框
-	public fun CreateDialog()
-	{
-		if (this._dialog == null)
-		{
-			this._dialog = g_Control.CreateControl{ALittle.Dialog}("ide_version_dialog", this);
+	},
+	CreateDialog : function() {
+		if (this._dialog === undefined) {
+			this._dialog = AUIPlugin.g_Control.CreateControl("ide_version_dialog", this);
 			A_LayerManager.AddToModal(this._dialog);
-
-			// 初始化控件
 			this._notice_content.text = "";
 			this._notice_content.visible = true;
 			this._notice_edit.text = "";
 			this._notice_edit.visible = false;
 			this._process_bg.visible = false;
 			this._process_bar.visible = false;
-	
 			this._noupdate_btn.visible = false;
 			this._update_btn.visible = false;
 			this._check_btn.visible = false;
 			this._install_btn.visible = false;
 			this._restart_btn.visible = false;
 		}
-	}
-	
-	// 处理图片搜索
-	public fun ShowDialog()
-	{
-		// 创建对话框
+	},
+	ShowDialog : function() {
 		this.CreateDialog();
-		// 显示对话框
 		this._dialog.visible = true;
-	
-		// 检查版本
 		this.UpdateVersion(true);
-	}
-	
-	////////////////////////////////////////////////////////////////////////////////////////
-	
-	// 检查版本
-	public fun HandleCheckClick(ALittle.UIEvent event)
-	{
+	},
+	HandleCheckClick : function(event) {
 		this.UpdateVersion(true);
-	}
-	// 立即更新
-	public fun HandleUpdateClick(ALittle.UIEvent event)
-	{
+	},
+	HandleUpdateClick : function(event) {
 		this.UpdateVersion(false);
-	}
-	// 暂不更新
-	public fun HandleNoUpdateClick(ALittle.UIEvent event)
-	{
+	},
+	HandleNoUpdateClick : function(event) {
 		this._dialog.visible = false;
-	}
-	// 安装
-	public fun HandleInstallClick(ALittle.UIEvent event)
-	{
-		this._version_system.Install(null);
-	}
-	// 重启
-	public fun HandleRestartClick(ALittle.UIEvent event)
-	{
+	},
+	HandleInstallClick : function(event) {
+		this._version_system.Install(undefined);
+	},
+	HandleRestartClick : function(event) {
 		ALittle.System_Restart();
-	}
-	
-	////////////////////////////////////////////////////////////////////////////////////////
-	
-	// 定时检查版本
-	public fun CheckVersionUpdate()
-	{
-		var loop = new ALittle.LoopFunction(bind(this.CheckVersionUpdateImpl, this), -1, 3600000, 0);
+	},
+	CheckVersionUpdate : function() {
+		let loop = ALittle.NewObject(ALittle.LoopFunction, this.CheckVersionUpdateImpl.bind(this), -1, 3600000, 0);
 		loop.Start();
-	}
-	public async fun CheckVersionUpdateImpl()
-	{
-		if (this._version_system.doing) return;
-	
-		// 创建模块版本更新
-		var result = this._version_system.UpdateVersion(this._version_ip, this._version_port, null, true);
-		if (result == ALittle.VersionProcess.VERSION_NEED_UPDATE_ADD
-			|| result == ALittle.VersionProcess.VERSION_NEED_UPDATE_FORCE) //需要强制更新
+	},
+	CheckVersionUpdateImpl : async function() {
+		if (this._version_system.doing) {
+			return;
+		}
+		let result = await this._version_system.UpdateVersion(this._version_ip, this._version_port, undefined, true);
+		if (result === 2 || result === 3) {
 			g_AUITool.ShowTipHelp("有最新版本，需要就更新~", 10000);
-	}
-	
-	// 处理版本更新问题
-	public async fun UpdateVersion(bool check)
-	{
-		// 创建对话框
+		}
+	},
+	UpdateVersion : async function(check) {
 		this.CreateDialog();
-	
-		// 如果版本系统正在处理，那么久直接返回
-		if (this._version_system.doing) return;
-	
-		if (check)
-		{
+		if (this._version_system.doing) {
+			return;
+		}
+		if (check) {
 			this._notice_content.text = "正在检查版本...";
 			this._notice_content.visible = true;
 			this._notice_edit.visible = false;
@@ -141,9 +83,7 @@ public class AUIVersionManager
 			this._update_btn.visible = false;
 			this._check_btn.visible = true;
 			this._install_btn.visible = false;
-		}
-		else
-		{
+		} else {
 			this._notice_content.text = "正在更新版本...";
 			this._notice_content.visible = true;
 			this._notice_edit.visible = false;
@@ -154,17 +94,13 @@ public class AUIVersionManager
 			this._check_btn.visible = false;
 			this._install_btn.visible = false;
 		}
-	
-		// 创建模块版本更新
-		var result = this._version_system.UpdateVersion(this._version_ip, this._version_port, bind(this.HandleUpdateVersion, this), check);
-		if (result == ALittle.VersionProcess.VERSION_NEED_UPDATE_ADD
-			|| result == ALittle.VersionProcess.VERSION_NEED_UPDATE_FORCE) //需要强制更新
-		{
-			var text = "有最新版本，您是否更新?";
-			var new_big_version, new_small_version, new_log_list = this._version_system.GetNewVersion(5);
-			if (new_log_list != null)
-				text = text.."\n"..ALittle.String_Join(new_log_list, "\n");
-
+		let result = await this._version_system.UpdateVersion(this._version_ip, this._version_port, this.HandleUpdateVersion.bind(this), check);
+		if (result === 2 || result === 3) {
+			let text = "有最新版本，您是否更新?";
+			let [new_big_version, new_small_version, new_log_list] = this._version_system.GetNewVersion(5);
+			if (new_log_list !== undefined) {
+				text = text + "\n" + ALittle.String_Join(new_log_list, "\n");
+			}
 			this._notice_edit.text = text;
 			this._notice_content.visible = false;
 			this._notice_edit.visible = true;
@@ -175,9 +111,7 @@ public class AUIVersionManager
 			this._check_btn.visible = false;
 			this._install_btn.visible = false;
 			this._restart_btn.visible = false;
-		}
-		elseif (result == ALittle.VersionProcess.VERSION_NONEED_UPDATE) //已经是最新版本
-		{
+		} else if (result === 1) {
 			this._notice_content.text = "您当前已经是最新版本";
 			this._notice_content.visible = true;
 			this._notice_edit.visible = false;
@@ -188,9 +122,7 @@ public class AUIVersionManager
 			this._check_btn.visible = true;
 			this._install_btn.visible = false;
 			this._restart_btn.visible = false;
-		}
-		elseif (result == ALittle.VersionProcess.UPDATE_VERSION_FAILED)
-		{
+		} else if (result === 11) {
 			this._notice_content.text = "版本更新失败";
 			this._notice_content.visible = true;
 			this._notice_edit.visible = false;
@@ -201,9 +133,7 @@ public class AUIVersionManager
 			this._check_btn.visible = true;
 			this._install_btn.visible = false;
 			this._restart_btn.visible = false;
-		}
-		elseif (result == ALittle.VersionProcess.UPDATE_VERSION_SUCCEED)
-		{
+		} else if (result === 12) {
 			this._notice_content.text = "版本更新成功，重启软件生效";
 			this._notice_content.visible = true;
 			this._notice_edit.visible = false;
@@ -214,9 +144,7 @@ public class AUIVersionManager
 			this._check_btn.visible = false;
 			this._install_btn.visible = false;
 			this._restart_btn.visible = true;
-		}
-		elseif (result == ALittle.VersionProcess.UPDATE_VERSION_INSTALL)
-		{
+		} else if (result === 13) {
 			this._notice_content.text = "版本更新成功，需要重新安装";
 			this._notice_content.visible = true;
 			this._notice_edit.visible = false;
@@ -228,12 +156,9 @@ public class AUIVersionManager
 			this._install_btn.visible = true;
 			this._restart_btn.visible = false;
 		}
-	}
-
-	// 处理版本更新事件
-	public fun HandleUpdateVersion(string file_name, int cur_size, int total_size, int cur_file_index, int file_count)
-	{
-		this._notice_content.text = "版本正在更新..."..ALittle.Math_Floor(this._version_system.current_update_size / this._version_system.total_update_size * 100).."%";
+	},
+	HandleUpdateVersion : function(file_name, cur_size, total_size, cur_file_index, file_count) {
+		this._notice_content.text = "版本正在更新..." + ALittle.Math_Floor(this._version_system.current_update_size / this._version_system.total_update_size * 100) + "%";
 		this._notice_content.visible = true;
 		this._notice_edit.visible = false;
 		this._process_bg.visible = true;
@@ -245,5 +170,7 @@ public class AUIVersionManager
 		this._check_btn.visible = false;
 		this._install_btn.visible = false;
 		this._restart_btn.visible = false;
-	}
+	},
+}, "AUIPlugin.AUIVersionManager");
+
 }

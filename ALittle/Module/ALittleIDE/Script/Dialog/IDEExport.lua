@@ -37,8 +37,8 @@ option_map = {}
 })
 ALittle.RegStruct(1962364004, "ALittleIDE.IDEPackageInfo", {
 name = "ALittleIDE.IDEPackageInfo", ns_name = "ALittleIDE", rl_name = "IDEPackageInfo", hash_code = 1962364004,
-name_list = {"platform","project_name","project_path","export_path","export_module_path","version_info","install_info"},
-type_list = {"string","string","string","string","string","ALittleIDE.IDEVersionInfo","ALittleIDE.IDEInstallInfo"},
+name_list = {"platform","project_name","project_path","export_path","export_module_path","export_module_base_path","version_info","install_info"},
+type_list = {"string","string","string","string","string","string","ALittleIDE.IDEVersionInfo","ALittleIDE.IDEInstallInfo"},
 option_map = {}
 })
 ALittle.RegStruct(-1247620677, "ALittleIDE.IDEVersionInfo", {
@@ -49,8 +49,8 @@ option_map = {}
 })
 ALittle.RegStruct(-1093384145, "ALittleIDE.IDEExportSubmitInfo", {
 name = "ALittleIDE.IDEExportSubmitInfo", ns_name = "ALittleIDE", rl_name = "IDEExportSubmitInfo", hash_code = -1093384145,
-name_list = {"upload_list","project_path","export_module_path","is_login","module_name","platform","small_version_time","small_version_index","update_time","update_index","big_version","version_number","install_version","log_list","install_name","install_size","completed","version_id"},
-type_list = {"List<string>","string","string","bool","string","string","int","int","int","int","string","string","string","List<string>","string","int","bool","string"},
+name_list = {"upload_list","project_path","export_module_path","is_login","module_name","platform","small_version_time","small_version_index","update_time","update_index","big_version","version_number","install_version","plugin_list","log_list","install_name","install_size","completed","version_id"},
+type_list = {"List<string>","string","string","bool","string","string","int","int","int","int","string","string","string","string","List<string>","string","int","bool","string"},
 option_map = {}
 })
 ALittle.RegStruct(-600814285, "ALittle.SmallVersionInfo", {
@@ -87,10 +87,11 @@ function IDEExport:PackagePlatform(project_name, version_info, install_info, pla
 	local export_path = project_path .. "/Export/" .. platform
 	ALittle.File_DeleteDeepDir(export_path)
 	ALittle.File_MakeDeepDir(export_path)
-	local export_module_path = export_path .. "/Module/" .. project_name
+	local export_module_base_path = export_path .. "/Module"
 	if platform == "Android" then
-		export_module_path = export_path .. "/assets/Module/" .. project_name
+		export_module_base_path = export_path .. "/assets/Module"
 	end
+	local export_module_path = export_module_base_path .. "/" .. project_name
 	ALittle.File_MakeDeepDir(export_module_path)
 	local package_info = {}
 	package_info.platform = platform
@@ -98,6 +99,7 @@ function IDEExport:PackagePlatform(project_name, version_info, install_info, pla
 	package_info.project_path = project_path
 	package_info.export_path = export_path
 	package_info.export_module_path = export_module_path
+	package_info.export_module_base_path = export_module_base_path
 	package_info.version_info = version_info
 	package_info.install_info = install_info
 	self:PackageVersion(package_info)
@@ -180,14 +182,13 @@ function IDEExport:PackagePath(src_path, dst_path, file_type, crypt_mode)
 	return out_file_map
 end
 
-function IDEExport:PackageCommon(project_path)
+function IDEExport:PackageCommon(export_path, project_path, project_name, is_plugin)
 	ALittle.Log("========PackageCommon:" .. project_path .. "========")
 	Lua.Assert(ALittle.File_GetFileAttr(project_path) ~= nil, "项目文件夹不存在:" .. project_path)
-	local export_path = project_path .. "/Export"
 	if ALittle.File_GetFileAttr(export_path) == nil then
 		ALittle.File_MakeDeepDir(export_path)
 	end
-	local export_common_path = export_path .. "/Common"
+	local export_common_path = export_path .. "/" .. project_name
 	ALittle.File_DeleteDeepDir(export_common_path)
 	if ALittle.File_GetFileAttr(export_common_path) == nil then
 		ALittle.File_MakeDeepDir(export_common_path)
@@ -241,20 +242,22 @@ function IDEExport:PackageCommon(project_path)
 			map_list[count] = result
 		end
 	end
-	local result = self:PackagePath(ALittle.File_BaseFilePath() .. "Module/ALittleIDE/Other/GameLibrary/Core/Script", export_common_path .. "/Core", "Core", true)
-	if result ~= nil then
-		count = count + 1
-		map_list[count] = result
-	end
-	result = self:PackagePath(ALittle.File_BaseFilePath() .. "Module/ALittleIDE/Other/GameLibrary/Std/Script", export_common_path .. "/Std", "Std", true)
-	if result ~= nil then
-		count = count + 1
-		map_list[count] = result
-	end
-	result = self:PackagePath(ALittle.File_BaseFilePath() .. "Module/ALittleIDE/Other/GameLibrary/CEngine/Script", export_common_path .. "/CEngine", "CEngine", true)
-	if result ~= nil then
-		count = count + 1
-		map_list[count] = result
+	if not is_plugin then
+		local result = self:PackagePath(ALittle.File_BaseFilePath() .. "Module/ALittleIDE/Other/GameLibrary/Core/Script", export_common_path .. "/Core", "Core", true)
+		if result ~= nil then
+			count = count + 1
+			map_list[count] = result
+		end
+		result = self:PackagePath(ALittle.File_BaseFilePath() .. "Module/ALittleIDE/Other/GameLibrary/Std/Script", export_common_path .. "/Std", "Std", true)
+		if result ~= nil then
+			count = count + 1
+			map_list[count] = result
+		end
+		result = self:PackagePath(ALittle.File_BaseFilePath() .. "Module/ALittleIDE/Other/GameLibrary/CEngine/Script", export_common_path .. "/CEngine", "CEngine", true)
+		if result ~= nil then
+			count = count + 1
+			map_list[count] = result
+		end
 	end
 	return map_list
 end
@@ -376,10 +379,19 @@ function IDEExport:HandleQueryNewCurVersionImpl(package_info, is_login, update_t
 	end
 	g_AUITool:ShowAlertDialog("提示", "打包当前版本")
 	ALittle.System_Render()
-	local error, version_info_list = Lua.TCall(self.PackageCommon, self, package_info.project_path)
+	ALittle.File_DeleteDeepDir(package_info.project_path .. "/Export/Common")
+	local error, version_info_list = Lua.TCall(self.PackageCommon, self, package_info.project_path .. "/Export/Common", package_info.project_path, package_info.project_name, false)
 	if error ~= nil then
 		g_AUITool:ShowNotice("错误", "PackageCommon 调用失败:" .. error)
 		return
+	end
+	local plugin_list = ALittle.String_Split(package_info.version_info.plugin_list, ",")
+	for index, plugin in ___ipairs(plugin_list) do
+		local plugin_error, _ = Lua.TCall(self.PackageCommon, self, package_info.project_path .. "/Export/Common", ALittle.File_BaseFilePath() .. "Module/" .. plugin, plugin, true)
+		if plugin_error ~= nil then
+			g_AUITool:ShowNotice("错误", "PackageCommon 调用失败:" .. plugin_error)
+			return
+		end
 	end
 	if package_info.platform == "Android" then
 		ALittle.File_MakeDir(package_info.export_path .. "/assets/Module")
@@ -388,7 +400,7 @@ function IDEExport:HandleQueryNewCurVersionImpl(package_info, is_login, update_t
 		ALittle.File_MakeDir(package_info.export_path .. "/Module")
 		ALittle.File_SaveFile(package_info.export_path .. "/Module/Enter.ali", package_info.project_name, -1)
 	end
-	ALittle.File_CopyDeepDir(package_info.project_path .. "/Export/Common", package_info.export_module_path)
+	ALittle.File_CopyDeepDir(package_info.project_path .. "/Export/Common", package_info.export_module_base_path)
 	local submit_info = {}
 	submit_info.upload_list = {}
 	local update_list_count = 0
@@ -556,6 +568,7 @@ function IDEExport:HandleQueryNewCurVersionImpl(package_info, is_login, update_t
 	submit_info.big_version = package_info.version_info.big_version
 	submit_info.version_number = package_info.version_info.version_number
 	submit_info.install_version = package_info.version_info.install_version
+	submit_info.plugin_list = package_info.version_info.plugin_list
 	submit_info.log_list = ALittle.String_Split(package_info.install_info.new_log, "\n")
 	submit_info.install_name = install_name
 	local install_attr = ALittle.File_GetFileAttr(package_info.project_path .. "/Export/" .. install_name)
@@ -610,6 +623,7 @@ function IDEExport:SubmitPlatform(project_name, platform)
 		param.big_version = submit_info.big_version
 		param.version_number = submit_info.version_number
 		param.install_version = submit_info.install_version
+		param.plugin_list = submit_info.plugin_list
 		param.install_size = submit_info.install_size
 		param.log_list = submit_info.log_list
 		param.small_version_time = submit_info.small_version_time
@@ -658,7 +672,7 @@ function IDEExport:HandleNewVersionInfoImpl(submit_info)
 	local result = nil
 	for k, file_path in ___ipairs(submit_info.upload_list) do
 		upload_index = upload_index + 1
-		self._submit_content.text = "正在上传:" .. upload_index .. "/" .. total_count
+		self._submit_content.text = "正在上传:" .. upload_index .. "/" .. total_count .. "\n" .. submit_info.export_module_path .. "/" .. file_path
 		param.file_path = file_path
 		param.__account_id = g_IDEWebLoginManager.account_id
 		param.__session_id = g_IDEWebLoginManager.session_id
@@ -679,7 +693,7 @@ function IDEExport:HandleNewVersionInfoImpl(submit_info)
 	end
 	do
 		upload_index = upload_index + 1
-		self._submit_content.text = "正在上传:" .. upload_index .. "/" .. total_count
+		self._submit_content.text = "正在上传:" .. upload_index .. "/" .. total_count .. "\n" .. submit_info.project_path .. "/Export/" .. submit_info.install_name
 		param.file_path = submit_info.install_name
 		param.__account_id = g_IDEWebLoginManager.account_id
 		param.__session_id = g_IDEWebLoginManager.session_id
@@ -700,7 +714,7 @@ function IDEExport:HandleNewVersionInfoImpl(submit_info)
 	end
 	do
 		upload_index = upload_index + 1
-		self._submit_content.text = "正在上传:" .. upload_index .. "/" .. total_count
+		self._submit_content.text = "正在上传:" .. upload_index .. "/" .. total_count .. "\n" .. submit_info.export_module_path .. "/CurVersion.db"
 		param.file_path = "CurVersion.db"
 		param.__account_id = g_IDEWebLoginManager.account_id
 		param.__session_id = g_IDEWebLoginManager.session_id

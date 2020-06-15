@@ -97,8 +97,8 @@ option_map = {}
 })
 ALittle.RegStruct(763533061, "VersionServer.QNewVersionInfo", {
 name = "VersionServer.QNewVersionInfo", ns_name = "VersionServer", rl_name = "QNewVersionInfo", hash_code = 763533061,
-name_list = {"__account_id","__session_id","module_name","platform","big_version","version_number","install_version","install_size","log_list","small_version_time","small_version_index","update_time","update_index"},
-type_list = {"string","string","string","string","string","string","string","int","List<string>","int","int","int","int"},
+name_list = {"__account_id","__session_id","module_name","platform","big_version","version_number","install_version","plugin_list","install_size","log_list","small_version_time","small_version_index","update_time","update_index"},
+type_list = {"string","string","string","string","string","string","string","string","int","List<string>","int","int","int","int"},
 option_map = {}
 })
 ALittle.RegStruct(929252339, "VersionServer.D_VersionClose", {
@@ -176,7 +176,7 @@ function HandleHttpQVersionInfo(client, msg)
 	param.log_list = {}
 	local web_account = A_WebAccountManager:CheckLoginById(msg.__account_id, msg.__session_id)
 	do
-		local sql = "SELECT `version_id`,`account_id`,`module_name`,`platform`,`big_version`,`version_number`,`install_version`,`install_size`,`status`,`small_version_time`,`small_version_index`,`create_time`,`create_index`,`update_time`,`update_index` FROM `VersionInfo` WHERE `account_id`=? AND `module_name`=? AND `platform`=?"
+		local sql = "SELECT `version_id`,`account_id`,`module_name`,`platform`,`big_version`,`version_number`,`install_version`,`plugin_list`,`install_size`,`status`,`small_version_time`,`small_version_index`,`create_time`,`create_index`,`update_time`,`update_index` FROM `VersionInfo` WHERE `account_id`=? AND `module_name`=? AND `platform`=?"
 		local query = ALittle.MysqlStatementQuery()
 		query.sql = sql
 		query.value = msg.__account_id
@@ -198,6 +198,7 @@ function HandleHttpQVersionInfo(client, msg)
 			data.big_version = query.value
 			data.version_number = query.value
 			data.install_version = query.value
+			data.plugin_list = query.value
 			data.install_size = query.value
 			data.status = query.value
 			data.small_version_time = query.value
@@ -324,7 +325,7 @@ function HandleHttpQNewCurVersion(client, msg)
 	local ___COROUTINE = coroutine.running()
 	local param = {}
 	local web_account = A_WebAccountManager:CheckLoginById(msg.__account_id, msg.__session_id)
-	local sql = "SELECT `version_id`,`account_id`,`module_name`,`platform`,`big_version`,`version_number`,`install_version`,`install_size`,`status`,`small_version_time`,`small_version_index`,`create_time`,`create_index`,`update_time`,`update_index` FROM `VersionInfo` WHERE `account_id`=? AND `module_name`=? AND `platform`=? AND `status`=1"
+	local sql = "SELECT `version_id`,`account_id`,`module_name`,`platform`,`big_version`,`version_number`,`install_version`,`plugin_list`,`install_size`,`status`,`small_version_time`,`small_version_index`,`create_time`,`create_index`,`update_time`,`update_index` FROM `VersionInfo` WHERE `account_id`=? AND `module_name`=? AND `platform`=? AND `status`=1"
 	local query = ALittle.MysqlStatementQuery()
 	query.sql = sql
 	query.value = msg.__account_id
@@ -346,6 +347,7 @@ function HandleHttpQNewCurVersion(client, msg)
 		data.big_version = query.value
 		data.version_number = query.value
 		data.install_version = query.value
+		data.plugin_list = query.value
 		data.install_size = query.value
 		data.status = query.value
 		data.small_version_time = query.value
@@ -369,7 +371,7 @@ function HandleHttpQNewVersionInfo(client, msg)
 	local ___COROUTINE = coroutine.running()
 	local web_account = A_WebAccountManager:CheckLoginById(msg.__account_id, msg.__session_id)
 	local version_id = ALittle.String_GenerateID("VERSION")
-	local sql = "INSERT INTO `VersionInfo` (`version_id`,`account_id`,`module_name`,`platform`,`big_version`,`version_number`,`install_version`,`install_size`,`status`,`small_version_time`,`small_version_index`,`create_time`,`create_index`,`update_time`,`update_index`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
+	local sql = "INSERT INTO `VersionInfo` (`version_id`,`account_id`,`module_name`,`platform`,`big_version`,`version_number`,`install_version`,`plugin_list`,`install_size`,`status`,`small_version_time`,`small_version_index`,`create_time`,`create_index`,`update_time`,`update_index`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
 	local query = ALittle.MysqlStatementQuery()
 	query.sql = sql
 	query.value = version_id
@@ -379,6 +381,7 @@ function HandleHttpQNewVersionInfo(client, msg)
 	query.value = msg.big_version
 	query.value = msg.version_number
 	query.value = msg.install_version
+	query.value = msg.plugin_list
 	query.value = msg.install_size
 	query.value = 0
 	query.value = msg.small_version_time
@@ -448,7 +451,7 @@ function HandleHttpQUpdateVersion(client, msg)
 		end
 	end
 	do
-		local sql = "SELECT `version_id`,`account_id`,`module_name`,`platform`,`big_version`,`version_number`,`install_version`,`install_size`,`status`,`small_version_time`,`small_version_index`,`create_time`,`create_index`,`update_time`,`update_index` FROM `VersionInfo` WHERE `account_id`=? AND `module_name`=? AND `platform`=? ORDER BY `update_time` DESC,`update_index` DESC LIMIT 1"
+		local sql = "SELECT `version_id`,`account_id`,`module_name`,`platform`,`big_version`,`version_number`,`install_version`,`plugin_list`,`install_size`,`status`,`small_version_time`,`small_version_index`,`create_time`,`create_index`,`update_time`,`update_index` FROM `VersionInfo` WHERE `account_id`=? AND `module_name`=? AND `platform`=? ORDER BY `update_time` DESC,`update_index` DESC LIMIT 1"
 		local query = ALittle.MysqlStatementQuery()
 		query.sql = sql
 		query.value = base_info.account_id
@@ -470,6 +473,7 @@ function HandleHttpQUpdateVersion(client, msg)
 		data.big_version = query.value
 		data.version_number = query.value
 		data.install_version = query.value
+		data.plugin_list = query.value
 		data.install_size = query.value
 		data.status = query.value
 		data.small_version_time = query.value

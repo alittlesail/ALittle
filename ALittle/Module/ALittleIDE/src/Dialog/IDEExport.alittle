@@ -28,6 +28,7 @@ public struct IDEPackageInfo
 	string project_path;
 	string export_path;
 	string export_module_path;
+	string export_module_base_path;
 	IDEVersionInfo version_info;
 	IDEInstallInfo install_info;
 }
@@ -67,6 +68,7 @@ struct IDEExportSubmitInfo
 	string big_version;
 	string version_number;
 	string install_version;
+	string plugin_list;
 	List<string> log_list;
 	string install_name;
 	int install_size;
@@ -112,8 +114,9 @@ class IDEExport
 		var export_path = project_path.."/Export/"..platform;
 		ALittle.File_DeleteDeepDir(export_path);
 		ALittle.File_MakeDeepDir(export_path);
-		var export_module_path = export_path.."/Module/"..project_name;
-		if (platform == "Android") export_module_path = export_path.."/assets/Module/"..project_name;
+		var export_module_base_path = export_path.."/Module";
+		if (platform == "Android") export_module_base_path = export_path.."/assets/Module";
+		var export_module_path = export_module_base_path.."/"..project_name;
 		ALittle.File_MakeDeepDir(export_module_path);
 	
 		var package_info = new IDEPackageInfo();
@@ -122,6 +125,7 @@ class IDEExport
 		package_info.project_path = project_path;				// 项目路径
 		package_info.export_path = export_path; 					// 导出目录
 		package_info.export_module_path = export_module_path; 	// 导出的模块路径
+		package_info.export_module_base_path = export_module_base_path;
 		package_info.version_info = version_info;
 		package_info.install_info = install_info;
 		this.PackageVersion(package_info);
@@ -237,16 +241,15 @@ class IDEExport
 	
 	// 打包统一的资源文件
 	// @param project_path 工程目录
-	public fun PackageCommon(string project_path) : List<Map<string, IDEExportFileAttr> >
+	public fun PackageCommon(string export_path, string project_path, string project_name, bool is_plugin) : List<Map<string, IDEExportFileAttr>>
 	{
 		ALittle.Log("========PackageCommon:"..project_path.."========");
 		// 检查路径是否存在
 		assert(ALittle.File_GetFileAttr(project_path) != null, "项目文件夹不存在:"..project_path);
 	
 		// 创建导出文件夹
-		var export_path = project_path.."/Export";
 		if (ALittle.File_GetFileAttr(export_path) == null) ALittle.File_MakeDeepDir(export_path);
-		var export_common_path = export_path.."/Common";
+		var export_common_path = export_path.."/"..project_name;
 		ALittle.File_DeleteDeepDir(export_common_path);
 		if (ALittle.File_GetFileAttr(export_common_path) == null) ALittle.File_MakeDeepDir(export_common_path);
 	
@@ -290,30 +293,33 @@ class IDEExport
 			}
 		}
         
-        // 打包基础库脚本
-		var result = this.PackagePath(ALittle.File_BaseFilePath().."Module/ALittleIDE/Other/GameLibrary/Core/Script", export_common_path.."/Core", "Core", true);
-		if (result != null)
+		if (!is_plugin)
 		{
-			++count;
-			map_list[count] = result;
-		}
+            // 打包基础库脚本
+			var result = this.PackagePath(ALittle.File_BaseFilePath().."Module/ALittleIDE/Other/GameLibrary/Core/Script", export_common_path.."/Core", "Core", true);
+			if (result != null)
+			{
+				++count;
+				map_list[count] = result;
+			}
 		
-        // 打包基础库脚本
-		result = this.PackagePath(ALittle.File_BaseFilePath().."Module/ALittleIDE/Other/GameLibrary/Std/Script", export_common_path.."/Std", "Std", true);
-		if (result != null)
-		{
-			++count;
-			map_list[count] = result;
-		}
+			// 打包基础库脚本
+			result = this.PackagePath(ALittle.File_BaseFilePath().."Module/ALittleIDE/Other/GameLibrary/Std/Script", export_common_path.."/Std", "Std", true);
+			if (result != null)
+			{
+				++count;
+				map_list[count] = result;
+			}
 	
-		// 打包引擎脚本
-		result = this.PackagePath(ALittle.File_BaseFilePath().."Module/ALittleIDE/Other/GameLibrary/CEngine/Script", export_common_path.."/CEngine", "CEngine", true);
-		if (result != null)
-		{
-			++count;
-			map_list[count] = result;
-		}
-
+			// 打包引擎脚本
+			result = this.PackagePath(ALittle.File_BaseFilePath().."Module/ALittleIDE/Other/GameLibrary/CEngine/Script", export_common_path.."/CEngine", "CEngine", true);
+			if (result != null)
+			{
+				++count;
+				map_list[count] = result;
+			}
+        }
+        
 		// 返回文件列表
 		return map_list;
 	}
@@ -470,14 +476,28 @@ class IDEExport
 	
 		g_AUITool.ShowAlertDialog("提示", "打包当前版本");
 		ALittle.System_Render(); // 强制渲染
-	
+
+		ALittle.File_DeleteDeepDir(package_info.project_path.."/Export/Common");
+
 		// 打包文件
-		var error, version_info_list = tcall(this.PackageCommon, this, package_info.project_path);
+		var error, version_info_list = tcall(this.PackageCommon, this, package_info.project_path.."/Export/Common", package_info.project_path, package_info.project_name, false);
 		if (error != null)
 		{
 			g_AUITool.ShowNotice("错误", "PackageCommon 调用失败:"..error);
 			return;
 		}
+
+		// 插件
+		var plugin_list = ALittle.String_Split(package_info.version_info.plugin_list, ",");
+		for (var index, plugin in plugin_list)
+		{
+			var plugin_error, _ = tcall(this.PackageCommon, this, package_info.project_path.."/Export/Common", ALittle.File_BaseFilePath().."Module/"..plugin, plugin, true);
+			if (plugin_error != null)
+			{
+				g_AUITool.ShowNotice("错误", "PackageCommon 调用失败:"..plugin_error);
+				return;
+            }
+        }
 	
 		// 创建入口文件
 		if (package_info.platform == "Android")
@@ -492,7 +512,7 @@ class IDEExport
         }
 	
 		// 把Common的文件复制到
-		ALittle.File_CopyDeepDir(package_info.project_path.."/Export/Common", package_info.export_module_path);
+		ALittle.File_CopyDeepDir(package_info.project_path.."/Export/Common", package_info.export_module_base_path);
 	
 		// 用于上传版本使用的信息
 		var submit_info = new IDEExportSubmitInfo();
@@ -736,6 +756,7 @@ class IDEExport
 		submit_info.big_version = package_info.version_info.big_version;
 		submit_info.version_number = package_info.version_info.version_number;
 		submit_info.install_version = package_info.version_info.install_version;
+		submit_info.plugin_list = package_info.version_info.plugin_list;
 		submit_info.log_list = ALittle.String_Split(package_info.install_info.new_log, "\n");
 		submit_info.install_name = install_name;
 		var install_attr = ALittle.File_GetFileAttr(package_info.project_path.."/Export/"..install_name);
@@ -813,6 +834,7 @@ class IDEExport
 			param.big_version = submit_info.big_version;
 			param.version_number = submit_info.version_number;
 			param.install_version = submit_info.install_version;
+			param.plugin_list = submit_info.plugin_list;
 			param.install_size = submit_info.install_size;
 			param.log_list = submit_info.log_list;
 			param.small_version_time = submit_info.small_version_time;
@@ -870,7 +892,7 @@ class IDEExport
 		for (var k, file_path in submit_info.upload_list)
 		{
             ++ upload_index;
-            this._submit_content.text = "正在上传:"..upload_index.."/"..total_count;
+            this._submit_content.text = "正在上传:"..upload_index.."/"..total_count.."\n"..submit_info.export_module_path.."/"..file_path;
 
 			param.file_path = file_path;
 			param.__account_id = g_IDEWebLoginManager.account_id;
@@ -896,7 +918,7 @@ class IDEExport
 
 		{
             ++ upload_index;
-            this._submit_content.text = "正在上传:"..upload_index.."/"..total_count;
+            this._submit_content.text = "正在上传:"..upload_index.."/"..total_count.."\n"..submit_info.project_path.."/Export/"..submit_info.install_name;
 
 			param.file_path = submit_info.install_name;
 			param.__account_id = g_IDEWebLoginManager.account_id;
@@ -923,7 +945,7 @@ class IDEExport
 
 		{
             ++ upload_index;
-            this._submit_content.text = "正在上传:"..upload_index.."/"..total_count;
+            this._submit_content.text = "正在上传:"..upload_index.."/"..total_count.."\n"..submit_info.export_module_path.."/CurVersion.db";
 
 			param.file_path = "CurVersion.db";
 			param.__account_id = g_IDEWebLoginManager.account_id;

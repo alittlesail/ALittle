@@ -6,6 +6,7 @@ public struct IDEVersionInfo
 	string install_version;
 	string big_version;
 	string version_number;
+	string plugin_list;
 }
 
 public struct IDEInstallInfo

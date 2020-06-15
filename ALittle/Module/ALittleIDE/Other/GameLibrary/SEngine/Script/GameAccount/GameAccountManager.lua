@@ -1,4 +1,4 @@
--- ALittle Generate Lua
+-- ALittle Generate Lua And Do Not Edit This Line!
 module("ALittle", package.seeall)
 
 local ___rawset = rawset
@@ -6,16 +6,16 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = GetAllStruct()
 
+RegStruct(1569725693, "ALittle.GS2C_ALogin", {
+name = "ALittle.GS2C_ALogin", ns_name = "ALittle", rl_name = "GS2C_ALogin", hash_code = 1569725693,
+name_list = {},
+type_list = {},
+option_map = {}
+})
 RegStruct(1715346212, "ALittle.Event", {
 name = "ALittle.Event", ns_name = "ALittle", rl_name = "Event", hash_code = 1715346212,
 name_list = {"target"},
 type_list = {"ALittle.EventDispatcher"},
-option_map = {}
-})
-RegStruct(-1010453448, "DataServer.GS2DATA_NRegStruct", {
-name = "DataServer.GS2DATA_NRegStruct", ns_name = "DataServer", rl_name = "GS2DATA_NRegStruct", hash_code = -1010453448,
-name_list = {"rflt_list","table_map"},
-type_list = {"List<ALittle.StructInfo>","Map<int,bool>"},
 option_map = {}
 })
 RegStruct(1847150134, "ALittle.StructInfo", {
@@ -24,22 +24,10 @@ name_list = {"name","ns_name","rl_name","hash_code","name_list","type_list","opt
 type_list = {"string","string","string","int","List<string>","List<string>","Map<string,string>"},
 option_map = {}
 })
-RegStruct(-660832923, "ALittle.GS2C_NForceLogout", {
-name = "ALittle.GS2C_NForceLogout", ns_name = "ALittle", rl_name = "GS2C_NForceLogout", hash_code = -660832923,
-name_list = {"reason"},
-type_list = {"string"},
-option_map = {}
-})
-RegStruct(-1162432155, "ALittle.C2GS_QLogin", {
-name = "ALittle.C2GS_QLogin", ns_name = "ALittle", rl_name = "C2GS_QLogin", hash_code = -1162432155,
-name_list = {"account_id","session","device"},
-type_list = {"int","string","string"},
-option_map = {}
-})
-RegStruct(1569725693, "ALittle.GS2C_ALogin", {
-name = "ALittle.GS2C_ALogin", ns_name = "ALittle", rl_name = "GS2C_ALogin", hash_code = 1569725693,
-name_list = {},
-type_list = {},
+RegStruct(-2092316375, "ALittle.SS2GS_QCheckSessionCode", {
+name = "ALittle.SS2GS_QCheckSessionCode", ns_name = "ALittle", rl_name = "SS2GS_QCheckSessionCode", hash_code = -2092316375,
+name_list = {"account_id","session_code"},
+type_list = {"int","string"},
 option_map = {}
 })
 RegStruct(-1836835016, "ALittle.GS2C_NDataReady", {
@@ -48,16 +36,28 @@ name_list = {},
 type_list = {},
 option_map = {}
 })
-RegStruct(-2092316375, "ALittle.SS2GS_QCheckSessionCode", {
-name = "ALittle.SS2GS_QCheckSessionCode", ns_name = "ALittle", rl_name = "SS2GS_QCheckSessionCode", hash_code = -2092316375,
-name_list = {"account_id","session_code"},
-type_list = {"int","string"},
-option_map = {}
-})
 RegStruct(-1766835499, "ALittle.GS2SS_ACheckSessionCode", {
 name = "ALittle.GS2SS_ACheckSessionCode", ns_name = "ALittle", rl_name = "GS2SS_ACheckSessionCode", hash_code = -1766835499,
 name_list = {},
 type_list = {},
+option_map = {}
+})
+RegStruct(-1162432155, "ALittle.C2GS_QLogin", {
+name = "ALittle.C2GS_QLogin", ns_name = "ALittle", rl_name = "C2GS_QLogin", hash_code = -1162432155,
+name_list = {"account_id","session","device"},
+type_list = {"int","string","string"},
+option_map = {}
+})
+RegStruct(-1010453448, "DataServer.GS2DATA_NRegStruct", {
+name = "DataServer.GS2DATA_NRegStruct", ns_name = "DataServer", rl_name = "GS2DATA_NRegStruct", hash_code = -1010453448,
+name_list = {"rflt_list","table_map"},
+type_list = {"List<ALittle.StructInfo>","Map<int,bool>"},
+option_map = {}
+})
+RegStruct(-660832923, "ALittle.GS2C_NForceLogout", {
+name = "ALittle.GS2C_NForceLogout", ns_name = "ALittle", rl_name = "GS2C_NForceLogout", hash_code = -660832923,
+name_list = {"reason"},
+type_list = {"string"},
 option_map = {}
 })
 
@@ -217,7 +217,7 @@ end
 
 _G.A_GameAccountManager = GameAccountManager()
 function HandleQLogin(client, msg)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	local lease_info = g_GameLeaseManager:GetLease(msg.account_id)
 	Lua.Assert(lease_info, "没有租约信息:" .. msg.account_id)
 	Lua.Assert(g_GameLoginManager:ChcekSession(msg.account_id, msg.session), "会话ID错误")
@@ -261,7 +261,7 @@ end
 
 RegMsgRpcCallback(-1162432155, HandleQLogin, 1569725693)
 function HandleQCheckSessionCode(client, msg)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	local account = A_GameAccountManager:GetAccountById(msg.account_id)
 	Lua.Assert(account, "账号不存在")
 	Lua.Assert(account:GetSession() == msg.session_code, "验证码错误")

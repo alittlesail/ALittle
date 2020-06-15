@@ -1,4 +1,4 @@
--- ALittle Generate Lua
+-- ALittle Generate Lua And Do Not Edit This Line!
 module("ALittle", package.seeall)
 
 local ___rawset = rawset
@@ -6,6 +6,12 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = GetAllStruct()
 
+RegStruct(-245025090, "ALittle.ClientDisconnectEvent", {
+name = "ALittle.ClientDisconnectEvent", ns_name = "ALittle", rl_name = "ClientDisconnectEvent", hash_code = -245025090,
+name_list = {"target","msg_receiver"},
+type_list = {"ALittle.EventDispatcher","ALittle.MsgReceiverTemplate<ALittle.MsgReceiverNative,lua.__CPPAPIMessageWriteFactory>"},
+option_map = {}
+})
 RegStruct(1715346212, "ALittle.Event", {
 name = "ALittle.Event", ns_name = "ALittle", rl_name = "Event", hash_code = 1715346212,
 name_list = {"target"},
@@ -14,12 +20,6 @@ option_map = {}
 })
 RegStruct(-1221484301, "ALittle.ClientConnectEvent", {
 name = "ALittle.ClientConnectEvent", ns_name = "ALittle", rl_name = "ClientConnectEvent", hash_code = -1221484301,
-name_list = {"target","msg_receiver"},
-type_list = {"ALittle.EventDispatcher","ALittle.MsgReceiverTemplate<ALittle.MsgReceiverNative,lua.__CPPAPIMessageWriteFactory>"},
-option_map = {}
-})
-RegStruct(-245025090, "ALittle.ClientDisconnectEvent", {
-name = "ALittle.ClientDisconnectEvent", ns_name = "ALittle", rl_name = "ClientDisconnectEvent", hash_code = -245025090,
 name_list = {"target","msg_receiver"},
 type_list = {"ALittle.EventDispatcher","ALittle.MsgReceiverTemplate<ALittle.MsgReceiverNative,lua.__CPPAPIMessageWriteFactory>"},
 option_map = {}

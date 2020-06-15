@@ -10,6 +10,7 @@ public struct D_VersionInfo
     string big_version;          // 大版本
     string version_number;       // 安装包版本号
     string install_version;      // 安装包版本
+    string plugin_list;         // 插件列表
     int install_size;                 // 安装包文件大小
     int status;                       // 状态(0还未上传，1上传成功，2版本作废)
     int small_version_time;        // 小版本时间

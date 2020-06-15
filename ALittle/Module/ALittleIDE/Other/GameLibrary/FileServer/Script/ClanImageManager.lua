@@ -1,4 +1,4 @@
--- ALittle Generate Lua
+-- ALittle Generate Lua And Do Not Edit This Line!
 module("FileServer", package.seeall)
 
 local ___rawset = rawset
@@ -6,11 +6,23 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = ALittle.GetAllStruct()
 
+ALittle.RegStruct(-1420108834, "FileServer.ClanImageInfoDelete", {
+name = "FileServer.ClanImageInfoDelete", ns_name = "FileServer", rl_name = "ClanImageInfoDelete", hash_code = -1420108834,
+name_list = {"clan_id","create_time"},
+type_list = {"int","int"},
+option_map = {}
+})
 ALittle.RegStruct(-1164907202, "ALittle.CacheData", {
 name = "ALittle.CacheData", ns_name = "ALittle", rl_name = "CacheData", hash_code = -1164907202,
 name_list = {"id"},
 type_list = {"int"},
 option_map = {primary="id"}
+})
+ALittle.RegStruct(246409882, "FileServer.ACheckClanImage", {
+name = "FileServer.ACheckClanImage", ns_name = "FileServer", rl_name = "ACheckClanImage", hash_code = 246409882,
+name_list = {"is_exist","need_download"},
+type_list = {"bool","bool"},
+option_map = {}
 })
 ALittle.RegStruct(319415465, "FileServer.ClanImageInfo", {
 name = "FileServer.ClanImageInfo", ns_name = "FileServer", rl_name = "ClanImageInfo", hash_code = 319415465,
@@ -18,22 +30,10 @@ name_list = {"id","image_md5","create_time"},
 type_list = {"int","string","int"},
 option_map = {primary="id"}
 })
-ALittle.RegStruct(-1420108834, "FileServer.ClanImageInfoDelete", {
-name = "FileServer.ClanImageInfoDelete", ns_name = "FileServer", rl_name = "ClanImageInfoDelete", hash_code = -1420108834,
-name_list = {"clan_id","create_time"},
-type_list = {"int","int"},
-option_map = {}
-})
 ALittle.RegStruct(1459438620, "FileServer.QCheckClanImage", {
 name = "FileServer.QCheckClanImage", ns_name = "FileServer", rl_name = "QCheckClanImage", hash_code = 1459438620,
 name_list = {"gs_route_id","account_id","session_code","target_clan_id","target_image_md5"},
 type_list = {"int","int","string","int","string"},
-option_map = {}
-})
-ALittle.RegStruct(246409882, "FileServer.ACheckClanImage", {
-name = "FileServer.ACheckClanImage", ns_name = "FileServer", rl_name = "ACheckClanImage", hash_code = 246409882,
-name_list = {"is_exist","need_download"},
-type_list = {"bool","bool"},
 option_map = {}
 })
 ALittle.RegStruct(-2092316375, "ALittle.SS2GS_QCheckSessionCode", {
@@ -74,7 +74,7 @@ function ClanImageManager:Ctor()
 end
 
 function ClanImageManager:Setup()
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	local error = self._cache:Init()
 	if error ~= nil then
 		return error
@@ -130,7 +130,7 @@ ClanImageManager.HandleNewDay = Lua.CoWrap(ClanImageManager.HandleNewDay)
 
 g_ClanImageManager = ClanImageManager()
 function HandleCheckClanImage(client, msg)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	local error, session = A_SessionSystem:ConnectSession(7, msg.gs_route_id)
 	if error ~= nil then
 		Lua.Throw(error)
@@ -160,7 +160,7 @@ end
 
 ALittle.RegHttpCallback("FileServer.QCheckClanImage", HandleCheckClanImage)
 function HandleDownloadClanImage(client, msg)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	local error, session = A_SessionSystem:ConnectSession(7, msg.gs_route_id)
 	if error ~= nil then
 		Lua.Throw(error)
@@ -183,7 +183,7 @@ end
 
 ALittle.RegHttpDownloadCallback("FileServer.QDownloadClanImage", HandleDownloadClanImage)
 function HandleQUploadClanImage(client, msg)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	local error, session = A_SessionSystem:ConnectSession(7, msg.gs_route_id)
 	if error ~= nil then
 		Lua.Throw(error)

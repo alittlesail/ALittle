@@ -1,4 +1,4 @@
--- ALittle Generate Lua
+-- ALittle Generate Lua And Do Not Edit This Line!
 module("FileServer", package.seeall)
 
 local ___rawset = rawset
@@ -6,18 +6,6 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = ALittle.GetAllStruct()
 
-ALittle.RegStruct(-1164907202, "ALittle.CacheData", {
-name = "ALittle.CacheData", ns_name = "ALittle", rl_name = "CacheData", hash_code = -1164907202,
-name_list = {"id"},
-type_list = {"int"},
-option_map = {primary="id"}
-})
-ALittle.RegStruct(-1925387704, "FileServer.HeadImageInfo", {
-name = "FileServer.HeadImageInfo", ns_name = "FileServer", rl_name = "HeadImageInfo", hash_code = -1925387704,
-name_list = {"id","image_md5","create_time"},
-type_list = {"int","string","int"},
-option_map = {primary="id"}
-})
 ALittle.RegStruct(1696187693, "FileServer.HeadImageInfoDelete", {
 name = "FileServer.HeadImageInfoDelete", ns_name = "FileServer", rl_name = "HeadImageInfoDelete", hash_code = 1696187693,
 name_list = {"account_id","create_time"},
@@ -30,16 +18,22 @@ name_list = {"target"},
 type_list = {"ALittle.EventDispatcher"},
 option_map = {}
 })
-ALittle.RegStruct(-36908822, "ALittle.SessionDisconnectEvent", {
-name = "ALittle.SessionDisconnectEvent", ns_name = "ALittle", rl_name = "SessionDisconnectEvent", hash_code = -36908822,
-name_list = {"target","connect_key","route_type","route_num","session"},
-type_list = {"ALittle.EventDispatcher","int","int","int","ALittle.MsgSessionTemplate<ALittle.MsgSessionNative,lua.__CPPAPIMessageWriteFactory>"},
-option_map = {}
+ALittle.RegStruct(-1925387704, "FileServer.HeadImageInfo", {
+name = "FileServer.HeadImageInfo", ns_name = "FileServer", rl_name = "HeadImageInfo", hash_code = -1925387704,
+name_list = {"id","image_md5","create_time"},
+type_list = {"int","string","int"},
+option_map = {primary="id"}
 })
-ALittle.RegStruct(888437463, "ALittle.SessionConnectEvent", {
-name = "ALittle.SessionConnectEvent", ns_name = "ALittle", rl_name = "SessionConnectEvent", hash_code = 888437463,
-name_list = {"target","connect_key","route_type","route_num","session"},
-type_list = {"ALittle.EventDispatcher","int","int","int","ALittle.MsgSessionTemplate<ALittle.MsgSessionNative,lua.__CPPAPIMessageWriteFactory>"},
+ALittle.RegStruct(-1164907202, "ALittle.CacheData", {
+name = "ALittle.CacheData", ns_name = "ALittle", rl_name = "CacheData", hash_code = -1164907202,
+name_list = {"id"},
+type_list = {"int"},
+option_map = {primary="id"}
+})
+ALittle.RegStruct(-969892976, "GatewayServer.ConnectInfo", {
+name = "GatewayServer.ConnectInfo", ns_name = "GatewayServer", rl_name = "ConnectInfo", hash_code = -969892976,
+name_list = {"client_ip","client_port","http_ip","http_port"},
+type_list = {"string","int","string","int"},
 option_map = {}
 })
 ALittle.RegStruct(-370290946, "GatewayServer.NUpdateRouteInfo", {
@@ -48,10 +42,10 @@ name_list = {"route_weight","route_info"},
 type_list = {"int","GatewayServer.ConnectInfo"},
 option_map = {}
 })
-ALittle.RegStruct(-969892976, "GatewayServer.ConnectInfo", {
-name = "GatewayServer.ConnectInfo", ns_name = "GatewayServer", rl_name = "ConnectInfo", hash_code = -969892976,
-name_list = {"client_ip","client_port","http_ip","http_port"},
-type_list = {"string","int","string","int"},
+ALittle.RegStruct(-36908822, "ALittle.SessionDisconnectEvent", {
+name = "ALittle.SessionDisconnectEvent", ns_name = "ALittle", rl_name = "SessionDisconnectEvent", hash_code = -36908822,
+name_list = {"target","connect_key","route_type","route_num","session"},
+type_list = {"ALittle.EventDispatcher","int","int","int","ALittle.MsgSessionTemplate<ALittle.MsgSessionNative,lua.__CPPAPIMessageWriteFactory>"},
 option_map = {}
 })
 ALittle.RegStruct(174098031, "FileServer.QCheckHeadImage", {
@@ -60,10 +54,22 @@ name_list = {"gs_route_id","account_id","session_code","target_account_id","targ
 type_list = {"int","int","string","int","string"},
 option_map = {}
 })
+ALittle.RegStruct(888437463, "ALittle.SessionConnectEvent", {
+name = "ALittle.SessionConnectEvent", ns_name = "ALittle", rl_name = "SessionConnectEvent", hash_code = 888437463,
+name_list = {"target","connect_key","route_type","route_num","session"},
+type_list = {"ALittle.EventDispatcher","int","int","int","ALittle.MsgSessionTemplate<ALittle.MsgSessionNative,lua.__CPPAPIMessageWriteFactory>"},
+option_map = {}
+})
 ALittle.RegStruct(1301042862, "FileServer.ACheckHeadImage", {
 name = "FileServer.ACheckHeadImage", ns_name = "FileServer", rl_name = "ACheckHeadImage", hash_code = 1301042862,
 name_list = {"is_exist","need_download"},
 type_list = {"bool","bool"},
+option_map = {}
+})
+ALittle.RegStruct(2049961865, "FileServer.AUploadHeadImage", {
+name = "FileServer.AUploadHeadImage", ns_name = "FileServer", rl_name = "AUploadHeadImage", hash_code = 2049961865,
+name_list = {},
+type_list = {},
 option_map = {}
 })
 ALittle.RegStruct(-2092316375, "ALittle.SS2GS_QCheckSessionCode", {
@@ -90,12 +96,6 @@ name_list = {"gs_route_id","account_id","session_code","target_image_md5"},
 type_list = {"int","int","string","string"},
 option_map = {}
 })
-ALittle.RegStruct(2049961865, "FileServer.AUploadHeadImage", {
-name = "FileServer.AUploadHeadImage", ns_name = "FileServer", rl_name = "AUploadHeadImage", hash_code = 2049961865,
-name_list = {},
-type_list = {},
-option_map = {}
-})
 
 HeadImageManager = Lua.Class(nil, "FileServer.HeadImageManager")
 
@@ -104,7 +104,7 @@ function HeadImageManager:Ctor()
 end
 
 function HeadImageManager:Setup()
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	local error = self._cache:Init()
 	if error ~= nil then
 		return error
@@ -186,7 +186,7 @@ end
 
 g_HeadImageManager = HeadImageManager()
 function HandleCheckHeadImage(client, msg)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	local error, session = A_SessionSystem:ConnectSession(7, msg.gs_route_id)
 	if error ~= nil then
 		Lua.Throw(error)
@@ -216,7 +216,7 @@ end
 
 ALittle.RegHttpCallback("FileServer.QCheckHeadImage", HandleCheckHeadImage)
 function HandleDownloadHeadImage(client, msg)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	local error, session = A_SessionSystem:ConnectSession(7, msg.gs_route_id)
 	if error ~= nil then
 		Lua.Throw(error)
@@ -239,7 +239,7 @@ end
 
 ALittle.RegHttpDownloadCallback("FileServer.QDownloadHeadImage", HandleDownloadHeadImage)
 function HandleQUploadHeadImage(client, msg)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	local error, session = A_SessionSystem:ConnectSession(7, msg.gs_route_id)
 	if error ~= nil then
 		Lua.Throw(error)

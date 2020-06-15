@@ -1,4 +1,4 @@
--- ALittle Generate Lua
+-- ALittle Generate Lua And Do Not Edit This Line!
 module("ALittle", package.seeall)
 
 local ___rawset = rawset
@@ -6,40 +6,22 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = GetAllStruct()
 
-RegStruct(-192825113, "ALittle.WebBaseInfo", {
-name = "ALittle.WebBaseInfo", ns_name = "ALittle", rl_name = "WebBaseInfo", hash_code = -192825113,
-name_list = {"account_id","account_name","account_pwd","role_id","creator_id","create_time","create_index","update_time","update_index"},
-type_list = {"string","string","string","string","string","int","int","int","int"},
-option_map = {primary="account_id",unique="account_name"}
-})
 RegStruct(-699725823, "ALittle.WebRoleInfo", {
 name = "ALittle.WebRoleInfo", ns_name = "ALittle", rl_name = "WebRoleInfo", hash_code = -699725823,
 name_list = {"role_id","role_name","permission","creator_id","create_time","create_index","update_time","update_index"},
 type_list = {"string","string","List<string>","string","int","int","int","int"},
 option_map = {}
 })
+RegStruct(-192825113, "ALittle.WebBaseInfo", {
+name = "ALittle.WebBaseInfo", ns_name = "ALittle", rl_name = "WebBaseInfo", hash_code = -192825113,
+name_list = {"account_id","account_name","account_pwd","role_id","creator_id","create_time","create_index","update_time","update_index"},
+type_list = {"string","string","string","string","string","int","int","int","int"},
+option_map = {primary="account_id",unique="account_name"}
+})
 RegStruct(1715346212, "ALittle.Event", {
 name = "ALittle.Event", ns_name = "ALittle", rl_name = "Event", hash_code = 1715346212,
 name_list = {"target"},
 type_list = {"ALittle.EventDispatcher"},
-option_map = {}
-})
-RegStruct(898014419, "ALittle.QWebLogin", {
-name = "ALittle.QWebLogin", ns_name = "ALittle", rl_name = "QWebLogin", hash_code = 898014419,
-name_list = {"device_id","client_platform","third_platform","account_name","account_pwd"},
-type_list = {"string","string","string","string","string"},
-option_map = {}
-})
-RegStruct(-303211063, "ALittle.AWebLogin", {
-name = "ALittle.AWebLogin", ns_name = "ALittle", rl_name = "AWebLogin", hash_code = -303211063,
-name_list = {},
-type_list = {},
-option_map = {}
-})
-RegStruct(1598450085, "ALittle.QWebLogout", {
-name = "ALittle.QWebLogout", ns_name = "ALittle", rl_name = "QWebLogout", hash_code = 1598450085,
-name_list = {},
-type_list = {},
 option_map = {}
 })
 RegStruct(-344058063, "ALittle.AWebLogout", {
@@ -48,16 +30,34 @@ name_list = {},
 type_list = {},
 option_map = {}
 })
-RegStruct(-1373673802, "ALittle.QWebChangePassword", {
-name = "ALittle.QWebChangePassword", ns_name = "ALittle", rl_name = "QWebChangePassword", hash_code = -1373673802,
-name_list = {"old_password","new_password"},
-type_list = {"string","string"},
+RegStruct(-303211063, "ALittle.AWebLogin", {
+name = "ALittle.AWebLogin", ns_name = "ALittle", rl_name = "AWebLogin", hash_code = -303211063,
+name_list = {},
+type_list = {},
+option_map = {}
+})
+RegStruct(898014419, "ALittle.QWebLogin", {
+name = "ALittle.QWebLogin", ns_name = "ALittle", rl_name = "QWebLogin", hash_code = 898014419,
+name_list = {"device_id","client_platform","third_platform","account_name","account_pwd"},
+type_list = {"string","string","string","string","string"},
+option_map = {}
+})
+RegStruct(1598450085, "ALittle.QWebLogout", {
+name = "ALittle.QWebLogout", ns_name = "ALittle", rl_name = "QWebLogout", hash_code = 1598450085,
+name_list = {},
+type_list = {},
 option_map = {}
 })
 RegStruct(1652964636, "ALittle.AWebChangePassword", {
 name = "ALittle.AWebChangePassword", ns_name = "ALittle", rl_name = "AWebChangePassword", hash_code = 1652964636,
 name_list = {},
 type_list = {},
+option_map = {}
+})
+RegStruct(-1373673802, "ALittle.QWebChangePassword", {
+name = "ALittle.QWebChangePassword", ns_name = "ALittle", rl_name = "QWebChangePassword", hash_code = -1373673802,
+name_list = {"old_password","new_password"},
+type_list = {"string","string"},
 option_map = {}
 })
 
@@ -70,7 +70,7 @@ function WebAccountManager:Ctor()
 end
 
 function WebAccountManager:Setup()
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	local error = A_MysqlSystem:CreateIfNotExit(___all_struct[-192825113])
 	Lua.Assert(error == nil, error)
 	error = A_MysqlSystem:CreateIfNotExit(___all_struct[-699725823])
@@ -189,7 +189,7 @@ end
 
 _G.A_WebAccountManager = WebAccountManager()
 function HandleQWebLogin(client, msg)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	local receiver = client
 	Lua.Assert(receiver._web_account_id == "" or receiver._web_account_id == nil, "当前连接已经登录")
 	local error = nil
@@ -231,7 +231,7 @@ end
 
 RegMsgRpcCallback(898014419, HandleQWebLogin, -303211063)
 function HandleQWebLogout(client, msg)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	local receiver = client
 	Lua.Assert(receiver._web_account_id ~= nil and receiver._web_account_id ~= "", "当前连接还未登录")
 	local web_account = A_WebAccountManager:GetAccountByClient(receiver)
@@ -244,7 +244,7 @@ end
 
 RegMsgRpcCallback(1598450085, HandleQWebLogout, -344058063)
 function HandleQWebChangePassword(client, msg)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	local web_account = A_WebAccountManager:CheckLoginByClient(client)
 	local error = nil
 	local base_info = nil

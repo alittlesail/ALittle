@@ -1,4 +1,4 @@
--- ALittle Generate Lua
+-- ALittle Generate Lua And Do Not Edit This Line!
 module("ALittle", package.seeall)
 
 local ___rawset = rawset
@@ -24,7 +24,7 @@ function CacheDataSet:Ctor(submit_interval_ms, cache_interval_ms)
 end
 
 function CacheDataSet:Init()
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	local rflt = self.__class.__element[1]
 	self._primary = rflt.option_map["primary"]
 	if self._primary == nil then
@@ -80,7 +80,7 @@ end
 CacheDataSet.Submit = Lua.CoWrap(CacheDataSet.Submit)
 
 function CacheDataSet:GetDataAndDirty(id)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	local data = self:GetData(id)
 	if data ~= nil then
 		self._dirty_map[id] = true
@@ -89,7 +89,7 @@ local ___COROUTINE = coroutine.running()
 end
 
 function CacheDataSet:GetData(id)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	if self._release then
 		return nil
 	end
@@ -149,7 +149,7 @@ end
 CacheDataSet.SubmitData = Lua.CoWrap(CacheDataSet.SubmitData)
 
 function CacheDataSet:CreateData(data)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	if self._release then
 		return "数据集已经被释放"
 	end
@@ -175,7 +175,7 @@ local ___COROUTINE = coroutine.running()
 end
 
 function CacheDataSet:DeleteData(id)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	if self._release then
 		return "数据集已经被释放"
 	end

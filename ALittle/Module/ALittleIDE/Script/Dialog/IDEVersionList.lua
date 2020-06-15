@@ -32,8 +32,8 @@ option_map = {}
 })
 ALittle.RegStruct(1657250345, "VersionServer.D_VersionInfo", {
 name = "VersionServer.D_VersionInfo", ns_name = "VersionServer", rl_name = "D_VersionInfo", hash_code = 1657250345,
-name_list = {"version_id","account_id","module_name","platform","big_version","version_number","install_version","install_size","status","small_version_time","small_version_index","create_time","create_index","update_time","update_index"},
-type_list = {"string","string","string","string","string","string","string","int","int","int","int","int","int","int","int"},
+name_list = {"version_id","account_id","module_name","platform","big_version","version_number","install_version","plugin_list","install_size","status","small_version_time","small_version_index","create_time","create_index","update_time","update_index"},
+type_list = {"string","string","string","string","string","string","string","string","int","int","int","int","int","int","int","int"},
 option_map = {}
 })
 ALittle.RegStruct(-1810358206, "ALittleIDE.IDEVersionCloseItemUserData", {
@@ -137,7 +137,7 @@ function IDEVersionList:HandleRefreshVersionList(event)
 	local first_version_info = nil
 	for k, v in ___ipairs(version_list) do
 		local control_line = {}
-		local item = self._ctrl_sys:CreateControl("ide_common_tree_item", control_line, self._version_list)
+		local item = self._ctrl_sys:CreateControl("ide_version_item", control_line, self._version_list)
 		control_line._item_button.group = group
 		local user_data = {}
 		control_line._item_button._user_data = user_data
@@ -243,6 +243,11 @@ function IDEVersionList:ShowVersionInfo(version_info)
 	else
 		self._export_version_number.text = ""
 	end
+	if version_info.data.plugin_list ~= nil then
+		self._export_plugin_list.text = version_info.data.plugin_list
+	else
+		self._export_plugin_list.text = ""
+	end
 	local log_list = {}
 	local last_create_time = 0
 	local log_index = 1
@@ -337,6 +342,11 @@ function IDEVersionList:LoadConfig()
 	else
 		self._export_version_number.text = ""
 	end
+	if version_info.plugin_list ~= nil then
+		self._export_plugin_list.text = version_info.plugin_list
+	else
+		self._export_plugin_list.text = ""
+	end
 end
 
 function IDEVersionList:CheckDateString(content)
@@ -396,6 +406,14 @@ function IDEVersionList:GetConfig()
 	if self:CheckVersionString(version_info.version_number) == false then
 		g_AUITool:ShowNotice("错误", "软件版本号格式不正确，请调整格式为：数字.数字.数字")
 		return nil
+	end
+	version_info.plugin_list = self._export_plugin_list.text
+	local module_list = ALittle.String_Split(version_info.plugin_list, ",")
+	for index, module in ___ipairs(module_list) do
+		if ALittle.File_GetFileAttr(ALittle.File_BaseFilePath() .. "Module/" .. module) == nil then
+			g_AUITool:ShowNotice("错误", "引入的插件不存在:" .. module)
+			return nil
+		end
 	end
 	return version_info
 end

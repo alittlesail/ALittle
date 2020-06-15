@@ -5,17 +5,17 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = ALittle.GetAllStruct()
 
-ALittle.RegStruct(976782632, "LogServer.LogEventInfo", {
-name = "LogServer.LogEventInfo", ns_name = "LogServer", rl_name = "LogEventInfo", hash_code = 976782632,
-name_list = {"account_id","main_type","sub_type","res_type","res_id","res_num","res_count","param_1","param_2","param_3","param_4","param_5","param_string","create_time","log_time"},
-type_list = {"int","int","int","int","int","int","int","int","int","int","int","int","string","int","int"},
-option_map = {index="account_id,main_type,sub_type,create_time"}
-})
 ALittle.RegStruct(200159280, "LogServer.EmptyResult", {
 name = "LogServer.EmptyResult", ns_name = "LogServer", rl_name = "EmptyResult", hash_code = 200159280,
 name_list = {},
 type_list = {},
 option_map = {}
+})
+ALittle.RegStruct(976782632, "LogServer.LogEventInfo", {
+name = "LogServer.LogEventInfo", ns_name = "LogServer", rl_name = "LogEventInfo", hash_code = 976782632,
+name_list = {"account_id","main_type","sub_type","res_type","res_id","res_num","res_count","param_1","param_2","param_3","param_4","param_5","param_string","create_time","log_time"},
+type_list = {"int","int","int","int","int","int","int","int","int","int","int","int","string","int","int"},
+option_map = {index="account_id,main_type,sub_type,create_time"}
 })
 
 g_ConfigSystem = nil

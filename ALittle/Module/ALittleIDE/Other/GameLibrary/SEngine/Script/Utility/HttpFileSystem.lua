@@ -1,4 +1,4 @@
--- ALittle Generate Lua
+-- ALittle Generate Lua And Do Not Edit This Line!
 module("ALittle", package.seeall)
 
 local ___rawset = rawset
@@ -34,7 +34,7 @@ end
 HttpFileSystem.HandleHttpFileTask = Lua.CoWrap(HttpFileSystem.HandleHttpFileTask)
 
 function HttpFileSystem:HandleHttpFileTaskImpl(http_id, path, callback, value_map)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	local file_client = HttpFileReceiver(http_id, ___COROUTINE)
 	self._http_file_map[http_id] = file_client
 	local error = nil

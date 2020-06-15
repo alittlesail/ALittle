@@ -1,4 +1,4 @@
--- ALittle Generate Lua
+-- ALittle Generate Lua And Do Not Edit This Line!
 module("ALittle", package.seeall)
 
 local ___rawset = rawset
@@ -6,16 +6,16 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = GetAllStruct()
 
-RegStruct(1715346212, "ALittle.Event", {
-name = "ALittle.Event", ns_name = "ALittle", rl_name = "Event", hash_code = 1715346212,
-name_list = {"target"},
-type_list = {"ALittle.EventDispatcher"},
-option_map = {}
-})
 RegStruct(-370290946, "GatewayServer.NUpdateRouteInfo", {
 name = "GatewayServer.NUpdateRouteInfo", ns_name = "GatewayServer", rl_name = "NUpdateRouteInfo", hash_code = -370290946,
 name_list = {"route_weight","route_info"},
 type_list = {"int","GatewayServer.ConnectInfo"},
+option_map = {}
+})
+RegStruct(1715346212, "ALittle.Event", {
+name = "ALittle.Event", ns_name = "ALittle", rl_name = "Event", hash_code = 1715346212,
+name_list = {"target"},
+type_list = {"ALittle.EventDispatcher"},
 option_map = {}
 })
 RegStruct(-969892976, "GatewayServer.ConnectInfo", {
@@ -30,16 +30,16 @@ name_list = {"route_weight"},
 type_list = {"int"},
 option_map = {}
 })
-RegStruct(-1307158553, "DataServer.GS2DATA_NGameServerInfo", {
-name = "DataServer.GS2DATA_NGameServerInfo", ns_name = "DataServer", rl_name = "GS2DATA_NGameServerInfo", hash_code = -1307158553,
-name_list = {"client_ip","client_port"},
-type_list = {"string","int"},
-option_map = {}
-})
 RegStruct(-1355264955, "GatewayServer.NRouteConnected", {
 name = "GatewayServer.NRouteConnected", ns_name = "GatewayServer", rl_name = "NRouteConnected", hash_code = -1355264955,
 name_list = {"route_type","route_num"},
 type_list = {"int","int"},
+option_map = {}
+})
+RegStruct(-1307158553, "DataServer.GS2DATA_NGameServerInfo", {
+name = "DataServer.GS2DATA_NGameServerInfo", ns_name = "DataServer", rl_name = "GS2DATA_NGameServerInfo", hash_code = -1307158553,
+name_list = {"client_ip","client_port"},
+type_list = {"string","int"},
 option_map = {}
 })
 

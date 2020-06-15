@@ -1,4 +1,4 @@
--- ALittle Generate Lua
+-- ALittle Generate Lua And Do Not Edit This Line!
 module("ALittle", package.seeall)
 
 local ___rawset = rawset
@@ -64,7 +64,7 @@ end
 HttpSystem.HandleHttpDownloadTask = Lua.CoWrap(HttpSystem.HandleHttpDownloadTask)
 
 function HttpSystem:Get(url)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	if ___COROUTINE == nil then
 		return "当前不是协程", nil
 	end
@@ -75,7 +75,7 @@ local ___COROUTINE = coroutine.running()
 end
 
 function HttpSystem:PostJson(url, content)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	if ___COROUTINE == nil then
 		return "当前不是协程", nil
 	end

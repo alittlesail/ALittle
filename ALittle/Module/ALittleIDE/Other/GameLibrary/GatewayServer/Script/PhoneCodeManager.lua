@@ -1,4 +1,4 @@
--- ALittle Generate Lua
+-- ALittle Generate Lua And Do Not Edit This Line!
 module("GatewayServer", package.seeall)
 
 local ___rawset = rawset
@@ -10,6 +10,12 @@ ALittle.RegStruct(702085384, "GatewayServer.PhoneCodeCfg", {
 name = "GatewayServer.PhoneCodeCfg", ns_name = "GatewayServer", rl_name = "PhoneCodeCfg", hash_code = 702085384,
 name_list = {"url","sid","token","appid","templateid"},
 type_list = {"string","string","string","string","string"},
+option_map = {}
+})
+ALittle.RegStruct(1926215703, "GatewayServer.PhoneCodeSendParam", {
+name = "GatewayServer.PhoneCodeSendParam", ns_name = "GatewayServer", rl_name = "PhoneCodeSendParam", hash_code = 1926215703,
+name_list = {"sid","token","appid","templateid","param","mobile"},
+type_list = {"string","string","string","string","string","string"},
 option_map = {}
 })
 ALittle.RegStruct(-1727159013, "GatewayServer.CodeInfo", {
@@ -24,22 +30,16 @@ name_list = {"phone_number","request_type"},
 type_list = {"string","int"},
 option_map = {}
 })
-ALittle.RegStruct(-247110298, "GatewayServer.APhoneCode", {
-name = "GatewayServer.APhoneCode", ns_name = "GatewayServer", rl_name = "APhoneCode", hash_code = -247110298,
-name_list = {},
-type_list = {},
-option_map = {}
-})
-ALittle.RegStruct(1926215703, "GatewayServer.PhoneCodeSendParam", {
-name = "GatewayServer.PhoneCodeSendParam", ns_name = "GatewayServer", rl_name = "PhoneCodeSendParam", hash_code = 1926215703,
-name_list = {"sid","token","appid","templateid","param","mobile"},
-type_list = {"string","string","string","string","string","string"},
-option_map = {}
-})
 ALittle.RegStruct(-795717731, "GatewayServer.PhoneCodeSendResult", {
 name = "GatewayServer.PhoneCodeSendResult", ns_name = "GatewayServer", rl_name = "PhoneCodeSendResult", hash_code = -795717731,
 name_list = {"code","msg"},
 type_list = {"string","string"},
+option_map = {}
+})
+ALittle.RegStruct(-247110298, "GatewayServer.APhoneCode", {
+name = "GatewayServer.APhoneCode", ns_name = "GatewayServer", rl_name = "APhoneCode", hash_code = -247110298,
+name_list = {},
+type_list = {},
 option_map = {}
 })
 
@@ -134,7 +134,7 @@ PhoneCodeRequestType = {
 }
 
 function HandleQPhoneCode(client, msg)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	Lua.Assert(msg.phone_number ~= nil, "手机号码不能为空")
 	Lua.Assert(msg.phone_number ~= "", "手机号码不能为空")
 	Lua.Assert(msg.request_type > PhoneCodeRequestType.PRT_BEGIN and msg.request_type < PhoneCodeRequestType.PRT_END, "无效的请求方式!")

@@ -1,4 +1,4 @@
--- ALittle Generate Lua
+-- ALittle Generate Lua And Do Not Edit This Line!
 module("ALittle", package.seeall)
 
 local ___rawset = rawset
@@ -18,6 +18,12 @@ name_list = {"account_id"},
 type_list = {"int"},
 option_map = {}
 })
+RegStruct(-1627449907, "ALittle.DATA2GS_QEmpty", {
+name = "ALittle.DATA2GS_QEmpty", ns_name = "ALittle", rl_name = "DATA2GS_QEmpty", hash_code = -1627449907,
+name_list = {},
+type_list = {},
+option_map = {}
+})
 RegStruct(-1057357327, "DataServer.GS2DATA_QRenewLease", {
 name = "DataServer.GS2DATA_QRenewLease", ns_name = "DataServer", rl_name = "GS2DATA_QRenewLease", hash_code = -1057357327,
 name_list = {"account_id"},
@@ -34,12 +40,6 @@ RegStruct(370639724, "ALittle.DATA2GS_NNewLease", {
 name = "ALittle.DATA2GS_NNewLease", ns_name = "ALittle", rl_name = "DATA2GS_NNewLease", hash_code = 370639724,
 name_list = {"account_id"},
 type_list = {"int"},
-option_map = {}
-})
-RegStruct(-1627449907, "ALittle.DATA2GS_QEmpty", {
-name = "ALittle.DATA2GS_QEmpty", ns_name = "ALittle", rl_name = "DATA2GS_QEmpty", hash_code = -1627449907,
-name_list = {},
-type_list = {},
 option_map = {}
 })
 RegStruct(726375194, "ALittle.GS2DATA_AEmpty", {
@@ -137,7 +137,7 @@ end
 
 RegMsgCallback(370639724, HandleNNewLease)
 function HandleQEmpty(client, msg)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	return {}
 end
 

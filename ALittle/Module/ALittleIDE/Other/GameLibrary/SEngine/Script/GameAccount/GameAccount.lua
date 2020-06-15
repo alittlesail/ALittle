@@ -1,4 +1,4 @@
--- ALittle Generate Lua
+-- ALittle Generate Lua And Do Not Edit This Line!
 module("ALittle", package.seeall)
 
 local ___rawset = rawset
@@ -6,10 +6,10 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = GetAllStruct()
 
-RegStruct(-1121683527, "DataServer.GS2DATA_QLoadStruct", {
-name = "DataServer.GS2DATA_QLoadStruct", ns_name = "DataServer", rl_name = "GS2DATA_QLoadStruct", hash_code = -1121683527,
-name_list = {"account_id","hash_code"},
-type_list = {"int","int"},
+RegStruct(1463647694, "DataServer.GS2DATA_NBackupStruct", {
+name = "DataServer.GS2DATA_NBackupStruct", ns_name = "DataServer", rl_name = "GS2DATA_NBackupStruct", hash_code = 1463647694,
+name_list = {"account_id","data"},
+type_list = {"int","ALittle.ProtocolAnyStruct"},
 option_map = {}
 })
 RegStruct(1821069430, "ALittle.ProtocolAnyStruct", {
@@ -18,10 +18,10 @@ name_list = {"hash_code","value"},
 type_list = {"int","any"},
 option_map = {}
 })
-RegStruct(1463647694, "DataServer.GS2DATA_NBackupStruct", {
-name = "DataServer.GS2DATA_NBackupStruct", ns_name = "DataServer", rl_name = "GS2DATA_NBackupStruct", hash_code = 1463647694,
-name_list = {"account_id","data"},
-type_list = {"int","ALittle.ProtocolAnyStruct"},
+RegStruct(-1121683527, "DataServer.GS2DATA_QLoadStruct", {
+name = "DataServer.GS2DATA_QLoadStruct", ns_name = "DataServer", rl_name = "GS2DATA_QLoadStruct", hash_code = -1121683527,
+name_list = {"account_id","hash_code"},
+type_list = {"int","int"},
 option_map = {}
 })
 RegStruct(-197564509, "ALittle.GS2C_NAccountInfo", {

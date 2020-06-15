@@ -36,6 +36,7 @@ public class IDEVersionList : ALittle.DisplayLayout
 	private ALittle.DisplayObject _export_big_version;		// 大版本输入框
 	private ALittle.DisplayObject _export_install_version;	// 安装版本输入框
 	private ALittle.DisplayObject _export_version_number;	// 版本号输入框
+	private ALittle.DisplayObject _export_plugin_list;		// 引入插件
 	private ALittle.DisplayObject _export_old_log;			// 日志显示框
 
 	private ALittle.Dialog _version_close_dialog;			// 版本屏蔽对话框
@@ -111,7 +112,7 @@ public class IDEVersionList : ALittle.DisplayLayout
 		{
 			// 创建子控件
 			var control_line = new IDEVersionInfoItem();
-			var item = this._ctrl_sys.CreateControl{ALittle.DisplayObject}("ide_common_tree_item", control_line, this._version_list);
+			var item = this._ctrl_sys.CreateControl{ALittle.DisplayObject}("ide_version_item", control_line, this._version_list);
 			control_line._item_button.group = group;
 			var user_data = new IDEVersionInfoItemUserData();
 			control_line._item_button._user_data = user_data;
@@ -228,6 +229,11 @@ public class IDEVersionList : ALittle.DisplayLayout
 		else
 			this._export_version_number.text = "";
 
+		if (version_info.data.plugin_list != null)
+			this._export_plugin_list.text = version_info.data.plugin_list;
+		else
+			this._export_plugin_list.text = "";
+
 		var log_list = new List<string>();
 		var last_create_time = 0;
 		var log_index = 1;
@@ -340,6 +346,11 @@ public class IDEVersionList : ALittle.DisplayLayout
 			this._export_version_number.text = version_info.version_number;
 		else
 			this._export_version_number.text = "";
+
+		if (version_info.plugin_list != null)
+			this._export_plugin_list.text = version_info.plugin_list;
+		else
+			this._export_plugin_list.text = "";
 	}
 
 	public fun CheckDateString(string content) : bool
@@ -397,6 +408,18 @@ public class IDEVersionList : ALittle.DisplayLayout
 			g_AUITool.ShowNotice("错误", "软件版本号格式不正确，请调整格式为：数字.数字.数字");
 			return null;
 		}
+	
+		// 插件信息
+		version_info.plugin_list = this._export_plugin_list.text;
+		var module_list = ALittle.String_Split(version_info.plugin_list, ",");
+		for (var index, module in module_list)
+		{
+            if (ALittle.File_GetFileAttr(ALittle.File_BaseFilePath().."Module/"..module) == null)
+			{
+				g_AUITool.ShowNotice("错误", "引入的插件不存在:"..module);
+				return null;
+			}
+        }
 	
 		return version_info;
 	}

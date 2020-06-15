@@ -1,4 +1,4 @@
--- ALittle Generate Lua
+-- ALittle Generate Lua And Do Not Edit This Line!
 module("ALittle", package.seeall)
 
 local ___rawset = rawset
@@ -6,18 +6,6 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = GetAllStruct()
 
-RegStruct(799192036, "ALittle.SessionInfo", {
-name = "ALittle.SessionInfo", ns_name = "ALittle", rl_name = "SessionInfo", hash_code = 799192036,
-name_list = {"new_client","old_client","time"},
-type_list = {"string","string","int"},
-option_map = {}
-})
-RegStruct(1391512615, "ALittle.S2CWebForceLogout", {
-name = "ALittle.S2CWebForceLogout", ns_name = "ALittle", rl_name = "S2CWebForceLogout", hash_code = 1391512615,
-name_list = {"reason"},
-type_list = {"string"},
-option_map = {}
-})
 RegStruct(-417093574, "ALittle.S2CWebAccountInfo", {
 name = "ALittle.S2CWebAccountInfo", ns_name = "ALittle", rl_name = "S2CWebAccountInfo", hash_code = -417093574,
 name_list = {"account_id","account_name","role_id","role_name","permission_map"},
@@ -28,6 +16,18 @@ RegStruct(-300988017, "ALittle.S2CWebServerInfo", {
 name = "ALittle.S2CWebServerInfo", ns_name = "ALittle", rl_name = "S2CWebServerInfo", hash_code = -300988017,
 name_list = {"http_ip","http_port"},
 type_list = {"string","int"},
+option_map = {}
+})
+RegStruct(799192036, "ALittle.SessionInfo", {
+name = "ALittle.SessionInfo", ns_name = "ALittle", rl_name = "SessionInfo", hash_code = 799192036,
+name_list = {"new_client","old_client","time"},
+type_list = {"string","string","int"},
+option_map = {}
+})
+RegStruct(1391512615, "ALittle.S2CWebForceLogout", {
+name = "ALittle.S2CWebForceLogout", ns_name = "ALittle", rl_name = "S2CWebForceLogout", hash_code = 1391512615,
+name_list = {"reason"},
+type_list = {"string"},
 option_map = {}
 })
 RegStruct(1809602374, "ALittle.S2CWebSession", {
@@ -78,7 +78,7 @@ function WebAccount:GetClient()
 end
 
 function WebAccount:UpdateRoleInfo()
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	do
 		local error, base_info = A_MysqlSystem:SelectOneFromByKey(___all_struct[-192825113], "account_id", self._base_info.account_id)
 		if error ~= nil then

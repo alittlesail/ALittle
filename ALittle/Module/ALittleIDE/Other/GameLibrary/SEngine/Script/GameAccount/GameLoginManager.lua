@@ -1,20 +1,20 @@
--- ALittle Generate Lua
+-- ALittle Generate Lua And Do Not Edit This Line!
 module("ALittle", package.seeall)
 
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
-RegStruct(-1864322361, "ALittle.LoginSessionInfo", {
-name = "ALittle.LoginSessionInfo", ns_name = "ALittle", rl_name = "LoginSessionInfo", hash_code = -1864322361,
-name_list = {"account_id","session","timer"},
-type_list = {"int","string","int"},
-option_map = {}
-})
 RegStruct(-1922773679, "ALittle.DATA2GS_QSaveSession", {
 name = "ALittle.DATA2GS_QSaveSession", ns_name = "ALittle", rl_name = "DATA2GS_QSaveSession", hash_code = -1922773679,
 name_list = {"account_id","session"},
 type_list = {"int","string"},
+option_map = {}
+})
+RegStruct(-1864322361, "ALittle.LoginSessionInfo", {
+name = "ALittle.LoginSessionInfo", ns_name = "ALittle", rl_name = "LoginSessionInfo", hash_code = -1864322361,
+name_list = {"account_id","session","timer"},
+type_list = {"int","string","int"},
 option_map = {}
 })
 RegStruct(-963859571, "ALittle.GS2DATA_ASaveSession", {
@@ -79,7 +79,7 @@ end
 
 g_GameLoginManager = GameLoginManager()
 function HandleQSaveSession(client, msg)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	g_GameLoginManager:HandleQSaveSession(msg)
 	return {}
 end

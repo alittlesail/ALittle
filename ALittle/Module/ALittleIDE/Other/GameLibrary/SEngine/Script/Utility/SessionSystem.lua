@@ -1,4 +1,4 @@
--- ALittle Generate Lua
+-- ALittle Generate Lua And Do Not Edit This Line!
 module("ALittle", package.seeall)
 
 local ___rawset = rawset
@@ -6,10 +6,10 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = GetAllStruct()
 
-RegStruct(1715346212, "ALittle.Event", {
-name = "ALittle.Event", ns_name = "ALittle", rl_name = "Event", hash_code = 1715346212,
-name_list = {"target"},
-type_list = {"ALittle.EventDispatcher"},
+RegStruct(-36908822, "ALittle.SessionDisconnectEvent", {
+name = "ALittle.SessionDisconnectEvent", ns_name = "ALittle", rl_name = "SessionDisconnectEvent", hash_code = -36908822,
+name_list = {"target","connect_key","route_type","route_num","session"},
+type_list = {"ALittle.EventDispatcher","int","int","int","ALittle.MsgSessionTemplate<ALittle.MsgSessionNative,lua.__CPPAPIMessageWriteFactory>"},
 option_map = {}
 })
 RegStruct(888437463, "ALittle.SessionConnectEvent", {
@@ -18,10 +18,10 @@ name_list = {"target","connect_key","route_type","route_num","session"},
 type_list = {"ALittle.EventDispatcher","int","int","int","ALittle.MsgSessionTemplate<ALittle.MsgSessionNative,lua.__CPPAPIMessageWriteFactory>"},
 option_map = {}
 })
-RegStruct(-36908822, "ALittle.SessionDisconnectEvent", {
-name = "ALittle.SessionDisconnectEvent", ns_name = "ALittle", rl_name = "SessionDisconnectEvent", hash_code = -36908822,
-name_list = {"target","connect_key","route_type","route_num","session"},
-type_list = {"ALittle.EventDispatcher","int","int","int","ALittle.MsgSessionTemplate<ALittle.MsgSessionNative,lua.__CPPAPIMessageWriteFactory>"},
+RegStruct(1715346212, "ALittle.Event", {
+name = "ALittle.Event", ns_name = "ALittle", rl_name = "Event", hash_code = 1715346212,
+name_list = {"target"},
+type_list = {"ALittle.EventDispatcher"},
 option_map = {}
 })
 RegStruct(-1417161474, "ALittle.ConnectSessionInfo", {
@@ -90,7 +90,7 @@ function SessionSystem:AddConnectSession(route_type, route_num)
 end
 
 function SessionSystem:ConnectSession(route_type, route_num)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	if ___COROUTINE == nil then
 		return "当前不是协程", nil
 	end

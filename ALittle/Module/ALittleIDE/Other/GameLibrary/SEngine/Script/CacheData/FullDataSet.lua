@@ -1,4 +1,4 @@
--- ALittle Generate Lua
+-- ALittle Generate Lua And Do Not Edit This Line!
 module("ALittle", package.seeall)
 
 local ___rawset = rawset
@@ -22,7 +22,7 @@ function FullDataSet:Ctor(submit_interval_ms)
 end
 
 function FullDataSet:Init()
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	local rflt = self.__class.__element[1]
 	self._primary = rflt.option_map["primary"]
 	if self._primary == nil then
@@ -84,7 +84,7 @@ end
 FullDataSet.Submit = Lua.CoWrap(FullDataSet.Submit)
 
 function FullDataSet:GetDataAndDirty(id)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	local data = self:GetData(id)
 	if data ~= nil then
 		self._dirty_map[id] = true
@@ -93,7 +93,7 @@ local ___COROUTINE = coroutine.running()
 end
 
 function FullDataSet:GetData(id)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	if self._release then
 		return nil
 	end
@@ -125,7 +125,7 @@ local ___COROUTINE = coroutine.running()
 end
 
 function FullDataSet:CreateData(data)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	if self._release then
 		return "数据集已经被释放"
 	end
@@ -147,7 +147,7 @@ local ___COROUTINE = coroutine.running()
 end
 
 function FullDataSet:DeleteData(id)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	if self._release then
 		return "数据集已经被释放"
 	end

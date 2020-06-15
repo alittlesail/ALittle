@@ -97,8 +97,6 @@ function AUIWebLoginManager:Setup(ip, port, config)
 	self._logingate_ip = ip
 	self._logingate_port = port
 	self._config = config
-	self._msg_client = ALittle.CreateMsgSender(30, true)
-	self._msg_client._user_data = self
 	self._session_id = ""
 	self._account_info = {}
 	self._server_info = {}
@@ -145,6 +143,7 @@ function AUIWebLoginManager:Connect()
 		return
 	end
 	self._msg_client = ALittle.CreateMsgSender(60, true, Lua.Bind(self.OnDisconnected, self))
+	self._msg_client._user_data = self
 	error = self._msg_client:Connect(result.client_ip, result.client_port)
 	if error ~= nil then
 		self._msg_client = nil

@@ -1,4 +1,4 @@
--- ALittle Generate Lua
+-- ALittle Generate Lua And Do Not Edit This Line!
 module("GatewayServer", package.seeall)
 
 local ___pairs = pairs
@@ -11,10 +11,10 @@ name_list = {"account_id","user_id","p_account_id","phone_number","device_id","a
 type_list = {"int","string","int","string","string","string","string","int"},
 option_map = {primary="account_id",index="user_id,phone_number,device_id,account_name"}
 })
-ALittle.RegStruct(1693893532, "GatewayServer.QNormalRegister", {
-name = "GatewayServer.QNormalRegister", ns_name = "GatewayServer", rl_name = "QNormalRegister", hash_code = 1693893532,
-name_list = {"account_name","account_pwd","p_user_id"},
-type_list = {"string","string","string"},
+ALittle.RegStruct(945940302, "GatewayServer.QBindPhone", {
+name = "GatewayServer.QBindPhone", ns_name = "GatewayServer", rl_name = "QBindPhone", hash_code = 945940302,
+name_list = {"account_id","phone_number","phone_code"},
+type_list = {"int","string","string"},
 option_map = {}
 })
 ALittle.RegStruct(1066813511, "GatewayServer.QPhoneRegister", {
@@ -23,16 +23,16 @@ name_list = {"phone_number","phone_pwd","phone_code","p_user_id"},
 type_list = {"string","string","string","string"},
 option_map = {}
 })
+ALittle.RegStruct(1693893532, "GatewayServer.QNormalRegister", {
+name = "GatewayServer.QNormalRegister", ns_name = "GatewayServer", rl_name = "QNormalRegister", hash_code = 1693893532,
+name_list = {"account_name","account_pwd","p_user_id"},
+type_list = {"string","string","string"},
+option_map = {}
+})
 ALittle.RegStruct(-2105123691, "GatewayServer.ARegister", {
 name = "GatewayServer.ARegister", ns_name = "GatewayServer", rl_name = "ARegister", hash_code = -2105123691,
 name_list = {},
 type_list = {},
-option_map = {}
-})
-ALittle.RegStruct(945940302, "GatewayServer.QBindPhone", {
-name = "GatewayServer.QBindPhone", ns_name = "GatewayServer", rl_name = "QBindPhone", hash_code = 945940302,
-name_list = {"account_id","phone_number","phone_code"},
-type_list = {"int","string","string"},
 option_map = {}
 })
 ALittle.RegStruct(-729612372, "GatewayServer.ABindPhone", {
@@ -41,28 +41,16 @@ name_list = {},
 type_list = {},
 option_map = {}
 })
-ALittle.RegStruct(1231533201, "GatewayServer.C2GW_QLogin", {
-name = "GatewayServer.C2GW_QLogin", ns_name = "GatewayServer", rl_name = "C2GW_QLogin", hash_code = 1231533201,
-name_list = {"device_id","account_name","account_pwd"},
-type_list = {"string","string","string"},
-option_map = {}
-})
 ALittle.RegStruct(39013007, "GatewayServer.GW2C_ALogin", {
 name = "GatewayServer.GW2C_ALogin", ns_name = "GatewayServer", rl_name = "GW2C_ALogin", hash_code = 39013007,
 name_list = {"client_ip","client_port","account_id","session_id"},
 type_list = {"string","int","int","string"},
 option_map = {}
 })
-ALittle.RegStruct(-1343408203, "DataServer.GW2DATA_QLogin", {
-name = "DataServer.GW2DATA_QLogin", ns_name = "DataServer", rl_name = "GW2DATA_QLogin", hash_code = -1343408203,
-name_list = {"account_id"},
-type_list = {"int"},
-option_map = {}
-})
-ALittle.RegStruct(-937945851, "DataServer.GW2DATA_ALogin", {
-name = "DataServer.GW2DATA_ALogin", ns_name = "DataServer", rl_name = "GW2DATA_ALogin", hash_code = -937945851,
-name_list = {"client_ip","client_port","session_id"},
-type_list = {"string","int","string"},
+ALittle.RegStruct(1231533201, "GatewayServer.C2GW_QLogin", {
+name = "GatewayServer.C2GW_QLogin", ns_name = "GatewayServer", rl_name = "C2GW_QLogin", hash_code = 1231533201,
+name_list = {"device_id","account_name","account_pwd"},
+type_list = {"string","string","string"},
 option_map = {}
 })
 ALittle.RegStruct(-2061561503, "GatewayServer.QChangePwd", {
@@ -71,10 +59,10 @@ name_list = {"account_id","old_pwd","new_pwd"},
 type_list = {"int","string","string"},
 option_map = {}
 })
-ALittle.RegStruct(38167126, "GatewayServer.AChangePwd", {
-name = "GatewayServer.AChangePwd", ns_name = "GatewayServer", rl_name = "AChangePwd", hash_code = 38167126,
-name_list = {},
-type_list = {},
+ALittle.RegStruct(-1343408203, "DataServer.GW2DATA_QLogin", {
+name = "DataServer.GW2DATA_QLogin", ns_name = "DataServer", rl_name = "GW2DATA_QLogin", hash_code = -1343408203,
+name_list = {"account_id"},
+type_list = {"int"},
 option_map = {}
 })
 ALittle.RegStruct(-1289005117, "GatewayServer.QForgotPwd", {
@@ -83,8 +71,20 @@ name_list = {"phone_number","phone_code","new_pwd"},
 type_list = {"string","string","string"},
 option_map = {}
 })
+ALittle.RegStruct(-937945851, "DataServer.GW2DATA_ALogin", {
+name = "DataServer.GW2DATA_ALogin", ns_name = "DataServer", rl_name = "GW2DATA_ALogin", hash_code = -937945851,
+name_list = {"client_ip","client_port","session_id"},
+type_list = {"string","int","string"},
+option_map = {}
+})
 ALittle.RegStruct(-147839140, "GatewayServer.AForgotPwd", {
 name = "GatewayServer.AForgotPwd", ns_name = "GatewayServer", rl_name = "AForgotPwd", hash_code = -147839140,
+name_list = {},
+type_list = {},
+option_map = {}
+})
+ALittle.RegStruct(38167126, "GatewayServer.AChangePwd", {
+name = "GatewayServer.AChangePwd", ns_name = "GatewayServer", rl_name = "AChangePwd", hash_code = 38167126,
 name_list = {},
 type_list = {},
 option_map = {}
@@ -96,7 +96,7 @@ function RegisterManager:Ctor()
 end
 
 function RegisterManager:Setup()
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	local error = A_MysqlSystem:CreateIfNotExit(___all_struct[90250184])
 	Lua.Assert(error == nil, error)
 end
@@ -105,7 +105,7 @@ function RegisterManager:Shutdown()
 end
 
 function RegisterManager:GenerateUserId()
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	local i = 6
 	while true do
 		if not(i <= 8) then break end
@@ -130,7 +130,7 @@ local ___COROUTINE = coroutine.running()
 end
 
 function RegisterManager:GenerateAccountId(data_route_num)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	local max_id = ALittle.MAX_ACCOUNT_ID_BY_DATA_ROUTE_NUM(data_route_num)
 	local min_id = ALittle.MIN_ACCOUNT_ID_BY_DATA_ROUTE_NUM(data_route_num)
 	local i = 1
@@ -151,7 +151,7 @@ end
 
 g_RegisterManager = RegisterManager()
 function HandleQNormalRegister(client, msg)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	Lua.Assert(msg.account_name ~= nil and msg.account_name ~= "", "账号名不能为空")
 	Lua.Assert(msg.account_pwd ~= nil and msg.account_pwd ~= "", "密码不能为空")
 	Lua.Assert(ALittle.String_IsPhoneNumber(msg.account_name), "账号名，不能是手机号码")
@@ -194,7 +194,7 @@ end
 
 ALittle.RegMsgRpcCallback(1693893532, HandleQNormalRegister, -2105123691)
 function HandleQPhoneRegister(client, msg)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	Lua.Assert(msg.phone_number ~= nil and msg.phone_number ~= "", "手机号码不能为空")
 	Lua.Assert(msg.phone_pwd ~= nil and msg.phone_pwd ~= "", "密码不能为空")
 	local error, count = A_MysqlSystem:SelectCount(___all_struct[90250184], "phone_number", msg.phone_number)
@@ -236,7 +236,7 @@ end
 
 ALittle.RegMsgRpcCallback(1066813511, HandleQPhoneRegister, -2105123691)
 function HandleQBindPhone(client, msg)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	Lua.Assert(msg.phone_number ~= nil and msg.phone_number ~= "", "手机号码不能为空")
 	local error, info = A_MysqlSystem:SelectOneFromByKey(___all_struct[90250184], "phone_number", msg.phone_number)
 	if error ~= nil then
@@ -262,7 +262,7 @@ end
 
 ALittle.RegMsgRpcCallback(945940302, HandleQBindPhone, -729612372)
 function HandleQLogin(client, msg)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	local info = nil
 	if msg.device_id ~= nil and msg.device_id ~= "" then
 		local error = nil
@@ -323,7 +323,7 @@ end
 
 ALittle.RegHttpCallback("GatewayServer.C2GW_QLogin", HandleQLogin)
 function HandleQChangePwd(client, msg)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	local error, info = A_MysqlSystem:SelectOneFromByKey(___all_struct[90250184], "account_id", msg.account_id)
 	if error ~= nil then
 		Lua.Throw("密码修改失败:" .. error)
@@ -340,7 +340,7 @@ end
 
 ALittle.RegMsgRpcCallback(-2061561503, HandleQChangePwd, 38167126)
 function HandleQForgotPwd(client, msg)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	Lua.Assert(msg.phone_number ~= nil and msg.phone_number ~= "", "手机号码不能为空")
 	local error, info = A_MysqlSystem:SelectOneFromByKey(___all_struct[90250184], "phone_number", msg.phone_number)
 	if error ~= nil then

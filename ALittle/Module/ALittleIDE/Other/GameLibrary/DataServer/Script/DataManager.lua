@@ -1,13 +1,19 @@
--- ALittle Generate Lua
+-- ALittle Generate Lua And Do Not Edit This Line!
 module("DataServer", package.seeall)
 
 local ___pairs = pairs
 local ___ipairs = ipairs
 
-ALittle.RegStruct(-1010453448, "DataServer.GS2DATA_NRegStruct", {
-name = "DataServer.GS2DATA_NRegStruct", ns_name = "DataServer", rl_name = "GS2DATA_NRegStruct", hash_code = -1010453448,
-name_list = {"rflt_list","table_map"},
-type_list = {"List<ALittle.StructInfo>","Map<int,bool>"},
+ALittle.RegStruct(1463647694, "DataServer.GS2DATA_NBackupStruct", {
+name = "DataServer.GS2DATA_NBackupStruct", ns_name = "DataServer", rl_name = "GS2DATA_NBackupStruct", hash_code = 1463647694,
+name_list = {"account_id","data"},
+type_list = {"int","ALittle.ProtocolAnyStruct"},
+option_map = {}
+})
+ALittle.RegStruct(1821069430, "ALittle.ProtocolAnyStruct", {
+name = "ALittle.ProtocolAnyStruct", ns_name = "ALittle", rl_name = "ProtocolAnyStruct", hash_code = 1821069430,
+name_list = {"hash_code","value"},
+type_list = {"int","any"},
 option_map = {}
 })
 ALittle.RegStruct(1847150134, "ALittle.StructInfo", {
@@ -28,16 +34,10 @@ name_list = {"account_id","hash_code"},
 type_list = {"int","int"},
 option_map = {}
 })
-ALittle.RegStruct(1821069430, "ALittle.ProtocolAnyStruct", {
-name = "ALittle.ProtocolAnyStruct", ns_name = "ALittle", rl_name = "ProtocolAnyStruct", hash_code = 1821069430,
-name_list = {"hash_code","value"},
-type_list = {"int","any"},
-option_map = {}
-})
-ALittle.RegStruct(1463647694, "DataServer.GS2DATA_NBackupStruct", {
-name = "DataServer.GS2DATA_NBackupStruct", ns_name = "DataServer", rl_name = "GS2DATA_NBackupStruct", hash_code = 1463647694,
-name_list = {"account_id","data"},
-type_list = {"int","ALittle.ProtocolAnyStruct"},
+ALittle.RegStruct(-1010453448, "DataServer.GS2DATA_NRegStruct", {
+name = "DataServer.GS2DATA_NRegStruct", ns_name = "DataServer", rl_name = "GS2DATA_NRegStruct", hash_code = -1010453448,
+name_list = {"rflt_list","table_map"},
+type_list = {"List<ALittle.StructInfo>","Map<int,bool>"},
 option_map = {}
 })
 
@@ -71,7 +71,7 @@ HandleQRegStruct = Lua.CoWrap(HandleQRegStruct)
 
 ALittle.RegMsgCallback(-1010453448, HandleQRegStruct)
 function HandleQLoadStruct(client, msg)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	local connect_key = client:GetID()
 	local register_map = TABLE_REGISTER_MAP[connect_key]
 	Lua.Assert(register_map, "表结构尚未注册")

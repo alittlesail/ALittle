@@ -48,10 +48,6 @@ public class AUIWebLoginManager : ALittle.EventDispatcher
 		this._logingate_port = port;
 		this._config = config;
 	
-		// 创建长连接
-		this._msg_client = ALittle.CreateMsgSender(30, true);
-		this._msg_client._user_data = this;
-	
 		// 短链接会话ID
 		this._session_id = "";
 		// 账号信息
@@ -116,6 +112,7 @@ public class AUIWebLoginManager : ALittle.EventDispatcher
 		}
 
 		this._msg_client = ALittle.CreateMsgSender(60, true, bind(this.OnDisconnected, this));
+		this._msg_client._user_data = this;
 		error = this._msg_client.Connect(result.client_ip, result.client_port);
 		if (error != null)
 		{

@@ -1,9 +1,15 @@
--- ALittle Generate Lua
+-- ALittle Generate Lua And Do Not Edit This Line!
 module("DataServer", package.seeall)
 
 local ___pairs = pairs
 local ___ipairs = ipairs
 
+ALittle.RegStruct(-1627449907, "ALittle.DATA2GS_QEmpty", {
+name = "ALittle.DATA2GS_QEmpty", ns_name = "ALittle", rl_name = "DATA2GS_QEmpty", hash_code = -1627449907,
+name_list = {},
+type_list = {},
+option_map = {}
+})
 ALittle.RegStruct(-1343408203, "DataServer.GW2DATA_QLogin", {
 name = "DataServer.GW2DATA_QLogin", ns_name = "DataServer", rl_name = "GW2DATA_QLogin", hash_code = -1343408203,
 name_list = {"account_id"},
@@ -14,12 +20,6 @@ ALittle.RegStruct(-937945851, "DataServer.GW2DATA_ALogin", {
 name = "DataServer.GW2DATA_ALogin", ns_name = "DataServer", rl_name = "GW2DATA_ALogin", hash_code = -937945851,
 name_list = {"client_ip","client_port","session_id"},
 type_list = {"string","int","string"},
-option_map = {}
-})
-ALittle.RegStruct(-1627449907, "ALittle.DATA2GS_QEmpty", {
-name = "ALittle.DATA2GS_QEmpty", ns_name = "ALittle", rl_name = "DATA2GS_QEmpty", hash_code = -1627449907,
-name_list = {},
-type_list = {},
 option_map = {}
 })
 ALittle.RegStruct(726375194, "ALittle.GS2DATA_AEmpty", {
@@ -42,7 +42,7 @@ option_map = {}
 })
 
 function HandleQLogin(client, msg)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	local info = g_LeaseManager:GetLease(msg.account_id)
 	Lua.Assert(info, "租约信息获取失败")
 	local gs_info = g_LeaseManager:GetGameServerInfo(info.gs_route_num)

@@ -1,18 +1,24 @@
--- ALittle Generate Lua
+-- ALittle Generate Lua And Do Not Edit This Line!
 module("ALittle", package.seeall)
 
 local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = GetAllStruct()
 
+RegStruct(-1670031053, "ALittle.QVersionSetAccountPwd", {
+name = "ALittle.QVersionSetAccountPwd", ns_name = "ALittle", rl_name = "QVersionSetAccountPwd", hash_code = -1670031053,
+name_list = {"__account_id","__session_id","account_id","account_pwd"},
+type_list = {"string","string","string","string"},
+option_map = {}
+})
 RegStruct(-1334237987, "ALittle.QVersionCreateAccount", {
 name = "ALittle.QVersionCreateAccount", ns_name = "ALittle", rl_name = "QVersionCreateAccount", hash_code = -1334237987,
 name_list = {"__account_id","__session_id","account_name","account_pwd"},
 type_list = {"string","string","string","string"},
 option_map = {}
 })
-RegStruct(-52328307, "ALittle.AVersionCreateAccount", {
-name = "ALittle.AVersionCreateAccount", ns_name = "ALittle", rl_name = "AVersionCreateAccount", hash_code = -52328307,
+RegStruct(-1217701648, "ALittle.AVersionDeleteAccount", {
+name = "ALittle.AVersionDeleteAccount", ns_name = "ALittle", rl_name = "AVersionDeleteAccount", hash_code = -1217701648,
 name_list = {},
 type_list = {},
 option_map = {}
@@ -23,16 +29,10 @@ name_list = {"__account_id","__session_id","account_id"},
 type_list = {"string","string","string"},
 option_map = {}
 })
-RegStruct(-1217701648, "ALittle.AVersionDeleteAccount", {
-name = "ALittle.AVersionDeleteAccount", ns_name = "ALittle", rl_name = "AVersionDeleteAccount", hash_code = -1217701648,
+RegStruct(-52328307, "ALittle.AVersionCreateAccount", {
+name = "ALittle.AVersionCreateAccount", ns_name = "ALittle", rl_name = "AVersionCreateAccount", hash_code = -52328307,
 name_list = {},
 type_list = {},
-option_map = {}
-})
-RegStruct(-1670031053, "ALittle.QVersionSetAccountPwd", {
-name = "ALittle.QVersionSetAccountPwd", ns_name = "ALittle", rl_name = "QVersionSetAccountPwd", hash_code = -1670031053,
-name_list = {"__account_id","__session_id","account_id","account_pwd"},
-type_list = {"string","string","string","string"},
 option_map = {}
 })
 RegStruct(1908089542, "ALittle.AVersionSetAccountPwd", {
@@ -71,8 +71,8 @@ name_list = {"__account_id","__session_id","role_id","role_name","role_permissio
 type_list = {"string","string","string","string","Map<string,bool>"},
 option_map = {}
 })
-RegStruct(-1341503137, "ALittle.AVersionUpdateRole", {
-name = "ALittle.AVersionUpdateRole", ns_name = "ALittle", rl_name = "AVersionUpdateRole", hash_code = -1341503137,
+RegStruct(1169802891, "ALittle.AVersionDeleteRole", {
+name = "ALittle.AVersionDeleteRole", ns_name = "ALittle", rl_name = "AVersionDeleteRole", hash_code = 1169802891,
 name_list = {},
 type_list = {},
 option_map = {}
@@ -83,15 +83,15 @@ name_list = {"__account_id","__session_id","role_id"},
 type_list = {"string","string","string"},
 option_map = {}
 })
-RegStruct(1169802891, "ALittle.AVersionDeleteRole", {
-name = "ALittle.AVersionDeleteRole", ns_name = "ALittle", rl_name = "AVersionDeleteRole", hash_code = 1169802891,
+RegStruct(-1341503137, "ALittle.AVersionUpdateRole", {
+name = "ALittle.AVersionUpdateRole", ns_name = "ALittle", rl_name = "AVersionUpdateRole", hash_code = -1341503137,
 name_list = {},
 type_list = {},
 option_map = {}
 })
 
 function HandleQVersionCreateAccount(client, msg)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	local web_account = A_WebAccountManager:CheckLoginByClient(client)
 	Lua.Assert(msg.account_name ~= nil and msg.account_name ~= "", "账号名不能为空")
 	Lua.Assert(msg.account_pwd ~= nil and msg.account_pwd ~= "", "密码不能为空")
@@ -118,7 +118,7 @@ end
 
 RegMsgRpcCallback(-1334237987, HandleQVersionCreateAccount, -52328307)
 function HandleQVersionDeleteAccount(client, msg)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	local web_account = A_WebAccountManager:CheckLoginByClient(client)
 	local error, base_info = A_MysqlSystem:SelectOneFromByKey(___all_struct[-192825113], "account_id", msg.account_id)
 	if error ~= nil then
@@ -135,7 +135,7 @@ end
 
 RegMsgRpcCallback(-216744240, HandleQVersionDeleteAccount, -1217701648)
 function HandleQVersionSetAccountPwd(client, msg)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	local web_account = A_WebAccountManager:CheckLoginByClient(client)
 	local error, base_info = A_MysqlSystem:SelectOneFromByKey(___all_struct[-192825113], "account_id", msg.account_id)
 	if error ~= nil then
@@ -152,7 +152,7 @@ end
 
 RegMsgRpcCallback(-1670031053, HandleQVersionSetAccountPwd, 1908089542)
 function HandleQVersionSetAccountRole(client, msg)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	local web_account = A_WebAccountManager:CheckLoginByClient(client)
 	local error = nil
 	local base_info = nil
@@ -178,7 +178,7 @@ end
 
 RegMsgRpcCallback(-2090346221, HandleQVersionSetAccountRole, -1565382514)
 function HandleQVersionCreateRole(client, msg)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	local web_account = A_WebAccountManager:CheckLoginByClient(client)
 	local permission_list = {}
 	for permission, _ in ___pairs(msg.role_permission) do
@@ -202,7 +202,7 @@ end
 
 RegMsgRpcCallback(-813534860, HandleQVersionCreateRole, 662928143)
 function HandleQVersionUpdateRole(client, msg)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	local web_account = A_WebAccountManager:CheckLoginByClient(client)
 	local error, role_info = A_MysqlSystem:SelectOneFromByKey(___all_struct[-699725823], "role_id", msg.role_id)
 	if error ~= nil then
@@ -244,7 +244,7 @@ end
 
 RegMsgRpcCallback(1102339341, HandleQVersionUpdateRole, -1341503137)
 function HandleQVersionDeleteRole(client, msg)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	local web_account = A_WebAccountManager:CheckLoginByClient(client)
 	local error, count = A_MysqlSystem:SelectCount(___all_struct[-192825113], "role_id", msg.role_id)
 	if error ~= nil then

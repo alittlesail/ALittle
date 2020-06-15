@@ -43,8 +43,8 @@ option_map = {}
 })
 ALittle.RegStruct(-1247620677, "ALittleIDE.IDEVersionInfo", {
 name = "ALittleIDE.IDEVersionInfo", ns_name = "ALittleIDE", rl_name = "IDEVersionInfo", hash_code = -1247620677,
-name_list = {"install_version","big_version","version_number"},
-type_list = {"string","string","string"},
+name_list = {"install_version","big_version","version_number","plugin_list"},
+type_list = {"string","string","string","string"},
 option_map = {}
 })
 ALittle.RegStruct(-1093384145, "ALittleIDE.IDEExportSubmitInfo", {

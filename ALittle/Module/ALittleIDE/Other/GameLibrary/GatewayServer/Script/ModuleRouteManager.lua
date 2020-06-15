@@ -1,4 +1,4 @@
--- ALittle Generate Lua
+-- ALittle Generate Lua And Do Not Edit This Line!
 module("GatewayServer", package.seeall)
 
 local ___rawset = rawset
@@ -6,10 +6,10 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = ALittle.GetAllStruct()
 
-ALittle.RegStruct(-370290946, "GatewayServer.NUpdateRouteInfo", {
-name = "GatewayServer.NUpdateRouteInfo", ns_name = "GatewayServer", rl_name = "NUpdateRouteInfo", hash_code = -370290946,
-name_list = {"route_weight","route_info"},
-type_list = {"int","GatewayServer.ConnectInfo"},
+ALittle.RegStruct(-1470077324, "GatewayServer.UpdateRouteInfo", {
+name = "GatewayServer.UpdateRouteInfo", ns_name = "GatewayServer", rl_name = "UpdateRouteInfo", hash_code = -1470077324,
+name_list = {"route_weight","route_info","route_type"},
+type_list = {"int","GatewayServer.ConnectInfo","int"},
 option_map = {}
 })
 ALittle.RegStruct(-969892976, "GatewayServer.ConnectInfo", {
@@ -18,16 +18,10 @@ name_list = {"client_ip","client_port","http_ip","http_port"},
 type_list = {"string","int","string","int"},
 option_map = {}
 })
-ALittle.RegStruct(-1470077324, "GatewayServer.UpdateRouteInfo", {
-name = "GatewayServer.UpdateRouteInfo", ns_name = "GatewayServer", rl_name = "UpdateRouteInfo", hash_code = -1470077324,
-name_list = {"route_weight","route_info","route_type"},
-type_list = {"int","GatewayServer.ConnectInfo","int"},
-option_map = {}
-})
-ALittle.RegStruct(1715346212, "ALittle.Event", {
-name = "ALittle.Event", ns_name = "ALittle", rl_name = "Event", hash_code = 1715346212,
-name_list = {"target"},
-type_list = {"ALittle.EventDispatcher"},
+ALittle.RegStruct(-370290946, "GatewayServer.NUpdateRouteInfo", {
+name = "GatewayServer.NUpdateRouteInfo", ns_name = "GatewayServer", rl_name = "NUpdateRouteInfo", hash_code = -370290946,
+name_list = {"route_weight","route_info"},
+type_list = {"int","GatewayServer.ConnectInfo"},
 option_map = {}
 })
 ALittle.RegStruct(-36908822, "ALittle.SessionDisconnectEvent", {
@@ -42,28 +36,34 @@ name_list = {"target","connect_key","route_type","route_num","session"},
 type_list = {"ALittle.EventDispatcher","int","int","int","ALittle.MsgSessionTemplate<ALittle.MsgSessionNative,lua.__CPPAPIMessageWriteFactory>"},
 option_map = {}
 })
-ALittle.RegStruct(-1355264955, "GatewayServer.NRouteConnected", {
-name = "GatewayServer.NRouteConnected", ns_name = "GatewayServer", rl_name = "NRouteConnected", hash_code = -1355264955,
-name_list = {"route_type","route_num"},
-type_list = {"int","int"},
-option_map = {}
-})
 ALittle.RegStruct(1006278988, "GatewayServer.NUpdateRouteWeight", {
 name = "GatewayServer.NUpdateRouteWeight", ns_name = "GatewayServer", rl_name = "NUpdateRouteWeight", hash_code = 1006278988,
 name_list = {"route_weight"},
 type_list = {"int"},
 option_map = {}
 })
-ALittle.RegStruct(-974143213, "GatewayServer.QRouteInfo", {
-name = "GatewayServer.QRouteInfo", ns_name = "GatewayServer", rl_name = "QRouteInfo", hash_code = -974143213,
-name_list = {"route_type"},
-type_list = {"int"},
+ALittle.RegStruct(1715346212, "ALittle.Event", {
+name = "ALittle.Event", ns_name = "ALittle", rl_name = "Event", hash_code = 1715346212,
+name_list = {"target"},
+type_list = {"ALittle.EventDispatcher"},
 option_map = {}
 })
 ALittle.RegStruct(2090635487, "GatewayServer.ARouteInfo", {
 name = "GatewayServer.ARouteInfo", ns_name = "GatewayServer", rl_name = "ARouteInfo", hash_code = 2090635487,
 name_list = {"client_ip","client_port","http_ip","http_port"},
 type_list = {"string","int","string","int"},
+option_map = {}
+})
+ALittle.RegStruct(-1355264955, "GatewayServer.NRouteConnected", {
+name = "GatewayServer.NRouteConnected", ns_name = "GatewayServer", rl_name = "NRouteConnected", hash_code = -1355264955,
+name_list = {"route_type","route_num"},
+type_list = {"int","int"},
+option_map = {}
+})
+ALittle.RegStruct(-974143213, "GatewayServer.QRouteInfo", {
+name = "GatewayServer.QRouteInfo", ns_name = "GatewayServer", rl_name = "QRouteInfo", hash_code = -974143213,
+name_list = {"route_type"},
+type_list = {"int"},
 option_map = {}
 })
 
@@ -147,7 +147,7 @@ end
 
 ALittle.RegMsgCallback(1006278988, HandleNUpdateRouteWeight)
 function HandleQRouteInfo(client, msg)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	local route_info = g_ModuleRouteManager:GetRouteInfo(msg.route_type)
 	Lua.Assert(route_info, "没有找到模块类型:" .. msg.route_type)
 	local result = {}

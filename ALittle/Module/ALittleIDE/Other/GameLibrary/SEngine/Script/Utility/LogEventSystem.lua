@@ -1,4 +1,4 @@
--- ALittle Generate Lua
+-- ALittle Generate Lua And Do Not Edit This Line!
 module("ALittle", package.seeall)
 
 local ___rawset = rawset
@@ -6,17 +6,17 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = GetAllStruct()
 
-RegStruct(976782632, "LogServer.LogEventInfo", {
-name = "LogServer.LogEventInfo", ns_name = "LogServer", rl_name = "LogEventInfo", hash_code = 976782632,
-name_list = {"account_id","main_type","sub_type","res_type","res_id","res_num","res_count","param_1","param_2","param_3","param_4","param_5","param_string","create_time","log_time"},
-type_list = {"int","int","int","int","int","int","int","int","int","int","int","int","string","int","int"},
-option_map = {index="account_id,main_type,sub_type,create_time"}
-})
 RegStruct(200159280, "LogServer.EmptyResult", {
 name = "LogServer.EmptyResult", ns_name = "LogServer", rl_name = "EmptyResult", hash_code = 200159280,
 name_list = {},
 type_list = {},
 option_map = {}
+})
+RegStruct(976782632, "LogServer.LogEventInfo", {
+name = "LogServer.LogEventInfo", ns_name = "LogServer", rl_name = "LogEventInfo", hash_code = 976782632,
+name_list = {"account_id","main_type","sub_type","res_type","res_id","res_num","res_count","param_1","param_2","param_3","param_4","param_5","param_string","create_time","log_time"},
+type_list = {"int","int","int","int","int","int","int","int","int","int","int","int","string","int","int"},
+option_map = {index="account_id,main_type,sub_type,create_time"}
 })
 RegStruct(1715346212, "ALittle.Event", {
 name = "ALittle.Event", ns_name = "ALittle", rl_name = "Event", hash_code = 1715346212,
@@ -58,7 +58,7 @@ function LogEventSystem:HandleSessionDisconnected(event)
 end
 
 function LogEventSystem:Flush()
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	for index, info in ___ipairs(self._list) do
 		self:Send(info)
 	end
@@ -67,7 +67,7 @@ local ___COROUTINE = coroutine.running()
 end
 
 function LogEventSystem:Send(info)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	local error, result = ALittle.IMsgCommon.InvokeRPC(976782632, self._session, info)
 	if error ~= nil then
 		Warn("日志发送失败:" .. error .. " 数据:" .. json.encode(info))

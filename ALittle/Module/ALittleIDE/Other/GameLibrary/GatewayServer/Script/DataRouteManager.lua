@@ -1,4 +1,4 @@
--- ALittle Generate Lua
+-- ALittle Generate Lua And Do Not Edit This Line!
 module("GatewayServer", package.seeall)
 
 local ___rawset = rawset
@@ -6,6 +6,12 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = ALittle.GetAllStruct()
 
+ALittle.RegStruct(1715346212, "ALittle.Event", {
+name = "ALittle.Event", ns_name = "ALittle", rl_name = "Event", hash_code = 1715346212,
+name_list = {"target"},
+type_list = {"ALittle.EventDispatcher"},
+option_map = {}
+})
 ALittle.RegStruct(1723229779, "GatewayServer.DataRouteInfo", {
 name = "GatewayServer.DataRouteInfo", ns_name = "GatewayServer", rl_name = "DataRouteInfo", hash_code = 1723229779,
 name_list = {"route_type","route_num","route_weight","route_info","session"},
@@ -16,12 +22,6 @@ ALittle.RegStruct(-969892976, "GatewayServer.ConnectInfo", {
 name = "GatewayServer.ConnectInfo", ns_name = "GatewayServer", rl_name = "ConnectInfo", hash_code = -969892976,
 name_list = {"client_ip","client_port","http_ip","http_port"},
 type_list = {"string","int","string","int"},
-option_map = {}
-})
-ALittle.RegStruct(1715346212, "ALittle.Event", {
-name = "ALittle.Event", ns_name = "ALittle", rl_name = "Event", hash_code = 1715346212,
-name_list = {"target"},
-type_list = {"ALittle.EventDispatcher"},
 option_map = {}
 })
 ALittle.RegStruct(-36908822, "ALittle.SessionDisconnectEvent", {

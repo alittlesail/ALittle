@@ -1,4 +1,4 @@
--- ALittle Generate Lua
+-- ALittle Generate Lua And Do Not Edit This Line!
 module("DataServer", package.seeall)
 
 local ___rawset = rawset
@@ -6,10 +6,16 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = ALittle.GetAllStruct()
 
-ALittle.RegStruct(-714377901, "DataServer.LeaseInfo", {
-name = "DataServer.LeaseInfo", ns_name = "DataServer", rl_name = "LeaseInfo", hash_code = -714377901,
-name_list = {"account_id","confirm","timer","gs_route_num"},
-type_list = {"int","bool","int","int"},
+ALittle.RegStruct(1715346212, "ALittle.Event", {
+name = "ALittle.Event", ns_name = "ALittle", rl_name = "Event", hash_code = 1715346212,
+name_list = {"target"},
+type_list = {"ALittle.EventDispatcher"},
+option_map = {}
+})
+ALittle.RegStruct(-1307158553, "DataServer.GS2DATA_NGameServerInfo", {
+name = "DataServer.GS2DATA_NGameServerInfo", ns_name = "DataServer", rl_name = "GS2DATA_NGameServerInfo", hash_code = -1307158553,
+name_list = {"client_ip","client_port"},
+type_list = {"string","int"},
 option_map = {}
 })
 ALittle.RegStruct(-1076468151, "DataServer.LeaseGameServerInfo", {
@@ -18,10 +24,22 @@ name_list = {"client_ip","client_port","count","session"},
 type_list = {"string","int","int","ALittle.MsgSessionTemplate<ALittle.MsgSessionNative,lua.__CPPAPIMessageWriteFactory>"},
 option_map = {}
 })
-ALittle.RegStruct(1715346212, "ALittle.Event", {
-name = "ALittle.Event", ns_name = "ALittle", rl_name = "Event", hash_code = 1715346212,
-name_list = {"target"},
-type_list = {"ALittle.EventDispatcher"},
+ALittle.RegStruct(-1057357327, "DataServer.GS2DATA_QRenewLease", {
+name = "DataServer.GS2DATA_QRenewLease", ns_name = "DataServer", rl_name = "GS2DATA_QRenewLease", hash_code = -1057357327,
+name_list = {"account_id"},
+type_list = {"int"},
+option_map = {}
+})
+ALittle.RegStruct(-714377901, "DataServer.LeaseInfo", {
+name = "DataServer.LeaseInfo", ns_name = "DataServer", rl_name = "LeaseInfo", hash_code = -714377901,
+name_list = {"account_id","confirm","timer","gs_route_num"},
+type_list = {"int","bool","int","int"},
+option_map = {}
+})
+ALittle.RegStruct(-276606114, "DataServer.DATA2GS_ARenewLease", {
+name = "DataServer.DATA2GS_ARenewLease", ns_name = "DataServer", rl_name = "DATA2GS_ARenewLease", hash_code = -276606114,
+name_list = {},
+type_list = {},
 option_map = {}
 })
 ALittle.RegStruct(-36908822, "ALittle.SessionDisconnectEvent", {
@@ -34,24 +52,6 @@ ALittle.RegStruct(370639724, "ALittle.DATA2GS_NNewLease", {
 name = "ALittle.DATA2GS_NNewLease", ns_name = "ALittle", rl_name = "DATA2GS_NNewLease", hash_code = 370639724,
 name_list = {"account_id"},
 type_list = {"int"},
-option_map = {}
-})
-ALittle.RegStruct(-1307158553, "DataServer.GS2DATA_NGameServerInfo", {
-name = "DataServer.GS2DATA_NGameServerInfo", ns_name = "DataServer", rl_name = "GS2DATA_NGameServerInfo", hash_code = -1307158553,
-name_list = {"client_ip","client_port"},
-type_list = {"string","int"},
-option_map = {}
-})
-ALittle.RegStruct(-1057357327, "DataServer.GS2DATA_QRenewLease", {
-name = "DataServer.GS2DATA_QRenewLease", ns_name = "DataServer", rl_name = "GS2DATA_QRenewLease", hash_code = -1057357327,
-name_list = {"account_id"},
-type_list = {"int"},
-option_map = {}
-})
-ALittle.RegStruct(-276606114, "DataServer.DATA2GS_ARenewLease", {
-name = "DataServer.DATA2GS_ARenewLease", ns_name = "DataServer", rl_name = "DATA2GS_ARenewLease", hash_code = -276606114,
-name_list = {},
-type_list = {},
 option_map = {}
 })
 ALittle.RegStruct(-1970485469, "DataServer.GS2DATA_NReleaseLease", {
@@ -218,7 +218,7 @@ end
 
 ALittle.RegMsgCallback(-1307158553, HandleNGameServerInfo)
 function HandleQLeaseRenew(client, msg)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	local error = g_LeaseManager:HandleLeaseRenew(client, msg)
 	Lua.Assert(error == nil, error)
 	return {}

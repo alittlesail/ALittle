@@ -1,4 +1,4 @@
--- ALittle Generate Lua
+-- ALittle Generate Lua And Do Not Edit This Line!
 module("ALittle", package.seeall)
 
 local ___rawset = rawset
@@ -44,7 +44,7 @@ function MysqlStatementQuery.__getter:affect_count()
 end
 
 function MysqlStatementQuery:Execute(thread_id)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	return A_MysqlSystem:ExecuteStatement(self, thread_id)
 end
 
@@ -244,7 +244,7 @@ function MysqlSystem:HandleMysqlEmptyTask(id, reason)
 end
 
 function MysqlSystem:ExecuteStatement(query, thread_id)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	if ___COROUTINE == nil then
 		return "当前不是协程"
 	end
@@ -264,7 +264,7 @@ local ___COROUTINE = coroutine.running()
 end
 
 function MysqlSystem:ExecuteNormal(sql, thread_id)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	if ___COROUTINE == nil then
 		return "当前不是协程"
 	end
@@ -283,7 +283,7 @@ local ___COROUTINE = coroutine.running()
 end
 
 function MysqlSystem:ExecuteEmpty(thread_id)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	if ___COROUTINE == nil then
 		return "当前不是协程"
 	end
@@ -300,7 +300,7 @@ local ___COROUTINE = coroutine.running()
 end
 
 function MysqlSystem:SelectCountByReflect(info, key, value, thread_id)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	if value == nil then
 		return "value == null", 0
 	end
@@ -320,12 +320,12 @@ local ___COROUTINE = coroutine.running()
 end
 
 function MysqlSystem:SelectCount(T, key, value, thread_id)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	return self:SelectCountByReflect(T, key, value, thread_id)
 end
 
 function MysqlSystem:SelectOneFromByKeyByReflect(info, key, value, thread_id)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	if value == nil then
 		return "value == null", nil
 	end
@@ -382,12 +382,12 @@ local ___COROUTINE = coroutine.running()
 end
 
 function MysqlSystem:SelectOneFromByKey(T, key, value, thread_id)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	return self:SelectOneFromByKeyByReflect(T, key, value, thread_id)
 end
 
 function MysqlSystem:SelectListFromByMapByReflect(info, value_map, thread_id)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	local sql = "SELECT "
 	local field_list = {}
 	for i, name in ___ipairs(info.name_list) do
@@ -463,12 +463,12 @@ local ___COROUTINE = coroutine.running()
 end
 
 function MysqlSystem:SelectListFromByMap(T, value_map, thread_id)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	return self:SelectListFromByMapByReflect(T, value_map, thread_id)
 end
 
 function MysqlSystem:InsertIntoByReflect(info, map, table_name, thread_id)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	local sql = "INSERT INTO `"
 	if table_name == nil then
 		sql = sql .. info.rl_name
@@ -535,12 +535,12 @@ local ___COROUTINE = coroutine.running()
 end
 
 function MysqlSystem:InsertInto(T, value, table_name, thread_id)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	return self:InsertIntoByReflect(T, value, table_name, thread_id)
 end
 
 function MysqlSystem:UpdateOneByReflect(info, map, key, key_value, thread_id)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	if key_value == nil then
 		return "key_value == null"
 	end
@@ -607,12 +607,12 @@ local ___COROUTINE = coroutine.running()
 end
 
 function MysqlSystem:UpdateOne(T, value, key, key_value, thread_id)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	return self:UpdateOneByReflect(T, value, key, key_value, thread_id)
 end
 
 function MysqlSystem:UpdateSetByReflect(info, field, field_value, key, key_value, thread_id)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	if field_value == nil then
 		return "field_value == null"
 	end
@@ -635,12 +635,12 @@ local ___COROUTINE = coroutine.running()
 end
 
 function MysqlSystem:UpdateSet(T, field, field_value, key, key_value, thread_id)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	return self:UpdateSetByReflect(T, field, field_value, key, key_value, thread_id)
 end
 
 function MysqlSystem:DeleteFromByMapByReflect(info, value_map, thread_id)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	local sql = "DELETE FROM `"
 	sql = sql .. info.rl_name
 	sql = sql .. "`"
@@ -668,12 +668,12 @@ local ___COROUTINE = coroutine.running()
 end
 
 function MysqlSystem:DeleteFromByMap(T, value_map, thread_id)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	return self:DeleteFromByMapByReflect(T, value_map, thread_id)
 end
 
 function MysqlSystem:DeleteFromByKeyByReflect(info, key, value, thread_id)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	local sql = "DELETE FROM `"
 	sql = sql .. info.rl_name
 	sql = sql .. "` WHERE `"
@@ -686,12 +686,12 @@ local ___COROUTINE = coroutine.running()
 end
 
 function MysqlSystem:DeleteFromByKey(T, key, value, thread_id)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	return self:DeleteFromByKeyByReflect(T, key, value, thread_id)
 end
 
 function MysqlSystem:CreateIfNotExitByReflect(info, table_name, thread_id)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	local name_map = {}
 	for index, name in ___ipairs(info.name_list) do
 		name_map[name] = true
@@ -766,7 +766,7 @@ local ___COROUTINE = coroutine.running()
 end
 
 function MysqlSystem:CreateIfNotExit(T, table_name, thread_id)
-local ___COROUTINE = coroutine.running()
+	local ___COROUTINE = coroutine.running()
 	return self:CreateIfNotExitByReflect(T, table_name, thread_id)
 end
 

@@ -2,13 +2,34 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <None Include="src\Main.alittle" />
-    <None Include="src\AUIIMEManager.alittle" />
-    <None Include="src\AUIVersionManager.alittle" />
-    <None Include="src\AUITool.alittle" />
-    <None Include="src\AUIRightMenu.alittle" />
-    <None Include="src\AUIWebLoginManager.alittle" />
-    <None Include="src\AUIImageCutPlugin.alittle" />
-    <None Include="src\AUIEditImageDialog.alittle" />
-    <None Include="src\AUIFileSelectDialog.alittle" />
+    <None Include="src\AUI\AUIImageCutPlugin.alittle">
+      <Filter>AUI</Filter>
+    </None>
+    <None Include="src\AUI\AUIIMEManager.alittle">
+      <Filter>AUI</Filter>
+    </None>
+    <None Include="src\AUI\AUIRightMenu.alittle">
+      <Filter>AUI</Filter>
+    </None>
+    <None Include="src\AUI\AUITool.alittle">
+      <Filter>AUI</Filter>
+    </None>
+    <None Include="src\AUI\AUIVersionManager.alittle">
+      <Filter>AUI</Filter>
+    </None>
+    <None Include="src\AUI\AUIWebLoginManager.alittle">
+      <Filter>AUI</Filter>
+    </None>
+    <None Include="src\AUI\AUIEditImageDialog.alittle">
+      <Filter>AUI</Filter>
+    </None>
+    <None Include="src\AUI\AUIFileSelectDialog.alittle">
+      <Filter>AUI</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="AUI">
+      <UniqueIdentifier>{5de9520e-0884-47e5-b926-eb8ef6bab33e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

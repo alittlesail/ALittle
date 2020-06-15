@@ -19,14 +19,14 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\AUIEditImageDialog.alittle" />
-    <None Include="src\AUIFileSelectDialog.alittle" />
-    <None Include="src\AUIImageCutPlugin.alittle" />
-    <None Include="src\AUIIMEManager.alittle" />
-    <None Include="src\AUIRightMenu.alittle" />
-    <None Include="src\AUITool.alittle" />
-    <None Include="src\AUIVersionManager.alittle" />
-    <None Include="src\AUIWebLoginManager.alittle" />
+    <None Include="src\AUI\AUIEditImageDialog.alittle" />
+    <None Include="src\AUI\AUIFileSelectDialog.alittle" />
+    <None Include="src\AUI\AUIImageCutPlugin.alittle" />
+    <None Include="src\AUI\AUIIMEManager.alittle" />
+    <None Include="src\AUI\AUIRightMenu.alittle" />
+    <None Include="src\AUI\AUITool.alittle" />
+    <None Include="src\AUI\AUIVersionManager.alittle" />
+    <None Include="src\AUI\AUIWebLoginManager.alittle" />
     <None Include="src\Main.alittle" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

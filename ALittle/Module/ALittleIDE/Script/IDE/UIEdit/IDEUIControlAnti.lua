@@ -435,6 +435,7 @@ function IDEAntiFrameAntiItem:InsertBefore(loop_item, clazz)
 end
 
 function IDEAntiFrameAntiItem:DeleteLoop(loop_item)
+	self._panel:HideAntiLoop(loop_item)
 	local child_index = self._container:GetChildIndex(loop_item)
 	if child_index <= 0 then
 		return
@@ -1006,143 +1007,44 @@ function IDEUIControlAnti:HandleNewAntiConfirm(event)
 end
 
 function IDEUIControlAnti:ShowAntiListMenu(panel, name)
-	if self._anti_list_right_menu == nil then
-		self._anti_list_right_menu = g_Control:CreateControl("ide_anti_list_right_menu", self)
-	end
-	A_LayerManager:ShowFromRight(self._anti_list_right_menu)
-	self._anti_list_right_menu.x = A_UISystem.mouse_x
-	self._anti_list_right_menu.y = A_UISystem.mouse_y
-	if self._anti_list_right_menu.x + self._anti_list_right_menu.width > A_UISystem.view_width then
-		self._anti_list_right_menu.x = A_UISystem.view_width - self._anti_list_right_menu.width
-	end
-	if self._anti_list_right_menu.y + self._anti_list_right_menu.height > A_UISystem.view_height then
-		self._anti_list_right_menu.y = A_UISystem.view_height - self._anti_list_right_menu.height
-	end
-	local user_data = {}
-	user_data.panel = panel
-	user_data.name = name
-	self._anti_list_right_menu._user_data = user_data
+	local menu = AUIPlugin.AUIRightMenu()
+	menu:AddItem("复制并新建", Lua.Bind(self.HandleAntiListRightMenuCopyAnNew, self, panel, name))
+	menu:AddItem("删除", Lua.Bind(panel.DeleteAnti, panel, name))
+	menu:Show()
 end
 
-function IDEUIControlAnti:HandleAntiListRightMenuDelete(event)
-	A_LayerManager:HideFromRight(self._anti_list_right_menu)
-	local user_data = self._anti_list_right_menu._user_data
-	self._anti_list_right_menu._user_data = nil
-	user_data.panel:DeleteAnti(user_data.name)
-end
-
-function IDEUIControlAnti:HandleAntiListRightMenuCopyAnNew(event)
-	A_LayerManager:HideFromRight(self._anti_list_right_menu)
-	local user_data = self._anti_list_right_menu._user_data
-	self._anti_list_right_menu._user_data = nil
+function IDEUIControlAnti:HandleAntiListRightMenuCopyAnNew(panel, name)
 	local x, y
-	for index, child in ___ipairs(user_data.panel.anti_scroll_list.childs) do
-		if child.text == user_data.name then
+	for index, child in ___ipairs(panel.anti_scroll_list.childs) do
+		if child.text == name then
 			x, y = child:LocalToGlobal()
 			break
 		end
 	end
-	local old_name = user_data.name
-	local new_name = g_AUITool:ShowRename(old_name, x, y, event.target.width)
+	local old_name = name
+	local new_name = g_AUITool:ShowRename(old_name, x, y, 200)
 	if new_name == nil or old_name == new_name then
 		return
 	end
-	user_data.panel:CopyAndNewAnti(old_name, new_name)
+	panel:CopyAndNewAnti(old_name, new_name)
 end
 IDEUIControlAnti.HandleAntiListRightMenuCopyAnNew = Lua.CoWrap(IDEUIControlAnti.HandleAntiListRightMenuCopyAnNew)
 
 function IDEUIControlAnti:ShowAntiAntiMenu(item, child_index, rel_x)
-	if self._anti_anti_right_menu == nil then
-		self._anti_anti_right_menu = g_Control:CreateControl("ide_anti_anti_right_menu", self)
-	end
-	A_LayerManager:ShowFromRight(self._anti_anti_right_menu)
-	self._anti_anti_right_menu.x = A_UISystem.mouse_x
-	self._anti_anti_right_menu.y = A_UISystem.mouse_y
-	if self._anti_anti_right_menu.x + self._anti_anti_right_menu.width > A_UISystem.view_width then
-		self._anti_anti_right_menu.x = A_UISystem.view_width - self._anti_anti_right_menu.width
-	end
-	if self._anti_anti_right_menu.y + self._anti_anti_right_menu.height > A_UISystem.view_height then
-		self._anti_anti_right_menu.y = A_UISystem.view_height - self._anti_anti_right_menu.height
-	end
-	local user_data = {}
-	user_data.item = item
-	user_data.child_index = child_index
-	user_data.rel_x = rel_x
-	self._anti_anti_right_menu._user_data = user_data
-end
-
-function IDEUIControlAnti:HandleAntiAntiInsertLinear(event)
-	A_LayerManager:HideFromRight(self._anti_anti_right_menu)
-	local user_data = self._anti_anti_right_menu._user_data
-	self._anti_anti_right_menu._user_data = nil
-	user_data.item:Insert(user_data.rel_x, "LoopLinear")
-end
-
-function IDEUIControlAnti:HandleAntiAntiInsertRit(event)
-	A_LayerManager:HideFromRight(self._anti_anti_right_menu)
-	local user_data = self._anti_anti_right_menu._user_data
-	self._anti_anti_right_menu._user_data = nil
-	user_data.item:Insert(user_data.rel_x, "LoopRit")
-end
-
-function IDEUIControlAnti:HandleAntiAntiInsertAttribute(event)
-	A_LayerManager:HideFromRight(self._anti_anti_right_menu)
-	local user_data = self._anti_anti_right_menu._user_data
-	self._anti_anti_right_menu._user_data = nil
-	user_data.item:Insert(user_data.rel_x, "LoopAttribute")
-end
-
-function IDEUIControlAnti:HandleAntiAntiClear(event)
-	A_LayerManager:HideFromRight(self._anti_anti_right_menu)
-	local user_data = self._anti_anti_right_menu._user_data
-	self._anti_anti_right_menu._user_data = nil
-	user_data.item:ClearLoop()
+	local menu = AUIPlugin.AUIRightMenu()
+	menu:AddItem("插入Linear", Lua.Bind(item.Insert, item, rel_x, "LoopLinear"))
+	menu:AddItem("插入Rit", Lua.Bind(item.Insert, item, rel_x, "LoopRit"))
+	menu:AddItem("插入Attribute", Lua.Bind(item.Insert, item, rel_x, "LoopAttribute"))
+	menu:AddItem("清空", Lua.Bind(item.ClearLoop, item))
+	menu:Show()
 end
 
 function IDEUIControlAnti:ShowAntiLoopMenu(loop_item)
-	if self._anti_loop_right_menu == nil then
-		self._anti_loop_right_menu = g_Control:CreateControl("ide_anti_loop_right_menu", self)
-	end
-	A_LayerManager:ShowFromRight(self._anti_loop_right_menu)
-	self._anti_loop_right_menu.x = A_UISystem.mouse_x
-	self._anti_loop_right_menu.y = A_UISystem.mouse_y
-	if self._anti_loop_right_menu.x + self._anti_loop_right_menu.width > A_UISystem.view_width then
-		self._anti_loop_right_menu.x = A_UISystem.view_width - self._anti_loop_right_menu.width
-	end
-	if self._anti_loop_right_menu.y + self._anti_loop_right_menu.height > A_UISystem.view_height then
-		self._anti_loop_right_menu.y = A_UISystem.view_height - self._anti_loop_right_menu.height
-	end
-	local user_data = {}
-	user_data.loop_item = loop_item
-	self._anti_loop_right_menu._user_data = user_data
-end
-
-function IDEUIControlAnti:HandleAntiLoopInsertLinear(event)
-	A_LayerManager:HideFromRight(self._anti_loop_right_menu)
-	local user_data = self._anti_loop_right_menu._user_data
-	self._anti_loop_right_menu._user_data = nil
-	user_data.loop_item.item:InsertBefore(user_data.loop_item, "LoopLinear")
-end
-
-function IDEUIControlAnti:HandleAntiLoopInsertRit(event)
-	A_LayerManager:HideFromRight(self._anti_loop_right_menu)
-	local user_data = self._anti_loop_right_menu._user_data
-	self._anti_loop_right_menu._user_data = nil
-	user_data.loop_item.item:InsertBefore(user_data.loop_item, "LoopRit")
-end
-
-function IDEUIControlAnti:HandleAntiLoopInsertAttribute(event)
-	A_LayerManager:HideFromRight(self._anti_loop_right_menu)
-	local user_data = self._anti_loop_right_menu._user_data
-	self._anti_loop_right_menu._user_data = nil
-	user_data.loop_item.item:InsertBefore(user_data.loop_item, "LoopAttribute")
-end
-
-function IDEUIControlAnti:HandleAntiLoopDelete(event)
-	A_LayerManager:HideFromRight(self._anti_loop_right_menu)
-	local user_data = self._anti_loop_right_menu._user_data
-	self._anti_loop_right_menu._user_data = nil
-	user_data.loop_item.item.panel:HideAntiLoop(user_data.loop_item)
-	user_data.loop_item.item:DeleteLoop(user_data.loop_item)
+	local menu = AUIPlugin.AUIRightMenu()
+	menu:AddItem("插入Linear", Lua.Bind(loop_item.item.InsertBefore, loop_item.item, loop_item, "LoopLinear"))
+	menu:AddItem("插入Rit", Lua.Bind(loop_item.item.InsertBefore, loop_item.item, loop_item, "LoopRit"))
+	menu:AddItem("插入Attribute", Lua.Bind(loop_item.item.InsertBefore, loop_item.item, loop_item, "LoopAttribute"))
+	menu:AddItem("清空", Lua.Bind(loop_item.item.DeleteLoop, loop_item.item, loop_item))
+	menu:Show()
 end
 

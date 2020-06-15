@@ -457,10 +457,12 @@ public class IDEAntiFrameAntiItem : ALittle.DisplayLayout
 	}
     
 	public fun DeleteLoop(IDEAntiFrameLoopItem loop_item)
-	{
+	{     
+		this._panel.HideAntiLoop(loop_item);
+
 		var child_index = this._container.GetChildIndex(loop_item);
 		if (child_index <= 0) return;
-        
+   
 		var child = this._info.childs[child_index];
 		ALittle.List_Remove(this._info.childs, child_index);
 		this._container.RemoveChild(loop_item);
@@ -1106,10 +1108,6 @@ public class IDEUIControlAnti : ALittle.DisplayLayout
 	private ALittle.DisplayObject _new_anti_dialog;
 	private ALittle.DisplayObject _new_anti_name_input;
 
-	private ALittle.DisplayObject _anti_list_right_menu;
-	private ALittle.DisplayObject _anti_anti_right_menu;
-	private ALittle.DisplayObject _anti_loop_right_menu;
-
 	public fun Setup(ALittle.Tab tab, ALittle.DisplayLayout control)
 	{
 		this._main_tab = tab;
@@ -1145,170 +1143,53 @@ public class IDEUIControlAnti : ALittle.DisplayLayout
 		this._new_anti_dialog._user_data = null;
 		panel.CreateAnti(this._new_anti_name_input.text);
 	}
+
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public fun ShowAntiListMenu(IDEAntiPanel panel, string name)
 	{
-		if (this._anti_list_right_menu == null)
-			this._anti_list_right_menu = g_Control.CreateControl{ALittle.DisplayObject}("ide_anti_list_right_menu", this);
-		A_LayerManager.ShowFromRight(this._anti_list_right_menu);
-
-		this._anti_list_right_menu.x = A_UISystem.mouse_x;
-		this._anti_list_right_menu.y = A_UISystem.mouse_y;
-		if (this._anti_list_right_menu.x + this._anti_list_right_menu.width > A_UISystem.view_width)
-			this._anti_list_right_menu.x = A_UISystem.view_width - this._anti_list_right_menu.width;
-
-		if (this._anti_list_right_menu.y + this._anti_list_right_menu.height > A_UISystem.view_height)
-			this._anti_list_right_menu.y = A_UISystem.view_height - this._anti_list_right_menu.height;
-
-		var user_data = new IDEAntiListMenuUserData();
-		user_data.panel = panel;
-		user_data.name = name;
-		this._anti_list_right_menu._user_data = user_data;
+		var menu = new AUIPlugin.AUIRightMenu();
+		menu.AddItem("复制并新建", bind(this.HandleAntiListRightMenuCopyAnNew, this, panel, name));
+		menu.AddItem("删除", bind(panel.DeleteAnti, panel, name));
+		menu.Show();
 	}
 
-	public fun HandleAntiListRightMenuDelete(ALittle.UIEvent event)
-	{
-		A_LayerManager.HideFromRight(this._anti_list_right_menu);
-		var user_data:IDEAntiListMenuUserData = this._anti_list_right_menu._user_data;
-		this._anti_list_right_menu._user_data = null;
-
-		user_data.panel.DeleteAnti(user_data.name);
-	}
-
-	public async fun HandleAntiListRightMenuCopyAnNew(ALittle.UIEvent event)
-	{
-		A_LayerManager.HideFromRight(this._anti_list_right_menu);
-		var user_data:IDEAntiListMenuUserData = this._anti_list_right_menu._user_data;
-		this._anti_list_right_menu._user_data = null;
-        
+	private async fun HandleAntiListRightMenuCopyAnNew(IDEAntiPanel panel, string name)
+	{   
 		var x:double, y:double;
-		for (var index, child in user_data.panel.anti_scroll_list.childs)
+		for (var index, child in panel.anti_scroll_list.childs)
 		{
-			if (child.text == user_data.name)
+			if (child.text == name)
 			{
 				x, y = child.LocalToGlobal();
 				break;
 			}
 		}
 
-		var old_name = user_data.name;
-		var new_name = g_AUITool.ShowRename(old_name, x, y, event.target.width);
+		var old_name = name;
+		var new_name = g_AUITool.ShowRename(old_name, x, y, 200);
 		if (new_name == null || old_name == new_name) return;
 		
-		user_data.panel.CopyAndNewAnti(old_name, new_name);
+		panel.CopyAndNewAnti(old_name, new_name);
 	}
 
 	public fun ShowAntiAntiMenu(IDEAntiFrameAntiItem item, int child_index, double rel_x)
 	{
-		if (this._anti_anti_right_menu == null)
-			this._anti_anti_right_menu = g_Control.CreateControl{ALittle.DisplayObject}("ide_anti_anti_right_menu", this);
-		A_LayerManager.ShowFromRight(this._anti_anti_right_menu);
-
-		this._anti_anti_right_menu.x = A_UISystem.mouse_x;
-		this._anti_anti_right_menu.y = A_UISystem.mouse_y;
-		if (this._anti_anti_right_menu.x + this._anti_anti_right_menu.width > A_UISystem.view_width)
-			this._anti_anti_right_menu.x = A_UISystem.view_width - this._anti_anti_right_menu.width;
-
-		if (this._anti_anti_right_menu.y + this._anti_anti_right_menu.height > A_UISystem.view_height)
-			this._anti_anti_right_menu.y = A_UISystem.view_height - this._anti_anti_right_menu.height;
-
-		var user_data = new IDEAntiAntiMenuUserData();
-		user_data.item = item;
-		user_data.child_index = child_index;
-		user_data.rel_x = rel_x;
-		this._anti_anti_right_menu._user_data = user_data;
-	}
-
-	public fun HandleAntiAntiInsertLinear(ALittle.UIEvent event)
-	{
-		A_LayerManager.HideFromRight(this._anti_anti_right_menu);
-		var user_data:IDEAntiAntiMenuUserData = this._anti_anti_right_menu._user_data;
-		this._anti_anti_right_menu._user_data = null;
-
-		user_data.item.Insert(user_data.rel_x, "LoopLinear");
-	}
-
-	public fun HandleAntiAntiInsertRit(ALittle.UIEvent event)
-	{
-		A_LayerManager.HideFromRight(this._anti_anti_right_menu);
-		var user_data:IDEAntiAntiMenuUserData = this._anti_anti_right_menu._user_data;
-		this._anti_anti_right_menu._user_data = null;
-
-		user_data.item.Insert(user_data.rel_x, "LoopRit");
-	}
-
-	public fun HandleAntiAntiInsertAttribute(ALittle.UIEvent event)
-	{
-		A_LayerManager.HideFromRight(this._anti_anti_right_menu);
-		var user_data:IDEAntiAntiMenuUserData = this._anti_anti_right_menu._user_data;
-		this._anti_anti_right_menu._user_data = null;
-
-		user_data.item.Insert(user_data.rel_x, "LoopAttribute");
-	}
-
-	public fun HandleAntiAntiClear(ALittle.UIEvent event)
-	{
-		A_LayerManager.HideFromRight(this._anti_anti_right_menu);
-		var user_data:IDEAntiAntiMenuUserData = this._anti_anti_right_menu._user_data;
-		this._anti_anti_right_menu._user_data = null;
-
-		user_data.item.ClearLoop();
+		var menu = new AUIPlugin.AUIRightMenu();
+		menu.AddItem("插入Linear", bind(item.Insert, item, rel_x, "LoopLinear"));
+		menu.AddItem("插入Rit", bind(item.Insert, item, rel_x, "LoopRit"));
+		menu.AddItem("插入Attribute", bind(item.Insert, item, rel_x, "LoopAttribute"));
+		menu.AddItem("清空", bind(item.ClearLoop, item));
+		menu.Show();
 	}
 
 	public fun ShowAntiLoopMenu(IDEAntiFrameLoopItem loop_item)
 	{
-		if (this._anti_loop_right_menu == null)
-			this._anti_loop_right_menu = g_Control.CreateControl{ALittle.DisplayObject}("ide_anti_loop_right_menu", this);
-		A_LayerManager.ShowFromRight(this._anti_loop_right_menu);
-
-		this._anti_loop_right_menu.x = A_UISystem.mouse_x;
-		this._anti_loop_right_menu.y = A_UISystem.mouse_y;
-		if (this._anti_loop_right_menu.x + this._anti_loop_right_menu.width > A_UISystem.view_width)
-			this._anti_loop_right_menu.x = A_UISystem.view_width - this._anti_loop_right_menu.width;
-
-		if (this._anti_loop_right_menu.y + this._anti_loop_right_menu.height > A_UISystem.view_height)
-			this._anti_loop_right_menu.y = A_UISystem.view_height - this._anti_loop_right_menu.height;
-
-		var user_data = new IDEAntiLoopMenuUserData();
-		user_data.loop_item = loop_item;
-		this._anti_loop_right_menu._user_data = user_data;
-	}
-
-	public fun HandleAntiLoopInsertLinear(ALittle.UIEvent event)
-	{
-		A_LayerManager.HideFromRight(this._anti_loop_right_menu);
-		var user_data:IDEAntiLoopMenuUserData = this._anti_loop_right_menu._user_data;
-		this._anti_loop_right_menu._user_data = null;
-
-		user_data.loop_item.item.InsertBefore(user_data.loop_item, "LoopLinear");
-	}
-
-	public fun HandleAntiLoopInsertRit(ALittle.UIEvent event)
-	{
-		A_LayerManager.HideFromRight(this._anti_loop_right_menu);
-		var user_data:IDEAntiLoopMenuUserData = this._anti_loop_right_menu._user_data;
-		this._anti_loop_right_menu._user_data = null;
-
-		user_data.loop_item.item.InsertBefore(user_data.loop_item, "LoopRit");
-	}
-        
-	public fun HandleAntiLoopInsertAttribute(ALittle.UIEvent event)
-	{
-		A_LayerManager.HideFromRight(this._anti_loop_right_menu);
-		var user_data:IDEAntiLoopMenuUserData = this._anti_loop_right_menu._user_data;
-		this._anti_loop_right_menu._user_data = null;
-
-		user_data.loop_item.item.InsertBefore(user_data.loop_item, "LoopAttribute");
-	}
-
-	public fun HandleAntiLoopDelete(ALittle.UIEvent event)
-	{
-		A_LayerManager.HideFromRight(this._anti_loop_right_menu);
-		var user_data:IDEAntiLoopMenuUserData = this._anti_loop_right_menu._user_data;
-		this._anti_loop_right_menu._user_data = null;
-
-		user_data.loop_item.item.panel.HideAntiLoop(user_data.loop_item);
-		user_data.loop_item.item.DeleteLoop(user_data.loop_item);
+		var menu = new AUIPlugin.AUIRightMenu();
+		menu.AddItem("插入Linear", bind(loop_item.item.InsertBefore, loop_item.item, loop_item, "LoopLinear"));
+		menu.AddItem("插入Rit", bind(loop_item.item.InsertBefore, loop_item.item, loop_item, "LoopRit"));
+		menu.AddItem("插入Attribute", bind(loop_item.item.InsertBefore, loop_item.item, loop_item, "LoopAttribute"));
+		menu.AddItem("清空", bind(loop_item.item.DeleteLoop, loop_item.item, loop_item));
+		menu.Show();
 	}
 }

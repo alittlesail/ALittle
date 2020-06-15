@@ -72,13 +72,7 @@ public class IDEUITabChild : IDETabChild
 	private ALittle.LoopLinear _tree_loop_x;    // 进行获取焦点操作时，移动到焦点位置时的动画
 	private ALittle.LoopLinear _tree_loop_y;    // 进行获取焦点操作时，移动到焦点位置时的动画
 
-    private ALittle.DisplayObject _select_right_exmenu;     // 对选中控件显示的右键菜单
-    private ALittle.DisplayObject _tab_right_exlinear;      // 右键菜单的菜单容器Linear
-    
     private ALittle.ImageInput _control_tabchild_textinput;
-
-    private ALittle.DisplayObject _quick_right_exmenu;
-    private ALittle.Linear _quick_right_exlinear;
 
 	public ctor(ALittle.ControlSystem ctrl_sys, string name, bool save)
 	{
@@ -724,9 +718,6 @@ public class IDEUITabChild : IDETabChild
 	
 	public fun HandleSelectRightExItemClick(ALittle.UIEvent event)
     {
-        A_LayerManager.HideFromRight(this._select_right_exmenu);
-        this._tab_right_exlinear.RemoveAllChild();
-	
         var tree = event.target._user_data;
         if (tree == null) return;
 	
@@ -1512,51 +1503,11 @@ public class IDEUITabChild : IDETabChild
             this.QuickDragAddStart(list[1], user_data);
             return;
 		}
-	
-		// 创建动态右键菜单
-		if (this._quick_right_exmenu == null)
-            this._quick_right_exmenu = g_Control.CreateControl{ALittle.DisplayObject}("ide_quick_drag_menu", this);
 
-        this._quick_right_exlinear.RemoveAllChild();
+        var menu = new AUIPlugin.AUIRightMenu();
 		for (var index, tree in list)
-        {
-            var item = g_Control.CreateControl{ALittle.DisplayObject}("ide_common_item_button");
-            item.AddEventListener(this, this.HandleQuickRightExItemClick);
-            item._user_data = tree;
-            item.text = tree.title;
-            this._quick_right_exlinear.AddChild(item);
-		}
-	
-		// 添加一个取消按钮
-        var item = g_Control.CreateControl{ALittle.DisplayObject}("ide_common_item_button");
-        item.AddEventListener(this, this.HandleQuickRightExItemClick);
-        item._user_data = null;
-        item.text = "取消";
-        this._quick_right_exlinear.AddChild(item);
-	
-        this._quick_right_exmenu.height = this._quick_right_exlinear.height + 5;
-	
-		if (abs_x + this._quick_right_exmenu.width > A_UISystem.view_width)
-            abs_x = A_UISystem.view_width - this._quick_right_exmenu.width;
-        
-        this._quick_right_exmenu.x = abs_x;
-        this._quick_right_exmenu.y = abs_y;
-        this._quick_right_exmenu._user_data = user_data;
-        A_LayerManager.ShowFromRight(this._quick_right_exmenu);
-	}
-	
-	public fun HandleQuickRightExItemClick(ALittle.UIClickEvent event)
-    {
-		// 隐藏菜单
-        A_LayerManager.HideFromRight(this._quick_right_exmenu);
-        this._quick_right_exlinear.RemoveAllChild();
-	
-        var user_data = this._quick_right_exmenu._user_data;
-	
-        var tree:IDEUITreeLogic = event.target._user_data;
-        if (tree == null) return;
-	
-        this.QuickDragAddStart(tree, user_data);
+            menu.AddItem(tree.title, bind(this.QuickDragAddStart, this, tree, user_data));
+        menu.AddItem("取消", null);
 	}
 	
 	public fun QuickDragAddStart(IDEUITreeLogic tree, IDEUITabChildQuickDragAddUserData user_data)

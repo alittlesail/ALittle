@@ -6,6 +6,12 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = ALittle.GetAllStruct()
 
+ALittle.RegStruct(1043339049, "ALittleIDE.IDEUITabChildSearchInfo", {
+name = "ALittleIDE.IDEUITabChildSearchInfo", ns_name = "ALittleIDE", rl_name = "IDEUITabChildSearchInfo", hash_code = 1043339049,
+name_list = {"name","index"},
+type_list = {"string","int"},
+option_map = {}
+})
 ALittle.RegStruct(1301789264, "ALittle.UIButtonDragBeginEvent", {
 name = "ALittle.UIButtonDragBeginEvent", ns_name = "ALittle", rl_name = "UIButtonDragBeginEvent", hash_code = 1301789264,
 name_list = {"target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"},
@@ -72,12 +78,6 @@ name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
 type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
 option_map = {}
 })
-ALittle.RegStruct(-449066808, "ALittle.UIClickEvent", {
-name = "ALittle.UIClickEvent", ns_name = "ALittle", rl_name = "UIClickEvent", hash_code = -449066808,
-name_list = {"target","is_drag"},
-type_list = {"ALittle.DisplayObject","bool"},
-option_map = {}
-})
 ALittle.RegStruct(-431205740, "ALittle.UIResizeEvent", {
 name = "ALittle.UIResizeEvent", ns_name = "ALittle", rl_name = "UIResizeEvent", hash_code = -431205740,
 name_list = {"target"},
@@ -118,12 +118,6 @@ ALittle.RegStruct(882286932, "ALittle.UIKeyEvent", {
 name = "ALittle.UIKeyEvent", ns_name = "ALittle", rl_name = "UIKeyEvent", hash_code = 882286932,
 name_list = {"target","mod","sym","scancode","custom","handled"},
 type_list = {"ALittle.DisplayObject","int","int","int","bool","bool"},
-option_map = {}
-})
-ALittle.RegStruct(1043339049, "ALittleIDE.IDEUITabChildSearchInfo", {
-name = "ALittleIDE.IDEUITabChildSearchInfo", ns_name = "ALittleIDE", rl_name = "IDEUITabChildSearchInfo", hash_code = 1043339049,
-name_list = {"name","index"},
-type_list = {"string","int"},
 option_map = {}
 })
 
@@ -690,8 +684,6 @@ function IDEUITabChild:HandleHandleContainerLButtonDown(event)
 end
 
 function IDEUITabChild:HandleSelectRightExItemClick(event)
-	A_LayerManager:HideFromRight(self._select_right_exmenu)
-	self._tab_right_exlinear:RemoveAllChild()
 	local tree = event.target._user_data
 	if tree == nil then
 		return
@@ -1344,41 +1336,11 @@ function IDEUITabChild:QuickDragAddControl(abs_x, abs_y, control_name)
 		self:QuickDragAddStart(list[1], user_data)
 		return
 	end
-	if self._quick_right_exmenu == nil then
-		self._quick_right_exmenu = g_Control:CreateControl("ide_quick_drag_menu", self)
-	end
-	self._quick_right_exlinear:RemoveAllChild()
+	local menu = AUIPlugin.AUIRightMenu()
 	for index, tree in ___ipairs(list) do
-		local item = g_Control:CreateControl("ide_common_item_button")
-		item:AddEventListener(___all_struct[-449066808], self, self.HandleQuickRightExItemClick)
-		item._user_data = tree
-		item.text = tree.title
-		self._quick_right_exlinear:AddChild(item)
+		menu:AddItem(tree.title, Lua.Bind(self.QuickDragAddStart, self, tree, user_data))
 	end
-	local item = g_Control:CreateControl("ide_common_item_button")
-	item:AddEventListener(___all_struct[-449066808], self, self.HandleQuickRightExItemClick)
-	item._user_data = nil
-	item.text = "取消"
-	self._quick_right_exlinear:AddChild(item)
-	self._quick_right_exmenu.height = self._quick_right_exlinear.height + 5
-	if abs_x + self._quick_right_exmenu.width > A_UISystem.view_width then
-		abs_x = A_UISystem.view_width - self._quick_right_exmenu.width
-	end
-	self._quick_right_exmenu.x = abs_x
-	self._quick_right_exmenu.y = abs_y
-	self._quick_right_exmenu._user_data = user_data
-	A_LayerManager:ShowFromRight(self._quick_right_exmenu)
-end
-
-function IDEUITabChild:HandleQuickRightExItemClick(event)
-	A_LayerManager:HideFromRight(self._quick_right_exmenu)
-	self._quick_right_exlinear:RemoveAllChild()
-	local user_data = self._quick_right_exmenu._user_data
-	local tree = event.target._user_data
-	if tree == nil then
-		return
-	end
-	self:QuickDragAddStart(tree, user_data)
+	menu:AddItem("取消", nil)
 end
 
 function IDEUITabChild:QuickDragAddStart(tree, user_data)

@@ -373,8 +373,8 @@ ALittle.TextureManager = JavaScript.Class(undefined, {
 			let info = [];
 			let info_count = 0;
 			let ___OBJECT_2 = list;
-			for (let index = 1; index <= ___OBJECT_2.length; ++index) {
-				let value = ___OBJECT_2[index - 1];
+			for (let _ = 1; _ <= ___OBJECT_2.length; ++_) {
+				let value = ___OBJECT_2[_ - 1];
 				if (value === undefined) break;
 				let path = value[1 - 1];
 				let x = value[2 - 1];

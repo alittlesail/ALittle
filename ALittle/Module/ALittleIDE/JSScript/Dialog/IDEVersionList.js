@@ -182,8 +182,8 @@ ALittleIDE.IDEVersionList = JavaScript.Class(ALittle.DisplayLayout, {
 		menu.Show();
 	},
 	HandleVersionDelete : async function(version_info) {
-		let result = await g_AUITool.DeleteNotice("删除", "确定要删除" + ALittle.Time_GetCurDate(version_info.data.update_time) + "(版本时间)这个版本吗?");
-		if (result !== "YES") {
+		let delete_result = await g_AUITool.DeleteNotice("删除", "确定要删除" + ALittle.Time_GetCurDate(version_info.data.update_time) + "(版本时间)这个版本吗?");
+		if (delete_result !== "YES") {
 			return;
 		}
 		let param = {};
@@ -258,8 +258,8 @@ ALittleIDE.IDEVersionList = JavaScript.Class(ALittle.DisplayLayout, {
 		menu.Show();
 	},
 	HandleVersionCloseDelete : async function(version_info) {
-		let result = await g_AUITool.DeleteNotice("删除", "确定要删除" + version_info.data.close_version + "(" + version_info.data.submit_platform + ")这个拦截版本吗?");
-		if (result !== "YES") {
+		let delete_result = await g_AUITool.DeleteNotice("删除", "确定要删除" + version_info.data.close_version + "(" + version_info.data.submit_platform + ")这个拦截版本吗?");
+		if (delete_result !== "YES") {
 			return;
 		}
 		let param = {};

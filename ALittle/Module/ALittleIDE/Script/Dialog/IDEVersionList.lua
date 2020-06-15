@@ -192,8 +192,8 @@ function IDEVersionList:HandleVersionListMenu(event)
 end
 
 function IDEVersionList:HandleVersionDelete(version_info)
-	local result = g_AUITool:DeleteNotice("删除", "确定要删除" .. ALittle.Time_GetCurDate(version_info.data.update_time) .. "(版本时间)这个版本吗?")
-	if result ~= "YES" then
+	local delete_result = g_AUITool:DeleteNotice("删除", "确定要删除" .. ALittle.Time_GetCurDate(version_info.data.update_time) .. "(版本时间)这个版本吗?")
+	if delete_result ~= "YES" then
 		return
 	end
 	local param = {}
@@ -270,8 +270,8 @@ function IDEVersionList:HandleVersionCloseListMenu(event)
 end
 
 function IDEVersionList:HandleVersionCloseDelete(version_info)
-	local result = g_AUITool:DeleteNotice("删除", "确定要删除" .. version_info.data.close_version .. "(" .. version_info.data.submit_platform .. ")这个拦截版本吗?")
-	if result ~= "YES" then
+	local delete_result = g_AUITool:DeleteNotice("删除", "确定要删除" .. version_info.data.close_version .. "(" .. version_info.data.submit_platform .. ")这个拦截版本吗?")
+	if delete_result ~= "YES" then
 		return
 	end
 	local param = {}

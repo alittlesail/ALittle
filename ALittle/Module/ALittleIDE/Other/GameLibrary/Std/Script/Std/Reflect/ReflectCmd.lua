@@ -53,7 +53,7 @@ function ExecuteCommand(cmd)
 		local out_list = {}
 		List_Push(out_list, "")
 		List_Push(out_list, "help 打印当前模块支持的指令列表")
-		for index, method_name in ___ipairs(method_list) do
+		for _, method_name in ___ipairs(method_list) do
 			local info = __all_callback[method_name]
 			local detail = method_name .. " "
 			local param_list = {}
@@ -127,7 +127,7 @@ function ExecuteCommand(cmd)
 		return
 	end
 	local value_list = {}
-	for ii, param in ___ipairs(param_list) do
+	for ii, _ in ___ipairs(param_list) do
 		local var_type = info.var_list[ii]
 		if var_type == "int" or var_type == "long" or var_type == "double" then
 			value_list[ii] = Math_ToDouble(param_list[ii])

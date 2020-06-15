@@ -392,7 +392,7 @@ function TextureManager:LoadAtlas()
 		local big_path = index .. ".atlas"
 		local info = {}
 		local info_count = 0
-		for index, value in ___ipairs(list) do
+		for _, value in ___ipairs(list) do
 			local path = value[1]
 			local x = value[2]
 			local y = value[3]

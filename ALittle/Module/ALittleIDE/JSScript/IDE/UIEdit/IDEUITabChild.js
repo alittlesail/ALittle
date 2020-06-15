@@ -536,9 +536,9 @@ ALittleIDE.IDEUITabChild = JavaScript.Class(ALittleIDE.IDETabChild, {
 		} else {
 			let max_index = common_parent.GetChildIndex(target);
 			let min_index = max_index;
-			for (let [target, info] of this._tab_quad_map) {
+			for (let [child, info] of this._tab_quad_map) {
 				if (info === undefined) continue;
-				let index = common_parent.GetChildIndex(target);
+				let index = common_parent.GetChildIndex(child);
 				if (index < min_index) {
 					min_index = index;
 				} else if (index > max_index) {
@@ -1054,7 +1054,7 @@ ALittleIDE.IDEUITabChild = JavaScript.Class(ALittleIDE.IDETabChild, {
 		if (parent !== undefined && ALittleIDE.g_IDEEnum.can_move_child_map[parent.user_info.default.__class] === undefined) {
 			return;
 		}
-		for (let [target, handle_info] of this._tab_quad_map) {
+		for (let [child, handle_info] of this._tab_quad_map) {
 			if (handle_info === undefined) continue;
 			handle_info.delta_width = 0;
 			handle_info.delta_height = 0;
@@ -1115,7 +1115,7 @@ ALittleIDE.IDEUITabChild = JavaScript.Class(ALittleIDE.IDETabChild, {
 	Copy : function(target) {
 		let copy_list = [];
 		let copy_list_count = 0;
-		for (let [target, handle_info] of this._tab_quad_map) {
+		for (let [child, handle_info] of this._tab_quad_map) {
 			if (handle_info === undefined) continue;
 			let info = {};
 			info.index = handle_info.target.logic_parent.GetChildIndex(handle_info.target);
@@ -1209,7 +1209,7 @@ ALittleIDE.IDEUITabChild = JavaScript.Class(ALittleIDE.IDETabChild, {
 	Delete : function(target) {
 		let revoke_bind = ALittle.NewObject(ALittleIDE.IDERevokeBind);
 		let has_target = false;
-		for (let [target, handle_info] of this._tab_quad_map) {
+		for (let [child, handle_info] of this._tab_quad_map) {
 			if (handle_info === undefined) continue;
 			handle_info.target.TreeDelete(revoke_bind);
 			has_target = true;
@@ -1223,7 +1223,7 @@ ALittleIDE.IDEUITabChild = JavaScript.Class(ALittleIDE.IDETabChild, {
 	Cut : function(target) {
 		let copy_list = [];
 		let copy_list_count = 0;
-		for (let [target, handle_info] of this._tab_quad_map) {
+		for (let [child, handle_info] of this._tab_quad_map) {
 			if (handle_info === undefined) continue;
 			let info = {};
 			info.index = handle_info.target.logic_parent.GetChildIndex(handle_info.target);
@@ -1235,7 +1235,7 @@ ALittleIDE.IDEUITabChild = JavaScript.Class(ALittleIDE.IDETabChild, {
 			ALittle.List_Sort(copy_list, ALittleIDE.IDEUITabChild.ControlCopyInfoCmp);
 			ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list));
 			let revoke_bind = ALittle.NewObject(ALittleIDE.IDERevokeBind);
-			for (let [target, handle_info] of this._tab_quad_map) {
+			for (let [child, handle_info] of this._tab_quad_map) {
 				if (handle_info === undefined) continue;
 				handle_info.target.TreeCut(revoke_bind);
 			}

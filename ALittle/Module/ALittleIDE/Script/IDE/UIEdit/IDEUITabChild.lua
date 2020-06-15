@@ -558,8 +558,8 @@ function IDEUITabChild:ShowHandleQuad(target, force_shift)
 	else
 		local max_index = common_parent:GetChildIndex(target)
 		local min_index = max_index
-		for target, info in ___pairs(self._tab_quad_map) do
-			local index = common_parent:GetChildIndex(target)
+		for child, info in ___pairs(self._tab_quad_map) do
+			local index = common_parent:GetChildIndex(child)
 			if index < min_index then
 				min_index = index
 			elseif index > max_index then
@@ -1081,7 +1081,7 @@ function IDEUITabChild:HandleHandleSizeQuadDragBegin(event)
 	if parent ~= nil and g_IDEEnum.can_move_child_map[parent.user_info.default.__class] == nil then
 		return
 	end
-	for target, handle_info in ___pairs(self._tab_quad_map) do
+	for child, handle_info in ___pairs(self._tab_quad_map) do
 		handle_info.delta_width = 0
 		handle_info.delta_height = 0
 		handle_info.lock_width_or_height = ALittle.Math_Abs(event.delta_x) > ALittle.Math_Abs(event.delta_y)
@@ -1146,7 +1146,7 @@ end
 function IDEUITabChild:Copy(target)
 	local copy_list = {}
 	local copy_list_count = 0
-	for target, handle_info in ___pairs(self._tab_quad_map) do
+	for child, handle_info in ___pairs(self._tab_quad_map) do
 		local info = {}
 		info.index = handle_info.target.logic_parent:GetChildIndex(handle_info.target)
 		info.info = handle_info.target:CalcInfo()
@@ -1236,7 +1236,7 @@ end
 function IDEUITabChild:Delete(target)
 	local revoke_bind = IDERevokeBind()
 	local has_target = false
-	for target, handle_info in ___pairs(self._tab_quad_map) do
+	for child, handle_info in ___pairs(self._tab_quad_map) do
 		handle_info.target:TreeDelete(revoke_bind)
 		has_target = true
 	end
@@ -1250,7 +1250,7 @@ end
 function IDEUITabChild:Cut(target)
 	local copy_list = {}
 	local copy_list_count = 0
-	for target, handle_info in ___pairs(self._tab_quad_map) do
+	for child, handle_info in ___pairs(self._tab_quad_map) do
 		local info = {}
 		info.index = handle_info.target.logic_parent:GetChildIndex(handle_info.target)
 		info.info = handle_info.target:CalcInfo()
@@ -1261,7 +1261,7 @@ function IDEUITabChild:Cut(target)
 		ALittle.List_Sort(copy_list, IDEUITabChild.ControlCopyInfoCmp)
 		ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list))
 		local revoke_bind = IDERevokeBind()
-		for target, handle_info in ___pairs(self._tab_quad_map) do
+		for child, handle_info in ___pairs(self._tab_quad_map) do
 			handle_info.target:TreeCut(revoke_bind)
 		end
 		self._revoke_list:PushRevoke(revoke_bind)

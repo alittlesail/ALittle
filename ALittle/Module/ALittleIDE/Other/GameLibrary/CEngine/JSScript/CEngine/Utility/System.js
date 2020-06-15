@@ -34,7 +34,12 @@ ALittle.System_CalcLandscape = function(src_width, src_height, flag) {
 		src_width = ALittle.Math_Floor(screen_width / screen_height * src_height);
 		flag = ALittle.BitOr(flag, ALittle.UIEnumTypes.VIEW_FULLSCREEN);
 	} else if (platform === "Web") {
-		scale = ALittle.System_GetScreenWidth() / src_width;
+		if (ALittle.BitAnd(flag, ALittle.UIEnumTypes.VIEW_RESIZABLE) > 0) {
+			src_width = ALittle.System_GetScreenWidth();
+			src_height = ALittle.System_GetScreenHeight();
+		} else {
+			scale = ALittle.System_GetScreenWidth() / src_width;
+		}
 	} else if (platform === "WeChat") {
 		let screen_width = ALittle.System_GetScreenWidth();
 		let screen_height = ALittle.System_GetScreenHeight();

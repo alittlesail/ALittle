@@ -372,7 +372,7 @@ function IDEExport:HandleQueryNewCurVersion(error, result, package_info, is_logi
 		param.version_id = result.version_info.version_id
 		param.file_path = "CurVersion.db"
 		local client = ALittle.CreateHttpFileSender(result.http_ip, result.http_port, target_path, 0)
-		local error = ALittle.IHttpFileSender.InvokeDownload("VersionServer.QDownloadVersionFile", client, param)
+		error = ALittle.IHttpFileSender.InvokeDownload("VersionServer.QDownloadVersionFile", client, param)
 		self:HandleDownloadCurVersion(error, package_info, is_login, update_time, update_index)
 	end
 end

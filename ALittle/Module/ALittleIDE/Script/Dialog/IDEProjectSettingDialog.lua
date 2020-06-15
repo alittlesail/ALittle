@@ -55,12 +55,12 @@ function IDEProjectSettingDialog:HandleSettingProjectConfirm(event)
 	g_IDEProject.project.config:SetConfig("default_show_height", default_show_height)
 	g_IDEProject.project.config:SetConfig("default_font_path", default_font_path)
 	g_IDEProject.project.config:SetConfig("default_font_size", default_font_size)
-	local event = {}
-	event.default_show_width = default_show_width
-	event.default_show_height = default_show_height
-	event.default_font_path = default_font_path
-	event.default_font_size = default_font_size
-	g_IDEProject:DispatchEvent(___all_struct[1787992834], event)
+	local changed_event = {}
+	changed_event.default_show_width = default_show_width
+	changed_event.default_show_height = default_show_height
+	changed_event.default_font_path = default_font_path
+	changed_event.default_font_size = default_font_size
+	g_IDEProject:DispatchEvent(___all_struct[1787992834], changed_event)
 	self._project_setting_dialog.visible = false
 end
 

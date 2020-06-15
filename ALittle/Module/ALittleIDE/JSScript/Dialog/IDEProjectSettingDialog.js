@@ -49,12 +49,12 @@ ALittleIDE.IDEProjectSettingDialog = JavaScript.Class(undefined, {
 		ALittleIDE.g_IDEProject.project.config.SetConfig("default_show_height", default_show_height);
 		ALittleIDE.g_IDEProject.project.config.SetConfig("default_font_path", default_font_path);
 		ALittleIDE.g_IDEProject.project.config.SetConfig("default_font_size", default_font_size);
-		let event = {};
-		event.default_show_width = default_show_width;
-		event.default_show_height = default_show_height;
-		event.default_font_path = default_font_path;
-		event.default_font_size = default_font_size;
-		ALittleIDE.g_IDEProject.DispatchEvent(___all_struct.get(1787992834), event);
+		let changed_event = {};
+		changed_event.default_show_width = default_show_width;
+		changed_event.default_show_height = default_show_height;
+		changed_event.default_font_path = default_font_path;
+		changed_event.default_font_size = default_font_size;
+		ALittleIDE.g_IDEProject.DispatchEvent(___all_struct.get(1787992834), changed_event);
 		this._project_setting_dialog.visible = false;
 	},
 }, "ALittleIDE.IDEProjectSettingDialog");

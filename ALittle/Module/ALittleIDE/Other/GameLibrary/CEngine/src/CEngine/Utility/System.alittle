@@ -17,8 +17,17 @@ public static System_CalcPortrait(int src_width, int src_height, int flag) : int
     }
     elseif (platform == "Web")
     {
-        // 比例不变，只做单纯的缩放
-	    scale = System_GetScreenHeight() / src_height;
+        // 如果是有resize
+        if (BitAnd(flag, UIEnumTypes.VIEW_RESIZABLE) > 0)
+        {
+            src_width = System_GetScreenWidth();
+            src_height = System_GetScreenHeight();
+        }
+        else
+        {
+            // 比例不变，只做单纯的缩放
+    	    scale = System_GetScreenHeight() / src_height;
+        }
     }
     elseif (platform == "WeChat")
     {
@@ -54,8 +63,17 @@ public static System_CalcLandscape(int src_width, int src_height, int flag) : in
     }
     elseif (platform == "Web")
     {
-        // 比例不变，只做单纯的缩放
-	    scale = System_GetScreenWidth() / src_width;
+        // 如果是有resize
+        if (BitAnd(flag, UIEnumTypes.VIEW_RESIZABLE) > 0)
+        {
+            src_width = System_GetScreenWidth();
+            src_height = System_GetScreenHeight();
+        }
+        else
+        {
+            // 比例不变，只做单纯的缩放
+	        scale = System_GetScreenWidth() / src_width;        
+        }
     }
     elseif (platform == "WeChat")
     {
@@ -73,6 +91,7 @@ public static System_CalcLandscape(int src_width, int src_height, int flag) : in
             scale = 0.5;
     }
 
+    ALittle.Log(src_width, src_height, flag, scale);
     return src_width, src_height, flag, scale;
 }
 

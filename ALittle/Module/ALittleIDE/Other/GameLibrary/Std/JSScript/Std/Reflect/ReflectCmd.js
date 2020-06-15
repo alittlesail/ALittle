@@ -54,8 +54,8 @@ ALittle.ExecuteCommand = function(cmd) {
 		ALittle.List_Push(out_list, "");
 		ALittle.List_Push(out_list, "help 打印当前模块支持的指令列表");
 		let ___OBJECT_2 = method_list;
-		for (let index = 1; index <= ___OBJECT_2.length; ++index) {
-			let method_name = ___OBJECT_2[index - 1];
+		for (let _ = 1; _ <= ___OBJECT_2.length; ++_) {
+			let method_name = ___OBJECT_2[_ - 1];
 			if (method_name === undefined) break;
 			let info = __all_callback[method_name];
 			let detail = method_name + " ";
@@ -135,8 +135,8 @@ ALittle.ExecuteCommand = function(cmd) {
 	let value_list = [];
 	let ___OBJECT_4 = param_list;
 	for (let ii = 1; ii <= ___OBJECT_4.length; ++ii) {
-		let param = ___OBJECT_4[ii - 1];
-		if (param === undefined) break;
+		let _ = ___OBJECT_4[ii - 1];
+		if (_ === undefined) break;
 		let var_type = info.var_list[ii - 1];
 		if (var_type === "int" || var_type === "long" || var_type === "double") {
 			value_list[ii - 1] = ALittle.Math_ToDouble(param_list[ii - 1]);

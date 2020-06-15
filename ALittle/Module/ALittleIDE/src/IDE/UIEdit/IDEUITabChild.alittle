@@ -587,9 +587,9 @@ public class IDEUITabChild : IDETabChild
             // 找到最小的子控件下标
             var max_index = common_parent.GetChildIndex(target);
             var min_index = max_index;
-            for (var target, info in this._tab_quad_map)
+            for (var child, info in this._tab_quad_map)
             {
-                var index = common_parent.GetChildIndex(target);
+                var index = common_parent.GetChildIndex(child);
                 if (index < min_index) min_index = index;
                 elseif (index > max_index) max_index = index;
             }
@@ -1213,7 +1213,7 @@ public class IDEUITabChild : IDETabChild
             return;
 
 		// 标记一下刚才的位置
-		for (var target, handle_info in this._tab_quad_map)
+		for (var child, handle_info in this._tab_quad_map)
         {
             handle_info.delta_width = 0;
             handle_info.delta_height = 0;
@@ -1305,7 +1305,7 @@ public class IDEUITabChild : IDETabChild
 		// 计算信息
         var copy_list = new List<IDEControlCopyInfo>();
         var copy_list_count = 0;
-		for (var target, handle_info in this._tab_quad_map)
+		for (var child, handle_info in this._tab_quad_map)
         {
             var info = new IDEControlCopyInfo();
             info.index = handle_info.target.logic_parent.GetChildIndex(handle_info.target);
@@ -1411,7 +1411,7 @@ public class IDEUITabChild : IDETabChild
 		// 执行删除
         var revoke_bind = new IDERevokeBind();
         var has_target = false;
-		for (var target, handle_info in this._tab_quad_map)
+		for (var child, handle_info in this._tab_quad_map)
         {
             handle_info.target.TreeDelete(revoke_bind);
             has_target = true;
@@ -1428,7 +1428,7 @@ public class IDEUITabChild : IDETabChild
     {
         var copy_list = new List<IDEControlCopyInfo>();
         var copy_list_count = 0;
-		for (var target, handle_info in this._tab_quad_map)
+		for (var child, handle_info in this._tab_quad_map)
         {
             var info = new IDEControlCopyInfo();
             info.index = handle_info.target.logic_parent.GetChildIndex(handle_info.target);
@@ -1441,7 +1441,7 @@ public class IDEUITabChild : IDETabChild
             ALittle.List_Sort(copy_list, IDEUITabChild.ControlCopyInfoCmp);
             ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list));
             var revoke_bind = new IDERevokeBind();
-			for (var target, handle_info in this._tab_quad_map)
+			for (var child, handle_info in this._tab_quad_map)
                 handle_info.target.TreeCut(revoke_bind);
             this._revoke_list.PushRevoke(revoke_bind);
 		}

@@ -30,7 +30,6 @@ ALittleIDE.IDEUIMainMenu = JavaScript.Class(ALittle.Linear, {
 	},
 	HandleToolMenuClick : function(event) {
 		let menu = ALittle.NewObject(AUIPlugin.AUIRightMenu);
-		menu.AddItem("生成ui_all_in_one", this.HandleGenUIAllInOneClick.bind(this));
 		menu.AddItem("生成core_all_in_one", this.HandleGenCoreAllInOneClick.bind(this));
 		menu.AddItem("生成std_all_in_one", this.HandleGenStdAllInOneClick.bind(this));
 		menu.AddItem("生成cengine_all_in_one", this.HandleGenCEngineAllInOneClick.bind(this));
@@ -40,33 +39,6 @@ ALittleIDE.IDEUIMainMenu = JavaScript.Class(ALittle.Linear, {
 	},
 	HandleRunMenuClick : function(event) {
 		ALittleIDE.g_IDEProject.RunProject();
-	},
-	HandleGenUIAllInOneClick : function() {
-		if (ALittleIDE.g_IDEProject.project === undefined) {
-			g_AUITool.ShowNotice("提示", "没有加载项目");
-			return;
-		}
-		let all_in_one = {};
-		let map = ALittle.File_GetFileAttrByDir("Module/" + ALittleIDE.g_IDEProject.project.name + "/UI");
-		let ___OBJECT_1 = map;
-		for (let path in ___OBJECT_1) {
-			let _ = ___OBJECT_1[path];
-			if (_ === undefined) continue;
-			let [json] = ALittle.File_ReadJsonFromStdFile(path);
-			let ___OBJECT_2 = json;
-			for (let name in ___OBJECT_2) {
-				let o = ___OBJECT_2[name];
-				if (o === undefined) continue;
-				all_in_one[name] = o;
-			}
-		}
-		ALittle.File_MakeDeepDir("Module/" + ALittleIDE.g_IDEProject.project.name + "/JSUI");
-		let result = ALittle.File_WriteJsonFromStdFile(all_in_one, "Module/" + ALittleIDE.g_IDEProject.project.name + "/JSUI/ui_all_in_one.json");
-		if (result) {
-			g_AUITool.ShowNotice("提示", "生成成功");
-		} else {
-			g_AUITool.ShowNotice("提示", "生成失败");
-		}
 	},
 	HandleGenCoreAllInOneClick : function() {
 		let all_in_one = [];
@@ -78,9 +50,9 @@ ALittleIDE.IDEUIMainMenu = JavaScript.Class(ALittle.Linear, {
 		ALittle.List_Push(file_list, base_path + "Core/Reflect/ReflectDefine.js");
 		ALittle.List_PushList(file_list, ALittle.File_GetFileListByDir(base_path + "Core/Utility/"));
 		ALittle.List_PushList(file_list, ALittle.File_GetFileListByDir(base_path + "Core/Net/"));
-		let ___OBJECT_3 = file_list;
-		for (let index = 1; index <= ___OBJECT_3.length; ++index) {
-			let path = ___OBJECT_3[index - 1];
+		let ___OBJECT_1 = file_list;
+		for (let index = 1; index <= ___OBJECT_1.length; ++index) {
+			let path = ___OBJECT_1[index - 1];
 			if (path === undefined) break;
 			all_in_one[index - 1] = ALittle.File_ReadTextFromStdFile(path);
 			if (all_in_one[index - 1] === undefined) {
@@ -112,9 +84,9 @@ ALittleIDE.IDEUIMainMenu = JavaScript.Class(ALittle.Linear, {
 		ALittle.List_PushList(file_list, ALittle.File_GetFileListByDir(base_path + "Std/Net/"));
 		ALittle.List_PushList(file_list, ALittle.File_GetFileListByDir(base_path + "Adapter/JavaScript/"));
 		ALittle.List_PushList(file_list, ALittle.File_GetFileListByDir(base_path + "Std/Singleton/"));
-		let ___OBJECT_4 = file_list;
-		for (let index = 1; index <= ___OBJECT_4.length; ++index) {
-			let path = ___OBJECT_4[index - 1];
+		let ___OBJECT_2 = file_list;
+		for (let index = 1; index <= ___OBJECT_2.length; ++index) {
+			let path = ___OBJECT_2[index - 1];
 			if (path === undefined) break;
 			all_in_one[index - 1] = ALittle.File_ReadTextFromStdFile(path);
 			if (all_in_one[index - 1] === undefined) {
@@ -122,7 +94,7 @@ ALittleIDE.IDEUIMainMenu = JavaScript.Class(ALittle.Linear, {
 				return;
 			}
 		}
-		let result = ALittle.File_WriteTextFromStdFile(ALittle.String_Join(all_in_one, "\n"), "Module/ALittleIDE/Other/GameLibrary/JSNative/Std.js");
+		let result = ALittle.File_WriteTextFromStdFile(ALittle.String_Join(all_in_one, "\n"), "Module/ALittleIDE/Other/GameLibrary/Std/JSNative/Std.js");
 		if (result) {
 			g_AUITool.ShowNotice("提示", "生成成功");
 		} else {
@@ -194,9 +166,9 @@ ALittleIDE.IDEUIMainMenu = JavaScript.Class(ALittle.Linear, {
 		ALittle.List_Push(file_list, base_path + "CEngine/UISystem/LayerManager.js");
 		ALittle.List_Push(file_list, base_path + "CEngine/UISystem/TextureManager.js");
 		ALittle.List_Push(file_list, base_path + "CEngine/UISystem/ControlSystem.js");
-		let ___OBJECT_5 = file_list;
-		for (let index = 1; index <= ___OBJECT_5.length; ++index) {
-			let path = ___OBJECT_5[index - 1];
+		let ___OBJECT_3 = file_list;
+		for (let index = 1; index <= ___OBJECT_3.length; ++index) {
+			let path = ___OBJECT_3[index - 1];
 			if (path === undefined) break;
 			all_in_one[index - 1] = ALittle.File_ReadTextFromStdFile(path);
 			if (all_in_one[index - 1] === undefined) {
@@ -204,7 +176,7 @@ ALittleIDE.IDEUIMainMenu = JavaScript.Class(ALittle.Linear, {
 				return;
 			}
 		}
-		let result = ALittle.File_WriteTextFromStdFile(ALittle.String_Join(all_in_one, "\n"), "Module/ALittleIDE/Other/GameLibrary/JSNative/CEngine.js");
+		let result = ALittle.File_WriteTextFromStdFile(ALittle.String_Join(all_in_one, "\n"), "Module/ALittleIDE/Other/GameLibrary/CEngine/JSNative/CEngine.js");
 		if (result) {
 			g_AUITool.ShowNotice("提示", "生成成功");
 		} else {

@@ -6,7 +6,6 @@ AUIPlugin.AUIVersionManager = JavaScript.Class(undefined, {
 	Ctor : function(ip, port, account, module_name) {
 		this._version_ip = ip;
 		this._version_port = port;
-		this._version_system = ALittle.VersionSystem.CreateVersionSystem(account, module_name);
 	},
 	Shutdown : function() {
 		if (this._dialog !== undefined) {
@@ -38,7 +37,6 @@ AUIPlugin.AUIVersionManager = JavaScript.Class(undefined, {
 	ShowDialog : function() {
 		this.CreateDialog();
 		this._dialog.visible = true;
-		this.UpdateVersion(true);
 	},
 	HandleCheckClick : function(event) {
 		this.UpdateVersion(true);

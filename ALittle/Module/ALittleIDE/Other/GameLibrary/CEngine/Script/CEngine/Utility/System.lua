@@ -14,7 +14,12 @@ function System_CalcPortrait(src_width, src_height, flag)
 		src_height = Math_Floor(screen_height / screen_width * src_width)
 		flag = BitOr(flag, UIEnumTypes.VIEW_FULLSCREEN)
 	elseif platform == "Web" then
-		scale = System_GetScreenHeight() / src_height
+		if BitAnd(flag, UIEnumTypes.VIEW_RESIZABLE) > 0 then
+			src_width = System_GetScreenWidth()
+			src_height = System_GetScreenHeight()
+		else
+			scale = System_GetScreenHeight() / src_height
+		end
 	elseif platform == "WeChat" then
 		local screen_width = System_GetScreenWidth()
 		local screen_height = System_GetScreenHeight()
@@ -37,7 +42,12 @@ function System_CalcLandscape(src_width, src_height, flag)
 		src_width = Math_Floor(screen_width / screen_height * src_height)
 		flag = BitOr(flag, UIEnumTypes.VIEW_FULLSCREEN)
 	elseif platform == "Web" then
-		scale = System_GetScreenWidth() / src_width
+		if BitAnd(flag, UIEnumTypes.VIEW_RESIZABLE) > 0 then
+			src_width = System_GetScreenWidth()
+			src_height = System_GetScreenHeight()
+		else
+			scale = System_GetScreenWidth() / src_width
+		end
 	elseif platform == "WeChat" then
 		local screen_width = System_GetScreenWidth()
 		local screen_height = System_GetScreenHeight()
@@ -48,6 +58,7 @@ function System_CalcLandscape(src_width, src_height, flag)
 			scale = 0.5
 		end
 	end
+	ALittle.Log(src_width, src_height, flag, scale)
 	return src_width, src_height, flag, scale
 end
 

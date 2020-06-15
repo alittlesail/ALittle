@@ -547,7 +547,7 @@ protected class TextureManager
             var big_path = index .. ".atlas";
             var info = new List<string>();
             var info_count = 0;
-            for (var index, value in list)
+            for (var _, value in list)
             {
                 var path = cast<string>(value[1]);
                 var x = cast<int>(value[2]);

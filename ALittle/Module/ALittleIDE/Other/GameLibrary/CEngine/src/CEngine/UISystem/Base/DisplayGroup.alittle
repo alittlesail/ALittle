@@ -207,8 +207,8 @@ public class DisplayGroup : DisplayObject
             this._abs_alpha = value;
         
         // 刷新子控件的alpha
-        for (var index, value in this._childs)
-            value.alpha = value.alpha;
+        for (var index, child in this._childs)
+            child.alpha = child.alpha;
     }
     
     // 设置是否可见
@@ -226,8 +226,8 @@ public class DisplayGroup : DisplayObject
         this._show.SetVisible(this._abs_visible);
     
         // 刷新子控件的visible
-        for (var index, value in this._childs)
-            value.visible = value.visible;
+        for (var index, child in this._childs)
+            child.visible = child.visible;
     }
     
     // 设置是否禁用
@@ -242,8 +242,8 @@ public class DisplayGroup : DisplayObject
             this._abs_disabled = value;
             
         // 刷新子控件的disable
-        for (var index, value in this._childs)
-            value.disabled = value.disabled;
+        for (var index, child in this._childs)
+            child.disabled = child.disabled;
     }
     
     // 检查坐标(x, y)是否在控件范围内，返回被点中的控件

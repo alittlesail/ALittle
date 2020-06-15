@@ -461,7 +461,7 @@ class IDEExport
 			param.version_id = result.version_info.version_id;
 			param.file_path = "CurVersion.db";
 			var client = ALittle.CreateHttpFileSender(result.http_ip, result.http_port, target_path, 0);
-			var error = VersionServer.HandleHttpQDownloadVersionFile(client, param);
+			error = VersionServer.HandleHttpQDownloadVersionFile(client, param);
 			this.HandleDownloadCurVersion(error, package_info, is_login, update_time, update_index);
 		}
 	}

@@ -60,7 +60,7 @@ public static ExecuteCommand(string cmd)
         var out_list = new List<string>();
         List_Push(out_list, "");
         List_Push(out_list, "help 打印当前模块支持的指令列表");
-        for (var index, method_name in method_list)
+        for (var _, method_name in method_list)
         {
             var info = __all_callback[method_name];
             var detail = method_name.." ";
@@ -168,7 +168,7 @@ public static ExecuteCommand(string cmd)
     }
 
     var value_list = new List<any>();
-    for (var ii, param in param_list)
+    for (var ii, _ in param_list)
     {
         var var_type = info.var_list[ii];
         if (var_type == "int" || var_type == "long" || var_type == "double")

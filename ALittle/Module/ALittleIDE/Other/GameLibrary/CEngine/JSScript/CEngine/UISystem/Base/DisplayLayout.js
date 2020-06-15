@@ -18,10 +18,10 @@ ALittle.DisplayLayout = JavaScript.Class(ALittle.DisplayGroup, {
 		}
 		let ___OBJECT_1 = this._childs;
 		for (let index = 1; index <= ___OBJECT_1.length; ++index) {
-			let value = ___OBJECT_1[index - 1];
-			if (value === undefined) break;
-			this.UpdateWidthLayout(value);
-			this.UpdateXLayout(value);
+			let child = ___OBJECT_1[index - 1];
+			if (child === undefined) break;
+			this.UpdateWidthLayout(child);
+			this.UpdateXLayout(child);
 		}
 		this._show.SetWidth(value);
 	},
@@ -35,10 +35,10 @@ ALittle.DisplayLayout = JavaScript.Class(ALittle.DisplayGroup, {
 		}
 		let ___OBJECT_2 = this._childs;
 		for (let index = 1; index <= ___OBJECT_2.length; ++index) {
-			let value = ___OBJECT_2[index - 1];
-			if (value === undefined) break;
-			this.UpdateHeightLayout(value);
-			this.UpdateYLayout(value);
+			let child = ___OBJECT_2[index - 1];
+			if (child === undefined) break;
+			this.UpdateHeightLayout(child);
+			this.UpdateYLayout(child);
 		}
 		this._show.SetHeight(value);
 	},

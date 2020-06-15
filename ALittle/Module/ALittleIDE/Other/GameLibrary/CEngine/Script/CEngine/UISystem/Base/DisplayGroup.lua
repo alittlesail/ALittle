@@ -160,8 +160,8 @@ function DisplayGroup.__setter:alpha(value)
 	else
 		self._abs_alpha = value
 	end
-	for index, value in ___ipairs(self._childs) do
-		value.alpha = value.alpha
+	for index, child in ___ipairs(self._childs) do
+		child.alpha = child.alpha
 	end
 end
 
@@ -173,8 +173,8 @@ function DisplayGroup.__setter:visible(value)
 		self._abs_visible = value
 	end
 	self._show:SetVisible(self._abs_visible)
-	for index, value in ___ipairs(self._childs) do
-		value.visible = value.visible
+	for index, child in ___ipairs(self._childs) do
+		child.visible = child.visible
 	end
 end
 
@@ -185,8 +185,8 @@ function DisplayGroup.__setter:disabled(value)
 	else
 		self._abs_disabled = value
 	end
-	for index, value in ___ipairs(self._childs) do
-		value.disabled = value.disabled
+	for index, child in ___ipairs(self._childs) do
+		child.disabled = child.disabled
 	end
 end
 

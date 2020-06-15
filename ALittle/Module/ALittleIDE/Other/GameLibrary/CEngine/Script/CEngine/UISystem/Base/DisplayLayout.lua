@@ -22,9 +22,9 @@ function DisplayLayout.__setter:width(value)
 	if self._width_type == UIEnumTypes.SIZE_ABS then
 		self._width_value = self._width
 	end
-	for index, value in ___ipairs(self._childs) do
-		self:UpdateWidthLayout(value)
-		self:UpdateXLayout(value)
+	for index, child in ___ipairs(self._childs) do
+		self:UpdateWidthLayout(child)
+		self:UpdateXLayout(child)
 	end
 	self._show:SetWidth(value)
 end
@@ -37,9 +37,9 @@ function DisplayLayout.__setter:height(value)
 	if self._height_type == UIEnumTypes.SIZE_ABS then
 		self._height_value = self._height
 	end
-	for index, value in ___ipairs(self._childs) do
-		self:UpdateHeightLayout(value)
-		self:UpdateYLayout(value)
+	for index, child in ___ipairs(self._childs) do
+		self:UpdateHeightLayout(child)
+		self:UpdateYLayout(child)
 	end
 	self._show:SetHeight(value)
 end

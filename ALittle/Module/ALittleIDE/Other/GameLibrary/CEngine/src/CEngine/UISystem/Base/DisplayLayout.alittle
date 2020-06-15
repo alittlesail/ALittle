@@ -17,10 +17,10 @@ public class DisplayLayout : DisplayGroup
         if (this._width_type == UIEnumTypes.SIZE_ABS)
             this._width_value = this._width;
 
-        for (var index, value in this._childs)
+        for (var index, child in this._childs)
         {
-            this.UpdateWidthLayout(value);
-            this.UpdateXLayout(value);
+            this.UpdateWidthLayout(child);
+            this.UpdateXLayout(child);
         }
 
         this._show.SetWidth(value);
@@ -35,10 +35,10 @@ public class DisplayLayout : DisplayGroup
         if (this._height_type == UIEnumTypes.SIZE_ABS)
             this._height_value = this._height;
     
-        for (var index, value in this._childs)
+        for (var index, child in this._childs)
         {
-            this.UpdateHeightLayout(value);
-            this.UpdateYLayout(value);
+            this.UpdateHeightLayout(child);
+            this.UpdateYLayout(child);
         }
 
         this._show.SetHeight(value);

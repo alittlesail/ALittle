@@ -174,8 +174,8 @@ public class IDEVersionList : ALittle.DisplayLayout
 	// 请求删除版本
 	public async fun HandleVersionDelete(IDEVersionInfoItemUserData version_info)
 	{   
-		var result = g_AUITool.DeleteNotice("删除", "确定要删除"..ALittle.Time_GetCurDate(version_info.data.update_time).."(版本时间)这个版本吗?");
-		if (result != AUIPlugin.AUIToolOption.YES) return;
+		var delete_result = g_AUITool.DeleteNotice("删除", "确定要删除"..ALittle.Time_GetCurDate(version_info.data.update_time).."(版本时间)这个版本吗?");
+		if (delete_result != AUIPlugin.AUIToolOption.YES) return;
 
 		// 发送HTTP请求
 		var param = new VersionServer.QDeleteVersionInfo();
@@ -262,8 +262,8 @@ public class IDEVersionList : ALittle.DisplayLayout
 	// 请求删除某个版本的屏蔽
 	public async fun HandleVersionCloseDelete(IDEVersionCloseItemUserData version_info)
 	{
-		var result = g_AUITool.DeleteNotice("删除", "确定要删除"..version_info.data.close_version.."("..version_info.data.submit_platform..")这个拦截版本吗?");
-		if (result != AUIPlugin.AUIToolOption.YES) return;
+		var delete_result = g_AUITool.DeleteNotice("删除", "确定要删除"..version_info.data.close_version.."("..version_info.data.submit_platform..")这个拦截版本吗?");
+		if (delete_result != AUIPlugin.AUIToolOption.YES) return;
 
 		// 发送HTTP请求
 		var param = new VersionServer.QDeleteVersionClose();

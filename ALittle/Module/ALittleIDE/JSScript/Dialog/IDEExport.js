@@ -233,9 +233,25 @@ ALittleIDE.IDEExport = JavaScript.Class(undefined, {
 			file_info.crypt_mode = false;
 			++ count;
 			file_list[count - 1] = file_info;
+			let all_in_one = {};
+			let map = ALittle.File_GetFileAttrByDir(ALittle.File_BaseFilePath() + "Module/" + project_name + "/UI");
+			let ___OBJECT_4 = map;
+			for (let path in ___OBJECT_4) {
+				let _ = ___OBJECT_4[path];
+				if (_ === undefined) continue;
+				let [json] = ALittle.File_ReadJsonFromStdFile(path);
+				let ___OBJECT_5 = json;
+				for (let name in ___OBJECT_5) {
+					let o = ___OBJECT_5[name];
+					if (o === undefined) continue;
+					all_in_one[name] = o;
+				}
+			}
+			ALittle.File_MakeDeepDir(ALittle.File_BaseFilePath() + "Module/" + project_name + "/JSUI");
+			ALittle.File_WriteJsonFromStdFile(all_in_one, ALittle.File_BaseFilePath() + "Module/" + project_name + "/JSUI/ui_all_in_one.json");
 			file_info = {};
 			file_info.path = "JSUI";
-			file_info.crypt_mode = true;
+			file_info.crypt_mode = false;
 			++ count;
 			file_list[count - 1] = file_info;
 		} else {
@@ -251,18 +267,18 @@ ALittleIDE.IDEExport = JavaScript.Class(undefined, {
 			file_list[count - 1] = file_info;
 		}
 		if (ALittle.File_GetFileAttr(project_path + "/NoCrypt.ali") === undefined) {
-			let ___OBJECT_4 = file_list;
-			for (let k = 1; k <= ___OBJECT_4.length; ++k) {
-				let v = ___OBJECT_4[k - 1];
+			let ___OBJECT_6 = file_list;
+			for (let k = 1; k <= ___OBJECT_6.length; ++k) {
+				let v = ___OBJECT_6[k - 1];
 				if (v === undefined) break;
 				v.crypt_mode = false;
 			}
 		}
 		let map_list = [];
 		count = 0;
-		let ___OBJECT_5 = file_list;
-		for (let k = 1; k <= ___OBJECT_5.length; ++k) {
-			let v = ___OBJECT_5[k - 1];
+		let ___OBJECT_7 = file_list;
+		for (let k = 1; k <= ___OBJECT_7.length; ++k) {
+			let v = ___OBJECT_7[k - 1];
 			if (v === undefined) break;
 			let result = this.PackagePath(project_path + "/" + v.path, export_common_path + "/" + v.path, v.path, v.crypt_mode);
 			if (result !== undefined) {
@@ -371,7 +387,7 @@ ALittleIDE.IDEExport = JavaScript.Class(undefined, {
 				param.version_id = result.version_info.version_id;
 				param.file_path = "CurVersion.db";
 				let client = ALittle.CreateHttpFileSender(result.http_ip, result.http_port, target_path, 0);
-				let [error] = await ALittle.IHttpFileSender.InvokeDownload("VersionServer.QDownloadVersionFile", client, param);
+				[error] = await ALittle.IHttpFileSender.InvokeDownload("VersionServer.QDownloadVersionFile", client, param);
 				this.HandleDownloadCurVersion(error, package_info, is_login, update_time, update_index);
 			}
 			___COROUTINE();
@@ -434,9 +450,9 @@ ALittleIDE.IDEExport = JavaScript.Class(undefined, {
 			return;
 		}
 		let plugin_list = ALittle.String_Split(package_info.version_info.plugin_list, ",");
-		let ___OBJECT_6 = plugin_list;
-		for (let index = 1; index <= ___OBJECT_6.length; ++index) {
-			let plugin = ___OBJECT_6[index - 1];
+		let ___OBJECT_8 = plugin_list;
+		for (let index = 1; index <= ___OBJECT_8.length; ++index) {
+			let plugin = ___OBJECT_8[index - 1];
 			if (plugin === undefined) break;
 			let [plugin_error, _] = (function() { try { let ___VALUE = this.PackageCommon.call(this, package_info.project_path + "/Export/Common", ALittle.File_BaseFilePath() + "Module/" + plugin, plugin, package_info.platform, true); return [undefined, ___VALUE]; } catch (___ERROR) { return [___ERROR.message]; } }).call(this);
 			if (plugin_error !== undefined) {
@@ -476,9 +492,9 @@ ALittleIDE.IDEExport = JavaScript.Class(undefined, {
 			let new_log = ALittle.String_Split(package_info.install_info.new_log, "\n");
 			let create_time = ALittle.Time_GetCurTime();
 			let create_index = 0;
-			let ___OBJECT_7 = new_log;
-			for (let k = 1; k <= ___OBJECT_7.length; ++k) {
-				let v = ___OBJECT_7[k - 1];
+			let ___OBJECT_9 = new_log;
+			for (let k = 1; k <= ___OBJECT_9.length; ++k) {
+				let v = ___OBJECT_9[k - 1];
 				if (v === undefined) break;
 				if (v !== "") {
 					sqlite.exec("INSERT INTO VersionLog (c_content,c_create_time,c_create_index) VALUES ('" + v + "'," + create_time + "," + create_index + ")");
@@ -501,13 +517,13 @@ ALittleIDE.IDEExport = JavaScript.Class(undefined, {
 			let change_count = 0;
 			let add_count = 0;
 			let delete_count = 0;
-			let ___OBJECT_8 = version_info_list;
-			for (let k = 1; k <= ___OBJECT_8.length; ++k) {
-				let map = ___OBJECT_8[k - 1];
+			let ___OBJECT_10 = version_info_list;
+			for (let k = 1; k <= ___OBJECT_10.length; ++k) {
+				let map = ___OBJECT_10[k - 1];
 				if (map === undefined) break;
-				let ___OBJECT_9 = map;
-				for (let file_path in ___OBJECT_9) {
-					let attr = ___OBJECT_9[file_path];
+				let ___OBJECT_11 = map;
+				for (let file_path in ___OBJECT_11) {
+					let attr = ___OBJECT_11[file_path];
 					if (attr === undefined) continue;
 					if (version_info === undefined) {
 						sqlite.exec("INSERT INTO SmallVersion (c_file_path,c_file_size,c_type,c_md5,c_update_time,c_update_index,c_is_delete) VALUES ('" + attr.file_path + "'," + attr.attr.size + ",'" + attr.file_type + "','" + attr.md5 + "'," + update_time + "," + update_index + ",0)");
@@ -533,9 +549,9 @@ ALittleIDE.IDEExport = JavaScript.Class(undefined, {
 				}
 			}
 			if (version_info !== undefined) {
-				let ___OBJECT_10 = version_info.small_version;
-				for (let k in ___OBJECT_10) {
-					let v = ___OBJECT_10[k];
+				let ___OBJECT_12 = version_info.small_version;
+				for (let k in ___OBJECT_12) {
+					let v = ___OBJECT_12[k];
 					if (v === undefined) continue;
 					if (v.c_is_delete !== 0) {
 						sqlite.exec("INSERT INTO SmallVersion (c_file_path,c_file_size,c_type,c_md5,c_update_time,c_update_index,c_is_delete) VALUES ('" + v.c_file_path + "'," + v.c_file_size + ",'" + v.c_type + "','" + v.c_md5 + "'," + v.c_update_time + "," + v.c_update_index + ",1)");
@@ -737,9 +753,9 @@ ALittleIDE.IDEExport = JavaScript.Class(undefined, {
 			param.version_id = submit_info.version_id;
 			let error = undefined;
 			let result = undefined;
-			let ___OBJECT_11 = submit_info.upload_list;
-			for (let k = 1; k <= ___OBJECT_11.length; ++k) {
-				let file_path = ___OBJECT_11[k - 1];
+			let ___OBJECT_13 = submit_info.upload_list;
+			for (let k = 1; k <= ___OBJECT_13.length; ++k) {
+				let file_path = ___OBJECT_13[k - 1];
 				if (file_path === undefined) break;
 				++ upload_index;
 				this._submit_content.text = "正在上传:" + upload_index + "/" + total_count + "\n" + submit_info.export_module_path + "/" + file_path;
@@ -972,9 +988,9 @@ ALittleIDE.IDEExport = JavaScript.Class(undefined, {
 		let javac_string = "";
 		let java_file_map = {};
 		ALittle.File_GetFileAttrByDir(default_src_path, java_file_map);
-		let ___OBJECT_12 = java_file_map;
-		for (let file_path in ___OBJECT_12) {
-			let java_file = ___OBJECT_12[file_path];
+		let ___OBJECT_14 = java_file_map;
+		for (let file_path in ___OBJECT_14) {
+			let java_file = ___OBJECT_14[file_path];
 			if (java_file === undefined) continue;
 			javac_string = javac_string + (ALittle.String_Replace(file_path, package_info.project_path + "/Export/Android/", "")) + "\n";
 			let content = ALittle.File_ReadTextFromFile(file_path);
@@ -983,9 +999,9 @@ ALittleIDE.IDEExport = JavaScript.Class(undefined, {
 		}
 		java_file_map = {};
 		ALittle.File_GetFileAttrByDir(package_src_path, java_file_map);
-		let ___OBJECT_13 = java_file_map;
-		for (let file_path in ___OBJECT_13) {
-			let java_file = ___OBJECT_13[file_path];
+		let ___OBJECT_15 = java_file_map;
+		for (let file_path in ___OBJECT_15) {
+			let java_file = ___OBJECT_15[file_path];
 			if (java_file === undefined) continue;
 			javac_string = javac_string + (ALittle.String_Replace(file_path, package_info.project_path + "/Export/Android/", "")) + "\n";
 			let content = ALittle.File_ReadTextFromFile(file_path);

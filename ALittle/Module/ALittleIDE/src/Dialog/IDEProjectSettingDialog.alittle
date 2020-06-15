@@ -66,12 +66,12 @@ public class IDEProjectSettingDialog
 		g_IDEProject.project.config.SetConfig("default_font_path", default_font_path);
 		g_IDEProject.project.config.SetConfig("default_font_size", default_font_size);
 		
-		var event = new IDEProjectSettingChanged();
-		event.default_show_width = default_show_width;
-		event.default_show_height = default_show_height;
-		event.default_font_path = default_font_path;
-		event.default_font_size = default_font_size;
-		g_IDEProject.DispatchEvent(event);
+		var changed_event = new IDEProjectSettingChanged();
+		changed_event.default_show_width = default_show_width;
+		changed_event.default_show_height = default_show_height;
+		changed_event.default_font_path = default_font_path;
+		changed_event.default_font_size = default_font_size;
+		g_IDEProject.DispatchEvent(changed_event);
 	
 		this._project_setting_dialog.visible = false;
 	}

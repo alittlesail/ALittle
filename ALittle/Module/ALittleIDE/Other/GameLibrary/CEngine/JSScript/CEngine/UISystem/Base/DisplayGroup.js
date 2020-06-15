@@ -155,9 +155,9 @@ ALittle.DisplayGroup = JavaScript.Class(ALittle.DisplayObject, {
 		}
 		let ___OBJECT_4 = this._childs;
 		for (let index = 1; index <= ___OBJECT_4.length; ++index) {
-			let value = ___OBJECT_4[index - 1];
-			if (value === undefined) break;
-			value.alpha = value.alpha;
+			let child = ___OBJECT_4[index - 1];
+			if (child === undefined) break;
+			child.alpha = child.alpha;
 		}
 	},
 	set visible(value) {
@@ -170,9 +170,9 @@ ALittle.DisplayGroup = JavaScript.Class(ALittle.DisplayObject, {
 		this._show.SetVisible(this._abs_visible);
 		let ___OBJECT_5 = this._childs;
 		for (let index = 1; index <= ___OBJECT_5.length; ++index) {
-			let value = ___OBJECT_5[index - 1];
-			if (value === undefined) break;
-			value.visible = value.visible;
+			let child = ___OBJECT_5[index - 1];
+			if (child === undefined) break;
+			child.visible = child.visible;
 		}
 	},
 	set disabled(value) {
@@ -184,9 +184,9 @@ ALittle.DisplayGroup = JavaScript.Class(ALittle.DisplayObject, {
 		}
 		let ___OBJECT_6 = this._childs;
 		for (let index = 1; index <= ___OBJECT_6.length; ++index) {
-			let value = ___OBJECT_6[index - 1];
-			if (value === undefined) break;
-			value.disabled = value.disabled;
+			let child = ___OBJECT_6[index - 1];
+			if (child === undefined) break;
+			child.disabled = child.disabled;
 		}
 	},
 	PickUp : function(x, y) {

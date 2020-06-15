@@ -25,8 +25,8 @@ option_map = {}
 })
 ALittle.RegStruct(1243834211, "ALittleIDE.IDEInstallInfo", {
 name = "ALittleIDE.IDEInstallInfo", ns_name = "ALittleIDE", rl_name = "IDEInstallInfo", hash_code = 1243834211,
-name_list = {"new_log","install_name","auto_start","package_name","screen","fullscreen","file_name"},
-type_list = {"string","string","bool","string","string","bool","string"},
+name_list = {"new_log","install_name","auto_start","package_name","screen","fullscreen","res_ip","res_port","res_base_path","file_name"},
+type_list = {"string","string","bool","string","string","bool","string","int","string","string"},
 option_map = {}
 })
 ALittle.RegStruct(1916591200, "ALittle.BigVersionInfo", {
@@ -606,6 +606,8 @@ function IDEExport:HandleQueryNewCurVersionImpl(package_info, is_login, update_t
 		install_name = self:GenerateIpa(package_info)
 	elseif package_info.platform == "Web" then
 		install_name = self:GenerateWeb(package_info)
+	elseif package_info.platform == "WeChat" then
+		install_name = self:GenerateWeChat(package_info)
 	end
 	submit_info.project_path = package_info.project_path
 	submit_info.export_module_path = package_info.export_module_path
@@ -1171,6 +1173,46 @@ function IDEExport:GenerateWeb(package_info)
 		ALittle.File_SaveFile(package_info.project_path .. "/Export/Install.html", content, -1)
 	end
 	return "Install.html"
+end
+
+function IDEExport:GenerateWeChat(package_info)
+	ALittle.Log("==================GenerateWeChat:" .. package_info.project_name .. "==================")
+	if ALittle.File_GetFileAttr(package_info.project_path) == nil then
+		ALittle.Log("IDEExport:GenerateWeChat project_path is not exist:", package_info.project_path)
+		return nil
+	end
+	local install_ico = package_info.project_path .. "/Icon/install.ico"
+	if ALittle.File_GetFileAttr(install_ico) == nil then
+		ALittle.File_CopyFile(ALittle.File_BaseFilePath() .. "Export/Icon/install.ico", package_info.project_path .. "/Export/WeChat/favicon.ico")
+	else
+		ALittle.File_CopyFile(install_ico, package_info.project_path .. "/Export/WeChat/favicon.ico")
+	end
+	local game_js = __CPPAPILocalFile()
+	game_js:SetPath(ALittle.File_BaseFilePath() .. "Export/WeChat/game.js")
+	if game_js:Load() then
+		local content = game_js:GetContent()
+		content = ALittle.String_Replace(content, "abcd@project_name@abcd", package_info.project_name)
+		ALittle.File_SaveFile(package_info.project_path .. "/Export/WeChat/game.js", content, -1)
+		ALittle.File_SaveFile(package_info.project_path .. "/Export/Install.js", content, -1)
+	end
+	local game_json = __CPPAPILocalFile()
+	game_json:SetPath(ALittle.File_BaseFilePath() .. "Export/WeChat/game.json")
+	if game_json:Load() then
+		local content = game_json:GetContent()
+		if package_info.install_info.screen == "竖屏" then
+			content = ALittle.String_Replace(content, "abcd@screen@abcd", "portrait")
+		else
+			content = ALittle.String_Replace(content, "abcd@screen@abcd", "landscape")
+		end
+		ALittle.File_SaveFile(package_info.project_path .. "/Export/WeChat/game.json", content, -1)
+	end
+	local project_config_json = __CPPAPILocalFile()
+	project_config_json:SetPath(ALittle.File_BaseFilePath() .. "Export/WeChat/project_config_json.json")
+	if project_config_json:Load() then
+		local content = project_config_json:GetContent()
+		ALittle.File_SaveFile(package_info.project_path .. "/Export/WeChat/project_config_json.json", content, -1)
+	end
+	return "Install.js"
 end
 
 g_IDEExport = IDEExport()

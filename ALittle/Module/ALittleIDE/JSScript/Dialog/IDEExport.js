@@ -21,8 +21,8 @@ option_map : {}
 })
 ALittle.RegStruct(1243834211, "ALittleIDE.IDEInstallInfo", {
 name : "ALittleIDE.IDEInstallInfo", ns_name : "ALittleIDE", rl_name : "IDEInstallInfo", hash_code : 1243834211,
-name_list : ["new_log","install_name","auto_start","package_name","screen","fullscreen","file_name"],
-type_list : ["string","string","bool","string","string","bool","string"],
+name_list : ["new_log","install_name","auto_start","package_name","screen","fullscreen","res_ip","res_port","res_base_path","file_name"],
+type_list : ["string","string","bool","string","string","bool","string","int","string","string"],
 option_map : {}
 })
 ALittle.RegStruct(1916591200, "ALittle.BigVersionInfo", {
@@ -1200,6 +1200,28 @@ ALittleIDE.IDEExport = JavaScript.Class(undefined, {
 		}
 		let file = ALittle.NewObject(lua.__CPPAPILocalFile);
 		file.SetPath(ALittle.File_BaseFilePath() + "Export/Web/index.html");
+		if (file.Load()) {
+			let content = file.GetContent();
+			content = ALittle.String_Replace(content, "abcd@project_name@abcd", package_info.project_name);
+			ALittle.File_SaveFile(package_info.project_path + "/Export/Web/" + package_info.project_name + ".html", content, -1);
+			ALittle.File_SaveFile(package_info.project_path + "/Export/Install.html", content, -1);
+		}
+		return "Install.html";
+	},
+	GenerateWeChat : function(package_info) {
+		ALittle.Log("==================GenerateWeChat:" + package_info.project_name + "==================");
+		if (ALittle.File_GetFileAttr(package_info.project_path) === undefined) {
+			ALittle.Log("IDEExport:GenerateWeChat project_path is not exist:", package_info.project_path);
+			return undefined;
+		}
+		let install_ico = package_info.project_path + "/Icon/install.ico";
+		if (ALittle.File_GetFileAttr(install_ico) === undefined) {
+			ALittle.File_CopyFile(ALittle.File_BaseFilePath() + "Export/Icon/install.ico", package_info.project_path + "/Export/WeChat/favicon.ico");
+		} else {
+			ALittle.File_CopyFile(install_ico, package_info.project_path + "/Export/WeChat/favicon.ico");
+		}
+		let file = ALittle.NewObject(lua.__CPPAPILocalFile);
+		file.SetPath(ALittle.File_BaseFilePath() + "Export/WeChat/game.js");
 		if (file.Load()) {
 			let content = file.GetContent();
 			content = ALittle.String_Replace(content, "abcd@project_name@abcd", package_info.project_name);

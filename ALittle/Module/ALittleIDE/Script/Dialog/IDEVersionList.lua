@@ -850,3 +850,110 @@ function IDEVersionWeb:HandleSubmit(event)
 end
 IDEVersionWeb.HandleSubmit = Lua.CoWrap(IDEVersionWeb.HandleSubmit)
 
+assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
+IDEVersionWeChat = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDEVersionWeChat")
+
+function IDEVersionWeChat:Ctor(ctrl_sys)
+end
+
+function IDEVersionWeChat:TCtor()
+	self._version_list.platform = "WeChat"
+	self._version_list.config_key = "wechat_export_info"
+end
+
+function IDEVersionWeChat.__setter:config_key(value)
+	self._version_list.config_key = value
+end
+
+function IDEVersionWeChat.__getter:config_key()
+	return self._version_list.config_key
+end
+
+function IDEVersionWeChat:LoadConfigImpl()
+	if g_IDEProject.project == nil then
+		g_AUITool:ShowNotice("错误", "当前没有打开的项目")
+		return false
+	end
+	self._version_list:LoadConfig()
+	self._version_list:HandleRefreshVersionList(nil)
+	self._version_list.export_old_log.text = ""
+	local export_info = g_IDEProject.project.config:GetConfig(self.config_key, {})
+	local install_info = export_info.install_info
+	if install_info == nil then
+		install_info = {}
+	end
+	if install_info.new_log ~= nil then
+		self._export_new_log.text = install_info.new_log
+	else
+		self._export_new_log.text = ""
+	end
+	if install_info.res_ip ~= nil then
+		self._export_res_ip.text = install_info.res_ip
+	else
+		self._export_res_ip.text = ""
+	end
+	if install_info.res_port ~= nil then
+		self._export_res_port.text = install_info.res_port
+	else
+		self._export_res_port.text = ""
+	end
+	if install_info.res_base_path ~= nil then
+		self._export_res_base_path.text = install_info.res_base_path
+	else
+		self._export_res_base_path.text = ""
+	end
+	if install_info.screen ~= nil then
+		self._export_screen.text = install_info.screen
+	else
+		self._export_screen.text = "竖屏"
+	end
+	return true
+end
+
+function IDEVersionWeChat:SaveConfigImpl()
+	if g_IDEProject.project == nil then
+		g_AUITool:ShowNotice("错误", "当前没有打开的项目")
+		return false
+	end
+	local version_info = self._version_list:GetConfig()
+	if version_info == nil then
+		return false
+	end
+	local export_info = {}
+	export_info.version_info = version_info
+	local install_info = {}
+	export_info.install_info = install_info
+	install_info.file_name = "Install.js"
+	install_info.new_log = self._export_new_log.text
+	install_info.res_ip = self._export_res_ip.text
+	install_info.res_port = ALittle.Math_ToIntOrZero(self._export_res_port.text)
+	install_info.res_base_path = self._export_res_base_path.text
+	install_info.screen = self._export_screen.text
+	g_IDEProject.project.config:SetConfig(self.config_key, export_info)
+	return true
+end
+
+function IDEVersionWeChat:HandleSaveConfig(event)
+	if self:SaveConfigImpl() == false then
+		return
+	end
+	g_AUITool:ShowNotice("提示", "配置保存成功")
+end
+
+function IDEVersionWeChat:HandleExport(event)
+	if self:SaveConfigImpl() == false then
+		return
+	end
+	local export_info = g_IDEProject.project.config:GetConfig(self.config_key, nil)
+	if export_info == nil then
+		return
+	end
+	g_IDEExport:PackagePlatform(g_IDEProject.project.name, export_info.version_info, export_info.install_info, "WeChat")
+end
+IDEVersionWeChat.HandleExport = Lua.CoWrap(IDEVersionWeChat.HandleExport)
+
+function IDEVersionWeChat:HandleSubmit(event)
+	g_IDEExport:SubmitPlatform(g_IDEProject.project.name, "WeChat")
+end
+IDEVersionWeChat.HandleSubmit = Lua.CoWrap(IDEVersionWeChat.HandleSubmit)
+

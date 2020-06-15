@@ -21,6 +21,18 @@ private var tan = lua.math.tan;
 [Language(Lua)]
 private var sqrt = lua.math.sqrt;
 
+public static Math_Min(double x, double y) : double
+{
+    if (x < y) return x;
+    return y;
+}
+
+public static Math_Max(double x, double y) : double
+{
+    if (x < y) return y;
+    return x;
+}
+
 public static Math_Sin(double v) : double
 {
     [Language(Lua)]

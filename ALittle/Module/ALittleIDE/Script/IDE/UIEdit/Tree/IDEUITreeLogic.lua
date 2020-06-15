@@ -765,7 +765,7 @@ end
 
 function IDEUITreeLogic:PasteFromClipboard()
 	if self.is_tree then
-		self.tab_child:RightControlTreePasteImpl(self, nil, nil)
+		self.tab_child:RightControlTreePasteImpl(self)
 	else
 		local common_parent = self.logic_parent
 		local child_index = 1
@@ -811,6 +811,28 @@ end
 
 function IDEUITreeLogic:SelectPickUp(x, y)
 	return nil, nil
+end
+
+function IDEUITreeLogic:SelectPickRange(min_x, min_y, max_x, max_y)
+	if self._user_info.extends then
+		return false
+	end
+	local object = self._user_info.object
+	local pick_this_1, rel_min_x, rel_min_y = object:PickUpSelf(min_x, min_y)
+	local pick_this_2, rel_max_x, rel_max_y = object:PickUpSelf(max_x, max_y)
+	if rel_min_x >= object.width then
+		return false
+	end
+	if rel_max_x < 0 then
+		return false
+	end
+	if rel_min_y >= object.height then
+		return false
+	end
+	if rel_max_y < 0 then
+		return false
+	end
+	return true
 end
 
 function IDEUITreeLogic:GetDataListForAdd()

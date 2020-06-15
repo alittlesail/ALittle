@@ -143,11 +143,15 @@ function IDEUITabChild:Ctor(ctrl_sys, name, save)
 	self._tab_screen:RejustScrollBar()
 	self._tab_select_container.visible = g_IDECenter.center.singleselect
 	self._tab_handle_quad:AddEventListener(___all_struct[1883782801], self, self.HandleHandleContainerLButtonDown)
+	self._tab_handle_quad:AddEventListener(___all_struct[40651933], self, self.HandleHandleContainerLButtonUp)
+	self._tab_handle_quad:AddEventListener(___all_struct[1301789264], self, self.HandleHandleContainerDragBegin)
+	self._tab_handle_quad:AddEventListener(___all_struct[1337289812], self, self.HandleHandleContainerDrag)
+	self._tab_handle_quad:AddEventListener(___all_struct[150587926], self, self.HandleHandleContainerDragEnd)
+	self._tab_select_rect.visible = false
 	self._tab_quad_container:RemoveAllChild()
 	___rawset(self, "_tab_quad_map", {})
 	self._tab_handdrag_container.visible = g_IDECenter.center.handdrag
 	self._tab_handdrag_quad.drag_trans_target = self._tab_screen
-	self._tab_dragadd_container.visible = false
 	self._tab_scale_container.visible = g_IDECenter.center.scale
 	self._tab_scale_quad:AddEventListener(___all_struct[1883782801], self, self.HandleScaleContainerLButtonDown)
 	___rawset(self, "_tree_search_info", {})
@@ -513,6 +517,11 @@ function IDEUITabChild:FocusInHandleQuad(target)
 	A_UISystem.focus = handle_info.focus_quad
 end
 
+function IDEUITabChild:ClearHandQuad()
+	self._tab_quad_map = {}
+	self._tab_quad_container:RemoveAllChild()
+end
+
 function IDEUITabChild:ShowHandleQuad(target, force_shift)
 	local shift = (A_UISystem.sym_map[1073742049] ~= nil or A_UISystem.sym_map[1073742053] ~= nil)
 	if force_shift then
@@ -619,6 +628,66 @@ function IDEUITabChild:ShowHandleQuad(target, force_shift)
 	loop:Start()
 end
 
+function IDEUITabChild:ShowHandleQuadList(list)
+	self._tab_quad_map = {}
+	self._tab_quad_container:RemoveAllChild()
+	local target = nil
+	for index, child in ___ipairs(list) do
+		target = child
+		local control_line = {}
+		local handle_quad = g_Control:CreateControl("ide_common_handle_quad", control_line)
+		control_line.quad:AddEventListener(___all_struct[40651933], self, self.HandleHandleQuadLButtonUp)
+		control_line.quad:AddEventListener(___all_struct[1883782801], self, self.HandleHandleQuadLButtonDown)
+		control_line.quad:AddEventListener(___all_struct[1301789264], self, self.HandleHandleQuadDragBegin)
+		control_line.quad:AddEventListener(___all_struct[1337289812], self, self.HandleHandleQuadDrag)
+		control_line.quad:AddEventListener(___all_struct[150587926], self, self.HandleHandleQuadDragEnd)
+		control_line.quad:AddEventListener(___all_struct[-641444818], self, self.HandleHandleQuadRButtonDown)
+		control_line.quad:AddEventListener(___all_struct[-1604617962], self, self.HandleHandleQuadKeyDown)
+		control_line.size_quad:AddEventListener(___all_struct[-1604617962], self, self.HandleHandleSizeQuadKeyDown)
+		control_line.size_quad:AddEventListener(___all_struct[1301789264], self, self.HandleHandleSizeQuadDragBegin)
+		control_line.size_quad:AddEventListener(___all_struct[1337289812], self, self.HandleHandleSizeQuadDrag)
+		control_line.size_quad:AddEventListener(___all_struct[150587926], self, self.HandleHandleSizeQuadDragEnd)
+		control_line.size_quad:AddEventListener(___all_struct[544684311], self, self.HandleHandleSizeQuadMoveIn)
+		control_line.size_quad:AddEventListener(___all_struct[-1202439334], self, self.HandleHandleSizeQuadMoveOut)
+		local handle_info = {}
+		local target_parent = child.user_info.object
+		local quad_parent = handle_quad
+		while target_parent ~= nil do
+			quad_parent.x = target_parent.x
+			quad_parent.y = target_parent.y
+			quad_parent.width = target_parent.width
+			quad_parent.height = target_parent.height
+			quad_parent.scale_x = target_parent.scale_x
+			quad_parent.scale_y = target_parent.scale_y
+			quad_parent.center_x = target_parent.center_x
+			quad_parent.center_y = target_parent.center_y
+			quad_parent.angle = target_parent.angle
+			local display_group = ALittle.DisplayGroup(g_Control)
+			display_group:AddChild(quad_parent)
+			if target_parent.show_parent == self._tab_object_container then
+				handle_info.display_group = display_group
+				self._tab_quad_container:AddChild(display_group)
+				break
+			end
+			quad_parent = display_group
+			target_parent = target_parent.show_parent
+		end
+		handle_info.handle_quad = handle_quad
+		handle_info.focus_quad = control_line.quad
+		handle_info.size_quad_container = control_line.size_quad_container
+		control_line.quad._user_data = handle_info
+		control_line.size_quad._user_data = handle_info
+		child:ShowAttributePanel()
+		handle_info.target = child
+		self._tab_quad_map[child] = handle_info
+	end
+	if target == nil then
+		return
+	end
+	local loop = ALittle.LoopFunction(Lua.Bind(self.FocusInHandleQuad, self, target), 1, 0, 1)
+	loop:Start()
+end
+
 function IDEUITabChild:HideHandleQuad(target, shift)
 	local handle_info = self._tab_quad_map[target]
 	if handle_info == nil then
@@ -669,6 +738,13 @@ function IDEUITabChild:UpdateHandleQuadRemove(target)
 end
 
 function IDEUITabChild:HandleHandleContainerLButtonDown(event)
+	self._container_drag = false
+end
+
+function IDEUITabChild:HandleHandleContainerLButtonUp(event)
+	if self._container_drag then
+		return
+	end
 	if self._tree_object == nil then
 		return
 	end
@@ -677,6 +753,72 @@ function IDEUITabChild:HandleHandleContainerLButtonDown(event)
 		return
 	end
 	self:ShowHandleQuad(target)
+end
+
+function IDEUITabChild:HandleHandleContainerDragBegin(event)
+	self:ClearHandQuad()
+	local target = self._tree_object:EditPickUp(event.rel_x, event.rel_y)
+	if target == nil then
+		return
+	end
+	self._container_drag_x = event.rel_x
+	self._container_drag_y = event.rel_y
+	self._container_drag_parent = target.logic_parent
+	self._tab_select_rect.visible = true
+	self._tab_select_rect.x = self._container_drag_x
+	self._tab_select_rect.y = self._container_drag_y
+	self._tab_select_rect.width = 0
+	self._tab_select_rect.height = 0
+end
+
+function IDEUITabChild:HandleHandleContainerDrag(event)
+	local min_x = self._container_drag_x
+	local max_x = event.rel_x
+	if self._container_drag_x > event.rel_x then
+		min_x = event.rel_x
+		max_x = self._container_drag_x
+	end
+	local min_y = self._container_drag_y
+	local max_y = event.rel_y
+	if self._container_drag_y > event.rel_y then
+		min_y = event.rel_y
+		max_y = self._container_drag_y
+	end
+	self._tab_select_rect.x = min_x
+	self._tab_select_rect.y = min_y
+	self._tab_select_rect.width = max_x - min_x
+	self._tab_select_rect.height = max_y - min_y
+end
+
+function IDEUITabChild:HandleHandleContainerDragEnd(event)
+	self._tab_select_rect.visible = false
+	if self._container_drag_parent == nil then
+		return
+	end
+	local rel_x, rel_y = self._container_drag_parent.user_info.object:LocalToGlobal(self._edit_screen)
+	local min_x = self._container_drag_x
+	local max_x = event.rel_x
+	if self._container_drag_x > event.rel_x then
+		min_x = event.rel_x
+		max_x = self._container_drag_x
+	end
+	local min_y = self._container_drag_y
+	local max_y = event.rel_y
+	if self._container_drag_y > event.rel_y then
+		min_y = event.rel_y
+		max_y = self._container_drag_y
+	end
+	local list = {}
+	for index, tree_logic in ___ipairs(self._container_drag_parent.childs) do
+		if tree_logic:SelectPickRange(min_x - rel_x, min_y - rel_y, max_x - rel_x, max_y - rel_y) then
+			ALittle.List_Push(list, tree_logic)
+		end
+	end
+	self:ShowHandleQuadList(list)
+	self._container_drag_x = nil
+	self._container_drag_y = nil
+	self._container_drag_parent = nil
+	self._container_drag = true
 end
 
 function IDEUITabChild:HandleSelectRightExItemClick(event)
@@ -792,7 +934,7 @@ function IDEUITabChild:HandleHandleQuadKeyDown(event)
 		if common_parent == nil then
 			common_parent = handle_info.target
 		else
-			child_index = common_parent:GetChildIndex(handle_info.target)
+			child_index = common_parent:GetChildIndex(handle_info.target) + 1
 		end
 		self:RightControlTreePasteImpl(common_parent, nil, child_index)
 		return
@@ -1046,6 +1188,7 @@ function IDEUITabChild:RightControlTreePasteImpl(target, copy_list, child_index,
 			return
 		end
 	end
+	self:ClearHandQuad()
 	local clazz = target.user_info.default.__class
 	if g_IDEEnum.can_add_child_map[clazz] and g_IDEEnum.child_show_map[clazz] == nil then
 		local add_list = {}
@@ -1084,7 +1227,7 @@ function IDEUITabChild:Paste(target)
 		if common_parent == nil then
 			common_parent = target
 		else
-			child_index = common_parent:GetChildIndex(target)
+			child_index = common_parent:GetChildIndex(target) + 1
 		end
 		self:RightControlTreePasteImpl(common_parent, nil, child_index)
 	end

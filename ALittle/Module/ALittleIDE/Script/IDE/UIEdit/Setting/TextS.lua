@@ -52,6 +52,7 @@ function TextS:HandleTextFOCUSOUT(event)
 	else
 		self:DefaultNoStringInputChange("text", false)
 	end
+	self._tree_logic:UpdateDesc()
 end
 
 function TextS:HandleFontPathFOCUSOUT(event)

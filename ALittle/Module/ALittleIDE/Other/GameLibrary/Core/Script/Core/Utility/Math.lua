@@ -15,6 +15,20 @@ local cos = math.cos
 local sin = math.sin
 local tan = math.tan
 local sqrt = math.sqrt
+function Math_Min(x, y)
+	if x < y then
+		return x
+	end
+	return y
+end
+
+function Math_Max(x, y)
+	if x < y then
+		return y
+	end
+	return x
+end
+
 function Math_Sin(v)
 	return sin(v)
 end

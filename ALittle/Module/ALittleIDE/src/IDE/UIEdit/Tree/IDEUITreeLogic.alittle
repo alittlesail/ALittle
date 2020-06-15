@@ -853,7 +853,7 @@ public class IDEUITreeLogic : ALittle.DisplayLayout
 	public fun PasteFromClipboard()
 	{
         if (this.is_tree)
-			this.tab_child.RightControlTreePasteImpl(this, null, null);
+			this.tab_child.RightControlTreePasteImpl(this);
 		else
 		{
 			var common_parent = cast<IDEUITreeLogic>(this.logic_parent);
@@ -876,5 +876,24 @@ public class IDEUITreeLogic : ALittle.DisplayLayout
 	public fun EditPickUp(double x, double y) : IDEUITreeLogic { return null; }
     public fun QuickPickUp(double x, double y, List<IDEUITreeLogic> list) { }
     public fun SelectPickUp(double x, double y) : IDEUITreeLogic, IDEUITreeLogic { return null, null; }
+    public fun SelectPickRange(double min_x, double min_y, double max_x, double max_y) : bool
+	{
+		if (this._user_info.extends) return false;
+	
+		// 检查自己是否被选中
+		var object = this._user_info.object;
+		
+		// 坐标转换
+		var pick_this_1, rel_min_x, rel_min_y = object.PickUpSelf(min_x, min_y);
+		var pick_this_2, rel_max_x, rel_max_y = object.PickUpSelf(max_x, max_y);
+
+		// 检查rel坐标是否在控件的
+		if (rel_min_x >= object.width) return false;
+		if (rel_max_x < 0) return false;
+		if (rel_min_y >= object.height) return false;
+		if (rel_max_y < 0) return false;
+
+		return true;
+	}
 	public fun GetDataListForAdd() : List<string> { return null; }
 }

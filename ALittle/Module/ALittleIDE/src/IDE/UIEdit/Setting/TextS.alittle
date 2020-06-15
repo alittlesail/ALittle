@@ -57,6 +57,7 @@ public class TextS : DisplayObjectS
 			this.DefaultNoStringInputChange("text", true);
 		else
 			this.DefaultNoStringInputChange("text", false);
+		this._tree_logic.UpdateDesc();
 	}
 	//font_path
 	public fun HandleFontPathFOCUSOUT(ALittle.UIEvent event)

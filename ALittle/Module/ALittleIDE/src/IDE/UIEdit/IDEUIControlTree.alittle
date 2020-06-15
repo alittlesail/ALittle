@@ -257,8 +257,11 @@ public class IDEUIControlTree : ALittle.DisplayLayout
 		var user_data:IDEPasteControlUserData = this._paste_control_dialog._user_data;
 		this._paste_control_dialog._user_data = null;
 	
+        // 清理红色矩形
+        user_data.target.tab_child.ClearHandQuad();
+	
 		var add_list = new List<IDEUITreeLogic>();
-		var tree_object = user_data.target.TreePaste(user_data.info, this._control_paste_type.text, user_data.child_index, false, user_data.revoke_bind);
+		var tree_object = user_data.target.TreePaste(user_data.info, this._control_paste_type.text, user_data.child_index + 1, false, user_data.revoke_bind);
 		add_list[1] = tree_object;
 		if (user_data.callback != null) user_data.callback(true, add_list);
 	}

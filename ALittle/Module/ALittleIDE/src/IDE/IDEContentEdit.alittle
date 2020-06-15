@@ -86,18 +86,6 @@ public class IDEContentEdit : ALittle.DisplayLayout
 		return info;
 	}
 	
-	// 获取控件列表
-	public fun GetTabNameList() : List<string>
-	{
-		//遍历
-		var info = new List<string>();
-		var tab_childs = this._main_tab.childs;
-		for (var index, child in tab_childs)
-			ALittle.List_Push(info, cast<IDETabChild>(child._user_data).name);
-
-		return info;
-	}
-	
 	// 获取当前标签的下标
 	public fun GetCurTabIndex() : int
 	{

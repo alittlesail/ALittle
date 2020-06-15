@@ -12,10 +12,6 @@ protected class IDEUIProjectDropdown : ALittle.DisplayLayout
 		g_IDEProject.AddEventListener(this, this.HandleProjectClose);
 	}
 	
-	public fun Shutdown()
-	{
-	}
-
 	private fun HandleProjectOpen(IDEProjectOpenEvent event) { this.UpdateProjectList(); }
 	private fun HandleProjectClose(IDEProjectCloseEvent event) { this.UpdateProjectList(); }
 	

@@ -26,6 +26,9 @@
     <Filter Include="源文件\IDE\UIEdit\Tree">
       <UniqueIdentifier>{7a162a32-da58-4d0b-98bd-fb9fea08da0d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="源文件\IDE\CodeEdit">
+      <UniqueIdentifier>{981c04d6-66d7-40ef-bdab-88e2b06d5544}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Main.alittle">
@@ -62,12 +65,6 @@
       <Filter>源文件\IDE</Filter>
     </None>
     <None Include="src\IDE\UIEdit\IDEUIControlTree.alittle">
-      <Filter>源文件\IDE\UIEdit</Filter>
-    </None>
-    <None Include="src\IDE\UIEdit\IDEUIControlList.alittle">
-      <Filter>源文件\IDE\UIEdit</Filter>
-    </None>
-    <None Include="src\IDE\UIEdit\IDEUIProjectList.alittle">
       <Filter>源文件\IDE\UIEdit</Filter>
     </None>
     <None Include="src\IDE\UIEdit\IDEUIControlAttr.alittle">
@@ -234,6 +231,12 @@
     </None>
     <None Include="src\Dialog\IDEProjectExportDialog.alittle">
       <Filter>源文件\Dialog</Filter>
+    </None>
+    <None Include="src\IDE\IDEUIProjectList.alittle">
+      <Filter>源文件\IDE</Filter>
+    </None>
+    <None Include="src\IDE\IDEUIControlList.alittle">
+      <Filter>源文件\IDE</Filter>
     </None>
   </ItemGroup>
 </Project>

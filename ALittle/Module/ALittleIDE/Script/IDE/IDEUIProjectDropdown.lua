@@ -21,9 +21,6 @@ function IDEUIProjectDropdown:TCtor()
 	g_IDEProject:AddEventListener(___all_struct[-332308624], self, self.HandleProjectClose)
 end
 
-function IDEUIProjectDropdown:Shutdown()
-end
-
 function IDEUIProjectDropdown:HandleProjectOpen(event)
 	self:UpdateProjectList()
 end

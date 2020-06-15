@@ -149,15 +149,6 @@ function IDEContentEdit:GetTabNameMap()
 	return info
 end
 
-function IDEContentEdit:GetTabNameList()
-	local info = {}
-	local tab_childs = self._main_tab.childs
-	for index, child in ___ipairs(tab_childs) do
-		ALittle.List_Push(info, child._user_data.name)
-	end
-	return info
-end
-
 function IDEContentEdit:GetCurTabIndex()
 	return self._main_tab.tab_index
 end

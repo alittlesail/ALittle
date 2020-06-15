@@ -142,24 +142,24 @@ protected class IDEUICenter : ALittle.DisplayLayout
 	public fun HandleShortcutKey()
 	{
 		// 判定Ctrl键是否按下
-		var ctrl = A_UISystem.sym_map[1073742048];
+		var ctrl = A_UISystem.sym_map[ALittle.UIEnumTypes.CTRL];
 		if (ctrl == null) return;
 		// 判断Ctrl+Z
-		var z = A_UISystem.sym_map[122];
+		var z = A_UISystem.sym_map[ALittle.UIEnumTypes.Z];
 		if (z)
 		{
 			this.HandleUndoRevoke(null);
 			return;
 		}
 		// 判断Ctrl+S
-		var s = A_UISystem.sym_map[115];
+		var s = A_UISystem.sym_map[ALittle.UIEnumTypes.S];
 		if (s)
 		{
 			this.HandleSaveCurrent(null);
 			return;
 		}
 		// 判断Ctrl+N
-		var n = A_UISystem.sym_map[110];
+		var n = A_UISystem.sym_map[ALittle.UIEnumTypes.N];
 		if (n)
 		{
 			g_IDECenter.center.control_list.ShowNewControl();

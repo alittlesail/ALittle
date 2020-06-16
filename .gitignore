@@ -22,3 +22,6 @@
 /ALittle/Module/ABrowser/*.cfg
 /ALittle/Module/AEditor/.vs
 /ALittle/Module/AUIPlugin/.vs
+/ALittle/Module/FlappyBird/Export
+/nginx-1.16.1/logs
+/nginx-1.16.1/temp

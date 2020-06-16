@@ -224,5 +224,11 @@
     <None Include="src\Adapter\Lua\memory.alittle">
       <Filter>Adapter\Lua</Filter>
     </None>
+    <None Include="src\Adapter\JavaScript\JHttpFileWxInterface.alittle">
+      <Filter>Adapter\JavaScript</Filter>
+    </None>
+    <None Include="src\Adapter\JavaScript\JHttpWxInterface.alittle">
+      <Filter>Adapter\JavaScript</Filter>
+    </None>
   </ItemGroup>
 </Project>

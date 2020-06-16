@@ -23,7 +23,9 @@
     <None Include="src\Adapter\JavaScript\jbit.alittle" />
     <None Include="src\Adapter\JavaScript\JCsvFile.alittle" />
     <None Include="src\Adapter\JavaScript\JHttpFileInterface.alittle" />
+    <None Include="src\Adapter\JavaScript\JHttpFileWxInterface.alittle" />
     <None Include="src\Adapter\JavaScript\JHttpInterface.alittle" />
+    <None Include="src\Adapter\JavaScript\JHttpWxInterface.alittle" />
     <None Include="src\Adapter\JavaScript\JMessageFactory.alittle" />
     <None Include="src\Adapter\JavaScript\JMsgInterface.alittle" />
     <None Include="src\Adapter\JavaScript\JSchedule.alittle" />

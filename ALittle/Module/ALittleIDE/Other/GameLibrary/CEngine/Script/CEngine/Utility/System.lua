@@ -58,7 +58,6 @@ function System_CalcLandscape(src_width, src_height, flag)
 			scale = 0.5
 		end
 	end
-	ALittle.Log(src_width, src_height, flag, scale)
 	return src_width, src_height, flag, scale
 end
 

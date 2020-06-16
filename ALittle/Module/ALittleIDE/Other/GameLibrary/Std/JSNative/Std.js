@@ -3923,6 +3923,7 @@ JavaScript.JHttpFileWxInterface = JavaScript.Class(ALittle.IHttpFileSenderNative
 		if (content !== undefined) {
 			info.data = content;
 		}
+		info.dataType = "text";
 		info.success = this.HandleCompleted.bind(this);
 		info.fail = this.HandleError.bind(this);
 		this._request = window.wx.request(info);

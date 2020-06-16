@@ -7,6 +7,10 @@ public class Window
 {
     public get innerHeight() : int {}
     public get innerWidth() : int {}
+
+    // 微信小游戏接口
+    public get wx() : wx {}
+    public get canvas() : Canvas {}
 }
 
 public var window:Window;

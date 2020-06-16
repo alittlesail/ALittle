@@ -170,11 +170,10 @@ JavaScript.JSystem_CreateView = function(title, width, height, flag, scale) {
 		return true;
 	}
 	let data = {};
-	let wx = window["wx"];
-	if (wx !== undefined) {
-		let info = wx["getSystemInfoSync"]();
-		__pixel_ratio = info["pixelRatio"];
-		data.view = window["canvas"];
+	if (window.wx !== undefined) {
+		let info = window.wx.getSystemInfoSync();
+		__pixel_ratio = info.pixelRatio;
+		data.view = window.canvas;
 	} else {
 		data.forceCanvas = !PIXI.utils.isWebGLSupported();
 	}
@@ -185,10 +184,10 @@ JavaScript.JSystem_CreateView = function(title, width, height, flag, scale) {
 	document.title = title;
 	A_PixiApp.stage.scale.x = scale;
 	A_PixiApp.stage.scale.y = scale;
-	if (wx !== undefined) {
-		wx["onTouchStart"](JSystem_WXFingerDown);
-		wx["onTouchMove"](JSystem_WXFingerMoved);
-		wx["onTouchEnd"](JSystem_WXFingerUp);
+	if (window.wx !== undefined) {
+		window.wx.onTouchStart(JSystem_WXFingerDown);
+		window.wx.onTouchMove(JSystem_WXFingerMoved);
+		window.wx.onTouchEnd(JSystem_WXFingerUp);
 	} else if (ALittle.System_IsPhone()) {
 		A_PixiApp.view.ontouchstart = JSystem_FingerDown;
 		A_PixiApp.view.ontouchmove = JSystem_FingerMoved;

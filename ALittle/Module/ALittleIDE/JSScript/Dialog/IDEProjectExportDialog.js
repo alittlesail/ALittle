@@ -13,14 +13,13 @@ ALittleIDE.IDEProjectExportDialog = JavaScript.Class(undefined, {
 			ALittleIDE.g_DialogLayer.AddChild(this._export_dialog);
 			this._main_export_tab.DisableAllCloseButton();
 			this._main_export_tab.tab_index = 1;
-			this._export_windows_official.config_key = "export_windows_official";
-			this._export_android_official.config_key = "export_android_official";
-			this._export_ios_official.config_key = "export_ios_official";
 		}
 		this._export_dialog.visible = true;
-		this._export_windows_official.LoadConfigImpl();
-		this._export_android_official.LoadConfigImpl();
-		this._export_ios_official.LoadConfigImpl();
+		this._export_windows.LoadConfigImpl();
+		this._export_android.LoadConfigImpl();
+		this._export_ios.LoadConfigImpl();
+		this._export_web.LoadConfigImpl();
+		this._export_wechat.LoadConfigImpl();
 	},
 }, "ALittleIDE.IDEProjectExportDialog");
 

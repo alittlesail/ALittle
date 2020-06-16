@@ -3,7 +3,7 @@
 
 let JSRequire = function(base_path, url, thread) {
 	if (typeof(require) !== "undefined") {
-		require("../" + base_path + url);
+		require("../../../" + base_path + url);
 		thread(undefined);
 		return;
 	}

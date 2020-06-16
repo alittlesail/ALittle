@@ -265,8 +265,11 @@ class IDEExport
 		var file_list = new List<IDEExportFileInfo>();
         var count = 0;
         var file_info:IDEExportFileInfo = null;
-		file_info = new IDEExportFileInfo(); file_info.path = "Font"; file_info.crypt_mode = false;
-		++ count; file_list[count] = file_info;
+		if (platform != "Web" && platform != "WeChat")
+		{
+			file_info = new IDEExportFileInfo(); file_info.path = "Font"; file_info.crypt_mode = false;
+			++ count; file_list[count] = file_info;   
+        }
 		file_info = new IDEExportFileInfo(); file_info.path = "Other"; file_info.crypt_mode = false;
 		++ count; file_list[count] = file_info;
 		if (platform == "Web" || platform == "WeChat")
@@ -1597,6 +1600,9 @@ class IDEExport
 		{
 			var content = game_js.GetContent();
 			content = ALittle.String_Replace(content, "abcd@project_name@abcd", package_info.project_name);
+			content = ALittle.String_Replace(content, "abcd@res_ip@abcd", package_info.install_info.res_ip);
+			content = ALittle.String_Replace(content, "abcd@res_port@abcd", ALittle.String_ToString(package_info.install_info.res_port));
+			content = ALittle.String_Replace(content, "abcd@res_base_path@abcd", package_info.install_info.res_base_path);
 	
 			ALittle.File_SaveFile(package_info.project_path.."/Export/WeChat/game.js", content, -1);
 			ALittle.File_SaveFile(package_info.project_path.."/Export/Install.js", content, -1);
@@ -1621,12 +1627,12 @@ class IDEExport
 		
 		// 生成game.json
 		var project_config_json = new lua.__CPPAPILocalFile();
-		project_config_json.SetPath(ALittle.File_BaseFilePath().."Export/WeChat/project_config_json.json");
+		project_config_json.SetPath(ALittle.File_BaseFilePath().."Export/WeChat/project.config.json");
 		if (project_config_json.Load())
 		{
 			var content = project_config_json.GetContent();
 
-			ALittle.File_SaveFile(package_info.project_path.."/Export/WeChat/project_config_json.json", content, -1);
+			ALittle.File_SaveFile(package_info.project_path.."/Export/WeChat/project.config.json", content, -1);
 		}
 		return "Install.js";
 	}

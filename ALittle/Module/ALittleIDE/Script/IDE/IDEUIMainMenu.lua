@@ -114,7 +114,6 @@ function IDEUIMainMenu:HandleGenStdAllInOneClick()
 end
 
 function IDEUIMainMenu:HandleGenCEngineAllInOneClick()
-	local all_in_one = {}
 	local base_path = "Module/ALittleIDE/Other/GameLibrary/CEngine/JSScript/"
 	local file_list = {}
 	ALittle.List_Push(file_list, base_path .. "ALittle.js")
@@ -178,18 +177,46 @@ function IDEUIMainMenu:HandleGenCEngineAllInOneClick()
 	ALittle.List_Push(file_list, base_path .. "CEngine/UISystem/LayerManager.js")
 	ALittle.List_Push(file_list, base_path .. "CEngine/UISystem/TextureManager.js")
 	ALittle.List_Push(file_list, base_path .. "CEngine/UISystem/ControlSystem.js")
+	local file_index = 1
+	local file_size = 0
+	local list_index = 1
+	local all_in_one = nil
 	for index, path in ___ipairs(file_list) do
-		all_in_one[index] = ALittle.File_ReadTextFromStdFile(path)
-		if all_in_one[index] == nil then
+		local content = ALittle.File_ReadTextFromStdFile(path)
+		if content == nil then
+			g_AUITool:ShowNotice("提示", "生成失败")
+			return
+		end
+		local len = ALittle.String_Len(content)
+		if file_size + len >= 500 * 1024 then
+			if all_in_one ~= nil then
+				local result = ALittle.File_WriteTextFromStdFile(ALittle.String_Join(all_in_one, "\n"), "Module/ALittleIDE/Other/GameLibrary/CEngine/JSNative/CEngine" .. file_index .. ".js")
+				if not result then
+					g_AUITool:ShowNotice("提示", "生成失败")
+					return
+				end
+			end
+			all_in_one = nil
+			list_index = 1
+			file_size = 0
+			file_index = file_index + 1
+		end
+		if file_size + len < 500 * 1024 then
+			file_size = file_size + (len)
+			if all_in_one == nil then
+				all_in_one = {}
+			end
+			all_in_one[list_index] = content
+			list_index = list_index + 1
+		end
+	end
+	if all_in_one ~= nil then
+		local result = ALittle.File_WriteTextFromStdFile(ALittle.String_Join(all_in_one, "\n"), "Module/ALittleIDE/Other/GameLibrary/CEngine/JSNative/CEngine" .. file_index .. ".js")
+		if not result then
 			g_AUITool:ShowNotice("提示", "生成失败")
 			return
 		end
 	end
-	local result = ALittle.File_WriteTextFromStdFile(ALittle.String_Join(all_in_one, "\n"), "Module/ALittleIDE/Other/GameLibrary/CEngine/JSNative/CEngine.js")
-	if result then
-		g_AUITool:ShowNotice("提示", "生成成功")
-	else
-		g_AUITool:ShowNotice("提示", "生成失败")
-	end
+	g_AUITool:ShowNotice("提示", "生成成功")
 end
 

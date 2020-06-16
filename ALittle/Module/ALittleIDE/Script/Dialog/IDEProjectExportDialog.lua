@@ -17,14 +17,13 @@ function IDEProjectExportDialog:ShowExportProject()
 		g_DialogLayer:AddChild(self._export_dialog)
 		self._main_export_tab:DisableAllCloseButton()
 		self._main_export_tab.tab_index = 1
-		self._export_windows_official.config_key = "export_windows_official"
-		self._export_android_official.config_key = "export_android_official"
-		self._export_ios_official.config_key = "export_ios_official"
 	end
 	self._export_dialog.visible = true
-	self._export_windows_official:LoadConfigImpl()
-	self._export_android_official:LoadConfigImpl()
-	self._export_ios_official:LoadConfigImpl()
+	self._export_windows:LoadConfigImpl()
+	self._export_android:LoadConfigImpl()
+	self._export_ios:LoadConfigImpl()
+	self._export_web:LoadConfigImpl()
+	self._export_wechat:LoadConfigImpl()
 end
 
 g_IDEProjectExportDialog = IDEProjectExportDialog()

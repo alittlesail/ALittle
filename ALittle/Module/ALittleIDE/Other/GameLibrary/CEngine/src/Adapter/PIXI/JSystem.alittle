@@ -168,12 +168,11 @@ public static JSystem_CreateView(string title, int width, int height, int flag, 
     if (A_PixiApp != null) return true;
     
     var data = new PIXI.ApplicationData();
-    var wx = cast<Map<string, any>>(window)["wx"];
-    if (wx != null)
+    if (window.wx != null)
     {
-        var info = cast<Map<string, Functor<():Map<string, int>>>>(wx)["getSystemInfoSync"]();
-        __pixel_ratio = info["pixelRatio"];
-        data.view = cast<Map<string, any>>(window)["canvas"];
+        var info = window.wx.getSystemInfoSync();
+        __pixel_ratio = info.pixelRatio;
+        data.view = window.canvas;
     }
     else
     {
@@ -189,11 +188,11 @@ public static JSystem_CreateView(string title, int width, int height, int flag, 
     A_PixiApp.stage.scale.y = scale;
     
 	// 监听鼠标基本事件
-    if (wx != null)
+    if (window.wx != null)
     {
-        cast<Map<string, Functor<(any)>>>(wx)["onTouchStart"](JSystem_WXFingerDown);
-        cast<Map<string, Functor<(any)>>>(wx)["onTouchMove"](JSystem_WXFingerMoved);
-        cast<Map<string, Functor<(any)>>>(wx)["onTouchEnd"](JSystem_WXFingerUp);
+        window.wx.onTouchStart(JSystem_WXFingerDown);
+        window.wx.onTouchMove(JSystem_WXFingerMoved);
+        window.wx.onTouchEnd(JSystem_WXFingerUp);
     }
 	elseif (ALittle.System_IsPhone())
 	{

@@ -11,7 +11,12 @@ ALittle.System_CalcPortrait = function(src_width, src_height, flag) {
 		src_height = ALittle.Math_Floor(screen_height / screen_width * src_width);
 		flag = ALittle.BitOr(flag, ALittle.UIEnumTypes.VIEW_FULLSCREEN);
 	} else if (platform === "Web") {
-		scale = ALittle.System_GetScreenHeight() / src_height;
+		if (ALittle.BitAnd(flag, ALittle.UIEnumTypes.VIEW_RESIZABLE) > 0) {
+			src_width = ALittle.System_GetScreenWidth();
+			src_height = ALittle.System_GetScreenHeight();
+		} else {
+			scale = ALittle.System_GetScreenHeight() / src_height;
+		}
 	} else if (platform === "WeChat") {
 		let screen_width = ALittle.System_GetScreenWidth();
 		let screen_height = ALittle.System_GetScreenHeight();
@@ -50,11 +55,12 @@ ALittle.System_CalcLandscape = function(src_width, src_height, flag) {
 			scale = 0.5;
 		}
 	}
+	ALittle.Log(src_width, src_height, flag, scale);
 	return [src_width, src_height, flag, scale];
 }
 
 ALittle.System_GetPlatform = function() {
-	if (window["wx"] !== undefined) {
+	if (window.wx !== undefined) {
 		return "WeChat";
 	} else {
 		return "Web";
@@ -87,20 +93,18 @@ ALittle.System_BackProgram = function() {
 }
 
 ALittle.System_GetScreenWidth = function() {
-	if (window["wx"] !== undefined) {
-		let wx = window["wx"];
-		let info = wx["getSystemInfoSync"]();
-		return info["windowWidth"] * info["pixelRatio"];
+	if (window.wx !== undefined) {
+		let info = window.wx.getSystemInfoSync();
+		return info.windowWidth * info.pixelRatio;
 	} else {
 		return window.innerWidth;
 	}
 }
 
 ALittle.System_GetScreenHeight = function() {
-	if (window["wx"] !== undefined) {
-		let wx = window["wx"];
-		let info = wx["getSystemInfoSync"]();
-		return info["windowHeight"] * info["pixelRatio"];
+	if (window.wx !== undefined) {
+		let info = window.wx.getSystemInfoSync();
+		return info.windowHeight * info.pixelRatio;
 	} else {
 		return window.innerHeight;
 	}
@@ -360,7 +364,11 @@ ALittle.CreateMsgSender = function(heartbeat, check_heartbeat, callback) {
 }
 
 ALittle.CreateHttpSender = function(ip, port) {
-	return ALittle.NewObject(JavaScript.Template(ALittle.HttpSenderTemplate, "ALittle.HttpSenderTemplate<JavaScript.JHttpInterface>", JavaScript.JHttpInterface), ip, port);
+	if (window.wx !== undefined) {
+		return ALittle.NewObject(JavaScript.Template(ALittle.HttpSenderTemplate, "ALittle.HttpSenderTemplate<JavaScript.JHttpWxInterface>", JavaScript.JHttpWxInterface), ip, port);
+	} else {
+		return ALittle.NewObject(JavaScript.Template(ALittle.HttpSenderTemplate, "ALittle.HttpSenderTemplate<JavaScript.JHttpInterface>", JavaScript.JHttpInterface), ip, port);
+	}
 }
 
 ALittle.HttpRequest = function(ip, port, method) {
@@ -375,7 +383,11 @@ ALittle.HttpRequest = function(ip, port, method) {
 }
 
 ALittle.CreateHttpFileSender = function(ip, port, file_path, start_size, callback) {
-	return ALittle.NewObject(JavaScript.Template(ALittle.HttpFileSenderTemplate, "ALittle.HttpFileSenderTemplate<JavaScript.JHttpFileInterface>", JavaScript.JHttpFileInterface), ip, port, file_path, start_size, callback);
+	if (window.wx !== undefined) {
+		return ALittle.NewObject(JavaScript.Template(ALittle.HttpFileSenderTemplate, "ALittle.HttpFileSenderTemplate<JavaScript.JHttpFileWxInterface>", JavaScript.JHttpFileWxInterface), ip, port, file_path, start_size, callback);
+	} else {
+		return ALittle.NewObject(JavaScript.Template(ALittle.HttpFileSenderTemplate, "ALittle.HttpFileSenderTemplate<JavaScript.JHttpFileInterface>", JavaScript.JHttpFileInterface), ip, port, file_path, start_size, callback);
+	}
 }
 
 ALittle.HttpDownloadRequest = function(ip, port, file_path, method, callback) {

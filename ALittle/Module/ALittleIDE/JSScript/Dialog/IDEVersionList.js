@@ -831,6 +831,11 @@ ALittleIDE.IDEVersionWeChat = JavaScript.Class(ALittle.DisplayLayout, {
 		} else {
 			this._export_res_base_path.text = "";
 		}
+		if (install_info.screen !== undefined) {
+			this._export_screen.text = install_info.screen;
+		} else {
+			this._export_screen.text = "竖屏";
+		}
 		return true;
 	},
 	SaveConfigImpl : function() {
@@ -851,6 +856,7 @@ ALittleIDE.IDEVersionWeChat = JavaScript.Class(ALittle.DisplayLayout, {
 		install_info.res_ip = this._export_res_ip.text;
 		install_info.res_port = ALittle.Math_ToIntOrZero(this._export_res_port.text);
 		install_info.res_base_path = this._export_res_base_path.text;
+		install_info.screen = this._export_screen.text;
 		ALittleIDE.g_IDEProject.project.config.SetConfig(this.config_key, export_info);
 		return true;
 	},

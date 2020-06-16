@@ -199,11 +199,13 @@ ALittleIDE.IDEExport = JavaScript.Class(undefined, {
 		let file_list = [];
 		let count = 0;
 		let file_info = undefined;
-		file_info = {};
-		file_info.path = "Font";
-		file_info.crypt_mode = false;
-		++ count;
-		file_list[count - 1] = file_info;
+		if (platform !== "Web" && platform !== "WeChat") {
+			file_info = {};
+			file_info.path = "Font";
+			file_info.crypt_mode = false;
+			++ count;
+			file_list[count - 1] = file_info;
+		}
 		file_info = {};
 		file_info.path = "Other";
 		file_info.crypt_mode = false;
@@ -636,6 +638,8 @@ ALittleIDE.IDEExport = JavaScript.Class(undefined, {
 			install_name = this.GenerateIpa(package_info);
 		} else if (package_info.platform === "Web") {
 			install_name = this.GenerateWeb(package_info);
+		} else if (package_info.platform === "WeChat") {
+			install_name = this.GenerateWeChat(package_info);
 		}
 		submit_info.project_path = package_info.project_path;
 		submit_info.export_module_path = package_info.export_module_path;
@@ -1220,15 +1224,35 @@ ALittleIDE.IDEExport = JavaScript.Class(undefined, {
 		} else {
 			ALittle.File_CopyFile(install_ico, package_info.project_path + "/Export/WeChat/favicon.ico");
 		}
-		let file = ALittle.NewObject(lua.__CPPAPILocalFile);
-		file.SetPath(ALittle.File_BaseFilePath() + "Export/WeChat/game.js");
-		if (file.Load()) {
-			let content = file.GetContent();
+		let game_js = ALittle.NewObject(lua.__CPPAPILocalFile);
+		game_js.SetPath(ALittle.File_BaseFilePath() + "Export/WeChat/game.js");
+		if (game_js.Load()) {
+			let content = game_js.GetContent();
 			content = ALittle.String_Replace(content, "abcd@project_name@abcd", package_info.project_name);
-			ALittle.File_SaveFile(package_info.project_path + "/Export/Web/" + package_info.project_name + ".html", content, -1);
-			ALittle.File_SaveFile(package_info.project_path + "/Export/Install.html", content, -1);
+			content = ALittle.String_Replace(content, "abcd@res_ip@abcd", package_info.install_info.res_ip);
+			content = ALittle.String_Replace(content, "abcd@res_port@abcd", ALittle.String_ToString(package_info.install_info.res_port));
+			content = ALittle.String_Replace(content, "abcd@res_base_path@abcd", package_info.install_info.res_base_path);
+			ALittle.File_SaveFile(package_info.project_path + "/Export/WeChat/game.js", content, -1);
+			ALittle.File_SaveFile(package_info.project_path + "/Export/Install.js", content, -1);
 		}
-		return "Install.html";
+		let game_json = ALittle.NewObject(lua.__CPPAPILocalFile);
+		game_json.SetPath(ALittle.File_BaseFilePath() + "Export/WeChat/game.json");
+		if (game_json.Load()) {
+			let content = game_json.GetContent();
+			if (package_info.install_info.screen === "竖屏") {
+				content = ALittle.String_Replace(content, "abcd@screen@abcd", "portrait");
+			} else {
+				content = ALittle.String_Replace(content, "abcd@screen@abcd", "landscape");
+			}
+			ALittle.File_SaveFile(package_info.project_path + "/Export/WeChat/game.json", content, -1);
+		}
+		let project_config_json = ALittle.NewObject(lua.__CPPAPILocalFile);
+		project_config_json.SetPath(ALittle.File_BaseFilePath() + "Export/WeChat/project.config.json");
+		if (project_config_json.Load()) {
+			let content = project_config_json.GetContent();
+			ALittle.File_SaveFile(package_info.project_path + "/Export/WeChat/project.config.json", content, -1);
+		}
+		return "Install.js";
 	},
 }, "ALittleIDE.IDEExport");
 

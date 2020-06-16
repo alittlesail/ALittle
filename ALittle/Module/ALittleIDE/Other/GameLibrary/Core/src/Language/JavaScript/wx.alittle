@@ -1,0 +1,46 @@
+
+[Language(JavaScript)]
+register namespace javascript;
+
+public struct WxSystemInfo
+{
+    int pixelRatio;
+	int windowWidth;
+	int windowHeight;
+}
+
+public struct WxRequestInfo
+{
+    string url; // 必填 开发者服务器接口地址
+	any data;	// string/object/ArrayBuffer 选填 请求的参数
+	string dataType;	// 返回值类型
+	int timeout;	// 超时时间 选填
+	string method;	// GET/POST 选填
+	Map<string, string> header;	// http头
+	Functor<(WxResponseInfo)> success;	// 成功时调用
+	Functor<()> fail;		// 失败时调用
+	Functor<()> complete;	// 不论成功失败都会调用
+}
+
+public struct WxResponseInfo
+{
+    any data;
+	string statusCode;
+	Map<string, string> header;
+}
+
+public class WxRequestTask
+{
+    public fun abort() {}
+}
+
+[Native]
+public class wx
+{
+	public fun getSystemInfoSync() : WxSystemInfo {}
+	public fun onTouchStart(Functor<(javascript.WXDomElementOnTouchEvent)> callback) {}
+	public fun onTouchMove(Functor<(javascript.WXDomElementOnTouchEvent)> callback) {}
+	public fun onTouchEnd(Functor<(javascript.WXDomElementOnTouchEvent)> callback) {}
+	public fun request(WxRequestInfo info) : WxRequestTask {}
+}
+

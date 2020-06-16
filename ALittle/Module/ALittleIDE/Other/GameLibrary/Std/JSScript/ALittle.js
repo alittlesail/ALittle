@@ -34,7 +34,9 @@ window.RequireStd = function(base_path) {
 		await Require(base_path, "Adapter/JavaScript/Timer");
 		await Require(base_path, "Adapter/JavaScript/FileSystem");
 		await Require(base_path, "Adapter/JavaScript/JHttpFileInterface");
+		await Require(base_path, "Adapter/JavaScript/JHttpFileWxInterface");
 		await Require(base_path, "Adapter/JavaScript/JHttpInterface");
+		await Require(base_path, "Adapter/JavaScript/JHttpWxInterface");
 		await Require(base_path, "Adapter/JavaScript/JMessageFactory");
 		await Require(base_path, "Adapter/JavaScript/JMsgInterface");
 		await Require(base_path, "Adapter/JavaScript/JSchedule");

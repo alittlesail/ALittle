@@ -102,7 +102,7 @@ public static System_GetPlatform() : string
     return lua.__CPPAPI_GetPlatform();
     
     [Language(JavaScript)]
-    if (cast<Map<string, any>>(window)["wx"] != null)
+    if (window.wx != null)
         return "WeChat";
     else
         return "Web";
@@ -180,11 +180,10 @@ public static System_GetScreenWidth() : int
     return lua.__CPPAPI_GetScreenWidth();
     
     [Language(JavaScript)]
-    if (cast<Map<string, any>>(window)["wx"] != null)
+    if (window.wx != null)
     {
-        var wx = cast<Map<string, any>>(window)["wx"];
-        var info = cast<Map<string, Functor<():Map<string, int>>>>(wx)["getSystemInfoSync"]();
-        return info["windowWidth"] * info["pixelRatio"];
+        var info = window.wx.getSystemInfoSync();
+        return info.windowWidth * info.pixelRatio;
     }
     else
         return window.innerWidth;
@@ -196,11 +195,10 @@ public static System_GetScreenHeight() : int
     return lua.__CPPAPI_GetScreenHeight();
     
     [Language(JavaScript)]
-    if (cast<Map<string, any>>(window)["wx"] != null)
+    if (window.wx != null)
     {
-        var wx = cast<Map<string, any>>(window)["wx"];
-        var info = cast<Map<string, Functor<():Map<string, int>>>>(wx)["getSystemInfoSync"]();
-        return info["windowHeight"] * info["pixelRatio"];
+        var info = window.wx.getSystemInfoSync();
+        return info.windowHeight * info.pixelRatio;
     }
     else
         return window.innerHeight;
@@ -668,7 +666,10 @@ public static CreateHttpSender(string ip, int port) : IHttpSender
     [Language(Lua)]
     return new HttpSenderTemplate<lua.__CPPAPIHttpInterface>(ip, port);
     [Language(JavaScript)]
-    return new HttpSenderTemplate<JavaScript.JHttpInterface>(ip, port);
+    if (window.wx != null)
+        return new HttpSenderTemplate<JavaScript.JHttpWxInterface>(ip, port);
+    else
+        return new HttpSenderTemplate<JavaScript.JHttpInterface>(ip, port);
 }
 
 public await static HttpRequest(string ip, int port, string method) : string, string
@@ -685,7 +686,10 @@ public static CreateHttpFileSender(string ip, int port, string file_path, int st
     [Language(Lua)]
     return new HttpFileSenderTemplate<lua.__CPPAPIHttpFileInterface>(ip, port, file_path, start_size, callback);
     [Language(JavaScript)]
-    return new HttpFileSenderTemplate<JavaScript.JHttpFileInterface>(ip, port, file_path, start_size, callback);
+    if (window.wx != null)
+        return new HttpFileSenderTemplate<JavaScript.JHttpFileWxInterface>(ip, port, file_path, start_size, callback);
+    else
+        return new HttpFileSenderTemplate<JavaScript.JHttpFileInterface>(ip, port, file_path, start_size, callback);
 }
 
 public await static HttpDownloadRequest(string ip, int port, string file_path, string method, [Nullable] Functor<(IHttpFileSender)> callback) : string

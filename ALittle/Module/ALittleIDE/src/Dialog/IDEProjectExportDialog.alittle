@@ -5,9 +5,11 @@ public class IDEProjectExportDialog
 {
 	private ALittle.DisplayObject _export_dialog;			// 导出项目
 	private ALittle.Tab _main_export_tab;					// 导出Tab控件
-	private IDEVersionWindows _export_windows_official;		// 导出Windows分页
-	private IDEVersionAndroid _export_android_official;		// 导出Android分页
-	private IDEVersioniOS _export_ios_official;				// 导出IOS分页
+	private IDEVersionWindows _export_windows;		// 导出Windows分页
+	private IDEVersionAndroid _export_android;		// 导出Android分页
+	private IDEVersioniOS _export_ios;				// 导出iOS分页
+	private IDEVersionWeb _export_web;				// 导出Web分页
+	private IDEVersionWeChat _export_wechat;				// 导出WeChat分页
 
 	// 处理导出Exe
 	public fun ShowExportProject()
@@ -24,17 +26,14 @@ public class IDEProjectExportDialog
 			g_DialogLayer.AddChild(this._export_dialog);
 			this._main_export_tab.DisableAllCloseButton();
 								  this._main_export_tab.tab_index = 1;
-	
-			// 初始化所有的标签页
-			this._export_windows_official.config_key = "export_windows_official";
-			this._export_android_official.config_key = "export_android_official";
-			this._export_ios_official.config_key = "export_ios_official";
 		}
 		this._export_dialog.visible = true;
 	
-		this._export_windows_official.LoadConfigImpl();
-		this._export_android_official.LoadConfigImpl();
-		this._export_ios_official.LoadConfigImpl();
+		this._export_windows.LoadConfigImpl();
+		this._export_android.LoadConfigImpl();
+		this._export_ios.LoadConfigImpl();
+		this._export_web.LoadConfigImpl();
+		this._export_wechat.LoadConfigImpl();
 	}	
 }
 

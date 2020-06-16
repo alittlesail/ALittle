@@ -34,7 +34,9 @@ window.RequireStd = function(base_path) {
 		await Require(base_path, "Adapter/JavaScript/Timer");
 		await Require(base_path, "Adapter/JavaScript/FileSystem");
 		await Require(base_path, "Adapter/JavaScript/JHttpFileInterface");
+		await Require(base_path, "Adapter/JavaScript/JHttpFileWxInterface");
 		await Require(base_path, "Adapter/JavaScript/JHttpInterface");
+		await Require(base_path, "Adapter/JavaScript/JHttpWxInterface");
 		await Require(base_path, "Adapter/JavaScript/JMessageFactory");
 		await Require(base_path, "Adapter/JavaScript/JMsgInterface");
 		await Require(base_path, "Adapter/JavaScript/JSchedule");
@@ -104,8 +106,8 @@ ALittle.ExecuteCommand = function(cmd) {
 		ALittle.List_Push(out_list, "");
 		ALittle.List_Push(out_list, "help 打印当前模块支持的指令列表");
 		let ___OBJECT_2 = method_list;
-		for (let index = 1; index <= ___OBJECT_2.length; ++index) {
-			let method_name = ___OBJECT_2[index - 1];
+		for (let _ = 1; _ <= ___OBJECT_2.length; ++_) {
+			let method_name = ___OBJECT_2[_ - 1];
 			if (method_name === undefined) break;
 			let info = __all_callback[method_name];
 			let detail = method_name + " ";
@@ -185,8 +187,8 @@ ALittle.ExecuteCommand = function(cmd) {
 	let value_list = [];
 	let ___OBJECT_4 = param_list;
 	for (let ii = 1; ii <= ___OBJECT_4.length; ++ii) {
-		let param = ___OBJECT_4[ii - 1];
-		if (param === undefined) break;
+		let _ = ___OBJECT_4[ii - 1];
+		if (_ === undefined) break;
 		let var_type = info.var_list[ii - 1];
 		if (var_type === "int" || var_type === "long" || var_type === "double") {
 			value_list[ii - 1] = ALittle.Math_ToDouble(param_list[ii - 1]);
@@ -3887,6 +3889,76 @@ JavaScript.JHttpFileInterface = JavaScript.Class(ALittle.IHttpFileSenderNative, 
 if (typeof JavaScript === "undefined") window.JavaScript = {};
 
 
+let __JHTTPWXFILE_MAXID = 0;
+if (ALittle.IHttpFileSenderNative === undefined) throw new Error(" extends class:ALittle.IHttpFileSenderNative is undefined");
+JavaScript.JHttpFileWxInterface = JavaScript.Class(ALittle.IHttpFileSenderNative, {
+	Ctor : function() {
+		++ __JHTTPWXFILE_MAXID;
+		this._id = __JHTTPWXFILE_MAXID;
+	},
+	GetID : function() {
+		return this._id;
+	},
+	SetURL : function(url, file_path, download, start_size) {
+		this._url = url;
+		this._file_path = file_path;
+		this._download = download;
+	},
+	Start : function() {
+		let content = undefined;
+		if (!this._download) {
+			content = JavaScript.File_LoadFile(this._file_path);
+			if (content === undefined) {
+				ALittle.__ALITTLEAPI_HttpFileFailed(this._id, "file is not exist:" + this._file_path);
+				return;
+			}
+		}
+		let info = {};
+		info.url = this._url;
+		if (this._download) {
+			info.method = "GET";
+		} else {
+			info.method = "POST";
+		}
+		if (content !== undefined) {
+			info.data = content;
+		}
+		info.success = this.HandleCompleted.bind(this);
+		info.fail = this.HandleError.bind(this);
+		this._request = window.wx.request(info);
+	},
+	Stop : function() {
+		if (this._request !== undefined) {
+			this._request.abort();
+		}
+	},
+	GetPath : function() {
+		return this._file_path;
+	},
+	GetContent : function() {
+		return this._response.data;
+	},
+	HandleError : function() {
+		ALittle.__ALITTLEAPI_HttpFileFailed(this._id, "wx.request failed");
+	},
+	HandleCompleted : function(info) {
+		if (this._download && !JavaScript.File_SaveFile(this._file_path, info.data)) {
+			ALittle.__ALITTLEAPI_HttpFileFailed(this._id, "file save failed:" + this._file_path);
+			return;
+		}
+		this._response = info;
+		ALittle.__ALITTLEAPI_HttpFileSucceed(this._id);
+	},
+	HandleOnProgress : function(event) {
+		ALittle.__ALITTLEAPI_HttpFileProcess(this._id, event.loaded, event.total);
+	},
+}, "JavaScript.JHttpFileWxInterface");
+
+}
+{
+if (typeof JavaScript === "undefined") window.JavaScript = {};
+
+
 let __JHTTP_MAXID = 0;
 if (ALittle.IHttpSenderNative === undefined) throw new Error(" extends class:ALittle.IHttpSenderNative is undefined");
 JavaScript.JHttpInterface = JavaScript.Class(ALittle.IHttpSenderNative, {
@@ -3929,6 +4001,57 @@ JavaScript.JHttpInterface = JavaScript.Class(ALittle.IHttpSenderNative, {
 		ALittle.__ALITTLEAPI_HttpClientSucceed(this._id);
 	},
 }, "JavaScript.JHttpInterface");
+
+}
+{
+if (typeof JavaScript === "undefined") window.JavaScript = {};
+
+
+let __JHTTPWX_MAXID = 0;
+if (ALittle.IHttpSenderNative === undefined) throw new Error(" extends class:ALittle.IHttpSenderNative is undefined");
+JavaScript.JHttpWxInterface = JavaScript.Class(ALittle.IHttpSenderNative, {
+	Ctor : function() {
+		++ __JHTTPWX_MAXID;
+		this._id = __JHTTPWX_MAXID;
+	},
+	GetID : function() {
+		return this._id;
+	},
+	SetURL : function(url, content) {
+		this._url = url;
+		this._content = content;
+	},
+	Start : function() {
+		let info = {};
+		info.url = this._url;
+		if (this._content === undefined) {
+			info.method = "GET";
+		} else {
+			info.method = "POST";
+		}
+		if (this._content !== undefined) {
+			info.data = this._content;
+		}
+		info.success = this.HandleCompleted.bind(this);
+		info.fail = this.HandleError.bind(this);
+		this._request = window.wx.request(info);
+	},
+	Stop : function() {
+		if (this._request !== undefined) {
+			this._request.abort();
+		}
+	},
+	GetResponse : function() {
+		return this._response.data;
+	},
+	HandleError : function() {
+		ALittle.__ALITTLEAPI_HttpClientFailed(this._id, "wx.request failed");
+	},
+	HandleCompleted : function(info) {
+		this._response = info;
+		ALittle.__ALITTLEAPI_HttpClientSucceed(this._id);
+	},
+}, "JavaScript.JHttpWxInterface");
 
 }
 {

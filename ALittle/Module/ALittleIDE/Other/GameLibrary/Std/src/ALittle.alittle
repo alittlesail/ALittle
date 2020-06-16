@@ -41,7 +41,11 @@ public await static RequireStd(string base_path)
     [Language(JavaScript)]
     Require(base_path, "Adapter/JavaScript/JHttpFileInterface");
     [Language(JavaScript)]
+    Require(base_path, "Adapter/JavaScript/JHttpFileWxInterface");
+    [Language(JavaScript)]
     Require(base_path, "Adapter/JavaScript/JHttpInterface");
+    [Language(JavaScript)]
+    Require(base_path, "Adapter/JavaScript/JHttpWxInterface");
     [Language(JavaScript)]
     Require(base_path, "Adapter/JavaScript/JMessageFactory");
     [Language(JavaScript)]

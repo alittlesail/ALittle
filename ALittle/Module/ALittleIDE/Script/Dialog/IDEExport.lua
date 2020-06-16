@@ -198,11 +198,13 @@ function IDEExport:PackageCommon(export_path, project_path, project_name, platfo
 	local file_list = {}
 	local count = 0
 	local file_info = nil
-	file_info = {}
-	file_info.path = "Font"
-	file_info.crypt_mode = false
-	count = count + 1
-	file_list[count] = file_info
+	if platform ~= "Web" and platform ~= "WeChat" then
+		file_info = {}
+		file_info.path = "Font"
+		file_info.crypt_mode = false
+		count = count + 1
+		file_list[count] = file_info
+	end
 	file_info = {}
 	file_info.path = "Other"
 	file_info.crypt_mode = false
@@ -1192,6 +1194,9 @@ function IDEExport:GenerateWeChat(package_info)
 	if game_js:Load() then
 		local content = game_js:GetContent()
 		content = ALittle.String_Replace(content, "abcd@project_name@abcd", package_info.project_name)
+		content = ALittle.String_Replace(content, "abcd@res_ip@abcd", package_info.install_info.res_ip)
+		content = ALittle.String_Replace(content, "abcd@res_port@abcd", ALittle.String_ToString(package_info.install_info.res_port))
+		content = ALittle.String_Replace(content, "abcd@res_base_path@abcd", package_info.install_info.res_base_path)
 		ALittle.File_SaveFile(package_info.project_path .. "/Export/WeChat/game.js", content, -1)
 		ALittle.File_SaveFile(package_info.project_path .. "/Export/Install.js", content, -1)
 	end
@@ -1207,10 +1212,10 @@ function IDEExport:GenerateWeChat(package_info)
 		ALittle.File_SaveFile(package_info.project_path .. "/Export/WeChat/game.json", content, -1)
 	end
 	local project_config_json = __CPPAPILocalFile()
-	project_config_json:SetPath(ALittle.File_BaseFilePath() .. "Export/WeChat/project_config_json.json")
+	project_config_json:SetPath(ALittle.File_BaseFilePath() .. "Export/WeChat/project.config.json")
 	if project_config_json:Load() then
 		local content = project_config_json:GetContent()
-		ALittle.File_SaveFile(package_info.project_path .. "/Export/WeChat/project_config_json.json", content, -1)
+		ALittle.File_SaveFile(package_info.project_path .. "/Export/WeChat/project.config.json", content, -1)
 	end
 	return "Install.js"
 end

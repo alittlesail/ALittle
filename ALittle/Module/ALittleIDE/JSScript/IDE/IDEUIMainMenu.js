@@ -102,7 +102,6 @@ ALittleIDE.IDEUIMainMenu = JavaScript.Class(ALittle.Linear, {
 		}
 	},
 	HandleGenCEngineAllInOneClick : function() {
-		let all_in_one = [];
 		let base_path = "Module/ALittleIDE/Other/GameLibrary/CEngine/JSScript/";
 		let file_list = [];
 		ALittle.List_Push(file_list, base_path + "ALittle.js");
@@ -166,22 +165,50 @@ ALittleIDE.IDEUIMainMenu = JavaScript.Class(ALittle.Linear, {
 		ALittle.List_Push(file_list, base_path + "CEngine/UISystem/LayerManager.js");
 		ALittle.List_Push(file_list, base_path + "CEngine/UISystem/TextureManager.js");
 		ALittle.List_Push(file_list, base_path + "CEngine/UISystem/ControlSystem.js");
+		let file_index = 1;
+		let file_size = 0;
+		let list_index = 1;
+		let all_in_one = undefined;
 		let ___OBJECT_3 = file_list;
 		for (let index = 1; index <= ___OBJECT_3.length; ++index) {
 			let path = ___OBJECT_3[index - 1];
 			if (path === undefined) break;
-			all_in_one[index - 1] = ALittle.File_ReadTextFromStdFile(path);
-			if (all_in_one[index - 1] === undefined) {
+			let content = ALittle.File_ReadTextFromStdFile(path);
+			if (content === undefined) {
+				g_AUITool.ShowNotice("提示", "生成失败");
+				return;
+			}
+			let len = ALittle.String_Len(content);
+			if (file_size + len >= 500 * 1024) {
+				if (all_in_one !== undefined) {
+					let result = ALittle.File_WriteTextFromStdFile(ALittle.String_Join(all_in_one, "\n"), "Module/ALittleIDE/Other/GameLibrary/CEngine/JSNative/CEngine" + file_index + ".js");
+					if (!result) {
+						g_AUITool.ShowNotice("提示", "生成失败");
+						return;
+					}
+				}
+				all_in_one = undefined;
+				list_index = 1;
+				file_size = 0;
+				++ file_index;
+			}
+			if (file_size + len < 500 * 1024) {
+				file_size = file_size + (len);
+				if (all_in_one === undefined) {
+					all_in_one = [];
+				}
+				all_in_one[list_index - 1] = content;
+				++ list_index;
+			}
+		}
+		if (all_in_one !== undefined) {
+			let result = ALittle.File_WriteTextFromStdFile(ALittle.String_Join(all_in_one, "\n"), "Module/ALittleIDE/Other/GameLibrary/CEngine/JSNative/CEngine" + file_index + ".js");
+			if (!result) {
 				g_AUITool.ShowNotice("提示", "生成失败");
 				return;
 			}
 		}
-		let result = ALittle.File_WriteTextFromStdFile(ALittle.String_Join(all_in_one, "\n"), "Module/ALittleIDE/Other/GameLibrary/CEngine/JSNative/CEngine.js");
-		if (result) {
-			g_AUITool.ShowNotice("提示", "生成成功");
-		} else {
-			g_AUITool.ShowNotice("提示", "生成失败");
-		}
+		g_AUITool.ShowNotice("提示", "生成成功");
 	},
 }, "ALittleIDE.IDEUIMainMenu");
 

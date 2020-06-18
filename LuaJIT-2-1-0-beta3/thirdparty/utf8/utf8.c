@@ -98,5 +98,5 @@ int utf8_CalcByteCountByWordCount(const char* str, int offset, int word_count)
         ++count;
         if (count >= word_count) break;
     }
-    return (int)index;
+    return (int)index - offset;
 }

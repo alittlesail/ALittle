@@ -25,9 +25,10 @@ static int utf8lib_CalcWordCount(lua_State* L)
 static int utf8lib_CalcByteCountByWordCount(lua_State* L)
 {
     const char* str = luaL_checkstring(L, 1);
-    int word_count = (int)luaL_checkinteger(L, 2);
+    int offset = (int)luaL_checkinteger(L, 2);
+    int word_count = (int)luaL_checkinteger(L, 3);
 
-    lua_pushinteger(L, utf8_CalcByteCountByWordCount(str, word_count));
+    lua_pushinteger(L, utf8_CalcByteCountByWordCount(str, offset, word_count));
     return 1;
 }
 

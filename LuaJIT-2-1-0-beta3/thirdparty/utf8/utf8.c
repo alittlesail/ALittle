@@ -78,33 +78,25 @@ const char* utf8_ANSI2UTF8(const char* content)
 
 int utf8_CalcWordCount(const char* str)
 {
-    size_t l = strlen(str);
     int count = 0;
-
     size_t index = 0;
-    while (index < l)
+    while (str[index] != 0)
     {
         index += utf8_GetByteCountOfOneWord(str[index]);
         ++count;
     }
-
     return count;
 }
 
-int utf8_CalcByteCountByWordCount(const char* str, int word_count)
+int utf8_CalcByteCountByWordCount(const char* str, int offset, int word_count)
 {
-    size_t l = strlen(str);
-
-    const char* old_str = str;
-    int length = 0;
-
-    size_t index = 0;
-    while (index < l)
+    int count = 0;
+    size_t index = offset;
+    while (str[index] != 0)
     {
         index += utf8_GetByteCountOfOneWord(str[index]);
-        ++length;
-        if (length >= word_count) break;
+        ++count;
+        if (count >= word_count) break;
     }
-
     return (int)index;
 }

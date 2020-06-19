@@ -17,7 +17,6 @@ function TextS:LoadNatureBase()
 	DisplayObjectS.LoadNatureBase(self)
 	self:LoadBoolData("bold", false, g_IDEEnum.yn_type)
 	self:LoadBoolData("underline", false, g_IDEEnum.yn_type)
-	self:LoadBoolData("outline", false, g_IDEEnum.yn_type)
 	self:LoadBoolData("deleteline", false, g_IDEEnum.yn_type)
 	self:LoadBoolData("italic", false, g_IDEEnum.yn_type)
 	self:LoadValueData("text")
@@ -32,10 +31,6 @@ end
 
 function TextS:HandleUnderLineSELECT_CHANGE(event)
 	self:BoolSelectChange("underline", false, g_IDEEnum.yn_type)
-end
-
-function TextS:HandleOutLineSELECT_CHANGE(event)
-	self:BoolSelectChange("outline", false, g_IDEEnum.yn_type)
 end
 
 function TextS:HandleDeleteLineSELECT_CHANGE(event)

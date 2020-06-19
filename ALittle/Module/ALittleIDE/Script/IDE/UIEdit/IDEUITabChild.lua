@@ -159,7 +159,6 @@ function IDEUITabChild:Ctor(ctrl_sys, name, save)
 	self._tree_search_info.index = 0
 	self._tab_screen._user_data = self
 	self._tree_screen._user_data = self
-	___rawset(self, "_revoke_list", IDERevokeList())
 	___rawset(self, "_tree_loop_x", nil)
 	___rawset(self, "_tree_loop_y", nil)
 	self:AddEventListener(___all_struct[-1676610185], self, self.HandleSavePng)
@@ -191,6 +190,9 @@ function IDEUITabChild:OnClose()
 	g_IDECenter.center.control_anti:RemoveChild(self._anti_panel)
 	g_IDEProject:RemoveEventListener(___all_struct[1787992834], self, self.HandleProjectSettingChanged)
 	g_IDECenter.center:RemoveEventListener(___all_struct[1408180774], self, self.HandleEditScaleChanged)
+	g_IDECenter.center:RemoveEventListener(___all_struct[-506107723], self, self.HandleShowSelectLayer)
+	g_IDECenter.center:RemoveEventListener(___all_struct[1299500288], self, self.HandleShowHandDragLayer)
+	g_IDECenter.center:RemoveEventListener(___all_struct[2103672497], self, self.HandleShowScaleLayer)
 end
 
 function IDEUITabChild:OnOpen()
@@ -237,7 +239,6 @@ function IDEUITabChild:HandleTreeSizeChanged(event)
 end
 
 function IDEUITabChild:HandleSavePng(event)
-	ALittle.Log(event.path)
 	g_Control:SaveControlToFile(self._tree_object.user_info.object, event.path)
 end
 
@@ -309,7 +310,7 @@ function IDEUITabChild:UpdateTitle()
 	if self._save == false then
 		text = text .. " *"
 	end
-	g_IDECenter.center.content_edit.main_tab:SetChildText(self.tab_screen, text)
+	g_IDECenter.center.content_edit.main_tab:SetChildText(self._tab_screen, text)
 end
 
 function IDEUITabChild.__getter:title()

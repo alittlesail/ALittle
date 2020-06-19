@@ -114,26 +114,6 @@ public class IDEUITreeLogic : ALittle.DisplayLayout
 		else
 			this._tab_child.ShowHandleQuad(this);
 	}
-
-	// 鼠标移入，显示绑定信息
-	public fun HandleMoveIn(ALittle.UIMoveInEvent event)
-	{
-		// g_IDEControlTree.ShowTip(this._user_info.default.__class);
-		// g_IDEControlTree.MoveTip(A_UISystem.mouse_x + 10, A_UISystem.mouse_y + 20);
-	}
-
-	// 鼠标移动，也移动绑定信息
-	public fun HandleMouseMove(ALittle.UIMouseMoveEvent event)
-	{
-		// g_IDEControlTree.MoveTip(A_UISystem.mouse_x + 10, A_UISystem.mouse_y + 20);
-	}
-
-	// 鼠标移除，也移除绑定信息
-	public fun HandleMoveOut(ALittle.UIMoveOutEvent event)
-	{
-		// g_IDEControlTree.HideTip();
-	}
-
 	// 拖拽item
 	public fun HandleDragBegin(ALittle.UIButtonDragBeginEvent event)
 	{

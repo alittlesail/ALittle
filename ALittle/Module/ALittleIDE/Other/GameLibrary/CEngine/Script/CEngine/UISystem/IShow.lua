@@ -103,9 +103,6 @@ end
 function IDisplayObject:SetDeleteline(value)
 end
 
-function IDisplayObject:SetOutline(value)
-end
-
 function IDisplayObject:GetRealWidth()
 	return 0
 end

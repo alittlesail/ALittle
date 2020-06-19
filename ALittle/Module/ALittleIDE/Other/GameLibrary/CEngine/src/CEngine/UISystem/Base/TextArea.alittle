@@ -10,7 +10,6 @@ public class TextArea : DisplayObject
     private bool _italic;
     private bool _underline;
     private bool _deleteline;
-    private bool _outline;
     private string _font_path;
     private int _font_size;
     private int _flip;
@@ -25,7 +24,6 @@ public class TextArea : DisplayObject
         this._italic = false;       // 是否显示斜体
         this._underline = false;        // 是否显示下划线
         this._deleteline = false;    // 是否显示删除线
-        this._outline = false;        // 是否为镂空
         // this._font_path = null;
         // this._font_size = null;
     
@@ -142,19 +140,6 @@ public class TextArea : DisplayObject
     public get deleteline() : bool
     {
         return this._deleteline;
-    }
-
-    // 设置镂空
-    public set outline(bool value)
-    {
-        if (this._outline == value)
-            return;
-        this._outline = value;
-        this._show.SetOutline(value);
-    }
-    public get outline() : bool
-    {
-        return this._outline;
     }
     
     // 设置水平对齐

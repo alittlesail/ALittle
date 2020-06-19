@@ -24,18 +24,6 @@ name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
 type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
 option_map = {}
 })
-ALittle.RegStruct(-1202439334, "ALittle.UIMoveOutEvent", {
-name = "ALittle.UIMoveOutEvent", ns_name = "ALittle", rl_name = "UIMoveOutEvent", hash_code = -1202439334,
-name_list = {"target"},
-type_list = {"ALittle.DisplayObject"},
-option_map = {}
-})
-ALittle.RegStruct(-1001723540, "ALittle.UIMouseMoveEvent", {
-name = "ALittle.UIMouseMoveEvent", ns_name = "ALittle", rl_name = "UIMouseMoveEvent", hash_code = -1001723540,
-name_list = {"target","abs_x","abs_y","rel_x","rel_y"},
-type_list = {"ALittle.DisplayObject","double","double","double","double"},
-option_map = {}
-})
 ALittle.RegStruct(-641444818, "ALittle.UIRButtonDownEvent", {
 name = "ALittle.UIRButtonDownEvent", ns_name = "ALittle", rl_name = "UIRButtonDownEvent", hash_code = -641444818,
 name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
@@ -58,12 +46,6 @@ ALittle.RegStruct(150587926, "ALittle.UIButtonDragEndEvent", {
 name = "ALittle.UIButtonDragEndEvent", ns_name = "ALittle", rl_name = "UIButtonDragEndEvent", hash_code = 150587926,
 name_list = {"target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"},
 type_list = {"ALittle.DisplayObject","double","double","double","double","double","double"},
-option_map = {}
-})
-ALittle.RegStruct(544684311, "ALittle.UIMoveInEvent", {
-name = "ALittle.UIMoveInEvent", ns_name = "ALittle", rl_name = "UIMoveInEvent", hash_code = 544684311,
-name_list = {"target"},
-type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
 ALittle.RegStruct(1301789264, "ALittle.UIButtonDragBeginEvent", {
@@ -94,9 +76,6 @@ function IDEUITree:Ctor(ctrl_sys, user_info, tab_child)
 	self._item_button.group = self._tab_child.group
 	self._item_button:AddEventListener(___all_struct[1883782801], self, self.HandleLButtonDown)
 	self._item_button:AddEventListener(___all_struct[-449066808], self, self.HandleClick)
-	self._item_button:AddEventListener(___all_struct[544684311], self, self.HandleMoveIn)
-	self._item_button:AddEventListener(___all_struct[-1001723540], self, self.HandleMouseMove)
-	self._item_button:AddEventListener(___all_struct[-1202439334], self, self.HandleMoveOut)
 	self._item_button:AddEventListener(___all_struct[1301789264], self, self.HandleDragBegin)
 	self._item_button:AddEventListener(___all_struct[1337289812], self, self.HandleDrag)
 	self._item_button:AddEventListener(___all_struct[150587926], self, self.HandleDragEnd)
@@ -435,7 +414,9 @@ function IDEUITree:AddChild(child, index)
 		return false
 	end
 	child._logic_parent = self
-	self:DispatchEvent(___all_struct[-431205740], {})
+	if self._body.abs_visible then
+		self:DispatchEvent(___all_struct[-431205740], {})
+	end
 	return true
 end
 
@@ -443,13 +424,17 @@ function IDEUITree:RemoveChild(child)
 	if self._body:RemoveChild(child) == false then
 		return false
 	end
-	self:DispatchEvent(___all_struct[-431205740], {})
+	if self._body.abs_visible then
+		self:DispatchEvent(___all_struct[-431205740], {})
+	end
 	return true
 end
 
 function IDEUITree:RemoveAllChild()
 	self._body:RemoveAllChild()
-	self:DispatchEvent(___all_struct[-431205740], {})
+	if self._body.abs_visible then
+		self:DispatchEvent(___all_struct[-431205740], {})
+	end
 end
 
 function IDEUITree.__getter:width()

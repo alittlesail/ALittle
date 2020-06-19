@@ -144,6 +144,15 @@ function IDEProject:NewProject(name, window_width, window_height, font_path, fon
 	return true
 end
 
+function IDEProject:RefreshProject()
+	if self._project == nil then
+		return
+	end
+	local name = self._project.name
+	self:CloseProject()
+	self:OpenProject(name)
+end
+
 function IDEProject:OpenProject(name)
 	if name == "" or name == nil then
 		return "请输入项目名"

@@ -88,7 +88,6 @@ public class JDisplayObject : ALittle.IDisplayObject
     public fun SetItalic(bool value) {}
     public fun SetUnderline(bool value) {}
     public fun SetDeleteline(bool value) {}
-    public fun SetOutline(bool value) {}
     public fun GetRealWidth() : int { return 0; }
     public fun GetRealHeight() : int { return 0; }
     public fun GetFontHeight() : int { return 0; }

@@ -1,0 +1,80 @@
+
+namespace ALittleIDE;
+
+struct IDECodeModuleInfo
+{
+    string module_name;
+	string root_path;
+}
+
+public class IDEUICodeList : ALittle.DisplayLayout
+{	
+	private ALittle.ScrollScreen _code_scroll_screen;
+	private ALittle.DisplayObject _code_search_key;
+	private ALittle.DisplayObject _code_search_type;
+	private ALittle.TextRadioButtonGroup _group;
+
+	public ctor(ALittle.ControlSystem ctrl_sys)
+	{
+		this._group = new ALittle.TextRadioButtonGroup();
+	}
+
+	public fun TCtor()
+	{
+        g_IDEProject.AddEventListener(this, this.HandleProjectOpen);
+        g_IDEProject.AddEventListener(this, this.HandleProjectClose);
+    }
+
+	private fun HandleProjectClose(IDEProjectCloseEvent event)
+	{
+    }
+
+	private fun HandleProjectOpen(IDEProjectOpenEvent event)
+	{
+		// 读取项目配置
+		var module_map = g_IDEConfig.GetConfig("code_module", new Map<string, IDECodeModuleInfo>());
+		// 删除掉基本库
+		module_map["Core"] = null;
+		module_map["Std"] = null;
+		module_map["CEngine"] = null;
+		module_map[event.name] = null;
+
+		// 添加自己的项目
+		var info = new IDECodeTreeUserInfo();
+		info.module_name = event.name;
+		info.name = "src";
+		info.path = ALittle.File_BaseFilePath().."Module/"..event.name.."/src";
+		info.group = this._group;
+		info.root = true;
+		this._code_scroll_screen.AddChild(new IDECodeTree(g_Control, info));
+		
+		var std_list = ["Core", "Std", "CEngine"];
+		for (var index, name in std_list)
+		{
+			info = new IDECodeTreeUserInfo();
+			info.module_name = name;
+			info.name = "src";
+			info.path = ALittle.File_BaseFilePath().."Module/ALittleIDE/Other/GameLibrary/"..name.."/src";
+			info.group = this._group;
+			info.root = true;
+			this._code_scroll_screen.AddChild(new IDECodeTree(g_Control, info));   
+        }
+
+		// 添加其他模块
+		for (var index, module in module_map)
+		{
+			info = new IDECodeTreeUserInfo();
+			info.module_name = module.module_name;
+			info.name = ALittle.File_GetFileNameByPath(module.root_path);
+			info.path = module.root_path;
+			info.group = this._group;
+			var tree = new IDECodeTree(g_Control, info);
+			this._code_scroll_screen.AddChild(tree);
+        }
+    }
+
+	private fun HandleCodeSearchClick(ALittle.UIEvent event)
+	{
+        
+    }
+}

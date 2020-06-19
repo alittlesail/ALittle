@@ -46,8 +46,8 @@ function IDEUIProjectList:HandleProjectItemRightClick(event)
 	local menu = AUIPlugin.AUIRightMenu()
 	menu:AddItem("打开", Lua.Bind(self.HandleRightProjectOpen, self, event.target))
 	menu:AddItem("关闭", Lua.Bind(self.HandleRightProjectClose, self, event.target))
-	menu:AddItem("刷新", Lua.Bind(self.HandleRightProjectRefresh, self, event.target))
 	menu:AddItem("移除", Lua.Bind(self.HandleRightProjectRemove, self, event.target))
+	menu:Show()
 end
 
 function IDEUIProjectList:HandleRightProjectOpen(target)
@@ -89,23 +89,4 @@ function IDEUIProjectList:HandleRightProjectClose(target)
 	g_IDEProject:CloseProject()
 end
 IDEUIProjectList.HandleRightProjectClose = Lua.CoWrap(IDEUIProjectList.HandleRightProjectClose)
-
-function IDEUIProjectList:RefreshProject()
-	if not g_IDECenter.center.content_edit:IsSaveAll() then
-		local result = g_AUITool:SaveNotice("提示", "是否保存当前项目?")
-		if result == "YES" then
-			g_IDECenter.center.content_edit:SaveAllTab()
-		end
-	end
-	g_IDECenter:RefreshProject()
-end
-IDEUIProjectList.RefreshProject = Lua.CoWrap(IDEUIProjectList.RefreshProject)
-
-function IDEUIProjectList:HandleRightProjectRefresh(target)
-	local project_name = target.text
-	if g_IDEProject.project == nil or g_IDEProject.project.name ~= project_name then
-		return
-	end
-	self:RefreshProject()
-end
 

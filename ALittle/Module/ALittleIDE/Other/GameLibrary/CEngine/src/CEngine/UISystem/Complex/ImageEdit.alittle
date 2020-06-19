@@ -214,17 +214,7 @@ public class ImageEdit : DisplayLayout
     {
         return this._show_edit.deleteline;
     }
-    
-    // 设置镂空
-    public set outline(bool value)
-    {
-        this._show_edit.outline = value;
-    }
-    public get outline() : bool
-    {
-        return this._show_edit.outline;
-    }
-    
+
     // 光标颜色
     public set cursor_red(double value)
     {

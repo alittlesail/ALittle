@@ -18,7 +18,6 @@ public class TextInput : DisplayObject
     private bool _italic;
     private bool _underline;
     private bool _deleteline;
-    private bool _outline;
     private bool _password_mode;
     private string _font_path;
     private int _font_size;
@@ -64,7 +63,6 @@ public class TextInput : DisplayObject
         this._italic = false;
         this._underline = false;
         this._deleteline = false;
-        this._outline = false;
         this._password_mode = false;
         // this._font_path = null;
         // this._font_size = null;
@@ -285,19 +283,6 @@ public class TextInput : DisplayObject
     public get deleteline() : bool
     {
         return this._deleteline;
-    }
-
-    // 设置镂空
-    public set outline(bool value)
-    {
-        if (this._outline == value)
-            return;
-        this._outline = value;
-        this._show.SetOutline(value);
-    }
-    public get outline() : bool
-    {
-        return this._outline;
     }
     
     // 设置密码模式

@@ -138,15 +138,6 @@ function IDEUITreeLogic:HandleClick(event)
 	end
 end
 
-function IDEUITreeLogic:HandleMoveIn(event)
-end
-
-function IDEUITreeLogic:HandleMouseMove(event)
-end
-
-function IDEUITreeLogic:HandleMoveOut(event)
-end
-
 function IDEUITreeLogic:HandleDragBegin(event)
 	self._drag_ctrl = (A_UISystem.sym_map[1073742048] ~= nil or A_UISystem.sym_map[1073742052] ~= nil)
 	if self._drag_ctrl == false then

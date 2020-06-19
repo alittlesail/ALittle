@@ -134,9 +134,6 @@ public class IDEUITabChild : IDETabChild
 		this._tab_screen._user_data = this;
 		this._tree_screen._user_data = this;
 	
-		// 撤销列表
-		this._revoke_list = new IDERevokeList();
-	
 		// 左侧控件树滚动Loop
 		this._tree_loop_x = null;
 		this._tree_loop_y = null;
@@ -176,6 +173,9 @@ public class IDEUITabChild : IDETabChild
 		g_IDECenter.center.control_anti.RemoveChild(this._anti_panel);
         g_IDEProject.RemoveEventListener(this, this.HandleProjectSettingChanged);
         g_IDECenter.center.RemoveEventListener(this, this.HandleEditScaleChanged);
+        g_IDECenter.center.RemoveEventListener(this, this.HandleShowSelectLayer);
+        g_IDECenter.center.RemoveEventListener(this, this.HandleShowHandDragLayer);
+        g_IDECenter.center.RemoveEventListener(this, this.HandleShowScaleLayer);
     }
 
     private fun OnOpen()
@@ -228,7 +228,6 @@ public class IDEUITabChild : IDETabChild
 
     private fun HandleSavePng(ALittle.UISystemSaveFileEvent event)
     {
-        ALittle.Log(event.path);
         g_Control.SaveControlToFile(this._tree_object.user_info.object, event.path);
     }
 	
@@ -278,7 +277,7 @@ public class IDEUITabChild : IDETabChild
                 text =  "..."..ALittle.String_Sub(this._name, -15, -1);
 		}
         if (this._save == false) text = text.." *";
-        g_IDECenter.center.content_edit.main_tab.SetChildText(this.tab_screen, text);
+        g_IDECenter.center.content_edit.main_tab.SetChildText(this._tab_screen, text);
 	}
 	
 	public get title() : string

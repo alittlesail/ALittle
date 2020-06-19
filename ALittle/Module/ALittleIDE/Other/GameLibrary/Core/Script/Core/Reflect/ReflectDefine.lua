@@ -22,6 +22,9 @@ function NewObject(clazz, ...)
 end
 
 function Cast(T, O, object)
+	if object == nil then
+		return nil
+	end
 	local o_info = (object).__class
 	local t_info = T
 	if o_info ~= t_info then

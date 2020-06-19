@@ -106,9 +106,6 @@ function RichInput:CompareTextInfo(a, b)
 	if a.deleteline ~= b.deleteline then
 		return false
 	end
-	if a.outline ~= b.outline then
-		return false
-	end
 	return true
 end
 
@@ -124,7 +121,6 @@ function RichInput:CopyTextInfo(b)
 	a.italic = b.italic
 	a.underline = b.underline
 	a.deleteline = b.deleteline
-	a.outline = b.outline
 	return a
 end
 
@@ -141,7 +137,6 @@ function RichInput:InitTextInfo()
 	a.italic = font_text.italic
 	a.underline = font_text.underline
 	a.deleteline = font_text.deleteline
-	a.outline = font_text.outline
 	return a
 end
 
@@ -156,7 +151,6 @@ function RichInput:SetDrawText(font_text)
 	draw_text.italic = font_text.italic
 	draw_text.underline = font_text.underline
 	draw_text.deleteline = font_text.deleteline
-	draw_text.outline = font_text.outline
 end
 
 function RichInput:SplitText(char_info, char_info_list, char_info_list_count)
@@ -355,10 +349,6 @@ function RichInput:UpdateFontText()
 	end
 	if font_text.deleteline ~= text_info.deleteline then
 		font_text.deleteline = text_info.deleteline
-		is_change = true
-	end
-	if font_text.outline ~= text_info.outline then
-		font_text.outline = text_info.outline
 		is_change = true
 	end
 	if is_change then
@@ -594,17 +584,6 @@ function RichInput.__setter:font_italic(value)
 	self._default_text.italic = value
 	if self._char_info_list[1] ~= nil then
 		self._char_info_list[1].text_info.italic = value
-	end
-end
-
-function RichInput.__setter:font_outline(value)
-	if self._font_text.outline == value then
-		return
-	end
-	self._font_text.outline = value
-	self._default_text.outline = value
-	if self._char_info_list[1] ~= nil then
-		self._char_info_list[1].text_info.outline = value
 	end
 end
 

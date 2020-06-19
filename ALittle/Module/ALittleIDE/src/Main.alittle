@@ -51,7 +51,7 @@ public async static __Module_Setup(ALittle.DisplayLayout layer_group, ALittle.Co
     g_ModuleBasePath = module_base_path;
     g_ModuleBasePathEx = ALittle.File_BaseFilePath()..module_base_path;
     g_ScriptBasePath = script_base_path;
-    
+
 	// 加载UI插件
     A_ModuleSystem.LoadPlugin("AUIPlugin");
     
@@ -65,10 +65,10 @@ public async static __Module_Setup(ALittle.DisplayLayout layer_group, ALittle.Co
 	ALittle.System_SetThreadCount(5);
     
     // 创建主层
-	g_MainLayer = new ALittle.DisplayLayout(g_Control);
-	g_MainLayer.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
-	g_MainLayer.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
-	g_LayerGroup.AddChild(g_MainLayer);
+    g_MainLayer = new ALittle.DisplayLayout(g_Control);
+    g_MainLayer.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+    g_MainLayer.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+    g_LayerGroup.AddChild(g_MainLayer);
     // 创建对话框层
 	g_DialogLayer = new ALittle.DisplayLayout(g_Control);
 	g_DialogLayer.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
@@ -79,6 +79,8 @@ public async static __Module_Setup(ALittle.DisplayLayout layer_group, ALittle.Co
 	alittle.RequireFromPaths(g_ScriptBasePath, "Data/", paths("src/Data"));	
     alittle.RequireFromPaths(script_base_path, "Dialog/", paths("src/Dialog"));
     alittle.RequireFromPaths(script_base_path, "IDE/", paths("src/IDE"));
+
+    // 初始化
     g_IDECenter.Setup();
 }
 

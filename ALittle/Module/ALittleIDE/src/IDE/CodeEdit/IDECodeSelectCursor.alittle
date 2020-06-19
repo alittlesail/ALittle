@@ -1,0 +1,249 @@
+
+namespace ALittleIDE;
+
+public class IDECodeSelectCursor
+{
+    private IDECodeTabChild _tab_child;
+
+    // 选中光标的范围
+    private int _it_line_start;
+    private int _it_char_start;
+    private int _it_line_end;
+    private int _it_char_end;
+    private bool _clear_quad = true;
+
+	public ctor(IDECodeTabChild tab_child)
+	{
+        this._tab_child = tab_child;
+    }
+
+    private fun ClearQuad()
+    {
+        if (this._clear_quad) return;
+        this._clear_quad = true;
+
+        if (this._it_line_start != null && this._it_line_end != null)
+        {
+            if (this._it_line_start < this._it_line_end)
+            {
+                for (var i = this._it_line_start; i <= this._it_line_end; 1)
+                this._tab_child.line_list[i].quad.visible = false;
+            }
+            else
+            {
+                for (var i = this._it_line_end; i <= this._it_line_start; 1)
+                this._tab_child.line_list[i].quad.visible = false;
+            }
+        }
+    }
+
+    private fun SetQuad()
+    {
+        var it_line_start = this._it_line_start;
+        var it_char_start = this._it_char_start;
+        var it_line_end = this._it_line_end;
+        var it_char_end = this._it_char_end;
+
+        var swap = false;
+        if (it_line_start > it_line_end)
+            swap = true;
+        elseif (it_line_start == it_line_end)
+            swap = it_char_start > it_char_end;
+        if (swap)
+        {
+            var temp = it_line_start;
+            it_line_start = it_line_end;
+            it_line_end = temp;
+
+            temp = it_char_start;
+            it_char_start = it_char_end;
+            it_char_end = temp;
+        }
+
+        if (it_line_start == it_line_end)
+        {
+            if (this._it_char_start == this._it_char_end) return;
+            var line = this._tab_child.line_list[it_line_start];
+            if (line.char_count == 0) return;
+            line.quad.visible = true;
+            this._clear_quad = false;
+            line.quad.x = line.char_list[it_char_start + 1].pre_width;
+            line.quad.width = line.char_list[it_char_end].pre_width + line.char_list[it_char_end].width - line.quad.x;
+            return;
+        }
+
+        for (var i = it_line_start; i <= it_line_end; 1)
+        {
+            var line = this._tab_child.line_list[i];
+            if (line.char_count > 0)
+            {
+                if (i == it_line_start)
+                {
+                    if (it_char_start < line.char_count)
+                    {
+                        line.quad.visible = true;
+                        this._clear_quad = false;
+                        line.quad.x = line.char_list[it_char_start + 1].pre_width;
+                        line.quad.width = line.text.x + line.text.width - line.quad.x;   
+                    }
+                }
+                else if (i == it_line_end)
+                {
+                    if (it_char_end > 0)
+                    {
+                        line.quad.visible = true;
+                        this._clear_quad = false;
+                        line.quad.x = 0;
+                        line.quad.width = line.char_list[it_char_end].pre_width + line.char_list[it_char_end].width;   
+                    }
+                }
+                else
+                {
+                    line.quad.visible = true;
+                    this._clear_quad = false;
+                    line.quad.x = 0;
+                    line.quad.width = line.text.x + line.text.width;
+                }   
+            }
+        }
+    }
+
+    public get line_start() : int { return this._it_line_start; }
+    public get char_start() : int { return this._it_char_start; }
+    public get line_end() : int { return this._it_line_end; }
+    public get char_end() : int { return this._it_char_end; }
+
+    public fun SetSelect(int line_start, int char_start, int line_end, int char_end)
+    {
+        this.ClearQuad();
+        
+        this._it_line_start = line_start;
+        this._it_char_start = char_start;
+        if (this._it_line_start == null) return;
+
+        this._it_line_end = line_end;
+        this._it_char_end = char_end;
+        this.SetQuad();
+    }
+
+    // 向左移动一格
+    public fun OffsetLeft()
+    {
+
+    }
+
+    // 向右移动一格
+    public fun OffsetRight()
+    {
+
+    }
+
+    // 向第一个字符
+    public fun OffsetHome()
+    {
+        
+    }
+
+    // 向最后一列
+    public fun OffsetEnd()
+    {
+
+    }
+
+    public fun StartSelect(double x, double y)
+    {
+        this.Hide();
+        if (this._tab_child.line_count == 0)
+            return;
+        this._it_line_start, this._it_char_start = this._tab_child.CalcLineAndChar(x, y);
+    }
+
+    public fun UpdateSelect(double x, double y)
+    {
+        this.ClearQuad();
+        if (this._it_line_start == null) return;
+
+        this._it_line_end, this._it_char_end = this._tab_child.CalcLineAndChar(x, y);
+        ALittle.Log(this._it_line_end, this._it_char_end);
+        this.SetQuad();
+    }
+
+    // 复制选中文本
+    public fun GetSelectText() : string
+    {
+        if (this._it_line_start == null) return null;
+        
+        var it_line_start = this._it_line_start;
+        var it_char_start = this._it_char_start;
+        var it_line_end = this._it_line_end;
+        var it_char_end = this._it_char_end;
+
+        var swap = false;
+        if (it_line_start > it_line_end)
+            swap = true;
+        elseif (it_line_start == it_line_end)
+            swap = it_char_start > it_char_end;
+        if (swap)
+        {
+            var temp = it_line_start;
+            it_line_start = it_line_end;
+            it_line_end = temp;
+
+            temp = it_char_start;
+            it_char_start = it_char_end;
+            it_char_end = temp;
+        }
+
+        if (it_line_start == it_line_end)
+        {
+            if (this._it_char_start == this._it_char_end) return "";
+            var line = this._tab_child.line_list[it_line_start];
+            if (line.char_count == 0) return "";
+            var text = "";
+            for (var i = it_char_start + 1; i <= it_char_end; 1)
+                text = text..line.char_list[i].char;
+            return text;
+        }
+
+        var text = "";
+        for (var i = it_line_start; i <= it_line_end; 1)
+        {
+            var line = this._tab_child.line_list[i];
+            if (line.char_count > 0)
+            {
+                if (i == it_line_start)
+                {
+                    if (it_char_start < line.char_count)
+                    {
+                        for (var j = it_char_start + 1; j <= line.char_count; 1)
+                            text = text..line.char_list[j].char;
+                    }
+                }
+                else if (i == it_line_end)
+                {
+                    if (it_char_end > 0)
+                    {
+                        for (var j = 1; j <= it_char_end; 1)
+                            text = text..line.char_list[j].char;
+                    }
+                }
+                else
+                {
+                    for (var j = 1; j <= line.char_count; 1)
+                        text = text..line.char_list[j].char;
+                }   
+            }
+        }
+        return text;
+    }
+
+	public fun Hide()
+	{
+        this.ClearQuad();
+        this._clear_quad = true;
+        this._it_line_start = null;
+        this._it_char_start = null;
+        this._it_line_end = null;
+        this._it_char_end = null;
+    }
+}

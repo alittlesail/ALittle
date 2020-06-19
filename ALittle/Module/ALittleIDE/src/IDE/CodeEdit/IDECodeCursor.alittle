@@ -1,0 +1,108 @@
+
+namespace ALittleIDE;
+
+public class IDECodeCursor : ALittle.Quad
+{
+	private double _flash_alpha = 0;
+    private double _flash_dir = 0.05;
+    private ALittle.LoopFunction _loop;
+
+    private IDECodeTabChild _tab_child;
+
+    // 单光标的位置
+    private int _it_line = 1;
+    private int _it_char = 0;
+
+	public ctor(ALittle.ControlSystem ctrl_sys, IDECodeTabChild tab_child)
+	{
+        this._tab_child = tab_child;
+    }
+
+    public get line() : int { return this._it_line; }
+    public get char() : int { return this._it_char; }
+
+	public fun Show([Nullable]double x, [Nullable]double y)
+	{
+        if (this._loop == null) this._loop = new ALittle.LoopFunction(bind(this.Update, this), -1, 1, 1);
+        if (!A_LoopSystem.HasUpdater(this._loop)) A_LoopSystem.AddUpdater(this._loop);
+        this.visible = true;
+    }
+
+    public fun SetOffsetXY(double x, double y, [Nullable]bool show)
+    {
+        if (this._tab_child.line_count <= 0)
+        {
+            this._it_line = 1;
+            this._it_char = 0;
+        }
+        else
+        {
+            this._it_line, this._it_char = this._tab_child.CalcLineAndChar(x, y);
+        }
+
+        this.y = (this._it_line - 1) * this._tab_child.line_height;
+        var line = this._tab_child.line_list[this._it_line];
+        if (line == null || this._it_char == 0)
+            this.x = 0;
+        else
+            this.x = line.char_list[this._it_char].pre_width + line.char_list[this._it_char].width;
+        if (show == null || show)
+            this.Show();
+    }
+
+    public fun SetLineChar(int it_line, int it_char, [Nullable]bool show)
+    {
+        this._it_line = it_line;
+        this._it_char = it_char;
+        
+        this.y = (this._it_line - 1) * this._tab_child.line_height;
+        var line = this._tab_child.line_list[this._it_line];
+        if (line == null || this._it_char == 0)
+            this.x = 0;
+        else
+            this.x = line.char_list[this._it_char].pre_width + line.char_list[this._it_char].width;
+        if (show == null || show)
+            this.Show();
+    }
+
+    // 向左移动一格
+    public fun OffsetLeft()
+    {
+        
+    }
+
+    // 向右移动一格
+    public fun OffsetRight()
+    {
+        
+    }
+
+    // 向第一个字符
+    public fun OffsetHome()
+    {
+
+    }
+
+    // 向最后一列
+    public fun OffsetEnd()
+    {
+
+    }
+
+	public fun Hide()
+	{
+        if (this._loop != null) this._loop.Stop();
+        this.visible = false;
+    }
+
+    private fun Update()
+    {
+        if (this.abs_visible)
+        {
+            this._flash_alpha = this._flash_alpha + this._flash_dir;
+            if ((this._flash_dir < 0 && this._flash_alpha < -0.05) || (this._flash_dir > 0 && this._flash_alpha > 1.5))
+                this._flash_dir = -this._flash_dir;
+            this.alpha = this._flash_alpha;
+        }
+    }
+}

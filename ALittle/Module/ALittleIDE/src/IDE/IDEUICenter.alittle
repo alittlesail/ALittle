@@ -61,6 +61,7 @@ protected class IDEUICenter : ALittle.DisplayLayout
 
 	private IDEUIControlTree _control_tree;	// 控件树
 	private IDEUIControlList _control_list;	// 控件库
+	private IDEUICodeList    _code_list;	// 代码库
 	private IDEUIProjectList _project_list;	// 项目库
 	private IDEUIControlAttr _control_attr;	// 控件属性
 	private IDEUIControlAnti _control_anti;	// 动画编辑器
@@ -87,6 +88,7 @@ protected class IDEUICenter : ALittle.DisplayLayout
 	
 	public get control_tree() : IDEUIControlTree { return this._control_tree; }
 	public get control_list() : IDEUIControlList { return this._control_list; }
+	public get code_list() : IDEUICodeList { return this._code_list; }
 	public get project_list() : IDEUIProjectList { return this._project_list; }
 	public get control_attr() : IDEUIControlAttr { return this._control_attr; }
 	public get control_anti() : IDEUIControlAnti { return this._control_anti; }
@@ -142,24 +144,24 @@ protected class IDEUICenter : ALittle.DisplayLayout
 	public fun HandleShortcutKey()
 	{
 		// 判定Ctrl键是否按下
-		var ctrl = A_UISystem.sym_map[ALittle.UIEnumTypes.CTRL];
+		var ctrl = A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_CTRL];
 		if (ctrl == null) return;
 		// 判断Ctrl+Z
-		var z = A_UISystem.sym_map[ALittle.UIEnumTypes.Z];
+		var z = A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_Z];
 		if (z)
 		{
 			this.HandleUndoRevoke(null);
 			return;
 		}
 		// 判断Ctrl+S
-		var s = A_UISystem.sym_map[ALittle.UIEnumTypes.S];
+		var s = A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_S];
 		if (s)
 		{
 			this.HandleSaveCurrent(null);
 			return;
 		}
 		// 判断Ctrl+N
-		var n = A_UISystem.sym_map[ALittle.UIEnumTypes.N];
+		var n = A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_N];
 		if (n)
 		{
 			g_IDECenter.center.control_list.ShowNewControl();

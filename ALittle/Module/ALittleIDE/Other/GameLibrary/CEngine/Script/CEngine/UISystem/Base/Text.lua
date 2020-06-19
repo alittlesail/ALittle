@@ -18,7 +18,6 @@ function Text:Ctor(ctrl_sys)
 	___rawset(self, "_italic", false)
 	___rawset(self, "_underline", false)
 	___rawset(self, "_deleteline", false)
-	___rawset(self, "_outline", false)
 	___rawset(self, "_flip", 0)
 	___rawset(self, "_show", __CPPAPIText())
 	A_LoadTextureManager:RegisterRedrawControl(self)
@@ -121,19 +120,6 @@ end
 
 function Text.__getter:deleteline()
 	return self._deleteline
-end
-
-function Text.__setter:outline(value)
-	if self._outline == value then
-		return
-	end
-	self._outline = value
-	self._show:SetOutline(value)
-	self:RejuseSize()
-end
-
-function Text.__getter:outline()
-	return self._outline
 end
 
 function Text:RejuseSize()

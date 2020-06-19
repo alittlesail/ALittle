@@ -7,12 +7,14 @@ public class IDETabChild : ALittle.UIEventDispatcher
 	private bool _save;             // 是否已保存
 	
 	private IDERevokeList _revoke_list;         // 撤销操作列表
+    private ALittle.ControlSystem _ctrl_sys;	// 控件系统
 
 	public ctor(ALittle.ControlSystem ctrl_sys, string name, bool save)
 	{
-		// 保存信息
 		this._name = name;
 		this._save = save;
+		// 撤销列表
+		this._revoke_list = new IDERevokeList();
     }
 	
 	public get name() : string { return this._name; }
@@ -97,7 +99,7 @@ public class IDEContentEdit : ALittle.DisplayLayout
 	{
 		if (this._main_tab.tab_index == index) return;
 		this._main_tab.tab_index = index;
-		this.ChangeTabEditControl(this._cur_tab, this._main_tab.tab);
+		this.ChangeTabEdit(this._cur_tab, this._main_tab.tab);
 	}
 	
 	// 检查是否已经都保存了
@@ -114,7 +116,7 @@ public class IDEContentEdit : ALittle.DisplayLayout
 	}
 	
 	// 切换tab编辑, 从from切换到to
-	public fun ChangeTabEditControl(ALittle.DisplayObject child_from, ALittle.DisplayObject child_to)
+	public fun ChangeTabEdit(ALittle.DisplayObject child_from, ALittle.DisplayObject child_to)
 	{
 		if (child_from == child_to) return;
 		// 把控件树区域的结构保存到from的info, 判断是否为Tab栏的第一个子控件
@@ -142,7 +144,7 @@ public class IDEContentEdit : ALittle.DisplayLayout
 		this._main_tab.RemoveChild(child);
 
 		// 切换到当前标签页
-		this.ChangeTabEditControl(null, this._main_tab.tab);
+		this.ChangeTabEdit(null, this._main_tab.tab);
 	}
 
 	// 保存某个分页
@@ -155,7 +157,7 @@ public class IDEContentEdit : ALittle.DisplayLayout
 	// 关闭全部分页
 	public fun CloseAllTab()
 	{
-		this.ChangeTabEditControl(this._main_tab.tab, null);
+		this.ChangeTabEdit(this._main_tab.tab, null);
 
 		for (var k, child in this._main_tab.childs)
 		{
@@ -191,7 +193,7 @@ public class IDEContentEdit : ALittle.DisplayLayout
 	// Tab栏的选中项发生改变时执行的操作
 	private fun HandleMainTabSelectChange(ALittle.UISelectChangedEvent event)
 	{
-		this.ChangeTabEditControl(this._cur_tab, this._main_tab.tab);
+		this.ChangeTabEdit(this._cur_tab, this._main_tab.tab);
 	}
 	
 	// Tab栏中有子控件被关闭执行的操作
@@ -255,7 +257,7 @@ public class IDEContentEdit : ALittle.DisplayLayout
 		this._main_tab.SetChildIndex(child_to, 1);
 		this._main_tab.tab = child_to;
 		// 切换
-		this.ChangeTabEditControl(child_from, child_to);
+		this.ChangeTabEdit(child_from, child_to);
 	}
 
 	public async fun CloseTabWithAsk(ALittle.DisplayObject child)
@@ -320,7 +322,7 @@ public class IDEContentEdit : ALittle.DisplayLayout
 		//切换
 		this._main_tab.tab = tab_child.tab_screen;
 		//切换时的数据操作
-		this.ChangeTabEditControl(child_from, this._main_tab.tab);
+		this.ChangeTabEdit(child_from, this._main_tab.tab);
 		// 设置标题
 		tab_child.UpdateTitle();
 		// 设置焦点
@@ -343,7 +345,7 @@ public class IDEContentEdit : ALittle.DisplayLayout
 		//切换
 		this._main_tab.tab = tab_child.tab_screen;
 		// 切换时的数据操作
-		this.ChangeTabEditControl(child_from, this._main_tab.tab);
+		this.ChangeTabEdit(child_from, this._main_tab.tab);
 		// 设置标题
 		tab_child.UpdateTitle();
 		// 设置焦点
@@ -363,7 +365,7 @@ public class IDEContentEdit : ALittle.DisplayLayout
 			// 设置目标标签页
 			this._main_tab.tab = child;
 			// 切换时数据操作
-			this.ChangeTabEditControl(child_from, this._main_tab.tab);
+			this.ChangeTabEdit(child_from, this._main_tab.tab);
 			return child._user_data;
 		}
 	
@@ -379,7 +381,7 @@ public class IDEContentEdit : ALittle.DisplayLayout
 		//切换
 		this._main_tab.tab = tab_child.tab_screen;
 		// 切换时的数据操作
-		this.ChangeTabEditControl(child_from, this._main_tab.tab);
+		this.ChangeTabEdit(child_from, this._main_tab.tab);
 		// 设置标题
 		tab_child.UpdateTitle();
 		// 如果根节点不是容器，那么直接设置焦点
@@ -388,4 +390,26 @@ public class IDEContentEdit : ALittle.DisplayLayout
 
 		return tab_child;
 	}
+
+	// 选择文件，并编辑
+	public fun StartEditCodeBySelect(string name, IDECodeTreeUserInfo info) : IDECodeTabChild
+	{
+		// 获取当前正在编辑的标签页
+		var child_from = this._main_tab.tab;
+		var tab_child = new IDECodeTabChild(g_Control, name, true);
+		tab_child.CreateBySelect(info);
+	
+		// 添加到界面中去
+		this._main_tab.AddChild(tab_child.tab_screen, 1);
+		// 发送打开事件
+		tab_child.OnOpen();
+		//切换
+		this._main_tab.tab = tab_child.tab_screen;
+		// 切换时的数据操作
+		this.ChangeTabEdit(child_from, this._main_tab.tab);
+		// 设置标题
+		tab_child.UpdateTitle();
+
+		return tab_child;
+    }
 }

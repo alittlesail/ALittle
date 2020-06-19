@@ -1,0 +1,11 @@
+
+namespace ALittleIDE;
+
+protected struct IDECodeTreeUserInfo
+{
+    string module_name;
+    string path;
+    string name;
+    bool root;
+    ALittle.TextRadioButtonGroup group;
+}

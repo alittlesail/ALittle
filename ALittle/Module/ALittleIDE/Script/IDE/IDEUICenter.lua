@@ -65,6 +65,10 @@ function IDEUICenter.__getter:control_list()
 	return self._control_list
 end
 
+function IDEUICenter.__getter:code_list()
+	return self._code_list
+end
+
 function IDEUICenter.__getter:project_list()
 	return self._project_list
 end

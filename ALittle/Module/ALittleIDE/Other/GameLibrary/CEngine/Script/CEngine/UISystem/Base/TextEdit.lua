@@ -25,7 +25,6 @@ function TextEdit:Ctor(ctrl_sys)
 	___rawset(self, "_italic", false)
 	___rawset(self, "_underline", false)
 	___rawset(self, "_deleteline", false)
-	___rawset(self, "_outline", false)
 	___rawset(self, "_default_text", "")
 	___rawset(self, "_default_text_alpha", 1)
 	___rawset(self, "_flip", 0)
@@ -226,18 +225,6 @@ end
 
 function TextEdit.__getter:deleteline()
 	return self._deleteline
-end
-
-function TextEdit.__setter:outline(value)
-	if self._outline == value then
-		return
-	end
-	self._outline = value
-	self._show:SetOutline(value)
-end
-
-function TextEdit.__getter:outline()
-	return self._outline
 end
 
 function TextEdit:SetCursorToEnd()

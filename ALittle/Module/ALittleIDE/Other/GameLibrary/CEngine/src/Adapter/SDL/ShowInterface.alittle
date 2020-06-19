@@ -58,7 +58,6 @@ public class __CPPAPIDisplayObject : ALittle.IDisplayObject
     public fun SetItalic(bool value) {}
     public fun SetUnderline(bool value) {}
     public fun SetDeleteline(bool value) {}
-    public fun SetOutline(bool value) {}
     public fun GetRealWidth() : int {}
     public fun GetRealHeight() : int {}
     public fun GetFontHeight() : int {}

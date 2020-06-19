@@ -22,9 +22,6 @@ public class IDEUITree : IDEUITreeLogic
 		this._item_button.group = this._tab_child.group;
 		this._item_button.AddEventListener(this, this.HandleLButtonDown);
 		this._item_button.AddEventListener(this, this.HandleClick);
-		this._item_button.AddEventListener(this, this.HandleMoveIn);
-		this._item_button.AddEventListener(this, this.HandleMouseMove);
-		this._item_button.AddEventListener(this, this.HandleMoveOut);
 		this._item_button.AddEventListener(this, this.HandleDragBegin);
 		this._item_button.AddEventListener(this, this.HandleDrag);
 		this._item_button.AddEventListener(this, this.HandleDragEnd);
@@ -375,7 +372,8 @@ public class IDEUITree : IDEUITreeLogic
 		if (this._body.AddChild(child, index) == false)
 			return false;
 		child._logic_parent = this;
-		this.DispatchEvent(new ALittle.UIResizeEvent());
+		if (this._body.abs_visible)
+			this.DispatchEvent(new ALittle.UIResizeEvent());
 		return true;
 	}
 	
@@ -383,15 +381,16 @@ public class IDEUITree : IDEUITreeLogic
 	{
 		if (this._body.RemoveChild(child) == false)
 			return false;
-		this.DispatchEvent(new ALittle.UIResizeEvent());
-
+		if (this._body.abs_visible)
+			this.DispatchEvent(new ALittle.UIResizeEvent());
 		return true;
 	}
 	
 	public fun RemoveAllChild()
 	{
 		this._body.RemoveAllChild();
-		this.DispatchEvent(new ALittle.UIResizeEvent());
+		if (this._body.abs_visible)
+			this.DispatchEvent(new ALittle.UIResizeEvent());
 	}
 	
 	//////////////////////////////////////////////////////////////////////

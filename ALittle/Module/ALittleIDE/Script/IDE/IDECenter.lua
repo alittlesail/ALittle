@@ -7,9 +7,6 @@ local ___ipairs = ipairs
 
 IDECenter = Lua.Class(nil, "ALittleIDE.IDECenter")
 
-function IDECenter:Ctor()
-end
-
 function IDECenter:Setup()
 	local ___COROUTINE = coroutine.running()
 	g_Control:CreateControl("ide_main_scene", self, g_MainLayer)
@@ -31,13 +28,15 @@ function IDECenter.__getter:center()
 end
 
 function IDECenter:RefreshProject()
-	if g_IDEProject.project == nil then
-		return
+	if not self._center.content_edit:IsSaveAll() then
+		local result = g_AUITool:SaveNotice("提示", "是否保存当前项目?")
+		if result == "YES" then
+			self._center.content_edit:SaveAllTab()
+		end
 	end
-	local project_name = g_IDEProject.project.name
-	g_IDEProject:CloseProject()
-	g_IDEProject:OpenProject(project_name)
+	g_IDEProject:RefreshProject()
 end
+IDECenter.RefreshProject = Lua.CoWrap(IDECenter.RefreshProject)
 
 function IDECenter:HandleShortcutKey(mod, sym, scancode)
 	if A_UISystem.sym_map[1073741886] then

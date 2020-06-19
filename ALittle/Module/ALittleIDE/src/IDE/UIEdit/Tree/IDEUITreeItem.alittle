@@ -71,9 +71,6 @@ public class IDEUITreeItem : IDEUITreeLogic
 		this._item_button.selected = false;
 		this._item_button.group = this._tab_child.group;
 		this._item_button.AddEventListener(this, this.HandleClick);
-		this._item_button.AddEventListener(this, this.HandleMoveIn);
-		this._item_button.AddEventListener(this, this.HandleMouseMove);
-		this._item_button.AddEventListener(this, this.HandleMoveOut);
 		this._item_button.AddEventListener(this, this.HandleDragBegin);
 		this._item_button.AddEventListener(this, this.HandleDrag);
 		this._item_button.AddEventListener(this, this.HandleDragEnd);

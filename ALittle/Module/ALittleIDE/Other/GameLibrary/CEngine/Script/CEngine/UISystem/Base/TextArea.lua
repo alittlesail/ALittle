@@ -16,7 +16,6 @@ function TextArea:Ctor(ctrl_sys)
 	___rawset(self, "_italic", false)
 	___rawset(self, "_underline", false)
 	___rawset(self, "_deleteline", false)
-	___rawset(self, "_outline", false)
 	___rawset(self, "_flip", 0)
 	___rawset(self, "_halign_type", UIEnumTypes.HALIGN_LEFT)
 	___rawset(self, "_valign_type", UIEnumTypes.VALIGN_TOP)
@@ -114,18 +113,6 @@ end
 
 function TextArea.__getter:deleteline()
 	return self._deleteline
-end
-
-function TextArea.__setter:outline(value)
-	if self._outline == value then
-		return
-	end
-	self._outline = value
-	self._show:SetOutline(value)
-end
-
-function TextArea.__getter:outline()
-	return self._outline
 end
 
 function TextArea.__setter:halign(value)

@@ -47,9 +47,6 @@ function IDEAttrTextDialog:HandleEditChanged(event)
 	if self._underline.text == "是" then
 		info.underline = true
 	end
-	if self._outline.text == "是" then
-		info.outline = true
-	end
 	if self._deleteline.text == "是" then
 		info.deleteline = true
 	end
@@ -91,10 +88,6 @@ function IDEAttrTextDialog:ResetText()
 	self._underline.text = "否"
 	if info.underline then
 		self._underline.text = "是"
-	end
-	self._outline.text = "否"
-	if info.outline then
-		self._outline.text = "是"
 	end
 	self._deleteline.text = "否"
 	if info.deleteline then

@@ -93,9 +93,6 @@ public class RichInput : DisplayLayout
         if (a.deleteline != b.deleteline)
             return false;
             
-        if (a.outline != b.outline)
-            return false;
-            
         return true;
     }
 
@@ -113,7 +110,6 @@ public class RichInput : DisplayLayout
         a.italic = b.italic;
         a.underline = b.underline;
         a.deleteline = b.deleteline;
-        a.outline = b.outline;
     
         return a;
     }
@@ -134,7 +130,6 @@ public class RichInput : DisplayLayout
         a.italic = font_text.italic;
         a.underline = font_text.underline;
         a.deleteline = font_text.deleteline;
-        a.outline = font_text.outline;
     
         return a;
     }
@@ -152,7 +147,6 @@ public class RichInput : DisplayLayout
         draw_text.italic = font_text.italic;
         draw_text.underline = font_text.underline;
         draw_text.deleteline = font_text.deleteline;
-        draw_text.outline = font_text.outline;
     }
     
     // 拆分char_list
@@ -423,11 +417,6 @@ public class RichInput : DisplayLayout
         if (font_text.deleteline != text_info.deleteline)
         {
             font_text.deleteline = text_info.deleteline;
-            is_change = true;
-        }
-        if (font_text.outline != text_info.outline)
-        {
-            font_text.outline = text_info.outline;
             is_change = true;
         }
         if (is_change)
@@ -806,17 +795,6 @@ public class RichInput : DisplayLayout
         this._default_text.italic = value;
         if (this._char_info_list[1] != null)
             this._char_info_list[1].text_info.italic = value;
-    }
-    
-    // 设置镂空
-    public set font_outline(bool value)
-    {
-        if (this._font_text.outline == value)
-            return;
-        this._font_text.outline = value;
-        this._default_text.outline = value;
-        if (this._char_info_list[1] != null)
-            this._char_info_list[1].text_info.outline = value;
     }
     
     // 设置字体，以及字体大小,获取默认行高

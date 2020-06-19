@@ -1,13 +1,6 @@
 
 namespace ALittleIDE;
 
-// 控件拷贝信息
-public struct IDEControlCopyInfo
-{
-	int index;					// 控件位置
-	ALittle.DisplayInfo info;	// 控件信息
-}
-
 // 检查控件名是否合法
 public static IDEUtility_CheckName(string name) : string
 {

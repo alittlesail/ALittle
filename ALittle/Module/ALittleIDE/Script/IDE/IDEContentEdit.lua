@@ -55,6 +55,7 @@ IDETabChild = Lua.Class(ALittle.UIEventDispatcher, "ALittleIDE.IDETabChild")
 function IDETabChild:Ctor(ctrl_sys, name, save)
 	___rawset(self, "_name", name)
 	___rawset(self, "_save", save)
+	___rawset(self, "_revoke_list", IDERevokeList())
 end
 
 function IDETabChild.__getter:name()
@@ -158,7 +159,7 @@ function IDEContentEdit:SetCurTabIndex(index)
 		return
 	end
 	self._main_tab.tab_index = index
-	self:ChangeTabEditControl(self._cur_tab, self._main_tab.tab)
+	self:ChangeTabEdit(self._cur_tab, self._main_tab.tab)
 end
 
 function IDEContentEdit:IsSaveAll()
@@ -171,7 +172,7 @@ function IDEContentEdit:IsSaveAll()
 	return true
 end
 
-function IDEContentEdit:ChangeTabEditControl(child_from, child_to)
+function IDEContentEdit:ChangeTabEdit(child_from, child_to)
 	if child_from == child_to then
 		return
 	end
@@ -190,7 +191,7 @@ function IDEContentEdit:CloseTab(child)
 	local tab_child = child._user_data
 	tab_child:OnClose()
 	self._main_tab:RemoveChild(child)
-	self:ChangeTabEditControl(nil, self._main_tab.tab)
+	self:ChangeTabEdit(nil, self._main_tab.tab)
 end
 
 function IDEContentEdit:SaveTab(child)
@@ -199,7 +200,7 @@ function IDEContentEdit:SaveTab(child)
 end
 
 function IDEContentEdit:CloseAllTab()
-	self:ChangeTabEditControl(self._main_tab.tab, nil)
+	self:ChangeTabEdit(self._main_tab.tab, nil)
 	for k, child in ___ipairs(self._main_tab.childs) do
 		local tab_child = child._user_data
 		tab_child:OnClose()
@@ -226,7 +227,7 @@ function IDEContentEdit:CanDelete(control_name)
 end
 
 function IDEContentEdit:HandleMainTabSelectChange(event)
-	self:ChangeTabEditControl(self._cur_tab, self._main_tab.tab)
+	self:ChangeTabEdit(self._cur_tab, self._main_tab.tab)
 end
 
 function IDEContentEdit:MainTabTabClose(child)
@@ -278,7 +279,7 @@ function IDEContentEdit:SelectItemClick(child_to)
 	local child_from = self._main_tab.tab
 	self._main_tab:SetChildIndex(child_to, 1)
 	self._main_tab.tab = child_to
-	self:ChangeTabEditControl(child_from, child_to)
+	self:ChangeTabEdit(child_from, child_to)
 end
 
 function IDEContentEdit:CloseTabWithAsk(child)
@@ -338,7 +339,7 @@ function IDEContentEdit:StartEditControlByNew(name, type)
 	self._main_tab:AddChild(tab_child.tab_screen)
 	tab_child:OnOpen()
 	self._main_tab.tab = tab_child.tab_screen
-	self:ChangeTabEditControl(child_from, self._main_tab.tab)
+	self:ChangeTabEdit(child_from, self._main_tab.tab)
 	tab_child:UpdateTitle()
 	tab_child:ShowHandleQuad(tab_child.tree_object)
 	return tab_child
@@ -351,7 +352,7 @@ function IDEContentEdit:StartEditControlByExtends(name, extends_v)
 	self._main_tab:AddChild(tab_child.tab_screen)
 	tab_child:OnOpen()
 	self._main_tab.tab = tab_child.tab_screen
-	self:ChangeTabEditControl(child_from, self._main_tab.tab)
+	self:ChangeTabEdit(child_from, self._main_tab.tab)
 	tab_child:UpdateTitle()
 	tab_child:ShowHandleQuad(tab_child.tree_object)
 	return tab_child
@@ -362,7 +363,7 @@ function IDEContentEdit:StartEditControlBySelect(name, info)
 	if child ~= nil then
 		local child_from = self._main_tab.tab
 		self._main_tab.tab = child
-		self:ChangeTabEditControl(child_from, self._main_tab.tab)
+		self:ChangeTabEdit(child_from, self._main_tab.tab)
 		return child._user_data
 	end
 	local child_from = self._main_tab.tab
@@ -371,11 +372,23 @@ function IDEContentEdit:StartEditControlBySelect(name, info)
 	self._main_tab:AddChild(tab_child.tab_screen, 1)
 	tab_child:OnOpen()
 	self._main_tab.tab = tab_child.tab_screen
-	self:ChangeTabEditControl(child_from, self._main_tab.tab)
+	self:ChangeTabEdit(child_from, self._main_tab.tab)
 	tab_child:UpdateTitle()
 	if not tab_child.tree_object.is_tree then
 		tab_child:ShowHandleQuad(tab_child.tree_object)
 	end
+	return tab_child
+end
+
+function IDEContentEdit:StartEditCodeBySelect(name, info)
+	local child_from = self._main_tab.tab
+	local tab_child = IDECodeTabChild(g_Control, name, true)
+	tab_child:CreateBySelect(info)
+	self._main_tab:AddChild(tab_child.tab_screen, 1)
+	tab_child:OnOpen()
+	self._main_tab.tab = tab_child.tab_screen
+	self:ChangeTabEdit(child_from, self._main_tab.tab)
+	tab_child:UpdateTitle()
 	return tab_child
 end
 

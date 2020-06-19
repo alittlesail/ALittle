@@ -17,7 +17,6 @@ public class TextS : DisplayObjectS
 	
 		this.LoadBoolData("bold", false, g_IDEEnum.yn_type);
 		this.LoadBoolData("underline", false, g_IDEEnum.yn_type);
-		this.LoadBoolData("outline", false, g_IDEEnum.yn_type);
 		this.LoadBoolData("deleteline", false, g_IDEEnum.yn_type);
 		this.LoadBoolData("italic", false, g_IDEEnum.yn_type);
 		this.LoadValueData("text");
@@ -34,11 +33,6 @@ public class TextS : DisplayObjectS
 	public fun HandleUnderLineSELECT_CHANGE(ALittle.UIEvent event)
 	{
 		this.BoolSelectChange("underline", false, g_IDEEnum.yn_type);
-	}
-	//outline
-	public fun HandleOutLineSELECT_CHANGE(ALittle.UIEvent event)
-	{
-		this.BoolSelectChange("outline", false, g_IDEEnum.yn_type);
 	}
 	//deleteline
 	public fun HandleDeleteLineSELECT_CHANGE(ALittle.UIEvent event)

@@ -184,14 +184,6 @@ function ImageInput.__getter:deleteline()
 	return self._show_input.deleteline
 end
 
-function ImageInput.__setter:outline(value)
-	self._show_input.outline = value
-end
-
-function ImageInput.__getter:outline()
-	return self._show_input.outline
-end
-
 function ImageInput.__setter:password_mode(value)
 	self._show_input.password_mode = value
 end

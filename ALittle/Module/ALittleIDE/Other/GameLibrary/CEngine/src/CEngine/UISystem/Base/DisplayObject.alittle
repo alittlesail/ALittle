@@ -46,7 +46,6 @@ public struct DisplayInfo
     bool italic;
     bool underline;
     bool deleteline;
-    bool outline;
     
     double x;
     double y;

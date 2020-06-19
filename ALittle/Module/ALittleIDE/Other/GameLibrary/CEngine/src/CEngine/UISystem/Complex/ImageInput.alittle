@@ -237,16 +237,6 @@ public class ImageInput : DisplayLayout
         return this._show_input.deleteline;
     }
     
-    // 设置镂空
-    public set outline(bool value)
-    {
-        this._show_input.outline = value;
-    }
-    public get outline() : bool
-    {
-        return this._show_input.outline;
-    }
-    
     // 设置密码模式
     public set password_mode(bool value)
     {

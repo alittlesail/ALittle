@@ -40,18 +40,18 @@ public class IDEUIControlList : ALittle.DisplayLayout
         g_IDEProject.AddEventListener(this, this.HandleProjectClose);
     }
 
-	public fun HandleProjectClose(IDEProjectCloseEvent event)
+	private fun HandleProjectClose(IDEProjectCloseEvent event)
 	{
         this.ClearControlItem();
     }
 
-	public static ControlInfoCmp(IDEControlInfo a, IDEControlInfo b) : bool
+	private static ControlInfoCmp(IDEControlInfo a, IDEControlInfo b) : bool
 	{
 		return a.name < b.name;
 	}
 
 	// 处理控件搜索
-	public fun HandleControlSearchClick(ALittle.UIEvent event)
+	private fun HandleControlSearchClick(ALittle.UIEvent event)
 	{
 		// 移除所有子控件
 		this._control_scroll_screen.RemoveAllChild();
@@ -163,14 +163,14 @@ public class IDEUIControlList : ALittle.DisplayLayout
 		if (search_count == 1)
 			g_IDECenter.center.content_edit.StartEditControlBySelect(last_control_info.name, last_control_info.info);
 	}
-	public fun HandleControlItemClick(ALittle.UIClickEvent event)
+	private fun HandleControlItemClick(ALittle.UIClickEvent event)
 	{
 		var info:IDEControlItemUserData = event.target._user_data;
 		info.presee = false;
 		event.target.selected = true;
 		g_IDECenter.center.content_edit.StartEditControlBySelect(info.control_info.name, info.control_info.info);
 	}
-	public fun HandleControlPreseeMoveIn(ALittle.UIMoveInEvent event)
+	private fun HandleControlPreseeMoveIn(ALittle.UIMoveInEvent event)
 	{
 		var info:IDEControlItemUserData = event.target._user_data;
 		info.presee = true;
@@ -178,7 +178,7 @@ public class IDEUIControlList : ALittle.DisplayLayout
 		info.pre_index = g_IDECenter.center.content_edit.GetCurTabIndex();
 		g_IDECenter.center.content_edit.StartEditControlBySelect(info.control_info.name, info.control_info.info);
 	}
-	public fun HandleControlPreseeMoveOut(ALittle.UIMoveOutEvent event)
+	private fun HandleControlPreseeMoveOut(ALittle.UIMoveOutEvent event)
 	{
 		var info:IDEControlItemUserData = event.target._user_data;
 		if (info.presee != true) return;
@@ -187,13 +187,13 @@ public class IDEUIControlList : ALittle.DisplayLayout
 		g_IDECenter.center.content_edit.CloseTab(child);
 		if (info.pre_index != null) g_IDECenter.center.content_edit.SetCurTabIndex(info.pre_index);
 	}
-	public async fun HandleControlKeyDown(ALittle.UIKeyDownEvent event)
+	private async fun HandleControlKeyDown(ALittle.UIKeyDownEvent event)
 	{
 		// 判断F2
 		if (event.sym == 1073741883)
 			this.ControlRename(event.target);
 	}
-	public fun HandleControlDragBegin(ALittle.UIButtonDragBeginEvent event)
+	private fun HandleControlDragBegin(ALittle.UIButtonDragBeginEvent event)
 	{
 		this._drag_shift = (A_UISystem.sym_map[1073742049] != null || A_UISystem.sym_map[1073742053] != null);
 		if (this._drag_shift == false)
@@ -220,7 +220,7 @@ public class IDEUIControlList : ALittle.DisplayLayout
 		g_IDECenter.center.content_edit.CloseTab(child);
 		if (info.pre_index != null) g_IDECenter.center.content_edit.SetCurTabIndex(info.pre_index);
 	}
-	public fun HandleControlDrag(ALittle.UIButtonDragEvent event)
+	private fun HandleControlDrag(ALittle.UIButtonDragEvent event)
 	{
 		if (this._drag_shift == false)
 		{
@@ -232,7 +232,7 @@ public class IDEUIControlList : ALittle.DisplayLayout
 		this._drag_effect.x = this._drag_effect.x + event.delta_x;
 		this._drag_effect.y = this._drag_effect.y + event.delta_y;
 	}
-	public fun HandleControlDragEnd(ALittle.UIButtonDragEndEvent event)
+	private fun HandleControlDragEnd(ALittle.UIButtonDragEndEvent event)
 	{
 		if (this._drag_shift == false)
 		{
@@ -326,12 +326,12 @@ public class IDEUIControlList : ALittle.DisplayLayout
 	}
 	
 	// 处理新建控件-取消
-	public fun HandleNewControlCancel(ALittle.UIEvent event)
+	private fun HandleNewControlCancel(ALittle.UIEvent event)
 	{
 		this._control_new_dialog.visible = false;
 	}
 	// 处理新建控件-确认
-	public fun HandleNewControlConfirm(ALittle.UIEvent event)
+	private fun HandleNewControlConfirm(ALittle.UIEvent event)
 	{
 		// 获取当前项目
 		var project = g_IDEProject.project;

@@ -142,6 +142,19 @@ public class IDEProject : ALittle.EventDispatcher
 		return true;
 	}
 
+	// 刷新项目
+	public fun RefreshProject()
+	{
+		// 检查当前是否有打开的项目
+		if (this._project == null) return;
+		// 获取项目名
+		var name = this._project.name;
+		// 关闭当前项目
+		this.CloseProject();
+		// 打开当前项目
+		this.OpenProject(name);
+    }
+
 	// 打开项目
 	public fun OpenProject(string name) : string
 	{

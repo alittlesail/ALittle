@@ -103,9 +103,6 @@ function RichEdit:CompareTextInfo(a, b)
 	if a.deleteline ~= b.deleteline then
 		return false
 	end
-	if a.outline ~= b.outline then
-		return false
-	end
 	return true
 end
 
@@ -121,7 +118,6 @@ function RichEdit:CopyTextInfo(b)
 	a.italic = b.italic
 	a.underline = b.underline
 	a.deleteline = b.deleteline
-	a.outline = b.outline
 	return a
 end
 
@@ -138,7 +134,6 @@ function RichEdit:InitTextInfo()
 	a.italic = font_text.italic
 	a.underline = font_text.underline
 	a.deleteline = font_text.deleteline
-	a.outline = font_text.outline
 	return a
 end
 
@@ -153,7 +148,6 @@ function RichEdit:SetDrawText(font_text)
 	draw_text.italic = font_text.italic
 	draw_text.underline = font_text.underline
 	draw_text.deleteline = font_text.deleteline
-	draw_text.outline = font_text.outline
 end
 
 function RichEdit:UpdateFontText()
@@ -196,10 +190,6 @@ function RichEdit:UpdateFontText()
 	end
 	if font_text.deleteline ~= text_info.deleteline then
 		font_text.deleteline = text_info.deleteline
-		is_change = true
-	end
-	if font_text.outline ~= text_info.outline then
-		font_text.outline = text_info.outline
 		is_change = true
 	end
 	if is_change then
@@ -743,14 +733,6 @@ function RichEdit.__setter:font_italic(value)
 	end
 	self._font_text.italic = value
 	self._default_text_area.italic = value
-end
-
-function RichEdit.__setter:font_outline(value)
-	if self._font_text.outline == value then
-		return
-	end
-	self._font_text.outline = value
-	self._default_text_area.outline = value
 end
 
 function RichEdit.__setter:font_path(value)

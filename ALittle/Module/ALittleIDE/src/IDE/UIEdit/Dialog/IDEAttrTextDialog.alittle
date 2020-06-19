@@ -10,7 +10,6 @@ public class IDEAttrTextDialog
 
 	private ALittle.DisplayObject _bold;
 	private ALittle.DisplayObject _underline;
-	private ALittle.DisplayObject _outline;
 	private ALittle.DisplayObject _deleteline;
 	private ALittle.DisplayObject _italic;
 	private ALittle.DisplayObject _font_path;
@@ -68,7 +67,6 @@ public class IDEAttrTextDialog
 		info.__class = "Text";
 		if (this._bold.text == "是") info.bold = true;
 		if (this._underline.text == "是") info.underline = true;
-		if (this._outline.text == "是") info.outline = true;
 		if (this._deleteline.text == "是") info.deleteline = true;
 		if (this._italic.text == "是") info.italic = true;
 		if (this._font_path.text != "") info.font_path = this._font_path.text;
@@ -92,8 +90,6 @@ public class IDEAttrTextDialog
 		if (info.bold) this._bold.text = "是";
 		this._underline.text = "否";
 		if (info.underline) this._underline.text = "是";
-		this._outline.text = "否";
-		if (info.outline) this._outline.text = "是";
 		this._deleteline.text = "否";
 		if (info.deleteline) this._deleteline.text = "是";
 		this._italic.text = "否";

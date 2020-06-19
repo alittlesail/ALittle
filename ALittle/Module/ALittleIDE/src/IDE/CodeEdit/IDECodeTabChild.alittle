@@ -1,0 +1,506 @@
+
+namespace ALittleIDE;
+
+private var LINE_HEIGHT = 18;
+private var FONT_SIZE = 14;
+private var FONT_PATH = "YaHei-Consolas.ttf";
+private var FONT_RED = 169/255;
+private var FONT_GREEN = 183/255;
+private var FONT_BLUE = 198/255;
+private var SELECT_RED = 33/255;
+private var SELECT_GREEN = 66/255;
+private var SELECT_BLUE = 131/255;
+
+protected struct IDECodeCharInfo
+{
+    string char;
+    double pre_width;
+    double width;
+    int start;
+    int len;
+}
+
+protected struct IDECodeLineInfo
+{
+    List<IDECodeCharInfo> char_list;
+    int char_count;
+    ALittle.Text text;
+    ALittle.Quad quad;
+}
+
+public class IDECodeTabChild : IDETabChild
+{
+    private IDECodeTreeUserInfo _user_info;
+
+	private ALittle.ScrollScreen _tab_screen;        // 标签页
+    private ALittle.DisplayLayout _code_container;
+    private ALittle.DisplayLayout _cursor_container;
+    private ALittle.DisplayObject _edit_quad;           // 编辑区
+
+    private IDECodeCursor _cursor;
+    private IDECodeSelectCursor _select_cursor;
+    private List<IDECodeLineInfo> _line_list = new List<IDECodeLineInfo>();
+    private int _line_count = 0;
+    private ALittle.Text _text_show;
+
+    // 因为是等宽，所以可以事先计算一下字体宽度
+    private double _ascii_width;    // ascii的宽度
+    private double _word_width;     // 中文的宽度
+
+	public ctor(ALittle.ControlSystem ctrl_sys, string name, bool save)
+	{
+		// 创建编辑容器
+		this._tab_screen = g_Control.CreateControl{ALittle.ScrollScreen}("ide_code_tab_screen", this);
+        this._tab_screen.container = new ALittle.DisplayLayout(g_Control);
+        this._tab_screen.AddEventListener(this, this.HandleMoveIn);
+        this._tab_screen.AddEventListener(this, this.HandleMoveOut);
+		this._tab_screen._user_data = this;
+
+        this._code_container.disabled = true;
+
+        this._cursor = new IDECodeCursor(ctrl_sys, this);
+        this._cursor.width = 1;
+        this._cursor.height = LINE_HEIGHT;
+        this._cursor_container.AddChild(this._cursor);
+
+        this._select_cursor = new IDECodeSelectCursor(this);
+
+        this._text_show = new ALittle.Text(g_Control);
+        this._text_show.font_path = "YaHei-Consolas.ttf";
+        this._text_show.font_size = 14;
+
+        this._ascii_width = this._text_show.native_show.CalcTextWidth("A");
+        this._word_width = this._text_show.native_show.CalcTextWidth("测");
+    }
+
+    public get line_count() : int { return this._line_count; }
+    public get line_list() : List<IDECodeLineInfo> { return this._line_list; }
+    public get line_height() : int { return LINE_HEIGHT; }
+
+    private fun HandleMoveIn(ALittle.UIMoveInEvent event) { ALittle.System_SetEditCursor(); }
+    private fun HandleMoveOut(ALittle.UIMoveOutEvent event) { ALittle.System_SetNormalCursor(); }
+    private fun HandleLButtonDown(ALittle.UILButtonDownEvent event)
+    {
+        this._select_cursor.Hide();
+        this._cursor.SetOffsetXY(event.rel_x, event.rel_y);
+    }
+
+    private fun HandleDragBegin(ALittle.UIButtonDragBeginEvent event)
+    {
+        this._cursor.Hide();
+        this._select_cursor.StartSelect(event.rel_x, event.rel_y);
+    }
+
+    private fun HandleDrag(ALittle.UIButtonDragEvent event)
+    {
+        this._select_cursor.UpdateSelect(event.rel_x, event.rel_y);
+    }
+
+    private fun HandleDragEnd(ALittle.UIButtonDragEndEvent event)
+    {
+        if (this._select_cursor.line_start == null)
+        {
+            this._select_cursor.Hide();
+            this._cursor.SetLineChar(1, 0);
+            return;
+        }
+
+        if (this._select_cursor.line_start == this._select_cursor.line_end
+            && this._select_cursor.char_start == this._select_cursor.char_end)
+        {
+            this._select_cursor.Hide();
+            this._cursor.SetLineChar(this._select_cursor.line_end, this._select_cursor.char_end);
+        }
+    }
+
+    // 计算行列
+    public fun CalcLineAndChar(double x, double y) : int, int
+    {
+        var it_line = ALittle.Math_Floor(y / LINE_HEIGHT) + 1;
+        if (it_line < 1) it_line = 1;
+        elseif (it_line > this._line_count) it_line = this._line_count;
+
+        var it_char:int = 0;
+        var line = this._line_list[it_line];
+        if (line == null) return it_line, it_char;
+        if (line.char_count == 0) return it_line, 0;
+
+        var pre_width = line.char_list[1].width / 2;
+        if (x < line.char_list[1].width / 2) return it_line, 0;
+
+        for (var index = 1; index < line.char_count; 1)
+        {
+            var next_width = pre_width + line.char_list[index].width / 2 + line.char_list[index + 1].width / 2;
+            if (x >= pre_width && x < next_width)
+                return it_line, index;
+            pre_width = next_width;
+        }
+        return it_line, line.char_count;
+    }
+
+    // 删除选择行
+    public fun DeleteSelectText() : bool
+    {
+        return false;
+    }
+
+    public fun HandleKeyDown(ALittle.UIKeyDownEvent event)
+    {
+        // 标记是否需要发送CHANGE事件
+        var is_change = false;
+        // 处理键盘按键
+        if (event.sym == ALittle.UIEnumTypes.KEY_LEFT)
+        {
+            if (ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) == 0)
+            {
+                if (this._select_cursor.line_end != null)
+                {
+                    this._select_cursor.Hide();
+                    this._cursor.SetLineChar(this._select_cursor.line_end, this._select_cursor.char_end);
+                }
+                else
+                    this._cursor.OffsetLeft();
+            }
+            else
+            {
+                if (this._select_cursor.line_end == null)
+                {
+                    if (this._cursor.line != 1 || this._cursor.char != 0)
+                    {
+                        this._select_cursor.SetSelect(this._cursor.line, this._cursor.char, this._cursor.line, this._cursor.char);   
+                        this._select_cursor.OffsetLeft();
+                    }   
+                }
+                else
+                    this._select_cursor.OffsetLeft();
+            }
+			event.handled = true;
+        }
+        elseif (event.sym == ALittle.UIEnumTypes.KEY_RIGHT)
+        {
+            if (ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) == 0)
+            {
+                if (this._select_cursor.line_end != null)
+                {
+                    this._select_cursor.Hide();
+                    this._cursor.SetLineChar(this._select_cursor.line_end, this._select_cursor.char_end);   
+                }
+                else
+                    this._cursor.OffsetRight();
+            }
+            else
+            {
+                if (this._select_cursor.line_end == null)
+                {
+                    if (this._cursor.line != this._line_count || this._cursor.char != this._line_list[this._line_count].char_count)
+                    {
+                        this._select_cursor.SetSelect(this._cursor.line, this._cursor.char, this._cursor.line, this._cursor.char);   
+                        this._select_cursor.OffsetRight();
+                    }   
+                }
+                else
+                    this._select_cursor.OffsetRight();
+            }
+			event.handled = true;
+        }
+        elseif (event.sym == ALittle.UIEnumTypes.KEY_BACKSPACE)
+        {
+			event.handled = true;
+        }
+        elseif (event.sym == ALittle.UIEnumTypes.KEY_DELETE)
+        {
+			event.handled = true;
+        }
+        elseif (event.sym == ALittle.UIEnumTypes.KEY_HOME)
+        {
+            if (ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) == 0)
+            {
+                if (this._select_cursor.line_end != null)
+                {
+                    this._select_cursor.Hide();
+                    this._cursor.SetLineChar(this._select_cursor.line_end, this._select_cursor.char_end);
+                }
+                this._cursor.OffsetHome();
+            }
+            else
+            {
+                if (this._select_cursor.line_end == null)
+                {
+                    if (this._cursor.char != 0)
+                    {
+                        this._select_cursor.SetSelect(this._cursor.line, this._cursor.char, this._cursor.line, this._cursor.char);   
+                        this._select_cursor.OffsetHome();
+                    }   
+                }
+                else
+                this._select_cursor.OffsetHome();
+            }
+            event.handled = true;
+        }
+        elseif (event.sym == ALittle.UIEnumTypes.KEY_END)
+        {
+            if (ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) == 0)
+            {
+                if (this._select_cursor.line_end != null)
+                {
+                    this._select_cursor.Hide();
+                    this._cursor.SetLineChar(this._select_cursor.line_end, this._select_cursor.char_end);
+                }
+                this._cursor.OffsetEnd();
+            }
+            else
+            {
+                if (this._select_cursor.line_end == null)
+                {
+                    if (this._cursor.line <= this._line_count && this._cursor.char < this._line_list[this._cursor.line].char_count)
+                    {
+                        this._select_cursor.SetSelect(this._cursor.line, this._cursor.char, this._cursor.line, this._cursor.char);   
+                        this._select_cursor.OffsetEnd();
+                    }   
+                }
+                else
+                this._select_cursor.OffsetEnd();
+            }
+			event.handled = true;
+        }
+        elseif (event.sym == ALittle.UIEnumTypes.KEY_ENTER || event.sym == ALittle.UIEnumTypes.KEY_NUMBER_ENTER)
+        {
+            this.DispatchEvent(new ALittle.UIEnterKeyEvent());
+			event.handled = true;
+        }
+        elseif (event.sym == ALittle.UIEnumTypes.KEY_X && ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) != 0)
+        {
+            // x键
+            // 单光标模式下处理
+            var select_text = this._select_cursor.GetSelectText();
+            if (select_text != null)
+                ALittle.System_SetClipboardText(select_text);
+            is_change = this.DeleteSelectText();
+			event.handled = true;
+        }
+        elseif (event.sym == ALittle.UIEnumTypes.KEY_C && ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) != 0)
+        {
+            var select_text = this._select_cursor.GetSelectText();
+            if (select_text != null)
+                ALittle.System_SetClipboardText(select_text);
+			event.handled = true;
+        }
+        elseif (event.sym == ALittle.UIEnumTypes.KEY_V && ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) != 0)
+        {
+			event.handled = true;
+        }
+        elseif (event.sym == 97 && ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) != 0)
+        {
+            // a键
+            if (this._line_count > 0)
+            {
+                this._cursor.Hide();
+                this._select_cursor.SetSelect(1, 0, this._line_count, this._line_list[this._line_count].char_count);
+            }
+			event.handled = true;
+        }
+        // 检查是否发送CHANGE事件
+        if (is_change)
+        {
+            this.DispatchEvent(new ALittle.UIChangedEvent());
+        }
+    }
+
+    private fun OnHide()
+    {
+        this._cursor.Hide();
+    }
+
+    private fun OnShow()
+    {
+        this._cursor.Show();
+    }
+
+    private fun OnClose()
+    {
+        this._cursor.Hide();
+    }
+
+    private fun OnOpen()
+    {
+        // 打开文件
+        var content = ALittle.File_ReadTextFromStdFile(this._user_info.path);
+        if (content != null)
+        {
+            this.SetText(content);
+        }
+    }
+
+    public fun SetText(string content)
+    {
+        this._code_container.RemoveAllChild();
+        this._line_list = new List<IDECodeLineInfo>();
+        this._line_count = 0;
+
+        var line:IDECodeLineInfo = null;
+        var len = ALittle.String_Len(content);
+        var index = 1;
+        var pre_width = 0.0;
+        while (index < len)
+        {
+            var is_asicc = true;
+            var byte_count = 1;
+            var char_text:string = null;
+            [Language(Lua)]
+            {
+                byte_count = lua.utf8.bytecount(content, index - 1, 1);
+                if (byte_count > 1) is_asicc = false;
+                char_text = lua.String.sub(content, index, index + byte_count - 1);
+            }
+            [Language(JavaScript)]
+            {
+                var code = cast<javascript.String>(content).charCodeAt(index - 1);
+                if (code > 255) is_asicc = false;
+                char_text = cast<javascript.String>(content).substring(index - 1, index);
+            }
+            index += byte_count;
+
+            var char = new IDECodeCharInfo();
+            if (is_asicc)
+            {
+                if (char_text == "\t")
+                    char.width = this._ascii_width * 4;
+                elseif (char_text == "\r" || char_text == "\n")
+                    char.width = 0;
+                else
+                    char.width = this._ascii_width;
+            }   
+            else
+                char.width = this._word_width;
+            char.start = index;
+            char.len = byte_count;
+            char.char = char_text;
+            char.pre_width = pre_width;
+            pre_width += char.width;
+
+            if (line == null)
+            {
+                line = new IDECodeLineInfo();
+                line.char_count = 0;
+                line.char_list = new List<IDECodeCharInfo>();
+                line.text = new ALittle.Text(g_Control);
+                line.text.red = FONT_RED;
+                line.text.green = FONT_GREEN;
+                line.text.blue = FONT_BLUE;
+                line.text.font_path = FONT_PATH;
+                line.text.font_size = FONT_SIZE;
+                line.quad = new ALittle.Quad(g_Control);
+                line.quad.red = SELECT_RED;
+                line.quad.green = SELECT_GREEN;
+                line.quad.blue = SELECT_BLUE;
+                line.quad.height = LINE_HEIGHT;
+                line.quad.visible = false;
+            }
+            line.char_count += 1;
+            line.char_list[line.char_count] = char;
+
+            if (char_text == "\n")
+            {
+                this._line_count += 1;
+                this._line_list[this._line_count] = line;
+                line = null;
+                pre_width = 0;
+            }
+        }
+
+        if (line != null)
+        {
+            this._line_count += 1;
+            this._line_list[this._line_count] = line;
+            line = null;
+        }
+
+        var line_offset = 0;
+        var max_width = 0.0;
+        for (var i, line_info in this._line_list)
+        {
+            var char_offset = 0.0;
+            var char_start = 1;
+            for (var j, char_info in line_info.char_list)
+            {
+                if (char_info.char == " ")
+                    char_offset += this._ascii_width;
+                elseif (char_info.char == "\t")
+                    char_offset += this._ascii_width * 4;
+                else
+                {
+                    char_start = j;
+                    break;
+                }
+            }
+            line_info.quad.x = 0;
+            line_info.text.x = char_offset;
+            var line_text = "";
+            for (var j = char_start; j <= line_info.char_count; 1)
+            {
+                var char_info = line_info.char_list[j];
+                if (char_info.char == "\r" || char_info.char == "\n")
+                    break;
+                if (char_info.char == "\t")
+                    line_text = line_text.."    ";
+                else
+                    line_text = line_text..char_info.char;
+            }
+            line_info.text.text = line_text;
+            line_info.quad.y = line_offset;
+            line_info.text.y = line_offset;
+            if (max_width < line_info.text.x + line_info.text.width)
+                max_width = line_info.text.x + line_info.text.width;
+            line_offset += LINE_HEIGHT;
+            this._code_container.AddChild(line_info.quad);
+            this._code_container.AddChild(line_info.text);
+        }
+
+        this._tab_screen.container.width = max_width;
+        this._tab_screen.container.height = line_offset;
+        this._tab_screen.RejustScrollBar();
+
+        this._cursor.x = 0;
+        this._cursor.y = 0;
+        this._cursor.Show();
+    }
+
+    public get tab_screen() : ALittle.ScrollScreen { return this._tab_screen; }
+
+    public set save(bool value)
+    {
+        if (this._save == value) return;
+		if (value == false)
+        {
+            this._save = false;
+            this.UpdateTitle();
+            return;
+		}
+
+        this._save = value;
+        this.UpdateTitle();
+	}
+
+	public fun Rename(string name)
+    {
+        this._name = name;
+        this.UpdateTitle();
+	}
+
+	public fun UpdateTitle()
+    {
+        var text = this._name;
+        if (this._save == false) text = text.." *";
+        g_IDECenter.center.content_edit.main_tab.SetChildText(this._tab_screen, text);
+	}
+
+	public get title() : string
+    {
+        return this._name;
+	}
+
+    public fun CreateBySelect(IDECodeTreeUserInfo info)
+    {
+        this._user_info = info;
+    }
+}

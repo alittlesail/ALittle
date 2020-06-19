@@ -25,7 +25,6 @@ function TextInput:Ctor(ctrl_sys)
 	___rawset(self, "_italic", false)
 	___rawset(self, "_underline", false)
 	___rawset(self, "_deleteline", false)
-	___rawset(self, "_outline", false)
 	___rawset(self, "_password_mode", false)
 	___rawset(self, "_default_text", "")
 	___rawset(self, "_default_text_alpha", 1)
@@ -205,18 +204,6 @@ end
 
 function TextInput.__getter:deleteline()
 	return self._deleteline
-end
-
-function TextInput.__setter:outline(value)
-	if self._outline == value then
-		return
-	end
-	self._outline = value
-	self._show:SetOutline(value)
-end
-
-function TextInput.__getter:outline()
-	return self._outline
 end
 
 function TextInput.__setter:password_mode(value)

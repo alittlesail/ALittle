@@ -169,14 +169,6 @@ function ImageEdit.__getter:deleteline()
 	return self._show_edit.deleteline
 end
 
-function ImageEdit.__setter:outline(value)
-	self._show_edit.outline = value
-end
-
-function ImageEdit.__getter:outline()
-	return self._show_edit.outline
-end
-
 function ImageEdit.__setter:cursor_red(value)
 	self._show_edit.cursor_red = value
 end

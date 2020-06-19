@@ -27,7 +27,7 @@ function IDEUIMainMenu:HandleFileMenuClick(event)
 	menu:AddItem("打开", Lua.Bind(g_IDEProjectOpenDialog.ShowOpenProject, g_IDEProjectOpenDialog))
 	menu:AddItem("设置", Lua.Bind(g_IDEProjectSettingDialog.ShowSettingProject, g_IDEProjectSettingDialog))
 	menu:AddItem("保存", Lua.Bind(g_IDECenter.center.content_edit.SaveAllTab, g_IDECenter.center.content_edit))
-	menu:AddItem("刷新", Lua.Bind(g_IDECenter.center.project_list.RefreshProject, g_IDECenter.center.project_list))
+	menu:AddItem("刷新", Lua.Bind(g_IDECenter.RefreshProject, g_IDECenter))
 	menu:AddItem("导出项目", Lua.Bind(g_IDEProjectExportDialog.ShowExportProject, g_IDEProjectExportDialog))
 	menu:Show(event.target)
 end

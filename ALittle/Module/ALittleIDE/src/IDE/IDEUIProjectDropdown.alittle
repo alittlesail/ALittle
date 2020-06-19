@@ -64,6 +64,5 @@ protected class IDEUIProjectDropdown : ALittle.DisplayLayout
 		if (result == AUIPlugin.AUIToolOption.YES) g_IDECenter.center.content_edit.SaveAllTab();
 		var error = g_IDEProject.OpenProject(new_name);
 		if (error != null) g_AUITool.ShowNotice("错误", error);
-	}
-    
+	}   
 }

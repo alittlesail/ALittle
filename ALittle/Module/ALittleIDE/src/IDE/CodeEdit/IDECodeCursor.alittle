@@ -3,7 +3,7 @@ namespace ALittleIDE;
 
 public class IDECodeCursor : ALittle.Quad
 {
-	private double _flash_alpha = 0;
+    private double _flash_alpha = 0;
     private double _flash_dir = 0.05;
     private ALittle.LoopFunction _loop;
 
@@ -13,16 +13,16 @@ public class IDECodeCursor : ALittle.Quad
     private int _it_line = 1;
     private int _it_char = 0;
 
-	public ctor(ALittle.ControlSystem ctrl_sys, IDECodeTabChild tab_child)
-	{
+    public ctor(ALittle.ControlSystem ctrl_sys, IDECodeTabChild tab_child)
+    {
         this._tab_child = tab_child;
     }
 
     public get line() : int { return this._it_line; }
     public get char() : int { return this._it_char; }
 
-	public fun Show([Nullable]double x, [Nullable]double y)
-	{
+    public fun Show([Nullable]double x, [Nullable]double y)
+    {
         if (this._loop == null) this._loop = new ALittle.LoopFunction(bind(this.Update, this), -1, 1, 1);
         if (!A_LoopSystem.HasUpdater(this._loop)) A_LoopSystem.AddUpdater(this._loop);
         this.visible = true;
@@ -54,10 +54,10 @@ public class IDECodeCursor : ALittle.Quad
     {
         this._it_line = it_line;
         this._it_char = it_char;
-        
+
         this.y = (this._it_line - 1) * this._tab_child.line_height;
         var line = this._tab_child.line_list[this._it_line];
-        if (line == null || this._it_char == 0)
+        if (line == null || this._it_char <= 0)
             this.x = 0;
         else
             this.x = line.char_list[this._it_char].pre_width + line.char_list[this._it_char].width;
@@ -65,22 +65,95 @@ public class IDECodeCursor : ALittle.Quad
             this.Show();
     }
 
+    // 向上移动一行
+    public fun OffsetUp()
+    {
+        if (this._it_line <= 1) return;
+        var it_line = this._it_line - 1;
+        var line = this._tab_child.line_list[it_line];
+        if (line == null) return;
+
+        var it_char = line.char_count;
+        while (it_char > 0 && line.char_list[it_char].width <= 0)
+            -- it_char;
+        if (this._it_char < it_char) it_char = this._it_char;
+
+        this.SetLineChar(it_line, it_char, false);
+    }
+
+    // 向下移动一行
+    public fun OffsetDown()
+    {
+        if (this._it_line >= this._tab_child.line_count) return;
+        var it_line = this._it_line + 1;
+        var line = this._tab_child.line_list[it_line];
+        if (line == null) return;
+        var it_char = line.char_count;
+        while (it_char > 0 && line.char_list[it_char].width <= 0)
+            -- it_char;
+        if (this._it_char < it_char) it_char = this._it_char;
+        this.SetLineChar(it_line, it_char, false);
+    }
+
     // 向左移动一格
     public fun OffsetLeft()
     {
-        
+        if (this._it_char > 0)
+        {
+            this.SetLineChar(this._it_line, this._it_char - 1, false);
+            return;
+        }
+
+        if (this._it_line > 1)
+        {
+            var it_line = this._it_line - 1;
+            var line = this._tab_child.line_list[it_line];
+            var it_char = line.char_count;
+            while (it_char > 0 && line.char_list[it_char].width <= 0)
+                -- it_char;
+            this.SetLineChar(it_line, it_char, false);
+            return;
+        }
+
+        this.SetLineChar(1, 0, false);
     }
 
     // 向右移动一格
     public fun OffsetRight()
     {
-        
+        if (this._tab_child.line_count <= 0) return;
+        var line = this._tab_child.line_list[this._it_line];
+        var count = line.char_count;
+        while (count > 0 && line.char_list[count].width <= 0)
+            -- count;
+        if (this._it_char < count)
+        {
+            this.SetLineChar(this._it_line, this._it_char + 1, false);
+            return;
+        }
+        if (this._it_line >= this._tab_child.line_count)
+        {
+            return;
+        }
+
+        this.SetLineChar(this._it_line + 1, 0, false);
     }
 
     // 向第一个字符
     public fun OffsetHome()
     {
+        if (this._it_char <= 0) return;
 
+        var line = this._tab_child.line_list[this._it_line];
+        var it_char = 1;
+        while (it_char <= line.char_count)
+        {
+            var char = line.char_list[it_char];
+            if (char.char != " " && char.char != "\t")
+            {
+                break;
+            }
+        }
     }
 
     // 向最后一列
@@ -89,8 +162,8 @@ public class IDECodeCursor : ALittle.Quad
 
     }
 
-	public fun Hide()
-	{
+    public fun Hide()
+    {
         if (this._loop != null) this._loop.Stop();
         this.visible = false;
     }

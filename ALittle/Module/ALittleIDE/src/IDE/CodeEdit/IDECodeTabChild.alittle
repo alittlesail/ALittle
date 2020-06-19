@@ -14,6 +14,7 @@ private var SELECT_BLUE = 131/255;
 protected struct IDECodeCharInfo
 {
     string char;
+    ALittle.Text text;
     double pre_width;
     double width;
     int start;
@@ -24,7 +25,8 @@ protected struct IDECodeLineInfo
 {
     List<IDECodeCharInfo> char_list;
     int char_count;
-    ALittle.Text text;
+    double width;
+    ALittle.DisplayLayout container;
     ALittle.Quad quad;
 }
 
@@ -173,6 +175,60 @@ public class IDECodeTabChild : IDETabChild
                 }
                 else
                     this._select_cursor.OffsetLeft();
+            }
+			event.handled = true;
+        }
+        elseif (event.sym == ALittle.UIEnumTypes.KEY_UP)
+        {
+            if (ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) == 0)
+            {
+                if (this._select_cursor.line_end != null)
+                {
+                    this._select_cursor.Hide();
+                    this._cursor.SetLineChar(this._select_cursor.line_end, this._select_cursor.char_end);
+                }
+                else
+                this._cursor.OffsetUp();
+            }
+            else
+            {
+                if (this._select_cursor.line_end == null)
+                {
+                    if (this._cursor.line != 1 || this._cursor.char != 0)
+                    {
+                        this._select_cursor.SetSelect(this._cursor.line, this._cursor.char, this._cursor.line, this._cursor.char);   
+                        this._select_cursor.OffsetUp();
+                    }   
+                }
+                else
+                this._select_cursor.OffsetUp();
+            }
+			event.handled = true;
+        }
+        elseif (event.sym == ALittle.UIEnumTypes.KEY_DOWN)
+        {
+            if (ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) == 0)
+            {
+                if (this._select_cursor.line_end != null)
+                {
+                    this._select_cursor.Hide();
+                    this._cursor.SetLineChar(this._select_cursor.line_end, this._select_cursor.char_end);
+                }
+                else
+                this._cursor.OffsetDown();
+            }
+            else
+            {
+                if (this._select_cursor.line_end == null)
+                {
+                    if (this._cursor.line != 1 || this._cursor.char != 0)
+                    {
+                        this._select_cursor.SetSelect(this._cursor.line, this._cursor.char, this._cursor.line, this._cursor.char);   
+                        this._select_cursor.OffsetDown();
+                    }   
+                }
+                else
+                this._select_cursor.OffsetDown();
             }
 			event.handled = true;
         }
@@ -341,7 +397,7 @@ public class IDECodeTabChild : IDETabChild
         var len = ALittle.String_Len(content);
         var index = 1;
         var pre_width = 0.0;
-        while (index < len)
+        while (index <= len)
         {
             var is_asicc = true;
             var byte_count = 1;
@@ -368,10 +424,30 @@ public class IDECodeTabChild : IDETabChild
                 elseif (char_text == "\r" || char_text == "\n")
                     char.width = 0;
                 else
+                {
+                    char.text = new ALittle.Text(g_Control);
+                    char.text.red = FONT_RED;
+                    char.text.green = FONT_GREEN;
+                    char.text.blue = FONT_BLUE;
+                    char.text.font_path = FONT_PATH;
+                    char.text.font_size = FONT_SIZE;
+                    char.text.text = char_text;
+                    char.text.x = pre_width;
                     char.width = this._ascii_width;
+                }
             }   
             else
+            {
+                char.text = new ALittle.Text(g_Control);
+                char.text.red = FONT_RED;
+                char.text.green = FONT_GREEN;
+                char.text.blue = FONT_BLUE;
+                char.text.font_path = FONT_PATH;
+                char.text.font_size = FONT_SIZE;
+                char.text.text = char_text;
+                char.text.x = pre_width;
                 char.width = this._word_width;
+            }
             char.start = index;
             char.len = byte_count;
             char.char = char_text;
@@ -383,13 +459,8 @@ public class IDECodeTabChild : IDETabChild
                 line = new IDECodeLineInfo();
                 line.char_count = 0;
                 line.char_list = new List<IDECodeCharInfo>();
-                line.text = new ALittle.Text(g_Control);
-                line.text.red = FONT_RED;
-                line.text.green = FONT_GREEN;
-                line.text.blue = FONT_BLUE;
-                line.text.font_path = FONT_PATH;
-                line.text.font_size = FONT_SIZE;
                 line.quad = new ALittle.Quad(g_Control);
+                line.container = new ALittle.DisplayLayout(g_Control);
                 line.quad.red = SELECT_RED;
                 line.quad.green = SELECT_GREEN;
                 line.quad.blue = SELECT_BLUE;
@@ -398,6 +469,8 @@ public class IDECodeTabChild : IDETabChild
             }
             line.char_count += 1;
             line.char_list[line.char_count] = char;
+            if (char.text != null)
+                line.container.AddChild(char.text);
 
             if (char_text == "\n")
             {
@@ -434,7 +507,6 @@ public class IDECodeTabChild : IDETabChild
                 }
             }
             line_info.quad.x = 0;
-            line_info.text.x = char_offset;
             var line_text = "";
             for (var j = char_start; j <= line_info.char_count; 1)
             {
@@ -446,14 +518,18 @@ public class IDECodeTabChild : IDETabChild
                 else
                     line_text = line_text..char_info.char;
             }
-            line_info.text.text = line_text;
             line_info.quad.y = line_offset;
-            line_info.text.y = line_offset;
-            if (max_width < line_info.text.x + line_info.text.width)
-                max_width = line_info.text.x + line_info.text.width;
+            line_info.container.y = line_offset;
+            line_info.width = 0;
+            if (line_info.char_count > 0)
+            {
+                var last_char = line_info.char_list[line_info.char_count];
+                line_info.width = last_char.pre_width + last_char.width;
+                if (max_width < line_info.width) max_width = line_info.width;
+            }
             line_offset += LINE_HEIGHT;
             this._code_container.AddChild(line_info.quad);
-            this._code_container.AddChild(line_info.text);
+            this._code_container.AddChild(line_info.container);
         }
 
         this._tab_screen.container.width = max_width;

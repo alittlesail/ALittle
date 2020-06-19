@@ -80,7 +80,7 @@ function IDECodeSelectCursor:SetQuad()
 					line.quad.visible = true
 					self._clear_quad = false
 					line.quad.x = line.char_list[it_char_start + 1].pre_width
-					line.quad.width = line.text.x + line.text.width - line.quad.x
+					line.quad.width = line.width - line.quad.x
 				end
 			else
 				if i == it_line_end then
@@ -94,7 +94,7 @@ function IDECodeSelectCursor:SetQuad()
 					line.quad.visible = true
 					self._clear_quad = false
 					line.quad.x = 0
-					line.quad.width = line.text.x + line.text.width
+					line.quad.width = line.width
 				end
 			end
 		end
@@ -136,6 +136,12 @@ end
 function IDECodeSelectCursor:OffsetRight()
 end
 
+function IDECodeSelectCursor:OffsetUp()
+end
+
+function IDECodeSelectCursor:OffsetDown()
+end
+
 function IDECodeSelectCursor:OffsetHome()
 end
 
@@ -156,7 +162,6 @@ function IDECodeSelectCursor:UpdateSelect(x, y)
 		return
 	end
 	self._it_line_end, self._it_char_end = self._tab_child:CalcLineAndChar(x, y)
-	ALittle.Log(self._it_line_end, self._it_char_end)
 	self:SetQuad()
 end
 

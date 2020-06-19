@@ -4,7 +4,7 @@ namespace ALittleIDE;
 public class IDECodeSelectCursor
 {
     private IDECodeTabChild _tab_child;
-
+    
     // 选中光标的范围
     private int _it_line_start;
     private int _it_char_start;
@@ -13,7 +13,7 @@ public class IDECodeSelectCursor
     private bool _clear_quad = true;
 
 	public ctor(IDECodeTabChild tab_child)
-	{
+    {
         this._tab_child = tab_child;
     }
 
@@ -46,9 +46,9 @@ public class IDECodeSelectCursor
 
         var swap = false;
         if (it_line_start > it_line_end)
-            swap = true;
+        swap = true;
         elseif (it_line_start == it_line_end)
-            swap = it_char_start > it_char_end;
+        swap = it_char_start > it_char_end;
         if (swap)
         {
             var temp = it_line_start;
@@ -84,7 +84,7 @@ public class IDECodeSelectCursor
                         line.quad.visible = true;
                         this._clear_quad = false;
                         line.quad.x = line.char_list[it_char_start + 1].pre_width;
-                        line.quad.width = line.text.x + line.text.width - line.quad.x;   
+                        line.quad.width = line.width - line.quad.x;   
                     }
                 }
                 else if (i == it_line_end)
@@ -102,7 +102,7 @@ public class IDECodeSelectCursor
                     line.quad.visible = true;
                     this._clear_quad = false;
                     line.quad.x = 0;
-                    line.quad.width = line.text.x + line.text.width;
+                    line.quad.width = line.width;
                 }   
             }
         }
@@ -138,6 +138,17 @@ public class IDECodeSelectCursor
 
     }
 
+    // 向上移动一行
+    public fun OffsetUp()
+    {
+        
+    }
+
+    // 向下移动一行
+    public fun OffsetDown()
+    {
+    }
+
     // 向第一个字符
     public fun OffsetHome()
     {
@@ -164,7 +175,6 @@ public class IDECodeSelectCursor
         if (this._it_line_start == null) return;
 
         this._it_line_end, this._it_char_end = this._tab_child.CalcLineAndChar(x, y);
-        ALittle.Log(this._it_line_end, this._it_char_end);
         this.SetQuad();
     }
 

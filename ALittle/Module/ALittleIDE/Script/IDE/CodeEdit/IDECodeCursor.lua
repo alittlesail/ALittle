@@ -59,7 +59,7 @@ function IDECodeCursor:SetLineChar(it_line, it_char, show)
 	self._it_char = it_char
 	self.y = (self._it_line - 1) * self._tab_child.line_height
 	local line = self._tab_child.line_list[self._it_line]
-	if line == nil or self._it_char == 0 then
+	if line == nil or self._it_char <= 0 then
 		self.x = 0
 	else
 		self.x = line.char_list[self._it_char].pre_width + line.char_list[self._it_char].width
@@ -69,13 +69,93 @@ function IDECodeCursor:SetLineChar(it_line, it_char, show)
 	end
 end
 
+function IDECodeCursor:OffsetUp()
+	if self._it_line <= 1 then
+		return
+	end
+	local it_line = self._it_line - 1
+	local line = self._tab_child.line_list[it_line]
+	if line == nil then
+		return
+	end
+	local it_char = line.char_count
+	while it_char > 0 and line.char_list[it_char].width <= 0 do
+		it_char = it_char - 1
+	end
+	if self._it_char < it_char then
+		it_char = self._it_char
+	end
+	self:SetLineChar(it_line, it_char, false)
+end
+
+function IDECodeCursor:OffsetDown()
+	if self._it_line >= self._tab_child.line_count then
+		return
+	end
+	local it_line = self._it_line + 1
+	local line = self._tab_child.line_list[it_line]
+	if line == nil then
+		return
+	end
+	local it_char = line.char_count
+	while it_char > 0 and line.char_list[it_char].width <= 0 do
+		it_char = it_char - 1
+	end
+	if self._it_char < it_char then
+		it_char = self._it_char
+	end
+	self:SetLineChar(it_line, it_char, false)
+end
+
 function IDECodeCursor:OffsetLeft()
+	if self._it_char > 0 then
+		self:SetLineChar(self._it_line, self._it_char - 1, false)
+		return
+	end
+	if self._it_line > 1 then
+		local it_line = self._it_line - 1
+		local line = self._tab_child.line_list[it_line]
+		local it_char = line.char_count
+		while it_char > 0 and line.char_list[it_char].width <= 0 do
+			it_char = it_char - 1
+		end
+		self:SetLineChar(it_line, it_char, false)
+		return
+	end
+	self:SetLineChar(1, 0, false)
 end
 
 function IDECodeCursor:OffsetRight()
+	if self._tab_child.line_count <= 0 then
+		return
+	end
+	local line = self._tab_child.line_list[self._it_line]
+	local count = line.char_count
+	while count > 0 and line.char_list[count].width <= 0 do
+		count = count - 1
+	end
+	if self._it_char < count then
+		self:SetLineChar(self._it_line, self._it_char + 1, false)
+		return
+	end
+	if self._it_line >= self._tab_child.line_count then
+		return
+	end
+	self:SetLineChar(self._it_line + 1, 0, false)
 end
 
 function IDECodeCursor:OffsetHome()
+	if self._it_char <= 0 then
+		return
+	end
+	local line = self._tab_child.line_list[self._it_line]
+	local it_char = 1
+	while it_char <= line.char_count do
+		local char = line.char_list[it_char]
+		if char.char ~= " " and char.char ~= "\t" then
+			break
+		end
+	end
 end
 
 function IDECodeCursor:OffsetEnd()

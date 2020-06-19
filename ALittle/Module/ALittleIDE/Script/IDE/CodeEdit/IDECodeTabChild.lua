@@ -20,14 +20,14 @@ option_map = {}
 })
 ALittle.RegStruct(-1100004461, "ALittleIDE.IDECodeCharInfo", {
 name = "ALittleIDE.IDECodeCharInfo", ns_name = "ALittleIDE", rl_name = "IDECodeCharInfo", hash_code = -1100004461,
-name_list = {"char","pre_width","width","start","len"},
-type_list = {"string","double","double","int","int"},
+name_list = {"char","text","pre_width","width","start","len"},
+type_list = {"string","ALittle.Text","double","double","int","int"},
 option_map = {}
 })
 ALittle.RegStruct(-14518441, "ALittleIDE.IDECodeLineInfo", {
 name = "ALittleIDE.IDECodeLineInfo", ns_name = "ALittleIDE", rl_name = "IDECodeLineInfo", hash_code = -14518441,
-name_list = {"char_list","char_count","text","quad"},
-type_list = {"List<ALittleIDE.IDECodeCharInfo>","int","ALittle.Text","ALittle.Quad"},
+name_list = {"char_list","char_count","width","container","quad"},
+type_list = {"List<ALittleIDE.IDECodeCharInfo>","int","double","ALittle.DisplayLayout","ALittle.Quad"},
 option_map = {}
 })
 ALittle.RegStruct(544684311, "ALittle.UIMoveInEvent", {
@@ -185,6 +185,44 @@ function IDECodeTabChild:HandleKeyDown(event)
 			end
 		end
 		event.handled = true
+	elseif event.sym == 1073741906 then
+		if ALittle.BitAnd(event.mod, 0x0003) == 0 then
+			if self._select_cursor.line_end ~= nil then
+				self._select_cursor:Hide()
+				self._cursor:SetLineChar(self._select_cursor.line_end, self._select_cursor.char_end)
+			else
+				self._cursor:OffsetUp()
+			end
+		else
+			if self._select_cursor.line_end == nil then
+				if self._cursor.line ~= 1 or self._cursor.char ~= 0 then
+					self._select_cursor:SetSelect(self._cursor.line, self._cursor.char, self._cursor.line, self._cursor.char)
+					self._select_cursor:OffsetUp()
+				end
+			else
+				self._select_cursor:OffsetUp()
+			end
+		end
+		event.handled = true
+	elseif event.sym == 1073741905 then
+		if ALittle.BitAnd(event.mod, 0x0003) == 0 then
+			if self._select_cursor.line_end ~= nil then
+				self._select_cursor:Hide()
+				self._cursor:SetLineChar(self._select_cursor.line_end, self._select_cursor.char_end)
+			else
+				self._cursor:OffsetDown()
+			end
+		else
+			if self._select_cursor.line_end == nil then
+				if self._cursor.line ~= 1 or self._cursor.char ~= 0 then
+					self._select_cursor:SetSelect(self._cursor.line, self._cursor.char, self._cursor.line, self._cursor.char)
+					self._select_cursor:OffsetDown()
+				end
+			else
+				self._select_cursor:OffsetDown()
+			end
+		end
+		event.handled = true
 	elseif event.sym == 1073741903 then
 		if ALittle.BitAnd(event.mod, 0x0003) == 0 then
 			if self._select_cursor.line_end ~= nil then
@@ -301,7 +339,7 @@ function IDECodeTabChild:SetText(content)
 	local len = ALittle.String_Len(content)
 	local index = 1
 	local pre_width = 0.0
-	while index < len do
+	while index <= len do
 		local is_asicc = true
 		local byte_count = 1
 		local char_text = nil
@@ -320,9 +358,25 @@ function IDECodeTabChild:SetText(content)
 			elseif char_text == "\r" or char_text == "\n" then
 				char.width = 0
 			else
+				char.text = ALittle.Text(g_Control)
+				char.text.red = FONT_RED
+				char.text.green = FONT_GREEN
+				char.text.blue = FONT_BLUE
+				char.text.font_path = FONT_PATH
+				char.text.font_size = FONT_SIZE
+				char.text.text = char_text
+				char.text.x = pre_width
 				char.width = self._ascii_width
 			end
 		else
+			char.text = ALittle.Text(g_Control)
+			char.text.red = FONT_RED
+			char.text.green = FONT_GREEN
+			char.text.blue = FONT_BLUE
+			char.text.font_path = FONT_PATH
+			char.text.font_size = FONT_SIZE
+			char.text.text = char_text
+			char.text.x = pre_width
 			char.width = self._word_width
 		end
 		char.start = index
@@ -334,13 +388,8 @@ function IDECodeTabChild:SetText(content)
 			line = {}
 			line.char_count = 0
 			line.char_list = {}
-			line.text = ALittle.Text(g_Control)
-			line.text.red = FONT_RED
-			line.text.green = FONT_GREEN
-			line.text.blue = FONT_BLUE
-			line.text.font_path = FONT_PATH
-			line.text.font_size = FONT_SIZE
 			line.quad = ALittle.Quad(g_Control)
+			line.container = ALittle.DisplayLayout(g_Control)
 			line.quad.red = SELECT_RED
 			line.quad.green = SELECT_GREEN
 			line.quad.blue = SELECT_BLUE
@@ -349,6 +398,9 @@ function IDECodeTabChild:SetText(content)
 		end
 		line.char_count = line.char_count + (1)
 		line.char_list[line.char_count] = char
+		if char.text ~= nil then
+			line.container:AddChild(char.text)
+		end
 		if char_text == "\n" then
 			self._line_count = self._line_count + (1)
 			self._line_list[self._line_count] = line
@@ -377,7 +429,6 @@ function IDECodeTabChild:SetText(content)
 			end
 		end
 		line_info.quad.x = 0
-		line_info.text.x = char_offset
 		local line_text = ""
 		local j = char_start
 		while true do
@@ -393,15 +444,19 @@ function IDECodeTabChild:SetText(content)
 			end
 			j = j+(1)
 		end
-		line_info.text.text = line_text
 		line_info.quad.y = line_offset
-		line_info.text.y = line_offset
-		if max_width < line_info.text.x + line_info.text.width then
-			max_width = line_info.text.x + line_info.text.width
+		line_info.container.y = line_offset
+		line_info.width = 0
+		if line_info.char_count > 0 then
+			local last_char = line_info.char_list[line_info.char_count]
+			line_info.width = last_char.pre_width + last_char.width
+			if max_width < line_info.width then
+				max_width = line_info.width
+			end
 		end
 		line_offset = line_offset + (LINE_HEIGHT)
 		self._code_container:AddChild(line_info.quad)
-		self._code_container:AddChild(line_info.text)
+		self._code_container:AddChild(line_info.container)
 	end
 	self._tab_screen.container.width = max_width
 	self._tab_screen.container.height = line_offset

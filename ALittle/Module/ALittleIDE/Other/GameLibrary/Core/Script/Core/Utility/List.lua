@@ -31,6 +31,21 @@ function List_Remove(list, index)
 	remove(list, index)
 end
 
+function List_Splice(list, index, count)
+	do
+		local endi = index + count
+		while list[endi] ~= nil do
+			list[index] = list[endi]
+			index = index + 1
+			endi = endi + 1
+		end
+		while count > 0 do
+			list[endi - 1] = nil
+			count = count - 1
+		end
+	end
+end
+
 function List_Sort(list, cmp)
 	sort(list, cmp)
 end

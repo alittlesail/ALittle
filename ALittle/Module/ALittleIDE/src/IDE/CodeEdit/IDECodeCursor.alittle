@@ -234,7 +234,17 @@ public class IDECodeCursor : ALittle.Quad
             if (last_char != null)
                 line.width = last_char.pre_width + last_char.width;
             line.container.width = line.width;
-            if (line.container.width > this._tab_child.tab_screen.container.width)
+
+            var rejust = true;
+            for (var index, line_info in this._tab_child.line_list)
+            {
+                if (line_info.width > line.container.width)
+                {
+                    rejust = false;
+                    break;
+                }
+            }
+            if (rejust)
             {
                 this._tab_child.tab_screen.container.width = line.container.width;
                 this._tab_child.tab_screen.RejustScrollBar();
@@ -324,7 +334,16 @@ public class IDECodeCursor : ALittle.Quad
             if (last_char != null)
                 line.width = last_char.pre_width + last_char.width;
             line.container.width = line.width;
-            if (line.container.width > this._tab_child.tab_screen.container.width)
+            var rejust = true;
+            for (var index, line_info in this._tab_child.line_list)
+            {
+                if (line_info.width > line.container.width)
+                {
+                    rejust = false;
+                    break;
+                }
+            }
+            if (rejust)
             {
                 this._tab_child.tab_screen.container.width = line.container.width;
                 this._tab_child.tab_screen.RejustScrollBar();

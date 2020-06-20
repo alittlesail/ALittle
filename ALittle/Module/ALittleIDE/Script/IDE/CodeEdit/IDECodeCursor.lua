@@ -249,7 +249,14 @@ function IDECodeCursor:DeleteLeft()
 			line.width = last_char.pre_width + last_char.width
 		end
 		line.container.width = line.width
-		if line.container.width > self._tab_child.tab_screen.container.width then
+		local rejust = true
+		for index, line_info in ___ipairs(self._tab_child.line_list) do
+			if line_info.width > line.container.width then
+				rejust = false
+				break
+			end
+		end
+		if rejust then
 			self._tab_child.tab_screen.container.width = line.container.width
 			self._tab_child.tab_screen:RejustScrollBar()
 		end
@@ -342,7 +349,14 @@ function IDECodeCursor:DeleteRight()
 			line.width = last_char.pre_width + last_char.width
 		end
 		line.container.width = line.width
-		if line.container.width > self._tab_child.tab_screen.container.width then
+		local rejust = true
+		for index, line_info in ___ipairs(self._tab_child.line_list) do
+			if line_info.width > line.container.width then
+				rejust = false
+				break
+			end
+		end
+		if rejust then
 			self._tab_child.tab_screen.container.width = line.container.width
 			self._tab_child.tab_screen:RejustScrollBar()
 		end

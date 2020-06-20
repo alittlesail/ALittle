@@ -229,6 +229,78 @@ function IDECodeSelectCursor:GetSelectText()
 	return text
 end
 
+function IDECodeSelectCursor:DeleteSelect()
+	if self._it_line_start == nil then
+		return false, nil, nil
+	end
+	if self._it_line_start == self._it_line_end then
+		if self._it_char_start == self._it_char_end then
+			return false, nil, nil
+		end
+		local line = self._tab_child.line_list[self._it_line_start]
+		if line == nil then
+			return false, nil, nil
+		end
+		local it_line_start = self._it_line_start
+		local it_char_start = self._it_char_start
+		local it_char_end = self._it_char_end
+		if it_char_start > it_char_end then
+			local temp = it_char_start
+			it_char_start = it_char_end
+			it_char_end = temp
+		end
+		local acc_width = 0.0
+		local i = it_char_start + 1
+		while true do
+			if not(i <= it_char_end) then break end
+			acc_width = acc_width + (line.char_list[i].width)
+			i = i+(1)
+		end
+		local i = it_char_end + 1
+		while true do
+			if not(i <= line.char_count) then break end
+			local char = line.char_list[i]
+			char.pre_width = char.pre_width - (acc_width)
+			if char.text ~= nil then
+				char.text.x = char.text.x - (acc_width)
+			end
+			i = i+(1)
+		end
+		local i = it_char_start + 1
+		while true do
+			if not(i <= it_char_end) then break end
+			local char = line.char_list[i]
+			if char.text ~= nil then
+				line.container:RemoveChild(char.text)
+			end
+			i = i+(1)
+		end
+		local count = it_char_end - it_char_start
+		line.char_count = line.char_count - (count)
+		ALittle.List_Splice(line.char_list, it_char_start + 1, count)
+		line.width = 0
+		if line.char_count > 0 then
+			local last_char = line.char_list[line.char_count]
+			line.width = last_char.pre_width + last_char.width
+		end
+		line.container.width = line.width
+		local rejust = true
+		for index, line_info in ___ipairs(self._tab_child.line_list) do
+			if line_info.width > line.container.width then
+				rejust = false
+				break
+			end
+		end
+		if rejust then
+			self._tab_child.tab_screen.container.width = line.container.width
+			self._tab_child.tab_screen:RejustScrollBar()
+		end
+		self:Hide()
+		return true, it_line_start, it_char_start
+	end
+	return false, nil, nil
+end
+
 function IDECodeSelectCursor:Hide()
 	self:ClearQuad()
 	self._clear_quad = true

@@ -173,7 +173,8 @@ public class IDECodeTabChild : IDETabChild
     // 删除选择行
     public fun DeleteSelectText() : bool
     {
-        return false;
+        var result = this._select_cursor.DeleteSelect();
+        return result;
     }
 
     public fun HandleTextInput(ALittle.UITextInputEvent event)
@@ -274,7 +275,8 @@ public class IDECodeTabChild : IDETabChild
             }
             else
             {
-
+                var result, it_line, it_char = this._select_cursor.DeleteSelect();
+                if (result) this._cursor.SetLineChar(it_line, it_char);
             }
 			event.handled = true;
         }
@@ -286,7 +288,8 @@ public class IDECodeTabChild : IDETabChild
             }
             else
             {
-
+                var result, it_line, it_char = this._select_cursor.DeleteSelect();
+                if (result) this._cursor.SetLineChar(it_line, it_char);
             }
 			event.handled = true;
         }

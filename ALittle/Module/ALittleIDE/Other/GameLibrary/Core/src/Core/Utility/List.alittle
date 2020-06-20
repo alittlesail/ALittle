@@ -61,6 +61,28 @@ public static List_Remove<T>(List<T> list, int index)
     cast<javascript.Array>(list).splice(index - 1, 1);
 }
 
+public static List_Splice<T>(List<T> list, int index, int count)
+{
+    [Language(Lua)]
+    {
+        var endi = index + count;
+        while (list[endi] != null)
+        {
+            list[index] = list[endi];
+            index = index + 1;
+            endi = endi + 1;
+        }
+        while (count > 0)
+        {
+            list[endi - 1] = null;
+            count = count - 1;
+        }
+    }
+
+    [Language(JavaScript)]
+    cast<javascript.Array>(list).splice(index - 1, count);
+}
+
 public static List_Sort<T>(List<T> list, [Nullable] Functor<(T, T) : bool> cmp)
 {
     [Language(Lua)]

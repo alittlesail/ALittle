@@ -212,7 +212,8 @@ function IDECodeTabChild:CalcLineAndChar(x, y)
 end
 
 function IDECodeTabChild:DeleteSelectText()
-	return false
+	local result = self._select_cursor:DeleteSelect()
+	return result
 end
 
 function IDECodeTabChild:HandleTextInput(event)
@@ -297,12 +298,20 @@ function IDECodeTabChild:HandleKeyDown(event)
 		if self._select_cursor.line_start == nil then
 			self._cursor:DeleteLeft()
 		else
+			local result, it_line, it_char = self._select_cursor:DeleteSelect()
+			if result then
+				self._cursor:SetLineChar(it_line, it_char)
+			end
 		end
 		event.handled = true
 	elseif event.sym == 127 then
 		if self._select_cursor.line_start == nil then
 			self._cursor:DeleteRight()
 		else
+			local result, it_line, it_char = self._select_cursor:DeleteSelect()
+			if result then
+				self._cursor:SetLineChar(it_line, it_char)
+			end
 		end
 		event.handled = true
 	elseif event.sym == 1073741898 then

@@ -85,6 +85,15 @@ public class IDECodeTabChild : IDETabChild
     {
         this._select_cursor.Hide();
         this._cursor.SetOffsetXY(event.rel_x, event.rel_y);
+        // 选中文本
+        if (event.count > 1)
+        {
+            var it_start, it_end = this._cursor.CalcSelectWord();
+            if (it_start == null) return;
+            this._cursor.SetLineChar(this._cursor.line, it_end);
+            this._select_cursor.StartLineChar(this._cursor.line, it_start);
+            this._select_cursor.UpdateLineChar(this._cursor.line, it_end);
+        }
     }
 
     private fun HandleDragBegin(ALittle.UIButtonDragBeginEvent event)

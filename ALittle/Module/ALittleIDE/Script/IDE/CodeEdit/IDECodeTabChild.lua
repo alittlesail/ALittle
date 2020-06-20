@@ -105,6 +105,15 @@ end
 function IDECodeTabChild:HandleLButtonDown(event)
 	self._select_cursor:Hide()
 	self._cursor:SetOffsetXY(event.rel_x, event.rel_y)
+	if event.count > 1 then
+		local it_start, it_end = self._cursor:CalcSelectWord()
+		if it_start == nil then
+			return
+		end
+		self._cursor:SetLineChar(self._cursor.line, it_end)
+		self._select_cursor:StartLineChar(self._cursor.line, it_start)
+		self._select_cursor:UpdateLineChar(self._cursor.line, it_end)
+	end
 end
 
 function IDECodeTabChild:HandleDragBegin(event)

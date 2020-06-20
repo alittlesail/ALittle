@@ -35,6 +35,51 @@ function IDECodeCursor:Show(x, y)
 	self.visible = true
 end
 
+function IDECodeCursor:CalcSelectWord()
+	local line = self._tab_child.line_list[self._it_line]
+	if line == nil then
+		return nil, nil
+	end
+	local count = line.char_count
+	while count > 0 and line.char_list[count].width <= 0 do
+		count = count - 1
+	end
+	local it_end = self._it_char
+	local i = self._it_char + 1
+	while true do
+		if not(i <= count) then break end
+		local char = line.char_list[i].char
+		local byte = ALittle.String_Byte(char, 1)
+		local check = byte >= 65 and byte <= 90 or byte >= 97 and byte <= 122 or byte == 95
+		if not check then
+			break
+		end
+		it_end = i
+		i = i+(1)
+	end
+	local it_start = self._it_char
+	local i = self._it_char
+	while true do
+		if not(i >= 1) then break end
+		local char = line.char_list[i].char
+		local byte = ALittle.String_Byte(char, 1)
+		local check = byte >= 65 and byte <= 90 or byte >= 97 and byte <= 122 or byte == 95
+		if not check then
+			break
+		end
+		it_start = i
+		i = i+(-1)
+	end
+	if it_start == it_end then
+		return nil, nil
+	end
+	it_start = it_start - (1)
+	if it_start < 0 then
+		it_start = 0
+	end
+	return it_start, it_end
+end
+
 function IDECodeCursor:SetOffsetXY(x, y, show)
 	if self._tab_child.line_count <= 0 then
 		self._it_line = 1

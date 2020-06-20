@@ -28,6 +28,45 @@ public class IDECodeCursor : ALittle.Quad
         this.visible = true;
     }
 
+    // 根据当前光标选中文本
+    public fun CalcSelectWord() : int, int
+    {
+        var line = this._tab_child.line_list[this._it_line];
+        if (line == null) return null, null;
+
+        var count = line.char_count;
+        while (count > 0 && line.char_list[count].width <= 0)
+            -- count;
+        // 从当前光标向后找
+        var it_end = this._it_char;
+        for (var i = this._it_char + 1; i <= count; 1)
+        {
+            var char = line.char_list[i].char;
+            var byte = ALittle.String_Byte(char, 1);
+            var check = byte >= 65 && byte <= 90
+                        || byte >= 97 && byte <= 122
+                        || byte == 95;
+            if (!check) break;
+            it_end = i;
+        }
+        // 从当前光标向前找
+        var it_start = this._it_char;
+        for (var i = this._it_char; i >= 1; -1)
+        {
+            var char = line.char_list[i].char;
+            var byte = ALittle.String_Byte(char, 1);
+            var check = byte >= 65 && byte <= 90
+                        || byte >= 97 && byte <= 122
+                        || byte == 95;
+            if (!check) break;
+            it_start = i;
+        }
+        if (it_start == it_end) return null, null;
+        it_start -= 1;
+        if (it_start < 0) it_start = 0;
+        return it_start, it_end;
+    }
+
     public fun SetOffsetXY(double x, double y, [Nullable]bool show)
     {
         if (this._tab_child.line_count <= 0)

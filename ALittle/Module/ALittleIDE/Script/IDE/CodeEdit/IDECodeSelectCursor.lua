@@ -70,6 +70,7 @@ function IDECodeSelectCursor:SetQuad()
 		line.quad.width = line.char_list[it_char_end].pre_width + line.char_list[it_char_end].width - line.quad.x
 		return
 	end
+	ALittle.Log(it_line_start, it_line_end)
 	local i = it_line_start
 	while true do
 		if not(i <= it_line_end) then break end
@@ -80,7 +81,7 @@ function IDECodeSelectCursor:SetQuad()
 					line.quad.visible = true
 					self._clear_quad = false
 					line.quad.x = line.char_list[it_char_start + 1].pre_width
-					line.quad.width = line.width - line.quad.x
+					line.quad.width = line.container.width - line.quad.x
 				end
 			elseif i == it_line_end then
 				if it_char_end > 0 then
@@ -93,7 +94,7 @@ function IDECodeSelectCursor:SetQuad()
 				line.quad.visible = true
 				self._clear_quad = false
 				line.quad.x = 0
-				line.quad.width = line.width
+				line.quad.width = line.container.width
 			end
 		end
 		i = i+(1)
@@ -235,6 +236,7 @@ function IDECodeSelectCursor:DeleteSelect()
 	end
 	if self._it_line_start == self._it_line_end then
 		if self._it_char_start == self._it_char_end then
+			self:Hide()
 			return false, nil, nil
 		end
 		local line = self._tab_child.line_list[self._it_line_start]
@@ -249,6 +251,7 @@ function IDECodeSelectCursor:DeleteSelect()
 			it_char_start = it_char_end
 			it_char_end = temp
 		end
+		self:Hide()
 		local acc_width = 0.0
 		local i = it_char_start + 1
 		while true do
@@ -278,15 +281,15 @@ function IDECodeSelectCursor:DeleteSelect()
 		local count = it_char_end - it_char_start
 		line.char_count = line.char_count - (count)
 		ALittle.List_Splice(line.char_list, it_char_start + 1, count)
-		line.width = 0
-		if line.char_count > 0 then
-			local last_char = line.char_list[line.char_count]
-			line.width = last_char.pre_width + last_char.width
+		local last_char = line.char_list[line.char_count]
+		if last_char ~= nil then
+			line.container.width = last_char.pre_width + last_char.width
+		else
+			line.container.width = 0
 		end
-		line.container.width = line.width
 		local rejust = true
 		for index, line_info in ___ipairs(self._tab_child.line_list) do
-			if line_info.width > line.container.width then
+			if line_info.container.width > line.container.width then
 				rejust = false
 				break
 			end
@@ -295,10 +298,91 @@ function IDECodeSelectCursor:DeleteSelect()
 			self._tab_child.tab_screen.container.width = line.container.width
 			self._tab_child.tab_screen:RejustScrollBar()
 		end
-		self:Hide()
 		return true, it_line_start, it_char_start
 	end
-	return false, nil, nil
+	local it_line_start = self._it_line_start
+	local it_char_start = self._it_char_start
+	local it_line_end = self._it_line_end
+	local it_char_end = self._it_char_end
+	if it_line_start > it_line_end then
+		local temp = it_line_start
+		it_line_start = it_line_end
+		it_line_end = temp
+		temp = it_char_start
+		it_char_start = it_char_end
+		it_char_end = temp
+	end
+	self:Hide()
+	local line_count = it_line_end - it_line_start - 1
+	if line_count > 0 then
+		local it_line = it_line_start + 1
+		while true do
+			if not(it_line < it_line_end) then break end
+			self._tab_child.code_container:RemoveChild(self._tab_child.line_list[it_line].container)
+			it_line = it_line+(1)
+		end
+		ALittle.List_Splice(self._tab_child.line_list, it_line_start + 1, line_count)
+		self._tab_child.line_count = self._tab_child.line_count - (line_count)
+		it_line_end = it_line_end - (line_count)
+	end
+	local start_line = self._tab_child.line_list[it_line_start]
+	local it_char = it_char_start + 1
+	while true do
+		if not(it_char <= start_line.char_count) then break end
+		local char = start_line.char_list[it_char]
+		if char.text ~= nil then
+			start_line.container:RemoveChild(char.text)
+		end
+		it_char = it_char+(1)
+	end
+	local count = start_line.char_count - it_char_start
+	start_line.char_count = start_line.char_count - (count)
+	ALittle.List_Splice(start_line.char_list, it_char_start + 1, count)
+	local end_line = self._tab_child.line_list[it_line_end]
+	local pre_width = 0.0
+	local last_char = start_line.char_list[start_line.char_count]
+	if last_char ~= nil then
+		pre_width = last_char.pre_width + last_char.width
+	end
+	local i = it_char_end + 1
+	while true do
+		if not(i <= end_line.char_count) then break end
+		local char = end_line.char_list[i]
+		char.pre_width = pre_width
+		if char.text ~= nil then
+			char.text.x = pre_width
+			start_line.container:AddChild(char.text)
+		end
+		pre_width = pre_width + (char.width)
+		start_line.char_count = start_line.char_count + (1)
+		start_line.char_list[start_line.char_count] = char
+		i = i+(1)
+	end
+	start_line.container.width = pre_width
+	self._tab_child.code_container:RemoveChild(end_line.container)
+	self._tab_child.line_count = self._tab_child.line_count - (1)
+	ALittle.List_Remove(self._tab_child.line_list, it_line_end)
+	local i = it_line_end
+	while true do
+		if not(i <= self._tab_child.line_count) then break end
+		self._tab_child.line_list[i].container.y = self._tab_child.line_list[i].container.y - (self._tab_child.line_height * (line_count + 1))
+		i = i+(1)
+	end
+	local max_width = 0.0
+	local text = ""
+	for index, line in ___ipairs(self._tab_child.line_list) do
+		if max_width < line.container.width then
+			max_width = line.container.width
+		end
+		text = text .. index
+		for kk, char in ___ipairs(line.char_list) do
+			text = text .. char.char
+		end
+	end
+	ALittle.Log(text)
+	self._tab_child.tab_screen.container.width = max_width
+	self._tab_child.tab_screen:RejustScrollBar()
+	return true, it_line_start, it_char_start
 end
 
 function IDECodeSelectCursor:Hide()

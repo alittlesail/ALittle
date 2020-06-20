@@ -88,7 +88,8 @@ function IDECodeCursor:SetOffsetXY(x, y, show)
 	if line == nil or self._it_char == 0 then
 		self.x = 0
 	else
-		self.x = line.char_list[self._it_char].pre_width + line.char_list[self._it_char].width
+		local char = line.char_list[self._it_char]
+		self.x = char.pre_width + char.width
 	end
 	if show == nil or show then
 		self:Show()
@@ -246,12 +247,13 @@ function IDECodeCursor:DeleteLeft()
 		self:SetLineChar(self._it_line, self._it_char - 1)
 		local last_char = line.char_list[line.char_count]
 		if last_char ~= nil then
-			line.width = last_char.pre_width + last_char.width
+			line.container.width = last_char.pre_width + last_char.width
+		else
+			line.container.width = 0
 		end
-		line.container.width = line.width
 		local rejust = true
 		for index, line_info in ___ipairs(self._tab_child.line_list) do
-			if line_info.width > line.container.width then
+			if line_info.container.width > line.container.width then
 				rejust = false
 				break
 			end
@@ -288,7 +290,7 @@ function IDECodeCursor:DeleteLeft()
 	end
 	local i = 1
 	while true do
-		if not(i < cur_line.char_count) then break end
+		if not(i <= cur_line.char_count) then break end
 		local char = cur_line.char_list[i]
 		char.pre_width = pre_width
 		if char.text ~= nil then
@@ -298,10 +300,9 @@ function IDECodeCursor:DeleteLeft()
 		pre_width = pre_width + (char.width)
 		pre_line.char_count = pre_line.char_count + (1)
 		pre_line.char_list[pre_line.char_count] = char
-		pre_line.width = pre_width
 		i = i+(1)
 	end
-	pre_line.container.width = pre_line.width
+	pre_line.container.width = pre_width
 	self._tab_child.code_container:RemoveChild(cur_line.container)
 	self._tab_child.line_count = self._tab_child.line_count - (1)
 	ALittle.List_Remove(self._tab_child.line_list, self._it_line)
@@ -346,12 +347,13 @@ function IDECodeCursor:DeleteRight()
 		self:SetLineChar(self._it_line, self._it_char)
 		local last_char = line.char_list[line.char_count]
 		if last_char ~= nil then
-			line.width = last_char.pre_width + last_char.width
+			line.container.width = last_char.pre_width + last_char.width
+		else
+			line.container.width = 0
 		end
-		line.container.width = line.width
 		local rejust = true
 		for index, line_info in ___ipairs(self._tab_child.line_list) do
-			if line_info.width > line.container.width then
+			if line_info.container.width > line.container.width then
 				rejust = false
 				break
 			end
@@ -385,7 +387,7 @@ function IDECodeCursor:DeleteRight()
 	end
 	local i = 1
 	while true do
-		if not(i < next_line.char_count) then break end
+		if not(i <= next_line.char_count) then break end
 		local char = next_line.char_list[i]
 		char.pre_width = pre_width
 		if char.text ~= nil then
@@ -395,10 +397,9 @@ function IDECodeCursor:DeleteRight()
 		pre_width = pre_width + (char.width)
 		cur_line.char_count = cur_line.char_count + (1)
 		cur_line.char_list[cur_line.char_count] = char
-		cur_line.width = pre_width
 		i = i+(1)
 	end
-	cur_line.container.width = cur_line.width
+	cur_line.container.width = pre_width
 	self._tab_child.code_container:RemoveChild(next_line.container)
 	self._tab_child.line_count = self._tab_child.line_count - (1)
 	ALittle.List_Remove(self._tab_child.line_list, self._it_line + 1)

@@ -82,9 +82,11 @@ public class IDECodeCursor : ALittle.Quad
         if (line == null || this._it_char == 0)
             this.x = 0;
         else
-            this.x = line.char_list[this._it_char].pre_width + line.char_list[this._it_char].width;
-        if (show == null || show)
-            this.Show();
+        {
+            var char = line.char_list[this._it_char];
+            this.x = char.pre_width + char.width;
+        }   
+        if (show == null || show) this.Show();
     }
 
     public fun SetLineChar(int it_line, int it_char, [Nullable]bool show)
@@ -232,13 +234,14 @@ public class IDECodeCursor : ALittle.Quad
 
             var last_char = line.char_list[line.char_count];
             if (last_char != null)
-                line.width = last_char.pre_width + last_char.width;
-            line.container.width = line.width;
+                line.container.width = last_char.pre_width + last_char.width;
+            else
+                line.container.width = 0;
 
             var rejust = true;
             for (var index, line_info in this._tab_child.line_list)
             {
-                if (line_info.width > line.container.width)
+                if (line_info.container.width > line.container.width)
                 {
                     rejust = false;
                     break;
@@ -275,7 +278,7 @@ public class IDECodeCursor : ALittle.Quad
             var last_char = pre_line.char_list[pre_line.char_count];
             pre_width = last_char.pre_width + last_char.width;
         }
-        for (var i = 1; i < cur_line.char_count; 1)
+        for (var i = 1; i <= cur_line.char_count; 1)
         {
             var char = cur_line.char_list[i];
             char.pre_width = pre_width;
@@ -287,9 +290,8 @@ public class IDECodeCursor : ALittle.Quad
             pre_width += char.width;
             pre_line.char_count += 1;
             pre_line.char_list[pre_line.char_count] = char;
-            pre_line.width = pre_width;
         }
-        pre_line.container.width = pre_line.width;
+        pre_line.container.width = pre_width;
         this._tab_child.code_container.RemoveChild(cur_line.container);
         this._tab_child.line_count -= 1;
         ALittle.List_Remove(this._tab_child.line_list, this._it_line);
@@ -332,12 +334,13 @@ public class IDECodeCursor : ALittle.Quad
 
             var last_char = line.char_list[line.char_count];
             if (last_char != null)
-                line.width = last_char.pre_width + last_char.width;
-            line.container.width = line.width;
+                line.container.width = last_char.pre_width + last_char.width;
+            else
+                line.container.width = 0;
             var rejust = true;
             for (var index, line_info in this._tab_child.line_list)
             {
-                if (line_info.width > line.container.width)
+                if (line_info.container.width > line.container.width)
                 {
                     rejust = false;
                     break;
@@ -374,7 +377,7 @@ public class IDECodeCursor : ALittle.Quad
             var last_char = cur_line.char_list[cur_line.char_count];
             pre_width = last_char.pre_width + last_char.width;
         }
-        for (var i = 1; i < next_line.char_count; 1)
+        for (var i = 1; i <= next_line.char_count; 1)
         {
             var char = next_line.char_list[i];
             char.pre_width = pre_width;
@@ -386,9 +389,8 @@ public class IDECodeCursor : ALittle.Quad
             pre_width += char.width;
             cur_line.char_count += 1;
             cur_line.char_list[cur_line.char_count] = char;
-            cur_line.width = pre_width;
         }
-        cur_line.container.width = cur_line.width;
+        cur_line.container.width = pre_width;
         this._tab_child.code_container.RemoveChild(next_line.container);
         this._tab_child.line_count -= 1;
         ALittle.List_Remove(this._tab_child.line_list, this._it_line + 1);

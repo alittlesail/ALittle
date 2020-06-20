@@ -32,6 +32,7 @@ function IDEUICodeList:TCtor()
 end
 
 function IDEUICodeList:HandleProjectClose(event)
+	self._code_scroll_screen:RemoveAllChild()
 end
 
 function IDEUICodeList:HandleProjectOpen(event)

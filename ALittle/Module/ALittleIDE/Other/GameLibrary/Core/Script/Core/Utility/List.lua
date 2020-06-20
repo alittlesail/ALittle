@@ -41,6 +41,7 @@ function List_Splice(list, index, count)
 		end
 		while count > 0 do
 			list[endi - 1] = nil
+			endi = endi - 1
 			count = count - 1
 		end
 	end

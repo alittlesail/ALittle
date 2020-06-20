@@ -27,6 +27,7 @@ public class IDEUICodeList : ALittle.DisplayLayout
 
 	private fun HandleProjectClose(IDEProjectCloseEvent event)
 	{
+		this._code_scroll_screen.RemoveAllChild();
     }
 
 	private fun HandleProjectOpen(IDEProjectOpenEvent event)

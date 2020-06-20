@@ -75,6 +75,7 @@ public static List_Splice<T>(List<T> list, int index, int count)
         while (count > 0)
         {
             list[endi - 1] = null;
+            endi = endi - 1;
             count = count - 1;
         }
     }

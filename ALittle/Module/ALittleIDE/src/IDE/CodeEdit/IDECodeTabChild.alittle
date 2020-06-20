@@ -23,7 +23,6 @@ protected struct IDECodeLineInfo
 {
     List<IDECodeCharInfo> char_list;
     int char_count;
-    double width;
     ALittle.DisplayLayout container;
     ALittle.Quad quad;
 }
@@ -472,6 +471,7 @@ public class IDECodeTabChild : IDETabChild
                 line.quad.blue = SELECT_BLUE;
                 line.quad.height = LINE_HEIGHT;
                 line.quad.visible = false;
+                line.container.AddChild(line.quad);
             }
             line.char_count += 1;
             line.char_list[line.char_count] = char;
@@ -512,7 +512,6 @@ public class IDECodeTabChild : IDETabChild
                     break;
                 }
             }
-            line_info.quad.x = 0;
             var line_text = "";
             for (var j = char_start; j <= line_info.char_count; 1)
             {
@@ -524,17 +523,14 @@ public class IDECodeTabChild : IDETabChild
                 else
                     line_text = line_text..char_info.char;
             }
-            line_info.quad.y = line_offset;
             line_info.container.y = line_offset;
-            line_info.width = 0;
             if (line_info.char_count > 0)
             {
                 var last_char = line_info.char_list[line_info.char_count];
-                line_info.width = last_char.pre_width + last_char.width;
-                if (max_width < line_info.width) max_width = line_info.width;
+                line_info.container.width = last_char.pre_width + last_char.width;
+                if (max_width < line_info.container.width) max_width = line_info.container.width;
             }
             line_offset += LINE_HEIGHT;
-            this._code_container.AddChild(line_info.quad);
             this._code_container.AddChild(line_info.container);
         }
 

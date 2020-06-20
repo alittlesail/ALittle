@@ -26,8 +26,8 @@ option_map = {}
 })
 ALittle.RegStruct(-14518441, "ALittleIDE.IDECodeLineInfo", {
 name = "ALittleIDE.IDECodeLineInfo", ns_name = "ALittleIDE", rl_name = "IDECodeLineInfo", hash_code = -14518441,
-name_list = {"char_list","char_count","width","container","quad"},
-type_list = {"List<ALittleIDE.IDECodeCharInfo>","int","double","ALittle.DisplayLayout","ALittle.Quad"},
+name_list = {"char_list","char_count","container","quad"},
+type_list = {"List<ALittleIDE.IDECodeCharInfo>","int","ALittle.DisplayLayout","ALittle.Quad"},
 option_map = {}
 })
 ALittle.RegStruct(544684311, "ALittle.UIMoveInEvent", {
@@ -456,6 +456,7 @@ function IDECodeTabChild:SetText(content)
 			line.quad.blue = SELECT_BLUE
 			line.quad.height = LINE_HEIGHT
 			line.quad.visible = false
+			line.container:AddChild(line.quad)
 		end
 		line.char_count = line.char_count + (1)
 		line.char_list[line.char_count] = char
@@ -489,7 +490,6 @@ function IDECodeTabChild:SetText(content)
 				break
 			end
 		end
-		line_info.quad.x = 0
 		local line_text = ""
 		local j = char_start
 		while true do
@@ -505,18 +505,15 @@ function IDECodeTabChild:SetText(content)
 			end
 			j = j+(1)
 		end
-		line_info.quad.y = line_offset
 		line_info.container.y = line_offset
-		line_info.width = 0
 		if line_info.char_count > 0 then
 			local last_char = line_info.char_list[line_info.char_count]
-			line_info.width = last_char.pre_width + last_char.width
-			if max_width < line_info.width then
-				max_width = line_info.width
+			line_info.container.width = last_char.pre_width + last_char.width
+			if max_width < line_info.container.width then
+				max_width = line_info.container.width
 			end
 		end
 		line_offset = line_offset + (LINE_HEIGHT)
-		self._code_container:AddChild(line_info.quad)
 		self._code_container:AddChild(line_info.container)
 	end
 	self._tab_screen.container.width = max_width

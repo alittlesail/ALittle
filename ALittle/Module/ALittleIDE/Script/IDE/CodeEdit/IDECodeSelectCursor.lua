@@ -70,7 +70,6 @@ function IDECodeSelectCursor:SetQuad()
 		line.quad.width = line.char_list[it_char_end].pre_width + line.char_list[it_char_end].width - line.quad.x
 		return
 	end
-	ALittle.Log(it_line_start, it_line_end)
 	local i = it_line_start
 	while true do
 		if not(i <= it_line_end) then break end
@@ -128,9 +127,6 @@ end
 
 function IDECodeSelectCursor:UpdateLineChar(line, char)
 	self:ClearQuad()
-	if self._it_line_start == nil then
-		return
-	end
 	self._it_line_end = line
 	self._it_char_end = char
 	self:SetQuad()
@@ -383,6 +379,17 @@ function IDECodeSelectCursor:DeleteSelect()
 	self._tab_child.tab_screen.container.width = max_width
 	self._tab_child.tab_screen:RejustScrollBar()
 	return true, it_line_start, it_char_start
+end
+
+function IDECodeSelectCursor:TryHide()
+	if self._it_line_start == nil or self._it_line_end == nil or self._it_char_start == nil or self._it_char_end == nil then
+		self:Hide()
+		return
+	end
+	if self._it_line_start == self._it_line_end and self._it_char_start == self._it_char_end then
+		self:Hide()
+		return
+	end
 end
 
 function IDECodeSelectCursor:Hide()

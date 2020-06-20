@@ -211,13 +211,13 @@ public class IDECodeCursor : ALittle.Quad
     }
 
     // 向前删除一个字符
-    public fun DeleteLeft()
+    public fun DeleteLeft() : bool
     {
         // 如果不在第一列
         if (this._it_char > 0)
         {
             var line = this._tab_child.line_list[this._it_line];
-            if (line == null) return;
+            if (line == null) return false;
 
             var char = line.char_list[this._it_char];
             if (char.text != null) line.container.RemoveChild(char.text);
@@ -252,14 +252,14 @@ public class IDECodeCursor : ALittle.Quad
                 this._tab_child.tab_screen.container.width = line.container.width;
                 this._tab_child.tab_screen.RejustScrollBar();
             }
-            return;
+            return true;
         }
 
-        if (this._it_line <= 1) return;
+        if (this._it_line <= 1) return false;
         var pre_line = this._tab_child.line_list[this._it_line - 1];
-        if (pre_line == null) return;
+        if (pre_line == null) return false;
         var cur_line = this._tab_child.line_list[this._it_line];
-        if (cur_line == null) return;
+        if (cur_line == null) return false;
 
         // 1. 删除上一行的\r\n，
         var it_char = pre_line.char_count;
@@ -305,13 +305,15 @@ public class IDECodeCursor : ALittle.Quad
             this._tab_child.tab_screen.container.width = pre_line.container.width;
             this._tab_child.tab_screen.RejustScrollBar();
         }
+
+        return true;
     }
 
     // 向后删除一个字符
-    public fun DeleteRight()
+    public fun DeleteRight() : bool
     {
         var line = this._tab_child.line_list[this._it_line];
-        if (line == null) return;
+        if (line == null) return false;
         var count = line.char_count;
         while (count > 0 && line.char_list[count].width <= 0)
             -- count;
@@ -351,14 +353,14 @@ public class IDECodeCursor : ALittle.Quad
                 this._tab_child.tab_screen.container.width = line.container.width;
                 this._tab_child.tab_screen.RejustScrollBar();
             }
-            return;
+            return true;
         }
 
-        if (this._it_line >= this._tab_child.line_count) return;
+        if (this._it_line >= this._tab_child.line_count) return false;
 
         var cur_line = line;
         var next_line = this._tab_child.line_list[this._it_line + 1];
-        if (next_line == null) return;
+        if (next_line == null) return false;
 
         // 1. 删除当前行的\r\n，
         var it_char = cur_line.char_count;
@@ -404,6 +406,8 @@ public class IDECodeCursor : ALittle.Quad
             this._tab_child.tab_screen.container.width = cur_line.container.width;
             this._tab_child.tab_screen.RejustScrollBar();
         }
+
+        return true;
     }
 
     public fun Hide()

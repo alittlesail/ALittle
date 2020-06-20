@@ -162,7 +162,7 @@ function IDEUIControlList:HandleControlSearchClick(event)
 			end
 		end
 	end
-	local tabname_map = g_IDECenter.center.content_edit:GetTabNameMap()
+	local tabname_map = g_IDECenter.center.content_edit:GetTabIdMap(IDEUITabChild)
 	local search_count = 0
 	local last_control_info = nil
 	ALittle.List_Sort(control_info_list, IDEUIControlList.ControlInfoCmp)
@@ -212,7 +212,7 @@ end
 function IDEUIControlList:HandleControlPreseeMoveIn(event)
 	local info = event.target._user_data
 	info.presee = true
-	if g_IDECenter.center.content_edit:GetTabByName(info.control_info.name) ~= nil then
+	if g_IDECenter.center.content_edit:GetTabById(IDEUITabChild, info.control_info.name) ~= nil then
 		info.presee = false
 		return
 	end
@@ -225,7 +225,7 @@ function IDEUIControlList:HandleControlPreseeMoveOut(event)
 	if info.presee ~= true then
 		return
 	end
-	local child = g_IDECenter.center.content_edit:GetTabByName(info.control_info.name)
+	local child = g_IDECenter.center.content_edit:GetTabById(IDEUITabChild, info.control_info.name)
 	if child == nil then
 		return
 	end
@@ -260,7 +260,7 @@ function IDEUIControlList:HandleControlDragBegin(event)
 	if info.presee ~= true then
 		return
 	end
-	local child = g_IDECenter.center.content_edit:GetTabByName(info.control_info.name)
+	local child = g_IDECenter.center.content_edit:GetTabById(IDEUITabChild, info.control_info.name)
 	if child == nil then
 		return
 	end
@@ -377,7 +377,7 @@ function IDEUIControlList:HandleNewControlConfirm(event)
 		g_AUITool:ShowNotice("错误", "控件已存在:" .. name)
 		return
 	end
-	if g_IDECenter.center.content_edit:GetTabByName(name) ~= nil then
+	if g_IDECenter.center.content_edit:GetTabById(IDEUITabChild, name) ~= nil then
 		g_AUITool:ShowNotice("错误", "控件名已存在:" .. name)
 		return
 	end
@@ -427,7 +427,7 @@ function IDEUIControlList:Delete(target)
 			g_AUITool:ShowNotice("提示", error)
 			return
 		end
-		local tab = g_IDECenter.center.content_edit:GetTabByName(user_data.control_info.name)
+		local tab = g_IDECenter.center.content_edit:GetTabById(IDEUITabChild, user_data.control_info.name)
 		if tab == nil then
 			return
 		end
@@ -503,7 +503,7 @@ function IDEUIControlList:ControlRename(target)
 		return
 	end
 	target.text = new_name
-	local tab = g_IDECenter.center.content_edit:GetTabByName(old_name)
+	local tab = g_IDECenter.center.content_edit:GetTabById(IDEUITabChild, old_name)
 	if tab == nil then
 		return
 	end

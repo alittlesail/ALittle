@@ -227,7 +227,7 @@ function IDECodeCursor:DeleteLeft()
 	if self._it_char > 0 then
 		local line = self._tab_child.line_list[self._it_line]
 		if line == nil then
-			return
+			return false
 		end
 		local char = line.char_list[self._it_char]
 		if char.text ~= nil then
@@ -262,18 +262,18 @@ function IDECodeCursor:DeleteLeft()
 			self._tab_child.tab_screen.container.width = line.container.width
 			self._tab_child.tab_screen:RejustScrollBar()
 		end
-		return
+		return true
 	end
 	if self._it_line <= 1 then
-		return
+		return false
 	end
 	local pre_line = self._tab_child.line_list[self._it_line - 1]
 	if pre_line == nil then
-		return
+		return false
 	end
 	local cur_line = self._tab_child.line_list[self._it_line]
 	if cur_line == nil then
-		return
+		return false
 	end
 	local it_char = pre_line.char_count
 	while it_char > 0 and pre_line.char_list[it_char].width <= 0 do
@@ -317,12 +317,13 @@ function IDECodeCursor:DeleteLeft()
 		self._tab_child.tab_screen.container.width = pre_line.container.width
 		self._tab_child.tab_screen:RejustScrollBar()
 	end
+	return true
 end
 
 function IDECodeCursor:DeleteRight()
 	local line = self._tab_child.line_list[self._it_line]
 	if line == nil then
-		return
+		return false
 	end
 	local count = line.char_count
 	while count > 0 and line.char_list[count].width <= 0 do
@@ -362,15 +363,15 @@ function IDECodeCursor:DeleteRight()
 			self._tab_child.tab_screen.container.width = line.container.width
 			self._tab_child.tab_screen:RejustScrollBar()
 		end
-		return
+		return true
 	end
 	if self._it_line >= self._tab_child.line_count then
-		return
+		return false
 	end
 	local cur_line = line
 	local next_line = self._tab_child.line_list[self._it_line + 1]
 	if next_line == nil then
-		return
+		return false
 	end
 	local it_char = cur_line.char_count
 	while it_char > 0 and (cur_line.char_list[it_char].char == "\r" or cur_line.char_list[it_char].char == "\n") do
@@ -414,6 +415,7 @@ function IDECodeCursor:DeleteRight()
 		self._tab_child.tab_screen.container.width = cur_line.container.width
 		self._tab_child.tab_screen:RejustScrollBar()
 	end
+	return true
 end
 
 function IDECodeCursor:Hide()

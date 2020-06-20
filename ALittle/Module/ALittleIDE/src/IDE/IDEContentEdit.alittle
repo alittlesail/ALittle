@@ -17,6 +17,7 @@ public class IDETabChild : ALittle.UIEventDispatcher
 		this._revoke_list = new IDERevokeList();
     }
 	
+	public get id() : string { return this._name; }
 	public get name() : string { return this._name; }
 	public get save() : bool { return this._save; }
 	public set save(bool value) {}
@@ -64,26 +65,31 @@ public class IDEContentEdit : ALittle.DisplayLayout
 	
 	////////////////////////////////////////////////////////////////////////-	
 	// 按照name遍历Tab是否已存在某个名字的控件
-	public fun GetTabByName(string name) : ALittle.DisplayObject
+	public fun GetTabById<T:IDETabChild>(string id) : ALittle.DisplayObject
 	{
 		//遍历
 		var tab_childs = this._main_tab.childs;
 		for (var index, child in tab_childs)
 		{
-			if (cast<IDETabChild>(child._user_data).name == name)
+			var tab_child = ALittle.Cast{T, IDETabChild}(child._user_data);
+			if (tab_child != null && tab_child.id == id)
 				return child;
 		}
 		return null;
 	}
 	
 	// 获取控件映射表
-	public fun GetTabNameMap() : Map<string, bool>
+	public fun GetTabIdMap<T:IDETabChild>() : Map<string, bool>
 	{
 		//遍历
 		var info = new Map<string, bool>();
 		var tab_childs = this._main_tab.childs;
 		for (var index, child in tab_childs)
-			info[cast<IDETabChild>(child._user_data).name] = true;
+		{
+			var tab_child = ALittle.Cast{T, IDETabChild}(child._user_data);
+			if (tab_child != null)
+				info[tab_child.id] = true;
+        }
 
 		return info;
 	}
@@ -357,7 +363,7 @@ public class IDEContentEdit : ALittle.DisplayLayout
 	public fun StartEditControlBySelect(string name, const ALittle.DisplayInfo info) : IDEUITabChild
 	{
 		// 判断显示tab栏中是否已有该控件
-		var child = this.GetTabByName(name);
+		var child = this.GetTabById{IDEUITabChild}(name);
 		if (child != null) // 切换
 		{
 			// 获取当前正在编辑的标签页
@@ -394,6 +400,19 @@ public class IDEContentEdit : ALittle.DisplayLayout
 	// 选择文件，并编辑
 	public fun StartEditCodeBySelect(string name, IDECodeTreeUserInfo info) : IDECodeTabChild
 	{
+		// 判断显示tab栏中是否已有该控件
+		var child = this.GetTabById{IDECodeTabChild}(info.path);
+		if (child != null) // 切换
+		{
+			// 获取当前正在编辑的标签页
+			var child_from = this._main_tab.tab;
+			// 设置目标标签页
+			this._main_tab.tab = child;
+			// 切换时数据操作
+			this.ChangeTabEdit(child_from, this._main_tab.tab);
+			return child._user_data;
+		}
+
 		// 获取当前正在编辑的标签页
 		var child_from = this._main_tab.tab;
 		var tab_child = new IDECodeTabChild(g_Control, name, true);

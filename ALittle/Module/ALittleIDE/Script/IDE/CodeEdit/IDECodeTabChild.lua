@@ -36,12 +36,6 @@ name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
-ALittle.RegStruct(776398171, "ALittle.UIEnterKeyEvent", {
-name = "ALittle.UIEnterKeyEvent", ns_name = "ALittle", rl_name = "UIEnterKeyEvent", hash_code = 776398171,
-name_list = {"target"},
-type_list = {"ALittle.DisplayObject"},
-option_map = {}
-})
 ALittle.RegStruct(958494922, "ALittle.UIChangedEvent", {
 name = "ALittle.UIChangedEvent", ns_name = "ALittle", rl_name = "UIChangedEvent", hash_code = 958494922,
 name_list = {"target"},
@@ -170,9 +164,7 @@ function IDECodeTabChild:HandleDrag(event)
 end
 
 function IDECodeTabChild:HandleDragEnd(event)
-	if self._select_cursor.line_start == nil or self._select_cursor.line_start == self._select_cursor.line_end and self._select_cursor.char_start == self._select_cursor.char_end then
-		self._select_cursor:Hide()
-	end
+	self._select_cursor:TryHide()
 end
 
 function IDECodeTabChild:CalcLineAndChar(x, y)
@@ -212,12 +204,16 @@ function IDECodeTabChild:CalcLineAndChar(x, y)
 end
 
 function IDECodeTabChild:DeleteSelectText()
-	local result = self._select_cursor:DeleteSelect()
+	local result, it_line, it_char = self._select_cursor:DeleteSelect()
+	if result then
+		self._cursor:SetLineChar(it_line, it_char)
+		self.save = false
+	end
 	return result
 end
 
 function IDECodeTabChild:HandleTextInput(event)
-	ALittle.Log(event.text)
+	self:InsertText(event.text)
 end
 
 function IDECodeTabChild:HandleKeyDown(event)
@@ -296,22 +292,16 @@ function IDECodeTabChild:HandleKeyDown(event)
 		event.handled = true
 	elseif event.sym == 8 then
 		if self._select_cursor.line_start == nil then
-			self._cursor:DeleteLeft()
+			is_change = self._cursor:DeleteLeft()
 		else
-			local result, it_line, it_char = self._select_cursor:DeleteSelect()
-			if result then
-				self._cursor:SetLineChar(it_line, it_char)
-			end
+			is_change = self:DeleteSelectText()
 		end
 		event.handled = true
 	elseif event.sym == 127 then
 		if self._select_cursor.line_start == nil then
-			self._cursor:DeleteRight()
+			is_change = self._cursor:DeleteRight()
 		else
-			local result, it_line, it_char = self._select_cursor:DeleteSelect()
-			if result then
-				self._cursor:SetLineChar(it_line, it_char)
-			end
+			is_change = self:DeleteSelectText()
 		end
 		event.handled = true
 	elseif event.sym == 1073741898 then
@@ -345,7 +335,8 @@ function IDECodeTabChild:HandleKeyDown(event)
 		end
 		event.handled = true
 	elseif event.sym == 13 or event.sym == 1073741912 then
-		self:DispatchEvent(___all_struct[776398171], {})
+		self:InsertText("\n")
+		is_change = true
 		event.handled = true
 	elseif event.sym == 120 and ALittle.BitAnd(event.mod, 0x00c0) ~= 0 then
 		local select_text = self._select_cursor:GetSelectText()
@@ -361,6 +352,10 @@ function IDECodeTabChild:HandleKeyDown(event)
 		end
 		event.handled = true
 	elseif event.sym == 118 and ALittle.BitAnd(event.mod, 0x00c0) ~= 0 then
+		if ALittle.System_HasClipboardText() then
+			self:InsertText(ALittle.System_GetClipboardText())
+			is_change = true
+		end
 		event.handled = true
 	elseif event.sym == 97 and ALittle.BitAnd(event.mod, 0x00c0) ~= 0 then
 		if self._line_count > 0 then
@@ -371,6 +366,7 @@ function IDECodeTabChild:HandleKeyDown(event)
 		event.handled = true
 	end
 	if is_change then
+		self.save = false
 		self:DispatchEvent(___all_struct[958494922], {})
 	end
 end
@@ -394,10 +390,10 @@ function IDECodeTabChild:OnOpen()
 	end
 end
 
-function IDECodeTabChild:SetText(content)
-	self._code_container:RemoveAllChild()
-	self._line_list = {}
-	self._line_count = 0
+function IDECodeTabChild:CreateLines(content)
+	local line_list = {}
+	local line_count = 0
+	local max_width = 0.0
 	local line = nil
 	local len = ALittle.String_Len(content)
 	local index = 1
@@ -464,64 +460,279 @@ function IDECodeTabChild:SetText(content)
 			line.container:AddChild(char.text)
 		end
 		if char_text == "\n" then
-			self._line_count = self._line_count + (1)
-			self._line_list[self._line_count] = line
+			line_count = line_count + (1)
+			line_list[line_count] = line
 			line = nil
 			pre_width = 0
 		end
 	end
 	if line ~= nil then
-		self._line_count = self._line_count + (1)
-		self._line_list[self._line_count] = line
-		line = nil
+		line_count = line_count + (1)
+		line_list[line_count] = line
 	end
-	local line_offset = 0
-	local max_width = 0.0
-	for i, line_info in ___ipairs(self._line_list) do
-		local char_offset = 0.0
-		local char_start = 1
-		for j, char_info in ___ipairs(line_info.char_list) do
-			if char_info.char == " " then
-				char_offset = char_offset + (self._ascii_width)
-			elseif char_info.char == "\t" then
-				char_offset = char_offset + (self._ascii_width * 4)
-			else
-				char_start = j
-				break
-			end
-		end
-		local line_text = ""
-		local j = char_start
-		while true do
-			if not(j <= line_info.char_count) then break end
-			local char_info = line_info.char_list[j]
-			if char_info.char == "\r" or char_info.char == "\n" then
-				break
-			end
-			if char_info.char == "\t" then
-				line_text = line_text .. "    "
-			else
-				line_text = line_text .. char_info.char
-			end
-			j = j+(1)
-		end
-		line_info.container.y = line_offset
-		if line_info.char_count > 0 then
-			local last_char = line_info.char_list[line_info.char_count]
+	local last_line = line_list[line_count]
+	if last_line == nil then
+		return line_list, line_count, max_width
+	end
+	local last_char = last_line.char_list[last_line.char_count]
+	if last_char == nil then
+		return line_list, line_count, max_width
+	end
+	if last_char.char == "\n" then
+		line = {}
+		line.char_count = 0
+		line.char_list = {}
+		line.quad = ALittle.Quad(g_Control)
+		line.container = ALittle.DisplayLayout(g_Control)
+		line.quad.red = SELECT_RED
+		line.quad.green = SELECT_GREEN
+		line.quad.blue = SELECT_BLUE
+		line.quad.height = LINE_HEIGHT
+		line.quad.visible = false
+		line.container:AddChild(line.quad)
+		line_count = line_count + (1)
+		line_list[line_count] = line
+	end
+	for i, line_info in ___ipairs(line_list) do
+		last_char = line_info.char_list[line_info.char_count]
+		if last_char ~= nil then
 			line_info.container.width = last_char.pre_width + last_char.width
-			if max_width < line_info.container.width then
-				max_width = line_info.container.width
-			end
 		end
-		line_offset = line_offset + (LINE_HEIGHT)
-		self._code_container:AddChild(line_info.container)
+		if line_info.container.width > max_width then
+			max_width = line_info.container.width
+		end
+	end
+	return line_list, line_count, max_width
+end
+
+function IDECodeTabChild:SetText(content)
+	self._code_container:RemoveAllChild()
+	local max_width = 0.0
+	self._line_list, self._line_count, max_width = self:CreateLines(content)
+	for index, line in ___ipairs(self._line_list) do
+		line.container.y = (index - 1) * LINE_HEIGHT
+		self._code_container:AddChild(line.container)
 	end
 	self._tab_screen.container.width = max_width
-	self._tab_screen.container.height = line_offset
+	self._tab_screen.container.height = self._line_count * LINE_HEIGHT
 	self._tab_screen:RejustScrollBar()
-	self._cursor.x = 0
-	self._cursor.y = 0
-	self._cursor:Show()
+	self._cursor:SetLineChar(1, 0)
+end
+
+function IDECodeTabChild:InsertText(content)
+	self:DeleteSelectText()
+	local line_list, line_count, max_width = self:CreateLines(content)
+	if line_count == 0 then
+		return
+	end
+	self.save = false
+	local split_pre_line = self._line_list[self._cursor.line]
+	local split_it_char = self._cursor.char
+	if split_pre_line == nil then
+		split_pre_line = {}
+		split_pre_line.char_count = 0
+		split_pre_line.char_list = {}
+		split_pre_line.quad = ALittle.Quad(g_Control)
+		split_pre_line.container = ALittle.DisplayLayout(g_Control)
+		split_pre_line.quad.red = SELECT_RED
+		split_pre_line.quad.green = SELECT_GREEN
+		split_pre_line.quad.blue = SELECT_BLUE
+		split_pre_line.quad.height = LINE_HEIGHT
+		split_pre_line.quad.visible = false
+		split_pre_line.container:AddChild(split_pre_line.quad)
+		self._code_container:AddChild(split_pre_line.container)
+		split_pre_line.container.y = self._line_count * LINE_HEIGHT
+		self._line_count = self._line_count + (1)
+		self._line_list[self._line_count] = split_pre_line
+	end
+	local split_next_line = split_pre_line
+	local it_cursor_line = self._cursor.line
+	local it_cursor_char = self._cursor.char
+	if line_count > 1 then
+		self._code_container:RemoveAllChild()
+		local new_line_list = {}
+		local new_line_count = 0
+		local i = 1
+		while true do
+			if not(i < self._cursor.line) then break end
+			local line = self._line_list[i]
+			line.container.y = new_line_count * LINE_HEIGHT
+			self._code_container:AddChild(line.container)
+			new_line_count = new_line_count + (1)
+			new_line_list[new_line_count] = line
+			i = i+(1)
+		end
+		do
+			split_pre_line = self._line_list[self._cursor.line]
+			if split_pre_line == nil then
+				return
+			end
+			split_next_line = {}
+			split_next_line.char_count = 0
+			split_next_line.char_list = {}
+			split_next_line.quad = ALittle.Quad(g_Control)
+			split_next_line.container = ALittle.DisplayLayout(g_Control)
+			split_next_line.quad.red = SELECT_RED
+			split_next_line.quad.green = SELECT_GREEN
+			split_next_line.quad.blue = SELECT_BLUE
+			split_next_line.quad.height = LINE_HEIGHT
+			split_next_line.quad.visible = false
+			split_next_line.container:AddChild(split_next_line.quad)
+			local i = self._cursor.char + 1
+			while true do
+				if not(i <= split_pre_line.char_count) then break end
+				split_next_line.char_count = split_next_line.char_count + (1)
+				split_next_line.char_list[split_next_line.char_count] = split_pre_line.char_list[i]
+				if split_pre_line.char_list[i].text ~= nil then
+					split_next_line.container:AddChild(split_pre_line.char_list[i].text)
+				end
+				i = i+(1)
+			end
+			local split_count = split_pre_line.char_count - self._cursor.char
+			ALittle.List_Splice(split_pre_line.char_list, self._cursor.char + 1, split_count)
+			split_pre_line.char_count = split_pre_line.char_count - (split_count)
+			split_pre_line.container.y = new_line_count * LINE_HEIGHT
+			self._code_container:AddChild(split_pre_line.container)
+			new_line_count = new_line_count + (1)
+			new_line_list[new_line_count] = split_pre_line
+		end
+		local i = 2
+		while true do
+			if not(i < line_count) then break end
+			local line = line_list[i]
+			line.container.y = new_line_count * LINE_HEIGHT
+			self._code_container:AddChild(line.container)
+			new_line_count = new_line_count + (1)
+			new_line_list[new_line_count] = line
+			i = i+(1)
+		end
+		do
+			split_next_line.container.y = new_line_count * LINE_HEIGHT
+			self._code_container:AddChild(split_next_line.container)
+			new_line_count = new_line_count + (1)
+			new_line_list[new_line_count] = split_next_line
+			it_cursor_line = new_line_count
+			it_cursor_char = 0
+		end
+		local i = self._cursor.line + 1
+		while true do
+			if not(i <= self._line_count) then break end
+			local line = self._line_list[i]
+			line.container.y = new_line_count * LINE_HEIGHT
+			self._code_container:AddChild(line.container)
+			new_line_count = new_line_count + (1)
+			new_line_list[new_line_count] = line
+			i = i+(1)
+		end
+		self._line_list = new_line_list
+		self._line_count = new_line_count
+	end
+	if line_count > 0 then
+		local line = line_list[1]
+		local char_list = {}
+		local char_count = 0
+		split_pre_line.container:RemoveAllChild()
+		split_pre_line.container:AddChild(split_pre_line.quad)
+		local pre_width = 0.0
+		local i = 1
+		while true do
+			if not(i <= split_it_char) then break end
+			local char = split_pre_line.char_list[i]
+			if char.text ~= nil then
+				char.text.x = pre_width
+				split_pre_line.container:AddChild(char.text)
+			end
+			char.pre_width = pre_width
+			char_count = char_count + (1)
+			char_list[char_count] = char
+			pre_width = pre_width + (char.width)
+			i = i+(1)
+		end
+		local i = 1
+		while true do
+			if not(i <= line.char_count) then break end
+			local char = line.char_list[i]
+			if char.text ~= nil then
+				char.text.x = pre_width
+				split_pre_line.container:AddChild(char.text)
+			end
+			char.pre_width = pre_width
+			char_count = char_count + (1)
+			char_list[char_count] = char
+			pre_width = pre_width + (char.width)
+			i = i+(1)
+		end
+		if line_count <= 1 then
+			it_cursor_char = char_count
+		end
+		local i = split_it_char + 1
+		while true do
+			if not(i <= split_pre_line.char_count) then break end
+			local char = split_pre_line.char_list[i]
+			if char.text ~= nil then
+				char.text.x = pre_width
+				split_pre_line.container:AddChild(char.text)
+			end
+			char.pre_width = pre_width
+			char_count = char_count + (1)
+			char_list[char_count] = char
+			pre_width = pre_width + (char.width)
+			i = i+(1)
+		end
+		split_pre_line.char_count = char_count
+		split_pre_line.char_list = char_list
+		split_pre_line.container.width = pre_width
+	end
+	if line_count > 1 then
+		local line = line_list[line_count]
+		local char_list = {}
+		local char_count = 0
+		split_next_line.container:RemoveAllChild()
+		split_next_line.container:AddChild(split_next_line.quad)
+		local pre_width = 0.0
+		local i = 1
+		while true do
+			if not(i <= line.char_count) then break end
+			local char = line.char_list[i]
+			if char.text ~= nil then
+				char.text.x = pre_width
+				split_next_line.container:AddChild(char.text)
+			end
+			char.pre_width = pre_width
+			char_count = char_count + (1)
+			char_list[char_count] = char
+			pre_width = pre_width + (char.width)
+			i = i+(1)
+		end
+		it_cursor_char = char_count
+		local i = 1
+		while true do
+			if not(i <= split_next_line.char_count) then break end
+			local char = split_next_line.char_list[i]
+			if char.text ~= nil then
+				char.text.x = pre_width
+				split_next_line.container:AddChild(char.text)
+			end
+			char.pre_width = pre_width
+			char_count = char_count + (1)
+			char_list[char_count] = char
+			pre_width = pre_width + (char.width)
+			i = i+(1)
+		end
+		split_next_line.char_count = char_count
+		split_next_line.char_list = char_list
+		split_next_line.container.width = pre_width
+	end
+	max_width = 0.0
+	for index, line in ___ipairs(self._line_list) do
+		if line.container.width > max_width then
+			max_width = line.container.width
+		end
+	end
+	self._tab_screen.container.width = max_width
+	self._tab_screen.container.height = self._line_count * LINE_HEIGHT
+	self._tab_screen:RejustScrollBar()
+	self._cursor:SetLineChar(it_cursor_line, it_cursor_char)
 end
 
 function IDECodeTabChild.__getter:tab_screen()
@@ -537,8 +748,21 @@ function IDECodeTabChild.__setter:save(value)
 		self:UpdateTitle()
 		return
 	end
+	local text_list = {}
+	local text_count = 0
+	for i, line in ___ipairs(self._line_list) do
+		for j, char in ___ipairs(line.char_list) do
+			text_count = text_count + (1)
+			text_list[text_count] = char.char
+		end
+	end
+	ALittle.File_WriteTextToFile(ALittle.String_Join(text_list, ""), self._user_info.path)
 	self._save = value
 	self:UpdateTitle()
+end
+
+function IDECodeTabChild.__getter:id()
+	return self._user_info.path
 end
 
 function IDECodeTabChild:Rename(name)
@@ -560,5 +784,6 @@ end
 
 function IDECodeTabChild:CreateBySelect(info)
 	self._user_info = info
+	self._edit_quad:DelayFocus()
 end
 

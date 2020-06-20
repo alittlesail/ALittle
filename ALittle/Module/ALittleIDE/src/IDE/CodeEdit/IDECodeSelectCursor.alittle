@@ -71,7 +71,6 @@ public class IDECodeSelectCursor
             line.quad.width = line.char_list[it_char_end].pre_width + line.char_list[it_char_end].width - line.quad.x;
             return;
         }
-        ALittle.Log(it_line_start, it_line_end);
         for (var i = it_line_start; i <= it_line_end; 1)
         {
             var line = this._tab_child.line_list[i];
@@ -125,7 +124,6 @@ public class IDECodeSelectCursor
     public fun UpdateLineChar(int line, int char)
     {
         this.ClearQuad();
-        if (this._it_line_start == null) return;
         this._it_line_end = line;
         this._it_char_end = char;
         this.SetQuad();
@@ -374,6 +372,25 @@ public class IDECodeSelectCursor
         this._tab_child.tab_screen.RejustScrollBar();
 
         return true, it_line_start, it_char_start;
+    }
+
+    public fun TryHide()
+    {
+        if (this._it_line_start == null
+            || this._it_line_end == null
+            || this._it_char_start == null
+            || this._it_char_end == null)
+        {
+            this.Hide();
+            return;
+        }
+
+        if (this._it_line_start == this._it_line_end
+            && this._it_char_start == this._it_char_end)
+        {
+            this.Hide();
+            return;
+        }
     }
 
 	public fun Hide()

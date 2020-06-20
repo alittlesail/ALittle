@@ -133,12 +133,7 @@ public class IDECodeTabChild : IDETabChild
 
     private fun HandleDragEnd(ALittle.UIButtonDragEndEvent event)
     {
-        if (this._select_cursor.line_start == null
-            || this._select_cursor.line_start == this._select_cursor.line_end
-            && this._select_cursor.char_start == this._select_cursor.char_end)
-        {
-            this._select_cursor.Hide();
-        }
+        this._select_cursor.TryHide();
     }
 
     // 计算行列
@@ -172,13 +167,18 @@ public class IDECodeTabChild : IDETabChild
     // 删除选择行
     public fun DeleteSelectText() : bool
     {
-        var result = this._select_cursor.DeleteSelect();
+        var result, it_line, it_char = this._select_cursor.DeleteSelect();
+        if (result) 
+        {
+            this._cursor.SetLineChar(it_line, it_char);
+            this.save = false;
+        }
         return result;
     }
 
     public fun HandleTextInput(ALittle.UITextInputEvent event)
     {
-        ALittle.Log(event.text);
+        this.InsertText(event.text);
     }
 
     public fun HandleKeyDown(ALittle.UIKeyDownEvent event)
@@ -270,12 +270,11 @@ public class IDECodeTabChild : IDETabChild
         {
             if (this._select_cursor.line_start == null)
             {
-                this._cursor.DeleteLeft();
+                is_change = this._cursor.DeleteLeft();
             }
             else
             {
-                var result, it_line, it_char = this._select_cursor.DeleteSelect();
-                if (result) this._cursor.SetLineChar(it_line, it_char);
+                is_change = this.DeleteSelectText();
             }
 			event.handled = true;
         }
@@ -283,12 +282,11 @@ public class IDECodeTabChild : IDETabChild
         {
             if (this._select_cursor.line_start == null)
             {
-                this._cursor.DeleteRight();
+                is_change = this._cursor.DeleteRight();
             }
             else
             {
-                var result, it_line, it_char = this._select_cursor.DeleteSelect();
-                if (result) this._cursor.SetLineChar(it_line, it_char);
+                is_change = this.DeleteSelectText();
             }
 			event.handled = true;
         }
@@ -330,7 +328,8 @@ public class IDECodeTabChild : IDETabChild
         }
         elseif (event.sym == ALittle.UIEnumTypes.KEY_ENTER || event.sym == ALittle.UIEnumTypes.KEY_NUMBER_ENTER)
         {
-            this.DispatchEvent(new ALittle.UIEnterKeyEvent());
+            this.InsertText("\n");
+            is_change = true;
 			event.handled = true;
         }
         elseif (event.sym == ALittle.UIEnumTypes.KEY_X && ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) != 0)
@@ -350,9 +349,14 @@ public class IDECodeTabChild : IDETabChild
         }
         elseif (event.sym == ALittle.UIEnumTypes.KEY_V && ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) != 0)
         {
+            if (ALittle.System_HasClipboardText())
+            {
+                this.InsertText(ALittle.System_GetClipboardText());
+                is_change = true;
+            }
 			event.handled = true;
         }
-        elseif (event.sym == 97 && ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) != 0)
+        elseif (event.sym == ALittle.UIEnumTypes.KEY_A && ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) != 0)
         {
             if (this._line_count > 0)
             {
@@ -365,6 +369,7 @@ public class IDECodeTabChild : IDETabChild
             // 检查是否发送CHANGE事件
         if (is_change)
         {
+            this.save = false;
             this.DispatchEvent(new ALittle.UIChangedEvent());
         }
     }
@@ -394,11 +399,11 @@ public class IDECodeTabChild : IDETabChild
         }
     }
 
-    public fun SetText(string content)
+    private fun CreateLines(string content) : List<IDECodeLineInfo>, int, double
     {
-        this._code_container.RemoveAllChild();
-        this._line_list = new List<IDECodeLineInfo>();
-        this._line_count = 0;
+        var line_list = new List<IDECodeLineInfo>();
+        var line_count = 0;
+        var max_width = 0.0;
 
         var line:IDECodeLineInfo = null;
         var len = ALittle.String_Len(content);
@@ -480,8 +485,8 @@ public class IDECodeTabChild : IDETabChild
 
             if (char_text == "\n")
             {
-                this._line_count += 1;
-                this._line_list[this._line_count] = line;
+                line_count += 1;
+                line_list[line_count] = line;
                 line = null;
                 pre_width = 0;
             }
@@ -489,58 +494,289 @@ public class IDECodeTabChild : IDETabChild
 
         if (line != null)
         {
-            this._line_count += 1;
-            this._line_list[this._line_count] = line;
-            line = null;
+            line_count += 1;
+            line_list[line_count] = line;
         }
 
-        var line_offset = 0;
-        var max_width = 0.0;
-        for (var i, line_info in this._line_list)
+        var last_line = line_list[line_count];
+        if (last_line == null) return line_list, line_count, max_width;
+        var last_char = last_line.char_list[last_line.char_count];
+        if (last_char == null) return line_list, line_count, max_width;
+
+            // 如果最后一个是回车，那么加一个空行
+        if (last_char.char == "\n")
         {
-            var char_offset = 0.0;
-            var char_start = 1;
-            for (var j, char_info in line_info.char_list)
-            {
-                if (char_info.char == " ")
-                    char_offset += this._ascii_width;
-                elseif (char_info.char == "\t")
-                    char_offset += this._ascii_width * 4;
-                else
-                {
-                    char_start = j;
-                    break;
-                }
-            }
-            var line_text = "";
-            for (var j = char_start; j <= line_info.char_count; 1)
-            {
-                var char_info = line_info.char_list[j];
-                if (char_info.char == "\r" || char_info.char == "\n")
-                    break;
-                if (char_info.char == "\t")
-                    line_text = line_text.."    ";
-                else
-                    line_text = line_text..char_info.char;
-            }
-            line_info.container.y = line_offset;
-            if (line_info.char_count > 0)
-            {
-                var last_char = line_info.char_list[line_info.char_count];
-                line_info.container.width = last_char.pre_width + last_char.width;
-                if (max_width < line_info.container.width) max_width = line_info.container.width;
-            }
-            line_offset += LINE_HEIGHT;
-            this._code_container.AddChild(line_info.container);
+            line = new IDECodeLineInfo();
+            line.char_count = 0;
+            line.char_list = new List<IDECodeCharInfo>();
+            line.quad = new ALittle.Quad(g_Control);
+            line.container = new ALittle.DisplayLayout(g_Control);
+            line.quad.red = SELECT_RED;
+            line.quad.green = SELECT_GREEN;
+            line.quad.blue = SELECT_BLUE;
+            line.quad.height = LINE_HEIGHT;
+            line.quad.visible = false;
+            line.container.AddChild(line.quad);
+            line_count += 1;
+            line_list[line_count] = line;
         }
 
+        for (var i, line_info in line_list)
+        {
+            last_char = line_info.char_list[line_info.char_count];
+            if (last_char != null) line_info.container.width = last_char.pre_width + last_char.width;
+            if (line_info.container.width > max_width) max_width = line_info.container.width;
+        }
+
+        return line_list, line_count, max_width;
+    }
+
+    public fun SetText(string content)
+    {
+        this._code_container.RemoveAllChild();
+        var max_width = 0.0;
+        this._line_list, this._line_count, max_width = this.CreateLines(content);
+
+        for (var index, line in this._line_list)
+        {
+            line.container.y = (index - 1) * LINE_HEIGHT;
+            this._code_container.AddChild(line.container);
+        }
         this._tab_screen.container.width = max_width;
-        this._tab_screen.container.height = line_offset;
+        this._tab_screen.container.height = this._line_count * LINE_HEIGHT;
         this._tab_screen.RejustScrollBar();
 
-        this._cursor.x = 0;
-        this._cursor.y = 0;
-        this._cursor.Show();
+        this._cursor.SetLineChar(1, 0);
+    }
+
+    // 插入文本
+    public fun InsertText(string content)
+    {
+        this.DeleteSelectText();
+        
+        var line_list, line_count, max_width = this.CreateLines(content);
+        if (line_count == 0) return;
+        this.save = false;
+
+        var split_pre_line:IDECodeLineInfo = this._line_list[this._cursor.line];
+        var split_it_char = this._cursor.char;
+
+        // 如果当前没有数据，那么就构建一个
+        if (split_pre_line == null)
+        {
+            split_pre_line = new IDECodeLineInfo();
+            split_pre_line.char_count = 0;
+            split_pre_line.char_list = new List<IDECodeCharInfo>();
+            split_pre_line.quad = new ALittle.Quad(g_Control);
+            split_pre_line.container = new ALittle.DisplayLayout(g_Control);
+            split_pre_line.quad.red = SELECT_RED;
+            split_pre_line.quad.green = SELECT_GREEN;
+            split_pre_line.quad.blue = SELECT_BLUE;
+            split_pre_line.quad.height = LINE_HEIGHT;
+            split_pre_line.quad.visible = false;
+            split_pre_line.container.AddChild(split_pre_line.quad);
+            this._code_container.AddChild(split_pre_line.container);
+            split_pre_line.container.y = this._line_count * LINE_HEIGHT;
+            this._line_count += 1;
+            this._line_list[this._line_count] = split_pre_line;
+        }
+
+        // 把当前行拆成两行
+        var split_next_line:IDECodeLineInfo = split_pre_line;
+        var it_cursor_line = this._cursor.line;
+        var it_cursor_char = this._cursor.char;
+
+        // 将插入的行位置空出来
+        if (line_count > 1)
+        {
+            this._code_container.RemoveAllChild();
+            var new_line_list = new List<IDECodeLineInfo>();
+            var new_line_count = 0;
+
+            // 处理开始那些行
+            for (var i = 1; i < this._cursor.line; 1)
+            {
+                var line = this._line_list[i];
+                line.container.y = new_line_count * LINE_HEIGHT;
+                this._code_container.AddChild(line.container);
+                new_line_count += 1;
+                new_line_list[new_line_count] = line;
+            }
+            // 把当前行拆成两行
+            {
+                split_pre_line = this._line_list[this._cursor.line];
+                if (split_pre_line == null) return;
+
+                split_next_line = new IDECodeLineInfo();
+                split_next_line.char_count = 0;
+                split_next_line.char_list = new List<IDECodeCharInfo>();
+                split_next_line.quad = new ALittle.Quad(g_Control);
+                split_next_line.container = new ALittle.DisplayLayout(g_Control);
+                split_next_line.quad.red = SELECT_RED;
+                split_next_line.quad.green = SELECT_GREEN;
+                split_next_line.quad.blue = SELECT_BLUE;
+                split_next_line.quad.height = LINE_HEIGHT;
+                split_next_line.quad.visible = false;
+                split_next_line.container.AddChild(split_next_line.quad);
+                for (var i = this._cursor.char + 1; i <= split_pre_line.char_count; 1)
+                {
+                    split_next_line.char_count += 1;
+                    split_next_line.char_list[split_next_line.char_count] = split_pre_line.char_list[i];
+                    if (split_pre_line.char_list[i].text != null)
+                        split_next_line.container.AddChild(split_pre_line.char_list[i].text);
+                }
+
+                var split_count = split_pre_line.char_count - this._cursor.char;
+                ALittle.List_Splice(split_pre_line.char_list, this._cursor.char + 1, split_count);
+                split_pre_line.char_count -= split_count;
+
+                // 插入旧行
+                split_pre_line.container.y = new_line_count * LINE_HEIGHT;
+                this._code_container.AddChild(split_pre_line.container);
+                new_line_count += 1;
+                new_line_list[new_line_count] = split_pre_line;
+            }
+            // 插入新的行
+            for (var i = 2; i < line_count; 1)
+            {
+                var line = line_list[i];
+                line.container.y = new_line_count * LINE_HEIGHT;
+                this._code_container.AddChild(line.container);
+                new_line_count += 1;
+                new_line_list[new_line_count] = line;
+            }
+            // 插入拆分行
+            {
+                split_next_line.container.y = new_line_count * LINE_HEIGHT;
+                this._code_container.AddChild(split_next_line.container);
+                new_line_count += 1;
+                new_line_list[new_line_count] = split_next_line;
+                it_cursor_line = new_line_count;
+                it_cursor_char = 0;
+            }
+            // 插入剩余行
+            for (var i = this._cursor.line + 1; i <= this._line_count; 1)
+            {
+                var line = this._line_list[i];
+                line.container.y = new_line_count * LINE_HEIGHT;
+                this._code_container.AddChild(line.container);
+                new_line_count += 1;
+                new_line_list[new_line_count] = line;
+            }
+            this._line_list = new_line_list;
+            this._line_count = new_line_count;
+        }
+
+        // 开始衔接起始行
+        if (line_count > 0)
+        {
+            var line = line_list[1];
+            var char_list = new List<IDECodeCharInfo>();
+            var char_count = 0;
+            split_pre_line.container.RemoveAllChild();
+            split_pre_line.container.AddChild(split_pre_line.quad);
+            // 插入旧的数据
+            var pre_width = 0.0;
+            for (var i = 1; i <= split_it_char; 1)
+            {
+                var char = split_pre_line.char_list[i];
+                if (char.text != null)
+                {
+                    char.text.x = pre_width;
+                    split_pre_line.container.AddChild(char.text);   
+                }
+                char.pre_width = pre_width;
+                char_count += 1;
+                char_list[char_count] = char;
+                pre_width += char.width;
+            }
+            // 插入新的数据
+            for (var i = 1; i <= line.char_count; 1)
+            {
+                var char = line.char_list[i];
+                if (char.text != null)
+                {
+                    char.text.x = pre_width;
+                    split_pre_line.container.AddChild(char.text);   
+                }
+                char.pre_width = pre_width;
+                char_count += 1;
+                char_list[char_count] = char;
+                pre_width += char.width;
+            }
+            // 如果只在起始行插入，那么光标移动到插入最后字符的位置
+            if (line_count <= 1)
+                it_cursor_char = char_count;
+            // 插入后缀数据
+            for (var i = split_it_char + 1; i <= split_pre_line.char_count; 1)
+            {
+                var char = split_pre_line.char_list[i];
+                if (char.text != null)
+                {
+                    char.text.x = pre_width;
+                    split_pre_line.container.AddChild(char.text);   
+                }
+                char.pre_width = pre_width;
+                char_count += 1;
+                char_list[char_count] = char;
+                pre_width += char.width;
+            }
+            split_pre_line.char_count = char_count;
+            split_pre_line.char_list = char_list;
+            split_pre_line.container.width = pre_width;
+        }
+
+        // 开始衔接结束行
+        if (line_count > 1)
+        {
+            var line = line_list[line_count];
+            var char_list = new List<IDECodeCharInfo>();
+            var char_count = 0;
+            split_next_line.container.RemoveAllChild();
+            split_next_line.container.AddChild(split_next_line.quad);
+            // 插入新的数据
+            var pre_width = 0.0;
+            for (var i = 1; i <= line.char_count; 1)
+            {
+                var char = line.char_list[i];
+                if (char.text != null)
+                {
+                    char.text.x = pre_width;
+                    split_next_line.container.AddChild(char.text);   
+                }
+                char.pre_width = pre_width;
+                char_count += 1;
+                char_list[char_count] = char;
+                pre_width += char.width;
+            }
+            it_cursor_char = char_count;
+            // 插入后缀数据
+            for (var i = 1; i <= split_next_line.char_count; 1)
+            {
+                var char = split_next_line.char_list[i];
+                if (char.text != null)
+                {
+                    char.text.x = pre_width;
+                    split_next_line.container.AddChild(char.text);   
+                }
+                char.pre_width = pre_width;
+                char_count += 1;
+                char_list[char_count] = char;
+                pre_width += char.width;
+            }
+            split_next_line.char_count = char_count;
+            split_next_line.char_list = char_list;
+            split_next_line.container.width = pre_width;
+        }
+
+        max_width = 0.0;
+        for (var index, line in this._line_list)
+            if (line.container.width > max_width) max_width = line.container.width;
+        this._tab_screen.container.width = max_width;
+        this._tab_screen.container.height = this._line_count * LINE_HEIGHT;
+        this._tab_screen.RejustScrollBar();
+
+        this._cursor.SetLineChar(it_cursor_line, it_cursor_char);
     }
 
     public get tab_screen() : ALittle.ScrollScreen { return this._tab_screen; }
@@ -555,9 +791,23 @@ public class IDECodeTabChild : IDETabChild
             return;
 		}
 
+        var text_list = new List<string>();
+        var text_count = 0;
+        for (var i, line in this._line_list)
+        {
+            for (var j, char in line.char_list)
+            {
+                text_count += 1;
+                text_list[text_count] = char.char;
+            }
+        }
+        ALittle.File_WriteTextToFile(ALittle.String_Join(text_list, ""), this._user_info.path);
+
         this._save = value;
         this.UpdateTitle();
 	}
+
+    public get id() : string { return this._user_info.path; }
 
 	public fun Rename(string name)
     {
@@ -580,5 +830,6 @@ public class IDECodeTabChild : IDETabChild
     public fun CreateBySelect(IDECodeTreeUserInfo info)
     {
         this._user_info = info;
+        this._edit_quad.DelayFocus();
     }
 }

@@ -58,6 +58,10 @@ function IDETabChild:Ctor(ctrl_sys, name, save)
 	___rawset(self, "_revoke_list", IDERevokeList())
 end
 
+function IDETabChild.__getter:id()
+	return self._name
+end
+
 function IDETabChild.__getter:name()
 	return self._name
 end
@@ -131,21 +135,25 @@ function IDEContentEdit:HandleProjectClose(event)
 	self:CloseAllTab()
 end
 
-function IDEContentEdit:GetTabByName(name)
+function IDEContentEdit:GetTabById(T, id)
 	local tab_childs = self._main_tab.childs
 	for index, child in ___ipairs(tab_childs) do
-		if child._user_data.name == name then
+		local tab_child = ALittle.Cast(T, IDETabChild, child._user_data)
+		if tab_child ~= nil and tab_child.id == id then
 			return child
 		end
 	end
 	return nil
 end
 
-function IDEContentEdit:GetTabNameMap()
+function IDEContentEdit:GetTabIdMap(T)
 	local info = {}
 	local tab_childs = self._main_tab.childs
 	for index, child in ___ipairs(tab_childs) do
-		info[child._user_data.name] = true
+		local tab_child = ALittle.Cast(T, IDETabChild, child._user_data)
+		if tab_child ~= nil then
+			info[tab_child.id] = true
+		end
 	end
 	return info
 end
@@ -359,7 +367,7 @@ function IDEContentEdit:StartEditControlByExtends(name, extends_v)
 end
 
 function IDEContentEdit:StartEditControlBySelect(name, info)
-	local child = self:GetTabByName(name)
+	local child = self:GetTabById(IDEUITabChild, name)
 	if child ~= nil then
 		local child_from = self._main_tab.tab
 		self._main_tab.tab = child
@@ -381,6 +389,13 @@ function IDEContentEdit:StartEditControlBySelect(name, info)
 end
 
 function IDEContentEdit:StartEditCodeBySelect(name, info)
+	local child = self:GetTabById(IDECodeTabChild, info.path)
+	if child ~= nil then
+		local child_from = self._main_tab.tab
+		self._main_tab.tab = child
+		self:ChangeTabEdit(child_from, self._main_tab.tab)
+		return child._user_data
+	end
 	local child_from = self._main_tab.tab
 	local tab_child = IDECodeTabChild(g_Control, name, true)
 	tab_child:CreateBySelect(info)

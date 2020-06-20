@@ -110,7 +110,7 @@ public class IDEUIControlList : ALittle.DisplayLayout
 		}
 	
 		// 获取当前已经打开的所有控件名
-		var tabname_map = g_IDECenter.center.content_edit.GetTabNameMap();
+		var tabname_map = g_IDECenter.center.content_edit.GetTabIdMap{IDEUITabChild}();
 		var search_count = 0;
 		var last_control_info:IDEControlInfo = null;
 		// 排序
@@ -174,7 +174,7 @@ public class IDEUIControlList : ALittle.DisplayLayout
 	{
 		var info:IDEControlItemUserData = event.target._user_data;
 		info.presee = true;
-		if (g_IDECenter.center.content_edit.GetTabByName(info.control_info.name) != null) { info.presee = false; return; }
+		if (g_IDECenter.center.content_edit.GetTabById{IDEUITabChild}(info.control_info.name) != null) { info.presee = false; return; }
 		info.pre_index = g_IDECenter.center.content_edit.GetCurTabIndex();
 		g_IDECenter.center.content_edit.StartEditControlBySelect(info.control_info.name, info.control_info.info);
 	}
@@ -182,7 +182,7 @@ public class IDEUIControlList : ALittle.DisplayLayout
 	{
 		var info:IDEControlItemUserData = event.target._user_data;
 		if (info.presee != true) return;
-		var child = g_IDECenter.center.content_edit.GetTabByName(info.control_info.name);
+		var child = g_IDECenter.center.content_edit.GetTabById{IDEUITabChild}(info.control_info.name);
 		if (child == null) return;
 		g_IDECenter.center.content_edit.CloseTab(child);
 		if (info.pre_index != null) g_IDECenter.center.content_edit.SetCurTabIndex(info.pre_index);
@@ -215,7 +215,7 @@ public class IDEUIControlList : ALittle.DisplayLayout
         
 		var info:IDEControlItemUserData = event.target._user_data;
 		if (info.presee != true) return;
-		var child = g_IDECenter.center.content_edit.GetTabByName(info.control_info.name);
+		var child = g_IDECenter.center.content_edit.GetTabById{IDEUITabChild}(info.control_info.name);
 		if (child == null) return;
 		g_IDECenter.center.content_edit.CloseTab(child);
 		if (info.pre_index != null) g_IDECenter.center.content_edit.SetCurTabIndex(info.pre_index);
@@ -360,7 +360,7 @@ public class IDEUIControlList : ALittle.DisplayLayout
 			return;
 		}
 		// 检查控件名是否已经正在编辑了
-		if (g_IDECenter.center.content_edit.GetTabByName(name) != null)
+		if (g_IDECenter.center.content_edit.GetTabById{IDEUITabChild}(name) != null)
 		{
 			g_AUITool.ShowNotice("错误", "控件名已存在:"..name);
 			return;
@@ -427,7 +427,7 @@ public class IDEUIControlList : ALittle.DisplayLayout
 				return;
 			}
 	
-			var tab = g_IDECenter.center.content_edit.GetTabByName(user_data.control_info.name);
+			var tab = g_IDECenter.center.content_edit.GetTabById{IDEUITabChild}(user_data.control_info.name);
 			if (tab == null) return;
 			g_IDECenter.center.content_edit.CloseTab(tab);
         }
@@ -514,7 +514,7 @@ public class IDEUIControlList : ALittle.DisplayLayout
 		target.text = new_name;
 	
 		// 检查有没有正在编辑的控件
-		var tab = g_IDECenter.center.content_edit.GetTabByName(old_name);
+		var tab = g_IDECenter.center.content_edit.GetTabById{IDEUITabChild}(old_name);
 		if (tab == null) return;
 		var tab_child:IDEUITabChild = tab._user_data;
 		tab_child.Rename(new_name);

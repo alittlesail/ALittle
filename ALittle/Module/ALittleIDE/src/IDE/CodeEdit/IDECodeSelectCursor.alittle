@@ -4,7 +4,7 @@ namespace ALittleIDE;
 public class IDECodeSelectCursor
 {
     private IDECodeTabChild _tab_child;
-    
+
     // 选中光标的范围
     private int _it_line_start;
     private int _it_char_start;
@@ -27,12 +27,12 @@ public class IDECodeSelectCursor
             if (this._it_line_start < this._it_line_end)
             {
                 for (var i = this._it_line_start; i <= this._it_line_end; 1)
-                this._tab_child.line_list[i].quad.visible = false;
+                    this._tab_child.line_list[i].quad.visible = false;
             }
             else
             {
                 for (var i = this._it_line_end; i <= this._it_line_start; 1)
-                this._tab_child.line_list[i].quad.visible = false;
+                    this._tab_child.line_list[i].quad.visible = false;
             }
         }
     }
@@ -46,9 +46,9 @@ public class IDECodeSelectCursor
 
         var swap = false;
         if (it_line_start > it_line_end)
-        swap = true;
+            swap = true;
         elseif (it_line_start == it_line_end)
-        swap = it_char_start > it_char_end;
+            swap = it_char_start > it_char_end;
         if (swap)
         {
             var temp = it_line_start;
@@ -87,7 +87,7 @@ public class IDECodeSelectCursor
                         line.quad.width = line.width - line.quad.x;   
                     }
                 }
-                else if (i == it_line_end)
+                elseif (i == it_line_end)
                 {
                     if (it_char_end > 0)
                     {
@@ -116,7 +116,7 @@ public class IDECodeSelectCursor
     public fun SetSelect(int line_start, int char_start, int line_end, int char_end)
     {
         this.ClearQuad();
-        
+
         this._it_line_start = line_start;
         this._it_char_start = char_start;
         if (this._it_line_start == null) return;
@@ -141,7 +141,7 @@ public class IDECodeSelectCursor
     // 向上移动一行
     public fun OffsetUp()
     {
-        
+
     }
 
     // 向下移动一行
@@ -152,7 +152,7 @@ public class IDECodeSelectCursor
     // 向第一个字符
     public fun OffsetHome()
     {
-        
+
     }
 
     // 向最后一列
@@ -182,7 +182,7 @@ public class IDECodeSelectCursor
     public fun GetSelectText() : string
     {
         if (this._it_line_start == null) return null;
-        
+
         var it_line_start = this._it_line_start;
         var it_char_start = this._it_char_start;
         var it_line_end = this._it_line_end;
@@ -229,7 +229,7 @@ public class IDECodeSelectCursor
                             text = text..line.char_list[j].char;
                     }
                 }
-                else if (i == it_line_end)
+                elseif (i == it_line_end)
                 {
                     if (it_char_end > 0)
                     {

@@ -143,23 +143,32 @@ public class IDECodeCursor : ALittle.Quad
     public fun OffsetHome()
     {
         if (this._it_char <= 0) return;
-
         var line = this._tab_child.line_list[this._it_line];
+        if (line == null) return;
         var it_char = 1;
         while (it_char <= line.char_count)
         {
             var char = line.char_list[it_char];
             if (char.char != " " && char.char != "\t")
-            {
                 break;
-            }
+            ++it_char;
         }
+        if (this._it_char == it_char - 1)
+            this.SetLineChar(this._it_line, 0, false);
+        else
+            this.SetLineChar(this._it_line, it_char - 1, false);
     }
 
     // 向最后一列
     public fun OffsetEnd()
     {
-
+        var line = this._tab_child.line_list[this._it_line];
+        if (line == null) return;
+        var count = line.char_count;
+        while (count > 0 && line.char_list[count].width <= 0)
+            -- count;
+        if (this._it_char < count)
+            this.SetLineChar(this._it_line, count, false);
     }
 
     public fun Hide()

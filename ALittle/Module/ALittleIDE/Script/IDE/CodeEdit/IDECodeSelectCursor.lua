@@ -82,20 +82,18 @@ function IDECodeSelectCursor:SetQuad()
 					line.quad.x = line.char_list[it_char_start + 1].pre_width
 					line.quad.width = line.width - line.quad.x
 				end
-			else
-				if i == it_line_end then
-					if it_char_end > 0 then
-						line.quad.visible = true
-						self._clear_quad = false
-						line.quad.x = 0
-						line.quad.width = line.char_list[it_char_end].pre_width + line.char_list[it_char_end].width
-					end
-				else
+			elseif i == it_line_end then
+				if it_char_end > 0 then
 					line.quad.visible = true
 					self._clear_quad = false
 					line.quad.x = 0
-					line.quad.width = line.width
+					line.quad.width = line.char_list[it_char_end].pre_width + line.char_list[it_char_end].width
 				end
+			else
+				line.quad.visible = true
+				self._clear_quad = false
+				line.quad.x = 0
+				line.quad.width = line.width
 			end
 		end
 		i = i+(1)
@@ -219,23 +217,21 @@ function IDECodeSelectCursor:GetSelectText()
 						j = j+(1)
 					end
 				end
-			else
-				if i == it_line_end then
-					if it_char_end > 0 then
-						local j = 1
-						while true do
-							if not(j <= it_char_end) then break end
-							text = text .. line.char_list[j].char
-							j = j+(1)
-						end
-					end
-				else
+			elseif i == it_line_end then
+				if it_char_end > 0 then
 					local j = 1
 					while true do
-						if not(j <= line.char_count) then break end
+						if not(j <= it_char_end) then break end
 						text = text .. line.char_list[j].char
 						j = j+(1)
 					end
+				end
+			else
+				local j = 1
+				while true do
+					if not(j <= line.char_count) then break end
+					text = text .. line.char_list[j].char
+					j = j+(1)
 				end
 			end
 		end

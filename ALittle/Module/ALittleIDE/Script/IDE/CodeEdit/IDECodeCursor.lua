@@ -149,16 +149,36 @@ function IDECodeCursor:OffsetHome()
 		return
 	end
 	local line = self._tab_child.line_list[self._it_line]
+	if line == nil then
+		return
+	end
 	local it_char = 1
 	while it_char <= line.char_count do
 		local char = line.char_list[it_char]
 		if char.char ~= " " and char.char ~= "\t" then
 			break
 		end
+		it_char = it_char + 1
+	end
+	if self._it_char == it_char - 1 then
+		self:SetLineChar(self._it_line, 0, false)
+	else
+		self:SetLineChar(self._it_line, it_char - 1, false)
 	end
 end
 
 function IDECodeCursor:OffsetEnd()
+	local line = self._tab_child.line_list[self._it_line]
+	if line == nil then
+		return
+	end
+	local count = line.char_count
+	while count > 0 and line.char_list[count].width <= 0 do
+		count = count - 1
+	end
+	if self._it_char < count then
+		self:SetLineChar(self._it_line, count, false)
+	end
 end
 
 function IDECodeCursor:Hide()

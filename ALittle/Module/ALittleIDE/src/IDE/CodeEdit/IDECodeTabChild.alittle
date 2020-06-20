@@ -108,7 +108,7 @@ public class IDECodeTabChild : IDETabChild
         }
 
         if (this._select_cursor.line_start == this._select_cursor.line_end
-            && this._select_cursor.char_start == this._select_cursor.char_end)
+        && this._select_cursor.char_start == this._select_cursor.char_end)
         {
             this._select_cursor.Hide();
             this._cursor.SetLineChar(this._select_cursor.line_end, this._select_cursor.char_end);
@@ -188,7 +188,7 @@ public class IDECodeTabChild : IDETabChild
                     this._cursor.SetLineChar(this._select_cursor.line_end, this._select_cursor.char_end);
                 }
                 else
-                this._cursor.OffsetUp();
+                    this._cursor.OffsetUp();
             }
             else
             {
@@ -201,7 +201,7 @@ public class IDECodeTabChild : IDETabChild
                     }   
                 }
                 else
-                this._select_cursor.OffsetUp();
+                    this._select_cursor.OffsetUp();
             }
 			event.handled = true;
         }
@@ -215,7 +215,7 @@ public class IDECodeTabChild : IDETabChild
                     this._cursor.SetLineChar(this._select_cursor.line_end, this._select_cursor.char_end);
                 }
                 else
-                this._cursor.OffsetDown();
+                    this._cursor.OffsetDown();
             }
             else
             {
@@ -228,7 +228,7 @@ public class IDECodeTabChild : IDETabChild
                     }   
                 }
                 else
-                this._select_cursor.OffsetDown();
+                    this._select_cursor.OffsetDown();
             }
 			event.handled = true;
         }
@@ -289,7 +289,7 @@ public class IDECodeTabChild : IDETabChild
                     }   
                 }
                 else
-                this._select_cursor.OffsetHome();
+                    this._select_cursor.OffsetHome();
             }
             event.handled = true;
         }
@@ -315,7 +315,7 @@ public class IDECodeTabChild : IDETabChild
                     }   
                 }
                 else
-                this._select_cursor.OffsetEnd();
+                    this._select_cursor.OffsetEnd();
             }
 			event.handled = true;
         }
@@ -355,7 +355,7 @@ public class IDECodeTabChild : IDETabChild
             }
 			event.handled = true;
         }
-        // 检查是否发送CHANGE事件
+            // 检查是否发送CHANGE事件
         if (is_change)
         {
             this.DispatchEvent(new ALittle.UIChangedEvent());

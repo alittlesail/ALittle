@@ -339,6 +339,8 @@ public class DisplayObject : UIEventDispatcher
     public get font_size() :int { return null; }
     public get cursor_x() : double { return null; }
     public get cursor_y() : double { return null; }
+    // 光标底部
+    public get cursor_b() : double { return null; }
 
     // 控件焦点
     public get is_focus() : bool
@@ -372,7 +374,7 @@ public class DisplayObject : UIEventDispatcher
     {
         return false;
     }
-
+    
     // 设置滚动
     public set can_scroll(bool value)
     {

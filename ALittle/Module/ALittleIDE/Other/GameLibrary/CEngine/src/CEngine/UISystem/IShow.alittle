@@ -49,6 +49,7 @@ public class IDisplayObject
     public fun SetDefaultTextAlpha(double value) {}
     public fun GetCursorX() : int { return 0; }
     public fun GetCursorY() : int { return 0; }
+    public fun GetCursorHeight() : int { return 0; }
     public fun GetText() : string { return null; }
     public fun SetCursorToEnd() {}
     public fun SetCursorToHome() {}

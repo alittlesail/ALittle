@@ -601,7 +601,7 @@ class UISystem
                 var abs_x, abs_y = this._sfc.LocalToGlobal();
                 abs_x += this._sfc.cursor_x;
                 abs_y += (this._sfc.cursor_y + this._sfc.font_size) * this._sfc.scale_y;
-                System_SetIMEPos(lua.math.floor(abs_x), lua.math.floor(abs_y));
+                System_SetIMEPos(Math_Floor(abs_x), Math_Floor(abs_y));
             }
         }
     }

@@ -187,6 +187,10 @@ function DisplayObject.__getter:cursor_y()
 	return nil
 end
 
+function DisplayObject.__getter:cursor_b()
+	return nil
+end
+
 function DisplayObject.__getter:is_focus()
 	return A_UISystem.focus == self
 end

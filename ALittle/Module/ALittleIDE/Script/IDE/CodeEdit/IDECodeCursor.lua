@@ -64,18 +64,14 @@ function IDECodeCursor:CalcSelectWord()
 		local char = line.char_list[i].char
 		local byte = ALittle.String_Byte(char, 1)
 		local check = byte >= 65 and byte <= 90 or byte >= 97 and byte <= 122 or byte == 95
+		it_start = i
 		if not check then
 			break
 		end
-		it_start = i
 		i = i+(-1)
 	end
 	if it_start == it_end then
 		return nil, nil
-	end
-	it_start = it_start - (1)
-	if it_start < 0 then
-		it_start = 0
 	end
 	return it_start, it_end
 end
@@ -223,6 +219,185 @@ function IDECodeCursor:OffsetEnd()
 	end
 	if self._it_char < count then
 		self:SetLineChar(self._it_line, count, false)
+	end
+end
+
+function IDECodeCursor:DeleteLeft()
+	if self._it_char > 0 then
+		local line = self._tab_child.line_list[self._it_line]
+		if line == nil then
+			return
+		end
+		local char = line.char_list[self._it_char]
+		if char.text ~= nil then
+			line.container:RemoveChild(char.text)
+		end
+		line.char_count = line.char_count - (1)
+		ALittle.List_Remove(line.char_list, self._it_char)
+		local i = self._it_char
+		while true do
+			if not(i < line.char_count) then break end
+			line.char_list[i].pre_width = line.char_list[i].pre_width - (char.width)
+			if line.char_list[i].text ~= nil then
+				line.char_list[i].text.x = line.char_list[i].text.x - (char.width)
+			end
+			i = i+(1)
+		end
+		self:SetLineChar(self._it_line, self._it_char - 1)
+		local last_char = line.char_list[line.char_count]
+		if last_char ~= nil then
+			line.width = last_char.pre_width + last_char.width
+		end
+		line.container.width = line.width
+		if line.container.width > self._tab_child.tab_screen.container.width then
+			self._tab_child.tab_screen.container.width = line.container.width
+			self._tab_child.tab_screen:RejustScrollBar()
+		end
+		return
+	end
+	if self._it_line <= 1 then
+		return
+	end
+	local pre_line = self._tab_child.line_list[self._it_line - 1]
+	if pre_line == nil then
+		return
+	end
+	local cur_line = self._tab_child.line_list[self._it_line]
+	if cur_line == nil then
+		return
+	end
+	local it_char = pre_line.char_count
+	while it_char > 0 and pre_line.char_list[it_char].width <= 0 do
+		pre_line.char_count = pre_line.char_count - (1)
+		pre_line.char_list[it_char] = nil
+		it_char = it_char - (1)
+	end
+	local new_it_line = self._it_line - 1
+	local new_it_char = it_char
+	local pre_width = 0.0
+	if pre_line.char_count > 0 then
+		local last_char = pre_line.char_list[pre_line.char_count]
+		pre_width = last_char.pre_width + last_char.width
+	end
+	local i = 1
+	while true do
+		if not(i < cur_line.char_count) then break end
+		local char = cur_line.char_list[i]
+		char.pre_width = pre_width
+		if char.text ~= nil then
+			char.text.x = pre_width
+			pre_line.container:AddChild(char.text)
+		end
+		pre_width = pre_width + (char.width)
+		pre_line.char_count = pre_line.char_count + (1)
+		pre_line.char_list[pre_line.char_count] = char
+		pre_line.width = pre_width
+		i = i+(1)
+	end
+	pre_line.container.width = pre_line.width
+	self._tab_child.code_container:RemoveChild(cur_line.container)
+	self._tab_child.line_count = self._tab_child.line_count - (1)
+	ALittle.List_Remove(self._tab_child.line_list, self._it_line)
+	local i = self._it_line
+	while true do
+		if not(i < self._tab_child.line_count) then break end
+		self._tab_child.line_list[i].container.y = self._tab_child.line_list[i].container.y - (self._tab_child.line_height)
+		i = i+(1)
+	end
+	self:SetLineChar(new_it_line, new_it_char)
+	if self._tab_child.tab_screen.container.width < pre_line.container.width then
+		self._tab_child.tab_screen.container.width = pre_line.container.width
+		self._tab_child.tab_screen:RejustScrollBar()
+	end
+end
+
+function IDECodeCursor:DeleteRight()
+	local line = self._tab_child.line_list[self._it_line]
+	if line == nil then
+		return
+	end
+	local count = line.char_count
+	while count > 0 and line.char_list[count].width <= 0 do
+		count = count - 1
+	end
+	if self._it_char < count then
+		local char = line.char_list[self._it_char + 1]
+		if char.text ~= nil then
+			line.container:RemoveChild(char.text)
+		end
+		line.char_count = line.char_count - (1)
+		ALittle.List_Remove(line.char_list, self._it_char + 1)
+		local i = self._it_char + 1
+		while true do
+			if not(i < line.char_count) then break end
+			line.char_list[i].pre_width = line.char_list[i].pre_width - (char.width)
+			if line.char_list[i].text ~= nil then
+				line.char_list[i].text.x = line.char_list[i].text.x - (char.width)
+			end
+			i = i+(1)
+		end
+		self:SetLineChar(self._it_line, self._it_char)
+		local last_char = line.char_list[line.char_count]
+		if last_char ~= nil then
+			line.width = last_char.pre_width + last_char.width
+		end
+		line.container.width = line.width
+		if line.container.width > self._tab_child.tab_screen.container.width then
+			self._tab_child.tab_screen.container.width = line.container.width
+			self._tab_child.tab_screen:RejustScrollBar()
+		end
+		return
+	end
+	if self._it_line >= self._tab_child.line_count then
+		return
+	end
+	local cur_line = line
+	local next_line = self._tab_child.line_list[self._it_line + 1]
+	if next_line == nil then
+		return
+	end
+	local it_char = cur_line.char_count
+	while it_char > 0 and (cur_line.char_list[it_char].char == "\r" or cur_line.char_list[it_char].char == "\n") do
+		cur_line.char_count = cur_line.char_count - (1)
+		cur_line.char_list[it_char] = nil
+		it_char = it_char - (1)
+	end
+	local new_it_line = self._it_line
+	local new_it_char = it_char
+	local pre_width = 0.0
+	if cur_line.char_count > 0 then
+		local last_char = cur_line.char_list[cur_line.char_count]
+		pre_width = last_char.pre_width + last_char.width
+	end
+	local i = 1
+	while true do
+		if not(i < next_line.char_count) then break end
+		local char = next_line.char_list[i]
+		char.pre_width = pre_width
+		if char.text ~= nil then
+			char.text.x = pre_width
+			cur_line.container:AddChild(char.text)
+		end
+		pre_width = pre_width + (char.width)
+		cur_line.char_count = cur_line.char_count + (1)
+		cur_line.char_list[cur_line.char_count] = char
+		cur_line.width = pre_width
+		i = i+(1)
+	end
+	cur_line.container.width = cur_line.width
+	self._tab_child.code_container:RemoveChild(next_line.container)
+	self._tab_child.line_count = self._tab_child.line_count - (1)
+	ALittle.List_Remove(self._tab_child.line_list, self._it_line + 1)
+	local i = self._it_line + 1
+	while true do
+		if not(i < self._tab_child.line_count) then break end
+		self._tab_child.line_list[i].container.y = self._tab_child.line_list[i].container.y - (self._tab_child.line_height)
+		i = i+(1)
+	end
+	self:SetLineChar(new_it_line, new_it_char)
+	if self._tab_child.tab_screen.container.width < cur_line.container.width then
+		self._tab_child.tab_screen.container.width = cur_line.container.width
+		self._tab_child.tab_screen:RejustScrollBar()
 	end
 end
 

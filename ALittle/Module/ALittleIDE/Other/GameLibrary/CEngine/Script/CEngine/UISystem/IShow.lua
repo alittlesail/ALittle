@@ -154,6 +154,10 @@ function IDisplayObject:GetCursorY()
 	return 0
 end
 
+function IDisplayObject:GetCursorHeight()
+	return 0
+end
+
 function IDisplayObject:GetText()
 	return nil
 end

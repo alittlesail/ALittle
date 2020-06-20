@@ -56,9 +56,15 @@ function AUIIMEManager:HandleImeEditingCallback(open, text, start, list, target)
 		end
 		self._ime_editing_list.text = ALittle.String_Join(new_list, " ")
 		local global_x, global_y = target:LocalToGlobal()
-		local height = target.height
-		self._ime_dialog.x = global_x
-		self._ime_dialog.y = global_y + height
+		local cursor_x = target.cursor_x
+		local cursor_b = target.cursor_b
+		if cursor_x ~= nil and cursor_b ~= nil then
+			self._ime_dialog.x = global_x + cursor_x
+			self._ime_dialog.y = global_y + cursor_b
+		else
+			self._ime_dialog.x = global_x
+			self._ime_dialog.y = global_y + target.height
+		end
 		local width = self._ime_editing_list.width + self._ime_editing_list.x * 2
 		if width < self._ime_dialog_init_width then
 			width = self._ime_dialog_init_width

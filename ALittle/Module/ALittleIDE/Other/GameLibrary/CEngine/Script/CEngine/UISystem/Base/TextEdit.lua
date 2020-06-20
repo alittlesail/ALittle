@@ -123,6 +123,10 @@ function TextEdit.__getter:cursor_y()
 	return self._show:GetCursorY()
 end
 
+function TextEdit.__getter:cursor_b()
+	return (self._show:GetCursorY() + self._show:GetCursorHeight()) * self.scale_y + self._ims_padding
+end
+
 function TextEdit.__setter:editable(value)
 	self._editable = value
 end

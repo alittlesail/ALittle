@@ -74,10 +74,19 @@ protected class AUIIMEManager
 	
 			// 获取目标控件的绝对位置
 			var global_x, global_y = target.LocalToGlobal();
-			var height = target.height;
-	
-			this._ime_dialog.x = global_x;
-			this._ime_dialog.y = global_y + height;
+
+			var cursor_x = target.cursor_x;
+			var cursor_b = target.cursor_b;
+			if (cursor_x != null && cursor_b != null)
+			{
+                this._ime_dialog.x = global_x + cursor_x;
+                this._ime_dialog.y = global_y + cursor_b;
+            }
+			else
+			{
+                this._ime_dialog.x = global_x;
+                this._ime_dialog.y = global_y + target.height;   
+            }
 	
 			var width = this._ime_editing_list.width +  this._ime_editing_list.x * 2;
 			if (width < this._ime_dialog_init_width)

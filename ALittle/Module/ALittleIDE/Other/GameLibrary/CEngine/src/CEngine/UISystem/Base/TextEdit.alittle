@@ -195,6 +195,12 @@ public class TextEdit : DisplayObject
     {
         return this._show.GetCursorY();
     }
+
+    // 获取光标底部
+    public get cursor_b() : double
+    {
+        return (this._show.GetCursorY() + this._show.GetCursorHeight()) * this.scale_y + this._ims_padding;
+    }
     
     // 设置是否可编辑
     public set editable(bool value)

@@ -1071,6 +1071,12 @@ public class RichInput : DisplayLayout
     {
         return this._cursor.y;
     }
+
+    // 获取光标底部
+    public get cursor_b() : double
+    {
+        return (this._cursor.y + this._cursor.height) * this.scale_y + this._ims_padding;
+    }
     
     public get start_cursor_x() : double
     {

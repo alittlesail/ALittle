@@ -17,8 +17,6 @@ protected struct IDECodeCharInfo
     ALittle.Text text;
     double pre_width;
     double width;
-    int start;
-    int len;
 }
 
 protected struct IDECodeLineInfo
@@ -30,6 +28,28 @@ protected struct IDECodeLineInfo
     ALittle.Quad quad;
 }
 
+protected class IDECodeQuad : ALittle.Quad
+{
+    public get is_input() : bool { return true; }
+    public get editable() : bool { return true; }
+    public get font_size() : int { return FONT_SIZE; }
+    public get cursor_x() : double
+    {
+        var tab_child = cast<IDECodeTabChild>(this._user_data);
+        return tab_child.cursor.x;
+    }
+    public get cursor_y() : double
+    {
+        var tab_child = cast<IDECodeTabChild>(this._user_data);
+        return tab_child.cursor.y;
+    }
+    public get cursor_b() : double
+    {
+        var tab_child = cast<IDECodeTabChild>(this._user_data);
+        return tab_child.cursor.y + tab_child.cursor.height;
+    }
+}
+
 public class IDECodeTabChild : IDETabChild
 {
     private IDECodeTreeUserInfo _user_info;
@@ -39,8 +59,8 @@ public class IDECodeTabChild : IDETabChild
     private ALittle.DisplayLayout _cursor_container;
     private ALittle.DisplayObject _edit_quad;           // 编辑区
 
-    private IDECodeCursor _cursor;
-    private IDECodeSelectCursor _select_cursor;
+    protected IDECodeCursor _cursor;
+    protected IDECodeSelectCursor _select_cursor;
     private List<IDECodeLineInfo> _line_list = new List<IDECodeLineInfo>();
     private int _line_count = 0;
     private ALittle.Text _text_show;
@@ -57,6 +77,7 @@ public class IDECodeTabChild : IDETabChild
         this._tab_screen.AddEventListener(this, this.HandleMoveIn);
         this._tab_screen.AddEventListener(this, this.HandleMoveOut);
 		this._tab_screen._user_data = this;
+        this._edit_quad._user_data = this;
 
         this._code_container.disabled = true;
 
@@ -75,6 +96,9 @@ public class IDECodeTabChild : IDETabChild
         this._word_width = this._text_show.native_show.CalcTextWidth("测");
     }
 
+    public get code_container() : ALittle.DisplayLayout { return this._code_container; }
+    public get cursor() : IDECodeCursor { return this._cursor; }
+    public set line_count(int count) { this._line_count = count; }
     public get line_count() : int { return this._line_count; }
     public get line_list() : List<IDECodeLineInfo> { return this._line_list; }
     public get line_height() : int { return LINE_HEIGHT; }
@@ -140,13 +164,21 @@ public class IDECodeTabChild : IDETabChild
                 return it_line, index;
             pre_width = next_width;
         }
-        return it_line, line.char_count;
+        var count = line.char_count;
+        while (count > 0 && line.char_list[count].width <= 0)
+            -- count;
+        return it_line, count;
     }
 
     // 删除选择行
     public fun DeleteSelectText() : bool
     {
         return false;
+    }
+
+    public fun HandleTextInput(ALittle.UITextInputEvent event)
+    {
+        ALittle.Log(event.text);
     }
 
     public fun HandleKeyDown(ALittle.UIKeyDownEvent event)
@@ -236,10 +268,26 @@ public class IDECodeTabChild : IDETabChild
         }
         elseif (event.sym == ALittle.UIEnumTypes.KEY_BACKSPACE)
         {
+            if (this._select_cursor.line_start == null)
+            {
+                this._cursor.DeleteLeft();
+            }
+            else
+            {
+
+            }
 			event.handled = true;
         }
         elseif (event.sym == ALittle.UIEnumTypes.KEY_DELETE)
         {
+            if (this._select_cursor.line_start == null)
+            {
+                this._cursor.DeleteRight();
+            }
+            else
+            {
+
+            }
 			event.handled = true;
         }
         elseif (event.sym == ALittle.UIEnumTypes.KEY_HOME)
@@ -405,8 +453,6 @@ public class IDECodeTabChild : IDETabChild
                 char.text.x = pre_width;
                 char.width = this._word_width;
             }
-            char.start = index;
-            char.len = byte_count;
             char.char = char_text;
             char.pre_width = pre_width;
             pre_width += char.width;

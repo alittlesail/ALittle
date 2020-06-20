@@ -414,7 +414,7 @@ function UISystem:HandleTextEditing(text, start)
 			local abs_x, abs_y = self._sfc:LocalToGlobal()
 			abs_x = abs_x + (self._sfc.cursor_x)
 			abs_y = abs_y + ((self._sfc.cursor_y + self._sfc.font_size) * self._sfc.scale_y)
-			System_SetIMEPos(math.floor(abs_x), math.floor(abs_y))
+			System_SetIMEPos(Math_Floor(abs_x), Math_Floor(abs_y))
 		end
 	end
 end

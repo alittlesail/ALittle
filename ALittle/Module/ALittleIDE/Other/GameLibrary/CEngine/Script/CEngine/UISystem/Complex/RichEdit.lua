@@ -994,6 +994,10 @@ function RichEdit.__getter:cursor_y()
 	return self._cursor.y
 end
 
+function RichEdit.__getter:cursor_b()
+	return (self._cursor.y + self._cursor.height) * self.scale_y + self._ims_padding
+end
+
 function RichEdit.__getter:start_cursor_x()
 	return self._event_start_x
 end

@@ -58,12 +58,10 @@ public class IDECodeCursor : ALittle.Quad
             var check = byte >= 65 && byte <= 90
                         || byte >= 97 && byte <= 122
                         || byte == 95;
-            if (!check) break;
             it_start = i;
+            if (!check) break;
         }
         if (it_start == it_end) return null, null;
-        it_start -= 1;
-        if (it_start < 0) it_start = 0;
         return it_start, it_end;
     }
 
@@ -208,6 +206,183 @@ public class IDECodeCursor : ALittle.Quad
             -- count;
         if (this._it_char < count)
             this.SetLineChar(this._it_line, count, false);
+    }
+
+    // 向前删除一个字符
+    public fun DeleteLeft()
+    {
+        // 如果不在第一列
+        if (this._it_char > 0)
+        {
+            var line = this._tab_child.line_list[this._it_line];
+            if (line == null) return;
+
+            var char = line.char_list[this._it_char];
+            if (char.text != null) line.container.RemoveChild(char.text);
+            line.char_count -= 1;
+            ALittle.List_Remove(line.char_list, this._it_char);
+            for (var i = this._it_char; i < line.char_count; 1)
+            {
+                line.char_list[i].pre_width -= char.width;
+                if (line.char_list[i].text != null)
+                    line.char_list[i].text.x -= char.width;
+            }
+
+            this.SetLineChar(this._it_line, this._it_char - 1);
+
+            var last_char = line.char_list[line.char_count];
+            if (last_char != null)
+                line.width = last_char.pre_width + last_char.width;
+            line.container.width = line.width;
+            if (line.container.width > this._tab_child.tab_screen.container.width)
+            {
+                this._tab_child.tab_screen.container.width = line.container.width;
+                this._tab_child.tab_screen.RejustScrollBar();
+            }
+            return;
+        }
+
+        if (this._it_line <= 1) return;
+        var pre_line = this._tab_child.line_list[this._it_line - 1];
+        if (pre_line == null) return;
+        var cur_line = this._tab_child.line_list[this._it_line];
+        if (cur_line == null) return;
+
+        // 1. 删除上一行的\r\n，
+        var it_char = pre_line.char_count;
+        while (it_char > 0 && pre_line.char_list[it_char].width <= 0)
+        {
+            pre_line.char_count -= 1;
+            pre_line.char_list[it_char] = null;
+            it_char -= 1;
+        }
+        var new_it_line = this._it_line - 1;
+        var new_it_char = it_char;
+        // 2. 当前行拼到上一行的尾部
+        var pre_width = 0.0;
+        if (pre_line.char_count > 0)
+        {
+            var last_char = pre_line.char_list[pre_line.char_count];
+            pre_width = last_char.pre_width + last_char.width;
+        }
+        for (var i = 1; i < cur_line.char_count; 1)
+        {
+            var char = cur_line.char_list[i];
+            char.pre_width = pre_width;
+            if (char.text != null)
+            {
+                char.text.x = pre_width;
+                pre_line.container.AddChild(char.text);
+            }
+            pre_width += char.width;
+            pre_line.char_count += 1;
+            pre_line.char_list[pre_line.char_count] = char;
+            pre_line.width = pre_width;
+        }
+        pre_line.container.width = pre_line.width;
+        this._tab_child.code_container.RemoveChild(cur_line.container);
+        this._tab_child.line_count -= 1;
+        ALittle.List_Remove(this._tab_child.line_list, this._it_line);
+        // 3. 下面的行依次往前移动
+        for (var i = this._it_line; i < this._tab_child.line_count; 1)
+            this._tab_child.line_list[i].container.y -= this._tab_child.line_height;
+        // 设置新的光标位置
+        this.SetLineChar(new_it_line, new_it_char);
+        if (this._tab_child.tab_screen.container.width < pre_line.container.width)
+        {
+            this._tab_child.tab_screen.container.width = pre_line.container.width;
+            this._tab_child.tab_screen.RejustScrollBar();
+        }
+    }
+
+    // 向后删除一个字符
+    public fun DeleteRight()
+    {
+        var line = this._tab_child.line_list[this._it_line];
+        if (line == null) return;
+        var count = line.char_count;
+        while (count > 0 && line.char_list[count].width <= 0)
+            -- count;
+
+        // 如果不在最后一列
+        if (this._it_char < count)
+        {
+            var char = line.char_list[this._it_char + 1];
+            if (char.text != null) line.container.RemoveChild(char.text);
+            line.char_count -= 1;
+            ALittle.List_Remove(line.char_list, this._it_char + 1);
+            for (var i = this._it_char + 1; i < line.char_count; 1)
+            {
+                line.char_list[i].pre_width -= char.width;
+                if (line.char_list[i].text != null)
+                    line.char_list[i].text.x -= char.width;
+            }
+
+            this.SetLineChar(this._it_line, this._it_char);
+
+            var last_char = line.char_list[line.char_count];
+            if (last_char != null)
+                line.width = last_char.pre_width + last_char.width;
+            line.container.width = line.width;
+            if (line.container.width > this._tab_child.tab_screen.container.width)
+            {
+                this._tab_child.tab_screen.container.width = line.container.width;
+                this._tab_child.tab_screen.RejustScrollBar();
+            }
+            return;
+        }
+
+        if (this._it_line >= this._tab_child.line_count) return;
+
+        var cur_line = line;
+        var next_line = this._tab_child.line_list[this._it_line + 1];
+        if (next_line == null) return;
+
+        // 1. 删除当前行的\r\n，
+        var it_char = cur_line.char_count;
+        while (it_char > 0 && (cur_line.char_list[it_char].char == "\r" || cur_line.char_list[it_char].char == "\n"))
+        {
+            cur_line.char_count -= 1;
+            cur_line.char_list[it_char] = null;
+            it_char -= 1;
+        }
+        var new_it_line = this._it_line;
+        var new_it_char = it_char;
+        // 2. 下一行拼到当前行的尾部
+        var pre_width = 0.0;
+        if (cur_line.char_count > 0)
+        {
+            var last_char = cur_line.char_list[cur_line.char_count];
+            pre_width = last_char.pre_width + last_char.width;
+        }
+        for (var i = 1; i < next_line.char_count; 1)
+        {
+            var char = next_line.char_list[i];
+            char.pre_width = pre_width;
+            if (char.text != null)
+            {
+                char.text.x = pre_width;
+                cur_line.container.AddChild(char.text);
+            }
+            pre_width += char.width;
+            cur_line.char_count += 1;
+            cur_line.char_list[cur_line.char_count] = char;
+            cur_line.width = pre_width;
+        }
+        cur_line.container.width = cur_line.width;
+        this._tab_child.code_container.RemoveChild(next_line.container);
+        this._tab_child.line_count -= 1;
+        ALittle.List_Remove(this._tab_child.line_list, this._it_line + 1);
+        // 3. 下面的行依次往前移动
+        for (var i = this._it_line + 1; i < this._tab_child.line_count; 1)
+            this._tab_child.line_list[i].container.y -= this._tab_child.line_height;
+        // 设置新的光标位置
+        this.SetLineChar(new_it_line, new_it_char);
+        if (this._tab_child.tab_screen.container.width < cur_line.container.width)
+        {
+            this._tab_child.tab_screen.container.width = cur_line.container.width;
+            this._tab_child.tab_screen.RejustScrollBar();
+        }
     }
 
     public fun Hide()

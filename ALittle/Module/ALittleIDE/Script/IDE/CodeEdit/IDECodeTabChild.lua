@@ -20,8 +20,8 @@ option_map = {}
 })
 ALittle.RegStruct(-1100004461, "ALittleIDE.IDECodeCharInfo", {
 name = "ALittleIDE.IDECodeCharInfo", ns_name = "ALittleIDE", rl_name = "IDECodeCharInfo", hash_code = -1100004461,
-name_list = {"char","text","pre_width","width","start","len"},
-type_list = {"string","ALittle.Text","double","double","int","int"},
+name_list = {"char","text","pre_width","width"},
+type_list = {"string","ALittle.Text","double","double"},
 option_map = {}
 })
 ALittle.RegStruct(-14518441, "ALittleIDE.IDECodeLineInfo", {
@@ -58,6 +58,36 @@ local FONT_BLUE = 198 / 255
 local SELECT_RED = 33 / 255
 local SELECT_GREEN = 66 / 255
 local SELECT_BLUE = 131 / 255
+assert(ALittle.Quad, " extends class:ALittle.Quad is nil")
+IDECodeQuad = Lua.Class(ALittle.Quad, "ALittleIDE.IDECodeQuad")
+
+function IDECodeQuad.__getter:is_input()
+	return true
+end
+
+function IDECodeQuad.__getter:editable()
+	return true
+end
+
+function IDECodeQuad.__getter:font_size()
+	return FONT_SIZE
+end
+
+function IDECodeQuad.__getter:cursor_x()
+	local tab_child = self._user_data
+	return tab_child.cursor.x
+end
+
+function IDECodeQuad.__getter:cursor_y()
+	local tab_child = self._user_data
+	return tab_child.cursor.y
+end
+
+function IDECodeQuad.__getter:cursor_b()
+	local tab_child = self._user_data
+	return tab_child.cursor.y + tab_child.cursor.height
+end
+
 assert(ALittleIDE.IDETabChild, " extends class:ALittleIDE.IDETabChild is nil")
 IDECodeTabChild = Lua.Class(ALittleIDE.IDETabChild, "ALittleIDE.IDECodeTabChild")
 
@@ -69,6 +99,7 @@ function IDECodeTabChild:Ctor(ctrl_sys, name, save)
 	self._tab_screen:AddEventListener(___all_struct[544684311], self, self.HandleMoveIn)
 	self._tab_screen:AddEventListener(___all_struct[-1202439334], self, self.HandleMoveOut)
 	self._tab_screen._user_data = self
+	self._edit_quad._user_data = self
 	self._code_container.disabled = true
 	___rawset(self, "_cursor", IDECodeCursor(ctrl_sys, self))
 	self._cursor.width = 1
@@ -80,6 +111,18 @@ function IDECodeTabChild:Ctor(ctrl_sys, name, save)
 	self._text_show.font_size = 14
 	___rawset(self, "_ascii_width", self._text_show.native_show:CalcTextWidth("A"))
 	___rawset(self, "_word_width", self._text_show.native_show:CalcTextWidth("测"))
+end
+
+function IDECodeTabChild.__getter:code_container()
+	return self._code_container
+end
+
+function IDECodeTabChild.__getter:cursor()
+	return self._cursor
+end
+
+function IDECodeTabChild.__setter:line_count(count)
+	self._line_count = count
 end
 
 function IDECodeTabChild.__getter:line_count()
@@ -161,11 +204,19 @@ function IDECodeTabChild:CalcLineAndChar(x, y)
 		pre_width = next_width
 		index = index+(1)
 	end
-	return it_line, line.char_count
+	local count = line.char_count
+	while count > 0 and line.char_list[count].width <= 0 do
+		count = count - 1
+	end
+	return it_line, count
 end
 
 function IDECodeTabChild:DeleteSelectText()
 	return false
+end
+
+function IDECodeTabChild:HandleTextInput(event)
+	ALittle.Log(event.text)
 end
 
 function IDECodeTabChild:HandleKeyDown(event)
@@ -243,8 +294,16 @@ function IDECodeTabChild:HandleKeyDown(event)
 		end
 		event.handled = true
 	elseif event.sym == 8 then
+		if self._select_cursor.line_start == nil then
+			self._cursor:DeleteLeft()
+		else
+		end
 		event.handled = true
 	elseif event.sym == 127 then
+		if self._select_cursor.line_start == nil then
+			self._cursor:DeleteRight()
+		else
+		end
 		event.handled = true
 	elseif event.sym == 1073741898 then
 		if ALittle.BitAnd(event.mod, 0x0003) == 0 then
@@ -374,8 +433,6 @@ function IDECodeTabChild:SetText(content)
 			char.text.x = pre_width
 			char.width = self._word_width
 		end
-		char.start = index
-		char.len = byte_count
 		char.char = char_text
 		char.pre_width = pre_width
 		pre_width = pre_width + (char.width)

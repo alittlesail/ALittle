@@ -35,6 +35,9 @@
     <Filter Include="源文件\IDE\CodeEdit\Tree">
       <UniqueIdentifier>{2263ff86-b77c-4485-b4ca-ce227da09757}</UniqueIdentifier>
     </Filter>
+    <Filter Include="源文件\IDE\CodeEdit\Code">
+      <UniqueIdentifier>{406fedbf-8a1b-40a6-9aa0-56d80ab0017e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Main.alittle">

@@ -116,37 +116,26 @@ function IDECodeSelectCursor.__getter:char_end()
 	return self._it_char_end
 end
 
-function IDECodeSelectCursor:SetSelect(line_start, char_start, line_end, char_end)
+function IDECodeSelectCursor:StartLineChar(line, char)
+	self:Hide()
+	if self._tab_child.line_count == 0 then
+		return
+	end
+	self._it_line_start = line
+	self._it_char_start = char
+end
+
+function IDECodeSelectCursor:UpdateLineChar(line, char)
 	self:ClearQuad()
-	self._it_line_start = line_start
-	self._it_char_start = char_start
 	if self._it_line_start == nil then
 		return
 	end
-	self._it_line_end = line_end
-	self._it_char_end = char_end
+	self._it_line_end = line
+	self._it_char_end = char
 	self:SetQuad()
 end
 
-function IDECodeSelectCursor:OffsetLeft()
-end
-
-function IDECodeSelectCursor:OffsetRight()
-end
-
-function IDECodeSelectCursor:OffsetUp()
-end
-
-function IDECodeSelectCursor:OffsetDown()
-end
-
-function IDECodeSelectCursor:OffsetHome()
-end
-
-function IDECodeSelectCursor:OffsetEnd()
-end
-
-function IDECodeSelectCursor:StartSelect(x, y)
+function IDECodeSelectCursor:StartOffsetXY(x, y)
 	self:Hide()
 	if self._tab_child.line_count == 0 then
 		return
@@ -154,7 +143,7 @@ function IDECodeSelectCursor:StartSelect(x, y)
 	self._it_line_start, self._it_char_start = self._tab_child:CalcLineAndChar(x, y)
 end
 
-function IDECodeSelectCursor:UpdateSelect(x, y)
+function IDECodeSelectCursor:UpdateOffsetXY(x, y)
 	self:ClearQuad()
 	if self._it_line_start == nil then
 		return

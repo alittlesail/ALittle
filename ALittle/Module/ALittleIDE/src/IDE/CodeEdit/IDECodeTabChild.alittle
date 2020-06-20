@@ -89,29 +89,23 @@ public class IDECodeTabChild : IDETabChild
 
     private fun HandleDragBegin(ALittle.UIButtonDragBeginEvent event)
     {
-        this._cursor.Hide();
-        this._select_cursor.StartSelect(event.rel_x, event.rel_y);
+        this._cursor.SetOffsetXY(event.rel_x, event.rel_y);
+        this._select_cursor.StartLineChar(this._cursor.line, this._cursor.char);
     }
 
     private fun HandleDrag(ALittle.UIButtonDragEvent event)
     {
-        this._select_cursor.UpdateSelect(event.rel_x, event.rel_y);
+        this._cursor.SetOffsetXY(event.rel_x, event.rel_y);
+        this._select_cursor.UpdateLineChar(this._cursor.line, this._cursor.char);
     }
 
     private fun HandleDragEnd(ALittle.UIButtonDragEndEvent event)
     {
-        if (this._select_cursor.line_start == null)
+        if (this._select_cursor.line_start == null
+            || this._select_cursor.line_start == this._select_cursor.line_end
+            && this._select_cursor.char_start == this._select_cursor.char_end)
         {
             this._select_cursor.Hide();
-            this._cursor.SetLineChar(1, 0);
-            return;
-        }
-
-        if (this._select_cursor.line_start == this._select_cursor.line_end
-        && this._select_cursor.char_start == this._select_cursor.char_end)
-        {
-            this._select_cursor.Hide();
-            this._cursor.SetLineChar(this._select_cursor.line_end, this._select_cursor.char_end);
         }
     }
 
@@ -155,26 +149,19 @@ public class IDECodeTabChild : IDETabChild
         {
             if (ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) == 0)
             {
-                if (this._select_cursor.line_end != null)
-                {
+                if (this._select_cursor.line_start != null)
                     this._select_cursor.Hide();
-                    this._cursor.SetLineChar(this._select_cursor.line_end, this._select_cursor.char_end);
-                }
                 else
                     this._cursor.OffsetLeft();
             }
             else
             {
-                if (this._select_cursor.line_end == null)
-                {
-                    if (this._cursor.line != 1 || this._cursor.char != 0)
-                    {
-                        this._select_cursor.SetSelect(this._cursor.line, this._cursor.char, this._cursor.line, this._cursor.char);   
-                        this._select_cursor.OffsetLeft();
-                    }   
-                }
-                else
-                    this._select_cursor.OffsetLeft();
+                if (this._select_cursor.line_start == null)
+                    this._select_cursor.StartLineChar(this._cursor.line, this._cursor.char);
+                this._cursor.OffsetLeft();
+                if (this._cursor.line == this._select_cursor.line_start && this._cursor.char == this._select_cursor.char_start)
+                    this._cursor.OffsetLeft();
+                this._select_cursor.UpdateLineChar(this._cursor.line, this._cursor.char);   
             }
 			event.handled = true;
         }
@@ -182,26 +169,19 @@ public class IDECodeTabChild : IDETabChild
         {
             if (ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) == 0)
             {
-                if (this._select_cursor.line_end != null)
-                {
+                if (this._select_cursor.line_start != null)
                     this._select_cursor.Hide();
-                    this._cursor.SetLineChar(this._select_cursor.line_end, this._select_cursor.char_end);
-                }
                 else
                     this._cursor.OffsetUp();
             }
             else
             {
-                if (this._select_cursor.line_end == null)
-                {
-                    if (this._cursor.line != 1 || this._cursor.char != 0)
-                    {
-                        this._select_cursor.SetSelect(this._cursor.line, this._cursor.char, this._cursor.line, this._cursor.char);   
-                        this._select_cursor.OffsetUp();
-                    }   
-                }
-                else
-                    this._select_cursor.OffsetUp();
+                if (this._select_cursor.line_start == null)
+                    this._select_cursor.StartLineChar(this._cursor.line, this._cursor.char);
+                this._cursor.OffsetUp();
+                if (this._cursor.line == this._select_cursor.line_start && this._cursor.char == this._select_cursor.char_start)
+                    this._cursor.OffsetUp();
+                this._select_cursor.UpdateLineChar(this._cursor.line, this._cursor.char);   
             }
 			event.handled = true;
         }
@@ -209,26 +189,19 @@ public class IDECodeTabChild : IDETabChild
         {
             if (ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) == 0)
             {
-                if (this._select_cursor.line_end != null)
-                {
+                if (this._select_cursor.line_start != null)
                     this._select_cursor.Hide();
-                    this._cursor.SetLineChar(this._select_cursor.line_end, this._select_cursor.char_end);
-                }
                 else
                     this._cursor.OffsetDown();
             }
             else
             {
-                if (this._select_cursor.line_end == null)
-                {
-                    if (this._cursor.line != 1 || this._cursor.char != 0)
-                    {
-                        this._select_cursor.SetSelect(this._cursor.line, this._cursor.char, this._cursor.line, this._cursor.char);   
-                        this._select_cursor.OffsetDown();
-                    }   
-                }
-                else
-                    this._select_cursor.OffsetDown();
+                if (this._select_cursor.line_start == null)
+                    this._select_cursor.StartLineChar(this._cursor.line, this._cursor.char);
+                this._cursor.OffsetDown();
+                if (this._cursor.line == this._select_cursor.line_start && this._cursor.char == this._select_cursor.char_start)
+                    this._cursor.OffsetDown();
+                this._select_cursor.UpdateLineChar(this._cursor.line, this._cursor.char);   
             }
 			event.handled = true;
         }
@@ -236,26 +209,19 @@ public class IDECodeTabChild : IDETabChild
         {
             if (ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) == 0)
             {
-                if (this._select_cursor.line_end != null)
-                {
+                if (this._select_cursor.line_start != null)
                     this._select_cursor.Hide();
-                    this._cursor.SetLineChar(this._select_cursor.line_end, this._select_cursor.char_end);   
-                }
                 else
                     this._cursor.OffsetRight();
             }
             else
             {
-                if (this._select_cursor.line_end == null)
-                {
-                    if (this._cursor.line != this._line_count || this._cursor.char != this._line_list[this._line_count].char_count)
-                    {
-                        this._select_cursor.SetSelect(this._cursor.line, this._cursor.char, this._cursor.line, this._cursor.char);   
-                        this._select_cursor.OffsetRight();
-                    }   
-                }
-                else
-                    this._select_cursor.OffsetRight();
+                if (this._select_cursor.line_start == null)
+                    this._select_cursor.StartLineChar(this._cursor.line, this._cursor.char);
+                this._cursor.OffsetRight();
+                if (this._cursor.line == this._select_cursor.line_start && this._cursor.char == this._select_cursor.char_start)
+                    this._cursor.OffsetRight();
+                this._select_cursor.UpdateLineChar(this._cursor.line, this._cursor.char);   
             }
 			event.handled = true;
         }
@@ -271,25 +237,17 @@ public class IDECodeTabChild : IDETabChild
         {
             if (ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) == 0)
             {
-                if (this._select_cursor.line_end != null)
-                {
+                if (this._select_cursor.line_start != null)
                     this._select_cursor.Hide();
-                    this._cursor.SetLineChar(this._select_cursor.line_end, this._select_cursor.char_end);
-                }
-                this._cursor.OffsetHome();
+                else
+                    this._cursor.OffsetHome();
             }
             else
             {
-                if (this._select_cursor.line_end == null)
-                {
-                    if (this._cursor.char != 0)
-                    {
-                        this._select_cursor.SetSelect(this._cursor.line, this._cursor.char, this._cursor.line, this._cursor.char);   
-                        this._select_cursor.OffsetHome();
-                    }   
-                }
-                else
-                    this._select_cursor.OffsetHome();
+                if (this._select_cursor.line_start == null)
+                    this._select_cursor.StartLineChar(this._cursor.line, this._cursor.char);
+                this._cursor.OffsetHome();
+                this._select_cursor.UpdateLineChar(this._cursor.line, this._cursor.char);   
             }
             event.handled = true;
         }
@@ -297,25 +255,17 @@ public class IDECodeTabChild : IDETabChild
         {
             if (ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) == 0)
             {
-                if (this._select_cursor.line_end != null)
-                {
+                if (this._select_cursor.line_start != null)
                     this._select_cursor.Hide();
-                    this._cursor.SetLineChar(this._select_cursor.line_end, this._select_cursor.char_end);
-                }
-                this._cursor.OffsetEnd();
+                else
+                    this._cursor.OffsetEnd();
             }
             else
             {
-                if (this._select_cursor.line_end == null)
-                {
-                    if (this._cursor.line <= this._line_count && this._cursor.char < this._line_list[this._cursor.line].char_count)
-                    {
-                        this._select_cursor.SetSelect(this._cursor.line, this._cursor.char, this._cursor.line, this._cursor.char);   
-                        this._select_cursor.OffsetEnd();
-                    }   
-                }
-                else
-                    this._select_cursor.OffsetEnd();
+                if (this._select_cursor.line_start == null)
+                    this._select_cursor.StartLineChar(this._cursor.line, this._cursor.char);
+                this._cursor.OffsetEnd();
+                this._select_cursor.UpdateLineChar(this._cursor.line, this._cursor.char);   
             }
 			event.handled = true;
         }
@@ -326,8 +276,6 @@ public class IDECodeTabChild : IDETabChild
         }
         elseif (event.sym == ALittle.UIEnumTypes.KEY_X && ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) != 0)
         {
-            // x键
-            // 单光标模式下处理
             var select_text = this._select_cursor.GetSelectText();
             if (select_text != null)
                 ALittle.System_SetClipboardText(select_text);
@@ -347,11 +295,11 @@ public class IDECodeTabChild : IDETabChild
         }
         elseif (event.sym == 97 && ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) != 0)
         {
-            // a键
             if (this._line_count > 0)
             {
-                this._cursor.Hide();
-                this._select_cursor.SetSelect(1, 0, this._line_count, this._line_list[this._line_count].char_count);
+                this._cursor.SetLineChar(this._line_count, this._line_list[this._line_count].char_count);
+                this._select_cursor.StartLineChar(1, 0);
+                this._select_cursor.UpdateLineChar(this._cursor.line, this._cursor.char);
             }
 			event.handled = true;
         }

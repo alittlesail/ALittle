@@ -113,55 +113,25 @@ public class IDECodeSelectCursor
     public get line_end() : int { return this._it_line_end; }
     public get char_end() : int { return this._it_char_end; }
 
-    public fun SetSelect(int line_start, int char_start, int line_end, int char_end)
+    public fun StartLineChar(int line, int char)
+    {
+        this.Hide();
+        if (this._tab_child.line_count == 0)
+            return;
+        this._it_line_start = line;
+        this._it_char_start = char;
+    }
+
+    public fun UpdateLineChar(int line, int char)
     {
         this.ClearQuad();
-
-        this._it_line_start = line_start;
-        this._it_char_start = char_start;
         if (this._it_line_start == null) return;
-
-        this._it_line_end = line_end;
-        this._it_char_end = char_end;
+        this._it_line_end = line;
+        this._it_char_end = char;
         this.SetQuad();
     }
 
-    // 向左移动一格
-    public fun OffsetLeft()
-    {
-
-    }
-
-    // 向右移动一格
-    public fun OffsetRight()
-    {
-
-    }
-
-    // 向上移动一行
-    public fun OffsetUp()
-    {
-
-    }
-
-    // 向下移动一行
-    public fun OffsetDown()
-    {
-    }
-
-    // 向第一个字符
-    public fun OffsetHome()
-    {
-
-    }
-
-    // 向最后一列
-    public fun OffsetEnd()
-    {
-
-    }
-
-    public fun StartSelect(double x, double y)
+    public fun StartOffsetXY(double x, double y)
     {
         this.Hide();
         if (this._tab_child.line_count == 0)
@@ -169,7 +139,7 @@ public class IDECodeSelectCursor
         this._it_line_start, this._it_char_start = this._tab_child.CalcLineAndChar(x, y);
     }
 
-    public fun UpdateSelect(double x, double y)
+    public fun UpdateOffsetXY(double x, double y)
     {
         this.ClearQuad();
         if (this._it_line_start == null) return;

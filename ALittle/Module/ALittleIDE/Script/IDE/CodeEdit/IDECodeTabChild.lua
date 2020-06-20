@@ -108,23 +108,18 @@ function IDECodeTabChild:HandleLButtonDown(event)
 end
 
 function IDECodeTabChild:HandleDragBegin(event)
-	self._cursor:Hide()
-	self._select_cursor:StartSelect(event.rel_x, event.rel_y)
+	self._cursor:SetOffsetXY(event.rel_x, event.rel_y)
+	self._select_cursor:StartLineChar(self._cursor.line, self._cursor.char)
 end
 
 function IDECodeTabChild:HandleDrag(event)
-	self._select_cursor:UpdateSelect(event.rel_x, event.rel_y)
+	self._cursor:SetOffsetXY(event.rel_x, event.rel_y)
+	self._select_cursor:UpdateLineChar(self._cursor.line, self._cursor.char)
 end
 
 function IDECodeTabChild:HandleDragEnd(event)
-	if self._select_cursor.line_start == nil then
+	if self._select_cursor.line_start == nil or self._select_cursor.line_start == self._select_cursor.line_end and self._select_cursor.char_start == self._select_cursor.char_end then
 		self._select_cursor:Hide()
-		self._cursor:SetLineChar(1, 0)
-		return
-	end
-	if self._select_cursor.line_start == self._select_cursor.line_end and self._select_cursor.char_start == self._select_cursor.char_end then
-		self._select_cursor:Hide()
-		self._cursor:SetLineChar(self._select_cursor.line_end, self._select_cursor.char_end)
 	end
 end
 
@@ -168,78 +163,74 @@ function IDECodeTabChild:HandleKeyDown(event)
 	local is_change = false
 	if event.sym == 1073741904 then
 		if ALittle.BitAnd(event.mod, 0x0003) == 0 then
-			if self._select_cursor.line_end ~= nil then
+			if self._select_cursor.line_start ~= nil then
 				self._select_cursor:Hide()
-				self._cursor:SetLineChar(self._select_cursor.line_end, self._select_cursor.char_end)
 			else
 				self._cursor:OffsetLeft()
 			end
 		else
-			if self._select_cursor.line_end == nil then
-				if self._cursor.line ~= 1 or self._cursor.char ~= 0 then
-					self._select_cursor:SetSelect(self._cursor.line, self._cursor.char, self._cursor.line, self._cursor.char)
-					self._select_cursor:OffsetLeft()
-				end
-			else
-				self._select_cursor:OffsetLeft()
+			if self._select_cursor.line_start == nil then
+				self._select_cursor:StartLineChar(self._cursor.line, self._cursor.char)
 			end
+			self._cursor:OffsetLeft()
+			if self._cursor.line == self._select_cursor.line_start and self._cursor.char == self._select_cursor.char_start then
+				self._cursor:OffsetLeft()
+			end
+			self._select_cursor:UpdateLineChar(self._cursor.line, self._cursor.char)
 		end
 		event.handled = true
 	elseif event.sym == 1073741906 then
 		if ALittle.BitAnd(event.mod, 0x0003) == 0 then
-			if self._select_cursor.line_end ~= nil then
+			if self._select_cursor.line_start ~= nil then
 				self._select_cursor:Hide()
-				self._cursor:SetLineChar(self._select_cursor.line_end, self._select_cursor.char_end)
 			else
 				self._cursor:OffsetUp()
 			end
 		else
-			if self._select_cursor.line_end == nil then
-				if self._cursor.line ~= 1 or self._cursor.char ~= 0 then
-					self._select_cursor:SetSelect(self._cursor.line, self._cursor.char, self._cursor.line, self._cursor.char)
-					self._select_cursor:OffsetUp()
-				end
-			else
-				self._select_cursor:OffsetUp()
+			if self._select_cursor.line_start == nil then
+				self._select_cursor:StartLineChar(self._cursor.line, self._cursor.char)
 			end
+			self._cursor:OffsetUp()
+			if self._cursor.line == self._select_cursor.line_start and self._cursor.char == self._select_cursor.char_start then
+				self._cursor:OffsetUp()
+			end
+			self._select_cursor:UpdateLineChar(self._cursor.line, self._cursor.char)
 		end
 		event.handled = true
 	elseif event.sym == 1073741905 then
 		if ALittle.BitAnd(event.mod, 0x0003) == 0 then
-			if self._select_cursor.line_end ~= nil then
+			if self._select_cursor.line_start ~= nil then
 				self._select_cursor:Hide()
-				self._cursor:SetLineChar(self._select_cursor.line_end, self._select_cursor.char_end)
 			else
 				self._cursor:OffsetDown()
 			end
 		else
-			if self._select_cursor.line_end == nil then
-				if self._cursor.line ~= 1 or self._cursor.char ~= 0 then
-					self._select_cursor:SetSelect(self._cursor.line, self._cursor.char, self._cursor.line, self._cursor.char)
-					self._select_cursor:OffsetDown()
-				end
-			else
-				self._select_cursor:OffsetDown()
+			if self._select_cursor.line_start == nil then
+				self._select_cursor:StartLineChar(self._cursor.line, self._cursor.char)
 			end
+			self._cursor:OffsetDown()
+			if self._cursor.line == self._select_cursor.line_start and self._cursor.char == self._select_cursor.char_start then
+				self._cursor:OffsetDown()
+			end
+			self._select_cursor:UpdateLineChar(self._cursor.line, self._cursor.char)
 		end
 		event.handled = true
 	elseif event.sym == 1073741903 then
 		if ALittle.BitAnd(event.mod, 0x0003) == 0 then
-			if self._select_cursor.line_end ~= nil then
+			if self._select_cursor.line_start ~= nil then
 				self._select_cursor:Hide()
-				self._cursor:SetLineChar(self._select_cursor.line_end, self._select_cursor.char_end)
 			else
 				self._cursor:OffsetRight()
 			end
 		else
-			if self._select_cursor.line_end == nil then
-				if self._cursor.line ~= self._line_count or self._cursor.char ~= self._line_list[self._line_count].char_count then
-					self._select_cursor:SetSelect(self._cursor.line, self._cursor.char, self._cursor.line, self._cursor.char)
-					self._select_cursor:OffsetRight()
-				end
-			else
-				self._select_cursor:OffsetRight()
+			if self._select_cursor.line_start == nil then
+				self._select_cursor:StartLineChar(self._cursor.line, self._cursor.char)
 			end
+			self._cursor:OffsetRight()
+			if self._cursor.line == self._select_cursor.line_start and self._cursor.char == self._select_cursor.char_start then
+				self._cursor:OffsetRight()
+			end
+			self._select_cursor:UpdateLineChar(self._cursor.line, self._cursor.char)
 		end
 		event.handled = true
 	elseif event.sym == 8 then
@@ -248,38 +239,32 @@ function IDECodeTabChild:HandleKeyDown(event)
 		event.handled = true
 	elseif event.sym == 1073741898 then
 		if ALittle.BitAnd(event.mod, 0x0003) == 0 then
-			if self._select_cursor.line_end ~= nil then
+			if self._select_cursor.line_start ~= nil then
 				self._select_cursor:Hide()
-				self._cursor:SetLineChar(self._select_cursor.line_end, self._select_cursor.char_end)
+			else
+				self._cursor:OffsetHome()
+			end
+		else
+			if self._select_cursor.line_start == nil then
+				self._select_cursor:StartLineChar(self._cursor.line, self._cursor.char)
 			end
 			self._cursor:OffsetHome()
-		else
-			if self._select_cursor.line_end == nil then
-				if self._cursor.char ~= 0 then
-					self._select_cursor:SetSelect(self._cursor.line, self._cursor.char, self._cursor.line, self._cursor.char)
-					self._select_cursor:OffsetHome()
-				end
-			else
-				self._select_cursor:OffsetHome()
-			end
+			self._select_cursor:UpdateLineChar(self._cursor.line, self._cursor.char)
 		end
 		event.handled = true
 	elseif event.sym == 1073741901 then
 		if ALittle.BitAnd(event.mod, 0x0003) == 0 then
-			if self._select_cursor.line_end ~= nil then
+			if self._select_cursor.line_start ~= nil then
 				self._select_cursor:Hide()
-				self._cursor:SetLineChar(self._select_cursor.line_end, self._select_cursor.char_end)
+			else
+				self._cursor:OffsetEnd()
+			end
+		else
+			if self._select_cursor.line_start == nil then
+				self._select_cursor:StartLineChar(self._cursor.line, self._cursor.char)
 			end
 			self._cursor:OffsetEnd()
-		else
-			if self._select_cursor.line_end == nil then
-				if self._cursor.line <= self._line_count and self._cursor.char < self._line_list[self._cursor.line].char_count then
-					self._select_cursor:SetSelect(self._cursor.line, self._cursor.char, self._cursor.line, self._cursor.char)
-					self._select_cursor:OffsetEnd()
-				end
-			else
-				self._select_cursor:OffsetEnd()
-			end
+			self._select_cursor:UpdateLineChar(self._cursor.line, self._cursor.char)
 		end
 		event.handled = true
 	elseif event.sym == 13 or event.sym == 1073741912 then
@@ -302,8 +287,9 @@ function IDECodeTabChild:HandleKeyDown(event)
 		event.handled = true
 	elseif event.sym == 97 and ALittle.BitAnd(event.mod, 0x00c0) ~= 0 then
 		if self._line_count > 0 then
-			self._cursor:Hide()
-			self._select_cursor:SetSelect(1, 0, self._line_count, self._line_list[self._line_count].char_count)
+			self._cursor:SetLineChar(self._line_count, self._line_list[self._line_count].char_count)
+			self._select_cursor:StartLineChar(1, 0)
+			self._select_cursor:UpdateLineChar(self._cursor.line, self._cursor.char)
 		end
 		event.handled = true
 	end

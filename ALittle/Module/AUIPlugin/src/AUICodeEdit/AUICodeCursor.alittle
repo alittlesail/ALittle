@@ -289,7 +289,7 @@ public class AUICodeCursor : ALittle.Quad
             }
             elseif (char.width > 0)
             {
-                pre_line.container.Dirty();
+                pre_line.container.CreateAndAdd(char);
             }
             pre_width += char.width;
             pre_line.char_count += 1;
@@ -394,7 +394,7 @@ public class AUICodeCursor : ALittle.Quad
             }
             elseif (char.width > 0)
             {
-                cur_line.container.Dirty();
+                cur_line.container.CreateAndAdd(char);
             }
             pre_width += char.width;
             cur_line.char_count += 1;

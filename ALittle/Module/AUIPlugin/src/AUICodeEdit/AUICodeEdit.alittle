@@ -55,7 +55,7 @@ protected class AUICodeLinear : ALittle.Linear
 
 protected class AUICodeLineContainer : ALittle.DisplayLayout
 {
-    private bool _dirty = true;
+    private bool _showd = false;
 
     public ctor(ALittle.ControlSystem ctrl_sys)
     {
@@ -63,9 +63,23 @@ protected class AUICodeLineContainer : ALittle.DisplayLayout
         this.AddEventListener(this, this.HandleShow);
     }
 
-    public fun Dirty()
+    public fun CreateAndAdd(AUICodeCharInfo char)
     {
-        this._dirty = true;
+        if (!this._showd) return;
+
+        if (char.text == null && char.width > 0
+            && char.char != " " && char.char != "\t")
+        {
+            char.text = new ALittle.Text(g_Control);
+            char.text.red = FONT_RED;
+            char.text.green = FONT_GREEN;
+            char.text.blue = FONT_BLUE;
+            char.text.font_path = FONT_PATH;
+            char.text.font_size = FONT_SIZE;
+            char.text.text = char.char;
+            char.text.x = char.pre_width;
+            this.AddChild(char.text);
+        }
     }
 
     private fun HandleHide(ALittle.UIHideEvent event)
@@ -74,8 +88,8 @@ protected class AUICodeLineContainer : ALittle.DisplayLayout
 
     private fun HandleShow(ALittle.UIShowEvent event)
     {
-        if (!this._dirty) return;
-        this._dirty = false;
+        if (this._showd) return;
+        this._showd = true;
 
         var line = cast<AUICodeLineInfo>(this._user_data);
         for (var index, char in line.char_list)

@@ -297,7 +297,7 @@ function AUICodeCursor:DeleteLeft()
 			char.text.x = pre_width
 			pre_line.container:AddChild(char.text)
 		elseif char.width > 0 then
-			pre_line.container:Dirty()
+			pre_line.container:CreateAndAdd(char)
 		end
 		pre_width = pre_width + (char.width)
 		pre_line.char_count = pre_line.char_count + (1)
@@ -391,7 +391,7 @@ function AUICodeCursor:DeleteRight()
 			char.text.x = pre_width
 			cur_line.container:AddChild(char.text)
 		elseif char.width > 0 then
-			cur_line.container:Dirty()
+			cur_line.container:CreateAndAdd(char)
 		end
 		pre_width = pre_width + (char.width)
 		cur_line.char_count = cur_line.char_count + (1)

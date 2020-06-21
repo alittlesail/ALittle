@@ -349,7 +349,7 @@ function AUICodeSelectCursor:DeleteSelect()
 			char.text.x = pre_width
 			start_line.container:AddChild(char.text)
 		elseif char.width > 0 then
-			start_line.container:Dirty()
+			start_line.container:CreateAndAdd(char)
 		end
 		pre_width = pre_width + (char.width)
 		start_line.char_count = start_line.char_count + (1)

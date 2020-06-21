@@ -346,7 +346,7 @@ public class AUICodeSelectCursor
             }
             elseif (char.width > 0)
             {
-                start_line.container.Dirty();
+                start_line.container.CreateAndAdd(char);
             }
             pre_width += char.width;
             start_line.char_count += 1;

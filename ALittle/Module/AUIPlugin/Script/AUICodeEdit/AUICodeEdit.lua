@@ -89,23 +89,36 @@ assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
 AUICodeLineContainer = Lua.Class(ALittle.DisplayLayout, "AUIPlugin.AUICodeLineContainer")
 
 function AUICodeLineContainer:Ctor(ctrl_sys)
-	___rawset(self, "_dirty", true)
+	___rawset(self, "_showd", false)
 	self:AddEventListener(___all_struct[348388800], self, self.HandleHide)
 	self:AddEventListener(___all_struct[1862557463], self, self.HandleShow)
 end
 
-function AUICodeLineContainer:Dirty()
-	self._dirty = true
+function AUICodeLineContainer:CreateAndAdd(char)
+	if not self._showd then
+		return
+	end
+	if char.text == nil and char.width > 0 and char.char ~= " " and char.char ~= "\t" then
+		char.text = ALittle.Text(g_Control)
+		char.text.red = FONT_RED
+		char.text.green = FONT_GREEN
+		char.text.blue = FONT_BLUE
+		char.text.font_path = FONT_PATH
+		char.text.font_size = FONT_SIZE
+		char.text.text = char.char
+		char.text.x = char.pre_width
+		self:AddChild(char.text)
+	end
 end
 
 function AUICodeLineContainer:HandleHide(event)
 end
 
 function AUICodeLineContainer:HandleShow(event)
-	if not self._dirty then
+	if self._showd then
 		return
 	end
-	self._dirty = false
+	self._showd = true
 	local line = self._user_data
 	for index, char in ___ipairs(line.char_list) do
 		if char.text == nil and char.width > 0 and char.char ~= " " and char.char ~= "\t" then

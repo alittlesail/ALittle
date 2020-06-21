@@ -45,10 +45,10 @@
     <None Include="src\IDE\IDEUIProjectDropdown.alittle" />
     <None Include="src\IDE\IDEUIProjectList.alittle" />
     <None Include="src\IDE\IDEUtility.alittle" />
+    <None Include="src\IDE\UIEdit\Dialog\IDEAttrControlDialog.alittle" />
     <None Include="src\IDE\UIEdit\Dialog\IDEAttrEventDialog.alittle" />
     <None Include="src\IDE\UIEdit\Dialog\IDEAttrTextDialog.alittle" />
     <None Include="src\IDE\UIEdit\IDEUIControlAnti.alittle" />
-    <None Include="src\IDE\UIEdit\IDEUIControlAttr.alittle" />
     <None Include="src\IDE\UIEdit\IDEUIControlTree.alittle" />
     <None Include="src\IDE\UIEdit\IDEUIRevocation.alittle" />
     <None Include="src\IDE\UIEdit\IDEUITabChild.alittle" />

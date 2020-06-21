@@ -314,7 +314,7 @@ function AUICodeSelectCursor:DeleteSelect()
 		local it_line = it_line_start + 1
 		while true do
 			if not(it_line < it_line_end) then break end
-			self._edit.code_container:RemoveChild(self._edit.line_list[it_line].container)
+			self._edit.code_linear:RemoveChild(self._edit.line_list[it_line].container)
 			it_line = it_line+(1)
 		end
 		ALittle.List_Splice(self._edit.line_list, it_line_start + 1, line_count)
@@ -348,6 +348,8 @@ function AUICodeSelectCursor:DeleteSelect()
 		if char.text ~= nil then
 			char.text.x = pre_width
 			start_line.container:AddChild(char.text)
+		elseif char.width > 0 then
+			start_line.container:Dirty()
 		end
 		pre_width = pre_width + (char.width)
 		start_line.char_count = start_line.char_count + (1)
@@ -355,7 +357,7 @@ function AUICodeSelectCursor:DeleteSelect()
 		i = i+(1)
 	end
 	start_line.container.width = pre_width
-	self._edit.code_container:RemoveChild(end_line.container)
+	self._edit.code_linear:RemoveChild(end_line.container)
 	self._edit.line_count = self._edit.line_count - (1)
 	ALittle.List_Remove(self._edit.line_list, it_line_end)
 	local max_width = 0.0

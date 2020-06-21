@@ -313,7 +313,7 @@ public class AUICodeSelectCursor
         if (line_count > 0)
         {
             for (var it_line = it_line_start + 1; it_line < it_line_end; 1)
-                this._edit.code_container.RemoveChild(this._edit.line_list[it_line].container);
+                this._edit.code_linear.RemoveChild(this._edit.line_list[it_line].container);
             ALittle.List_Splice(this._edit.line_list, it_line_start + 1, line_count);
             this._edit.line_count -= line_count;
             it_line_end -= line_count;
@@ -344,12 +344,16 @@ public class AUICodeSelectCursor
                 char.text.x = pre_width;
                 start_line.container.AddChild(char.text);
             }
+            elseif (char.width > 0)
+            {
+                start_line.container.Dirty();
+            }
             pre_width += char.width;
             start_line.char_count += 1;
             start_line.char_list[start_line.char_count] = char;
         }
         start_line.container.width = pre_width;
-        this._edit.code_container.RemoveChild(end_line.container);
+        this._edit.code_linear.RemoveChild(end_line.container);
         this._edit.line_count -= 1;
         ALittle.List_Remove(this._edit.line_list, it_line_end);
         // 3. 下面的行依次往前移动

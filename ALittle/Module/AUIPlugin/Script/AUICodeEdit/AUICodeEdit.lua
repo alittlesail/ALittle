@@ -6,16 +6,10 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = ALittle.GetAllStruct()
 
-ALittle.RegStruct(958494922, "ALittle.UIChangedEvent", {
-name = "ALittle.UIChangedEvent", ns_name = "ALittle", rl_name = "UIChangedEvent", hash_code = 958494922,
-name_list = {"target"},
-type_list = {"ALittle.DisplayObject"},
-option_map = {}
-})
 ALittle.RegStruct(1421505194, "AUIPlugin.AUICodeLineInfo", {
 name = "AUIPlugin.AUICodeLineInfo", ns_name = "AUIPlugin", rl_name = "AUICodeLineInfo", hash_code = 1421505194,
 name_list = {"char_list","char_count","container","quad"},
-type_list = {"List<AUIPlugin.AUICodeCharInfo>","int","ALittle.DisplayLayout","ALittle.Quad"},
+type_list = {"List<AUIPlugin.AUICodeCharInfo>","int","AUIPlugin.AUICodeLineContainer","ALittle.Quad"},
 option_map = {}
 })
 ALittle.RegStruct(1494749965, "AUIPlugin.AUICodeCharInfo", {
@@ -26,6 +20,24 @@ option_map = {}
 })
 ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
 name = "ALittle.UIEvent", ns_name = "ALittle", rl_name = "UIEvent", hash_code = -1479093282,
+name_list = {"target"},
+type_list = {"ALittle.DisplayObject"},
+option_map = {}
+})
+ALittle.RegStruct(348388800, "ALittle.UIHideEvent", {
+name = "ALittle.UIHideEvent", ns_name = "ALittle", rl_name = "UIHideEvent", hash_code = 348388800,
+name_list = {"target"},
+type_list = {"ALittle.DisplayObject"},
+option_map = {}
+})
+ALittle.RegStruct(958494922, "ALittle.UIChangedEvent", {
+name = "ALittle.UIChangedEvent", ns_name = "ALittle", rl_name = "UIChangedEvent", hash_code = 958494922,
+name_list = {"target"},
+type_list = {"ALittle.DisplayObject"},
+option_map = {}
+})
+ALittle.RegStruct(1862557463, "ALittle.UIShowEvent", {
+name = "ALittle.UIShowEvent", ns_name = "ALittle", rl_name = "UIShowEvent", hash_code = 1862557463,
 name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
 option_map = {}
@@ -74,6 +86,43 @@ assert(ALittle.Linear, " extends class:ALittle.Linear is nil")
 AUICodeLinear = Lua.Class(ALittle.Linear, "AUIPlugin.AUICodeLinear")
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
+AUICodeLineContainer = Lua.Class(ALittle.DisplayLayout, "AUIPlugin.AUICodeLineContainer")
+
+function AUICodeLineContainer:Ctor(ctrl_sys)
+	___rawset(self, "_dirty", true)
+	self:AddEventListener(___all_struct[348388800], self, self.HandleHide)
+	self:AddEventListener(___all_struct[1862557463], self, self.HandleShow)
+end
+
+function AUICodeLineContainer:Dirty()
+	self._dirty = true
+end
+
+function AUICodeLineContainer:HandleHide(event)
+end
+
+function AUICodeLineContainer:HandleShow(event)
+	if not self._dirty then
+		return
+	end
+	self._dirty = false
+	local line = self._user_data
+	for index, char in ___ipairs(line.char_list) do
+		if char.text == nil and char.width > 0 and char.char ~= " " and char.char ~= "\t" then
+			char.text = ALittle.Text(g_Control)
+			char.text.red = FONT_RED
+			char.text.green = FONT_GREEN
+			char.text.blue = FONT_BLUE
+			char.text.font_path = FONT_PATH
+			char.text.font_size = FONT_SIZE
+			char.text.text = char.char
+			char.text.x = char.pre_width
+			self:AddChild(char.text)
+		end
+	end
+end
+
+assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
 AUICodeEditContainer = Lua.Class(ALittle.DisplayLayout, "AUIPlugin.AUICodeEditContainer")
 
 function AUICodeEditContainer:ClipRect(x, y, width, height, h_move, v_move)
@@ -91,8 +140,7 @@ end
 function AUICodeEdit:TCtor()
 	self.container = AUICodeEditContainer(self._ctrl_sys)
 	self._edit_quad._user_data = self
-	self.container._user_data = self._code_container
-	self._code_container.disabled = true
+	self.container._user_data = self._code_linear
 	self._cursor = AUICodeCursor(self._ctrl_sys, self)
 	self._cursor.width = 1
 	self._cursor.height = LINE_HEIGHT
@@ -105,8 +153,8 @@ function AUICodeEdit:TCtor()
 	self._word_width = self._text_show.native_show:CalcTextWidth("测")
 end
 
-function AUICodeEdit.__getter:code_container()
-	return self._code_container
+function AUICodeEdit.__getter:code_linear()
+	return self._code_linear
 end
 
 function AUICodeEdit.__getter:cursor()
@@ -418,25 +466,9 @@ function AUICodeEdit:CreateLines(content)
 			elseif char_text == "\r" or char_text == "\n" then
 				char.width = 0
 			else
-				char.text = ALittle.Text(g_Control)
-				char.text.red = FONT_RED
-				char.text.green = FONT_GREEN
-				char.text.blue = FONT_BLUE
-				char.text.font_path = FONT_PATH
-				char.text.font_size = FONT_SIZE
-				char.text.text = char_text
-				char.text.x = pre_width
 				char.width = self._ascii_width
 			end
 		else
-			char.text = ALittle.Text(g_Control)
-			char.text.red = FONT_RED
-			char.text.green = FONT_GREEN
-			char.text.blue = FONT_BLUE
-			char.text.font_path = FONT_PATH
-			char.text.font_size = FONT_SIZE
-			char.text.text = char_text
-			char.text.x = pre_width
 			char.width = self._word_width
 		end
 		char.char = char_text
@@ -447,7 +479,8 @@ function AUICodeEdit:CreateLines(content)
 			line.char_count = 0
 			line.char_list = {}
 			line.quad = ALittle.Quad(g_Control)
-			line.container = ALittle.DisplayLayout(g_Control)
+			line.container = AUICodeLineContainer(g_Control)
+			line.container._user_data = line
 			line.container.height = LINE_HEIGHT
 			line.quad.red = SELECT_RED
 			line.quad.green = SELECT_GREEN
@@ -458,9 +491,6 @@ function AUICodeEdit:CreateLines(content)
 		end
 		line.char_count = line.char_count + (1)
 		line.char_list[line.char_count] = char
-		if char.text ~= nil then
-			line.container:AddChild(char.text)
-		end
 		if char_text == "\n" then
 			line_count = line_count + (1)
 			line_list[line_count] = line
@@ -485,7 +515,8 @@ function AUICodeEdit:CreateLines(content)
 		line.char_count = 0
 		line.char_list = {}
 		line.quad = ALittle.Quad(g_Control)
-		line.container = ALittle.DisplayLayout(g_Control)
+		line.container = AUICodeLineContainer(g_Control)
+		line.container._user_data = line
 		line.container.height = LINE_HEIGHT
 		line.quad.red = SELECT_RED
 		line.quad.green = SELECT_GREEN
@@ -509,11 +540,11 @@ function AUICodeEdit:CreateLines(content)
 end
 
 function AUICodeEdit:SetText(content)
-	self._code_container:RemoveAllChild()
+	self._code_linear:RemoveAllChild()
 	local max_width = 0.0
 	self._line_list, self._line_count, max_width = self:CreateLines(content)
 	for index, line in ___ipairs(self._line_list) do
-		self._code_container:AddChild(line.container)
+		self._code_linear:AddChild(line.container)
 	end
 	self.container.width = max_width
 	self.container.height = self._line_count * LINE_HEIGHT
@@ -535,7 +566,8 @@ function AUICodeEdit:InsertText(content)
 		split_pre_line.char_count = 0
 		split_pre_line.char_list = {}
 		split_pre_line.quad = ALittle.Quad(g_Control)
-		split_pre_line.container = ALittle.DisplayLayout(g_Control)
+		split_pre_line.container = AUICodeLineContainer(g_Control)
+		split_pre_line.container._user_data = split_pre_line
 		split_pre_line.container.height = LINE_HEIGHT
 		split_pre_line.quad.red = SELECT_RED
 		split_pre_line.quad.green = SELECT_GREEN
@@ -543,7 +575,7 @@ function AUICodeEdit:InsertText(content)
 		split_pre_line.quad.height = LINE_HEIGHT
 		split_pre_line.quad.visible = false
 		split_pre_line.container:AddChild(split_pre_line.quad)
-		self._code_container:AddChild(split_pre_line.container)
+		self._code_linear:AddChild(split_pre_line.container)
 		self._line_count = self._line_count + (1)
 		self._line_list[self._line_count] = split_pre_line
 	end
@@ -551,14 +583,14 @@ function AUICodeEdit:InsertText(content)
 	local it_cursor_line = self._cursor.line
 	local it_cursor_char = self._cursor.char
 	if line_count > 1 then
-		self._code_container:RemoveAllChild()
+		self._code_linear:RemoveAllChild()
 		local new_line_list = {}
 		local new_line_count = 0
 		local i = 1
 		while true do
 			if not(i < self._cursor.line) then break end
 			local line = self._line_list[i]
-			self._code_container:AddChild(line.container)
+			self._code_linear:AddChild(line.container)
 			new_line_count = new_line_count + (1)
 			new_line_list[new_line_count] = line
 			i = i+(1)
@@ -572,7 +604,8 @@ function AUICodeEdit:InsertText(content)
 			split_next_line.char_count = 0
 			split_next_line.char_list = {}
 			split_next_line.quad = ALittle.Quad(g_Control)
-			split_next_line.container = ALittle.DisplayLayout(g_Control)
+			split_next_line.container = AUICodeLineContainer(g_Control)
+			split_next_line.container._user_data = split_next_line
 			split_next_line.container.height = LINE_HEIGHT
 			split_next_line.quad.red = SELECT_RED
 			split_next_line.quad.green = SELECT_GREEN
@@ -593,7 +626,7 @@ function AUICodeEdit:InsertText(content)
 			local split_count = split_pre_line.char_count - self._cursor.char
 			ALittle.List_Splice(split_pre_line.char_list, self._cursor.char + 1, split_count)
 			split_pre_line.char_count = split_pre_line.char_count - (split_count)
-			self._code_container:AddChild(split_pre_line.container)
+			self._code_linear:AddChild(split_pre_line.container)
 			new_line_count = new_line_count + (1)
 			new_line_list[new_line_count] = split_pre_line
 		end
@@ -601,13 +634,13 @@ function AUICodeEdit:InsertText(content)
 		while true do
 			if not(i < line_count) then break end
 			local line = line_list[i]
-			self._code_container:AddChild(line.container)
+			self._code_linear:AddChild(line.container)
 			new_line_count = new_line_count + (1)
 			new_line_list[new_line_count] = line
 			i = i+(1)
 		end
 		do
-			self._code_container:AddChild(split_next_line.container)
+			self._code_linear:AddChild(split_next_line.container)
 			new_line_count = new_line_count + (1)
 			new_line_list[new_line_count] = split_next_line
 			it_cursor_line = new_line_count
@@ -617,7 +650,7 @@ function AUICodeEdit:InsertText(content)
 		while true do
 			if not(i <= self._line_count) then break end
 			local line = self._line_list[i]
-			self._code_container:AddChild(line.container)
+			self._code_linear:AddChild(line.container)
 			new_line_count = new_line_count + (1)
 			new_line_list[new_line_count] = line
 			i = i+(1)

@@ -287,12 +287,16 @@ public class AUICodeCursor : ALittle.Quad
                 char.text.x = pre_width;
                 pre_line.container.AddChild(char.text);
             }
+            elseif (char.width > 0)
+            {
+                pre_line.container.Dirty();
+            }
             pre_width += char.width;
             pre_line.char_count += 1;
             pre_line.char_list[pre_line.char_count] = char;
         }
         pre_line.container.width = pre_width;
-        this._edit.code_container.RemoveChild(cur_line.container);
+        this._edit.code_linear.RemoveChild(cur_line.container);
         this._edit.line_count -= 1;
         ALittle.List_Remove(this._edit.line_list, this._it_line);
         // 3. 下面的行依次往前移动
@@ -388,12 +392,16 @@ public class AUICodeCursor : ALittle.Quad
                 char.text.x = pre_width;
                 cur_line.container.AddChild(char.text);
             }
+            elseif (char.width > 0)
+            {
+                cur_line.container.Dirty();
+            }
             pre_width += char.width;
             cur_line.char_count += 1;
             cur_line.char_list[cur_line.char_count] = char;
         }
         cur_line.container.width = pre_width;
-        this._edit.code_container.RemoveChild(next_line.container);
+        this._edit.code_linear.RemoveChild(next_line.container);
         this._edit.line_count -= 1;
         ALittle.List_Remove(this._edit.line_list, this._it_line + 1);
         // 3. 下面的行依次往前移动

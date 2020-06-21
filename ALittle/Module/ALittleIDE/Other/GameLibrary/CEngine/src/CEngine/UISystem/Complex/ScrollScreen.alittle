@@ -28,6 +28,7 @@ public class ScrollScreen : DisplayGroup
     private DisplayView _scroll_view;
     
     private DisplayGroup _scroll_content;
+    private LoopFunction _clip_loop;
     
     private DisplayObject _static_object_h;
     private DisplayObject _static_object_v;
@@ -80,6 +81,9 @@ public class ScrollScreen : DisplayGroup
         this.AddEventListener(this, this.HandleDrag);
         this.AddEventListener(this, this.HandleDragEnd);
         this.AddEventListener(this, this.HandleDragBegin);
+
+        // 延迟裁剪
+        this.RefreshClipDisLine();
     }
 
     protected fun HandleMButtonWheel(UIMButtonWheelEvent event)
@@ -90,8 +94,8 @@ public class ScrollScreen : DisplayGroup
         if (this._right_scroll_bar != null && event.delta_y != 0)
         {
             var offset = this._content_height * 0.1 * event.delta_y;
-            if (offset > 40) offset = 40;
-            elseif (offset < -40) offset = -40;
+            if (offset > 50) offset = 50;
+            elseif (offset < -50) offset = -50;
             if (offset != 0) this._right_scroll_bar.offset_rate = this._right_scroll_bar.offset_rate - offset / this._content_height;
         }
         this.RejustScrollBar();
@@ -265,7 +269,9 @@ public class ScrollScreen : DisplayGroup
     // 设置子控件的索引
     public fun SetChildIndex(DisplayObject child, int index) : bool
     {
-        return this._scroll_content.SetChildIndex(child, index);
+        var result = this._scroll_content.SetChildIndex(child, index);
+        this.RefreshClipDisLine();
+        return result;
     }
     // 根据索引获取子控件
     public fun GetChildByIndex(int index) : DisplayObject
@@ -378,6 +384,8 @@ public class ScrollScreen : DisplayGroup
             if (this._static_object_h != null)
                 this._static_object_h.x = x;
         }
+
+        this.RefreshClipDisLine();
     }
     
     public set height(double value)
@@ -436,6 +444,8 @@ public class ScrollScreen : DisplayGroup
             if (this._static_object_v != null)
                 this._static_object_v.y = y;
         }
+
+        this.RefreshClipDisLine();
     }
     
     public get view_width() : double
@@ -649,6 +659,7 @@ public class ScrollScreen : DisplayGroup
         this._scroll_content.y = y;
         if (this._static_object_v != null)
             this._static_object_v.y = y;
+        this.RefreshClipDisLine();
     }
 
     protected fun HandleBottomScrollBarChange(UIChangedEvent event)
@@ -664,6 +675,8 @@ public class ScrollScreen : DisplayGroup
         this._scroll_content.x = x;
         if (this._static_object_h != null)
             this._static_object_h.x = x;
+
+        this.RefreshClipDisLine();
     }
 
     protected fun HandleContainerResize(UIResizeEvent event)
@@ -750,6 +763,7 @@ public class ScrollScreen : DisplayGroup
                 if (this._bottom_scroll_bar != null)
                     this._bottom_scroll_bar.offset_rate = -x / (this._content_width - this._scroll_view.width);
             }
+            this.RefreshClipDisLine(event.delta_x);
         }
     
         if (event.delta_y != 0 && this._right_scroll_bar != null)
@@ -814,6 +828,7 @@ public class ScrollScreen : DisplayGroup
                 if (this._right_scroll_bar != null)
                     this._right_scroll_bar.offset_rate = -y / (this._content_height - this._scroll_view.height);
             }
+            this.RefreshClipDisLine(null, event.delta_y);
         }
     }
 
@@ -831,13 +846,8 @@ public class ScrollScreen : DisplayGroup
         {
             if (this._scroll_content.x >= this._scroll_view.width * this._drag_rate * 0.9)
                 this.DispatchEvent(new UIDragRightEvent());
-            // 静态容器位置变化
-            var func:Functor<()> = null;
-            if (this._static_object_h != null)
-                func = bind(ScrollScreen.XStaticObjectChange, this);
-    
             A_LoopSystem.RemoveUpdater(this._drag_loop_x);
-            this._drag_loop_x = new LoopLinear(this._scroll_content, "x", 0, 200, 0, func);
+            this._drag_loop_x = new LoopLinear(this._scroll_content, "x", 0, 200, 0, bind(ScrollScreen.XScrollBarChange, this));
             A_LoopSystem.AddUpdater(this._drag_loop_x);
         }
         elseif (this._scroll_content.x < -this._content_width + this._scroll_view.width)
@@ -847,12 +857,8 @@ public class ScrollScreen : DisplayGroup
 
             if (this._scroll_content.x < 0)
             {
-                var func:Functor<()> = null;
-                if (this._static_object_h != null)
-                    func = bind(ScrollScreen.XStaticObjectChange, this);
-    
                 A_LoopSystem.RemoveUpdater(this._drag_loop_x);
-                this._drag_loop_x = new LoopLinear(this._scroll_content, "x", -this._content_width + this._scroll_view.width, 200, 0, func);
+                this._drag_loop_x = new LoopLinear(this._scroll_content, "x", -this._content_width + this._scroll_view.width, 200, 0, bind(ScrollScreen.XScrollBarChange, this));
                 A_LoopSystem.AddUpdater(this._drag_loop_x);
             }
         }
@@ -875,11 +881,8 @@ public class ScrollScreen : DisplayGroup
                 //依据范围判断是否需要回弹
                 if (target_x >= min_x && target_x <= max_x)
                 {
-                    var func:Functor<()> = null;
-                    if (this._static_object_h != null)
-                        func = bind(ScrollScreen.XStaticObjectChange, this);
                     A_LoopSystem.RemoveUpdater(this._drag_loop_x);
-                    this._drag_loop_x = new LoopLinear(this._scroll_content, "x", -this._content_width + this._scroll_view.width, 200, 300, func);
+                    this._drag_loop_x = new LoopLinear(this._scroll_content, "x", -this._content_width + this._scroll_view.width, 200, 300, bind(ScrollScreen.XScrollBarChange, this));
                     A_LoopSystem.AddUpdater(this._drag_loop_x);
                 }
             }
@@ -895,22 +898,12 @@ public class ScrollScreen : DisplayGroup
                 }
                 if (target_x >= min_x && target_x <= max_x)
                 {
-                    var func:Functor<()> = null;
-                    if (this._static_object_h != null)
-                        func = bind(ScrollScreen.XStaticObjectChange, this);
                     A_LoopSystem.RemoveUpdater(this._drag_loop_x);
-                    this._drag_loop_x = new LoopLinear(this._scroll_content, "x", 0, 200, 300, func);
+                    this._drag_loop_x = new LoopLinear(this._scroll_content, "x", 0, 200, 300, bind(ScrollScreen.XScrollBarChange, this));
                     A_LoopSystem.AddUpdater(this._drag_loop_x);
                 }
             }
             // 设置回调
-            var func:Functor<()> = null;
-            if (this._static_object_h != null && this._bottom_scroll_bar == null)
-                func = bind(ScrollScreen.XStaticObjectChange, this);
-            elseif (this._static_object_h == null && this._bottom_scroll_bar != null)
-                func = bind(ScrollScreen.XScrollBarChange, this);
-            elseif (this._static_object_h != null && this._bottom_scroll_bar != null)
-                func = bind(ScrollScreen.XStaticObjectAndScrollBarChange, this);
             A_LoopSystem.RemoveUpdater(this._x_type_dispatch);
             if (event_dispatch != null)
             {
@@ -927,7 +920,7 @@ public class ScrollScreen : DisplayGroup
             }
     
             A_LoopSystem.RemoveUpdater(this._drag_delta_loop_x);
-            this._drag_delta_loop_x = new LoopRit(this._scroll_content, "x", target_x, 300, 0, func);
+        this._drag_delta_loop_x = new LoopRit(this._scroll_content, "x", target_x, 300, 0, bind(ScrollScreen.XScrollBarChange, this));
             A_LoopSystem.AddUpdater(this._drag_delta_loop_x);
         }
     
@@ -935,13 +928,8 @@ public class ScrollScreen : DisplayGroup
         {
             if (this._scroll_content.y >= this._scroll_view.height * this._drag_rate * 0.9)
                 this.DispatchEvent(new UIDragDownEvent());
-            // 静态容器位置变化
-            var func:Functor<()> = null;
-            if (this._static_object_v != null)
-                func = bind(ScrollScreen.YStaticObjectChange, this);
-    
             A_LoopSystem.RemoveUpdater(this._drag_loop_y);
-            this._drag_loop_y = new LoopLinear(this._scroll_content, "y", 0, 200, 0, func);
+            this._drag_loop_y = new LoopLinear(this._scroll_content, "y", 0, 200, 0, bind(ScrollScreen.YScrollBarChange, this));
             A_LoopSystem.AddUpdater(this._drag_loop_y);
         }
         elseif (this._scroll_content.y < -this._content_height + this._scroll_view.height)
@@ -951,12 +939,8 @@ public class ScrollScreen : DisplayGroup
 
             if (this._scroll_content.y < 0)
             {
-                var func:Functor<()> = null;
-                if (this._static_object_v != null)
-                    func = bind(ScrollScreen.YStaticObjectChange, this);
-    
                 A_LoopSystem.RemoveUpdater(this._drag_loop_y);
-                this._drag_loop_y = new LoopLinear(this._scroll_content, "y", -this._content_height + this._scroll_view.height, 200, 0, func);
+                this._drag_loop_y = new LoopLinear(this._scroll_content, "y", -this._content_height + this._scroll_view.height, 200, 0, bind(ScrollScreen.YScrollBarChange, this));
                 A_LoopSystem.AddUpdater(this._drag_loop_y);
             }
         }
@@ -979,11 +963,8 @@ public class ScrollScreen : DisplayGroup
                 //依据范围判断是否需要回弹
                 if (target_y >= min_y && target_y <= max_y)
                 {
-                    var func:Functor<()> = null;
-                    if (this._static_object_v != null)
-                        func = bind(ScrollScreen.YStaticObjectChange, this);
                     A_LoopSystem.RemoveUpdater(this._drag_loop_y);
-                    this._drag_loop_y = new LoopLinear(this._scroll_content, "y", -this._content_height + this._scroll_view.height, 200, 300, func);
+                    this._drag_loop_y = new LoopLinear(this._scroll_content, "y", -this._content_height + this._scroll_view.height, 200, 300, bind(ScrollScreen.YScrollBarChange, this));
                     A_LoopSystem.AddUpdater(this._drag_loop_y);
                 }
             }
@@ -999,23 +980,12 @@ public class ScrollScreen : DisplayGroup
                 }
                 if (target_y >= min_y && target_y <= max_y)
                 {
-                    var func:Functor<()> = null;
-                    if (this._static_object_v != null)
-                        func = bind(ScrollScreen.YStaticObjectChange, this);
                     A_LoopSystem.RemoveUpdater(this._drag_loop_y);
-                    this._drag_loop_y = new LoopLinear(this._scroll_content, "y", 0, 200, 300, func);
+                    this._drag_loop_y = new LoopLinear(this._scroll_content, "y", 0, 200, 300, bind(ScrollScreen.YScrollBarChange, this));
                     A_LoopSystem.AddUpdater(this._drag_loop_y);
                 }
             }
             // 设置回调
-            var func:Functor<()> = null;
-            if (this._static_object_v != null && this._right_scroll_bar == null)
-                func = bind(ScrollScreen.YStaticObjectChange, this);
-            elseif (this._static_object_v == null && this._right_scroll_bar != null)
-                func = bind(ScrollScreen.YScrollBarChange, this);
-            elseif (this._static_object_v != null && this._right_scroll_bar != null)
-                func = bind(ScrollScreen.YStaticObjectAndScrollBarChange, this);
-
             A_LoopSystem.RemoveUpdater(this._y_type_dispatch);
             if (event_dispatch != null)
             {
@@ -1032,7 +1002,7 @@ public class ScrollScreen : DisplayGroup
             }
     
             A_LoopSystem.RemoveUpdater(this._drag_delta_loop_y);
-            this._drag_delta_loop_y = new LoopRit(this._scroll_content, "y", target_y, 300, 0, func);
+            this._drag_delta_loop_y = new LoopRit(this._scroll_content, "y", target_y, 300, 0, bind(ScrollScreen.YScrollBarChange, this));
             A_LoopSystem.AddUpdater(this._drag_delta_loop_y);
         }
     
@@ -1041,43 +1011,41 @@ public class ScrollScreen : DisplayGroup
     }
     
     ////////////////////////////////////////////////////////////////////////////////////////////-
-    
-    // x轴静态容器的位置和滚动条位置回调
-    protected fun XStaticObjectAndScrollBarChange()
+    protected fun RefreshClipDisLineImpl(double h_move, double v_move)
     {
-        this._static_object_h.x = this._scroll_content.x;
-        this._bottom_scroll_bar.offset_rate = -this._scroll_content.x / (this._content_width - this._scroll_view.width);
+        this._scroll_content.ClipRect(0, 0, this.width, this.height, h_move, v_move);
+        this._clip_loop = null;
     }
-    
-    // x静态容器的位置回调
-    protected fun XStaticObjectChange()
+
+    // 更新裁剪控件索引范围
+    public fun RefreshClipDisLine([Nullable] double h_move, [Nullable] double v_move)
     {
-        this._static_object_h.x = this._scroll_content.x;
+        if (this._clip_loop != null && this._clip_loop._user_data == null)
+            return;
+
+        this._clip_loop = new LoopFunction(bind(this.RefreshClipDisLineImpl, this, h_move, v_move), 1, 0, 1);
+        this._clip_loop._user_data = v_move;
+        A_LoopSystem.AddUpdater(this._clip_loop);
+    }
+
+    // x静态容器的位置回调
+    protected fun XScrollBarChange()
+    {
+        if (this._static_object_h != null)
+            this._static_object_h.x = this._scroll_content.x;
+        if (this._bottom_scroll_bar != null)
+            this._bottom_scroll_bar.offset_rate = -this._scroll_content.x / (this._content_width - this._scroll_view.width);
+        this.RefreshClipDisLine(null, null);
     }
     
     // y轴静态容器的位置和滚动条位置回调
-    protected fun YStaticObjectAndScrollBarChange()
-    {
-        this._static_object_v.y = this._scroll_content.y;
-        this._right_scroll_bar.offset_rate = -this._scroll_content.y / (this._content_height - this._scroll_view.height);
-    }
-    
-    // y静态容器的位置回调
-    protected fun YStaticObjectChange()
-    {
-        this._static_object_v.y = this._scroll_content.y;
-    }
-    
-    // x轴滚动条位置回调
-    protected fun XScrollBarChange()
-    {
-        this._bottom_scroll_bar.offset_rate = -this._scroll_content.x / (this._content_width - this._scroll_view.width);
-    }
-    
-    // y轴滚动条位置回调
     protected fun YScrollBarChange()
     {
-        this._right_scroll_bar.offset_rate = -this._scroll_content.y / (this._content_height - this._scroll_view.height);
+        if (this._static_object_v != null)
+            this._static_object_v.y = this._scroll_content.y;
+        if (this._right_scroll_bar != null)
+            this._right_scroll_bar.offset_rate = -this._scroll_content.y / (this._content_height - this._scroll_view.height);
+        this.RefreshClipDisLine(null, null);
     }
     
     ////////////////////////////////////////////////////////////////////////////////////////////-

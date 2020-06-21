@@ -29,8 +29,6 @@
     <None Include="src\Dialog\IDEProjectOpenDialog.alittle" />
     <None Include="src\Dialog\IDEProjectSettingDialog.alittle" />
     <None Include="src\Dialog\IDEVersionList.alittle" />
-    <None Include="src\IDE\CodeEdit\IDECodeCursor.alittle" />
-    <None Include="src\IDE\CodeEdit\IDECodeSelectCursor.alittle" />
     <None Include="src\IDE\CodeEdit\IDECodeTabChild.alittle" />
     <None Include="src\IDE\CodeEdit\IDECodeUtility.alittle" />
     <None Include="src\IDE\CodeEdit\Tree\IDECodeTree.alittle" />

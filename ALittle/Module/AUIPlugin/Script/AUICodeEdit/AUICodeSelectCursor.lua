@@ -358,12 +358,6 @@ function AUICodeSelectCursor:DeleteSelect()
 	self._edit.code_container:RemoveChild(end_line.container)
 	self._edit.line_count = self._edit.line_count - (1)
 	ALittle.List_Remove(self._edit.line_list, it_line_end)
-	local i = it_line_end
-	while true do
-		if not(i <= self._edit.line_count) then break end
-		self._edit.line_list[i].container.y = self._edit.line_list[i].container.y - (self._edit.line_height * (line_count + 1))
-		i = i+(1)
-	end
 	local max_width = 0.0
 	local text = ""
 	for index, line in ___ipairs(self._edit.line_list) do

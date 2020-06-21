@@ -431,8 +431,7 @@ public class Linear : DisplayGroup
                 {
                     this._show.AddChild(childs[i]._show);
                     new_show_map[childs[i]] = true;
-                    if (childs[i].ClipRect != null)
-                        childs[i].ClipRect(left, top, right, bottom, h_move, v_move);
+                    childs[i].ClipRect(left, top, right, bottom, h_move, v_move);
                     this._clip_down_index = i;
                 }
                 else
@@ -495,8 +494,7 @@ public class Linear : DisplayGroup
                 {
                     this._show.AddChild(childs[i]._show);
                     new_show_map[childs[i]] = true;
-                    if (childs[i].ClipRect != null)
-                        childs[i].ClipRect(left, top, right, bottom, h_move, v_move);
+                    childs[i].ClipRect(left, top, right, bottom, h_move, v_move);
                     this._clip_down_index = i;
                 }
                 else

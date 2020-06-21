@@ -32,6 +32,7 @@ function ScrollScreen:Ctor(ctrl_sys)
 	self:AddEventListener(___all_struct[1337289812], self, self.HandleDrag)
 	self:AddEventListener(___all_struct[150587926], self, self.HandleDragEnd)
 	self:AddEventListener(___all_struct[1301789264], self, self.HandleDragBegin)
+	self:RefreshClipDisLine()
 end
 
 function ScrollScreen:HandleMButtonWheel(event)
@@ -40,10 +41,10 @@ function ScrollScreen:HandleMButtonWheel(event)
 	end
 	if self._right_scroll_bar ~= nil and event.delta_y ~= 0 then
 		local offset = self._content_height * 0.1 * event.delta_y
-		if offset > 40 then
-			offset = 40
-		elseif offset < -40 then
-			offset = -40
+		if offset > 50 then
+			offset = 50
+		elseif offset < -50 then
+			offset = -50
 		end
 		if offset ~= 0 then
 			self._right_scroll_bar.offset_rate = self._right_scroll_bar.offset_rate - offset / self._content_height
@@ -193,7 +194,9 @@ function ScrollScreen:GetChildIndex(child)
 end
 
 function ScrollScreen:SetChildIndex(child, index)
-	return self._scroll_content:SetChildIndex(child, index)
+	local result = self._scroll_content:SetChildIndex(child, index)
+	self:RefreshClipDisLine()
+	return result
 end
 
 function ScrollScreen:GetChildByIndex(index)
@@ -297,6 +300,7 @@ function ScrollScreen.__setter:width(value)
 			self._static_object_h.x = x
 		end
 	end
+	self:RefreshClipDisLine()
 end
 
 function ScrollScreen.__setter:height(value)
@@ -349,6 +353,7 @@ function ScrollScreen.__setter:height(value)
 			self._static_object_v.y = y
 		end
 	end
+	self:RefreshClipDisLine()
 end
 
 function ScrollScreen.__getter:view_width()
@@ -524,6 +529,7 @@ function ScrollScreen:HandleRightScrollBarChange(event)
 	if self._static_object_v ~= nil then
 		self._static_object_v.y = y
 	end
+	self:RefreshClipDisLine()
 end
 
 function ScrollScreen:HandleBottomScrollBarChange(event)
@@ -538,6 +544,7 @@ function ScrollScreen:HandleBottomScrollBarChange(event)
 	if self._static_object_h ~= nil then
 		self._static_object_h.x = x
 	end
+	self:RefreshClipDisLine()
 end
 
 function ScrollScreen:HandleContainerResize(event)
@@ -610,6 +617,7 @@ function ScrollScreen:HandleDrag(event)
 				self._bottom_scroll_bar.offset_rate = -x / (self._content_width - self._scroll_view.width)
 			end
 		end
+		self:RefreshClipDisLine(event.delta_x)
 	end
 	if event.delta_y ~= 0 and self._right_scroll_bar ~= nil then
 		if event.delta_y > 0 then
@@ -664,6 +672,7 @@ function ScrollScreen:HandleDrag(event)
 				self._right_scroll_bar.offset_rate = -y / (self._content_height - self._scroll_view.height)
 			end
 		end
+		self:RefreshClipDisLine(nil, event.delta_y)
 	end
 end
 
@@ -679,24 +688,16 @@ function ScrollScreen:HandleDragEnd(event)
 		if self._scroll_content.x >= self._scroll_view.width * self._drag_rate * 0.9 then
 			self:DispatchEvent(___all_struct[-839083637], {})
 		end
-		local func = nil
-		if self._static_object_h ~= nil then
-			func = Lua.Bind(ScrollScreen.XStaticObjectChange, self)
-		end
 		A_LoopSystem:RemoveUpdater(self._drag_loop_x)
-		self._drag_loop_x = LoopLinear(self._scroll_content, "x", 0, 200, 0, func)
+		self._drag_loop_x = LoopLinear(self._scroll_content, "x", 0, 200, 0, Lua.Bind(ScrollScreen.XScrollBarChange, self))
 		A_LoopSystem:AddUpdater(self._drag_loop_x)
 	elseif self._scroll_content.x < -self._content_width + self._scroll_view.width then
 		if self._scroll_content.x <= -self._content_width + self._scroll_view.width - self._scroll_view.width * self._drag_rate * 0.9 then
 			self:DispatchEvent(___all_struct[-567702959], {})
 		end
 		if self._scroll_content.x < 0 then
-			local func = nil
-			if self._static_object_h ~= nil then
-				func = Lua.Bind(ScrollScreen.XStaticObjectChange, self)
-			end
 			A_LoopSystem:RemoveUpdater(self._drag_loop_x)
-			self._drag_loop_x = LoopLinear(self._scroll_content, "x", -self._content_width + self._scroll_view.width, 200, 0, func)
+			self._drag_loop_x = LoopLinear(self._scroll_content, "x", -self._content_width + self._scroll_view.width, 200, 0, Lua.Bind(ScrollScreen.XScrollBarChange, self))
 			A_LoopSystem:AddUpdater(self._drag_loop_x)
 		end
 	elseif self._scroll_content.x ~= 0 and self._scroll_content.x ~= -self._content_width + self._scroll_view.width then
@@ -710,12 +711,8 @@ function ScrollScreen:HandleDragEnd(event)
 				event_dispatch = Lua.Bind(ScrollScreen.ScrollDispatchDragLeftEvent, self)
 			end
 			if target_x >= min_x and target_x <= max_x then
-				local func = nil
-				if self._static_object_h ~= nil then
-					func = Lua.Bind(ScrollScreen.XStaticObjectChange, self)
-				end
 				A_LoopSystem:RemoveUpdater(self._drag_loop_x)
-				self._drag_loop_x = LoopLinear(self._scroll_content, "x", -self._content_width + self._scroll_view.width, 200, 300, func)
+				self._drag_loop_x = LoopLinear(self._scroll_content, "x", -self._content_width + self._scroll_view.width, 200, 300, Lua.Bind(ScrollScreen.XScrollBarChange, self))
 				A_LoopSystem:AddUpdater(self._drag_loop_x)
 			end
 		elseif self._drag_delta_x > 0 then
@@ -726,22 +723,10 @@ function ScrollScreen:HandleDragEnd(event)
 				event_dispatch = Lua.Bind(ScrollScreen.ScrollDispatchDragRightEvent, self)
 			end
 			if target_x >= min_x and target_x <= max_x then
-				local func = nil
-				if self._static_object_h ~= nil then
-					func = Lua.Bind(ScrollScreen.XStaticObjectChange, self)
-				end
 				A_LoopSystem:RemoveUpdater(self._drag_loop_x)
-				self._drag_loop_x = LoopLinear(self._scroll_content, "x", 0, 200, 300, func)
+				self._drag_loop_x = LoopLinear(self._scroll_content, "x", 0, 200, 300, Lua.Bind(ScrollScreen.XScrollBarChange, self))
 				A_LoopSystem:AddUpdater(self._drag_loop_x)
 			end
-		end
-		local func = nil
-		if self._static_object_h ~= nil and self._bottom_scroll_bar == nil then
-			func = Lua.Bind(ScrollScreen.XStaticObjectChange, self)
-		elseif self._static_object_h == nil and self._bottom_scroll_bar ~= nil then
-			func = Lua.Bind(ScrollScreen.XScrollBarChange, self)
-		elseif self._static_object_h ~= nil and self._bottom_scroll_bar ~= nil then
-			func = Lua.Bind(ScrollScreen.XStaticObjectAndScrollBarChange, self)
 		end
 		A_LoopSystem:RemoveUpdater(self._x_type_dispatch)
 		if event_dispatch ~= nil then
@@ -756,31 +741,23 @@ function ScrollScreen:HandleDragEnd(event)
 			end
 		end
 		A_LoopSystem:RemoveUpdater(self._drag_delta_loop_x)
-		self._drag_delta_loop_x = LoopRit(self._scroll_content, "x", target_x, 300, 0, func)
+		self._drag_delta_loop_x = LoopRit(self._scroll_content, "x", target_x, 300, 0, Lua.Bind(ScrollScreen.XScrollBarChange, self))
 		A_LoopSystem:AddUpdater(self._drag_delta_loop_x)
 	end
 	if self._scroll_content.y > 0 then
 		if self._scroll_content.y >= self._scroll_view.height * self._drag_rate * 0.9 then
 			self:DispatchEvent(___all_struct[1848466169], {})
 		end
-		local func = nil
-		if self._static_object_v ~= nil then
-			func = Lua.Bind(ScrollScreen.YStaticObjectChange, self)
-		end
 		A_LoopSystem:RemoveUpdater(self._drag_loop_y)
-		self._drag_loop_y = LoopLinear(self._scroll_content, "y", 0, 200, 0, func)
+		self._drag_loop_y = LoopLinear(self._scroll_content, "y", 0, 200, 0, Lua.Bind(ScrollScreen.YScrollBarChange, self))
 		A_LoopSystem:AddUpdater(self._drag_loop_y)
 	elseif self._scroll_content.y < -self._content_height + self._scroll_view.height then
 		if self._scroll_content.y <= -self._content_height + self._scroll_view.height - self._scroll_view.height * self._drag_rate * 0.9 then
 			self:DispatchEvent(___all_struct[809518110], {})
 		end
 		if self._scroll_content.y < 0 then
-			local func = nil
-			if self._static_object_v ~= nil then
-				func = Lua.Bind(ScrollScreen.YStaticObjectChange, self)
-			end
 			A_LoopSystem:RemoveUpdater(self._drag_loop_y)
-			self._drag_loop_y = LoopLinear(self._scroll_content, "y", -self._content_height + self._scroll_view.height, 200, 0, func)
+			self._drag_loop_y = LoopLinear(self._scroll_content, "y", -self._content_height + self._scroll_view.height, 200, 0, Lua.Bind(ScrollScreen.YScrollBarChange, self))
 			A_LoopSystem:AddUpdater(self._drag_loop_y)
 		end
 	elseif self._scroll_content.y ~= 0 and self._scroll_content.y ~= -self._content_height + self._scroll_view.height then
@@ -794,12 +771,8 @@ function ScrollScreen:HandleDragEnd(event)
 				event_dispatch = Lua.Bind(ScrollScreen.ScrollDispatchDragUpEvent, self)
 			end
 			if target_y >= min_y and target_y <= max_y then
-				local func = nil
-				if self._static_object_v ~= nil then
-					func = Lua.Bind(ScrollScreen.YStaticObjectChange, self)
-				end
 				A_LoopSystem:RemoveUpdater(self._drag_loop_y)
-				self._drag_loop_y = LoopLinear(self._scroll_content, "y", -self._content_height + self._scroll_view.height, 200, 300, func)
+				self._drag_loop_y = LoopLinear(self._scroll_content, "y", -self._content_height + self._scroll_view.height, 200, 300, Lua.Bind(ScrollScreen.YScrollBarChange, self))
 				A_LoopSystem:AddUpdater(self._drag_loop_y)
 			end
 		elseif self._drag_delta_y > 0 then
@@ -810,22 +783,10 @@ function ScrollScreen:HandleDragEnd(event)
 				event_dispatch = Lua.Bind(ScrollScreen.ScrollDispatchDragDownEvent, self)
 			end
 			if target_y >= min_y and target_y <= max_y then
-				local func = nil
-				if self._static_object_v ~= nil then
-					func = Lua.Bind(ScrollScreen.YStaticObjectChange, self)
-				end
 				A_LoopSystem:RemoveUpdater(self._drag_loop_y)
-				self._drag_loop_y = LoopLinear(self._scroll_content, "y", 0, 200, 300, func)
+				self._drag_loop_y = LoopLinear(self._scroll_content, "y", 0, 200, 300, Lua.Bind(ScrollScreen.YScrollBarChange, self))
 				A_LoopSystem:AddUpdater(self._drag_loop_y)
 			end
-		end
-		local func = nil
-		if self._static_object_v ~= nil and self._right_scroll_bar == nil then
-			func = Lua.Bind(ScrollScreen.YStaticObjectChange, self)
-		elseif self._static_object_v == nil and self._right_scroll_bar ~= nil then
-			func = Lua.Bind(ScrollScreen.YScrollBarChange, self)
-		elseif self._static_object_v ~= nil and self._right_scroll_bar ~= nil then
-			func = Lua.Bind(ScrollScreen.YStaticObjectAndScrollBarChange, self)
 		end
 		A_LoopSystem:RemoveUpdater(self._y_type_dispatch)
 		if event_dispatch ~= nil then
@@ -840,37 +801,45 @@ function ScrollScreen:HandleDragEnd(event)
 			end
 		end
 		A_LoopSystem:RemoveUpdater(self._drag_delta_loop_y)
-		self._drag_delta_loop_y = LoopRit(self._scroll_content, "y", target_y, 300, 0, func)
+		self._drag_delta_loop_y = LoopRit(self._scroll_content, "y", target_y, 300, 0, Lua.Bind(ScrollScreen.YScrollBarChange, self))
 		A_LoopSystem:AddUpdater(self._drag_delta_loop_y)
 	end
 	self._drag_delta_x = 0
 	self._drag_delta_y = 0
 end
 
-function ScrollScreen:XStaticObjectAndScrollBarChange()
-	self._static_object_h.x = self._scroll_content.x
-	self._bottom_scroll_bar.offset_rate = -self._scroll_content.x / (self._content_width - self._scroll_view.width)
+function ScrollScreen:RefreshClipDisLineImpl(h_move, v_move)
+	self._scroll_content:ClipRect(0, 0, self.width, self.height, h_move, v_move)
+	self._clip_loop = nil
 end
 
-function ScrollScreen:XStaticObjectChange()
-	self._static_object_h.x = self._scroll_content.x
-end
-
-function ScrollScreen:YStaticObjectAndScrollBarChange()
-	self._static_object_v.y = self._scroll_content.y
-	self._right_scroll_bar.offset_rate = -self._scroll_content.y / (self._content_height - self._scroll_view.height)
-end
-
-function ScrollScreen:YStaticObjectChange()
-	self._static_object_v.y = self._scroll_content.y
+function ScrollScreen:RefreshClipDisLine(h_move, v_move)
+	if self._clip_loop ~= nil and self._clip_loop._user_data == nil then
+		return
+	end
+	self._clip_loop = LoopFunction(Lua.Bind(self.RefreshClipDisLineImpl, self, h_move, v_move), 1, 0, 1)
+	self._clip_loop._user_data = v_move
+	A_LoopSystem:AddUpdater(self._clip_loop)
 end
 
 function ScrollScreen:XScrollBarChange()
-	self._bottom_scroll_bar.offset_rate = -self._scroll_content.x / (self._content_width - self._scroll_view.width)
+	if self._static_object_h ~= nil then
+		self._static_object_h.x = self._scroll_content.x
+	end
+	if self._bottom_scroll_bar ~= nil then
+		self._bottom_scroll_bar.offset_rate = -self._scroll_content.x / (self._content_width - self._scroll_view.width)
+	end
+	self:RefreshClipDisLine(nil, nil)
 end
 
 function ScrollScreen:YScrollBarChange()
-	self._right_scroll_bar.offset_rate = -self._scroll_content.y / (self._content_height - self._scroll_view.height)
+	if self._static_object_v ~= nil then
+		self._static_object_v.y = self._scroll_content.y
+	end
+	if self._right_scroll_bar ~= nil then
+		self._right_scroll_bar.offset_rate = -self._scroll_content.y / (self._content_height - self._scroll_view.height)
+	end
+	self:RefreshClipDisLine(nil, nil)
 end
 
 function ScrollScreen:ScrollDispatchDragDownEvent()

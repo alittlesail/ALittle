@@ -353,8 +353,8 @@ public class AUICodeSelectCursor
         this._edit.line_count -= 1;
         ALittle.List_Remove(this._edit.line_list, it_line_end);
         // 3. 下面的行依次往前移动
-        for (var i = it_line_end; i <= this._edit.line_count; 1)
-            this._edit.line_list[i].container.y -= this._edit.line_height * (line_count + 1);
+        // for (var i = it_line_end; i <= this._edit.line_count; 1)
+        //    this._edit.line_list[i].container.y -= this._edit.line_height * (line_count + 1);
 
         // 从新计算宽度
         var max_width = 0.0;

@@ -70,6 +70,16 @@ function AUICodeQuad.__getter:cursor_b()
 	return tab_child.cursor.y + tab_child.cursor.height
 end
 
+assert(ALittle.Linear, " extends class:ALittle.Linear is nil")
+AUICodeLinear = Lua.Class(ALittle.Linear, "AUIPlugin.AUICodeLinear")
+
+assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
+AUICodeEditContainer = Lua.Class(ALittle.DisplayLayout, "AUIPlugin.AUICodeEditContainer")
+
+function AUICodeEditContainer:ClipRect(x, y, width, height, h_move, v_move)
+	self._user_data:ClipRect(x - self._x, y - self._y, width - self._x, height - self._y, h_move, v_move)
+end
+
 assert(ALittle.ScrollScreen, " extends class:ALittle.ScrollScreen is nil")
 AUICodeEdit = Lua.Class(ALittle.ScrollScreen, "AUIPlugin.AUICodeEdit")
 
@@ -79,8 +89,9 @@ function AUICodeEdit:Ctor()
 end
 
 function AUICodeEdit:TCtor()
-	self.container = ALittle.DisplayLayout(self._ctrl_sys)
+	self.container = AUICodeEditContainer(self._ctrl_sys)
 	self._edit_quad._user_data = self
+	self.container._user_data = self._code_container
 	self._code_container.disabled = true
 	self._cursor = AUICodeCursor(self._ctrl_sys, self)
 	self._cursor.width = 1
@@ -437,6 +448,7 @@ function AUICodeEdit:CreateLines(content)
 			line.char_list = {}
 			line.quad = ALittle.Quad(g_Control)
 			line.container = ALittle.DisplayLayout(g_Control)
+			line.container.height = LINE_HEIGHT
 			line.quad.red = SELECT_RED
 			line.quad.green = SELECT_GREEN
 			line.quad.blue = SELECT_BLUE
@@ -474,6 +486,7 @@ function AUICodeEdit:CreateLines(content)
 		line.char_list = {}
 		line.quad = ALittle.Quad(g_Control)
 		line.container = ALittle.DisplayLayout(g_Control)
+		line.container.height = LINE_HEIGHT
 		line.quad.red = SELECT_RED
 		line.quad.green = SELECT_GREEN
 		line.quad.blue = SELECT_BLUE
@@ -500,7 +513,6 @@ function AUICodeEdit:SetText(content)
 	local max_width = 0.0
 	self._line_list, self._line_count, max_width = self:CreateLines(content)
 	for index, line in ___ipairs(self._line_list) do
-		line.container.y = (index - 1) * LINE_HEIGHT
 		self._code_container:AddChild(line.container)
 	end
 	self.container.width = max_width
@@ -524,6 +536,7 @@ function AUICodeEdit:InsertText(content)
 		split_pre_line.char_list = {}
 		split_pre_line.quad = ALittle.Quad(g_Control)
 		split_pre_line.container = ALittle.DisplayLayout(g_Control)
+		split_pre_line.container.height = LINE_HEIGHT
 		split_pre_line.quad.red = SELECT_RED
 		split_pre_line.quad.green = SELECT_GREEN
 		split_pre_line.quad.blue = SELECT_BLUE
@@ -531,7 +544,6 @@ function AUICodeEdit:InsertText(content)
 		split_pre_line.quad.visible = false
 		split_pre_line.container:AddChild(split_pre_line.quad)
 		self._code_container:AddChild(split_pre_line.container)
-		split_pre_line.container.y = self._line_count * LINE_HEIGHT
 		self._line_count = self._line_count + (1)
 		self._line_list[self._line_count] = split_pre_line
 	end
@@ -546,7 +558,6 @@ function AUICodeEdit:InsertText(content)
 		while true do
 			if not(i < self._cursor.line) then break end
 			local line = self._line_list[i]
-			line.container.y = new_line_count * LINE_HEIGHT
 			self._code_container:AddChild(line.container)
 			new_line_count = new_line_count + (1)
 			new_line_list[new_line_count] = line
@@ -562,6 +573,7 @@ function AUICodeEdit:InsertText(content)
 			split_next_line.char_list = {}
 			split_next_line.quad = ALittle.Quad(g_Control)
 			split_next_line.container = ALittle.DisplayLayout(g_Control)
+			split_next_line.container.height = LINE_HEIGHT
 			split_next_line.quad.red = SELECT_RED
 			split_next_line.quad.green = SELECT_GREEN
 			split_next_line.quad.blue = SELECT_BLUE
@@ -581,7 +593,6 @@ function AUICodeEdit:InsertText(content)
 			local split_count = split_pre_line.char_count - self._cursor.char
 			ALittle.List_Splice(split_pre_line.char_list, self._cursor.char + 1, split_count)
 			split_pre_line.char_count = split_pre_line.char_count - (split_count)
-			split_pre_line.container.y = new_line_count * LINE_HEIGHT
 			self._code_container:AddChild(split_pre_line.container)
 			new_line_count = new_line_count + (1)
 			new_line_list[new_line_count] = split_pre_line
@@ -590,14 +601,12 @@ function AUICodeEdit:InsertText(content)
 		while true do
 			if not(i < line_count) then break end
 			local line = line_list[i]
-			line.container.y = new_line_count * LINE_HEIGHT
 			self._code_container:AddChild(line.container)
 			new_line_count = new_line_count + (1)
 			new_line_list[new_line_count] = line
 			i = i+(1)
 		end
 		do
-			split_next_line.container.y = new_line_count * LINE_HEIGHT
 			self._code_container:AddChild(split_next_line.container)
 			new_line_count = new_line_count + (1)
 			new_line_list[new_line_count] = split_next_line
@@ -608,7 +617,6 @@ function AUICodeEdit:InsertText(content)
 		while true do
 			if not(i <= self._line_count) then break end
 			local line = self._line_list[i]
-			line.container.y = new_line_count * LINE_HEIGHT
 			self._code_container:AddChild(line.container)
 			new_line_count = new_line_count + (1)
 			new_line_list[new_line_count] = line

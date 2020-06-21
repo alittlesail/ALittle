@@ -1037,11 +1037,11 @@ public class DisplayObject : UIEventDispatcher
     }
 
     // 裁剪，优化渲染速度
-    protected fun ClipRect(double x, double y, double width, double height, double h_move, double v_move)
+    public fun ClipRect(double x, double y, double width, double height, double h_move, double v_move)
     {
     }
 
-    protected fun DeepLayout()
+    public fun DeepLayout()
     {
     }
 

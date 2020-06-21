@@ -26,10 +26,22 @@
     <None Include="src\AUI\AUIFileSelectDialog.alittle">
       <Filter>AUI</Filter>
     </None>
+    <None Include="src\AUICodeEdit\AUICodeEdit.alittle">
+      <Filter>AUICodeEdit</Filter>
+    </None>
+    <None Include="src\AUICodeEdit\AUICodeSelectCursor.alittle">
+      <Filter>AUICodeEdit</Filter>
+    </None>
+    <None Include="src\AUICodeEdit\AUICodeCursor.alittle">
+      <Filter>AUICodeEdit</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="AUI">
       <UniqueIdentifier>{5de9520e-0884-47e5-b926-eb8ef6bab33e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AUICodeEdit">
+      <UniqueIdentifier>{3840ac52-35c2-4dcc-b397-2e1165ecaf6c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -306,12 +306,6 @@ function AUICodeCursor:DeleteLeft()
 	self._edit.code_container:RemoveChild(cur_line.container)
 	self._edit.line_count = self._edit.line_count - (1)
 	ALittle.List_Remove(self._edit.line_list, self._it_line)
-	local i = self._it_line
-	while true do
-		if not(i < self._edit.line_count) then break end
-		self._edit.line_list[i].container.y = self._edit.line_list[i].container.y - (self._edit.line_height)
-		i = i+(1)
-	end
 	self:SetLineChar(new_it_line, new_it_char)
 	if self._edit.container.width < pre_line.container.width then
 		self._edit.container.width = pre_line.container.width
@@ -404,12 +398,6 @@ function AUICodeCursor:DeleteRight()
 	self._edit.code_container:RemoveChild(next_line.container)
 	self._edit.line_count = self._edit.line_count - (1)
 	ALittle.List_Remove(self._edit.line_list, self._it_line + 1)
-	local i = self._it_line + 1
-	while true do
-		if not(i < self._edit.line_count) then break end
-		self._edit.line_list[i].container.y = self._edit.line_list[i].container.y - (self._edit.line_height)
-		i = i+(1)
-	end
 	self:SetLineChar(new_it_line, new_it_char)
 	if self._edit.container.width < cur_line.container.width then
 		self._edit.container.width = cur_line.container.width

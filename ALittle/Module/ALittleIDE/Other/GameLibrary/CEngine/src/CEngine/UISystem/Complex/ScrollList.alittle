@@ -763,8 +763,8 @@ public class ScrollList : DisplayView
         if (this._scroll_bar != null && event.delta_y != 0)
         {
             var offset = this._scroll_linear.height * 0.1 * event.delta_y;
-            if (offset > 40) offset = 40;
-            elseif (offset < -40) offset = -40;
+            if (offset > 50) offset = 50;
+            elseif (offset < -50) offset = -50;
             if (offset != 0) this._scroll_bar.offset_rate = this._scroll_bar.offset_rate - offset / this._scroll_linear.height;
 
             this.HandleRightScrollBarChange(null);

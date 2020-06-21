@@ -148,7 +148,8 @@ public class IDEUITabChild : IDETabChild
 		this._tree_screen.visible = false;
 		this._attr_screen.visible = false;
 		this._anti_panel.visible = false;
-		g_IDECenter.control_attr.SetTitle("");
+		g_IDEAttrControlDialog.SetTitle("");
+        g_IDEAttrControlDialog.HideDialog();
         g_IDECenter.center.RemoveEventListener(this, this.HandleEditScaleChanged);
     }
 
@@ -161,7 +162,7 @@ public class IDEUITabChild : IDETabChild
 	
 		var panel_childs = this._attr_screen.childs;
 		if (panel_childs[1] != null)
-			g_IDECenter.control_attr.SetTitle(cast<IDEUITreeLogic>(panel_childs[1]._user_data).title);
+			g_IDEAttrControlDialog.SetTitle(cast<IDEUITreeLogic>(panel_childs[1]._user_data).title);
 		g_IDECenter.center.UpdateToolScale(this.GetScale());
     
         g_IDECenter.center.AddEventListener(this, this.HandleEditScaleChanged);
@@ -170,7 +171,7 @@ public class IDEUITabChild : IDETabChild
     private fun OnClose()
     {
         g_IDECenter.center.control_tree.RemoveChild(this._tree_screen);
-		g_IDECenter.control_attr.RemoveChild(this._attr_screen);
+		g_IDEAttrControlDialog.dialog.RemoveChild(this._attr_screen);
 		g_IDECenter.center.control_anti.RemoveChild(this._anti_panel);
         g_IDEProject.RemoveEventListener(this, this.HandleProjectSettingChanged);
         g_IDECenter.center.RemoveEventListener(this, this.HandleEditScaleChanged);
@@ -182,8 +183,36 @@ public class IDEUITabChild : IDETabChild
     private fun OnOpen()
     {
 		g_IDECenter.center.control_tree.AddChild(this._tree_screen);
-		g_IDECenter.control_attr.AddChild(this._attr_screen);
+		g_IDEAttrControlDialog.dialog.AddChild(this._attr_screen);
 		g_IDECenter.center.control_anti.AddChild(this._anti_panel);
+        this.ShowInCenter();
+    }
+
+    public fun ShowInCenter()
+    {
+        // 调整到中心位置
+        var object = this._tree_object.user_info.object;
+        var x, y = object.LocalToGlobal(this._tab_object_container);
+        if (x > 0 && y > 0)
+        {
+            if (object.width < this._tab_object_container.width && this._tab_screen.view_width > 0)
+            {
+                var view_x = this._tab_screen.view_width / 2;
+                var real_size = this._tab_object_container.width - this._tab_screen.view_width;
+                var center_x = x + object.width / 2;
+                this._tab_screen.bottom_scrollbar.offset_rate = (center_x - view_x) / real_size;
+            }
+
+            if (object.height < this._tab_object_container.height && this._tab_screen.view_height > 0)
+            {
+                var view_y = this._tab_screen.view_height / 2;
+                var real_size = this._tab_object_container.height - this._tab_screen.view_height;
+                var center_y = y + object.height / 2;
+                this._tab_screen.right_scrollbar.offset_rate = (center_y - view_y) / real_size;
+            }
+
+            this._tab_screen.RejustScrollBar();
+        }
     }
 
     private fun OnRightMenu()
@@ -942,9 +971,11 @@ public class IDEUITabChild : IDETabChild
         var handle_info:IDEUITabChildHandleInfo = event.target._user_data;
         if (handle_info.buttondown_lock != true) return;
 
-        if (handle_info.buttondown_count >= 2)
-            g_IDECenter.ShowControlAttrDialog(handle_info.target.user_info.object);
         this.HideHandleQuad(handle_info.target);
+        if (handle_info.buttondown_count >= 2)
+            g_IDEAttrControlDialog.ShowDialog(handle_info.target.user_info.object);
+        else
+            g_IDEAttrControlDialog.HideDialog();
 	}
 
     public static ControlCopyInfoCmp(IDEControlCopyInfo a, IDEControlCopyInfo b) : bool
@@ -1182,6 +1213,7 @@ public class IDEUITabChild : IDETabChild
 		var menu = new AUIPlugin.AUIRightMenu();
 		menu.AddItem("获取焦点", bind(this.ShowTreeItemFocus, this, target));
 		menu.AddItem("拾取父节点", bind(this.PickParent, this, target), target.user_info.root);
+		menu.AddItem("设置", bind(g_IDEAttrControlDialog.ShowDialog, g_IDEAttrControlDialog, target.user_info.object));
 		menu.AddItem("文本编辑", bind(this.TextEdit, this, target), g_IDEEnum.text_edit_display_map[target.user_info.default.__class] == null);
 		menu.AddItem("上移", bind(target.TransferUp, target), target.user_info.root || target.user_info.child_type != "child");
 		menu.AddItem("下移", bind(target.TransferDown, target), target.user_info.root || target.user_info.child_type != "child");

@@ -10,7 +10,6 @@ IDECenter = Lua.Class(nil, "ALittleIDE.IDECenter")
 function IDECenter:Setup()
 	local ___COROUTINE = coroutine.running()
 	g_Control:CreateControl("ide_main_scene", self, g_MainLayer)
-	self._control_attr_dialog.visible = false
 	g_IDEProject:OpenLastProject()
 	A_UISystem.keydown_callback = Lua.Bind(self.HandleShortcutKey, self)
 end
@@ -28,10 +27,6 @@ function IDECenter.__getter:center()
 	return self._center
 end
 
-function IDECenter.__getter:control_attr()
-	return self._control_attr
-end
-
 function IDECenter:RefreshProject()
 	if not self._center.content_edit:IsSaveAll() then
 		local result = g_AUITool:SaveNotice("提示", "是否保存当前项目?")
@@ -42,18 +37,6 @@ function IDECenter:RefreshProject()
 	g_IDEProject:RefreshProject()
 end
 IDECenter.RefreshProject = Lua.CoWrap(IDECenter.RefreshProject)
-
-function IDECenter:ShowControlAttrDialog(object)
-	self._control_attr_dialog.visible = true
-	self._control_attr_dialog.x = A_UISystem.mouse_x + 50
-	self._control_attr_dialog.y = A_UISystem.mouse_y
-	if self._control_attr_dialog.x + self._control_attr_dialog.width > A_UISystem.view_width then
-		self._control_attr_dialog.x = A_UISystem.view_width - self._control_attr_dialog.width
-	end
-	if self._control_attr_dialog.y + self._control_attr_dialog.height > A_UISystem.view_height then
-		self._control_attr_dialog.y = A_UISystem.view_height - self._control_attr_dialog.height
-	end
-end
 
 function IDECenter:HandleShortcutKey(mod, sym, scancode)
 	if A_UISystem.sym_map[1073741886] then

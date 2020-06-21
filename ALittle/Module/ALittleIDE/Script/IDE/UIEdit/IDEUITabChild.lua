@@ -168,7 +168,8 @@ function IDEUITabChild:OnHide()
 	self._tree_screen.visible = false
 	self._attr_screen.visible = false
 	self._anti_panel.visible = false
-	g_IDECenter.control_attr:SetTitle("")
+	g_IDEAttrControlDialog:SetTitle("")
+	g_IDEAttrControlDialog:HideDialog()
 	g_IDECenter.center:RemoveEventListener(___all_struct[1408180774], self, self.HandleEditScaleChanged)
 end
 
@@ -178,7 +179,7 @@ function IDEUITabChild:OnShow()
 	self._anti_panel.visible = true
 	local panel_childs = self._attr_screen.childs
 	if panel_childs[1] ~= nil then
-		g_IDECenter.control_attr:SetTitle(panel_childs[1]._user_data.title)
+		g_IDEAttrControlDialog:SetTitle(panel_childs[1]._user_data.title)
 	end
 	g_IDECenter.center:UpdateToolScale(self:GetScale())
 	g_IDECenter.center:AddEventListener(___all_struct[1408180774], self, self.HandleEditScaleChanged)
@@ -186,7 +187,7 @@ end
 
 function IDEUITabChild:OnClose()
 	g_IDECenter.center.control_tree:RemoveChild(self._tree_screen)
-	g_IDECenter.control_attr:RemoveChild(self._attr_screen)
+	g_IDEAttrControlDialog.dialog:RemoveChild(self._attr_screen)
 	g_IDECenter.center.control_anti:RemoveChild(self._anti_panel)
 	g_IDEProject:RemoveEventListener(___all_struct[1787992834], self, self.HandleProjectSettingChanged)
 	g_IDECenter.center:RemoveEventListener(___all_struct[1408180774], self, self.HandleEditScaleChanged)
@@ -197,8 +198,29 @@ end
 
 function IDEUITabChild:OnOpen()
 	g_IDECenter.center.control_tree:AddChild(self._tree_screen)
-	g_IDECenter.control_attr:AddChild(self._attr_screen)
+	g_IDEAttrControlDialog.dialog:AddChild(self._attr_screen)
 	g_IDECenter.center.control_anti:AddChild(self._anti_panel)
+	self:ShowInCenter()
+end
+
+function IDEUITabChild:ShowInCenter()
+	local object = self._tree_object.user_info.object
+	local x, y = object:LocalToGlobal(self._tab_object_container)
+	if x > 0 and y > 0 then
+		if object.width < self._tab_object_container.width and self._tab_screen.view_width > 0 then
+			local view_x = self._tab_screen.view_width / 2
+			local real_size = self._tab_object_container.width - self._tab_screen.view_width
+			local center_x = x + object.width / 2
+			self._tab_screen.bottom_scrollbar.offset_rate = (center_x - view_x) / real_size
+		end
+		if object.height < self._tab_object_container.height and self._tab_screen.view_height > 0 then
+			local view_y = self._tab_screen.view_height / 2
+			local real_size = self._tab_object_container.height - self._tab_screen.view_height
+			local center_y = y + object.height / 2
+			self._tab_screen.right_scrollbar.offset_rate = (center_y - view_y) / real_size
+		end
+		self._tab_screen:RejustScrollBar()
+	end
 end
 
 function IDEUITabChild:OnRightMenu()
@@ -868,10 +890,12 @@ function IDEUITabChild:HandleHandleQuadLButtonUp(event)
 	if handle_info.buttondown_lock ~= true then
 		return
 	end
-	if handle_info.buttondown_count >= 2 then
-		g_IDECenter:ShowControlAttrDialog(handle_info.target.user_info.object)
-	end
 	self:HideHandleQuad(handle_info.target)
+	if handle_info.buttondown_count >= 2 then
+		g_IDEAttrControlDialog:ShowDialog(handle_info.target.user_info.object)
+	else
+		g_IDEAttrControlDialog:HideDialog()
+	end
 end
 
 function IDEUITabChild.ControlCopyInfoCmp(a, b)
@@ -1061,6 +1085,7 @@ function IDEUITabChild:HandleHandleQuadRButtonDown(event)
 	local menu = AUIPlugin.AUIRightMenu()
 	menu:AddItem("获取焦点", Lua.Bind(self.ShowTreeItemFocus, self, target))
 	menu:AddItem("拾取父节点", Lua.Bind(self.PickParent, self, target), target.user_info.root)
+	menu:AddItem("设置", Lua.Bind(g_IDEAttrControlDialog.ShowDialog, g_IDEAttrControlDialog, target.user_info.object))
 	menu:AddItem("文本编辑", Lua.Bind(self.TextEdit, self, target), g_IDEEnum.text_edit_display_map[target.user_info.default.__class] == nil)
 	menu:AddItem("上移", Lua.Bind(target.TransferUp, target), target.user_info.root or target.user_info.child_type ~= "child")
 	menu:AddItem("下移", Lua.Bind(target.TransferDown, target), target.user_info.root or target.user_info.child_type ~= "child")

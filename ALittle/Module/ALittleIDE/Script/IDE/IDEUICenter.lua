@@ -50,8 +50,6 @@ function IDEUICenter:TCtor()
 	self._project_edit_tab.tab_index = 1
 	self._control_tree_tab:DisableAllCloseButton()
 	self._control_tree_tab.tab_index = 1
-	self._control_edit_tab:DisableAllCloseButton()
-	self._control_edit_tab.tab_index = 1
 	self._project_quick_tab:DisableAllCloseButton()
 	self._project_quick_tab.tab_index = 1
 	ALittle.TextRadioButton.SetGroup({self._tool_singleselect, self._tool_handdrag, self._tool_scale, self._tool_presee})
@@ -71,10 +69,6 @@ end
 
 function IDEUICenter.__getter:project_list()
 	return self._project_list
-end
-
-function IDEUICenter.__getter:control_attr()
-	return self._control_attr
 end
 
 function IDEUICenter.__getter:control_anti()

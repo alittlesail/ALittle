@@ -10,6 +10,7 @@ struct IDEUITabChildHandleInfo
     ALittle.DisplayObject size_quad_container;  // 选中后的拖拽大小的Quad集合
     IDEUITreeLogic target;                        // 选中的节点目标
     bool buttondown_lock;                       // 按钮按下锁定
+    int buttondown_count;                       // 记录多次点击
     
     double delta_x;
     double delta_y;
@@ -147,7 +148,7 @@ public class IDEUITabChild : IDETabChild
 		this._tree_screen.visible = false;
 		this._attr_screen.visible = false;
 		this._anti_panel.visible = false;
-		g_IDECenter.center.control_attr.SetTitle("");
+		g_IDECenter.control_attr.SetTitle("");
         g_IDECenter.center.RemoveEventListener(this, this.HandleEditScaleChanged);
     }
 
@@ -160,7 +161,7 @@ public class IDEUITabChild : IDETabChild
 	
 		var panel_childs = this._attr_screen.childs;
 		if (panel_childs[1] != null)
-			g_IDECenter.center.control_attr.SetTitle(cast<IDEUITreeLogic>(panel_childs[1]._user_data).title);
+			g_IDECenter.control_attr.SetTitle(cast<IDEUITreeLogic>(panel_childs[1]._user_data).title);
 		g_IDECenter.center.UpdateToolScale(this.GetScale());
     
         g_IDECenter.center.AddEventListener(this, this.HandleEditScaleChanged);
@@ -169,7 +170,7 @@ public class IDEUITabChild : IDETabChild
     private fun OnClose()
     {
         g_IDECenter.center.control_tree.RemoveChild(this._tree_screen);
-		g_IDECenter.center.control_attr.RemoveChild(this._attr_screen);
+		g_IDECenter.control_attr.RemoveChild(this._attr_screen);
 		g_IDECenter.center.control_anti.RemoveChild(this._anti_panel);
         g_IDEProject.RemoveEventListener(this, this.HandleProjectSettingChanged);
         g_IDECenter.center.RemoveEventListener(this, this.HandleEditScaleChanged);
@@ -181,7 +182,7 @@ public class IDEUITabChild : IDETabChild
     private fun OnOpen()
     {
 		g_IDECenter.center.control_tree.AddChild(this._tree_screen);
-		g_IDECenter.center.control_attr.AddChild(this._attr_screen);
+		g_IDECenter.control_attr.AddChild(this._attr_screen);
 		g_IDECenter.center.control_anti.AddChild(this._anti_panel);
     }
 
@@ -932,6 +933,7 @@ public class IDEUITabChild : IDETabChild
 		// 获取信息
         var handle_info:IDEUITabChildHandleInfo = event.target._user_data;
         handle_info.buttondown_lock = true;
+        handle_info.buttondown_count = event.count;
 	}
 	
 	public fun HandleHandleQuadLButtonUp(ALittle.UILButtonUpEvent event)
@@ -939,7 +941,9 @@ public class IDEUITabChild : IDETabChild
 		// 获取信息
         var handle_info:IDEUITabChildHandleInfo = event.target._user_data;
         if (handle_info.buttondown_lock != true) return;
-	
+
+        if (handle_info.buttondown_count >= 2)
+            g_IDECenter.ShowControlAttrDialog(handle_info.target.user_info.object);
         this.HideHandleQuad(handle_info.target);
 	}
 

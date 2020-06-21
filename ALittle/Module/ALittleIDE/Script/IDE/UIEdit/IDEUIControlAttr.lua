@@ -13,7 +13,7 @@ function IDEUIControlAttr:SetTitle(title)
 	if title ~= "" then
 		text = "控件属性(" .. title .. ")"
 	end
-	local main_tab = self.parent
-	main_tab:SetChildText(self, text)
+	local main_dialog = self.parent
+	main_dialog.title = text
 end
 

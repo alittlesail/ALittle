@@ -68,8 +68,8 @@ option_map = {}
 })
 ALittle.RegStruct(-959526497, "ALittleIDE.IDEUITabChildHandleInfo", {
 name = "ALittleIDE.IDEUITabChildHandleInfo", ns_name = "ALittleIDE", rl_name = "IDEUITabChildHandleInfo", hash_code = -959526497,
-name_list = {"display_group","handle_quad","focus_quad","size_quad_container","target","buttondown_lock","delta_x","delta_y","lock_x_or_y","delta_width","delta_height","lock_width_or_height"},
-type_list = {"ALittle.DisplayObject","ALittle.DisplayObject","ALittle.DisplayObject","ALittle.DisplayObject","ALittleIDE.IDEUITreeLogic","bool","double","double","bool","double","double","bool"},
+name_list = {"display_group","handle_quad","focus_quad","size_quad_container","target","buttondown_lock","buttondown_count","delta_x","delta_y","lock_x_or_y","delta_width","delta_height","lock_width_or_height"},
+type_list = {"ALittle.DisplayObject","ALittle.DisplayObject","ALittle.DisplayObject","ALittle.DisplayObject","ALittleIDE.IDEUITreeLogic","bool","int","double","double","bool","double","double","bool"},
 option_map = {}
 })
 ALittle.RegStruct(-641444818, "ALittle.UIRButtonDownEvent", {
@@ -168,7 +168,7 @@ function IDEUITabChild:OnHide()
 	self._tree_screen.visible = false
 	self._attr_screen.visible = false
 	self._anti_panel.visible = false
-	g_IDECenter.center.control_attr:SetTitle("")
+	g_IDECenter.control_attr:SetTitle("")
 	g_IDECenter.center:RemoveEventListener(___all_struct[1408180774], self, self.HandleEditScaleChanged)
 end
 
@@ -178,7 +178,7 @@ function IDEUITabChild:OnShow()
 	self._anti_panel.visible = true
 	local panel_childs = self._attr_screen.childs
 	if panel_childs[1] ~= nil then
-		g_IDECenter.center.control_attr:SetTitle(panel_childs[1]._user_data.title)
+		g_IDECenter.control_attr:SetTitle(panel_childs[1]._user_data.title)
 	end
 	g_IDECenter.center:UpdateToolScale(self:GetScale())
 	g_IDECenter.center:AddEventListener(___all_struct[1408180774], self, self.HandleEditScaleChanged)
@@ -186,7 +186,7 @@ end
 
 function IDEUITabChild:OnClose()
 	g_IDECenter.center.control_tree:RemoveChild(self._tree_screen)
-	g_IDECenter.center.control_attr:RemoveChild(self._attr_screen)
+	g_IDECenter.control_attr:RemoveChild(self._attr_screen)
 	g_IDECenter.center.control_anti:RemoveChild(self._anti_panel)
 	g_IDEProject:RemoveEventListener(___all_struct[1787992834], self, self.HandleProjectSettingChanged)
 	g_IDECenter.center:RemoveEventListener(___all_struct[1408180774], self, self.HandleEditScaleChanged)
@@ -197,7 +197,7 @@ end
 
 function IDEUITabChild:OnOpen()
 	g_IDECenter.center.control_tree:AddChild(self._tree_screen)
-	g_IDECenter.center.control_attr:AddChild(self._attr_screen)
+	g_IDECenter.control_attr:AddChild(self._attr_screen)
 	g_IDECenter.center.control_anti:AddChild(self._anti_panel)
 end
 
@@ -860,12 +860,16 @@ end
 function IDEUITabChild:HandleHandleQuadLButtonDown(event)
 	local handle_info = event.target._user_data
 	handle_info.buttondown_lock = true
+	handle_info.buttondown_count = event.count
 end
 
 function IDEUITabChild:HandleHandleQuadLButtonUp(event)
 	local handle_info = event.target._user_data
 	if handle_info.buttondown_lock ~= true then
 		return
+	end
+	if handle_info.buttondown_count >= 2 then
+		g_IDECenter:ShowControlAttrDialog(handle_info.target.user_info.object)
 	end
 	self:HideHandleQuad(handle_info.target)
 end

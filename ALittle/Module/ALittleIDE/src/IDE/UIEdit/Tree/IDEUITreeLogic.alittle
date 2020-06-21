@@ -69,7 +69,7 @@ public class IDEUITreeLogic : ALittle.DisplayLayout
 	{
 		if (this._attr_panel == null) return;
 		this._tab_child.attr_screen.RemoveChild(this._attr_panel.layer);
-		g_IDECenter.center.control_attr.SetTitle("");
+		g_IDECenter.control_attr.SetTitle("");
 	}
 
 	// 显示属性面板
@@ -89,7 +89,7 @@ public class IDEUITreeLogic : ALittle.DisplayLayout
 			this._attr_panel.layer.disabled = this._user_info.extends;
 		}
 		// 显示标题
-		g_IDECenter.center.control_attr.SetTitle(this._attr_panel.title);
+		g_IDECenter.control_attr.SetTitle(this._attr_panel.title);
 		this._tab_child.attr_screen.AddChild(this._attr_panel.layer);
 	}
 	

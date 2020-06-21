@@ -8,7 +8,7 @@ public class IDEUIControlAttr : ALittle.DisplayLayout
 		var text = "控件属性";
 		if (title != "") text = "控件属性("..title..")";
 
-		var main_tab = cast<ALittle.Tab>(this.parent);
-		main_tab.SetChildText(this, text);
+		var main_dialog = cast<ALittle.Dialog>(this.parent);
+		main_dialog.title = text;
 	}
 }

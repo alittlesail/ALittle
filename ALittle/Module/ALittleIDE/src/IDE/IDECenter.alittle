@@ -7,11 +7,15 @@ class IDECenter
 	private IDEUIProjectDropdown _project_dropdown;
 	private IDEUIMainMenu _main_menu;
 	private IDEUICenter _center;
+
+	private IDEUIControlAttr _control_attr;	// 控件属性
+	private ALittle.Dialog _control_attr_dialog;
 	
 	public await fun Setup()
 	{
 		// 创建主界面
 		g_Control.CreateControl{ALittle.DisplayObject}("ide_main_scene", this, g_MainLayer);
+		this._control_attr_dialog.visible = false;
 		// 打开上一次的项目
 		g_IDEProject.OpenLastProject();
 		// 初始化组合键
@@ -25,6 +29,7 @@ class IDECenter
 	}
 
 	public get center() : IDEUICenter { return this._center; }
+	public get control_attr() : IDEUIControlAttr { return this._control_attr; }
 	
 	public async fun RefreshProject()
 	{
@@ -37,6 +42,19 @@ class IDECenter
 		}
 		// 刷新当前
 		g_IDEProject.RefreshProject();
+	}
+
+	public fun ShowControlAttrDialog(ALittle.DisplayObject object)
+	{
+        this._control_attr_dialog.visible = true;
+
+        this._control_attr_dialog.x = A_UISystem.mouse_x + 50;
+		this._control_attr_dialog.y = A_UISystem.mouse_y;
+
+		if (this._control_attr_dialog.x + this._control_attr_dialog.width > A_UISystem.view_width)
+			this._control_attr_dialog.x = A_UISystem.view_width - this._control_attr_dialog.width;
+		if (this._control_attr_dialog.y + this._control_attr_dialog.height > A_UISystem.view_height)
+    		this._control_attr_dialog.y = A_UISystem.view_height - this._control_attr_dialog.height;
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////

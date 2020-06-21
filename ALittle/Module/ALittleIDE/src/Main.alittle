@@ -30,6 +30,7 @@ public static __Browser_Shutdown()
 }
 
 protected var g_Control:ALittle.ControlSystem;
+protected var g_AUIPluinControl:ALittle.ControlSystem;
 protected var g_LayerGroup:ALittle.DisplayLayout;
 protected var g_ModuleBasePath:string;
 protected var g_ScriptBasePath:string;
@@ -53,7 +54,7 @@ public async static __Module_Setup(ALittle.DisplayLayout layer_group, ALittle.Co
     g_ScriptBasePath = script_base_path;
 
 	// 加载UI插件
-    A_ModuleSystem.LoadPlugin("AUIPlugin");
+    g_AUIPluinControl = A_ModuleSystem.LoadPlugin("AUIPlugin");
     
     // 获取配置信息
 	g_IDEConfig = ALittle.CreateConfigSystem("ALittleIDE.cfg");

@@ -1,0 +1,822 @@
+
+namespace AUIPlugin;
+
+private var LINE_HEIGHT = 18;
+private var FONT_SIZE = 14;
+private var FONT_PATH = "YaHei-Consolas.ttf";
+private var FONT_RED = 169/255;
+private var FONT_GREEN = 183/255;
+private var FONT_BLUE = 198/255;
+private var SELECT_RED = 33/255;
+private var SELECT_GREEN = 66/255;
+private var SELECT_BLUE = 131/255;
+
+protected struct AUICodeCharInfo
+{
+    string char;
+    ALittle.Text text;
+    double pre_width;
+    double width;
+}
+
+protected struct AUICodeLineInfo
+{
+    List<AUICodeCharInfo> char_list;
+    int char_count;
+    ALittle.DisplayLayout container;
+    ALittle.Quad quad;
+}
+
+protected class AUICodeQuad : ALittle.Quad
+{
+    public get is_input() : bool { return true; }
+    public get editable() : bool { return true; }
+    public get font_size() : int { return FONT_SIZE; }
+    public get cursor_x() : double
+    {
+        var tab_child = cast<AUICodeEdit>(this._user_data);
+        return tab_child.cursor.x;
+    }
+    public get cursor_y() : double
+    {
+        var tab_child = cast<AUICodeEdit>(this._user_data);
+        return tab_child.cursor.y;
+    }
+    public get cursor_b() : double
+    {
+        var tab_child = cast<AUICodeEdit>(this._user_data);
+        return tab_child.cursor.y + tab_child.cursor.height;
+    }
+}
+
+public class AUICodeEdit : ALittle.ScrollScreen
+{
+	private ALittle.DisplayLayout _code_container;      // 代码容器
+    private ALittle.DisplayLayout _cursor_container;    // 光标容器
+    private ALittle.DisplayObject _edit_quad;           // 编辑区
+
+    protected AUICodeCursor _cursor;
+    protected AUICodeSelectCursor _select_cursor;
+
+    private List<AUICodeLineInfo> _line_list = new List<AUICodeLineInfo>();
+    private int _line_count = 0;
+
+    // 用于计算文本
+    private ALittle.Text _text_show;
+
+    // 因为是等宽，所以可以事先计算一下字体宽度
+    private double _ascii_width;    // ascii的宽度
+    private double _word_width;     // 中文的宽度
+
+    // 文件路径
+    private string _file_path;
+
+	public fun TCtor()
+	{
+		// 创建编辑容器
+        this.container = new ALittle.DisplayLayout(this._ctrl_sys);
+        this._edit_quad._user_data = this;
+
+        this._code_container.disabled = true;
+
+        this._cursor = new AUICodeCursor(this._ctrl_sys, this);
+        this._cursor.width = 1;
+        this._cursor.height = LINE_HEIGHT;
+        this._cursor_container.AddChild(this._cursor);
+
+        this._select_cursor = new AUICodeSelectCursor(this);
+
+        this._text_show = new ALittle.Text(this._ctrl_sys);
+        this._text_show.font_path = "YaHei-Consolas.ttf";
+        this._text_show.font_size = 14;
+
+        this._ascii_width = this._text_show.native_show.CalcTextWidth("A");
+        this._word_width = this._text_show.native_show.CalcTextWidth("测");
+    }
+
+    public get code_container() : ALittle.DisplayLayout { return this._code_container; }
+    public get cursor() : AUICodeCursor { return this._cursor; }
+    public set line_count(int count) { this._line_count = count; }
+    public get line_count() : int { return this._line_count; }
+    public get line_list() : List<AUICodeLineInfo> { return this._line_list; }
+    public get line_height() : int { return LINE_HEIGHT; }
+
+    private fun HandleMoveIn(ALittle.UIMoveInEvent event) { ALittle.System_SetEditCursor(); }
+    private fun HandleMoveOut(ALittle.UIMoveOutEvent event) { ALittle.System_SetNormalCursor(); }
+    private fun HandleLButtonDown(ALittle.UILButtonDownEvent event)
+    {
+        this._select_cursor.Hide();
+        this._cursor.SetOffsetXY(event.rel_x, event.rel_y);
+        // 选中文本
+        if (event.count > 1)
+        {
+            var it_start, it_end = this._cursor.CalcSelectWord();
+            if (it_start == null) return;
+            this._cursor.SetLineChar(this._cursor.line, it_end);
+            this._select_cursor.StartLineChar(this._cursor.line, it_start);
+            this._select_cursor.UpdateLineChar(this._cursor.line, it_end);
+        }
+    }
+
+    private fun HandleDragBegin(ALittle.UIButtonDragBeginEvent event)
+    {
+        this._cursor.SetOffsetXY(event.rel_x, event.rel_y);
+        this._select_cursor.StartLineChar(this._cursor.line, this._cursor.char);
+    }
+
+    private fun HandleDrag(ALittle.UIButtonDragEvent event)
+    {
+        this._cursor.SetOffsetXY(event.rel_x, event.rel_y);
+        this._select_cursor.UpdateLineChar(this._cursor.line, this._cursor.char);
+    }
+
+    private fun HandleDragEnd(ALittle.UIButtonDragEndEvent event)
+    {
+        this._select_cursor.TryHide();
+    }
+
+    // 计算行列
+    public fun CalcLineAndChar(double x, double y) : int, int
+    {
+        var it_line = ALittle.Math_Floor(y / LINE_HEIGHT) + 1;
+        if (it_line < 1) it_line = 1;
+        elseif (it_line > this._line_count) it_line = this._line_count;
+
+        var it_char:int = 0;
+        var line = this._line_list[it_line];
+        if (line == null) return it_line, it_char;
+        if (line.char_count == 0) return it_line, 0;
+
+        var pre_width = line.char_list[1].width / 2;
+        if (x < line.char_list[1].width / 2) return it_line, 0;
+
+        for (var index = 1; index < line.char_count; 1)
+        {
+            var next_width = pre_width + line.char_list[index].width / 2 + line.char_list[index + 1].width / 2;
+            if (x >= pre_width && x < next_width)
+                return it_line, index;
+            pre_width = next_width;
+        }
+        var count = line.char_count;
+        while (count > 0 && line.char_list[count].width <= 0)
+            -- count;
+        return it_line, count;
+    }
+
+    // 删除选择行
+    public fun DeleteSelectText() : bool
+    {
+        var result, it_line, it_char = this._select_cursor.DeleteSelect();
+        if (result) this._cursor.SetLineChar(it_line, it_char);
+        return result;
+    }
+
+    private fun HandleTextInput(ALittle.UITextInputEvent event)
+    {
+        if (this.InsertText(event.text))
+            this.DispatchEvent(new ALittle.UIChangedEvent());
+    }
+
+    private fun HandleKeyDown(ALittle.UIKeyDownEvent event)
+    {
+        // 标记是否需要发送CHANGE事件
+        var is_change = false;
+        // 处理键盘按键
+        if (event.sym == ALittle.UIEnumTypes.KEY_LEFT)
+        {
+            if (ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) == 0)
+            {
+                if (this._select_cursor.line_start != null)
+                    this._select_cursor.Hide();
+                else
+                    this._cursor.OffsetLeft();
+            }
+            else
+            {
+                if (this._select_cursor.line_start == null)
+                    this._select_cursor.StartLineChar(this._cursor.line, this._cursor.char);
+                this._cursor.OffsetLeft();
+                if (this._cursor.line == this._select_cursor.line_start && this._cursor.char == this._select_cursor.char_start)
+                    this._cursor.OffsetLeft();
+                this._select_cursor.UpdateLineChar(this._cursor.line, this._cursor.char);   
+            }
+			event.handled = true;
+        }
+        elseif (event.sym == ALittle.UIEnumTypes.KEY_UP)
+        {
+            if (ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) == 0)
+            {
+                if (this._select_cursor.line_start != null)
+                    this._select_cursor.Hide();
+                else
+                    this._cursor.OffsetUp();
+            }
+            else
+            {
+                if (this._select_cursor.line_start == null)
+                    this._select_cursor.StartLineChar(this._cursor.line, this._cursor.char);
+                this._cursor.OffsetUp();
+                if (this._cursor.line == this._select_cursor.line_start && this._cursor.char == this._select_cursor.char_start)
+                    this._cursor.OffsetUp();
+                this._select_cursor.UpdateLineChar(this._cursor.line, this._cursor.char);   
+            }
+			event.handled = true;
+        }
+        elseif (event.sym == ALittle.UIEnumTypes.KEY_DOWN)
+        {
+            if (ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) == 0)
+            {
+                if (this._select_cursor.line_start != null)
+                    this._select_cursor.Hide();
+                else
+                    this._cursor.OffsetDown();
+            }
+            else
+            {
+                if (this._select_cursor.line_start == null)
+                    this._select_cursor.StartLineChar(this._cursor.line, this._cursor.char);
+                this._cursor.OffsetDown();
+                if (this._cursor.line == this._select_cursor.line_start && this._cursor.char == this._select_cursor.char_start)
+                    this._cursor.OffsetDown();
+                this._select_cursor.UpdateLineChar(this._cursor.line, this._cursor.char);   
+            }
+			event.handled = true;
+        }
+        elseif (event.sym == ALittle.UIEnumTypes.KEY_RIGHT)
+        {
+            if (ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) == 0)
+            {
+                if (this._select_cursor.line_start != null)
+                    this._select_cursor.Hide();
+                else
+                    this._cursor.OffsetRight();
+            }
+            else
+            {
+                if (this._select_cursor.line_start == null)
+                    this._select_cursor.StartLineChar(this._cursor.line, this._cursor.char);
+                this._cursor.OffsetRight();
+                if (this._cursor.line == this._select_cursor.line_start && this._cursor.char == this._select_cursor.char_start)
+                    this._cursor.OffsetRight();
+                this._select_cursor.UpdateLineChar(this._cursor.line, this._cursor.char);   
+            }
+			event.handled = true;
+        }
+        elseif (event.sym == ALittle.UIEnumTypes.KEY_BACKSPACE)
+        {
+            if (this._select_cursor.line_start == null)
+            {
+                is_change = this._cursor.DeleteLeft();
+            }
+            else
+            {
+                is_change = this.DeleteSelectText();
+            }
+			event.handled = true;
+        }
+        elseif (event.sym == ALittle.UIEnumTypes.KEY_DELETE)
+        {
+            if (this._select_cursor.line_start == null)
+            {
+                is_change = this._cursor.DeleteRight();
+            }
+            else
+            {
+                is_change = this.DeleteSelectText();
+            }
+			event.handled = true;
+        }
+        elseif (event.sym == ALittle.UIEnumTypes.KEY_HOME)
+        {
+            if (ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) == 0)
+            {
+                if (this._select_cursor.line_start != null)
+                    this._select_cursor.Hide();
+                else
+                    this._cursor.OffsetHome();
+            }
+            else
+            {
+                if (this._select_cursor.line_start == null)
+                    this._select_cursor.StartLineChar(this._cursor.line, this._cursor.char);
+                this._cursor.OffsetHome();
+                this._select_cursor.UpdateLineChar(this._cursor.line, this._cursor.char);   
+            }
+            event.handled = true;
+        }
+        elseif (event.sym == ALittle.UIEnumTypes.KEY_END)
+        {
+            if (ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) == 0)
+            {
+                if (this._select_cursor.line_start != null)
+                    this._select_cursor.Hide();
+                else
+                    this._cursor.OffsetEnd();
+            }
+            else
+            {
+                if (this._select_cursor.line_start == null)
+                    this._select_cursor.StartLineChar(this._cursor.line, this._cursor.char);
+                this._cursor.OffsetEnd();
+                this._select_cursor.UpdateLineChar(this._cursor.line, this._cursor.char);   
+            }
+			event.handled = true;
+        }
+        elseif (event.sym == ALittle.UIEnumTypes.KEY_ENTER || event.sym == ALittle.UIEnumTypes.KEY_NUMBER_ENTER)
+        {
+            this.InsertText("\n");
+            is_change = true;
+			event.handled = true;
+        }
+        elseif (event.sym == ALittle.UIEnumTypes.KEY_X && ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) != 0)
+        {
+            var select_text = this._select_cursor.GetSelectText();
+            if (select_text != null)
+                ALittle.System_SetClipboardText(select_text);
+            is_change = this.DeleteSelectText();
+			event.handled = true;
+        }
+        elseif (event.sym == ALittle.UIEnumTypes.KEY_C && ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) != 0)
+        {
+            var select_text = this._select_cursor.GetSelectText();
+            if (select_text != null)
+                ALittle.System_SetClipboardText(select_text);
+			event.handled = true;
+        }
+        elseif (event.sym == ALittle.UIEnumTypes.KEY_V && ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) != 0)
+        {
+            if (ALittle.System_HasClipboardText())
+            {
+                is_change = this.InsertText(ALittle.System_GetClipboardText());
+            }
+			event.handled = true;
+        }
+        elseif (event.sym == ALittle.UIEnumTypes.KEY_A && ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) != 0)
+        {
+            if (this._line_count > 0)
+            {
+                this._cursor.SetLineChar(this._line_count, this._line_list[this._line_count].char_count);
+                this._select_cursor.StartLineChar(1, 0);
+                this._select_cursor.UpdateLineChar(this._cursor.line, this._cursor.char);
+            }
+			event.handled = true;
+        }
+            // 检查是否发送CHANGE事件
+        if (is_change)
+        {
+            this.DispatchEvent(new ALittle.UIChangedEvent());
+        }
+    }
+
+    public fun OnHide()
+    {
+        this._cursor.Hide();
+    }
+
+    public fun OnShow()
+    {
+        this._cursor.Show();
+    }
+
+    public fun OnClose()
+    {
+        this._cursor.Hide();
+        this._file_path = null;
+    }
+
+    public fun Load(string file_path) : bool
+    {
+        // 打开文件
+        var content = ALittle.File_ReadTextFromStdFile(file_path);
+        if (content == null) return false;
+
+        // 设置文本内容
+        this.SetText(content);
+        this._file_path = file_path;
+        return true;
+    }
+
+    // 根据内容创建行
+    private fun CreateLines(string content) : List<AUICodeLineInfo>, int, double
+    {
+        var line_list = new List<AUICodeLineInfo>();
+        var line_count = 0;
+        var max_width = 0.0;
+
+        var line:AUICodeLineInfo = null;
+        var len = ALittle.String_Len(content);
+        var index = 1;
+        var pre_width = 0.0;
+        while (index <= len)
+        {
+            var is_asicc = true;
+            var byte_count = 1;
+            var char_text:string = null;
+            [Language(Lua)]
+            {
+                byte_count = lua.utf8.bytecount(content, index - 1, 1);
+                if (byte_count > 1) is_asicc = false;
+                char_text = lua.String.sub(content, index, index + byte_count - 1);
+            }
+            [Language(JavaScript)]
+            {
+                var code = cast<javascript.String>(content).charCodeAt(index - 1);
+                if (code > 255) is_asicc = false;
+                char_text = cast<javascript.String>(content).substring(index - 1, index);
+            }
+            index += byte_count;
+
+            var char = new AUICodeCharInfo();
+            if (is_asicc)
+            {
+                if (char_text == "\t")
+                    char.width = this._ascii_width * 4;
+                elseif (char_text == "\r" || char_text == "\n")
+                    char.width = 0;
+                else
+                {
+                    char.text = new ALittle.Text(g_Control);
+                    char.text.red = FONT_RED;
+                    char.text.green = FONT_GREEN;
+                    char.text.blue = FONT_BLUE;
+                    char.text.font_path = FONT_PATH;
+                    char.text.font_size = FONT_SIZE;
+                    char.text.text = char_text;
+                    char.text.x = pre_width;
+                    char.width = this._ascii_width;
+                }
+            }   
+            else
+            {
+                char.text = new ALittle.Text(g_Control);
+                char.text.red = FONT_RED;
+                char.text.green = FONT_GREEN;
+                char.text.blue = FONT_BLUE;
+                char.text.font_path = FONT_PATH;
+                char.text.font_size = FONT_SIZE;
+                char.text.text = char_text;
+                char.text.x = pre_width;
+                char.width = this._word_width;
+            }
+            char.char = char_text;
+            char.pre_width = pre_width;
+            pre_width += char.width;
+
+            if (line == null)
+            {
+                line = new AUICodeLineInfo();
+                line.char_count = 0;
+                line.char_list = new List<AUICodeCharInfo>();
+                line.quad = new ALittle.Quad(g_Control);
+                line.container = new ALittle.DisplayLayout(g_Control);
+                line.quad.red = SELECT_RED;
+                line.quad.green = SELECT_GREEN;
+                line.quad.blue = SELECT_BLUE;
+                line.quad.height = LINE_HEIGHT;
+                line.quad.visible = false;
+                line.container.AddChild(line.quad);
+            }
+            line.char_count += 1;
+            line.char_list[line.char_count] = char;
+            if (char.text != null)
+                line.container.AddChild(char.text);
+
+            if (char_text == "\n")
+            {
+                line_count += 1;
+                line_list[line_count] = line;
+                line = null;
+                pre_width = 0;
+            }
+        }
+
+        if (line != null)
+        {
+            line_count += 1;
+            line_list[line_count] = line;
+        }
+
+        var last_line = line_list[line_count];
+        if (last_line == null) return line_list, line_count, max_width;
+        var last_char = last_line.char_list[last_line.char_count];
+        if (last_char == null) return line_list, line_count, max_width;
+
+            // 如果最后一个是回车，那么加一个空行
+        if (last_char.char == "\n")
+        {
+            line = new AUICodeLineInfo();
+            line.char_count = 0;
+            line.char_list = new List<AUICodeCharInfo>();
+            line.quad = new ALittle.Quad(g_Control);
+            line.container = new ALittle.DisplayLayout(g_Control);
+            line.quad.red = SELECT_RED;
+            line.quad.green = SELECT_GREEN;
+            line.quad.blue = SELECT_BLUE;
+            line.quad.height = LINE_HEIGHT;
+            line.quad.visible = false;
+            line.container.AddChild(line.quad);
+            line_count += 1;
+            line_list[line_count] = line;
+        }
+
+        for (var i, line_info in line_list)
+        {
+            last_char = line_info.char_list[line_info.char_count];
+            if (last_char != null) line_info.container.width = last_char.pre_width + last_char.width;
+            if (line_info.container.width > max_width) max_width = line_info.container.width;
+        }
+
+        return line_list, line_count, max_width;
+    }
+
+    // 设置文本
+    public fun SetText(string content)
+    {
+        this._code_container.RemoveAllChild();
+        var max_width = 0.0;
+        this._line_list, this._line_count, max_width = this.CreateLines(content);
+
+        for (var index, line in this._line_list)
+        {
+            line.container.y = (index - 1) * LINE_HEIGHT;
+            this._code_container.AddChild(line.container);
+        }
+        this.container.width = max_width;
+        this.container.height = this._line_count * LINE_HEIGHT;
+        this.RejustScrollBar();
+
+        this._cursor.SetLineChar(1, 0);
+    }
+
+    // 插入文本
+    public fun InsertText(string content) : bool
+    {
+        var is_changed = this.DeleteSelectText();
+        
+        var line_list, line_count, max_width = this.CreateLines(content);
+        if (line_count == 0) return is_changed;
+        is_changed = true;
+
+        var split_pre_line:AUICodeLineInfo = this._line_list[this._cursor.line];
+        var split_it_char = this._cursor.char;
+
+        // 如果当前没有数据，那么就构建一个
+        if (split_pre_line == null)
+        {
+            split_pre_line = new AUICodeLineInfo();
+            split_pre_line.char_count = 0;
+            split_pre_line.char_list = new List<AUICodeCharInfo>();
+            split_pre_line.quad = new ALittle.Quad(g_Control);
+            split_pre_line.container = new ALittle.DisplayLayout(g_Control);
+            split_pre_line.quad.red = SELECT_RED;
+            split_pre_line.quad.green = SELECT_GREEN;
+            split_pre_line.quad.blue = SELECT_BLUE;
+            split_pre_line.quad.height = LINE_HEIGHT;
+            split_pre_line.quad.visible = false;
+            split_pre_line.container.AddChild(split_pre_line.quad);
+            this._code_container.AddChild(split_pre_line.container);
+            split_pre_line.container.y = this._line_count * LINE_HEIGHT;
+            this._line_count += 1;
+            this._line_list[this._line_count] = split_pre_line;
+        }
+
+        // 把当前行拆成两行
+        var split_next_line:AUICodeLineInfo = split_pre_line;
+        var it_cursor_line = this._cursor.line;
+        var it_cursor_char = this._cursor.char;
+
+        // 将插入的行位置空出来
+        if (line_count > 1)
+        {
+            this._code_container.RemoveAllChild();
+            var new_line_list = new List<AUICodeLineInfo>();
+            var new_line_count = 0;
+
+            // 处理开始那些行
+            for (var i = 1; i < this._cursor.line; 1)
+            {
+                var line = this._line_list[i];
+                line.container.y = new_line_count * LINE_HEIGHT;
+                this._code_container.AddChild(line.container);
+                new_line_count += 1;
+                new_line_list[new_line_count] = line;
+            }
+            // 把当前行拆成两行
+            {
+                split_pre_line = this._line_list[this._cursor.line];
+                if (split_pre_line == null) return is_changed;
+
+                split_next_line = new AUICodeLineInfo();
+                split_next_line.char_count = 0;
+                split_next_line.char_list = new List<AUICodeCharInfo>();
+                split_next_line.quad = new ALittle.Quad(g_Control);
+                split_next_line.container = new ALittle.DisplayLayout(g_Control);
+                split_next_line.quad.red = SELECT_RED;
+                split_next_line.quad.green = SELECT_GREEN;
+                split_next_line.quad.blue = SELECT_BLUE;
+                split_next_line.quad.height = LINE_HEIGHT;
+                split_next_line.quad.visible = false;
+                split_next_line.container.AddChild(split_next_line.quad);
+                for (var i = this._cursor.char + 1; i <= split_pre_line.char_count; 1)
+                {
+                    split_next_line.char_count += 1;
+                    split_next_line.char_list[split_next_line.char_count] = split_pre_line.char_list[i];
+                    if (split_pre_line.char_list[i].text != null)
+                        split_next_line.container.AddChild(split_pre_line.char_list[i].text);
+                }
+
+                var split_count = split_pre_line.char_count - this._cursor.char;
+                ALittle.List_Splice(split_pre_line.char_list, this._cursor.char + 1, split_count);
+                split_pre_line.char_count -= split_count;
+
+                // 插入旧行
+                split_pre_line.container.y = new_line_count * LINE_HEIGHT;
+                this._code_container.AddChild(split_pre_line.container);
+                new_line_count += 1;
+                new_line_list[new_line_count] = split_pre_line;
+            }
+            // 插入新的行
+            for (var i = 2; i < line_count; 1)
+            {
+                var line = line_list[i];
+                line.container.y = new_line_count * LINE_HEIGHT;
+                this._code_container.AddChild(line.container);
+                new_line_count += 1;
+                new_line_list[new_line_count] = line;
+            }
+            // 插入拆分行
+            {
+                split_next_line.container.y = new_line_count * LINE_HEIGHT;
+                this._code_container.AddChild(split_next_line.container);
+                new_line_count += 1;
+                new_line_list[new_line_count] = split_next_line;
+                it_cursor_line = new_line_count;
+                it_cursor_char = 0;
+            }
+            // 插入剩余行
+            for (var i = this._cursor.line + 1; i <= this._line_count; 1)
+            {
+                var line = this._line_list[i];
+                line.container.y = new_line_count * LINE_HEIGHT;
+                this._code_container.AddChild(line.container);
+                new_line_count += 1;
+                new_line_list[new_line_count] = line;
+            }
+            this._line_list = new_line_list;
+            this._line_count = new_line_count;
+        }
+
+        // 开始衔接起始行
+        if (line_count > 0)
+        {
+            var line = line_list[1];
+            var char_list = new List<AUICodeCharInfo>();
+            var char_count = 0;
+            split_pre_line.container.RemoveAllChild();
+            split_pre_line.container.AddChild(split_pre_line.quad);
+            // 插入旧的数据
+            var pre_width = 0.0;
+            for (var i = 1; i <= split_it_char; 1)
+            {
+                var char = split_pre_line.char_list[i];
+                if (char.text != null)
+                {
+                    char.text.x = pre_width;
+                    split_pre_line.container.AddChild(char.text);   
+                }
+                char.pre_width = pre_width;
+                char_count += 1;
+                char_list[char_count] = char;
+                pre_width += char.width;
+            }
+            // 插入新的数据
+            for (var i = 1; i <= line.char_count; 1)
+            {
+                var char = line.char_list[i];
+                if (char.text != null)
+                {
+                    char.text.x = pre_width;
+                    split_pre_line.container.AddChild(char.text);   
+                }
+                char.pre_width = pre_width;
+                char_count += 1;
+                char_list[char_count] = char;
+                pre_width += char.width;
+            }
+            // 如果只在起始行插入，那么光标移动到插入最后字符的位置
+            if (line_count <= 1)
+                it_cursor_char = char_count;
+            // 插入后缀数据
+            for (var i = split_it_char + 1; i <= split_pre_line.char_count; 1)
+            {
+                var char = split_pre_line.char_list[i];
+                if (char.text != null)
+                {
+                    char.text.x = pre_width;
+                    split_pre_line.container.AddChild(char.text);   
+                }
+                char.pre_width = pre_width;
+                char_count += 1;
+                char_list[char_count] = char;
+                pre_width += char.width;
+            }
+            split_pre_line.char_count = char_count;
+            split_pre_line.char_list = char_list;
+            split_pre_line.container.width = pre_width;
+        }
+
+        // 开始衔接结束行
+        if (line_count > 1)
+        {
+            var line = line_list[line_count];
+            var char_list = new List<AUICodeCharInfo>();
+            var char_count = 0;
+            split_next_line.container.RemoveAllChild();
+            split_next_line.container.AddChild(split_next_line.quad);
+            // 插入新的数据
+            var pre_width = 0.0;
+            for (var i = 1; i <= line.char_count; 1)
+            {
+                var char = line.char_list[i];
+                if (char.text != null)
+                {
+                    char.text.x = pre_width;
+                    split_next_line.container.AddChild(char.text);   
+                }
+                char.pre_width = pre_width;
+                char_count += 1;
+                char_list[char_count] = char;
+                pre_width += char.width;
+            }
+            it_cursor_char = char_count;
+            // 插入后缀数据
+            for (var i = 1; i <= split_next_line.char_count; 1)
+            {
+                var char = split_next_line.char_list[i];
+                if (char.text != null)
+                {
+                    char.text.x = pre_width;
+                    split_next_line.container.AddChild(char.text);   
+                }
+                char.pre_width = pre_width;
+                char_count += 1;
+                char_list[char_count] = char;
+                pre_width += char.width;
+            }
+            split_next_line.char_count = char_count;
+            split_next_line.char_list = char_list;
+            split_next_line.container.width = pre_width;
+        }
+
+        max_width = 0.0;
+        for (var index, line in this._line_list)
+            if (line.container.width > max_width) max_width = line.container.width;
+        this.container.width = max_width;
+        this.container.height = this._line_count * LINE_HEIGHT;
+        this.RejustScrollBar();
+
+        this._cursor.SetLineChar(it_cursor_line, it_cursor_char);
+
+        return is_changed;
+    }
+
+    public fun GetText() : string
+    {
+        if (this._file_path == null) return "";
+
+        var text_list = new List<string>();
+        var text_count = 0;
+        for (var i, line in this._line_list)
+        {
+            for (var j, char in line.char_list)
+            {
+                text_count += 1;
+                text_list[text_count] = char.char;
+            }
+        }
+        return ALittle.String_Join(text_list, "");
+    }
+
+    public fun Save() : bool
+    {
+        if (this._file_path == null) return false;
+
+        var text_list = new List<string>();
+        var text_count = 0;
+        for (var i, line in this._line_list)
+        {
+            for (var j, char in line.char_list)
+            {
+                text_count += 1;
+                text_list[text_count] = char.char;
+            }
+        }
+        ALittle.File_WriteTextToFile(ALittle.String_Join(text_list, ""), this._file_path);
+        return true;
+	}
+
+    public fun EditFocus()
+    {
+        this._edit_quad.DelayFocus();
+    }
+}

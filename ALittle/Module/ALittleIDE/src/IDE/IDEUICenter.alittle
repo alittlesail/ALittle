@@ -36,6 +36,8 @@ protected class IDEUICenter : ALittle.DisplayLayout
 	private ALittle.Grid3 _right_edit_grid3;		// 下面全部三宫格
 	private ALittle.Grid3 _control_edit_grid3;		// 左边三宫格
 	private ALittle.Grid3 _quick_edit_grid3;		// 中间三宫格
+	private ALittle.TextCheckButton _quick_fold_updown;	// 对_quick_eidt_grid3的down进行收起
+	private double _quick_edit_grid3_down_size;
     
 	private ALittle.DisplayObject _tool_h_align_left;		// 水平对齐
 	private ALittle.DisplayObject _tool_h_align_center;
@@ -77,6 +79,7 @@ protected class IDEUICenter : ALittle.DisplayLayout
 		this._project_quick_tab.DisableAllCloseButton();
 		this._project_quick_tab.tab_index = 1;
 
+		this._quick_edit_grid3_down_size = this._quick_edit_grid3.down_size;
 		ALittle.TextRadioButton.SetGroup([this._tool_singleselect, this._tool_handdrag, this._tool_scale, this._tool_presee]);
 	}
 	
@@ -132,6 +135,18 @@ protected class IDEUICenter : ALittle.DisplayLayout
 		if (down_size > max_size) down_size = max_size;
 		this._quick_edit_grid3.down_size = down_size;
 	}
+	private fun HandleQuickFoldChanged(ALittle.UIChangedEvent event)
+	{
+		if (event.target.selected)
+		{
+            this._quick_edit_grid3.down_size = this._quick_edit_grid3_down_size;
+        }
+		else
+		{
+            this._quick_edit_grid3_down_size = this._quick_edit_grid3.down_size;
+			this._quick_edit_grid3.down_size = this._project_quick_tab.up_size;
+        }
+    }
 
 	////////////////////////////////////////////////////////////////////////////////////////
 	// 处理快捷点

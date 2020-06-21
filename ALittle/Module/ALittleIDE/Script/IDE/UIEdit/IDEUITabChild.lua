@@ -207,17 +207,17 @@ function IDEUITabChild:ShowInCenter()
 	local object = self._tree_object.user_info.object
 	local x, y = object:LocalToGlobal(self._tab_object_container)
 	if x > 0 and y > 0 then
-		if object.width < self._tab_object_container.width and self._tab_screen.view_width > 0 then
+		local real_width = self._tab_object_container.width - self._tab_screen.view_width
+		if object.width < self._tab_object_container.width and real_width > 0 then
 			local view_x = self._tab_screen.view_width / 2
-			local real_size = self._tab_object_container.width - self._tab_screen.view_width
 			local center_x = x + object.width / 2
-			self._tab_screen.bottom_scrollbar.offset_rate = (center_x - view_x) / real_size
+			self._tab_screen.bottom_scrollbar.offset_rate = (center_x - view_x) / real_width
 		end
-		if object.height < self._tab_object_container.height and self._tab_screen.view_height > 0 then
+		local real_height = self._tab_object_container.height - self._tab_screen.view_height
+		if object.height < self._tab_object_container.height and real_height > 0 then
 			local view_y = self._tab_screen.view_height / 2
-			local real_size = self._tab_object_container.height - self._tab_screen.view_height
 			local center_y = y + object.height / 2
-			self._tab_screen.right_scrollbar.offset_rate = (center_y - view_y) / real_size
+			self._tab_screen.right_scrollbar.offset_rate = (center_y - view_y) / real_height
 		end
 		self._tab_screen:RejustScrollBar()
 	end

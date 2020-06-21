@@ -32,10 +32,11 @@ public class IDEUIControlTree : ALittle.DisplayLayout
 	// 处理控件树，右键菜单
 	public fun HandleControlTreeItemRightClick(ALittle.UIRButtonDownEvent event)
 	{
-		var target:IDEUITreeItem = event.target._user_data;
+		var target:IDEUITreeLogic = event.target._user_data;
 		if (target.user_info.extends) return;
 	
 		var menu = new AUIPlugin.AUIRightMenu();
+		menu.AddItem("设置", bind(this.ShowSettingDialog, this, target));
 		menu.AddItem("上移", bind(target.TransferUp, target), target.user_info.root || target.user_info.child_type != "child", false);
 		menu.AddItem("下移", bind(target.TransferDown, target), target.user_info.root || target.user_info.child_type != "child", false);
 		menu.AddItem("添加", bind(this.ShowAddDialog, this, target), !target.is_tree);
@@ -50,6 +51,13 @@ public class IDEUIControlTree : ALittle.DisplayLayout
 		menu.AddItem("描述", bind(this.ControlTreeDesc, this, target));
 		menu.Show();
 	}
+
+	// 处理设置
+	private fun ShowSettingDialog(IDEUITreeLogic item)
+	{
+        item.ShowFocus(false);
+		g_IDEAttrControlDialog.ShowDialog(item.user_info.object);
+    }
 	
 	// 处理添加
 	public async fun ShowAddImageDialog(IDEUITreeLogic target)

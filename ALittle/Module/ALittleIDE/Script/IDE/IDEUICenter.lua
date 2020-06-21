@@ -52,6 +52,7 @@ function IDEUICenter:TCtor()
 	self._control_tree_tab.tab_index = 1
 	self._project_quick_tab:DisableAllCloseButton()
 	self._project_quick_tab.tab_index = 1
+	self._quick_edit_grid3_down_size = self._quick_edit_grid3.down_size
 	ALittle.TextRadioButton.SetGroup({self._tool_singleselect, self._tool_handdrag, self._tool_scale, self._tool_presee})
 end
 
@@ -145,6 +146,15 @@ function IDEUICenter:HandleQuickEditResizeDrag(event)
 		down_size = max_size
 	end
 	self._quick_edit_grid3.down_size = down_size
+end
+
+function IDEUICenter:HandleQuickFoldChanged(event)
+	if event.target.selected then
+		self._quick_edit_grid3.down_size = self._quick_edit_grid3_down_size
+	else
+		self._quick_edit_grid3_down_size = self._quick_edit_grid3.down_size
+		self._quick_edit_grid3.down_size = self._project_quick_tab.up_size
+	end
 end
 
 function IDEUICenter:HandleShortcutKey()

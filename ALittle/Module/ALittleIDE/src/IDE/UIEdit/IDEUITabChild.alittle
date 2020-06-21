@@ -188,27 +188,27 @@ public class IDEUITabChild : IDETabChild
         this.ShowInCenter();
     }
 
+    // 调整到中心位置
     public fun ShowInCenter()
     {
-        // 调整到中心位置
         var object = this._tree_object.user_info.object;
         var x, y = object.LocalToGlobal(this._tab_object_container);
         if (x > 0 && y > 0)
         {
-            if (object.width < this._tab_object_container.width && this._tab_screen.view_width > 0)
+            var real_width = this._tab_object_container.width - this._tab_screen.view_width;
+            if (object.width < this._tab_object_container.width && real_width > 0)
             {
                 var view_x = this._tab_screen.view_width / 2;
-                var real_size = this._tab_object_container.width - this._tab_screen.view_width;
                 var center_x = x + object.width / 2;
-                this._tab_screen.bottom_scrollbar.offset_rate = (center_x - view_x) / real_size;
+                this._tab_screen.bottom_scrollbar.offset_rate = (center_x - view_x) / real_width;
             }
 
-            if (object.height < this._tab_object_container.height && this._tab_screen.view_height > 0)
+            var real_height = this._tab_object_container.height - this._tab_screen.view_height;
+            if (object.height < this._tab_object_container.height && real_height > 0)
             {
                 var view_y = this._tab_screen.view_height / 2;
-                var real_size = this._tab_object_container.height - this._tab_screen.view_height;
                 var center_y = y + object.height / 2;
-                this._tab_screen.right_scrollbar.offset_rate = (center_y - view_y) / real_size;
+                this._tab_screen.right_scrollbar.offset_rate = (center_y - view_y) / real_height;
             }
 
             this._tab_screen.RejustScrollBar();

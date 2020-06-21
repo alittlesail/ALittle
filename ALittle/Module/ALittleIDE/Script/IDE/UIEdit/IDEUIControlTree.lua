@@ -50,6 +50,7 @@ function IDEUIControlTree:HandleControlTreeItemRightClick(event)
 		return
 	end
 	local menu = AUIPlugin.AUIRightMenu()
+	menu:AddItem("设置", Lua.Bind(self.ShowSettingDialog, self, target))
 	menu:AddItem("上移", Lua.Bind(target.TransferUp, target), target.user_info.root or target.user_info.child_type ~= "child", false)
 	menu:AddItem("下移", Lua.Bind(target.TransferDown, target), target.user_info.root or target.user_info.child_type ~= "child", false)
 	menu:AddItem("添加", Lua.Bind(self.ShowAddDialog, self, target), not target.is_tree)
@@ -63,6 +64,11 @@ function IDEUIControlTree:HandleControlTreeItemRightClick(event)
 	menu:AddItem("替换", Lua.Bind(self.ShowReplaceDialog, self, target), target.user_info.root)
 	menu:AddItem("描述", Lua.Bind(self.ControlTreeDesc, self, target))
 	menu:Show()
+end
+
+function IDEUIControlTree:ShowSettingDialog(item)
+	item:ShowFocus(false)
+	g_IDEAttrControlDialog:ShowDialog(item.user_info.object)
 end
 
 function IDEUIControlTree:ShowAddImageDialog(target)

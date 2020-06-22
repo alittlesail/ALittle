@@ -211,8 +211,11 @@ public class AUICodeCursor : ALittle.Quad
     }
 
     // 向前删除一个字符
-    public fun DeleteLeft() : bool
+    public fun DeleteLeft(bool need_revoke, [Nullable] ALittle.RevokeBind revoke_bind) : bool
     {
+        var old_it_line = this._it_line;
+        var old_it_char = this._it_char;
+
         // 如果不在第一列
         if (this._it_char > 0)
         {
@@ -220,6 +223,7 @@ public class AUICodeCursor : ALittle.Quad
             if (line == null) return false;
 
             var char = line.char_list[this._it_char];
+            var revoke_content = char.char;
             if (char.text != null) line.container.RemoveChild(char.text);
             line.char_count -= 1;
             ALittle.List_Remove(line.char_list, this._it_char);
@@ -252,6 +256,18 @@ public class AUICodeCursor : ALittle.Quad
                 this._edit.container.width = line.container.width;
                 this._edit.RejustScrollBar();
             }
+
+            if (need_revoke)
+            {
+                var new_it_line = this._it_line;
+                var new_it_char = this._it_char;
+
+                var revoke = new AUICodeDeleteLeftRevoke(this._edit, this, old_it_line, old_it_char, new_it_line, new_it_char, revoke_content);
+                if (revoke_bind != null)
+                    revoke_bind.PushRevoke(revoke);
+                else
+                    this._edit.revoke_list.PushRevoke(revoke);
+            }
             return true;
         }
 
@@ -263,8 +279,10 @@ public class AUICodeCursor : ALittle.Quad
 
         // 1. 删除上一行的\r\n，
         var it_char = pre_line.char_count;
+        var revoke_content = "";
         while (it_char > 0 && pre_line.char_list[it_char].width <= 0)
         {
+            revoke_content = pre_line.char_list[it_char].char..revoke_content;
             pre_line.char_count -= 1;
             pre_line.char_list[it_char] = null;
             it_char -= 1;
@@ -310,12 +328,23 @@ public class AUICodeCursor : ALittle.Quad
             this._edit.RejustScrollBar();
         }
 
+        if (need_revoke)
+        {
+            var revoke = new AUICodeDeleteLeftRevoke(this._edit, this, old_it_line, old_it_char, new_it_line, new_it_char, revoke_content);
+            if (revoke_bind != null)
+                revoke_bind.PushRevoke(revoke);
+            else
+                this._edit.revoke_list.PushRevoke(revoke);
+        }
         return true;
     }
 
     // 向后删除一个字符
-    public fun DeleteRight() : bool
+    public fun DeleteRight(bool need_revoke, [Nullable] ALittle.RevokeBind revoke_bind) : bool
     {
+        var old_it_line = this._it_line;
+        var old_it_char = this._it_char;
+
         var line = this._edit.line_list[this._it_line];
         if (line == null) return false;
         var count = line.char_count;
@@ -326,6 +355,7 @@ public class AUICodeCursor : ALittle.Quad
         if (this._it_char < count)
         {
             var char = line.char_list[this._it_char + 1];
+            var revoke_content = char.char;
             if (char.text != null) line.container.RemoveChild(char.text);
             line.char_count -= 1;
             ALittle.List_Remove(line.char_list, this._it_char + 1);
@@ -357,6 +387,18 @@ public class AUICodeCursor : ALittle.Quad
                 this._edit.container.width = line.container.width;
                 this._edit.RejustScrollBar();
             }
+
+            var new_it_line = this._it_line;
+            var new_it_char = this._it_char;
+
+            if (need_revoke)
+            {
+                var revoke = new AUICodeDeleteRightRevoke(this._edit, this, old_it_line, old_it_char, new_it_line, new_it_char, revoke_content);
+                if (revoke_bind != null)
+                    revoke_bind.PushRevoke(revoke);
+                else
+                    this._edit.revoke_list.PushRevoke(revoke);
+            }
             return true;
         }
 
@@ -368,8 +410,10 @@ public class AUICodeCursor : ALittle.Quad
 
         // 1. 删除当前行的\r\n，
         var it_char = cur_line.char_count;
+        var revoke_content = "";
         while (it_char > 0 && (cur_line.char_list[it_char].char == "\r" || cur_line.char_list[it_char].char == "\n"))
         {
+            revoke_content = cur_line.char_list[it_char].char..revoke_content;
             cur_line.char_count -= 1;
             cur_line.char_list[it_char] = null;
             it_char -= 1;
@@ -415,6 +459,14 @@ public class AUICodeCursor : ALittle.Quad
             this._edit.RejustScrollBar();
         }
 
+        if (need_revoke)
+        {
+            var revoke = new AUICodeDeleteRightRevoke(this._edit, this, old_it_line, old_it_char, new_it_line, new_it_char, revoke_content);
+            if (revoke_bind != null)
+                revoke_bind.PushRevoke(revoke);
+            else
+                this._edit.revoke_list.PushRevoke(revoke);
+        }
         return true;
     }
 

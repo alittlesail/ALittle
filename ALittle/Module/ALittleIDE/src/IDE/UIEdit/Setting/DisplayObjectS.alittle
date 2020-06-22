@@ -768,23 +768,23 @@ public class DisplayObjectS
 	public fun TypeSelectChange(string text, Map<string, any> list, bool need_reset, [Nullable] ALittle.RevokeBind revoke_bind)
 	{
 		// 保存旧属性
-		var old_base = cast<Map<string, any> >(this._base)[text];
+		var old_base = cast<Map<string, any>>(this._base)[text];
 		var old_object = cast<Map<string, any>>(this._object)[text];
 		// 设置新属性
 		var display_object:ALittle.DisplayObject = cast<Map<string, any>>(this)["_"..text];
 		if (revoke_bind == null && cast<Map<string, any>>(this._object)[text] == list[display_object.text]) return;
 		cast<Map<string, any>>(this._object)[text] = list[display_object.text];
-		cast<Map<string, any> >(this._base)[text] = list[display_object.text];
+		cast<Map<string, any>>(this._base)[text] = list[display_object.text];
 		// 如果新属性跟默认属性一样，那么就把base对应的value设置成null
-		if (cast<Map<string, any> >(this._base)[text] == cast<Map<string, any> >(this._default)[text])
-			cast<Map<string, any> >(this._base)[text] = null;
+		if (cast<Map<string, any>>(this._base)[text] == cast<Map<string, any> >(this._default)[text])
+			cast<Map<string, any>>(this._base)[text] = null;
 		
 		this._tab_child.UpdateHandleQuadLayout(this._tree_logic);
 	
 		// 设置为false
 		this._tab_child.save = false;
 		// 保存新的信息
-		var new_base = cast<Map<string, any> >(this._base)[text];
+		var new_base = cast<Map<string, any>>(this._base)[text];
 		var new_object = cast<Map<string, any>>(this._object)[text];
 		// 生成撤销类
 		var old_text:string = null;
@@ -799,7 +799,7 @@ public class DisplayObjectS
 	public fun ValueNumInputChange(string text, bool need_reset, [Nullable] ALittle.RevokeBind revoke_bind)
 	{
 		// 保存旧属性
-		var old_base = cast<Map<string, any> >(this._base)[text];
+		var old_base = cast<Map<string, any>>(this._base)[text];
 		var old_object = cast<Map<string, any>>(this._object)[text];
 		// 设置新的属性
 		var display_object:ALittle.DisplayObject = cast<Map<string, any>>(this)["_"..text];
@@ -809,24 +809,24 @@ public class DisplayObjectS
 			display_object.text = "0";
 			if (revoke_bind == null && cast<Map<string, any>>(this._object)[text] == 0) return;
 			cast<Map<string, any>>(this._object)[text] = 0;
-			cast<Map<string, any> >(this._base)[text] = 0;
+			cast<Map<string, any>>(this._base)[text] = 0;
 		}
 		else
 		{
 			if (revoke_bind == null && cast<Map<string, any>>(this._object)[text] == value) return;
 			cast<Map<string, any>>(this._object)[text] = value;
-			cast<Map<string, any> >(this._base)[text] = value;
+			cast<Map<string, any>>(this._base)[text] = value;
 		}
 		// 如果新属性跟默认属性一样，那么就把base对应的value设置成null
-		if (cast<Map<string, any> >(this._default)[text] != null && cast<Map<string, any> >(this._base)[text] == cast<Map<string, any> >(this._default)[text])
-			cast<Map<string, any> >(this._base)[text] = null;
+		if (cast<Map<string, any>>(this._default)[text] != null && cast<Map<string, any> >(this._base)[text] == cast<Map<string, any> >(this._default)[text])
+			cast<Map<string, any>>(this._base)[text] = null;
 	
 		this._tab_child.UpdateHandleQuadLayout(this._tree_logic);
 	
 		// 设置为false
 		this._tab_child.save = false;
 	
-		var new_base = cast<Map<string, any> >(this._base)[text];
+		var new_base = cast<Map<string, any>>(this._base)[text];
 		var new_object = cast<Map<string, any>>(this._object)[text];
 		// 生成撤销类
 		var old_text:string = null;
@@ -839,7 +839,7 @@ public class DisplayObjectS
 	public fun ValueNumZInputChange(string text, bool need_reset, [Nullable] ALittle.RevokeBind revoke_bind)
 	{
 		// 保存旧属性
-		var old_base = cast<Map<string, any> >(this._base)[text];
+		var old_base = cast<Map<string, any>>(this._base)[text];
 		var old_object = cast<Map<string, any>>(this._object)[text];
 		// 设置新的属性
 		var display_object:ALittle.DisplayObject = cast<Map<string, any>>(this)["_"..text];
@@ -849,24 +849,24 @@ public class DisplayObjectS
 			display_object.text = "0";
 			if (revoke_bind == null && cast<Map<string, any>>(this._object)[text] == 0) return;
 			cast<Map<string, any>>(this._object)[text] = 0;
-			cast<Map<string, any> >(this._base)[text] = 0;
+			cast<Map<string, any>>(this._base)[text] = 0;
 		}
 		else
 		{
 			if (revoke_bind == null && cast<Map<string, any>>(this._object)[text] == value) return;
 			cast<Map<string, any>>(this._object)[text] = value;
-			cast<Map<string, any> >(this._base)[text] = value;
+			cast<Map<string, any>>(this._base)[text] = value;
 		}
 		// 如果新属性跟默认属性一样，那么就把base对应的value设置成null
-		if (cast<Map<string, any> >(this._default)[text] != null && cast<Map<string, any> >(this._base)[text] == cast<Map<string, any> >(this._default)[text])
-			cast<Map<string, any> >(this._base)[text] = null;
+		if (cast<Map<string, any>>(this._default)[text] != null && cast<Map<string, any> >(this._base)[text] == cast<Map<string, any> >(this._default)[text])
+			cast<Map<string, any>>(this._base)[text] = null;
 		
 		this._tab_child.UpdateHandleQuadLayout(this._tree_logic);
 	
 		// 设置为false
 		this._tab_child.save = false;
 	
-		var new_base = cast<Map<string, any> >(this._base)[text];
+		var new_base = cast<Map<string, any>>(this._base)[text];
 		var new_object = cast<Map<string, any>>(this._object)[text];
 		// 生成撤销类
 		var old_text:string = null;
@@ -880,7 +880,7 @@ public class DisplayObjectS
 	public fun ColorValueInputChange(string text, bool need_reset, [Nullable] ALittle.RevokeBind revoke_bind)
 	{
 		// 保存旧属性
-		var old_base = cast<Map<string, any> >(this._base)[text];
+		var old_base = cast<Map<string, any>>(this._base)[text];
 		var old_object = cast<Map<string, any>>(this._object)[text];
 		// 设置新的属性
 		var display_object:ALittle.DisplayObject = cast<Map<string, any>>(this)["_"..text];
@@ -890,32 +890,32 @@ public class DisplayObjectS
 			display_object.text = "0";
 			if (revoke_bind == null && cast<Map<string, any>>(this._object)[text] == 0) return;
 			cast<Map<string, any>>(this._object)[text] = 0;
-			cast<Map<string, any> >(this._base)[text] = 0;
+			cast<Map<string, any>>(this._base)[text] = 0;
 		}
 		elseif (value > 255)
 		{
 			display_object.text = "255";
 			if (revoke_bind == null && cast<Map<string, any>>(this._object)[text] == 1) return;
 			cast<Map<string, any>>(this._object)[text] = 1;
-			cast<Map<string, any> >(this._base)[text] = 1;
+			cast<Map<string, any>>(this._base)[text] = 1;
 		}
 		else
 		{
 			if (revoke_bind == null && ALittle.Math_Ceil(cast<Map<string, double>>(this._object)[text] * 255) == value) return;
 			value = value / 255;
 			cast<Map<string, any>>(this._object)[text] = value;
-			cast<Map<string, any> >(this._base)[text] = value;
+			cast<Map<string, any>>(this._base)[text] = value;
 		}
 		// 如果新属性跟默认属性一样，那么就把base对应的value设置成null
-		if (cast<Map<string, any> >(this._default)[text] != null && cast<Map<string, any> >(this._base)[text] == cast<Map<string, any> >(this._default)[text])
-			cast<Map<string, any> >(this._base)[text] = null;
+		if (cast<Map<string, any>>(this._default)[text] != null && cast<Map<string, any> >(this._base)[text] == cast<Map<string, any> >(this._default)[text])
+			cast<Map<string, any>>(this._base)[text] = null;
 	
 		this._tab_child.UpdateHandleQuadLayout(this._tree_logic);
 	
 		// 设置为false
 		this._tab_child.save = false;
 	
-		var new_base = cast<Map<string, any> >(this._base)[text];
+		var new_base = cast<Map<string, any>>(this._base)[text];
 		var new_object = cast<Map<string, any>>(this._object)[text];
 		// 生成撤销类
 		var old_text:string = null;
@@ -929,7 +929,7 @@ public class DisplayObjectS
 	public fun Z2OValueInputChange(string text, bool need_reset, [Nullable] ALittle.RevokeBind revoke_bind)
 	{
 		// 保存旧属性
-		var old_base = cast<Map<string, any> >(this._base)[text];
+		var old_base = cast<Map<string, any>>(this._base)[text];
 		var old_object = cast<Map<string, any>>(this._object)[text];
 		// 设置新的属性
 		var display_object:ALittle.DisplayObject = cast<Map<string, any>>(this)["_"..text];
@@ -939,31 +939,31 @@ public class DisplayObjectS
 			display_object.text = "0";
 			if (revoke_bind == null && cast<Map<string, any>>(this._object)[text] == 0) return;
 			cast<Map<string, any>>(this._object)[text] = 0;
-			cast<Map<string, any> >(this._base)[text] = 0;
+			cast<Map<string, any>>(this._base)[text] = 0;
 		}
 		elseif (value > 1)
 		{
 			display_object.text = "1";
 			if (revoke_bind == null && cast<Map<string, any>>(this._object)[text] == 1) return;
 			cast<Map<string, any>>(this._object)[text] = 1;
-			cast<Map<string, any> >(this._base)[text] = 1;
+			cast<Map<string, any>>(this._base)[text] = 1;
 		}
 		else
 		{
 			if (revoke_bind == null && cast<Map<string, any>>(this._object)[text] == value) return;
 			cast<Map<string, any>>(this._object)[text] = value;
-			cast<Map<string, any> >(this._base)[text] = value;
+			cast<Map<string, any>>(this._base)[text] = value;
 		}
 		// 如果新属性跟默认属性一样，那么就把base对应的value设置成null	
-		if (cast<Map<string, any> >(this._base)[text] == cast<Map<string, any> >(this._default)[text])
-			cast<Map<string, any> >(this._base)[text] = null;
+		if (cast<Map<string, any>>(this._base)[text] == cast<Map<string, any> >(this._default)[text])
+			cast<Map<string, any>>(this._base)[text] = null;
 	
 		this._tab_child.UpdateHandleQuadLayout(this._tree_logic);
 	
 		// 设置为false
 		this._tab_child.save = false;
 	
-		var new_base = cast<Map<string, any> >(this._base)[text];
+		var new_base = cast<Map<string, any>>(this._base)[text];
 		var new_object = cast<Map<string, any>>(this._object)[text];
 		// 生成撤销类
 		var old_text:string = null;
@@ -978,7 +978,7 @@ public class DisplayObjectS
 	public fun DefaultNilStringInputChange(string text, bool need_reset, [Nullable] ALittle.RevokeBind revoke_bind)
 	{
 		// 保存旧的属性
-		var old_base = cast<Map<string, any> >(this._base)[text];
+		var old_base = cast<Map<string, any>>(this._base)[text];
 		var old_object = cast<Map<string, any>>(this._object)[text];
 		// 设置新的属性
 		var display_object:ALittle.DisplayObject = cast<Map<string, any>>(this)["_"..text];
@@ -986,24 +986,24 @@ public class DisplayObjectS
 		{
 			if (revoke_bind == null && cast<Map<string, any>>(this._object)[text] == null) return;
 
-			cast<Map<string, any> >(this._base)[text] = null;
-			if (cast<Map<string, any> >(this._default)[text] == null)
+			cast<Map<string, any>>(this._base)[text] = null;
+			if (cast<Map<string, any>>(this._default)[text] == null)
 				cast<Map<string, any>>(this._object)[text] = null;
 			else
 			{
-				cast<Map<string, any>>(this._object)[text] = cast<Map<string, any> >(this._default)[text];
-				display_object.text = cast<Map<string, any> >(this._default)[text];
+				cast<Map<string, any>>(this._object)[text] = cast<Map<string, any>>(this._default)[text];
+				display_object.text = cast<Map<string, any>>(this._default)[text];
 			}
 		}
 		else
 		{
 			if (revoke_bind == null && cast<Map<string, any>>(this._object)[text] == display_object.text) return;
-			cast<Map<string, any> >(this._base)[text] = display_object.text;
+			cast<Map<string, any>>(this._base)[text] = display_object.text;
 			cast<Map<string, any>>(this._object)[text] = display_object.text;
 	
 			// 如果新属性跟默认属性一样，那么就把base对应的value设置成null
-			if (cast<Map<string, any> >(this._default)[text] != null && cast<Map<string, any> >(this._base)[text] == cast<Map<string, any> >(this._default)[text])
-				cast<Map<string, any> >(this._base)[text] = null;
+			if (cast<Map<string, any>>(this._default)[text] != null && cast<Map<string, any> >(this._base)[text] == cast<Map<string, any> >(this._default)[text])
+				cast<Map<string, any>>(this._base)[text] = null;
 		}
 	
 		this._tab_child.UpdateHandleQuadLayout(this._tree_logic);
@@ -1011,7 +1011,7 @@ public class DisplayObjectS
 		// 设置为false
 		this._tab_child.save = false;
 	
-		var new_base = cast<Map<string, any> >(this._base)[text];
+		var new_base = cast<Map<string, any>>(this._base)[text];
 		var new_object = cast<Map<string, any>>(this._object)[text];
 		// 生成撤销类
 		var old_text:string = null;
@@ -1025,23 +1025,23 @@ public class DisplayObjectS
 	public fun DefaultNoStringInputChange(string text, bool need_reset, [Nullable] ALittle.RevokeBind revoke_bind)
 	{
 		// 保存旧的属性
-		var old_base = cast<Map<string, any> >(this._base)[text];
+		var old_base = cast<Map<string, any>>(this._base)[text];
 		var old_object = cast<Map<string, any>>(this._object)[text];
 		// 保存新的属性
 		var display_object:ALittle.DisplayObject = cast<Map<string, any>>(this)["_"..text];
 		if (revoke_bind == null && cast<Map<string, any>>(this._object)[text] == display_object.text) return;
-		cast<Map<string, any> >(this._base)[text] = display_object.text;
+		cast<Map<string, any>>(this._base)[text] = display_object.text;
 		cast<Map<string, any>>(this._object)[text] = display_object.text;
 		// 如果新属性跟默认属性一样，那么就把base对应的value设置成null
-		if (cast<Map<string, any> >(this._default)[text] != null && cast<Map<string, any> >(this._base)[text] == cast<Map<string, any> >(this._default)[text])
-			cast<Map<string, any> >(this._base)[text] = null;
+		if (cast<Map<string, any>>(this._default)[text] != null && cast<Map<string, any> >(this._base)[text] == cast<Map<string, any> >(this._default)[text])
+			cast<Map<string, any>>(this._base)[text] = null;
 	
 		this._tab_child.UpdateHandleQuadLayout(this._tree_logic);
 	
 		// 设置为false
 		this._tab_child.save = false;
 	
-		var new_base = cast<Map<string, any> >(this._base)[text];
+		var new_base = cast<Map<string, any>>(this._base)[text];
 		var new_object = cast<Map<string, any>>(this._object)[text];
 		// 生成撤销类
 		var old_text:string = null;
@@ -1055,33 +1055,33 @@ public class DisplayObjectS
 	public fun SpecialFontPathInputChange(string text, bool need_reset, [Nullable] ALittle.RevokeBind revoke_bind)
 	{
 		// 保存旧的属性
-		var old_base = cast<Map<string, any> >(this._base)[text];
+		var old_base = cast<Map<string, any>>(this._base)[text];
 		var old_object = cast<Map<string, any>>(this._object)[text];
 		// 设置新的属性
 		var display_object:ALittle.DisplayObject = cast<Map<string, any>>(this)["_"..text];
 		if (display_object.text == "")
 		{
 			if (revoke_bind == null && cast<Map<string, any>>(this._object)[text] == null) return;
-			if (cast<Map<string, any> >(this._default)[text] != null)
+			if (cast<Map<string, any>>(this._default)[text] != null)
 			{
-				display_object.text = cast<Map<string, any> >(this._default)[text];
-				cast<Map<string, any> >(this._base)[text] = null;
-				cast<Map<string, any>>(this._object)[text] = cast<Map<string, any> >(this._default)[text];
+				display_object.text = cast<Map<string, any>>(this._default)[text];
+				cast<Map<string, any>>(this._base)[text] = null;
+				cast<Map<string, any>>(this._object)[text] = cast<Map<string, any>>(this._default)[text];
 			}
 			else
 			{
-				display_object.text = cast<Map<string, any> >(this._base)[text];
-				cast<Map<string, any>>(this._object)[text] = cast<Map<string, any> >(this._base)[text];
+				display_object.text = cast<Map<string, any>>(this._base)[text];
+				cast<Map<string, any>>(this._object)[text] = cast<Map<string, any>>(this._base)[text];
 			}
 		}
 		else
 		{
 			if (revoke_bind == null && cast<Map<string, any>>(this._object)[text] == display_object.text) return;
-			cast<Map<string, any> >(this._base)[text] = display_object.text;
+			cast<Map<string, any>>(this._base)[text] = display_object.text;
 			cast<Map<string, any>>(this._object)[text] = display_object.text;
 			// 如果新属性跟默认属性一样，那么就把base对应的value设置成null
-			if (cast<Map<string, any> >(this._default)[text] != null && cast<Map<string, any> >(this._base)[text] == cast<Map<string, any> >(this._default)[text])
-				cast<Map<string, any> >(this._base)[text] = null;
+			if (cast<Map<string, any>>(this._default)[text] != null && cast<Map<string, any> >(this._base)[text] == cast<Map<string, any> >(this._default)[text])
+				cast<Map<string, any>>(this._base)[text] = null;
 		}
 	
 		this._tab_child.UpdateHandleQuadLayout(this._tree_logic);
@@ -1089,7 +1089,7 @@ public class DisplayObjectS
 		// 设置为false
 		this._tab_child.save = false;
 		
-		var new_base = cast<Map<string, any> >(this._base)[text];
+		var new_base = cast<Map<string, any>>(this._base)[text];
 		var new_object = cast<Map<string, any>>(this._object)[text];
 		// 生成撤销类
 		var old_text:string = null;
@@ -1104,7 +1104,7 @@ public class DisplayObjectS
 	public fun BoolSelectChange(string text, bool need_reset, Map<bool, string> list, [Nullable] ALittle.RevokeBind revoke_bind)
 	{
 		// 保存旧的属性
-		var old_base = cast<Map<string, any> >(this._base)[text];
+		var old_base = cast<Map<string, any>>(this._base)[text];
 		var old_object = cast<Map<string, any>>(this._object)[text];
 		// 设置新的属性
 		var display_object:ALittle.DisplayObject = cast<Map<string, any>>(this)["_"..text];
@@ -1112,27 +1112,27 @@ public class DisplayObjectS
 		{
 			if (revoke_bind == null && cast<Map<string, any>>(this._object)[text] == true) return;
 			cast<Map<string, any>>(this._object)[text] = true;
-			cast<Map<string, any> >(this._base)[text] = true;
+			cast<Map<string, any>>(this._base)[text] = true;
 		}
 		elseif (display_object.text == list[false])
 		{
 			if (revoke_bind == null && cast<Map<string, any>>(this._object)[text] == false) return;
 			cast<Map<string, any>>(this._object)[text] = false;
-			cast<Map<string, any> >(this._base)[text] = false;
+			cast<Map<string, any>>(this._base)[text] = false;
 		}
 		else
 			ALittle.Log("bool failed");
 
 		// 如果新属性跟默认属性一样，那么就把base对应的value设置成null
-		if (cast<Map<string, any> >(this._base)[text] == cast<Map<string, any> >(this._default)[text])
-			cast<Map<string, any> >(this._base)[text] = null;
+		if (cast<Map<string, any>>(this._base)[text] == cast<Map<string, any> >(this._default)[text])
+			cast<Map<string, any>>(this._base)[text] = null;
 
 		this._tab_child.UpdateHandleQuadLayout(this._tree_logic);
 	
 		// 设置为false
 		this._tab_child.save = false;
 		
-		var new_base = cast<Map<string, any> >(this._base)[text];
+		var new_base = cast<Map<string, any>>(this._base)[text];
 		var new_object = cast<Map<string, any>>(this._object)[text];
 		// 生成撤销类
 		var old_text:string = null;
@@ -1187,14 +1187,14 @@ public class DisplayObjectS
 	//show类数据修改
 	public fun RemoverToNilShowSet(string text, string json_content, bool need_reset, [Nullable] ALittle.RevokeBind revoke_bind)
 	{
-		var old_base = cast<Map<string, any> >(this._base)[text];
+		var old_base = cast<Map<string, any>>(this._base)[text];
 		var old_object = cast<Map<string, any>>(this._object)[text];
 		if (json_content == "")
 		{
-			cast<Map<string, any> >(this._base)[text] = null;
-			if (cast<Map<string, any> >(this._default)[text] != null && cast<Map<string, ALittle.DisplayInfo> >(this._default)[text].__class != null)
+			cast<Map<string, any>>(this._base)[text] = null;
+			if (cast<Map<string, any>>(this._default)[text] != null && cast<Map<string, ALittle.DisplayInfo> >(this._default)[text].__class != null)
 			{
-				var content = cast<Map<string, any> >(this._default)[text];
+				var content = cast<Map<string, any>>(this._default)[text];
 				var error1, content1 = tcall(ALittle.String_JsonDecode, content);
 				if (error1 == null)
 				{
@@ -1229,7 +1229,7 @@ public class DisplayObjectS
 						return;
 					}
 				}
-				cast<Map<string, ALittle.DisplayInfo> >(this._base)[text] = content1;
+				cast<Map<string, ALittle.DisplayInfo>>(this._base)[text] = content1;
 				var error2, content2:ALittle.DisplayInfo = tcall(ALittle.String_JsonDecode, content);
 				var name = "mnbvcxzasdfghjklpoiuytrewq20160121";
 				g_IDEProject.project.control.RegisterInfo(name, content2);
@@ -1249,7 +1249,7 @@ public class DisplayObjectS
 		// 设置为false
 		this._tab_child.save = false;
 	
-		var new_base = cast<Map<string, any> >(this._base)[text];
+		var new_base = cast<Map<string, any>>(this._base)[text];
 		var new_object = cast<Map<string, any>>(this._object)[text];
 		// 生成撤销类
 		var old_text:string = null;
@@ -1264,18 +1264,18 @@ public class DisplayObjectS
 	public fun RemoverToNilNoNilShowSet(string text, bool need_reset, [Nullable] ALittle.RevokeBind revoke_bind)
 	{
 		// 保存旧的属性
-		var old_base = cast<Map<string, any> >(this._base)[text];
+		var old_base = cast<Map<string, any>>(this._base)[text];
 		var old_object = cast<Map<string, any>>(this._object)[text];
 		var display_object:ALittle.DisplayObject = cast<Map<string, any>>(this)["_"..text];
 		if (display_object.text == "")
 		{
-			cast<Map<string, any> >(this._base)[text] = null;
-			if (cast<Map<string, any> >(this._default)[text] != null
-				&& (cast<Map<string, ALittle.DisplayInfo> >(this._default)[text].__class != null
-					|| cast<Map<string, ALittle.DisplayInfo> >(this._default)[text].__include != null
-					|| cast<Map<string, ALittle.DisplayInfo> >(this._default)[text].__extends != null))
+			cast<Map<string, any>>(this._base)[text] = null;
+			if (cast<Map<string, any>>(this._default)[text] != null
+				&& (cast<Map<string, ALittle.DisplayInfo>>(this._default)[text].__class != null
+					|| cast<Map<string, ALittle.DisplayInfo>>(this._default)[text].__include != null
+					|| cast<Map<string, ALittle.DisplayInfo>>(this._default)[text].__extends != null))
 			{
-				var content = cast<Map<string, ALittle.DisplayInfo> >(this._default)[text];
+				var content = cast<Map<string, ALittle.DisplayInfo>>(this._default)[text];
 				var error, content1 = tcall(ALittle.String_JsonEncode, content);
 				if (error != null)
 				{
@@ -1309,7 +1309,7 @@ public class DisplayObjectS
 						return;
 					}
 				}
-				cast<Map<string, any> >(this._base)[text] = content1;
+				cast<Map<string, any>>(this._base)[text] = content1;
 				var error2, content2:ALittle.DisplayInfo = tcall(ALittle.String_JsonDecode, content);
 				var name = "mnbvcxzasdfghjklpoiuytrewq20160121";
 				g_IDEProject.project.control.RegisterInfo(name, content2);
@@ -1330,7 +1330,7 @@ public class DisplayObjectS
 		// 设置为false
 		this._tab_child.save = false;
 	
-		var new_base = cast<Map<string, any> >(this._base)[text];
+		var new_base = cast<Map<string, any>>(this._base)[text];
 		var new_object = cast<Map<string, any>>(this._object)[text];
 		// 生成撤销类
 		var old_text:string = null;
@@ -1344,7 +1344,7 @@ public class DisplayObjectS
 	public fun TableDataSet(string text, bool need_reset, [Nullable] ALittle.RevokeBind revoke_bind)
 	{
 		// 保存旧的属性
-		var old_base = cast<Map<string, any> >(this._base)[text];
+		var old_base = cast<Map<string, any>>(this._base)[text];
 		var old_object = cast<Map<string, any>>(this._object)[text];
 		// 设置新的属性
 		var display_object:ALittle.DisplayObject = cast<Map<string, any>>(this)["_"..text];

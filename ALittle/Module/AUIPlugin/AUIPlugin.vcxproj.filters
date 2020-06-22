@@ -35,6 +35,9 @@
     <None Include="src\AUICodeEdit\AUICodeCursor.alittle">
       <Filter>AUICodeEdit</Filter>
     </None>
+    <None Include="src\AUICodeEdit\AUICodeRevocation.alittle">
+      <Filter>AUICodeEdit</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="AUI">

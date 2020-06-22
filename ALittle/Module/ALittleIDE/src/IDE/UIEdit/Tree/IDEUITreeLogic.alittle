@@ -402,7 +402,7 @@ public class IDEUITreeLogic : ALittle.DisplayLayout
 			this._tab_child.ShowTreeItemFocus(tree_object);
 		}
 		this._tab_child.revoke_list.PushRevoke(revoke_bind);
-	
+
 		return tree_object;
 	}
 	

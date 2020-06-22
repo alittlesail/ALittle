@@ -318,7 +318,7 @@ class IDEExport
 			for (var k, v in file_list) v.crypt_mode = false;
 		}
 		
-		var map_list = new List<Map<string, IDEExportFileAttr> >();
+		var map_list = new List<Map<string, IDEExportFileAttr>>();
 		count = 0;
 		for (var k, v in file_list)
 		{

@@ -174,7 +174,7 @@ public class IDEUITree : IDEUITreeLogic
 			elseif (child_type != null)
 			{
 				// 保存列表
-				cast<Map<string, ALittle.DisplayInfo> >(info)[child_type] = v.CalcInfo();
+				cast<Map<string, ALittle.DisplayInfo>>(info)[child_type] = v.CalcInfo();
 			}
 		}
 		return info;

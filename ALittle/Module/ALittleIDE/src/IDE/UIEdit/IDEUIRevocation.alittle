@@ -289,7 +289,7 @@ public class IDENatureChangeRevoke : ALittle.RevokeObject
 		var user_info = this._target.user_info;
 		var nature = this._nature;
 	
-		cast<Map<string, any> >(user_info.base)[nature] = this._new_base;
+		cast<Map<string, any>>(user_info.base)[nature] = this._new_base;
 		cast<Map<string,any>>(user_info.object)[nature] = this._new_object;
 		
 		if (this._target.attr_panel != null && this._text != null)

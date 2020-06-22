@@ -223,13 +223,16 @@ function AUICodeCursor:OffsetEnd()
 	end
 end
 
-function AUICodeCursor:DeleteLeft()
+function AUICodeCursor:DeleteLeft(need_revoke, revoke_bind)
+	local old_it_line = self._it_line
+	local old_it_char = self._it_char
 	if self._it_char > 0 then
 		local line = self._edit.line_list[self._it_line]
 		if line == nil then
 			return false
 		end
 		local char = line.char_list[self._it_char]
+		local revoke_content = char.char
 		if char.text ~= nil then
 			line.container:RemoveChild(char.text)
 		end
@@ -262,6 +265,16 @@ function AUICodeCursor:DeleteLeft()
 			self._edit.container.width = line.container.width
 			self._edit:RejustScrollBar()
 		end
+		if need_revoke then
+			local new_it_line = self._it_line
+			local new_it_char = self._it_char
+			local revoke = AUICodeDeleteLeftRevoke(self._edit, self, old_it_line, old_it_char, new_it_line, new_it_char, revoke_content)
+			if revoke_bind ~= nil then
+				revoke_bind:PushRevoke(revoke)
+			else
+				self._edit.revoke_list:PushRevoke(revoke)
+			end
+		end
 		return true
 	end
 	if self._it_line <= 1 then
@@ -276,7 +289,9 @@ function AUICodeCursor:DeleteLeft()
 		return false
 	end
 	local it_char = pre_line.char_count
+	local revoke_content = ""
 	while it_char > 0 and pre_line.char_list[it_char].width <= 0 do
+		revoke_content = pre_line.char_list[it_char].char .. revoke_content
 		pre_line.char_count = pre_line.char_count - (1)
 		pre_line.char_list[it_char] = nil
 		it_char = it_char - (1)
@@ -313,10 +328,20 @@ function AUICodeCursor:DeleteLeft()
 		self._edit.container.width = pre_line.container.width
 		self._edit:RejustScrollBar()
 	end
+	if need_revoke then
+		local revoke = AUICodeDeleteLeftRevoke(self._edit, self, old_it_line, old_it_char, new_it_line, new_it_char, revoke_content)
+		if revoke_bind ~= nil then
+			revoke_bind:PushRevoke(revoke)
+		else
+			self._edit.revoke_list:PushRevoke(revoke)
+		end
+	end
 	return true
 end
 
-function AUICodeCursor:DeleteRight()
+function AUICodeCursor:DeleteRight(need_revoke, revoke_bind)
+	local old_it_line = self._it_line
+	local old_it_char = self._it_char
 	local line = self._edit.line_list[self._it_line]
 	if line == nil then
 		return false
@@ -327,6 +352,7 @@ function AUICodeCursor:DeleteRight()
 	end
 	if self._it_char < count then
 		local char = line.char_list[self._it_char + 1]
+		local revoke_content = char.char
 		if char.text ~= nil then
 			line.container:RemoveChild(char.text)
 		end
@@ -359,6 +385,16 @@ function AUICodeCursor:DeleteRight()
 			self._edit.container.width = line.container.width
 			self._edit:RejustScrollBar()
 		end
+		local new_it_line = self._it_line
+		local new_it_char = self._it_char
+		if need_revoke then
+			local revoke = AUICodeDeleteRightRevoke(self._edit, self, old_it_line, old_it_char, new_it_line, new_it_char, revoke_content)
+			if revoke_bind ~= nil then
+				revoke_bind:PushRevoke(revoke)
+			else
+				self._edit.revoke_list:PushRevoke(revoke)
+			end
+		end
 		return true
 	end
 	if self._it_line >= self._edit.line_count then
@@ -370,7 +406,9 @@ function AUICodeCursor:DeleteRight()
 		return false
 	end
 	local it_char = cur_line.char_count
+	local revoke_content = ""
 	while it_char > 0 and (cur_line.char_list[it_char].char == "\r" or cur_line.char_list[it_char].char == "\n") do
+		revoke_content = cur_line.char_list[it_char].char .. revoke_content
 		cur_line.char_count = cur_line.char_count - (1)
 		cur_line.char_list[it_char] = nil
 		it_char = it_char - (1)
@@ -406,6 +444,14 @@ function AUICodeCursor:DeleteRight()
 	if self._edit.container.width < cur_line.container.width then
 		self._edit.container.width = cur_line.container.width
 		self._edit:RejustScrollBar()
+	end
+	if need_revoke then
+		local revoke = AUICodeDeleteRightRevoke(self._edit, self, old_it_line, old_it_char, new_it_line, new_it_char, revoke_content)
+		if revoke_bind ~= nil then
+			revoke_bind:PushRevoke(revoke)
+		else
+			self._edit.revoke_list:PushRevoke(revoke)
+		end
 	end
 	return true
 end

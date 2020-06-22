@@ -266,7 +266,7 @@ public class IDEUIControlList : ALittle.DisplayLayout
 		// 把自己剪切
 		var save_info = new Map<string, any>();
 		save_info["__extends"] = user_data.control_info.name;
-		var copy_list = new List<Map<string, any> >();
+		var copy_list = new List<Map<string, any>>();
 		var info = new Map<string, any>();
 		info["index"] = 1;
 		info["info"] = save_info;
@@ -390,10 +390,6 @@ public class IDEUIControlList : ALittle.DisplayLayout
 		menu.AddItem("复制并新建控件", bind(this.CopyInfo, this, event.target));
 		menu.AddItem("复制继承代码", bind(this.CopyExtends, this, event.target));
 		menu.AddItem("修改控件名", bind(this.ControlRename, this, event.target));
-		// menu.AddItem("标记为常用图片", bind(g_IDEQuickManager.FlagImage, g_IDEQuickManager, user_data.control_info.name));
-		// menu.AddItem("标记为常用按钮", bind(g_IDEQuickManager.FlagButton, g_IDEQuickManager, user_data.control_info.name));
-		// menu.AddItem("标记为常用文本", bind(g_IDEQuickManager.FlagText, g_IDEQuickManager, user_data.control_info.name));
-		// menu.AddItem("标记为其他常用", bind(g_IDEQuickManager.FlagOther, g_IDEQuickManager, user_data.control_info.name));
 		menu.AddItem("删除", bind(this.Delete, this, event.target));
 		menu.Show();
 	}
@@ -525,7 +521,7 @@ public class IDEUIControlList : ALittle.DisplayLayout
 		var name = user_data.control_info.name;
 		var save_info = new Map<string, any>();
 		save_info["__extends"] = name;
-		var copy_list = new List<Map<string, any> >();
+		var copy_list = new List<Map<string, any>>();
 		var info = new Map<string, any>();
 		info["index"] = 1;
 		info["info"] = save_info;

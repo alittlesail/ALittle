@@ -141,6 +141,7 @@ public class AUICodeEdit : ALittle.ScrollScreen
 
     // 文件路径
     private string _file_path;
+	private ALittle.RevokeList _revoke_list;         // 撤销操作列表
 
 	public fun TCtor()
 	{
@@ -170,6 +171,7 @@ public class AUICodeEdit : ALittle.ScrollScreen
     public get line_count() : int { return this._line_count; }
     public get line_list() : List<AUICodeLineInfo> { return this._line_list; }
     public get line_height() : int { return LINE_HEIGHT; }
+    public get revoke_list() : ALittle.RevokeList { return this._revoke_list; }
 
     private fun HandleMoveIn(ALittle.UIMoveInEvent event) { ALittle.System_SetEditCursor(); }
     private fun HandleMoveOut(ALittle.UIMoveOutEvent event) { ALittle.System_SetNormalCursor(); }
@@ -291,7 +293,7 @@ public class AUICodeEdit : ALittle.ScrollScreen
 
     private fun HandleTextInput(ALittle.UITextInputEvent event)
     {
-        if (this.InsertText(event.text))
+        if (this.InsertText(event.text, true))
             this.DispatchEvent(new ALittle.UIChangedEvent());
     }
 
@@ -384,7 +386,7 @@ public class AUICodeEdit : ALittle.ScrollScreen
         {
             if (this._select_cursor.line_start == null)
             {
-                is_change = this._cursor.DeleteLeft();
+                is_change = this._cursor.DeleteLeft(true);
             }
             else
             {
@@ -396,7 +398,7 @@ public class AUICodeEdit : ALittle.ScrollScreen
         {
             if (this._select_cursor.line_start == null)
             {
-                is_change = this._cursor.DeleteRight();
+                is_change = this._cursor.DeleteRight(true);
             }
             else
             {
@@ -442,12 +444,12 @@ public class AUICodeEdit : ALittle.ScrollScreen
         }
         elseif (event.sym == ALittle.UIEnumTypes.KEY_ENTER || event.sym == ALittle.UIEnumTypes.KEY_NUMBER_ENTER)
         {
-            is_change = this.InsertText("\n");
+            is_change = this.InsertText("\n", true);
 			event.handled = true;
         }
         elseif (event.sym == ALittle.UIEnumTypes.KEY_TAB)
         {
-            is_change = this.InsertText("\t");
+            is_change = this.InsertText("\t", true);
 			event.handled = true;
         }
         elseif (event.sym == ALittle.UIEnumTypes.KEY_X && ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) != 0)
@@ -469,7 +471,7 @@ public class AUICodeEdit : ALittle.ScrollScreen
         {
             if (ALittle.System_HasClipboardText())
             {
-                is_change = this.InsertText(ALittle.System_GetClipboardText());
+                is_change = this.InsertText(ALittle.System_GetClipboardText(), true);
             }
 			event.handled = true;
         }
@@ -506,7 +508,7 @@ public class AUICodeEdit : ALittle.ScrollScreen
         this._file_path = null;
     }
 
-    public fun Load(string file_path) : bool
+    public fun Load(string file_path, ALittle.RevokeList revoke_list) : bool
     {
         // 打开文件
         var content = ALittle.File_ReadTextFromStdFile(file_path);
@@ -515,6 +517,8 @@ public class AUICodeEdit : ALittle.ScrollScreen
         // 设置文本内容
         this.SetText(content);
         this._file_path = file_path;
+        this._revoke_list = revoke_list;
+        if (this._revoke_list == null) this._revoke_list = new ALittle.RevokeList();
         return true;
     }
 
@@ -653,7 +657,7 @@ public class AUICodeEdit : ALittle.ScrollScreen
     }
 
     // 插入文本
-    public fun InsertText(string content) : bool
+    public fun InsertText(string content, bool need_revoke) : bool
     {
         var is_changed = this.DeleteSelectText();
         

@@ -163,6 +163,14 @@ function IDEEnum:Ctor()
 	___rawset(self, "child_show_map", {})
 	self.child_show_map["Grid3"] = {"show_up", "show_center", "show_down"}
 	self.child_show_map["Grid9"] = {"show_left_top", "show_left_center", "show_left_bottom", "show_center_top", "show_center_center", "show_center_bottom", "show_right_top", "show_right_center", "show_right_bottom"}
+	___rawset(self, "child_show_map_map", {})
+	for k, list in ___pairs(self.child_show_map) do
+		local map = {}
+		for _, name in ___ipairs(list) do
+			map[name] = true
+		end
+		self.child_show_map_map[k] = map
+	end
 	___rawset(self, "nature_show_map", {})
 	self.nature_show_map["TextButton"] = {"show_text", "show_up", "show_down", "show_over", "show_disabled", "show_down_text", "show_over_text", "show_disabled_text"}
 	self.nature_show_map["SpringTextButton"] = {"show_text", "show_up", "show_disabled", "show_disabled_text"}
@@ -180,6 +188,14 @@ function IDEEnum:Ctor()
 	self.nature_show_map["ScrollList"] = {"right_scrollbar"}
 	self.nature_show_map["RichEdit"] = {"start_cursor", "end_cursor"}
 	self.nature_show_map["RichInput"] = {"start_cursor", "end_cursor"}
+	___rawset(self, "nature_show_map_map", {})
+	for k, list in ___pairs(self.child_show_map) do
+		local map = {}
+		for _, name in ___ipairs(list) do
+			map[name] = true
+		end
+		self.nature_show_map_map[k] = map
+	end
 end
 
 g_IDEEnum = IDEEnum()

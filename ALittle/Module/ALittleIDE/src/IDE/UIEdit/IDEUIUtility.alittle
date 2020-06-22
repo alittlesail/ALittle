@@ -12,7 +12,7 @@ public struct IDEControlCopyInfo
 public static IDEUIUtility_CalcTextureName(ALittle.DisplayInfo info, Map<string, bool> map) : Map<string, bool>
 {
 	if (map == null) map = new Map<string, bool>();
-	for (var k, v in cast<Map<string, any> >(info))
+	for (var k, v in cast<Map<string, any>>(info))
 	{
 		if (k == "texture_name")
 			map[v] = true;
@@ -26,7 +26,7 @@ public static IDEUIUtility_CalcTextureName(ALittle.DisplayInfo info, Map<string,
 public static IDEUIUtility_GetExtends(const ALittle.DisplayInfo info, [Nullable] Map<string, bool> map) : Map<string, bool>
 {
 	if (map == null) map = new Map<string, bool>();
-	for (var k, v in cast<Map<string, any> >(info))
+	for (var k, v in cast<Map<string, any>>(info))
 	{
 		if (ALittle.String_Type(v) == "table")
 			IDEUIUtility_GetExtends(v, map);
@@ -46,7 +46,7 @@ public static IDEUIUtility_HasTargetClass(const ALittle.DisplayInfo info, string
 		if (ALittle.String_Find(str, name) != null) return true;
 	}
 
-	for (var k, v in cast<Map<string, any> >(info))
+	for (var k, v in cast<Map<string, any>>(info))
 	{
 		if (ALittle.String_Type(v) == "table")
 		{
@@ -76,7 +76,7 @@ public static IDEUIUtility_HasEventCallback(const ALittle.DisplayInfo info, stri
 		if (ALittle.String_Find(content, name) != null) return true;
 	}
 
-	for (var k, v in cast<Map<string, any> >(info))
+	for (var k, v in cast<Map<string, any>>(info))
 	{
 		if (ALittle.String_Type(v) == "table")
 		{
@@ -167,10 +167,13 @@ public static IDEUIUtility_GetBaseInfo(const ALittle.DisplayInfo info) : ALittle
 	{
 		// 避开__childs和show
 		if (ALittle.String_Type(v) != "table")
-			cast<Map<string, any> >(base)[k] = v;
+			cast<Map<string, any>>(base)[k] = v;
 		// 这里处理类似dropdown控件里面的data_list那样的属性
-		elseif (ALittle.String_Type(v) == "table" && k != "__childs")
-			cast<Map<string, any> >(base)[k] = ALittle.String_CopyTable(v);
+		elseif (!(k == "__childs"
+			|| (g_IDEEnum.nature_show_map_map[info.__class] != null && g_IDEEnum.nature_show_map_map[info.__class][k])
+			|| (g_IDEEnum.child_show_map_map[info.__class] != null && g_IDEEnum.child_show_map_map[info.__class][k]))
+		)
+			cast<Map<string, any>>(base)[k] = ALittle.String_CopyTable(v);
 	}
 
 	// 复制link信息
@@ -197,10 +200,10 @@ public static IDEUIUtility_GetDefaultInfo(const ALittle.DisplayInfo info) : ALit
 		// 获取控件默认数据
 		default_v = IDEUIUtility_GetDefaultInfo(g_IDEProject.project.ui.control_map[info.__extends].info);
 		// 覆盖其他属性
-		for (var k, v in cast<Map<string, any> >(info))
+		for (var k, v in cast<Map<string, any>>(info))
 		{
 			if (k != "__extends")
-				cast<Map<string, any> >(default_v)[k] = v;
+				cast<Map<string, any>>(default_v)[k] = v;
 		}
 	}
 	// 处理包含
@@ -214,14 +217,14 @@ public static IDEUIUtility_GetDefaultInfo(const ALittle.DisplayInfo info) : ALit
 		var class_default = g_IDEEnum.type_default_map[info.__class];
 		// 复制属性
 		default_v = new ALittle.DisplayInfo();
-		for (var k, v in cast<Map<string, any> >(class_default))
+		for (var k, v in cast<Map<string, any>>(class_default))
 		{
 			if (ALittle.String_Type(v) != "table")
-				cast<Map<string, any> >(default_v)[k] = v;
+				cast<Map<string, any>>(default_v)[k] = v;
 		}
 		// 覆盖属性
-		for (var k, v in cast<Map<string, any> >(info))
-			cast<Map<string, any> >(default_v)[k] = v;
+		for (var k, v in cast<Map<string, any>>(info))
+			cast<Map<string, any>>(default_v)[k] = v;
 	}
 	else
 		ALittle.Log("error GetDefaultInfo: there have not extends, include, class");
@@ -286,8 +289,8 @@ public static IDEUIUtility_CreateTree(const ALittle.DisplayInfo control, bool ex
 	{
 		for (var index, name in nature_list)
 		{
-			if (cast<Map<string, any> >(control)[name] != null)
-				cast<Map<string, any> >(user_info.base)[name] = ALittle.String_CopyTable(cast<Map<string, any> >(control)[name]);
+			if (cast<Map<string, any>>(control)[name] != null)
+				cast<Map<string, any>>(user_info.base)[name] = ALittle.String_CopyTable(cast<Map<string, any> >(control)[name]);
 		}
 	}
 
@@ -309,8 +312,7 @@ public static IDEUIUtility_CreateTree(const ALittle.DisplayInfo control, bool ex
 	var tree_logic:IDEUITreeLogic = null;
 
 	// 区分是树形控件，还是按钮
-	if (g_IDEEnum.can_add_child_map[user_info.default.__class]
-		|| g_IDEEnum.child_show_map[user_info.default.__class] != null)
+	if (g_IDEEnum.can_add_child_map[user_info.default.__class] || g_IDEEnum.child_show_map[user_info.default.__class] != null)
 		tree_logic = new IDEUITree(g_Control, user_info, tab_child);
 	else
 		tree_logic = new IDEUITreeItem(g_Control, user_info, tab_child);
@@ -344,11 +346,11 @@ public static IDEUIUtility_CreateTree(const ALittle.DisplayInfo control, bool ex
 			if (cast<Map<string,any>>(object)[name] != null)
 			{
 				// 如果这个show是当前控件的，那么是否继承由extends决定
-				if (cast<Map<string, any> >(control)[name] != null)
-					tree_logic.AddChild(IDEUIUtility_CreateTree(cast<Map<string, any> >(control)[name], extends_v, cast<Map<string,any>>(object)[name], name, tab_child, false));
+				if (cast<Map<string, any>>(control)[name] != null)
+					tree_logic.AddChild(IDEUIUtility_CreateTree(cast<Map<string, any>>(control)[name], extends_v, cast<Map<string,any>>(object)[name], name, tab_child, false));
 				// 如果这个show是继承的，那么都是继承
-				elseif (cast<Map<string, any> >(user_info.default)[name] != null)
-					tree_logic.AddChild(IDEUIUtility_CreateTree(cast<Map<string, any> >(user_info.default)[name], true, cast<Map<string,any>>(object)[name], name, tab_child, false));
+				elseif (cast<Map<string, any>>(user_info.default)[name] != null)
+					tree_logic.AddChild(IDEUIUtility_CreateTree(cast<Map<string, any>>(user_info.default)[name], true, cast<Map<string,any>>(object)[name], name, tab_child, false));
 			}
 		}
 	}

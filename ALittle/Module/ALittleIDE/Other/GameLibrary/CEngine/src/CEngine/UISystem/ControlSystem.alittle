@@ -371,10 +371,10 @@ public class ControlSystem
                     return null;
                 }
                 var copy = new DisplayInfo();
-                for (var key, value in cast<Map<string, any> >(control))
-                    cast<Map<string, any> >(copy)[key] = value;
-                for (var key, value in cast<Map<string, any> >(info))
-                    cast<Map<string, any> >(copy)[key] = value;
+                for (var key, value in cast<Map<string, any>>(control))
+                    cast<Map<string, any>>(copy)[key] = value;
+                for (var key, value in cast<Map<string, any>>(info))
+                    cast<Map<string, any>>(copy)[key] = value;
                 info = copy;
                 info.__extends_included = true;
                 info.__shows_included = null;
@@ -387,7 +387,7 @@ public class ControlSystem
         // 组合
         if (info.__shows_included != true)
         {
-            for (var key, value in cast<Map<string, any> >(info))
+            for (var key, value in cast<Map<string, any>>(info))
             {
                 if (__byte(key, 1) != 95 && __type(value) == "table"
                     && (cast<DisplayInfo>(value).__include != null
@@ -456,7 +456,7 @@ public class ControlSystem
 
         // 反序列化属性
         var info_t = info;
-        for (var key, value in cast<Map<string, any> >(info_t))
+        for (var key, value in cast<Map<string, any>>(info_t))
         {
             if (__type(value) == "table" && cast<DisplayInfo>(value).__class != null)
                 this.CollectTextureNameImpl(value, map);

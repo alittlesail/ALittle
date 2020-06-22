@@ -1,0 +1,85 @@
+
+namespace AUIPlugin;
+
+public class AUICodeDeleteLeftRevoke : ALittle.RevokeObject
+{
+	private AUICodeEdit _edit;
+	private AUICodeCursor _cursor;
+	// 删除之前的光标位置
+	private int _old_it_line;
+	private int _old_it_char;
+	// 删除之后的光标位置
+	private int _new_it_line;
+	private int _new_it_char;
+	private string _content;
+	
+	public ctor(AUICodeEdit edit, AUICodeCursor cursor
+			, int old_it_line, int old_it_char
+			, int new_it_line, int new_it_char
+			, string content)
+	{
+		this._edit = edit;
+		this._cursor = cursor;
+		this._old_it_line = old_it_line;
+		this._old_it_char = old_it_char;
+		this._new_it_line = new_it_line;
+		this._new_it_char = new_it_char;
+		this._content = content;
+	}
+
+	public fun Forward()
+	{
+		this._cursor.SetLineChar(this._old_it_line, this._old_it_char);
+		this._cursor.DeleteLeft(false);
+		this._edit.DispatchEvent(new ALittle.UIChangedEvent());
+	}
+	
+	public fun Back()
+	{
+		this._cursor.SetLineChar(this._new_it_line, this._new_it_char);
+		this._edit.InsertText(this._content, false);
+		this._edit.DispatchEvent(new ALittle.UIChangedEvent());
+	}
+}
+
+public class AUICodeDeleteRightRevoke : ALittle.RevokeObject
+{
+	private AUICodeEdit _edit;
+	private AUICodeCursor _cursor;
+	// 删除之前的光标位置
+	private int _old_it_line;
+	private int _old_it_char;
+	// 删除之后的光标位置
+	private int _new_it_line;
+	private int _new_it_char;
+	private string _content;
+
+	public ctor(AUICodeEdit edit, AUICodeCursor cursor
+			, int old_it_line, int old_it_char
+			, int new_it_line, int new_it_char
+			, string content)
+	{
+		this._edit = edit;
+		this._cursor = cursor;
+		this._old_it_line = old_it_line;
+		this._old_it_char = old_it_char;
+		this._new_it_line = new_it_line;
+		this._new_it_char = new_it_char;
+		this._content = content;
+	}
+
+	public fun Forward()
+	{
+		this._cursor.SetLineChar(this._old_it_line, this._old_it_char);
+		this._cursor.DeleteRight(false);
+		this._edit.DispatchEvent(new ALittle.UIChangedEvent());
+	}
+
+	public fun Back()
+	{
+		this._cursor.SetLineChar(this._new_it_line, this._new_it_char);
+		this._edit.InsertText(this._content, false);
+		this._cursor.SetLineChar(this._new_it_line, this._new_it_char);
+		this._edit.DispatchEvent(new ALittle.UIChangedEvent());
+	}
+}

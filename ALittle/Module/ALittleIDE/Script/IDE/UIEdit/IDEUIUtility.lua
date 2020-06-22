@@ -166,7 +166,7 @@ function IDEUIUtility_GetBaseInfo(info)
 	for k, v in ___pairs(info) do
 		if ALittle.String_Type(v) ~= "table" then
 			base[k] = v
-		elseif ALittle.String_Type(v) == "table" and k ~= "__childs" then
+		elseif not (k == "__childs" or (g_IDEEnum.nature_show_map_map[info.__class] ~= nil and g_IDEEnum.nature_show_map_map[info.__class][k]) or (g_IDEEnum.child_show_map_map[info.__class] ~= nil and g_IDEEnum.child_show_map_map[info.__class][k])) then
 			base[k] = ALittle.String_CopyTable(v)
 		end
 	end

@@ -355,13 +355,13 @@ public class AltasBinary
     }
 
     // map 输出参数
-    public fun GetInfo([Nullable] AltasCollectInfo list_info) : List<List<any> >
+    public fun GetInfo([Nullable] AltasCollectInfo list_info) : List<List<any>>
     {
         if (list_info == null)
         {
             list_info = new AltasCollectInfo();
             list_info.count = 0;
-            list_info.list = new List<List<any> >();
+            list_info.list = new List<List<any>>();
         }
 
         if (this._texture_path != null)
@@ -493,7 +493,7 @@ protected class TextureManager
     private bool _crypt_mode;
     private Map<string, ITexture> _path_map_texture;
     private Map<PrepareInfo, bool> _prepare_map;
-    private Map<string, Map<DisplayObject, string> > _path_map_objects;
+    private Map<string, Map<DisplayObject, string>> _path_map_objects;
     private Map<string, AltasInfo> _name_map_atlas;
     
     // @param module_name 模块名
@@ -513,7 +513,7 @@ protected class TextureManager
         this._prepare_map = new Map<PrepareInfo, bool>(); // 强引用，用于保存预加载纹理映射
     
         // 正在加载中的纹理信息
-        this._path_map_objects = new Map<string, Map<DisplayObject, string> >();
+        this._path_map_objects = new Map<string, Map<DisplayObject, string>>();
     
         // 加载拼接数据
         this.LoadAtlas();

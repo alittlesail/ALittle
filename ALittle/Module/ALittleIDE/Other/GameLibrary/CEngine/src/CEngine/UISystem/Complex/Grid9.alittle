@@ -5,7 +5,7 @@ private var __ceil = Math_Ceil;
 
 public class Grid9 : DisplayGroup
 {
-    private Map<int, Map<int, DisplayObject> > _child_map;
+    private Map<int, Map<int, DisplayObject>> _child_map;
     
     private double  _logic_left;
     private double  _logic_top;
@@ -21,7 +21,7 @@ public class Grid9 : DisplayGroup
     public ctor(ControlSystem ctrl_sys)
     {
         // 子控件列表
-        this._child_map = new Map<int, Map<int, DisplayObject> >();
+        this._child_map = new Map<int, Map<int, DisplayObject>>();
         this._child_map[1] = new Map<int, DisplayObject>();
         this._child_map[2] = new Map<int, DisplayObject>();
         this._child_map[3] = new Map<int, DisplayObject>();

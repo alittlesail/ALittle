@@ -190,6 +190,10 @@ function AUICodeEdit.__getter:line_height()
 	return LINE_HEIGHT
 end
 
+function AUICodeEdit.__getter:revoke_list()
+	return self._revoke_list
+end
+
 function AUICodeEdit:HandleMoveIn(event)
 	ALittle.System_SetEditCursor()
 end
@@ -344,7 +348,7 @@ function AUICodeEdit:DeleteSelectText()
 end
 
 function AUICodeEdit:HandleTextInput(event)
-	if self:InsertText(event.text) then
+	if self:InsertText(event.text, true) then
 		self:DispatchEvent(___all_struct[958494922], {})
 	end
 end
@@ -425,14 +429,14 @@ function AUICodeEdit:HandleKeyDown(event)
 		event.handled = true
 	elseif event.sym == 8 then
 		if self._select_cursor.line_start == nil then
-			is_change = self._cursor:DeleteLeft()
+			is_change = self._cursor:DeleteLeft(true)
 		else
 			is_change = self:DeleteSelectText()
 		end
 		event.handled = true
 	elseif event.sym == 127 then
 		if self._select_cursor.line_start == nil then
-			is_change = self._cursor:DeleteRight()
+			is_change = self._cursor:DeleteRight(true)
 		else
 			is_change = self:DeleteSelectText()
 		end
@@ -468,10 +472,10 @@ function AUICodeEdit:HandleKeyDown(event)
 		end
 		event.handled = true
 	elseif event.sym == 13 or event.sym == 1073741912 then
-		is_change = self:InsertText("\n")
+		is_change = self:InsertText("\n", true)
 		event.handled = true
 	elseif event.sym == 9 then
-		is_change = self:InsertText("\t")
+		is_change = self:InsertText("\t", true)
 		event.handled = true
 	elseif event.sym == 120 and ALittle.BitAnd(event.mod, 0x00c0) ~= 0 then
 		local select_text = self._select_cursor:GetSelectText()
@@ -488,7 +492,7 @@ function AUICodeEdit:HandleKeyDown(event)
 		event.handled = true
 	elseif event.sym == 118 and ALittle.BitAnd(event.mod, 0x00c0) ~= 0 then
 		if ALittle.System_HasClipboardText() then
-			is_change = self:InsertText(ALittle.System_GetClipboardText())
+			is_change = self:InsertText(ALittle.System_GetClipboardText(), true)
 		end
 		event.handled = true
 	elseif event.sym == 97 and ALittle.BitAnd(event.mod, 0x00c0) ~= 0 then
@@ -517,13 +521,17 @@ function AUICodeEdit:OnClose()
 	self._file_path = nil
 end
 
-function AUICodeEdit:Load(file_path)
+function AUICodeEdit:Load(file_path, revoke_list)
 	local content = ALittle.File_ReadTextFromStdFile(file_path)
 	if content == nil then
 		return false
 	end
 	self:SetText(content)
 	self._file_path = file_path
+	self._revoke_list = revoke_list
+	if self._revoke_list == nil then
+		self._revoke_list = ALittle.RevokeList()
+	end
 	return true
 end
 
@@ -643,7 +651,7 @@ function AUICodeEdit:SetText(content)
 	self._cursor:SetLineChar(1, 0)
 end
 
-function AUICodeEdit:InsertText(content)
+function AUICodeEdit:InsertText(content, need_revoke)
 	local is_changed = self:DeleteSelectText()
 	local line_list, line_count, max_width = self:CreateLines(content)
 	if line_count == 0 then

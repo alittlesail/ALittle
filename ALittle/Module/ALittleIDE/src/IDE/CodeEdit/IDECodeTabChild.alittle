@@ -32,7 +32,8 @@ public class IDECodeTabChild : IDETabChild
 
     private fun OnOpen()
     {
-        this._edit.Load(this._user_info.path);
+        this._revoke_list = new ALittle.RevokeList();
+        this._edit.Load(this._user_info.path, this._revoke_list);
     }
 
     private fun HandleChangedEvent(ALittle.UIChangedEvent event)

@@ -41,7 +41,8 @@ function IDECodeTabChild:OnClose()
 end
 
 function IDECodeTabChild:OnOpen()
-	self._edit:Load(self._user_info.path)
+	self._revoke_list = ALittle.RevokeList()
+	self._edit:Load(self._user_info.path, self._revoke_list)
 end
 
 function IDECodeTabChild:HandleChangedEvent(event)

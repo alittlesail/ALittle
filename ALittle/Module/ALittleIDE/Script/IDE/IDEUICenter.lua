@@ -111,19 +111,6 @@ function IDEUICenter:HandleLeftEditResizeDrag(event)
 	self._right_edit_grid3.up_size = up_size
 end
 
-function IDEUICenter:HandleRightEditResizeDrag(event)
-	local down_size = self._right_edit_grid3.down_size
-	down_size = down_size - event.delta_x
-	local max_size = self._right_edit_grid3.width - self._right_edit_grid3.up_size - 50
-	if down_size > max_size then
-		down_size = max_size
-	end
-	if down_size < 100 then
-		down_size = 100
-	end
-	self._right_edit_grid3.down_size = down_size
-end
-
 function IDEUICenter:HandleControlEditResizeDrag(event)
 	local up_size = self._control_edit_grid3.up_size
 	up_size = up_size + event.delta_y

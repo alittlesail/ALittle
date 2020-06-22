@@ -110,15 +110,6 @@ protected class IDEUICenter : ALittle.DisplayLayout
 		if (up_size < 100) up_size = 100;
 		this._right_edit_grid3.up_size = up_size;
 	}
-	private fun HandleRightEditResizeDrag(ALittle.UIButtonDragEvent event)
-	{
-		var down_size = this._right_edit_grid3.down_size;
-		down_size = down_size - event.delta_x;
-		var max_size = this._right_edit_grid3.width - this._right_edit_grid3.up_size - 50;
-		if (down_size > max_size) down_size = max_size;
-		if (down_size < 100) down_size = 100;
-		this._right_edit_grid3.down_size = down_size;
-	}
 	private fun HandleControlEditResizeDrag(ALittle.UIButtonDragEvent event)
 	{
 		var up_size = this._control_edit_grid3.up_size;

@@ -80,6 +80,8 @@ protected class IDEUICenter : ALittle.DisplayLayout
 		this._project_quick_tab.tab_index = 1;
 
 		this._quick_edit_grid3_down_size = this._quick_edit_grid3.down_size;
+		this._quick_edit_grid3.down_size = this._project_quick_tab.up_size;
+		this._quick_fold_updown.selected = false;
 		ALittle.TextRadioButton.SetGroup([this._tool_singleselect, this._tool_handdrag, this._tool_scale, this._tool_presee]);
 	}
 	

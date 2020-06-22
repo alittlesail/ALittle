@@ -53,6 +53,8 @@ function IDEUICenter:TCtor()
 	self._project_quick_tab:DisableAllCloseButton()
 	self._project_quick_tab.tab_index = 1
 	self._quick_edit_grid3_down_size = self._quick_edit_grid3.down_size
+	self._quick_edit_grid3.down_size = self._project_quick_tab.up_size
+	self._quick_fold_updown.selected = false
 	ALittle.TextRadioButton.SetGroup({self._tool_singleselect, self._tool_handdrag, self._tool_scale, self._tool_presee})
 end
 

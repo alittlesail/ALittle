@@ -14,8 +14,8 @@ option_map = {}
 })
 ALittle.RegStruct(1494749965, "AUIPlugin.AUICodeCharInfo", {
 name = "AUIPlugin.AUICodeCharInfo", ns_name = "AUIPlugin", rl_name = "AUICodeCharInfo", hash_code = 1494749965,
-name_list = {"char","text","pre_width","width"},
-type_list = {"string","ALittle.Text","double","double"},
+name_list = {"char","text","red","green","blue","pre_width","width"},
+type_list = {"string","ALittle.Text","double","double","double","double","double"},
 option_map = {}
 })
 ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
@@ -100,9 +100,9 @@ function AUICodeLineContainer:CreateAndAdd(char)
 	end
 	if char.text == nil and char.width > 0 and char.char ~= " " and char.char ~= "\t" then
 		char.text = ALittle.Text(g_Control)
-		char.text.red = FONT_RED
-		char.text.green = FONT_GREEN
-		char.text.blue = FONT_BLUE
+		char.text.red = char.red
+		char.text.green = char.green
+		char.text.blue = char.blue
 		char.text.font_path = FONT_PATH
 		char.text.font_size = FONT_SIZE
 		char.text.text = char.char
@@ -262,6 +262,79 @@ function AUICodeEdit:CalcLineAndChar(x, y)
 	return it_line, count
 end
 
+function AUICodeEdit:BrushColor(line_start, char_start, line_end, char_end, red, green, blue)
+	if line_start == line_end then
+		local line = self._line_list[line_start]
+		local it_char = char_start + 1
+		while true do
+			if not(it_char <= char_end) then break end
+			local char = line.char_list[it_char]
+			char.red = red
+			char.green = green
+			char.blue = blue
+			if char.text ~= nil then
+				char.text.red = red
+				char.text.green = green
+				char.text.blue = blue
+			end
+			it_char = it_char+(1)
+		end
+		return
+	end
+	local it_line = line_start
+	while true do
+		if not(it_line <= line_end) then break end
+		local line = self._line_list[it_line]
+		if it_line == line_start then
+			local it_char = char_start + 1
+			while true do
+				if not(it_char <= line.char_count) then break end
+				local char = line.char_list[it_char]
+				char.red = red
+				char.green = green
+				char.blue = blue
+				if char.text ~= nil then
+					char.text.red = red
+					char.text.green = green
+					char.text.blue = blue
+				end
+				it_char = it_char+(1)
+			end
+		elseif it_line == line_end then
+			local it_char = 1
+			while true do
+				if not(it_char <= char_end) then break end
+				local char = line.char_list[it_char]
+				char.red = red
+				char.green = green
+				char.blue = blue
+				if char.text ~= nil then
+					char.text.red = red
+					char.text.green = green
+					char.text.blue = blue
+				end
+				it_char = it_char+(1)
+			end
+		else
+			local it_char = 1
+			while true do
+				if not(it_char <= line.char_count) then break end
+				local char = line.char_list[it_char]
+				char.red = red
+				char.green = green
+				char.blue = blue
+				if char.text ~= nil then
+					char.text.red = red
+					char.text.green = green
+					char.text.blue = blue
+				end
+				it_char = it_char+(1)
+			end
+		end
+		it_line = it_line+(1)
+	end
+end
+
 function AUICodeEdit:DeleteSelectText()
 	local result, it_line, it_char = self._select_cursor:DeleteSelect()
 	if result then
@@ -395,8 +468,10 @@ function AUICodeEdit:HandleKeyDown(event)
 		end
 		event.handled = true
 	elseif event.sym == 13 or event.sym == 1073741912 then
-		self:InsertText("\n")
-		is_change = true
+		is_change = self:InsertText("\n")
+		event.handled = true
+	elseif event.sym == 9 then
+		is_change = self:InsertText("\t")
 		event.handled = true
 	elseif event.sym == 120 and ALittle.BitAnd(event.mod, 0x00c0) ~= 0 then
 		local select_text = self._select_cursor:GetSelectText()
@@ -484,6 +559,9 @@ function AUICodeEdit:CreateLines(content)
 		else
 			char.width = self._word_width
 		end
+		char.red = FONT_RED
+		char.green = FONT_GREEN
+		char.blue = FONT_BLUE
 		char.char = char_text
 		char.pre_width = pre_width
 		pre_width = pre_width + (char.width)
@@ -682,11 +760,13 @@ function AUICodeEdit:InsertText(content)
 		while true do
 			if not(i <= split_it_char) then break end
 			local char = split_pre_line.char_list[i]
+			char.pre_width = pre_width
 			if char.text ~= nil then
 				char.text.x = pre_width
 				split_pre_line.container:AddChild(char.text)
+			elseif char.width > 0 then
+				split_pre_line.container:CreateAndAdd(char)
 			end
-			char.pre_width = pre_width
 			char_count = char_count + (1)
 			char_list[char_count] = char
 			pre_width = pre_width + (char.width)
@@ -696,11 +776,13 @@ function AUICodeEdit:InsertText(content)
 		while true do
 			if not(i <= line.char_count) then break end
 			local char = line.char_list[i]
+			char.pre_width = pre_width
 			if char.text ~= nil then
 				char.text.x = pre_width
 				split_pre_line.container:AddChild(char.text)
+			elseif char.width > 0 then
+				split_pre_line.container:CreateAndAdd(char)
 			end
-			char.pre_width = pre_width
 			char_count = char_count + (1)
 			char_list[char_count] = char
 			pre_width = pre_width + (char.width)
@@ -713,11 +795,13 @@ function AUICodeEdit:InsertText(content)
 		while true do
 			if not(i <= split_pre_line.char_count) then break end
 			local char = split_pre_line.char_list[i]
+			char.pre_width = pre_width
 			if char.text ~= nil then
 				char.text.x = pre_width
 				split_pre_line.container:AddChild(char.text)
+			elseif char.width > 0 then
+				split_pre_line.container:CreateAndAdd(char)
 			end
-			char.pre_width = pre_width
 			char_count = char_count + (1)
 			char_list[char_count] = char
 			pre_width = pre_width + (char.width)
@@ -738,11 +822,13 @@ function AUICodeEdit:InsertText(content)
 		while true do
 			if not(i <= line.char_count) then break end
 			local char = line.char_list[i]
+			char.pre_width = pre_width
 			if char.text ~= nil then
 				char.text.x = pre_width
 				split_next_line.container:AddChild(char.text)
+			elseif char.width > 0 then
+				split_next_line.container:CreateAndAdd(char)
 			end
-			char.pre_width = pre_width
 			char_count = char_count + (1)
 			char_list[char_count] = char
 			pre_width = pre_width + (char.width)
@@ -753,11 +839,13 @@ function AUICodeEdit:InsertText(content)
 		while true do
 			if not(i <= split_next_line.char_count) then break end
 			local char = split_next_line.char_list[i]
+			char.pre_width = pre_width
 			if char.text ~= nil then
 				char.text.x = pre_width
 				split_next_line.container:AddChild(char.text)
+			elseif char.width > 0 then
+				split_next_line.container:CreateAndAdd(char)
 			end
-			char.pre_width = pre_width
 			char_count = char_count + (1)
 			char_list[char_count] = char
 			pre_width = pre_width + (char.width)

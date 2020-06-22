@@ -191,19 +191,13 @@ public class AUICodeSelectCursor
             {
                 if (i == it_line_start)
                 {
-                    if (it_char_start < line.char_count)
-                    {
-                        for (var j = it_char_start + 1; j <= line.char_count; 1)
-                            text = text..line.char_list[j].char;
-                    }
+                    for (var j = it_char_start + 1; j <= line.char_count; 1)
+                        text = text..line.char_list[j].char;
                 }
                 elseif (i == it_line_end)
                 {
-                    if (it_char_end > 0)
-                    {
-                        for (var j = 1; j <= it_char_end; 1)
-                            text = text..line.char_list[j].char;
-                    }
+                    for (var j = 1; j <= it_char_end; 1)
+                        text = text..line.char_list[j].char;
                 }
                 else
                 {

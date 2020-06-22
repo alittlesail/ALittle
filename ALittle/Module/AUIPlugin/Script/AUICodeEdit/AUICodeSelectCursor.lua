@@ -195,22 +195,18 @@ function AUICodeSelectCursor:GetSelectText()
 		local line = self._edit.line_list[i]
 		if line.char_count > 0 then
 			if i == it_line_start then
-				if it_char_start < line.char_count then
-					local j = it_char_start + 1
-					while true do
-						if not(j <= line.char_count) then break end
-						text = text .. line.char_list[j].char
-						j = j+(1)
-					end
+				local j = it_char_start + 1
+				while true do
+					if not(j <= line.char_count) then break end
+					text = text .. line.char_list[j].char
+					j = j+(1)
 				end
 			elseif i == it_line_end then
-				if it_char_end > 0 then
-					local j = 1
-					while true do
-						if not(j <= it_char_end) then break end
-						text = text .. line.char_list[j].char
-						j = j+(1)
-					end
+				local j = 1
+				while true do
+					if not(j <= it_char_end) then break end
+					text = text .. line.char_list[j].char
+					j = j+(1)
 				end
 			else
 				local j = 1

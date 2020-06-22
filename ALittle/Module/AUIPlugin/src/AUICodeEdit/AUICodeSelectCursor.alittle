@@ -209,7 +209,7 @@ public class AUICodeSelectCursor
         return text;
     }
 
-    public fun DeleteSelect() : bool, int, int
+    public fun DeleteSelect(bool need_revoke, [Nullable]ALittle.RevokeBind revoke_bind) : bool, int, int
     {
         if (this._it_line_start == null) return false, null, null;
 
@@ -223,6 +223,11 @@ public class AUICodeSelectCursor
 
             var line = this._edit.line_list[this._it_line_start];
             if (line == null) return false, null, null;
+
+            var old_it_line_start = this._it_line_start;
+            var old_it_char_start = this._it_line_start;
+            var old_it_line_end = this._it_line_end;
+            var old_it_char_end = this._it_char_end;
 
             var it_line_start = this._it_line_start;
             // 交换
@@ -252,9 +257,11 @@ public class AUICodeSelectCursor
             }
 
             // 移除
+            var revoke_content = "";
             for (var i = it_char_start + 1; i <= it_char_end; 1)
             {
                 var char = line.char_list[i];
+                revoke_content = revoke_content..char.char;
                 if (char.text != null) line.container.RemoveChild(char.text);
             }
             var count = it_char_end - it_char_start;
@@ -280,8 +287,25 @@ public class AUICodeSelectCursor
                 this._edit.container.width = line.container.width;
                 this._edit.RejustScrollBar();
             }
+
+            if (need_revoke)
+            {
+                var revoke = new AUICodeDeleteSelectRevoke(this._edit, this._edit.cursor, this
+                            , old_it_line_start, old_it_char_start, old_it_line_end, old_it_char_end
+                            , it_line_start, it_char_start, revoke_content);
+                if (revoke_bind != null)
+                    revoke_bind.PushRevoke(revoke);
+                else
+                    this._edit.revoke_list.PushRevoke(revoke);
+            }
+
             return true, it_line_start, it_char_start;
         }
+
+        var old_it_line_start = this._it_line_start;
+        var old_it_char_start = this._it_line_start;
+        var old_it_line_end = this._it_line_end;
+        var old_it_char_end = this._it_char_end;
 
         // 交换
         var it_line_start = this._it_line_start;
@@ -303,20 +327,28 @@ public class AUICodeSelectCursor
         this.Hide();
 
         // 先删除中间的行
+        var revoke_center = "";
         var line_count = it_line_end - it_line_start - 1;
         if (line_count > 0)
         {
             for (var it_line = it_line_start + 1; it_line < it_line_end; 1)
-                this._edit.code_linear.RemoveChild(this._edit.line_list[it_line].container);
+            {
+                var line = this._edit.line_list[it_line];
+                for (var it_char = 1; it_char <= line.char_count; 1)
+                    revoke_center = revoke_center..line.char_list[it_char].char;
+                this._edit.code_linear.RemoveChild(line.container);
+            }   
             ALittle.List_Splice(this._edit.line_list, it_line_start + 1, line_count);
             this._edit.line_count -= line_count;
             it_line_end -= line_count;
         }
         // 删除开始行
+        var revoke_start = "";
         var start_line = this._edit.line_list[it_line_start];
         for (var it_char = it_char_start + 1; it_char <= start_line.char_count; 1)
         {
             var char = start_line.char_list[it_char];
+            revoke_start = revoke_start..char.char;
             if (char.text != null) start_line.container.RemoveChild(char.text);
         }
         var count = start_line.char_count - it_char_start;
@@ -329,6 +361,11 @@ public class AUICodeSelectCursor
         var last_char = start_line.char_list[start_line.char_count];
         if (last_char != null)
             pre_width = last_char.pre_width + last_char.width;
+        
+        var revoke_end = "";
+        for (var i = 1; i <= it_char_end; 1)
+            revoke_end = revoke_end..end_line.char_list[i].char;
+
         for (var i = it_char_end + 1; i <= end_line.char_count; 1)
         {
             var char = end_line.char_list[i];
@@ -367,6 +404,17 @@ public class AUICodeSelectCursor
         }
         this._edit.container.width = max_width;
         this._edit.RejustScrollBar();
+
+        if (need_revoke)
+        {
+            var revoke = new AUICodeDeleteSelectRevoke(this._edit, this._edit.cursor, this
+                , old_it_line_start, old_it_char_start, old_it_line_end, old_it_char_end
+                , it_line_start, it_char_start, revoke_start..revoke_center..revoke_end);
+            if (revoke_bind != null)
+                revoke_bind.PushRevoke(revoke);
+            else
+                this._edit.revoke_list.PushRevoke(revoke);
+        }
 
         return true, it_line_start, it_char_start;
     }

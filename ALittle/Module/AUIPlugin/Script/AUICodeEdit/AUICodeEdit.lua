@@ -340,7 +340,7 @@ function AUICodeEdit:BrushColor(line_start, char_start, line_end, char_end, red,
 end
 
 function AUICodeEdit:DeleteSelectText()
-	local result, it_line, it_char = self._select_cursor:DeleteSelect()
+	local result, it_line, it_char = self._select_cursor:DeleteSelect(true)
 	if result then
 		self._cursor:SetLineChar(it_line, it_char)
 	end
@@ -651,13 +651,22 @@ function AUICodeEdit:SetText(content)
 	self._cursor:SetLineChar(1, 0)
 end
 
-function AUICodeEdit:InsertText(content, need_revoke)
-	local is_changed = self:DeleteSelectText()
+function AUICodeEdit:InsertText(content, need_revoke, revoke_bind)
+	local insert_revoke
+	if need_revoke then
+		insert_revoke = ALittle.RevokeBind()
+	end
+	local is_changed, delete_it_line, delete_it_char = self._select_cursor:DeleteSelect(need_revoke, insert_revoke)
+	if is_changed then
+		self._cursor:SetLineChar(delete_it_line, delete_it_char)
+	end
 	local line_list, line_count, max_width = self:CreateLines(content)
 	if line_count == 0 then
 		return is_changed
 	end
 	is_changed = true
+	local old_it_line = self._cursor.line
+	local old_it_char = self._cursor.char
 	local split_pre_line = self._line_list[self._cursor.line]
 	local split_it_char = self._cursor.char
 	if split_pre_line == nil then
@@ -873,6 +882,15 @@ function AUICodeEdit:InsertText(content, need_revoke)
 	self.container.height = self._line_count * LINE_HEIGHT
 	self:RejustScrollBar()
 	self._cursor:SetLineChar(it_cursor_line, it_cursor_char)
+	if need_revoke then
+		local revoke = AUICodeInsetTextRevoke(self, self._cursor, self._select_cursor, old_it_line, old_it_char, it_cursor_line, it_cursor_char, content)
+		insert_revoke:PushRevoke(revoke)
+		if revoke_bind ~= nil then
+			revoke_bind:PushRevoke(insert_revoke)
+		else
+			self._revoke_list:PushRevoke(insert_revoke)
+		end
+	end
 	return is_changed
 end
 

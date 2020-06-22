@@ -286,7 +286,7 @@ public class AUICodeEdit : ALittle.ScrollScreen
     // 删除选择行
     public fun DeleteSelectText() : bool
     {
-        var result, it_line, it_char = this._select_cursor.DeleteSelect();
+        var result, it_line, it_char = this._select_cursor.DeleteSelect(true);
         if (result) this._cursor.SetLineChar(it_line, it_char);
         return result;
     }
@@ -657,13 +657,20 @@ public class AUICodeEdit : ALittle.ScrollScreen
     }
 
     // 插入文本
-    public fun InsertText(string content, bool need_revoke) : bool
+    public fun InsertText(string content, bool need_revoke, [Nullable]ALittle.RevokeBind revoke_bind) : bool
     {
-        var is_changed = this.DeleteSelectText();
+        var insert_revoke:ALittle.RevokeBind;
+        if (need_revoke) insert_revoke = new ALittle.RevokeBind(); 
+
+        var is_changed, delete_it_line, delete_it_char = this._select_cursor.DeleteSelect(need_revoke, insert_revoke);
+        if (is_changed) this._cursor.SetLineChar(delete_it_line, delete_it_char);
         
         var line_list, line_count, max_width = this.CreateLines(content);
         if (line_count == 0) return is_changed;
         is_changed = true;
+
+        var old_it_line = this._cursor.line;
+        var old_it_char = this._cursor.char;
 
         var split_pre_line:AUICodeLineInfo = this._line_list[this._cursor.line];
         var split_it_char = this._cursor.char;
@@ -902,6 +909,16 @@ public class AUICodeEdit : ALittle.ScrollScreen
         this.RejustScrollBar();
 
         this._cursor.SetLineChar(it_cursor_line, it_cursor_char);
+
+        if (need_revoke)
+        {
+            var revoke = new AUICodeInsetTextRevoke(this, this._cursor, this._select_cursor, old_it_line, old_it_char, it_cursor_line, it_cursor_char, content);
+            insert_revoke.PushRevoke(revoke);
+            if (revoke_bind != null)
+                revoke_bind.PushRevoke(insert_revoke);
+            else
+                this._revoke_list.PushRevoke(insert_revoke);
+        }
 
         return is_changed;
     }

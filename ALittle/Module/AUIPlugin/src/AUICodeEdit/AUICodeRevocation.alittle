@@ -83,3 +83,98 @@ public class AUICodeDeleteRightRevoke : ALittle.RevokeObject
 		this._edit.DispatchEvent(new ALittle.UIChangedEvent());
 	}
 }
+
+public class AUICodeInsetTextRevoke : ALittle.RevokeObject
+{
+	private AUICodeEdit _edit;
+	private AUICodeCursor _cursor;
+	private AUICodeSelectCursor _select_cursor;
+	// 删除之前的光标位置
+	private int _old_it_line;
+	private int _old_it_char;
+	// 删除之后的光标位置
+	private int _new_it_line;
+	private int _new_it_char;
+	private string _content;
+
+	public ctor(AUICodeEdit edit, AUICodeCursor cursor, AUICodeSelectCursor select_cursor
+			, int old_it_line, int old_it_char
+			, int new_it_line, int new_it_char
+			, string content)
+	{
+		this._edit = edit;
+		this._cursor = cursor;
+		this._select_cursor = select_cursor;
+		this._old_it_line = old_it_line;
+		this._old_it_char = old_it_char;
+		this._new_it_line = new_it_line;
+		this._new_it_char = new_it_char;
+		this._content = content;
+	}
+
+	public fun Forward()
+	{
+		this._cursor.SetLineChar(this._old_it_line, this._old_it_char);
+		this._edit.InsertText(this._content, false);
+		this._edit.DispatchEvent(new ALittle.UIChangedEvent());
+	}
+
+	public fun Back()
+	{
+		this._select_cursor.StartLineChar(this._old_it_line, this._old_it_char);
+		this._select_cursor.UpdateLineChar(this._new_it_line, this._new_it_char);
+		this._select_cursor.DeleteSelect(false);
+		this._cursor.SetLineChar(this._old_it_line, this._old_it_char);
+		this._edit.DispatchEvent(new ALittle.UIChangedEvent());
+	}
+}
+
+public class AUICodeDeleteSelectRevoke : ALittle.RevokeObject
+{
+	private AUICodeEdit _edit;
+	private AUICodeCursor _cursor;
+	private AUICodeSelectCursor _select_cursor;
+	// 删除之前的光标位置
+	private int _old_it_line_start;
+	private int _old_it_char_start;
+	private int _old_it_line_end;
+	private int _old_it_char_end;
+	// 删除之后的光标位置
+	private int _new_it_line;
+	private int _new_it_char;
+
+	private string _content;
+
+	public ctor(AUICodeEdit edit, AUICodeCursor cursor, AUICodeSelectCursor select_cursor
+			, int old_it_line_start, int old_it_char_start, int old_it_line_end, int old_it_char_end
+			, int new_it_line, int new_it_char
+			, string content)
+	{
+		this._edit = edit;
+		this._cursor = cursor;
+		this._select_cursor = select_cursor;
+		this._old_it_line_start = old_it_line_start;
+		this._old_it_char_start = old_it_char_start;
+		this._old_it_line_end = old_it_line_end;
+		this._old_it_char_end = old_it_char_end;
+		this._new_it_line = new_it_line;
+		this._new_it_char = new_it_char;
+		this._content = content;
+	}
+
+	public fun Forward()
+	{
+		this._select_cursor.StartLineChar(this._old_it_line_start, this._old_it_char_start);
+		this._select_cursor.UpdateLineChar(this._old_it_line_end, this._old_it_char_end);
+		this._select_cursor.DeleteSelect(false);
+		this._cursor.SetLineChar(this._new_it_line, this._new_it_char);
+		this._edit.DispatchEvent(new ALittle.UIChangedEvent());
+	}
+
+	public fun Back()
+	{
+		this._cursor.SetLineChar(this._new_it_line, this._new_it_char);
+		this._edit.InsertText(this._content, false);
+		this._edit.DispatchEvent(new ALittle.UIChangedEvent());
+	}
+}

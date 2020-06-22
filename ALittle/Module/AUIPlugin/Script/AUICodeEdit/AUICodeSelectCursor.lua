@@ -222,7 +222,7 @@ function AUICodeSelectCursor:GetSelectText()
 	return text
 end
 
-function AUICodeSelectCursor:DeleteSelect()
+function AUICodeSelectCursor:DeleteSelect(need_revoke, revoke_bind)
 	if self._it_line_start == nil then
 		return false, nil, nil
 	end
@@ -235,6 +235,10 @@ function AUICodeSelectCursor:DeleteSelect()
 		if line == nil then
 			return false, nil, nil
 		end
+		local old_it_line_start = self._it_line_start
+		local old_it_char_start = self._it_line_start
+		local old_it_line_end = self._it_line_end
+		local old_it_char_end = self._it_char_end
 		local it_line_start = self._it_line_start
 		local it_char_start = self._it_char_start
 		local it_char_end = self._it_char_end
@@ -261,10 +265,12 @@ function AUICodeSelectCursor:DeleteSelect()
 			end
 			i = i+(1)
 		end
+		local revoke_content = ""
 		local i = it_char_start + 1
 		while true do
 			if not(i <= it_char_end) then break end
 			local char = line.char_list[i]
+			revoke_content = revoke_content .. char.char
 			if char.text ~= nil then
 				line.container:RemoveChild(char.text)
 			end
@@ -290,8 +296,20 @@ function AUICodeSelectCursor:DeleteSelect()
 			self._edit.container.width = line.container.width
 			self._edit:RejustScrollBar()
 		end
+		if need_revoke then
+			local revoke = AUICodeDeleteSelectRevoke(self._edit, self._edit.cursor, self, old_it_line_start, old_it_char_start, old_it_line_end, old_it_char_end, it_line_start, it_char_start, revoke_content)
+			if revoke_bind ~= nil then
+				revoke_bind:PushRevoke(revoke)
+			else
+				self._edit.revoke_list:PushRevoke(revoke)
+			end
+		end
 		return true, it_line_start, it_char_start
 	end
+	local old_it_line_start = self._it_line_start
+	local old_it_char_start = self._it_line_start
+	local old_it_line_end = self._it_line_end
+	local old_it_char_end = self._it_char_end
 	local it_line_start = self._it_line_start
 	local it_char_start = self._it_char_start
 	local it_line_end = self._it_line_end
@@ -305,23 +323,33 @@ function AUICodeSelectCursor:DeleteSelect()
 		it_char_end = temp
 	end
 	self:Hide()
+	local revoke_center = ""
 	local line_count = it_line_end - it_line_start - 1
 	if line_count > 0 then
 		local it_line = it_line_start + 1
 		while true do
 			if not(it_line < it_line_end) then break end
-			self._edit.code_linear:RemoveChild(self._edit.line_list[it_line].container)
+			local line = self._edit.line_list[it_line]
+			local it_char = 1
+			while true do
+				if not(it_char <= line.char_count) then break end
+				revoke_center = revoke_center .. line.char_list[it_char].char
+				it_char = it_char+(1)
+			end
+			self._edit.code_linear:RemoveChild(line.container)
 			it_line = it_line+(1)
 		end
 		ALittle.List_Splice(self._edit.line_list, it_line_start + 1, line_count)
 		self._edit.line_count = self._edit.line_count - (line_count)
 		it_line_end = it_line_end - (line_count)
 	end
+	local revoke_start = ""
 	local start_line = self._edit.line_list[it_line_start]
 	local it_char = it_char_start + 1
 	while true do
 		if not(it_char <= start_line.char_count) then break end
 		local char = start_line.char_list[it_char]
+		revoke_start = revoke_start .. char.char
 		if char.text ~= nil then
 			start_line.container:RemoveChild(char.text)
 		end
@@ -335,6 +363,13 @@ function AUICodeSelectCursor:DeleteSelect()
 	local last_char = start_line.char_list[start_line.char_count]
 	if last_char ~= nil then
 		pre_width = last_char.pre_width + last_char.width
+	end
+	local revoke_end = ""
+	local i = 1
+	while true do
+		if not(i <= it_char_end) then break end
+		revoke_end = revoke_end .. end_line.char_list[i].char
+		i = i+(1)
 	end
 	local i = it_char_end + 1
 	while true do
@@ -369,6 +404,14 @@ function AUICodeSelectCursor:DeleteSelect()
 	end
 	self._edit.container.width = max_width
 	self._edit:RejustScrollBar()
+	if need_revoke then
+		local revoke = AUICodeDeleteSelectRevoke(self._edit, self._edit.cursor, self, old_it_line_start, old_it_char_start, old_it_line_end, old_it_char_end, it_line_start, it_char_start, revoke_start .. revoke_center .. revoke_end)
+		if revoke_bind ~= nil then
+			revoke_bind:PushRevoke(revoke)
+		else
+			self._edit.revoke_list:PushRevoke(revoke)
+		end
+	end
 	return true, it_line_start, it_char_start
 end
 

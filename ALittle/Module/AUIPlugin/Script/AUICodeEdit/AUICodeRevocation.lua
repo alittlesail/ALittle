@@ -70,3 +70,61 @@ function AUICodeDeleteRightRevoke:Back()
 	self._edit:DispatchEvent(___all_struct[958494922], {})
 end
 
+assert(ALittle.RevokeObject, " extends class:ALittle.RevokeObject is nil")
+AUICodeInsetTextRevoke = Lua.Class(ALittle.RevokeObject, "AUIPlugin.AUICodeInsetTextRevoke")
+
+function AUICodeInsetTextRevoke:Ctor(edit, cursor, select_cursor, old_it_line, old_it_char, new_it_line, new_it_char, content)
+	___rawset(self, "_edit", edit)
+	___rawset(self, "_cursor", cursor)
+	___rawset(self, "_select_cursor", select_cursor)
+	___rawset(self, "_old_it_line", old_it_line)
+	___rawset(self, "_old_it_char", old_it_char)
+	___rawset(self, "_new_it_line", new_it_line)
+	___rawset(self, "_new_it_char", new_it_char)
+	___rawset(self, "_content", content)
+end
+
+function AUICodeInsetTextRevoke:Forward()
+	self._cursor:SetLineChar(self._old_it_line, self._old_it_char)
+	self._edit:InsertText(self._content, false)
+	self._edit:DispatchEvent(___all_struct[958494922], {})
+end
+
+function AUICodeInsetTextRevoke:Back()
+	self._select_cursor:StartLineChar(self._old_it_line, self._old_it_char)
+	self._select_cursor:UpdateLineChar(self._new_it_line, self._new_it_char)
+	self._select_cursor:DeleteSelect(false)
+	self._cursor:SetLineChar(self._old_it_line, self._old_it_char)
+	self._edit:DispatchEvent(___all_struct[958494922], {})
+end
+
+assert(ALittle.RevokeObject, " extends class:ALittle.RevokeObject is nil")
+AUICodeDeleteSelectRevoke = Lua.Class(ALittle.RevokeObject, "AUIPlugin.AUICodeDeleteSelectRevoke")
+
+function AUICodeDeleteSelectRevoke:Ctor(edit, cursor, select_cursor, old_it_line_start, old_it_char_start, old_it_line_end, old_it_char_end, new_it_line, new_it_char, content)
+	___rawset(self, "_edit", edit)
+	___rawset(self, "_cursor", cursor)
+	___rawset(self, "_select_cursor", select_cursor)
+	___rawset(self, "_old_it_line_start", old_it_line_start)
+	___rawset(self, "_old_it_char_start", old_it_char_start)
+	___rawset(self, "_old_it_line_end", old_it_line_end)
+	___rawset(self, "_old_it_char_end", old_it_char_end)
+	___rawset(self, "_new_it_line", new_it_line)
+	___rawset(self, "_new_it_char", new_it_char)
+	___rawset(self, "_content", content)
+end
+
+function AUICodeDeleteSelectRevoke:Forward()
+	self._select_cursor:StartLineChar(self._old_it_line_start, self._old_it_char_start)
+	self._select_cursor:UpdateLineChar(self._old_it_line_end, self._old_it_char_end)
+	self._select_cursor:DeleteSelect(false)
+	self._cursor:SetLineChar(self._new_it_line, self._new_it_char)
+	self._edit:DispatchEvent(___all_struct[958494922], {})
+end
+
+function AUICodeDeleteSelectRevoke:Back()
+	self._cursor:SetLineChar(self._new_it_line, self._new_it_char)
+	self._edit:InsertText(self._content, false)
+	self._edit:DispatchEvent(___all_struct[958494922], {})
+end
+

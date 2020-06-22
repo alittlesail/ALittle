@@ -7,12 +7,23 @@ struct IDECodeModuleInfo
 	string root_path;
 }
 
+struct IDECodeFileSearchInfo
+{
+    List<IDECodeTreeLogic> list;
+	int count;
+	int index;
+	string name;
+}
+
 public class IDEUICodeList : ALittle.DisplayLayout
 {	
 	private ALittle.ScrollScreen _code_scroll_screen;
 	private ALittle.DisplayObject _code_search_key;
-	private ALittle.DisplayObject _code_search_type;
 	private ALittle.TextRadioButtonGroup _group;
+	private IDECodeFileSearchInfo _search_info;                // 搜索集合
+
+	private ALittle.LoopLinear _tree_loop_x;
+	private ALittle.LoopLinear _tree_loop_y;
 
 	public ctor(ALittle.ControlSystem ctrl_sys)
 	{
@@ -74,8 +85,56 @@ public class IDEUICodeList : ALittle.DisplayLayout
         }
     }
 
+	// 在树形区域，设置控件焦点
+	public fun ShowTreeItemFocus(IDECodeTreeLogic target)
+    {
+        // 显示
+        target.ShowSelect();
+
+		if (target != this._code_scroll_screen)
+        {
+            var parent = cast<IDEUITreeLogic>(target.logic_parent);
+			while (parent != null && parent != this._code_scroll_screen)
+            {
+                parent.fold = true;
+                parent = cast<IDEUITreeLogic>(parent.logic_parent);
+			}
+		}
+        this._code_scroll_screen.RejustScrollBar();
+
+		// 如果现在直接看的见的话，就直接返回了
+        var x, y = target.LocalToGlobal(this._code_scroll_screen.container);
+        var target_x = (this._code_scroll_screen.view_width - target.width / 2) / 2 - x;
+        var target_y = (this._code_scroll_screen.view_height - target.height) / 2 - y;
+
+        if (this._tree_loop_x != null) { this._tree_loop_x.Stop(); this._tree_loop_x = null; }
+        if (this._tree_loop_y != null) { this._tree_loop_y.Stop(); this._tree_loop_y = null; }
+
+        this._tree_loop_x = new ALittle.LoopLinear(this._code_scroll_screen, "container_x", target_x, 300, 0);
+        this._tree_loop_x.Start();
+        this._tree_loop_y = new ALittle.LoopLinear(this._code_scroll_screen, "container_y", target_y, 300, 0);
+        this._tree_loop_y.Start();
+	}
+
 	private fun HandleCodeSearchClick(ALittle.UIEvent event)
 	{
-        
+		if (this._search_info == null || this._search_info.name != this._code_search_key.text)
+		{
+            this._search_info = new IDECodeFileSearchInfo();
+			this._search_info.name = this._code_search_key.text;
+			this._search_info.index = 0;
+			this._search_info.list = new List<IDECodeTreeLogic>();
+			for (var index, child:IDECodeTreeLogic in this._code_scroll_screen.childs)
+                child.SearchFile(this._search_info.name, this._search_info.list);
+			this._search_info.count = ALittle.List_MaxN(this._search_info.list);
+        }
+
+		if (this._search_info.count <= 0) return;
+
+		this._search_info.index += 1;
+		if (this._search_info.index > this._search_info.count)
+			this._search_info.index = 1;
+		var item = this._search_info.list[this._search_info.index];
+		this.ShowTreeItemFocus(item);
     }
 }

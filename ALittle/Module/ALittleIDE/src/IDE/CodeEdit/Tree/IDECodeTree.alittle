@@ -115,17 +115,6 @@ public class IDECodeTree : IDECodeTreeLogic
 		return list;
 	}
 	
-	// 搜索类/枚举/结构体名
-	public fun SearchDefine(string name, [Nullable] List<IDECodeTreeLogic> list) : List<IDECodeTreeLogic>
-	{
-		if (list == null) list = new List<IDECodeTreeLogic>();
-	
-		for (var k, child:IDECodeTreeLogic in this._body.childs)
-			child.SearchDefine(name, list);
-	
-		return list;
-	}
-	
 	public fun HandleChildResize(ALittle.UIResizeEvent event)
 	{
 		this.DispatchEvent(new ALittle.UIResizeEvent());

@@ -37,11 +37,4 @@ public class IDECodeTreeItem : IDECodeTreeLogic
 			ALittle.List_Push(list, this);
 		return list;
 	}
-	
-	// 搜索类/枚举/结构体名
-	public fun SearchDefine(string name, [Nullable] List<IDECodeTreeLogic> list) : List<IDECodeTreeLogic>
-	{
-		if (list == null) list = new List<IDECodeTreeLogic>();
-		return list;
-	}
 }

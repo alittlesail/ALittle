@@ -18,6 +18,12 @@ name_list = {"target"},
 type_list = {"ALittle.EventDispatcher"},
 option_map = {}
 })
+ALittle.RegStruct(-889634858, "ALittleIDE.IDECodeFileSearchInfo", {
+name = "ALittleIDE.IDECodeFileSearchInfo", ns_name = "ALittleIDE", rl_name = "IDECodeFileSearchInfo", hash_code = -889634858,
+name_list = {"list","count","index","name"},
+type_list = {"List<ALittleIDE.IDECodeTreeLogic>","int","int","string"},
+option_map = {}
+})
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
 IDEUICodeList = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDEUICodeList")
@@ -69,6 +75,52 @@ function IDEUICodeList:HandleProjectOpen(event)
 	end
 end
 
+function IDEUICodeList:ShowTreeItemFocus(target)
+	target:ShowSelect()
+	if target ~= self._code_scroll_screen then
+		local parent = target.logic_parent
+		while parent ~= nil and parent ~= self._code_scroll_screen do
+			parent.fold = true
+			parent = parent.logic_parent
+		end
+	end
+	self._code_scroll_screen:RejustScrollBar()
+	local x, y = target:LocalToGlobal(self._code_scroll_screen.container)
+	local target_x = (self._code_scroll_screen.view_width - target.width / 2) / 2 - x
+	local target_y = (self._code_scroll_screen.view_height - target.height) / 2 - y
+	if self._tree_loop_x ~= nil then
+		self._tree_loop_x:Stop()
+		self._tree_loop_x = nil
+	end
+	if self._tree_loop_y ~= nil then
+		self._tree_loop_y:Stop()
+		self._tree_loop_y = nil
+	end
+	self._tree_loop_x = ALittle.LoopLinear(self._code_scroll_screen, "container_x", target_x, 300, 0)
+	self._tree_loop_x:Start()
+	self._tree_loop_y = ALittle.LoopLinear(self._code_scroll_screen, "container_y", target_y, 300, 0)
+	self._tree_loop_y:Start()
+end
+
 function IDEUICodeList:HandleCodeSearchClick(event)
+	if self._search_info == nil or self._search_info.name ~= self._code_search_key.text then
+		self._search_info = {}
+		self._search_info.name = self._code_search_key.text
+		self._search_info.index = 0
+		self._search_info.list = {}
+		for index, child in ___ipairs(self._code_scroll_screen.childs) do
+			child:SearchFile(self._search_info.name, self._search_info.list)
+		end
+		self._search_info.count = ALittle.List_MaxN(self._search_info.list)
+	end
+	if self._search_info.count <= 0 then
+		return
+	end
+	self._search_info.index = self._search_info.index + (1)
+	if self._search_info.index > self._search_info.count then
+		self._search_info.index = 1
+	end
+	local item = self._search_info.list[self._search_info.index]
+	self:ShowTreeItemFocus(item)
 end
 

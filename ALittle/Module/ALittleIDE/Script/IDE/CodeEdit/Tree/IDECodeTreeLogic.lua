@@ -28,17 +28,16 @@ end
 function IDECodeTreeLogic.__setter:fold(value)
 end
 
+function IDECodeTreeLogic:ShowSelect()
+	if self._item_button ~= nil then
+		self._item_button.selected = true
+	end
+end
+
 function IDECodeTreeLogic:Refresh()
 end
 
 function IDECodeTreeLogic:SearchFile(name, list)
-	if list == nil then
-		list = {}
-	end
-	return list
-end
-
-function IDECodeTreeLogic:SearchDefine(name, list)
 	if list == nil then
 		list = {}
 	end

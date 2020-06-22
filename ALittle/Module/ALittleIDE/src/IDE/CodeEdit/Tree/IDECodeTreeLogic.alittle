@@ -20,18 +20,15 @@ public class IDECodeTreeLogic : ALittle.DisplayLayout
 	public get is_tree() : bool { return false; }
 	public get is_root() : bool { return this._user_info.root; }
 	public set fold(bool value) { }
+	public fun ShowSelect()
+	{
+		if (this._item_button != null) this._item_button.selected = true;
+	}
 
 	public fun Refresh() {}
 	
 	// 搜索文件
 	public fun SearchFile(string name, [Nullable] List<IDECodeTreeLogic> list) : List<IDECodeTreeLogic>
-	{
-		if (list == null) list = new List<IDECodeTreeLogic>();
-		return list;
-	}
-	
-	// 搜索类/枚举/结构体名
-	public fun SearchDefine(string name, [Nullable] List<IDECodeTreeLogic> list) : List<IDECodeTreeLogic>
 	{
 		if (list == null) list = new List<IDECodeTreeLogic>();
 		return list;

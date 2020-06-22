@@ -32,6 +32,7 @@ public class IDEAttrControlDialog
 
         this._dialog.x = A_UISystem.mouse_x + 50;
 		this._dialog.y = A_UISystem.mouse_y - (this._dialog.height - target.height) / 2;
+		if (this._dialog.y < 0) this._dialog.y = 0;
 
 		if (this._dialog.x + this._dialog.width > A_UISystem.view_width)
 			this._dialog.x = A_UISystem.view_width - this._dialog.width;

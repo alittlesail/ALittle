@@ -34,6 +34,9 @@ function IDEAttrControlDialog:ShowDialog(target)
 	self._dialog.visible = true
 	self._dialog.x = A_UISystem.mouse_x + 50
 	self._dialog.y = A_UISystem.mouse_y - (self._dialog.height - target.height) / 2
+	if self._dialog.y < 0 then
+		self._dialog.y = 0
+	end
 	if self._dialog.x + self._dialog.width > A_UISystem.view_width then
 		self._dialog.x = A_UISystem.view_width - self._dialog.width
 	end

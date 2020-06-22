@@ -59,10 +59,3 @@ function IDECodeTreeItem:SearchFile(name, list)
 	return list
 end
 
-function IDECodeTreeItem:SearchDefine(name, list)
-	if list == nil then
-		list = {}
-	end
-	return list
-end
-

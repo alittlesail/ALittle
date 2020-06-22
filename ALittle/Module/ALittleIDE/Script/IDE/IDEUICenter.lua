@@ -147,6 +147,12 @@ function IDEUICenter:HandleQuickFoldChanged(event)
 end
 
 function IDEUICenter:HandleShortcutKey()
+	if A_UISystem.sym_map[27] then
+		if g_IDEAttrControlDialog.dialog.visible then
+			g_IDEAttrControlDialog:HideDialog()
+			return
+		end
+	end
 	local ctrl = A_UISystem.sym_map[1073742048]
 	if ctrl == nil then
 		return

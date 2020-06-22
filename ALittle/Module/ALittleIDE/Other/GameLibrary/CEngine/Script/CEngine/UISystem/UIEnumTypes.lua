@@ -54,6 +54,7 @@ UIEnumTypes = {
 	KMOD_SHIFT = 0x0003,
 	KMOD_ALT = 0x0300,
 	KMOD_GUI = 0x0c00,
+	KEY_ESC = 27,
 	KEY_Z = 122,
 	KEY_S = 115,
 	KEY_N = 110,

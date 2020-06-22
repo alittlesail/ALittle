@@ -127,16 +127,6 @@ function IDECodeTree:SearchFile(name, list)
 	return list
 end
 
-function IDECodeTree:SearchDefine(name, list)
-	if list == nil then
-		list = {}
-	end
-	for k, child in ___ipairs(self._body.childs) do
-		child:SearchDefine(name, list)
-	end
-	return list
-end
-
 function IDECodeTree:HandleChildResize(event)
 	self:DispatchEvent(___all_struct[-431205740], {})
 end

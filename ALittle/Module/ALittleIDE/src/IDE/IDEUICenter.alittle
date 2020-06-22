@@ -145,6 +145,16 @@ protected class IDEUICenter : ALittle.DisplayLayout
 	// 处理快捷点
 	public fun HandleShortcutKey()
 	{
+		// 判断ESC
+		if (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_ESC])
+		{
+            if (g_IDEAttrControlDialog.dialog.visible)
+			{
+                g_IDEAttrControlDialog.HideDialog();
+				return;
+            }
+        }
+
 		// 判定Ctrl键是否按下
 		var ctrl = A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_CTRL];
 		if (ctrl == null) return;

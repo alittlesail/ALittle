@@ -379,7 +379,7 @@ public class IDEUITabChild : IDETabChild
         }
 		else
         {
-            var revoke_bind = new IDERevokeBind();
+            var revoke_bind = new ALittle.RevokeBind();
 			if (align_type == "h_align_left")
             {
                 var common = first_target.user_info.object.x;
@@ -1025,7 +1025,7 @@ public class IDEUITabChild : IDETabChild
             {
                 ALittle.List_Sort(copy_list, IDEUITabChild.ControlCopyInfoCmp);
                 ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list));
-                var revoke_bind = new IDERevokeBind();
+                var revoke_bind = new ALittle.RevokeBind();
 				for (var target, handle_info in this._tab_quad_map)
                     handle_info.target.TreeCut(revoke_bind);
                 this._revoke_list.PushRevoke(revoke_bind);
@@ -1035,7 +1035,7 @@ public class IDEUITabChild : IDETabChild
 	    //处理Delete键
 		if (event.sym == 127)
         {
-            var revoke_bind = new IDERevokeBind();
+            var revoke_bind = new ALittle.RevokeBind();
             var has_target = false;
 			for (var target, handle_info in this._tab_quad_map)
             {
@@ -1092,7 +1092,7 @@ public class IDEUITabChild : IDETabChild
             return;
 	
 		// 创建一批撤销
-        var revoke_bind = new IDERevokeBind();
+        var revoke_bind = new ALittle.RevokeBind();
 	
 		// 开始拖动
         var has_target = false;
@@ -1191,7 +1191,7 @@ public class IDEUITabChild : IDETabChild
 	public fun HandleHandleQuadDragEnd(ALittle.UIButtonDragEndEvent event)
     {
 		// 创建一批撤销
-        var revoke_bind = new IDERevokeBind();
+        var revoke_bind = new ALittle.RevokeBind();
 	
         var has_target = false;
 		for (var target, handle_info in this._tab_quad_map)
@@ -1355,7 +1355,7 @@ public class IDEUITabChild : IDETabChild
 		}
 	}
 	// 实际处理粘贴的函数
-	public fun RightControlTreePasteImpl(IDEUITreeLogic target, [Nullable] List<IDEControlCopyInfo> copy_list, [Nullable] int child_index, [Nullable] IDERevokeBind revoke_bind,  [Nullable] Functor<(bool, List<IDEUITreeLogic>)> callback)
+	public fun RightControlTreePasteImpl(IDEUITreeLogic target, [Nullable] List<IDEControlCopyInfo> copy_list, [Nullable] int child_index, [Nullable] ALittle.RevokeBind revoke_bind,  [Nullable] Functor<(bool, List<IDEUITreeLogic>)> callback)
     {
 		// 获取剪切板内容
 		if (copy_list == null)
@@ -1397,7 +1397,7 @@ public class IDEUITabChild : IDETabChild
         {
             var add_list = new List<IDEUITreeLogic>();
             var add_list_count = 0;
-            var inner_revoke_bind = new IDERevokeBind();
+            var inner_revoke_bind = new ALittle.RevokeBind();
 			for (var k, info in copy_list)
             {
 				if (k == 1)
@@ -1444,7 +1444,7 @@ public class IDEUITabChild : IDETabChild
 	public fun Delete(IDEUITreeLogic target)
     {
 		// 执行删除
-        var revoke_bind = new IDERevokeBind();
+        var revoke_bind = new ALittle.RevokeBind();
         var has_target = false;
 		for (var child, handle_info in this._tab_quad_map)
         {
@@ -1475,7 +1475,7 @@ public class IDEUITabChild : IDETabChild
         {
             ALittle.List_Sort(copy_list, IDEUITabChild.ControlCopyInfoCmp);
             ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list));
-            var revoke_bind = new IDERevokeBind();
+            var revoke_bind = new ALittle.RevokeBind();
 			for (var child, handle_info in this._tab_quad_map)
                 handle_info.target.TreeCut(revoke_bind);
             this._revoke_list.PushRevoke(revoke_bind);
@@ -1725,7 +1725,7 @@ public class IDEUITabChild : IDETabChild
 	public fun QuickDragAddStart(IDEUITreeLogic tree, IDEUITabChildQuickDragAddUserData user_data)
     {
 		// 定义撤销
-        var revoke_bind = new IDERevokeBind();
+        var revoke_bind = new ALittle.RevokeBind();
 	
         var display_info = new ALittle.DisplayInfo();
         display_info.__extends = user_data.control_name;
@@ -1738,7 +1738,7 @@ public class IDEUITabChild : IDETabChild
                                       , bind(this.QuickDragAddEnd, this, tree, user_data, revoke_bind));
 	}
 	
-	public fun QuickDragAddEnd(IDEUITreeLogic tree, IDEUITabChildQuickDragAddUserData user_data, IDERevokeBind revoke_bind, bool result, List<IDEUITreeLogic> add_list)
+	public fun QuickDragAddEnd(IDEUITreeLogic tree, IDEUITabChildQuickDragAddUserData user_data, ALittle.RevokeBind revoke_bind, bool result, List<IDEUITreeLogic> add_list)
     {
         if (result == false) return;
 	

@@ -34,7 +34,6 @@
     <None Include="src\IDE\CodeEdit\Tree\IDECodeTree.alittle" />
     <None Include="src\IDE\CodeEdit\Tree\IDECodeTreeItem.alittle" />
     <None Include="src\IDE\CodeEdit\Tree\IDECodeTreeLogic.alittle" />
-    <None Include="src\IDE\IDERevocation.alittle" />
     <None Include="src\IDE\IDEContentEdit.alittle" />
     <None Include="src\IDE\IDEUIAccount.alittle" />
     <None Include="src\IDE\IDECenter.alittle" />

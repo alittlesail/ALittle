@@ -392,7 +392,7 @@ function IDEUITabChild:SelectAlign(align_type)
 		local revoke = IDEDragXYRevoke(first_target, drag_x, drag_y)
 		self._revoke_list:PushRevoke(revoke)
 	else
-		local revoke_bind = IDERevokeBind()
+		local revoke_bind = ALittle.RevokeBind()
 		if align_type == "h_align_left" then
 			local common = first_target.user_info.object.x
 			for target, v in ___pairs(self._tab_quad_map) do
@@ -934,7 +934,7 @@ function IDEUITabChild:HandleHandleQuadKeyDown(event)
 		if copy_list_count > 0 then
 			ALittle.List_Sort(copy_list, IDEUITabChild.ControlCopyInfoCmp)
 			ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list))
-			local revoke_bind = IDERevokeBind()
+			local revoke_bind = ALittle.RevokeBind()
 			for target, handle_info in ___pairs(self._tab_quad_map) do
 				handle_info.target:TreeCut(revoke_bind)
 			end
@@ -943,7 +943,7 @@ function IDEUITabChild:HandleHandleQuadKeyDown(event)
 		return
 	end
 	if event.sym == 127 then
-		local revoke_bind = IDERevokeBind()
+		local revoke_bind = ALittle.RevokeBind()
 		local has_target = false
 		for target, handle_info in ___pairs(self._tab_quad_map) do
 			handle_info.target:TreeDelete(revoke_bind)
@@ -992,7 +992,7 @@ function IDEUITabChild:HandleHandleQuadKeyDown(event)
 	if g_IDEEnum.can_move_child_map[common_parent.user_info.default.__class] == nil then
 		return
 	end
-	local revoke_bind = IDERevokeBind()
+	local revoke_bind = ALittle.RevokeBind()
 	local has_target = false
 	for target, handle_info in ___pairs(self._tab_quad_map) do
 		target:DragXY(delta_x, delta_y)
@@ -1066,7 +1066,7 @@ function IDEUITabChild:HandleHandleQuadDrag(event)
 end
 
 function IDEUITabChild:HandleHandleQuadDragEnd(event)
-	local revoke_bind = IDERevokeBind()
+	local revoke_bind = ALittle.RevokeBind()
 	local has_target = false
 	for target, handle_info in ___pairs(self._tab_quad_map) do
 		has_target = true
@@ -1223,7 +1223,7 @@ function IDEUITabChild:RightControlTreePasteImpl(target, copy_list, child_index,
 	if g_IDEEnum.can_add_child_map[clazz] and g_IDEEnum.child_show_map[clazz] == nil then
 		local add_list = {}
 		local add_list_count = 0
-		local inner_revoke_bind = IDERevokeBind()
+		local inner_revoke_bind = ALittle.RevokeBind()
 		for k, info in ___ipairs(copy_list) do
 			if k == 1 then
 				local tree_object = target:TreePaste(info.info, "child", child_index, false, inner_revoke_bind)
@@ -1264,7 +1264,7 @@ function IDEUITabChild:Paste(target)
 end
 
 function IDEUITabChild:Delete(target)
-	local revoke_bind = IDERevokeBind()
+	local revoke_bind = ALittle.RevokeBind()
 	local has_target = false
 	for child, handle_info in ___pairs(self._tab_quad_map) do
 		handle_info.target:TreeDelete(revoke_bind)
@@ -1290,7 +1290,7 @@ function IDEUITabChild:Cut(target)
 	if copy_list_count > 0 then
 		ALittle.List_Sort(copy_list, IDEUITabChild.ControlCopyInfoCmp)
 		ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list))
-		local revoke_bind = IDERevokeBind()
+		local revoke_bind = ALittle.RevokeBind()
 		for child, handle_info in ___pairs(self._tab_quad_map) do
 			handle_info.target:TreeCut(revoke_bind)
 		end
@@ -1513,7 +1513,7 @@ function IDEUITabChild:QuickDragAddControl(abs_x, abs_y, control_name)
 end
 
 function IDEUITabChild:QuickDragAddStart(tree, user_data)
-	local revoke_bind = IDERevokeBind()
+	local revoke_bind = ALittle.RevokeBind()
 	local display_info = {}
 	display_info.__extends = user_data.control_name
 	local info = {}

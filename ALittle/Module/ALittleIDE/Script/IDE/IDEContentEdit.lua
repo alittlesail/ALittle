@@ -55,7 +55,7 @@ IDETabChild = Lua.Class(ALittle.UIEventDispatcher, "ALittleIDE.IDETabChild")
 function IDETabChild:Ctor(ctrl_sys, name, save)
 	___rawset(self, "_name", name)
 	___rawset(self, "_save", save)
-	___rawset(self, "_revoke_list", IDERevokeList())
+	___rawset(self, "_revoke_list", ALittle.RevokeList())
 end
 
 function IDETabChild.__getter:id()

@@ -45,7 +45,7 @@ function Grid9ImageS:HandleAutoCut(event)
 	if display_info == nil then
 		return
 	end
-	local revoke_bind = IDERevokeBind()
+	local revoke_bind = ALittle.RevokeBind()
 	self._left_size.text = display_info.left_size
 	self:ValueNumInputChange("left_size", false, revoke_bind)
 	self._right_size.text = display_info.right_size

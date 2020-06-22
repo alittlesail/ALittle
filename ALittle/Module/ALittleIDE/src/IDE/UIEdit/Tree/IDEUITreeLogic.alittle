@@ -199,7 +199,7 @@ public class IDEUITreeLogic : ALittle.DisplayLayout
 		copy_list[1] = info;
 		ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list));
 	
-		var revoke_bind = new IDERevokeBind();
+		var revoke_bind = new ALittle.RevokeBind();
 		if (tree.is_tree)
 			this._tab_child.RightControlTreePasteImpl(tree, null, 1, revoke_bind, bind(this.HandleDragEndAndCut, this, revoke_bind));
 		else
@@ -220,7 +220,7 @@ public class IDEUITreeLogic : ALittle.DisplayLayout
 	}
 	
 	// 处理Drag的最后一步
-	public fun HandleDragEndAndCut(IDERevokeBind revoke_bind, bool result, List<IDEUITreeLogic> list)
+	public fun HandleDragEndAndCut(ALittle.RevokeBind revoke_bind, bool result, List<IDEUITreeLogic> list)
 	{
 		if (result == false) return;
 		this.TreeCut(revoke_bind);
@@ -268,10 +268,10 @@ public class IDEUITreeLogic : ALittle.DisplayLayout
 	// }
 	
 	// 粘帖
-	public fun TreePaste(ALittle.DisplayInfo info, string child_type, int child_index, bool is_group, IDERevokeBind revoke_bind) : IDEUITreeLogic
+	public fun TreePaste(ALittle.DisplayInfo info, string child_type, int child_index, bool is_group, ALittle.RevokeBind revoke_bind) : IDEUITreeLogic
 	{
 		// 撤销
-		var inner_revoke_bind = new IDERevokeBind();
+		var inner_revoke_bind = new ALittle.RevokeBind();
 	
 		// 如果是show，那么就移除对应的show
 		if (child_type != "child" && cast<Map<string,any>>(this._user_info.object)[child_type] != null)
@@ -329,7 +329,7 @@ public class IDEUITreeLogic : ALittle.DisplayLayout
 		if (extends_name != "" && extends_info == null) return null;
 	
 		// 定义撤销
-		var revoke_bind = new IDERevokeBind();
+		var revoke_bind = new ALittle.RevokeBind();
 	
 		// 如果是show，那么就移除对应的show
 		if (child_type != "child" && cast<Map<string,any>>(this._user_info.object)[child_type] != null)
@@ -414,7 +414,7 @@ public class IDEUITreeLogic : ALittle.DisplayLayout
 		if (extends_name != "" && extends_info == null) return;
 	
 		// 定义撤销
-		var revoke_bind = new IDERevokeBind();
+		var revoke_bind = new ALittle.RevokeBind();
 	
 		// 获取父节点
 		var target_parent = cast<IDEUITreeLogic>(this._logic_parent);
@@ -601,7 +601,7 @@ public class IDEUITreeLogic : ALittle.DisplayLayout
 	}
 	
 	// 删除
-	public fun TreeDelete([Nullable] IDERevokeBind revoke_bind)
+	public fun TreeDelete([Nullable] ALittle.RevokeBind revoke_bind)
 	{
 		var parent = cast<IDEUITreeLogic>(this._logic_parent);
 		if (parent == null) return;
@@ -631,7 +631,7 @@ public class IDEUITreeLogic : ALittle.DisplayLayout
 	}
 	
 	// 剪切
-	public fun TreeCut([Nullable] IDERevokeBind revoke_bind)
+	public fun TreeCut([Nullable] ALittle.RevokeBind revoke_bind)
 	{
 		// 删除
 		var parent = cast<IDEUITreeLogic>(this._logic_parent);

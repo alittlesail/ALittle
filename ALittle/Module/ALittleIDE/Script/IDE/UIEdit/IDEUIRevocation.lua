@@ -19,8 +19,8 @@ type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
 
-assert(ALittleIDE.IDERevokeObject, " extends class:ALittleIDE.IDERevokeObject is nil")
-IDETextEditRevoke = Lua.Class(ALittleIDE.IDERevokeObject, "ALittleIDE.IDETextEditRevoke")
+assert(ALittle.RevokeObject, " extends class:ALittle.RevokeObject is nil")
+IDETextEditRevoke = Lua.Class(ALittle.RevokeObject, "ALittleIDE.IDETextEditRevoke")
 
 function IDETextEditRevoke:Ctor(target, old_text, new_text)
 	___rawset(self, "_target", target)
@@ -36,8 +36,8 @@ function IDETextEditRevoke:Back()
 	self._target.text = self._old_text
 end
 
-assert(ALittleIDE.IDERevokeObject, " extends class:ALittleIDE.IDERevokeObject is nil")
-IDEDeleteRevoke = Lua.Class(ALittleIDE.IDERevokeObject, "ALittleIDE.IDEDeleteRevoke")
+assert(ALittle.RevokeObject, " extends class:ALittle.RevokeObject is nil")
+IDEDeleteRevoke = Lua.Class(ALittle.RevokeObject, "ALittleIDE.IDEDeleteRevoke")
 
 function IDEDeleteRevoke:Ctor(parent, current, index)
 	___rawset(self, "_parent", parent)
@@ -82,8 +82,8 @@ function IDEDeleteRevoke:Back()
 	current.tab_child.save = false
 end
 
-assert(ALittleIDE.IDERevokeObject, " extends class:ALittleIDE.IDERevokeObject is nil")
-IDEChildShowRevoke = Lua.Class(ALittleIDE.IDERevokeObject, "ALittleIDE.IDEChildShowRevoke")
+assert(ALittle.RevokeObject, " extends class:ALittle.RevokeObject is nil")
+IDEChildShowRevoke = Lua.Class(ALittle.RevokeObject, "ALittleIDE.IDEChildShowRevoke")
 
 function IDEChildShowRevoke:Ctor(parent, current, index)
 	___rawset(self, "_parent", parent)
@@ -128,8 +128,8 @@ function IDEChildShowRevoke:Back()
 	current.tab_child.save = false
 end
 
-assert(ALittleIDE.IDERevokeObject, " extends class:ALittleIDE.IDERevokeObject is nil")
-IDEDragXYRevoke = Lua.Class(ALittleIDE.IDERevokeObject, "ALittleIDE.IDEDragXYRevoke")
+assert(ALittle.RevokeObject, " extends class:ALittle.RevokeObject is nil")
+IDEDragXYRevoke = Lua.Class(ALittle.RevokeObject, "ALittleIDE.IDEDragXYRevoke")
 
 function IDEDragXYRevoke:Ctor(target, delta_x, delta_y)
 	___rawset(self, "_target", target)
@@ -149,8 +149,8 @@ function IDEDragXYRevoke:Back()
 	self._target.tab_child.save = false
 end
 
-assert(ALittleIDE.IDERevokeObject, " extends class:ALittleIDE.IDERevokeObject is nil")
-IDEDragWHRevoke = Lua.Class(ALittleIDE.IDERevokeObject, "ALittleIDE.IDEDragWHRevoke")
+assert(ALittle.RevokeObject, " extends class:ALittle.RevokeObject is nil")
+IDEDragWHRevoke = Lua.Class(ALittle.RevokeObject, "ALittleIDE.IDEDragWHRevoke")
 
 function IDEDragWHRevoke:Ctor(target, delta_x, delta_y)
 	___rawset(self, "_target", target)
@@ -170,8 +170,8 @@ function IDEDragWHRevoke:Back()
 	self._target.tab_child.save = false
 end
 
-assert(ALittleIDE.IDERevokeObject, " extends class:ALittleIDE.IDERevokeObject is nil")
-IDEChildUpDownRevoke = Lua.Class(ALittleIDE.IDERevokeObject, "ALittleIDE.IDEChildUpDownRevoke")
+assert(ALittle.RevokeObject, " extends class:ALittle.RevokeObject is nil")
+IDEChildUpDownRevoke = Lua.Class(ALittle.RevokeObject, "ALittleIDE.IDEChildUpDownRevoke")
 
 function IDEChildUpDownRevoke:Ctor(parent, current, up_down)
 	___rawset(self, "_parent", parent)
@@ -207,8 +207,8 @@ function IDEChildUpDownRevoke:Back()
 	parent.user_info.object:SetChildIndex(current.user_info.object, index)
 end
 
-assert(ALittleIDE.IDERevokeObject, " extends class:ALittleIDE.IDERevokeObject is nil")
-IDENatureChangeRevoke = Lua.Class(ALittleIDE.IDERevokeObject, "ALittleIDE.IDENatureChangeRevoke")
+assert(ALittle.RevokeObject, " extends class:ALittle.RevokeObject is nil")
+IDENatureChangeRevoke = Lua.Class(ALittle.RevokeObject, "ALittleIDE.IDENatureChangeRevoke")
 
 function IDENatureChangeRevoke:Ctor(target, nature, old_base, new_base, old_object, new_object, text, need_reset)
 	___rawset(self, "_target", target)
@@ -249,8 +249,8 @@ function IDENatureChangeRevoke:Back()
 	self._target.tab_child.save = false
 end
 
-assert(ALittleIDE.IDERevokeObject, " extends class:ALittleIDE.IDERevokeObject is nil")
-IDECreateAntiRevoke = Lua.Class(ALittleIDE.IDERevokeObject, "ALittleIDE.IDECreateAntiRevoke")
+assert(ALittle.RevokeObject, " extends class:ALittle.RevokeObject is nil")
+IDECreateAntiRevoke = Lua.Class(ALittle.RevokeObject, "ALittleIDE.IDECreateAntiRevoke")
 
 function IDECreateAntiRevoke:Ctor(target, name, info, item)
 	___rawset(self, "_target", target)
@@ -279,8 +279,8 @@ function IDECreateAntiRevoke:Back()
 	self._target.tab_child.save = false
 end
 
-assert(ALittleIDE.IDERevokeObject, " extends class:ALittleIDE.IDERevokeObject is nil")
-IDEDeleteAntiRevoke = Lua.Class(ALittleIDE.IDERevokeObject, "ALittleIDE.IDEDeleteAntiRevoke")
+assert(ALittle.RevokeObject, " extends class:ALittle.RevokeObject is nil")
+IDEDeleteAntiRevoke = Lua.Class(ALittle.RevokeObject, "ALittleIDE.IDEDeleteAntiRevoke")
 
 function IDEDeleteAntiRevoke:Ctor(target, name, info, item, child_index)
 	___rawset(self, "_target", target)
@@ -310,8 +310,8 @@ function IDEDeleteAntiRevoke:Back()
 	self._target.tab_child.save = false
 end
 
-assert(ALittleIDE.IDERevokeObject, " extends class:ALittleIDE.IDERevokeObject is nil")
-IDEAntiAddAttrRevoke = Lua.Class(ALittleIDE.IDERevokeObject, "ALittleIDE.IDEAntiAddAttrRevoke")
+assert(ALittle.RevokeObject, " extends class:ALittle.RevokeObject is nil")
+IDEAntiAddAttrRevoke = Lua.Class(ALittle.RevokeObject, "ALittleIDE.IDEAntiAddAttrRevoke")
 
 function IDEAntiAddAttrRevoke:Ctor(target, name, info, anti_item, link_item)
 	___rawset(self, "_target", target)
@@ -361,8 +361,8 @@ function IDEAntiAddAttrRevoke:Back()
 	self._target.tab_child.save = false
 end
 
-assert(ALittleIDE.IDERevokeObject, " extends class:ALittleIDE.IDERevokeObject is nil")
-IDEAntiRemoveAttrRevoke = Lua.Class(ALittleIDE.IDERevokeObject, "ALittleIDE.IDEAntiRemoveAttrRevoke")
+assert(ALittle.RevokeObject, " extends class:ALittle.RevokeObject is nil")
+IDEAntiRemoveAttrRevoke = Lua.Class(ALittle.RevokeObject, "ALittleIDE.IDEAntiRemoveAttrRevoke")
 
 function IDEAntiRemoveAttrRevoke:Ctor(target, name, info, anti_item, link_item, child_index)
 	___rawset(self, "_target", target)
@@ -413,8 +413,8 @@ function IDEAntiRemoveAttrRevoke:Back()
 	self._target.tab_child.save = false
 end
 
-assert(ALittleIDE.IDERevokeObject, " extends class:ALittleIDE.IDERevokeObject is nil")
-IDEAntiInsertLoopRevoke = Lua.Class(ALittleIDE.IDERevokeObject, "ALittleIDE.IDEAntiInsertLoopRevoke")
+assert(ALittle.RevokeObject, " extends class:ALittle.RevokeObject is nil")
+IDEAntiInsertLoopRevoke = Lua.Class(ALittle.RevokeObject, "ALittleIDE.IDEAntiInsertLoopRevoke")
 
 function IDEAntiInsertLoopRevoke:Ctor(target, info, loop_item, child_index)
 	___rawset(self, "_target", target)
@@ -438,8 +438,8 @@ function IDEAntiInsertLoopRevoke:Back()
 	self._target.panel.tab_child.save = false
 end
 
-assert(ALittleIDE.IDERevokeObject, " extends class:ALittleIDE.IDERevokeObject is nil")
-IDEAntiDeleteLoopRevoke = Lua.Class(ALittleIDE.IDERevokeObject, "ALittleIDE.IDEAntiDeleteLoopRevoke")
+assert(ALittle.RevokeObject, " extends class:ALittle.RevokeObject is nil")
+IDEAntiDeleteLoopRevoke = Lua.Class(ALittle.RevokeObject, "ALittleIDE.IDEAntiDeleteLoopRevoke")
 
 function IDEAntiDeleteLoopRevoke:Ctor(target, info, loop_item, child_index)
 	___rawset(self, "_target", target)
@@ -463,8 +463,8 @@ function IDEAntiDeleteLoopRevoke:Back()
 	self._target.panel.tab_child.save = false
 end
 
-assert(ALittleIDE.IDERevokeObject, " extends class:ALittleIDE.IDERevokeObject is nil")
-IDEAntiClearLoopRevoke = Lua.Class(ALittleIDE.IDERevokeObject, "ALittleIDE.IDEAntiClearLoopRevoke")
+assert(ALittle.RevokeObject, " extends class:ALittle.RevokeObject is nil")
+IDEAntiClearLoopRevoke = Lua.Class(ALittle.RevokeObject, "ALittleIDE.IDEAntiClearLoopRevoke")
 
 function IDEAntiClearLoopRevoke:Ctor(target, info_list, loop_item_list)
 	___rawset(self, "_target", target)
@@ -487,8 +487,8 @@ function IDEAntiClearLoopRevoke:Back()
 	self._target.panel.tab_child.save = false
 end
 
-assert(ALittleIDE.IDERevokeObject, " extends class:ALittleIDE.IDERevokeObject is nil")
-IDEAntiLoopTargetValueChangeRevoke = Lua.Class(ALittleIDE.IDERevokeObject, "ALittleIDE.IDEAntiLoopTargetValueChangeRevoke")
+assert(ALittle.RevokeObject, " extends class:ALittle.RevokeObject is nil")
+IDEAntiLoopTargetValueChangeRevoke = Lua.Class(ALittle.RevokeObject, "ALittleIDE.IDEAntiLoopTargetValueChangeRevoke")
 
 function IDEAntiLoopTargetValueChangeRevoke:Ctor(target, old_value, new_value)
 	___rawset(self, "_target", target)
@@ -526,8 +526,8 @@ function IDEAntiLoopTargetValueChangeRevoke:Back()
 	self._target.item.panel.tab_child.save = false
 end
 
-assert(ALittleIDE.IDERevokeObject, " extends class:ALittleIDE.IDERevokeObject is nil")
-IDEAntiLoopTotalTimeChangeRevoke = Lua.Class(ALittleIDE.IDERevokeObject, "ALittleIDE.IDEAntiLoopTotalTimeChangeRevoke")
+assert(ALittle.RevokeObject, " extends class:ALittle.RevokeObject is nil")
+IDEAntiLoopTotalTimeChangeRevoke = Lua.Class(ALittle.RevokeObject, "ALittleIDE.IDEAntiLoopTotalTimeChangeRevoke")
 
 function IDEAntiLoopTotalTimeChangeRevoke:Ctor(target, old_value, new_value)
 	___rawset(self, "_target", target)
@@ -565,8 +565,8 @@ function IDEAntiLoopTotalTimeChangeRevoke:Back()
 	self._target.item.panel.tab_child.save = false
 end
 
-assert(ALittleIDE.IDERevokeObject, " extends class:ALittleIDE.IDERevokeObject is nil")
-IDEAntiLoopDelayTimeChangeRevoke = Lua.Class(ALittleIDE.IDERevokeObject, "ALittleIDE.IDEAntiLoopDelayTimeChangeRevoke")
+assert(ALittle.RevokeObject, " extends class:ALittle.RevokeObject is nil")
+IDEAntiLoopDelayTimeChangeRevoke = Lua.Class(ALittle.RevokeObject, "ALittleIDE.IDEAntiLoopDelayTimeChangeRevoke")
 
 function IDEAntiLoopDelayTimeChangeRevoke:Ctor(target, old_value, new_value)
 	___rawset(self, "_target", target)

@@ -1,29 +1,29 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittleIDE", package.seeall)
+module("ALittle", package.seeall)
 
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-IDERevokeObject = Lua.Class(nil, "ALittleIDE.IDERevokeObject")
+RevokeObject = Lua.Class(nil, "ALittle.RevokeObject")
 
-function IDERevokeObject:Forward()
+function RevokeObject:Forward()
 end
 
-function IDERevokeObject:Back()
+function RevokeObject:Back()
 end
 
-IDERevokeList = Lua.Class(nil, "ALittleIDE.IDERevokeList")
+RevokeList = Lua.Class(nil, "ALittle.RevokeList")
 
-function IDERevokeList:Ctor()
+function RevokeList:Ctor()
 	___rawset(self, "_revoke_list", {})
 	___rawset(self, "_revoke_count", 0)
 	___rawset(self, "_revoke_index", 0)
 	___rawset(self, "_max_count", 100)
 end
 
-function IDERevokeList:PushRevoke(revoke)
+function RevokeList:PushRevoke(revoke)
 	if self._revoke_index < self._revoke_count then
 		local i = self._revoke_index + 1
 		while true do
@@ -43,7 +43,7 @@ function IDERevokeList:PushRevoke(revoke)
 	end
 end
 
-function IDERevokeList:DoRevoke()
+function RevokeList:DoRevoke()
 	if self._revoke_index >= self._revoke_count then
 		return
 	end
@@ -52,7 +52,7 @@ function IDERevokeList:DoRevoke()
 	revoke:Forward()
 end
 
-function IDERevokeList:UndoRevoke()
+function RevokeList:UndoRevoke()
 	if self._revoke_index == 0 then
 		return
 	end
@@ -61,26 +61,26 @@ function IDERevokeList:UndoRevoke()
 	self._revoke_index = self._revoke_index - 1
 end
 
-assert(ALittleIDE.IDERevokeObject, " extends class:ALittleIDE.IDERevokeObject is nil")
-IDERevokeBind = Lua.Class(ALittleIDE.IDERevokeObject, "ALittleIDE.IDERevokeBind")
+assert(ALittle.RevokeObject, " extends class:ALittle.RevokeObject is nil")
+RevokeBind = Lua.Class(ALittle.RevokeObject, "ALittle.RevokeBind")
 
-function IDERevokeBind:Ctor()
+function RevokeBind:Ctor()
 	___rawset(self, "_list", {})
 	___rawset(self, "_count", 0)
 end
 
-function IDERevokeBind:PushRevoke(revoke)
+function RevokeBind:PushRevoke(revoke)
 	self._count = self._count + 1
 	self._list[self._count] = revoke
 end
 
-function IDERevokeBind:Forward()
+function RevokeBind:Forward()
 	for k, revoke in ___ipairs(self._list) do
 		revoke:Forward()
 	end
 end
 
-function IDERevokeBind:Back()
+function RevokeBind:Back()
 	local i = self._count
 	while true do
 		if not(i >= 1) then break end

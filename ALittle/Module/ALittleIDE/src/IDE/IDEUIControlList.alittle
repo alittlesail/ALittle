@@ -39,7 +39,6 @@ public class IDEUIControlList : ALittle.DisplayLayout
 	{
         g_IDEProject.AddEventListener(this, this.HandleProjectClose);
     }
-
 	private fun HandleProjectClose(IDEProjectCloseEvent event)
 	{
         this.ClearControlItem();

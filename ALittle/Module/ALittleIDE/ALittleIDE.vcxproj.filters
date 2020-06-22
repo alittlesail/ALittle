@@ -88,9 +88,6 @@
     <None Include="src\IDE\UIEdit\Dialog\IDEAttrEventDialog.alittle">
       <Filter>源文件\IDE\UIEdit\Dialog</Filter>
     </None>
-    <None Include="src\IDE\IDERevocation.alittle">
-      <Filter>源文件\IDE</Filter>
-    </None>
     <None Include="src\IDE\UIEdit\IDEUIRevocation.alittle">
       <Filter>源文件\IDE\UIEdit</Filter>
     </None>

@@ -11,7 +11,7 @@ public class IDEAttrEventDialog
     private ALittle.ImageEdit _event_edit;
 
     private string _edit_old_text;
-    private IDERevokeList _revoke_list;
+    private ALittle.RevokeList _revoke_list;
     private ALittle.DisplayObject _select_dialog;
 
     ////////////////////////////////////////////////////////////////////////////////////////
@@ -106,7 +106,7 @@ public class IDEAttrEventDialog
         var content_str = ALittle.String_Join(content, "\n");
         this._event_edit.text = content_str;
         this._edit_old_text = content_str;
-        this._revoke_list = new IDERevokeList();
+        this._revoke_list = new ALittle.RevokeList();
     }
     
     public fun ShowEventSelectDialog(double x, double y)

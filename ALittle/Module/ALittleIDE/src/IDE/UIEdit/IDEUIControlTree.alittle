@@ -6,7 +6,7 @@ struct IDEPasteControlUserData
 	IDEUITreeLogic target;
 	ALittle.DisplayInfo info;
 	int child_index;
-	IDERevokeBind revoke_bind;
+	ALittle.RevokeBind revoke_bind;
 	Functor<(bool, List<IDEUITreeLogic>)> callback;
 }
 
@@ -224,7 +224,7 @@ public class IDEUIControlTree : ALittle.DisplayLayout
 		target.TreeReplace(extends_name, class_name, child_type);
 	}
 	// 处理粘贴
-	public fun ShowPasteDialog(IDEUITreeLogic target, ALittle.DisplayInfo info, int child_index, IDERevokeBind revoke_bind, Functor<(bool, List<IDEUITreeLogic>)> callback)
+	public fun ShowPasteDialog(IDEUITreeLogic target, ALittle.DisplayInfo info, int child_index, ALittle.RevokeBind revoke_bind, Functor<(bool, List<IDEUITreeLogic>)> callback)
 	{
 		var data_list = target.GetDataListForAdd();
 		if (ALittle.List_MaxN(data_list) == 0)

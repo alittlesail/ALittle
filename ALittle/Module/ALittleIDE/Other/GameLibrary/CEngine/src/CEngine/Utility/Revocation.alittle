@@ -1,16 +1,15 @@
-////////////////////////////////////撤销类//////////////////////////////////////////-
 
-namespace ALittleIDE;
+namespace ALittle;
 
-public class IDERevokeObject
+public class RevokeObject
 {
 	public fun Forward() {}
 	public fun Back() {}
 }
 
-public class IDERevokeList
+public class RevokeList
 {
-	private List<IDERevokeObject> _revoke_list;
+	private List<RevokeObject> _revoke_list;
 	private int _revoke_count;
 	private int _revoke_index;
 	private int _max_count;
@@ -18,14 +17,14 @@ public class IDERevokeList
 	public ctor()
 	{
 		// 当前的撤销队列
-		this._revoke_list = new List<IDERevokeObject>();
+		this._revoke_list = new List<RevokeObject>();
 		this._revoke_count = 0;
 		this._revoke_index = 0;
 	
 		this._max_count = 100;
 	}
 	
-	public fun PushRevoke(IDERevokeObject revoke)
+	public fun PushRevoke(RevokeObject revoke)
 	{
 		// 移除掉后面的撤销对象
 		if (this._revoke_index < this._revoke_count)
@@ -70,18 +69,18 @@ public class IDERevokeList
 }
 
 //////////撤销列表////////////-
-public class IDERevokeBind : IDERevokeObject
+public class RevokeBind : RevokeObject
 {
-	private List<IDERevokeObject> _list;
+	private List<RevokeObject> _list;
 	private int _count;
 
 	public ctor()
 	{
-		this._list = new List<IDERevokeObject>();
+		this._list = new List<RevokeObject>();
 		this._count = 0;
 	}
 	
-	public fun PushRevoke(IDERevokeObject revoke)
+	public fun PushRevoke(RevokeObject revoke)
 	{
 		++ this._count;
 		this._list[this._count] = revoke;

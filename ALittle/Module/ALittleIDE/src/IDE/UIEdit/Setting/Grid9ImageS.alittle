@@ -40,7 +40,7 @@ public class Grid9ImageS : Grid9S
         var image_path = this._texture_name.text;
         var display_info = IDEUIUtility_GenerateGrid9ImageInfo(g_IDEProject.project.texture_path.."/", image_path);
         if (display_info == null) return;
-        var revoke_bind = new IDERevokeBind();
+        var revoke_bind = new ALittle.RevokeBind();
         this._left_size.text = display_info.left_size;
         this.ValueNumInputChange("left_size", false, revoke_bind);
         this._right_size.text = display_info.right_size;

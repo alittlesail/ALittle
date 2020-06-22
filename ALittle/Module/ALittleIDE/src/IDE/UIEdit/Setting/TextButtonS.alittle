@@ -52,7 +52,7 @@ public class TextButtonS : DisplayLayoutS
 		var new_x = target_x;
 	
 		var list = g_IDEEnum.xy_rtype;
-		var revoke_bind = new IDERevokeBind();
+		var revoke_bind = new ALittle.RevokeBind();
 		this.TypeSelectChange("text_x_type", cast<Map<string, any>>(list), false, revoke_bind);
 	}
 	//text_x_value
@@ -168,7 +168,7 @@ public class TextButtonS : DisplayLayoutS
 	public fun HandleHandFileSelectSELECT_CHANGE(ALittle.UIEvent event)
 	{
 		var list = g_IDEEnum.select_rtype;
-		var revoke_bind = new IDERevokeBind();
+		var revoke_bind = new ALittle.RevokeBind();
 		this.TypeSelectChange("file_select", cast<Map<string, any>>(list), false, revoke_bind);
 	}
 }

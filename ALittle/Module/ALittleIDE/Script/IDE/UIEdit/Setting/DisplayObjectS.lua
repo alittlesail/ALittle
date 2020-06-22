@@ -172,7 +172,7 @@ function DisplayObjectS:HandleXTypeSELECT_CHANGE(event)
 	local target_x = object.x
 	local new_x = target_x
 	local list = g_IDEEnum.xy_rtype
-	local revoke_bind = IDERevokeBind()
+	local revoke_bind = ALittle.RevokeBind()
 	self:TypeSelectChange("x_type", list, true, revoke_bind)
 	if object.x_type == 1 then
 		new_x = target_x
@@ -219,7 +219,7 @@ function DisplayObjectS:HandleYTypeSELECT_CHANGE(event)
 	local target_y = object.y
 	local new_y = target_y
 	local list = g_IDEEnum.xy_rtype
-	local revoke_bind = IDERevokeBind()
+	local revoke_bind = ALittle.RevokeBind()
 	self:TypeSelectChange("y_type", list, true, revoke_bind)
 	if object.y_type == 1 then
 		new_y = target_y
@@ -1605,7 +1605,7 @@ function DisplayObjectS:ImagePathSelectCallback(text, callback, revoke_bind, pat
 	local new_revoke = false
 	if revoke_bind == nil then
 		new_revoke = true
-		revoke_bind = IDERevokeBind()
+		revoke_bind = ALittle.RevokeBind()
 	end
 	self:SetWType(1, revoke_bind)
 	self:SetHType(1, revoke_bind)

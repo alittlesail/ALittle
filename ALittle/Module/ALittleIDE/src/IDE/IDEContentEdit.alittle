@@ -6,7 +6,7 @@ public class IDETabChild : ALittle.UIEventDispatcher
 	private string _name;           // 当前控件名
 	private bool _save;             // 是否已保存
 	
-	private IDERevokeList _revoke_list;         // 撤销操作列表
+	private ALittle.RevokeList _revoke_list;         // 撤销操作列表
     private ALittle.ControlSystem _ctrl_sys;	// 控件系统
 
 	public ctor(ALittle.ControlSystem ctrl_sys, string name, bool save)
@@ -14,7 +14,7 @@ public class IDETabChild : ALittle.UIEventDispatcher
 		this._name = name;
 		this._save = save;
 		// 撤销列表
-		this._revoke_list = new IDERevokeList();
+		this._revoke_list = new ALittle.RevokeList();
     }
 	
 	public get id() : string { return this._name; }
@@ -22,7 +22,7 @@ public class IDETabChild : ALittle.UIEventDispatcher
 	public get save() : bool { return this._save; }
 	public set save(bool value) {}
 	public fun Save() { this.save = true; }
-	public get revoke_list() : IDERevokeList { return this._revoke_list; }
+	public get revoke_list() : ALittle.RevokeList { return this._revoke_list; }
 	public fun CanDelete(string control_name) : string { return null; }
 	public get title() : string { return this._name; }
 

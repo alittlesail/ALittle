@@ -101,6 +101,7 @@
     <None Include="src\CEngine\Utility\File.alittle" />
     <None Include="src\CEngine\Utility\ModuleSystem.alittle" />
     <None Include="src\CEngine\Utility\OtherSystem.alittle" />
+    <None Include="src\CEngine\Utility\Revocation.alittle" />
     <None Include="src\CEngine\Utility\String.alittle" />
     <None Include="src\CEngine\Utility\System.alittle" />
     <None Include="src\CEngine\Version\VersionSystem.alittle" />

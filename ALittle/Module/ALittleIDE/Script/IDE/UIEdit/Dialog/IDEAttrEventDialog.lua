@@ -105,7 +105,7 @@ function IDEAttrEventDialog:ResetText()
 	local content_str = ALittle.String_Join(content, "\n")
 	self._event_edit.text = content_str
 	self._edit_old_text = content_str
-	self._revoke_list = IDERevokeList()
+	self._revoke_list = ALittle.RevokeList()
 end
 
 function IDEAttrEventDialog:ShowEventSelectDialog(x, y)

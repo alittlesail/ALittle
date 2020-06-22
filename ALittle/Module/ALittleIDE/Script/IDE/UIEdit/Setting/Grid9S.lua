@@ -38,7 +38,7 @@ function Grid9S:HandleGrid9BottomFOCUSOUT(event)
 end
 
 function Grid9S:HandleAutoCut(event)
-	local revoke_bind = IDERevokeBind()
+	local revoke_bind = ALittle.RevokeBind()
 	self._left_size.text = 0
 	self:ValueNumInputChange("left_size", false, revoke_bind)
 	self._right_size.text = 0

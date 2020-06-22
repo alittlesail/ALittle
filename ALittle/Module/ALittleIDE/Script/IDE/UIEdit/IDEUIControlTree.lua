@@ -13,7 +13,7 @@ option_map = {}
 ALittle.RegStruct(1025287370, "ALittleIDE.IDEPasteControlUserData", {
 name = "ALittleIDE.IDEPasteControlUserData", ns_name = "ALittleIDE", rl_name = "IDEPasteControlUserData", hash_code = 1025287370,
 name_list = {"target","info","child_index","revoke_bind","callback"},
-type_list = {"ALittleIDE.IDEUITreeLogic","ALittle.DisplayInfo","int","ALittleIDE.IDERevokeBind","Functor<(bool,List<ALittleIDE.IDEUITreeLogic>)>"},
+type_list = {"ALittleIDE.IDEUITreeLogic","ALittle.DisplayInfo","int","ALittle.RevokeBind","Functor<(bool,List<ALittleIDE.IDEUITreeLogic>)>"},
 option_map = {}
 })
 ALittle.RegStruct(1653869333, "ALittle.LoopGroupInfo", {

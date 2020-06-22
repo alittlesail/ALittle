@@ -67,7 +67,7 @@ public class TextCheckButtonS : DisplayLayoutS
 		var new_x = target_x;
 	
 		var list = g_IDEEnum.xy_rtype;
-		var revoke_bind = new IDERevokeBind();
+		var revoke_bind = new ALittle.RevokeBind();
 		this.TypeSelectChange("text_x_type", cast<Map<string, any>>(list), false, revoke_bind);
 	}
 	//text_x_value

@@ -2,7 +2,7 @@
 namespace ALittleIDE;
 
 //////////文本编辑撤销类//////////-
-public class IDETextEditRevoke : IDERevokeObject
+public class IDETextEditRevoke : ALittle.RevokeObject
 {
 	private ALittle.DisplayObject _target;
 	private string _old_text;
@@ -29,7 +29,7 @@ public class IDETextEditRevoke : IDERevokeObject
 	}
 }
 	//////////删除撤销类//////////-
-public class IDEDeleteRevoke : IDERevokeObject
+public class IDEDeleteRevoke : ALittle.RevokeObject
 {	
 	private IDEUITree _parent;
 	private IDEUITreeItem _current;
@@ -89,7 +89,7 @@ public class IDEDeleteRevoke : IDERevokeObject
 	}
 }
 	//////////子控件show撤销类//////////-
-public class IDEChildShowRevoke : IDERevokeObject
+public class IDEChildShowRevoke : ALittle.RevokeObject
 {
 	private IDEUITree _parent;
 	private IDEUITreeItem _current;
@@ -147,7 +147,7 @@ public class IDEChildShowRevoke : IDERevokeObject
 	}
 }
 	//////////拖拉撤销类//////////-
-public class IDEDragXYRevoke : IDERevokeObject
+public class IDEDragXYRevoke : ALittle.RevokeObject
 {
 	private IDEUITreeLogic _target;
 	private double _delta_x;
@@ -182,7 +182,7 @@ public class IDEDragXYRevoke : IDERevokeObject
 }
 	
 	//////////拖拉撤销类//////////-
-public class IDEDragWHRevoke : IDERevokeObject
+public class IDEDragWHRevoke : ALittle.RevokeObject
 {
 	private IDEUITreeLogic _target;
 	private double _delta_x;
@@ -216,7 +216,7 @@ public class IDEDragWHRevoke : IDERevokeObject
 	}
 }	
 	//////////控件上移下移撤销类//////////-
-public class IDEChildUpDownRevoke : IDERevokeObject
+public class IDEChildUpDownRevoke : ALittle.RevokeObject
 {	
 	private IDEUITree _parent;
 	private IDEUITreeItem _current;
@@ -261,7 +261,7 @@ public class IDEChildUpDownRevoke : IDERevokeObject
 	}
 }
 	//////////面板修改撤销类//////////-
-public class IDENatureChangeRevoke : IDERevokeObject
+public class IDENatureChangeRevoke : ALittle.RevokeObject
 {
 	private IDEUITreeLogic _target;
 	private string _nature;
@@ -323,7 +323,7 @@ public class IDENatureChangeRevoke : IDERevokeObject
 
 
 //////////新建动画//////////-
-public class IDECreateAntiRevoke : IDERevokeObject
+public class IDECreateAntiRevoke : ALittle.RevokeObject
 {
 	private IDEAntiPanel _target;
 	private string _name;
@@ -365,7 +365,7 @@ public class IDECreateAntiRevoke : IDERevokeObject
 	}
 }
 
-public class IDEDeleteAntiRevoke : IDERevokeObject
+public class IDEDeleteAntiRevoke : ALittle.RevokeObject
 {
 	private IDEAntiPanel _target;
 	private string _name;
@@ -409,7 +409,7 @@ public class IDEDeleteAntiRevoke : IDERevokeObject
 	}
 }
 
-public class IDEAntiAddAttrRevoke : IDERevokeObject
+public class IDEAntiAddAttrRevoke : ALittle.RevokeObject
 {
 	private IDEAntiPanel _target;
 	private string _name;
@@ -473,7 +473,7 @@ public class IDEAntiAddAttrRevoke : IDERevokeObject
 	}
 }
 
-public class IDEAntiRemoveAttrRevoke : IDERevokeObject
+public class IDEAntiRemoveAttrRevoke : ALittle.RevokeObject
 {
 	private IDEAntiPanel _target;
 	private string _name;
@@ -539,7 +539,7 @@ public class IDEAntiRemoveAttrRevoke : IDERevokeObject
 	}
 }
 
-public class IDEAntiInsertLoopRevoke : IDERevokeObject
+public class IDEAntiInsertLoopRevoke : ALittle.RevokeObject
 {
 	private IDEAntiFrameAntiItem _target;
 	private ALittle.LoopChildInfo _info;
@@ -573,7 +573,7 @@ public class IDEAntiInsertLoopRevoke : IDERevokeObject
 	}
 }
 
-public class IDEAntiDeleteLoopRevoke : IDERevokeObject
+public class IDEAntiDeleteLoopRevoke : ALittle.RevokeObject
 {
 	private IDEAntiFrameAntiItem _target;
 	private ALittle.LoopChildInfo _info;
@@ -607,7 +607,7 @@ public class IDEAntiDeleteLoopRevoke : IDERevokeObject
 	}
 }
 
-public class IDEAntiClearLoopRevoke : IDERevokeObject
+public class IDEAntiClearLoopRevoke : ALittle.RevokeObject
 {
 	private IDEAntiFrameAntiItem _target;
 	private List<ALittle.LoopChildInfo> _info_list;
@@ -638,7 +638,7 @@ public class IDEAntiClearLoopRevoke : IDERevokeObject
 	}
 }
 
-public class IDEAntiLoopTargetValueChangeRevoke : IDERevokeObject
+public class IDEAntiLoopTargetValueChangeRevoke : ALittle.RevokeObject
 {
 	private IDEAntiFrameLoopItem _target;
 	private string _old_value;
@@ -688,7 +688,7 @@ public class IDEAntiLoopTargetValueChangeRevoke : IDERevokeObject
 	}
 }
 
-public class IDEAntiLoopTotalTimeChangeRevoke : IDERevokeObject
+public class IDEAntiLoopTotalTimeChangeRevoke : ALittle.RevokeObject
 {
 	private IDEAntiFrameLoopItem _target;
 	private int _old_value;
@@ -738,7 +738,7 @@ public class IDEAntiLoopTotalTimeChangeRevoke : IDERevokeObject
 	}
 }
 
-public class IDEAntiLoopDelayTimeChangeRevoke : IDERevokeObject
+public class IDEAntiLoopDelayTimeChangeRevoke : ALittle.RevokeObject
 {
 	private IDEAntiFrameLoopItem _target;
 	private int _old_value;

@@ -46,7 +46,7 @@ function TextCheckButtonS:HandleTextXTypeSELECT_CHANGE(event)
 	local target_x = object.text_x_type
 	local new_x = target_x
 	local list = g_IDEEnum.xy_rtype
-	local revoke_bind = IDERevokeBind()
+	local revoke_bind = ALittle.RevokeBind()
 	self:TypeSelectChange("text_x_type", list, false, revoke_bind)
 end
 

@@ -208,7 +208,7 @@ function IDEUITreeLogic:HandleDragEnd(event)
 	info.info = self:CalcInfo()
 	copy_list[1] = info
 	ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list))
-	local revoke_bind = IDERevokeBind()
+	local revoke_bind = ALittle.RevokeBind()
 	if tree.is_tree then
 		self._tab_child:RightControlTreePasteImpl(tree, nil, 1, revoke_bind, Lua.Bind(self.HandleDragEndAndCut, self, revoke_bind))
 	else
@@ -270,7 +270,7 @@ function IDEUITreeLogic:TransferDown()
 end
 
 function IDEUITreeLogic:TreePaste(info, child_type, child_index, is_group, revoke_bind)
-	local inner_revoke_bind = IDERevokeBind()
+	local inner_revoke_bind = ALittle.RevokeBind()
 	if child_type ~= "child" and self._user_info.object[child_type] ~= nil then
 		self._user_info.object[child_type] = nil
 		for k, v in ___ipairs(self.childs) do
@@ -311,7 +311,7 @@ function IDEUITreeLogic:TreeAdd(extends_name, class_name, child_type)
 	if extends_name ~= "" and extends_info == nil then
 		return nil
 	end
-	local revoke_bind = IDERevokeBind()
+	local revoke_bind = ALittle.RevokeBind()
 	if child_type ~= "child" and self._user_info.object[child_type] ~= nil then
 		self._user_info.object[child_type] = nil
 		for k, v in ___ipairs(self.childs) do
@@ -369,7 +369,7 @@ function IDEUITreeLogic:TreeReplace(extends_name, class_name, child_type)
 	if extends_name ~= "" and extends_info == nil then
 		return
 	end
-	local revoke_bind = IDERevokeBind()
+	local revoke_bind = ALittle.RevokeBind()
 	local target_parent = self._logic_parent
 	local child_index = nil
 	if self._user_info.child_type ~= "child" then

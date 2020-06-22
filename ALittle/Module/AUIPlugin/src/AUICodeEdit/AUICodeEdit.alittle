@@ -154,6 +154,7 @@ public class AUICodeEdit : ALittle.ScrollScreen
         this._cursor.width = 1;
         this._cursor.height = LINE_HEIGHT;
         this._cursor_container.AddChild(this._cursor);
+        this._cursor.disabled = true;
 
         this._select_cursor = new AUICodeSelectCursor(this);
 

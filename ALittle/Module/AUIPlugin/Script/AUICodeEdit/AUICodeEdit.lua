@@ -158,6 +158,7 @@ function AUICodeEdit:TCtor()
 	self._cursor.width = 1
 	self._cursor.height = LINE_HEIGHT
 	self._cursor_container:AddChild(self._cursor)
+	self._cursor.disabled = true
 	self._select_cursor = AUICodeSelectCursor(self)
 	self._text_show = ALittle.Text(self._ctrl_sys)
 	self._text_show.font_path = "YaHei-Consolas.ttf"

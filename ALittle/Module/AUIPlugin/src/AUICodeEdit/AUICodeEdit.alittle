@@ -719,9 +719,6 @@ public class AUICodeEdit : ALittle.ScrollScreen
             }
             // 把当前行拆成两行
             {
-                split_pre_line = this._line_list[this._cursor.line];
-                if (split_pre_line == null) return is_changed;
-
                 split_next_line = new AUICodeLineInfo();
                 split_next_line.char_count = 0;
                 split_next_line.char_list = new List<AUICodeCharInfo>();

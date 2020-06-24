@@ -705,10 +705,6 @@ function AUICodeEdit:InsertText(content, need_revoke, revoke_bind)
 			i = i+(1)
 		end
 		do
-			split_pre_line = self._line_list[self._cursor.line]
-			if split_pre_line == nil then
-				return is_changed
-			end
 			split_next_line = {}
 			split_next_line.char_count = 0
 			split_next_line.char_list = {}

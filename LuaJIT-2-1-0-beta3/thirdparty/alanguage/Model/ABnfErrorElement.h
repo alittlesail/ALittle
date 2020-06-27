@@ -13,14 +13,17 @@ private:
     ABnfElementPtr m_target;               // 本来要匹配的目标元素
 
 public:
-    ABnfErrorElement(ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& value, ABnfElementPtr target)
+    ABnfErrorElement(ABnfFactory* factory, ABnfFile* file
+        , int line, int col, int offset
+        , const std::string& value, ABnfElementPtr target)
         : ABnfElement(factory, file, line, col, offset)
     {
         m_value = value;
         m_target = target;
     }
+    virtual ~ABnfErrorElement() {}
 
-    bool IsLeafOrHasChildOrError() override {  return true; }
+    bool IsLeafOrHasChildOrError() override { return true; }
     bool IsError() override { return true; }
 
     ABnfElementPtr GetTargetElement() { return m_target; }
@@ -33,6 +36,6 @@ public:
         if (offset == GetStart()) return shared_from_this();
         return nullptr;
     }
-}
+};
 
 #endif // _ALITTLE_ABNFERRORELEMENT_H_

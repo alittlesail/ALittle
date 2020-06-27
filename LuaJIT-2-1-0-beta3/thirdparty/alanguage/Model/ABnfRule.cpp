@@ -38,7 +38,6 @@ bool ABnfRule::Load(const std::string& buffer, std::string& error)
 
     // 对tokencol表进line语法分析
     size_t offset = 0;
-    std::string error;
     while (offset < token_list.size())
     {
         // 解析规则

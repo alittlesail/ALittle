@@ -16,6 +16,8 @@ protected:
     std::string value_without_const;
 
 public:
+    virtual ~ABnfGuess() {}
+
     bool is_const = false;
 
     virtual bool IsChanged() const { return true; }

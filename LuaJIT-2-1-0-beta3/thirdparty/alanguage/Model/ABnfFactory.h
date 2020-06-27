@@ -6,6 +6,8 @@
 #include <regex>
 #include <unordered_map>
 
+#include "ABnfGuess.h"
+
 class ABnfElement;
 using ABnfElementPtr = std::shared_ptr<ABnfElement>;
 class ABnfKeyElement;
@@ -23,6 +25,7 @@ using ABnfGuessPtr = std::shared_ptr<ABnfGuess>;
 class ABnfProject;
 class ABnf;
 using ABnfPtr = std::shared_ptr<ABnf>;
+class ABnfReference;
 
 class ABnfFactory
 {

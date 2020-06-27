@@ -17,6 +17,7 @@ private:
 
 public:
     ABnfLeafElement(ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& value);
+    virtual ~ABnfLeafElement() {}
 
     bool IsLeafOrHasChildOrError() override { return true; }
 

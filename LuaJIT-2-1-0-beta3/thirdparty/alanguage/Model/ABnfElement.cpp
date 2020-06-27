@@ -1,6 +1,7 @@
 
 #include "ABnfElement.h"
 #include "ABnfFactory.h"
+#include "ABnfReference.h"
 #include "../Index/ABnfFile.h"
 #include "../Index/ABnfProject.h"
 
@@ -27,12 +28,12 @@ ABnfReference* ABnfElement::GetReference()
     if (m_factory != nullptr)
         m_reference = m_factory->CreateReference(shared_from_this());
     if (m_reference == nullptr)
-        m_reference = new ABnfReferenceTemplate<ABnfElement>(this);
+        m_reference = new ABnfReferenceTemplate<ABnfElement>(shared_from_this());
     return m_reference;
 }
 
 // 获取类型
-void ABnfElement::GuessTypes(std::vector<ABnfGuessPtr>& guess_list, ABnfGuessError& error)
+bool ABnfElement::GuessTypes(std::vector<ABnfGuessPtr>& guess_list, ABnfGuessError& error)
 {
     return m_factory->GuessTypes(shared_from_this(), guess_list, error);
 }
@@ -71,13 +72,10 @@ const std::string& ABnfElement::GetProjectPath()
 }
 
 // 设置父节点
-
-void ABnfElement::SetParent(ABnfNodeElementPtr parent) { m_parent = parent; }
-
-ABnfNodeElementPtr ABnfElement::GetParent() { return m_parent.lock(); }
+void ABnfElement::SetParent(ABnfElementPtr parent) { m_parent = parent; }
+ABnfElementPtr ABnfElement::GetParent() { return m_parent.lock(); }
 
 // 当前节点是否和指定范围有交集
-
 bool ABnfElement::IntersectsWith(int start, int end)
 {
     if (m_start >= end) return false;
@@ -113,4 +111,43 @@ std::string ABnfElement::GetElementString()
     int start = GetStart() + 1;
     if (start >= m_file->GetLength()) return "";
     return m_file->Substring(start, length);
+}
+
+// 计算indent
+int ABnfElement::GetStartIndent()
+{
+    int start = GetStart();
+    int end = start + GetStartCol();
+    int count = 0;
+    for (int i = start; i < end; ++i)
+    {
+        if (i >= m_file->GetLength()) break;
+
+        if (m_file->GetText()[i] == '\t')
+            count += s_indent_size;
+        else
+            ++count;
+    }
+
+    return count;
+}
+
+// 向前找到第一个\n并且，中间没有空格和\t
+int ABnfElement::FindForwardFirstEnterAndHaveNotSpaceOrTab()
+{
+    const auto& text = m_file->GetText();
+    int start = GetStart();
+    int end = GetEnd() - 1;
+    while (end >= 0 && text[end] != ' ' && text[end] != '\t' && text[end] != '\n')
+        --end;
+
+    for (int i = end; i >= start; --i)
+    {
+        if (text[i] == ' ' || text[i] == '\t')
+            continue;
+        if (text[i] == '\n')
+            return i;
+        break;
+    }
+    return -1;
 }

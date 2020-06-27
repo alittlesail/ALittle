@@ -5,17 +5,16 @@
 #include "ABnfLeafElement.h"
 #include <regex>
 
-class ABnfRegexElement : ABnfLeafElement
+class ABnfRegexElement : public ABnfLeafElement
 {
 private:
     std::shared_ptr<std::regex> m_regex;
 
 public:
     ABnfRegexElement(ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& value, std::shared_ptr<std::regex> regex)
-        : ABnfLeafElement(factory, file, line, col, offset, value)
-    {
-        m_regex = regex;
-    }
+        : ABnfLeafElement(factory, file, line, col, offset, value), m_regex(regex)
+    { }
+    virtual ~ABnfRegexElement() {}
 
     bool IsMatch(const std::string& value)
     {
@@ -23,6 +22,6 @@ public:
         std::smatch result;
         return std::regex_match(value, result, *m_regex);
     }
-}
+};
 
 #endif // _ALITTLE_ABNFREGEXELEMENT_H_

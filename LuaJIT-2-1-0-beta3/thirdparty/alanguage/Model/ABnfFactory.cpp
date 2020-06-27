@@ -4,6 +4,7 @@
 #include "ABnfKeyElement.h"
 #include "ABnfStringElement.h"
 #include "ABnfRegexElement.h"
+#include "ABnfReference.h"
 
 ABnfNodeElementPtr ABnfFactory::CreateNodeElement(ABnfFile* file, int line, int col, int offset, const std::string& type)
 {

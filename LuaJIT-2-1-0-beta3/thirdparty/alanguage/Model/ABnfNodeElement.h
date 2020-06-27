@@ -20,6 +20,7 @@ protected:
 
 public:
     ABnfNodeElement(ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type);
+    virtual ~ABnfNodeElement() {}
 
     bool IsLeafOrHasChildOrError() override;
 

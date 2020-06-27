@@ -5,6 +5,8 @@
 #include <string>
 #include <vector>
 
+const int s_indent_size = 4;
+
 struct ALanguageCompletionInfo
 {
     std::string insert;

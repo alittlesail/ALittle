@@ -9,8 +9,8 @@ class ABnfStringElement : public ABnfLeafElement
 public:
     ABnfStringElement(ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& value)
         : ABnfLeafElement(factory, file, line, col, offset, value)
-    {
-    }
+    { }
+    virtual ~ABnfStringElement() {}
 };
 
 #endif // _ALITTLE_ABNFSTRINGELEMENT_H_

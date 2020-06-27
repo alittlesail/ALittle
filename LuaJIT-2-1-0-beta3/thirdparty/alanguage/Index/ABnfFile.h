@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <unordered_map>
 
 class ABnf;
 using ABnfPtr = std::shared_ptr<ABnf>;
@@ -61,6 +62,8 @@ public:
 public:
     // 获取文件路径
     inline const std::string& GetFullPath() const { return m_full_path; }
+    // 获取工程信息
+    inline const ABnfProject* GetProjectInfo() { return m_project; }
     // 获取文本
     inline const std::string& GetText() { return m_text; }
     // 获取文本长度

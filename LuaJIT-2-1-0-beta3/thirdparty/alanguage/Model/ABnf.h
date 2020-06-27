@@ -5,10 +5,12 @@
 #include <vector>
 #include <unordered_map>
 #include <string>
+#include <regex>
 #include "ABnfRule.h"
 #include "ALanguageHelperInfo.h"
 
 class ABnfNodeElement;
+class ABnfFile;
 
 class ABnfFactory;
 using ABnfNodeElementPtr = std::shared_ptr<ABnfNodeElement>;
@@ -48,8 +50,6 @@ private:
     std::unordered_map<std::string, std::unordered_set<char>> m_symbol_check;
 
 public:
-    ABnf();
-
     // 初始化参数
     void Clear();
 
@@ -69,9 +69,6 @@ public:
 
     // 解析文件
     ABnfNodeElementPtr Analysis(ABnfFile* file);
-
-    // 统计
-    void StatElement(ABnfElementPtr element);
 
     // 分析规则语句
     bool AnalysisABnfNode(ABnfRuleInfo* rule, ABnfRuleNodeInfo* node, ABnfNodeElementPtr parent, bool not_key

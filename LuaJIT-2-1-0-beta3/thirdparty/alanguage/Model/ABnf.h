@@ -115,6 +115,4 @@ public:
     void AnalysisSkip(int& line, int& col, int& offset);
 };
 
-using ABnfPtr = std::shared_ptr<ABnf>;
-
 #endif // _ALITTLE_ABNF_H_

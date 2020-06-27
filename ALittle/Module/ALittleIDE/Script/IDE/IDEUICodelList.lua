@@ -62,7 +62,8 @@ function IDEUICodeList:HandleProjectOpen(event)
 		info.path = ALittle.File_BaseFilePath() .. "Module/ALittleIDE/Other/GameLibrary/" .. name .. "/src"
 		info.group = self._group
 		info.root = true
-		self._code_scroll_screen:AddChild(IDECodeTree(g_Control, info))
+		local tree = IDECodeTree(g_Control, info)
+		self._code_scroll_screen:AddChild(tree)
 	end
 	for index, module in ___pairs(module_map) do
 		info = {}

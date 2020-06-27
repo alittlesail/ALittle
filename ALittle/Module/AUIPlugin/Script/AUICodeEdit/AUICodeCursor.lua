@@ -231,6 +231,9 @@ function AUICodeCursor:DeleteLeft(need_revoke, revoke_bind)
 		if line == nil then
 			return false
 		end
+		if self._edit.language ~= nil then
+			self._edit.language:DeleteText(self._it_line, self._it_char, self._it_line, self._it_char)
+		end
 		local char = line.char_list[self._it_char]
 		local revoke_content = char.char
 		if char.text ~= nil then
@@ -298,6 +301,9 @@ function AUICodeCursor:DeleteLeft(need_revoke, revoke_bind)
 	end
 	local new_it_line = self._it_line - 1
 	local new_it_char = it_char
+	if self._edit.language ~= nil then
+		self._edit.language:DeleteText(new_it_line, new_it_char, self._it_line, self._it_char)
+	end
 	local pre_width = 0.0
 	if pre_line.char_count > 0 then
 		local last_char = pre_line.char_list[pre_line.char_count]
@@ -351,6 +357,9 @@ function AUICodeCursor:DeleteRight(need_revoke, revoke_bind)
 		count = count - 1
 	end
 	if self._it_char < count then
+		if self._edit.language ~= nil then
+			self._edit.language:DeleteText(self._it_line, self._it_char + 1, self._it_line, self._it_char + 1)
+		end
 		local char = line.char_list[self._it_char + 1]
 		local revoke_content = char.char
 		if char.text ~= nil then
@@ -415,6 +424,9 @@ function AUICodeCursor:DeleteRight(need_revoke, revoke_bind)
 	end
 	local new_it_line = self._it_line
 	local new_it_char = it_char
+	if self._edit.language ~= nil then
+		self._edit.language:DeleteText(new_it_line, new_it_char, self._it_line, self._it_char)
+	end
 	local pre_width = 0.0
 	if cur_line.char_count > 0 then
 		local last_char = cur_line.char_list[cur_line.char_count]

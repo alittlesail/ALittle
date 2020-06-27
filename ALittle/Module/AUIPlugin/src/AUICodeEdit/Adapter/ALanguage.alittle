@@ -1,0 +1,29 @@
+
+register namespace lua;
+
+public class ABnfFactory
+{
+    
+}
+
+public class ABnf
+{
+    
+}
+
+public class ABnfFile
+{
+    
+}
+
+public class ABnfProject
+{
+    
+}
+
+public class alanguage
+{
+    // abnfÎÄ·¨
+    public static create_abnf() : ABnf {}
+    public static abnf_load(ABnf abnf, string buffer, ABnfFactory factory) : string {}
+}

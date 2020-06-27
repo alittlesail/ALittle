@@ -175,6 +175,10 @@ function AUICodeEdit.__getter:cursor()
 	return self._cursor
 end
 
+function AUICodeEdit.__getter:language()
+	return self._language
+end
+
 function AUICodeEdit.__setter:line_count(count)
 	self._line_count = count
 end
@@ -522,7 +526,8 @@ function AUICodeEdit:OnClose()
 	self._file_path = nil
 end
 
-function AUICodeEdit:Load(file_path, revoke_list)
+function AUICodeEdit:Load(file_path, revoke_list, language)
+	self._language = language
 	local content = ALittle.File_ReadTextFromStdFile(file_path)
 	if content == nil then
 		return false
@@ -650,6 +655,9 @@ function AUICodeEdit:SetText(content)
 	self.container.height = self._line_count * LINE_HEIGHT
 	self:RejustScrollBar()
 	self._cursor:SetLineChar(1, 0)
+	if self._language ~= nil then
+		self._language:SetText(content)
+	end
 end
 
 function AUICodeEdit:InsertText(content, need_revoke, revoke_bind)
@@ -666,6 +674,9 @@ function AUICodeEdit:InsertText(content, need_revoke, revoke_bind)
 		return is_changed
 	end
 	is_changed = true
+	if self._language ~= nil then
+		self._language:InsertText(content, self._cursor.line, self._cursor.char)
+	end
 	local old_it_line = self._cursor.line
 	local old_it_char = self._cursor.char
 	local split_pre_line = self._line_list[self._cursor.line]

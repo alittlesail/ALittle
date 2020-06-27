@@ -38,6 +38,12 @@
     <None Include="src\AUICodeEdit\AUICodeRevocation.alittle">
       <Filter>AUICodeEdit</Filter>
     </None>
+    <None Include="src\AUICodeEdit\AUICodeLanguage.alittle">
+      <Filter>AUICodeEdit</Filter>
+    </None>
+    <None Include="src\AUICodeEdit\Adapter\ALanguage.alittle">
+      <Filter>AUICodeEdit\Adapter</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="AUI">
@@ -45,6 +51,12 @@
     </Filter>
     <Filter Include="AUICodeEdit">
       <UniqueIdentifier>{3840ac52-35c2-4dcc-b397-2e1165ecaf6c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AUICodeEdit\ABnf">
+      <UniqueIdentifier>{319d2e5a-5de6-45ea-b960-4b876eadd032}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AUICodeEdit\Adapter">
+      <UniqueIdentifier>{6360d048-aef1-4a0f-8851-9bb92f08eb86}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

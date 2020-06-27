@@ -6,8 +6,8 @@ local ___ipairs = ipairs
 
 ALittle.RegStruct(-2115236044, "ALittleIDE.IDECodeTreeUserInfo", {
 name = "ALittleIDE.IDECodeTreeUserInfo", ns_name = "ALittleIDE", rl_name = "IDECodeTreeUserInfo", hash_code = -2115236044,
-name_list = {"module_name","path","name","root","group"},
-type_list = {"string","string","string","bool","Map<ALittle.TextRadioButton,bool>"},
+name_list = {"module_name","path","name","root","group","project"},
+type_list = {"string","string","string","bool","Map<ALittle.TextRadioButton,bool>","lua.ABnfProject"},
 option_map = {}
 })
 

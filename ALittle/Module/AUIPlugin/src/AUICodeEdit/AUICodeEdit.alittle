@@ -122,6 +122,8 @@ protected class AUICodeEditContainer : ALittle.DisplayLayout
 
 public class AUICodeEdit : ALittle.ScrollScreen
 {
+    private AUICodeLanguage _language;  // 代码解析器
+
 	private AUICodeLinear _code_linear;      // 代码容器
     private ALittle.DisplayLayout _cursor_container;    // 光标容器
     private ALittle.DisplayObject _edit_quad;           // 编辑区
@@ -168,6 +170,7 @@ public class AUICodeEdit : ALittle.ScrollScreen
 
     public get code_linear() : AUICodeLinear { return this._code_linear; }
     public get cursor() : AUICodeCursor { return this._cursor; }
+    public get language() : AUICodeLanguage { return this._language; }
     public set line_count(int count) { this._line_count = count; }
     public get line_count() : int { return this._line_count; }
     public get line_list() : List<AUICodeLineInfo> { return this._line_list; }
@@ -509,8 +512,11 @@ public class AUICodeEdit : ALittle.ScrollScreen
         this._file_path = null;
     }
 
-    public fun Load(string file_path, ALittle.RevokeList revoke_list) : bool
+    public fun Load(string file_path, ALittle.RevokeList revoke_list, [Nullable] AUICodeLanguage language) : bool
     {
+        // 保存代码解析器
+        this._language = language;
+
         // 打开文件
         var content = ALittle.File_ReadTextFromStdFile(file_path);
         if (content == null) return false;
@@ -655,6 +661,8 @@ public class AUICodeEdit : ALittle.ScrollScreen
         this.RejustScrollBar();
 
         this._cursor.SetLineChar(1, 0);
+
+        if (this._language != null) this._language.SetText(content);
     }
 
     // 插入文本
@@ -669,6 +677,8 @@ public class AUICodeEdit : ALittle.ScrollScreen
         var line_list, line_count, max_width = this.CreateLines(content);
         if (line_count == 0) return is_changed;
         is_changed = true;
+
+        if (this._language != null) this._language.InsertText(content, this._cursor.line, this._cursor.char);
 
         var old_it_line = this._cursor.line;
         var old_it_char = this._cursor.char;

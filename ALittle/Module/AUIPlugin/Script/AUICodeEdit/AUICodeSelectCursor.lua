@@ -235,8 +235,11 @@ function AUICodeSelectCursor:DeleteSelect(need_revoke, revoke_bind)
 		if line == nil then
 			return false, nil, nil
 		end
+		if self._edit.language ~= nil then
+			self._edit.language:DeleteText(self._it_line_start, self._it_char_start, self._it_line_end, self._it_char_end)
+		end
 		local old_it_line_start = self._it_line_start
-		local old_it_char_start = self._it_line_start
+		local old_it_char_start = self._it_char_start
 		local old_it_line_end = self._it_line_end
 		local old_it_char_end = self._it_char_end
 		local it_line_start = self._it_line_start
@@ -305,6 +308,9 @@ function AUICodeSelectCursor:DeleteSelect(need_revoke, revoke_bind)
 			end
 		end
 		return true, it_line_start, it_char_start
+	end
+	if self._edit.language ~= nil then
+		self._edit.language:DeleteText(self._it_line_start, self._it_char_start, self._it_line_end, self._it_char_end)
 	end
 	local old_it_line_start = self._it_line_start
 	local old_it_char_start = self._it_line_start

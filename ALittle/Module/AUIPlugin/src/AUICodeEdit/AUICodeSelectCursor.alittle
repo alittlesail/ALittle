@@ -224,8 +224,11 @@ public class AUICodeSelectCursor
             var line = this._edit.line_list[this._it_line_start];
             if (line == null) return false, null, null;
 
+            if (this._edit.language != null)
+                this._edit.language.DeleteText(this._it_line_start, this._it_char_start, this._it_line_end, this._it_char_end);
+
             var old_it_line_start = this._it_line_start;
-            var old_it_char_start = this._it_line_start;
+            var old_it_char_start = this._it_char_start;
             var old_it_line_end = this._it_line_end;
             var old_it_char_end = this._it_char_end;
 
@@ -301,6 +304,9 @@ public class AUICodeSelectCursor
 
             return true, it_line_start, it_char_start;
         }
+
+        if (this._edit.language != null)
+            this._edit.language.DeleteText(this._it_line_start, this._it_char_start, this._it_line_end, this._it_char_end);
 
         var old_it_line_start = this._it_line_start;
         var old_it_char_start = this._it_line_start;

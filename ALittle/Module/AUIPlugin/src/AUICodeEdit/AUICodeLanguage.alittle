@@ -1,0 +1,27 @@
+
+namespace AUIPlugin;
+
+public struct AUICodeQueryColor
+{
+    int start;
+    int count;
+    double red;
+    double green;
+    double blue;
+    double alpha;
+}
+
+public class AUICodeLanguage
+{
+    // 设置文本
+    public fun SetText(string content) {}
+
+    // 插入文本
+    public fun InsertText(string content, int it_line, int it_char) {}
+
+    // 删除文本
+    public fun DeleteText(int it_line_start, int it_char_start, int it_line_end, int it_char_end) {}
+
+    // 查询颜色
+    public fun QueryColor(int line) : List<AUICodeQueryColor> { return new List<AUICodeQueryColor>(); }
+}

@@ -222,6 +222,9 @@ public class AUICodeCursor : ALittle.Quad
             var line = this._edit.line_list[this._it_line];
             if (line == null) return false;
 
+            if (this._edit.language != null)
+                this._edit.language.DeleteText(this._it_line, this._it_char, this._it_line, this._it_char);
+
             var char = line.char_list[this._it_char];
             var revoke_content = char.char;
             if (char.text != null) line.container.RemoveChild(char.text);
@@ -289,6 +292,10 @@ public class AUICodeCursor : ALittle.Quad
         }
         var new_it_line = this._it_line - 1;
         var new_it_char = it_char;
+
+        if (this._edit.language != null)
+            this._edit.language.DeleteText(new_it_line, new_it_char, this._it_line, this._it_char);
+
         // 2. 当前行拼到上一行的尾部
         var pre_width = 0.0;
         if (pre_line.char_count > 0)
@@ -354,6 +361,9 @@ public class AUICodeCursor : ALittle.Quad
         // 如果不在最后一列
         if (this._it_char < count)
         {
+            if (this._edit.language != null)
+                this._edit.language.DeleteText(this._it_line, this._it_char + 1, this._it_line, this._it_char + 1);
+
             var char = line.char_list[this._it_char + 1];
             var revoke_content = char.char;
             if (char.text != null) line.container.RemoveChild(char.text);
@@ -420,6 +430,10 @@ public class AUICodeCursor : ALittle.Quad
         }
         var new_it_line = this._it_line;
         var new_it_char = it_char;
+
+        if (this._edit.language != null)
+            this._edit.language.DeleteText(new_it_line, new_it_char, this._it_line, this._it_char);
+
         // 2. 下一行拼到当前行的尾部
         var pre_width = 0.0;
         if (cur_line.char_count > 0)

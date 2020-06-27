@@ -6,9 +6,9 @@
 #include "lua.h"
 #include "lauxlib.h"
 
-#include "alanguagelib.h"
+#include "abnflib.h"
 
-#define ALANGUAGE_MODNAME "alanguage"
+#define ABNF_MODNAME "abnf"
 
 /*
 ** Assumes the table is on top of the stack.
@@ -18,22 +18,22 @@ static void set_info (lua_State *L) {
 	lua_pushliteral (L, "Copyright (C) 2003-2019 PUC-Rio");
 	lua_settable (L, -3);
 	lua_pushliteral (L, "_DESCRIPTION");
-	lua_pushliteral (L, "ALanguage for Lua");
+	lua_pushliteral (L, "ABnf for Lua");
 	lua_settable (L, -3);
 	lua_pushliteral (L, "_VERSION");
-	lua_pushliteral (L, "ALanguage 1.3");
+	lua_pushliteral (L, "ABnf 1.3");
 	lua_settable (L, -3);
 }
 
-static struct luaL_Reg alanguagelib[] = {
+static struct luaL_Reg abnflib[] = {
   {NULL, NULL}
 };
 
-int luaopen_alanguage(lua_State *L) {
+int luaopen_abnf(lua_State *L) {
   lua_newtable(L);
-  luaL_setfuncs(L, alanguagelib, 0);
+  luaL_setfuncs(L, abnflib, 0);
   set_info (L);
   lua_pushvalue(L, -1);
-  lua_setglobal(L, ALANGUAGE_MODNAME);
+  lua_setglobal(L, ABNF_MODNAME);
   return 1;
 }

@@ -1,0 +1,101 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="alanguagelib.c" />
+    <ClCompile Include="Model\ABnf.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Model\ABnfElement.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Index\ABnfFile.cpp">
+      <Filter>Index</Filter>
+    </ClCompile>
+    <ClCompile Include="Model\ABnfRuleNodeInfo.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Model\ABnfRule.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Model\ABnfRuleInfo.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Index\ABnfProject.cpp">
+      <Filter>Index</Filter>
+    </ClCompile>
+    <ClCompile Include="Model\ABnfFactory.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Model\ABnfLeafElement.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Model\ABnfNodeElement.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="alanguagelib.h" />
+    <ClInclude Include="Model\ABnf.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Model\ABnfElement.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Model\ABnfGuess.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Model\ABnfErrorElement.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Model\ABnfFactory.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Model\ABnfNodeElement.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Index\ABnfFile.h">
+      <Filter>Index</Filter>
+    </ClInclude>
+    <ClInclude Include="Model\ABnfRule.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Model\ABnfRuleNodeInfo.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Model\ABnfRuleTokenInfo.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Model\ABnfRuleInfo.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Index\ABnfProject.h">
+      <Filter>Index</Filter>
+    </ClInclude>
+    <ClInclude Include="Model\ABnfReference.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Model\ALanguageHelperInfo.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Model\ABnfLeafElement.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Model\ABnfKeyElement.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Model\ABnfStringElement.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Model\ABnfRegexElement.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Model">
+      <UniqueIdentifier>{133ab231-3deb-4b3a-b376-751707227589}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Index">
+      <UniqueIdentifier>{1978d0cd-b3dd-46ad-a396-a373383366f4}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

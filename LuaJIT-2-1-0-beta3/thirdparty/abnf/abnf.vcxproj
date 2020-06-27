@@ -19,46 +19,18 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="alanguagelib.c" />
-    <ClCompile Include="Index\ABnfFile.cpp" />
-    <ClCompile Include="Index\ABnfProject.cpp" />
-    <ClCompile Include="Model\ABnf.cpp" />
-    <ClCompile Include="Model\ABnfElement.cpp" />
-    <ClCompile Include="Model\ABnfFactory.cpp" />
-    <ClCompile Include="Model\ABnfLeafElement.cpp" />
-    <ClCompile Include="Model\ABnfNodeElement.cpp" />
-    <ClCompile Include="Model\ABnfRule.cpp" />
-    <ClCompile Include="Model\ABnfRuleInfo.cpp" />
-    <ClCompile Include="Model\ABnfRuleNodeInfo.cpp" />
+    <ClInclude Include="abnflib.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="alanguagelib.h" />
-    <ClInclude Include="Index\ABnfFile.h" />
-    <ClInclude Include="Index\ABnfProject.h" />
-    <ClInclude Include="Model\ABnf.h" />
-    <ClInclude Include="Model\ABnfElement.h" />
-    <ClInclude Include="Model\ABnfErrorElement.h" />
-    <ClInclude Include="Model\ABnfFactory.h" />
-    <ClInclude Include="Model\ABnfGuess.h" />
-    <ClInclude Include="Model\ABnfLeafElement.h" />
-    <ClInclude Include="Model\ABnfKeyElement.h" />
-    <ClInclude Include="Model\ABnfNodeElement.h" />
-    <ClInclude Include="Model\ABnfReference.h" />
-    <ClInclude Include="Model\ABnfRegexElement.h" />
-    <ClInclude Include="Model\ABnfRule.h" />
-    <ClInclude Include="Model\ABnfRuleInfo.h" />
-    <ClInclude Include="Model\ABnfRuleNodeInfo.h" />
-    <ClInclude Include="Model\ABnfRuleTokenInfo.h" />
-    <ClInclude Include="Model\ABnfStringElement.h" />
-    <ClInclude Include="Model\ALanguageHelperInfo.h" />
+    <ClCompile Include="abnflib.c" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
-    <ProjectGuid>{4C048496-5F7A-43A7-959E-25A3ABBABCFD}</ProjectGuid>
+    <ProjectGuid>{73947086-B6CC-4CEC-B6C3-443FD4C15F47}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>thirdparty</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>alanguage</ProjectName>
+    <ProjectName>abnf</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

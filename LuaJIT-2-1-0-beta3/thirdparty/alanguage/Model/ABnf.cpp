@@ -21,7 +21,6 @@ void ABnf::Clear()
     m_regex_skip.clear();
     m_line_comment_skip.clear();
     m_block_comment_skip.clear();
-    m_stat = ABnfRuleStat();
     m_root = nullptr;
     m_line_comment = nullptr;
     m_block_comment = nullptr;
@@ -35,7 +34,7 @@ bool ABnf::Load(const std::string& buffer, ABnfFactory* factory, std::string& er
     // 清理
     Clear();
 
-    // 设置节点工厂
+    // 设置节点工厂，工厂指针不能为空
     m_factory = factory;
     if (m_factory == nullptr)
     {
@@ -44,18 +43,21 @@ bool ABnf::Load(const std::string& buffer, ABnfFactory* factory, std::string& er
         return false;
     }
 
-    // 保存字符串内容
+    // 加载语言文法
     if (!m_rule.Load(buffer, error))
     {
         Clear();
         return false;
     }
 
-    // 保存特殊的规则
+    // 获取根规则
     m_root = m_rule.FindRuleInfo("Root");
+    // 获取单行注释
     m_line_comment = m_rule.FindRuleInfo("LineComment");
+    // 获取多行注释
     m_block_comment = m_rule.FindRuleInfo("BlockComment");
 
+    // 收集符号检查，在处理类似+=时，会解析为+=，而不是+和=。
     const auto& symbol_set = m_rule.GetSymbolSet();
     for (auto& symbol : symbol_set)
     {
@@ -65,9 +67,11 @@ bool ABnf::Load(const std::string& buffer, ABnfFactory* factory, std::string& er
                 m_symbol_check[symbol].insert(symbol_check[symbol.size()]);
         }
     }
+
     return true;
 }
 
+// 获取规则信息
 ABnfRuleInfo* ABnf::GetRule(const std::string& name)
 {
     return m_rule.FindRuleInfo(name);
@@ -87,38 +91,39 @@ void ABnf::QueryKeyWordCompletion(const std::string& input, std::vector<ALanguag
     }
 }
 
+// 创建语法节点
 ABnfNodeElementPtr ABnf::CreateNodeElement(int line, int col, int offset, const std::string& type)
 {
-    // m_stat.CreateNode(type);
     auto node = m_factory->CreateNodeElement(m_file, line, col, offset, type);
     if (node == nullptr) node = ABnfNodeElementPtr(new ABnfNodeElement(m_factory, m_file, line, col, offset, type));
     return node;
 }
 
+// 创建关键字节点
 ABnfKeyElementPtr ABnf::CreateKeyElement(int line, int col, int offset, const std::string& value)
 {
-    // m_stat.create_key_count++;
     auto node = m_factory->CreateKeyElement(m_file, line, col, offset, value);
     if (node == nullptr) node = ABnfKeyElementPtr(new ABnfKeyElement(m_factory, m_file, line, col, offset, value));
     return node;
 }
 
+// 创建符号节点
 ABnfStringElementPtr ABnf::CreateStringElement(int line, int col, int offset, const std::string& value)
 {
-    // m_stat.create_string_count++;
     auto node = m_factory->CreateStringElement(m_file, line, col, offset, value);
     if (node == nullptr) node = ABnfStringElementPtr(new ABnfStringElement(m_factory, m_file, line, col, offset, value));
     return node;
 }
 
+// 创建曾泽表达式节点
 ABnfRegexElementPtr ABnf::CreateRegexElement(int line, int col, int offset, const std::string& value, std::shared_ptr<std::regex> regex)
 {
-    // m_stat.create_regex_count++;
     auto node = m_factory->CreateRegexElement(m_file, line, col, offset, value, regex);
     if (node == nullptr) node = ABnfRegexElementPtr(new ABnfRegexElement(m_factory, m_file, line, col, offset, value, regex));
     return node;
 }
 
+// 开始解析文件
 ABnfNodeElementPtr ABnf::Analysis(ABnfFile* file)
 {
     if (m_root == nullptr) return nullptr;
@@ -139,33 +144,35 @@ ABnfNodeElementPtr ABnf::Analysis(ABnfFile* file)
     bool not_key = false;
     m_stop_stack.clear();
 
-    // 创建跟节点，然后开始解析
+    // 创建跟节点
     auto node = CreateNodeElement(line, col, offset, m_root->id.value);
 
+    // 开始解析
     while (true)
     {
+        // 根据根节点的文法开始解析文本
         if (!AnalysisABnfNode(m_root, m_root->node, node, not_key
-            , line, col, offset
-            , pin_offset, false))
+            , line, col, offset, pin_offset, false))
         {
+            // 如果offset是文件尾部，那么向前走一个字符，这样便于创建错误节点
             if (offset >= m_file->GetLength() && m_file->GetLength() > 0)
                 --offset;
         }
         else
         {
+            // 跳过分割字符
             AnalysisSkip(line, col, offset);
-            if (offset >= m_file->GetLength())
-                break;
+
+            // 如果到了文件尾部，那么就跳出解析
+            if (offset >= m_file->GetLength()) break;
         }
+
+        // 将offset视为错误节点位置
         node->AddChild(ABnfErrorElementPtr(new ABnfErrorElement(m_factory, m_file, line, col, offset, "语法错误", nullptr)));
 
-        // 跳到下一行
-        if (!JumpToNextLine(line, col, offset))
-            break;
+        // 跳到下一行，然后继续解析
+        if (!JumpToNextLine(line, col, offset)) break;
     }
-
-    // StatElement(node);
-    // m_stat.CalcRate();
 
     // 清空缓存
     m_regex_skip.clear();
@@ -175,44 +182,6 @@ ABnfNodeElementPtr ABnf::Analysis(ABnfFile* file)
 
     // 返回结果
     return node;
-}
-
-void ABnf::StatElement(ABnfElementPtr element)
-{
-    if (std::dynamic_pointer_cast<ABnfKeyElement>(element))
-    {
-        m_stat.use_key_count++;
-        return;
-    }
-
-    if (std::dynamic_pointer_cast<ABnfStringElement>(element))
-    {
-        m_stat.use_string_count++;
-        return;
-    }
-
-    if (std::dynamic_pointer_cast<ABnfRegexElement>(element))
-    {
-        m_stat.use_regex_count++;
-        return;
-    }
-
-    auto node = std::dynamic_pointer_cast<ABnfNodeElement>(element);
-    if (node)
-    {
-        m_stat.use_node_count++;
-
-        auto it = m_stat.use_node_count_map.find(node->GetNodeType());
-        if (it != m_stat.use_node_count_map.end())
-            it->second++;
-        else
-            m_stat.use_node_count_map[node->GetNodeType()] = 1;
-
-        for (auto& child : node->GetChilds())
-            StatElement(child);
-
-        return;
-    }
 }
 
 // 分析规则语句
@@ -235,8 +204,10 @@ bool ABnf::AnalysisABnfNode(ABnfRuleInfo* rule, ABnfRuleNodeInfo* node, ABnfNode
             return false;
         }
 
+        // 如果匹配内部有pin，那么也要对外标记为pin
         if (temp_pin_offset >= 0) pin_offset = temp_pin_offset;
 
+        // 返回匹配成功
         return true;
     }
 
@@ -256,9 +227,10 @@ bool ABnf::AnalysisABnfNode(ABnfRuleInfo* rule, ABnfRuleNodeInfo* node, ABnfNode
             return false;
         }
 
+        // 如果匹配内部有pin，那么也要对外标记为pin
         if (temp_pin_offset >= 0) pin_offset = temp_pin_offset;
 
-        // 匹配剩下的
+        // 匹配剩下的，忽略错误，能匹配到哪里就匹配到哪里
         return AnalysisABnfNodeMore(rule, node, parent, not_key
             , line, col, offset
             , pin_offset, true);
@@ -267,6 +239,7 @@ bool ABnf::AnalysisABnfNode(ABnfRuleInfo* rule, ABnfRuleNodeInfo* node, ABnfNode
     // 处理 （没有或者一个）
     if (node->repeat == ABnfRuleNodeRepeatType::NRT_ONE_OR_NOT)
     {
+        // 忽略错误，如果能匹配到就匹配，如果匹配不到就算了
         int temp_pin_offset = -1;
         if (!AnalysisABnfNodeMatch(rule, node, parent, not_key
             , line, col, offset
@@ -284,15 +257,17 @@ bool ABnf::AnalysisABnfNode(ABnfRuleInfo* rule, ABnfRuleNodeInfo* node, ABnfNode
             return true;
         }
 
-        if (temp_pin_offset >= 0)
-            pin_offset = temp_pin_offset;
+        // 如果匹配内部有pin，那么也要对外标记为pin
+        if (temp_pin_offset >= 0) pin_offset = temp_pin_offset;
 
+        // 返回匹配成功
         return true;
     }
 
     // 处理 （没有或者任意多个）
     if (node->repeat == ABnfRuleNodeRepeatType::NRT_NOT_OR_MORE)
     {
+        // 忽略错误，能匹配多少就匹配多少
         return AnalysisABnfNodeMore(rule, node, parent, not_key
             , line, col, offset
             , pin_offset, true);
@@ -302,9 +277,11 @@ bool ABnf::AnalysisABnfNode(ABnfRuleInfo* rule, ABnfRuleNodeInfo* node, ABnfNode
     return false;
 }
 
+// 多次匹配
 bool ABnf::AnalysisABnfNodeMore(ABnfRuleInfo* rule, ABnfRuleNodeInfo* node, ABnfNodeElementPtr parent
     , bool not_key, int& line, int& col, int& offset, int& pin_offset, bool ignore_error)
 {
+    // 循环解析
     while (offset < m_file->GetLength())
     {
         int temp_pin_offset = -1;
@@ -325,41 +302,47 @@ bool ABnf::AnalysisABnfNodeMore(ABnfRuleInfo* rule, ABnfRuleNodeInfo* node, ABnf
             return true;
         }
 
+        // 如果匹配内部有pin，那么也要对外标记为pin
         if (temp_pin_offset >= 0) pin_offset = temp_pin_offset;
 
         // 跳过注释
         AnalysisABnfCommentMatch(rule, parent, not_key, line, col, offset);
-        // 跳过空格，制表符，换行
+        // 跳过分割字符
         AnalysisSkip(line, col, offset);
     }
 
     return true;
 }
 
+// 精准匹配
 bool ABnf::AnalysisABnfRuleMatch(ABnfRuleInfo* rule, ABnfNodeElementPtr parent, bool not_key
     , int& line, int& col, int& offset, int& pin_offset, bool ignore_error)
 {
-    // 跳过空格，制表符，换行
+    // 跳过分割字符
     AnalysisSkip(line, col, offset);
     // 跳过注释
     AnalysisABnfCommentMatch(rule, parent, not_key, line, col, offset);
-    // 跳过空格，制表符，换行
+    // 跳过分割字符
     AnalysisSkip(line, col, offset);
 
+    // 如果文件已经结束，那么就是匹配失败
     if (offset >= m_file->GetLength()) return false;
+    // 检查下一个字符
     char next_char = m_file->GetText()[offset];
+    // 检查下一个字符是否在预测范围内
     auto* index_list = rule->CheckNextChar(next_char);
-    if (!index_list)
-        return false;
+    if (!index_list) return false;
 
     // 遍历选择规则
     std::vector<ABnfNodeElementPtr> option_list;
     for (auto option_index : *index_list)
     {
+        // 强规则预检查
         if (!rule->node->PreCheck(m_file->GetText(), offset)) continue;
+        // 获取当前节点规则
         auto& node_list = rule->node->node_list[option_index];
 
-        // 缓存位置
+        // 缓存位置，用于多轮匹配
         int temp_line = line;
         int temp_col = col;
         int temp_offset = offset;

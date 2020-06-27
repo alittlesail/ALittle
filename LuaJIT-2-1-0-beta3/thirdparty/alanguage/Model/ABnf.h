@@ -10,74 +10,6 @@
 
 class ABnfNodeElement;
 
-struct ABnfRuleCahce
-{
-    std::vector<ABnfNodeElement> option_list;
-    int pin_offset = 0;
-    int line = 0;
-    int col = 0;
-    int offset = 0;
-    bool match = false;
-};
-
-class ABnfRuleStat
-{
-public:
-    int create_node_count = 0;
-    int use_node_count = 0;
-    double use_node_rate = 0;
-
-    int create_key_count = 0;
-    int use_key_count = 0;
-    double use_key_rate = 0;
-
-    int create_string_count = 0;
-    int use_string_count = 0;
-    double use_string_rate = 0;
-
-    int create_regex_count = 0;
-    int use_regex_count = 0;
-    double use_regex_rate = 0;
-
-    std::unordered_map<std::string, int> create_node_count_map;
-    std::unordered_map<std::string, int> use_node_count_map;
-    std::unordered_map<std::string, double> use_node_rate_map;
-
-    void CalcRate()
-    {
-        use_key_rate = 1;
-        if (create_key_count > 0)
-            use_key_rate = use_key_count / (double)create_key_count;
-
-        use_string_rate = 1;
-        if (create_string_count > 0)
-            use_string_rate = use_string_count / (double)create_string_count;
-
-        use_regex_rate = 1;
-        if (create_regex_count > 0)
-            use_regex_rate = use_regex_count / (double)create_regex_count;
-
-        for (auto& create_pair : create_node_count_map)
-        {
-            auto it = use_node_count_map.find("ALittleScript" + create_pair.first + "Element");
-            if (it != use_node_count_map.end() && create_pair.second != 0)
-                use_node_rate_map[create_pair.first] = it->second / (double)create_pair.second;
-            else
-                use_node_rate_map[create_pair.first] = 1;
-        }
-    }
-
-    void CreateNode(const std::string& type)
-    {
-        auto it = create_node_count_map.find(type);
-        if (it != create_node_count_map.end())
-            it->second++;
-        else
-            create_node_count_map[type] = 1;
-        create_node_count++;
-    }
-};
-
 class ABnfFactory;
 using ABnfNodeElementPtr = std::shared_ptr<ABnfNodeElement>;
 class ABnfErrorElement;
@@ -111,9 +43,7 @@ private:
     std::unordered_set<int> m_block_comment_skip;
     // 结束符栈
     std::vector<ABnfRuleInfo*> m_stop_stack;
-    // 统计
-    ABnfRuleStat m_stat;
-
+    
     // 符号集合，当前符号如果遇到后面字符，那么就匹配失败
     std::unordered_map<std::string, std::unordered_set<char>> m_symbol_check;
 

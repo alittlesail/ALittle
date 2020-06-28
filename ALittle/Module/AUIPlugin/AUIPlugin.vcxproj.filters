@@ -41,8 +41,14 @@
     <None Include="src\AUICodeEdit\AUICodeLanguage.alittle">
       <Filter>AUICodeEdit</Filter>
     </None>
-    <None Include="src\AUICodeEdit\Adapter\ALanguage.alittle">
-      <Filter>AUICodeEdit\Adapter</Filter>
+    <None Include="src\AUICodeEdit\ABnf\AUICodeABnf.alittle">
+      <Filter>AUICodeEdit\ABnf</Filter>
+    </None>
+    <None Include="src\Adapter\ALanguage.alittle">
+      <Filter>Adapter</Filter>
+    </None>
+    <None Include="src\Adapter\ABnf.alittle">
+      <Filter>Adapter</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -55,8 +61,8 @@
     <Filter Include="AUICodeEdit\ABnf">
       <UniqueIdentifier>{319d2e5a-5de6-45ea-b960-4b876eadd032}</UniqueIdentifier>
     </Filter>
-    <Filter Include="AUICodeEdit\Adapter">
-      <UniqueIdentifier>{6360d048-aef1-4a0f-8851-9bb92f08eb86}</UniqueIdentifier>
+    <Filter Include="Adapter">
+      <UniqueIdentifier>{ad9141fe-c3e7-4bae-afd4-163092a5352f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

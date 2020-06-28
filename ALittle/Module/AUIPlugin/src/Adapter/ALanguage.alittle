@@ -1,0 +1,45 @@
+
+register namespace lua;
+
+public struct ABnfQueryColor
+{
+    int char_start;
+    int char_count;
+    double red;
+    double green;
+    double blue;
+    double alpha;
+}
+
+public struct ABnfFactory
+{
+    
+}
+
+public struct ABnf
+{
+    
+}
+
+public struct ABnfFile
+{
+    
+}
+
+public struct ABnfProject
+{
+    
+}
+
+public class alanguage
+{
+    // abnf文法
+    public static create_abnf() : ABnf {}
+    public static abnf_load(ABnf abnf, string buffer, ABnfFactory factory) : string {}
+
+    // 文件操作
+    public static abnffile_settext(ABnfFile abnf_file, string text) {}
+    public static abnffile_inserttext(ABnfFile abnf_file, string text, int it_line, int it_char) {}
+    public static abnffile_deletetext(ABnfFile abnf_file, int it_line_start, int it_char_start, int it_line_end, int it_char_end) {}
+    public static abnffile_querycolor(ABnfFile abnf_file, int version, int line) : List<ABnfQueryColor> {}
+}

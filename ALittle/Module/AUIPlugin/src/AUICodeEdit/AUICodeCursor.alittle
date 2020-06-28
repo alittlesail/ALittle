@@ -222,15 +222,12 @@ public class AUICodeCursor : ALittle.Quad
             var line = this._edit.line_list[this._it_line];
             if (line == null) return false;
 
-            if (this._edit.language != null)
-                this._edit.language.DeleteText(this._it_line, this._it_char, this._it_line, this._it_char);
-
             var char = line.char_list[this._it_char];
             var revoke_content = char.char;
             if (char.text != null) line.container.RemoveChild(char.text);
             line.char_count -= 1;
             ALittle.List_Remove(line.char_list, this._it_char);
-            for (var i = this._it_char; i < line.char_count; 1)
+            for (var i = this._it_char; i <= line.char_count; 1)
             {
                 line.char_list[i].pre_width -= char.width;
                 if (line.char_list[i].text != null)
@@ -238,6 +235,9 @@ public class AUICodeCursor : ALittle.Quad
             }
 
             this.SetLineChar(this._it_line, this._it_char - 1);
+
+            if (this._edit.language != null)
+                this._edit.language.DeleteText(this._it_line, this._it_char, this._it_line, this._it_char);
 
             var last_char = line.char_list[line.char_count];
             if (last_char != null)
@@ -281,6 +281,7 @@ public class AUICodeCursor : ALittle.Quad
         if (cur_line == null) return false;
 
         // 1. 删除上一行的\r\n，
+        var old_char_count = pre_line.char_count;
         var it_char = pre_line.char_count;
         var revoke_content = "";
         while (it_char > 0 && pre_line.char_list[it_char].width <= 0)
@@ -294,7 +295,7 @@ public class AUICodeCursor : ALittle.Quad
         var new_it_char = it_char;
 
         if (this._edit.language != null)
-            this._edit.language.DeleteText(new_it_line, new_it_char, this._it_line, this._it_char);
+            this._edit.language.DeleteText(new_it_line, new_it_char, new_it_line, old_char_count - 1);
 
         // 2. 当前行拼到上一行的尾部
         var pre_width = 0.0;
@@ -362,14 +363,14 @@ public class AUICodeCursor : ALittle.Quad
         if (this._it_char < count)
         {
             if (this._edit.language != null)
-                this._edit.language.DeleteText(this._it_line, this._it_char + 1, this._it_line, this._it_char + 1);
+                this._edit.language.DeleteText(this._it_line, this._it_char, this._it_line, this._it_char);
 
             var char = line.char_list[this._it_char + 1];
             var revoke_content = char.char;
             if (char.text != null) line.container.RemoveChild(char.text);
             line.char_count -= 1;
             ALittle.List_Remove(line.char_list, this._it_char + 1);
-            for (var i = this._it_char + 1; i < line.char_count; 1)
+            for (var i = this._it_char + 1; i <= line.char_count; 1)
             {
                 line.char_list[i].pre_width -= char.width;
                 if (line.char_list[i].text != null)

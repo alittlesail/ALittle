@@ -26,6 +26,7 @@ protected struct AUICodeLineInfo
     int char_count;
     AUICodeLineContainer container;
     ALittle.Quad quad;
+    AUICodeEdit edit;
 }
 
 protected class AUICodeQuad : ALittle.Quad
@@ -57,6 +58,8 @@ protected class AUICodeLinear : ALittle.Linear
 protected class AUICodeLineContainer : ALittle.DisplayLayout
 {
     private bool _showd = false;
+    private int _version = 0;
+    private ALittle.LoopTimer _delay_loop = null;
 
     public ctor(ALittle.ControlSystem ctrl_sys)
     {
@@ -68,8 +71,9 @@ protected class AUICodeLineContainer : ALittle.DisplayLayout
     {
         if (!this._showd) return;
 
+        // 构建文本
         if (char.text == null && char.width > 0
-            && char.char != " " && char.char != "\t")
+        && char.char != " " && char.char != "\t")
         {
             char.text = new ALittle.Text(g_Control);
             char.text.red = char.red;
@@ -81,6 +85,50 @@ protected class AUICodeLineContainer : ALittle.DisplayLayout
             char.text.x = char.pre_width;
             this.AddChild(char.text);
         }
+
+        // 查询颜色
+        var line = cast<AUICodeLineInfo>(this._user_data);
+        if (this._delay_loop == null && line.edit.language != null && line.edit.language.version != this._version)
+        {
+            this._delay_loop = new ALittle.LoopTimer(bind(this.HandleColor, this), 1);
+            this._delay_loop.Start();
+        }
+    }
+
+    private fun HandleColor()
+    {
+        this._delay_loop = null;
+
+        var line = cast<AUICodeLineInfo>(this._user_data);
+
+        this._version = line.edit.language.version;
+        var list = line.edit.language.QueryColor(ALittle.List_IndexOf(line.edit.line_list, line));
+
+        for (var index, char in line.char_list)
+        {
+            if (char.text != null)
+            {
+                char.text.red = char.red;
+                char.text.green = char.green;
+                char.text.blue = char.blue;
+                char.text.alpha = 1;
+            }
+        }
+
+        for (var index, info in list)
+        {
+            for (var i = info.char_start; i <= info.char_start + info.char_count; 1)
+            {
+                var child = line.char_list[i];
+                if (child != null && child.text != null)
+                {
+                    child.text.red = info.red;
+                    child.text.green = info.green;
+                    child.text.blue = info.blue;
+                    child.text.alpha = info.alpha;   
+                }
+            }
+        }
     }
 
     private fun HandleHide(ALittle.UIHideEvent event)
@@ -89,25 +137,35 @@ protected class AUICodeLineContainer : ALittle.DisplayLayout
 
     private fun HandleShow(ALittle.UIShowEvent event)
     {
-        if (this._showd) return;
-        this._showd = true;
-
-        var line = cast<AUICodeLineInfo>(this._user_data);
-        for (var index, char in line.char_list)
+        if (!this._showd)
         {
-            if (char.text == null && char.width > 0
-                && char.char != " " && char.char != "\t")
+            this._showd = true;
+
+            var line = cast<AUICodeLineInfo>(this._user_data);
+            for (var index, char in line.char_list)
             {
-                char.text = new ALittle.Text(g_Control);
-                char.text.red = FONT_RED;
-                char.text.green = FONT_GREEN;
-                char.text.blue = FONT_BLUE;
-                char.text.font_path = FONT_PATH;
-                char.text.font_size = FONT_SIZE;
-                char.text.text = char.char;
-                char.text.x = char.pre_width;
-                this.AddChild(char.text);
+                if (char.text == null && char.width > 0
+                && char.char != " " && char.char != "\t")
+                {
+                    char.text = new ALittle.Text(g_Control);
+                    char.text.red = FONT_RED;
+                    char.text.green = FONT_GREEN;
+                    char.text.blue = FONT_BLUE;
+                    char.text.font_path = FONT_PATH;
+                    char.text.font_size = FONT_SIZE;
+                    char.text.text = char.char;
+                    char.text.x = char.pre_width;
+                    this.AddChild(char.text);
+                }
             }
+        }
+        
+        // 查询颜色
+        var line = cast<AUICodeLineInfo>(this._user_data);
+        if (this._delay_loop == null && line.edit.language != null && line.edit.language.version != this._version)
+        {
+            this._delay_loop = new ALittle.LoopTimer(bind(this.HandleColor, this), 1);
+            this._delay_loop.Start();
         }
     }
 }
@@ -147,6 +205,10 @@ public class AUICodeEdit : ALittle.ScrollScreen
 
 	public fun TCtor()
 	{
+        this.AddEventListener(this, this.HandleMoveIn);
+        this.AddEventListener(this, this.HandleMoveOut);
+        this.AddEventListener(this, this.HandleScreenScrollLButtonDown);
+        
 		// 创建编辑容器
         this.container = new AUICodeEditContainer(this._ctrl_sys);
         this._edit_quad._user_data = this;
@@ -179,6 +241,12 @@ public class AUICodeEdit : ALittle.ScrollScreen
 
     private fun HandleMoveIn(ALittle.UIMoveInEvent event) { ALittle.System_SetEditCursor(); }
     private fun HandleMoveOut(ALittle.UIMoveOutEvent event) { ALittle.System_SetNormalCursor(); }
+    private fun HandleScreenScrollLButtonDown(ALittle.UILButtonDownEvent event)
+    {
+        this._edit_quad.DelayFocus();
+        this.HandleLButtonDown(event);
+    }
+
     private fun HandleLButtonDown(ALittle.UILButtonDownEvent event)
     {
         this._select_cursor.Hide();
@@ -517,6 +585,10 @@ public class AUICodeEdit : ALittle.ScrollScreen
         // 保存代码解析器
         this._language = language;
 
+        // 如果没有指定language，并且是abnf文件，那么就创建一个默认的
+        if (this._language == null && ALittle.File_GetFileExtByPathAndUpper(file_path) == "ABNF")
+            this._language = new AUICodeABnf(file_path);
+
         // 打开文件
         var content = ALittle.File_ReadTextFromStdFile(file_path);
         if (content == null) return false;
@@ -581,6 +653,7 @@ public class AUICodeEdit : ALittle.ScrollScreen
             if (line == null)
             {
                 line = new AUICodeLineInfo();
+                line.edit = this;
                 line.char_count = 0;
                 line.char_list = new List<AUICodeCharInfo>();
                 line.quad = new ALittle.Quad(g_Control);
@@ -621,6 +694,7 @@ public class AUICodeEdit : ALittle.ScrollScreen
         if (last_char.char == "\n")
         {
             line = new AUICodeLineInfo();
+            line.edit = this;
             line.char_count = 0;
             line.char_list = new List<AUICodeCharInfo>();
             line.quad = new ALittle.Quad(g_Control);
@@ -690,6 +764,7 @@ public class AUICodeEdit : ALittle.ScrollScreen
         if (split_pre_line == null)
         {
             split_pre_line = new AUICodeLineInfo();
+            split_pre_line.edit = this;
             split_pre_line.char_count = 0;
             split_pre_line.char_list = new List<AUICodeCharInfo>();
             split_pre_line.quad = new ALittle.Quad(g_Control);
@@ -730,6 +805,7 @@ public class AUICodeEdit : ALittle.ScrollScreen
             // 把当前行拆成两行
             {
                 split_next_line = new AUICodeLineInfo();
+                split_next_line.edit = this;
                 split_next_line.char_count = 0;
                 split_next_line.char_list = new List<AUICodeCharInfo>();
                 split_next_line.quad = new ALittle.Quad(g_Control);

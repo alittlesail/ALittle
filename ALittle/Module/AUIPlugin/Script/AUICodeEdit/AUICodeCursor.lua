@@ -231,9 +231,6 @@ function AUICodeCursor:DeleteLeft(need_revoke, revoke_bind)
 		if line == nil then
 			return false
 		end
-		if self._edit.language ~= nil then
-			self._edit.language:DeleteText(self._it_line, self._it_char, self._it_line, self._it_char)
-		end
 		local char = line.char_list[self._it_char]
 		local revoke_content = char.char
 		if char.text ~= nil then
@@ -243,7 +240,7 @@ function AUICodeCursor:DeleteLeft(need_revoke, revoke_bind)
 		ALittle.List_Remove(line.char_list, self._it_char)
 		local i = self._it_char
 		while true do
-			if not(i < line.char_count) then break end
+			if not(i <= line.char_count) then break end
 			line.char_list[i].pre_width = line.char_list[i].pre_width - (char.width)
 			if line.char_list[i].text ~= nil then
 				line.char_list[i].text.x = line.char_list[i].text.x - (char.width)
@@ -251,6 +248,9 @@ function AUICodeCursor:DeleteLeft(need_revoke, revoke_bind)
 			i = i+(1)
 		end
 		self:SetLineChar(self._it_line, self._it_char - 1)
+		if self._edit.language ~= nil then
+			self._edit.language:DeleteText(self._it_line, self._it_char, self._it_line, self._it_char)
+		end
 		local last_char = line.char_list[line.char_count]
 		if last_char ~= nil then
 			line.container.width = last_char.pre_width + last_char.width
@@ -291,6 +291,7 @@ function AUICodeCursor:DeleteLeft(need_revoke, revoke_bind)
 	if cur_line == nil then
 		return false
 	end
+	local old_char_count = pre_line.char_count
 	local it_char = pre_line.char_count
 	local revoke_content = ""
 	while it_char > 0 and pre_line.char_list[it_char].width <= 0 do
@@ -302,7 +303,7 @@ function AUICodeCursor:DeleteLeft(need_revoke, revoke_bind)
 	local new_it_line = self._it_line - 1
 	local new_it_char = it_char
 	if self._edit.language ~= nil then
-		self._edit.language:DeleteText(new_it_line, new_it_char, self._it_line, self._it_char)
+		self._edit.language:DeleteText(new_it_line, new_it_char, new_it_line, old_char_count - 1)
 	end
 	local pre_width = 0.0
 	if pre_line.char_count > 0 then
@@ -358,7 +359,7 @@ function AUICodeCursor:DeleteRight(need_revoke, revoke_bind)
 	end
 	if self._it_char < count then
 		if self._edit.language ~= nil then
-			self._edit.language:DeleteText(self._it_line, self._it_char + 1, self._it_line, self._it_char + 1)
+			self._edit.language:DeleteText(self._it_line, self._it_char, self._it_line, self._it_char)
 		end
 		local char = line.char_list[self._it_char + 1]
 		local revoke_content = char.char
@@ -369,7 +370,7 @@ function AUICodeCursor:DeleteRight(need_revoke, revoke_bind)
 		ALittle.List_Remove(line.char_list, self._it_char + 1)
 		local i = self._it_char + 1
 		while true do
-			if not(i < line.char_count) then break end
+			if not(i <= line.char_count) then break end
 			line.char_list[i].pre_width = line.char_list[i].pre_width - (char.width)
 			if line.char_list[i].text ~= nil then
 				line.char_list[i].text.x = line.char_list[i].text.x - (char.width)

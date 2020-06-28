@@ -235,9 +235,6 @@ function AUICodeSelectCursor:DeleteSelect(need_revoke, revoke_bind)
 		if line == nil then
 			return false, nil, nil
 		end
-		if self._edit.language ~= nil then
-			self._edit.language:DeleteText(self._it_line_start, self._it_char_start, self._it_line_end, self._it_char_end)
-		end
 		local old_it_line_start = self._it_line_start
 		local old_it_char_start = self._it_char_start
 		local old_it_line_end = self._it_line_end
@@ -249,6 +246,9 @@ function AUICodeSelectCursor:DeleteSelect(need_revoke, revoke_bind)
 			local temp = it_char_start
 			it_char_start = it_char_end
 			it_char_end = temp
+		end
+		if self._edit.language ~= nil then
+			self._edit.language:DeleteText(it_line_start, it_char_start, it_line_start, it_char_end - 1)
 		end
 		self:Hide()
 		local acc_width = 0.0
@@ -309,9 +309,6 @@ function AUICodeSelectCursor:DeleteSelect(need_revoke, revoke_bind)
 		end
 		return true, it_line_start, it_char_start
 	end
-	if self._edit.language ~= nil then
-		self._edit.language:DeleteText(self._it_line_start, self._it_char_start, self._it_line_end, self._it_char_end)
-	end
 	local old_it_line_start = self._it_line_start
 	local old_it_char_start = self._it_line_start
 	local old_it_line_end = self._it_line_end
@@ -327,6 +324,15 @@ function AUICodeSelectCursor:DeleteSelect(need_revoke, revoke_bind)
 		temp = it_char_start
 		it_char_start = it_char_end
 		it_char_end = temp
+	end
+	if self._edit.language ~= nil then
+		local delete_line_end = it_line_end
+		local delete_char_end = it_char_end - 1
+		if delete_char_end < 0 then
+			delete_line_end = delete_line_end - (1)
+			delete_char_end = self._edit.line_list[delete_line_end].char_count - 1
+		end
+		self._edit.language:DeleteText(it_line_start, it_char_start, delete_line_end, delete_char_end)
 	end
 	self:Hide()
 	local revoke_center = ""

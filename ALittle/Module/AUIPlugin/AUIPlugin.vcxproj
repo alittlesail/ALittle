@@ -19,7 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\AUICodeEdit\Adapter\ALanguage.alittle" />
+    <None Include="src\Adapter\ABnf.alittle" />
+    <None Include="src\Adapter\ALanguage.alittle" />
+    <None Include="src\AUICodeEdit\ABnf\AUICodeABnf.alittle" />
     <None Include="src\AUICodeEdit\AUICodeCursor.alittle" />
     <None Include="src\AUICodeEdit\AUICodeLanguage.alittle" />
     <None Include="src\AUICodeEdit\AUICodeRevocation.alittle" />

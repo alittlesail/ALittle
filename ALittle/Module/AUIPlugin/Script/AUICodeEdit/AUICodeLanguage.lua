@@ -1,17 +1,20 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
 module("AUIPlugin", package.seeall)
 
+local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
-ALittle.RegStruct(1378427401, "AUIPlugin.AUICodeQueryColor", {
-name = "AUIPlugin.AUICodeQueryColor", ns_name = "AUIPlugin", rl_name = "AUICodeQueryColor", hash_code = 1378427401,
-name_list = {"start","count","red","green","blue","alpha"},
-type_list = {"int","int","double","double","double","double"},
-option_map = {}
-})
 
 AUICodeLanguage = Lua.Class(nil, "AUIPlugin.AUICodeLanguage")
+
+function AUICodeLanguage:Ctor()
+	___rawset(self, "_version", 1)
+end
+
+function AUICodeLanguage.__getter:version()
+	return self._version
+end
 
 function AUICodeLanguage:SetText(content)
 end

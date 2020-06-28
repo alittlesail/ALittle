@@ -8,8 +8,8 @@ local ___all_struct = ALittle.GetAllStruct()
 
 ALittle.RegStruct(1421505194, "AUIPlugin.AUICodeLineInfo", {
 name = "AUIPlugin.AUICodeLineInfo", ns_name = "AUIPlugin", rl_name = "AUICodeLineInfo", hash_code = 1421505194,
-name_list = {"char_list","char_count","container","quad"},
-type_list = {"List<AUIPlugin.AUICodeCharInfo>","int","AUIPlugin.AUICodeLineContainer","ALittle.Quad"},
+name_list = {"char_list","char_count","container","quad","edit"},
+type_list = {"List<AUIPlugin.AUICodeCharInfo>","int","AUIPlugin.AUICodeLineContainer","ALittle.Quad","AUIPlugin.AUICodeEdit"},
 option_map = {}
 })
 ALittle.RegStruct(1494749965, "AUIPlugin.AUICodeCharInfo", {
@@ -30,6 +30,12 @@ name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
+ALittle.RegStruct(544684311, "ALittle.UIMoveInEvent", {
+name = "ALittle.UIMoveInEvent", ns_name = "ALittle", rl_name = "UIMoveInEvent", hash_code = 544684311,
+name_list = {"target"},
+type_list = {"ALittle.DisplayObject"},
+option_map = {}
+})
 ALittle.RegStruct(958494922, "ALittle.UIChangedEvent", {
 name = "ALittle.UIChangedEvent", ns_name = "ALittle", rl_name = "UIChangedEvent", hash_code = 958494922,
 name_list = {"target"},
@@ -38,6 +44,24 @@ option_map = {}
 })
 ALittle.RegStruct(1862557463, "ALittle.UIShowEvent", {
 name = "ALittle.UIShowEvent", ns_name = "ALittle", rl_name = "UIShowEvent", hash_code = 1862557463,
+name_list = {"target"},
+type_list = {"ALittle.DisplayObject"},
+option_map = {}
+})
+ALittle.RegStruct(1883782801, "ALittle.UILButtonDownEvent", {
+name = "ALittle.UILButtonDownEvent", ns_name = "ALittle", rl_name = "UILButtonDownEvent", hash_code = 1883782801,
+name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
+type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
+option_map = {}
+})
+ALittle.RegStruct(-1347278145, "ALittle.UIButtonEvent", {
+name = "ALittle.UIButtonEvent", ns_name = "ALittle", rl_name = "UIButtonEvent", hash_code = -1347278145,
+name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
+type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
+option_map = {}
+})
+ALittle.RegStruct(-1202439334, "ALittle.UIMoveOutEvent", {
+name = "ALittle.UIMoveOutEvent", ns_name = "ALittle", rl_name = "UIMoveOutEvent", hash_code = -1202439334,
 name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
 option_map = {}
@@ -90,6 +114,8 @@ AUICodeLineContainer = Lua.Class(ALittle.DisplayLayout, "AUIPlugin.AUICodeLineCo
 
 function AUICodeLineContainer:Ctor(ctrl_sys)
 	___rawset(self, "_showd", false)
+	___rawset(self, "_version", 0)
+	___rawset(self, "_delay_loop", nil)
 	self:AddEventListener(___all_struct[348388800], self, self.HandleHide)
 	self:AddEventListener(___all_struct[1862557463], self, self.HandleShow)
 end
@@ -109,29 +135,67 @@ function AUICodeLineContainer:CreateAndAdd(char)
 		char.text.x = char.pre_width
 		self:AddChild(char.text)
 	end
+	local line = self._user_data
+	if self._delay_loop == nil and line.edit.language ~= nil and line.edit.language.version ~= self._version then
+		self._delay_loop = ALittle.LoopTimer(Lua.Bind(self.HandleColor, self), 1)
+		self._delay_loop:Start()
+	end
+end
+
+function AUICodeLineContainer:HandleColor()
+	self._delay_loop = nil
+	local line = self._user_data
+	self._version = line.edit.language.version
+	local list = line.edit.language:QueryColor(ALittle.List_IndexOf(line.edit.line_list, line))
+	for index, char in ___ipairs(line.char_list) do
+		if char.text ~= nil then
+			char.text.red = char.red
+			char.text.green = char.green
+			char.text.blue = char.blue
+			char.text.alpha = 1
+		end
+	end
+	for index, info in ___ipairs(list) do
+		local i = info.char_start
+		while true do
+			if not(i <= info.char_start + info.char_count) then break end
+			local child = line.char_list[i]
+			if child ~= nil and child.text ~= nil then
+				child.text.red = info.red
+				child.text.green = info.green
+				child.text.blue = info.blue
+				child.text.alpha = info.alpha
+			end
+			i = i+(1)
+		end
+	end
 end
 
 function AUICodeLineContainer:HandleHide(event)
 end
 
 function AUICodeLineContainer:HandleShow(event)
-	if self._showd then
-		return
-	end
-	self._showd = true
-	local line = self._user_data
-	for index, char in ___ipairs(line.char_list) do
-		if char.text == nil and char.width > 0 and char.char ~= " " and char.char ~= "\t" then
-			char.text = ALittle.Text(g_Control)
-			char.text.red = FONT_RED
-			char.text.green = FONT_GREEN
-			char.text.blue = FONT_BLUE
-			char.text.font_path = FONT_PATH
-			char.text.font_size = FONT_SIZE
-			char.text.text = char.char
-			char.text.x = char.pre_width
-			self:AddChild(char.text)
+	if not self._showd then
+		self._showd = true
+		local line = self._user_data
+		for index, char in ___ipairs(line.char_list) do
+			if char.text == nil and char.width > 0 and char.char ~= " " and char.char ~= "\t" then
+				char.text = ALittle.Text(g_Control)
+				char.text.red = FONT_RED
+				char.text.green = FONT_GREEN
+				char.text.blue = FONT_BLUE
+				char.text.font_path = FONT_PATH
+				char.text.font_size = FONT_SIZE
+				char.text.text = char.char
+				char.text.x = char.pre_width
+				self:AddChild(char.text)
+			end
 		end
+	end
+	local line = self._user_data
+	if self._delay_loop == nil and line.edit.language ~= nil and line.edit.language.version ~= self._version then
+		self._delay_loop = ALittle.LoopTimer(Lua.Bind(self.HandleColor, self), 1)
+		self._delay_loop:Start()
 	end
 end
 
@@ -151,6 +215,9 @@ function AUICodeEdit:Ctor()
 end
 
 function AUICodeEdit:TCtor()
+	self:AddEventListener(___all_struct[544684311], self, self.HandleMoveIn)
+	self:AddEventListener(___all_struct[-1202439334], self, self.HandleMoveOut)
+	self:AddEventListener(___all_struct[1883782801], self, self.HandleScreenScrollLButtonDown)
 	self.container = AUICodeEditContainer(self._ctrl_sys)
 	self._edit_quad._user_data = self
 	self.container._user_data = self._code_linear
@@ -205,6 +272,11 @@ end
 
 function AUICodeEdit:HandleMoveOut(event)
 	ALittle.System_SetNormalCursor()
+end
+
+function AUICodeEdit:HandleScreenScrollLButtonDown(event)
+	self._edit_quad:DelayFocus()
+	self:HandleLButtonDown(event)
 end
 
 function AUICodeEdit:HandleLButtonDown(event)
@@ -528,6 +600,9 @@ end
 
 function AUICodeEdit:Load(file_path, revoke_list, language)
 	self._language = language
+	if self._language == nil and ALittle.File_GetFileExtByPathAndUpper(file_path) == "ABNF" then
+		self._language = AUICodeABnf(file_path)
+	end
 	local content = ALittle.File_ReadTextFromStdFile(file_path)
 	if content == nil then
 		return false
@@ -581,6 +656,7 @@ function AUICodeEdit:CreateLines(content)
 		pre_width = pre_width + (char.width)
 		if line == nil then
 			line = {}
+			line.edit = self
 			line.char_count = 0
 			line.char_list = {}
 			line.quad = ALittle.Quad(g_Control)
@@ -617,6 +693,7 @@ function AUICodeEdit:CreateLines(content)
 	end
 	if last_char.char == "\n" then
 		line = {}
+		line.edit = self
 		line.char_count = 0
 		line.char_list = {}
 		line.quad = ALittle.Quad(g_Control)
@@ -683,6 +760,7 @@ function AUICodeEdit:InsertText(content, need_revoke, revoke_bind)
 	local split_it_char = self._cursor.char
 	if split_pre_line == nil then
 		split_pre_line = {}
+		split_pre_line.edit = self
 		split_pre_line.char_count = 0
 		split_pre_line.char_list = {}
 		split_pre_line.quad = ALittle.Quad(g_Control)
@@ -717,6 +795,7 @@ function AUICodeEdit:InsertText(content, need_revoke, revoke_bind)
 		end
 		do
 			split_next_line = {}
+			split_next_line.edit = self
 			split_next_line.char_count = 0
 			split_next_line.char_list = {}
 			split_next_line.quad = ALittle.Quad(g_Control)

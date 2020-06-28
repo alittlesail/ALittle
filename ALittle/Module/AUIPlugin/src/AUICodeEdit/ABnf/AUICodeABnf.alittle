@@ -1,0 +1,61 @@
+
+namespace AUIPlugin;
+
+private var g_ABnf:lua.ABnf;
+private var g_ABnfFactory:lua.ABnfFactoryClass;
+
+public class AUICodeABnf : AUICodeLanguage
+{
+    private lua.ABnfFileClass _abnf_file;
+
+    public ctor(string full_path)
+    {
+        if (g_ABnf == null)
+        {
+            g_ABnfFactory = lua.abnf.create_abnf_factory();
+            g_ABnf = lua.alanguage.create_abnf();
+
+            var abnf_path = g_ModuleBasePath.."/Other/ABnf/ABnf.abnf";
+            var buffer = ALittle.File_ReadTextFromFile(abnf_path);
+            if (buffer != null)
+            {
+                var error = lua.alanguage.abnf_load(g_ABnf, buffer, g_ABnfFactory);
+                if (error != null)
+                    ALittle.Log("abnf load failed! "..error);
+            }
+            else
+            {
+                ALittle.Log("abnf file read failed! "..abnf_path);
+            }
+        }
+
+        this._abnf_file = lua.abnf.create_abnf_file(full_path, g_ABnf, "");
+    }
+
+    // 设置文本
+    public fun SetText(string content)
+    {
+        this._version += 1;
+        lua.alanguage.abnffile_settext(this._abnf_file, content);
+    }
+
+    // 插入文本
+    public fun InsertText(string content, int it_line, int it_char)
+    {
+        this._version += 1;
+        lua.alanguage.abnffile_inserttext(this._abnf_file, content, it_line, it_char);
+    }
+
+    // 删除文本
+    public fun DeleteText(int it_line_start, int it_char_start, int it_line_end, int it_char_end)
+    {
+        this._version += 1;
+        lua.alanguage.abnffile_deletetext(this._abnf_file, it_line_start, it_char_start, it_line_end, it_char_end);
+    }
+
+    // 查询颜色
+    public fun QueryColor(int line) : List<lua.ABnfQueryColor>
+    {
+        return lua.alanguage.abnffile_querycolor(this._abnf_file, this._version, line);
+    }
+}

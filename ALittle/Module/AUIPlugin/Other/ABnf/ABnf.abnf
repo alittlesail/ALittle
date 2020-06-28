@@ -1,0 +1,36 @@
+
+// 语法树的跟【Root是系统内置，必须定义Root作为语法根节点，没有定义会报错】
+Root = Expression*;
+// 行注释【LineComment是系统内置的行注释语法规则名】
+LineComment : "\A/{1}" = "\A//{1}.*";
+// 块注释【BlockComment是系统内置的块注释语法规则名】
+BlockComment : "\A/{1}" = "\A/\*{1}([^*/]|\*(?!/)|/(?<!\*))*((?=\*/))(\*/)";
+
+// 关键字
+Key : "\A<{1}" = "\A<{1}([^<\\\\]|\\\\.)*>";
+// 字符串
+String : "\A'{1}" = "\A'{1}([^'\\\\]|\\\\.)*'";
+// 正则表达式
+Regex : "\A\"{1}" = "\A\"{1}([^\"\\\\]|\\\\.)*\"";
+// 规则名称
+Id : "\A[_a-zA-Z0-9]{1}" = "\A[_a-zA-Z0-9]{1}[_a-zA-Z0-9]*";
+// 规则修饰
+NodeTail = '?' | '*' | '+' | '@' | '#';
+
+// 表达式 
+Expression = Id@ (':'@ Regex '@'?)? '='@ Node ';';
+
+// 通用节点
+Node = List | Group;
+
+// 叶子节点
+Leaf = (Id | Key | String | Regex) NodeTail?;
+
+// 节点列表
+List = (Group | Leaf)+ Option*;
+
+// 多选一
+Option = '|'@ (Group | Leaf)+;
+
+// 括号
+Group = '('@ List ')' NodeTail?;

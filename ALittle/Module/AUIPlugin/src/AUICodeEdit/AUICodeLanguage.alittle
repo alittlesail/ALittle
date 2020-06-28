@@ -1,18 +1,13 @@
 
 namespace AUIPlugin;
 
-public struct AUICodeQueryColor
-{
-    int start;
-    int count;
-    double red;
-    double green;
-    double blue;
-    double alpha;
-}
-
 public class AUICodeLanguage
 {
+    private int _version = 1;
+
+    // 获取文本修改版本号
+    public get version() : int { return this._version; }
+
     // 设置文本
     public fun SetText(string content) {}
 
@@ -23,5 +18,5 @@ public class AUICodeLanguage
     public fun DeleteText(int it_line_start, int it_char_start, int it_line_end, int it_char_end) {}
 
     // 查询颜色
-    public fun QueryColor(int line) : List<AUICodeQueryColor> { return new List<AUICodeQueryColor>(); }
+    public fun QueryColor(int line) : List<lua.ABnfQueryColor> { return new List<lua.ABnfQueryColor>(); }
 }

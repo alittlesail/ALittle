@@ -1,0 +1,18 @@
+
+register namespace lua;
+
+public struct ABnfFactoryClass : ABnfFactory
+{
+
+}
+
+public struct ABnfFileClass : ABnfFile
+{
+    
+}
+
+public class abnf
+{
+    public static create_abnf_factory() : ABnfFactoryClass {}
+    public static create_abnf_file(string full_path, ABnf abnf, string text) : ABnfFileClass {}
+}

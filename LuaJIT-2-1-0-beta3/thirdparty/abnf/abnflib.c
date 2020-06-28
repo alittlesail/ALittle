@@ -20,7 +20,7 @@ static int abnflib_destroy_abnf_factory(lua_State* L)
 
 static int abnflib_create_abnf_factory(lua_State* L)
 {
-	void** c = (void*)lua_newuserdata(L, sizeof(void**));
+	void** c = (void**)lua_newuserdata(L, sizeof(void**));
 	lua_newtable(L);
 	lua_pushcfunction(L, abnflib_destroy_abnf_factory);
 	lua_setfield(L, -2, "__gc");
@@ -47,7 +47,7 @@ static int abnflib_create_abnf_file(lua_State* L)
 	const char* text = luaL_checklstring(L, 3, &len);
 	luaL_argcheck(L, text != 0, 3, "text is null");
 
-	void** c = (void*)lua_newuserdata(L, sizeof(void**));
+	void** c = (void**)lua_newuserdata(L, sizeof(void**));
 	lua_newtable(L);
 	lua_pushcfunction(L, abnflib_destroy_abnf_file);
 	lua_setfield(L, -2, "__gc");

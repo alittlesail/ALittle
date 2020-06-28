@@ -27,6 +27,15 @@ function List_Insert(list, index, object)
 	insert(list, index, object)
 end
 
+function List_IndexOf(list, object)
+	for index, o in ___ipairs(list) do
+		if o == object then
+			return index
+		end
+	end
+	return nil
+end
+
 function List_Remove(list, index)
 	remove(list, index)
 end

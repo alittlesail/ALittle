@@ -24,6 +24,12 @@ name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
 type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
 option_map = {}
 })
+ALittle.RegStruct(-641444818, "ALittle.UIRButtonDownEvent", {
+name = "ALittle.UIRButtonDownEvent", ns_name = "ALittle", rl_name = "UIRButtonDownEvent", hash_code = -641444818,
+name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
+type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
+option_map = {}
+})
 ALittle.RegStruct(-431205740, "ALittle.UIResizeEvent", {
 name = "ALittle.UIResizeEvent", ns_name = "ALittle", rl_name = "UIResizeEvent", hash_code = -431205740,
 name_list = {"target"},
@@ -40,6 +46,7 @@ function IDECodeTree:Ctor(ctrl_sys, user_info)
 	self._item_button.selected = false
 	self._item_button.group = user_info.group
 	self._item_button:AddEventListener(___all_struct[1883782801], self, self.HandleLButtonDown)
+	self._item_button:AddEventListener(___all_struct[-641444818], self, self.HandleRButtonDown)
 	self._item_button._user_data = self
 	___rawset(self, "_body", ALittle.Linear(ctrl_sys))
 	self._body.type = 2
@@ -66,6 +73,24 @@ function IDECodeTree:HandleLButtonDown(event)
 	end
 	self.fold = not self.fold
 end
+
+function IDECodeTree:HandleRButtonDown(event)
+	local menu = AUIPlugin.AUIRightMenu()
+	menu:AddItem("新建文件", Lua.Bind(self.HandleCreateFile, self))
+	menu:AddItem("刷新", Lua.Bind(self.Refresh, self))
+	menu:Show()
+end
+
+function IDECodeTree:HandleCreateFile()
+	local x, y = self._head:LocalToGlobal()
+	local name = g_AUITool:ShowRename("", x, y + self._head.height, 200)
+	if name == nil or name == "" then
+		return
+	end
+	ALittle.File_WriteTextToFile("", self._user_info.path .. "/" .. name)
+	self:Refresh()
+end
+IDECodeTree.HandleCreateFile = Lua.CoWrap(IDECodeTree.HandleCreateFile)
 
 function IDECodeTree.__getter:is_tree()
 	return true
@@ -104,7 +129,7 @@ function IDECodeTree:Refresh()
 				info.group = self._user_info.group
 				info.root = false
 				self:AddChild(IDECodeTree(self._ctrl_sys, info))
-			elseif ALittle.File_GetFileExtByPathAndUpper(name) == "ALITTLE" then
+			else
 				local info = {}
 				info.module_name = self._user_info.module_name
 				info.name = name

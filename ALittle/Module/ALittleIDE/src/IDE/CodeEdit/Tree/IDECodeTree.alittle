@@ -14,6 +14,7 @@ public class IDECodeTree : IDECodeTreeLogic
 		this._item_button.selected = false;
 		this._item_button.group = user_info.group;
 		this._item_button.AddEventListener(this, this.HandleLButtonDown);
+		this._item_button.AddEventListener(this, this.HandleRButtonDown);
 		this._item_button._user_data = this;
 	
 		// 对数的身体部分进行处理
@@ -38,11 +39,28 @@ public class IDECodeTree : IDECodeTreeLogic
 		this.Refresh();
 	}
 	
-	public fun HandleLButtonDown(ALittle.UILButtonDownEvent event)
+	private fun HandleLButtonDown(ALittle.UILButtonDownEvent event)
 	{
 		if (event.count == 1) return;
 		this.fold = !this.fold;
 	}
+
+	private fun HandleRButtonDown(ALittle.UIRButtonDownEvent event)
+	{
+        var menu = new AUIPlugin.AUIRightMenu();
+		menu.AddItem("新建文件", bind(this.HandleCreateFile, this));
+		menu.AddItem("刷新", bind(this.Refresh, this));
+		menu.Show();
+    }
+
+	private async fun HandleCreateFile()
+	{
+		var x, y = this._head.LocalToGlobal();
+        var name = g_AUITool.ShowRename("", x, y + this._head.height, 200);
+		if (name == null || name == "") return;
+		ALittle.File_WriteTextToFile("", this._user_info.path.."/"..name);
+		this.Refresh();
+    }
 	
 	public get is_tree() : bool { return true; }
 
@@ -90,7 +108,7 @@ public class IDECodeTree : IDECodeTreeLogic
 					info.root = false;
                     this.AddChild(new IDECodeTree(this._ctrl_sys, info));
                 }
-				elseif (ALittle.File_GetFileExtByPathAndUpper(name) == "ALITTLE")
+				else
 				{
 					var info = new IDECodeTreeUserInfo();
 					info.module_name = this._user_info.module_name;

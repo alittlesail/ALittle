@@ -52,6 +52,25 @@ public static List_Insert<T>(List<T> list, int index, T object)
     cast<javascript.Array>(list).splice(index - 1, 0, object);
 }
 
+public static List_IndexOf<T>(List<T> list, T object) : int
+{
+    [Language(Lua)]
+    for (var index, o in list)
+    {
+        if (o == object)
+            return index;
+    }
+    [Language(Lua)]
+    return null;
+
+    [Language(JavaScript)]
+    var index = cast<javascript.Array>(list).indexOf(object);
+
+    [Language(JavaScript)]
+    if (index < 0) return null;
+    else return index + 1;
+}
+
 public static List_Remove<T>(List<T> list, int index)
 {
     [Language(Lua)]

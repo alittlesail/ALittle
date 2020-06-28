@@ -86,7 +86,9 @@ const std::unordered_map<char, std::vector<int>>* ABnfRuleNodeInfo::CalcNextChar
                     // 遍历合并
                     for (auto& pair : *sub_next_char_map)
                     {
-                        next_char_map[pair.first].push_back(index);
+                        auto& list = next_char_map[pair.first];
+                        if (std::find(list.begin(), list.end(), index) == list.end())
+                            list.push_back(index);
                     }
                 }
                 // 如果遇到正则表达式，那么直接设置为无预测
@@ -100,7 +102,9 @@ const std::unordered_map<char, std::vector<int>>* ABnfRuleNodeInfo::CalcNextChar
                 {
                     if (node_value->value.value.size() > 0)
                     {
-                        next_char_map[node_value->value.value[0]].push_back(index);
+                        auto& list = next_char_map[node_value->value.value[0]];
+                        if (std::find(list.begin(), list.end(), index) == list.end())
+                            list.push_back(index);
                     }
                 }
             }
@@ -116,7 +120,9 @@ const std::unordered_map<char, std::vector<int>>* ABnfRuleNodeInfo::CalcNextChar
 
                 for (auto& pair : *sub_next_char_map)
                 {
-                    next_char_map[pair.first].push_back(index);
+                    auto& list = next_char_map[pair.first];
+                    if (std::find(list.begin(), list.end(), index) == list.end())
+                        list.push_back(index);
                 }
             }
 

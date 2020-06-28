@@ -47,13 +47,7 @@ public:
     // ÎÄ¼þºó×º
     virtual std::string GetDotExt() { return ""; }
 
-    virtual std::string LoadABnf() { return ""; }
-
     virtual bool FastGoto(const std::unordered_map<std::string, ABnfProject*>& projects, const std::string& text, std::string& error) { error = "no implement FastGoto"; return false; }
-
-    virtual ABnfFile* CreateABnfFile(const std::string& full_path, ABnfPtr abnf, const std::string& text) { return nullptr; }
-
-    virtual ABnfProject* CreateProjectInfo(ABnfFactory* factory, ABnfPtr abnf, const std::string& path) { return nullptr; }
 };
 
 #endif // _ALITTLE_ALANGUAGECOMPLETIONINFO_H_

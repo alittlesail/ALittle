@@ -6,6 +6,10 @@
 
 class ABnfFactoryClass : public ABnfFactory
 {
+public:
+    ABnfReference* CreateReference(ABnfElementPtr element) override;
+
+    std::string GetDotExt() override { return ".abnf"; }
 
 };
 

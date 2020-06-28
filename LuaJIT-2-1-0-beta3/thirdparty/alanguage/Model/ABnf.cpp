@@ -784,8 +784,8 @@ bool ABnf::AnalysisABnfRegexMatch(ABnfRuleInfo* rule
             node->value.regex = std::shared_ptr<std::regex>(new std::regex(node->value.value));
         // 开始匹配
         std::match_results<const char*> match;
-        if (std::regex_search(m_file->GetText().c_str() + offset, match, *node->value.regex, std::regex_constants::match_flag_type::match_continuous))
-            length = static_cast<int>(match.size());
+        if (std::regex_search(m_file->GetText().c_str() + offset, match, *node->value.regex, std::regex_constants::match_flag_type::match_continuous) && match.size())
+            length = static_cast<int>(match[0].length());
         // 如果没有匹配到，并且规则的预测值有pin
         if (length == 0 && rule->prediction.type != ABnfRuleTokenType::TT_NONE && rule->prediction_pin == ABnfRuleNodePinType::NPT_TRUE)
         {
@@ -794,8 +794,8 @@ bool ABnf::AnalysisABnfRegexMatch(ABnfRuleInfo* rule
                 rule->prediction.regex = std::shared_ptr<std::regex>(new std::regex(rule->prediction.value));
             // 预测匹配，如果匹配成功，那么就标记为负数，以示区别
             std::match_results<const char*> pre_match;
-            if (std::regex_search(m_file->GetText().c_str() + offset, pre_match, *rule->prediction.regex, std::regex_constants::match_continuous))
-                length = - static_cast<int>(pre_match.size());
+            if (std::regex_search(m_file->GetText().c_str() + offset, pre_match, *rule->prediction.regex, std::regex_constants::match_continuous) && pre_match.size())
+                length = - static_cast<int>(pre_match[0].length());
         }
         // 添加缓存
         m_regex_skip[offset][node] = length;
@@ -899,7 +899,8 @@ void ABnf::AnalysisOffset(int value_len, int& line, int& col, int& offset)
         if (value_len == 0) break;
         if (offset >= m_file->GetLength()) break;
 
-        if (m_file->GetText()[offset] == '\n')
+        char c = m_file->GetText()[offset];
+        if (c == '\n')
         {
             ++line;
             col = 0;
@@ -908,8 +909,10 @@ void ABnf::AnalysisOffset(int value_len, int& line, int& col, int& offset)
         {
             ++col;
         }
-        --value_len;
-        ++offset;
+
+        int byte_count = ABnfFile::GetByteCountOfOneWord(c);
+        value_len -= byte_count;
+        offset += byte_count;
     }
 }
 
@@ -920,7 +923,8 @@ bool ABnf::JumpToNextLine(int& line, int& col, int& offset)
     {
         if (offset >= m_file->GetLength()) break;
 
-        if (m_file->GetText()[offset] == '\n')
+        char c = m_file->GetText()[offset];
+        if (c == '\n')
         {
             ++line;
             col = 0;
@@ -931,7 +935,7 @@ bool ABnf::JumpToNextLine(int& line, int& col, int& offset)
         else
         {
             ++col;
-            ++offset;
+            offset += ABnfFile::GetByteCountOfOneWord(c);
         }
     }
 
@@ -947,11 +951,7 @@ void ABnf::AnalysisSkip(int& line, int& col, int& offset)
         if (c != ' ' && c != '\t' && c != '\r' && c != '\n')
             return;
 
-        if (c == '\r')
-        {
-
-        }
-        else if (c == '\n')
+        if (c == '\n')
         {
             ++line;
             col = 0;

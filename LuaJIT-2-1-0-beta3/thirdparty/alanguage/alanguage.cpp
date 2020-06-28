@@ -44,3 +44,19 @@ void abnffile_deletetext(void* abnf_file, int it_line_start, int it_char_start, 
 {
 	((ABnfFile*)abnf_file)->DeleteText(it_line_start, it_char_start, it_line_end, it_char_end);
 }
+
+const struct ABnfQueryColor** abnffile_querycolor(void* abnf_file, int version, int line, int* count)
+{
+	static std::vector<const struct ABnfQueryColor*> temp;
+	temp.resize(0);
+
+	auto* list = ((ABnfFile*)abnf_file)->QueryColor(version, line);
+	if (list != nullptr)
+	{
+		for (auto& color : *list)
+			temp.push_back(&color);
+	}
+
+	*count = static_cast<int>(temp.size());
+	return temp.data();
+}

@@ -34,9 +34,9 @@ static int alanguagelib_abnf_load(lua_State* L)
     void** c = (void**)lua_touserdata(L, 1);
     luaL_argcheck(L, c != 0, 1, "abnf object is null");
     const char* buffer = luaL_checkstring(L, 2);
-    void* factory = lua_touserdata(L, 3);
+    void** factory = lua_touserdata(L, 3);
     luaL_argcheck(L, factory != 0, 3, "factory object is null");
-    const char* r = abnf_load(*c, buffer, factory);
+    const char* r = abnf_load(*c, buffer, *factory);
     if (r) lua_pushstring(L, r);
     else lua_pushnil(L);
     return 1;
@@ -78,6 +78,36 @@ static int alanguagelib_abnffile_deletetext(lua_State* L)
     return 0;
 }
 
+static int alanguagelib_abnffile_querycolor(lua_State* L)
+{
+    void** c = (void**)lua_touserdata(L, 1);
+    luaL_argcheck(L, c != 0, 1, "abnf file object is null");
+    int version = (int)luaL_checkinteger(L, 2);
+    int line = (int)luaL_checkinteger(L, 3);
+    int count = 0;
+    const struct ABnfQueryColor** list = abnffile_querycolor(*c, version, line - 1, &count);
+    lua_newtable(L);
+    for (int i = 0; i < count; ++i)
+    {
+        const struct ABnfQueryColor* color = list[i];
+        lua_newtable(L);
+        lua_pushinteger(L, color->line_start + 1);
+        lua_setfield(L, -2, "line_start");
+        lua_pushinteger(L, color->char_start + 1);
+        lua_setfield(L, -2, "char_start");
+        lua_pushinteger(L, color->line_end + 1);
+        lua_setfield(L, -2, "line_end");
+        lua_pushinteger(L, color->char_end);
+        lua_setfield(L, -2, "char_end");
+        lua_pushinteger(L, color->tag);
+        lua_setfield(L, -2, "tag");
+        lua_pushboolean(L, color->blur);
+        lua_setfield(L, -2, "blur");
+        lua_rawseti(L, -2, i + 1);
+    }
+    return 1;
+}
+
 /*
 ** Assumes the table is on top of the stack.
 */
@@ -99,6 +129,7 @@ static struct luaL_Reg alanguagelib[] = {
   {"abnffile_settext", alanguagelib_abnffile_settext},
   {"abnffile_inserttext", alanguagelib_abnffile_inserttext},
   {"abnffile_deletetext", alanguagelib_abnffile_deletetext},
+  {"abnffile_querycolor", alanguagelib_abnffile_querycolor},
   {NULL, NULL}
 };
 

@@ -71,7 +71,7 @@ int ABnfNodeElement::GetEndLine()
 int ABnfNodeElement::GetEndCol()
 {
     if (m_end_col < 0) CalcEnd();
-    return m_end_line;
+    return m_end_col;
 }
 
 void ABnfNodeElement::CalcEnd()

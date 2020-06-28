@@ -3,9 +3,13 @@
 #include <string.h>
 #include <time.h>
 
+extern "C" {
 #include "alanguage.h"
+}
+
 #include "Model/ABnf.h"
 #include "Index/ABnfProject.h"
+#include "Index/ABnfFile.h"
 
 void* create_abnf()
 {
@@ -24,4 +28,19 @@ const char* abnf_load(void* abnf, const char* buffer, void* factory)
 void delete_abnf(void* abnf)
 {
 	delete ((ABnf*)abnf);
+}
+
+void abnffile_settext(void* abnf_file, const char* text, size_t len)
+{
+	((ABnfFile*)abnf_file)->SetText(text, len);
+}
+
+void abnffile_inserttext(void* abnf_file, const char* text, size_t len, int it_line, int it_char)
+{
+	((ABnfFile*)abnf_file)->InsertText(text, len, it_line, it_char);
+}
+
+void abnffile_deletetext(void* abnf_file, int it_line_start, int it_char_start, int it_line_end, int it_char_end)
+{
+	((ABnfFile*)abnf_file)->DeleteText(it_line_start, it_char_start, it_line_end, it_char_end);
 }

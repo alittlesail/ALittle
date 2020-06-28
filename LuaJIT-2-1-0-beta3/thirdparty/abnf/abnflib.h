@@ -1,6 +1,6 @@
 
-#ifndef _ALITTLE_ABNF_H_
-#define _ALITTLE_ABNF_H_
+#ifndef _ALITTLE_ABNFLIB_H_
+#define _ALITTLE_ABNFLIB_H_
 
 #include "lua.h"
 

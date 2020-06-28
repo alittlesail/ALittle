@@ -1,6 +1,14 @@
 
 namespace AUIPlugin;
 
+public struct ABnfColor
+{
+    double red;
+    double green;
+    double blue;
+    double alpha;
+}
+
 public class AUICodeLanguage
 {
     private int _version = 1;
@@ -19,4 +27,7 @@ public class AUICodeLanguage
 
     // 查询颜色
     public fun QueryColor(int line) : List<lua.ABnfQueryColor> { return new List<lua.ABnfQueryColor>(); }
+
+    // 颜色查询
+    public fun QueryColorValue(int tag) : ABnfColor { return null; }
 }

@@ -146,7 +146,8 @@ function AUICodeLineContainer:HandleColor()
 	self._delay_loop = nil
 	local line = self._user_data
 	self._version = line.edit.language.version
-	local list = line.edit.language:QueryColor(ALittle.List_IndexOf(line.edit.line_list, line))
+	local line_index = ALittle.List_IndexOf(line.edit.line_list, line)
+	local list = line.edit.language:QueryColor(line_index)
 	for index, char in ___ipairs(line.char_list) do
 		if char.text ~= nil then
 			char.text.red = char.red
@@ -156,17 +157,32 @@ function AUICodeLineContainer:HandleColor()
 		end
 	end
 	for index, info in ___ipairs(list) do
-		local i = info.char_start
-		while true do
-			if not(i <= info.char_start + info.char_count) then break end
-			local child = line.char_list[i]
-			if child ~= nil and child.text ~= nil then
-				child.text.red = info.red
-				child.text.green = info.green
-				child.text.blue = info.blue
-				child.text.alpha = info.alpha
+		local char_start = 1
+		if info.line_start == line_index then
+			char_start = info.char_start
+		end
+		local char_end = line.char_count
+		if info.line_end == line_index then
+			char_end = info.char_end
+		end
+		local color = line.edit.language:QueryColorValue(info.tag)
+		if color ~= nil then
+			local i = char_start
+			while true do
+				if not(i <= char_end) then break end
+				local child = line.char_list[i]
+				if child ~= nil and child.text ~= nil then
+					child.text.red = color.red
+					child.text.green = color.green
+					child.text.blue = color.blue
+					if info.blur then
+						child.text.alpha = 0.5
+					else
+						child.text.alpha = 1
+					end
+				end
+				i = i+(1)
 			end
-			i = i+(1)
 		end
 	end
 end

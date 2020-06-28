@@ -5,6 +5,12 @@ local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
+ALittle.RegStruct(152169657, "AUIPlugin.ABnfColor", {
+name = "AUIPlugin.ABnfColor", ns_name = "AUIPlugin", rl_name = "ABnfColor", hash_code = 152169657,
+name_list = {"red","green","blue","alpha"},
+type_list = {"double","double","double","double"},
+option_map = {}
+})
 
 AUICodeLanguage = Lua.Class(nil, "AUIPlugin.AUICodeLanguage")
 
@@ -27,5 +33,9 @@ end
 
 function AUICodeLanguage:QueryColor(line)
 	return {}
+end
+
+function AUICodeLanguage:QueryColorValue(tag)
+	return nil
 end
 

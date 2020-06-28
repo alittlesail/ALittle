@@ -4,15 +4,29 @@ namespace AUIPlugin;
 private var g_ABnf:lua.ABnf;
 private var g_ABnfFactory:lua.ABnfFactoryClass;
 
+private var g_ABnfColor:Map<int, ABnfColor>;
+
+enum ABnfColorType
+{
+    ABnfKeyWord = 1;
+    ABnfId = 2;
+    ABnfComment = 3;
+    ABnfKey = 4;
+    ABnfString = 5;
+    ABnfRegex = 6;
+}
+
 public class AUICodeABnf : AUICodeLanguage
 {
     private lua.ABnfFileClass _abnf_file;
 
     public ctor(string full_path)
     {
+        if (g_ABnfFactory == null)
+            g_ABnfFactory = lua.abnf.create_abnf_factory();
+
         if (g_ABnf == null)
         {
-            g_ABnfFactory = lua.abnf.create_abnf_factory();
             g_ABnf = lua.alanguage.create_abnf();
 
             var abnf_path = g_ModuleBasePath.."/Other/ABnf/ABnf.abnf";
@@ -20,12 +34,59 @@ public class AUICodeABnf : AUICodeLanguage
             if (buffer != null)
             {
                 var error = lua.alanguage.abnf_load(g_ABnf, buffer, g_ABnfFactory);
-                if (error != null)
-                    ALittle.Log("abnf load failed! "..error);
+                if (error != null) ALittle.Log("abnf load failed! "..error);
             }
             else
             {
                 ALittle.Log("abnf file read failed! "..abnf_path);
+            }
+        }
+
+        if (g_ABnfColor == null)
+        {
+            g_ABnfColor = new Map<int, ABnfColor>();
+            var color:ABnfColor;
+            {
+                color = new ABnfColor();
+                color.red = 255/255;
+                color.green = 198/255;
+                color.blue = 109/255;
+                g_ABnfColor[ABnfColorType.ABnfKeyWord] = color;   
+            }
+            {
+                color = new ABnfColor();
+                color.red = 204/255;
+                color.green = 120/255;
+                color.blue = 50/255;
+                g_ABnfColor[ABnfColorType.ABnfId] = color;   
+            }
+            {
+                color = new ABnfColor();
+                color.red = 128/255;
+                color.green = 128/255;
+                color.blue = 128/255;
+                g_ABnfColor[ABnfColorType.ABnfComment] = color;   
+            }
+            {
+                color = new ABnfColor();
+                color.red = 204/255;
+                color.green = 120/255;
+                color.blue = 50/255;
+                g_ABnfColor[ABnfColorType.ABnfKey] = color;   
+            }
+            {
+                color = new ABnfColor();
+                color.red = 85/255;
+                color.green = 134/255;
+                color.blue = 74/255;
+                g_ABnfColor[ABnfColorType.ABnfString] = color;   
+            }
+            {
+                color = new ABnfColor();
+                color.red = 152/255;
+                color.green = 118/255;
+                color.blue = 170/255;
+                g_ABnfColor[ABnfColorType.ABnfRegex] = color;   
             }
         }
 
@@ -58,4 +119,7 @@ public class AUICodeABnf : AUICodeLanguage
     {
         return lua.alanguage.abnffile_querycolor(this._abnf_file, this._version, line);
     }
+
+    // ÑÕÉ«²éÑ¯
+    public fun QueryColorValue(int tag) : ABnfColor { return g_ABnfColor[tag]; }
 }

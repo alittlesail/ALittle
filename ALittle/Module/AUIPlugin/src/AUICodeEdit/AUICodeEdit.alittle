@@ -102,8 +102,9 @@ protected class AUICodeLineContainer : ALittle.DisplayLayout
         var line = cast<AUICodeLineInfo>(this._user_data);
 
         this._version = line.edit.language.version;
-        var list = line.edit.language.QueryColor(ALittle.List_IndexOf(line.edit.line_list, line));
+        var line_index = ALittle.List_IndexOf(line.edit.line_list, line);
 
+        var list = line.edit.language.QueryColor(line_index);
         for (var index, char in line.char_list)
         {
             if (char.text != null)
@@ -117,17 +118,32 @@ protected class AUICodeLineContainer : ALittle.DisplayLayout
 
         for (var index, info in list)
         {
-            for (var i = info.char_start; i <= info.char_start + info.char_count; 1)
+            var char_start = 1;
+            if (info.line_start == line_index)
+                char_start = info.char_start;
+            var char_end = line.char_count;
+            if (info.line_end == line_index)
+                char_end = info.char_end;
+
+            var color = line.edit.language.QueryColorValue(info.tag);
+            if (color != null)
             {
-                var child = line.char_list[i];
-                if (child != null && child.text != null)
+                for (var i = char_start; i <= char_end; 1)
                 {
-                    child.text.red = info.red;
-                    child.text.green = info.green;
-                    child.text.blue = info.blue;
-                    child.text.alpha = info.alpha;   
-                }
+                    var child = line.char_list[i];
+                    if (child != null && child.text != null)
+                    {
+                        child.text.red = color.red;
+                        child.text.green = color.green;
+                        child.text.blue = color.blue;
+                        if (info.blur)
+                            child.text.alpha = 0.5;   
+                        else
+                            child.text.alpha = 1;   
+                    }
+                }                
             }
+
         }
     }
 

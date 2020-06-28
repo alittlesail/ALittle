@@ -20,7 +20,7 @@ static int alanguagelib_destroy_abnf(lua_State* L)
 
 static int alanguagelib_create_abnf(lua_State* L)
 {
-    void** c = (void*)lua_newuserdata(L, sizeof(void**));
+    void** c = (void**)lua_newuserdata(L, sizeof(void**));
     lua_newtable(L);
     lua_pushcfunction(L, alanguagelib_destroy_abnf);
     lua_setfield(L, -2, "__gc");

@@ -14,7 +14,7 @@ bool ABnfNodeElement::IsLeafOrHasChildOrError()
 // Ìí¼ÓÔªËØ
 void ABnfNodeElement::AddChild(ABnfElementPtr child)
 {
-    child->SetParent(std::dynamic_pointer_cast<ABnfNodeElement>(shared_from_this()));
+    child->SetParent(shared_from_this());
     m_childs.push_back(child);
 }
 

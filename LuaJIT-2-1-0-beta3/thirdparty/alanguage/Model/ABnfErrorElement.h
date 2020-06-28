@@ -9,7 +9,7 @@
 class ABnfErrorElement : public ABnfElement
 {
 private:
-    std::string m_value = "";                   // 节点值
+    std::string m_value;                   // 节点值
     ABnfElementPtr m_target;               // 本来要匹配的目标元素
 
 public:

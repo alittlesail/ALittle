@@ -20,8 +20,7 @@ const char* abnf_load(void* abnf, const char* buffer, void* factory)
 {
 	static std::string error;
 	error.clear();
-	if (((ABnf*)abnf)->Load(buffer, (ABnfFactory*)factory, error))
-		return nullptr;
+	if (((ABnf*)abnf)->Load(buffer, (ABnfFactory*)factory, error)) return nullptr;
 	return error.c_str();
 }
 

@@ -16,9 +16,12 @@ ABnfKeyReference::ABnfKeyReference(ABnfElementPtr element) : ABnfCommonReference
 
 bool ABnfKeyReference::CheckError(ABnfGuessError& error)
 {
-    if (m_element->GetLength() <= 2)
+    auto element = m_element.lock();
+    if (element == nullptr) return false;
+
+    if (element->GetLength() <= 2)
     {
-        error.element = m_element;
+        error.element = element;
         error.error = "key can't not be empty";
         return true;
     }

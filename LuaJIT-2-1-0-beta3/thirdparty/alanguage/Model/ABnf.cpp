@@ -174,6 +174,7 @@ ABnfNodeElementPtr ABnf::Analysis(ABnfFile* file)
     m_regex_skip.clear();
     m_line_comment_skip.clear();
     m_block_comment_skip.clear();
+    m_stop_stack.clear();
     m_file = nullptr;
 
     // ·µ»Ø½á¹û

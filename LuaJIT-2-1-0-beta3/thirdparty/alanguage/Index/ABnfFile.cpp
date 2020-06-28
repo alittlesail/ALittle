@@ -1,7 +1,10 @@
 ﻿
 #include "ABnfFile.h"
 #include "../Model/ABnf.h"
+#include "../Model/ABnfElement.h"
 #include "../Model/ABnfNodeElement.h"
+#include "../Model/ABnfErrorElement.h"
+#include "../Model/ABnfReference.h"
 
 ABnfFile::ABnfFile(ABnfProject* project, const std::string& full_path, ABnf* abnf, const char* text, size_t len)
 {
@@ -114,6 +117,15 @@ void ABnfFile::DeleteText(int it_line_start, int it_char_start, int it_line_end,
     m_text.erase(start_index, end_index - start_index);
 }
 
+const std::vector<struct ABnfQueryColor>* ABnfFile::QueryColor(int version, int it_line)
+{
+    AnalysisText(version);
+
+    auto it = m_color_map.find(it_line);
+    if (it == m_color_map.end()) return nullptr;
+    return &it->second;
+}
+
 int ABnfFile::GetByteCountOfOneWord(unsigned char first_char)
 {
     unsigned char temp = 0x80;
@@ -132,5 +144,81 @@ int ABnfFile::GetByteCountOfOneWord(unsigned char first_char)
     return num;
 }
 
-// 获取根节点
-ABnfNodeElementPtr ABnfFile::GetRoot() { return nullptr; }
+void ABnfFile::AnalysisText(int version)
+{
+    if (m_version == version) return;
+    m_version = version;
+    m_color_map.clear();
+
+    UpdateAnalysis();
+    UpdateError();
+
+    if (m_root) CollectColor(m_root, false);
+}
+
+void ABnfFile::CollectColor(ABnfElementPtr element, bool blur)
+{
+    if (element->IsError()) return;
+
+    bool blur_temp = false;
+    int tag = element->GetReference()->QueryClassificationTag(blur_temp);
+    if (tag > 0)
+    {
+        for (int line = element->GetStartLine(); line <= element->GetEndLine(); ++line)
+        {
+            struct ABnfQueryColor info;
+            info.line_start = element->GetStartLine();
+            info.char_start = element->GetStartCol();
+            info.line_end = element->GetEndLine();
+            info.char_end = element->GetEndCol();
+            info.blur = (blur || blur_temp) ? 1 : 0;
+            info.tag = tag;
+            m_color_map[line].push_back(info);
+        }
+        return;
+    }
+
+    auto node = std::dynamic_pointer_cast<ABnfNodeElement>(element);
+    if (node != nullptr)
+    {
+        for (auto child : node->GetChilds())
+            CollectColor(child, blur || blur_temp);
+    }
+}
+
+// 收集语法错误
+void ABnfFile::CollectError(ABnfElementPtr element)
+{
+    auto error_element = std::dynamic_pointer_cast<ABnfErrorElement>(element);
+    if (error_element != nullptr)
+    {
+        AddCheckErrorInfo(element, error_element->GetValue());
+        return;
+    }
+
+    auto node_element = std::dynamic_pointer_cast<ABnfNodeElement>(element);
+    if (node_element == nullptr) return;
+
+    for (auto child : node_element->GetChilds())
+        CollectError(child);
+}
+
+void ABnfFile::AnalysisError(ABnfElementPtr element)
+{
+    auto error_element = std::dynamic_pointer_cast<ABnfErrorElement>(element);
+    if (error_element == nullptr) return;
+
+    ABnfGuessError error;
+    if (element->GetReference()->CheckError(error))
+    {
+        if (error.element != nullptr && error.element->GetFile() == this)
+            AddAnalysisErrorInfo(error.element, error.error);
+    }
+
+    auto node_element = std::dynamic_pointer_cast<ABnfNodeElement>(element);
+    if (node_element == nullptr) return;
+
+    for (auto child : node_element->GetChilds())
+        AnalysisError(child);
+}
+

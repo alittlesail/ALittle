@@ -12,13 +12,13 @@ void abnffile_deletetext(void* abnf_file, int it_line_start, int it_char_start, 
 
 struct ABnfQueryColor
 {
+	int line_start;
 	int char_start;
-	int char_count;
-	double red;
-	double green;
-	double blue;
-	double alpha;
+	int line_end;
+	int char_end;
+	int tag;
+	int blur;
 };
-struct ABnfQueryColor* abnffile_querycolor(void* abnf_file, int version, int line, int* count);
+const struct ABnfQueryColor** abnffile_querycolor(void* abnf_file, int version, int line, int* count);
 
 #endif // _ALITTLE_ALANGUAGE_H_

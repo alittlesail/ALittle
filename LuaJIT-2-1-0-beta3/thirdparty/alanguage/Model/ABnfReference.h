@@ -14,7 +14,7 @@ public:
     virtual ~ABnfReference() {}
 
     // 检查错误
-    virtual void CheckError(ABnfGuessError& error) { }
+    virtual bool CheckError(ABnfGuessError& error) { return false; }
 
     // 获取类型
     virtual void GuessTypes(std::vector<ABnfGuess>& guess_list, ABnfGuessError& error) { }
@@ -42,7 +42,7 @@ public:
     virtual bool QueryCompletion(int offset, std::vector<ALanguageCompletionInfo>& list) { return false; }
 
     // 配色
-    virtual void QueryClassificationTag(bool& blur, std::string& tag) { blur = false; }
+    virtual int QueryClassificationTag(bool& blur) { blur = false; return 0; }
 
     // 高亮拾取
     virtual bool PeekHighlightWord() { return false; }

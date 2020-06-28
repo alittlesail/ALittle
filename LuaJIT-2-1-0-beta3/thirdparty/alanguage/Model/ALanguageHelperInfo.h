@@ -26,8 +26,10 @@ struct ALanguageSignatureInfo
 
 struct ALanguageHighlightWordInfo
 {
-    int start = 0;
-    int end = 0;
+    int line_start = 0;
+    int char_start = 0;
+    int line_end = 0;
+    int char_end = 0;
 };
 
 #endif // _ALITTLE_ALANGUAGEHELPERINFO_H_

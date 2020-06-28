@@ -28,7 +28,7 @@ public:
     int GetEndLine() override { if (m_end_line < 0) CalcEnd(); return m_end_line; }
 
     // 获取结束位置是第几列
-    int GetEndCol() override { if (m_end_col < 0) CalcEnd(); return m_end_line; }
+    int GetEndCol() override { if (m_end_col < 0) CalcEnd(); return m_end_col; }
 
     // 获取节点文本
     const std::string& GetValue() { return m_value; }

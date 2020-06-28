@@ -5,7 +5,11 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <map>
 #include <unordered_map>
+extern "C" {
+#include "../alanguage.h"
+}
 
 class ABnf;
 class ABnfProject;
@@ -13,10 +17,13 @@ class ABnfNodeElement;
 using ABnfNodeElementPtr = std::shared_ptr<ABnfNodeElement>;
 class ABnfElement;
 using ABnfElementPtr = std::shared_ptr<ABnfElement>;
+struct ABnfQueryColor;
 
 class ABnfFile
 {
 protected:
+    // 根节点
+    ABnfNodeElementPtr m_root;
     // 工程信息
     ABnfProject* m_project = nullptr;
     // 解析器
@@ -25,6 +32,12 @@ protected:
     std::string m_full_path;
     // 文本字符串
     std::string m_text;
+
+    int m_version = 0;
+    // 收集错误
+    std::map<ABnfElementPtr, std::string> m_analysis_error_map;
+    std::map<ABnfElementPtr, std::string> m_check_error_map;
+    std::unordered_map<int, std::vector<struct ABnfQueryColor>> m_color_map;
 
 public:
     ABnfFile(ABnfProject* project, const std::string& full_path, ABnf* abnf, const char* text, size_t len);
@@ -44,19 +57,16 @@ public:
     // it_char_end 从0开始算
     void DeleteText(int it_line_start, int it_char_start, int it_line_end, int it_char_end);
 
-private:
+    // 获取颜色
+    // it_line 从0开始算
+    const std::vector<struct ABnfQueryColor>* QueryColor(int version, int it_line);
+
     // utf8字符切割
     static int GetByteCountOfOneWord(unsigned char first_char);
 
-public:
-    // 格式化当前文件
-    virtual std::string FormatDocument() { return ""; }
-    // 编译当前文件
-    virtual bool CompileDocument() { return false; }
-    // 格式化当前项目
-    virtual bool CompileProject() { return false; }
-    // 触发保存文件
-    virtual void OnSave() { }
+private:
+    // 解析一条龙
+    void AnalysisText(int version);
 
 public:
     // 获取文件路径
@@ -72,20 +82,32 @@ public:
     
 public:
     // 获取根节点
-    virtual ABnfNodeElementPtr GetRoot();
+    ABnfNodeElementPtr GetRoot() { return m_root; }
+    
+public:
     // 更新解析
     virtual void UpdateAnalysis() { }
-    // 清空解析信息
-    virtual void ClearAnalysisError() { }
     // 更新错误信息
     virtual void UpdateError() { }
-    // 清空错误信息
-    virtual void ClearCheckError() { }
 
-    // 获取当前所有错误节点
-    virtual void GetAnalysisErrorMap(std::unordered_map<ABnfElement, std::string>& out) { }
+    // 清空错误信息
+    inline void ClearAnalysisError() { m_analysis_error_map.clear(); }
+    inline void ClearCheckError() { m_check_error_map.clear(); }
+
     // 获取所有错误节点
-    virtual void GetCheckErrorMap(std::unordered_map<ABnfElement, std::string>& out) { }
+    inline const std::map<ABnfElementPtr, std::string>& GetAnalysisErrorMap() { return m_analysis_error_map; }
+    inline const std::map<ABnfElementPtr, std::string>& GetCheckErrorMap() { return m_check_error_map; }
+
+    // 添加错误节点
+    inline void AddAnalysisErrorInfo(ABnfElementPtr element, const std::string& error) { if (element == nullptr) return; m_analysis_error_map[element] = error; }
+    inline void AddCheckErrorInfo(ABnfElementPtr element, const std::string& error) { if (element == nullptr) return; m_check_error_map[element] = error; }
+
+    // 收集语法着色
+    void CollectColor(ABnfElementPtr element, bool blur);
+    // 收集语法错误
+    void CollectError(ABnfElementPtr element);
+    // 收集语义错误
+    void AnalysisError(ABnfElementPtr element);
 };
 
 #endif // _ALITTLE_ABNFFILE_H_

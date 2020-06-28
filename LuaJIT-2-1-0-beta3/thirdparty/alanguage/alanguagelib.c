@@ -42,6 +42,42 @@ static int alanguagelib_abnf_load(lua_State* L)
     return 1;
 }
 
+static int alanguagelib_abnffile_settext(lua_State* L)
+{
+    void** c = (void**)lua_touserdata(L, 1);
+    luaL_argcheck(L, c != 0, 1, "abnf file object is null");
+    size_t len = 0;
+    const char* text = luaL_checklstring(L, 2, &len);
+    luaL_argcheck(L, text != 0, 2, "text is null");
+    abnffile_settext(*c, text, len);
+    return 0;
+}
+
+static int alanguagelib_abnffile_inserttext(lua_State* L)
+{
+    void** c = (void**)lua_touserdata(L, 1);
+    luaL_argcheck(L, c != 0, 1, "abnf file object is null");
+    size_t len = 0;
+    const char* text = luaL_checklstring(L, 2, &len);
+    luaL_argcheck(L, text != 0, 2, "text is null");
+    int it_line = (int)luaL_checkinteger(L, 3);
+    int it_char = (int)luaL_checkinteger(L, 4);
+    abnffile_inserttext(*c, text, len, it_line - 1, it_char);
+    return 0;
+}
+
+static int alanguagelib_abnffile_deletetext(lua_State* L)
+{
+    void** c = (void**)lua_touserdata(L, 1);
+    luaL_argcheck(L, c != 0, 1, "abnf file object is null");
+    int it_line_start = (int)luaL_checkinteger(L, 2);
+    int it_char_start = (int)luaL_checkinteger(L, 3);
+    int it_line_end = (int)luaL_checkinteger(L, 4);
+    int it_char_end = (int)luaL_checkinteger(L, 5);
+    abnffile_deletetext(*c, it_line_start-1, it_char_start, it_line_end - 1, it_char_end);
+    return 0;
+}
+
 /*
 ** Assumes the table is on top of the stack.
 */
@@ -60,6 +96,9 @@ static void set_info (lua_State *L) {
 static struct luaL_Reg alanguagelib[] = {
   {"create_abnf", alanguagelib_create_abnf},
   {"abnf_load", alanguagelib_abnf_load},
+  {"abnffile_settext", alanguagelib_abnffile_settext},
+  {"abnffile_inserttext", alanguagelib_abnffile_inserttext},
+  {"abnffile_deletetext", alanguagelib_abnffile_deletetext},
   {NULL, NULL}
 };
 

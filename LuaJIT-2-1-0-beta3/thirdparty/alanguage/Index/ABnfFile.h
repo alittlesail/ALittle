@@ -8,7 +8,6 @@
 #include <unordered_map>
 
 class ABnf;
-using ABnfPtr = std::shared_ptr<ABnf>;
 class ABnfProject;
 class ABnfNodeElement;
 using ABnfNodeElementPtr = std::shared_ptr<ABnfNodeElement>;
@@ -21,14 +20,14 @@ protected:
     // 工程信息
     ABnfProject* m_project = nullptr;
     // 解析器
-    ABnfPtr m_abnf;
+    ABnf* m_abnf = nullptr;
     // 文件路径
     std::string m_full_path;
     // 文本字符串
     std::string m_text;
 
 public:
-    ABnfFile(ABnfProject* project, const std::string& full_path, ABnfPtr abnf, const char* text, size_t len);
+    ABnfFile(ABnfProject* project, const std::string& full_path, ABnf* abnf, const char* text, size_t len);
 
     // 设置文本
     void SetText(const char* text, size_t len);
@@ -36,14 +35,14 @@ public:
     // 插入文本
     // it_line 从0开始算
     // it_char 从0开始算
-    void InsertText(const char* content, size_t len, size_t it_line, size_t it_char);
+    void InsertText(const char* content, size_t len, int it_line, int it_char);
 
     // 删除文本
     // it_line_start 从0开始算
     // it_char_start 从0开始算
     // it_line_end 从0开始算
     // it_char_end 从0开始算
-    void DeleteText(size_t it_line_start, size_t it_char_start, size_t it_line_end, size_t it_char_end);
+    void DeleteText(int it_line_start, int it_char_start, int it_line_end, int it_char_end);
 
 private:
     // utf8字符切割

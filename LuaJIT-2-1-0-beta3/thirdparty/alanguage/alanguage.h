@@ -10,4 +10,15 @@ void abnffile_settext(void* abnf_file, const char* text, size_t len);
 void abnffile_inserttext(void* abnf_file, const char* text, size_t len, int it_line, int it_char);
 void abnffile_deletetext(void* abnf_file, int it_line_start, int it_char_start, int it_line_end, int it_char_end);
 
+struct ABnfQueryColor
+{
+	int char_start;
+	int char_count;
+	double red;
+	double green;
+	double blue;
+	double alpha;
+};
+struct ABnfQueryColor* abnffile_querycolor(void* abnf_file, int version, int line, int* count);
+
 #endif // _ALITTLE_ALANGUAGE_H_

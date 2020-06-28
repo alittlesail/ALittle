@@ -78,6 +78,35 @@ static int alanguagelib_abnffile_deletetext(lua_State* L)
     return 0;
 }
 
+static int alanguagelib_abnffile_querycolor(lua_State* L)
+{
+    void** c = (void**)lua_touserdata(L, 1);
+    luaL_argcheck(L, c != 0, 1, "abnf file object is null");
+    int version = (int)luaL_checkinteger(L, 2);
+    int line = (int)luaL_checkinteger(L, 3);
+    int count = 0;
+    struct ABnfQueryColor* list = abnffile_querycolor(*c, version, line, &count);
+    lua_newtable(L);
+    for (int i = 0; i < count; ++i)
+    {
+        lua_newtable(L);
+        lua_pushinteger(L, list[i].char_start);
+        lua_setfield(L, -2, "char_start");
+        lua_pushinteger(L, list[i].char_count);
+        lua_setfield(L, -2, "char_count");
+        lua_pushnumber(L, list[i].red);
+        lua_setfield(L, -2, "red");
+        lua_pushnumber(L, list[i].green);
+        lua_setfield(L, -2, "green");
+        lua_pushnumber(L, list[i].blue);
+        lua_setfield(L, -2, "blue");
+        lua_pushnumber(L, list[i].alpha);
+        lua_setfield(L, -2, "alpha");
+        lua_rawseti(L, -2, i + 1);
+    }
+    return 1;
+}
+
 /*
 ** Assumes the table is on top of the stack.
 */
@@ -99,6 +128,7 @@ static struct luaL_Reg alanguagelib[] = {
   {"abnffile_settext", alanguagelib_abnffile_settext},
   {"abnffile_inserttext", alanguagelib_abnffile_inserttext},
   {"abnffile_deletetext", alanguagelib_abnffile_deletetext},
+  {"abnffile_querycolor", alanguagelib_abnffile_querycolor},
   {NULL, NULL}
 };
 

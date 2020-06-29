@@ -609,10 +609,8 @@ class UISystem
     // 处理键盘按键按下事件
     public fun HandleKeyDown(int mod, int sym, int scancode)
     {
-        // 保存mod
+        // 保存按键
         this._sym_map[sym] = true;
-        // 标记是否被处理
-        var result = false;
         // 如果当前有选中焦点，并且输入法不是在编辑状态
         if (System_GetIMESelectList() == "" && this._ime_editing)
         {
@@ -638,8 +636,17 @@ class UISystem
     
     public fun HandleKeyUp(int mod, int sym, int scancode)
     {
-        // 保存mod
+        // 清理按键
         this._sym_map[sym] = null;
+
+        // 向焦点控件发送键盘按键事件
+        var event = new UIKeyUpEvent();
+        event.target = this._sfc;
+        event.mod = mod;
+        event.sym = sym;
+        event.scancode = scancode;
+        if (this._sfc != null && this._ime_editing == false)
+            this._sfc.DispatchEvent(event);
     }
     
     // 处理鼠标滚轮事件

@@ -421,7 +421,6 @@ end
 
 function UISystem:HandleKeyDown(mod, sym, scancode)
 	self._sym_map[sym] = true
-	local result = false
 	if System_GetIMESelectList() == "" and self._ime_editing then
 		self._ime_editing = false
 		if self._ime_editing_callback ~= nil then
@@ -444,6 +443,14 @@ end
 
 function UISystem:HandleKeyUp(mod, sym, scancode)
 	self._sym_map[sym] = nil
+	local event = {}
+	event.target = self._sfc
+	event.mod = mod
+	event.sym = sym
+	event.scancode = scancode
+	if self._sfc ~= nil and self._ime_editing == false then
+		self._sfc:DispatchEvent(___all_struct[1213009422], event)
+	end
 end
 
 function UISystem:HandleMouseWheel(x, y)

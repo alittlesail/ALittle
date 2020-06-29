@@ -130,6 +130,31 @@ const std::vector<struct ABnfQueryColor>* ABnfFile::QueryColor(int version, int 
     return &it->second;
 }
 
+bool ABnfFile::QueryInfo(int version, int it_line, int it_char
+    , std::string& info, int& line_start, int& char_start, int& line_end, int& char_end)
+{
+    AnalysisText(version);
+
+    if (m_root == nullptr) return false;
+
+    auto element = m_root->GetException(it_line, it_char);
+    if (element == nullptr || element->IsError()) return false;
+
+    auto node = std::dynamic_pointer_cast<ABnfNodeElement>(element);
+    if (node == nullptr) node = std::dynamic_pointer_cast<ABnfNodeElement>(element->GetParent());
+    if (node == nullptr)
+        element->GetReference()->QueryQuickInfo(info);
+    else
+        node->GetReference()->QueryQuickInfo(info);
+
+    line_start = element->GetStartLine();
+    char_start = element->GetStartCol();
+    line_end = element->GetEndLine();
+    char_end = element->GetEndCol();
+
+    return !info.empty();
+}
+
 int ABnfFile::GetByteCountOfOneWord(unsigned char first_char)
 {
     unsigned char temp = 0x80;

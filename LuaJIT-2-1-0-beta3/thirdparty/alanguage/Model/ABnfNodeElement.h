@@ -23,6 +23,7 @@ public:
     virtual ~ABnfNodeElement() {}
 
     bool IsLeafOrHasChildOrError() override;
+    bool IsNode() override { return true; }
 
     // 添加元素
     void AddChild(ABnfElementPtr child);
@@ -34,6 +35,9 @@ public:
 
     // 根据偏移位置，获取期望的元素
     ABnfElementPtr GetException(int offset) override;
+
+    // 根据行列，获取期望的元素
+    ABnfElementPtr GetException(int it_line, int it_char) override;
 
     // 获取节点类型
     const std::string& GetNodeType() override { return m_type; }

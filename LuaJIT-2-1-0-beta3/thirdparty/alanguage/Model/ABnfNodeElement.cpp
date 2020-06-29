@@ -33,6 +33,27 @@ ABnfElementPtr ABnfNodeElement::GetException(int offset)
     return shared_from_this();
 }
 
+// 根据行列，获取期望的元素
+ABnfElementPtr ABnfNodeElement::GetException(int it_line, int it_char)
+{
+    for (auto& child : m_childs)
+    {
+        auto element = child->GetException(it_line, it_char);
+        if (element != nullptr) return element;
+    }
+
+    auto start_line = GetStartLine();
+    auto end_line = GetEndLine();
+
+    if (start_line > it_line) return nullptr;
+    if (end_line < it_line) return nullptr;
+
+    if (start_line == it_line && GetStartCol() > it_char) return nullptr;
+    if (end_line == it_line && GetEndCol() <= it_char) return nullptr;
+
+    return shared_from_this();
+}
+
 int ABnfNodeElement::GetLengthWithoutError()
 {
     for (int i = static_cast<int>(m_childs.size()) - 1; i >= 0; --i)

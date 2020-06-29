@@ -23,8 +23,6 @@ struct ABnfGuessError;
 class ABnfGuess;
 using ABnfGuessPtr = std::shared_ptr<ABnfGuess>;
 class ABnfProject;
-class ABnf;
-using ABnfPtr = std::shared_ptr<ABnf>;
 class ABnfReference;
 
 class ABnfFactory

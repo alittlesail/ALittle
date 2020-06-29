@@ -17,7 +17,7 @@ enum ABnfColorType
 class ABnfCommonReference : public ABnfReference
 {
 protected:
-	ABnfElementPtr m_element;
+	ABnfElementWeakPtr m_element;
 
 public:
     ABnfCommonReference(ABnfElementPtr element);

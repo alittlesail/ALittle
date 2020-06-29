@@ -41,6 +41,7 @@ protected:
 
 public:
     ABnfFile(ABnfProject* project, const std::string& full_path, ABnf* abnf, const char* text, size_t len);
+    virtual ~ABnfFile();
 
     // 设置文本
     void SetText(const char* text, size_t len);

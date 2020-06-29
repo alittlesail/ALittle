@@ -17,7 +17,10 @@ ABnfRegexReference::ABnfRegexReference(ABnfElementPtr element) : ABnfCommonRefer
 
 void ABnfRegexReference::QueryQuickInfo(std::string& info)
 {
-    auto parent = m_element->GetParent();
+    auto element = m_element.lock();
+    if (element == nullptr) return;
+
+    auto parent = element->GetParent();
     if (parent != nullptr && parent->GetNodeType() == "Expression")
     {
         info = "The next character prediction, if the prediction fails, skip this rule to improve parsing efficiency";

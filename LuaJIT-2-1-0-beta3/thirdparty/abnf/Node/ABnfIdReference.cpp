@@ -16,10 +16,13 @@ ABnfIdReference::ABnfIdReference(ABnfElementPtr element) : ABnfCommonReference(e
 
 void ABnfIdReference::QueryQuickInfo(std::string& info)
 {
-    ABnfFileClass* file = dynamic_cast<ABnfFileClass*>(m_element->GetFile());
+    auto element = m_element.lock();
+    if (element == nullptr) return;
+
+    ABnfFileClass* file = dynamic_cast<ABnfFileClass*>(element->GetFile());
     if (file == nullptr) return;
 
-    auto it = file->GetRuleSet().find(m_element->GetElementText());
+    auto it = file->GetRuleSet().find(element->GetElementText());
     if (it == file->GetRuleSet().end()) return;
 
     std::vector<std::string> content_list;
@@ -31,12 +34,15 @@ void ABnfIdReference::QueryQuickInfo(std::string& info)
 
 bool ABnfIdReference::QueryCompletion(int offset, std::vector<ALanguageCompletionInfo>& list)
 {
-    ABnfFileClass* file = dynamic_cast<ABnfFileClass*>(m_element->GetFile());
+    auto element = m_element.lock();
+    if (element == nullptr) return false;
+
+    ABnfFileClass* file = dynamic_cast<ABnfFileClass*>(element->GetFile());
     if (file == nullptr) return false;
 
     for (auto& pair : file->GetRuleSet())
     {
-        if (pair.first.find(m_element->GetElementText()) == 0)
+        if (pair.first.find(element->GetElementText()) == 0)
         {
             ALanguageCompletionInfo info;
             info.display = pair.first;
@@ -49,32 +55,35 @@ bool ABnfIdReference::QueryCompletion(int offset, std::vector<ALanguageCompletio
 // ¼ì²é´íÎó
 bool ABnfIdReference::CheckError(ABnfGuessError& error)
 {
-    ABnfFileClass* file = dynamic_cast<ABnfFileClass*>(m_element->GetFile());
+    auto element = m_element.lock();
+    if (element == nullptr) return false;
+
+    ABnfFileClass* file = dynamic_cast<ABnfFileClass*>(element->GetFile());
     if (file == nullptr) return false;
 
-    const auto& text = m_element->GetElementText();
+    const auto& text = element->GetElementText();
 
     auto it = file->GetRuleSet().find(text);
     if (it == file->GetRuleSet().end())
     {
-        auto parent = m_element->GetParent();
+        auto parent = element->GetParent();
         if (parent == nullptr || parent->GetNodeType() != "Expression")
         {
-            error.element = m_element;
+            error.element = element;
             error.error = "unknow type";
             return true;
         }
     }
     else if (it->second.size() > 1)
     {
-        error.element = m_element;
+        error.element = element;
         error.error = "repeated define";
         return true;
     }
 
     if (text.size() != 0 && text[0] >= '0' && text[0] <= '9')
     {
-        error.element = m_element;
+        error.element = element;
         error.error = "rule name must not start with number";
         return true;
     }
@@ -84,10 +93,13 @@ bool ABnfIdReference::CheckError(ABnfGuessError& error)
 
 void ABnfIdReference::QueryHighlightWordTag(std::vector<ALanguageHighlightWordInfo>& list)
 {
-    ABnfFileClass* file = dynamic_cast<ABnfFileClass*>(m_element->GetFile());
+    auto element = m_element.lock();
+    if (element == nullptr) return;
+
+    ABnfFileClass* file = dynamic_cast<ABnfFileClass*>(element->GetFile());
     if (file == nullptr) return;
 
-    auto it = file->GetIndex().find(m_element->GetElementText());
+    auto it = file->GetIndex().find(element->GetElementText());
     if (it == file->GetIndex().end()) return;
 
     for (auto element : it->second)
@@ -104,10 +116,13 @@ void ABnfIdReference::QueryHighlightWordTag(std::vector<ALanguageHighlightWordIn
 // Ìø×ª
 ABnfElementPtr ABnfIdReference::GotoDefinition()
 {
-    ABnfFileClass* file = dynamic_cast<ABnfFileClass*>(m_element->GetFile());
+    auto element = m_element.lock();
+    if (element == nullptr) return nullptr;
+
+    ABnfFileClass* file = dynamic_cast<ABnfFileClass*>(element->GetFile());
     if (file == nullptr) return nullptr;
 
-    auto it = file->GetRuleSet().find(m_element->GetElementText());
+    auto it = file->GetRuleSet().find(element->GetElementText());
     if (it == file->GetRuleSet().end())
         return nullptr;
 

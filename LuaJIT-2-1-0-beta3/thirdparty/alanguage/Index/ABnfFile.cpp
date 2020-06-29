@@ -14,6 +14,10 @@ ABnfFile::ABnfFile(ABnfProject* project, const std::string& full_path, ABnf* abn
     SetText(text, len);
 }
 
+ABnfFile::~ABnfFile()
+{
+}
+
 // 设置文本
 void ABnfFile::SetText(const char* text, size_t len)
 {

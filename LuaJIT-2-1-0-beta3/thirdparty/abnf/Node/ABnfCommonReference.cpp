@@ -11,11 +11,14 @@ ABnfCommonReference::ABnfCommonReference(ABnfElementPtr element)
 // ÅäÉ«
 int ABnfCommonReference::QueryClassificationTag(bool& blur)
 {
+    auto element = m_element.lock();
+    if (element == nullptr) return 0;
+
     blur = false;
-    const auto& type = m_element->GetNodeType();
+    const auto& type = element->GetNodeType();
     if (type == "Id")
     {
-        const auto& text = m_element->GetElementText();
+        const auto& text = element->GetElementText();
         if (text == "Root" || text == "LineComment" || text == "BlockComment")
             return ABnfColorType::ABnfKeyWord;
         else

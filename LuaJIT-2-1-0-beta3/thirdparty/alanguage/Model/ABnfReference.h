@@ -11,7 +11,7 @@ class ABnfReference
 {
 public:
     ABnfReference() { }
-    virtual ~ABnfReference() {}
+    virtual ~ABnfReference() { }
 
     // ¼ì²é´íÎó
     virtual bool CheckError(ABnfGuessError& error) { return false; }

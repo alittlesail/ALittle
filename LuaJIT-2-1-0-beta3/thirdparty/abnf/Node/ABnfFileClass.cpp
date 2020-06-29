@@ -8,6 +8,10 @@ ABnfFileClass::ABnfFileClass(ABnfProject* project, const std::string& full_path,
 {
 }
 
+ABnfFileClass::~ABnfFileClass()
+{
+}
+
 // 更新分析内容
 void ABnfFileClass::UpdateAnalysis()
 {

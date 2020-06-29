@@ -16,7 +16,10 @@ ABnfNodeReference::ABnfNodeReference(ABnfElementPtr element) : ABnfCommonReferen
 
 bool ABnfNodeReference::CheckError(ABnfGuessError& error)
 {
-    auto parent = std::dynamic_pointer_cast<ABnfNodeElement>(m_element->GetParent());
+    auto element = m_element.lock();
+    if (element == nullptr) return false;
+
+    auto parent = std::dynamic_pointer_cast<ABnfNodeElement>(element->GetParent());
     if (parent == nullptr) return false;
 
     for (auto child : parent->GetChilds())
@@ -25,7 +28,7 @@ bool ABnfNodeReference::CheckError(ABnfGuessError& error)
             return false;
     }
 
-    return CheckElementError(m_element, error);
+    return CheckElementError(element, error);
 }
 
 bool ABnfNodeReference::CheckElementError(ABnfElementPtr element, ABnfGuessError& error)

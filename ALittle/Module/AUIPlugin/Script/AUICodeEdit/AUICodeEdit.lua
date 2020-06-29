@@ -225,9 +225,14 @@ end
 function AUICodeLineContainer:HandleColor()
 	self._delay_loop = nil
 	local line = self._user_data
+	if self._version ~= line.edit.language.version then
+		self._line_index = nil
+	end
 	self._version = line.edit.language.version
-	local line_index = ALittle.List_IndexOf(line.edit.line_list, line)
-	local list = line.edit.language:QueryColor(line_index)
+	if self._line_index == nil then
+		self._line_index = ALittle.List_IndexOf(line.edit.line_list, line)
+	end
+	local list = line.edit.language:QueryColor(self._line_index)
 	for index, char in ___ipairs(line.char_list) do
 		if char.text ~= nil then
 			char.text.red = char.red
@@ -238,11 +243,11 @@ function AUICodeLineContainer:HandleColor()
 	end
 	for index, info in ___ipairs(list) do
 		local char_start = 1
-		if info.line_start == line_index then
+		if info.line_start == self._line_index then
 			char_start = info.char_start
 		end
 		local char_end = line.char_count
-		if info.line_end == line_index then
+		if info.line_end == self._line_index then
 			char_end = info.char_end
 		end
 		local color = line.edit.language:QueryColorValue(info.tag)

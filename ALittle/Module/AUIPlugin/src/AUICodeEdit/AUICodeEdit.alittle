@@ -63,6 +63,7 @@ protected class AUICodeLineContainer : ALittle.DisplayLayout
 {
     private bool _showd = false;
     private int _version = 0;
+    private int _line_index;
     private ALittle.LoopTimer _delay_loop = null;
 
     public ctor(ALittle.ControlSystem ctrl_sys)
@@ -136,10 +137,14 @@ protected class AUICodeLineContainer : ALittle.DisplayLayout
 
         var line = cast<AUICodeLineInfo>(this._user_data);
 
-        this._version = line.edit.language.version;
-        var line_index = ALittle.List_IndexOf(line.edit.line_list, line);
+        if (this._version != line.edit.language.version)
+            this._line_index = null;
 
-        var list = line.edit.language.QueryColor(line_index);
+        this._version = line.edit.language.version;
+        if (this._line_index == null)
+            this._line_index = ALittle.List_IndexOf(line.edit.line_list, line);
+
+        var list = line.edit.language.QueryColor(this._line_index);
         for (var index, char in line.char_list)
         {
             if (char.text != null)
@@ -154,10 +159,10 @@ protected class AUICodeLineContainer : ALittle.DisplayLayout
         for (var index, info in list)
         {
             var char_start = 1;
-            if (info.line_start == line_index)
+            if (info.line_start == this._line_index)
                 char_start = info.char_start;
             var char_end = line.char_count;
-            if (info.line_end == line_index)
+            if (info.line_end == this._line_index)
                 char_end = info.char_end;
 
             var color = line.edit.language.QueryColorValue(info.tag);
@@ -178,7 +183,6 @@ protected class AUICodeLineContainer : ALittle.DisplayLayout
                     }
                 }                
             }
-
         }
     }
 

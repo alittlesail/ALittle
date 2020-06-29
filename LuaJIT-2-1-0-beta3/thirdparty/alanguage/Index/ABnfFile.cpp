@@ -155,6 +155,32 @@ bool ABnfFile::QueryInfo(int version, int it_line, int it_char
     return !info.empty();
 }
 
+bool ABnfFile::QueryGoto(int version, int it_line, int it_char
+    , std::string& file_path, int& line_start, int& char_start, int& line_end, int& char_end)
+{
+    AnalysisText(version);
+
+    if (m_root == nullptr) return false;
+
+    auto element = m_root->GetException(it_line, it_char);
+    if (element == nullptr || element->IsError()) return false;
+
+    auto node = std::dynamic_pointer_cast<ABnfNodeElement>(element);
+    if (node == nullptr) node = std::dynamic_pointer_cast<ABnfNodeElement>(element->GetParent());
+    if (node == nullptr) return false;
+    
+    auto goto_element = node->GetReference()->GotoDefinition();
+    if (goto_element == nullptr) return false;
+
+    file_path = goto_element->GetFullPath();
+    line_start = goto_element->GetStartLine();
+    char_start = goto_element->GetStartCol();
+    line_end = goto_element->GetEndLine();
+    char_end = goto_element->GetEndCol();
+
+    return true;
+}
+
 int ABnfFile::GetByteCountOfOneWord(unsigned char first_char)
 {
     unsigned char temp = 0x80;

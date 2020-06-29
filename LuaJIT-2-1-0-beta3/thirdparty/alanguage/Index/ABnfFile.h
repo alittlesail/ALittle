@@ -64,6 +64,9 @@ public:
     // 获取节点信息
     bool QueryInfo(int version, int it_line, int it_char
         , std::string& info, int& line_start, int& char_start, int& line_end, int& char_end);
+    // 获取跳转
+    bool QueryGoto(int version, int it_line, int it_char
+        , std::string& file_path, int& line_start, int& char_start, int& line_end, int& char_end);
 
     // utf8字符切割
     static int GetByteCountOfOneWord(unsigned char first_char);

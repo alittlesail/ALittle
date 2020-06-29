@@ -69,3 +69,13 @@ int abnffile_queryinfo(void* abnf_file, int version, int it_line, int it_char, s
 	info->info = temp.c_str();
 	return 1;
 }
+
+int abnffile_querygoto(void* abnf_file, int version, int it_line, int it_char, struct ABnfQueryGoto* info)
+{
+	static std::string temp;
+	temp.resize(0);
+	bool result = ((ABnfFile*)abnf_file)->QueryGoto(version, it_line, it_char, temp, info->line_start, info->char_start, info->line_end, info->char_end);
+	if (!result) return 0;
+	info->file_path = temp.c_str();
+	return 1;
+}

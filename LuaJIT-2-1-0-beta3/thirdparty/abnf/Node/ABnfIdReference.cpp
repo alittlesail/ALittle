@@ -126,6 +126,10 @@ ABnfElementPtr ABnfIdReference::GotoDefinition()
     if (it == file->GetRuleSet().end())
         return nullptr;
 
-    for (auto e : it->second) return e;
+    for (auto e : it->second)
+    {
+        if (e->GetChilds().size() > 0)
+            return e->GetChilds()[0];
+    }
     return nullptr;
 }

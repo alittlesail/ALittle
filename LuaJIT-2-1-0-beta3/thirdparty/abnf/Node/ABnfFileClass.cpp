@@ -72,6 +72,6 @@ void ABnfFileClass::CollectRule()
         if (value == nullptr) continue;
         const auto& id_value = id->GetElementText();
 
-        m_rule[id_value].insert(element);
+        m_rule[id_value].insert(node);
     }
 }

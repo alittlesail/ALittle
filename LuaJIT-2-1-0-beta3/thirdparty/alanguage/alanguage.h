@@ -21,4 +21,14 @@ struct ABnfQueryColor
 };
 const struct ABnfQueryColor** abnffile_querycolor(void* abnf_file, int version, int line, int* count);
 
+struct ABnfQueryInfo
+{
+	int line_start;
+	int char_start;
+	int line_end;
+	int char_end;
+	const char* info;
+};
+int abnffile_queryinfo(void* abnf_file, int version, int it_line, int it_char, struct ABnfQueryInfo* info);
+
 #endif // _ALITTLE_ALANGUAGE_H_

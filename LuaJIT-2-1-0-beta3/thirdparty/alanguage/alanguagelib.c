@@ -108,6 +108,34 @@ static int alanguagelib_abnffile_querycolor(lua_State* L)
     return 1;
 }
 
+static int alanguagelib_abnffile_queryinfo(lua_State* L)
+{
+    void** c = (void**)lua_touserdata(L, 1);
+    luaL_argcheck(L, c != 0, 1, "abnf file object is null");
+    int version = (int)luaL_checkinteger(L, 2);
+    int it_line = (int)luaL_checkinteger(L, 3);
+    int it_char = (int)luaL_checkinteger(L, 4);
+
+    struct ABnfQueryInfo info;
+    int result = abnffile_queryinfo(*c, version, it_line - 1, it_char, &info);
+    if (result == 0) lua_pushnil(L);
+    else
+    {
+        lua_newtable(L);
+        lua_pushinteger(L, info.line_start + 1);
+        lua_setfield(L, -2, "line_start");
+        lua_pushinteger(L, info.char_start + 1);
+        lua_setfield(L, -2, "char_start");
+        lua_pushinteger(L, info.line_end + 1);
+        lua_setfield(L, -2, "line_end");
+        lua_pushinteger(L, info.char_end);
+        lua_setfield(L, -2, "char_end");
+        lua_pushstring(L, info.info);
+        lua_setfield(L, -2, "info");
+    }
+    return 1;
+}
+
 /*
 ** Assumes the table is on top of the stack.
 */
@@ -130,6 +158,7 @@ static struct luaL_Reg alanguagelib[] = {
   {"abnffile_inserttext", alanguagelib_abnffile_inserttext},
   {"abnffile_deletetext", alanguagelib_abnffile_deletetext},
   {"abnffile_querycolor", alanguagelib_abnffile_querycolor},
+  {"abnffile_queryinfo", alanguagelib_abnffile_queryinfo},
   {NULL, NULL}
 };
 

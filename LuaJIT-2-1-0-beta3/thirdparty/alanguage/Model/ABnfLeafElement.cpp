@@ -16,6 +16,21 @@ ABnfElementPtr ABnfLeafElement::GetException(int offset)
     return shared_from_this();
 }
 
+// 根据偏移位置，获取期望的元素
+ABnfElementPtr ABnfLeafElement::GetException(int it_line, int it_char)
+{
+    auto start_line = GetStartLine();
+    auto end_line = GetEndLine();
+
+    if (start_line > it_line) return nullptr;
+    if (end_line < it_line) return nullptr;
+
+    if (start_line == it_line && GetStartCol() > it_char) return nullptr;
+    if (end_line == it_line && GetEndCol() <= it_char) return nullptr;
+
+    return shared_from_this();
+}
+
 void ABnfLeafElement::CalcEnd()
 {
     m_end_line = m_line;

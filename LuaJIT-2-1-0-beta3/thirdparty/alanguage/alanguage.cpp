@@ -59,3 +59,13 @@ const struct ABnfQueryColor** abnffile_querycolor(void* abnf_file, int version, 
 	*count = static_cast<int>(temp.size());
 	return temp.data();
 }
+
+int abnffile_queryinfo(void* abnf_file, int version, int it_line, int it_char, struct ABnfQueryInfo* info)
+{
+	static std::string temp;
+	temp.resize(0);
+	bool result = ((ABnfFile*)abnf_file)->QueryInfo(version, it_line, it_char, temp, info->line_start, info->char_start, info->line_end, info->char_end);
+	if (!result) return 0;
+	info->info = temp.c_str();
+	return 1;
+}

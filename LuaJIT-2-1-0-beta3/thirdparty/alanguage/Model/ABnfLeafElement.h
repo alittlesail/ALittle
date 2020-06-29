@@ -35,6 +35,9 @@ public:
 
     // 根据偏移位置，获取期望的元素
     ABnfElementPtr GetException(int offset) override;
+
+    // 根据行列，获取期望的元素
+    ABnfElementPtr GetException(int it_line, int it_char) override;
 };
 
 #endif // _ALITTLE_ABNFLEAFELEMENT_H_

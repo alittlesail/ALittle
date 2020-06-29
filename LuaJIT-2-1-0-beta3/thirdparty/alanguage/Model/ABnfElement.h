@@ -37,6 +37,7 @@ public:
 
     virtual bool IsLeafOrHasChildOrError() { return false; }
     virtual bool IsError() { return false; }
+    virtual bool IsNode() { return false; }
 
     // 获取引用
     ABnfReference* GetReference();
@@ -62,6 +63,8 @@ public:
 
     // 根据偏移位置，获取期望的元素
     virtual ABnfElementPtr GetException(int offset) { return nullptr; }
+    // 根据行列，获取期望的元素
+    virtual ABnfElementPtr GetException(int it_line, int it_char) { return nullptr; }
 
     // 获取节点偏移
     virtual int GetStart() { return m_start; }

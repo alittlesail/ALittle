@@ -36,6 +36,12 @@ public:
         if (offset == GetStart()) return shared_from_this();
         return nullptr;
     }
+    // 根据行列，获取期望的元素
+    ABnfElementPtr GetException(int it_line, int it_char) override
+    {
+        if (it_line == GetStartLine() && it_char == GetStartCol()) return shared_from_this();
+        return nullptr;
+    }
 };
 
 #endif // _ALITTLE_ABNFERRORELEMENT_H_

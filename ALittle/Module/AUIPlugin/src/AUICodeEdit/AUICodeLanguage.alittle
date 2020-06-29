@@ -12,24 +12,55 @@ public struct ABnfColor
 public class AUICodeLanguage
 {
     private int _version = 1;
+    private lua.ABnfFile _abnf_file;
 
     // 获取文本修改版本号
     public get version() : int { return this._version; }
 
     // 设置文本
-    public fun SetText(string content) {}
+    public fun SetText(string content)
+    {
+        this._version += 1;
+        lua.alanguage.abnffile_settext(this._abnf_file, content);
+    }
 
     // 插入文本
-    public fun InsertText(string content, int it_line, int it_char) {}
+    public fun InsertText(string content, int it_line, int it_char)
+    {
+        this._version += 1;
+        lua.alanguage.abnffile_inserttext(this._abnf_file, content, it_line, it_char);
+    }
 
     // 删除文本
-    public fun DeleteText(int it_line_start, int it_char_start, int it_line_end, int it_char_end) {}
+    public fun DeleteText(int it_line_start, int it_char_start, int it_line_end, int it_char_end)
+    {
+        this._version += 1;
+        lua.alanguage.abnffile_deletetext(this._abnf_file, it_line_start, it_char_start, it_line_end, it_char_end);
+    }
 
     // 查询颜色
-    public fun QueryColor(int line) : List<lua.ABnfQueryColor> { return new List<lua.ABnfQueryColor>(); }
+    public fun QueryColor(int line) : List<lua.ABnfQueryColor>
+    {
+        return lua.alanguage.abnffile_querycolor(this._abnf_file, this._version, line);
+    }
 
     // 查询快捷信息
-    public fun QueryInfo(int line, int char) : lua.ABnfQueryInfo { return null; }
+    public fun QueryInfo(int line, int char) : lua.ABnfQueryInfo
+    {
+        return lua.alanguage.abnffile_queryinfo(this._abnf_file, this._version, line, char);
+    }
+
+    // 查询跳转信息
+    public fun QueryGoto(int line, int char) : lua.ABnfQueryGoto
+    {
+        return lua.alanguage.abnffile_querygoto(this._abnf_file, this._version, line, char);
+    }
+
+    // 查询提示信息
+    public fun QueryComplete(int line, int char) : lua.ABnfQueryComplete
+    {
+        return lua.alanguage.abnffile_querycomplete(this._abnf_file, this._version, line, char);
+    }
 
     // 颜色查询
     public fun QueryColorValue(int tag) : ABnfColor { return null; }

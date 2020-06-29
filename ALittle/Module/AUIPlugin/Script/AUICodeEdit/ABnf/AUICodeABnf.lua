@@ -87,29 +87,6 @@ function AUICodeABnf:Ctor(full_path)
 	___rawset(self, "_abnf_file", abnf.create_abnf_file(full_path, g_ABnf, ""))
 end
 
-function AUICodeABnf:SetText(content)
-	self._version = self._version + (1)
-	alanguage.abnffile_settext(self._abnf_file, content)
-end
-
-function AUICodeABnf:InsertText(content, it_line, it_char)
-	self._version = self._version + (1)
-	alanguage.abnffile_inserttext(self._abnf_file, content, it_line, it_char)
-end
-
-function AUICodeABnf:DeleteText(it_line_start, it_char_start, it_line_end, it_char_end)
-	self._version = self._version + (1)
-	alanguage.abnffile_deletetext(self._abnf_file, it_line_start, it_char_start, it_line_end, it_char_end)
-end
-
-function AUICodeABnf:QueryColor(line)
-	return alanguage.abnffile_querycolor(self._abnf_file, self._version, line)
-end
-
-function AUICodeABnf:QueryInfo(line, char)
-	return alanguage.abnffile_queryinfo(self._abnf_file, self._version, line, char)
-end
-
 function AUICodeABnf:QueryColorValue(tag)
 	return g_ABnfColor[tag]
 end

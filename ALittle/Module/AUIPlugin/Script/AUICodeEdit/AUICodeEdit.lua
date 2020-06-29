@@ -399,6 +399,19 @@ function AUICodeEdit:HandleLButtonDown(event)
 		self._select_cursor:StartLineChar(self._cursor.line, it_start)
 		self._select_cursor:UpdateLineChar(self._cursor.line, it_end)
 	end
+	if A_UISystem.sym_map[1073742048] and self._query_info ~= nil and self._language ~= nil then
+		local it_line, it_char = self:CalcLineAndChar(event.rel_x, event.rel_y)
+		local info = self._language:QueryGoto(it_line, it_char)
+		if info ~= nil then
+			if info.file_path == self._file_path then
+				self._cursor:SetLineChar(info.line_start, info.char_start - 1)
+				self._select_cursor:StartLineChar(info.line_start, info.char_start - 1)
+				self._select_cursor:UpdateLineChar(info.line_end, info.char_end)
+			else
+			end
+		end
+		self:StopQueryInfo()
+	end
 end
 
 function AUICodeEdit:HandleDragBegin(event)

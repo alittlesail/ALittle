@@ -20,6 +20,31 @@ public struct ABnfQueryInfo
     string info;
 }
 
+public struct ABnfQueryGoto
+{
+    int line_start;
+    int char_start;
+    int line_end;
+    int char_end;
+    string file_path;
+}
+
+public struct ABnfQueryCompleteInfo
+{
+    string complete;
+    string descriptor;
+    int tag;
+}
+
+public struct ABnfQueryComplete
+{
+    int line_start;
+    int char_start;
+    int line_end;
+    int char_end;
+    ABnfQueryCompleteInfo complete_list;
+}
+
 public struct ABnfFactory
 {
     
@@ -52,4 +77,6 @@ public class alanguage
     public static abnffile_deletetext(ABnfFile abnf_file, int it_line_start, int it_char_start, int it_line_end, int it_char_end) {}
     public static abnffile_querycolor(ABnfFile abnf_file, int version, int line) : List<ABnfQueryColor> {}
     public static abnffile_queryinfo(ABnfFile abnf_file, int version, int line, int char) : ABnfQueryInfo {}
+    public static abnffile_querygoto(ABnfFile abnf_file, int version, int line, int char) : ABnfQueryGoto {}
+    public static abnffile_querycomplete(ABnfFile abnf_file, int version, int line, int char) : ABnfQueryComplete {}
 }

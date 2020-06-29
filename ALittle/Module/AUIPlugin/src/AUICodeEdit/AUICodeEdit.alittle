@@ -234,6 +234,15 @@ protected class AUICodeEditContainer : ALittle.DisplayLayout
     }
 }
 
+public struct AUICodeEditGotoEvent : ALittle.UIEvent
+{
+    string file_path;
+    int line_start;
+    int char_start;
+    int line_end;
+    int char_end;
+}
+
 public class AUICodeEdit : ALittle.ScrollScreen
 {
     private AUICodeLanguage _language;  // 代码解析器
@@ -331,6 +340,33 @@ public class AUICodeEdit : ALittle.ScrollScreen
             this._cursor.SetLineChar(this._cursor.line, it_end);
             this._select_cursor.StartLineChar(this._cursor.line, it_start);
             this._select_cursor.UpdateLineChar(this._cursor.line, it_end);
+        }
+
+        if (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_CTRL] && this._query_info != null && this._language != null)
+        {
+            var it_line, it_char = this.CalcLineAndChar(event.rel_x, event.rel_y);
+            var info = this._language.QueryGoto(it_line, it_char);
+            if (info != null)
+            {
+                if (info.file_path == this._file_path)
+                {
+                    this._cursor.SetLineChar(info.line_start, info.char_start - 1);
+                    this._select_cursor.StartLineChar(info.line_start, info.char_start - 1);
+                    this._select_cursor.UpdateLineChar(info.line_end, info.char_end);
+                }
+                // 对外发送事件，让外面打开，然后再聚焦到某个代码段
+                else
+                {
+                    var goto_event = new AUICodeEditGotoEvent();
+                    goto_event.file_path = info.file_path;
+                    goto_event.line_start = info.line_start;
+                    goto_event.char_start = info.char_start;
+                    goto_event.line_end = info.line_end;
+                    goto_event.char_end = info.char_end;
+                    this.DispatchEvent(goto_event);
+                }
+            }
+            this.StopQueryInfo();
         }
     }
 

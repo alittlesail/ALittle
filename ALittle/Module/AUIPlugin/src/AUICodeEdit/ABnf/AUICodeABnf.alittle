@@ -18,8 +18,6 @@ enum ABnfColorType
 
 public class AUICodeABnf : AUICodeLanguage
 {
-    private lua.ABnfFileClass _abnf_file;
-
     public ctor(string full_path)
     {
         if (g_ABnfFactory == null)
@@ -91,39 +89,6 @@ public class AUICodeABnf : AUICodeLanguage
         }
 
         this._abnf_file = lua.abnf.create_abnf_file(full_path, g_ABnf, "");
-    }
-
-    // 设置文本
-    public fun SetText(string content)
-    {
-        this._version += 1;
-        lua.alanguage.abnffile_settext(this._abnf_file, content);
-    }
-
-    // 插入文本
-    public fun InsertText(string content, int it_line, int it_char)
-    {
-        this._version += 1;
-        lua.alanguage.abnffile_inserttext(this._abnf_file, content, it_line, it_char);
-    }
-
-    // 删除文本
-    public fun DeleteText(int it_line_start, int it_char_start, int it_line_end, int it_char_end)
-    {
-        this._version += 1;
-        lua.alanguage.abnffile_deletetext(this._abnf_file, it_line_start, it_char_start, it_line_end, it_char_end);
-    }
-
-    // 查询颜色
-    public fun QueryColor(int line) : List<lua.ABnfQueryColor>
-    {
-        return lua.alanguage.abnffile_querycolor(this._abnf_file, this._version, line);
-    }
-
-    // 查询快捷信息
-    public fun QueryInfo(int line, int char) : lua.ABnfQueryInfo
-    {
-        return lua.alanguage.abnffile_queryinfo(this._abnf_file, this._version, line, char);
     }
 
     // 颜色查询

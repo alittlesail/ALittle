@@ -250,6 +250,10 @@ function AUITool:ShowTip(content)
 	self._tip_dialog.height = self._tip_text.height + 10
 end
 
+function AUITool:GetTipSize()
+	return self._tip_dialog.width, self._tip_dialog.height
+end
+
 function AUITool:MoveTip(x, y)
 	if self._tip_dialog == nil then
 		return

@@ -425,6 +425,13 @@ function AUICodeEdit:UpdateQueryInfo(x, y)
 	local it_line, it_char = self:CalcLineAndChar(x, y)
 	local info = self._language:QueryInfo(it_line, it_char)
 	if info == nil then
+		if self._query_info ~= nil then
+			g_AUITool:HideTip()
+			local line_container = self._code_linear:GetChildByIndex(self._query_info.line_start)
+			if line_container ~= nil then
+				line_container:RestoreColor()
+			end
+		end
 		ALittle.System_SetEditCursor()
 		return
 	end
@@ -433,6 +440,7 @@ function AUICodeEdit:UpdateQueryInfo(x, y)
 		return
 	end
 	if self._query_info ~= nil then
+		g_AUITool:HideTip()
 		local line_container = self._code_linear:GetChildByIndex(self._query_info.line_start)
 		if line_container ~= nil then
 			line_container:RestoreColor()
@@ -449,6 +457,17 @@ function AUICodeEdit:UpdateQueryInfo(x, y)
 			line_container:SetColor(self._query_info.char_start, line.char_count, FOCUS_RED, FOCUS_GREEN, FOCUS_BLUE)
 		end
 	end
+	g_AUITool:ShowTip(info.info)
+	local quad_x, quad_y = self._edit_quad:LocalToGlobal()
+	local char_end = info.char_end
+	if info.line_start == info.line_end then
+		info.char_end = line.char_count
+	end
+	local rect_x, rect_y, rect_width = self:CalcRect(info.line_start, info.char_start, char_end)
+	local center_x = rect_x + rect_width / 2 + quad_x
+	local center_y = rect_y + quad_y
+	local tip_width, tip_height = g_AUITool:GetTipSize()
+	g_AUITool:MoveTip(center_x - tip_width / 2, center_y - tip_height)
 	ALittle.System_SetHandCursor()
 end
 
@@ -464,6 +483,7 @@ function AUICodeEdit:StopQueryInfo()
 	if line_container ~= nil then
 		line_container:RestoreColor()
 	end
+	g_AUITool:HideTip()
 	self._query_info = nil
 end
 
@@ -501,6 +521,17 @@ function AUICodeEdit:CalcLineAndChar(x, y)
 		count = count - 1
 	end
 	return it_line, count
+end
+
+function AUICodeEdit:CalcRect(it_line, char_start, char_end)
+	local line = self._line_list[it_line]
+	if line == nil then
+		return 0, 0, 0
+	end
+	local y = (it_line - 1) * LINE_HEIGHT
+	local x = line.char_list[char_start].pre_width
+	local width = line.char_list[char_end].pre_width + line.char_list[char_end].width - x
+	return x, y, width
 end
 
 function AUICodeEdit:BrushColor(line_start, char_start, line_end, char_end, red, green, blue)

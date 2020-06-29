@@ -366,6 +366,12 @@ public class AUICodeEdit : ALittle.ScrollScreen
         var info = this._language.QueryInfo(it_line, it_char);        
         if (info == null)
         {
+            if (this._query_info != null)
+            {
+                g_AUITool.HideTip();
+                var line_container = cast<AUICodeLineContainer>(this._code_linear.GetChildByIndex(this._query_info.line_start));
+                if (line_container != null) line_container.RestoreColor();   
+            }
             ALittle.System_SetEditCursor();
             return;
         }
@@ -383,6 +389,7 @@ public class AUICodeEdit : ALittle.ScrollScreen
 
         if (this._query_info != null)
         {
+            g_AUITool.HideTip();
             var line_container = cast<AUICodeLineContainer>(this._code_linear.GetChildByIndex(this._query_info.line_start));
             if (line_container != null) line_container.RestoreColor();   
         }
@@ -401,6 +408,16 @@ public class AUICodeEdit : ALittle.ScrollScreen
         }
 
         // 把内容放在头部
+        g_AUITool.ShowTip(info.info);
+        
+        var quad_x, quad_y = this._edit_quad.LocalToGlobal();
+        var char_end = info.char_end;
+        if (info.line_start == info.line_end) info.char_end = line.char_count;
+        var rect_x, rect_y, rect_width = this.CalcRect(info.line_start, info.char_start, char_end);
+        var center_x = rect_x + rect_width / 2 + quad_x;
+        var center_y = rect_y + quad_y;
+        var tip_width, tip_height = g_AUITool.GetTipSize();
+        g_AUITool.MoveTip(center_x - tip_width / 2, center_y - tip_height);
 
         ALittle.System_SetHandCursor();
     }
@@ -415,6 +432,7 @@ public class AUICodeEdit : ALittle.ScrollScreen
         var line_container = cast<AUICodeLineContainer>(this._code_linear.GetChildByIndex(this._query_info.line_start));
         if (line_container != null) line_container.RestoreColor();
 
+        g_AUITool.HideTip();
         this._query_info = null;
     }
 
@@ -444,6 +462,19 @@ public class AUICodeEdit : ALittle.ScrollScreen
         while (count > 0 && line.char_list[count].width <= 0)
             -- count;
         return it_line, count;
+    }
+
+    // 计算坐标，获取x，y，宽度
+    public fun CalcRect(int it_line, int char_start, int char_end) : double, double, double
+    {
+        var line = this._line_list[it_line];
+        if (line == null) return 0,0,0;
+
+        var y = (it_line - 1) * LINE_HEIGHT;
+        var x = line.char_list[char_start].pre_width;
+        var width = line.char_list[char_end].pre_width + line.char_list[char_end].width - x;
+
+        return x, y, width;
     }
 
     // 上色

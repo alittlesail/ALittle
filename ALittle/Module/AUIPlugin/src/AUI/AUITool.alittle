@@ -354,6 +354,12 @@ public class AUITool
 		this._tip_dialog.width = this._tip_text.width + 10;
 		this._tip_dialog.height = this._tip_text.height + 10;
 	}
+
+	// 获取宽高
+	public fun GetTipSize() : double, double
+	{
+        return this._tip_dialog.width, this._tip_dialog.height;
+    }
 	
 	// 移动TIP
 	public fun MoveTip(double x, double y)

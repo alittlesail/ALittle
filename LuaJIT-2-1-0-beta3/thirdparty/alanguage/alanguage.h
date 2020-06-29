@@ -31,4 +31,14 @@ struct ABnfQueryInfo
 };
 int abnffile_queryinfo(void* abnf_file, int version, int it_line, int it_char, struct ABnfQueryInfo* info);
 
+struct ABnfQueryGoto
+{
+	int line_start;
+	int char_start;
+	int line_end;
+	int char_end;
+	const char* file_path;
+};
+int abnffile_querygoto(void* abnf_file, int version, int it_line, int it_char, struct ABnfQueryGoto* info);
+
 #endif // _ALITTLE_ALANGUAGE_H_

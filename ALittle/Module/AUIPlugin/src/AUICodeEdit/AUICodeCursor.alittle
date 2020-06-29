@@ -58,8 +58,8 @@ public class AUICodeCursor : ALittle.Quad
             var check = byte >= 65 && byte <= 90
                         || byte >= 97 && byte <= 122
                         || byte == 95;
-            it_start = i;
             if (!check) break;
+            it_start = i - 1;
         }
         if (it_start == it_end) return null, null;
         return it_start, it_end;

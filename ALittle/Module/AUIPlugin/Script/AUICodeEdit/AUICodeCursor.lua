@@ -64,10 +64,10 @@ function AUICodeCursor:CalcSelectWord()
 		local char = line.char_list[i].char
 		local byte = ALittle.String_Byte(char, 1)
 		local check = byte >= 65 and byte <= 90 or byte >= 97 and byte <= 122 or byte == 95
-		it_start = i
 		if not check then
 			break
 		end
+		it_start = i - 1
 		i = i+(-1)
 	end
 	if it_start == it_end then

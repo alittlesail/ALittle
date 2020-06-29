@@ -11,6 +11,15 @@ public struct ABnfQueryColor
     bool blur;
 }
 
+public struct ABnfQueryInfo
+{
+    int line_start;
+    int char_start;
+    int line_end;
+    int char_end;
+    string info;
+}
+
 public struct ABnfFactory
 {
     
@@ -42,4 +51,5 @@ public class alanguage
     public static abnffile_inserttext(ABnfFile abnf_file, string text, int it_line, int it_char) {}
     public static abnffile_deletetext(ABnfFile abnf_file, int it_line_start, int it_char_start, int it_line_end, int it_char_end) {}
     public static abnffile_querycolor(ABnfFile abnf_file, int version, int line) : List<ABnfQueryColor> {}
+    public static abnffile_queryinfo(ABnfFile abnf_file, int version, int line, int char) : ABnfQueryInfo {}
 }

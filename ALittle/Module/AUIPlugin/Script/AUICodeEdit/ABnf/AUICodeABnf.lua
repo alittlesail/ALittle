@@ -106,6 +106,10 @@ function AUICodeABnf:QueryColor(line)
 	return alanguage.abnffile_querycolor(self._abnf_file, self._version, line)
 end
 
+function AUICodeABnf:QueryInfo(line, char)
+	return alanguage.abnffile_queryinfo(self._abnf_file, self._version, line, char)
+end
+
 function AUICodeABnf:QueryColorValue(tag)
 	return g_ABnfColor[tag]
 end

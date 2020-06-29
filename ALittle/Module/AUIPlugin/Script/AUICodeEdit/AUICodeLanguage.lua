@@ -35,6 +35,10 @@ function AUICodeLanguage:QueryColor(line)
 	return {}
 end
 
+function AUICodeLanguage:QueryInfo(line, char)
+	return nil
+end
+
 function AUICodeLanguage:QueryColorValue(tag)
 	return nil
 end

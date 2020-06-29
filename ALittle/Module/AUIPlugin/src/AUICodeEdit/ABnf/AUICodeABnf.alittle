@@ -120,6 +120,12 @@ public class AUICodeABnf : AUICodeLanguage
         return lua.alanguage.abnffile_querycolor(this._abnf_file, this._version, line);
     }
 
+    // 查询快捷信息
+    public fun QueryInfo(int line, int char) : lua.ABnfQueryInfo
+    {
+        return lua.alanguage.abnffile_queryinfo(this._abnf_file, this._version, line, char);
+    }
+
     // 颜色查询
     public fun QueryColorValue(int tag) : ABnfColor { return g_ABnfColor[tag]; }
 }

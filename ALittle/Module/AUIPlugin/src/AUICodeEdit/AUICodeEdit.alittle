@@ -11,6 +11,10 @@ private var SELECT_RED = 33/255;
 private var SELECT_GREEN = 66/255;
 private var SELECT_BLUE = 131/255;
 
+private var FOCUS_RED = 88/255;
+private var FOCUS_GREEN = 157/255;
+private var FOCUS_BLUE = 246/255;
+
 protected struct AUICodeCharInfo
 {
     string char;
@@ -76,6 +80,7 @@ protected class AUICodeLineContainer : ALittle.DisplayLayout
         && char.char != " " && char.char != "\t")
         {
             char.text = new ALittle.Text(g_Control);
+            char.text.disabled = true;
             char.text.red = char.red;
             char.text.green = char.green;
             char.text.blue = char.blue;
@@ -93,6 +98,36 @@ protected class AUICodeLineContainer : ALittle.DisplayLayout
             this._delay_loop = new ALittle.LoopTimer(bind(this.HandleColor, this), 1);
             this._delay_loop.Start();
         }
+    }
+
+    public fun RestoreColor()
+    {
+        if (this._delay_loop != null) return;
+
+        this._delay_loop = new ALittle.LoopTimer(bind(this.HandleColor, this), 1);
+        this._delay_loop.Start();
+    }
+
+    public fun SetColor(int char_start, int char_end, double red, double green, double blue)
+    {
+        if (this._delay_loop != null)
+        {
+            this._delay_loop.Stop();
+            this._delay_loop = null;
+            this.HandleColor();
+        }
+
+        var line = cast<AUICodeLineInfo>(this._user_data);
+        for (var i = char_start; i <= char_end; 1)
+        {
+            var child = line.char_list[i];
+            if (child != null && child.text != null)
+            {
+                child.text.red = red;
+                child.text.green = green;
+                child.text.blue = blue;
+            }
+        }   
     }
 
     private fun HandleColor()
@@ -164,6 +199,7 @@ protected class AUICodeLineContainer : ALittle.DisplayLayout
                 && char.char != " " && char.char != "\t")
                 {
                     char.text = new ALittle.Text(g_Control);
+                    char.text.disabled = true;
                     char.text.red = FONT_RED;
                     char.text.green = FONT_GREEN;
                     char.text.blue = FONT_BLUE;
@@ -198,9 +234,13 @@ public class AUICodeEdit : ALittle.ScrollScreen
 {
     private AUICodeLanguage _language;  // 代码解析器
 
+    private int _query_info_version;
+    private lua.ABnfQueryInfo _query_info;
+
 	private AUICodeLinear _code_linear;      // 代码容器
     private ALittle.DisplayLayout _cursor_container;    // 光标容器
-    private ALittle.DisplayObject _edit_quad;           // 编辑区
+    private AUICodeQuad _edit_quad;           // 编辑区
+    private bool _move_in = false;
 
     protected AUICodeCursor _cursor;
     protected AUICodeSelectCursor _select_cursor;
@@ -223,8 +263,15 @@ public class AUICodeEdit : ALittle.ScrollScreen
 	{
         this.AddEventListener(this, this.HandleMoveIn);
         this.AddEventListener(this, this.HandleMoveOut);
-        this.AddEventListener(this, this.HandleScreenScrollLButtonDown);
-        
+        this.AddEventListener(this, this.HandleLButtonDown);
+        this.AddEventListener(this, this.HandleDragBegin);
+        this.AddEventListener(this, this.HandleDrag);
+        this.AddEventListener(this, this.HandleDragEnd);
+        this.AddEventListener(this, this.HandleKeyDown);
+        this.AddEventListener(this, this.HandleKeyUp);
+        this.AddEventListener(this, this.HandleTextInput);
+        this.AddEventListener(this, this.HandleMouseMove);
+
 		// 创建编辑容器
         this.container = new AUICodeEditContainer(this._ctrl_sys);
         this._edit_quad._user_data = this;
@@ -255,19 +302,24 @@ public class AUICodeEdit : ALittle.ScrollScreen
     public get line_height() : int { return LINE_HEIGHT; }
     public get revoke_list() : ALittle.RevokeList { return this._revoke_list; }
 
-    private fun HandleMoveIn(ALittle.UIMoveInEvent event) { ALittle.System_SetEditCursor(); }
-    private fun HandleMoveOut(ALittle.UIMoveOutEvent event) { ALittle.System_SetNormalCursor(); }
-    private fun HandleScreenScrollLButtonDown(ALittle.UILButtonDownEvent event)
+    private fun HandleMoveIn(ALittle.UIMoveInEvent event)
     {
-        this._edit_quad.DelayFocus();
-        this.HandleLButtonDown(event);
+        this._move_in = true;
+        ALittle.System_SetEditCursor();
     }
-
+    private fun HandleMoveOut(ALittle.UIMoveOutEvent event)
+    {
+        this.StopQueryInfo();
+        this._move_in = false;
+        ALittle.System_SetNormalCursor();
+    }
+    
     private fun HandleLButtonDown(ALittle.UILButtonDownEvent event)
     {
         this._select_cursor.Hide();
         this._cursor.SetOffsetXY(event.rel_x, event.rel_y);
-        // 选中文本
+        
+        // 如果多次点击，那么就选中文本
         if (event.count > 1)
         {
             var it_start, it_end = this._cursor.CalcSelectWord();
@@ -293,6 +345,77 @@ public class AUICodeEdit : ALittle.ScrollScreen
     private fun HandleDragEnd(ALittle.UIButtonDragEndEvent event)
     {
         this._select_cursor.TryHide();
+    }
+
+    private fun HandleMouseMove(ALittle.UIMouseMoveEvent event)
+    {
+        if (!A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_CTRL]) return;
+
+        this.UpdateQueryInfo(event.rel_x, event.rel_y);
+    }
+
+    private fun UpdateQueryInfo(double x, double y)
+    {
+        if (this._language == null)
+        {
+            ALittle.System_SetEditCursor();
+            return;
+        }
+
+        var it_line, it_char = this.CalcLineAndChar(x, y);
+        var info = this._language.QueryInfo(it_line, it_char);        
+        if (info == null)
+        {
+            ALittle.System_SetEditCursor();
+            return;
+        }
+
+        if (this._query_info != null
+            && this._query_info.line_start == info.line_start
+            && this._query_info.char_start == info.char_start
+            && this._query_info.line_end == info.line_end
+            && this._query_info.char_end == info.char_end
+            && this._query_info_version == this._language.version)
+        {
+            ALittle.System_SetHandCursor();
+            return;
+        }
+
+        if (this._query_info != null)
+        {
+            var line_container = cast<AUICodeLineContainer>(this._code_linear.GetChildByIndex(this._query_info.line_start));
+            if (line_container != null) line_container.RestoreColor();   
+        }
+
+        this._query_info_version = this._language.version;
+        this._query_info = info;
+
+        var line = this._line_list[this._query_info.line_start];
+        var line_container = cast<AUICodeLineContainer>(this._code_linear.GetChildByIndex(this._query_info.line_start));
+        if (line != null && line_container != null)
+        {
+            if (this._query_info.line_start == this._query_info.line_end)
+                line_container.SetColor(this._query_info.char_start, this._query_info.char_end, FOCUS_RED, FOCUS_GREEN, FOCUS_BLUE);
+            else
+                line_container.SetColor(this._query_info.char_start, line.char_count, FOCUS_RED, FOCUS_GREEN, FOCUS_BLUE);
+        }
+
+        // 把内容放在头部
+
+        ALittle.System_SetHandCursor();
+    }
+
+    private fun StopQueryInfo()
+    {
+        if (this._language == null) return;
+        if (this._language.version != this._query_info_version) return;
+
+        this._query_info_version = null;
+        
+        var line_container = cast<AUICodeLineContainer>(this._code_linear.GetChildByIndex(this._query_info.line_start));
+        if (line_container != null) line_container.RestoreColor();
+
+        this._query_info = null;
     }
 
     // 计算行列
@@ -573,10 +696,33 @@ public class AUICodeEdit : ALittle.ScrollScreen
             }
 			event.handled = true;
         }
-            // 检查是否发送CHANGE事件
+        elseif (event.sym == ALittle.UIEnumTypes.KEY_CTRL)
+        {
+            if (this._move_in)
+            {
+                var x, y = this._edit_quad.LocalToGlobal();
+                this.UpdateQueryInfo(A_UISystem.mouse_x - x, A_UISystem.mouse_y - y);
+            }   
+        }
+        
+        // 检查是否发送CHANGE事件
         if (is_change)
         {
             this.DispatchEvent(new ALittle.UIChangedEvent());
+        }
+    }
+
+    private fun HandleKeyUp(ALittle.UIKeyUpEvent event)
+    {
+        if (event.sym == ALittle.UIEnumTypes.KEY_CTRL)
+        {
+            if (this._move_in)
+            {
+                ALittle.System_SetEditCursor();
+                this.StopQueryInfo();
+            }
+            else
+                ALittle.System_SetNormalCursor();
         }
     }
 

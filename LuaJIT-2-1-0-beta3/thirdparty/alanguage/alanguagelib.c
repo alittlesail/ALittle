@@ -229,6 +229,7 @@ static struct luaL_Reg alanguagelib[] = {
   {"abnffile_querycolor", alanguagelib_abnffile_querycolor},
   {"abnffile_queryinfo", alanguagelib_abnffile_queryinfo},
   {"abnffile_querygoto", alanguagelib_abnffile_querygoto},
+  {"abnffile_querycomplete", alanguagelib_abnffile_querycomplete},
   {NULL, NULL}
 };
 

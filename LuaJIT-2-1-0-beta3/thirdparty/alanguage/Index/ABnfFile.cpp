@@ -206,6 +206,34 @@ bool ABnfFile::QueryComplete(int version, int it_line, int it_char
     return true;
 }
 
+bool ABnfFile::QueryError(int version, std::vector<ALanguageErrorInfo>& info_list)
+{
+    AnalysisText(version);
+
+    for (auto& pair : m_check_error_map)
+    {
+        ALanguageErrorInfo info;
+        info.line_start = pair.first->GetStartLine();
+        info.char_start = pair.first->GetStartCol();
+        info.line_end = pair.first->GetEndLine();
+        info.char_end = pair.first->GetEndCol() + 1;
+        info.error = pair.second;
+        info_list.push_back(info);
+    }
+
+    for (auto& pair : m_analysis_error_map)
+    {
+        ALanguageErrorInfo info;
+        info.line_start = pair.first->GetStartLine();
+        info.char_start = pair.first->GetStartCol();
+        info.line_end = pair.first->GetEndLine();
+        info.char_end = pair.first->GetEndCol();
+        info.error = pair.second;
+        info_list.push_back(info);
+    }
+    return true;
+}
+
 int ABnfFile::GetByteCountOfOneWord(unsigned char first_char)
 {
     unsigned char temp = 0x80;
@@ -285,8 +313,7 @@ void ABnfFile::CollectError(ABnfElementPtr element)
 
 void ABnfFile::AnalysisError(ABnfElementPtr element)
 {
-    auto error_element = std::dynamic_pointer_cast<ABnfErrorElement>(element);
-    if (error_element == nullptr) return;
+    if (element->IsError()) return;
 
     ABnfGuessError error;
     if (element->GetReference()->CheckError(error))

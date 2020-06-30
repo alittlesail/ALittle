@@ -102,3 +102,26 @@ const struct ABnfQueryComplete* abnffile_querycomplete(void* abnf_file, int vers
 	*count = static_cast<int>(query_temp.size());
 	return query_temp.data();
 }
+
+const struct ABnfQueryError* abnffile_queryerror(void* abnf_file, int version, int* count)
+{
+	static std::vector<ALanguageErrorInfo> error_temp;
+	error_temp.resize(0);
+	bool result = ((ABnfFile*)abnf_file)->QueryError(version, error_temp);
+	if (!result) return nullptr;
+
+	static std::vector<struct ABnfQueryError> query_temp;
+	query_temp.resize(0);
+	for (auto& temp : error_temp)
+	{
+		struct ABnfQueryError info;
+		info.line_start = temp.line_start;
+		info.char_start = temp.char_start;
+		info.line_end = temp.line_end;
+		info.char_end = temp.char_end;
+		info.error = temp.error.c_str();
+		query_temp.push_back(info);
+	}
+	*count = static_cast<int>(query_temp.size());
+	return query_temp.data();
+}

@@ -51,4 +51,14 @@ struct ABnfQueryComplete
 const struct ABnfQueryComplete* abnffile_querycomplete(void* abnf_file, int version, int it_line, int it_char
 	, int* count, int* line_start, int* char_start, int* line_end, int* char_end);
 
+struct ABnfQueryError
+{
+	int line_start;
+	int char_start;
+	int line_end;
+	int char_end;
+	const char* error;
+};
+const struct ABnfQueryError* abnffile_queryerror(void* abnf_file, int version, int* count);
+
 #endif // _ALITTLE_ALANGUAGE_H_

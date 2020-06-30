@@ -220,6 +220,42 @@ static int alanguagelib_abnffile_querycomplete(lua_State* L)
     }
     return 1;
 }
+
+static int alanguagelib_abnffile_queryerror(lua_State* L)
+{
+    void** c = (void**)lua_touserdata(L, 1);
+    luaL_argcheck(L, c != 0, 1, "abnf file object is null");
+    int version = (int)luaL_checkinteger(L, 2);
+    
+    int count = 0;
+    const struct ABnfQueryError* list = abnffile_queryerror(*c, version, &count);
+    if (count <= 0)
+    {
+        lua_pushnil(L);
+    }
+    else
+    {
+        lua_newtable(L);
+        for (int i = 0; i < count; ++i)
+        {
+            const struct ABnfQueryError* error = list + i;
+            lua_newtable(L);
+            lua_pushinteger(L, error->line_start + 1);
+            lua_setfield(L, -2, "line_start");
+            lua_pushinteger(L, error->char_start + 1);
+            lua_setfield(L, -2, "char_start");
+            lua_pushinteger(L, error->line_end + 1);
+            lua_setfield(L, -2, "line_end");
+            lua_pushinteger(L, error->char_end);
+            lua_setfield(L, -2, "char_end");
+            lua_pushstring(L, error->error);
+            lua_setfield(L, -2, "error");
+            lua_rawseti(L, -2, i + 1);
+        }
+    }
+    return 1;
+}
+
 /*
 ** Assumes the table is on top of the stack.
 */
@@ -245,6 +281,7 @@ static struct luaL_Reg alanguagelib[] = {
   {"abnffile_queryinfo", alanguagelib_abnffile_queryinfo},
   {"abnffile_querygoto", alanguagelib_abnffile_querygoto},
   {"abnffile_querycomplete", alanguagelib_abnffile_querycomplete},
+  {"abnffile_queryerror", alanguagelib_abnffile_queryerror},
   {NULL, NULL}
 };
 

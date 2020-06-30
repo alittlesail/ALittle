@@ -29,6 +29,9 @@ void ABnfFileClass::UpdateAnalysis()
 
 void ABnfFileClass::UpdateError()
 {
+    ClearCheckError();
+    ClearAnalysisError();
+
     if (m_root == nullptr) return;
 
     CollectError(m_root);

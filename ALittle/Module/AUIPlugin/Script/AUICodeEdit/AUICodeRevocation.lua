@@ -22,7 +22,7 @@ option_map = {}
 assert(ALittle.RevokeObject, " extends class:ALittle.RevokeObject is nil")
 AUICodeDeleteLeftRevoke = Lua.Class(ALittle.RevokeObject, "AUIPlugin.AUICodeDeleteLeftRevoke")
 
-function AUICodeDeleteLeftRevoke:Ctor(edit, cursor, old_it_line, old_it_char, new_it_line, new_it_char, content)
+function AUICodeDeleteLeftRevoke:Ctor(edit, cursor, old_it_line, old_it_char, new_it_line, new_it_char, content, dispatch_event)
 	___rawset(self, "_edit", edit)
 	___rawset(self, "_cursor", cursor)
 	___rawset(self, "_old_it_line", old_it_line)
@@ -30,24 +30,29 @@ function AUICodeDeleteLeftRevoke:Ctor(edit, cursor, old_it_line, old_it_char, ne
 	___rawset(self, "_new_it_line", new_it_line)
 	___rawset(self, "_new_it_char", new_it_char)
 	___rawset(self, "_content", content)
+	___rawset(self, "_dispatch_event", dispatch_event)
 end
 
 function AUICodeDeleteLeftRevoke:Forward()
 	self._cursor:SetLineChar(self._old_it_line, self._old_it_char)
 	self._cursor:DeleteLeft(false)
-	self._edit:DispatchEvent(___all_struct[958494922], {})
+	if self._dispatch_event then
+		self._edit:DispatchEvent(___all_struct[958494922], {})
+	end
 end
 
 function AUICodeDeleteLeftRevoke:Back()
 	self._cursor:SetLineChar(self._new_it_line, self._new_it_char)
 	self._edit:InsertText(self._content, false)
-	self._edit:DispatchEvent(___all_struct[958494922], {})
+	if self._dispatch_event then
+		self._edit:DispatchEvent(___all_struct[958494922], {})
+	end
 end
 
 assert(ALittle.RevokeObject, " extends class:ALittle.RevokeObject is nil")
 AUICodeDeleteRightRevoke = Lua.Class(ALittle.RevokeObject, "AUIPlugin.AUICodeDeleteRightRevoke")
 
-function AUICodeDeleteRightRevoke:Ctor(edit, cursor, old_it_line, old_it_char, new_it_line, new_it_char, content)
+function AUICodeDeleteRightRevoke:Ctor(edit, cursor, old_it_line, old_it_char, new_it_line, new_it_char, content, dispatch_event)
 	___rawset(self, "_edit", edit)
 	___rawset(self, "_cursor", cursor)
 	___rawset(self, "_old_it_line", old_it_line)
@@ -55,25 +60,30 @@ function AUICodeDeleteRightRevoke:Ctor(edit, cursor, old_it_line, old_it_char, n
 	___rawset(self, "_new_it_line", new_it_line)
 	___rawset(self, "_new_it_char", new_it_char)
 	___rawset(self, "_content", content)
+	___rawset(self, "_dispatch_event", dispatch_event)
 end
 
 function AUICodeDeleteRightRevoke:Forward()
 	self._cursor:SetLineChar(self._old_it_line, self._old_it_char)
 	self._cursor:DeleteRight(false)
-	self._edit:DispatchEvent(___all_struct[958494922], {})
+	if self._dispatch_event then
+		self._edit:DispatchEvent(___all_struct[958494922], {})
+	end
 end
 
 function AUICodeDeleteRightRevoke:Back()
 	self._cursor:SetLineChar(self._new_it_line, self._new_it_char)
 	self._edit:InsertText(self._content, false)
 	self._cursor:SetLineChar(self._new_it_line, self._new_it_char)
-	self._edit:DispatchEvent(___all_struct[958494922], {})
+	if self._dispatch_event then
+		self._edit:DispatchEvent(___all_struct[958494922], {})
+	end
 end
 
 assert(ALittle.RevokeObject, " extends class:ALittle.RevokeObject is nil")
 AUICodeInsetTextRevoke = Lua.Class(ALittle.RevokeObject, "AUIPlugin.AUICodeInsetTextRevoke")
 
-function AUICodeInsetTextRevoke:Ctor(edit, cursor, select_cursor, old_it_line, old_it_char, new_it_line, new_it_char, content)
+function AUICodeInsetTextRevoke:Ctor(edit, cursor, select_cursor, old_it_line, old_it_char, new_it_line, new_it_char, content, dispatch_event)
 	___rawset(self, "_edit", edit)
 	___rawset(self, "_cursor", cursor)
 	___rawset(self, "_select_cursor", select_cursor)
@@ -82,12 +92,15 @@ function AUICodeInsetTextRevoke:Ctor(edit, cursor, select_cursor, old_it_line, o
 	___rawset(self, "_new_it_line", new_it_line)
 	___rawset(self, "_new_it_char", new_it_char)
 	___rawset(self, "_content", content)
+	___rawset(self, "_dispatch_event", dispatch_event)
 end
 
 function AUICodeInsetTextRevoke:Forward()
 	self._cursor:SetLineChar(self._old_it_line, self._old_it_char)
 	self._edit:InsertText(self._content, false)
-	self._edit:DispatchEvent(___all_struct[958494922], {})
+	if self._dispatch_event then
+		self._edit:DispatchEvent(___all_struct[958494922], {})
+	end
 end
 
 function AUICodeInsetTextRevoke:Back()
@@ -95,13 +108,15 @@ function AUICodeInsetTextRevoke:Back()
 	self._select_cursor:UpdateLineChar(self._new_it_line, self._new_it_char)
 	self._select_cursor:DeleteSelect(false)
 	self._cursor:SetLineChar(self._old_it_line, self._old_it_char)
-	self._edit:DispatchEvent(___all_struct[958494922], {})
+	if self._dispatch_event then
+		self._edit:DispatchEvent(___all_struct[958494922], {})
+	end
 end
 
 assert(ALittle.RevokeObject, " extends class:ALittle.RevokeObject is nil")
 AUICodeDeleteSelectRevoke = Lua.Class(ALittle.RevokeObject, "AUIPlugin.AUICodeDeleteSelectRevoke")
 
-function AUICodeDeleteSelectRevoke:Ctor(edit, cursor, select_cursor, old_it_line_start, old_it_char_start, old_it_line_end, old_it_char_end, new_it_line, new_it_char, content)
+function AUICodeDeleteSelectRevoke:Ctor(edit, cursor, select_cursor, old_it_line_start, old_it_char_start, old_it_line_end, old_it_char_end, new_it_line, new_it_char, content, dispatch_event)
 	___rawset(self, "_edit", edit)
 	___rawset(self, "_cursor", cursor)
 	___rawset(self, "_select_cursor", select_cursor)
@@ -112,6 +127,7 @@ function AUICodeDeleteSelectRevoke:Ctor(edit, cursor, select_cursor, old_it_line
 	___rawset(self, "_new_it_line", new_it_line)
 	___rawset(self, "_new_it_char", new_it_char)
 	___rawset(self, "_content", content)
+	___rawset(self, "_dispatch_event", dispatch_event)
 end
 
 function AUICodeDeleteSelectRevoke:Forward()
@@ -119,12 +135,16 @@ function AUICodeDeleteSelectRevoke:Forward()
 	self._select_cursor:UpdateLineChar(self._old_it_line_end, self._old_it_char_end)
 	self._select_cursor:DeleteSelect(false)
 	self._cursor:SetLineChar(self._new_it_line, self._new_it_char)
-	self._edit:DispatchEvent(___all_struct[958494922], {})
+	if self._dispatch_event then
+		self._edit:DispatchEvent(___all_struct[958494922], {})
+	end
 end
 
 function AUICodeDeleteSelectRevoke:Back()
 	self._cursor:SetLineChar(self._new_it_line, self._new_it_char)
 	self._edit:InsertText(self._content, false)
-	self._edit:DispatchEvent(___all_struct[958494922], {})
+	if self._dispatch_event then
+		self._edit:DispatchEvent(___all_struct[958494922], {})
+	end
 end
 

@@ -207,8 +207,14 @@ function AUICodeLineContainer:CreateAndAdd(char)
 end
 
 function AUICodeLineContainer:RestoreColor(line, version)
-	self._version = version
-	self._line_index = line
+	if self._version == version then
+		if line ~= nil then
+			self._line_index = line
+		end
+	else
+		self._version = version
+		self._line_index = line
+	end
 	if self._delay_loop ~= nil then
 		return
 	end
@@ -245,6 +251,9 @@ function AUICodeLineContainer:HandleColor()
 	end
 	if self._line_index == nil then
 		self._line_index = ALittle.List_IndexOf(line.edit.line_list, line)
+	end
+	if self._line_index == nil then
+		return
 	end
 	local list = line.edit.language:QueryColor(self._line_index)
 	for index, char in ___ipairs(line.char_list) do
@@ -601,8 +610,8 @@ function AUICodeEdit:HandleChangedEvent(event)
 		return
 	end
 	local map = self._code_linear:GetShowMap()
-	for object, line in ___pairs(map) do
-		object:RestoreColor(line, self._language.version)
+	for object, _ in ___pairs(map) do
+		object:RestoreColor(nil, self._language.version)
 	end
 	if self._error_loop == nil then
 		self._error_loop = ALittle.LoopTimer(Lua.Bind(self.UpdateErrorInfo, self), 1000)
@@ -924,7 +933,23 @@ function AUICodeEdit:HandleKeyDown(event)
 		if g_AUICodeCompleteScreen:IsShow() then
 			is_change = g_AUICodeCompleteScreen:DoSelect()
 		else
-			is_change = self:InsertText("\n", true)
+			local revoke_bind = ALittle.RevokeBind()
+			is_change = self:InsertText("\n", true, revoke_bind)
+			if self._language ~= nil then
+				local indent = self._language:QueryDesiredIndent(self._cursor.line, self._cursor.char)
+				if indent > 0 then
+					local indent_str = ""
+					local i = 1
+					while true do
+						if not(i <= indent) then break end
+						indent_str = indent_str .. " "
+						i = i+(1)
+					end
+					self:InsertText(indent_str, true, revoke_bind)
+				end
+			end
+			revoke_bind.complete = Lua.Bind(self.DispatchChangedEvent, self)
+			self._revoke_list:PushRevoke(revoke_bind)
 		end
 		event.handled = true
 	elseif event.sym == 9 then
@@ -964,6 +989,10 @@ function AUICodeEdit:HandleKeyDown(event)
 	if is_change then
 		self:DispatchEvent(___all_struct[958494922], {})
 	end
+end
+
+function AUICodeEdit:DispatchChangedEvent()
+	self:DispatchEvent(___all_struct[958494922], {})
 end
 
 function AUICodeEdit:HandleKeyUp(event)
@@ -1366,7 +1395,7 @@ function AUICodeEdit:InsertText(content, need_revoke, revoke_bind)
 	self:RejustScrollBar()
 	self._cursor:SetLineChar(it_cursor_line, it_cursor_char)
 	if need_revoke then
-		local revoke = AUICodeInsetTextRevoke(self, self._cursor, self._select_cursor, old_it_line, old_it_char, it_cursor_line, it_cursor_char, content)
+		local revoke = AUICodeInsetTextRevoke(self, self._cursor, self._select_cursor, old_it_line, old_it_char, it_cursor_line, it_cursor_char, content, revoke_bind == nil)
 		insert_revoke:PushRevoke(revoke)
 		if revoke_bind ~= nil then
 			revoke_bind:PushRevoke(insert_revoke)

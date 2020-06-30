@@ -381,7 +381,7 @@ function Linear:ClipRect(left, top, right, bottom, h_move, v_move)
 			if not(i <= child_count) then break end
 			if childs[i].x < right then
 				self._show:AddChild(childs[i]._show)
-				new_show_map[childs[i]] = i
+				new_show_map[childs[i]] = true
 				childs[i]:ClipRect(left, top, right, bottom, h_move, v_move)
 				self._clip_down_index = i
 			else
@@ -426,7 +426,7 @@ function Linear:ClipRect(left, top, right, bottom, h_move, v_move)
 			if not(i <= child_count) then break end
 			if childs[i].y < bottom then
 				self._show:AddChild(childs[i]._show)
-				new_show_map[childs[i]] = i
+				new_show_map[childs[i]] = true
 				childs[i]:ClipRect(left, top, right, bottom, h_move, v_move)
 				self._clip_down_index = i
 			else

@@ -265,7 +265,7 @@ public class AUICodeCursor : ALittle.Quad
                 var new_it_line = this._it_line;
                 var new_it_char = this._it_char;
 
-                var revoke = new AUICodeDeleteLeftRevoke(this._edit, this, old_it_line, old_it_char, new_it_line, new_it_char, revoke_content);
+                var revoke = new AUICodeDeleteLeftRevoke(this._edit, this, old_it_line, old_it_char, new_it_line, new_it_char, revoke_content, revoke_bind == null);
                 if (revoke_bind != null)
                     revoke_bind.PushRevoke(revoke);
                 else
@@ -338,7 +338,7 @@ public class AUICodeCursor : ALittle.Quad
 
         if (need_revoke)
         {
-            var revoke = new AUICodeDeleteLeftRevoke(this._edit, this, old_it_line, old_it_char, new_it_line, new_it_char, revoke_content);
+            var revoke = new AUICodeDeleteLeftRevoke(this._edit, this, old_it_line, old_it_char, new_it_line, new_it_char, revoke_content, revoke_bind == null);
             if (revoke_bind != null)
                 revoke_bind.PushRevoke(revoke);
             else
@@ -404,7 +404,7 @@ public class AUICodeCursor : ALittle.Quad
 
             if (need_revoke)
             {
-                var revoke = new AUICodeDeleteRightRevoke(this._edit, this, old_it_line, old_it_char, new_it_line, new_it_char, revoke_content);
+                var revoke = new AUICodeDeleteRightRevoke(this._edit, this, old_it_line, old_it_char, new_it_line, new_it_char, revoke_content, revoke_bind == null);
                 if (revoke_bind != null)
                     revoke_bind.PushRevoke(revoke);
                 else
@@ -420,6 +420,7 @@ public class AUICodeCursor : ALittle.Quad
         if (next_line == null) return false;
 
         // 1. 删除当前行的\r\n，
+        var old_char_count = cur_line.char_count;
         var it_char = cur_line.char_count;
         var revoke_content = "";
         while (it_char > 0 && (cur_line.char_list[it_char].char == "\r" || cur_line.char_list[it_char].char == "\n"))
@@ -433,7 +434,7 @@ public class AUICodeCursor : ALittle.Quad
         var new_it_char = it_char;
 
         if (this._edit.language != null)
-            this._edit.language.DeleteText(new_it_line, new_it_char, this._it_line, this._it_char);
+            this._edit.language.DeleteText(this._it_line, it_char, this._it_line, old_char_count - 1);
 
         // 2. 下一行拼到当前行的尾部
         var pre_width = 0.0;
@@ -476,7 +477,7 @@ public class AUICodeCursor : ALittle.Quad
 
         if (need_revoke)
         {
-            var revoke = new AUICodeDeleteRightRevoke(this._edit, this, old_it_line, old_it_char, new_it_line, new_it_char, revoke_content);
+            var revoke = new AUICodeDeleteRightRevoke(this._edit, this, old_it_line, old_it_char, new_it_line, new_it_char, revoke_content, revoke_bind == null);
             if (revoke_bind != null)
                 revoke_bind.PushRevoke(revoke);
             else

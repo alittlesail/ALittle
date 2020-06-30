@@ -57,6 +57,14 @@ function AUICodeLanguage:QueryError()
 	return alanguage.abnffile_queryerror(self._abnf_file, self._version)
 end
 
+function AUICodeLanguage:QueryDesiredIndent(line, char)
+	return alanguage.abnffile_querydesiredindent(self._abnf_file, self._version, line, char)
+end
+
+function AUICodeLanguage:QueryFormateIndent(line, char)
+	return alanguage.abnffile_queryformateindent(self._abnf_file, self._version, line, char)
+end
+
 function AUICodeLanguage:QueryColorValue(tag)
 	return nil
 end

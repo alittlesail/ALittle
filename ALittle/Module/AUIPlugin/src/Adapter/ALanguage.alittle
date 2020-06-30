@@ -55,25 +55,10 @@ public struct ABnfQueryError
     string error;
 }
 
-public struct ABnfFactory
-{
-    
-}
-
-public struct ABnf
-{
-    
-}
-
-public struct ABnfFile
-{
-    
-}
-
-public struct ABnfProject
-{
-    
-}
+public struct ABnfFactory { }
+public struct ABnf { }
+public struct ABnfFile { }
+public struct ABnfProject { }
 
 public class alanguage
 {
@@ -90,4 +75,6 @@ public class alanguage
     public static abnffile_querygoto(ABnfFile abnf_file, int version, int line, int char) : ABnfQueryGoto {}
     public static abnffile_querycomplete(ABnfFile abnf_file, int version, int line, int char) : ABnfQueryComplete {}
     public static abnffile_queryerror(ABnfFile abnf_file, int version) : List<ABnfQueryError> {}
+    public static abnffile_querydesiredindent(ABnfFile abnf_file, int version, int line, int char) : int {}
+    public static abnffile_queryformateindent(ABnfFile abnf_file, int version, int line, int char) : int {}
 }

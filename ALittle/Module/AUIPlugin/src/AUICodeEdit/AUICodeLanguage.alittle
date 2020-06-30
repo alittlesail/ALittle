@@ -68,6 +68,18 @@ public class AUICodeLanguage
         return lua.alanguage.abnffile_queryerror(this._abnf_file, this._version);
     }
 
+    // 查询插入缩进
+    public fun QueryDesiredIndent(int line, int char) : int
+    {
+        return lua.alanguage.abnffile_querydesiredindent(this._abnf_file, this._version, line, char);
+    }
+
+    // 查询格式化缩进
+    public fun QueryFormateIndent(int line, int char) : int
+    {
+        return lua.alanguage.abnffile_queryformateindent(this._abnf_file, this._version, line, char);
+    }
+
     // 颜色查询
     public fun QueryColorValue(int tag) : ABnfColor { return null; }
 

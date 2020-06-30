@@ -12,11 +12,12 @@ public class AUICodeDeleteLeftRevoke : ALittle.RevokeObject
 	private int _new_it_line;
 	private int _new_it_char;
 	private string _content;
+	private bool _dispatch_event;
 	
 	public ctor(AUICodeEdit edit, AUICodeCursor cursor
 			, int old_it_line, int old_it_char
 			, int new_it_line, int new_it_char
-			, string content)
+			, string content, bool dispatch_event)
 	{
 		this._edit = edit;
 		this._cursor = cursor;
@@ -25,20 +26,23 @@ public class AUICodeDeleteLeftRevoke : ALittle.RevokeObject
 		this._new_it_line = new_it_line;
 		this._new_it_char = new_it_char;
 		this._content = content;
+		this._dispatch_event = dispatch_event;
 	}
 
 	public fun Forward()
 	{
 		this._cursor.SetLineChar(this._old_it_line, this._old_it_char);
 		this._cursor.DeleteLeft(false);
-		this._edit.DispatchEvent(new ALittle.UIChangedEvent());
+		if (this._dispatch_event)
+			this._edit.DispatchEvent(new ALittle.UIChangedEvent());
 	}
 	
 	public fun Back()
 	{
 		this._cursor.SetLineChar(this._new_it_line, this._new_it_char);
 		this._edit.InsertText(this._content, false);
-		this._edit.DispatchEvent(new ALittle.UIChangedEvent());
+		if (this._dispatch_event)
+			this._edit.DispatchEvent(new ALittle.UIChangedEvent());
 	}
 }
 
@@ -53,11 +57,12 @@ public class AUICodeDeleteRightRevoke : ALittle.RevokeObject
 	private int _new_it_line;
 	private int _new_it_char;
 	private string _content;
+	private bool _dispatch_event;
 
 	public ctor(AUICodeEdit edit, AUICodeCursor cursor
 			, int old_it_line, int old_it_char
 			, int new_it_line, int new_it_char
-			, string content)
+			, string content, bool dispatch_event)
 	{
 		this._edit = edit;
 		this._cursor = cursor;
@@ -66,13 +71,15 @@ public class AUICodeDeleteRightRevoke : ALittle.RevokeObject
 		this._new_it_line = new_it_line;
 		this._new_it_char = new_it_char;
 		this._content = content;
+		this._dispatch_event = dispatch_event;
 	}
 
 	public fun Forward()
 	{
 		this._cursor.SetLineChar(this._old_it_line, this._old_it_char);
 		this._cursor.DeleteRight(false);
-		this._edit.DispatchEvent(new ALittle.UIChangedEvent());
+		if (this._dispatch_event)
+			this._edit.DispatchEvent(new ALittle.UIChangedEvent());
 	}
 
 	public fun Back()
@@ -80,7 +87,8 @@ public class AUICodeDeleteRightRevoke : ALittle.RevokeObject
 		this._cursor.SetLineChar(this._new_it_line, this._new_it_char);
 		this._edit.InsertText(this._content, false);
 		this._cursor.SetLineChar(this._new_it_line, this._new_it_char);
-		this._edit.DispatchEvent(new ALittle.UIChangedEvent());
+		if (this._dispatch_event)
+			this._edit.DispatchEvent(new ALittle.UIChangedEvent());
 	}
 }
 
@@ -96,11 +104,12 @@ public class AUICodeInsetTextRevoke : ALittle.RevokeObject
 	private int _new_it_line;
 	private int _new_it_char;
 	private string _content;
+	private bool _dispatch_event;
 
 	public ctor(AUICodeEdit edit, AUICodeCursor cursor, AUICodeSelectCursor select_cursor
 			, int old_it_line, int old_it_char
 			, int new_it_line, int new_it_char
-			, string content)
+			, string content, bool dispatch_event)
 	{
 		this._edit = edit;
 		this._cursor = cursor;
@@ -110,13 +119,15 @@ public class AUICodeInsetTextRevoke : ALittle.RevokeObject
 		this._new_it_line = new_it_line;
 		this._new_it_char = new_it_char;
 		this._content = content;
+		this._dispatch_event = dispatch_event;
 	}
 
 	public fun Forward()
 	{
 		this._cursor.SetLineChar(this._old_it_line, this._old_it_char);
 		this._edit.InsertText(this._content, false);
-		this._edit.DispatchEvent(new ALittle.UIChangedEvent());
+		if (this._dispatch_event)
+			this._edit.DispatchEvent(new ALittle.UIChangedEvent());
 	}
 
 	public fun Back()
@@ -125,7 +136,8 @@ public class AUICodeInsetTextRevoke : ALittle.RevokeObject
 		this._select_cursor.UpdateLineChar(this._new_it_line, this._new_it_char);
 		this._select_cursor.DeleteSelect(false);
 		this._cursor.SetLineChar(this._old_it_line, this._old_it_char);
-		this._edit.DispatchEvent(new ALittle.UIChangedEvent());
+		if (this._dispatch_event)
+			this._edit.DispatchEvent(new ALittle.UIChangedEvent());
 	}
 }
 
@@ -144,11 +156,12 @@ public class AUICodeDeleteSelectRevoke : ALittle.RevokeObject
 	private int _new_it_char;
 
 	private string _content;
+	private bool _dispatch_event;
 
 	public ctor(AUICodeEdit edit, AUICodeCursor cursor, AUICodeSelectCursor select_cursor
 			, int old_it_line_start, int old_it_char_start, int old_it_line_end, int old_it_char_end
 			, int new_it_line, int new_it_char
-			, string content)
+			, string content, bool dispatch_event)
 	{
 		this._edit = edit;
 		this._cursor = cursor;
@@ -160,6 +173,7 @@ public class AUICodeDeleteSelectRevoke : ALittle.RevokeObject
 		this._new_it_line = new_it_line;
 		this._new_it_char = new_it_char;
 		this._content = content;
+		this._dispatch_event = dispatch_event;
 	}
 
 	public fun Forward()
@@ -168,13 +182,15 @@ public class AUICodeDeleteSelectRevoke : ALittle.RevokeObject
 		this._select_cursor.UpdateLineChar(this._old_it_line_end, this._old_it_char_end);
 		this._select_cursor.DeleteSelect(false);
 		this._cursor.SetLineChar(this._new_it_line, this._new_it_char);
-		this._edit.DispatchEvent(new ALittle.UIChangedEvent());
+		if (this._dispatch_event)
+			this._edit.DispatchEvent(new ALittle.UIChangedEvent());
 	}
 
 	public fun Back()
 	{
 		this._cursor.SetLineChar(this._new_it_line, this._new_it_char);
 		this._edit.InsertText(this._content, false);
-		this._edit.DispatchEvent(new ALittle.UIChangedEvent());
+		if (this._dispatch_event)
+			this._edit.DispatchEvent(new ALittle.UIChangedEvent());
 	}
 }

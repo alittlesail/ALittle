@@ -73,12 +73,15 @@ public class RevokeBind : RevokeObject
 {
 	private List<RevokeObject> _list;
 	private int _count;
+	private Functor<()> _complete;
 
 	public ctor()
 	{
 		this._list = new List<RevokeObject>();
 		this._count = 0;
 	}
+
+	public set complete(Functor<()> value) { this._complete = value;}
 	
 	public fun PushRevoke(RevokeObject revoke)
 	{
@@ -90,11 +93,13 @@ public class RevokeBind : RevokeObject
 	{
 		for (var k, revoke in this._list)
 			revoke.Forward();
+		if (this._complete != null) this._complete();
 	}
 	
 	public fun Back()
 	{
 		for (var i = this._count; i >= 1; -1)
 			this._list[i].Back();
+		if (this._complete != null) this._complete();
 	}
 }

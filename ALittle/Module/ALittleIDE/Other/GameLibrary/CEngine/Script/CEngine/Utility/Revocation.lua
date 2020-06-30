@@ -69,6 +69,10 @@ function RevokeBind:Ctor()
 	___rawset(self, "_count", 0)
 end
 
+function RevokeBind.__setter:complete(value)
+	self._complete = value
+end
+
 function RevokeBind:PushRevoke(revoke)
 	self._count = self._count + 1
 	self._list[self._count] = revoke
@@ -78,6 +82,9 @@ function RevokeBind:Forward()
 	for k, revoke in ___ipairs(self._list) do
 		revoke:Forward()
 	end
+	if self._complete ~= nil then
+		self._complete()
+	end
 end
 
 function RevokeBind:Back()
@@ -86,6 +93,9 @@ function RevokeBind:Back()
 		if not(i >= 1) then break end
 		self._list[i]:Back()
 		i = i+(-1)
+	end
+	if self._complete ~= nil then
+		self._complete()
 	end
 end
 

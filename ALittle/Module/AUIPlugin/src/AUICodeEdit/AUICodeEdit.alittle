@@ -109,8 +109,16 @@ protected class AUICodeLineContainer : ALittle.DisplayLayout
 
     public fun RestoreColor(int line, int version)
     {
-        this._version = version;
-        this._line_index = line;
+        if (this._version == version)
+        {
+            if (line != null)
+                this._line_index = line;
+        }
+        else
+        {
+            this._version = version;
+            this._line_index = line;   
+        }
         if (this._delay_loop != null) return;
 
         this._delay_loop = new ALittle.LoopTimer(bind(this.HandleColor, this), 1);
@@ -153,6 +161,7 @@ protected class AUICodeLineContainer : ALittle.DisplayLayout
 
         if (this._line_index == null)
             this._line_index = ALittle.List_IndexOf(line.edit.line_list, line);
+        if (this._line_index == null) return;
 
         var list = line.edit.language.QueryColor(this._line_index);
         for (var index, char in line.char_list)
@@ -567,8 +576,8 @@ public class AUICodeEdit : ALittle.ScrollScreen
 
         // 获取显示的行，然后进行颜色处理
         var map = this._code_linear.GetShowMap();
-        for (var object:AUICodeLineContainer, line in map)
-            object.RestoreColor(line, this._language.version);
+        for (var object:AUICodeLineContainer, _ in map)
+            object.RestoreColor(null, this._language.version);
 
         if (this._error_loop == null)
             this._error_loop = new ALittle.LoopTimer(bind(this.UpdateErrorInfo, this), 1000);
@@ -721,7 +730,6 @@ public class AUICodeEdit : ALittle.ScrollScreen
         if (this.InsertText(event.text, true))
         {
             this.DispatchEvent(new ALittle.UIChangedEvent());
-
             g_AUICodeCompleteScreen.ShowComplete(this);
         }
     }
@@ -904,7 +912,21 @@ public class AUICodeEdit : ALittle.ScrollScreen
             }
             else
             {
-                is_change = this.InsertText("\n", true);   
+                var revoke_bind = new ALittle.RevokeBind();
+                is_change = this.InsertText("\n", true, revoke_bind);
+                if (this._language != null)
+                {
+                    var indent = this._language.QueryDesiredIndent(this._cursor.line, this._cursor.char);
+                    if (indent > 0)
+                    {
+                        var indent_str = "";
+                        for (var i = 1; i <= indent; 1)
+                            indent_str = indent_str.." ";
+                        this.InsertText(indent_str, true, revoke_bind);
+                    }
+                }
+                revoke_bind.complete = bind(this.DispatchChangedEvent, this);
+                this._revoke_list.PushRevoke(revoke_bind);
             }
 			event.handled = true;
         }
@@ -960,6 +982,11 @@ public class AUICodeEdit : ALittle.ScrollScreen
         {
             this.DispatchEvent(new ALittle.UIChangedEvent());
         }
+    }
+
+    private fun DispatchChangedEvent()
+    {
+        this.DispatchEvent(new ALittle.UIChangedEvent());
     }
 
     private fun HandleKeyUp(ALittle.UIKeyUpEvent event)
@@ -1413,7 +1440,7 @@ public class AUICodeEdit : ALittle.ScrollScreen
 
         if (need_revoke)
         {
-            var revoke = new AUICodeInsetTextRevoke(this, this._cursor, this._select_cursor, old_it_line, old_it_char, it_cursor_line, it_cursor_char, content);
+            var revoke = new AUICodeInsetTextRevoke(this, this._cursor, this._select_cursor, old_it_line, old_it_char, it_cursor_line, it_cursor_char, content, revoke_bind == null);
             insert_revoke.PushRevoke(revoke);
             if (revoke_bind != null)
                 revoke_bind.PushRevoke(insert_revoke);

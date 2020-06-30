@@ -325,8 +325,8 @@ function IDEUITabChild:UpdateTitle()
 	local text = self._tree_object:GetDesc()
 	if text == "" then
 		text = self._name
-		if ALittle.String_Len(self._name) > 15 then
-			text = "..." .. ALittle.String_Sub(self._name, -15, -1)
+		if ALittle.String_Len(self._name) > 30 then
+			text = "..." .. ALittle.String_Sub(self._name, -30, -1)
 		end
 	end
 	if self._save == false then

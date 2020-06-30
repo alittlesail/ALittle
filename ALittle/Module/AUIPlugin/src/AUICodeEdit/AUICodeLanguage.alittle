@@ -62,6 +62,12 @@ public class AUICodeLanguage
         return lua.alanguage.abnffile_querycomplete(this._abnf_file, this._version, line, char);
     }
 
+    // 查询错误信息
+    public fun QueryError() : List<lua.ABnfQueryError>
+    {
+        return lua.alanguage.abnffile_queryerror(this._abnf_file, this._version);
+    }
+
     // 颜色查询
     public fun QueryColorValue(int tag) : ABnfColor { return null; }
 

@@ -33,6 +33,12 @@ protected struct AUICodeLineInfo
     AUICodeEdit edit;
 }
 
+protected struct AUICodeErrorInfo
+{
+    ALittle.DisplayObject _focus_quad;
+    string error;
+}
+
 protected class AUICodeQuad : ALittle.Quad
 {
     public get is_input() : bool { return true; }
@@ -101,8 +107,10 @@ protected class AUICodeLineContainer : ALittle.DisplayLayout
         }
     }
 
-    public fun RestoreColor()
+    public fun RestoreColor(int line, int version)
     {
+        this._version = version;
+        this._line_index = line;
         if (this._delay_loop != null) return;
 
         this._delay_loop = new ALittle.LoopTimer(bind(this.HandleColor, this), 1);
@@ -138,9 +146,11 @@ protected class AUICodeLineContainer : ALittle.DisplayLayout
         var line = cast<AUICodeLineInfo>(this._user_data);
 
         if (this._version != line.edit.language.version)
+        {
             this._line_index = null;
+            this._version = line.edit.language.version;
+        }
 
-        this._version = line.edit.language.version;
         if (this._line_index == null)
             this._line_index = ALittle.List_IndexOf(line.edit.line_list, line);
 
@@ -250,9 +260,13 @@ public class AUICodeEdit : ALittle.ScrollScreen
     private int _query_info_version;
     private lua.ABnfQueryInfo _query_info;
 
+    private ALittle.LoopTimer _error_loop;  // 显示错误信息的定时器
+
 	private AUICodeLinear _code_linear;      // 代码容器
     private ALittle.DisplayLayout _cursor_container;    // 光标容器
+    private ALittle.DisplayLayout _error_container;     // 错误容器
     private AUICodeQuad _edit_quad;           // 编辑区
+    private ALittle.DisplayObject _goto_quad;   // goto的下划线
     private bool _move_in = false;
 
     protected AUICodeCursor _cursor;
@@ -284,10 +298,12 @@ public class AUICodeEdit : ALittle.ScrollScreen
         this.AddEventListener(this, this.HandleKeyUp);
         this.AddEventListener(this, this.HandleTextInput);
         this.AddEventListener(this, this.HandleMouseMove);
+        this.AddEventListener(this, this.HandleChangedEvent);
 
 		// 创建编辑容器
         this.container = new AUICodeEditContainer(this._ctrl_sys);
         this._edit_quad._user_data = this;
+        this._goto_quad.visible = false;
         this.container._user_data = this._code_linear;
 
         this._cursor = new AUICodeCursor(this._ctrl_sys, this);
@@ -435,14 +451,16 @@ public class AUICodeEdit : ALittle.ScrollScreen
         }
 
         var it_line, it_char = this.CalcLineAndChar(x, y);
-        var info = this._language.QueryInfo(it_line, it_char);        
+        var info = this._language.QueryInfo(it_line, it_char);
         if (info == null)
         {
             if (this._query_info != null)
             {
                 g_AUITool.HideTip();
+                this._goto_quad.visible = false;
                 var line_container = cast<AUICodeLineContainer>(this._code_linear.GetChildByIndex(this._query_info.line_start));
-                if (line_container != null) line_container.RestoreColor();   
+                if (line_container != null) line_container.RestoreColor(this._query_info.line_start, this._language.version);   
+                this._query_info = null;
             }
             ALittle.System_SetEditCursor();
             return;
@@ -462,8 +480,9 @@ public class AUICodeEdit : ALittle.ScrollScreen
         if (this._query_info != null)
         {
             g_AUITool.HideTip();
+            this._goto_quad.visible = false;
             var line_container = cast<AUICodeLineContainer>(this._code_linear.GetChildByIndex(this._query_info.line_start));
-            if (line_container != null) line_container.RestoreColor();   
+            if (line_container != null) line_container.RestoreColor(this._query_info.line_start, this._language.version);   
         }
 
         this._query_info_version = this._language.version;
@@ -484,12 +503,18 @@ public class AUICodeEdit : ALittle.ScrollScreen
         
         var quad_x, quad_y = this._edit_quad.LocalToGlobal();
         var char_end = info.char_end;
-        if (info.line_start == info.line_end) info.char_end = line.char_count;
+        if (info.line_start != info.line_end) info.char_end = line.char_count;
         var rect_x, rect_y, rect_width = this.CalcRect(info.line_start, info.char_start, char_end);
         var center_x = rect_x + rect_width / 2 + quad_x;
         var center_y = rect_y + quad_y;
         var tip_width, tip_height = g_AUITool.GetTipSize();
         g_AUITool.MoveTip(center_x - tip_width / 2, center_y - tip_height);
+
+        this._goto_quad.x = rect_x;
+        this._goto_quad.y = rect_y;
+        this._goto_quad.width = rect_width;
+        this._goto_quad.height = LINE_HEIGHT;
+        this._goto_quad.visible = true;
 
         ALittle.System_SetHandCursor();
     }
@@ -502,10 +527,71 @@ public class AUICodeEdit : ALittle.ScrollScreen
         this._query_info_version = null;
         
         var line_container = cast<AUICodeLineContainer>(this._code_linear.GetChildByIndex(this._query_info.line_start));
-        if (line_container != null) line_container.RestoreColor();
+        if (line_container != null) line_container.RestoreColor(this._query_info.line_start, this._language.version);
 
         g_AUITool.HideTip();
         this._query_info = null;
+        this._goto_quad.visible = false;
+    }
+
+    private fun UpdateErrorInfo()
+    {
+        g_AUITool.HideTip();
+        this._error_container.RemoveAllChild();
+        var list = this._language.QueryError();
+        if (list == null) return;
+
+        for (var index, info in list)
+        {
+            var item_info = new AUICodeErrorInfo();
+            var item = g_Control.CreateControl{ALittle.DisplayObject}("ide_code_error_item", item_info);
+            var line = this._line_list[info.line_start];
+            var char_end = info.char_end;
+            if (info.line_start != info.line_end) info.char_end = line.char_count;
+            var x, y, width = this.CalcRect(info.line_start, info.char_start, char_end);
+            item.x = x;
+            item.y = y;
+            item.width = width;
+            item.height = LINE_HEIGHT;
+            item_info.error = info.error;
+            item_info._focus_quad._user_data = item_info;
+            this._error_container.AddChild(item);
+            item_info._focus_quad.AddEventListener(this, this.HandleErrorQuadMoveIn);
+            item_info._focus_quad.AddEventListener(this, this.HandleErrorQuadMoveOut);
+        }
+    }
+
+    private fun HandleChangedEvent(ALittle.UIChangedEvent event)
+    {
+        if (this._language == null) return;
+
+        // 获取显示的行，然后进行颜色处理
+        var map = this._code_linear.GetShowMap();
+        for (var object:AUICodeLineContainer, line in map)
+            object.RestoreColor(line, this._language.version);
+
+        if (this._error_loop == null)
+            this._error_loop = new ALittle.LoopTimer(bind(this.UpdateErrorInfo, this), 1000);
+
+        this._error_loop.Stop();
+        this._error_loop.Reset();
+        this._error_loop.Start();
+    }
+
+    private fun HandleErrorQuadMoveIn(ALittle.UIMoveInEvent event)
+    {
+        var item_info = cast<AUICodeErrorInfo>(event.target._user_data);
+        var x, y = event.target.LocalToGlobal();
+        var center_x = x + event.target.width / 2;
+        var center_y = y;
+        g_AUITool.ShowTip(item_info.error);
+        var tip_width, tip_height = g_AUITool.GetTipSize();
+        g_AUITool.MoveTip(center_x - tip_width / 2, center_y - tip_height);
+    }
+
+    private fun HandleErrorQuadMoveOut(ALittle.UIMoveOutEvent event)
+    {
+        g_AUITool.HideTip();
     }
 
     // 计算行列
@@ -902,6 +988,11 @@ public class AUICodeEdit : ALittle.ScrollScreen
 
     public fun OnClose()
     {
+        if (this._error_loop != null)
+        {
+            this._error_loop.Stop();
+            this._error_loop = null;
+        }
         this._cursor.Hide();
         this._file_path = null;
     }

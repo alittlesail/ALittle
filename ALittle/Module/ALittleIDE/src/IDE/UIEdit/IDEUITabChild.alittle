@@ -303,8 +303,8 @@ public class IDEUITabChild : IDETabChild
 		if (text == "")
         {
             text = this._name;
-			if (ALittle.String_Len(this._name) > 15)
-                text =  "..."..ALittle.String_Sub(this._name, -15, -1);
+			if (ALittle.String_Len(this._name) > 30)
+                text =  "..."..ALittle.String_Sub(this._name, -30, -1);
 		}
         if (this._save == false) text = text.." *";
         g_IDECenter.center.content_edit.main_tab.SetChildText(this._tab_screen, text);

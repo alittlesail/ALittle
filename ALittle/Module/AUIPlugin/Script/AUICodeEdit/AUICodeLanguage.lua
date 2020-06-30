@@ -53,6 +53,10 @@ function AUICodeLanguage:QueryComplete(line, char)
 	return alanguage.abnffile_querycomplete(self._abnf_file, self._version, line, char)
 end
 
+function AUICodeLanguage:QueryError()
+	return alanguage.abnffile_queryerror(self._abnf_file, self._version)
+end
+
 function AUICodeLanguage:QueryColorValue(tag)
 	return nil
 end

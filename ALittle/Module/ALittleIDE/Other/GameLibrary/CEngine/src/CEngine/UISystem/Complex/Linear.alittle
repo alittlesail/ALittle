@@ -13,7 +13,7 @@ public class Linear : DisplayGroup
     
     private Map<DisplayObject, double> _child_width_map;
     private Map<DisplayObject, double> _child_height_map;
-    private Map<DisplayObject, bool> _show_child_map;
+    private Map<DisplayObject, int> _show_child_map;
 
     public ctor(ControlSystem ctrl_sys)
     {
@@ -79,6 +79,8 @@ public class Linear : DisplayGroup
     {
         return this._gap;
     }
+
+    public fun GetShowMap() : Map<DisplayObject, int> { return this._show_child_map; }
     
     public fun AddChild(DisplayObject child, [Nullable] int index) : bool
     {
@@ -372,7 +374,7 @@ public class Linear : DisplayGroup
             return;
         var childs = this.childs;
 
-        var new_show_map:Map<DisplayObject, bool> = CreateKeyWeakMap();
+        var new_show_map:Map<DisplayObject, int> = CreateKeyWeakMap();
         this._show.RemoveAllChild(); // 移除所有显示列表
         var max_index = child_count;
         var min_index = 1;
@@ -430,7 +432,7 @@ public class Linear : DisplayGroup
                 if (childs[i].x < right)
                 {
                     this._show.AddChild(childs[i]._show);
-                    new_show_map[childs[i]] = true;
+                    new_show_map[childs[i]] = i;
                     childs[i].ClipRect(left, top, right, bottom, h_move, v_move);
                     this._clip_down_index = i;
                 }
@@ -493,7 +495,7 @@ public class Linear : DisplayGroup
                 if (childs[i].y < bottom)
                 {
                     this._show.AddChild(childs[i]._show);
-                    new_show_map[childs[i]] = true;
+                    new_show_map[childs[i]] = i;
                     childs[i].ClipRect(left, top, right, bottom, h_move, v_move);
                     this._clip_down_index = i;
                 }

@@ -84,6 +84,12 @@ name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
 type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
 option_map = {}
 })
+ALittle.RegStruct(-2130019625, "AUIPlugin.AUICodeErrorInfo", {
+name = "AUIPlugin.AUICodeErrorInfo", ns_name = "AUIPlugin", rl_name = "AUICodeErrorInfo", hash_code = -2130019625,
+name_list = {"_focus_quad","error"},
+type_list = {"ALittle.DisplayObject","string"},
+option_map = {}
+})
 ALittle.RegStruct(-1604617962, "ALittle.UIKeyDownEvent", {
 name = "ALittle.UIKeyDownEvent", ns_name = "ALittle", rl_name = "UIKeyDownEvent", hash_code = -1604617962,
 name_list = {"target","mod","sym","scancode","custom","handled"},
@@ -200,7 +206,9 @@ function AUICodeLineContainer:CreateAndAdd(char)
 	end
 end
 
-function AUICodeLineContainer:RestoreColor()
+function AUICodeLineContainer:RestoreColor(line, version)
+	self._version = version
+	self._line_index = line
 	if self._delay_loop ~= nil then
 		return
 	end
@@ -233,8 +241,8 @@ function AUICodeLineContainer:HandleColor()
 	local line = self._user_data
 	if self._version ~= line.edit.language.version then
 		self._line_index = nil
+		self._version = line.edit.language.version
 	end
-	self._version = line.edit.language.version
 	if self._line_index == nil then
 		self._line_index = ALittle.List_IndexOf(line.edit.line_list, line)
 	end
@@ -334,8 +342,10 @@ function AUICodeEdit:TCtor()
 	self:AddEventListener(___all_struct[1213009422], self, self.HandleKeyUp)
 	self:AddEventListener(___all_struct[-1234078962], self, self.HandleTextInput)
 	self:AddEventListener(___all_struct[-1001723540], self, self.HandleMouseMove)
+	self:AddEventListener(___all_struct[958494922], self, self.HandleChangedEvent)
 	self.container = AUICodeEditContainer(self._ctrl_sys)
 	self._edit_quad._user_data = self
+	self._goto_quad.visible = false
 	self.container._user_data = self._code_linear
 	self._cursor = AUICodeCursor(self._ctrl_sys, self)
 	self._cursor.width = 1
@@ -489,10 +499,12 @@ function AUICodeEdit:UpdateQueryInfo(x, y)
 	if info == nil then
 		if self._query_info ~= nil then
 			g_AUITool:HideTip()
+			self._goto_quad.visible = false
 			local line_container = self._code_linear:GetChildByIndex(self._query_info.line_start)
 			if line_container ~= nil then
-				line_container:RestoreColor()
+				line_container:RestoreColor(self._query_info.line_start, self._language.version)
 			end
+			self._query_info = nil
 		end
 		ALittle.System_SetEditCursor()
 		return
@@ -503,9 +515,10 @@ function AUICodeEdit:UpdateQueryInfo(x, y)
 	end
 	if self._query_info ~= nil then
 		g_AUITool:HideTip()
+		self._goto_quad.visible = false
 		local line_container = self._code_linear:GetChildByIndex(self._query_info.line_start)
 		if line_container ~= nil then
-			line_container:RestoreColor()
+			line_container:RestoreColor(self._query_info.line_start, self._language.version)
 		end
 	end
 	self._query_info_version = self._language.version
@@ -522,7 +535,7 @@ function AUICodeEdit:UpdateQueryInfo(x, y)
 	g_AUITool:ShowTip(info.info)
 	local quad_x, quad_y = self._edit_quad:LocalToGlobal()
 	local char_end = info.char_end
-	if info.line_start == info.line_end then
+	if info.line_start ~= info.line_end then
 		info.char_end = line.char_count
 	end
 	local rect_x, rect_y, rect_width = self:CalcRect(info.line_start, info.char_start, char_end)
@@ -530,6 +543,11 @@ function AUICodeEdit:UpdateQueryInfo(x, y)
 	local center_y = rect_y + quad_y
 	local tip_width, tip_height = g_AUITool:GetTipSize()
 	g_AUITool:MoveTip(center_x - tip_width / 2, center_y - tip_height)
+	self._goto_quad.x = rect_x
+	self._goto_quad.y = rect_y
+	self._goto_quad.width = rect_width
+	self._goto_quad.height = LINE_HEIGHT
+	self._goto_quad.visible = true
 	ALittle.System_SetHandCursor()
 end
 
@@ -543,10 +561,69 @@ function AUICodeEdit:StopQueryInfo()
 	self._query_info_version = nil
 	local line_container = self._code_linear:GetChildByIndex(self._query_info.line_start)
 	if line_container ~= nil then
-		line_container:RestoreColor()
+		line_container:RestoreColor(self._query_info.line_start, self._language.version)
 	end
 	g_AUITool:HideTip()
 	self._query_info = nil
+	self._goto_quad.visible = false
+end
+
+function AUICodeEdit:UpdateErrorInfo()
+	g_AUITool:HideTip()
+	self._error_container:RemoveAllChild()
+	local list = self._language:QueryError()
+	if list == nil then
+		return
+	end
+	for index, info in ___ipairs(list) do
+		local item_info = {}
+		local item = g_Control:CreateControl("ide_code_error_item", item_info)
+		local line = self._line_list[info.line_start]
+		local char_end = info.char_end
+		if info.line_start ~= info.line_end then
+			info.char_end = line.char_count
+		end
+		local x, y, width = self:CalcRect(info.line_start, info.char_start, char_end)
+		item.x = x
+		item.y = y
+		item.width = width
+		item.height = LINE_HEIGHT
+		item_info.error = info.error
+		item_info._focus_quad._user_data = item_info
+		self._error_container:AddChild(item)
+		item_info._focus_quad:AddEventListener(___all_struct[544684311], self, self.HandleErrorQuadMoveIn)
+		item_info._focus_quad:AddEventListener(___all_struct[-1202439334], self, self.HandleErrorQuadMoveOut)
+	end
+end
+
+function AUICodeEdit:HandleChangedEvent(event)
+	if self._language == nil then
+		return
+	end
+	local map = self._code_linear:GetShowMap()
+	for object, line in ___pairs(map) do
+		object:RestoreColor(line, self._language.version)
+	end
+	if self._error_loop == nil then
+		self._error_loop = ALittle.LoopTimer(Lua.Bind(self.UpdateErrorInfo, self), 1000)
+	end
+	self._error_loop:Stop()
+	self._error_loop:Reset()
+	self._error_loop:Start()
+end
+
+function AUICodeEdit:HandleErrorQuadMoveIn(event)
+	local item_info = event.target._user_data
+	local x, y = event.target:LocalToGlobal()
+	local center_x = x + event.target.width / 2
+	local center_y = y
+	g_AUITool:ShowTip(item_info.error)
+	local tip_width, tip_height = g_AUITool:GetTipSize()
+	g_AUITool:MoveTip(center_x - tip_width / 2, center_y - tip_height)
+end
+
+function AUICodeEdit:HandleErrorQuadMoveOut(event)
+	g_AUITool:HideTip()
 end
 
 function AUICodeEdit:CalcLineAndChar(x, y)
@@ -909,6 +986,10 @@ function AUICodeEdit:OnShow()
 end
 
 function AUICodeEdit:OnClose()
+	if self._error_loop ~= nil then
+		self._error_loop:Stop()
+		self._error_loop = nil
+	end
 	self._cursor:Hide()
 	self._file_path = nil
 end

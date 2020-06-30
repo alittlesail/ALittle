@@ -61,4 +61,7 @@ struct ABnfQueryError
 };
 const struct ABnfQueryError* abnffile_queryerror(void* abnf_file, int version, int* count);
 
+int abnffile_querydesiredindent(void* abnf_file, int version, int it_line, int it_char);
+int abnffile_queryformateindent(void* abnf_file, int version, int it_line, int it_char);
+
 #endif // _ALITTLE_ALANGUAGE_H_

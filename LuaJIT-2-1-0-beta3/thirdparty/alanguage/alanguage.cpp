@@ -125,3 +125,13 @@ const struct ABnfQueryError* abnffile_queryerror(void* abnf_file, int version, i
 	*count = static_cast<int>(query_temp.size());
 	return query_temp.data();
 }
+
+int abnffile_querydesiredindent(void* abnf_file, int version, int it_line, int it_char)
+{
+	return ((ABnfFile*)abnf_file)->QueryDesiredIndent(version, it_line, it_char);
+}
+
+int abnffile_queryformateindent(void* abnf_file, int version, int it_line, int it_char)
+{
+	return ((ABnfFile*)abnf_file)->QueryFormateIndent(version, it_line, it_char);
+}

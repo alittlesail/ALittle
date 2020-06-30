@@ -234,6 +234,34 @@ bool ABnfFile::QueryError(int version, std::vector<ALanguageErrorInfo>& info_lis
     return true;
 }
 
+int ABnfFile::QueryDesiredIndent(int version, int it_line, int it_char)
+{
+    AnalysisText(version);
+
+    auto element = m_root->GetException(it_line, it_char);
+    if (element == nullptr) return false;
+
+    auto node = std::dynamic_pointer_cast<ABnfNodeElement>(element);
+    if (node == nullptr) node = std::dynamic_pointer_cast<ABnfNodeElement>(element->GetParent());
+    if (node == nullptr) return 0;
+
+    return node->GetReference()->QueryDesiredIndent(it_line, it_char, element);
+}
+
+int ABnfFile::QueryFormateIndent(int version, int it_line, int it_char)
+{
+    AnalysisText(version);
+
+    auto element = m_root->GetException(it_line, it_char);
+    if (element == nullptr) return false;
+
+    auto node = std::dynamic_pointer_cast<ABnfNodeElement>(element);
+    if (node == nullptr) node = std::dynamic_pointer_cast<ABnfNodeElement>(element->GetParent());
+    if (node == nullptr) return 0;
+
+    return node->GetReference()->QueryFormateIndent(it_line, it_char, element);
+}
+
 int ABnfFile::GetByteCountOfOneWord(unsigned char first_char)
 {
     unsigned char temp = 0x80;

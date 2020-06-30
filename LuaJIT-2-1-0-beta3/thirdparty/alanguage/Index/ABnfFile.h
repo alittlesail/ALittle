@@ -75,7 +75,10 @@ public:
         , int& line_start, int& char_start, int& line_end, int& char_end);
     // 获取错误
     bool QueryError(int version, std::vector<ALanguageErrorInfo>& info_list);
-
+    // 获取插入缩进
+    int QueryDesiredIndent(int version, int it_line, int it_char);
+    // 获取格式化缩进
+    int QueryFormateIndent(int version, int it_line, int it_char);
     // utf8字符切割
     static int GetByteCountOfOneWord(unsigned char first_char);
 

@@ -200,10 +200,18 @@ static int alanguagelib_abnffile_querycomplete(lua_State* L)
         {
             const struct ABnfQueryComplete* complete = list + i;
             lua_newtable(L);
-            lua_pushstring(L, complete->complete);
-            lua_setfield(L, -2, "complete");
-            lua_pushstring(L, complete->descriptor);
-            lua_setfield(L, -2, "descriptor");
+            lua_pushstring(L, complete->display);
+            lua_setfield(L, -2, "display");
+            if (complete->insert)
+            {
+                lua_pushstring(L, complete->insert);
+                lua_setfield(L, -2, "insert");
+            }
+            if (complete->descriptor)
+            {
+                lua_pushstring(L, complete->descriptor);
+                lua_setfield(L, -2, "descriptor");
+            }
             lua_pushinteger(L, complete->tag);
             lua_setfield(L, -2, "tag");
             lua_rawseti(L, -2, i + 1);

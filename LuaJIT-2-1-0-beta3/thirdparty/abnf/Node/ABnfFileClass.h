@@ -5,13 +5,14 @@
 #include "ALittle/LibCommon/ThirdParty/alanguage/Index/ABnfFile.h"
 #include <unordered_map>
 #include <unordered_set>
+#include <map>
 #include <string>
 
 class ABnfFileClass : public ABnfFile
 {
 private:
     // 规则名映射规则内容
-    std::unordered_map<std::string, std::unordered_set<ABnfNodeElementPtr>> m_rule;
+    std::unordered_map<std::string, std::map<ABnfNodeElementPtr, std::string>> m_rule;
     // 获取规则
     std::unordered_map<std::string, std::unordered_set<ABnfNodeElementPtr>> m_index;
 
@@ -19,7 +20,7 @@ public:
 	ABnfFileClass(ABnfProject* project, const std::string& full_path, ABnf* abnf, const char* text, size_t len);
     virtual ~ABnfFileClass();
 
-    inline const std::unordered_map<std::string, std::unordered_set<ABnfNodeElementPtr>>& GetRuleSet() { return m_rule; }
+    inline const std::unordered_map<std::string, std::map<ABnfNodeElementPtr, std::string>>& GetRuleSet() { return m_rule; }
     inline const std::unordered_map<std::string, std::unordered_set<ABnfNodeElementPtr>>& GetIndex() { return m_index; }
 
     // 更新分析内容

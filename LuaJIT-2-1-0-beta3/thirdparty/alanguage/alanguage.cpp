@@ -79,3 +79,25 @@ int abnffile_querygoto(void* abnf_file, int version, int it_line, int it_char, s
 	info->file_path = temp.c_str();
 	return 1;
 }
+
+const struct ABnfQueryComplete* abnffile_querycomplete(void* abnf_file, int version, int it_line, int it_char
+	, int* count, int* line_start, int* char_start, int* line_end, int* char_end)
+{
+	static std::vector<ALanguageCompletionInfo> completion_temp;
+	completion_temp.resize(0);
+	bool result = ((ABnfFile*)abnf_file)->QueryComplete(version, it_line, it_char, completion_temp, *line_start, *char_start, *line_end, *char_end);
+	if (!result) return nullptr;
+
+	static std::vector<struct ABnfQueryComplete> query_temp;
+	query_temp.resize(0);
+	for (auto& temp : completion_temp)
+	{
+		struct ABnfQueryComplete info;
+		info.complete = temp.display.c_str();
+		info.descriptor = temp.descriptor.c_str();
+		info.tag = temp.tag;
+		query_temp.push_back(info);
+	}
+	*count = static_cast<int>(query_temp.size());
+	return query_temp.data();
+}

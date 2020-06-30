@@ -164,6 +164,47 @@ static int alanguagelib_abnffile_querygoto(lua_State* L)
     return 1;
 }
 
+static int alanguagelib_abnffile_querycomplete(lua_State* L)
+{
+    void** c = (void**)lua_touserdata(L, 1);
+    luaL_argcheck(L, c != 0, 1, "abnf file object is null");
+    int version = (int)luaL_checkinteger(L, 2);
+    int it_line = (int)luaL_checkinteger(L, 3);
+    int it_char = (int)luaL_checkinteger(L, 4);
+
+    int count = 0;
+    int line_start = 0;
+    int char_start = 0;
+    int line_end = 0;
+    int char_end = 0;
+    const struct ABnfQueryComplete* list = abnffile_querycomplete(*c, version, it_line - 1, it_char
+        , &count, &line_start, &char_start, &line_end, &char_end);
+    lua_newtable(L);
+    lua_pushinteger(L, line_start + 1);
+    lua_setfield(L, -2, "line_start");
+    lua_pushinteger(L, char_start + 1);
+    lua_setfield(L, -2, "char_start");
+    lua_pushinteger(L, line_end + 1);
+    lua_setfield(L, -2, "line_end");
+    lua_pushinteger(L, char_end);
+    lua_setfield(L, -2, "char_end");
+
+    lua_newtable(L);
+    for (int i = 0; i < count; ++i)
+    {
+        const struct ABnfQueryComplete* complete = list + i;
+        lua_newtable(L);
+        lua_pushstring(L, complete->complete);
+        lua_setfield(L, -2, "complete");
+        lua_pushstring(L, complete->descriptor);
+        lua_setfield(L, -2, "descriptor");
+        lua_pushinteger(L, complete->tag);
+        lua_setfield(L, -2, "tag");
+        lua_rawseti(L, -2, i + 1);
+    }
+    lua_setfield(L, -2, "complete_list");
+    return 1;
+}
 /*
 ** Assumes the table is on top of the stack.
 */

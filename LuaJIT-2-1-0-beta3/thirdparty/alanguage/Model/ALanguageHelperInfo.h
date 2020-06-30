@@ -9,8 +9,9 @@ const int s_indent_size = 4;
 
 struct ALanguageCompletionInfo
 {
-    std::string insert;
     std::string display;
+    std::string descriptor;
+    int tag;
 };
 
 struct ALanguageParameterInfo

@@ -19,6 +19,7 @@ class ABnfElement;
 using ABnfElementPtr = std::shared_ptr<ABnfElement>;
 struct ABnfQueryColor;
 struct ALanguageCompletionInfo;
+struct ALanguageErrorInfo;
 
 class ABnfFile
 {
@@ -72,6 +73,8 @@ public:
     bool QueryComplete(int version, int it_line, int it_char
         , std::vector<ALanguageCompletionInfo>& info_list
         , int& line_start, int& char_start, int& line_end, int& char_end);
+    // 获取错误
+    bool QueryError(int version, std::vector<ALanguageErrorInfo>& info_list);
 
     // utf8字符切割
     static int GetByteCountOfOneWord(unsigned char first_char);

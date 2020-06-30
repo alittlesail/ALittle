@@ -15,6 +15,15 @@ struct ALanguageCompletionInfo
     int tag = 0;
 };
 
+struct ALanguageErrorInfo
+{
+    int line_start = 0;
+    int char_start = 0;
+    int line_end = 0;
+    int char_end = 0;
+    std::string error;
+};
+
 struct ALanguageParameterInfo
 {
     std::string documentation;

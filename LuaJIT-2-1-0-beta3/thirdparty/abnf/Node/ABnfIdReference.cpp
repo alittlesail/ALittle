@@ -32,7 +32,7 @@ void ABnfIdReference::QueryQuickInfo(std::string& info)
     info = ALittle::StringHelper::Join(content_list, "\n");
 }
 
-bool ABnfIdReference::QueryCompletion(int offset, std::vector<ALanguageCompletionInfo>& list)
+bool ABnfIdReference::QueryCompletion(std::vector<ALanguageCompletionInfo>& list)
 {
     auto element = m_element.lock();
     if (element == nullptr) return false;

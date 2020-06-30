@@ -5,6 +5,7 @@
 #include "../Model/ABnfNodeElement.h"
 #include "../Model/ABnfErrorElement.h"
 #include "../Model/ABnfReference.h"
+#include "../Model/ALanguageHelperInfo.h"
 
 ABnfFile::ABnfFile(ABnfProject* project, const std::string& full_path, ABnf* abnf, const char* text, size_t len)
 {
@@ -178,6 +179,30 @@ bool ABnfFile::QueryGoto(int version, int it_line, int it_char
     line_end = goto_element->GetEndLine();
     char_end = goto_element->GetEndCol();
 
+    return true;
+}
+
+bool ABnfFile::QueryComplete(int version, int it_line, int it_char
+    , std::vector<ALanguageCompletionInfo>& info_list
+    , int& line_start, int& char_start, int& line_end, int& char_end)
+{
+    AnalysisText(version);
+
+    if (m_root == nullptr) return false;
+
+    auto element = m_root->GetException(it_line, it_char);
+    if (element == nullptr) return false;
+
+    line_start = element->GetStartLine();
+    char_start = element->GetStartCol();
+    line_end = element->GetEndLine();
+    char_end = element->GetEndCol();
+
+    auto node = std::dynamic_pointer_cast<ABnfNodeElement>(element);
+    if (node == nullptr) node = std::dynamic_pointer_cast<ABnfNodeElement>(element->GetParent());
+    if (node == nullptr) return true;
+
+    node->GetReference()->QueryCompletion(info_list);
     return true;
 }
 

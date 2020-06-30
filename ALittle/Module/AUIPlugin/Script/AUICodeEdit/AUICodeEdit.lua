@@ -358,6 +358,10 @@ function AUICodeEdit.__getter:cursor()
 	return self._cursor
 end
 
+function AUICodeEdit.__getter:select_cursor()
+	return self._select_cursor
+end
+
 function AUICodeEdit.__getter:language()
 	return self._language
 end
@@ -592,7 +596,7 @@ function AUICodeEdit:CalcRect(it_line, char_start, char_end)
 	return x, y, width
 end
 
-function AUICodeEdit:CalcPosition(it_line, it_char)
+function AUICodeEdit:CalcPosition(it_line, it_char, pre)
 	local line = self._line_list[it_line]
 	if line == nil then
 		return 0, 0
@@ -600,13 +604,16 @@ function AUICodeEdit:CalcPosition(it_line, it_char)
 	local y = (it_line - 1) * LINE_HEIGHT
 	local x = 0.0
 	if it_char > 0 then
-		x = line.char_list[it_char].pre_width + line.char_list[it_char].width
+		x = line.char_list[it_char].pre_width
+		if not pre then
+			x = x + (line.char_list[it_char].width)
+		end
 	end
 	return x, y
 end
 
-function AUICodeEdit:CalcAbsPosition(it_line, it_char)
-	local x, y = self:CalcPosition(it_line, it_char)
+function AUICodeEdit:CalcAbsPosition(it_line, it_char, pre)
+	local x, y = self:CalcPosition(it_line, it_char, pre)
 	local abs_x, abs_y = self._edit_quad:LocalToGlobal()
 	return abs_x + x, abs_y + y
 end
@@ -722,42 +729,50 @@ function AUICodeEdit:HandleKeyDown(event)
 		end
 		event.handled = true
 	elseif event.sym == 1073741906 then
-		if ALittle.BitAnd(event.mod, 0x0003) == 0 then
-			if self._select_cursor.line_start ~= nil then
-				self._select_cursor:Hide()
-			else
-				self._cursor:OffsetUp()
-			end
+		if g_AUICodeCompleteScreen:IsShow() then
+			g_AUICodeCompleteScreen:SelectUp()
 		else
-			if self._select_cursor.line_start == nil then
-				self._select_cursor:StartLineChar(self._cursor.line, self._cursor.char)
-			end
-			self._cursor:OffsetUp()
-			if self._cursor.line == self._select_cursor.line_start and self._cursor.char == self._select_cursor.char_start then
+			if ALittle.BitAnd(event.mod, 0x0003) == 0 then
+				if self._select_cursor.line_start ~= nil then
+					self._select_cursor:Hide()
+				else
+					self._cursor:OffsetUp()
+				end
+			else
+				if self._select_cursor.line_start == nil then
+					self._select_cursor:StartLineChar(self._cursor.line, self._cursor.char)
+				end
 				self._cursor:OffsetUp()
+				if self._cursor.line == self._select_cursor.line_start and self._cursor.char == self._select_cursor.char_start then
+					self._cursor:OffsetUp()
+				end
+				self._select_cursor:UpdateLineChar(self._cursor.line, self._cursor.char)
 			end
-			self._select_cursor:UpdateLineChar(self._cursor.line, self._cursor.char)
+			g_AUICodeCompleteScreen:Hide()
 		end
-		g_AUICodeCompleteScreen:Hide()
 		event.handled = true
 	elseif event.sym == 1073741905 then
-		if ALittle.BitAnd(event.mod, 0x0003) == 0 then
-			if self._select_cursor.line_start ~= nil then
-				self._select_cursor:Hide()
-			else
-				self._cursor:OffsetDown()
-			end
+		if g_AUICodeCompleteScreen:IsShow() then
+			g_AUICodeCompleteScreen:SelectDown()
 		else
-			if self._select_cursor.line_start == nil then
-				self._select_cursor:StartLineChar(self._cursor.line, self._cursor.char)
-			end
-			self._cursor:OffsetDown()
-			if self._cursor.line == self._select_cursor.line_start and self._cursor.char == self._select_cursor.char_start then
+			if ALittle.BitAnd(event.mod, 0x0003) == 0 then
+				if self._select_cursor.line_start ~= nil then
+					self._select_cursor:Hide()
+				else
+					self._cursor:OffsetDown()
+				end
+			else
+				if self._select_cursor.line_start == nil then
+					self._select_cursor:StartLineChar(self._cursor.line, self._cursor.char)
+				end
 				self._cursor:OffsetDown()
+				if self._cursor.line == self._select_cursor.line_start and self._cursor.char == self._select_cursor.char_start then
+					self._cursor:OffsetDown()
+				end
+				self._select_cursor:UpdateLineChar(self._cursor.line, self._cursor.char)
 			end
-			self._select_cursor:UpdateLineChar(self._cursor.line, self._cursor.char)
+			g_AUICodeCompleteScreen:Hide()
 		end
-		g_AUICodeCompleteScreen:Hide()
 		event.handled = true
 	elseif event.sym == 1073741903 then
 		if ALittle.BitAnd(event.mod, 0x0003) == 0 then
@@ -829,7 +844,11 @@ function AUICodeEdit:HandleKeyDown(event)
 		end
 		event.handled = true
 	elseif event.sym == 13 or event.sym == 1073741912 then
-		is_change = self:InsertText("\n", true)
+		if g_AUICodeCompleteScreen:IsShow() then
+			is_change = g_AUICodeCompleteScreen:DoSelect()
+		else
+			is_change = self:InsertText("\n", true)
+		end
 		event.handled = true
 	elseif event.sym == 9 then
 		is_change = self:InsertText("\t", true)

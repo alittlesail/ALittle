@@ -308,6 +308,7 @@ public class AUICodeEdit : ALittle.ScrollScreen
 
     public get code_linear() : AUICodeLinear { return this._code_linear; }
     public get cursor() : AUICodeCursor { return this._cursor; }
+    public get select_cursor() : AUICodeSelectCursor { return this._select_cursor; }
     public get language() : AUICodeLanguage { return this._language; }
     public set line_count(int count) { this._line_count = count; }
     public get line_count() : int { return this._line_count; }
@@ -549,7 +550,7 @@ public class AUICodeEdit : ALittle.ScrollScreen
     }
 
     // 计算相对坐标
-    public fun CalcPosition(int it_line, int it_char) : double, double
+    public fun CalcPosition(int it_line, int it_char, bool pre) : double, double
     {
         var line = this._line_list[it_line];
         if (line == null) return 0, 0;
@@ -557,15 +558,18 @@ public class AUICodeEdit : ALittle.ScrollScreen
         var y = (it_line - 1) * LINE_HEIGHT;
         var x = 0.0;
         if (it_char > 0)
-            x = line.char_list[it_char].pre_width + line.char_list[it_char].width;
-
+        {
+            x = line.char_list[it_char].pre_width;
+            if (!pre) x += line.char_list[it_char].width;
+        }
+            
         return x, y;
     }
 
     // 计算绝对坐标
-    public fun CalcAbsPosition(int it_line, int it_char) : double, double
+    public fun CalcAbsPosition(int it_line, int it_char, bool pre) : double, double
     {
-        var x, y = this.CalcPosition(it_line, it_char);
+        var x, y = this.CalcPosition(it_line, it_char, pre);
         var abs_x, abs_y = this._edit_quad.LocalToGlobal();
         return abs_x + x, abs_y + y;
     }
@@ -666,44 +670,58 @@ public class AUICodeEdit : ALittle.ScrollScreen
         }
         elseif (event.sym == ALittle.UIEnumTypes.KEY_UP)
         {
-            if (ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) == 0)
+            if (g_AUICodeCompleteScreen.IsShow())
             {
-                if (this._select_cursor.line_start != null)
-                    this._select_cursor.Hide();
-                else
-                    this._cursor.OffsetUp();
+                g_AUICodeCompleteScreen.SelectUp();   
             }
             else
             {
-                if (this._select_cursor.line_start == null)
-                    this._select_cursor.StartLineChar(this._cursor.line, this._cursor.char);
-                this._cursor.OffsetUp();
-                if (this._cursor.line == this._select_cursor.line_start && this._cursor.char == this._select_cursor.char_start)
+                if (ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) == 0)
+                {
+                    if (this._select_cursor.line_start != null)
+                        this._select_cursor.Hide();
+                    else
+                        this._cursor.OffsetUp();
+                }
+                else
+                {
+                    if (this._select_cursor.line_start == null)
+                        this._select_cursor.StartLineChar(this._cursor.line, this._cursor.char);
                     this._cursor.OffsetUp();
-                this._select_cursor.UpdateLineChar(this._cursor.line, this._cursor.char);   
+                    if (this._cursor.line == this._select_cursor.line_start && this._cursor.char == this._select_cursor.char_start)
+                        this._cursor.OffsetUp();
+                    this._select_cursor.UpdateLineChar(this._cursor.line, this._cursor.char);   
+                }
+                g_AUICodeCompleteScreen.Hide();
             }
-            g_AUICodeCompleteScreen.Hide();
 			event.handled = true;
         }
         elseif (event.sym == ALittle.UIEnumTypes.KEY_DOWN)
         {
-            if (ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) == 0)
+            if (g_AUICodeCompleteScreen.IsShow())
             {
-                if (this._select_cursor.line_start != null)
-                    this._select_cursor.Hide();
-                else
-                    this._cursor.OffsetDown();
+                g_AUICodeCompleteScreen.SelectDown();   
             }
             else
             {
-                if (this._select_cursor.line_start == null)
-                    this._select_cursor.StartLineChar(this._cursor.line, this._cursor.char);
-                this._cursor.OffsetDown();
-                if (this._cursor.line == this._select_cursor.line_start && this._cursor.char == this._select_cursor.char_start)
+                if (ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) == 0)
+                {
+                    if (this._select_cursor.line_start != null)
+                        this._select_cursor.Hide();
+                    else
+                        this._cursor.OffsetDown();
+                }
+                else
+                {
+                    if (this._select_cursor.line_start == null)
+                        this._select_cursor.StartLineChar(this._cursor.line, this._cursor.char);
                     this._cursor.OffsetDown();
-                this._select_cursor.UpdateLineChar(this._cursor.line, this._cursor.char);   
+                    if (this._cursor.line == this._select_cursor.line_start && this._cursor.char == this._select_cursor.char_start)
+                        this._cursor.OffsetDown();
+                    this._select_cursor.UpdateLineChar(this._cursor.line, this._cursor.char);   
+                }
+                g_AUICodeCompleteScreen.Hide();
             }
-            g_AUICodeCompleteScreen.Hide();
 			event.handled = true;
         }
         elseif (event.sym == ALittle.UIEnumTypes.KEY_RIGHT)
@@ -794,7 +812,14 @@ public class AUICodeEdit : ALittle.ScrollScreen
         }
         elseif (event.sym == ALittle.UIEnumTypes.KEY_ENTER || event.sym == ALittle.UIEnumTypes.KEY_NUMBER_ENTER)
         {
-            is_change = this.InsertText("\n", true);
+            if (g_AUICodeCompleteScreen.IsShow())
+            {
+                is_change = g_AUICodeCompleteScreen.DoSelect();
+            }
+            else
+            {
+                is_change = this.InsertText("\n", true);   
+            }
 			event.handled = true;
         }
         elseif (event.sym == ALittle.UIEnumTypes.KEY_TAB)

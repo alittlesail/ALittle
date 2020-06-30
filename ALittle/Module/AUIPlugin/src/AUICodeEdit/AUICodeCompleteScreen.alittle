@@ -1,0 +1,146 @@
+
+namespace AUIPlugin;
+
+protected struct AUICodeCompleteItemInfo
+{
+    ALittle.TextRadioButton _item_button;
+    ALittle.Text _item_title;
+    ALittle.Image _tag_image;
+    ALittle.DisplayObject _item;
+}
+
+protected class AUICodeCompleteScreen
+{
+    private ALittle.ScrollScreen _screen;
+    private List<AUICodeCompleteItemInfo> _item_list;
+    
+    private ALittle.TextRadioButtonGroup _item_group;
+
+    private lua.ABnfQueryComplete _complete;
+    private int _line_start;
+    private int _char_start;
+    private int _line_end;
+    private int _char_end;
+    private AUICodeEdit _edit;
+    private double _item_height;
+
+    public get edit() : AUICodeEdit { return this._edit; }
+
+    public fun ShowComplete(AUICodeEdit edit)
+    {
+        this._edit = edit;
+        if (this._complete == null)
+        {
+            this._line_start = edit.cursor.line;
+            this._char_start = edit.cursor.char - 1;
+            this.ReInit(edit);
+        }
+
+        this._line_end = edit.cursor.line;
+        this._char_end = edit.cursor.char;
+        var text = edit.GetTargetText(this._line_start, this._char_start, edit.cursor.line, edit.cursor.char);
+        if (text == "")
+        {
+            this.Hide();
+            return;
+        }
+        this.Fliter(text);
+    }
+
+    public fun IsShow() : bool { return this._complete != null; }
+
+    private fun ReInit(AUICodeEdit edit)
+    {
+        this._complete = edit.language.QueryComplete(this._line_start, this._char_start);
+        if (this._complete == null) return;
+
+        // 计算坐标
+        var x, y = edit.CalcAbsPosition(this._complete.line_start, this._complete.char_start);
+        y += edit.line_height;
+
+        if (this._screen == null)
+        {
+            this._screen = g_Control.CreateControl{ALittle.ScrollScreen}("ide_code_scroll_screen");
+            this._screen.width = 200;
+            this._screen.AddEventListener(this, this.HandleHideEvent);
+        }
+
+        this._screen.x = x;
+        this._screen.y = y;
+
+        this._item_group = new ALittle.TextRadioButtonGroup();
+        this._item_list = new List<AUICodeCompleteItemInfo>();
+        for (var index, info in this._complete.complete_list)
+        {
+            var item_info = new AUICodeCompleteItemInfo();
+            item_info._item = g_Control.CreateControl{ALittle.DisplayObject}("ide_code_complete_item", item_info);
+            item_info._item_button.group = this._item_group;
+            item_info._item_title.text = info.complete;
+            item_info._tag_image.texture_name = edit.language.QueryCompleteIcon(info.tag);
+            this._item_list[index] = item_info;
+
+            this._item_height = item_info._item.height;
+        }
+
+        A_LayerManager.ShowFromRight(this._screen, false);
+    }
+
+    private fun Fliter(string text)
+    {
+        if (text == null) text = "";
+
+        this._screen.RemoveAllChild();
+        for (var index, info in this._item_list)
+        {
+            var pos = ALittle.String_Find(info._item_title.text, text);
+            if (pos != null)
+            {
+                if (this._screen.child_count == 0)
+                    info._item_button.selected = true;
+                this._screen.AddChild(info._item);   
+            }
+        }
+        var height = this._screen.child_count * this._item_height;
+        if (height < 200) this._screen.height = height;
+        else this._screen.height = 200;
+    }
+
+    public fun Hide()
+    {
+        this._edit = null;
+        this._complete = null;
+        A_LayerManager.HideFromRight(this._screen);
+    }
+
+    public fun TryHide(AUICodeEdit edit)
+    {
+        if (this._edit != edit) return;
+
+        // 检查光标
+        if (edit.cursor.line < this._line_start || edit.cursor.line > this._line_end)
+        {
+            this.Hide();
+            return;
+        }
+
+        if (edit.cursor.line == this._line_start && edit.cursor.char < this._char_start)
+        {
+            this.Hide();
+            return;
+        }
+
+        if (edit.cursor.line == this._line_end && edit.cursor.char > this._char_end)
+        {
+            this.Hide();
+            return;
+        }
+    }
+
+    private fun HandleHideEvent(ALittle.UIHideEvent event)
+    {
+        this._edit = null;
+        this._complete = null;
+    }
+}
+
+protected var g_AUICodeCompleteScreen = new AUICodeCompleteScreen();

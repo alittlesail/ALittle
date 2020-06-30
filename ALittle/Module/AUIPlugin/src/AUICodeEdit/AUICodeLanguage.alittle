@@ -64,4 +64,7 @@ public class AUICodeLanguage
 
     // 颜色查询
     public fun QueryColorValue(int tag) : ABnfColor { return null; }
+
+    // 查询提示图标路径
+    public fun QueryCompleteIcon(int tag) : string { return null; }
 }

@@ -24,6 +24,12 @@ name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
+ALittle.RegStruct(631224630, "AUIPlugin.AUICodeEditGotoEvent", {
+name = "AUIPlugin.AUICodeEditGotoEvent", ns_name = "AUIPlugin", rl_name = "AUICodeEditGotoEvent", hash_code = 631224630,
+name_list = {"target","file_path","line_start","char_start","line_end","char_end"},
+type_list = {"ALittle.DisplayObject","string","int","int","int","int"},
+option_map = {}
+})
 ALittle.RegStruct(882286932, "ALittle.UIKeyEvent", {
 name = "ALittle.UIKeyEvent", ns_name = "ALittle", rl_name = "UIKeyEvent", hash_code = 882286932,
 name_list = {"target","mod","sym","scancode","custom","handled"},
@@ -376,6 +382,32 @@ function AUICodeEdit.__getter:revoke_list()
 	return self._revoke_list
 end
 
+function AUICodeEdit:FocusLineChar(it_line, it_char)
+	local line = self._line_list[it_line]
+	if line == nil then
+		return
+	end
+	local char = line.char_list[it_char]
+	if char == nil then
+		char = line.char_list[1]
+	end
+	local y = (it_line - 1) * LINE_HEIGHT
+	local x = char.pre_width
+	local real_width = self.container.width - self.view_width
+	if real_width > 0 then
+		local view_x = self.view_width / 2
+		local center_x = x
+		self.bottom_scrollbar.offset_rate = (center_x - view_x) / real_width
+	end
+	local real_height = self.container.height - self.view_height
+	if real_height > 0 then
+		local view_y = self.view_height / 2
+		local center_y = y
+		self.right_scrollbar.offset_rate = (center_y - view_y) / real_height
+	end
+	self:RejustScrollBar()
+end
+
 function AUICodeEdit:HandleMoveIn(event)
 	self._move_in = true
 	ALittle.System_SetEditCursor()
@@ -407,7 +439,15 @@ function AUICodeEdit:HandleLButtonDown(event)
 				self._cursor:SetLineChar(info.line_start, info.char_start - 1)
 				self._select_cursor:StartLineChar(info.line_start, info.char_start - 1)
 				self._select_cursor:UpdateLineChar(info.line_end, info.char_end)
+				self:FocusLineChar(self._cursor.line, self._cursor.char)
 			else
+				local goto_event = {}
+				goto_event.file_path = info.file_path
+				goto_event.line_start = info.line_start
+				goto_event.char_start = info.char_start
+				goto_event.line_end = info.line_end
+				goto_event.char_end = info.char_end
+				self:DispatchEvent(___all_struct[631224630], goto_event)
 			end
 		end
 		self:StopQueryInfo()
@@ -552,6 +592,25 @@ function AUICodeEdit:CalcRect(it_line, char_start, char_end)
 	return x, y, width
 end
 
+function AUICodeEdit:CalcPosition(it_line, it_char)
+	local line = self._line_list[it_line]
+	if line == nil then
+		return 0, 0
+	end
+	local y = (it_line - 1) * LINE_HEIGHT
+	local x = 0.0
+	if it_char > 0 then
+		x = line.char_list[it_char].pre_width + line.char_list[it_char].width
+	end
+	return x, y
+end
+
+function AUICodeEdit:CalcAbsPosition(it_line, it_char)
+	local x, y = self:CalcPosition(it_line, it_char)
+	local abs_x, abs_y = self._edit_quad:LocalToGlobal()
+	return abs_x + x, abs_y + y
+end
+
 function AUICodeEdit:BrushColor(line_start, char_start, line_end, char_end, red, green, blue)
 	if line_start == line_end then
 		local line = self._line_list[line_start]
@@ -636,6 +695,7 @@ end
 function AUICodeEdit:HandleTextInput(event)
 	if self:InsertText(event.text, true) then
 		self:DispatchEvent(___all_struct[958494922], {})
+		g_AUICodeCompleteScreen:ShowComplete(self)
 	end
 end
 
@@ -648,6 +708,7 @@ function AUICodeEdit:HandleKeyDown(event)
 			else
 				self._cursor:OffsetLeft()
 			end
+			g_AUICodeCompleteScreen:TryHide(self)
 		else
 			if self._select_cursor.line_start == nil then
 				self._select_cursor:StartLineChar(self._cursor.line, self._cursor.char)
@@ -657,6 +718,7 @@ function AUICodeEdit:HandleKeyDown(event)
 				self._cursor:OffsetLeft()
 			end
 			self._select_cursor:UpdateLineChar(self._cursor.line, self._cursor.char)
+			g_AUICodeCompleteScreen:Hide()
 		end
 		event.handled = true
 	elseif event.sym == 1073741906 then
@@ -676,6 +738,7 @@ function AUICodeEdit:HandleKeyDown(event)
 			end
 			self._select_cursor:UpdateLineChar(self._cursor.line, self._cursor.char)
 		end
+		g_AUICodeCompleteScreen:Hide()
 		event.handled = true
 	elseif event.sym == 1073741905 then
 		if ALittle.BitAnd(event.mod, 0x0003) == 0 then
@@ -694,6 +757,7 @@ function AUICodeEdit:HandleKeyDown(event)
 			end
 			self._select_cursor:UpdateLineChar(self._cursor.line, self._cursor.char)
 		end
+		g_AUICodeCompleteScreen:Hide()
 		event.handled = true
 	elseif event.sym == 1073741903 then
 		if ALittle.BitAnd(event.mod, 0x0003) == 0 then
@@ -702,6 +766,7 @@ function AUICodeEdit:HandleKeyDown(event)
 			else
 				self._cursor:OffsetRight()
 			end
+			g_AUICodeCompleteScreen:TryHide(self)
 		else
 			if self._select_cursor.line_start == nil then
 				self._select_cursor:StartLineChar(self._cursor.line, self._cursor.char)
@@ -711,13 +776,19 @@ function AUICodeEdit:HandleKeyDown(event)
 				self._cursor:OffsetRight()
 			end
 			self._select_cursor:UpdateLineChar(self._cursor.line, self._cursor.char)
+			g_AUICodeCompleteScreen:Hide()
 		end
 		event.handled = true
 	elseif event.sym == 8 then
 		if self._select_cursor.line_start == nil then
 			is_change = self._cursor:DeleteLeft(true)
+			g_AUICodeCompleteScreen:TryHide(self)
+			if g_AUICodeCompleteScreen:IsShow() then
+				g_AUICodeCompleteScreen:ShowComplete(self)
+			end
 		else
 			is_change = self:DeleteSelectText()
+			g_AUICodeCompleteScreen:Hide()
 		end
 		event.handled = true
 	elseif event.sym == 127 then
@@ -1219,6 +1290,14 @@ function AUICodeEdit:GetText()
 		end
 	end
 	return ALittle.String_Join(text_list, "")
+end
+
+function AUICodeEdit:GetSelectText()
+	return self._select_cursor:GetSelectText()
+end
+
+function AUICodeEdit:GetTargetText(line_start, char_start, line_end, char_end)
+	return self._select_cursor:GetTargetText(line_start, char_start, line_end, char_end)
 end
 
 function AUICodeEdit:Save()

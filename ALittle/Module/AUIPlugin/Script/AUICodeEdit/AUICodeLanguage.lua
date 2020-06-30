@@ -57,3 +57,7 @@ function AUICodeLanguage:QueryColorValue(tag)
 	return nil
 end
 
+function AUICodeLanguage:QueryCompleteIcon(tag)
+	return nil
+end
+

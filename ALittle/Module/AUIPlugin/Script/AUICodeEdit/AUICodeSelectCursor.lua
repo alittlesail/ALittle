@@ -149,14 +149,7 @@ function AUICodeSelectCursor:UpdateOffsetXY(x, y)
 	self:SetQuad()
 end
 
-function AUICodeSelectCursor:GetSelectText()
-	if self._it_line_start == nil then
-		return nil
-	end
-	local it_line_start = self._it_line_start
-	local it_char_start = self._it_char_start
-	local it_line_end = self._it_line_end
-	local it_char_end = self._it_char_end
+function AUICodeSelectCursor:GetTargetText(it_line_start, it_char_start, it_line_end, it_char_end)
 	local swap = false
 	if it_line_start > it_line_end then
 		swap = true
@@ -172,7 +165,7 @@ function AUICodeSelectCursor:GetSelectText()
 		it_char_end = temp
 	end
 	if it_line_start == it_line_end then
-		if self._it_char_start == self._it_char_end then
+		if it_char_start == it_char_end then
 			return ""
 		end
 		local line = self._edit.line_list[it_line_start]
@@ -220,6 +213,13 @@ function AUICodeSelectCursor:GetSelectText()
 		i = i+(1)
 	end
 	return text
+end
+
+function AUICodeSelectCursor:GetSelectText()
+	if self._it_line_start == nil then
+		return nil
+	end
+	return self:GetTargetText(self._it_line_start, self._it_char_start, self._it_line_end, self._it_char_end)
 end
 
 function AUICodeSelectCursor:DeleteSelect(need_revoke, revoke_bind)

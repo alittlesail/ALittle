@@ -315,6 +315,36 @@ public class AUICodeEdit : ALittle.ScrollScreen
     public get line_height() : int { return LINE_HEIGHT; }
     public get revoke_list() : ALittle.RevokeList { return this._revoke_list; }
 
+    public fun FocusLineChar(int it_line, int it_char)
+    {
+        var line = this._line_list[it_line];
+        if (line == null) return;
+        var char = line.char_list[it_char];
+        if (char == null) char = line.char_list[1];
+
+        var y = (it_line - 1) * LINE_HEIGHT;
+        var x = char.pre_width;
+
+        
+        var real_width = this.container.width - this.view_width;
+        if (real_width > 0)
+        {
+            var view_x = this.view_width / 2;
+            var center_x = x;
+            this.bottom_scrollbar.offset_rate = (center_x - view_x) / real_width;
+        }
+
+        var real_height = this.container.height - this.view_height;
+        if (real_height > 0)
+        {
+            var view_y = this.view_height / 2;
+            var center_y = y;
+            this.right_scrollbar.offset_rate = (center_y - view_y) / real_height;
+        }
+
+        this.RejustScrollBar();
+    }
+
     private fun HandleMoveIn(ALittle.UIMoveInEvent event)
     {
         this._move_in = true;
@@ -353,6 +383,7 @@ public class AUICodeEdit : ALittle.ScrollScreen
                     this._cursor.SetLineChar(info.line_start, info.char_start - 1);
                     this._select_cursor.StartLineChar(info.line_start, info.char_start - 1);
                     this._select_cursor.UpdateLineChar(info.line_end, info.char_end);
+                    this.FocusLineChar(this._cursor.line, this._cursor.char);
                 }
                 // 对外发送事件，让外面打开，然后再聚焦到某个代码段
                 else
@@ -517,6 +548,28 @@ public class AUICodeEdit : ALittle.ScrollScreen
         return x, y, width;
     }
 
+    // 计算相对坐标
+    public fun CalcPosition(int it_line, int it_char) : double, double
+    {
+        var line = this._line_list[it_line];
+        if (line == null) return 0, 0;
+
+        var y = (it_line - 1) * LINE_HEIGHT;
+        var x = 0.0;
+        if (it_char > 0)
+            x = line.char_list[it_char].pre_width + line.char_list[it_char].width;
+
+        return x, y;
+    }
+
+    // 计算绝对坐标
+    public fun CalcAbsPosition(int it_line, int it_char) : double, double
+    {
+        var x, y = this.CalcPosition(it_line, it_char);
+        var abs_x, abs_y = this._edit_quad.LocalToGlobal();
+        return abs_x + x, abs_y + y;
+    }
+
     // 上色
     public fun BrushColor(int line_start, int char_start, int line_end, int char_end, double red, double green, double blue)
     {
@@ -576,7 +629,11 @@ public class AUICodeEdit : ALittle.ScrollScreen
     private fun HandleTextInput(ALittle.UITextInputEvent event)
     {
         if (this.InsertText(event.text, true))
+        {
             this.DispatchEvent(new ALittle.UIChangedEvent());
+
+            g_AUICodeCompleteScreen.ShowComplete(this);
+        }
     }
 
     private fun HandleKeyDown(ALittle.UIKeyDownEvent event)
@@ -592,6 +649,7 @@ public class AUICodeEdit : ALittle.ScrollScreen
                     this._select_cursor.Hide();
                 else
                     this._cursor.OffsetLeft();
+                g_AUICodeCompleteScreen.TryHide(this);
             }
             else
             {
@@ -600,8 +658,10 @@ public class AUICodeEdit : ALittle.ScrollScreen
                 this._cursor.OffsetLeft();
                 if (this._cursor.line == this._select_cursor.line_start && this._cursor.char == this._select_cursor.char_start)
                     this._cursor.OffsetLeft();
-                this._select_cursor.UpdateLineChar(this._cursor.line, this._cursor.char);   
+                this._select_cursor.UpdateLineChar(this._cursor.line, this._cursor.char);
+                g_AUICodeCompleteScreen.Hide();
             }
+
 			event.handled = true;
         }
         elseif (event.sym == ALittle.UIEnumTypes.KEY_UP)
@@ -622,6 +682,7 @@ public class AUICodeEdit : ALittle.ScrollScreen
                     this._cursor.OffsetUp();
                 this._select_cursor.UpdateLineChar(this._cursor.line, this._cursor.char);   
             }
+            g_AUICodeCompleteScreen.Hide();
 			event.handled = true;
         }
         elseif (event.sym == ALittle.UIEnumTypes.KEY_DOWN)
@@ -642,6 +703,7 @@ public class AUICodeEdit : ALittle.ScrollScreen
                     this._cursor.OffsetDown();
                 this._select_cursor.UpdateLineChar(this._cursor.line, this._cursor.char);   
             }
+            g_AUICodeCompleteScreen.Hide();
 			event.handled = true;
         }
         elseif (event.sym == ALittle.UIEnumTypes.KEY_RIGHT)
@@ -652,6 +714,7 @@ public class AUICodeEdit : ALittle.ScrollScreen
                     this._select_cursor.Hide();
                 else
                     this._cursor.OffsetRight();
+                g_AUICodeCompleteScreen.TryHide(this);
             }
             else
             {
@@ -661,6 +724,7 @@ public class AUICodeEdit : ALittle.ScrollScreen
                 if (this._cursor.line == this._select_cursor.line_start && this._cursor.char == this._select_cursor.char_start)
                     this._cursor.OffsetRight();
                 this._select_cursor.UpdateLineChar(this._cursor.line, this._cursor.char);   
+                g_AUICodeCompleteScreen.Hide();
             }
 			event.handled = true;
         }
@@ -669,10 +733,14 @@ public class AUICodeEdit : ALittle.ScrollScreen
             if (this._select_cursor.line_start == null)
             {
                 is_change = this._cursor.DeleteLeft(true);
+                g_AUICodeCompleteScreen.TryHide(this);
+                if (g_AUICodeCompleteScreen.IsShow())
+                    g_AUICodeCompleteScreen.ShowComplete(this);
             }
             else
             {
                 is_change = this.DeleteSelectText();
+                g_AUICodeCompleteScreen.Hide();
             }
 			event.handled = true;
         }
@@ -1255,6 +1323,16 @@ public class AUICodeEdit : ALittle.ScrollScreen
             }
         }
         return ALittle.String_Join(text_list, "");
+    }
+
+    public fun GetSelectText() : string
+    {
+        return this._select_cursor.GetSelectText();
+    }
+
+    public fun GetTargetText(int line_start, int char_start, int line_end, int char_end) : string
+    {
+        return this._select_cursor.GetTargetText(line_start, char_start, line_end, char_end);
     }
 
     public fun Save() : bool

@@ -42,7 +42,7 @@ public struct ABnfQueryComplete
     int char_start;
     int line_end;
     int char_end;
-    ABnfQueryCompleteInfo complete_list;
+    List<ABnfQueryCompleteInfo> complete_list;
 }
 
 public struct ABnfFactory

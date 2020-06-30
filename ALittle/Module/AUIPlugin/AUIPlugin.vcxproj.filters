@@ -50,6 +50,9 @@
     <None Include="src\Adapter\ABnf.alittle">
       <Filter>Adapter</Filter>
     </None>
+    <None Include="src\AUICodeEdit\AUICodeCompleteScreen.alittle">
+      <Filter>AUICodeEdit</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="AUI">

@@ -146,16 +146,9 @@ public class AUICodeSelectCursor
         this.SetQuad();
     }
 
-    // 复制选中文本
-    public fun GetSelectText() : string
+    // 获取目标文本
+    public fun GetTargetText(int it_line_start, int it_char_start, int it_line_end, int it_char_end) : string
     {
-        if (this._it_line_start == null) return null;
-
-        var it_line_start = this._it_line_start;
-        var it_char_start = this._it_char_start;
-        var it_line_end = this._it_line_end;
-        var it_char_end = this._it_char_end;
-
         var swap = false;
         if (it_line_start > it_line_end)
             swap = true;
@@ -174,7 +167,7 @@ public class AUICodeSelectCursor
 
         if (it_line_start == it_line_end)
         {
-            if (this._it_char_start == this._it_char_end) return "";
+            if (it_char_start == it_char_end) return "";
             var line = this._edit.line_list[it_line_start];
             if (line.char_count == 0) return "";
             var text = "";
@@ -207,6 +200,13 @@ public class AUICodeSelectCursor
             }
         }
         return text;
+    }
+
+    // 复制选中文本
+    public fun GetSelectText() : string
+    {
+        if (this._it_line_start == null) return null;
+        return this.GetTargetText(this._it_line_start, this._it_char_start, this._it_line_end, this._it_char_end);
     }
 
     public fun DeleteSelect(bool need_revoke, [Nullable]ALittle.RevokeBind revoke_bind) : bool, int, int

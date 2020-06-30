@@ -179,30 +179,37 @@ static int alanguagelib_abnffile_querycomplete(lua_State* L)
     int char_end = 0;
     const struct ABnfQueryComplete* list = abnffile_querycomplete(*c, version, it_line - 1, it_char
         , &count, &line_start, &char_start, &line_end, &char_end);
-    lua_newtable(L);
-    lua_pushinteger(L, line_start + 1);
-    lua_setfield(L, -2, "line_start");
-    lua_pushinteger(L, char_start + 1);
-    lua_setfield(L, -2, "char_start");
-    lua_pushinteger(L, line_end + 1);
-    lua_setfield(L, -2, "line_end");
-    lua_pushinteger(L, char_end);
-    lua_setfield(L, -2, "char_end");
-
-    lua_newtable(L);
-    for (int i = 0; i < count; ++i)
+    if (count <= 0)
     {
-        const struct ABnfQueryComplete* complete = list + i;
-        lua_newtable(L);
-        lua_pushstring(L, complete->complete);
-        lua_setfield(L, -2, "complete");
-        lua_pushstring(L, complete->descriptor);
-        lua_setfield(L, -2, "descriptor");
-        lua_pushinteger(L, complete->tag);
-        lua_setfield(L, -2, "tag");
-        lua_rawseti(L, -2, i + 1);
+        lua_pushnil(L);
     }
-    lua_setfield(L, -2, "complete_list");
+    else
+    {
+        lua_newtable(L);
+        lua_pushinteger(L, line_start + 1);
+        lua_setfield(L, -2, "line_start");
+        lua_pushinteger(L, char_start + 1);
+        lua_setfield(L, -2, "char_start");
+        lua_pushinteger(L, line_end + 1);
+        lua_setfield(L, -2, "line_end");
+        lua_pushinteger(L, char_end);
+        lua_setfield(L, -2, "char_end");
+
+        lua_newtable(L);
+        for (int i = 0; i < count; ++i)
+        {
+            const struct ABnfQueryComplete* complete = list + i;
+            lua_newtable(L);
+            lua_pushstring(L, complete->complete);
+            lua_setfield(L, -2, "complete");
+            lua_pushstring(L, complete->descriptor);
+            lua_setfield(L, -2, "descriptor");
+            lua_pushinteger(L, complete->tag);
+            lua_setfield(L, -2, "tag");
+            lua_rawseti(L, -2, i + 1);
+        }
+        lua_setfield(L, -2, "complete_list");
+    }
     return 1;
 }
 /*

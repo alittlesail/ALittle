@@ -43,7 +43,8 @@ int abnffile_querygoto(void* abnf_file, int version, int it_line, int it_char, s
 
 struct ABnfQueryComplete
 {
-	const char* complete;
+	const char* insert;
+	const char* display;
 	const char* descriptor;
 	int tag;
 };

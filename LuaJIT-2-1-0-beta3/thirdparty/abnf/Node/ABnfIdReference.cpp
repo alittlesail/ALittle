@@ -26,8 +26,8 @@ void ABnfIdReference::QueryQuickInfo(std::string& info)
     if (it == file->GetRuleSet().end()) return;
 
     std::vector<std::string> content_list;
-    for (auto rule : it->second)
-        content_list.push_back(rule->GetElementText());
+    for (auto pair : it->second)
+        content_list.push_back(pair.first->GetElementText());
 
     info = ALittle::StringHelper::Join(content_list, "\n");
 }
@@ -46,6 +46,8 @@ bool ABnfIdReference::QueryCompletion(std::vector<ALanguageCompletionInfo>& list
         {
             ALanguageCompletionInfo info;
             info.display = pair.first;
+            if (!pair.second.empty())
+                info.descriptor = pair.second.begin()->second;
             list.push_back(info);
         }
     }
@@ -126,10 +128,10 @@ ABnfElementPtr ABnfIdReference::GotoDefinition()
     if (it == file->GetRuleSet().end())
         return nullptr;
 
-    for (auto e : it->second)
+    for (auto pair : it->second)
     {
-        if (e->GetChilds().size() > 0)
-            return e->GetChilds()[0];
+        if (pair.first->GetChilds().size() > 0)
+            return pair.first->GetChilds()[0];
     }
     return nullptr;
 }

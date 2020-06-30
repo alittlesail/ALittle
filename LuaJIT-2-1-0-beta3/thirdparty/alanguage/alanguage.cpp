@@ -93,8 +93,9 @@ const struct ABnfQueryComplete* abnffile_querycomplete(void* abnf_file, int vers
 	for (auto& temp : completion_temp)
 	{
 		struct ABnfQueryComplete info;
-		info.complete = temp.display.c_str();
-		info.descriptor = temp.descriptor.c_str();
+		info.insert = temp.insert.empty() ? 0 : temp.insert.c_str();
+		info.display = temp.display.c_str();
+		info.descriptor = temp.descriptor.empty() ? 0 : temp.descriptor.c_str();
 		info.tag = temp.tag;
 		query_temp.push_back(info);
 	}

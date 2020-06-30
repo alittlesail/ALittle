@@ -54,8 +54,12 @@ void ABnfFileClass::CollectIndex(ABnfNodeElementPtr node)
 // 收集规则ID
 void ABnfFileClass::CollectRule()
 {
+    std::string comment;
     for (auto element : m_root->GetChilds())
     {
+        if (element->GetNodeType() == "LineComment" || element->GetNodeType() == "BlockComment")
+            comment = element->GetElementText();
+
         if (element->GetNodeType() != "Expression") continue;
 
         auto node = std::dynamic_pointer_cast<ABnfNodeElement>(element);
@@ -72,6 +76,7 @@ void ABnfFileClass::CollectRule()
         if (value == nullptr) continue;
         const auto& id_value = id->GetElementText();
 
-        m_rule[id_value].insert(node);
+        m_rule[id_value][node] = comment;
+        comment.clear();
     }
 }

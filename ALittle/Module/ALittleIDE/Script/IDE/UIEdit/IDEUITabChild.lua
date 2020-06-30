@@ -305,7 +305,6 @@ function IDEUITabChild.__setter:save(value)
 		return
 	end
 	local info = self._tree_object:CalcInfo()
-	ALittle.Log(self._name, ALittle.String_JsonEncode(info))
 	local error = g_IDEProject.project.ui:SaveControl(self._name, info)
 	if error ~= nil then
 		return

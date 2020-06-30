@@ -281,7 +281,6 @@ public class IDEUITabChild : IDETabChild
         if (this._tree_object == null) return;
 	
         var info = this._tree_object.CalcInfo();
-        ALittle.Log(this._name, ALittle.String_JsonEncode(info));
         var error = g_IDEProject.project.ui.SaveControl(this._name, info);
         if (error != null) return;
 	

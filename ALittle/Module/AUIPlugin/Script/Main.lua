@@ -42,5 +42,6 @@ __Plugin_Setup = Lua.CoWrap(__Plugin_Setup)
 function __Plugin_Shutdown()
 	g_AUIIMEManager:Shutdown()
 	g_AUITool:Shutdown()
+	g_AUICodeCompleteScreen:Shutdown()
 end
 

@@ -7,12 +7,17 @@ protected struct AUICodeCompleteItemInfo
     ALittle.Text _item_title;
     ALittle.Image _tag_image;
     ALittle.DisplayObject _item;
+
+    lua.ABnfQueryCompleteInfo complete;
 }
 
 protected class AUICodeCompleteScreen
 {
     private ALittle.ScrollScreen _screen;
     private List<AUICodeCompleteItemInfo> _item_list;
+
+    private ALittle.DisplayObject _tip_dialog;
+    private ALittle.TextArea _tip_text;
     
     private ALittle.TextRadioButtonGroup _item_group;
 
@@ -23,6 +28,11 @@ protected class AUICodeCompleteScreen
     private double _item_height = 0;
 
     public get edit() : AUICodeEdit { return this._edit; }
+
+    public fun Shutdown()
+    {
+        this.Hide();
+    }
 
     public fun ShowComplete(AUICodeEdit edit)
     {
@@ -39,14 +49,10 @@ protected class AUICodeCompleteScreen
         this._line_end = edit.cursor.line;
         this._char_end = edit.cursor.char;
         var text = edit.GetTargetText(this._complete.line_start, this._complete.char_start - 1, edit.cursor.line, edit.cursor.char);
-        if (text == "")
+        if (text == null || text == "" || !this.Fliter(text))
         {
             this.Hide();
             return;
-        }
-        if (!this.Fliter(text))
-        {
-            this.Hide();
         }
     }
 
@@ -58,7 +64,13 @@ protected class AUICodeCompleteScreen
         target -= 1;
         if (target < 1) target = this._screen.child_count;
         var item = this._screen.childs[target];
-        cast<AUICodeCompleteItemInfo>(item._user_data)._item_button.selected = true;
+        var info = cast<AUICodeCompleteItemInfo>(item._user_data);
+        info._item_button.selected = true;
+
+        if (info.complete.descriptor != null)
+            this.ShowTip(info.complete.descriptor);
+        else
+            this.HideTip();
 
         var delta = this._screen.container.height - this._screen.height;
         if (delta > 0)
@@ -74,7 +86,13 @@ protected class AUICodeCompleteScreen
         target += 1;
         if (target > this._screen.child_count) target = 1;
         var item = this._screen.childs[target];
-        cast<AUICodeCompleteItemInfo>(item._user_data)._item_button.selected = true;
+        var info = cast<AUICodeCompleteItemInfo>(item._user_data);
+        info._item_button.selected = true;
+
+        if (info.complete.descriptor != null)
+            this.ShowTip(info.complete.descriptor);
+        else
+            this.HideTip();
         
         var delta = this._screen.container.height - this._screen.height;
         if (delta > 0)
@@ -93,7 +111,10 @@ protected class AUICodeCompleteScreen
         this._edit.select_cursor.UpdateLineChar(this._edit.cursor.line, this._edit.cursor.char);
 
         var item = this._screen.childs[target];
-        var text = cast<AUICodeCompleteItemInfo>(item._user_data)._item_title.text;
+        var text:string;
+        var complete = cast<AUICodeCompleteItemInfo>(item._user_data).complete;
+        if (complete.insert != null) text = complete.insert;
+        else text = complete.display;
 
         var result = this._edit.InsertText(text, true);
         this.Hide();
@@ -140,9 +161,10 @@ protected class AUICodeCompleteScreen
             var item_info = new AUICodeCompleteItemInfo();
             item_info._item = g_Control.CreateControl{ALittle.DisplayObject}("ide_code_complete_item", item_info);
             item_info._item_button.group = this._item_group;
-            item_info._item_title.text = info.complete;
+            item_info._item_title.text = info.display;
             item_info._tag_image.texture_name = edit.language.QueryCompleteIcon(info.tag);
             item_info._item._user_data = item_info;
+            item_info.complete = info;
             this._item_list[index] = item_info;
 
             this._item_height = item_info._item.height;
@@ -155,7 +177,7 @@ protected class AUICodeCompleteScreen
 
     private fun Fliter(string text) : bool
     {
-        if (text == null) text = "";
+        var descriptor:string;
 
         this._screen.RemoveAllChild();
         for (var index, info in this._item_list)
@@ -164,7 +186,10 @@ protected class AUICodeCompleteScreen
             if (pos != null)
             {
                 if (this._screen.child_count == 0)
+                {
                     info._item_button.selected = true;
+                    descriptor = info.complete.descriptor;
+                }
                 this._screen.AddChild(info._item);   
             }
         }
@@ -175,11 +200,17 @@ protected class AUICodeCompleteScreen
         if (height < 200) this._screen.height = height;
         else this._screen.height = 200;
 
+        if (descriptor != null)
+            this.ShowTip(descriptor);
+        else
+            this.HideTip();
+
         return true;
     }
 
     public fun Hide()
     {
+        this.HideTip();
         this._edit = null;
         this._complete = null;
         A_LayerManager.HideFromRight(this._screen);
@@ -211,9 +242,37 @@ protected class AUICodeCompleteScreen
 
     private fun HandleHideEvent(ALittle.UIHideEvent event)
     {
+        this.HideTip();
         this._edit = null;
         this._complete = null;
     }
+
+	// 显示TIP
+	private fun ShowTip(string content)
+	{
+		// 创建模态提示对话框，并添加到模态层
+		if (this._tip_dialog == null)
+		{
+			this._tip_dialog = g_Control.CreateControl{ALittle.DisplayObject}("ide_tool_area_tip", this);
+            this._tip_dialog.width = 200;
+		}
+
+        A_LayerManager.AddToTip(this._tip_dialog);
+		this._tip_dialog.visible = true;
+		this._tip_text.text = content;
+		this._tip_dialog.height = this._tip_text.real_height + 6;
+
+		this._tip_dialog.x = this._screen.x;
+		this._tip_dialog.y = this._screen.y + this._screen.height;
+	}
+
+	// 隐藏TIP
+	private fun HideTip()
+	{
+		if (this._tip_dialog == null) return;
+		this._tip_dialog.visible = false;
+        A_LayerManager.RemoveFromTip(this._tip_dialog);
+	}
 }
 
 protected var g_AUICodeCompleteScreen = new AUICodeCompleteScreen();

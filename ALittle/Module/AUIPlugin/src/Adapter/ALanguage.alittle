@@ -31,7 +31,8 @@ public struct ABnfQueryGoto
 
 public struct ABnfQueryCompleteInfo
 {
-    string complete;
+    string display;
+    string insert;
     string descriptor;
     int tag;
 }

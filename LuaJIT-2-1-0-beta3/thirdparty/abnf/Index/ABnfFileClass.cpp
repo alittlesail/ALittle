@@ -1,7 +1,7 @@
 
 #include "ABnfFileClass.h"
-#include "ALittle/LibCommon/ThirdParty/alanguage/Model/ABnf.h"
-#include "ALittle/LibCommon/ThirdParty/alanguage/Model/ABnfNodeElement.h"
+#include "../../alanguage/Model/ABnf.h"
+#include "../../alanguage/Model/ABnfNodeElement.h"
 
 ABnfFileClass::ABnfFileClass(ABnfProject* project, const std::string& full_path, ABnf* abnf, const char* text, size_t len)
 	: ABnfFile(project, full_path, abnf, text, len)

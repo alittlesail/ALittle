@@ -7,8 +7,8 @@ extern "C" {
 #include "abnf_c.h"
 }
 
-#include "Node/ABnfFactoryClass.h"
-#include "Node/ABnfFileClass.h"
+#include "Index/ABnfFactoryClass.h"
+#include "Index/ABnfFileClass.h"
 
 void* create_abnf_factory()
 {

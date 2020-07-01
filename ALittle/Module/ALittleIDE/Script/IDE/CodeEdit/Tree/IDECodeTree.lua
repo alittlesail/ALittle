@@ -211,6 +211,34 @@ function IDECodeTree:RemoveChild(child)
 	return true
 end
 
+function IDECodeTree:SpliceChild(index, count)
+	if count == nil then
+		count = self._child_count
+	end
+	if count <= 0 then
+		return 0
+	end
+	local endv = index + count
+	local i = index
+	while true do
+		if not(i < endv) then break end
+		local child = self._childs[index]
+		if child == nil then
+			break
+		end
+		child.group = nil
+		i = i+(1)
+	end
+	local result = self._body:SpliceChild(index, count)
+	if result == 0 then
+		return 0
+	end
+	if self._body.abs_visible then
+		self:DispatchEvent(___all_struct[-431205740], {})
+	end
+	return result
+end
+
 function IDECodeTree:RemoveAllChild()
 	for index, child in ___ipairs(self.childs) do
 		child.group = nil

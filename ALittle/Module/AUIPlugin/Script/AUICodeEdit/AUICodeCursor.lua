@@ -333,8 +333,8 @@ function AUICodeCursor:DeleteLeft(need_revoke, revoke_bind)
 	self:SetLineChar(new_it_line, new_it_char)
 	if self._edit.container.width < pre_line.container.width then
 		self._edit.container.width = pre_line.container.width
-		self._edit:RejustScrollBar()
 	end
+	self._edit:RejustScrollBar()
 	if need_revoke then
 		local revoke = AUICodeDeleteLeftRevoke(self._edit, self, old_it_line, old_it_char, new_it_line, new_it_char, revoke_content, revoke_bind == nil)
 		if revoke_bind ~= nil then
@@ -457,8 +457,8 @@ function AUICodeCursor:DeleteRight(need_revoke, revoke_bind)
 	self:SetLineChar(new_it_line, new_it_char)
 	if self._edit.container.width < cur_line.container.width then
 		self._edit.container.width = cur_line.container.width
-		self._edit:RejustScrollBar()
 	end
+	self._edit:RejustScrollBar()
 	if need_revoke then
 		local revoke = AUICodeDeleteRightRevoke(self._edit, self, old_it_line, old_it_char, new_it_line, new_it_char, revoke_content, revoke_bind == nil)
 		if revoke_bind ~= nil then

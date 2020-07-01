@@ -430,6 +430,17 @@ function IDEUITree:RemoveChild(child)
 	return true
 end
 
+function IDEUITree:SpliceChild(index, count)
+	local result = self._body:SpliceChild(index, count)
+	if result == 0 then
+		return 0
+	end
+	if self._body.abs_visible then
+		self:DispatchEvent(___all_struct[-431205740], {})
+	end
+	return result
+end
+
 function IDEUITree:RemoveAllChild()
 	self._body:RemoveAllChild()
 	if self._body.abs_visible then

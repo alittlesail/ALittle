@@ -125,6 +125,32 @@ function TileTable:RemoveChild(child)
 	return true
 end
 
+function TileTable:SpliceChild(index, count)
+	if count == nil then
+		count = self._child_count
+	end
+	if count <= 0 then
+		return 0
+	end
+	local endv = index + count
+	local i = index
+	while true do
+		if not(i < endv) then break end
+		local child = self._childs[i]
+		if child == nil then
+			break
+		end
+		self._show_child_map[child] = nil
+		child:RemoveEventListener(___all_struct[-431205740], self)
+		i = i+(1)
+	end
+	local result = DisplayGroup.SpliceChild(self, index, count)
+	if result ~= 0 then
+		self:Layout(index)
+	end
+	return result
+end
+
 function TileTable:RemoveAllChild()
 	for k, child in ___ipairs(self._childs) do
 		child:RemoveEventListener(___all_struct[-431205740], self)

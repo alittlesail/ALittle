@@ -306,6 +306,12 @@ public class ScrollScreen : DisplayGroup
         this.RejustScrollBar();
         return true;
     }
+    public fun SpliceChild(int index, [Nullable] int count) : int
+    {
+        var result = this._scroll_content.SpliceChild(index, count);
+        if (result != 0) this.RejustScrollBar();
+        return result;
+    }
     // 检查是否存在某个子控件
     public fun HasChild(DisplayObject child) : bool
     {

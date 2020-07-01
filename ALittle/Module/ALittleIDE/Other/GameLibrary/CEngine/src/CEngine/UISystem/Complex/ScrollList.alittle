@@ -147,6 +147,7 @@ public class ScrollList : DisplayView
         this.RefreshChild(false);
         return true;
     }
+
     public fun RemoveChild(DisplayObject child) : bool
     {
         if (child == null)
@@ -157,6 +158,13 @@ public class ScrollList : DisplayView
             
         this.RefreshChild(false);
         return true;
+    }
+
+    public fun SpliceChild(int index, [Nullable] int count) : int
+    {
+        var result = this._scroll_linear.SpliceChild(index, count);
+        if (result != 0) this.RefreshChild(false);
+        return result;
     }
     
     // 特殊效果添加控件

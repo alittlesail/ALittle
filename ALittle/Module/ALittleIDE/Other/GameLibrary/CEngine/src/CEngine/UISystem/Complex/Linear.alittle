@@ -123,9 +123,33 @@ public class Linear : DisplayGroup
         this._show_child_map[child] = null;
         // 侦听大小发生变化
         child.RemoveEventListener{UIResizeEvent}(this);
-            
+     
         this.Layout(child_index);
         return true;
+    }
+
+    public fun SpliceChild(int index, [Nullable] int count) : int
+    {
+        if (count == null) count = this._child_count;
+        if (count <= 0) return 0;
+
+        var endv = index + count;
+        for (var i = index; i < endv; 1)
+        {
+            var child = this._childs[index];
+            if (child == null) break;
+
+            // 删除记录
+            this._child_width_map[child] = null;
+            this._child_height_map[child] = null;
+            this._show_child_map[child] = null;
+            // 侦听大小发生变化
+            child.RemoveEventListener{UIResizeEvent}(this);
+        }
+
+        var result = DisplayGroup.SpliceChild(this, index, count);
+        if (result != 0) this.Layout(index);
+        return result;
     }
     
     public fun RemoveAllChild()
@@ -241,8 +265,7 @@ public class Linear : DisplayGroup
         this._clip_down_index = 0;
 
         var child_count = this.child_count;
-        if (index > child_count)
-            return;
+        if (index <= 0 || index > child_count) return;
     
         if (this._type == UIEnumTypes.TYPE_H)
         {
@@ -324,15 +347,13 @@ public class Linear : DisplayGroup
     
     public get max_right() : double
     {
-        if (this._size_fixed)
-            return this.width;
+        if (this._size_fixed) return this.width;
         return DisplayGroup.max_right(this);
     }
     
     public get max_bottom() : double
     {
-        if (this._size_fixed)
-            return this.height;
+        if (this._size_fixed) return this.height;
         return DisplayGroup.max_bottom(this);
     }
     

@@ -172,6 +172,27 @@ public class IDECodeTree : IDECodeTreeLogic
 			this.DispatchEvent(new ALittle.UIResizeEvent());
 		return true;
 	}
+
+	public fun SpliceChild(int index, [Nullable] int count) : int
+	{
+        if (count == null) count = this._child_count;
+        if (count <= 0) return 0;
+
+        var endv = index + count;
+        for (var i = index; i < endv; 1)
+        {
+            var child = this._childs[index];
+            if (child == null) break;
+
+			child.group = null;
+        }
+
+		var result = this._body.SpliceChild(index, count);
+		if (result == 0) return 0;
+		if (this._body.abs_visible)
+			this.DispatchEvent(new ALittle.UIResizeEvent());
+		return result;
+    }
 	
 	public fun RemoveAllChild()
 	{

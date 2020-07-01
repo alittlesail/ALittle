@@ -233,6 +233,14 @@ function ScrollScreen:RemoveChild(child)
 	return true
 end
 
+function ScrollScreen:SpliceChild(index, count)
+	local result = self._scroll_content:SpliceChild(index, count)
+	if result ~= 0 then
+		self:RejustScrollBar()
+	end
+	return result
+end
+
 function ScrollScreen:HasChild(child)
 	return self._scroll_content:HasChild(child)
 end

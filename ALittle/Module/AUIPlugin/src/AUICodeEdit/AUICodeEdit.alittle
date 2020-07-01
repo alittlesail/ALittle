@@ -1010,6 +1010,8 @@ public class AUICodeEdit : ALittle.ScrollScreen
         }
         this._cursor.Hide();
         this._file_path = null;
+        [Language(Lua)]
+        lua.collectgarbage("collect");
     }
 
     public fun Load(string file_path, ALittle.RevokeList revoke_list, [Nullable] AUICodeLanguage language) : bool

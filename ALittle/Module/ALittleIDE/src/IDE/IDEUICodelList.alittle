@@ -69,7 +69,7 @@ public class IDEUICodeList : ALittle.DisplayLayout
 			info.path = ALittle.File_BaseFilePath().."Module/ALittleIDE/Other/GameLibrary/"..name.."/src";
 			info.group = this._group;
 			info.root = true;
-			info.project = 
+			info.project = null;
 			var tree = new IDECodeTree(g_Control, info);
 			this._code_scroll_screen.AddChild(tree);   
         }

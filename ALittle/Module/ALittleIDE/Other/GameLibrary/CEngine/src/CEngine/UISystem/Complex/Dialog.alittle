@@ -318,6 +318,11 @@ public class Dialog : DisplayLayout
             return false;
         return this._body.RemoveChild(child);
     }
+    // 批量移除子控件
+    public fun SpliceChild(int index, [Nullable] int count) : int
+    {
+        return this._body.SpliceChild(index, count);
+    }
     // 检查是否存在某个子控件
     public fun HasChild(DisplayObject child) : bool
     {

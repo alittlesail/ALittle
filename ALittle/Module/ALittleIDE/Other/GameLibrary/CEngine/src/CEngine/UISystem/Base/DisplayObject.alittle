@@ -331,6 +331,7 @@ public class DisplayObject : UIEventDispatcher
     public fun SetChildIndex(DisplayObject child, int index) : bool { return false; }
     public fun AddChild(DisplayObject child, [Nullable] int index) : bool { return false; }
     public fun RemoveChild(DisplayObject child) : bool { return false; }
+    public fun SpliceChild(int index, [Nullable] int count) : int { return 0; }
     public fun RemoveAllChild() {}
     public fun GetChildOffset() : double, double { return 0, 0; }
 

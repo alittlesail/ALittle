@@ -8,6 +8,7 @@ local ___ipairs = ipairs
 
 local __remove = List_Remove
 local __insert = List_Insert
+local __splice = List_Splice
 local __cos = Math_Cos
 local __sin = Math_Sin
 assert(ALittle.DisplayObject, " extends class:ALittle.DisplayObject is nil")
@@ -127,6 +128,32 @@ function DisplayGroup:RemoveChild(child)
 		end
 	end
 	return false
+end
+
+function DisplayGroup:SpliceChild(index, count)
+	if count == nil then
+		count = self._child_count
+	end
+	if count <= 0 then
+		return 0
+	end
+	local old_count = self._child_count
+	local endv = index + count
+	local i = index
+	while true do
+		if not(i < endv) then break end
+		local child = self._childs[index]
+		if child == nil then
+			break
+		end
+		self._show:RemoveChild(child._show)
+		child._show_parent = nil
+		child._logic_parent = nil
+		self._child_count = self._child_count - 1
+		i = i+(1)
+	end
+	__splice(self._childs, index, count)
+	return old_count - self._child_count
 end
 
 function DisplayGroup:HasChild(child)

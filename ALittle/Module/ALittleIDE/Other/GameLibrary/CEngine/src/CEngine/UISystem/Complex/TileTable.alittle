@@ -147,6 +147,27 @@ public class TileTable : DisplayGroup
     
         return true;
     }
+
+    public fun SpliceChild(int index, [Nullable] int count) : int
+    {
+        if (count == null) count = this._child_count;
+        if (count <= 0) return 0;
+
+        var endv = index + count;
+        for (var i = index; i < endv; 1)
+        {
+            var child = this._childs[i];
+            if (child == null) break;
+
+            this._show_child_map[child] = null;
+            // 侦听大小发生变化
+            child.RemoveEventListener{UIResizeEvent}(this);
+        }
+
+        var result = DisplayGroup.SpliceChild(this, index, count);
+        if (result != 0) this.Layout(index);
+        return result;
+    }
     
     public fun RemoveAllChild()
     {

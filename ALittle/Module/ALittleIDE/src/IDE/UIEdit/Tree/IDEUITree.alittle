@@ -385,6 +385,15 @@ public class IDEUITree : IDEUITreeLogic
 			this.DispatchEvent(new ALittle.UIResizeEvent());
 		return true;
 	}
+
+	public fun SpliceChild(int index, [Nullable] int count) : int
+	{
+		var result = this._body.SpliceChild(index, count);
+		if (result == 0) return 0;
+		if (this._body.abs_visible)
+			this.DispatchEvent(new ALittle.UIResizeEvent());
+		return result;
+    }
 	
 	public fun RemoveAllChild()
 	{

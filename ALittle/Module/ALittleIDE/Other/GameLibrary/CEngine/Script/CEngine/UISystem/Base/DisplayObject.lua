@@ -164,6 +164,10 @@ function DisplayObject:RemoveChild(child)
 	return false
 end
 
+function DisplayObject:SpliceChild(index, count)
+	return 0
+end
+
 function DisplayObject:RemoveAllChild()
 end
 

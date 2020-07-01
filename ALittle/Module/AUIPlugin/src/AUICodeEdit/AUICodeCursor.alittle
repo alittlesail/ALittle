@@ -331,10 +331,8 @@ public class AUICodeCursor : ALittle.Quad
         // 设置新的光标位置
         this.SetLineChar(new_it_line, new_it_char);
         if (this._edit.container.width < pre_line.container.width)
-        {
             this._edit.container.width = pre_line.container.width;
-            this._edit.RejustScrollBar();
-        }
+        this._edit.RejustScrollBar();
 
         if (need_revoke)
         {
@@ -470,10 +468,8 @@ public class AUICodeCursor : ALittle.Quad
         // 设置新的光标位置
         this.SetLineChar(new_it_line, new_it_char);
         if (this._edit.container.width < cur_line.container.width)
-        {
             this._edit.container.width = cur_line.container.width;
-            this._edit.RejustScrollBar();
-        }
+        this._edit.RejustScrollBar();
 
         if (need_revoke)
         {

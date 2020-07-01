@@ -272,6 +272,10 @@ function Dialog:RemoveChild(child)
 	return self._body:RemoveChild(child)
 end
 
+function Dialog:SpliceChild(index, count)
+	return self._body:SpliceChild(index, count)
+end
+
 function Dialog:HasChild(child)
 	return self._body:HasChild(child)
 end

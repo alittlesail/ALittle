@@ -465,6 +465,59 @@ function Tab:RemoveChild(child)
 	return true
 end
 
+function Tab:SpliceChild(index, count)
+	if count == nil then
+		count = self._child_count
+	end
+	if count <= 0 then
+		return 0
+	end
+	local show_center = self.show_center
+	local endv = index + count
+	local i = index
+	while true do
+		if not(i < endv) then break end
+		local child = show_center:GetChildByIndex(i)
+		if child == nil then
+			break
+		end
+		child.visible = true
+		self._child_id_map[child] = nil
+		local simplelayout = self._linear:GetChildByIndex(index)
+		if simplelayout ~= nil then
+			local layout_childs = simplelayout.childs
+			layout_childs[1]:RemoveEventListener(___all_struct[958494922], self, self.HandleRadioButtonChanged)
+			layout_childs[1]:RemoveEventListener(___all_struct[1337289812], self, self.HandleRadioButtonDrag)
+			layout_childs[1]:RemoveEventListener(___all_struct[1301789264], self, self.HandleRadioButtonDragBegin)
+			layout_childs[1]:RemoveEventListener(___all_struct[150587926], self, self.HandleRadioButtonDragEnd)
+			layout_childs[1]:RemoveEventListener(___all_struct[-1330840], self, self.HandleRadioButtonMClick)
+			layout_childs[1]:RemoveEventListener(___all_struct[-641444818], self, self.HandleRadioButtonRButtonDown)
+			layout_childs[1]:RemoveEventListener(___all_struct[-1604617962], self, self.HandleRadioButtonKeyDown)
+			layout_childs[3]:RemoveEventListener(___all_struct[-449066808], self, self.HandleCloseButtonClick)
+			layout_childs[5]:RemoveEventListener(___all_struct[-449066808], self, self.HandleCloseButtonClick)
+			layout_childs[1].group = nil
+		end
+		i = i+(1)
+	end
+	self._linear:SpliceChild(index, count)
+	local result = show_center:SpliceChild(index, count)
+	local new_index = 0
+	if self._tab_index >= index and self._tab_index < endv then
+		new_index = index
+	elseif self._tab_index >= endv then
+		new_index = self._tab_index - result
+	else
+		new_index = self._tab_index
+	end
+	if new_index > show_center.child_count then
+		new_index = show_center.child_count
+	elseif new_index < 0 then
+		new_index = 0
+	end
+	self.tab_index = new_index
+	return result
+end
+
 function Tab:HasChild(child)
 	local show_center = self.show_center
 	return show_center:HasChild(child)

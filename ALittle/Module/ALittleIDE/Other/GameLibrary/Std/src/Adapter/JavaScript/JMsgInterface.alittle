@@ -58,8 +58,8 @@ public class JNetBuffer
         if (this._dstart < 100) return;
         
         var start = this._dstart;
-        var end = this._dstart + this._dsize;
-        for (var i = start; i < end; 1)
+        var endv = this._dstart + this._dsize;
+        for (var i = start; i < endv; 1)
             this._memory.setUint8(i - this._dsize, this._memory.getUint8(i));
         
         this._dstart = 0;

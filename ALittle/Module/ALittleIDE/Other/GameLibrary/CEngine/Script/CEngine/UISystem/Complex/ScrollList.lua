@@ -107,6 +107,14 @@ function ScrollList:RemoveChild(child)
 	return true
 end
 
+function ScrollList:SpliceChild(index, count)
+	local result = self._scroll_linear:SpliceChild(index, count)
+	if result ~= 0 then
+		self:RefreshChild(false)
+	end
+	return result
+end
+
 function ScrollList:AddChildEffect(child, up)
 	if child == nil then
 		return false

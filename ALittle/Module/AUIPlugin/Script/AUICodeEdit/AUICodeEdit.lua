@@ -1020,6 +1020,7 @@ function AUICodeEdit:OnClose()
 	end
 	self._cursor:Hide()
 	self._file_path = nil
+	collectgarbage("collect")
 end
 
 function AUICodeEdit:Load(file_path, revoke_list, language)

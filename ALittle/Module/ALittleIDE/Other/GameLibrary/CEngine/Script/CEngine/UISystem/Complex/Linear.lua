@@ -111,6 +111,34 @@ function Linear:RemoveChild(child)
 	return true
 end
 
+function Linear:SpliceChild(index, count)
+	if count == nil then
+		count = self._child_count
+	end
+	if count <= 0 then
+		return 0
+	end
+	local endv = index + count
+	local i = index
+	while true do
+		if not(i < endv) then break end
+		local child = self._childs[index]
+		if child == nil then
+			break
+		end
+		self._child_width_map[child] = nil
+		self._child_height_map[child] = nil
+		self._show_child_map[child] = nil
+		child:RemoveEventListener(___all_struct[-431205740], self)
+		i = i+(1)
+	end
+	local result = DisplayGroup.SpliceChild(self, index, count)
+	if result ~= 0 then
+		self:Layout(index)
+	end
+	return result
+end
+
 function Linear:RemoveAllChild()
 	for i, child in ___ipairs(self._childs) do
 		child:RemoveEventListener(___all_struct[-431205740], self)
@@ -208,7 +236,7 @@ function Linear:Layout(index)
 	self._clip_up_index = 0
 	self._clip_down_index = 0
 	local child_count = self.child_count
-	if index > child_count then
+	if index <= 0 or index > child_count then
 		return
 	end
 	if self._type == UIEnumTypes.TYPE_H then

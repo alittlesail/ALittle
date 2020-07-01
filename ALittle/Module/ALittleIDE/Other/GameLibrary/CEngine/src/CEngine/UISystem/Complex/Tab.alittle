@@ -585,6 +585,62 @@ public class Tab : Grid3
         this.tab_index = new_index;
         return true;
     }
+
+    public fun SpliceChild(int index, [Nullable] int count) : int
+    {
+        if (count == null) count = this._child_count;
+        if (count <= 0) return 0;
+
+        var show_center = cast<DisplayGroup>(this.show_center);
+
+        var endv = index + count;
+        for (var i = index; i < endv; 1)
+        {
+            var child = show_center.GetChildByIndex(i);
+            if (child == null) break;
+            
+            // 设置标签页为可见
+            child.visible = true;
+            // 移除映射
+            this._child_id_map[child] = null;
+            // 获取标签按钮控件
+            var simplelayout = this._linear.GetChildByIndex(index);
+            if (simplelayout != null)
+            {
+                var layout_childs = simplelayout.childs;
+                layout_childs[1].RemoveEventListener(this, this.HandleRadioButtonChanged);
+                layout_childs[1].RemoveEventListener(this, this.HandleRadioButtonDrag);
+                layout_childs[1].RemoveEventListener(this, this.HandleRadioButtonDragBegin);
+                layout_childs[1].RemoveEventListener(this, this.HandleRadioButtonDragEnd);
+                layout_childs[1].RemoveEventListener(this, this.HandleRadioButtonMClick);
+                layout_childs[1].RemoveEventListener(this, this.HandleRadioButtonRButtonDown);
+                layout_childs[1].RemoveEventListener(this, this.HandleRadioButtonKeyDown);
+                layout_childs[3].RemoveEventListener(this, this.HandleCloseButtonClick);
+                layout_childs[5].RemoveEventListener(this, this.HandleCloseButtonClick);
+                layout_childs[1].group = null;
+            }
+        }
+
+        this._linear.SpliceChild(index, count);
+        var result = show_center.SpliceChild(index, count);
+
+        var new_index = 0;
+        if (this._tab_index >= index && this._tab_index < endv)
+            new_index = index;
+        elseif (this._tab_index >= endv)
+            new_index = this._tab_index - result;
+        else
+            new_index = this._tab_index;
+
+        if (new_index > show_center.child_count)
+            new_index = show_center.child_count;
+        elseif (new_index < 0)
+            new_index = 0;
+
+        this.tab_index = new_index;
+        return result;
+    }
+
     // 检查是否存在某个子控件
     public fun HasChild(DisplayObject child) : bool
     {

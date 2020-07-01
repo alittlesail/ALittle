@@ -6,4 +6,4 @@
 
 LUALIB_API int luaopen_abnf(lua_State* L);
 
-#endif // _ALITTLE_ABNF_H_
+#endif // _ALITTLE_ABNFLIB_H_

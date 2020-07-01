@@ -1,11 +1,11 @@
 
 #include "ABnfFactoryClass.h" 
-#include "ABnfIdReference.h"
-#include "ABnfRegexReference.h"
-#include "ABnfKeyReference.h"
-#include "ABnfStringReference.h"
-#include "ABnfNodeReference.h"
-#include "ALittle/LibCommon/ThirdParty/alanguage/Model/ABnfElement.h"
+#include "../Reference/ABnfIdReference.h"
+#include "../Reference/ABnfRegexReference.h"
+#include "../Reference/ABnfKeyReference.h"
+#include "../Reference/ABnfStringReference.h"
+#include "../Reference/ABnfNodeReference.h"
+#include "../../alanguage/Model/ABnfElement.h"
 
 ABnfReference* ABnfFactoryClass::CreateReference(ABnfElementPtr element)
 {

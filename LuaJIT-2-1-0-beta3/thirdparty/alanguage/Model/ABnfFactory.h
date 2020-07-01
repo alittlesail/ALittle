@@ -46,6 +46,29 @@ public:
     virtual std::string GetDotExt() { return ""; }
 
     virtual bool FastGoto(const std::unordered_map<std::string, ABnfProject*>& projects, const std::string& text, std::string& error) { error = "no implement FastGoto"; return false; }
+
+private:
+    template <typename T>
+    static void AddString(std::string& result, const T& v) { result.append(std::to_string(v)); }
+    static void AddString(std::string& result, const std::string& v) { result.append(v); }
+
+public:
+    // Æ´½Ó×Ö·û´®
+    template <typename T>
+    static std::string Join(const T& container, const std::string& split)
+    {
+        std::string result;
+        size_t count = 0;
+        for (auto it = container.begin(); it != container.end(); ++it)
+        {
+            ++count;
+            AddString(result, *it);
+            if (count != container.size())
+                result.append(split);
+
+        }
+        return result;
+    }
 };
 
 #endif // _ALITTLE_ALANGUAGECOMPLETIONINFO_H_

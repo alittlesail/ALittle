@@ -1,12 +1,9 @@
 
-#include "ABnfFileClass.h"
-#include "ABnfCommonReference.h"
-#include "ALittle/LibCommon/ThirdParty/alanguage/Model/ABnfElement.h"
-#include "ALittle/LibCommon/ThirdParty/alanguage/Model/ABnfNodeElement.h"
-#include "ALittle/LibCommon/ThirdParty/alanguage/Model/ABnf.h"
-#include "ALittle/LibCommon/Helper/StringHelper.h"
 #include "ABnfStringReference.h"
-#include "ABnfFileClass.h"
+#include "../../alanguage/Model/ABnfElement.h"
+#include "../../alanguage/Model/ABnfNodeElement.h"
+#include "../../alanguage/Model/ABnf.h"
+#include "../Index/ABnfFileClass.h"
 
 #include <unordered_set>
 

@@ -1,12 +1,10 @@
 
-#include "ABnfFileClass.h"
-#include "ABnfCommonReference.h"
-#include "ALittle/LibCommon/ThirdParty/alanguage/Model/ABnfElement.h"
-#include "ALittle/LibCommon/ThirdParty/alanguage/Model/ABnfNodeElement.h"
-#include "ALittle/LibCommon/ThirdParty/alanguage/Model/ABnf.h"
-#include "ALittle/LibCommon/Helper/StringHelper.h"
 #include "ABnfIdReference.h"
-#include "ABnfFileClass.h"
+#include "../../alanguage/Model/ABnfElement.h"
+#include "../../alanguage/Model/ABnfNodeElement.h"
+#include "../../alanguage/Model/ABnf.h"
+#include "../../alanguage/Model/ABnfFactory.h"
+#include "../Index/ABnfFileClass.h"
 
 #include <unordered_set>
 
@@ -29,7 +27,7 @@ void ABnfIdReference::QueryQuickInfo(std::string& info)
     for (auto pair : it->second)
         content_list.push_back(pair.first->GetElementText());
 
-    info = ALittle::StringHelper::Join(content_list, "\n");
+    info = ABnfFactory::Join(content_list, "\n");
 }
 
 bool ABnfIdReference::QueryCompletion(std::vector<ALanguageCompletionInfo>& list)

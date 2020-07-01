@@ -448,7 +448,7 @@ public class AUICodeEdit : ALittle.ScrollScreen
                 g_AUITool.HideTip();
                 this._goto_quad.visible = false;
                 var line_container = cast<AUICodeLineContainer>(this._code_linear.GetChildByIndex(this._query_info.line_start));
-                if (line_container != null) line_container.RestoreColor(this._query_info.line_start, this._language.version);   
+                if (line_container != null) line_container.RestoreColor();
                 this._query_info = null;
             }
             ALittle.System_SetEditCursor();
@@ -471,7 +471,7 @@ public class AUICodeEdit : ALittle.ScrollScreen
             g_AUITool.HideTip();
             this._goto_quad.visible = false;
             var line_container = cast<AUICodeLineContainer>(this._code_linear.GetChildByIndex(this._query_info.line_start));
-            if (line_container != null) line_container.RestoreColor(this._query_info.line_start, this._language.version);   
+            if (line_container != null) line_container.RestoreColor();   
         }
 
         this._query_info_version = this._language.version;
@@ -516,7 +516,7 @@ public class AUICodeEdit : ALittle.ScrollScreen
         this._query_info_version = null;
         
         var line_container = cast<AUICodeLineContainer>(this._code_linear.GetChildByIndex(this._query_info.line_start));
-        if (line_container != null) line_container.RestoreColor(this._query_info.line_start, this._language.version);
+        if (line_container != null) line_container.RestoreColor();
 
         g_AUITool.HideTip();
         this._query_info = null;
@@ -557,7 +557,7 @@ public class AUICodeEdit : ALittle.ScrollScreen
         // 获取显示的行，然后进行颜色处理
         var map = this._code_linear.GetShowMap();
         for (var object:AUICodeLineContainer, _ in map)
-            object.RestoreColor(null, this._language.version);
+            object.RestoreColor();
 
         if (this._error_loop == null)
             this._error_loop = new ALittle.LoopTimer(bind(this.UpdateErrorInfo, this), 1000);

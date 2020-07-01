@@ -136,6 +136,11 @@ local FONT_BLUE = 198 / 255
 local SELECT_RED = 33 / 255
 local SELECT_GREEN = 66 / 255
 local SELECT_BLUE = 131 / 255
+g_DefaultColor = {}
+g_DefaultColor.alpha = 1
+g_DefaultColor.red = FONT_RED
+g_DefaultColor.green = FONT_GREEN
+g_DefaultColor.blue = FONT_BLUE
 local FOCUS_RED = 88 / 255
 local FOCUS_GREEN = 157 / 255
 local FOCUS_BLUE = 246 / 255
@@ -206,15 +211,7 @@ function AUICodeLineContainer:CreateAndAdd(char)
 	end
 end
 
-function AUICodeLineContainer:RestoreColor(line, version)
-	if self._version == version then
-		if line ~= nil then
-			self._line_index = line
-		end
-	else
-		self._version = version
-		self._line_index = line
-	end
+function AUICodeLineContainer:RestoreColor()
 	if self._delay_loop ~= nil then
 		return
 	end
@@ -244,53 +241,47 @@ end
 
 function AUICodeLineContainer:HandleColor()
 	self._delay_loop = nil
-	local line = self._user_data
-	if self._version ~= line.edit.language.version then
-		self._line_index = nil
-		self._version = line.edit.language.version
-	end
-	if self._line_index == nil then
-		self._line_index = ALittle.List_IndexOf(line.edit.line_list, line)
-	end
-	if self._line_index == nil then
+	if self.parent == nil then
 		return
 	end
-	local list = line.edit.language:QueryColor(self._line_index)
-	for index, char in ___ipairs(line.char_list) do
-		if char.text ~= nil then
-			char.text.red = char.red
-			char.text.green = char.green
-			char.text.blue = char.blue
-			char.text.alpha = 1
-		end
+	local line = self._user_data
+	if self._version == line.edit.language.version then
+		return
 	end
+	self._version = line.edit.language.version
+	local line_index = ALittle.Math_Ceil(self.y / LINE_HEIGHT)
+	if line_index < 1 or line_index > line.edit.line_count then
+		return
+	end
+	local list = line.edit.language:QueryColor(line_index)
 	for index, info in ___ipairs(list) do
 		local char_start = 1
-		if info.line_start == self._line_index then
+		if info.line_start == line_index then
 			char_start = info.char_start
 		end
 		local char_end = line.char_count
-		if info.line_end == self._line_index then
+		if info.line_end == line_index then
 			char_end = info.char_end
 		end
 		local color = line.edit.language:QueryColorValue(info.tag)
-		if color ~= nil then
-			local i = char_start
-			while true do
-				if not(i <= char_end) then break end
-				local child = line.char_list[i]
-				if child ~= nil and child.text ~= nil then
-					child.text.red = color.red
-					child.text.green = color.green
-					child.text.blue = color.blue
-					if info.blur then
-						child.text.alpha = 0.5
-					else
-						child.text.alpha = 1
-					end
+		if color == nil then
+			color = g_DefaultColor
+		end
+		local i = char_start
+		while true do
+			if not(i <= char_end) then break end
+			local child = line.char_list[i]
+			if child ~= nil and child.text ~= nil then
+				child.text.red = color.red
+				child.text.green = color.green
+				child.text.blue = color.blue
+				if info.blur then
+					child.text.alpha = 0.5
+				else
+					child.text.alpha = 1
 				end
-				i = i+(1)
 			end
+			i = i+(1)
 		end
 	end
 end
@@ -511,7 +502,7 @@ function AUICodeEdit:UpdateQueryInfo(x, y)
 			self._goto_quad.visible = false
 			local line_container = self._code_linear:GetChildByIndex(self._query_info.line_start)
 			if line_container ~= nil then
-				line_container:RestoreColor(self._query_info.line_start, self._language.version)
+				line_container:RestoreColor()
 			end
 			self._query_info = nil
 		end
@@ -527,7 +518,7 @@ function AUICodeEdit:UpdateQueryInfo(x, y)
 		self._goto_quad.visible = false
 		local line_container = self._code_linear:GetChildByIndex(self._query_info.line_start)
 		if line_container ~= nil then
-			line_container:RestoreColor(self._query_info.line_start, self._language.version)
+			line_container:RestoreColor()
 		end
 	end
 	self._query_info_version = self._language.version
@@ -570,7 +561,7 @@ function AUICodeEdit:StopQueryInfo()
 	self._query_info_version = nil
 	local line_container = self._code_linear:GetChildByIndex(self._query_info.line_start)
 	if line_container ~= nil then
-		line_container:RestoreColor(self._query_info.line_start, self._language.version)
+		line_container:RestoreColor()
 	end
 	g_AUITool:HideTip()
 	self._query_info = nil
@@ -611,7 +602,7 @@ function AUICodeEdit:HandleChangedEvent(event)
 	end
 	local map = self._code_linear:GetShowMap()
 	for object, _ in ___pairs(map) do
-		object:RestoreColor(nil, self._language.version)
+		object:RestoreColor()
 	end
 	if self._error_loop == nil then
 		self._error_loop = ALittle.LoopTimer(Lua.Bind(self.UpdateErrorInfo, self), 1000)

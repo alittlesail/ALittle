@@ -38,12 +38,6 @@ public struct lua_socket_schedule_enum_info
     string name;
 }
 
-private struct FindMessageInfo
-{
-    lua_socket_schedule_message_info info;
-    int score;
-}
-
 public class LuaSocketSchedule : ALittle.ISchedule
 {
     public lua.socket _socket;
@@ -146,43 +140,34 @@ public class LuaSocketSchedule : ALittle.ISchedule
         return result;
     }
 
-    private static FindMessageInfoCmp(FindMessageInfo a, FindMessageInfo b) : bool { return a.score > b.score; }
-
     // 根据key_list查找
     public fun FindMessageByUpperKeyList(List<string> key_list) : List<lua_socket_schedule_message_info>
     {
-        var find_list = new List<FindMessageInfo>();
+        var result = new List<lua_socket_schedule_message_info>();
         var count = 0;
         for (var name, info in this._upper_message_map)
         {
-            var score = 0;
+            var find = true;
             var init = 1;
             for (var index, key in key_list)
             {
                 var pos = ALittle.String_Find(name, key, init);
-                if (pos != null)
+                if (pos == null)
                 {
-                    score += 1; // 找到一个匹配加1分
-                    init = pos + ALittle.String_Len(key) + 1;
+                    find = false;
+                    break;
                 }
+
+                init = pos + ALittle.String_Len(key);
             }
 
-            if (score > 0)
+            if (find)
             {
-                var list_info = new FindMessageInfo();
-                list_info.info = info;
-                list_info.score = score;
                 count += 1;
-                find_list[count] = list_info;
+                result[count] = info;
             }
         }
-
-        // 排序
-        ALittle.List_Sort(find_list, LuaSocketSchedule.FindMessageInfoCmp);
-
-        var result = new List<lua_socket_schedule_message_info>();
-        for (var index, find in find_list)
-            result[index] = find.info;
+        
         return result;
     }
 

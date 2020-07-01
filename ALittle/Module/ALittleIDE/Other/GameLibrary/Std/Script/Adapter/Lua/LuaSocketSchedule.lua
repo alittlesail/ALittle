@@ -23,12 +23,6 @@ name_list = {"descriptor","full_name","name"},
 type_list = {"lua.protobuf_descriptor","string","string"},
 option_map = {}
 })
-ALittle.RegStruct(1870767196, "Lua.FindMessageInfo", {
-name = "Lua.FindMessageInfo", ns_name = "Lua", rl_name = "FindMessageInfo", hash_code = 1870767196,
-name_list = {"info","score"},
-type_list = {"Lua.lua_socket_schedule_message_info","int"},
-option_map = {}
-})
 ALittle.RegStruct(-1908889092, "Lua.lua_socket_schedule_enum_info", {
 name = "Lua.lua_socket_schedule_enum_info", ns_name = "Lua", rl_name = "lua_socket_schedule_enum_info", hash_code = -1908889092,
 name_list = {"descriptor","full_name","name"},
@@ -139,35 +133,24 @@ function LuaSocketSchedule:FindMessageByUpperKey(key)
 	return result
 end
 
-function LuaSocketSchedule.FindMessageInfoCmp(a, b)
-	return a.score > b.score
-end
-
 function LuaSocketSchedule:FindMessageByUpperKeyList(key_list)
-	local find_list = {}
+	local result = {}
 	local count = 0
 	for name, info in ___pairs(self._upper_message_map) do
-		local score = 0
+		local find = true
 		local init = 1
 		for index, key in ___ipairs(key_list) do
 			local pos = ALittle.String_Find(name, key, init)
-			if pos ~= nil then
-				score = score + (1)
-				init = pos + ALittle.String_Len(key) + 1
+			if pos == nil then
+				find = false
+				break
 			end
+			init = pos + ALittle.String_Len(key)
 		end
-		if score > 0 then
-			local list_info = {}
-			list_info.info = info
-			list_info.score = score
+		if find then
 			count = count + (1)
-			find_list[count] = list_info
+			result[count] = info
 		end
-	end
-	ALittle.List_Sort(find_list, LuaSocketSchedule.FindMessageInfoCmp)
-	local result = {}
-	for index, find in ___ipairs(find_list) do
-		result[index] = find.info
 	end
 	return result
 end

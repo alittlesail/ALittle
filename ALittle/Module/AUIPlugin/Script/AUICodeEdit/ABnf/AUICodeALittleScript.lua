@@ -9,7 +9,7 @@ local ___ipairs = ipairs
 local g_ABnf = nil
 local g_ABnfFactory = nil
 local g_ABnfColor = nil
-ABnfColorType = {
+ALittleScriptColorType = {
 	ABnfKeyWord = 1,
 	ABnfId = 2,
 	ABnfComment = 3,
@@ -19,15 +19,15 @@ ABnfColorType = {
 }
 
 assert(AUIPlugin.AUICodeLanguage, " extends class:AUIPlugin.AUICodeLanguage is nil")
-AUICodeABnf = Lua.Class(AUIPlugin.AUICodeLanguage, "AUIPlugin.AUICodeABnf")
+AUICodeALittleScript = Lua.Class(AUIPlugin.AUICodeLanguage, "AUIPlugin.AUICodeALittleScript")
 
-function AUICodeABnf:Ctor(full_path)
+function AUICodeALittleScript:Ctor(full_path)
 	if g_ABnfFactory == nil then
-		g_ABnfFactory = abnf.create_abnf_factory()
+		g_ABnfFactory = alittlescript.create_alittlescript_factory()
 	end
 	if g_ABnf == nil then
 		g_ABnf = alanguage.create_abnf()
-		local abnf_path = g_ModuleBasePath .. "/Other/ABnf/ABnf.abnf"
+		local abnf_path = g_ModuleBasePath .. "/Other/ABnf/ALittleScript.abnf"
 		local buffer = ALittle.File_ReadTextFromFile(abnf_path)
 		if buffer ~= nil then
 			local error = alanguage.abnf_load(g_ABnf, buffer, g_ABnfFactory)
@@ -46,48 +46,48 @@ function AUICodeABnf:Ctor(full_path)
 			color.red = 255 / 255
 			color.green = 198 / 255
 			color.blue = 109 / 255
-			g_ABnfColor[ABnfColorType.ABnfKeyWord] = color
+			g_ABnfColor[ALittleScriptColorType.ABnfKeyWord] = color
 		end
 		do
 			color = {}
 			color.red = 204 / 255
 			color.green = 120 / 255
 			color.blue = 50 / 255
-			g_ABnfColor[ABnfColorType.ABnfId] = color
+			g_ABnfColor[ALittleScriptColorType.ABnfId] = color
 		end
 		do
 			color = {}
 			color.red = 128 / 255
 			color.green = 128 / 255
 			color.blue = 128 / 255
-			g_ABnfColor[ABnfColorType.ABnfComment] = color
+			g_ABnfColor[ALittleScriptColorType.ABnfComment] = color
 		end
 		do
 			color = {}
 			color.red = 53 / 255
 			color.green = 155 / 255
 			color.blue = 185 / 255
-			g_ABnfColor[ABnfColorType.ABnfKey] = color
+			g_ABnfColor[ALittleScriptColorType.ABnfKey] = color
 		end
 		do
 			color = {}
 			color.red = 85 / 255
 			color.green = 134 / 255
 			color.blue = 74 / 255
-			g_ABnfColor[ABnfColorType.ABnfString] = color
+			g_ABnfColor[ALittleScriptColorType.ABnfString] = color
 		end
 		do
 			color = {}
 			color.red = 152 / 255
 			color.green = 118 / 255
 			color.blue = 170 / 255
-			g_ABnfColor[ABnfColorType.ABnfRegex] = color
+			g_ABnfColor[ALittleScriptColorType.ABnfRegex] = color
 		end
 	end
-	___rawset(self, "_abnf_file", abnf.create_abnf_file(full_path, g_ABnf, ""))
+	___rawset(self, "_abnf_file", alittlescript.create_alittlescript_file(full_path, g_ABnf, ""))
 end
 
-function AUICodeABnf:QueryColorValue(tag)
+function AUICodeALittleScript:QueryColorValue(tag)
 	return g_ABnfColor[tag]
 end
 

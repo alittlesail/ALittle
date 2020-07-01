@@ -137,6 +137,7 @@ protected class AUICodeCompleteScreen
 
     private fun ReInit(AUICodeEdit edit) : bool
     {
+        if (edit.language == null) return false;
         this._complete = edit.language.QueryComplete(edit.cursor.line, edit.cursor.char - 1);
         if (this._complete == null) return false;
         

@@ -360,6 +360,30 @@ function AUICodeEdit:TCtor()
 	self._word_width = self._text_show.native_show:CalcTextWidth("测")
 end
 
+function AUICodeEdit.__getter:is_input()
+	return true
+end
+
+function AUICodeEdit.__getter:editable()
+	return true
+end
+
+function AUICodeEdit.__getter:font_size()
+	return FONT_SIZE
+end
+
+function AUICodeEdit.__getter:cursor_x()
+	return self._edit_quad.cursor_x
+end
+
+function AUICodeEdit.__getter:cursor_y()
+	return self._edit_quad.cursor_y
+end
+
+function AUICodeEdit.__getter:cursor_b()
+	return self._edit_quad.cursor_b
+end
+
 function AUICodeEdit.__getter:code_linear()
 	return self._code_linear
 end
@@ -668,8 +692,15 @@ function AUICodeEdit:CalcRect(it_line, char_start, char_end)
 		return 0, 0, 0
 	end
 	local y = (it_line - 1) * LINE_HEIGHT
-	local x = line.char_list[char_start].pre_width
-	local width = line.char_list[char_end].pre_width + line.char_list[char_end].width - x
+	local x = 0.0
+	if line.char_list[char_start] ~= nil then
+		x = line.char_list[char_start].pre_width
+	end
+	local width = 0.0
+	local char_e = line.char_list[char_end]
+	if char_e ~= nil then
+		width = char_e.pre_width + char_e.width - x
+	end
 	return x, y, width
 end
 

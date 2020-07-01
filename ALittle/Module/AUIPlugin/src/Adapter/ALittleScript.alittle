@@ -1,0 +1,18 @@
+
+register namespace lua;
+
+public struct ALittleScriptFactoryClass : ABnfFactory
+{
+
+}
+
+public struct ALittleScriptFileClass : ABnfFile
+{
+    
+}
+
+public class alittlescript
+{
+    public static create_alittlescript_factory() : ALittleScriptFactoryClass {}
+    public static create_alittlescript_file(string full_path, ABnf abnf, string text) : ALittleScriptFileClass {}
+}

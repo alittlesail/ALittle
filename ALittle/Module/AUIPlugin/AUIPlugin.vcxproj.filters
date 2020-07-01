@@ -53,6 +53,12 @@
     <None Include="src\AUICodeEdit\AUICodeCompleteScreen.alittle">
       <Filter>AUICodeEdit</Filter>
     </None>
+    <None Include="src\AUICodeEdit\ABnf\AUICodeALittleScript.alittle">
+      <Filter>AUICodeEdit\ABnf</Filter>
+    </None>
+    <None Include="src\Adapter\ALittleScript.alittle">
+      <Filter>Adapter</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="AUI">

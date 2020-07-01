@@ -140,6 +140,9 @@ function AUICodeCompleteScreen:GetSelectIndex()
 end
 
 function AUICodeCompleteScreen:ReInit(edit)
+	if edit.language == nil then
+		return false
+	end
 	self._complete = edit.language:QueryComplete(edit.cursor.line, edit.cursor.char - 1)
 	if self._complete == nil then
 		return false

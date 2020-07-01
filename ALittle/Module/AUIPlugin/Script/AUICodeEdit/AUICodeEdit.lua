@@ -249,7 +249,7 @@ function AUICodeLineContainer:HandleColor()
 		return
 	end
 	self._version = line.edit.language.version
-	local line_index = ALittle.Math_Ceil(self.y / LINE_HEIGHT)
+	local line_index = ALittle.Math_Floor(self.y / LINE_HEIGHT) + 1
 	if line_index < 1 or line_index > line.edit.line_count then
 		return
 	end
@@ -897,12 +897,14 @@ function AUICodeEdit:HandleKeyDown(event)
 			else
 				self._cursor:OffsetHome()
 			end
+			g_AUICodeCompleteScreen:TryHide(self)
 		else
 			if self._select_cursor.line_start == nil then
 				self._select_cursor:StartLineChar(self._cursor.line, self._cursor.char)
 			end
 			self._cursor:OffsetHome()
 			self._select_cursor:UpdateLineChar(self._cursor.line, self._cursor.char)
+			g_AUICodeCompleteScreen:Hide()
 		end
 		event.handled = true
 	elseif event.sym == 1073741901 then
@@ -912,12 +914,14 @@ function AUICodeEdit:HandleKeyDown(event)
 			else
 				self._cursor:OffsetEnd()
 			end
+			g_AUICodeCompleteScreen:TryHide(self)
 		else
 			if self._select_cursor.line_start == nil then
 				self._select_cursor:StartLineChar(self._cursor.line, self._cursor.char)
 			end
 			self._cursor:OffsetEnd()
 			self._select_cursor:UpdateLineChar(self._cursor.line, self._cursor.char)
+			g_AUICodeCompleteScreen:Hide()
 		end
 		event.handled = true
 	elseif event.sym == 13 or event.sym == 1073741912 then
@@ -945,6 +949,7 @@ function AUICodeEdit:HandleKeyDown(event)
 		event.handled = true
 	elseif event.sym == 9 then
 		is_change = self:InsertText("\t", true)
+		g_AUICodeCompleteScreen:Hide()
 		event.handled = true
 	elseif event.sym == 120 and ALittle.BitAnd(event.mod, 0x00c0) ~= 0 then
 		local select_text = self._select_cursor:GetSelectText()
@@ -952,6 +957,7 @@ function AUICodeEdit:HandleKeyDown(event)
 			ALittle.System_SetClipboardText(select_text)
 		end
 		is_change = self:DeleteSelectText()
+		g_AUICodeCompleteScreen:Hide()
 		event.handled = true
 	elseif event.sym == 99 and ALittle.BitAnd(event.mod, 0x00c0) ~= 0 then
 		local select_text = self._select_cursor:GetSelectText()
@@ -962,6 +968,7 @@ function AUICodeEdit:HandleKeyDown(event)
 	elseif event.sym == 118 and ALittle.BitAnd(event.mod, 0x00c0) ~= 0 then
 		if ALittle.System_HasClipboardText() then
 			is_change = self:InsertText(ALittle.System_GetClipboardText(), true)
+			g_AUICodeCompleteScreen:Hide()
 		end
 		event.handled = true
 	elseif event.sym == 97 and ALittle.BitAnd(event.mod, 0x00c0) ~= 0 then
@@ -969,6 +976,7 @@ function AUICodeEdit:HandleKeyDown(event)
 			self._cursor:SetLineChar(self._line_count, self._line_list[self._line_count].char_count)
 			self._select_cursor:StartLineChar(1, 0)
 			self._select_cursor:UpdateLineChar(self._cursor.line, self._cursor.char)
+			g_AUICodeCompleteScreen:Hide()
 		end
 		event.handled = true
 	elseif event.sym == 1073742048 then

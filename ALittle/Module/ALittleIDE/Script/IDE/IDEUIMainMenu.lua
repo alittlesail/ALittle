@@ -10,7 +10,7 @@ IDEUIMainMenu = Lua.Class(ALittle.Linear, "ALittleIDE.IDEUIMainMenu")
 
 function IDEUIMainMenu:TCtor()
 	local version_ip = g_IDEServerConfig:GetConfig("version_ip", "139.159.176.119")
-	local version_port = g_IDEServerConfig:GetConfig("version_port", 1011)
+	local version_port = g_IDEServerConfig:GetConfig("version_port", 1100)
 	self._version_manager = AUIPlugin.AUIVersionManager(version_ip, version_port, "alittle", "ALittleIDE")
 	if not g_Control.crypt_mode then
 		self._version_manager:CheckVersionUpdate()

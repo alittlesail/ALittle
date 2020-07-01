@@ -6,24 +6,6 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = ALittle.GetAllStruct()
 
-ALittle.RegStruct(-297098024, "lua.protobuf_descriptor", {
-name = "lua.protobuf_descriptor", ns_name = "lua", rl_name = "protobuf_descriptor", hash_code = -297098024,
-name_list = {},
-type_list = {},
-option_map = {}
-})
-ALittle.RegStruct(398889456, "Emulator.RootInfo", {
-name = "Emulator.RootInfo", ns_name = "Emulator", rl_name = "RootInfo", hash_code = 398889456,
-name_list = {"detail_info","for_show"},
-type_list = {"Emulator.DetailInfo","bool"},
-option_map = {}
-})
-ALittle.RegStruct(958494922, "ALittle.UIChangedEvent", {
-name = "ALittle.UIChangedEvent", ns_name = "ALittle", rl_name = "UIChangedEvent", hash_code = 958494922,
-name_list = {"target"},
-type_list = {"ALittle.DisplayObject"},
-option_map = {}
-})
 ALittle.RegStruct(1618605759, "Emulator.DetailInfo", {
 name = "Emulator.DetailInfo", ns_name = "Emulator", rl_name = "DetailInfo", hash_code = 1618605759,
 name_list = {"tree","message","reflection","info"},
@@ -48,28 +30,46 @@ name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
-ALittle.RegStruct(-1347278145, "ALittle.UIButtonEvent", {
-name = "ALittle.UIButtonEvent", ns_name = "ALittle", rl_name = "UIButtonEvent", hash_code = -1347278145,
-name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
-type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
-option_map = {}
-})
 ALittle.RegStruct(-888044440, "Emulator.LogItemUserData", {
 name = "Emulator.LogItemUserData", ns_name = "Emulator", rl_name = "LogItemUserData", hash_code = -888044440,
 name_list = {"msg","info","upper_name","detail_info"},
 type_list = {"lua.protobuf_message","Lua.lua_socket_schedule_message_info","string","Emulator.DetailInfo"},
 option_map = {}
 })
-ALittle.RegStruct(-641444818, "ALittle.UIRButtonDownEvent", {
-name = "ALittle.UIRButtonDownEvent", ns_name = "ALittle", rl_name = "UIRButtonDownEvent", hash_code = -641444818,
-name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
-type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
-option_map = {}
-})
 ALittle.RegStruct(-628015380, "lua.protobuf_message", {
 name = "lua.protobuf_message", ns_name = "lua", rl_name = "protobuf_message", hash_code = -628015380,
 name_list = {},
 type_list = {},
+option_map = {}
+})
+ALittle.RegStruct(-297098024, "lua.protobuf_descriptor", {
+name = "lua.protobuf_descriptor", ns_name = "lua", rl_name = "protobuf_descriptor", hash_code = -297098024,
+name_list = {},
+type_list = {},
+option_map = {}
+})
+ALittle.RegStruct(398889456, "Emulator.RootInfo", {
+name = "Emulator.RootInfo", ns_name = "Emulator", rl_name = "RootInfo", hash_code = 398889456,
+name_list = {"detail_info","for_show"},
+type_list = {"Emulator.DetailInfo","bool"},
+option_map = {}
+})
+ALittle.RegStruct(958494922, "ALittle.UIChangedEvent", {
+name = "ALittle.UIChangedEvent", ns_name = "ALittle", rl_name = "UIChangedEvent", hash_code = 958494922,
+name_list = {"target"},
+type_list = {"ALittle.DisplayObject"},
+option_map = {}
+})
+ALittle.RegStruct(-1347278145, "ALittle.UIButtonEvent", {
+name = "ALittle.UIButtonEvent", ns_name = "ALittle", rl_name = "UIButtonEvent", hash_code = -1347278145,
+name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
+type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
+option_map = {}
+})
+ALittle.RegStruct(-641444818, "ALittle.UIRButtonDownEvent", {
+name = "ALittle.UIRButtonDownEvent", ns_name = "ALittle", rl_name = "UIRButtonDownEvent", hash_code = -641444818,
+name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
+type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
 option_map = {}
 })
 
@@ -174,6 +174,10 @@ function GCenter:HandleShowSettingDialog(event)
 	self._plugin_file_input.text = g_GConfig:GetString("plugin_script", "")
 end
 
+function GCenter:HandleShowVersionDialog(event)
+	g_VersionManager:ShowDialog()
+end
+
 function GCenter:HandleSettingSelectProtoRootClick(event)
 	if event.path == nil then
 		return
@@ -270,11 +274,17 @@ end
 function GCenter:RefreshProtoList()
 	local key = self._proto_search_key.text
 	key = ALittle.String_Upper(key)
+	local key_list = ALittle.String_SplitSepList(key, {" ", "\t"})
 	for index, child in ___ipairs(self._protobuf_scroll_screen.childs) do
 		child.group = nil
 	end
 	self._protobuf_scroll_screen:RemoveAllChild()
-	local list = A_LuaSocketSchedule:FindMessageByUpperKey(key)
+	local list
+	if ALittle.List_MaxN(key_list) == 0 then
+		list = A_LuaSocketSchedule:FindMessageByUpperKey("")
+	else
+		list = A_LuaSocketSchedule:FindMessageByUpperKeyList(key_list)
+	end
 	for index, info in ___ipairs(list) do
 		local item = self._proto_search_item_pool[info.name]
 		if item == nil then

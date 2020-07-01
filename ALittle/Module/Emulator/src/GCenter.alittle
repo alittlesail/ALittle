@@ -205,13 +205,20 @@ class GCenter
         A_LuaSocketSchedule.RunInFrame();
     }
 
-    // 显示对话框
+    // 显示设置对话框
     public fun HandleShowSettingDialog(ALittle.UIClickEvent event)
     {
         this._setting_dialog.visible = true;
         this._proto_root_input.text = g_GConfig.GetString("proto_root", "");
         this._login_proto_input.text = g_GConfig.GetString("login_proto", "");
         this._plugin_file_input.text = g_GConfig.GetString("plugin_script", "");
+    }
+
+    // 显示版本对话框
+    public fun HandleShowVersionDialog(ALittle.UIClickEvent event)
+    {
+        [Language(Lua)]
+        g_VersionManager.ShowDialog();
     }
 
     // 选择协议跟路径
@@ -340,13 +347,20 @@ class GCenter
         var key = this._proto_search_key.text;
         key = ALittle.String_Upper(key);
 
+        // 通过空格切割
+        var key_list = ALittle.String_SplitSepList(key, [" ", "\t"]);
+        
         // 清理
         for (var index, child in this._protobuf_scroll_screen.childs)
             child.group = null;
         this._protobuf_scroll_screen.RemoveAllChild();
 
         // 搜索
-        var list = A_LuaSocketSchedule.FindMessageByUpperKey(key);
+        var list:List<Lua.lua_socket_schedule_message_info>;
+        if (ALittle.List_MaxN(key_list) == 0)
+            list = A_LuaSocketSchedule.FindMessageByUpperKey("");
+        else
+            list = A_LuaSocketSchedule.FindMessageByUpperKeyList(key_list);
         for (var index, info in list)
         {
             var item = this._proto_search_item_pool[info.name];

@@ -5,7 +5,7 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-function __Browser_Setup(layer_group, control, module_base_path, script_base_path, debug)
+function __Browser_Setup(layer_group, control, module_base_path, script_base_path)
 	local window_width, window_height, flag, scale = ALittle.System_CalcLandscape(1200, 600, 0x00000020)
 	ALittle.System_CreateView("Emulator", window_width, window_height, flag, scale)
 	ALittle.System_SetViewIcon(module_base_path .. "/Other/ic_launcher.png")
@@ -22,10 +22,13 @@ end
 g_Control = nil
 g_LayerGroup = nil
 g_ModuleBasePath = nil
+g_AUIPluinControl = nil
+g_VersionManager = nil
 function __Module_Setup(layer_group, control, module_base_path, script_base_path, debug)
 	g_Control = control
 	g_LayerGroup = layer_group
 	g_ModuleBasePath = module_base_path
+	g_AUIPluinControl = A_ModuleSystem:LoadPlugin("AUIPlugin")
 	if ALittle.System_GetPlatform() == "Windows" then
 		package.cpath = package.cpath .. ";./" .. module_base_path .. "Other/?.dll"
 		require("memory")
@@ -63,10 +66,15 @@ function __Module_Setup(layer_group, control, module_base_path, script_base_path
 	Require(script_base_path, "PluginSocket")
 	g_IDEIMEManager:Setup()
 	g_GCenter:Setup()
+	g_VersionManager = AUIPlugin.AUIVersionManager("139.159.176.119", 1100, "alittle", "Emulator")
+	if A_ModuleSystem:GetDebugInfo() ~= "debug" then
+		g_VersionManager:CheckVersionUpdate()
+	end
 end
 __Module_Setup = Lua.CoWrap(__Module_Setup)
 
 function __Module_Shutdown()
+	g_VersionManager:Shutdown()
 	g_GCenter:Shutdown()
 	g_IDEIMEManager:Shutdown()
 end

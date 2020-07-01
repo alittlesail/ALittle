@@ -10,7 +10,7 @@ protected class IDEUIMainMenu : ALittle.Linear
 	{
 		// 版本服务器
 		var version_ip = g_IDEServerConfig.GetConfig("version_ip", "139.159.176.119");
-		var version_port = g_IDEServerConfig.GetConfig("version_port", 1011);
+		var version_port = g_IDEServerConfig.GetConfig("version_port", 1100);
 		this._version_manager = new AUIPlugin.AUIVersionManager(version_ip, version_port, "alittle", "ALittleIDE");
 		
 		// 如果不是debug模式，那么就检查版本

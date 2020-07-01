@@ -11,6 +11,12 @@ private var SELECT_RED = 33/255;
 private var SELECT_GREEN = 66/255;
 private var SELECT_BLUE = 131/255;
 
+protected var g_DefaultColor = new ABnfColor();
+g_DefaultColor.alpha = 1;
+g_DefaultColor.red = FONT_RED;
+g_DefaultColor.green = FONT_GREEN;
+g_DefaultColor.blue = FONT_BLUE;
+
 private var FOCUS_RED = 88/255;
 private var FOCUS_GREEN = 157/255;
 private var FOCUS_BLUE = 246/255;
@@ -69,7 +75,6 @@ protected class AUICodeLineContainer : ALittle.DisplayLayout
 {
     private bool _showd = false;
     private int _version = 0;
-    private int _line_index;
     private ALittle.LoopTimer _delay_loop = null;
 
     public ctor(ALittle.ControlSystem ctrl_sys)
@@ -107,18 +112,8 @@ protected class AUICodeLineContainer : ALittle.DisplayLayout
         }
     }
 
-    public fun RestoreColor(int line, int version)
+    public fun RestoreColor()
     {
-        if (this._version == version)
-        {
-            if (line != null)
-                this._line_index = line;
-        }
-        else
-        {
-            this._version = version;
-            this._line_index = line;   
-        }
         if (this._delay_loop != null) return;
 
         this._delay_loop = new ALittle.LoopTimer(bind(this.HandleColor, this), 1);
@@ -151,56 +146,41 @@ protected class AUICodeLineContainer : ALittle.DisplayLayout
     {
         this._delay_loop = null;
 
+        // 如果已经没有父节点，那么直接返回
+        if (this.parent == null) return;
+
         var line = cast<AUICodeLineInfo>(this._user_data);
+        if (this._version == line.edit.language.version) return;
+        this._version = line.edit.language.version;
+        var line_index = ALittle.Math_Ceil(this.y / LINE_HEIGHT);
+        if (line_index < 1 || line_index > line.edit.line_count) return;
 
-        if (this._version != line.edit.language.version)
-        {
-            this._line_index = null;
-            this._version = line.edit.language.version;
-        }
-
-        if (this._line_index == null)
-            this._line_index = ALittle.List_IndexOf(line.edit.line_list, line);
-        if (this._line_index == null) return;
-
-        var list = line.edit.language.QueryColor(this._line_index);
-        for (var index, char in line.char_list)
-        {
-            if (char.text != null)
-            {
-                char.text.red = char.red;
-                char.text.green = char.green;
-                char.text.blue = char.blue;
-                char.text.alpha = 1;
-            }
-        }
-
+        var list = line.edit.language.QueryColor(line_index);
         for (var index, info in list)
         {
             var char_start = 1;
-            if (info.line_start == this._line_index)
+            if (info.line_start == line_index)
                 char_start = info.char_start;
             var char_end = line.char_count;
-            if (info.line_end == this._line_index)
+            if (info.line_end == line_index)
                 char_end = info.char_end;
 
             var color = line.edit.language.QueryColorValue(info.tag);
-            if (color != null)
+            if (color == null) color = g_DefaultColor;
+
+            for (var i = char_start; i <= char_end; 1)
             {
-                for (var i = char_start; i <= char_end; 1)
+                var child = line.char_list[i];
+                if (child != null && child.text != null)
                 {
-                    var child = line.char_list[i];
-                    if (child != null && child.text != null)
-                    {
-                        child.text.red = color.red;
-                        child.text.green = color.green;
-                        child.text.blue = color.blue;
-                        if (info.blur)
-                            child.text.alpha = 0.5;   
-                        else
-                            child.text.alpha = 1;   
-                    }
-                }                
+                    child.text.red = color.red;
+                    child.text.green = color.green;
+                    child.text.blue = color.blue;
+                    if (info.blur)
+                        child.text.alpha = 0.5;   
+                    else
+                        child.text.alpha = 1;   
+                }
             }
         }
     }

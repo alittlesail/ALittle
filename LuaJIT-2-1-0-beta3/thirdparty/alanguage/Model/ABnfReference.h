@@ -23,10 +23,10 @@ public:
     virtual bool MultiGuessTypes() { return false; }
 
     // 获取缩进
-    virtual int QueryDesiredIndent(int it_line, int it_char, ABnfElementPtr select) { return 4; }
+    virtual int QueryDesiredIndent(int it_line, int it_char, ABnfElementPtr select) { return 0; }
 
     // 获取缩进
-    virtual int QueryFormateIndent(int it_line, int it_char, ABnfElementPtr select) { return 4; }
+    virtual int QueryFormateIndent(int it_line, int it_char, ABnfElementPtr select) { return 0; }
 
     // 函数调用时的函数提示
     virtual void QuerySignatureHelp(int& start, int& length, ALanguageSignatureInfo& info)

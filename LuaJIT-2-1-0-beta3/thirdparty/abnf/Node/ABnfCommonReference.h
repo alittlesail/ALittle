@@ -12,6 +12,7 @@ enum ABnfColorType
     ABnfKey = 4,
     ABnfString = 5,
     ABnfRegex = 6,
+    ABnfNodeTail = 7,
 };
 
 class ABnfCommonReference : public ABnfReference
@@ -25,6 +26,9 @@ public:
 
     // 配色
     virtual int QueryClassificationTag(bool& blur) override;
+
+    // 获取缩进
+    virtual int QueryDesiredIndent(int it_line, int it_char, ABnfElementPtr select) override;
 };
 
 #endif // _ALITTLE_ABNFCOMMONREFERENCE_H_

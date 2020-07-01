@@ -37,5 +37,19 @@ int ABnfCommonReference::QueryClassificationTag(bool& blur)
     if (type == "Regex")
         return ABnfColorType::ABnfRegex;
 
+    if (type == "NodeTail")
+        return ABnfColorType::ABnfNodeTail;
+
     return 0;
+}
+
+int ABnfCommonReference::QueryDesiredIndent(int it_line, int it_char, ABnfElementPtr select)
+{
+    auto element = m_element.lock();
+    if (element == nullptr) return 0;
+
+    const auto& type = element->GetNodeType();
+    if (type == "Root" || type == "LineComment" || type == "BlockComment")
+        return 0;
+    return 4;
 }

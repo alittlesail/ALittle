@@ -24,7 +24,7 @@ void delete_abnf_project(void* project)
 
 void* create_abnf_file(void* project, const char* full_path, const char* text, size_t len)
 {
-	return new ABnfFileClass((ABnfProject*)project, full_path, text, len);
+	return new ABnfFileClass((ABnfProject*)project, full_path, text, len, true);
 }
 
 void delete_abnf_file(void* file)

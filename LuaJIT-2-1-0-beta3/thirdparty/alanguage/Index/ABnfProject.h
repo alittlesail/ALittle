@@ -12,7 +12,7 @@
 
 #include "lua.hpp"
 #include "../Model/ABnf.h"
-class ABnfFactory;
+#include "ABnfFactory.h"
 
 class ABnfProject
 {
@@ -24,6 +24,7 @@ private:
 private:
 	std::string m_project_path;
 	ABnf m_abnf;
+	ABnfFactory m_default_factory;
 	std::unordered_map<std::string, ABnfFile*> m_file_map;
 
 	// 支线程逻辑
@@ -50,7 +51,7 @@ public:
 
 public:
 	const std::string& GetProjectPath() const { return m_project_path; }
-	virtual ABnfFactory& RefFactory() = 0;
+	virtual ABnfFactory& RefFactory() { return m_default_factory; };
 	virtual ABnf& RefABnf() { return m_abnf; }
 	virtual ABnf& RefABnfUI() { return m_abnf_ui; }
 

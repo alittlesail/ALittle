@@ -4,8 +4,8 @@
 #include "../../alanguage/Model/ABnf.h"
 #include "../../alanguage/Model/ABnfNodeElement.h"
 
-ALittleScriptFileClass::ALittleScriptFileClass(ABnfProject* project, const std::string& full_path, const char* text, size_t len)
-	: ABnfFile(project, full_path, text, len)
+ALittleScriptFileClass::ALittleScriptFileClass(ABnfProject* project, const std::string& full_path, const char* text, size_t len, bool in_ui)
+	: ABnfFile(project, full_path, text, len, in_ui)
 {
 }
 
@@ -18,7 +18,10 @@ void ALittleScriptFileClass::UpdateAnalysis()
 {
     m_root = nullptr;
     
-    m_root = GetProject()->RefABnf().Analysis(this);
+    if (m_in_ui)
+        m_root = GetProject()->RefABnfUI().Analysis(this);
+    else
+        m_root = GetProject()->RefABnf().Analysis(this);
     if (m_root == nullptr) return;
 }
 

@@ -34,5 +34,5 @@ ABnfReference* ABnfFactory::CreateReference(ABnfElementPtr element)
 
 ABnfFile* ABnfFactory::CreateFile(ABnfProject* project, const std::string& full_path, const char* text, size_t len)
 {
-    return new ABnfFile(project, full_path, text, len);
+    return new ABnfFile(project, full_path, text, len, false);
 }

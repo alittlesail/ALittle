@@ -24,7 +24,7 @@ void delete_alittlescript_project(void* file)
 
 void* create_alittlescript_file(void* project, const char* full_path, const char* text, size_t len)
 {
-	return new ALittleScriptFileClass((ABnfProject*)project, full_path, text, len);
+	return new ALittleScriptFileClass((ABnfProject*)project, full_path, text, len, true);
 }
 
 void delete_alittlescript_file(void* file)

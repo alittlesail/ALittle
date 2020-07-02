@@ -32,6 +32,8 @@ protected:
     std::string m_full_path;
     // 文本字符串
     std::string m_text;
+    // 是否是ui创建
+    bool m_in_ui = true;
 
     int m_version = 0;
     // 收集错误
@@ -40,7 +42,7 @@ protected:
     std::unordered_map<int, std::vector<ALanguageColorInfo>> m_color_map;
 
 public:
-    ABnfFile(ABnfProject* project, const std::string& full_path, const char* text, size_t len);
+    ABnfFile(ABnfProject* project, const std::string& full_path, const char* text, size_t len, bool in_ui);
     virtual ~ABnfFile();
 
     // 设置文本

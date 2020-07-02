@@ -4,8 +4,8 @@
 #include "../../alanguage/Index/ABnfProject.h"
 #include "../../alanguage/Model/ABnfNodeElement.h"
 
-ABnfFileClass::ABnfFileClass(ABnfProject* project, const std::string& full_path, const char* text, size_t len)
-	: ABnfFile(project, full_path, text, len)
+ABnfFileClass::ABnfFileClass(ABnfProject* project, const std::string& full_path, const char* text, size_t len, bool in_ui)
+	: ABnfFile(project, full_path, text, len, in_ui)
 {
 }
 
@@ -19,7 +19,10 @@ void ABnfFileClass::UpdateAnalysis()
     m_root = nullptr;
     m_rule.clear();
     
-    m_root = GetProject()->RefABnf().Analysis(this);
+    if (m_in_ui)
+        m_root = GetProject()->RefABnfUI().Analysis(this);
+    else
+        m_root = GetProject()->RefABnf().Analysis(this);
     if (m_root == nullptr) return;
 
     m_index.clear();

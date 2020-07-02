@@ -1,10 +1,11 @@
 
 #include "ABnfFileClass.h"
 #include "../../alanguage/Model/ABnf.h"
+#include "../../alanguage/Index/ABnfProject.h"
 #include "../../alanguage/Model/ABnfNodeElement.h"
 
-ABnfFileClass::ABnfFileClass(ABnfProject* project, const std::string& full_path, ABnf* abnf, const char* text, size_t len)
-	: ABnfFile(project, full_path, abnf, text, len)
+ABnfFileClass::ABnfFileClass(ABnfProject* project, const std::string& full_path, const char* text, size_t len)
+	: ABnfFile(project, full_path, text, len)
 {
 }
 
@@ -17,9 +18,8 @@ void ABnfFileClass::UpdateAnalysis()
 {
     m_root = nullptr;
     m_rule.clear();
-    if (m_abnf == nullptr) return;
-
-    m_root = m_abnf->Analysis(this);
+    
+    m_root = GetProject()->RefABnf().Analysis(this);
     if (m_root == nullptr) return;
 
     m_index.clear();

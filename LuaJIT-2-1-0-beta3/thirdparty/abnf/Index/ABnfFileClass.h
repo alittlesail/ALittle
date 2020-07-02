@@ -17,7 +17,7 @@ private:
     std::unordered_map<std::string, std::unordered_set<ABnfNodeElementPtr>> m_index;
 
 public:
-	ABnfFileClass(ABnfProject* project, const std::string& full_path, ABnf* abnf, const char* text, size_t len);
+	ABnfFileClass(ABnfProject* project, const std::string& full_path, const char* text, size_t len);
     virtual ~ABnfFileClass();
 
     inline const std::unordered_map<std::string, std::map<ABnfNodeElementPtr, std::string>>& GetRuleSet() { return m_rule; }

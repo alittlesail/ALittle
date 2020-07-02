@@ -1,10 +1,11 @@
 
 #include "ALittleScriptFileClass.h"
-#include "ALittle/LibCommon/ThirdParty/alanguage/Model/ABnf.h"
-#include "ALittle/LibCommon/ThirdParty/alanguage/Model/ABnfNodeElement.h"
+#include "ALittleScriptProjectClass.h"
+#include "../../alanguage/Model/ABnf.h"
+#include "../../alanguage/Model/ABnfNodeElement.h"
 
-ALittleScriptFileClass::ALittleScriptFileClass(ABnfProject* project, const std::string& full_path, ABnf* abnf, const char* text, size_t len)
-	: ABnfFile(project, full_path, abnf, text, len)
+ALittleScriptFileClass::ALittleScriptFileClass(ABnfProject* project, const std::string& full_path, const char* text, size_t len)
+	: ABnfFile(project, full_path, text, len)
 {
 }
 
@@ -16,11 +17,9 @@ ALittleScriptFileClass::~ALittleScriptFileClass()
 void ALittleScriptFileClass::UpdateAnalysis()
 {
     m_root = nullptr;
-    if (m_abnf == nullptr) return;
-
-    m_root = m_abnf->Analysis(this);
+    
+    m_root = GetProject()->RefABnf().Analysis(this);
     if (m_root == nullptr) return;
-
 }
 
 void ALittleScriptFileClass::UpdateError()

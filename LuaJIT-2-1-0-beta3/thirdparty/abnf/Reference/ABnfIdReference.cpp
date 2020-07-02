@@ -3,7 +3,7 @@
 #include "../../alanguage/Model/ABnfElement.h"
 #include "../../alanguage/Model/ABnfNodeElement.h"
 #include "../../alanguage/Model/ABnf.h"
-#include "../../alanguage/Model/ABnfFactory.h"
+#include "../../alanguage/Index/ABnfFactory.h"
 #include "../Index/ABnfFileClass.h"
 
 #include <unordered_set>

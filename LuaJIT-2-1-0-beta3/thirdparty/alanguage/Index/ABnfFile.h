@@ -7,9 +7,6 @@
 #include <memory>
 #include <map>
 #include <unordered_map>
-extern "C" {
-#include "../alanguage.h"
-}
 
 class ABnf;
 class ABnfProject;
@@ -17,7 +14,10 @@ class ABnfNodeElement;
 using ABnfNodeElementPtr = std::shared_ptr<ABnfNodeElement>;
 class ABnfElement;
 using ABnfElementPtr = std::shared_ptr<ABnfElement>;
-struct ABnfQueryColor;
+
+struct ALanguageQuickInfo;
+struct ALanguageColorInfo;
+struct ALanguageGotoInfo;
 struct ALanguageCompletionInfo;
 struct ALanguageErrorInfo;
 
@@ -28,8 +28,6 @@ protected:
     ABnfNodeElementPtr m_root;
     // 工程信息
     ABnfProject* m_project = nullptr;
-    // 解析器
-    ABnf* m_abnf = nullptr;
     // 文件路径
     std::string m_full_path;
     // 文本字符串
@@ -39,10 +37,10 @@ protected:
     // 收集错误
     std::map<ABnfElementPtr, std::string> m_analysis_error_map;
     std::map<ABnfElementPtr, std::string> m_check_error_map;
-    std::unordered_map<int, std::vector<struct ABnfQueryColor>> m_color_map;
+    std::unordered_map<int, std::vector<ALanguageColorInfo>> m_color_map;
 
 public:
-    ABnfFile(ABnfProject* project, const std::string& full_path, ABnf* abnf, const char* text, size_t len);
+    ABnfFile(ABnfProject* project, const std::string& full_path, const char* text, size_t len);
     virtual ~ABnfFile();
 
     // 设置文本
@@ -62,13 +60,11 @@ public:
 
     // 获取颜色
     // it_line 从0开始算
-    const std::vector<struct ABnfQueryColor>* QueryColor(int version, int it_line);
+    const std::vector<ALanguageColorInfo>* QueryColor(int version, int it_line);
     // 获取节点信息
-    bool QueryInfo(int version, int it_line, int it_char
-        , std::string& info, int& line_start, int& char_start, int& line_end, int& char_end);
+    bool QueryInfo(int version, int it_line, int it_char, ALanguageQuickInfo& info);
     // 获取跳转
-    bool QueryGoto(int version, int it_line, int it_char
-        , std::string& file_path, int& line_start, int& char_start, int& line_end, int& char_end);
+    bool QueryGoto(int version, int it_line, int it_char, ALanguageGotoInfo& info);
     // 获取提示
     bool QueryComplete(int version, int it_line, int it_char
         , std::vector<ALanguageCompletionInfo>& info_list
@@ -82,6 +78,12 @@ public:
     // utf8字符切割
     static int GetByteCountOfOneWord(unsigned char first_char);
 
+public:
+    // 内容出现更新
+    virtual void OnUpdate() {}
+    // 移除内容
+    virtual void OnRemove() {}
+
 private:
     // 解析一条龙
     void AnalysisText(int version);
@@ -90,7 +92,7 @@ public:
     // 获取文件路径
     inline const std::string& GetFullPath() const { return m_full_path; }
     // 获取工程信息
-    inline const ABnfProject* GetProjectInfo() { return m_project; }
+    inline ABnfProject* GetProject() { return m_project; }
     // 获取文本
     inline const std::string& GetText() { return m_text; }
     // 获取文本长度

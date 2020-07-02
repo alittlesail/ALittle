@@ -6,7 +6,7 @@
 #include <regex>
 #include <unordered_map>
 
-#include "ABnfGuess.h"
+#include "../Model/ABnfGuess.h"
 
 class ABnfElement;
 using ABnfElementPtr = std::shared_ptr<ABnfElement>;
@@ -42,10 +42,8 @@ public:
 
     virtual bool GuessTypes(ABnfElementPtr element, std::vector<ABnfGuessPtr>& guess_list, ABnfGuessError& error) { error.error = "no implement"; return false; }
 
-    // ÎÄ¼þºó×º
-    virtual std::string GetDotExt() { return ""; }
-
-    virtual bool FastGoto(const std::unordered_map<std::string, ABnfProject*>& projects, const std::string& text, std::string& error) { error = "no implement FastGoto"; return false; }
+public:
+    virtual ABnfFile* CreateFile(ABnfProject* project, const std::string& full_path, const char* text, size_t len);
 
 private:
     template <typename T>

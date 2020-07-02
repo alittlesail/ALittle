@@ -11,7 +11,7 @@
 class ALittleScriptFileClass : public ABnfFile
 {
 public:
-    ALittleScriptFileClass(ABnfProject* project, const std::string& full_path, ABnf* abnf, const char* text, size_t len);
+    ALittleScriptFileClass(ABnfProject* project, const std::string& full_path, const char* text, size_t len);
     virtual ~ALittleScriptFileClass();
 
     // 更新分析内容

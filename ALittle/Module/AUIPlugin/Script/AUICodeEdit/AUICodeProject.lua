@@ -41,16 +41,17 @@ function AUICodeProject:Add(thread)
 end
 
 function AUICodeProject:Update(frame)
-	local info = alanguage.abnfproject_pollone(self._project)
-	if info == nil then
-		return
+	while true do
+		local info = alanguage.abnfproject_pollone(self._project)
+		if info == nil then
+			break
+		end
+		local thread = self._map[info.query_id]
+		if thread ~= nil then
+			self._map[info.query_id] = nil
+			ALittle.Coroutine.Resume(thread, info.result)
+		end
 	end
-	local thread = self._map[info.query_id]
-	if thread == nil then
-		return
-	end
-	self._map[info.query_id] = nil
-	ALittle.Coroutine.Resume(thread, info.result)
 end
 
 function AUICodeProject:Stop()

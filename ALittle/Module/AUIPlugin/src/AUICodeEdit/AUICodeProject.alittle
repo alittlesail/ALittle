@@ -36,14 +36,18 @@ public class AUICodeProject
 
     private fun Update(int frame)
     {
-        var info = lua.alanguage.abnfproject_pollone(this._project);
-        if (info == null) return;
+        while (true)
+        {
+            var info = lua.alanguage.abnfproject_pollone(this._project);
+            if (info == null) break;
 
-        var thread = this._map[info.query_id];
-        if (thread == null) return;
-        this._map[info.query_id] = null;
-
-        ALittle.Coroutine.Resume(thread, info.result);
+            var thread = this._map[info.query_id];
+            if (thread != null)
+            {
+                this._map[info.query_id] = null;
+                ALittle.Coroutine.Resume(thread, info.result);      
+            }
+        }
     }
 
     public fun Stop()

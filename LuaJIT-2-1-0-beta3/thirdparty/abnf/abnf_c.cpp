@@ -7,22 +7,24 @@ extern "C" {
 #include "abnf_c.h"
 }
 
-#include "Index/ABnfFactoryClass.h"
+#include "Index/ABnfProjectClass.h"
 #include "Index/ABnfFileClass.h"
 
-void* create_abnf_factory()
+void* create_abnf_project(const char* full_path, const char* abnf_buffer)
 {
-	return new ABnfFactoryClass();
+	auto* project = new ABnfProjectClass(full_path);
+	project->Start(abnf_buffer);
+	return project;
 }
 
-void delete_abnf_factory(void* factory)
+void delete_abnf_project(void* project)
 {
-	delete ((ABnfFactoryClass*)factory);
+	delete ((ABnfProjectClass*)project);
 }
 
-void* create_abnf_file(const char* full_path, void* abnf, const char* text, size_t len)
+void* create_abnf_file(void* project, const char* full_path, const char* text, size_t len)
 {
-	return new ABnfFileClass(nullptr, full_path, (ABnf*)abnf, text, len);
+	return new ABnfFileClass((ABnfProject*)project, full_path, text, len);
 }
 
 void delete_abnf_file(void* file)

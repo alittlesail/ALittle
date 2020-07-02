@@ -1,6 +1,6 @@
 #include "ABnf.h"
 #include "../Index/ABnfFile.h"
-#include "ABnfFactory.h"
+#include "../Index/ABnfFactory.h"
 #include "ABnfRuleInfo.h"
 #include "ABnfRuleNodeInfo.h"
 #include "ABnfNodeElement.h"

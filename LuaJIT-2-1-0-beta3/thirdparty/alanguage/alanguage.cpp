@@ -11,119 +11,76 @@ extern "C" {
 #include "Index/ABnfProject.h"
 #include "Index/ABnfFile.h"
 
-void* create_abnf()
+int alanguage_project_pollone(void* project, lua_State* L)
 {
-	return new ABnf();
+	auto* project_c = (ABnfProject*)project;
+	return project_c->PollOne(L);
 }
 
-const char* abnf_load(void* abnf, const char* buffer, void* factory)
+void alanguage_project_updatefile(void* project, const char* full_path)
 {
-	static std::string error;
-	error.clear();
-	if (((ABnf*)abnf)->Load(buffer, (ABnfFactory*)factory, error)) return nullptr;
-	return error.c_str();
+	auto* project_c = (ABnfProject*)project;
+	project_c->Add(std::bind(&ABnfProject::UpdateFile, project_c, std::string(full_path)));
 }
 
-void delete_abnf(void* abnf)
+void alanguage_project_removefile(void* project, const char* full_path)
 {
-	delete ((ABnf*)abnf);
+	auto* project_c = (ABnfProject*)project;
+	project_c->Add(std::bind(&ABnfProject::RemoveFile, project_c, std::string(full_path)));
 }
 
 void abnffile_settext(void* abnf_file, const char* text, size_t len)
 {
 	((ABnfFile*)abnf_file)->SetText(text, len);
+
+	auto* project_c = ((ABnfFile*)abnf_file)->GetProject();
+	project_c->Add(std::bind(&ABnfProject::UpdateText, project_c, ((ABnfFile*)abnf_file)->GetFullPath(), std::string(text, len)));
 }
 
 void abnffile_inserttext(void* abnf_file, const char* text, size_t len, int it_line, int it_char)
 {
 	((ABnfFile*)abnf_file)->InsertText(text, len, it_line, it_char);
+
+	auto* project_c = ((ABnfFile*)abnf_file)->GetProject();
+	project_c->Add(std::bind(&ABnfProject::InsertText, project_c, ((ABnfFile*)abnf_file)->GetFullPath(), std::string(text, len), it_line, it_char));
 }
 
 void abnffile_deletetext(void* abnf_file, int it_line_start, int it_char_start, int it_line_end, int it_char_end)
 {
 	((ABnfFile*)abnf_file)->DeleteText(it_line_start, it_char_start, it_line_end, it_char_end);
+
+	auto* project_c = ((ABnfFile*)abnf_file)->GetProject();
+	project_c->Add(std::bind(&ABnfProject::DeleteText, project_c, ((ABnfFile*)abnf_file)->GetFullPath(), it_line_start, it_char_start, it_line_end, it_char_end));
 }
 
-const struct ABnfQueryColor** abnffile_querycolor(void* abnf_file, int version, int line, int* count)
+void abnffile_querycolor(void* abnf_file, int query_id, int version, int line)
 {
-	static std::vector<const struct ABnfQueryColor*> temp;
-	temp.resize(0);
-
-	auto* list = ((ABnfFile*)abnf_file)->QueryColor(version, line);
-	if (list != nullptr)
-	{
-		for (auto& color : *list)
-			temp.push_back(&color);
-	}
-
-	*count = static_cast<int>(temp.size());
-	return temp.data();
+	auto* project_c = ((ABnfFile*)abnf_file)->GetProject();
+	project_c->Add(std::bind(&ABnfProject::QueryColor, project_c, ((ABnfFile*)abnf_file)->GetFullPath(), query_id, version, line));
 }
 
-int abnffile_queryinfo(void* abnf_file, int version, int it_line, int it_char, struct ABnfQueryInfo* info)
+void abnffile_queryinfo(void* abnf_file, int query_id, int version, int it_line, int it_char)
 {
-	static std::string temp;
-	temp.resize(0);
-	bool result = ((ABnfFile*)abnf_file)->QueryInfo(version, it_line, it_char, temp, info->line_start, info->char_start, info->line_end, info->char_end);
-	if (!result) return 0;
-	info->info = temp.c_str();
-	return 1;
+	auto* project_c = ((ABnfFile*)abnf_file)->GetProject();
+	project_c->Add(std::bind(&ABnfProject::QueryInfo, project_c, ((ABnfFile*)abnf_file)->GetFullPath(), query_id, version, it_line, it_char));
 }
 
-int abnffile_querygoto(void* abnf_file, int version, int it_line, int it_char, struct ABnfQueryGoto* info)
+void abnffile_querygoto(void* abnf_file, int query_id, int version, int it_line, int it_char)
 {
-	static std::string temp;
-	temp.resize(0);
-	bool result = ((ABnfFile*)abnf_file)->QueryGoto(version, it_line, it_char, temp, info->line_start, info->char_start, info->line_end, info->char_end);
-	if (!result) return 0;
-	info->file_path = temp.c_str();
-	return 1;
+	auto* project_c = ((ABnfFile*)abnf_file)->GetProject();
+	project_c->Add(std::bind(&ABnfProject::QueryGoto, project_c, ((ABnfFile*)abnf_file)->GetFullPath(), query_id, version, it_line, it_char));
 }
 
-const struct ABnfQueryComplete* abnffile_querycomplete(void* abnf_file, int version, int it_line, int it_char
-	, int* count, int* line_start, int* char_start, int* line_end, int* char_end)
+void abnffile_querycomplete(void* abnf_file, int query_id, int version, int it_line, int it_char)
 {
-	static std::vector<ALanguageCompletionInfo> completion_temp;
-	completion_temp.resize(0);
-	bool result = ((ABnfFile*)abnf_file)->QueryComplete(version, it_line, it_char, completion_temp, *line_start, *char_start, *line_end, *char_end);
-	if (!result) return nullptr;
-
-	static std::vector<struct ABnfQueryComplete> query_temp;
-	query_temp.resize(0);
-	for (auto& temp : completion_temp)
-	{
-		struct ABnfQueryComplete info;
-		info.insert = temp.insert.empty() ? 0 : temp.insert.c_str();
-		info.display = temp.display.c_str();
-		info.descriptor = temp.descriptor.empty() ? 0 : temp.descriptor.c_str();
-		info.tag = temp.tag;
-		query_temp.push_back(info);
-	}
-	*count = static_cast<int>(query_temp.size());
-	return query_temp.data();
+	auto* project_c = ((ABnfFile*)abnf_file)->GetProject();
+	project_c->Add(std::bind(&ABnfProject::QueryComplete, project_c, ((ABnfFile*)abnf_file)->GetFullPath(), query_id, version, it_line, it_char));
 }
 
-const struct ABnfQueryError* abnffile_queryerror(void* abnf_file, int version, int* count)
+void abnffile_queryerror(void* abnf_file, int query_id, int version)
 {
-	static std::vector<ALanguageErrorInfo> error_temp;
-	error_temp.resize(0);
-	bool result = ((ABnfFile*)abnf_file)->QueryError(version, error_temp);
-	if (!result) return nullptr;
-
-	static std::vector<struct ABnfQueryError> query_temp;
-	query_temp.resize(0);
-	for (auto& temp : error_temp)
-	{
-		struct ABnfQueryError info;
-		info.line_start = temp.line_start;
-		info.char_start = temp.char_start;
-		info.line_end = temp.line_end;
-		info.char_end = temp.char_end;
-		info.error = temp.error.c_str();
-		query_temp.push_back(info);
-	}
-	*count = static_cast<int>(query_temp.size());
-	return query_temp.data();
+	auto* project_c = ((ABnfFile*)abnf_file)->GetProject();
+	project_c->Add(std::bind(&ABnfProject::QueryError, project_c, ((ABnfFile*)abnf_file)->GetFullPath(), query_id, version));
 }
 
 int abnffile_querydesiredindent(void* abnf_file, int version, int it_line, int it_char)

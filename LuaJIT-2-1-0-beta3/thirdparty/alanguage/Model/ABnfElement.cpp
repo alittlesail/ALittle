@@ -1,7 +1,7 @@
 
 #include "ABnfElement.h"
-#include "ABnfFactory.h"
 #include "ABnfReference.h"
+#include "../Index/ABnfFactory.h"
 #include "../Index/ABnfFile.h"
 #include "../Index/ABnfProject.h"
 
@@ -66,7 +66,7 @@ const std::string& ABnfElement::GetProjectPath()
 {
     static std::string empty;
     if (m_file == nullptr) return empty;
-    auto* project = m_file->GetProjectInfo();
+    auto* project = m_file->GetProject();
     if (project == nullptr) return empty;
     return project->GetProjectPath();
 }

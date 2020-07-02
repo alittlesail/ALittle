@@ -1,10 +1,11 @@
 #include "ABnfFactory.h"
-#include "ABnfElement.h"
-#include "ABnfNodeElement.h"
-#include "ABnfKeyElement.h"
-#include "ABnfStringElement.h"
-#include "ABnfRegexElement.h"
-#include "ABnfReference.h"
+#include "ABnfFile.h"
+#include "../Model/ABnfElement.h"
+#include "../Model/ABnfNodeElement.h"
+#include "../Model/ABnfKeyElement.h"
+#include "../Model/ABnfStringElement.h"
+#include "../Model/ABnfRegexElement.h"
+#include "../Model/ABnfReference.h"
 
 ABnfNodeElementPtr ABnfFactory::CreateNodeElement(ABnfFile* file, int line, int col, int offset, const std::string& type)
 {
@@ -29,4 +30,9 @@ ABnfRegexElementPtr ABnfFactory::CreateRegexElement(ABnfFile* file, int line, in
 ABnfReference* ABnfFactory::CreateReference(ABnfElementPtr element)
 {
     return new ABnfReferenceTemplate<ABnfElement>(element);
+}
+
+ABnfFile* ABnfFactory::CreateFile(ABnfProject* project, const std::string& full_path, const char* text, size_t len)
+{
+    return new ABnfFile(project, full_path, text, len);
 }

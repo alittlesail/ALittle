@@ -7,6 +7,34 @@
 
 const int s_indent_size = 4;
 
+struct ALanguageColorInfo
+{
+    int line_start = 0;
+    int char_start = 0;
+    int line_end = 0;
+    int char_end = 0;
+    int tag = 0;
+    bool blur = 0;
+};
+
+struct ALanguageQuickInfo
+{
+    int line_start = 0;
+    int char_start = 0;
+    int line_end = 0;
+    int char_end = 0;
+    std::string info;
+};
+
+struct ALanguageGotoInfo
+{
+    int line_start = 0;
+    int char_start = 0;
+    int line_end = 0;
+    int char_end = 0;
+    std::string file_path;
+};
+
 struct ALanguageCompletionInfo
 {
     std::string display;

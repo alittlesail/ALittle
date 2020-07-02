@@ -7,10 +7,9 @@
 #include "../Model/ABnfReference.h"
 #include "../Model/ALanguageHelperInfo.h"
 
-ABnfFile::ABnfFile(ABnfProject* project, const std::string& full_path, ABnf* abnf, const char* text, size_t len)
+ABnfFile::ABnfFile(ABnfProject* project, const std::string& full_path, const char* text, size_t len)
 {
     m_project = project;
-    m_abnf = abnf;
     m_full_path = full_path;
     SetText(text, len);
 }
@@ -22,7 +21,7 @@ ABnfFile::~ABnfFile()
 // 设置文本
 void ABnfFile::SetText(const char* text, size_t len)
 {
-    m_text.assign(text, len);
+    if (len > 0) m_text.assign(text, len);
 }
 
 // 插入文本
@@ -122,7 +121,7 @@ void ABnfFile::DeleteText(int it_line_start, int it_char_start, int it_line_end,
     m_text.erase(start_index, end_index - start_index);
 }
 
-const std::vector<struct ABnfQueryColor>* ABnfFile::QueryColor(int version, int it_line)
+const std::vector<ALanguageColorInfo>* ABnfFile::QueryColor(int version, int it_line)
 {
     AnalysisText(version);
 
@@ -131,8 +130,7 @@ const std::vector<struct ABnfQueryColor>* ABnfFile::QueryColor(int version, int 
     return &it->second;
 }
 
-bool ABnfFile::QueryInfo(int version, int it_line, int it_char
-    , std::string& info, int& line_start, int& char_start, int& line_end, int& char_end)
+bool ABnfFile::QueryInfo(int version, int it_line, int it_char, ALanguageQuickInfo& info)
 {
     AnalysisText(version);
 
@@ -144,20 +142,19 @@ bool ABnfFile::QueryInfo(int version, int it_line, int it_char
     auto node = std::dynamic_pointer_cast<ABnfNodeElement>(element);
     if (node == nullptr) node = std::dynamic_pointer_cast<ABnfNodeElement>(element->GetParent());
     if (node == nullptr)
-        element->GetReference()->QueryQuickInfo(info);
+        element->GetReference()->QueryQuickInfo(info.info);
     else
-        node->GetReference()->QueryQuickInfo(info);
+        node->GetReference()->QueryQuickInfo(info.info);
 
-    line_start = element->GetStartLine();
-    char_start = element->GetStartCol();
-    line_end = element->GetEndLine();
-    char_end = element->GetEndCol();
+    info.line_start = element->GetStartLine();
+    info.char_start = element->GetStartCol();
+    info.line_end = element->GetEndLine();
+    info.char_end = element->GetEndCol();
 
-    return !info.empty();
+    return !info.info.empty();
 }
 
-bool ABnfFile::QueryGoto(int version, int it_line, int it_char
-    , std::string& file_path, int& line_start, int& char_start, int& line_end, int& char_end)
+bool ABnfFile::QueryGoto(int version, int it_line, int it_char, ALanguageGotoInfo& info)
 {
     AnalysisText(version);
 
@@ -173,11 +170,11 @@ bool ABnfFile::QueryGoto(int version, int it_line, int it_char
     auto goto_element = node->GetReference()->GotoDefinition();
     if (goto_element == nullptr) return false;
 
-    file_path = goto_element->GetFullPath();
-    line_start = goto_element->GetStartLine();
-    char_start = goto_element->GetStartCol();
-    line_end = goto_element->GetEndLine();
-    char_end = goto_element->GetEndCol();
+    info.file_path = goto_element->GetFullPath();
+    info.line_start = goto_element->GetStartLine();
+    info.char_start = goto_element->GetStartCol();
+    info.line_end = goto_element->GetEndLine();
+    info.char_end = goto_element->GetEndCol();
 
     return true;
 }
@@ -302,7 +299,7 @@ void ABnfFile::CollectColor(ABnfElementPtr element, bool blur)
     {
         for (int line = element->GetStartLine(); line <= element->GetEndLine(); ++line)
         {
-            struct ABnfQueryColor info;
+            ALanguageColorInfo info;
             info.line_start = element->GetStartLine();
             info.char_start = element->GetStartCol();
             info.line_end = element->GetEndLine();

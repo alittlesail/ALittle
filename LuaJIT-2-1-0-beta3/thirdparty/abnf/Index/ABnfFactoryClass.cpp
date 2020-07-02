@@ -1,5 +1,6 @@
 
-#include "ABnfFactoryClass.h" 
+#include "ABnfFactoryClass.h"
+#include "ABnfFileClass.h"
 #include "../Reference/ABnfIdReference.h"
 #include "../Reference/ABnfRegexReference.h"
 #include "../Reference/ABnfKeyReference.h"
@@ -20,4 +21,9 @@ ABnfReference* ABnfFactoryClass::CreateReference(ABnfElementPtr element)
     else if (element->GetNodeType() == "Node")
         return new ABnfNodeReference(element);
     return new ABnfCommonReference(element);
+}
+
+ABnfFile* ABnfFactoryClass::CreateFile(ABnfProject* project, const std::string& full_path, const char* text, size_t len)
+{
+    return new ABnfFileClass(project, full_path, text, len);
 }

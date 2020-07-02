@@ -11,21 +11,27 @@
 
 #define ABNF_MODNAME "abnf"
 
-static int abnflib_destroy_abnf_factory(lua_State* L)
+static int abnflib_destroy_abnf_project(lua_State* L)
 {
 	void** c = (void**)lua_touserdata(L, 1);
-	if (c) delete_abnf_factory(*c);
+	if (c) delete_abnf_project(*c);
 	return 0;
 }
 
-static int abnflib_create_abnf_factory(lua_State* L)
+static int abnflib_create_abnf_project(lua_State* L)
 {
+	const char* full_path = luaL_checkstring(L, 1);
+	luaL_argcheck(L, full_path != 0, 1, "full_path is null");
+	const char* abnf_buffer = luaL_checkstring(L, 2);
+	luaL_argcheck(L, abnf_buffer != 0, 2, "abnf buffer is null");
+
 	void** c = (void**)lua_newuserdata(L, sizeof(void**));
 	lua_newtable(L);
-	lua_pushcfunction(L, abnflib_destroy_abnf_factory);
+	lua_pushcfunction(L, abnflib_destroy_abnf_project);
 	lua_setfield(L, -2, "__gc");
 	lua_setmetatable(L, -2);
-	*c = create_abnf_factory();
+
+	*c = create_abnf_project(full_path, abnf_buffer);
 	return 1;
 }
 
@@ -38,10 +44,10 @@ static int abnflib_destroy_abnf_file(lua_State* L)
 
 static int abnflib_create_abnf_file(lua_State* L)
 {
-	const char* full_path = luaL_checkstring(L, 1);
-	luaL_argcheck(L, full_path != 0, 1, "full_path is null");
-	void** abnf = (void**)lua_touserdata(L, 2);
-	luaL_argcheck(L, abnf != 0, 2, "abnf is null");
+	void** project = (void**)lua_touserdata(L, 1);
+	luaL_argcheck(L, project != 0, 1, "project is null");
+	const char* full_path = luaL_checkstring(L, 2);
+	luaL_argcheck(L, full_path != 0, 2, "full_path is null");
 
 	size_t len;
 	const char* text = luaL_checklstring(L, 3, &len);
@@ -52,7 +58,7 @@ static int abnflib_create_abnf_file(lua_State* L)
 	lua_pushcfunction(L, abnflib_destroy_abnf_file);
 	lua_setfield(L, -2, "__gc");
 	lua_setmetatable(L, -2);
-	*c = create_abnf_file(full_path, *abnf, text, len);
+	*c = create_abnf_file(*project, full_path, text, len);
 	return 1;
 }
 
@@ -72,7 +78,7 @@ static void set_info (lua_State *L) {
 }
 
 static struct luaL_Reg abnflib[] = {
-  {"create_abnf_factory", abnflib_create_abnf_factory},
+  {"create_abnf_project", abnflib_create_abnf_project},
   {"create_abnf_file", abnflib_create_abnf_file},
   {NULL, NULL}
 };

@@ -172,16 +172,19 @@ function AUICodeSelectCursor:GetTargetText(it_line_start, it_char_start, it_line
 		if line.char_count == 0 then
 			return ""
 		end
-		local text = ""
+		local text = {}
+		local text_count = 0
 		local i = it_char_start + 1
 		while true do
 			if not(i <= it_char_end) then break end
-			text = text .. line.char_list[i].char
+			text_count = text_count + 1
+			text[text_count] = line.char_list[i].char
 			i = i+(1)
 		end
-		return text
+		return ALittle.String_Join(text, "")
 	end
-	local text = ""
+	local text = {}
+	local text_count = 0
 	local i = it_line_start
 	while true do
 		if not(i <= it_line_end) then break end
@@ -191,28 +194,31 @@ function AUICodeSelectCursor:GetTargetText(it_line_start, it_char_start, it_line
 				local j = it_char_start + 1
 				while true do
 					if not(j <= line.char_count) then break end
-					text = text .. line.char_list[j].char
+					text_count = text_count + 1
+					text[text_count] = line.char_list[j].char
 					j = j+(1)
 				end
 			elseif i == it_line_end then
 				local j = 1
 				while true do
 					if not(j <= it_char_end) then break end
-					text = text .. line.char_list[j].char
+					text_count = text_count + 1
+					text[text_count] = line.char_list[j].char
 					j = j+(1)
 				end
 			else
 				local j = 1
 				while true do
 					if not(j <= line.char_count) then break end
-					text = text .. line.char_list[j].char
+					text_count = text_count + 1
+					text[text_count] = line.char_list[j].char
 					j = j+(1)
 				end
 			end
 		end
 		i = i+(1)
 	end
-	return text
+	return ALittle.String_Join(text, "")
 end
 
 function AUICodeSelectCursor:GetSelectText()

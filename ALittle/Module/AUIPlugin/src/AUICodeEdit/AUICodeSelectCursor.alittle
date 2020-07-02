@@ -170,13 +170,18 @@ public class AUICodeSelectCursor
             if (it_char_start == it_char_end) return "";
             var line = this._edit.line_list[it_line_start];
             if (line.char_count == 0) return "";
-            var text = "";
+            var text = new List<string>();
+            var text_count = 0;
             for (var i = it_char_start + 1; i <= it_char_end; 1)
-                text = text..line.char_list[i].char;
-            return text;
+            {
+                ++text_count;
+                text[text_count] = line.char_list[i].char;
+            }
+            return ALittle.String_Join(text, "");
         }
 
-        var text = "";
+        var text = new List<string>();
+        var text_count = 0;
         for (var i = it_line_start; i <= it_line_end; 1)
         {
             var line = this._edit.line_list[i];
@@ -185,21 +190,30 @@ public class AUICodeSelectCursor
                 if (i == it_line_start)
                 {
                     for (var j = it_char_start + 1; j <= line.char_count; 1)
-                        text = text..line.char_list[j].char;
+                    {
+                        ++text_count;
+                        text[text_count] = line.char_list[j].char;
+                    }
                 }
                 elseif (i == it_line_end)
                 {
                     for (var j = 1; j <= it_char_end; 1)
-                        text = text..line.char_list[j].char;
+                    {
+                        ++text_count;
+                        text[text_count] = line.char_list[j].char;
+                    }
                 }
                 else
                 {
                     for (var j = 1; j <= line.char_count; 1)
-                        text = text..line.char_list[j].char;
+                    {
+                        ++text_count;
+                        text[text_count] = line.char_list[j].char;
+                    }
                 }   
             }
         }
-        return text;
+        return ALittle.String_Join(text, "");
     }
 
     // 复制选中文本

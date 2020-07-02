@@ -1,18 +1,11 @@
 
 register namespace lua;
 
-public struct ALittleScriptFactoryClass : ABnfFactory
-{
-
-}
-
-public struct ALittleScriptFileClass : ABnfFile
-{
-    
-}
+public struct ALittleScriptProjectClass : ABnfProject { }
+public struct ALittleScriptFileClass : ABnfFile { }
 
 public class alittlescript
 {
-    public static create_alittlescript_factory() : ALittleScriptFactoryClass {}
-    public static create_alittlescript_file(string full_path, ABnf abnf, string text) : ALittleScriptFileClass {}
+    public static create_alittlescript_project(string full_path, string abnf_buffer) : ALittleScriptProjectClass {}
+    public static create_alittlescript_file(ABnfProject project, string full_path, string text) : ALittleScriptFileClass {}
 }

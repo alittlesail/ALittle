@@ -38,9 +38,6 @@
     <None Include="src\AUICodeEdit\AUICodeRevocation.alittle">
       <Filter>AUICodeEdit</Filter>
     </None>
-    <None Include="src\AUICodeEdit\AUICodeLanguage.alittle">
-      <Filter>AUICodeEdit</Filter>
-    </None>
     <None Include="src\AUICodeEdit\ABnf\AUICodeABnf.alittle">
       <Filter>AUICodeEdit\ABnf</Filter>
     </None>
@@ -58,6 +55,12 @@
     </None>
     <None Include="src\Adapter\ALittleScript.alittle">
       <Filter>Adapter</Filter>
+    </None>
+    <None Include="src\AUICodeEdit\AUICodeProject.alittle">
+      <Filter>AUICodeEdit</Filter>
+    </None>
+    <None Include="src\AUICodeEdit\AUICodeLanguage.alittle">
+      <Filter>AUICodeEdit</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

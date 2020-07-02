@@ -6,8 +6,6 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-local g_ABnf = nil
-local g_ABnfFactory = nil
 local g_ABnfColor = nil
 ALittleScriptColorType = {
 	ABnfKeyWord = 1,
@@ -21,23 +19,7 @@ ALittleScriptColorType = {
 assert(AUIPlugin.AUICodeLanguage, " extends class:AUIPlugin.AUICodeLanguage is nil")
 AUICodeALittleScript = Lua.Class(AUIPlugin.AUICodeLanguage, "AUIPlugin.AUICodeALittleScript")
 
-function AUICodeALittleScript:Ctor(full_path)
-	if g_ABnfFactory == nil then
-		g_ABnfFactory = alittlescript.create_alittlescript_factory()
-	end
-	if g_ABnf == nil then
-		g_ABnf = alanguage.create_abnf()
-		local abnf_path = g_ModuleBasePath .. "/Other/ABnf/ALittleScript.abnf"
-		local buffer = ALittle.File_ReadTextFromFile(abnf_path)
-		if buffer ~= nil then
-			local error = alanguage.abnf_load(g_ABnf, buffer, g_ABnfFactory)
-			if error ~= nil then
-				ALittle.Log("abnf load failed! " .. error)
-			end
-		else
-			ALittle.Log("abnf file read failed! " .. abnf_path)
-		end
-	end
+function AUICodeALittleScript:Ctor(project, full_path)
 	if g_ABnfColor == nil then
 		g_ABnfColor = {}
 		local color
@@ -84,7 +66,7 @@ function AUICodeALittleScript:Ctor(full_path)
 			g_ABnfColor[ALittleScriptColorType.ABnfRegex] = color
 		end
 	end
-	___rawset(self, "_abnf_file", alittlescript.create_alittlescript_file(full_path, g_ABnf, ""))
+	___rawset(self, "_abnf_file", alittlescript.create_alittlescript_file(project.project, full_path, ""))
 end
 
 function AUICodeALittleScript:QueryColorValue(tag)

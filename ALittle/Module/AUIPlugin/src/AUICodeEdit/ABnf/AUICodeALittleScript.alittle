@@ -1,9 +1,6 @@
 
 namespace AUIPlugin;
 
-private var g_ABnf:lua.ABnf;
-private var g_ABnfFactory:lua.ALittleScriptFactoryClass;
-
 private var g_ABnfColor:Map<int, ABnfColor>;
 
 enum ALittleScriptColorType
@@ -18,28 +15,8 @@ enum ALittleScriptColorType
 
 public class AUICodeALittleScript : AUICodeLanguage
 {
-    public ctor(string full_path)
+    public ctor(AUICodeProject project, string full_path)
     {
-        if (g_ABnfFactory == null)
-            g_ABnfFactory = lua.alittlescript.create_alittlescript_factory();
-
-        if (g_ABnf == null)
-        {
-            g_ABnf = lua.alanguage.create_abnf();
-
-            var abnf_path = g_ModuleBasePath.."/Other/ABnf/ALittleScript.abnf";
-            var buffer = ALittle.File_ReadTextFromFile(abnf_path);
-            if (buffer != null)
-            {
-                var error = lua.alanguage.abnf_load(g_ABnf, buffer, g_ABnfFactory);
-                if (error != null) ALittle.Log("abnf load failed! "..error);
-            }
-            else
-            {
-                ALittle.Log("abnf file read failed! "..abnf_path);
-            }
-        }
-
         if (g_ABnfColor == null)
         {
             g_ABnfColor = new Map<int, ABnfColor>();
@@ -88,7 +65,7 @@ public class AUICodeALittleScript : AUICodeLanguage
             }
         }
 
-        this._abnf_file = lua.alittlescript.create_alittlescript_file(full_path, g_ABnf, "");
+        this._abnf_file = lua.alittlescript.create_alittlescript_file(project.project, full_path, "");
     }
 
     // ÑÕÉ«²éÑ¯

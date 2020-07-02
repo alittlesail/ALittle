@@ -290,6 +290,7 @@ function AUICodeLineContainer:HandleColor()
 		self._set_color = nil
 	end
 end
+AUICodeLineContainer.HandleColor = Lua.CoWrap(AUICodeLineContainer.HandleColor)
 
 function AUICodeLineContainer:HandleHide(event)
 end
@@ -476,26 +477,31 @@ function AUICodeEdit:HandleLButtonDown(event)
 	end
 	if A_UISystem.sym_map[1073742048] and self._query_info ~= nil and self._language ~= nil then
 		local it_line, it_char = self:CalcLineAndChar(event.rel_x, event.rel_y)
-		local info = self._language:QueryGoto(it_line, it_char)
-		if info ~= nil then
-			if info.file_path == self._file_path then
-				self._cursor:SetLineChar(info.line_start, info.char_start - 1)
-				self._select_cursor:StartLineChar(info.line_start, info.char_start - 1)
-				self._select_cursor:UpdateLineChar(info.line_end, info.char_end)
-				self:FocusLineChar(self._cursor.line, self._cursor.char)
-			else
-				local goto_event = {}
-				goto_event.file_path = info.file_path
-				goto_event.line_start = info.line_start
-				goto_event.char_start = info.char_start
-				goto_event.line_end = info.line_end
-				goto_event.char_end = info.char_end
-				self:DispatchEvent(___all_struct[631224630], goto_event)
-			end
-		end
+		self:DoQueryGoto(it_line, it_char)
 		self:StopQueryInfo()
 	end
 end
+
+function AUICodeEdit:DoQueryGoto(it_line, it_char)
+	local info = self._language:QueryGoto(it_line, it_char)
+	if info ~= nil then
+		if info.file_path == self._file_path then
+			self._cursor:SetLineChar(info.line_start, info.char_start - 1)
+			self._select_cursor:StartLineChar(info.line_start, info.char_start - 1)
+			self._select_cursor:UpdateLineChar(info.line_end, info.char_end)
+			self:FocusLineChar(self._cursor.line, self._cursor.char)
+		else
+			local goto_event = {}
+			goto_event.file_path = info.file_path
+			goto_event.line_start = info.line_start
+			goto_event.char_start = info.char_start
+			goto_event.line_end = info.line_end
+			goto_event.char_end = info.char_end
+			self:DispatchEvent(___all_struct[631224630], goto_event)
+		end
+	end
+end
+AUICodeEdit.DoQueryGoto = Lua.CoWrap(AUICodeEdit.DoQueryGoto)
 
 function AUICodeEdit:HandleDragBegin(event)
 	self._cursor:SetOffsetXY(event.rel_x, event.rel_y)
@@ -579,6 +585,7 @@ function AUICodeEdit:UpdateQueryInfo(x, y)
 	self._goto_quad.visible = true
 	ALittle.System_SetHandCursor()
 end
+AUICodeEdit.UpdateQueryInfo = Lua.CoWrap(AUICodeEdit.UpdateQueryInfo)
 
 function AUICodeEdit:StopQueryInfo()
 	if self._language == nil then
@@ -626,6 +633,7 @@ function AUICodeEdit:UpdateErrorInfo()
 		item_info._focus_quad:AddEventListener(___all_struct[-1202439334], self, self.HandleErrorQuadMoveOut)
 	end
 end
+AUICodeEdit.UpdateErrorInfo = Lua.CoWrap(AUICodeEdit.UpdateErrorInfo)
 
 function AUICodeEdit:HandleChangedEvent(event)
 	if self._language == nil then
@@ -1045,10 +1053,16 @@ end
 
 function AUICodeEdit:OnHide()
 	self._cursor:Hide()
+	if self._language ~= nil then
+		self._language:OnHide()
+	end
 end
 
 function AUICodeEdit:OnShow()
 	self._cursor:Show()
+	if self._language ~= nil then
+		self._language:OnShow()
+	end
 end
 
 function AUICodeEdit:OnClose()
@@ -1058,13 +1072,19 @@ function AUICodeEdit:OnClose()
 	end
 	self._cursor:Hide()
 	self._file_path = nil
+	if self._language ~= nil then
+		self._language:OnClose()
+	end
 	collectgarbage("collect")
 end
 
 function AUICodeEdit:Load(file_path, revoke_list, language)
 	self._language = language
 	if self._language == nil and ALittle.File_GetFileExtByPathAndUpper(file_path) == "ABNF" then
-		self._language = AUICodeABnf(file_path)
+		self._language = AUICodeABnf(nil, file_path)
+	end
+	if self._language ~= nil then
+		self._language:OnOpen()
 	end
 	local content = ALittle.File_ReadTextFromStdFile(file_path)
 	if content == nil then

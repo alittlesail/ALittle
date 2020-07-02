@@ -13,9 +13,23 @@ public class AUICodeLanguage
 {
     private int _version = 1;
     private lua.ABnfFile _abnf_file;
+    private AUICodeProject _project;
+    private string _full_path;
+
+    public ctor(AUICodeProject project, string full_path)
+    {
+        this._project = project;
+        this._full_path = full_path;
+    }
 
     // 获取文本修改版本号
     public get version() : int { return this._version; }
+
+    // 处理
+    public fun OnOpen() {}
+    public fun OnClose() {}
+    public fun OnShow() {}
+    public fun OnHide() {}
 
     // 设置文本
     public fun SetText(string content)
@@ -39,33 +53,43 @@ public class AUICodeLanguage
     }
 
     // 查询颜色
-    public fun QueryColor(int line) : List<lua.ABnfQueryColor>
+    public await fun QueryColor(int line) : List<lua.ABnfQueryColor>
     {
-        return lua.alanguage.abnffile_querycolor(this._abnf_file, this._version, line);
+        var query_id = this._project.Add(co);
+        lua.alanguage.abnffile_querycolor(this._abnf_file, query_id, this._version, line);
+        return yield;
     }
 
     // 查询快捷信息
-    public fun QueryInfo(int line, int char) : lua.ABnfQueryInfo
+    public await fun QueryInfo(int line, int char) : lua.ABnfQueryInfo
     {
-        return lua.alanguage.abnffile_queryinfo(this._abnf_file, this._version, line, char);
+        var query_id = this._project.Add(co);
+        lua.alanguage.abnffile_queryinfo(this._abnf_file, query_id, this._version, line, char);
+        return yield;
     }
 
     // 查询跳转信息
-    public fun QueryGoto(int line, int char) : lua.ABnfQueryGoto
+    public await fun QueryGoto(int line, int char) : lua.ABnfQueryGoto
     {
-        return lua.alanguage.abnffile_querygoto(this._abnf_file, this._version, line, char);
+        var query_id = this._project.Add(co);
+        lua.alanguage.abnffile_querygoto(this._abnf_file, query_id, this._version, line, char);
+        return yield;
     }
 
     // 查询提示信息
-    public fun QueryComplete(int line, int char) : lua.ABnfQueryComplete
+    public await fun QueryComplete(int line, int char) : lua.ABnfQueryComplete
     {
-        return lua.alanguage.abnffile_querycomplete(this._abnf_file, this._version, line, char);
+        var query_id = this._project.Add(co);
+        lua.alanguage.abnffile_querycomplete(this._abnf_file, query_id, this._version, line, char);
+        return yield;
     }
 
     // 查询错误信息
-    public fun QueryError() : List<lua.ABnfQueryError>
+    public await fun QueryError() : List<lua.ABnfQueryError>
     {
-        return lua.alanguage.abnffile_queryerror(this._abnf_file, this._version);
+        var query_id = this._project.Add(co);
+        lua.alanguage.abnffile_queryerror(this._abnf_file, query_id, this._version);
+        return yield;
     }
 
     // 查询插入缩进

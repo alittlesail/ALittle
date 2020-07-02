@@ -61,6 +61,7 @@ function AUICodeCompleteScreen:ShowComplete(edit)
 		return
 	end
 end
+AUICodeCompleteScreen.ShowComplete = Lua.CoWrap(AUICodeCompleteScreen.ShowComplete)
 
 function AUICodeCompleteScreen:IsShow()
 	return self._complete ~= nil
@@ -140,6 +141,7 @@ function AUICodeCompleteScreen:GetSelectIndex()
 end
 
 function AUICodeCompleteScreen:ReInit(edit)
+	local ___COROUTINE = coroutine.running()
 	if edit.language == nil then
 		return false
 	end

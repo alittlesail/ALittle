@@ -59,4 +59,8 @@ public static __Plugin_Shutdown()
     g_AUIIMEManager.Shutdown();
     g_AUITool.Shutdown();
     g_AUICodeCompleteScreen.Shutdown();
+
+    if (g_ABnfProjectInfo != null
+        && g_ABnfProjectInfo.project != null)
+        g_ABnfProjectInfo.project.Stop();
 }

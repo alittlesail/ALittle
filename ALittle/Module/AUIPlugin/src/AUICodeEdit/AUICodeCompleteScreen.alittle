@@ -34,7 +34,7 @@ protected class AUICodeCompleteScreen
         this.Hide();
     }
 
-    public fun ShowComplete(AUICodeEdit edit)
+    public async fun ShowComplete(AUICodeEdit edit)
     {
         this._edit = edit;
         if (this._complete == null)
@@ -135,7 +135,7 @@ protected class AUICodeCompleteScreen
         return target;
     }
 
-    private fun ReInit(AUICodeEdit edit) : bool
+    private await fun ReInit(AUICodeEdit edit) : bool
     {
         if (edit.language == null) return false;
         this._complete = edit.language.QueryComplete(edit.cursor.line, edit.cursor.char - 1);

@@ -1,9 +1,6 @@
 
 namespace AUIPlugin;
 
-private var g_ABnf:lua.ABnf;
-private var g_ABnfFactory:lua.ABnfFactoryClass;
-
 private var g_ABnfColor:Map<int, ABnfColor>;
 
 enum ABnfColorType
@@ -16,29 +13,28 @@ enum ABnfColorType
     ABnfRegex = 6;
 }
 
+struct ABnfProjectInfo
+{
+    AUICodeProject project;
+}
+
+protected var g_ABnfProjectInfo:ABnfProjectInfo = ALittle.CreateValueWeakMap();
+
 public class AUICodeABnf : AUICodeLanguage
 {
-    public ctor(string full_path)
+    public ctor(AUICodeProject project, string full_path)
     {
-        if (g_ABnfFactory == null)
-            g_ABnfFactory = lua.abnf.create_abnf_factory();
-
-        if (g_ABnf == null)
+        if (this._project == null && g_ABnfProjectInfo.project == null)
         {
-            g_ABnf = lua.alanguage.create_abnf();
+            var buffer = ALittle.File_ReadTextFromFile(g_ModuleBasePath.."/Other/ABnf/ABnf.abnf");
+            if (buffer == null) buffer = "";
 
-            var abnf_path = g_ModuleBasePath.."/Other/ABnf/ABnf.abnf";
-            var buffer = ALittle.File_ReadTextFromFile(abnf_path);
-            if (buffer != null)
-            {
-                var error = lua.alanguage.abnf_load(g_ABnf, buffer, g_ABnfFactory);
-                if (error != null) ALittle.Log("abnf load failed! "..error);
-            }
-            else
-            {
-                ALittle.Log("abnf file read failed! "..abnf_path);
-            }
+            var native_project = lua.abnf.create_abnf_project("", buffer);
+            g_ABnfProjectInfo.project = new AUICodeProject(native_project);
+            g_ABnfProjectInfo.project.Start();
         }
+
+        if (this._project == null) this._project = g_ABnfProjectInfo.project;
 
         if (g_ABnfColor == null)
         {
@@ -88,7 +84,27 @@ public class AUICodeABnf : AUICodeLanguage
             }
         }
 
-        this._abnf_file = lua.abnf.create_abnf_file(full_path, g_ABnf, "");
+        this._abnf_file = lua.abnf.create_abnf_file(this._project.project, full_path, "");
+    }
+
+    public fun OnOpen()
+    {
+        this._project.UpdateFile(this._full_path);
+    }
+
+    public fun OnShow()
+    {
+        
+    }
+
+    public fun OnHide()
+    {
+        
+    }
+
+    public fun OnClose()
+    {
+        this._project.RemoveFile(this._full_path);
     }
 
     // ÑÕÉ«²éÑ¯

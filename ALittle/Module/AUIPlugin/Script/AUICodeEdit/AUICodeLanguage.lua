@@ -14,12 +14,26 @@ option_map = {}
 
 AUICodeLanguage = Lua.Class(nil, "AUIPlugin.AUICodeLanguage")
 
-function AUICodeLanguage:Ctor()
+function AUICodeLanguage:Ctor(project, full_path)
 	___rawset(self, "_version", 1)
+	___rawset(self, "_project", project)
+	___rawset(self, "_full_path", full_path)
 end
 
 function AUICodeLanguage.__getter:version()
 	return self._version
+end
+
+function AUICodeLanguage:OnOpen()
+end
+
+function AUICodeLanguage:OnClose()
+end
+
+function AUICodeLanguage:OnShow()
+end
+
+function AUICodeLanguage:OnHide()
 end
 
 function AUICodeLanguage:SetText(content)
@@ -38,23 +52,38 @@ function AUICodeLanguage:DeleteText(it_line_start, it_char_start, it_line_end, i
 end
 
 function AUICodeLanguage:QueryColor(line)
-	return alanguage.abnffile_querycolor(self._abnf_file, self._version, line)
+	local ___COROUTINE = coroutine.running()
+	local query_id = self._project:Add(___COROUTINE)
+	alanguage.abnffile_querycolor(self._abnf_file, query_id, self._version, line)
+	return coroutine.yield()
 end
 
 function AUICodeLanguage:QueryInfo(line, char)
-	return alanguage.abnffile_queryinfo(self._abnf_file, self._version, line, char)
+	local ___COROUTINE = coroutine.running()
+	local query_id = self._project:Add(___COROUTINE)
+	alanguage.abnffile_queryinfo(self._abnf_file, query_id, self._version, line, char)
+	return coroutine.yield()
 end
 
 function AUICodeLanguage:QueryGoto(line, char)
-	return alanguage.abnffile_querygoto(self._abnf_file, self._version, line, char)
+	local ___COROUTINE = coroutine.running()
+	local query_id = self._project:Add(___COROUTINE)
+	alanguage.abnffile_querygoto(self._abnf_file, query_id, self._version, line, char)
+	return coroutine.yield()
 end
 
 function AUICodeLanguage:QueryComplete(line, char)
-	return alanguage.abnffile_querycomplete(self._abnf_file, self._version, line, char)
+	local ___COROUTINE = coroutine.running()
+	local query_id = self._project:Add(___COROUTINE)
+	alanguage.abnffile_querycomplete(self._abnf_file, query_id, self._version, line, char)
+	return coroutine.yield()
 end
 
 function AUICodeLanguage:QueryError()
-	return alanguage.abnffile_queryerror(self._abnf_file, self._version)
+	local ___COROUTINE = coroutine.running()
+	local query_id = self._project:Add(___COROUTINE)
+	alanguage.abnffile_queryerror(self._abnf_file, query_id, self._version)
+	return coroutine.yield()
 end
 
 function AUICodeLanguage:QueryDesiredIndent(line, char)

@@ -5,9 +5,13 @@ local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
+ALittle.RegStruct(1083672388, "AUIPlugin.ABnfProjectInfo", {
+name = "AUIPlugin.ABnfProjectInfo", ns_name = "AUIPlugin", rl_name = "ABnfProjectInfo", hash_code = 1083672388,
+name_list = {"project"},
+type_list = {"AUIPlugin.AUICodeProject"},
+option_map = {}
+})
 
-local g_ABnf = nil
-local g_ABnfFactory = nil
 local g_ABnfColor = nil
 ABnfColorType = {
 	ABnfKeyWord = 1,
@@ -18,25 +22,22 @@ ABnfColorType = {
 	ABnfRegex = 6,
 }
 
+g_ABnfProjectInfo = ALittle.CreateValueWeakMap()
 assert(AUIPlugin.AUICodeLanguage, " extends class:AUIPlugin.AUICodeLanguage is nil")
 AUICodeABnf = Lua.Class(AUIPlugin.AUICodeLanguage, "AUIPlugin.AUICodeABnf")
 
-function AUICodeABnf:Ctor(full_path)
-	if g_ABnfFactory == nil then
-		g_ABnfFactory = abnf.create_abnf_factory()
-	end
-	if g_ABnf == nil then
-		g_ABnf = alanguage.create_abnf()
-		local abnf_path = g_ModuleBasePath .. "/Other/ABnf/ABnf.abnf"
-		local buffer = ALittle.File_ReadTextFromFile(abnf_path)
-		if buffer ~= nil then
-			local error = alanguage.abnf_load(g_ABnf, buffer, g_ABnfFactory)
-			if error ~= nil then
-				ALittle.Log("abnf load failed! " .. error)
-			end
-		else
-			ALittle.Log("abnf file read failed! " .. abnf_path)
+function AUICodeABnf:Ctor(project, full_path)
+	if self._project == nil and g_ABnfProjectInfo.project == nil then
+		local buffer = ALittle.File_ReadTextFromFile(g_ModuleBasePath .. "/Other/ABnf/ABnf.abnf")
+		if buffer == nil then
+			buffer = ""
 		end
+		local native_project = abnf.create_abnf_project("", buffer)
+		g_ABnfProjectInfo.project = AUICodeProject(native_project)
+		g_ABnfProjectInfo.project:Start()
+	end
+	if self._project == nil then
+		___rawset(self, "_project", g_ABnfProjectInfo.project)
 	end
 	if g_ABnfColor == nil then
 		g_ABnfColor = {}
@@ -84,7 +85,21 @@ function AUICodeABnf:Ctor(full_path)
 			g_ABnfColor[ABnfColorType.ABnfRegex] = color
 		end
 	end
-	___rawset(self, "_abnf_file", abnf.create_abnf_file(full_path, g_ABnf, ""))
+	___rawset(self, "_abnf_file", abnf.create_abnf_file(self._project.project, full_path, ""))
+end
+
+function AUICodeABnf:OnOpen()
+	self._project:UpdateFile(self._full_path)
+end
+
+function AUICodeABnf:OnShow()
+end
+
+function AUICodeABnf:OnHide()
+end
+
+function AUICodeABnf:OnClose()
+	self._project:RemoveFile(self._full_path)
 end
 
 function AUICodeABnf:QueryColorValue(tag)

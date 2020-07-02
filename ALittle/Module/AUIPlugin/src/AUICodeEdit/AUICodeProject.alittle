@@ -1,0 +1,56 @@
+
+namespace AUIPlugin;
+
+public class AUICodeProject
+{
+    private int _query_id = 0;
+    private lua.ABnfProject _project;
+
+    private ALittle.LoopFrame _loop;
+    private Map<int, ALittle.Thread> _map;
+
+    public ctor(lua.ABnfProject project)
+    {
+        this._project = project;
+        this._map = new Map<int, ALittle.Thread>();
+    }
+
+    public get project() : lua.ABnfProject { return this._project; }
+    public fun UpdateFile(string full_path) { lua.alanguage.abnfproject_updatefile(this._project, full_path); }
+    public fun RemoveFile(string full_path) { lua.alanguage.abnfproject_removefile(this._project, full_path); }
+
+    public fun Start()
+    {
+        if (this._loop != null) return;
+
+        this._loop = new ALittle.LoopFrame(bind(this.Update, this));
+        this._loop.Start();
+    }
+
+    public fun Add(ALittle.Thread thread) : int
+    {
+        ++ this._query_id;
+        this._map[this._query_id] = thread;
+        return this._query_id;
+    }
+
+    private fun Update(int frame)
+    {
+        var info = lua.alanguage.abnfproject_pollone(this._project);
+        if (info == null) return;
+
+        var thread = this._map[info.query_id];
+        if (thread == null) return;
+        this._map[info.query_id] = null;
+
+        ALittle.Coroutine.Resume(thread, info.result);
+    }
+
+    public fun Stop()
+    {
+        if (this._loop == null) return;
+
+        this._loop.Stop();
+        this._loop = null;
+    }
+}

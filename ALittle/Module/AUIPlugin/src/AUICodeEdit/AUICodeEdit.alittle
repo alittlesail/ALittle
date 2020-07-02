@@ -76,6 +76,7 @@ protected class AUICodeLineContainer : ALittle.DisplayLayout
     private bool _showd = false;
     private int _version = 0;
     private ALittle.LoopTimer _delay_loop = null;
+    private Functor<()> _set_color;
 
     public ctor(ALittle.ControlSystem ctrl_sys)
     {
@@ -114,8 +115,10 @@ protected class AUICodeLineContainer : ALittle.DisplayLayout
 
     public fun RestoreColor()
     {
+        this._set_color = null;
         if (this._delay_loop != null) return;
 
+        this._version = 0;
         this._delay_loop = new ALittle.LoopTimer(bind(this.HandleColor, this), 1);
         this._delay_loop.Start();
     }
@@ -124,9 +127,8 @@ protected class AUICodeLineContainer : ALittle.DisplayLayout
     {
         if (this._delay_loop != null)
         {
-            this._delay_loop.Stop();
-            this._delay_loop = null;
-            this.HandleColor();
+            this._set_color = bind(this.SetColor, this, char_start, char_end, red, green, blue);
+            return;
         }
 
         var line = cast<AUICodeLineInfo>(this._user_data);
@@ -148,7 +150,7 @@ protected class AUICodeLineContainer : ALittle.DisplayLayout
 
         // 如果已经没有父节点，那么直接返回
         if (this.parent == null) return;
-
+        
         var line = cast<AUICodeLineInfo>(this._user_data);
         if (this._version == line.edit.language.version) return;
         this._version = line.edit.language.version;
@@ -182,6 +184,12 @@ protected class AUICodeLineContainer : ALittle.DisplayLayout
                         child.text.alpha = 1;   
                 }
             }
+        }
+
+        if (this._set_color != null)
+        {
+            this._set_color();
+            this._set_color = null;
         }
     }
 
@@ -521,9 +529,12 @@ public class AUICodeEdit : ALittle.ScrollScreen
         if (this._language.version != this._query_info_version) return;
 
         this._query_info_version = null;
-        
-        var line_container = cast<AUICodeLineContainer>(this._code_linear.GetChildByIndex(this._query_info.line_start));
-        if (line_container != null) line_container.RestoreColor();
+
+        if (this._query_info != null)
+        {
+            var line_container = cast<AUICodeLineContainer>(this._code_linear.GetChildByIndex(this._query_info.line_start));
+            if (line_container != null) line_container.RestoreColor();   
+        }
 
         g_AUITool.HideTip();
         this._query_info = null;

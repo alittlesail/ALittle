@@ -34,7 +34,7 @@ function __Plugin_Setup(control, module_base_path, script_base_path)
 	g_ModuleBasePath = module_base_path
 	g_ScriptBasePath = script_base_path
 	RequireFromPaths(script_base_path, "AUI/", {"AUIEditImageDialog.alittle", "AUIFileSelectDialog.alittle", "AUIImageCutPlugin.alittle", "AUIIMEManager.alittle", "AUIRightMenu.alittle", "AUITool.alittle", "AUIVersionManager.alittle", "AUIWebLoginManager.alittle"})
-	RequireFromPaths(script_base_path, "AUICodeEdit/", {"AUICodeCompleteScreen.alittle", "AUICodeCursor.alittle", "AUICodeEdit.alittle", "AUICodeLanguage.alittle", "AUICodeRevocation.alittle", "AUICodeSelectCursor.alittle", "ABnf/AUICodeABnf.alittle"})
+	RequireFromPaths(script_base_path, "AUICodeEdit/", {"AUICodeCompleteScreen.alittle", "AUICodeCursor.alittle", "AUICodeEdit.alittle", "AUICodeLanguage.alittle", "AUICodeRevocation.alittle", "AUICodeSelectCursor.alittle", "ABnf/AUICodeABnf.alittle", "ABnf/AUICodeALittleScript.alittle"})
 	g_AUIIMEManager:Setup()
 end
 __Plugin_Setup = Lua.CoWrap(__Plugin_Setup)

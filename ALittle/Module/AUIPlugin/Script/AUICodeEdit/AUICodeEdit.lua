@@ -212,18 +212,19 @@ function AUICodeLineContainer:CreateAndAdd(char)
 end
 
 function AUICodeLineContainer:RestoreColor()
+	self._set_color = nil
 	if self._delay_loop ~= nil then
 		return
 	end
+	self._version = 0
 	self._delay_loop = ALittle.LoopTimer(Lua.Bind(self.HandleColor, self), 1)
 	self._delay_loop:Start()
 end
 
 function AUICodeLineContainer:SetColor(char_start, char_end, red, green, blue)
 	if self._delay_loop ~= nil then
-		self._delay_loop:Stop()
-		self._delay_loop = nil
-		self:HandleColor()
+		self._set_color = Lua.Bind(self.SetColor, self, char_start, char_end, red, green, blue)
+		return
 	end
 	local line = self._user_data
 	local i = char_start
@@ -283,6 +284,10 @@ function AUICodeLineContainer:HandleColor()
 			end
 			i = i+(1)
 		end
+	end
+	if self._set_color ~= nil then
+		self._set_color()
+		self._set_color = nil
 	end
 end
 
@@ -583,9 +588,11 @@ function AUICodeEdit:StopQueryInfo()
 		return
 	end
 	self._query_info_version = nil
-	local line_container = self._code_linear:GetChildByIndex(self._query_info.line_start)
-	if line_container ~= nil then
-		line_container:RestoreColor()
+	if self._query_info ~= nil then
+		local line_container = self._code_linear:GetChildByIndex(self._query_info.line_start)
+		if line_container ~= nil then
+			line_container:RestoreColor()
+		end
 	end
 	g_AUITool:HideTip()
 	self._query_info = nil

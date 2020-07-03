@@ -67,6 +67,12 @@ public:
         }
         return result;
     }
+
+    // Ìæ»»×Ö·û´®
+    static std::string ReplaceAll(std::string str, const std::string& from, const std::string& to);
+    
+    // Ð´ÈëÎÄ¼þ
+    static bool WriteAllText(const std::string& file_path, const std::string& content);
 };
 
 #endif // _ALITTLE_ALANGUAGECOMPLETIONINFO_H_

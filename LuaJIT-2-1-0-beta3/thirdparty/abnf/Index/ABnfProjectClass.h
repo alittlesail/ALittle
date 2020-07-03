@@ -20,6 +20,8 @@ public:
     virtual ~ABnfProjectClass() {}
 
     ABnfFactory& RefFactory() override { return m_factory; }
+
+    void Generate(const std::string& full_path, int query_id, int version, const std::string& target_path, const std::string& language_name);
 };
 
 #endif // _ALITTLE_ABNFPROJECTCLASS_H_

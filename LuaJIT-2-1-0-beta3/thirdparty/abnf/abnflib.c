@@ -62,6 +62,21 @@ static int abnflib_create_abnf_file(lua_State* L)
 	return 1;
 }
 
+static int abnflib_abnffile_generate(lua_State* L)
+{
+	void** file = (void**)lua_touserdata(L, 1);
+	luaL_argcheck(L, file != 0, 1, "file is null");
+	int query_id = (int)luaL_checkinteger(L, 2);
+	int version = (int)luaL_checkinteger(L, 3);
+	const char* target_path = luaL_checkstring(L, 4);
+	luaL_argcheck(L, target_path != 0, 4, "full_path is null");
+	const char* language_name = luaL_checkstring(L, 5);
+	luaL_argcheck(L, language_name != 0, 5, "language_name is null");
+
+	abnffile_generate(*file, query_id, version, target_path, language_name);
+	return 0;
+}
+
 /*
 ** Assumes the table is on top of the stack.
 */
@@ -80,6 +95,7 @@ static void set_info (lua_State *L) {
 static struct luaL_Reg abnflib[] = {
   {"create_abnf_project", abnflib_create_abnf_project},
   {"create_abnf_file", abnflib_create_abnf_file},
+  {"abnffile_generate", abnflib_abnffile_generate},
   {NULL, NULL}
 };
 

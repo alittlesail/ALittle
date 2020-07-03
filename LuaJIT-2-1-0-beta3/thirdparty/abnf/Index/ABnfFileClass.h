@@ -31,6 +31,21 @@ public:
     void CollectIndex(ABnfNodeElementPtr node);
     // 收集规则ID
     void CollectRule();
+
+public:
+    // 生成C++代码
+    std::string Generate(int version, const std::string& target_path, const std::string& language_name);
+
+private:
+    struct CollectCompileInfo
+    {
+        // 0 表示没有，1表示一个，大于1表示多个
+        std::unordered_map<std::string, int> id_map;
+        int has_string = 0;
+        int has_regex = 0;
+        int has_key = 0;
+    };
+    void CollectCompile(ABnfElementPtr element, CollectCompileInfo& info, bool multi);
 };
 
 #endif // _ALITTLE_ABNFFILECLASS_H_

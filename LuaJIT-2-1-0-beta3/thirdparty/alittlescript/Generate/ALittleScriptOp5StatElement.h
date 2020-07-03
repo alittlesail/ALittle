@@ -39,7 +39,7 @@ private:
     bool m_flag_Op5SuffixEx = false;
     std::vector<std::shared_ptr<ALittleScriptOp5SuffixExElement>> m_list_Op5SuffixEx;
 public:
-    std::vector<std::shared_ptr<ALittleScriptOp5SuffixExElement>> GetOp5SuffixExList()
+    const std::vector<std::shared_ptr<ALittleScriptOp5SuffixExElement>>& GetOp5SuffixExList()
     {
         if (m_flag_Op5SuffixEx) return m_list_Op5SuffixEx;
         m_flag_Op5SuffixEx = true;

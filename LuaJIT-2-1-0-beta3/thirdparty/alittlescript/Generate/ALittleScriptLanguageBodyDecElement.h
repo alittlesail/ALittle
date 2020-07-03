@@ -20,7 +20,7 @@ private:
     bool m_flag_LanguageNameDec = false;
     std::vector<std::shared_ptr<ALittleScriptLanguageNameDecElement>> m_list_LanguageNameDec;
 public:
-    std::vector<std::shared_ptr<ALittleScriptLanguageNameDecElement>> GetLanguageNameDecList()
+    const std::vector<std::shared_ptr<ALittleScriptLanguageNameDecElement>>& GetLanguageNameDecList()
     {
         if (m_flag_LanguageNameDec) return m_list_LanguageNameDec;
         m_flag_LanguageNameDec = true;
@@ -36,7 +36,7 @@ private:
     bool m_flag_String = false;
     std::vector<std::shared_ptr<ALittleScriptStringElement>> m_list_String;
 public:
-    std::vector<std::shared_ptr<ALittleScriptStringElement>> GetStringList()
+    const std::vector<std::shared_ptr<ALittleScriptStringElement>>& GetStringList()
     {
         if (m_flag_String) return m_list_String;
         m_flag_String = true;

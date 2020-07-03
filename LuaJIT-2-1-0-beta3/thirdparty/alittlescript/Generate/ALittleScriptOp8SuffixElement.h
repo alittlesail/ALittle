@@ -79,7 +79,7 @@ private:
     bool m_flag_Op8SuffixEe = false;
     std::vector<std::shared_ptr<ALittleScriptOp8SuffixEeElement>> m_list_Op8SuffixEe;
 public:
-    std::vector<std::shared_ptr<ALittleScriptOp8SuffixEeElement>> GetOp8SuffixEeList()
+    const std::vector<std::shared_ptr<ALittleScriptOp8SuffixEeElement>>& GetOp8SuffixEeList()
     {
         if (m_flag_Op8SuffixEe) return m_list_Op8SuffixEe;
         m_flag_Op8SuffixEe = true;

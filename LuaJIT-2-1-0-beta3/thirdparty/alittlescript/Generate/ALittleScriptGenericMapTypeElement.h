@@ -21,7 +21,7 @@ private:
     bool m_flag_AllType = false;
     std::vector<std::shared_ptr<ALittleScriptAllTypeElement>> m_list_AllType;
 public:
-    std::vector<std::shared_ptr<ALittleScriptAllTypeElement>> GetAllTypeList()
+    const std::vector<std::shared_ptr<ALittleScriptAllTypeElement>>& GetAllTypeList()
     {
         if (m_flag_AllType) return m_list_AllType;
         m_flag_AllType = true;
@@ -56,7 +56,7 @@ private:
     bool m_flag_String = false;
     std::vector<std::shared_ptr<ALittleScriptStringElement>> m_list_String;
 public:
-    std::vector<std::shared_ptr<ALittleScriptStringElement>> GetStringList()
+    const std::vector<std::shared_ptr<ALittleScriptStringElement>>& GetStringList()
     {
         if (m_flag_String) return m_list_String;
         m_flag_String = true;

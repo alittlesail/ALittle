@@ -22,7 +22,7 @@ private:
     bool m_flag_PropertyValue = false;
     std::vector<std::shared_ptr<ALittleScriptPropertyValueElement>> m_list_PropertyValue;
 public:
-    std::vector<std::shared_ptr<ALittleScriptPropertyValueElement>> GetPropertyValueList()
+    const std::vector<std::shared_ptr<ALittleScriptPropertyValueElement>>& GetPropertyValueList()
     {
         if (m_flag_PropertyValue) return m_list_PropertyValue;
         m_flag_PropertyValue = true;
@@ -76,7 +76,7 @@ private:
     bool m_flag_String = false;
     std::vector<std::shared_ptr<ALittleScriptStringElement>> m_list_String;
 public:
-    std::vector<std::shared_ptr<ALittleScriptStringElement>> GetStringList()
+    const std::vector<std::shared_ptr<ALittleScriptStringElement>>& GetStringList()
     {
         if (m_flag_String) return m_list_String;
         m_flag_String = true;

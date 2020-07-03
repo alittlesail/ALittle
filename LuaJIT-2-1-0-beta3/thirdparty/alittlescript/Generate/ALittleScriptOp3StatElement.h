@@ -39,7 +39,7 @@ private:
     bool m_flag_Op3SuffixEx = false;
     std::vector<std::shared_ptr<ALittleScriptOp3SuffixExElement>> m_list_Op3SuffixEx;
 public:
-    std::vector<std::shared_ptr<ALittleScriptOp3SuffixExElement>> GetOp3SuffixExList()
+    const std::vector<std::shared_ptr<ALittleScriptOp3SuffixExElement>>& GetOp3SuffixExList()
     {
         if (m_flag_Op3SuffixEx) return m_list_Op3SuffixEx;
         m_flag_Op3SuffixEx = true;

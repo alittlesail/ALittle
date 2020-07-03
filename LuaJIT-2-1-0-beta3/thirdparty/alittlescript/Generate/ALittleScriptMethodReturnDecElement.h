@@ -20,7 +20,7 @@ private:
     bool m_flag_MethodReturnOneDec = false;
     std::vector<std::shared_ptr<ALittleScriptMethodReturnOneDecElement>> m_list_MethodReturnOneDec;
 public:
-    std::vector<std::shared_ptr<ALittleScriptMethodReturnOneDecElement>> GetMethodReturnOneDecList()
+    const std::vector<std::shared_ptr<ALittleScriptMethodReturnOneDecElement>>& GetMethodReturnOneDecList()
     {
         if (m_flag_MethodReturnOneDec) return m_list_MethodReturnOneDec;
         m_flag_MethodReturnOneDec = true;
@@ -36,7 +36,7 @@ private:
     bool m_flag_String = false;
     std::vector<std::shared_ptr<ALittleScriptStringElement>> m_list_String;
 public:
-    std::vector<std::shared_ptr<ALittleScriptStringElement>> GetStringList()
+    const std::vector<std::shared_ptr<ALittleScriptStringElement>>& GetStringList()
     {
         if (m_flag_String) return m_list_String;
         m_flag_String = true;

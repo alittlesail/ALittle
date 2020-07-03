@@ -20,7 +20,7 @@ private:
     bool m_flag_GenericFunctorReturnOneType = false;
     std::vector<std::shared_ptr<ALittleScriptGenericFunctorReturnOneTypeElement>> m_list_GenericFunctorReturnOneType;
 public:
-    std::vector<std::shared_ptr<ALittleScriptGenericFunctorReturnOneTypeElement>> GetGenericFunctorReturnOneTypeList()
+    const std::vector<std::shared_ptr<ALittleScriptGenericFunctorReturnOneTypeElement>>& GetGenericFunctorReturnOneTypeList()
     {
         if (m_flag_GenericFunctorReturnOneType) return m_list_GenericFunctorReturnOneType;
         m_flag_GenericFunctorReturnOneType = true;
@@ -36,7 +36,7 @@ private:
     bool m_flag_String = false;
     std::vector<std::shared_ptr<ALittleScriptStringElement>> m_list_String;
 public:
-    std::vector<std::shared_ptr<ALittleScriptStringElement>> GetStringList()
+    const std::vector<std::shared_ptr<ALittleScriptStringElement>>& GetStringList()
     {
         if (m_flag_String) return m_list_String;
         m_flag_String = true;

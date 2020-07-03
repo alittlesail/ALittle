@@ -60,7 +60,7 @@ private:
     bool m_flag_Op6SuffixEe = false;
     std::vector<std::shared_ptr<ALittleScriptOp6SuffixEeElement>> m_list_Op6SuffixEe;
 public:
-    std::vector<std::shared_ptr<ALittleScriptOp6SuffixEeElement>> GetOp6SuffixEeList()
+    const std::vector<std::shared_ptr<ALittleScriptOp6SuffixEeElement>>& GetOp6SuffixEeList()
     {
         if (m_flag_Op6SuffixEe) return m_list_Op6SuffixEe;
         m_flag_Op6SuffixEe = true;

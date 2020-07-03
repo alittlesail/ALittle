@@ -237,7 +237,7 @@ static std::string ABnfGetChildListTemplate =
 "    bool m_flag_@@NAME@@ = false;\n"
 "    std::vector<std::shared_ptr<@@LANGUAGE@@@@NAME@@Element>> m_list_@@NAME@@;\n"
 "public:\n"
-"    std::vector<std::shared_ptr<@@LANGUAGE@@@@NAME@@Element>> Get@@NAME@@List()\n"
+"    const std::vector<std::shared_ptr<@@LANGUAGE@@@@NAME@@Element>>& Get@@NAME@@List()\n"
 "    {\n"
 "        if (m_flag_@@NAME@@) return m_list_@@NAME@@;\n"
 "        m_flag_@@NAME@@ = true;\n"

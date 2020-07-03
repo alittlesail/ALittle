@@ -39,7 +39,7 @@ private:
     bool m_flag_PropertyValueSuffix = false;
     std::vector<std::shared_ptr<ALittleScriptPropertyValueSuffixElement>> m_list_PropertyValueSuffix;
 public:
-    std::vector<std::shared_ptr<ALittleScriptPropertyValueSuffixElement>> GetPropertyValueSuffixList()
+    const std::vector<std::shared_ptr<ALittleScriptPropertyValueSuffixElement>>& GetPropertyValueSuffixList()
     {
         if (m_flag_PropertyValueSuffix) return m_list_PropertyValueSuffix;
         m_flag_PropertyValueSuffix = true;

@@ -79,7 +79,7 @@ private:
     bool m_flag_Op7SuffixEe = false;
     std::vector<std::shared_ptr<ALittleScriptOp7SuffixEeElement>> m_list_Op7SuffixEe;
 public:
-    std::vector<std::shared_ptr<ALittleScriptOp7SuffixEeElement>> GetOp7SuffixEeList()
+    const std::vector<std::shared_ptr<ALittleScriptOp7SuffixEeElement>>& GetOp7SuffixEeList()
     {
         if (m_flag_Op7SuffixEe) return m_list_Op7SuffixEe;
         m_flag_Op7SuffixEe = true;

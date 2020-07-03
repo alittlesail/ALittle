@@ -20,7 +20,7 @@ private:
     bool m_flag_TemplatePairDec = false;
     std::vector<std::shared_ptr<ALittleScriptTemplatePairDecElement>> m_list_TemplatePairDec;
 public:
-    std::vector<std::shared_ptr<ALittleScriptTemplatePairDecElement>> GetTemplatePairDecList()
+    const std::vector<std::shared_ptr<ALittleScriptTemplatePairDecElement>>& GetTemplatePairDecList()
     {
         if (m_flag_TemplatePairDec) return m_list_TemplatePairDec;
         m_flag_TemplatePairDec = true;
@@ -36,7 +36,7 @@ private:
     bool m_flag_String = false;
     std::vector<std::shared_ptr<ALittleScriptStringElement>> m_list_String;
 public:
-    std::vector<std::shared_ptr<ALittleScriptStringElement>> GetStringList()
+    const std::vector<std::shared_ptr<ALittleScriptStringElement>>& GetStringList()
     {
         if (m_flag_String) return m_list_String;
         m_flag_String = true;

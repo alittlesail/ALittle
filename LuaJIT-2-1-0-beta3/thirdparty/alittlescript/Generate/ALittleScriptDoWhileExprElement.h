@@ -60,7 +60,7 @@ private:
     bool m_flag_Key = false;
     std::vector<std::shared_ptr<ALittleScriptKeyElement>> m_list_Key;
 public:
-    std::vector<std::shared_ptr<ALittleScriptKeyElement>> GetKeyList()
+    const std::vector<std::shared_ptr<ALittleScriptKeyElement>>& GetKeyList()
     {
         if (m_flag_Key) return m_list_Key;
         m_flag_Key = true;

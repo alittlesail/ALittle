@@ -20,7 +20,7 @@ private:
     bool m_flag_ClassElementDec = false;
     std::vector<std::shared_ptr<ALittleScriptClassElementDecElement>> m_list_ClassElementDec;
 public:
-    std::vector<std::shared_ptr<ALittleScriptClassElementDecElement>> GetClassElementDecList()
+    const std::vector<std::shared_ptr<ALittleScriptClassElementDecElement>>& GetClassElementDecList()
     {
         if (m_flag_ClassElementDec) return m_list_ClassElementDec;
         m_flag_ClassElementDec = true;
@@ -36,7 +36,7 @@ private:
     bool m_flag_String = false;
     std::vector<std::shared_ptr<ALittleScriptStringElement>> m_list_String;
 public:
-    std::vector<std::shared_ptr<ALittleScriptStringElement>> GetStringList()
+    const std::vector<std::shared_ptr<ALittleScriptStringElement>>& GetStringList()
     {
         if (m_flag_String) return m_list_String;
         m_flag_String = true;

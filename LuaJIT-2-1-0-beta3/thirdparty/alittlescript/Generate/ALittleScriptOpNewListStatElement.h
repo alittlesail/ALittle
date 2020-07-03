@@ -20,7 +20,7 @@ private:
     bool m_flag_ValueStat = false;
     std::vector<std::shared_ptr<ALittleScriptValueStatElement>> m_list_ValueStat;
 public:
-    std::vector<std::shared_ptr<ALittleScriptValueStatElement>> GetValueStatList()
+    const std::vector<std::shared_ptr<ALittleScriptValueStatElement>>& GetValueStatList()
     {
         if (m_flag_ValueStat) return m_list_ValueStat;
         m_flag_ValueStat = true;
@@ -36,7 +36,7 @@ private:
     bool m_flag_String = false;
     std::vector<std::shared_ptr<ALittleScriptStringElement>> m_list_String;
 public:
-    std::vector<std::shared_ptr<ALittleScriptStringElement>> GetStringList()
+    const std::vector<std::shared_ptr<ALittleScriptStringElement>>& GetStringList()
     {
         if (m_flag_String) return m_list_String;
         m_flag_String = true;

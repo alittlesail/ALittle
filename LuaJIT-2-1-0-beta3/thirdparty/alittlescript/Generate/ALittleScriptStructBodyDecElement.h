@@ -21,7 +21,7 @@ private:
     bool m_flag_StructOptionDec = false;
     std::vector<std::shared_ptr<ALittleScriptStructOptionDecElement>> m_list_StructOptionDec;
 public:
-    std::vector<std::shared_ptr<ALittleScriptStructOptionDecElement>> GetStructOptionDecList()
+    const std::vector<std::shared_ptr<ALittleScriptStructOptionDecElement>>& GetStructOptionDecList()
     {
         if (m_flag_StructOptionDec) return m_list_StructOptionDec;
         m_flag_StructOptionDec = true;
@@ -37,7 +37,7 @@ private:
     bool m_flag_StructVarDec = false;
     std::vector<std::shared_ptr<ALittleScriptStructVarDecElement>> m_list_StructVarDec;
 public:
-    std::vector<std::shared_ptr<ALittleScriptStructVarDecElement>> GetStructVarDecList()
+    const std::vector<std::shared_ptr<ALittleScriptStructVarDecElement>>& GetStructVarDecList()
     {
         if (m_flag_StructVarDec) return m_list_StructVarDec;
         m_flag_StructVarDec = true;
@@ -53,7 +53,7 @@ private:
     bool m_flag_String = false;
     std::vector<std::shared_ptr<ALittleScriptStringElement>> m_list_String;
 public:
-    std::vector<std::shared_ptr<ALittleScriptStringElement>> GetStringList()
+    const std::vector<std::shared_ptr<ALittleScriptStringElement>>& GetStringList()
     {
         if (m_flag_String) return m_list_String;
         m_flag_String = true;

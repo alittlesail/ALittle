@@ -81,7 +81,7 @@ private:
     bool m_flag_ElseIfExpr = false;
     std::vector<std::shared_ptr<ALittleScriptElseIfExprElement>> m_list_ElseIfExpr;
 public:
-    std::vector<std::shared_ptr<ALittleScriptElseIfExprElement>> GetElseIfExprList()
+    const std::vector<std::shared_ptr<ALittleScriptElseIfExprElement>>& GetElseIfExprList()
     {
         if (m_flag_ElseIfExpr) return m_list_ElseIfExpr;
         m_flag_ElseIfExpr = true;

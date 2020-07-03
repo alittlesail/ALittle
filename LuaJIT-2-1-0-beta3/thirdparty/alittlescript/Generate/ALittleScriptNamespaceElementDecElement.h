@@ -26,7 +26,7 @@ private:
     bool m_flag_Modifier = false;
     std::vector<std::shared_ptr<ALittleScriptModifierElement>> m_list_Modifier;
 public:
-    std::vector<std::shared_ptr<ALittleScriptModifierElement>> GetModifierList()
+    const std::vector<std::shared_ptr<ALittleScriptModifierElement>>& GetModifierList()
     {
         if (m_flag_Modifier) return m_list_Modifier;
         m_flag_Modifier = true;

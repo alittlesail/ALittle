@@ -20,7 +20,7 @@ private:
     bool m_flag_AllExpr = false;
     std::vector<std::shared_ptr<ALittleScriptAllExprElement>> m_list_AllExpr;
 public:
-    std::vector<std::shared_ptr<ALittleScriptAllExprElement>> GetAllExprList()
+    const std::vector<std::shared_ptr<ALittleScriptAllExprElement>>& GetAllExprList()
     {
         if (m_flag_AllExpr) return m_list_AllExpr;
         m_flag_AllExpr = true;
@@ -36,7 +36,7 @@ private:
     bool m_flag_String = false;
     std::vector<std::shared_ptr<ALittleScriptStringElement>> m_list_String;
 public:
-    std::vector<std::shared_ptr<ALittleScriptStringElement>> GetStringList()
+    const std::vector<std::shared_ptr<ALittleScriptStringElement>>& GetStringList()
     {
         if (m_flag_String) return m_list_String;
         m_flag_String = true;

@@ -23,7 +23,7 @@ private:
     bool m_flag_Modifier = false;
     std::vector<std::shared_ptr<ALittleScriptModifierElement>> m_list_Modifier;
 public:
-    std::vector<std::shared_ptr<ALittleScriptModifierElement>> GetModifierList()
+    const std::vector<std::shared_ptr<ALittleScriptModifierElement>>& GetModifierList()
     {
         if (m_flag_Modifier) return m_list_Modifier;
         m_flag_Modifier = true;
@@ -39,7 +39,7 @@ private:
     bool m_flag_NamespaceElementDec = false;
     std::vector<std::shared_ptr<ALittleScriptNamespaceElementDecElement>> m_list_NamespaceElementDec;
 public:
-    std::vector<std::shared_ptr<ALittleScriptNamespaceElementDecElement>> GetNamespaceElementDecList()
+    const std::vector<std::shared_ptr<ALittleScriptNamespaceElementDecElement>>& GetNamespaceElementDecList()
     {
         if (m_flag_NamespaceElementDec) return m_list_NamespaceElementDec;
         m_flag_NamespaceElementDec = true;

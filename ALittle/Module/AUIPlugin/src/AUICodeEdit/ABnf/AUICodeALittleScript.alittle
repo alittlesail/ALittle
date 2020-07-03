@@ -70,4 +70,6 @@ public class AUICodeALittleScript : AUICodeLanguage
 
     // ÑÕÉ«²éÑ¯
     public fun QueryColorValue(int tag) : ABnfColor { return g_ABnfColor[tag]; }
+
+
 }

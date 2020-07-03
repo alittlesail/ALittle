@@ -31,6 +31,12 @@ public class AUICodeLanguage
     public fun OnShow() {}
     public fun OnHide() {}
 
+    // Tab右键点击
+    public fun OnRightMenu(AUIRightMenu menu)
+    {
+        
+    }
+
     // 设置文本
     public fun SetText(string content)
     {

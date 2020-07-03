@@ -106,6 +106,10 @@ function AUICodeABnf:QueryColorValue(tag)
 	return g_ABnfColor[tag]
 end
 
+function AUICodeABnf:OnRightMenu(menu)
+	menu:AddItem("生成", Lua.Bind(self.GenerateABnf, self))
+end
+
 function AUICodeABnf:GenerateABnf()
 	local file_name = ALittle.File_GetJustFileNameByPath(self._full_path)
 	local path = g_AUITool:ShowSelectDir("选择生成的文件夹", self._generate_dir)

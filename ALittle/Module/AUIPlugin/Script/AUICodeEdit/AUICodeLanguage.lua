@@ -36,6 +36,9 @@ end
 function AUICodeLanguage:OnHide()
 end
 
+function AUICodeLanguage:OnRightMenu(menu)
+end
+
 function AUICodeLanguage:SetText(content)
 	self._version = self._version + (1)
 	alanguage.abnffile_settext(self._abnf_file, content)

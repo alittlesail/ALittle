@@ -112,6 +112,11 @@ public class AUICodeABnf : AUICodeLanguage
     // 颜色查询
     public fun QueryColorValue(int tag) : ABnfColor { return g_ABnfColor[tag]; }
 
+    public fun OnRightMenu(AUIRightMenu menu)
+    {
+        menu.AddItem("生成", bind(this.GenerateABnf, this));
+    }
+
     // 生成对应的代码
     public async fun GenerateABnf()
     {

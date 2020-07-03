@@ -1021,9 +1021,7 @@ public class AUICodeEdit : ALittle.ScrollScreen
 
     public fun OnRightMenu(AUIRightMenu menu)
     {
-        var code_abnf = ALittle.Cast{AUICodeABnf}(this._language);
-        if (code_abnf != null)
-		    menu.AddItem("生成", bind(code_abnf.GenerateABnf, code_abnf));
+        if (this._language != null) this._language.OnRightMenu(menu);
     }
 
     public fun OnHide()

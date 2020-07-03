@@ -12,6 +12,18 @@ name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
+ALittle.RegStruct(-1347278145, "ALittle.UIButtonEvent", {
+name = "ALittle.UIButtonEvent", ns_name = "ALittle", rl_name = "UIButtonEvent", hash_code = -1347278145,
+name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
+type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
+option_map = {}
+})
+ALittle.RegStruct(-641444818, "ALittle.UIRButtonDownEvent", {
+name = "ALittle.UIRButtonDownEvent", ns_name = "ALittle", rl_name = "UIRButtonDownEvent", hash_code = -641444818,
+name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
+type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
+option_map = {}
+})
 ALittle.RegStruct(-449066808, "ALittle.UIClickEvent", {
 name = "ALittle.UIClickEvent", ns_name = "ALittle", rl_name = "UIClickEvent", hash_code = -449066808,
 name_list = {"target","is_drag"},
@@ -30,6 +42,7 @@ function IDECodeTreeItem:Ctor(ctrl_sys, user_info)
 	self._item_button.selected = false
 	self._item_button.group = user_info.group
 	self._item_button:AddEventListener(___all_struct[-449066808], self, self.HandleClick)
+	self._item_button:AddEventListener(___all_struct[-641444818], self, self.HandleRButtonDown)
 	self._item_button._user_data = self
 	self._item_title.text = self._user_info.name
 end
@@ -58,4 +71,21 @@ function IDECodeTreeItem:SearchFile(name, list)
 	end
 	return list
 end
+
+function IDECodeTreeItem:HandleRButtonDown(event)
+	local menu = AUIPlugin.AUIRightMenu()
+	menu:AddItem("删除", Lua.Bind(self.HandleDeleteFile, self))
+	menu:Show()
+end
+
+function IDECodeTreeItem:HandleDeleteFile()
+	local file_name = ALittle.File_GetFileNameByPath(self._user_info.path)
+	local result = g_AUITool:DeleteNotice("删除", "确定要删除" .. file_name .. "吗?")
+	if result ~= "YES" then
+		return
+	end
+	ALittle.File_DeleteFile(self._user_info.path)
+	self:RemoveFromParent()
+end
+IDECodeTreeItem.HandleDeleteFile = Lua.CoWrap(IDECodeTreeItem.HandleDeleteFile)
 

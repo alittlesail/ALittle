@@ -45,11 +45,19 @@ function IDECodeTabChild:OnOpen()
 	self._edit:Load(self._user_info.path, self._revoke_list)
 end
 
+function IDECodeTabChild:OnRightMenu(menu)
+	self._edit:OnRightMenu(menu)
+end
+
 function IDECodeTabChild:HandleChangedEvent(event)
 	self.save = false
 end
 
 function IDECodeTabChild.__getter:tab_screen()
+	return self._edit
+end
+
+function IDECodeTabChild.__getter:tab_body()
 	return self._edit
 end
 

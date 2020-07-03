@@ -223,16 +223,10 @@ function IDEUITabChild:ShowInCenter()
 	end
 end
 
-function IDEUITabChild:OnRightMenu()
-	local menu = AUIPlugin.AUIRightMenu()
-	menu:AddItem("保存", Lua.Bind(self.Save, self))
+function IDEUITabChild:OnRightMenu(menu)
 	menu:AddItem("截图导出", Lua.Bind(A_OtherSystem.SystemSaveFile, A_OtherSystem, self, self._name .. ".png", nil))
 	menu:AddItem("复制控件名", Lua.Bind(ALittle.System_SetClipboardText, self._name))
 	menu:AddItem("复制继承代码", Lua.Bind(self.CopyExtends, self))
-	menu:AddItem("关闭自己", Lua.Bind(g_IDECenter.center.content_edit.CloseTabWithAsk, g_IDECenter.center.content_edit, self._tab_screen))
-	menu:AddItem("关闭左侧", Lua.Bind(g_IDECenter.center.content_edit.CloseLeftTab, g_IDECenter.center.content_edit, self._tab_screen))
-	menu:AddItem("关闭右侧", Lua.Bind(g_IDECenter.center.content_edit.CloseRightTab, g_IDECenter.center.content_edit, self._tab_screen))
-	menu:Show()
 end
 
 function IDEUITabChild:CopyExtends()
@@ -262,6 +256,10 @@ end
 
 function IDEUITabChild:HandleSavePng(event)
 	g_Control:SaveControlToFile(self._tree_object.user_info.object, event.path)
+end
+
+function IDEUITabChild.__getter:tab_body()
+	return self._tab_screen
 end
 
 function IDEUITabChild.__getter:edit_screen()

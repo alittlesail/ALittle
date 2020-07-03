@@ -215,18 +215,12 @@ public class IDEUITabChild : IDETabChild
         }
     }
 
-    private fun OnRightMenu()
+    private fun OnRightMenu(AUIPlugin.AUIRightMenu menu)
     {
-		var menu = new AUIPlugin.AUIRightMenu();
-		menu.AddItem("保存", bind(this.Save, this));
 		menu.AddItem("截图导出", bind(A_OtherSystem.SystemSaveFile, A_OtherSystem, this, this._name..".png", null));
 		menu.AddItem("复制控件名", bind(ALittle.System_SetClipboardText, this._name));
 		menu.AddItem("复制继承代码", bind(this.CopyExtends, this));
-		menu.AddItem("关闭自己", bind(g_IDECenter.center.content_edit.CloseTabWithAsk, g_IDECenter.center.content_edit, this._tab_screen));
-		menu.AddItem("关闭左侧", bind(g_IDECenter.center.content_edit.CloseLeftTab, g_IDECenter.center.content_edit, this._tab_screen));
-		menu.AddItem("关闭右侧", bind(g_IDECenter.center.content_edit.CloseRightTab, g_IDECenter.center.content_edit, this._tab_screen));
-		menu.Show();
-    }
+	}
     
 	private fun CopyExtends()
 	{
@@ -262,7 +256,9 @@ public class IDEUITabChild : IDETabChild
     }
 	
 	////////////////////////////////////////////////////////////////////////////////////////////-
-	public get edit_screen() : ALittle.ScrollScreen { return this._edit_screen; }
+	public get tab_body() : ALittle.DisplayObject { return this._tab_screen; }
+
+    public get edit_screen() : ALittle.ScrollScreen { return this._edit_screen; }
 	public get tab_screen() : ALittle.ScrollScreen { return this._tab_screen; }
 	public get tree_screen() : ALittle.ScrollScreen { return this._tree_screen; }
 	public get attr_screen() : ALittle.ScrollScreen { return this._attr_screen; }

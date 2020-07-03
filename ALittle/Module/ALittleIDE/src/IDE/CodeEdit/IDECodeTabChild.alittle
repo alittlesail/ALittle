@@ -36,12 +36,18 @@ public class IDECodeTabChild : IDETabChild
         this._edit.Load(this._user_info.path, this._revoke_list);
     }
 
+    private fun OnRightMenu(AUIPlugin.AUIRightMenu menu)
+    {
+        this._edit.OnRightMenu(menu);
+    }
+
     private fun HandleChangedEvent(ALittle.UIChangedEvent event)
     {
         this.save = false;
     }
 
     public get tab_screen() : ALittle.ScrollScreen { return this._edit; }
+	public get tab_body() : ALittle.DisplayObject { return this._edit; }
 
     public set save(bool value)
     {

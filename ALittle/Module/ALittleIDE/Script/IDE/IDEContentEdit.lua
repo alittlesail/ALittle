@@ -89,6 +89,10 @@ function IDETabChild.__getter:title()
 	return self._name
 end
 
+function IDETabChild.__getter:tab_body()
+	return nil
+end
+
 function IDETabChild:OnHide()
 end
 
@@ -101,7 +105,7 @@ end
 function IDETabChild:OnOpen()
 end
 
-function IDETabChild:OnRightMenu()
+function IDETabChild:OnRightMenu(menu)
 end
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
@@ -263,7 +267,13 @@ IDEContentEdit.MainTabTabCloseImpl = Lua.CoWrap(IDEContentEdit.MainTabTabCloseIm
 
 function IDEContentEdit:HandleMainTabRightClick(event)
 	local tab_child = event.target._user_data
-	tab_child:OnRightMenu()
+	local menu = AUIPlugin.AUIRightMenu()
+	menu:AddItem("保存", Lua.Bind(tab_child.Save, tab_child))
+	tab_child:OnRightMenu(menu)
+	menu:AddItem("关闭自己", Lua.Bind(g_IDECenter.center.content_edit.CloseTabWithAsk, g_IDECenter.center.content_edit, tab_child.tab_body))
+	menu:AddItem("关闭左侧", Lua.Bind(g_IDECenter.center.content_edit.CloseLeftTab, g_IDECenter.center.content_edit, tab_child.tab_body))
+	menu:AddItem("关闭右侧", Lua.Bind(g_IDECenter.center.content_edit.CloseRightTab, g_IDECenter.center.content_edit, tab_child.tab_body))
+	menu:Show()
 end
 
 function IDEContentEdit:HandleMainTabKeyDown(event)

@@ -109,4 +109,18 @@ public class AUICodeABnf : AUICodeLanguage
 
     // 颜色查询
     public fun QueryColorValue(int tag) : ABnfColor { return g_ABnfColor[tag]; }
+
+    // 生成对应的代码
+    public async fun GenerateABnf()
+    {
+        
+    }
+
+    // 查询错误信息
+    public await fun Generate(string target_path, string language_name) : string
+    {
+        var query_id = this._project.Add(co);
+        lua.abnf.abnffile_generate(this._abnf_file, query_id, this._version, target_path, language_name);
+        return yield;
+    }
 }

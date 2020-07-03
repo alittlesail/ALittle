@@ -8,5 +8,5 @@ protected struct IDECodeTreeUserInfo
     string name;
     bool root;
     ALittle.TextRadioButtonGroup group;
-    lua.ABnfProject project;
+    AUIPlugin.AUICodeProject project;
 }

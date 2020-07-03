@@ -106,3 +106,14 @@ function AUICodeABnf:QueryColorValue(tag)
 	return g_ABnfColor[tag]
 end
 
+function AUICodeABnf:GenerateABnf()
+end
+AUICodeABnf.GenerateABnf = Lua.CoWrap(AUICodeABnf.GenerateABnf)
+
+function AUICodeABnf:Generate(target_path, language_name)
+	local ___COROUTINE = coroutine.running()
+	local query_id = self._project:Add(___COROUTINE)
+	abnf.abnffile_generate(self._abnf_file, query_id, self._version, target_path, language_name)
+	return coroutine.yield()
+end
+

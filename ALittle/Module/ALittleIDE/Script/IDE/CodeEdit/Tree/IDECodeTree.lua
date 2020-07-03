@@ -78,6 +78,7 @@ function IDECodeTree:HandleRButtonDown(event)
 	local menu = AUIPlugin.AUIRightMenu()
 	menu:AddItem("新建文件", Lua.Bind(self.HandleCreateFile, self))
 	menu:AddItem("刷新", Lua.Bind(self.Refresh, self))
+	menu:AddItem("删除", Lua.Bind(self.HandleDeleteDir, self))
 	menu:Show()
 end
 
@@ -91,6 +92,17 @@ function IDECodeTree:HandleCreateFile()
 	self:Refresh()
 end
 IDECodeTree.HandleCreateFile = Lua.CoWrap(IDECodeTree.HandleCreateFile)
+
+function IDECodeTree:HandleDeleteDir()
+	local file_name = ALittle.File_GetFileNameByPath(self._user_info.path)
+	local result = g_AUITool:DeleteNotice("删除", "确定要删除" .. file_name .. "，以及子文件和子文件夹吗?")
+	if result ~= "YES" then
+		return
+	end
+	ALittle.File_DeleteDeepDir(self._user_info.path)
+	self:RemoveFromParent()
+end
+IDECodeTree.HandleDeleteDir = Lua.CoWrap(IDECodeTree.HandleDeleteDir)
 
 function IDECodeTree.__getter:is_tree()
 	return true

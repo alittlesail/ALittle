@@ -13,6 +13,7 @@ public class IDECodeTreeItem : IDECodeTreeLogic
 		this._item_button.selected = false;
 		this._item_button.group = user_info.group;
 		this._item_button.AddEventListener(this, this.HandleClick);
+		this._item_button.AddEventListener(this, this.HandleRButtonDown);
 		this._item_button._user_data = this;
 		
 		this._item_title.text = this._user_info.name;
@@ -37,4 +38,20 @@ public class IDECodeTreeItem : IDECodeTreeLogic
 			ALittle.List_Push(list, this);
 		return list;
 	}
+
+	private fun HandleRButtonDown(ALittle.UIRButtonDownEvent event)
+	{
+        var menu = new AUIPlugin.AUIRightMenu();
+		menu.AddItem("删除", bind(this.HandleDeleteFile, this));
+		menu.Show();
+    }
+
+	private async fun HandleDeleteFile()
+	{
+		var file_name = ALittle.File_GetFileNameByPath(this._user_info.path);
+		var result = g_AUITool.DeleteNotice("删除", "确定要删除"..file_name.."吗?");
+		if (result != AUIPlugin.AUIToolOption.YES) return;
+		ALittle.File_DeleteFile(this._user_info.path);
+        this.RemoveFromParent();
+    }
 }

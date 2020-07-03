@@ -50,6 +50,7 @@ public class IDECodeTree : IDECodeTreeLogic
         var menu = new AUIPlugin.AUIRightMenu();
 		menu.AddItem("新建文件", bind(this.HandleCreateFile, this));
 		menu.AddItem("刷新", bind(this.Refresh, this));
+		menu.AddItem("删除", bind(this.HandleDeleteDir, this));
 		menu.Show();
     }
 
@@ -60,6 +61,15 @@ public class IDECodeTree : IDECodeTreeLogic
 		if (name == null || name == "") return;
 		ALittle.File_WriteTextToFile("", this._user_info.path.."/"..name);
 		this.Refresh();
+    }
+
+	private async fun HandleDeleteDir()
+	{
+		var file_name = ALittle.File_GetFileNameByPath(this._user_info.path);
+		var result = g_AUITool.DeleteNotice("删除", "确定要删除"..file_name.."，以及子文件和子文件夹吗?");
+		if (result != AUIPlugin.AUIToolOption.YES) return;
+		ALittle.File_DeleteDeepDir(this._user_info.path);
+        this.RemoveFromParent();
     }
 	
 	public get is_tree() : bool { return true; }

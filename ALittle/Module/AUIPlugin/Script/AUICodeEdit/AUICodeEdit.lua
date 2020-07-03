@@ -1051,6 +1051,13 @@ function AUICodeEdit:HandleKeyUp(event)
 	end
 end
 
+function AUICodeEdit:OnRightMenu(menu)
+	local code_abnf = ALittle.Cast(AUICodeABnf, AUICodeLanguage, self._language)
+	if code_abnf ~= nil then
+		menu:AddItem("生成", Lua.Bind(code_abnf.GenerateABnf, code_abnf))
+	end
+end
+
 function AUICodeEdit:OnHide()
 	self._cursor:Hide()
 	if self._language ~= nil then

@@ -31,3 +31,9 @@ void delete_abnf_file(void* file)
 {
 	delete ((ABnfFileClass*)file);
 }
+
+void abnffile_generate(void* file, int query_id, int version, const char* target_path, const char* language_name)
+{
+	auto* project_c = (ABnfProjectClass*)(((ABnfFileClass*)file)->GetProject());
+	project_c->Add(std::bind(&ABnfProjectClass::Generate, project_c, ((ABnfFileClass*)file)->GetFullPath(), query_id, version, std::string(target_path), std::string(language_name)));
+}

@@ -8,4 +8,6 @@ void delete_abnf_project(void* project);
 void* create_abnf_file(void* project, const char* full_path, const char* text, size_t len);
 void delete_abnf_file(void* file);
 
+void abnffile_generate(void* file, int query_id, int version, const char* target_path, const char* language_name);
+
 #endif // _ALITTLE_ABNF_C_H_

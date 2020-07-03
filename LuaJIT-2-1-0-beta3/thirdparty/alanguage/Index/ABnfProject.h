@@ -21,14 +21,14 @@ private:
 	ABnf m_abnf_ui;
 
 	// 提供支线程部分
-private:
+protected:
 	std::string m_project_path;
 	ABnf m_abnf;
 	ABnfFactory m_default_factory;
 	std::unordered_map<std::string, ABnfFile*> m_file_map;
 
 	// 支线程逻辑
-private:
+protected:
 	volatile bool m_run = false;
 	std::condition_variable m_cv;       // 条件变量
 	std::thread* m_thread = nullptr;

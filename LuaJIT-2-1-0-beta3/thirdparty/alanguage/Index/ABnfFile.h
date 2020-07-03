@@ -86,7 +86,7 @@ public:
     // 移除内容
     virtual void OnRemove() {}
 
-private:
+protected:
     // 解析一条龙
     void AnalysisText(int version);
 
@@ -115,6 +115,7 @@ public:
     // 清空错误信息
     inline void ClearAnalysisError() { m_analysis_error_map.clear(); }
     inline void ClearCheckError() { m_check_error_map.clear(); }
+    inline bool HasError() const { return m_analysis_error_map.size() > 0 || m_check_error_map.size() > 0; }
 
     // 获取所有错误节点
     inline const std::map<ABnfElementPtr, std::string>& GetAnalysisErrorMap() { return m_analysis_error_map; }

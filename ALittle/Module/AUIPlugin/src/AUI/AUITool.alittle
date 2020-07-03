@@ -44,6 +44,10 @@ public class AUITool
 	private ALittle.DisplayObject _tip_dialog;
 	private ALittle.Text _tip_text;
 
+	// 文件夹选择对话框
+	private ALittle.Dialog _selectdir_dialog;
+	private ALittle.ImageInput _selectdir_input;
+
 	public fun Shutdown()
 	{
         if (this._alert_dialog != null)
@@ -76,6 +80,11 @@ public class AUITool
 		{
             A_LayerManager.RemoveFromTip(this._tip_help_dialog);
 			this._tip_help_dialog = null;
+        }
+		if (this._selectdir_dialog != null)
+		{
+            A_LayerManager.RemoveFromModal(this._selectdir_dialog);
+			this._selectdir_dialog = null;
         }
     }
 	
@@ -282,6 +291,60 @@ public class AUITool
 		
 		// 执行协程
 		ALittle.Coroutine.Resume(thread, null);
+    }
+	////////////////////////////////////////////////////////////////////////////////////////
+	// 显示文件夹输入框
+	public await fun ShowSelectDir(string title, string dir) : string
+	{
+		// 创建输入框，并加入模态层
+		if (this._selectdir_dialog == null)
+		{
+			this._selectdir_dialog = g_Control.CreateControl{ALittle.Dialog}("ide_common_selectdir_dialog", this);
+			A_LayerManager.AddToModal(this._selectdir_dialog);
+		}
+            // 显示输入框
+		this._selectdir_dialog.visible = true;
+		// 并且获得焦点
+		this._selectdir_input.DelayFocus();
+		if (dir != null) this._selectdir_input.text = dir;
+
+            // 保存目标
+		this._selectdir_dialog._user_data = co;
+		return yield;
+	}
+	// 选择确认
+	private fun HandleSelectDirConfirm(ALittle.UIEvent event)
+	{
+		// 隐藏输入框
+		this._selectdir_dialog.visible = false;
+
+		// 获取协程
+		var thread:ALittle.Thread = this._selectdir_dialog._user_data;
+		if (thread == null) return;
+		this._selectdir_dialog._user_data = null;
+		// 获取输入框文本
+		var text = this._selectdir_input.text;
+		// 执行协程
+		ALittle.Coroutine.Resume(thread, text);
+	}
+	// 选择取消
+	private fun HandleSelectDirCancel(ALittle.UIEvent event)
+	{
+        // 获取协程
+		var thread:ALittle.Thread = this._selectdir_dialog._user_data;
+		if (thread == null) return;
+		this._selectdir_dialog._user_data = null;
+
+		// 隐藏输入框
+		this._selectdir_dialog.visible = false;
+
+		// 执行协程
+		ALittle.Coroutine.Resume(thread, null);
+    }
+	// 浏览文件夹
+	private fun HandleSelectDirClick(ALittle.UISystemSelectDirectoryEvent event)
+	{
+		if (event.path != null) this._selectdir_input.text = event.path;
     }
 	////////////////////////////////////////////////////////////////////////////////////////
 	// 显示版本提示对话框

@@ -38,6 +38,10 @@ function AUITool:Shutdown()
 		A_LayerManager:RemoveFromTip(self._tip_help_dialog)
 		self._tip_help_dialog = nil
 	end
+	if self._selectdir_dialog ~= nil then
+		A_LayerManager:RemoveFromModal(self._selectdir_dialog)
+		self._selectdir_dialog = nil
+	end
 end
 
 function AUITool:ShowAlertDialog(title, content)
@@ -196,6 +200,48 @@ function AUITool:HandleRenameCancel(event)
 	self._rename_input._user_data = nil
 	self._rename_input.visible = false
 	ALittle.Coroutine.Resume(thread, nil)
+end
+
+function AUITool:ShowSelectDir(title, dir)
+	local ___COROUTINE = coroutine.running()
+	if self._selectdir_dialog == nil then
+		self._selectdir_dialog = g_Control:CreateControl("ide_common_selectdir_dialog", self)
+		A_LayerManager:AddToModal(self._selectdir_dialog)
+	end
+	self._selectdir_dialog.visible = true
+	self._selectdir_input:DelayFocus()
+	if dir ~= nil then
+		self._selectdir_input.text = dir
+	end
+	self._selectdir_dialog._user_data = ___COROUTINE
+	return coroutine.yield()
+end
+
+function AUITool:HandleSelectDirConfirm(event)
+	self._selectdir_dialog.visible = false
+	local thread = self._selectdir_dialog._user_data
+	if thread == nil then
+		return
+	end
+	self._selectdir_dialog._user_data = nil
+	local text = self._selectdir_input.text
+	ALittle.Coroutine.Resume(thread, text)
+end
+
+function AUITool:HandleSelectDirCancel(event)
+	local thread = self._selectdir_dialog._user_data
+	if thread == nil then
+		return
+	end
+	self._selectdir_dialog._user_data = nil
+	self._selectdir_dialog.visible = false
+	ALittle.Coroutine.Resume(thread, nil)
+end
+
+function AUITool:HandleSelectDirClick(event)
+	if event.path ~= nil then
+		self._selectdir_input.text = event.path
+	end
 end
 
 function AUITool:ShowTipHelp(content, show_time)

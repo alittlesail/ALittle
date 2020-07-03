@@ -86,6 +86,7 @@ function IDECodeTreeItem:HandleDeleteFile()
 	end
 	ALittle.File_DeleteFile(self._user_info.path)
 	self:RemoveFromParent()
+	g_IDECenter.center.content_edit:CloseTabByName(IDECodeTabChild, self._user_info.name)
 end
 IDECodeTreeItem.HandleDeleteFile = Lua.CoWrap(IDECodeTreeItem.HandleDeleteFile)
 

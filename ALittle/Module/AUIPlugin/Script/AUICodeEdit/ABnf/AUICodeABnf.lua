@@ -107,6 +107,25 @@ function AUICodeABnf:QueryColorValue(tag)
 end
 
 function AUICodeABnf:GenerateABnf()
+	local file_name = ALittle.File_GetJustFileNameByPath(self._full_path)
+	local path = g_AUITool:ShowSelectDir("选择生成的文件夹", self._generate_dir)
+	if path == nil then
+		return
+	end
+	local attr = ALittle.File_GetFileAttr(path)
+	if attr == nil or attr.mode ~= "directory" then
+		g_AUITool:ShowNotice("错误", "文件夹不存在")
+		return
+	end
+	self._generate_dir = path
+	ALittle.File_DeleteDeepDir(path .. "/Generate")
+	ALittle.File_MakeDeepDir(path .. "/Generate")
+	local error = self:Generate(path .. "/Generate", file_name)
+	if error ~= nil then
+		g_AUITool:ShowNotice("错误", error)
+		return
+	end
+	g_AUITool:ShowNotice("提示", "生成成功")
 end
 AUICodeABnf.GenerateABnf = Lua.CoWrap(AUICodeABnf.GenerateABnf)
 

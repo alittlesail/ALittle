@@ -154,6 +154,19 @@ public class IDEContentEdit : ALittle.DisplayLayout
 		this.ChangeTabEdit(null, this._main_tab.tab);
 	}
 
+	public fun CloseTabByName<T:IDETabChild>(string name)
+	{
+		for (var index, child in this._main_tab.childs)
+		{
+            var tab_child = ALittle.Cast{T}(child);
+			if (tab_child != null && tab_child.name == name)
+			{
+                this.CloseTab(tab_child.tab_body);
+				break;
+            }
+        }
+    }
+
 	// 保存某个分页
 	public fun SaveTab(ALittle.DisplayObject child)
 	{

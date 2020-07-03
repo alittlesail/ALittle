@@ -53,5 +53,7 @@ public class IDECodeTreeItem : IDECodeTreeLogic
 		if (result != AUIPlugin.AUIToolOption.YES) return;
 		ALittle.File_DeleteFile(this._user_info.path);
         this.RemoveFromParent();
+
+		g_IDECenter.center.content_edit.CloseTabByName{IDECodeTabChild}(this._user_info.name);
     }
 }

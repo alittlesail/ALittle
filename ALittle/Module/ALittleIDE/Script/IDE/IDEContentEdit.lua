@@ -206,6 +206,16 @@ function IDEContentEdit:CloseTab(child)
 	self:ChangeTabEdit(nil, self._main_tab.tab)
 end
 
+function IDEContentEdit:CloseTabByName(T, name)
+	for index, child in ___ipairs(self._main_tab.childs) do
+		local tab_child = ALittle.Cast(T, ALittle.DisplayObject, child)
+		if tab_child ~= nil and tab_child.name == name then
+			self:CloseTab(tab_child.tab_body)
+			break
+		end
+	end
+end
+
 function IDEContentEdit:SaveTab(child)
 	local tab_child = child._user_data
 	tab_child.save = true

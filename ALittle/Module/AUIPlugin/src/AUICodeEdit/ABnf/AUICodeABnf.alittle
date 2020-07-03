@@ -22,6 +22,8 @@ protected var g_ABnfProjectInfo:ABnfProjectInfo = ALittle.CreateValueWeakMap();
 
 public class AUICodeABnf : AUICodeLanguage
 {
+    private string _generate_dir;
+
     public ctor(AUICodeProject project, string full_path)
     {
         if (this._project == null && g_ABnfProjectInfo.project == null)
@@ -113,7 +115,29 @@ public class AUICodeABnf : AUICodeLanguage
     // 生成对应的代码
     public async fun GenerateABnf()
     {
-        
+        var file_name = ALittle.File_GetJustFileNameByPath(this._full_path);
+        var path = g_AUITool.ShowSelectDir("选择生成的文件夹", this._generate_dir);
+        if (path == null) return;
+
+        var attr = ALittle.File_GetFileAttr(path);
+        if (attr == null || attr.mode != "directory")
+        {
+            g_AUITool.ShowNotice("错误", "文件夹不存在");
+            return;
+        }
+        this._generate_dir = path;
+
+        ALittle.File_DeleteDeepDir(path.."/Generate");
+        ALittle.File_MakeDeepDir(path.."/Generate");
+
+        var error = this.Generate(path.."/Generate", file_name);
+        if (error != null)
+        {
+            g_AUITool.ShowNotice("错误", error);
+            return;
+        }
+
+        g_AUITool.ShowNotice("提示", "生成成功");
     }
 
     // 查询错误信息

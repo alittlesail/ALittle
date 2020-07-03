@@ -2,9 +2,9 @@
 #ifndef _ALITTLE_ALITTLESCRIPTFACTORYCLASS_H_
 #define _ALITTLE_ALITTLESCRIPTFACTORYCLASS_H_
 
-#include "../../alanguage/Index/ABnfFactory.h"
+#include "../Generate/ALittleScriptFactory.h"
 
-class ALittleScriptFactoryClass : public ABnfFactory
+class ALittleScriptFactoryClass : public ALittleScriptFactory
 {
 public:
     ABnfReference* CreateReference(ABnfElementPtr element) override;

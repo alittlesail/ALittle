@@ -1,7 +1,7 @@
 
 #include "ALittleScriptFactoryClass.h" 
 #include "ALittleScriptFileClass.h"
-#include "ALittle/LibCommon/ThirdParty/alanguage/Model/ABnfElement.h"
+#include "../../alanguage/Model/ABnfElement.h"
 
 ABnfReference* ALittleScriptFactoryClass::CreateReference(ABnfElementPtr element)
 {

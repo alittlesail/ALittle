@@ -191,10 +191,15 @@ void ABnfFileClass::CollectCompile(ABnfElementPtr element, CollectCompileInfo& i
 }
 
 static std::string ABnfElementTemplate =
+"#ifndef _ALITTLE_@@LANGUAGE@@@@NAME@@Element_H_\n"
+"#define _ALITTLE_@@LANGUAGE@@@@NAME@@Element_H_\n"
+"\n"
 "#include <memory>\n"
 "#include <vector>\n"
+"#include <string>\n"
+"#include \"../../alanguage/Model/ABnfNodeElement.h\"\n"
 "\n"
-"@@ELEMENT_DEFINE@@\n"
+"@@ELEMENT_DEFINE@@"
 "\n"
 "class @@LANGUAGE@@@@NAME@@Element : public ABnfNodeElement\n"
 "{\n"
@@ -203,8 +208,10 @@ static std::string ABnfElementTemplate =
 "        : ABnfNodeElement(factory, file, line, col, offset, type) { }\n"
 "    virtual ~@@LANGUAGE@@@@NAME@@Element() { }\n"
 "\n"
-"@@ELEMENT_GET_CHILD@@\n"
-"}";
+"@@ELEMENT_GET_CHILD@@"
+"};\n"
+"\n"
+"#endif // _ALITTLE_@@LANGUAGE@@@@NAME@@Element_H_\n";
 static std::string ABnfGetChildTemplate =
 "private:\n"
 "    bool m_flag_@@NAME@@ = false;\n"
@@ -224,7 +231,7 @@ static std::string ABnfGetChildTemplate =
 "            }\n"
 "        }\n"
 "        return m_cache_@@NAME@@;\n"
-"     }\n";
+"    }\n";
 static std::string ABnfGetChildListTemplate =
 "private:\n"
 "    bool m_flag_@@NAME@@ = false;\n"
@@ -241,38 +248,70 @@ static std::string ABnfGetChildListTemplate =
 "                m_list_@@NAME@@.push_back(node);\n"
 "        }\n"
 "        return m_list_@@NAME@@;\n"
-"     }\n";
+"    }\n";
 
 static std::string ABnfKeyElementTemplate =
+"#ifndef _ALITTLE_@@LANGUAGE@@KeyElement_H_\n"
+"#define _ALITTLE_@@LANGUAGE@@KeyElement_H_\n"
+"\n"
+"#include \"../../alanguage/Model/ABnfKeyElement.h\"\n"
+"\n"
 "class @@LANGUAGE@@KeyElement : public ABnfKeyElement\n"
 "{\n"
 "public:\n"
-"    @@LANGUAGE@@KeyElement(ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& value)\n"
+"    @@LANGUAGE@@KeyElement(ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type)\n"
 "        : ABnfKeyElement(factory, file, line, col, offset, type) { }\n"
 "    virtual ~@@LANGUAGE@@KeyElement() { }\n"
-"}\n";
+"};\n"
+"\n"
+"#endif // _ALITTLE_@@LANGUAGE@@KeyElement_H_\n";
 static std::string ABnfStringElementTemplate =
+"#ifndef _ALITTLE_@@LANGUAGE@@StringElement_H_\n"
+"#define _ALITTLE_@@LANGUAGE@@StringElement_H_\n"
+"\n"
+"#include \"../../alanguage/Model/ABnfStringElement.h\"\n"
+"\n"
 "class @@LANGUAGE@@StringElement : public ABnfStringElement\n"
 "{\n"
 "public:\n"
-"    @@LANGUAGE@@StringElement(ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& value)\n"
+"    @@LANGUAGE@@StringElement(ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type)\n"
 "        : ABnfStringElement(factory, file, line, col, offset, type) { }\n"
 "    virtual ~@@LANGUAGE@@StringElement() { }\n"
-"}\n";
+"};\n"
+"\n"
+"#endif // _ALITTLE_@@LANGUAGE@@StringElement_H_\n";
 static std::string ABnfRegexElementTemplate =
+"#ifndef _ALITTLE_@@LANGUAGE@@RegexElement_H_\n"
+"#define _ALITTLE_@@LANGUAGE@@RegexElement_H_\n"
+"\n"
+"#include \"../../alanguage/Model/ABnfRegexElement.h\"\n"
+"\n"
 "class @@LANGUAGE@@RegexElement : public ABnfRegexElement\n"
 "{\n"
 "public:\n"
-"    @@LANGUAGE@@RegexElement(ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& value)\n"
-"        : ABnfRegexElement(factory, file, line, col, offset, type) { }\n"
+"    @@LANGUAGE@@RegexElement(ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type, std::shared_ptr<std::regex> regex)\n"
+"        : ABnfRegexElement(factory, file, line, col, offset, type, regex) { }\n"
 "    virtual ~@@LANGUAGE@@RegexElement() { }\n"
-"}\n";
+"};\n"
+"\n"
+"#endif // _ALITTLE_@@LANGUAGE@@RegexElement_H_\n";
 static std::string ABnfFactoryTemplate =
-"#include <regex>\n"
+"#ifndef _ALITTLE_@@LANGUAGE@@Factory_H_\n"
+"#define _ALITTLE_@@LANGUAGE@@Factory_H_\n"
+"\n"
+"#include \"../../alanguage/Index/ABnfFactory.h\"\n"
+"#include \"@@LANGUAGE@@KeyElement.h\"\n"
+"#include \"@@LANGUAGE@@StringElement.h\"\n"
+"#include \"@@LANGUAGE@@RegexElement.h\"\n"
+"@@ELEMENT_INCLUDE@@"
+"\n"
+"#include <unordered_map>\n"
+"#include <functional>\n"
+"#include <string>\n"
 "\n"
 "class @@LANGUAGE@@Factory : public ABnfFactory\n"
 "{\n"
-"    std::unordered_map<stdstring, std::function<std::shared_ptr<ABnfNodeElement>(ABnfFactory*, ABnfFile*, int, int, int, const std::string&)>> m_create_map;\n"
+"    std::unordered_map<std::string, std::function<std::shared_ptr<ABnfNodeElement>(ABnfFactory*, ABnfFile*, int, int, int, const std::string&)>> m_create_map;\n"
 "public:\n"
 "    @@LANGUAGE@@Factory()\n"
 "    {\n"
@@ -293,14 +332,16 @@ static std::string ABnfFactoryTemplate =
 
 "    std::shared_ptr<ABnfStringElement> CreateStringElement(ABnfFile* file, int line, int col, int offset, const std::string& type) override\n"
 "    {\n"
-"        return std::shared_ptr<ABnfStringElement>new @@LANGUAGE@@StringElement(this, file, line, col, offset, type));\n"
+"        return std::shared_ptr<ABnfStringElement>(new @@LANGUAGE@@StringElement(this, file, line, col, offset, type));\n"
 "    }\n"
 
 "    std::shared_ptr<ABnfRegexElement> CreateRegexElement(ABnfFile* file, int line, int col, int offset, const std::string& type, std::shared_ptr<std::regex> regex) override\n"
 "    {\n"
-"        return std::shared_ptr<ABnfRegexElement>(new @@LANGUAGE@@RegexElement(this, file, line, col, offset, type, regex)));\n"
+"        return std::shared_ptr<ABnfRegexElement>(new @@LANGUAGE@@RegexElement(this, file, line, col, offset, type, regex));\n"
 "    }\n"
-"};\n";
+"};\n"
+"\n"
+"#endif // _ALITTLE_@@LANGUAGE@@Factory_H_\n";
 
 std::string ABnfFileClass::Generate(int version, const std::string& target_path, const std::string& language_name)
 {
@@ -310,6 +351,7 @@ std::string ABnfFileClass::Generate(int version, const std::string& target_path,
     if (HasError()) return "Please fix the error before generating";
 
     std::string add_new_buffer = "";
+    std::vector<std::string> element_include_list;
     for (auto& rule : m_rule)
     {
         ABnfNodeElementPtr node = nullptr;
@@ -342,7 +384,8 @@ std::string ABnfFileClass::Generate(int version, const std::string& target_path,
         buffer = ABnfFactory::ReplaceAll(buffer, "@@LANGUAGE@@", language_name);
         buffer = ABnfFactory::ReplaceAll(buffer, "@@NAME@@", rule.first);
 
-        add_new_buffer += "        m_create_map[\"" + rule.first + "\"] = [](factory, file, line, col, offset, type) -> std::shared_ptr<ABnfNodeElement> { return std::shared_ptr<ABnfNodeElement>(new " + language_name + rule.first + "Element(factory, file, line, col, offset, type)); };\n";
+        add_new_buffer += "        m_create_map[\"" + rule.first + "\"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::shared_ptr<ABnfNodeElement>(new " + language_name + rule.first + "Element(factory, file, line, col, offset, type)); };\n";
+        element_include_list.push_back("#include \"" + language_name + rule.first + "Element.h\"\n");
 
         std::string element_define = "";
 
@@ -416,7 +459,7 @@ std::string ABnfFileClass::Generate(int version, const std::string& target_path,
 
     {
         // Éú³ÉFactory
-        std::string buffer = ABnfFactory::ReplaceAll(ABnfFactory::ReplaceAll(ABnfFactoryTemplate, "@@LANGUAGE@@", language_name), "@@ELEMENT_ADD_CREATE@@", add_new_buffer);
+        std::string buffer = ABnfFactory::ReplaceAll(ABnfFactory::ReplaceAll(ABnfFactory::ReplaceAll(ABnfFactoryTemplate, "@@LANGUAGE@@", language_name), "@@ELEMENT_ADD_CREATE@@", add_new_buffer), "@@ELEMENT_INCLUDE@@", ABnfFactory::Join(element_include_list, ""));
         std::string file_path = target_path + "/" + language_name + "Factory.h";
         if (!ABnfFactory::WriteAllText(file_path, buffer))
             return file_path + " generate failed!";

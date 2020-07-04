@@ -5,11 +5,13 @@
 #include <string>
 #include <memory>
 #include <unordered_map>
+#include <memory>
 
 class ABnfGuess;
 using ABnfGuessPtr = std::shared_ptr<ABnfGuess>;
+using ABnfGuessWeakPtr = std::weak_ptr<ABnfGuess>;
 
-class ABnfGuess
+class ABnfGuess : public std::enable_shared_from_this<ABnfGuess>
 {
 protected:
     std::string value;

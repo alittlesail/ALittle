@@ -42,10 +42,10 @@ public:
     // 获取引用
     ABnfReference* GetReference();
     // 获取类型
-    virtual bool GuessTypes(std::vector<ABnfGuessPtr>& guess_list, ABnfGuessError& error);
+    virtual ABnfGuessError GuessTypes(std::vector<ABnfGuessPtr>& guess_list);
 
     // 获取第一个类型
-    virtual ABnfGuessPtr GuessType(ABnfGuessError& error);
+    virtual ABnfGuessError GuessType(ABnfGuessPtr& out);
 
     // 获取解析细节
     inline ABnfFile* GetFile() { return m_file; }

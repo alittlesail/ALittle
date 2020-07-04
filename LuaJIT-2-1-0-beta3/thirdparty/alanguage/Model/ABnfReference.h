@@ -14,10 +14,10 @@ public:
     virtual ~ABnfReference() { }
 
     // 检查错误
-    virtual bool CheckError(ABnfGuessError& error) { return false; }
+    virtual ABnfGuessError CheckError() { return nullptr; }
 
     // 获取类型
-    virtual void GuessTypes(std::vector<ABnfGuess>& guess_list, ABnfGuessError& error) { }
+    virtual ABnfGuessError GuessTypes(std::vector<ABnfGuess>& guess_list) { return nullptr; }
 
     // 返回多个表达式的类型
     virtual bool MultiGuessTypes() { return false; }

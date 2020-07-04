@@ -24,7 +24,7 @@ public:
     void AddClassChildDec(std::shared_ptr<ABnfElement> dec);
 
     // ≤È’“‘™Àÿ
-    void FindClassAttrList(int access_level, ClassAttrType attr_type, const std::string& name, std::vector<std::shared_ptr<ABnfElement>>& result);
+    void FindClassAttrList(int access_level, ClassAttrType attr_type, const std::string& name, std::vector<std::shared_ptr<ABnfElement>>& result) const;
 };
 
 #endif // _ALITTLE_ALITTLESCRIPTCLASSDATA_H_

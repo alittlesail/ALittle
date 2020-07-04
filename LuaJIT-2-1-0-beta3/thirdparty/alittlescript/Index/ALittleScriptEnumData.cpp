@@ -14,7 +14,7 @@ void ALittleScriptEnumData::AddVarDec(std::shared_ptr<ALittleScriptEnumVarDecEle
 }
 
 // ²éÕÒÔªËØ
-void ALittleScriptEnumData::FindVarDecList(const std::string& name, std::vector<std::shared_ptr<ALittleScriptEnumVarDecElement>>& result)
+void ALittleScriptEnumData::FindVarDecList(const std::string& name, std::vector<std::shared_ptr<ALittleScriptEnumVarDecElement>>& result) const
 {
     if (name.empty())
     {

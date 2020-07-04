@@ -15,7 +15,7 @@ public:
     // 输入提示
     bool QueryCompletion(std::vector<ALanguageCompletionInfo>& list) override;
     // 检查错误
-    bool CheckError(ABnfGuessError& error) override;
+    ABnfGuessError CheckError() override;
     // 可以拾取高亮
     bool PeekHighlightWord() override { return true; }
     // 获取高亮信息

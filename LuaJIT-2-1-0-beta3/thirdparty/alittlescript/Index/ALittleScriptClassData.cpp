@@ -168,7 +168,7 @@ void ALittleScriptClassData::FindClassAttrList(int access_level, ClassAttrType a
     }
 }
 
-const std::unordered_map<std::string, std::shared_ptr<ABnfElement>>* ALittleScriptClassData::GetElementMap(ClassAttrType attr_type, ClassAccessType access_type)
+const std::unordered_map<std::string, std::shared_ptr<ABnfElement>>* ALittleScriptClassData::GetElementMap(ClassAttrType attr_type, ClassAccessType access_type) const
 {
     auto it = m_element_map.find(access_type);
     if (it == m_element_map.end()) return nullptr;

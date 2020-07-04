@@ -3,13 +3,14 @@
 #define _ALITTLE_ALITTLESCRIPTPROJECTCLASS_H_
 
 #include "ALittle/LibCommon/ThirdParty/alanguage/Index/ABnfProject.h"
+#include "ALittleScriptIndex.h"
 #include "ALittleScriptFactoryClass.h"
 #include <unordered_map>
 #include <unordered_set>
 #include <map>
 #include <string>
 
-class ALittleScriptProjectClass : public ABnfProject
+class ALittleScriptProjectClass : public ABnfProject, public ALittleScriptIndex
 {
 private:
     ALittleScriptFactoryClass m_factory;

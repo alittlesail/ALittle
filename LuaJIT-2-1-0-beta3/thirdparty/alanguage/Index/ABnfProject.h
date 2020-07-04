@@ -56,6 +56,7 @@ public:
 	virtual ABnf& RefABnfUI() { return m_abnf_ui; }
 
 public:
+	ABnfFile* GetFile(const std::string& full_path);
 	void UpdateFile(const std::string& full_path);
 	void RemoveFile(const std::string& full_path);
 	void UpdateText(const std::string& full_path, const std::string& text);

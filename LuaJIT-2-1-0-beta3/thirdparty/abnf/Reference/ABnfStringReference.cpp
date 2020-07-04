@@ -11,16 +11,13 @@ ABnfStringReference::ABnfStringReference(ABnfElementPtr element) : ABnfCommonRef
 {
 }
 
-bool ABnfStringReference::CheckError(ABnfGuessError& error)
+ABnfGuessError ABnfStringReference::CheckError()
 {
     auto element = m_element.lock();
-    if (element == nullptr) return false;
+    if (element == nullptr) return nullptr;
 
     if (element->GetLength() <= 2)
-    {
-        error.element = element;
-        error.error = "symbol can't not be empty";
-        return true;
-    }
-    return false;
+        return ABnfGuessError(element, "symbol can't not be empty");
+
+    return nullptr;
 }

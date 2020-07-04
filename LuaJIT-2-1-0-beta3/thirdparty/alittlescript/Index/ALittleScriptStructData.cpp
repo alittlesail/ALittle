@@ -14,7 +14,7 @@ void ALittleScriptStructData::AddVarDec(std::shared_ptr<ALittleScriptStructVarDe
 }
 
 // ²éÕÒÔªËØ
-void ALittleScriptStructData::FindVarDecList(const std::string& name, std::vector<std::shared_ptr<ALittleScriptStructVarDecElement>>& result)
+void ALittleScriptStructData::FindVarDecList(const std::string& name, std::vector<std::shared_ptr<ALittleScriptStructVarDecElement>>& result) const
 {
     if (name.empty())
     {

@@ -341,8 +341,8 @@ void ABnfFile::AnalysisError(ABnfElementPtr element)
 {
     if (element->IsError()) return;
 
-    ABnfGuessError error;
-    if (element->GetReference()->CheckError(error))
+    ABnfGuessError error = element->GetReference()->CheckError();
+    if (error)
     {
         if (error.element != nullptr && error.element->GetFile() == this)
             AddAnalysisErrorInfo(error.element, error.error);

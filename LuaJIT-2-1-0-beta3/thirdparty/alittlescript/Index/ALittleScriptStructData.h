@@ -19,7 +19,7 @@ public:
     void AddVarDec(std::shared_ptr<ALittleScriptStructVarDecElement> dec);
 
     // ВщевдЊЫи
-    void FindVarDecList(const std::string& name, std::vector<std::shared_ptr<ALittleScriptStructVarDecElement>>& result);
+    void FindVarDecList(const std::string& name, std::vector<std::shared_ptr<ALittleScriptStructVarDecElement>>& result) const;
 };
 
 #endif // _ALITTLE_ALITTLESCRIPTSTRUCTDATA_H_

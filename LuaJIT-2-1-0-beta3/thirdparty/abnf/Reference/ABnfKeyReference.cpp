@@ -11,18 +11,15 @@ ABnfKeyReference::ABnfKeyReference(ABnfElementPtr element) : ABnfCommonReference
 {
 }
 
-bool ABnfKeyReference::CheckError(ABnfGuessError& error)
+ABnfGuessError ABnfKeyReference::CheckError()
 {
     auto element = m_element.lock();
-    if (element == nullptr) return false;
+    if (element == nullptr) return nullptr;
 
     if (element->GetLength() <= 2)
-    {
-        error.element = element;
-        error.error = "key can't not be empty";
-        return true;
-    }
-    return false;
+        return ABnfGuessError(element, "key can't not be empty");
+
+    return nullptr;
 }
 
 void ABnfKeyReference::QueryQuickInfo(std::string& info)

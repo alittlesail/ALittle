@@ -10,10 +10,10 @@ public:
     ABnfNodeReference(ABnfElementPtr element);
     virtual ~ABnfNodeReference() {}
 
-    bool CheckError(ABnfGuessError& error)override;
+    ABnfGuessError CheckError() override;
 
 private:
-    bool CheckElementError(ABnfElementPtr element, ABnfGuessError& error);
+    ABnfGuessError CheckElementError(ABnfElementPtr element);
 };
 
 #endif // _ALITTLE_ABNFNODEREFERENCE_H_

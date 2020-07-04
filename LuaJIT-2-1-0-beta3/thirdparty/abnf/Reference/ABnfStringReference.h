@@ -10,7 +10,7 @@ public:
     ABnfStringReference(ABnfElementPtr element);
     virtual ~ABnfStringReference() {}
 
-    bool CheckError(ABnfGuessError& error)override;
+    ABnfGuessError CheckError() override;
 };
 
 #endif // _ALITTLE_ABNFSTRINGREFERENCE_H_

@@ -81,6 +81,13 @@ void ABnfProject::Add(std::function<void()> fun)
     m_cv.notify_one();
 }
 
+ABnfFile* ABnfProject::GetFile(const std::string& full_path)
+{
+    auto it = m_file_map.find(full_path);
+    if (it == m_file_map.end()) return nullptr;
+    return it->second;
+}
+
 void ABnfProject::UpdateFile(const std::string& full_path)
 {
     // 打开文件

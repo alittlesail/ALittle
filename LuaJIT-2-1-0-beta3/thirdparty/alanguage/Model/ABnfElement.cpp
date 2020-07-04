@@ -33,24 +33,29 @@ ABnfReference* ABnfElement::GetReference()
 }
 
 // 获取类型
-bool ABnfElement::GuessTypes(std::vector<ABnfGuessPtr>& guess_list, ABnfGuessError& error)
+ABnfGuessError ABnfElement::GuessTypes(std::vector<ABnfGuessPtr>& guess_list)
 {
-    return m_factory->GuessTypes(shared_from_this(), guess_list, error);
+    return m_factory->GuessTypes(shared_from_this(), guess_list);
 }
 
 // 获取第一个类型
-ABnfGuessPtr ABnfElement::GuessType(ABnfGuessError& error)
+ABnfGuessError ABnfElement::GuessType(ABnfGuessPtr& out)
 {
+    out = nullptr;
+
     std::vector<ABnfGuessPtr> guess_list;
-    GuessTypes(guess_list, error);
-    if (error.error.size()) return nullptr;
+    auto error = GuessTypes(guess_list);
+    if (error) return error;
+
     if (guess_list.size() == 0)
     {
         error.element = shared_from_this();
         error.error = "unknown type";
-        return nullptr;
+        return error;
     }
-    return guess_list[0];
+
+    out = guess_list[0];
+    return nullptr;
 }
 
 // 获取文件全路径

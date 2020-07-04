@@ -10,7 +10,7 @@ public:
     ABnfKeyReference(ABnfElementPtr element);
     virtual ~ABnfKeyReference() {}
 
-    bool CheckError(ABnfGuessError& error)override;
+    ABnfGuessError CheckError() override;
 
     void QueryQuickInfo(std::string& info) override;
 };

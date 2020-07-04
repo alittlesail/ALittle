@@ -40,7 +40,7 @@ public:
 
     virtual ABnfReference* CreateReference(ABnfElementPtr element);
 
-    virtual bool GuessTypes(ABnfElementPtr element, std::vector<ABnfGuessPtr>& guess_list, ABnfGuessError& error) { error.error = "no implement"; return false; }
+    virtual ABnfGuessError GuessTypes(ABnfElementPtr element, std::vector<ABnfGuessPtr>& guess_list) { return "no implement"; }
 
 public:
     virtual ABnfFile* CreateFile(ABnfProject* project, const std::string& full_path, const char* text, size_t len);

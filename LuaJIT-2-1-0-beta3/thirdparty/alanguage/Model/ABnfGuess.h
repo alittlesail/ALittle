@@ -39,6 +39,12 @@ struct ABnfGuessError
 {
     std::string error;
     ABnfElementPtr element;
+
+    ABnfGuessError() {}
+    ABnfGuessError(const char* p_error) : error(p_error) { }
+    ABnfGuessError(std::nullptr_t t) { }
+    ABnfGuessError(ABnfElementPtr p_element, const std::string& p_error) : element(p_element), error(p_error) {}
+    operator bool() { return !error.empty(); }
 };
 
 #endif // _ALITTLE_ABNFGUESS_H_

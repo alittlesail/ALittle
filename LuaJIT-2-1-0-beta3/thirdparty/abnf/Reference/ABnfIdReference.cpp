@@ -53,13 +53,13 @@ bool ABnfIdReference::QueryCompletion(std::vector<ALanguageCompletionInfo>& list
 }
 
 // ¼ì²é´íÎó
-bool ABnfIdReference::CheckError(ABnfGuessError& error)
+ABnfGuessError ABnfIdReference::CheckError()
 {
     auto element = m_element.lock();
-    if (element == nullptr) return false;
+    if (element == nullptr) return nullptr;
 
     ABnfFileClass* file = dynamic_cast<ABnfFileClass*>(element->GetFile());
-    if (file == nullptr) return false;
+    if (file == nullptr) return nullptr;
 
     const auto& text = element->GetElementText();
 
@@ -68,27 +68,15 @@ bool ABnfIdReference::CheckError(ABnfGuessError& error)
     {
         auto parent = element->GetParent();
         if (parent == nullptr || parent->GetNodeType() != "Expression")
-        {
-            error.element = element;
-            error.error = "unknow type";
-            return true;
-        }
+            return ABnfGuessError(element, "unknow type");
     }
     else if (it->second.size() > 1)
-    {
-        error.element = element;
-        error.error = "repeated define";
-        return true;
-    }
+        return ABnfGuessError(element, "repeated define");
 
     if (text.size() != 0 && text[0] >= '0' && text[0] <= '9')
-    {
-        error.element = element;
-        error.error = "rule name must not start with number";
-        return true;
-    }
+        return ABnfGuessError(element, "rule name must not start with number");
 
-    return false;
+    return nullptr;
 }
 
 void ABnfIdReference::QueryHighlightWordTag(std::vector<ALanguageHighlightWordInfo>& list)

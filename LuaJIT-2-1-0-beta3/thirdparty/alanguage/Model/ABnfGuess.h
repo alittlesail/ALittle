@@ -28,9 +28,9 @@ public:
     virtual void UpdateValue() { }
     virtual ABnfGuessPtr Clone() const { return nullptr; }
     virtual bool NeedReplace() const { return false; }
-    virtual ABnfGuessPtr ReplaceTemplate(const std::unordered_map<std::string, ABnfGuessPtr>& fill_map) const { return nullptr; }
+    virtual ABnfGuessPtr ReplaceTemplate(const std::unordered_map<std::string, ABnfGuessPtr>& fill_map) { return nullptr; }
     virtual bool HasAny() const { return false; }
-    virtual const std::string& GetTotalValue() const { return value; }
+    virtual const std::string& GetTotalValue() { return value; }
 };
 
 class ABnfElement;

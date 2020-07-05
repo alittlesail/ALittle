@@ -8,6 +8,7 @@
 
 #include "../../alanguage/Model/ABnfElement.h"
 #include "../../alanguage/Index/ABnfProject.h"
+#include "../../alanguage/Index/ABnfFile.h"
 
 #include "../Generate/ALittleScriptNamespaceDecElement.h"
 #include "../Generate/ALittleScriptNamespaceElementDecElement.h"
@@ -34,6 +35,10 @@
 #include "../Generate/ALittleScriptVarAssignNameDecElement.h"
 #include "../Generate/ALittleScriptUsingDecElement.h"
 #include "../Generate/ALittleScriptUsingNameDecElement.h"
+
+#include "../Guess/ALittleScriptGuessClass.h"
+#include "../Guess/ALittleScriptGuessPrimitive.h"
+#include "../Guess/ALittleScriptGuessConst.h"
 
 #include <algorithm>
 
@@ -421,6 +426,7 @@ const ALittleScriptEnumData* ALittleScriptIndex::GetEnumData(std::shared_ptr<ALi
 void ALittleScriptIndex::AddRoot(std::shared_ptr<ALittleScriptRootElement> root)
 {
     // 清除标记
+    root->GetFile()->ClearGuessType();
     m_guess_type_map.erase(root->GetFile());
     m_guess_error_map.erase(root->GetFile());
     m_class_data_map.erase(root->GetFile());
@@ -571,6 +577,7 @@ void ALittleScriptIndex::AddRoot(std::shared_ptr<ALittleScriptRootElement> root)
 void ALittleScriptIndex::RemoveRoot(std::shared_ptr<ALittleScriptRootElement> root)
 {
     // 清除标记
+    root->GetFile()->ClearGuessType();
     m_guess_type_map.erase(root->GetFile());
     m_guess_error_map.erase(root->GetFile());
     m_class_data_map.erase(root->GetFile());

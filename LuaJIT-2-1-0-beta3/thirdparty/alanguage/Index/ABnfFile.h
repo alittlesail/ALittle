@@ -14,6 +14,8 @@ class ABnfNodeElement;
 using ABnfNodeElementPtr = std::shared_ptr<ABnfNodeElement>;
 class ABnfElement;
 using ABnfElementPtr = std::shared_ptr<ABnfElement>;
+class ABnfGuess;
+using ABnfGuessPtr = std::shared_ptr<ABnfGuess>;
 
 struct ALanguageQuickInfo;
 struct ALanguageColorInfo;
@@ -40,6 +42,9 @@ protected:
     std::map<ABnfElementPtr, std::string> m_analysis_error_map;
     std::map<ABnfElementPtr, std::string> m_check_error_map;
     std::unordered_map<int, std::vector<ALanguageColorInfo>> m_color_map;
+
+    // 持有ABnfGuess的引用
+    std::vector<ABnfGuessPtr> m_guess_cache;
 
 public:
     ABnfFile(ABnfProject* project, const std::string& full_path, const char* text, size_t len, bool in_ui);
@@ -85,6 +90,10 @@ public:
     virtual void OnUpdate() {}
     // 移除内容
     virtual void OnRemove() {}
+    // 添加ABnfGuess，为了持有这个对象的引用
+    inline void AddGuessType(ABnfGuessPtr& ptr) { m_guess_cache.push_back(ptr); }
+    // 清空引用
+    inline void ClearGuessType() { m_guess_cache.resize(0); }
 
 protected:
     // 解析一条龙

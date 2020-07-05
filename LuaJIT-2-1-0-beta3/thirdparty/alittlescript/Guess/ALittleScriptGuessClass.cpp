@@ -2,8 +2,12 @@
 #include "ALittleScriptGuessClass.h"
 
 #include "../Index/ALittleScriptUtility.h"
-
+#include "../Index/ALittleScriptIndex.h"
 #include "../Generate/ALittleScriptClassDecElement.h"
+
+#include "../../alanguage/Index/ABnfFactory.h"
+#include "../../alanguage/Index/ABnfFile.h"
+#include "../../alanguage/Index/ABnfProject.h"
 
 ALittleScriptGuessClass::ALittleScriptGuessClass(const std::string& p_namespace_name, const std::string& p_class_name, std::shared_ptr<ALittleScriptClassDecElement> p_class_dec, const std::string& p_using_name, bool p_is_const, bool p_is_native)
 {
@@ -32,7 +36,7 @@ bool ALittleScriptGuessClass::NeedReplace() const
     return false;
 }
 
-ABnfGuessPtr ALittleScriptGuessClass::ReplaceTemplate(const std::unordered_map<std::string, ABnfGuessPtr>& fill_map) const
+ABnfGuessPtr ALittleScriptGuessClass::ReplaceTemplate(const std::unordered_map<std::string, ABnfGuessPtr>& fill_map)
 {
     auto new_guess = std::dynamic_pointer_cast<ALittleScriptGuessClass>(Clone());
     for (auto& pair : template_map)
@@ -69,21 +73,28 @@ void ALittleScriptGuessClass::UpdateValue()
     std::vector<std::string> name_list;
     for (auto template_guess : template_list)
     {
-        if (template_map.TryGetValue(template.GetValueWithoutConst(), out ABnfGuess impl))
+        auto guess = template_guess.lock();
+        if (guess == nullptr) continue;
+
+        auto it = template_map.find(guess->GetValueWithoutConst());
+        if (it != template_map.end())
         {
-            if (template.is_const && !impl.is_const)
+            auto impl = it->second.lock();
+            if (impl == nullptr) continue;
+
+            if (guess->is_const && !impl->is_const)
             {
-                impl = impl.Clone();
-                impl.is_const = true;
-                impl.UpdateValue();
+                impl = impl->Clone();
+                impl->is_const = true;
+                impl->UpdateValue();
             }
-            name_list.Add(impl.GetValue());
+            name_list.push_back(impl->GetValue());
         }
         else
-            name_list.Add(template.GetValue());
+            name_list.push_back(guess->GetValue());
     }
-    if (name_list.Count > 0)
-        value += "<" + string.Join(",", name_list) + ">";
+    if (name_list.size() > 0)
+        value += "<" + ABnfFactory::Join(name_list, ",") + ">";
 
     value_without_const = value;
     if (is_const) value = "const " + value;
@@ -104,8 +115,8 @@ bool ALittleScriptGuessClass::IsChanged() const
             return true;
     }
 
-    auto class_dec_element = class_dec.lock();
-    if (class_dec_element == nullptr) return true;
+    auto element = class_dec.lock();
+    if (element == nullptr) return true;
 
-    return dynamic_cast<ALittleScriptIndex*>(class_dec_element->GetFile()->GetProject())->GetGuessTypeList(class_dec) == nullptr;
+    return dynamic_cast<ALittleScriptIndex*>(element->GetFile()->GetProject())->GetGuessTypeList(element) == nullptr;
 }

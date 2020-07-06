@@ -34,6 +34,17 @@ static int alittlescriptlib_create_alittlescript_project(lua_State* L)
 	return 1;
 }
 
+static int alittlescriptlib_alittlescriptproject_settargetlanguage(lua_State* L)
+{
+	void** c = (void**)lua_touserdata(L, 1);
+	luaL_argcheck(L, c != 0, 1, "alittlescript project object is null");
+	const char* target_language = luaL_checkstring(L, 2);
+	luaL_argcheck(L, target_language != 0, 2, "target_language is null");
+
+	alittlescriptproject_settargetlanguage(*c, target_language);
+	return 0;
+}
+
 static int alittlescriptlib_destroy_alittlescript_file(lua_State* L)
 {
 	void** c = (void**)lua_touserdata(L, 1);
@@ -79,6 +90,7 @@ static void set_info (lua_State *L) {
 static struct luaL_Reg alittlescriptlib[] = {
   {"create_alittlescript_project", alittlescriptlib_create_alittlescript_project},
   {"create_alittlescript_file", alittlescriptlib_create_alittlescript_file},
+  {"alittlescriptproject_settargetlanguage", alittlescriptlib_alittlescriptproject_settargetlanguage},
   {NULL, NULL}
 };
 

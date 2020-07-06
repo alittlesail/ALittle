@@ -28,7 +28,7 @@ ABnfReference* ABnfElement::GetReference()
     if (m_factory != nullptr)
         m_reference = m_factory->CreateReference(shared_from_this());
     if (m_reference == nullptr)
-        m_reference = new ABnfReferenceTemplate<ABnfElement>(shared_from_this());
+        m_reference = new ABnfReference();
     return m_reference;
 }
 

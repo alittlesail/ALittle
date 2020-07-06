@@ -113,6 +113,8 @@
 #include "../Guess/ALittleScriptGuessClass.h"
 #include "../Guess/ALittleScriptGuessReturnTail.h"
 
+#include "../Reference/ALittleScriptLanguageModifierReference.h"
+
 void ALittleScriptUtility::CreateFolder(const std::string& path)
 {
 #ifdef _WIN32

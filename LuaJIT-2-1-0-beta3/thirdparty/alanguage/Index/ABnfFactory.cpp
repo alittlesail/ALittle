@@ -29,7 +29,7 @@ ABnfRegexElementPtr ABnfFactory::CreateRegexElement(ABnfFile* file, int line, in
 
 ABnfReference* ABnfFactory::CreateReference(ABnfElementPtr element)
 {
-    return new ABnfReferenceTemplate<ABnfElement>(element);
+    return new ABnfReference();
 }
 
 ABnfFile* ABnfFactory::CreateFile(ABnfProject* project, const std::string& full_path, const char* text, size_t len)

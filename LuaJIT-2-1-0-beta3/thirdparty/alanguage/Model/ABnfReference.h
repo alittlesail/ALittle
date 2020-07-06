@@ -7,6 +7,10 @@
 
 #include <memory>
 
+class ABnfElement;
+using ABnfElementPtr = std::shared_ptr<ABnfElement>;
+using ABnfElementWeakPtr = std::weak_ptr<ABnfElement>;
+
 class ABnfReference
 {
 public:
@@ -55,16 +59,6 @@ public:
 
     // 是否可以跳转
     virtual bool CanGotoDefinition() { return true; }
-};
-
-template <typename T>
-class ABnfReferenceTemplate : public ABnfReference
-{
-protected:
-    std::shared_ptr<T> m_element;
-
-public:
-    ABnfReferenceTemplate(ABnfElementPtr element) { m_element = std::dynamic_pointer_cast<T>(element); }
 };
 
 #endif // _ALITTLE_ABNFREFERENCE_H_

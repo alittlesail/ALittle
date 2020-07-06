@@ -14,6 +14,7 @@ class ALittleScriptProjectClass : public ABnfProject, public ALittleScriptIndex
 {
 private:
     ALittleScriptFactoryClass m_factory;
+    std::string m_target_language;
 
 public:
     ALittleScriptProjectClass(const std::string& full_path);
@@ -21,6 +22,10 @@ public:
 
 public:
     ABnfFactory& RefFactory() override { return m_factory; }
+
+public:
+    void SetTargetLanguage(const std::string& language);
+    const std::string& GetTargetLanguage() const { return m_target_language; }
 };
 
 #endif // _ALITTLE_ALITTLESCRIPTPROJECTCLASS_H_

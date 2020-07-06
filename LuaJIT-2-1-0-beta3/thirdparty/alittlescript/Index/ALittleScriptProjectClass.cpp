@@ -10,3 +10,8 @@ ALittleScriptProjectClass::~ALittleScriptProjectClass()
 {
 }
 
+void ALittleScriptProjectClass::SetTargetLanguage(const std::string& language)
+{
+	m_target_language = language;
+}
+

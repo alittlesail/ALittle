@@ -1,5 +1,6 @@
 
 #include "ALittleScriptGuessFunctor.h"
+#include "ALittleScriptGuessTemplate.h"
 
 #include "../Index/ALittleScriptUtility.h"
 #include "../Index/ALittleScriptIndex.h"
@@ -134,21 +135,29 @@ void ALittleScriptGuessFunctor::UpdateValue()
     std::vector<std::string> param_string_list;
     for (size_t i = 0; i < param_list.size(); ++i)
     {
+        auto param_e = param_list[i].lock();
+        if (param_e == nullptr) continue;
         if (i < param_nullable_list.size() && param_nullable_list[i])
-            param_string_list.push_back("[Nullable] " + param_list[i]->GetValue());
+            param_string_list.push_back("[Nullable] " + param_e->GetValue());
         else
-            param_string_list.push_back(param_list[i]->GetValue());
+            param_string_list.push_back(param_e->GetValue());
     }
-    if (param_tail != nullptr)
-        param_string_list.push_back(param_tail->GetValue());
+    auto param_tail_e = param_tail.lock();
+    if (param_tail_e != nullptr)
+        param_string_list.push_back(param_tail_e->GetValue());
     value += "(" + ABnfFactory::Join(param_string_list, ",") + ")";
 
     // 返回值类型列表
     std::vector<std::string> return_string_list;
     for (auto& guess : return_list)
-        return_string_list.push_back(guess->GetValue());
-    if (return_tail != nullptr)
-        return_string_list.push_back(return_tail->GetValue());
+    {
+        auto guess_e = guess.lock();
+        if (guess_e == nullptr) continue;
+        return_string_list.push_back(guess_e->GetValue());
+    }
+    auto return_tail_e = return_tail.lock();
+    if (return_tail_e != nullptr)
+        return_string_list.push_back(return_tail_e->GetValue());
     if (return_string_list.size() > 0) value += ":";
     value += ABnfFactory::Join(return_string_list, ",");
 

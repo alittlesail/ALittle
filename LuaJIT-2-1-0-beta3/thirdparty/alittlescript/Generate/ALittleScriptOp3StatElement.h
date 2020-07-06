@@ -20,37 +20,12 @@ private:
     bool m_flag_Op3Suffix = false;
     std::shared_ptr<ALittleScriptOp3SuffixElement> m_cache_Op3Suffix;
 public:
-    std::shared_ptr<ALittleScriptOp3SuffixElement> GetOp3Suffix()
-    {
-        if (m_flag_Op3Suffix) return m_cache_Op3Suffix;
-        m_flag_Op3Suffix = true;
-        for (auto& child : m_childs)
-        {
-            auto node = std::dynamic_pointer_cast<ALittleScriptOp3SuffixElement>(child);
-            if (node != nullptr)
-            {
-                m_cache_Op3Suffix = node;
-                break;
-            }
-        }
-        return m_cache_Op3Suffix;
-    }
+    std::shared_ptr<ALittleScriptOp3SuffixElement> GetOp3Suffix();
 private:
     bool m_flag_Op3SuffixEx = false;
     std::vector<std::shared_ptr<ALittleScriptOp3SuffixExElement>> m_list_Op3SuffixEx;
 public:
-    const std::vector<std::shared_ptr<ALittleScriptOp3SuffixExElement>>& GetOp3SuffixExList()
-    {
-        if (m_flag_Op3SuffixEx) return m_list_Op3SuffixEx;
-        m_flag_Op3SuffixEx = true;
-        for (auto& child : m_childs)
-        {
-            auto node = std::dynamic_pointer_cast<ALittleScriptOp3SuffixExElement>(child);
-            if (node != nullptr)
-                m_list_Op3SuffixEx.push_back(node);
-        }
-        return m_list_Op3SuffixEx;
-    }
+    const std::vector<std::shared_ptr<ALittleScriptOp3SuffixExElement>>& GetOp3SuffixExList();
 };
 
 #endif // _ALITTLE_ALittleScriptOp3StatElement_H_

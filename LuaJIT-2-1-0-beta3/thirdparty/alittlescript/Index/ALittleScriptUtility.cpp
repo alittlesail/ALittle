@@ -97,10 +97,21 @@
 #include "../Generate/ALittleScriptVarAssignExprElement.h"
 #include "../Generate/ALittleScriptVarAssignDecElement.h"
 #include "../Generate/ALittleScriptValueStatElement.h"
+#include "../Generate/ALittleScriptRegisterModifierElement.h"
+#include "../Generate/ALittleScriptConstModifierElement.h"
+#include "../Generate/ALittleScriptNullableModifierElement.h"
 
 #include "../../alanguage/Index/ABnfFile.h"
 #include "../../alanguage/Index/ABnfProject.h"
 #include "../../alanguage/Model/ABnfGuess.h"
+
+#include "../Guess/ALittleScriptGuessStruct.h"
+#include "../Guess/ALittleScriptGuessList.h"
+#include "../Guess/ALittleScriptGuessMap.h"
+#include "../Guess/ALittleScriptGuessFunctor.h"
+#include "../Guess/ALittleScriptGuessPrimitive.h"
+#include "../Guess/ALittleScriptGuessClass.h"
+#include "../Guess/ALittleScriptGuessReturnTail.h"
 
 void ALittleScriptUtility::CreateFolder(const std::string& path)
 {
@@ -166,7 +177,7 @@ void ALittleScriptUtility::GetNameListInFolder(const std::string& path, std::vec
 {
 #ifdef _WIN32
     //文件句柄
-    long   hFile = 0;
+    std::intptr_t   hFile = 0;
     //文件信息
     struct _finddata_t fileinfo;
     std::string p;
@@ -1187,15 +1198,19 @@ bool ALittleScriptUtility::IsPairsFunction(const std::vector<ABnfGuessPtr>& gues
     if (guess->param_nullable_list[0]) return false;
     if (guess->param_nullable_list[1]) return false;
     // 函数不能有参数占位符
-    if (guess->param_tail != nullptr) return false;
+    auto param_tail_e = guess->param_tail.lock();
+    if (param_tail_e != nullptr) return false;
     // 函数必须有返回值，可以是任意个，这个也表示for的变量列表的数量
     if (guess->return_list.size() > 0) return false;
     // 函数不能有返回值占位符
-    if (guess->return_tail != nullptr) return false;
+    auto return_tail_e = guess->return_tail.lock();
+    if (return_tail_e != nullptr) return false;
     // 函数的第一个参数必须和guess_list第二个参数一致
-    if (guess->param_list[0]->GetValue() != guess_list[1]->GetValue()) return false;
+    auto param_list_0 = guess->param_list[0].lock();
+    if (param_list_0 == nullptr || param_list_0->GetValue() != guess_list[1]->GetValue()) return false;
     // 函数的第二个参数必须和guess_list第二个参数一致
-    if (guess->param_list[1]->GetValue() != guess_list[2]->GetValue()) return false;
+    auto param_list_1 = guess->param_list[1].lock();
+    if (param_list_1 == nullptr || param_list_1->GetValue() != guess_list[2]->GetValue()) return false;
     return true;
 }
 
@@ -1204,7 +1219,7 @@ ABnfGuessError ALittleScriptUtility::CalcPairsTypeForLua(std::shared_ptr<ALittle
 {
     result = "";
     std::vector<ABnfGuessPtr> guess_list;
-    auto error = value_stat.GuessTypes(guess_list);
+    auto error = value_stat->GuessTypes(guess_list);
     if (error) return error;
 
     // 必出是模板容器
@@ -1231,7 +1246,7 @@ ABnfGuessError ALittleScriptUtility::CalcPairsTypeForJavaScript(std::shared_ptr<
     result = "Other";
     is_native = false;
     std::vector<ABnfGuessPtr> guess_list;
-    auto error = value_stat.GuessTypes(guess_list);
+    auto error = value_stat->GuessTypes(guess_list);
     if (error) return error;
 
     // 必出是模板容器
@@ -1243,7 +1258,7 @@ ABnfGuessError ALittleScriptUtility::CalcPairsTypeForJavaScript(std::shared_ptr<
     }
     else if (guess_list.size() == 1 && std::dynamic_pointer_cast<ALittleScriptGuessMap>(guess_list[0]))
     {
-        if (std::dynamic_pointer_cast<ALittleScriptGuessString>(std::dynamic_pointer_cast<ALittleScriptGuessMap>(guess_list[0])->key_type))
+        if (std::dynamic_pointer_cast<ALittleScriptGuessString>(std::dynamic_pointer_cast<ALittleScriptGuessMap>(guess_list[0])->key_type.lock()))
             result = "Object";
         else
             result = "Map";
@@ -1270,7 +1285,7 @@ ABnfGuessError ALittleScriptUtility::IsClassSuper(std::shared_ptr<ALittleScriptC
 
     // 获取类型
     ABnfGuessPtr guess;
-    auto error = name_dec.GuessType(guess);
+    auto error = name_dec->GuessType(guess);
     if (error) return error;
 
     // 继续判断父类的父类
@@ -1284,7 +1299,7 @@ ABnfGuessError ALittleScriptUtility::IsClassSuper(std::shared_ptr<ALittleScriptC
         return nullptr;
     }
 
-    return IsClassSuper(guess_class.class_dec, parent, result);
+    return IsClassSuper(guess_class->class_dec.lock(), parent, result);
 }
 
 // 判断 parent是否是child的父类
@@ -1305,7 +1320,7 @@ ABnfGuessError ALittleScriptUtility::IsStructSuper(std::shared_ptr<ABnfElement> 
 
     // 获取类型
     ABnfGuessPtr guess;
-    auto error = name_dec.GuessType(guess);
+    auto error = name_dec->GuessType(guess);
     if (error) return error;
 
     // 继续判断父结构体的父结构体
@@ -1319,7 +1334,7 @@ ABnfGuessError ALittleScriptUtility::IsStructSuper(std::shared_ptr<ABnfElement> 
         return nullptr;
     }
 
-    return IsStructSuper(guess_struct->struct_dec, parent, result);
+    return IsStructSuper(guess_struct->struct_dec.lock(), parent, result);
 }
 
 // 获取目标根路径

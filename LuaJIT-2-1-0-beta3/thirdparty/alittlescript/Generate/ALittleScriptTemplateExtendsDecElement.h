@@ -22,78 +22,22 @@ private:
     bool m_flag_AllType = false;
     std::shared_ptr<ALittleScriptAllTypeElement> m_cache_AllType;
 public:
-    std::shared_ptr<ALittleScriptAllTypeElement> GetAllType()
-    {
-        if (m_flag_AllType) return m_cache_AllType;
-        m_flag_AllType = true;
-        for (auto& child : m_childs)
-        {
-            auto node = std::dynamic_pointer_cast<ALittleScriptAllTypeElement>(child);
-            if (node != nullptr)
-            {
-                m_cache_AllType = node;
-                break;
-            }
-        }
-        return m_cache_AllType;
-    }
+    std::shared_ptr<ALittleScriptAllTypeElement> GetAllType();
 private:
     bool m_flag_TemplateExtendsClassDec = false;
     std::shared_ptr<ALittleScriptTemplateExtendsClassDecElement> m_cache_TemplateExtendsClassDec;
 public:
-    std::shared_ptr<ALittleScriptTemplateExtendsClassDecElement> GetTemplateExtendsClassDec()
-    {
-        if (m_flag_TemplateExtendsClassDec) return m_cache_TemplateExtendsClassDec;
-        m_flag_TemplateExtendsClassDec = true;
-        for (auto& child : m_childs)
-        {
-            auto node = std::dynamic_pointer_cast<ALittleScriptTemplateExtendsClassDecElement>(child);
-            if (node != nullptr)
-            {
-                m_cache_TemplateExtendsClassDec = node;
-                break;
-            }
-        }
-        return m_cache_TemplateExtendsClassDec;
-    }
+    std::shared_ptr<ALittleScriptTemplateExtendsClassDecElement> GetTemplateExtendsClassDec();
 private:
     bool m_flag_TemplateExtendsStructDec = false;
     std::shared_ptr<ALittleScriptTemplateExtendsStructDecElement> m_cache_TemplateExtendsStructDec;
 public:
-    std::shared_ptr<ALittleScriptTemplateExtendsStructDecElement> GetTemplateExtendsStructDec()
-    {
-        if (m_flag_TemplateExtendsStructDec) return m_cache_TemplateExtendsStructDec;
-        m_flag_TemplateExtendsStructDec = true;
-        for (auto& child : m_childs)
-        {
-            auto node = std::dynamic_pointer_cast<ALittleScriptTemplateExtendsStructDecElement>(child);
-            if (node != nullptr)
-            {
-                m_cache_TemplateExtendsStructDec = node;
-                break;
-            }
-        }
-        return m_cache_TemplateExtendsStructDec;
-    }
+    std::shared_ptr<ALittleScriptTemplateExtendsStructDecElement> GetTemplateExtendsStructDec();
 private:
     bool m_flag_String = false;
     std::shared_ptr<ALittleScriptStringElement> m_cache_String;
 public:
-    std::shared_ptr<ALittleScriptStringElement> GetString()
-    {
-        if (m_flag_String) return m_cache_String;
-        m_flag_String = true;
-        for (auto& child : m_childs)
-        {
-            auto node = std::dynamic_pointer_cast<ALittleScriptStringElement>(child);
-            if (node != nullptr)
-            {
-                m_cache_String = node;
-                break;
-            }
-        }
-        return m_cache_String;
-    }
+    std::shared_ptr<ALittleScriptStringElement> GetString();
 };
 
 #endif // _ALITTLE_ALittleScriptTemplateExtendsDecElement_H_

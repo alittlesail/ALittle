@@ -108,7 +108,7 @@ void ALittleScriptClassData::AddClassChildDec(std::shared_ptr<ABnfElement> dec)
 }
 
 // ≤È’“‘™Àÿ
-void ALittleScriptClassData::FindClassAttrList(int access_level, ClassAttrType attr_type, const std::string& name, std::vector<std::shared_ptr<ABnfElement>>& result)
+void ALittleScriptClassData::FindClassAttrList(int access_level, ClassAttrType attr_type, const std::string& name, std::vector<std::shared_ptr<ABnfElement>>& result) const
 {
     if (access_level >= ALittleScriptUtility::sAccessOnlyPublic)
     {

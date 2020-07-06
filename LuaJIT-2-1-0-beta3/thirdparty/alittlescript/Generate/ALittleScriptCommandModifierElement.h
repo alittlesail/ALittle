@@ -20,40 +20,12 @@ private:
     bool m_flag_CommandBodyDec = false;
     std::shared_ptr<ALittleScriptCommandBodyDecElement> m_cache_CommandBodyDec;
 public:
-    std::shared_ptr<ALittleScriptCommandBodyDecElement> GetCommandBodyDec()
-    {
-        if (m_flag_CommandBodyDec) return m_cache_CommandBodyDec;
-        m_flag_CommandBodyDec = true;
-        for (auto& child : m_childs)
-        {
-            auto node = std::dynamic_pointer_cast<ALittleScriptCommandBodyDecElement>(child);
-            if (node != nullptr)
-            {
-                m_cache_CommandBodyDec = node;
-                break;
-            }
-        }
-        return m_cache_CommandBodyDec;
-    }
+    std::shared_ptr<ALittleScriptCommandBodyDecElement> GetCommandBodyDec();
 private:
     bool m_flag_Key = false;
     std::shared_ptr<ALittleScriptKeyElement> m_cache_Key;
 public:
-    std::shared_ptr<ALittleScriptKeyElement> GetKey()
-    {
-        if (m_flag_Key) return m_cache_Key;
-        m_flag_Key = true;
-        for (auto& child : m_childs)
-        {
-            auto node = std::dynamic_pointer_cast<ALittleScriptKeyElement>(child);
-            if (node != nullptr)
-            {
-                m_cache_Key = node;
-                break;
-            }
-        }
-        return m_cache_Key;
-    }
+    std::shared_ptr<ALittleScriptKeyElement> GetKey();
 };
 
 #endif // _ALITTLE_ALittleScriptCommandModifierElement_H_

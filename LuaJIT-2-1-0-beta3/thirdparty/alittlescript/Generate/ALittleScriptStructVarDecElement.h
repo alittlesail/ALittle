@@ -21,59 +21,17 @@ private:
     bool m_flag_AllType = false;
     std::shared_ptr<ALittleScriptAllTypeElement> m_cache_AllType;
 public:
-    std::shared_ptr<ALittleScriptAllTypeElement> GetAllType()
-    {
-        if (m_flag_AllType) return m_cache_AllType;
-        m_flag_AllType = true;
-        for (auto& child : m_childs)
-        {
-            auto node = std::dynamic_pointer_cast<ALittleScriptAllTypeElement>(child);
-            if (node != nullptr)
-            {
-                m_cache_AllType = node;
-                break;
-            }
-        }
-        return m_cache_AllType;
-    }
+    std::shared_ptr<ALittleScriptAllTypeElement> GetAllType();
 private:
     bool m_flag_StructVarNameDec = false;
     std::shared_ptr<ALittleScriptStructVarNameDecElement> m_cache_StructVarNameDec;
 public:
-    std::shared_ptr<ALittleScriptStructVarNameDecElement> GetStructVarNameDec()
-    {
-        if (m_flag_StructVarNameDec) return m_cache_StructVarNameDec;
-        m_flag_StructVarNameDec = true;
-        for (auto& child : m_childs)
-        {
-            auto node = std::dynamic_pointer_cast<ALittleScriptStructVarNameDecElement>(child);
-            if (node != nullptr)
-            {
-                m_cache_StructVarNameDec = node;
-                break;
-            }
-        }
-        return m_cache_StructVarNameDec;
-    }
+    std::shared_ptr<ALittleScriptStructVarNameDecElement> GetStructVarNameDec();
 private:
     bool m_flag_String = false;
     std::shared_ptr<ALittleScriptStringElement> m_cache_String;
 public:
-    std::shared_ptr<ALittleScriptStringElement> GetString()
-    {
-        if (m_flag_String) return m_cache_String;
-        m_flag_String = true;
-        for (auto& child : m_childs)
-        {
-            auto node = std::dynamic_pointer_cast<ALittleScriptStringElement>(child);
-            if (node != nullptr)
-            {
-                m_cache_String = node;
-                break;
-            }
-        }
-        return m_cache_String;
-    }
+    std::shared_ptr<ALittleScriptStringElement> GetString();
 };
 
 #endif // _ALITTLE_ALittleScriptStructVarDecElement_H_

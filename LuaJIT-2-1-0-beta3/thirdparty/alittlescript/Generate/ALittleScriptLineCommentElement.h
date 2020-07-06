@@ -19,21 +19,7 @@ private:
     bool m_flag_Regex = false;
     std::shared_ptr<ALittleScriptRegexElement> m_cache_Regex;
 public:
-    std::shared_ptr<ALittleScriptRegexElement> GetRegex()
-    {
-        if (m_flag_Regex) return m_cache_Regex;
-        m_flag_Regex = true;
-        for (auto& child : m_childs)
-        {
-            auto node = std::dynamic_pointer_cast<ALittleScriptRegexElement>(child);
-            if (node != nullptr)
-            {
-                m_cache_Regex = node;
-                break;
-            }
-        }
-        return m_cache_Regex;
-    }
+    std::shared_ptr<ALittleScriptRegexElement> GetRegex();
 };
 
 #endif // _ALITTLE_ALittleScriptLineCommentElement_H_

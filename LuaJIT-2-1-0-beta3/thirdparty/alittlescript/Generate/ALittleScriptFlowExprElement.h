@@ -20,40 +20,12 @@ private:
     bool m_flag_Key = false;
     std::shared_ptr<ALittleScriptKeyElement> m_cache_Key;
 public:
-    std::shared_ptr<ALittleScriptKeyElement> GetKey()
-    {
-        if (m_flag_Key) return m_cache_Key;
-        m_flag_Key = true;
-        for (auto& child : m_childs)
-        {
-            auto node = std::dynamic_pointer_cast<ALittleScriptKeyElement>(child);
-            if (node != nullptr)
-            {
-                m_cache_Key = node;
-                break;
-            }
-        }
-        return m_cache_Key;
-    }
+    std::shared_ptr<ALittleScriptKeyElement> GetKey();
 private:
     bool m_flag_String = false;
     std::shared_ptr<ALittleScriptStringElement> m_cache_String;
 public:
-    std::shared_ptr<ALittleScriptStringElement> GetString()
-    {
-        if (m_flag_String) return m_cache_String;
-        m_flag_String = true;
-        for (auto& child : m_childs)
-        {
-            auto node = std::dynamic_pointer_cast<ALittleScriptStringElement>(child);
-            if (node != nullptr)
-            {
-                m_cache_String = node;
-                break;
-            }
-        }
-        return m_cache_String;
-    }
+    std::shared_ptr<ALittleScriptStringElement> GetString();
 };
 
 #endif // _ALITTLE_ALittleScriptFlowExprElement_H_

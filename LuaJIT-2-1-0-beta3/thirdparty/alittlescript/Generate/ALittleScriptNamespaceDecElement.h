@@ -23,91 +23,27 @@ private:
     bool m_flag_Modifier = false;
     std::vector<std::shared_ptr<ALittleScriptModifierElement>> m_list_Modifier;
 public:
-    const std::vector<std::shared_ptr<ALittleScriptModifierElement>>& GetModifierList()
-    {
-        if (m_flag_Modifier) return m_list_Modifier;
-        m_flag_Modifier = true;
-        for (auto& child : m_childs)
-        {
-            auto node = std::dynamic_pointer_cast<ALittleScriptModifierElement>(child);
-            if (node != nullptr)
-                m_list_Modifier.push_back(node);
-        }
-        return m_list_Modifier;
-    }
+    const std::vector<std::shared_ptr<ALittleScriptModifierElement>>& GetModifierList();
 private:
     bool m_flag_NamespaceElementDec = false;
     std::vector<std::shared_ptr<ALittleScriptNamespaceElementDecElement>> m_list_NamespaceElementDec;
 public:
-    const std::vector<std::shared_ptr<ALittleScriptNamespaceElementDecElement>>& GetNamespaceElementDecList()
-    {
-        if (m_flag_NamespaceElementDec) return m_list_NamespaceElementDec;
-        m_flag_NamespaceElementDec = true;
-        for (auto& child : m_childs)
-        {
-            auto node = std::dynamic_pointer_cast<ALittleScriptNamespaceElementDecElement>(child);
-            if (node != nullptr)
-                m_list_NamespaceElementDec.push_back(node);
-        }
-        return m_list_NamespaceElementDec;
-    }
+    const std::vector<std::shared_ptr<ALittleScriptNamespaceElementDecElement>>& GetNamespaceElementDecList();
 private:
     bool m_flag_NamespaceNameDec = false;
     std::shared_ptr<ALittleScriptNamespaceNameDecElement> m_cache_NamespaceNameDec;
 public:
-    std::shared_ptr<ALittleScriptNamespaceNameDecElement> GetNamespaceNameDec()
-    {
-        if (m_flag_NamespaceNameDec) return m_cache_NamespaceNameDec;
-        m_flag_NamespaceNameDec = true;
-        for (auto& child : m_childs)
-        {
-            auto node = std::dynamic_pointer_cast<ALittleScriptNamespaceNameDecElement>(child);
-            if (node != nullptr)
-            {
-                m_cache_NamespaceNameDec = node;
-                break;
-            }
-        }
-        return m_cache_NamespaceNameDec;
-    }
+    std::shared_ptr<ALittleScriptNamespaceNameDecElement> GetNamespaceNameDec();
 private:
     bool m_flag_Key = false;
     std::shared_ptr<ALittleScriptKeyElement> m_cache_Key;
 public:
-    std::shared_ptr<ALittleScriptKeyElement> GetKey()
-    {
-        if (m_flag_Key) return m_cache_Key;
-        m_flag_Key = true;
-        for (auto& child : m_childs)
-        {
-            auto node = std::dynamic_pointer_cast<ALittleScriptKeyElement>(child);
-            if (node != nullptr)
-            {
-                m_cache_Key = node;
-                break;
-            }
-        }
-        return m_cache_Key;
-    }
+    std::shared_ptr<ALittleScriptKeyElement> GetKey();
 private:
     bool m_flag_String = false;
     std::shared_ptr<ALittleScriptStringElement> m_cache_String;
 public:
-    std::shared_ptr<ALittleScriptStringElement> GetString()
-    {
-        if (m_flag_String) return m_cache_String;
-        m_flag_String = true;
-        for (auto& child : m_childs)
-        {
-            auto node = std::dynamic_pointer_cast<ALittleScriptStringElement>(child);
-            if (node != nullptr)
-            {
-                m_cache_String = node;
-                break;
-            }
-        }
-        return m_cache_String;
-    }
+    std::shared_ptr<ALittleScriptStringElement> GetString();
 };
 
 #endif // _ALITTLE_ALittleScriptNamespaceDecElement_H_

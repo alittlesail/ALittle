@@ -20,34 +20,12 @@ private:
     bool m_flag_MethodReturnOneDec = false;
     std::vector<std::shared_ptr<ALittleScriptMethodReturnOneDecElement>> m_list_MethodReturnOneDec;
 public:
-    const std::vector<std::shared_ptr<ALittleScriptMethodReturnOneDecElement>>& GetMethodReturnOneDecList()
-    {
-        if (m_flag_MethodReturnOneDec) return m_list_MethodReturnOneDec;
-        m_flag_MethodReturnOneDec = true;
-        for (auto& child : m_childs)
-        {
-            auto node = std::dynamic_pointer_cast<ALittleScriptMethodReturnOneDecElement>(child);
-            if (node != nullptr)
-                m_list_MethodReturnOneDec.push_back(node);
-        }
-        return m_list_MethodReturnOneDec;
-    }
+    const std::vector<std::shared_ptr<ALittleScriptMethodReturnOneDecElement>>& GetMethodReturnOneDecList();
 private:
     bool m_flag_String = false;
     std::vector<std::shared_ptr<ALittleScriptStringElement>> m_list_String;
 public:
-    const std::vector<std::shared_ptr<ALittleScriptStringElement>>& GetStringList()
-    {
-        if (m_flag_String) return m_list_String;
-        m_flag_String = true;
-        for (auto& child : m_childs)
-        {
-            auto node = std::dynamic_pointer_cast<ALittleScriptStringElement>(child);
-            if (node != nullptr)
-                m_list_String.push_back(node);
-        }
-        return m_list_String;
-    }
+    const std::vector<std::shared_ptr<ALittleScriptStringElement>>& GetStringList();
 };
 
 #endif // _ALITTLE_ALittleScriptMethodReturnDecElement_H_

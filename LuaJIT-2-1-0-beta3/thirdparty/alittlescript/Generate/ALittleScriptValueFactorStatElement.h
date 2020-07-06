@@ -25,135 +25,37 @@ private:
     bool m_flag_WrapValueStat = false;
     std::shared_ptr<ALittleScriptWrapValueStatElement> m_cache_WrapValueStat;
 public:
-    std::shared_ptr<ALittleScriptWrapValueStatElement> GetWrapValueStat()
-    {
-        if (m_flag_WrapValueStat) return m_cache_WrapValueStat;
-        m_flag_WrapValueStat = true;
-        for (auto& child : m_childs)
-        {
-            auto node = std::dynamic_pointer_cast<ALittleScriptWrapValueStatElement>(child);
-            if (node != nullptr)
-            {
-                m_cache_WrapValueStat = node;
-                break;
-            }
-        }
-        return m_cache_WrapValueStat;
-    }
+    std::shared_ptr<ALittleScriptWrapValueStatElement> GetWrapValueStat();
 private:
     bool m_flag_MethodParamTailDec = false;
     std::shared_ptr<ALittleScriptMethodParamTailDecElement> m_cache_MethodParamTailDec;
 public:
-    std::shared_ptr<ALittleScriptMethodParamTailDecElement> GetMethodParamTailDec()
-    {
-        if (m_flag_MethodParamTailDec) return m_cache_MethodParamTailDec;
-        m_flag_MethodParamTailDec = true;
-        for (auto& child : m_childs)
-        {
-            auto node = std::dynamic_pointer_cast<ALittleScriptMethodParamTailDecElement>(child);
-            if (node != nullptr)
-            {
-                m_cache_MethodParamTailDec = node;
-                break;
-            }
-        }
-        return m_cache_MethodParamTailDec;
-    }
+    std::shared_ptr<ALittleScriptMethodParamTailDecElement> GetMethodParamTailDec();
 private:
     bool m_flag_ConstValue = false;
     std::shared_ptr<ALittleScriptConstValueElement> m_cache_ConstValue;
 public:
-    std::shared_ptr<ALittleScriptConstValueElement> GetConstValue()
-    {
-        if (m_flag_ConstValue) return m_cache_ConstValue;
-        m_flag_ConstValue = true;
-        for (auto& child : m_childs)
-        {
-            auto node = std::dynamic_pointer_cast<ALittleScriptConstValueElement>(child);
-            if (node != nullptr)
-            {
-                m_cache_ConstValue = node;
-                break;
-            }
-        }
-        return m_cache_ConstValue;
-    }
+    std::shared_ptr<ALittleScriptConstValueElement> GetConstValue();
 private:
     bool m_flag_ReflectValue = false;
     std::shared_ptr<ALittleScriptReflectValueElement> m_cache_ReflectValue;
 public:
-    std::shared_ptr<ALittleScriptReflectValueElement> GetReflectValue()
-    {
-        if (m_flag_ReflectValue) return m_cache_ReflectValue;
-        m_flag_ReflectValue = true;
-        for (auto& child : m_childs)
-        {
-            auto node = std::dynamic_pointer_cast<ALittleScriptReflectValueElement>(child);
-            if (node != nullptr)
-            {
-                m_cache_ReflectValue = node;
-                break;
-            }
-        }
-        return m_cache_ReflectValue;
-    }
+    std::shared_ptr<ALittleScriptReflectValueElement> GetReflectValue();
 private:
     bool m_flag_PathsValue = false;
     std::shared_ptr<ALittleScriptPathsValueElement> m_cache_PathsValue;
 public:
-    std::shared_ptr<ALittleScriptPathsValueElement> GetPathsValue()
-    {
-        if (m_flag_PathsValue) return m_cache_PathsValue;
-        m_flag_PathsValue = true;
-        for (auto& child : m_childs)
-        {
-            auto node = std::dynamic_pointer_cast<ALittleScriptPathsValueElement>(child);
-            if (node != nullptr)
-            {
-                m_cache_PathsValue = node;
-                break;
-            }
-        }
-        return m_cache_PathsValue;
-    }
+    std::shared_ptr<ALittleScriptPathsValueElement> GetPathsValue();
 private:
     bool m_flag_PropertyValue = false;
     std::shared_ptr<ALittleScriptPropertyValueElement> m_cache_PropertyValue;
 public:
-    std::shared_ptr<ALittleScriptPropertyValueElement> GetPropertyValue()
-    {
-        if (m_flag_PropertyValue) return m_cache_PropertyValue;
-        m_flag_PropertyValue = true;
-        for (auto& child : m_childs)
-        {
-            auto node = std::dynamic_pointer_cast<ALittleScriptPropertyValueElement>(child);
-            if (node != nullptr)
-            {
-                m_cache_PropertyValue = node;
-                break;
-            }
-        }
-        return m_cache_PropertyValue;
-    }
+    std::shared_ptr<ALittleScriptPropertyValueElement> GetPropertyValue();
 private:
     bool m_flag_CoroutineStat = false;
     std::shared_ptr<ALittleScriptCoroutineStatElement> m_cache_CoroutineStat;
 public:
-    std::shared_ptr<ALittleScriptCoroutineStatElement> GetCoroutineStat()
-    {
-        if (m_flag_CoroutineStat) return m_cache_CoroutineStat;
-        m_flag_CoroutineStat = true;
-        for (auto& child : m_childs)
-        {
-            auto node = std::dynamic_pointer_cast<ALittleScriptCoroutineStatElement>(child);
-            if (node != nullptr)
-            {
-                m_cache_CoroutineStat = node;
-                break;
-            }
-        }
-        return m_cache_CoroutineStat;
-    }
+    std::shared_ptr<ALittleScriptCoroutineStatElement> GetCoroutineStat();
 };
 
 #endif // _ALITTLE_ALittleScriptValueFactorStatElement_H_

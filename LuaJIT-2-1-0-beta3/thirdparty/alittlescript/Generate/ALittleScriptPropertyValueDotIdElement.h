@@ -20,40 +20,12 @@ private:
     bool m_flag_PropertyValueDotIdName = false;
     std::shared_ptr<ALittleScriptPropertyValueDotIdNameElement> m_cache_PropertyValueDotIdName;
 public:
-    std::shared_ptr<ALittleScriptPropertyValueDotIdNameElement> GetPropertyValueDotIdName()
-    {
-        if (m_flag_PropertyValueDotIdName) return m_cache_PropertyValueDotIdName;
-        m_flag_PropertyValueDotIdName = true;
-        for (auto& child : m_childs)
-        {
-            auto node = std::dynamic_pointer_cast<ALittleScriptPropertyValueDotIdNameElement>(child);
-            if (node != nullptr)
-            {
-                m_cache_PropertyValueDotIdName = node;
-                break;
-            }
-        }
-        return m_cache_PropertyValueDotIdName;
-    }
+    std::shared_ptr<ALittleScriptPropertyValueDotIdNameElement> GetPropertyValueDotIdName();
 private:
     bool m_flag_String = false;
     std::shared_ptr<ALittleScriptStringElement> m_cache_String;
 public:
-    std::shared_ptr<ALittleScriptStringElement> GetString()
-    {
-        if (m_flag_String) return m_cache_String;
-        m_flag_String = true;
-        for (auto& child : m_childs)
-        {
-            auto node = std::dynamic_pointer_cast<ALittleScriptStringElement>(child);
-            if (node != nullptr)
-            {
-                m_cache_String = node;
-                break;
-            }
-        }
-        return m_cache_String;
-    }
+    std::shared_ptr<ALittleScriptStringElement> GetString();
 };
 
 #endif // _ALITTLE_ALittleScriptPropertyValueDotIdElement_H_

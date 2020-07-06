@@ -46,6 +46,7 @@ struct ABnfGuessError
     ABnfGuessError(const char* p_error) : error(p_error) { }
     ABnfGuessError(std::nullptr_t t) { }
     ABnfGuessError(ABnfElementPtr p_element, const std::string& p_error) : element(p_element), error(p_error) {}
+    ABnfGuessError(ABnfElementPtr p_element, const char* p_error) : element(p_element), error(p_error) {}
     operator bool() { return !error.empty(); }
 };
 

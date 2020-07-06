@@ -20,34 +20,12 @@ private:
     bool m_flag_GenericFunctorReturnOneType = false;
     std::vector<std::shared_ptr<ALittleScriptGenericFunctorReturnOneTypeElement>> m_list_GenericFunctorReturnOneType;
 public:
-    const std::vector<std::shared_ptr<ALittleScriptGenericFunctorReturnOneTypeElement>>& GetGenericFunctorReturnOneTypeList()
-    {
-        if (m_flag_GenericFunctorReturnOneType) return m_list_GenericFunctorReturnOneType;
-        m_flag_GenericFunctorReturnOneType = true;
-        for (auto& child : m_childs)
-        {
-            auto node = std::dynamic_pointer_cast<ALittleScriptGenericFunctorReturnOneTypeElement>(child);
-            if (node != nullptr)
-                m_list_GenericFunctorReturnOneType.push_back(node);
-        }
-        return m_list_GenericFunctorReturnOneType;
-    }
+    const std::vector<std::shared_ptr<ALittleScriptGenericFunctorReturnOneTypeElement>>& GetGenericFunctorReturnOneTypeList();
 private:
     bool m_flag_String = false;
     std::vector<std::shared_ptr<ALittleScriptStringElement>> m_list_String;
 public:
-    const std::vector<std::shared_ptr<ALittleScriptStringElement>>& GetStringList()
-    {
-        if (m_flag_String) return m_list_String;
-        m_flag_String = true;
-        for (auto& child : m_childs)
-        {
-            auto node = std::dynamic_pointer_cast<ALittleScriptStringElement>(child);
-            if (node != nullptr)
-                m_list_String.push_back(node);
-        }
-        return m_list_String;
-    }
+    const std::vector<std::shared_ptr<ALittleScriptStringElement>>& GetStringList();
 };
 
 #endif // _ALITTLE_ALittleScriptGenericFunctorReturnTypeElement_H_

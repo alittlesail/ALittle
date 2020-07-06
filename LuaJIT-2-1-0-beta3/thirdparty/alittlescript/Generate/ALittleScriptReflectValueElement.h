@@ -21,59 +21,17 @@ private:
     bool m_flag_ReflectCustomType = false;
     std::shared_ptr<ALittleScriptReflectCustomTypeElement> m_cache_ReflectCustomType;
 public:
-    std::shared_ptr<ALittleScriptReflectCustomTypeElement> GetReflectCustomType()
-    {
-        if (m_flag_ReflectCustomType) return m_cache_ReflectCustomType;
-        m_flag_ReflectCustomType = true;
-        for (auto& child : m_childs)
-        {
-            auto node = std::dynamic_pointer_cast<ALittleScriptReflectCustomTypeElement>(child);
-            if (node != nullptr)
-            {
-                m_cache_ReflectCustomType = node;
-                break;
-            }
-        }
-        return m_cache_ReflectCustomType;
-    }
+    std::shared_ptr<ALittleScriptReflectCustomTypeElement> GetReflectCustomType();
 private:
     bool m_flag_ReflectValueStat = false;
     std::shared_ptr<ALittleScriptReflectValueStatElement> m_cache_ReflectValueStat;
 public:
-    std::shared_ptr<ALittleScriptReflectValueStatElement> GetReflectValueStat()
-    {
-        if (m_flag_ReflectValueStat) return m_cache_ReflectValueStat;
-        m_flag_ReflectValueStat = true;
-        for (auto& child : m_childs)
-        {
-            auto node = std::dynamic_pointer_cast<ALittleScriptReflectValueStatElement>(child);
-            if (node != nullptr)
-            {
-                m_cache_ReflectValueStat = node;
-                break;
-            }
-        }
-        return m_cache_ReflectValueStat;
-    }
+    std::shared_ptr<ALittleScriptReflectValueStatElement> GetReflectValueStat();
 private:
     bool m_flag_Key = false;
     std::shared_ptr<ALittleScriptKeyElement> m_cache_Key;
 public:
-    std::shared_ptr<ALittleScriptKeyElement> GetKey()
-    {
-        if (m_flag_Key) return m_cache_Key;
-        m_flag_Key = true;
-        for (auto& child : m_childs)
-        {
-            auto node = std::dynamic_pointer_cast<ALittleScriptKeyElement>(child);
-            if (node != nullptr)
-            {
-                m_cache_Key = node;
-                break;
-            }
-        }
-        return m_cache_Key;
-    }
+    std::shared_ptr<ALittleScriptKeyElement> GetKey();
 };
 
 #endif // _ALITTLE_ALittleScriptReflectValueElement_H_

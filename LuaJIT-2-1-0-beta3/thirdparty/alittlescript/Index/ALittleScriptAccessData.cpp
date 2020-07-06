@@ -1,6 +1,5 @@
 
 #include "ALittleScriptAccessData.h"
-#include "ALittleScriptUtility.h"
 
 #include "../../alanguage/Model/ABnfElement.h"
 #include "../Generate/ALittleScriptClassNameDecElement.h"

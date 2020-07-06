@@ -19,21 +19,7 @@ private:
     bool m_flag_Op8Suffix = false;
     std::shared_ptr<ALittleScriptOp8SuffixElement> m_cache_Op8Suffix;
 public:
-    std::shared_ptr<ALittleScriptOp8SuffixElement> GetOp8Suffix()
-    {
-        if (m_flag_Op8Suffix) return m_cache_Op8Suffix;
-        m_flag_Op8Suffix = true;
-        for (auto& child : m_childs)
-        {
-            auto node = std::dynamic_pointer_cast<ALittleScriptOp8SuffixElement>(child);
-            if (node != nullptr)
-            {
-                m_cache_Op8Suffix = node;
-                break;
-            }
-        }
-        return m_cache_Op8Suffix;
-    }
+    std::shared_ptr<ALittleScriptOp8SuffixElement> GetOp8Suffix();
 };
 
 #endif // _ALITTLE_ALittleScriptOp8SuffixExElement_H_

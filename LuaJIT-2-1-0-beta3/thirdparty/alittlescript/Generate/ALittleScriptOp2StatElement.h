@@ -20,37 +20,12 @@ private:
     bool m_flag_Op2Value = false;
     std::shared_ptr<ALittleScriptOp2ValueElement> m_cache_Op2Value;
 public:
-    std::shared_ptr<ALittleScriptOp2ValueElement> GetOp2Value()
-    {
-        if (m_flag_Op2Value) return m_cache_Op2Value;
-        m_flag_Op2Value = true;
-        for (auto& child : m_childs)
-        {
-            auto node = std::dynamic_pointer_cast<ALittleScriptOp2ValueElement>(child);
-            if (node != nullptr)
-            {
-                m_cache_Op2Value = node;
-                break;
-            }
-        }
-        return m_cache_Op2Value;
-    }
+    std::shared_ptr<ALittleScriptOp2ValueElement> GetOp2Value();
 private:
     bool m_flag_Op2SuffixEx = false;
     std::vector<std::shared_ptr<ALittleScriptOp2SuffixExElement>> m_list_Op2SuffixEx;
 public:
-    const std::vector<std::shared_ptr<ALittleScriptOp2SuffixExElement>>& GetOp2SuffixExList()
-    {
-        if (m_flag_Op2SuffixEx) return m_list_Op2SuffixEx;
-        m_flag_Op2SuffixEx = true;
-        for (auto& child : m_childs)
-        {
-            auto node = std::dynamic_pointer_cast<ALittleScriptOp2SuffixExElement>(child);
-            if (node != nullptr)
-                m_list_Op2SuffixEx.push_back(node);
-        }
-        return m_list_Op2SuffixEx;
-    }
+    const std::vector<std::shared_ptr<ALittleScriptOp2SuffixExElement>>& GetOp2SuffixExList();
 };
 
 #endif // _ALITTLE_ALittleScriptOp2StatElement_H_

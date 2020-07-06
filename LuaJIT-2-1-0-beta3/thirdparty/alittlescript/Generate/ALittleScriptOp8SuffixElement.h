@@ -22,75 +22,22 @@ private:
     bool m_flag_Op8 = false;
     std::shared_ptr<ALittleScriptOp8Element> m_cache_Op8;
 public:
-    std::shared_ptr<ALittleScriptOp8Element> GetOp8()
-    {
-        if (m_flag_Op8) return m_cache_Op8;
-        m_flag_Op8 = true;
-        for (auto& child : m_childs)
-        {
-            auto node = std::dynamic_pointer_cast<ALittleScriptOp8Element>(child);
-            if (node != nullptr)
-            {
-                m_cache_Op8 = node;
-                break;
-            }
-        }
-        return m_cache_Op8;
-    }
+    std::shared_ptr<ALittleScriptOp8Element> GetOp8();
 private:
     bool m_flag_ValueFactorStat = false;
     std::shared_ptr<ALittleScriptValueFactorStatElement> m_cache_ValueFactorStat;
 public:
-    std::shared_ptr<ALittleScriptValueFactorStatElement> GetValueFactorStat()
-    {
-        if (m_flag_ValueFactorStat) return m_cache_ValueFactorStat;
-        m_flag_ValueFactorStat = true;
-        for (auto& child : m_childs)
-        {
-            auto node = std::dynamic_pointer_cast<ALittleScriptValueFactorStatElement>(child);
-            if (node != nullptr)
-            {
-                m_cache_ValueFactorStat = node;
-                break;
-            }
-        }
-        return m_cache_ValueFactorStat;
-    }
+    std::shared_ptr<ALittleScriptValueFactorStatElement> GetValueFactorStat();
 private:
     bool m_flag_Op2Value = false;
     std::shared_ptr<ALittleScriptOp2ValueElement> m_cache_Op2Value;
 public:
-    std::shared_ptr<ALittleScriptOp2ValueElement> GetOp2Value()
-    {
-        if (m_flag_Op2Value) return m_cache_Op2Value;
-        m_flag_Op2Value = true;
-        for (auto& child : m_childs)
-        {
-            auto node = std::dynamic_pointer_cast<ALittleScriptOp2ValueElement>(child);
-            if (node != nullptr)
-            {
-                m_cache_Op2Value = node;
-                break;
-            }
-        }
-        return m_cache_Op2Value;
-    }
+    std::shared_ptr<ALittleScriptOp2ValueElement> GetOp2Value();
 private:
     bool m_flag_Op8SuffixEe = false;
     std::vector<std::shared_ptr<ALittleScriptOp8SuffixEeElement>> m_list_Op8SuffixEe;
 public:
-    const std::vector<std::shared_ptr<ALittleScriptOp8SuffixEeElement>>& GetOp8SuffixEeList()
-    {
-        if (m_flag_Op8SuffixEe) return m_list_Op8SuffixEe;
-        m_flag_Op8SuffixEe = true;
-        for (auto& child : m_childs)
-        {
-            auto node = std::dynamic_pointer_cast<ALittleScriptOp8SuffixEeElement>(child);
-            if (node != nullptr)
-                m_list_Op8SuffixEe.push_back(node);
-        }
-        return m_list_Op8SuffixEe;
-    }
+    const std::vector<std::shared_ptr<ALittleScriptOp8SuffixEeElement>>& GetOp8SuffixEeList();
 };
 
 #endif // _ALITTLE_ALittleScriptOp8SuffixElement_H_

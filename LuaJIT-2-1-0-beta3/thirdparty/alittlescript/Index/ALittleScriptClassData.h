@@ -6,9 +6,9 @@
 #include <set>
 #include <memory>
 
+#include "ALittleScriptDefine.h"
+
 class ABnfElement;
-enum ClassAccessType;
-enum ClassAttrType;
 
 class ALittleScriptClassData
 {
@@ -17,7 +17,7 @@ private:
     std::unordered_map<ClassAccessType, std::unordered_map<ClassAttrType, std::unordered_map<std::string, std::shared_ptr<ABnfElement>>>> m_element_map;
 
     // 获取元素集合    
-    const std::unordered_map<std::string, std::shared_ptr<ABnfElement>>* GetElementMap(ClassAttrType attr_type, ClassAccessType access_type);
+    const std::unordered_map<std::string, std::shared_ptr<ABnfElement>>* GetElementMap(ClassAttrType attr_type, ClassAccessType access_type) const;
 
 public:
     // 添加新元素

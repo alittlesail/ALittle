@@ -21,59 +21,17 @@ private:
     bool m_flag_PropertyValueDotId = false;
     std::shared_ptr<ALittleScriptPropertyValueDotIdElement> m_cache_PropertyValueDotId;
 public:
-    std::shared_ptr<ALittleScriptPropertyValueDotIdElement> GetPropertyValueDotId()
-    {
-        if (m_flag_PropertyValueDotId) return m_cache_PropertyValueDotId;
-        m_flag_PropertyValueDotId = true;
-        for (auto& child : m_childs)
-        {
-            auto node = std::dynamic_pointer_cast<ALittleScriptPropertyValueDotIdElement>(child);
-            if (node != nullptr)
-            {
-                m_cache_PropertyValueDotId = node;
-                break;
-            }
-        }
-        return m_cache_PropertyValueDotId;
-    }
+    std::shared_ptr<ALittleScriptPropertyValueDotIdElement> GetPropertyValueDotId();
 private:
     bool m_flag_PropertyValueMethodCall = false;
     std::shared_ptr<ALittleScriptPropertyValueMethodCallElement> m_cache_PropertyValueMethodCall;
 public:
-    std::shared_ptr<ALittleScriptPropertyValueMethodCallElement> GetPropertyValueMethodCall()
-    {
-        if (m_flag_PropertyValueMethodCall) return m_cache_PropertyValueMethodCall;
-        m_flag_PropertyValueMethodCall = true;
-        for (auto& child : m_childs)
-        {
-            auto node = std::dynamic_pointer_cast<ALittleScriptPropertyValueMethodCallElement>(child);
-            if (node != nullptr)
-            {
-                m_cache_PropertyValueMethodCall = node;
-                break;
-            }
-        }
-        return m_cache_PropertyValueMethodCall;
-    }
+    std::shared_ptr<ALittleScriptPropertyValueMethodCallElement> GetPropertyValueMethodCall();
 private:
     bool m_flag_PropertyValueBracketValue = false;
     std::shared_ptr<ALittleScriptPropertyValueBracketValueElement> m_cache_PropertyValueBracketValue;
 public:
-    std::shared_ptr<ALittleScriptPropertyValueBracketValueElement> GetPropertyValueBracketValue()
-    {
-        if (m_flag_PropertyValueBracketValue) return m_cache_PropertyValueBracketValue;
-        m_flag_PropertyValueBracketValue = true;
-        for (auto& child : m_childs)
-        {
-            auto node = std::dynamic_pointer_cast<ALittleScriptPropertyValueBracketValueElement>(child);
-            if (node != nullptr)
-            {
-                m_cache_PropertyValueBracketValue = node;
-                break;
-            }
-        }
-        return m_cache_PropertyValueBracketValue;
-    }
+    std::shared_ptr<ALittleScriptPropertyValueBracketValueElement> GetPropertyValueBracketValue();
 };
 
 #endif // _ALITTLE_ALittleScriptPropertyValueSuffixElement_H_

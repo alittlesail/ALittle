@@ -19,21 +19,7 @@ private:
     bool m_flag_NamespaceDec = false;
     std::shared_ptr<ALittleScriptNamespaceDecElement> m_cache_NamespaceDec;
 public:
-    std::shared_ptr<ALittleScriptNamespaceDecElement> GetNamespaceDec()
-    {
-        if (m_flag_NamespaceDec) return m_cache_NamespaceDec;
-        m_flag_NamespaceDec = true;
-        for (auto& child : m_childs)
-        {
-            auto node = std::dynamic_pointer_cast<ALittleScriptNamespaceDecElement>(child);
-            if (node != nullptr)
-            {
-                m_cache_NamespaceDec = node;
-                break;
-            }
-        }
-        return m_cache_NamespaceDec;
-    }
+    std::shared_ptr<ALittleScriptNamespaceDecElement> GetNamespaceDec();
 };
 
 #endif // _ALITTLE_ALittleScriptRootElement_H_

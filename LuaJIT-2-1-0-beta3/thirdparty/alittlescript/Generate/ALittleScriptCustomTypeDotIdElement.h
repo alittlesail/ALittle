@@ -20,40 +20,12 @@ private:
     bool m_flag_CustomTypeDotIdName = false;
     std::shared_ptr<ALittleScriptCustomTypeDotIdNameElement> m_cache_CustomTypeDotIdName;
 public:
-    std::shared_ptr<ALittleScriptCustomTypeDotIdNameElement> GetCustomTypeDotIdName()
-    {
-        if (m_flag_CustomTypeDotIdName) return m_cache_CustomTypeDotIdName;
-        m_flag_CustomTypeDotIdName = true;
-        for (auto& child : m_childs)
-        {
-            auto node = std::dynamic_pointer_cast<ALittleScriptCustomTypeDotIdNameElement>(child);
-            if (node != nullptr)
-            {
-                m_cache_CustomTypeDotIdName = node;
-                break;
-            }
-        }
-        return m_cache_CustomTypeDotIdName;
-    }
+    std::shared_ptr<ALittleScriptCustomTypeDotIdNameElement> GetCustomTypeDotIdName();
 private:
     bool m_flag_String = false;
     std::shared_ptr<ALittleScriptStringElement> m_cache_String;
 public:
-    std::shared_ptr<ALittleScriptStringElement> GetString()
-    {
-        if (m_flag_String) return m_cache_String;
-        m_flag_String = true;
-        for (auto& child : m_childs)
-        {
-            auto node = std::dynamic_pointer_cast<ALittleScriptStringElement>(child);
-            if (node != nullptr)
-            {
-                m_cache_String = node;
-                break;
-            }
-        }
-        return m_cache_String;
-    }
+    std::shared_ptr<ALittleScriptStringElement> GetString();
 };
 
 #endif // _ALITTLE_ALittleScriptCustomTypeDotIdElement_H_

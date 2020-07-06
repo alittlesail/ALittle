@@ -19,21 +19,7 @@ private:
     bool m_flag_Id = false;
     std::shared_ptr<ALittleScriptIdElement> m_cache_Id;
 public:
-    std::shared_ptr<ALittleScriptIdElement> GetId()
-    {
-        if (m_flag_Id) return m_cache_Id;
-        m_flag_Id = true;
-        for (auto& child : m_childs)
-        {
-            auto node = std::dynamic_pointer_cast<ALittleScriptIdElement>(child);
-            if (node != nullptr)
-            {
-                m_cache_Id = node;
-                break;
-            }
-        }
-        return m_cache_Id;
-    }
+    std::shared_ptr<ALittleScriptIdElement> GetId();
 };
 
 #endif // _ALITTLE_ALittleScriptEnumNameDecElement_H_

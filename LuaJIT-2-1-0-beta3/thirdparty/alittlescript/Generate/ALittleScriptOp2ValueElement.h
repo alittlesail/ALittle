@@ -20,40 +20,12 @@ private:
     bool m_flag_Op2 = false;
     std::shared_ptr<ALittleScriptOp2Element> m_cache_Op2;
 public:
-    std::shared_ptr<ALittleScriptOp2Element> GetOp2()
-    {
-        if (m_flag_Op2) return m_cache_Op2;
-        m_flag_Op2 = true;
-        for (auto& child : m_childs)
-        {
-            auto node = std::dynamic_pointer_cast<ALittleScriptOp2Element>(child);
-            if (node != nullptr)
-            {
-                m_cache_Op2 = node;
-                break;
-            }
-        }
-        return m_cache_Op2;
-    }
+    std::shared_ptr<ALittleScriptOp2Element> GetOp2();
 private:
     bool m_flag_ValueFactorStat = false;
     std::shared_ptr<ALittleScriptValueFactorStatElement> m_cache_ValueFactorStat;
 public:
-    std::shared_ptr<ALittleScriptValueFactorStatElement> GetValueFactorStat()
-    {
-        if (m_flag_ValueFactorStat) return m_cache_ValueFactorStat;
-        m_flag_ValueFactorStat = true;
-        for (auto& child : m_childs)
-        {
-            auto node = std::dynamic_pointer_cast<ALittleScriptValueFactorStatElement>(child);
-            if (node != nullptr)
-            {
-                m_cache_ValueFactorStat = node;
-                break;
-            }
-        }
-        return m_cache_ValueFactorStat;
-    }
+    std::shared_ptr<ALittleScriptValueFactorStatElement> GetValueFactorStat();
 };
 
 #endif // _ALITTLE_ALittleScriptOp2ValueElement_H_

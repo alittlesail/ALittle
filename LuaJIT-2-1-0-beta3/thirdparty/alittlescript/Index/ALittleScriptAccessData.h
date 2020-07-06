@@ -6,8 +6,9 @@
 #include <set>
 #include <memory>
 
+#include "ALittleScriptDefine.h"
+
 class ABnfElement;
-enum ABnfElementType;
 
 class ALittleScriptAccessData
 {

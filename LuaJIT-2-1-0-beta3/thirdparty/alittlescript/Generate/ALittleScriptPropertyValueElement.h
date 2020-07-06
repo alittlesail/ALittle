@@ -20,37 +20,12 @@ private:
     bool m_flag_PropertyValueFirstType = false;
     std::shared_ptr<ALittleScriptPropertyValueFirstTypeElement> m_cache_PropertyValueFirstType;
 public:
-    std::shared_ptr<ALittleScriptPropertyValueFirstTypeElement> GetPropertyValueFirstType()
-    {
-        if (m_flag_PropertyValueFirstType) return m_cache_PropertyValueFirstType;
-        m_flag_PropertyValueFirstType = true;
-        for (auto& child : m_childs)
-        {
-            auto node = std::dynamic_pointer_cast<ALittleScriptPropertyValueFirstTypeElement>(child);
-            if (node != nullptr)
-            {
-                m_cache_PropertyValueFirstType = node;
-                break;
-            }
-        }
-        return m_cache_PropertyValueFirstType;
-    }
+    std::shared_ptr<ALittleScriptPropertyValueFirstTypeElement> GetPropertyValueFirstType();
 private:
     bool m_flag_PropertyValueSuffix = false;
     std::vector<std::shared_ptr<ALittleScriptPropertyValueSuffixElement>> m_list_PropertyValueSuffix;
 public:
-    const std::vector<std::shared_ptr<ALittleScriptPropertyValueSuffixElement>>& GetPropertyValueSuffixList()
-    {
-        if (m_flag_PropertyValueSuffix) return m_list_PropertyValueSuffix;
-        m_flag_PropertyValueSuffix = true;
-        for (auto& child : m_childs)
-        {
-            auto node = std::dynamic_pointer_cast<ALittleScriptPropertyValueSuffixElement>(child);
-            if (node != nullptr)
-                m_list_PropertyValueSuffix.push_back(node);
-        }
-        return m_list_PropertyValueSuffix;
-    }
+    const std::vector<std::shared_ptr<ALittleScriptPropertyValueSuffixElement>>& GetPropertyValueSuffixList();
 };
 
 #endif // _ALITTLE_ALittleScriptPropertyValueElement_H_

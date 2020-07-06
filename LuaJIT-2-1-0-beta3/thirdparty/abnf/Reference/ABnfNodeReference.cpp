@@ -33,7 +33,7 @@ ABnfGuessError ABnfNodeReference::CheckElementError(ABnfElementPtr element)
     if (element->GetNodeType() == "List")
     {
         auto node = std::dynamic_pointer_cast<ABnfNodeElement>(element);
-        if (node == nullptr) return false;
+        if (node == nullptr) return nullptr;
 
         bool has_child = false;
         for (auto child : node->GetChilds())
@@ -61,7 +61,7 @@ ABnfGuessError ABnfNodeReference::CheckElementError(ABnfElementPtr element)
     else if (element->GetNodeType() == "Option" || element->GetNodeType() == "Node")
     {
         auto node = std::dynamic_pointer_cast<ABnfNodeElement>(element);
-        if (node == nullptr) return false;
+        if (node == nullptr) return nullptr;
 
         for (auto child : node->GetChilds())
         {
@@ -72,7 +72,7 @@ ABnfGuessError ABnfNodeReference::CheckElementError(ABnfElementPtr element)
     else if (element->GetNodeType() == "Group" || element->GetNodeType() == "Leaf")
     {
         auto node = std::dynamic_pointer_cast<ABnfNodeElement>(element);
-        if (node == nullptr) return false;
+        if (node == nullptr) return nullptr;
 
         ABnfElementPtr tail_node = nullptr;
         for (auto child : node->GetChilds())

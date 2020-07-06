@@ -20,40 +20,12 @@ private:
     bool m_flag_LanguageBodyDec = false;
     std::shared_ptr<ALittleScriptLanguageBodyDecElement> m_cache_LanguageBodyDec;
 public:
-    std::shared_ptr<ALittleScriptLanguageBodyDecElement> GetLanguageBodyDec()
-    {
-        if (m_flag_LanguageBodyDec) return m_cache_LanguageBodyDec;
-        m_flag_LanguageBodyDec = true;
-        for (auto& child : m_childs)
-        {
-            auto node = std::dynamic_pointer_cast<ALittleScriptLanguageBodyDecElement>(child);
-            if (node != nullptr)
-            {
-                m_cache_LanguageBodyDec = node;
-                break;
-            }
-        }
-        return m_cache_LanguageBodyDec;
-    }
+    std::shared_ptr<ALittleScriptLanguageBodyDecElement> GetLanguageBodyDec();
 private:
     bool m_flag_Key = false;
     std::shared_ptr<ALittleScriptKeyElement> m_cache_Key;
 public:
-    std::shared_ptr<ALittleScriptKeyElement> GetKey()
-    {
-        if (m_flag_Key) return m_cache_Key;
-        m_flag_Key = true;
-        for (auto& child : m_childs)
-        {
-            auto node = std::dynamic_pointer_cast<ALittleScriptKeyElement>(child);
-            if (node != nullptr)
-            {
-                m_cache_Key = node;
-                break;
-            }
-        }
-        return m_cache_Key;
-    }
+    std::shared_ptr<ALittleScriptKeyElement> GetKey();
 };
 
 #endif // _ALITTLE_ALittleScriptLanguageModifierElement_H_

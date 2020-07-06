@@ -21,56 +21,17 @@ private:
     bool m_flag_NamespaceNameDec = false;
     std::shared_ptr<ALittleScriptNamespaceNameDecElement> m_cache_NamespaceNameDec;
 public:
-    std::shared_ptr<ALittleScriptNamespaceNameDecElement> GetNamespaceNameDec()
-    {
-        if (m_flag_NamespaceNameDec) return m_cache_NamespaceNameDec;
-        m_flag_NamespaceNameDec = true;
-        for (auto& child : m_childs)
-        {
-            auto node = std::dynamic_pointer_cast<ALittleScriptNamespaceNameDecElement>(child);
-            if (node != nullptr)
-            {
-                m_cache_NamespaceNameDec = node;
-                break;
-            }
-        }
-        return m_cache_NamespaceNameDec;
-    }
+    std::shared_ptr<ALittleScriptNamespaceNameDecElement> GetNamespaceNameDec();
 private:
     bool m_flag_ClassNameDec = false;
     std::shared_ptr<ALittleScriptClassNameDecElement> m_cache_ClassNameDec;
 public:
-    std::shared_ptr<ALittleScriptClassNameDecElement> GetClassNameDec()
-    {
-        if (m_flag_ClassNameDec) return m_cache_ClassNameDec;
-        m_flag_ClassNameDec = true;
-        for (auto& child : m_childs)
-        {
-            auto node = std::dynamic_pointer_cast<ALittleScriptClassNameDecElement>(child);
-            if (node != nullptr)
-            {
-                m_cache_ClassNameDec = node;
-                break;
-            }
-        }
-        return m_cache_ClassNameDec;
-    }
+    std::shared_ptr<ALittleScriptClassNameDecElement> GetClassNameDec();
 private:
     bool m_flag_String = false;
     std::vector<std::shared_ptr<ALittleScriptStringElement>> m_list_String;
 public:
-    const std::vector<std::shared_ptr<ALittleScriptStringElement>>& GetStringList()
-    {
-        if (m_flag_String) return m_list_String;
-        m_flag_String = true;
-        for (auto& child : m_childs)
-        {
-            auto node = std::dynamic_pointer_cast<ALittleScriptStringElement>(child);
-            if (node != nullptr)
-                m_list_String.push_back(node);
-        }
-        return m_list_String;
-    }
+    const std::vector<std::shared_ptr<ALittleScriptStringElement>>& GetStringList();
 };
 
 #endif // _ALITTLE_ALittleScriptClassExtendsDecElement_H_

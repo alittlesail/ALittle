@@ -190,7 +190,7 @@ void ABnfFileClass::CollectCompile(ABnfElementPtr element, CollectCompileInfo& i
     }
 }
 
-static std::string ABnfElementTemplate =
+static std::string ABnfElementTemplateHpp =
 "#ifndef _ALITTLE_@@LANGUAGE@@@@NAME@@Element_H_\n"
 "#define _ALITTLE_@@LANGUAGE@@@@NAME@@Element_H_\n"
 "\n"
@@ -212,44 +212,54 @@ static std::string ABnfElementTemplate =
 "};\n"
 "\n"
 "#endif // _ALITTLE_@@LANGUAGE@@@@NAME@@Element_H_\n";
-static std::string ABnfGetChildTemplate =
+static std::string ABnfElementTemplateCpp =
+"#include \"@@LANGUAGE@@@@NAME@@Element.h\"\n"
+"\n"
+"@@ELEMENT_INCLUDE@@"
+"\n"
+"@@ELEMENT_GET_CHILD@@"
+"\n";
+static std::string ABnfGetChildTemplateHpp =
 "private:\n"
 "    bool m_flag_@@NAME@@ = false;\n"
 "    std::shared_ptr<@@LANGUAGE@@@@NAME@@Element> m_cache_@@NAME@@;\n"
 "public:\n"
-"    std::shared_ptr<@@LANGUAGE@@@@NAME@@Element> Get@@NAME@@()\n"
+"    std::shared_ptr<@@LANGUAGE@@@@NAME@@Element> Get@@NAME@@();\n";
+static std::string ABnfGetChildTemplateCpp =
+"std::shared_ptr<@@LANGUAGE@@@@NAME@@Element> @@LANGUAGE@@@@CLASS_NAME@@Element::Get@@NAME@@()\n"
+"{\n"
+"    if (m_flag_@@NAME@@) return m_cache_@@NAME@@;\n"
+"    m_flag_@@NAME@@ = true;\n"
+"    for (auto& child : m_childs)\n"
 "    {\n"
-"        if (m_flag_@@NAME@@) return m_cache_@@NAME@@;\n"
-"        m_flag_@@NAME@@ = true;\n"
-"        for (auto& child : m_childs)\n"
+"        auto node = std::dynamic_pointer_cast<@@LANGUAGE@@@@NAME@@Element>(child);\n"
+"        if (node != nullptr)\n"
 "        {\n"
-"            auto node = std::dynamic_pointer_cast<@@LANGUAGE@@@@NAME@@Element>(child);\n"
-"            if (node != nullptr)\n"
-"            {\n"
-"                m_cache_@@NAME@@ = node;\n"
-"                break;\n"
-"            }\n"
+"            m_cache_@@NAME@@ = node;\n"
+"            break;\n"
 "        }\n"
-"        return m_cache_@@NAME@@;\n"
-"    }\n";
-static std::string ABnfGetChildListTemplate =
+"    }\n"
+"    return m_cache_@@NAME@@;\n"
+"}\n";
+static std::string ABnfGetChildListTemplateHpp =
 "private:\n"
 "    bool m_flag_@@NAME@@ = false;\n"
 "    std::vector<std::shared_ptr<@@LANGUAGE@@@@NAME@@Element>> m_list_@@NAME@@;\n"
 "public:\n"
-"    const std::vector<std::shared_ptr<@@LANGUAGE@@@@NAME@@Element>>& Get@@NAME@@List()\n"
+"    const std::vector<std::shared_ptr<@@LANGUAGE@@@@NAME@@Element>>& Get@@NAME@@List();\n";
+static std::string ABnfGetChildListTemplateCpp =
+"const std::vector<std::shared_ptr<@@LANGUAGE@@@@NAME@@Element>>& @@LANGUAGE@@@@CLASS_NAME@@Element::Get@@NAME@@List()\n"
+"{\n"
+"    if (m_flag_@@NAME@@) return m_list_@@NAME@@;\n"
+"    m_flag_@@NAME@@ = true;\n"
+"    for (auto& child : m_childs)\n"
 "    {\n"
-"        if (m_flag_@@NAME@@) return m_list_@@NAME@@;\n"
-"        m_flag_@@NAME@@ = true;\n"
-"        for (auto& child : m_childs)\n"
-"        {\n"
-"            auto node = std::dynamic_pointer_cast<@@LANGUAGE@@@@NAME@@Element>(child);\n"
-"            if (node != nullptr)\n"
-"                m_list_@@NAME@@.push_back(node);\n"
-"        }\n"
-"        return m_list_@@NAME@@;\n"
-"    }\n";
-
+"        auto node = std::dynamic_pointer_cast<@@LANGUAGE@@@@NAME@@Element>(child);\n"
+"        if (node != nullptr)\n"
+"            m_list_@@NAME@@.push_back(node);\n"
+"    }\n"
+"    return m_list_@@NAME@@;\n"
+"}\n";
 static std::string ABnfKeyElementTemplate =
 "#ifndef _ALITTLE_@@LANGUAGE@@KeyElement_H_\n"
 "#define _ALITTLE_@@LANGUAGE@@KeyElement_H_\n"
@@ -378,59 +388,108 @@ std::string ABnfFileClass::Generate(int version, const std::string& target_path,
         CollectCompile(value, info, false);
 
         // 这里开始生成
-        std::string buffer = ABnfElementTemplate;
+        std::string buffer_hpp = ABnfElementTemplateHpp;
+        std::string buffer_cpp = ABnfElementTemplateCpp;
 
         // 替换协议名字
-        buffer = ABnfFactory::ReplaceAll(buffer, "@@LANGUAGE@@", language_name);
-        buffer = ABnfFactory::ReplaceAll(buffer, "@@NAME@@", rule.first);
+        buffer_hpp = ABnfFactory::ReplaceAll(buffer_hpp, "@@LANGUAGE@@", language_name);
+        buffer_hpp = ABnfFactory::ReplaceAll(buffer_hpp, "@@NAME@@", rule.first);
+
+        buffer_cpp = ABnfFactory::ReplaceAll(buffer_cpp, "@@LANGUAGE@@", language_name);
+        buffer_cpp = ABnfFactory::ReplaceAll(buffer_cpp, "@@NAME@@", rule.first);
 
         add_new_buffer += "        m_create_map[\"" + rule.first + "\"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::shared_ptr<ABnfNodeElement>(new " + language_name + rule.first + "Element(factory, file, line, col, offset, type)); };\n";
         element_include_list.push_back("#include \"" + language_name + rule.first + "Element.h\"\n");
 
         std::string element_define = "";
+        std::string element_include = "";
 
-        std::string get_child_buffer = "";
+        std::string get_child_buffer_hpp = "";
+        std::string get_child_buffer_cpp = "";
         for (auto& id_pair : info.id_map)
         {
             if (id_pair.second == 1)
-                get_child_buffer += ABnfFactory::ReplaceAll(ABnfFactory::ReplaceAll(ABnfGetChildTemplate, "@@LANGUAGE@@", language_name), "@@NAME@@", id_pair.first);
+            {
+                get_child_buffer_hpp += ABnfFactory::ReplaceAll(ABnfFactory::ReplaceAll(ABnfGetChildTemplateHpp, "@@LANGUAGE@@", language_name), "@@NAME@@", id_pair.first);
+                get_child_buffer_cpp += ABnfFactory::ReplaceAll(ABnfFactory::ReplaceAll(ABnfFactory::ReplaceAll(ABnfGetChildTemplateCpp, "@@LANGUAGE@@", language_name), "@@NAME@@", id_pair.first), "@@CLASS_NAME@@", rule.first);
+            }
             else if (id_pair.second > 1)
-                get_child_buffer += ABnfFactory::ReplaceAll(ABnfFactory::ReplaceAll(ABnfGetChildListTemplate, "@@LANGUAGE@@", language_name), "@@NAME@@", id_pair.first);
+            {
+                get_child_buffer_hpp += ABnfFactory::ReplaceAll(ABnfFactory::ReplaceAll(ABnfGetChildListTemplateHpp, "@@LANGUAGE@@", language_name), "@@NAME@@", id_pair.first);
+                get_child_buffer_cpp += ABnfFactory::ReplaceAll(ABnfFactory::ReplaceAll(ABnfFactory::ReplaceAll(ABnfGetChildListTemplateCpp, "@@LANGUAGE@@", language_name), "@@NAME@@", id_pair.first), "@@CLASS_NAME@@", rule.first);
+            }
 
             if (id_pair.second > 0)
+            {
                 element_define += "class " + language_name + id_pair.first + "Element;\n";
+                element_include += "#include \"" + language_name + id_pair.first + "Element.h\"\n";
+            }
         }
 
         if (info.has_key == 1)
-            get_child_buffer += ABnfFactory::ReplaceAll(ABnfFactory::ReplaceAll(ABnfGetChildTemplate, "@@LANGUAGE@@", language_name), "@@NAME@@", "Key");
+        {
+            get_child_buffer_hpp += ABnfFactory::ReplaceAll(ABnfFactory::ReplaceAll(ABnfGetChildTemplateHpp, "@@LANGUAGE@@", language_name), "@@NAME@@", "Key");
+            get_child_buffer_cpp += ABnfFactory::ReplaceAll(ABnfFactory::ReplaceAll(ABnfFactory::ReplaceAll(ABnfGetChildTemplateCpp, "@@LANGUAGE@@", language_name), "@@NAME@@", "Key"), "@@CLASS_NAME@@", rule.first);
+        }
         else if (info.has_key > 1)
-            get_child_buffer += ABnfFactory::ReplaceAll(ABnfFactory::ReplaceAll(ABnfGetChildListTemplate, "@@LANGUAGE@@", language_name), "@@NAME@@", "Key");
+        {
+            get_child_buffer_hpp += ABnfFactory::ReplaceAll(ABnfFactory::ReplaceAll(ABnfGetChildListTemplateHpp, "@@LANGUAGE@@", language_name), "@@NAME@@", "Key");
+            get_child_buffer_cpp += ABnfFactory::ReplaceAll(ABnfFactory::ReplaceAll(ABnfFactory::ReplaceAll(ABnfGetChildListTemplateCpp, "@@LANGUAGE@@", language_name), "@@NAME@@", "Key"), "@@CLASS_NAME@@", rule.first);
+        }
 
         if (info.has_key > 0)
+        {
             element_define += "class " + language_name + "KeyElement;\n";
+            element_include += "#include \"" + language_name + "KeyElement.h\"\n";
+        }
 
         if (info.has_string == 1)
-            get_child_buffer += ABnfFactory::ReplaceAll(ABnfFactory::ReplaceAll(ABnfGetChildTemplate, "@@LANGUAGE@@", language_name), "@@NAME@@", "String");
+        {
+            get_child_buffer_hpp += ABnfFactory::ReplaceAll(ABnfFactory::ReplaceAll(ABnfGetChildTemplateHpp, "@@LANGUAGE@@", language_name), "@@NAME@@", "String");
+            get_child_buffer_cpp += ABnfFactory::ReplaceAll(ABnfFactory::ReplaceAll(ABnfFactory::ReplaceAll(ABnfGetChildTemplateCpp, "@@LANGUAGE@@", language_name), "@@NAME@@", "String"), "@@CLASS_NAME@@", rule.first);
+        }
         else if (info.has_string > 1)
-            get_child_buffer += ABnfFactory::ReplaceAll(ABnfFactory::ReplaceAll(ABnfGetChildListTemplate, "@@LANGUAGE@@", language_name), "@@NAME@@", "String");
+        {
+            get_child_buffer_hpp += ABnfFactory::ReplaceAll(ABnfFactory::ReplaceAll(ABnfGetChildListTemplateHpp, "@@LANGUAGE@@", language_name), "@@NAME@@", "String");
+            get_child_buffer_cpp += ABnfFactory::ReplaceAll(ABnfFactory::ReplaceAll(ABnfFactory::ReplaceAll(ABnfGetChildListTemplateCpp, "@@LANGUAGE@@", language_name), "@@NAME@@", "String"), "@@CLASS_NAME@@", rule.first);
+        }
 
         if (info.has_string > 0)
+        {
             element_define += "class " + language_name + "StringElement;\n";
+            element_include += "#include \"" + language_name + "StringElement.h\"\n";
+        }
 
         if (info.has_regex == 1)
-            get_child_buffer += ABnfFactory::ReplaceAll(ABnfFactory::ReplaceAll(ABnfGetChildTemplate, "@@LANGUAGE@@", language_name), "@@NAME@@", "Regex");
+        {
+            get_child_buffer_hpp += ABnfFactory::ReplaceAll(ABnfFactory::ReplaceAll(ABnfGetChildTemplateHpp, "@@LANGUAGE@@", language_name), "@@NAME@@", "Regex");
+            get_child_buffer_cpp += ABnfFactory::ReplaceAll(ABnfFactory::ReplaceAll(ABnfFactory::ReplaceAll(ABnfGetChildTemplateCpp, "@@LANGUAGE@@", language_name), "@@NAME@@", "Regex"), "@@CLASS_NAME@@", rule.first);
+        }
         else if (info.has_regex > 1)
-            get_child_buffer += ABnfFactory::ReplaceAll(ABnfFactory::ReplaceAll(ABnfGetChildListTemplate, "@@LANGUAGE@@", language_name), "@@NAME@@", "Regex");
+        {
+            get_child_buffer_hpp += ABnfFactory::ReplaceAll(ABnfFactory::ReplaceAll(ABnfGetChildListTemplateHpp, "@@LANGUAGE@@", language_name), "@@NAME@@", "Regex");
+            get_child_buffer_cpp += ABnfFactory::ReplaceAll(ABnfFactory::ReplaceAll(ABnfFactory::ReplaceAll(ABnfGetChildListTemplateCpp, "@@LANGUAGE@@", language_name), "@@NAME@@", "Regex"), "@@CLASS_NAME@@", rule.first);
+        }
 
         if (info.has_regex > 0)
+        {
             element_define += "class " + language_name + "RegexElement;\n";
+            element_include += "#include \"" + language_name + "RegexElement.h\"\n";
+        }
 
-        buffer = ABnfFactory::ReplaceAll(buffer, "@@ELEMENT_GET_CHILD@@", get_child_buffer);
-        buffer = ABnfFactory::ReplaceAll(buffer, "@@ELEMENT_DEFINE@@", element_define);
-        std::string file_path = target_path + "/" + language_name + rule.first + "Element.h";
+        buffer_hpp = ABnfFactory::ReplaceAll(buffer_hpp, "@@ELEMENT_GET_CHILD@@", get_child_buffer_hpp);
+        buffer_hpp = ABnfFactory::ReplaceAll(buffer_hpp, "@@ELEMENT_DEFINE@@", element_define);
 
-        if (!ABnfFactory::WriteAllText(file_path, buffer))
-            return file_path + " generate failed!";
+        buffer_cpp = ABnfFactory::ReplaceAll(buffer_cpp, "@@ELEMENT_GET_CHILD@@", get_child_buffer_cpp);
+        buffer_cpp = ABnfFactory::ReplaceAll(buffer_cpp, "@@ELEMENT_INCLUDE@@", element_include);
+
+        std::string file_path_hpp = target_path + "/" + language_name + rule.first + "Element.h";
+        std::string file_path_cpp = target_path + "/" + language_name + rule.first + "Element.cpp";
+
+        if (!ABnfFactory::WriteAllText(file_path_hpp, buffer_hpp))
+            return file_path_hpp + " generate failed!";
+        if (!ABnfFactory::WriteAllText(file_path_cpp, buffer_cpp))
+            return file_path_cpp + " generate failed!";
     }
 
     {

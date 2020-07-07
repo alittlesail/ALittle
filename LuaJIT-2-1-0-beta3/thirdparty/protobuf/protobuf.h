@@ -2,8 +2,6 @@
 #ifndef _ALITTLE_PROTOBUF_H_
 #define _ALITTLE_PROTOBUF_H_
 
-#include "lua.h"
-
 typedef struct _importer
 {
 	void* source_tree;
@@ -17,6 +15,14 @@ void protobuf_shutdown();
 void* protobuf_createimporter(const char* path);
 void protobuf_freeimporter(void* c);
 void* protobuf_importer_import(void* c, const char* path);
+void* protobuf_importer_getpool(void* c);
+
+// descripor pool
+void* protobuf_descriptorpool_findmessagetypebyname(void* pool, const char* name);
+void* protobuf_descriptorpool_findfieldbyname(void* pool, const char* name);
+void* protobuf_descriptorpool_findoneofbyname(void* pool, const char* name);
+void* protobuf_descriptorpool_findenumtypebyname(void* pool, const char* name);
+void* protobuf_descriptorpool_findenumvaluebyname(void* pool, const char* name);
 
 // file descriptor
 int protobuf_filedescriptor_messagetypecount(void* descriptor);

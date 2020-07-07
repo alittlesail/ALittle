@@ -35,6 +35,12 @@ class ALittleScriptValueStatElement;
 class ALittleScriptUtility
 {
 public:
+    // 删除左边的空格
+    static void TrimLeft(std::string& target);
+
+    // 删除右边的空格
+    static void TrimRight(std::string& target);
+
 	// 创建文件夹
 	static void CreateFolder(const std::string& path);
 
@@ -84,10 +90,10 @@ public:
     static bool IsNullable(const std::vector<std::shared_ptr<ALittleScriptModifierElement>>& element_list);
 
     // 获取协程类型
-    static bool GetCoroutineType(const std::vector<std::shared_ptr<ALittleScriptModifierElement>>& element_list, std::string& out);
+    static std::string GetCoroutineType(const std::vector<std::shared_ptr<ALittleScriptModifierElement>>& element_list);
 
     // 获取协议类型
-    static bool GetProtocolType(const std::vector<std::shared_ptr<ALittleScriptModifierElement>>& element_list, std::string& out);
+    static std::string GetProtocolType(const std::vector<std::shared_ptr<ALittleScriptModifierElement>>& element_list);
 
     // 获取命令类型
     static bool GetCommandDetail(const std::vector<std::shared_ptr<ALittleScriptModifierElement>>& element_list, std::string& cmd, std::string& desc);
@@ -194,7 +200,7 @@ public:
     static std::string CalcTargetFullPath(const std::string& project_path, const std::string& ali_full_path, const std::string& ext, std::string& error);
 
     // 判断ValueStat
-    static ABnfGuessError CalcReturnCount(ALittleScriptValueStatElement value_stat, int& count, std::vector<ABnfGuessPtr>& guess_list);
+    static ABnfGuessError CalcReturnCount(std::shared_ptr<ALittleScriptValueStatElement> value_stat, int& count, std::vector<ABnfGuessPtr>& guess_list);
 };
 
 #endif // _ALITTLE_ALITTLESCRIPTUTILITY_H_

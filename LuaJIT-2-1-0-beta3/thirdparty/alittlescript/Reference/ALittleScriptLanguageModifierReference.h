@@ -9,7 +9,6 @@
 
 #include "../Generate/ALittleScriptLanguageModifierElement.h"
 
-
 class ALittleScriptLanguageModifierReference : public ALittleScriptReferenceTemplate<ALittleScriptLanguageModifierElement>
 {
 private:

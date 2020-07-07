@@ -115,6 +115,24 @@
 
 #include "../Reference/ALittleScriptLanguageModifierReference.h"
 
+void ALittleScriptUtility::TrimLeft(std::string& target)
+{
+    std::string::size_type pos = target.find_first_not_of(' ');
+    if (pos == std::string::npos) return;
+    if (pos == 0) return;
+
+    target = target.substr(pos);
+}
+
+void ALittleScriptUtility::TrimRight(std::string& target)
+{
+    std::string::size_type pos = target.find_last_not_of(' ');
+    if (pos == std::string::npos) return;
+    if (pos + 1 == target.size()) return;
+
+    target = target.substr(0, pos + 1);
+}
+
 void ALittleScriptUtility::CreateFolder(const std::string& path)
 {
 #ifdef _WIN32
@@ -316,24 +334,21 @@ ABnfGuessError ALittleScriptUtility::CheckInvokeAwaitError(std::shared_ptr<ABnfE
         else if (std::dynamic_pointer_cast<ALittleScriptClassMethodDecElement>(parent))
         {
             auto modifier = std::dynamic_pointer_cast<ALittleScriptClassElementDecElement>(parent->GetParent())->GetModifierList();
-            std::string type;
-			if (!GetCoroutineType(modifier, type))
+			if (!GetCoroutineType(modifier).empty())
                 return ABnfGuessError(element, u8"所在函数没有async或await修饰");
             break;
         }
         else if (std::dynamic_pointer_cast<ALittleScriptClassStaticDecElement>(parent))
         {
             auto modifier = std::dynamic_pointer_cast<ALittleScriptClassElementDecElement>(parent->GetParent())->GetModifierList();
-            std::string type;
-            if (!GetCoroutineType(modifier, type))
+            if (!GetCoroutineType(modifier).empty())
                 return ABnfGuessError(element, u8"所在函数没有async或await修饰");
             break;
         }
         else if (std::dynamic_pointer_cast<ALittleScriptGlobalMethodDecElement>(parent))
         {
             auto modifier = std::dynamic_pointer_cast<ALittleScriptNamespaceElementDecElement>(parent->GetParent())->GetModifierList();
-            std::string type;
-            if (!GetCoroutineType(modifier, type))
+            if (!GetCoroutineType(modifier).empty())
                 return ABnfGuessError(element, u8"所在函数没有async或await修饰");
             break;
         }
@@ -557,33 +572,31 @@ bool ALittleScriptUtility::IsNullable(const std::vector<std::shared_ptr<ALittleS
 }
 
 // 获取协程类型
-bool ALittleScriptUtility::GetCoroutineType(const std::vector<std::shared_ptr<ALittleScriptModifierElement>>& element_list, std::string& out)
+std::string ALittleScriptUtility::GetCoroutineType(const std::vector<std::shared_ptr<ALittleScriptModifierElement>>& element_list)
 {
     for (auto& element : element_list)
     {
         if (element->GetCoroutineModifier() != nullptr)
         {
-            out = element->GetCoroutineModifier()->GetElementText();
-            return true;
+            return element->GetCoroutineModifier()->GetElementText();
         }
     }
-    return false;
+    return "";
 }
 
 // 获取协议类型
-bool ALittleScriptUtility::GetProtocolType(const std::vector<std::shared_ptr<ALittleScriptModifierElement>>& element_list, std::string& out)
+std::string ALittleScriptUtility::GetProtocolType(const std::vector<std::shared_ptr<ALittleScriptModifierElement>>& element_list)
 {
     for (auto& element : element_list)
     {
         if (element->GetAttributeModifier() != nullptr
             && element->GetAttributeModifier()->GetProtocolModifier() != nullptr)
         {
-            out = element->GetAttributeModifier()->GetProtocolModifier()->GetElementText();
-            return true;
+            return element->GetAttributeModifier()->GetProtocolModifier()->GetElementText();
         }
 
     }
-    return false;
+    return "";
 }
 
 // 获取命令类型
@@ -1362,11 +1375,11 @@ std::string ALittleScriptUtility::CalcTargetFullPath(const std::string& project_
 }
 
 // 判断ValueStat
-ABnfGuessError ALittleScriptUtility::CalcReturnCount(ALittleScriptValueStatElement value_stat, int& count, std::vector<ABnfGuessPtr>& guess_list)
+ABnfGuessError ALittleScriptUtility::CalcReturnCount(std::shared_ptr<ALittleScriptValueStatElement> value_stat, int& count, std::vector<ABnfGuessPtr>& guess_list)
 {
     count = 0;
     // 获取右边表达式的
-    auto error = value_stat.GuessTypes(guess_list);
+    auto error = value_stat->GuessTypes(guess_list);
     if (error) return error;
 
     count = static_cast<int>(guess_list.size());

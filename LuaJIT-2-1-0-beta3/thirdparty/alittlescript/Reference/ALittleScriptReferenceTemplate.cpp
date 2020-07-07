@@ -2,11 +2,14 @@
 #include "ALittleScriptReferenceTemplate.h"
 
 #include "../Index/ALittleScriptUtility.h"
+#include "../Index/ALittleScriptIndex.h"
 
 #include "../../alanguage/Model/ABnfElement.h"
 #include "../../alanguage/Model/ABnfGuess.h"
 #include "../../alanguage/Model/ABnfStringElement.h"
 #include "../../alanguage/Model/ALanguageHelperInfo.h"
+#include "../../alanguage/Index/ABnfFile.h"
+#include "../../alanguage/Index/ABnfProject.h"
 
 #include "../Generate/ALittleScriptClassBodyDecElement.h"
 #include "../Generate/ALittleScriptStructBodyDecElement.h"
@@ -165,4 +168,12 @@ int ALittleScriptReference::QueryFormateIndent(int it_line, int it_char, ABnfEle
 
     m_format_indent = parent->GetReference()->QueryFormateIndent(it_line, it_char, nullptr);
     return m_format_indent;
+}
+
+ALittleScriptIndex* ALittleScriptReference::GetIndex()
+{
+    auto element = m_ref_element.lock();
+    if (element == nullptr) return nullptr;
+
+    return dynamic_cast<ALittleScriptIndex*>(element->GetFile()->GetProject());
 }

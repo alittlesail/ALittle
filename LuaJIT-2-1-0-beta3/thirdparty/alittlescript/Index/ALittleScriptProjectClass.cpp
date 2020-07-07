@@ -4,6 +4,8 @@
 ALittleScriptProjectClass::ALittleScriptProjectClass(const std::string& full_path)
 	: ABnfProject(full_path)
 {
+	m_language_set.insert("Lua");
+	m_language_set.insert("JavaScript");
 }
 
 ALittleScriptProjectClass::~ALittleScriptProjectClass()

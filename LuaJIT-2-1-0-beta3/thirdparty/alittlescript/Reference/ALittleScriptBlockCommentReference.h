@@ -16,7 +16,7 @@ public:
         auto element = m_element.lock();
         if (element == nullptr) return 0;
         blur = false;
-        return ALittleScriptColorType::ALittleScriptComment;
+        return ALittleScriptColorType::COMMENT;
     }
 
     bool CanGotoDefinition() override

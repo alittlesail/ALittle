@@ -12,7 +12,7 @@ ALittleScriptEnumNameDecReference::ALittleScriptEnumNameDecReference(ABnfElement
 int ALittleScriptEnumNameDecReference::QueryClassificationTag(bool& blur)
 {
     blur = false;
-    return ALittleScriptColorType::ALittleScriptDefineName;
+    return ALittleScriptColorType::DEFINE_NAME;
 }
 
 ABnfGuessError ALittleScriptEnumNameDecReference::GuessTypes(std::vector<ABnfGuessPtr>& guess_list)
@@ -45,7 +45,7 @@ bool ALittleScriptEnumNameDecReference::QueryCompletion(std::vector<ALanguageCom
         ABnfElementType::ENUM_NAME, element->GetFile(), m_namespace_name, m_key, true, dec_list);
 
     for (auto& dec : dec_list)
-        list.emplace_back(dec->GetElementText(), ALittleScriptColorType::ALittleScriptEnumName);
+        list.emplace_back(dec->GetElementText(), ALittleScriptIconType::ENUM);
 
     return true;
 }

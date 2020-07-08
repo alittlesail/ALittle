@@ -33,7 +33,7 @@ ALittleScriptClassNameDecReference::ALittleScriptClassNameDecReference(ABnfEleme
 int ALittleScriptClassNameDecReference::QueryClassificationTag(bool& blur)
 {
     blur = false;
-    return ALittleScriptColorType::ALittleScriptDefineName;
+    return ALittleScriptColorType::DEFINE_NAME;
 }
 
 ABnfGuessError ALittleScriptClassNameDecReference::GuessTypes(std::vector<ABnfGuessPtr>& guess_list)
@@ -151,7 +151,7 @@ bool ALittleScriptClassNameDecReference::QueryCompletion(std::vector<ALanguageCo
             ABnfElementType::CLASS_NAME, element->GetFile(), m_namespace_name, u8"", true, dec_list);
 
         for (auto& dec : dec_list)
-            list.emplace_back(dec->GetElementText(), ALittleScriptColorType::ALittleScriptClassName);
+            list.emplace_back(dec->GetElementText(), ALittleScriptIconType::CLASS);
     }
 
     if (std::dynamic_pointer_cast<ALittleScriptClassExtendsDecElement>(element->GetParent()))
@@ -159,7 +159,7 @@ bool ALittleScriptClassNameDecReference::QueryCompletion(std::vector<ALanguageCo
         std::unordered_map<std::string, std::shared_ptr<ALittleScriptNamespaceNameDecElement>> dec_list;
         index->FindNamespaceNameDecList("", dec_list);
         for (auto& pair : dec_list)
-            list.emplace_back(pair.first, ALittleScriptColorType::ALittleScriptNamespaceName);
+            list.emplace_back(pair.first, ALittleScriptIconType::NAMESPACE);
     }
     return true;
 }

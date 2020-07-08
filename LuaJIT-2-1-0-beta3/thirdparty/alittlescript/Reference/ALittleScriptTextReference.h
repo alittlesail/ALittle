@@ -13,7 +13,7 @@ public:
     int QueryClassificationTag(bool& blur) override
     {
         blur = false;
-        return ALittleScriptColorType::ALittleScriptText;
+        return ALittleScriptColorType::TEXT;
     }
 
     bool CanGotoDefinition() override

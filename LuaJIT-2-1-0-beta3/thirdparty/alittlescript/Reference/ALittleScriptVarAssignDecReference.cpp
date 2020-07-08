@@ -113,16 +113,16 @@ bool ALittleScriptVarAssignDecReference::QueryCompletion(std::vector<ALanguageCo
             auto error = dec->GuessType(guess);
             if (error)
             {
-                list.emplace_back(dec->GetElementText(), ALittleScriptColorType::ALittleScriptClassName);
+                list.emplace_back(dec->GetElementText(), ALittleScriptIconType::CLASS);
             }
             else
             {
                 if (std::dynamic_pointer_cast<ALittleScriptGuessClass>(guess))
-                    list.emplace_back(dec->GetElementText(), ALittleScriptColorType::ALittleScriptClassName);
+                    list.emplace_back(dec->GetElementText(), ALittleScriptIconType::CLASS);
                 else if (std::dynamic_pointer_cast<ALittleScriptGuessStruct>(guess))
-                    list.emplace_back(dec->GetElementText(), ALittleScriptColorType::ALittleScriptStructName);
+                    list.emplace_back(dec->GetElementText(), ALittleScriptIconType::STRUCT);
                 else
-                    list.emplace_back(dec->GetElementText(), ALittleScriptColorType::ALittleScriptClassName);
+                    list.emplace_back(dec->GetElementText(), ALittleScriptIconType::PROPERTY);
             }
         }
     }
@@ -133,7 +133,7 @@ bool ALittleScriptVarAssignDecReference::QueryCompletion(std::vector<ALanguageCo
         index->FindALittleNameDecList(
             ABnfElementType::CLASS_NAME, element->GetFile(), m_namespace_name, u8"", true, dec_list);
         for (auto& dec : dec_list)
-            list.emplace_back(dec->GetElementText(), ALittleScriptColorType::ALittleScriptClassName);
+            list.emplace_back(dec->GetElementText(), ALittleScriptIconType::CLASS);
     }
     // 查找类模板
     {
@@ -148,7 +148,7 @@ bool ALittleScriptVarAssignDecReference::QueryCompletion(std::vector<ALanguageCo
                 auto pair_dec = std::dynamic_pointer_cast<ALittleScriptTemplatePairDecElement>(dec);
                 auto pair_name_dec = pair_dec->GetTemplateNameDec();
                 if (pair_name_dec != nullptr)
-                    list.emplace_back(pair_name_dec->GetElementText(), ALittleScriptColorType::ALittleScriptTemplateName);
+                    list.emplace_back(pair_name_dec->GetElementText(), ALittleScriptIconType::TEMPLATE);
             }
         }
     }
@@ -162,7 +162,7 @@ bool ALittleScriptVarAssignDecReference::QueryCompletion(std::vector<ALanguageCo
             {
                 auto pair_name_dec = pair_dec->GetTemplateNameDec();
                 if (pair_name_dec != nullptr)
-                    list.emplace_back(pair_name_dec->GetElementText(), ALittleScriptColorType::ALittleScriptTemplateName);
+                    list.emplace_back(pair_name_dec->GetElementText(), ALittleScriptIconType::TEMPLATE);
             }
         }
     }
@@ -172,7 +172,7 @@ bool ALittleScriptVarAssignDecReference::QueryCompletion(std::vector<ALanguageCo
         index->FindALittleNameDecList(
             ABnfElementType::STRUCT_NAME, element->GetFile(), m_namespace_name, u8"", true, dec_list);
         for (auto& dec : dec_list)
-            list.emplace_back(dec->GetElementText(), ALittleScriptColorType::ALittleScriptStructName);
+            list.emplace_back(dec->GetElementText(), ALittleScriptIconType::STRUCT);
     }
     // 枚举名
     {
@@ -180,7 +180,7 @@ bool ALittleScriptVarAssignDecReference::QueryCompletion(std::vector<ALanguageCo
         index->FindALittleNameDecList(
             ABnfElementType::ENUM_NAME, element->GetFile(), m_namespace_name, u8"", true, dec_list);
         for (auto& dec : dec_list)
-            list.emplace_back(dec->GetElementText(), ALittleScriptColorType::ALittleScriptEnumName);
+            list.emplace_back(dec->GetElementText(), ALittleScriptIconType::ENUM);
     }
     // 查找全局函数
     {
@@ -188,14 +188,14 @@ bool ALittleScriptVarAssignDecReference::QueryCompletion(std::vector<ALanguageCo
         index->FindALittleNameDecList(
             ABnfElementType::GLOBAL_METHOD, element->GetFile(), m_namespace_name, u8"", true, dec_list);
         for (auto& dec : dec_list)
-            list.emplace_back(dec->GetElementText(), ALittleScriptColorType::ALittleScriptGlobalMethodName);
+            list.emplace_back(dec->GetElementText(), ALittleScriptIconType::GLOBAL_METHOD);
     }
     // 查找所有命名域
     {
         std::unordered_map<std::string, std::shared_ptr<ALittleScriptNamespaceNameDecElement>> dec_map;
         index->FindNamespaceNameDecList("", dec_map);
         for (auto& pair : dec_map)
-            list.emplace_back(pair.second->GetElementText(), ALittleScriptColorType::ALittleScriptNamespaceName);
+            list.emplace_back(pair.second->GetElementText(), ALittleScriptIconType::NAMESPACE);
     }
 
     return true;

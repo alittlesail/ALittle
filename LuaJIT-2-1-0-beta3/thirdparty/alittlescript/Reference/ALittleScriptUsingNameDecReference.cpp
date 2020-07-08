@@ -5,7 +5,7 @@
 int ALittleScriptUsingNameDecReference::QueryClassificationTag(bool& blur)
 {
     blur = false;
-    return ALittleScriptColorType::ALittleScriptDefineName;
+    return ALittleScriptColorType::DEFINE_NAME;
 }
 
 ABnfGuessError ALittleScriptUsingNameDecReference::GuessTypes(std::vector<ABnfGuessPtr>& guess_list)

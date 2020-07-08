@@ -194,9 +194,12 @@ ALittleScriptFactoryClassEx::ALittleScriptFactoryClassEx()
 ABnfReference* ALittleScriptFactoryClassEx::CreateReference(ABnfElementPtr element)
 {
     auto it = m_create_map.find(element->GetNodeType());
-    if (it == m_create_map.end()) return nullptr;
+    if (it != m_create_map.end()) return it->second(element);
 
-    return it->second(element);
+    it = m_create_map.find(element->GetLeafType());
+    if (it != m_create_map.end()) return it->second(element);
+
+    return nullptr;
 }
 
 ABnfGuessError ALittleScriptFactoryClassEx::GuessTypes(ABnfElementPtr element, std::vector<ABnfGuessPtr>& guess_list)

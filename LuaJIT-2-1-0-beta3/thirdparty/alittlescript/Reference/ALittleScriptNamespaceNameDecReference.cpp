@@ -10,7 +10,7 @@ ALittleScriptNamespaceNameDecReference::ALittleScriptNamespaceNameDecReference(A
 int ALittleScriptNamespaceNameDecReference::QueryClassificationTag(bool& blur)
 {
     blur = false;
-    return ALittleScriptColorType::ALittleScriptDefineName;
+    return ALittleScriptColorType::DEFINE_NAME;
 }
 
 ABnfGuessError ALittleScriptNamespaceNameDecReference::GuessTypes(std::vector<ABnfGuessPtr>& guess_list)
@@ -70,6 +70,6 @@ bool ALittleScriptNamespaceNameDecReference::QueryCompletion(std::vector<ALangua
     std::unordered_map<std::string, std::shared_ptr<ALittleScriptNamespaceNameDecElement>> name_dec_map;
     index->FindNamespaceNameDecList(m_key, name_dec_map);
     for (auto& pair : name_dec_map)
-        list.emplace_back(pair.second->GetElementText(), ALittleScriptColorType::ALittleScriptNamespaceName);
+        list.emplace_back(pair.second->GetElementText(), ALittleScriptIconType::NAMESPACE);
     return true;
 }

@@ -649,17 +649,17 @@ int ALittleScriptPropertyValueDotIdNameReference::QueryClassificationTag(bool& b
             || std::dynamic_pointer_cast<ALittleScriptClassGetterDecElement>(guess_functor_element)
             || std::dynamic_pointer_cast<ALittleScriptClassSetterDecElement>(guess_functor_element)
             || std::dynamic_pointer_cast<ALittleScriptGlobalMethodDecElement>(guess_functor_element))
-            return ALittleScriptColorType::ALittleScriptMethodName;
+            return ALittleScriptColorType::METHOD_NAME;
     }
     else if (std::dynamic_pointer_cast<ALittleScriptGuessNamespaceName>(guess)
         || std::dynamic_pointer_cast<ALittleScriptGuessClassName>(guess)
         || std::dynamic_pointer_cast<ALittleScriptGuessStructName>(guess)
         || std::dynamic_pointer_cast<ALittleScriptGuessEnumName>(guess))
     {
-        return ALittleScriptColorType::ALittleScriptCustomName;
+        return ALittleScriptColorType::CUSTOM_NAME;
     }
 
-    return ALittleScriptColorType::ALittleScriptVarName;
+    return ALittleScriptColorType::VAR_NAME;
 }
 
 ABnfGuessError ALittleScriptPropertyValueDotIdNameReference::CheckError()

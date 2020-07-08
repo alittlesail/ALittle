@@ -92,6 +92,8 @@ bool ABnfElement::IntersectsWith(int start, int end)
 // 获取类型
 const std::string& ABnfElement::GetNodeType() { static std::string empty; return empty; }
 
+const std::string& ABnfElement::GetLeafType() { static std::string empty; return empty; }
+
 // 获取文本
 const std::string& ABnfElement::GetElementText()
 {

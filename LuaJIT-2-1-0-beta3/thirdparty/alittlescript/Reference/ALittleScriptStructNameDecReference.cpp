@@ -25,7 +25,7 @@ ALittleScriptStructNameDecReference::ALittleScriptStructNameDecReference(ABnfEle
 int ALittleScriptStructNameDecReference::QueryClassificationTag(bool& blur)
 {
     blur = false;
-    return ALittleScriptColorType::ALittleScriptDefineName;
+    return ALittleScriptColorType::DEFINE_NAME;
 }
 
 ABnfGuessError ALittleScriptStructNameDecReference::GuessTypes(std::vector<ABnfGuessPtr>& guess_list)
@@ -90,7 +90,7 @@ bool ALittleScriptStructNameDecReference::QueryCompletion(std::vector<ALanguageC
         ABnfElementType::STRUCT_NAME, element->GetFile(), m_namespace_name, u8"", true, dec_list);
 
     for (auto& dec : dec_list)
-        list.emplace_back(dec->GetElementText(), ALittleScriptColorType::ALittleScriptStructName);
+        list.emplace_back(dec->GetElementText(), ALittleScriptIconType::STRUCT);
 
     return true;
 }

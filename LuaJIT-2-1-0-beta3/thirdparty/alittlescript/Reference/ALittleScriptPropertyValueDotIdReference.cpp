@@ -109,7 +109,7 @@ bool ALittleScriptPropertyValueDotIdReference::QueryCompletion(std::vector<ALang
             if (class_var_dec == nullptr) continue;
             auto class_var_name_dec = class_var_dec->GetClassVarNameDec();
             if (class_var_name_dec == nullptr) continue;
-            list.emplace_back(class_var_name_dec->GetElementText(), ALittleScriptColorType::ALittleScriptVariableName);
+            list.emplace_back(class_var_name_dec->GetElementText(), ALittleScriptIconType::VARIABLE);
         }
 
         // 所有setter,getter
@@ -118,14 +118,14 @@ bool ALittleScriptPropertyValueDotIdReference::QueryCompletion(std::vector<ALang
         ALittleScriptUtility::FindClassAttrList(class_dec, access_level, ClassAttrType::GETTER, u8"", class_method_name_dec_list, 100);
         ALittleScriptUtility::FilterSameName(class_method_name_dec_list, class_method_name_dec_list);
         for (auto& class_method_name_dec : class_method_name_dec_list)
-            list.emplace_back(class_method_name_dec->GetElementText(), ALittleScriptColorType::ALittleScriptFieldMethodName);
+            list.emplace_back(class_method_name_dec->GetElementText(), ALittleScriptIconType::FIELD_METHOD);
 
         // 所有成员函数
         class_method_name_dec_list.resize(0);
         ALittleScriptUtility::FindClassAttrList(class_dec, access_level, ClassAttrType::FUN, u8"", class_method_name_dec_list, 10);
         ALittleScriptUtility::FilterSameName(class_method_name_dec_list, class_method_name_dec_list);
         for (auto& class_method_name_dec : class_method_name_dec_list)
-            list.emplace_back(class_method_name_dec->GetElementText(), ALittleScriptColorType::ALittleScriptMemberMethodName);
+            list.emplace_back(class_method_name_dec->GetElementText(), ALittleScriptIconType::MEMBER_METHOD);
 
     }
     // 处理结构体的实例对象
@@ -139,7 +139,7 @@ bool ALittleScriptPropertyValueDotIdReference::QueryCompletion(std::vector<ALang
         {
             auto name_dec = struct_var_dec->GetStructVarNameDec();
             if (name_dec == nullptr) continue;
-            list.emplace_back(name_dec->GetElementText(), ALittleScriptColorType::ALittleScriptProperty);
+            list.emplace_back(name_dec->GetElementText(), ALittleScriptIconType::PROPERTY);
         }
     }
     // 比如 ALittleName.XXX
@@ -152,31 +152,31 @@ bool ALittleScriptPropertyValueDotIdReference::QueryCompletion(std::vector<ALang
         index_e->FindALittleNameDecList(
             ABnfElementType::ENUM_NAME, element->GetFile(), namespace_name, u8"", true, enum_name_dec_list);
         for (auto& enum_name_dec : enum_name_dec_list)
-            list.emplace_back(enum_name_dec->GetElementText(), ALittleScriptColorType::ALittleScriptEnumName);
+            list.emplace_back(enum_name_dec->GetElementText(), ALittleScriptIconType::ENUM);
         // 所有全局函数
         std::vector<ABnfElementPtr> method_name_dec_list;
         index_e->FindALittleNameDecList(
             ABnfElementType::GLOBAL_METHOD, element->GetFile(), namespace_name, u8"", true, method_name_dec_list);
         for (auto& method_name_dec : method_name_dec_list)
-            list.emplace_back(method_name_dec->GetElementText(), ALittleScriptColorType::ALittleScriptGlobalMethodName);
+            list.emplace_back(method_name_dec->GetElementText(), ALittleScriptIconType::GLOBAL_METHOD);
         // 所有类名
         std::vector<ABnfElementPtr> class_name_dec_list;
         index_e->FindALittleNameDecList(
             ABnfElementType::CLASS_NAME, element->GetFile(), namespace_name, u8"", true, class_name_dec_list);
         for (auto& class_name_dec : class_name_dec_list)
-            list.emplace_back(class_name_dec->GetElementText(), ALittleScriptColorType::ALittleScriptClassName);
+            list.emplace_back(class_name_dec->GetElementText(), ALittleScriptIconType::CLASS);
         // 所有结构体名
         std::vector<ABnfElementPtr> struct_name_dec_list;
         index_e->FindALittleNameDecList(
             ABnfElementType::STRUCT_NAME, element->GetFile(), namespace_name, u8"", true, struct_name_dec_list);
         for (auto& struct_name_dec : struct_name_dec_list)
-            list.emplace_back(struct_name_dec->GetElementText(), ALittleScriptColorType::ALittleScriptStructName);
+            list.emplace_back(struct_name_dec->GetElementText(), ALittleScriptIconType::STRUCT);
         // 所有单例
         std::vector<ABnfElementPtr> instance_name_dec_list;
         index_e->FindALittleNameDecList(
             ABnfElementType::INSTANCE_NAME, element->GetFile(), namespace_name, u8"", false, instance_name_dec_list);
         for (auto& instance_name_dec : instance_name_dec_list)
-            list.emplace_back(instance_name_dec->GetElementText(), ALittleScriptColorType::ALittleScriptInstanceName);
+            list.emplace_back(instance_name_dec->GetElementText(), ALittleScriptIconType::INSTANCE);
     }
     // 比如 AClassName.XXX
     else if (std::dynamic_pointer_cast<ALittleScriptGuessClassName>(pre_type))
@@ -191,19 +191,19 @@ bool ALittleScriptPropertyValueDotIdReference::QueryCompletion(std::vector<ALang
         std::vector<ABnfElementPtr> class_method_name_dec_list;
         ALittleScriptUtility::FindClassAttrList(class_dec, access_level, ClassAttrType::STATIC, u8"", class_method_name_dec_list, 100);
         for (auto& class_method_name_dec : class_method_name_dec_list)
-            list.emplace_back(class_method_name_dec->GetElementText(), ALittleScriptColorType::ALittleScriptStaticMethodName);
+            list.emplace_back(class_method_name_dec->GetElementText(), ALittleScriptIconType::STATIC_METHOD);
         // 所有成员函数
         class_method_name_dec_list.resize(0);
         ALittleScriptUtility::FindClassAttrList(class_dec, access_level, ClassAttrType::FUN, u8"", class_method_name_dec_list, 100);
         for (auto& class_method_name_dec : class_method_name_dec_list)
-            list.emplace_back(class_method_name_dec->GetElementText(), ALittleScriptColorType::ALittleScriptMemberMethodName);
+            list.emplace_back(class_method_name_dec->GetElementText(), ALittleScriptIconType::MEMBER_METHOD);
         // 所有setter,getter
         class_method_name_dec_list.resize(0);
         ALittleScriptUtility::FindClassAttrList(class_dec, access_level, ClassAttrType::SETTER, u8"", class_method_name_dec_list, 100);
         ALittleScriptUtility::FindClassAttrList(class_dec, access_level, ClassAttrType::GETTER, u8"", class_method_name_dec_list, 100);
         ALittleScriptUtility::FilterSameName(class_method_name_dec_list, class_method_name_dec_list);
         for (auto& class_method_name_dec : class_method_name_dec_list)
-            list.emplace_back(class_method_name_dec->GetElementText(), ALittleScriptColorType::ALittleScriptFieldMethodName);
+            list.emplace_back(class_method_name_dec->GetElementText(), ALittleScriptIconType::FIELD_METHOD);
     }
     // 比如 AEnum.XXX
     else if (std::dynamic_pointer_cast<ALittleScriptGuessEnumName>(pre_type))
@@ -217,7 +217,7 @@ bool ALittleScriptPropertyValueDotIdReference::QueryCompletion(std::vector<ALang
         {
             auto var_name_dec = var_dec->GetEnumVarNameDec();
             if (var_name_dec == nullptr) continue;
-            list.emplace_back(var_name_dec->GetElementText(), ALittleScriptColorType::ALittleScriptEnumName);
+            list.emplace_back(var_name_dec->GetElementText(), ALittleScriptIconType::ENUM);
         }
     }
 

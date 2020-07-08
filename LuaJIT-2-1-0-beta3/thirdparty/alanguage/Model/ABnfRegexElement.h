@@ -22,6 +22,7 @@ public:
         std::smatch result;
         return std::regex_match(value, result, *m_regex);
     }
+    virtual const std::string& GetLeafType() override { static std::string type = "Regex"; return type; }
 };
 
 #endif // _ALITTLE_ABNFREGEXELEMENT_H_

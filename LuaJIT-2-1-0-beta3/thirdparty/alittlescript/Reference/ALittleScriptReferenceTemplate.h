@@ -31,30 +31,33 @@ public:
 
 enum ALittleScriptColorType
 {
-    ALittleScriptComment = 1,
-    ALittleScriptClassName,
-    ALittleScriptStructName,
-    ALittleScriptEnumName,
-    ALittleScriptNamespaceName,
-    ALittleScriptDefineName,
-    ALittleScriptVarName,
-    ALittleScriptCustomName,
-    ALittleScriptCtrlKeyWord,
-    ALittleScriptKeyWord,
-    ALittleScriptMethodName,
-    ALittleScriptText,
+    COMMENT = 1,
+    DEFINE_NAME = 2,
+    VAR_NAME = 3,
+    CUSTOM_NAME = 4,
+    CTRL_KEYWORD = 5,
+    KEYWORD = 6,
+    METHOD_NAME = 7,
+    DEFAULT = 8,
+    TEXT = 9,
+};
 
-    ALittleScriptProperty,
-    ALittleScriptTemplateName,
-    ALittleScriptLanguageName,
-    ALittleScriptMemberMethodName,
-    ALittleScriptFieldMethodName,
-    ALittleScriptGlobalMethodName,
-    ALittleScriptStaticMethodName,
-    ALittleScriptDefault,
-    ALittleScriptInstanceName,
-    ALittleScriptParamName,
-    ALittleScriptVariableName,
+enum ALittleScriptIconType
+{
+    CLASS = 1,
+    STRUCT = 2,
+    PROPERTY = 3,
+    NAMESPACE = 4,
+    TEMPLATE = 5,
+    ENUM = 6,
+    LANGUAGE = 7,
+    GLOBAL_METHOD = 8,
+    MEMBER_METHOD = 9,
+    FIELD_METHOD = 10,
+    STATIC_METHOD = 11,
+    INSTANCE = 12,
+    PARAM = 13,
+    VARIABLE = 14,
 };
 
 template <typename T>

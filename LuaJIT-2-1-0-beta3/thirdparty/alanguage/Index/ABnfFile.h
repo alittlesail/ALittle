@@ -86,8 +86,10 @@ public:
     static int GetByteCountOfOneWord(unsigned char first_char);
 
 public:
+    // 内容更新之前
+    virtual void OnBeforeUpdate() {}
     // 内容出现更新
-    virtual void OnUpdate() {}
+    virtual void OnAfterUpdate() {}
     // 移除内容
     virtual void OnRemove() {}
     // 添加ABnfGuess，为了持有这个对象的引用

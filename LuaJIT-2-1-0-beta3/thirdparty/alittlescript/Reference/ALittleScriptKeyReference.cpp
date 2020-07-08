@@ -11,8 +11,8 @@ int ALittleScriptKeyReference::QueryClassificationTag(bool& blur)
     auto text = element->GetElementText();
 
     if (ALittleScriptStatic::Inst().sCtrlKeyWord.find(text) != ALittleScriptStatic::Inst().sCtrlKeyWord.end())
-        return ALittleScriptColorType::ALittleScriptCtrlKeyWord;
-    return ALittleScriptColorType::ALittleScriptKeyWord;
+        return ALittleScriptColorType::CTRL_KEYWORD;
+    return ALittleScriptColorType::KEYWORD;
 }
 
 ABnfElementPtr ALittleScriptKeyReference::GotoDefinition()

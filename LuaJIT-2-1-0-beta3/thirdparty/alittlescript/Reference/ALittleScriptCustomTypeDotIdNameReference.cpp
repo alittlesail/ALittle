@@ -17,5 +17,5 @@ ALittleScriptCustomTypeDotIdNameReference::ALittleScriptCustomTypeDotIdNameRefer
 int ALittleScriptCustomTypeDotIdNameReference::QueryClassificationTag(bool& blur)
 {
     blur = false;
-    return ALittleScriptColorType::ALittleScriptCustomName;
+    return ALittleScriptColorType::CUSTOM_NAME;
 }

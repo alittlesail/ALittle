@@ -18,8 +18,8 @@ public:
         blur = false;
         auto text = element->GetElementText();
         if (text == "primary" || text == "unique" || text == "index")
-            return ALittleScriptColorType::ALittleScriptCtrlKeyWord;
-        return ALittleScriptColorType::ALittleScriptVarName;
+            return ALittleScriptColorType::CTRL_KEYWORD;
+        return ALittleScriptColorType::VAR_NAME;
     }
 };
 

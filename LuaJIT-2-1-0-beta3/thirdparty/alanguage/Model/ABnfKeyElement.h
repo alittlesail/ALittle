@@ -11,6 +11,8 @@ public:
         : ABnfLeafElement(factory, file, line, col, offset, value)
     { }
     virtual ~ABnfKeyElement() {}
+
+    virtual const std::string& GetLeafType() override { static std::string type = "Key"; return type; }
 };
 
 #endif // _ALITTLE_ABNFKEYELEMENT_H_

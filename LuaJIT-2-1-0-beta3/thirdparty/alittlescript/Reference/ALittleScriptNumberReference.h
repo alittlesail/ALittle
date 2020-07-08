@@ -15,7 +15,7 @@ public:
     int QueryClassificationTag(bool& blur) override
     {
         blur = false;
-        return ALittleScriptColorType::ALittleScriptDefault;
+        return ALittleScriptColorType::DEFAULT;
     }
 };
 

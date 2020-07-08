@@ -7,6 +7,8 @@
 
 class ALittleScriptTemplateNameDecReference : public ALittleScriptReferenceTemplate<ALittleScriptTemplateNameDecElement>
 {
+public:
+    ALittleScriptTemplateNameDecReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptTemplateNameDecElement>(element) {}
     int QueryClassificationTag(bool& blur) override
     {
         blur = false;

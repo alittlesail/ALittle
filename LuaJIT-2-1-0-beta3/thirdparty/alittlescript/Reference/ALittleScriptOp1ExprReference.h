@@ -8,6 +8,8 @@
 
 class ALittleScriptOp1ExprReference : public ALittleScriptReferenceTemplate<ALittleScriptOp1ExprElement>
 {
+public:
+    ALittleScriptOp1ExprReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptOp1ExprElement>(element) {}
     ABnfGuessError CheckError() override;
 };
 

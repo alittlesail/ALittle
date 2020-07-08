@@ -7,6 +7,8 @@
 
 class ALittleScriptThrowExprReference : public ALittleScriptReferenceTemplate<ALittleScriptThrowExprElement>
 {
+public:
+    ALittleScriptThrowExprReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptThrowExprElement>(element) {}
     ABnfGuessError GuessTypes(std::vector<ABnfGuessPtr>& guess_list) override;
 
     ABnfGuessError CheckError() override;

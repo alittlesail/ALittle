@@ -8,6 +8,8 @@
 
 class ALittleScriptPropertyValueDotIdReference : public ALittleScriptReferenceTemplate<ALittleScriptPropertyValueDotIdElement>
 {
+public:
+    ALittleScriptPropertyValueDotIdReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptPropertyValueDotIdElement>(element) {}
     ABnfGuessError GuessTypes(std::vector<ABnfGuessPtr>& guess_list) override;
 
     bool QueryCompletion(std::vector<ALanguageCompletionInfo>& list) override;

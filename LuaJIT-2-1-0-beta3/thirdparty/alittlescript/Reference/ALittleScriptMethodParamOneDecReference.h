@@ -8,6 +8,8 @@
 
 class ALittleScriptMethodParamOneDecReference : public ALittleScriptReferenceTemplate<ALittleScriptMethodParamOneDecElement>
 {
+public:
+    ALittleScriptMethodParamOneDecReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptMethodParamOneDecElement>(element) {}
     ABnfGuessError CheckError() override;
 };
 

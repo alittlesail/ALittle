@@ -8,10 +8,11 @@
 
 class ALittleScriptStructDecReference : public ALittleScriptReferenceTemplate<ALittleScriptStructDecElement>
 {
+public:
+    ALittleScriptStructDecReference(ABnfElementPtr element);
+
 private:
     std::string m_namespace_name;
-
-    ALittleScriptStructDecReference(ABnfElementPtr element);
 
     ABnfGuessError GuessTypes(std::vector<ABnfGuessPtr>& guess_list) override;
 

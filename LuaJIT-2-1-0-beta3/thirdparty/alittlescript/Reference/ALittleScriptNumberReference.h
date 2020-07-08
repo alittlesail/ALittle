@@ -8,10 +8,13 @@
 
 class ALittleScriptNumberReference : public ALittleScriptReferenceTemplate<ALittleScriptNumberElement>
 {
+public:
+    ALittleScriptNumberReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptNumberElement>(element) {}
+
     int QueryClassificationTag(bool& blur) override
     {
         blur = false;
-        ALittleScriptColorType::ALittleScriptDefault;
+        return ALittleScriptColorType::ALittleScriptDefault;
     }
 };
 

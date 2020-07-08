@@ -9,6 +9,7 @@
 class ALittleScriptAllExprReference : public ALittleScriptReferenceTemplate<ALittleScriptAllExprElement>
 {
 public:
+    ALittleScriptAllExprReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptAllExprElement>(element) {}
     ABnfGuessError CheckError() override;
 
     int QueryClassificationTag(bool& blur) override;

@@ -8,6 +8,9 @@
 
 class ALittleScriptClassGetterDecReference : public ALittleScriptReferenceTemplate<ALittleScriptClassGetterDecElement>
 {
+public:
+    ALittleScriptClassGetterDecReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptClassGetterDecElement>(element) {}
+
     ABnfGuessError CheckError() override
     {
         auto element = m_element.lock();

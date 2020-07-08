@@ -8,6 +8,8 @@
 
 class ALittleScriptLanguageNameDecReference : public ALittleScriptReferenceTemplate<ALittleScriptLanguageNameDecElement>
 {
+public:
+    ALittleScriptLanguageNameDecReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptLanguageNameDecElement>(element) {}
     ABnfGuessError CheckError() override;
 
     bool QueryCompletion(std::vector<ALanguageCompletionInfo>& list) override;

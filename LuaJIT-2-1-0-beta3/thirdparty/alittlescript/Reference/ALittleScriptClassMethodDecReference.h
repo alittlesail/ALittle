@@ -8,6 +8,8 @@
 
 class ALittleScriptClassMethodDecReference : public ALittleScriptReferenceTemplate<ALittleScriptClassMethodDecElement>
 {
+public:
+    ALittleScriptClassMethodDecReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptClassMethodDecElement>(element) {}
     ABnfGuessError CheckError() override;
 };
 

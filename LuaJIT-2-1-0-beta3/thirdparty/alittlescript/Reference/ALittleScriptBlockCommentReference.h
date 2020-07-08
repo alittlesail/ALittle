@@ -8,6 +8,8 @@
 
 class ALittleScriptBlockCommentReference : public ALittleScriptReferenceTemplate<ALittleScriptBlockCommentElement>
 {
+public:
+    ALittleScriptBlockCommentReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptBlockCommentElement>(element) {}
     int QueryClassificationTag(bool& blur) override
     {
         auto element = m_element.lock();

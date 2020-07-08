@@ -7,6 +7,9 @@
 
 class ALittleScriptIdReference : public ALittleScriptReferenceTemplate<ALittleScriptIdElement>
 {
+public:
+    ALittleScriptIdReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptIdElement>(element) {}
+
     void QueryQuickInfo(std::string& info) override;
 
     ABnfElementPtr GotoDefinition() override;

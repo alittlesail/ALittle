@@ -8,6 +8,8 @@
 
 class ALittleScriptLineCommentReference : public ALittleScriptReferenceTemplate<ALittleScriptLineCommentElement>
 {
+public:
+    ALittleScriptLineCommentReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptLineCommentElement>(element) {}
     int QueryClassificationTag(bool& blur) override
     {
         blur = false;

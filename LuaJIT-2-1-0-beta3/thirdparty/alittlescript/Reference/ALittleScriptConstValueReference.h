@@ -8,6 +8,8 @@
 
 class ALittleScriptConstValueReference : public ALittleScriptReferenceTemplate<ALittleScriptConstValueElement>
 {
+public:
+    ALittleScriptConstValueReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptConstValueElement>(element) {}
     ABnfGuessError GuessTypes(std::vector<ABnfGuessPtr>& guess_list) override;
 };
 

@@ -8,6 +8,8 @@
 
 class ALittleScriptOpNewListStatReference : public ALittleScriptReferenceTemplate<ALittleScriptOpNewListStatElement>
 {
+public:
+    ALittleScriptOpNewListStatReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptOpNewListStatElement>(element) {}
     ABnfGuessError GuessTypes(std::vector<ABnfGuessPtr>& guess_list) override;
 
     ABnfGuessError CheckError() override;

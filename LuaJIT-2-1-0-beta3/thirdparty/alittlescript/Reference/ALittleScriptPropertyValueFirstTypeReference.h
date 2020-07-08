@@ -8,6 +8,8 @@
 
 class ALittleScriptPropertyValueFirstTypeReference : public ALittleScriptReferenceTemplate<ALittleScriptPropertyValueFirstTypeElement>
 {
+public:
+    ALittleScriptPropertyValueFirstTypeReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptPropertyValueFirstTypeElement>(element) {}
     ABnfGuessError GuessTypes(std::vector<ABnfGuessPtr>& guess_list) override;
 };
 

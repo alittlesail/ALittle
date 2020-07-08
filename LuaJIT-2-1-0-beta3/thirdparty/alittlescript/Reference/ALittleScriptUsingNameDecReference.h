@@ -7,6 +7,8 @@
 
 class ALittleScriptUsingNameDecReference : public ALittleScriptReferenceTemplate<ALittleScriptUsingNameDecElement>
 {
+public:
+    ALittleScriptUsingNameDecReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptUsingNameDecElement>(element) {}
     int QueryClassificationTag(bool& blur) override;
 
     ABnfGuessError GuessTypes(std::vector<ABnfGuessPtr>& guess_list) override;

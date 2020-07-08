@@ -9,6 +9,8 @@
 
 class ALittleScriptGlobalMethodDecReference : public ALittleScriptReferenceTemplate<ALittleScriptGlobalMethodDecElement>
 {
+public:
+    ALittleScriptGlobalMethodDecReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptGlobalMethodDecElement>(element) {}
 private:
     ABnfGuessError CheckCmdError();
 

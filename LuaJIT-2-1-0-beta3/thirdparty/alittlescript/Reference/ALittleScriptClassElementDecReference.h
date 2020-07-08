@@ -8,6 +8,8 @@
 
 class ALittleScriptClassElementDecReference : public ALittleScriptReferenceTemplate<ALittleScriptClassElementDecElement>
 {
+public:
+    ALittleScriptClassElementDecReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptClassElementDecElement>(element) {}
     ABnfGuessError CheckError() override;
 
     int QueryClassificationTag(bool& blur) override;

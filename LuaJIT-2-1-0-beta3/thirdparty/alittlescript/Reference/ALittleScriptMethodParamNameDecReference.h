@@ -8,6 +8,8 @@
 
 class ALittleScriptMethodParamNameDecReference : public ALittleScriptReferenceTemplate<ALittleScriptMethodParamNameDecElement>
 {
+public:
+    ALittleScriptMethodParamNameDecReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptMethodParamNameDecElement>(element) {}
     int QueryClassificationTag(bool& blur) override;
 
     ABnfGuessError GuessTypes(std::vector<ABnfGuessPtr>& guess_list) override;

@@ -8,6 +8,8 @@
 
 class ALittleScriptPropertyValueSuffixReference : public ALittleScriptReferenceTemplate<ALittleScriptPropertyValueSuffixElement>
 {
+public:
+    ALittleScriptPropertyValueSuffixReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptPropertyValueSuffixElement>(element) {}
     ABnfGuessError GuessTypes(std::vector<ABnfGuessPtr>& guess_list) override;
 };
 

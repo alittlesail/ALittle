@@ -7,6 +7,8 @@
 
 class ALittleScriptFlowExprReference : public ALittleScriptReferenceTemplate<ALittleScriptFlowExprElement>
 {
+public:
+    ALittleScriptFlowExprReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptFlowExprElement>(element) {}
     ABnfGuessError CheckError() override;
 };
 

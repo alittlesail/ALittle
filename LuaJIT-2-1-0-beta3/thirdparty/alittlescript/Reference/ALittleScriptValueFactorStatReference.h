@@ -7,6 +7,8 @@
 
 class ALittleScriptValueFactorStatReference : public ALittleScriptReferenceTemplate<ALittleScriptValueFactorStatElement>
 {
+public:
+    ALittleScriptValueFactorStatReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptValueFactorStatElement>(element) {}
     ABnfGuessError GuessTypes(std::vector<ABnfGuessPtr>& guess_list) override;
 };
 

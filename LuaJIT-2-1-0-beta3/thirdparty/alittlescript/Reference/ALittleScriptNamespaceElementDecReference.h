@@ -8,6 +8,9 @@
 
 class ALittleScriptNamespaceElementDecReference : public ALittleScriptReferenceTemplate<ALittleScriptNamespaceElementDecElement>
 {
+public:
+    ALittleScriptNamespaceElementDecReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptNamespaceElementDecElement>(element) {}
+
     ABnfGuessError CheckError() override;
 
     int QueryClassificationTag(bool& blur) override;

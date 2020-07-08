@@ -8,6 +8,8 @@
 
 class ALittleScriptDoWhileConditionReference : public ALittleScriptReferenceTemplate<ALittleScriptDoWhileConditionElement>
 {
+public:
+    ALittleScriptDoWhileConditionReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptDoWhileConditionElement>(element) {}
     ABnfGuessError CheckError() override;
 };
 

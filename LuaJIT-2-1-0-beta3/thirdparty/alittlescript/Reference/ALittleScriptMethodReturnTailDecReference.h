@@ -8,6 +8,8 @@
 
 class ALittleScriptMethodReturnTailDecReference : public ALittleScriptReferenceTemplate<ALittleScriptMethodReturnTailDecElement>
 {
+public:
+    ALittleScriptMethodReturnTailDecReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptMethodReturnTailDecElement>(element) {}
     ABnfGuessError GuessTypes(std::vector<ABnfGuessPtr>& guess_list) override;
 };
 

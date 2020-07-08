@@ -9,6 +9,7 @@
 class ALittleScriptClassCtorDecReference : public ALittleScriptReferenceTemplate<ALittleScriptClassCtorDecElement>
 {
 public:
+    ALittleScriptClassCtorDecReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptClassCtorDecElement>(element) {}
     ABnfElementPtr GotoDefinition() override;
 
     ABnfGuessError CheckError() override;

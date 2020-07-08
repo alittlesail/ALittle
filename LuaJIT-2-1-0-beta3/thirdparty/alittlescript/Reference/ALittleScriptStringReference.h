@@ -8,6 +8,8 @@
 
 class ALittleScriptStringReference : public ALittleScriptReferenceTemplate<ALittleScriptStringElement>
 {
+public:
+    ALittleScriptStringReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptStringElement>(element) {}
     int QueryClassificationTag(bool& blur) override
     {
         blur = false;

@@ -7,6 +7,8 @@
 
 class ALittleScriptStructOptionNameDecReference : public ALittleScriptReferenceTemplate<ALittleScriptStructOptionNameDecElement>
 {
+public:
+    ALittleScriptStructOptionNameDecReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptStructOptionNameDecElement>(element) {}
     int QueryClassificationTag(bool& blur) override
     {
         auto element = m_element.lock();

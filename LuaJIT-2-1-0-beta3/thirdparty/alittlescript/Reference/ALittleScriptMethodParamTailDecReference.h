@@ -8,6 +8,8 @@
 
 class ALittleScriptMethodParamTailDecReference : public ALittleScriptReferenceTemplate<ALittleScriptMethodParamTailDecElement>
 {
+public:
+    ALittleScriptMethodParamTailDecReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptMethodParamTailDecElement>(element) {}
     ABnfGuessError GuessTypes(std::vector<ABnfGuessPtr>& guess_list) override;
 
     ABnfGuessError CheckError() override;

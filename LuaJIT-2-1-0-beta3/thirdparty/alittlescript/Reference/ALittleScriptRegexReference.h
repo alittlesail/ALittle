@@ -8,6 +8,8 @@
 
 class ALittleScriptRegexReference : public ALittleScriptReferenceTemplate<ALittleScriptRegexElement>
 {
+public:
+    ALittleScriptRegexReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptRegexElement>(element) {}
     bool CanGotoDefinition() override
     {
         auto element = m_element.lock();

@@ -7,6 +7,8 @@
 
 class ALittleScriptEnumVarNameDecReference : public ALittleScriptReferenceTemplate<ALittleScriptEnumVarNameDecElement>
 {
+public:
+    ALittleScriptEnumVarNameDecReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptEnumVarNameDecElement>(element) {}
     int QueryClassificationTag(bool& blur) override
     {
         blur = false;

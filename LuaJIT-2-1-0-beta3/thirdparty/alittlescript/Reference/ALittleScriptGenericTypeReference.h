@@ -7,6 +7,8 @@
 
 class ALittleScriptGenericTypeReference : public ALittleScriptReferenceTemplate<ALittleScriptGenericTypeElement>
 {
+public:
+    ALittleScriptGenericTypeReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptGenericTypeElement>(element) {}
     ABnfGuessError GuessTypes(std::vector<ABnfGuessPtr>& guess_list) override;
 };
 

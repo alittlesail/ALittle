@@ -4,6 +4,7 @@
 #include "../Generate/ALittleScriptVarAssignDecElement.h"
 
 #include "../Guess/ALittleScriptGuessReturnTail.h"
+#include "../Index/ALittleScriptOp.h"
 
 ABnfGuessError ALittleScriptVarAssignExprReference::CheckError()
 {

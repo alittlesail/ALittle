@@ -13,6 +13,7 @@ private:
 
 public:
     ALittleScriptNamespaceNameDecReference(ABnfElementPtr element);
+    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptNamespaceNameDecReference(element); }
 
     int QueryClassificationTag(bool& blur) override;
 

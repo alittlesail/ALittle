@@ -13,8 +13,10 @@
 #include "../Index/ALittleScriptIndex.h"
 #include "../Index/ALittleScriptUtility.h"
 #include "../Index/ALittleScriptFileClass.h"
+#include "../Index/ALittleScriptOp.h"
 
 #include "../Guess/ALittleScriptGuessClass.h"
+#include "../Guess/ALittleScriptGuessStruct.h"
 
 ALittleScriptCustomTypeCommonReference::ALittleScriptCustomTypeCommonReference(std::shared_ptr<ALittleScriptCustomTypeElement> custom_type, ABnfElementPtr element) : ALittleScriptReferenceTemplate<ABnfElement>(element)
 {
@@ -111,7 +113,7 @@ ABnfGuessError ALittleScriptCustomTypeCommonReference::GuessTypes(std::vector<AB
             // 对比两种
             for (int i = 0; i < template_list.size(); ++i)
             {
-                error = ALittleScriptOp::GuessTypeEqual(guess_class->template_list[i], template_list[i], src_guess_list[i], false, false);
+                error = ALittleScriptOp::GuessTypeEqual(guess_class->template_list[i].lock(), template_list[i], src_guess_list[i], false, false);
                 if (error) return error;
             }
 

@@ -17,6 +17,7 @@ private:
 
 public:
     ALittleScriptVarAssignDecReference(ABnfElementPtr element);
+    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptVarAssignDecReference(element); }
 
     std::shared_ptr<ALittleScriptClassDecElement> GetClassDec();
 

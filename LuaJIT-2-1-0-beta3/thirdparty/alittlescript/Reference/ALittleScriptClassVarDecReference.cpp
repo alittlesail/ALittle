@@ -7,6 +7,7 @@
 #include "../Generate/ALittleScriptOpNewStatElement.h"
 
 #include "../Index/ALittleScriptUtility.h"
+#include "../Index/ALittleScriptOp.h"
 #include "../Guess/ALittleScriptGuessList.h"
 #include "../Guess/ALittleScriptGuessMap.h"
 

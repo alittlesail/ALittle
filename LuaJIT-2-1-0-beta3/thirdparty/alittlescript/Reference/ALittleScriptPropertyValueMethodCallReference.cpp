@@ -22,6 +22,7 @@
 
 #include "../Index/ALittleScriptFileClass.h"
 #include "../Index/ALittleScriptUtility.h"
+#include "../Index/ALittleScriptOp.h"
 
 inline ABnfGuessError ALittleScriptPropertyValueMethodCallReference::GuessPreType(ABnfGuessPtr& guess)
 {
@@ -197,7 +198,7 @@ ABnfGuessError ALittleScriptPropertyValueMethodCallReference::AnalysisTemplate(s
         if (!std::dynamic_pointer_cast<ALittleScriptGuessList>(right_guess))
             return ABnfGuessError(right_src, u8"要求是" + left_guess->GetValue() + ",不能是:" + right_guess->GetValue());
         auto error = AnalysisTemplate(fill_map, std::dynamic_pointer_cast<ALittleScriptGuessList>(left_guess)->sub_type.lock(), right_src, std::dynamic_pointer_cast<ALittleScriptGuessList>(right_guess)->sub_type.lock(), false);
-        if (error) return ABnfGuessError(right_src, u8"要求是" + left_guess.GetValue() + ",不能是:" + right_guess.GetValue());
+        if (error) return ABnfGuessError(right_src, u8"要求是" + left_guess->GetValue() + ",不能是:" + right_guess->GetValue());
         return nullptr;
     }
 
@@ -523,7 +524,7 @@ ABnfGuessError ALittleScriptPropertyValueMethodCallReference::CheckError()
                 return ABnfGuessError(element, u8"该函数调用需要" + std::to_string(pre_type_functor->param_list.size()) + "个参数，而不是" + std::to_string(value_stat_list.size()) + "个");
         }
 
-        error = ALittleScriptOp::GuessTypeEqual(pre_type_functor->param_list[i], value_stat, guess, false, false);
+        error = ALittleScriptOp::GuessTypeEqual(pre_type_functor->param_list[i].lock(), value_stat, guess, false, false);
         if (error)
             return ABnfGuessError(value_stat, u8"第" + std::to_string(i + 1) + "个参数类型和函数定义的参数类型不同:" + error.error);
     }

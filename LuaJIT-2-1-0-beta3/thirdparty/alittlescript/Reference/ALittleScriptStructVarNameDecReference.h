@@ -9,6 +9,7 @@ class ALittleScriptStructVarNameDecReference : public ALittleScriptReferenceTemp
 {
 public:
     ALittleScriptStructVarNameDecReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptStructVarNameDecElement>(element) {}
+    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptStructVarNameDecReference(element); }
     int QueryClassificationTag(bool& blur) override
     {
         blur = false;

@@ -13,6 +13,7 @@ private:
 
 public:
     ALittleScriptClassDecReference(ABnfElementPtr element);
+    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptClassDecReference(element); }
 
     ABnfGuessError CheckError() override;
 

@@ -17,6 +17,11 @@
 #include "../Generate/ALittleScriptUsingDecElement.h"
 #include "../Generate/ALittleScriptMethodParamNameDecElement.h"
 #include "../Generate/ALittleScriptVarAssignNameDecElement.h"
+#include "../Generate/ALittleScriptMethodBodyDecElement.h"
+#include "../Generate/ALittleScriptNamespaceDecElement.h"
+#include "../Generate/ALittleScriptClassDecElement.h"
+#include "../Generate/ALittleScriptEnumNameDecElement.h"
+#include "../Generate/ALittleScriptMethodNameDecElement.h"
 
 #include "../Index/ALittleScriptUtility.h"
 #include "../Index/ALittleScriptIndex.h"
@@ -71,7 +76,7 @@ int ALittleScriptPropertyValueCustomTypeReference::QueryClassificationTag(bool& 
 void ALittleScriptPropertyValueCustomTypeReference::ReloadInfo()
 {
     m_method_dec = ABnfElementPtr();
-    auto parent = m_element.lock();
+    ABnfElementPtr parent = m_element.lock();
     while (parent != nullptr)
     {
         if (std::dynamic_pointer_cast<ALittleScriptNamespaceDecElement>(parent))

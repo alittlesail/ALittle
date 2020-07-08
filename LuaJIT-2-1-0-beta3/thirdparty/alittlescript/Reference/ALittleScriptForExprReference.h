@@ -9,6 +9,7 @@ class ALittleScriptForExprReference : public ALittleScriptReferenceTemplate<ALit
 {
 public:
     ALittleScriptForExprReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptForExprElement>(element) {}
+    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptForExprReference(element); }
     ABnfGuessError CheckError() override;
 };
 

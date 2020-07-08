@@ -10,6 +10,7 @@ class ALittleScriptAllExprReference : public ALittleScriptReferenceTemplate<ALit
 {
 public:
     ALittleScriptAllExprReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptAllExprElement>(element) {}
+    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptAllExprReference(element); }
     ABnfGuessError CheckError() override;
 
     int QueryClassificationTag(bool& blur) override;

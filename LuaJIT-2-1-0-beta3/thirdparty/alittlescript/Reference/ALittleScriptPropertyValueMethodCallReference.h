@@ -18,6 +18,7 @@ class ALittleScriptPropertyValueMethodCallReference : public ALittleScriptRefere
 
 public:
     ALittleScriptPropertyValueMethodCallReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptPropertyValueMethodCallElement>(element) {}
+    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptPropertyValueMethodCallReference(element); }
     ABnfGuessError GuessPreType(ABnfGuessPtr& guess);
 
     ABnfGuessError GuessTypes(std::vector<ABnfGuessPtr>& guess_list) override;

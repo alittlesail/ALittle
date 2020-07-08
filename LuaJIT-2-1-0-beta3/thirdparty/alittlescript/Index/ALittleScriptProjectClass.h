@@ -4,7 +4,7 @@
 
 #include "ALittle/LibCommon/ThirdParty/alanguage/Index/ABnfProject.h"
 #include "ALittleScriptIndex.h"
-#include "ALittleScriptFactoryClass.h"
+#include "../Reference/ALittleScriptFactoryClassEx.h"
 #include <unordered_map>
 #include <unordered_set>
 #include <map>
@@ -13,7 +13,7 @@
 class ALittleScriptProjectClass : public ABnfProject, public ALittleScriptIndex
 {
 private:
-    ALittleScriptFactoryClass m_factory;
+    ALittleScriptFactoryClassEx m_factory;
     std::string m_target_language;
     std::unordered_set<std::string> m_language_set;
 

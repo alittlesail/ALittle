@@ -10,6 +10,7 @@ class ALittleScriptMethodParamOneDecReference : public ALittleScriptReferenceTem
 {
 public:
     ALittleScriptMethodParamOneDecReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptMethodParamOneDecElement>(element) {}
+    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptMethodParamOneDecReference(element); }
     ABnfGuessError CheckError() override;
 };
 

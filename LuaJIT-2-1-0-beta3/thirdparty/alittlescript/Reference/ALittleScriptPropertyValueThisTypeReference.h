@@ -28,6 +28,7 @@ private:
 
 public:
     ALittleScriptPropertyValueThisTypeReference(ABnfElementPtr element);
+    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptPropertyValueThisTypeReference(element); }
 
 private:
     void ReloadInfo();

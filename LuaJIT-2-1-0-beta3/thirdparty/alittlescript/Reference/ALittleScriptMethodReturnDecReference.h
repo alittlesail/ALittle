@@ -10,6 +10,7 @@ class ALittleScriptMethodReturnDecReference : public ALittleScriptReferenceTempl
 {
 public:
     ALittleScriptMethodReturnDecReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptMethodReturnDecElement>(element) {}
+    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptMethodReturnDecReference(element); }
 
     ABnfGuessError CheckError() override
     {

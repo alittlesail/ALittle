@@ -8,6 +8,9 @@
 #include "../Generate/ALittleScriptClassStaticDecElement.h"
 #include "../Generate/ALittleScriptClassDecElement.h"
 #include "../Generate/ALittleScriptClassElementDecElement.h"
+#include "../Generate/ALittleScriptClassGetterDecElement.h"
+#include "../Generate/ALittleScriptClassCtorDecElement.h"
+#include "../Generate/ALittleScriptGlobalMethodDecElement.h"
 
 #include "../Index/ALittleScriptUtility.h"
 #include "../Index/ALittleScriptIndex.h"
@@ -22,12 +25,12 @@ ALittleScriptPropertyValueThisTypeReference::ALittleScriptPropertyValueThisTypeR
 void ALittleScriptPropertyValueThisTypeReference::ReloadInfo()
 {
     m_class_dec = std::shared_ptr<ALittleScriptClassDecElement>();
-    m_class_ctor_dec = std::shared_ptr<ALittleScriptClassGetterDecElement>();
+    m_class_ctor_dec = std::shared_ptr<ALittleScriptClassCtorDecElement>();
     m_class_setter_dec = std::shared_ptr<ALittleScriptClassSetterDecElement>();
     m_class_method_dec = std::shared_ptr<ALittleScriptClassMethodDecElement>();
     m_class_static_dec = std::shared_ptr<ALittleScriptClassStaticDecElement>();
 
-    auto parent = m_element.lock();
+    ABnfElementPtr parent = m_element.lock();
     while (true)
     {
         if (parent == nullptr) break;
@@ -85,9 +88,7 @@ ABnfGuessError ALittleScriptPropertyValueThisTypeReference::GuessTypes(std::vect
 {
     auto element = m_element.lock();
     if (element == nullptr) return ABnfGuessError(nullptr, u8"节点失效");
-    auto* index = GetIndex();
-    if (index == nullptr) return ABnfGuessError(element, u8"不在工程中");
-
+    
     guess_list.resize(0);
 
     std::vector<ABnfElementPtr> result_list;
@@ -103,8 +104,8 @@ ABnfGuessError ALittleScriptPropertyValueThisTypeReference::GuessTypes(std::vect
             {
                 if (std::dynamic_pointer_cast<ALittleScriptGuessPrimitive>(guess))
                 {
-                    auto it = index->sPrimitiveGuessMap.find("const " + guess->GetValue());
-                    if (it != index->sPrimitiveGuessMap.end()) guess = it->second;
+                    auto it = ALittleScriptStatic::Inst().sPrimitiveGuessMap.find("const " + guess->GetValue());
+                    if (it != ALittleScriptStatic::Inst().sPrimitiveGuessMap.end()) guess = it->second;
                     else return ABnfGuessError(element, u8"找不到const " + guess->GetValue());
                 }
                 else

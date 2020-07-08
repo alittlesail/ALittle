@@ -13,6 +13,8 @@
 #include "../Index/ALittleScriptUtility.h"
 #include "../Index/ALittleScriptIndex.h"
 #include "../Guess/ALittleScriptGuessClass.h"
+#include "../Guess/ALittleScriptGuessReturnTail.h"
+#include "../Guess/ALittleScriptGuessStruct.h"
 
 ALittleScriptVarAssignDecReference::ALittleScriptVarAssignDecReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptVarAssignDecElement>(element)
 {
@@ -45,9 +47,7 @@ ABnfGuessError ALittleScriptVarAssignDecReference::GuessTypes(std::vector<ABnfGu
 {
     auto element = m_element.lock();
     if (element == nullptr) return ABnfGuessError(nullptr, u8"节点失效");
-    auto* index_e = GetIndex();
-    if (index_e == nullptr) return ABnfGuessError(element, u8"不在工程内");
-
+    
     auto all_type = element->GetAllType();
     if (all_type != nullptr) return all_type->GuessTypes(guess_list);
 
@@ -77,11 +77,11 @@ ABnfGuessError ALittleScriptVarAssignDecReference::GuessTypes(std::vector<ABnfGu
     auto error = value_stat->GuessTypes(method_call_guess_list);
     if (error) return error;
     // 如果有"..."作为返回值结尾
-    bool hasTail = method_call_guess_list.size() > 0 && method_call_guess_list[method_call_guess_list.size() - 1] is ALittleScriptGuessReturnTail;
+    bool hasTail = method_call_guess_list.size() > 0 && std::dynamic_pointer_cast<ALittleScriptGuessReturnTail>(method_call_guess_list[method_call_guess_list.size() - 1]);
     if (hasTail)
     {
         if (index >= method_call_guess_list.size() - 1)
-            guess_list.push_back(index_e->sAnyGuess);
+            guess_list.push_back(ALittleScriptStatic::Inst().sAnyGuess);
         else
             guess_list.push_back(method_call_guess_list[index]);
     }

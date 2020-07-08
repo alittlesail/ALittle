@@ -30,7 +30,7 @@ ALittleScriptVarAssignNameDecReference::ALittleScriptVarAssignNameDecReference(A
 void ALittleScriptVarAssignNameDecReference::ReloadInfo()
 {
     m_method_dec = std::shared_ptr<ALittleScriptMethodBodyDecElement>();
-    auto parent = m_element.lock();
+    ABnfElementPtr parent = m_element.lock();
     while (parent != nullptr)
     {
         if (std::dynamic_pointer_cast<ALittleScriptNamespaceDecElement>(parent))

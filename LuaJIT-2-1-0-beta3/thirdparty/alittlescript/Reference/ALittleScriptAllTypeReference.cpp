@@ -39,9 +39,8 @@ ABnfGuessError ALittleScriptAllTypeReference::GuessTypes(std::vector<ABnfGuessPt
 
             if (std::dynamic_pointer_cast<ALittleScriptGuessPrimitive>(guess))
             {
-                auto* index = GetIndex();
-                auto it = index->sPrimitiveGuessListMap.find("const " + guess->GetValue());
-                if (it == index->sPrimitiveGuessListMap.end())
+                auto it = ALittleScriptStatic::Inst().sPrimitiveGuessListMap.find("const " + guess->GetValue());
+                if (it == ALittleScriptStatic::Inst().sPrimitiveGuessListMap.end())
                     return ABnfGuessError(element, u8"ÕÒ²»µ½const " + guess->GetValue());
                 break;
             }

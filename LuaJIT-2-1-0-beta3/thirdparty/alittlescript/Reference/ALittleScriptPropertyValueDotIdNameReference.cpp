@@ -24,6 +24,10 @@
 #include "../Generate/ALittleScriptEnumVarDecElement.h"
 #include "../Generate/ALittleScriptClassVarDecElement.h"
 #include "../Generate/ALittleScriptStructNameDecElement.h"
+#include "../Generate/ALittleScriptNamespaceDecElement.h"
+#include "../Generate/ALittleScriptEnumDecElement.h"
+#include "../Generate/ALittleScriptMethodNameDecElement.h"
+#include "../Generate/ALittleScriptVarAssignNameDecElement.h"
 
 #include "../Guess/ALittleScriptGuessTemplate.h"
 #include "../Guess/ALittleScriptGuessClass.h"
@@ -47,7 +51,7 @@ ALittleScriptPropertyValueDotIdNameReference::ALittleScriptPropertyValueDotIdNam
 void ALittleScriptPropertyValueDotIdNameReference::ReloadInfo()
 {
     m_method_dec = ABnfElementPtr();
-    auto parent = m_element.lock();
+    ABnfElementPtr parent = m_element.lock();
     while (parent != nullptr)
     {
         if (std::dynamic_pointer_cast<ALittleScriptNamespaceDecElement>(parent))
@@ -446,9 +450,7 @@ ABnfGuessError ALittleScriptPropertyValueDotIdNameReference::GuessTypes(std::vec
 {
     auto element = m_element.lock();
     if (element == nullptr) return ABnfGuessError(nullptr, u8"节点失效");
-    auto* index = GetIndex();
-    if (index == nullptr) return ABnfGuessError(element, u8"不在工程中");
-
+    
     guess_list.resize(0);
 
     m_getter_list.resize(0);
@@ -605,8 +607,8 @@ ABnfGuessError ALittleScriptPropertyValueDotIdNameReference::GuessTypes(std::vec
             {
                 if (std::dynamic_pointer_cast<ALittleScriptGuessPrimitive>(guess))
                 {
-                    auto it = index->sPrimitiveGuessMap.find("const " + guess->GetValue());
-                    if (it != index->sPrimitiveGuessMap.end()) guess = it->second;
+                    auto it = ALittleScriptStatic::Inst().sPrimitiveGuessMap.find("const " + guess->GetValue());
+                    if (it != ALittleScriptStatic::Inst().sPrimitiveGuessMap.end()) guess = it->second;
                     else return ABnfGuessError(element, u8"找不到const " + guess->GetValue());
                 }
                 else

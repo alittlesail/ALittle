@@ -20,6 +20,7 @@
 #include "../Generate/ALittleScriptGlobalMethodDecElement.h"
 #include "../Generate/ALittleScriptMethodReturnOneDecElement.h"
 #include "../Generate/ALittleScriptMethodReturnTailDecElement.h"
+#include "../Generate/ALittleScriptClassCtorDecElement.h"
 
 #include "../Index/ALittleScriptUtility.h"
 
@@ -272,7 +273,7 @@ ABnfGuessError ALittleScriptMethodBodyDecReference::CheckError()
                 if (i + 1 != return_one_list.size())
                     return ABnfGuessError(return_one, u8"返回值占位符必须定义在最后");
                 ABnfGuessPtr return_tail_guess;
-                auto error = return_tail->GuessType();
+                auto error = return_tail->GuessType(return_tail_guess);
                 if (error) return error;
                 return_list.push_back(return_tail_guess);
             }

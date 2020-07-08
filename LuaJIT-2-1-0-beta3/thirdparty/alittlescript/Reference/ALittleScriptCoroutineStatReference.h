@@ -10,6 +10,7 @@ class ALittleScriptCoroutineStatReference : public ALittleScriptReferenceTemplat
 {
 public:
     ALittleScriptCoroutineStatReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptCoroutineStatElement>(element) {}
+    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptCoroutineStatReference(element); }
 
     ABnfGuessError CheckError() override;
 

@@ -16,6 +16,7 @@
 
 #include "../Index/ALittleScriptUtility.h"
 #include "../Index/ALittleScriptFileClass.h"
+#include "../Index/ALittleScriptOp.h"
 
 ABnfGuessError ALittleScriptForExprReference::CheckError()
 {

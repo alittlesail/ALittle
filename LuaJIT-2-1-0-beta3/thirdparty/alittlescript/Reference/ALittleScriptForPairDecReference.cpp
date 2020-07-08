@@ -18,8 +18,6 @@ ABnfGuessError ALittleScriptForPairDecReference::GuessTypes(std::vector<ABnfGues
     auto element = m_element.lock();
     if (element == nullptr) return ABnfGuessError(nullptr, u8"节点失效");
 
-    auto* get_index = GetIndex();
-
     // 如果有定义类型
     auto all_type = element->GetAllType();
     if (all_type != nullptr) return all_type->GuessTypes(guess_list);
@@ -83,13 +81,13 @@ ABnfGuessError ALittleScriptForPairDecReference::GuessTypes(std::vector<ABnfGues
             {
                 if (value_guess_list[0]->is_const)
                 {
-                    auto it = get_index->sPrimitiveGuessListMap.find("const int");
-                    if (it != get_index->sPrimitiveGuessListMap.end()) guess_list = it->second;
+                    auto it = ALittleScriptStatic::Inst().sPrimitiveGuessListMap.find("const int");
+                    if (it != ALittleScriptStatic::Inst().sPrimitiveGuessListMap.end()) guess_list = it->second;
                 }
                 else
                 {
-                    auto it = get_index->sPrimitiveGuessListMap.find("int");
-                    if (it != get_index->sPrimitiveGuessListMap.end()) guess_list = it->second;
+                    auto it = ALittleScriptStatic::Inst().sPrimitiveGuessListMap.find("int");
+                    if (it != ALittleScriptStatic::Inst().sPrimitiveGuessListMap.end()) guess_list = it->second;
                 }
                 return nullptr;
             }

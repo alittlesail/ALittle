@@ -10,6 +10,7 @@ class ALittleScriptRegexReference : public ALittleScriptReferenceTemplate<ALittl
 {
 public:
     ALittleScriptRegexReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptRegexElement>(element) {}
+    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptRegexReference(element); }
     bool CanGotoDefinition() override
     {
         auto element = m_element.lock();

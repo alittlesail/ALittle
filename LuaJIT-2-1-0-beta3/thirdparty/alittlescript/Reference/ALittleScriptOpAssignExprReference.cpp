@@ -6,6 +6,7 @@
 #include "../Generate/ALittleScriptOpAssignElement.h"
 
 #include "../Index/ALittleScriptUtility.h"
+#include "../Index/ALittleScriptOp.h"
 
 #include "../Guess/ALittleScriptGuessReturnTail.h"
 #include "../Guess/ALittleScriptGuessTemplate.h"

@@ -16,6 +16,7 @@ private:
 
 public:
     ALittleScriptVarAssignNameDecReference(ABnfElementPtr element);
+    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptVarAssignNameDecReference(element); }
 
 private:
     void ReloadInfo();

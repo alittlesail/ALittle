@@ -11,8 +11,11 @@
 #include "../Generate/ALittleScriptMethodReturnDecElement.h"
 #include "../Generate/ALittleScriptMethodReturnOneDecElement.h"
 #include "../Generate/ALittleScriptValueStatElement.h"
+#include "../Generate/ALittleScriptMethodNameDecElement.h"
+#include "../Generate/ALittleScriptClassSetterDecElement.h"
 
 #include "../Index/ALittleScriptUtility.h"
+#include "../Index/ALittleScriptOp.h"
 #include "../Guess/ALittleScriptGuessReturnTail.h"
 #include "../Guess/ALittleScriptGuessParamTail.h"
 

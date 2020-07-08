@@ -10,6 +10,7 @@
 #include "../Guess/ALittleScriptGuessPrimitive.h"
 #include "../Index/ALittleScriptFileClass.h"
 #include "../Index/ALittleScriptUtility.h"
+#include "../Index/ALittleScriptOp.h"
 
 ABnfGuessError ALittleScriptPropertyValueBracketValueReference::GuessTypes(std::vector<ABnfGuessPtr>& guess_list)
 {

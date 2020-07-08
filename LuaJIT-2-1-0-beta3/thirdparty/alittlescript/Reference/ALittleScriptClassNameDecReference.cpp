@@ -7,6 +7,7 @@
 #include "../Generate/ALittleScriptTemplatePairDecElement.h"
 #include "../Index/ALittleScriptUtility.h"
 #include "../Index/ALittleScriptIndex.h"
+#include "../Index/ALittleScriptOp.h"
 #include "../Guess/ALittleScriptGuessClass.h"
 
 ALittleScriptClassNameDecReference::ALittleScriptClassNameDecReference(ABnfElementPtr p_element) : ALittleScriptReferenceTemplate<ALittleScriptClassNameDecElement>(p_element)
@@ -92,7 +93,7 @@ ABnfGuessError ALittleScriptClassNameDecReference::GuessTypes(std::vector<ABnfGu
                     ABnfGuessPtr sub_template;
                     error = sub_template_pair_list[i]->GuessType(sub_template);
                     if (error) return error;
-                    error = ALittleScriptOp::GuessTypeEqual(guess_class->template_list[i], sub_template_pair_list[i], sub_template, false, false);
+                    error = ALittleScriptOp::GuessTypeEqual(guess_class->template_list[i].lock(), sub_template_pair_list[i], sub_template, false, false);
                     if (error)
                         return ABnfGuessError(sub_template_pair_list[i], u8"子类的模板参数和父类的模板参数不一致:" + error.error);
                 }

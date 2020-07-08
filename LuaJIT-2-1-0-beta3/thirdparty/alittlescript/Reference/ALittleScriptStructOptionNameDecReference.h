@@ -9,6 +9,7 @@ class ALittleScriptStructOptionNameDecReference : public ALittleScriptReferenceT
 {
 public:
     ALittleScriptStructOptionNameDecReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptStructOptionNameDecElement>(element) {}
+    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptStructOptionNameDecReference(element); }
     int QueryClassificationTag(bool& blur) override
     {
         auto element = m_element.lock();

@@ -10,6 +10,7 @@ class ALittleScriptStructDecReference : public ALittleScriptReferenceTemplate<AL
 {
 public:
     ALittleScriptStructDecReference(ABnfElementPtr element);
+    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptStructDecReference(element); }
 
 private:
     std::string m_namespace_name;

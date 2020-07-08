@@ -22,6 +22,7 @@ ABnfGuessError ALittleScriptMethodParamNameDecReference::GuessTypes(std::vector<
         if (all_type != nullptr)
             return all_type->GuessTypes(guess_list);
     }
+    return nullptr;
 }
 
 ABnfGuessError ALittleScriptMethodParamNameDecReference::CheckError()

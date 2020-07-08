@@ -10,6 +10,7 @@ class ALittleScriptNamespaceDecReference : public ALittleScriptReferenceTemplate
 {
 public:
     ALittleScriptNamespaceDecReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptNamespaceDecElement>(element) {}
+    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptNamespaceDecReference(element); }
 
     ABnfGuessError CheckError() override;
 

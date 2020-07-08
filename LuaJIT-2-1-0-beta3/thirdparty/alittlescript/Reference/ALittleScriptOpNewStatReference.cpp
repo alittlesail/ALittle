@@ -16,6 +16,7 @@
 #include "../Guess/ALittleScriptGuessReturnTail.h"
 
 #include "../Index/ALittleScriptUtility.h"
+#include "../Index/ALittleScriptOp.h"
 
 ABnfGuessError ALittleScriptOpNewStatReference::GuessTypes(std::vector<ABnfGuessPtr>& guess_list)
 {

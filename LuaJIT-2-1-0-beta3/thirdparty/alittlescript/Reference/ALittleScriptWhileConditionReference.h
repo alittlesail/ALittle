@@ -9,6 +9,7 @@ class ALittleScriptWhileConditionReference : public ALittleScriptReferenceTempla
 {
 public:
     ALittleScriptWhileConditionReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptWhileConditionElement>(element) {}
+    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptWhileConditionReference(element); }
     ABnfGuessError CheckError() override;
 };
 

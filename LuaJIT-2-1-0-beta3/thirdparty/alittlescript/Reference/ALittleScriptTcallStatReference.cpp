@@ -3,14 +3,14 @@
 #include "../Generate/ALittleScriptValueStatElement.h"
 #include "../Index/ALittleScriptIndex.h"
 #include "../Index/ALittleScriptUtility.h"
+#include "../Index/ALittleScriptOp.h"
 #include "../Guess/ALittleScriptGuessFunctor.h"
 
 ABnfGuessError ALittleScriptTcallStatReference::GuessTypes(std::vector<ABnfGuessPtr>& guess_list)
 {
     auto element = m_element.lock();
     if (element == nullptr) return ABnfGuessError(nullptr, u8"节点失效");
-    auto* index = GetIndex();
-    if (index == nullptr) return ABnfGuessError(element, u8"不在工程内");
+
     guess_list.resize(0);
     auto value_stat_list = element->GetValueStatList();
     if (value_stat_list.size() == 0)
@@ -29,7 +29,7 @@ ABnfGuessError ALittleScriptTcallStatReference::GuessTypes(std::vector<ABnfGuess
         return ABnfGuessError(value_stat, u8"tcall表达式要绑定的函数不能有模板定义");
 
     guess_list.resize(0);
-    guess_list.push_back(index->sStringGuess);
+    guess_list.push_back(ALittleScriptStatic::Inst().sStringGuess);
     for (auto& return_guess : guess_functor->return_list)
         guess_list.push_back(return_guess.lock());
     if (guess_functor->return_tail.lock() != nullptr)
@@ -87,7 +87,7 @@ ABnfGuessError ALittleScriptTcallStatReference::CheckError()
         ABnfGuessPtr param_value_stat_guess;
         error = param_value_stat->GuessType(param_value_stat_guess);
         if (error) return error;
-        error = ALittleScriptOp::GuessTypeEqual(param_guess, param_value_stat, param_value_stat_guess, false, false);
+        error = ALittleScriptOp::GuessTypeEqual(param_guess.lock(), param_value_stat, param_value_stat_guess, false, false);
         if (error)
             return ABnfGuessError(param_value_stat, u8"第" + std::to_string(i) + "个参数类型和函数定义的参数类型不同:" + error.error);
     }

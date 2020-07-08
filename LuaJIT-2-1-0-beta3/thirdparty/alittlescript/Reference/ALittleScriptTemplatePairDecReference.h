@@ -9,6 +9,7 @@ class ALittleScriptTemplatePairDecReference : public ALittleScriptReferenceTempl
 {
 public:
     ALittleScriptTemplatePairDecReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptTemplatePairDecElement>(element) {}
+    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptTemplatePairDecReference(element); }
     ABnfGuessError GuessTypes(std::vector<ABnfGuessPtr>& guess_list) override;
 
     ABnfGuessError CheckError() override;

@@ -9,6 +9,7 @@ class ALittleScriptVarAssignExprReference : public ALittleScriptReferenceTemplat
 {
 public:
     ALittleScriptVarAssignExprReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptVarAssignExprElement>(element) {}
+    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptVarAssignExprReference(element); }
     ABnfGuessError CheckError() override;
 };
 

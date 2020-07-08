@@ -12,6 +12,7 @@
 #include "../Generate/ALittleScriptDoWhileExprElement.h"
 
 #include "../Guess/ALittleScriptGuessPrimitive.h"
+#include "../Index/ALittleScriptOp.h"
 
 ABnfGuessError ALittleScriptValueStatReference::GuessTypes(std::vector<ABnfGuessPtr>& guess_list)
 {
@@ -30,6 +31,7 @@ ABnfGuessError ALittleScriptValueStatReference::GuessTypes(std::vector<ABnfGuess
     else if (element->GetOp2Stat() != nullptr)
     {
         guess_list.resize(0);
+        ABnfGuessPtr guess;
         auto error = ALittleScriptOp::GuessType(element->GetOp2Stat(), guess);
         if (error) return error;
         guess_list.push_back(guess);

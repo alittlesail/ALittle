@@ -5,6 +5,7 @@
 #include "../Generate/ALittleScriptTemplateExtendsStructDecElement.h"
 #include "../Generate/ALittleScriptTemplateExtendsDecElement.h"
 #include "../Generate/ALittleScriptTemplateNameDecElement.h"
+#include "../Generate/ALittleScriptClassDecElement.h"
 
 #include "../Guess/ALittleScriptGuessStruct.h"
 #include "../Guess/ALittleScriptGuessClass.h"
@@ -69,7 +70,7 @@ ABnfGuessError ALittleScriptTemplatePairDecReference::GuessTypes(std::vector<ABn
     }
     else
     {
-        auto info = ABnfGuessPtr(new ALittleScriptGuessMethodTemplate(m_element, template_extends, is_class, is_struct));
+        auto info = ABnfGuessPtr(new ALittleScriptGuessMethodTemplate(element, template_extends, is_class, is_struct));
         info->UpdateValue();
         element->GetFile()->AddGuessType(info);
         guess_list.push_back(info);

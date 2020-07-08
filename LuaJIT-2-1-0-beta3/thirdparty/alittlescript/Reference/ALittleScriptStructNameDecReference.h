@@ -14,6 +14,7 @@ private:
 
 public:
     ALittleScriptStructNameDecReference(ABnfElementPtr element);
+    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptStructNameDecReference(element); }
 
     int QueryClassificationTag(bool& blur) override;
 

@@ -10,6 +10,7 @@ class ALittleScriptLanguageNameDecReference : public ALittleScriptReferenceTempl
 {
 public:
     ALittleScriptLanguageNameDecReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptLanguageNameDecElement>(element) {}
+    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptLanguageNameDecReference(element); }
     ABnfGuessError CheckError() override;
 
     bool QueryCompletion(std::vector<ALanguageCompletionInfo>& list) override;

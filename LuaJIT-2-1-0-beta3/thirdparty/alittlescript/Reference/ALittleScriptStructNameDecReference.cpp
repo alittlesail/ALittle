@@ -2,6 +2,7 @@
 
 #include "../Generate/ALittleScriptStructExtendsDecElement.h"
 #include "../Generate/ALittleScriptNamespaceNameDecElement.h"
+#include "../Generate/ALittleScriptStructDecElement.h"
 
 #include "../Index/ALittleScriptUtility.h"
 #include "../Index/ALittleScriptIndex.h"

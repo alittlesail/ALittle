@@ -13,6 +13,8 @@
 #include "../Generate/ALittleScriptNamespaceNameDecElement.h"
 #include "../Generate/ALittleScriptEnumVarDecElement.h"
 #include "../Generate/ALittleScriptEnumVarNameDecElement.h"
+#include "../Generate/ALittleScriptClassDecElement.h"
+#include "../Generate/ALittleScriptEnumDecElement.h"
 
 #include "../Guess/ALittleScriptGuessEnumName.h"
 #include "../Guess/ALittleScriptGuessNamespaceName.h"

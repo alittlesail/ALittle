@@ -18,6 +18,7 @@ private:
 
 public:
     ALittleScriptPropertyValueCustomTypeReference(ABnfElementPtr element);
+    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptPropertyValueCustomTypeReference(element); }
 
     int QueryClassificationTag(bool& blur) override;
 

@@ -14,6 +14,7 @@ private:
 
 public:
     ALittleScriptMethodNameDecReference(ABnfElementPtr element);
+    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptMethodNameDecReference(element); }
 
     int QueryClassificationTag(bool& blur) override;
 

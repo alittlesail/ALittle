@@ -337,24 +337,24 @@ ABnfGuessError ALittleScriptMethodNameDecReference::GuessTypes(std::vector<ABnfG
             if (error_element == nullptr) error_element = global_method_dec;
 
             if (global_method_dec->GetTemplateDec() != nullptr)
-                return ABnfGuessError(error_element, u8"带" + info->proto + "不能定义函数模板");
+                return ABnfGuessError(error_element, u8"带" + info->proto + u8"不能定义函数模板");
 
             // 如果是带协议注解，那么一定是一个await
             info->await_modifier = true;
             info->proto = protocol_type;
 
             auto param_dec = global_method_dec->GetMethodParamDec();
-            if (param_dec == nullptr) return ABnfGuessError(error_element, u8"带" + info->proto + "注解的函数必须是两个参数");
+            if (param_dec == nullptr) return ABnfGuessError(error_element, u8"带" + info->proto + u8"注解的函数必须是两个参数");
             auto one_dec_list = param_dec->GetMethodParamOneDecList();
-            if (one_dec_list.size() != 2) return ABnfGuessError(error_element, u8"带" + info->proto + "注解的函数必须是两个参数");
+            if (one_dec_list.size() != 2) return ABnfGuessError(error_element, u8"带" + info->proto + u8"注解的函数必须是两个参数");
             if (ALittleScriptUtility::IsNullable(one_dec_list[0]->GetModifierList()) || ALittleScriptUtility::IsNullable(one_dec_list[1]->GetModifierList()))
-                return ABnfGuessError(error_element, u8"带" + info->proto + "注解的函数参数不能使用Nullable修饰");
+                return ABnfGuessError(error_element, u8"带" + info->proto + u8"注解的函数参数不能使用Nullable修饰");
             auto all_type = one_dec_list[1]->GetAllType();
-            if (all_type == nullptr) return ABnfGuessError(error_element, u8"带" + info->proto + "注解的函数，第二个参数没有定义类型");
+            if (all_type == nullptr) return ABnfGuessError(error_element, u8"带" + info->proto + u8"注解的函数，第二个参数没有定义类型");
             ABnfGuessPtr guess;
             auto error = all_type->GuessType(guess);
             if (error) return error;
-            if (!std::dynamic_pointer_cast<ALittleScriptGuessStruct>(guess)) return ABnfGuessError(error_element, u8"带" + info->proto + "注解的函数第二个参数必须是struct");
+            if (!std::dynamic_pointer_cast<ALittleScriptGuessStruct>(guess)) return ABnfGuessError(error_element, u8"带" + info->proto + u8"注解的函数第二个参数必须是struct");
 
             if (info->proto == "Http")
             {
@@ -372,15 +372,15 @@ ABnfGuessError ALittleScriptMethodNameDecReference::GuessTypes(std::vector<ABnfG
                 info->param_name_list.push_back("param");
 
                 auto return_dec = global_method_dec->GetMethodReturnDec();
-                if (return_dec == nullptr) return ABnfGuessError(error_element, u8"带" + info->proto + "注解的函数返回值必须是struct");
+                if (return_dec == nullptr) return ABnfGuessError(error_element, u8"带" + info->proto + u8"注解的函数返回值必须是struct");
                 auto return_one_list = return_dec->GetMethodReturnOneDecList();
-                if (return_one_list.size() != 1) return ABnfGuessError(error_element, u8"带" + info->proto + "注解的函数返回值有且仅有一个struct");
+                if (return_one_list.size() != 1) return ABnfGuessError(error_element, u8"带" + info->proto + u8"注解的函数返回值有且仅有一个struct");
                 auto return_one_all_type = return_one_list[0]->GetAllType();
-                if (return_one_all_type == nullptr) return ABnfGuessError(error_element, u8"带" + info->proto + "注解的函数返回值有且仅有一个struct");
+                if (return_one_all_type == nullptr) return ABnfGuessError(error_element, u8"带" + info->proto + u8"注解的函数返回值有且仅有一个struct");
                 ABnfGuessPtr return_guess;
                 error = return_one_all_type->GuessType(return_guess);
                 if (error) return error;
-                if (!std::dynamic_pointer_cast<ALittleScriptGuessStruct>(return_guess)) return ABnfGuessError(error_element, u8"带" + info->proto + "注解的函数返回值必须是struct");
+                if (!std::dynamic_pointer_cast<ALittleScriptGuessStruct>(return_guess)) return ABnfGuessError(error_element, u8"带" + info->proto + u8"注解的函数返回值必须是struct");
                 info->return_list.push_back(ALittleScriptStatic::Inst().sStringGuess);
                 info->return_list.push_back(return_guess);
             }
@@ -445,12 +445,12 @@ ABnfGuessError ALittleScriptMethodNameDecReference::GuessTypes(std::vector<ABnfG
                     {
                         auto return_one_all_type = return_one_list[0]->GetAllType();
                         if (return_one_all_type == nullptr)
-                            return ABnfGuessError(error_element, u8"带" + info->proto + "注解的函数返回值必须是struct");
+                            return ABnfGuessError(error_element, u8"带" + info->proto + u8"注解的函数返回值必须是struct");
                         ABnfGuessPtr return_guess;
                         error = return_one_all_type->GuessType(return_guess);
                         if (error) return error;
                         if (!std::dynamic_pointer_cast<ALittleScriptGuessStruct>(return_guess))
-                            return ABnfGuessError(error_element, u8"带" + info->proto + "注解的函数返回值必须是struct");
+                            return ABnfGuessError(error_element, u8"带" + info->proto + u8"注解的函数返回值必须是struct");
                         info->return_list.push_back(ALittleScriptStatic::Inst().sStringGuess);
                         info->return_list.push_back(return_guess);
                     }

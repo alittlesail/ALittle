@@ -159,7 +159,7 @@ ABnfGuessError ALittleScriptPropertyValueMethodCallReference::AnalysisTemplate(s
     if (assign_or_call)
     {
         if (left_guess->is_const && !right_guess->is_const)
-            return ABnfGuessError(right_src, u8"要求是" + left_guess->GetValue() + ", 不能是:" + right_guess->GetValue());
+            return ABnfGuessError(right_src, u8"要求是" + left_guess->GetValue() + u8", 不能是:" + right_guess->GetValue());
     }
     else
     {
@@ -167,7 +167,7 @@ ABnfGuessError ALittleScriptPropertyValueMethodCallReference::AnalysisTemplate(s
         if (!std::dynamic_pointer_cast<ALittleScriptGuessPrimitive>(left_guess) || left_guess->GetValueWithoutConst() == "any")
         {
             if (!left_guess->is_const && right_guess->is_const)
-                return ABnfGuessError(right_src, u8"要求是" + left_guess->GetValue() + ", 不能是:" + right_guess->GetValue());
+                return ABnfGuessError(right_src, u8"要求是" + left_guess->GetValue() + u8", 不能是:" + right_guess->GetValue());
         }
     }
 
@@ -183,29 +183,29 @@ ABnfGuessError ALittleScriptPropertyValueMethodCallReference::AnalysisTemplate(s
     if (std::dynamic_pointer_cast<ALittleScriptGuessMap>(left_guess))
     {
         if (!std::dynamic_pointer_cast<ALittleScriptGuessMap>(right_guess))
-            return ABnfGuessError(right_src, u8"要求是" + left_guess->GetValue() + ",不能是:" + right_guess->GetValue());
+            return ABnfGuessError(right_src, u8"要求是" + left_guess->GetValue() + u8",不能是:" + right_guess->GetValue());
 
 
         auto error = AnalysisTemplate(fill_map, std::dynamic_pointer_cast<ALittleScriptGuessMap>(left_guess)->key_type.lock(), right_src, std::dynamic_pointer_cast<ALittleScriptGuessMap>(right_guess)->key_type.lock(), false);
-        if (error) return ABnfGuessError(right_src, u8"要求是" + left_guess->GetValue() + ",不能是:" + right_guess->GetValue());
+        if (error) return ABnfGuessError(right_src, u8"要求是" + left_guess->GetValue() + u8",不能是:" + right_guess->GetValue());
         error = AnalysisTemplate(fill_map, std::dynamic_pointer_cast<ALittleScriptGuessMap>(left_guess)->value_type.lock(), right_src, std::dynamic_pointer_cast<ALittleScriptGuessMap>(right_guess)->value_type.lock(), false);
-        if (error) return ABnfGuessError(right_src, u8"要求是" + left_guess->GetValue() + ",不能是:" + right_guess->GetValue());
+        if (error) return ABnfGuessError(right_src, u8"要求是" + left_guess->GetValue() + u8",不能是:" + right_guess->GetValue());
         return nullptr;
     }
 
     if (std::dynamic_pointer_cast<ALittleScriptGuessList>(left_guess))
     {
         if (!std::dynamic_pointer_cast<ALittleScriptGuessList>(right_guess))
-            return ABnfGuessError(right_src, u8"要求是" + left_guess->GetValue() + ",不能是:" + right_guess->GetValue());
+            return ABnfGuessError(right_src, u8"要求是" + left_guess->GetValue() + u8",不能是:" + right_guess->GetValue());
         auto error = AnalysisTemplate(fill_map, std::dynamic_pointer_cast<ALittleScriptGuessList>(left_guess)->sub_type.lock(), right_src, std::dynamic_pointer_cast<ALittleScriptGuessList>(right_guess)->sub_type.lock(), false);
-        if (error) return ABnfGuessError(right_src, u8"要求是" + left_guess->GetValue() + ",不能是:" + right_guess->GetValue());
+        if (error) return ABnfGuessError(right_src, u8"要求是" + left_guess->GetValue() + u8",不能是:" + right_guess->GetValue());
         return nullptr;
     }
 
     if (std::dynamic_pointer_cast<ALittleScriptGuessFunctor>(left_guess))
     {
         if (!std::dynamic_pointer_cast<ALittleScriptGuessFunctor>(right_guess))
-            return ABnfGuessError(right_src, u8"要求是" + left_guess->GetValue() + ",不能是:" + right_guess->GetValue());
+            return ABnfGuessError(right_src, u8"要求是" + left_guess->GetValue() + u8",不能是:" + right_guess->GetValue());
         auto left_guess_functor = std::dynamic_pointer_cast<ALittleScriptGuessFunctor>(left_guess);
         auto right_guess_functor = std::dynamic_pointer_cast<ALittleScriptGuessFunctor>(right_guess);
 
@@ -223,7 +223,7 @@ ABnfGuessError ALittleScriptPropertyValueMethodCallReference::AnalysisTemplate(s
             || left_guess_functor->return_tail.lock() != nullptr && right_guess_functor->return_tail.lock() == nullptr
             )
         {
-            return ABnfGuessError(right_src, u8"要求是" + left_guess->GetValue() + ",不能是:" + right_guess->GetValue());
+            return ABnfGuessError(right_src, u8"要求是" + left_guess->GetValue() + u8",不能是:" + right_guess->GetValue());
         }
 
         for (int i = 0; i < left_guess_functor->template_param_list.size(); ++i)
@@ -241,7 +241,7 @@ ABnfGuessError ALittleScriptPropertyValueMethodCallReference::AnalysisTemplate(s
         for (int i = 0; i < left_guess_functor->param_nullable_list.size(); ++i)
         {
             if (left_guess_functor->param_nullable_list[i] != right_guess_functor->param_nullable_list[i])
-                return ABnfGuessError(right_src, u8"要求是" + left_guess->GetValue() + ",不能是:" + right_guess->GetValue());
+                return ABnfGuessError(right_src, u8"要求是" + left_guess->GetValue() + u8",不能是:" + right_guess->GetValue());
         }
 
         for (int i = 0; i < left_guess_functor->return_list.size(); ++i)
@@ -258,7 +258,7 @@ ABnfGuessError ALittleScriptPropertyValueMethodCallReference::AnalysisTemplate(s
             right_guess = std::dynamic_pointer_cast<ALittleScriptGuessTemplate>(right_guess)->template_extends.lock();
 
         if (!std::dynamic_pointer_cast<ALittleScriptGuessClass>(right_guess))
-            return ABnfGuessError(right_src, u8"要求是" + left_guess->GetValue() + ",不能是:" + right_guess->GetValue());
+            return ABnfGuessError(right_src, u8"要求是" + left_guess->GetValue() + u8",不能是:" + right_guess->GetValue());
 
         if (left_guess->GetValue() == right_guess->GetValue()) return nullptr;
 
@@ -270,7 +270,7 @@ ABnfGuessError ALittleScriptPropertyValueMethodCallReference::AnalysisTemplate(s
         if (error) return error;
         if (result) return nullptr;
 
-        return ABnfGuessError(right_src, u8"要求是" + left_guess->GetValue() + ",不能是:" + right_guess->GetValue());
+        return ABnfGuessError(right_src, u8"要求是" + left_guess->GetValue() + u8",不能是:" + right_guess->GetValue());
     }
 
     if (std::dynamic_pointer_cast<ALittleScriptGuessTemplate>(left_guess)) {
@@ -326,7 +326,7 @@ ABnfGuessError ALittleScriptPropertyValueMethodCallReference::AnalysisTemplate(s
                     return nullptr;
                 }
             }
-            return ABnfGuessError(right_src, u8"要求是" + left_guess->GetValue() + ",不能是:" + right_guess->GetValue());
+            return ABnfGuessError(right_src, u8"要求是" + left_guess->GetValue() + u8",不能是:" + right_guess->GetValue());
         }
         else if (left_guess_template->is_struct)
         {
@@ -358,7 +358,7 @@ ABnfGuessError ALittleScriptPropertyValueMethodCallReference::AnalysisTemplate(s
                     return nullptr;
                 }
             }
-            return ABnfGuessError(right_src, u8"要求是" + left_guess->GetValue() + ",不能是:" + right_guess->GetValue());
+            return ABnfGuessError(right_src, u8"要求是" + left_guess->GetValue() + u8",不能是:" + right_guess->GetValue());
         }
 
         if (right_guess->is_const)
@@ -372,7 +372,7 @@ ABnfGuessError ALittleScriptPropertyValueMethodCallReference::AnalysisTemplate(s
         return nullptr;
     }
 
-    return ABnfGuessError(right_src, u8"要求是" + left_guess->GetValue() + ",不能是:" + right_guess->GetValue());
+    return ABnfGuessError(right_src, u8"要求是" + left_guess->GetValue() + u8",不能是:" + right_guess->GetValue());
 }
 
 ABnfGuessError ALittleScriptPropertyValueMethodCallReference::CheckTemplateMap(std::unordered_map<std::string, std::shared_ptr<ALittleScriptGuessTemplate>>& src_map, std::unordered_map<std::string, ABnfGuessPtr>& fill_map, std::shared_ptr<ALittleScriptGuessFunctor>& guess)
@@ -393,7 +393,7 @@ ABnfGuessError ALittleScriptPropertyValueMethodCallReference::CheckTemplateMap(s
 
     auto value_stat_list = element->GetValueStatList();
     if (pre_type_functor->param_list.size() < value_stat_list.size() && pre_type_functor->param_tail.lock() == nullptr)
-        return ABnfGuessError(element, u8"函数调用最多需要" + std::to_string(pre_type_functor->param_list.size()) + "个参数,不能是:" + std::to_string(value_stat_list.size()) + "个");
+        return ABnfGuessError(element, u8"函数调用最多需要" + std::to_string(pre_type_functor->param_list.size()) + u8"个参数,不能是:" + std::to_string(value_stat_list.size()) + "个");
 
     // 检查模板参数
     if (pre_type_functor->template_param_list.size() > 0)
@@ -409,7 +409,7 @@ ABnfGuessError ALittleScriptPropertyValueMethodCallReference::CheckTemplateMap(s
         {
             auto all_type_list = method_template->GetAllTypeList();
             if (all_type_list.size() > pre_type_functor->template_param_list.size())
-                return ABnfGuessError(element, u8"函数调用最多需要" + std::to_string(pre_type_functor->template_param_list.size()) + "个模板参数,不能是:" + std::to_string(all_type_list.size()) + "个");
+                return ABnfGuessError(element, u8"函数调用最多需要" + std::to_string(pre_type_functor->template_param_list.size()) + u8"个模板参数,不能是:" + std::to_string(all_type_list.size()) + "个");
 
             for (int i = 0; i < all_type_list.size(); ++i)
             {
@@ -452,7 +452,7 @@ ABnfGuessError ALittleScriptPropertyValueMethodCallReference::CheckTemplateMap(s
         for (auto& pair : src_map)
         {
             if (fill_map.find(pair.first) == fill_map.end())
-                return ABnfGuessError(element, pair.first + "模板无法解析");
+                return ABnfGuessError(element, pair.first + u8"模板无法解析");
         }
     }
 
@@ -521,12 +521,12 @@ ABnfGuessError ALittleScriptPropertyValueMethodCallReference::CheckError()
             if (pre_type_functor->param_tail.lock() != nullptr)
                 break;
             else
-                return ABnfGuessError(element, u8"该函数调用需要" + std::to_string(pre_type_functor->param_list.size()) + "个参数，而不是" + std::to_string(value_stat_list.size()) + "个");
+                return ABnfGuessError(element, u8"该函数调用需要" + std::to_string(pre_type_functor->param_list.size()) + u8"个参数，而不是" + std::to_string(value_stat_list.size()) + "个");
         }
 
         error = ALittleScriptOp::GuessTypeEqual(pre_type_functor->param_list[i].lock(), value_stat, guess, false, false);
         if (error)
-            return ABnfGuessError(value_stat, u8"第" + std::to_string(i + 1) + "个参数类型和函数定义的参数类型不同:" + error.error);
+            return ABnfGuessError(value_stat, u8"第" + std::to_string(i + 1) + u8"个参数类型和函数定义的参数类型不同:" + error.error);
     }
 
     // 如果参数数量不足以填充
@@ -546,7 +546,7 @@ ABnfGuessError ALittleScriptPropertyValueMethodCallReference::CheckError()
                     else
                         break;
                 }
-                return ABnfGuessError(element, u8"该函数调用至少需要" + std::to_string(count) + "个参数，而不是" + std::to_string(value_stat_list.size()) + "个");
+                return ABnfGuessError(element, u8"该函数调用至少需要" + std::to_string(count) + u8"个参数，而不是" + std::to_string(value_stat_list.size()) + "个");
             }
         }
     }

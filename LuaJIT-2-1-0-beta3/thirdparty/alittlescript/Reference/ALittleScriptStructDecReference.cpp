@@ -75,7 +75,7 @@ ABnfGuessError ALittleScriptStructDecReference::CheckError()
         option_set.insert(text);
 
         auto option_value = option_dec->GetText();
-        if (option_value == nullptr) return ABnfGuessError(option_dec, text + "没有设置对应的值");
+        if (option_value == nullptr) return ABnfGuessError(option_dec, text + u8"没有设置对应的值");
 
         if (text == "primary")
         {

@@ -89,7 +89,7 @@ ABnfGuessError ALittleScriptTcallStatReference::CheckError()
         if (error) return error;
         error = ALittleScriptOp::GuessTypeEqual(param_guess.lock(), param_value_stat, param_value_stat_guess, false, false);
         if (error)
-            return ABnfGuessError(param_value_stat, u8"第" + std::to_string(i) + "个参数类型和函数定义的参数类型不同:" + error.error);
+            return ABnfGuessError(param_value_stat, u8"第" + std::to_string(i) + u8"个参数类型和函数定义的参数类型不同:" + error.error);
     }
 
     // 检查这个函数是不是await

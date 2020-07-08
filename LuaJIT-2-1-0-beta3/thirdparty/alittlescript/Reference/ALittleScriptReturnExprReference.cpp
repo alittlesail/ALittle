@@ -243,7 +243,7 @@ ABnfGuessError ALittleScriptReturnExprReference::CheckError()
 
         error = ALittleScriptOp::GuessTypeEqual(return_type_guess, target_value_stat, guess_list[i], false, true);
         if (error)
-            return ABnfGuessError(target_value_stat, u8"return的第" + std::to_string(i + 1) + "个返回值数量和函数定义的返回值类型不同:" + error.error);
+            return ABnfGuessError(target_value_stat, u8"return的第" + std::to_string(i + 1) + u8"个返回值数量和函数定义的返回值类型不同:" + error.error);
     }
 
     return nullptr;

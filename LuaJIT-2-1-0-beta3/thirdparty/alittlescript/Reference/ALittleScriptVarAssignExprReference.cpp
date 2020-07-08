@@ -47,7 +47,7 @@ ABnfGuessError ALittleScriptVarAssignExprReference::CheckError()
             if (guess_error) return guess_error;
             guess_error = ALittleScriptOp::GuessTypeEqual(pair_dec_guess, value_stat, method_call_guess_list[i], true, false);
             if (guess_error)
-                return ABnfGuessError(value_stat, u8"等号左边的第" + std::to_string(i + 1) + "个变量数量和函数定义的返回值类型不相等:" + guess_error.error);
+                return ABnfGuessError(value_stat, u8"等号左边的第" + std::to_string(i + 1) + u8"个变量数量和函数定义的返回值类型不相等:" + guess_error.error);
         }
         return nullptr;
     }

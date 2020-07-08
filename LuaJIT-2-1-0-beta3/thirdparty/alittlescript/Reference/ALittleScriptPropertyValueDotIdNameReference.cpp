@@ -594,7 +594,7 @@ ABnfGuessError ALittleScriptPropertyValueDotIdNameReference::GuessTypes(std::vec
                 return ABnfGuessError(element, u8"ALittleClassNameDec.guessType的结果不是ALittleGuessClass");
             auto class_guess_class = std::dynamic_pointer_cast<ALittleScriptGuessClass>(class_guess);
             if (class_guess_class->template_list.size() > 0)
-                return ABnfGuessError(element, u8"模板类" + class_guess_class->GetValue() + "不能直接使用");
+                return ABnfGuessError(element, u8"模板类" + class_guess_class->GetValue() + u8"不能直接使用");
             auto info = ABnfGuessPtr(new ALittleScriptGuessClassName(class_guess_class->namespace_name, class_guess_class->class_name, std::dynamic_pointer_cast<ALittleScriptClassNameDecElement>(result)));
             info->UpdateValue();
             element->GetFile()->AddGuessType(info);

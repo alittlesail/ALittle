@@ -52,9 +52,9 @@ ABnfGuessError ALittleScriptGlobalMethodDecReference::CheckProtoError()
     std::string text = proto_type;
 
     if (element->GetTemplateDec() != nullptr)
-        return ABnfGuessError(element, u8"带" + text + "的全局函数，不能使用模板");
+        return ABnfGuessError(element, u8"带" + text + u8"的全局函数，不能使用模板");
 
-    if (param_dec == nullptr) return ABnfGuessError(element, u8"带" + text + "的全局函数，必须有参数");
+    if (param_dec == nullptr) return ABnfGuessError(element, u8"带" + text + u8"的全局函数，必须有参数");
     std::vector<std::shared_ptr<ALittleScriptAllTypeElement>> return_list;
     if (return_dec != nullptr)
     {
@@ -62,10 +62,10 @@ ABnfGuessError ALittleScriptGlobalMethodDecReference::CheckProtoError()
         for (auto& return_one : return_one_list)
         {
             if (return_one->GetMethodReturnTailDec() != nullptr)
-                return ABnfGuessError(element, u8"带" + text + "的全局函数，不能使用返回值占位符");
+                return ABnfGuessError(element, u8"带" + text + u8"的全局函数，不能使用返回值占位符");
             auto all_type = return_one->GetAllType();
             if (all_type == nullptr)
-                return ABnfGuessError(element, u8"带" + text + "的全局函数，返回值没有定义类型");
+                return ABnfGuessError(element, u8"带" + text + u8"的全局函数，返回值没有定义类型");
             return_list.push_back(all_type);
         }
     }
@@ -75,10 +75,10 @@ ABnfGuessError ALittleScriptGlobalMethodDecReference::CheckProtoError()
     for (auto& param_one_dec : param_one_dec_list)
     {
         if (param_one_dec->GetMethodParamTailDec() != nullptr)
-            return ABnfGuessError(element, u8"带" + text + "的全局函数，不能使用参数占位符");
+            return ABnfGuessError(element, u8"带" + text + u8"的全局函数，不能使用参数占位符");
         auto all_type = param_one_dec->GetAllType();
         if (all_type == nullptr)
-            return ABnfGuessError(element, u8"带" + text + "的全局函数，参数没有定义类型");
+            return ABnfGuessError(element, u8"带" + text + u8"的全局函数，参数没有定义类型");
 
         ABnfGuessPtr all_type_guess;
         auto guess_error = all_type->GuessType(all_type_guess);
@@ -99,25 +99,25 @@ ABnfGuessError ALittleScriptGlobalMethodDecReference::CheckProtoError()
         return ABnfGuessError(return_dec, u8"带async修饰的函数，不能有返回值");
 
     // 检查参数个数
-    if (param_guess_list.size() != 2) return ABnfGuessError(param_dec, u8"带" + text + "的全局函数，必须有两个参数");
+    if (param_guess_list.size() != 2) return ABnfGuessError(param_dec, u8"带" + text + u8"的全局函数，必须有两个参数");
 
     // 第二个参数
     if (!std::dynamic_pointer_cast<ALittleScriptGuessStruct>(param_guess_list[1]))
-        return ABnfGuessError(element, u8"带" + text + "的全局函数，第二个参数必须是struct");
+        return ABnfGuessError(element, u8"带" + text + u8"的全局函数，第二个参数必须是struct");
     ABnfGuessError error;
     if (text == "Http")
     {
         if (co_text != "await")
-            return ABnfGuessError(element, u8"带" + text + "的全局函数，必须使用await修饰");
+            return ABnfGuessError(element, u8"带" + text + u8"的全局函数，必须使用await修饰");
 
-        if (return_guess_list.size() != 1) return ABnfGuessError(element, u8"带" + text + "的全局函数，必须有一个返回值");
+        if (return_guess_list.size() != 1) return ABnfGuessError(element, u8"带" + text + u8"的全局函数，必须有一个返回值");
         // 第一个参数
         if (param_guess_list[0]->GetValue() != "ALittle.IHttpReceiver")
-            return ABnfGuessError(param_one_dec_list[0], u8"带" + text + "的全局函数，第一个参数必须是ALittle.IHttpReceiver");
+            return ABnfGuessError(param_one_dec_list[0], u8"带" + text + u8"的全局函数，第一个参数必须是ALittle.IHttpReceiver");
 
         // 返回值
         if (!std::dynamic_pointer_cast<ALittleScriptGuessStruct>(return_guess_list[0]))
-            return ABnfGuessError(element, u8"带" + text + "的全局函数，返回值必须是struct");
+            return ABnfGuessError(element, u8"带" + text + u8"的全局函数，返回值必须是struct");
 
         std::unordered_set<std::string> temp;
         error = CheckJsonStruct(param_one_dec_list[1], param_guess_list[1], temp);
@@ -130,14 +130,14 @@ ABnfGuessError ALittleScriptGlobalMethodDecReference::CheckProtoError()
     else if (text == "HttpDownload")
     {
         if (co_text != "await")
-            return ABnfGuessError(element, u8"带" + text + "的全局函数，必须使用await修饰");
+            return ABnfGuessError(element, u8"带" + text + u8"的全局函数，必须使用await修饰");
 
-        if (return_guess_list.size() != 2) return ABnfGuessError(element, u8"带" + text + "的全局函数，必须有两个返回值，一个是string，一个是int");
-        if (return_guess_list[0]->GetValue() != "string") return ABnfGuessError(element, u8"带" + text + "的全局函数，第一个参数必须是string");
-        if (return_guess_list[1]->GetValue() != "int") return ABnfGuessError(element, u8"带" + text + "的全局函数，第二个参数必须是int");
+        if (return_guess_list.size() != 2) return ABnfGuessError(element, u8"带" + text + u8"的全局函数，必须有两个返回值，一个是string，一个是int");
+        if (return_guess_list[0]->GetValue() != "string") return ABnfGuessError(element, u8"带" + text + u8"的全局函数，第一个参数必须是string");
+        if (return_guess_list[1]->GetValue() != "int") return ABnfGuessError(element, u8"带" + text + u8"的全局函数，第二个参数必须是int");
         // 第一个参数
         if (param_guess_list[0]->GetValue() != "ALittle.IHttpReceiver")
-            return ABnfGuessError(param_one_dec_list[0], u8"带" + text + "的全局函数，第一个参数必须是ALittle.IHttpReceiver");
+            return ABnfGuessError(param_one_dec_list[0], u8"带" + text + u8"的全局函数，第一个参数必须是ALittle.IHttpReceiver");
 
         std::unordered_set<std::string> temp;
         error = CheckJsonStruct(param_one_dec_list[1], param_guess_list[1], temp);
@@ -146,11 +146,11 @@ ABnfGuessError ALittleScriptGlobalMethodDecReference::CheckProtoError()
     else if (text == "HttpUpload")
     {
         if (co_text != "await")
-            return ABnfGuessError(element, u8"带" + text + "的全局函数，必须使用await修饰");
+            return ABnfGuessError(element, u8"带" + text + u8"的全局函数，必须使用await修饰");
 
         // 第一个参数
         if (param_guess_list[0]->GetValue() != "ALittle.IHttpFileReceiver")
-            return ABnfGuessError(param_one_dec_list[0], u8"带" + text + "的全局函数，第一个参数必须是ALittle.IHttpFileReceiver");
+            return ABnfGuessError(param_one_dec_list[0], u8"带" + text + u8"的全局函数，第一个参数必须是ALittle.IHttpFileReceiver");
 
         std::unordered_set<std::string> temp;
         error = CheckJsonStruct(param_one_dec_list[1], param_guess_list[1], temp);
@@ -158,14 +158,14 @@ ABnfGuessError ALittleScriptGlobalMethodDecReference::CheckProtoError()
 
         // 返回值
         if (return_guess_list.size() != 0)
-            return ABnfGuessError(element, u8"带" + text + "的全局函数，不能有返回值");
+            return ABnfGuessError(element, u8"带" + text + u8"的全局函数，不能有返回值");
     }
     else if (text == "Msg")
     {
-        if (return_guess_list.size() > 1) return ABnfGuessError(element, u8"带" + text + "的全局函数，最多只能有一个返回值");
+        if (return_guess_list.size() > 1) return ABnfGuessError(element, u8"带" + text + u8"的全局函数，最多只能有一个返回值");
         // 第一个参数
         if (param_guess_list[0]->GetValue() != "ALittle.IMsgCommon")
-            return ABnfGuessError(param_one_dec_list[0], u8"带" + text + "的全局函数，第一个参数必须是ALittle.IMsgCommon");
+            return ABnfGuessError(param_one_dec_list[0], u8"带" + text + u8"的全局函数，第一个参数必须是ALittle.IMsgCommon");
 
         std::unordered_set<std::string> temp;
         error = CheckMsgStruct(param_one_dec_list[1], param_guess_list[1], temp);
@@ -175,10 +175,10 @@ ABnfGuessError ALittleScriptGlobalMethodDecReference::CheckProtoError()
         if (return_guess_list.size() > 0)
         {
             if (co_text != "await")
-                return ABnfGuessError(element, u8"带" + text + "的全局函数，并且有返回值，必须使用await修饰");
+                return ABnfGuessError(element, u8"带" + text + u8"的全局函数，并且有返回值，必须使用await修饰");
 
             if (!std::dynamic_pointer_cast<ALittleScriptGuessStruct>(return_guess_list[0]))
-                return ABnfGuessError(element, u8"带" + text + "的全局函数，返回值必须是struct");
+                return ABnfGuessError(element, u8"带" + text + u8"的全局函数，返回值必须是struct");
 
             std::unordered_set<std::string> temp;
             error = CheckMsgStruct(return_list[0], return_guess_list[0], temp);
@@ -188,7 +188,7 @@ ABnfGuessError ALittleScriptGlobalMethodDecReference::CheckProtoError()
         {
             // 如果没有返回值，那么不能使用await，只能使用async，或者不使用
             if (co_text == "await")
-                return ABnfGuessError(element, u8"带" + text + "的全局函数，当没有返回值时，不能使用await，可以使用async");
+                return ABnfGuessError(element, u8"带" + text + u8"的全局函数，当没有返回值时，不能使用await，可以使用async");
         }
     }
     return nullptr;

@@ -1366,7 +1366,7 @@ std::string ALittleScriptUtility::CalcTargetFullPath(const std::string& project_
     std::string ali_rel_path = ChangeFileExtByPath(ali_full_path.substr(project_path.size()), ext);
     if (ali_rel_path.find("src\\") != 0)
     {
-        error = "请把代码文件工程目录下的src文件夹中:" + project_path + "src\\";
+        error = u8"请把代码文件工程目录下的src文件夹中:" + project_path + "src\\";
         return nullptr;
     }
 

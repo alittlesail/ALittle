@@ -47,6 +47,39 @@ public:
 
 private:
     template <typename T>
+    static void AddElement(T& list, const std::string& v) { list.push_back(v); }
+    static void AddElement(std::list<int>& list, const std::string& v) { list.push_back(std::atoi(v.c_str())); }
+    static void AddElement(std::vector<int>& list, const std::string& v) { list.push_back(std::atoi(v.c_str())); }
+
+public:
+    // ÇÐ¸î×Ö·û´®
+    template <typename T>
+    static void Split(const std::string& content, const std::string& split, T& list)
+    {
+        list.resize(0);
+        if (content.size() == 0) return;
+
+        size_t start_index = 0;
+        while (true)
+        {
+            size_t pos = content.find(split, start_index);
+            if (pos != std::string::npos)
+            {
+                AddElement(list, content.substr(start_index, pos - start_index));
+                start_index = pos + split.size();
+                continue;
+            }
+            break;
+        }
+
+        if (start_index == 0)
+            AddElement(list, content);
+        else
+            AddElement(list, content.substr(start_index));
+    }
+
+private:
+    template <typename T>
     static void AddString(std::string& result, const T& v) { result.append(std::to_string(v)); }
     static void AddString(std::string& result, const std::string& v) { result.append(v); }
 

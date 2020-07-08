@@ -35,6 +35,7 @@ ABnfReference* ABnfElement::GetReference()
 // 获取类型
 ABnfGuessError ABnfElement::GuessTypes(std::vector<ABnfGuessPtr>& guess_list)
 {
+    guess_list.resize(0);
     return m_factory->GuessTypes(shared_from_this(), guess_list);
 }
 

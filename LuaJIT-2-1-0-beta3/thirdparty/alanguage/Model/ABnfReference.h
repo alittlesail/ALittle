@@ -10,6 +10,8 @@
 class ABnfElement;
 using ABnfElementPtr = std::shared_ptr<ABnfElement>;
 using ABnfElementWeakPtr = std::weak_ptr<ABnfElement>;
+class ABnfGuess;
+using ABnfGuessPtr = std::shared_ptr<ABnfGuess>;
 
 class ABnfReference
 {
@@ -21,7 +23,7 @@ public:
     virtual ABnfGuessError CheckError() { return nullptr; }
 
     // 获取类型
-    virtual ABnfGuessError GuessTypes(std::vector<ABnfGuess>& guess_list) { return nullptr; }
+    virtual ABnfGuessError GuessTypes(std::vector<ABnfGuessPtr>& guess_list) { return nullptr; }
 
     // 返回多个表达式的类型
     virtual bool MultiGuessTypes() { return false; }

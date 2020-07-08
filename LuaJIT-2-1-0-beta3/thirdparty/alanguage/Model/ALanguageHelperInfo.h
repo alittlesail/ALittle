@@ -37,6 +37,8 @@ struct ALanguageGotoInfo
 
 struct ALanguageCompletionInfo
 {
+    ALanguageCompletionInfo() {}
+    ALanguageCompletionInfo(const std::string& p_display, int p_tag) : display(p_display), tag(p_tag) {}
     std::string display;
     std::string insert;
     std::string descriptor;

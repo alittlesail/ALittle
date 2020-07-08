@@ -139,13 +139,13 @@ ABnfGuessError ALittleScriptOpNewStatReference::CheckError()
             if (value_stat_list.size() < param_guess_list.size())
             {
                 // 不足的部分，参数必须都是nullable
-                for (int i = value_stat_list.size(); i < param_nullable_list.size(); ++i)
+                for (size_t i = value_stat_list.size(); i < param_nullable_list.size(); ++i)
                 {
                     if (!param_nullable_list[i])
                     {
                         // 计算至少需要的参数个数
-                        int count = param_nullable_list.size();
-                        for (int j = param_nullable_list.size() - 1; j >= 0; --j)
+                        size_t count = param_nullable_list.size();
+                        for (int j = static_cast<int>(param_nullable_list.size()) - 1; j >= 0; --j)
                         {
                             if (param_nullable_list[j])
                                 --count;
@@ -157,7 +157,7 @@ ABnfGuessError ALittleScriptOpNewStatReference::CheckError()
                 }
             }
 
-            for (int i = 0; i < value_stat_list.size(); ++i)
+            for (size_t i = 0; i < value_stat_list.size(); ++i)
             {
                 auto value_stat = value_stat_list[i];
 

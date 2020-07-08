@@ -533,13 +533,13 @@ ABnfGuessError ALittleScriptPropertyValueMethodCallReference::CheckError()
     if (value_stat_list.size() < pre_type_functor->param_list.size())
     {
         // 不足的部分，参数必须都是nullable
-        for (int i = value_stat_list.size(); i < pre_type_functor->param_nullable_list.size(); ++i)
+        for (size_t i = value_stat_list.size(); i < pre_type_functor->param_nullable_list.size(); ++i)
         {
             if (!pre_type_functor->param_nullable_list[i])
             {
                 // 计算至少需要的参数个数
-                int count = pre_type_functor->param_nullable_list.size();
-                for (int j = pre_type_functor->param_nullable_list.size() - 1; j >= 0; --j)
+                size_t count = pre_type_functor->param_nullable_list.size();
+                for (int j = static_cast<int>(pre_type_functor->param_nullable_list.size()) - 1; j >= 0; --j)
                 {
                     if (pre_type_functor->param_nullable_list[j])
                         --count;

@@ -62,7 +62,7 @@ ABnfGuessError ALittleScriptStructDecReference::CheckError()
         name_set.insert(text);
     }
 
-    auto option_dec_list = body_dec->GetStructOptionDecList();
+    const auto& option_dec_list = body_dec->GetStructOptionDecList();
     std::set<std::string> option_set;
     for (auto& option_dec : option_dec_list)
     {

@@ -61,7 +61,7 @@ ABnfGuessError ALittleScriptVarAssignDecReference::GuessTypes(std::vector<ABnfGu
         return ABnfGuessError(name_dec, u8"没有赋值对象，无法推导类型");
 
     // 获取等号左边的变量定义列表
-    auto pair_dec_list = parent->GetVarAssignDecList();
+    const auto& pair_dec_list = parent->GetVarAssignDecList();
     // 计算当前是第几个参数
     int index = -1;
     for (size_t i = 0; i < pair_dec_list.size(); ++i)

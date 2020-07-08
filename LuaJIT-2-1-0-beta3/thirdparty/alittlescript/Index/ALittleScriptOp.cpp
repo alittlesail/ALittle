@@ -93,7 +93,7 @@ ABnfGuessError ALittleScriptOp::GuessTypeForOp8(ABnfElementPtr left_src, ABnfGue
         return ABnfGuessError(op_8_suffix, "未知的表达式");
     }
 
-    auto suffix_ee_list = op_8_suffix->GetOp8SuffixEeList();
+    const auto& suffix_ee_list = op_8_suffix->GetOp8SuffixEeList();
     for (auto& suffix_ee : suffix_ee_list)
     {
         if (suffix_ee->GetOp3Suffix() != nullptr)
@@ -162,7 +162,7 @@ ABnfGuessError ALittleScriptOp::GuessTypeForOp7(ABnfElementPtr left_src, ABnfGue
         return ABnfGuessError(op_7_suffix, "未知的表达式");
     }
 
-    auto suffix_ee_list = op_7_suffix->GetOp7SuffixEeList();
+    const auto& suffix_ee_list = op_7_suffix->GetOp7SuffixEeList();
     for (auto& suffix_ee : suffix_ee_list)
     {
         if (suffix_ee->GetOp3Suffix() != nullptr)
@@ -288,7 +288,7 @@ ABnfGuessError ALittleScriptOp::GuessTypeForOp6(ABnfElementPtr left_src, ABnfGue
         return ABnfGuessError(op_6_suffix, "未知的表达式");
     }
 
-    auto suffix_ee_list = op_6_suffix->GetOp6SuffixEeList();
+    const auto& suffix_ee_list = op_6_suffix->GetOp6SuffixEeList();
     for (auto& suffix_ee : suffix_ee_list)
     {
         if (suffix_ee->GetOp3Suffix() != nullptr)
@@ -362,7 +362,7 @@ ABnfGuessError ALittleScriptOp::GuessTypeForOp5(ABnfElementPtr left_src, ABnfGue
         return ABnfGuessError(op_5_suffix, "未知的表达式");
     }
 
-    auto suffix_ee_list = op_5_suffix->GetOp5SuffixEeList();
+    const auto& suffix_ee_list = op_5_suffix->GetOp5SuffixEeList();
     for (auto& suffix_ee : suffix_ee_list)
     {
         if (suffix_ee->GetOp3Suffix() != nullptr)
@@ -452,7 +452,7 @@ ABnfGuessError ALittleScriptOp::GuessTypeForOp4(ABnfElementPtr left_src, ABnfGue
         return ABnfGuessError(op_4_suffix, "未知的表达式");
     }
 
-    auto suffix_ee_list = op_4_suffix->GetOp4SuffixEeList();
+    const auto& suffix_ee_list = op_4_suffix->GetOp4SuffixEeList();
     for (auto& suffix_ee : suffix_ee_list)
     {
         if (suffix_ee->GetOp3Suffix() != nullptr)
@@ -587,7 +587,7 @@ ABnfGuessError ALittleScriptOp::GuessType(std::shared_ptr<ALittleScriptValueFact
     if (error) return error;
 
     ABnfElementPtr last_src = op_3_stat->GetOp3Suffix();
-    auto suffix_ex_list = op_3_stat->GetOp3SuffixExList();
+    const auto& suffix_ex_list = op_3_stat->GetOp3SuffixExList();
     for (auto& suffix_ex : suffix_ex_list)
     {
         if (suffix_ex->GetOp3Suffix() != nullptr)
@@ -707,7 +707,7 @@ ABnfGuessError ALittleScriptOp::GuessType(std::shared_ptr<ALittleScriptOp2StatEl
     if (error) return error;
 
     ABnfElementPtr last_src = op_2_value;
-    auto suffix_ex_list = op_2_stat->GetOp2SuffixExList();
+    const auto& suffix_ex_list = op_2_stat->GetOp2SuffixExList();
     for (auto& suffix_ex : suffix_ex_list)
     {
         if (suffix_ex->GetOp3Suffix() != nullptr)
@@ -1041,7 +1041,7 @@ ABnfGuessError ALittleScriptOp::GuessType(std::shared_ptr<ALittleScriptValueFact
     if (error) return error;
 
     ABnfElementPtr last_src = op_4_stat->GetOp4Suffix();
-    auto suffix_ex_list = op_4_stat->GetOp4SuffixExList();
+    const auto& suffix_ex_list = op_4_stat->GetOp4SuffixExList();
     for (auto& suffix_ex : suffix_ex_list)
     {
         if (suffix_ex->GetOp4Suffix() != nullptr)
@@ -1096,7 +1096,7 @@ ABnfGuessError ALittleScriptOp::GuessType(std::shared_ptr<ALittleScriptValueFact
     if (error) return error;
 
     ABnfElementPtr last_src = op_5_stat->GetOp5Suffix();
-    auto suffix_ex_list = op_5_stat->GetOp5SuffixExList();
+    const auto& suffix_ex_list = op_5_stat->GetOp5SuffixExList();
     for (auto& suffix_ex : suffix_ex_list)
     {
         if (suffix_ex->GetOp5Suffix() != nullptr)
@@ -1145,7 +1145,7 @@ ABnfGuessError ALittleScriptOp::GuessType(std::shared_ptr<ALittleScriptValueFact
     if (error) return error;
 
     ABnfElementPtr last_src = op_6_stat->GetOp6Suffix();
-    auto suffix_ex_list = op_6_stat->GetOp6SuffixExList();
+    const auto& suffix_ex_list = op_6_stat->GetOp6SuffixExList();
     for (auto& suffix_ex : suffix_ex_list)
     {
         if (suffix_ex->GetOp6Suffix() != nullptr)
@@ -1188,7 +1188,7 @@ ABnfGuessError ALittleScriptOp::GuessType(std::shared_ptr<ALittleScriptValueFact
     if (error) return error;
 
     ABnfElementPtr last_src = op_7_stat->GetOp7Suffix();
-    auto suffix_ex_list = op_7_stat->GetOp7SuffixExList();
+    const auto& suffix_ex_list = op_7_stat->GetOp7SuffixExList();
     for (auto& suffix_ex : suffix_ex_list)
     {
         if (suffix_ex->GetOp7Suffix() != nullptr)
@@ -1225,7 +1225,7 @@ ABnfGuessError ALittleScriptOp::GuessType(std::shared_ptr<ALittleScriptValueFact
     if (error) return error;
 
     ABnfElementPtr last_src = op_8_stat->GetOp8Suffix();
-    auto suffix_ex_list = op_8_stat->GetOp8SuffixExList();
+    const auto& suffix_ex_list = op_8_stat->GetOp8SuffixExList();
     for (auto& suffix_ex : suffix_ex_list)
     {
         if (suffix_ex->GetOp8Suffix() != nullptr)

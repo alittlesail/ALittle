@@ -13,7 +13,7 @@ ABnfGuessError ALittleScriptVarAssignExprReference::CheckError()
     auto value_stat = element->GetValueStat();
     if (value_stat == nullptr) return nullptr;
 
-    auto pair_dec_list = element->GetVarAssignDecList();
+    const auto& pair_dec_list = element->GetVarAssignDecList();
     if (pair_dec_list.size() == 0) return nullptr;
 
     // 如果返回值只有一个函数调用

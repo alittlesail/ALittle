@@ -53,7 +53,7 @@ ABnfGuessError ALittleScriptCoroutineStatReference::CheckError()
         }
         else if (std::dynamic_pointer_cast<ALittleScriptGlobalMethodDecElement>(parent))
         {
-            auto modifier = std::dynamic_pointer_cast<ALittleScriptNamespaceElementDecElement>(parent->GetParent())->GetModifierList();
+            const auto& modifier = std::dynamic_pointer_cast<ALittleScriptNamespaceElementDecElement>(parent->GetParent())->GetModifierList();
             if (ALittleScriptUtility::GetCoroutineType(modifier) == "await")
                 return nullptr;
             break;

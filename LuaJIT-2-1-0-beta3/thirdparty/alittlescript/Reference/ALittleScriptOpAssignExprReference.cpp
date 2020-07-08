@@ -16,14 +16,14 @@ ABnfGuessError ALittleScriptOpAssignExprReference::CheckError()
 {
     auto element = m_element.lock();
     if (element == nullptr) return ABnfGuessError(element, u8"节点失效");
-    auto property_value_list = element->GetPropertyValueList();
+    const auto& property_value_list = element->GetPropertyValueList();
     auto value_stat = element->GetValueStat();
     if (value_stat == nullptr)
     {
         if (property_value_list.size() != 1)
             return ABnfGuessError(element, u8"没有赋值表达式时，只能是一个函数调用");
         auto property_value = property_value_list[0];
-        auto suffix_list = property_value->GetPropertyValueSuffixList();
+        const auto& suffix_list = property_value->GetPropertyValueSuffixList();
         if (suffix_list.size() == 0)
             return ABnfGuessError(element, u8"没有赋值表达式时，只能是一个函数调用");
         auto suffix = suffix_list[suffix_list.size() - 1];

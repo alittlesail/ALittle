@@ -34,7 +34,7 @@ ABnfGuessError ALittleScriptOpNewStatReference::CheckError()
 {
     auto element = m_element.lock();
     if (element == nullptr) return ABnfGuessError(element, u8"½ÚµãÊ§Ð§");
-    auto value_stat_list = element->GetValueStatList();
+    const auto& value_stat_list = element->GetValueStatList();
 
     if (element->GetGenericType() != nullptr)
     {
@@ -113,7 +113,7 @@ ABnfGuessError ALittleScriptOpNewStatReference::CheckError()
                 return nullptr;
             }
 
-            auto param_one_dec_list = param_dec->GetMethodParamOneDecList();
+            const auto& param_one_dec_list = param_dec->GetMethodParamOneDecList();
             std::vector<ABnfGuessPtr> param_guess_list;
             std::vector<bool> param_nullable_list;
             bool has_param_tail = false;

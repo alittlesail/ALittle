@@ -189,7 +189,7 @@ ABnfGuessError ALittleScriptMethodBodyDecReference::CheckMethodBody(const std::v
     // ¼ì²éreturn
     if (return_list.size() > 0 && !ALittleScriptUtility::IsRegister(method_name_dec))
     {
-        auto all_expr_list = method_body_dec->GetAllExprList();
+        const auto& all_expr_list = method_body_dec->GetAllExprList();
         bool result = false;
         auto error = CheckAllExprList(return_list, all_expr_list, result);
         if (error) return error;
@@ -255,8 +255,8 @@ ABnfGuessError ALittleScriptMethodBodyDecReference::CheckError()
 
     if (return_dec != nullptr)
     {
-        auto return_one_list = return_dec->GetMethodReturnOneDecList();
-        for (int i = 0; i < return_one_list.size(); ++i)
+        const auto& return_one_list = return_dec->GetMethodReturnOneDecList();
+        for (size_t i = 0; i < return_one_list.size(); ++i)
         {
             auto return_one = return_one_list[i];
             auto all_type = return_one->GetAllType();

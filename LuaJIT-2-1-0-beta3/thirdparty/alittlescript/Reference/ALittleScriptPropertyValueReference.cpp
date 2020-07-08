@@ -7,7 +7,7 @@ ABnfGuessError ALittleScriptPropertyValueReference::GuessTypes(std::vector<ABnfG
 {
     auto element = m_element.lock();
     if (element == nullptr) return ABnfGuessError(nullptr, u8"½ÚµãÊ§Ð§");
-    auto suffixList = element->GetPropertyValueSuffixList();
+    const auto& suffixList = element->GetPropertyValueSuffixList();
     if (suffixList.size() == 0)
     {
         auto first_type = element->GetPropertyValueFirstType();

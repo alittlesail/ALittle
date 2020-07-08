@@ -34,7 +34,7 @@ inline ABnfGuessError ALittleScriptPropertyValueMethodCallReference::GuessPreTyp
     auto property_value_suffix = std::dynamic_pointer_cast<ALittleScriptPropertyValueSuffixElement>(element->GetParent());
     auto property_value = std::dynamic_pointer_cast<ALittleScriptPropertyValueElement>(property_value_suffix->GetParent());
     auto property_value_first_type = property_value->GetPropertyValueFirstType();
-    auto suffix_list = property_value->GetPropertyValueSuffixList();
+    const auto& suffix_list = property_value->GetPropertyValueSuffixList();
 
     // 获取所在位置
     int index = -1;
@@ -391,7 +391,7 @@ ABnfGuessError ALittleScriptPropertyValueMethodCallReference::CheckTemplateMap(s
     if (!std::dynamic_pointer_cast<ALittleScriptGuessFunctor>(pre_type)) return nullptr;
     auto pre_type_functor = std::dynamic_pointer_cast<ALittleScriptGuessFunctor>(pre_type);
 
-    auto value_stat_list = element->GetValueStatList();
+    const auto& value_stat_list = element->GetValueStatList();
     if (pre_type_functor->param_list.size() < value_stat_list.size() && pre_type_functor->param_tail.lock() == nullptr)
         return ABnfGuessError(element, u8"函数调用最多需要" + std::to_string(pre_type_functor->param_list.size()) + u8"个参数,不能是:" + std::to_string(value_stat_list.size()) + "个");
 
@@ -407,7 +407,7 @@ ABnfGuessError ALittleScriptPropertyValueMethodCallReference::CheckTemplateMap(s
         auto method_template = element->GetPropertyValueMethodTemplate();
         if (method_template != nullptr)
         {
-            auto all_type_list = method_template->GetAllTypeList();
+            const auto& all_type_list = method_template->GetAllTypeList();
             if (all_type_list.size() > pre_type_functor->template_param_list.size())
                 return ABnfGuessError(element, u8"函数调用最多需要" + std::to_string(pre_type_functor->template_param_list.size()) + u8"个模板参数,不能是:" + std::to_string(all_type_list.size()) + "个");
 
@@ -497,7 +497,7 @@ ABnfGuessError ALittleScriptPropertyValueMethodCallReference::CheckError()
     if (pre_type_functor == nullptr) return ABnfGuessError(element, u8"括号前面必须是函数");
 
     // 检查填写的和函数定义的参数是否一致
-    auto value_stat_list = element->GetValueStatList();
+    const auto& value_stat_list = element->GetValueStatList();
     for (int i = 0; i < value_stat_list.size(); ++i)
     {
         auto value_stat = value_stat_list[i];

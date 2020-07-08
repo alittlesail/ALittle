@@ -48,19 +48,19 @@ void ALittleScriptPropertyValueThisTypeReference::ReloadInfo()
         else if (std::dynamic_pointer_cast<ALittleScriptClassGetterDecElement>(parent)) {
             auto class_getter_dec = std::dynamic_pointer_cast<ALittleScriptClassGetterDecElement>(parent);
             m_class_getter_dec = class_getter_dec;
-            auto modifier = std::dynamic_pointer_cast<ALittleScriptClassElementDecElement>(class_getter_dec->GetParent())->GetModifierList();
+            const auto& modifier = std::dynamic_pointer_cast<ALittleScriptClassElementDecElement>(class_getter_dec->GetParent())->GetModifierList();
             m_is_const = ALittleScriptUtility::IsConst(modifier);
         }
         else if (std::dynamic_pointer_cast<ALittleScriptClassSetterDecElement>(parent)) {
             auto class_setter_dec = std::dynamic_pointer_cast<ALittleScriptClassSetterDecElement>(parent);
             m_class_setter_dec = class_setter_dec;
-            auto modifier = std::dynamic_pointer_cast<ALittleScriptClassElementDecElement>(class_setter_dec->GetParent())->GetModifierList();
+            const auto& modifier = std::dynamic_pointer_cast<ALittleScriptClassElementDecElement>(class_setter_dec->GetParent())->GetModifierList();
             m_is_const = ALittleScriptUtility::IsConst(modifier);
         }
         else if (std::dynamic_pointer_cast<ALittleScriptClassMethodDecElement>(parent)) {
             auto class_method_dec = std::dynamic_pointer_cast<ALittleScriptClassMethodDecElement>(parent);
             m_class_method_dec = class_method_dec;
-            auto modifier = std::dynamic_pointer_cast<ALittleScriptClassElementDecElement>(class_method_dec->GetParent())->GetModifierList();
+            const auto& modifier = std::dynamic_pointer_cast<ALittleScriptClassElementDecElement>(class_method_dec->GetParent())->GetModifierList();
             m_is_const = ALittleScriptUtility::IsConst(modifier);
         }
         else if (std::dynamic_pointer_cast<ALittleScriptClassStaticDecElement>(parent)) {

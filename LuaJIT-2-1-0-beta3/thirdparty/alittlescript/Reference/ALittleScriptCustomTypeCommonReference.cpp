@@ -254,7 +254,7 @@ ABnfElementPtr ALittleScriptCustomTypeCommonReference::GotoDefinition()
         auto template_dec = GetMethodTemplateDec();
         if (template_dec != nullptr)
         {
-            auto pair_dec_list = template_dec->GetTemplatePairDecList();
+            const auto& pair_dec_list = template_dec->GetTemplatePairDecList();
             for (auto& pair_dec : pair_dec_list)
             {
                 auto pair_name_dec = pair_dec->GetTemplateNameDec();

@@ -54,7 +54,7 @@ ABnfGuessError ALittleScriptForPairDecReference::GuessTypes(std::vector<ABnfGues
             return ABnfGuessError(element, u8"For没有遍历对象，无法推导类型");
 
         // 获取定义列表
-        auto pair_dec_list = in_condition->GetForPairDecList();
+        const auto& pair_dec_list = in_condition->GetForPairDecList();
         // 查找是第几个，如果没有找到，那么就是第0个，如果有找到那就+1
         int index = -1;
         for (int i = 0; i < static_cast<int>(pair_dec_list.size()); ++i)

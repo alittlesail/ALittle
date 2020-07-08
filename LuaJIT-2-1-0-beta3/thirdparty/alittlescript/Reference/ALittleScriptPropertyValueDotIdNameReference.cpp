@@ -263,7 +263,7 @@ ABnfGuessError ALittleScriptPropertyValueDotIdNameReference::CalcResolve(std::ve
     auto property_value_suffix = std::dynamic_pointer_cast<ALittleScriptPropertyValueSuffixElement>(property_value_dot_id->GetParent());
     auto property_value = std::dynamic_pointer_cast<ALittleScriptPropertyValueElement>(property_value_suffix->GetParent());
     auto property_value_first_type = property_value->GetPropertyValueFirstType();
-    auto suffix_list = property_value->GetPropertyValueSuffixList();
+    const auto& suffix_list = property_value->GetPropertyValueSuffixList();
 
     // 获取所在位置
     int index = -1;

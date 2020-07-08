@@ -37,7 +37,7 @@ ABnfGuessError ALittleScriptReturnExprReference::CheckError()
             if (std::dynamic_pointer_cast<ALittleScriptClassMethodDecElement>(parent))
             {
                 auto method_dec = std::dynamic_pointer_cast<ALittleScriptClassMethodDecElement>(parent);
-                auto modifier = std::dynamic_pointer_cast<ALittleScriptClassElementDecElement>(method_dec->GetParent())->GetModifierList();
+                const auto& modifier = std::dynamic_pointer_cast<ALittleScriptClassElementDecElement>(method_dec->GetParent())->GetModifierList();
                 if (ALittleScriptUtility::GetCoroutineType(modifier).empty())
                 {
                     element = method_dec->GetMethodNameDec();
@@ -48,7 +48,7 @@ ABnfGuessError ALittleScriptReturnExprReference::CheckError()
             else if (std::dynamic_pointer_cast<ALittleScriptClassStaticDecElement>(parent))
             {
                 auto method_dec = std::dynamic_pointer_cast<ALittleScriptClassStaticDecElement>(parent);
-                auto modifier = std::dynamic_pointer_cast<ALittleScriptClassElementDecElement>(method_dec->GetParent())->GetModifierList();
+                const auto& modifier = std::dynamic_pointer_cast<ALittleScriptClassElementDecElement>(method_dec->GetParent())->GetModifierList();
                 if (ALittleScriptUtility::GetCoroutineType(modifier).empty())
                 {
                     element = method_dec->GetMethodNameDec();
@@ -59,7 +59,7 @@ ABnfGuessError ALittleScriptReturnExprReference::CheckError()
             else if (std::dynamic_pointer_cast<ALittleScriptGlobalMethodDecElement>(parent))
             {
                 auto method_dec = std::dynamic_pointer_cast<ALittleScriptGlobalMethodDecElement>(parent);
-                auto modifier = std::dynamic_pointer_cast<ALittleScriptNamespaceElementDecElement>(method_dec->GetParent())->GetModifierList();
+                const auto& modifier = std::dynamic_pointer_cast<ALittleScriptNamespaceElementDecElement>(method_dec->GetParent())->GetModifierList();
                 if (ALittleScriptUtility::GetCoroutineType(modifier).empty())
                 {
                     element = method_dec->GetMethodNameDec();
@@ -76,7 +76,7 @@ ABnfGuessError ALittleScriptReturnExprReference::CheckError()
         return nullptr;
     }
 
-    auto value_stat_list = element->GetValueStatList();
+    const auto& value_stat_list = element->GetValueStatList();
     std::vector<std::shared_ptr<ALittleScriptAllTypeElement>> return_type_list;
     std::shared_ptr<ALittleScriptMethodReturnTailDecElement> return_tail_dec;
 
@@ -121,7 +121,7 @@ ABnfGuessError ALittleScriptReturnExprReference::CheckError()
             auto return_dec = method_dec->GetMethodReturnDec();
             if (return_dec != nullptr)
             {
-                auto return_one_list = return_dec->GetMethodReturnOneDecList();
+                const auto& return_one_list = return_dec->GetMethodReturnOneDecList();
                 for (auto& return_one : return_one_list)
                 {
                     auto all_type = return_one->GetAllType();
@@ -139,7 +139,7 @@ ABnfGuessError ALittleScriptReturnExprReference::CheckError()
             auto return_dec = method_dec->GetMethodReturnDec();
             if (return_dec != nullptr)
             {
-                auto return_one_list = return_dec->GetMethodReturnOneDecList();
+                const auto& return_one_list = return_dec->GetMethodReturnOneDecList();
                 for (auto& return_one : return_one_list)
                 {
                     auto all_type = return_one->GetAllType();

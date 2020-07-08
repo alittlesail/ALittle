@@ -12,7 +12,7 @@ ABnfGuessError ALittleScriptTcallStatReference::GuessTypes(std::vector<ABnfGuess
     if (element == nullptr) return ABnfGuessError(nullptr, u8"节点失效");
 
     guess_list.resize(0);
-    auto value_stat_list = element->GetValueStatList();
+    const auto& value_stat_list = element->GetValueStatList();
     if (value_stat_list.size() == 0)
         return ABnfGuessError(element, u8"tcall表达式不能没有参数");
 
@@ -42,7 +42,7 @@ ABnfGuessError ALittleScriptTcallStatReference::CheckError()
 {
     auto element = m_element.lock();
     if (element == nullptr) return ABnfGuessError(element, u8"节点失效");
-    auto value_stat_list = element->GetValueStatList();
+    const auto& value_stat_list = element->GetValueStatList();
     if (value_stat_list.size() == 0)
         return ABnfGuessError(element, u8"tcall表达式不能没有参数");
 

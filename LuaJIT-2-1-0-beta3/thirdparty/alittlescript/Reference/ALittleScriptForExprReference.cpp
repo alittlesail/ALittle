@@ -133,7 +133,7 @@ ABnfGuessError ALittleScriptForExprReference::CheckError()
                 element->GetFile()->AddGuessType(sub_type);
             }
             error = ALittleScriptOp::GuessTypeEqual(sub_type, pair_dec_list[1], value_guess_type, false, false);
-            if (error != nullptr)
+            if (error)
                 return ABnfGuessError(error.element, u8"变量格式错误，不能是:" + value_guess_type->GetValue() + " :" + error.error);
             return nullptr;
         }
@@ -160,7 +160,7 @@ ABnfGuessError ALittleScriptForExprReference::CheckError()
                 element->GetFile()->AddGuessType(map_key_type);
             }
             error = ALittleScriptOp::GuessTypeEqual(map_key_type, pair_dec_list[0], key_guess_type, false, false);
-            if (error != nullptr)
+            if (error)
                 return ABnfGuessError(error.element, u8"key变量格式错误，不能是:" + key_guess_type->GetValue() + " :" + error.error);
 
             // 第二个参数必须和Map的value元素相等
@@ -176,7 +176,7 @@ ABnfGuessError ALittleScriptForExprReference::CheckError()
                 element->GetFile()->AddGuessType(map_value_type);
             }
             error = ALittleScriptOp::GuessTypeEqual(map_value_type, pair_dec_list[1], value_guess_type, false, false);
-            if (error != nullptr)
+            if (error)
                 return ABnfGuessError(error.element, u8"value变量格式错误，不能是:" + value_guess_type->GetValue() + " :" + error.error);
             return nullptr;
         }

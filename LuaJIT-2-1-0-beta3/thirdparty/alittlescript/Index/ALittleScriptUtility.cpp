@@ -305,7 +305,7 @@ bool ALittleScriptUtility::IsNative(const std::vector<std::shared_ptr<ALittleScr
 }
 
 // 检查await
-ABnfGuessError ALittleScriptUtility::CheckInvokeAwaitError(std::shared_ptr<ABnfElement> element)
+ABnfGuessError ALittleScriptUtility::CheckInvokeAwait(std::shared_ptr<ABnfElement> element)
 {
     // 检查这次所在的函数必须要有await或者async修饰
 	std::shared_ptr<ABnfElement> parent = element;
@@ -836,8 +836,7 @@ void ALittleScriptUtility::FilterSameName(const std::vector<std::shared_ptr<ABnf
         map[list[i]->GetElementText()] = list[i];
 
     out.resize(0);
-    for (auto& pair : map)
-        out.push_back(pair.second);
+    for (auto& pair : map) out.push_back(pair.second);
 }
 
 // 计算在dec这个类中，对targetDec成员的访问权限

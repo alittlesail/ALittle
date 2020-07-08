@@ -78,9 +78,7 @@ ABnfGuessError ALittleScriptMethodNameDecReference::GuessTypes(std::vector<ABnfG
         info->return_list.push_back(all_type_guess);
 
         info->UpdateValue();
-
-        ABnfGuessPtr cache = info;
-        element->GetFile()->AddGuessType(cache);
+        element->GetFile()->AddGuessType(info);
         guess_list.push_back(info);
     }
     else if (std::dynamic_pointer_cast<ALittleScriptClassSetterDecElement>(parent))
@@ -126,9 +124,7 @@ ABnfGuessError ALittleScriptMethodNameDecReference::GuessTypes(std::vector<ABnfG
         }
 
         info->UpdateValue();
-
-        ABnfGuessPtr cache = info;
-        element->GetFile()->AddGuessType(cache);
+        element->GetFile()->AddGuessType(info);
         guess_list.push_back(info);
     }
     else if (std::dynamic_pointer_cast<ALittleScriptClassMethodDecElement>(parent))
@@ -229,9 +225,7 @@ ABnfGuessError ALittleScriptMethodNameDecReference::GuessTypes(std::vector<ABnfG
             }
         }
         info->UpdateValue();
-
-        ABnfGuessPtr cache = info;
-        element->GetFile()->AddGuessType(cache);
+        element->GetFile()->AddGuessType(info);
         guess_list.push_back(info);
     }
     else if (std::dynamic_pointer_cast<ALittleScriptClassStaticDecElement>(parent))
@@ -321,9 +315,7 @@ ABnfGuessError ALittleScriptMethodNameDecReference::GuessTypes(std::vector<ABnfG
             }
         }
         info->UpdateValue();
-
-        ABnfGuessPtr cache = info;
-        element->GetFile()->AddGuessType(cache);
+        element->GetFile()->AddGuessType(info);
         guess_list.push_back(info);
     }
     else if (std::dynamic_pointer_cast<ALittleScriptGlobalMethodDecElement>(parent))
@@ -546,8 +538,7 @@ ABnfGuessError ALittleScriptMethodNameDecReference::GuessTypes(std::vector<ABnfG
             }
         }
         info->UpdateValue();
-        ABnfGuessPtr cache = info;
-        element->GetFile()->AddGuessType(cache);
+        element->GetFile()->AddGuessType(info);
         guess_list.push_back(info);
     }
 

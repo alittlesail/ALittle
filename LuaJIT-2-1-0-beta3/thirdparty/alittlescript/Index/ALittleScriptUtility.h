@@ -75,7 +75,7 @@ public:
     static bool IsNative(const std::vector<std::shared_ptr<ALittleScriptModifierElement>>& element_list);
 
     // ºÏ≤Èawait
-    static ABnfGuessError CheckInvokeAwaitError(std::shared_ptr<ABnfElement> element);
+    static ABnfGuessError CheckInvokeAwait(std::shared_ptr<ABnfElement> element);
 
     // ≈–∂œ «∑Ò¥Ê‘⁄
     static ABnfGuessError CheckError(std::shared_ptr<ABnfElement> parent, const std::vector<std::shared_ptr<ALittleScriptModifierElement>>& element_list);

@@ -134,8 +134,7 @@ ABnfGuessError ALittleScriptCustomTypeCommonReference::GuessTypes(std::vector<AB
                     info->template_map[template_guess->GetValueWithoutConst()] = src_guess_list[i];
                 }
                 info->UpdateValue();
-                ABnfGuessPtr cache = info;
-                element->GetFile()->AddGuessType(cache);
+                element->GetFile()->AddGuessType(info);
                 guess = info;
             }
 

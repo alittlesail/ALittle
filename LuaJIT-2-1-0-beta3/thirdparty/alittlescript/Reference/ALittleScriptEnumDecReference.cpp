@@ -24,9 +24,7 @@ inline ABnfGuessError ALittleScriptEnumDecReference::GuessTypes(std::vector<ABnf
 
     auto info = std::shared_ptr< ALittleScriptGuessEnum>(new ALittleScriptGuessEnum(m_namespace_name, name_dec->GetElementText(), element));
     info->UpdateValue();
-
-    ABnfGuessPtr cache = info;
-    element->GetFile()->AddGuessType(cache);
+    element->GetFile()->AddGuessType(info);
     guess_list.push_back(info);
     return nullptr;
 }

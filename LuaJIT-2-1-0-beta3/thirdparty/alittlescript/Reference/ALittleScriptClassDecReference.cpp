@@ -58,9 +58,7 @@ ABnfGuessError ALittleScriptClassDecReference::GuessTypes(std::vector<ABnfGuessP
         for (auto& guess : guess_list_temp) info->template_list.push_back(guess);
     }
     info->UpdateValue();
-
-    ABnfGuessPtr cache = info;
-    element->GetFile()->AddGuessType(cache);
+    element->GetFile()->AddGuessType(info);
     guess_list.push_back(info);
     return nullptr;
 }

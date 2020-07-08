@@ -135,8 +135,7 @@ ABnfGuessError ALittleScriptGenericTypeReference::GuessTypes(std::vector<ABnfGue
                 }
             }
             info->UpdateValue();
-            ABnfGuessPtr cache = info;
-            element->GetFile()->AddGuessType(cache);
+            element->GetFile()->AddGuessType(info);
             guess_list.push_back(info);
         }
     }

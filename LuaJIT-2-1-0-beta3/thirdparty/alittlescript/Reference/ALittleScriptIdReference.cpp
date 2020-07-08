@@ -10,7 +10,7 @@ void ALittleScriptIdReference::QueryQuickInfo(std::string& info)
     parent->GetReference()->QueryQuickInfo(info);
 }
 
-inline ABnfElementPtr ALittleScriptIdReference::GotoDefinition()
+ABnfElementPtr ALittleScriptIdReference::GotoDefinition()
 {
     auto element = m_element.lock();
     if (element == nullptr) return nullptr;

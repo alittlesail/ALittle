@@ -6,7 +6,7 @@
 #include "../Index/ALittleScriptFileClass.h"
 #include "../Index/ALittleScriptUtility.h"
 
-inline ABnfGuessError ALittleScriptOpNewListStatReference::GuessTypes(std::vector<ABnfGuessPtr>& guess_list)
+ABnfGuessError ALittleScriptOpNewListStatReference::GuessTypes(std::vector<ABnfGuessPtr>& guess_list)
 {
     auto element = m_element.lock();
     if (element == nullptr) return ABnfGuessError(nullptr, u8"½ÚµãÊ§Ð§");

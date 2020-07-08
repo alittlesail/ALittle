@@ -77,8 +77,10 @@ public:
 
     virtual int GetLengthWithoutError() { return GetEnd() - GetStart(); }
 
-    // 获取类型
+    // 获取支节点类型
     virtual const std::string& GetNodeType();
+    // 获取叶结点类型
+    virtual const std::string& GetLeafType();
 
     // 获取文本
     virtual const std::string& GetElementText();

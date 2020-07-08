@@ -22,12 +22,12 @@ bool ALittleScriptLanguageNameDecReference::QueryCompletion(std::vector<ALanguag
     auto* project = dynamic_cast<ALittleScriptProjectClass*>(element->GetFile()->GetProject());
     if (project == nullptr) return false;
     for (auto& name : project->GetLanguageSet())
-        list.emplace_back(name, ALittleScriptColorType::ALittleScriptLanguageName);
+        list.emplace_back(name, ALittleScriptIconType::LANGUAGE);
     return true;
 }
 
 int ALittleScriptLanguageNameDecReference::QueryClassificationTag(bool& blur)
 {
     blur = false;
-    return ALittleScriptColorType::ALittleScriptCustomName;
+    return ALittleScriptColorType::CUSTOM_NAME;
 }

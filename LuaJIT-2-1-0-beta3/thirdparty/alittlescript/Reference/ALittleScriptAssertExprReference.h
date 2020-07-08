@@ -9,6 +9,8 @@
 class ALittleScriptAssertExprReference : public ALittleScriptReferenceTemplate<ALittleScriptAssertExprElement>
 {
 public:
+    ALittleScriptAssertExprReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptAssertExprElement>(element) {}
+    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptAssertExprReference(element); }
     ABnfGuessError CheckError() override;
 };
 

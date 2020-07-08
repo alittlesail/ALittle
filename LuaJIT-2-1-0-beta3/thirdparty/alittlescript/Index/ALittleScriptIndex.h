@@ -36,27 +36,8 @@ struct RelayInfo
     std::string rel_path;
 };
 
-class ALittleScriptIndex
+class ALittleScriptStatic
 {
-protected:
-    // 保存关键的元素对象，用于快速语法树解析
-    // Key1:文件对象，Key2:元素对象，Value:类型
-    std::map<ABnfFile*, std::map<std::shared_ptr<ABnfElement>, std::vector<std::shared_ptr<ABnfGuess>>>> m_guess_type_map;
-    std::map<ABnfFile*, std::map<std::shared_ptr<ABnfElement>, ABnfGuessError>> m_guess_error_map;
-    // Key1:文件对象，Key2:名称，Value:数据
-    std::map<ABnfFile*, std::map<std::string, ALittleScriptClassData>> m_class_data_map;
-    std::map<ABnfFile*, std::map<std::string, ALittleScriptStructData>> m_struct_data_map;
-    std::map<ABnfFile*, std::map<std::string, ALittleScriptEnumData>> m_enum_data_map;
-
-    // 按命名域来划分
-    // string 表示命名域
-    std::map<std::string, std::map<std::shared_ptr<ALittleScriptNamespaceNameDecElement>, ALittleScriptAccessData>> m_all_data_map;
-    // 根据开放权限来划分
-    // string 表示命名域
-    std::map<std::string, ALittleScriptAccessData> m_global_access_map;
-    std::map<std::string, ALittleScriptAccessData> m_namespace_access_map;
-    std::map<ABnfFile*, ALittleScriptAccessData> m_file_access_map;
-
 public:
     std::shared_ptr<ABnfGuess> sIntGuess;
     std::shared_ptr<ABnfGuess> sDoubleGuess;
@@ -80,9 +61,35 @@ public:
     // 控制语句
     std::set<std::string> sCtrlKeyWord;
 
-    ALittleScriptIndex();
-    virtual ~ALittleScriptIndex() {}
+public:
+    static ALittleScriptStatic& Inst();
 
+private:
+    ALittleScriptStatic();
+};
+
+class ALittleScriptIndex
+{
+protected:
+    // 保存关键的元素对象，用于快速语法树解析
+    // Key1:文件对象，Key2:元素对象，Value:类型
+    std::map<ABnfFile*, std::map<std::shared_ptr<ABnfElement>, std::vector<std::shared_ptr<ABnfGuess>>>> m_guess_type_map;
+    std::map<ABnfFile*, std::map<std::shared_ptr<ABnfElement>, ABnfGuessError>> m_guess_error_map;
+    // Key1:文件对象，Key2:名称，Value:数据
+    std::map<ABnfFile*, std::map<std::string, ALittleScriptClassData>> m_class_data_map;
+    std::map<ABnfFile*, std::map<std::string, ALittleScriptStructData>> m_struct_data_map;
+    std::map<ABnfFile*, std::map<std::string, ALittleScriptEnumData>> m_enum_data_map;
+
+    // 按命名域来划分
+    // string 表示命名域
+    std::map<std::string, std::map<std::shared_ptr<ALittleScriptNamespaceNameDecElement>, ALittleScriptAccessData>> m_all_data_map;
+    // 根据开放权限来划分
+    // string 表示命名域
+    std::map<std::string, ALittleScriptAccessData> m_global_access_map;
+    std::map<std::string, ALittleScriptAccessData> m_namespace_access_map;
+    std::map<ABnfFile*, ALittleScriptAccessData> m_file_access_map;
+
+public:
     // 获取类型列表
     const std::vector<std::shared_ptr<ABnfGuess>>* GetGuessTypeList(std::shared_ptr<ABnfElement> element);
 

@@ -10,10 +10,9 @@ int ALittleScriptKeyReference::QueryClassificationTag(bool& blur)
     blur = false;
     auto text = element->GetElementText();
 
-    auto* index = GetIndex();
-    if (index->sCtrlKeyWord.find(text) != index->sCtrlKeyWord.end())
-        return ALittleScriptColorType::ALittleScriptCtrlKeyWord;
-    return ALittleScriptColorType::ALittleScriptKeyWord;
+    if (ALittleScriptStatic::Inst().sCtrlKeyWord.find(text) != ALittleScriptStatic::Inst().sCtrlKeyWord.end())
+        return ALittleScriptColorType::CTRL_KEYWORD;
+    return ALittleScriptColorType::KEYWORD;
 }
 
 ABnfElementPtr ALittleScriptKeyReference::GotoDefinition()

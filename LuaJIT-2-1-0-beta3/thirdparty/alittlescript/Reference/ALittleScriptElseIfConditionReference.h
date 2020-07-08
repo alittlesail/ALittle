@@ -8,6 +8,9 @@
 
 class ALittleScriptElseIfConditionReference : public ALittleScriptReferenceTemplate<ALittleScriptElseIfConditionElement>
 {
+public:
+    ALittleScriptElseIfConditionReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptElseIfConditionElement>(element) {}
+    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptElseIfConditionReference(element); }
     ABnfGuessError CheckError() override;
 };
 

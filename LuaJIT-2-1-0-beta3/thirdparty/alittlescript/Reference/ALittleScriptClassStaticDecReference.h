@@ -8,6 +8,9 @@
 
 class ALittleScriptClassStaticDecReference : public ALittleScriptReferenceTemplate<ALittleScriptClassStaticDecElement>
 {
+public:
+    ALittleScriptClassStaticDecReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptClassStaticDecElement>(element) {}
+    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptClassStaticDecReference(element); }
     ABnfGuessError CheckError() override;
 };
 

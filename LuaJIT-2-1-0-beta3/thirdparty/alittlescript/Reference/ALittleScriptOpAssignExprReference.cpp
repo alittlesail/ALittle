@@ -6,6 +6,7 @@
 #include "../Generate/ALittleScriptOpAssignElement.h"
 
 #include "../Index/ALittleScriptUtility.h"
+#include "../Index/ALittleScriptOp.h"
 
 #include "../Guess/ALittleScriptGuessReturnTail.h"
 #include "../Guess/ALittleScriptGuessTemplate.h"
@@ -15,14 +16,14 @@ ABnfGuessError ALittleScriptOpAssignExprReference::CheckError()
 {
     auto element = m_element.lock();
     if (element == nullptr) return ABnfGuessError(element, u8"节点失效");
-    auto property_value_list = element->GetPropertyValueList();
+    const auto& property_value_list = element->GetPropertyValueList();
     auto value_stat = element->GetValueStat();
     if (value_stat == nullptr)
     {
         if (property_value_list.size() != 1)
             return ABnfGuessError(element, u8"没有赋值表达式时，只能是一个函数调用");
         auto property_value = property_value_list[0];
-        auto suffix_list = property_value->GetPropertyValueSuffixList();
+        const auto& suffix_list = property_value->GetPropertyValueSuffixList();
         if (suffix_list.size() == 0)
             return ABnfGuessError(element, u8"没有赋值表达式时，只能是一个函数调用");
         auto suffix = suffix_list[suffix_list.size() - 1];
@@ -66,7 +67,7 @@ ABnfGuessError ALittleScriptOpAssignExprReference::CheckError()
             if (guess_error) return guess_error;
             guess_error = ALittleScriptOp::GuessTypeEqual(pair_dec_guess, value_stat, method_call_guess_list[i], true, false);
             if (guess_error)
-                return ABnfGuessError(value_stat, u8"等号左边的第" + std::to_string(i + 1) + "个变量数量和函数定义的返回值类型不相等:" + guess_error.error);
+                return ABnfGuessError(value_stat, u8"等号左边的第" + std::to_string(i + 1) + u8"个变量数量和函数定义的返回值类型不相等:" + guess_error.error);
         }
 
         return nullptr;
@@ -103,16 +104,16 @@ ABnfGuessError ALittleScriptOpAssignExprReference::CheckError()
         if (error) return error;
 
         if (return_count != 1)
-            return ABnfGuessError(value_stat, op_string + "右边必须只能是一个返回值");
+            return ABnfGuessError(value_stat, op_string + u8"右边必须只能是一个返回值");
 
         if (pair_guess->is_const)
-            return ABnfGuessError(property_value_list[0], u8"const类型不能使用" + op_string + "运算符");
+            return ABnfGuessError(property_value_list[0], u8"const类型不能使用" + op_string + u8"运算符");
 
         if (!std::dynamic_pointer_cast<ALittleScriptGuessInt>(pair_guess) && !std::dynamic_pointer_cast<ALittleScriptGuessDouble>(pair_guess) && !std::dynamic_pointer_cast<ALittleScriptGuessLong>(pair_guess))
-            return ABnfGuessError(property_value_list[0], op_string + "左边必须是int, double, long");
+            return ABnfGuessError(property_value_list[0], op_string + u8"左边必须是int, double, long");
 
         if (!std::dynamic_pointer_cast<ALittleScriptGuessInt>(value_guess) && !std::dynamic_pointer_cast<ALittleScriptGuessDouble>(value_guess) && !std::dynamic_pointer_cast<ALittleScriptGuessLong>(value_guess))
-            return ABnfGuessError(value_stat, op_string + "右边必须是int, double, long");
+            return ABnfGuessError(value_stat, op_string + u8"右边必须是int, double, long");
     }
     return nullptr;
 }

@@ -86,12 +86,14 @@ public:
     static int GetByteCountOfOneWord(unsigned char first_char);
 
 public:
+    // 内容更新之前
+    virtual void OnBeforeUpdate() {}
     // 内容出现更新
-    virtual void OnUpdate() {}
+    virtual void OnAfterUpdate() {}
     // 移除内容
     virtual void OnRemove() {}
     // 添加ABnfGuess，为了持有这个对象的引用
-    inline void AddGuessType(ABnfGuessPtr& ptr) { m_guess_cache.push_back(ptr); }
+    inline void AddGuessType(ABnfGuessPtr ptr) { m_guess_cache.push_back(ptr); }
     // 清空引用
     inline void ClearGuessType() { m_guess_cache.resize(0); }
 

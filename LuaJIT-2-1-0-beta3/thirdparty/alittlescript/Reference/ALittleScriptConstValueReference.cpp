@@ -11,35 +11,33 @@ ABnfGuessError ALittleScriptConstValueReference::GuessTypes(std::vector<ABnfGues
 
     const auto& text = element->GetElementText();
 
-    auto* index = GetIndex();
-
     if (element->GetNumber() != nullptr)
     {
         if (ALittleScriptUtility::IsInt(element->GetNumber()))
         {
-            auto it = index->sPrimitiveGuessListMap.find("int");
-            if (it != index->sPrimitiveGuessListMap.end()) guess_list = it->second;
+            auto it = ALittleScriptStatic::Inst().sPrimitiveGuessListMap.find("int");
+            if (it != ALittleScriptStatic::Inst().sPrimitiveGuessListMap.end()) guess_list = it->second;
         }
         else
         {
-            auto it = index->sPrimitiveGuessListMap.find("double");
-            if (it != index->sPrimitiveGuessListMap.end()) guess_list = it->second;
+            auto it = ALittleScriptStatic::Inst().sPrimitiveGuessListMap.find("double");
+            if (it != ALittleScriptStatic::Inst().sPrimitiveGuessListMap.end()) guess_list = it->second;
         }
 
     }
     else if (element->GetText() != nullptr)
     {
-        auto it = index->sPrimitiveGuessListMap.find("string");
-        if (it != index->sPrimitiveGuessListMap.end()) guess_list = it->second;
+        auto it = ALittleScriptStatic::Inst().sPrimitiveGuessListMap.find("string");
+        if (it != ALittleScriptStatic::Inst().sPrimitiveGuessListMap.end()) guess_list = it->second;
     }
     else if (text == "true" || text == "false")
     {
-        auto it = index->sPrimitiveGuessListMap.find("bool");
-        if (it != index->sPrimitiveGuessListMap.end()) guess_list = it->second;
+        auto it = ALittleScriptStatic::Inst().sPrimitiveGuessListMap.find("bool");
+        if (it != ALittleScriptStatic::Inst().sPrimitiveGuessListMap.end()) guess_list = it->second;
     }
     else if (text == "null")
     {
-        guess_list = index->sConstNullGuess;
+        guess_list = ALittleScriptStatic::Inst().sConstNullGuess;
     }
     else
     {

@@ -13,6 +13,7 @@ private:
     std::string m_key;
 public:
     ALittleScriptClassNameDecReference(ABnfElementPtr element);
+    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptClassNameDecReference(element); }
 
     int QueryClassificationTag(bool& blur) override;
 

@@ -22,12 +22,16 @@
 #include "../Generate/ALittleScriptGlobalMethodDecElement.h"
 #include "../Generate/ALittleScriptNamespaceElementDecElement.h"
 #include "../Generate/ALittleScriptClassNameDecElement.h"
+#include "../Generate/ALittleScriptMethodNameDecElement.h"
 
 #include "../Guess/ALittleScriptGuessFunctor.h"
+#include "../Guess/ALittleScriptGuessTemplate.h"
+#include "../Guess/ALittleScriptGuessStruct.h"
 
 #include "../Index/ALittleScriptUtility.h"
 #include "../Index/ALittleScriptFileClass.h"
 #include "../Index/ALittleScriptIndex.h"
+#include "../Index/ALittleScriptOp.h"
 
 ALittleScriptMethodNameDecReference::ALittleScriptMethodNameDecReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptMethodNameDecElement>(element)
 {
@@ -38,7 +42,7 @@ ALittleScriptMethodNameDecReference::ALittleScriptMethodNameDecReference(ABnfEle
 int ALittleScriptMethodNameDecReference::QueryClassificationTag(bool& blur)
 {
     blur = false;
-    return ALittleScriptColorType::ALittleScriptMethodName;
+    return ALittleScriptColorType::METHOD_NAME;
 }
 
 ABnfGuessError ALittleScriptMethodNameDecReference::GuessTypes(std::vector<ABnfGuessPtr>& guess_list)
@@ -78,9 +82,7 @@ ABnfGuessError ALittleScriptMethodNameDecReference::GuessTypes(std::vector<ABnfG
         info->return_list.push_back(all_type_guess);
 
         info->UpdateValue();
-
-        ABnfGuessPtr cache = info;
-        element->GetFile()->AddGuessType(cache);
+        element->GetFile()->AddGuessType(info);
         guess_list.push_back(info);
     }
     else if (std::dynamic_pointer_cast<ALittleScriptClassSetterDecElement>(parent))
@@ -126,9 +128,7 @@ ABnfGuessError ALittleScriptMethodNameDecReference::GuessTypes(std::vector<ABnfG
         }
 
         info->UpdateValue();
-
-        ABnfGuessPtr cache = info;
-        element->GetFile()->AddGuessType(cache);
+        element->GetFile()->AddGuessType(info);
         guess_list.push_back(info);
     }
     else if (std::dynamic_pointer_cast<ALittleScriptClassMethodDecElement>(parent))
@@ -139,7 +139,7 @@ ABnfGuessError ALittleScriptMethodNameDecReference::GuessTypes(std::vector<ABnfG
         auto class_dec = std::dynamic_pointer_cast<ALittleScriptClassDecElement>(class_body_dec->GetParent());
 
         auto info = std::shared_ptr<ALittleScriptGuessFunctor>(new ALittleScriptGuessFunctor(class_method_dec));
-        auto modifier = class_element_dec->GetModifierList();
+        const auto& modifier = class_element_dec->GetModifierList();
         info->const_modifier = ALittleScriptUtility::IsConst(class_element_dec->GetModifierList());
         info->await_modifier = ALittleScriptUtility::GetCoroutineType(modifier) == "await";
 
@@ -170,7 +170,7 @@ ABnfGuessError ALittleScriptMethodNameDecReference::GuessTypes(std::vector<ABnfG
         auto param_dec = class_method_dec->GetMethodParamDec();
         if (param_dec != nullptr)
         {
-            auto one_dec_list = param_dec->GetMethodParamOneDecList();
+            const auto& one_dec_list = param_dec->GetMethodParamOneDecList();
             for (size_t i = 0; i < one_dec_list.size(); ++i)
             {
                 auto one_dec = one_dec_list[i];
@@ -204,8 +204,8 @@ ABnfGuessError ALittleScriptMethodNameDecReference::GuessTypes(std::vector<ABnfG
         auto return_dec = class_method_dec->GetMethodReturnDec();
         if (return_dec != nullptr)
         {
-            auto one_dec_list = return_dec->GetMethodReturnOneDecList();
-            for (int i = 0; i < one_dec_list.size(); ++i)
+            const auto& one_dec_list = return_dec->GetMethodReturnOneDecList();
+            for (size_t i = 0; i < one_dec_list.size(); ++i)
             {
                 auto one_dec = one_dec_list[i];
                 auto all_type = one_dec->GetAllType();
@@ -229,9 +229,7 @@ ABnfGuessError ALittleScriptMethodNameDecReference::GuessTypes(std::vector<ABnfG
             }
         }
         info->UpdateValue();
-
-        ABnfGuessPtr cache = info;
-        element->GetFile()->AddGuessType(cache);
+        element->GetFile()->AddGuessType(info);
         guess_list.push_back(info);
     }
     else if (std::dynamic_pointer_cast<ALittleScriptClassStaticDecElement>(parent))
@@ -261,8 +259,8 @@ ABnfGuessError ALittleScriptMethodNameDecReference::GuessTypes(std::vector<ABnfG
         auto param_dec = class_static_dec->GetMethodParamDec();
         if (param_dec != nullptr)
         {
-            auto one_dec_list = param_dec->GetMethodParamOneDecList();
-            for (int i = 0; i < one_dec_list.size(); ++i)
+            const auto& one_dec_list = param_dec->GetMethodParamOneDecList();
+            for (size_t i = 0; i < one_dec_list.size(); ++i)
             {
                 auto one_dec = one_dec_list[i];
                 auto all_type = one_dec->GetAllType();
@@ -321,9 +319,7 @@ ABnfGuessError ALittleScriptMethodNameDecReference::GuessTypes(std::vector<ABnfG
             }
         }
         info->UpdateValue();
-
-        ABnfGuessPtr cache = info;
-        element->GetFile()->AddGuessType(cache);
+        element->GetFile()->AddGuessType(info);
         guess_list.push_back(info);
     }
     else if (std::dynamic_pointer_cast<ALittleScriptGlobalMethodDecElement>(parent))
@@ -337,28 +333,28 @@ ABnfGuessError ALittleScriptMethodNameDecReference::GuessTypes(std::vector<ABnfG
         auto protocol_type = ALittleScriptUtility::GetProtocolType(namespace_element_dec->GetModifierList());
         if (protocol_type.size())
         {
-            auto error_element = global_method_dec->GetMethodNameDec();
+            ABnfElementPtr error_element = global_method_dec->GetMethodNameDec();
             if (error_element == nullptr) error_element = global_method_dec;
 
             if (global_method_dec->GetTemplateDec() != nullptr)
-                return ABnfGuessError(error_element, u8"带" + info->proto + "不能定义函数模板");
+                return ABnfGuessError(error_element, u8"带" + info->proto + u8"不能定义函数模板");
 
             // 如果是带协议注解，那么一定是一个await
             info->await_modifier = true;
             info->proto = protocol_type;
 
             auto param_dec = global_method_dec->GetMethodParamDec();
-            if (param_dec == nullptr) return ABnfGuessError(error_element, u8"带" + info->proto + "注解的函数必须是两个参数");
-            auto one_dec_list = param_dec->GetMethodParamOneDecList();
-            if (one_dec_list.size() != 2) return ABnfGuessError(error_element, u8"带" + info->proto + "注解的函数必须是两个参数");
+            if (param_dec == nullptr) return ABnfGuessError(error_element, u8"带" + info->proto + u8"注解的函数必须是两个参数");
+            const auto& one_dec_list = param_dec->GetMethodParamOneDecList();
+            if (one_dec_list.size() != 2) return ABnfGuessError(error_element, u8"带" + info->proto + u8"注解的函数必须是两个参数");
             if (ALittleScriptUtility::IsNullable(one_dec_list[0]->GetModifierList()) || ALittleScriptUtility::IsNullable(one_dec_list[1]->GetModifierList()))
-                return ABnfGuessError(error_element, u8"带" + info->proto + "注解的函数参数不能使用Nullable修饰");
+                return ABnfGuessError(error_element, u8"带" + info->proto + u8"注解的函数参数不能使用Nullable修饰");
             auto all_type = one_dec_list[1]->GetAllType();
-            if (all_type == nullptr) return ABnfGuessError(error_element, u8"带" + info->proto + "注解的函数，第二个参数没有定义类型");
+            if (all_type == nullptr) return ABnfGuessError(error_element, u8"带" + info->proto + u8"注解的函数，第二个参数没有定义类型");
             ABnfGuessPtr guess;
             auto error = all_type->GuessType(guess);
             if (error) return error;
-            if (!std::dynamic_pointer_cast<ALittleScriptGuessStruct>(guess)) return ABnfGuessError(error_element, u8"带" + info->proto + "注解的函数第二个参数必须是struct");
+            if (!std::dynamic_pointer_cast<ALittleScriptGuessStruct>(guess)) return ABnfGuessError(error_element, u8"带" + info->proto + u8"注解的函数第二个参数必须是struct");
 
             if (info->proto == "Http")
             {
@@ -376,16 +372,16 @@ ABnfGuessError ALittleScriptMethodNameDecReference::GuessTypes(std::vector<ABnfG
                 info->param_name_list.push_back("param");
 
                 auto return_dec = global_method_dec->GetMethodReturnDec();
-                if (return_dec == nullptr) return ABnfGuessError(error_element, u8"带" + info->proto + "注解的函数返回值必须是struct");
-                auto return_one_list = return_dec->GetMethodReturnOneDecList();
-                if (return_one_list.size() != 1) return ABnfGuessError(error_element, u8"带" + info->proto + "注解的函数返回值有且仅有一个struct");
+                if (return_dec == nullptr) return ABnfGuessError(error_element, u8"带" + info->proto + u8"注解的函数返回值必须是struct");
+                const auto& return_one_list = return_dec->GetMethodReturnOneDecList();
+                if (return_one_list.size() != 1) return ABnfGuessError(error_element, u8"带" + info->proto + u8"注解的函数返回值有且仅有一个struct");
                 auto return_one_all_type = return_one_list[0]->GetAllType();
-                if (return_one_all_type == nullptr) return ABnfGuessError(error_element, u8"带" + info->proto + "注解的函数返回值有且仅有一个struct");
+                if (return_one_all_type == nullptr) return ABnfGuessError(error_element, u8"带" + info->proto + u8"注解的函数返回值有且仅有一个struct");
                 ABnfGuessPtr return_guess;
                 error = return_one_all_type->GuessType(return_guess);
                 if (error) return error;
-                if (!std::dynamic_pointer_cast<ALittleScriptGuessStruct>(return_guess)) return ABnfGuessError(error_element, u8"带" + info->proto + "注解的函数返回值必须是struct");
-                info->return_list.push_back(index->sStringGuess);
+                if (!std::dynamic_pointer_cast<ALittleScriptGuessStruct>(return_guess)) return ABnfGuessError(error_element, u8"带" + info->proto + u8"注解的函数返回值必须是struct");
+                info->return_list.push_back(ALittleScriptStatic::Inst().sStringGuess);
                 info->return_list.push_back(return_guess);
             }
             else if (info->proto == "HttpDownload")
@@ -403,7 +399,7 @@ ABnfGuessError ALittleScriptMethodNameDecReference::GuessTypes(std::vector<ABnfG
                 info->param_nullable_list.push_back(false);
                 info->param_name_list.push_back("param");
 
-                info->return_list.push_back(index->sStringGuess);
+                info->return_list.push_back(ALittleScriptStatic::Inst().sStringGuess);
                 ABnfGuessPtr sender_guess;
                 error = element->GuessType(sender_guess);
                 if (error) return error;
@@ -424,7 +420,7 @@ ABnfGuessError ALittleScriptMethodNameDecReference::GuessTypes(std::vector<ABnfG
                 info->param_nullable_list.push_back(false);
                 info->param_name_list.push_back("param");
 
-                info->return_list.push_back(index->sStringGuess);
+                info->return_list.push_back(ALittleScriptStatic::Inst().sStringGuess);
             }
             else if (info->proto == "Msg")
             {
@@ -444,18 +440,18 @@ ABnfGuessError ALittleScriptMethodNameDecReference::GuessTypes(std::vector<ABnfG
                 auto return_dec = global_method_dec->GetMethodReturnDec();
                 if (return_dec != nullptr)
                 {
-                    auto return_one_list = return_dec->GetMethodReturnOneDecList();
+                    const auto& return_one_list = return_dec->GetMethodReturnOneDecList();
                     if (return_one_list.size() > 0)
                     {
                         auto return_one_all_type = return_one_list[0]->GetAllType();
                         if (return_one_all_type == nullptr)
-                            return ABnfGuessError(error_element, u8"带" + info->proto + "注解的函数返回值必须是struct");
+                            return ABnfGuessError(error_element, u8"带" + info->proto + u8"注解的函数返回值必须是struct");
                         ABnfGuessPtr return_guess;
                         error = return_one_all_type->GuessType(return_guess);
                         if (error) return error;
                         if (!std::dynamic_pointer_cast<ALittleScriptGuessStruct>(return_guess))
-                            return ABnfGuessError(error_element, u8"带" + info->proto + "注解的函数返回值必须是struct");
-                        info->return_list.push_back(index->sStringGuess);
+                            return ABnfGuessError(error_element, u8"带" + info->proto + u8"注解的函数返回值必须是struct");
+                        info->return_list.push_back(ALittleScriptStatic::Inst().sStringGuess);
                         info->return_list.push_back(return_guess);
                     }
                 }
@@ -486,8 +482,8 @@ ABnfGuessError ALittleScriptMethodNameDecReference::GuessTypes(std::vector<ABnfG
             auto param_dec = global_method_dec->GetMethodParamDec();
             if (param_dec != nullptr)
             {
-                auto one_dec_list = param_dec->GetMethodParamOneDecList();
-                for (int i = 0; i < one_dec_list.size(); ++i)
+                const auto& one_dec_list = param_dec->GetMethodParamOneDecList();
+                for (size_t i = 0; i < one_dec_list.size(); ++i)
                 {
                     auto one_dec = one_dec_list[i];
                     auto all_type = one_dec->GetAllType();
@@ -520,8 +516,8 @@ ABnfGuessError ALittleScriptMethodNameDecReference::GuessTypes(std::vector<ABnfG
             auto return_dec = global_method_dec->GetMethodReturnDec();
             if (return_dec != nullptr)
             {
-                auto one_dec_list = return_dec->GetMethodReturnOneDecList();
-                for (int i = 0; i < one_dec_list.size(); ++i)
+                const auto& one_dec_list = return_dec->GetMethodReturnOneDecList();
+                for (size_t i = 0; i < one_dec_list.size(); ++i)
                 {
                     auto one_dec = one_dec_list[i];
                     auto all_type = one_dec->GetAllType();
@@ -546,8 +542,7 @@ ABnfGuessError ALittleScriptMethodNameDecReference::GuessTypes(std::vector<ABnfG
             }
         }
         info->UpdateValue();
-        ABnfGuessPtr cache = info;
-        element->GetFile()->AddGuessType(cache);
+        element->GetFile()->AddGuessType(info);
         guess_list.push_back(info);
     }
 
@@ -615,7 +610,7 @@ bool ALittleScriptMethodNameDecReference::QueryCompletion(std::vector<ALanguageC
         std::vector<ABnfElementPtr> dec_list;
         ALittleScriptUtility::FindClassMethodNameDecList(class_dec, ALittleScriptUtility::sAccessPrivateAndProtectedAndPublic, u8"", dec_list, 100);
         for (int i = 0; i < dec_list.size(); ++i)
-            list.emplace_back(dec_list[i]->GetElementText(), ALittleScriptColorType::ALittleScriptMemberMethodName);
+            list.emplace_back(dec_list[i]->GetElementText(), ALittleScriptIconType::MEMBER_METHOD);
     }
     // 全局函数
     else if (std::dynamic_pointer_cast<ALittleScriptNamespaceElementDecElement>(method_dec->GetParent()))
@@ -624,7 +619,7 @@ bool ALittleScriptMethodNameDecReference::QueryCompletion(std::vector<ALanguageC
         index->FindALittleNameDecList(
             ABnfElementType::GLOBAL_METHOD, element->GetFile(), m_namespace_name, u8"", true, dec_list);
         for (auto& dec : dec_list)
-            list.emplace_back(dec->GetElementText(), ALittleScriptColorType::ALittleScriptGlobalMethodName);
+            list.emplace_back(dec->GetElementText(), ALittleScriptIconType::GLOBAL_METHOD);
     }
 
     return true;

@@ -46,7 +46,7 @@ ABnfGuessError ALittleScriptMethodParamTailDecReference::CheckError()
 
         if (param_dec != nullptr)
         {
-            auto param_one_list = param_dec->GetMethodParamOneDecList();
+            const auto& param_one_list = param_dec->GetMethodParamOneDecList();
             if (param_one_list.size() == 0)
                 return ABnfGuessError(element, u8"参数占位符未定义");
             auto param_tail = param_one_list[param_one_list.size() - 1]->GetMethodParamTailDec();

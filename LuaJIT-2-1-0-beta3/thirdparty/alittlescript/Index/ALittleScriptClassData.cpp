@@ -22,7 +22,7 @@ void ALittleScriptClassData::AddClassChildDec(std::shared_ptr<ABnfElement> dec)
     auto template_dec = std::dynamic_pointer_cast<ALittleScriptTemplateDecElement>(dec);
     if (template_dec)
     {
-        auto& pair_dec_list = template_dec->GetTemplatePairDecList();
+        const auto& pair_dec_list = template_dec->GetTemplatePairDecList();
         for (auto& pair_dec : pair_dec_list)
             AddClassChildDec(pair_dec);
         return;

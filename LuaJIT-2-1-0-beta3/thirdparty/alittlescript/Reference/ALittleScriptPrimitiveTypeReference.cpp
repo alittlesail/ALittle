@@ -6,10 +6,8 @@ ABnfGuessError ALittleScriptPrimitiveTypeReference::GuessTypes(std::vector<ABnfG
 {
     auto element = m_element.lock();
     if (element == nullptr) return ABnfGuessError(nullptr, u8"节点失效");
-    auto* index = GetIndex();
-    if (index == nullptr) return  ABnfGuessError(nullptr, u8"不在工程中");
-    auto it = index->sPrimitiveGuessListMap.find(element->GetElementText());
-    if (it != index->sPrimitiveGuessListMap.end())
+    auto it = ALittleScriptStatic::Inst().sPrimitiveGuessListMap.find(element->GetElementText());
+    if (it != ALittleScriptStatic::Inst().sPrimitiveGuessListMap.end())
     {
         guess_list = it->second;
         return nullptr;

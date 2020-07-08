@@ -20,6 +20,7 @@
 #include "../Generate/ALittleScriptGlobalMethodDecElement.h"
 #include "../Generate/ALittleScriptMethodReturnOneDecElement.h"
 #include "../Generate/ALittleScriptMethodReturnTailDecElement.h"
+#include "../Generate/ALittleScriptClassCtorDecElement.h"
 
 #include "../Index/ALittleScriptUtility.h"
 
@@ -188,7 +189,7 @@ ABnfGuessError ALittleScriptMethodBodyDecReference::CheckMethodBody(const std::v
     // 检查return
     if (return_list.size() > 0 && !ALittleScriptUtility::IsRegister(method_name_dec))
     {
-        auto all_expr_list = method_body_dec->GetAllExprList();
+        const auto& all_expr_list = method_body_dec->GetAllExprList();
         bool result = false;
         auto error = CheckAllExprList(return_list, all_expr_list, result);
         if (error) return error;
@@ -254,8 +255,8 @@ ABnfGuessError ALittleScriptMethodBodyDecReference::CheckError()
 
     if (return_dec != nullptr)
     {
-        auto return_one_list = return_dec->GetMethodReturnOneDecList();
-        for (int i = 0; i < return_one_list.size(); ++i)
+        const auto& return_one_list = return_dec->GetMethodReturnOneDecList();
+        for (size_t i = 0; i < return_one_list.size(); ++i)
         {
             auto return_one = return_one_list[i];
             auto all_type = return_one->GetAllType();
@@ -272,7 +273,7 @@ ABnfGuessError ALittleScriptMethodBodyDecReference::CheckError()
                 if (i + 1 != return_one_list.size())
                     return ABnfGuessError(return_one, u8"返回值占位符必须定义在最后");
                 ABnfGuessPtr return_tail_guess;
-                auto error = return_tail->GuessType();
+                auto error = return_tail->GuessType(return_tail_guess);
                 if (error) return error;
                 return_list.push_back(return_tail_guess);
             }

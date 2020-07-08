@@ -18,6 +18,14 @@ public:
     void UpdateAnalysis() override;
     // 更新错误信息
     void UpdateError() override;
+
+protected:
+    // 内容更新之前
+    void OnBeforeUpdate() override;
+    // 内容更新之后
+    void OnAfterUpdate() override;
+    // 移除内容
+    void OnRemove() override;
 };
 
 #endif // _ALITTLE_ALITTLESCRIPTFILECLASS_H_

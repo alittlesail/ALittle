@@ -10,6 +10,7 @@ class ALittleScriptCustomTypeDotIdNameReference : public ALittleScriptCustomType
 {
 public:
     ALittleScriptCustomTypeDotIdNameReference(ABnfElementPtr element);
+    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptCustomTypeDotIdNameReference(element); }
 
     int QueryClassificationTag(bool& blur) override;
 };

@@ -5,6 +5,7 @@
 #include "../Generate/ALittleScriptValueStatElement.h"
 #include "../Guess/ALittleScriptGuessFunctor.h"
 #include "../Index/ALittleScriptUtility.h"
+#include "../Index/ALittleScriptOp.h"
 
 ABnfGuessError ALittleScriptBindStatReference::GuessTypes(std::vector<ABnfGuessPtr>& guess_list)
 {
@@ -54,9 +55,7 @@ ABnfGuessError ALittleScriptBindStatReference::GuessTypes(std::vector<ABnfGuessP
         --param_count;
     }
     info->UpdateValue();
-
-    ABnfGuessPtr cache = info;
-    element->GetFile()->AddGuessType(cache);
+    element->GetFile()->AddGuessType(info);
     guess_list.push_back(info);
     return nullptr;
 }
@@ -106,8 +105,8 @@ ABnfGuessError ALittleScriptBindStatReference::CheckError()
         ABnfGuessPtr value_stat_guess;
         error = value_stat->GuessType(value_stat_guess);
         if (error) return error;
-        error = ALittleScriptOp::GuessTypeEqual(param_guess, value_stat, value_stat_guess, false, false);
-        if (error != nullptr)
+        error = ALittleScriptOp::GuessTypeEqual(param_guess.lock(), value_stat, value_stat_guess, false, false);
+        if (error)
             return ABnfGuessError(value_stat, u8"第" + std::to_string(i) + u8"个参数类型和函数定义的参数类型不同:" + error.error);
     }
 

@@ -44,8 +44,8 @@ ABnfGuessError ALittleScriptClassCtorDecReference::CheckError()
     if (extends_method_param_dec == nullptr || my_method_param_dec == nullptr)
         return ABnfGuessError(element, u8"该函数是从父类继承下来，但是参数数量不一致");
 
-    auto extends_param_one_dec_list = extends_method_param_dec->GetMethodParamOneDecList();
-    auto my_param_one_dec_list = my_method_param_dec->GetMethodParamOneDecList();
+    const auto& extends_param_one_dec_list = extends_method_param_dec->GetMethodParamOneDecList();
+    const auto& my_param_one_dec_list = my_method_param_dec->GetMethodParamOneDecList();
     if (extends_param_one_dec_list.size() > my_param_one_dec_list.size())
         return ABnfGuessError(my_method_param_dec, u8"该函数是从父类继承下来，但是子类的参数数量少于父类的构造函数");
 

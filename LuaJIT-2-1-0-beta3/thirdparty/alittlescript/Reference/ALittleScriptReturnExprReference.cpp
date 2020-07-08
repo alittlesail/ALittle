@@ -11,8 +11,11 @@
 #include "../Generate/ALittleScriptMethodReturnDecElement.h"
 #include "../Generate/ALittleScriptMethodReturnOneDecElement.h"
 #include "../Generate/ALittleScriptValueStatElement.h"
+#include "../Generate/ALittleScriptMethodNameDecElement.h"
+#include "../Generate/ALittleScriptClassSetterDecElement.h"
 
 #include "../Index/ALittleScriptUtility.h"
+#include "../Index/ALittleScriptOp.h"
 #include "../Guess/ALittleScriptGuessReturnTail.h"
 #include "../Guess/ALittleScriptGuessParamTail.h"
 
@@ -34,7 +37,7 @@ ABnfGuessError ALittleScriptReturnExprReference::CheckError()
             if (std::dynamic_pointer_cast<ALittleScriptClassMethodDecElement>(parent))
             {
                 auto method_dec = std::dynamic_pointer_cast<ALittleScriptClassMethodDecElement>(parent);
-                auto modifier = std::dynamic_pointer_cast<ALittleScriptClassElementDecElement>(method_dec->GetParent())->GetModifierList();
+                const auto& modifier = std::dynamic_pointer_cast<ALittleScriptClassElementDecElement>(method_dec->GetParent())->GetModifierList();
                 if (ALittleScriptUtility::GetCoroutineType(modifier).empty())
                 {
                     element = method_dec->GetMethodNameDec();
@@ -45,7 +48,7 @@ ABnfGuessError ALittleScriptReturnExprReference::CheckError()
             else if (std::dynamic_pointer_cast<ALittleScriptClassStaticDecElement>(parent))
             {
                 auto method_dec = std::dynamic_pointer_cast<ALittleScriptClassStaticDecElement>(parent);
-                auto modifier = std::dynamic_pointer_cast<ALittleScriptClassElementDecElement>(method_dec->GetParent())->GetModifierList();
+                const auto& modifier = std::dynamic_pointer_cast<ALittleScriptClassElementDecElement>(method_dec->GetParent())->GetModifierList();
                 if (ALittleScriptUtility::GetCoroutineType(modifier).empty())
                 {
                     element = method_dec->GetMethodNameDec();
@@ -56,7 +59,7 @@ ABnfGuessError ALittleScriptReturnExprReference::CheckError()
             else if (std::dynamic_pointer_cast<ALittleScriptGlobalMethodDecElement>(parent))
             {
                 auto method_dec = std::dynamic_pointer_cast<ALittleScriptGlobalMethodDecElement>(parent);
-                auto modifier = std::dynamic_pointer_cast<ALittleScriptNamespaceElementDecElement>(method_dec->GetParent())->GetModifierList();
+                const auto& modifier = std::dynamic_pointer_cast<ALittleScriptNamespaceElementDecElement>(method_dec->GetParent())->GetModifierList();
                 if (ALittleScriptUtility::GetCoroutineType(modifier).empty())
                 {
                     element = method_dec->GetMethodNameDec();
@@ -73,7 +76,7 @@ ABnfGuessError ALittleScriptReturnExprReference::CheckError()
         return nullptr;
     }
 
-    auto value_stat_list = element->GetValueStatList();
+    const auto& value_stat_list = element->GetValueStatList();
     std::vector<std::shared_ptr<ALittleScriptAllTypeElement>> return_type_list;
     std::shared_ptr<ALittleScriptMethodReturnTailDecElement> return_tail_dec;
 
@@ -118,7 +121,7 @@ ABnfGuessError ALittleScriptReturnExprReference::CheckError()
             auto return_dec = method_dec->GetMethodReturnDec();
             if (return_dec != nullptr)
             {
-                auto return_one_list = return_dec->GetMethodReturnOneDecList();
+                const auto& return_one_list = return_dec->GetMethodReturnOneDecList();
                 for (auto& return_one : return_one_list)
                 {
                     auto all_type = return_one->GetAllType();
@@ -136,7 +139,7 @@ ABnfGuessError ALittleScriptReturnExprReference::CheckError()
             auto return_dec = method_dec->GetMethodReturnDec();
             if (return_dec != nullptr)
             {
-                auto return_one_list = return_dec->GetMethodReturnOneDecList();
+                const auto& return_one_list = return_dec->GetMethodReturnOneDecList();
                 for (auto& return_one : return_one_list)
                 {
                     auto all_type = return_one->GetAllType();
@@ -240,7 +243,7 @@ ABnfGuessError ALittleScriptReturnExprReference::CheckError()
 
         error = ALittleScriptOp::GuessTypeEqual(return_type_guess, target_value_stat, guess_list[i], false, true);
         if (error)
-            return ABnfGuessError(target_value_stat, u8"return的第" + std::to_string(i + 1) + "个返回值数量和函数定义的返回值类型不同:" + error.error);
+            return ABnfGuessError(target_value_stat, u8"return的第" + std::to_string(i + 1) + u8"个返回值数量和函数定义的返回值类型不同:" + error.error);
     }
 
     return nullptr;

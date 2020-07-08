@@ -46,7 +46,7 @@ ABnfGuessError ALittleScriptClassDecReference::GuessTypes(std::vector<ABnfGuessP
         return ABnfGuessError(element, u8"ALittleScriptClassDecReference的父节点不是ALittleScriptNamespaceElementDecElement");
 
     bool is_native = ALittleScriptUtility::IsNative(namespace_element_dec->GetModifierList());
-    auto info = std::shared_ptr<ALittleScriptGuessClass>(new ALittleScriptGuessClass(m_namespace_name, name_dec->GetElementText(), element, nullptr, false, is_native));
+    auto info = std::shared_ptr<ALittleScriptGuessClass>(new ALittleScriptGuessClass(m_namespace_name, name_dec->GetElementText(), element, "", false, is_native));
     auto template_dec = element->GetTemplateDec();
     if (template_dec != nullptr)
     {
@@ -58,9 +58,7 @@ ABnfGuessError ALittleScriptClassDecReference::GuessTypes(std::vector<ABnfGuessP
         for (auto& guess : guess_list_temp) info->template_list.push_back(guess);
     }
     info->UpdateValue();
-
-    ABnfGuessPtr cache = info;
-    element->GetFile()->AddGuessType(cache);
+    element->GetFile()->AddGuessType(info);
     guess_list.push_back(info);
     return nullptr;
 }

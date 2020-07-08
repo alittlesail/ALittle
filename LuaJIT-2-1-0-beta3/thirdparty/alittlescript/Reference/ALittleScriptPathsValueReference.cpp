@@ -7,13 +7,11 @@
 #include "../Index/ALittleScriptUtility.h"
 #include "../Index/ALittleScriptFileClass.h"
 
-inline ABnfGuessError ALittleScriptPathsValueReference::GuessTypes(std::vector<ABnfGuessPtr>& guess_list)
+ABnfGuessError ALittleScriptPathsValueReference::GuessTypes(std::vector<ABnfGuessPtr>& guess_list)
 {
     auto element = m_element.lock();
     if (element == nullptr) return ABnfGuessError(nullptr, u8"节点失效");
-    auto* index = GetIndex();
-    if (index == nullptr) return ABnfGuessError(nullptr, u8"不在工程内");
-    auto info = ABnfGuessPtr(new ALittleScriptGuessList(index->sStringGuess, false, false));
+    auto info = ABnfGuessPtr(new ALittleScriptGuessList(ALittleScriptStatic::Inst().sStringGuess, false, false));
     info->UpdateValue();
     element->GetFile()->AddGuessType(info);
     guess_list.push_back(info);

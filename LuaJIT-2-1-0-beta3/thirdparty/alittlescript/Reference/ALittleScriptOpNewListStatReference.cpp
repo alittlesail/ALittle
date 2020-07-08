@@ -6,12 +6,12 @@
 #include "../Index/ALittleScriptFileClass.h"
 #include "../Index/ALittleScriptUtility.h"
 
-inline ABnfGuessError ALittleScriptOpNewListStatReference::GuessTypes(std::vector<ABnfGuessPtr>& guess_list)
+ABnfGuessError ALittleScriptOpNewListStatReference::GuessTypes(std::vector<ABnfGuessPtr>& guess_list)
 {
     auto element = m_element.lock();
     if (element == nullptr) return ABnfGuessError(nullptr, u8"节点失效");
     guess_list.resize(0);
-    auto value_stat_list = element->GetValueStatList();
+    const auto& value_stat_list = element->GetValueStatList();
     if (value_stat_list.size() == 0)
         return ABnfGuessError(element, u8"List列表不能为空");
 
@@ -29,7 +29,7 @@ ABnfGuessError ALittleScriptOpNewListStatReference::CheckError()
 {
     auto element = m_element.lock();
     if (element == nullptr) return ABnfGuessError(element, u8"节点失效");
-    auto value_stat_list = element->GetValueStatList();
+    const auto& value_stat_list = element->GetValueStatList();
     if (value_stat_list.size() == 0)
         return ABnfGuessError(element, u8"这种方式必须填写参数，否则请使用new List的方式");
 

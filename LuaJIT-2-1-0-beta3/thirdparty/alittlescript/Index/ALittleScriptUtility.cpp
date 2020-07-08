@@ -305,7 +305,7 @@ bool ALittleScriptUtility::IsNative(const std::vector<std::shared_ptr<ALittleScr
 }
 
 // 检查await
-ABnfGuessError ALittleScriptUtility::CheckInvokeAwaitError(std::shared_ptr<ABnfElement> element)
+ABnfGuessError ALittleScriptUtility::CheckInvokeAwait(std::shared_ptr<ABnfElement> element)
 {
     // 检查这次所在的函数必须要有await或者async修饰
 	std::shared_ptr<ABnfElement> parent = element;
@@ -333,21 +333,21 @@ ABnfGuessError ALittleScriptUtility::CheckInvokeAwaitError(std::shared_ptr<ABnfE
         }
         else if (std::dynamic_pointer_cast<ALittleScriptClassMethodDecElement>(parent))
         {
-            auto modifier = std::dynamic_pointer_cast<ALittleScriptClassElementDecElement>(parent->GetParent())->GetModifierList();
+            const auto& modifier = std::dynamic_pointer_cast<ALittleScriptClassElementDecElement>(parent->GetParent())->GetModifierList();
 			if (!GetCoroutineType(modifier).empty())
                 return ABnfGuessError(element, u8"所在函数没有async或await修饰");
             break;
         }
         else if (std::dynamic_pointer_cast<ALittleScriptClassStaticDecElement>(parent))
         {
-            auto modifier = std::dynamic_pointer_cast<ALittleScriptClassElementDecElement>(parent->GetParent())->GetModifierList();
+            const auto& modifier = std::dynamic_pointer_cast<ALittleScriptClassElementDecElement>(parent->GetParent())->GetModifierList();
             if (!GetCoroutineType(modifier).empty())
                 return ABnfGuessError(element, u8"所在函数没有async或await修饰");
             break;
         }
         else if (std::dynamic_pointer_cast<ALittleScriptGlobalMethodDecElement>(parent))
         {
-            auto modifier = std::dynamic_pointer_cast<ALittleScriptNamespaceElementDecElement>(parent->GetParent())->GetModifierList();
+            const auto& modifier = std::dynamic_pointer_cast<ALittleScriptNamespaceElementDecElement>(parent->GetParent())->GetModifierList();
             if (!GetCoroutineType(modifier).empty())
                 return ABnfGuessError(element, u8"所在函数没有async或await修饰");
             break;
@@ -836,8 +836,7 @@ void ALittleScriptUtility::FilterSameName(const std::vector<std::shared_ptr<ABnf
         map[list[i]->GetElementText()] = list[i];
 
     out.resize(0);
-    for (auto& pair : map)
-        out.push_back(pair.second);
+    for (auto& pair : map) out.push_back(pair.second);
 }
 
 // 计算在dec这个类中，对targetDec成员的访问权限
@@ -1367,7 +1366,7 @@ std::string ALittleScriptUtility::CalcTargetFullPath(const std::string& project_
     std::string ali_rel_path = ChangeFileExtByPath(ali_full_path.substr(project_path.size()), ext);
     if (ali_rel_path.find("src\\") != 0)
     {
-        error = "请把代码文件工程目录下的src文件夹中:" + project_path + "src\\";
+        error = u8"请把代码文件工程目录下的src文件夹中:" + project_path + "src\\";
         return nullptr;
     }
 

@@ -14,6 +14,7 @@ private:
 
 public:
     ALittleScriptEnumNameDecReference(ABnfElementPtr element);
+    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptEnumNameDecReference(element); }
 
     int QueryClassificationTag(bool& blur) override;
 

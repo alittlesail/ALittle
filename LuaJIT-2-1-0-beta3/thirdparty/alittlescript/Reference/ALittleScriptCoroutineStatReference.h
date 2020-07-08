@@ -8,6 +8,10 @@
 
 class ALittleScriptCoroutineStatReference : public ALittleScriptReferenceTemplate<ALittleScriptCoroutineStatElement>
 {
+public:
+    ALittleScriptCoroutineStatReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptCoroutineStatElement>(element) {}
+    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptCoroutineStatReference(element); }
+
     ABnfGuessError CheckError() override;
 
     ABnfGuessError GuessTypes(std::vector<ABnfGuessPtr>& guess_list) override;

@@ -16,6 +16,7 @@
 #include "../Guess/ALittleScriptGuessReturnTail.h"
 
 #include "../Index/ALittleScriptUtility.h"
+#include "../Index/ALittleScriptOp.h"
 
 ABnfGuessError ALittleScriptOpNewStatReference::GuessTypes(std::vector<ABnfGuessPtr>& guess_list)
 {
@@ -33,7 +34,7 @@ ABnfGuessError ALittleScriptOpNewStatReference::CheckError()
 {
     auto element = m_element.lock();
     if (element == nullptr) return ABnfGuessError(element, u8"节点失效");
-    auto value_stat_list = element->GetValueStatList();
+    const auto& value_stat_list = element->GetValueStatList();
 
     if (element->GetGenericType() != nullptr)
     {
@@ -112,7 +113,7 @@ ABnfGuessError ALittleScriptOpNewStatReference::CheckError()
                 return nullptr;
             }
 
-            auto param_one_dec_list = param_dec->GetMethodParamOneDecList();
+            const auto& param_one_dec_list = param_dec->GetMethodParamOneDecList();
             std::vector<ABnfGuessPtr> param_guess_list;
             std::vector<bool> param_nullable_list;
             bool has_param_tail = false;
@@ -138,25 +139,25 @@ ABnfGuessError ALittleScriptOpNewStatReference::CheckError()
             if (value_stat_list.size() < param_guess_list.size())
             {
                 // 不足的部分，参数必须都是nullable
-                for (int i = value_stat_list.size(); i < param_nullable_list.size(); ++i)
+                for (size_t i = value_stat_list.size(); i < param_nullable_list.size(); ++i)
                 {
                     if (!param_nullable_list[i])
                     {
                         // 计算至少需要的参数个数
-                        int count = param_nullable_list.size();
-                        for (int j = param_nullable_list.size() - 1; j >= 0; --j)
+                        size_t count = param_nullable_list.size();
+                        for (int j = static_cast<int>(param_nullable_list.size()) - 1; j >= 0; --j)
                         {
                             if (param_nullable_list[j])
                                 --count;
                             else
                                 break;
                         }
-                        return ABnfGuessError(element, u8"new的类的构造函数调用需要" + std::to_string(count) + "个参数,不能是:" + std::to_string(value_stat_list.size()) + "个");
+                        return ABnfGuessError(element, u8"new的类的构造函数调用需要" + std::to_string(count) + u8"个参数,不能是:" + std::to_string(value_stat_list.size()) + "个");
                     }
                 }
             }
 
-            for (int i = 0; i < value_stat_list.size(); ++i)
+            for (size_t i = 0; i < value_stat_list.size(); ++i)
             {
                 auto value_stat = value_stat_list[i];
 
@@ -179,12 +180,12 @@ ABnfGuessError ALittleScriptOpNewStatReference::CheckError()
                     if (has_param_tail)
                         break;
                     else
-                        return ABnfGuessError(element, u8"该构造函数调用需要" + std::to_string(param_guess_list.size()) + "个参数，而不是" + std::to_string(value_stat_list.size()) + "个");
+                        return ABnfGuessError(element, u8"该构造函数调用需要" + std::to_string(param_guess_list.size()) + u8"个参数，而不是" + std::to_string(value_stat_list.size()) + "个");
                 }
 
                 error = ALittleScriptOp::GuessTypeEqual(param_guess_list[i], value_stat, value_stat_guess, false, false);
                 if (error)
-                    return ABnfGuessError(value_stat, u8"第" + std::to_string(i + 1) + "个参数类型和函数定义的参数类型不同:" + error.error);
+                    return ABnfGuessError(value_stat, u8"第" + std::to_string(i + 1) + u8"个参数类型和函数定义的参数类型不同:" + error.error);
             }
             return nullptr;
         }

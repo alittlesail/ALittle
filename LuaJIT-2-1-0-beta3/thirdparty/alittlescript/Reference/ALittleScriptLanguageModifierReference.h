@@ -16,6 +16,8 @@ private:
 	std::unordered_set<std::string> m_name_set;
 
 public:
+	ALittleScriptLanguageModifierReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptLanguageModifierElement>(element) {}
+	static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptLanguageModifierReference(element); }
 	ABnfGuessError CheckError() override;
 
 	bool IsLanguageEnable();

@@ -8,6 +8,9 @@
 
 class ALittleScriptPathsValueReference : public ALittleScriptReferenceTemplate<ALittleScriptPathsValueElement>
 {
+public:
+    ALittleScriptPathsValueReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptPathsValueElement>(element) {}
+    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptPathsValueReference(element); }
     ABnfGuessError GuessTypes(std::vector<ABnfGuessPtr>& guess_list) override;
 
     ABnfGuessError CheckError() override;

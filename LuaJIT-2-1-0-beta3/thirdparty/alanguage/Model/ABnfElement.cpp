@@ -35,6 +35,7 @@ ABnfReference* ABnfElement::GetReference()
 // 获取类型
 ABnfGuessError ABnfElement::GuessTypes(std::vector<ABnfGuessPtr>& guess_list)
 {
+    guess_list.resize(0);
     return m_factory->GuessTypes(shared_from_this(), guess_list);
 }
 
@@ -90,6 +91,8 @@ bool ABnfElement::IntersectsWith(int start, int end)
 
 // 获取类型
 const std::string& ABnfElement::GetNodeType() { static std::string empty; return empty; }
+
+const std::string& ABnfElement::GetLeafType() { static std::string empty; return empty; }
 
 // 获取文本
 const std::string& ABnfElement::GetElementText()

@@ -45,7 +45,7 @@ ABnfGuessError ALittleScriptGenericTypeReference::GuessTypes(std::vector<ABnfGue
     else if (element->GetGenericMapType() != nullptr)
     {
         auto dec = element->GetGenericMapType();
-        auto all_type_list = dec->GetAllTypeList();
+        const auto& all_type_list = dec->GetAllTypeList();
         if (all_type_list.size() != 2) return nullptr;
 
         ABnfGuessPtr key_guess;
@@ -77,7 +77,7 @@ ABnfGuessError ALittleScriptGenericTypeReference::GuessTypes(std::vector<ABnfGue
             auto param_type = dec->GetGenericFunctorParamType();
             if (param_type != nullptr)
             {
-                auto param_one_list = param_type->GetGenericFunctorParamOneTypeList();
+                const auto& param_one_list = param_type->GetGenericFunctorParamOneTypeList();
                 for (int i = 0; i < param_one_list.size(); ++i)
                 {
                     auto param_one = param_one_list[i];
@@ -135,8 +135,7 @@ ABnfGuessError ALittleScriptGenericTypeReference::GuessTypes(std::vector<ABnfGue
                 }
             }
             info->UpdateValue();
-            ABnfGuessPtr cache = info;
-            element->GetFile()->AddGuessType(cache);
+            element->GetFile()->AddGuessType(info);
             guess_list.push_back(info);
         }
     }

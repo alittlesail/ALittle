@@ -8,12 +8,15 @@
 
 class ALittleScriptBlockCommentReference : public ALittleScriptReferenceTemplate<ALittleScriptBlockCommentElement>
 {
+public:
+    ALittleScriptBlockCommentReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptBlockCommentElement>(element) {}
+    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptBlockCommentReference(element); }
     int QueryClassificationTag(bool& blur) override
     {
         auto element = m_element.lock();
         if (element == nullptr) return 0;
         blur = false;
-        return ALittleScriptColorType::ALittleScriptComment;
+        return ALittleScriptColorType::COMMENT;
     }
 
     bool CanGotoDefinition() override

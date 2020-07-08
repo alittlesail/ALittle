@@ -6,7 +6,7 @@
 int ALittleScriptMethodParamNameDecReference::QueryClassificationTag(bool& blur)
 {
     blur = false;
-    return ALittleScriptColorType::ALittleScriptVarName;
+    return ALittleScriptColorType::VAR_NAME;
 }
 
 ABnfGuessError ALittleScriptMethodParamNameDecReference::GuessTypes(std::vector<ABnfGuessPtr>& guess_list)
@@ -22,6 +22,7 @@ ABnfGuessError ALittleScriptMethodParamNameDecReference::GuessTypes(std::vector<
         if (all_type != nullptr)
             return all_type->GuessTypes(guess_list);
     }
+    return nullptr;
 }
 
 ABnfGuessError ALittleScriptMethodParamNameDecReference::CheckError()

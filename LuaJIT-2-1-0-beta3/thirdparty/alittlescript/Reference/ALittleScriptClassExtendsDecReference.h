@@ -14,6 +14,7 @@ private:
 
 public:
     ALittleScriptClassExtendsDecReference(ABnfElementPtr p_element);
+    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptClassExtendsDecReference(element); }
 
     ABnfGuessError GuessTypes(std::vector<ABnfGuessPtr>& guess_list) override;
 

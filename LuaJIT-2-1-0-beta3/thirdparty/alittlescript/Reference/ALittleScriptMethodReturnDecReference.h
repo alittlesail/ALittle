@@ -8,6 +8,10 @@
 
 class ALittleScriptMethodReturnDecReference : public ALittleScriptReferenceTemplate<ALittleScriptMethodReturnDecElement>
 {
+public:
+    ALittleScriptMethodReturnDecReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptMethodReturnDecElement>(element) {}
+    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptMethodReturnDecReference(element); }
+
     ABnfGuessError CheckError() override
     {
         auto element = m_element.lock();

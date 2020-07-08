@@ -22,7 +22,7 @@ ABnfGuessError ALittleScriptClassMethodDecReference::CheckError()
 
     int return_count = 0;
     auto return_dec = element->GetMethodReturnDec();
-    if (return_dec != nullptr) return_count = return_dec->GetMethodReturnOneDecList().size();
+    if (return_dec != nullptr) return_count = static_cast<int>(return_dec->GetMethodReturnOneDecList().size());
 
     if (co_text == "async" && return_count > 0)
         return ABnfGuessError(return_dec, u8"带async修饰的函数，不能有返回值");

@@ -7,6 +7,7 @@
 #include "../Generate/ALittleScriptTemplatePairDecElement.h"
 #include "../Index/ALittleScriptUtility.h"
 #include "../Index/ALittleScriptIndex.h"
+#include "../Index/ALittleScriptOp.h"
 #include "../Guess/ALittleScriptGuessClass.h"
 
 ALittleScriptClassNameDecReference::ALittleScriptClassNameDecReference(ABnfElementPtr p_element) : ALittleScriptReferenceTemplate<ALittleScriptClassNameDecElement>(p_element)
@@ -32,7 +33,7 @@ ALittleScriptClassNameDecReference::ALittleScriptClassNameDecReference(ABnfEleme
 int ALittleScriptClassNameDecReference::QueryClassificationTag(bool& blur)
 {
     blur = false;
-    return ALittleScriptColorType::ALittleScriptDefineName;
+    return ALittleScriptColorType::DEFINE_NAME;
 }
 
 ABnfGuessError ALittleScriptClassNameDecReference::GuessTypes(std::vector<ABnfGuessPtr>& guess_list)
@@ -92,7 +93,7 @@ ABnfGuessError ALittleScriptClassNameDecReference::GuessTypes(std::vector<ABnfGu
                     ABnfGuessPtr sub_template;
                     error = sub_template_pair_list[i]->GuessType(sub_template);
                     if (error) return error;
-                    error = ALittleScriptOp::GuessTypeEqual(guess_class->template_list[i], sub_template_pair_list[i], sub_template, false, false);
+                    error = ALittleScriptOp::GuessTypeEqual(guess_class->template_list[i].lock(), sub_template_pair_list[i], sub_template, false, false);
                     if (error)
                         return ABnfGuessError(sub_template_pair_list[i], u8"子类的模板参数和父类的模板参数不一致:" + error.error);
                 }
@@ -150,7 +151,7 @@ bool ALittleScriptClassNameDecReference::QueryCompletion(std::vector<ALanguageCo
             ABnfElementType::CLASS_NAME, element->GetFile(), m_namespace_name, u8"", true, dec_list);
 
         for (auto& dec : dec_list)
-            list.emplace_back(dec->GetElementText(), ALittleScriptColorType::ALittleScriptClassName);
+            list.emplace_back(dec->GetElementText(), ALittleScriptIconType::CLASS);
     }
 
     if (std::dynamic_pointer_cast<ALittleScriptClassExtendsDecElement>(element->GetParent()))
@@ -158,7 +159,7 @@ bool ALittleScriptClassNameDecReference::QueryCompletion(std::vector<ALanguageCo
         std::unordered_map<std::string, std::shared_ptr<ALittleScriptNamespaceNameDecElement>> dec_list;
         index->FindNamespaceNameDecList("", dec_list);
         for (auto& pair : dec_list)
-            list.emplace_back(pair.first, ALittleScriptColorType::ALittleScriptNamespaceName);
+            list.emplace_back(pair.first, ALittleScriptIconType::NAMESPACE);
     }
     return true;
 }

@@ -8,6 +8,9 @@
 
 class ALittleScriptClassVarDecReference : public ALittleScriptReferenceTemplate<ALittleScriptClassVarDecElement>
 {
+public:
+    ALittleScriptClassVarDecReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptClassVarDecElement>(element) {}
+    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptClassVarDecReference(element); }
     ABnfGuessError GuessTypes(std::vector<ABnfGuessPtr>& guess_list) override;
 
     ABnfGuessError CheckError() override;

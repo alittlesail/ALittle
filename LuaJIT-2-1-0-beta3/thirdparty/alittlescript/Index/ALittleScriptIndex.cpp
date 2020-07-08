@@ -42,7 +42,13 @@
 
 #include <algorithm>
 
-ALittleScriptIndex::ALittleScriptIndex()
+ALittleScriptStatic& ALittleScriptStatic::Inst()
+{
+    static ALittleScriptStatic inst;
+    return inst;
+}
+
+ALittleScriptStatic::ALittleScriptStatic()
 {
     // »ù´¡±äÁ¿
     std::vector<std::shared_ptr<ABnfGuess>> tmp;

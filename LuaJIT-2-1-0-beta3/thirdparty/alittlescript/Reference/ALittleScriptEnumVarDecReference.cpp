@@ -10,16 +10,15 @@ ABnfGuessError ALittleScriptEnumVarDecReference::GuessTypes(std::vector<ABnfGues
     auto element = m_element.lock();
     if (element == nullptr) return ABnfGuessError(nullptr, u8"½ÚµãÊ§Ð§");
 
-    auto* index = GetIndex();
     if (element->GetText() != nullptr)
     {
-        auto it = index->sPrimitiveGuessListMap.find("string");
-        if (it != index->sPrimitiveGuessListMap.end()) guess_list = it->second;
+        auto it = ALittleScriptStatic::Inst().sPrimitiveGuessListMap.find("string");
+        if (it != ALittleScriptStatic::Inst().sPrimitiveGuessListMap.end()) guess_list = it->second;
     }
     else
     {
-        auto it = index->sPrimitiveGuessListMap.find("int");
-        if (it != index->sPrimitiveGuessListMap.end()) guess_list = it->second;
+        auto it = ALittleScriptStatic::Inst().sPrimitiveGuessListMap.find("int");
+        if (it != ALittleScriptStatic::Inst().sPrimitiveGuessListMap.end()) guess_list = it->second;
     }
         
     return nullptr;

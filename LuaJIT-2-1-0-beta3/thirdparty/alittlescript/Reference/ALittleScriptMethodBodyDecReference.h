@@ -11,6 +11,8 @@ class ALittleScriptMethodNameDecElement;
 class ALittleScriptMethodBodyDecReference : public ALittleScriptReferenceTemplate<ALittleScriptMethodBodyDecElement>
 {
 public:
+    ALittleScriptMethodBodyDecReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptMethodBodyDecElement>(element) {}
+    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptMethodBodyDecReference(element); }
     // 检查表达式是否有return
     static ABnfGuessError CheckAllExpr(const std::vector<ABnfGuessPtr>& return_list, std::shared_ptr<ALittleScriptAllExprElement> all_expr, bool& result);
 

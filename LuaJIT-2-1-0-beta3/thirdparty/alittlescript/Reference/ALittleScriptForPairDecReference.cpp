@@ -18,8 +18,6 @@ ABnfGuessError ALittleScriptForPairDecReference::GuessTypes(std::vector<ABnfGues
     auto element = m_element.lock();
     if (element == nullptr) return ABnfGuessError(nullptr, u8"节点失效");
 
-    auto* get_index = GetIndex();
-
     // 如果有定义类型
     auto all_type = element->GetAllType();
     if (all_type != nullptr) return all_type->GuessTypes(guess_list);
@@ -56,7 +54,7 @@ ABnfGuessError ALittleScriptForPairDecReference::GuessTypes(std::vector<ABnfGues
             return ABnfGuessError(element, u8"For没有遍历对象，无法推导类型");
 
         // 获取定义列表
-        auto pair_dec_list = in_condition->GetForPairDecList();
+        const auto& pair_dec_list = in_condition->GetForPairDecList();
         // 查找是第几个，如果没有找到，那么就是第0个，如果有找到那就+1
         int index = -1;
         for (int i = 0; i < static_cast<int>(pair_dec_list.size()); ++i)
@@ -83,13 +81,13 @@ ABnfGuessError ALittleScriptForPairDecReference::GuessTypes(std::vector<ABnfGues
             {
                 if (value_guess_list[0]->is_const)
                 {
-                    auto it = get_index->sPrimitiveGuessListMap.find("const int");
-                    if (it != get_index->sPrimitiveGuessListMap.end()) guess_list = it->second;
+                    auto it = ALittleScriptStatic::Inst().sPrimitiveGuessListMap.find("const int");
+                    if (it != ALittleScriptStatic::Inst().sPrimitiveGuessListMap.end()) guess_list = it->second;
                 }
                 else
                 {
-                    auto it = get_index->sPrimitiveGuessListMap.find("int");
-                    if (it != get_index->sPrimitiveGuessListMap.end()) guess_list = it->second;
+                    auto it = ALittleScriptStatic::Inst().sPrimitiveGuessListMap.find("int");
+                    if (it != ALittleScriptStatic::Inst().sPrimitiveGuessListMap.end()) guess_list = it->second;
                 }
                 return nullptr;
             }

@@ -10,6 +10,7 @@ class ALittleScriptCustomTypeReference : public ALittleScriptCustomTypeCommonRef
 {
 public:
     ALittleScriptCustomTypeReference(ABnfElementPtr p_element);
+    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptCustomTypeReference(element); }
 
     ABnfGuessError CheckError() override;
 };

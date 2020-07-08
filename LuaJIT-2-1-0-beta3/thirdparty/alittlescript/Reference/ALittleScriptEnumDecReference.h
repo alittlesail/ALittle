@@ -13,6 +13,7 @@ private:
 
 public:
     ALittleScriptEnumDecReference(ABnfElementPtr element);
+    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptEnumDecReference(element); }
 
     ABnfGuessError GuessTypes(std::vector<ABnfGuessPtr>& guess_list) override;
 

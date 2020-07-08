@@ -8,6 +8,9 @@
 
 class ALittleScriptPrimitiveTypeReference : public ALittleScriptReferenceTemplate<ALittleScriptPrimitiveTypeElement>
 {
+public:
+    ALittleScriptPrimitiveTypeReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptPrimitiveTypeElement>(element) {}
+    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptPrimitiveTypeReference(element); }
     ABnfGuessError GuessTypes(std::vector<ABnfGuessPtr>& guess_list) override;
 };
 

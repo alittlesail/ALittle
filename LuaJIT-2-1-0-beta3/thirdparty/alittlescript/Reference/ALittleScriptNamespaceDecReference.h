@@ -8,6 +8,10 @@
 
 class ALittleScriptNamespaceDecReference : public ALittleScriptReferenceTemplate<ALittleScriptNamespaceDecElement>
 {
+public:
+    ALittleScriptNamespaceDecReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptNamespaceDecElement>(element) {}
+    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptNamespaceDecReference(element); }
+
     ABnfGuessError CheckError() override;
 
     ABnfGuessError GuessTypes(std::vector<ABnfGuessPtr>& guess_list) override;

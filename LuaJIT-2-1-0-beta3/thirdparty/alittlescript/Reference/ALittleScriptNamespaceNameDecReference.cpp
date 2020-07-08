@@ -27,8 +27,10 @@ ABnfGuessError ALittleScriptNamespaceNameDecReference::GuessTypes(std::vector<AB
     index->FindNamespaceNameDecList(m_key, name_dec_map);
     for (auto& pair : name_dec_map)
     {
+        auto parent = pair.second->GetParent();
+        if (parent == nullptr) continue;
         ABnfGuessPtr guess;
-        auto error = pair.second->GetParent()->GuessType(guess);
+        auto error = parent->GuessType(guess);
         if (error) return error;
         guess_list.push_back(guess);
     }

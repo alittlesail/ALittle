@@ -22,7 +22,8 @@ option_map = {}
 assert(ALittleIDE.IDETabChild, " extends class:ALittleIDE.IDETabChild is nil")
 IDECodeTabChild = Lua.Class(ALittleIDE.IDETabChild, "ALittleIDE.IDECodeTabChild")
 
-function IDECodeTabChild:Ctor(ctrl_sys, name, save)
+function IDECodeTabChild:Ctor(ctrl_sys, name, save, user_info)
+	___rawset(self, "_user_info", user_info)
 	___rawset(self, "_edit", g_AUIPluinControl:CreateControl("ide_code_tab_screen", self))
 	self._edit:AddEventListener(___all_struct[958494922], self, self.HandleChangedEvent)
 	self._edit._user_data = self
@@ -42,7 +43,10 @@ end
 
 function IDECodeTabChild:OnOpen()
 	self._revoke_list = ALittle.RevokeList()
-	self._edit:Load(self._user_info.path, self._revoke_list)
+	if self._language == nil and ALittle.File_GetFileExtByPathAndUpper(self._user_info.path) == "ALITTLE" then
+		self._language = AUIPlugin.AUICodeALittleScript(self._user_info.project, self._user_info.path)
+	end
+	self._edit:Load(self._user_info.path, self._revoke_list, self._language)
 end
 
 function IDECodeTabChild:OnRightMenu(menu)

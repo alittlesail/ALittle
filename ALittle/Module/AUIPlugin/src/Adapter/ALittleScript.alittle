@@ -8,4 +8,5 @@ public class alittlescript
 {
     public static create_alittlescript_project(string full_path, string abnf_buffer) : ALittleScriptProjectClass {}
     public static create_alittlescript_file(ABnfProject project, string full_path, string text) : ALittleScriptFileClass {}
+    public static alittlescriptproject_settargetlanguage(ABnfProject project, string target_language) {}
 }

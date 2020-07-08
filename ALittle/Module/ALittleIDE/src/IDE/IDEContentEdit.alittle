@@ -436,7 +436,7 @@ public class IDEContentEdit : ALittle.DisplayLayout
 
 		// 获取当前正在编辑的标签页
 		var child_from = this._main_tab.tab;
-		var tab_child = new IDECodeTabChild(g_Control, name, true);
+		var tab_child = new IDECodeTabChild(g_Control, name, true, info);
 		tab_child.CreateBySelect(info);
 	
 		// 添加到界面中去

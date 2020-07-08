@@ -58,6 +58,7 @@ public class IDEUICodeList : ALittle.DisplayLayout
 		info.path = ALittle.File_BaseFilePath().."Module/"..event.name.."/src";
 		info.group = this._group;
 		info.root = true;
+		info.project = g_IDEProject.project.code;
 		this._code_scroll_screen.AddChild(new IDECodeTree(g_Control, info));
 		
 		var std_list = ["Core", "Std", "CEngine"];
@@ -69,7 +70,7 @@ public class IDEUICodeList : ALittle.DisplayLayout
 			info.path = ALittle.File_BaseFilePath().."Module/ALittleIDE/Other/GameLibrary/"..name.."/src";
 			info.group = this._group;
 			info.root = true;
-			info.project = null;
+            info.project = g_IDEProject.project.code;
 			var tree = new IDECodeTree(g_Control, info);
 			this._code_scroll_screen.AddChild(tree);   
         }
@@ -82,6 +83,7 @@ public class IDEUICodeList : ALittle.DisplayLayout
 			info.name = ALittle.File_GetFileNameByPath(module.root_path);
 			info.path = module.root_path;
 			info.group = this._group;
+            info.project = g_IDEProject.project.code;
 			var tree = new IDECodeTree(g_Control, info);
 			this._code_scroll_screen.AddChild(tree);
         }

@@ -7,8 +7,11 @@ public class IDECodeTabChild : IDETabChild
 
 	private AUIPlugin.AUICodeEdit _edit;        // 标签页
 
-	public ctor(ALittle.ControlSystem ctrl_sys, string name, bool save)
+    private AUIPlugin.AUICodeLanguage _language;
+
+	public ctor(ALittle.ControlSystem ctrl_sys, string name, bool save, IDECodeTreeUserInfo user_info)
 	{
+        this._user_info = user_info;
 		// 创建编辑容器
 		this._edit = g_AUIPluinControl.CreateControl{AUIPlugin.AUICodeEdit}("ide_code_tab_screen", this);
         this._edit.AddEventListener(this, this.HandleChangedEvent);
@@ -33,7 +36,11 @@ public class IDECodeTabChild : IDETabChild
     private fun OnOpen()
     {
         this._revoke_list = new ALittle.RevokeList();
-        this._edit.Load(this._user_info.path, this._revoke_list);
+
+        [Language(Lua)]
+        if (this._language == null && ALittle.File_GetFileExtByPathAndUpper(this._user_info.path) == "ALITTLE")
+            this._language = new AUIPlugin.AUICodeALittleScript(this._user_info.project, this._user_info.path);
+        this._edit.Load(this._user_info.path, this._revoke_list, this._language);
     }
 
     private fun OnRightMenu(AUIPlugin.AUIRightMenu menu)

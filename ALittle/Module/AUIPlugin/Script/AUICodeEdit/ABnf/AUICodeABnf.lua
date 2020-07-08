@@ -5,12 +5,6 @@ local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
-ALittle.RegStruct(1083672388, "AUIPlugin.ABnfProjectInfo", {
-name = "AUIPlugin.ABnfProjectInfo", ns_name = "AUIPlugin", rl_name = "ABnfProjectInfo", hash_code = 1083672388,
-name_list = {"project"},
-type_list = {"AUIPlugin.AUICodeProject"},
-option_map = {}
-})
 
 local g_ABnfColor = nil
 ABnfColorType = {
@@ -22,22 +16,12 @@ ABnfColorType = {
 	ABnfRegex = 6,
 }
 
-g_ABnfProjectInfo = ALittle.CreateValueWeakMap()
 assert(AUIPlugin.AUICodeLanguage, " extends class:AUIPlugin.AUICodeLanguage is nil")
 AUICodeABnf = Lua.Class(AUIPlugin.AUICodeLanguage, "AUIPlugin.AUICodeABnf")
 
 function AUICodeABnf:Ctor(project, full_path)
-	if self._project == nil and g_ABnfProjectInfo.project == nil then
-		local buffer = ALittle.File_ReadTextFromFile(g_ModuleBasePath .. "/Other/ABnf/ABnf.abnf")
-		if buffer == nil then
-			buffer = ""
-		end
-		local native_project = abnf.create_abnf_project("", buffer)
-		g_ABnfProjectInfo.project = AUICodeProject(native_project)
-		g_ABnfProjectInfo.project:Start()
-	end
 	if self._project == nil then
-		___rawset(self, "_project", g_ABnfProjectInfo.project)
+		___rawset(self, "_project", AUICodeProject.CreateABnfProject())
 	end
 	if g_ABnfColor == nil then
 		g_ABnfColor = {}

@@ -1,67 +1,91 @@
 
 namespace AUIPlugin;
 
-private var g_ABnfColor:Map<int, ABnfColor>;
+private var g_ALittleScriptColor:Map<int, ABnfColor>;
 
 enum ALittleScriptColorType
 {
-    ABnfKeyWord = 1;
-    ABnfId = 2;
-    ABnfComment = 3;
-    ABnfKey = 4;
-    ABnfString = 5;
-    ABnfRegex = 6;
+    COMMENT = 1;
+    DEFINE_NAME = 2;
+    VAR_NAME = 3;
+    CUSTOM_NAME = 4;
+    CTRL_KEYWORD = 5;
+    KEYWORD = 6;
+    METHOD_NAME = 7;
+    DEFAULT = 8;
+    TEXT = 9;
 }
 
 public class AUICodeALittleScript : AUICodeLanguage
 {
     public ctor(AUICodeProject project, string full_path)
     {
-        if (g_ABnfColor == null)
+        if (g_ALittleScriptColor == null)
         {
-            g_ABnfColor = new Map<int, ABnfColor>();
+            g_ALittleScriptColor = new Map<int, ABnfColor>();
             var color:ABnfColor;
-            {
-                color = new ABnfColor();
-                color.red = 255/255;
-                color.green = 198/255;
-                color.blue = 109/255;
-                g_ABnfColor[ALittleScriptColorType.ABnfKeyWord] = color;   
-            }
-            {
-                color = new ABnfColor();
-                color.red = 204/255;
-                color.green = 120/255;
-                color.blue = 50/255;
-                g_ABnfColor[ALittleScriptColorType.ABnfId] = color;   
-            }
             {
                 color = new ABnfColor();
                 color.red = 128/255;
                 color.green = 128/255;
                 color.blue = 128/255;
-                g_ABnfColor[ALittleScriptColorType.ABnfComment] = color;   
+                g_ALittleScriptColor[ALittleScriptColorType.COMMENT] = color;   
             }
             {
                 color = new ABnfColor();
-                color.red = 53/255;
-                color.green = 155/255;
-                color.blue = 185/255;
-                g_ABnfColor[ALittleScriptColorType.ABnfKey] = color;   
+                color.red = 78/255;
+                color.green = 201/255;
+                color.blue = 176/255;
+                g_ALittleScriptColor[ALittleScriptColorType.DEFINE_NAME] = color;   
             }
             {
                 color = new ABnfColor();
-                color.red = 85/255;
-                color.green = 134/255;
-                color.blue = 74/255;
-                g_ABnfColor[ALittleScriptColorType.ABnfString] = color;   
+                color.red = 169/255;
+                color.green = 183/255;
+                color.blue = 198/255;
+                g_ALittleScriptColor[ALittleScriptColorType.VAR_NAME] = color;   
             }
             {
                 color = new ABnfColor();
-                color.red = 152/255;
-                color.green = 118/255;
-                color.blue = 170/255;
-                g_ABnfColor[ALittleScriptColorType.ABnfRegex] = color;   
+                color.red = 78/255;
+                color.green = 201/255;
+                color.blue = 176/255;
+                g_ALittleScriptColor[ALittleScriptColorType.CUSTOM_NAME] = color;   
+            }
+            {
+                color = new ABnfColor();
+                color.red = 255/255;
+                color.green = 128/255;
+                color.blue = 0/255;
+                g_ALittleScriptColor[ALittleScriptColorType.CTRL_KEYWORD] = color;   
+            }
+            {
+                color = new ABnfColor();
+                color.red = 255/255;
+                color.green = 128/255;
+                color.blue = 0/255;
+                g_ALittleScriptColor[ALittleScriptColorType.KEYWORD] = color;   
+            }
+            {
+                color = new ABnfColor();
+                color.red = 255/255;
+                color.green = 198/255;
+                color.blue = 109/255;
+                g_ALittleScriptColor[ALittleScriptColorType.METHOD_NAME] = color;   
+            }
+            {
+                color = new ABnfColor();
+                color.red = 169/255;
+                color.green = 183/255;
+                color.blue = 198/255;
+                g_ALittleScriptColor[ALittleScriptColorType.DEFAULT] = color;   
+            }
+            {
+                color = new ABnfColor();
+                color.red = 106/255;
+                color.green = 135/255;
+                color.blue = 89/255;
+                g_ALittleScriptColor[ALittleScriptColorType.TEXT] = color;   
             }
         }
 
@@ -69,7 +93,11 @@ public class AUICodeALittleScript : AUICodeLanguage
     }
 
     // 颜色查询
-    public fun QueryColorValue(int tag) : ABnfColor { return g_ABnfColor[tag]; }
+    public fun QueryColorValue(int tag) : ABnfColor { return g_ALittleScriptColor[tag]; }
 
-
+    // 设置目标生成语言
+    public fun SetTargetLanguage(string target_languaeg)
+    {
+        lua.alittlescript.alittlescriptproject_settargetlanguage(this._project.project, target_languaeg);
+    }
 }

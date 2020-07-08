@@ -122,34 +122,47 @@ function IDECodeTree:Refresh()
 		map[child._user_info.name] = nil
 		child:Refresh()
 	end
-	local add = nil
+	local add_file = nil
+	local add_dir = nil
 	for name, attr in ___pairs(map) do
-		if add == nil then
-			add = {}
-		end
-		ALittle.List_Push(add, name)
-	end
-	if add ~= nil then
-		ALittle.List_Sort(add)
-		for index, name in ___ipairs(add) do
-			local attr = map[name]
-			if attr.mode == "directory" then
-				local info = {}
-				info.module_name = self._user_info.module_name
-				info.name = name
-				info.path = self._user_info.path .. "/" .. name
-				info.group = self._user_info.group
-				info.root = false
-				self:AddChild(IDECodeTree(self._ctrl_sys, info))
-			else
-				local info = {}
-				info.module_name = self._user_info.module_name
-				info.name = name
-				info.path = self._user_info.path .. "/" .. name
-				info.group = self._user_info.group
-				info.root = false
-				self:AddChild(IDECodeTreeItem(self._ctrl_sys, info))
+		if attr.mode == "directory" then
+			if add_dir == nil then
+				add_dir = {}
 			end
+			ALittle.List_Push(add_dir, name)
+		else
+			if add_file == nil then
+				add_file = {}
+			end
+			ALittle.List_Push(add_file, name)
+		end
+	end
+	if add_file ~= nil then
+		ALittle.List_Sort(add_file)
+		for index, name in ___ipairs(add_file) do
+			local attr = map[name]
+			local info = {}
+			info.module_name = self._user_info.module_name
+			info.name = name
+			info.path = self._user_info.path .. "/" .. name
+			info.group = self._user_info.group
+			info.project = self._user_info.project
+			info.root = false
+			self:AddChild(IDECodeTreeItem(self._ctrl_sys, info))
+		end
+	end
+	if add_dir ~= nil then
+		ALittle.List_Sort(add_dir)
+		for index, name in ___ipairs(add_dir) do
+			local attr = map[name]
+			local info = {}
+			info.module_name = self._user_info.module_name
+			info.name = name
+			info.path = self._user_info.path .. "/" .. name
+			info.group = self._user_info.group
+			info.project = self._user_info.project
+			info.root = false
+			self:AddChild(IDECodeTree(self._ctrl_sys, info))
 		end
 	end
 end

@@ -55,8 +55,8 @@ option_map = {}
 })
 ALittle.RegStruct(934918978, "ALittleIDE.IDEProjectInfo", {
 name = "ALittleIDE.IDEProjectInfo", ns_name = "ALittleIDE", rl_name = "IDEProjectInfo", hash_code = 934918978,
-name_list = {"name","base_path","texture_path","save","control","config","ui"},
-type_list = {"string","string","string","bool","ALittle.ControlSystem","ALittle.IJsonConfig","ALittleIDE.IDEUIManager"},
+name_list = {"name","base_path","texture_path","save","control","config","ui","code"},
+type_list = {"string","string","string","bool","ALittle.ControlSystem","ALittle.IJsonConfig","ALittleIDE.IDEUIManager","AUIPlugin.AUICodeProject"},
 option_map = {}
 })
 ALittle.RegStruct(1787992834, "ALittleIDE.IDEProjectSettingChanged", {
@@ -173,6 +173,7 @@ function IDEProject:OpenProject(name)
 	self._project.control.use_plugin_class = false
 	self._project.config = ALittle.CreateConfigSystem("Module/" .. name .. "/ALittleIDE.cfg")
 	self._project.ui = IDEUIManager(name, self._project.control)
+	self._project.code = AUIPlugin.AUICodeProject.CreateALittleScriptProject(ALittle.File_BaseFilePath() .. "Module/" .. name .. "/")
 	g_IDEConfig:SetConfig("last_project", name)
 	local e = {}
 	e.name = name
@@ -195,6 +196,9 @@ function IDEProject:CloseProject()
 	local e = {}
 	e.name = self._project.name
 	self:DispatchEvent(___all_struct[-332308624], e)
+	if self._project.code ~= nil then
+		self._project.code:Stop()
+	end
 	self._project = nil
 	return nil
 end

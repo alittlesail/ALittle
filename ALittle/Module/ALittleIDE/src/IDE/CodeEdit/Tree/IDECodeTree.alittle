@@ -95,39 +95,53 @@ public class IDECodeTree : IDECodeTreeLogic
         }
 
 		// 添加
-		var add:List<string> = null;
+		var add_file:List<string> = null;
+		var add_dir:List<string> = null;
 		for (var name, attr in map)
 		{
-			if (add == null) add = new List<string>();
-            ALittle.List_Push(add, name);
+			if (attr.mode == "directory")
+			{
+                if (add_dir == null) add_dir = new List<string>();
+                ALittle.List_Push(add_dir, name);
+            }
+			else
+			{
+                if (add_file == null) add_file = new List<string>();
+                ALittle.List_Push(add_file, name);
+            }	
 		}
 
-		if (add != null)
+		if (add_file != null)
 		{
-			ALittle.List_Sort(add);
-			for (var index, name in add)
+			ALittle.List_Sort(add_file);
+			for (var index, name in add_file)
 			{
                 var attr = map[name];
-				if (attr.mode == "directory")
-				{
-					var info = new IDECodeTreeUserInfo();
-					info.module_name = this._user_info.module_name;
-					info.name = name;
-					info.path = this._user_info.path.."/"..name;
-					info.group = this._user_info.group;
-					info.root = false;
-                    this.AddChild(new IDECodeTree(this._ctrl_sys, info));
-                }
-				else
-				{
-					var info = new IDECodeTreeUserInfo();
-					info.module_name = this._user_info.module_name;
-					info.name = name;
-					info.path = this._user_info.path.."/"..name;
-					info.group = this._user_info.group;
-					info.root = false;
-                    this.AddChild(new IDECodeTreeItem(this._ctrl_sys, info));
-                }
+				var info = new IDECodeTreeUserInfo();
+				info.module_name = this._user_info.module_name;
+				info.name = name;
+				info.path = this._user_info.path.."/"..name;
+				info.group = this._user_info.group;
+				info.project = this._user_info.project;
+				info.root = false;
+                this.AddChild(new IDECodeTreeItem(this._ctrl_sys, info));
+            }
+        }
+
+		if (add_dir != null)
+		{
+			ALittle.List_Sort(add_dir);
+			for (var index, name in add_dir)
+			{
+                var attr = map[name];
+				var info = new IDECodeTreeUserInfo();
+				info.module_name = this._user_info.module_name;
+				info.name = name;
+				info.path = this._user_info.path.."/"..name;
+				info.group = this._user_info.group;
+                info.project = this._user_info.project;
+				info.root = false;
+                this.AddChild(new IDECodeTree(this._ctrl_sys, info));
             }
         }
     }

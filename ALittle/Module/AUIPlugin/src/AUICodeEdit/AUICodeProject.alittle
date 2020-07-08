@@ -1,6 +1,8 @@
 
 namespace AUIPlugin;
 
+protected var g_ABnfProjectMap:Map<string, AUICodeProject> = ALittle.CreateValueWeakMap();
+
 public class AUICodeProject
 {
     private int _query_id = 0;
@@ -15,6 +17,38 @@ public class AUICodeProject
         this._map = new Map<int, ALittle.Thread>();
     }
 
+    public static CreateALittleScriptProject(string project_path) : AUICodeProject
+    {
+        var abnf_buffer = ALittle.File_ReadTextFromFile(g_ModuleBasePath.."Other/ABnf/ALittleScript.abnf");
+        var project = new AUICodeProject(lua.alittlescript.create_alittlescript_project(project_path, abnf_buffer));
+        project.Start();
+        return project;
+    }
+
+    // 构建一个ABnf项目
+    public static CreateABnfProject() : AUICodeProject
+    {
+        var abnf_project = g_ABnfProjectMap["abnf"];
+        if (abnf_project == null)
+        {
+            var buffer = ALittle.File_ReadTextFromFile(g_ModuleBasePath.."/Other/ABnf/ABnf.abnf");
+            if (buffer == null) buffer = "";
+
+            var native_project = lua.abnf.create_abnf_project("", buffer);
+            abnf_project = new AUICodeProject(native_project);
+            g_ABnfProjectMap["abnf"] = abnf_project;
+            abnf_project.Start();
+        }
+        return abnf_project;
+    }
+
+    public static Shutdown()
+    {
+        for (var name, project in g_ABnfProjectMap)
+            project.Stop();
+        g_ABnfProjectMap = ALittle.CreateValueWeakMap();
+    }
+
     public get project() : lua.ABnfProject { return this._project; }
     public fun UpdateFile(string full_path) { lua.alanguage.abnfproject_updatefile(this._project, full_path); }
     public fun RemoveFile(string full_path) { lua.alanguage.abnfproject_removefile(this._project, full_path); }
@@ -24,7 +58,7 @@ public class AUICodeProject
         if (this._loop != null) return;
 
         this._loop = new ALittle.LoopFrame(bind(this.Update, this));
-        this._loop.Start();
+        A_WeakLoopSystem.AddUpdater(this._loop);
     }
 
     public fun Add(ALittle.Thread thread) : int
@@ -54,7 +88,7 @@ public class AUICodeProject
     {
         if (this._loop == null) return;
 
-        this._loop.Stop();
+        A_WeakLoopSystem.RemoveUpdater(this._loop);
         this._loop = null;
     }
 }

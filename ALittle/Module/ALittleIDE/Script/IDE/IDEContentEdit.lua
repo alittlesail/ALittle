@@ -417,7 +417,7 @@ function IDEContentEdit:StartEditCodeBySelect(name, info)
 		return child._user_data
 	end
 	local child_from = self._main_tab.tab
-	local tab_child = IDECodeTabChild(g_Control, name, true)
+	local tab_child = IDECodeTabChild(g_Control, name, true, info)
 	tab_child:CreateBySelect(info)
 	self._main_tab:AddChild(tab_child.tab_screen, 1)
 	tab_child:OnOpen()

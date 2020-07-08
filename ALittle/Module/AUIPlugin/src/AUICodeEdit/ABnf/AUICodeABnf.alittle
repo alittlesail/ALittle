@@ -13,30 +13,13 @@ enum ABnfColorType
     ABnfRegex = 6;
 }
 
-struct ABnfProjectInfo
-{
-    AUICodeProject project;
-}
-
-protected var g_ABnfProjectInfo:ABnfProjectInfo = ALittle.CreateValueWeakMap();
-
 public class AUICodeABnf : AUICodeLanguage
 {
     private string _generate_dir;
 
     public ctor(AUICodeProject project, string full_path)
     {
-        if (this._project == null && g_ABnfProjectInfo.project == null)
-        {
-            var buffer = ALittle.File_ReadTextFromFile(g_ModuleBasePath.."/Other/ABnf/ABnf.abnf");
-            if (buffer == null) buffer = "";
-
-            var native_project = lua.abnf.create_abnf_project("", buffer);
-            g_ABnfProjectInfo.project = new AUICodeProject(native_project);
-            g_ABnfProjectInfo.project.Start();
-        }
-
-        if (this._project == null) this._project = g_ABnfProjectInfo.project;
+        if (this._project == null) this._project = AUICodeProject.CreateABnfProject();
 
         if (g_ABnfColor == null)
         {

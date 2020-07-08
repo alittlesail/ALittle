@@ -31,8 +31,11 @@ public struct IDEProjectInfo
 	string texture_path;						// 纹理路径，尾部不带/
 	bool save;									// 所有信息是否已保存
 	ALittle.ControlSystem control;				// 项目的控件系统
-	ALittle.IJsonConfig config;			// 项目的配置文件系统
+	ALittle.IJsonConfig config;					// 项目的配置文件系统
+	// UI数据管理
 	IDEUIManager ui;
+	// 代码数据管理
+	AUIPlugin.AUICodeProject code;
 }
 
 public class IDEProject : ALittle.EventDispatcher
@@ -182,6 +185,8 @@ public class IDEProject : ALittle.EventDispatcher
 		this._project.control.use_plugin_class = false;
 		this._project.config = ALittle.CreateConfigSystem("Module/"..name.."/ALittleIDE.cfg");
 		this._project.ui = new IDEUIManager(name, this._project.control);
+		[Language(Lua)]
+		this._project.code = AUIPlugin.AUICodeProject.CreateALittleScriptProject(ALittle.File_BaseFilePath().."Module/"..name.."/");
 
 		// 标记上次打开的项目名
 		g_IDEConfig.SetConfig("last_project", name);
@@ -211,6 +216,9 @@ public class IDEProject : ALittle.EventDispatcher
 		var e = new IDEProjectCloseEvent();
 		e.name = this._project.name;
 		this.DispatchEvent(e);
+
+		if (this._project.code != null)
+			this._project.code.Stop();
 
 		this._project = null;
 		return null;

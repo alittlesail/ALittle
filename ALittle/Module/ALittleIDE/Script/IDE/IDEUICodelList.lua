@@ -53,6 +53,7 @@ function IDEUICodeList:HandleProjectOpen(event)
 	info.path = ALittle.File_BaseFilePath() .. "Module/" .. event.name .. "/src"
 	info.group = self._group
 	info.root = true
+	info.project = g_IDEProject.project.code
 	self._code_scroll_screen:AddChild(IDECodeTree(g_Control, info))
 	local std_list = {"Core", "Std", "CEngine"}
 	for index, name in ___ipairs(std_list) do
@@ -62,7 +63,7 @@ function IDEUICodeList:HandleProjectOpen(event)
 		info.path = ALittle.File_BaseFilePath() .. "Module/ALittleIDE/Other/GameLibrary/" .. name .. "/src"
 		info.group = self._group
 		info.root = true
-		info.project = nil
+		info.project = g_IDEProject.project.code
 		local tree = IDECodeTree(g_Control, info)
 		self._code_scroll_screen:AddChild(tree)
 	end
@@ -72,6 +73,7 @@ function IDEUICodeList:HandleProjectOpen(event)
 		info.name = ALittle.File_GetFileNameByPath(module.root_path)
 		info.path = module.root_path
 		info.group = self._group
+		info.project = g_IDEProject.project.code
 		local tree = IDECodeTree(g_Control, info)
 		self._code_scroll_screen:AddChild(tree)
 	end

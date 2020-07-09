@@ -335,6 +335,7 @@ public class AUICodeEdit : ALittle.ScrollScreen
     public get cursor() : AUICodeCursor { return this._cursor; }
     public get select_cursor() : AUICodeSelectCursor { return this._select_cursor; }
     public get language() : AUICodeLanguage { return this._language; }
+    public get ascii_width() : double { return this._ascii_width; }
     public set line_count(int count) { this._line_count = count; }
     public get line_count() : int { return this._line_count; }
     public get line_list() : List<AUICodeLineInfo> { return this._line_list; }
@@ -404,6 +405,8 @@ public class AUICodeEdit : ALittle.ScrollScreen
             this.DoQueryGoto(it_line, it_char);
             this.StopQueryInfo();
         }
+
+        this._cursor.RejustShowCursor();
     }
 
     private async fun DoQueryGoto(int it_line, int it_char)
@@ -780,11 +783,21 @@ public class AUICodeEdit : ALittle.ScrollScreen
 
     private fun HandleTextInput(ALittle.UITextInputEvent event)
     {
-        if (this.InsertText(event.text, true))
+        var text = event.text;
+        if (this._language != null && this._cursor.virtual_indent > 0)
+        {
+            var indent = this._cursor.virtual_indent;
+            var indent_str = "";
+            for (var i = 1; i <= indent; 1)
+                indent_str = indent_str.." ";
+            text = indent_str..text;
+        }
+
+        if (this.InsertText(text, true))
         {
             this.DispatchEvent(new ALittle.UIChangedEvent());
             g_AUICodeCompleteScreen.ShowComplete(this);
-        }
+        }   
     }
 
     private fun HandleKeyDown(ALittle.UIKeyDownEvent event)
@@ -800,6 +813,7 @@ public class AUICodeEdit : ALittle.ScrollScreen
                     this._select_cursor.Hide();
                 else
                     this._cursor.OffsetLeft();
+                this._cursor.RejustShowCursor();
                 g_AUICodeCompleteScreen.TryHide(this);
             }
             else
@@ -829,6 +843,7 @@ public class AUICodeEdit : ALittle.ScrollScreen
                         this._select_cursor.Hide();
                     else
                         this._cursor.OffsetUp();
+                    this._cursor.RejustShowCursor();
                 }
                 else
                 {
@@ -857,6 +872,7 @@ public class AUICodeEdit : ALittle.ScrollScreen
                         this._select_cursor.Hide();
                     else
                         this._cursor.OffsetDown();
+                    this._cursor.RejustShowCursor();
                 }
                 else
                 {
@@ -879,6 +895,7 @@ public class AUICodeEdit : ALittle.ScrollScreen
                     this._select_cursor.Hide();
                 else
                     this._cursor.OffsetRight();
+                this._cursor.RejustShowCursor();
                 g_AUICodeCompleteScreen.TryHide(this);
             }
             else
@@ -971,17 +988,7 @@ public class AUICodeEdit : ALittle.ScrollScreen
             {
                 var revoke_bind = new ALittle.RevokeBind();
                 is_change = this.InsertText("\n", true, revoke_bind);
-                if (this._language != null)
-                {
-                    var indent = this._language.QueryDesiredIndent(this._cursor.line, this._cursor.char);
-                    if (indent > 0)
-                    {
-                        var indent_str = "";
-                        for (var i = 1; i <= indent; 1)
-                            indent_str = indent_str.." ";
-                        this.InsertText(indent_str, true, revoke_bind);
-                    }
-                }
+                this._cursor.RejustShowCursor();
                 revoke_bind.complete = bind(this.DispatchChangedEvent, this);
                 this._revoke_list.PushRevoke(revoke_bind);
             }

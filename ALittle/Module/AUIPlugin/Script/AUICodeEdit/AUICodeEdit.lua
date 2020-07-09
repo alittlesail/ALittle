@@ -408,6 +408,10 @@ function AUICodeEdit.__getter:language()
 	return self._language
 end
 
+function AUICodeEdit.__getter:ascii_width()
+	return self._ascii_width
+end
+
 function AUICodeEdit.__setter:line_count(count)
 	self._line_count = count
 end
@@ -482,6 +486,7 @@ function AUICodeEdit:HandleLButtonDown(event)
 		self:DoQueryGoto(it_line, it_char)
 		self:StopQueryInfo()
 	end
+	self._cursor:RejustShowCursor()
 end
 
 function AUICodeEdit:DoQueryGoto(it_line, it_char)
@@ -851,7 +856,19 @@ function AUICodeEdit:DeleteSelectText()
 end
 
 function AUICodeEdit:HandleTextInput(event)
-	if self:InsertText(event.text, true) then
+	local text = event.text
+	if self._language ~= nil and self._cursor.virtual_indent > 0 then
+		local indent = self._cursor.virtual_indent
+		local indent_str = ""
+		local i = 1
+		while true do
+			if not(i <= indent) then break end
+			indent_str = indent_str .. " "
+			i = i+(1)
+		end
+		text = indent_str .. text
+	end
+	if self:InsertText(text, true) then
 		self:DispatchEvent(___all_struct[958494922], {})
 		g_AUICodeCompleteScreen:ShowComplete(self)
 	end
@@ -866,6 +883,7 @@ function AUICodeEdit:HandleKeyDown(event)
 			else
 				self._cursor:OffsetLeft()
 			end
+			self._cursor:RejustShowCursor()
 			g_AUICodeCompleteScreen:TryHide(self)
 		else
 			if self._select_cursor.line_start == nil then
@@ -889,6 +907,7 @@ function AUICodeEdit:HandleKeyDown(event)
 				else
 					self._cursor:OffsetUp()
 				end
+				self._cursor:RejustShowCursor()
 			else
 				if self._select_cursor.line_start == nil then
 					self._select_cursor:StartLineChar(self._cursor.line, self._cursor.char)
@@ -912,6 +931,7 @@ function AUICodeEdit:HandleKeyDown(event)
 				else
 					self._cursor:OffsetDown()
 				end
+				self._cursor:RejustShowCursor()
 			else
 				if self._select_cursor.line_start == nil then
 					self._select_cursor:StartLineChar(self._cursor.line, self._cursor.char)
@@ -932,6 +952,7 @@ function AUICodeEdit:HandleKeyDown(event)
 			else
 				self._cursor:OffsetRight()
 			end
+			self._cursor:RejustShowCursor()
 			g_AUICodeCompleteScreen:TryHide(self)
 		else
 			if self._select_cursor.line_start == nil then
@@ -1004,19 +1025,7 @@ function AUICodeEdit:HandleKeyDown(event)
 		else
 			local revoke_bind = ALittle.RevokeBind()
 			is_change = self:InsertText("\n", true, revoke_bind)
-			if self._language ~= nil then
-				local indent = self._language:QueryDesiredIndent(self._cursor.line, self._cursor.char)
-				if indent > 0 then
-					local indent_str = ""
-					local i = 1
-					while true do
-						if not(i <= indent) then break end
-						indent_str = indent_str .. " "
-						i = i+(1)
-					end
-					self:InsertText(indent_str, true, revoke_bind)
-				end
-			end
+			self._cursor:RejustShowCursor()
 			revoke_bind.complete = Lua.Bind(self.DispatchChangedEvent, self)
 			self._revoke_list:PushRevoke(revoke_bind)
 		end

@@ -8,8 +8,8 @@ local ___all_struct = ALittle.GetAllStruct()
 
 ALittle.RegStruct(1773085126, "AUIPlugin.AUICodeCompleteItemInfo", {
 name = "AUIPlugin.AUICodeCompleteItemInfo", ns_name = "AUIPlugin", rl_name = "AUICodeCompleteItemInfo", hash_code = 1773085126,
-name_list = {"_item_button","_item_title","_tag_image","_item","complete"},
-type_list = {"ALittle.TextRadioButton","ALittle.Text","ALittle.Image","ALittle.DisplayObject","lua.ABnfQueryCompleteInfo"},
+name_list = {"_item_button","_item_title","_tag_image","_item","pos","upper","complete"},
+type_list = {"ALittle.TextRadioButton","ALittle.Text","ALittle.Image","ALittle.DisplayObject","int","string","lua.ABnfQueryCompleteInfo"},
 option_map = {}
 })
 ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
@@ -34,6 +34,8 @@ option_map = {}
 AUICodeCompleteScreen = Lua.Class(nil, "AUIPlugin.AUICodeCompleteScreen")
 
 function AUICodeCompleteScreen:Ctor()
+	___rawset(self, "_item_pool", {})
+	___rawset(self, "_item_pool_count", 0)
 	___rawset(self, "_item_height", 0)
 end
 
@@ -71,7 +73,7 @@ function AUICodeCompleteScreen:SelectUp()
 	local target = self:GetSelectIndex()
 	target = target - (1)
 	if target < 1 then
-		target = self._screen.child_count
+		return
 	end
 	local item = self._screen.childs[target]
 	local info = item._user_data
@@ -83,8 +85,11 @@ function AUICodeCompleteScreen:SelectUp()
 	end
 	local delta = self._screen.container.height - self._screen.height
 	if delta > 0 then
-		local offset = (target - 1) * self._item_height
-		self._screen.right_scrollbar.offset_rate = offset / delta
+		local offset = (target - 1) * self._item_height + self._screen.container_y
+		if offset < 0 then
+			self._screen.right_scrollbar.offset_rate = ((target - 1) * self._item_height) / delta
+			self._screen:RejustScrollBar()
+		end
 	end
 end
 
@@ -92,7 +97,7 @@ function AUICodeCompleteScreen:SelectDown()
 	local target = self:GetSelectIndex()
 	target = target + (1)
 	if target > self._screen.child_count then
-		target = 1
+		return
 	end
 	local item = self._screen.childs[target]
 	local info = item._user_data
@@ -104,8 +109,11 @@ function AUICodeCompleteScreen:SelectDown()
 	end
 	local delta = self._screen.container.height - self._screen.height
 	if delta > 0 then
-		local offset = (target - 1) * self._item_height
-		self._screen.right_scrollbar.offset_rate = offset / delta
+		local offset = target * self._item_height + self._screen.container_y
+		if offset > self._screen.height then
+			self._screen.right_scrollbar.offset_rate = (target * self._item_height - self._screen.height) / delta
+			self._screen:RejustScrollBar()
+		end
 	end
 end
 
@@ -158,13 +166,27 @@ function AUICodeCompleteScreen:ReInit(edit)
 	end
 	self._screen.x = x
 	self._screen.y = y
+	if self._item_list ~= nil then
+		for index, info in ___ipairs(self._item_list) do
+			self._item_pool_count = self._item_pool_count + (1)
+			self._item_pool[self._item_pool_count] = info
+		end
+	end
 	self._item_group = {}
 	self._item_list = {}
 	for index, info in ___ipairs(self._complete.complete_list) do
-		local item_info = {}
-		item_info._item = g_Control:CreateControl("ide_code_complete_item", item_info)
+		local item_info
+		if self._item_pool_count > 0 then
+			item_info = self._item_pool[self._item_pool_count]
+			self._item_pool[self._item_pool_count] = nil
+			self._item_pool_count = self._item_pool_count - (1)
+		else
+			item_info = {}
+			item_info._item = g_Control:CreateControl("ide_code_complete_item", item_info)
+		end
 		item_info._item_button.group = self._item_group
 		item_info._item_title.text = info.display
+		item_info.upper = ALittle.String_Upper(info.display)
 		item_info._tag_image.texture_name = edit.language:QueryCompleteIcon(info.tag)
 		item_info._item._user_data = item_info
 		item_info.complete = info
@@ -175,18 +197,30 @@ function AUICodeCompleteScreen:ReInit(edit)
 	return true
 end
 
+function AUICodeCompleteScreen.ItemInfoSort(a, b)
+	return a.pos < b.pos
+end
+
 function AUICodeCompleteScreen:Fliter(text)
 	local descriptor
+	local upper = ALittle.String_Upper(text)
+	local sort_list = {}
+	local count = 0
 	self._screen:RemoveAllChild()
 	for index, info in ___ipairs(self._item_list) do
-		local pos = ALittle.String_Find(info._item_title.text, text)
-		if pos ~= nil then
-			if self._screen.child_count == 0 then
-				info._item_button.selected = true
-				descriptor = info.complete.descriptor
-			end
-			self._screen:AddChild(info._item)
+		info.pos = ALittle.String_Find(info.upper, upper)
+		if info.pos ~= nil then
+			count = count + 1
+			sort_list[count] = info
 		end
+	end
+	ALittle.List_Sort(sort_list, AUICodeCompleteScreen.ItemInfoSort)
+	for index, info in ___ipairs(sort_list) do
+		if self._screen.child_count == 0 then
+			info._item_button.selected = true
+			descriptor = info.complete.descriptor
+		end
+		self._screen:AddChild(info._item)
 	end
 	if self._screen.child_count == 0 then
 		return false

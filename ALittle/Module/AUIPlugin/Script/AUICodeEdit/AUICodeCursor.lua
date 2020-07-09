@@ -14,6 +14,7 @@ function AUICodeCursor:Ctor(ctrl_sys, edit)
 	___rawset(self, "_flash_dir", 0.05)
 	___rawset(self, "_it_line", 1)
 	___rawset(self, "_it_char", 0)
+	___rawset(self, "_virtual_indent", 0)
 	___rawset(self, "_edit", edit)
 end
 
@@ -23,6 +24,10 @@ end
 
 function AUICodeCursor.__getter:char()
 	return self._it_char
+end
+
+function AUICodeCursor.__getter:virtual_indent()
+	return self._virtual_indent
 end
 
 function AUICodeCursor:Show(x, y)
@@ -94,6 +99,7 @@ function AUICodeCursor:SetOffsetXY(x, y, show)
 	if show == nil or show then
 		self:Show()
 	end
+	self._virtual_indent = 0
 end
 
 function AUICodeCursor:SetLineChar(it_line, it_char, show)
@@ -108,6 +114,22 @@ function AUICodeCursor:SetLineChar(it_line, it_char, show)
 	end
 	if show == nil or show then
 		self:Show()
+	end
+	self._virtual_indent = 0
+end
+
+function AUICodeCursor:RejustShowCursor()
+	local line = self._edit.line_list[self._it_line]
+	if line == nil then
+		return
+	end
+	if line.char_count < 1 or line.char_list[1].char == "\r" or line.char_list[1].char == "\n" then
+		if self._edit.language ~= nil then
+			self._virtual_indent = self._edit.language:QueryDesiredIndent(self._it_line, self._it_char)
+			if self._virtual_indent > 0 then
+				self.x = self._virtual_indent * self._edit.ascii_width
+			end
+		end
 	end
 end
 

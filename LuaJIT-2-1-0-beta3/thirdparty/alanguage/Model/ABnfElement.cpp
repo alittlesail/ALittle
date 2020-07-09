@@ -139,23 +139,3 @@ int ABnfElement::GetStartIndent()
 
     return count;
 }
-
-// 向前找到第一个\n并且，中间没有空格和\t
-int ABnfElement::FindForwardFirstEnterAndHaveNotSpaceOrTab()
-{
-    const auto& text = m_file->GetText();
-    int start = GetStart();
-    int end = GetEnd() - 1;
-    while (end >= 0 && text[end] != ' ' && text[end] != '\t' && text[end] != '\n')
-        --end;
-
-    for (int i = end; i >= start; --i)
-    {
-        if (text[i] == ' ' || text[i] == '\t')
-            continue;
-        if (text[i] == '\n')
-            return i;
-        break;
-    }
-    return -1;
-}

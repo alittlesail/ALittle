@@ -100,9 +100,6 @@ public:
     virtual int GetEndLine() { return m_line; }
     // 获取结束位置是第几行，从1开始算
     virtual int GetEndCol() { return m_col; }
-
-    // 向前找到第一个\n并且，中间没有空格和\t
-    virtual int FindForwardFirstEnterAndHaveNotSpaceOrTab();
 };
 
 #endif // _ALITTLE_ABNFELEMENT_H_

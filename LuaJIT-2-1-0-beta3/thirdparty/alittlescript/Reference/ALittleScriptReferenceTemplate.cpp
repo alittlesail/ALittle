@@ -83,9 +83,7 @@ int ALittleScriptReference::QueryDesiredIndent(int it_line, int it_char, ABnfEle
             m_desire_indent = parent->GetReference()->QueryDesiredIndent(it_line, it_char, nullptr);
         if (std::dynamic_pointer_cast<ABnfStringElement>(select) && select->GetElementText() == "{")
             return m_desire_indent;
-        // int find = element->FindForwardFirstEnterAndHaveNotSpaceOrTab();
-        // if (find < 0 || offset <= find || offset > element->GetEnd()) return m_desire_indent + s_indent_size;
-        return m_desire_indent;
+        return m_desire_indent + s_indent_size;
     }
     else if (std::dynamic_pointer_cast<ALittleScriptMethodParamDecElement>(element)
         || std::dynamic_pointer_cast<ALittleScriptOpNewListStatElement>(element))

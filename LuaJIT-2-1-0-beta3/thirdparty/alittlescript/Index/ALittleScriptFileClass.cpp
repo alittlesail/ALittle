@@ -18,7 +18,7 @@ ALittleScriptFileClass::~ALittleScriptFileClass()
 // 更新分析内容
 void ALittleScriptFileClass::UpdateAnalysis()
 {
-    if (m_root != nullptr)
+    if (!m_in_ui && m_root != nullptr)
     {
         auto* index = dynamic_cast<ALittleScriptIndex*>(m_project);
         if (index != nullptr)
@@ -30,7 +30,7 @@ void ALittleScriptFileClass::UpdateAnalysis()
     else
         m_root = GetProject()->RefABnf().Analysis(this);
 
-    if (m_root != nullptr)
+    if (!m_in_ui && m_root != nullptr)
     {
         auto* index = dynamic_cast<ALittleScriptIndex*>(m_project);
         if (index != nullptr)

@@ -3,6 +3,7 @@
 #include "ABnfRuleInfo.h"
 #include "ABnfRuleTokenInfo.h"
 #include "ABnfRuleNodeInfo.h"
+#include "ARegex.h"
 
 ABnfRule::ABnfRule()
 {
@@ -103,9 +104,9 @@ ABnfRuleInfo* ABnfRule::CalcABnfRule(const std::vector<ABnfRuleTokenInfo>& token
     }
 
     // 正则表达式匹配
-    std::smatch result;
-    static std::regex pattern("^[_a-zA-Z][_a-zA-Z0-9]*$");
-    if (!std::regex_match(token_list[offset].value, result, pattern))
+    int result_length;
+    static ARegex pattern("[_a-zA-Z][_a-zA-Z0-9]*");
+    if (!pattern.Match(token_list[offset].value.c_str(), result_length))
     {
         if (rule != nullptr) delete rule;
         error = "line:" + std::to_string(token_list[offset].line) + "col:" + std::to_string(token_list[offset].col)
@@ -223,9 +224,9 @@ ABnfRuleNodeInfo* ABnfRule::CalcABnfNode(const std::vector<ABnfRuleTokenInfo>& t
         if (token.type == ABnfRuleTokenType::TT_ID)
         {
             // 正则表达式匹配
-            std::smatch result;
-            static std::regex pattern("^[_a-zA-Z][_a-zA-Z0-9]*$");
-            if (!std::regex_match(token.value, result, pattern))
+            int result_length = 0;
+            static ARegex pattern("[_a-zA-Z][_a-zA-Z0-9]*");
+            if (!pattern.Match(token.value.c_str(), result_length))
             {
                 if (node != nullptr) delete node;
                 error = "line:" + std::to_string(token.line) + "col:" + std::to_string(token.col)

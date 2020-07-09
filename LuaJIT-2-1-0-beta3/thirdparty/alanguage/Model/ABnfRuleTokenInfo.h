@@ -3,8 +3,9 @@
 #define _ALITTLE_ABNFRULETOKENINFO_H_
 
 #include <string>
-#include <regex>
 #include <memory>
+
+#include "ARegex.h"
 
 enum class ABnfRuleTokenType
 {
@@ -26,7 +27,7 @@ struct ABnfRuleTokenInfo
 
     ABnfRuleTokenType type = ABnfRuleTokenType::TT_NONE;    // 类型
     std::string value;                                      // 值
-    std::shared_ptr<std::regex> regex;                      // 正则表达式
+    std::shared_ptr<ARegex> regex;                      // 正则表达式
 
     int line = 0;   // 所在行，从1开始算
     int col = 0;    // 所在列，从1开始算

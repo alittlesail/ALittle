@@ -6,7 +6,7 @@
 class ALittleScriptRegexElement : public ABnfRegexElement
 {
 public:
-    ALittleScriptRegexElement(ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type, std::shared_ptr<std::regex> regex)
+    ALittleScriptRegexElement(ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type, std::shared_ptr<ARegex> regex)
         : ABnfRegexElement(factory, file, line, col, offset, type, regex) { }
     virtual ~ALittleScriptRegexElement() { }
 };

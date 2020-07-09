@@ -6,6 +6,7 @@
 #include "../Model/ABnfStringElement.h"
 #include "../Model/ABnfRegexElement.h"
 #include "../Model/ABnfReference.h"
+#include "../Model/ARegex.h"
 
 ABnfNodeElementPtr ABnfFactory::CreateNodeElement(ABnfFile* file, int line, int col, int offset, const std::string& type)
 {
@@ -22,7 +23,7 @@ ABnfStringElementPtr ABnfFactory::CreateStringElement(ABnfFile* file, int line, 
     return ABnfStringElementPtr(new ABnfStringElement(this, file, line, col, offset, type));
 }
 
-ABnfRegexElementPtr ABnfFactory::CreateRegexElement(ABnfFile* file, int line, int col, int offset, const std::string& type, std::shared_ptr<std::regex> regex)
+ABnfRegexElementPtr ABnfFactory::CreateRegexElement(ABnfFile* file, int line, int col, int offset, const std::string& type, std::shared_ptr<ARegex> regex)
 {
     return ABnfRegexElementPtr(new ABnfRegexElement(this, file, line, col, offset, type, regex));
 }

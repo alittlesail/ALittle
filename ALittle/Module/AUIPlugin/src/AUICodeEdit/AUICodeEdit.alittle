@@ -1071,6 +1071,11 @@ public class AUICodeEdit : ALittle.ScrollScreen
         }
     }
 
+    public fun OnUnDo()
+    {
+        g_AUICodeCompleteScreen.Hide();
+    }
+
     public fun OnRightMenu(AUIRightMenu menu)
     {
         if (this._language != null) this._language.OnRightMenu(menu);

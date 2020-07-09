@@ -1088,6 +1088,10 @@ function AUICodeEdit:HandleKeyUp(event)
 	end
 end
 
+function AUICodeEdit:OnUnDo()
+	g_AUICodeCompleteScreen:Hide()
+end
+
 function AUICodeEdit:OnRightMenu(menu)
 	if self._language ~= nil then
 		self._language:OnRightMenu(menu)

@@ -177,6 +177,8 @@ protected class AUICodeCompleteScreen
             }
         }
 
+        var max_width = 200.0;
+
         this._item_group = new ALittle.TextRadioButtonGroup();
         this._item_list = new List<AUICodeCompleteItemInfo>();
         for (var index, info in this._complete.complete_list)
@@ -201,8 +203,13 @@ protected class AUICodeCompleteScreen
             item_info.complete = info;
             this._item_list[index] = item_info;
 
+            var title_wdith = this._edit.ascii_width * ALittle.String_Len(info.display);
+            if (max_width < title_wdith) max_width = title_wdith;
+
             this._item_height = item_info._item.height;
         }
+
+        this._screen.width = max_width;
 
         A_LayerManager.ShowFromRight(this._screen, false);
 

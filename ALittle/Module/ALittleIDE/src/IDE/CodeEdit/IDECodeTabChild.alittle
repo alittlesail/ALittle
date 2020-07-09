@@ -18,20 +18,11 @@ public class IDECodeTabChild : IDETabChild
 		this._edit._user_data = this;
     }
 
-    private fun OnHide()
-    {
-        this._edit.OnHide();
-    }
-
-    private fun OnShow()
-    {
-        this._edit.OnShow();
-    }
-
-    private fun OnClose()
-    {
-        this._edit.OnClose();
-    }
+    private fun OnUndo() { this._edit.OnUnDo(); }
+    private fun OnRedo() { }
+    private fun OnHide() { this._edit.OnHide(); }
+    private fun OnShow() { this._edit.OnShow(); }
+    private fun OnClose() { this._edit.OnClose(); }
 
     private fun OnOpen()
     {

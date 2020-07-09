@@ -175,30 +175,6 @@ function IDEUICenter:HandleShortcutKey()
 end
 
 function IDEUICenter:HandleUndoRevoke(event)
-	local tab_child = g_IDECenter.center.content_edit.cur_tab_child
-	if tab_child == nil then
-		return
-	end
-	tab_child.revoke_list:UndoRevoke()
-end
-
-function IDEUICenter:HandleDoRevoke(event)
-	local tab_child = g_IDECenter.center.content_edit.cur_tab_child
-	if tab_child == nil then
-		return
-	end
-	tab_child.revoke_list:DoRevoke()
-end
-
-function IDEUICenter:HandleSaveCurrent(event)
-	local tab_child = g_IDECenter.center.content_edit.cur_tab_child
-	if tab_child == nil then
-		return
-	end
-	tab_child.save = true
-end
-
-function IDEUICenter:HandleUndoRevoke(event)
 	if g_IDEAttrEventDialog:IsShow() then
 		return
 	end
@@ -207,6 +183,7 @@ function IDEUICenter:HandleUndoRevoke(event)
 		return
 	end
 	tab_child.revoke_list:UndoRevoke()
+	tab_child:OnUndo()
 end
 
 function IDEUICenter:HandleDoRevoke(event)
@@ -215,6 +192,7 @@ function IDEUICenter:HandleDoRevoke(event)
 		return
 	end
 	tab_child.revoke_list:DoRevoke()
+	tab_child:OnRedo()
 end
 
 function IDEUICenter:HandleSaveCurrent(event)

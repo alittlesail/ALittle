@@ -183,32 +183,12 @@ protected class IDEUICenter : ALittle.DisplayLayout
 	// 快捷键 撤销
 	public fun HandleUndoRevoke(ALittle.UIEvent event)
 	{
-		var tab_child = g_IDECenter.center.content_edit.cur_tab_child;
-		if (tab_child == null) return;
-		tab_child.revoke_list.UndoRevoke();
-	}
-	// 快捷键 重做
-	public fun HandleDoRevoke(ALittle.UIEvent event)
-	{
-		var tab_child = g_IDECenter.center.content_edit.cur_tab_child;
-		if (tab_child == null) return;
-		tab_child.revoke_list.DoRevoke();
-	}
-	// 快捷键 保存
-	public fun HandleSaveCurrent(ALittle.UIEvent event)
-	{
-		var tab_child = g_IDECenter.center.content_edit.cur_tab_child;
-		if (tab_child == null) return;
-		tab_child.save = true;
-	}
-	// 快捷键 撤销
-	public fun HandleUndoRevoke(ALittle.UIEvent event)
-	{
 		// 如果某些对话框打开着那么就直接返回
 		if (g_IDEAttrEventDialog.IsShow()) return;
 		var tab_child = g_IDECenter.center.content_edit.cur_tab_child;
 		if (tab_child == null) return;
 		tab_child.revoke_list.UndoRevoke();
+		tab_child.OnUndo();
 	}
 	// 快捷键 重做
 	public fun HandleDoRevoke(ALittle.UIEvent event)
@@ -216,6 +196,7 @@ protected class IDEUICenter : ALittle.DisplayLayout
 		var tab_child = g_IDECenter.center.content_edit.cur_tab_child;
 		if (tab_child == null) return;
 		tab_child.revoke_list.DoRevoke();
+		tab_child.OnRedo();
 	}
 	// 快捷键 保存
 	public fun HandleSaveCurrent(ALittle.UIEvent event)

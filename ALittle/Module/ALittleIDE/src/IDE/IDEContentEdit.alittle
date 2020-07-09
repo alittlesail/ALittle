@@ -27,6 +27,8 @@ public class IDETabChild : ALittle.UIEventDispatcher
 	public get title() : string { return this._name; }
 	public get tab_body() : ALittle.DisplayObject { return null; }
 
+	public fun OnUndo() {}
+	public fun OnRedo() {}
 	public fun OnHide() {}
 	public fun OnShow() {}
 	public fun OnClose() {}

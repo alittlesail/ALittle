@@ -93,6 +93,12 @@ function IDETabChild.__getter:tab_body()
 	return nil
 end
 
+function IDETabChild:OnUndo()
+end
+
+function IDETabChild:OnRedo()
+end
+
 function IDETabChild:OnHide()
 end
 

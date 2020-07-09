@@ -172,6 +172,7 @@ function AUICodeCompleteScreen:ReInit(edit)
 			self._item_pool[self._item_pool_count] = info
 		end
 	end
+	local max_width = 200.0
 	self._item_group = {}
 	self._item_list = {}
 	for index, info in ___ipairs(self._complete.complete_list) do
@@ -191,8 +192,13 @@ function AUICodeCompleteScreen:ReInit(edit)
 		item_info._item._user_data = item_info
 		item_info.complete = info
 		self._item_list[index] = item_info
+		local title_wdith = self._edit.ascii_width * ALittle.String_Len(info.display)
+		if max_width < title_wdith then
+			max_width = title_wdith
+		end
 		self._item_height = item_info._item.height
 	end
+	self._screen.width = max_width
 	A_LayerManager:ShowFromRight(self._screen, false)
 	return true
 end

@@ -29,6 +29,13 @@ function IDECodeTabChild:Ctor(ctrl_sys, name, save, user_info)
 	self._edit._user_data = self
 end
 
+function IDECodeTabChild:OnUndo()
+	self._edit:OnUnDo()
+end
+
+function IDECodeTabChild:OnRedo()
+end
+
 function IDECodeTabChild:OnHide()
 	self._edit:OnHide()
 end

@@ -28,9 +28,9 @@ function AUICodeALittleScript:Ctor(project, full_path)
 		local color
 		do
 			color = {}
-			color.red = 128 / 255
-			color.green = 128 / 255
-			color.blue = 128 / 255
+			color.red = 87 / 255
+			color.green = 166 / 255
+			color.blue = 74 / 255
 			g_ALittleScriptColor[ALittleScriptColorType.COMMENT] = color
 		end
 		do
@@ -42,37 +42,37 @@ function AUICodeALittleScript:Ctor(project, full_path)
 		end
 		do
 			color = {}
-			color.red = 169 / 255
-			color.green = 183 / 255
-			color.blue = 198 / 255
+			color.red = 218 / 255
+			color.green = 218 / 255
+			color.blue = 218 / 255
 			g_ALittleScriptColor[ALittleScriptColorType.VAR_NAME] = color
 		end
 		do
 			color = {}
-			color.red = 78 / 255
-			color.green = 201 / 255
-			color.blue = 176 / 255
+			color.red = 156 / 255
+			color.green = 220 / 255
+			color.blue = 254 / 255
 			g_ALittleScriptColor[ALittleScriptColorType.CUSTOM_NAME] = color
 		end
 		do
 			color = {}
-			color.red = 255 / 255
-			color.green = 128 / 255
-			color.blue = 0 / 255
+			color.red = 216 / 255
+			color.green = 160 / 255
+			color.blue = 223 / 255
 			g_ALittleScriptColor[ALittleScriptColorType.CTRL_KEYWORD] = color
 		end
 		do
 			color = {}
-			color.red = 255 / 255
-			color.green = 128 / 255
-			color.blue = 0 / 255
+			color.red = 86 / 255
+			color.green = 156 / 255
+			color.blue = 214 / 255
 			g_ALittleScriptColor[ALittleScriptColorType.KEYWORD] = color
 		end
 		do
 			color = {}
-			color.red = 255 / 255
-			color.green = 198 / 255
-			color.blue = 109 / 255
+			color.red = 220 / 255
+			color.green = 220 / 255
+			color.blue = 170 / 255
 			g_ALittleScriptColor[ALittleScriptColorType.METHOD_NAME] = color
 		end
 		do
@@ -84,9 +84,9 @@ function AUICodeALittleScript:Ctor(project, full_path)
 		end
 		do
 			color = {}
-			color.red = 106 / 255
-			color.green = 135 / 255
-			color.blue = 89 / 255
+			color.red = 214 / 255
+			color.green = 157 / 255
+			color.blue = 133 / 255
 			g_ALittleScriptColor[ALittleScriptColorType.TEXT] = color
 		end
 	end

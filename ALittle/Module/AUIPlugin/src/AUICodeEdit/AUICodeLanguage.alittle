@@ -41,21 +41,21 @@ public class AUICodeLanguage
     public fun SetText(string content)
     {
         this._version += 1;
-        lua.alanguage.abnffile_settext(this._abnf_file, content);
+        lua.alanguage.abnffile_settext(this._abnf_file, this._version, content);
     }
 
     // 插入文本
     public fun InsertText(string content, int it_line, int it_char)
     {
         this._version += 1;
-        lua.alanguage.abnffile_inserttext(this._abnf_file, content, it_line, it_char);
+        lua.alanguage.abnffile_inserttext(this._abnf_file, this._version, content, it_line, it_char);
     }
 
     // 删除文本
     public fun DeleteText(int it_line_start, int it_char_start, int it_line_end, int it_char_end)
     {
         this._version += 1;
-        lua.alanguage.abnffile_deletetext(this._abnf_file, it_line_start, it_char_start, it_line_end, it_char_end);
+        lua.alanguage.abnffile_deletetext(this._abnf_file, this._version, it_line_start, it_char_start, it_line_end, it_char_end);
     }
 
     // 查询颜色

@@ -41,17 +41,17 @@ end
 
 function AUICodeLanguage:SetText(content)
 	self._version = self._version + (1)
-	alanguage.abnffile_settext(self._abnf_file, content)
+	alanguage.abnffile_settext(self._abnf_file, self._version, content)
 end
 
 function AUICodeLanguage:InsertText(content, it_line, it_char)
 	self._version = self._version + (1)
-	alanguage.abnffile_inserttext(self._abnf_file, content, it_line, it_char)
+	alanguage.abnffile_inserttext(self._abnf_file, self._version, content, it_line, it_char)
 end
 
 function AUICodeLanguage:DeleteText(it_line_start, it_char_start, it_line_end, it_char_end)
 	self._version = self._version + (1)
-	alanguage.abnffile_deletetext(self._abnf_file, it_line_start, it_char_start, it_line_end, it_char_end)
+	alanguage.abnffile_deletetext(self._abnf_file, self._version, it_line_start, it_char_start, it_line_end, it_char_end)
 end
 
 function AUICodeLanguage:QueryColor(line)

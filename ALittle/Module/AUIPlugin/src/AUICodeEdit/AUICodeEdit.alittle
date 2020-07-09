@@ -256,6 +256,7 @@ public class AUICodeEdit : ALittle.ScrollScreen
 
     private int _query_info_version;
     private lua.ABnfQueryInfo _query_info;
+    private bool _in_query_info = false;
 
     private ALittle.LoopTimer _error_loop;  // 显示错误信息的定时器
 
@@ -282,6 +283,10 @@ public class AUICodeEdit : ALittle.ScrollScreen
     // 文件路径
     private string _file_path;
 	private ALittle.RevokeList _revoke_list;         // 撤销操作列表
+
+    // 记录当前ErrorQuad
+    private ALittle.DisplayObject _error_quad_move_in;
+    private bool _in_drag = false;
 
 	public fun TCtor()
 	{
@@ -429,6 +434,13 @@ public class AUICodeEdit : ALittle.ScrollScreen
 
     private fun HandleDragBegin(ALittle.UIButtonDragBeginEvent event)
     {
+        if (this._error_quad_move_in != null)
+        {
+            g_AUITool.HideTip();
+            this._error_quad_move_in = null;
+        }
+
+        this._in_drag = true;
         this._cursor.SetOffsetXY(event.rel_x, event.rel_y);
         this._select_cursor.StartLineChar(this._cursor.line, this._cursor.char);
     }
@@ -442,10 +454,32 @@ public class AUICodeEdit : ALittle.ScrollScreen
     private fun HandleDragEnd(ALittle.UIButtonDragEndEvent event)
     {
         this._select_cursor.TryHide();
+        this._in_drag = false;
     }
 
     private fun HandleMouseMove(ALittle.UIMouseMoveEvent event)
     {
+        // 显示错误的TIP
+        if (!this._in_drag)
+        {
+            var item = this._error_container.PickUp(event.rel_x, event.rel_y);
+            if (item != this._error_quad_move_in)
+            {
+                if (this._error_quad_move_in != null) g_AUITool.HideTip();
+                this._error_quad_move_in = item;
+                if (item != null)
+                {
+                    var item_info = cast<AUICodeErrorInfo>(item._user_data);
+                    var x, y = item.LocalToGlobal();
+                    var center_x = x + item.width / 2;
+                    var center_y = y;
+                    g_AUITool.ShowTip(item_info.error);
+                    var tip_width, tip_height = g_AUITool.GetTipSize();
+                    g_AUITool.MoveTip(center_x - tip_width / 2, center_y - tip_height);
+                }
+            }   
+        }
+
         if (!A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_CTRL]) return;
 
         this.UpdateQueryInfo(event.rel_x, event.rel_y);
@@ -459,9 +493,19 @@ public class AUICodeEdit : ALittle.ScrollScreen
             return;
         }
 
+        if (this._in_query_info)
+        {
+            if (this._query_info == null)
+                ALittle.System_SetEditCursor();
+            else
+                ALittle.System_SetHandCursor();
+            return;
+        }
+
         var it_line, it_char = this.CalcLineAndChar(x, y);
+        this._in_query_info = true;
         var info = this._language.QueryInfo(it_line, it_char);
-        if (info == null)
+        if (this._in_query_info == false || info == null)
         {
             if (this._query_info != null)
             {
@@ -474,6 +518,7 @@ public class AUICodeEdit : ALittle.ScrollScreen
             ALittle.System_SetEditCursor();
             return;
         }
+        this._in_query_info = false;
 
         if (this._query_info != null
             && this._query_info.line_start == info.line_start
@@ -492,31 +537,43 @@ public class AUICodeEdit : ALittle.ScrollScreen
             this._goto_quad.visible = false;
             var line_container = cast<AUICodeLineContainer>(this._code_linear.GetChildByIndex(this._query_info.line_start));
             if (line_container != null) line_container.RestoreColor();   
+            this._query_info = null;
+        }
+
+        var line = this._line_list[info.line_start];
+
+        var quad_x, quad_y = this._edit_quad.LocalToGlobal();
+        var char_end = info.char_end;
+        if (line != null && info.line_start != info.line_end) info.char_end = line.char_count;
+        var rect_x, rect_y, rect_width = this.CalcRect(info.line_start, info.char_start, char_end);
+
+        // 如果这个时候鼠标已经移走，那么就清空
+        if (A_UISystem.mouse_x < quad_x + rect_x || A_UISystem.mouse_x >= quad_x + rect_x + rect_width
+            || A_UISystem.mouse_y < quad_y + rect_y || A_UISystem.mouse_y >= quad_y + rect_y + LINE_HEIGHT)
+        {
+            ALittle.System_SetEditCursor();
+            return;
         }
 
         this._query_info_version = this._language.version;
         this._query_info = info;
 
-        var line = this._line_list[this._query_info.line_start];
-        var line_container = cast<AUICodeLineContainer>(this._code_linear.GetChildByIndex(this._query_info.line_start));
+        var line_container = cast<AUICodeLineContainer>(this._code_linear.GetChildByIndex(info.line_start));
         if (line != null && line_container != null)
         {
-            if (this._query_info.line_start == this._query_info.line_end)
-                line_container.SetColor(this._query_info.char_start, this._query_info.char_end, FOCUS_RED, FOCUS_GREEN, FOCUS_BLUE);
+            if (info.line_start == info.line_end)
+                line_container.SetColor(info.char_start, info.char_end, FOCUS_RED, FOCUS_GREEN, FOCUS_BLUE);
             else
-                line_container.SetColor(this._query_info.char_start, line.char_count, FOCUS_RED, FOCUS_GREEN, FOCUS_BLUE);
+                line_container.SetColor(info.char_start, line.char_count, FOCUS_RED, FOCUS_GREEN, FOCUS_BLUE);
         }
 
-        // 把内容放在头部
         g_AUITool.ShowTip(info.info);
         
-        var quad_x, quad_y = this._edit_quad.LocalToGlobal();
-        var char_end = info.char_end;
-        if (info.line_start != info.line_end) info.char_end = line.char_count;
-        var rect_x, rect_y, rect_width = this.CalcRect(info.line_start, info.char_start, char_end);
         var center_x = rect_x + rect_width / 2 + quad_x;
         var center_y = rect_y + quad_y;
         var tip_width, tip_height = g_AUITool.GetTipSize();
+        
+        // 把内容放在头部
         g_AUITool.MoveTip(center_x - tip_width / 2, center_y - tip_height);
 
         this._goto_quad.x = rect_x;
@@ -531,14 +588,14 @@ public class AUICodeEdit : ALittle.ScrollScreen
     private fun StopQueryInfo()
     {
         if (this._language == null) return;
-        if (this._language.version != this._query_info_version) return;
+        this._in_query_info = false;
 
         this._query_info_version = null;
 
         if (this._query_info != null)
         {
             var line_container = cast<AUICodeLineContainer>(this._code_linear.GetChildByIndex(this._query_info.line_start));
-            if (line_container != null) line_container.RestoreColor();   
+            if (line_container != null) line_container.RestoreColor();
         }
 
         g_AUITool.HideTip();
@@ -549,6 +606,7 @@ public class AUICodeEdit : ALittle.ScrollScreen
     private async fun UpdateErrorInfo()
     {
         g_AUITool.HideTip();
+        this._error_quad_move_in = null;
         this._error_container.RemoveAllChild();
         var list = this._language.QueryError();
         if (list == null) return;
@@ -568,8 +626,6 @@ public class AUICodeEdit : ALittle.ScrollScreen
             item_info.error = info.error;
             item_info._focus_quad._user_data = item_info;
             this._error_container.AddChild(item);
-            item_info._focus_quad.AddEventListener(this, this.HandleErrorQuadMoveIn);
-            item_info._focus_quad.AddEventListener(this, this.HandleErrorQuadMoveOut);
         }
     }
 
@@ -582,28 +638,17 @@ public class AUICodeEdit : ALittle.ScrollScreen
         for (var object:AUICodeLineContainer, _ in map)
             object.RestoreColor();
 
+        this.StartErrorLoop();
+    }
+
+    private fun StartErrorLoop()
+    {
         if (this._error_loop == null)
             this._error_loop = new ALittle.LoopTimer(bind(this.UpdateErrorInfo, this), 1000);
 
         this._error_loop.Stop();
         this._error_loop.Reset();
-        this._error_loop.Start();
-    }
-
-    private fun HandleErrorQuadMoveIn(ALittle.UIMoveInEvent event)
-    {
-        var item_info = cast<AUICodeErrorInfo>(event.target._user_data);
-        var x, y = event.target.LocalToGlobal();
-        var center_x = x + event.target.width / 2;
-        var center_y = y;
-        g_AUITool.ShowTip(item_info.error);
-        var tip_width, tip_height = g_AUITool.GetTipSize();
-        g_AUITool.MoveTip(center_x - tip_width / 2, center_y - tip_height);
-    }
-
-    private fun HandleErrorQuadMoveOut(ALittle.UIMoveOutEvent event)
-    {
-        g_AUITool.HideTip();
+        this._error_loop.Start();        
     }
 
     // 计算行列
@@ -986,7 +1031,7 @@ public class AUICodeEdit : ALittle.ScrollScreen
         }
         elseif (event.sym == ALittle.UIEnumTypes.KEY_CTRL)
         {
-            if (this._move_in)
+            if (this._move_in && !this._in_query_info)
             {
                 var x, y = this._edit_quad.LocalToGlobal();
                 this.UpdateQueryInfo(A_UISystem.mouse_x - x, A_UISystem.mouse_y - y);
@@ -1073,6 +1118,8 @@ public class AUICodeEdit : ALittle.ScrollScreen
         this._file_path = file_path;
         this._revoke_list = revoke_list;
         if (this._revoke_list == null) this._revoke_list = new ALittle.RevokeList();
+
+        this.StartErrorLoop();
         return true;
     }
 

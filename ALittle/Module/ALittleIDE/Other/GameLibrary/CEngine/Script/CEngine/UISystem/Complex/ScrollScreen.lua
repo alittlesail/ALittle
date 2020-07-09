@@ -41,10 +41,10 @@ function ScrollScreen:HandleMButtonWheel(event)
 	end
 	if self._right_scroll_bar ~= nil and event.delta_y ~= 0 then
 		local offset = self._content_height * 0.1 * event.delta_y
-		if offset > 50 then
-			offset = 50
-		elseif offset < -50 then
-			offset = -50
+		if offset > 60 then
+			offset = 60
+		elseif offset < -60 then
+			offset = -60
 		end
 		if offset ~= 0 then
 			self._right_scroll_bar.offset_rate = self._right_scroll_bar.offset_rate - offset / self._content_height

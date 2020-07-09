@@ -49,7 +49,7 @@ function AUICodeProject.__getter:project()
 end
 
 function AUICodeProject:UpdateFile(full_path)
-	alanguage.abnfproject_updatefile(self._project, full_path)
+	alanguage.abnfproject_updatefile(self._project, full_path, 0)
 end
 
 function AUICodeProject:RemoveFile(full_path)

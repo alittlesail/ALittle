@@ -50,7 +50,7 @@ public class AUICodeProject
     }
 
     public get project() : lua.ABnfProject { return this._project; }
-    public fun UpdateFile(string full_path) { lua.alanguage.abnfproject_updatefile(this._project, full_path); }
+    public fun UpdateFile(string full_path) { lua.alanguage.abnfproject_updatefile(this._project, full_path, 0); }
     public fun RemoveFile(string full_path) { lua.alanguage.abnfproject_removefile(this._project, full_path); }
     
     public fun Start()

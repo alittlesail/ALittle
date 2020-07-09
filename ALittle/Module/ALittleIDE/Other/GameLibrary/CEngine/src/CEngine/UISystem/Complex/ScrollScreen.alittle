@@ -94,8 +94,8 @@ public class ScrollScreen : DisplayGroup
         if (this._right_scroll_bar != null && event.delta_y != 0)
         {
             var offset = this._content_height * 0.1 * event.delta_y;
-            if (offset > 50) offset = 50;
-            elseif (offset < -50) offset = -50;
+            if (offset > 60) offset = 60;
+            elseif (offset < -60) offset = -60;
             if (offset != 0) this._right_scroll_bar.offset_rate = this._right_scroll_bar.offset_rate - offset / this._content_height;
         }
         this.RejustScrollBar();

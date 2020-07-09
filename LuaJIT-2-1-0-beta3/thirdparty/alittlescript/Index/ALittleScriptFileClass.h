@@ -20,10 +20,6 @@ public:
     void UpdateError() override;
 
 protected:
-    // 内容更新之前
-    void OnBeforeUpdate() override;
-    // 内容更新之后
-    void OnAfterUpdate() override;
     // 移除内容
     void OnRemove() override;
 };

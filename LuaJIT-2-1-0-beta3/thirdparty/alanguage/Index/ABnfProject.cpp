@@ -88,7 +88,7 @@ ABnfFile* ABnfProject::GetFile(const std::string& full_path)
     return it->second;
 }
 
-void ABnfProject::UpdateFile(const std::string& full_path)
+void ABnfProject::UpdateFile(const std::string& full_path, int version)
 {
     // 打开文件
     FILE* file = nullptr;
@@ -116,13 +116,12 @@ void ABnfProject::UpdateFile(const std::string& full_path)
     {
         auto file = RefFactory().CreateFile(this, full_path, out.data(), out.size());
         m_file_map[full_path] = file;
-        file->OnAfterUpdate();
+        file->AnalysisText(version);
     }
     else
     {
-        it->second->OnBeforeUpdate();
         it->second->SetText(out.data(), out.size());
-        it->second->OnAfterUpdate();
+        it->second->AnalysisText(version);
     }
 }
 
@@ -136,34 +135,31 @@ void ABnfProject::RemoveFile(const std::string& full_path)
     m_file_map.erase(it);
 }
 
-void ABnfProject::UpdateText(const std::string& full_path, const std::string& text)
+void ABnfProject::UpdateText(const std::string& full_path, int version, const std::string& text)
 {
     auto it = m_file_map.find(full_path);
     if (it == m_file_map.end()) return;
 
-    it->second->OnBeforeUpdate();
     it->second->SetText(text.c_str(), text.size());
-    it->second->OnAfterUpdate();
+    it->second->AnalysisText(version);
 }
 
-void ABnfProject::InsertText(const std::string& full_path, const std::string& text, int it_line, int it_char)
+void ABnfProject::InsertText(const std::string& full_path, int version, const std::string& text, int it_line, int it_char)
 {
     auto it = m_file_map.find(full_path);
     if (it == m_file_map.end()) return;
 
-    it->second->OnBeforeUpdate();
     it->second->InsertText(text.c_str(), text.size(), it_line, it_char);
-    it->second->OnAfterUpdate();
+    it->second->AnalysisText(version);
 }
 
-void ABnfProject::DeleteText(const std::string& full_path, int it_line_start, int it_char_start, int it_line_end, int it_char_end)
+void ABnfProject::DeleteText(const std::string& full_path, int version, int it_line_start, int it_char_start, int it_line_end, int it_char_end)
 {
     auto it = m_file_map.find(full_path);
     if (it == m_file_map.end()) return;
 
-    it->second->OnBeforeUpdate();
     it->second->DeleteText(it_line_start, it_char_start, it_line_end, it_char_end);
-    it->second->OnAfterUpdate();
+    it->second->AnalysisText(version);
 }
 
 void ABnfProject::QueryColor(const std::string& full_path, int query_id, int version, int line)

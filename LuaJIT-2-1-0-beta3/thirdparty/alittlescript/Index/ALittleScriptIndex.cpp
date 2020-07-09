@@ -448,9 +448,9 @@ void ALittleScriptIndex::AddRoot(std::shared_ptr<ALittleScriptRootElement> root)
     const auto& name = namespace_name_dec->GetElementText();
 
     auto& all_access_data = m_all_data_map[name][namespace_name_dec] = ALittleScriptAccessData();
-    auto& global_access_data = m_global_access_map[name] = ALittleScriptAccessData();
-    auto& namespace_access_data = m_namespace_access_map[name] = ALittleScriptAccessData();
-    auto& file_access_data = m_file_access_map[root->GetFile()] = ALittleScriptAccessData();
+    auto& global_access_data = m_global_access_map[name];
+    auto& namespace_access_data = m_namespace_access_map[name];
+    auto& file_access_data = m_file_access_map[root->GetFile()];
 
     const auto& element_dec_list = namespace_dec->GetNamespaceElementDecList();
     for (auto& child : element_dec_list)

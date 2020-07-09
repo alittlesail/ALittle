@@ -280,14 +280,18 @@ int ABnfFile::GetByteCountOfOneWord(unsigned char first_char)
 
 void ABnfFile::AnalysisText(int version)
 {
-    if (m_version == version) return;
+    if (m_version == version)
+        return;
     m_version = version;
-    m_color_map.clear();
-
+    
     UpdateAnalysis();
-    UpdateError();
 
-    if (m_root) CollectColor(m_root, false);
+    if (!m_in_ui)
+    {
+        UpdateError();
+        m_color_map.clear();
+        if (m_root) CollectColor(m_root, false);
+    }
 }
 
 void ABnfFile::CollectColor(ABnfElementPtr element, bool blur)

@@ -401,7 +401,7 @@ ABnfGuessError ALittleScriptMethodNameDecReference::GuessTypes(std::vector<ABnfG
 
                 info->return_list.push_back(ALittleScriptStatic::Inst().sStringGuess);
                 ABnfGuessPtr sender_guess;
-                error = element->GuessType(sender_guess);
+                error = class_name_element->GuessType(sender_guess);
                 if (error) return error;
                 info->return_list.push_back(sender_guess);
             }

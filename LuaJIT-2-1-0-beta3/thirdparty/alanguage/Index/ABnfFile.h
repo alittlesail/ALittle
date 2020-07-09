@@ -37,7 +37,7 @@ protected:
     // 是否是ui创建
     bool m_in_ui = true;
 
-    int m_version = 0;
+    int m_version = -1;
     // 收集错误
     std::map<ABnfElementPtr, std::string> m_analysis_error_map;
     std::map<ABnfElementPtr, std::string> m_check_error_map;
@@ -86,10 +86,6 @@ public:
     static int GetByteCountOfOneWord(unsigned char first_char);
 
 public:
-    // 内容更新之前
-    virtual void OnBeforeUpdate() {}
-    // 内容出现更新
-    virtual void OnAfterUpdate() {}
     // 移除内容
     virtual void OnRemove() {}
     // 添加ABnfGuess，为了持有这个对象的引用
@@ -97,7 +93,7 @@ public:
     // 清空引用
     inline void ClearGuessType() { m_guess_cache.resize(0); }
 
-protected:
+public:
     // 解析一条龙
     void AnalysisText(int version);
 

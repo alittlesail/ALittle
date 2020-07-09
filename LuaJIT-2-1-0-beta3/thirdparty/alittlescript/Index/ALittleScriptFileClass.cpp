@@ -18,11 +18,24 @@ ALittleScriptFileClass::~ALittleScriptFileClass()
 // 更新分析内容
 void ALittleScriptFileClass::UpdateAnalysis()
 {
-    m_root = nullptr;
+    if (m_root != nullptr)
+    {
+        auto* index = dynamic_cast<ALittleScriptIndex*>(m_project);
+        if (index != nullptr)
+            index->RemoveRoot(std::dynamic_pointer_cast<ALittleScriptRootElement>(m_root));
+    }
+
     if (m_in_ui)
         m_root = GetProject()->RefABnfUI().Analysis(this);
     else
         m_root = GetProject()->RefABnf().Analysis(this);
+
+    if (m_root != nullptr)
+    {
+        auto* index = dynamic_cast<ALittleScriptIndex*>(m_project);
+        if (index != nullptr)
+            index->AddRoot(std::dynamic_pointer_cast<ALittleScriptRootElement>(m_root));
+    }
 }
 
 void ALittleScriptFileClass::UpdateError()
@@ -34,23 +47,6 @@ void ALittleScriptFileClass::UpdateError()
 
     CollectError(m_root);
     AnalysisError(m_root);
-}
-
-void ALittleScriptFileClass::OnBeforeUpdate()
-{
-    auto* index = dynamic_cast<ALittleScriptIndex*>(m_project);
-    if (index == nullptr) return;
-    if (m_root == nullptr) return;
-    index->RemoveRoot(std::dynamic_pointer_cast<ALittleScriptRootElement>(m_root));
-}
-
-void ALittleScriptFileClass::OnAfterUpdate()
-{
-    auto* index = dynamic_cast<ALittleScriptIndex*>(m_project);
-    if (index == nullptr) return;
-    UpdateAnalysis();
-    if (m_root == nullptr) return;
-    index->AddRoot(std::dynamic_pointer_cast<ALittleScriptRootElement>(m_root));
 }
 
 void ALittleScriptFileClass::OnRemove()

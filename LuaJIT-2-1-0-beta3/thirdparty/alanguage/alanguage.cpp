@@ -17,10 +17,10 @@ int alanguage_project_pollone(void* project, lua_State* L)
 	return project_c->PollOne(L);
 }
 
-void alanguage_project_updatefile(void* project, const char* full_path)
+void alanguage_project_updatefile(void* project, const char* full_path, int version)
 {
 	auto* project_c = (ABnfProject*)project;
-	project_c->Add(std::bind(&ABnfProject::UpdateFile, project_c, std::string(full_path)));
+	project_c->Add(std::bind(&ABnfProject::UpdateFile, project_c, std::string(full_path), version));
 }
 
 void alanguage_project_removefile(void* project, const char* full_path)
@@ -29,28 +29,28 @@ void alanguage_project_removefile(void* project, const char* full_path)
 	project_c->Add(std::bind(&ABnfProject::RemoveFile, project_c, std::string(full_path)));
 }
 
-void abnffile_settext(void* abnf_file, const char* text, size_t len)
+void abnffile_settext(void* abnf_file, int version, const char* text, size_t len)
 {
 	((ABnfFile*)abnf_file)->SetText(text, len);
 
 	auto* project_c = ((ABnfFile*)abnf_file)->GetProject();
-	project_c->Add(std::bind(&ABnfProject::UpdateText, project_c, ((ABnfFile*)abnf_file)->GetFullPath(), std::string(text, len)));
+	project_c->Add(std::bind(&ABnfProject::UpdateText, project_c, ((ABnfFile*)abnf_file)->GetFullPath(), version, std::string(text, len)));
 }
 
-void abnffile_inserttext(void* abnf_file, const char* text, size_t len, int it_line, int it_char)
+void abnffile_inserttext(void* abnf_file, int version, const char* text, size_t len, int it_line, int it_char)
 {
 	((ABnfFile*)abnf_file)->InsertText(text, len, it_line, it_char);
 
 	auto* project_c = ((ABnfFile*)abnf_file)->GetProject();
-	project_c->Add(std::bind(&ABnfProject::InsertText, project_c, ((ABnfFile*)abnf_file)->GetFullPath(), std::string(text, len), it_line, it_char));
+	project_c->Add(std::bind(&ABnfProject::InsertText, project_c, ((ABnfFile*)abnf_file)->GetFullPath(), version, std::string(text, len), it_line, it_char));
 }
 
-void abnffile_deletetext(void* abnf_file, int it_line_start, int it_char_start, int it_line_end, int it_char_end)
+void abnffile_deletetext(void* abnf_file, int version, int it_line_start, int it_char_start, int it_line_end, int it_char_end)
 {
 	((ABnfFile*)abnf_file)->DeleteText(it_line_start, it_char_start, it_line_end, it_char_end);
 
 	auto* project_c = ((ABnfFile*)abnf_file)->GetProject();
-	project_c->Add(std::bind(&ABnfProject::DeleteText, project_c, ((ABnfFile*)abnf_file)->GetFullPath(), it_line_start, it_char_start, it_line_end, it_char_end));
+	project_c->Add(std::bind(&ABnfProject::DeleteText, project_c, ((ABnfFile*)abnf_file)->GetFullPath(), version, it_line_start, it_char_start, it_line_end, it_char_end));
 }
 
 void abnffile_querycolor(void* abnf_file, int query_id, int version, int line)

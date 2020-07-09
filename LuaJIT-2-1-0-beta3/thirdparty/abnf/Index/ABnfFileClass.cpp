@@ -22,12 +22,16 @@ void ABnfFileClass::UpdateAnalysis()
     if (m_in_ui)
         m_root = GetProject()->RefABnfUI().Analysis(this);
     else
+    {
         m_root = GetProject()->RefABnf().Analysis(this);
-    if (m_root == nullptr) return;
 
-    m_index.clear();
-    CollectIndex(m_root);
-    CollectRule();
+        if (m_root != nullptr)
+        {
+            m_index.clear();
+            CollectIndex(m_root);
+            CollectRule();
+        }
+    }
 }
 
 void ABnfFileClass::UpdateError()

@@ -57,11 +57,11 @@ public:
 
 public:
 	ABnfFile* GetFile(const std::string& full_path);
-	void UpdateFile(const std::string& full_path);
+	void UpdateFile(const std::string& full_path, int version);
 	void RemoveFile(const std::string& full_path);
-	void UpdateText(const std::string& full_path, const std::string& text);
-	void InsertText(const std::string& full_path, const std::string& text, int it_line, int it_char);
-	void DeleteText(const std::string& full_path, int it_line_start, int it_char_start, int it_line_end, int it_char_end);
+	void UpdateText(const std::string& full_path, int version, const std::string& text);
+	void InsertText(const std::string& full_path, int version, const std::string& text, int it_line, int it_char);
+	void DeleteText(const std::string& full_path, int version, int it_line_start, int it_char_start, int it_line_end, int it_char_end);
 
 public:
 	void QueryColor(const std::string& full_path, int query_id, int version, int line);

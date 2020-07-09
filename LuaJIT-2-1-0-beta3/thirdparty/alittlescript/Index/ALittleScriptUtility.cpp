@@ -334,21 +334,21 @@ ABnfGuessError ALittleScriptUtility::CheckInvokeAwait(std::shared_ptr<ABnfElemen
         else if (std::dynamic_pointer_cast<ALittleScriptClassMethodDecElement>(parent))
         {
             const auto& modifier = std::dynamic_pointer_cast<ALittleScriptClassElementDecElement>(parent->GetParent())->GetModifierList();
-			if (!GetCoroutineType(modifier).empty())
+			if (GetCoroutineType(modifier).empty())
                 return ABnfGuessError(element, u8"所在函数没有async或await修饰");
             break;
         }
         else if (std::dynamic_pointer_cast<ALittleScriptClassStaticDecElement>(parent))
         {
             const auto& modifier = std::dynamic_pointer_cast<ALittleScriptClassElementDecElement>(parent->GetParent())->GetModifierList();
-            if (!GetCoroutineType(modifier).empty())
+            if (GetCoroutineType(modifier).empty())
                 return ABnfGuessError(element, u8"所在函数没有async或await修饰");
             break;
         }
         else if (std::dynamic_pointer_cast<ALittleScriptGlobalMethodDecElement>(parent))
         {
             const auto& modifier = std::dynamic_pointer_cast<ALittleScriptNamespaceElementDecElement>(parent->GetParent())->GetModifierList();
-            if (!GetCoroutineType(modifier).empty())
+            if (GetCoroutineType(modifier).empty())
                 return ABnfGuessError(element, u8"所在函数没有async或await修饰");
             break;
         }

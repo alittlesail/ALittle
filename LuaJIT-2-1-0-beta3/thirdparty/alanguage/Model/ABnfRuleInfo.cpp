@@ -30,13 +30,13 @@ const std::unordered_map<char, std::vector<int>>* ABnfRuleInfo::CalcNextChar()
     if (prediction.type != ABnfRuleTokenType::TT_NONE)
     {
         if (prediction.regex == nullptr)
-            prediction.regex = std::shared_ptr<std::regex>(new std::regex(prediction.value));
+            prediction.regex = std::shared_ptr<ARegex>(new ARegex(prediction.value));
 
         for (char i = '!'; i <= '~'; ++i)
         {
-            std::smatch result;
+            int result_length;
             std::string value; value.push_back(i);
-            if (std::regex_match(value, result, *prediction.regex))
+            if (prediction.regex->Match(value.c_str(), result_length))
             {
                 std::vector<int>& list = next_char_map[i];
                 std::set<int> set;

@@ -112,7 +112,7 @@ ABnfStringElementPtr ABnf::CreateStringElement(int line, int col, int offset, co
 }
 
 // 创建曾泽表达式节点
-ABnfRegexElementPtr ABnf::CreateRegexElement(int line, int col, int offset, const std::string& value, std::shared_ptr<std::regex> regex)
+ABnfRegexElementPtr ABnf::CreateRegexElement(int line, int col, int offset, const std::string& value, std::shared_ptr<ARegex> regex)
 {
     auto node = m_factory->CreateRegexElement(m_file, line, col, offset, value, regex);
     if (node == nullptr) node = ABnfRegexElementPtr(new ABnfRegexElement(m_factory, m_file, line, col, offset, value, regex));
@@ -782,21 +782,21 @@ bool ABnf::AnalysisABnfRegexMatch(ABnfRuleInfo* rule
     {
         // 正则表达式匹配
         if (node->value.regex == nullptr)
-            node->value.regex = std::shared_ptr<std::regex>(new std::regex(node->value.value));
+            node->value.regex = std::shared_ptr<ARegex>(new ARegex(node->value.value));
         // 开始匹配
-        std::match_results<const char*> match;
-        if (std::regex_search(m_file->GetText().c_str() + offset, match, *node->value.regex, std::regex_constants::match_flag_type::match_continuous) && match.size())
-            length = static_cast<int>(match[0].length());
+        int match_length = 0;
+        if (node->value.regex->Match(m_file->GetText().c_str() + offset, match_length))
+            length = match_length;
         // 如果没有匹配到，并且规则的预测值有pin
         if (length == 0 && rule->prediction.type != ABnfRuleTokenType::TT_NONE && rule->prediction_pin == ABnfRuleNodePinType::NPT_TRUE)
         {
             // 正则表达式匹配
             if (rule->prediction.regex == nullptr)
-                rule->prediction.regex = std::shared_ptr<std::regex>(new std::regex(rule->prediction.value));
+                rule->prediction.regex = std::shared_ptr<ARegex>(new ARegex(rule->prediction.value));
             // 预测匹配，如果匹配成功，那么就标记为负数，以示区别
-            std::match_results<const char*> pre_match;
-            if (std::regex_search(m_file->GetText().c_str() + offset, pre_match, *rule->prediction.regex, std::regex_constants::match_continuous) && pre_match.size())
-                length = - static_cast<int>(pre_match[0].length());
+            int pre_match_length = 0;
+            if (rule->prediction.regex->Match(m_file->GetText().c_str() + offset, pre_match_length))
+                length = - pre_match_length;
         }
         // 添加缓存
         m_regex_skip[offset][node] = length;

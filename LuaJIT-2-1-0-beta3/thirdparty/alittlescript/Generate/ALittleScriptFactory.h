@@ -400,7 +400,7 @@ public:
     {
         return std::shared_ptr<ABnfStringElement>(new ALittleScriptStringElement(this, file, line, col, offset, type));
     }
-    std::shared_ptr<ABnfRegexElement> CreateRegexElement(ABnfFile* file, int line, int col, int offset, const std::string& type, std::shared_ptr<std::regex> regex) override
+    std::shared_ptr<ABnfRegexElement> CreateRegexElement(ABnfFile* file, int line, int col, int offset, const std::string& type, std::shared_ptr<ARegex> regex) override
     {
         return std::shared_ptr<ABnfRegexElement>(new ALittleScriptRegexElement(this, file, line, col, offset, type, regex));
     }

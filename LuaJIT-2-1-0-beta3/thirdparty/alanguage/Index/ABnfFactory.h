@@ -7,6 +7,7 @@
 #include <unordered_map>
 
 #include "../Model/ABnfGuess.h"
+#include "../Model/ARegex.h"
 
 class ABnfElement;
 using ABnfElementPtr = std::shared_ptr<ABnfElement>;
@@ -36,7 +37,7 @@ public:
 
     virtual ABnfStringElementPtr CreateStringElement(ABnfFile* file, int line, int col, int offset, const std::string& type);
 
-    virtual ABnfRegexElementPtr CreateRegexElement(ABnfFile* file, int line, int col, int offset, const std::string& type, std::shared_ptr<std::regex> regex);
+    virtual ABnfRegexElementPtr CreateRegexElement(ABnfFile* file, int line, int col, int offset, const std::string& type, std::shared_ptr<ARegex> regex);
 
     virtual ABnfReference* CreateReference(ABnfElementPtr element);
 

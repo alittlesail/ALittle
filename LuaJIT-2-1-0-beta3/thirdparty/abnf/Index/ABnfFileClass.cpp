@@ -299,7 +299,7 @@ static std::string ABnfRegexElementTemplate =
 "class @@LANGUAGE@@RegexElement : public ABnfRegexElement\n"
 "{\n"
 "public:\n"
-"    @@LANGUAGE@@RegexElement(ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type, std::shared_ptr<std::regex> regex)\n"
+"    @@LANGUAGE@@RegexElement(ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type, std::shared_ptr<ARegex> regex)\n"
 "        : ABnfRegexElement(factory, file, line, col, offset, type, regex) { }\n"
 "    virtual ~@@LANGUAGE@@RegexElement() { }\n"
 "};\n"
@@ -345,7 +345,7 @@ static std::string ABnfFactoryTemplate =
 "        return std::shared_ptr<ABnfStringElement>(new @@LANGUAGE@@StringElement(this, file, line, col, offset, type));\n"
 "    }\n"
 
-"    std::shared_ptr<ABnfRegexElement> CreateRegexElement(ABnfFile* file, int line, int col, int offset, const std::string& type, std::shared_ptr<std::regex> regex) override\n"
+"    std::shared_ptr<ABnfRegexElement> CreateRegexElement(ABnfFile* file, int line, int col, int offset, const std::string& type, std::shared_ptr<ARegex> regex) override\n"
 "    {\n"
 "        return std::shared_ptr<ABnfRegexElement>(new @@LANGUAGE@@RegexElement(this, file, line, col, offset, type, regex));\n"
 "    }\n"

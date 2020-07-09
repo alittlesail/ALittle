@@ -8,6 +8,7 @@
 #include <regex>
 #include "ABnfRule.h"
 #include "ALanguageHelperInfo.h"
+#include "ARegex.h"
 
 class ABnfNodeElement;
 class ABnfFile;
@@ -65,7 +66,7 @@ public:
     ABnfNodeElementPtr CreateNodeElement(int line, int col, int offset, const std::string& type);
     ABnfKeyElementPtr CreateKeyElement(int line, int col, int offset, const std::string& value);
     ABnfStringElementPtr CreateStringElement(int line, int col, int offset, const std::string& value);
-    ABnfRegexElementPtr CreateRegexElement(int line, int col, int offset, const std::string& value, std::shared_ptr<std::regex> regex);
+    ABnfRegexElementPtr CreateRegexElement(int line, int col, int offset, const std::string& value, std::shared_ptr<ARegex> regex);
 
     // ½âÎöÎÄ¼þ
     ABnfNodeElementPtr Analysis(ABnfFile* file);

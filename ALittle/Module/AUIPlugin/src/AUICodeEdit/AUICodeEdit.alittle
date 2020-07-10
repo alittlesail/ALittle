@@ -1076,9 +1076,9 @@ public class AUICodeEdit : ALittle.ScrollScreen
         g_AUICodeCompleteScreen.Hide();
     }
 
-    public fun OnRightMenu(AUIRightMenu menu)
+    public fun OnTabRightMenu(AUIRightMenu menu)
     {
-        if (this._language != null) this._language.OnRightMenu(menu);
+        if (this._language != null) this._language.OnTabRightMenu(menu);
     }
 
     public fun OnHide()

@@ -50,14 +50,14 @@ end
 
 function IDECodeTabChild:OnOpen()
 	self._revoke_list = ALittle.RevokeList()
-	if self._language == nil and ALittle.File_GetFileExtByPathAndUpper(self._user_info.path) == "ALITTLE" then
+	if self._language == nil and self._user_info.project ~= nil and ALittle.File_GetFileExtByPathAndUpper(self._user_info.path) == self._user_info.project.upper_ext then
 		self._language = AUIPlugin.AUICodeALittleScript(self._user_info.project, self._user_info.path)
 	end
 	self._edit:Load(self._user_info.path, self._revoke_list, self._language)
 end
 
-function IDECodeTabChild:OnRightMenu(menu)
-	self._edit:OnRightMenu(menu)
+function IDECodeTabChild:OnTabRightMenu(menu)
+	self._edit:OnTabRightMenu(menu)
 end
 
 function IDECodeTabChild:HandleChangedEvent(event)

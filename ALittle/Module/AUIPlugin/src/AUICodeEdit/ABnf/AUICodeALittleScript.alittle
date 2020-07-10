@@ -92,6 +92,24 @@ public class AUICodeALittleScript : AUICodeLanguage
         this._abnf_file = lua.alittlescript.create_alittlescript_file(project.project, full_path, "");
     }
 
+    public fun OnRightMenu(AUIRightMenu menu)
+    {
+        menu.AddItem("生成", bind(this.GenerateLanguage, this));
+    }
+
+    // 生成对应的代码
+    public async fun GenerateLanguage()
+    {
+        var error = this.Generate(this._full_path);
+        if (error != null)
+        {
+            g_AUITool.ShowNotice("错误", error.error.." 文件路径"..error.full_path);
+            return;
+        }
+
+        g_AUITool.ShowNotice("提示", "生成成功");
+    }
+
     // 颜色查询
     public fun QueryColorValue(int tag) : ABnfColor { return g_ALittleScriptColor[tag]; }
 
@@ -99,5 +117,28 @@ public class AUICodeALittleScript : AUICodeLanguage
     public fun SetTargetLanguage(string target_languaeg)
     {
         lua.alittlescript.alittlescriptproject_settargetlanguage(this._project.project, target_languaeg);
+    }
+
+    // 生成目标语言
+    public await fun Generate(string full_path) : lua.ALittleScriptGenerateError
+    {
+        var query_id = this._project.Add(co);
+        lua.alittlescript.alittlescriptproject_generate(this._project.project, query_id, full_path);
+        return yield;
+    }
+}
+
+public class AUICodeALittleScriptProject : AUICodeProject
+{
+    public get upper_ext() : string { return "ALITTLE"; }
+
+    public fun OnTreeMenu(string full_path, AUIRightMenu menu)
+    {
+
+    }
+
+    public fun OnTreeItemMenu(string full_path, AUIRightMenu menu)
+    {
+        
     }
 }

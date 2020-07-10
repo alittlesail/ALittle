@@ -44,3 +44,6 @@ function IDECodeTreeLogic:SearchFile(name, list)
 	return list
 end
 
+function IDECodeTreeLogic:OnDelete()
+end
+

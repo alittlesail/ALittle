@@ -48,6 +48,8 @@ public class IDECodeTree : IDECodeTreeLogic
 	private fun HandleRButtonDown(ALittle.UIRButtonDownEvent event)
 	{
         var menu = new AUIPlugin.AUIRightMenu();
+        if (this._user_info.project != null)
+            this._user_info.project.OnTreeMenu(this._user_info.path, menu);
 		menu.AddItem("新建文件", bind(this.HandleCreateFile, this));
 		menu.AddItem("刷新", bind(this.Refresh, this));
 		menu.AddItem("删除", bind(this.HandleDeleteDir, this));
@@ -68,6 +70,7 @@ public class IDECodeTree : IDECodeTreeLogic
 		var file_name = ALittle.File_GetFileNameByPath(this._user_info.path);
 		var result = g_AUITool.DeleteNotice("删除", "确定要删除"..file_name.."，以及子文件和子文件夹吗?");
 		if (result != AUIPlugin.AUIToolOption.YES) return;
+		this.OnDelete();
 		ALittle.File_DeleteDeepDir(this._user_info.path);
         this.RemoveFromParent();
     }
@@ -111,23 +114,6 @@ public class IDECodeTree : IDECodeTreeLogic
             }	
 		}
 
-		if (add_file != null)
-		{
-			ALittle.List_Sort(add_file);
-			for (var index, name in add_file)
-			{
-                var attr = map[name];
-				var info = new IDECodeTreeUserInfo();
-				info.module_name = this._user_info.module_name;
-				info.name = name;
-				info.path = this._user_info.path.."/"..name;
-				info.group = this._user_info.group;
-				info.project = this._user_info.project;
-				info.root = false;
-                this.AddChild(new IDECodeTreeItem(this._ctrl_sys, info));
-            }
-        }
-
 		if (add_dir != null)
 		{
 			ALittle.List_Sort(add_dir);
@@ -144,6 +130,23 @@ public class IDECodeTree : IDECodeTreeLogic
                 this.AddChild(new IDECodeTree(this._ctrl_sys, info));
             }
         }
+
+		if (add_file != null)
+		{
+			ALittle.List_Sort(add_file);
+			for (var index, name in add_file)
+			{
+                var attr = map[name];
+				var info = new IDECodeTreeUserInfo();
+				info.module_name = this._user_info.module_name;
+				info.name = name;
+				info.path = this._user_info.path.."/"..name;
+				info.group = this._user_info.group;
+				info.project = this._user_info.project;
+				info.root = false;
+                this.AddChild(new IDECodeTreeItem(this._ctrl_sys, info));
+            }
+        }
     }
 	
 	// 搜索文件
@@ -156,6 +159,13 @@ public class IDECodeTree : IDECodeTreeLogic
 	
 		return list;
 	}
+
+	// 触发删除
+	public fun OnDelete()
+	{
+		for (var index, child:IDECodeTreeLogic in this.childs)
+            child.OnDelete();
+    }
 	
 	public fun HandleChildResize(ALittle.UIResizeEvent event)
 	{

@@ -91,18 +91,18 @@ function AUICodeABnf:QueryColorValue(tag)
 end
 
 function AUICodeABnf:OnRightMenu(menu)
-	menu:AddItem("����", Lua.Bind(self.GenerateABnf, self))
+	menu:AddItem("生成", Lua.Bind(self.GenerateABnf, self))
 end
 
 function AUICodeABnf:GenerateABnf()
 	local file_name = ALittle.File_GetJustFileNameByPath(self._full_path)
-	local path = g_AUITool:ShowSelectDir("ѡ�����ɵ��ļ���", self._generate_dir)
+	local path = g_AUITool:ShowSelectDir("选择生成的文件夹", self._generate_dir)
 	if path == nil then
 		return
 	end
 	local attr = ALittle.File_GetFileAttr(path)
 	if attr == nil or attr.mode ~= "directory" then
-		g_AUITool:ShowNotice("����", "�ļ��в�����")
+		g_AUITool:ShowNotice("错误", "文件夹不存在")
 		return
 	end
 	self._generate_dir = path
@@ -110,10 +110,10 @@ function AUICodeABnf:GenerateABnf()
 	ALittle.File_MakeDeepDir(path .. "/Generate")
 	local error = self:Generate(path .. "/Generate", file_name)
 	if error ~= nil then
-		g_AUITool:ShowNotice("����", error)
+		g_AUITool:ShowNotice("错误", error)
 		return
 	end
-	g_AUITool:ShowNotice("��ʾ", "���ɳɹ�")
+	g_AUITool:ShowNotice("提示", "生成成功")
 end
 AUICodeABnf.GenerateABnf = Lua.CoWrap(AUICodeABnf.GenerateABnf)
 
@@ -122,5 +122,18 @@ function AUICodeABnf:Generate(target_path, language_name)
 	local query_id = self._project:Add(___COROUTINE)
 	abnf.abnffile_generate(self._abnf_file, query_id, self._version, target_path, language_name)
 	return coroutine.yield()
+end
+
+assert(AUIPlugin.AUICodeProject, " extends class:AUIPlugin.AUICodeProject is nil")
+AUICodeABnfProject = Lua.Class(AUIPlugin.AUICodeProject, "AUIPlugin.AUICodeABnfProject")
+
+function AUICodeABnfProject.__getter:upper_ext()
+	return "ABNF"
+end
+
+function AUICodeABnfProject:OnTreeMenu(full_path, menu)
+end
+
+function AUICodeABnfProject:OnTreeItemMenu(full_path, menu)
 end
 

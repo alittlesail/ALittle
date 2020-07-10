@@ -32,7 +32,7 @@ public class AUICodeLanguage
     public fun OnHide() {}
 
     // TabÓÒ¼üµã»÷
-    public fun OnRightMenu(AUIRightMenu menu)
+    public fun OnTabRightMenu(AUIRightMenu menu)
     {
         
     }

@@ -76,6 +76,9 @@ end
 
 function IDECodeTree:HandleRButtonDown(event)
 	local menu = AUIPlugin.AUIRightMenu()
+	if self._user_info.project ~= nil then
+		self._user_info.project:OnTreeMenu(self._user_info.path, menu)
+	end
 	menu:AddItem("新建文件", Lua.Bind(self.HandleCreateFile, self))
 	menu:AddItem("刷新", Lua.Bind(self.Refresh, self))
 	menu:AddItem("删除", Lua.Bind(self.HandleDeleteDir, self))
@@ -99,6 +102,7 @@ function IDECodeTree:HandleDeleteDir()
 	if result ~= "YES" then
 		return
 	end
+	self:OnDelete()
 	ALittle.File_DeleteDeepDir(self._user_info.path)
 	self:RemoveFromParent()
 end
@@ -137,20 +141,6 @@ function IDECodeTree:Refresh()
 			ALittle.List_Push(add_file, name)
 		end
 	end
-	if add_file ~= nil then
-		ALittle.List_Sort(add_file)
-		for index, name in ___ipairs(add_file) do
-			local attr = map[name]
-			local info = {}
-			info.module_name = self._user_info.module_name
-			info.name = name
-			info.path = self._user_info.path .. "/" .. name
-			info.group = self._user_info.group
-			info.project = self._user_info.project
-			info.root = false
-			self:AddChild(IDECodeTreeItem(self._ctrl_sys, info))
-		end
-	end
 	if add_dir ~= nil then
 		ALittle.List_Sort(add_dir)
 		for index, name in ___ipairs(add_dir) do
@@ -165,6 +155,20 @@ function IDECodeTree:Refresh()
 			self:AddChild(IDECodeTree(self._ctrl_sys, info))
 		end
 	end
+	if add_file ~= nil then
+		ALittle.List_Sort(add_file)
+		for index, name in ___ipairs(add_file) do
+			local attr = map[name]
+			local info = {}
+			info.module_name = self._user_info.module_name
+			info.name = name
+			info.path = self._user_info.path .. "/" .. name
+			info.group = self._user_info.group
+			info.project = self._user_info.project
+			info.root = false
+			self:AddChild(IDECodeTreeItem(self._ctrl_sys, info))
+		end
+	end
 end
 
 function IDECodeTree:SearchFile(name, list)
@@ -175,6 +179,12 @@ function IDECodeTree:SearchFile(name, list)
 		child:SearchFile(name, list)
 	end
 	return list
+end
+
+function IDECodeTree:OnDelete()
+	for index, child in ___ipairs(self.childs) do
+		child:OnDelete()
+	end
 end
 
 function IDECodeTree:HandleChildResize(event)

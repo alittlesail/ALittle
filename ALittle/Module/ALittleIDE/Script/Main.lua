@@ -57,6 +57,7 @@ end
 __Module_Setup = Lua.CoWrap(__Module_Setup)
 
 function __Module_Shutdown()
+	g_IDEProject:CloseProject()
 	g_IDECenter:Shutdown()
 	g_IDEImageSelectDialog:Shutdown()
 	g_IDEImageManagerDialog:Shutdown()

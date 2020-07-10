@@ -88,6 +88,7 @@ public async static __Module_Setup(ALittle.DisplayLayout layer_group, ALittle.Co
 // 模块结束函数
 public static __Module_Shutdown()
 {
+    g_IDEProject.CloseProject();
     g_IDECenter.Shutdown();
     
 	g_IDEImageSelectDialog.Shutdown();

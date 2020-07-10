@@ -93,11 +93,45 @@ function AUICodeALittleScript:Ctor(project, full_path)
 	___rawset(self, "_abnf_file", alittlescript.create_alittlescript_file(project.project, full_path, ""))
 end
 
+function AUICodeALittleScript:OnRightMenu(menu)
+	menu:AddItem("生成", Lua.Bind(self.GenerateLanguage, self))
+end
+
+function AUICodeALittleScript:GenerateLanguage()
+	local error = self:Generate(self._full_path)
+	if error ~= nil then
+		g_AUITool:ShowNotice("错误", error.error .. " 文件路径" .. error.full_path)
+		return
+	end
+	g_AUITool:ShowNotice("提示", "生成成功")
+end
+AUICodeALittleScript.GenerateLanguage = Lua.CoWrap(AUICodeALittleScript.GenerateLanguage)
+
 function AUICodeALittleScript:QueryColorValue(tag)
 	return g_ALittleScriptColor[tag]
 end
 
 function AUICodeALittleScript:SetTargetLanguage(target_languaeg)
 	alittlescript.alittlescriptproject_settargetlanguage(self._project.project, target_languaeg)
+end
+
+function AUICodeALittleScript:Generate(full_path)
+	local ___COROUTINE = coroutine.running()
+	local query_id = self._project:Add(___COROUTINE)
+	alittlescript.alittlescriptproject_generate(self._project.project, query_id, full_path)
+	return coroutine.yield()
+end
+
+assert(AUIPlugin.AUICodeProject, " extends class:AUIPlugin.AUICodeProject is nil")
+AUICodeALittleScriptProject = Lua.Class(AUIPlugin.AUICodeProject, "AUIPlugin.AUICodeALittleScriptProject")
+
+function AUICodeALittleScriptProject.__getter:upper_ext()
+	return "ALITTLE"
+end
+
+function AUICodeALittleScriptProject:OnTreeMenu(full_path, menu)
+end
+
+function AUICodeALittleScriptProject:OnTreeItemMenu(full_path, menu)
 end
 

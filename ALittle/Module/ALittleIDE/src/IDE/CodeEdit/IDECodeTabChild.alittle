@@ -27,16 +27,15 @@ public class IDECodeTabChild : IDETabChild
     private fun OnOpen()
     {
         this._revoke_list = new ALittle.RevokeList();
-
         [Language(Lua)]
-        if (this._language == null && ALittle.File_GetFileExtByPathAndUpper(this._user_info.path) == "ALITTLE")
+        if (this._language == null && this._user_info.project != null && ALittle.File_GetFileExtByPathAndUpper(this._user_info.path) == this._user_info.project.upper_ext)
             this._language = new AUIPlugin.AUICodeALittleScript(this._user_info.project, this._user_info.path);
         this._edit.Load(this._user_info.path, this._revoke_list, this._language);
     }
 
-    private fun OnRightMenu(AUIPlugin.AUIRightMenu menu)
+    private fun OnTabRightMenu(AUIPlugin.AUIRightMenu menu)
     {
-        this._edit.OnRightMenu(menu);
+        this._edit.OnTabRightMenu(menu);
     }
 
     private fun HandleChangedEvent(ALittle.UIChangedEvent event)

@@ -77,6 +77,9 @@ end
 
 function IDECodeTreeItem:HandleRButtonDown(event)
 	local menu = AUIPlugin.AUIRightMenu()
+	if self._user_info.project ~= nil then
+		self._user_info.project:OnTreeItemMenu(self._user_info.path, menu)
+	end
 	menu:AddItem("删除", Lua.Bind(self.HandleDeleteFile, self))
 	menu:Show()
 end
@@ -87,9 +90,16 @@ function IDECodeTreeItem:HandleDeleteFile()
 	if result ~= "YES" then
 		return
 	end
+	self:OnDelete()
 	ALittle.File_DeleteFile(self._user_info.path)
 	self:RemoveFromParent()
 	g_IDECenter.center.content_edit:CloseTabByName(IDECodeTabChild, self._user_info.name)
 end
 IDECodeTreeItem.HandleDeleteFile = Lua.CoWrap(IDECodeTreeItem.HandleDeleteFile)
+
+function IDECodeTreeItem:OnDelete()
+	if self._user_info.project ~= nil then
+		self._user_info.project:RemoveFile(self._user_info.path)
+	end
+end
 

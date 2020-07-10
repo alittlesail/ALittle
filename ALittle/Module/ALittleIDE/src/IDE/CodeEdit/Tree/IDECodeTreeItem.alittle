@@ -46,6 +46,8 @@ public class IDECodeTreeItem : IDECodeTreeLogic
 	private fun HandleRButtonDown(ALittle.UIRButtonDownEvent event)
 	{
         var menu = new AUIPlugin.AUIRightMenu();
+		if (this._user_info.project != null)
+			this._user_info.project.OnTreeItemMenu(this._user_info.path, menu);
 		menu.AddItem("删除", bind(this.HandleDeleteFile, this));
 		menu.Show();
     }
@@ -55,9 +57,19 @@ public class IDECodeTreeItem : IDECodeTreeLogic
 		var file_name = ALittle.File_GetFileNameByPath(this._user_info.path);
 		var result = g_AUITool.DeleteNotice("删除", "确定要删除"..file_name.."吗?");
 		if (result != AUIPlugin.AUIToolOption.YES) return;
+
+		this.OnDelete();
+
 		ALittle.File_DeleteFile(this._user_info.path);
         this.RemoveFromParent();
 
 		g_IDECenter.center.content_edit.CloseTabByName{IDECodeTabChild}(this._user_info.name);
+    }
+
+	// 触发删除
+	public fun OnDelete()
+	{
+		if (this._user_info.project != null)
+			this._user_info.project.RemoveFile(this._user_info.path);
     }
 }

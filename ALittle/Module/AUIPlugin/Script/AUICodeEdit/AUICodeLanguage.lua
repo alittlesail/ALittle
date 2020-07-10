@@ -36,7 +36,7 @@ end
 function AUICodeLanguage:OnHide()
 end
 
-function AUICodeLanguage:OnRightMenu(menu)
+function AUICodeLanguage:OnTabRightMenu(menu)
 end
 
 function AUICodeLanguage:SetText(content)

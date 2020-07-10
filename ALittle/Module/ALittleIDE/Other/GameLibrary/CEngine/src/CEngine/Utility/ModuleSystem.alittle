@@ -41,13 +41,13 @@ class ModuleSystem
 
     public ctor()
     {
-        // Ä£¿éÓ³Éä±í
+        // æ¨¡å—æ˜ å°„è¡¨
         this._name_module_map = new Map<string, ModuleInfo>();
-        // Ö÷Ä£¿é
+        // ä¸»æ¨¡å—
         this._main_module = null;
     }
     
-    // »ñÈ¡Ö÷Ä£¿éÃû
+    // è·å–ä¸»æ¨¡å—å
     public fun GetMainModuleName() : string
     {
         if (this._main_module == null)
@@ -56,7 +56,7 @@ class ModuleSystem
         return this._main_module.name;
     }
 
-    // »ñÈ¡µ÷ÊÔĞÅÏ¢
+    // è·å–è°ƒè¯•ä¿¡æ¯
     public fun GetDebugInfo() : string
     {
         return this._debug_info;
@@ -64,17 +64,17 @@ class ModuleSystem
     
     public await fun LoadModuleImpl(string module_base_path, string name) : ModuleInfo
     {
-        // Ë¢ĞÂÄ£¿é
+        // åˆ·æ–°æ¨¡å—
         [Language(Lua)]
         var version_system = VersionSystem.CreateVersionSystem("", name);
         [Language(Lua)]
         if (version_system != null) version_system.UpdateModule();
         
-        // ´´½¨ĞÅÏ¢
+        // åˆ›å»ºä¿¡æ¯
         var info = new ModuleInfo();
-        info.name = name; // ±£´æÄ£¿éÃû
+        info.name = name; // ä¿å­˜æ¨¡å—å
     
-        // ¼ÓÔØMainÎÄ¼ş
+        // åŠ è½½Mainæ–‡ä»¶
         [Language(Lua)]
         if (package.loaded[name] == null)
             alittle.Require(module_base_path, "Script/Main");
@@ -87,20 +87,20 @@ class ModuleSystem
         info.module = cast<Map<string, any>>(window)[name];
         if (info.module == null) return null;
 
-        // ÅĞ¶ÏÊÇ²»ÊÇ¼ÓÃÜÄ£Ê½
+        // åˆ¤æ–­æ˜¯ä¸æ˜¯åŠ å¯†æ¨¡å¼
         [Language(Lua)]
         info.crypt_mode = (File_ReadTextFromFile("Module/" .. name .. "/NoCrypt.ali", false) == null);
         [Language(JavaScript)]
         info.crypt_mode = false;
     
-        // ¼ÓÔØUIÎÄ¼ş
+        // åŠ è½½UIæ–‡ä»¶
         info.control = new ControlSystem(name, info.crypt_mode);
         [Language(JavaScript)]
         info.control.RegisterInfoByHttp();
         
         this._name_module_map[name] = info;
     
-        // »ñÈ¡¿ÇºÍÄ£¿éµÄÆô¶¯ºÍ½áÊøº¯Êı
+        // è·å–å£³å’Œæ¨¡å—çš„å¯åŠ¨å’Œç»“æŸå‡½æ•°
         info.browser_setup = cast<Map<string, Functor<(DisplayLayout, ControlSystem, string, string)>>>(info.module)["__Browser_Setup"];
         info.browser_addmodule = cast<Map<string, Functor<(string, DisplayLayout, ModuleShortInfo):bool>>>(info.module)["__Browser_AddModule"];
         info.browser_shutdown = cast<Map<string, Functor<()>>>(info.module)["__Browser_Shutdown"];
@@ -110,7 +110,7 @@ class ModuleSystem
         info.plugin_setup = cast<Map<string, Functor<(ControlSystem, string, string)>>>(info.module)["__Plugin_Setup"];
         info.plugin_shutdown = cast<Map<string, Functor<()>>>(info.module)["__Plugin_Shutdown"];
     
-        // ´´½¨²ã×é
+        // åˆ›å»ºå±‚ç»„
         var control = info.control;
         if (this._main_module != null)
             control = this._main_module.control;
@@ -121,31 +121,31 @@ class ModuleSystem
     
     public fun RemoveModule(string name) : bool
     {
-        // Èç¹ûÊÇÖ÷Ä£¿é£¬²»ÄÜÒÆ³ı
+        // å¦‚æœæ˜¯ä¸»æ¨¡å—ï¼Œä¸èƒ½ç§»é™¤
         if (this._main_module != null && this._main_module.name == name)
             return false;
-        // »ñÈ¡ĞÅÏ¢
+        // è·å–ä¿¡æ¯
         var info = this._name_module_map[name];
         if (info == null)
             return false;
     
-        // µ÷ÓÃÏîÄ¿µÄShutdown
+        // è°ƒç”¨é¡¹ç›®çš„Shutdown
         var module_shutdown = info.module_shutdown;
         if (module_shutdown != null)
             module_shutdown();
     
-        // Çå¿ÕÄÚ´æ
+        // æ¸…ç©ºå†…å­˜
         this._name_module_map[name] = null;
         A_LayerManager.RemoveChild(info.layer_group);
     
-        // ÊÍ·ÅÏîÄ¿
+        // é‡Šæ”¾é¡¹ç›®
         [Language(Lua)]
         package.loaded[name] = null;
         [Language(Lua)]
         cast<Map<string, any>>(_G)[name] = null;
         [Language(JavaScript)]
         cast<Map<string, any>>(window)[name] = null;
-        // Ö´ĞĞÀ¬»ø»ØÊÕ
+        // æ‰§è¡Œåƒåœ¾å›æ”¶
         [Language(Lua)]
         lua.collectgarbage("collect");
         return true;
@@ -153,20 +153,20 @@ class ModuleSystem
     
     public await fun LoadPlugin(string module_name) : ControlSystem
     {
-        // ¹Ì¶¨Ä£¿éÂ·¾¶
+        // å›ºå®šæ¨¡å—è·¯å¾„
         var module_base_path = "Module/"..module_name.."/";
 
-        // ¼ì²éÄ£¿éÊÇ·ñÊÇnull
+        // æ£€æŸ¥æ¨¡å—æ˜¯å¦æ˜¯null
         if (module_name == null)
         {
             Log("module_name is null!");
             return null;
         }
-        // ¼ì²éÊÇ·ñÒÑ¾­¼ÓÔØ
+        // æ£€æŸ¥æ˜¯å¦å·²ç»åŠ è½½
         var info = this._name_module_map[module_name];
         if (info == null)
         {
-            // ¼ÓÔØÄ£¿é
+            // åŠ è½½æ¨¡å—
             info = this.LoadModuleImpl(module_base_path, module_name);
             if (info == null)
             {
@@ -174,10 +174,10 @@ class ModuleSystem
                 return null;
             }
         }
-        // ¼ì²é__Plugin_SetupÊÇ·ñÒÑ¾­µ÷ÓÃ¹ıÁË
+        // æ£€æŸ¥__Plugin_Setupæ˜¯å¦å·²ç»è°ƒç”¨è¿‡äº†
         if (info.plugin_loaded) return info.control;
     
-        // µ÷ÓÃÆô¶¯º¯Êı
+        // è°ƒç”¨å¯åŠ¨å‡½æ•°
         var setup_func = info.plugin_setup;
         if (setup_func == null)
         {
@@ -186,7 +186,7 @@ class ModuleSystem
         }
         info.plugin_loaded = true;
     
-        // ´«Èëdebug£¬²ã×é£¬×ÊÔ´¶ÔÏó
+        // ä¼ å…¥debugï¼Œå±‚ç»„ï¼Œèµ„æºå¯¹è±¡
         [Language(Lua)]
         setup_func(info.control, module_base_path, module_base_path.."Script/");
         [Language(JavaScript)]
@@ -197,17 +197,17 @@ class ModuleSystem
     
     public await fun LoadModule(string module_base_path, string module_name) : bool
     {
-        // ¼ì²éÄ£¿éÊÇ·ñÊÇnull
+        // æ£€æŸ¥æ¨¡å—æ˜¯å¦æ˜¯null
         if (module_name == null)
         {
             Log("module_name is null!");
             return false;
         }
-        // ¼ì²éÊÇ·ñÒÑ¾­¼ÓÔØ
+        // æ£€æŸ¥æ˜¯å¦å·²ç»åŠ è½½
         var info = this._name_module_map[module_name];
         if (info == null)
         {
-            // ¼ÓÔØÄ£¿é
+            // åŠ è½½æ¨¡å—
             info = this.LoadModuleImpl(module_base_path, module_name);
             if (info == null)
             {
@@ -215,14 +215,14 @@ class ModuleSystem
                 return false;
             }
         }
-        // ¼ì²é__Module_SetupÊÇ·ñÒÑ¾­µ÷ÓÃ¹ıÁË
+        // æ£€æŸ¥__Module_Setupæ˜¯å¦å·²ç»è°ƒç”¨è¿‡äº†
         if (info.module_loaded)
         {
             Log(module_name .. ":__Module_Setup already invoked!");
             return false;
         }
     
-        // µ÷ÓÃÆô¶¯º¯Êı
+        // è°ƒç”¨å¯åŠ¨å‡½æ•°
         var setup_func = info.module_setup;
         if (setup_func == null)
         {
@@ -231,7 +231,7 @@ class ModuleSystem
         }
         info.module_loaded = true;
     
-        // Èç¹û¿ÇÓĞ¶¨ÒåÌí¼ÓÄ£¿éº¯Êı£¬¾Í×ß¿ÇµÄÁ÷³Ì
+        // å¦‚æœå£³æœ‰å®šä¹‰æ·»åŠ æ¨¡å—å‡½æ•°ï¼Œå°±èµ°å£³çš„æµç¨‹
         if (this._main_module.name != module_name)
         {
             var result = false;
@@ -243,12 +243,12 @@ class ModuleSystem
 
                 result = this._main_module.browser_addmodule(module_name, info.layer_group, module_info);
             }
-            // Èç¹ûÃ»ÓĞ¾ÍÖ±½Ó¹ÒÔÚ²ãÏÂÃæ
+            // å¦‚æœæ²¡æœ‰å°±ç›´æ¥æŒ‚åœ¨å±‚ä¸‹é¢
             if (!result)
                 A_LayerManager.AddChild(info.layer_group, A_LayerManager.group_count - 1);
         }
     
-        // ´«Èëdebug£¬²ã×é£¬×ÊÔ´¶ÔÏó
+        // ä¼ å…¥debugï¼Œå±‚ç»„ï¼Œèµ„æºå¯¹è±¡
         [Language(Lua)]
         setup_func(info.layer_group, info.control, module_base_path, module_base_path.."Script/");
         [Language(JavaScript)]
@@ -259,11 +259,11 @@ class ModuleSystem
     
     public async fun MainSetup(string base_path, string module_name, string debug_info)
     {
-        // ¼ì²éÖ÷Ä£¿éÊÇ·ñÒÑ¾­¼ÓÔØ
+        // æ£€æŸ¥ä¸»æ¨¡å—æ˜¯å¦å·²ç»åŠ è½½
         if (this._main_module != null)
             return;
         
-        // ¶ÁÈ¡Æô¶¯ÎÄ¼ş
+        // è¯»å–å¯åŠ¨æ–‡ä»¶
         if (module_name == null)
             module_name = File_ReadTextFromFile("Module/Enter.ali", false);
         if (module_name == null)
@@ -272,7 +272,7 @@ class ModuleSystem
             return;
         }
         
-        // ¼ÓÔØÖ÷Ä£¿é
+        // åŠ è½½ä¸»æ¨¡å—
         var info = this.LoadModuleImpl(base_path, module_name);
         if (info == null)
         {
@@ -280,25 +280,25 @@ class ModuleSystem
             return;
         }
 
-        // °Ñ×éÄ£¿éµÄ²ã×é·Å½ø²ã¹ÜÀíÆ÷
+        // æŠŠç»„æ¨¡å—çš„å±‚ç»„æ”¾è¿›å±‚ç®¡ç†å™¨
         A_LayerManager.AddChild(info.layer_group, A_LayerManager.group_count - 1);
         this._main_module = info;
         this._debug_info = debug_info;
     
-        // Ä£¿é»ù±¾Â·¾¶
+        // æ¨¡å—åŸºæœ¬è·¯å¾„
         var module_base_path = "Module/" .. module_name.."/";
         
-        // ±ê¼ÇÒÑ¾­¼ÓÔØÍê³É
+        // æ ‡è®°å·²ç»åŠ è½½å®Œæˆ
         this._main_module.browser_loaded = true;
         var setup_func = this._main_module.browser_setup;
-        // Èç¹ûÃ»ÓĞÖ÷Ä£¿éµÄÆô¶¯º¯Êı£¬Ö±½Ó¼ÓÔØÄ£¿é
+        // å¦‚æœæ²¡æœ‰ä¸»æ¨¡å—çš„å¯åŠ¨å‡½æ•°ï¼Œç›´æ¥åŠ è½½æ¨¡å—
         if (setup_func == null)
         {
             this.LoadModule(module_base_path, this._main_module.name);
             return;
         }
     
-        // µ÷ÓÃ¿ÇµÄÆô¶¯º¯Êı
+        // è°ƒç”¨å£³çš„å¯åŠ¨å‡½æ•°
         [Language(Lua)]
         setup_func(this._main_module.layer_group, this._main_module.control, module_base_path, module_base_path.."Script/");
         [Language(JavaScript)]
@@ -307,11 +307,11 @@ class ModuleSystem
     
     public fun MainShutdown()
     {
-        // Èç¹ûÖ÷Ä£¿éÃ»ÓĞ¼ÓÔØÖ±½Ó·µ»Ø
+        // å¦‚æœä¸»æ¨¡å—æ²¡æœ‰åŠ è½½ç›´æ¥è¿”å›
         if (this._main_module == null)
             return;
     
-        // ±éÀúËùÓĞ×ÓÄ£¿é£¬µ÷ÓÃ½áÊøº¯Êı
+        // éå†æ‰€æœ‰å­æ¨¡å—ï¼Œè°ƒç”¨ç»“æŸå‡½æ•°
         for (var name, info in this._name_module_map)
         {
             var shutdown_func = info.module_shutdown;
@@ -329,7 +329,7 @@ class ModuleSystem
                     Log("ModuleSystem:MainShutdown invoke __Plugin_Shutdown error:", error);
             }
         }
-        // µ÷ÓÃ¿ÇµÄ½áÊøº¯Êı
+        // è°ƒç”¨å£³çš„ç»“æŸå‡½æ•°
         var shutdown_func = this._main_module.browser_shutdown;
         if (shutdown_func == null) return;
         shutdown_func();

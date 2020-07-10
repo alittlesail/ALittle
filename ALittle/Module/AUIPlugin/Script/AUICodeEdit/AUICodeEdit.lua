@@ -1092,9 +1092,9 @@ function AUICodeEdit:OnUnDo()
 	g_AUICodeCompleteScreen:Hide()
 end
 
-function AUICodeEdit:OnRightMenu(menu)
+function AUICodeEdit:OnTabRightMenu(menu)
 	if self._language ~= nil then
-		self._language:OnRightMenu(menu)
+		self._language:OnTabRightMenu(menu)
 	end
 end
 

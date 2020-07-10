@@ -215,7 +215,7 @@ public class IDEUITabChild : IDETabChild
         }
     }
 
-    private fun OnRightMenu(AUIPlugin.AUIRightMenu menu)
+    private fun OnTabRightMenu(AUIPlugin.AUIRightMenu menu)
     {
 		menu.AddItem("截图导出", bind(A_OtherSystem.SystemSaveFile, A_OtherSystem, this, this._name..".png", null));
 		menu.AddItem("复制控件名", bind(ALittle.System_SetClipboardText, this._name));

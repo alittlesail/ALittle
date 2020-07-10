@@ -20,7 +20,7 @@ public class AUICodeProject
     public static CreateALittleScriptProject(string project_path) : AUICodeProject
     {
         var abnf_buffer = ALittle.File_ReadTextFromFile(g_ModuleBasePath.."Other/ABnf/ALittleScript.abnf");
-        var project = new AUICodeProject(lua.alittlescript.create_alittlescript_project(project_path, abnf_buffer));
+        var project = new AUICodeALittleScriptProject(lua.alittlescript.create_alittlescript_project(project_path, abnf_buffer));
         project.Start();
         return project;
     }
@@ -31,11 +31,8 @@ public class AUICodeProject
         var abnf_project = g_ABnfProjectMap["abnf"];
         if (abnf_project == null)
         {
-            var buffer = ALittle.File_ReadTextFromFile(g_ModuleBasePath.."/Other/ABnf/ABnf.abnf");
-            if (buffer == null) buffer = "";
-
-            var native_project = lua.abnf.create_abnf_project("", buffer);
-            abnf_project = new AUICodeProject(native_project);
+            var abnf_buffer = ALittle.File_ReadTextFromFile(g_ModuleBasePath.."/Other/ABnf/ABnf.abnf");
+            abnf_project = new AUICodeABnfProject(lua.abnf.create_abnf_project("", abnf_buffer));
             g_ABnfProjectMap["abnf"] = abnf_project;
             abnf_project.Start();
         }
@@ -48,6 +45,8 @@ public class AUICodeProject
             project.Stop();
         g_ABnfProjectMap = ALittle.CreateValueWeakMap();
     }
+
+    public get upper_ext() : string { return null; }
 
     public get project() : lua.ABnfProject { return this._project; }
     public fun UpdateFile(string full_path) { lua.alanguage.abnfproject_updatefile(this._project, full_path, 0); }
@@ -68,6 +67,16 @@ public class AUICodeProject
         return this._query_id;
     }
 
+    public fun OnTreeMenu(string full_path, AUIRightMenu menu)
+    {
+        
+    }
+
+    public fun OnTreeItemMenu(string full_path, AUIRightMenu menu)
+    {
+        
+    }
+
     private fun Update(int frame)
     {
         while (true)
@@ -86,6 +95,8 @@ public class AUICodeProject
 
     public fun Stop()
     {
+        lua.alanguage.abnfproject_clear(this._project);
+
         if (this._loop == null) return;
 
         A_WeakLoopSystem.RemoveUpdater(this._loop);

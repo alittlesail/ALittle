@@ -136,3 +136,18 @@ public class AUICodeABnf : AUICodeLanguage
         return yield;
     }
 }
+
+public class AUICodeABnfProject : AUICodeProject
+{
+    public get upper_ext() : string { return "ABNF"; }
+
+    public fun OnTreeMenu(string full_path, AUIRightMenu menu)
+    {
+
+    }
+
+    public fun OnTreeItemMenu(string full_path, AUIRightMenu menu)
+    {
+
+    }
+}

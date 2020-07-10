@@ -33,4 +33,10 @@ public class IDECodeTreeLogic : ALittle.DisplayLayout
 		if (list == null) list = new List<IDECodeTreeLogic>();
 		return list;
 	}
+
+	// 触发删除
+	public fun OnDelete()
+	{
+        
+    }
 }

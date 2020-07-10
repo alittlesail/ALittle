@@ -223,7 +223,7 @@ function IDEUITabChild:ShowInCenter()
 	end
 end
 
-function IDEUITabChild:OnRightMenu(menu)
+function IDEUITabChild:OnTabRightMenu(menu)
 	menu:AddItem("截图导出", Lua.Bind(A_OtherSystem.SystemSaveFile, A_OtherSystem, self, self._name .. ".png", nil))
 	menu:AddItem("复制控件名", Lua.Bind(ALittle.System_SetClipboardText, self._name))
 	menu:AddItem("复制继承代码", Lua.Bind(self.CopyExtends, self))

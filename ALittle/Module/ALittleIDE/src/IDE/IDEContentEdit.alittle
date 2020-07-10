@@ -33,7 +33,7 @@ public class IDETabChild : ALittle.UIEventDispatcher
 	public fun OnShow() {}
 	public fun OnClose() {}
 	public fun OnOpen() {}
-	public fun OnRightMenu(AUIPlugin.AUIRightMenu menu) {}
+	public fun OnTabRightMenu(AUIPlugin.AUIRightMenu menu) {}
 }
 
 public class IDEContentEdit : ALittle.DisplayLayout
@@ -250,7 +250,7 @@ public class IDEContentEdit : ALittle.DisplayLayout
 
 		var menu = new AUIPlugin.AUIRightMenu();
 		menu.AddItem("保存", bind(tab_child.Save, tab_child));
-		tab_child.OnRightMenu(menu);
+		tab_child.OnTabRightMenu(menu);
 		menu.AddItem("关闭自己", bind(g_IDECenter.center.content_edit.CloseTabWithAsk, g_IDECenter.center.content_edit, tab_child.tab_body));
 		menu.AddItem("关闭左侧", bind(g_IDECenter.center.content_edit.CloseLeftTab, g_IDECenter.center.content_edit, tab_child.tab_body));
 		menu.AddItem("关闭右侧", bind(g_IDECenter.center.content_edit.CloseRightTab, g_IDECenter.center.content_edit, tab_child.tab_body));

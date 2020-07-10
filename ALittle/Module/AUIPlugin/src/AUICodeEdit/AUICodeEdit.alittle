@@ -1094,6 +1094,11 @@ public class AUICodeEdit : ALittle.ScrollScreen
         if (this._language != null) this._language.OnShow();
     }
 
+    public fun OnSave()
+    {
+        if (this._language != null) this._language.OnSave();
+    }
+
     public fun OnClose()
     {
         if (this._error_loop != null)
@@ -1583,6 +1588,8 @@ public class AUICodeEdit : ALittle.ScrollScreen
             }
         }
         ALittle.File_WriteTextToFile(ALittle.String_Join(text_list, ""), this._file_path);
+
+        this.OnSave();
         return true;
 	}
 

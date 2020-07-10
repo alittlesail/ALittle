@@ -94,11 +94,16 @@ public class AUICodeALittleScript : AUICodeLanguage
 
     public fun OnRightMenu(AUIRightMenu menu)
     {
-        menu.AddItem("生成", bind(this.GenerateLanguage, this));
+        menu.AddItem("生成", bind(this.GenerateLanguage, this, true));
+    }
+
+    public fun OnSave()
+    {
+        this.GenerateLanguage(false);
     }
 
     // 生成对应的代码
-    public async fun GenerateLanguage()
+    public async fun GenerateLanguage(bool notice)
     {
         var error = this.Generate(this._full_path);
         if (error != null)

@@ -94,10 +94,14 @@ function AUICodeALittleScript:Ctor(project, full_path)
 end
 
 function AUICodeALittleScript:OnRightMenu(menu)
-	menu:AddItem("生成", Lua.Bind(self.GenerateLanguage, self))
+	menu:AddItem("生成", Lua.Bind(self.GenerateLanguage, self, true))
 end
 
-function AUICodeALittleScript:GenerateLanguage()
+function AUICodeALittleScript:OnSave()
+	self:GenerateLanguage(false)
+end
+
+function AUICodeALittleScript:GenerateLanguage(notice)
 	local error = self:Generate(self._full_path)
 	if error ~= nil then
 		g_AUITool:ShowNotice("错误", error.error .. " 文件路径" .. error.full_path)

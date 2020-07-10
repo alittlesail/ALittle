@@ -1112,6 +1112,12 @@ function AUICodeEdit:OnShow()
 	end
 end
 
+function AUICodeEdit:OnSave()
+	if self._language ~= nil then
+		self._language:OnSave()
+	end
+end
+
 function AUICodeEdit:OnClose()
 	if self._error_loop ~= nil then
 		self._error_loop:Stop()
@@ -1548,6 +1554,7 @@ function AUICodeEdit:Save()
 		end
 	end
 	ALittle.File_WriteTextToFile(ALittle.String_Join(text_list, ""), self._file_path)
+	self:OnSave()
 	return true
 end
 

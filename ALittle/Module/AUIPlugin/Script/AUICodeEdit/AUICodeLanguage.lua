@@ -36,6 +36,9 @@ end
 function AUICodeLanguage:OnHide()
 end
 
+function AUICodeLanguage:OnSave()
+end
+
 function AUICodeLanguage:OnTabRightMenu(menu)
 end
 

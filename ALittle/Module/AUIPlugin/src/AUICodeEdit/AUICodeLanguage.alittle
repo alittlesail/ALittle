@@ -30,6 +30,7 @@ public class AUICodeLanguage
     public fun OnClose() {}
     public fun OnShow() {}
     public fun OnHide() {}
+    public fun OnSave() {}
 
     // TabÓÒ¼üµã»÷
     public fun OnTabRightMenu(AUIRightMenu menu)

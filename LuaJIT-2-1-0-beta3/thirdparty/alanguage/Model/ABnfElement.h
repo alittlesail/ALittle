@@ -51,8 +51,8 @@ public:
     inline ABnfFile* GetFile() { return m_file; }
     // 获取文件全路径
     const std::string& GetFullPath();
-    // 获取所在工程路径
-    const std::string& GetProjectPath();
+    // 获取所在模块路径
+    const std::string& GetModulePath();
 
     // 设置父节点
     void SetParent(ABnfElementPtr parent);

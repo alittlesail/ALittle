@@ -20,17 +20,15 @@ static int alittlescriptlib_destroy_alittlescript_project(lua_State* L)
 
 static int alittlescriptlib_create_alittlescript_project(lua_State* L)
 {
-	const char* full_path = luaL_checkstring(L, 1);
-	luaL_argcheck(L, full_path != 0, 1, "full_path is null");
-	const char* abnf_buffer = luaL_checkstring(L, 2);
-	luaL_argcheck(L, abnf_buffer != 0, 2, "abnf buffer is null");
+	const char* abnf_buffer = luaL_checkstring(L, 1);
+	luaL_argcheck(L, abnf_buffer != 0, 1, "abnf buffer is null");
 
 	void** c = (void**)lua_newuserdata(L, sizeof(void**));
 	lua_newtable(L);
 	lua_pushcfunction(L, alittlescriptlib_destroy_alittlescript_project);
 	lua_setfield(L, -2, "__gc");
 	lua_setmetatable(L, -2);
-	*c = create_alittlescript_project(full_path, abnf_buffer);
+	*c = create_alittlescript_project(abnf_buffer);
 	return 1;
 }
 
@@ -68,19 +66,21 @@ static int alittlescriptlib_create_alittlescript_file(lua_State* L)
 {
 	void** project = (void**)lua_touserdata(L, 1);
 	luaL_argcheck(L, project != 0, 1, "alittlescript project is null");
-	const char* full_path = luaL_checkstring(L, 2);
-	luaL_argcheck(L, full_path != 0, 2, "full_path is null");
+	const char* module_path = luaL_checkstring(L, 2);
+	luaL_argcheck(L, module_path != 0, 2, "module_path is null");
+	const char* full_path = luaL_checkstring(L, 3);
+	luaL_argcheck(L, full_path != 0, 3, "full_path is null");
 
 	size_t len;
-	const char* text = luaL_checklstring(L, 3, &len);
-	luaL_argcheck(L, text != 0, 3, "text is null");
+	const char* text = luaL_checklstring(L, 4, &len);
+	luaL_argcheck(L, text != 0, 4, "text is null");
 
 	void** c = (void**)lua_newuserdata(L, sizeof(void**));
 	lua_newtable(L);
 	lua_pushcfunction(L, alittlescriptlib_destroy_alittlescript_file);
 	lua_setfield(L, -2, "__gc");
 	lua_setmetatable(L, -2);
-	*c = create_alittlescript_file(*project, full_path, text, len);
+	*c = create_alittlescript_file(*project, module_path, full_path, text, len);
 	return 1;
 }
 

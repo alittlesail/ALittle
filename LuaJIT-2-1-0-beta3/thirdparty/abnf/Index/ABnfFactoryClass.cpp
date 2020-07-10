@@ -23,7 +23,7 @@ ABnfReference* ABnfFactoryClass::CreateReference(ABnfElementPtr element)
     return new ABnfCommonReference(element);
 }
 
-ABnfFile* ABnfFactoryClass::CreateFile(ABnfProject* project, const std::string& full_path, const char* text, size_t len)
+ABnfFile* ABnfFactoryClass::CreateFile(ABnfProject* project, const std::string& module_path, const std::string& full_path, const char* text, size_t len)
 {
     return new ABnfFileClass(project, full_path, text, len, false);
 }

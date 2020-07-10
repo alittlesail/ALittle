@@ -16,7 +16,7 @@ private:
     ABnfFactoryClass m_factory;
 
 public:
-    ABnfProjectClass(const std::string& full_path) : ABnfProject(full_path) {}
+    ABnfProjectClass() {}
     virtual ~ABnfProjectClass() {}
 
     ABnfFactory& RefFactory() override { return m_factory; }

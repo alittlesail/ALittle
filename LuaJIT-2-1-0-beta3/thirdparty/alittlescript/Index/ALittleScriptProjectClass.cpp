@@ -7,8 +7,8 @@ void ALittleScriptProjectClass::ClearImpl()
     ClearIndex();
 }
 
-ALittleScriptProjectClass::ALittleScriptProjectClass(const std::string& full_path)
-	: ABnfProject(full_path), m_target_language("Lua")
+ALittleScriptProjectClass::ALittleScriptProjectClass()
+	: m_target_language("Lua")
 {
 	m_language_set.insert("Lua");
 	m_language_set.insert("JavaScript");

@@ -33,7 +33,7 @@ protected:
     // 当前文件命名域
     std::string m_namespace_name;
     // 当前模块所在工程路径
-    std::string m_project_path;
+    std::string m_module_path;
     // 当前文件路径
     std::string m_file_path;
 

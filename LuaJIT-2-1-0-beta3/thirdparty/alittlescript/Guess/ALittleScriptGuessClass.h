@@ -18,7 +18,7 @@ public:
     // 类本身定义的模板列表
     std::vector<ABnfGuessWeakPtr> template_list;
     // 填充后的模板实例
-    std::map<std::string, ABnfGuessWeakPtr> template_map;
+    std::unordered_map<std::string, ABnfGuessWeakPtr> template_map;
 
     // 如果是using定义出来的，那么就有这个值
     std::string using_name;

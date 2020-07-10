@@ -68,13 +68,11 @@ const std::string& ABnfElement::GetFullPath()
 }
 
 // 获取所在工程路径
-const std::string& ABnfElement::GetProjectPath()
+const std::string& ABnfElement::GetModulePath()
 {
     static std::string empty;
     if (m_file == nullptr) return empty;
-    auto* project = m_file->GetProject();
-    if (project == nullptr) return empty;
-    return project->GetProjectPath();
+    return m_file->GetModulePath();
 }
 
 // 设置父节点

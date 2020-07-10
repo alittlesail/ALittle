@@ -5,7 +5,7 @@
 #include "lua.h"
 
 int alanguage_project_pollone(void* project, lua_State* L);
-void alanguage_project_updatefile(void* project, const char* full_path, int version);
+void alanguage_project_updatefile(void* project, const char* module_path, const char* full_path, int version);
 void alanguage_project_removefile(void* project, const char* full_path);
 void alanguage_project_clear(void* project);
 

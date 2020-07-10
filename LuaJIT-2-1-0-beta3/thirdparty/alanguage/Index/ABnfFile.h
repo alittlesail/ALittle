@@ -32,6 +32,8 @@ protected:
     ABnfProject* m_project = nullptr;
     // 文件路径
     std::string m_full_path;
+    // 模块路径
+    std::string m_module_path;
     // 文本字符串
     std::string m_text;
     // 是否是ui创建
@@ -47,7 +49,7 @@ protected:
     std::vector<ABnfGuessPtr> m_guess_cache;
 
 public:
-    ABnfFile(ABnfProject* project, const std::string& full_path, const char* text, size_t len, bool in_ui);
+    ABnfFile(ABnfProject* project, const std::string& module_path, const std::string& full_path, const char* text, size_t len, bool in_ui);
     virtual ~ABnfFile();
 
     // 设置文本
@@ -100,6 +102,8 @@ public:
 public:
     // 获取文件路径
     inline const std::string& GetFullPath() const { return m_full_path; }
+    // 获取文件路径
+    inline const std::string& GetModulePath() const { return m_module_path; }
     // 获取工程信息
     inline ABnfProject* GetProject() { return m_project; }
     // 获取文本

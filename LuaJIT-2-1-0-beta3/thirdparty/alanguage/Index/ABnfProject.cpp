@@ -3,7 +3,7 @@
 #include "ABnfFactory.h"
 #include "ABnfFile.h"
 
-ABnfProject::ABnfProject(const std::string& full_path) : m_project_path(full_path)
+ABnfProject::ABnfProject()
 {
 }
 
@@ -91,7 +91,7 @@ ABnfFile* ABnfProject::GetFile(const std::string& full_path)
     return it->second;
 }
 
-void ABnfProject::UpdateFile(const std::string& full_path, int version)
+void ABnfProject::UpdateFile(const std::string& module_path, const std::string& full_path, int version)
 {
     if (!m_run) return;
 
@@ -119,7 +119,7 @@ void ABnfProject::UpdateFile(const std::string& full_path, int version)
     auto it = m_file_map.find(full_path);
     if (it == m_file_map.end())
     {
-        auto file = RefFactory().CreateFile(this, full_path, out.data(), out.size());
+        auto file = RefFactory().CreateFile(this, module_path, full_path, out.data(), out.size());
         m_file_map[full_path] = file;
         file->AnalysisText(version);
     }

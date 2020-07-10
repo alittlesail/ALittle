@@ -10,9 +10,9 @@ extern "C" {
 #include "Index/ALittleScriptFileClass.h"
 #include "Index/ALittleScriptProjectClass.h"
 
-void* create_alittlescript_project(const char* full_path, const char* abnf_buffer)
+void* create_alittlescript_project(const char* abnf_buffer)
 {
-	auto* project = new ALittleScriptProjectClass(full_path);
+	auto* project = new ALittleScriptProjectClass();
 	project->Start(abnf_buffer);
 	return project;
 }
@@ -34,9 +34,9 @@ void alittlescriptproject_generate(void* project, int query_id, const char* full
 	project_c->Add(std::bind(&ALittleScriptProjectClass::Generate, project_c, query_id, std::string(full_path)));
 }
 
-void* create_alittlescript_file(void* project, const char* full_path, const char* text, size_t len)
+void* create_alittlescript_file(void* project, const char* module_path, const char* full_path, const char* text, size_t len)
 {
-	return new ALittleScriptFileClass((ABnfProject*)project, full_path, text, len, true);
+	return new ALittleScriptFileClass((ABnfProject*)project, module_path, full_path, text, len, true);
 }
 
 void delete_alittlescript_file(void* file)

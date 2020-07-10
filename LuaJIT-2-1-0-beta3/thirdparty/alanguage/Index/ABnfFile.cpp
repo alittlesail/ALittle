@@ -7,9 +7,10 @@
 #include "../Model/ABnfReference.h"
 #include "../Model/ALanguageHelperInfo.h"
 
-ABnfFile::ABnfFile(ABnfProject* project, const std::string& full_path, const char* text, size_t len, bool in_ui)
+ABnfFile::ABnfFile(ABnfProject* project, const std::string& module_path, const std::string& full_path, const char* text, size_t len, bool in_ui)
 {
     m_project = project;
+    m_module_path = module_path;
     m_full_path = full_path;
     m_in_ui = in_ui;
     SetText(text, len);

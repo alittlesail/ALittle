@@ -22,7 +22,6 @@ private:
 
 	// 提供支线程部分
 protected:
-	std::string m_project_path;
 	ABnf m_abnf;
 	ABnfFactory m_default_factory;
 	std::unordered_map<std::string, ABnfFile*> m_file_map;
@@ -42,7 +41,7 @@ protected:
 	virtual void ClearImpl() {}
 
 public:
-	ABnfProject(const std::string& full_path);
+	ABnfProject();
 	virtual ~ABnfProject();
 
 public:
@@ -53,14 +52,13 @@ public:
 	void Add(std::function<void()> fun);
 
 public:
-	const std::string& GetProjectPath() const { return m_project_path; }
 	virtual ABnfFactory& RefFactory() { return m_default_factory; };
 	virtual ABnf& RefABnf() { return m_abnf; }
 	virtual ABnf& RefABnfUI() { return m_abnf_ui; }
 
 public:
 	ABnfFile* GetFile(const std::string& full_path);
-	void UpdateFile(const std::string& full_path, int version);
+	void UpdateFile(const std::string& module_path, const std::string& full_path, int version);
 	void RemoveFile(const std::string& full_path);
 	void UpdateText(const std::string& full_path, int version, const std::string& text);
 	void InsertText(const std::string& full_path, int version, const std::string& text, int it_line, int it_char);

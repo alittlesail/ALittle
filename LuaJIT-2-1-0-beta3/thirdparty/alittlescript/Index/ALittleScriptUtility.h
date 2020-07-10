@@ -59,6 +59,9 @@ public:
     // 改变扩展名
     static std::string ChangeFileExtByPath(const std::string& file_path, const std::string& ext);
 
+    // 从路径中获取文件名
+    static std::string GetFilePathByPath(const std::string& file_path);
+
     // 判断字符串是不是整型值
 	static bool IsInt(const std::shared_ptr<ALittleScriptNumberElement>& element);
 

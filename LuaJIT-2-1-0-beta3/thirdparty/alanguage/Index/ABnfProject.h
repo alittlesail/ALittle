@@ -39,6 +39,8 @@ protected:
 
 	static int Run(ABnfProject* self);
 
+	virtual void ClearImpl() {}
+
 public:
 	ABnfProject(const std::string& full_path);
 	virtual ~ABnfProject();
@@ -46,6 +48,7 @@ public:
 public:
 	void Start(const std::string& abnf_buffer);
 	void Stop();
+	inline bool IsStoped() { return m_run == false; }
 	int PollOne(lua_State* L);
 	void Add(std::function<void()> fun);
 

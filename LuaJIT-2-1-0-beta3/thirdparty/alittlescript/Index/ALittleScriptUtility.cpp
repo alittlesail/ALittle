@@ -176,7 +176,21 @@ std::string ALittleScriptUtility::ChangeFileExtByPath(const std::string& file_pa
     std::string::size_type pos = file_path.find_last_of('.');
     if (pos == std::string::npos) return file_path + "." + ext;
 
-    return file_path.substr(0, pos) + ext;
+    return file_path.substr(0, pos) + "." + ext;
+}
+
+std::string ALittleScriptUtility::GetFilePathByPath(const std::string& file_path)
+{
+    size_t index = 0;
+    for (size_t i = file_path.size(); i > 0; --i)
+    {
+        if (file_path[i - 1] == '/' || file_path[i - 1] == '\\')
+        {
+            index = i - 1;
+            break;
+        }
+    }
+    return file_path.substr(0, index);
 }
 
 bool ALittleScriptUtility::IsDirExist(const std::string& path)
@@ -1356,7 +1370,7 @@ std::string ALittleScriptUtility::CalcRootFullPath(const std::string& project_pa
 {
     std::string out_pre = "";
     if (ext == "js") out_pre = "JS";
-    return project_path + out_pre + "Script\\";
+    return project_path + out_pre + "Script/";
 }
 
 // 获取目标文件路径
@@ -1364,13 +1378,13 @@ std::string ALittleScriptUtility::CalcTargetFullPath(const std::string& project_
 {
     error = "";
     std::string ali_rel_path = ChangeFileExtByPath(ali_full_path.substr(project_path.size()), ext);
-    if (ali_rel_path.find("src\\") != 0)
+    if (ali_rel_path.find("src/") != 0)
     {
-        error = u8"请把代码文件工程目录下的src文件夹中:" + project_path + "src\\";
-        return nullptr;
+        error = u8"请把代码文件工程目录下的src文件夹中:" + project_path + "src/";
+        return "";
     }
 
-    return CalcRootFullPath(project_path, ext) + ali_rel_path.substr(strlen("src\\"));
+    return CalcRootFullPath(project_path, ext) + ali_rel_path.substr(strlen("src/"));
 }
 
 // 判断ValueStat

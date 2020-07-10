@@ -7,6 +7,7 @@
 int alanguage_project_pollone(void* project, lua_State* L);
 void alanguage_project_updatefile(void* project, const char* full_path, int version);
 void alanguage_project_removefile(void* project, const char* full_path);
+void alanguage_project_clear(void* project);
 
 void abnffile_settext(void* abnf_file, int version, const char* text, size_t len);
 void abnffile_inserttext(void* abnf_file, int version, const char* text, size_t len, int it_line, int it_char);

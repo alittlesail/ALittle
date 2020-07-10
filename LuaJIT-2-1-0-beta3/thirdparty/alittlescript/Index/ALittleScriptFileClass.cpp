@@ -25,6 +25,10 @@ void ALittleScriptFileClass::UpdateAnalysis()
             index->RemoveRoot(std::dynamic_pointer_cast<ALittleScriptRootElement>(m_root));
     }
 
+    m_root = nullptr;
+    if (this->GetProject() != nullptr && this->GetProject()->IsStoped())
+        return;
+
     if (m_in_ui)
         m_root = GetProject()->RefABnfUI().Analysis(this);
     else

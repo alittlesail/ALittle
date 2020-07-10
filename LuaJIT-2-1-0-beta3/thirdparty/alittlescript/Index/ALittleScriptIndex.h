@@ -89,6 +89,9 @@ protected:
     std::map<std::string, ALittleScriptAccessData> m_namespace_access_map;
     std::map<ABnfFile*, ALittleScriptAccessData> m_file_access_map;
 
+protected:
+    void ClearIndex();
+
 public:
     // 获取类型列表
     const std::vector<std::shared_ptr<ABnfGuess>>* GetGuessTypeList(std::shared_ptr<ABnfElement> element);

@@ -84,6 +84,19 @@ ALittleScriptStatic::ALittleScriptStatic()
     sCtrlKeyWord.insert("assert");
 }
 
+void ALittleScriptIndex::ClearIndex()
+{
+    m_guess_type_map.clear();
+    m_guess_error_map.clear();
+    m_class_data_map.clear();
+    m_struct_data_map.clear();
+    m_enum_data_map.clear();
+    m_all_data_map.clear();
+    m_global_access_map.clear();
+    m_namespace_access_map.clear();
+    m_file_access_map.clear();
+}
+
 const std::vector<std::shared_ptr<ABnfGuess>>* ALittleScriptIndex::GetGuessTypeList(std::shared_ptr<ABnfElement> element)
 {
     auto it = m_guess_type_map.find(element->GetFile());

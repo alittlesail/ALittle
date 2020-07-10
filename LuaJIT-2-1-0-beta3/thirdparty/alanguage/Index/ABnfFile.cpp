@@ -126,6 +126,7 @@ void ABnfFile::DeleteText(int it_line_start, int it_char_start, int it_line_end,
 const std::vector<ALanguageColorInfo>* ABnfFile::QueryColor(int version, int it_line)
 {
     AnalysisText(version);
+    AnalysisColor(version);
 
     auto it = m_color_map.find(it_line);
     if (it == m_color_map.end()) return nullptr;
@@ -205,9 +206,10 @@ bool ABnfFile::QueryComplete(int version, int it_line, int it_char
     return true;
 }
 
-bool ABnfFile::QueryError(int version, std::vector<ALanguageErrorInfo>& info_list)
+bool ABnfFile::QueryError(int version, bool force, std::vector<ALanguageErrorInfo>& info_list)
 {
     AnalysisText(version);
+    AnalysisError(version, force);
 
     for (auto& pair : m_check_error_map)
     {
@@ -281,18 +283,31 @@ int ABnfFile::GetByteCountOfOneWord(unsigned char first_char)
 
 void ABnfFile::AnalysisText(int version)
 {
-    if (m_version == version)
-        return;
-    m_version = version;
-    
+    if (m_analysis_version == version) return;
+    m_analysis_version = version;
     UpdateAnalysis();
+}
 
-    if (!m_in_ui)
-    {
-        UpdateError();
-        m_color_map.clear();
-        if (m_root) CollectColor(m_root, false);
-    }
+void ABnfFile::AnalysisError(int version, bool force)
+{
+    if (!force && m_error_version == version) return;
+    m_error_version = version;
+
+    ClearCheckError();
+    ClearAnalysisError();
+    if (m_root == nullptr) return;
+    CollectError(m_root);
+    AnalysisError(m_root);
+}
+
+void ABnfFile::AnalysisColor(int version)
+{
+    if (m_color_version == version) return;
+    m_color_version = version;
+
+    m_color_map.clear();
+    if (m_root == nullptr) return;
+    CollectColor(m_root, false);
 }
 
 void ABnfFile::CollectColor(ABnfElementPtr element, bool blur)

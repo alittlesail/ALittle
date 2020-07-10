@@ -16,8 +16,6 @@ public:
 
     // 更新分析内容
     void UpdateAnalysis() override;
-    // 更新错误信息
-    void UpdateError() override;
 
 protected:
     // 移除内容

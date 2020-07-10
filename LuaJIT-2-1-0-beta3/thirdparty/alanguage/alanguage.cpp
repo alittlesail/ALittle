@@ -83,10 +83,10 @@ void abnffile_querycomplete(void* abnf_file, int query_id, int version, int it_l
 	project_c->Add(std::bind(&ABnfProject::QueryComplete, project_c, ((ABnfFile*)abnf_file)->GetFullPath(), query_id, version, it_line, it_char));
 }
 
-void abnffile_queryerror(void* abnf_file, int query_id, int version)
+void abnffile_queryerror(void* abnf_file, int query_id, int version, int force)
 {
 	auto* project_c = ((ABnfFile*)abnf_file)->GetProject();
-	project_c->Add(std::bind(&ABnfProject::QueryError, project_c, ((ABnfFile*)abnf_file)->GetFullPath(), query_id, version));
+	project_c->Add(std::bind(&ABnfProject::QueryError, project_c, ((ABnfFile*)abnf_file)->GetFullPath(), query_id, version, force != 0));
 }
 
 int abnffile_querydesiredindent(void* abnf_file, int version, int it_line, int it_char)

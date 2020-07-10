@@ -16,7 +16,7 @@ void abnffile_querycolor(void* abnf_file, int query_id, int version, int line);
 void abnffile_queryinfo(void* abnf_file, int query_id, int version, int it_line, int it_char);
 void abnffile_querygoto(void* abnf_file, int query_id, int version, int it_line, int it_char);
 void abnffile_querycomplete(void* abnf_file, int query_id, int version, int it_line, int it_char);
-void abnffile_queryerror(void* abnf_file, int query_id, int version);
+void abnffile_queryerror(void* abnf_file, int query_id, int version, int force);
 
 int abnffile_querydesiredindent(void* abnf_file, int version, int it_line, int it_char);
 int abnffile_queryformateindent(void* abnf_file, int version, int it_line, int it_char);

@@ -381,14 +381,14 @@ void ABnfProject::QueryComplete(const std::string& full_path, int query_id, int 
         });
 }
 
-void ABnfProject::QueryError(const std::string& full_path, int query_id, int version)
+void ABnfProject::QueryError(const std::string& full_path, int query_id, int version, bool force)
 {
     auto it = m_file_map.find(full_path);
     if (it != m_file_map.end())
     {
         std::vector<ALanguageErrorInfo> info_list;
         int line_start; int char_start; int line_end; int char_end;
-        if (it->second->QueryError(version, info_list)
+        if (it->second->QueryError(version, force, info_list)
             && info_list.size())
         {
             std::unique_lock<std::mutex> lock(m_output_lock);

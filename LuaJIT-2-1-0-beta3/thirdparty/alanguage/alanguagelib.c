@@ -143,7 +143,8 @@ static int alanguagelib_abnffile_queryerror(lua_State* L)
     luaL_argcheck(L, c != 0, 1, "abnf file object is null");
     int query_id = (int)luaL_checkinteger(L, 2);
     int version = (int)luaL_checkinteger(L, 3);
-    abnffile_queryerror(*c, query_id, version);
+    int force = lua_toboolean(L, 4);
+    abnffile_queryerror(*c, query_id, version, force);
     return 0;
 }
 

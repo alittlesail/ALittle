@@ -42,17 +42,6 @@ void ALittleScriptFileClass::UpdateAnalysis()
     }
 }
 
-void ALittleScriptFileClass::UpdateError()
-{
-    ClearCheckError();
-    ClearAnalysisError();
-
-    if (m_root == nullptr) return;
-
-    CollectError(m_root);
-    AnalysisError(m_root);
-}
-
 void ALittleScriptFileClass::OnRemove()
 {
     auto* index = dynamic_cast<ALittleScriptIndex*>(m_project);

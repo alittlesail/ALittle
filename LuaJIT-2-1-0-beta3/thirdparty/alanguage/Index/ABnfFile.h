@@ -39,7 +39,9 @@ protected:
     // 是否是ui创建
     bool m_in_ui = true;
 
-    int m_version = -1;
+    int m_analysis_version = -1;
+    int m_error_version = -1;
+    int m_color_version = -1;
     // 收集错误
     std::map<ABnfElementPtr, std::string> m_analysis_error_map;
     std::map<ABnfElementPtr, std::string> m_check_error_map;
@@ -79,7 +81,7 @@ public:
         , std::vector<ALanguageCompletionInfo>& info_list
         , int& line_start, int& char_start, int& line_end, int& char_end);
     // 获取错误
-    bool QueryError(int version, std::vector<ALanguageErrorInfo>& info_list);
+    bool QueryError(int version, bool force, std::vector<ALanguageErrorInfo>& info_list);
     // 获取插入缩进
     int QueryDesiredIndent(int version, int it_line, int it_char);
     // 获取格式化缩进
@@ -96,8 +98,12 @@ public:
     inline void ClearGuessType() { m_guess_cache.resize(0); }
 
 public:
-    // 解析一条龙
+    // 解析文本
     void AnalysisText(int version);
+    // 解析错误
+    void AnalysisError(int version, bool force);
+    // 解析着色
+    void AnalysisColor(int version);
 
 public:
     // 获取文件路径
@@ -120,8 +126,6 @@ public:
 public:
     // 更新解析
     virtual void UpdateAnalysis() { }
-    // 更新错误信息
-    virtual void UpdateError() { }
 
     // 清空错误信息
     inline void ClearAnalysisError() { m_analysis_error_map.clear(); }

@@ -199,7 +199,7 @@ ABnfReference* ALittleScriptFactoryClassEx::CreateReference(ABnfElementPtr eleme
     it = m_create_map.find(element->GetLeafType());
     if (it != m_create_map.end()) return it->second(element);
 
-    return nullptr;
+    return new ALittleScriptReference(element);
 }
 
 ABnfGuessError ALittleScriptFactoryClassEx::GuessTypes(ABnfElementPtr element, std::vector<ABnfGuessPtr>& guess_list)

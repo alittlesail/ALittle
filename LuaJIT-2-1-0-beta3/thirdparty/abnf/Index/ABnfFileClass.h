@@ -25,8 +25,6 @@ public:
 
     // 更新分析内容
     void UpdateAnalysis() override;
-    // 更新错误信息
-    void UpdateError() override;
     // 收集索引
     void CollectIndex(ABnfNodeElementPtr node);
     // 收集规则ID

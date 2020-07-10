@@ -34,17 +34,6 @@ void ABnfFileClass::UpdateAnalysis()
     }
 }
 
-void ABnfFileClass::UpdateError()
-{
-    ClearCheckError();
-    ClearAnalysisError();
-
-    if (m_root == nullptr) return;
-
-    CollectError(m_root);
-    AnalysisError(m_root);
-}
-
 void ABnfFileClass::CollectIndex(ABnfNodeElementPtr node)
 {
     if (node->GetNodeType() == "Id")

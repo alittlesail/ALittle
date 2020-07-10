@@ -20,10 +20,8 @@ static int abnflib_destroy_abnf_project(lua_State* L)
 
 static int abnflib_create_abnf_project(lua_State* L)
 {
-	const char* full_path = luaL_checkstring(L, 1);
-	luaL_argcheck(L, full_path != 0, 1, "full_path is null");
-	const char* abnf_buffer = luaL_checkstring(L, 2);
-	luaL_argcheck(L, abnf_buffer != 0, 2, "abnf buffer is null");
+	const char* abnf_buffer = luaL_checkstring(L, 1);
+	luaL_argcheck(L, abnf_buffer != 0, 1, "abnf buffer is null");
 
 	void** c = (void**)lua_newuserdata(L, sizeof(void**));
 	lua_newtable(L);
@@ -31,7 +29,7 @@ static int abnflib_create_abnf_project(lua_State* L)
 	lua_setfield(L, -2, "__gc");
 	lua_setmetatable(L, -2);
 
-	*c = create_abnf_project(full_path, abnf_buffer);
+	*c = create_abnf_project(abnf_buffer);
 	return 1;
 }
 

@@ -26,7 +26,7 @@ ABnfGuessError ALittleScriptPathsValueReference::CheckError()
     if (text == nullptr) return ABnfGuessError(element, u8"请填写路径来获取子文件夹以及文件的路径");
 
     // 检查路径是否存在
-    auto path = element->GetProjectPath() + text->GetElementString();
+    auto path = element->GetModulePath() + text->GetElementString();
     ALittleScriptUtility::TrimLeft(path);
     ALittleScriptUtility::TrimRight(path);
     if (!ALittleScriptUtility::IsDirExist(path))

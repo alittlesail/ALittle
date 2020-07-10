@@ -5,7 +5,7 @@
 #include "../../alanguage/Model/ABnfNodeElement.h"
 
 ABnfFileClass::ABnfFileClass(ABnfProject* project, const std::string& full_path, const char* text, size_t len, bool in_ui)
-	: ABnfFile(project, full_path, text, len, in_ui)
+	: ABnfFile(project, "", full_path, text, len, in_ui)
 {
 }
 

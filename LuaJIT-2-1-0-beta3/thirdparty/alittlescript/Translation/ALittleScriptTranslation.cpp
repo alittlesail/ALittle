@@ -69,10 +69,6 @@ ABnfGuessError ALittleScriptTranslation::CheckErrorElement(ABnfElementPtr elemen
 
 ABnfGuessError ALittleScriptTranslation::Generate(ABnfFile* file, bool full_check)
 {
-    // 判断是否在工程中
-    auto project_info = file->GetProject();
-    if (project_info == nullptr) return ABnfGuessError(nullptr, "文件没有添加到工程中");
-
     // 解析失败
     auto root_dec = std::dynamic_pointer_cast<ALittleScriptRootElement>(file->GetRoot());
     if (root_dec == nullptr) return ABnfGuessError(nullptr, "文件还未解析");
@@ -84,8 +80,8 @@ ABnfGuessError ALittleScriptTranslation::Generate(ABnfFile* file, bool full_chec
 
     m_namespace_name = name_dec->GetElementText();
 
-    m_project_path = file->GetRoot()->GetProjectPath();
-    m_file_path = file->GetRoot()->GetFullPath();
+    m_module_path = file->GetModulePath();
+    m_file_path = file->GetFullPath();
 
     // 如果命名域有register标记，那么就不需要生成
     if (ALittleScriptUtility::IsRegister(namespace_dec->GetModifierList())) return nullptr;
@@ -97,7 +93,7 @@ ABnfGuessError ALittleScriptTranslation::Generate(ABnfFile* file, bool full_chec
 
     // 获取工作目录
     std::string path_error;
-    auto full_path = ALittleScriptUtility::CalcTargetFullPath(project_info->GetProjectPath(), file->GetFullPath(), GetExt(), path_error);
+    auto full_path = ALittleScriptUtility::CalcTargetFullPath(m_module_path, file->GetFullPath(), GetExt(), path_error);
     if (full_path.empty()) return ABnfGuessError(nullptr, path_error);
     std::string full_dir = ALittleScriptUtility::GetFilePathByPath(full_path);
     ALittleScriptUtility::CreateDeepFolder(full_dir);

@@ -21,7 +21,7 @@ protected:
     void ClearImpl() override;
 
 public:
-    ALittleScriptProjectClass(const std::string& full_path);
+    ALittleScriptProjectClass();
     virtual ~ALittleScriptProjectClass();
 
 public:

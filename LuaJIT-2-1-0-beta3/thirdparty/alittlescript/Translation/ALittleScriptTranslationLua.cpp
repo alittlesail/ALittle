@@ -1337,13 +1337,13 @@ ABnfGuessError ALittleScriptTranslationLua::GeneratePathsValue(std::shared_ptr<A
     auto path = text->GetElementString();
     ALittleScriptUtility::TrimLeft(path);
     ALittleScriptUtility::TrimRight(path);
-    if (!ALittleScriptUtility::IsDirExist(paths_value->GetProjectPath() + path)) return ABnfGuessError(paths_value, u8"路径不存在:" + path);
+    if (!ALittleScriptUtility::IsDirExist(paths_value->GetModulePath() + path)) return ABnfGuessError(paths_value, u8"路径不存在:" + path);
     std::vector<std::string> path_list;
 
     auto* index = dynamic_cast<ALittleScriptIndex*>(paths_value->GetFile()->GetProject());
     if (index == nullptr) return ABnfGuessError(paths_value, u8"不在工程内");
     std::string error;
-    if (!index->GetDeepFilePaths(paths_value->GetFile()->GetProject(), paths_value->GetProjectPath() + path, u8"", path_list, error)) return ABnfGuessError(paths_value, error);
+    if (!index->GetDeepFilePaths(paths_value->GetFile()->GetProject(), paths_value->GetModulePath() + path, u8"", path_list, error)) return ABnfGuessError(paths_value, error);
 
     content = "{";
     for (size_t i = 0; i < path_list.size(); ++i)
@@ -1483,7 +1483,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateReflectStructInfo(ABnfGuessP
         if (guess_struct->struct_dec.lock() != nullptr && guess_struct->struct_dec.lock()->GetFullPath() == m_file_path)
             generate = true;
         // 如果不在同一个工程，那么就生成
-        if (guess_struct->struct_dec.lock() != nullptr && guess_struct->struct_dec.lock()->GetProjectPath() != m_project_path)
+        if (guess_struct->struct_dec.lock() != nullptr && guess_struct->struct_dec.lock()->GetModulePath() != m_module_path)
             generate = true;
         //  如果是同一个工程，并且是register，那么也要生成
         else if (guess_struct->is_register)
@@ -1621,7 +1621,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateEnumValue(std::shared_ptr<AL
 
     auto enum_name_dec = enum_name_guess->enum_name_dec.lock();
     if (enum_name_dec == nullptr) return ABnfGuessError(nullptr, u8"节点失效");
-    if (enum_name_dec->GetProjectPath() == m_project_path) return nullptr;
+    if (enum_name_dec->GetModulePath() == m_module_path) return nullptr;
 
     auto dot_id = suffix->GetPropertyValueDotId();
     if (dot_id == nullptr) return nullptr;

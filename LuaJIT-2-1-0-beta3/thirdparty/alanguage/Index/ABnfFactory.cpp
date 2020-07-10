@@ -33,9 +33,9 @@ ABnfReference* ABnfFactory::CreateReference(ABnfElementPtr element)
     return new ABnfReference();
 }
 
-ABnfFile* ABnfFactory::CreateFile(ABnfProject* project, const std::string& full_path, const char* text, size_t len)
+ABnfFile* ABnfFactory::CreateFile(ABnfProject* project, const std::string& module_path, const std::string& full_path, const char* text, size_t len)
 {
-    return new ABnfFile(project, full_path, text, len, false);
+    return new ABnfFile(project, module_path, full_path, text, len, false);
 }
 
 std::string ABnfFactory::ReplaceAll(std::string str, const std::string& from, const std::string& to)

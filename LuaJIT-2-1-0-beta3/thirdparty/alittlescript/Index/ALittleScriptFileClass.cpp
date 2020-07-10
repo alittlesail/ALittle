@@ -6,8 +6,8 @@
 #include "../../alanguage/Model/ABnf.h"
 #include "../../alanguage/Model/ABnfNodeElement.h"
 
-ALittleScriptFileClass::ALittleScriptFileClass(ABnfProject* project, const std::string& full_path, const char* text, size_t len, bool in_ui)
-	: ABnfFile(project, full_path, text, len, in_ui)
+ALittleScriptFileClass::ALittleScriptFileClass(ABnfProject* project, const std::string& module_path, const std::string& full_path, const char* text, size_t len, bool in_ui)
+	: ABnfFile(project, module_path, full_path, text, len, in_ui)
 {
 }
 

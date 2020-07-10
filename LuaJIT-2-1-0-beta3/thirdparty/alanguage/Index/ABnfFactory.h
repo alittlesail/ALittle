@@ -44,7 +44,7 @@ public:
     virtual ABnfGuessError GuessTypes(ABnfElementPtr element, std::vector<ABnfGuessPtr>& guess_list) { return "no implement"; }
 
 public:
-    virtual ABnfFile* CreateFile(ABnfProject* project, const std::string& full_path, const char* text, size_t len);
+    virtual ABnfFile* CreateFile(ABnfProject* project, const std::string& module_path, const std::string& full_path, const char* text, size_t len);
 
 private:
     template <typename T>

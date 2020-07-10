@@ -10,9 +10,9 @@ extern "C" {
 #include "Index/ABnfProjectClass.h"
 #include "Index/ABnfFileClass.h"
 
-void* create_abnf_project(const char* full_path, const char* abnf_buffer)
+void* create_abnf_project(const char* abnf_buffer)
 {
-	auto* project = new ABnfProjectClass(full_path);
+	auto* project = new ABnfProjectClass();
 	project->Start(abnf_buffer);
 	return project;
 }

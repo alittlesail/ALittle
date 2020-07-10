@@ -17,10 +17,10 @@ int alanguage_project_pollone(void* project, lua_State* L)
 	return project_c->PollOne(L);
 }
 
-void alanguage_project_updatefile(void* project, const char* full_path, int version)
+void alanguage_project_updatefile(void* project, const char* module_path, const char* full_path, int version)
 {
 	auto* project_c = (ABnfProject*)project;
-	project_c->Add(std::bind(&ABnfProject::UpdateFile, project_c, std::string(full_path), version));
+	project_c->Add(std::bind(&ABnfProject::UpdateFile, project_c, std::string(module_path), std::string(full_path), version));
 }
 
 void alanguage_project_removefile(void* project, const char* full_path)

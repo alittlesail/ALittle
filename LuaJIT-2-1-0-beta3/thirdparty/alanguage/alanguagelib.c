@@ -22,10 +22,12 @@ static int alanguagelib_project_updatefile(lua_State* L)
 {
     void** c = (void**)lua_touserdata(L, 1);
     luaL_argcheck(L, c != 0, 1, "abnf project object is null");
-    const char* full_path = luaL_checkstring(L, 2);
-    luaL_argcheck(L, full_path != 0, 2, "full_path is null");
-    int version = (int)luaL_checkinteger(L, 3);
-    alanguage_project_updatefile(*c, full_path, version);
+    const char* module_path = luaL_checkstring(L, 2);
+    luaL_argcheck(L, module_path != 0, 2, "module_path is null");
+    const char* full_path = luaL_checkstring(L, 3);
+    luaL_argcheck(L, full_path != 0, 3, "full_path is null");
+    int version = (int)luaL_checkinteger(L, 4);
+    alanguage_project_updatefile(*c, module_path, full_path, version);
     return 0;
 }
 

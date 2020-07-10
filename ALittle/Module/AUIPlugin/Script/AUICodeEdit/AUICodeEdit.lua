@@ -338,6 +338,7 @@ function AUICodeEdit:Ctor()
 	___rawset(self, "_line_list", {})
 	___rawset(self, "_line_count", 0)
 	___rawset(self, "_in_drag", false)
+	___rawset(self, "_force_query_error", false)
 end
 
 function AUICodeEdit:TCtor()
@@ -655,7 +656,7 @@ function AUICodeEdit:UpdateErrorInfo()
 	g_AUITool:HideTip()
 	self._error_quad_move_in = nil
 	self._error_container:RemoveAllChild()
-	local list = self._language:QueryError()
+	local list = self._language:QueryError(self._force_query_error)
 	if list == nil then
 		return
 	end
@@ -687,10 +688,11 @@ function AUICodeEdit:HandleChangedEvent(event)
 	for object, _ in ___pairs(map) do
 		object:RestoreColor()
 	end
-	self:StartErrorLoop()
+	self:StartErrorLoop(false)
 end
 
-function AUICodeEdit:StartErrorLoop()
+function AUICodeEdit:StartErrorLoop(force)
+	self._force_query_error = force
 	if self._error_loop == nil then
 		self._error_loop = ALittle.LoopTimer(Lua.Bind(self.UpdateErrorInfo, self), 1000)
 	end
@@ -1111,6 +1113,7 @@ function AUICodeEdit:OnShow()
 	if self._language ~= nil then
 		self._language:OnShow()
 	end
+	self:StartErrorLoop(true)
 end
 
 function AUICodeEdit:OnSave()
@@ -1150,7 +1153,6 @@ function AUICodeEdit:Load(file_path, revoke_list, language)
 	if self._revoke_list == nil then
 		self._revoke_list = ALittle.RevokeList()
 	end
-	self:StartErrorLoop()
 	return true
 end
 

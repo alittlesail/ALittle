@@ -104,10 +104,14 @@ end
 function AUICodeALittleScript:GenerateLanguage(notice)
 	local error = self:Generate(self._full_path)
 	if error ~= nil then
-		g_AUITool:ShowNotice("错误", error.error .. " 文件路径" .. error.full_path)
+		if notice then
+			g_AUITool:ShowNotice("错误", error.error .. " 文件路径" .. error.full_path)
+		end
 		return
 	end
-	g_AUITool:ShowNotice("提示", "生成成功")
+	if notice then
+		g_AUITool:ShowNotice("提示", "生成成功")
+	end
 end
 AUICodeALittleScript.GenerateLanguage = Lua.CoWrap(AUICodeALittleScript.GenerateLanguage)
 

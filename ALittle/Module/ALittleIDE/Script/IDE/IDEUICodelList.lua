@@ -51,7 +51,7 @@ function IDEUICodeList:HandleProjectOpen(event)
 	info.module_name = event.name
 	info.name = "src"
 	info.path = ALittle.File_BaseFilePath() .. "Module/" .. event.name .. "/src"
-	info.module_path = info.path .. "/"
+	info.module_path = ALittle.File_BaseFilePath() .. "Module/" .. event.name .. "/"
 	info.group = self._group
 	info.root = true
 	info.project = g_IDEProject.project.code
@@ -62,7 +62,7 @@ function IDEUICodeList:HandleProjectOpen(event)
 		info.module_name = name
 		info.name = "src"
 		info.path = ALittle.File_BaseFilePath() .. "Module/ALittleIDE/Other/GameLibrary/" .. name .. "/src"
-		info.module_path = info.path .. "/"
+		info.module_path = ALittle.File_BaseFilePath() .. "Module/ALittleIDE/Other/GameLibrary/" .. name .. "/"
 		info.group = self._group
 		info.root = true
 		info.project = g_IDEProject.project.code
@@ -74,7 +74,7 @@ function IDEUICodeList:HandleProjectOpen(event)
 		info.module_name = module.module_name
 		info.name = ALittle.File_GetFileNameByPath(module.root_path)
 		info.path = module.root_path
-		info.module_path = info.path .. "/"
+		info.module_path = ALittle.File_GetFilePathByPath(module.root_path) .. "/"
 		info.group = self._group
 		info.project = g_IDEProject.project.code
 		info.root = true
@@ -102,14 +102,14 @@ function IDEUICodeList:AddModule(name)
 	local module_map = g_IDEConfig:GetConfig("code_module", {})
 	local module_info = {}
 	module_info.module_name = name
-	module_info.root_path = "Module/" .. name .. "/src"
+	module_info.root_path = ALittle.File_BaseFilePath() .. "Module/" .. name .. "/src"
 	module_map[name] = module_info
 	g_IDEConfig:SetConfig("code_module", module_map)
 	local info = {}
 	info.module_name = name
 	info.name = ALittle.File_GetFileNameByPath(module_info.root_path)
 	info.path = module_info.root_path
-	info.module_path = info.path .. "/"
+	info.module_path = ALittle.File_BaseFilePath() .. "Module/" .. name .. "/"
 	info.group = self._group
 	info.root = true
 	info.project = g_IDEProject.project.code

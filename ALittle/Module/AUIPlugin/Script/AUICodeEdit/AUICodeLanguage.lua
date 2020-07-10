@@ -85,10 +85,10 @@ function AUICodeLanguage:QueryComplete(line, char)
 	return coroutine.yield()
 end
 
-function AUICodeLanguage:QueryError()
+function AUICodeLanguage:QueryError(force)
 	local ___COROUTINE = coroutine.running()
 	local query_id = self._project:Add(___COROUTINE)
-	alanguage.abnffile_queryerror(self._abnf_file, query_id, self._version)
+	alanguage.abnffile_queryerror(self._abnf_file, query_id, self._version, force)
 	return coroutine.yield()
 end
 

@@ -92,10 +92,10 @@ public class AUICodeLanguage
     }
 
     // ≤È—Ø¥ÌŒÛ–≈œ¢
-    public await fun QueryError() : List<lua.ABnfQueryError>
+    public await fun QueryError(bool force) : List<lua.ABnfQueryError>
     {
         var query_id = this._project.Add(co);
-        lua.alanguage.abnffile_queryerror(this._abnf_file, query_id, this._version);
+        lua.alanguage.abnffile_queryerror(this._abnf_file, query_id, this._version, force);
         return yield;
     }
 

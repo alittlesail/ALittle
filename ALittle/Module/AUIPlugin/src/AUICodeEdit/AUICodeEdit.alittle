@@ -288,6 +288,7 @@ public class AUICodeEdit : ALittle.ScrollScreen
     // 记录当前ErrorQuad
     private ALittle.DisplayObject _error_quad_move_in;
     private bool _in_drag = false;
+    private bool _force_query_error = false;
 
 	public fun TCtor()
 	{
@@ -612,7 +613,7 @@ public class AUICodeEdit : ALittle.ScrollScreen
         g_AUITool.HideTip();
         this._error_quad_move_in = null;
         this._error_container.RemoveAllChild();
-        var list = this._language.QueryError();
+        var list = this._language.QueryError(this._force_query_error);
         if (list == null) return;
 
         for (var index, info in list)
@@ -642,11 +643,12 @@ public class AUICodeEdit : ALittle.ScrollScreen
         for (var object:AUICodeLineContainer, _ in map)
             object.RestoreColor();
 
-        this.StartErrorLoop();
+        this.StartErrorLoop(false);
     }
 
-    private fun StartErrorLoop()
+    private fun StartErrorLoop(bool force)
     {
+        this._force_query_error = force;
         if (this._error_loop == null)
             this._error_loop = new ALittle.LoopTimer(bind(this.UpdateErrorInfo, this), 1000);
 
@@ -1093,6 +1095,8 @@ public class AUICodeEdit : ALittle.ScrollScreen
         this._cursor.Show();
 
         if (this._language != null) this._language.OnShow();
+
+        this.StartErrorLoop(true);
     }
 
     public fun OnSave()
@@ -1137,7 +1141,6 @@ public class AUICodeEdit : ALittle.ScrollScreen
         this._revoke_list = revoke_list;
         if (this._revoke_list == null) this._revoke_list = new ALittle.RevokeList();
 
-        this.StartErrorLoop();
         return true;
     }
 

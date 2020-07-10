@@ -56,7 +56,7 @@ public class IDEUICodeList : ALittle.DisplayLayout
 		info.module_name = event.name;
 		info.name = "src";
 		info.path = ALittle.File_BaseFilePath().."Module/"..event.name.."/src";
-		info.module_path = info.path.."/";
+		info.module_path = ALittle.File_BaseFilePath().."Module/"..event.name.."/";
 		info.group = this._group;
 		info.root = true;
 		info.project = g_IDEProject.project.code;
@@ -69,7 +69,7 @@ public class IDEUICodeList : ALittle.DisplayLayout
 			info.module_name = name;
 			info.name = "src";
 			info.path = ALittle.File_BaseFilePath().."Module/ALittleIDE/Other/GameLibrary/"..name.."/src";
-            info.module_path = info.path.."/";
+            info.module_path = ALittle.File_BaseFilePath().."Module/ALittleIDE/Other/GameLibrary/"..name.."/";
 			info.group = this._group;
 			info.root = true;
             info.project = g_IDEProject.project.code;
@@ -84,7 +84,7 @@ public class IDEUICodeList : ALittle.DisplayLayout
 			info.module_name = module.module_name;
 			info.name = ALittle.File_GetFileNameByPath(module.root_path);
 			info.path = module.root_path;
-            info.module_path = info.path.."/";
+            info.module_path = ALittle.File_GetFilePathByPath(module.root_path).."/";
 			info.group = this._group;
             info.project = g_IDEProject.project.code;
 			info.root = true;
@@ -115,7 +115,7 @@ public class IDEUICodeList : ALittle.DisplayLayout
 
 		var module_info = new IDECodeModuleInfo();
 		module_info.module_name = name;
-		module_info.root_path = "Module/"..name.."/src";
+		module_info.root_path = ALittle.File_BaseFilePath().."Module/"..name.."/src";
 		module_map[name] = module_info;
 		g_IDEConfig.SetConfig("code_module", module_map);
 
@@ -123,7 +123,7 @@ public class IDEUICodeList : ALittle.DisplayLayout
         info.module_name = name;
         info.name = ALittle.File_GetFileNameByPath(module_info.root_path);
         info.path = module_info.root_path;
-        info.module_path = info.path.."/";
+        info.module_path = ALittle.File_BaseFilePath().."Module/"..name.."/";
         info.group = this._group;
 		info.root = true;
         info.project = g_IDEProject.project.code;

@@ -108,11 +108,13 @@ public class AUICodeALittleScript : AUICodeLanguage
         var error = this.Generate(this._full_path);
         if (error != null)
         {
-            g_AUITool.ShowNotice("错误", error.error.." 文件路径"..error.full_path);
+            if (notice)
+                g_AUITool.ShowNotice("错误", error.error.." 文件路径"..error.full_path);
             return;
         }
 
-        g_AUITool.ShowNotice("提示", "生成成功");
+        if (notice)
+            g_AUITool.ShowNotice("提示", "生成成功");
     }
 
     // 颜色查询

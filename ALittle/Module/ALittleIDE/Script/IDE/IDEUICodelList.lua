@@ -51,6 +51,7 @@ function IDEUICodeList:HandleProjectOpen(event)
 	info.module_name = event.name
 	info.name = "src"
 	info.path = ALittle.File_BaseFilePath() .. "Module/" .. event.name .. "/src"
+	info.module_path = info.path .. "/"
 	info.group = self._group
 	info.root = true
 	info.project = g_IDEProject.project.code
@@ -61,6 +62,7 @@ function IDEUICodeList:HandleProjectOpen(event)
 		info.module_name = name
 		info.name = "src"
 		info.path = ALittle.File_BaseFilePath() .. "Module/ALittleIDE/Other/GameLibrary/" .. name .. "/src"
+		info.module_path = info.path .. "/"
 		info.group = self._group
 		info.root = true
 		info.project = g_IDEProject.project.code
@@ -72,11 +74,47 @@ function IDEUICodeList:HandleProjectOpen(event)
 		info.module_name = module.module_name
 		info.name = ALittle.File_GetFileNameByPath(module.root_path)
 		info.path = module.root_path
+		info.module_path = info.path .. "/"
 		info.group = self._group
 		info.project = g_IDEProject.project.code
+		info.root = true
 		local tree = IDECodeTree(g_Control, info)
 		self._code_scroll_screen:AddChild(tree)
 	end
+end
+
+function IDEUICodeList:OpenByFullPath(full_path, line_start, char_start, line_end, char_end)
+	for index, child in ___ipairs(self._code_scroll_screen.childs) do
+		local item = child:FindFile(full_path)
+		if item ~= nil then
+			local code_child = g_IDECenter.center.content_edit:StartEditCodeBySelect(item.user_info.name, item.user_info)
+			code_child:JumpFocus(line_start, char_start, line_end, char_end)
+		end
+	end
+end
+
+function IDEUICodeList:AddModule(name)
+	for index, tree in ___ipairs(self._code_scroll_screen.childs) do
+		if tree.user_info.module_name == name then
+			return
+		end
+	end
+	local module_map = g_IDEConfig:GetConfig("code_module", {})
+	local module_info = {}
+	module_info.module_name = name
+	module_info.root_path = "Module/" .. name .. "/src"
+	module_map[name] = module_info
+	g_IDEConfig:SetConfig("code_module", module_map)
+	local info = {}
+	info.module_name = name
+	info.name = ALittle.File_GetFileNameByPath(module_info.root_path)
+	info.path = module_info.root_path
+	info.module_path = info.path .. "/"
+	info.group = self._group
+	info.root = true
+	info.project = g_IDEProject.project.code
+	local tree = IDECodeTree(g_Control, info)
+	self._code_scroll_screen:AddChild(tree)
 end
 
 function IDEUICodeList:ShowTreeItemFocus(target)

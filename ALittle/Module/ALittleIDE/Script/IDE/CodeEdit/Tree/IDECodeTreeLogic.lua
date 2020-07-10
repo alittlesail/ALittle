@@ -44,6 +44,10 @@ function IDECodeTreeLogic:SearchFile(name, list)
 	return list
 end
 
+function IDECodeTreeLogic:FindFile(full_path)
+	return nil
+end
+
 function IDECodeTreeLogic:OnDelete()
 end
 

@@ -73,7 +73,7 @@ function AUICodeABnf:Ctor(project, full_path)
 end
 
 function AUICodeABnf:OnOpen()
-	self._project:UpdateFile(self._full_path)
+	self._project:UpdateFile("", self._full_path)
 end
 
 function AUICodeABnf:OnShow()

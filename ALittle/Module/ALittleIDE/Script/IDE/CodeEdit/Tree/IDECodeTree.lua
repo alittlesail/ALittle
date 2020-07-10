@@ -60,7 +60,7 @@ function IDECodeTree:Ctor(ctrl_sys, user_info)
 	___rawset(self, "_pickup_child", true)
 	self.fold = false
 	if user_info.root then
-		self._item_title.text = self._user_info.module_name
+		self._item_title.text = "[" .. self._user_info.module_name .. "] " .. self._user_info.name
 	else
 		self._item_title.text = self._user_info.name
 	end
@@ -80,8 +80,18 @@ function IDECodeTree:HandleRButtonDown(event)
 		self._user_info.project:OnTreeMenu(self._user_info.path, menu)
 	end
 	menu:AddItem("新建文件", Lua.Bind(self.HandleCreateFile, self))
+	menu:AddItem("新建文件夹", Lua.Bind(self.HandleCreateDir, self))
 	menu:AddItem("刷新", Lua.Bind(self.Refresh, self))
-	menu:AddItem("删除", Lua.Bind(self.HandleDeleteDir, self))
+	if not self._user_info.root then
+		menu:AddItem("删除", Lua.Bind(self.HandleDeleteDir, self))
+	end
+	if self._user_info.root then
+		menu:AddItem("添加模块", Lua.Bind(self.HandleAddModule, self))
+	end
+	local can_remove = self._user_info.root and self._user_info.module_name ~= "Std" and self._user_info.module_name ~= "Core" and self._user_info.module_name ~= "CEngine" and self._user_info.module_name ~= g_IDEProject.project.name
+	if can_remove then
+		menu:AddItem("移除模块", Lua.Bind(self.HandleRemoveModule, self))
+	end
 	menu:Show()
 end
 
@@ -96,6 +106,27 @@ function IDECodeTree:HandleCreateFile()
 end
 IDECodeTree.HandleCreateFile = Lua.CoWrap(IDECodeTree.HandleCreateFile)
 
+function IDECodeTree:HandleCreateDir()
+	local x, y = self._head:LocalToGlobal()
+	local name = g_AUITool:ShowRename("", x, y + self._head.height, 200)
+	if name == nil or name == "" then
+		return
+	end
+	ALittle.File_MakeDir(self._user_info.path .. "/" .. name)
+	self:Refresh()
+end
+IDECodeTree.HandleCreateDir = Lua.CoWrap(IDECodeTree.HandleCreateDir)
+
+function IDECodeTree:HandleAddModule()
+	local x, y = self._head:LocalToGlobal()
+	local name = g_AUITool:ShowRename("", x, y + self._head.height, 200)
+	if name == nil or name == "" then
+		return
+	end
+	g_IDECenter.center.code_list:AddModule(name)
+end
+IDECodeTree.HandleAddModule = Lua.CoWrap(IDECodeTree.HandleAddModule)
+
 function IDECodeTree:HandleDeleteDir()
 	local file_name = ALittle.File_GetFileNameByPath(self._user_info.path)
 	local result = g_AUITool:DeleteNotice("删除", "确定要删除" .. file_name .. "，以及子文件和子文件夹吗?")
@@ -107,6 +138,17 @@ function IDECodeTree:HandleDeleteDir()
 	self:RemoveFromParent()
 end
 IDECodeTree.HandleDeleteDir = Lua.CoWrap(IDECodeTree.HandleDeleteDir)
+
+function IDECodeTree:HandleRemoveModule()
+	local file_name = ALittle.File_GetFileNameByPath(self._user_info.path)
+	local result = g_AUITool:DeleteNotice("移除", "确定要移除" .. file_name .. "模块吗?")
+	if result ~= "YES" then
+		return
+	end
+	self:OnDelete()
+	self:RemoveFromParent()
+end
+IDECodeTree.HandleRemoveModule = Lua.CoWrap(IDECodeTree.HandleRemoveModule)
 
 function IDECodeTree.__getter:is_tree()
 	return true
@@ -125,6 +167,14 @@ function IDECodeTree:Refresh()
 		end
 		map[child._user_info.name] = nil
 		child:Refresh()
+	end
+	if remove ~= nil then
+		for index, child in ___ipairs(remove) do
+			if self._user_info.project ~= nil and ALittle.File_GetFileExtByPathAndUpper(child.user_info.path) == self._user_info.project.upper_ext then
+				self._user_info.project:RemoveFile(child.user_info.path)
+			end
+			self:RemoveChild(child)
+		end
 	end
 	local add_file = nil
 	local add_dir = nil
@@ -147,6 +197,7 @@ function IDECodeTree:Refresh()
 			local attr = map[name]
 			local info = {}
 			info.module_name = self._user_info.module_name
+			info.module_path = self._user_info.module_path
 			info.name = name
 			info.path = self._user_info.path .. "/" .. name
 			info.group = self._user_info.group
@@ -161,14 +212,19 @@ function IDECodeTree:Refresh()
 			local attr = map[name]
 			local info = {}
 			info.module_name = self._user_info.module_name
+			info.module_path = self._user_info.module_path
 			info.name = name
 			info.path = self._user_info.path .. "/" .. name
 			info.group = self._user_info.group
 			info.project = self._user_info.project
 			info.root = false
 			self:AddChild(IDECodeTreeItem(self._ctrl_sys, info))
+			if self._user_info.project ~= nil and ALittle.File_GetFileExtByPathAndUpper(info.path) == self._user_info.project.upper_ext then
+				self._user_info.project:UpdateFile(info.module_path, info.path)
+			end
 		end
 	end
+	self:DispatchEvent(___all_struct[-431205740], {})
 end
 
 function IDECodeTree:SearchFile(name, list)
@@ -179,6 +235,19 @@ function IDECodeTree:SearchFile(name, list)
 		child:SearchFile(name, list)
 	end
 	return list
+end
+
+function IDECodeTree:FindFile(full_path)
+	if ALittle.String_Find(full_path, self._user_info.path) ~= 1 then
+		return nil
+	end
+	for k, child in ___ipairs(self._body.childs) do
+		local item = child:FindFile(full_path)
+		if item ~= nil then
+			return item
+		end
+	end
+	return nil
 end
 
 function IDECodeTree:OnDelete()

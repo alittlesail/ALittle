@@ -56,6 +56,7 @@ public class IDEUICodeList : ALittle.DisplayLayout
 		info.module_name = event.name;
 		info.name = "src";
 		info.path = ALittle.File_BaseFilePath().."Module/"..event.name.."/src";
+		info.module_path = info.path.."/";
 		info.group = this._group;
 		info.root = true;
 		info.project = g_IDEProject.project.code;
@@ -68,6 +69,7 @@ public class IDEUICodeList : ALittle.DisplayLayout
 			info.module_name = name;
 			info.name = "src";
 			info.path = ALittle.File_BaseFilePath().."Module/ALittleIDE/Other/GameLibrary/"..name.."/src";
+            info.module_path = info.path.."/";
 			info.group = this._group;
 			info.root = true;
             info.project = g_IDEProject.project.code;
@@ -82,11 +84,51 @@ public class IDEUICodeList : ALittle.DisplayLayout
 			info.module_name = module.module_name;
 			info.name = ALittle.File_GetFileNameByPath(module.root_path);
 			info.path = module.root_path;
+            info.module_path = info.path.."/";
 			info.group = this._group;
             info.project = g_IDEProject.project.code;
+			info.root = true;
 			var tree = new IDECodeTree(g_Control, info);
 			this._code_scroll_screen.AddChild(tree);
         }
+    }
+
+	public fun OpenByFullPath(string full_path, int line_start, int char_start, int line_end, int char_end)
+	{
+        for (var index, child:IDECodeTreeLogic in this._code_scroll_screen.childs)
+		{
+            var item = child.FindFile(full_path);
+			if (item != null)
+			{
+                var code_child = g_IDECenter.center.content_edit.StartEditCodeBySelect(item.user_info.name, item.user_info);
+				code_child.JumpFocus(line_start, char_start, line_end, char_end);
+            }
+        }
+    }
+
+	public fun AddModule(string name)
+	{
+        for (var index, tree:IDECodeTreeLogic in this._code_scroll_screen.childs)
+            if (tree.user_info.module_name == name) return;
+
+		var module_map = g_IDEConfig.GetConfig("code_module", new Map<string, IDECodeModuleInfo>());
+
+		var module_info = new IDECodeModuleInfo();
+		module_info.module_name = name;
+		module_info.root_path = "Module/"..name.."/src";
+		module_map[name] = module_info;
+		g_IDEConfig.SetConfig("code_module", module_map);
+
+        var info = new IDECodeTreeUserInfo();
+        info.module_name = name;
+        info.name = ALittle.File_GetFileNameByPath(module_info.root_path);
+        info.path = module_info.root_path;
+        info.module_path = info.path.."/";
+        info.group = this._group;
+		info.root = true;
+        info.project = g_IDEProject.project.code;
+        var tree = new IDECodeTree(g_Control, info);
+        this._code_scroll_screen.AddChild(tree);
     }
 
 	// 在树形区域，设置控件焦点

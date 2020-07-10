@@ -18,7 +18,7 @@ enum ALittleScriptColorType
 
 public class AUICodeALittleScript : AUICodeLanguage
 {
-    public ctor(AUICodeProject project, string full_path)
+    public ctor(AUICodeProject project, string full_path, string module_path)
     {
         if (g_ALittleScriptColor == null)
         {
@@ -89,7 +89,7 @@ public class AUICodeALittleScript : AUICodeLanguage
             }
         }
 
-        this._abnf_file = lua.alittlescript.create_alittlescript_file(project.project, full_path, "");
+        this._abnf_file = lua.alittlescript.create_alittlescript_file(project.project, module_path, full_path, "");
     }
 
     public fun OnRightMenu(AUIRightMenu menu)

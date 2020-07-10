@@ -33,7 +33,7 @@ public class IDECodeTree : IDECodeTreeLogic
 	
 		this.fold = false;
 		if (user_info.root)
-			this._item_title.text = this._user_info.module_name;
+			this._item_title.text = "["..this._user_info.module_name.."] "..this._user_info.name;
 		else
 			this._item_title.text = this._user_info.name;
 		this.Refresh();
@@ -51,8 +51,18 @@ public class IDECodeTree : IDECodeTreeLogic
         if (this._user_info.project != null)
             this._user_info.project.OnTreeMenu(this._user_info.path, menu);
 		menu.AddItem("新建文件", bind(this.HandleCreateFile, this));
+		menu.AddItem("新建文件夹", bind(this.HandleCreateDir, this));
 		menu.AddItem("刷新", bind(this.Refresh, this));
-		menu.AddItem("删除", bind(this.HandleDeleteDir, this));
+		if (!this._user_info.root)
+			menu.AddItem("删除", bind(this.HandleDeleteDir, this));
+
+		if (this._user_info.root)
+			menu.AddItem("添加模块", bind(this.HandleAddModule, this));
+
+		var can_remove = this._user_info.root && this._user_info.module_name != "Std" && this._user_info.module_name != "Core" && this._user_info.module_name != "CEngine"
+						&& this._user_info.module_name != g_IDEProject.project.name;
+		if (can_remove) menu.AddItem("移除模块", bind(this.HandleRemoveModule, this));
+			
 		menu.Show();
     }
 
@@ -65,6 +75,23 @@ public class IDECodeTree : IDECodeTreeLogic
 		this.Refresh();
     }
 
+	private async fun HandleCreateDir()
+	{
+		var x, y = this._head.LocalToGlobal();
+        var name = g_AUITool.ShowRename("", x, y + this._head.height, 200);
+		if (name == null || name == "") return;
+		ALittle.File_MakeDir(this._user_info.path.."/"..name);
+		this.Refresh();
+    }
+
+	private async fun HandleAddModule()
+	{
+		var x, y = this._head.LocalToGlobal();
+        var name = g_AUITool.ShowRename("", x, y + this._head.height, 200);
+		if (name == null || name == "") return;
+		g_IDECenter.center.code_list.AddModule(name);
+    }
+
 	private async fun HandleDeleteDir()
 	{
 		var file_name = ALittle.File_GetFileNameByPath(this._user_info.path);
@@ -72,6 +99,15 @@ public class IDECodeTree : IDECodeTreeLogic
 		if (result != AUIPlugin.AUIToolOption.YES) return;
 		this.OnDelete();
 		ALittle.File_DeleteDeepDir(this._user_info.path);
+        this.RemoveFromParent();
+    }
+
+	private async fun HandleRemoveModule()
+	{
+		var file_name = ALittle.File_GetFileNameByPath(this._user_info.path);
+		var result = g_AUITool.DeleteNotice("移除", "确定要移除"..file_name.."模块吗?");
+		if (result != AUIPlugin.AUIToolOption.YES) return;
+		this.OnDelete();
         this.RemoveFromParent();
     }
 	
@@ -95,6 +131,17 @@ public class IDECodeTree : IDECodeTreeLogic
 
 			map[child._user_info.name] = null;
 			child.Refresh();
+        }
+
+		if (remove != null)
+		{
+            for (var index, child:IDECodeTreeLogic in remove)
+            {
+                // 移除文件
+                if (this._user_info.project != null && ALittle.File_GetFileExtByPathAndUpper(child.user_info.path) == this._user_info.project.upper_ext)
+                    this._user_info.project.RemoveFile(child.user_info.path);
+                this.RemoveChild(child);
+            }   
         }
 
 		// 添加
@@ -122,6 +169,7 @@ public class IDECodeTree : IDECodeTreeLogic
                 var attr = map[name];
 				var info = new IDECodeTreeUserInfo();
 				info.module_name = this._user_info.module_name;
+				info.module_path = this._user_info.module_path;
 				info.name = name;
 				info.path = this._user_info.path.."/"..name;
 				info.group = this._user_info.group;
@@ -139,14 +187,21 @@ public class IDECodeTree : IDECodeTreeLogic
                 var attr = map[name];
 				var info = new IDECodeTreeUserInfo();
 				info.module_name = this._user_info.module_name;
+				info.module_path = this._user_info.module_path;
 				info.name = name;
 				info.path = this._user_info.path.."/"..name;
 				info.group = this._user_info.group;
 				info.project = this._user_info.project;
 				info.root = false;
                 this.AddChild(new IDECodeTreeItem(this._ctrl_sys, info));
+
+                // 把文件添加到工程中
+                if (this._user_info.project != null && ALittle.File_GetFileExtByPathAndUpper(info.path) == this._user_info.project.upper_ext)
+                    this._user_info.project.UpdateFile(info.module_path, info.path);
             }
         }
+
+		this.DispatchEvent(new ALittle.UIResizeEvent());
     }
 	
 	// 搜索文件
@@ -159,6 +214,19 @@ public class IDECodeTree : IDECodeTreeLogic
 	
 		return list;
 	}
+
+	// 查找文件
+	public fun FindFile(string full_path) : IDECodeTreeLogic
+	{
+		if (ALittle.String_Find(full_path, this._user_info.path) != 1) return null;
+
+		for (var k, child:IDECodeTreeLogic in this._body.childs)
+		{
+			var item = child.FindFile(full_path);
+			if (item != null) return item;
+        }
+		return null;
+    }
 
 	// 触发删除
 	public fun OnDelete()

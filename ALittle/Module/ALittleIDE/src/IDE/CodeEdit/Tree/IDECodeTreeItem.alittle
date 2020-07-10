@@ -17,10 +17,6 @@ public class IDECodeTreeItem : IDECodeTreeLogic
 		this._item_button._user_data = this;
 		
 		this._item_title.text = this._user_info.name;
-
-		// 把文件添加到工程中
-		if (user_info.project != null && ALittle.File_GetFileExtByPathAndUpper(user_info.path) == "ALITTLE")
-            user_info.project.UpdateFile(user_info.path);
 	}
 	
 	public get is_tree() : bool { return false; }
@@ -42,6 +38,13 @@ public class IDECodeTreeItem : IDECodeTreeLogic
 			ALittle.List_Push(list, this);
 		return list;
 	}
+
+	// 查找文件
+	public fun FindFile(string full_path) : IDECodeTreeLogic
+	{
+		if (this._user_info.path == full_path) return this;
+		return null;
+    }
 
 	private fun HandleRButtonDown(ALittle.UIRButtonDownEvent event)
 	{

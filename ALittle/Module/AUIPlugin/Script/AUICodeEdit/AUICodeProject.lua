@@ -15,9 +15,9 @@ function AUICodeProject:Ctor(project)
 	___rawset(self, "_map", {})
 end
 
-function AUICodeProject.CreateALittleScriptProject(project_path)
+function AUICodeProject.CreateALittleScriptProject()
 	local abnf_buffer = ALittle.File_ReadTextFromFile(g_ModuleBasePath .. "Other/ABnf/ALittleScript.abnf")
-	local project = AUICodeALittleScriptProject(alittlescript.create_alittlescript_project(project_path, abnf_buffer))
+	local project = AUICodeALittleScriptProject(alittlescript.create_alittlescript_project(abnf_buffer))
 	project:Start()
 	return project
 end
@@ -26,7 +26,7 @@ function AUICodeProject.CreateABnfProject()
 	local abnf_project = g_ABnfProjectMap["abnf"]
 	if abnf_project == nil then
 		local abnf_buffer = ALittle.File_ReadTextFromFile(g_ModuleBasePath .. "/Other/ABnf/ABnf.abnf")
-		abnf_project = AUICodeABnfProject(abnf.create_abnf_project("", abnf_buffer))
+		abnf_project = AUICodeABnfProject(abnf.create_abnf_project(abnf_buffer))
 		g_ABnfProjectMap["abnf"] = abnf_project
 		abnf_project:Start()
 	end
@@ -48,8 +48,8 @@ function AUICodeProject.__getter:project()
 	return self._project
 end
 
-function AUICodeProject:UpdateFile(full_path)
-	alanguage.abnfproject_updatefile(self._project, full_path, 0)
+function AUICodeProject:UpdateFile(module_path, full_path)
+	alanguage.abnfproject_updatefile(self._project, module_path, full_path, 0)
 end
 
 function AUICodeProject:RemoveFile(full_path)

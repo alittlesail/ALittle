@@ -2,6 +2,7 @@
 namespace AUIPlugin;
 
 private var LINE_HEIGHT = 18;
+private var PAD_HEIGHT = 100;
 private var FONT_SIZE = 14;
 private var FONT_PATH = "YaHei-Consolas.ttf";
 private var FONT_RED = 169/255;
@@ -1270,7 +1271,7 @@ public class AUICodeEdit : ALittle.ScrollScreen
         for (var index, line in this._line_list)
             this._code_linear.AddChild(line.container);
         this.container.width = max_width;
-        this.container.height = this._line_count * LINE_HEIGHT;
+        this.container.height = this._line_count * LINE_HEIGHT + PAD_HEIGHT;
         this.RejustScrollBar();
 
         this._cursor.SetLineChar(1, 0);
@@ -1528,7 +1529,7 @@ public class AUICodeEdit : ALittle.ScrollScreen
         for (var index, line in this._line_list)
             if (line.container.width > max_width) max_width = line.container.width;
         this.container.width = max_width;
-        this.container.height = this._line_count * LINE_HEIGHT;
+        this.container.height = this._line_count * LINE_HEIGHT + PAD_HEIGHT;
         this.RejustScrollBar();
 
         this._cursor.SetLineChar(it_cursor_line, it_cursor_char);
@@ -1593,8 +1594,25 @@ public class AUICodeEdit : ALittle.ScrollScreen
         return true;
 	}
 
-    public fun EditFocus()
+    public fun EditFocus(int line_start, int char_start, int line_end, int char_end)
     {
         this._edit_quad.DelayFocus();
+
+        if (line_start != null && char_start != null)
+        {
+            if (char_start > 0) char_start -= 1;
+            if (line_end == null || char_end == null)
+            {
+                this._select_cursor.Hide();
+                this._cursor.SetLineChar(line_start, char_start);
+            }
+            else
+            {
+                this._cursor.SetLineChar(line_start, char_start);
+                this._select_cursor.StartLineChar(line_start, char_start);
+                this._select_cursor.UpdateLineChar(line_end, char_end);
+            }
+            this.FocusLineChar(this._cursor.line, this._cursor.char);
+        }
     }
 }

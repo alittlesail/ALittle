@@ -67,7 +67,7 @@ public struct ABnfProject { }
 public class alanguage
 {
     public static abnfproject_pollone(ABnfProject project) : ABnfPollInfo {}
-    public static abnfproject_updatefile(ABnfProject project, string full_path, int version) {}
+    public static abnfproject_updatefile(ABnfProject project, string module_path, string full_path, int version) {}
     public static abnfproject_removefile(ABnfProject project, string full_path) {}
     public static abnfproject_clear(ABnfProject project) {}
 

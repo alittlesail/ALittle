@@ -45,9 +45,6 @@ function IDECodeTreeItem:Ctor(ctrl_sys, user_info)
 	self._item_button:AddEventListener(___all_struct[-641444818], self, self.HandleRButtonDown)
 	self._item_button._user_data = self
 	self._item_title.text = self._user_info.name
-	if user_info.project ~= nil and ALittle.File_GetFileExtByPathAndUpper(user_info.path) == "ALITTLE" then
-		user_info.project:UpdateFile(user_info.path)
-	end
 end
 
 function IDECodeTreeItem.__getter:is_tree()
@@ -73,6 +70,13 @@ function IDECodeTreeItem:SearchFile(name, list)
 		ALittle.List_Push(list, self)
 	end
 	return list
+end
+
+function IDECodeTreeItem:FindFile(full_path)
+	if self._user_info.path == full_path then
+		return self
+	end
+	return nil
 end
 
 function IDECodeTreeItem:HandleRButtonDown(event)

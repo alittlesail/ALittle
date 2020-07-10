@@ -17,10 +17,10 @@ public class AUICodeProject
         this._map = new Map<int, ALittle.Thread>();
     }
 
-    public static CreateALittleScriptProject(string project_path) : AUICodeProject
+    public static CreateALittleScriptProject() : AUICodeProject
     {
         var abnf_buffer = ALittle.File_ReadTextFromFile(g_ModuleBasePath.."Other/ABnf/ALittleScript.abnf");
-        var project = new AUICodeALittleScriptProject(lua.alittlescript.create_alittlescript_project(project_path, abnf_buffer));
+        var project = new AUICodeALittleScriptProject(lua.alittlescript.create_alittlescript_project(abnf_buffer));
         project.Start();
         return project;
     }
@@ -32,7 +32,7 @@ public class AUICodeProject
         if (abnf_project == null)
         {
             var abnf_buffer = ALittle.File_ReadTextFromFile(g_ModuleBasePath.."/Other/ABnf/ABnf.abnf");
-            abnf_project = new AUICodeABnfProject(lua.abnf.create_abnf_project("", abnf_buffer));
+            abnf_project = new AUICodeABnfProject(lua.abnf.create_abnf_project(abnf_buffer));
             g_ABnfProjectMap["abnf"] = abnf_project;
             abnf_project.Start();
         }
@@ -49,7 +49,7 @@ public class AUICodeProject
     public get upper_ext() : string { return null; }
 
     public get project() : lua.ABnfProject { return this._project; }
-    public fun UpdateFile(string full_path) { lua.alanguage.abnfproject_updatefile(this._project, full_path, 0); }
+    public fun UpdateFile(string module_path, string full_path) { lua.alanguage.abnfproject_updatefile(this._project, module_path, full_path, 0); }
     public fun RemoveFile(string full_path) { lua.alanguage.abnfproject_removefile(this._project, full_path); }
     
     public fun Start()

@@ -173,7 +173,7 @@ function IDEProject:OpenProject(name)
 	self._project.control.use_plugin_class = false
 	self._project.config = ALittle.CreateConfigSystem("Module/" .. name .. "/ALittleIDE.cfg")
 	self._project.ui = IDEUIManager(name, self._project.control)
-	self._project.code = AUIPlugin.AUICodeProject.CreateALittleScriptProject(ALittle.File_BaseFilePath() .. "Module/" .. name .. "/")
+	self._project.code = AUIPlugin.AUICodeProject.CreateALittleScriptProject()
 	g_IDEConfig:SetConfig("last_project", name)
 	local e = {}
 	e.name = name

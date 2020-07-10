@@ -128,6 +128,7 @@ option_map = {}
 })
 
 local LINE_HEIGHT = 18
+local PAD_HEIGHT = 100
 local FONT_SIZE = 14
 local FONT_PATH = "YaHei-Consolas.ttf"
 local FONT_RED = 169 / 255
@@ -1266,7 +1267,7 @@ function AUICodeEdit:SetText(content)
 		self._code_linear:AddChild(line.container)
 	end
 	self.container.width = max_width
-	self.container.height = self._line_count * LINE_HEIGHT
+	self.container.height = self._line_count * LINE_HEIGHT + PAD_HEIGHT
 	self:RejustScrollBar()
 	self._cursor:SetLineChar(1, 0)
 	if self._language ~= nil then
@@ -1503,7 +1504,7 @@ function AUICodeEdit:InsertText(content, need_revoke, revoke_bind)
 		end
 	end
 	self.container.width = max_width
-	self.container.height = self._line_count * LINE_HEIGHT
+	self.container.height = self._line_count * LINE_HEIGHT + PAD_HEIGHT
 	self:RejustScrollBar()
 	self._cursor:SetLineChar(it_cursor_line, it_cursor_char)
 	if need_revoke then
@@ -1558,7 +1559,21 @@ function AUICodeEdit:Save()
 	return true
 end
 
-function AUICodeEdit:EditFocus()
+function AUICodeEdit:EditFocus(line_start, char_start, line_end, char_end)
 	self._edit_quad:DelayFocus()
+	if line_start ~= nil and char_start ~= nil then
+		if char_start > 0 then
+			char_start = char_start - (1)
+		end
+		if line_end == nil or char_end == nil then
+			self._select_cursor:Hide()
+			self._cursor:SetLineChar(line_start, char_start)
+		else
+			self._cursor:SetLineChar(line_start, char_start)
+			self._select_cursor:StartLineChar(line_start, char_start)
+			self._select_cursor:UpdateLineChar(line_end, char_end)
+		end
+		self:FocusLineChar(self._cursor.line, self._cursor.char)
+	end
 end
 

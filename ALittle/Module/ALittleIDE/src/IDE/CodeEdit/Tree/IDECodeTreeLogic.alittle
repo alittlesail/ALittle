@@ -34,6 +34,12 @@ public class IDECodeTreeLogic : ALittle.DisplayLayout
 		return list;
 	}
 
+	// 查找文件
+	public fun FindFile(string full_path) : IDECodeTreeLogic
+	{
+        return null;
+    }
+
 	// 触发删除
 	public fun OnDelete()
 	{

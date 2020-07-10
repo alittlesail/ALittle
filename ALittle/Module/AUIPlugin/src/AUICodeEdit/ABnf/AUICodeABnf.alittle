@@ -74,7 +74,7 @@ public class AUICodeABnf : AUICodeLanguage
 
     public fun OnOpen()
     {
-        this._project.UpdateFile(this._full_path);
+        this._project.UpdateFile("", this._full_path);
     }
 
     public fun OnShow()

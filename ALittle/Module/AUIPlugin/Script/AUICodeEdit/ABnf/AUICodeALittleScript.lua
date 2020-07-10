@@ -22,7 +22,7 @@ ALittleScriptColorType = {
 assert(AUIPlugin.AUICodeLanguage, " extends class:AUIPlugin.AUICodeLanguage is nil")
 AUICodeALittleScript = Lua.Class(AUIPlugin.AUICodeLanguage, "AUIPlugin.AUICodeALittleScript")
 
-function AUICodeALittleScript:Ctor(project, full_path)
+function AUICodeALittleScript:Ctor(project, full_path, module_path)
 	if g_ALittleScriptColor == nil then
 		g_ALittleScriptColor = {}
 		local color
@@ -90,7 +90,7 @@ function AUICodeALittleScript:Ctor(project, full_path)
 			g_ALittleScriptColor[ALittleScriptColorType.TEXT] = color
 		end
 	end
-	___rawset(self, "_abnf_file", alittlescript.create_alittlescript_file(project.project, full_path, ""))
+	___rawset(self, "_abnf_file", alittlescript.create_alittlescript_file(project.project, module_path, full_path, ""))
 end
 
 function AUICodeALittleScript:OnRightMenu(menu)

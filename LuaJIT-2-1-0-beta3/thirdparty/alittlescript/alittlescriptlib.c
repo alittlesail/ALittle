@@ -45,6 +45,18 @@ static int alittlescriptlib_alittlescriptproject_settargetlanguage(lua_State* L)
 	return 0;
 }
 
+static int alittlescriptlib_alittlescriptproject_generate(lua_State* L)
+{
+	void** c = (void**)lua_touserdata(L, 1);
+	luaL_argcheck(L, c != 0, 1, "alittlescript project object is null");
+	int query_id = (int)luaL_checkinteger(L, 2);
+	const char* full_path = luaL_checkstring(L, 3);
+	luaL_argcheck(L, full_path != 0, 2, "full_path is null");
+
+	alittlescriptproject_generate(*c, query_id, full_path);
+	return 0;
+}
+
 static int alittlescriptlib_destroy_alittlescript_file(lua_State* L)
 {
 	void** c = (void**)lua_touserdata(L, 1);
@@ -91,6 +103,7 @@ static struct luaL_Reg alittlescriptlib[] = {
   {"create_alittlescript_project", alittlescriptlib_create_alittlescript_project},
   {"create_alittlescript_file", alittlescriptlib_create_alittlescript_file},
   {"alittlescriptproject_settargetlanguage", alittlescriptlib_alittlescriptproject_settargetlanguage},
+  {"alittlescriptproject_generate", alittlescriptlib_alittlescriptproject_generate},
   {NULL, NULL}
 };
 

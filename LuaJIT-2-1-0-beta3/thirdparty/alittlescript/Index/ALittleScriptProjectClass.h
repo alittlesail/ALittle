@@ -17,6 +17,9 @@ private:
     std::string m_target_language;
     std::unordered_set<std::string> m_language_set;
 
+protected:
+    void ClearImpl() override;
+
 public:
     ALittleScriptProjectClass(const std::string& full_path);
     virtual ~ALittleScriptProjectClass();
@@ -26,6 +29,7 @@ public:
 
 public:
     void SetTargetLanguage(const std::string& language);
+    void Generate(int query_id, const std::string& full_path);
     const std::string& GetTargetLanguage() const { return m_target_language; }
     const std::unordered_set<std::string>& GetLanguageSet() const { return m_language_set; }
 };

@@ -40,6 +40,15 @@ static int alanguagelib_project_removefile(lua_State* L)
     return 0;
 }
 
+static int alanguagelib_project_clear(lua_State* L)
+{
+    void** c = (void**)lua_touserdata(L, 1);
+    luaL_argcheck(L, c != 0, 1, "abnf project object is null");
+
+    alanguage_project_clear(*c);
+    return 0;
+}
+
 static int alanguagelib_abnffile_settext(lua_State* L)
 {
     void** c = (void**)lua_touserdata(L, 1);
@@ -182,6 +191,7 @@ static struct luaL_Reg alanguagelib[] = {
 
   {"abnfproject_updatefile", alanguagelib_project_updatefile},
   {"abnfproject_removefile", alanguagelib_project_removefile},
+  {"abnfproject_clear", alanguagelib_project_clear},
 
   {"abnffile_settext", alanguagelib_abnffile_settext},
   {"abnffile_inserttext", alanguagelib_abnffile_inserttext},

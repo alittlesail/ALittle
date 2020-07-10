@@ -10,9 +10,6 @@ ABnfProject::ABnfProject(const std::string& full_path) : m_project_path(full_pat
 ABnfProject::~ABnfProject()
 {
 	Stop();
-
-    for (auto& pair : m_file_map)
-        delete pair.second;
 }
 
 void ABnfProject::Start(const std::string& abnf_buffer)
@@ -53,6 +50,12 @@ void ABnfProject::Stop()
             m_inputs.pop_front();
         }
     }
+
+    for (auto& pair : m_file_map)
+        delete pair.second;
+    m_file_map.clear();
+
+    ClearImpl();
 }
 
 int ABnfProject::PollOne(lua_State* L)
@@ -90,6 +93,8 @@ ABnfFile* ABnfProject::GetFile(const std::string& full_path)
 
 void ABnfProject::UpdateFile(const std::string& full_path, int version)
 {
+    if (!m_run) return;
+
     // 打开文件
     FILE* file = nullptr;
 #ifdef _WIN32

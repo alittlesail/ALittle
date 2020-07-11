@@ -16,10 +16,20 @@ public class AUICodeLanguage
     private AUICodeProject _project;
     private string _full_path;
 
+    private Map<string, string> _auto_pair;
+
     public ctor(AUICodeProject project, string full_path)
     {
         this._project = project;
         this._full_path = full_path;
+
+        this._auto_pair = new Map<string, string>();
+        this._auto_pair["{"] = "}";
+        this._auto_pair["["] = "]";
+        this._auto_pair["("] = ")";
+        this._auto_pair["<"] = ">";
+        this._auto_pair["\""] = "\"";
+        this._auto_pair["'"] = "'";
     }
 
     // 获取文本修改版本号
@@ -109,6 +119,16 @@ public class AUICodeLanguage
     public fun QueryFormateIndent(int line, int char) : int
     {
         return lua.alanguage.abnffile_queryformateindent(this._abnf_file, this._version, line, char);
+    }
+
+    // 查询自动匹配
+    public fun QueryAutoPair(int line, int char, string input) : string
+    {
+        var right = this._auto_pair[input];
+        if (right == null) return null;
+        if (!lua.alanguage.abnffile_queryautopair(this._abnf_file, this._version, line, char, input, right))
+            return null;
+        return right;
     }
 
     // 颜色查询

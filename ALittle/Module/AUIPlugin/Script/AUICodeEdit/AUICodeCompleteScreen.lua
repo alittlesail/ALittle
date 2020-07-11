@@ -193,7 +193,6 @@ function AUICodeCompleteScreen:ReInit(edit)
 	self._item_group = {}
 	self._item_list = {}
 	for index, info in ___ipairs(self._complete.complete_list) do
-		ALittle.Log("ReInit   aaaa", index)
 		local item_info
 		if self._item_pool_count > 0 then
 			item_info = self._item_pool[self._item_pool_count]

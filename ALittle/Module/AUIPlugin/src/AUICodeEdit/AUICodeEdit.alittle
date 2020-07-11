@@ -798,6 +798,21 @@ public class AUICodeEdit : ALittle.ScrollScreen
 
         if (this.InsertText(text, true))
         {
+            if (this._language != null)
+            {
+                var auto_pair = this._language.QueryAutoPair(this._cursor.line, this._cursor.char, event.text);
+                if (auto_pair != null)
+                {
+                    if (this._cursor.GetNextCharInLine() != auto_pair)
+                    {
+                        var old_line = this._cursor.line;
+                        var old_char = this._cursor.char;
+                        this.InsertText(auto_pair, true);
+                        this._cursor.SetLineChar(old_line, old_char);
+                    }
+                }
+            }
+
             this.DispatchEvent(new ALittle.UIChangedEvent());
             g_AUICodeCompleteScreen.ShowComplete(this);
         }   

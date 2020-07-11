@@ -200,7 +200,6 @@ protected class AUICodeCompleteScreen
         this._item_list = new List<AUICodeCompleteItemInfo>();
         for (var index, info in this._complete.complete_list)
         {
-            ALittle.Log("ReInit   aaaa", index);
             var item_info:AUICodeCompleteItemInfo;
             if (this._item_pool_count > 0)
             {

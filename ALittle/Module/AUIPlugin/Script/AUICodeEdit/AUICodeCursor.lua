@@ -15,6 +15,7 @@ function AUICodeCursor:Ctor(ctrl_sys, edit)
 	___rawset(self, "_it_line", 1)
 	___rawset(self, "_it_char", 0)
 	___rawset(self, "_virtual_indent", 0)
+	___rawset(self, "_move_char", 0)
 	___rawset(self, "_edit", edit)
 end
 
@@ -38,6 +39,30 @@ function AUICodeCursor:Show(x, y)
 		A_LoopSystem:AddUpdater(self._loop)
 	end
 	self.visible = true
+end
+
+function AUICodeCursor:GetCurCharInLine()
+	local line = self._edit.line_list[self._it_line]
+	if line == nil then
+		return nil
+	end
+	local index = self._it_char + 1
+	if index > line.char_count then
+		return nil
+	end
+	return line.char_list[index].char
+end
+
+function AUICodeCursor:GetNextCharInLine()
+	local line = self._edit.line_list[self._it_line]
+	if line == nil then
+		return nil
+	end
+	local index = self._it_char + 2
+	if index > line.char_count then
+		return nil
+	end
+	return line.char_list[index].char
 end
 
 function AUICodeCursor:CalcSelectWord()
@@ -100,9 +125,15 @@ function AUICodeCursor:SetOffsetXY(x, y, show)
 		self:Show()
 	end
 	self._virtual_indent = 0
+	self._move_char = self._it_char
 end
 
 function AUICodeCursor:SetLineChar(it_line, it_char, show)
+	self:SetLineCharInner(it_line, it_char, show)
+	self._move_char = self._it_char
+end
+
+function AUICodeCursor:SetLineCharInner(it_line, it_char, show)
 	self._it_line = it_line
 	self._it_char = it_char
 	self.y = (self._it_line - 1) * self._edit.line_height
@@ -146,10 +177,10 @@ function AUICodeCursor:OffsetUp()
 	while it_char > 0 and line.char_list[it_char].width <= 0 do
 		it_char = it_char - 1
 	end
-	if self._it_char < it_char then
-		it_char = self._it_char
+	if self._move_char < it_char then
+		it_char = self._move_char
 	end
-	self:SetLineChar(it_line, it_char, false)
+	self:SetLineCharInner(it_line, it_char, false)
 end
 
 function AUICodeCursor:OffsetDown()
@@ -165,10 +196,10 @@ function AUICodeCursor:OffsetDown()
 	while it_char > 0 and line.char_list[it_char].width <= 0 do
 		it_char = it_char - 1
 	end
-	if self._it_char < it_char then
-		it_char = self._it_char
+	if self._move_char < it_char then
+		it_char = self._move_char
 	end
-	self:SetLineChar(it_line, it_char, false)
+	self:SetLineCharInner(it_line, it_char, false)
 end
 
 function AUICodeCursor:OffsetLeft()

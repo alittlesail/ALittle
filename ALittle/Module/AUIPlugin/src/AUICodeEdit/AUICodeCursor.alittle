@@ -15,6 +15,8 @@ public class AUICodeCursor : ALittle.Quad
 
     // 缩进数量
     private int _virtual_indent = 0;
+    // 记录当前列
+    private int _move_char = 0;
 
     public ctor(ALittle.ControlSystem ctrl_sys, AUICodeEdit edit)
     {
@@ -30,6 +32,28 @@ public class AUICodeCursor : ALittle.Quad
         if (this._loop == null) this._loop = new ALittle.LoopFunction(bind(this.Update, this), -1, 1, 1);
         if (!A_LoopSystem.HasUpdater(this._loop)) A_LoopSystem.AddUpdater(this._loop);
         this.visible = true;
+    }
+
+    // 获取光标当前的字符
+    public fun GetCurCharInLine() : string
+    {
+        var line = this._edit.line_list[this._it_line];
+        if (line == null) return null;
+
+        var index = this._it_char + 1;
+        if (index > line.char_count) return null;
+        return line.char_list[index].char;
+    }
+
+    // 获取光标下一个的字符
+    public fun GetNextCharInLine() : string
+    {
+        var line = this._edit.line_list[this._it_line];
+        if (line == null) return null;
+
+        var index = this._it_char + 2;
+        if (index > line.char_count) return null;
+        return line.char_list[index].char;
     }
 
     // 根据当前光标选中文本
@@ -93,9 +117,16 @@ public class AUICodeCursor : ALittle.Quad
         if (show == null || show) this.Show();
 
         this._virtual_indent = 0;
+        this._move_char = this._it_char;
     }
 
     public fun SetLineChar(int it_line, int it_char, [Nullable]bool show)
+    {
+        this.SetLineCharInner(it_line, it_char, show);
+        this._move_char = this._it_char;
+    }
+
+    private fun SetLineCharInner(int it_line, int it_char, [Nullable]bool show)
     {
         this._it_line = it_line;
         this._it_char = it_char;
@@ -140,9 +171,9 @@ public class AUICodeCursor : ALittle.Quad
         var it_char = line.char_count;
         while (it_char > 0 && line.char_list[it_char].width <= 0)
             -- it_char;
-        if (this._it_char < it_char) it_char = this._it_char;
+        if (this._move_char < it_char) it_char = this._move_char;
 
-        this.SetLineChar(it_line, it_char, false);
+        this.SetLineCharInner(it_line, it_char, false);
     }
 
     // 向下移动一行
@@ -155,8 +186,9 @@ public class AUICodeCursor : ALittle.Quad
         var it_char = line.char_count;
         while (it_char > 0 && line.char_list[it_char].width <= 0)
             -- it_char;
-        if (this._it_char < it_char) it_char = this._it_char;
-        this.SetLineChar(it_line, it_char, false);
+        if (this._move_char < it_char) it_char = this._move_char;
+
+        this.SetLineCharInner(it_line, it_char, false);
     }
 
     // 向左移动一格

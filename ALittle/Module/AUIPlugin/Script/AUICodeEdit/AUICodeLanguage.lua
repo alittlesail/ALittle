@@ -18,6 +18,13 @@ function AUICodeLanguage:Ctor(project, full_path)
 	___rawset(self, "_version", 1)
 	___rawset(self, "_project", project)
 	___rawset(self, "_full_path", full_path)
+	___rawset(self, "_auto_pair", {})
+	self._auto_pair["{"] = "}"
+	self._auto_pair["["] = "]"
+	self._auto_pair["("] = ")"
+	self._auto_pair["<"] = ">"
+	self._auto_pair["\""] = "\""
+	self._auto_pair["'"] = "'"
 end
 
 function AUICodeLanguage.__getter:version()
@@ -98,6 +105,17 @@ end
 
 function AUICodeLanguage:QueryFormateIndent(line, char)
 	return alanguage.abnffile_queryformateindent(self._abnf_file, self._version, line, char)
+end
+
+function AUICodeLanguage:QueryAutoPair(line, char, input)
+	local right = self._auto_pair[input]
+	if right == nil then
+		return nil
+	end
+	if not alanguage.abnffile_queryautopair(self._abnf_file, self._version, line, char, input, right) then
+		return nil
+	end
+	return right
 end
 
 function AUICodeLanguage:QueryColorValue(tag)

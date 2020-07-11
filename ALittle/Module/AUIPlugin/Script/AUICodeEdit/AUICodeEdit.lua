@@ -872,6 +872,17 @@ function AUICodeEdit:HandleTextInput(event)
 		text = indent_str .. text
 	end
 	if self:InsertText(text, true) then
+		if self._language ~= nil then
+			local auto_pair = self._language:QueryAutoPair(self._cursor.line, self._cursor.char, event.text)
+			if auto_pair ~= nil then
+				if self._cursor:GetNextCharInLine() ~= auto_pair then
+					local old_line = self._cursor.line
+					local old_char = self._cursor.char
+					self:InsertText(auto_pair, true)
+					self._cursor:SetLineChar(old_line, old_char)
+				end
+			end
+		end
 		self:DispatchEvent(___all_struct[958494922], {})
 		g_AUICodeCompleteScreen:ShowComplete(self)
 	end

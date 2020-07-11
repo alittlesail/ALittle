@@ -83,4 +83,5 @@ public class alanguage
 
     public static abnffile_querydesiredindent(ABnfFile abnf_file, int version, int line, int char) : int {}
     public static abnffile_queryformateindent(ABnfFile abnf_file, int version, int line, int char) : int {}
+    public static abnffile_queryautopair(ABnfFile abnf_file, int version, int line, int char, string left_pair, string right_pair) : bool {}
 }

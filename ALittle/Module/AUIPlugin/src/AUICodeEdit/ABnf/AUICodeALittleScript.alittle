@@ -141,11 +141,48 @@ public class AUICodeALittleScriptProject : AUICodeProject
 
     public fun OnTreeMenu(string full_path, AUIRightMenu menu)
     {
-
+        menu.AddItem("生成", bind(this.GenerateDir, this, full_path));
     }
 
     public fun OnTreeItemMenu(string full_path, AUIRightMenu menu)
     {
-        
+        menu.AddItem("生成", bind(this.GenerateFile, this, full_path));
+    }
+
+    // 生成对应的代码
+    public async fun GenerateDir(string full_path)
+    {
+        var file_map = ALittle.File_GetFileAttrByDir(full_path);
+        for (var file_path, attr in file_map)
+        {
+            var error = this.Generate(full_path);
+            if (error != null)
+            {
+                g_AUITool.ShowNotice("错误", error.error.." 文件路径"..error.full_path);
+                return;
+            }   
+        }
+        g_AUITool.ShowNotice("提示", "生成成功");
+    }
+
+    // 生成对应的代码
+    public async fun GenerateFile(string full_path)
+    {
+        var error = this.Generate(full_path);
+        if (error != null)
+        {
+            g_AUITool.ShowNotice("错误", error.error.." 文件路径"..error.full_path);
+            return;
+        }
+
+        g_AUITool.ShowNotice("提示", "生成成功");
+    }
+
+    // 生成目标语言
+    public await fun Generate(string full_path) : lua.ALittleScriptGenerateError
+    {
+        var query_id = this.Add(co);
+        lua.alittlescript.alittlescriptproject_generate(this._project, query_id, full_path);
+        return yield;
     }
 }

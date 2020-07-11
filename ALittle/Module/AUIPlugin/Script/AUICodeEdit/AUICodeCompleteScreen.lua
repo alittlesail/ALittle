@@ -58,9 +58,25 @@ function AUICodeCompleteScreen:ShowComplete(edit)
 	self._line_end = edit.cursor.line
 	self._char_end = edit.cursor.char
 	local text = edit:GetTargetText(self._complete.line_start, self._complete.char_start - 1, edit.cursor.line, edit.cursor.char)
-	if text == nil or text == "" or not self:Fliter(text) then
+	if text == nil or text == "" then
 		self:Hide()
 		return
+	end
+	if not self:Fliter(text) then
+		self:Hide()
+		self._edit = edit
+		if not self:ReInit(edit) then
+			return
+		end
+		self._line_end = edit.cursor.line
+		self._char_end = edit.cursor.char
+		text = edit:GetTargetText(self._complete.line_start, self._complete.char_start - 1, edit.cursor.line, edit.cursor.char)
+		if text == nil or text == "" then
+			return
+		end
+		if not self:Fliter(text) then
+			self:Hide()
+		end
 	end
 end
 AUICodeCompleteScreen.ShowComplete = Lua.CoWrap(AUICodeCompleteScreen.ShowComplete)
@@ -164,6 +180,7 @@ function AUICodeCompleteScreen:ReInit(edit)
 		self._screen.width = 200
 		self._screen:AddEventListener(___all_struct[348388800], self, self.HandleHideEvent)
 	end
+	self._screen:RemoveAllChild()
 	self._screen.x = x
 	self._screen.y = y
 	if self._item_list ~= nil then
@@ -176,6 +193,7 @@ function AUICodeCompleteScreen:ReInit(edit)
 	self._item_group = {}
 	self._item_list = {}
 	for index, info in ___ipairs(self._complete.complete_list) do
+		ALittle.Log("ReInit   aaaa", index)
 		local item_info
 		if self._item_pool_count > 0 then
 			item_info = self._item_pool[self._item_pool_count]
@@ -187,12 +205,16 @@ function AUICodeCompleteScreen:ReInit(edit)
 		end
 		item_info._item_button.group = self._item_group
 		item_info._item_title.text = info.display
-		item_info.upper = ALittle.String_Upper(info.display)
+		if info.insert == nil then
+			item_info.upper = ALittle.String_Upper(info.display)
+		else
+			item_info.upper = ALittle.String_Upper(info.insert)
+		end
 		item_info._tag_image.texture_name = edit.language:QueryCompleteIcon(info.tag)
 		item_info._item._user_data = item_info
 		item_info.complete = info
 		self._item_list[index] = item_info
-		local title_wdith = self._edit.ascii_width * ALittle.String_Len(info.display)
+		local title_wdith = edit.ascii_width * ALittle.String_Len(info.display)
 		if max_width < title_wdith then
 			max_width = title_wdith
 		end
@@ -249,6 +271,9 @@ function AUICodeCompleteScreen:Hide()
 	self:HideTip()
 	self._edit = nil
 	self._complete = nil
+	if self._screen ~= nil then
+		self._screen:RemoveAllChild()
+	end
 	A_LayerManager:HideFromRight(self._screen)
 end
 

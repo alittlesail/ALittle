@@ -138,8 +138,40 @@ function AUICodeALittleScriptProject.__getter:upper_ext()
 end
 
 function AUICodeALittleScriptProject:OnTreeMenu(full_path, menu)
+	menu:AddItem("生成", Lua.Bind(self.GenerateDir, self, full_path))
 end
 
 function AUICodeALittleScriptProject:OnTreeItemMenu(full_path, menu)
+	menu:AddItem("生成", Lua.Bind(self.GenerateFile, self, full_path))
+end
+
+function AUICodeALittleScriptProject:GenerateDir(full_path)
+	local file_map = ALittle.File_GetFileAttrByDir(full_path)
+	for file_path, attr in ___pairs(file_map) do
+		local error = self:Generate(full_path)
+		if error ~= nil then
+			g_AUITool:ShowNotice("错误", error.error .. " 文件路径" .. error.full_path)
+			return
+		end
+	end
+	g_AUITool:ShowNotice("提示", "生成成功")
+end
+AUICodeALittleScriptProject.GenerateDir = Lua.CoWrap(AUICodeALittleScriptProject.GenerateDir)
+
+function AUICodeALittleScriptProject:GenerateFile(full_path)
+	local error = self:Generate(full_path)
+	if error ~= nil then
+		g_AUITool:ShowNotice("错误", error.error .. " 文件路径" .. error.full_path)
+		return
+	end
+	g_AUITool:ShowNotice("提示", "生成成功")
+end
+AUICodeALittleScriptProject.GenerateFile = Lua.CoWrap(AUICodeALittleScriptProject.GenerateFile)
+
+function AUICodeALittleScriptProject:Generate(full_path)
+	local ___COROUTINE = coroutine.running()
+	local query_id = self:Add(___COROUTINE)
+	alittlescript.alittlescriptproject_generate(self._project, query_id, full_path)
+	return coroutine.yield()
 end
 

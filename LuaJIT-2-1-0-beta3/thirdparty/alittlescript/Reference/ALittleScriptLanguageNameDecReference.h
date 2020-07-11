@@ -13,7 +13,7 @@ public:
     static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptLanguageNameDecReference(element); }
     ABnfGuessError CheckError() override;
 
-    bool QueryCompletion(std::vector<ALanguageCompletionInfo>& list) override;
+    bool QueryCompletion(ABnfElementPtr select, std::vector<ALanguageCompletionInfo>& list) override;
 
     int QueryClassificationTag(bool& blur) override;
 };

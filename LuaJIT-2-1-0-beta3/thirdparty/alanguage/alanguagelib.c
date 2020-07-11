@@ -174,6 +174,21 @@ static int alanguagelib_abnffile_queryformateindent(lua_State* L)
     return 1;
 }
 
+static int alanguagelib_abnffile_queryautopair(lua_State* L)
+{
+    void** c = (void**)lua_touserdata(L, 1);
+    luaL_argcheck(L, c != 0, 1, "abnf file object is null");
+    int version = (int)luaL_checkinteger(L, 2);
+    int it_line = (int)luaL_checkinteger(L, 3);
+    int it_char = (int)luaL_checkinteger(L, 4);
+    const char* left_pair = luaL_checkstring(L, 5);
+    luaL_argcheck(L, left_pair != 0, 5, "left_pair is null");
+    const char* right_pair = luaL_checkstring(L, 6);
+    luaL_argcheck(L, right_pair != 0, 6, "right_pair is null");
+    lua_pushboolean(L, abnffile_queryautopair(*c, version, it_line - 1, it_char, left_pair, right_pair));
+    return 1;
+}
+
 /*
 ** Assumes the table is on top of the stack.
 */
@@ -208,6 +223,7 @@ static struct luaL_Reg alanguagelib[] = {
 
   {"abnffile_querydesiredindent", alanguagelib_abnffile_querydesiredindent},
   {"abnffile_queryformateindent", alanguagelib_abnffile_queryformateindent},
+  {"abnffile_queryautopair", alanguagelib_abnffile_queryautopair},
 
   {NULL, NULL}
 };

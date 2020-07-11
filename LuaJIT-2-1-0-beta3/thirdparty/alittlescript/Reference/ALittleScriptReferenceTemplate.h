@@ -26,6 +26,8 @@ public:
 
     virtual int QueryFormateIndent(int it_line, int it_char, ABnfElementPtr select) override;
 
+    virtual bool QueryKeyWord(ABnfElementPtr select, std::vector<ALanguageCompletionInfo>& list) override;
+
     ALittleScriptIndex* GetIndex();
 };
 

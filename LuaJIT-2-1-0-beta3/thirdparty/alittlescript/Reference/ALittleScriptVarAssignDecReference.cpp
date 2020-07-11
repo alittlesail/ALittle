@@ -95,7 +95,7 @@ ABnfGuessError ALittleScriptVarAssignDecReference::GuessTypes(std::vector<ABnfGu
     return nullptr;
 }
 
-bool ALittleScriptVarAssignDecReference::QueryCompletion(std::vector<ALanguageCompletionInfo>& list)
+bool ALittleScriptVarAssignDecReference::QueryCompletion(ABnfElementPtr select, std::vector<ALanguageCompletionInfo>& list)
 {
     auto element = m_element.lock();
     if (element == nullptr) return false;

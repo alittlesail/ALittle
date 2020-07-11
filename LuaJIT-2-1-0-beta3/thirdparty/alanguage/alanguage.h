@@ -20,5 +20,6 @@ void abnffile_queryerror(void* abnf_file, int query_id, int version, int force);
 
 int abnffile_querydesiredindent(void* abnf_file, int version, int it_line, int it_char);
 int abnffile_queryformateindent(void* abnf_file, int version, int it_line, int it_char);
+int abnffile_queryautopair(void* abnf_file, int version, int it_line, int it_char, const char* left_pair, const char* right_pair);
 
 #endif // _ALITTLE_ALANGUAGE_H_

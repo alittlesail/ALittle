@@ -139,7 +139,7 @@ ABnfElementPtr ALittleScriptClassNameDecReference::GotoDefinition()
 }
 
 //  ‰»Î÷«ƒ‹≤π»´
-bool ALittleScriptClassNameDecReference::QueryCompletion(std::vector<ALanguageCompletionInfo>& list)
+bool ALittleScriptClassNameDecReference::QueryCompletion(ABnfElementPtr select, std::vector<ALanguageCompletionInfo>& list)
 {
     auto element = m_element.lock();
     if (element == nullptr) return false;

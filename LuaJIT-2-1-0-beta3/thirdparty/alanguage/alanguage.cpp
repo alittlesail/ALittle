@@ -98,3 +98,8 @@ int abnffile_queryformateindent(void* abnf_file, int version, int it_line, int i
 {
 	return ((ABnfFile*)abnf_file)->QueryFormateIndent(version, it_line, it_char);
 }
+
+int abnffile_queryautopair(void* abnf_file, int version, int it_line, int it_char, const char* left_pair, const char* right_pair)
+{
+	return ((ABnfFile*)abnf_file)->QueryAutoPair(version, it_line, it_char, left_pair, right_pair) ? 1 : 0;
+}

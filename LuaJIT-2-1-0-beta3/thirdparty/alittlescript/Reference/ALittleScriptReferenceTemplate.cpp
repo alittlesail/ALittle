@@ -168,6 +168,15 @@ int ALittleScriptReference::QueryFormateIndent(int it_line, int it_char, ABnfEle
     return m_format_indent;
 }
 
+bool ALittleScriptReference::QueryKeyWord(ABnfElementPtr select, std::vector<ALanguageCompletionInfo>& list)
+{
+    auto& abnf = select->GetFile()->GetProject()->RefABnf();
+
+    for (auto& key : abnf.GetKeySet())
+        list.emplace_back(key, 0);
+    return false;
+}
+
 ALittleScriptIndex* ALittleScriptReference::GetIndex()
 {
     auto element = m_ref_element.lock();

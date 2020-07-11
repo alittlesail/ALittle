@@ -14,7 +14,7 @@ ABnfGuessError ALittleScriptLanguageNameDecReference::CheckError()
     return nullptr;
 }
 
-bool ALittleScriptLanguageNameDecReference::QueryCompletion(std::vector<ALanguageCompletionInfo>& list)
+bool ALittleScriptLanguageNameDecReference::QueryCompletion(ABnfElementPtr select, std::vector<ALanguageCompletionInfo>& list)
 {
     auto element = m_element.lock();
     if (element == nullptr) return false;

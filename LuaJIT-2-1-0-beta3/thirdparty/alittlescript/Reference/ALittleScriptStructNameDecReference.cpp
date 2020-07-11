@@ -78,7 +78,7 @@ ABnfElementPtr ALittleScriptStructNameDecReference::GotoDefinition()
     return nullptr;
 }
 
-bool ALittleScriptStructNameDecReference::QueryCompletion(std::vector<ALanguageCompletionInfo>& list)
+bool ALittleScriptStructNameDecReference::QueryCompletion(ABnfElementPtr select, std::vector<ALanguageCompletionInfo>& list)
 {
     auto element = m_element.lock();
     if (element == nullptr) return false;

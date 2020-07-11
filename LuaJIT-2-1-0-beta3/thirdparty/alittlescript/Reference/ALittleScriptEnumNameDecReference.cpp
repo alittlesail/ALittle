@@ -34,7 +34,7 @@ ABnfElementPtr ALittleScriptEnumNameDecReference::GotoDefinition()
     return nullptr;
 }
 
-bool ALittleScriptEnumNameDecReference::QueryCompletion(std::vector<ALanguageCompletionInfo>& list)
+bool ALittleScriptEnumNameDecReference::QueryCompletion(ABnfElementPtr select, std::vector<ALanguageCompletionInfo>& list)
 {
     auto element = m_element.lock();
     if (element == nullptr) return false;

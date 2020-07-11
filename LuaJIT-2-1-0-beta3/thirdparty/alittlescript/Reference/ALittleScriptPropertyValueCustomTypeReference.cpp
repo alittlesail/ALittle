@@ -447,7 +447,7 @@ ABnfGuessError ALittleScriptPropertyValueCustomTypeReference::CheckError()
     return nullptr;
 }
 
-bool ALittleScriptPropertyValueCustomTypeReference::QueryCompletion(std::vector<ALanguageCompletionInfo>& list)
+bool ALittleScriptPropertyValueCustomTypeReference::QueryCompletion(ABnfElementPtr select, std::vector<ALanguageCompletionInfo>& list)
 {
     auto element = m_element.lock();
     if (element == nullptr) return false;

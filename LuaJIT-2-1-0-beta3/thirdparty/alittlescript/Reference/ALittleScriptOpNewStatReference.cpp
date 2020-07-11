@@ -152,7 +152,7 @@ ABnfGuessError ALittleScriptOpNewStatReference::CheckError()
                             else
                                 break;
                         }
-                        return ABnfGuessError(element, u8"new的类的构造函数调用需要" + std::to_string(count) + u8"个参数,不能是:" + std::to_string(value_stat_list.size()) + "个");
+                        return ABnfGuessError(element, u8"new的类的构造函数调用需要" + std::to_string(count) + u8"个参数,不能是:" + std::to_string(value_stat_list.size()) + u8"个");
                     }
                 }
             }
@@ -180,7 +180,7 @@ ABnfGuessError ALittleScriptOpNewStatReference::CheckError()
                     if (has_param_tail)
                         break;
                     else
-                        return ABnfGuessError(element, u8"该构造函数调用需要" + std::to_string(param_guess_list.size()) + u8"个参数，而不是" + std::to_string(value_stat_list.size()) + "个");
+                        return ABnfGuessError(element, u8"该构造函数调用需要" + std::to_string(param_guess_list.size()) + u8"个参数，而不是" + std::to_string(value_stat_list.size()) + u8"个");
                 }
 
                 error = ALittleScriptOp::GuessTypeEqual(param_guess_list[i], value_stat, value_stat_guess, false, false);

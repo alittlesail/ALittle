@@ -19,14 +19,14 @@ ABnfElementPtr ALittleScriptIdReference::GotoDefinition()
     return parent->GetReference()->GotoDefinition();
 }
 
-bool ALittleScriptIdReference::QueryCompletion(std::vector<ALanguageCompletionInfo>& list)
+bool ALittleScriptIdReference::QueryCompletion(ABnfElementPtr select, std::vector<ALanguageCompletionInfo>& list)
 {
     auto element = m_element.lock();
     if (element == nullptr) return false;
 
     auto parent = element->GetParent();
     if (parent == nullptr) return false;
-    return parent->GetReference()->QueryCompletion(list);
+    return parent->GetReference()->QueryCompletion(select, list);
 }
 
 bool ALittleScriptIdReference::PeekHighlightWord()

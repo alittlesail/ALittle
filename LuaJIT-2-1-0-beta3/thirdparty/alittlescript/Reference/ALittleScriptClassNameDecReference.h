@@ -24,7 +24,7 @@ public:
     ABnfElementPtr GotoDefinition() override;
 
     // 输入智能补全
-    bool QueryCompletion(std::vector<ALanguageCompletionInfo>& list) override;
+    bool QueryCompletion(ABnfElementPtr select, std::vector<ALanguageCompletionInfo>& list) override;
 };
 
 #endif // _ALITTLE_ALITTLESCRIPTCLASSNAMEDECREFERENCE_H_

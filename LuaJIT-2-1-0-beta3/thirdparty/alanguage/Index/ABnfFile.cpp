@@ -202,7 +202,7 @@ bool ABnfFile::QueryComplete(int version, int it_line, int it_char
     if (node == nullptr) node = std::dynamic_pointer_cast<ABnfNodeElement>(element->GetParent());
     if (node == nullptr) return true;
 
-    node->GetReference()->QueryCompletion(info_list);
+    node->GetReference()->QueryCompletion(node, info_list);
     return true;
 }
 

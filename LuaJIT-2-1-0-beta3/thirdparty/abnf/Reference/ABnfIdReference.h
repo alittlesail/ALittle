@@ -13,7 +13,7 @@ public:
     // 快捷信息
     void QueryQuickInfo(std::string& info) override;
     // 输入提示
-    bool QueryCompletion(std::vector<ALanguageCompletionInfo>& list) override;
+    bool QueryCompletion(ABnfElementPtr select, std::vector<ALanguageCompletionInfo>& list) override;
     // 检查错误
     ABnfGuessError CheckError() override;
     // 可以拾取高亮

@@ -393,7 +393,7 @@ ABnfGuessError ALittleScriptPropertyValueMethodCallReference::CheckTemplateMap(s
 
     const auto& value_stat_list = element->GetValueStatList();
     if (pre_type_functor->param_list.size() < value_stat_list.size() && pre_type_functor->param_tail.lock() == nullptr)
-        return ABnfGuessError(element, u8"函数调用最多需要" + std::to_string(pre_type_functor->param_list.size()) + u8"个参数,不能是:" + std::to_string(value_stat_list.size()) + "个");
+        return ABnfGuessError(element, u8"函数调用最多需要" + std::to_string(pre_type_functor->param_list.size()) + u8"个参数,不能是:" + std::to_string(value_stat_list.size()) + u8"个");
 
     // 检查模板参数
     if (pre_type_functor->template_param_list.size() > 0)
@@ -409,7 +409,7 @@ ABnfGuessError ALittleScriptPropertyValueMethodCallReference::CheckTemplateMap(s
         {
             const auto& all_type_list = method_template->GetAllTypeList();
             if (all_type_list.size() > pre_type_functor->template_param_list.size())
-                return ABnfGuessError(element, u8"函数调用最多需要" + std::to_string(pre_type_functor->template_param_list.size()) + u8"个模板参数,不能是:" + std::to_string(all_type_list.size()) + "个");
+                return ABnfGuessError(element, u8"函数调用最多需要" + std::to_string(pre_type_functor->template_param_list.size()) + u8"个模板参数,不能是:" + std::to_string(all_type_list.size()) + u8"个");
 
             for (int i = 0; i < all_type_list.size(); ++i)
             {
@@ -521,7 +521,7 @@ ABnfGuessError ALittleScriptPropertyValueMethodCallReference::CheckError()
             if (pre_type_functor->param_tail.lock() != nullptr)
                 break;
             else
-                return ABnfGuessError(element, u8"该函数调用需要" + std::to_string(pre_type_functor->param_list.size()) + u8"个参数，而不是" + std::to_string(value_stat_list.size()) + "个");
+                return ABnfGuessError(element, u8"该函数调用需要" + std::to_string(pre_type_functor->param_list.size()) + u8"个参数，而不是" + std::to_string(value_stat_list.size()) + u8"个");
         }
 
         error = ALittleScriptOp::GuessTypeEqual(pre_type_functor->param_list[i].lock(), value_stat, guess, false, false);
@@ -546,7 +546,7 @@ ABnfGuessError ALittleScriptPropertyValueMethodCallReference::CheckError()
                     else
                         break;
                 }
-                return ABnfGuessError(element, u8"该函数调用至少需要" + std::to_string(count) + u8"个参数，而不是" + std::to_string(value_stat_list.size()) + "个");
+                return ABnfGuessError(element, u8"该函数调用至少需要" + std::to_string(count) + u8"个参数，而不是" + std::to_string(value_stat_list.size()) + u8"个");
             }
         }
     }

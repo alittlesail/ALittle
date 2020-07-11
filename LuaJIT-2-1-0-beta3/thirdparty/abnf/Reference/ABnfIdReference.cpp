@@ -30,7 +30,7 @@ void ABnfIdReference::QueryQuickInfo(std::string& info)
     info = ABnfFactory::Join(content_list, "\n");
 }
 
-bool ABnfIdReference::QueryCompletion(std::vector<ALanguageCompletionInfo>& list)
+bool ABnfIdReference::QueryCompletion(ABnfElementPtr select, std::vector<ALanguageCompletionInfo>& list)
 {
     auto element = m_element.lock();
     if (element == nullptr) return false;

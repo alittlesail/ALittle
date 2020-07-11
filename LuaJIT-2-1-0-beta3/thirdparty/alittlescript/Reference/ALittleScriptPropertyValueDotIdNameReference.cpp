@@ -677,7 +677,7 @@ ABnfGuessError ALittleScriptPropertyValueDotIdNameReference::CheckError()
     return nullptr;
 }
 
-bool ALittleScriptPropertyValueDotIdNameReference::QueryCompletion(std::vector<ALanguageCompletionInfo>& list)
+bool ALittleScriptPropertyValueDotIdNameReference::QueryCompletion(ABnfElementPtr select, std::vector<ALanguageCompletionInfo>& list)
 {
     auto element = m_element.lock();
     if (element == nullptr) return false;
@@ -685,7 +685,7 @@ bool ALittleScriptPropertyValueDotIdNameReference::QueryCompletion(std::vector<A
     auto parent = element->GetParent();
     if (parent == nullptr) return false;
 
-    return parent->GetReference()->QueryCompletion(list);
+    return parent->GetReference()->QueryCompletion(select, list);
 }
 
 ABnfElementPtr ALittleScriptPropertyValueDotIdNameReference::GotoDefinition()

@@ -35,7 +35,7 @@ ABnfGuessError ALittleScriptClassExtendsDecReference::GuessTypes(std::vector<ABn
     return class_name_dec->GuessTypes(guess_list);
 }
 
-bool ALittleScriptClassExtendsDecReference::QueryCompletion(std::vector<ALanguageCompletionInfo>& list)
+bool ALittleScriptClassExtendsDecReference::QueryCompletion(ABnfElementPtr select, std::vector<ALanguageCompletionInfo>& list)
 {
     auto element = m_element.lock();
     if (element == nullptr) return false;

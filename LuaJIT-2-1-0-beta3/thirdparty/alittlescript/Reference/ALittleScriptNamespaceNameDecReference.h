@@ -23,7 +23,7 @@ public:
 
     ABnfElementPtr GotoDefinition() override;
 
-    bool QueryCompletion(std::vector<ALanguageCompletionInfo>& list) override;
+    bool QueryCompletion(ABnfElementPtr select, std::vector<ALanguageCompletionInfo>& list) override;
 };
 
 #endif // _ALITTLE_ALITTLESCRIPTNAMESPACENAMEDECREFERENCE_H_

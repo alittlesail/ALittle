@@ -1505,14 +1505,14 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateReflectStructInfo(ABnfGuessP
             auto error = extends_dec->GetStructNameDec()->GuessType(extends_guess);
             if (error) return error;
             if (!(std::dynamic_pointer_cast<ALittleScriptGuessStruct>(extends_guess)))
-                return ABnfGuessError(nullptr, extends_guess->GetValue() + "不是结构体");
+                return ABnfGuessError(nullptr, extends_guess->GetValue() + u8"不是结构体");
             error = GenerateReflectStructInfo(std::dynamic_pointer_cast<ALittleScriptGuessStruct>(extends_guess));
             if (error) return error;
 
             StructReflectInfo* extends_info;
             auto it = m_reflect_map.find(extends_guess->GetValue());
             if (it == m_reflect_map.end())
-                return ABnfGuessError(nullptr, extends_guess->GetValue() + "反射信息生成失败");
+                return ABnfGuessError(nullptr, extends_guess->GetValue() + u8"反射信息生成失败");
             extends_info = &it->second;
             info.name_list = extends_info->name_list;
             info.type_list = extends_info->type_list;
@@ -1528,7 +1528,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateReflectStructInfo(ABnfGuessP
             auto error = var_dec->GuessType(var_guess);
             if (error) return error;
             auto name_dec = var_dec->GetStructVarNameDec();
-            if (name_dec == nullptr) return ABnfGuessError(nullptr, guess_struct->GetValue() + "没有定义变量名");
+            if (name_dec == nullptr) return ABnfGuessError(nullptr, guess_struct->GetValue() + u8"没有定义变量名");
             info.name_list.push_back("\"" + name_dec->GetElementText() + "\"");
             info.type_list.push_back("\"" + var_guess->GetValue() + "\"");
 
@@ -1538,9 +1538,9 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateReflectStructInfo(ABnfGuessP
         for (auto& option_dec : option_dec_list)
         {
             auto name = option_dec->GetStructOptionNameDec();
-            if (name == nullptr) return ABnfGuessError(nullptr, guess_struct->GetValue() + "option定义不完整");
+            if (name == nullptr) return ABnfGuessError(nullptr, guess_struct->GetValue() + u8"option定义不完整");
             auto value = option_dec->GetText();
-            if (value == nullptr) return ABnfGuessError(nullptr, guess_struct->GetValue() + "option定义不完整");
+            if (value == nullptr) return ABnfGuessError(nullptr, guess_struct->GetValue() + u8"option定义不完整");
             info.option_map[name->GetElementText()] = value->GetElementText();
         }
         std::vector<std::string> split_list;
@@ -2799,7 +2799,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateEnum(std::shared_ptr<ALittle
 {
     content = "";
     auto name_dec = root->GetEnumNameDec();
-    if (name_dec == nullptr) return ABnfGuessError(nullptr, root->GetElementText() + "没有定义枚举名");
+    if (name_dec == nullptr) return ABnfGuessError(nullptr, root->GetElementText() + u8"没有定义枚举名");
 
     content += pre_tab + name_dec->GetElementText() + " = {\n";
 
@@ -2816,7 +2816,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateEnum(std::shared_ptr<ALittle
         {
             std::string value = var_dec->GetNumber()->GetElementText();
             if (!ALittleScriptUtility::IsInt(var_dec->GetNumber()))
-                return ABnfGuessError(nullptr, var_dec->GetNumber()->GetElementText() + "对应的枚举值必须是整数");
+                return ABnfGuessError(nullptr, var_dec->GetNumber()->GetElementText() + u8"对应的枚举值必须是整数");
 
             if (value.find("0x") == 0)
             {
@@ -2960,7 +2960,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateClass(std::shared_ptr<ALittl
         {
             ++ctor_count;
             if (ctor_count > 1)
-                return ABnfGuessError(nullptr, u8"class " + class_name + " 最多只能有一个构造函数");
+                return ABnfGuessError(nullptr, u8"class " + class_name + u8" 最多只能有一个构造函数");
             //构建构造函数//////////////////////////////////////////////////////////////////////////////////////////
             std::string ctor_param_list;
 
@@ -2975,7 +2975,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateClass(std::shared_ptr<ALittl
                 {
                     auto param_name_dec = param_one_dec->GetMethodParamNameDec();
                     if (param_name_dec == nullptr)
-                        return ABnfGuessError(nullptr, u8"class " + class_name + " 的构造函数没有参数名");
+                        return ABnfGuessError(nullptr, u8"class " + class_name + u8" 的构造函数没有参数名");
                     param_name_list.push_back(param_name_dec->GetElementText());
                 }
             }
@@ -3022,13 +3022,13 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateClass(std::shared_ptr<ALittl
             auto class_getter_dec = class_element_dec->GetClassGetterDec();
             auto class_method_name_dec = class_getter_dec->GetMethodNameDec();
             if (class_method_name_dec == nullptr)
-                return ABnfGuessError(nullptr, u8"class " + class_name + " getter函数没有函数名");
+                return ABnfGuessError(nullptr, u8"class " + class_name + u8" getter函数没有函数名");
 
             content += pre_tab + "function " + class_name + ".__getter:" + class_method_name_dec->GetElementText() + "()\n";
 
             auto class_method_body_dec = class_getter_dec->GetMethodBodyDec();
             if (class_method_body_dec == nullptr)
-                return ABnfGuessError(nullptr, u8"class " + class_name + " getter函数没有函数体");
+                return ABnfGuessError(nullptr, u8"class " + class_name + u8" getter函数没有函数体");
             const auto& all_expr_list = class_method_body_dec->GetAllExprList();
             for (auto& all_expr : all_expr_list)
             {
@@ -3050,18 +3050,18 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateClass(std::shared_ptr<ALittl
             auto class_setter_dec = class_element_dec->GetClassSetterDec();
             auto class_method_name_dec = class_setter_dec->GetMethodNameDec();
             if (class_method_name_dec == nullptr)
-                return ABnfGuessError(nullptr, u8"class " + class_name + " setter函数没有函数名");
+                return ABnfGuessError(nullptr, u8"class " + class_name + u8" setter函数没有函数名");
             auto param_dec = class_setter_dec->GetMethodSetterParamDec();
             if (param_dec == nullptr)
-                return ABnfGuessError(nullptr, u8"class " + class_name + " setter函数必须要有一个参数");
+                return ABnfGuessError(nullptr, u8"class " + class_name + u8" setter函数必须要有一个参数");
 
             auto param_one_dec = param_dec->GetMethodParamOneDec();
             if (param_one_dec == nullptr)
-                return ABnfGuessError(nullptr, u8"class " + class_name + " setter函数必须要有一个参数");
+                return ABnfGuessError(nullptr, u8"class " + class_name + u8" setter函数必须要有一个参数");
 
             auto param_name_dec = param_one_dec->GetMethodParamNameDec();
             if (param_name_dec == nullptr)
-                return ABnfGuessError(nullptr, u8"class " + class_name + " 函数没有定义函数名");
+                return ABnfGuessError(nullptr, u8"class " + class_name + u8" 函数没有定义函数名");
 
             content += pre_tab + "function " + class_name + ".__setter:"
                 + class_method_name_dec->GetElementText() + "("
@@ -3069,7 +3069,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateClass(std::shared_ptr<ALittl
 
             auto class_method_body_dec = class_setter_dec->GetMethodBodyDec();
             if (class_method_body_dec == nullptr)
-                return ABnfGuessError(nullptr, u8"class " + class_name + " setter函数没有函数体");
+                return ABnfGuessError(nullptr, u8"class " + class_name + u8" setter函数没有函数体");
 
             const auto& all_expr_list = class_method_body_dec->GetAllExprList();
             for (auto& all_expr : all_expr_list)
@@ -3092,7 +3092,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateClass(std::shared_ptr<ALittl
             auto class_method_dec = class_element_dec->GetClassMethodDec();
             auto class_method_name_dec = class_method_dec->GetMethodNameDec();
             if (class_method_name_dec == nullptr)
-                return ABnfGuessError(nullptr, u8"class " + class_name + " 成员函数没有函数名");
+                return ABnfGuessError(nullptr, u8"class " + class_name + u8" 成员函数没有函数名");
 
             std::vector<std::string> param_name_list;
 
@@ -3128,7 +3128,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateClass(std::shared_ptr<ALittl
                     }
                     auto param_name_dec = param_one_dec->GetMethodParamNameDec();
                     if (param_name_dec == nullptr)
-                        return ABnfGuessError(nullptr, u8"class " + class_name + " 成员函数没有参数名");
+                        return ABnfGuessError(nullptr, u8"class " + class_name + u8" 成员函数没有参数名");
                     param_name_list.push_back(param_name_dec->GetElementText());
                 }
             }
@@ -3143,7 +3143,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateClass(std::shared_ptr<ALittl
 
             auto class_method_body_dec = class_method_dec->GetMethodBodyDec();
             if (class_method_body_dec == nullptr)
-                return ABnfGuessError(nullptr, u8"class " + class_name + " 成员函数没有函数体");
+                return ABnfGuessError(nullptr, u8"class " + class_name + u8" 成员函数没有函数体");
             const auto& all_expr_list = class_method_body_dec->GetAllExprList();
             for (auto& all_expr : all_expr_list)
             {
@@ -3174,7 +3174,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateClass(std::shared_ptr<ALittl
             auto class_static_dec = class_element_dec->GetClassStaticDec();
             auto class_method_name_dec = class_static_dec->GetMethodNameDec();
             if (class_method_name_dec == nullptr)
-                return ABnfGuessError(nullptr, u8"class " + class_name + " 静态函数没有函数名");
+                return ABnfGuessError(nullptr, u8"class " + class_name + u8" 静态函数没有函数名");
             std::vector<std::string> param_name_list;
 
             auto template_dec = class_static_dec->GetTemplateDec();
@@ -3208,7 +3208,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateClass(std::shared_ptr<ALittl
                     }
                     auto param_name_dec = param_one_dec->GetMethodParamNameDec();
                     if (param_name_dec == nullptr)
-                        return ABnfGuessError(nullptr, u8"class " + class_name + " 静态函数没有参数名");
+                        return ABnfGuessError(nullptr, u8"class " + class_name + u8" 静态函数没有参数名");
                     param_name_list.push_back(param_name_dec->GetElementText());
                 }
             }
@@ -3224,7 +3224,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateClass(std::shared_ptr<ALittl
 
             auto class_method_body_dec = class_static_dec->GetMethodBodyDec();
             if (class_method_body_dec == nullptr)
-                return ABnfGuessError(nullptr, u8"class " + class_name + " 静态函数没有函数体");
+                return ABnfGuessError(nullptr, u8"class " + class_name + u8" 静态函数没有函数体");
 
             const auto& all_expr_list = class_method_body_dec->GetAllExprList();
             for (auto& all_expr : all_expr_list)
@@ -3352,7 +3352,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateGlobalMethod(const std::vect
             }
             auto param_name_dec = param_one_dec->GetMethodParamNameDec();
             if (param_name_dec == nullptr)
-                return ABnfGuessError(nullptr, u8"全局函数" + method_name + "没有参数名");
+                return ABnfGuessError(nullptr, u8"全局函数" + method_name + u8"没有参数名");
             param_name_list.push_back(param_name_dec->GetElementText());
         }
     }
@@ -3377,7 +3377,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateGlobalMethod(const std::vect
 
     auto class_method_body_dec = root->GetMethodBodyDec();
     if (class_method_body_dec == nullptr)
-        return ABnfGuessError(nullptr, u8"全局函数 " + method_name + " 没有函数体");
+        return ABnfGuessError(nullptr, u8"全局函数 " + method_name + u8" 没有函数体");
 
     const auto& all_expr_list = class_method_body_dec->GetAllExprList();
     for (auto& all_expr : all_expr_list)
@@ -3409,16 +3409,16 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateGlobalMethod(const std::vect
     ALittleScriptUtility::GetCommandDetail(modifier, command_type, command_text);
     if (proto_type.size())
     {
-        if (param_dec == nullptr) return ABnfGuessError(nullptr, u8"带" + proto_type + "的全局函数，必须有两个参数");
+        if (param_dec == nullptr) return ABnfGuessError(nullptr, u8"带" + proto_type + u8"的全局函数，必须有两个参数");
         const auto& one_dec_list = param_dec->GetMethodParamOneDecList();
-        if (one_dec_list.size() != 2 || one_dec_list[1]->GetAllType() == nullptr) return ABnfGuessError(nullptr, u8"带" + proto_type + "的全局函数，必须有两个参数");
+        if (one_dec_list.size() != 2 || one_dec_list[1]->GetAllType() == nullptr) return ABnfGuessError(nullptr, u8"带" + proto_type + u8"的全局函数，必须有两个参数");
 
         ABnfGuessPtr guess_param;
         auto error = one_dec_list[1]->GetAllType()->GuessType(guess_param);
         if (error) return error;
 
         auto guess_param_struct = std::dynamic_pointer_cast<ALittleScriptGuessStruct>(guess_param);
-        if (!guess_param_struct) return ABnfGuessError(nullptr, u8"带" + proto_type + "的全局函数，第二个参数必须是struct");
+        if (!guess_param_struct) return ABnfGuessError(nullptr, u8"带" + proto_type + u8"的全局函数，第二个参数必须是struct");
 
         std::vector<std::shared_ptr<ALittleScriptAllTypeElement>> return_list;
         auto return_dec = root->GetMethodReturnDec();
@@ -3441,26 +3441,26 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateGlobalMethod(const std::vect
 
         if (proto_type == "Http")
         {
-            if (return_list.size() != 1) return ABnfGuessError(nullptr, u8"带" + proto_type + "的全局函数，有且仅有一个返回值");
+            if (return_list.size() != 1) return ABnfGuessError(nullptr, u8"带" + proto_type + u8"的全局函数，有且仅有一个返回值");
             content += pre_tab + m_alittle_gen_namespace_pre + "RegHttpCallback(\"" + guess_param_struct->GetValue() + "\", " + method_name + ")\n";
         }
         else if (proto_type == "HttpDownload")
         {
-            if (return_list.size() != 2) return ABnfGuessError(nullptr, u8"带" + proto_type + "的全局函数，有且仅有两个返回值");
+            if (return_list.size() != 2) return ABnfGuessError(nullptr, u8"带" + proto_type + u8"的全局函数，有且仅有两个返回值");
             content += pre_tab + m_alittle_gen_namespace_pre
                 + "RegHttpDownloadCallback(\""
                 + guess_param_struct->GetValue() + "\", " + method_name + ")\n";
         }
         else if (proto_type == "HttpUpload")
         {
-            if (return_list.size() != 0) return ABnfGuessError(nullptr, u8"带" + proto_type + "的全局函数，不能有返回值");
+            if (return_list.size() != 0) return ABnfGuessError(nullptr, u8"带" + proto_type + u8"的全局函数，不能有返回值");
             content += pre_tab + m_alittle_gen_namespace_pre
                 + "RegHttpFileCallback(\""
                 + guess_param_struct->GetValue() + "\", " + method_name + ")\n";
         }
         else if (proto_type == "Msg")
         {
-            if (return_list.size() > 1) return ABnfGuessError(nullptr, u8"带" + proto_type + "的全局函数，最多只有一个返回值");
+            if (return_list.size() > 1) return ABnfGuessError(nullptr, u8"带" + proto_type + u8"的全局函数，最多只有一个返回值");
             error = GenerateReflectStructInfo(guess_param_struct);
             if (error) return error;
 
@@ -3473,7 +3473,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateGlobalMethod(const std::vect
             else
             {
                 auto guess_return_struct = std::dynamic_pointer_cast<ALittleScriptGuessStruct>(guess_return);
-                if (!guess_return_struct) return ABnfGuessError(nullptr, u8"带" + proto_type + "的全局函数，返回值必须是struct");
+                if (!guess_return_struct) return ABnfGuessError(nullptr, u8"带" + proto_type + u8"的全局函数，返回值必须是struct");
 
                 content += pre_tab + m_alittle_gen_namespace_pre
                     + "RegMsgRpcCallback(" + std::to_string(ALittleScriptUtility::StructHash(guess_param_struct))

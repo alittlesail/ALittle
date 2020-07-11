@@ -65,7 +65,7 @@ ABnfElementPtr ALittleScriptNamespaceNameDecReference::GotoDefinition()
     return nullptr;
 }
 
-bool ALittleScriptNamespaceNameDecReference::QueryCompletion(std::vector<ALanguageCompletionInfo>& list)
+bool ALittleScriptNamespaceNameDecReference::QueryCompletion(ABnfElementPtr select, std::vector<ALanguageCompletionInfo>& list)
 {
     auto* index = GetIndex();
     if (index == nullptr) return false;

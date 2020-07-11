@@ -9,6 +9,7 @@
 #include "../Generate/ALittleScriptTemplatePairDecElement.h"
 #include "../Generate/ALittleScriptTemplateNameDecElement.h"
 #include "../Generate/ALittleScriptNamespaceNameDecElement.h"
+#include "../Generate/ALittleScriptCustomTypeDotIdElement.h"
 
 #include "../Index/ALittleScriptIndex.h"
 #include "../Index/ALittleScriptUtility.h"
@@ -279,12 +280,15 @@ ABnfElementPtr ALittleScriptCustomTypeCommonReference::GotoDefinition()
     return nullptr;
 }
 
-bool ALittleScriptCustomTypeCommonReference::QueryCompletion(std::vector<ALanguageCompletionInfo>& list)
+bool ALittleScriptCustomTypeCommonReference::QueryCompletion(ABnfElementPtr select, std::vector<ALanguageCompletionInfo>& list)
 {
     auto element = m_element.lock();
     if (element == nullptr) return false;
-
     auto* index = GetIndex();
+    if (index == nullptr) return false;
+
+    bool is_dot_it = std::dynamic_pointer_cast<ALittleScriptCustomTypeDotIdElement>(select) != nullptr;
+
     // 查找该命名域下的
     {
         std::vector<ABnfElementPtr> dec_list;
@@ -294,18 +298,33 @@ bool ALittleScriptCustomTypeCommonReference::QueryCompletion(std::vector<ALangua
         {
             ABnfGuessPtr guess;
             auto error = dec->GuessType(guess);
-            if (error)
+            if (is_dot_it)
             {
-                list.emplace_back(dec->GetElementText(), ALittleScriptIconType::CLASS);
+                if (error)
+                    list.emplace_back(dec->GetElementText(), "." + dec->GetElementText(), ALittleScriptIconType::CLASS);
+                else
+                {
+                    if (std::dynamic_pointer_cast<ALittleScriptGuessClass>(guess))
+                        list.emplace_back(dec->GetElementText(), "." + dec->GetElementText(), ALittleScriptIconType::CLASS);
+                    else if (std::dynamic_pointer_cast<ALittleScriptGuessStruct>(guess))
+                        list.emplace_back(dec->GetElementText(), "." + dec->GetElementText(), ALittleScriptIconType::STRUCT);
+                    else
+                        list.emplace_back(dec->GetElementText(), "." + dec->GetElementText(), ALittleScriptIconType::PROPERTY);
+                }
             }
             else
             {
-                if (std::dynamic_pointer_cast<ALittleScriptGuessClass>(guess))
+                if (error)
                     list.emplace_back(dec->GetElementText(), ALittleScriptIconType::CLASS);
-                else if (std::dynamic_pointer_cast<ALittleScriptGuessStruct>(guess))
-                    list.emplace_back(dec->GetElementText(), ALittleScriptIconType::STRUCT);
                 else
-                    list.emplace_back(dec->GetElementText(), ALittleScriptIconType::PROPERTY);
+                {
+                    if (std::dynamic_pointer_cast<ALittleScriptGuessClass>(guess))
+                        list.emplace_back(dec->GetElementText(), ALittleScriptIconType::CLASS);
+                    else if (std::dynamic_pointer_cast<ALittleScriptGuessStruct>(guess))
+                        list.emplace_back(dec->GetElementText(), ALittleScriptIconType::STRUCT);
+                    else
+                        list.emplace_back(dec->GetElementText(), ALittleScriptIconType::PROPERTY);
+                }
             }
         }
     }
@@ -316,7 +335,12 @@ bool ALittleScriptCustomTypeCommonReference::QueryCompletion(std::vector<ALangua
         index->FindALittleNameDecList(
             ABnfElementType::CLASS_NAME, element->GetFile(), m_namespace_name, u8"", true, dec_list);
         for (auto& dec : dec_list)
-            list.emplace_back(dec->GetElementText(), ALittleScriptIconType::CLASS);
+        {
+            if (is_dot_it)
+                list.emplace_back(dec->GetElementText(), "." + dec->GetElementText(), ALittleScriptIconType::CLASS);
+            else
+                list.emplace_back(dec->GetElementText(), ALittleScriptIconType::CLASS);
+        }   
     }
     // 查找类模板
     {
@@ -330,7 +354,11 @@ bool ALittleScriptCustomTypeCommonReference::QueryCompletion(std::vector<ALangua
             {
                 auto pair_dec = std::dynamic_pointer_cast<ALittleScriptTemplatePairDecElement>(dec);
                 auto pair_name_dec = pair_dec->GetTemplateNameDec();
-                if (pair_name_dec != nullptr)
+                if (pair_name_dec == nullptr) continue;
+
+                if (is_dot_it)
+                    list.emplace_back(pair_name_dec->GetElementText(), "." + pair_name_dec->GetElementText(), ALittleScriptIconType::TEMPLATE);
+                else
                     list.emplace_back(pair_name_dec->GetElementText(), ALittleScriptIconType::TEMPLATE);
             }
         }
@@ -344,7 +372,11 @@ bool ALittleScriptCustomTypeCommonReference::QueryCompletion(std::vector<ALangua
             for (auto& pair_dec : pair_dec_list)
             {
                 auto pair_name_dec = pair_dec->GetTemplateNameDec();
-                if (pair_name_dec != nullptr)
+                if (pair_name_dec == nullptr) continue;
+
+                if (is_dot_it)
+                    list.emplace_back(pair_name_dec->GetElementText(), "." + pair_name_dec->GetElementText(), ALittleScriptIconType::TEMPLATE);
+                else
                     list.emplace_back(pair_name_dec->GetElementText(), ALittleScriptIconType::TEMPLATE);
             }
         }
@@ -355,7 +387,12 @@ bool ALittleScriptCustomTypeCommonReference::QueryCompletion(std::vector<ALangua
         index->FindALittleNameDecList(
             ABnfElementType::STRUCT_NAME, element->GetFile(), m_namespace_name, u8"", true, dec_list);
         for (auto& dec : dec_list)
-            list.emplace_back(dec->GetElementText(), ALittleScriptIconType::STRUCT);
+        {
+            if (is_dot_it)
+                list.emplace_back(dec->GetElementText(), "." + dec->GetElementText(), ALittleScriptIconType::STRUCT);
+            else
+                list.emplace_back(dec->GetElementText(), ALittleScriptIconType::STRUCT);
+        }   
     }
     // 枚举名
     {
@@ -371,14 +408,26 @@ bool ALittleScriptCustomTypeCommonReference::QueryCompletion(std::vector<ALangua
         index->FindALittleNameDecList(
             ABnfElementType::GLOBAL_METHOD, element->GetFile(), m_namespace_name, u8"", true, dec_list);
         for (auto& dec : dec_list)
-            list.emplace_back(dec->GetElementText(), ALittleScriptIconType::GLOBAL_METHOD);
+        {
+            if (is_dot_it)
+                list.emplace_back(dec->GetElementText(), "." + dec->GetElementText(), ALittleScriptIconType::GLOBAL_METHOD);
+            else
+                list.emplace_back(dec->GetElementText(), ALittleScriptIconType::GLOBAL_METHOD);
+        }
+            
     }
     // 查找所有命名域
     {
         std::unordered_map<std::string, std::shared_ptr<ALittleScriptNamespaceNameDecElement>> dec_map;
         index->FindNamespaceNameDecList("", dec_map);
         for (auto& pair : dec_map)
-            list.emplace_back(pair.second->GetElementText(), ALittleScriptIconType::NAMESPACE);
+        {
+            if (is_dot_it)
+                list.emplace_back(pair.second->GetElementText(), "." + pair.second->GetElementText(), ALittleScriptIconType::NAMESPACE);
+            else
+                list.emplace_back(pair.second->GetElementText(), ALittleScriptIconType::NAMESPACE);
+        }
+            
     }
 
     return true;

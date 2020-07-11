@@ -13,7 +13,7 @@ public:
     static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptPropertyValueDotIdReference(element); }
     ABnfGuessError GuessTypes(std::vector<ABnfGuessPtr>& guess_list) override;
 
-    bool QueryCompletion(std::vector<ALanguageCompletionInfo>& list) override;
+    bool QueryCompletion(ABnfElementPtr select, std::vector<ALanguageCompletionInfo>& list) override;
 };
 
 #endif // _ALITTLE_ALITTLESCRIPTPROPERTYVALUEDOTIDREFERENCE_H_

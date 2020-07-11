@@ -46,6 +46,7 @@ public:
 
     // 输入智能补全
     virtual bool QueryCompletion(ABnfElementPtr select, std::vector<ALanguageCompletionInfo>& list) { return false; }
+    virtual bool QueryKeyWord(ABnfElementPtr select, std::vector<ALanguageCompletionInfo>& list) { return false; }
 
     // 配色
     virtual int QueryClassificationTag(bool& blur) { blur = false; return 0; }

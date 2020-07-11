@@ -1,11 +1,15 @@
 ﻿
 #include "ABnfFile.h"
+#include "ABnfProject.h"
 #include "../Model/ABnf.h"
 #include "../Model/ABnfElement.h"
 #include "../Model/ABnfNodeElement.h"
 #include "../Model/ABnfErrorElement.h"
 #include "../Model/ABnfReference.h"
+#include "../Model/ABnfRegexElement.h"
 #include "../Model/ALanguageHelperInfo.h"
+#include "../Model/ABnfRuleInfo.h"
+#include "../Model/ABnfRuleNodeInfo.h"
 
 ABnfFile::ABnfFile(ABnfProject* project, const std::string& module_path, const std::string& full_path, const char* text, size_t len, bool in_ui)
 {
@@ -203,6 +207,7 @@ bool ABnfFile::QueryComplete(int version, int it_line, int it_char
     if (node == nullptr) return true;
 
     node->GetReference()->QueryCompletion(node, info_list);
+    node->GetReference()->QueryKeyWord(node, info_list);
     return true;
 }
 
@@ -261,6 +266,80 @@ int ABnfFile::QueryFormateIndent(int version, int it_line, int it_char)
     if (node == nullptr) return 0;
 
     return node->GetReference()->QueryFormateIndent(it_line, it_char, element);
+}
+
+bool ABnfFile::QueryAutoPair(int version, int it_line, int it_char, const std::string& left_pair, const std::string& right_pair)
+{
+    AnalysisText(version);
+
+    if (m_root == nullptr) return "";
+
+    // 获取元素
+    auto element = m_root->GetException(it_line, it_char);
+    if (element == nullptr) return "";
+
+    // 如果是错误元素，那么就以目标元素来判定
+    if (element->IsError())
+    {
+        auto error_element = std::dynamic_pointer_cast<ABnfErrorElement>(element);
+        if (std::dynamic_pointer_cast<ABnfRegexElement>(error_element->GetTargetElement()))
+            return std::dynamic_pointer_cast<ABnfRegexElement>(error_element->GetTargetElement())->IsMatch(left_pair + right_pair);
+        return false;
+    }
+
+    // 如果是正则表达式，那么就直接匹配
+    if (std::dynamic_pointer_cast<ABnfRegexElement>(element))
+        return std::dynamic_pointer_cast<ABnfRegexElement>(element)->IsMatch(left_pair + right_pair);
+
+    // 获取类型
+    auto node = std::dynamic_pointer_cast<ABnfNodeElement>(element);
+    if (node == nullptr) node = std::dynamic_pointer_cast<ABnfNodeElement>(element->GetParent());
+    if (node == nullptr) return false;
+
+    // 查找规则 
+    auto rule = m_project->RefABnfUI().GetRule(node->GetNodeType());
+    if (rule == nullptr || rule->node == nullptr) return false;
+    for (auto& node_list : rule->node->node_list)
+    {
+        // 如果还有一个子规则，那么就跳过
+        if (node_list.size() <= 1) continue;
+
+        // 如果找到规则并且和left_pair一致，那么就找到left_pair对应的规则
+        int index = -1;
+        for (size_t i = 0; i < node_list.size(); ++i)
+        {
+            auto& node_token = node_list[i];
+            if (node_token->value.type == ABnfRuleTokenType::TT_NONE) continue;
+
+            if (node_token->value.type == ABnfRuleTokenType::TT_STRING)
+            {
+                if (node_token->value.value.size() == 1
+                    && node_token->value.value == left_pair)
+                {
+                    index = static_cast<int>(i);
+                    break;
+                }
+            }
+        }
+        // 如果没有找到就跳过当前规则组
+        if (index == -1) continue;
+        // 从后面往前找，找到与right_pair配对的子规则，如果有，那么就返回true
+        for (int i = static_cast<int>(node_list.size()) - 1; i >= index + 1; --i)
+        {
+            auto& node_token = node_list[i];
+            if (node_token->value.type == ABnfRuleTokenType::TT_NONE) continue;
+
+            if (node_token->value.type == ABnfRuleTokenType::TT_STRING)
+            {
+                if (node_token->value.value == right_pair)
+                {
+                    return true;
+                }
+            }
+        }
+    }
+
+    return false;
 }
 
 int ABnfFile::GetByteCountOfOneWord(unsigned char first_char)

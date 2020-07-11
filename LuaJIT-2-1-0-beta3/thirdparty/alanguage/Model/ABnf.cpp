@@ -73,6 +73,11 @@ ABnfRuleInfo* ABnf::GetRule(const std::string& name)
     return m_rule.FindRuleInfo(name);
 }
 
+const std::unordered_set<std::string>& ABnf::GetKeySet() const
+{
+    return m_rule.GetKeySet();
+}
+
 // ²éÑ¯¹Ø¼ü×Ö
 void ABnf::QueryKeyWordCompletion(const std::string& input, std::vector<ALanguageCompletionInfo>& list)
 {

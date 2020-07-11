@@ -86,6 +86,8 @@ public:
     int QueryDesiredIndent(int version, int it_line, int it_char);
     // 获取格式化缩进
     int QueryFormateIndent(int version, int it_line, int it_char);
+    // 查询自动匹配
+    bool QueryAutoPair(int version, int it_line, int it_char, const std::string& left_pair, const std::string& right_pair);
     // utf8字符切割
     static int GetByteCountOfOneWord(unsigned char first_char);
 

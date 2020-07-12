@@ -71,6 +71,12 @@ name_list = {"target","name"},
 type_list = {"ALittle.EventDispatcher","string"},
 option_map = {}
 })
+ALittle.RegStruct(2057209532, "AUIPlugin.AUICodeProjectGotoEvent", {
+name = "AUIPlugin.AUICodeProjectGotoEvent", ns_name = "AUIPlugin", rl_name = "AUICodeProjectGotoEvent", hash_code = 2057209532,
+name_list = {"target","file_path","line_start","char_start","line_end","char_end"},
+type_list = {"ALittle.EventDispatcher","string","int","int","int","int"},
+option_map = {}
+})
 
 assert(ALittle.EventDispatcher, " extends class:ALittle.EventDispatcher is nil")
 IDEProject = Lua.Class(ALittle.EventDispatcher, "ALittleIDE.IDEProject")
@@ -174,11 +180,16 @@ function IDEProject:OpenProject(name)
 	self._project.config = ALittle.CreateConfigSystem("Module/" .. name .. "/ALittleIDE.cfg")
 	self._project.ui = IDEUIManager(name, self._project.control)
 	self._project.code = AUIPlugin.AUICodeProject.CreateALittleScriptProject()
+	self._project.code:AddEventListener(___all_struct[2057209532], self, self.HandleCodeProjectGoToEvent)
 	g_IDEConfig:SetConfig("last_project", name)
 	local e = {}
 	e.name = name
 	self:DispatchEvent(___all_struct[-975432877], e)
 	return nil
+end
+
+function IDEProject:HandleCodeProjectGoToEvent(event)
+	g_IDECenter.center.code_list:OpenByFullPath(event.file_path, event.line_start, event.char_start, event.line_end, event.char_end)
 end
 
 function IDEProject:OpenLastProject()
@@ -197,6 +208,7 @@ function IDEProject:CloseProject()
 	e.name = self._project.name
 	self:DispatchEvent(___all_struct[-332308624], e)
 	if self._project.code ~= nil then
+		self._project.code:RemoveEventListener(___all_struct[2057209532], self, self.HandleCodeProjectGoToEvent)
 		self._project.code:Stop()
 	end
 	self._project = nil

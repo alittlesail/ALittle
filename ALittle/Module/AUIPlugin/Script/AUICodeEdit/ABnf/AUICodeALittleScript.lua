@@ -4,7 +4,14 @@ module("AUIPlugin", package.seeall)
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
+local ___all_struct = ALittle.GetAllStruct()
 
+ALittle.RegStruct(1715346212, "ALittle.Event", {
+name = "ALittle.Event", ns_name = "ALittle", rl_name = "Event", hash_code = 1715346212,
+name_list = {"target"},
+type_list = {"ALittle.EventDispatcher"},
+option_map = {}
+})
 
 local g_ALittleScriptColor = nil
 local g_ALittleScriptIcon = nil
@@ -187,9 +194,20 @@ end
 function AUICodeALittleScriptProject:GenerateDir(full_path)
 	local file_map = ALittle.File_GetFileAttrByDir(full_path)
 	for file_path, attr in ___pairs(file_map) do
-		local error = self:Generate(full_path)
+		local error = self:Generate(file_path)
 		if error ~= nil then
-			g_AUITool:ShowNotice("错误", error.error .. " 文件路径" .. error.full_path)
+			if AUIToolOption.YES == g_AUITool:DeleteNotice("错误", error.error .. "\n 文件路径" .. file_path .. "\n是否打开该文件?") then
+				local goto_event = {}
+				goto_event.file_path = error.full_path
+				if goto_event.file_path == nil then
+					goto_event.file_path = file_path
+				end
+				goto_event.line_start = error.line_start
+				goto_event.char_start = error.char_start
+				goto_event.line_end = error.line_end
+				goto_event.char_end = error.char_end
+				self:DispatchEvent(___all_struct[2057209532], goto_event)
+			end
 			return
 		end
 	end

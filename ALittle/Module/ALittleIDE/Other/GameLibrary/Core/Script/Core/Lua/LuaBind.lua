@@ -4,10 +4,10 @@ module("Lua", package.seeall)
 local ___pairs = pairs
 local ___ipairs = ipairs
 
-ALittle.RegStruct(1453939213, "Lua.FunctorMetatable", {
-name = "Lua.FunctorMetatable", ns_name = "Lua", rl_name = "FunctorMetatable", hash_code = 1453939213,
+ALittle.RegStruct(-2114130826, "Lua.CoFunctorMetatable", {
+name = "Lua.CoFunctorMetatable", ns_name = "Lua", rl_name = "CoFunctorMetatable", hash_code = -2114130826,
 name_list = {"__call","__tostring"},
-type_list = {"any","Functor<(Lua.FunctorObject):string>"},
+type_list = {"any","Functor<(Lua.CoFunctorObject):string>"},
 option_map = {}
 })
 ALittle.RegStruct(1817653851, "Lua.CoFunctorObject", {
@@ -16,10 +16,10 @@ name_list = {"_func"},
 type_list = {"Functor<(any):any>"},
 option_map = {}
 })
-ALittle.RegStruct(-2114130826, "Lua.CoFunctorMetatable", {
-name = "Lua.CoFunctorMetatable", ns_name = "Lua", rl_name = "CoFunctorMetatable", hash_code = -2114130826,
+ALittle.RegStruct(1453939213, "Lua.FunctorMetatable", {
+name = "Lua.FunctorMetatable", ns_name = "Lua", rl_name = "FunctorMetatable", hash_code = 1453939213,
 name_list = {"__call","__tostring"},
-type_list = {"any","Functor<(Lua.CoFunctorObject):string>"},
+type_list = {"any","Functor<(Lua.FunctorObject):string>"},
 option_map = {}
 })
 ALittle.RegStruct(-1456681653, "Lua.FunctorObject", {

@@ -5,16 +5,16 @@ local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
-ALittle.RegStruct(-297098024, "lua.protobuf_descriptor", {
-name = "lua.protobuf_descriptor", ns_name = "lua", rl_name = "protobuf_descriptor", hash_code = -297098024,
-name_list = {},
-type_list = {},
-option_map = {}
-})
 ALittle.RegStruct(1415684675, "lua.protobuf_enum_descriptor", {
 name = "lua.protobuf_enum_descriptor", ns_name = "lua", rl_name = "protobuf_enum_descriptor", hash_code = 1415684675,
 name_list = {},
 type_list = {},
+option_map = {}
+})
+ALittle.RegStruct(-1908889092, "Lua.lua_socket_schedule_enum_info", {
+name = "Lua.lua_socket_schedule_enum_info", ns_name = "Lua", rl_name = "lua_socket_schedule_enum_info", hash_code = -1908889092,
+name_list = {"descriptor","full_name","name"},
+type_list = {"lua.protobuf_enum_descriptor","string","string"},
 option_map = {}
 })
 ALittle.RegStruct(1628431371, "Lua.lua_socket_schedule_message_info", {
@@ -23,10 +23,10 @@ name_list = {"descriptor","full_name","name"},
 type_list = {"lua.protobuf_descriptor","string","string"},
 option_map = {}
 })
-ALittle.RegStruct(-1908889092, "Lua.lua_socket_schedule_enum_info", {
-name = "Lua.lua_socket_schedule_enum_info", ns_name = "Lua", rl_name = "lua_socket_schedule_enum_info", hash_code = -1908889092,
-name_list = {"descriptor","full_name","name"},
-type_list = {"lua.protobuf_enum_descriptor","string","string"},
+ALittle.RegStruct(-297098024, "lua.protobuf_descriptor", {
+name = "lua.protobuf_descriptor", ns_name = "lua", rl_name = "protobuf_descriptor", hash_code = -297098024,
+name_list = {},
+type_list = {},
 option_map = {}
 })
 

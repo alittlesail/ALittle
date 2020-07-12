@@ -6,16 +6,16 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = GetAllStruct()
 
-RegStruct(1517533145, "ALittle.DialogDragEvent", {
-name = "ALittle.DialogDragEvent", ns_name = "ALittle", rl_name = "DialogDragEvent", hash_code = 1517533145,
-name_list = {"target","delta_x","delta_y"},
-type_list = {"ALittle.DisplayObject","double","double"},
-option_map = {}
-})
 RegStruct(1971745271, "ALittle.DialogDragBeginEvent", {
 name = "ALittle.DialogDragBeginEvent", ns_name = "ALittle", rl_name = "DialogDragBeginEvent", hash_code = 1971745271,
 name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
+option_map = {}
+})
+RegStruct(1517533145, "ALittle.DialogDragEvent", {
+name = "ALittle.DialogDragEvent", ns_name = "ALittle", rl_name = "DialogDragEvent", hash_code = 1517533145,
+name_list = {"target","delta_x","delta_y"},
+type_list = {"ALittle.DisplayObject","double","double"},
 option_map = {}
 })
 RegStruct(-1482649531, "ALittle.DialogDragEndEvent", {

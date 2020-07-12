@@ -187,6 +187,8 @@ public class IDEProject : ALittle.EventDispatcher
 		this._project.ui = new IDEUIManager(name, this._project.control);
 		[Language(Lua)]
 		this._project.code = AUIPlugin.AUICodeProject.CreateALittleScriptProject();
+		[Language(Lua)]
+		this._project.code.AddEventListener(this, this.HandleCodeProjectGoToEvent);
 
 		// 标记上次打开的项目名
 		g_IDEConfig.SetConfig("last_project", name);
@@ -197,6 +199,12 @@ public class IDEProject : ALittle.EventDispatcher
 
 		return null;
 	}
+
+	// 处理codeproject发出来的事件
+	private fun HandleCodeProjectGoToEvent(AUIPlugin.AUICodeProjectGotoEvent event)
+	{	
+		g_IDECenter.center.code_list.OpenByFullPath(event.file_path, event.line_start, event.char_start, event.line_end, event.char_end);
+    }
 
 	// 打开上次的项目
 	public fun OpenLastProject()
@@ -218,7 +226,10 @@ public class IDEProject : ALittle.EventDispatcher
 		this.DispatchEvent(e);
 
 		if (this._project.code != null)
+		{
+			this._project.code.RemoveEventListener(this, this.HandleCodeProjectGoToEvent);
 			this._project.code.Stop();
+        }
 
 		this._project = null;
 		return null;

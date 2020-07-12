@@ -199,10 +199,21 @@ public class AUICodeALittleScriptProject : AUICodeProject
         var file_map = ALittle.File_GetFileAttrByDir(full_path);
         for (var file_path, attr in file_map)
         {
-            var error = this.Generate(full_path);
+            var error = this.Generate(file_path);
             if (error != null)
             {
-                g_AUITool.ShowNotice("错误", error.error.." 文件路径"..error.full_path);
+                if (AUIToolOption.YES == g_AUITool.DeleteNotice("错误", error.error.."\n 文件路径"..file_path.."\n是否打开该文件?"))
+                {
+                    var goto_event = new AUICodeProjectGotoEvent();
+                    goto_event.file_path = error.full_path;
+                    if (goto_event.file_path == null)
+                        goto_event.file_path = file_path;
+                    goto_event.line_start = error.line_start;
+                    goto_event.char_start = error.char_start;
+                    goto_event.line_end = error.line_end;
+                    goto_event.char_end = error.char_end;
+                    this.DispatchEvent(goto_event);
+                }
                 return;
             }   
         }

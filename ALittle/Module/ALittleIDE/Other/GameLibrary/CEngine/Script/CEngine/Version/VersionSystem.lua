@@ -5,16 +5,16 @@ local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
-RegStruct(1916591200, "ALittle.BigVersionInfo", {
-name = "ALittle.BigVersionInfo", ns_name = "ALittle", rl_name = "BigVersionInfo", hash_code = 1916591200,
-name_list = {"c_big_version","c_install_version","c_db_version"},
-type_list = {"string","string","string"},
-option_map = {}
-})
 RegStruct(2129851601, "ALittle.VersionInstallInfo", {
 name = "ALittle.VersionInstallInfo", ns_name = "ALittle", rl_name = "VersionInstallInfo", hash_code = 2129851601,
 name_list = {"c_file_path","c_file_size","start_size"},
 type_list = {"string","int","int"},
+option_map = {}
+})
+RegStruct(1916591200, "ALittle.BigVersionInfo", {
+name = "ALittle.BigVersionInfo", ns_name = "ALittle", rl_name = "BigVersionInfo", hash_code = 1916591200,
+name_list = {"c_big_version","c_install_version","c_db_version"},
+type_list = {"string","string","string"},
 option_map = {}
 })
 RegStruct(-1881042933, "ALittle.VersionLogInfo", {

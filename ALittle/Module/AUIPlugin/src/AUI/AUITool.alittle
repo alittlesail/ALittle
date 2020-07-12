@@ -27,6 +27,7 @@ public class AUITool
 	// 删除对话框
 	private ALittle.Dialog _delete_dialog;
 	private ALittle.TextArea _delete_content;
+	private double _delete_delta_height;
 
 	// 重命名输入框
 	private ALittle.ImageInput _rename_input;
@@ -203,12 +204,14 @@ public class AUITool
 		{
 			this._delete_dialog = g_Control.CreateControl{ALittle.Dialog}("ide_delete_dialog", this);
 			A_LayerManager.AddToModal(this._delete_dialog);
+			this._delete_delta_height = this._delete_dialog.height - this._delete_content.height;
 		}
 		// 显示提示框，设置标题和内容
 		this._delete_dialog.visible = true;
 		this._delete_dialog.MoveToTop();
 		this._delete_dialog.title = title;
 		this._delete_content.text = content;
+		this._delete_dialog.height = this._delete_delta_height + this._delete_content.real_height;
 		this._delete_dialog._user_data = co;
 		return yield;
 	}

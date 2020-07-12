@@ -1117,6 +1117,7 @@ public class AUICodeEdit : ALittle.ScrollScreen
     public fun OnShow()
     {
         this._cursor.Show();
+        this._edit_quad.DelayFocus();
 
         if (this._language != null) this._language.OnShow();
 

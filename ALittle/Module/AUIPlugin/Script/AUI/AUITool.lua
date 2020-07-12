@@ -130,11 +130,13 @@ function AUITool:DeleteNotice(title, content)
 	if self._delete_dialog == nil then
 		self._delete_dialog = g_Control:CreateControl("ide_delete_dialog", self)
 		A_LayerManager:AddToModal(self._delete_dialog)
+		self._delete_delta_height = self._delete_dialog.height - self._delete_content.height
 	end
 	self._delete_dialog.visible = true
 	self._delete_dialog:MoveToTop()
 	self._delete_dialog.title = title
 	self._delete_content.text = content
+	self._delete_dialog.height = self._delete_delta_height + self._delete_content.real_height
 	self._delete_dialog._user_data = ___COROUTINE
 	return coroutine.yield()
 end

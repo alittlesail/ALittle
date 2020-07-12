@@ -653,8 +653,9 @@ class UISystem
     public fun HandleMouseWheel(double x, double y) : bool
     {
         // 没有焦点控件，或者控件属于锁定状态，直接返回
-        if (this._mfc == null || this._sl)
+        if (this._mfc == null)
             return false;
+
         // 检查是否有现成的滚动焦点
         if (this._wfc == null)
         {

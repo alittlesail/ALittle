@@ -454,7 +454,7 @@ function UISystem:HandleKeyUp(mod, sym, scancode)
 end
 
 function UISystem:HandleMouseWheel(x, y)
-	if self._mfc == nil or self._sl then
+	if self._mfc == nil then
 		return false
 	end
 	if self._wfc == nil then

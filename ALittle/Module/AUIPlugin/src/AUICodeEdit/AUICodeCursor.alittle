@@ -218,11 +218,34 @@ public class AUICodeCursor : ALittle.Quad
     }
 
     // 向左移动一格
-    public fun OffsetLeft()
+    public fun OffsetLeft(bool ctrl)
     {
         if (this._it_char > 0)
         {
-            this.SetLineChar(this._it_line, this._it_char - 1, false);
+            if (!ctrl)
+            {
+                this.SetLineChar(this._it_line, this._it_char - 1, false);
+                return;   
+            }
+
+            // 检查当前字符是【字母，数字，下划线】或者【其他】
+            var line = this._edit.line_list[this._it_line];
+            if (line == null) return;
+            var cur_char = line.char_list[this._it_char];
+            var is_word = ALittle.String_IsWordChar(cur_char.char);
+            
+            var it_char = this._it_char - 1;
+            while (it_char > 0)
+            {
+                if (ALittle.String_IsWordChar(line.char_list[it_char].char) != is_word)
+                {
+                    this.SetLineChar(this._it_line, it_char, false);
+                    return;   
+                }   
+                -- it_char;
+            }
+
+            this.SetLineChar(this._it_line, 0, false);
             return;
         }
 
@@ -241,7 +264,7 @@ public class AUICodeCursor : ALittle.Quad
     }
 
     // 向右移动一格
-    public fun OffsetRight()
+    public fun OffsetRight(bool ctrl)
     {
         if (this._edit.line_count <= 0) return;
         var line = this._edit.line_list[this._it_line];
@@ -250,9 +273,31 @@ public class AUICodeCursor : ALittle.Quad
             -- count;
         if (this._it_char < count)
         {
-            this.SetLineChar(this._it_line, this._it_char + 1, false);
+            if (!ctrl)
+            {
+                this.SetLineChar(this._it_line, this._it_char + 1, false);
+                return;
+            }
+
+            // 检查当前字符是【字母，数字，下划线】或者【其他】
+            var cur_char = line.char_list[this._it_char + 1];
+            var is_word = ALittle.String_IsWordChar(cur_char.char);
+
+            var it_char = this._it_char + 1;
+            while (it_char <= count)
+            {
+                if (ALittle.String_IsWordChar(line.char_list[it_char + 1].char) != is_word)
+                {
+                    this.SetLineChar(this._it_line, it_char, false);
+                    return;   
+                }   
+                ++ it_char;
+            }
+
+            this.SetLineChar(this._it_line, count, false);
             return;
         }
+
         if (this._it_line >= this._edit.line_count)
         {
             return;

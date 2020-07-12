@@ -884,7 +884,7 @@ function AUICodeEdit:HandleKeyDown(event)
 			if self._select_cursor.line_start ~= nil then
 				self._select_cursor:Hide()
 			else
-				self._cursor:OffsetLeft()
+				self._cursor:OffsetLeft(ALittle.BitAnd(event.mod, 0x00c0) ~= 0)
 			end
 			self._cursor:RejustShowCursor()
 			g_AUICodeCompleteScreen:TryHide(self)
@@ -892,9 +892,9 @@ function AUICodeEdit:HandleKeyDown(event)
 			if self._select_cursor.line_start == nil then
 				self._select_cursor:StartLineChar(self._cursor.line, self._cursor.char)
 			end
-			self._cursor:OffsetLeft()
+			self._cursor:OffsetLeft(ALittle.BitAnd(event.mod, 0x00c0) ~= 0)
 			if self._cursor.line == self._select_cursor.line_start and self._cursor.char == self._select_cursor.char_start then
-				self._cursor:OffsetLeft()
+				self._cursor:OffsetLeft(ALittle.BitAnd(event.mod, 0x00c0) ~= 0)
 			end
 			self._select_cursor:UpdateLineChar(self._cursor.line, self._cursor.char)
 			g_AUICodeCompleteScreen:Hide()
@@ -953,7 +953,7 @@ function AUICodeEdit:HandleKeyDown(event)
 			if self._select_cursor.line_start ~= nil then
 				self._select_cursor:Hide()
 			else
-				self._cursor:OffsetRight()
+				self._cursor:OffsetRight(ALittle.BitAnd(event.mod, 0x00c0) ~= 0)
 			end
 			self._cursor:RejustShowCursor()
 			g_AUICodeCompleteScreen:TryHide(self)
@@ -961,9 +961,9 @@ function AUICodeEdit:HandleKeyDown(event)
 			if self._select_cursor.line_start == nil then
 				self._select_cursor:StartLineChar(self._cursor.line, self._cursor.char)
 			end
-			self._cursor:OffsetRight()
+			self._cursor:OffsetRight(ALittle.BitAnd(event.mod, 0x00c0) ~= 0)
 			if self._cursor.line == self._select_cursor.line_start and self._cursor.char == self._select_cursor.char_start then
-				self._cursor:OffsetRight()
+				self._cursor:OffsetRight(ALittle.BitAnd(event.mod, 0x00c0) ~= 0)
 			end
 			self._select_cursor:UpdateLineChar(self._cursor.line, self._cursor.char)
 			g_AUICodeCompleteScreen:Hide()

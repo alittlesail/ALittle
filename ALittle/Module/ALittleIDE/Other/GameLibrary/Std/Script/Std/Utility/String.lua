@@ -31,7 +31,7 @@ function String_GetWordCount(text)
 end
 
 function String_GetByteCount(text, word_count)
-	return utf8.bytecount(text, word_count)
+	return utf8.bytecount(text, 0, word_count)
 end
 
 StringGenerateID = Lua.Class(nil, "ALittle.StringGenerateID")
@@ -106,5 +106,26 @@ function String_IsPhoneNumber(number)
 		i = i+(1)
 	end
 	return true
+end
+
+function String_IsWordChar(char)
+	local len = String_Len(char)
+	if len ~= 1 then
+		return false
+	end
+	local value = String_Byte(char, 1)
+	if value >= 48 and value <= 57 then
+		return true
+	end
+	if value == 95 then
+		return true
+	end
+	if value >= 97 and value <= 122 then
+		return true
+	end
+	if value >= 64 and value <= 90 then
+		return true
+	end
+	return false
 end
 

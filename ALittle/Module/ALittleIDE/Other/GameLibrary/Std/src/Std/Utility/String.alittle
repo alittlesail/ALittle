@@ -58,7 +58,7 @@ public static String_GetWordCount(string text) : int
 public static String_GetByteCount(string text, int word_count) : int
 {
     [Language(Lua)]
-    return lua.utf8.bytecount(text, word_count);
+    return lua.utf8.bytecount(text, 0, word_count);
     
     [Language(JavaScript)]
     if (cast<javascript.String>(text).length < word_count)
@@ -157,4 +157,23 @@ public static String_IsPhoneNumber(string number) : bool
     }
 
     return true;
+}
+
+// 判断是不是单词的字符
+public static String_IsWordChar(string char) : bool
+{
+    var len = String_Len(char);
+    if (len != 1) return false;
+
+    var value = String_Byte(char, 1);
+    // 数字
+    if (value >= 48 && value <= 57) return true;
+    // 下划线
+    if (value == 95) return true;
+    // 小写字母
+    if (value >= 97 && value <= 122) return true;
+    // 大写字母
+    if (value >= 64 && value <= 90) return true;
+
+    return false;
 }

@@ -821,7 +821,7 @@ public class AUICodeEdit : ALittle.ScrollScreen
                 if (this._select_cursor.line_start != null)
                     this._select_cursor.Hide();
                 else
-                    this._cursor.OffsetLeft();
+                    this._cursor.OffsetLeft(ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) != 0);
                 this._cursor.RejustShowCursor();
                 g_AUICodeCompleteScreen.TryHide(this);
             }
@@ -829,9 +829,9 @@ public class AUICodeEdit : ALittle.ScrollScreen
             {
                 if (this._select_cursor.line_start == null)
                     this._select_cursor.StartLineChar(this._cursor.line, this._cursor.char);
-                this._cursor.OffsetLeft();
+                this._cursor.OffsetLeft(ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) != 0);
                 if (this._cursor.line == this._select_cursor.line_start && this._cursor.char == this._select_cursor.char_start)
-                    this._cursor.OffsetLeft();
+                    this._cursor.OffsetLeft(ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) != 0);
                 this._select_cursor.UpdateLineChar(this._cursor.line, this._cursor.char);
                 g_AUICodeCompleteScreen.Hide();
             }
@@ -903,7 +903,7 @@ public class AUICodeEdit : ALittle.ScrollScreen
                 if (this._select_cursor.line_start != null)
                     this._select_cursor.Hide();
                 else
-                    this._cursor.OffsetRight();
+                    this._cursor.OffsetRight(ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) != 0);
                 this._cursor.RejustShowCursor();
                 g_AUICodeCompleteScreen.TryHide(this);
             }
@@ -911,9 +911,9 @@ public class AUICodeEdit : ALittle.ScrollScreen
             {
                 if (this._select_cursor.line_start == null)
                     this._select_cursor.StartLineChar(this._cursor.line, this._cursor.char);
-                this._cursor.OffsetRight();
+                this._cursor.OffsetRight(ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) != 0);
                 if (this._cursor.line == this._select_cursor.line_start && this._cursor.char == this._select_cursor.char_start)
-                    this._cursor.OffsetRight();
+                    this._cursor.OffsetRight(ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) != 0);
                 this._select_cursor.UpdateLineChar(this._cursor.line, this._cursor.char);   
                 g_AUICodeCompleteScreen.Hide();
             }

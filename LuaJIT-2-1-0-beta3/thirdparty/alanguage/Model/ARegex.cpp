@@ -234,6 +234,9 @@ bool ARegex::CompileOption(const std::string& rule, size_t& offset, ARegexNode& 
 				else if (next_c == ']') child.value = ']';
 				else if (next_c == '(') child.value = '(';
 				else if (next_c == ')') child.value = ')';
+				else if (next_c == '*') child.value = '*';
+				else if (next_c == '+') child.value = '+';
+				else if (next_c == '?') child.value = '?';
 				else
 				{
 					error = "error char after %, offset:" + std::to_string(offset);

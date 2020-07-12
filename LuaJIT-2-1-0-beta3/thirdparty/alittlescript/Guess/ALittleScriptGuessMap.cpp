@@ -1,5 +1,6 @@
 
 #include "ALittleScriptGuessMap.h"
+#include "../Index/ALittleScriptFileClass.h"
 
 ALittleScriptGuessMap::ALittleScriptGuessMap(ABnfGuessPtr p_key_type, ABnfGuessPtr p_value_type, bool p_is_const)
 {
@@ -30,22 +31,25 @@ bool ALittleScriptGuessMap::NeedReplace() const
     return false;
 }
 
-ABnfGuessPtr ALittleScriptGuessMap::ReplaceTemplate(const std::unordered_map<std::string, ABnfGuessPtr>& fill_map)
+ABnfGuessPtr ALittleScriptGuessMap::ReplaceTemplate(ABnfFile* file, const std::unordered_map<std::string, ABnfGuessPtr>& fill_map)
 {
     auto key_type_e = key_type.lock();
     if (key_type_e == nullptr) return nullptr;
 
-    auto key_replace = key_type_e->ReplaceTemplate(fill_map);
+    auto key_replace = key_type_e->ReplaceTemplate(file, fill_map);
     if (key_replace == nullptr) return nullptr;
 
     auto value_type_e = value_type.lock();
     if (value_type_e == nullptr) return nullptr;
 
-    auto value_replace = value_type_e->ReplaceTemplate(fill_map);
+    auto value_replace = value_type_e->ReplaceTemplate(file, fill_map);
     if (value_replace == nullptr) return nullptr;
+    
+    if (key_type_e == key_replace && value_type_e == value_replace) return shared_from_this();
 
     auto guess = ABnfGuessPtr(new ALittleScriptGuessMap(key_replace, value_replace, is_const));
     guess->UpdateValue();
+    file->AddGuessType(guess);
     return guess;
 }
 

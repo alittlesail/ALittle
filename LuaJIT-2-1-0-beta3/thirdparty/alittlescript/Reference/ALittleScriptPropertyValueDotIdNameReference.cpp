@@ -156,7 +156,7 @@ ABnfGuessError ALittleScriptPropertyValueDotIdNameReference::ReplaceTemplate(ABn
             || std::dynamic_pointer_cast<ALittleScriptClassSetterDecElement>(guess_functor_element)
             || std::dynamic_pointer_cast<ALittleScriptClassGetterDecElement>(guess_functor_element))
         {
-            info->param_list.push_back(m_class_guess);
+            info->param_list.push_back(class_guess);
             info->param_nullable_list.push_back(false);
             if (info->param_name_list.size() > 0)
                 info->param_name_list[0] = class_guess->GetValue();

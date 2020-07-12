@@ -35,7 +35,7 @@ bool ALittleScriptGuessTemplate::NeedReplace() const
     return true;
 }
 
-ABnfGuessPtr ALittleScriptGuessTemplate::ReplaceTemplate(const std::unordered_map<std::string, ABnfGuessPtr>& fill_map)
+ABnfGuessPtr ALittleScriptGuessTemplate::ReplaceTemplate(ABnfFile* file, const std::unordered_map<std::string, ABnfGuessPtr>& fill_map)
 {
     auto it = fill_map.find(native_value);
     if (it != fill_map.end()) return it->second;

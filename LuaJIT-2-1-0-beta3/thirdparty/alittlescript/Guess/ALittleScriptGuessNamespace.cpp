@@ -23,7 +23,7 @@ bool ALittleScriptGuessNamespace::NeedReplace() const
     return false;
 }
 
-ABnfGuessPtr ALittleScriptGuessNamespace::ReplaceTemplate(const std::unordered_map<std::string, ABnfGuessPtr>& fill_map)
+ABnfGuessPtr ALittleScriptGuessNamespace::ReplaceTemplate(ABnfFile* file, const std::unordered_map<std::string, ABnfGuessPtr>& fill_map)
 {
     return shared_from_this();
 }

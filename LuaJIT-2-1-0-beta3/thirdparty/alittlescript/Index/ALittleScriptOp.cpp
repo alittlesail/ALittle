@@ -90,7 +90,7 @@ ABnfGuessError ALittleScriptOp::GuessTypeForOp8(ABnfElementPtr left_src, ABnfGue
     }
     else
     {
-        return ABnfGuessError(op_8_suffix, "未知的表达式");
+        return ABnfGuessError(op_8_suffix, u8"未知的表达式");
     }
 
     const auto& suffix_ee_list = op_8_suffix->GetOp8SuffixEeList();
@@ -128,7 +128,7 @@ ABnfGuessError ALittleScriptOp::GuessTypeForOp8(ABnfElementPtr left_src, ABnfGue
         }
         else
         {
-            return ABnfGuessError(suffix_ee, "未知的表达式");
+            return ABnfGuessError(suffix_ee, u8"未知的表达式");
         }
     }
 
@@ -159,7 +159,7 @@ ABnfGuessError ALittleScriptOp::GuessTypeForOp7(ABnfElementPtr left_src, ABnfGue
     }
     else
     {
-        return ABnfGuessError(op_7_suffix, "未知的表达式");
+        return ABnfGuessError(op_7_suffix, u8"未知的表达式");
     }
 
     const auto& suffix_ee_list = op_7_suffix->GetOp7SuffixEeList();
@@ -191,7 +191,7 @@ ABnfGuessError ALittleScriptOp::GuessTypeForOp7(ABnfElementPtr left_src, ABnfGue
         }
         else
         {
-            return ABnfGuessError(suffix_ee, "未知的表达式");
+            return ABnfGuessError(suffix_ee, u8"未知的表达式");
         }
     }
 
@@ -285,7 +285,7 @@ ABnfGuessError ALittleScriptOp::GuessTypeForOp6(ABnfElementPtr left_src, ABnfGue
     }
     else
     {
-        return ABnfGuessError(op_6_suffix, "未知的表达式");
+        return ABnfGuessError(op_6_suffix, u8"未知的表达式");
     }
 
     const auto& suffix_ee_list = op_6_suffix->GetOp6SuffixEeList();
@@ -311,7 +311,7 @@ ABnfGuessError ALittleScriptOp::GuessTypeForOp6(ABnfElementPtr left_src, ABnfGue
         }
         else
         {
-            return ABnfGuessError(suffix_ee, "未知的表达式");
+            return ABnfGuessError(suffix_ee, u8"未知的表达式");
         }
     }
     return GuessTypeForOp6Impl(op_string, left_src, left_guess_type, last_src, suffix_guess_type, op_6_suffix, guess);
@@ -359,7 +359,7 @@ ABnfGuessError ALittleScriptOp::GuessTypeForOp5(ABnfElementPtr left_src, ABnfGue
     }
     else
     {
-        return ABnfGuessError(op_5_suffix, "未知的表达式");
+        return ABnfGuessError(op_5_suffix, u8"未知的表达式");
     }
 
     const auto& suffix_ee_list = op_5_suffix->GetOp5SuffixEeList();
@@ -379,7 +379,7 @@ ABnfGuessError ALittleScriptOp::GuessTypeForOp5(ABnfElementPtr left_src, ABnfGue
         }
         else
         {
-            return ABnfGuessError(suffix_ee, "未知的表达式");
+            return ABnfGuessError(suffix_ee, u8"未知的表达式");
         }
     }
 
@@ -449,7 +449,7 @@ ABnfGuessError ALittleScriptOp::GuessTypeForOp4(ABnfElementPtr left_src, ABnfGue
     }
     else
     {
-        return ABnfGuessError(op_4_suffix, "未知的表达式");
+        return ABnfGuessError(op_4_suffix, u8"未知的表达式");
     }
 
     const auto& suffix_ee_list = op_4_suffix->GetOp4SuffixEeList();
@@ -463,7 +463,7 @@ ABnfGuessError ALittleScriptOp::GuessTypeForOp4(ABnfElementPtr left_src, ABnfGue
         }
         else
         {
-            return ABnfGuessError(suffix_ee, "未知的表达式");
+            return ABnfGuessError(suffix_ee, u8"未知的表达式");
         }
     }
 
@@ -494,7 +494,7 @@ ABnfGuessError ALittleScriptOp::GuessTypeForOp3(ABnfElementPtr left_src, ABnfGue
     }
     else
     {
-        return ABnfGuessError(op_3_suffix, "未知的表达式");
+        return ABnfGuessError(op_3_suffix, u8"未知的表达式");
     }
 
     if (std::dynamic_pointer_cast<ALittleScriptGuessInt>(left_guess_type))
@@ -628,7 +628,7 @@ ABnfGuessError ALittleScriptOp::GuessType(std::shared_ptr<ALittleScriptValueFact
         }
         else
         {
-            return ABnfGuessError(suffix_ex, "未知的表达式");
+            return ABnfGuessError(suffix_ex, u8"未知的表达式");
         }
     }
 
@@ -748,7 +748,7 @@ ABnfGuessError ALittleScriptOp::GuessType(std::shared_ptr<ALittleScriptOp2StatEl
         }
         else
         {
-            return ABnfGuessError(suffix_ex, "未知的表达式");
+            return ABnfGuessError(suffix_ex, u8"未知的表达式");
         }
     }
 
@@ -771,7 +771,7 @@ ABnfGuessError ALittleScriptOp::GuessTypeEqual(ABnfGuessPtr left_guess, ABnfElem
     if (assign_or_call)
     {
         if (left_guess->is_const && !right_guess->is_const)
-            return ABnfGuessError(right_src, "要求是" + left_guess->GetValue() + u8", 不能是:" + right_guess->GetValue());
+            return ABnfGuessError(right_src, u8"要求是" + left_guess->GetValue() + u8", 不能是:" + right_guess->GetValue());
     }
     else
     {
@@ -779,7 +779,7 @@ ABnfGuessError ALittleScriptOp::GuessTypeEqual(ABnfGuessPtr left_guess, ABnfElem
         if (!std::dynamic_pointer_cast<ALittleScriptGuessPrimitive>(left_guess) || left_guess->GetValueWithoutConst() == "any")
         {
             if (!left_guess->is_const && right_guess->is_const)
-                return ABnfGuessError(right_src, "要求是" + left_guess->GetValue() + u8", 不能是:" + right_guess->GetValue());
+                return ABnfGuessError(right_src, u8"要求是" + left_guess->GetValue() + u8", 不能是:" + right_guess->GetValue());
         }
     }
 
@@ -792,15 +792,15 @@ ABnfGuessError ALittleScriptOp::GuessTypeEqual(ABnfGuessPtr left_guess, ABnfElem
 
     // 基本变量类型检查
     if (std::dynamic_pointer_cast<ALittleScriptGuessBool>(left_guess))
-        return ABnfGuessError(right_src, "要求是bool,不能是:" + right_guess->GetValue());
+        return ABnfGuessError(right_src, u8"要求是bool,不能是:" + right_guess->GetValue());
 
     if (std::dynamic_pointer_cast<ALittleScriptGuessInt>(left_guess))
     {
         if (std::dynamic_pointer_cast<ALittleScriptGuessLong>(right_guess))
-            return ABnfGuessError(right_src, "long赋值给int，需要使用cast<int>()做强制类型转换");
+            return ABnfGuessError(right_src, u8"long赋值给int，需要使用cast<int>()做强制类型转换");
         if (std::dynamic_pointer_cast<ALittleScriptGuessDouble>(right_guess))
             return ABnfGuessError(right_src, "double赋值给int，需要使用cast<int>()做强制类型转换");
-        return ABnfGuessError(right_src, "要求是int, 不能是:" + right_guess->GetValue());
+        return ABnfGuessError(right_src, u8"要求是int, 不能是:" + right_guess->GetValue());
     }
 
     if (std::dynamic_pointer_cast<ALittleScriptGuessLong>(left_guess))
@@ -808,45 +808,45 @@ ABnfGuessError ALittleScriptOp::GuessTypeEqual(ABnfGuessPtr left_guess, ABnfElem
         if (std::dynamic_pointer_cast<ALittleScriptGuessInt>(right_guess)) return nullptr;
 
         if (std::dynamic_pointer_cast<ALittleScriptGuessDouble>(right_guess))
-            return ABnfGuessError(right_src, "double赋值给long，需要使用cast<long>()做强制类型转换");
-        return ABnfGuessError(right_src, "要求是long, 不能是:" + right_guess->GetValue());
+            return ABnfGuessError(right_src, u8"double赋值给long，需要使用cast<long>()做强制类型转换");
+        return ABnfGuessError(right_src, u8"要求是long, 不能是:" + right_guess->GetValue());
     }
 
     if (std::dynamic_pointer_cast<ALittleScriptGuessDouble>(left_guess))
     {
         if (std::dynamic_pointer_cast<ALittleScriptGuessInt>(right_guess) || std::dynamic_pointer_cast<ALittleScriptGuessLong>(right_guess)) return nullptr;
-        return ABnfGuessError(right_src, "要求是double, 不能是:" + right_guess->GetValue());
+        return ABnfGuessError(right_src, u8"要求是double, 不能是:" + right_guess->GetValue());
     }
 
     if (std::dynamic_pointer_cast<ALittleScriptGuessString>(left_guess))
-        return ABnfGuessError(right_src, "要求是string,不能是:" + right_guess->GetValue());
+        return ABnfGuessError(right_src, u8"要求是string,不能是:" + right_guess->GetValue());
 
     if (std::dynamic_pointer_cast<ALittleScriptGuessMap>(left_guess))
     {
         if (!std::dynamic_pointer_cast<ALittleScriptGuessMap>(right_guess))
-            return ABnfGuessError(right_src, "要求是" + left_guess->GetValue() + u8",不能是:" + right_guess->GetValue());
+            return ABnfGuessError(right_src, u8"要求是" + left_guess->GetValue() + u8",不能是:" + right_guess->GetValue());
 
         auto error = GuessTypeEqual(std::dynamic_pointer_cast<ALittleScriptGuessMap>(left_guess)->key_type.lock(), right_src, std::dynamic_pointer_cast<ALittleScriptGuessMap>(right_guess)->key_type.lock(), assign_or_call, is_return);
-        if (error) return ABnfGuessError(right_src, "要求是" + left_guess->GetValue() + u8",不能是:" + right_guess->GetValue());
+        if (error) return ABnfGuessError(right_src, u8"要求是" + left_guess->GetValue() + u8",不能是:" + right_guess->GetValue());
         error = GuessTypeEqual(std::dynamic_pointer_cast<ALittleScriptGuessMap>(left_guess)->value_type.lock(), right_src, std::dynamic_pointer_cast<ALittleScriptGuessMap>(right_guess)->value_type.lock(), assign_or_call, is_return);
-        if (error) return ABnfGuessError(right_src, "要求是" + left_guess->GetValue() + u8",不能是:" + right_guess->GetValue());
+        if (error) return ABnfGuessError(right_src, u8"要求是" + left_guess->GetValue() + u8",不能是:" + right_guess->GetValue());
         return nullptr;
     }
 
     if (std::dynamic_pointer_cast<ALittleScriptGuessList>(left_guess))
     {
         if (!std::dynamic_pointer_cast<ALittleScriptGuessList>(right_guess))
-            return ABnfGuessError(right_src, "要求是" + left_guess->GetValue() + u8",不能是:" + right_guess->GetValue());
+            return ABnfGuessError(right_src, u8"要求是" + left_guess->GetValue() + u8",不能是:" + right_guess->GetValue());
 
         auto error = GuessTypeEqual(std::dynamic_pointer_cast<ALittleScriptGuessList>(left_guess)->sub_type.lock(), right_src, std::dynamic_pointer_cast<ALittleScriptGuessList>(right_guess)->sub_type.lock(), assign_or_call, is_return);
-        if (error) return ABnfGuessError(right_src, "要求是" + left_guess->GetValue() + u8",不能是:" + right_guess->GetValue());
+        if (error) return ABnfGuessError(right_src, u8"要求是" + left_guess->GetValue() + u8",不能是:" + right_guess->GetValue());
         return nullptr;
     }
 
     if (std::dynamic_pointer_cast<ALittleScriptGuessFunctor>(left_guess))
     {
         if (!std::dynamic_pointer_cast<ALittleScriptGuessFunctor>(right_guess))
-            return ABnfGuessError(right_src, "要求是" + left_guess->GetValue() + u8",不能是:" + right_guess->GetValue());
+            return ABnfGuessError(right_src, u8"要求是" + left_guess->GetValue() + u8",不能是:" + right_guess->GetValue());
 
         auto left_guess_functor = std::dynamic_pointer_cast<ALittleScriptGuessFunctor>(left_guess);
         auto right_guess_functor = std::dynamic_pointer_cast<ALittleScriptGuessFunctor>(right_guess);
@@ -865,7 +865,7 @@ ABnfGuessError ALittleScriptOp::GuessTypeEqual(ABnfGuessPtr left_guess, ABnfElem
             || left_guess_functor->return_tail.lock() != nullptr && right_guess_functor->return_tail.lock() == nullptr
             )
         {
-            return ABnfGuessError(right_src, "要求是" + left_guess->GetValue() + u8",不能是:" + right_guess->GetValue());
+            return ABnfGuessError(right_src, u8"要求是" + left_guess->GetValue() + u8",不能是:" + right_guess->GetValue());
         }
 
         for (int i = 0; i < left_guess_functor->template_param_list.size(); ++i)
@@ -883,7 +883,7 @@ ABnfGuessError ALittleScriptOp::GuessTypeEqual(ABnfGuessPtr left_guess, ABnfElem
         for (int i = 0; i < left_guess_functor->param_nullable_list.size(); ++i)
         {
             if (left_guess_functor->param_nullable_list[i] != right_guess_functor->param_nullable_list[i])
-                return ABnfGuessError(right_src, "要求是" + left_guess->GetValue() + u8",不能是:" + right_guess->GetValue());
+                return ABnfGuessError(right_src, u8"要求是" + left_guess->GetValue() + u8",不能是:" + right_guess->GetValue());
         }
 
         for (int i = 0; i < left_guess_functor->return_list.size(); ++i)
@@ -904,7 +904,7 @@ ABnfGuessError ALittleScriptOp::GuessTypeEqual(ABnfGuessPtr left_guess, ABnfElem
         }
 
         if (!std::dynamic_pointer_cast<ALittleScriptGuessClass>(right_guess))
-            return ABnfGuessError(right_src, "要求是" + left_guess->GetValue() + u8",不能是:" + right_guess->GetValue());
+            return ABnfGuessError(right_src, u8"要求是" + left_guess->GetValue() + u8",不能是:" + right_guess->GetValue());
 
         if (left_guess->GetValueWithoutConst() == right_guess->GetValueWithoutConst()) return nullptr;
 
@@ -913,7 +913,7 @@ ABnfGuessError ALittleScriptOp::GuessTypeEqual(ABnfGuessPtr left_guess, ABnfElem
         if (error) return error;
         if (result) return nullptr;
 
-        return ABnfGuessError(right_src, "要求是" + left_guess->GetValue() + u8",不能是:" + right_guess->GetValue());
+        return ABnfGuessError(right_src, u8"要求是" + left_guess->GetValue() + u8",不能是:" + right_guess->GetValue());
     }
 
     if (std::dynamic_pointer_cast<ALittleScriptGuessStruct>(left_guess))
@@ -927,7 +927,7 @@ ABnfGuessError ALittleScriptOp::GuessTypeEqual(ABnfGuessPtr left_guess, ABnfElem
 
         if (!(std::dynamic_pointer_cast<ALittleScriptGuessStruct>(right_guess)))
         {
-            return ABnfGuessError(right_src, "要求是" + left_guess->GetValue() + u8",不能是:" + right_guess->GetValue());
+            return ABnfGuessError(right_src, u8"要求是" + left_guess->GetValue() + u8",不能是:" + right_guess->GetValue());
         }
 
         if (left_guess->GetValueWithoutConst() == right_guess->GetValueWithoutConst()) return nullptr;
@@ -937,7 +937,7 @@ ABnfGuessError ALittleScriptOp::GuessTypeEqual(ABnfGuessPtr left_guess, ABnfElem
         if (error) return error;
         if (result) return nullptr;
 
-        return ABnfGuessError(right_src, "要求是" + left_guess->GetValue() + u8",不能是:" + right_guess->GetValue());
+        return ABnfGuessError(right_src, u8"要求是" + left_guess->GetValue() + u8",不能是:" + right_guess->GetValue());
     }
 
     if (std::dynamic_pointer_cast<ALittleScriptGuessTemplate>(left_guess))
@@ -961,7 +961,7 @@ ABnfGuessError ALittleScriptOp::GuessTypeEqual(ABnfGuessPtr left_guess, ABnfElem
                 if (std::dynamic_pointer_cast<ALittleScriptGuessClass>(right_guess_template->template_extends.lock()) || right_guess_template->is_class)
                     return nullptr;
             }
-            return ABnfGuessError(right_src, "要求是" + left_guess->GetValue() + u8",不能是:" + right_guess->GetValue());
+            return ABnfGuessError(right_src, u8"要求是" + left_guess->GetValue() + u8",不能是:" + right_guess->GetValue());
         }
         else if (left_guess_template->is_struct)
         {
@@ -975,7 +975,7 @@ ABnfGuessError ALittleScriptOp::GuessTypeEqual(ABnfGuessPtr left_guess, ABnfElem
                 if (std::dynamic_pointer_cast<ALittleScriptGuessStruct>(right_guess_template->template_extends.lock()) || right_guess_template->is_struct)
                     return nullptr;
             }
-            return ABnfGuessError(right_src, "要求是" + left_guess->GetValue() + u8",不能是:" + right_guess->GetValue());
+            return ABnfGuessError(right_src, u8"要求是" + left_guess->GetValue() + u8",不能是:" + right_guess->GetValue());
         }
         else
         {
@@ -988,11 +988,11 @@ ABnfGuessError ALittleScriptOp::GuessTypeEqual(ABnfGuessPtr left_guess, ABnfElem
                 if (left_guess->GetValueWithoutConst() == right_guess->GetValue())
                     return nullptr;
             }
-            return ABnfGuessError(right_src, "要求是" + left_guess->GetValue() + u8",不能是:" + right_guess->GetValue());
+            return ABnfGuessError(right_src, u8"要求是" + left_guess->GetValue() + u8",不能是:" + right_guess->GetValue());
         }
     }
 
-    return ABnfGuessError(right_src, "要求是" + left_guess->GetValue() + u8",不能是:" + right_guess->GetValue());
+    return ABnfGuessError(right_src, u8"要求是" + left_guess->GetValue() + u8",不能是:" + right_guess->GetValue());
 }
 
 ABnfGuessError ALittleScriptOp::GuessType(std::shared_ptr<ALittleScriptOp2ValueElement> op_2_value, ABnfGuessPtr& guess)
@@ -1001,7 +1001,7 @@ ABnfGuessError ALittleScriptOp::GuessType(std::shared_ptr<ALittleScriptOp2ValueE
 
     auto value_factor_stat = op_2_value->GetValueFactorStat();
     if (value_factor_stat == nullptr)
-        return ABnfGuessError(value_factor_stat, "单目运算没有目标表达式");
+        return ABnfGuessError(value_factor_stat, u8"单目运算没有目标表达式");
 
     ABnfGuessPtr guess_info;
     auto error = value_factor_stat->GuessType(guess_info);
@@ -1012,17 +1012,17 @@ ABnfGuessError ALittleScriptOp::GuessType(std::shared_ptr<ALittleScriptOp2ValueE
     if (op_2 == "!")
     {
         if (!std::dynamic_pointer_cast<ALittleScriptGuessBool>(guess_info))
-            return ABnfGuessError(value_factor_stat, "!运算符右边必须是bool类型.不能是:" + guess_info->GetValue());
+            return ABnfGuessError(value_factor_stat, u8"!运算符右边必须是bool类型.不能是:" + guess_info->GetValue());
         // guess_type必须是数字
     }
     else if (op_2 == "-")
     {
         if (!std::dynamic_pointer_cast<ALittleScriptGuessInt>(guess_info) && !std::dynamic_pointer_cast<ALittleScriptGuessLong>(guess_info) && !std::dynamic_pointer_cast<ALittleScriptGuessDouble>(guess_info))
-            return ABnfGuessError(value_factor_stat, "-运算符右边必须是int,double类型.不能是:" + guess_info->GetValue());
+            return ABnfGuessError(value_factor_stat, u8"-运算符右边必须是int,double类型.不能是:" + guess_info->GetValue());
     }
     else
     {
-        return ABnfGuessError(op_2_value->GetOp2(), "未知的运算符:" + op_2);
+        return ABnfGuessError(op_2_value->GetOp2(), u8"未知的运算符:" + op_2);
     }
 
     guess = guess_info;
@@ -1076,7 +1076,7 @@ ABnfGuessError ALittleScriptOp::GuessType(std::shared_ptr<ALittleScriptValueFact
         }
         else
         {
-            return ABnfGuessError(suffix_ex, "未知的表达式");
+            return ABnfGuessError(suffix_ex, u8"未知的表达式");
         }
     }
 
@@ -1125,7 +1125,7 @@ ABnfGuessError ALittleScriptOp::GuessType(std::shared_ptr<ALittleScriptValueFact
         }
         else
         {
-            return ABnfGuessError(suffix_ex, "未知的表达式");
+            return ABnfGuessError(suffix_ex, u8"未知的表达式");
         }
     }
 
@@ -1168,7 +1168,7 @@ ABnfGuessError ALittleScriptOp::GuessType(std::shared_ptr<ALittleScriptValueFact
         }
         else
         {
-            return ABnfGuessError(suffix_ex, "未知的表达式");
+            return ABnfGuessError(suffix_ex, u8"未知的表达式");
         }
     }
 
@@ -1205,7 +1205,7 @@ ABnfGuessError ALittleScriptOp::GuessType(std::shared_ptr<ALittleScriptValueFact
         }
         else
         {
-            return ABnfGuessError(suffix_ex, "未知的表达式");
+            return ABnfGuessError(suffix_ex, u8"未知的表达式");
         }
     }
 
@@ -1237,7 +1237,7 @@ ABnfGuessError ALittleScriptOp::GuessType(std::shared_ptr<ALittleScriptValueFact
         }
         else
         {
-            return ABnfGuessError(suffix_ex, "未知的表达式");
+            return ABnfGuessError(suffix_ex, u8"未知的表达式");
         }
     }
 

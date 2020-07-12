@@ -1,5 +1,6 @@
 
 #include "ALittleScriptGuessList.h"
+#include "../Index/ALittleScriptFileClass.h"
 
 ALittleScriptGuessList::ALittleScriptGuessList(ABnfGuessPtr p_sub_type, bool p_is_const, bool p_is_native)
 {
@@ -22,14 +23,17 @@ bool ALittleScriptGuessList::NeedReplace() const
     return sub_type_e->NeedReplace();
 }
 
-ABnfGuessPtr ALittleScriptGuessList::ReplaceTemplate(const std::unordered_map<std::string, ABnfGuessPtr>& fill_map)
+ABnfGuessPtr ALittleScriptGuessList::ReplaceTemplate(ABnfFile* file, const std::unordered_map<std::string, ABnfGuessPtr>& fill_map)
 {
     auto sub_type_e = sub_type.lock();
     if (sub_type_e == nullptr) return nullptr;
-    auto replace = sub_type_e->ReplaceTemplate(fill_map);
+    auto replace = sub_type_e->ReplaceTemplate(file, fill_map);
     if (replace == nullptr) return nullptr;
+    if (sub_type_e == replace) return shared_from_this();
+
     auto guess = ABnfGuessPtr(new ALittleScriptGuessList(replace, is_const, is_native));
     guess->UpdateValue();
+    file->AddGuessType(guess);
     return guess;
 }
 

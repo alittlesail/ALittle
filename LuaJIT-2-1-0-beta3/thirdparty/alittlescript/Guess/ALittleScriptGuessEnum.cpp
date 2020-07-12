@@ -25,7 +25,7 @@ bool ALittleScriptGuessEnum::NeedReplace() const
     return false;
 }
 
-ABnfGuessPtr ALittleScriptGuessEnum::ReplaceTemplate(const std::unordered_map<std::string, ABnfGuessPtr>& fill_map)
+ABnfGuessPtr ALittleScriptGuessEnum::ReplaceTemplate(ABnfFile* file, const std::unordered_map<std::string, ABnfGuessPtr>& fill_map)
 {
     return shared_from_this();
 }

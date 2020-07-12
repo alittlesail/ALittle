@@ -12,7 +12,7 @@ public:
     ALittleScriptGuessConst(const std::string& p_value);
 
     bool NeedReplace() const override;
-    ABnfGuessPtr ReplaceTemplate(const std::unordered_map<std::string, ABnfGuessPtr>& fill_map) override;
+    ABnfGuessPtr ReplaceTemplate(ABnfFile* file, const std::unordered_map<std::string, ABnfGuessPtr>& fill_map) override;
     ABnfGuessPtr Clone() const override;
     bool IsChanged() const override { return false; }
 };

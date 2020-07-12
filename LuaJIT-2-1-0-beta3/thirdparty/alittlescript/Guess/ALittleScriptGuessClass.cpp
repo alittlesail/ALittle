@@ -36,23 +36,29 @@ bool ALittleScriptGuessClass::NeedReplace() const
     return false;
 }
 
-ABnfGuessPtr ALittleScriptGuessClass::ReplaceTemplate(const std::unordered_map<std::string, ABnfGuessPtr>& fill_map)
+ABnfGuessPtr ALittleScriptGuessClass::ReplaceTemplate(ABnfFile* file, const std::unordered_map<std::string, ABnfGuessPtr>& fill_map)
 {
+    if (template_map.empty()) return shared_from_this();
+
+    bool has_replace = false;
     auto new_guess = std::dynamic_pointer_cast<ALittleScriptGuessClass>(Clone());
     for (auto& pair : template_map)
     {
         auto template_guess = pair.second.lock();
         if (template_guess == nullptr) return nullptr;
 
-        auto guess = template_guess->ReplaceTemplate(fill_map);
-        if (guess == nullptr) return nullptr;
-        if (guess != template_guess)
+        auto replace = template_guess->ReplaceTemplate(file, fill_map);
+        if (replace == nullptr) return nullptr;
+        if (replace != template_guess)
         {
-            auto replace = template_guess->ReplaceTemplate(fill_map);
-            if (replace == nullptr) return nullptr;
+            has_replace = true;
             new_guess->template_map[pair.first] = replace;
         }
     }
+
+    if (!has_replace) return shared_from_this();
+
+    file->AddGuessType(new_guess);
     return new_guess;
 }
 

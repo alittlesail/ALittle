@@ -55,8 +55,9 @@ bool ALittleScriptGuessFunctor::NeedReplace() const
     return false;
 }
 
-ABnfGuessPtr ALittleScriptGuessFunctor::ReplaceTemplate(const std::unordered_map<std::string, ABnfGuessPtr>& fill_map)
+ABnfGuessPtr ALittleScriptGuessFunctor::ReplaceTemplate(ABnfFile* file, const std::unordered_map<std::string, ABnfGuessPtr>& fill_map)
 {
+    bool has_replace = false;
     // 克隆一份
     auto new_guess = std::dynamic_pointer_cast<ALittleScriptGuessFunctor>(Clone());
     // 清理参数列表，重新按模板替换
@@ -68,8 +69,9 @@ ABnfGuessPtr ALittleScriptGuessFunctor::ReplaceTemplate(const std::unordered_map
         auto guess_e = guess.lock();
         if (guess_e == nullptr) return nullptr;
 
-        auto replace = guess_e->ReplaceTemplate(fill_map);
+        auto replace = guess_e->ReplaceTemplate(file, fill_map);
         if (replace == nullptr) return nullptr;
+        if (guess_e != replace) has_replace = true;
         new_guess->param_list.push_back(replace);
         if (i < param_nullable_list.size())
             new_guess->param_nullable_list.push_back(param_nullable_list[i]);
@@ -82,11 +84,14 @@ ABnfGuessPtr ALittleScriptGuessFunctor::ReplaceTemplate(const std::unordered_map
     {
         auto guess_e = guess.lock();
         if (guess_e == nullptr) return nullptr;
-        auto replace = guess_e->ReplaceTemplate(fill_map);
+        auto replace = guess_e->ReplaceTemplate(file, fill_map);
         if (replace == nullptr) return nullptr;
+        if (guess_e != replace) has_replace = true;
         new_guess->return_list.push_back(replace);
     }
+    if (!has_replace) return shared_from_this();
     // 返回拷贝
+    file->AddGuessType(new_guess);
     return new_guess;
 }
 

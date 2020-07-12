@@ -132,7 +132,7 @@ ABnfGuessError ALittleScriptPropertyValueMethodCallReference::GuessTypes(std::ve
 
         if (guess_e->NeedReplace())
         {
-            auto replace = guess_e->ReplaceTemplate(fill_map);
+            auto replace = guess_e->ReplaceTemplate(element->GetFile(), fill_map);
             if (replace == nullptr) return ABnfGuessError(element, u8"Ä£°åÌæ»»Ê§°Ü:" + guess_e->GetValue());
             guess_list.push_back(replace);
         }

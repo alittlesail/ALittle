@@ -17,7 +17,7 @@ public:
 
     bool HasAny() const override;
     bool NeedReplace() const override;
-    ABnfGuessPtr ReplaceTemplate(const std::unordered_map<std::string, ABnfGuessPtr>& fill_map) override;
+    ABnfGuessPtr ReplaceTemplate(ABnfFile* file, const std::unordered_map<std::string, ABnfGuessPtr>& fill_map) override;
     ABnfGuessPtr Clone() const override;
     void UpdateValue() override;
     bool IsChanged() const override;

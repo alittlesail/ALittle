@@ -229,7 +229,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateBindStat(std::shared_ptr<ALi
         if (error) return error;
         param_list.push_back(sub_content);
     }
-    content += ABnfFactory::Join(param_list, u8",");
+    content += ABnfFactory::Join(param_list, u8", ");
     content += ")";
     return nullptr;
 }
@@ -249,7 +249,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateTcallStat(std::shared_ptr<AL
         if (error) return error;
         param_list.push_back(sub_content);
     }
-    content += ABnfFactory::Join(param_list, u8",");
+    content += ABnfFactory::Join(param_list, u8", ");
     content += ")";
     return nullptr;
 }
@@ -269,7 +269,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateOpNewListStat(std::shared_pt
         if (error) return error;
         param_list.push_back(sub_content);
     }
-    content += ABnfFactory::Join(param_list, u8",");
+    content += ABnfFactory::Join(param_list, u8", ");
     content += "}";
     return nullptr;
 }
@@ -349,7 +349,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateOpNewStat(std::shared_ptr<AL
                 if (error) return error;
                 param_list.push_back(sub_content);
             }
-            content += ABnfFactory::Join(param_list, u8",");
+            content += ABnfFactory::Join(param_list, u8", ");
             content += ")";
             return nullptr;
         }
@@ -396,19 +396,19 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateOpNewStat(std::shared_ptr<AL
                     if (error) return error;
                     param_list.push_back(sub_content);
                 }
-                content += ABnfFactory::Join(param_list, u8",");
+                content += ABnfFactory::Join(param_list, u8", ");
                 content += ")";
                 return nullptr;
             }
 
             if (guess_template->is_class)
             {
-                return ABnfGuessError(nullptr, u8"该模板只是class，不能确定它的构造参数参数");
+                return ABnfGuessError(op_new_stat, u8"该模板只是class，不能确定它的构造参数参数");
             }
         }
     }
 
-    return ABnfGuessError(nullptr, u8"new 未知类型");
+    return ABnfGuessError(op_new_stat, u8"new 未知类型");
 }
 
 // 生成custom_type定义中的模板参数列表
@@ -2055,7 +2055,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateThrowExpr(std::shared_ptr<AL
         if (error) return error;
         param_list.push_back(sub_content);
     }
-    content += ABnfFactory::Join(param_list, u8",");
+    content += ABnfFactory::Join(param_list, u8", ");
     content += ")\n";
     return nullptr;
 }
@@ -2084,7 +2084,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateAssertExpr(std::shared_ptr<A
         if (error) return error;
         param_list.push_back(sub_content);
     }
-    content += ABnfFactory::Join(param_list, u8",");
+    content += ABnfFactory::Join(param_list, u8", ");
     content += ")\n";
     return nullptr;
 }
@@ -2799,7 +2799,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateEnum(std::shared_ptr<ALittle
 {
     content = "";
     auto name_dec = root->GetEnumNameDec();
-    if (name_dec == nullptr) return ABnfGuessError(nullptr, root->GetElementText() + u8"没有定义枚举名");
+    if (name_dec == nullptr) return ABnfGuessError(root, root->GetElementText() + u8"没有定义枚举名");
 
     content += pre_tab + name_dec->GetElementText() + " = {\n";
 
@@ -2807,7 +2807,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateEnum(std::shared_ptr<ALittle
     std::string enum_string;
 
     auto body_dec = root->GetEnumBodyDec();
-    if (body_dec == nullptr) return ABnfGuessError(nullptr, u8"表达式不完整");
+    if (body_dec == nullptr) return ABnfGuessError(root, u8"表达式不完整");
 
     const auto& var_dec_list = body_dec->GetEnumVarDecList();
     for (auto& var_dec : var_dec_list)
@@ -2816,7 +2816,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateEnum(std::shared_ptr<ALittle
         {
             std::string value = var_dec->GetNumber()->GetElementText();
             if (!ALittleScriptUtility::IsInt(var_dec->GetNumber()))
-                return ABnfGuessError(nullptr, var_dec->GetNumber()->GetElementText() + u8"对应的枚举值必须是整数");
+                return ABnfGuessError(var_dec, var_dec->GetNumber()->GetElementText() + u8"对应的枚举值必须是整数");
 
             if (value.find("0x") == 0)
             {
@@ -2824,16 +2824,16 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateEnum(std::shared_ptr<ALittle
                     enum_value = std::stoi(value.substr(2), nullptr, 16);
                 }
                 catch (std::exception e) {
-                    return ABnfGuessError(nullptr, u8"枚举值的十六进制数解析失败");
+                    return ABnfGuessError(var_dec, u8"枚举值的十六进制数解析失败");
                 }
             }
             else
             {
                 try {
-                    enum_value = std::stoi(value.substr(2), nullptr, 10);
+                    enum_value = std::stoi(value, nullptr, 10);
                 }
                 catch (std::exception e) {
-                    return ABnfGuessError(nullptr, u8"枚举值的十进制数解析失败");
+                    return ABnfGuessError(var_dec, u8"枚举值的十进制数解析失败");
                 }
             }
             enum_string = value;
@@ -2864,7 +2864,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateClass(std::shared_ptr<ALittl
     content = "";
 
     auto name_dec = root->GetClassNameDec();
-    if (name_dec == nullptr) return ABnfGuessError(nullptr, u8"类没有定义类名");
+    if (name_dec == nullptr) return ABnfGuessError(root, u8"类没有定义类名");
 
     //类声明//////////////////////////////////////////////////////////////////////////////////////////
     std::string class_name = name_dec->GetElementText();
@@ -3607,9 +3607,9 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateRoot(const std::vector<std::
         content += "local ___all_struct = " + m_alittle_gen_namespace_pre + "GetAllStruct()\n";
     content += "\n";
 
-    std::vector<StructReflectInfo*> info_list;
+    std::list<StructReflectInfo*> info_list;
     for (auto& pair : m_reflect_map) info_list.push_back(&pair.second);
-    std::sort(info_list.begin(), info_list.end(), StructReflectSort);
+    info_list.sort(StructReflectSort);
     for (auto& info : info_list)
     {
         if (!info->generate) continue;

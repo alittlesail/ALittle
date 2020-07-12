@@ -82,11 +82,21 @@ void ALittleScriptProjectClass::Generate(int query_id, const std::string& full_p
     }
 
     std::unique_lock<std::mutex> lock(m_output_lock);
-    m_outputs.push_back([query_id](lua_State* L) -> int {
+    m_outputs.push_back([query_id, full_path](lua_State* L) -> int {
         lua_newtable(L);
         lua_pushinteger(L, query_id);
         lua_setfield(L, -2, "query_id");
+
+        std::string error = "can't find file_path:";
+        error += full_path;
+        lua_newtable(L);
+        lua_pushstring(L, full_path.c_str());
+        lua_setfield(L, -2, "full_path");
+        lua_pushstring(L, error.c_str());
+        lua_setfield(L, -2, "error");
+
+        lua_setfield(L, -2, "result");
         return 1;
-        });
+    });
 }
 

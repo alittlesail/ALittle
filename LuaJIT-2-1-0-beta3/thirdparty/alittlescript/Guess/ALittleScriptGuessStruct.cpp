@@ -26,7 +26,7 @@ bool ALittleScriptGuessStruct::NeedReplace() const
     return false;
 }
 
-ABnfGuessPtr ALittleScriptGuessStruct::ReplaceTemplate(const std::unordered_map<std::string, ABnfGuessPtr>& fill_map)
+ABnfGuessPtr ALittleScriptGuessStruct::ReplaceTemplate(ABnfFile* file, const std::unordered_map<std::string, ABnfGuessPtr>& fill_map)
 {
     return shared_from_this();
 }

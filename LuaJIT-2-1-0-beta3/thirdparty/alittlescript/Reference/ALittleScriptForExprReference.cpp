@@ -94,7 +94,8 @@ ABnfGuessError ALittleScriptForExprReference::CheckError()
         if (error) return error;
         if (ALittleScriptUtility::IsPairsFunction(return_guess_list))
             return_count = 1;
-        if (return_count != 1) return ABnfGuessError(value_stat, u8"for的遍历对象必须只能是一个返回值");
+        if (return_count != 1)
+            return ABnfGuessError(value_stat, u8"for的遍历对象必须只能是一个返回值");
 
         const auto& pair_dec_list_temp = in_condition->GetForPairDecList();
         std::vector<std::shared_ptr<ALittleScriptForPairDecElement>> pair_dec_list;

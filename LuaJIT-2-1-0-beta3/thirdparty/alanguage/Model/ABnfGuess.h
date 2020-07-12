@@ -10,6 +10,7 @@
 class ABnfGuess;
 using ABnfGuessPtr = std::shared_ptr<ABnfGuess>;
 using ABnfGuessWeakPtr = std::weak_ptr<ABnfGuess>;
+class ABnfFile;
 
 class ABnfGuess : public std::enable_shared_from_this<ABnfGuess>
 {
@@ -28,7 +29,7 @@ public:
     virtual void UpdateValue() { }
     virtual ABnfGuessPtr Clone() const { return nullptr; }
     virtual bool NeedReplace() const { return false; }
-    virtual ABnfGuessPtr ReplaceTemplate(const std::unordered_map<std::string, ABnfGuessPtr>& fill_map) { return nullptr; }
+    virtual ABnfGuessPtr ReplaceTemplate(ABnfFile* file, const std::unordered_map<std::string, ABnfGuessPtr>& fill_map) { return nullptr; }
     virtual bool HasAny() const { return false; }
     virtual const std::string& GetTotalValue() { return value; }
 };

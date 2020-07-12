@@ -73,9 +73,9 @@ protected:
     }
 
 public:
-    static int StructReflectSort(const StructReflectInfo* a, const StructReflectInfo* b)
+    static bool StructReflectSort(const StructReflectInfo* a, const StructReflectInfo* b)
     {
-        return a->hash_code - b->hash_code;
+        return std::abs(a->hash_code) > std::abs(b->hash_code);
     }
 };
 

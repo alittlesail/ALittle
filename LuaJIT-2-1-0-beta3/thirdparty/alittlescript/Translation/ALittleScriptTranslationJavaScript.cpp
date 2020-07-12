@@ -3217,7 +3217,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateEnum(std::shared_ptr<
 {
     content = "";
     auto name_dec = root->GetEnumNameDec();
-    if (name_dec == nullptr) return ABnfGuessError(nullptr, root->GetElementText() + u8"没有定义枚举名");
+    if (name_dec == nullptr) return ABnfGuessError(root, root->GetElementText() + u8"没有定义枚举名");
 
     content += pre_tab + m_alittle_gen_namespace_pre + name_dec->GetElementText() + " = {\n";
 
@@ -3225,7 +3225,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateEnum(std::shared_ptr<
     std::string enum_string;
 
     auto body_dec = root->GetEnumBodyDec();
-    if (body_dec == nullptr) return ABnfGuessError(nullptr, u8"表达式不完整");
+    if (body_dec == nullptr) return ABnfGuessError(root, u8"表达式不完整");
 
     const auto& var_dec_list = body_dec->GetEnumVarDecList();
     for (auto& var_dec : var_dec_list)
@@ -3234,7 +3234,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateEnum(std::shared_ptr<
         {
             std::string value = var_dec->GetNumber()->GetElementText();
             if (!ALittleScriptUtility::IsInt(var_dec->GetNumber()))
-                return ABnfGuessError(nullptr, var_dec->GetNumber()->GetElementText() + u8"对应的枚举值必须是整数");
+                return ABnfGuessError(var_dec, var_dec->GetNumber()->GetElementText() + u8"对应的枚举值必须是整数");
 
             if (value.find("0x") == 0)
             {
@@ -3242,16 +3242,16 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateEnum(std::shared_ptr<
                     enum_value = std::stoi(value.substr(2), nullptr, 16);
                 }
                 catch (std::exception e) {
-                    return ABnfGuessError(nullptr, u8"枚举值的十六进制数解析失败");
+                    return ABnfGuessError(var_dec, u8"枚举值的十六进制数解析失败");
                 }
             }
             else
             {
                 try {
-                    enum_value = std::stoi(value.substr(2), nullptr, 10);
+                    enum_value = std::stoi(value, nullptr, 10);
                 }
                 catch (std::exception e) {
-                    return ABnfGuessError(nullptr, u8"枚举值的十进制数解析失败");
+                    return ABnfGuessError(var_dec, u8"枚举值的十进制数解析失败");
                 }
             }
             enum_string = value;
@@ -4066,10 +4066,9 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateRoot(const std::vecto
     if (m_need_all_struct) content += "let ___all_struct = ALittle->GetAllStruct();\n";
     content += "\n";
 
-    std::vector<StructReflectInfo*> info_list;
+    std::list<StructReflectInfo*> info_list;
     for (auto& pair : m_reflect_map) info_list.push_back(&pair.second);
-    std::sort(info_list.begin(), info_list.end(), StructReflectSort);
-
+    info_list.sort(StructReflectSort);
     for (auto& info : info_list)
     {
         if (!info->generate) continue;

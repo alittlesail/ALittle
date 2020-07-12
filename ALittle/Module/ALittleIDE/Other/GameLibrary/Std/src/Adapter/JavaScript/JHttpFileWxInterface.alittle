@@ -20,7 +20,7 @@ public class JHttpFileWxInterface : ALittle.IHttpFileSenderNative
     }
     public fun GetID() : int { return this._id; }
     
-    // start_sizeÔİÊ±²»Ö§³Ö
+    // start_sizeæš‚æ—¶ä¸æ”¯æŒ
     public fun SetURL(string url, string file_path, bool download, int start_size)
     {
         this._url = url;

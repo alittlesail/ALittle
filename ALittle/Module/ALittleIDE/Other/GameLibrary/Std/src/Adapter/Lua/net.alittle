@@ -6,19 +6,19 @@ public struct net_event
     int type;
     int id;
     
-    // µ±typeÎªHTTP_SUCCEEDÊ±ÓĞĞ§
+    // å½“typeä¸ºHTTP_SUCCEEDæ—¶æœ‰æ•ˆ
     string content;
-    // µ±typeÎªHTTP_FILE_FAILED£¬HTTP_FAILEDÊ±ÓĞĞ§
+    // å½“typeä¸ºHTTP_FILE_FAILEDï¼ŒHTTP_FAILEDæ—¶æœ‰æ•ˆ
     string error;
     
-    // µ±typeÎªHTTP_FILE_PROGRESSÊ±ÓĞĞ§
+    // å½“typeä¸ºHTTP_FILE_PROGRESSæ—¶æœ‰æ•ˆ
     int cur_size;
     int total_size;
     
-    // µ±typeÎªTIMERÊ±ÓĞĞ§£¬µ±Ç°µÄÊ±¼ä´Á£¬µ¥Î»ÊÇºÁÃë
+    // å½“typeä¸ºTIMERæ—¶æœ‰æ•ˆï¼Œå½“å‰çš„æ—¶é—´æˆ³ï¼Œå•ä½æ˜¯æ¯«ç§’
     int time;
     
-    // µ±typeÎªMSG_MESSAE
+    // å½“typeä¸ºMSG_MESSAE
     int msg_id;
     int rpc_id;
     read_factory factory;
@@ -38,13 +38,13 @@ public class net
 {
     public static create() : net {}
     
-    // Èç¹û·µ»Ønull£¬±íÊ¾ËùÓĞnetÈ«²¿´¦Àí½áÊø
+    // å¦‚æœè¿”å›nullï¼Œè¡¨ç¤ºæ‰€æœ‰netå…¨éƒ¨å¤„ç†ç»“æŸ
     public static poll(net c) : net_event {}
     
-    // Æô¶¯Ò»¸ö¶¨Ê±Æ÷
+    // å¯åŠ¨ä¸€ä¸ªå®šæ—¶å™¨
     public static timer(net c, int delay_ms) {}
     
-    // httpÏà¹Ø½Ó¿Ú
+    // httpç›¸å…³æ¥å£
     public static get(net c, int id, string url) {}
     public static stopget(net c, int id) {}
     public static post(net c, int id, string url, string type, string content) {}
@@ -54,14 +54,14 @@ public class net
     public static upload(net c, int id, string url, string file_path) {}
     public static stopupload(net c, int id) {}
     
-    // ³¤Á¬½ÓÏà¹Ø½Ó¿Ú
+    // é•¿è¿æ¥ç›¸å…³æ¥å£
     public static connect(net c, int id, string ip, int port) {}
     public static isconnected(net c, int id) : bool {}
     public static isconnecting(net c, int id) : bool {}
     public static close(net c, int id) {}
     public static send(net c, int id, write_factory factory) {}
     
-    // ĞòÁĞ»¯Ïà¹Ø½Ó¿Ú
+    // åºåˆ—åŒ–ç›¸å…³æ¥å£
     public static createwfactory() : write_factory{}
     public static wfactorysetid(write_factory factory, int id) {}
     public static wfactorysetrpcid(write_factory factory, int id) {}
@@ -74,7 +74,7 @@ public class net
     public static wfactorywritestring(write_factory factory, string value) : int {}
     public static wfactorywritedouble(write_factory factory, double value) : int {}
     
-    // ·´ĞòÁĞ»¯Ïà¹Ø½Ó¿Ú
+    // ååºåˆ—åŒ–ç›¸å…³æ¥å£
     public static rfactoryrelease(net c, read_factory factory) {}
     public static rfactorygetdatasize(read_factory factory) : int {}
     public static rfactoryreadbool(read_factory factory) : bool {}

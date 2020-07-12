@@ -6,10 +6,10 @@ public struct socket_event
     int type;
     int id;
     
-    // µ±typeÎªTIMERÊ±ÓĞĞ§£¬µ±Ç°µÄÊ±¼ä´Á£¬µ¥Î»ÊÇºÁÃë
+    // å½“typeä¸ºTIMERæ—¶æœ‰æ•ˆï¼Œå½“å‰çš„æ—¶é—´æˆ³ï¼Œå•ä½æ˜¯æ¯«ç§’
     int time;
 
-    // µ±typeÎªMSG_READ_XXXÊ±£¬ÕûĞÍÖµ£¬¸¡µãÖµ£¬protobufÖµ
+    // å½“typeä¸ºMSG_READ_XXXæ—¶ï¼Œæ•´å‹å€¼ï¼Œæµ®ç‚¹å€¼ï¼Œprotobufå€¼
     int int_value;
     double double_value;
     string string_value;
@@ -20,18 +20,18 @@ public class socket
 {
     public static create() : socket {}
     
-    // Èç¹û·µ»Ønull£¬±íÊ¾ËùÓĞsocketÈ«²¿´¦Àí½áÊø
+    // å¦‚æœè¿”å›nullï¼Œè¡¨ç¤ºæ‰€æœ‰socketå…¨éƒ¨å¤„ç†ç»“æŸ
     public static poll(socket c) : socket_event {}
     public static run(socket c) : socket_event {}
     
-    // Æô¶¯Ò»¸ö¶¨Ê±Æ÷
+    // å¯åŠ¨ä¸€ä¸ªå®šæ—¶å™¨
     public static timer(socket c, int delay_ms) {}
     
-    // ³¤Á¬½ÓÏà¹Ø½Ó¿Ú
+    // é•¿è¿æ¥ç›¸å…³æ¥å£
     public static connect(socket c, int id, string ip, int port) {}
     public static close(socket c, int id) {}
 
-    // ¶ÁÈ¡Êı¾İ
+    // è¯»å–æ•°æ®
     public static readuint8(socket c, int id) {}
     public static readint8(socket c, int id) {}
     public static readuint16(socket c, int id) {}
@@ -43,12 +43,12 @@ public class socket
     public static readfloat(socket c, int id) {}
     public static readdouble(socket c, int id) {}
     public static readstring(socket c, int id, int len) {}
-    // ¶ÁÈ¡µ½µÄ¶ş½øÖÆÊı¾İ£¬±ØĞëÊ¹ÓÃfreebinaryÊÍ·Å
+    // è¯»å–åˆ°çš„äºŒè¿›åˆ¶æ•°æ®ï¼Œå¿…é¡»ä½¿ç”¨freebinaryé‡Šæ”¾
     public static readbinary(socket c, int id, int len) {}
-    // ÊÍ·Å¶ş½øÖÆÊı¾İ
+    // é‡Šæ”¾äºŒè¿›åˆ¶æ•°æ®
     public static freebinary(any buffer) {}
     
-    // ·¢ËÍÊı¾İ
+    // å‘é€æ•°æ®
     public static writeuint8(socket c, int id, int value) {}
     public static writeint8(socket c, int id, int value) {}
     public static writeuint16(socket c, int id, int value) {}

@@ -11,20 +11,20 @@ public struct DataRouteInfo
 
 class DataRouteManager
 {
-    // 数据服务器路由信息，KEY：路由类型拼上路由编号，Value路由信息
+    // 鏁版嵁鏈嶅姟鍣ㄨ矾鐢变俊鎭紝KEY锛氳矾鐢辩被鍨嬫嫾涓婅矾鐢辩紪鍙凤紝Value璺敱淇℃伅
     private Map<string, DataRouteInfo> _route_map;
     
     public ctor()
     {
         this._route_map = new Map<string, DataRouteInfo>();
         
-        // 监听连接断开
+        // 鐩戝惉杩炴帴鏂紑
         A_SessionSystem.AddEventListener(this, this.HandleAnySessionDisconnected);
     }
     
     public fun HandleAnySessionDisconnected(ALittle.SessionDisconnectEvent event)
     {
-        // 只处理数据服务器
+        // 鍙鐞嗘暟鎹湇鍔″櫒
         if (event.route_type != ALittle.RouteType.RT_DATA) return;
         
         var key = event.route_type.."_"..event.route_num;
@@ -33,10 +33,10 @@ class DataRouteManager
     
     public fun HandleUpdateRouteInfo(ALittle.MsgSession client, NUpdateRouteInfo msg)
     {
-        // 只处理数据服务器
+        // 鍙鐞嗘暟鎹湇鍔″櫒
         if (client.route_type != ALittle.RouteType.RT_DATA) return;
         
-        // 保存信息
+        // 淇濆瓨淇℃伅
         var info = new DataRouteInfo();
         info.session = client;
         info.route_type = client.route_type;
@@ -49,17 +49,17 @@ class DataRouteManager
     
     public fun HandleUpdateRouteWeight(ALittle.MsgSession client, NUpdateRouteWeight msg)
     {
-        // 只处理数据服务器
+        // 鍙鐞嗘暟鎹湇鍔″櫒
         if (client.route_type != ALittle.RouteType.RT_DATA) return;
         
-        // 更新权重
+        // 鏇存柊鏉冮噸
         var key = client.route_type.."_"..client.route_num;
         var info = this._route_map[key];
         if (info == null) return;
         info.route_weight = msg.route_weight;
     }
     
-    // 获取权重值最小的路由
+    // 鑾峰彇鏉冮噸鍊兼渶灏忕殑璺敱
     public fun GetRouteInfo() : DataRouteInfo
     {
         var min_weight = 0;
@@ -76,7 +76,7 @@ class DataRouteManager
         return target;
     }
     
-    // 查找路由信息
+    // 鏌ユ壘璺敱淇℃伅
     public fun FindRouteInfo(int route_num) : DataRouteInfo
     {
         var key = ALittle.RouteType.RT_DATA.."_"..route_num;

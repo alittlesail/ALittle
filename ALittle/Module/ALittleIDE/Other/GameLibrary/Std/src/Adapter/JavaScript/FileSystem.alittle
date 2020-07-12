@@ -150,15 +150,15 @@ public static File_GetFileAttrByDir(string path, [Nullable] Map<string, lua.file
     }
     if (cur.file == null) return file_map;
     
-    // ±éÀúÂ·¾¶
+    // éå†è·¯å¾„
     for (var name, value in cur.file)
     {
-        // Éú³ÉÎÄ¼şÄ¿Â¼
+        // ç”Ÿæˆæ–‡ä»¶ç›®å½•
         var file_path = cur_dir .. name;
-        // Èç¹ûÊÇÄ¿Â¼£¬ÄÇÃ´¾Íµİ¹é±éÀú
+        // å¦‚æœæ˜¯ç›®å½•ï¼Œé‚£ä¹ˆå°±é€’å½’éå†
         if (value.is_directory)
             File_GetFileAttrByDir(file_path, file_map);
-        // Èç¹ûÊÇÎÄ¼ş£¬ÄÇÃ´¾ÍÖ±½Ó»ñÈ¡ÊôĞÔ
+        // å¦‚æœæ˜¯æ–‡ä»¶ï¼Œé‚£ä¹ˆå°±ç›´æ¥è·å–å±æ€§
         else
         {    
             var attr = new lua.fileattr();
@@ -168,7 +168,7 @@ public static File_GetFileAttrByDir(string path, [Nullable] Map<string, lua.file
         }
     }
     
-    // ·µ»Ø½á¹û
+    // è¿”å›ç»“æœ
     return file_map;  
 }
 
@@ -188,15 +188,15 @@ public static File_GetFileListByDir(string path, [Nullable] List<string> file_li
     }
     if (cur.file == null) return file_list;
     
-    // ±éÀúÂ·¾¶
+    // éå†è·¯å¾„
     for (var name, value in cur.file)
     {
-        // Éú³ÉÎÄ¼şÄ¿Â¼
+        // ç”Ÿæˆæ–‡ä»¶ç›®å½•
         var file_path = cur_dir .. name;
-        // Èç¹ûÊÇÄ¿Â¼£¬ÄÇÃ´¾Íµİ¹é±éÀú
+        // å¦‚æœæ˜¯ç›®å½•ï¼Œé‚£ä¹ˆå°±é€’å½’éå†
         if (value.is_directory)
             File_GetFileListByDir(file_path, file_list);
-        // Èç¹ûÊÇÎÄ¼ş£¬ÄÇÃ´¾ÍÖ±½Ó»ñÈ¡ÊôĞÔ
+        // å¦‚æœæ˜¯æ–‡ä»¶ï¼Œé‚£ä¹ˆå°±ç›´æ¥è·å–å±æ€§
         else
         {    
             var attr = new lua.fileattr();
@@ -206,7 +206,7 @@ public static File_GetFileListByDir(string path, [Nullable] List<string> file_li
         }
     }
     
-    // ·µ»Ø½á¹û
+    // è¿”å›ç»“æœ
     return file_list;  
 }
 
@@ -226,12 +226,12 @@ public static File_GetFileNameListByDir(string path, [Nullable] Map<string, lua.
     }
     if (cur.file == null) return file_map;
     
-    // ±éÀúÂ·¾¶
+    // éå†è·¯å¾„
     for (var name, value in cur.file)
     {
-        // Éú³ÉÎÄ¼şÄ¿Â¼
+        // ç”Ÿæˆæ–‡ä»¶ç›®å½•
         var file_path = cur_dir .. name;
-        // Èç¹ûÊÇÄ¿Â¼£¬ÄÇÃ´¾Íµİ¹é±éÀú
+        // å¦‚æœæ˜¯ç›®å½•ï¼Œé‚£ä¹ˆå°±é€’å½’éå†
         if (value.is_directory)
         {
             var attr = new lua.fileattr();
@@ -239,7 +239,7 @@ public static File_GetFileNameListByDir(string path, [Nullable] Map<string, lua.
             attr.size = 0;
             file_map[name] = attr;
         }
-        // Èç¹ûÊÇÎÄ¼ş£¬ÄÇÃ´¾ÍÖ±½Ó»ñÈ¡ÊôĞÔ
+        // å¦‚æœæ˜¯æ–‡ä»¶ï¼Œé‚£ä¹ˆå°±ç›´æ¥è·å–å±æ€§
         else
         {    
             var attr = new lua.fileattr();
@@ -249,7 +249,7 @@ public static File_GetFileNameListByDir(string path, [Nullable] Map<string, lua.
         }
     }
     
-    // ·µ»Ø½á¹û
+    // è¿”å›ç»“æœ
     return file_map;  
 }
 
@@ -266,7 +266,7 @@ public static File_DeleteDir(string path) : bool
         cur = file;
     }
     var can = true;
-    // ¼ì²éÊÇ·ñÓĞ×ÓÎÄ¼ş»òÕß×ÓÎÄ¼ş¼Ğ
+    // æ£€æŸ¥æ˜¯å¦æœ‰å­æ–‡ä»¶æˆ–è€…å­æ–‡ä»¶å¤¹
     if (cur.file != null)
     {
         for (var index, value in cur.file)
@@ -276,7 +276,7 @@ public static File_DeleteDir(string path) : bool
         }
     }
     if (!can) return false;
-    // ½â³ı¹ØÏµ
+    // è§£é™¤å…³ç³»
     cur.parent.file[cur.name] = null;
     cur.parent = null;
     return true;
@@ -284,7 +284,7 @@ public static File_DeleteDir(string path) : bool
 
 public static File_DeleteDeepDir(string path, [Nullable] bool log_path)
 {
-    // Èç¹ûĞèÒª´òÓ¡£¬ÄÇÃ´»ñÈ¡Ò»ÏÂÄ¿Â¼£¬È»ºó´òÓ¡³öÀ´
+    // å¦‚æœéœ€è¦æ‰“å°ï¼Œé‚£ä¹ˆè·å–ä¸€ä¸‹ç›®å½•ï¼Œç„¶åæ‰“å°å‡ºæ¥
     if (log_path)
     {
         var file_map = File_GetFileAttrByDir(path);
@@ -399,22 +399,22 @@ public static File_CopyDeepDir(string src_path, string dest_path, [Nullable] str
     }
     if (cur.file == null) return;
 
-    // ±éÀúÔ´ÎÄ¼ş¼Ğ
+    // éå†æºæ–‡ä»¶å¤¹
     for (var file, info in cur.file)
     {
-        // Ô´ÎÄ¼şÂ·¾¶
+        // æºæ–‡ä»¶è·¯å¾„
         var src_file_path = src_path .. "/" .. file;
-        // Ä¿±êÎÄ¼şÂ·¾¶
+        // ç›®æ ‡æ–‡ä»¶è·¯å¾„
         var dest_file_path = dest_path .. "/" .. file;
-        // Èç¹ûÊÇÄ¿Â¼½øĞĞµİ¹é¸´ÖÆ
+        // å¦‚æœæ˜¯ç›®å½•è¿›è¡Œé€’å½’å¤åˆ¶
         if (info.is_directory)
         {
-            // ´´½¨ÎÄ¼ş¼Ğ
+            // åˆ›å»ºæ–‡ä»¶å¤¹
             File_MakeDir(dest_file_path);
-            // ¿ªÊ¼¸´ÖÆ
+            // å¼€å§‹å¤åˆ¶
             File_CopyDeepDir(src_file_path, dest_file_path, upper_ext, log);
         }
-        // Èç¹ûÊÇÎÄ¼ş£¬¾ÍÖ±½Ó¸´ÖÆÎÄ¼ş
+        // å¦‚æœæ˜¯æ–‡ä»¶ï¼Œå°±ç›´æ¥å¤åˆ¶æ–‡ä»¶
         else
         {
             if (upper_ext == null || ALittle.File_GetFileExtByPathAndUpper(src_file_path) == upper_ext)

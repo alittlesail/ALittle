@@ -21,7 +21,7 @@ public class JSchedule : ALittle.ISchedule
         this._run = false;
     }
 
-    // 在JS版本下Run直接退出，因为JS有自己的事件系统
+    // 鍦↗S鐗堟湰涓婻un鐩存帴閫�鍑猴紝鍥犱负JS鏈夎嚜宸辩殑浜嬩欢绯荤粺
     public fun Run()
     {
         this.RunInFrame();

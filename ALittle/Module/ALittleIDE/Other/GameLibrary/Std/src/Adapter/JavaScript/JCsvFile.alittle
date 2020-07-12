@@ -16,10 +16,10 @@ public class JCsvFile : ALittle.ICsvFile
         this._file_path = "";
     }
     
-    // Ìí¼ÓÒ»ĞĞ
+    // æ·»åŠ ä¸€è¡Œ
     private fun addRow(List<string> row) : bool
     {
-        // Èç¹ûÊÇµÚÒ»ĞĞ£¬ÄÇÃ´¾Í±£´æÁĞ×ÜÊı
+        // å¦‚æœæ˜¯ç¬¬ä¸€è¡Œï¼Œé‚£ä¹ˆå°±ä¿å­˜åˆ—æ€»æ•°
         if (this._col_count == 0)
         {
             ++ this._row_count;
@@ -28,14 +28,14 @@ public class JCsvFile : ALittle.ICsvFile
             return true;
         }
         
-        // Èç¹û²»ÊÇµÚÒ»ĞĞ£¬ÄÇÃ´¾Í¼ì²éÁĞÊıÁ¿ÊÇ·ñÒ»ÖÂ
+        // å¦‚æœä¸æ˜¯ç¬¬ä¸€è¡Œï¼Œé‚£ä¹ˆå°±æ£€æŸ¥åˆ—æ•°é‡æ˜¯å¦ä¸€è‡´
         if (cast<javascript.Array>(row).length != this._col_count)
         {
             ALittle.Error("row("..(this._row_count + 1)..") col: "..cast<javascript.Array>(row).length.." != "..this._col_count);
             return false;
         }
     
-        // Ìí¼ÓĞĞ
+        // æ·»åŠ è¡Œ
         ++ this._row_count;
         this._data[this._row_count] = row;
         return true;
@@ -43,7 +43,7 @@ public class JCsvFile : ALittle.ICsvFile
     
     public fun Load(string path) : bool
     {
-        // ¼ÓÔØÎÄ¼ş
+        // åŠ è½½æ–‡ä»¶
         var content = JavaScript.File_LoadFile(path);
         if (content == null)
         {
@@ -51,14 +51,14 @@ public class JCsvFile : ALittle.ICsvFile
             return false;   
         }
         
-        // ±£´æÎÄ¼ş
+        // ä¿å­˜æ–‡ä»¶
         this._file_path = path;
         
-        // ¹¹½¨Êı¾İ
+        // æ„å»ºæ•°æ®
         this._data = new List<List<string>>();
         var data_index = 1;
         
-        // ×Ö·ûÓÎ±ê
+        // å­—ç¬¦æ¸¸æ ‡
         var char_index = 0;
         
         if (char_index >= cast<javascript.String>(content).length)
@@ -66,11 +66,11 @@ public class JCsvFile : ALittle.ICsvFile
             ALittle.Error("file is empty:"..this._file_path);
             return false;
         }
-        // ¶ÁÈ¡µÚÒ»¸ö×Ö·û
+        // è¯»å–ç¬¬ä¸€ä¸ªå­—ç¬¦
         var cur_char:int = cast<javascript.String>(content).charCodeAt(char_index);
         ++char_index;
             
-        // ¶ÁÈ¡ÏÂÒ»¸ö×Ö·û
+        // è¯»å–ä¸‹ä¸€ä¸ªå­—ç¬¦
         if (char_index >= cast<javascript.String>(content).length)
         {
             this._data[1] = new List<string>();
@@ -79,144 +79,144 @@ public class JCsvFile : ALittle.ICsvFile
         }
         var next_char:int = cast<javascript.String>(content).charCodeAt(char_index);
         
-        // ±ê¼Çµ±Ç°ÊÇ·ñÔÚÒıºÅÖĞ
+        // æ ‡è®°å½“å‰æ˜¯å¦åœ¨å¼•å·ä¸­
         var in_quote = false;
         
-        // µ±Ç°ĞĞÊı¾İ
+        // å½“å‰è¡Œæ•°æ®
         var row = new List<string>();
         var row_index = 0;
-        // µ±Ç°ÁĞÊı¾İ
+        // å½“å‰åˆ—æ•°æ®
         var cell = "";
         
         while (true)
         {
-            // Èç¹ûÊÇ·Ö¸ô·û 44 ÊÇ ','
+            // å¦‚æœæ˜¯åˆ†éš”ç¬¦ 44 æ˜¯ ','
             if (cur_char == 44)
             { 
-                // Èç¹ûÔÚÒıºÅÖĞ£¬ÄÇÃ´¾ÍÒªÌí¼Óµ½µ±Ç°µÄ×Ö·û
+                // å¦‚æœåœ¨å¼•å·ä¸­ï¼Œé‚£ä¹ˆå°±è¦æ·»åŠ åˆ°å½“å‰çš„å­—ç¬¦
                 if (in_quote)
                 {
-                    // Ìí¼Óµ½ÁĞ
+                    // æ·»åŠ åˆ°åˆ—
                     cell = cell..",";
                     
-                    // Èç¹ûºóÃæÃ»ÓĞÊı¾İÁË£¬ËµÃ÷Ã»ÓĞ¹Ø±ÕÒıºÅ£¬±¨´í
+                    // å¦‚æœåé¢æ²¡æœ‰æ•°æ®äº†ï¼Œè¯´æ˜æ²¡æœ‰å…³é—­å¼•å·ï¼ŒæŠ¥é”™
                     if (next_char == null)
                     {
                         ALittle.Error("row("..this._row_count..") have no close quote");
                         return false;
                     }
                 }
-                // Èç¹ûÃ»ÓĞÔÚÒıºÅÖĞ£¬ÄÇÃ´¾ÍÒª×öÇĞ¸î
+                // å¦‚æœæ²¡æœ‰åœ¨å¼•å·ä¸­ï¼Œé‚£ä¹ˆå°±è¦åšåˆ‡å‰²
                 else
                 {
-                    // Ìí¼Óµ½ĞĞ
+                    // æ·»åŠ åˆ°è¡Œ
                     ++row_index;
                     row[row_index] = cell;
                     cell = "";
         
-                    // Èç¹ûºóÃæÃ»ÓĞÊı¾İÁË
+                    // å¦‚æœåé¢æ²¡æœ‰æ•°æ®äº†
                     if (next_char == null)
                     {
-                        // ÔÙÈûÒ»¸ö¿ÕÁĞ
+                        // å†å¡ä¸€ä¸ªç©ºåˆ—
                         ++row_index;
                         row[row_index] = "";
-                        // Ìí¼Óµ½±í
+                        // æ·»åŠ åˆ°è¡¨
                         if (!this.addRow(row)) return false;
                         row_index = 0;
                         row = new List<string>();
                     }
                 }
             }
-            // Èç¹ûÊÇ»»ĞĞ 10 ÊÇ '\n'
+            // å¦‚æœæ˜¯æ¢è¡Œ 10 æ˜¯ '\n'
             elseif (cur_char == 10)
             {
-                // Èç¹ûÔÚÒıºÅÖĞ£¬ÄÇÃ´¾ÍÒªÌí¼Óµ½µ±Ç°µÄ×Ö·û
+                // å¦‚æœåœ¨å¼•å·ä¸­ï¼Œé‚£ä¹ˆå°±è¦æ·»åŠ åˆ°å½“å‰çš„å­—ç¬¦
                 if (in_quote)
                 {
-                    // Ìí¼Óµ½ÁĞ
+                    // æ·»åŠ åˆ°åˆ—
                     cell = cell.."\n";
                     
-                    // Èç¹ûºóÃæÃ»ÓĞÊı¾İÁË£¬ËµÃ÷Ã»ÓĞ¹Ø±ÕÒıºÅ£¬±¨´í
+                    // å¦‚æœåé¢æ²¡æœ‰æ•°æ®äº†ï¼Œè¯´æ˜æ²¡æœ‰å…³é—­å¼•å·ï¼ŒæŠ¥é”™
                     if (next_char == null)
                     {
                         ALittle.Error("row("..this._row_count..") have no close quote");
                         return false;
                     }
                 }
-                // Èç¹ûÃ»ÓĞÔÚÒıºÅÖĞ£¬ÄÇÃ´¾ÍÒª×öÇĞ¸î
+                // å¦‚æœæ²¡æœ‰åœ¨å¼•å·ä¸­ï¼Œé‚£ä¹ˆå°±è¦åšåˆ‡å‰²
                 else
                 {
-                    // Ìí¼Óµ½ĞĞ
+                    // æ·»åŠ åˆ°è¡Œ
                     ++row_index;
                     row[row_index] = cell;
                     cell = "";
                     
-                    // Ìí¼Óµ½±í
+                    // æ·»åŠ åˆ°è¡¨
                     if (!this.addRow(row)) return false;
                     row_index = 0;
                     row = new List<string>();
                 }
             }
-            // Èç¹ûÊÇÒıºÅ 34 ÊÇ '"'
+            // å¦‚æœæ˜¯å¼•å· 34 æ˜¯ '"'
             elseif (cur_char == 34)
             {
-                // Èç¹ûÔÚÒıºÅÖĞ
+                // å¦‚æœåœ¨å¼•å·ä¸­
                 if (in_quote)
                 {
-                    // Èç¹ûÏÂÒ»¸öÒ²ÊÇÒıºÅ£¬ÄÇÃ´µ±Ç°Ö±½Ó×ªÒåÎªÒıºÅ
+                    // å¦‚æœä¸‹ä¸€ä¸ªä¹Ÿæ˜¯å¼•å·ï¼Œé‚£ä¹ˆå½“å‰ç›´æ¥è½¬ä¹‰ä¸ºå¼•å·
                     if (next_char == 34)
                     {
-                        // Ìí¼Óµ½ÁĞ
+                        // æ·»åŠ åˆ°åˆ—
                         cell = cell .."\"";
-                        // Ö±½Ó¶ÁÈ¡ÏÂÒ»¸ö×Ö·û
+                        // ç›´æ¥è¯»å–ä¸‹ä¸€ä¸ªå­—ç¬¦
                         next_char = null;
                         if (char_index + 1 < cast<javascript.String>(content).length)
                         {
                             ++char_index;
                             next_char = cast<javascript.String>(content).charCodeAt(char_index);
                         }
-                        // Èç¹ûºóÃæÃ»ÓĞÊı¾İÁË£¬ËµÃ÷Ã»ÓĞ¹Ø±ÕÒıºÅ£¬±¨´í
+                        // å¦‚æœåé¢æ²¡æœ‰æ•°æ®äº†ï¼Œè¯´æ˜æ²¡æœ‰å…³é—­å¼•å·ï¼ŒæŠ¥é”™
                         if (next_char == null)
                         {
                             ALittle.Error("row("..this._row_count..") have no close quote");
                             return false;
                         }
                     }
-                    // Èç¹ûÏÂÒ»¸ö²»ÊÇÒıºÅ£¬ÄÇÃ´¾Í¹Ø±ÕÒıºÅ
+                    // å¦‚æœä¸‹ä¸€ä¸ªä¸æ˜¯å¼•å·ï¼Œé‚£ä¹ˆå°±å…³é—­å¼•å·
                     else
                     {
                         in_quote = false;
 
                         if (next_char == null)
                         {
-                            // Ìí¼Óµ½ĞĞ
+                            // æ·»åŠ åˆ°è¡Œ
                             ++row_index;
                             row[row_index] = cell;
                             cell = "";
                     
-                            // Ìí¼Óµ½±í
+                            // æ·»åŠ åˆ°è¡¨
                             if (!this.addRow(row)) return false;
                             row_index = 0;
                             row = new List<string>();
                         }
                     }
                 }
-                // ²»ÔÚÒıºÅÖĞ£¬Ö±½Ó±ê¼ÇÎªÔÚÒıºÅÖĞ
+                // ä¸åœ¨å¼•å·ä¸­ï¼Œç›´æ¥æ ‡è®°ä¸ºåœ¨å¼•å·ä¸­
                 else
                 {
-                    // Èç¹ûµ±Ç°ÁĞÊÇ¿ÕµÄ£¬ÄÇÃ´¾Í±ê¼ÇÒıºÅ¿ªÊ¼
+                    // å¦‚æœå½“å‰åˆ—æ˜¯ç©ºçš„ï¼Œé‚£ä¹ˆå°±æ ‡è®°å¼•å·å¼€å§‹
                     if (cast<javascript.String>(cell).length == 0)
                     {
                         in_quote = true;
                     }
-                    // Èç¹ûµ±Ç°ÒÑ¾­ÓĞÊı¾İÁË£¬ÄÇÃ´Ö±½Óµ±×öÆÕÍ¨×Ö·û
+                    // å¦‚æœå½“å‰å·²ç»æœ‰æ•°æ®äº†ï¼Œé‚£ä¹ˆç›´æ¥å½“åšæ™®é€šå­—ç¬¦
                     else
                     {
                         cell = cell .."\"";
                     }
 
         
-                    // Èç¹ûºóÃæÃ»ÓĞÊı¾İÁË£¬ËµÃ÷Ã»ÓĞ¹Ø±ÕÒıºÅ£¬±¨´í
+                    // å¦‚æœåé¢æ²¡æœ‰æ•°æ®äº†ï¼Œè¯´æ˜æ²¡æœ‰å…³é—­å¼•å·ï¼ŒæŠ¥é”™
                     if (next_char == null)
                     {
                         ALittle.Error("row("..this._row_count..") have no close quote");
@@ -224,15 +224,15 @@ public class JCsvFile : ALittle.ICsvFile
                     }
                 }
             }
-            // ÆäËû×Ö·ûÖ±½ÓÌí¼Ó
+            // å…¶ä»–å­—ç¬¦ç›´æ¥æ·»åŠ 
             else
             {
                 if (in_quote)
                 {
-                    // ÎŞÌõ¼şÌí¼Ó×Ö·û
+                    // æ— æ¡ä»¶æ·»åŠ å­—ç¬¦
                     cell = cell..javascript.String.fromCharCode(cur_char);
                 
-                    // Èç¹ûºóÃæÃ»ÓĞÊı¾İÁË£¬ËµÃ÷Ã»ÓĞ¹Ø±ÕÒıºÅ£¬±¨´í
+                    // å¦‚æœåé¢æ²¡æœ‰æ•°æ®äº†ï¼Œè¯´æ˜æ²¡æœ‰å…³é—­å¼•å·ï¼ŒæŠ¥é”™
                     if (next_char == null)
                     {
                         ALittle.Error("row("..this._row_count..") have no close quote");
@@ -241,21 +241,21 @@ public class JCsvFile : ALittle.ICsvFile
                 }
                 else
                 {
-                    // Ìí¼Óµ½ÁĞ 13 ÊÇ '\r'  10 ÊÇ '\n'
+                    // æ·»åŠ åˆ°åˆ— 13 æ˜¯ '\r'  10 æ˜¯ '\n'
                     if (!(cur_char == 13 && next_char == 10))
                     {
                         cell = cell..javascript.String.fromCharCode(cur_char);
                     }
 
-                    // Èç¹ûºóÃæÃ»ÓĞÊı¾İÁË
+                    // å¦‚æœåé¢æ²¡æœ‰æ•°æ®äº†
                     if (next_char == null)
                     {
-                        // Ìí¼Óµ½ĞĞ
+                        // æ·»åŠ åˆ°è¡Œ
                         ++row_index;
                         row[row_index] = cell;
                         cell = "";
                     
-                        // Ìí¼Óµ½±í
+                        // æ·»åŠ åˆ°è¡¨
                         if (!this.addRow(row)) return false;
                         row_index = 0;
                         row = new List<string>();
@@ -264,12 +264,12 @@ public class JCsvFile : ALittle.ICsvFile
 
             }
 
-            // Èç¹ûÃ»ÓĞÏÂ¸ö×Ö·ûÁË£¬ËµÃ÷½áÊøÁË
+            // å¦‚æœæ²¡æœ‰ä¸‹ä¸ªå­—ç¬¦äº†ï¼Œè¯´æ˜ç»“æŸäº†
             if (next_char == null) {
                 break;
             }
         
-            // ¶ÁÈ¡ÏÂÒ»¸ö×Ö·û
+            // è¯»å–ä¸‹ä¸€ä¸ªå­—ç¬¦
             cur_char = next_char;
             next_char = null;
             if (char_index + 1 < cast<javascript.String>(content).length)

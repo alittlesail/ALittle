@@ -11,12 +11,12 @@ public class JMessageWriteFactory : ALittle.IMessageWriteFactory
     
     public ctor(int init_size)
     {
-        // ³õÊ¼»¯
+        // åˆå§‹åŒ–
         this._size = 0;
         this._id = 0;
         this._rpc_id = 0;
         
-        // ¹¹½¨ÄÚ´æ
+        // æ„å»ºå†…å­˜
         if (init_size == null || init_size <= 0) init_size = 1024;
         var data = new javascript.ArrayBuffer(init_size);
         this._memory = new javascript.DataView(data);
@@ -24,16 +24,16 @@ public class JMessageWriteFactory : ALittle.IMessageWriteFactory
     
     private fun ResizeMemory(int add_size)
     {
-        // Èç¹ûÄÚ´æ¹»£¬ÄÇÃ´¾ÍÖ±½Ó·µ»Ø
+        // å¦‚æœå†…å­˜å¤Ÿï¼Œé‚£ä¹ˆå°±ç›´æ¥è¿”å›
         if (this._memory.byteLength >= this._size + add_size) return;
         
-        // ´´½¨ĞÂÊı¾İ
+        // åˆ›å»ºæ–°æ•°æ®
 		var new_data = new javascript.ArrayBuffer(this._memory.byteLength * 2);
 		var new_memory = new javascript.DataView(new_data);
-        // ¸´ÖÆÊı¾İ
+        // å¤åˆ¶æ•°æ®
         for (var i = 0; i < this._memory.byteLength; 1)
             new_memory.setUint8(i, this._memory.getUint8(i));
-        // Ìæ»»Êı¾İ
+        // æ›¿æ¢æ•°æ®
 		this._memory = new_memory;
     }
     
@@ -66,14 +66,14 @@ public class JMessageWriteFactory : ALittle.IMessageWriteFactory
     }
     public fun WriteString(string value) : int
     {
-        // Ò»¸ö×Ö·û×î¶àÀ©Õ¹µ½utf8ÊÇ4¸ö×Ö½Ú£¬ºóÃæµÄ5ÊÇ×îºó\0ºÍlenĞèÒªµÄÄÚ´æ´óĞ¡
+        // ä¸€ä¸ªå­—ç¬¦æœ€å¤šæ‰©å±•åˆ°utf8æ˜¯4ä¸ªå­—èŠ‚ï¼Œåé¢çš„5æ˜¯æœ€å\0å’Œlenéœ€è¦çš„å†…å­˜å¤§å°
 		this.ResizeMemory(cast<javascript.String>(value).length*4 + 5);
         
-        // ±£´æ¾ÉµÄ´óĞ¡
+        // ä¿å­˜æ—§çš„å¤§å°
         var old_size = this._size;
-        // ÏòÇ°Æ«ÒÆ4¸ö×Ö½Ú
+        // å‘å‰åç§»4ä¸ªå­—èŠ‚
         this._size += 4;
-        // ×ªÎªutf8£¬È»ºó¿½±´µ½ÄÚ´æ
+        // è½¬ä¸ºutf8ï¼Œç„¶åæ‹·è´åˆ°å†…å­˜
 		var new_data = javascript.StringToUTF8Array(value);
 		var new_memory = new javascript.DataView(new_data.buffer);
 		for (var i = 0; i < new_memory.byteLength; 1)
@@ -81,15 +81,15 @@ public class JMessageWriteFactory : ALittle.IMessageWriteFactory
             this._memory.setUint8(this._size, new_memory.getUint8(i));
 			++ this._size;
 		}
-        // ¼ÆËã×Ö·û´®³¤¶È
+        // è®¡ç®—å­—ç¬¦ä¸²é•¿åº¦
         var str_len = this._size - 4 - old_size;
-        // ÉèÖÃ³¤¶Èµ½ÄÚ´æ
+        // è®¾ç½®é•¿åº¦åˆ°å†…å­˜
         this._memory.setUint32(old_size, str_len + 1, true);
-        // Î²°Í´øÉÏ\0
+        // å°¾å·´å¸¦ä¸Š\0
         this._memory.setUint8(this._size, 0);
         this._size += 1;
         
-        // ×îºó·µ»ØÊµ¼ÊµÄĞòÁĞ»¯³¤¶È
+        // æœ€åè¿”å›å®é™…çš„åºåˆ—åŒ–é•¿åº¦
         return str_len + 4 + 1;
     }
     public fun WriteDouble(double value) : int
@@ -115,14 +115,14 @@ public class JMessageWriteFactory : ALittle.IMessageWriteFactory
 
 public class JMessageReadFactory : ALittle.IMessageReadFactory
 {
-    private int _id;                        // ÏûÏ¢ID
-    private int _rpc_id;                    // ÏûÏ¢RpcID
-    private int _read_size;                 // _memoryÒÑ¶ÁÈ¡µÄ×Ö½ÚÊı
-    private int _total_size;                // _memory×Ö½Ú×ÜÊı
-    private int _data_size;                 // ÏûÏ¢Ìå×Ö½Ú×ÜÊı
-    private int _last_read_size;            // ÉÏÒ»´Î¶ÁÈ¡µÄ×Ö½ÚÊı
-    private javascript.DataView _memory;    // ÏûÏ¢Í·+ÏûÏ¢Ìå
-    private int _offset;                    // bufferµÄÆ«ÒÆÎ»ÖÃ
+    private int _id;                        // æ¶ˆæ¯ID
+    private int _rpc_id;                    // æ¶ˆæ¯RpcID
+    private int _read_size;                 // _memoryå·²è¯»å–çš„å­—èŠ‚æ•°
+    private int _total_size;                // _memoryå­—èŠ‚æ€»æ•°
+    private int _data_size;                 // æ¶ˆæ¯ä½“å­—èŠ‚æ€»æ•°
+    private int _last_read_size;            // ä¸Šä¸€æ¬¡è¯»å–çš„å­—èŠ‚æ•°
+    private javascript.DataView _memory;    // æ¶ˆæ¯å¤´+æ¶ˆæ¯ä½“
+    private int _offset;                    // bufferçš„åç§»ä½ç½®
     
     public ctor(javascript.DataView data, int offset)
     {
@@ -179,7 +179,7 @@ public class JMessageReadFactory : ALittle.IMessageReadFactory
 		    ALittle.Log("id:"..this._id.." already read completed:"..this._total_size..", "..this._read_size);
 		    return "";
 	    }
-        // »ñÈ¡×Ö·û´®³¤¶È£¬Õâ¸ö³¤¶È°üÀ¨ÁË×îºóµÄ\0
+        // è·å–å­—ç¬¦ä¸²é•¿åº¦ï¼Œè¿™ä¸ªé•¿åº¦åŒ…æ‹¬äº†æœ€åçš„\0
 	    var len = this._memory.getInt32(this._read_size, true); // include '\0'
 	    if (len <= 0)
         {
@@ -187,15 +187,15 @@ public class JMessageReadFactory : ALittle.IMessageReadFactory
 		    ALittle.Error("id:"..this._id.." string len: "..len.." is error:"..this._total_size..", "..this._read_size);
 		    return "";
 	    }
-        // ÏòÇ°×ßÒ»¸öint
+        // å‘å‰èµ°ä¸€ä¸ªint
         this._read_size += 4;
-        // utf8×ªÎª×Ö·û´®
+        // utf8è½¬ä¸ºå­—ç¬¦ä¸²
         var value = "";
         if (len > 1) value = javascript.UTF8ArrayToString(new javascript.Uint8Array(this._memory.buffer, this._offset + this._read_size, len - 1));
-        // ÏòÇ°×ßlen
+        // å‘å‰èµ°len
         this._read_size += len;
         this._last_read_size = len + 4;
-        // ·µ»Ø³¤¶È
+        // è¿”å›é•¿åº¦
 	    return value;
     }
     

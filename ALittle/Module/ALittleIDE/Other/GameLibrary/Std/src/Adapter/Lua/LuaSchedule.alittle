@@ -11,7 +11,7 @@ public enum net_type
 	HTTP_FILE_FAILED = 12;
 	HTTP_FILE_PROGRESS = 13;
     
-    TIMER = 21;     // ¶¨Ê±Æ÷
+    TIMER = 21;     // å®šæ—¶å™¨
     
     MSG_CONNECT_SUCCEED = 31;
     MSG_CONNECT_FAILED = 32;
@@ -29,7 +29,7 @@ public class LuaSchedule : ALittle.ISchedule
     {
     }
 
-    // ÔÚÖ¡ÖĞÔËĞĞ
+    // åœ¨å¸§ä¸­è¿è¡Œ
     public fun RunInFrame()
     {
         if (this._net == null)
@@ -44,7 +44,7 @@ public class LuaSchedule : ALittle.ISchedule
         }
     }
     
-    // ÔÚLua°æ±¾ÏÂRunÖ±½Ó×èÈû£¬µÈ´ıËùÓĞÊÂ¼şÈ«²¿´¦ÀíÍê±Ï²ÅÍË³ö
+    // åœ¨Luaç‰ˆæœ¬ä¸‹Runç›´æ¥é˜»å¡ï¼Œç­‰å¾…æ‰€æœ‰äº‹ä»¶å…¨éƒ¨å¤„ç†å®Œæ¯•æ‰é€€å‡º
     public fun Run()
     {   
         if (this._net == null)

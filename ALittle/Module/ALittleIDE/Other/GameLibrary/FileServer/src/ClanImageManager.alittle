@@ -6,17 +6,17 @@ struct ClanImageInfo : ALittle.CacheData
     int create_time;
 }
 
-// ´ıÉ¾³ıµÄÍ·ÏñÁĞ±í
+// å¾…åˆ é™¤çš„å¤´åƒåˆ—è¡¨
 struct ClanImageInfoDelete
 {
-    int clan_id;         // ¹«»áID
-    int create_time;     // ´´½¨Ê±¼ä  
+    int clan_id;         // å…¬ä¼šID
+    int create_time;     // åˆ›å»ºæ—¶é—´  
 }
 
 public class ClanImageManager
 {
     private string _base_path;
-    private int _timer;      // É¾³ı¶¨Ê±Æ÷
+    private int _timer;      // åˆ é™¤å®šæ—¶å™¨
     private ALittle.CacheDataSet<ClanImageInfo> _cache;
     
     public ctor()
@@ -31,10 +31,10 @@ public class ClanImageManager
         
         this._base_path = g_ConfigSystem.GetString("clan_image_path", "");
         
-        // ´´½¨ÎÄ¼ş¼Ğ
+        // åˆ›å»ºæ–‡ä»¶å¤¹
         if (this._base_path != "") ALittle.File_MakeDeepDir(this._base_path);
         
-        // Ã¿Ìì¶¨Ê±ÔËĞĞÇåÀí
+        // æ¯å¤©å®šæ—¶è¿è¡Œæ¸…ç†
         var delay_time = ALittle.GetNextTodayBeginTime() - lua.os.time();
         this._timer = A_LoopSystem.AddTimer(delay_time * 1000, bind(this.HandleNewDay, this));
         
@@ -72,13 +72,13 @@ public class ClanImageManager
             {
                 var file_path = this.GetImagePath(info.clan_id, info.create_time);            
                 if (!ALittle.File_DeleteFile(file_path))
-			        ALittle.Warn("ÎÄ¼şÉ¾³ıÊ§°Ü:"..file_path);
+			        ALittle.Warn("æ–‡ä»¶åˆ é™¤å¤±è´¥:"..file_path);
             }
         }
         error = A_MysqlSystem.DeleteFromByMap{ClanImageInfo}(null);
         if (error != null) ALittle.Error(error);
         
-        // ¶¨Ê±Ã÷ÌìÁè³¿
+        // å®šæ—¶æ˜å¤©å‡Œæ™¨
         var delay_time = ALittle.GetNextTodayBeginTime() - lua.os.time();
         this._timer = A_LoopSystem.AddTimer(delay_time * 1000, bind(this.HandleNewDay, this));
     }
@@ -97,8 +97,8 @@ public struct QCheckClanImage
 
 public struct ACheckClanImage
 {
-    bool is_exist;      // ÊÇ·ñ´æÔÚ
-    bool need_download; // ÊÇ·ñĞèÒªÏÂÔØ
+    bool is_exist;      // æ˜¯å¦å­˜åœ¨
+    bool need_download; // æ˜¯å¦éœ€è¦ä¸‹è½½
 }
 
 [Http]
@@ -155,7 +155,7 @@ public await static HandleDownloadClanImage(ALittle.IHttpReceiver client, QDownl
     
     {
         var data = g_ClanImageManager.cache.GetData(msg.target_clan_id);
-        assert(data, "Í·Ïñ²»´æÔÚ");
+        assert(data, "å¤´åƒä¸å­˜åœ¨");
         
         return g_ClanImageManager.GetImagePath(data.id, data.create_time), 0;
     }
@@ -192,7 +192,7 @@ public await static HandleQUploadClanImage(ALittle.IHttpFileReceiver client, QUp
     {
         var data = g_ClanImageManager.cache.GetData(msg.account_id);
         if (data != null && data.create_time == create_time)
-            throw("ÒÑ¾­ÓĞÍ·ÏñÕıÔÚÉÏ´«");
+            throw("å·²ç»æœ‰å¤´åƒæ­£åœ¨ä¸Šä¼ ");
         
         var file_path = g_ClanImageManager.GetImagePath(msg.account_id, create_time);
         var file_dir = ALittle.File_GetFilePathByPath(file_path);
@@ -201,7 +201,7 @@ public await static HandleQUploadClanImage(ALittle.IHttpFileReceiver client, QUp
         if (error != null) throw(error);
     }
     
-    // ¼ì²éÖ®Ç°ÊÇ·ñÒÑ¾­´æÔÚ£¬ÄÇÃ´¾ÍÌí¼Óµ½É¾³ı±íÖĞ
+    // æ£€æŸ¥ä¹‹å‰æ˜¯å¦å·²ç»å­˜åœ¨ï¼Œé‚£ä¹ˆå°±æ·»åŠ åˆ°åˆ é™¤è¡¨ä¸­
     var data = g_ClanImageManager.cache.GetData(msg.account_id);
     if (data != null)
     {

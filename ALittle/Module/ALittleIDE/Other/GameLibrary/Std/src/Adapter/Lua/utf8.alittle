@@ -3,15 +3,15 @@ register namespace lua;
 
 public class utf8
 {
-    // ¼ÆËãutf8×Ö·û´®µÄ×ÖµÄ¸öÊı
+    // è®¡ç®—utf8å­—ç¬¦ä¸²çš„å­—çš„ä¸ªæ•°
     public static wordcount(string value) : int {}
-    // ¼ÆËãutf8×Ö·û´®£¬ÔÚÖ¸¶¨wordcountÏÂµÄ×Ö½ÚÊı£¬offset´Ó0¿ªÊ¼Ëã
+    // è®¡ç®—utf8å­—ç¬¦ä¸²ï¼Œåœ¨æŒ‡å®šwordcountä¸‹çš„å­—èŠ‚æ•°ï¼Œoffsetä»0å¼€å§‹ç®—
     public static bytecount(string value, int offset, int word_count) : int {}
     
-    // ansi×ªutf8
-    // utf8×ªansi
-    // Õâ¸ö½Ó¿ÚÖ»ÓĞÔÚwindowsÆ½Ì¨²ÅÓĞĞ§£¬ÆäËûÆ½Ì¨·µ»ØÔ­Ê¼ÄÚÈİ
-    // ÒòÎªÆäËûÆ½Ì¨Ä¬ÈÏ»ù±¾¶¼ÊÇutf8»òÕßUnicode
+    // ansiè½¬utf8
+    // utf8è½¬ansi
+    // è¿™ä¸ªæ¥å£åªæœ‰åœ¨windowså¹³å°æ‰æœ‰æ•ˆï¼Œå…¶ä»–å¹³å°è¿”å›åŸå§‹å†…å®¹
+    // å› ä¸ºå…¶ä»–å¹³å°é»˜è®¤åŸºæœ¬éƒ½æ˜¯utf8æˆ–è€…Unicode
     public static ansi2utf8(string c) : string {}
     public static utf82ansi(string c) : string {}
 }

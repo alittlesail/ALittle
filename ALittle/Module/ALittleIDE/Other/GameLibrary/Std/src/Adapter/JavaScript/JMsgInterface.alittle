@@ -4,9 +4,9 @@ namespace JavaScript;
 
 public class JNetBuffer
 {
-    private int _msize;    // Êı¾İ°üÌå´óĞ¡
-    private int _dstart;    // Êı¾İÆğÊ¼±ãÒË£¬dstartÖ®Ç°¶¼ÊÇ¾ÉÊı¾İ²»ÒªµÄ
-    private int _dsize;    // Êı¾İ´óĞ¡
+    private int _msize;    // æ•°æ®åŒ…ä½“å¤§å°
+    private int _dstart;    // æ•°æ®èµ·å§‹ä¾¿å®œï¼Œdstartä¹‹å‰éƒ½æ˜¯æ—§æ•°æ®ä¸è¦çš„
+    private int _dsize;    // æ•°æ®å¤§å°
     private javascript.DataView _memory;
     
     public ctor(int init_size)
@@ -18,7 +18,7 @@ public class JNetBuffer
         this._memory = new javascript.DataView(data);
     }
     
-    // Ìí¼Ó»º³åÇø
+    // æ·»åŠ ç¼“å†²åŒº
     public fun Add(javascript.ArrayBuffer array_buffer)
     {
 		var data_view = new javascript.DataView(array_buffer);
@@ -32,14 +32,14 @@ public class JNetBuffer
     
     public fun Read() : javascript.DataView, int
     {
-        // Èç¹ûÊı¾İ»¹²»×ãÍ·²¿´óĞ¡£¬ÄÇÃ´Ö±½Ó·µ»Ø
+        // å¦‚æœæ•°æ®è¿˜ä¸è¶³å¤´éƒ¨å¤§å°ï¼Œé‚£ä¹ˆç›´æ¥è¿”å›
 		if (this._dsize < 12) return null, 0;
         
-        // ¶ÁÈ¡Í·²¿´óĞ¡
+        // è¯»å–å¤´éƒ¨å¤§å°
 		if (this._dsize >= 4)
 			this._msize = this._memory.getUint32(this._dstart, true);   
         
-        // ¼ì²éĞ­ÒéÌå´óĞ¡
+        // æ£€æŸ¥åè®®ä½“å¤§å°
         if (this._dsize - 12 >= this._msize)
         {
             var offset = this._dstart;
@@ -52,7 +52,7 @@ public class JNetBuffer
 		return null, 0;
     }
     
-    // °ÑºóÃæµÄÊı¾İÈ«²¿Õûµ½Ç°Ãæ
+    // æŠŠåé¢çš„æ•°æ®å…¨éƒ¨æ•´åˆ°å‰é¢
     public fun Optimizes()
     {
         if (this._dstart < 100) return;
@@ -67,23 +67,23 @@ public class JNetBuffer
         
     public fun Resize(int add_size)
 	{
-        // ¼ÆËã´óĞ¡
+        // è®¡ç®—å¤§å°
         var need_size = this._dstart + this._dsize + add_size;
 		if (need_size <= this._memory.byteLength) return;
 
-        // ´´½¨ÄÚ´æ        
+        // åˆ›å»ºå†…å­˜        
 		var new_data:javascript.ArrayBuffer = null;
 		if (this._memory.byteLength * 2 < need_size)
 			new_data = new javascript.ArrayBuffer(need_size);
 		else
 			new_data = new javascript.ArrayBuffer(this._memory.byteLength * 2);
         
-        // ¿½±´ÄÚ´æ
+        // æ‹·è´å†…å­˜
 		var new_memory = new javascript.DataView(new_data);
 		for (var i = 0; i < this._memory.byteLength; 1)
 			new_memory.setUint8(i, this._memory.getUint8(i));
         
-        // Ìæ»»ÄÚ´æ
+        // æ›¿æ¢å†…å­˜
         this._memory = new_memory;
 	}
 }
@@ -100,7 +100,7 @@ public class JMsgInterface : ALittle.IMsgCommonNative
 {
     private javascript.WebSocket _net_system;
     private JNetBuffer _net_buffer;
-    private int _net_status;    // µ±Ç°×´Ì¬
+    private int _net_status;    // å½“å‰çŠ¶æ€
     private string _ip;
     private int _port;
     private int _id;
@@ -115,7 +115,7 @@ public class JMsgInterface : ALittle.IMsgCommonNative
 	    this._net_buffer = new JNetBuffer(2048);
     }
     
-    public fun GetID() : int { return this._id; }         // »ñÈ¡Á¬½Ó¶ÔÏóÈ«¾ÖID
+    public fun GetID() : int { return this._id; }         // è·å–è¿æ¥å¯¹è±¡å…¨å±€ID
     public fun Connect(string ip, int port)
     {
         if (this._net_status == JConnectStatus.NET_CONNECTED)
@@ -198,7 +198,7 @@ public class JMsgInterface : ALittle.IMsgCommonNative
             ALittle.__ALITTLEAPI_Message(this._id, factory.GetID(), factory.GetRpcID(), factory);
 		}
         
-        // ÓÅ»¯»º³åÇø
+        // ä¼˜åŒ–ç¼“å†²åŒº
         this._net_buffer.Optimizes();
 	}   
 }

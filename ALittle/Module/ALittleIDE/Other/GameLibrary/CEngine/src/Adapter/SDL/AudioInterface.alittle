@@ -5,7 +5,7 @@ public class __CPPAPIAudioSystem
 {
     public fun AddChunkCache(string path) {}
     public fun RemoveChunkCache(string path) {}
-    // 如果loop<=0，那么就表示无限循环
+    // 濡傛灉loop<=0锛岄偅涔堝氨琛ㄧず鏃犻檺寰幆
     public fun StartChunk(string path, int loop) : int {}
     public fun StopChunk(int channel) : bool {}
     public fun SetChunkVolume(int channel, double volume) : bool {}

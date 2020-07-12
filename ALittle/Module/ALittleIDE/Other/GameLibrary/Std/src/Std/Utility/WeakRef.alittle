@@ -1,7 +1,7 @@
 
 namespace ALittle;
 
-// KEYÀàĞÍ±ØĞëÊÇ¶ÔÏó
+// KEYç±»å‹å¿…é¡»æ˜¯å¯¹è±¡
 public static CreateKeyWeakMap() : any
 {
     [Language(Lua)]
@@ -19,7 +19,7 @@ public static CreateKeyWeakMap() : any
     return new javascript.jkeyweakmap();
 }
 
-// KEYÀàĞÍ±ØĞëÊÇ¶ÔÏó
+// KEYç±»å‹å¿…é¡»æ˜¯å¯¹è±¡
 public static CreateValueWeakMap() : any
 {
     [Language(Lua)]

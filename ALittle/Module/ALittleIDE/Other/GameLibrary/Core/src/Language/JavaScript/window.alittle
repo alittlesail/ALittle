@@ -8,7 +8,7 @@ public class Window
     public get innerHeight() : int {}
     public get innerWidth() : int {}
 
-    // Î¢ĞÅĞ¡ÓÎÏ·½Ó¿Ú
+    // å¾®ä¿¡å°æ¸¸æˆæ¥å£
     public get wx() : wx {}
     public get canvas() : Canvas {}
 }

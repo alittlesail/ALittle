@@ -41,7 +41,7 @@ public class JHttpInterface : ALittle.IHttpSenderNative
         if (this._request != null)
             this._request.abort();
     }
-    public fun GetResponse() : string { return this._request.responseText; }                // 获取请求结果
+    public fun GetResponse() : string { return this._request.responseText; }                // 鑾峰彇璇锋眰缁撴灉
     
     private fun HandleError()
 	{

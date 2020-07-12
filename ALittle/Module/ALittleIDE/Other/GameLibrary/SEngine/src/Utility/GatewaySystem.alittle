@@ -31,7 +31,7 @@ public class GatewayUpdateRoute
     }
     
     
-    // Á¬½Ó¶Ï¿ªÁË
+    // è¿æ¥æ–­å¼€äº†
     private fun HandleAnySessionDisconnected(SessionDisconnectEvent event)
     {
         if (event.route_type != RouteType.RT_GATEWAY) return;
@@ -39,7 +39,7 @@ public class GatewayUpdateRoute
         return;
     }
     
-    // Á¬½Ó
+    // è¿æ¥
     private fun HandleAnySessionConnected(SessionConnectEvent event)
     {
         if (event.route_type != RouteType.RT_GATEWAY) return;
@@ -48,7 +48,7 @@ public class GatewayUpdateRoute
         this._session.SendMsg(this._info);
     }
     
-    // ÉÏ´«¸ºÔØ
+    // ä¸Šä¼ è´Ÿè½½
     public fun UpdateRouteWeight(int weight)
     {
         this._info.route_weight = weight;
@@ -70,7 +70,7 @@ public class GatewaySystem
     {
         if (__CPPAPI_ServerSchedule.GetRouteType() == RouteType.RT_GAME && event.route_type == RouteType.RT_DATA)
         {
-            // ·¢ËÍGameServerĞÅÏ¢
+            // å‘é€GameServerä¿¡æ¯
             {
                 var param = new DataServer.GS2DATA_NGameServerInfo();
                 param.client_ip = __CPPAPI_ServerSchedule.GetClientServerYunIp();

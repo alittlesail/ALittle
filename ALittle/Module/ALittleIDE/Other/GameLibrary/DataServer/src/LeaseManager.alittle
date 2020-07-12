@@ -1,16 +1,16 @@
 
 namespace DataServer;
 
-// ×âÔ¼ĞÅÏ¢
+// ç§Ÿçº¦ä¿¡æ¯
 protected struct LeaseInfo
 {
-    int account_id;         // ÕËºÅID
-    bool confirm;           // ×âÔ¼Í¨ÖªÈ·¶¨µ½´ï
-    int timer;              // ¶¨Ê±Æ÷
-    int gs_route_num;       // ËùÔÚµÄGS
+    int account_id;         // è´¦å·ID
+    bool confirm;           // ç§Ÿçº¦é€šçŸ¥ç¡®å®šåˆ°è¾¾
+    int timer;              // å®šæ—¶å™¨
+    int gs_route_num;       // æ‰€åœ¨çš„GS
 }
 
-// GSÁ¬½ÓĞÅÏ¢
+// GSè¿æ¥ä¿¡æ¯
 protected struct LeaseGameServerInfo
 {
     string client_ip;
@@ -23,9 +23,9 @@ protected var DATA_LEASE_INTERVAL = 30 * 1000;
 
 public class LeaseManager
 {
-    private Map<int, LeaseInfo> _lease_map;             // ×âÔ¼ĞÅÏ¢
-    private int _lease_count;                           // ×âÔ¼ÊıÁ¿
-    private Map<int, LeaseGameServerInfo> _info_map;    // Á¬½ÓĞÅÏ¢
+    private Map<int, LeaseInfo> _lease_map;             // ç§Ÿçº¦ä¿¡æ¯
+    private int _lease_count;                           // ç§Ÿçº¦æ•°é‡
+    private Map<int, LeaseGameServerInfo> _info_map;    // è¿æ¥ä¿¡æ¯
     private ALittle.GatewayUpdateRoute _update_route;
     
     private bool _lease_start;
@@ -68,7 +68,7 @@ public class LeaseManager
     {
         if (event.route_type != ALittle.RouteType.RT_GAME) return;
         
-        // ÇåÀíÁ¬½ÓĞÅÏ¢
+        // æ¸…ç†è¿æ¥ä¿¡æ¯
         this._info_map[event.route_num] = null;
     }
     
@@ -81,7 +81,7 @@ public class LeaseManager
         info.client_ip = msg.client_ip;
         info.client_port = msg.client_port;
         
-        // Í³¼Æ·ÖÅäÊıÁ¿
+        // ç»Ÿè®¡åˆ†é…æ•°é‡
         info.count = 0;
         for (var account_id, lease_info in this._lease_map)
         {
@@ -89,7 +89,7 @@ public class LeaseManager
                 ++ info.count;
         }
         
-        // ±£´æĞÅÏ¢
+        // ä¿å­˜ä¿¡æ¯
         this._info_map[session.route_num] = info;
     }
     
@@ -98,7 +98,7 @@ public class LeaseManager
         return this._info_map[gs_route_num];
     }
     
-    // Ñ¡Ôñ¸ºÔØ×îĞ¡µÄGS
+    // é€‰æ‹©è´Ÿè½½æœ€å°çš„GS
     private fun SelectGameServer() : LeaseGameServerInfo
     {   
         var target_info:LeaseGameServerInfo = null;
@@ -120,41 +120,41 @@ public class LeaseManager
     
     public fun GetLease(int account_id) : LeaseInfo
     {
-        // Èç¹û´¦ÓÚ²»·şÎñÊ±¼ä£¬ÄÇÃ´¾Í·µ»Ønull
+        // å¦‚æœå¤„äºä¸æœåŠ¡æ—¶é—´ï¼Œé‚£ä¹ˆå°±è¿”å›null
         if (!this._lease_start) return null;
         
-        // Èç¹ûÓĞ²éÕÒµ½£¬Ö±½Ó·µ»Ø
+        // å¦‚æœæœ‰æŸ¥æ‰¾åˆ°ï¼Œç›´æ¥è¿”å›
         var info = this._lease_map[account_id];
         if (info != null) return info;    
             
-        // Ñ¡Ôñ¸ºÔØ×îĞ¡µÄGS
+        // é€‰æ‹©è´Ÿè½½æœ€å°çš„GS
         var target = this.SelectGameServer();
-        // Èç¹ûÃ»ÓĞ£¬ÄÇÃ´¾ÍÖ±½Ó·µ»Ø
+        // å¦‚æœæ²¡æœ‰ï¼Œé‚£ä¹ˆå°±ç›´æ¥è¿”å›
         if (target == null) return null;                
-        // ¸üĞÂÈ¨ÖØ
+        // æ›´æ–°æƒé‡
         ++ target.count;
         
         info = new LeaseInfo();
         info.account_id = account_id;
         info.gs_route_num = target.session.route_num;
-        // Æô¶¯¶¨Ê±Æ÷
+        // å¯åŠ¨å®šæ—¶å™¨
         info.timer = A_LoopSystem.AddTimer(DATA_LEASE_INTERVAL, bind(this.HandleLeaseTimeout, this, info.gs_route_num, account_id));
         this._lease_map[account_id] = info;
         ++ this._lease_count;
         
-        // ·ÖÅä×âÔ¼
-        // ÕâÀï²»ÂÛ·ÖÅä³É¹¦»¹ÊÇÊ§°Ü£¬¶¼ÈÏÎªÊÇ³É¹¦
+        // åˆ†é…ç§Ÿçº¦
+        // è¿™é‡Œä¸è®ºåˆ†é…æˆåŠŸè¿˜æ˜¯å¤±è´¥ï¼Œéƒ½è®¤ä¸ºæ˜¯æˆåŠŸ
         var param = new ALittle.DATA2GS_NNewLease();
         param.account_id = account_id;
         target.session.SendMsg(param);
         
-        // ÉÏ±¨·şÎñÆ÷Ïà¹ØĞÅÏ¢
+        // ä¸ŠæŠ¥æœåŠ¡å™¨ç›¸å…³ä¿¡æ¯
         this._update_route.UpdateRouteWeight(this._lease_count);
         
         return info;
     }
     
-    // ĞøÔ¼
+    // ç»­çº¦
     public fun HandleLeaseRenew(ALittle.MsgSession session, GS2DATA_QRenewLease msg) : string
     {
         var info = this._lease_map[msg.account_id];
@@ -165,50 +165,50 @@ public class LeaseManager
             info.gs_route_num = session.route_num;
             info.confirm = true;
             this._lease_map[msg.account_id] = info;
-            // Ìí¼Ó¶¨Ê±Æ÷
+            // æ·»åŠ å®šæ—¶å™¨
             info.timer = A_LoopSystem.AddTimer(DATA_LEASE_INTERVAL, bind(this.HandleLeaseTimeout, this, info.gs_route_num, info.account_id));
             return null;
         }
         
-        // Èç¹ûÒÑ¾­·ÖÅä³öÈ¥ÁË£¬ÄÇÃ´¾ÍĞøÔ¼Ê§°Ü
-        if (info.gs_route_num != session.route_num) return "ĞøÔ¼Ê§°Ü";
+        // å¦‚æœå·²ç»åˆ†é…å‡ºå»äº†ï¼Œé‚£ä¹ˆå°±ç»­çº¦å¤±è´¥
+        if (info.gs_route_num != session.route_num) return "ç»­çº¦å¤±è´¥";
         info.confirm = true;
         
-        // Æô¶¯¶¨Ê±Æ÷
+        // å¯åŠ¨å®šæ—¶å™¨
         if (info.timer != null) A_LoopSystem.RemoveTimer(info.timer);
         info.timer = A_LoopSystem.AddTimer(DATA_LEASE_INTERVAL, bind(this.HandleLeaseTimeout, this, info.gs_route_num, info.account_id));
         
         return null;
     }
     
-    // ·ÅÆú×âÔ¼
+    // æ”¾å¼ƒç§Ÿçº¦
     public fun HandleReleaseLease(ALittle.MsgSession session, GS2DATA_NReleaseLease msg)
     {
         var info = this._lease_map[msg.account_id];
         if (info == null) return;
         
-        // ¼ì²é·ÖÅäµÄÊÇ·ñÕıÈ·
+        // æ£€æŸ¥åˆ†é…çš„æ˜¯å¦æ­£ç¡®
         if (info.gs_route_num != session.route_num) return;
         
-        // É¾³ı¶¨Ê±Æ÷
+        // åˆ é™¤å®šæ—¶å™¨
         if (info.timer != null) A_LoopSystem.RemoveTimer(info.timer);
         
-        // ¼õÉÙÈ¨ÖØ
+        // å‡å°‘æƒé‡
         var gs_info = this._info_map[session.route_num];
         if (gs_info != null) -- gs_info.count;
         
-        // É¾³ıĞÅÏ¢
+        // åˆ é™¤ä¿¡æ¯
         this._lease_map[msg.account_id] = null;
     }
     
-    // ×âÔ¼³¬Ê±
+    // ç§Ÿçº¦è¶…æ—¶
     private fun HandleLeaseTimeout(int route_num, int account_id)
     {
-        // ¼õÉÙÈ¨ÖØ
+        // å‡å°‘æƒé‡
         var info = this._info_map[route_num];
         if (info != null) -- info.count;
         
-        // É¾³ıĞÅÏ¢
+        // åˆ é™¤ä¿¡æ¯
         this._lease_map[account_id] = null;
     }
 }

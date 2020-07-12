@@ -36,5 +36,5 @@ public class LuaHttpInterface : ALittle.IHttpSenderNative
         else
             lua.net.stoppost(A_LuaSchedule._net, this._id);
     }
-    public fun GetResponse() : string { return this._response; }                // 获取请求结果
+    public fun GetResponse() : string { return this._response; }                // 鑾峰彇璇锋眰缁撴灉
 }

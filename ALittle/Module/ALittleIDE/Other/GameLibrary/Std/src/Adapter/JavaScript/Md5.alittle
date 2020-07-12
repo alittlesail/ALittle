@@ -2,6 +2,6 @@
 [Language(JavaScript)]
 register namespace javascript;
 
-// ÇëÔÚhtmlÌí¼Óscript±êÇ©
+// è¯·åœ¨htmlæ·»åŠ scriptæ ‡ç­¾
 // <script src="ALittle/Module/ALittleIDE/Other/GameLibrary/JSNative/md5.min.js"></script>
 public static md5(string text) : string {}

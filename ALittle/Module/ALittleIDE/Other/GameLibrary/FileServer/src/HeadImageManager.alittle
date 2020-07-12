@@ -6,18 +6,18 @@ struct HeadImageInfo : ALittle.CacheData
     int create_time;
 }
 
-// ´ıÉ¾³ıµÄÍ·ÏñÁĞ±í
+// å¾…åˆ é™¤çš„å¤´åƒåˆ—è¡¨
 struct HeadImageInfoDelete
 {
-    int account_id;         // ÕËºÅID
-    int create_time;        // ´´½¨Ê±¼ä
+    int account_id;         // è´¦å·ID
+    int create_time;        // åˆ›å»ºæ—¶é—´
 }
 
 public class HeadImageManager
 {
-    private ALittle.IMsgCommon _gw_session;         // GatewayÁ¬½Ó
+    private ALittle.IMsgCommon _gw_session;         // Gatewayè¿æ¥
     private string _base_path;
-    private int _timer;      // É¾³ı¶¨Ê±Æ÷
+    private int _timer;      // åˆ é™¤å®šæ—¶å™¨
     private ALittle.CacheDataSet<HeadImageInfo> _cache;
     
     public ctor()
@@ -32,14 +32,14 @@ public class HeadImageManager
         
         this._base_path = g_ConfigSystem.GetString("head_image_path", "");
         
-        // ´´½¨ÎÄ¼ş¼Ğ
+        // åˆ›å»ºæ–‡ä»¶å¤¹
         if (this._base_path != "") ALittle.File_MakeDeepDir(this._base_path);
         
         A_SessionSystem.AddEventListener(this, this.HandleSessionDisconnect);
         A_SessionSystem.AddEventListener(this, this.HandleSessionConnect);
         A_SessionSystem.AddConnectSession(ALittle.RouteType.RT_GATEWAY, ALittle.RouteNum.RN_DEFAULT);
         
-        // Ã¿Ìì¶¨Ê±ÔËĞĞÇåÀí
+        // æ¯å¤©å®šæ—¶è¿è¡Œæ¸…ç†
         var delay_time = ALittle.GetNextTodayBeginTime() - lua.os.time();
         this._timer = A_LoopSystem.AddTimer(delay_time * 1000, bind(this.HandleNewDay, this));
         
@@ -77,33 +77,33 @@ public class HeadImageManager
             {
                 var file_path = this.GetImagePath(info.account_id, info.create_time);            
                 if (!ALittle.File_DeleteFile(file_path))
-			        ALittle.Warn("ÎÄ¼şÉ¾³ıÊ§°Ü:"..file_path);
+			        ALittle.Warn("æ–‡ä»¶åˆ é™¤å¤±è´¥:"..file_path);
             }
         }
         error = A_MysqlSystem.DeleteFromByMap{HeadImageInfo}(null);
         if (error != null) ALittle.Error(error);
         
-        // ¶¨Ê±Ã÷ÌìÁè³¿
+        // å®šæ—¶æ˜å¤©å‡Œæ™¨
         var delay_time = ALittle.GetNextTodayBeginTime() - lua.os.time();
         this._timer = A_LoopSystem.AddTimer(delay_time * 1000, bind(this.HandleNewDay, this));
     }
     
-    // ´¦ÀíGW¶Ï¿ªÁ¬½Ó
+    // å¤„ç†GWæ–­å¼€è¿æ¥
     protected fun HandleSessionDisconnect(ALittle.SessionDisconnectEvent event)
     {
         if (event.route_type != ALittle.RouteType.RT_GATEWAY) return;
         this._gw_session = null;
     }
 
-    // ´¦ÀíÁ¬½Ó³É¹¦
+    // å¤„ç†è¿æ¥æˆåŠŸ
     protected fun HandleSessionConnect(ALittle.SessionConnectEvent event)
     {
         if (event.route_type != ALittle.RouteType.RT_GATEWAY) return;
         
-        // ±£´æÁ¬½Ó
+        // ä¿å­˜è¿æ¥
         this._gw_session = event.session;
         
-        // ÉÏ±¨·şÎñÆ÷Ïà¹ØĞÅÏ¢
+        // ä¸ŠæŠ¥æœåŠ¡å™¨ç›¸å…³ä¿¡æ¯
         var param = new GatewayServer.NUpdateRouteInfo();
         param.route_weight = 0;
         param.route_info = new GatewayServer.ConnectInfo();
@@ -128,8 +128,8 @@ public struct QCheckHeadImage
 
 public struct ACheckHeadImage
 {
-    bool is_exist;      // ÊÇ·ñ´æÔÚ
-    bool need_download; // ÊÇ·ñĞèÒªÏÂÔØ
+    bool is_exist;      // æ˜¯å¦å­˜åœ¨
+    bool need_download; // æ˜¯å¦éœ€è¦ä¸‹è½½
 }
 
 [Http]
@@ -186,7 +186,7 @@ public await static HandleDownloadHeadImage(ALittle.IHttpReceiver client, QDownl
     
     {
         var data = g_HeadImageManager.cache.GetData(msg.target_account_id);
-        assert(data, "Í·Ïñ²»´æÔÚ");
+        assert(data, "å¤´åƒä¸å­˜åœ¨");
         
         return g_HeadImageManager.GetImagePath(data.id, data.create_time), 0;
     }
@@ -224,7 +224,7 @@ public await static HandleQUploadHeadImage(ALittle.IHttpFileReceiver client, QUp
     {
         var data = g_HeadImageManager.cache.GetData(msg.account_id);
         if (data != null && data.create_time == create_time)
-            throw("ÒÑ¾­ÓĞÍ·ÏñÕıÔÚÉÏ´«");
+            throw("å·²ç»æœ‰å¤´åƒæ­£åœ¨ä¸Šä¼ ");
         
         var file_path = g_HeadImageManager.GetImagePath(msg.account_id, create_time);
         var file_dir = ALittle.File_GetFilePathByPath(file_path);
@@ -233,7 +233,7 @@ public await static HandleQUploadHeadImage(ALittle.IHttpFileReceiver client, QUp
         if (error != null) throw(error);
     }
     
-    // ¼ì²éÖ®Ç°ÊÇ·ñÒÑ¾­´æÔÚ£¬ÄÇÃ´¾ÍÌí¼Óµ½É¾³ı±íÖĞ
+    // æ£€æŸ¥ä¹‹å‰æ˜¯å¦å·²ç»å­˜åœ¨ï¼Œé‚£ä¹ˆå°±æ·»åŠ åˆ°åˆ é™¤è¡¨ä¸­
     var data = g_HeadImageManager.cache.GetData(msg.account_id);
     if (data != null)
     {

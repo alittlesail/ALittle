@@ -3,27 +3,27 @@ register namespace lua;
 
 public class __CPPAPIMysqlStatementQuery
 {
-    // ÉèÖÃsql
+    // è®¾ç½®sql
     public fun SetSQL(string sql) {}
     public fun GetSQL() : string {}
 
-    // »ñÈ¡¼ÇÂ¼ÊıÁ¿
+    // è·å–è®°å½•æ•°é‡
     public fun GetCount() : int {}
-    // »ñÈ¡Ó°ÏìµÄ¼ÇÂ¼ÌõÊı
+    // è·å–å½±å“çš„è®°å½•æ¡æ•°
     public fun GetAffectCount() : int {}
 
-    // Ñ¹Èë²ÎÊı
+    // å‹å…¥å‚æ•°
     public fun PushBool(bool value) {}
     public fun PushInt(int value) {}
     public fun PushDouble(double value) {}
     public fun PushI64(long value) {}
     public fun PushString(string value) {}
 
-    // ÏÂÒ»Ìõ¼ÇÂ¼
+    // ä¸‹ä¸€æ¡è®°å½•
     public fun HasNext() : bool {}
     public fun Next() : bool {}
 
-    // ¶ÁÈ¡¼ÇÂ¼×Ö¶Î
+    // è¯»å–è®°å½•å­—æ®µ
     public fun ReadType() : int {}
     public fun ReadBool() : bool {}
     public fun ReadInt() : int {}

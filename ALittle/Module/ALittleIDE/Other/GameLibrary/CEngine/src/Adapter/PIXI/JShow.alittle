@@ -351,7 +351,7 @@ public class JImage : JDisplayObject
     }
     public fun SetTextureCoord(double t, double b, double l, double r)
     {
-        // ÒòÎªWeb°æ±¾µÄÍ¼Æ¬¶¼ÊÇÉ¢×°µÄ£¬ËùÒÔ²»ĞèÒª´¦Àí
+        // å› ä¸ºWebç‰ˆæœ¬çš„å›¾ç‰‡éƒ½æ˜¯æ•£è£…çš„ï¼Œæ‰€ä»¥ä¸éœ€è¦å¤„ç†
     }
 }
 
@@ -399,7 +399,7 @@ public class JGrid9Image : JDisplayObject
     }
     public fun SetTextureCoord(double t, double b, double l, double r)
     {
-        // ÒòÎªWeb°æ±¾µÄÍ¼Æ¬¶¼ÊÇÉ¢×°µÄ£¬ËùÒÔ²»ĞèÒª´¦Àí
+        // å› ä¸ºWebç‰ˆæœ¬çš„å›¾ç‰‡éƒ½æ˜¯æ•£è£…çš„ï¼Œæ‰€ä»¥ä¸éœ€è¦å¤„ç†
     }
 
     public fun SetWidth(double width)
@@ -488,7 +488,7 @@ public class JSprite : JDisplayObject
     }
     public fun SetTextureCoord(double t, double b, double l, double r)
     {
-        // ÒòÎªWeb°æ±¾µÄÍ¼Æ¬¶¼ÊÇÉ¢×°µÄ£¬ËùÒÔ²»ĞèÒª´¦Àí
+        // å› ä¸ºWebç‰ˆæœ¬çš„å›¾ç‰‡éƒ½æ˜¯æ•£è£…çš„ï¼Œæ‰€ä»¥ä¸éœ€è¦å¤„ç†
     }
 
     public fun SetRowColCount(int row_count, int col_count)
@@ -564,7 +564,7 @@ public class JTriangle : JDisplayObject
     }
     public fun SetTextureCoord(double t, double b, double l, double r)
     {
-        // ÒòÎªWeb°æ±¾µÄÍ¼Æ¬¶¼ÊÇÉ¢×°µÄ£¬ËùÒÔ²»ĞèÒª´¦Àí
+        // å› ä¸ºWebç‰ˆæœ¬çš„å›¾ç‰‡éƒ½æ˜¯æ•£è£…çš„ï¼Œæ‰€ä»¥ä¸éœ€è¦å¤„ç†
     }
     
     public fun SetTexUV(int index, double u, double v)

@@ -6,7 +6,7 @@ private var __pixel_ratio = 1;
 
 public static JSystem_GetDeviceID() : string
 {
-    // ÏÈ´Ócookie»ñÈ¡£¬Èç¹ûÃ»ÓĞ¾ÍËæ»úÉú³ÉÒ»¸ö
+    // å…ˆä»cookieè·å–ï¼Œå¦‚æœæ²¡æœ‰å°±éšæœºç”Ÿæˆä¸€ä¸ª
     var id:string = null;
     var json:Map<string, any> = null;
     if (document.cookie != null && document.cookie != "")
@@ -187,7 +187,7 @@ public static JSystem_CreateView(string title, int width, int height, int flag, 
     A_PixiApp.stage.scale.x = scale;
     A_PixiApp.stage.scale.y = scale;
     
-	// ¼àÌıÊó±ê»ù±¾ÊÂ¼ş
+	// ç›‘å¬é¼ æ ‡åŸºæœ¬äº‹ä»¶
     if (window.wx != null)
     {
         window.wx.onTouchStart(JSystem_WXFingerDown);

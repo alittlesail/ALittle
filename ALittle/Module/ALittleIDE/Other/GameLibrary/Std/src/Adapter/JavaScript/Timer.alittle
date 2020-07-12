@@ -2,7 +2,7 @@
 [Language(JavaScript)]
 namespace JavaScript;
 
-// ÒòÎªÖ»»á·­Òë³ÉJavaScript£¬Ö»ĞèÒª´ÓjavascriptÈ¡
+// å› ä¸ºåªä¼šç¿»è¯‘æˆJavaScriptï¼Œåªéœ€è¦ä»javascriptå–
 var Math_Floor = javascript.Math.floor;
 
 public struct MiniHeapNodeInfo
@@ -13,7 +13,7 @@ public struct MiniHeapNodeInfo
 
 public class MiniHeap<T : MiniHeapNodeInfo>
 {
-    [Native] // ·­Òë³ÉJavaScriptÊ± Ê¹ÓÃNative±íÊ¾ÏÂ±ê´Ó0¿ªÊ¼
+    [Native] // ç¿»è¯‘æˆJavaScriptæ—¶ ä½¿ç”¨Nativeè¡¨ç¤ºä¸‹æ ‡ä»0å¼€å§‹
     private List<T> _nodes;
     private int _size;
     private int _capacity;
@@ -83,7 +83,7 @@ public class MiniHeap<T : MiniHeapNodeInfo>
         greater than one or both its children. Since the children are known
         to be less than the parent, it can't need to shift both up and
         down. */
-        // Èç¹û²»ÊÇ¸ù½Úµã£¬²¢ÇÒ¸¸½Úµã±È×îºóÒ»¸ö½Úµã´ó£¬ÄÇÃ´¾ÍÊ¹ÓÃÎŞÌõ¼şÉÏ¸¡Ò»´Î£¬È»ºóÒÀ´ÎÉÏ¸¡
+        // å¦‚æœä¸æ˜¯æ ¹èŠ‚ç‚¹ï¼Œå¹¶ä¸”çˆ¶èŠ‚ç‚¹æ¯”æœ€åä¸€ä¸ªèŠ‚ç‚¹å¤§ï¼Œé‚£ä¹ˆå°±ä½¿ç”¨æ— æ¡ä»¶ä¸Šæµ®ä¸€æ¬¡ï¼Œç„¶åä¾æ¬¡ä¸Šæµ®
         if (node.heap_index > 0 && this._nodes[Math_Floor((node.heap_index-1)/2)].end_time > last.end_time)
             this.ShiftUpUnconditional(node.heap_index, last);
         else
@@ -92,9 +92,9 @@ public class MiniHeap<T : MiniHeapNodeInfo>
         return true;
     }
     
-    // ´Óindex¿ªÊ¼£¬ÏòÉÏ¸¡
-    // 1. ´Óµ±Ç°½Úµã¿ªÊ¼Óë¸¸½Úµã½øĞĞ¶Ô±È
-    // 2. Èç¹û¸¸½Úµã´óÓÚµ±Ç°½Úµã£¬ÄÇÃ´¾Í½»»»¡£·ñÔòÍ£Ö¹
+    // ä»indexå¼€å§‹ï¼Œå‘ä¸Šæµ®
+    // 1. ä»å½“å‰èŠ‚ç‚¹å¼€å§‹ä¸çˆ¶èŠ‚ç‚¹è¿›è¡Œå¯¹æ¯”
+    // 2. å¦‚æœçˆ¶èŠ‚ç‚¹å¤§äºå½“å‰èŠ‚ç‚¹ï¼Œé‚£ä¹ˆå°±äº¤æ¢ã€‚å¦åˆ™åœæ­¢
     private fun ShiftUp(int index, T node)
     {
         var parent = Math_Floor((index - 1) / 2);
@@ -109,10 +109,10 @@ public class MiniHeap<T : MiniHeapNodeInfo>
         node.heap_index = index;
     }
     
-    // ´Óindex¿ªÊ¼£¬ÏòÉÏ¸¡
-    // 1. µÚÒ»´ÎÎŞÌõ¼şÉÏ¸¡
-    // 2. ´Óµ±Ç°½Úµã¿ªÊ¼Óë¸¸½Úµã½øĞĞ¶Ô±È
-    // 3. Èç¹û¸¸½Úµã´óÓÚµ±Ç°½Úµã£¬ÄÇÃ´¾Í½»»»¡£·ñÔòÍ£Ö¹
+    // ä»indexå¼€å§‹ï¼Œå‘ä¸Šæµ®
+    // 1. ç¬¬ä¸€æ¬¡æ— æ¡ä»¶ä¸Šæµ®
+    // 2. ä»å½“å‰èŠ‚ç‚¹å¼€å§‹ä¸çˆ¶èŠ‚ç‚¹è¿›è¡Œå¯¹æ¯”
+    // 3. å¦‚æœçˆ¶èŠ‚ç‚¹å¤§äºå½“å‰èŠ‚ç‚¹ï¼Œé‚£ä¹ˆå°±äº¤æ¢ã€‚å¦åˆ™åœæ­¢
     private fun ShiftUpUnconditional(int index, T node)
     {
         var parent = Math_Floor((index - 1) / 2);
@@ -130,16 +130,16 @@ public class MiniHeap<T : MiniHeapNodeInfo>
     
     private fun ShiftDown(int index, T node)
     {
-        // Ñ¡ÔñÓÒ×Ó½Úµã
+        // é€‰æ‹©å³å­èŠ‚ç‚¹
         var min_child = 2 * (index + 1);
         while (min_child <= this._size)
         {
-            // Èç¹ûÕâ¸ö×Ö½ÚµãÊÇ×îºóÒ»¸ö½Úµã£¬»òÕßÓÒ½Úµã´óÓÚ×ó½Úµã
-            // ÄÇÃ´¾ÍÑ¡Ôñ×ó½Úµã
+            // å¦‚æœè¿™ä¸ªå­—èŠ‚ç‚¹æ˜¯æœ€åä¸€ä¸ªèŠ‚ç‚¹ï¼Œæˆ–è€…å³èŠ‚ç‚¹å¤§äºå·¦èŠ‚ç‚¹
+            // é‚£ä¹ˆå°±é€‰æ‹©å·¦èŠ‚ç‚¹
             if (min_child == this._size || this._nodes[min_child].end_time > this._nodes[min_child - 1].end_time)
                 min_child -= 1;
             
-            // Èç¹ûµ±Ç°½ÚµãĞ¡ÓÚ»òµÈÓÚÑ¡ÔñµÄ½Úµã£¬ÄÇÃ´¾ÍÌø³ö
+            // å¦‚æœå½“å‰èŠ‚ç‚¹å°äºæˆ–ç­‰äºé€‰æ‹©çš„èŠ‚ç‚¹ï¼Œé‚£ä¹ˆå°±è·³å‡º
             if (!(node.end_time > this._nodes[min_child].end_time)) {
                 break;
             }
@@ -212,19 +212,19 @@ public class JHeapTimer : ALittle.IHeapTimer
         var find_count = 1000000;
         while(find_count > 0)
         {
-            // ÍùÇ°¼Ó
+            // å¾€å‰åŠ 
             this._max_id += 1;
-            // Èç¹ûµ½´ï×î´óÖµ£¬ÄÇÃ´¾Í»Øµ½1¿ªÊ¼
+            // å¦‚æœåˆ°è¾¾æœ€å¤§å€¼ï¼Œé‚£ä¹ˆå°±å›åˆ°1å¼€å§‹
             if (this._max_id == 0x7FFFFFFF) this._max_id = 1;
             
-            // Èç¹ûÃ»ÓĞ±»Ê¹ÓÃ£¬ÄÇÃ´¿ÉÒÔÌø³ö
+            // å¦‚æœæ²¡æœ‰è¢«ä½¿ç”¨ï¼Œé‚£ä¹ˆå¯ä»¥è·³å‡º
             if (this._map[this._max_id] == null)
             {
                 info.id = this._max_id;
                 break;
             }
             
-            // ¼ÌĞø²éÕÒ
+            // ç»§ç»­æŸ¥æ‰¾
             --find_count;
         }
         
@@ -265,7 +265,7 @@ public class JHeapTimer : ALittle.IHeapTimer
         
         this._heap.Pop();
         
-        // ´¦ÀíÎŞÏŞÑ­»·
+        // å¤„ç†æ— é™å¾ªç¯
         if (info.loop < 0)
         {
             info.end_time = info.end_time + info.interval_ms;
@@ -273,7 +273,7 @@ public class JHeapTimer : ALittle.IHeapTimer
             return info.id;   
         }
         
-        // Èç¹û»¹ÓĞ´ÎÊı£¬ÄÇÃ´¾Í¿Û³ı´ÎÊı
+        // å¦‚æœè¿˜æœ‰æ¬¡æ•°ï¼Œé‚£ä¹ˆå°±æ‰£é™¤æ¬¡æ•°
         if (info.loop > 1)
         {
             --info.loop;
@@ -282,7 +282,7 @@ public class JHeapTimer : ALittle.IHeapTimer
             return info.id;
         }
         
-        // ´ÎÊıÒÑ¾­ÓÃÍê£¬ÄÇÃ´¾ÍÖ±½ÓÉ¾³ı
+        // æ¬¡æ•°å·²ç»ç”¨å®Œï¼Œé‚£ä¹ˆå°±ç›´æ¥åˆ é™¤
         this._map[info.id] = null;
         this.Release(info);
         return -info.id;

@@ -45,7 +45,7 @@ public class JCsvFileLoader : ALittle.ICsvFileLoader
             if (func != null) func(this);
             return;
         }
-        // 可以删掉文件了，已经没有用了
+        // 鍙互鍒犳帀鏂囦欢浜嗭紝宸茬粡娌℃湁鐢ㄤ簡
         ALittle.File_DeleteFile(path);
         
         var func = cast<Map<string, Functor<(ALittle.ICsvFileLoader, ALittle.ICsvFile)>>>(window)["__ALITTLEAPI_CsvFileLoadSucceed"];

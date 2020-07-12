@@ -4,7 +4,7 @@ register namespace lua;
 public class csv
 {
     public static create() : csv {}
-    // 如果失败则返回失败的原因，否则返回null
+    // 濡傛灉澶辫触鍒欒繑鍥炲け璐ョ殑鍘熷洜锛屽惁鍒欒繑鍥瀗ull
     public static load(csv c, string path) : string {}
     public static clear(csv c) {}
     public static getpath(csv c) : string {}

@@ -11,15 +11,15 @@ public struct WxSystemInfo
 
 public struct WxRequestInfo
 {
-    string url; // ±ØÌî ¿ª·¢Õß·şÎñÆ÷½Ó¿ÚµØÖ·
-	any data;	// string/object/ArrayBuffer Ñ¡Ìî ÇëÇóµÄ²ÎÊı
-	string dataType;	// ·µ»ØÖµÀàĞÍ
-	int timeout;	// ³¬Ê±Ê±¼ä Ñ¡Ìî
-	string method;	// GET/POST Ñ¡Ìî
-	Map<string, string> header;	// httpÍ·
-	Functor<(WxResponseInfo)> success;	// ³É¹¦Ê±µ÷ÓÃ
-	Functor<()> fail;		// Ê§°ÜÊ±µ÷ÓÃ
-	Functor<()> complete;	// ²»ÂÛ³É¹¦Ê§°Ü¶¼»áµ÷ÓÃ
+    string url; // å¿…å¡« å¼€å‘è€…æœåŠ¡å™¨æ¥å£åœ°å€
+	any data;	// string/object/ArrayBuffer é€‰å¡« è¯·æ±‚çš„å‚æ•°
+	string dataType;	// è¿”å›å€¼ç±»å‹
+	int timeout;	// è¶…æ—¶æ—¶é—´ é€‰å¡«
+	string method;	// GET/POST é€‰å¡«
+	Map<string, string> header;	// httpå¤´
+	Functor<(WxResponseInfo)> success;	// æˆåŠŸæ—¶è°ƒç”¨
+	Functor<()> fail;		// å¤±è´¥æ—¶è°ƒç”¨
+	Functor<()> complete;	// ä¸è®ºæˆåŠŸå¤±è´¥éƒ½ä¼šè°ƒç”¨
 }
 
 public struct WxResponseInfo

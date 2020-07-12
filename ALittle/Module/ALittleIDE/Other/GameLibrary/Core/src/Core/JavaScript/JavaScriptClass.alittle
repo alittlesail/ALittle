@@ -4,82 +4,82 @@ namespace JavaScript;
 
 protected static CloneProperty(ALittle.ClassInfo clazz, bool copy_ctor) : ALittle.ClassInfo
 {
-    // ¹¹½¨·´ÉäĞÅÏ¢
+    // æ„å»ºåå°„ä¿¡æ¯
     var new_clazz = new ALittle.ClassInfo();
     
-    // ±£´æ¸¸Àà¶ÔÏó
+    // ä¿å­˜çˆ¶ç±»å¯¹è±¡
     new_clazz.__super = clazz.__super;
     new_clazz.__name = clazz.__name;
     
-    // ¹¹½¨setter getter
+    // æ„å»ºsetter getter
     var setter_map = new Map<string, Functor<(any, any)>>();
     var getter_map = new Map<string, Functor<(any):any>>();
     new_clazz.__setter = setter_map;
     new_clazz.__getter = getter_map;
     
-    // ±éÀúËùÓĞ¸¸ÀàµÄÊôĞÔºÍº¯Êı
-    [Native] // ÕâÀïÊ¹ÓÃNative±íÊ¾¶ÔÖµÎªundefinedµÄ¼üÖµ¶Ô½øĞĞ¹ıÂË
+    // éå†æ‰€æœ‰çˆ¶ç±»çš„å±æ€§å’Œå‡½æ•°
+    [Native] // è¿™é‡Œä½¿ç”¨Nativeè¡¨ç¤ºå¯¹å€¼ä¸ºundefinedçš„é”®å€¼å¯¹è¿›è¡Œè¿‡æ»¤
     for (var name, _ in cast<Map<string, any>>(clazz))
     {
-        // Èç¹û²»¿½±´¹¹Ôìº¯Êı£¬¾ÍÌø¹ı
+        // å¦‚æœä¸æ‹·è´æ„é€ å‡½æ•°ï¼Œå°±è·³è¿‡
         if (!copy_ctor && name == "Ctor") continue;
         
-		// ³ıÁË¹¹Ôìº¯ÊıºÍsuper_classµÄ¸¸Àà¶ÔÏó²»ĞèÒª¸´ÖÆ£¬ÆäËû¶¼Òª¸´ÖÆ
+		// é™¤äº†æ„é€ å‡½æ•°å’Œsuper_classçš„çˆ¶ç±»å¯¹è±¡ä¸éœ€è¦å¤åˆ¶ï¼Œå…¶ä»–éƒ½è¦å¤åˆ¶
         if (name != "__super" && name != "__getter" && name != "__setter")
         {
-			// ¸´ÖÆ¶ÔÓ¦µÄsetter£¬getterº¯Êı
+			// å¤åˆ¶å¯¹åº”çš„setterï¼Œgetterå‡½æ•°
             var info = cast<Map<string, any>>(javascript.Object.getOwnPropertyDescriptor(clazz, name));
             if (info["set"] != null || info["get"] != null) javascript.Object.defineProperty(new_clazz, name, info);
                 
             if (info["set"] != null) setter_map[name] = info["set"];
             if (info["get"] != null) getter_map[name] = info["get"];
                 
-            // Èç¹ûÁ½¸ö¶¼Ã»ÓĞ£¬ÄÇÃ´Õâ¸ö»ù±¾ÉÏ¾ÍÊÇº¯ÊıÁË£¬ÄÇÃ´¾ÍÖ±½Ó¸´ÖÆ
+            // å¦‚æœä¸¤ä¸ªéƒ½æ²¡æœ‰ï¼Œé‚£ä¹ˆè¿™ä¸ªåŸºæœ¬ä¸Šå°±æ˜¯å‡½æ•°äº†ï¼Œé‚£ä¹ˆå°±ç›´æ¥å¤åˆ¶
             if (info["set"] == null && info["get"] == null)
                 cast<Map<string, any>>(new_clazz)[name] = cast<Map<string, any>>(clazz)[name];
         }
     }
     
-    // ·µ»Ø·´ÉäĞÅÏ¢
+    // è¿”å›åå°„ä¿¡æ¯
     return new_clazz;
 }
 
 protected static Class(ALittle.ClassInfo drived, Map<string, any> clazz_prop, string clazz_name) : ALittle.ClassInfo
 {
-    // ´´½¨¶ÔÏó
+    // åˆ›å»ºå¯¹è±¡
     var clazz:ALittle.ClassInfo;
-    // Èç¹ûÓĞ¸¸Àà£¬ÄÇÃ´¾Í¶Ô¸¸Àà½øĞĞ¿½±´
+    // å¦‚æœæœ‰çˆ¶ç±»ï¼Œé‚£ä¹ˆå°±å¯¹çˆ¶ç±»è¿›è¡Œæ‹·è´
     if (drived != null)
     {
         clazz = CloneProperty(drived, false);
         clazz.__super = drived;
     }
-    // Ã»ÓĞ¸¸Àà£¬ÄÇÃ´¾Í´´½¨Ò»¸ö¿ÕµÄ
+    // æ²¡æœ‰çˆ¶ç±»ï¼Œé‚£ä¹ˆå°±åˆ›å»ºä¸€ä¸ªç©ºçš„
     else
     {
         clazz  = new ALittle.ClassInfo();
         clazz.__setter = new Map<string, Functor<(any, any)>>();
         clazz.__getter = new Map<string, Functor<(any):any>>();
     }
-    // ÉèÖÃÀàÃû
+    // è®¾ç½®ç±»å
     clazz.__name = clazz_name;
     
-    // »ñÈ¡setter£¬getter
+    // è·å–setterï¼Œgetter
     var setter_map = clazz.__setter;
     var getter_map = clazz.__getter;
     
-    // Í¬Àí¸´ÖÆµ±Ç°µÄÊôĞÔºÍº¯Êı
-    [Native] // ÕâÀïÊ¹ÓÃNative±íÊ¾¶ÔÖµÎªundefinedµÄ¼üÖµ¶Ô½øĞĞ¹ıÂË
+    // åŒç†å¤åˆ¶å½“å‰çš„å±æ€§å’Œå‡½æ•°
+    [Native] // è¿™é‡Œä½¿ç”¨Nativeè¡¨ç¤ºå¯¹å€¼ä¸ºundefinedçš„é”®å€¼å¯¹è¿›è¡Œè¿‡æ»¤
     for (var name, _ in clazz_prop)
     {
-		// ¸´ÖÆ¶ÔÓ¦µÄsetter£¬getterº¯Êı
+		// å¤åˆ¶å¯¹åº”çš„setterï¼Œgetterå‡½æ•°
         var info = cast<Map<string, any>>(javascript.Object.getOwnPropertyDescriptor(clazz_prop, name));
-        // Èç¹û¸ÃÊôĞÔÃ»ÓĞsetter»òÕßgetter£¬ÄÇÃ´¾ÍÖ±½Ó¸´ÖÆ£¬Ò»°ãÊÇº¯Êı
+        // å¦‚æœè¯¥å±æ€§æ²¡æœ‰setteræˆ–è€…getterï¼Œé‚£ä¹ˆå°±ç›´æ¥å¤åˆ¶ï¼Œä¸€èˆ¬æ˜¯å‡½æ•°
         if (info["get"] == null && info["set"] == null)
         {
             cast<Map<string, any>>(clazz)[name] = clazz_prop[name];
         }
-        // Èç¹ûÓĞgetter£¬Ã»ÓĞsetter¡£ÄÇÃ´setterÊ¹ÓÃ¸¸ÀàµÄ
+        // å¦‚æœæœ‰getterï¼Œæ²¡æœ‰setterã€‚é‚£ä¹ˆsetterä½¿ç”¨çˆ¶ç±»çš„
         else if (info["get"] != null && info["set"] == null)
         {
             getter_map[name] = info["get"];
@@ -87,7 +87,7 @@ protected static Class(ALittle.ClassInfo drived, Map<string, any> clazz_prop, st
                 info["set"] = setter_map[name];
             javascript.Object.defineProperty(clazz, name, info);
         }
-        // Èç¹ûÓĞsetter£¬Ã»ÓĞgetter¡£ÄÇÃ´getterÊ¹ÓÃ¸¸Àà
+        // å¦‚æœæœ‰setterï¼Œæ²¡æœ‰getterã€‚é‚£ä¹ˆgetterä½¿ç”¨çˆ¶ç±»
         else if (info["get"] == null && info["set"] != null)
         {
             setter_map[name] = info["set"];
@@ -95,7 +95,7 @@ protected static Class(ALittle.ClassInfo drived, Map<string, any> clazz_prop, st
                 info["get"] = getter_map[name];
             javascript.Object.defineProperty(clazz, name, info);
         }
-        // Èç¹û¶¼ÓĞ£¬ÄÇÃ´¾ÍÖ»Ê¹ÓÃ×Ô¼ºµÄ
+        // å¦‚æœéƒ½æœ‰ï¼Œé‚£ä¹ˆå°±åªä½¿ç”¨è‡ªå·±çš„
         else
         {
             getter_map[name] = info["get"];
@@ -107,10 +107,10 @@ protected static Class(ALittle.ClassInfo drived, Map<string, any> clazz_prop, st
     return clazz;
 }
 
-// ¶¨ÒåÄ£°å
+// å®šä¹‰æ¨¡æ¿
 protected static Template(ALittle.ClassInfo clazz, string name, ...) : ALittle.ClassInfo
 {
-    // ¼ì²é¸ÃÄ£°åÀàÊÇ·ñÒÑ¾­´´½¨¹ı£¬Èç¹ûÓĞÄÇÃ´¾ÍÖ±½Ó·µ»Ø
+    // æ£€æŸ¥è¯¥æ¨¡æ¿ç±»æ˜¯å¦å·²ç»åˆ›å»ºè¿‡ï¼Œå¦‚æœæœ‰é‚£ä¹ˆå°±ç›´æ¥è¿”å›
     var child = clazz.__child;
     if (child == null)
     {
@@ -120,21 +120,21 @@ protected static Template(ALittle.ClassInfo clazz, string name, ...) : ALittle.C
     var template = child[name];
     if (template != null) return template;
     
-    // ´ÓÔ­Ê¼Àà¿½±´Ò»·İ
+    // ä»åŸå§‹ç±»æ‹·è´ä¸€ä»½
     template = CloneProperty(clazz, true);
-    // ±£´æÆğÀ´
+    // ä¿å­˜èµ·æ¥
     child[name] = template;
     
-    // ÉèÖÃÀàÃû
+    // è®¾ç½®ç±»å
     template.__name = name;
-    // ±£´æÄ£°åÔªËØ
+    // ä¿å­˜æ¨¡æ¿å…ƒç´ 
     template.__element = [cast<ALittle.ClassInfo>(...)];
     
-    // ·µ»ØÄ£°å
+    // è¿”å›æ¨¡æ¿
     return template;
 }
 
-// µİ¹éµ÷ÓÃ¹¹Ôìº¯Êı
+// é€’å½’è°ƒç”¨æ„é€ å‡½æ•°
 protected static ClassCtor(any object, ALittle.ClassInfo clazz, ...)
 {
     var drived = clazz.__super;
@@ -144,15 +144,15 @@ protected static ClassCtor(any object, ALittle.ClassInfo clazz, ...)
     if (fctor != null) fctor.call(object, ...);
 }
 
-// ´´½¨¶ÔÏó
+// åˆ›å»ºå¯¹è±¡
 public static NewObject(ALittle.ClassInfo clazz, ...) : any
 {
-    // ¹¹Ôì¶ÔÏó
+    // æ„é€ å¯¹è±¡
     var object = javascript.Object.create(clazz);
-	// °Ñ×Ô¼º×÷ÎªÀà±£´æÔÚ¶ÔÏóÖĞ
+	// æŠŠè‡ªå·±ä½œä¸ºç±»ä¿å­˜åœ¨å¯¹è±¡ä¸­
     cast<Map<string, any>>(object)["__class"] = clazz;
-    // µ÷ÓÃ¹¹Ôìº¯Êı
+    // è°ƒç”¨æ„é€ å‡½æ•°
     ClassCtor(object, clazz, ...);
-    // ·µ»Ø¶ÔÏó
+    // è¿”å›å¯¹è±¡
     return object;
 }

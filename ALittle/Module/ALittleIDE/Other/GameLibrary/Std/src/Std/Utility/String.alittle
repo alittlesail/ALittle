@@ -100,13 +100,13 @@ class StringGenerateID
 
 private var A_StringGenerateID = new StringGenerateID();
 
-// Éú³ÉID
+// ç”ŸæˆID
 public static String_GenerateID(string pre) : string
 {
     return A_StringGenerateID.GenID(pre);
 }
 
-// ²ÎÊı½âÎö
+// å‚æ•°è§£æ
 public static String_HttpAnalysisValueMap(string param, string content) : Map<string, any>
 {
     var value_map = new Map<string, any>();
@@ -145,7 +145,7 @@ public static String_HttpAnalysisValueMap(string param, string content) : Map<st
     return value_map;
 }
 
-// ÅĞ¶ÏÊÇ²»ÊÇÊÖ»úºÅÂë
+// åˆ¤æ–­æ˜¯ä¸æ˜¯æ‰‹æœºå·ç 
 public static String_IsPhoneNumber(string number) : bool
 {
     var l = String_Len(number);
@@ -159,20 +159,20 @@ public static String_IsPhoneNumber(string number) : bool
     return true;
 }
 
-// ÅĞ¶ÏÊÇ²»ÊÇµ¥´ÊµÄ×Ö·û
+// åˆ¤æ–­æ˜¯ä¸æ˜¯å•è¯çš„å­—ç¬¦
 public static String_IsWordChar(string char) : bool
 {
     var len = String_Len(char);
     if (len != 1) return false;
 
     var value = String_Byte(char, 1);
-    // Êı×Ö
+    // æ•°å­—
     if (value >= 48 && value <= 57) return true;
-    // ÏÂ»®Ïß
+    // ä¸‹åˆ’çº¿
     if (value == 95) return true;
-    // Ğ¡Ğ´×ÖÄ¸
+    // å°å†™å­—æ¯
     if (value >= 97 && value <= 122) return true;
-    // ´óĞ´×ÖÄ¸
+    // å¤§å†™å­—æ¯
     if (value >= 64 && value <= 90) return true;
 
     return false;

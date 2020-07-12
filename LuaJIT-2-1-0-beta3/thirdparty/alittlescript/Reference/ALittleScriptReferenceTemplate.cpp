@@ -36,6 +36,14 @@
 #include "../Generate/ALittleScriptEnumVarDecElement.h"
 #include "../Generate/ALittleScriptStructVarDecElement.h"
 #include "../Generate/ALittleScriptStructOptionDecElement.h"
+#include "../Generate/ALittleScriptOp8Element.h"
+#include "../Generate/ALittleScriptOp7Element.h"
+#include "../Generate/ALittleScriptOp6Element.h"
+#include "../Generate/ALittleScriptOp5Element.h"
+#include "../Generate/ALittleScriptOp4Element.h"
+#include "../Generate/ALittleScriptOp3Element.h"
+#include "../Generate/ALittleScriptOp2Element.h"
+#include "../Generate/ALittleScriptOp1Element.h"
 
 ALittleScriptReference::ALittleScriptReference(ABnfElementPtr p_element)
 {
@@ -98,6 +106,19 @@ int ALittleScriptReference::QueryDesiredIndent(int it_line, int it_char, ABnfEle
             m_desire_indent = childs[0]->GetStartIndent();
             return m_desire_indent;
         }
+    }
+    else if (std::dynamic_pointer_cast<ALittleScriptOp8Element>(element)
+        || std::dynamic_pointer_cast<ALittleScriptOp7Element>(element)
+        || std::dynamic_pointer_cast<ALittleScriptOp6Element>(element)
+        || std::dynamic_pointer_cast<ALittleScriptOp5Element>(element)
+        || std::dynamic_pointer_cast<ALittleScriptOp4Element>(element)
+        || std::dynamic_pointer_cast<ALittleScriptOp3Element>(element)
+        || std::dynamic_pointer_cast<ALittleScriptOp2Element>(element)
+        || std::dynamic_pointer_cast<ALittleScriptOp1Element>(element))
+    {
+        if (m_desire_indent >= 0) return m_desire_indent;
+        m_desire_indent = parent->GetReference()->QueryDesiredIndent(it_line, it_char, nullptr) + s_indent_size;
+        return m_desire_indent;
     }
 
     if (m_desire_indent >= 0) return m_desire_indent;
@@ -163,6 +184,18 @@ int ALittleScriptReference::QueryFormateIndent(int it_line, int it_char, ABnfEle
             m_format_indent = childs[0]->GetStartIndent();
             return m_format_indent;
         }
+    }
+    else if (std::dynamic_pointer_cast<ALittleScriptOp8Element>(element)
+        || std::dynamic_pointer_cast<ALittleScriptOp7Element>(element)
+        || std::dynamic_pointer_cast<ALittleScriptOp6Element>(element)
+        || std::dynamic_pointer_cast<ALittleScriptOp5Element>(element)
+        || std::dynamic_pointer_cast<ALittleScriptOp4Element>(element)
+        || std::dynamic_pointer_cast<ALittleScriptOp3Element>(element)
+        || std::dynamic_pointer_cast<ALittleScriptOp2Element>(element)
+        || std::dynamic_pointer_cast<ALittleScriptOp1Element>(element))
+    {
+        m_format_indent = parent->GetReference()->QueryFormateIndent(it_line, it_char, nullptr) + s_indent_size;
+        return m_format_indent;
     }
 
     m_format_indent = parent->GetReference()->QueryFormateIndent(it_line, it_char, nullptr);

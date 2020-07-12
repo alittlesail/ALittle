@@ -92,25 +92,25 @@ public class AUICodeABnf : AUICodeLanguage
         this._project.RemoveFile(this._full_path);
     }
 
-    // ÑÕÉ«²éÑ¯
+    // é¢œè‰²æŸ¥è¯¢
     public fun QueryColorValue(int tag) : ABnfColor { return g_ABnfColor[tag]; }
 
     public fun OnRightMenu(AUIRightMenu menu)
     {
-        menu.AddItem("Éú³É", bind(this.GenerateABnf, this));
+        menu.AddItem("ç”Ÿæˆ", bind(this.GenerateABnf, this));
     }
 
-    // Éú³É¶ÔÓ¦µÄ´úÂë
+    // ç”Ÿæˆå¯¹åº”çš„ä»£ç 
     public async fun GenerateABnf()
     {
         var file_name = ALittle.File_GetJustFileNameByPath(this._full_path);
-        var path = g_AUITool.ShowSelectDir("Ñ¡ÔñÉú³ÉµÄÎÄ¼ş¼Ğ", this._generate_dir);
+        var path = g_AUITool.ShowSelectDir("é€‰æ‹©ç”Ÿæˆçš„æ–‡ä»¶å¤¹", this._generate_dir);
         if (path == null) return;
 
         var attr = ALittle.File_GetFileAttr(path);
         if (attr == null || attr.mode != "directory")
         {
-            g_AUITool.ShowNotice("´íÎó", "ÎÄ¼ş¼Ğ²»´æÔÚ");
+            g_AUITool.ShowNotice("é”™è¯¯", "æ–‡ä»¶å¤¹ä¸å­˜åœ¨");
             return;
         }
         this._generate_dir = path;
@@ -121,14 +121,14 @@ public class AUICodeABnf : AUICodeLanguage
         var error = this.Generate(path.."/Generate", file_name);
         if (error != null)
         {
-            g_AUITool.ShowNotice("´íÎó", error);
+            g_AUITool.ShowNotice("é”™è¯¯", error);
             return;
         }
 
-        g_AUITool.ShowNotice("ÌáÊ¾", "Éú³É³É¹¦");
+        g_AUITool.ShowNotice("æç¤º", "ç”ŸæˆæˆåŠŸ");
     }
 
-    // ²éÑ¯´íÎóĞÅÏ¢
+    // æŸ¥è¯¢é”™è¯¯ä¿¡æ¯
     public await fun Generate(string target_path, string language_name) : string
     {
         var query_id = this._project.Add(co);

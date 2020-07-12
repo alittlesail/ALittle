@@ -3,7 +3,7 @@ namespace Emulator;
 
 public static UitlityCreateChildMessage(RootInfo root, IDETree tree, lua.protobuf_descriptor descriptor, lua.protobuf_reflection rflct, lua.protobuf_message msg)
 {
-    // ±éÀúÏûÏ¢½á¹¹
+    // éå†æ¶ˆæ¯ç»“æ„
     var field_count = lua.protobuf.messagedescriptor_fieldcount(descriptor); 
     for (var i = 0; i < field_count; 1)
     {
@@ -35,7 +35,7 @@ public static UtilityCreateTreeMessage(RootInfo root, lua.protobuf_message msg, 
     var rflct = lua.protobuf.message_getreflection(msg);
     var descriptor = lua.protobuf.message_getdescriptor(msg);
     
-    // ´´½¨ĞÅÏ¢
+    // åˆ›å»ºä¿¡æ¯
     var detail_info = new DetailInfo();
     detail_info.message = msg;
     detail_info.reflection = rflct;
@@ -43,7 +43,7 @@ public static UtilityCreateTreeMessage(RootInfo root, lua.protobuf_message msg, 
     var tree = new IDETreeMessage(g_Control, root, msg_field_name, detail_info);
     detail_info.tree = tree;
 
-    // ±éÀúÏûÏ¢½á¹¹
+    // éå†æ¶ˆæ¯ç»“æ„
     UitlityCreateChildMessage(root, tree, descriptor, rflct, msg);
 
     return tree;
@@ -54,7 +54,7 @@ public static UtilityCreateTreeRepeatedMessage(RootInfo root, IDETreeRepeated pa
     var rflct = lua.protobuf.message_getreflection(msg);
     var descriptor = lua.protobuf.message_getdescriptor(msg);
     
-    // ´´½¨ĞÅÏ¢
+    // åˆ›å»ºä¿¡æ¯
     var detail_info = new DetailInfo();
     detail_info.message = msg;
     detail_info.reflection = rflct;
@@ -62,7 +62,7 @@ public static UtilityCreateTreeRepeatedMessage(RootInfo root, IDETreeRepeated pa
     var tree = new IDETreeRepeatedMessage(g_Control, root, parent, detail_info);
     detail_info.tree = tree;
     
-    // ±éÀúÏûÏ¢½á¹¹
+    // éå†æ¶ˆæ¯ç»“æ„
     UitlityCreateChildMessage(root, tree, descriptor, rflct, msg);
 
     return tree;
@@ -73,7 +73,7 @@ public static UtilityCreateTreeBoolMapMessage(RootInfo root, IDETreeMap parent, 
     var rflct = lua.protobuf.message_getreflection(msg);
     var descriptor = lua.protobuf.message_getdescriptor(msg);
     
-    // ´´½¨ĞÅÏ¢
+    // åˆ›å»ºä¿¡æ¯
     var detail_info = new DetailInfo();
     detail_info.message = lua.protobuf.reflection_getmessage(rflct, msg, value_field);
     detail_info.reflection = lua.protobuf.message_getreflection(detail_info.message);
@@ -81,7 +81,7 @@ public static UtilityCreateTreeBoolMapMessage(RootInfo root, IDETreeMap parent, 
     var tree = new IDETreeBoolMapMessage(g_Control, root, parent, rflct, msg, key_field, detail_info);
     detail_info.tree = tree;
     
-    // ±éÀúÏûÏ¢½á¹¹
+    // éå†æ¶ˆæ¯ç»“æ„
     UitlityCreateChildMessage(root, tree, descriptor, rflct, msg);
 
     return tree;
@@ -92,7 +92,7 @@ public static UtilityCreateTreeEnumMapMessage(RootInfo root, IDETreeMap parent, 
     var rflct = lua.protobuf.message_getreflection(msg);
     var descriptor = lua.protobuf.message_getdescriptor(msg);
     
-    // ´´½¨ĞÅÏ¢
+    // åˆ›å»ºä¿¡æ¯
     var detail_info = new DetailInfo();
     detail_info.message = lua.protobuf.reflection_getmessage(rflct, msg, value_field);
     detail_info.reflection = lua.protobuf.message_getreflection(detail_info.message);
@@ -100,7 +100,7 @@ public static UtilityCreateTreeEnumMapMessage(RootInfo root, IDETreeMap parent, 
     var tree = new IDETreeEnumMapMessage(g_Control, root, parent, rflct, msg, key_field, detail_info);
     detail_info.tree = tree;
     
-    // ±éÀúÏûÏ¢½á¹¹
+    // éå†æ¶ˆæ¯ç»“æ„
     UitlityCreateChildMessage(root, tree, descriptor, rflct, msg);
 
     return tree;
@@ -111,7 +111,7 @@ public static UtilityCreateTreeValueMapMessage(RootInfo root, IDETreeMap parent,
     var rflct = lua.protobuf.message_getreflection(msg);
     var descriptor = lua.protobuf.message_getdescriptor(msg);
     
-    // ´´½¨ĞÅÏ¢
+    // åˆ›å»ºä¿¡æ¯
     var detail_info = new DetailInfo();
     detail_info.message = lua.protobuf.reflection_getmessage(rflct, msg, value_field);
     detail_info.reflection = lua.protobuf.message_getreflection(detail_info.message);
@@ -119,7 +119,7 @@ public static UtilityCreateTreeValueMapMessage(RootInfo root, IDETreeMap parent,
     var tree = new IDETreeValueMapMessage(g_Control, root, parent, rflct, msg, key_field, detail_info);
     detail_info.tree = tree;
     
-    // ±éÀúÏûÏ¢½á¹¹
+    // éå†æ¶ˆæ¯ç»“æ„
     UitlityCreateChildMessage(root, tree, descriptor, rflct, msg);
 
     return tree;
@@ -127,11 +127,11 @@ public static UtilityCreateTreeValueMapMessage(RootInfo root, IDETreeMap parent,
 
 public static Utility_CreateTreeForEdit(Lua.lua_socket_schedule_message_info info) : DetailInfo
 {
-    // ´´½¨ÏûÏ¢°ü
+    // åˆ›å»ºæ¶ˆæ¯åŒ…
     var msg = A_LuaSocketSchedule.CreateMessage(info.full_name);
     if (msg == null) return null;
     
-    // ´ÓÅäÖÃÖĞ»ñÈ¡¼ÇÂ¼µÄĞÅÏ¢
+    // ä»é…ç½®ä¸­è·å–è®°å½•çš„ä¿¡æ¯
     var json = g_GProtoCache.GetString(info.full_name, "{}");
     lua.protobuf.message_jsondecode(msg, json);
 

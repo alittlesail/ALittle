@@ -32,44 +32,44 @@ public class AUICodeLanguage
         this._auto_pair["'"] = "'";
     }
 
-    // »ñÈ¡ÎÄ±¾ĞŞ¸Ä°æ±¾ºÅ
+    // è·å–æ–‡æœ¬ä¿®æ”¹ç‰ˆæœ¬å·
     public get version() : int { return this._version; }
 
-    // ´¦Àí
+    // å¤„ç†
     public fun OnOpen() {}
     public fun OnClose() {}
     public fun OnShow() {}
     public fun OnHide() {}
     public fun OnSave() {}
 
-    // TabÓÒ¼üµã»÷
+    // Tabå³é”®ç‚¹å‡»
     public fun OnTabRightMenu(AUIRightMenu menu)
     {
         
     }
 
-    // ÉèÖÃÎÄ±¾
+    // è®¾ç½®æ–‡æœ¬
     public fun SetText(string content)
     {
         this._version += 1;
         lua.alanguage.abnffile_settext(this._abnf_file, this._version, content);
     }
 
-    // ²åÈëÎÄ±¾
+    // æ’å…¥æ–‡æœ¬
     public fun InsertText(string content, int it_line, int it_char)
     {
         this._version += 1;
         lua.alanguage.abnffile_inserttext(this._abnf_file, this._version, content, it_line, it_char);
     }
 
-    // É¾³ıÎÄ±¾
+    // åˆ é™¤æ–‡æœ¬
     public fun DeleteText(int it_line_start, int it_char_start, int it_line_end, int it_char_end)
     {
         this._version += 1;
         lua.alanguage.abnffile_deletetext(this._abnf_file, this._version, it_line_start, it_char_start, it_line_end, it_char_end);
     }
 
-    // ²éÑ¯ÑÕÉ«
+    // æŸ¥è¯¢é¢œè‰²
     public await fun QueryColor(int line) : List<lua.ABnfQueryColor>
     {
         var query_id = this._project.Add(co);
@@ -77,7 +77,7 @@ public class AUICodeLanguage
         return yield;
     }
 
-    // ²éÑ¯¿ì½İĞÅÏ¢
+    // æŸ¥è¯¢å¿«æ·ä¿¡æ¯
     public await fun QueryInfo(int line, int char) : lua.ABnfQueryInfo
     {
         var query_id = this._project.Add(co);
@@ -85,7 +85,7 @@ public class AUICodeLanguage
         return yield;
     }
 
-    // ²éÑ¯Ìø×ªĞÅÏ¢
+    // æŸ¥è¯¢è·³è½¬ä¿¡æ¯
     public await fun QueryGoto(int line, int char) : lua.ABnfQueryGoto
     {
         var query_id = this._project.Add(co);
@@ -93,7 +93,7 @@ public class AUICodeLanguage
         return yield;
     }
 
-    // ²éÑ¯ÌáÊ¾ĞÅÏ¢
+    // æŸ¥è¯¢æç¤ºä¿¡æ¯
     public await fun QueryComplete(int line, int char) : lua.ABnfQueryComplete
     {
         var query_id = this._project.Add(co);
@@ -101,7 +101,7 @@ public class AUICodeLanguage
         return yield;
     }
 
-    // ²éÑ¯´íÎóĞÅÏ¢
+    // æŸ¥è¯¢é”™è¯¯ä¿¡æ¯
     public await fun QueryError(bool force) : List<lua.ABnfQueryError>
     {
         var query_id = this._project.Add(co);
@@ -109,19 +109,19 @@ public class AUICodeLanguage
         return yield;
     }
 
-    // ²éÑ¯²åÈëËõ½ø
+    // æŸ¥è¯¢æ’å…¥ç¼©è¿›
     public fun QueryDesiredIndent(int line, int char) : int
     {
         return lua.alanguage.abnffile_querydesiredindent(this._abnf_file, this._version, line, char);
     }
 
-    // ²éÑ¯¸ñÊ½»¯Ëõ½ø
+    // æŸ¥è¯¢æ ¼å¼åŒ–ç¼©è¿›
     public fun QueryFormateIndent(int line, int char) : int
     {
         return lua.alanguage.abnffile_queryformateindent(this._abnf_file, this._version, line, char);
     }
 
-    // ²éÑ¯×Ô¶¯Æ¥Åä
+    // æŸ¥è¯¢è‡ªåŠ¨åŒ¹é…
     public fun QueryAutoPair(int line, int char, string input) : string
     {
         var right = this._auto_pair[input];
@@ -131,9 +131,9 @@ public class AUICodeLanguage
         return right;
     }
 
-    // ÑÕÉ«²éÑ¯
+    // é¢œè‰²æŸ¥è¯¢
     public fun QueryColorValue(int tag) : ABnfColor { return null; }
 
-    // ²éÑ¯ÌáÊ¾Í¼±êÂ·¾¶
+    // æŸ¥è¯¢æç¤ºå›¾æ ‡è·¯å¾„
     public fun QueryCompleteIcon(int tag) : string { return null; }
 }

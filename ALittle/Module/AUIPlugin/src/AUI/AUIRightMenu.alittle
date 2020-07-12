@@ -51,7 +51,7 @@ public class AUIRightMenu
 			this._menu.height = this._linear.height + 10;
         }
 		
-		// ÉèÖÃ²Ëµ¥µÄÎ»ÖÃ
+		// è®¾ç½®èœå•çš„ä½ç½®
 		if (target != null)
 		{
 			var x, y = target.LocalToGlobal();

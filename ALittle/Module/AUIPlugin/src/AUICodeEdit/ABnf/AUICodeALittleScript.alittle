@@ -132,7 +132,7 @@ public class AUICodeALittleScript : AUICodeLanguage
 
     public fun OnRightMenu(AUIRightMenu menu)
     {
-        menu.AddItem("Éú³É", bind(this.GenerateLanguage, this, true));
+        menu.AddItem("ç”Ÿæˆ", bind(this.GenerateLanguage, this, true));
     }
 
     public fun OnSave()
@@ -140,31 +140,31 @@ public class AUICodeALittleScript : AUICodeLanguage
         this.GenerateLanguage(false);
     }
 
-    // Éú³É¶ÔÓ¦µÄ´úÂë
+    // ç”Ÿæˆå¯¹åº”çš„ä»£ç 
     public async fun GenerateLanguage(bool notice)
     {
         var error = this.Generate(this._full_path);
         if (error != null)
         {
             if (notice)
-                g_AUITool.ShowNotice("´íÎó", error.error.." ÎÄ¼şÂ·¾¶"..error.full_path);
+                g_AUITool.ShowNotice("é”™è¯¯", error.error.." æ–‡ä»¶è·¯å¾„"..error.full_path);
             return;
         }
 
         if (notice)
-            g_AUITool.ShowNotice("ÌáÊ¾", "Éú³É³É¹¦");
+            g_AUITool.ShowNotice("æç¤º", "ç”ŸæˆæˆåŠŸ");
     }
 
-    // ÑÕÉ«²éÑ¯
+    // é¢œè‰²æŸ¥è¯¢
     public fun QueryColorValue(int tag) : ABnfColor { return g_ALittleScriptColor[tag]; }
 
-    // ÉèÖÃÄ¿±êÉú³ÉÓïÑÔ
+    // è®¾ç½®ç›®æ ‡ç”Ÿæˆè¯­è¨€
     public fun SetTargetLanguage(string target_languaeg)
     {
         lua.alittlescript.alittlescriptproject_settargetlanguage(this._project.project, target_languaeg);
     }
 
-    // Éú³ÉÄ¿±êÓïÑÔ
+    // ç”Ÿæˆç›®æ ‡è¯­è¨€
     public await fun Generate(string full_path) : lua.ALittleScriptGenerateError
     {
         var query_id = this._project.Add(co);
@@ -172,7 +172,7 @@ public class AUICodeALittleScript : AUICodeLanguage
         return yield;
     }
 
-    // ²éÑ¯ÌáÊ¾Í¼±êÂ·¾¶
+    // æŸ¥è¯¢æç¤ºå›¾æ ‡è·¯å¾„
     public fun QueryCompleteIcon(int tag) : string
     {
         return g_ALittleScriptIcon[tag];
@@ -185,15 +185,15 @@ public class AUICodeALittleScriptProject : AUICodeProject
 
     public fun OnTreeMenu(string full_path, AUIRightMenu menu)
     {
-        menu.AddItem("Éú³É", bind(this.GenerateDir, this, full_path));
+        menu.AddItem("ç”Ÿæˆ", bind(this.GenerateDir, this, full_path));
     }
 
     public fun OnTreeItemMenu(string full_path, AUIRightMenu menu)
     {
-        menu.AddItem("Éú³É", bind(this.GenerateFile, this, full_path));
+        menu.AddItem("ç”Ÿæˆ", bind(this.GenerateFile, this, full_path));
     }
 
-    // Éú³É¶ÔÓ¦µÄ´úÂë
+    // ç”Ÿæˆå¯¹åº”çš„ä»£ç 
     public async fun GenerateDir(string full_path)
     {
         var file_map = ALittle.File_GetFileAttrByDir(full_path);
@@ -202,27 +202,27 @@ public class AUICodeALittleScriptProject : AUICodeProject
             var error = this.Generate(full_path);
             if (error != null)
             {
-                g_AUITool.ShowNotice("´íÎó", error.error.." ÎÄ¼şÂ·¾¶"..error.full_path);
+                g_AUITool.ShowNotice("é”™è¯¯", error.error.." æ–‡ä»¶è·¯å¾„"..error.full_path);
                 return;
             }   
         }
-        g_AUITool.ShowNotice("ÌáÊ¾", "Éú³É³É¹¦");
+        g_AUITool.ShowNotice("æç¤º", "ç”ŸæˆæˆåŠŸ");
     }
 
-    // Éú³É¶ÔÓ¦µÄ´úÂë
+    // ç”Ÿæˆå¯¹åº”çš„ä»£ç 
     public async fun GenerateFile(string full_path)
     {
         var error = this.Generate(full_path);
         if (error != null)
         {
-            g_AUITool.ShowNotice("´íÎó", error.error.." ÎÄ¼şÂ·¾¶"..error.full_path);
+            g_AUITool.ShowNotice("é”™è¯¯", error.error.." æ–‡ä»¶è·¯å¾„"..error.full_path);
             return;
         }
 
-        g_AUITool.ShowNotice("ÌáÊ¾", "Éú³É³É¹¦");
+        g_AUITool.ShowNotice("æç¤º", "ç”ŸæˆæˆåŠŸ");
     }
 
-    // Éú³ÉÄ¿±êÓïÑÔ
+    // ç”Ÿæˆç›®æ ‡è¯­è¨€
     public await fun Generate(string full_path) : lua.ALittleScriptGenerateError
     {
         var query_id = this.Add(co);

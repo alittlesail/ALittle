@@ -25,7 +25,7 @@ public class AUICodeProject
         return project;
     }
 
-    // 构建一个ABnf项目
+    // 鏋勫缓涓�涓狝Bnf椤圭洰
     public static CreateABnfProject() : AUICodeProject
     {
         var abnf_project = g_ABnfProjectMap["abnf"];

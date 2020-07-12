@@ -2477,9 +2477,9 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateForExpr(std::shared_ptr<ALit
 
         // 如果for : 遇到迭代函数，那么就不用pair_type
         if (pair_type.size() == 0)
-            content += "for " + ABnfFactory::Join(pair_string_list, ", ") + " : " + value_stat_result + " do\n";
+            content += "for " + ABnfFactory::Join(pair_string_list, ", ") + " in " + value_stat_result + " do\n";
         else
-            content += "for " + ABnfFactory::Join(pair_string_list, ", ") + " : " + pair_type + "(" + value_stat_result + ") do\n";
+            content += "for " + ABnfFactory::Join(pair_string_list, ", ") + " in " + pair_type + "(" + value_stat_result + ") do\n";
     }
     else
     {

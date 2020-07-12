@@ -81,7 +81,8 @@ int ALittleScriptReference::QueryDesiredIndent(int it_line, int it_char, ABnfEle
     {
         if (m_desire_indent < 0)
             m_desire_indent = parent->GetReference()->QueryDesiredIndent(it_line, it_char, nullptr);
-        if (std::dynamic_pointer_cast<ABnfStringElement>(select) && select->GetElementText() == "{")
+        if (std::dynamic_pointer_cast<ABnfStringElement>(select)
+            && (select->GetElementText() == "{" || select->GetElementText() == "}"))
             return m_desire_indent;
         return m_desire_indent + s_indent_size;
     }

@@ -28,7 +28,18 @@ function AUICodeCursor.__getter:char()
 end
 
 function AUICodeCursor.__getter:virtual_indent()
-	return self._virtual_indent
+	if self._virtual_indent == 0 then
+		return ""
+	end
+	local indent = self._virtual_indent
+	local indent_str = ""
+	local i = 1
+	while true do
+		if not(i <= indent) then break end
+		indent_str = indent_str .. " "
+		i = i+(1)
+	end
+	return indent_str
 end
 
 function AUICodeCursor:Show(x, y)
@@ -149,6 +160,17 @@ function AUICodeCursor:SetLineCharInner(it_line, it_char, show)
 	self._virtual_indent = 0
 end
 
+function AUICodeCursor:CurLineHasChar()
+	local line = self._edit.line_list[self._it_line]
+	if line == nil then
+		return false
+	end
+	if line.char_count < 1 or line.char_list[1].char == "\r" or line.char_list[1].char == "\n" then
+		return false
+	end
+	return true
+end
+
 function AUICodeCursor:RejustShowCursor()
 	local line = self._edit.line_list[self._it_line]
 	if line == nil then
@@ -161,6 +183,12 @@ function AUICodeCursor:RejustShowCursor()
 				self.x = self._virtual_indent * self._edit.ascii_width
 			end
 		end
+	end
+end
+
+function AUICodeCursor:UpdateVirtualIndent()
+	if self._edit.language ~= nil then
+		self._virtual_indent = self._edit.language:QueryDesiredIndent(self._it_line, self._it_char)
 	end
 end
 

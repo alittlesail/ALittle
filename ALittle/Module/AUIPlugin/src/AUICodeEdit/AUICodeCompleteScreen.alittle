@@ -259,6 +259,7 @@ protected class AUICodeCompleteScreen
             }
         }
         ALittle.List_Sort(sort_list, AUICodeCompleteScreen.ItemInfoSort);
+        count = 0;
         for (var index, info in sort_list)
         {
             if (this._screen.child_count == 0)
@@ -267,6 +268,7 @@ protected class AUICodeCompleteScreen
                 descriptor = info.complete.descriptor;
             }
             this._screen.AddChild(info._item);      
+            if (count >= 50) break;
         }
 
         if (this._screen.child_count == 0) return false;

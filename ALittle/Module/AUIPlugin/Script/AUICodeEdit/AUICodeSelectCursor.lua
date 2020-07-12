@@ -95,6 +95,14 @@ function AUICodeSelectCursor:SetQuad()
 				line.quad.x = 0
 				line.quad.width = line.container.width
 			end
+			if line.quad.width <= 0 then
+				line.quad.width = self._edit.ascii_width
+			end
+		else
+			line.quad.visible = true
+			self._clear_quad = false
+			line.quad.x = 0
+			line.quad.width = self._edit.ascii_width
 		end
 		i = i+(1)
 	end

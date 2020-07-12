@@ -2,6 +2,7 @@
 namespace AUIPlugin;
 
 private var g_ALittleScriptColor:Map<int, ABnfColor>;
+private var g_ALittleScriptIcon:Map<int, string>;
 
 enum ALittleScriptColorType
 {
@@ -14,6 +15,24 @@ enum ALittleScriptColorType
     METHOD_NAME = 7;
     DEFAULT = 8;
     TEXT = 9;
+}
+
+enum ALittleScriptIconType
+{
+    CLASS = 1;
+    STRUCT = 2;
+    PROPERTY = 3;
+    NAMESPACE = 4;
+    TEMPLATE = 5;
+    ENUM = 6;
+    LANGUAGE = 7;
+    GLOBAL_METHOD = 8;
+    MEMBER_METHOD = 9;
+    FIELD_METHOD = 10;
+    STATIC_METHOD = 11;
+    INSTANCE = 12;
+    PARAM = 13;
+    VARIABLE = 14;
 }
 
 public class AUICodeALittleScript : AUICodeLanguage
@@ -89,6 +108,25 @@ public class AUICodeALittleScript : AUICodeLanguage
             }
         }
 
+        if (g_ALittleScriptIcon == null)
+        {
+            g_ALittleScriptIcon = new Map<int, string>();
+            g_ALittleScriptIcon[ALittleScriptIconType.CLASS] = "ABnf/ALittleScript/ALittleScriptClassIcon.png";
+            g_ALittleScriptIcon[ALittleScriptIconType.STRUCT] = "ABnf/ALittleScript/ALittleScriptStructIcon.png";
+            g_ALittleScriptIcon[ALittleScriptIconType.PROPERTY] = "ABnf/ALittleScript/ALittleScriptPropertyIcon.png";
+            g_ALittleScriptIcon[ALittleScriptIconType.NAMESPACE] = "ABnf/ALittleScript/ALittleScriptNamespaceIcon.png";
+            g_ALittleScriptIcon[ALittleScriptIconType.TEMPLATE] = "ABnf/ALittleScript/ALittleScriptTemplateIcon.png";
+            g_ALittleScriptIcon[ALittleScriptIconType.ENUM] = "ABnf/ALittleScript/ALittleScriptEnumIcon.png";
+            g_ALittleScriptIcon[ALittleScriptIconType.LANGUAGE] = "ABnf/ALittleScript/ALittleScriptNamespaceIcon.png";
+            g_ALittleScriptIcon[ALittleScriptIconType.GLOBAL_METHOD] = "ABnf/ALittleScript/ALittleScriptStaticIcon.png";
+            g_ALittleScriptIcon[ALittleScriptIconType.MEMBER_METHOD] = "ABnf/ALittleScript/ALittleScriptMethodIcon.png";
+            g_ALittleScriptIcon[ALittleScriptIconType.FIELD_METHOD] = "ABnf/ALittleScript/ALittleScriptFieldIcon.png";
+            g_ALittleScriptIcon[ALittleScriptIconType.STATIC_METHOD] = "ABnf/ALittleScript/ALittleScriptStaticIcon.png";
+            g_ALittleScriptIcon[ALittleScriptIconType.INSTANCE] = "ABnf/ALittleScript/ALittleScriptInstanceIcon.png";
+            g_ALittleScriptIcon[ALittleScriptIconType.PARAM] = "ABnf/ALittleScript/ALittleScriptParamIcon.png";
+            g_ALittleScriptIcon[ALittleScriptIconType.VARIABLE] = "ABnf/ALittleScript/ALittleScriptVariableIcon.png";
+        }
+
         this._abnf_file = lua.alittlescript.create_alittlescript_file(project.project, module_path, full_path, "");
     }
 
@@ -132,6 +170,12 @@ public class AUICodeALittleScript : AUICodeLanguage
         var query_id = this._project.Add(co);
         lua.alittlescript.alittlescriptproject_generate(this._project.project, query_id, full_path);
         return yield;
+    }
+
+    // 查询提示图标路径
+    public fun QueryCompleteIcon(int tag) : string
+    {
+        return g_ALittleScriptIcon[tag];
     }
 }
 

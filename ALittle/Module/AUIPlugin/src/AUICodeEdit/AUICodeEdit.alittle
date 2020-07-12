@@ -786,16 +786,7 @@ public class AUICodeEdit : ALittle.ScrollScreen
 
     private fun HandleTextInput(ALittle.UITextInputEvent event)
     {
-        var text = event.text;
-        if (this._language != null && this._cursor.virtual_indent > 0)
-        {
-            var indent = this._cursor.virtual_indent;
-            var indent_str = "";
-            for (var i = 1; i <= indent; 1)
-                indent_str = indent_str.." ";
-            text = indent_str..text;
-        }
-
+        var text = this._cursor.virtual_indent..event.text;
         if (this.InsertText(text, true))
         {
             if (this._language != null)
@@ -933,6 +924,7 @@ public class AUICodeEdit : ALittle.ScrollScreen
             if (this._select_cursor.line_start == null)
             {
                 is_change = this._cursor.DeleteLeft(true);
+                this._cursor.RejustShowCursor();
                 g_AUICodeCompleteScreen.TryHide(this);
                 if (g_AUICodeCompleteScreen.IsShow())
                     g_AUICodeCompleteScreen.ShowComplete(this);
@@ -1004,9 +996,26 @@ public class AUICodeEdit : ALittle.ScrollScreen
             }
             else
             {
+                var old_line = this._cursor.line;
+                var old_char = this._cursor.char;
                 var revoke_bind = new ALittle.RevokeBind();
                 is_change = this.InsertText("\n", true, revoke_bind);
-                this._cursor.RejustShowCursor();
+                if (this._cursor.CurLineHasChar())
+                {
+                    this._cursor.UpdateVirtualIndent();
+                    var text = this._cursor.virtual_indent;
+                    if (text != "")
+                        is_change = this.InsertText(text, true, revoke_bind);
+                    // 如果右边是花括号
+                    if (this._cursor.GetCurCharInLine() == "}")
+                    {
+                        this._cursor.SetLineChar(old_line, old_char);
+                        is_change = this.InsertText("\n", true, revoke_bind);
+                        this._cursor.RejustShowCursor();
+                    }
+                }
+                else
+                    this._cursor.RejustShowCursor();
                 revoke_bind.complete = bind(this.DispatchChangedEvent, this);
                 this._revoke_list.PushRevoke(revoke_bind);
             }

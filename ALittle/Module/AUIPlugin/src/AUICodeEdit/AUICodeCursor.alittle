@@ -25,7 +25,15 @@ public class AUICodeCursor : ALittle.Quad
 
     public get line() : int { return this._it_line; }
     public get char() : int { return this._it_char; }
-    public get virtual_indent() : int { return this._virtual_indent; }
+    public get virtual_indent() : string
+    {
+        if (this._virtual_indent == 0) return "";
+        var indent = this._virtual_indent;
+        var indent_str = "";
+        for (var i = 1; i <= indent; 1)
+            indent_str = indent_str.." ";
+        return indent_str;
+    }
 
     public fun Show([Nullable]double x, [Nullable]double y)
     {
@@ -143,6 +151,18 @@ public class AUICodeCursor : ALittle.Quad
         this._virtual_indent = 0;
     }
 
+    public fun CurLineHasChar() : bool
+    {
+        var line = this._edit.line_list[this._it_line];
+        if (line == null) return false;
+
+        // 如果当前行没有字符，那么调整显示位置，不调整逻辑位置
+        if (line.char_count < 1 || line.char_list[1].char == "\r" || line.char_list[1].char == "\n")
+            return false;
+
+        return true;
+    }
+
     public fun RejustShowCursor()
     {
         var line = this._edit.line_list[this._it_line];
@@ -158,6 +178,12 @@ public class AUICodeCursor : ALittle.Quad
                     this.x = this._virtual_indent * this._edit.ascii_width;
             }
         }
+    }
+
+    public fun UpdateVirtualIndent()
+    {
+        if (this._edit.language != null)
+            this._virtual_indent = this._edit.language.QueryDesiredIndent(this._it_line, this._it_char);
     }
 
     // 向上移动一行

@@ -7,6 +7,7 @@ local ___ipairs = ipairs
 
 
 local g_ALittleScriptColor = nil
+local g_ALittleScriptIcon = nil
 ALittleScriptColorType = {
 	COMMENT = 1,
 	DEFINE_NAME = 2,
@@ -17,6 +18,23 @@ ALittleScriptColorType = {
 	METHOD_NAME = 7,
 	DEFAULT = 8,
 	TEXT = 9,
+}
+
+ALittleScriptIconType = {
+	CLASS = 1,
+	STRUCT = 2,
+	PROPERTY = 3,
+	NAMESPACE = 4,
+	TEMPLATE = 5,
+	ENUM = 6,
+	LANGUAGE = 7,
+	GLOBAL_METHOD = 8,
+	MEMBER_METHOD = 9,
+	FIELD_METHOD = 10,
+	STATIC_METHOD = 11,
+	INSTANCE = 12,
+	PARAM = 13,
+	VARIABLE = 14,
 }
 
 assert(AUIPlugin.AUICodeLanguage, " extends class:AUIPlugin.AUICodeLanguage is nil")
@@ -90,6 +108,23 @@ function AUICodeALittleScript:Ctor(project, full_path, module_path)
 			g_ALittleScriptColor[ALittleScriptColorType.TEXT] = color
 		end
 	end
+	if g_ALittleScriptIcon == nil then
+		g_ALittleScriptIcon = {}
+		g_ALittleScriptIcon[ALittleScriptIconType.CLASS] = "ABnf/ALittleScript/ALittleScriptClassIcon.png"
+		g_ALittleScriptIcon[ALittleScriptIconType.STRUCT] = "ABnf/ALittleScript/ALittleScriptStructIcon.png"
+		g_ALittleScriptIcon[ALittleScriptIconType.PROPERTY] = "ABnf/ALittleScript/ALittleScriptPropertyIcon.png"
+		g_ALittleScriptIcon[ALittleScriptIconType.NAMESPACE] = "ABnf/ALittleScript/ALittleScriptNamespaceIcon.png"
+		g_ALittleScriptIcon[ALittleScriptIconType.TEMPLATE] = "ABnf/ALittleScript/ALittleScriptTemplateIcon.png"
+		g_ALittleScriptIcon[ALittleScriptIconType.ENUM] = "ABnf/ALittleScript/ALittleScriptEnumIcon.png"
+		g_ALittleScriptIcon[ALittleScriptIconType.LANGUAGE] = "ABnf/ALittleScript/ALittleScriptNamespaceIcon.png"
+		g_ALittleScriptIcon[ALittleScriptIconType.GLOBAL_METHOD] = "ABnf/ALittleScript/ALittleScriptStaticIcon.png"
+		g_ALittleScriptIcon[ALittleScriptIconType.MEMBER_METHOD] = "ABnf/ALittleScript/ALittleScriptMethodIcon.png"
+		g_ALittleScriptIcon[ALittleScriptIconType.FIELD_METHOD] = "ABnf/ALittleScript/ALittleScriptFieldIcon.png"
+		g_ALittleScriptIcon[ALittleScriptIconType.STATIC_METHOD] = "ABnf/ALittleScript/ALittleScriptStaticIcon.png"
+		g_ALittleScriptIcon[ALittleScriptIconType.INSTANCE] = "ABnf/ALittleScript/ALittleScriptInstanceIcon.png"
+		g_ALittleScriptIcon[ALittleScriptIconType.PARAM] = "ABnf/ALittleScript/ALittleScriptParamIcon.png"
+		g_ALittleScriptIcon[ALittleScriptIconType.VARIABLE] = "ABnf/ALittleScript/ALittleScriptVariableIcon.png"
+	end
 	___rawset(self, "_abnf_file", alittlescript.create_alittlescript_file(project.project, module_path, full_path, ""))
 end
 
@@ -128,6 +163,10 @@ function AUICodeALittleScript:Generate(full_path)
 	local query_id = self._project:Add(___COROUTINE)
 	alittlescript.alittlescriptproject_generate(self._project.project, query_id, full_path)
 	return coroutine.yield()
+end
+
+function AUICodeALittleScript:QueryCompleteIcon(tag)
+	return g_ALittleScriptIcon[tag]
 end
 
 assert(AUIPlugin.AUICodeProject, " extends class:AUIPlugin.AUICodeProject is nil")

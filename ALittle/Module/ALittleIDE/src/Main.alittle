@@ -52,7 +52,7 @@ public async static __Module_Setup(ALittle.DisplayLayout layer_group, ALittle.Co
     g_ModuleBasePath = module_base_path;
     g_ModuleBasePathEx = ALittle.File_BaseFilePath()..module_base_path;
     g_ScriptBasePath = script_base_path;
-    
+
 	// 加载UI插件
     g_AUIPluinControl = A_ModuleSystem.LoadPlugin("AUIPlugin");
     

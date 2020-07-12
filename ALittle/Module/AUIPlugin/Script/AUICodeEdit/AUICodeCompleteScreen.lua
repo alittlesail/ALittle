@@ -242,12 +242,16 @@ function AUICodeCompleteScreen:Fliter(text)
 		end
 	end
 	ALittle.List_Sort(sort_list, AUICodeCompleteScreen.ItemInfoSort)
+	count = 0
 	for index, info in ___ipairs(sort_list) do
 		if self._screen.child_count == 0 then
 			info._item_button.selected = true
 			descriptor = info.complete.descriptor
 		end
 		self._screen:AddChild(info._item)
+		if count >= 50 then
+			break
+		end
 	end
 	if self._screen.child_count == 0 then
 		return false

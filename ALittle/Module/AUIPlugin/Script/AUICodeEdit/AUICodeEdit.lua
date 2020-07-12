@@ -859,18 +859,7 @@ function AUICodeEdit:DeleteSelectText()
 end
 
 function AUICodeEdit:HandleTextInput(event)
-	local text = event.text
-	if self._language ~= nil and self._cursor.virtual_indent > 0 then
-		local indent = self._cursor.virtual_indent
-		local indent_str = ""
-		local i = 1
-		while true do
-			if not(i <= indent) then break end
-			indent_str = indent_str .. " "
-			i = i+(1)
-		end
-		text = indent_str .. text
-	end
+	local text = self._cursor.virtual_indent .. event.text
 	if self:InsertText(text, true) then
 		if self._language ~= nil then
 			local auto_pair = self._language:QueryAutoPair(self._cursor.line, self._cursor.char, event.text)
@@ -983,6 +972,7 @@ function AUICodeEdit:HandleKeyDown(event)
 	elseif event.sym == 8 then
 		if self._select_cursor.line_start == nil then
 			is_change = self._cursor:DeleteLeft(true)
+			self._cursor:RejustShowCursor()
 			g_AUICodeCompleteScreen:TryHide(self)
 			if g_AUICodeCompleteScreen:IsShow() then
 				g_AUICodeCompleteScreen:ShowComplete(self)
@@ -1037,9 +1027,24 @@ function AUICodeEdit:HandleKeyDown(event)
 		if g_AUICodeCompleteScreen:IsShow() then
 			is_change = g_AUICodeCompleteScreen:DoSelect()
 		else
+			local old_line = self._cursor.line
+			local old_char = self._cursor.char
 			local revoke_bind = ALittle.RevokeBind()
 			is_change = self:InsertText("\n", true, revoke_bind)
-			self._cursor:RejustShowCursor()
+			if self._cursor:CurLineHasChar() then
+				self._cursor:UpdateVirtualIndent()
+				local text = self._cursor.virtual_indent
+				if text ~= "" then
+					is_change = self:InsertText(text, true, revoke_bind)
+				end
+				if self._cursor:GetCurCharInLine() == "}" then
+					self._cursor:SetLineChar(old_line, old_char)
+					is_change = self:InsertText("\n", true, revoke_bind)
+					self._cursor:RejustShowCursor()
+				end
+			else
+				self._cursor:RejustShowCursor()
+			end
 			revoke_bind.complete = Lua.Bind(self.DispatchChangedEvent, self)
 			self._revoke_list:PushRevoke(revoke_bind)
 		end

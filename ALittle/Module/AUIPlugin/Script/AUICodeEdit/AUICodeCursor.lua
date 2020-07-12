@@ -85,14 +85,13 @@ function AUICodeCursor:CalcSelectWord()
 	while count > 0 and line.char_list[count].width <= 0 do
 		count = count - 1
 	end
+	local cur_char = line.char_list[self._it_char + 1]
+	local is_word = ALittle.String_IsWordChar(cur_char.char)
 	local it_end = self._it_char
 	local i = self._it_char + 1
 	while true do
 		if not(i <= count) then break end
-		local char = line.char_list[i].char
-		local byte = ALittle.String_Byte(char, 1)
-		local check = byte >= 65 and byte <= 90 or byte >= 97 and byte <= 122 or byte == 95
-		if not check then
+		if ALittle.String_IsWordChar(line.char_list[i].char) ~= is_word then
 			break
 		end
 		it_end = i
@@ -102,10 +101,7 @@ function AUICodeCursor:CalcSelectWord()
 	local i = self._it_char
 	while true do
 		if not(i >= 1) then break end
-		local char = line.char_list[i].char
-		local byte = ALittle.String_Byte(char, 1)
-		local check = byte >= 65 and byte <= 90 or byte >= 97 and byte <= 122 or byte == 95
-		if not check then
+		if ALittle.String_IsWordChar(line.char_list[i].char) ~= is_word then
 			break
 		end
 		it_start = i - 1

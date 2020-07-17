@@ -6,8 +6,14 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = ALittle.GetAllStruct()
 
-ALittle.RegStruct(348388800, "ALittle.UIHideEvent", {
-name = "ALittle.UIHideEvent", ns_name = "ALittle", rl_name = "UIHideEvent", hash_code = 348388800,
+ALittle.RegStruct(1773085126, "AUIPlugin.AUICodeCompleteItemInfo", {
+name = "AUIPlugin.AUICodeCompleteItemInfo", ns_name = "AUIPlugin", rl_name = "AUICodeCompleteItemInfo", hash_code = 1773085126,
+name_list = {"_item_button","_item_title","_tag_image","_item","pos","upper","complete"},
+type_list = {"ALittle.TextRadioButton","ALittle.Text","ALittle.Image","ALittle.DisplayObject","int","string","lua.ABnfQueryCompleteInfo"},
+option_map = {}
+})
+ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
+name = "ALittle.UIEvent", ns_name = "ALittle", rl_name = "UIEvent", hash_code = -1479093282,
 name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
 option_map = {}
@@ -18,16 +24,10 @@ name_list = {"display","insert","descriptor","tag"},
 type_list = {"string","string","string","int"},
 option_map = {}
 })
-ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
-name = "ALittle.UIEvent", ns_name = "ALittle", rl_name = "UIEvent", hash_code = -1479093282,
+ALittle.RegStruct(348388800, "ALittle.UIHideEvent", {
+name = "ALittle.UIHideEvent", ns_name = "ALittle", rl_name = "UIHideEvent", hash_code = 348388800,
 name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
-option_map = {}
-})
-ALittle.RegStruct(1773085126, "AUIPlugin.AUICodeCompleteItemInfo", {
-name = "AUIPlugin.AUICodeCompleteItemInfo", ns_name = "AUIPlugin", rl_name = "AUICodeCompleteItemInfo", hash_code = 1773085126,
-name_list = {"_item_button","_item_title","_tag_image","_item","pos","upper","complete"},
-type_list = {"ALittle.TextRadioButton","ALittle.Text","ALittle.Image","ALittle.DisplayObject","int","string","lua.ABnfQueryCompleteInfo"},
 option_map = {}
 })
 

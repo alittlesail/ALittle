@@ -310,8 +310,8 @@ function AUICodeSelectCursor:DeleteSelect(need_revoke, revoke_bind)
 			end
 		end
 		if rejust then
-			self._edit.container.width = line.container.width
-			self._edit:RejustScrollBar()
+			self._edit.code_screen.container.width = line.container.width
+			self._edit.code_screen:RejustScrollBar()
 		end
 		if need_revoke then
 			local revoke = AUICodeDeleteSelectRevoke(self._edit, self._edit.cursor, self, old_it_line_start, old_it_char_start, old_it_line_end, old_it_char_end, it_line_start, it_char_start, revoke_content, revoke_bind == nil)
@@ -423,8 +423,8 @@ function AUICodeSelectCursor:DeleteSelect(need_revoke, revoke_bind)
 			max_width = line.container.width
 		end
 	end
-	self._edit.container.width = max_width
-	self._edit:RejustScrollBar()
+	self._edit.code_screen.container.width = max_width
+	self._edit.code_screen:RejustScrollBar()
 	if need_revoke then
 		local revoke = AUICodeDeleteSelectRevoke(self._edit, self._edit.cursor, self, old_it_line_start, old_it_char_start, old_it_line_end, old_it_char_end, it_line_start, it_char_start, revoke_start .. ALittle.String_Join(revoke_center, "") .. revoke_end, revoke_bind == nil)
 		if revoke_bind ~= nil then

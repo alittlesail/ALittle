@@ -363,8 +363,8 @@ function AUICodeEditContainer:ClipRect(x, y, width, height, h_move, v_move)
 	self._user_data:ClipRect(x - self._x, y - self._y, width - self._x, height - self._y, h_move, v_move)
 end
 
-assert(ALittle.ScrollScreen, " extends class:ALittle.ScrollScreen is nil")
-AUICodeEdit = Lua.Class(ALittle.ScrollScreen, "AUIPlugin.AUICodeEdit")
+assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
+AUICodeEdit = Lua.Class(ALittle.DisplayLayout, "AUIPlugin.AUICodeEdit")
 
 function AUICodeEdit:Ctor()
 	___rawset(self, "_in_query_info", false)
@@ -376,23 +376,23 @@ function AUICodeEdit:Ctor()
 end
 
 function AUICodeEdit:TCtor()
-	self:AddEventListener(___all_struct[-644464135], self, self.HandleFocusIn)
-	self:AddEventListener(___all_struct[292776509], self, self.HandleFocusOut)
-	self:AddEventListener(___all_struct[544684311], self, self.HandleMoveIn)
-	self:AddEventListener(___all_struct[-1202439334], self, self.HandleMoveOut)
-	self:AddEventListener(___all_struct[1883782801], self, self.HandleLButtonDown)
-	self:AddEventListener(___all_struct[1301789264], self, self.HandleDragBegin)
-	self:AddEventListener(___all_struct[1337289812], self, self.HandleDrag)
-	self:AddEventListener(___all_struct[150587926], self, self.HandleDragEnd)
-	self:AddEventListener(___all_struct[-1604617962], self, self.HandleKeyDown)
-	self:AddEventListener(___all_struct[1213009422], self, self.HandleKeyUp)
-	self:AddEventListener(___all_struct[-1234078962], self, self.HandleTextInput)
-	self:AddEventListener(___all_struct[-1001723540], self, self.HandleMouseMove)
-	self:AddEventListener(___all_struct[958494922], self, self.HandleChangedEvent)
-	self.container = AUICodeEditContainer(self._ctrl_sys)
+	self._code_screen:AddEventListener(___all_struct[-644464135], self, self.HandleFocusIn)
+	self._code_screen:AddEventListener(___all_struct[292776509], self, self.HandleFocusOut)
+	self._code_screen:AddEventListener(___all_struct[544684311], self, self.HandleMoveIn)
+	self._code_screen:AddEventListener(___all_struct[-1202439334], self, self.HandleMoveOut)
+	self._code_screen:AddEventListener(___all_struct[1883782801], self, self.HandleLButtonDown)
+	self._code_screen:AddEventListener(___all_struct[1301789264], self, self.HandleDragBegin)
+	self._code_screen:AddEventListener(___all_struct[1337289812], self, self.HandleDrag)
+	self._code_screen:AddEventListener(___all_struct[150587926], self, self.HandleDragEnd)
+	self._code_screen:AddEventListener(___all_struct[-1604617962], self, self.HandleKeyDown)
+	self._code_screen:AddEventListener(___all_struct[1213009422], self, self.HandleKeyUp)
+	self._code_screen:AddEventListener(___all_struct[-1234078962], self, self.HandleTextInput)
+	self._code_screen:AddEventListener(___all_struct[-1001723540], self, self.HandleMouseMove)
+	self._code_screen:AddEventListener(___all_struct[958494922], self, self.HandleChangedEvent)
+	self._code_screen.container = AUICodeEditContainer(self._ctrl_sys)
 	self._edit_quad._user_data = self
 	self._goto_quad.visible = false
-	self.container._user_data = self._code_linear
+	self._code_screen.container._user_data = self._code_linear
 	self._cursor = AUICodeCursor(self._ctrl_sys, self)
 	self._cursor.width = 1
 	self._cursor.height = LINE_HEIGHT
@@ -428,6 +428,10 @@ end
 
 function AUICodeEdit.__getter:cursor_b()
 	return self._edit_quad.cursor_b
+end
+
+function AUICodeEdit.__getter:code_screen()
+	return self._code_screen
 end
 
 function AUICodeEdit.__getter:code_linear()
@@ -470,7 +474,7 @@ function AUICodeEdit.__getter:revoke_list()
 	return self._revoke_list
 end
 
-function AUICodeEdit:FocusLineChar(it_line, it_char)
+function AUICodeEdit:FocusLineCharToCenter(it_line, it_char)
 	local line = self._line_list[it_line]
 	if line == nil then
 		return
@@ -481,19 +485,43 @@ function AUICodeEdit:FocusLineChar(it_line, it_char)
 	end
 	local y = (it_line - 1) * LINE_HEIGHT
 	local x = char.pre_width
-	local real_width = self.container.width - self.view_width
+	local real_width = self._code_screen.container.width - self._code_screen.view_width
 	if real_width > 0 then
-		local view_x = self.view_width / 2
+		local view_x = self._code_screen.view_width / 2
 		local center_x = x
-		self.bottom_scrollbar.offset_rate = (center_x - view_x) / real_width
+		self._code_screen.bottom_scrollbar.offset_rate = (center_x - view_x) / real_width
 	end
-	local real_height = self.container.height - self.view_height
+	local real_height = self._code_screen.container.height - self._code_screen.view_height
 	if real_height > 0 then
-		local view_y = self.view_height / 2
+		local view_y = self._code_screen.view_height / 2
 		local center_y = y
-		self.right_scrollbar.offset_rate = (center_y - view_y) / real_height
+		self._code_screen.right_scrollbar.offset_rate = (center_y - view_y) / real_height
 	end
-	self:RejustScrollBar()
+	self._code_screen:RejustScrollBar()
+end
+
+function AUICodeEdit:FocusLineCharToUp(it_line, it_char)
+	local line = self._line_list[it_line]
+	if line == nil then
+		return
+	end
+	local real_height = self._code_screen.container.height - self._code_screen.view_height
+	if real_height > 0 then
+		self._code_screen.right_scrollbar.offset_rate = (it_line - 1) * LINE_HEIGHT / real_height
+		self._code_screen:RejustScrollBar()
+	end
+end
+
+function AUICodeEdit:FocusLineCharToDown(it_line, it_char)
+	local line = self._line_list[it_line]
+	if line == nil then
+		return
+	end
+	local real_height = self._code_screen.container.height - self._code_screen.view_height
+	if real_height > 0 then
+		self._code_screen.right_scrollbar.offset_rate = (it_line * LINE_HEIGHT - self._code_screen.view_height) / real_height
+		self._code_screen:RejustScrollBar()
+	end
 end
 
 function AUICodeEdit:HandleFocusIn(event)
@@ -542,7 +570,7 @@ function AUICodeEdit:DoQueryGoto(it_line, it_char)
 			self._cursor:SetLineChar(info.line_start, info.char_start - 1)
 			self._select_cursor:StartLineChar(info.line_start, info.char_start - 1)
 			self._select_cursor:UpdateLineChar(info.line_end, info.char_end)
-			self:FocusLineChar(self._cursor.line, self._cursor.char)
+			self:FocusLineCharToCenter(self._cursor.line, self._cursor.char)
 		else
 			local goto_event = {}
 			goto_event.file_path = info.file_path
@@ -965,6 +993,10 @@ function AUICodeEdit:HandleKeyDown(event)
 				end
 				self._select_cursor:UpdateLineChar(self._cursor.line, self._cursor.char)
 			end
+			local offset_y = self._cursor.y + self._code_screen.container_y
+			if offset_y < 0 then
+				self:FocusLineCharToUp(self._cursor.line, self._cursor.char)
+			end
 			g_AUICodeCompleteScreen:Hide()
 		end
 		event.handled = true
@@ -988,6 +1020,10 @@ function AUICodeEdit:HandleKeyDown(event)
 					self._cursor:OffsetDown()
 				end
 				self._select_cursor:UpdateLineChar(self._cursor.line, self._cursor.char)
+			end
+			local offset_y = self._cursor.y + self._cursor.height + self._code_screen.container_y
+			if offset_y > self._code_screen.view_height then
+				self:FocusLineCharToDown(self._cursor.line, self._cursor.char)
 			end
 			g_AUICodeCompleteScreen:Hide()
 		end
@@ -1171,7 +1207,6 @@ end
 function AUICodeEdit:OnShow()
 	self._cursor:Show()
 	self._edit_quad:DelayFocus()
-	ALittle.System_OpenIME()
 	if self._language ~= nil then
 		self._language:OnShow()
 	end
@@ -1317,9 +1352,9 @@ function AUICodeEdit:SetText(content)
 	for index, line in ___ipairs(self._line_list) do
 		self._code_linear:AddChild(line.container)
 	end
-	self.container.width = max_width
-	self.container.height = self._line_count * LINE_HEIGHT + PAD_HEIGHT
-	self:RejustScrollBar()
+	self._code_screen.container.width = max_width
+	self._code_screen.container.height = self._line_count * LINE_HEIGHT + PAD_HEIGHT
+	self._code_screen:RejustScrollBar()
 	self._cursor:SetLineChar(1, 0)
 	if self._language ~= nil then
 		self._language:SetText(content)
@@ -1528,9 +1563,9 @@ function AUICodeEdit:InsertText(content, need_revoke, revoke_bind)
 			max_width = line.container.width
 		end
 	end
-	self.container.width = max_width
-	self.container.height = self._line_count * LINE_HEIGHT + PAD_HEIGHT
-	self:RejustScrollBar()
+	self._code_screen.container.width = max_width
+	self._code_screen.container.height = self._line_count * LINE_HEIGHT + PAD_HEIGHT
+	self._code_screen:RejustScrollBar()
 	self._cursor:SetLineChar(it_cursor_line, it_cursor_char)
 	if need_revoke then
 		local revoke = AUICodeInsetTextRevoke(self, self._cursor, self._select_cursor, old_it_line, old_it_char, it_cursor_line, it_cursor_char, content, revoke_bind == nil)
@@ -1598,7 +1633,7 @@ function AUICodeEdit:EditFocus(line_start, char_start, line_end, char_end)
 			self._select_cursor:StartLineChar(line_start, char_start)
 			self._select_cursor:UpdateLineChar(line_end, char_end)
 		end
-		self:FocusLineChar(self._cursor.line, self._cursor.char)
+		self:FocusLineCharToCenter(self._cursor.line, self._cursor.char)
 	end
 end
 

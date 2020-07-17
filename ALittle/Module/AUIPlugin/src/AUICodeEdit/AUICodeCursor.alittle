@@ -378,8 +378,8 @@ public class AUICodeCursor : ALittle.Quad
             }
             if (rejust)
             {
-                this._edit.container.width = line.container.width;
-                this._edit.RejustScrollBar();
+                this._edit.code_screen.container.width = line.container.width;
+                this._edit.code_screen.RejustScrollBar();
             }
 
             if (need_revoke)
@@ -445,9 +445,9 @@ public class AUICodeCursor : ALittle.Quad
         //     this._edit.line_list[i].container.y -= this._edit.line_height;
         // 设置新的光标位置
         this.SetLineChar(new_it_line, new_it_char);
-        if (this._edit.container.width < pre_line.container.width)
-            this._edit.container.width = pre_line.container.width;
-        this._edit.RejustScrollBar();
+        if (this._edit.code_screen.container.width < pre_line.container.width)
+            this._edit.code_screen.container.width = pre_line.container.width;
+        this._edit.code_screen.RejustScrollBar();
 
         if (need_revoke)
         {
@@ -508,8 +508,8 @@ public class AUICodeCursor : ALittle.Quad
             }
             if (rejust)
             {
-                this._edit.container.width = line.container.width;
-                this._edit.RejustScrollBar();
+                this._edit.code_screen.container.width = line.container.width;
+                this._edit.code_screen.RejustScrollBar();
             }
 
             var new_it_line = this._it_line;
@@ -575,9 +575,9 @@ public class AUICodeCursor : ALittle.Quad
         //    this._edit.line_list[i].container.y -= this._edit.line_height;
         // 设置新的光标位置
         this.SetLineChar(new_it_line, new_it_char);
-        if (this._edit.container.width < cur_line.container.width)
-            this._edit.container.width = cur_line.container.width;
-        this._edit.RejustScrollBar();
+        if (this._edit.code_screen.container.width < cur_line.container.width)
+            this._edit.code_screen.container.width = cur_line.container.width;
+        this._edit.code_screen.RejustScrollBar();
 
         if (need_revoke)
         {

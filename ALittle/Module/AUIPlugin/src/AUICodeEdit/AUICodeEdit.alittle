@@ -283,7 +283,7 @@ public struct AUICodeEditGotoEvent : ALittle.UIEvent
     int char_end;
 }
 
-public class AUICodeEdit : ALittle.ScrollScreen
+public class AUICodeEdit : ALittle.DisplayLayout
 {
     private AUICodeLanguage _language;  // 代码解析器
 
@@ -293,6 +293,7 @@ public class AUICodeEdit : ALittle.ScrollScreen
 
     private ALittle.LoopTimer _error_loop;  // 显示错误信息的定时器
 
+    private ALittle.ScrollScreen _code_screen;  // 滚动屏幕
 	private AUICodeLinear _code_linear;      // 代码容器
     private ALittle.DisplayLayout _cursor_container;    // 光标容器
     private ALittle.DisplayLayout _error_container;     // 错误容器
@@ -324,25 +325,25 @@ public class AUICodeEdit : ALittle.ScrollScreen
 
 	public fun TCtor()
 	{
-        this.AddEventListener(this, this.HandleFocusIn);
-        this.AddEventListener(this, this.HandleFocusOut);
-        this.AddEventListener(this, this.HandleMoveIn);
-        this.AddEventListener(this, this.HandleMoveOut);
-        this.AddEventListener(this, this.HandleLButtonDown);
-        this.AddEventListener(this, this.HandleDragBegin);
-        this.AddEventListener(this, this.HandleDrag);
-        this.AddEventListener(this, this.HandleDragEnd);
-        this.AddEventListener(this, this.HandleKeyDown);
-        this.AddEventListener(this, this.HandleKeyUp);
-        this.AddEventListener(this, this.HandleTextInput);
-        this.AddEventListener(this, this.HandleMouseMove);
-        this.AddEventListener(this, this.HandleChangedEvent);
+        this._code_screen.AddEventListener(this, this.HandleFocusIn);
+        this._code_screen.AddEventListener(this, this.HandleFocusOut);
+        this._code_screen.AddEventListener(this, this.HandleMoveIn);
+        this._code_screen.AddEventListener(this, this.HandleMoveOut);
+        this._code_screen.AddEventListener(this, this.HandleLButtonDown);
+        this._code_screen.AddEventListener(this, this.HandleDragBegin);
+        this._code_screen.AddEventListener(this, this.HandleDrag);
+        this._code_screen.AddEventListener(this, this.HandleDragEnd);
+        this._code_screen.AddEventListener(this, this.HandleKeyDown);
+        this._code_screen.AddEventListener(this, this.HandleKeyUp);
+        this._code_screen.AddEventListener(this, this.HandleTextInput);
+        this._code_screen.AddEventListener(this, this.HandleMouseMove);
+        this._code_screen.AddEventListener(this, this.HandleChangedEvent);
 
 		// 创建编辑容器
-        this.container = new AUICodeEditContainer(this._ctrl_sys);
+        this._code_screen.container = new AUICodeEditContainer(this._ctrl_sys);
         this._edit_quad._user_data = this;
         this._goto_quad.visible = false;
-        this.container._user_data = this._code_linear;
+        this._code_screen.container._user_data = this._code_linear;
 
         this._cursor = new AUICodeCursor(this._ctrl_sys, this);
         this._cursor.width = 1;
@@ -367,6 +368,7 @@ public class AUICodeEdit : ALittle.ScrollScreen
     public get cursor_y() : double { return this._edit_quad.cursor_y; }
     public get cursor_b() : double { return this._edit_quad.cursor_b; }
 
+    public get code_screen() : ALittle.ScrollScreen { return this._code_screen; }
     public get code_linear() : AUICodeLinear { return this._code_linear; }
     public get cursor() : AUICodeCursor { return this._cursor; }
     public get select_cursor() : AUICodeSelectCursor { return this._select_cursor; }
@@ -378,7 +380,7 @@ public class AUICodeEdit : ALittle.ScrollScreen
     public get line_height() : int { return LINE_HEIGHT; }
     public get revoke_list() : ALittle.RevokeList { return this._revoke_list; }
 
-    public fun FocusLineChar(int it_line, int it_char)
+    public fun FocusLineCharToCenter(int it_line, int it_char)
     {
         var line = this._line_list[it_line];
         if (line == null) return;
@@ -387,25 +389,49 @@ public class AUICodeEdit : ALittle.ScrollScreen
 
         var y = (it_line - 1) * LINE_HEIGHT;
         var x = char.pre_width;
-
-        
-        var real_width = this.container.width - this.view_width;
+   
+        var real_width = this._code_screen.container.width - this._code_screen.view_width;
         if (real_width > 0)
         {
-            var view_x = this.view_width / 2;
+            var view_x = this._code_screen.view_width / 2;
             var center_x = x;
-            this.bottom_scrollbar.offset_rate = (center_x - view_x) / real_width;
+            this._code_screen.bottom_scrollbar.offset_rate = (center_x - view_x) / real_width;
         }
 
-        var real_height = this.container.height - this.view_height;
+        var real_height = this._code_screen.container.height - this._code_screen.view_height;
         if (real_height > 0)
         {
-            var view_y = this.view_height / 2;
+            var view_y = this._code_screen.view_height / 2;
             var center_y = y;
-            this.right_scrollbar.offset_rate = (center_y - view_y) / real_height;
+            this._code_screen.right_scrollbar.offset_rate = (center_y - view_y) / real_height;
         }
+        this._code_screen.RejustScrollBar();
+    }
 
-        this.RejustScrollBar();
+    public fun FocusLineCharToUp(int it_line, int it_char)
+    {
+        var line = this._line_list[it_line];
+        if (line == null) return;
+
+        var real_height = this._code_screen.container.height - this._code_screen.view_height;
+        if (real_height > 0)
+        {
+            this._code_screen.right_scrollbar.offset_rate = (it_line - 1) * LINE_HEIGHT / real_height;
+            this._code_screen.RejustScrollBar();   
+        }
+    }
+
+    public fun FocusLineCharToDown(int it_line, int it_char)
+    {
+        var line = this._line_list[it_line];
+        if (line == null) return;
+
+        var real_height = this._code_screen.container.height - this._code_screen.view_height;
+        if (real_height > 0)
+        {
+            this._code_screen.right_scrollbar.offset_rate = (it_line * LINE_HEIGHT - this._code_screen.view_height) / real_height;
+            this._code_screen.RejustScrollBar();   
+        }
     }
 
     private fun HandleFocusIn(ALittle.UIFocusInEvent event)
@@ -466,9 +492,9 @@ public class AUICodeEdit : ALittle.ScrollScreen
                 this._cursor.SetLineChar(info.line_start, info.char_start - 1);
                 this._select_cursor.StartLineChar(info.line_start, info.char_start - 1);
                 this._select_cursor.UpdateLineChar(info.line_end, info.char_end);
-                this.FocusLineChar(this._cursor.line, this._cursor.char);
+                this.FocusLineCharToCenter(this._cursor.line, this._cursor.char);
             }
-                // 对外发送事件，让外面打开，然后再聚焦到某个代码段
+            // 对外发送事件，让外面打开，然后再聚焦到某个代码段
             else
             {
                 var goto_event = new AUICodeEditGotoEvent();
@@ -506,6 +532,7 @@ public class AUICodeEdit : ALittle.ScrollScreen
         this._select_cursor.TryHide();
         this._in_drag = false;
     }
+
 
     private fun HandleMouseMove(ALittle.UIMouseMoveEvent event)
     {
@@ -908,6 +935,8 @@ public class AUICodeEdit : ALittle.ScrollScreen
                         this._cursor.OffsetUp();
                     this._select_cursor.UpdateLineChar(this._cursor.line, this._cursor.char);   
                 }
+                var offset_y = this._cursor.y + this._code_screen.container_y;
+                if (offset_y < 0) this.FocusLineCharToUp(this._cursor.line, this._cursor.char);
                 g_AUICodeCompleteScreen.Hide();
             }
 			event.handled = true;
@@ -937,6 +966,8 @@ public class AUICodeEdit : ALittle.ScrollScreen
                         this._cursor.OffsetDown();
                     this._select_cursor.UpdateLineChar(this._cursor.line, this._cursor.char);   
                 }
+                var offset_y = this._cursor.y + this._cursor.height + this._code_screen.container_y;
+                if (offset_y > this._code_screen.view_height) this.FocusLineCharToDown(this._cursor.line, this._cursor.char);
                 g_AUICodeCompleteScreen.Hide();
             }
 			event.handled = true;
@@ -1163,10 +1194,7 @@ public class AUICodeEdit : ALittle.ScrollScreen
     {
         this._cursor.Show();
         this._edit_quad.DelayFocus();
-        ALittle.System_OpenIME();
-
         if (this._language != null) this._language.OnShow();
-
         this.StartErrorLoop(true);
     }
 
@@ -1331,9 +1359,9 @@ public class AUICodeEdit : ALittle.ScrollScreen
 
         for (var index, line in this._line_list)
             this._code_linear.AddChild(line.container);
-        this.container.width = max_width;
-        this.container.height = this._line_count * LINE_HEIGHT + PAD_HEIGHT;
-        this.RejustScrollBar();
+        this._code_screen.container.width = max_width;
+        this._code_screen.container.height = this._line_count * LINE_HEIGHT + PAD_HEIGHT;
+        this._code_screen.RejustScrollBar();
 
         this._cursor.SetLineChar(1, 0);
 
@@ -1538,9 +1566,9 @@ public class AUICodeEdit : ALittle.ScrollScreen
         max_width = 0.0;
         for (var index, line in this._line_list)
             if (line.container.width > max_width) max_width = line.container.width;
-        this.container.width = max_width;
-        this.container.height = this._line_count * LINE_HEIGHT + PAD_HEIGHT;
-        this.RejustScrollBar();
+        this._code_screen.container.width = max_width;
+        this._code_screen.container.height = this._line_count * LINE_HEIGHT + PAD_HEIGHT;
+        this._code_screen.RejustScrollBar();
 
         this._cursor.SetLineChar(it_cursor_line, it_cursor_char);
 
@@ -1622,7 +1650,7 @@ public class AUICodeEdit : ALittle.ScrollScreen
                 this._select_cursor.StartLineChar(line_start, char_start);
                 this._select_cursor.UpdateLineChar(line_end, char_end);
             }
-            this.FocusLineChar(this._cursor.line, this._cursor.char);
+            this.FocusLineCharToCenter(this._cursor.line, this._cursor.char);
         }
     }
 }

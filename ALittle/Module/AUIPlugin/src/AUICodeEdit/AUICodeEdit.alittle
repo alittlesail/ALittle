@@ -36,7 +36,6 @@ protected struct AUICodeLineInfo
     List<AUICodeCharInfo> char_list;
     int char_count;
     AUICodeLineContainer container;
-    ALittle.Quad quad;
     AUICodeEdit edit;
 }
 
@@ -79,19 +78,52 @@ protected class AUICodeLineContainer : ALittle.DisplayLayout
     private ALittle.LoopTimer _delay_loop = null;
     private Functor<()> _set_color;
 
+    public ALittle.Quad _select;  // 选择底色
+    public ALittle.DisplayLayout _error;    // 查找容器
+    public ALittle.DisplayLayout _text;    // 文本容器
+
     public ctor(ALittle.ControlSystem ctrl_sys)
     {
+        // 用于算则显示
+        var quad = new ALittle.Quad(ctrl_sys);
+        quad = new ALittle.Quad(g_Control);
+        quad.red = SELECT_RED;
+        quad.green = SELECT_GREEN;
+        quad.blue = SELECT_BLUE;
+        quad.height = LINE_HEIGHT;
+        quad.visible = false;
+        this.AddChild(quad);
+        this._select = quad;
+
+        // 用于显示错误容器
+        var error = new ALittle.DisplayLayout(ctrl_sys);
+        error.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+        error.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+        this.AddChild(error);
+        this._error = error;
+
+        // 用于显示文本
+        var text = new ALittle.DisplayLayout(ctrl_sys);
+        text.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+        text.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+        this.AddChild(text);
+        this._text = text;
+
         this.AddEventListener(this, this.HandleHide);
         this.AddEventListener(this, this.HandleShow);
     }
 
-    public fun CreateAndAdd(AUICodeCharInfo char)
+    public fun AddChar(AUICodeCharInfo char)
     {
+        // 如果已经创建了text，那就直接复用
+        if (char.text != null)
+            this._text.AddChild(char.text);
+
         if (!this._showd) return;
 
         // 构建文本
         if (char.text == null && char.width > 0
-        && char.char != " " && char.char != "\t")
+            && char.char != " " && char.char != "\t")
         {
             char.text = new ALittle.Text(g_Control);
             char.text.disabled = true;
@@ -102,7 +134,7 @@ protected class AUICodeLineContainer : ALittle.DisplayLayout
             char.text.font_size = FONT_SIZE;
             char.text.text = char.char;
             char.text.x = char.pre_width;
-            this.AddChild(char.text);
+            this._text.AddChild(char.text);
         }
 
         // 查询颜色
@@ -208,7 +240,7 @@ protected class AUICodeLineContainer : ALittle.DisplayLayout
             for (var index, char in line.char_list)
             {
                 if (char.text == null && char.width > 0
-                && char.char != " " && char.char != "\t")
+                    && char.char != " " && char.char != "\t")
                 {
                     char.text = new ALittle.Text(g_Control);
                     char.text.disabled = true;
@@ -219,7 +251,7 @@ protected class AUICodeLineContainer : ALittle.DisplayLayout
                     char.text.font_size = FONT_SIZE;
                     char.text.text = char.char;
                     char.text.x = char.pre_width;
-                    this.AddChild(char.text);
+                    this._text.AddChild(char.text);
                 }
             }
         }
@@ -292,6 +324,8 @@ public class AUICodeEdit : ALittle.ScrollScreen
 
 	public fun TCtor()
 	{
+        this.AddEventListener(this, this.HandleFocusIn);
+        this.AddEventListener(this, this.HandleFocusOut);
         this.AddEventListener(this, this.HandleMoveIn);
         this.AddEventListener(this, this.HandleMoveOut);
         this.AddEventListener(this, this.HandleLButtonDown);
@@ -374,11 +408,22 @@ public class AUICodeEdit : ALittle.ScrollScreen
         this.RejustScrollBar();
     }
 
+    private fun HandleFocusIn(ALittle.UIFocusInEvent event)
+    {
+        ALittle.System_OpenIME();
+    }
+
+    private fun HandleFocusOut(ALittle.UIFocusOutEvent event)
+    {
+        ALittle.System_CloseIME();
+    }
+
     private fun HandleMoveIn(ALittle.UIMoveInEvent event)
     {
         this._move_in = true;
         ALittle.System_SetEditCursor();
     }
+
     private fun HandleMoveOut(ALittle.UIMoveOutEvent event)
     {
         this.StopQueryInfo();
@@ -1118,6 +1163,7 @@ public class AUICodeEdit : ALittle.ScrollScreen
     {
         this._cursor.Show();
         this._edit_quad.DelayFocus();
+        ALittle.System_OpenIME();
 
         if (this._language != null) this._language.OnShow();
 
@@ -1138,6 +1184,7 @@ public class AUICodeEdit : ALittle.ScrollScreen
         }
         this._cursor.Hide();
         this._file_path = null;
+        ALittle.System_CloseIME();
 
         if (this._language != null) this._language.OnClose();
 
@@ -1224,16 +1271,9 @@ public class AUICodeEdit : ALittle.ScrollScreen
                 line.edit = this;
                 line.char_count = 0;
                 line.char_list = new List<AUICodeCharInfo>();
-                line.quad = new ALittle.Quad(g_Control);
                 line.container = new AUICodeLineContainer(g_Control);
                 line.container._user_data = line;
                 line.container.height = LINE_HEIGHT;
-                line.quad.red = SELECT_RED;
-                line.quad.green = SELECT_GREEN;
-                line.quad.blue = SELECT_BLUE;
-                line.quad.height = LINE_HEIGHT;
-                line.quad.visible = false;
-                line.container.AddChild(line.quad);
             }
             line.char_count += 1;
             line.char_list[line.char_count] = char;
@@ -1265,16 +1305,9 @@ public class AUICodeEdit : ALittle.ScrollScreen
             line.edit = this;
             line.char_count = 0;
             line.char_list = new List<AUICodeCharInfo>();
-            line.quad = new ALittle.Quad(g_Control);
             line.container = new AUICodeLineContainer(g_Control);
             line.container._user_data = line;
             line.container.height = LINE_HEIGHT;
-            line.quad.red = SELECT_RED;
-            line.quad.green = SELECT_GREEN;
-            line.quad.blue = SELECT_BLUE;
-            line.quad.height = LINE_HEIGHT;
-            line.quad.visible = false;
-            line.container.AddChild(line.quad);
             line_count += 1;
             line_list[line_count] = line;
         }
@@ -1335,16 +1368,9 @@ public class AUICodeEdit : ALittle.ScrollScreen
             split_pre_line.edit = this;
             split_pre_line.char_count = 0;
             split_pre_line.char_list = new List<AUICodeCharInfo>();
-            split_pre_line.quad = new ALittle.Quad(g_Control);
             split_pre_line.container = new AUICodeLineContainer(g_Control);
             split_pre_line.container._user_data = split_pre_line;
             split_pre_line.container.height = LINE_HEIGHT;
-            split_pre_line.quad.red = SELECT_RED;
-            split_pre_line.quad.green = SELECT_GREEN;
-            split_pre_line.quad.blue = SELECT_BLUE;
-            split_pre_line.quad.height = LINE_HEIGHT;
-            split_pre_line.quad.visible = false;
-            split_pre_line.container.AddChild(split_pre_line.quad);
             this._code_linear.AddChild(split_pre_line.container);
             this._line_count += 1;
             this._line_list[this._line_count] = split_pre_line;
@@ -1376,16 +1402,9 @@ public class AUICodeEdit : ALittle.ScrollScreen
                 split_next_line.edit = this;
                 split_next_line.char_count = 0;
                 split_next_line.char_list = new List<AUICodeCharInfo>();
-                split_next_line.quad = new ALittle.Quad(g_Control);
                 split_next_line.container = new AUICodeLineContainer(g_Control);
                 split_next_line.container._user_data = split_next_line;
                 split_next_line.container.height = LINE_HEIGHT;
-                split_next_line.quad.red = SELECT_RED;
-                split_next_line.quad.green = SELECT_GREEN;
-                split_next_line.quad.blue = SELECT_BLUE;
-                split_next_line.quad.height = LINE_HEIGHT;
-                split_next_line.quad.visible = false;
-                split_next_line.container.AddChild(split_next_line.quad);
                 for (var i = this._cursor.char + 1; i <= split_pre_line.char_count; 1)
                 {
                     split_next_line.char_count += 1;
@@ -1437,23 +1456,15 @@ public class AUICodeEdit : ALittle.ScrollScreen
             var line = line_list[1];
             var char_list = new List<AUICodeCharInfo>();
             var char_count = 0;
-            split_pre_line.container.RemoveAllChild();
-            split_pre_line.container.AddChild(split_pre_line.quad);
+            split_pre_line.container._text.RemoveAllChild();
             // 插入旧的数据
             var pre_width = 0.0;
             for (var i = 1; i <= split_it_char; 1)
             {
                 var char = split_pre_line.char_list[i];
                 char.pre_width = pre_width;
-                if (char.text != null)
-                {
-                    char.text.x = pre_width;
-                    split_pre_line.container.AddChild(char.text);   
-                }
-                elseif (char.width > 0)
-                {
-                    split_pre_line.container.CreateAndAdd(char);   
-                }
+                if (char.text != null) char.text.x = pre_width;
+                split_pre_line.container.AddChar(char);
                 char_count += 1;
                 char_list[char_count] = char;
                 pre_width += char.width;
@@ -1463,15 +1474,8 @@ public class AUICodeEdit : ALittle.ScrollScreen
             {
                 var char = line.char_list[i];
                 char.pre_width = pre_width;
-                if (char.text != null)
-                {
-                    char.text.x = pre_width;
-                    split_pre_line.container.AddChild(char.text);   
-                }
-                elseif (char.width > 0)
-                {
-                    split_pre_line.container.CreateAndAdd(char);   
-                }
+                if (char.text != null) char.text.x = pre_width;
+                split_pre_line.container.AddChar(char);   
                 char_count += 1;
                 char_list[char_count] = char;
                 pre_width += char.width;
@@ -1484,15 +1488,8 @@ public class AUICodeEdit : ALittle.ScrollScreen
             {
                 var char = split_pre_line.char_list[i];
                 char.pre_width = pre_width;
-                if (char.text != null)
-                {
-                    char.text.x = pre_width;
-                    split_pre_line.container.AddChild(char.text);   
-                }
-                elseif (char.width > 0)
-                {
-                    split_pre_line.container.CreateAndAdd(char);   
-                }
+                if (char.text != null) char.text.x = pre_width;
+                split_pre_line.container.AddChar(char);   
                 char_count += 1;
                 char_list[char_count] = char;
                 pre_width += char.width;
@@ -1508,23 +1505,15 @@ public class AUICodeEdit : ALittle.ScrollScreen
             var line = line_list[line_count];
             var char_list = new List<AUICodeCharInfo>();
             var char_count = 0;
-            split_next_line.container.RemoveAllChild();
-            split_next_line.container.AddChild(split_next_line.quad);
+            split_next_line.container._text.RemoveAllChild();
             // 插入新的数据
             var pre_width = 0.0;
             for (var i = 1; i <= line.char_count; 1)
             {
                 var char = line.char_list[i];
                 char.pre_width = pre_width;
-                if (char.text != null)
-                {
-                    char.text.x = pre_width;
-                    split_next_line.container.AddChild(char.text);   
-                }
-                elseif (char.width > 0)
-                {
-                    split_next_line.container.CreateAndAdd(char);   
-                }
+                if (char.text != null) char.text.x = pre_width;
+                split_next_line.container.AddChar(char);   
                 char_count += 1;
                 char_list[char_count] = char;
                 pre_width += char.width;
@@ -1535,15 +1524,8 @@ public class AUICodeEdit : ALittle.ScrollScreen
             {
                 var char = split_next_line.char_list[i];
                 char.pre_width = pre_width;
-                if (char.text != null)
-                {
-                    char.text.x = pre_width;
-                    split_next_line.container.AddChild(char.text);   
-                }
-                elseif (char.width > 0)
-                {
-                    split_next_line.container.CreateAndAdd(char);   
-                }
+                if (char.text != null) char.text.x = pre_width;
+                split_next_line.container.AddChar(char);   
                 char_count += 1;
                 char_list[char_count] = char;
                 pre_width += char.width;

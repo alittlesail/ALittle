@@ -6,10 +6,10 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = ALittle.GetAllStruct()
 
-ALittle.RegStruct(1618605759, "Emulator.DetailInfo", {
-name = "Emulator.DetailInfo", ns_name = "Emulator", rl_name = "DetailInfo", hash_code = 1618605759,
-name_list = {"tree","message","reflection","info"},
-type_list = {"Emulator.IDETreeLogic","lua.protobuf_message","lua.protobuf_reflection","Lua.lua_socket_schedule_message_info"},
+ALittle.RegStruct(1835920059, "lua.protobuf_reflection", {
+name = "lua.protobuf_reflection", ns_name = "lua", rl_name = "protobuf_reflection", hash_code = 1835920059,
+name_list = {},
+type_list = {},
 option_map = {}
 })
 ALittle.RegStruct(1628431371, "Lua.lua_socket_schedule_message_info", {
@@ -18,44 +18,14 @@ name_list = {"descriptor","full_name","name"},
 type_list = {"lua.protobuf_descriptor","string","string"},
 option_map = {}
 })
-ALittle.RegStruct(1835920059, "lua.protobuf_reflection", {
-name = "lua.protobuf_reflection", ns_name = "lua", rl_name = "protobuf_reflection", hash_code = 1835920059,
-name_list = {},
-type_list = {},
+ALittle.RegStruct(1618605759, "Emulator.DetailInfo", {
+name = "Emulator.DetailInfo", ns_name = "Emulator", rl_name = "DetailInfo", hash_code = 1618605759,
+name_list = {"tree","message","reflection","info"},
+type_list = {"Emulator.IDETreeLogic","lua.protobuf_message","lua.protobuf_reflection","Lua.lua_socket_schedule_message_info"},
 option_map = {}
 })
 ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
 name = "ALittle.UIEvent", ns_name = "ALittle", rl_name = "UIEvent", hash_code = -1479093282,
-name_list = {"target"},
-type_list = {"ALittle.DisplayObject"},
-option_map = {}
-})
-ALittle.RegStruct(-888044440, "Emulator.LogItemUserData", {
-name = "Emulator.LogItemUserData", ns_name = "Emulator", rl_name = "LogItemUserData", hash_code = -888044440,
-name_list = {"msg","info","upper_name","detail_info"},
-type_list = {"lua.protobuf_message","Lua.lua_socket_schedule_message_info","string","Emulator.DetailInfo"},
-option_map = {}
-})
-ALittle.RegStruct(-628015380, "lua.protobuf_message", {
-name = "lua.protobuf_message", ns_name = "lua", rl_name = "protobuf_message", hash_code = -628015380,
-name_list = {},
-type_list = {},
-option_map = {}
-})
-ALittle.RegStruct(-297098024, "lua.protobuf_descriptor", {
-name = "lua.protobuf_descriptor", ns_name = "lua", rl_name = "protobuf_descriptor", hash_code = -297098024,
-name_list = {},
-type_list = {},
-option_map = {}
-})
-ALittle.RegStruct(398889456, "Emulator.RootInfo", {
-name = "Emulator.RootInfo", ns_name = "Emulator", rl_name = "RootInfo", hash_code = 398889456,
-name_list = {"detail_info","for_show"},
-type_list = {"Emulator.DetailInfo","bool"},
-option_map = {}
-})
-ALittle.RegStruct(958494922, "ALittle.UIChangedEvent", {
-name = "ALittle.UIChangedEvent", ns_name = "ALittle", rl_name = "UIChangedEvent", hash_code = 958494922,
 name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
 option_map = {}
@@ -66,10 +36,40 @@ name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
 type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
 option_map = {}
 })
+ALittle.RegStruct(958494922, "ALittle.UIChangedEvent", {
+name = "ALittle.UIChangedEvent", ns_name = "ALittle", rl_name = "UIChangedEvent", hash_code = 958494922,
+name_list = {"target"},
+type_list = {"ALittle.DisplayObject"},
+option_map = {}
+})
+ALittle.RegStruct(-888044440, "Emulator.LogItemUserData", {
+name = "Emulator.LogItemUserData", ns_name = "Emulator", rl_name = "LogItemUserData", hash_code = -888044440,
+name_list = {"msg","info","upper_name","detail_info"},
+type_list = {"lua.protobuf_message","Lua.lua_socket_schedule_message_info","string","Emulator.DetailInfo"},
+option_map = {}
+})
 ALittle.RegStruct(-641444818, "ALittle.UIRButtonDownEvent", {
 name = "ALittle.UIRButtonDownEvent", ns_name = "ALittle", rl_name = "UIRButtonDownEvent", hash_code = -641444818,
 name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
 type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
+option_map = {}
+})
+ALittle.RegStruct(-628015380, "lua.protobuf_message", {
+name = "lua.protobuf_message", ns_name = "lua", rl_name = "protobuf_message", hash_code = -628015380,
+name_list = {},
+type_list = {},
+option_map = {}
+})
+ALittle.RegStruct(398889456, "Emulator.RootInfo", {
+name = "Emulator.RootInfo", ns_name = "Emulator", rl_name = "RootInfo", hash_code = 398889456,
+name_list = {"detail_info","for_show"},
+type_list = {"Emulator.DetailInfo","bool"},
+option_map = {}
+})
+ALittle.RegStruct(-297098024, "lua.protobuf_descriptor", {
+name = "lua.protobuf_descriptor", ns_name = "lua", rl_name = "protobuf_descriptor", hash_code = -297098024,
+name_list = {},
+type_list = {},
 option_map = {}
 })
 

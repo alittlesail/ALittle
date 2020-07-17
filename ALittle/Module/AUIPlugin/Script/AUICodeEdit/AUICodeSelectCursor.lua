@@ -23,14 +23,14 @@ function AUICodeSelectCursor:ClearQuad()
 			local i = self._it_line_start
 			while true do
 				if not(i <= self._it_line_end) then break end
-				self._edit.line_list[i].quad.visible = false
+				self._edit.line_list[i].container._select.visible = false
 				i = i+(1)
 			end
 		else
 			local i = self._it_line_end
 			while true do
 				if not(i <= self._it_line_start) then break end
-				self._edit.line_list[i].quad.visible = false
+				self._edit.line_list[i].container._select.visible = false
 				i = i+(1)
 			end
 		end
@@ -64,10 +64,10 @@ function AUICodeSelectCursor:SetQuad()
 		if line.char_count == 0 then
 			return
 		end
-		line.quad.visible = true
+		line.container._select.visible = true
 		self._clear_quad = false
-		line.quad.x = line.char_list[it_char_start + 1].pre_width
-		line.quad.width = line.char_list[it_char_end].pre_width + line.char_list[it_char_end].width - line.quad.x
+		line.container._select.x = line.char_list[it_char_start + 1].pre_width
+		line.container._select.width = line.char_list[it_char_end].pre_width + line.char_list[it_char_end].width - line.container._select.x
 		return
 	end
 	local i = it_line_start
@@ -77,32 +77,32 @@ function AUICodeSelectCursor:SetQuad()
 		if line.char_count > 0 then
 			if i == it_line_start then
 				if it_char_start < line.char_count then
-					line.quad.visible = true
+					line.container._select.visible = true
 					self._clear_quad = false
-					line.quad.x = line.char_list[it_char_start + 1].pre_width
-					line.quad.width = line.container.width - line.quad.x
+					line.container._select.x = line.char_list[it_char_start + 1].pre_width
+					line.container._select.width = line.container.width - line.container._select.x
 				end
 			elseif i == it_line_end then
 				if it_char_end > 0 then
-					line.quad.visible = true
+					line.container._select.visible = true
 					self._clear_quad = false
-					line.quad.x = 0
-					line.quad.width = line.char_list[it_char_end].pre_width + line.char_list[it_char_end].width
+					line.container._select.x = 0
+					line.container._select.width = line.char_list[it_char_end].pre_width + line.char_list[it_char_end].width
 				end
 			else
-				line.quad.visible = true
+				line.container._select.visible = true
 				self._clear_quad = false
-				line.quad.x = 0
-				line.quad.width = line.container.width
+				line.container._select.x = 0
+				line.container._select.width = line.container.width
 			end
-			if line.quad.width <= 0 then
-				line.quad.width = self._edit.ascii_width
+			if line.container._select.width <= 0 then
+				line.container._select.width = self._edit.ascii_width
 			end
 		else
-			line.quad.visible = true
+			line.container._select.visible = true
 			self._clear_quad = false
-			line.quad.x = 0
-			line.quad.width = self._edit.ascii_width
+			line.container._select.x = 0
+			line.container._select.width = self._edit.ascii_width
 		end
 		i = i+(1)
 	end
@@ -289,7 +289,7 @@ function AUICodeSelectCursor:DeleteSelect(need_revoke, revoke_bind)
 			local char = line.char_list[i]
 			revoke_content = revoke_content .. char.char
 			if char.text ~= nil then
-				line.container:RemoveChild(char.text)
+				line.container._text:RemoveChild(char.text)
 			end
 			i = i+(1)
 		end
@@ -379,7 +379,7 @@ function AUICodeSelectCursor:DeleteSelect(need_revoke, revoke_bind)
 		local char = start_line.char_list[it_char]
 		revoke_start = revoke_start .. char.char
 		if char.text ~= nil then
-			start_line.container:RemoveChild(char.text)
+			start_line.container._text:RemoveChild(char.text)
 		end
 		it_char = it_char+(1)
 	end
@@ -406,10 +406,8 @@ function AUICodeSelectCursor:DeleteSelect(need_revoke, revoke_bind)
 		char.pre_width = pre_width
 		if char.text ~= nil then
 			char.text.x = pre_width
-			start_line.container:AddChild(char.text)
-		elseif char.width > 0 then
-			start_line.container:CreateAndAdd(char)
 		end
+		start_line.container:AddChar(char)
 		pre_width = pre_width + (char.width)
 		start_line.char_count = start_line.char_count + (1)
 		start_line.char_list[start_line.char_count] = char

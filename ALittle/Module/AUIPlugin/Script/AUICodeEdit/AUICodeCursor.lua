@@ -343,7 +343,7 @@ function AUICodeCursor:DeleteLeft(need_revoke, revoke_bind)
 		local char = line.char_list[self._it_char]
 		local revoke_content = char.char
 		if char.text ~= nil then
-			line.container:RemoveChild(char.text)
+			line.container._text:RemoveChild(char.text)
 		end
 		line.char_count = line.char_count - (1)
 		ALittle.List_Remove(line.char_list, self._it_char)
@@ -426,10 +426,8 @@ function AUICodeCursor:DeleteLeft(need_revoke, revoke_bind)
 		char.pre_width = pre_width
 		if char.text ~= nil then
 			char.text.x = pre_width
-			pre_line.container:AddChild(char.text)
-		elseif char.width > 0 then
-			pre_line.container:CreateAndAdd(char)
 		end
+		pre_line.container:AddChar(char)
 		pre_width = pre_width + (char.width)
 		pre_line.char_count = pre_line.char_count + (1)
 		pre_line.char_list[pre_line.char_count] = char
@@ -473,7 +471,7 @@ function AUICodeCursor:DeleteRight(need_revoke, revoke_bind)
 		local char = line.char_list[self._it_char + 1]
 		local revoke_content = char.char
 		if char.text ~= nil then
-			line.container:RemoveChild(char.text)
+			line.container._text:RemoveChild(char.text)
 		end
 		line.char_count = line.char_count - (1)
 		ALittle.List_Remove(line.char_list, self._it_char + 1)
@@ -550,10 +548,8 @@ function AUICodeCursor:DeleteRight(need_revoke, revoke_bind)
 		char.pre_width = pre_width
 		if char.text ~= nil then
 			char.text.x = pre_width
-			cur_line.container:AddChild(char.text)
-		elseif char.width > 0 then
-			cur_line.container:CreateAndAdd(char)
 		end
+		cur_line.container:AddChar(char)
 		pre_width = pre_width + (char.width)
 		cur_line.char_count = cur_line.char_count + (1)
 		cur_line.char_list[cur_line.char_count] = char

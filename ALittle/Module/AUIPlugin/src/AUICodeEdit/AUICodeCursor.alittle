@@ -346,7 +346,7 @@ public class AUICodeCursor : ALittle.Quad
 
             var char = line.char_list[this._it_char];
             var revoke_content = char.char;
-            if (char.text != null) line.container.RemoveChild(char.text);
+            if (char.text != null) line.container._text.RemoveChild(char.text);
             line.char_count -= 1;
             ALittle.List_Remove(line.char_list, this._it_char);
             for (var i = this._it_char; i <= line.char_count; 1)
@@ -430,15 +430,8 @@ public class AUICodeCursor : ALittle.Quad
         {
             var char = cur_line.char_list[i];
             char.pre_width = pre_width;
-            if (char.text != null)
-            {
-                char.text.x = pre_width;
-                pre_line.container.AddChild(char.text);
-            }
-            elseif (char.width > 0)
-            {
-                pre_line.container.CreateAndAdd(char);
-            }
+            if (char.text != null) char.text.x = pre_width;
+            pre_line.container.AddChar(char);
             pre_width += char.width;
             pre_line.char_count += 1;
             pre_line.char_list[pre_line.char_count] = char;
@@ -487,7 +480,7 @@ public class AUICodeCursor : ALittle.Quad
 
             var char = line.char_list[this._it_char + 1];
             var revoke_content = char.char;
-            if (char.text != null) line.container.RemoveChild(char.text);
+            if (char.text != null) line.container._text.RemoveChild(char.text);
             line.char_count -= 1;
             ALittle.List_Remove(line.char_list, this._it_char + 1);
             for (var i = this._it_char + 1; i <= line.char_count; 1)
@@ -567,15 +560,8 @@ public class AUICodeCursor : ALittle.Quad
         {
             var char = next_line.char_list[i];
             char.pre_width = pre_width;
-            if (char.text != null)
-            {
-                char.text.x = pre_width;
-                cur_line.container.AddChild(char.text);
-            }
-            elseif (char.width > 0)
-            {
-                cur_line.container.CreateAndAdd(char);
-            }
+            if (char.text != null) char.text.x = pre_width;
+            cur_line.container.AddChar(char);
             pre_width += char.width;
             cur_line.char_count += 1;
             cur_line.char_list[cur_line.char_count] = char;

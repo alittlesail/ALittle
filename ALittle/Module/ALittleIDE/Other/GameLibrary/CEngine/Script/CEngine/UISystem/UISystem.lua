@@ -370,6 +370,7 @@ function UISystem:HandleRButtonUp(x, y)
 end
 
 function UISystem:HandleTextInput(text)
+	ALittle.Log(text)
 	self._ime_editing = false
 	if self._ime_editing_callback ~= nil then
 		self._ime_editing_callback(false, nil, nil, nil, nil)
@@ -378,6 +379,7 @@ function UISystem:HandleTextInput(text)
 		local event = {}
 		event.target = self._sfc
 		event.text = text
+		ALittle.Log(self._sfc)
 		self._sfc:DispatchEvent(___all_struct[-1234078962], event)
 		return true
 	end

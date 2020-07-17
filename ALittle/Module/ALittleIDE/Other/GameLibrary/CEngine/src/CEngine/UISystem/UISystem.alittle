@@ -547,6 +547,7 @@ class UISystem
     
     public fun HandleTextInput(string text) : bool
     {
+        ALittle.Log(text);
         this._ime_editing = false;
         if (this._ime_editing_callback != null)
             this._ime_editing_callback(false, null, null, null, null);
@@ -556,6 +557,7 @@ class UISystem
             var event = new UITextInputEvent();
             event.target = this._sfc;
             event.text = text;
+            ALittle.Log(this._sfc);
             // 向焦点控件发送文本输入事件
             this._sfc.DispatchEvent(event);
             return true;

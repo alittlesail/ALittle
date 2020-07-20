@@ -1652,6 +1652,9 @@ public class AUICodeEdit : ALittle.DisplayLayout
 
         var revoke_bind = new ALittle.RevokeBind();
 
+        var old_indent_list = new Map<int, int>();
+        var indent_list = new Map<int, int>();
+        var delete_list = new Map<int, int>();
         for (var index = line_start; index <= line_end; 1)
         {
             var line = this._line_list[index];
@@ -1674,7 +1677,24 @@ public class AUICodeEdit : ALittle.DisplayLayout
 					break;
                 }
             }
-        	var indent = this._language.QueryFormateIndent(index, delete_count);
+
+            old_indent_list[index] = old_indent;
+            delete_list[index] = delete_count;
+
+            var first_char = line.char_list[1];
+            if (first_char == null || first_char.char == "\r" || first_char.char == "\n")
+            	indent_list[index] = 0;
+            else
+	            indent_list[index] = this._language.QueryFormateIndent(index, delete_count);
+        }
+
+        var changed = false;
+        for (var index = line_start; index <= line_end; 1)
+        {
+            var line = this._line_list[index];
+            var old_indent = old_indent_list[index];
+            var delete_count = delete_list[index];
+            var indent = indent_list[index];
 
             // 检查是否需要格式化
             if (old_indent != indent)
@@ -1690,14 +1710,17 @@ public class AUICodeEdit : ALittle.DisplayLayout
                 	new_indent = new_indent.." ";
                 this.InsertText(new_indent, true, revoke_bind);
 
+                changed = true;
                 if (old_line == index) old_char += indent - delete_count;
             }
         }
 
-        revoke_bind.complete = bind(this.DispatchChangedEvent, this);
-        this._revoke_list.PushRevoke(revoke_bind);
-
-        this._cursor.SetLineChar(old_line, old_char);
+        if (changed)
+        {
+            revoke_bind.complete = bind(this.DispatchChangedEvent, this);
+            this._revoke_list.PushRevoke(revoke_bind);
+            this._cursor.SetLineChar(old_line, old_char);
+        }
     }
 
     // 删除多行tab键

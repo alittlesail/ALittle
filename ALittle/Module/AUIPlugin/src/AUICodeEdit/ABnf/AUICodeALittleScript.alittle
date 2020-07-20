@@ -162,7 +162,7 @@ public class AUICodeALittleScript : AUICodeLanguage
     // 查询自动格式化行
     public fun QueryAutoFormat(string input) : bool
     {
-        return input == ";";
+        return input == ";" || input == "}";
     }
 
     // 设置目标生成语言

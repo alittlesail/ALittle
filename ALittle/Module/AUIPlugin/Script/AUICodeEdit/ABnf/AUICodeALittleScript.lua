@@ -162,7 +162,7 @@ function AUICodeALittleScript:QueryColorValue(tag)
 end
 
 function AUICodeALittleScript:QueryAutoFormat(input)
-	return input == ";"
+	return input == ";" or input == "}"
 end
 
 function AUICodeALittleScript:SetTargetLanguage(target_languaeg)

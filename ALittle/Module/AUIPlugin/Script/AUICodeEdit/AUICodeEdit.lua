@@ -1595,6 +1595,9 @@ function AUICodeEdit:MultiLineFormat(line_start, line_end)
 	local old_line = self._cursor.line
 	local old_char = self._cursor.char
 	local revoke_bind = ALittle.RevokeBind()
+	local old_indent_list = {}
+	local indent_list = {}
+	local delete_list = {}
 	local index = line_start
 	while true do
 		if not(index <= line_end) then break end
@@ -1612,7 +1615,24 @@ function AUICodeEdit:MultiLineFormat(line_start, line_end)
 				break
 			end
 		end
-		local indent = self._language:QueryFormateIndent(index, delete_count)
+		old_indent_list[index] = old_indent
+		delete_list[index] = delete_count
+		local first_char = line.char_list[1]
+		if first_char == nil or first_char.char == "\r" or first_char.char == "\n" then
+			indent_list[index] = 0
+		else
+			indent_list[index] = self._language:QueryFormateIndent(index, delete_count)
+		end
+		index = index+(1)
+	end
+	local changed = false
+	local index = line_start
+	while true do
+		if not(index <= line_end) then break end
+		local line = self._line_list[index]
+		local old_indent = old_indent_list[index]
+		local delete_count = delete_list[index]
+		local indent = indent_list[index]
 		if old_indent ~= indent then
 			self._select_cursor:StartLineChar(index, 0)
 			self._select_cursor:UpdateLineChar(index, delete_count)
@@ -1625,15 +1645,18 @@ function AUICodeEdit:MultiLineFormat(line_start, line_end)
 				i = i+(1)
 			end
 			self:InsertText(new_indent, true, revoke_bind)
+			changed = true
 			if old_line == index then
 				old_char = old_char + (indent - delete_count)
 			end
 		end
 		index = index+(1)
 	end
-	revoke_bind.complete = Lua.Bind(self.DispatchChangedEvent, self)
-	self._revoke_list:PushRevoke(revoke_bind)
-	self._cursor:SetLineChar(old_line, old_char)
+	if changed then
+		revoke_bind.complete = Lua.Bind(self.DispatchChangedEvent, self)
+		self._revoke_list:PushRevoke(revoke_bind)
+		self._cursor:SetLineChar(old_line, old_char)
+	end
 end
 
 function AUICodeEdit:MultiTabDelete(need_revoke, revoke_bind)

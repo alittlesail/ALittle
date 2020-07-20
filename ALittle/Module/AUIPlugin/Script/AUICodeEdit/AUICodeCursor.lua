@@ -177,6 +177,7 @@ function AUICodeCursor:RejustShowCursor()
 			self._virtual_indent = self._edit.language:QueryDesiredIndent(self._it_line, self._it_char)
 			if self._virtual_indent > 0 then
 				self.x = self._virtual_indent * self._edit.ascii_width
+				self._move_char = self._virtual_indent
 			end
 		end
 	end

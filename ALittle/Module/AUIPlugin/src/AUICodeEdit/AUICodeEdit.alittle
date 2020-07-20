@@ -314,7 +314,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
     private List<ALittle.DisplayObject> _error_list;    // 错误列表
 
     private ALittle.Dialog _find_dialog;        // 查找对话框
-    private ALittle.DisplayObject _find_input;  // 输入框
+    private ALittle.ImageInput _find_input;  // 输入框
     private Map<int, List<AUICodeFindInfo>> _find_map; // 查找列表
 
     private ALittle.ScrollScreen _code_screen;  // 滚动屏幕
@@ -363,6 +363,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
         this.AddEventListener(this, this.HandleChangedEvent);
 
         this._find_dialog.visible = false;
+        this._find_dialog.close_callback = bind(this.HandleFindEscClick, this, null);
 
 		// 创建编辑容器
         this._code_screen.container = new AUICodeEditContainer(this._ctrl_sys);
@@ -843,9 +844,19 @@ public class AUICodeEdit : ALittle.DisplayLayout
         }
     }
 
-    private fun HandleFindEscClick(ALittle.UIEscKeyEvent event)
+    private fun HandleFindEscClick(ALittle.UIEvent event)
     {
         this._find_dialog.visible = false;
+
+        if (this._find_map != null)
+        {
+            for (var it_line, list in this._find_map)
+            {
+                for (var index, info in list)
+                    info._focus_quad.RemoveFromParent();   
+            }
+        }
+        this._find_map = null;
     }
 
     private fun HandleChangedEvent(ALittle.UIChangedEvent event)
@@ -1241,7 +1252,18 @@ public class AUICodeEdit : ALittle.DisplayLayout
         }
         elseif (event.sym == ALittle.UIEnumTypes.KEY_TAB)
         {
-            is_change = this.InsertText("\t", true);
+            if (this._select_cursor.line_start != this._select_cursor.line_end)
+            {
+                if (ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) != 0)
+                    is_change = this.MultiTabDelete(true);
+                else
+                    is_change = this.MultiTabInsert(true);
+            }
+            else
+            {
+        		var text = this._cursor.virtual_indent.."\t";
+            	is_change = this.InsertText(text, true);
+            }
             g_AUICodeCompleteScreen.Hide();   
 			event.handled = true;
         }
@@ -1285,6 +1307,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
         {
             this._find_dialog.visible = true;
             this._find_input.DelayFocus();
+            this._find_input.SelectAll();
         }
         elseif (event.sym == ALittle.UIEnumTypes.KEY_CTRL)
         {
@@ -1301,6 +1324,12 @@ public class AUICodeEdit : ALittle.DisplayLayout
                 this._find_dialog.visible = false;
                 event.handled = true;
             }
+        }
+        elseif (event.sym == ALittle.UIEnumTypes.KEY_F12)
+        {
+            this.DoQueryGoto(this._cursor.line, this._cursor.char);
+            this.StopQueryInfo();
+            event.handled = true;
         }
         
         // 检查是否发送CHANGE事件
@@ -1523,6 +1552,176 @@ public class AUICodeEdit : ALittle.DisplayLayout
         if (this._language != null) this._language.SetText(content);
     }
 
+    // 插入多行tab键
+    public fun MultiTabInsert(bool need_revoke, [Nullable]ALittle.RevokeBind revoke_bind) : bool
+    {
+        var insert_revoke:ALittle.RevokeBind;
+        if (need_revoke) insert_revoke = new ALittle.RevokeBind();
+
+        if (this._select_cursor.line_start == null || this._select_cursor.line_end == null) return false;
+
+        var old_line_start = this._select_cursor.line_start;
+        var old_char_start = this._select_cursor.char_start;
+        var old_line_end = this._select_cursor.line_end;
+        var old_char_end = this._select_cursor.char_end;
+
+        var old_line = this._cursor.line;
+        var old_char = this._cursor.char;
+
+        var line_min = this._select_cursor.line_start;
+        var line_max = this._select_cursor.line_end;
+        if (line_min > line_max)
+        {
+            var temp = line_min;
+            line_min = line_max;
+            line_max = temp;
+        }
+
+        for (var index = line_min; index <= line_max; 1) 
+        {
+        	if (this._language != null) this._language.InsertText("    ", index, 1);
+            var line = this._line_list[index];
+            for (var char_index, char in line.char_list)
+            {
+                char.pre_width += this._ascii_width * 4;
+                if (char.text != null)
+					char.text.x += this._ascii_width * 4;
+            }
+            line.container.width += this._ascii_width * 4;
+            for (var i = 1; i <= 4; 1)
+            {
+                var char = new AUICodeCharInfo();
+                char.pre_width = (i - 1) * this._ascii_width;
+                char.char = " ";
+                char.width = this._ascii_width;
+                ALittle.List_Insert(line.char_list, i, char);
+            }
+        	line.char_count += 4;
+        }
+
+        var max_width = 0.0;
+        for (var index, line in this._line_list)
+            if (line.container.width > max_width) max_width = line.container.width;
+        this._code_screen.container.width = max_width;
+        this._code_screen.RejustScrollBar();
+
+        this._cursor.SetLineChar(old_line, old_char + 4);
+        this._select_cursor.StartLineChar(old_line_start, old_char_start + 4);
+        this._select_cursor.UpdateLineChar(old_line_end, old_char_end + 4);
+
+        if (need_revoke)
+        {
+            var revoke = new AUICodeMultiTabInsertRevoke(this, this._cursor, this._select_cursor
+            	, old_line_start, old_char_start, old_line_end, old_char_end
+            	, this._select_cursor.line_start, this._select_cursor.char_start, this._select_cursor.line_end, this._select_cursor.char_end
+            	, revoke_bind == null);
+            insert_revoke.PushRevoke(revoke);
+            if (revoke_bind != null)
+                revoke_bind.PushRevoke(insert_revoke);
+            else
+                this._revoke_list.PushRevoke(insert_revoke);
+        }
+        return true;
+    }
+
+    // 删除多行tab键
+    public fun MultiTabDelete(bool need_revoke, [Nullable]ALittle.RevokeBind revoke_bind) : bool
+    {
+		var insert_revoke:ALittle.RevokeBind;
+        if (need_revoke) insert_revoke = new ALittle.RevokeBind();
+
+        if (this._select_cursor.line_start == null || this._select_cursor.line_end == null) return false;
+
+        var old_line_start = this._select_cursor.line_start;
+        var old_char_start = this._select_cursor.char_start;
+        var old_line_end = this._select_cursor.line_end;
+        var old_char_end = this._select_cursor.char_end;
+
+        var old_line = this._cursor.line;
+        var old_char = this._cursor.char;
+
+        var line_min = this._select_cursor.line_start;
+        var line_max = this._select_cursor.line_end;
+        if (line_min > line_max)
+        {
+            var temp = line_min;
+            line_min = line_max;
+            line_max = temp;
+        }
+
+        var changed = false;
+        for (var index = line_min; index <= line_max; 1) 
+        {
+            var line = this._line_list[index];
+            // 计算空格数
+            var delete_count = 0;
+            for (var i = 1; i <= 4; 1)
+            {
+                if (line.char_list[i].char == "\t")
+                {
+                    if (i == 1)
+                    {
+                        delete_count = 1;
+                        break;
+                    }
+                    else
+                        break;
+                }
+                elseif (line.char_list[i].char == " ")
+					delete_count += 1;
+                else
+					break;
+            }
+
+            if (delete_count > 0)
+            {
+                changed = true;
+        		if (this._language != null) this._language.DeleteText(index, 1, index, delete_count);
+    			for (var char_index, char in line.char_list)
+            	{
+             	   char.pre_width -= this._ascii_width * 4;
+             	   if (char.text != null)
+						char.text.x -= this._ascii_width * 4;
+            	}
+            	line.container.width -= this._ascii_width * 4;
+            	ALittle.List_Splice(line.char_list, 1, delete_count);
+            	line.char_count -= delete_count;
+				if (index == old_line_start) old_char_start -= delete_count;
+            	elseif (index == old_line_end) old_char_end -= delete_count;
+
+                if (index == old_line) old_char -= delete_count;
+            }
+        }
+
+        if (changed)
+        {
+            this._cursor.SetLineChar(old_line, old_char);
+        	this._select_cursor.StartLineChar(old_line_start, old_char_start);
+        	this._select_cursor.UpdateLineChar(old_line_end, old_char_end);
+
+       	 var max_width = 0.0;
+	        for (var index, line in this._line_list)
+ 	           if (line.container.width > max_width) max_width = line.container.width;
+        	this._code_screen.container.width = max_width;
+        	this._code_screen.RejustScrollBar();
+
+        	if (need_revoke)
+        	{
+            	var revoke = new AUICodeMultiTabDeleteRevoke(this, this._cursor, this._select_cursor
+            		, old_line_start, old_char_start, old_line_end, old_char_end
+            		, this._select_cursor.line_start, this._select_cursor.char_start, this._select_cursor.line_end, this._select_cursor.char_end
+            		, revoke_bind == null);
+            	insert_revoke.PushRevoke(revoke);
+            	if (revoke_bind != null)
+             	   revoke_bind.PushRevoke(insert_revoke);
+            	else
+             	   this._revoke_list.PushRevoke(insert_revoke);
+        	}
+        }
+
+        return true;
+    }
+
     // 插入文本
     public fun InsertText(string content, bool need_revoke, [Nullable]ALittle.RevokeBind revoke_bind) : bool
     {
@@ -1729,7 +1928,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
 
         if (need_revoke)
         {
-            var revoke = new AUICodeInsetTextRevoke(this, this._cursor, this._select_cursor, old_it_line, old_it_char, it_cursor_line, it_cursor_char, content, revoke_bind == null);
+            var revoke = new AUICodeInsertTextRevoke(this, this._cursor, this._select_cursor, old_it_line, old_it_char, it_cursor_line, it_cursor_char, content, revoke_bind == null);
             insert_revoke.PushRevoke(revoke);
             if (revoke_bind != null)
                 revoke_bind.PushRevoke(insert_revoke);

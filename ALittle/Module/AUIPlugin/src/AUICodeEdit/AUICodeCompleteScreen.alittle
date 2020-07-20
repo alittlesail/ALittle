@@ -297,6 +297,7 @@ protected class AUICodeCompleteScreen
     public fun TryHide(AUICodeEdit edit)
     {
         if (this._edit != edit) return;
+        if (this._complete == null) return;
 
         // 检查光标
         if (edit.cursor.line < this._complete.line_start || edit.cursor.line > this._line_end)

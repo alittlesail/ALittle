@@ -150,7 +150,7 @@ AllExpr = Modifier* (IfExpr |
 EmptyExpr = ';';
 
 // for 流程控制
-ForExpr = <for>@ ForCondition (ForBody | AllExpr);
+ForExpr = <for>@ ForCondition (ForBody | AllExpr)?;
 ForCondition = '('@ <var>@ ForPairDec (ForStepCondition | ForInCondition) ')';
 ForBody = '{'@ AllExpr* '}';
 
@@ -163,7 +163,7 @@ ForInCondition = (','@ ForPairDec)* <in>@ ValueStat;
 ForPairDec = VarAssignNameDec (':'@ AllType)?;
 
 // while 流程控制
-WhileExpr = <while>@ WhileCondition (WhileBody | AllExpr);
+WhileExpr = <while>@ WhileCondition (WhileBody | AllExpr)?;
 WhileCondition = '('@ ValueStat? ')';
 WhileBody = '{'@ AllExpr* '}';
 
@@ -173,12 +173,12 @@ DoWhileCondition = '('@ ValueStat? ')';
 DoWhileBody = '{'@ AllExpr* '}';
 
 // if else 流程控制
-IfExpr = <if>@ IfCondition (IfBody | AllExpr) ElseIfExpr* ElseExpr?;
+IfExpr = <if>@ IfCondition (IfBody | AllExpr)? ElseIfExpr* ElseExpr?;
 IfCondition = '('@ ValueStat? ')';
 IfBody = '{'@ AllExpr* '}';
-ElseExpr = <else>@ (ElseBody | AllExpr);
+ElseExpr = <else>@ (ElseBody | AllExpr)?;
 ElseBody = '{'@ AllExpr* '}';
-ElseIfExpr = <elseif>@ ElseIfCondition (ElseIfBody | AllExpr);
+ElseIfExpr = <elseif>@ ElseIfCondition (ElseIfBody | AllExpr)?;
 ElseIfCondition = '('@ ValueStat? ')';
 ElseIfBody = '{'@ AllExpr* '}';
 

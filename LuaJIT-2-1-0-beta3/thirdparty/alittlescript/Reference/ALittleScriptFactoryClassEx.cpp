@@ -33,7 +33,10 @@
 #include "ALittleScriptGlobalMethodDecReference.h"
 #include "ALittleScriptIdReference.h"
 #include "ALittleScriptIfConditionReference.h"
+#include "ALittleScriptIfExprReference.h"
 #include "ALittleScriptElseIfConditionReference.h"
+#include "ALittleScriptElseIfExprReference.h"
+#include "ALittleScriptElseExprReference.h"
 #include "ALittleScriptWhileConditionReference.h"
 #include "ALittleScriptDoWhileConditionReference.h"
 #include "ALittleScriptKeyReference.h"
@@ -82,6 +85,7 @@
 #include "ALittleScriptValueStatReference.h"
 #include "ALittleScriptVarAssignDecReference.h"
 #include "ALittleScriptVarAssignNameDecReference.h"
+#include "ALittleScriptWhileExprReference.h"
 #include "ALittleScriptWrapValueStatReference.h"
 #include "ALittleScriptLanguageModifierReference.h"
 #include "ALittleScriptLanguageNameDecReference.h"
@@ -130,8 +134,12 @@ ALittleScriptFactoryClassEx::ALittleScriptFactoryClassEx()
     m_create_map["GlobalMethodDec"] = ALittleScriptGlobalMethodDecReference::Create;
     m_create_map["Id"] = ALittleScriptIdReference::Create;
     m_create_map["IfCondition"] = ALittleScriptIfConditionReference::Create;
+    m_create_map["IfExpr"] = ALittleScriptIfExprReference::Create;
     m_create_map["ElseIfCondition"] = ALittleScriptElseIfConditionReference::Create;
+    m_create_map["ElseIfExpr"] = ALittleScriptElseIfExprReference::Create;
+    m_create_map["ElseExpr"] = ALittleScriptElseExprReference::Create;
     m_create_map["WhileCondition"] = ALittleScriptWhileConditionReference::Create;
+    m_create_map["WhileExpr"] = ALittleScriptWhileExprReference::Create;
     m_create_map["DoWhileCondition"] = ALittleScriptDoWhileConditionReference::Create;
     m_create_map["Key"] = ALittleScriptKeyReference::Create;
     m_create_map["LineComment"] = ALittleScriptLineCommentReference::Create;

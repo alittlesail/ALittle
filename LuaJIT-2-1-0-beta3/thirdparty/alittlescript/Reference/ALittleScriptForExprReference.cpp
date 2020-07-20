@@ -188,5 +188,9 @@ ABnfGuessError ALittleScriptForExprReference::CheckError()
 
         return ABnfGuessError(value_stat, u8"遍历对象类型必须是List,Map或者迭代函数");
     }
+
+    if (element->GetAllExpr() == nullptr && element->GetForBody() == nullptr)
+        return ABnfGuessError(element, u8"for没有循环体");
+
     return nullptr;
 }

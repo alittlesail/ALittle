@@ -216,19 +216,10 @@ bool ABnfFile::QueryError(int version, bool force, std::vector<ALanguageErrorInf
     AnalysisText(version);
     AnalysisError(version, force);
 
+    std::unordered_set<ABnfElementPtr> fliter;
     for (auto& pair : m_check_error_map)
     {
-        ALanguageErrorInfo info;
-        info.line_start = pair.first->GetStartLine();
-        info.char_start = pair.first->GetStartCol();
-        info.line_end = pair.first->GetEndLine();
-        info.char_end = pair.first->GetEndCol() + 1;
-        info.error = pair.second;
-        info_list.push_back(info);
-    }
-
-    for (auto& pair : m_analysis_error_map)
-    {
+        if (fliter.find(pair.first) != fliter.end()) continue;
         ALanguageErrorInfo info;
         info.line_start = pair.first->GetStartLine();
         info.char_start = pair.first->GetStartCol();
@@ -236,6 +227,20 @@ bool ABnfFile::QueryError(int version, bool force, std::vector<ALanguageErrorInf
         info.char_end = pair.first->GetEndCol();
         info.error = pair.second;
         info_list.push_back(info);
+        fliter.insert(pair.first);
+    }
+
+    for (auto& pair : m_analysis_error_map)
+    {
+        if (fliter.find(pair.first) != fliter.end()) continue;
+        ALanguageErrorInfo info;
+        info.line_start = pair.first->GetStartLine();
+        info.char_start = pair.first->GetStartCol();
+        info.line_end = pair.first->GetEndLine();
+        info.char_end = pair.first->GetEndCol();
+        info.error = pair.second;
+        info_list.push_back(info);
+        fliter.insert(pair.first);
     }
     return true;
 }

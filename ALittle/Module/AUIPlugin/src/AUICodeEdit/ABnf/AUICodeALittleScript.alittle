@@ -158,6 +158,13 @@ public class AUICodeALittleScript : AUICodeLanguage
     // 颜色查询
     public fun QueryColorValue(int tag) : ABnfColor { return g_ALittleScriptColor[tag]; }
 
+
+    // 查询自动格式化行
+    public fun QueryAutoFormat(string input) : bool
+    {
+        return input == ";";
+    }
+
     // 设置目标生成语言
     public fun SetTargetLanguage(string target_languaeg)
     {

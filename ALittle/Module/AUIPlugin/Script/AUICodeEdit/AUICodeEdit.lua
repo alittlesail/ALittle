@@ -206,6 +206,11 @@ function AUICodeLineContainer:Ctor(ctrl_sys)
 	___rawset(self, "_showd", false)
 	___rawset(self, "_version", 0)
 	___rawset(self, "_delay_loop", nil)
+	local find = ALittle.DisplayLayout(ctrl_sys)
+	find.width_type = 4
+	find.height_type = 4
+	self:AddChild(find)
+	___rawset(self, "_find", find)
 	local quad = ALittle.Quad(ctrl_sys)
 	quad = ALittle.Quad(g_Control)
 	quad.red = SELECT_RED
@@ -215,11 +220,6 @@ function AUICodeLineContainer:Ctor(ctrl_sys)
 	quad.visible = false
 	self:AddChild(quad)
 	___rawset(self, "_select", quad)
-	local find = ALittle.DisplayLayout(ctrl_sys)
-	find.width_type = 4
-	find.height_type = 4
-	self:AddChild(find)
-	___rawset(self, "_find", find)
 	local error = ALittle.DisplayLayout(ctrl_sys)
 	error.width_type = 4
 	error.height_type = 4
@@ -798,7 +798,7 @@ function AUICodeEdit:HandleFindInputChanged(event)
 		return
 	end
 	self._find_map = {}
-	local first_info = nil
+	self._first_info = nil
 	for index, line in ___ipairs(self._line_list) do
 		if line.char_count >= find_len then
 			local char_index = 1
@@ -831,8 +831,8 @@ function AUICodeEdit:HandleFindInputChanged(event)
 					info.it_char_end = char_index + find_len - 1
 					ALittle.List_Push(find_line, info)
 					char_index = char_index + (find_len)
-					if first_info == nil then
-						first_info = info
+					if self._first_info == nil then
+						self._first_info = info
 					end
 				else
 					char_index = char_index + (1)
@@ -840,8 +840,8 @@ function AUICodeEdit:HandleFindInputChanged(event)
 			end
 		end
 	end
-	if first_info ~= nil then
-		self:EditFocus(first_info.it_line, first_info.it_char_start, first_info.it_line, first_info.it_char_end, false)
+	if self._first_info ~= nil then
+		self:EditFocus(self._first_info.it_line, self._first_info.it_char_start, self._first_info.it_line, self._first_info.it_char_end, false)
 	end
 end
 
@@ -858,6 +858,9 @@ function AUICodeEdit:HandleFindNextClick(event)
 			end
 		end
 		line_index = line_index + (1)
+	end
+	if self._first_info ~= nil then
+		self:EditFocus(self._first_info.it_line, self._first_info.it_char_start, self._first_info.it_line, self._first_info.it_char_end, false)
 	end
 end
 
@@ -1063,6 +1066,8 @@ function AUICodeEdit:HandleTextInput(event)
 					self:InsertText(auto_pair, true)
 					self._cursor:SetLineChar(old_line, old_char)
 				end
+			elseif self._language:QueryAutoFormat(event.text) then
+				self:MultiLineFormat(self._cursor.line, self._cursor.line)
 			end
 		end
 		self:DispatchEvent(___all_struct[958494922], {})
@@ -1279,8 +1284,11 @@ function AUICodeEdit:HandleKeyDown(event)
 		event.handled = true
 	elseif event.sym == 118 and ALittle.BitAnd(event.mod, 0x00c0) ~= 0 then
 		if ALittle.System_HasClipboardText() then
+			local old_line = self._cursor.line
 			is_change = self:InsertText(ALittle.System_GetClipboardText(), true)
+			local new_line = self._cursor.line
 			g_AUICodeCompleteScreen:Hide()
+			self:MultiLineFormat(old_line, new_line)
 		end
 		event.handled = true
 	elseif event.sym == 97 and ALittle.BitAnd(event.mod, 0x00c0) ~= 0 then
@@ -1573,6 +1581,59 @@ function AUICodeEdit:MultiTabInsert(need_revoke, revoke_bind)
 		end
 	end
 	return true
+end
+
+function AUICodeEdit:MultiLineFormat(line_start, line_end)
+	if self._language == nil then
+		return
+	end
+	if line_start > line_end then
+		local temp = line_start
+		line_start = line_end
+		line_end = temp
+	end
+	local old_line = self._cursor.line
+	local old_char = self._cursor.char
+	local revoke_bind = ALittle.RevokeBind()
+	local index = line_start
+	while true do
+		if not(index <= line_end) then break end
+		local line = self._line_list[index]
+		local old_indent = 0
+		local delete_count = 0
+		for i, char in ___ipairs(line.char_list) do
+			if char.char == " " then
+				old_indent = old_indent + (1)
+				delete_count = delete_count + (1)
+			elseif char.char == "\t" then
+				old_indent = old_indent + (4)
+				delete_count = delete_count + (1)
+			else
+				break
+			end
+		end
+		local indent = self._language:QueryFormateIndent(index, delete_count)
+		if old_indent ~= indent then
+			self._select_cursor:StartLineChar(index, 0)
+			self._select_cursor:UpdateLineChar(index, delete_count)
+			self._cursor:SetLineChar(index, 0)
+			local new_indent = ""
+			local i = 1
+			while true do
+				if not(i <= indent) then break end
+				new_indent = new_indent .. " "
+				i = i+(1)
+			end
+			self:InsertText(new_indent, true, revoke_bind)
+			if old_line == index then
+				old_char = old_char + (indent - delete_count)
+			end
+		end
+		index = index+(1)
+	end
+	revoke_bind.complete = Lua.Bind(self.DispatchChangedEvent, self)
+	self._revoke_list:PushRevoke(revoke_bind)
+	self._cursor:SetLineChar(old_line, old_char)
 end
 
 function AUICodeEdit:MultiTabDelete(need_revoke, revoke_bind)

@@ -118,6 +118,10 @@ function AUICodeLanguage:QueryAutoPair(line, char, input)
 	return right
 end
 
+function AUICodeLanguage:QueryAutoFormat(input)
+	return false
+end
+
 function AUICodeLanguage:QueryColorValue(tag)
 	return nil
 end

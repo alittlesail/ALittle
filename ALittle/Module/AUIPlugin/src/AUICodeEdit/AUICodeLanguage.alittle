@@ -131,6 +131,12 @@ public class AUICodeLanguage
         return right;
     }
 
+    // 查询自动格式化行
+    public fun QueryAutoFormat(string input) : bool
+    {
+        return false;
+    }
+
     // 颜色查询
     public fun QueryColorValue(int tag) : ABnfColor { return null; }
 

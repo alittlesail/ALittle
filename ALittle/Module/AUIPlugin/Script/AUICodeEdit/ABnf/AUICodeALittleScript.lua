@@ -161,6 +161,10 @@ function AUICodeALittleScript:QueryColorValue(tag)
 	return g_ALittleScriptColor[tag]
 end
 
+function AUICodeALittleScript:QueryAutoFormat(input)
+	return input == ";"
+end
+
 function AUICodeALittleScript:SetTargetLanguage(target_languaeg)
 	alittlescript.alittlescriptproject_settargetlanguage(self._project.project, target_languaeg)
 end

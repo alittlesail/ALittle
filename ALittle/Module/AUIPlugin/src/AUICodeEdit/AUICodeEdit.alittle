@@ -96,7 +96,14 @@ protected class AUICodeLineContainer : ALittle.DisplayLayout
 
     public ctor(ALittle.ControlSystem ctrl_sys)
     {
-        // 用于算则显示
+        // 用于显示查找容器
+        var find = new ALittle.DisplayLayout(ctrl_sys);
+        find.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+        find.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+        this.AddChild(find);
+        this._find = find;
+
+        // 用于选择显示
         var quad = new ALittle.Quad(ctrl_sys);
         quad = new ALittle.Quad(g_Control);
         quad.red = SELECT_RED;
@@ -106,13 +113,6 @@ protected class AUICodeLineContainer : ALittle.DisplayLayout
         quad.visible = false;
         this.AddChild(quad);
         this._select = quad;
-
-        // 用于显示查找容器
-        var find = new ALittle.DisplayLayout(ctrl_sys);
-        find.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
-        find.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
-        this.AddChild(find);
-        this._find = find;
 
         // 用于显示错误容器
         var error = new ALittle.DisplayLayout(ctrl_sys);
@@ -316,6 +316,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
     private ALittle.Dialog _find_dialog;        // 查找对话框
     private ALittle.ImageInput _find_input;  // 输入框
     private Map<int, List<AUICodeFindInfo>> _find_map; // 查找列表
+    private AUICodeFindInfo _first_info;	// 第一个查找结果
 
     private ALittle.ScrollScreen _code_screen;  // 滚动屏幕
 	private AUICodeLinear _code_linear;      // 代码容器
@@ -765,7 +766,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
         if (find_len == 0) return;
 
         this._find_map = new Map<int, List<AUICodeFindInfo>>();
-        var first_info:AUICodeFindInfo = null;
+        this._first_info = null;
         for (var index, line in this._line_list)
         {
             if (line.char_count >= find_len)
@@ -807,7 +808,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
                         ALittle.List_Push(find_line, info);
                         char_index += find_len;
 
-                        if (first_info == null) first_info = info;
+                        if (this._first_info == null) this._first_info = info;
                     }
                     else
                     {
@@ -817,8 +818,8 @@ public class AUICodeEdit : ALittle.DisplayLayout
             }
         }
 
-        if (first_info != null)
-            this.EditFocus(first_info.it_line, first_info.it_char_start, first_info.it_line, first_info.it_char_end, false);
+        if (this._first_info != null)
+            this.EditFocus(this._first_info.it_line, this._first_info.it_char_start, this._first_info.it_line, this._first_info.it_char_end, false);
     }
 
     private fun HandleFindNextClick(ALittle.UIClickEvent event)
@@ -842,6 +843,9 @@ public class AUICodeEdit : ALittle.DisplayLayout
 
             line_index += 1;
         }
+
+        if (this._first_info != null)
+        	this.EditFocus(this._first_info.it_line, this._first_info.it_char_start, this._first_info.it_line, this._first_info.it_char_end, false);
     }
 
     private fun HandleFindEscClick(ALittle.UIEvent event)
@@ -1026,6 +1030,10 @@ public class AUICodeEdit : ALittle.DisplayLayout
                         this.InsertText(auto_pair, true);
                         this._cursor.SetLineChar(old_line, old_char);
                     }
+                }
+                elseif (this._language.QueryAutoFormat(event.text))
+                {
+                    this.MultiLineFormat(this._cursor.line, this._cursor.line);
                 }
             }
 
@@ -1287,8 +1295,11 @@ public class AUICodeEdit : ALittle.DisplayLayout
         {
             if (ALittle.System_HasClipboardText())
             {
+                var old_line = this._cursor.line;
                 is_change = this.InsertText(ALittle.System_GetClipboardText(), true);
-                g_AUICodeCompleteScreen.Hide();   
+                var new_line = this._cursor.line;
+                g_AUICodeCompleteScreen.Hide();
+                this.MultiLineFormat(old_line, new_line);
             }
 			event.handled = true;
         }
@@ -1622,6 +1633,71 @@ public class AUICodeEdit : ALittle.DisplayLayout
                 this._revoke_list.PushRevoke(insert_revoke);
         }
         return true;
+    }
+
+    // 行缩进格式化
+    public fun MultiLineFormat(int line_start, int line_end)
+    {
+        if (this._language == null) return;
+
+        if (line_start > line_end)
+        {
+            var temp = line_start;
+            line_start = line_end;
+            line_end = temp;
+        }
+
+        var old_line = this._cursor.line;
+        var old_char = this._cursor.char;
+
+        var revoke_bind = new ALittle.RevokeBind();
+
+        for (var index = line_start; index <= line_end; 1)
+        {
+            var line = this._line_list[index];
+            var old_indent = 0;
+            var delete_count = 0;
+            for (var i, char in line.char_list)
+            {
+                if (char.char == " ")
+                {
+                	old_indent += 1;
+                    delete_count += 1;
+                }
+                elseif (char.char == "\t")
+                {
+                	old_indent += 4;
+                    delete_count += 1;
+                }
+                else
+                {
+					break;
+                }
+            }
+        	var indent = this._language.QueryFormateIndent(index, delete_count);
+
+            // 检查是否需要格式化
+            if (old_indent != indent)
+            {
+                // 先删除
+                this._select_cursor.StartLineChar(index, 0);
+                this._select_cursor.UpdateLineChar(index, delete_count);
+                this._cursor.SetLineChar(index, 0);
+                
+                // 再插入
+                var new_indent = "";
+                for (var i = 1; i <= indent; 1)
+                	new_indent = new_indent.." ";
+                this.InsertText(new_indent, true, revoke_bind);
+
+                if (old_line == index) old_char += indent - delete_count;
+            }
+        }
+
+        revoke_bind.complete = bind(this.DispatchChangedEvent, this);
+        this._revoke_list.PushRevoke(revoke_bind);
+
+        this._cursor.SetLineChar(old_line, old_char);
     }
 
     // 删除多行tab键

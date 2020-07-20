@@ -45,6 +45,8 @@ public struct UITabKeyEvent : UIEvent { }
 public struct UIEnterKeyEvent : UIEvent { }
 // @按键
 public struct UIAtKeyEvent : UIEvent { }
+// ESC按键
+public struct UIEscKeyEvent : UIEvent { }
 
 // 向X拖拽
 public struct UIDragUpEvent : UIEvent { }

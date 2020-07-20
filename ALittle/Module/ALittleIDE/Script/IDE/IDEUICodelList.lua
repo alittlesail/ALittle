@@ -6,6 +6,12 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = ALittle.GetAllStruct()
 
+ALittle.RegStruct(-889634858, "ALittleIDE.IDECodeFileSearchInfo", {
+name = "ALittleIDE.IDECodeFileSearchInfo", ns_name = "ALittleIDE", rl_name = "IDECodeFileSearchInfo", hash_code = -889634858,
+name_list = {"list","count","index","name"},
+type_list = {"List<ALittleIDE.IDECodeTreeLogic>","int","int","string"},
+option_map = {}
+})
 ALittle.RegStruct(1450277461, "ALittleIDE.IDECodeModuleInfo", {
 name = "ALittleIDE.IDECodeModuleInfo", ns_name = "ALittleIDE", rl_name = "IDECodeModuleInfo", hash_code = 1450277461,
 name_list = {"module_name","root_path"},
@@ -16,12 +22,6 @@ ALittle.RegStruct(1715346212, "ALittle.Event", {
 name = "ALittle.Event", ns_name = "ALittle", rl_name = "Event", hash_code = 1715346212,
 name_list = {"target"},
 type_list = {"ALittle.EventDispatcher"},
-option_map = {}
-})
-ALittle.RegStruct(-889634858, "ALittleIDE.IDECodeFileSearchInfo", {
-name = "ALittleIDE.IDECodeFileSearchInfo", ns_name = "ALittleIDE", rl_name = "IDECodeFileSearchInfo", hash_code = -889634858,
-name_list = {"list","count","index","name"},
-type_list = {"List<ALittleIDE.IDECodeTreeLogic>","int","int","string"},
 option_map = {}
 })
 

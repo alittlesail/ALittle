@@ -11,6 +11,12 @@ name_list = {"target"},
 type_list = {"ALittle.EventDispatcher"},
 option_map = {}
 })
+ALittle.RegStruct(-420010531, "AUIPlugin.AUIWebAccountLoginEvent", {
+name = "AUIPlugin.AUIWebAccountLoginEvent", ns_name = "AUIPlugin", rl_name = "AUIWebAccountLoginEvent", hash_code = -420010531,
+name_list = {"target"},
+type_list = {"ALittle.EventDispatcher"},
+option_map = {}
+})
 ALittle.RegStruct(1715346212, "ALittle.Event", {
 name = "ALittle.Event", ns_name = "ALittle", rl_name = "Event", hash_code = 1715346212,
 name_list = {"target"},
@@ -19,12 +25,6 @@ option_map = {}
 })
 ALittle.RegStruct(-1848509213, "AUIPlugin.AUIWebAccountLogoutEvent", {
 name = "AUIPlugin.AUIWebAccountLogoutEvent", ns_name = "AUIPlugin", rl_name = "AUIWebAccountLogoutEvent", hash_code = -1848509213,
-name_list = {"target"},
-type_list = {"ALittle.EventDispatcher"},
-option_map = {}
-})
-ALittle.RegStruct(-420010531, "AUIPlugin.AUIWebAccountLoginEvent", {
-name = "AUIPlugin.AUIWebAccountLoginEvent", ns_name = "AUIPlugin", rl_name = "AUIWebAccountLoginEvent", hash_code = -420010531,
 name_list = {"target"},
 type_list = {"ALittle.EventDispatcher"},
 option_map = {}

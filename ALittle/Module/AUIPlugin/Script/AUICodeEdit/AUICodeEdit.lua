@@ -60,6 +60,12 @@ name_list = {"target","abs_x","abs_y","rel_x","rel_y"},
 type_list = {"ALittle.DisplayObject","double","double","double","double"},
 option_map = {}
 })
+ALittle.RegStruct(-1073016186, "AUIPlugin.AUICodeFindInfo", {
+name = "AUIPlugin.AUICodeFindInfo", ns_name = "AUIPlugin", rl_name = "AUICodeFindInfo", hash_code = -1073016186,
+name_list = {"_focus_quad","it_line","it_char_start","it_char_end"},
+type_list = {"ALittle.DisplayObject","int","int","int"},
+option_map = {}
+})
 ALittle.RegStruct(-1202439334, "ALittle.UIMoveOutEvent", {
 name = "ALittle.UIMoveOutEvent", ns_name = "ALittle", rl_name = "UIMoveOutEvent", hash_code = -1202439334,
 name_list = {"target"},
@@ -149,6 +155,9 @@ local FONT_BLUE = 198 / 255
 local SELECT_RED = 33 / 255
 local SELECT_GREEN = 66 / 255
 local SELECT_BLUE = 131 / 255
+local FIND_RED = 50 / 255
+local FIND_GREEN = 89 / 255
+local FIND_BLUE = 61 / 255
 g_DefaultColor = {}
 g_DefaultColor.alpha = 1
 g_DefaultColor.red = FONT_RED
@@ -206,6 +215,11 @@ function AUICodeLineContainer:Ctor(ctrl_sys)
 	quad.visible = false
 	self:AddChild(quad)
 	___rawset(self, "_select", quad)
+	local find = ALittle.DisplayLayout(ctrl_sys)
+	find.width_type = 4
+	find.height_type = 4
+	self:AddChild(find)
+	___rawset(self, "_find", find)
 	local error = ALittle.DisplayLayout(ctrl_sys)
 	error.width_type = 4
 	error.height_type = 4
@@ -388,7 +402,8 @@ function AUICodeEdit:TCtor()
 	self._code_screen:AddEventListener(___all_struct[1213009422], self, self.HandleKeyUp)
 	self._code_screen:AddEventListener(___all_struct[-1234078962], self, self.HandleTextInput)
 	self._code_screen:AddEventListener(___all_struct[-1001723540], self, self.HandleMouseMove)
-	self._code_screen:AddEventListener(___all_struct[958494922], self, self.HandleChangedEvent)
+	self:AddEventListener(___all_struct[958494922], self, self.HandleChangedEvent)
+	self._find_dialog.visible = false
 	self._code_screen.container = AUICodeEditContainer(self._ctrl_sys)
 	self._edit_quad._user_data = self
 	self._goto_quad.visible = false
@@ -606,20 +621,26 @@ end
 
 function AUICodeEdit:HandleMouseMove(event)
 	if not self._in_drag then
-		local item = self._error_container:PickUp(event.rel_x, event.rel_y)
-		if item ~= self._error_quad_move_in then
-			if self._error_quad_move_in ~= nil then
-				g_AUITool:HideTip()
-			end
-			self._error_quad_move_in = item
-			if item ~= nil then
-				local item_info = item._user_data
-				local x, y = item:LocalToGlobal()
-				local center_x = x + item.width / 2
-				local center_y = y
-				g_AUITool:ShowTip(item_info.error)
-				local tip_width, tip_height = g_AUITool:GetTipSize()
-				g_AUITool:MoveTip(center_x - tip_width / 2, center_y - tip_height)
+		local it_line = ALittle.Math_Floor(event.rel_y / LINE_HEIGHT) + 1
+		local line = self._line_list[it_line]
+		if line ~= nil then
+			local rel_x = event.rel_x
+			local rel_y = event.rel_y - (it_line - 1) * LINE_HEIGHT
+			local item = line.container._error:PickUp(rel_x, rel_y)
+			if item ~= self._error_quad_move_in then
+				if self._error_quad_move_in ~= nil then
+					g_AUITool:HideTip()
+				end
+				self._error_quad_move_in = item
+				if item ~= nil then
+					local item_info = item._user_data
+					local x, y = item:LocalToGlobal()
+					local center_x = x + item.width / 2
+					local center_y = y
+					g_AUITool:ShowTip(item_info.error)
+					local tip_width, tip_height = g_AUITool:GetTipSize()
+					g_AUITool:MoveTip(center_x - tip_width / 2, center_y - tip_height)
+				end
 			end
 		end
 	end
@@ -727,11 +748,18 @@ end
 function AUICodeEdit:UpdateErrorInfo()
 	g_AUITool:HideTip()
 	self._error_quad_move_in = nil
-	self._error_container:RemoveAllChild()
+	if self._error_list ~= nil then
+		for index, item in ___ipairs(self._error_list) do
+			item:RemoveFromParent()
+		end
+	end
+	self._error_list = nil
 	local list = self._language:QueryError(self._force_query_error)
 	if list == nil then
 		return
 	end
+	self._error_list = {}
+	local error_count = 0
 	for index, info in ___ipairs(list) do
 		local item_info = {}
 		local item = g_Control:CreateControl("ide_code_error_item", item_info)
@@ -742,15 +770,99 @@ function AUICodeEdit:UpdateErrorInfo()
 		end
 		local x, y, width = self:CalcRect(info.line_start, info.char_start, char_end)
 		item.x = x
-		item.y = y
 		item.width = width
 		item.height = LINE_HEIGHT
 		item_info.error = info.error
 		item_info._focus_quad._user_data = item_info
-		self._error_container:AddChild(item)
+		line.container._error:AddChild(item)
+		error_count = error_count + (1)
+		self._error_list[error_count] = item
 	end
 end
 AUICodeEdit.UpdateErrorInfo = Lua.CoWrap(AUICodeEdit.UpdateErrorInfo)
+
+function AUICodeEdit:HandleFindInputChanged(event)
+	if self._find_map ~= nil then
+		for it_line, list in ___pairs(self._find_map) do
+			for index, info in ___ipairs(list) do
+				info._focus_quad:RemoveFromParent()
+			end
+		end
+	end
+	self._find_map = nil
+	local content = self._find_input.text
+	local list = ALittle.String_SplitUTF8(content)
+	local find_len = ALittle.List_MaxN(list)
+	if find_len == 0 then
+		return
+	end
+	self._find_map = {}
+	local first_info = nil
+	for index, line in ___ipairs(self._line_list) do
+		if line.char_count >= find_len then
+			local char_index = 1
+			while char_index <= line.char_count do
+				local find = true
+				for i, char in ___ipairs(list) do
+					if char ~= line.char_list[char_index + i - 1].char then
+						find = false
+						break
+					end
+				end
+				if find then
+					local item = ALittle.Quad(g_Control)
+					item.red = FIND_RED
+					item.green = FIND_GREEN
+					item.blue = FIND_BLUE
+					item.x = line.char_list[char_index].pre_width
+					item.width = line.char_list[char_index + find_len].pre_width - line.char_list[char_index].pre_width
+					item.height = LINE_HEIGHT
+					line.container._find:AddChild(item)
+					local find_line = self._find_map[index]
+					if find_line == nil then
+						find_line = {}
+						self._find_map[index] = find_line
+					end
+					local info = {}
+					info._focus_quad = item
+					info.it_line = index
+					info.it_char_start = char_index
+					info.it_char_end = char_index + find_len - 1
+					ALittle.List_Push(find_line, info)
+					char_index = char_index + (find_len)
+					if first_info == nil then
+						first_info = info
+					end
+				else
+					char_index = char_index + (1)
+				end
+			end
+		end
+	end
+	if first_info ~= nil then
+		self:EditFocus(first_info.it_line, first_info.it_char_start, first_info.it_line, first_info.it_char_end, false)
+	end
+end
+
+function AUICodeEdit:HandleFindNextClick(event)
+	local line_index = self._cursor.line
+	while line_index <= self._line_count do
+		local find_line = self._find_map[line_index]
+		if find_line ~= nil then
+			for index, info in ___ipairs(find_line) do
+				if line_index ~= self._cursor.line or info.it_char_start > self._cursor.char + 1 then
+					self:EditFocus(info.it_line, info.it_char_start, info.it_line, info.it_char_end, false)
+					return
+				end
+			end
+		end
+		line_index = line_index + (1)
+	end
+end
+
+function AUICodeEdit:HandleFindEscClick(event)
+	self._find_dialog.visible = false
+end
 
 function AUICodeEdit:HandleChangedEvent(event)
 	if self._language == nil then
@@ -1161,10 +1273,18 @@ function AUICodeEdit:HandleKeyDown(event)
 			g_AUICodeCompleteScreen:Hide()
 		end
 		event.handled = true
+	elseif event.sym == 102 and ALittle.BitAnd(event.mod, 0x00c0) ~= 0 then
+		self._find_dialog.visible = true
+		self._find_input:DelayFocus()
 	elseif event.sym == 1073742048 then
 		if self._move_in and not self._in_query_info then
 			local x, y = self._edit_quad:LocalToGlobal()
 			self:UpdateQueryInfo(A_UISystem.mouse_x - x, A_UISystem.mouse_y - y)
+		end
+	elseif event.sym == 27 then
+		if self._find_dialog ~= nil and self._find_dialog.visible then
+			self._find_dialog.visible = false
+			event.handled = true
 		end
 	end
 	if is_change then
@@ -1619,8 +1739,10 @@ function AUICodeEdit:Save()
 	return true
 end
 
-function AUICodeEdit:EditFocus(line_start, char_start, line_end, char_end)
-	self._edit_quad:DelayFocus()
+function AUICodeEdit:EditFocus(line_start, char_start, line_end, char_end, edit_focus)
+	if edit_focus then
+		self._edit_quad:DelayFocus()
+	end
 	if line_start ~= nil and char_start ~= nil then
 		if char_start > 0 then
 			char_start = char_start - (1)

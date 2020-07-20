@@ -64,6 +64,7 @@ public class ImageInput : DisplayLayout
         this._show_input.AddEventListener(this, this.HandleImageInputTransformChangd);
         this._show_input.AddEventListener(this, this.HandleImageInputTransformEnterKey);
         this._show_input.AddEventListener(this, this.HandleImageInputTransformTabKey);
+        this._show_input.AddEventListener(this, this.HandleImageInputTransformEscKey);
         this._show_input.AddEventListener(this, this.HandleImageInputTransformRButtonDown);
         this._show_input.AddEventListener(this, this.HandleImageInputTransformRButtonUp);
         this._show_input.AddEventListener(this, this.HandleImageInputTransformLongButtonDown);
@@ -337,6 +338,7 @@ public class ImageInput : DisplayLayout
     protected fun HandleImageInputTransformChangd(UIChangedEvent event) { event.target = this; this.DispatchEvent(event); }
     protected fun HandleImageInputTransformEnterKey(UIEnterKeyEvent event) { event.target = this; this.DispatchEvent(event); }
     protected fun HandleImageInputTransformTabKey(UITabKeyEvent event) { event.target = this; this.DispatchEvent(event); }
+    protected fun HandleImageInputTransformEscKey(UIEscKeyEvent event) { event.target = this; this.DispatchEvent(event); }
     protected fun HandleImageInputTransformRButtonDown(UIRButtonDownEvent event) { event.target = this; this.DispatchEvent(event); }
     protected fun HandleImageInputTransformRButtonUp(UIRButtonUpEvent event) { event.target = this; this.DispatchEvent(event); }
     protected fun HandleImageInputTransformLongButtonDown(UILongButtonDownEvent event) { event.target = this; this.DispatchEvent(event); }

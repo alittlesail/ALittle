@@ -55,11 +55,16 @@ public class IDEUITree : IDEUITreeLogic
 			title = title.."["..this._user_info.child_type.."]";
 		
 		title = title.."["..this._user_info.default.__class.."]";
-		
+
+		var link = this._user_info.base.__link;
+		if (link == null) link = this._user_info.default.__link;
+
 		if (this._user_info.base.description != null)
 			title = title..this._user_info.base.description;
 		elseif (this._user_info.default.description != null)
 			title = title..this._user_info.default.description;
+		elseif (link != null)
+			title = title..link;
 		elseif (this._user_info.base.text != null)
 			title = title..this._user_info.base.text;
 		elseif (this._user_info.default.text != null)

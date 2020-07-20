@@ -72,6 +72,7 @@ public enum UIEnumTypes
     KEY_C = 99;
     KEY_V = 118;
     KEY_A = 97;
+    KEY_F = 102;
     KEY_F5 = 1073741886;
     KEY_CTRL = 1073742048;
     KEY_LEFT = 1073741904;

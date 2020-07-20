@@ -10,6 +10,12 @@ name_list = {"__target_class","__class_func","__base_attr","__show_attr","loop_m
 type_list = {"List<string>","any","Map<string,any>","Map<string,ALittle.DisplayInfo>","Map<string,ALittle.LoopGroupInfo>","string","string","string","List<ALittle.DisplayInfo>","List<ALittle.EventInfo>","string","bool","bool","bool","string","string","string","int","double","double","double","double","bool","bool","bool","bool","double","double","int","double","int","double","double","double","int","double","int","double","double","double","double","double","double","int","bool","bool","bool","double","double","double","double","string","int","int","bool","double","double","double","double","double","double","double","double","double","double","double","double","double","double","int","double","double","double","double","double","double","double","double","int","double","double","double","double","double","double","double","double","double","double","double","int","int","int","int","int","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double"},
 option_map = {}
 })
+ALittle.RegStruct(-925381158, "ALittle.LoopChildInfo", {
+name = "ALittle.LoopChildInfo", ns_name = "ALittle", rl_name = "LoopChildInfo", hash_code = -925381158,
+name_list = {"clazz","target","total_time","delay_time"},
+type_list = {"string","any","int","int"},
+option_map = {}
+})
 ALittle.RegStruct(1025287370, "ALittleIDE.IDEPasteControlUserData", {
 name = "ALittleIDE.IDEPasteControlUserData", ns_name = "ALittleIDE", rl_name = "IDEPasteControlUserData", hash_code = 1025287370,
 name_list = {"target","info","child_index","revoke_bind","callback"},
@@ -22,22 +28,16 @@ name_list = {"childs"},
 type_list = {"List<ALittle.LoopListInfo>"},
 option_map = {}
 })
-ALittle.RegStruct(-2110455927, "ALittle.EventInfo", {
-name = "ALittle.EventInfo", ns_name = "ALittle", rl_name = "EventInfo", hash_code = -2110455927,
-name_list = {"type","func"},
-type_list = {"string","string"},
-option_map = {}
-})
 ALittle.RegStruct(-1741432339, "ALittle.LoopListInfo", {
 name = "ALittle.LoopListInfo", ns_name = "ALittle", rl_name = "LoopListInfo", hash_code = -1741432339,
 name_list = {"link","attribute","init","childs"},
 type_list = {"string","string","any","List<ALittle.LoopChildInfo>"},
 option_map = {}
 })
-ALittle.RegStruct(-925381158, "ALittle.LoopChildInfo", {
-name = "ALittle.LoopChildInfo", ns_name = "ALittle", rl_name = "LoopChildInfo", hash_code = -925381158,
-name_list = {"clazz","target","total_time","delay_time"},
-type_list = {"string","any","int","int"},
+ALittle.RegStruct(-2110455927, "ALittle.EventInfo", {
+name = "ALittle.EventInfo", ns_name = "ALittle", rl_name = "EventInfo", hash_code = -2110455927,
+name_list = {"type","func"},
+type_list = {"string","string"},
 option_map = {}
 })
 

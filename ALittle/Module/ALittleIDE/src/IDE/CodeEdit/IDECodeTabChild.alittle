@@ -49,7 +49,6 @@ public class IDECodeTabChild : IDETabChild
         this.save = false;
     }
 
-    public get tab_screen() : ALittle.ScrollScreen { return this._edit; }
 	public get tab_body() : ALittle.DisplayObject { return this._edit; }
 
     public set save(bool value)
@@ -89,11 +88,11 @@ public class IDECodeTabChild : IDETabChild
     public fun CreateBySelect(IDECodeTreeUserInfo info)
     {
         this._user_info = info;
-        this._edit.EditFocus(0, 0, null, null);
+        this._edit.EditFocus(0, 0, null, null, true);
     }
 
     public fun JumpFocus(int line_start, int char_start, int line_end, int char_end)
     {
-        this._edit.EditFocus(line_start, char_start, line_end, char_end);
+        this._edit.EditFocus(line_start, char_start, line_end, char_end, true);
     }
 }

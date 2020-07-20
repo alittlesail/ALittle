@@ -417,6 +417,10 @@ function TextInput:HandleKeyDown(event)
 		event.handled = true
 	elseif event.sym == 9 then
 		self:DispatchEvent(___all_struct[2024735182], {})
+		event.handled = true
+	elseif event.sym == ALittle.UIEnumTypes.KEY_ESC then
+		self:DispatchEvent(___all_struct[1637310579], {})
+		event.handled = true
 	end
 	if is_change then
 		self:DispatchEvent(___all_struct[958494922], {})

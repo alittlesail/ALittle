@@ -345,11 +345,11 @@ public class IDEContentEdit : ALittle.DisplayLayout
 		var tab_child = new IDEUITabChild(g_Control, name, false);
 		tab_child.CreateByNew(type);
 		// 添加到界面中去
-		this._main_tab.AddChild(tab_child.tab_screen);
+		this._main_tab.AddChild(tab_child.tab_body);
 		// 发送打开事件
 		tab_child.OnOpen();
 		//切换
-		this._main_tab.tab = tab_child.tab_screen;
+		this._main_tab.tab = tab_child.tab_body;
 		//切换时的数据操作
 		this.ChangeTabEdit(child_from, this._main_tab.tab);
 		// 设置标题
@@ -368,11 +368,11 @@ public class IDEContentEdit : ALittle.DisplayLayout
 		var tab_child = new IDEUITabChild(g_Control, name, false);
 		tab_child.CreateByExtends(extends_v);
 		// 添加到界面中去
-		this._main_tab.AddChild(tab_child.tab_screen);
+		this._main_tab.AddChild(tab_child.tab_body);
 		// 发送打开事件
 		tab_child.OnOpen();
 		//切换
-		this._main_tab.tab = tab_child.tab_screen;
+		this._main_tab.tab = tab_child.tab_body;
 		// 切换时的数据操作
 		this.ChangeTabEdit(child_from, this._main_tab.tab);
 		// 设置标题
@@ -404,11 +404,11 @@ public class IDEContentEdit : ALittle.DisplayLayout
 		tab_child.CreateBySelect(info);
 	
 		// 添加到界面中去
-		this._main_tab.AddChild(tab_child.tab_screen, 1);
+		this._main_tab.AddChild(tab_child.tab_body, 1);
 		// 发送打开事件
 		tab_child.OnOpen();
 		//切换
-		this._main_tab.tab = tab_child.tab_screen;
+		this._main_tab.tab = tab_child.tab_body;
 		// 切换时的数据操作
 		this.ChangeTabEdit(child_from, this._main_tab.tab);
 		// 设置标题
@@ -442,11 +442,11 @@ public class IDEContentEdit : ALittle.DisplayLayout
 		tab_child.CreateBySelect(info);
 	
 		// 添加到界面中去
-		this._main_tab.AddChild(tab_child.tab_screen, 1);
+		this._main_tab.AddChild(tab_child.tab_body, 1);
 		// 发送打开事件
 		tab_child.OnOpen();
 		//切换
-		this._main_tab.tab = tab_child.tab_screen;
+		this._main_tab.tab = tab_child.tab_body;
 		// 切换时的数据操作
 		this.ChangeTabEdit(child_from, this._main_tab.tab);
 		// 设置标题

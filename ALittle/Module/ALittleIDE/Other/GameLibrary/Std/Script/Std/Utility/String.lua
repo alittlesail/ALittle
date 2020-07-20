@@ -129,3 +129,19 @@ function String_IsWordChar(char)
 	return false
 end
 
+function String_SplitUTF8(content)
+	local len = ALittle.String_Len(content)
+	local index = 1
+	local char_list = {}
+	local char_count = 0
+	while index <= len do
+		do
+			local byte_count = utf8.bytecount(content, index - 1, 1)
+			char_count = char_count + (1)
+			char_list[char_count] = string.sub(content, index, index + byte_count - 1)
+			index = index + (byte_count)
+		end
+	end
+	return char_list
+end
+

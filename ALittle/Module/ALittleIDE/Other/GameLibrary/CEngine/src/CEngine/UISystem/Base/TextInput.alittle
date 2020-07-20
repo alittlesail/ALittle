@@ -596,6 +596,13 @@ public class TextInput : DisplayObject
         {
             // tab键
             this.DispatchEvent(new UITabKeyEvent());
+			event.handled = true;
+        }
+        elseif (event.sym == ALittle.UIEnumTypes.KEY_ESC)
+        {
+            // Esc键
+            this.DispatchEvent(new UIEscKeyEvent());
+			event.handled = true;
         }
         // 检查是否发送CHANGE事件
         if (is_change)

@@ -75,10 +75,6 @@ function IDECodeTabChild:HandleChangedEvent(event)
 	self.save = false
 end
 
-function IDECodeTabChild.__getter:tab_screen()
-	return self._edit
-end
-
 function IDECodeTabChild.__getter:tab_body()
 	return self._edit
 end
@@ -120,10 +116,10 @@ end
 
 function IDECodeTabChild:CreateBySelect(info)
 	self._user_info = info
-	self._edit:EditFocus(0, 0, nil, nil)
+	self._edit:EditFocus(0, 0, nil, nil, true)
 end
 
 function IDECodeTabChild:JumpFocus(line_start, char_start, line_end, char_end)
-	self._edit:EditFocus(line_start, char_start, line_end, char_end)
+	self._edit:EditFocus(line_start, char_start, line_end, char_end, true)
 end
 

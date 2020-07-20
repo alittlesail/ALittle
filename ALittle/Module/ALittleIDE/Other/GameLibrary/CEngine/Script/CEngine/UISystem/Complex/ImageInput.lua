@@ -42,6 +42,7 @@ function ImageInput:Ctor(ctrl_sys)
 	self._show_input:AddEventListener(___all_struct[958494922], self, self.HandleImageInputTransformChangd)
 	self._show_input:AddEventListener(___all_struct[776398171], self, self.HandleImageInputTransformEnterKey)
 	self._show_input:AddEventListener(___all_struct[2024735182], self, self.HandleImageInputTransformTabKey)
+	self._show_input:AddEventListener(___all_struct[1637310579], self, self.HandleImageInputTransformEscKey)
 	self._show_input:AddEventListener(___all_struct[-641444818], self, self.HandleImageInputTransformRButtonDown)
 	self._show_input:AddEventListener(___all_struct[-569321214], self, self.HandleImageInputTransformRButtonUp)
 	self._show_input:AddEventListener(___all_struct[-439548260], self, self.HandleImageInputTransformLongButtonDown)
@@ -309,6 +310,11 @@ end
 function ImageInput:HandleImageInputTransformTabKey(event)
 	event.target = self
 	self:DispatchEvent(___all_struct[2024735182], event)
+end
+
+function ImageInput:HandleImageInputTransformEscKey(event)
+	event.target = self
+	self:DispatchEvent(___all_struct[1637310579], event)
 end
 
 function ImageInput:HandleImageInputTransformRButtonDown(event)

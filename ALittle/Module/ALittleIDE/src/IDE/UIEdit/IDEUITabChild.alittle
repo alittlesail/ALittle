@@ -259,7 +259,6 @@ public class IDEUITabChild : IDETabChild
 	public get tab_body() : ALittle.DisplayObject { return this._tab_screen; }
 
     public get edit_screen() : ALittle.ScrollScreen { return this._edit_screen; }
-	public get tab_screen() : ALittle.ScrollScreen { return this._tab_screen; }
 	public get tree_screen() : ALittle.ScrollScreen { return this._tree_screen; }
 	public get attr_screen() : ALittle.ScrollScreen { return this._attr_screen; }
     public get anti_panel() : IDEAntiPanel { return this._anti_panel; }

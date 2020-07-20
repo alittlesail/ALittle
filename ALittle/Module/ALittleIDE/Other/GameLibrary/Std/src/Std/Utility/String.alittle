@@ -177,3 +177,30 @@ public static String_IsWordChar(string char) : bool
 
     return false;
 }
+
+// 切割utf8字符串
+public static String_SplitUTF8(string content) : List<string>
+{
+    var len = ALittle.String_Len(content);
+    var index = 1;
+    var char_list = new List<string>();
+    var char_count = 0;
+    while (index <= len)
+    {
+        [Language(Lua)]
+        {
+            var byte_count = lua.utf8.bytecount(content, index - 1, 1);
+            char_count += 1;
+            char_list[char_count] = lua.String.sub(content, index, index + byte_count - 1);
+            index += byte_count;
+        }
+        [Language(JavaScript)]
+        {
+            var code = cast<javascript.String>(content).charCodeAt(index - 1);
+            char_count += 1;
+            char_list[char_count] = cast<javascript.String>(content).substring(index - 1, index);
+            index += 1;
+        }
+    }
+    return char_list;
+}

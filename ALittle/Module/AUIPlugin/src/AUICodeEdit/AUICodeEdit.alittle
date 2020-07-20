@@ -11,6 +11,9 @@ private var FONT_BLUE = 198/255;
 private var SELECT_RED = 33/255;
 private var SELECT_GREEN = 66/255;
 private var SELECT_BLUE = 131/255;
+private var FIND_RED = 50/255;
+private var FIND_GREEN = 89/255;
+private var FIND_BLUE = 61/255;
 
 protected var g_DefaultColor = new ABnfColor();
 g_DefaultColor.alpha = 1;
@@ -43,6 +46,14 @@ protected struct AUICodeErrorInfo
 {
     ALittle.DisplayObject _focus_quad;
     string error;
+}
+
+protected struct AUICodeFindInfo
+{
+    ALittle.DisplayObject _focus_quad;
+    int it_line;
+    int it_char_start;
+    int it_char_end;
 }
 
 protected class AUICodeQuad : ALittle.Quad
@@ -79,7 +90,8 @@ protected class AUICodeLineContainer : ALittle.DisplayLayout
     private Functor<()> _set_color;
 
     public ALittle.Quad _select;  // 选择底色
-    public ALittle.DisplayLayout _error;    // 查找容器
+    public ALittle.DisplayLayout _error;    // 错误容器
+    public ALittle.DisplayLayout _find;     // 查找容器
     public ALittle.DisplayLayout _text;    // 文本容器
 
     public ctor(ALittle.ControlSystem ctrl_sys)
@@ -94,6 +106,13 @@ protected class AUICodeLineContainer : ALittle.DisplayLayout
         quad.visible = false;
         this.AddChild(quad);
         this._select = quad;
+
+        // 用于显示查找容器
+        var find = new ALittle.DisplayLayout(ctrl_sys);
+        find.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+        find.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+        this.AddChild(find);
+        this._find = find;
 
         // 用于显示错误容器
         var error = new ALittle.DisplayLayout(ctrl_sys);
@@ -292,11 +311,15 @@ public class AUICodeEdit : ALittle.DisplayLayout
     private bool _in_query_info = false;
 
     private ALittle.LoopTimer _error_loop;  // 显示错误信息的定时器
+    private List<ALittle.DisplayObject> _error_list;    // 错误列表
+
+    private ALittle.Dialog _find_dialog;        // 查找对话框
+    private ALittle.DisplayObject _find_input;  // 输入框
+    private Map<int, List<AUICodeFindInfo>> _find_map; // 查找列表
 
     private ALittle.ScrollScreen _code_screen;  // 滚动屏幕
 	private AUICodeLinear _code_linear;      // 代码容器
     private ALittle.DisplayLayout _cursor_container;    // 光标容器
-    private ALittle.DisplayLayout _error_container;     // 错误容器
     private AUICodeQuad _edit_quad;           // 编辑区
     private ALittle.DisplayObject _goto_quad;   // goto的下划线
     private bool _move_in = false;
@@ -337,7 +360,9 @@ public class AUICodeEdit : ALittle.DisplayLayout
         this._code_screen.AddEventListener(this, this.HandleKeyUp);
         this._code_screen.AddEventListener(this, this.HandleTextInput);
         this._code_screen.AddEventListener(this, this.HandleMouseMove);
-        this._code_screen.AddEventListener(this, this.HandleChangedEvent);
+        this.AddEventListener(this, this.HandleChangedEvent);
+
+        this._find_dialog.visible = false;
 
 		// 创建编辑容器
         this._code_screen.container = new AUICodeEditContainer(this._ctrl_sys);
@@ -533,28 +558,35 @@ public class AUICodeEdit : ALittle.DisplayLayout
         this._in_drag = false;
     }
 
-
     private fun HandleMouseMove(ALittle.UIMouseMoveEvent event)
     {
         // 显示错误的TIP
         if (!this._in_drag)
         {
-            var item = this._error_container.PickUp(event.rel_x, event.rel_y);
-            if (item != this._error_quad_move_in)
+            // 获取是那一行
+            var it_line = ALittle.Math_Floor(event.rel_y / LINE_HEIGHT) + 1;
+            var line = this._line_list[it_line];
+            if (line != null)
             {
-                if (this._error_quad_move_in != null) g_AUITool.HideTip();
-                this._error_quad_move_in = item;
-                if (item != null)
+                var rel_x = event.rel_x;
+                var rel_y = event.rel_y - (it_line - 1) * LINE_HEIGHT;
+                var item = line.container._error.PickUp(rel_x, rel_y);
+                if (item != this._error_quad_move_in)
                 {
-                    var item_info = cast<AUICodeErrorInfo>(item._user_data);
-                    var x, y = item.LocalToGlobal();
-                    var center_x = x + item.width / 2;
-                    var center_y = y;
-                    g_AUITool.ShowTip(item_info.error);
-                    var tip_width, tip_height = g_AUITool.GetTipSize();
-                    g_AUITool.MoveTip(center_x - tip_width / 2, center_y - tip_height);
-                }
-            }   
+                    if (this._error_quad_move_in != null) g_AUITool.HideTip();
+                    this._error_quad_move_in = item;
+                    if (item != null)
+                    {
+                        var item_info = cast<AUICodeErrorInfo>(item._user_data);
+                        var x, y = item.LocalToGlobal();
+                        var center_x = x + item.width / 2;
+                        var center_y = y;
+                        g_AUITool.ShowTip(item_info.error);
+                        var tip_width, tip_height = g_AUITool.GetTipSize();
+                        g_AUITool.MoveTip(center_x - tip_width / 2, center_y - tip_height);
+                    }
+                }    
+            }  
         }
 
         if (!A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_CTRL]) return;
@@ -684,10 +716,17 @@ public class AUICodeEdit : ALittle.DisplayLayout
     {
         g_AUITool.HideTip();
         this._error_quad_move_in = null;
-        this._error_container.RemoveAllChild();
+        if (this._error_list != null)
+        {
+            for (var index, item in this._error_list)
+                item.RemoveFromParent();
+        }
+        this._error_list = null;
         var list = this._language.QueryError(this._force_query_error);
         if (list == null) return;
 
+        this._error_list = new List<ALittle.DisplayObject>();
+        var error_count = 0;
         for (var index, info in list)
         {
             var item_info = new AUICodeErrorInfo();
@@ -697,13 +736,116 @@ public class AUICodeEdit : ALittle.DisplayLayout
             if (info.line_start != info.line_end) info.char_end = line.char_count;
             var x, y, width = this.CalcRect(info.line_start, info.char_start, char_end);
             item.x = x;
-            item.y = y;
             item.width = width;
             item.height = LINE_HEIGHT;
             item_info.error = info.error;
             item_info._focus_quad._user_data = item_info;
-            this._error_container.AddChild(item);
+            line.container._error.AddChild(item);
+            error_count += 1;
+            this._error_list[error_count] = item;
         }
+    }
+
+    private fun HandleFindInputChanged(ALittle.UIChangedEvent event)
+    {
+        if (this._find_map != null)
+        {
+            for (var it_line, list in this._find_map)
+            {
+                for (var index, info in list)
+                    info._focus_quad.RemoveFromParent();   
+            }
+        }
+        this._find_map = null;
+
+        var content = this._find_input.text;
+        var list = ALittle.String_SplitUTF8(content);
+        var find_len = ALittle.List_MaxN(list);
+        if (find_len == 0) return;
+
+        this._find_map = new Map<int, List<AUICodeFindInfo>>();
+        var first_info:AUICodeFindInfo = null;
+        for (var index, line in this._line_list)
+        {
+            if (line.char_count >= find_len)
+            {
+                var char_index = 1;
+                while (char_index <= line.char_count)
+                {
+                    var find = true;
+                    for (var i, char in list)
+                    {
+                        if (char != line.char_list[char_index + i - 1].char)
+                        {
+                            find = false;
+                            break;
+                        }
+                    }
+
+                    if (find)
+                    {
+                        var item = new ALittle.Quad(g_Control);
+                        item.red = FIND_RED;
+                        item.green = FIND_GREEN;
+                        item.blue = FIND_BLUE;
+                        item.x = line.char_list[char_index].pre_width;
+                        item.width = line.char_list[char_index + find_len].pre_width - line.char_list[char_index].pre_width;
+                        item.height = LINE_HEIGHT;
+                        line.container._find.AddChild(item);
+                        var find_line = this._find_map[index];
+                        if (find_line == null)
+                        {
+                            find_line = new List<AUICodeFindInfo>();
+                            this._find_map[index] = find_line;
+                        }
+                        var info = new AUICodeFindInfo();
+                        info._focus_quad = item;
+                        info.it_line = index;
+                        info.it_char_start = char_index;
+                        info.it_char_end = char_index + find_len - 1;
+                        ALittle.List_Push(find_line, info);
+                        char_index += find_len;
+
+                        if (first_info == null) first_info = info;
+                    }
+                    else
+                    {
+                        char_index += 1;
+                    }
+                }   
+            }
+        }
+
+        if (first_info != null)
+            this.EditFocus(first_info.it_line, first_info.it_char_start, first_info.it_line, first_info.it_char_end, false);
+    }
+
+    private fun HandleFindNextClick(ALittle.UIClickEvent event)
+    {
+        // 获取当前光标位置，然后向下查找最近
+        var line_index = this._cursor.line;
+        while (line_index <= this._line_count)
+        {
+            var find_line = this._find_map[line_index];
+            if (find_line != null)
+            {
+                for (var index, info in find_line)
+                {
+                    if (line_index != this._cursor.line || info.it_char_start > this._cursor.char + 1)
+                    {
+                        this.EditFocus(info.it_line, info.it_char_start, info.it_line, info.it_char_end, false);
+                        return;
+                    }
+                }
+            }
+
+            line_index += 1;
+        }
+    }
+
+    private fun HandleFindEscClick(ALittle.UIEscKeyEvent event)
+    {
+        this._find_dialog.visible = false;
     }
 
     private fun HandleChangedEvent(ALittle.UIChangedEvent event)
@@ -1139,6 +1281,11 @@ public class AUICodeEdit : ALittle.DisplayLayout
             }
 			event.handled = true;
         }
+        elseif (event.sym == ALittle.UIEnumTypes.KEY_F && ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) != 0)
+        {
+            this._find_dialog.visible = true;
+            this._find_input.DelayFocus();
+        }
         elseif (event.sym == ALittle.UIEnumTypes.KEY_CTRL)
         {
             if (this._move_in && !this._in_query_info)
@@ -1146,6 +1293,14 @@ public class AUICodeEdit : ALittle.DisplayLayout
                 var x, y = this._edit_quad.LocalToGlobal();
                 this.UpdateQueryInfo(A_UISystem.mouse_x - x, A_UISystem.mouse_y - y);
             }   
+        }
+        elseif (event.sym == ALittle.UIEnumTypes.KEY_ESC)
+        {
+            if (this._find_dialog != null && this._find_dialog.visible)
+            {
+                this._find_dialog.visible = false;
+                event.handled = true;
+            }
         }
         
         // 检查是否发送CHANGE事件
@@ -1632,9 +1787,10 @@ public class AUICodeEdit : ALittle.DisplayLayout
         return true;
 	}
 
-    public fun EditFocus(int line_start, int char_start, int line_end, int char_end)
+    public fun EditFocus(int line_start, int char_start, int line_end, int char_end, bool edit_focus)
     {
-        this._edit_quad.DelayFocus();
+        if (edit_focus)
+            this._edit_quad.DelayFocus();
 
         if (line_start != null && char_start != null)
         {

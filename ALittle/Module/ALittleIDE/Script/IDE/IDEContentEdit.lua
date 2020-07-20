@@ -6,16 +6,10 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = ALittle.GetAllStruct()
 
-ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
-name = "ALittle.UIEvent", ns_name = "ALittle", rl_name = "UIEvent", hash_code = -1479093282,
+ALittle.RegStruct(444989011, "ALittle.UISelectChangedEvent", {
+name = "ALittle.UISelectChangedEvent", ns_name = "ALittle", rl_name = "UISelectChangedEvent", hash_code = 444989011,
 name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
-option_map = {}
-})
-ALittle.RegStruct(-1347278145, "ALittle.UIButtonEvent", {
-name = "ALittle.UIButtonEvent", ns_name = "ALittle", rl_name = "UIButtonEvent", hash_code = -1347278145,
-name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
-type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
 option_map = {}
 })
 ALittle.RegStruct(-641444818, "ALittle.UIRButtonDownEvent", {
@@ -24,14 +18,26 @@ name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
 type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
 option_map = {}
 })
-ALittle.RegStruct(444989011, "ALittle.UISelectChangedEvent", {
-name = "ALittle.UISelectChangedEvent", ns_name = "ALittle", rl_name = "UISelectChangedEvent", hash_code = 444989011,
+ALittle.RegStruct(882286932, "ALittle.UIKeyEvent", {
+name = "ALittle.UIKeyEvent", ns_name = "ALittle", rl_name = "UIKeyEvent", hash_code = 882286932,
+name_list = {"target","mod","sym","scancode","custom","handled"},
+type_list = {"ALittle.DisplayObject","int","int","int","bool","bool"},
+option_map = {}
+})
+ALittle.RegStruct(-1347278145, "ALittle.UIButtonEvent", {
+name = "ALittle.UIButtonEvent", ns_name = "ALittle", rl_name = "UIButtonEvent", hash_code = -1347278145,
+name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
+type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
+option_map = {}
+})
+ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
+name = "ALittle.UIEvent", ns_name = "ALittle", rl_name = "UIEvent", hash_code = -1479093282,
 name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
-ALittle.RegStruct(882286932, "ALittle.UIKeyEvent", {
-name = "ALittle.UIKeyEvent", ns_name = "ALittle", rl_name = "UIKeyEvent", hash_code = 882286932,
+ALittle.RegStruct(-1604617962, "ALittle.UIKeyDownEvent", {
+name = "ALittle.UIKeyDownEvent", ns_name = "ALittle", rl_name = "UIKeyDownEvent", hash_code = -1604617962,
 name_list = {"target","mod","sym","scancode","custom","handled"},
 type_list = {"ALittle.DisplayObject","int","int","int","bool","bool"},
 option_map = {}
@@ -40,12 +46,6 @@ ALittle.RegStruct(1715346212, "ALittle.Event", {
 name = "ALittle.Event", ns_name = "ALittle", rl_name = "Event", hash_code = 1715346212,
 name_list = {"target"},
 type_list = {"ALittle.EventDispatcher"},
-option_map = {}
-})
-ALittle.RegStruct(-1604617962, "ALittle.UIKeyDownEvent", {
-name = "ALittle.UIKeyDownEvent", ns_name = "ALittle", rl_name = "UIKeyDownEvent", hash_code = -1604617962,
-name_list = {"target","mod","sym","scancode","custom","handled"},
-type_list = {"ALittle.DisplayObject","int","int","int","bool","bool"},
 option_map = {}
 })
 
@@ -370,9 +370,9 @@ function IDEContentEdit:StartEditControlByNew(name, type)
 	local child_from = self._main_tab.tab
 	local tab_child = IDEUITabChild(g_Control, name, false)
 	tab_child:CreateByNew(type)
-	self._main_tab:AddChild(tab_child.tab_screen)
+	self._main_tab:AddChild(tab_child.tab_body)
 	tab_child:OnOpen()
-	self._main_tab.tab = tab_child.tab_screen
+	self._main_tab.tab = tab_child.tab_body
 	self:ChangeTabEdit(child_from, self._main_tab.tab)
 	tab_child:UpdateTitle()
 	tab_child:ShowHandleQuad(tab_child.tree_object)
@@ -383,9 +383,9 @@ function IDEContentEdit:StartEditControlByExtends(name, extends_v)
 	local child_from = self._main_tab.tab
 	local tab_child = IDEUITabChild(g_Control, name, false)
 	tab_child:CreateByExtends(extends_v)
-	self._main_tab:AddChild(tab_child.tab_screen)
+	self._main_tab:AddChild(tab_child.tab_body)
 	tab_child:OnOpen()
-	self._main_tab.tab = tab_child.tab_screen
+	self._main_tab.tab = tab_child.tab_body
 	self:ChangeTabEdit(child_from, self._main_tab.tab)
 	tab_child:UpdateTitle()
 	tab_child:ShowHandleQuad(tab_child.tree_object)
@@ -403,9 +403,9 @@ function IDEContentEdit:StartEditControlBySelect(name, info)
 	local child_from = self._main_tab.tab
 	local tab_child = IDEUITabChild(g_Control, name, true)
 	tab_child:CreateBySelect(info)
-	self._main_tab:AddChild(tab_child.tab_screen, 1)
+	self._main_tab:AddChild(tab_child.tab_body, 1)
 	tab_child:OnOpen()
-	self._main_tab.tab = tab_child.tab_screen
+	self._main_tab.tab = tab_child.tab_body
 	self:ChangeTabEdit(child_from, self._main_tab.tab)
 	tab_child:UpdateTitle()
 	if not tab_child.tree_object.is_tree then
@@ -425,9 +425,9 @@ function IDEContentEdit:StartEditCodeBySelect(name, info)
 	local child_from = self._main_tab.tab
 	local tab_child = IDECodeTabChild(g_Control, name, true, info)
 	tab_child:CreateBySelect(info)
-	self._main_tab:AddChild(tab_child.tab_screen, 1)
+	self._main_tab:AddChild(tab_child.tab_body, 1)
 	tab_child:OnOpen()
-	self._main_tab.tab = tab_child.tab_screen
+	self._main_tab.tab = tab_child.tab_body
 	self:ChangeTabEdit(child_from, self._main_tab.tab)
 	tab_child:UpdateTitle()
 	return tab_child

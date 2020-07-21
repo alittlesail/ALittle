@@ -336,6 +336,16 @@ public static File_GetFileExtByPath(string file_path) : string
     return list[l];
 }
 
+// 替换扩展名
+public static File_ChangeFileExtByPath(string file_path, string ext) : string
+{
+    var list = String_Split(file_path, ".");
+    var l = List_MaxN(list);
+    if (l <= 0) return file_path.."."..ext;
+    list[l] = ext;
+    return String_Join(list, ".");
+}
+
 // 从路径中获取扩展名并改为大写
 public static File_GetFileExtByPathAndUpper(string file_path) : string
 {

@@ -193,6 +193,8 @@ end
 
 function AUICodeALittleScriptProject:OnTreeItemMenu(full_path, menu)
 	menu:AddItem("生成目标代码", Lua.Bind(self.GenerateFile, self, full_path))
+	menu:AddItem("打开Lua代码", Lua.Bind(self.OpenTargetLuaFile, self, full_path))
+	menu:AddItem("打开JavaScript代码", Lua.Bind(self.OpenTargetJavaScriptFile, self, full_path))
 end
 
 function AUICodeALittleScriptProject:GenerateDir(full_path)
@@ -228,6 +230,30 @@ function AUICodeALittleScriptProject:GenerateFile(full_path)
 	g_AUITool:ShowNotice("提示", "生成成功")
 end
 AUICodeALittleScriptProject.GenerateFile = Lua.CoWrap(AUICodeALittleScriptProject.GenerateFile)
+
+function AUICodeALittleScriptProject:OpenTargetLuaFile(full_path)
+	full_path = ALittle.File_ChangeFileExtByPath(full_path, "lua")
+	local index = ALittle.String_Find(full_path, "/src/")
+	if index == nil then
+		return
+	end
+	local new_path = ALittle.String_Sub(full_path, 1, index) .. "Script/" .. ALittle.String_Sub(full_path, index + 5)
+	local event = {}
+	event.file_path = new_path
+	self:DispatchEvent(___all_struct[2057209532], event)
+end
+
+function AUICodeALittleScriptProject:OpenTargetJavaScriptFile(full_path)
+	full_path = ALittle.File_ChangeFileExtByPath(full_path, "js")
+	local index = ALittle.String_Find(full_path, "/src/")
+	if index == nil then
+		return
+	end
+	local new_path = ALittle.String_Sub(full_path, 1, index) .. "JSScript/" .. ALittle.String_Sub(full_path, index + 5)
+	local event = {}
+	event.file_path = new_path
+	self:DispatchEvent(___all_struct[2057209532], event)
+end
 
 function AUICodeALittleScriptProject:Generate(full_path)
 	local ___COROUTINE = coroutine.running()

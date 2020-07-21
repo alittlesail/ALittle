@@ -209,6 +209,16 @@ function File_GetFileExtByPath(file_path)
 	return list[l]
 end
 
+function File_ChangeFileExtByPath(file_path, ext)
+	local list = String_Split(file_path, ".")
+	local l = List_MaxN(list)
+	if l <= 0 then
+		return file_path .. "." .. ext
+	end
+	list[l] = ext
+	return String_Join(list, ".")
+end
+
 function File_GetFileExtByPathAndUpper(file_path)
 	return String_Upper(File_GetFileExtByPath(file_path))
 end

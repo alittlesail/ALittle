@@ -102,8 +102,16 @@ public class IDEUICodeList : ALittle.DisplayLayout
 			{
                 var code_child = g_IDECenter.center.content_edit.StartEditCodeBySelect(item.user_info.name, item.user_info);
 				code_child.JumpFocus(line_start, char_start, line_end, char_end);
+				return;
             }
         }
+
+		if (ALittle.File_GetFileAttr(full_path) == null) return;
+
+		var user_info = new IDECodeTreeUserInfo();
+		user_info.name = ALittle.File_GetFileNameByPath(full_path);
+		user_info.path = full_path;
+		g_IDECenter.center.content_edit.StartEditCodeBySelect(user_info.name, user_info);
     }
 
 	public fun AddModule(string name)

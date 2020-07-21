@@ -198,6 +198,8 @@ public class AUICodeALittleScriptProject : AUICodeProject
     public fun OnTreeItemMenu(string full_path, AUIRightMenu menu)
     {
         menu.AddItem("生成目标代码", bind(this.GenerateFile, this, full_path));
+        menu.AddItem("打开Lua代码", bind(this.OpenTargetLuaFile, this, full_path));
+        menu.AddItem("打开JavaScript代码", bind(this.OpenTargetJavaScriptFile, this, full_path));
     }
 
     // 生成对应的代码
@@ -238,6 +240,32 @@ public class AUICodeALittleScriptProject : AUICodeProject
         }
 
         g_AUITool.ShowNotice("提示", "生成成功");
+    }
+
+    // 打开目标代码
+    public fun OpenTargetLuaFile(string full_path)
+    {
+        full_path = ALittle.File_ChangeFileExtByPath(full_path, "lua");
+        var index = ALittle.String_Find(full_path, "/src/");
+        if (index == null) return;
+
+        var new_path = ALittle.String_Sub(full_path, 1, index).."Script/"..ALittle.String_Sub(full_path, index + 5);
+        var event = new AUICodeProjectGotoEvent();
+        event.file_path = new_path;
+        this.DispatchEvent(event);
+    }
+
+    // 打开目标代码
+    public fun OpenTargetJavaScriptFile(string full_path)
+    {
+        full_path = ALittle.File_ChangeFileExtByPath(full_path, "js");
+        var index = ALittle.String_Find(full_path, "/src/");
+        if (index == null) return;
+
+        var new_path = ALittle.String_Sub(full_path, 1, index).."JSScript/"..ALittle.String_Sub(full_path, index + 5);
+        var event = new AUICodeProjectGotoEvent();
+        event.file_path = new_path;
+        this.DispatchEvent(event);
     }
 
     // 生成目标语言

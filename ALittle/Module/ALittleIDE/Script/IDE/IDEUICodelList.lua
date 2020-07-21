@@ -89,8 +89,16 @@ function IDEUICodeList:OpenByFullPath(full_path, line_start, char_start, line_en
 		if item ~= nil then
 			local code_child = g_IDECenter.center.content_edit:StartEditCodeBySelect(item.user_info.name, item.user_info)
 			code_child:JumpFocus(line_start, char_start, line_end, char_end)
+			return
 		end
 	end
+	if ALittle.File_GetFileAttr(full_path) == nil then
+		return
+	end
+	local user_info = {}
+	user_info.name = ALittle.File_GetFileNameByPath(full_path)
+	user_info.path = full_path
+	g_IDECenter.center.content_edit:StartEditCodeBySelect(user_info.name, user_info)
 end
 
 function IDEUICodeList:AddModule(name)

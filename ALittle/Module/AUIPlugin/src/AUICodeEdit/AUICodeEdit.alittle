@@ -1606,7 +1606,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
 
         for (var index, line in this._line_list)
             this._code_linear.AddChild(line.container);
-        this._code_screen.container.width = max_width;
+        this._code_screen.container.width = max_width + LINE_NUMBER_WIDTH;
         this._code_screen.container.height = this._line_count * LINE_HEIGHT + PAD_LINES * LINE_HEIGHT;
         this._code_screen.RejustScrollBar();
 
@@ -1667,7 +1667,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
         var max_width = 0.0;
         for (var index, line in this._line_list)
             if (line.container.width > max_width) max_width = line.container.width;
-        this._code_screen.container.width = max_width;
+        this._code_screen.container.width = max_width + LINE_NUMBER_WIDTH;
         this._code_screen.RejustScrollBar();
 
         this._cursor.SetLineChar(old_line, old_char + 4);
@@ -1855,7 +1855,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
        	 var max_width = 0.0;
 	        for (var index, line in this._line_list)
  	           if (line.container.width > max_width) max_width = line.container.width;
-        	this._code_screen.container.width = max_width;
+        	this._code_screen.container.width = max_width + LINE_NUMBER_WIDTH;
         	this._code_screen.RejustScrollBar();
 
         	if (need_revoke)
@@ -2073,7 +2073,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
         max_width = 0.0;
         for (var index, line in this._line_list)
             if (line.container.width > max_width) max_width = line.container.width;
-        this._code_screen.container.width = max_width;
+        this._code_screen.container.width = max_width + LINE_NUMBER_WIDTH;
         this._code_screen.container.height = this._line_count * LINE_HEIGHT + PAD_LINES * LINE_HEIGHT;
         this._code_screen.RejustScrollBar();
 

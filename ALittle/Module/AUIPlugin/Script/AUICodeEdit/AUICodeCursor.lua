@@ -375,7 +375,7 @@ function AUICodeCursor:DeleteLeft(need_revoke, revoke_bind)
 			end
 		end
 		if rejust then
-			self._edit.code_screen.container.width = line.container.width
+			self._edit.code_screen.container.width = line.container.width + self._edit.line_number_width
 			self._edit.code_screen:RejustScrollBar()
 		end
 		if need_revoke then
@@ -439,8 +439,8 @@ function AUICodeCursor:DeleteLeft(need_revoke, revoke_bind)
 	self._edit.line_count = self._edit.line_count - (1)
 	ALittle.List_Remove(self._edit.line_list, self._it_line)
 	self:SetLineChar(new_it_line, new_it_char)
-	if self._edit.code_screen.container.width < pre_line.container.width then
-		self._edit.code_screen.container.width = pre_line.container.width
+	if self._edit.code_screen.container.width < pre_line.container.width + self._edit.line_number_width then
+		self._edit.code_screen.container.width = pre_line.container.width + self._edit.line_number_width
 	end
 	self._edit.code_screen:RejustScrollBar()
 	if need_revoke then
@@ -500,7 +500,7 @@ function AUICodeCursor:DeleteRight(need_revoke, revoke_bind)
 			end
 		end
 		if rejust then
-			self._edit.code_screen.container.width = line.container.width
+			self._edit.code_screen.container.width = line.container.width + self._edit.line_number_width
 			self._edit.code_screen:RejustScrollBar()
 		end
 		local new_it_line = self._it_line
@@ -561,8 +561,8 @@ function AUICodeCursor:DeleteRight(need_revoke, revoke_bind)
 	self._edit.line_count = self._edit.line_count - (1)
 	ALittle.List_Remove(self._edit.line_list, self._it_line + 1)
 	self:SetLineChar(new_it_line, new_it_char)
-	if self._edit.code_screen.container.width < cur_line.container.width then
-		self._edit.code_screen.container.width = cur_line.container.width
+	if self._edit.code_screen.container.width < cur_line.container.width + self._edit.line_number_width then
+		self._edit.code_screen.container.width = cur_line.container.width + self._edit.line_number_width
 	end
 	self._edit.code_screen:RejustScrollBar()
 	if need_revoke then

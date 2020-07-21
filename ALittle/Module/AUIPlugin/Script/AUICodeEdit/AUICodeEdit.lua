@@ -6,38 +6,98 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = ALittle.GetAllStruct()
 
-ALittle.RegStruct(150587926, "ALittle.UIButtonDragEndEvent", {
-name = "ALittle.UIButtonDragEndEvent", ns_name = "ALittle", rl_name = "UIButtonDragEndEvent", hash_code = 150587926,
+ALittle.RegStruct(-2130019625, "AUIPlugin.AUICodeErrorInfo", {
+name = "AUIPlugin.AUICodeErrorInfo", ns_name = "AUIPlugin", rl_name = "AUICodeErrorInfo", hash_code = -2130019625,
+name_list = {"_focus_quad","error"},
+type_list = {"ALittle.DisplayObject","string"},
+option_map = {}
+})
+ALittle.RegStruct(1883782801, "ALittle.UILButtonDownEvent", {
+name = "ALittle.UILButtonDownEvent", ns_name = "ALittle", rl_name = "UILButtonDownEvent", hash_code = 1883782801,
+name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
+type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
+option_map = {}
+})
+ALittle.RegStruct(1862557463, "ALittle.UIShowEvent", {
+name = "ALittle.UIShowEvent", ns_name = "ALittle", rl_name = "UIShowEvent", hash_code = 1862557463,
+name_list = {"target"},
+type_list = {"ALittle.DisplayObject"},
+option_map = {}
+})
+ALittle.RegStruct(-1604617962, "ALittle.UIKeyDownEvent", {
+name = "ALittle.UIKeyDownEvent", ns_name = "ALittle", rl_name = "UIKeyDownEvent", hash_code = -1604617962,
+name_list = {"target","mod","sym","scancode","custom","handled"},
+type_list = {"ALittle.DisplayObject","int","int","int","bool","bool"},
+option_map = {}
+})
+ALittle.RegStruct(1494749965, "AUIPlugin.AUICodeCharInfo", {
+name = "AUIPlugin.AUICodeCharInfo", ns_name = "AUIPlugin", rl_name = "AUICodeCharInfo", hash_code = 1494749965,
+name_list = {"char","text","red","green","blue","pre_width","width"},
+type_list = {"string","ALittle.Text","double","double","double","double","double"},
+option_map = {}
+})
+ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
+name = "ALittle.UIEvent", ns_name = "ALittle", rl_name = "UIEvent", hash_code = -1479093282,
+name_list = {"target"},
+type_list = {"ALittle.DisplayObject"},
+option_map = {}
+})
+ALittle.RegStruct(1421505194, "AUIPlugin.AUICodeLineInfo", {
+name = "AUIPlugin.AUICodeLineInfo", ns_name = "AUIPlugin", rl_name = "AUICodeLineInfo", hash_code = 1421505194,
+name_list = {"char_list","char_count","container","edit"},
+type_list = {"List<AUIPlugin.AUICodeCharInfo>","int","AUIPlugin.AUICodeLineContainer","AUIPlugin.AUICodeEdit"},
+option_map = {}
+})
+ALittle.RegStruct(-1347278145, "ALittle.UIButtonEvent", {
+name = "ALittle.UIButtonEvent", ns_name = "ALittle", rl_name = "UIButtonEvent", hash_code = -1347278145,
+name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
+type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
+option_map = {}
+})
+ALittle.RegStruct(1337289812, "ALittle.UIButtonDragEvent", {
+name = "ALittle.UIButtonDragEvent", ns_name = "ALittle", rl_name = "UIButtonDragEvent", hash_code = 1337289812,
 name_list = {"target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"},
 type_list = {"ALittle.DisplayObject","double","double","double","double","double","double"},
 option_map = {}
 })
-ALittle.RegStruct(292776509, "ALittle.UIFocusOutEvent", {
-name = "ALittle.UIFocusOutEvent", ns_name = "ALittle", rl_name = "UIFocusOutEvent", hash_code = 292776509,
+ALittle.RegStruct(1301789264, "ALittle.UIButtonDragBeginEvent", {
+name = "ALittle.UIButtonDragBeginEvent", ns_name = "ALittle", rl_name = "UIButtonDragBeginEvent", hash_code = 1301789264,
+name_list = {"target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"},
+type_list = {"ALittle.DisplayObject","double","double","double","double","double","double"},
+option_map = {}
+})
+ALittle.RegStruct(-1234078962, "ALittle.UITextInputEvent", {
+name = "ALittle.UITextInputEvent", ns_name = "ALittle", rl_name = "UITextInputEvent", hash_code = -1234078962,
+name_list = {"target","text","custom"},
+type_list = {"ALittle.DisplayObject","string","bool"},
+option_map = {}
+})
+ALittle.RegStruct(1213009422, "ALittle.UIKeyUpEvent", {
+name = "ALittle.UIKeyUpEvent", ns_name = "ALittle", rl_name = "UIKeyUpEvent", hash_code = 1213009422,
+name_list = {"target","mod","sym","scancode","custom","handled"},
+type_list = {"ALittle.DisplayObject","int","int","int","bool","bool"},
+option_map = {}
+})
+ALittle.RegStruct(-1202439334, "ALittle.UIMoveOutEvent", {
+name = "ALittle.UIMoveOutEvent", ns_name = "ALittle", rl_name = "UIMoveOutEvent", hash_code = -1202439334,
 name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
-ALittle.RegStruct(348388800, "ALittle.UIHideEvent", {
-name = "ALittle.UIHideEvent", ns_name = "ALittle", rl_name = "UIHideEvent", hash_code = 348388800,
-name_list = {"target"},
-type_list = {"ALittle.DisplayObject"},
+ALittle.RegStruct(-1073016186, "AUIPlugin.AUICodeFindInfo", {
+name = "AUIPlugin.AUICodeFindInfo", ns_name = "AUIPlugin", rl_name = "AUICodeFindInfo", hash_code = -1073016186,
+name_list = {"_focus_quad","it_line","it_char_start","it_char_end"},
+type_list = {"ALittle.DisplayObject","int","int","int"},
 option_map = {}
 })
-ALittle.RegStruct(544684311, "ALittle.UIMoveInEvent", {
-name = "ALittle.UIMoveInEvent", ns_name = "ALittle", rl_name = "UIMoveInEvent", hash_code = 544684311,
-name_list = {"target"},
-type_list = {"ALittle.DisplayObject"},
+ALittle.RegStruct(-1001723540, "ALittle.UIMouseMoveEvent", {
+name = "ALittle.UIMouseMoveEvent", ns_name = "ALittle", rl_name = "UIMouseMoveEvent", hash_code = -1001723540,
+name_list = {"target","abs_x","abs_y","rel_x","rel_y"},
+type_list = {"ALittle.DisplayObject","double","double","double","double"},
 option_map = {}
 })
-ALittle.RegStruct(631224630, "AUIPlugin.AUICodeEditGotoEvent", {
-name = "AUIPlugin.AUICodeEditGotoEvent", ns_name = "AUIPlugin", rl_name = "AUICodeEditGotoEvent", hash_code = 631224630,
-name_list = {"target","file_path","line_start","char_start","line_end","char_end"},
-type_list = {"ALittle.DisplayObject","string","int","int","int","int"},
-option_map = {}
-})
-ALittle.RegStruct(-644464135, "ALittle.UIFocusInEvent", {
-name = "ALittle.UIFocusInEvent", ns_name = "ALittle", rl_name = "UIFocusInEvent", hash_code = -644464135,
+ALittle.RegStruct(958494922, "ALittle.UIChangedEvent", {
+name = "ALittle.UIChangedEvent", ns_name = "ALittle", rl_name = "UIChangedEvent", hash_code = 958494922,
 name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
 option_map = {}
@@ -48,100 +108,40 @@ name_list = {"target","mod","sym","scancode","custom","handled"},
 type_list = {"ALittle.DisplayObject","int","int","int","bool","bool"},
 option_map = {}
 })
-ALittle.RegStruct(958494922, "ALittle.UIChangedEvent", {
-name = "ALittle.UIChangedEvent", ns_name = "ALittle", rl_name = "UIChangedEvent", hash_code = 958494922,
+ALittle.RegStruct(-644464135, "ALittle.UIFocusInEvent", {
+name = "ALittle.UIFocusInEvent", ns_name = "ALittle", rl_name = "UIFocusInEvent", hash_code = -644464135,
 name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
-ALittle.RegStruct(-1001723540, "ALittle.UIMouseMoveEvent", {
-name = "ALittle.UIMouseMoveEvent", ns_name = "ALittle", rl_name = "UIMouseMoveEvent", hash_code = -1001723540,
-name_list = {"target","abs_x","abs_y","rel_x","rel_y"},
-type_list = {"ALittle.DisplayObject","double","double","double","double"},
+ALittle.RegStruct(631224630, "AUIPlugin.AUICodeEditGotoEvent", {
+name = "AUIPlugin.AUICodeEditGotoEvent", ns_name = "AUIPlugin", rl_name = "AUICodeEditGotoEvent", hash_code = 631224630,
+name_list = {"target","file_path","line_start","char_start","line_end","char_end"},
+type_list = {"ALittle.DisplayObject","string","int","int","int","int"},
 option_map = {}
 })
-ALittle.RegStruct(-1073016186, "AUIPlugin.AUICodeFindInfo", {
-name = "AUIPlugin.AUICodeFindInfo", ns_name = "AUIPlugin", rl_name = "AUICodeFindInfo", hash_code = -1073016186,
-name_list = {"_focus_quad","it_line","it_char_start","it_char_end"},
-type_list = {"ALittle.DisplayObject","int","int","int"},
-option_map = {}
-})
-ALittle.RegStruct(-1202439334, "ALittle.UIMoveOutEvent", {
-name = "ALittle.UIMoveOutEvent", ns_name = "ALittle", rl_name = "UIMoveOutEvent", hash_code = -1202439334,
+ALittle.RegStruct(544684311, "ALittle.UIMoveInEvent", {
+name = "ALittle.UIMoveInEvent", ns_name = "ALittle", rl_name = "UIMoveInEvent", hash_code = 544684311,
 name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
-ALittle.RegStruct(1213009422, "ALittle.UIKeyUpEvent", {
-name = "ALittle.UIKeyUpEvent", ns_name = "ALittle", rl_name = "UIKeyUpEvent", hash_code = 1213009422,
-name_list = {"target","mod","sym","scancode","custom","handled"},
-type_list = {"ALittle.DisplayObject","int","int","int","bool","bool"},
+ALittle.RegStruct(348388800, "ALittle.UIHideEvent", {
+name = "ALittle.UIHideEvent", ns_name = "ALittle", rl_name = "UIHideEvent", hash_code = 348388800,
+name_list = {"target"},
+type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
-ALittle.RegStruct(-1234078962, "ALittle.UITextInputEvent", {
-name = "ALittle.UITextInputEvent", ns_name = "ALittle", rl_name = "UITextInputEvent", hash_code = -1234078962,
-name_list = {"target","text","custom"},
-type_list = {"ALittle.DisplayObject","string","bool"},
+ALittle.RegStruct(292776509, "ALittle.UIFocusOutEvent", {
+name = "ALittle.UIFocusOutEvent", ns_name = "ALittle", rl_name = "UIFocusOutEvent", hash_code = 292776509,
+name_list = {"target"},
+type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
-ALittle.RegStruct(1301789264, "ALittle.UIButtonDragBeginEvent", {
-name = "ALittle.UIButtonDragBeginEvent", ns_name = "ALittle", rl_name = "UIButtonDragBeginEvent", hash_code = 1301789264,
+ALittle.RegStruct(150587926, "ALittle.UIButtonDragEndEvent", {
+name = "ALittle.UIButtonDragEndEvent", ns_name = "ALittle", rl_name = "UIButtonDragEndEvent", hash_code = 150587926,
 name_list = {"target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"},
 type_list = {"ALittle.DisplayObject","double","double","double","double","double","double"},
-option_map = {}
-})
-ALittle.RegStruct(1337289812, "ALittle.UIButtonDragEvent", {
-name = "ALittle.UIButtonDragEvent", ns_name = "ALittle", rl_name = "UIButtonDragEvent", hash_code = 1337289812,
-name_list = {"target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"},
-type_list = {"ALittle.DisplayObject","double","double","double","double","double","double"},
-option_map = {}
-})
-ALittle.RegStruct(-1347278145, "ALittle.UIButtonEvent", {
-name = "ALittle.UIButtonEvent", ns_name = "ALittle", rl_name = "UIButtonEvent", hash_code = -1347278145,
-name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
-type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
-option_map = {}
-})
-ALittle.RegStruct(1421505194, "AUIPlugin.AUICodeLineInfo", {
-name = "AUIPlugin.AUICodeLineInfo", ns_name = "AUIPlugin", rl_name = "AUICodeLineInfo", hash_code = 1421505194,
-name_list = {"char_list","char_count","container","edit"},
-type_list = {"List<AUIPlugin.AUICodeCharInfo>","int","AUIPlugin.AUICodeLineContainer","AUIPlugin.AUICodeEdit"},
-option_map = {}
-})
-ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
-name = "ALittle.UIEvent", ns_name = "ALittle", rl_name = "UIEvent", hash_code = -1479093282,
-name_list = {"target"},
-type_list = {"ALittle.DisplayObject"},
-option_map = {}
-})
-ALittle.RegStruct(1494749965, "AUIPlugin.AUICodeCharInfo", {
-name = "AUIPlugin.AUICodeCharInfo", ns_name = "AUIPlugin", rl_name = "AUICodeCharInfo", hash_code = 1494749965,
-name_list = {"char","text","red","green","blue","pre_width","width"},
-type_list = {"string","ALittle.Text","double","double","double","double","double"},
-option_map = {}
-})
-ALittle.RegStruct(-1604617962, "ALittle.UIKeyDownEvent", {
-name = "ALittle.UIKeyDownEvent", ns_name = "ALittle", rl_name = "UIKeyDownEvent", hash_code = -1604617962,
-name_list = {"target","mod","sym","scancode","custom","handled"},
-type_list = {"ALittle.DisplayObject","int","int","int","bool","bool"},
-option_map = {}
-})
-ALittle.RegStruct(1862557463, "ALittle.UIShowEvent", {
-name = "ALittle.UIShowEvent", ns_name = "ALittle", rl_name = "UIShowEvent", hash_code = 1862557463,
-name_list = {"target"},
-type_list = {"ALittle.DisplayObject"},
-option_map = {}
-})
-ALittle.RegStruct(1883782801, "ALittle.UILButtonDownEvent", {
-name = "ALittle.UILButtonDownEvent", ns_name = "ALittle", rl_name = "UILButtonDownEvent", hash_code = 1883782801,
-name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
-type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
-option_map = {}
-})
-ALittle.RegStruct(-2130019625, "AUIPlugin.AUICodeErrorInfo", {
-name = "AUIPlugin.AUICodeErrorInfo", ns_name = "AUIPlugin", rl_name = "AUICodeErrorInfo", hash_code = -2130019625,
-name_list = {"_focus_quad","error"},
-type_list = {"ALittle.DisplayObject","string"},
 option_map = {}
 })
 
@@ -1557,7 +1557,7 @@ function AUICodeEdit:SetText(content)
 	for index, line in ___ipairs(self._line_list) do
 		self._code_linear:AddChild(line.container)
 	end
-	self._code_screen.container.width = max_width
+	self._code_screen.container.width = max_width + LINE_NUMBER_WIDTH
 	self._code_screen.container.height = self._line_count * LINE_HEIGHT + PAD_LINES * LINE_HEIGHT
 	self._code_screen:RejustScrollBar()
 	self._cursor:SetLineChar(1, 0)
@@ -1621,7 +1621,7 @@ function AUICodeEdit:MultiTabInsert(need_revoke, revoke_bind)
 			max_width = line.container.width
 		end
 	end
-	self._code_screen.container.width = max_width
+	self._code_screen.container.width = max_width + LINE_NUMBER_WIDTH
 	self._code_screen:RejustScrollBar()
 	self._cursor:SetLineChar(old_line, old_char + 4)
 	self._select_cursor:StartLineChar(old_line_start, old_char_start + 4)
@@ -1793,7 +1793,7 @@ function AUICodeEdit:MultiTabDelete(need_revoke, revoke_bind)
 				max_width = line.container.width
 			end
 		end
-		self._code_screen.container.width = max_width
+		self._code_screen.container.width = max_width + LINE_NUMBER_WIDTH
 		self._code_screen:RejustScrollBar()
 		if need_revoke then
 			local revoke = AUICodeMultiTabDeleteRevoke(self, self._cursor, self._select_cursor, old_line_start, old_char_start, old_line_end, old_char_end, self._select_cursor.line_start, self._select_cursor.char_start, self._select_cursor.line_end, self._select_cursor.char_end, revoke_bind == nil)
@@ -2010,7 +2010,7 @@ function AUICodeEdit:InsertText(content, need_revoke, revoke_bind)
 			max_width = line.container.width
 		end
 	end
-	self._code_screen.container.width = max_width
+	self._code_screen.container.width = max_width + LINE_NUMBER_WIDTH
 	self._code_screen.container.height = self._line_count * LINE_HEIGHT + PAD_LINES * LINE_HEIGHT
 	self._code_screen:RejustScrollBar()
 	self._cursor:SetLineChar(it_cursor_line, it_cursor_char)

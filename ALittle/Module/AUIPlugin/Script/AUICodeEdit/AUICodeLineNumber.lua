@@ -6,14 +6,14 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = ALittle.GetAllStruct()
 
-ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
-name = "ALittle.UIEvent", ns_name = "ALittle", rl_name = "UIEvent", hash_code = -1479093282,
+ALittle.RegStruct(1862557463, "ALittle.UIShowEvent", {
+name = "ALittle.UIShowEvent", ns_name = "ALittle", rl_name = "UIShowEvent", hash_code = 1862557463,
 name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
-ALittle.RegStruct(1862557463, "ALittle.UIShowEvent", {
-name = "ALittle.UIShowEvent", ns_name = "ALittle", rl_name = "UIShowEvent", hash_code = 1862557463,
+ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
+name = "ALittle.UIEvent", ns_name = "ALittle", rl_name = "UIEvent", hash_code = -1479093282,
 name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
 option_map = {}
@@ -43,6 +43,13 @@ end
 function AUICodeLineNumber:UpdateShow()
 	local text_list = ALittle.String_SplitUTF8(self._text)
 	self:RemoveAllChild()
+	local quad = ALittle.Quad(self._ctrl_sys)
+	quad.width_type = 4
+	quad.height_type = 4
+	quad.red = 43 / 255
+	quad.green = 43 / 255
+	quad.blue = 43 / 255
+	self:AddChild(quad)
 	local offset = 0.0
 	local len = ALittle.List_MaxN(text_list)
 	local index = len

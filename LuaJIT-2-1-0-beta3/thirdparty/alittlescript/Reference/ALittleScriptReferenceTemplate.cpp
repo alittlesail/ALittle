@@ -44,6 +44,10 @@
 #include "../Generate/ALittleScriptOp3Element.h"
 #include "../Generate/ALittleScriptOp2Element.h"
 #include "../Generate/ALittleScriptOp1Element.h"
+#include "../Generate/ALittleScriptPropertyValueMethodCallElement.h"
+#include "../Generate/ALittleScriptBindStatElement.h"
+#include "../Generate/ALittleScriptTcallStatElement.h"
+#include "../Generate/ALittleScriptOpNewStatElement.h"
 
 ALittleScriptReference::ALittleScriptReference(ABnfElementPtr p_element)
 {
@@ -95,7 +99,10 @@ int ALittleScriptReference::QueryDesiredIndent(int it_line, int it_char, ABnfEle
         return m_desire_indent + s_indent_size;
     }
     else if (std::dynamic_pointer_cast<ALittleScriptMethodParamDecElement>(element)
-        || std::dynamic_pointer_cast<ALittleScriptOpNewListStatElement>(element))
+        || std::dynamic_pointer_cast<ALittleScriptOpNewListStatElement>(element)
+        || std::dynamic_pointer_cast<ALittleScriptPropertyValueMethodCallElement>(element)
+        || std::dynamic_pointer_cast<ALittleScriptBindStatElement>(element)
+        || std::dynamic_pointer_cast<ALittleScriptOpNewStatElement>(element))
     {
         if (m_desire_indent >= 0) return m_desire_indent;
 
@@ -174,7 +181,11 @@ int ALittleScriptReference::QueryFormateIndent(int it_line, int it_char, ABnfEle
         return m_format_indent;
     }
     else if (std::dynamic_pointer_cast<ALittleScriptMethodParamDecElement>(element)
-        || std::dynamic_pointer_cast<ALittleScriptOpNewListStatElement>(element))
+        || std::dynamic_pointer_cast<ALittleScriptOpNewListStatElement>(element)
+        || std::dynamic_pointer_cast<ALittleScriptPropertyValueMethodCallElement>(element)
+        || std::dynamic_pointer_cast<ALittleScriptBindStatElement>(element)
+        || std::dynamic_pointer_cast<ALittleScriptTcallStatElement>(element)
+        || std::dynamic_pointer_cast<ALittleScriptOpNewStatElement>(element))
     {
         auto node = std::dynamic_pointer_cast<ABnfNodeElement>(element);
         const auto& childs = node->GetChilds();

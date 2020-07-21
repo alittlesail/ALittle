@@ -214,9 +214,21 @@ end
 
 function IDEContentEdit:CloseTabByName(T, name)
 	for index, child in ___ipairs(self._main_tab.childs) do
-		local tab_child = ALittle.Cast(T, ALittle.DisplayObject, child)
-		if tab_child ~= nil and tab_child.name == name then
+		local tab_child = child._user_data
+		local target_child = ALittle.Cast(T, IDETabChild, tab_child)
+		if target_child ~= nil and target_child.name == name then
 			self:CloseTab(tab_child.tab_body)
+			break
+		end
+	end
+end
+
+function IDEContentEdit:RenameTabByName(T, old_name, new_name)
+	for index, child in ___ipairs(self._main_tab.childs) do
+		local tab_child = child._user_data
+		local target_child = ALittle.Cast(T, IDETabChild, tab_child)
+		if target_child ~= nil and target_child.name == old_name then
+			self._main_tab:SetChildText(tab_child.tab_body, new_name)
 			break
 		end
 	end

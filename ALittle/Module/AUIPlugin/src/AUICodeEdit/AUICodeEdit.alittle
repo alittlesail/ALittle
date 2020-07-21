@@ -2,7 +2,8 @@
 namespace AUIPlugin;
 
 private var LINE_HEIGHT = 18;
-private var PAD_HEIGHT = 100;
+private var LINE_NUMBER_WIDTH = 40;
+private var PAD_LINES = 5;
 private var FONT_SIZE = 14;
 private var FONT_PATH = "YaHei-Consolas.ttf";
 private var FONT_RED = 169/255;
@@ -14,6 +15,9 @@ private var SELECT_BLUE = 131/255;
 private var FIND_RED = 50/255;
 private var FIND_GREEN = 89/255;
 private var FIND_BLUE = 61/255;
+private var LINE_NUMBER_RED = 100/255;
+private var LINE_NUMBER_GREEN = 100/255;
+private var LINE_NUMBER_BLUE = 100/255;
 
 protected var g_DefaultColor = new ABnfColor();
 g_DefaultColor.alpha = 1;
@@ -93,7 +97,7 @@ protected class AUICodeLineContainer : ALittle.DisplayLayout
     public ALittle.DisplayLayout _error;    // 错误容器
     public ALittle.DisplayLayout _find;     // 查找容器
     public ALittle.DisplayLayout _text;    // 文本容器
-
+    
     public ctor(ALittle.ControlSystem ctrl_sys)
     {
         // 用于显示查找容器
@@ -306,13 +310,16 @@ public class AUICodeEdit : ALittle.DisplayLayout
 {
     private AUICodeLanguage _language;  // 代码解析器
 
+    // 查询快捷信息
     private int _query_info_version;
     private lua.ABnfQueryInfo _query_info;
     private bool _in_query_info = false;
 
+    // 查询错误信息
     private ALittle.LoopTimer _error_loop;  // 显示错误信息的定时器
     private List<ALittle.DisplayObject> _error_list;    // 错误列表
 
+    // 全文查找
     private ALittle.Dialog _find_dialog;        // 查找对话框
     private ALittle.ImageInput _find_input;  // 输入框
     private Map<int, List<AUICodeFindInfo>> _find_map; // 查找列表
@@ -323,11 +330,14 @@ public class AUICodeEdit : ALittle.DisplayLayout
     private ALittle.DisplayLayout _cursor_container;    // 光标容器
     private AUICodeQuad _edit_quad;           // 编辑区
     private ALittle.DisplayObject _goto_quad;   // goto的下划线
-    private bool _move_in = false;
+    private bool _move_in = false;			// 是否移入编辑区
+    private ALittle.Linear _line_number;		// 行号
 
+    // 光标
     protected AUICodeCursor _cursor;
     protected AUICodeSelectCursor _select_cursor;
 
+    // 行信息
     private List<AUICodeLineInfo> _line_list = new List<AUICodeLineInfo>();
     private int _line_count = 0;
 
@@ -371,6 +381,10 @@ public class AUICodeEdit : ALittle.DisplayLayout
         this._edit_quad._user_data = this;
         this._goto_quad.visible = false;
         this._code_screen.container._user_data = this._code_linear;
+        this._line_number = new ALittle.Linear(this._ctrl_sys);
+        this._line_number.type = ALittle.UIEnumTypes.TYPE_V;
+        this._line_number.width = LINE_NUMBER_WIDTH;
+        this._code_screen.static_object_v = this._line_number;
 
         this._cursor = new AUICodeCursor(this._ctrl_sys, this);
         this._cursor.width = 1;
@@ -405,6 +419,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
     public get line_count() : int { return this._line_count; }
     public get line_list() : List<AUICodeLineInfo> { return this._line_list; }
     public get line_height() : int { return LINE_HEIGHT; }
+    public get line_number_width() : double { return LINE_NUMBER_WIDTH; }
     public get revoke_list() : ALittle.RevokeList { return this._revoke_list; }
 
     public fun FocusLineCharToCenter(int it_line, int it_char)
@@ -486,8 +501,11 @@ public class AUICodeEdit : ALittle.DisplayLayout
     
     private fun HandleLButtonDown(ALittle.UILButtonDownEvent event)
     {
+        var rel_x = event.rel_x;
+        if (event.target == this._code_screen) rel_x -= this._code_linear.x;
+
         this._select_cursor.Hide();
-        this._cursor.SetOffsetXY(event.rel_x, event.rel_y);
+        this._cursor.SetOffsetXY(rel_x, event.rel_y);
         
         // 如果多次点击，那么就选中文本
         if (event.count > 1)
@@ -501,7 +519,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
 
         if (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_CTRL] && this._query_info != null && this._language != null)
         {
-            var it_line, it_char = this.CalcLineAndChar(event.rel_x, event.rel_y);
+            var it_line, it_char = this.CalcLineAndChar(rel_x, event.rel_y);
             this.DoQueryGoto(it_line, it_char);
             this.StopQueryInfo();
         }
@@ -543,14 +561,20 @@ public class AUICodeEdit : ALittle.DisplayLayout
             this._error_quad_move_in = null;
         }
 
+        var rel_x = event.rel_x;
+        if (event.target == this._code_screen) rel_x -= this._code_linear.x;
+
         this._in_drag = true;
-        this._cursor.SetOffsetXY(event.rel_x, event.rel_y);
+        this._cursor.SetOffsetXY(rel_x, event.rel_y);
         this._select_cursor.StartLineChar(this._cursor.line, this._cursor.char);
     }
 
     private fun HandleDrag(ALittle.UIButtonDragEvent event)
     {
-        this._cursor.SetOffsetXY(event.rel_x, event.rel_y);
+        var rel_x = event.rel_x;
+        if (event.target == this._code_screen) rel_x -= this._code_linear.x;
+
+        this._cursor.SetOffsetXY(rel_x, event.rel_y);
         this._select_cursor.UpdateLineChar(this._cursor.line, this._cursor.char);
     }
 
@@ -562,6 +586,9 @@ public class AUICodeEdit : ALittle.DisplayLayout
 
     private fun HandleMouseMove(ALittle.UIMouseMoveEvent event)
     {
+        var rel_x = event.rel_x;
+        if (event.target == this._code_screen) rel_x -= this._code_linear.x;
+
         // 显示错误的TIP
         if (!this._in_drag)
         {
@@ -570,7 +597,6 @@ public class AUICodeEdit : ALittle.DisplayLayout
             var line = this._line_list[it_line];
             if (line != null)
             {
-                var rel_x = event.rel_x;
                 var rel_y = event.rel_y - (it_line - 1) * LINE_HEIGHT;
                 var item = line.container._error.PickUp(rel_x, rel_y);
                 if (item != this._error_quad_move_in)
@@ -593,7 +619,31 @@ public class AUICodeEdit : ALittle.DisplayLayout
 
         if (!A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_CTRL]) return;
 
-        this.UpdateQueryInfo(event.rel_x, event.rel_y);
+        this.UpdateQueryInfo(rel_x, event.rel_y);
+    }
+
+    public fun UpdateLineNumber()
+    {
+        var child_count = this._line_count + PAD_LINES;
+        var delta = this._line_number.child_count - child_count;
+        if (delta >= -10 && delta <= 10) return;
+
+        if (delta > 0)
+        {
+            this._line_number.SpliceChild(child_count);
+            return;
+        }
+
+        for (var index = this._line_number.child_count + 1; index <= child_count; 1)
+        {
+            var text = new AUICodeLineNumber(this._ctrl_sys, FONT_PATH, FONT_SIZE, this._ascii_width, this._word_width);
+            text.height = LINE_HEIGHT;
+            text.red = LINE_NUMBER_RED;
+            text.green = LINE_NUMBER_GREEN;
+            text.blue = LINE_NUMBER_BLUE;
+            text.text = ALittle.String_ToString(index);
+            this._line_number.AddChild(text);
+        }
     }
 
     private async fun UpdateQueryInfo(double x, double y)
@@ -877,6 +927,8 @@ public class AUICodeEdit : ALittle.DisplayLayout
 
     private fun StartErrorLoop(bool force)
     {
+        if (this._language == null) return;
+
         this._force_query_error = force;
         if (this._error_loop == null)
             this._error_loop = new ALittle.LoopTimer(bind(this.UpdateErrorInfo, this), 1000);
@@ -1555,12 +1607,14 @@ public class AUICodeEdit : ALittle.DisplayLayout
         for (var index, line in this._line_list)
             this._code_linear.AddChild(line.container);
         this._code_screen.container.width = max_width;
-        this._code_screen.container.height = this._line_count * LINE_HEIGHT + PAD_HEIGHT;
+        this._code_screen.container.height = this._line_count * LINE_HEIGHT + PAD_LINES * LINE_HEIGHT;
         this._code_screen.RejustScrollBar();
 
         this._cursor.SetLineChar(1, 0);
 
         if (this._language != null) this._language.SetText(content);
+
+		this.UpdateLineNumber();
     }
 
     // 插入多行tab键
@@ -2020,7 +2074,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
         for (var index, line in this._line_list)
             if (line.container.width > max_width) max_width = line.container.width;
         this._code_screen.container.width = max_width;
-        this._code_screen.container.height = this._line_count * LINE_HEIGHT + PAD_HEIGHT;
+        this._code_screen.container.height = this._line_count * LINE_HEIGHT + PAD_LINES * LINE_HEIGHT;
         this._code_screen.RejustScrollBar();
 
         this._cursor.SetLineChar(it_cursor_line, it_cursor_char);
@@ -2035,6 +2089,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
                 this._revoke_list.PushRevoke(insert_revoke);
         }
 
+        this.UpdateLineNumber();
         return is_changed;
     }
 

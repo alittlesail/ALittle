@@ -393,6 +393,8 @@ public class ScrollScreen : DisplayGroup
 
         this.RefreshClipDisLine();
     }
+
+    public get width() : double { return this._width; }
     
     public set height(double value)
     {
@@ -453,6 +455,8 @@ public class ScrollScreen : DisplayGroup
 
         this.RefreshClipDisLine();
     }
+
+    public get height() : double { return this._height; }
     
     public get view_width() : double
     {
@@ -1019,7 +1023,9 @@ public class ScrollScreen : DisplayGroup
     ////////////////////////////////////////////////////////////////////////////////////////////-
     protected fun RefreshClipDisLineImpl(double h_move, double v_move)
     {
-        this._scroll_content.ClipRect(0, 0, this.width, this.height, h_move, v_move);
+        this._scroll_content.ClipRect(0, 0, this._width, this._height, h_move, v_move);
+        if (this._static_object_v != null) this._static_object_v.ClipRect(0, 0, this._width, this._height, h_move, v_move);
+        if (this._static_object_h != null) this._static_object_h.ClipRect(0, 0, this._width, this._height, h_move, v_move);
         this._clip_loop = null;
     }
 

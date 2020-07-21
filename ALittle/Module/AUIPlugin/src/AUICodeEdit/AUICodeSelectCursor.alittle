@@ -445,6 +445,7 @@ public class AUICodeSelectCursor
                 this._edit.revoke_list.PushRevoke(revoke);
         }
 
+        this._edit.UpdateLineNumber();
         return true, it_line_start, it_char_start;
     }
 

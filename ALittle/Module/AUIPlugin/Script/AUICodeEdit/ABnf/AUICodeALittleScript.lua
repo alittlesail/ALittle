@@ -188,11 +188,11 @@ function AUICodeALittleScriptProject.__getter:upper_ext()
 end
 
 function AUICodeALittleScriptProject:OnTreeMenu(full_path, menu)
-	menu:AddItem("生成", Lua.Bind(self.GenerateDir, self, full_path))
+	menu:AddItem("生成目标代码", Lua.Bind(self.GenerateDir, self, full_path))
 end
 
 function AUICodeALittleScriptProject:OnTreeItemMenu(full_path, menu)
-	menu:AddItem("生成", Lua.Bind(self.GenerateFile, self, full_path))
+	menu:AddItem("生成目标代码", Lua.Bind(self.GenerateFile, self, full_path))
 end
 
 function AUICodeALittleScriptProject:GenerateDir(full_path)

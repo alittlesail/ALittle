@@ -51,6 +51,7 @@ public class IDECodeTreeItem : IDECodeTreeLogic
         var menu = new AUIPlugin.AUIRightMenu();
 		if (this._user_info.project != null)
 			this._user_info.project.OnTreeItemMenu(this._user_info.path, menu);
+		menu.AddItem("重命名", bind(this.HandleRenameFile, this));
 		menu.AddItem("删除", bind(this.HandleDeleteFile, this));
 		menu.Show();
     }
@@ -64,9 +65,38 @@ public class IDECodeTreeItem : IDECodeTreeLogic
 		this.OnDelete();
 
 		ALittle.File_DeleteFile(this._user_info.path);
-        this.RemoveFromParent();
 
+		var parent = this.parent;
+        this.RemoveFromParent();
+		if (parent != null) parent.DispatchEvent(new ALittle.UIResizeEvent());
 		g_IDECenter.center.content_edit.CloseTabByName{IDECodeTabChild}(this._user_info.name);
+    }
+
+	private async fun HandleRenameFile()
+	{
+		var file_name = ALittle.File_GetFileNameByPath(this._user_info.path);
+		var x, y = this.LocalToGlobal();
+		var new_name = g_AUITool.ShowRename(file_name, x, y, 200);
+		if (new_name == null || new_name == "") return;
+
+		var old_name = this._user_info.name;
+		var old_path = this._user_info.path;
+		var new_path = ALittle.File_GetFilePathByPath(old_path).."/"..new_name;
+
+		this._user_info.path = new_path;
+		this._user_info.name = new_name;
+
+		this._item_title.text = this._user_info.name;
+
+		if (this._user_info.project != null)
+			this._user_info.project.RemoveFile(old_path);
+
+		ALittle.File_RenameFile(old_path, new_path);
+
+		g_IDECenter.center.content_edit.RenameTabByName{IDECodeTabChild}(old_name, this._user_info.name);
+
+		if (this._user_info.project != null)
+			this._user_info.project.UpdateFile(this._user_info.module_path, this._user_info.path);
     }
 
 	// 触发删除

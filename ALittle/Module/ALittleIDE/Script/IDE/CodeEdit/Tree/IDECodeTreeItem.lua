@@ -6,6 +6,12 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = ALittle.GetAllStruct()
 
+ALittle.RegStruct(-431205740, "ALittle.UIResizeEvent", {
+name = "ALittle.UIResizeEvent", ns_name = "ALittle", rl_name = "UIResizeEvent", hash_code = -431205740,
+name_list = {"target"},
+type_list = {"ALittle.DisplayObject"},
+option_map = {}
+})
 ALittle.RegStruct(-449066808, "ALittle.UIClickEvent", {
 name = "ALittle.UIClickEvent", ns_name = "ALittle", rl_name = "UIClickEvent", hash_code = -449066808,
 name_list = {"target","is_drag"},
@@ -84,6 +90,7 @@ function IDECodeTreeItem:HandleRButtonDown(event)
 	if self._user_info.project ~= nil then
 		self._user_info.project:OnTreeItemMenu(self._user_info.path, menu)
 	end
+	menu:AddItem("重命名", Lua.Bind(self.HandleRenameFile, self))
 	menu:AddItem("删除", Lua.Bind(self.HandleDeleteFile, self))
 	menu:Show()
 end
@@ -96,10 +103,38 @@ function IDECodeTreeItem:HandleDeleteFile()
 	end
 	self:OnDelete()
 	ALittle.File_DeleteFile(self._user_info.path)
+	local parent = self.parent
 	self:RemoveFromParent()
+	if parent ~= nil then
+		parent:DispatchEvent(___all_struct[-431205740], {})
+	end
 	g_IDECenter.center.content_edit:CloseTabByName(IDECodeTabChild, self._user_info.name)
 end
 IDECodeTreeItem.HandleDeleteFile = Lua.CoWrap(IDECodeTreeItem.HandleDeleteFile)
+
+function IDECodeTreeItem:HandleRenameFile()
+	local file_name = ALittle.File_GetFileNameByPath(self._user_info.path)
+	local x, y = self:LocalToGlobal()
+	local new_name = g_AUITool:ShowRename(file_name, x, y, 200)
+	if new_name == nil or new_name == "" then
+		return
+	end
+	local old_name = self._user_info.name
+	local old_path = self._user_info.path
+	local new_path = ALittle.File_GetFilePathByPath(old_path) .. "/" .. new_name
+	self._user_info.path = new_path
+	self._user_info.name = new_name
+	self._item_title.text = self._user_info.name
+	if self._user_info.project ~= nil then
+		self._user_info.project:RemoveFile(old_path)
+	end
+	ALittle.File_RenameFile(old_path, new_path)
+	g_IDECenter.center.content_edit:RenameTabByName(IDECodeTabChild, old_name, self._user_info.name)
+	if self._user_info.project ~= nil then
+		self._user_info.project:UpdateFile(self._user_info.module_path, self._user_info.path)
+	end
+end
+IDECodeTreeItem.HandleRenameFile = Lua.CoWrap(IDECodeTreeItem.HandleRenameFile)
 
 function IDECodeTreeItem:OnDelete()
 	if self._user_info.project ~= nil then

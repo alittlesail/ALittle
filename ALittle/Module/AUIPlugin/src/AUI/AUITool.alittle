@@ -211,7 +211,7 @@ public class AUITool
 		this._delete_dialog.MoveToTop();
 		this._delete_dialog.title = title;
 		this._delete_content.text = content;
-		this._delete_dialog.height = this._delete_delta_height + this._delete_content.real_height;
+		this._delete_dialog.height = this._delete_delta_height + this._delete_content.real_height + 10;
 		this._delete_dialog._user_data = co;
 		return yield;
 	}

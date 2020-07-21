@@ -136,7 +136,7 @@ function AUITool:DeleteNotice(title, content)
 	self._delete_dialog:MoveToTop()
 	self._delete_dialog.title = title
 	self._delete_content.text = content
-	self._delete_dialog.height = self._delete_delta_height + self._delete_content.real_height
+	self._delete_dialog.height = self._delete_delta_height + self._delete_content.real_height + 10
 	self._delete_dialog._user_data = ___COROUTINE
 	return coroutine.yield()
 end

@@ -311,6 +311,10 @@ function ScrollScreen.__setter:width(value)
 	self:RefreshClipDisLine()
 end
 
+function ScrollScreen.__getter:width()
+	return self._width
+end
+
 function ScrollScreen.__setter:height(value)
 	if self._height == value then
 		return
@@ -362,6 +366,10 @@ function ScrollScreen.__setter:height(value)
 		end
 	end
 	self:RefreshClipDisLine()
+end
+
+function ScrollScreen.__getter:height()
+	return self._height
 end
 
 function ScrollScreen.__getter:view_width()
@@ -817,7 +825,13 @@ function ScrollScreen:HandleDragEnd(event)
 end
 
 function ScrollScreen:RefreshClipDisLineImpl(h_move, v_move)
-	self._scroll_content:ClipRect(0, 0, self.width, self.height, h_move, v_move)
+	self._scroll_content:ClipRect(0, 0, self._width, self._height, h_move, v_move)
+	if self._static_object_v ~= nil then
+		self._static_object_v:ClipRect(0, 0, self._width, self._height, h_move, v_move)
+	end
+	if self._static_object_h ~= nil then
+		self._static_object_h:ClipRect(0, 0, self._width, self._height, h_move, v_move)
+	end
 	self._clip_loop = nil
 end
 

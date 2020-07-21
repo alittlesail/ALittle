@@ -62,6 +62,9 @@
     <None Include="src\AUICodeEdit\AUICodeLanguage.alittle">
       <Filter>AUICodeEdit</Filter>
     </None>
+    <None Include="src\AUICodeEdit\AUICodeLineNumber.alittle">
+      <Filter>AUICodeEdit</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="AUI">

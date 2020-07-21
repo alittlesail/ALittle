@@ -192,12 +192,12 @@ public class AUICodeALittleScriptProject : AUICodeProject
 
     public fun OnTreeMenu(string full_path, AUIRightMenu menu)
     {
-        menu.AddItem("生成", bind(this.GenerateDir, this, full_path));
+        menu.AddItem("生成目标代码", bind(this.GenerateDir, this, full_path));
     }
 
     public fun OnTreeItemMenu(string full_path, AUIRightMenu menu)
     {
-        menu.AddItem("生成", bind(this.GenerateFile, this, full_path));
+        menu.AddItem("生成目标代码", bind(this.GenerateFile, this, full_path));
     }
 
     // 生成对应的代码

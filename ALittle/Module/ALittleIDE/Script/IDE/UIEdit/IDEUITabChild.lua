@@ -168,6 +168,7 @@ function IDEUITabChild:OnHide()
 	self._tree_screen.visible = false
 	self._attr_screen.visible = false
 	self._anti_panel.visible = false
+	g_IDECenter.center.tool_ui.visible = false
 	g_IDEAttrControlDialog:SetTitle("")
 	g_IDEAttrControlDialog:HideDialog()
 	g_IDECenter.center:RemoveEventListener(___all_struct[1408180774], self, self.HandleEditScaleChanged)
@@ -177,6 +178,7 @@ function IDEUITabChild:OnShow()
 	self._tree_screen.visible = true
 	self._attr_screen.visible = true
 	self._anti_panel.visible = true
+	g_IDECenter.center.tool_ui.visible = true
 	local panel_childs = self._attr_screen.childs
 	if panel_childs[1] ~= nil then
 		g_IDEAttrControlDialog:SetTitle(panel_childs[1]._user_data.title)

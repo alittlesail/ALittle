@@ -180,7 +180,12 @@ function IDEProject:OpenProject(name)
 	self._project.config = ALittle.CreateConfigSystem("Module/" .. name .. "/ALittleIDE.cfg")
 	self._project.ui = IDEUIManager(name, self._project.control)
 	self._project.code = AUIPlugin.AUICodeProject.CreateALittleScriptProject()
-	self._project.code:AddEventListener(___all_struct[2057209532], self, self.HandleCodeProjectGoToEvent)
+	if self._project.code ~= nil then
+		self._project.code:AddEventListener(___all_struct[2057209532], self, self.HandleCodeProjectGoToEvent)
+	end
+	if self._project.code ~= nil then
+		alittlescript.alittlescriptproject_settargetlanguage(self._project.code.project, self._project.config:GetConfig("target_language", "Lua"))
+	end
 	g_IDEConfig:SetConfig("last_project", name)
 	local e = {}
 	e.name = name

@@ -1,6 +1,6 @@
 {
 if (typeof ALittleIDE === "undefined") window.ALittleIDE = {};
-let ___all_struct = ALittle->GetAllStruct();
+let ___all_struct = ALittle.GetAllStruct();
 
 ALittle.RegStruct(-1810358206, "ALittleIDE.IDEVersionCloseItemUserData", {
 name : "ALittleIDE.IDEVersionCloseItemUserData", ns_name : "ALittleIDE", rl_name : "IDEVersionCloseItemUserData", hash_code : -1810358206,

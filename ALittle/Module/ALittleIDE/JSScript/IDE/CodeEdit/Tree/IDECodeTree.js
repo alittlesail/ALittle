@@ -1,6 +1,6 @@
 {
 if (typeof ALittleIDE === "undefined") window.ALittleIDE = {};
-let ___all_struct = ALittle->GetAllStruct();
+let ___all_struct = ALittle.GetAllStruct();
 
 ALittle.RegStruct(1883782801, "ALittle.UILButtonDownEvent", {
 name : "ALittle.UILButtonDownEvent", ns_name : "ALittle", rl_name : "UILButtonDownEvent", hash_code : 1883782801,

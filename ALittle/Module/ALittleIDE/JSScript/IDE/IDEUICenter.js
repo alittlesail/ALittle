@@ -1,11 +1,17 @@
 {
 if (typeof ALittleIDE === "undefined") window.ALittleIDE = {};
-let ___all_struct = ALittle->GetAllStruct();
+let ___all_struct = ALittle.GetAllStruct();
 
 ALittle.RegStruct(2103672497, "ALittleIDE.IDEUICenterScaleOpChangedEvent", {
 name : "ALittleIDE.IDEUICenterScaleOpChangedEvent", ns_name : "ALittleIDE", rl_name : "IDEUICenterScaleOpChangedEvent", hash_code : 2103672497,
 name_list : ["target","value"],
 type_list : ["ALittle.DisplayObject","bool"],
+option_map : {}
+})
+ALittle.RegStruct(1715346212, "ALittle.Event", {
+name : "ALittle.Event", ns_name : "ALittle", rl_name : "Event", hash_code : 1715346212,
+name_list : ["target"],
+type_list : ["ALittle.EventDispatcher"],
 option_map : {}
 })
 ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
@@ -54,6 +60,7 @@ ALittleIDE.IDEUICenter = JavaScript.Class(ALittle.DisplayLayout, {
 		this._quick_edit_grid3.down_size = this._project_quick_tab.up_size;
 		this._quick_fold_updown.selected = false;
 		ALittle.TextRadioButton.SetGroup([this._tool_singleselect, this._tool_handdrag, this._tool_scale, this._tool_presee]);
+		ALittleIDE.g_IDEProject.AddEventListener(___all_struct.get(-975432877), this, this.HandleProjectOpen);
 	},
 	get control_tree() {
 		return this._control_tree;

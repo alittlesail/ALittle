@@ -21,8 +21,16 @@ public class IDECodeTabChild : IDETabChild
 
     private fun OnUndo() { this._edit.OnUnDo(); }
     private fun OnRedo() { }
-    private fun OnHide() { this._edit.OnHide(); }
-    private fun OnShow() { this._edit.OnShow(); }
+    private fun OnHide()
+    {
+        this._edit.OnHide();
+        g_IDECenter.center.tool_code.visible = false;
+    }
+    private fun OnShow()
+    {
+        this._edit.OnShow();
+        g_IDECenter.center.tool_code.visible = true;
+    }
     private fun OnClose() { this._edit.OnClose(); }
 
     private fun OnOpen()

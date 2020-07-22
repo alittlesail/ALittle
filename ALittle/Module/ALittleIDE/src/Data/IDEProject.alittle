@@ -188,7 +188,10 @@ public class IDEProject : ALittle.EventDispatcher
 		[Language(Lua)]
 		this._project.code = AUIPlugin.AUICodeProject.CreateALittleScriptProject();
 		[Language(Lua)]
-		this._project.code.AddEventListener(this, this.HandleCodeProjectGoToEvent);
+        if (this._project.code != null)
+			this._project.code.AddEventListener(this, this.HandleCodeProjectGoToEvent);
+        [Language(Lua)]
+        if (this._project.code != null) lua.alittlescript.alittlescriptproject_settargetlanguage(this._project.code.project, this._project.config.GetConfig("target_language", "Lua"));
 
 		// 标记上次打开的项目名
 		g_IDEConfig.SetConfig("last_project", name);

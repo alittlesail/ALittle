@@ -38,7 +38,10 @@ protected class IDEUICenter : ALittle.DisplayLayout
 	private ALittle.Grid3 _quick_edit_grid3;		// 中间三宫格
 	private ALittle.TextCheckButton _quick_fold_updown;	// 对_quick_eidt_grid3的down进行收起
 	private double _quick_edit_grid3_down_size;
-    
+
+    private ALittle.DisplayLayout _tool_ui_container;    	// UI工具容器
+    private ALittle.DisplayLayout _tool_code_container;		// 代码工具容器
+
 	private ALittle.DisplayObject _tool_h_align_left;		// 水平对齐
 	private ALittle.DisplayObject _tool_h_align_center;
 	private ALittle.DisplayObject _tool_h_align_right;
@@ -60,6 +63,8 @@ protected class IDEUICenter : ALittle.DisplayLayout
 	private ALittle.TextRadioButton _tool_scale;				// 缩放模式
 	private ALittle.TextRadioButton _tool_presee;				// 预览模式
 
+    private ALittle.DropDown _target_language;	// 目标语言下拉菜单
+
 	private IDEUIControlTree _control_tree;	// 控件树
 	private IDEUIControlList _control_list;	// 控件库
 	private IDEUICodeList    _code_list;	// 代码库
@@ -79,10 +84,16 @@ protected class IDEUICenter : ALittle.DisplayLayout
 		this._project_quick_tab.DisableAllCloseButton();
 		this._project_quick_tab.tab_index = 1;
 
+        // 工具容器
+        this._tool_ui_container.visible = false;
+        this._tool_code_container.visible = false;
+
 		this._quick_edit_grid3_down_size = this._quick_edit_grid3.down_size;
 		this._quick_edit_grid3.down_size = this._project_quick_tab.up_size;
 		this._quick_fold_updown.selected = false;
 		ALittle.TextRadioButton.SetGroup([this._tool_singleselect, this._tool_handdrag, this._tool_scale, this._tool_presee]);
+
+        g_IDEProject.AddEventListener(this, this.HandleProjectOpen);
 	}
 	
 	public get control_tree() : IDEUIControlTree { return this._control_tree; }
@@ -91,6 +102,8 @@ protected class IDEUICenter : ALittle.DisplayLayout
 	public get project_list() : IDEUIProjectList { return this._project_list; }
 	public get control_anti() : IDEUIControlAnti { return this._control_anti; }
 	public get content_edit() : IDEContentEdit { return this._content_edit; }
+    public get tool_ui() : ALittle.DisplayLayout { return this._tool_ui_container; }
+    public get tool_code() : ALittle.DisplayLayout { return this._tool_code_container; }
 
 	////////////////////////////////////////////////////////////////////////////////////////
 
@@ -332,4 +345,17 @@ protected class IDEUICenter : ALittle.DisplayLayout
 		g_IDEImageManagerDialog.SetBasePath(g_IDEProject.project.texture_path);
 		g_IDEImageManagerDialog.ShowDialog();
 	}
+
+    private fun HandleTargetLanguageSelectChange(ALittle.UISelectChangedEvent event)
+    {
+        if (g_IDEProject.project == null) return;
+        if (g_IDEProject.project.code == null) return;
+        lua.alittlescript.alittlescriptproject_settargetlanguage(g_IDEProject.project.code.project, event.target.text);
+        g_IDEProject.project.config.SetConfig("target_language", event.target.text);
+    }
+
+    private fun HandleProjectOpen(IDEProjectOpenEvent event)
+    {
+        this._target_language.text = g_IDEProject.project.config.GetConfig("target_language", "Lua");
+    }
 }

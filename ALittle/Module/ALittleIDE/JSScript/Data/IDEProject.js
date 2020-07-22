@@ -1,6 +1,6 @@
 {
 if (typeof ALittleIDE === "undefined") window.ALittleIDE = {};
-let ___all_struct = ALittle->GetAllStruct();
+let ___all_struct = ALittle.GetAllStruct();
 
 ALittle.RegStruct(2057209532, "AUIPlugin.AUICodeProjectGotoEvent", {
 name : "AUIPlugin.AUICodeProjectGotoEvent", ns_name : "AUIPlugin", rl_name : "AUICodeProjectGotoEvent", hash_code : 2057209532,

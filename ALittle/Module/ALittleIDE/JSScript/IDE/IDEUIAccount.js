@@ -1,6 +1,6 @@
 {
 if (typeof ALittleIDE === "undefined") window.ALittleIDE = {};
-let ___all_struct = ALittle->GetAllStruct();
+let ___all_struct = ALittle.GetAllStruct();
 
 ALittle.RegStruct(-1848509213, "AUIPlugin.AUIWebAccountLogoutEvent", {
 name : "AUIPlugin.AUIWebAccountLogoutEvent", ns_name : "AUIPlugin", rl_name : "AUIWebAccountLogoutEvent", hash_code : -1848509213,

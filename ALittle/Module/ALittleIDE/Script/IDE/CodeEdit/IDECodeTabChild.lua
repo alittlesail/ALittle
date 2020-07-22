@@ -45,10 +45,12 @@ end
 
 function IDECodeTabChild:OnHide()
 	self._edit:OnHide()
+	g_IDECenter.center.tool_code.visible = false
 end
 
 function IDECodeTabChild:OnShow()
 	self._edit:OnShow()
+	g_IDECenter.center.tool_code.visible = true
 end
 
 function IDECodeTabChild:OnClose()

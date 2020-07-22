@@ -11,6 +11,12 @@ name_list = {"target","value"},
 type_list = {"ALittle.DisplayObject","bool"},
 option_map = {}
 })
+ALittle.RegStruct(1715346212, "ALittle.Event", {
+name = "ALittle.Event", ns_name = "ALittle", rl_name = "Event", hash_code = 1715346212,
+name_list = {"target"},
+type_list = {"ALittle.EventDispatcher"},
+option_map = {}
+})
 ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
 name = "ALittle.UIEvent", ns_name = "ALittle", rl_name = "UIEvent", hash_code = -1479093282,
 name_list = {"target"},
@@ -52,10 +58,13 @@ function IDEUICenter:TCtor()
 	self._control_tree_tab.tab_index = 1
 	self._project_quick_tab:DisableAllCloseButton()
 	self._project_quick_tab.tab_index = 1
+	self._tool_ui_container.visible = false
+	self._tool_code_container.visible = false
 	self._quick_edit_grid3_down_size = self._quick_edit_grid3.down_size
 	self._quick_edit_grid3.down_size = self._project_quick_tab.up_size
 	self._quick_fold_updown.selected = false
 	ALittle.TextRadioButton.SetGroup({self._tool_singleselect, self._tool_handdrag, self._tool_scale, self._tool_presee})
+	g_IDEProject:AddEventListener(___all_struct[-975432877], self, self.HandleProjectOpen)
 end
 
 function IDEUICenter.__getter:control_tree()
@@ -80,6 +89,14 @@ end
 
 function IDEUICenter.__getter:content_edit()
 	return self._content_edit
+end
+
+function IDEUICenter.__getter:tool_ui()
+	return self._tool_ui_container
+end
+
+function IDEUICenter.__getter:tool_code()
+	return self._tool_code_container
 end
 
 function IDEUICenter:System_SetVDragCursor(event)
@@ -327,5 +344,21 @@ function IDEUICenter:HandleImageSelectClick(event)
 	end
 	g_IDEImageManagerDialog:SetBasePath(g_IDEProject.project.texture_path)
 	g_IDEImageManagerDialog:ShowDialog()
+end
+
+function IDEUICenter:HandleTargetLanguageSelectChange(event)
+	if g_IDEProject.project == nil then
+		return
+	end
+	if g_IDEProject.project.code == nil then
+		return
+	end
+	alittlescript.alittlescriptproject_settargetlanguage(g_IDEProject.project.code.project, event.target.text)
+	g_IDEProject.project.config:SetConfig("target_language", event.target.text)
+end
+
+function IDEUICenter:HandleProjectOpen(event)
+	self._target_language.text = g_IDEProject.project.config:GetConfig("target_language", "Lua")
+	ALittle.Log("HandleProjectOpen", self._target_language.text)
 end
 

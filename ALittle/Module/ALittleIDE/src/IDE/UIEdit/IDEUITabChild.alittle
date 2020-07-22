@@ -148,6 +148,7 @@ public class IDEUITabChild : IDETabChild
 		this._tree_screen.visible = false;
 		this._attr_screen.visible = false;
 		this._anti_panel.visible = false;
+        g_IDECenter.center.tool_ui.visible = false;
 		g_IDEAttrControlDialog.SetTitle("");
         g_IDEAttrControlDialog.HideDialog();
         g_IDECenter.center.RemoveEventListener(this, this.HandleEditScaleChanged);
@@ -159,6 +160,7 @@ public class IDEUITabChild : IDETabChild
 		this._tree_screen.visible = true;
 		this._attr_screen.visible = true;
 		this._anti_panel.visible = true;
+        g_IDECenter.center.tool_ui.visible = true;
 	
 		var panel_childs = this._attr_screen.childs;
 		if (panel_childs[1] != null)

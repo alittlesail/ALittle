@@ -1,6 +1,6 @@
 {
 if (typeof ALittleIDE === "undefined") window.ALittleIDE = {};
-let ___all_struct = ALittle->GetAllStruct();
+let ___all_struct = ALittle.GetAllStruct();
 
 ALittle.RegStruct(1821709712, "AUIPlugin.AUIFileSelectRightButtonDownEvent", {
 name : "AUIPlugin.AUIFileSelectRightButtonDownEvent", ns_name : "AUIPlugin", rl_name : "AUIFileSelectRightButtonDownEvent", hash_code : 1821709712,

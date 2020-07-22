@@ -2,10 +2,16 @@
 if (typeof AUIPlugin === "undefined") window.AUIPlugin = {};
 let ___all_struct = ALittle.GetAllStruct();
 
-ALittle.RegStruct(-262794256, "AUIPlugin.AUIWebAccountReconnectEvent", {
-name : "AUIPlugin.AUIWebAccountReconnectEvent", ns_name : "AUIPlugin", rl_name : "AUIWebAccountReconnectEvent", hash_code : -262794256,
+ALittle.RegStruct(-1848509213, "AUIPlugin.AUIWebAccountLogoutEvent", {
+name : "AUIPlugin.AUIWebAccountLogoutEvent", ns_name : "AUIPlugin", rl_name : "AUIWebAccountLogoutEvent", hash_code : -1848509213,
 name_list : ["target"],
 type_list : ["ALittle.EventDispatcher"],
+option_map : {}
+})
+ALittle.RegStruct(1809602374, "ALittle.S2CWebSession", {
+name : "ALittle.S2CWebSession", ns_name : "ALittle", rl_name : "S2CWebSession", hash_code : 1809602374,
+name_list : ["session_id"],
+type_list : ["string"],
 option_map : {}
 })
 ALittle.RegStruct(1715346212, "ALittle.Event", {
@@ -14,16 +20,46 @@ name_list : ["target"],
 type_list : ["ALittle.EventDispatcher"],
 option_map : {}
 })
-ALittle.RegStruct(-1848509213, "AUIPlugin.AUIWebAccountLogoutEvent", {
-name : "AUIPlugin.AUIWebAccountLogoutEvent", ns_name : "AUIPlugin", rl_name : "AUIWebAccountLogoutEvent", hash_code : -1848509213,
-name_list : ["target"],
-type_list : ["ALittle.EventDispatcher"],
+ALittle.RegStruct(1652964636, "ALittle.AWebChangePassword", {
+name : "ALittle.AWebChangePassword", ns_name : "ALittle", rl_name : "AWebChangePassword", hash_code : 1652964636,
+name_list : [],
+type_list : [],
+option_map : {}
+})
+ALittle.RegStruct(1598450085, "ALittle.QWebLogout", {
+name : "ALittle.QWebLogout", ns_name : "ALittle", rl_name : "QWebLogout", hash_code : 1598450085,
+name_list : [],
+type_list : [],
+option_map : {}
+})
+ALittle.RegStruct(1391512615, "ALittle.S2CWebForceLogout", {
+name : "ALittle.S2CWebForceLogout", ns_name : "ALittle", rl_name : "S2CWebForceLogout", hash_code : 1391512615,
+name_list : ["reason"],
+type_list : ["string"],
+option_map : {}
+})
+ALittle.RegStruct(-1373673802, "ALittle.QWebChangePassword", {
+name : "ALittle.QWebChangePassword", ns_name : "ALittle", rl_name : "QWebChangePassword", hash_code : -1373673802,
+name_list : ["old_password","new_password"],
+type_list : ["string","string"],
+option_map : {}
+})
+ALittle.RegStruct(898014419, "ALittle.QWebLogin", {
+name : "ALittle.QWebLogin", ns_name : "ALittle", rl_name : "QWebLogin", hash_code : 898014419,
+name_list : ["device_id","client_platform","third_platform","account_name","account_pwd"],
+type_list : ["string","string","string","string","string"],
 option_map : {}
 })
 ALittle.RegStruct(-420010531, "AUIPlugin.AUIWebAccountLoginEvent", {
 name : "AUIPlugin.AUIWebAccountLoginEvent", ns_name : "AUIPlugin", rl_name : "AUIWebAccountLoginEvent", hash_code : -420010531,
 name_list : ["target"],
 type_list : ["ALittle.EventDispatcher"],
+option_map : {}
+})
+ALittle.RegStruct(-417093574, "ALittle.S2CWebAccountInfo", {
+name : "ALittle.S2CWebAccountInfo", ns_name : "ALittle", rl_name : "S2CWebAccountInfo", hash_code : -417093574,
+name_list : ["account_id","account_name","role_id","role_name","permission_map"],
+type_list : ["string","string","string","string","Map<string,bool>"],
 option_map : {}
 })
 ALittle.RegStruct(-344058063, "ALittle.AWebLogout", {
@@ -38,52 +74,16 @@ name_list : [],
 type_list : [],
 option_map : {}
 })
-ALittle.RegStruct(898014419, "ALittle.QWebLogin", {
-name : "ALittle.QWebLogin", ns_name : "ALittle", rl_name : "QWebLogin", hash_code : 898014419,
-name_list : ["device_id","client_platform","third_platform","account_name","account_pwd"],
-type_list : ["string","string","string","string","string"],
-option_map : {}
-})
-ALittle.RegStruct(1391512615, "ALittle.S2CWebForceLogout", {
-name : "ALittle.S2CWebForceLogout", ns_name : "ALittle", rl_name : "S2CWebForceLogout", hash_code : 1391512615,
-name_list : ["reason"],
-type_list : ["string"],
-option_map : {}
-})
-ALittle.RegStruct(1598450085, "ALittle.QWebLogout", {
-name : "ALittle.QWebLogout", ns_name : "ALittle", rl_name : "QWebLogout", hash_code : 1598450085,
-name_list : [],
-type_list : [],
-option_map : {}
-})
-ALittle.RegStruct(1652964636, "ALittle.AWebChangePassword", {
-name : "ALittle.AWebChangePassword", ns_name : "ALittle", rl_name : "AWebChangePassword", hash_code : 1652964636,
-name_list : [],
-type_list : [],
-option_map : {}
-})
-ALittle.RegStruct(1809602374, "ALittle.S2CWebSession", {
-name : "ALittle.S2CWebSession", ns_name : "ALittle", rl_name : "S2CWebSession", hash_code : 1809602374,
-name_list : ["session_id"],
-type_list : ["string"],
-option_map : {}
-})
-ALittle.RegStruct(-1373673802, "ALittle.QWebChangePassword", {
-name : "ALittle.QWebChangePassword", ns_name : "ALittle", rl_name : "QWebChangePassword", hash_code : -1373673802,
-name_list : ["old_password","new_password"],
-type_list : ["string","string"],
-option_map : {}
-})
-ALittle.RegStruct(-417093574, "ALittle.S2CWebAccountInfo", {
-name : "ALittle.S2CWebAccountInfo", ns_name : "ALittle", rl_name : "S2CWebAccountInfo", hash_code : -417093574,
-name_list : ["account_id","account_name","role_id","role_name","permission_map"],
-type_list : ["string","string","string","string","Map<string,bool>"],
-option_map : {}
-})
 ALittle.RegStruct(-300988017, "ALittle.S2CWebServerInfo", {
 name : "ALittle.S2CWebServerInfo", ns_name : "ALittle", rl_name : "S2CWebServerInfo", hash_code : -300988017,
 name_list : ["http_ip","http_port"],
 type_list : ["string","int"],
+option_map : {}
+})
+ALittle.RegStruct(-262794256, "AUIPlugin.AUIWebAccountReconnectEvent", {
+name : "AUIPlugin.AUIWebAccountReconnectEvent", ns_name : "AUIPlugin", rl_name : "AUIWebAccountReconnectEvent", hash_code : -262794256,
+name_list : ["target"],
+type_list : ["ALittle.EventDispatcher"],
 option_map : {}
 })
 

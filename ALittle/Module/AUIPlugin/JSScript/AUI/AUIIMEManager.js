@@ -52,9 +52,15 @@ AUIPlugin.AUIIMEManager = JavaScript.Class(undefined, {
 			}
 			this._ime_editing_list.text = ALittle.String_Join(new_list, " ");
 			let [global_x, global_y] = target.LocalToGlobal();
-			let height = target.height;
-			this._ime_dialog.x = global_x;
-			this._ime_dialog.y = global_y + height;
+			let cursor_x = target.cursor_x;
+			let cursor_b = target.cursor_b;
+			if (cursor_x !== undefined && cursor_b !== undefined) {
+				this._ime_dialog.x = global_x + cursor_x;
+				this._ime_dialog.y = global_y + cursor_b;
+			} else {
+				this._ime_dialog.x = global_x;
+				this._ime_dialog.y = global_y + target.height;
+			}
 			let width = this._ime_editing_list.width + this._ime_editing_list.x * 2;
 			if (width < this._ime_dialog_init_width) {
 				width = this._ime_dialog_init_width;

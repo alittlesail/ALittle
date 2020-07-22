@@ -34,6 +34,10 @@ AUIPlugin.AUITool = JavaScript.Class(undefined, {
 			A_LayerManager.RemoveFromTip(this._tip_help_dialog);
 			this._tip_help_dialog = undefined;
 		}
+		if (this._selectdir_dialog !== undefined) {
+			A_LayerManager.RemoveFromModal(this._selectdir_dialog);
+			this._selectdir_dialog = undefined;
+		}
 	},
 	ShowAlertDialog : function(title, content) {
 		if (this._alert_dialog === undefined) {
@@ -114,11 +118,13 @@ AUIPlugin.AUITool = JavaScript.Class(undefined, {
 			if (this._delete_dialog === undefined) {
 				this._delete_dialog = AUIPlugin.g_Control.CreateControl("ide_delete_dialog", this);
 				A_LayerManager.AddToModal(this._delete_dialog);
+				this._delete_delta_height = this._delete_dialog.height - this._delete_content.height;
 			}
 			this._delete_dialog.visible = true;
 			this._delete_dialog.MoveToTop();
 			this._delete_dialog.title = title;
 			this._delete_content.text = content;
+			this._delete_dialog.height = this._delete_delta_height + this._delete_content.real_height + 10;
 			this._delete_dialog._user_data = ___COROUTINE;
 			return;
 		}).bind(this));
@@ -182,6 +188,45 @@ AUIPlugin.AUITool = JavaScript.Class(undefined, {
 		this._rename_input.visible = false;
 		ALittle.Coroutine.Resume(thread, undefined);
 	},
+	ShowSelectDir : function(title, dir) {
+		return new Promise((function(___COROUTINE, ___) {
+			if (this._selectdir_dialog === undefined) {
+				this._selectdir_dialog = AUIPlugin.g_Control.CreateControl("ide_common_selectdir_dialog", this);
+				A_LayerManager.AddToModal(this._selectdir_dialog);
+			}
+			this._selectdir_dialog.visible = true;
+			this._selectdir_input.DelayFocus();
+			if (dir !== undefined) {
+				this._selectdir_input.text = dir;
+			}
+			this._selectdir_dialog._user_data = ___COROUTINE;
+			return;
+		}).bind(this));
+	},
+	HandleSelectDirConfirm : function(event) {
+		this._selectdir_dialog.visible = false;
+		let thread = this._selectdir_dialog._user_data;
+		if (thread === undefined) {
+			return;
+		}
+		this._selectdir_dialog._user_data = undefined;
+		let text = this._selectdir_input.text;
+		ALittle.Coroutine.Resume(thread, text);
+	},
+	HandleSelectDirCancel : function(event) {
+		let thread = this._selectdir_dialog._user_data;
+		if (thread === undefined) {
+			return;
+		}
+		this._selectdir_dialog._user_data = undefined;
+		this._selectdir_dialog.visible = false;
+		ALittle.Coroutine.Resume(thread, undefined);
+	},
+	HandleSelectDirClick : function(event) {
+		if (event.path !== undefined) {
+			this._selectdir_input.text = event.path;
+		}
+	},
 	ShowTipHelp : function(content, show_time) {
 		if (this._tip_help_dialog === undefined) {
 			this._tip_help_dialog = AUIPlugin.g_Control.CreateControl("ide_tip_help", this);
@@ -230,6 +275,9 @@ AUIPlugin.AUITool = JavaScript.Class(undefined, {
 		this._tip_text.text = content;
 		this._tip_dialog.width = this._tip_text.width + 10;
 		this._tip_dialog.height = this._tip_text.height + 10;
+	},
+	GetTipSize : function() {
+		return [this._tip_dialog.width, this._tip_dialog.height];
 	},
 	MoveTip : function(x, y) {
 		if (this._tip_dialog === undefined) {

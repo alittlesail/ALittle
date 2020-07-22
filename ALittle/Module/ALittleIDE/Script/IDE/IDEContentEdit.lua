@@ -6,20 +6,26 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = ALittle.GetAllStruct()
 
-ALittle.RegStruct(-338112738, "ALittle.UIDropFileEvent", {
-name = "ALittle.UIDropFileEvent", ns_name = "ALittle", rl_name = "UIDropFileEvent", hash_code = -338112738,
-name_list = {"target","path"},
-type_list = {"ALittle.DisplayObject","string"},
+ALittle.RegStruct(1715346212, "ALittle.Event", {
+name = "ALittle.Event", ns_name = "ALittle", rl_name = "Event", hash_code = 1715346212,
+name_list = {"target"},
+type_list = {"ALittle.EventDispatcher"},
 option_map = {}
 })
-ALittle.RegStruct(444989011, "ALittle.UISelectChangedEvent", {
-name = "ALittle.UISelectChangedEvent", ns_name = "ALittle", rl_name = "UISelectChangedEvent", hash_code = 444989011,
+ALittle.RegStruct(-1604617962, "ALittle.UIKeyDownEvent", {
+name = "ALittle.UIKeyDownEvent", ns_name = "ALittle", rl_name = "UIKeyDownEvent", hash_code = -1604617962,
+name_list = {"target","mod","sym","scancode","custom","handled"},
+type_list = {"ALittle.DisplayObject","int","int","int","bool","bool"},
+option_map = {}
+})
+ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
+name = "ALittle.UIEvent", ns_name = "ALittle", rl_name = "UIEvent", hash_code = -1479093282,
 name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
-ALittle.RegStruct(-641444818, "ALittle.UIRButtonDownEvent", {
-name = "ALittle.UIRButtonDownEvent", ns_name = "ALittle", rl_name = "UIRButtonDownEvent", hash_code = -641444818,
+ALittle.RegStruct(-1347278145, "ALittle.UIButtonEvent", {
+name = "ALittle.UIButtonEvent", ns_name = "ALittle", rl_name = "UIButtonEvent", hash_code = -1347278145,
 name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
 type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
 option_map = {}
@@ -30,28 +36,22 @@ name_list = {"target","mod","sym","scancode","custom","handled"},
 type_list = {"ALittle.DisplayObject","int","int","int","bool","bool"},
 option_map = {}
 })
-ALittle.RegStruct(-1347278145, "ALittle.UIButtonEvent", {
-name = "ALittle.UIButtonEvent", ns_name = "ALittle", rl_name = "UIButtonEvent", hash_code = -1347278145,
+ALittle.RegStruct(-641444818, "ALittle.UIRButtonDownEvent", {
+name = "ALittle.UIRButtonDownEvent", ns_name = "ALittle", rl_name = "UIRButtonDownEvent", hash_code = -641444818,
 name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
 type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
 option_map = {}
 })
-ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
-name = "ALittle.UIEvent", ns_name = "ALittle", rl_name = "UIEvent", hash_code = -1479093282,
+ALittle.RegStruct(444989011, "ALittle.UISelectChangedEvent", {
+name = "ALittle.UISelectChangedEvent", ns_name = "ALittle", rl_name = "UISelectChangedEvent", hash_code = 444989011,
 name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
-ALittle.RegStruct(-1604617962, "ALittle.UIKeyDownEvent", {
-name = "ALittle.UIKeyDownEvent", ns_name = "ALittle", rl_name = "UIKeyDownEvent", hash_code = -1604617962,
-name_list = {"target","mod","sym","scancode","custom","handled"},
-type_list = {"ALittle.DisplayObject","int","int","int","bool","bool"},
-option_map = {}
-})
-ALittle.RegStruct(1715346212, "ALittle.Event", {
-name = "ALittle.Event", ns_name = "ALittle", rl_name = "Event", hash_code = 1715346212,
-name_list = {"target"},
-type_list = {"ALittle.EventDispatcher"},
+ALittle.RegStruct(-338112738, "ALittle.UIDropFileEvent", {
+name = "ALittle.UIDropFileEvent", ns_name = "ALittle", rl_name = "UIDropFileEvent", hash_code = -338112738,
+name_list = {"target","path"},
+type_list = {"ALittle.DisplayObject","string"},
 option_map = {}
 })
 

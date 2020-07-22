@@ -5,58 +5,10 @@ local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
-ALittle.RegStruct(-435045833, "ALittleIDE.IDEExportVersionInfo", {
-name = "ALittleIDE.IDEExportVersionInfo", ns_name = "ALittleIDE", rl_name = "IDEExportVersionInfo", hash_code = -435045833,
-name_list = {"small_version","big_version"},
-type_list = {"Map<string,ALittle.SmallVersionInfo>","ALittle.BigVersionInfo"},
-option_map = {}
-})
-ALittle.RegStruct(-600814285, "ALittle.SmallVersionInfo", {
-name = "ALittle.SmallVersionInfo", ns_name = "ALittle", rl_name = "SmallVersionInfo", hash_code = -600814285,
-name_list = {"c_file_path","c_file_size","c_type","c_width","c_height","c_md5","c_update_time","c_update_index","c_is_delete"},
-type_list = {"string","int","string","int","int","string","int","int","int"},
-option_map = {}
-})
-ALittle.RegStruct(900617833, "ALittleIDE.IDEExportFileAttr", {
-name = "ALittleIDE.IDEExportFileAttr", ns_name = "ALittleIDE", rl_name = "IDEExportFileAttr", hash_code = 900617833,
-name_list = {"attr","md5","file_type","file_path"},
-type_list = {"lua.fileattr","string","string","string"},
-option_map = {}
-})
-ALittle.RegStruct(1033286911, "ALittleIDE.ANewVersionInfo", {
-name = "ALittleIDE.ANewVersionInfo", ns_name = "ALittleIDE", rl_name = "ANewVersionInfo", hash_code = 1033286911,
-name_list = {"result","reason","version_id"},
-type_list = {"bool","string","string"},
-option_map = {}
-})
-ALittle.RegStruct(1084005584, "ALittleIDE.IDEExportFileInfo", {
-name = "ALittleIDE.IDEExportFileInfo", ns_name = "ALittleIDE", rl_name = "IDEExportFileInfo", hash_code = 1084005584,
-name_list = {"path","crypt_mode"},
-type_list = {"string","bool"},
-option_map = {}
-})
-ALittle.RegStruct(1089261655, "lua.fileattr", {
-name = "lua.fileattr", ns_name = "lua", rl_name = "fileattr", hash_code = 1089261655,
-name_list = {"mode","size"},
-type_list = {"string","int"},
-option_map = {}
-})
-ALittle.RegStruct(-1093384145, "ALittleIDE.IDEExportSubmitInfo", {
-name = "ALittleIDE.IDEExportSubmitInfo", ns_name = "ALittleIDE", rl_name = "IDEExportSubmitInfo", hash_code = -1093384145,
-name_list = {"upload_list","project_path","export_module_path","is_login","module_name","platform","small_version_time","small_version_index","update_time","update_index","big_version","version_number","install_version","plugin_list","log_list","install_name","install_size","completed","version_id"},
-type_list = {"List<string>","string","string","bool","string","string","int","int","int","int","string","string","string","string","List<string>","string","int","bool","string"},
-option_map = {}
-})
-ALittle.RegStruct(1243834211, "ALittleIDE.IDEInstallInfo", {
-name = "ALittleIDE.IDEInstallInfo", ns_name = "ALittleIDE", rl_name = "IDEInstallInfo", hash_code = 1243834211,
-name_list = {"new_log","install_name","auto_start","package_name","screen","fullscreen","res_ip","res_port","res_base_path","file_name"},
-type_list = {"string","string","bool","string","string","bool","string","int","string","string"},
-option_map = {}
-})
-ALittle.RegStruct(-1247620677, "ALittleIDE.IDEVersionInfo", {
-name = "ALittleIDE.IDEVersionInfo", ns_name = "ALittleIDE", rl_name = "IDEVersionInfo", hash_code = -1247620677,
-name_list = {"install_version","big_version","version_number","plugin_list"},
-type_list = {"string","string","string","string"},
+ALittle.RegStruct(1962364004, "ALittleIDE.IDEPackageInfo", {
+name = "ALittleIDE.IDEPackageInfo", ns_name = "ALittleIDE", rl_name = "IDEPackageInfo", hash_code = 1962364004,
+name_list = {"platform","project_name","project_path","export_path","export_module_path","export_module_base_path","version_info","install_info"},
+type_list = {"string","string","string","string","string","string","ALittleIDE.IDEVersionInfo","ALittleIDE.IDEInstallInfo"},
 option_map = {}
 })
 ALittle.RegStruct(1916591200, "ALittle.BigVersionInfo", {
@@ -65,10 +17,58 @@ name_list = {"c_big_version","c_install_version","c_db_version"},
 type_list = {"string","string","string"},
 option_map = {}
 })
-ALittle.RegStruct(1962364004, "ALittleIDE.IDEPackageInfo", {
-name = "ALittleIDE.IDEPackageInfo", ns_name = "ALittleIDE", rl_name = "IDEPackageInfo", hash_code = 1962364004,
-name_list = {"platform","project_name","project_path","export_path","export_module_path","export_module_base_path","version_info","install_info"},
-type_list = {"string","string","string","string","string","string","ALittleIDE.IDEVersionInfo","ALittleIDE.IDEInstallInfo"},
+ALittle.RegStruct(-1247620677, "ALittleIDE.IDEVersionInfo", {
+name = "ALittleIDE.IDEVersionInfo", ns_name = "ALittleIDE", rl_name = "IDEVersionInfo", hash_code = -1247620677,
+name_list = {"install_version","big_version","version_number","plugin_list"},
+type_list = {"string","string","string","string"},
+option_map = {}
+})
+ALittle.RegStruct(1243834211, "ALittleIDE.IDEInstallInfo", {
+name = "ALittleIDE.IDEInstallInfo", ns_name = "ALittleIDE", rl_name = "IDEInstallInfo", hash_code = 1243834211,
+name_list = {"new_log","install_name","auto_start","package_name","screen","fullscreen","res_ip","res_port","res_base_path","file_name"},
+type_list = {"string","string","bool","string","string","bool","string","int","string","string"},
+option_map = {}
+})
+ALittle.RegStruct(-1093384145, "ALittleIDE.IDEExportSubmitInfo", {
+name = "ALittleIDE.IDEExportSubmitInfo", ns_name = "ALittleIDE", rl_name = "IDEExportSubmitInfo", hash_code = -1093384145,
+name_list = {"upload_list","project_path","export_module_path","is_login","module_name","platform","small_version_time","small_version_index","update_time","update_index","big_version","version_number","install_version","plugin_list","log_list","install_name","install_size","completed","version_id"},
+type_list = {"List<string>","string","string","bool","string","string","int","int","int","int","string","string","string","string","List<string>","string","int","bool","string"},
+option_map = {}
+})
+ALittle.RegStruct(1089261655, "lua.fileattr", {
+name = "lua.fileattr", ns_name = "lua", rl_name = "fileattr", hash_code = 1089261655,
+name_list = {"mode","size"},
+type_list = {"string","int"},
+option_map = {}
+})
+ALittle.RegStruct(1084005584, "ALittleIDE.IDEExportFileInfo", {
+name = "ALittleIDE.IDEExportFileInfo", ns_name = "ALittleIDE", rl_name = "IDEExportFileInfo", hash_code = 1084005584,
+name_list = {"path","crypt_mode"},
+type_list = {"string","bool"},
+option_map = {}
+})
+ALittle.RegStruct(1033286911, "ALittleIDE.ANewVersionInfo", {
+name = "ALittleIDE.ANewVersionInfo", ns_name = "ALittleIDE", rl_name = "ANewVersionInfo", hash_code = 1033286911,
+name_list = {"result","reason","version_id"},
+type_list = {"bool","string","string"},
+option_map = {}
+})
+ALittle.RegStruct(900617833, "ALittleIDE.IDEExportFileAttr", {
+name = "ALittleIDE.IDEExportFileAttr", ns_name = "ALittleIDE", rl_name = "IDEExportFileAttr", hash_code = 900617833,
+name_list = {"attr","md5","file_type","file_path"},
+type_list = {"lua.fileattr","string","string","string"},
+option_map = {}
+})
+ALittle.RegStruct(-600814285, "ALittle.SmallVersionInfo", {
+name = "ALittle.SmallVersionInfo", ns_name = "ALittle", rl_name = "SmallVersionInfo", hash_code = -600814285,
+name_list = {"c_file_path","c_file_size","c_type","c_width","c_height","c_md5","c_update_time","c_update_index","c_is_delete"},
+type_list = {"string","int","string","int","int","string","int","int","int"},
+option_map = {}
+})
+ALittle.RegStruct(-435045833, "ALittleIDE.IDEExportVersionInfo", {
+name = "ALittleIDE.IDEExportVersionInfo", ns_name = "ALittleIDE", rl_name = "IDEExportVersionInfo", hash_code = -435045833,
+name_list = {"small_version","big_version"},
+type_list = {"Map<string,ALittle.SmallVersionInfo>","ALittle.BigVersionInfo"},
 option_map = {}
 })
 

@@ -6,20 +6,8 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = ALittle.GetAllStruct()
 
-ALittle.RegStruct(-431205740, "ALittle.UIResizeEvent", {
-name = "ALittle.UIResizeEvent", ns_name = "ALittle", rl_name = "UIResizeEvent", hash_code = -431205740,
-name_list = {"target"},
-type_list = {"ALittle.DisplayObject"},
-option_map = {}
-})
-ALittle.RegStruct(-641444818, "ALittle.UIRButtonDownEvent", {
-name = "ALittle.UIRButtonDownEvent", ns_name = "ALittle", rl_name = "UIRButtonDownEvent", hash_code = -641444818,
-name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
-type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
-option_map = {}
-})
-ALittle.RegStruct(-1347278145, "ALittle.UIButtonEvent", {
-name = "ALittle.UIButtonEvent", ns_name = "ALittle", rl_name = "UIButtonEvent", hash_code = -1347278145,
+ALittle.RegStruct(1883782801, "ALittle.UILButtonDownEvent", {
+name = "ALittle.UILButtonDownEvent", ns_name = "ALittle", rl_name = "UILButtonDownEvent", hash_code = 1883782801,
 name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
 type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
 option_map = {}
@@ -30,10 +18,22 @@ name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
-ALittle.RegStruct(1883782801, "ALittle.UILButtonDownEvent", {
-name = "ALittle.UILButtonDownEvent", ns_name = "ALittle", rl_name = "UILButtonDownEvent", hash_code = 1883782801,
+ALittle.RegStruct(-1347278145, "ALittle.UIButtonEvent", {
+name = "ALittle.UIButtonEvent", ns_name = "ALittle", rl_name = "UIButtonEvent", hash_code = -1347278145,
 name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
 type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
+option_map = {}
+})
+ALittle.RegStruct(-641444818, "ALittle.UIRButtonDownEvent", {
+name = "ALittle.UIRButtonDownEvent", ns_name = "ALittle", rl_name = "UIRButtonDownEvent", hash_code = -641444818,
+name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
+type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
+option_map = {}
+})
+ALittle.RegStruct(-431205740, "ALittle.UIResizeEvent", {
+name = "ALittle.UIResizeEvent", ns_name = "ALittle", rl_name = "UIResizeEvent", hash_code = -431205740,
+name_list = {"target"},
+type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
 
@@ -87,6 +87,7 @@ function IDECodeTree:HandleRButtonDown(event)
 	end
 	if self._user_info.root then
 		menu:AddItem("添加模块", Lua.Bind(self.HandleAddModule, self))
+		menu:AddItem("添加库", Lua.Bind(self.HandleAddLibrary, self))
 	end
 	local can_remove = self._user_info.root and self._user_info.module_name ~= "Std" and self._user_info.module_name ~= "Core" and self._user_info.module_name ~= "CEngine" and self._user_info.module_name ~= g_IDEProject.project.name
 	if can_remove then
@@ -127,6 +128,16 @@ function IDECodeTree:HandleAddModule()
 end
 IDECodeTree.HandleAddModule = Lua.CoWrap(IDECodeTree.HandleAddModule)
 
+function IDECodeTree:HandleAddLibrary()
+	local x, y = self._head:LocalToGlobal()
+	local name = g_AUITool:ShowRename("", x, y + self._head.height, 200)
+	if name == nil or name == "" then
+		return
+	end
+	g_IDECenter.center.code_list:AddLibrary(name)
+end
+IDECodeTree.HandleAddLibrary = Lua.CoWrap(IDECodeTree.HandleAddLibrary)
+
 function IDECodeTree:HandleDeleteDir()
 	local file_name = ALittle.File_GetFileNameByPath(self._user_info.path)
 	local result = g_AUITool:DeleteNotice("删除", "确定要删除" .. file_name .. "，以及子文件和子文件夹吗?")
@@ -151,6 +162,9 @@ function IDECodeTree:HandleRemoveModule()
 	end
 	self:OnDelete()
 	self:RemoveFromParent()
+	local module_map = g_IDEProject.project.config:GetConfig("code_module", {})
+	module_map[self._user_info.module_name] = nil
+	g_IDEProject.project.config:SetConfig("code_module", module_map)
 end
 IDECodeTree.HandleRemoveModule = Lua.CoWrap(IDECodeTree.HandleRemoveModule)
 

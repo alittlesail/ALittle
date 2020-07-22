@@ -57,7 +57,10 @@ public class IDECodeTree : IDECodeTreeLogic
 			menu.AddItem("删除", bind(this.HandleDeleteDir, this));
 
 		if (this._user_info.root)
+        {
 			menu.AddItem("添加模块", bind(this.HandleAddModule, this));
+			menu.AddItem("添加库", bind(this.HandleAddLibrary, this));
+        }
 
 		var can_remove = this._user_info.root && this._user_info.module_name != "Std" && this._user_info.module_name != "Core" && this._user_info.module_name != "CEngine"
 						&& this._user_info.module_name != g_IDEProject.project.name;
@@ -92,6 +95,14 @@ public class IDECodeTree : IDECodeTreeLogic
 		g_IDECenter.center.code_list.AddModule(name);
     }
 
+	private async fun HandleAddLibrary()
+	{
+		var x, y = this._head.LocalToGlobal();
+        var name = g_AUITool.ShowRename("", x, y + this._head.height, 200);
+		if (name == null || name == "") return;
+		g_IDECenter.center.code_list.AddLibrary(name);
+    }
+
 	private async fun HandleDeleteDir()
 	{
 		var file_name = ALittle.File_GetFileNameByPath(this._user_info.path);
@@ -112,6 +123,9 @@ public class IDECodeTree : IDECodeTreeLogic
 		if (result != AUIPlugin.AUIToolOption.YES) return;
 		this.OnDelete();
         this.RemoveFromParent();
+		var module_map = g_IDEProject.project.config.GetConfig("code_module", new Map<string, IDECodeModuleInfo>());
+        module_map[this._user_info.module_name] = null;
+        g_IDEProject.project.config.SetConfig("code_module", module_map);
     }
 	
 	public get is_tree() : bool { return true; }

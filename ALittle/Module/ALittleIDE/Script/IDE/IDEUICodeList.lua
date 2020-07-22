@@ -6,10 +6,10 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = ALittle.GetAllStruct()
 
-ALittle.RegStruct(-889634858, "ALittleIDE.IDECodeFileSearchInfo", {
-name = "ALittleIDE.IDECodeFileSearchInfo", ns_name = "ALittleIDE", rl_name = "IDECodeFileSearchInfo", hash_code = -889634858,
-name_list = {"list","count","index","name"},
-type_list = {"List<ALittleIDE.IDECodeTreeLogic>","int","int","string"},
+ALittle.RegStruct(1715346212, "ALittle.Event", {
+name = "ALittle.Event", ns_name = "ALittle", rl_name = "Event", hash_code = 1715346212,
+name_list = {"target"},
+type_list = {"ALittle.EventDispatcher"},
 option_map = {}
 })
 ALittle.RegStruct(1450277461, "ALittleIDE.IDECodeModuleInfo", {
@@ -18,10 +18,10 @@ name_list = {"module_name","root_path"},
 type_list = {"string","string"},
 option_map = {}
 })
-ALittle.RegStruct(1715346212, "ALittle.Event", {
-name = "ALittle.Event", ns_name = "ALittle", rl_name = "Event", hash_code = 1715346212,
-name_list = {"target"},
-type_list = {"ALittle.EventDispatcher"},
+ALittle.RegStruct(-889634858, "ALittleIDE.IDECodeFileSearchInfo", {
+name = "ALittleIDE.IDECodeFileSearchInfo", ns_name = "ALittleIDE", rl_name = "IDECodeFileSearchInfo", hash_code = -889634858,
+name_list = {"list","count","index","name"},
+type_list = {"List<ALittleIDE.IDECodeTreeLogic>","int","int","string"},
 option_map = {}
 })
 
@@ -81,6 +81,31 @@ function IDEUICodeList:HandleProjectOpen(event)
 		local tree = IDECodeTree(g_Control, info)
 		self._code_scroll_screen:AddChild(tree)
 	end
+end
+
+function IDEUICodeList:AddLibrary(name)
+	local file_map = ALittle.File_GetFileNameListByDir(ALittle.File_BaseFilePath() .. "Module/ALittleIDE/Other/GameLibrary")
+	local attr = file_map[name]
+	if attr == nil or attr.mode ~= "directory" then
+		return false
+	end
+	local module_map = g_IDEProject.project.config:GetConfig("code_module", {})
+	local module_info = {}
+	module_info.module_name = name
+	module_info.root_path = ALittle.File_BaseFilePath() .. "Module/ALittleIDE/Other/GameLibrary/" .. name .. "/src"
+	module_map[name] = module_info
+	g_IDEProject.project.config:SetConfig("code_module", module_map)
+	local info = {}
+	info.module_name = name
+	info.name = "src"
+	info.path = ALittle.File_BaseFilePath() .. "Module/ALittleIDE/Other/GameLibrary/" .. name .. "/src"
+	info.module_path = ALittle.File_BaseFilePath() .. "Module/ALittleIDE/Other/GameLibrary/" .. name .. "/"
+	info.group = self._group
+	info.root = true
+	info.project = g_IDEProject.project.code
+	local tree = IDECodeTree(g_Control, info)
+	self._code_scroll_screen:AddChild(tree)
+	return true
 end
 
 function IDEUICodeList:OpenByFullPath(full_path, line_start, char_start, line_end, char_end)

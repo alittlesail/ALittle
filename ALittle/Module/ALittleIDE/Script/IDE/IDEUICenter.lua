@@ -5,8 +5,26 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = ALittle.GetAllStruct()
 
-ALittle.RegStruct(-506107723, "ALittleIDE.IDEUICenterSelectOpChangedEvent", {
-name = "ALittleIDE.IDEUICenterSelectOpChangedEvent", ns_name = "ALittleIDE", rl_name = "IDEUICenterSelectOpChangedEvent", hash_code = -506107723,
+ALittle.RegStruct(2103672497, "ALittleIDE.IDEUICenterScaleOpChangedEvent", {
+name = "ALittleIDE.IDEUICenterScaleOpChangedEvent", ns_name = "ALittleIDE", rl_name = "IDEUICenterScaleOpChangedEvent", hash_code = 2103672497,
+name_list = {"target","value"},
+type_list = {"ALittle.DisplayObject","bool"},
+option_map = {}
+})
+ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
+name = "ALittle.UIEvent", ns_name = "ALittle", rl_name = "UIEvent", hash_code = -1479093282,
+name_list = {"target"},
+type_list = {"ALittle.DisplayObject"},
+option_map = {}
+})
+ALittle.RegStruct(1408180774, "ALittleIDE.IDEUICenterScaleChangedEvent", {
+name = "ALittleIDE.IDEUICenterScaleChangedEvent", ns_name = "ALittleIDE", rl_name = "IDEUICenterScaleChangedEvent", hash_code = 1408180774,
+name_list = {"target","scale"},
+type_list = {"ALittle.DisplayObject","double"},
+option_map = {}
+})
+ALittle.RegStruct(1299500288, "ALittleIDE.IDEUICenterHandDragOpChangedEvent", {
+name = "ALittleIDE.IDEUICenterHandDragOpChangedEvent", ns_name = "ALittleIDE", rl_name = "IDEUICenterHandDragOpChangedEvent", hash_code = 1299500288,
 name_list = {"target","value"},
 type_list = {"ALittle.DisplayObject","bool"},
 option_map = {}
@@ -17,26 +35,8 @@ name_list = {"target","value"},
 type_list = {"ALittle.DisplayObject","bool"},
 option_map = {}
 })
-ALittle.RegStruct(1299500288, "ALittleIDE.IDEUICenterHandDragOpChangedEvent", {
-name = "ALittleIDE.IDEUICenterHandDragOpChangedEvent", ns_name = "ALittleIDE", rl_name = "IDEUICenterHandDragOpChangedEvent", hash_code = 1299500288,
-name_list = {"target","value"},
-type_list = {"ALittle.DisplayObject","bool"},
-option_map = {}
-})
-ALittle.RegStruct(1408180774, "ALittleIDE.IDEUICenterScaleChangedEvent", {
-name = "ALittleIDE.IDEUICenterScaleChangedEvent", ns_name = "ALittleIDE", rl_name = "IDEUICenterScaleChangedEvent", hash_code = 1408180774,
-name_list = {"target","scale"},
-type_list = {"ALittle.DisplayObject","double"},
-option_map = {}
-})
-ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
-name = "ALittle.UIEvent", ns_name = "ALittle", rl_name = "UIEvent", hash_code = -1479093282,
-name_list = {"target"},
-type_list = {"ALittle.DisplayObject"},
-option_map = {}
-})
-ALittle.RegStruct(2103672497, "ALittleIDE.IDEUICenterScaleOpChangedEvent", {
-name = "ALittleIDE.IDEUICenterScaleOpChangedEvent", ns_name = "ALittleIDE", rl_name = "IDEUICenterScaleOpChangedEvent", hash_code = 2103672497,
+ALittle.RegStruct(-506107723, "ALittleIDE.IDEUICenterSelectOpChangedEvent", {
+name = "ALittleIDE.IDEUICenterSelectOpChangedEvent", ns_name = "ALittleIDE", rl_name = "IDEUICenterSelectOpChangedEvent", hash_code = -506107723,
 name_list = {"target","value"},
 type_list = {"ALittle.DisplayObject","bool"},
 option_map = {}

@@ -6,8 +6,14 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = ALittle.GetAllStruct()
 
-ALittle.RegStruct(150587926, "ALittle.UIButtonDragEndEvent", {
-name = "ALittle.UIButtonDragEndEvent", ns_name = "ALittle", rl_name = "UIButtonDragEndEvent", hash_code = 150587926,
+ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
+name = "ALittle.UIEvent", ns_name = "ALittle", rl_name = "UIEvent", hash_code = -1479093282,
+name_list = {"target"},
+type_list = {"ALittle.DisplayObject"},
+option_map = {}
+})
+ALittle.RegStruct(1337289812, "ALittle.UIButtonDragEvent", {
+name = "ALittle.UIButtonDragEvent", ns_name = "ALittle", rl_name = "UIButtonDragEvent", hash_code = 1337289812,
 name_list = {"target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"},
 type_list = {"ALittle.DisplayObject","double","double","double","double","double","double"},
 option_map = {}
@@ -18,16 +24,10 @@ name_list = {"target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"},
 type_list = {"ALittle.DisplayObject","double","double","double","double","double","double"},
 option_map = {}
 })
-ALittle.RegStruct(1337289812, "ALittle.UIButtonDragEvent", {
-name = "ALittle.UIButtonDragEvent", ns_name = "ALittle", rl_name = "UIButtonDragEvent", hash_code = 1337289812,
+ALittle.RegStruct(150587926, "ALittle.UIButtonDragEndEvent", {
+name = "ALittle.UIButtonDragEndEvent", ns_name = "ALittle", rl_name = "UIButtonDragEndEvent", hash_code = 150587926,
 name_list = {"target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"},
 type_list = {"ALittle.DisplayObject","double","double","double","double","double","double"},
-option_map = {}
-})
-ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
-name = "ALittle.UIEvent", ns_name = "ALittle", rl_name = "UIEvent", hash_code = -1479093282,
-name_list = {"target"},
-type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
 

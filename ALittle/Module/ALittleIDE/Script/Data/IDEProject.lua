@@ -5,32 +5,38 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = ALittle.GetAllStruct()
 
-ALittle.RegStruct(-93681239, "ALittleIDE.IDEProjectCreateControlEvent", {
-name = "ALittleIDE.IDEProjectCreateControlEvent", ns_name = "ALittleIDE", rl_name = "IDEProjectCreateControlEvent", hash_code = -93681239,
+ALittle.RegStruct(2057209532, "AUIPlugin.AUICodeProjectGotoEvent", {
+name = "AUIPlugin.AUICodeProjectGotoEvent", ns_name = "AUIPlugin", rl_name = "AUICodeProjectGotoEvent", hash_code = 2057209532,
+name_list = {"target","file_path","line_start","char_start","line_end","char_end"},
+type_list = {"ALittle.EventDispatcher","string","int","int","int","int"},
+option_map = {}
+})
+ALittle.RegStruct(1962591044, "ALittleIDE.IDEProjectDeleteControlEvent", {
+name = "ALittleIDE.IDEProjectDeleteControlEvent", ns_name = "ALittleIDE", rl_name = "IDEProjectDeleteControlEvent", hash_code = 1962591044,
 name_list = {"target","name"},
 type_list = {"ALittle.EventDispatcher","string"},
 option_map = {}
 })
-ALittle.RegStruct(-277092447, "ALittleIDE.IDEProjectRemoveEvent", {
-name = "ALittleIDE.IDEProjectRemoveEvent", ns_name = "ALittleIDE", rl_name = "IDEProjectRemoveEvent", hash_code = -277092447,
+ALittle.RegStruct(1910687721, "ALittleIDE.IDEProjectEvent", {
+name = "ALittleIDE.IDEProjectEvent", ns_name = "ALittleIDE", rl_name = "IDEProjectEvent", hash_code = 1910687721,
 name_list = {"target","name"},
 type_list = {"ALittle.EventDispatcher","string"},
 option_map = {}
 })
-ALittle.RegStruct(-332308624, "ALittleIDE.IDEProjectCloseEvent", {
-name = "ALittleIDE.IDEProjectCloseEvent", ns_name = "ALittleIDE", rl_name = "IDEProjectCloseEvent", hash_code = -332308624,
-name_list = {"target","name"},
-type_list = {"ALittle.EventDispatcher","string"},
+ALittle.RegStruct(1787992834, "ALittleIDE.IDEProjectSettingChanged", {
+name = "ALittleIDE.IDEProjectSettingChanged", ns_name = "ALittleIDE", rl_name = "IDEProjectSettingChanged", hash_code = 1787992834,
+name_list = {"target","default_show_width","default_show_height","default_font_path","default_font_size"},
+type_list = {"ALittle.EventDispatcher","double","double","string","int"},
 option_map = {}
 })
-ALittle.RegStruct(374071006, "ALittleIDE.IDEProjectChangeControlEvent", {
-name = "ALittleIDE.IDEProjectChangeControlEvent", ns_name = "ALittleIDE", rl_name = "IDEProjectChangeControlEvent", hash_code = 374071006,
-name_list = {"target","name"},
-type_list = {"ALittle.EventDispatcher","string"},
+ALittle.RegStruct(1715346212, "ALittle.Event", {
+name = "ALittle.Event", ns_name = "ALittle", rl_name = "Event", hash_code = 1715346212,
+name_list = {"target"},
+type_list = {"ALittle.EventDispatcher"},
 option_map = {}
 })
-ALittle.RegStruct(-685984390, "ALittleIDE.IDEProjectAddEvent", {
-name = "ALittleIDE.IDEProjectAddEvent", ns_name = "ALittleIDE", rl_name = "IDEProjectAddEvent", hash_code = -685984390,
+ALittle.RegStruct(-975432877, "ALittleIDE.IDEProjectOpenEvent", {
+name = "ALittleIDE.IDEProjectOpenEvent", ns_name = "ALittleIDE", rl_name = "IDEProjectOpenEvent", hash_code = -975432877,
 name_list = {"target","name"},
 type_list = {"ALittle.EventDispatcher","string"},
 option_map = {}
@@ -41,40 +47,34 @@ name_list = {"name","base_path","texture_path","save","control","config","ui","c
 type_list = {"string","string","string","bool","ALittle.ControlSystem","ALittle.IJsonConfig","ALittleIDE.IDEUIManager","AUIPlugin.AUICodeProject"},
 option_map = {}
 })
-ALittle.RegStruct(-975432877, "ALittleIDE.IDEProjectOpenEvent", {
-name = "ALittleIDE.IDEProjectOpenEvent", ns_name = "ALittleIDE", rl_name = "IDEProjectOpenEvent", hash_code = -975432877,
+ALittle.RegStruct(-685984390, "ALittleIDE.IDEProjectAddEvent", {
+name = "ALittleIDE.IDEProjectAddEvent", ns_name = "ALittleIDE", rl_name = "IDEProjectAddEvent", hash_code = -685984390,
 name_list = {"target","name"},
 type_list = {"ALittle.EventDispatcher","string"},
 option_map = {}
 })
-ALittle.RegStruct(1715346212, "ALittle.Event", {
-name = "ALittle.Event", ns_name = "ALittle", rl_name = "Event", hash_code = 1715346212,
-name_list = {"target"},
-type_list = {"ALittle.EventDispatcher"},
-option_map = {}
-})
-ALittle.RegStruct(1787992834, "ALittleIDE.IDEProjectSettingChanged", {
-name = "ALittleIDE.IDEProjectSettingChanged", ns_name = "ALittleIDE", rl_name = "IDEProjectSettingChanged", hash_code = 1787992834,
-name_list = {"target","default_show_width","default_show_height","default_font_path","default_font_size"},
-type_list = {"ALittle.EventDispatcher","double","double","string","int"},
-option_map = {}
-})
-ALittle.RegStruct(1910687721, "ALittleIDE.IDEProjectEvent", {
-name = "ALittleIDE.IDEProjectEvent", ns_name = "ALittleIDE", rl_name = "IDEProjectEvent", hash_code = 1910687721,
+ALittle.RegStruct(374071006, "ALittleIDE.IDEProjectChangeControlEvent", {
+name = "ALittleIDE.IDEProjectChangeControlEvent", ns_name = "ALittleIDE", rl_name = "IDEProjectChangeControlEvent", hash_code = 374071006,
 name_list = {"target","name"},
 type_list = {"ALittle.EventDispatcher","string"},
 option_map = {}
 })
-ALittle.RegStruct(1962591044, "ALittleIDE.IDEProjectDeleteControlEvent", {
-name = "ALittleIDE.IDEProjectDeleteControlEvent", ns_name = "ALittleIDE", rl_name = "IDEProjectDeleteControlEvent", hash_code = 1962591044,
+ALittle.RegStruct(-332308624, "ALittleIDE.IDEProjectCloseEvent", {
+name = "ALittleIDE.IDEProjectCloseEvent", ns_name = "ALittleIDE", rl_name = "IDEProjectCloseEvent", hash_code = -332308624,
 name_list = {"target","name"},
 type_list = {"ALittle.EventDispatcher","string"},
 option_map = {}
 })
-ALittle.RegStruct(2057209532, "AUIPlugin.AUICodeProjectGotoEvent", {
-name = "AUIPlugin.AUICodeProjectGotoEvent", ns_name = "AUIPlugin", rl_name = "AUICodeProjectGotoEvent", hash_code = 2057209532,
-name_list = {"target","file_path","line_start","char_start","line_end","char_end"},
-type_list = {"ALittle.EventDispatcher","string","int","int","int","int"},
+ALittle.RegStruct(-277092447, "ALittleIDE.IDEProjectRemoveEvent", {
+name = "ALittleIDE.IDEProjectRemoveEvent", ns_name = "ALittleIDE", rl_name = "IDEProjectRemoveEvent", hash_code = -277092447,
+name_list = {"target","name"},
+type_list = {"ALittle.EventDispatcher","string"},
+option_map = {}
+})
+ALittle.RegStruct(-93681239, "ALittleIDE.IDEProjectCreateControlEvent", {
+name = "ALittleIDE.IDEProjectCreateControlEvent", ns_name = "ALittleIDE", rl_name = "IDEProjectCreateControlEvent", hash_code = -93681239,
+name_list = {"target","name"},
+type_list = {"ALittle.EventDispatcher","string"},
 option_map = {}
 })
 

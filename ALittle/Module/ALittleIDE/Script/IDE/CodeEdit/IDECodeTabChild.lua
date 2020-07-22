@@ -6,10 +6,10 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = ALittle.GetAllStruct()
 
-ALittle.RegStruct(631224630, "AUIPlugin.AUICodeEditGotoEvent", {
-name = "AUIPlugin.AUICodeEditGotoEvent", ns_name = "AUIPlugin", rl_name = "AUICodeEditGotoEvent", hash_code = 631224630,
-name_list = {"target","file_path","line_start","char_start","line_end","char_end"},
-type_list = {"ALittle.DisplayObject","string","int","int","int","int"},
+ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
+name = "ALittle.UIEvent", ns_name = "ALittle", rl_name = "UIEvent", hash_code = -1479093282,
+name_list = {"target"},
+type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
 ALittle.RegStruct(958494922, "ALittle.UIChangedEvent", {
@@ -18,10 +18,10 @@ name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
-ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
-name = "ALittle.UIEvent", ns_name = "ALittle", rl_name = "UIEvent", hash_code = -1479093282,
-name_list = {"target"},
-type_list = {"ALittle.DisplayObject"},
+ALittle.RegStruct(631224630, "AUIPlugin.AUICodeEditGotoEvent", {
+name = "AUIPlugin.AUICodeEditGotoEvent", ns_name = "AUIPlugin", rl_name = "AUICodeEditGotoEvent", hash_code = 631224630,
+name_list = {"target","file_path","line_start","char_start","line_end","char_end"},
+type_list = {"ALittle.DisplayObject","string","int","int","int","int"},
 option_map = {}
 })
 

@@ -1,7 +1,7 @@
 
 namespace ALittleIDE;
 
-struct IDECodeModuleInfo
+protected struct IDECodeModuleInfo
 {
     string module_name;
 	string root_path;
@@ -64,17 +64,17 @@ public class IDEUICodeList : ALittle.DisplayLayout
 		
 		var std_list = ["Core", "Std", "CEngine"];
 		for (var index, name in std_list)
-		{
-			info = new IDECodeTreeUserInfo();
-			info.module_name = name;
-			info.name = "src";
-			info.path = ALittle.File_BaseFilePath().."Module/ALittleIDE/Other/GameLibrary/"..name.."/src";
+        {
+            info = new IDECodeTreeUserInfo();
+            info.module_name = name;
+            info.name = "src";
+            info.path = ALittle.File_BaseFilePath().."Module/ALittleIDE/Other/GameLibrary/"..name.."/src";
             info.module_path = ALittle.File_BaseFilePath().."Module/ALittleIDE/Other/GameLibrary/"..name.."/";
-			info.group = this._group;
-			info.root = true;
+            info.group = this._group;
+            info.root = true;
             info.project = g_IDEProject.project.code;
-			var tree = new IDECodeTree(g_Control, info);
-			this._code_scroll_screen.AddChild(tree);   
+            var tree = new IDECodeTree(g_Control, info);
+            this._code_scroll_screen.AddChild(tree);
         }
 
 		// 添加其他模块
@@ -91,6 +91,34 @@ public class IDEUICodeList : ALittle.DisplayLayout
 			var tree = new IDECodeTree(g_Control, info);
 			this._code_scroll_screen.AddChild(tree);
         }
+    }
+
+    public fun AddLibrary(string name) : bool
+    {
+        var file_map = ALittle.File_GetFileNameListByDir(ALittle.File_BaseFilePath().."Module/ALittleIDE/Other/GameLibrary");
+        var attr = file_map[name];
+        if (attr == null || attr.mode != "directory") return false;
+
+		var module_map = g_IDEProject.project.config.GetConfig("code_module", new Map<string, IDECodeModuleInfo>());
+
+		var module_info = new IDECodeModuleInfo();
+		module_info.module_name = name;
+		module_info.root_path = ALittle.File_BaseFilePath().."Module/ALittleIDE/Other/GameLibrary/"..name.."/src";
+		module_map[name] = module_info;
+		g_IDEProject.project.config.SetConfig("code_module", module_map);
+    
+		var info = new IDECodeTreeUserInfo();
+        info.module_name = name;
+        info.name = "src";
+        info.path = ALittle.File_BaseFilePath().."Module/ALittleIDE/Other/GameLibrary/"..name.."/src";
+        info.module_path = ALittle.File_BaseFilePath().."Module/ALittleIDE/Other/GameLibrary/"..name.."/";
+        info.group = this._group;
+        info.root = true;
+        info.project = g_IDEProject.project.code;
+        var tree = new IDECodeTree(g_Control, info);
+        this._code_scroll_screen.AddChild(tree);
+
+        return true;
     }
 
 	public fun OpenByFullPath(string full_path, int line_start, int char_start, int line_end, int char_end)

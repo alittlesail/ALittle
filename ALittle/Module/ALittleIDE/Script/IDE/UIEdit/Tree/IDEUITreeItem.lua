@@ -6,34 +6,10 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = ALittle.GetAllStruct()
 
-ALittle.RegStruct(150587926, "ALittle.UIButtonDragEndEvent", {
-name = "ALittle.UIButtonDragEndEvent", ns_name = "ALittle", rl_name = "UIButtonDragEndEvent", hash_code = 150587926,
-name_list = {"target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"},
-type_list = {"ALittle.DisplayObject","double","double","double","double","double","double"},
-option_map = {}
-})
-ALittle.RegStruct(-449066808, "ALittle.UIClickEvent", {
-name = "ALittle.UIClickEvent", ns_name = "ALittle", rl_name = "UIClickEvent", hash_code = -449066808,
-name_list = {"target","is_drag"},
-type_list = {"ALittle.DisplayObject","bool"},
-option_map = {}
-})
-ALittle.RegStruct(-641444818, "ALittle.UIRButtonDownEvent", {
-name = "ALittle.UIRButtonDownEvent", ns_name = "ALittle", rl_name = "UIRButtonDownEvent", hash_code = -641444818,
-name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
-type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
-option_map = {}
-})
-ALittle.RegStruct(1301789264, "ALittle.UIButtonDragBeginEvent", {
-name = "ALittle.UIButtonDragBeginEvent", ns_name = "ALittle", rl_name = "UIButtonDragBeginEvent", hash_code = 1301789264,
-name_list = {"target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"},
-type_list = {"ALittle.DisplayObject","double","double","double","double","double","double"},
-option_map = {}
-})
-ALittle.RegStruct(1337289812, "ALittle.UIButtonDragEvent", {
-name = "ALittle.UIButtonDragEvent", ns_name = "ALittle", rl_name = "UIButtonDragEvent", hash_code = 1337289812,
-name_list = {"target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"},
-type_list = {"ALittle.DisplayObject","double","double","double","double","double","double"},
+ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
+name = "ALittle.UIEvent", ns_name = "ALittle", rl_name = "UIEvent", hash_code = -1479093282,
+name_list = {"target"},
+type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
 ALittle.RegStruct(-1347278145, "ALittle.UIButtonEvent", {
@@ -42,10 +18,34 @@ name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
 type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
 option_map = {}
 })
-ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
-name = "ALittle.UIEvent", ns_name = "ALittle", rl_name = "UIEvent", hash_code = -1479093282,
-name_list = {"target"},
-type_list = {"ALittle.DisplayObject"},
+ALittle.RegStruct(1337289812, "ALittle.UIButtonDragEvent", {
+name = "ALittle.UIButtonDragEvent", ns_name = "ALittle", rl_name = "UIButtonDragEvent", hash_code = 1337289812,
+name_list = {"target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"},
+type_list = {"ALittle.DisplayObject","double","double","double","double","double","double"},
+option_map = {}
+})
+ALittle.RegStruct(1301789264, "ALittle.UIButtonDragBeginEvent", {
+name = "ALittle.UIButtonDragBeginEvent", ns_name = "ALittle", rl_name = "UIButtonDragBeginEvent", hash_code = 1301789264,
+name_list = {"target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"},
+type_list = {"ALittle.DisplayObject","double","double","double","double","double","double"},
+option_map = {}
+})
+ALittle.RegStruct(-641444818, "ALittle.UIRButtonDownEvent", {
+name = "ALittle.UIRButtonDownEvent", ns_name = "ALittle", rl_name = "UIRButtonDownEvent", hash_code = -641444818,
+name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
+type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
+option_map = {}
+})
+ALittle.RegStruct(-449066808, "ALittle.UIClickEvent", {
+name = "ALittle.UIClickEvent", ns_name = "ALittle", rl_name = "UIClickEvent", hash_code = -449066808,
+name_list = {"target","is_drag"},
+type_list = {"ALittle.DisplayObject","bool"},
+option_map = {}
+})
+ALittle.RegStruct(150587926, "ALittle.UIButtonDragEndEvent", {
+name = "ALittle.UIButtonDragEndEvent", ns_name = "ALittle", rl_name = "UIButtonDragEndEvent", hash_code = 150587926,
+name_list = {"target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"},
+type_list = {"ALittle.DisplayObject","double","double","double","double","double","double"},
 option_map = {}
 })
 

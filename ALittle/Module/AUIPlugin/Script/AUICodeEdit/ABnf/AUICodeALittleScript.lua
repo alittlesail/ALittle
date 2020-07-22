@@ -202,6 +202,15 @@ function AUICodeALittleScriptProject:OnTreeItemMenu(full_path, menu)
 end
 
 function AUICodeALittleScriptProject:GenerateDir(full_path)
+	local index = ALittle.String_Find(full_path, "/src")
+	if index == nil then
+		g_AUITool:ShowNotice("提示", "当前不是/src的子目录")
+		return
+	end
+	local new_path = ALittle.String_Sub(full_path, 1, index) .. "Script" .. ALittle.String_Sub(full_path, index + 4)
+	ALittle.Log(new_path)
+	ALittle.File_DeleteDeepDir(new_path)
+	ALittle.File_MakeDeepDir(new_path)
 	local file_map = ALittle.File_GetFileAttrByDir(full_path)
 	for file_path, attr in ___pairs(file_map) do
 		local error = self:Generate(file_path)

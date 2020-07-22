@@ -391,15 +391,34 @@ void ABnfFile::AnalysisColor(int version)
 
     m_color_map.clear();
     if (m_root == nullptr) return;
-    CollectColor(m_root, false);
+    auto& rule_set = GetProject()->RefABnf().GetRuleSet();
+    CollectColor(m_root, rule_set, false);
 }
 
-void ABnfFile::CollectColor(ABnfElementPtr element, bool blur)
+// 更新解析
+void ABnfFile::UpdateAnalysis()
+{
+    m_root = nullptr;
+
+    if (m_in_ui)
+        m_root = GetProject()->RefABnfUI().Analysis(this);
+    else
+        m_root = GetProject()->RefABnf().Analysis(this);
+}
+
+void ABnfFile::CollectColor(ABnfElementPtr element, const std::unordered_map<std::string, ABnfRuleInfo*>& rule_set, bool blur)
 {
     if (element->IsError()) return;
 
     bool blur_temp = false;
-    int tag = element->GetReference()->QueryClassificationTag(blur_temp);
+    int tag = 0;
+
+    auto rule_it = rule_set.find(element->GetNodeType());
+    if (rule_it != rule_set.end() && rule_it->second->has_color)
+        tag = rule_it->second->rule_id;
+    else
+        tag = element->GetReference()->QueryClassificationTag(blur_temp);
+    
     if (tag > 0)
     {
         for (int line = element->GetStartLine(); line <= element->GetEndLine(); ++line)
@@ -420,7 +439,7 @@ void ABnfFile::CollectColor(ABnfElementPtr element, bool blur)
     if (node != nullptr)
     {
         for (auto child : node->GetChilds())
-            CollectColor(child, blur || blur_temp);
+            CollectColor(child, rule_set, blur || blur_temp);
     }
 }
 

@@ -61,6 +61,8 @@ public:
     ABnfRuleInfo* GetRule(const std::string& name);
     // 获取所有关键字
     const std::unordered_set<std::string>& GetKeySet() const;
+    // 获取所有规则
+    const std::unordered_map<std::string, ABnfRuleInfo*>& GetRuleSet() const;
 
     // 查询关键字
     void QueryKeyWordCompletion(const std::string& input, std::vector<ALanguageCompletionInfo>& list);

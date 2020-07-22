@@ -17,6 +17,34 @@ int alanguage_project_pollone(void* project, lua_State* L)
 	return project_c->PollOne(L);
 }
 
+void* create_abnfproject(const char* abnf_buffer)
+{
+	auto* project = new ABnfProject();
+	project->Start(abnf_buffer);
+	return project;
+}
+
+void delete_abnfproject(void* file)
+{
+	delete ((ABnfProject*)file);
+}
+
+int abnfproject_queryrulecolor(void* project, lua_State* L)
+{
+	auto* project_c = (ABnfProject*)project;
+	return project_c->QueryRuleColor(L);
+}
+
+void* create_abnffile(void* project, const char* full_path, const char* text, size_t len)
+{
+	return new ABnfFile((ABnfProject*)project, "", full_path, text, len, true);
+}
+
+void delete_abnffile(void* file)
+{
+	delete ((ABnfFile*)file);
+}
+
 void alanguage_project_updatefile(void* project, const char* module_path, const char* full_path, int version)
 {
 	auto* project_c = (ABnfProject*)project;

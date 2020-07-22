@@ -37,12 +37,14 @@ bool ABnfRule::Load(const std::string& buffer, std::string& error)
     std::vector<ABnfRuleTokenInfo> token_list;
     CalcToken(token_list);
 
+    int rule_id = 0;
     // 对tokencol表进line语法分析
     size_t offset = 0;
     while (offset < token_list.size())
     {
+        ++rule_id;
         // 解析规则
-        ABnfRuleInfo* rule = CalcABnfRule(token_list, offset, error);
+        ABnfRuleInfo* rule = CalcABnfRule(token_list, rule_id, offset, error);
         if (rule == nullptr)
         {
             Clear();
@@ -76,10 +78,17 @@ ABnfRuleInfo* ABnfRule::FindRuleInfo(const std::string& id)
     return it->second;
 }
 
+const std::unordered_map<std::string, ABnfRuleInfo*>& ABnfRule::GetRuleSet() const
+{
+    return m_rule_map;
+}
+
 // 解析规则语句
-ABnfRuleInfo* ABnfRule::CalcABnfRule(const std::vector<ABnfRuleTokenInfo>& token_list, size_t& offset, std::string& error)
+ABnfRuleInfo* ABnfRule::CalcABnfRule(const std::vector<ABnfRuleTokenInfo>& token_list, int rule_id, size_t& offset, std::string& error)
 {
     ABnfRuleInfo* rule = new ABnfRuleInfo(this);
+
+    rule->rule_id = rule_id;
 
     // 跳过注释
     while (offset < token_list.size() &&
@@ -157,6 +166,132 @@ ABnfRuleInfo* ABnfRule::CalcABnfRule(const std::vector<ABnfRuleTokenInfo>& token
         }
     }
 
+    if (offset >= token_list.size())
+    {
+        if (rule != nullptr) delete rule;
+        error = "the last rule is incomplete";
+        return nullptr;
+    }
+
+    // 处理颜色标记
+    if (token_list[offset].type == ABnfRuleTokenType::TT_SYMBOL && token_list[offset].value == "[")
+    {
+        rule->has_color = true;
+
+        ++offset;
+        // 处理预测正则表达式
+        if (offset >= token_list.size())
+        {
+            if (rule != nullptr) delete rule;
+            error = "the last rule is incomplete";
+            return nullptr;
+        }
+
+        // red
+        if (token_list[offset].type != ABnfRuleTokenType::TT_ID)
+        {
+            if (rule != nullptr) delete rule;
+            error = "line:" + std::to_string(token_list[offset].line) + "col:" + std::to_string(token_list[offset].col)
+                + " expect number of red but get:" + token_list[offset].value;
+            return nullptr;
+        }
+        rule->red = std::atoi(token_list[offset].value.c_str());
+
+        ++offset;
+        // 处理预测正则表达式
+        if (offset >= token_list.size())
+        {
+            if (rule != nullptr) delete rule;
+            error = "the last rule is incomplete";
+            return nullptr;
+        }
+
+        // ,
+        if (token_list[offset].type != ABnfRuleTokenType::TT_SYMBOL || token_list[offset].value != ",")
+        {
+            if (rule != nullptr) delete rule;
+            error = "line:" + std::to_string(token_list[offset].line) + "col:" + std::to_string(token_list[offset].col)
+                + " expect , but get:" + token_list[offset].value;
+            return nullptr;
+        }
+
+        ++offset;
+        // 处理预测正则表达式
+        if (offset >= token_list.size())
+        {
+            if (rule != nullptr) delete rule;
+            error = "the last rule is incomplete";
+            return nullptr;
+        }
+
+        // green
+        if (token_list[offset].type != ABnfRuleTokenType::TT_ID)
+        {
+            if (rule != nullptr) delete rule;
+            error = "line:" + std::to_string(token_list[offset].line) + "col:" + std::to_string(token_list[offset].col)
+                + " expect number of green but get:" + token_list[offset].value;
+            return nullptr;
+        }
+        rule->green = std::atoi(token_list[offset].value.c_str());
+
+        ++offset;
+        // 处理预测正则表达式
+        if (offset >= token_list.size())
+        {
+            if (rule != nullptr) delete rule;
+            error = "the last rule is incomplete";
+            return nullptr;
+        }
+
+        // ,
+        if (token_list[offset].type != ABnfRuleTokenType::TT_SYMBOL || token_list[offset].value != ",")
+        {
+            if (rule != nullptr) delete rule;
+            error = "line:" + std::to_string(token_list[offset].line) + "col:" + std::to_string(token_list[offset].col)
+                + " expect , but get:" + token_list[offset].value;
+            return nullptr;
+        }
+
+        ++offset;
+        // 处理预测正则表达式
+        if (offset >= token_list.size())
+        {
+            if (rule != nullptr) delete rule;
+            error = "the last rule is incomplete";
+            return nullptr;
+        }
+
+        // blue
+        if (token_list[offset].type != ABnfRuleTokenType::TT_ID)
+        {
+            if (rule != nullptr) delete rule;
+            error = "line:" + std::to_string(token_list[offset].line) + "col:" + std::to_string(token_list[offset].col)
+                + " expect number of blue but get:" + token_list[offset].value;
+            return nullptr;
+        }
+        rule->blue = std::atoi(token_list[offset].value.c_str());
+
+        ++offset;
+        // 处理预测正则表达式
+        if (offset >= token_list.size())
+        {
+            if (rule != nullptr) delete rule;
+            error = "the last rule is incomplete";
+            return nullptr;
+        }
+
+        // ]
+        if (token_list[offset].type != ABnfRuleTokenType::TT_SYMBOL || token_list[offset].value != "]")
+        {
+            if (rule != nullptr) delete rule;
+            error = "line:" + std::to_string(token_list[offset].line) + "col:" + std::to_string(token_list[offset].col)
+                + " expect ] but get:" + token_list[offset].value;
+            return nullptr;
+        }
+
+        ++offset;
+    }
+
     // 处理等号
     if (offset >= token_list.size())
     {
@@ -180,7 +315,7 @@ ABnfRuleInfo* ABnfRule::CalcABnfRule(const std::vector<ABnfRuleTokenInfo>& token
     if (rule->node == nullptr || rule->node->node_list.size() == 0)
     {
         if (rule != nullptr) delete rule;
-        error = "line:" + std::to_string(rule->id.line) + "col:" + std::to_string(rule->id.col)
+        error = "line:" + std::to_string(rule->id.line) + "col:" + std::to_string(token_list[offset].col)
             + " node create failed:" + error;
         return nullptr;
     }
@@ -198,7 +333,7 @@ ABnfRuleInfo* ABnfRule::CalcABnfRule(const std::vector<ABnfRuleTokenInfo>& token
         if (rule != nullptr) delete rule;
         error = "line:" + std::to_string(token_list[offset].line) + "col:" + std::to_string(token_list[offset].col)
             + " expect; but get:" + token_list[offset].value;
-        return rule;
+        return nullptr;
     }
     ++offset;
 
@@ -651,8 +786,9 @@ void ABnfRule::CalcToken(std::vector<ABnfRuleTokenInfo>& token_list)
             }
             else if (c == '=' || c == '@' || c == '#' || c == ':'
                 || c == '*' || c == '?' || c == '+'
-                || c == '|' || c == ';'
-                || c == '(' || c == ')')
+                || c == '|' || c == ';' || c == ','
+                || c == '(' || c == ')'
+                || c == '[' || c == ']')
             {
                 if (token.type != ABnfRuleTokenType::TT_NONE) token_list.push_back(token);
 

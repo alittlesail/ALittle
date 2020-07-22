@@ -10,6 +10,7 @@
 
 class ABnf;
 class ABnfProject;
+class ABnfRuleInfo;
 class ABnfNodeElement;
 using ABnfNodeElementPtr = std::shared_ptr<ABnfNodeElement>;
 class ABnfElement;
@@ -127,7 +128,7 @@ public:
     
 public:
     // 更新解析
-    virtual void UpdateAnalysis() { }
+    virtual void UpdateAnalysis();
 
     // 清空错误信息
     inline void ClearAnalysisError() { m_analysis_error_map.clear(); }
@@ -143,7 +144,7 @@ public:
     inline void AddCheckErrorInfo(ABnfElementPtr element, const std::string& error) { if (element == nullptr) return; m_check_error_map[element] = error; }
 
     // 收集语法着色
-    void CollectColor(ABnfElementPtr element, bool blur);
+    void CollectColor(ABnfElementPtr element, const std::unordered_map<std::string, ABnfRuleInfo*>& rule_set, bool blur);
     // 收集语法错误
     void CollectError(ABnfElementPtr element);
     // 收集语义错误

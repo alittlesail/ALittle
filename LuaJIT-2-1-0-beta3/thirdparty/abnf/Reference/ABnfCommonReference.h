@@ -13,6 +13,7 @@ enum ABnfColorType
     ABnfString = 5,
     ABnfRegex = 6,
     ABnfNodeTail = 7,
+    ABnfNumber = 8,
 };
 
 class ABnfCommonReference : public ABnfReference

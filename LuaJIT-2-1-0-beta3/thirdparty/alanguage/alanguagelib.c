@@ -18,6 +18,62 @@ static int alanguagelib_project_pollone(lua_State* L)
     return alanguage_project_pollone(*c, L);
 }
 
+static int alanguagelib_destroy_abnfproject(lua_State* L)
+{
+    void** c = (void**)lua_touserdata(L, 1);
+    if (c) delete_abnfproject(*c);
+    return 0;
+}
+
+static int alanguagelib_create_abnfproject(lua_State* L)
+{
+    const char* abnf_buffer = luaL_checkstring(L, 1);
+    luaL_argcheck(L, abnf_buffer != 0, 1, "abnf buffer is null");
+
+    void** c = (void**)lua_newuserdata(L, sizeof(void**));
+    lua_newtable(L);
+    lua_pushcfunction(L, alanguagelib_destroy_abnfproject);
+    lua_setfield(L, -2, "__gc");
+    lua_setmetatable(L, -2);
+    *c = create_abnfproject(abnf_buffer);
+    return 1;
+}
+
+static int alanguagelib_abnfproject_queryrulecolor(lua_State* L)
+{
+    void** c = (void**)lua_touserdata(L, 1);
+    luaL_argcheck(L, c != 0, 1, "abnf project object is null");
+
+    return abnfproject_queryrulecolor(*c, L);
+}
+
+static int alanguagelib_destroy_abnffile(lua_State* L)
+{
+    void** c = (void**)lua_touserdata(L, 1);
+    if (c) delete_abnffile(*c);
+    return 0;
+}
+
+static int alanguagelib_create_abnffile(lua_State* L)
+{
+    void** project = (void**)lua_touserdata(L, 1);
+    luaL_argcheck(L, project != 0, 1, "abnfproject is null");
+    const char* full_path = luaL_checkstring(L, 2);
+    luaL_argcheck(L, full_path != 0, 2, "full_path is null");
+
+    size_t len;
+    const char* text = luaL_checklstring(L, 3, &len);
+    luaL_argcheck(L, text != 0, 3, "text is null");
+
+    void** c = (void**)lua_newuserdata(L, sizeof(void**));
+    lua_newtable(L);
+    lua_pushcfunction(L, alanguagelib_destroy_abnffile);
+    lua_setfield(L, -2, "__gc");
+    lua_setmetatable(L, -2);
+    *c = create_abnffile(*project, full_path, text, len);
+    return 1;
+}
+
 static int alanguagelib_project_updatefile(lua_State* L)
 {
     void** c = (void**)lua_touserdata(L, 1);
@@ -206,6 +262,10 @@ static void set_info (lua_State *L) {
 
 static struct luaL_Reg alanguagelib[] = {
   {"abnfproject_pollone", alanguagelib_project_pollone},
+
+  {"create_abnfproject", alanguagelib_create_abnfproject},
+  {"abnfproject_queryrulecolor", alanguagelib_abnfproject_queryrulecolor},
+  {"create_abnffile", alanguagelib_create_abnffile},
 
   {"abnfproject_updatefile", alanguagelib_project_updatefile},
   {"abnfproject_removefile", alanguagelib_project_removefile},

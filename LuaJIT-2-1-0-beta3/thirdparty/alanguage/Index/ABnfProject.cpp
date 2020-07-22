@@ -2,6 +2,7 @@
 #include "ABnfProject.h"
 #include "ABnfFactory.h"
 #include "ABnfFile.h"
+#include "../Model/ABnfRuleInfo.h"
 
 ABnfProject::ABnfProject()
 {
@@ -82,6 +83,25 @@ void ABnfProject::Add(std::function<void()> fun)
     std::unique_lock<std::mutex> lock(m_input_lock);
     m_inputs.emplace_back(std::move(fun));
     m_cv.notify_one();
+}
+
+int ABnfProject::QueryRuleColor(lua_State* L)
+{
+    lua_newtable(L);
+    for (auto& pair : m_abnf_ui.GetRuleSet())
+    {
+        if (!pair.second->has_color) continue;
+        lua_newtable(L);
+        lua_pushnumber(L, pair.second->red / 255.0);
+        lua_setfield(L, -2, "red");
+        lua_pushnumber(L, pair.second->green / 255.0);
+        lua_setfield(L, -2, "green");
+        lua_pushnumber(L, pair.second->blue / 255.0);
+        lua_setfield(L, -2, "blue");
+
+        lua_rawseti(L, -2, pair.second->rule_id);
+    }
+    return 1;
 }
 
 ABnfFile* ABnfProject::GetFile(const std::string& full_path)

@@ -7,8 +7,8 @@ local ___ipairs = ipairs
 
 ALittle.RegStruct(152169657, "AUIPlugin.ABnfColor", {
 name = "AUIPlugin.ABnfColor", ns_name = "AUIPlugin", rl_name = "ABnfColor", hash_code = 152169657,
-name_list = {"red","green","blue","alpha"},
-type_list = {"double","double","double","double"},
+name_list = {"red","green","blue"},
+type_list = {"double","double","double"},
 option_map = {}
 })
 

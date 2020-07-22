@@ -11,6 +11,8 @@ enum ABnfColorType
     ABnfKey = 4;
     ABnfString = 5;
     ABnfRegex = 6;
+    ABnfNodeTail = 7;
+    ABnfNumber = 8;
 }
 
 public class AUICodeABnf : AUICodeLanguage
@@ -66,6 +68,13 @@ public class AUICodeABnf : AUICodeLanguage
                 color.green = 118/255;
                 color.blue = 170/255;
                 g_ABnfColor[ABnfColorType.ABnfRegex] = color;   
+            }
+            {
+                color = new ABnfColor();
+                color.red = 152/255;
+                color.green = 118/255;
+                color.blue = 170/255;
+                g_ABnfColor[ABnfColorType.ABnfNumber] = color;   
             }
         }
 

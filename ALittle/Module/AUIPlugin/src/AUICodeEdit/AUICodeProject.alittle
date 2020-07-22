@@ -3,6 +3,10 @@ namespace AUIPlugin;
 
 protected var g_ABnfProjectMap:Map<string, AUICodeProject> = ALittle.CreateValueWeakMap();
 
+// 用于记录大写后缀和abnf描述文件的映射关系
+protected var g_UpperExtMapABnf = new Map<string, string>();
+g_UpperExtMapABnf["JSON"] = "AJson.abnf";
+
 public struct AUICodeProjectGotoEvent : ALittle.Event
 {
     string file_path;
@@ -48,6 +52,28 @@ public class AUICodeProject : ALittle.EventDispatcher
         return abnf_project;
     }
 
+    public static SupportUpperExt(string upper_ext) : bool
+    {
+        return g_UpperExtMapABnf[upper_ext] != null;
+    }
+
+    // 构建通用着色项目
+    public static CreateCommonProject(string upper_ext) : AUICodeProject
+    {
+        var abnf = g_UpperExtMapABnf[upper_ext];
+        if (abnf == null) return null;
+
+        var abnf_project = g_ABnfProjectMap[abnf];
+        if (abnf_project == null)
+        {
+            var abnf_buffer = ALittle.File_ReadTextFromFile(g_ModuleBasePath.."/Other/ABnf/"..abnf);
+            abnf_project = new AUICodeCommonProject(lua.alanguage.create_abnfproject(abnf_buffer), upper_ext);
+            g_ABnfProjectMap[abnf] = abnf_project;
+            abnf_project.Start();
+        }
+        return abnf_project;
+    }
+
     public static Shutdown()
     {
         for (var name, project in g_ABnfProjectMap)
@@ -58,6 +84,7 @@ public class AUICodeProject : ALittle.EventDispatcher
     public get upper_ext() : string { return null; }
 
     public get project() : lua.ABnfProject { return this._project; }
+    public fun QueryRuleColor() : Map<int, ABnfColor> { return lua.alanguage.abnfproject_queryrulecolor(this._project); }
     public fun UpdateFile(string module_path, string full_path) { lua.alanguage.abnfproject_updatefile(this._project, module_path, full_path, 0); }
     public fun RemoveFile(string full_path) { lua.alanguage.abnfproject_removefile(this._project, full_path); }
     

@@ -6,7 +6,6 @@ public struct ABnfColor
     double red;
     double green;
     double blue;
-    double alpha;
 }
 
 public class AUICodeLanguage

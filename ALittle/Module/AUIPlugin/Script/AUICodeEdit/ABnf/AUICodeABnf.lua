@@ -14,6 +14,8 @@ ABnfColorType = {
 	ABnfKey = 4,
 	ABnfString = 5,
 	ABnfRegex = 6,
+	ABnfNodeTail = 7,
+	ABnfNumber = 8,
 }
 
 assert(AUIPlugin.AUICodeLanguage, " extends class:AUIPlugin.AUICodeLanguage is nil")
@@ -67,6 +69,13 @@ function AUICodeABnf:Ctor(project, full_path)
 			color.green = 118 / 255
 			color.blue = 170 / 255
 			g_ABnfColor[ABnfColorType.ABnfRegex] = color
+		end
+		do
+			color = {}
+			color.red = 152 / 255
+			color.green = 118 / 255
+			color.blue = 170 / 255
+			g_ABnfColor[ABnfColorType.ABnfNumber] = color
 		end
 	end
 	___rawset(self, "_abnf_file", abnf.create_abnf_file(self._project.project, full_path, ""))

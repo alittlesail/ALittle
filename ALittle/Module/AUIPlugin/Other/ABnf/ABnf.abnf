@@ -14,11 +14,16 @@ String : "'" = "'([^'\\]|\\.)*'";
 Regex : "\"" = "\"([^\"\\]|\\.)*\"";
 // 规则名称
 Id : "[_a-zA-Z0-9]" = "[_a-zA-Z0-9][_a-zA-Z0-9]*";
+// 数字
+Number : "[0-9]" = "[0-9]*";
 // 规则修饰
 NodeTail = '?' | '*' | '+' | '@' | '#';
 
 // 表达式
-Expression = Id@ (':'@ Regex '@'?)? '='@ Node ';';
+Expression = Id@ (':'@ Regex '@'?)? Color? '='@ Node ';';
+
+// 颜色
+Color = '['@ Number ',' Number ',' Number ']';
 
 // 通用节点
 Node = List | Group;

@@ -5,20 +5,22 @@ local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
-ALittle.RegStruct(2057209532, "AUIPlugin.AUICodeProjectGotoEvent", {
-name = "AUIPlugin.AUICodeProjectGotoEvent", ns_name = "AUIPlugin", rl_name = "AUICodeProjectGotoEvent", hash_code = 2057209532,
-name_list = {"target","file_path","line_start","char_start","line_end","char_end"},
-type_list = {"ALittle.EventDispatcher","string","int","int","int","int"},
-option_map = {}
-})
 ALittle.RegStruct(1715346212, "ALittle.Event", {
 name = "ALittle.Event", ns_name = "ALittle", rl_name = "Event", hash_code = 1715346212,
 name_list = {"target"},
 type_list = {"ALittle.EventDispatcher"},
 option_map = {}
 })
+ALittle.RegStruct(2057209532, "AUIPlugin.AUICodeProjectGotoEvent", {
+name = "AUIPlugin.AUICodeProjectGotoEvent", ns_name = "AUIPlugin", rl_name = "AUICodeProjectGotoEvent", hash_code = 2057209532,
+name_list = {"target","file_path","line_start","char_start","line_end","char_end"},
+type_list = {"ALittle.EventDispatcher","string","int","int","int","int"},
+option_map = {}
+})
 
 g_ABnfProjectMap = ALittle.CreateValueWeakMap()
+g_UpperExtMapABnf = {}
+g_UpperExtMapABnf["JSON"] = "AJson.abnf"
 assert(ALittle.EventDispatcher, " extends class:ALittle.EventDispatcher is nil")
 AUICodeProject = Lua.Class(ALittle.EventDispatcher, "AUIPlugin.AUICodeProject")
 
@@ -46,6 +48,25 @@ function AUICodeProject.CreateABnfProject()
 	return abnf_project
 end
 
+function AUICodeProject.SupportUpperExt(upper_ext)
+	return g_UpperExtMapABnf[upper_ext] ~= nil
+end
+
+function AUICodeProject.CreateCommonProject(upper_ext)
+	local abnf = g_UpperExtMapABnf[upper_ext]
+	if abnf == nil then
+		return nil
+	end
+	local abnf_project = g_ABnfProjectMap[abnf]
+	if abnf_project == nil then
+		local abnf_buffer = ALittle.File_ReadTextFromFile(g_ModuleBasePath .. "/Other/ABnf/" .. abnf)
+		abnf_project = AUICodeCommonProject(alanguage.create_abnfproject(abnf_buffer), upper_ext)
+		g_ABnfProjectMap[abnf] = abnf_project
+		abnf_project:Start()
+	end
+	return abnf_project
+end
+
 function AUICodeProject.Shutdown()
 	for name, project in ___pairs(g_ABnfProjectMap) do
 		project:Stop()
@@ -59,6 +80,10 @@ end
 
 function AUICodeProject.__getter:project()
 	return self._project
+end
+
+function AUICodeProject:QueryRuleColor()
+	return alanguage.abnfproject_queryrulecolor(self._project)
 end
 
 function AUICodeProject:UpdateFile(module_path, full_path)

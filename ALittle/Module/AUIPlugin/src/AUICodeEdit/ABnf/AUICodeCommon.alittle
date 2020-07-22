@@ -1,0 +1,65 @@
+
+namespace AUIPlugin;
+
+public class AUICodeCommon : AUICodeLanguage
+{
+    private Map<int, ABnfColor> _abnf_color;
+
+    public ctor(AUICodeProject project, string full_path)
+    {
+        if (this._project == null) this._project = AUICodeProject.CreateCommonProject(ALittle.File_GetFileExtByPathAndUpper(full_path));
+
+        this._abnf_color = this._project.QueryRuleColor();
+        
+        this._abnf_file = lua.alanguage.create_abnffile(this._project.project, full_path, "");
+    }
+
+    public fun OnOpen()
+    {
+        this._project.UpdateFile("", this._full_path);
+    }
+
+    public fun OnShow()
+    {
+        
+    }
+
+    public fun OnHide()
+    {
+        
+    }
+
+    public fun OnClose()
+    {
+        this._project.RemoveFile(this._full_path);
+    }
+
+    // 颜色查询
+    public fun QueryColorValue(int tag) : ABnfColor { return this._abnf_color[tag]; }
+
+    public fun OnRightMenu(AUIRightMenu menu)
+    {
+    }
+}
+
+public class AUICodeCommonProject : AUICodeProject
+{
+    private string _upper_ext;
+
+    public ctor(lua.ABnfProject project, string upper_ext)
+    {
+        this._upper_ext = upper_ext;
+    }
+
+    public get upper_ext() : string { return this._upper_ext; }
+
+    public fun OnTreeMenu(string full_path, AUIRightMenu menu)
+    {
+
+    }
+
+    public fun OnTreeItemMenu(string full_path, AUIRightMenu menu)
+    {
+
+    }
+}

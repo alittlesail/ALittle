@@ -20,7 +20,6 @@ private var LINE_NUMBER_GREEN = 100/255;
 private var LINE_NUMBER_BLUE = 100/255;
 
 protected var g_DefaultColor = new ABnfColor();
-g_DefaultColor.alpha = 1;
 g_DefaultColor.red = FONT_RED;
 g_DefaultColor.green = FONT_GREEN;
 g_DefaultColor.blue = FONT_BLUE;
@@ -626,7 +625,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
     {
         var child_count = this._line_count + PAD_LINES;
         var delta = this._line_number.child_count - child_count;
-        if (delta >= -10 && delta <= 10) return;
+        if (delta >= 0 && delta <= 10) return;
 
         if (delta > 0)
         {
@@ -1472,9 +1471,12 @@ public class AUICodeEdit : ALittle.DisplayLayout
         // 保存代码解析器
         this._language = language;
 
+        var upper_ext = ALittle.File_GetFileExtByPathAndUpper(file_path);
         // 如果没有指定language，并且是abnf文件，那么就创建一个默认的
-        if (this._language == null && ALittle.File_GetFileExtByPathAndUpper(file_path) == "ABNF")
+        if (this._language == null && upper_ext == "ABNF")
             this._language = new AUICodeABnf(null, file_path);
+        if (this._language == null && AUICodeProject.SupportUpperExt(upper_ext))
+            this._language = new AUICodeCommon(null, file_path);
 
         if (this._language != null) this._language.OnOpen();
 

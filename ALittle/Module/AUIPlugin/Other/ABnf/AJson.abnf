@@ -1,0 +1,21 @@
+
+// 语法树的跟【Root是系统内置，必须定义Root作为语法根节点，没有定义会报错】
+Root = Value?;
+
+// 字符串
+Text : "\""@ [85,134,74] = "\"([^\"\\]|\\.)*\"";
+// 规则名称
+Id : "[_a-zA-Z]" [204,120,50]  = "[_a-zA-Z][_a-zA-Z0-9]*";
+// 整型数值
+Number : "[0-9]" [152,118,170]  = "0x[0-9a-fA-F]+" | "[0-9][0-9]*(%.[0-9]*)?";
+// 空
+Null [53,155,185] = <null>;
+
+Value = Text | Id | Number | Null | Array | Object;
+
+Array = '['@ (Value ArrayValuePair*)? ']';
+ArrayValuePair = ','@ Value;
+
+Object = '{'@ (ObjectValue ObjectValuePair*)? '}';
+ObjectValue = Text ':'@ Value;
+ObjectValuePair = ','@ ObjectValue;

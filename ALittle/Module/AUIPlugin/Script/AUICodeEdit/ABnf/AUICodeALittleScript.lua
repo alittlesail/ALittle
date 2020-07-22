@@ -207,8 +207,11 @@ function AUICodeALittleScriptProject:GenerateDir(full_path)
 		g_AUITool:ShowNotice("提示", "当前不是/src的子目录")
 		return
 	end
-	local new_path = ALittle.String_Sub(full_path, 1, index) .. "Script" .. ALittle.String_Sub(full_path, index + 4)
-	ALittle.Log(new_path)
+	local pre = ""
+	if alittlescript.alittlescriptproject_gettargetlanguage(self._project) == "JavaScript" then
+		pre = "JS"
+	end
+	local new_path = ALittle.String_Sub(full_path, 1, index) .. pre .. "Script" .. ALittle.String_Sub(full_path, index + 4)
 	ALittle.File_DeleteDeepDir(new_path)
 	ALittle.File_MakeDeepDir(new_path)
 	local file_map = ALittle.File_GetFileAttrByDir(full_path)

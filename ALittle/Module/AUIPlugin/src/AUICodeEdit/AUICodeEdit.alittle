@@ -370,6 +370,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
         this._code_screen.AddEventListener(this, this.HandleKeyUp);
         this._code_screen.AddEventListener(this, this.HandleTextInput);
         this._code_screen.AddEventListener(this, this.HandleMouseMove);
+        this._code_screen.AddEventListener(this, this.HandleDropFile);
         this.AddEventListener(this, this.HandleChangedEvent);
 
         this._find_dialog.visible = false;
@@ -619,6 +620,13 @@ public class AUICodeEdit : ALittle.DisplayLayout
         if (!A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_CTRL]) return;
 
         this.UpdateQueryInfo(rel_x, event.rel_y);
+    }
+
+    private fun HandleDropFile(ALittle.UIDropFileEvent event)
+    {
+        var goto_event = new AUICodeEditGotoEvent();
+        goto_event.file_path = event.path;
+        this.DispatchEvent(goto_event);
     }
 
     public fun UpdateLineNumber()

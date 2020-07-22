@@ -18,6 +18,12 @@ name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
+ALittle.RegStruct(-338112738, "ALittle.UIDropFileEvent", {
+name = "ALittle.UIDropFileEvent", ns_name = "ALittle", rl_name = "UIDropFileEvent", hash_code = -338112738,
+name_list = {"target","path"},
+type_list = {"ALittle.DisplayObject","string"},
+option_map = {}
+})
 ALittle.RegStruct(348388800, "ALittle.UIHideEvent", {
 name = "ALittle.UIHideEvent", ns_name = "ALittle", rl_name = "UIHideEvent", hash_code = 348388800,
 name_list = {"target"},
@@ -405,6 +411,7 @@ function AUICodeEdit:TCtor()
 	self._code_screen:AddEventListener(___all_struct[1213009422], self, self.HandleKeyUp)
 	self._code_screen:AddEventListener(___all_struct[-1234078962], self, self.HandleTextInput)
 	self._code_screen:AddEventListener(___all_struct[-1001723540], self, self.HandleMouseMove)
+	self._code_screen:AddEventListener(___all_struct[-338112738], self, self.HandleDropFile)
 	self:AddEventListener(___all_struct[958494922], self, self.HandleChangedEvent)
 	self._find_dialog.visible = false
 	self._find_dialog.close_callback = Lua.Bind(self.HandleFindEscClick, self, nil)
@@ -675,6 +682,12 @@ function AUICodeEdit:HandleMouseMove(event)
 		return
 	end
 	self:UpdateQueryInfo(rel_x, event.rel_y)
+end
+
+function AUICodeEdit:HandleDropFile(event)
+	local goto_event = {}
+	goto_event.file_path = event.path
+	self:DispatchEvent(___all_struct[631224630], goto_event)
 end
 
 function AUICodeEdit:UpdateLineNumber()

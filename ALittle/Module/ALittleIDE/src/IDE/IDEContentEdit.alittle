@@ -39,6 +39,7 @@ public class IDETabChild : ALittle.UIEventDispatcher
 public class IDEContentEdit : ALittle.DisplayLayout
 {
 	private ALittle.DisplayObject _cur_tab;		// 当前标签页
+	private ALittle.Quad _main_tab_bg;
 	private ALittle.Tab _main_tab;				// tab标签管理器
 	
 	public fun TCtor()
@@ -47,6 +48,7 @@ public class IDEContentEdit : ALittle.DisplayLayout
 		this._main_tab.AddEventListener(this, this.HandleMainTabSelectChange);
 		this._main_tab.AddEventListener(this, this.HandleMainTabRightClick);
 		this._main_tab.AddEventListener(this, this.HandleMainTabKeyDown);
+		this._main_tab_bg.AddEventListener(this, this.HandleMainTabDropFile);
 		this._main_tab.close_callback = bind(this.MainTabTabCloseYesOrNot, this);
 		this._main_tab.close_post_callback = bind(this.MainTabTabClose, this);
 		// 监听关闭
@@ -276,6 +278,16 @@ public class IDEContentEdit : ALittle.DisplayLayout
 	private async fun HandleMainTabKeyDown(ALittle.UIKeyDownEvent event)
 	{
 	}
+
+	// 文件拖拽到tab
+	private fun HandleMainTabDropFile(ALittle.UIDropFileEvent event)
+	{
+		var name = ALittle.File_GetFileNameByPath(event.path);
+		var user_info = new IDECodeTreeUserInfo();
+		user_info.path = event.path;
+		user_info.name = name;
+        this.StartEditCodeBySelect(name, user_info);
+    }
 
 	// Tab界面右上角菜单按钮
 	private fun HandleTabRightExMenu(ALittle.UIEvent event)

@@ -744,7 +744,7 @@ class UISystem
         var y = System_GetCursorY() - System_GetViewY();
     
         this.HandleMouseMoved(x, y);
-    
+
         if (this._mfc == null) return;
         
         var event = new UIDropFileEvent();

@@ -6,6 +6,12 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = ALittle.GetAllStruct()
 
+ALittle.RegStruct(-338112738, "ALittle.UIDropFileEvent", {
+name = "ALittle.UIDropFileEvent", ns_name = "ALittle", rl_name = "UIDropFileEvent", hash_code = -338112738,
+name_list = {"target","path"},
+type_list = {"ALittle.DisplayObject","string"},
+option_map = {}
+})
 ALittle.RegStruct(444989011, "ALittle.UISelectChangedEvent", {
 name = "ALittle.UISelectChangedEvent", ns_name = "ALittle", rl_name = "UISelectChangedEvent", hash_code = 444989011,
 name_list = {"target"},
@@ -121,6 +127,7 @@ function IDEContentEdit:TCtor()
 	self._main_tab:AddEventListener(___all_struct[444989011], self, self.HandleMainTabSelectChange)
 	self._main_tab:AddEventListener(___all_struct[-641444818], self, self.HandleMainTabRightClick)
 	self._main_tab:AddEventListener(___all_struct[-1604617962], self, self.HandleMainTabKeyDown)
+	self._main_tab_bg:AddEventListener(___all_struct[-338112738], self, self.HandleMainTabDropFile)
 	self._main_tab.close_callback = Lua.Bind(self.MainTabTabCloseYesOrNot, self)
 	self._main_tab.close_post_callback = Lua.Bind(self.MainTabTabClose, self)
 	g_IDEProject:AddEventListener(___all_struct[-332308624], self, self.HandleProjectClose)
@@ -307,6 +314,14 @@ end
 function IDEContentEdit:HandleMainTabKeyDown(event)
 end
 IDEContentEdit.HandleMainTabKeyDown = Lua.CoWrap(IDEContentEdit.HandleMainTabKeyDown)
+
+function IDEContentEdit:HandleMainTabDropFile(event)
+	local name = ALittle.File_GetFileNameByPath(event.path)
+	local user_info = {}
+	user_info.path = event.path
+	user_info.name = name
+	self:StartEditCodeBySelect(name, user_info)
+end
 
 function IDEContentEdit:HandleTabRightExMenu(event)
 	local tab_childs = self._main_tab.childs

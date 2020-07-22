@@ -16,7 +16,7 @@ ABnfProject::~ABnfProject()
 void ABnfProject::Start(const std::string& abnf_buffer)
 {
 	std::string error;
-	m_abnf.Load(abnf_buffer, &RefFactory(), error);
+    m_abnf.Load(abnf_buffer, &RefFactory(), error);
 	m_abnf_ui.Load(abnf_buffer, &RefFactory(), error);
 
 	if (m_thread == nullptr)
@@ -146,6 +146,24 @@ void ABnfProject::UpdateFile(const std::string& module_path, const std::string& 
     else
     {
         it->second->SetText(out.data(), out.size());
+        it->second->AnalysisText(version);
+    }
+}
+
+void ABnfProject::TempFile(const std::string& module_path, const std::string& full_path, const std::string& text, int version)
+{
+    if (!m_run) return;
+
+    auto it = m_file_map.find(full_path);
+    if (it == m_file_map.end())
+    {
+        auto file = RefFactory().CreateFile(this, module_path, full_path, text.data(), text.size());
+        m_file_map[full_path] = file;
+        file->AnalysisText(version);
+    }
+    else
+    {
+        it->second->SetText(text.data(), text.size());
         it->second->AnalysisText(version);
     }
 }

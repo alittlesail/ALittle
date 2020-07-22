@@ -1875,7 +1875,7 @@ ABnfGuessError ALittleScriptTranslationLua::GeneratePropertyValue(std::shared_pt
                 std::vector<std::string> param_list;
                 if (pre_type_functor->proto == "Msg")
                 {
-                    param_list.push_back("" + msg_id);
+                    param_list.push_back(std::to_string(msg_id));
                     // ×¢²áÐ­Òé
                     error = GenerateReflectStructInfo(param_struct);
                     if (error) return error;

@@ -2103,7 +2103,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GeneratePropertyValue(std::sh
                 std::vector<std::string> param_list;
                 if (pre_type_functor->proto == "Msg")
                 {
-                    param_list.push_back("" + msg_id);
+                    param_list.push_back(std::to_string(msg_id));
                     // ×¢²áÐ­Òé
                     error = GenerateReflectStructInfo(param_struct);
                     if (error) return error;
@@ -4063,7 +4063,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateRoot(const std::vecto
         content += "{\nif (typeof " + m_namespace_name + " === \"undefined\") window." + m_namespace_name + " = {};\n";
     }
 
-    if (m_need_all_struct) content += "let ___all_struct = ALittle->GetAllStruct();\n";
+    if (m_need_all_struct) content += "let ___all_struct = ALittle.GetAllStruct();\n";
     content += "\n";
 
     std::list<StructReflectInfo*> info_list;

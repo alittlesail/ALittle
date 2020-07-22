@@ -248,9 +248,10 @@ bool ABnfFile::QueryError(int version, bool force, std::vector<ALanguageErrorInf
 int ABnfFile::QueryDesiredIndent(int version, int it_line, int it_char)
 {
     AnalysisText(version);
+    if (m_root == nullptr) return 0;
 
     auto element = m_root->GetException(it_line, it_char);
-    if (element == nullptr) return false;
+    if (element == nullptr) return 0;
 
     auto node = std::dynamic_pointer_cast<ABnfNodeElement>(element);
     if (node == nullptr) node = std::dynamic_pointer_cast<ABnfNodeElement>(element->GetParent());
@@ -262,9 +263,10 @@ int ABnfFile::QueryDesiredIndent(int version, int it_line, int it_char)
 int ABnfFile::QueryFormateIndent(int version, int it_line, int it_char)
 {
     AnalysisText(version);
+    if (m_root == nullptr) return 0;
 
     auto element = m_root->GetException(it_line, it_char);
-    if (element == nullptr) return false;
+    if (element == nullptr) return 0;
 
     auto node = std::dynamic_pointer_cast<ABnfNodeElement>(element);
     if (node == nullptr) node = std::dynamic_pointer_cast<ABnfNodeElement>(element->GetParent());

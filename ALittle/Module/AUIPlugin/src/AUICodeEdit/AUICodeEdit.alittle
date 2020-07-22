@@ -48,7 +48,7 @@ protected struct AUICodeLineInfo
 protected struct AUICodeErrorInfo
 {
     ALittle.DisplayObject _focus_quad;
-    string error;
+    lua.ABnfQueryError info;
 }
 
 protected struct AUICodeFindInfo
@@ -322,6 +322,9 @@ public class AUICodeEdit : ALittle.DisplayLayout
     // 查询错误信息
     private ALittle.LoopTimer _error_loop;  // 显示错误信息的定时器
     private List<ALittle.DisplayObject> _error_list;    // 错误列表
+    private int _error_count = 0;
+    private int _error_index = 0;
+    private ALittle.DisplayObject _error_btn;	// 错误按钮
 
     // 全文查找
     private ALittle.Dialog _find_dialog;        // 查找对话框
@@ -380,6 +383,8 @@ public class AUICodeEdit : ALittle.DisplayLayout
 
         this._find_dialog.visible = false;
         this._find_dialog.close_callback = bind(this.HandleFindEscClick, this, null);
+
+        this._error_btn.visible = false;
 
 		// 创建编辑容器
         this._code_screen.container = new AUICodeEditContainer(this._ctrl_sys);
@@ -615,7 +620,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
                         var x, y = item.LocalToGlobal();
                         var center_x = x + item.width / 2;
                         var center_y = y;
-                        g_AUITool.ShowTip(item_info.error);
+                        g_AUITool.ShowTip(item_info.info.error);
                         var tip_width, tip_height = g_AUITool.GetTipSize();
                         g_AUITool.MoveTip(center_x - tip_width / 2, center_y - tip_height);
                     }
@@ -787,11 +792,15 @@ public class AUICodeEdit : ALittle.DisplayLayout
                 item.RemoveFromParent();
         }
         this._error_list = null;
+        this._error_count = 0;
+        this._error_index = 0;
+        this._error_btn.visible = false;
         var list = this._language.QueryError(this._force_query_error);
         if (list == null) return;
 
         this._error_list = new List<ALittle.DisplayObject>();
-        var error_count = 0;
+        this._error_count = 0;
+        this._error_index = 0;
         for (var index, info in list)
         {
             var item_info = new AUICodeErrorInfo();
@@ -799,16 +808,30 @@ public class AUICodeEdit : ALittle.DisplayLayout
             var line = this._line_list[info.line_start];
             var char_end = info.char_end;
             if (info.line_start != info.line_end) info.char_end = line.char_count;
+            item_info.info = info;
             var x, y, width = this.CalcRect(info.line_start, info.char_start, char_end);
             item.x = x;
             item.width = width;
             item.height = LINE_HEIGHT;
-            item_info.error = info.error;
             item_info._focus_quad._user_data = item_info;
+            item._user_data = item_info;
             line.container._error.AddChild(item);
-            error_count += 1;
-            this._error_list[error_count] = item;
+            this._error_count += 1;
+            this._error_list[this._error_count] = item;
         }
+        this._error_btn.visible = this._error_count > 0;
+    }
+
+    private fun HandleErrorNextClick(ALittle.UIClickEvent event)
+    {
+        if (this._error_count <= 0) return;
+        this._error_index += 1;
+        if (this._error_index > this._error_count) this._error_index = 1;
+
+        var item = this._error_list[this._error_index];
+        var item_info = cast<AUICodeErrorInfo>(item._user_data);
+
+        this.EditFocus(item_info.info.line_start, item_info.info.char_start, item_info.info.line_end, item_info.info.char_end, false);
     }
 
     private fun HandleFindInputChanged(ALittle.UIChangedEvent event)
@@ -879,6 +902,10 @@ public class AUICodeEdit : ALittle.DisplayLayout
 
     private fun HandleFindNextClick(ALittle.UIClickEvent event)
     {
+        if (this._find_map == null)
+            this.HandleFindInputChanged(null);
+        if (this._find_map == null) return;
+
         // 获取当前光标位置，然后向下查找最近
         var line_index = this._cursor.line;
         while (line_index <= this._line_count)

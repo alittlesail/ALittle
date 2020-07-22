@@ -56,6 +56,8 @@ public:
 	virtual ABnf& RefABnf() { return m_abnf; }
 	virtual ABnf& RefABnfUI() { return m_abnf_ui; }
 
+	int QueryRuleColor(lua_State* L);
+
 public:
 	ABnfFile* GetFile(const std::string& full_path);
 	void UpdateFile(const std::string& module_path, const std::string& full_path, int version);

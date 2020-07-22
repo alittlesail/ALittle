@@ -5,6 +5,14 @@
 #include "lua.h"
 
 int alanguage_project_pollone(void* project, lua_State* L);
+
+void* create_abnfproject(const char* abnf_buffer);
+void delete_abnfproject(void* project);
+int abnfproject_queryrulecolor(void* project, lua_State* L);
+
+void* create_abnffile(void* project, const char* full_path, const char* text, size_t len);
+void delete_abnffile(void* file);
+
 void alanguage_project_updatefile(void* project, const char* module_path, const char* full_path, int version);
 void alanguage_project_removefile(void* project, const char* full_path);
 void alanguage_project_clear(void* project);

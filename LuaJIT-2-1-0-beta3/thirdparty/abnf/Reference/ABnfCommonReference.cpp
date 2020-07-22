@@ -33,6 +33,9 @@ int ABnfCommonReference::QueryClassificationTag(bool& blur)
     if (type == "String")
         return ABnfColorType::ABnfString;
 
+    if (type == "Number")
+        return ABnfColorType::ABnfNumber;
+
     if (type == "Regex")
         return ABnfColorType::ABnfRegex;
 

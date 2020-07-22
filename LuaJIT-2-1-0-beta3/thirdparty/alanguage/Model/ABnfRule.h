@@ -42,9 +42,12 @@ public:
     // 根绝规则名称查找规则对象
     ABnfRuleInfo* FindRuleInfo(const std::string& id);
 
+    // 获取所有规则
+    const std::unordered_map<std::string, ABnfRuleInfo*>& GetRuleSet() const;
+
 private:
     // 解析规则语句
-    ABnfRuleInfo* CalcABnfRule(const std::vector<ABnfRuleTokenInfo>& token_list, size_t& offset, std::string& error);
+    ABnfRuleInfo* CalcABnfRule(const std::vector<ABnfRuleTokenInfo>& token_list, int rule_id, size_t& offset, std::string& error);
 
     // 解析规则节点
     ABnfRuleNodeInfo* CalcABnfNode(const std::vector<ABnfRuleTokenInfo>& token_list, size_t& offset, std::string& error);

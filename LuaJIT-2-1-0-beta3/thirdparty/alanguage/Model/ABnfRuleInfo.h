@@ -20,6 +20,13 @@ public:
     ABnfRuleTokenInfo assign;           // 等号
     ABnfRuleNodeInfo* node = nullptr;   // 规则节点
 
+    int rule_id = 0;
+    // 颜色
+    bool has_color = false;
+    int red = 0;
+    int green = 0;
+    int blue = 0;
+
 private:
     // 计算结束符
     bool calc_stop_token = false;

@@ -78,6 +78,11 @@ const std::unordered_set<std::string>& ABnf::GetKeySet() const
     return m_rule.GetKeySet();
 }
 
+const std::unordered_map<std::string, ABnfRuleInfo*>& ABnf::GetRuleSet() const
+{
+    return m_rule.GetRuleSet();
+}
+
 // ²éÑ¯¹Ø¼ü×Ö
 void ABnf::QueryKeyWordCompletion(const std::string& input, std::vector<ALanguageCompletionInfo>& list)
 {

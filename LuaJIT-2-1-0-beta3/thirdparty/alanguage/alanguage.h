@@ -14,6 +14,7 @@ void* create_abnffile(void* project, const char* full_path, const char* text, si
 void delete_abnffile(void* file);
 
 void alanguage_project_updatefile(void* project, const char* module_path, const char* full_path, int version);
+void alanguage_project_tempfile(void* project, const char* module_path, const char* full_path, const char* text, size_t len, int version);
 void alanguage_project_removefile(void* project, const char* full_path);
 void alanguage_project_clear(void* project);
 

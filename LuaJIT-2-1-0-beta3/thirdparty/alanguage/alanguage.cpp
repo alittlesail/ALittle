@@ -51,6 +51,12 @@ void alanguage_project_updatefile(void* project, const char* module_path, const 
 	project_c->Add(std::bind(&ABnfProject::UpdateFile, project_c, std::string(module_path), std::string(full_path), version));
 }
 
+void alanguage_project_tempfile(void* project, const char* module_path, const char* full_path, const char* text, size_t len, int version)
+{
+	auto* project_c = (ABnfProject*)project;
+	project_c->Add(std::bind(&ABnfProject::TempFile, project_c, std::string(module_path), std::string(full_path), std::string(text, len), version));
+}
+
 void alanguage_project_removefile(void* project, const char* full_path)
 {
 	auto* project_c = (ABnfProject*)project;

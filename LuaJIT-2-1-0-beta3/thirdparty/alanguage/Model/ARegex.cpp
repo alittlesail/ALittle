@@ -81,12 +81,23 @@ bool ARegex::MatchNode(const char* src, const ARegexNode& node, int& length)
 	{
 		for (auto& child : node.childs)
 		{
+			// 保存临时值
 			int length_temp = length;
 			if (MatchNodeRepeated(src, child, length_temp))
 			{
+				// 如果有取反，那么直接返回失败
+				if (node.negate == ARegexNegateType::NNT_TRUE)
+					return false;
+
 				length = length_temp;
 				return true;
 			}
+		}
+
+		if (node.negate == ARegexNegateType::NNT_TRUE)
+		{
+			length += 1;
+			return true;
 		}
 
 		return false;
@@ -182,11 +193,22 @@ bool ARegex::CompileOption(const std::string& rule, size_t& offset, ARegexNode& 
 
 			++offset;
 		}
+		else if (c == '!')
+		{
+			if (next_c != '(')
+			{
+				error = "next char must be ( after !, offset:" + offset;
+				return false;
+			}
+			++offset;
+		}
 		else if (c == '(')
 		{
 			list->childs.push_back(ARegexNode());
 			ARegexNode& child = list->childs.back();
 			child.type = ARegexType::T_OPTION;
+			if (offset > 0 && rule[offset - 1] == '!')
+				child.negate = ARegexNegateType::NNT_TRUE;
 
 			++offset;
 			if (!CompileOption(rule, offset, child, error)) return false;
@@ -229,14 +251,7 @@ bool ARegex::CompileOption(const std::string& rule, size_t& offset, ARegexNode& 
 				else if (next_c == 'r') child.value = '\r';
 				else if (next_c == 't') child.value = '\t';
 				else if (next_c == 'v') child.value = '\v';
-				else if (next_c == '.') child.value = '.';
-				else if (next_c == '[') child.value = '[';
-				else if (next_c == ']') child.value = ']';
-				else if (next_c == '(') child.value = '(';
-				else if (next_c == ')') child.value = ')';
-				else if (next_c == '*') child.value = '*';
-				else if (next_c == '+') child.value = '+';
-				else if (next_c == '?') child.value = '?';
+				else if (next_c != 0) child.value = next_c;
 				else
 				{
 					error = "error char after %, offset:" + std::to_string(offset);

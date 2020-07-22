@@ -61,6 +61,7 @@ public:
 public:
 	ABnfFile* GetFile(const std::string& full_path);
 	void UpdateFile(const std::string& module_path, const std::string& full_path, int version);
+	void TempFile(const std::string& module_path, const std::string& full_path, const std::string& text, int version);
 	void RemoveFile(const std::string& full_path);
 	void UpdateText(const std::string& full_path, int version, const std::string& text);
 	void InsertText(const std::string& full_path, int version, const std::string& text, int it_line, int it_char);

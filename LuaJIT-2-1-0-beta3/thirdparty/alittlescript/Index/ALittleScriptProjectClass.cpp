@@ -23,6 +23,11 @@ void ALittleScriptProjectClass::SetTargetLanguage(const std::string& language)
 	m_target_language = language;
 }
 
+void ALittleScriptProjectClass::SetTargetLanguageUI(const std::string& language)
+{
+    m_target_language_ui = language;
+}
+
 void ALittleScriptProjectClass::Generate(int query_id, const std::string& full_path)
 {
     auto it = m_file_map.find(full_path);

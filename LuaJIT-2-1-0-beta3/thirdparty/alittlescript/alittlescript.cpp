@@ -25,7 +25,14 @@ void delete_alittlescript_project(void* file)
 void alittlescriptproject_settargetlanguage(void* project, const char* target_language)
 {
 	auto* project_c = (ALittleScriptProjectClass*)project;
+	project_c->SetTargetLanguageUI(target_language);
 	project_c->Add(std::bind(&ALittleScriptProjectClass::SetTargetLanguage, project_c, std::string(target_language)));
+}
+
+const char* alittlescriptproject_gettargetlanguage(void* project)
+{
+	auto* project_c = (ALittleScriptProjectClass*)project;
+	return project_c->GetTargetLanguageUI().c_str();
 }
 
 void alittlescriptproject_generate(void* project, int query_id, const char* full_path)

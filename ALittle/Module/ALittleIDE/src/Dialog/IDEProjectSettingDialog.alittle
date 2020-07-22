@@ -16,15 +16,15 @@ public class IDEProjectSettingDialog
 			g_AUITool.ShowNotice("错误", "当前没有打开的项目");
 			return;
 		}
-	
-		// 创建对话框
+        
+            // 创建对话框
 		if (this._project_setting_dialog == null)
 		{
 			this._project_setting_dialog = g_Control.CreateControl{ALittle.DisplayObject}("ide_setting_project_dialog", this);
 			A_LayerManager.AddToModal(this._project_setting_dialog);
 		}
-	
-		// 显示对话框
+        
+            // 显示对话框
 		this._project_setting_dialog.visible = true;
 	
 		// 初始化信息

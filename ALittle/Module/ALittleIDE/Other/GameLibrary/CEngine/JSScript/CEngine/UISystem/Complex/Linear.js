@@ -95,8 +95,11 @@ ALittle.Linear = JavaScript.Class(ALittle.DisplayGroup, {
 		return true;
 	},
 	SpliceChild : function(index, count) {
+		let remain_count = this._child_count - index + 1;
 		if (count === undefined) {
-			count = this._child_count;
+			count = remain_count;
+		} else if (count > remain_count) {
+			count = remain_count;
 		}
 		if (count <= 0) {
 			return 0;

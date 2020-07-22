@@ -31,7 +31,7 @@ function AUICodeLanguage.__getter:version()
 	return self._version
 end
 
-function AUICodeLanguage:OnOpen()
+function AUICodeLanguage:OnOpen(content)
 end
 
 function AUICodeLanguage:OnClose()

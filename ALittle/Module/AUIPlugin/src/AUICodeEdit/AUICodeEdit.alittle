@@ -61,8 +61,11 @@ protected struct AUICodeFindInfo
 
 protected class AUICodeQuad : ALittle.Quad
 {
+    private bool _ediable = true;
+
     public get is_input() : bool { return true; }
-    public get editable() : bool { return true; }
+    public get editable() : bool { return this._ediable; }
+    public set editable(bool value) { this._ediable = value; }
     public get font_size() : int { return FONT_SIZE; }
     public get cursor_x() : double
     {
@@ -309,6 +312,8 @@ public class AUICodeEdit : ALittle.DisplayLayout
 {
     private AUICodeLanguage _language;  // 代码解析器
 
+    private bool _editable = true;
+
     // 查询快捷信息
     private int _query_info_version;
     private lua.ABnfQueryInfo _query_info;
@@ -403,7 +408,8 @@ public class AUICodeEdit : ALittle.DisplayLayout
     }
 
     public get is_input() : bool { return true; }
-    public get editable() : bool { return true; }
+    public get editable() : bool { return this._editable; }
+    public set editable(bool value) { this._editable = value; }
     public get font_size() : int { return FONT_SIZE; }
     public get cursor_x() : double { return this._edit_quad.cursor_x; }
     public get cursor_y() : double { return this._edit_quad.cursor_y; }
@@ -807,15 +813,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
 
     private fun HandleFindInputChanged(ALittle.UIChangedEvent event)
     {
-        if (this._find_map != null)
-        {
-            for (var it_line, list in this._find_map)
-            {
-                for (var index, info in list)
-                    info._focus_quad.RemoveFromParent();   
-            }
-        }
-        this._find_map = null;
+        this.ClearFindInfo();
 
         var content = this._find_input.text;
         var list = ALittle.String_SplitUTF8(content);
@@ -909,6 +907,11 @@ public class AUICodeEdit : ALittle.DisplayLayout
     {
         this._find_dialog.visible = false;
 
+        this.ClearFindInfo();
+    }
+
+    public fun ClearFindInfo()
+    {
         if (this._find_map != null)
         {
             for (var it_line, list in this._find_map)
@@ -918,6 +921,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
             }
         }
         this._find_map = null;
+        this._first_info = null;
     }
 
     private fun HandleChangedEvent(ALittle.UIChangedEvent event)
@@ -929,6 +933,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
         for (var object:AUICodeLineContainer, _ in map)
             object.RestoreColor();
 
+        this.ClearFindInfo();
         this.StartErrorLoop(false);
     }
 
@@ -1217,32 +1222,34 @@ public class AUICodeEdit : ALittle.DisplayLayout
         }
         elseif (event.sym == ALittle.UIEnumTypes.KEY_BACKSPACE)
         {
-            if (this._select_cursor.line_start == null)
+            if (this._editable)
             {
-                is_change = this._cursor.DeleteLeft(true);
-                this._cursor.RejustShowCursor();
-                g_AUICodeCompleteScreen.TryHide(this);
-                if (g_AUICodeCompleteScreen.IsShow())
-                    g_AUICodeCompleteScreen.ShowComplete(this);
+                if (this._select_cursor.line_start == null)
+                {
+                    is_change = this._cursor.DeleteLeft(true);
+                    this._cursor.RejustShowCursor();
+                    g_AUICodeCompleteScreen.TryHide(this);
+                    if (g_AUICodeCompleteScreen.IsShow())
+                        g_AUICodeCompleteScreen.ShowComplete(this);
+                }
+                else
+                {
+                    is_change = this.DeleteSelectText();
+                    g_AUICodeCompleteScreen.Hide();
+                }
+                event.handled = true;
             }
-            else
-            {
-                is_change = this.DeleteSelectText();
-                g_AUICodeCompleteScreen.Hide();
-            }
-			event.handled = true;
         }
         elseif (event.sym == ALittle.UIEnumTypes.KEY_DELETE)
         {
-            if (this._select_cursor.line_start == null)
+            if (this._editable)
             {
-                is_change = this._cursor.DeleteRight(true);
+                if (this._select_cursor.line_start == null)
+                    is_change = this._cursor.DeleteRight(true);
+                else
+                    is_change = this.DeleteSelectText();
+                event.handled = true;
             }
-            else
-            {
-                is_change = this.DeleteSelectText();
-            }
-			event.handled = true;
         }
         elseif (event.sym == ALittle.UIEnumTypes.KEY_HOME)
         {
@@ -1286,62 +1293,71 @@ public class AUICodeEdit : ALittle.DisplayLayout
         }
         elseif (event.sym == ALittle.UIEnumTypes.KEY_ENTER || event.sym == ALittle.UIEnumTypes.KEY_NUMBER_ENTER)
         {
-            if (g_AUICodeCompleteScreen.IsShow())
+            if (this._editable)
             {
-                is_change = g_AUICodeCompleteScreen.DoSelect();
-            }
-            else
-            {
-                var old_line = this._cursor.line;
-                var old_char = this._cursor.char;
-                var revoke_bind = new ALittle.RevokeBind();
-                is_change = this.InsertText("\n", true, revoke_bind);
-                if (this._cursor.CurLineHasChar())
+                if (g_AUICodeCompleteScreen.IsShow())
                 {
-                    this._cursor.UpdateVirtualIndent();
-                    var text = this._cursor.virtual_indent;
-                    if (text != "")
-                        is_change = this.InsertText(text, true, revoke_bind);
-                    // 如果右边是花括号
-                    if (this._cursor.GetCurCharInLine() == "}")
-                    {
-                        this._cursor.SetLineChar(old_line, old_char);
-                        is_change = this.InsertText("\n", true, revoke_bind);
-                        this._cursor.RejustShowCursor();
-                    }
+                    is_change = g_AUICodeCompleteScreen.DoSelect();
                 }
                 else
-                    this._cursor.RejustShowCursor();
-                revoke_bind.complete = bind(this.DispatchChangedEvent, this);
-                this._revoke_list.PushRevoke(revoke_bind);
+                {
+                    var old_line = this._cursor.line;
+                    var old_char = this._cursor.char;
+                    var revoke_bind = new ALittle.RevokeBind();
+                    is_change = this.InsertText("\n", true, revoke_bind);
+                    if (this._cursor.CurLineHasChar())
+                    {
+                        this._cursor.UpdateVirtualIndent();
+                        var text = this._cursor.virtual_indent;
+                        if (text != "")
+                            is_change = this.InsertText(text, true, revoke_bind);
+                            // 如果右边是花括号
+                        if (this._cursor.GetCurCharInLine() == "}")
+                        {
+                            this._cursor.SetLineChar(old_line, old_char);
+                            is_change = this.InsertText("\n", true, revoke_bind);
+                            this._cursor.RejustShowCursor();
+                        }
+                    }
+                    else
+                        this._cursor.RejustShowCursor();
+                    revoke_bind.complete = bind(this.DispatchChangedEvent, this);
+                    this._revoke_list.PushRevoke(revoke_bind);
+                }
+                event.handled = true;
             }
-			event.handled = true;
         }
         elseif (event.sym == ALittle.UIEnumTypes.KEY_TAB)
         {
-            if (this._select_cursor.line_start != this._select_cursor.line_end)
+            if (this._editable)
             {
-                if (ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) != 0)
-                    is_change = this.MultiTabDelete(true);
+                if (this._select_cursor.line_start != this._select_cursor.line_end)
+                {
+                    if (ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) != 0)
+                        is_change = this.MultiTabDelete(true);
+                    else
+                        is_change = this.MultiTabInsert(true);
+                }
                 else
-                    is_change = this.MultiTabInsert(true);
+                {
+                    var text = this._cursor.virtual_indent.."\t";
+                    is_change = this.InsertText(text, true);
+                }
+                g_AUICodeCompleteScreen.Hide();   
+                event.handled = true;
             }
-            else
-            {
-        		var text = this._cursor.virtual_indent.."\t";
-            	is_change = this.InsertText(text, true);
-            }
-            g_AUICodeCompleteScreen.Hide();   
-			event.handled = true;
         }
         elseif (event.sym == ALittle.UIEnumTypes.KEY_X && ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) != 0)
         {
-            var select_text = this._select_cursor.GetSelectText();
-            if (select_text != null)
-                ALittle.System_SetClipboardText(select_text);
-            is_change = this.DeleteSelectText();
-            g_AUICodeCompleteScreen.Hide();   
-			event.handled = true;
+            if (this._editable)
+            {
+                var select_text = this._select_cursor.GetSelectText();
+                if (select_text != null)
+                    ALittle.System_SetClipboardText(select_text);
+                is_change = this.DeleteSelectText();
+                g_AUICodeCompleteScreen.Hide();   
+                event.handled = true;
+            }
         }
         elseif (event.sym == ALittle.UIEnumTypes.KEY_C && ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) != 0)
         {
@@ -1352,15 +1368,18 @@ public class AUICodeEdit : ALittle.DisplayLayout
         }
         elseif (event.sym == ALittle.UIEnumTypes.KEY_V && ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) != 0)
         {
-            if (ALittle.System_HasClipboardText())
+            if (this._editable)
             {
-                var old_line = this._cursor.line;
-                is_change = this.InsertText(ALittle.System_GetClipboardText(), true);
-                var new_line = this._cursor.line;
-                g_AUICodeCompleteScreen.Hide();
-                this.MultiLineFormat(old_line, new_line);
+                if (ALittle.System_HasClipboardText())
+                {
+                    var old_line = this._cursor.line;
+                    is_change = this.InsertText(ALittle.System_GetClipboardText(), true);
+                    var new_line = this._cursor.line;
+                    g_AUICodeCompleteScreen.Hide();
+                    this.MultiLineFormat(old_line, new_line);
+                }
+                event.handled = true;
             }
-			event.handled = true;
         }
         elseif (event.sym == ALittle.UIEnumTypes.KEY_A && ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) != 0)
         {
@@ -1474,7 +1493,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
         lua.collectgarbage("collect");
     }
 
-    public fun Load(string file_path, ALittle.RevokeList revoke_list, [Nullable] AUICodeLanguage language) : bool
+    public fun Load(string file_path, string content, ALittle.RevokeList revoke_list, [Nullable] AUICodeLanguage language) : bool
     {
         // 保存代码解析器
         this._language = language;
@@ -1486,10 +1505,11 @@ public class AUICodeEdit : ALittle.DisplayLayout
         if (this._language == null && AUICodeProject.SupportUpperExt(upper_ext))
             this._language = new AUICodeCommon(null, file_path);
 
-        if (this._language != null) this._language.OnOpen();
+        if (this._language != null) this._language.OnOpen(content);
 
         // 打开文件
-        var content = ALittle.File_ReadTextFromStdFile(file_path);
+        if (content == null)
+        	content = ALittle.File_ReadTextFromStdFile(file_path);
         if (content == null) return false;
 
         // 设置文本内容

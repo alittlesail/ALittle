@@ -35,7 +35,7 @@ public class AUICodeLanguage
     public get version() : int { return this._version; }
 
     // 处理
-    public fun OnOpen() {}
+    public fun OnOpen(string content) {}
     public fun OnClose() {}
     public fun OnShow() {}
     public fun OnHide() {}

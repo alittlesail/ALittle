@@ -6,44 +6,32 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = ALittle.GetAllStruct()
 
-ALittle.RegStruct(-338112738, "ALittle.UIDropFileEvent", {
-name = "ALittle.UIDropFileEvent", ns_name = "ALittle", rl_name = "UIDropFileEvent", hash_code = -338112738,
-name_list = {"target","path"},
-type_list = {"ALittle.DisplayObject","string"},
+ALittle.RegStruct(1876308853, "AUIPlugin.AUIFileSelectItemUserData", {
+name = "AUIPlugin.AUIFileSelectItemUserData", ns_name = "AUIPlugin", rl_name = "AUIFileSelectItemUserData", hash_code = 1876308853,
+name_list = {"path","directory"},
+type_list = {"string","bool"},
 option_map = {}
 })
-ALittle.RegStruct(-449066808, "ALittle.UIClickEvent", {
-name = "ALittle.UIClickEvent", ns_name = "ALittle", rl_name = "UIClickEvent", hash_code = -449066808,
-name_list = {"target","is_drag"},
-type_list = {"ALittle.DisplayObject","bool"},
+ALittle.RegStruct(1821709712, "AUIPlugin.AUIFileSelectRightButtonDownEvent", {
+name = "AUIPlugin.AUIFileSelectRightButtonDownEvent", ns_name = "AUIPlugin", rl_name = "AUIFileSelectRightButtonDownEvent", hash_code = 1821709712,
+name_list = {"target","path","directory"},
+type_list = {"ALittle.EventDispatcher","string","bool"},
 option_map = {}
 })
-ALittle.RegStruct(544684311, "ALittle.UIMoveInEvent", {
-name = "ALittle.UIMoveInEvent", ns_name = "ALittle", rl_name = "UIMoveInEvent", hash_code = 544684311,
+ALittle.RegStruct(1715346212, "ALittle.Event", {
+name = "ALittle.Event", ns_name = "ALittle", rl_name = "Event", hash_code = 1715346212,
 name_list = {"target"},
-type_list = {"ALittle.DisplayObject"},
+type_list = {"ALittle.EventDispatcher"},
 option_map = {}
 })
-ALittle.RegStruct(-573946464, "AUIPlugin.AUIFileSelectCollectRunTime", {
-name = "AUIPlugin.AUIFileSelectCollectRunTime", ns_name = "AUIPlugin", rl_name = "AUIFileSelectCollectRunTime", hash_code = -573946464,
-name_list = {"cur_count","total_count"},
-type_list = {"int","int"},
+ALittle.RegStruct(1686540930, "AUIPlugin.AUIFileSelectItemInfo", {
+name = "AUIPlugin.AUIFileSelectItemInfo", ns_name = "AUIPlugin", rl_name = "AUIFileSelectItemInfo", hash_code = 1686540930,
+name_list = {"name","frame","image","file","dir","button"},
+type_list = {"ALittle.DisplayObject","ALittle.DisplayObject","ALittle.Image","ALittle.Image","ALittle.Image","ALittle.DisplayObject"},
 option_map = {}
 })
-ALittle.RegStruct(-641444818, "ALittle.UIRButtonDownEvent", {
-name = "ALittle.UIRButtonDownEvent", ns_name = "ALittle", rl_name = "UIRButtonDownEvent", hash_code = -641444818,
-name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
-type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
-option_map = {}
-})
-ALittle.RegStruct(-1001723540, "ALittle.UIMouseMoveEvent", {
-name = "ALittle.UIMouseMoveEvent", ns_name = "ALittle", rl_name = "UIMouseMoveEvent", hash_code = -1001723540,
-name_list = {"target","abs_x","abs_y","rel_x","rel_y"},
-type_list = {"ALittle.DisplayObject","double","double","double","double"},
-option_map = {}
-})
-ALittle.RegStruct(-1202439334, "ALittle.UIMoveOutEvent", {
-name = "ALittle.UIMoveOutEvent", ns_name = "ALittle", rl_name = "UIMoveOutEvent", hash_code = -1202439334,
+ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
+name = "ALittle.UIEvent", ns_name = "ALittle", rl_name = "UIEvent", hash_code = -1479093282,
 name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
 option_map = {}
@@ -54,34 +42,46 @@ name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
 type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
 option_map = {}
 })
-ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
-name = "ALittle.UIEvent", ns_name = "ALittle", rl_name = "UIEvent", hash_code = -1479093282,
+ALittle.RegStruct(-1202439334, "ALittle.UIMoveOutEvent", {
+name = "ALittle.UIMoveOutEvent", ns_name = "ALittle", rl_name = "UIMoveOutEvent", hash_code = -1202439334,
 name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
-ALittle.RegStruct(1686540930, "AUIPlugin.AUIFileSelectItemInfo", {
-name = "AUIPlugin.AUIFileSelectItemInfo", ns_name = "AUIPlugin", rl_name = "AUIFileSelectItemInfo", hash_code = 1686540930,
-name_list = {"name","frame","image","file","dir","button"},
-type_list = {"ALittle.DisplayObject","ALittle.DisplayObject","ALittle.Image","ALittle.Image","ALittle.Image","ALittle.DisplayObject"},
+ALittle.RegStruct(-1001723540, "ALittle.UIMouseMoveEvent", {
+name = "ALittle.UIMouseMoveEvent", ns_name = "ALittle", rl_name = "UIMouseMoveEvent", hash_code = -1001723540,
+name_list = {"target","abs_x","abs_y","rel_x","rel_y"},
+type_list = {"ALittle.DisplayObject","double","double","double","double"},
 option_map = {}
 })
-ALittle.RegStruct(1715346212, "ALittle.Event", {
-name = "ALittle.Event", ns_name = "ALittle", rl_name = "Event", hash_code = 1715346212,
+ALittle.RegStruct(-641444818, "ALittle.UIRButtonDownEvent", {
+name = "ALittle.UIRButtonDownEvent", ns_name = "ALittle", rl_name = "UIRButtonDownEvent", hash_code = -641444818,
+name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
+type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
+option_map = {}
+})
+ALittle.RegStruct(-573946464, "AUIPlugin.AUIFileSelectCollectRunTime", {
+name = "AUIPlugin.AUIFileSelectCollectRunTime", ns_name = "AUIPlugin", rl_name = "AUIFileSelectCollectRunTime", hash_code = -573946464,
+name_list = {"cur_count","total_count"},
+type_list = {"int","int"},
+option_map = {}
+})
+ALittle.RegStruct(544684311, "ALittle.UIMoveInEvent", {
+name = "ALittle.UIMoveInEvent", ns_name = "ALittle", rl_name = "UIMoveInEvent", hash_code = 544684311,
 name_list = {"target"},
-type_list = {"ALittle.EventDispatcher"},
+type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
-ALittle.RegStruct(1821709712, "AUIPlugin.AUIFileSelectRightButtonDownEvent", {
-name = "AUIPlugin.AUIFileSelectRightButtonDownEvent", ns_name = "AUIPlugin", rl_name = "AUIFileSelectRightButtonDownEvent", hash_code = 1821709712,
-name_list = {"target","path","directory"},
-type_list = {"ALittle.EventDispatcher","string","bool"},
+ALittle.RegStruct(-449066808, "ALittle.UIClickEvent", {
+name = "ALittle.UIClickEvent", ns_name = "ALittle", rl_name = "UIClickEvent", hash_code = -449066808,
+name_list = {"target","is_drag"},
+type_list = {"ALittle.DisplayObject","bool"},
 option_map = {}
 })
-ALittle.RegStruct(1876308853, "AUIPlugin.AUIFileSelectItemUserData", {
-name = "AUIPlugin.AUIFileSelectItemUserData", ns_name = "AUIPlugin", rl_name = "AUIFileSelectItemUserData", hash_code = 1876308853,
-name_list = {"path","directory"},
-type_list = {"string","bool"},
+ALittle.RegStruct(-338112738, "ALittle.UIDropFileEvent", {
+name = "ALittle.UIDropFileEvent", ns_name = "ALittle", rl_name = "UIDropFileEvent", hash_code = -338112738,
+name_list = {"target","path"},
+type_list = {"ALittle.DisplayObject","string"},
 option_map = {}
 })
 

@@ -426,11 +426,15 @@ ALittle.Tab = JavaScript.Class(ALittle.Grid3, {
 		return true;
 	},
 	SpliceChild : function(index, count) {
+		let remain_count = this._child_count - index + 1;
 		if (count === undefined) {
-			count = this._child_count;
+			count = remain_count;
 		}
 		if (count <= 0) {
 			return 0;
+		}
+		if (count > remain_count) {
+			count = remain_count;
 		}
 		let show_center = this.show_center;
 		let endv = index + count;

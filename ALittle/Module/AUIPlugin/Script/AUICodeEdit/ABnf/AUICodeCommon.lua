@@ -17,8 +17,12 @@ function AUICodeCommon:Ctor(project, full_path)
 	___rawset(self, "_abnf_file", alanguage.create_abnffile(self._project.project, full_path, ""))
 end
 
-function AUICodeCommon:OnOpen()
-	self._project:UpdateFile("", self._full_path)
+function AUICodeCommon:OnOpen(content)
+	if content ~= nil then
+		self._project:TempFile("", self._full_path, content)
+	else
+		self._project:UpdateFile("", self._full_path)
+	end
 end
 
 function AUICodeCommon:OnShow()

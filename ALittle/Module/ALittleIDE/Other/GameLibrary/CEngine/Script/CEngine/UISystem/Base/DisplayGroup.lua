@@ -131,8 +131,12 @@ function DisplayGroup:RemoveChild(child)
 end
 
 function DisplayGroup:SpliceChild(index, count)
+	local remain_count = self._child_count - index + 1
 	if count == nil then
-		count = self._child_count
+		count = remain_count
+	end
+	if count > remain_count then
+		count = remain_count
 	end
 	if count <= 0 then
 		return 0

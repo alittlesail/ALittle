@@ -62,7 +62,7 @@ function IDECodeTabChild:OnOpen()
 	if self._language == nil and self._user_info.project ~= nil and ALittle.File_GetFileExtByPathAndUpper(self._user_info.path) == self._user_info.project.upper_ext then
 		self._language = AUIPlugin.AUICodeALittleScript(self._user_info.project, self._user_info.path, self._user_info.module_path)
 	end
-	self._edit:Load(self._user_info.path, self._revoke_list, self._language)
+	self._edit:Load(self._user_info.path, nil, self._revoke_list, self._language)
 end
 
 function IDECodeTabChild:OnTabRightMenu(menu)

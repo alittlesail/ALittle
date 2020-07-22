@@ -588,8 +588,10 @@ public class Tab : Grid3
 
     public fun SpliceChild(int index, [Nullable] int count) : int
     {
-        if (count == null) count = this._child_count;
+        var remain_count = this._child_count - index + 1;
+        if (count == null) count = remain_count;
         if (count <= 0) return 0;
+        if (count > remain_count) count = remain_count;
 
         var show_center = cast<DisplayGroup>(this.show_center);
 

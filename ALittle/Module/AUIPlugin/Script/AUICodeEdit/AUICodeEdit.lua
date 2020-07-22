@@ -178,12 +178,20 @@ local FOCUS_BLUE = 246 / 255
 assert(ALittle.Quad, " extends class:ALittle.Quad is nil")
 AUICodeQuad = Lua.Class(ALittle.Quad, "AUIPlugin.AUICodeQuad")
 
+function AUICodeQuad:Ctor()
+	___rawset(self, "_ediable", true)
+end
+
 function AUICodeQuad.__getter:is_input()
 	return true
 end
 
 function AUICodeQuad.__getter:editable()
-	return true
+	return self._ediable
+end
+
+function AUICodeQuad.__setter:editable(value)
+	self._ediable = value
 end
 
 function AUICodeQuad.__getter:font_size()
@@ -390,6 +398,7 @@ assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
 AUICodeEdit = Lua.Class(ALittle.DisplayLayout, "AUIPlugin.AUICodeEdit")
 
 function AUICodeEdit:Ctor()
+	___rawset(self, "_editable", true)
 	___rawset(self, "_in_query_info", false)
 	___rawset(self, "_move_in", false)
 	___rawset(self, "_line_list", {})
@@ -441,7 +450,11 @@ function AUICodeEdit.__getter:is_input()
 end
 
 function AUICodeEdit.__getter:editable()
-	return true
+	return self._editable
+end
+
+function AUICodeEdit.__setter:editable(value)
+	self._editable = value
 end
 
 function AUICodeEdit.__getter:font_size()
@@ -846,14 +859,7 @@ end
 AUICodeEdit.UpdateErrorInfo = Lua.CoWrap(AUICodeEdit.UpdateErrorInfo)
 
 function AUICodeEdit:HandleFindInputChanged(event)
-	if self._find_map ~= nil then
-		for it_line, list in ___pairs(self._find_map) do
-			for index, info in ___ipairs(list) do
-				info._focus_quad:RemoveFromParent()
-			end
-		end
-	end
-	self._find_map = nil
+	self:ClearFindInfo()
 	local content = self._find_input.text
 	local list = ALittle.String_SplitUTF8(content)
 	local find_len = ALittle.List_MaxN(list)
@@ -929,6 +935,10 @@ end
 
 function AUICodeEdit:HandleFindEscClick(event)
 	self._find_dialog.visible = false
+	self:ClearFindInfo()
+end
+
+function AUICodeEdit:ClearFindInfo()
 	if self._find_map ~= nil then
 		for it_line, list in ___pairs(self._find_map) do
 			for index, info in ___ipairs(list) do
@@ -937,6 +947,7 @@ function AUICodeEdit:HandleFindEscClick(event)
 		end
 	end
 	self._find_map = nil
+	self._first_info = nil
 end
 
 function AUICodeEdit:HandleChangedEvent(event)
@@ -947,6 +958,7 @@ function AUICodeEdit:HandleChangedEvent(event)
 	for object, _ in ___pairs(map) do
 		object:RestoreColor()
 	end
+	self:ClearFindInfo()
 	self:StartErrorLoop(false)
 end
 
@@ -1242,25 +1254,29 @@ function AUICodeEdit:HandleKeyDown(event)
 		end
 		event.handled = true
 	elseif event.sym == 8 then
-		if self._select_cursor.line_start == nil then
-			is_change = self._cursor:DeleteLeft(true)
-			self._cursor:RejustShowCursor()
-			g_AUICodeCompleteScreen:TryHide(self)
-			if g_AUICodeCompleteScreen:IsShow() then
-				g_AUICodeCompleteScreen:ShowComplete(self)
+		if self._editable then
+			if self._select_cursor.line_start == nil then
+				is_change = self._cursor:DeleteLeft(true)
+				self._cursor:RejustShowCursor()
+				g_AUICodeCompleteScreen:TryHide(self)
+				if g_AUICodeCompleteScreen:IsShow() then
+					g_AUICodeCompleteScreen:ShowComplete(self)
+				end
+			else
+				is_change = self:DeleteSelectText()
+				g_AUICodeCompleteScreen:Hide()
 			end
-		else
-			is_change = self:DeleteSelectText()
-			g_AUICodeCompleteScreen:Hide()
+			event.handled = true
 		end
-		event.handled = true
 	elseif event.sym == 127 then
-		if self._select_cursor.line_start == nil then
-			is_change = self._cursor:DeleteRight(true)
-		else
-			is_change = self:DeleteSelectText()
+		if self._editable then
+			if self._select_cursor.line_start == nil then
+				is_change = self._cursor:DeleteRight(true)
+			else
+				is_change = self:DeleteSelectText()
+			end
+			event.handled = true
 		end
-		event.handled = true
 	elseif event.sym == 1073741898 then
 		if ALittle.BitAnd(event.mod, 0x0003) == 0 then
 			if self._select_cursor.line_start ~= nil then
@@ -1296,52 +1312,58 @@ function AUICodeEdit:HandleKeyDown(event)
 		end
 		event.handled = true
 	elseif event.sym == 13 or event.sym == 1073741912 then
-		if g_AUICodeCompleteScreen:IsShow() then
-			is_change = g_AUICodeCompleteScreen:DoSelect()
-		else
-			local old_line = self._cursor.line
-			local old_char = self._cursor.char
-			local revoke_bind = ALittle.RevokeBind()
-			is_change = self:InsertText("\n", true, revoke_bind)
-			if self._cursor:CurLineHasChar() then
-				self._cursor:UpdateVirtualIndent()
-				local text = self._cursor.virtual_indent
-				if text ~= "" then
-					is_change = self:InsertText(text, true, revoke_bind)
-				end
-				if self._cursor:GetCurCharInLine() == "}" then
-					self._cursor:SetLineChar(old_line, old_char)
-					is_change = self:InsertText("\n", true, revoke_bind)
+		if self._editable then
+			if g_AUICodeCompleteScreen:IsShow() then
+				is_change = g_AUICodeCompleteScreen:DoSelect()
+			else
+				local old_line = self._cursor.line
+				local old_char = self._cursor.char
+				local revoke_bind = ALittle.RevokeBind()
+				is_change = self:InsertText("\n", true, revoke_bind)
+				if self._cursor:CurLineHasChar() then
+					self._cursor:UpdateVirtualIndent()
+					local text = self._cursor.virtual_indent
+					if text ~= "" then
+						is_change = self:InsertText(text, true, revoke_bind)
+					end
+					if self._cursor:GetCurCharInLine() == "}" then
+						self._cursor:SetLineChar(old_line, old_char)
+						is_change = self:InsertText("\n", true, revoke_bind)
+						self._cursor:RejustShowCursor()
+					end
+				else
 					self._cursor:RejustShowCursor()
 				end
-			else
-				self._cursor:RejustShowCursor()
+				revoke_bind.complete = Lua.Bind(self.DispatchChangedEvent, self)
+				self._revoke_list:PushRevoke(revoke_bind)
 			end
-			revoke_bind.complete = Lua.Bind(self.DispatchChangedEvent, self)
-			self._revoke_list:PushRevoke(revoke_bind)
+			event.handled = true
 		end
-		event.handled = true
 	elseif event.sym == 9 then
-		if self._select_cursor.line_start ~= self._select_cursor.line_end then
-			if ALittle.BitAnd(event.mod, 0x0003) ~= 0 then
-				is_change = self:MultiTabDelete(true)
+		if self._editable then
+			if self._select_cursor.line_start ~= self._select_cursor.line_end then
+				if ALittle.BitAnd(event.mod, 0x0003) ~= 0 then
+					is_change = self:MultiTabDelete(true)
+				else
+					is_change = self:MultiTabInsert(true)
+				end
 			else
-				is_change = self:MultiTabInsert(true)
+				local text = self._cursor.virtual_indent .. "\t"
+				is_change = self:InsertText(text, true)
 			end
-		else
-			local text = self._cursor.virtual_indent .. "\t"
-			is_change = self:InsertText(text, true)
+			g_AUICodeCompleteScreen:Hide()
+			event.handled = true
 		end
-		g_AUICodeCompleteScreen:Hide()
-		event.handled = true
 	elseif event.sym == 120 and ALittle.BitAnd(event.mod, 0x00c0) ~= 0 then
-		local select_text = self._select_cursor:GetSelectText()
-		if select_text ~= nil then
-			ALittle.System_SetClipboardText(select_text)
+		if self._editable then
+			local select_text = self._select_cursor:GetSelectText()
+			if select_text ~= nil then
+				ALittle.System_SetClipboardText(select_text)
+			end
+			is_change = self:DeleteSelectText()
+			g_AUICodeCompleteScreen:Hide()
+			event.handled = true
 		end
-		is_change = self:DeleteSelectText()
-		g_AUICodeCompleteScreen:Hide()
-		event.handled = true
 	elseif event.sym == 99 and ALittle.BitAnd(event.mod, 0x00c0) ~= 0 then
 		local select_text = self._select_cursor:GetSelectText()
 		if select_text ~= nil then
@@ -1349,14 +1371,16 @@ function AUICodeEdit:HandleKeyDown(event)
 		end
 		event.handled = true
 	elseif event.sym == 118 and ALittle.BitAnd(event.mod, 0x00c0) ~= 0 then
-		if ALittle.System_HasClipboardText() then
-			local old_line = self._cursor.line
-			is_change = self:InsertText(ALittle.System_GetClipboardText(), true)
-			local new_line = self._cursor.line
-			g_AUICodeCompleteScreen:Hide()
-			self:MultiLineFormat(old_line, new_line)
+		if self._editable then
+			if ALittle.System_HasClipboardText() then
+				local old_line = self._cursor.line
+				is_change = self:InsertText(ALittle.System_GetClipboardText(), true)
+				local new_line = self._cursor.line
+				g_AUICodeCompleteScreen:Hide()
+				self:MultiLineFormat(old_line, new_line)
+			end
+			event.handled = true
 		end
-		event.handled = true
 	elseif event.sym == 97 and ALittle.BitAnd(event.mod, 0x00c0) ~= 0 then
 		if self._line_count > 0 then
 			self._cursor:SetLineChar(self._line_count, self._line_list[self._line_count].char_count)
@@ -1450,7 +1474,7 @@ function AUICodeEdit:OnClose()
 	collectgarbage("collect")
 end
 
-function AUICodeEdit:Load(file_path, revoke_list, language)
+function AUICodeEdit:Load(file_path, content, revoke_list, language)
 	self._language = language
 	local upper_ext = ALittle.File_GetFileExtByPathAndUpper(file_path)
 	if self._language == nil and upper_ext == "ABNF" then
@@ -1460,9 +1484,11 @@ function AUICodeEdit:Load(file_path, revoke_list, language)
 		self._language = AUICodeCommon(nil, file_path)
 	end
 	if self._language ~= nil then
-		self._language:OnOpen()
+		self._language:OnOpen(content)
 	end
-	local content = ALittle.File_ReadTextFromStdFile(file_path)
+	if content == nil then
+		content = ALittle.File_ReadTextFromStdFile(file_path)
+	end
 	if content == nil then
 		return false
 	end

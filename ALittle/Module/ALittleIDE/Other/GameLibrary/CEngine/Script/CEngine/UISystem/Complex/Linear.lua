@@ -112,8 +112,11 @@ function Linear:RemoveChild(child)
 end
 
 function Linear:SpliceChild(index, count)
+	local remain_count = self._child_count - index + 1
 	if count == nil then
-		count = self._child_count
+		count = remain_count
+	elseif count > remain_count then
+		count = remain_count
 	end
 	if count <= 0 then
 		return 0

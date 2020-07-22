@@ -39,7 +39,7 @@ public class IDECodeTabChild : IDETabChild
         [Language(Lua)]
         if (this._language == null && this._user_info.project != null && ALittle.File_GetFileExtByPathAndUpper(this._user_info.path) == this._user_info.project.upper_ext)
             this._language = new AUIPlugin.AUICodeALittleScript(this._user_info.project, this._user_info.path, this._user_info.module_path);
-        this._edit.Load(this._user_info.path, this._revoke_list, this._language);
+        this._edit.Load(this._user_info.path, null, this._revoke_list, this._language);
     }
 
     private fun OnTabRightMenu(AUIPlugin.AUIRightMenu menu)

@@ -81,9 +81,12 @@ public class AUICodeABnf : AUICodeLanguage
         this._abnf_file = lua.abnf.create_abnf_file(this._project.project, full_path, "");
     }
 
-    public fun OnOpen()
+    public fun OnOpen(string content)
     {
-        this._project.UpdateFile("", this._full_path);
+        if (content != null)
+        	this._project.TempFile("", this._full_path, content);
+        else
+	        this._project.UpdateFile("", this._full_path);
     }
 
     public fun OnShow()

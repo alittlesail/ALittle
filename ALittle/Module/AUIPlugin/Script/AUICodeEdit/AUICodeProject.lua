@@ -92,6 +92,10 @@ function AUICodeProject:UpdateFile(module_path, full_path)
 	alanguage.abnfproject_updatefile(self._project, module_path, full_path, 0)
 end
 
+function AUICodeProject:TempFile(module_path, full_path, text)
+	alanguage.abnfproject_tempfile(self._project, module_path, full_path, text, 0)
+end
+
 function AUICodeProject:RemoveFile(full_path)
 	alanguage.abnfproject_removefile(self._project, full_path)
 end

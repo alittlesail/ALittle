@@ -122,6 +122,10 @@ function AUICodeLanguage:QueryAutoFormat(input)
 	return false
 end
 
+function AUICodeLanguage:NeedAutoFormat()
+	return false
+end
+
 function AUICodeLanguage:QueryColorValue(tag)
 	return nil
 end

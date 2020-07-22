@@ -1,0 +1,21 @@
+
+// 语法树的跟【Root是系统内置，必须定义Root作为语法根节点，没有定义会报错】
+Root = (Title Child*)?;
+
+// 块注释【BlockComment是系统内置的块注释语法规则名】
+BlockComment : "<" [128,128,128] = "<%!%-%-!(%-%->)*%-%->";
+
+// 字符串
+Text : "\""@ [106,135,89] = "\"([^\"\\]|\\.)*\"";
+// 规则名称
+Id : "[_a-zA-Z]" [204,120,50] = "[_a-zA-Z][_a-zA-Z0-9]*";
+
+Attr = AttrKey@ '='@ Text;
+AttrKey [152,118,170] = Id;
+
+Title = '<?'@ Id Attr* '?>';
+Child = ChildPre (PairChild | CloseChild);
+
+ChildPre = '<'@ Id Attr*;
+PairChild = '>'@ Child* '</' Id '>';
+CloseChild = '/>'@;

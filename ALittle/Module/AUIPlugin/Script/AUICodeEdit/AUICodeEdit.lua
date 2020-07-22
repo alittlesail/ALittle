@@ -1655,7 +1655,7 @@ function AUICodeEdit:MultiTabInsert(need_revoke, revoke_bind)
 end
 
 function AUICodeEdit:MultiLineFormat(line_start, line_end)
-	if self._language == nil then
+	if self._language == nil or not self._language:NeedAutoFormat() then
 		return
 	end
 	if line_start > line_end then

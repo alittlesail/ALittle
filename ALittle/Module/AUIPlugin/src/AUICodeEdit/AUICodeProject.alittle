@@ -6,6 +6,7 @@ protected var g_ABnfProjectMap:Map<string, AUICodeProject> = ALittle.CreateValue
 // 用于记录大写后缀和abnf描述文件的映射关系
 protected var g_UpperExtMapABnf = new Map<string, string>();
 g_UpperExtMapABnf["JSON"] = "AJson.abnf";
+g_UpperExtMapABnf["XML"] = "AXml.abnf";
 
 public struct AUICodeProjectGotoEvent : ALittle.Event
 {

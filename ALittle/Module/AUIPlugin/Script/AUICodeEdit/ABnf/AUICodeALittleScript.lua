@@ -165,6 +165,10 @@ function AUICodeALittleScript:QueryAutoFormat(input)
 	return input == ";" or input == "}"
 end
 
+function AUICodeALittleScript:NeedAutoFormat()
+	return true
+end
+
 function AUICodeALittleScript:SetTargetLanguage(target_languaeg)
 	alittlescript.alittlescriptproject_settargetlanguage(self._project.project, target_languaeg)
 end

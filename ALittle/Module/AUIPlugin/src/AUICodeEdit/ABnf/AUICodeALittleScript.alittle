@@ -165,6 +165,12 @@ public class AUICodeALittleScript : AUICodeLanguage
         return input == ";" || input == "}";
     }
 
+    // 查询是否支持自动格式化
+    public fun NeedAutoFormat() : bool
+    {
+        return true;
+    }
+
     // 设置目标生成语言
     public fun SetTargetLanguage(string target_languaeg)
     {

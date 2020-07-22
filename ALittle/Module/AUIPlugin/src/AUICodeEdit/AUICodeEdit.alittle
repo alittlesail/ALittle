@@ -1702,7 +1702,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
     // 行缩进格式化
     public fun MultiLineFormat(int line_start, int line_end)
     {
-        if (this._language == null) return;
+        if (this._language == null || !this._language.NeedAutoFormat()) return;
 
         if (line_start > line_end)
         {

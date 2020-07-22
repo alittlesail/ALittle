@@ -21,6 +21,7 @@ option_map = {}
 g_ABnfProjectMap = ALittle.CreateValueWeakMap()
 g_UpperExtMapABnf = {}
 g_UpperExtMapABnf["JSON"] = "AJson.abnf"
+g_UpperExtMapABnf["XML"] = "AXml.abnf"
 assert(ALittle.EventDispatcher, " extends class:ALittle.EventDispatcher is nil")
 AUICodeProject = Lua.Class(ALittle.EventDispatcher, "AUIPlugin.AUICodeProject")
 

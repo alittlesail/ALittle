@@ -11,7 +11,6 @@ ALittle.TextArea = JavaScript.Class(ALittle.DisplayObject, {
 		this._italic = false;
 		this._underline = false;
 		this._deleteline = false;
-		this._outline = false;
 		this._flip = 0;
 		this._halign_type = ALittle.UIEnumTypes.HALIGN_LEFT;
 		this._valign_type = ALittle.UIEnumTypes.VALIGN_TOP;
@@ -93,16 +92,6 @@ ALittle.TextArea = JavaScript.Class(ALittle.DisplayObject, {
 	},
 	get deleteline() {
 		return this._deleteline;
-	},
-	set outline(value) {
-		if (this._outline === value) {
-			return;
-		}
-		this._outline = value;
-		this._show.SetOutline(value);
-	},
-	get outline() {
-		return this._outline;
 	},
 	set halign(value) {
 		if (this._halign_type === value) {

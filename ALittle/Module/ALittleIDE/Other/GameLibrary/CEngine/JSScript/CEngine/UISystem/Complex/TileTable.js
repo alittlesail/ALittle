@@ -105,6 +105,28 @@ ALittle.TileTable = JavaScript.Class(ALittle.DisplayGroup, {
 		this.Layout(child_index);
 		return true;
 	},
+	SpliceChild : function(index, count) {
+		if (count === undefined) {
+			count = this._child_count;
+		}
+		if (count <= 0) {
+			return 0;
+		}
+		let endv = index + count;
+		for (let i = index; i < endv; i += 1) {
+			let child = this._childs[i - 1];
+			if (child === undefined) {
+				break;
+			}
+			this._show_child_map.delete(child);
+			child.RemoveEventListener(___all_struct.get(-431205740), this);
+		}
+		let result = ALittle.DisplayGroup.SpliceChild.call(this, index, count);
+		if (result !== 0) {
+			this.Layout(index);
+		}
+		return result;
+	},
 	RemoveAllChild : function() {
 		let ___OBJECT_1 = this._childs;
 		for (let k = 1; k <= ___OBJECT_1.length; ++k) {

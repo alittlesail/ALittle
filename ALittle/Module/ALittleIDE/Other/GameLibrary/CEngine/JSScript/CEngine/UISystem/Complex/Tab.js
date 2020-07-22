@@ -425,6 +425,55 @@ ALittle.Tab = JavaScript.Class(ALittle.Grid3, {
 		this.tab_index = new_index;
 		return true;
 	},
+	SpliceChild : function(index, count) {
+		if (count === undefined) {
+			count = this._child_count;
+		}
+		if (count <= 0) {
+			return 0;
+		}
+		let show_center = this.show_center;
+		let endv = index + count;
+		for (let i = index; i < endv; i += 1) {
+			let child = show_center.GetChildByIndex(i);
+			if (child === undefined) {
+				break;
+			}
+			child.visible = true;
+			this._child_id_map.delete(child);
+			let simplelayout = this._linear.GetChildByIndex(index);
+			if (simplelayout !== undefined) {
+				let layout_childs = simplelayout.childs;
+				layout_childs[1 - 1].RemoveEventListener(___all_struct.get(958494922), this, this.HandleRadioButtonChanged);
+				layout_childs[1 - 1].RemoveEventListener(___all_struct.get(1337289812), this, this.HandleRadioButtonDrag);
+				layout_childs[1 - 1].RemoveEventListener(___all_struct.get(1301789264), this, this.HandleRadioButtonDragBegin);
+				layout_childs[1 - 1].RemoveEventListener(___all_struct.get(150587926), this, this.HandleRadioButtonDragEnd);
+				layout_childs[1 - 1].RemoveEventListener(___all_struct.get(-1330840), this, this.HandleRadioButtonMClick);
+				layout_childs[1 - 1].RemoveEventListener(___all_struct.get(-641444818), this, this.HandleRadioButtonRButtonDown);
+				layout_childs[1 - 1].RemoveEventListener(___all_struct.get(-1604617962), this, this.HandleRadioButtonKeyDown);
+				layout_childs[3 - 1].RemoveEventListener(___all_struct.get(-449066808), this, this.HandleCloseButtonClick);
+				layout_childs[5 - 1].RemoveEventListener(___all_struct.get(-449066808), this, this.HandleCloseButtonClick);
+				layout_childs[1 - 1].group = undefined;
+			}
+		}
+		this._linear.SpliceChild(index, count);
+		let result = show_center.SpliceChild(index, count);
+		let new_index = 0;
+		if (this._tab_index >= index && this._tab_index < endv) {
+			new_index = index;
+		} else if (this._tab_index >= endv) {
+			new_index = this._tab_index - result;
+		} else {
+			new_index = this._tab_index;
+		}
+		if (new_index > show_center.child_count) {
+			new_index = show_center.child_count;
+		} else if (new_index < 0) {
+			new_index = 0;
+		}
+		this.tab_index = new_index;
+		return result;
+	},
 	HasChild : function(child) {
 		let show_center = this.show_center;
 		return show_center.HasChild(child);

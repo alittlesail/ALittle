@@ -20,7 +20,6 @@ ALittle.TextEdit = JavaScript.Class(ALittle.DisplayObject, {
 		this._italic = false;
 		this._underline = false;
 		this._deleteline = false;
-		this._outline = false;
 		this._default_text = "";
 		this._default_text_alpha = 1;
 		this._flip = 0;
@@ -105,6 +104,9 @@ ALittle.TextEdit = JavaScript.Class(ALittle.DisplayObject, {
 	},
 	get cursor_y() {
 		return this._show.GetCursorY();
+	},
+	get cursor_b() {
+		return (this._show.GetCursorY() + this._show.GetCursorHeight()) * this.scale_y + this._ims_padding;
 	},
 	set editable(value) {
 		this._editable = value;
@@ -193,16 +195,6 @@ ALittle.TextEdit = JavaScript.Class(ALittle.DisplayObject, {
 	},
 	get deleteline() {
 		return this._deleteline;
-	},
-	set outline(value) {
-		if (this._outline === value) {
-			return;
-		}
-		this._outline = value;
-		this._show.SetOutline(value);
-	},
-	get outline() {
-		return this._outline;
 	},
 	SetCursorToEnd : function() {
 		this._is_selecting = false;

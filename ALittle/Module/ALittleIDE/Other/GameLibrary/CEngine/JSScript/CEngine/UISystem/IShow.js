@@ -67,8 +67,6 @@ ALittle.IDisplayObject = JavaScript.Class(undefined, {
 	},
 	SetDeleteline : function(value) {
 	},
-	SetOutline : function(value) {
-	},
 	GetRealWidth : function() {
 		return 0;
 	},
@@ -104,6 +102,9 @@ ALittle.IDisplayObject = JavaScript.Class(undefined, {
 		return 0;
 	},
 	GetCursorY : function() {
+		return 0;
+	},
+	GetCursorHeight : function() {
 		return 0;
 	},
 	GetText : function() {

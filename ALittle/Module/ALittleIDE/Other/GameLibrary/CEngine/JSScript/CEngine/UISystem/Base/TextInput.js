@@ -20,7 +20,6 @@ ALittle.TextInput = JavaScript.Class(ALittle.DisplayObject, {
 		this._italic = false;
 		this._underline = false;
 		this._deleteline = false;
-		this._outline = false;
 		this._password_mode = false;
 		this._default_text = "";
 		this._default_text_alpha = 1;
@@ -88,6 +87,9 @@ ALittle.TextInput = JavaScript.Class(ALittle.DisplayObject, {
 	},
 	get cursor_y() {
 		return this._show.GetCursorY();
+	},
+	get cursor_b() {
+		return (this._show.GetCursorY() + this._show.GetCursorHeight()) * this.scale_y + this._ims_padding;
 	},
 	set editable(value) {
 		this._editable = value;
@@ -176,16 +178,6 @@ ALittle.TextInput = JavaScript.Class(ALittle.DisplayObject, {
 	},
 	get deleteline() {
 		return this._deleteline;
-	},
-	set outline(value) {
-		if (this._outline === value) {
-			return;
-		}
-		this._outline = value;
-		this._show.SetOutline(value);
-	},
-	get outline() {
-		return this._outline;
 	},
 	set password_mode(value) {
 		this._is_selecting = false;
@@ -385,6 +377,10 @@ ALittle.TextInput = JavaScript.Class(ALittle.DisplayObject, {
 			event.handled = true;
 		} else if (event.sym === 9) {
 			this.DispatchEvent(___all_struct.get(2024735182), {});
+			event.handled = true;
+		} else if (event.sym === ALittle.UIEnumTypes.KEY_ESC) {
+			this.DispatchEvent(___all_struct.get(1637310579), {});
+			event.handled = true;
 		}
 		if (is_change) {
 			this.DispatchEvent(___all_struct.get(958494922), {});

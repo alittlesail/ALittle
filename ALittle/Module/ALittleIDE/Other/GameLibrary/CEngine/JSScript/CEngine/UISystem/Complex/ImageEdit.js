@@ -136,12 +136,6 @@ ALittle.ImageEdit = JavaScript.Class(ALittle.DisplayLayout, {
 	get deleteline() {
 		return this._show_edit.deleteline;
 	},
-	set outline(value) {
-		this._show_edit.outline = value;
-	},
-	get outline() {
-		return this._show_edit.outline;
-	},
 	set cursor_red(value) {
 		this._show_edit.cursor_red = value;
 	},

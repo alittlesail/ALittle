@@ -13,7 +13,6 @@ ALittle.Text = JavaScript.Class(ALittle.DisplayObject, {
 		this._italic = false;
 		this._underline = false;
 		this._deleteline = false;
-		this._outline = false;
 		this._flip = 0;
 		this._show = ALittle.NewObject(JavaScript.JText);
 	},
@@ -100,17 +99,6 @@ ALittle.Text = JavaScript.Class(ALittle.DisplayObject, {
 	},
 	get deleteline() {
 		return this._deleteline;
-	},
-	set outline(value) {
-		if (this._outline === value) {
-			return;
-		}
-		this._outline = value;
-		this._show.SetOutline(value);
-		this.RejuseSize();
-	},
-	get outline() {
-		return this._outline;
 	},
 	RejuseSize : function() {
 		if (this._font_path === undefined || this._font_size === undefined) {

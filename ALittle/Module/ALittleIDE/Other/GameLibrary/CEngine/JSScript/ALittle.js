@@ -17,6 +17,7 @@ window.RequireCEngine = function(base_path) {
 		await Require(base_path, "CEngine/Utility/AudioSystem");
 		await Require(base_path, "CEngine/Utility/ModuleSystem");
 		await Require(base_path, "CEngine/Utility/CsvConfigManager");
+		await Require(base_path, "CEngine/Utility/Revocation");
 		await Require(base_path, "CEngine/LoopSystem/LoopAnimation");
 		await Require(base_path, "CEngine/LoopSystem/LoopAttribute");
 		await Require(base_path, "CEngine/LoopSystem/LoopLinear");

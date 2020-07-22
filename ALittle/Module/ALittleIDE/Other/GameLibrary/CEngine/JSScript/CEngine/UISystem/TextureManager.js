@@ -1,22 +1,10 @@
 {
 if (typeof ALittle === "undefined") window.ALittle = {};
 
-ALittle.RegStruct(1002517605, "ALittle.LoadingTextureObjectInfo", {
-name : "ALittle.LoadingTextureObjectInfo", ns_name : "ALittle", rl_name : "LoadingTextureObjectInfo", hash_code : 1002517605,
-name_list : ["callback"],
-type_list : ["Functor<(ALittle.DisplayObject,bool)>"],
-option_map : {}
-})
-ALittle.RegStruct(1266404893, "ALittle.LoadTextureInfo", {
-name : "ALittle.LoadTextureInfo", ns_name : "ALittle", rl_name : "LoadTextureInfo", hash_code : 1266404893,
-name_list : ["loader","cut_loader","texture_mgr"],
-type_list : ["ALittle.ITextureLoader","ALittle.ITextureCutLoader","ALittle.TextureManager"],
-option_map : {}
-})
-ALittle.RegStruct(1754262532, "ALittle.LoadingTextureInfo", {
-name : "ALittle.LoadingTextureInfo", ns_name : "ALittle", rl_name : "LoadingTextureInfo", hash_code : 1754262532,
-name_list : ["cache","object_map"],
-type_list : ["bool","Map<ALittle.DisplayObject,ALittle.LoadingTextureObjectInfo>"],
+ALittle.RegStruct(-1815508639, "ALittle.TextureCutInfo", {
+name : "ALittle.TextureCutInfo", ns_name : "ALittle", rl_name : "TextureCutInfo", hash_code : -1815508639,
+name_list : ["texture_name","max_width","max_height","cache"],
+type_list : ["string","int","int","bool"],
 option_map : {}
 })
 ALittle.RegStruct(1812223610, "ALittle.LoadAtlasInfo", {
@@ -25,10 +13,34 @@ name_list : ["big_path","atlas","big_width","big_height"],
 type_list : ["string","List<string>","int","int"],
 option_map : {}
 })
-ALittle.RegStruct(-1815508639, "ALittle.TextureCutInfo", {
-name : "ALittle.TextureCutInfo", ns_name : "ALittle", rl_name : "TextureCutInfo", hash_code : -1815508639,
-name_list : ["texture_name","max_width","max_height","cache"],
-type_list : ["string","int","int","bool"],
+ALittle.RegStruct(1754262532, "ALittle.LoadingTextureInfo", {
+name : "ALittle.LoadingTextureInfo", ns_name : "ALittle", rl_name : "LoadingTextureInfo", hash_code : 1754262532,
+name_list : ["cache","object_map"],
+type_list : ["bool","Map<ALittle.DisplayObject,ALittle.LoadingTextureObjectInfo>"],
+option_map : {}
+})
+ALittle.RegStruct(1390702448, "ALittle.AltasCollectInfo", {
+name : "ALittle.AltasCollectInfo", ns_name : "ALittle", rl_name : "AltasCollectInfo", hash_code : 1390702448,
+name_list : ["count","list"],
+type_list : ["int","List<List<any>>"],
+option_map : {}
+})
+ALittle.RegStruct(1305876767, "ALittle.PrepareInfo", {
+name : "ALittle.PrepareInfo", ns_name : "ALittle", rl_name : "PrepareInfo", hash_code : 1305876767,
+name_list : ["total","succeed","failed","map","callback"],
+type_list : ["int","int","int","Map<string,bool>","Functor<(int,int,int)>"],
+option_map : {}
+})
+ALittle.RegStruct(1266404893, "ALittle.LoadTextureInfo", {
+name : "ALittle.LoadTextureInfo", ns_name : "ALittle", rl_name : "LoadTextureInfo", hash_code : 1266404893,
+name_list : ["loader","cut_loader","texture_mgr"],
+type_list : ["ALittle.ITextureLoader","ALittle.ITextureCutLoader","ALittle.TextureManager"],
+option_map : {}
+})
+ALittle.RegStruct(1002517605, "ALittle.LoadingTextureObjectInfo", {
+name : "ALittle.LoadingTextureObjectInfo", ns_name : "ALittle", rl_name : "LoadingTextureObjectInfo", hash_code : 1002517605,
+name_list : ["callback"],
+type_list : ["Functor<(ALittle.DisplayObject,bool)>"],
 option_map : {}
 })
 ALittle.RegStruct(-451991995, "ALittle.AltasTextureInfo", {
@@ -41,18 +53,6 @@ ALittle.RegStruct(-60039899, "ALittle.AltasInfo", {
 name : "ALittle.AltasInfo", ns_name : "ALittle", rl_name : "AltasInfo", hash_code : -60039899,
 name_list : ["big_path","atlas","big_width","big_height","t","b","l","r"],
 type_list : ["string","List<string>","int","int","double","double","double","double"],
-option_map : {}
-})
-ALittle.RegStruct(1305876767, "ALittle.PrepareInfo", {
-name : "ALittle.PrepareInfo", ns_name : "ALittle", rl_name : "PrepareInfo", hash_code : 1305876767,
-name_list : ["total","succeed","failed","map","callback"],
-type_list : ["int","int","int","Map<string,bool>","Functor<(int,int,int)>"],
-option_map : {}
-})
-ALittle.RegStruct(1390702448, "ALittle.AltasCollectInfo", {
-name : "ALittle.AltasCollectInfo", ns_name : "ALittle", rl_name : "AltasCollectInfo", hash_code : 1390702448,
-name_list : ["count","list"],
-type_list : ["int","List<List<any>>"],
 option_map : {}
 })
 

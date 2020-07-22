@@ -4,6 +4,7 @@ if (typeof ALittle === "undefined") window.ALittle = {};
 
 let __remove = ALittle.List_Remove;
 let __insert = ALittle.List_Insert;
+let __splice = ALittle.List_Splice;
 let __cos = ALittle.Math_Cos;
 let __sin = ALittle.Math_Sin;
 if (ALittle.DisplayObject === undefined) throw new Error(" extends class:ALittle.DisplayObject is undefined");
@@ -121,6 +122,28 @@ ALittle.DisplayGroup = JavaScript.Class(ALittle.DisplayObject, {
 			}
 		}
 		return false;
+	},
+	SpliceChild : function(index, count) {
+		if (count === undefined) {
+			count = this._child_count;
+		}
+		if (count <= 0) {
+			return 0;
+		}
+		let old_count = this._child_count;
+		let endv = index + count;
+		for (let i = index; i < endv; i += 1) {
+			let child = this._childs[index - 1];
+			if (child === undefined) {
+				break;
+			}
+			this._show.RemoveChild(child._show);
+			child._show_parent = undefined;
+			child._logic_parent = undefined;
+			-- this._child_count;
+		}
+		__splice(this._childs, index, count);
+		return old_count - this._child_count;
 	},
 	HasChild : function(child) {
 		if (child === undefined) {

@@ -55,6 +55,9 @@ ALittle.Linear = JavaScript.Class(ALittle.DisplayGroup, {
 	get gap() {
 		return this._gap;
 	},
+	GetShowMap : function() {
+		return this._show_child_map;
+	},
 	AddChild : function(child, index) {
 		if (ALittle.DisplayGroup.AddChild.call(this, child, index) === false) {
 			return false;
@@ -90,6 +93,30 @@ ALittle.Linear = JavaScript.Class(ALittle.DisplayGroup, {
 		child.RemoveEventListener(___all_struct.get(-431205740), this);
 		this.Layout(child_index);
 		return true;
+	},
+	SpliceChild : function(index, count) {
+		if (count === undefined) {
+			count = this._child_count;
+		}
+		if (count <= 0) {
+			return 0;
+		}
+		let endv = index + count;
+		for (let i = index; i < endv; i += 1) {
+			let child = this._childs[index - 1];
+			if (child === undefined) {
+				break;
+			}
+			this._child_width_map.delete(child);
+			this._child_height_map.delete(child);
+			this._show_child_map.delete(child);
+			child.RemoveEventListener(___all_struct.get(-431205740), this);
+		}
+		let result = ALittle.DisplayGroup.SpliceChild.call(this, index, count);
+		if (result !== 0) {
+			this.Layout(index);
+		}
+		return result;
 	},
 	RemoveAllChild : function() {
 		let ___OBJECT_1 = this._childs;
@@ -194,7 +221,7 @@ ALittle.Linear = JavaScript.Class(ALittle.DisplayGroup, {
 		this._clip_up_index = 0;
 		this._clip_down_index = 0;
 		let child_count = this.child_count;
-		if (index > child_count) {
+		if (index <= 0 || index > child_count) {
 			return;
 		}
 		if (this._type === ALittle.UIEnumTypes.TYPE_H) {
@@ -347,9 +374,7 @@ ALittle.Linear = JavaScript.Class(ALittle.DisplayGroup, {
 				if (childs[i - 1].x < right) {
 					this._show.AddChild(childs[i - 1]._show);
 					new_show_map.set(childs[i - 1], true);
-					if (childs[i - 1].ClipRect !== undefined) {
-						childs[i - 1].ClipRect(left, top, right, bottom, h_move, v_move);
-					}
+					childs[i - 1].ClipRect(left, top, right, bottom, h_move, v_move);
 					this._clip_down_index = i;
 				} else {
 					break;
@@ -391,9 +416,7 @@ ALittle.Linear = JavaScript.Class(ALittle.DisplayGroup, {
 				if (childs[i - 1].y < bottom) {
 					this._show.AddChild(childs[i - 1]._show);
 					new_show_map.set(childs[i - 1], true);
-					if (childs[i - 1].ClipRect !== undefined) {
-						childs[i - 1].ClipRect(left, top, right, bottom, h_move, v_move);
-					}
+					childs[i - 1].ClipRect(left, top, right, bottom, h_move, v_move);
 					this._clip_down_index = i;
 				} else {
 					break;

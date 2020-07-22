@@ -37,6 +37,7 @@ ALittle.ImageInput = JavaScript.Class(ALittle.DisplayLayout, {
 		this._show_input.AddEventListener(___all_struct.get(958494922), this, this.HandleImageInputTransformChangd);
 		this._show_input.AddEventListener(___all_struct.get(776398171), this, this.HandleImageInputTransformEnterKey);
 		this._show_input.AddEventListener(___all_struct.get(2024735182), this, this.HandleImageInputTransformTabKey);
+		this._show_input.AddEventListener(___all_struct.get(1637310579), this, this.HandleImageInputTransformEscKey);
 		this._show_input.AddEventListener(___all_struct.get(-641444818), this, this.HandleImageInputTransformRButtonDown);
 		this._show_input.AddEventListener(___all_struct.get(-569321214), this, this.HandleImageInputTransformRButtonUp);
 		this._show_input.AddEventListener(___all_struct.get(-439548260), this, this.HandleImageInputTransformLongButtonDown);
@@ -148,12 +149,6 @@ ALittle.ImageInput = JavaScript.Class(ALittle.DisplayLayout, {
 	get deleteline() {
 		return this._show_input.deleteline;
 	},
-	set outline(value) {
-		this._show_input.outline = value;
-	},
-	get outline() {
-		return this._show_input.outline;
-	},
 	set password_mode(value) {
 		this._show_input.password_mode = value;
 	},
@@ -252,6 +247,10 @@ ALittle.ImageInput = JavaScript.Class(ALittle.DisplayLayout, {
 	HandleImageInputTransformTabKey : function(event) {
 		event.target = this;
 		this.DispatchEvent(___all_struct.get(2024735182), event);
+	},
+	HandleImageInputTransformEscKey : function(event) {
+		event.target = this;
+		this.DispatchEvent(___all_struct.get(1637310579), event);
 	},
 	HandleImageInputTransformRButtonDown : function(event) {
 		event.target = this;

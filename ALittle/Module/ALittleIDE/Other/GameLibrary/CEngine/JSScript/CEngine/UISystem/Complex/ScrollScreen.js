@@ -27,6 +27,7 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 		this.AddEventListener(___all_struct.get(1337289812), this, this.HandleDrag);
 		this.AddEventListener(___all_struct.get(150587926), this, this.HandleDragEnd);
 		this.AddEventListener(___all_struct.get(1301789264), this, this.HandleDragBegin);
+		this.RefreshClipDisLine();
 	},
 	HandleMButtonWheel : function(event) {
 		if (this._bottom_scroll_bar !== undefined && event.delta_x !== 0) {
@@ -34,10 +35,10 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 		}
 		if (this._right_scroll_bar !== undefined && event.delta_y !== 0) {
 			let offset = this._content_height * 0.1 * event.delta_y;
-			if (offset > 40) {
-				offset = 40;
-			} else if (offset < -40) {
-				offset = -40;
+			if (offset > 60) {
+				offset = 60;
+			} else if (offset < -60) {
+				offset = -60;
 			}
 			if (offset !== 0) {
 				this._right_scroll_bar.offset_rate = this._right_scroll_bar.offset_rate - offset / this._content_height;
@@ -175,7 +176,9 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 		return this._scroll_content.GetChildIndex(child);
 	},
 	SetChildIndex : function(child, index) {
-		return this._scroll_content.SetChildIndex(child, index);
+		let result = this._scroll_content.SetChildIndex(child, index);
+		this.RefreshClipDisLine();
+		return result;
 	},
 	GetChildByIndex : function(index) {
 		return this._scroll_content.GetChildByIndex(index);
@@ -205,6 +208,13 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 		}
 		this.RejustScrollBar();
 		return true;
+	},
+	SpliceChild : function(index, count) {
+		let result = this._scroll_content.SpliceChild(index, count);
+		if (result !== 0) {
+			this.RejustScrollBar();
+		}
+		return result;
 	},
 	HasChild : function(child) {
 		return this._scroll_content.HasChild(child);
@@ -271,6 +281,10 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 				this._static_object_h.x = x;
 			}
 		}
+		this.RefreshClipDisLine();
+	},
+	get width() {
+		return this._width;
 	},
 	set height(value) {
 		if (this._height === value) {
@@ -322,6 +336,10 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 				this._static_object_v.y = y;
 			}
 		}
+		this.RefreshClipDisLine();
+	},
+	get height() {
+		return this._height;
 	},
 	get view_width() {
 		return this._scroll_view.width;
@@ -487,6 +505,7 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 		if (this._static_object_v !== undefined) {
 			this._static_object_v.y = y;
 		}
+		this.RefreshClipDisLine();
 	},
 	HandleBottomScrollBarChange : function(event) {
 		let rate = this._bottom_scroll_bar.offset_rate;
@@ -500,6 +519,7 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 		if (this._static_object_h !== undefined) {
 			this._static_object_h.x = x;
 		}
+		this.RefreshClipDisLine();
 	},
 	HandleContainerResize : function(event) {
 		this.RejustScrollBar();
@@ -569,6 +589,7 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 					this._bottom_scroll_bar.offset_rate = -x / (this._content_width - this._scroll_view.width);
 				}
 			}
+			this.RefreshClipDisLine(event.delta_x);
 		}
 		if (event.delta_y !== 0 && this._right_scroll_bar !== undefined) {
 			if (event.delta_y > 0) {
@@ -623,6 +644,7 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 					this._right_scroll_bar.offset_rate = -y / (this._content_height - this._scroll_view.height);
 				}
 			}
+			this.RefreshClipDisLine(undefined, event.delta_y);
 		}
 	},
 	HandleDragEnd : function(event) {
@@ -637,24 +659,16 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 			if (this._scroll_content.x >= this._scroll_view.width * this._drag_rate * 0.9) {
 				this.DispatchEvent(___all_struct.get(-839083637), {});
 			}
-			let func = undefined;
-			if (this._static_object_h !== undefined) {
-				func = ALittle.ScrollScreen.XStaticObjectChange.bind(this);
-			}
 			A_LoopSystem.RemoveUpdater(this._drag_loop_x);
-			this._drag_loop_x = ALittle.NewObject(ALittle.LoopLinear, this._scroll_content, "x", 0, 200, 0, func);
+			this._drag_loop_x = ALittle.NewObject(ALittle.LoopLinear, this._scroll_content, "x", 0, 200, 0, ALittle.ScrollScreen.XScrollBarChange.bind(this));
 			A_LoopSystem.AddUpdater(this._drag_loop_x);
 		} else if (this._scroll_content.x < -this._content_width + this._scroll_view.width) {
 			if (this._scroll_content.x <= -this._content_width + this._scroll_view.width - this._scroll_view.width * this._drag_rate * 0.9) {
 				this.DispatchEvent(___all_struct.get(-567702959), {});
 			}
 			if (this._scroll_content.x < 0) {
-				let func = undefined;
-				if (this._static_object_h !== undefined) {
-					func = ALittle.ScrollScreen.XStaticObjectChange.bind(this);
-				}
 				A_LoopSystem.RemoveUpdater(this._drag_loop_x);
-				this._drag_loop_x = ALittle.NewObject(ALittle.LoopLinear, this._scroll_content, "x", -this._content_width + this._scroll_view.width, 200, 0, func);
+				this._drag_loop_x = ALittle.NewObject(ALittle.LoopLinear, this._scroll_content, "x", -this._content_width + this._scroll_view.width, 200, 0, ALittle.ScrollScreen.XScrollBarChange.bind(this));
 				A_LoopSystem.AddUpdater(this._drag_loop_x);
 			}
 		} else if (this._scroll_content.x !== 0 && this._scroll_content.x !== -this._content_width + this._scroll_view.width) {
@@ -668,12 +682,8 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 					event_dispatch = ALittle.ScrollScreen.ScrollDispatchDragLeftEvent.bind(this);
 				}
 				if (target_x >= min_x && target_x <= max_x) {
-					let func = undefined;
-					if (this._static_object_h !== undefined) {
-						func = ALittle.ScrollScreen.XStaticObjectChange.bind(this);
-					}
 					A_LoopSystem.RemoveUpdater(this._drag_loop_x);
-					this._drag_loop_x = ALittle.NewObject(ALittle.LoopLinear, this._scroll_content, "x", -this._content_width + this._scroll_view.width, 200, 300, func);
+					this._drag_loop_x = ALittle.NewObject(ALittle.LoopLinear, this._scroll_content, "x", -this._content_width + this._scroll_view.width, 200, 300, ALittle.ScrollScreen.XScrollBarChange.bind(this));
 					A_LoopSystem.AddUpdater(this._drag_loop_x);
 				}
 			} else if (this._drag_delta_x > 0) {
@@ -684,22 +694,10 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 					event_dispatch = ALittle.ScrollScreen.ScrollDispatchDragRightEvent.bind(this);
 				}
 				if (target_x >= min_x && target_x <= max_x) {
-					let func = undefined;
-					if (this._static_object_h !== undefined) {
-						func = ALittle.ScrollScreen.XStaticObjectChange.bind(this);
-					}
 					A_LoopSystem.RemoveUpdater(this._drag_loop_x);
-					this._drag_loop_x = ALittle.NewObject(ALittle.LoopLinear, this._scroll_content, "x", 0, 200, 300, func);
+					this._drag_loop_x = ALittle.NewObject(ALittle.LoopLinear, this._scroll_content, "x", 0, 200, 300, ALittle.ScrollScreen.XScrollBarChange.bind(this));
 					A_LoopSystem.AddUpdater(this._drag_loop_x);
 				}
-			}
-			let func = undefined;
-			if (this._static_object_h !== undefined && this._bottom_scroll_bar === undefined) {
-				func = ALittle.ScrollScreen.XStaticObjectChange.bind(this);
-			} else if (this._static_object_h === undefined && this._bottom_scroll_bar !== undefined) {
-				func = ALittle.ScrollScreen.XScrollBarChange.bind(this);
-			} else if (this._static_object_h !== undefined && this._bottom_scroll_bar !== undefined) {
-				func = ALittle.ScrollScreen.XStaticObjectAndScrollBarChange.bind(this);
 			}
 			A_LoopSystem.RemoveUpdater(this._x_type_dispatch);
 			if (event_dispatch !== undefined) {
@@ -714,31 +712,23 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 				}
 			}
 			A_LoopSystem.RemoveUpdater(this._drag_delta_loop_x);
-			this._drag_delta_loop_x = ALittle.NewObject(ALittle.LoopRit, this._scroll_content, "x", target_x, 300, 0, func);
+			this._drag_delta_loop_x = ALittle.NewObject(ALittle.LoopRit, this._scroll_content, "x", target_x, 300, 0, ALittle.ScrollScreen.XScrollBarChange.bind(this));
 			A_LoopSystem.AddUpdater(this._drag_delta_loop_x);
 		}
 		if (this._scroll_content.y > 0) {
 			if (this._scroll_content.y >= this._scroll_view.height * this._drag_rate * 0.9) {
 				this.DispatchEvent(___all_struct.get(1848466169), {});
 			}
-			let func = undefined;
-			if (this._static_object_v !== undefined) {
-				func = ALittle.ScrollScreen.YStaticObjectChange.bind(this);
-			}
 			A_LoopSystem.RemoveUpdater(this._drag_loop_y);
-			this._drag_loop_y = ALittle.NewObject(ALittle.LoopLinear, this._scroll_content, "y", 0, 200, 0, func);
+			this._drag_loop_y = ALittle.NewObject(ALittle.LoopLinear, this._scroll_content, "y", 0, 200, 0, ALittle.ScrollScreen.YScrollBarChange.bind(this));
 			A_LoopSystem.AddUpdater(this._drag_loop_y);
 		} else if (this._scroll_content.y < -this._content_height + this._scroll_view.height) {
 			if (this._scroll_content.y <= -this._content_height + this._scroll_view.height - this._scroll_view.height * this._drag_rate * 0.9) {
 				this.DispatchEvent(___all_struct.get(809518110), {});
 			}
 			if (this._scroll_content.y < 0) {
-				let func = undefined;
-				if (this._static_object_v !== undefined) {
-					func = ALittle.ScrollScreen.YStaticObjectChange.bind(this);
-				}
 				A_LoopSystem.RemoveUpdater(this._drag_loop_y);
-				this._drag_loop_y = ALittle.NewObject(ALittle.LoopLinear, this._scroll_content, "y", -this._content_height + this._scroll_view.height, 200, 0, func);
+				this._drag_loop_y = ALittle.NewObject(ALittle.LoopLinear, this._scroll_content, "y", -this._content_height + this._scroll_view.height, 200, 0, ALittle.ScrollScreen.YScrollBarChange.bind(this));
 				A_LoopSystem.AddUpdater(this._drag_loop_y);
 			}
 		} else if (this._scroll_content.y !== 0 && this._scroll_content.y !== -this._content_height + this._scroll_view.height) {
@@ -752,12 +742,8 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 					event_dispatch = ALittle.ScrollScreen.ScrollDispatchDragUpEvent.bind(this);
 				}
 				if (target_y >= min_y && target_y <= max_y) {
-					let func = undefined;
-					if (this._static_object_v !== undefined) {
-						func = ALittle.ScrollScreen.YStaticObjectChange.bind(this);
-					}
 					A_LoopSystem.RemoveUpdater(this._drag_loop_y);
-					this._drag_loop_y = ALittle.NewObject(ALittle.LoopLinear, this._scroll_content, "y", -this._content_height + this._scroll_view.height, 200, 300, func);
+					this._drag_loop_y = ALittle.NewObject(ALittle.LoopLinear, this._scroll_content, "y", -this._content_height + this._scroll_view.height, 200, 300, ALittle.ScrollScreen.YScrollBarChange.bind(this));
 					A_LoopSystem.AddUpdater(this._drag_loop_y);
 				}
 			} else if (this._drag_delta_y > 0) {
@@ -768,22 +754,10 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 					event_dispatch = ALittle.ScrollScreen.ScrollDispatchDragDownEvent.bind(this);
 				}
 				if (target_y >= min_y && target_y <= max_y) {
-					let func = undefined;
-					if (this._static_object_v !== undefined) {
-						func = ALittle.ScrollScreen.YStaticObjectChange.bind(this);
-					}
 					A_LoopSystem.RemoveUpdater(this._drag_loop_y);
-					this._drag_loop_y = ALittle.NewObject(ALittle.LoopLinear, this._scroll_content, "y", 0, 200, 300, func);
+					this._drag_loop_y = ALittle.NewObject(ALittle.LoopLinear, this._scroll_content, "y", 0, 200, 300, ALittle.ScrollScreen.YScrollBarChange.bind(this));
 					A_LoopSystem.AddUpdater(this._drag_loop_y);
 				}
-			}
-			let func = undefined;
-			if (this._static_object_v !== undefined && this._right_scroll_bar === undefined) {
-				func = ALittle.ScrollScreen.YStaticObjectChange.bind(this);
-			} else if (this._static_object_v === undefined && this._right_scroll_bar !== undefined) {
-				func = ALittle.ScrollScreen.YScrollBarChange.bind(this);
-			} else if (this._static_object_v !== undefined && this._right_scroll_bar !== undefined) {
-				func = ALittle.ScrollScreen.YStaticObjectAndScrollBarChange.bind(this);
 			}
 			A_LoopSystem.RemoveUpdater(this._y_type_dispatch);
 			if (event_dispatch !== undefined) {
@@ -798,31 +772,47 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 				}
 			}
 			A_LoopSystem.RemoveUpdater(this._drag_delta_loop_y);
-			this._drag_delta_loop_y = ALittle.NewObject(ALittle.LoopRit, this._scroll_content, "y", target_y, 300, 0, func);
+			this._drag_delta_loop_y = ALittle.NewObject(ALittle.LoopRit, this._scroll_content, "y", target_y, 300, 0, ALittle.ScrollScreen.YScrollBarChange.bind(this));
 			A_LoopSystem.AddUpdater(this._drag_delta_loop_y);
 		}
 		this._drag_delta_x = 0;
 		this._drag_delta_y = 0;
 	},
-	XStaticObjectAndScrollBarChange : function() {
-		this._static_object_h.x = this._scroll_content.x;
-		this._bottom_scroll_bar.offset_rate = -this._scroll_content.x / (this._content_width - this._scroll_view.width);
+	RefreshClipDisLineImpl : function(h_move, v_move) {
+		this._scroll_content.ClipRect(0, 0, this._width, this._height, h_move, v_move);
+		if (this._static_object_v !== undefined) {
+			this._static_object_v.ClipRect(0, 0, this._width, this._height, h_move, v_move);
+		}
+		if (this._static_object_h !== undefined) {
+			this._static_object_h.ClipRect(0, 0, this._width, this._height, h_move, v_move);
+		}
+		this._clip_loop = undefined;
 	},
-	XStaticObjectChange : function() {
-		this._static_object_h.x = this._scroll_content.x;
-	},
-	YStaticObjectAndScrollBarChange : function() {
-		this._static_object_v.y = this._scroll_content.y;
-		this._right_scroll_bar.offset_rate = -this._scroll_content.y / (this._content_height - this._scroll_view.height);
-	},
-	YStaticObjectChange : function() {
-		this._static_object_v.y = this._scroll_content.y;
+	RefreshClipDisLine : function(h_move, v_move) {
+		if (this._clip_loop !== undefined && this._clip_loop._user_data === undefined) {
+			return;
+		}
+		this._clip_loop = ALittle.NewObject(ALittle.LoopFunction, this.RefreshClipDisLineImpl.bind(this, h_move, v_move), 1, 0, 1);
+		this._clip_loop._user_data = v_move;
+		A_LoopSystem.AddUpdater(this._clip_loop);
 	},
 	XScrollBarChange : function() {
-		this._bottom_scroll_bar.offset_rate = -this._scroll_content.x / (this._content_width - this._scroll_view.width);
+		if (this._static_object_h !== undefined) {
+			this._static_object_h.x = this._scroll_content.x;
+		}
+		if (this._bottom_scroll_bar !== undefined) {
+			this._bottom_scroll_bar.offset_rate = -this._scroll_content.x / (this._content_width - this._scroll_view.width);
+		}
+		this.RefreshClipDisLine(undefined, undefined);
 	},
 	YScrollBarChange : function() {
-		this._right_scroll_bar.offset_rate = -this._scroll_content.y / (this._content_height - this._scroll_view.height);
+		if (this._static_object_v !== undefined) {
+			this._static_object_v.y = this._scroll_content.y;
+		}
+		if (this._right_scroll_bar !== undefined) {
+			this._right_scroll_bar.offset_rate = -this._scroll_content.y / (this._content_height - this._scroll_view.height);
+		}
+		this.RefreshClipDisLine(undefined, undefined);
 	},
 	ScrollDispatchDragDownEvent : function() {
 		this.DispatchEvent(___all_struct.get(1848466169), {});

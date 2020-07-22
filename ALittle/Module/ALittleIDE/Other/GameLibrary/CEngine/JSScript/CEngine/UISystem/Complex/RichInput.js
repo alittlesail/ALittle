@@ -2,16 +2,10 @@
 if (typeof ALittle === "undefined") window.ALittle = {};
 let ___all_struct = ALittle.GetAllStruct();
 
-ALittle.RegStruct(-256576702, "ALittle.RichInputFontChangedEvent", {
-name : "ALittle.RichInputFontChangedEvent", ns_name : "ALittle", rl_name : "RichInputFontChangedEvent", hash_code : -256576702,
-name_list : ["target"],
-type_list : ["ALittle.DisplayObject"],
-option_map : {}
-})
-ALittle.RegStruct(1424993548, "ALittle.RichInputMultiDragBeginEvent", {
-name : "ALittle.RichInputMultiDragBeginEvent", ns_name : "ALittle", rl_name : "RichInputMultiDragBeginEvent", hash_code : 1424993548,
-name_list : ["target"],
-type_list : ["ALittle.DisplayObject"],
+ALittle.RegStruct(1818243950, "ALittle.RichInputCharInfo", {
+name : "ALittle.RichInputCharInfo", ns_name : "ALittle", rl_name : "RichInputCharInfo", hash_code : 1818243950,
+name_list : ["acc_width","pre_width","text_info","text","password_text","text_object","ctrl_info","ctrl"],
+type_list : ["double","double","ALittle.DisplayInfo","string","string","ALittle.Text","ALittle.DisplayInfo","ALittle.DisplayObject"],
 option_map : {}
 })
 ALittle.RegStruct(1640499878, "ALittle.UIRichInputLongClickEvent", {
@@ -20,10 +14,10 @@ name_list : ["target","abs_x","abs_y","rel_x","rel_y"],
 type_list : ["ALittle.DisplayObject","double","double","double","double"],
 option_map : {}
 })
-ALittle.RegStruct(1818243950, "ALittle.RichInputCharInfo", {
-name : "ALittle.RichInputCharInfo", ns_name : "ALittle", rl_name : "RichInputCharInfo", hash_code : 1818243950,
-name_list : ["acc_width","pre_width","text_info","text","password_text","text_object","ctrl_info","ctrl"],
-type_list : ["double","double","ALittle.DisplayInfo","string","string","ALittle.Text","ALittle.DisplayInfo","ALittle.DisplayObject"],
+ALittle.RegStruct(1424993548, "ALittle.RichInputMultiDragBeginEvent", {
+name : "ALittle.RichInputMultiDragBeginEvent", ns_name : "ALittle", rl_name : "RichInputMultiDragBeginEvent", hash_code : 1424993548,
+name_list : ["target"],
+type_list : ["ALittle.DisplayObject"],
 option_map : {}
 })
 ALittle.RegStruct(-884368490, "ALittle.RichInputMultiDragEndEvent", {
@@ -40,6 +34,12 @@ option_map : {}
 })
 ALittle.RegStruct(-605767802, "ALittle.RichInputMultiDragEvent", {
 name : "ALittle.RichInputMultiDragEvent", ns_name : "ALittle", rl_name : "RichInputMultiDragEvent", hash_code : -605767802,
+name_list : ["target"],
+type_list : ["ALittle.DisplayObject"],
+option_map : {}
+})
+ALittle.RegStruct(-256576702, "ALittle.RichInputFontChangedEvent", {
+name : "ALittle.RichInputFontChangedEvent", ns_name : "ALittle", rl_name : "RichInputFontChangedEvent", hash_code : -256576702,
 name_list : ["target"],
 type_list : ["ALittle.DisplayObject"],
 option_map : {}
@@ -101,9 +101,6 @@ ALittle.RichInput = JavaScript.Class(ALittle.DisplayLayout, {
 		if (a.deleteline !== b.deleteline) {
 			return false;
 		}
-		if (a.outline !== b.outline) {
-			return false;
-		}
 		return true;
 	},
 	CopyTextInfo : function(b) {
@@ -118,7 +115,6 @@ ALittle.RichInput = JavaScript.Class(ALittle.DisplayLayout, {
 		a.italic = b.italic;
 		a.underline = b.underline;
 		a.deleteline = b.deleteline;
-		a.outline = b.outline;
 		return a;
 	},
 	InitTextInfo : function() {
@@ -134,7 +130,6 @@ ALittle.RichInput = JavaScript.Class(ALittle.DisplayLayout, {
 		a.italic = font_text.italic;
 		a.underline = font_text.underline;
 		a.deleteline = font_text.deleteline;
-		a.outline = font_text.outline;
 		return a;
 	},
 	SetDrawText : function(font_text) {
@@ -148,7 +143,6 @@ ALittle.RichInput = JavaScript.Class(ALittle.DisplayLayout, {
 		draw_text.italic = font_text.italic;
 		draw_text.underline = font_text.underline;
 		draw_text.deleteline = font_text.deleteline;
-		draw_text.outline = font_text.outline;
 	},
 	SplitText : function(char_info, char_info_list, char_info_list_count) {
 		let text = char_info.text;
@@ -351,10 +345,6 @@ ALittle.RichInput = JavaScript.Class(ALittle.DisplayLayout, {
 		}
 		if (font_text.deleteline !== text_info.deleteline) {
 			font_text.deleteline = text_info.deleteline;
-			is_change = true;
-		}
-		if (font_text.outline !== text_info.outline) {
-			font_text.outline = text_info.outline;
 			is_change = true;
 		}
 		if (is_change) {
@@ -569,16 +559,6 @@ ALittle.RichInput = JavaScript.Class(ALittle.DisplayLayout, {
 			this._char_info_list[1 - 1].text_info.italic = value;
 		}
 	},
-	set font_outline(value) {
-		if (this._font_text.outline === value) {
-			return;
-		}
-		this._font_text.outline = value;
-		this._default_text.outline = value;
-		if (this._char_info_list[1 - 1] !== undefined) {
-			this._char_info_list[1 - 1].text_info.outline = value;
-		}
-	},
 	set font_path(value) {
 		if (this._font_text.font_path === value) {
 			return;
@@ -779,6 +759,9 @@ ALittle.RichInput = JavaScript.Class(ALittle.DisplayLayout, {
 	},
 	get cursor_y() {
 		return this._cursor.y;
+	},
+	get cursor_b() {
+		return (this._cursor.y + this._cursor.height) * this.scale_y + this._ims_padding;
 	},
 	get start_cursor_x() {
 		return this._event_start_x;

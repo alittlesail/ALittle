@@ -385,13 +385,12 @@ ALittle.UISystem = JavaScript.Class(undefined, {
 				let [abs_x, abs_y] = this._sfc.LocalToGlobal();
 				abs_x = abs_x + (this._sfc.cursor_x);
 				abs_y = abs_y + ((this._sfc.cursor_y + this._sfc.font_size) * this._sfc.scale_y);
-				ALittle.System_SetIMEPos(lua.math.floor(abs_x), lua.math.floor(abs_y));
+				ALittle.System_SetIMEPos(ALittle.Math_Floor(abs_x), ALittle.Math_Floor(abs_y));
 			}
 		}
 	},
 	HandleKeyDown : function(mod, sym, scancode) {
 		this._sym_map.set(sym, true);
-		let result = false;
 		if (ALittle.System_GetIMESelectList() === "" && this._ime_editing) {
 			this._ime_editing = false;
 			if (this._ime_editing_callback !== undefined) {
@@ -413,9 +412,17 @@ ALittle.UISystem = JavaScript.Class(undefined, {
 	},
 	HandleKeyUp : function(mod, sym, scancode) {
 		this._sym_map.delete(sym);
+		let event = {};
+		event.target = this._sfc;
+		event.mod = mod;
+		event.sym = sym;
+		event.scancode = scancode;
+		if (this._sfc !== undefined && this._ime_editing === false) {
+			this._sfc.DispatchEvent(___all_struct.get(1213009422), event);
+		}
 	},
 	HandleMouseWheel : function(x, y) {
-		if (this._mfc === undefined || this._sl) {
+		if (this._mfc === undefined) {
 			return false;
 		}
 		if (this._wfc === undefined) {

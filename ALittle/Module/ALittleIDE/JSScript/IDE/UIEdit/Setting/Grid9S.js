@@ -27,7 +27,7 @@ ALittleIDE.Grid9S = JavaScript.Class(ALittleIDE.DisplayLayoutS, {
 		this.ValueNumInputChange("bottom_size", false);
 	},
 	HandleAutoCut : function(event) {
-		let revoke_bind = ALittle.NewObject(ALittleIDE.IDERevokeBind);
+		let revoke_bind = ALittle.NewObject(ALittle.RevokeBind);
 		this._left_size.text = 0;
 		this.ValueNumInputChange("left_size", false, revoke_bind);
 		this._right_size.text = 0;

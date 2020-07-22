@@ -1,11 +1,11 @@
 {
 if (typeof ALittleIDE === "undefined") window.ALittleIDE = {};
-let ___all_struct = ALittle.GetAllStruct();
+let ___all_struct = ALittle->GetAllStruct();
 
-ALittle.RegStruct(1408180774, "ALittleIDE.IDEUICenterScaleChangedEvent", {
-name : "ALittleIDE.IDEUICenterScaleChangedEvent", ns_name : "ALittleIDE", rl_name : "IDEUICenterScaleChangedEvent", hash_code : 1408180774,
-name_list : ["target","scale"],
-type_list : ["ALittle.DisplayObject","double"],
+ALittle.RegStruct(2103672497, "ALittleIDE.IDEUICenterScaleOpChangedEvent", {
+name : "ALittleIDE.IDEUICenterScaleOpChangedEvent", ns_name : "ALittleIDE", rl_name : "IDEUICenterScaleOpChangedEvent", hash_code : 2103672497,
+name_list : ["target","value"],
+type_list : ["ALittle.DisplayObject","bool"],
 option_map : {}
 })
 ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
@@ -14,8 +14,14 @@ name_list : ["target"],
 type_list : ["ALittle.DisplayObject"],
 option_map : {}
 })
-ALittle.RegStruct(-506107723, "ALittleIDE.IDEUICenterSelectOpChangedEvent", {
-name : "ALittleIDE.IDEUICenterSelectOpChangedEvent", ns_name : "ALittleIDE", rl_name : "IDEUICenterSelectOpChangedEvent", hash_code : -506107723,
+ALittle.RegStruct(1408180774, "ALittleIDE.IDEUICenterScaleChangedEvent", {
+name : "ALittleIDE.IDEUICenterScaleChangedEvent", ns_name : "ALittleIDE", rl_name : "IDEUICenterScaleChangedEvent", hash_code : 1408180774,
+name_list : ["target","scale"],
+type_list : ["ALittle.DisplayObject","double"],
+option_map : {}
+})
+ALittle.RegStruct(1299500288, "ALittleIDE.IDEUICenterHandDragOpChangedEvent", {
+name : "ALittleIDE.IDEUICenterHandDragOpChangedEvent", ns_name : "ALittleIDE", rl_name : "IDEUICenterHandDragOpChangedEvent", hash_code : 1299500288,
 name_list : ["target","value"],
 type_list : ["ALittle.DisplayObject","bool"],
 option_map : {}
@@ -26,14 +32,8 @@ name_list : ["target","value"],
 type_list : ["ALittle.DisplayObject","bool"],
 option_map : {}
 })
-ALittle.RegStruct(1299500288, "ALittleIDE.IDEUICenterHandDragOpChangedEvent", {
-name : "ALittleIDE.IDEUICenterHandDragOpChangedEvent", ns_name : "ALittleIDE", rl_name : "IDEUICenterHandDragOpChangedEvent", hash_code : 1299500288,
-name_list : ["target","value"],
-type_list : ["ALittle.DisplayObject","bool"],
-option_map : {}
-})
-ALittle.RegStruct(2103672497, "ALittleIDE.IDEUICenterScaleOpChangedEvent", {
-name : "ALittleIDE.IDEUICenterScaleOpChangedEvent", ns_name : "ALittleIDE", rl_name : "IDEUICenterScaleOpChangedEvent", hash_code : 2103672497,
+ALittle.RegStruct(-506107723, "ALittleIDE.IDEUICenterSelectOpChangedEvent", {
+name : "ALittleIDE.IDEUICenterSelectOpChangedEvent", ns_name : "ALittleIDE", rl_name : "IDEUICenterSelectOpChangedEvent", hash_code : -506107723,
 name_list : ["target","value"],
 type_list : ["ALittle.DisplayObject","bool"],
 option_map : {}
@@ -46,10 +46,13 @@ ALittleIDE.IDEUICenter = JavaScript.Class(ALittle.DisplayLayout, {
 		this._project_edit_tab.tab_index = 1;
 		this._control_tree_tab.DisableAllCloseButton();
 		this._control_tree_tab.tab_index = 1;
-		this._control_edit_tab.DisableAllCloseButton();
-		this._control_edit_tab.tab_index = 1;
 		this._project_quick_tab.DisableAllCloseButton();
 		this._project_quick_tab.tab_index = 1;
+		this._tool_ui_container.visible = false;
+		this._tool_code_container.visible = false;
+		this._quick_edit_grid3_down_size = this._quick_edit_grid3.down_size;
+		this._quick_edit_grid3.down_size = this._project_quick_tab.up_size;
+		this._quick_fold_updown.selected = false;
 		ALittle.TextRadioButton.SetGroup([this._tool_singleselect, this._tool_handdrag, this._tool_scale, this._tool_presee]);
 	},
 	get control_tree() {
@@ -58,17 +61,23 @@ ALittleIDE.IDEUICenter = JavaScript.Class(ALittle.DisplayLayout, {
 	get control_list() {
 		return this._control_list;
 	},
+	get code_list() {
+		return this._code_list;
+	},
 	get project_list() {
 		return this._project_list;
-	},
-	get control_attr() {
-		return this._control_attr;
 	},
 	get control_anti() {
 		return this._control_anti;
 	},
 	get content_edit() {
 		return this._content_edit;
+	},
+	get tool_ui() {
+		return this._tool_ui_container;
+	},
+	get tool_code() {
+		return this._tool_code_container;
 	},
 	System_SetVDragCursor : function(event) {
 		ALittle.System_SetVDragCursor();
@@ -94,18 +103,6 @@ ALittleIDE.IDEUICenter = JavaScript.Class(ALittle.DisplayLayout, {
 		}
 		this._right_edit_grid3.up_size = up_size;
 	},
-	HandleRightEditResizeDrag : function(event) {
-		let down_size = this._right_edit_grid3.down_size;
-		down_size = down_size - event.delta_x;
-		let max_size = this._right_edit_grid3.width - this._right_edit_grid3.up_size - 50;
-		if (down_size > max_size) {
-			down_size = max_size;
-		}
-		if (down_size < 100) {
-			down_size = 100;
-		}
-		this._right_edit_grid3.down_size = down_size;
-	},
 	HandleControlEditResizeDrag : function(event) {
 		let up_size = this._control_edit_grid3.up_size;
 		up_size = up_size + event.delta_y;
@@ -130,7 +127,21 @@ ALittleIDE.IDEUICenter = JavaScript.Class(ALittle.DisplayLayout, {
 		}
 		this._quick_edit_grid3.down_size = down_size;
 	},
+	HandleQuickFoldChanged : function(event) {
+		if (event.target.selected) {
+			this._quick_edit_grid3.down_size = this._quick_edit_grid3_down_size;
+		} else {
+			this._quick_edit_grid3_down_size = this._quick_edit_grid3.down_size;
+			this._quick_edit_grid3.down_size = this._project_quick_tab.up_size;
+		}
+	},
 	HandleShortcutKey : function() {
+		if (A_UISystem.sym_map.get(27)) {
+			if (ALittleIDE.g_IDEAttrControlDialog.dialog.visible) {
+				ALittleIDE.g_IDEAttrControlDialog.HideDialog();
+				return;
+			}
+		}
 		let ctrl = A_UISystem.sym_map.get(1073742048);
 		if (ctrl === undefined) {
 			return;
@@ -152,27 +163,6 @@ ALittleIDE.IDEUICenter = JavaScript.Class(ALittle.DisplayLayout, {
 		}
 	},
 	HandleUndoRevoke : function(event) {
-		let tab_child = ALittleIDE.g_IDECenter.center.content_edit.cur_tab_child;
-		if (tab_child === undefined) {
-			return;
-		}
-		tab_child.revoke_list.UndoRevoke();
-	},
-	HandleDoRevoke : function(event) {
-		let tab_child = ALittleIDE.g_IDECenter.center.content_edit.cur_tab_child;
-		if (tab_child === undefined) {
-			return;
-		}
-		tab_child.revoke_list.DoRevoke();
-	},
-	HandleSaveCurrent : function(event) {
-		let tab_child = ALittleIDE.g_IDECenter.center.content_edit.cur_tab_child;
-		if (tab_child === undefined) {
-			return;
-		}
-		tab_child.save = true;
-	},
-	HandleUndoRevoke : function(event) {
 		if (ALittleIDE.g_IDEAttrEventDialog.IsShow()) {
 			return;
 		}
@@ -181,6 +171,7 @@ ALittleIDE.IDEUICenter = JavaScript.Class(ALittle.DisplayLayout, {
 			return;
 		}
 		tab_child.revoke_list.UndoRevoke();
+		tab_child.OnUndo();
 	},
 	HandleDoRevoke : function(event) {
 		let tab_child = ALittleIDE.g_IDECenter.center.content_edit.cur_tab_child;
@@ -188,6 +179,7 @@ ALittleIDE.IDEUICenter = JavaScript.Class(ALittle.DisplayLayout, {
 			return;
 		}
 		tab_child.revoke_list.DoRevoke();
+		tab_child.OnRedo();
 	},
 	HandleSaveCurrent : function(event) {
 		let tab_child = ALittleIDE.g_IDECenter.center.content_edit.cur_tab_child;
@@ -307,6 +299,19 @@ ALittleIDE.IDEUICenter = JavaScript.Class(ALittle.DisplayLayout, {
 		}
 		ALittleIDE.g_IDEImageManagerDialog.SetBasePath(ALittleIDE.g_IDEProject.project.texture_path);
 		ALittleIDE.g_IDEImageManagerDialog.ShowDialog();
+	},
+	HandleTargetLanguageSelectChange : function(event) {
+		if (ALittleIDE.g_IDEProject.project === undefined) {
+			return;
+		}
+		if (ALittleIDE.g_IDEProject.project.code === undefined) {
+			return;
+		}
+		lua.alittlescript.alittlescriptproject_settargetlanguage(ALittleIDE.g_IDEProject.project.code.project, event.target.text);
+		ALittleIDE.g_IDEProject.project.config.SetConfig("target_language", event.target.text);
+	},
+	HandleProjectOpen : function(event) {
+		this._target_language.text = ALittleIDE.g_IDEProject.project.config.GetConfig("target_language", "Lua");
 	},
 }, "ALittleIDE.IDEUICenter");
 

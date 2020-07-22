@@ -86,7 +86,7 @@ ALittleIDE.IDEEnum = JavaScript.Class(undefined, {
 		this.select_rtype["无"] = 0;
 		this.select_rtype["选择文件"] = 1;
 		this.select_rtype["选择文件夹"] = 2;
-		this.event_type_list = ["UIClickEvent", "UIChangedEvent", "UISelectChangedEvent", "UIFocusInEvent", "UIFocusOutEvent", "UIButtonDragEvent", "UIButtonDragBeginEvent", "UIButtonDragEndEvent", "UILongButtonDownEvent", "UIEnterKeyEvent", "UIDragDownEvent", "UIDragUpEvent", "UIDragLeftEvent", "UIDragRightEvent", "UIMoveInEvent", "UIMoveOutEvent", "UIMouseMoveEvent", "UIDropEvent", "UIDropFileEvent", "UIKeyDownEvent", "UILButtonDownEvent", "UILButtonUpEvent", "UIRButtonDownEvent", "UIRButtonUpEvent", "UIMButtonDownEvent", "UIMButtonUpEvent", "UIMButtonWheelEvent", "UIFClickEvent", "UIMClickEvent", "UITextInputEvent", "UIResizeEvent", "UIShowEvent", "UIHideEvent", "UITabKeyEvent", "UIAtKeyEvent", "UITabCloseEvent", "UIFButtonDownEvent", "UIFButtonUpEvent", "UIFDragBeginEvent", "UIFDragEvent", "UIFDragEndEvent", "UISystemSelectFileEvent", "UISystemSelectSaveEvent", "UISystemSelectDirectoryEvent"];
+		this.event_type_list = ["UIClickEvent", "UIChangedEvent", "UISelectChangedEvent", "UIFocusInEvent", "UIFocusOutEvent", "UIButtonDragEvent", "UIButtonDragBeginEvent", "UIButtonDragEndEvent", "UILongButtonDownEvent", "UIEnterKeyEvent", "UIDragDownEvent", "UIDragUpEvent", "UIDragLeftEvent", "UIDragRightEvent", "UIMoveInEvent", "UIMoveOutEvent", "UIMouseMoveEvent", "UIDropEvent", "UIDropFileEvent", "UIKeyDownEvent", "UILButtonDownEvent", "UILButtonUpEvent", "UIRButtonDownEvent", "UIRButtonUpEvent", "UIMButtonDownEvent", "UIMButtonUpEvent", "UIMButtonWheelEvent", "UIFClickEvent", "UIMClickEvent", "UITextInputEvent", "UIResizeEvent", "UIShowEvent", "UIHideEvent", "UITabKeyEvent", "UIAtKeyEvent", "UIEscKeyEvent", "UITabCloseEvent", "UIFButtonDownEvent", "UIFButtonUpEvent", "UIFDragBeginEvent", "UIFDragEvent", "UIFDragEndEvent", "UISystemSelectFileEvent", "UISystemSelectSaveEvent", "UISystemSelectDirectoryEvent"];
 		this.add_child_change_map = {};
 		this.add_child_change_map["Linear"] = true;
 		this.can_move_child_map = {};
@@ -164,6 +164,20 @@ ALittleIDE.IDEEnum = JavaScript.Class(undefined, {
 		this.child_show_map = {};
 		this.child_show_map["Grid3"] = ["show_up", "show_center", "show_down"];
 		this.child_show_map["Grid9"] = ["show_left_top", "show_left_center", "show_left_bottom", "show_center_top", "show_center_center", "show_center_bottom", "show_right_top", "show_right_center", "show_right_bottom"];
+		this.child_show_map_map = {};
+		let ___OBJECT_3 = this.child_show_map;
+		for (let k in ___OBJECT_3) {
+			let list = ___OBJECT_3[k];
+			if (list === undefined) continue;
+			let map = {};
+			let ___OBJECT_4 = list;
+			for (let _ = 1; _ <= ___OBJECT_4.length; ++_) {
+				let name = ___OBJECT_4[_ - 1];
+				if (name === undefined) break;
+				map[name] = true;
+			}
+			this.child_show_map_map[k] = map;
+		}
 		this.nature_show_map = {};
 		this.nature_show_map["TextButton"] = ["show_text", "show_up", "show_down", "show_over", "show_disabled", "show_down_text", "show_over_text", "show_disabled_text"];
 		this.nature_show_map["SpringTextButton"] = ["show_text", "show_up", "show_disabled", "show_disabled_text"];
@@ -181,6 +195,20 @@ ALittleIDE.IDEEnum = JavaScript.Class(undefined, {
 		this.nature_show_map["ScrollList"] = ["right_scrollbar"];
 		this.nature_show_map["RichEdit"] = ["start_cursor", "end_cursor"];
 		this.nature_show_map["RichInput"] = ["start_cursor", "end_cursor"];
+		this.nature_show_map_map = {};
+		let ___OBJECT_5 = this.child_show_map;
+		for (let k in ___OBJECT_5) {
+			let list = ___OBJECT_5[k];
+			if (list === undefined) continue;
+			let map = {};
+			let ___OBJECT_6 = list;
+			for (let _ = 1; _ <= ___OBJECT_6.length; ++_) {
+				let name = ___OBJECT_6[_ - 1];
+				if (name === undefined) break;
+				map[name] = true;
+			}
+			this.nature_show_map_map[k] = map;
+		}
 	},
 }, "ALittleIDE.IDEEnum");
 

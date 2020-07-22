@@ -6,7 +6,7 @@ if (ALittle.Linear === undefined) throw new Error(" extends class:ALittle.Linear
 ALittleIDE.IDEUIMainMenu = JavaScript.Class(ALittle.Linear, {
 	TCtor : function() {
 		let version_ip = ALittleIDE.g_IDEServerConfig.GetConfig("version_ip", "139.159.176.119");
-		let version_port = ALittleIDE.g_IDEServerConfig.GetConfig("version_port", 1011);
+		let version_port = ALittleIDE.g_IDEServerConfig.GetConfig("version_port", 1100);
 		this._version_manager = ALittle.NewObject(AUIPlugin.AUIVersionManager, version_ip, version_port, "alittle", "ALittleIDE");
 	},
 	Shutdown : function() {
@@ -17,7 +17,7 @@ ALittleIDE.IDEUIMainMenu = JavaScript.Class(ALittle.Linear, {
 		menu.AddItem("打开", ALittleIDE.g_IDEProjectOpenDialog.ShowOpenProject.bind(ALittleIDE.g_IDEProjectOpenDialog));
 		menu.AddItem("设置", ALittleIDE.g_IDEProjectSettingDialog.ShowSettingProject.bind(ALittleIDE.g_IDEProjectSettingDialog));
 		menu.AddItem("保存", ALittleIDE.g_IDECenter.center.content_edit.SaveAllTab.bind(ALittleIDE.g_IDECenter.center.content_edit));
-		menu.AddItem("刷新", ALittleIDE.g_IDECenter.center.project_list.RefreshProject.bind(ALittleIDE.g_IDECenter.center.project_list));
+		menu.AddItem("刷新", ALittleIDE.g_IDECenter.RefreshProject.bind(ALittleIDE.g_IDECenter));
 		menu.AddItem("导出项目", ALittleIDE.g_IDEProjectExportDialog.ShowExportProject.bind(ALittleIDE.g_IDEProjectExportDialog));
 		menu.Show(event.target);
 	},
@@ -117,6 +117,7 @@ ALittleIDE.IDEUIMainMenu = JavaScript.Class(ALittle.Linear, {
 		ALittle.List_Push(file_list, base_path + "CEngine/Utility/AudioSystem.js");
 		ALittle.List_Push(file_list, base_path + "CEngine/Utility/ModuleSystem.js");
 		ALittle.List_Push(file_list, base_path + "CEngine/Utility/CsvConfigManager.js");
+		ALittle.List_Push(file_list, base_path + "CEngine/Utility/Revocation.js");
 		ALittle.List_PushList(file_list, ALittle.File_GetFileListByDir(base_path + "CEngine/LoopSystem/"));
 		ALittle.List_Push(file_list, base_path + "CEngine/UISystem/UIEnumTypes.js");
 		ALittle.List_Push(file_list, base_path + "CEngine/UISystem/UIEventDispatcher.js");

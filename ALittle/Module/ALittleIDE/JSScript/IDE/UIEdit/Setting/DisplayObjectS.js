@@ -155,7 +155,7 @@ ALittleIDE.DisplayObjectS = JavaScript.Class(undefined, {
 		let target_x = object.x;
 		let new_x = target_x;
 		let list = ALittleIDE.g_IDEEnum.xy_rtype;
-		let revoke_bind = ALittle.NewObject(ALittleIDE.IDERevokeBind);
+		let revoke_bind = ALittle.NewObject(ALittle.RevokeBind);
 		this.TypeSelectChange("x_type", list, true, revoke_bind);
 		if (object.x_type === 1) {
 			new_x = target_x;
@@ -200,7 +200,7 @@ ALittleIDE.DisplayObjectS = JavaScript.Class(undefined, {
 		let target_y = object.y;
 		let new_y = target_y;
 		let list = ALittleIDE.g_IDEEnum.xy_rtype;
-		let revoke_bind = ALittle.NewObject(ALittleIDE.IDERevokeBind);
+		let revoke_bind = ALittle.NewObject(ALittle.RevokeBind);
 		this.TypeSelectChange("y_type", list, true, revoke_bind);
 		if (object.y_type === 1) {
 			new_y = target_y;
@@ -1477,7 +1477,7 @@ ALittleIDE.DisplayObjectS = JavaScript.Class(undefined, {
 		let new_revoke = false;
 		if (revoke_bind === undefined) {
 			new_revoke = true;
-			revoke_bind = ALittle.NewObject(ALittleIDE.IDERevokeBind);
+			revoke_bind = ALittle.NewObject(ALittle.RevokeBind);
 		}
 		this.SetWType(1, revoke_bind);
 		this.SetHType(1, revoke_bind);

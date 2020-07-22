@@ -3,8 +3,6 @@ if (typeof ALittleIDE === "undefined") window.ALittleIDE = {};
 
 
 ALittleIDE.IDECenter = JavaScript.Class(undefined, {
-	Ctor : function() {
-	},
 	Setup : function() {
 		return new Promise((function(___COROUTINE, ___) {
 			ALittleIDE.g_Control.CreateControl("ide_main_scene", this, ALittleIDE.g_MainLayer);
@@ -24,13 +22,14 @@ ALittleIDE.IDECenter = JavaScript.Class(undefined, {
 	get center() {
 		return this._center;
 	},
-	RefreshProject : function() {
-		if (ALittleIDE.g_IDEProject.project === undefined) {
-			return;
+	RefreshProject : async function() {
+		if (!this._center.content_edit.IsSaveAll()) {
+			let result = await g_AUITool.SaveNotice("提示", "是否保存当前项目?");
+			if (result === "YES") {
+				this._center.content_edit.SaveAllTab();
+			}
 		}
-		let project_name = ALittleIDE.g_IDEProject.project.name;
-		ALittleIDE.g_IDEProject.CloseProject();
-		ALittleIDE.g_IDEProject.OpenProject(project_name);
+		ALittleIDE.g_IDEProject.RefreshProject();
 	},
 	HandleShortcutKey : function(mod, sym, scancode) {
 		if (A_UISystem.sym_map.get(1073741886)) {

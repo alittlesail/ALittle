@@ -1,6 +1,6 @@
 {
 if (typeof ALittleIDE === "undefined") window.ALittleIDE = {};
-let ___all_struct = ALittle.GetAllStruct();
+let ___all_struct = ALittle->GetAllStruct();
 
 ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
 name : "ALittle.UIEvent", ns_name : "ALittle", rl_name : "UIEvent", hash_code : -1479093282,
@@ -44,8 +44,8 @@ ALittleIDE.IDEUIProjectList = JavaScript.Class(ALittle.DisplayLayout, {
 		let menu = ALittle.NewObject(AUIPlugin.AUIRightMenu);
 		menu.AddItem("打开", this.HandleRightProjectOpen.bind(this, event.target));
 		menu.AddItem("关闭", this.HandleRightProjectClose.bind(this, event.target));
-		menu.AddItem("刷新", this.HandleRightProjectRefresh.bind(this, event.target));
 		menu.AddItem("移除", this.HandleRightProjectRemove.bind(this, event.target));
+		menu.Show();
 	},
 	HandleRightProjectOpen : async function(target) {
 		let project_name = target.text;
@@ -81,22 +81,6 @@ ALittleIDE.IDEUIProjectList = JavaScript.Class(ALittle.DisplayLayout, {
 			}
 		}
 		ALittleIDE.g_IDEProject.CloseProject();
-	},
-	RefreshProject : async function() {
-		if (!ALittleIDE.g_IDECenter.center.content_edit.IsSaveAll()) {
-			let result = await g_AUITool.SaveNotice("提示", "是否保存当前项目?");
-			if (result === "YES") {
-				ALittleIDE.g_IDECenter.center.content_edit.SaveAllTab();
-			}
-		}
-		ALittleIDE.g_IDECenter.RefreshProject();
-	},
-	HandleRightProjectRefresh : function(target) {
-		let project_name = target.text;
-		if (ALittleIDE.g_IDEProject.project === undefined || ALittleIDE.g_IDEProject.project.name !== project_name) {
-			return;
-		}
-		this.RefreshProject();
 	},
 }, "ALittleIDE.IDEUIProjectList");
 

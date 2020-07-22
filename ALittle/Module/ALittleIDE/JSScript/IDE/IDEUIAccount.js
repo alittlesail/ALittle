@@ -1,9 +1,9 @@
 {
 if (typeof ALittleIDE === "undefined") window.ALittleIDE = {};
-let ___all_struct = ALittle.GetAllStruct();
+let ___all_struct = ALittle->GetAllStruct();
 
-ALittle.RegStruct(-262794256, "AUIPlugin.AUIWebAccountReconnectEvent", {
-name : "AUIPlugin.AUIWebAccountReconnectEvent", ns_name : "AUIPlugin", rl_name : "AUIWebAccountReconnectEvent", hash_code : -262794256,
+ALittle.RegStruct(-1848509213, "AUIPlugin.AUIWebAccountLogoutEvent", {
+name : "AUIPlugin.AUIWebAccountLogoutEvent", ns_name : "AUIPlugin", rl_name : "AUIWebAccountLogoutEvent", hash_code : -1848509213,
 name_list : ["target"],
 type_list : ["ALittle.EventDispatcher"],
 option_map : {}
@@ -14,14 +14,14 @@ name_list : ["target"],
 type_list : ["ALittle.EventDispatcher"],
 option_map : {}
 })
-ALittle.RegStruct(-1848509213, "AUIPlugin.AUIWebAccountLogoutEvent", {
-name : "AUIPlugin.AUIWebAccountLogoutEvent", ns_name : "AUIPlugin", rl_name : "AUIWebAccountLogoutEvent", hash_code : -1848509213,
+ALittle.RegStruct(-420010531, "AUIPlugin.AUIWebAccountLoginEvent", {
+name : "AUIPlugin.AUIWebAccountLoginEvent", ns_name : "AUIPlugin", rl_name : "AUIWebAccountLoginEvent", hash_code : -420010531,
 name_list : ["target"],
 type_list : ["ALittle.EventDispatcher"],
 option_map : {}
 })
-ALittle.RegStruct(-420010531, "AUIPlugin.AUIWebAccountLoginEvent", {
-name : "AUIPlugin.AUIWebAccountLoginEvent", ns_name : "AUIPlugin", rl_name : "AUIWebAccountLoginEvent", hash_code : -420010531,
+ALittle.RegStruct(-262794256, "AUIPlugin.AUIWebAccountReconnectEvent", {
+name : "AUIPlugin.AUIWebAccountReconnectEvent", ns_name : "AUIPlugin", rl_name : "AUIWebAccountReconnectEvent", hash_code : -262794256,
 name_list : ["target"],
 type_list : ["ALittle.EventDispatcher"],
 option_map : {}

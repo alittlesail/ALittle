@@ -1,24 +1,6 @@
 {
 if (typeof ALittleIDE === "undefined") window.ALittleIDE = {};
 
-ALittle.RegStruct(-4982446, "ALittle.DisplayInfo", {
-name : "ALittle.DisplayInfo", ns_name : "ALittle", rl_name : "DisplayInfo", hash_code : -4982446,
-name_list : ["__target_class","__class_func","__base_attr","__show_attr","loop_map","__class","__include","__extends","__childs","__event","__link","__shows_included","__childs_included","__extends_included","description","text","font_path","font_size","red","green","blue","alpha","bold","italic","underline","deleteline","outline","x","y","x_type","x_value","y_type","y_value","width","height","width_type","width_value","height_type","height_value","scale_x","scale_y","center_x","center_y","angle","flip","hand_cursor","visible","disabled","left_size","right_size","top_size","bottom_size","texture_name","interval","play_loop_count","var_play","base_y","head_size","gap","up_size","down_size","cursor_red","cursor_green","cursor_blue","default_text_alpha","ims_padding","margin_left","margin_right","margin_top","margin_bottom","show_count","body_margin","screen_margin_left","screen_margin_right","screen_margin_top","screen_margin_bottom","start_degree","end_degree","line_spacing","max_line_count","font_red","font_green","font_blue","margin_halign","margin_valign","cursor_margin_up","cursor_margin_down","total_size","show_size","offset_rate","offset_step","grade","row_count","col_count","row_index","col_index","u1","v1","u2","v2","u3","v3","x1","y1","x2","y2","x3","y3","x_gap","y_gap","x_start_gap","y_start_gap","button_gap","button_start","button_margin","tab_index","view_margin","child_width_margin"],
-type_list : ["List<string>","any","Map<string,any>","Map<string,ALittle.DisplayInfo>","Map<string,ALittle.LoopGroupInfo>","string","string","string","List<ALittle.DisplayInfo>","List<ALittle.EventInfo>","string","bool","bool","bool","string","string","string","int","double","double","double","double","bool","bool","bool","bool","bool","double","double","int","double","int","double","double","double","int","double","int","double","double","double","double","double","double","int","bool","bool","bool","double","double","double","double","string","int","int","bool","double","double","double","double","double","double","double","double","double","double","double","double","double","double","int","double","double","double","double","double","double","double","double","int","double","double","double","double","double","double","double","double","double","double","double","int","int","int","int","int","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double"],
-option_map : {}
-})
-ALittle.RegStruct(1025287370, "ALittleIDE.IDEPasteControlUserData", {
-name : "ALittleIDE.IDEPasteControlUserData", ns_name : "ALittleIDE", rl_name : "IDEPasteControlUserData", hash_code : 1025287370,
-name_list : ["target","info","child_index","revoke_bind","callback"],
-type_list : ["ALittleIDE.IDEUITreeLogic","ALittle.DisplayInfo","int","ALittleIDE.IDERevokeBind","Functor<(bool,List<ALittleIDE.IDEUITreeLogic>)>"],
-option_map : {}
-})
-ALittle.RegStruct(1653869333, "ALittle.LoopGroupInfo", {
-name : "ALittle.LoopGroupInfo", ns_name : "ALittle", rl_name : "LoopGroupInfo", hash_code : 1653869333,
-name_list : ["childs"],
-type_list : ["List<ALittle.LoopListInfo>"],
-option_map : {}
-})
 ALittle.RegStruct(-2110455927, "ALittle.EventInfo", {
 name : "ALittle.EventInfo", ns_name : "ALittle", rl_name : "EventInfo", hash_code : -2110455927,
 name_list : ["type","func"],
@@ -31,10 +13,28 @@ name_list : ["link","attribute","init","childs"],
 type_list : ["string","string","any","List<ALittle.LoopChildInfo>"],
 option_map : {}
 })
+ALittle.RegStruct(1653869333, "ALittle.LoopGroupInfo", {
+name : "ALittle.LoopGroupInfo", ns_name : "ALittle", rl_name : "LoopGroupInfo", hash_code : 1653869333,
+name_list : ["childs"],
+type_list : ["List<ALittle.LoopListInfo>"],
+option_map : {}
+})
+ALittle.RegStruct(1025287370, "ALittleIDE.IDEPasteControlUserData", {
+name : "ALittleIDE.IDEPasteControlUserData", ns_name : "ALittleIDE", rl_name : "IDEPasteControlUserData", hash_code : 1025287370,
+name_list : ["target","info","child_index","revoke_bind","callback"],
+type_list : ["ALittleIDE.IDEUITreeLogic","ALittle.DisplayInfo","int","ALittle.RevokeBind","Functor<(bool,List<ALittleIDE.IDEUITreeLogic>)>"],
+option_map : {}
+})
 ALittle.RegStruct(-925381158, "ALittle.LoopChildInfo", {
 name : "ALittle.LoopChildInfo", ns_name : "ALittle", rl_name : "LoopChildInfo", hash_code : -925381158,
 name_list : ["clazz","target","total_time","delay_time"],
 type_list : ["string","any","int","int"],
+option_map : {}
+})
+ALittle.RegStruct(-4982446, "ALittle.DisplayInfo", {
+name : "ALittle.DisplayInfo", ns_name : "ALittle", rl_name : "DisplayInfo", hash_code : -4982446,
+name_list : ["__target_class","__class_func","__base_attr","__show_attr","loop_map","__class","__include","__extends","__childs","__event","__link","__shows_included","__childs_included","__extends_included","description","text","font_path","font_size","red","green","blue","alpha","bold","italic","underline","deleteline","x","y","x_type","x_value","y_type","y_value","width","height","width_type","width_value","height_type","height_value","scale_x","scale_y","center_x","center_y","angle","flip","hand_cursor","visible","disabled","left_size","right_size","top_size","bottom_size","texture_name","interval","play_loop_count","var_play","base_y","head_size","gap","up_size","down_size","cursor_red","cursor_green","cursor_blue","default_text_alpha","ims_padding","margin_left","margin_right","margin_top","margin_bottom","show_count","body_margin","screen_margin_left","screen_margin_right","screen_margin_top","screen_margin_bottom","start_degree","end_degree","line_spacing","max_line_count","font_red","font_green","font_blue","margin_halign","margin_valign","cursor_margin_up","cursor_margin_down","total_size","show_size","offset_rate","offset_step","grade","row_count","col_count","row_index","col_index","u1","v1","u2","v2","u3","v3","x1","y1","x2","y2","x3","y3","x_gap","y_gap","x_start_gap","y_start_gap","button_gap","button_start","button_margin","tab_index","view_margin","child_width_margin"],
+type_list : ["List<string>","any","Map<string,any>","Map<string,ALittle.DisplayInfo>","Map<string,ALittle.LoopGroupInfo>","string","string","string","List<ALittle.DisplayInfo>","List<ALittle.EventInfo>","string","bool","bool","bool","string","string","string","int","double","double","double","double","bool","bool","bool","bool","double","double","int","double","int","double","double","double","int","double","int","double","double","double","double","double","double","int","bool","bool","bool","double","double","double","double","string","int","int","bool","double","double","double","double","double","double","double","double","double","double","double","double","double","double","int","double","double","double","double","double","double","double","double","int","double","double","double","double","double","double","double","double","double","double","double","int","int","int","int","int","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double"],
 option_map : {}
 })
 
@@ -46,6 +46,7 @@ ALittleIDE.IDEUIControlTree = JavaScript.Class(ALittle.DisplayLayout, {
 			return;
 		}
 		let menu = ALittle.NewObject(AUIPlugin.AUIRightMenu);
+		menu.AddItem("设置", this.ShowSettingDialog.bind(this, target));
 		menu.AddItem("上移", target.TransferUp.bind(target), target.user_info.root || target.user_info.child_type !== "child", false);
 		menu.AddItem("下移", target.TransferDown.bind(target), target.user_info.root || target.user_info.child_type !== "child", false);
 		menu.AddItem("添加", this.ShowAddDialog.bind(this, target), !target.is_tree);
@@ -59,6 +60,10 @@ ALittleIDE.IDEUIControlTree = JavaScript.Class(ALittle.DisplayLayout, {
 		menu.AddItem("替换", this.ShowReplaceDialog.bind(this, target), target.user_info.root);
 		menu.AddItem("描述", this.ControlTreeDesc.bind(this, target));
 		menu.Show();
+	},
+	ShowSettingDialog : function(item) {
+		item.ShowFocus(false);
+		ALittleIDE.g_IDEAttrControlDialog.ShowDialog(item.user_info.object);
 	},
 	ShowAddImageDialog : async function(target) {
 		ALittleIDE.g_IDEImageSelectDialog.SetBasePath(ALittleIDE.g_IDEProject.project.texture_path);

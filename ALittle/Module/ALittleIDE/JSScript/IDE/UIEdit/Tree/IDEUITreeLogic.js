@@ -1,11 +1,11 @@
 {
 if (typeof ALittleIDE === "undefined") window.ALittleIDE = {};
-let ___all_struct = ALittle.GetAllStruct();
+let ___all_struct = ALittle->GetAllStruct();
 
-ALittle.RegStruct(1301789264, "ALittle.UIButtonDragBeginEvent", {
-name : "ALittle.UIButtonDragBeginEvent", ns_name : "ALittle", rl_name : "UIButtonDragBeginEvent", hash_code : 1301789264,
-name_list : ["target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"],
-type_list : ["ALittle.DisplayObject","double","double","double","double","double","double"],
+ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
+name : "ALittle.UIEvent", ns_name : "ALittle", rl_name : "UIEvent", hash_code : -1479093282,
+name_list : ["target"],
+type_list : ["ALittle.DisplayObject"],
 option_map : {}
 })
 ALittle.RegStruct(1337289812, "ALittle.UIButtonDragEvent", {
@@ -14,10 +14,10 @@ name_list : ["target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"],
 type_list : ["ALittle.DisplayObject","double","double","double","double","double","double"],
 option_map : {}
 })
-ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
-name : "ALittle.UIEvent", ns_name : "ALittle", rl_name : "UIEvent", hash_code : -1479093282,
-name_list : ["target"],
-type_list : ["ALittle.DisplayObject"],
+ALittle.RegStruct(1301789264, "ALittle.UIButtonDragBeginEvent", {
+name : "ALittle.UIButtonDragBeginEvent", ns_name : "ALittle", rl_name : "UIButtonDragBeginEvent", hash_code : 1301789264,
+name_list : ["target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"],
+type_list : ["ALittle.DisplayObject","double","double","double","double","double","double"],
 option_map : {}
 })
 ALittle.RegStruct(150587926, "ALittle.UIButtonDragEndEvent", {
@@ -85,7 +85,7 @@ ALittleIDE.IDEUITreeLogic = JavaScript.Class(ALittle.DisplayLayout, {
 			return;
 		}
 		this._tab_child.attr_screen.RemoveChild(this._attr_panel.layer);
-		ALittleIDE.g_IDECenter.center.control_attr.SetTitle("");
+		ALittleIDE.g_IDEAttrControlDialog.SetTitle("");
 	},
 	ShowAttributePanel : function() {
 		this._tab_child.attr_screen.RemoveAllChild();
@@ -97,7 +97,7 @@ ALittleIDE.IDEUITreeLogic = JavaScript.Class(ALittle.DisplayLayout, {
 			this._attr_panel.layer._user_data = this._attr_panel;
 			this._attr_panel.layer.disabled = this._user_info.extends;
 		}
-		ALittleIDE.g_IDECenter.center.control_attr.SetTitle(this._attr_panel.title);
+		ALittleIDE.g_IDEAttrControlDialog.SetTitle(this._attr_panel.title);
 		this._tab_child.attr_screen.AddChild(this._attr_panel.layer);
 	},
 	ShowFocus : function(is_group) {
@@ -116,12 +116,6 @@ ALittleIDE.IDEUITreeLogic = JavaScript.Class(ALittle.DisplayLayout, {
 		} else {
 			this._tab_child.ShowHandleQuad(this);
 		}
-	},
-	HandleMoveIn : function(event) {
-	},
-	HandleMouseMove : function(event) {
-	},
-	HandleMoveOut : function(event) {
 	},
 	HandleDragBegin : function(event) {
 		this._drag_ctrl = (A_UISystem.sym_map.get(1073742048) !== undefined || A_UISystem.sym_map.get(1073742052) !== undefined);
@@ -191,7 +185,7 @@ ALittleIDE.IDEUITreeLogic = JavaScript.Class(ALittle.DisplayLayout, {
 		info.info = this.CalcInfo();
 		copy_list[1 - 1] = info;
 		ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list));
-		let revoke_bind = ALittle.NewObject(ALittleIDE.IDERevokeBind);
+		let revoke_bind = ALittle.NewObject(ALittle.RevokeBind);
 		if (tree.is_tree) {
 			this._tab_child.RightControlTreePasteImpl(tree, undefined, 1, revoke_bind, this.HandleDragEndAndCut.bind(this, revoke_bind));
 		} else {
@@ -249,7 +243,7 @@ ALittleIDE.IDEUITreeLogic = JavaScript.Class(ALittle.DisplayLayout, {
 		this._tab_child.revoke_list.PushRevoke(revoke);
 	},
 	TreePaste : function(info, child_type, child_index, is_group, revoke_bind) {
-		let inner_revoke_bind = ALittle.NewObject(ALittleIDE.IDERevokeBind);
+		let inner_revoke_bind = ALittle.NewObject(ALittle.RevokeBind);
 		if (child_type !== "child" && this._user_info.object[child_type] !== undefined) {
 			delete this._user_info.object[child_type];
 			let ___OBJECT_1 = this.childs;
@@ -292,7 +286,7 @@ ALittleIDE.IDEUITreeLogic = JavaScript.Class(ALittle.DisplayLayout, {
 		if (extends_name !== "" && extends_info === undefined) {
 			return undefined;
 		}
-		let revoke_bind = ALittle.NewObject(ALittleIDE.IDERevokeBind);
+		let revoke_bind = ALittle.NewObject(ALittle.RevokeBind);
 		if (child_type !== "child" && this._user_info.object[child_type] !== undefined) {
 			delete this._user_info.object[child_type];
 			let ___OBJECT_2 = this.childs;
@@ -352,7 +346,7 @@ ALittleIDE.IDEUITreeLogic = JavaScript.Class(ALittle.DisplayLayout, {
 		if (extends_name !== "" && extends_info === undefined) {
 			return;
 		}
-		let revoke_bind = ALittle.NewObject(ALittleIDE.IDERevokeBind);
+		let revoke_bind = ALittle.NewObject(ALittle.RevokeBind);
 		let target_parent = this._logic_parent;
 		let child_index = undefined;
 		if (this._user_info.child_type !== "child") {

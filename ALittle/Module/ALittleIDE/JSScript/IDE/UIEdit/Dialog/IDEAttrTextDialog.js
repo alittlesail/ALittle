@@ -40,9 +40,6 @@ ALittleIDE.IDEAttrTextDialog = JavaScript.Class(undefined, {
 		if (this._underline.text === "是") {
 			info.underline = true;
 		}
-		if (this._outline.text === "是") {
-			info.outline = true;
-		}
 		if (this._deleteline.text === "是") {
 			info.deleteline = true;
 		}
@@ -83,10 +80,6 @@ ALittleIDE.IDEAttrTextDialog = JavaScript.Class(undefined, {
 		this._underline.text = "否";
 		if (info.underline) {
 			this._underline.text = "是";
-		}
-		this._outline.text = "否";
-		if (info.outline) {
-			this._outline.text = "是";
 		}
 		this._deleteline.text = "否";
 		if (info.deleteline) {

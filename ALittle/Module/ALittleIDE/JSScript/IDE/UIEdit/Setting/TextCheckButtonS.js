@@ -38,7 +38,7 @@ ALittleIDE.TextCheckButtonS = JavaScript.Class(ALittleIDE.DisplayLayoutS, {
 		let target_x = object.text_x_type;
 		let new_x = target_x;
 		let list = ALittleIDE.g_IDEEnum.xy_rtype;
-		let revoke_bind = ALittle.NewObject(ALittleIDE.IDERevokeBind);
+		let revoke_bind = ALittle.NewObject(ALittle.RevokeBind);
 		this.TypeSelectChange("text_x_type", list, false, revoke_bind);
 	},
 	HandleTextXValueFOCUSOUT : function(event) {

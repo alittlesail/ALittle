@@ -11,7 +11,6 @@ ALittleIDE.TextS = JavaScript.Class(ALittleIDE.DisplayObjectS, {
 		ALittleIDE.DisplayObjectS.LoadNatureBase.call(this);
 		this.LoadBoolData("bold", false, ALittleIDE.g_IDEEnum.yn_type);
 		this.LoadBoolData("underline", false, ALittleIDE.g_IDEEnum.yn_type);
-		this.LoadBoolData("outline", false, ALittleIDE.g_IDEEnum.yn_type);
 		this.LoadBoolData("deleteline", false, ALittleIDE.g_IDEEnum.yn_type);
 		this.LoadBoolData("italic", false, ALittleIDE.g_IDEEnum.yn_type);
 		this.LoadValueData("text");
@@ -24,9 +23,6 @@ ALittleIDE.TextS = JavaScript.Class(ALittleIDE.DisplayObjectS, {
 	},
 	HandleUnderLineSELECT_CHANGE : function(event) {
 		this.BoolSelectChange("underline", false, ALittleIDE.g_IDEEnum.yn_type);
-	},
-	HandleOutLineSELECT_CHANGE : function(event) {
-		this.BoolSelectChange("outline", false, ALittleIDE.g_IDEEnum.yn_type);
 	},
 	HandleDeleteLineSELECT_CHANGE : function(event) {
 		this.BoolSelectChange("deleteline", false, ALittleIDE.g_IDEEnum.yn_type);

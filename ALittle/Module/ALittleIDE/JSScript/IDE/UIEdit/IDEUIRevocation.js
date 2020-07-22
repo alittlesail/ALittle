@@ -1,6 +1,6 @@
 {
 if (typeof ALittleIDE === "undefined") window.ALittleIDE = {};
-let ___all_struct = ALittle.GetAllStruct();
+let ___all_struct = ALittle->GetAllStruct();
 
 ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
 name : "ALittle.UIEvent", ns_name : "ALittle", rl_name : "UIEvent", hash_code : -1479093282,
@@ -15,8 +15,8 @@ type_list : ["ALittle.DisplayObject"],
 option_map : {}
 })
 
-if (ALittleIDE.IDERevokeObject === undefined) throw new Error(" extends class:ALittleIDE.IDERevokeObject is undefined");
-ALittleIDE.IDETextEditRevoke = JavaScript.Class(ALittleIDE.IDERevokeObject, {
+if (ALittle.RevokeObject === undefined) throw new Error(" extends class:ALittle.RevokeObject is undefined");
+ALittleIDE.IDETextEditRevoke = JavaScript.Class(ALittle.RevokeObject, {
 	Ctor : function(target, old_text, new_text) {
 		this._target = target;
 		this._old_text = old_text;
@@ -30,8 +30,8 @@ ALittleIDE.IDETextEditRevoke = JavaScript.Class(ALittleIDE.IDERevokeObject, {
 	},
 }, "ALittleIDE.IDETextEditRevoke");
 
-if (ALittleIDE.IDERevokeObject === undefined) throw new Error(" extends class:ALittleIDE.IDERevokeObject is undefined");
-ALittleIDE.IDEDeleteRevoke = JavaScript.Class(ALittleIDE.IDERevokeObject, {
+if (ALittle.RevokeObject === undefined) throw new Error(" extends class:ALittle.RevokeObject is undefined");
+ALittleIDE.IDEDeleteRevoke = JavaScript.Class(ALittle.RevokeObject, {
 	Ctor : function(parent, current, index) {
 		this._parent = parent;
 		this._current = current;
@@ -74,8 +74,8 @@ ALittleIDE.IDEDeleteRevoke = JavaScript.Class(ALittleIDE.IDERevokeObject, {
 	},
 }, "ALittleIDE.IDEDeleteRevoke");
 
-if (ALittleIDE.IDERevokeObject === undefined) throw new Error(" extends class:ALittleIDE.IDERevokeObject is undefined");
-ALittleIDE.IDEChildShowRevoke = JavaScript.Class(ALittleIDE.IDERevokeObject, {
+if (ALittle.RevokeObject === undefined) throw new Error(" extends class:ALittle.RevokeObject is undefined");
+ALittleIDE.IDEChildShowRevoke = JavaScript.Class(ALittle.RevokeObject, {
 	Ctor : function(parent, current, index) {
 		this._parent = parent;
 		this._current = current;
@@ -118,8 +118,8 @@ ALittleIDE.IDEChildShowRevoke = JavaScript.Class(ALittleIDE.IDERevokeObject, {
 	},
 }, "ALittleIDE.IDEChildShowRevoke");
 
-if (ALittleIDE.IDERevokeObject === undefined) throw new Error(" extends class:ALittleIDE.IDERevokeObject is undefined");
-ALittleIDE.IDEDragXYRevoke = JavaScript.Class(ALittleIDE.IDERevokeObject, {
+if (ALittle.RevokeObject === undefined) throw new Error(" extends class:ALittle.RevokeObject is undefined");
+ALittleIDE.IDEDragXYRevoke = JavaScript.Class(ALittle.RevokeObject, {
 	Ctor : function(target, delta_x, delta_y) {
 		this._target = target;
 		this._delta_x = delta_x;
@@ -137,8 +137,8 @@ ALittleIDE.IDEDragXYRevoke = JavaScript.Class(ALittleIDE.IDERevokeObject, {
 	},
 }, "ALittleIDE.IDEDragXYRevoke");
 
-if (ALittleIDE.IDERevokeObject === undefined) throw new Error(" extends class:ALittleIDE.IDERevokeObject is undefined");
-ALittleIDE.IDEDragWHRevoke = JavaScript.Class(ALittleIDE.IDERevokeObject, {
+if (ALittle.RevokeObject === undefined) throw new Error(" extends class:ALittle.RevokeObject is undefined");
+ALittleIDE.IDEDragWHRevoke = JavaScript.Class(ALittle.RevokeObject, {
 	Ctor : function(target, delta_x, delta_y) {
 		this._target = target;
 		this._delta_x = delta_x;
@@ -156,8 +156,8 @@ ALittleIDE.IDEDragWHRevoke = JavaScript.Class(ALittleIDE.IDERevokeObject, {
 	},
 }, "ALittleIDE.IDEDragWHRevoke");
 
-if (ALittleIDE.IDERevokeObject === undefined) throw new Error(" extends class:ALittleIDE.IDERevokeObject is undefined");
-ALittleIDE.IDEChildUpDownRevoke = JavaScript.Class(ALittleIDE.IDERevokeObject, {
+if (ALittle.RevokeObject === undefined) throw new Error(" extends class:ALittle.RevokeObject is undefined");
+ALittleIDE.IDEChildUpDownRevoke = JavaScript.Class(ALittle.RevokeObject, {
 	Ctor : function(parent, current, up_down) {
 		this._parent = parent;
 		this._current = current;
@@ -191,8 +191,8 @@ ALittleIDE.IDEChildUpDownRevoke = JavaScript.Class(ALittleIDE.IDERevokeObject, {
 	},
 }, "ALittleIDE.IDEChildUpDownRevoke");
 
-if (ALittleIDE.IDERevokeObject === undefined) throw new Error(" extends class:ALittleIDE.IDERevokeObject is undefined");
-ALittleIDE.IDENatureChangeRevoke = JavaScript.Class(ALittleIDE.IDERevokeObject, {
+if (ALittle.RevokeObject === undefined) throw new Error(" extends class:ALittle.RevokeObject is undefined");
+ALittleIDE.IDENatureChangeRevoke = JavaScript.Class(ALittle.RevokeObject, {
 	Ctor : function(target, nature, old_base, new_base, old_object, new_object, text, need_reset) {
 		this._target = target;
 		this._nature = nature;
@@ -231,8 +231,8 @@ ALittleIDE.IDENatureChangeRevoke = JavaScript.Class(ALittleIDE.IDERevokeObject, 
 	},
 }, "ALittleIDE.IDENatureChangeRevoke");
 
-if (ALittleIDE.IDERevokeObject === undefined) throw new Error(" extends class:ALittleIDE.IDERevokeObject is undefined");
-ALittleIDE.IDECreateAntiRevoke = JavaScript.Class(ALittleIDE.IDERevokeObject, {
+if (ALittle.RevokeObject === undefined) throw new Error(" extends class:ALittle.RevokeObject is undefined");
+ALittleIDE.IDECreateAntiRevoke = JavaScript.Class(ALittle.RevokeObject, {
 	Ctor : function(target, name, info, item) {
 		this._target = target;
 		this._name = name;
@@ -259,8 +259,8 @@ ALittleIDE.IDECreateAntiRevoke = JavaScript.Class(ALittleIDE.IDERevokeObject, {
 	},
 }, "ALittleIDE.IDECreateAntiRevoke");
 
-if (ALittleIDE.IDERevokeObject === undefined) throw new Error(" extends class:ALittleIDE.IDERevokeObject is undefined");
-ALittleIDE.IDEDeleteAntiRevoke = JavaScript.Class(ALittleIDE.IDERevokeObject, {
+if (ALittle.RevokeObject === undefined) throw new Error(" extends class:ALittle.RevokeObject is undefined");
+ALittleIDE.IDEDeleteAntiRevoke = JavaScript.Class(ALittle.RevokeObject, {
 	Ctor : function(target, name, info, item, child_index) {
 		this._target = target;
 		this._name = name;
@@ -288,8 +288,8 @@ ALittleIDE.IDEDeleteAntiRevoke = JavaScript.Class(ALittleIDE.IDERevokeObject, {
 	},
 }, "ALittleIDE.IDEDeleteAntiRevoke");
 
-if (ALittleIDE.IDERevokeObject === undefined) throw new Error(" extends class:ALittleIDE.IDERevokeObject is undefined");
-ALittleIDE.IDEAntiAddAttrRevoke = JavaScript.Class(ALittleIDE.IDERevokeObject, {
+if (ALittle.RevokeObject === undefined) throw new Error(" extends class:ALittle.RevokeObject is undefined");
+ALittleIDE.IDEAntiAddAttrRevoke = JavaScript.Class(ALittle.RevokeObject, {
 	Ctor : function(target, name, info, anti_item, link_item) {
 		this._target = target;
 		this._name = name;
@@ -337,8 +337,8 @@ ALittleIDE.IDEAntiAddAttrRevoke = JavaScript.Class(ALittleIDE.IDERevokeObject, {
 	},
 }, "ALittleIDE.IDEAntiAddAttrRevoke");
 
-if (ALittleIDE.IDERevokeObject === undefined) throw new Error(" extends class:ALittleIDE.IDERevokeObject is undefined");
-ALittleIDE.IDEAntiRemoveAttrRevoke = JavaScript.Class(ALittleIDE.IDERevokeObject, {
+if (ALittle.RevokeObject === undefined) throw new Error(" extends class:ALittle.RevokeObject is undefined");
+ALittleIDE.IDEAntiRemoveAttrRevoke = JavaScript.Class(ALittle.RevokeObject, {
 	Ctor : function(target, name, info, anti_item, link_item, child_index) {
 		this._target = target;
 		this._name = name;
@@ -387,8 +387,8 @@ ALittleIDE.IDEAntiRemoveAttrRevoke = JavaScript.Class(ALittleIDE.IDERevokeObject
 	},
 }, "ALittleIDE.IDEAntiRemoveAttrRevoke");
 
-if (ALittleIDE.IDERevokeObject === undefined) throw new Error(" extends class:ALittleIDE.IDERevokeObject is undefined");
-ALittleIDE.IDEAntiInsertLoopRevoke = JavaScript.Class(ALittleIDE.IDERevokeObject, {
+if (ALittle.RevokeObject === undefined) throw new Error(" extends class:ALittle.RevokeObject is undefined");
+ALittleIDE.IDEAntiInsertLoopRevoke = JavaScript.Class(ALittle.RevokeObject, {
 	Ctor : function(target, info, loop_item, child_index) {
 		this._target = target;
 		this._info = info;
@@ -410,8 +410,8 @@ ALittleIDE.IDEAntiInsertLoopRevoke = JavaScript.Class(ALittleIDE.IDERevokeObject
 	},
 }, "ALittleIDE.IDEAntiInsertLoopRevoke");
 
-if (ALittleIDE.IDERevokeObject === undefined) throw new Error(" extends class:ALittleIDE.IDERevokeObject is undefined");
-ALittleIDE.IDEAntiDeleteLoopRevoke = JavaScript.Class(ALittleIDE.IDERevokeObject, {
+if (ALittle.RevokeObject === undefined) throw new Error(" extends class:ALittle.RevokeObject is undefined");
+ALittleIDE.IDEAntiDeleteLoopRevoke = JavaScript.Class(ALittle.RevokeObject, {
 	Ctor : function(target, info, loop_item, child_index) {
 		this._target = target;
 		this._info = info;
@@ -433,8 +433,8 @@ ALittleIDE.IDEAntiDeleteLoopRevoke = JavaScript.Class(ALittleIDE.IDERevokeObject
 	},
 }, "ALittleIDE.IDEAntiDeleteLoopRevoke");
 
-if (ALittleIDE.IDERevokeObject === undefined) throw new Error(" extends class:ALittleIDE.IDERevokeObject is undefined");
-ALittleIDE.IDEAntiClearLoopRevoke = JavaScript.Class(ALittleIDE.IDERevokeObject, {
+if (ALittle.RevokeObject === undefined) throw new Error(" extends class:ALittle.RevokeObject is undefined");
+ALittleIDE.IDEAntiClearLoopRevoke = JavaScript.Class(ALittle.RevokeObject, {
 	Ctor : function(target, info_list, loop_item_list) {
 		this._target = target;
 		this._info_list = info_list;
@@ -458,8 +458,8 @@ ALittleIDE.IDEAntiClearLoopRevoke = JavaScript.Class(ALittleIDE.IDERevokeObject,
 	},
 }, "ALittleIDE.IDEAntiClearLoopRevoke");
 
-if (ALittleIDE.IDERevokeObject === undefined) throw new Error(" extends class:ALittleIDE.IDERevokeObject is undefined");
-ALittleIDE.IDEAntiLoopTargetValueChangeRevoke = JavaScript.Class(ALittleIDE.IDERevokeObject, {
+if (ALittle.RevokeObject === undefined) throw new Error(" extends class:ALittle.RevokeObject is undefined");
+ALittleIDE.IDEAntiLoopTargetValueChangeRevoke = JavaScript.Class(ALittle.RevokeObject, {
 	Ctor : function(target, old_value, new_value) {
 		this._target = target;
 		this._old_value = old_value;
@@ -495,8 +495,8 @@ ALittleIDE.IDEAntiLoopTargetValueChangeRevoke = JavaScript.Class(ALittleIDE.IDER
 	},
 }, "ALittleIDE.IDEAntiLoopTargetValueChangeRevoke");
 
-if (ALittleIDE.IDERevokeObject === undefined) throw new Error(" extends class:ALittleIDE.IDERevokeObject is undefined");
-ALittleIDE.IDEAntiLoopTotalTimeChangeRevoke = JavaScript.Class(ALittleIDE.IDERevokeObject, {
+if (ALittle.RevokeObject === undefined) throw new Error(" extends class:ALittle.RevokeObject is undefined");
+ALittleIDE.IDEAntiLoopTotalTimeChangeRevoke = JavaScript.Class(ALittle.RevokeObject, {
 	Ctor : function(target, old_value, new_value) {
 		this._target = target;
 		this._old_value = old_value;
@@ -532,8 +532,8 @@ ALittleIDE.IDEAntiLoopTotalTimeChangeRevoke = JavaScript.Class(ALittleIDE.IDERev
 	},
 }, "ALittleIDE.IDEAntiLoopTotalTimeChangeRevoke");
 
-if (ALittleIDE.IDERevokeObject === undefined) throw new Error(" extends class:ALittleIDE.IDERevokeObject is undefined");
-ALittleIDE.IDEAntiLoopDelayTimeChangeRevoke = JavaScript.Class(ALittleIDE.IDERevokeObject, {
+if (ALittle.RevokeObject === undefined) throw new Error(" extends class:ALittle.RevokeObject is undefined");
+ALittleIDE.IDEAntiLoopDelayTimeChangeRevoke = JavaScript.Class(ALittle.RevokeObject, {
 	Ctor : function(target, old_value, new_value) {
 		this._target = target;
 		this._old_value = old_value;

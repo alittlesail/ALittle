@@ -1,6 +1,6 @@
 {
 if (typeof ALittleIDE === "undefined") window.ALittleIDE = {};
-let ___all_struct = ALittle.GetAllStruct();
+let ___all_struct = ALittle->GetAllStruct();
 
 ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
 name : "ALittle.UIEvent", ns_name : "ALittle", rl_name : "UIEvent", hash_code : -1479093282,
@@ -103,7 +103,7 @@ ALittleIDE.IDEAttrEventDialog = JavaScript.Class(undefined, {
 		let content_str = ALittle.String_Join(content, "\n");
 		this._event_edit.text = content_str;
 		this._edit_old_text = content_str;
-		this._revoke_list = ALittle.NewObject(ALittleIDE.IDERevokeList);
+		this._revoke_list = ALittle.NewObject(ALittle.RevokeList);
 	},
 	ShowEventSelectDialog : function(x, y) {
 		if (this._select_dialog === undefined) {

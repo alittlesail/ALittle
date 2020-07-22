@@ -1,6 +1,6 @@
 {
 if (typeof ALittleIDE === "undefined") window.ALittleIDE = {};
-let ___all_struct = ALittle.GetAllStruct();
+let ___all_struct = ALittle->GetAllStruct();
 
 ALittle.RegStruct(-2110455927, "ALittle.EventInfo", {
 name : "ALittle.EventInfo", ns_name : "ALittle", rl_name : "EventInfo", hash_code : -2110455927,
@@ -12,6 +12,18 @@ ALittle.RegStruct(-1741432339, "ALittle.LoopListInfo", {
 name : "ALittle.LoopListInfo", ns_name : "ALittle", rl_name : "LoopListInfo", hash_code : -1741432339,
 name_list : ["link","attribute","init","childs"],
 type_list : ["string","string","any","List<ALittle.LoopChildInfo>"],
+option_map : {}
+})
+ALittle.RegStruct(1715346212, "ALittle.Event", {
+name : "ALittle.Event", ns_name : "ALittle", rl_name : "Event", hash_code : 1715346212,
+name_list : ["target"],
+type_list : ["ALittle.EventDispatcher"],
+option_map : {}
+})
+ALittle.RegStruct(1653869333, "ALittle.LoopGroupInfo", {
+name : "ALittle.LoopGroupInfo", ns_name : "ALittle", rl_name : "LoopGroupInfo", hash_code : 1653869333,
+name_list : ["childs"],
+type_list : ["List<ALittle.LoopListInfo>"],
 option_map : {}
 })
 ALittle.RegStruct(-1604617962, "ALittle.UIKeyDownEvent", {
@@ -32,10 +44,28 @@ name_list : ["target","abs_x","abs_y","rel_x","rel_y","count","is_drag"],
 type_list : ["ALittle.DisplayObject","double","double","double","double","int","bool"],
 option_map : {}
 })
+ALittle.RegStruct(1337289812, "ALittle.UIButtonDragEvent", {
+name : "ALittle.UIButtonDragEvent", ns_name : "ALittle", rl_name : "UIButtonDragEvent", hash_code : 1337289812,
+name_list : ["target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"],
+type_list : ["ALittle.DisplayObject","double","double","double","double","double","double"],
+option_map : {}
+})
+ALittle.RegStruct(1301789264, "ALittle.UIButtonDragBeginEvent", {
+name : "ALittle.UIButtonDragBeginEvent", ns_name : "ALittle", rl_name : "UIButtonDragBeginEvent", hash_code : 1301789264,
+name_list : ["target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"],
+type_list : ["ALittle.DisplayObject","double","double","double","double","double","double"],
+option_map : {}
+})
 ALittle.RegStruct(-925381158, "ALittle.LoopChildInfo", {
 name : "ALittle.LoopChildInfo", ns_name : "ALittle", rl_name : "LoopChildInfo", hash_code : -925381158,
 name_list : ["clazz","target","total_time","delay_time"],
 type_list : ["string","any","int","int"],
+option_map : {}
+})
+ALittle.RegStruct(882286932, "ALittle.UIKeyEvent", {
+name : "ALittle.UIKeyEvent", ns_name : "ALittle", rl_name : "UIKeyEvent", hash_code : 882286932,
+name_list : ["target","mod","sym","scancode","custom","handled"],
+type_list : ["ALittle.DisplayObject","int","int","int","bool","bool"],
 option_map : {}
 })
 ALittle.RegStruct(-641444818, "ALittle.UIRButtonDownEvent", {
@@ -50,6 +80,12 @@ name_list : ["target","is_drag"],
 type_list : ["ALittle.DisplayObject","bool"],
 option_map : {}
 })
+ALittle.RegStruct(150587926, "ALittle.UIButtonDragEndEvent", {
+name : "ALittle.UIButtonDragEndEvent", ns_name : "ALittle", rl_name : "UIButtonDragEndEvent", hash_code : 150587926,
+name_list : ["target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"],
+type_list : ["ALittle.DisplayObject","double","double","double","double","double","double"],
+option_map : {}
+})
 ALittle.RegStruct(-11865120, "ALittleIDE.IDEControlItemUserData", {
 name : "ALittleIDE.IDEControlItemUserData", ns_name : "ALittleIDE", rl_name : "IDEControlItemUserData", hash_code : -11865120,
 name_list : ["pre_index","presee","control_info"],
@@ -58,44 +94,8 @@ option_map : {}
 })
 ALittle.RegStruct(-4982446, "ALittle.DisplayInfo", {
 name : "ALittle.DisplayInfo", ns_name : "ALittle", rl_name : "DisplayInfo", hash_code : -4982446,
-name_list : ["__target_class","__class_func","__base_attr","__show_attr","loop_map","__class","__include","__extends","__childs","__event","__link","__shows_included","__childs_included","__extends_included","description","text","font_path","font_size","red","green","blue","alpha","bold","italic","underline","deleteline","outline","x","y","x_type","x_value","y_type","y_value","width","height","width_type","width_value","height_type","height_value","scale_x","scale_y","center_x","center_y","angle","flip","hand_cursor","visible","disabled","left_size","right_size","top_size","bottom_size","texture_name","interval","play_loop_count","var_play","base_y","head_size","gap","up_size","down_size","cursor_red","cursor_green","cursor_blue","default_text_alpha","ims_padding","margin_left","margin_right","margin_top","margin_bottom","show_count","body_margin","screen_margin_left","screen_margin_right","screen_margin_top","screen_margin_bottom","start_degree","end_degree","line_spacing","max_line_count","font_red","font_green","font_blue","margin_halign","margin_valign","cursor_margin_up","cursor_margin_down","total_size","show_size","offset_rate","offset_step","grade","row_count","col_count","row_index","col_index","u1","v1","u2","v2","u3","v3","x1","y1","x2","y2","x3","y3","x_gap","y_gap","x_start_gap","y_start_gap","button_gap","button_start","button_margin","tab_index","view_margin","child_width_margin"],
-type_list : ["List<string>","any","Map<string,any>","Map<string,ALittle.DisplayInfo>","Map<string,ALittle.LoopGroupInfo>","string","string","string","List<ALittle.DisplayInfo>","List<ALittle.EventInfo>","string","bool","bool","bool","string","string","string","int","double","double","double","double","bool","bool","bool","bool","bool","double","double","int","double","int","double","double","double","int","double","int","double","double","double","double","double","double","int","bool","bool","bool","double","double","double","double","string","int","int","bool","double","double","double","double","double","double","double","double","double","double","double","double","double","double","int","double","double","double","double","double","double","double","double","int","double","double","double","double","double","double","double","double","double","double","double","int","int","int","int","int","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double"],
-option_map : {}
-})
-ALittle.RegStruct(150587926, "ALittle.UIButtonDragEndEvent", {
-name : "ALittle.UIButtonDragEndEvent", ns_name : "ALittle", rl_name : "UIButtonDragEndEvent", hash_code : 150587926,
-name_list : ["target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"],
-type_list : ["ALittle.DisplayObject","double","double","double","double","double","double"],
-option_map : {}
-})
-ALittle.RegStruct(882286932, "ALittle.UIKeyEvent", {
-name : "ALittle.UIKeyEvent", ns_name : "ALittle", rl_name : "UIKeyEvent", hash_code : 882286932,
-name_list : ["target","mod","sym","scancode","custom","handled"],
-type_list : ["ALittle.DisplayObject","int","int","int","bool","bool"],
-option_map : {}
-})
-ALittle.RegStruct(1301789264, "ALittle.UIButtonDragBeginEvent", {
-name : "ALittle.UIButtonDragBeginEvent", ns_name : "ALittle", rl_name : "UIButtonDragBeginEvent", hash_code : 1301789264,
-name_list : ["target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"],
-type_list : ["ALittle.DisplayObject","double","double","double","double","double","double"],
-option_map : {}
-})
-ALittle.RegStruct(1337289812, "ALittle.UIButtonDragEvent", {
-name : "ALittle.UIButtonDragEvent", ns_name : "ALittle", rl_name : "UIButtonDragEvent", hash_code : 1337289812,
-name_list : ["target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"],
-type_list : ["ALittle.DisplayObject","double","double","double","double","double","double"],
-option_map : {}
-})
-ALittle.RegStruct(1653869333, "ALittle.LoopGroupInfo", {
-name : "ALittle.LoopGroupInfo", ns_name : "ALittle", rl_name : "LoopGroupInfo", hash_code : 1653869333,
-name_list : ["childs"],
-type_list : ["List<ALittle.LoopListInfo>"],
-option_map : {}
-})
-ALittle.RegStruct(1715346212, "ALittle.Event", {
-name : "ALittle.Event", ns_name : "ALittle", rl_name : "Event", hash_code : 1715346212,
-name_list : ["target"],
-type_list : ["ALittle.EventDispatcher"],
+name_list : ["__target_class","__class_func","__base_attr","__show_attr","loop_map","__class","__include","__extends","__childs","__event","__link","__shows_included","__childs_included","__extends_included","description","text","font_path","font_size","red","green","blue","alpha","bold","italic","underline","deleteline","x","y","x_type","x_value","y_type","y_value","width","height","width_type","width_value","height_type","height_value","scale_x","scale_y","center_x","center_y","angle","flip","hand_cursor","visible","disabled","left_size","right_size","top_size","bottom_size","texture_name","interval","play_loop_count","var_play","base_y","head_size","gap","up_size","down_size","cursor_red","cursor_green","cursor_blue","default_text_alpha","ims_padding","margin_left","margin_right","margin_top","margin_bottom","show_count","body_margin","screen_margin_left","screen_margin_right","screen_margin_top","screen_margin_bottom","start_degree","end_degree","line_spacing","max_line_count","font_red","font_green","font_blue","margin_halign","margin_valign","cursor_margin_up","cursor_margin_down","total_size","show_size","offset_rate","offset_step","grade","row_count","col_count","row_index","col_index","u1","v1","u2","v2","u3","v3","x1","y1","x2","y2","x3","y3","x_gap","y_gap","x_start_gap","y_start_gap","button_gap","button_start","button_margin","tab_index","view_margin","child_width_margin"],
+type_list : ["List<string>","any","Map<string,any>","Map<string,ALittle.DisplayInfo>","Map<string,ALittle.LoopGroupInfo>","string","string","string","List<ALittle.DisplayInfo>","List<ALittle.EventInfo>","string","bool","bool","bool","string","string","string","int","double","double","double","double","bool","bool","bool","bool","double","double","int","double","int","double","double","double","int","double","int","double","double","double","double","double","double","int","bool","bool","bool","double","double","double","double","string","int","int","bool","double","double","double","double","double","double","double","double","double","double","double","double","double","double","int","double","double","double","double","double","double","double","double","int","double","double","double","double","double","double","double","double","double","double","double","int","int","int","int","int","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double"],
 option_map : {}
 })
 
@@ -159,7 +159,7 @@ ALittleIDE.IDEUIControlList = JavaScript.Class(ALittle.DisplayLayout, {
 				}
 			}
 		}
-		let tabname_map = ALittleIDE.g_IDECenter.center.content_edit.GetTabNameMap();
+		let tabname_map = ALittleIDE.g_IDECenter.center.content_edit.GetTabIdMap(ALittleIDE.IDEUITabChild);
 		let search_count = 0;
 		let last_control_info = undefined;
 		ALittle.List_Sort(control_info_list, ALittleIDE.IDEUIControlList.ControlInfoCmp);
@@ -210,7 +210,7 @@ ALittleIDE.IDEUIControlList = JavaScript.Class(ALittle.DisplayLayout, {
 	HandleControlPreseeMoveIn : function(event) {
 		let info = event.target._user_data;
 		info.presee = true;
-		if (ALittleIDE.g_IDECenter.center.content_edit.GetTabByName(info.control_info.name) !== undefined) {
+		if (ALittleIDE.g_IDECenter.center.content_edit.GetTabById(ALittleIDE.IDEUITabChild, info.control_info.name) !== undefined) {
 			info.presee = false;
 			return;
 		}
@@ -222,7 +222,7 @@ ALittleIDE.IDEUIControlList = JavaScript.Class(ALittle.DisplayLayout, {
 		if (info.presee !== true) {
 			return;
 		}
-		let child = ALittleIDE.g_IDECenter.center.content_edit.GetTabByName(info.control_info.name);
+		let child = ALittleIDE.g_IDECenter.center.content_edit.GetTabById(ALittleIDE.IDEUITabChild, info.control_info.name);
 		if (child === undefined) {
 			return;
 		}
@@ -254,7 +254,7 @@ ALittleIDE.IDEUIControlList = JavaScript.Class(ALittle.DisplayLayout, {
 		if (info.presee !== true) {
 			return;
 		}
-		let child = ALittleIDE.g_IDECenter.center.content_edit.GetTabByName(info.control_info.name);
+		let child = ALittleIDE.g_IDECenter.center.content_edit.GetTabById(ALittleIDE.IDEUITabChild, info.control_info.name);
 		if (child === undefined) {
 			return;
 		}
@@ -365,7 +365,7 @@ ALittleIDE.IDEUIControlList = JavaScript.Class(ALittle.DisplayLayout, {
 			g_AUITool.ShowNotice("错误", "控件已存在:" + name);
 			return;
 		}
-		if (ALittleIDE.g_IDECenter.center.content_edit.GetTabByName(name) !== undefined) {
+		if (ALittleIDE.g_IDECenter.center.content_edit.GetTabById(ALittleIDE.IDEUITabChild, name) !== undefined) {
 			g_AUITool.ShowNotice("错误", "控件名已存在:" + name);
 			return;
 		}
@@ -413,7 +413,7 @@ ALittleIDE.IDEUIControlList = JavaScript.Class(ALittle.DisplayLayout, {
 				g_AUITool.ShowNotice("提示", error);
 				return;
 			}
-			let tab = ALittleIDE.g_IDECenter.center.content_edit.GetTabByName(user_data.control_info.name);
+			let tab = ALittleIDE.g_IDECenter.center.content_edit.GetTabById(ALittleIDE.IDEUITabChild, user_data.control_info.name);
 			if (tab === undefined) {
 				return;
 			}
@@ -483,7 +483,7 @@ ALittleIDE.IDEUIControlList = JavaScript.Class(ALittle.DisplayLayout, {
 			return;
 		}
 		target.text = new_name;
-		let tab = ALittleIDE.g_IDECenter.center.content_edit.GetTabByName(old_name);
+		let tab = ALittleIDE.g_IDECenter.center.content_edit.GetTabById(ALittleIDE.IDEUITabChild, old_name);
 		if (tab === undefined) {
 			return;
 		}

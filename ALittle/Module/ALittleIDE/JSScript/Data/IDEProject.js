@@ -1,11 +1,17 @@
 {
 if (typeof ALittleIDE === "undefined") window.ALittleIDE = {};
-let ___all_struct = ALittle.GetAllStruct();
+let ___all_struct = ALittle->GetAllStruct();
 
-ALittle.RegStruct(1715346212, "ALittle.Event", {
-name : "ALittle.Event", ns_name : "ALittle", rl_name : "Event", hash_code : 1715346212,
-name_list : ["target"],
-type_list : ["ALittle.EventDispatcher"],
+ALittle.RegStruct(2057209532, "AUIPlugin.AUICodeProjectGotoEvent", {
+name : "AUIPlugin.AUICodeProjectGotoEvent", ns_name : "AUIPlugin", rl_name : "AUICodeProjectGotoEvent", hash_code : 2057209532,
+name_list : ["target","file_path","line_start","char_start","line_end","char_end"],
+type_list : ["ALittle.EventDispatcher","string","int","int","int","int"],
+option_map : {}
+})
+ALittle.RegStruct(1962591044, "ALittleIDE.IDEProjectDeleteControlEvent", {
+name : "ALittleIDE.IDEProjectDeleteControlEvent", ns_name : "ALittleIDE", rl_name : "IDEProjectDeleteControlEvent", hash_code : 1962591044,
+name_list : ["target","name"],
+type_list : ["ALittle.EventDispatcher","string"],
 option_map : {}
 })
 ALittle.RegStruct(1910687721, "ALittleIDE.IDEProjectEvent", {
@@ -14,14 +20,38 @@ name_list : ["target","name"],
 type_list : ["ALittle.EventDispatcher","string"],
 option_map : {}
 })
+ALittle.RegStruct(1787992834, "ALittleIDE.IDEProjectSettingChanged", {
+name : "ALittleIDE.IDEProjectSettingChanged", ns_name : "ALittleIDE", rl_name : "IDEProjectSettingChanged", hash_code : 1787992834,
+name_list : ["target","default_show_width","default_show_height","default_font_path","default_font_size"],
+type_list : ["ALittle.EventDispatcher","double","double","string","int"],
+option_map : {}
+})
+ALittle.RegStruct(1715346212, "ALittle.Event", {
+name : "ALittle.Event", ns_name : "ALittle", rl_name : "Event", hash_code : 1715346212,
+name_list : ["target"],
+type_list : ["ALittle.EventDispatcher"],
+option_map : {}
+})
 ALittle.RegStruct(-975432877, "ALittleIDE.IDEProjectOpenEvent", {
 name : "ALittleIDE.IDEProjectOpenEvent", ns_name : "ALittleIDE", rl_name : "IDEProjectOpenEvent", hash_code : -975432877,
 name_list : ["target","name"],
 type_list : ["ALittle.EventDispatcher","string"],
 option_map : {}
 })
+ALittle.RegStruct(934918978, "ALittleIDE.IDEProjectInfo", {
+name : "ALittleIDE.IDEProjectInfo", ns_name : "ALittleIDE", rl_name : "IDEProjectInfo", hash_code : 934918978,
+name_list : ["name","base_path","texture_path","save","control","config","ui","code"],
+type_list : ["string","string","string","bool","ALittle.ControlSystem","ALittle.IJsonConfig","ALittleIDE.IDEUIManager","AUIPlugin.AUICodeProject"],
+option_map : {}
+})
 ALittle.RegStruct(-685984390, "ALittleIDE.IDEProjectAddEvent", {
 name : "ALittleIDE.IDEProjectAddEvent", ns_name : "ALittleIDE", rl_name : "IDEProjectAddEvent", hash_code : -685984390,
+name_list : ["target","name"],
+type_list : ["ALittle.EventDispatcher","string"],
+option_map : {}
+})
+ALittle.RegStruct(374071006, "ALittleIDE.IDEProjectChangeControlEvent", {
+name : "ALittleIDE.IDEProjectChangeControlEvent", ns_name : "ALittleIDE", rl_name : "IDEProjectChangeControlEvent", hash_code : 374071006,
 name_list : ["target","name"],
 type_list : ["ALittle.EventDispatcher","string"],
 option_map : {}
@@ -40,30 +70,6 @@ option_map : {}
 })
 ALittle.RegStruct(-93681239, "ALittleIDE.IDEProjectCreateControlEvent", {
 name : "ALittleIDE.IDEProjectCreateControlEvent", ns_name : "ALittleIDE", rl_name : "IDEProjectCreateControlEvent", hash_code : -93681239,
-name_list : ["target","name"],
-type_list : ["ALittle.EventDispatcher","string"],
-option_map : {}
-})
-ALittle.RegStruct(374071006, "ALittleIDE.IDEProjectChangeControlEvent", {
-name : "ALittleIDE.IDEProjectChangeControlEvent", ns_name : "ALittleIDE", rl_name : "IDEProjectChangeControlEvent", hash_code : 374071006,
-name_list : ["target","name"],
-type_list : ["ALittle.EventDispatcher","string"],
-option_map : {}
-})
-ALittle.RegStruct(934918978, "ALittleIDE.IDEProjectInfo", {
-name : "ALittleIDE.IDEProjectInfo", ns_name : "ALittleIDE", rl_name : "IDEProjectInfo", hash_code : 934918978,
-name_list : ["name","base_path","texture_path","save","control","config","ui"],
-type_list : ["string","string","string","bool","ALittle.ControlSystem","ALittle.IJsonConfig","ALittleIDE.IDEUIManager"],
-option_map : {}
-})
-ALittle.RegStruct(1787992834, "ALittleIDE.IDEProjectSettingChanged", {
-name : "ALittleIDE.IDEProjectSettingChanged", ns_name : "ALittleIDE", rl_name : "IDEProjectSettingChanged", hash_code : 1787992834,
-name_list : ["target","default_show_width","default_show_height","default_font_path","default_font_size"],
-type_list : ["ALittle.EventDispatcher","double","double","string","int"],
-option_map : {}
-})
-ALittle.RegStruct(1962591044, "ALittleIDE.IDEProjectDeleteControlEvent", {
-name : "ALittleIDE.IDEProjectDeleteControlEvent", ns_name : "ALittleIDE", rl_name : "IDEProjectDeleteControlEvent", hash_code : 1962591044,
 name_list : ["target","name"],
 type_list : ["ALittle.EventDispatcher","string"],
 option_map : {}
@@ -140,6 +146,14 @@ ALittleIDE.IDEProject = JavaScript.Class(ALittle.EventDispatcher, {
 		this.DispatchEvent(___all_struct.get(-685984390), event);
 		return true;
 	},
+	RefreshProject : function() {
+		if (this._project === undefined) {
+			return;
+		}
+		let name = this._project.name;
+		this.CloseProject();
+		this.OpenProject(name);
+	},
 	OpenProject : function(name) {
 		if (name === "" || name === undefined) {
 			return "请输入项目名";
@@ -166,6 +180,9 @@ ALittleIDE.IDEProject = JavaScript.Class(ALittle.EventDispatcher, {
 		this.DispatchEvent(___all_struct.get(-975432877), e);
 		return undefined;
 	},
+	HandleCodeProjectGoToEvent : function(event) {
+		ALittleIDE.g_IDECenter.center.code_list.OpenByFullPath(event.file_path, event.line_start, event.char_start, event.line_end, event.char_end);
+	},
 	OpenLastProject : function() {
 		let name = ALittleIDE.g_IDEConfig.GetString("last_project", undefined);
 		if (name === undefined) {
@@ -180,6 +197,10 @@ ALittleIDE.IDEProject = JavaScript.Class(ALittle.EventDispatcher, {
 		let e = {};
 		e.name = this._project.name;
 		this.DispatchEvent(___all_struct.get(-332308624), e);
+		if (this._project.code !== undefined) {
+			this._project.code.RemoveEventListener(___all_struct.get(2057209532), this, this.HandleCodeProjectGoToEvent);
+			this._project.code.Stop();
+		}
 		this._project = undefined;
 		return undefined;
 	},

@@ -34,7 +34,7 @@ ALittleIDE.Grid9ImageS = JavaScript.Class(ALittleIDE.Grid9S, {
 		if (display_info === undefined) {
 			return;
 		}
-		let revoke_bind = ALittle.NewObject(ALittleIDE.IDERevokeBind);
+		let revoke_bind = ALittle.NewObject(ALittle.RevokeBind);
 		this._left_size.text = display_info.left_size;
 		this.ValueNumInputChange("left_size", false, revoke_bind);
 		this._right_size.text = display_info.right_size;

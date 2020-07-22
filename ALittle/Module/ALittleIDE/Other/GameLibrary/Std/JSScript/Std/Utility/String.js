@@ -110,4 +110,41 @@ ALittle.String_IsPhoneNumber = function(number) {
 	return true;
 }
 
+ALittle.String_IsWordChar = function(char) {
+	let len = ALittle.String_Len(char);
+	if (len !== 1) {
+		return false;
+	}
+	let value = ALittle.String_Byte(char, 1);
+	if (value >= 48 && value <= 57) {
+		return true;
+	}
+	if (value === 95) {
+		return true;
+	}
+	if (value >= 97 && value <= 122) {
+		return true;
+	}
+	if (value >= 64 && value <= 90) {
+		return true;
+	}
+	return false;
+}
+
+ALittle.String_SplitUTF8 = function(content) {
+	let len = ALittle.String_Len(content);
+	let index = 1;
+	let char_list = [];
+	let char_count = 0;
+	while (index <= len) {
+		{
+			let code = content.charCodeAt(index - 1);
+			char_count = char_count + (1);
+			char_list[char_count - 1] = content.substring(index - 1, index);
+			index = index + (1);
+		}
+	}
+	return char_list;
+}
+
 }

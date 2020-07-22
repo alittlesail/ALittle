@@ -29,8 +29,21 @@ ALittle.List_Insert = function(list, index, object) {
 	list.splice(index - 1, 0, object);
 }
 
+ALittle.List_IndexOf = function(list, object) {
+	let index = list.indexOf(object);
+	if (index < 0) {
+		return undefined;
+	} else {
+		return index + 1;
+	}
+}
+
 ALittle.List_Remove = function(list, index) {
 	list.splice(index - 1, 1);
+}
+
+ALittle.List_Splice = function(list, index, count) {
+	list.splice(index - 1, count);
 }
 
 ALittle.List_Sort = function(list, cmp) {

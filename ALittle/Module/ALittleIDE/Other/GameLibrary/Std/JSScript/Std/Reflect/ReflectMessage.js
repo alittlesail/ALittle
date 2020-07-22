@@ -1,16 +1,16 @@
 {
 if (typeof ALittle === "undefined") window.ALittle = {};
 
-ALittle.RegStruct(1821069430, "ALittle.ProtocolAnyStruct", {
-name : "ALittle.ProtocolAnyStruct", ns_name : "ALittle", rl_name : "ProtocolAnyStruct", hash_code : 1821069430,
-name_list : ["hash_code","value"],
-type_list : ["int","any"],
-option_map : {}
-})
 ALittle.RegStruct(1847150134, "ALittle.StructInfo", {
 name : "ALittle.StructInfo", ns_name : "ALittle", rl_name : "StructInfo", hash_code : 1847150134,
 name_list : ["name","ns_name","rl_name","hash_code","name_list","type_list","option_map"],
 type_list : ["string","string","string","int","List<string>","List<string>","Map<string,string>"],
+option_map : {}
+})
+ALittle.RegStruct(1821069430, "ALittle.ProtocolAnyStruct", {
+name : "ALittle.ProtocolAnyStruct", ns_name : "ALittle", rl_name : "ProtocolAnyStruct", hash_code : 1821069430,
+name_list : ["hash_code","value"],
+type_list : ["int","any"],
 option_map : {}
 })
 ALittle.RegStruct(-1602043290, "ALittle.ProtocolInvokeInfo", {

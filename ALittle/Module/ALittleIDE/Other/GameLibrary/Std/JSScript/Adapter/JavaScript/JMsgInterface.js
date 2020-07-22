@@ -39,8 +39,8 @@ JavaScript.JNetBuffer = JavaScript.Class(undefined, {
 			return;
 		}
 		let start = this._dstart;
-		let end = this._dstart + this._dsize;
-		for (let i = start; i < end; i += 1) {
+		let endv = this._dstart + this._dsize;
+		for (let i = start; i < endv; i += 1) {
 			this._memory.setUint8(i - this._dsize, this._memory.getUint8(i));
 		}
 		this._dstart = 0;

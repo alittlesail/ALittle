@@ -123,6 +123,16 @@ ALittle.File_GetFileExtByPath = function(file_path) {
 	return list[l - 1];
 }
 
+ALittle.File_ChangeFileExtByPath = function(file_path, ext) {
+	let list = ALittle.String_Split(file_path, ".");
+	let l = ALittle.List_MaxN(list);
+	if (l <= 0) {
+		return file_path + "." + ext;
+	}
+	list[l - 1] = ext;
+	return ALittle.String_Join(list, ".");
+}
+
 ALittle.File_GetFileExtByPathAndUpper = function(file_path) {
 	return ALittle.String_Upper(ALittle.File_GetFileExtByPath(file_path));
 }

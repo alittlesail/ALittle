@@ -42,7 +42,7 @@ function IDEUICodeList:HandleProjectClose(event)
 end
 
 function IDEUICodeList:HandleProjectOpen(event)
-	local module_map = g_IDEConfig:GetConfig("code_module", {})
+	local module_map = g_IDEProject.project.config:GetConfig("code_module", {})
 	module_map["Core"] = nil
 	module_map["Std"] = nil
 	module_map["CEngine"] = nil
@@ -107,12 +107,12 @@ function IDEUICodeList:AddModule(name)
 			return
 		end
 	end
-	local module_map = g_IDEConfig:GetConfig("code_module", {})
+	local module_map = g_IDEProject.project.config:GetConfig("code_module", {})
 	local module_info = {}
 	module_info.module_name = name
 	module_info.root_path = ALittle.File_BaseFilePath() .. "Module/" .. name .. "/src"
 	module_map[name] = module_info
-	g_IDEConfig:SetConfig("code_module", module_map)
+	g_IDEProject.project.config:SetConfig("code_module", module_map)
 	local info = {}
 	info.module_name = name
 	info.name = ALittle.File_GetFileNameByPath(module_info.root_path)

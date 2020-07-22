@@ -44,7 +44,7 @@ public class IDEUICodeList : ALittle.DisplayLayout
 	private fun HandleProjectOpen(IDEProjectOpenEvent event)
 	{
 		// 读取项目配置
-		var module_map = g_IDEConfig.GetConfig("code_module", new Map<string, IDECodeModuleInfo>());
+		var module_map = g_IDEProject.project.config.GetConfig("code_module", new Map<string, IDECodeModuleInfo>());
 		// 删除掉基本库
 		module_map["Core"] = null;
 		module_map["Std"] = null;
@@ -119,14 +119,14 @@ public class IDEUICodeList : ALittle.DisplayLayout
         for (var index, tree:IDECodeTreeLogic in this._code_scroll_screen.childs)
             if (tree.user_info.module_name == name) return;
 
-		var module_map = g_IDEConfig.GetConfig("code_module", new Map<string, IDECodeModuleInfo>());
+		var module_map = g_IDEProject.project.config.GetConfig("code_module", new Map<string, IDECodeModuleInfo>());
 
 		var module_info = new IDECodeModuleInfo();
 		module_info.module_name = name;
 		module_info.root_path = ALittle.File_BaseFilePath().."Module/"..name.."/src";
 		module_map[name] = module_info;
-		g_IDEConfig.SetConfig("code_module", module_map);
-
+		g_IDEProject.project.config.SetConfig("code_module", module_map);
+		
         var info = new IDECodeTreeUserInfo();
         info.module_name = name;
         info.name = ALittle.File_GetFileNameByPath(module_info.root_path);

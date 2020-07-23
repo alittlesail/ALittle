@@ -686,3 +686,12 @@ void ALittleScriptIndex::RemoveRoot(std::shared_ptr<ALittleScriptRootElement> ro
     it->second.erase(sub_it);
     if (it->second.empty()) m_all_data_map.erase(it);
 }
+
+void ALittleScriptIndex::RemoveGuess(ABnfFile* file)
+{
+    if (file == nullptr) return;
+
+    file->ClearGuessType();
+    m_guess_type_map.erase(file);
+    m_guess_error_map.erase(file);
+}

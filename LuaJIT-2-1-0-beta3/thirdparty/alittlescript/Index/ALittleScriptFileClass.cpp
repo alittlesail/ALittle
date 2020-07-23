@@ -50,3 +50,10 @@ void ALittleScriptFileClass::OnRemove()
     index->RemoveRoot(std::dynamic_pointer_cast<ALittleScriptRootElement>(m_root));
 }
 
+void ALittleScriptFileClass::OnForceAnalysisError()
+{
+    auto* index = dynamic_cast<ALittleScriptIndex*>(m_project);
+    if (index == nullptr) return;
+    index->RemoveGuess(this);
+}
+

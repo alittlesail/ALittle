@@ -129,6 +129,8 @@ public:
 public:
     // 更新解析
     virtual void UpdateAnalysis();
+    // 强制错误解析
+    virtual void OnForceAnalysisError() {}
 
     // 清空错误信息
     inline void ClearAnalysisError() { m_analysis_error_map.clear(); }

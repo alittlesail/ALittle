@@ -163,6 +163,9 @@ public:
 
     // ÒÆ³ıÃüÃûÓò
     void RemoveRoot(std::shared_ptr<ALittleScriptRootElement> root);
+
+    // ÒÆ³ıguess
+    void RemoveGuess(ABnfFile* file);
 };
 
 #endif // _ALITTLE_ALITTLESCRIPTINDEX_H_

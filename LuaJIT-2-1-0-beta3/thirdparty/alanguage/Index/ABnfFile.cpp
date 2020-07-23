@@ -379,6 +379,8 @@ void ABnfFile::AnalysisError(int version, bool force)
     if (!force && m_error_version == version) return;
     m_error_version = version;
 
+    if (force) OnForceAnalysisError();
+
     ClearCheckError();
     ClearAnalysisError();
     if (m_root == nullptr) return;

@@ -20,6 +20,9 @@ public:
 protected:
     // 移除内容
     void OnRemove() override;
+
+    // 强制错误解析
+    void OnForceAnalysisError() override;
 };
 
 #endif // _ALITTLE_ALITTLESCRIPTFILECLASS_H_

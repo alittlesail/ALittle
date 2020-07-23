@@ -5,7 +5,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
 {
     private AUICodeLanguage _language;  // 代码解析器
 
-    private bool _editable = true;
+    private bool _editable = true;	// 标记是否可编辑
 
     // 查询快捷信息
     private int _query_info_version;
@@ -503,6 +503,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
             if (info.line_start != info.line_end) info.char_end = line.char_count;
             item_info.info = info;
             var x, y, width = this.CalcRect(info.line_start, info.char_start, char_end);
+            if (width <= 0) width = this._ascii_width;
             item.x = x;
             item.width = width;
             item.height = CODE_LINE_HEIGHT;

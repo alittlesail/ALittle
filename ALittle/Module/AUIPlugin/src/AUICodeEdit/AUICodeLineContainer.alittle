@@ -33,19 +33,19 @@ protected class AUICodeLineContainer : ALittle.DisplayLayout
         this.AddChild(quad);
         this._select = quad;
 
-        // 用于显示错误容器
-        var error = new ALittle.DisplayLayout(ctrl_sys);
-        error.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
-        error.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
-        this.AddChild(error);
-        this._error = error;
-
         // 用于显示文本
         var text = new ALittle.DisplayLayout(ctrl_sys);
         text.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
         text.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
         this.AddChild(text);
         this._text = text;
+
+        // 用于显示错误容器
+        var error = new ALittle.DisplayLayout(ctrl_sys);
+        error.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+        error.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+        this.AddChild(error);
+        this._error = error;
 
         this.AddEventListener(this, this.HandleHide);
         this.AddEventListener(this, this.HandleShow);

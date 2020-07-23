@@ -46,16 +46,16 @@ function AUICodeLineContainer:Ctor(ctrl_sys)
 	quad.visible = false
 	self:AddChild(quad)
 	___rawset(self, "_select", quad)
-	local error = ALittle.DisplayLayout(ctrl_sys)
-	error.width_type = 4
-	error.height_type = 4
-	self:AddChild(error)
-	___rawset(self, "_error", error)
 	local text = ALittle.DisplayLayout(ctrl_sys)
 	text.width_type = 4
 	text.height_type = 4
 	self:AddChild(text)
 	___rawset(self, "_text", text)
+	local error = ALittle.DisplayLayout(ctrl_sys)
+	error.width_type = 4
+	error.height_type = 4
+	self:AddChild(error)
+	___rawset(self, "_error", error)
 	self:AddEventListener(___all_struct[348388800], self, self.HandleHide)
 	self:AddEventListener(___all_struct[1862557463], self, self.HandleShow)
 end

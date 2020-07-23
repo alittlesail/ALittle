@@ -557,6 +557,9 @@ function AUICodeEdit:UpdateErrorInfo()
 		end
 		item_info.info = info
 		local x, y, width = self:CalcRect(info.line_start, info.char_start, char_end)
+		if width <= 0 then
+			width = self._ascii_width
+		end
 		item.x = x
 		item.width = width
 		item.height = CODE_LINE_HEIGHT

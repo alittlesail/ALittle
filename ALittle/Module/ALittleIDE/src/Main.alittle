@@ -75,7 +75,7 @@ public async static __Module_Setup(ALittle.DisplayLayout layer_group, ALittle.Co
 	g_DialogLayer.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
 	g_DialogLayer.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
 	g_LayerGroup.AddChild(g_DialogLayer);
-
+    
     // 这里加载必要的代码，最好把所有的都加载进来
 	alittle.RequireFromPaths(g_ScriptBasePath, "Data/", paths("src/Data"));	
     alittle.RequireFromPaths(script_base_path, "Dialog/", paths("src/Dialog"));

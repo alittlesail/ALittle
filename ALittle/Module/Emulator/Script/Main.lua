@@ -36,7 +36,6 @@ function __Module_Setup(layer_group, control, module_base_path, script_base_path
 		require("socket")
 	end
 	Require(script_base_path, "GCenter")
-	Require(script_base_path, "IDETool")
 	Require(script_base_path, "IDETree/IDETreeLogic")
 	Require(script_base_path, "IDETree/IDETree")
 	Require(script_base_path, "IDETree/IDETreeValue")
@@ -62,9 +61,7 @@ function __Module_Setup(layer_group, control, module_base_path, script_base_path
 	Require(script_base_path, "IDETree/IDETreeMap")
 	Require(script_base_path, "IDETree/IDETreeRepeated")
 	Require(script_base_path, "GUtility")
-	Require(script_base_path, "IDEIMEManager")
 	Require(script_base_path, "PluginSocket")
-	g_IDEIMEManager:Setup()
 	g_GCenter:Setup()
 	g_VersionManager = AUIPlugin.AUIVersionManager("139.159.176.119", 1100, "alittle", "Emulator")
 	if A_ModuleSystem:GetDebugInfo() ~= "debug" then
@@ -76,7 +73,6 @@ __Module_Setup = Lua.CoWrap(__Module_Setup)
 function __Module_Shutdown()
 	g_VersionManager:Shutdown()
 	g_GCenter:Shutdown()
-	g_IDEIMEManager:Shutdown()
 end
 
 function __Module_GetInfo(control, module_base_path, script_base_path)

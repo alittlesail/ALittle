@@ -72,7 +72,7 @@ function IDETreeLogic:SearchDescription(name, list)
 end
 
 function IDETreeLogic:Save()
-	local content = protobuf.message_jsonencode(self._root.detail_info.message)
+	local content = protobuf.message_jsonencode(self._root.detail_info.message, false)
 	if content == nil then
 		return
 	end

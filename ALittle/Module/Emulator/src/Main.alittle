@@ -57,7 +57,6 @@ public async static __Module_Setup(ALittle.DisplayLayout layer_group, ALittle.Co
     }
 
 	alittle.Require(script_base_path, "GCenter");
-	alittle.Require(script_base_path, "IDETool");
 
 	alittle.Require(script_base_path, "IDETree/IDETreeLogic");
 	alittle.Require(script_base_path, "IDETree/IDETree");
@@ -85,9 +84,7 @@ public async static __Module_Setup(ALittle.DisplayLayout layer_group, ALittle.Co
 	alittle.Require(script_base_path, "IDETree/IDETreeRepeated");
 
 	alittle.Require(script_base_path, "GUtility");
-	alittle.Require(script_base_path, "IDEIMEManager");
 	alittle.Require(script_base_path, "PluginSocket");
-	g_IDEIMEManager.Setup();
 
 	g_GCenter.Setup();
 
@@ -105,7 +102,6 @@ public static __Module_Shutdown()
 	g_VersionManager.Shutdown();
 
 	g_GCenter.Shutdown();
-	g_IDEIMEManager.Shutdown();
 }
 
 // 提供给壳的模块信息

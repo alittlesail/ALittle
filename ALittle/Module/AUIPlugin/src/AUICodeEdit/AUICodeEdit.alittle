@@ -55,6 +55,8 @@ public class AUICodeEdit : ALittle.DisplayLayout
     private bool _in_drag = false;
     private bool _force_query_error = false;
 
+    public static Create() : AUICodeEdit { return g_Control.CreateControl{AUICodeEdit}("ide_code_tab_screen"); }
+
 	public fun TCtor()
 	{
         this._code_screen.AddEventListener(this, this.HandleFocusIn);
@@ -92,6 +94,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
         this._cursor.height = CODE_LINE_HEIGHT;
         this._cursor_container.AddChild(this._cursor);
         this._cursor.disabled = true;
+        this._cursor.Hide();
 
         this._select_cursor = new AUICodeSelectCursor(this);
 
@@ -187,11 +190,13 @@ public class AUICodeEdit : ALittle.DisplayLayout
     private fun HandleFocusIn(ALittle.UIFocusInEvent event)
     {
         ALittle.System_OpenIME();
+        this._cursor.Show();
     }
 
     private fun HandleFocusOut(ALittle.UIFocusOutEvent event)
     {
         ALittle.System_CloseIME();
+        this._cursor.Hide();
     }
 
     private fun HandleMoveIn(ALittle.UIMoveInEvent event)
@@ -550,6 +555,12 @@ public class AUICodeEdit : ALittle.DisplayLayout
         return false;
     }
 
+    public fun SetFindInput(string text)
+    {
+        this._find_input.text = text;
+        this.HandleFindInputChanged(null);
+    }
+
     private fun HandleFindInputChanged(ALittle.UIChangedEvent event)
     {
         this.ClearFindInfo();
@@ -612,6 +623,13 @@ public class AUICodeEdit : ALittle.DisplayLayout
 
     private fun HandleFindNextClick(ALittle.UIClickEvent event)
     {
+        this.FindNext(null);
+    }
+
+    public fun FindNext(string content)
+    {
+        if (content != null && this._find_input.text != content)
+            this.SetFindInput(content);
         if (this.FindNextImpl(this._cursor.line, true)) return;
         this.FindNextImpl(1, false);
     }
@@ -1252,7 +1270,6 @@ public class AUICodeEdit : ALittle.DisplayLayout
 
     public fun OnShow()
     {
-        this._cursor.Show();
         this._edit_quad.DelayFocus();
         if (this._language != null) this._language.OnShow();
         this.StartErrorLoop(true);

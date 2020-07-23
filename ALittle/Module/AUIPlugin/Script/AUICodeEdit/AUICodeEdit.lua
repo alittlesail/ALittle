@@ -122,6 +122,10 @@ function AUICodeEdit:Ctor()
 	___rawset(self, "_force_query_error", false)
 end
 
+function AUICodeEdit.Create()
+	return g_Control:CreateControl("ide_code_tab_screen")
+end
+
 function AUICodeEdit:TCtor()
 	self._code_screen:AddEventListener(___all_struct[-644464135], self, self.HandleFocusIn)
 	self._code_screen:AddEventListener(___all_struct[292776509], self, self.HandleFocusOut)
@@ -153,6 +157,7 @@ function AUICodeEdit:TCtor()
 	self._cursor.height = CODE_LINE_HEIGHT
 	self._cursor_container:AddChild(self._cursor)
 	self._cursor.disabled = true
+	self._cursor:Hide()
 	self._select_cursor = AUICodeSelectCursor(self)
 	self._text_show = ALittle.Text(self._ctrl_sys)
 	self._text_show.font_path = "YaHei-Consolas.ttf"
@@ -285,10 +290,12 @@ end
 
 function AUICodeEdit:HandleFocusIn(event)
 	ALittle.System_OpenIME()
+	self._cursor:Show()
 end
 
 function AUICodeEdit:HandleFocusOut(event)
 	ALittle.System_CloseIME()
+	self._cursor:Hide()
 end
 
 function AUICodeEdit:HandleMoveIn(event)
@@ -601,6 +608,11 @@ function AUICodeEdit:ErrorNextImpl(start_line, check_cursor)
 	return false
 end
 
+function AUICodeEdit:SetFindInput(text)
+	self._find_input.text = text
+	self:HandleFindInputChanged(nil)
+end
+
 function AUICodeEdit:HandleFindInputChanged(event)
 	self:ClearFindInfo()
 	local content = self._find_input.text
@@ -654,6 +666,13 @@ function AUICodeEdit:HandleFindInputChanged(event)
 end
 
 function AUICodeEdit:HandleFindNextClick(event)
+	self:FindNext(nil)
+end
+
+function AUICodeEdit:FindNext(content)
+	if content ~= nil and self._find_input.text ~= content then
+		self:SetFindInput(content)
+	end
 	if self:FindNextImpl(self._cursor.line, true) then
 		return
 	end
@@ -1235,7 +1254,6 @@ function AUICodeEdit:OnHide()
 end
 
 function AUICodeEdit:OnShow()
-	self._cursor:Show()
 	self._edit_quad:DelayFocus()
 	if self._language ~= nil then
 		self._language:OnShow()

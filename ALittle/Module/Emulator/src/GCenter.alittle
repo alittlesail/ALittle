@@ -22,7 +22,7 @@ protected struct LogItemUserData
     lua.protobuf_message msg;
     Lua.lua_socket_schedule_message_info info;
     string upper_name;
-    DetailInfo detail_info;
+    string json_content;
 }
 
 protected enum LoginStatus
@@ -75,7 +75,9 @@ class GCenter
     // 详细信息
     private LogItemUserData _cur_item_user_data;
     private ALittle.DisplayObject _show_search_key;
-    private ALittle.ScrollScreen _show_scroll_screen;
+
+    private ALittle.DisplayLayout _json_container;
+    private AUIPlugin.AUICodeEdit _json_codeedit;
 
     private ALittle.Grid3 _right_grad3_ud;
     private ALittle.Grid3 _main_grid3_lr;
@@ -198,6 +200,10 @@ class GCenter
         // 每帧处理
         this._frame_loop = new ALittle.LoopFrame(bind(this.UpdateFrame, this));
         this._frame_loop.Start();
+
+        // 创建一个CodeEdit
+		this._json_codeedit = AUIPlugin.AUICodeEdit.Create();
+        this._json_container.AddChild(this._json_codeedit);
     }
 
     public fun UpdateFrame(int frame_time)
@@ -251,14 +257,14 @@ class GCenter
         var attr = ALittle.File_GetFileAttr(this._proto_root_input.text);
         if (attr == null || attr.mode != "directory")
         {
-            g_IDETool.ShowNotice("错误", "文件夹不存在");
+            g_AUITool.ShowNotice("错误", "文件夹不存在");
             return;
         }
 
         var error = A_LuaSocketSchedule.LoadProto(this._proto_root_input.text);
         if (error != null)
         {
-            g_IDETool.ShowNotice("错误", error);
+            g_AUITool.ShowNotice("错误", error);
             return;
         }
 
@@ -275,7 +281,7 @@ class GCenter
         }
         else
         {
-            g_IDETool.ShowNotice("错误", "插件脚本必须是lua脚本");
+            g_AUITool.ShowNotice("错误", "插件脚本必须是lua脚本");
             return;
         }
 
@@ -290,7 +296,7 @@ class GCenter
         }
         if (error != null)
         {
-            g_IDETool.ShowNotice("错误", error);
+            g_AUITool.ShowNotice("错误", error);
             return;
         }
 
@@ -422,7 +428,7 @@ class GCenter
         this._log_item_count = 0;
         this._log_scroll_screen.RemoveAllChild();
         this._cur_item_user_data = null;
-        this._show_scroll_screen.SetContainer(null);
+        this._json_codeedit.OnClose();
     }
 
     // 过滤对话框
@@ -488,7 +494,7 @@ class GCenter
             var item = this._log_item_list[1];
             var user_data = cast<LogItemUserData>(item._user_data);
             if (this._cur_item_user_data == user_data)
-                this._show_scroll_screen.SetContainer(null);
+                this._json_codeedit.OnClose();
             this._log_scroll_screen.RemoveChild(item);
             item.group = null;
             ALittle.List_Remove(this._log_item_list, 1);
@@ -530,9 +536,11 @@ class GCenter
     {
         this._show_search_key.text = "";
         this._cur_item_user_data = cast<LogItemUserData>(event.target._user_data);
-        if (this._cur_item_user_data.detail_info == null)
-            this._cur_item_user_data.detail_info = Utility_CreateTreeForShow(this._cur_item_user_data.msg);
-        this._show_scroll_screen.SetContainer(this._cur_item_user_data.detail_info.tree);
+        if (this._cur_item_user_data.json_content == null)
+            this._cur_item_user_data.json_content = lua.protobuf.message_jsonencode(this._cur_item_user_data.msg, false);
+        this._json_codeedit.OnClose();
+
+        this._json_codeedit.Load("temp.json", this._cur_item_user_data.json_content, null);
     }
 
     // 右键菜单
@@ -550,12 +558,7 @@ class GCenter
         if (this._cur_item_user_data == null) return;
 
         var key = this._show_search_key.text;
-        key = ALittle.String_Upper(key);
-
-        var tree = this._cur_item_user_data.detail_info.tree;
-        tree.SearchBegin();
-        var list = tree.SearchDescription(key);
-        tree.SearchEnd(list);
+        this._json_codeedit.FindNext(key);
     }
 
     // 处理消息右键菜单，复制全称
@@ -651,27 +654,27 @@ class GCenter
         var port = ALittle.Math_ToInt(this._login_port_input.text);
         if (port == null || port <= 0)
         {
-            g_IDETool.ShowNotice("提示", "请使用正确的端口");
+            g_AUITool.ShowNotice("提示", "请使用正确的端口");
             return;
         }
 
         // 获取协议msg
         if (this._login_detail_info == null)
         {
-            g_IDETool.ShowNotice("提示", "请设置登陆协议");
+            g_AUITool.ShowNotice("提示", "请设置登陆协议");
             return;
         }
 
         // 如果正在登陆，那么就稍后
         if (this._login_status == LoginStatus.EMULATOR_LOGINING)
         {
-            g_IDETool.ShowNotice("提示", "当前正在登陆，请先断开");
+            g_AUITool.ShowNotice("提示", "当前正在登陆，请先断开");
             return;
         }
 
         if (this._login_status == LoginStatus.EMULATOR_LOGINED)
         {
-            g_IDETool.ShowNotice("提示", "当前已登录，请先断开");
+            g_AUITool.ShowNotice("提示", "当前已登录，请先断开");
             return;
         }
 
@@ -722,7 +725,7 @@ class GCenter
         }
         else
         {
-            g_IDETool.ShowNotice("提示", error);
+            g_AUITool.ShowNotice("提示", error);
             this._login_status = LoginStatus.EMULATOR_IDLE;
 
             this._login_button.visible = true;

@@ -44,8 +44,8 @@ option_map = {}
 })
 ALittle.RegStruct(-888044440, "Emulator.LogItemUserData", {
 name = "Emulator.LogItemUserData", ns_name = "Emulator", rl_name = "LogItemUserData", hash_code = -888044440,
-name_list = {"msg","info","upper_name","detail_info"},
-type_list = {"lua.protobuf_message","Lua.lua_socket_schedule_message_info","string","Emulator.DetailInfo"},
+name_list = {"msg","info","upper_name","json_content"},
+type_list = {"lua.protobuf_message","Lua.lua_socket_schedule_message_info","string","string"},
 option_map = {}
 })
 ALittle.RegStruct(-641444818, "ALittle.UIRButtonDownEvent", {
@@ -161,6 +161,8 @@ function GCenter:Setup()
 	self._send_button.disabled = true
 	self._frame_loop = ALittle.LoopFrame(Lua.Bind(self.UpdateFrame, self))
 	self._frame_loop:Start()
+	self._json_codeedit = AUIPlugin.AUICodeEdit.Create()
+	self._json_container:AddChild(self._json_codeedit)
 end
 
 function GCenter:UpdateFrame(frame_time)
@@ -204,12 +206,12 @@ end
 function GCenter:HandleSettingConfirmClick(event)
 	local attr = ALittle.File_GetFileAttr(self._proto_root_input.text)
 	if attr == nil or attr.mode ~= "directory" then
-		g_IDETool:ShowNotice("错误", "文件夹不存在")
+		g_AUITool:ShowNotice("错误", "文件夹不存在")
 		return
 	end
 	local error = A_LuaSocketSchedule:LoadProto(self._proto_root_input.text)
 	if error ~= nil then
-		g_IDETool:ShowNotice("错误", error)
+		g_AUITool:ShowNotice("错误", error)
 		return
 	end
 	if ALittle.File_GetFileExtByPathAndUpper(self._plugin_file_input.text) == "LUA" then
@@ -223,7 +225,7 @@ function GCenter:HandleSettingConfirmClick(event)
 			__CPPAPI_ScriptSystemEx:RunScript(plugin_script, self._plugin_file_input.text)
 		end
 	else
-		g_IDETool:ShowNotice("错误", "插件脚本必须是lua脚本")
+		g_AUITool:ShowNotice("错误", "插件脚本必须是lua脚本")
 		return
 	end
 	self._setting_dialog.visible = false
@@ -236,7 +238,7 @@ function GCenter:HandleSettingConfirmClick(event)
 		end
 	end
 	if error ~= nil then
-		g_IDETool:ShowNotice("错误", error)
+		g_AUITool:ShowNotice("错误", error)
 		return
 	end
 	self._protobuf_scroll_screen:RemoveAllChild()
@@ -335,7 +337,7 @@ function GCenter:HandleLogClearClick(event)
 	self._log_item_count = 0
 	self._log_scroll_screen:RemoveAllChild()
 	self._cur_item_user_data = nil
-	self._show_scroll_screen:SetContainer(nil)
+	self._json_codeedit:OnClose()
 end
 
 function GCenter:HandleLogFliterClick(event)
@@ -385,7 +387,7 @@ function GCenter:AddLogMessage(msg)
 		local item = self._log_item_list[1]
 		local user_data = item._user_data
 		if self._cur_item_user_data == user_data then
-			self._show_scroll_screen:SetContainer(nil)
+			self._json_codeedit:OnClose()
 		end
 		self._log_scroll_screen:RemoveChild(item)
 		item.group = nil
@@ -418,10 +420,11 @@ end
 function GCenter:HandleLogItemSelected(event)
 	self._show_search_key.text = ""
 	self._cur_item_user_data = event.target._user_data
-	if self._cur_item_user_data.detail_info == nil then
-		self._cur_item_user_data.detail_info = Utility_CreateTreeForShow(self._cur_item_user_data.msg)
+	if self._cur_item_user_data.json_content == nil then
+		self._cur_item_user_data.json_content = protobuf.message_jsonencode(self._cur_item_user_data.msg, false)
 	end
-	self._show_scroll_screen:SetContainer(self._cur_item_user_data.detail_info.tree)
+	self._json_codeedit:OnClose()
+	self._json_codeedit:Load("temp.json", self._cur_item_user_data.json_content, nil)
 end
 
 function GCenter:HandleProtoLogRButtonDown(event)
@@ -436,11 +439,7 @@ function GCenter:HandleShowSearchClick(event)
 		return
 	end
 	local key = self._show_search_key.text
-	key = ALittle.String_Upper(key)
-	local tree = self._cur_item_user_data.detail_info.tree
-	tree:SearchBegin()
-	local list = tree:SearchDescription(key)
-	tree:SearchEnd(list)
+	self._json_codeedit:FindNext(key)
 end
 
 function GCenter:HandleMsgCopyFullName(event)
@@ -515,19 +514,19 @@ function GCenter:HandleLoginClick(event)
 	local ip = self._login_ip_input.text
 	local port = ALittle.Math_ToInt(self._login_port_input.text)
 	if port == nil or port <= 0 then
-		g_IDETool:ShowNotice("提示", "请使用正确的端口")
+		g_AUITool:ShowNotice("提示", "请使用正确的端口")
 		return
 	end
 	if self._login_detail_info == nil then
-		g_IDETool:ShowNotice("提示", "请设置登陆协议")
+		g_AUITool:ShowNotice("提示", "请设置登陆协议")
 		return
 	end
 	if self._login_status == LoginStatus.EMULATOR_LOGINING then
-		g_IDETool:ShowNotice("提示", "当前正在登陆，请先断开")
+		g_AUITool:ShowNotice("提示", "当前正在登陆，请先断开")
 		return
 	end
 	if self._login_status == LoginStatus.EMULATOR_LOGINED then
-		g_IDETool:ShowNotice("提示", "当前已登录，请先断开")
+		g_AUITool:ShowNotice("提示", "当前已登录，请先断开")
 		return
 	end
 	g_GConfig:SetConfig("login_ip", ip)
@@ -558,7 +557,7 @@ function GCenter:HandleLoginClick(event)
 		self._login_status = LoginStatus.EMULATOR_LOGINED
 		self._send_button.disabled = false
 	else
-		g_IDETool:ShowNotice("提示", error)
+		g_AUITool:ShowNotice("提示", error)
 		self._login_status = LoginStatus.EMULATOR_IDLE
 		self._login_button.visible = true
 		self._logout_button.visible = false

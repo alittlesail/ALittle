@@ -135,12 +135,12 @@ function AUICodeCursor:SetOffsetXY(x, y, show)
 	self._move_char = self._it_char
 end
 
-function AUICodeCursor:SetLineChar(it_line, it_char, show)
-	self:SetLineCharInner(it_line, it_char, show)
+function AUICodeCursor:SetLineChar(it_line, it_char)
+	self:SetLineCharInner(it_line, it_char)
 	self._move_char = self._it_char
 end
 
-function AUICodeCursor:SetLineCharInner(it_line, it_char, show)
+function AUICodeCursor:SetLineCharInner(it_line, it_char)
 	self._it_line = it_line
 	self._it_char = it_char
 	self.y = (self._it_line - 1) * CODE_LINE_HEIGHT
@@ -149,9 +149,6 @@ function AUICodeCursor:SetLineCharInner(it_line, it_char, show)
 		self.x = 0
 	else
 		self.x = line.char_list[self._it_char].pre_width + line.char_list[self._it_char].width
-	end
-	if show == nil or show then
-		self:Show()
 	end
 	self._virtual_indent = 0
 end
@@ -205,7 +202,7 @@ function AUICodeCursor:OffsetUp()
 	if self._move_char < it_char then
 		it_char = self._move_char
 	end
-	self:SetLineCharInner(it_line, it_char, false)
+	self:SetLineCharInner(it_line, it_char)
 end
 
 function AUICodeCursor:OffsetDown()
@@ -224,13 +221,13 @@ function AUICodeCursor:OffsetDown()
 	if self._move_char < it_char then
 		it_char = self._move_char
 	end
-	self:SetLineCharInner(it_line, it_char, false)
+	self:SetLineCharInner(it_line, it_char)
 end
 
 function AUICodeCursor:OffsetLeft(ctrl)
 	if self._it_char > 0 then
 		if not ctrl then
-			self:SetLineChar(self._it_line, self._it_char - 1, false)
+			self:SetLineChar(self._it_line, self._it_char - 1)
 			return
 		end
 		local line = self._edit.line_list[self._it_line]
@@ -242,12 +239,12 @@ function AUICodeCursor:OffsetLeft(ctrl)
 		local it_char = self._it_char - 1
 		while it_char > 0 do
 			if ALittle.String_IsWordChar(line.char_list[it_char].char) ~= is_word then
-				self:SetLineChar(self._it_line, it_char, false)
+				self:SetLineChar(self._it_line, it_char)
 				return
 			end
 			it_char = it_char - 1
 		end
-		self:SetLineChar(self._it_line, 0, false)
+		self:SetLineChar(self._it_line, 0)
 		return
 	end
 	if self._it_line > 1 then
@@ -257,10 +254,10 @@ function AUICodeCursor:OffsetLeft(ctrl)
 		while it_char > 0 and line.char_list[it_char].width <= 0 do
 			it_char = it_char - 1
 		end
-		self:SetLineChar(it_line, it_char, false)
+		self:SetLineChar(it_line, it_char)
 		return
 	end
-	self:SetLineChar(1, 0, false)
+	self:SetLineChar(1, 0)
 end
 
 function AUICodeCursor:OffsetRight(ctrl)
@@ -274,7 +271,7 @@ function AUICodeCursor:OffsetRight(ctrl)
 	end
 	if self._it_char < count then
 		if not ctrl then
-			self:SetLineChar(self._it_line, self._it_char + 1, false)
+			self:SetLineChar(self._it_line, self._it_char + 1)
 			return
 		end
 		local cur_char = line.char_list[self._it_char + 1]
@@ -282,18 +279,18 @@ function AUICodeCursor:OffsetRight(ctrl)
 		local it_char = self._it_char + 1
 		while it_char <= count do
 			if ALittle.String_IsWordChar(line.char_list[it_char + 1].char) ~= is_word then
-				self:SetLineChar(self._it_line, it_char, false)
+				self:SetLineChar(self._it_line, it_char)
 				return
 			end
 			it_char = it_char + 1
 		end
-		self:SetLineChar(self._it_line, count, false)
+		self:SetLineChar(self._it_line, count)
 		return
 	end
 	if self._it_line >= self._edit.line_count then
 		return
 	end
-	self:SetLineChar(self._it_line + 1, 0, false)
+	self:SetLineChar(self._it_line + 1, 0)
 end
 
 function AUICodeCursor:OffsetHome()
@@ -313,9 +310,9 @@ function AUICodeCursor:OffsetHome()
 		it_char = it_char + 1
 	end
 	if self._it_char == it_char - 1 then
-		self:SetLineChar(self._it_line, 0, false)
+		self:SetLineChar(self._it_line, 0)
 	else
-		self:SetLineChar(self._it_line, it_char - 1, false)
+		self:SetLineChar(self._it_line, it_char - 1)
 	end
 end
 
@@ -329,7 +326,7 @@ function AUICodeCursor:OffsetEnd()
 		count = count - 1
 	end
 	if self._it_char < count then
-		self:SetLineChar(self._it_line, count, false)
+		self:SetLineChar(self._it_line, count)
 	end
 end
 

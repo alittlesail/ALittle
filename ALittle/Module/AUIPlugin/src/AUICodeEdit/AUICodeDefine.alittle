@@ -67,3 +67,10 @@ public struct AUICodeEditGotoEvent : ALittle.UIEvent
     int line_end;
     int char_end;
 }
+
+public struct AUICodeEditJumpEvent : ALittle.UIEvent
+{
+    string file_path;
+    int it_line;
+    int it_char;
+}

@@ -63,7 +63,9 @@ protected class IDEUICenter : ALittle.DisplayLayout
 	private ALittle.TextRadioButton _tool_scale;				// 缩放模式
 	private ALittle.TextRadioButton _tool_presee;				// 预览模式
 
-    private ALittle.DropDown _target_language;	// 目标语言下拉菜单
+    private ALittle.DropDown _tool_language;	// 目标语言下拉菜单
+    private ALittle.DisplayObject _tool_jumpprecode;
+    private ALittle.DisplayObject _tool_jumpnextcode;
 
 	private IDEUIControlTree _control_tree;	// 控件树
 	private IDEUIControlList _control_list;	// 控件库
@@ -353,9 +355,21 @@ protected class IDEUICenter : ALittle.DisplayLayout
         lua.alittlescript.alittlescriptproject_settargetlanguage(g_IDEProject.project.code.project, event.target.text);
         g_IDEProject.project.config.SetConfig("target_language", event.target.text);
     }
+    private fun HandleJumpNextCodeClick(ALittle.UIClickEvent event)
+    {
+        var info = this._code_list.JumpNextCode();
+        if (info == null) return;
+		g_IDECenter.center.code_list.OpenByFullPath(info.file_path, info.it_line, info.it_char, null, null);
+    }
+    private fun HandleJumpPreCodeClick(ALittle.UIClickEvent event)
+    {
+        var info = this._code_list.JumpPreCode();
+        if (info == null) return;
+		g_IDECenter.center.code_list.OpenByFullPath(info.file_path, info.it_line, info.it_char, null, null);
+    }
 
     private fun HandleProjectOpen(IDEProjectOpenEvent event)
     {
-        this._target_language.text = g_IDEProject.project.config.GetConfig("target_language", "Lua");
+        this._tool_language.text = g_IDEProject.project.config.GetConfig("target_language", "Lua");
     }
 }

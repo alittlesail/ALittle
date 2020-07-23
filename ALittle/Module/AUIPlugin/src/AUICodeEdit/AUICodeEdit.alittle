@@ -14,9 +14,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
 
     // 查询错误信息
     private ALittle.LoopTimer _error_loop;  // 显示错误信息的定时器
-    private List<ALittle.DisplayObject> _error_list;    // 错误列表
-    private int _error_count = 0;
-    private int _error_index = 0;
+    private Map<AUICodeErrorInfo, bool> _error_map;    // 错误列表
     private ALittle.DisplayObject _error_btn;	// 错误按钮
 
     // 全文查找
@@ -123,6 +121,15 @@ public class AUICodeEdit : ALittle.DisplayLayout
     public get line_list() : List<AUICodeLineInfo> { return this._line_list; }
     public get revoke_list() : ALittle.RevokeList { return this._revoke_list; }
 
+    private fun DispatchJumEvent()
+    {
+        var event = new AUICodeEditJumpEvent();
+        event.file_path = this._file_path;
+        event.it_line = this._cursor.line;
+        event.it_char = this._cursor.char;
+        this.DispatchEvent(event);
+    }
+
     public fun FocusLineCharToCenter(int it_line, int it_char)
     {
         var line = this._line_list[it_line];
@@ -226,6 +233,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
         }
 
         this._cursor.RejustShowCursor();
+        this.DispatchJumEvent();
     }
 
     private async fun DoQueryGoto(int it_line, int it_char)
@@ -239,6 +247,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
                 this._select_cursor.StartLineChar(info.line_start, info.char_start - 1);
                 this._select_cursor.UpdateLineChar(info.line_end, info.char_end);
                 this.FocusLineCharToCenter(this._cursor.line, this._cursor.char);
+                this.DispatchJumEvent();
             }
             // 对外发送事件，让外面打开，然后再聚焦到某个代码段
             else
@@ -476,14 +485,12 @@ public class AUICodeEdit : ALittle.DisplayLayout
     {
         g_AUITool.HideTip();
         this._error_quad_move_in = null;
-        if (this._error_list != null)
+        if (this._error_map != null)
         {
-            for (var index, item in this._error_list)
-                item.RemoveFromParent();
+            for (var info, _ in this._error_map)
+                info._focus_quad.RemoveFromParent();
         }
-        this._error_list = null;
-        this._error_count = 0;
-        this._error_index = 0;
+        this._error_map = null;
         var list = this._language.QueryError(this._force_query_error);
         if (list == null)
         {
@@ -491,9 +498,8 @@ public class AUICodeEdit : ALittle.DisplayLayout
             return;
         }
 
-        this._error_list = new List<ALittle.DisplayObject>();
-        this._error_count = 0;
-        this._error_index = 0;
+        this._error_map = new Map<AUICodeErrorInfo, bool>();
+        var error_count = 0;
         for (var index, info in list)
         {
             var item_info = new AUICodeErrorInfo();
@@ -507,25 +513,41 @@ public class AUICodeEdit : ALittle.DisplayLayout
             item.x = x;
             item.width = width;
             item.height = CODE_LINE_HEIGHT;
-            item_info._focus_quad._user_data = item_info;
+            item_info._focus_quad = item;
             item._user_data = item_info;
             line.container._error.AddChild(item);
-            this._error_count += 1;
-            this._error_list[this._error_count] = item;
+            error_count += 1;
+            this._error_map[item_info] = true;
         }
-        this._error_btn.visible = this._error_count > 0;
+        this._error_btn.visible = error_count > 0;
     }
 
     private fun HandleErrorNextClick(ALittle.UIClickEvent event)
     {
-        if (this._error_count <= 0) return;
-        this._error_index += 1;
-        if (this._error_index > this._error_count) this._error_index = 1;
+        if (this.ErrorNextImpl(this._cursor.line, true)) return;
+        this.ErrorNextImpl(1, false);
+    }
 
-        var item = this._error_list[this._error_index];
-        var item_info = cast<AUICodeErrorInfo>(item._user_data);
+    private fun ErrorNextImpl(int start_line, bool check_cursor) : bool
+    {
+        var line_index = start_line;
+        while (line_index <= this._line_count)
+        {
+            var line = this._line_list[line_index];
+            for (var index, child in line.container._error.childs)
+            {
+                var info = cast<AUICodeErrorInfo>(child._user_data);
+                if (!check_cursor || line_index != this._cursor.line || info.info.char_start > this._cursor.char + 1)
+                {
+                    this.EditFocus(info.info.line_start, info.info.char_start, null, null, false);
+                    return true;
+                }
+            }
 
-        this.EditFocus(item_info.info.line_start, item_info.info.char_start, item_info.info.line_end, item_info.info.char_end, false);
+            line_index += 1;
+        }
+
+        return false;
     }
 
     private fun HandleFindInputChanged(ALittle.UIChangedEvent event)
@@ -1953,24 +1975,75 @@ public class AUICodeEdit : ALittle.DisplayLayout
 
     public fun EditFocus(int line_start, int char_start, int line_end, int char_end, bool edit_focus)
     {
-        if (edit_focus)
-            this._edit_quad.DelayFocus();
+        if (edit_focus) this._edit_quad.DelayFocus();
 
-        if (line_start != null && char_start != null)
+        // 如果行数为0，那么直接返回
+        if (this._line_count <= 0)
         {
-            if (char_start > 0) char_start -= 1;
-            if (line_end == null || char_end == null)
-            {
-                this._select_cursor.Hide();
-                this._cursor.SetLineChar(line_start, char_start);
-            }
-            else
-            {
-                this._cursor.SetLineChar(line_start, char_start);
-                this._select_cursor.StartLineChar(line_start, char_start);
-                this._select_cursor.UpdateLineChar(line_end, char_end);
-            }
+            this._select_cursor.Hide();
+            this._cursor.SetLineChar(1, 0);
             this.FocusLineCharToCenter(this._cursor.line, this._cursor.char);
+            return;
         }
+
+        if (line_start == null || char_start == null) return;
+
+        if (char_start > 0) char_start -= 1;
+        if (line_end == null || char_end == null)
+        {
+            this._select_cursor.Hide();
+
+            if (line_start > this._line_count)
+            {
+                this._cursor.SetLineChar(1, 0);
+                this.FocusLineCharToCenter(this._cursor.line, this._cursor.char);
+                return;
+            }
+            var line = this._line_list[line_start];
+            var count = line.char_count;
+            while (count > 0 && line.char_list[count].width <= 0)
+                -- count;
+            if (char_start > count) char_start = count;
+            this._cursor.SetLineChar(line_start, char_start);
+            this.FocusLineCharToCenter(this._cursor.line, this._cursor.char);
+            return;
+        }
+
+        if (line_start > this._line_count || line_end > this._line_count)
+        {
+            this._select_cursor.Hide();
+            this._cursor.SetLineChar(1, 0);
+            this.FocusLineCharToCenter(this._cursor.line, this._cursor.char);
+            return;
+        }
+
+        {
+            var line = this._line_list[line_start];
+            var count = line.char_count;
+            while (count > 0 && line.char_list[count].width <= 0)
+                -- count;
+            if (char_start > count) char_start = count;
+        }
+
+        {
+            var line = this._line_list[line_end];
+            var count = line.char_count;
+            while (count > 0 && line.char_list[count].width <= 0)
+                -- count;
+            if (char_end > count) char_end = count;
+        }
+
+        if (line_start == line_end && char_start == char_end)
+        {
+            this._select_cursor.Hide();
+            this._cursor.SetLineChar(line_start, char_start);
+            this.FocusLineCharToCenter(this._cursor.line, this._cursor.char);
+            return;
+        }
+
+        this._cursor.SetLineChar(line_start, char_start);
+        this._select_cursor.StartLineChar(line_start, char_start);
+        this._select_cursor.UpdateLineChar(line_end, char_end);
+        this.FocusLineCharToCenter(this._cursor.line, this._cursor.char);
     }
 }

@@ -16,6 +16,7 @@ public class IDECodeTabChild : IDETabChild
 		this._edit = g_AUIPluinControl.CreateControl{AUIPlugin.AUICodeEdit}("ide_code_tab_screen", this);
         this._edit.AddEventListener(this, this.HandleChangedEvent);
         this._edit.AddEventListener(this, this.HandleEditGotoEvent);
+        this._edit.AddEventListener(this, this.HandleJumpCodeEvent);
 		this._edit._user_data = this;
     }
 
@@ -50,6 +51,15 @@ public class IDECodeTabChild : IDETabChild
     private fun HandleEditGotoEvent(AUIPlugin.AUICodeEditGotoEvent event)
     {
 		g_IDECenter.center.code_list.OpenByFullPath(event.file_path, event.line_start, event.char_start, event.line_end, event.char_end);
+    }
+
+    private fun HandleJumpCodeEvent(AUIPlugin.AUICodeEditJumpEvent event)
+    {
+        var info = new IDECodeJumpInfo();
+        info.file_path = event.file_path;
+        info.it_line = event.it_line;
+        info.it_char = event.it_char;
+        g_IDECenter.center.code_list.AddCodeJump(info);
     }
 
     private fun HandleChangedEvent(ALittle.UIChangedEvent event)

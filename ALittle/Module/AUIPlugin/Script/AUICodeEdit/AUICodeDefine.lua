@@ -10,6 +10,12 @@ name_list = {"_focus_quad","info"},
 type_list = {"ALittle.DisplayObject","lua.ABnfQueryError"},
 option_map = {}
 })
+ALittle.RegStruct(-1898137181, "AUIPlugin.AUICodeEditJumpEvent", {
+name = "AUIPlugin.AUICodeEditJumpEvent", ns_name = "AUIPlugin", rl_name = "AUICodeEditJumpEvent", hash_code = -1898137181,
+name_list = {"target","file_path","it_line","it_char"},
+type_list = {"ALittle.DisplayObject","string","int","int"},
+option_map = {}
+})
 ALittle.RegStruct(1494749965, "AUIPlugin.AUICodeCharInfo", {
 name = "AUIPlugin.AUICodeCharInfo", ns_name = "AUIPlugin", rl_name = "AUICodeCharInfo", hash_code = 1494749965,
 name_list = {"char","text","red","green","blue","pre_width","width"},

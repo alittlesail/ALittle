@@ -115,8 +115,6 @@ AUICodeEdit = Lua.Class(ALittle.DisplayLayout, "AUIPlugin.AUICodeEdit")
 function AUICodeEdit:Ctor()
 	___rawset(self, "_editable", true)
 	___rawset(self, "_in_query_info", false)
-	___rawset(self, "_error_count", 0)
-	___rawset(self, "_error_index", 0)
 	___rawset(self, "_move_in", false)
 	___rawset(self, "_line_list", {})
 	___rawset(self, "_line_count", 0)
@@ -227,6 +225,14 @@ function AUICodeEdit.__getter:revoke_list()
 	return self._revoke_list
 end
 
+function AUICodeEdit:DispatchJumEvent()
+	local event = {}
+	event.file_path = self._file_path
+	event.it_line = self._cursor.line
+	event.it_char = self._cursor.char
+	self:DispatchEvent(___all_struct[-1898137181], event)
+end
+
 function AUICodeEdit:FocusLineCharToCenter(it_line, it_char)
 	local line = self._line_list[it_line]
 	if line == nil then
@@ -318,6 +324,7 @@ function AUICodeEdit:HandleLButtonDown(event)
 		self:StopQueryInfo()
 	end
 	self._cursor:RejustShowCursor()
+	self:DispatchJumEvent()
 end
 
 function AUICodeEdit:DoQueryGoto(it_line, it_char)
@@ -328,6 +335,7 @@ function AUICodeEdit:DoQueryGoto(it_line, it_char)
 			self._select_cursor:StartLineChar(info.line_start, info.char_start - 1)
 			self._select_cursor:UpdateLineChar(info.line_end, info.char_end)
 			self:FocusLineCharToCenter(self._cursor.line, self._cursor.char)
+			self:DispatchJumEvent()
 		else
 			local goto_event = {}
 			goto_event.file_path = info.file_path
@@ -531,22 +539,19 @@ end
 function AUICodeEdit:UpdateErrorInfo()
 	g_AUITool:HideTip()
 	self._error_quad_move_in = nil
-	if self._error_list ~= nil then
-		for index, item in ___ipairs(self._error_list) do
-			item:RemoveFromParent()
+	if self._error_map ~= nil then
+		for info, _ in ___pairs(self._error_map) do
+			info._focus_quad:RemoveFromParent()
 		end
 	end
-	self._error_list = nil
-	self._error_count = 0
-	self._error_index = 0
+	self._error_map = nil
 	local list = self._language:QueryError(self._force_query_error)
 	if list == nil then
 		self._error_btn.visible = false
 		return
 	end
-	self._error_list = {}
-	self._error_count = 0
-	self._error_index = 0
+	self._error_map = {}
+	local error_count = 0
 	for index, info in ___ipairs(list) do
 		local item_info = {}
 		local item = g_Control:CreateControl("ide_code_error_item", item_info)
@@ -563,27 +568,37 @@ function AUICodeEdit:UpdateErrorInfo()
 		item.x = x
 		item.width = width
 		item.height = CODE_LINE_HEIGHT
-		item_info._focus_quad._user_data = item_info
+		item_info._focus_quad = item
 		item._user_data = item_info
 		line.container._error:AddChild(item)
-		self._error_count = self._error_count + (1)
-		self._error_list[self._error_count] = item
+		error_count = error_count + (1)
+		self._error_map[item_info] = true
 	end
-	self._error_btn.visible = self._error_count > 0
+	self._error_btn.visible = error_count > 0
 end
 AUICodeEdit.UpdateErrorInfo = Lua.CoWrap(AUICodeEdit.UpdateErrorInfo)
 
 function AUICodeEdit:HandleErrorNextClick(event)
-	if self._error_count <= 0 then
+	if self:ErrorNextImpl(self._cursor.line, true) then
 		return
 	end
-	self._error_index = self._error_index + (1)
-	if self._error_index > self._error_count then
-		self._error_index = 1
+	self:ErrorNextImpl(1, false)
+end
+
+function AUICodeEdit:ErrorNextImpl(start_line, check_cursor)
+	local line_index = start_line
+	while line_index <= self._line_count do
+		local line = self._line_list[line_index]
+		for index, child in ___ipairs(line.container._error.childs) do
+			local info = child._user_data
+			if not check_cursor or line_index ~= self._cursor.line or info.info.char_start > self._cursor.char + 1 then
+				self:EditFocus(info.info.line_start, info.info.char_start, nil, nil, false)
+				return true
+			end
+		end
+		line_index = line_index + (1)
 	end
-	local item = self._error_list[self._error_index]
-	local item_info = item._user_data
-	self:EditFocus(item_info.info.line_start, item_info.info.char_start, item_info.info.line_end, item_info.info.char_end, false)
+	return false
 end
 
 function AUICodeEdit:HandleFindInputChanged(event)
@@ -1897,19 +1912,72 @@ function AUICodeEdit:EditFocus(line_start, char_start, line_end, char_end, edit_
 	if edit_focus then
 		self._edit_quad:DelayFocus()
 	end
-	if line_start ~= nil and char_start ~= nil then
-		if char_start > 0 then
-			char_start = char_start - (1)
-		end
-		if line_end == nil or char_end == nil then
-			self._select_cursor:Hide()
-			self._cursor:SetLineChar(line_start, char_start)
-		else
-			self._cursor:SetLineChar(line_start, char_start)
-			self._select_cursor:StartLineChar(line_start, char_start)
-			self._select_cursor:UpdateLineChar(line_end, char_end)
-		end
+	if self._line_count <= 0 then
+		self._select_cursor:Hide()
+		self._cursor:SetLineChar(1, 0)
 		self:FocusLineCharToCenter(self._cursor.line, self._cursor.char)
+		return
 	end
+	if line_start == nil or char_start == nil then
+		return
+	end
+	if char_start > 0 then
+		char_start = char_start - (1)
+	end
+	if line_end == nil or char_end == nil then
+		self._select_cursor:Hide()
+		if line_start > self._line_count then
+			self._cursor:SetLineChar(1, 0)
+			self:FocusLineCharToCenter(self._cursor.line, self._cursor.char)
+			return
+		end
+		local line = self._line_list[line_start]
+		local count = line.char_count
+		while count > 0 and line.char_list[count].width <= 0 do
+			count = count - 1
+		end
+		if char_start > count then
+			char_start = count
+		end
+		self._cursor:SetLineChar(line_start, char_start)
+		self:FocusLineCharToCenter(self._cursor.line, self._cursor.char)
+		return
+	end
+	if line_start > self._line_count or line_end > self._line_count then
+		self._select_cursor:Hide()
+		self._cursor:SetLineChar(1, 0)
+		self:FocusLineCharToCenter(self._cursor.line, self._cursor.char)
+		return
+	end
+	do
+		local line = self._line_list[line_start]
+		local count = line.char_count
+		while count > 0 and line.char_list[count].width <= 0 do
+			count = count - 1
+		end
+		if char_start > count then
+			char_start = count
+		end
+	end
+	do
+		local line = self._line_list[line_end]
+		local count = line.char_count
+		while count > 0 and line.char_list[count].width <= 0 do
+			count = count - 1
+		end
+		if char_end > count then
+			char_end = count
+		end
+	end
+	if line_start == line_end and char_start == char_end then
+		self._select_cursor:Hide()
+		self._cursor:SetLineChar(line_start, char_start)
+		self:FocusLineCharToCenter(self._cursor.line, self._cursor.char)
+		return
+	end
+	self._cursor:SetLineChar(line_start, char_start)
+	self._select_cursor:StartLineChar(line_start, char_start)
+	self._select_cursor:UpdateLineChar(line_end, char_end)
+	self:FocusLineCharToCenter(self._cursor.line, self._cursor.char)
 end
 

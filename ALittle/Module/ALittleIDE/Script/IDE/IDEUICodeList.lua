@@ -12,6 +12,12 @@ name_list = {"target"},
 type_list = {"ALittle.EventDispatcher"},
 option_map = {}
 })
+ALittle.RegStruct(-1701308094, "ALittleIDE.IDECodeJumpInfo", {
+name = "ALittleIDE.IDECodeJumpInfo", ns_name = "ALittleIDE", rl_name = "IDECodeJumpInfo", hash_code = -1701308094,
+name_list = {"file_path","it_line","it_char"},
+type_list = {"string","int","int"},
+option_map = {}
+})
 ALittle.RegStruct(1450277461, "ALittleIDE.IDECodeModuleInfo", {
 name = "ALittleIDE.IDECodeModuleInfo", ns_name = "ALittleIDE", rl_name = "IDECodeModuleInfo", hash_code = 1450277461,
 name_list = {"module_name","root_path"},
@@ -29,6 +35,9 @@ assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
 IDEUICodeList = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDEUICodeList")
 
 function IDEUICodeList:Ctor(ctrl_sys)
+	___rawset(self, "_jump_list", {})
+	___rawset(self, "_jump_count", 0)
+	___rawset(self, "_jump_index", 0)
 	___rawset(self, "_group", {})
 end
 
@@ -37,11 +46,46 @@ function IDEUICodeList:TCtor()
 	g_IDEProject:AddEventListener(___all_struct[-332308624], self, self.HandleProjectClose)
 end
 
+function IDEUICodeList:AddCodeJump(info)
+	if self._jump_count > 0 and self._jump_index < self._jump_count then
+		ALittle.List_Splice(self._jump_list, self._jump_index + 1, self._jump_count - self._jump_index)
+		self._jump_count = self._jump_index
+	end
+	self._jump_count = self._jump_count + (1)
+	self._jump_index = self._jump_count
+	self._jump_list[self._jump_count] = info
+end
+
+function IDEUICodeList:JumpPreCode()
+	if self._jump_count == 0 then
+		return nil
+	end
+	if self._jump_index <= 1 then
+		return nil
+	end
+	self._jump_index = self._jump_index - (1)
+	return self._jump_list[self._jump_index]
+end
+
+function IDEUICodeList:JumpNextCode()
+	if self._jump_count == 0 then
+		return nil
+	end
+	if self._jump_index >= self._jump_count then
+		return nil
+	end
+	self._jump_index = self._jump_index + (1)
+	return self._jump_list[self._jump_index]
+end
+
 function IDEUICodeList:HandleProjectClose(event)
 	self._code_scroll_screen:RemoveAllChild()
 end
 
 function IDEUICodeList:HandleProjectOpen(event)
+	self._jump_count = 0
+	self._jump_index = 0
+	self._jump_list = {}
 	local module_map = g_IDEProject.project.config:GetConfig("code_module", {})
 	module_map["Core"] = nil
 	module_map["Std"] = nil

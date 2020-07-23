@@ -357,7 +357,23 @@ function IDEUICenter:HandleTargetLanguageSelectChange(event)
 	g_IDEProject.project.config:SetConfig("target_language", event.target.text)
 end
 
+function IDEUICenter:HandleJumpNextCodeClick(event)
+	local info = self._code_list:JumpNextCode()
+	if info == nil then
+		return
+	end
+	g_IDECenter.center.code_list:OpenByFullPath(info.file_path, info.it_line, info.it_char, nil, nil)
+end
+
+function IDEUICenter:HandleJumpPreCodeClick(event)
+	local info = self._code_list:JumpPreCode()
+	if info == nil then
+		return
+	end
+	g_IDECenter.center.code_list:OpenByFullPath(info.file_path, info.it_line, info.it_char, nil, nil)
+end
+
 function IDEUICenter:HandleProjectOpen(event)
-	self._target_language.text = g_IDEProject.project.config:GetConfig("target_language", "Lua")
+	self._tool_language.text = g_IDEProject.project.config:GetConfig("target_language", "Lua")
 end
 

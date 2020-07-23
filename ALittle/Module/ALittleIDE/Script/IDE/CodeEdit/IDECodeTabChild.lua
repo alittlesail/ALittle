@@ -6,6 +6,12 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = ALittle.GetAllStruct()
 
+ALittle.RegStruct(-1898137181, "AUIPlugin.AUICodeEditJumpEvent", {
+name = "AUIPlugin.AUICodeEditJumpEvent", ns_name = "AUIPlugin", rl_name = "AUICodeEditJumpEvent", hash_code = -1898137181,
+name_list = {"target","file_path","it_line","it_char"},
+type_list = {"ALittle.DisplayObject","string","int","int"},
+option_map = {}
+})
 ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
 name = "ALittle.UIEvent", ns_name = "ALittle", rl_name = "UIEvent", hash_code = -1479093282,
 name_list = {"target"},
@@ -33,6 +39,7 @@ function IDECodeTabChild:Ctor(ctrl_sys, name, save, user_info)
 	___rawset(self, "_edit", g_AUIPluinControl:CreateControl("ide_code_tab_screen", self))
 	self._edit:AddEventListener(___all_struct[958494922], self, self.HandleChangedEvent)
 	self._edit:AddEventListener(___all_struct[631224630], self, self.HandleEditGotoEvent)
+	self._edit:AddEventListener(___all_struct[-1898137181], self, self.HandleJumpCodeEvent)
 	self._edit._user_data = self
 end
 
@@ -71,6 +78,14 @@ end
 
 function IDECodeTabChild:HandleEditGotoEvent(event)
 	g_IDECenter.center.code_list:OpenByFullPath(event.file_path, event.line_start, event.char_start, event.line_end, event.char_end)
+end
+
+function IDECodeTabChild:HandleJumpCodeEvent(event)
+	local info = {}
+	info.file_path = event.file_path
+	info.it_line = event.it_line
+	info.it_char = event.it_char
+	g_IDECenter.center.code_list:AddCodeJump(info)
 end
 
 function IDECodeTabChild:HandleChangedEvent(event)

@@ -15,6 +15,13 @@ struct IDECodeFileSearchInfo
 	string name;
 }
 
+protected struct IDECodeJumpInfo
+{
+    string file_path;
+    int it_line;
+    int it_char;
+}
+
 public class IDEUICodeList : ALittle.DisplayLayout
 {	
 	private ALittle.ScrollScreen _code_scroll_screen;
@@ -24,6 +31,10 @@ public class IDEUICodeList : ALittle.DisplayLayout
 
 	private ALittle.LoopLinear _tree_loop_x;
 	private ALittle.LoopLinear _tree_loop_y;
+
+    private List<IDECodeJumpInfo> _jump_list = new List<IDECodeJumpInfo>();
+    private int _jump_count = 0;
+    private int _jump_index = 0;
 
 	public ctor(ALittle.ControlSystem ctrl_sys)
 	{
@@ -36,6 +47,34 @@ public class IDEUICodeList : ALittle.DisplayLayout
         g_IDEProject.AddEventListener(this, this.HandleProjectClose);
     }
 
+    public fun AddCodeJump(IDECodeJumpInfo info)
+    {
+        if (this._jump_count > 0 && this._jump_index < this._jump_count)
+        {
+        	ALittle.List_Splice(this._jump_list, this._jump_index + 1, this._jump_count - this._jump_index);
+            this._jump_count = this._jump_index;
+        }
+        this._jump_count += 1;
+        this._jump_index = this._jump_count;
+        this._jump_list[this._jump_count] = info;
+    }
+
+    public fun JumpPreCode() : IDECodeJumpInfo
+    {
+        if (this._jump_count == 0) return null;
+        if (this._jump_index <= 1) return null;
+        this._jump_index -= 1;
+        return this._jump_list[this._jump_index];
+    }
+
+    public fun JumpNextCode() : IDECodeJumpInfo
+    {
+        if (this._jump_count == 0) return null;
+        if (this._jump_index >= this._jump_count) return null;
+        this._jump_index += 1;
+        return this._jump_list[this._jump_index];
+    }
+
 	private fun HandleProjectClose(IDEProjectCloseEvent event)
 	{
 		this._code_scroll_screen.RemoveAllChild();
@@ -43,6 +82,10 @@ public class IDEUICodeList : ALittle.DisplayLayout
 
 	private fun HandleProjectOpen(IDEProjectOpenEvent event)
 	{
+        this._jump_count = 0;
+        this._jump_index = 0;
+        this._jump_list = new List<IDECodeJumpInfo>();
+
 		// 读取项目配置
 		var module_map = g_IDEProject.project.config.GetConfig("code_module", new Map<string, IDECodeModuleInfo>());
 		// 删除掉基本库

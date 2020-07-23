@@ -77,6 +77,11 @@ function IDECodeTabChild:OnTabRightMenu(menu)
 end
 
 function IDECodeTabChild:HandleEditGotoEvent(event)
+	local info = {}
+	info.file_path = event.file_path
+	info.it_line = event.line_start
+	info.it_char = event.char_start
+	g_IDECenter.center.code_list:AddCodeJump(info)
 	g_IDECenter.center.code_list:OpenByFullPath(event.file_path, event.line_start, event.char_start, event.line_end, event.char_end)
 end
 

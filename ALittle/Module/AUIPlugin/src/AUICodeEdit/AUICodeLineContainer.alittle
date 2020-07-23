@@ -1,0 +1,205 @@
+
+namespace AUIPlugin;
+
+protected class AUICodeLineContainer : ALittle.DisplayLayout
+{
+    private bool _showd = false;
+    private int _version = 0;
+    private ALittle.LoopTimer _delay_loop = null;
+    private Functor<()> _set_color;
+
+    public ALittle.Quad _select;  // 选择底色
+    public ALittle.DisplayLayout _error;    // 错误容器
+    public ALittle.DisplayLayout _find;     // 查找容器
+    public ALittle.DisplayLayout _text;    // 文本容器
+
+    public ctor(ALittle.ControlSystem ctrl_sys)
+    {
+        // 用于显示查找容器
+        var find = new ALittle.DisplayLayout(ctrl_sys);
+        find.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+        find.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+        this.AddChild(find);
+        this._find = find;
+
+        // 用于选择显示
+        var quad = new ALittle.Quad(ctrl_sys);
+        quad = new ALittle.Quad(g_Control);
+        quad.red = CODE_SELECT_RED;
+        quad.green = CODE_SELECT_GREEN;
+        quad.blue = CODE_SELECT_BLUE;
+        quad.height = CODE_LINE_HEIGHT;
+        quad.visible = false;
+        this.AddChild(quad);
+        this._select = quad;
+
+        // 用于显示错误容器
+        var error = new ALittle.DisplayLayout(ctrl_sys);
+        error.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+        error.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+        this.AddChild(error);
+        this._error = error;
+
+        // 用于显示文本
+        var text = new ALittle.DisplayLayout(ctrl_sys);
+        text.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+        text.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+        this.AddChild(text);
+        this._text = text;
+
+        this.AddEventListener(this, this.HandleHide);
+        this.AddEventListener(this, this.HandleShow);
+    }
+
+    public fun AddChar(AUICodeCharInfo char)
+    {
+        // 如果已经创建了text，那就直接复用
+        if (char.text != null)
+            this._text.AddChild(char.text);
+
+        if (!this._showd) return;
+
+            // 构建文本
+        if (char.text == null && char.width > 0
+            && char.char != " " && char.char != "\t")
+        {
+            char.text = new ALittle.Text(g_Control);
+            char.text.disabled = true;
+            char.text.red = char.red;
+            char.text.green = char.green;
+            char.text.blue = char.blue;
+            char.text.font_path = CODE_FONT_PATH;
+            char.text.font_size = CODE_FONT_SIZE;
+            char.text.text = char.char;
+            char.text.x = char.pre_width;
+            this._text.AddChild(char.text);
+        }
+
+            // 查询颜色
+        var line = cast<AUICodeLineInfo>(this._user_data);
+        if (this._delay_loop == null && line.edit.language != null && line.edit.language.version != this._version)
+        {
+            this._delay_loop = new ALittle.LoopTimer(bind(this.HandleColor, this), 1);
+            this._delay_loop.Start();
+        }
+    }
+
+    public fun RestoreColor()
+    {
+        this._set_color = null;
+        if (this._delay_loop != null) return;
+
+        this._version = 0;
+        this._delay_loop = new ALittle.LoopTimer(bind(this.HandleColor, this), 1);
+        this._delay_loop.Start();
+    }
+
+    public fun SetColor(int char_start, int char_end, double red, double green, double blue)
+    {
+        if (this._delay_loop != null)
+        {
+            this._set_color = bind(this.SetColor, this, char_start, char_end, red, green, blue);
+            return;
+        }
+
+        var line = cast<AUICodeLineInfo>(this._user_data);
+        for (var i = char_start; i <= char_end; 1)
+        {
+            var child = line.char_list[i];
+            if (child != null && child.text != null)
+            {
+                child.text.red = red;
+                child.text.green = green;
+                child.text.blue = blue;
+            }
+        }   
+    }
+
+    private async fun HandleColor()
+    {
+        this._delay_loop = null;
+
+        // 如果已经没有父节点，那么直接返回
+        if (this.parent == null) return;
+    
+        var line = cast<AUICodeLineInfo>(this._user_data);
+        if (this._version == line.edit.language.version) return;
+        this._version = line.edit.language.version;
+        var line_index = ALittle.Math_Floor(this.y / CODE_LINE_HEIGHT) + 1;
+        if (line_index < 1 || line_index > line.edit.line_count) return;
+
+        var list = line.edit.language.QueryColor(line_index);
+        for (var index, info in list)
+        {
+            var char_start = 1;
+            if (info.line_start == line_index)
+                char_start = info.char_start;
+            var char_end = line.char_count;
+            if (info.line_end == line_index)
+                char_end = info.char_end;
+
+            var color = line.edit.language.QueryColorValue(info.tag);
+            if (color == null) color = CODE_DEFAULT_COLOR;
+
+            for (var i = char_start; i <= char_end; 1)
+            {
+                var child = line.char_list[i];
+                if (child != null && child.text != null)
+                {
+                    child.text.red = color.red;
+                    child.text.green = color.green;
+                    child.text.blue = color.blue;
+                    if (info.blur)
+                        child.text.alpha = 0.5;   
+                    else
+                        child.text.alpha = 1;   
+                }
+            }
+        }
+
+        if (this._set_color != null)
+        {
+            this._set_color();
+            this._set_color = null;
+        }
+    }
+
+    private fun HandleHide(ALittle.UIHideEvent event)
+    {
+    }
+
+    private fun HandleShow(ALittle.UIShowEvent event)
+    {
+        if (!this._showd)
+        {
+            this._showd = true;
+
+            var line = cast<AUICodeLineInfo>(this._user_data);
+            for (var index, char in line.char_list)
+            {
+                if (char.text == null && char.width > 0
+                    && char.char != " " && char.char != "\t")
+                {
+                    char.text = new ALittle.Text(g_Control);
+                    char.text.disabled = true;
+                    char.text.red = CODE_FONT_RED;
+                    char.text.green = CODE_FONT_GREEN;
+                    char.text.blue = CODE_FONT_BLUE;
+                    char.text.font_path = CODE_FONT_PATH;
+                    char.text.font_size = CODE_FONT_SIZE;
+                    char.text.text = char.char;
+                    char.text.x = char.pre_width;
+                    this._text.AddChild(char.text);
+                }
+            }
+        }
+        
+            // 查询颜色
+        var line = cast<AUICodeLineInfo>(this._user_data);
+        if (this._delay_loop == null && line.edit.language != null && line.edit.language.version != this._version)
+        {
+            this._delay_loop = new ALittle.LoopTimer(bind(this.HandleColor, this), 1);
+            this._delay_loop.Start();
+        }
+    }
+}

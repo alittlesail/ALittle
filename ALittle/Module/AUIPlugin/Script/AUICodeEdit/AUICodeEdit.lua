@@ -6,22 +6,10 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = ALittle.GetAllStruct()
 
-ALittle.RegStruct(-2130019625, "AUIPlugin.AUICodeErrorInfo", {
-name = "AUIPlugin.AUICodeErrorInfo", ns_name = "AUIPlugin", rl_name = "AUICodeErrorInfo", hash_code = -2130019625,
-name_list = {"_focus_quad","info"},
-type_list = {"ALittle.DisplayObject","lua.ABnfQueryError"},
-option_map = {}
-})
 ALittle.RegStruct(1883782801, "ALittle.UILButtonDownEvent", {
 name = "ALittle.UILButtonDownEvent", ns_name = "ALittle", rl_name = "UILButtonDownEvent", hash_code = 1883782801,
 name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
 type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
-option_map = {}
-})
-ALittle.RegStruct(1862557463, "ALittle.UIShowEvent", {
-name = "ALittle.UIShowEvent", ns_name = "ALittle", rl_name = "UIShowEvent", hash_code = 1862557463,
-name_list = {"target"},
-type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
 ALittle.RegStruct(-1604617962, "ALittle.UIKeyDownEvent", {
@@ -30,22 +18,10 @@ name_list = {"target","mod","sym","scancode","custom","handled"},
 type_list = {"ALittle.DisplayObject","int","int","int","bool","bool"},
 option_map = {}
 })
-ALittle.RegStruct(1494749965, "AUIPlugin.AUICodeCharInfo", {
-name = "AUIPlugin.AUICodeCharInfo", ns_name = "AUIPlugin", rl_name = "AUICodeCharInfo", hash_code = 1494749965,
-name_list = {"char","text","red","green","blue","pre_width","width"},
-type_list = {"string","ALittle.Text","double","double","double","double","double"},
-option_map = {}
-})
 ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
 name = "ALittle.UIEvent", ns_name = "ALittle", rl_name = "UIEvent", hash_code = -1479093282,
 name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
-option_map = {}
-})
-ALittle.RegStruct(1421505194, "AUIPlugin.AUICodeLineInfo", {
-name = "AUIPlugin.AUICodeLineInfo", ns_name = "AUIPlugin", rl_name = "AUICodeLineInfo", hash_code = 1421505194,
-name_list = {"char_list","char_count","container","edit"},
-type_list = {"List<AUIPlugin.AUICodeCharInfo>","int","AUIPlugin.AUICodeLineContainer","AUIPlugin.AUICodeEdit"},
 option_map = {}
 })
 ALittle.RegStruct(-1347278145, "ALittle.UIButtonEvent", {
@@ -84,12 +60,6 @@ name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
-ALittle.RegStruct(-1073016186, "AUIPlugin.AUICodeFindInfo", {
-name = "AUIPlugin.AUICodeFindInfo", ns_name = "AUIPlugin", rl_name = "AUICodeFindInfo", hash_code = -1073016186,
-name_list = {"_focus_quad","it_line","it_char_start","it_char_end"},
-type_list = {"ALittle.DisplayObject","int","int","int"},
-option_map = {}
-})
 ALittle.RegStruct(-1001723540, "ALittle.UIMouseMoveEvent", {
 name = "ALittle.UIMouseMoveEvent", ns_name = "ALittle", rl_name = "UIMouseMoveEvent", hash_code = -1001723540,
 name_list = {"target","abs_x","abs_y","rel_x","rel_y"},
@@ -100,12 +70,6 @@ ALittle.RegStruct(958494922, "ALittle.UIChangedEvent", {
 name = "ALittle.UIChangedEvent", ns_name = "ALittle", rl_name = "UIChangedEvent", hash_code = 958494922,
 name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
-option_map = {}
-})
-ALittle.RegStruct(-947960184, "lua.ABnfQueryError", {
-name = "lua.ABnfQueryError", ns_name = "lua", rl_name = "ABnfQueryError", hash_code = -947960184,
-name_list = {"line_start","char_start","line_end","char_end","error"},
-type_list = {"int","int","int","int","string"},
 option_map = {}
 })
 ALittle.RegStruct(882286932, "ALittle.UIKeyEvent", {
@@ -120,20 +84,8 @@ name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
-ALittle.RegStruct(631224630, "AUIPlugin.AUICodeEditGotoEvent", {
-name = "AUIPlugin.AUICodeEditGotoEvent", ns_name = "AUIPlugin", rl_name = "AUICodeEditGotoEvent", hash_code = 631224630,
-name_list = {"target","file_path","line_start","char_start","line_end","char_end"},
-type_list = {"ALittle.DisplayObject","string","int","int","int","int"},
-option_map = {}
-})
 ALittle.RegStruct(544684311, "ALittle.UIMoveInEvent", {
 name = "ALittle.UIMoveInEvent", ns_name = "ALittle", rl_name = "UIMoveInEvent", hash_code = 544684311,
-name_list = {"target"},
-type_list = {"ALittle.DisplayObject"},
-option_map = {}
-})
-ALittle.RegStruct(348388800, "ALittle.UIHideEvent", {
-name = "ALittle.UIHideEvent", ns_name = "ALittle", rl_name = "UIHideEvent", hash_code = 348388800,
 name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
 option_map = {}
@@ -156,249 +108,6 @@ name_list = {"target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"},
 type_list = {"ALittle.DisplayObject","double","double","double","double","double","double"},
 option_map = {}
 })
-
-local LINE_HEIGHT = 18
-local LINE_NUMBER_WIDTH = 40
-local PAD_LINES = 5
-local FONT_SIZE = 14
-local FONT_PATH = "YaHei-Consolas.ttf"
-local FONT_RED = 169 / 255
-local FONT_GREEN = 183 / 255
-local FONT_BLUE = 198 / 255
-local SELECT_RED = 33 / 255
-local SELECT_GREEN = 66 / 255
-local SELECT_BLUE = 131 / 255
-local FIND_RED = 50 / 255
-local FIND_GREEN = 89 / 255
-local FIND_BLUE = 61 / 255
-local LINE_NUMBER_RED = 100 / 255
-local LINE_NUMBER_GREEN = 100 / 255
-local LINE_NUMBER_BLUE = 100 / 255
-g_DefaultColor = {}
-g_DefaultColor.red = FONT_RED
-g_DefaultColor.green = FONT_GREEN
-g_DefaultColor.blue = FONT_BLUE
-local FOCUS_RED = 88 / 255
-local FOCUS_GREEN = 157 / 255
-local FOCUS_BLUE = 246 / 255
-assert(ALittle.Quad, " extends class:ALittle.Quad is nil")
-AUICodeQuad = Lua.Class(ALittle.Quad, "AUIPlugin.AUICodeQuad")
-
-function AUICodeQuad:Ctor()
-	___rawset(self, "_ediable", true)
-end
-
-function AUICodeQuad.__getter:is_input()
-	return true
-end
-
-function AUICodeQuad.__getter:editable()
-	return self._ediable
-end
-
-function AUICodeQuad.__setter:editable(value)
-	self._ediable = value
-end
-
-function AUICodeQuad.__getter:font_size()
-	return FONT_SIZE
-end
-
-function AUICodeQuad.__getter:cursor_x()
-	local tab_child = self._user_data
-	return tab_child.cursor.x
-end
-
-function AUICodeQuad.__getter:cursor_y()
-	local tab_child = self._user_data
-	return tab_child.cursor.y
-end
-
-function AUICodeQuad.__getter:cursor_b()
-	local tab_child = self._user_data
-	return tab_child.cursor.y + tab_child.cursor.height
-end
-
-assert(ALittle.Linear, " extends class:ALittle.Linear is nil")
-AUICodeLinear = Lua.Class(ALittle.Linear, "AUIPlugin.AUICodeLinear")
-
-assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
-AUICodeLineContainer = Lua.Class(ALittle.DisplayLayout, "AUIPlugin.AUICodeLineContainer")
-
-function AUICodeLineContainer:Ctor(ctrl_sys)
-	___rawset(self, "_showd", false)
-	___rawset(self, "_version", 0)
-	___rawset(self, "_delay_loop", nil)
-	local find = ALittle.DisplayLayout(ctrl_sys)
-	find.width_type = 4
-	find.height_type = 4
-	self:AddChild(find)
-	___rawset(self, "_find", find)
-	local quad = ALittle.Quad(ctrl_sys)
-	quad = ALittle.Quad(g_Control)
-	quad.red = SELECT_RED
-	quad.green = SELECT_GREEN
-	quad.blue = SELECT_BLUE
-	quad.height = LINE_HEIGHT
-	quad.visible = false
-	self:AddChild(quad)
-	___rawset(self, "_select", quad)
-	local error = ALittle.DisplayLayout(ctrl_sys)
-	error.width_type = 4
-	error.height_type = 4
-	self:AddChild(error)
-	___rawset(self, "_error", error)
-	local text = ALittle.DisplayLayout(ctrl_sys)
-	text.width_type = 4
-	text.height_type = 4
-	self:AddChild(text)
-	___rawset(self, "_text", text)
-	self:AddEventListener(___all_struct[348388800], self, self.HandleHide)
-	self:AddEventListener(___all_struct[1862557463], self, self.HandleShow)
-end
-
-function AUICodeLineContainer:AddChar(char)
-	if char.text ~= nil then
-		self._text:AddChild(char.text)
-	end
-	if not self._showd then
-		return
-	end
-	if char.text == nil and char.width > 0 and char.char ~= " " and char.char ~= "\t" then
-		char.text = ALittle.Text(g_Control)
-		char.text.disabled = true
-		char.text.red = char.red
-		char.text.green = char.green
-		char.text.blue = char.blue
-		char.text.font_path = FONT_PATH
-		char.text.font_size = FONT_SIZE
-		char.text.text = char.char
-		char.text.x = char.pre_width
-		self._text:AddChild(char.text)
-	end
-	local line = self._user_data
-	if self._delay_loop == nil and line.edit.language ~= nil and line.edit.language.version ~= self._version then
-		self._delay_loop = ALittle.LoopTimer(Lua.Bind(self.HandleColor, self), 1)
-		self._delay_loop:Start()
-	end
-end
-
-function AUICodeLineContainer:RestoreColor()
-	self._set_color = nil
-	if self._delay_loop ~= nil then
-		return
-	end
-	self._version = 0
-	self._delay_loop = ALittle.LoopTimer(Lua.Bind(self.HandleColor, self), 1)
-	self._delay_loop:Start()
-end
-
-function AUICodeLineContainer:SetColor(char_start, char_end, red, green, blue)
-	if self._delay_loop ~= nil then
-		self._set_color = Lua.Bind(self.SetColor, self, char_start, char_end, red, green, blue)
-		return
-	end
-	local line = self._user_data
-	local i = char_start
-	while true do
-		if not(i <= char_end) then break end
-		local child = line.char_list[i]
-		if child ~= nil and child.text ~= nil then
-			child.text.red = red
-			child.text.green = green
-			child.text.blue = blue
-		end
-		i = i+(1)
-	end
-end
-
-function AUICodeLineContainer:HandleColor()
-	self._delay_loop = nil
-	if self.parent == nil then
-		return
-	end
-	local line = self._user_data
-	if self._version == line.edit.language.version then
-		return
-	end
-	self._version = line.edit.language.version
-	local line_index = ALittle.Math_Floor(self.y / LINE_HEIGHT) + 1
-	if line_index < 1 or line_index > line.edit.line_count then
-		return
-	end
-	local list = line.edit.language:QueryColor(line_index)
-	for index, info in ___ipairs(list) do
-		local char_start = 1
-		if info.line_start == line_index then
-			char_start = info.char_start
-		end
-		local char_end = line.char_count
-		if info.line_end == line_index then
-			char_end = info.char_end
-		end
-		local color = line.edit.language:QueryColorValue(info.tag)
-		if color == nil then
-			color = g_DefaultColor
-		end
-		local i = char_start
-		while true do
-			if not(i <= char_end) then break end
-			local child = line.char_list[i]
-			if child ~= nil and child.text ~= nil then
-				child.text.red = color.red
-				child.text.green = color.green
-				child.text.blue = color.blue
-				if info.blur then
-					child.text.alpha = 0.5
-				else
-					child.text.alpha = 1
-				end
-			end
-			i = i+(1)
-		end
-	end
-	if self._set_color ~= nil then
-		self._set_color()
-		self._set_color = nil
-	end
-end
-AUICodeLineContainer.HandleColor = Lua.CoWrap(AUICodeLineContainer.HandleColor)
-
-function AUICodeLineContainer:HandleHide(event)
-end
-
-function AUICodeLineContainer:HandleShow(event)
-	if not self._showd then
-		self._showd = true
-		local line = self._user_data
-		for index, char in ___ipairs(line.char_list) do
-			if char.text == nil and char.width > 0 and char.char ~= " " and char.char ~= "\t" then
-				char.text = ALittle.Text(g_Control)
-				char.text.disabled = true
-				char.text.red = FONT_RED
-				char.text.green = FONT_GREEN
-				char.text.blue = FONT_BLUE
-				char.text.font_path = FONT_PATH
-				char.text.font_size = FONT_SIZE
-				char.text.text = char.char
-				char.text.x = char.pre_width
-				self._text:AddChild(char.text)
-			end
-		end
-	end
-	local line = self._user_data
-	if self._delay_loop == nil and line.edit.language ~= nil and line.edit.language.version ~= self._version then
-		self._delay_loop = ALittle.LoopTimer(Lua.Bind(self.HandleColor, self), 1)
-		self._delay_loop:Start()
-	end
-end
-
-assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
-AUICodeEditContainer = Lua.Class(ALittle.DisplayLayout, "AUIPlugin.AUICodeEditContainer")
-
-function AUICodeEditContainer:ClipRect(x, y, width, height, h_move, v_move)
-	self._user_data:ClipRect(x - self._x, y - self._y, width - self._x, height - self._y, h_move, v_move)
-end
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
 AUICodeEdit = Lua.Class(ALittle.DisplayLayout, "AUIPlugin.AUICodeEdit")
@@ -439,11 +148,11 @@ function AUICodeEdit:TCtor()
 	self._code_screen.container._user_data = self._code_linear
 	self._line_number = ALittle.Linear(self._ctrl_sys)
 	self._line_number.type = 2
-	self._line_number.width = LINE_NUMBER_WIDTH
+	self._line_number.width = CODE_LINE_NUMBER_WIDTH
 	self._code_screen.static_object_v = self._line_number
 	self._cursor = AUICodeCursor(self._ctrl_sys, self)
 	self._cursor.width = 1
-	self._cursor.height = LINE_HEIGHT
+	self._cursor.height = CODE_LINE_HEIGHT
 	self._cursor_container:AddChild(self._cursor)
 	self._cursor.disabled = true
 	self._select_cursor = AUICodeSelectCursor(self)
@@ -464,10 +173,6 @@ end
 
 function AUICodeEdit.__setter:editable(value)
 	self._editable = value
-end
-
-function AUICodeEdit.__getter:font_size()
-	return FONT_SIZE
 end
 
 function AUICodeEdit.__getter:cursor_x()
@@ -518,14 +223,6 @@ function AUICodeEdit.__getter:line_list()
 	return self._line_list
 end
 
-function AUICodeEdit.__getter:line_height()
-	return LINE_HEIGHT
-end
-
-function AUICodeEdit.__getter:line_number_width()
-	return LINE_NUMBER_WIDTH
-end
-
 function AUICodeEdit.__getter:revoke_list()
 	return self._revoke_list
 end
@@ -539,7 +236,7 @@ function AUICodeEdit:FocusLineCharToCenter(it_line, it_char)
 	if char == nil then
 		char = line.char_list[1]
 	end
-	local y = (it_line - 1) * LINE_HEIGHT
+	local y = (it_line - 1) * CODE_LINE_HEIGHT
 	local x = char.pre_width
 	local real_width = self._code_screen.container.width - self._code_screen.view_width
 	if real_width > 0 then
@@ -563,7 +260,7 @@ function AUICodeEdit:FocusLineCharToUp(it_line, it_char)
 	end
 	local real_height = self._code_screen.container.height - self._code_screen.view_height
 	if real_height > 0 then
-		self._code_screen.right_scrollbar.offset_rate = (it_line - 1) * LINE_HEIGHT / real_height
+		self._code_screen.right_scrollbar.offset_rate = (it_line - 1) * CODE_LINE_HEIGHT / real_height
 		self._code_screen:RejustScrollBar()
 	end
 end
@@ -575,7 +272,7 @@ function AUICodeEdit:FocusLineCharToDown(it_line, it_char)
 	end
 	local real_height = self._code_screen.container.height - self._code_screen.view_height
 	if real_height > 0 then
-		self._code_screen.right_scrollbar.offset_rate = (it_line * LINE_HEIGHT - self._code_screen.view_height) / real_height
+		self._code_screen.right_scrollbar.offset_rate = (it_line * CODE_LINE_HEIGHT - self._code_screen.view_height) / real_height
 		self._code_screen:RejustScrollBar()
 	end
 end
@@ -678,10 +375,10 @@ function AUICodeEdit:HandleMouseMove(event)
 		rel_x = rel_x - (self._code_linear.x)
 	end
 	if not self._in_drag then
-		local it_line = ALittle.Math_Floor(event.rel_y / LINE_HEIGHT) + 1
+		local it_line = ALittle.Math_Floor(event.rel_y / CODE_LINE_HEIGHT) + 1
 		local line = self._line_list[it_line]
 		if line ~= nil then
-			local rel_y = event.rel_y - (it_line - 1) * LINE_HEIGHT
+			local rel_y = event.rel_y - (it_line - 1) * CODE_LINE_HEIGHT
 			local item = line.container._error:PickUp(rel_x, rel_y)
 			if item ~= self._error_quad_move_in then
 				if self._error_quad_move_in ~= nil then
@@ -713,7 +410,7 @@ function AUICodeEdit:HandleDropFile(event)
 end
 
 function AUICodeEdit:UpdateLineNumber()
-	local child_count = self._line_count + PAD_LINES
+	local child_count = self._line_count + CODE_PAD_LINES
 	local delta = self._line_number.child_count - child_count
 	if delta >= 0 and delta <= 10 then
 		return
@@ -725,11 +422,11 @@ function AUICodeEdit:UpdateLineNumber()
 	local index = self._line_number.child_count + 1
 	while true do
 		if not(index <= child_count) then break end
-		local text = AUICodeLineNumber(self._ctrl_sys, FONT_PATH, FONT_SIZE, self._ascii_width, self._word_width)
-		text.height = LINE_HEIGHT
-		text.red = LINE_NUMBER_RED
-		text.green = LINE_NUMBER_GREEN
-		text.blue = LINE_NUMBER_BLUE
+		local text = AUICodeLineNumber(self._ctrl_sys, CODE_FONT_PATH, CODE_FONT_SIZE, self._ascii_width, self._word_width)
+		text.height = CODE_LINE_HEIGHT
+		text.red = CODE_LINE_NUMBER_RED
+		text.green = CODE_LINE_NUMBER_GREEN
+		text.blue = CODE_LINE_NUMBER_BLUE
 		text.text = ALittle.String_ToString(index)
 		self._line_number:AddChild(text)
 		index = index+(1)
@@ -786,7 +483,7 @@ function AUICodeEdit:UpdateQueryInfo(x, y)
 		info.char_end = line.char_count
 	end
 	local rect_x, rect_y, rect_width = self:CalcRect(info.line_start, info.char_start, char_end)
-	if A_UISystem.mouse_x < quad_x + rect_x or A_UISystem.mouse_x >= quad_x + rect_x + rect_width or A_UISystem.mouse_y < quad_y + rect_y or A_UISystem.mouse_y >= quad_y + rect_y + LINE_HEIGHT then
+	if A_UISystem.mouse_x < quad_x + rect_x or A_UISystem.mouse_x >= quad_x + rect_x + rect_width or A_UISystem.mouse_y < quad_y + rect_y or A_UISystem.mouse_y >= quad_y + rect_y + CODE_LINE_HEIGHT then
 		ALittle.System_SetEditCursor()
 		return
 	end
@@ -795,9 +492,9 @@ function AUICodeEdit:UpdateQueryInfo(x, y)
 	local line_container = self._code_linear:GetChildByIndex(info.line_start)
 	if line ~= nil and line_container ~= nil then
 		if info.line_start == info.line_end then
-			line_container:SetColor(info.char_start, info.char_end, FOCUS_RED, FOCUS_GREEN, FOCUS_BLUE)
+			line_container:SetColor(info.char_start, info.char_end, CODE_FOCUS_RED, CODE_FOCUS_GREEN, CODE_FOCUS_BLUE)
 		else
-			line_container:SetColor(info.char_start, line.char_count, FOCUS_RED, FOCUS_GREEN, FOCUS_BLUE)
+			line_container:SetColor(info.char_start, line.char_count, CODE_FOCUS_RED, CODE_FOCUS_GREEN, CODE_FOCUS_BLUE)
 		end
 	end
 	g_AUITool:ShowTip(info.info)
@@ -808,7 +505,7 @@ function AUICodeEdit:UpdateQueryInfo(x, y)
 	self._goto_quad.x = rect_x
 	self._goto_quad.y = rect_y
 	self._goto_quad.width = rect_width
-	self._goto_quad.height = LINE_HEIGHT
+	self._goto_quad.height = CODE_LINE_HEIGHT
 	self._goto_quad.visible = true
 	ALittle.System_SetHandCursor()
 end
@@ -862,7 +559,7 @@ function AUICodeEdit:UpdateErrorInfo()
 		local x, y, width = self:CalcRect(info.line_start, info.char_start, char_end)
 		item.x = x
 		item.width = width
-		item.height = LINE_HEIGHT
+		item.height = CODE_LINE_HEIGHT
 		item_info._focus_quad._user_data = item_info
 		item._user_data = item_info
 		line.container._error:AddChild(item)
@@ -909,12 +606,12 @@ function AUICodeEdit:HandleFindInputChanged(event)
 				end
 				if find then
 					local item = ALittle.Quad(g_Control)
-					item.red = FIND_RED
-					item.green = FIND_GREEN
-					item.blue = FIND_BLUE
+					item.red = CODE_FIND_RED
+					item.green = CODE_FIND_GREEN
+					item.blue = CODE_FIND_BLUE
 					item.x = line.char_list[char_index].pre_width
 					item.width = line.char_list[char_index + find_len].pre_width - line.char_list[char_index].pre_width
-					item.height = LINE_HEIGHT
+					item.height = CODE_LINE_HEIGHT
 					line.container._find:AddChild(item)
 					local info = {}
 					info._focus_quad = item
@@ -989,12 +686,12 @@ function AUICodeEdit:UpdateLineFind(it_line)
 			end
 			if find then
 				local item = ALittle.Quad(g_Control)
-				item.red = FIND_RED
-				item.green = FIND_GREEN
-				item.blue = FIND_BLUE
+				item.red = CODE_FIND_RED
+				item.green = CODE_FIND_GREEN
+				item.blue = CODE_FIND_BLUE
 				item.x = line.char_list[char_index].pre_width
 				item.width = line.char_list[char_index + find_len].pre_width - line.char_list[char_index].pre_width
-				item.height = LINE_HEIGHT
+				item.height = CODE_LINE_HEIGHT
 				line.container._find:AddChild(item)
 				local info = {}
 				info._focus_quad = item
@@ -1050,7 +747,7 @@ function AUICodeEdit:StartErrorLoop(force)
 end
 
 function AUICodeEdit:CalcLineAndChar(x, y)
-	local it_line = ALittle.Math_Floor(y / LINE_HEIGHT) + 1
+	local it_line = ALittle.Math_Floor(y / CODE_LINE_HEIGHT) + 1
 	if it_line < 1 then
 		it_line = 1
 	elseif it_line > self._line_count then
@@ -1090,7 +787,7 @@ function AUICodeEdit:CalcRect(it_line, char_start, char_end)
 	if line == nil then
 		return 0, 0, 0
 	end
-	local y = (it_line - 1) * LINE_HEIGHT
+	local y = (it_line - 1) * CODE_LINE_HEIGHT
 	local x = 0.0
 	if line.char_list[char_start] ~= nil then
 		x = line.char_list[char_start].pre_width
@@ -1108,7 +805,7 @@ function AUICodeEdit:CalcPosition(it_line, it_char, pre)
 	if line == nil then
 		return 0, 0
 	end
-	local y = (it_line - 1) * LINE_HEIGHT
+	local y = (it_line - 1) * CODE_LINE_HEIGHT
 	local x = 0.0
 	if it_char > 0 then
 		x = line.char_list[it_char].pre_width
@@ -1607,9 +1304,9 @@ function AUICodeEdit:CreateLines(content)
 		else
 			char.width = self._word_width
 		end
-		char.red = FONT_RED
-		char.green = FONT_GREEN
-		char.blue = FONT_BLUE
+		char.red = CODE_FONT_RED
+		char.green = CODE_FONT_GREEN
+		char.blue = CODE_FONT_BLUE
 		char.char = char_text
 		char.pre_width = pre_width
 		pre_width = pre_width + (char.width)
@@ -1620,7 +1317,7 @@ function AUICodeEdit:CreateLines(content)
 			line.char_list = {}
 			line.container = AUICodeLineContainer(g_Control)
 			line.container._user_data = line
-			line.container.height = LINE_HEIGHT
+			line.container.height = CODE_LINE_HEIGHT
 		end
 		line.char_count = line.char_count + (1)
 		line.char_list[line.char_count] = char
@@ -1650,7 +1347,7 @@ function AUICodeEdit:CreateLines(content)
 		line.char_list = {}
 		line.container = AUICodeLineContainer(g_Control)
 		line.container._user_data = line
-		line.container.height = LINE_HEIGHT
+		line.container.height = CODE_LINE_HEIGHT
 		line_count = line_count + (1)
 		line_list[line_count] = line
 	end
@@ -1673,8 +1370,8 @@ function AUICodeEdit:SetText(content)
 	for index, line in ___ipairs(self._line_list) do
 		self._code_linear:AddChild(line.container)
 	end
-	self._code_screen.container.width = max_width + LINE_NUMBER_WIDTH
-	self._code_screen.container.height = self._line_count * LINE_HEIGHT + PAD_LINES * LINE_HEIGHT
+	self._code_screen.container.width = max_width + CODE_LINE_NUMBER_WIDTH
+	self._code_screen.container.height = self._line_count * CODE_LINE_HEIGHT + CODE_PAD_LINES * CODE_LINE_HEIGHT
 	self._code_screen:RejustScrollBar()
 	self._cursor:SetLineChar(1, 0)
 	if self._language ~= nil then
@@ -1737,7 +1434,7 @@ function AUICodeEdit:MultiTabInsert(need_revoke, revoke_bind)
 			max_width = line.container.width
 		end
 	end
-	self._code_screen.container.width = max_width + LINE_NUMBER_WIDTH
+	self._code_screen.container.width = max_width + CODE_LINE_NUMBER_WIDTH
 	self._code_screen:RejustScrollBar()
 	self._cursor:SetLineChar(old_line, old_char + 4)
 	self._select_cursor:StartLineChar(old_line_start, old_char_start + 4)
@@ -1909,7 +1606,7 @@ function AUICodeEdit:MultiTabDelete(need_revoke, revoke_bind)
 				max_width = line.container.width
 			end
 		end
-		self._code_screen.container.width = max_width + LINE_NUMBER_WIDTH
+		self._code_screen.container.width = max_width + CODE_LINE_NUMBER_WIDTH
 		self._code_screen:RejustScrollBar()
 		if need_revoke then
 			local revoke = AUICodeMultiTabDeleteRevoke(self, self._cursor, self._select_cursor, old_line_start, old_char_start, old_line_end, old_char_end, self._select_cursor.line_start, self._select_cursor.char_start, self._select_cursor.line_end, self._select_cursor.char_end, revoke_bind == nil)
@@ -1953,7 +1650,7 @@ function AUICodeEdit:InsertText(content, need_revoke, revoke_bind)
 		split_pre_line.char_list = {}
 		split_pre_line.container = AUICodeLineContainer(g_Control)
 		split_pre_line.container._user_data = split_pre_line
-		split_pre_line.container.height = LINE_HEIGHT
+		split_pre_line.container.height = CODE_LINE_HEIGHT
 		self._code_linear:AddChild(split_pre_line.container)
 		self._line_count = self._line_count + (1)
 		self._line_list[self._line_count] = split_pre_line
@@ -1983,7 +1680,7 @@ function AUICodeEdit:InsertText(content, need_revoke, revoke_bind)
 			split_next_line.char_list = {}
 			split_next_line.container = AUICodeLineContainer(g_Control)
 			split_next_line.container._user_data = split_next_line
-			split_next_line.container.height = LINE_HEIGHT
+			split_next_line.container.height = CODE_LINE_HEIGHT
 			local i = self._cursor.char + 1
 			while true do
 				if not(i <= split_pre_line.char_count) then break end
@@ -2131,8 +1828,8 @@ function AUICodeEdit:InsertText(content, need_revoke, revoke_bind)
 			max_width = line.container.width
 		end
 	end
-	self._code_screen.container.width = max_width + LINE_NUMBER_WIDTH
-	self._code_screen.container.height = self._line_count * LINE_HEIGHT + PAD_LINES * LINE_HEIGHT
+	self._code_screen.container.width = max_width + CODE_LINE_NUMBER_WIDTH
+	self._code_screen.container.height = self._line_count * CODE_LINE_HEIGHT + CODE_PAD_LINES * CODE_LINE_HEIGHT
 	self._code_screen:RejustScrollBar()
 	self._cursor:SetLineChar(it_cursor_line, it_cursor_char)
 	if need_revoke then

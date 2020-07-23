@@ -311,7 +311,7 @@ public class AUICodeSelectCursor
             }
             if (rejust)
             {
-                this._edit.code_screen.container.width = line.container.width + this._edit.line_number_width;
+                this._edit.code_screen.container.width = line.container.width + CODE_LINE_NUMBER_WIDTH;
                 this._edit.code_screen.RejustScrollBar();
             }
             
@@ -432,7 +432,7 @@ public class AUICodeSelectCursor
             if (max_width < line.container.width)
                 max_width = line.container.width;
         }
-        this._edit.code_screen.container.width = max_width + this._edit.line_number_width;
+        this._edit.code_screen.container.width = max_width + CODE_LINE_NUMBER_WIDTH;
         this._edit.code_screen.RejustScrollBar();
 
         if (need_revoke)

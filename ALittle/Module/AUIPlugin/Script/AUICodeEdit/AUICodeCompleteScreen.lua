@@ -174,7 +174,7 @@ function AUICodeCompleteScreen:ReInit(edit)
 		return false
 	end
 	local x, y = edit:CalcAbsPosition(self._complete.line_start, self._complete.char_start, true)
-	y = y + (edit.line_height)
+	y = y + (CODE_LINE_HEIGHT)
 	if self._screen == nil then
 		self._screen = g_Control:CreateControl("ide_code_scroll_screen")
 		self._screen.width = 200

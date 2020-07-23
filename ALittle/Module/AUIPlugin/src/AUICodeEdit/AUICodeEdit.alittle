@@ -1,313 +1,6 @@
 
 namespace AUIPlugin;
 
-private var LINE_HEIGHT = 18;
-private var LINE_NUMBER_WIDTH = 40;
-private var PAD_LINES = 5;
-private var FONT_SIZE = 14;
-private var FONT_PATH = "YaHei-Consolas.ttf";
-private var FONT_RED = 169/255;
-private var FONT_GREEN = 183/255;
-private var FONT_BLUE = 198/255;
-private var SELECT_RED = 33/255;
-private var SELECT_GREEN = 66/255;
-private var SELECT_BLUE = 131/255;
-private var FIND_RED = 50/255;
-private var FIND_GREEN = 89/255;
-private var FIND_BLUE = 61/255;
-private var LINE_NUMBER_RED = 100/255;
-private var LINE_NUMBER_GREEN = 100/255;
-private var LINE_NUMBER_BLUE = 100/255;
-
-protected var g_DefaultColor = new ABnfColor();
-g_DefaultColor.red = FONT_RED;
-g_DefaultColor.green = FONT_GREEN;
-g_DefaultColor.blue = FONT_BLUE;
-
-private var FOCUS_RED = 88/255;
-private var FOCUS_GREEN = 157/255;
-private var FOCUS_BLUE = 246/255;
-
-protected struct AUICodeCharInfo
-{
-    string char;
-    ALittle.Text text;
-    double red; double green; double blue;
-    double pre_width;
-    double width;
-}
-
-protected struct AUICodeLineInfo
-{
-    List<AUICodeCharInfo> char_list;
-    int char_count;
-    AUICodeLineContainer container;
-    AUICodeEdit edit;
-}
-
-protected struct AUICodeErrorInfo
-{
-    ALittle.DisplayObject _focus_quad;
-    lua.ABnfQueryError info;
-}
-
-protected struct AUICodeFindInfo
-{
-    ALittle.DisplayObject _focus_quad;
-    int it_line;
-    int it_char_start;
-    int it_char_end;
-}
-
-protected class AUICodeQuad : ALittle.Quad
-{
-    private bool _ediable = true;
-
-    public get is_input() : bool { return true; }
-    public get editable() : bool { return this._ediable; }
-    public set editable(bool value) { this._ediable = value; }
-    public get font_size() : int { return FONT_SIZE; }
-    public get cursor_x() : double
-    {
-        var tab_child = cast<AUICodeEdit>(this._user_data);
-        return tab_child.cursor.x;
-    }
-    public get cursor_y() : double
-    {
-        var tab_child = cast<AUICodeEdit>(this._user_data);
-        return tab_child.cursor.y;
-    }
-    public get cursor_b() : double
-    {
-        var tab_child = cast<AUICodeEdit>(this._user_data);
-        return tab_child.cursor.y + tab_child.cursor.height;
-    }
-}
-
-protected class AUICodeLinear : ALittle.Linear
-{
-}
-
-protected class AUICodeLineContainer : ALittle.DisplayLayout
-{
-    private bool _showd = false;
-    private int _version = 0;
-    private ALittle.LoopTimer _delay_loop = null;
-    private Functor<()> _set_color;
-
-    public ALittle.Quad _select;  // 选择底色
-    public ALittle.DisplayLayout _error;    // 错误容器
-    public ALittle.DisplayLayout _find;     // 查找容器
-    public ALittle.DisplayLayout _text;    // 文本容器
-    
-    public ctor(ALittle.ControlSystem ctrl_sys)
-    {
-        // 用于显示查找容器
-        var find = new ALittle.DisplayLayout(ctrl_sys);
-        find.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
-        find.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
-        this.AddChild(find);
-        this._find = find;
-
-        // 用于选择显示
-        var quad = new ALittle.Quad(ctrl_sys);
-        quad = new ALittle.Quad(g_Control);
-        quad.red = SELECT_RED;
-        quad.green = SELECT_GREEN;
-        quad.blue = SELECT_BLUE;
-        quad.height = LINE_HEIGHT;
-        quad.visible = false;
-        this.AddChild(quad);
-        this._select = quad;
-
-        // 用于显示错误容器
-        var error = new ALittle.DisplayLayout(ctrl_sys);
-        error.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
-        error.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
-        this.AddChild(error);
-        this._error = error;
-
-        // 用于显示文本
-        var text = new ALittle.DisplayLayout(ctrl_sys);
-        text.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
-        text.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
-        this.AddChild(text);
-        this._text = text;
-
-        this.AddEventListener(this, this.HandleHide);
-        this.AddEventListener(this, this.HandleShow);
-    }
-
-    public fun AddChar(AUICodeCharInfo char)
-    {
-        // 如果已经创建了text，那就直接复用
-        if (char.text != null)
-            this._text.AddChild(char.text);
-
-        if (!this._showd) return;
-
-        // 构建文本
-        if (char.text == null && char.width > 0
-            && char.char != " " && char.char != "\t")
-        {
-            char.text = new ALittle.Text(g_Control);
-            char.text.disabled = true;
-            char.text.red = char.red;
-            char.text.green = char.green;
-            char.text.blue = char.blue;
-            char.text.font_path = FONT_PATH;
-            char.text.font_size = FONT_SIZE;
-            char.text.text = char.char;
-            char.text.x = char.pre_width;
-            this._text.AddChild(char.text);
-        }
-
-        // 查询颜色
-        var line = cast<AUICodeLineInfo>(this._user_data);
-        if (this._delay_loop == null && line.edit.language != null && line.edit.language.version != this._version)
-        {
-            this._delay_loop = new ALittle.LoopTimer(bind(this.HandleColor, this), 1);
-            this._delay_loop.Start();
-        }
-    }
-
-    public fun RestoreColor()
-    {
-        this._set_color = null;
-        if (this._delay_loop != null) return;
-
-        this._version = 0;
-        this._delay_loop = new ALittle.LoopTimer(bind(this.HandleColor, this), 1);
-        this._delay_loop.Start();
-    }
-
-    public fun SetColor(int char_start, int char_end, double red, double green, double blue)
-    {
-        if (this._delay_loop != null)
-        {
-            this._set_color = bind(this.SetColor, this, char_start, char_end, red, green, blue);
-            return;
-        }
-
-        var line = cast<AUICodeLineInfo>(this._user_data);
-        for (var i = char_start; i <= char_end; 1)
-        {
-            var child = line.char_list[i];
-            if (child != null && child.text != null)
-            {
-                child.text.red = red;
-                child.text.green = green;
-                child.text.blue = blue;
-            }
-        }   
-    }
-
-    private async fun HandleColor()
-    {
-        this._delay_loop = null;
-
-        // 如果已经没有父节点，那么直接返回
-        if (this.parent == null) return;
-        
-        var line = cast<AUICodeLineInfo>(this._user_data);
-        if (this._version == line.edit.language.version) return;
-        this._version = line.edit.language.version;
-        var line_index = ALittle.Math_Floor(this.y / LINE_HEIGHT) + 1;
-        if (line_index < 1 || line_index > line.edit.line_count) return;
-
-        var list = line.edit.language.QueryColor(line_index);
-        for (var index, info in list)
-        {
-            var char_start = 1;
-            if (info.line_start == line_index)
-                char_start = info.char_start;
-            var char_end = line.char_count;
-            if (info.line_end == line_index)
-                char_end = info.char_end;
-
-            var color = line.edit.language.QueryColorValue(info.tag);
-            if (color == null) color = g_DefaultColor;
-
-            for (var i = char_start; i <= char_end; 1)
-            {
-                var child = line.char_list[i];
-                if (child != null && child.text != null)
-                {
-                    child.text.red = color.red;
-                    child.text.green = color.green;
-                    child.text.blue = color.blue;
-                    if (info.blur)
-                        child.text.alpha = 0.5;   
-                    else
-                        child.text.alpha = 1;   
-                }
-            }
-        }
-
-        if (this._set_color != null)
-        {
-            this._set_color();
-            this._set_color = null;
-        }
-    }
-
-    private fun HandleHide(ALittle.UIHideEvent event)
-    {
-    }
-
-    private fun HandleShow(ALittle.UIShowEvent event)
-    {
-        if (!this._showd)
-        {
-            this._showd = true;
-
-            var line = cast<AUICodeLineInfo>(this._user_data);
-            for (var index, char in line.char_list)
-            {
-                if (char.text == null && char.width > 0
-                    && char.char != " " && char.char != "\t")
-                {
-                    char.text = new ALittle.Text(g_Control);
-                    char.text.disabled = true;
-                    char.text.red = FONT_RED;
-                    char.text.green = FONT_GREEN;
-                    char.text.blue = FONT_BLUE;
-                    char.text.font_path = FONT_PATH;
-                    char.text.font_size = FONT_SIZE;
-                    char.text.text = char.char;
-                    char.text.x = char.pre_width;
-                    this._text.AddChild(char.text);
-                }
-            }
-        }
-        
-        // 查询颜色
-        var line = cast<AUICodeLineInfo>(this._user_data);
-        if (this._delay_loop == null && line.edit.language != null && line.edit.language.version != this._version)
-        {
-            this._delay_loop = new ALittle.LoopTimer(bind(this.HandleColor, this), 1);
-            this._delay_loop.Start();
-        }
-    }
-}
-
-protected class AUICodeEditContainer : ALittle.DisplayLayout
-{
-    protected fun ClipRect(double x, double y, double width, double height, double h_move, double v_move)
-    {
-        cast<AUICodeLinear>(this._user_data).ClipRect(x - this._x, y - this._y, width - this._x, height - this._y, h_move, v_move);
-    }
-}
-
-public struct AUICodeEditGotoEvent : ALittle.UIEvent
-{
-    string file_path;
-    int line_start;
-    int char_start;
-    int line_end;
-    int char_end;
-}
-
 public class AUICodeEdit : ALittle.DisplayLayout
 {
     private AUICodeLanguage _language;  // 代码解析器
@@ -393,12 +86,12 @@ public class AUICodeEdit : ALittle.DisplayLayout
         this._code_screen.container._user_data = this._code_linear;
         this._line_number = new ALittle.Linear(this._ctrl_sys);
         this._line_number.type = ALittle.UIEnumTypes.TYPE_V;
-        this._line_number.width = LINE_NUMBER_WIDTH;
+        this._line_number.width = CODE_LINE_NUMBER_WIDTH;
         this._code_screen.static_object_v = this._line_number;
 
         this._cursor = new AUICodeCursor(this._ctrl_sys, this);
         this._cursor.width = 1;
-        this._cursor.height = LINE_HEIGHT;
+        this._cursor.height = CODE_LINE_HEIGHT;
         this._cursor_container.AddChild(this._cursor);
         this._cursor.disabled = true;
 
@@ -415,7 +108,6 @@ public class AUICodeEdit : ALittle.DisplayLayout
     public get is_input() : bool { return true; }
     public get editable() : bool { return this._editable; }
     public set editable(bool value) { this._editable = value; }
-    public get font_size() : int { return FONT_SIZE; }
     public get cursor_x() : double { return this._edit_quad.cursor_x; }
     public get cursor_y() : double { return this._edit_quad.cursor_y; }
     public get cursor_b() : double { return this._edit_quad.cursor_b; }
@@ -429,8 +121,6 @@ public class AUICodeEdit : ALittle.DisplayLayout
     public set line_count(int count) { this._line_count = count; }
     public get line_count() : int { return this._line_count; }
     public get line_list() : List<AUICodeLineInfo> { return this._line_list; }
-    public get line_height() : int { return LINE_HEIGHT; }
-    public get line_number_width() : double { return LINE_NUMBER_WIDTH; }
     public get revoke_list() : ALittle.RevokeList { return this._revoke_list; }
 
     public fun FocusLineCharToCenter(int it_line, int it_char)
@@ -440,7 +130,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
         var char = line.char_list[it_char];
         if (char == null) char = line.char_list[1];
 
-        var y = (it_line - 1) * LINE_HEIGHT;
+        var y = (it_line - 1) * CODE_LINE_HEIGHT;
         var x = char.pre_width;
    
         var real_width = this._code_screen.container.width - this._code_screen.view_width;
@@ -469,7 +159,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
         var real_height = this._code_screen.container.height - this._code_screen.view_height;
         if (real_height > 0)
         {
-            this._code_screen.right_scrollbar.offset_rate = (it_line - 1) * LINE_HEIGHT / real_height;
+            this._code_screen.right_scrollbar.offset_rate = (it_line - 1) * CODE_LINE_HEIGHT / real_height;
             this._code_screen.RejustScrollBar();   
         }
     }
@@ -482,7 +172,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
         var real_height = this._code_screen.container.height - this._code_screen.view_height;
         if (real_height > 0)
         {
-            this._code_screen.right_scrollbar.offset_rate = (it_line * LINE_HEIGHT - this._code_screen.view_height) / real_height;
+            this._code_screen.right_scrollbar.offset_rate = (it_line * CODE_LINE_HEIGHT - this._code_screen.view_height) / real_height;
             this._code_screen.RejustScrollBar();   
         }
     }
@@ -604,11 +294,11 @@ public class AUICodeEdit : ALittle.DisplayLayout
         if (!this._in_drag)
         {
             // 获取是那一行
-            var it_line = ALittle.Math_Floor(event.rel_y / LINE_HEIGHT) + 1;
+            var it_line = ALittle.Math_Floor(event.rel_y / CODE_LINE_HEIGHT) + 1;
             var line = this._line_list[it_line];
             if (line != null)
             {
-                var rel_y = event.rel_y - (it_line - 1) * LINE_HEIGHT;
+                var rel_y = event.rel_y - (it_line - 1) * CODE_LINE_HEIGHT;
                 var item = line.container._error.PickUp(rel_x, rel_y);
                 if (item != this._error_quad_move_in)
                 {
@@ -642,7 +332,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
 
     public fun UpdateLineNumber()
     {
-        var child_count = this._line_count + PAD_LINES;
+        var child_count = this._line_count + CODE_PAD_LINES;
         var delta = this._line_number.child_count - child_count;
         if (delta >= 0 && delta <= 10) return;
 
@@ -654,11 +344,11 @@ public class AUICodeEdit : ALittle.DisplayLayout
 
         for (var index = this._line_number.child_count + 1; index <= child_count; 1)
         {
-            var text = new AUICodeLineNumber(this._ctrl_sys, FONT_PATH, FONT_SIZE, this._ascii_width, this._word_width);
-            text.height = LINE_HEIGHT;
-            text.red = LINE_NUMBER_RED;
-            text.green = LINE_NUMBER_GREEN;
-            text.blue = LINE_NUMBER_BLUE;
+            var text = new AUICodeLineNumber(this._ctrl_sys, CODE_FONT_PATH, CODE_FONT_SIZE, this._ascii_width, this._word_width);
+            text.height = CODE_LINE_HEIGHT;
+            text.red = CODE_LINE_NUMBER_RED;
+            text.green = CODE_LINE_NUMBER_GREEN;
+            text.blue = CODE_LINE_NUMBER_BLUE;
             text.text = ALittle.String_ToString(index);
             this._line_number.AddChild(text);
         }
@@ -728,7 +418,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
 
         // 如果这个时候鼠标已经移走，那么就清空
         if (A_UISystem.mouse_x < quad_x + rect_x || A_UISystem.mouse_x >= quad_x + rect_x + rect_width
-            || A_UISystem.mouse_y < quad_y + rect_y || A_UISystem.mouse_y >= quad_y + rect_y + LINE_HEIGHT)
+            || A_UISystem.mouse_y < quad_y + rect_y || A_UISystem.mouse_y >= quad_y + rect_y + CODE_LINE_HEIGHT)
         {
             ALittle.System_SetEditCursor();
             return;
@@ -741,9 +431,9 @@ public class AUICodeEdit : ALittle.DisplayLayout
         if (line != null && line_container != null)
         {
             if (info.line_start == info.line_end)
-                line_container.SetColor(info.char_start, info.char_end, FOCUS_RED, FOCUS_GREEN, FOCUS_BLUE);
+                line_container.SetColor(info.char_start, info.char_end, CODE_FOCUS_RED, CODE_FOCUS_GREEN, CODE_FOCUS_BLUE);
             else
-                line_container.SetColor(info.char_start, line.char_count, FOCUS_RED, FOCUS_GREEN, FOCUS_BLUE);
+                line_container.SetColor(info.char_start, line.char_count, CODE_FOCUS_RED, CODE_FOCUS_GREEN, CODE_FOCUS_BLUE);
         }
 
         g_AUITool.ShowTip(info.info);
@@ -758,7 +448,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
         this._goto_quad.x = rect_x;
         this._goto_quad.y = rect_y;
         this._goto_quad.width = rect_width;
-        this._goto_quad.height = LINE_HEIGHT;
+        this._goto_quad.height = CODE_LINE_HEIGHT;
         this._goto_quad.visible = true;
 
         ALittle.System_SetHandCursor();
@@ -815,7 +505,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
             var x, y, width = this.CalcRect(info.line_start, info.char_start, char_end);
             item.x = x;
             item.width = width;
-            item.height = LINE_HEIGHT;
+            item.height = CODE_LINE_HEIGHT;
             item_info._focus_quad._user_data = item_info;
             item._user_data = item_info;
             line.container._error.AddChild(item);
@@ -868,12 +558,12 @@ public class AUICodeEdit : ALittle.DisplayLayout
                     if (find)
                     {
                         var item = new ALittle.Quad(g_Control);
-                        item.red = FIND_RED;
-                        item.green = FIND_GREEN;
-                        item.blue = FIND_BLUE;
+                        item.red = CODE_FIND_RED;
+                        item.green = CODE_FIND_GREEN;
+                        item.blue = CODE_FIND_BLUE;
                         item.x = line.char_list[char_index].pre_width;
                         item.width = line.char_list[char_index + find_len].pre_width - line.char_list[char_index].pre_width;
-                        item.height = LINE_HEIGHT;
+                        item.height = CODE_LINE_HEIGHT;
                         line.container._find.AddChild(item);
                         var info = new AUICodeFindInfo();
                         info._focus_quad = item;
@@ -959,12 +649,12 @@ public class AUICodeEdit : ALittle.DisplayLayout
                 if (find)
                 {
                     var item = new ALittle.Quad(g_Control);
-                    item.red = FIND_RED;
-                    item.green = FIND_GREEN;
-                    item.blue = FIND_BLUE;
+                    item.red = CODE_FIND_RED;
+                    item.green = CODE_FIND_GREEN;
+                    item.blue = CODE_FIND_BLUE;
                     item.x = line.char_list[char_index].pre_width;
                     item.width = line.char_list[char_index + find_len].pre_width - line.char_list[char_index].pre_width;
-                    item.height = LINE_HEIGHT;
+                    item.height = CODE_LINE_HEIGHT;
                     line.container._find.AddChild(item);
                     var info = new AUICodeFindInfo();
                     info._focus_quad = item;
@@ -1027,7 +717,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
     // 计算行列
     public fun CalcLineAndChar(double x, double y) : int, int
     {
-        var it_line = ALittle.Math_Floor(y / LINE_HEIGHT) + 1;
+        var it_line = ALittle.Math_Floor(y / CODE_LINE_HEIGHT) + 1;
         if (it_line < 1) it_line = 1;
         elseif (it_line > this._line_count) it_line = this._line_count;
 
@@ -1058,7 +748,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
         var line = this._line_list[it_line];
         if (line == null) return 0,0,0;
 
-        var y = (it_line - 1) * LINE_HEIGHT;
+        var y = (it_line - 1) * CODE_LINE_HEIGHT;
         
         var x = 0.0;
         if (line.char_list[char_start] != null) x = line.char_list[char_start].pre_width;
@@ -1076,7 +766,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
         var line = this._line_list[it_line];
         if (line == null) return 0, 0;
 
-        var y = (it_line - 1) * LINE_HEIGHT;
+        var y = (it_line - 1) * CODE_LINE_HEIGHT;
         var x = 0.0;
         if (it_char > 0)
         {
@@ -1637,9 +1327,9 @@ public class AUICodeEdit : ALittle.DisplayLayout
             }   
             else
                 char.width = this._word_width;
-            char.red = FONT_RED;
-            char.green = FONT_GREEN;
-            char.blue = FONT_BLUE;
+            char.red = CODE_FONT_RED;
+            char.green = CODE_FONT_GREEN;
+            char.blue = CODE_FONT_BLUE;
             char.char = char_text;
             char.pre_width = pre_width;
             pre_width += char.width;
@@ -1652,7 +1342,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
                 line.char_list = new List<AUICodeCharInfo>();
                 line.container = new AUICodeLineContainer(g_Control);
                 line.container._user_data = line;
-                line.container.height = LINE_HEIGHT;
+                line.container.height = CODE_LINE_HEIGHT;
             }
             line.char_count += 1;
             line.char_list[line.char_count] = char;
@@ -1686,7 +1376,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
             line.char_list = new List<AUICodeCharInfo>();
             line.container = new AUICodeLineContainer(g_Control);
             line.container._user_data = line;
-            line.container.height = LINE_HEIGHT;
+            line.container.height = CODE_LINE_HEIGHT;
             line_count += 1;
             line_list[line_count] = line;
         }
@@ -1710,8 +1400,8 @@ public class AUICodeEdit : ALittle.DisplayLayout
 
         for (var index, line in this._line_list)
             this._code_linear.AddChild(line.container);
-        this._code_screen.container.width = max_width + LINE_NUMBER_WIDTH;
-        this._code_screen.container.height = this._line_count * LINE_HEIGHT + PAD_LINES * LINE_HEIGHT;
+        this._code_screen.container.width = max_width + CODE_LINE_NUMBER_WIDTH;
+        this._code_screen.container.height = this._line_count * CODE_LINE_HEIGHT + CODE_PAD_LINES * CODE_LINE_HEIGHT;
         this._code_screen.RejustScrollBar();
 
         this._cursor.SetLineChar(1, 0);
@@ -1771,7 +1461,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
         var max_width = 0.0;
         for (var index, line in this._line_list)
             if (line.container.width > max_width) max_width = line.container.width;
-        this._code_screen.container.width = max_width + LINE_NUMBER_WIDTH;
+        this._code_screen.container.width = max_width + CODE_LINE_NUMBER_WIDTH;
         this._code_screen.RejustScrollBar();
 
         this._cursor.SetLineChar(old_line, old_char + 4);
@@ -1959,7 +1649,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
        	 var max_width = 0.0;
 	        for (var index, line in this._line_list)
  	           if (line.container.width > max_width) max_width = line.container.width;
-        	this._code_screen.container.width = max_width + LINE_NUMBER_WIDTH;
+        	this._code_screen.container.width = max_width + CODE_LINE_NUMBER_WIDTH;
         	this._code_screen.RejustScrollBar();
 
         	if (need_revoke)
@@ -2012,7 +1702,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
             split_pre_line.char_list = new List<AUICodeCharInfo>();
             split_pre_line.container = new AUICodeLineContainer(g_Control);
             split_pre_line.container._user_data = split_pre_line;
-            split_pre_line.container.height = LINE_HEIGHT;
+            split_pre_line.container.height = CODE_LINE_HEIGHT;
             this._code_linear.AddChild(split_pre_line.container);
             this._line_count += 1;
             this._line_list[this._line_count] = split_pre_line;
@@ -2050,7 +1740,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
                 split_next_line.char_list = new List<AUICodeCharInfo>();
                 split_next_line.container = new AUICodeLineContainer(g_Control);
                 split_next_line.container._user_data = split_next_line;
-                split_next_line.container.height = LINE_HEIGHT;
+                split_next_line.container.height = CODE_LINE_HEIGHT;
                 for (var i = this._cursor.char + 1; i <= split_pre_line.char_count; 1)
                 {
                     split_next_line.char_count += 1;
@@ -2188,8 +1878,8 @@ public class AUICodeEdit : ALittle.DisplayLayout
         max_width = 0.0;
         for (var index, line in this._line_list)
             if (line.container.width > max_width) max_width = line.container.width;
-        this._code_screen.container.width = max_width + LINE_NUMBER_WIDTH;
-        this._code_screen.container.height = this._line_count * LINE_HEIGHT + PAD_LINES * LINE_HEIGHT;
+        this._code_screen.container.width = max_width + CODE_LINE_NUMBER_WIDTH;
+        this._code_screen.container.height = this._line_count * CODE_LINE_HEIGHT + CODE_PAD_LINES * CODE_LINE_HEIGHT;
         this._code_screen.RejustScrollBar();
 
         this._cursor.SetLineChar(it_cursor_line, it_cursor_char);

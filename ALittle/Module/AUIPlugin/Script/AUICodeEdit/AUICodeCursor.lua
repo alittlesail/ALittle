@@ -120,7 +120,7 @@ function AUICodeCursor:SetOffsetXY(x, y, show)
 	else
 		self._it_line, self._it_char = self._edit:CalcLineAndChar(x, y)
 	end
-	self.y = (self._it_line - 1) * self._edit.line_height
+	self.y = (self._it_line - 1) * CODE_LINE_HEIGHT
 	local line = self._edit.line_list[self._it_line]
 	if line == nil or self._it_char == 0 then
 		self.x = 0
@@ -143,7 +143,7 @@ end
 function AUICodeCursor:SetLineCharInner(it_line, it_char, show)
 	self._it_line = it_line
 	self._it_char = it_char
-	self.y = (self._it_line - 1) * self._edit.line_height
+	self.y = (self._it_line - 1) * CODE_LINE_HEIGHT
 	local line = self._edit.line_list[self._it_line]
 	if line == nil or self._it_char <= 0 then
 		self.x = 0
@@ -375,7 +375,7 @@ function AUICodeCursor:DeleteLeft(need_revoke, revoke_bind)
 			end
 		end
 		if rejust then
-			self._edit.code_screen.container.width = line.container.width + self._edit.line_number_width
+			self._edit.code_screen.container.width = line.container.width + CODE_LINE_NUMBER_WIDTH
 			self._edit.code_screen:RejustScrollBar()
 		end
 		if need_revoke then
@@ -440,8 +440,8 @@ function AUICodeCursor:DeleteLeft(need_revoke, revoke_bind)
 	self._edit.line_count = self._edit.line_count - (1)
 	ALittle.List_Remove(self._edit.line_list, self._it_line)
 	self:SetLineChar(new_it_line, new_it_char)
-	if self._edit.code_screen.container.width < pre_line.container.width + self._edit.line_number_width then
-		self._edit.code_screen.container.width = pre_line.container.width + self._edit.line_number_width
+	if self._edit.code_screen.container.width < pre_line.container.width + CODE_LINE_NUMBER_WIDTH then
+		self._edit.code_screen.container.width = pre_line.container.width + CODE_LINE_NUMBER_WIDTH
 	end
 	self._edit.code_screen:RejustScrollBar()
 	if need_revoke then
@@ -503,7 +503,7 @@ function AUICodeCursor:DeleteRight(need_revoke, revoke_bind)
 			end
 		end
 		if rejust then
-			self._edit.code_screen.container.width = line.container.width + self._edit.line_number_width
+			self._edit.code_screen.container.width = line.container.width + CODE_LINE_NUMBER_WIDTH
 			self._edit.code_screen:RejustScrollBar()
 		end
 		local new_it_line = self._it_line
@@ -565,8 +565,8 @@ function AUICodeCursor:DeleteRight(need_revoke, revoke_bind)
 	self._edit.line_count = self._edit.line_count - (1)
 	ALittle.List_Remove(self._edit.line_list, self._it_line + 1)
 	self:SetLineChar(new_it_line, new_it_char)
-	if self._edit.code_screen.container.width < cur_line.container.width + self._edit.line_number_width then
-		self._edit.code_screen.container.width = cur_line.container.width + self._edit.line_number_width
+	if self._edit.code_screen.container.width < cur_line.container.width + CODE_LINE_NUMBER_WIDTH then
+		self._edit.code_screen.container.width = cur_line.container.width + CODE_LINE_NUMBER_WIDTH
 	end
 	self._edit.code_screen:RejustScrollBar()
 	if need_revoke then

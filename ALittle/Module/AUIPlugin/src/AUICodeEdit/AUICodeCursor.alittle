@@ -107,7 +107,7 @@ public class AUICodeCursor : ALittle.Quad
             this._it_line, this._it_char = this._edit.CalcLineAndChar(x, y);
         }
 
-        this.y = (this._it_line - 1) * this._edit.line_height;
+        this.y = (this._it_line - 1) * CODE_LINE_HEIGHT;
         var line = this._edit.line_list[this._it_line];
         if (line == null || this._it_char == 0)
             this.x = 0;
@@ -133,7 +133,7 @@ public class AUICodeCursor : ALittle.Quad
         this._it_line = it_line;
         this._it_char = it_char;
 
-        this.y = (this._it_line - 1) * this._edit.line_height;
+        this.y = (this._it_line - 1) * CODE_LINE_HEIGHT;
         var line = this._edit.line_list[this._it_line];
         if (line == null || this._it_char <= 0)
             this.x = 0;
@@ -381,7 +381,7 @@ public class AUICodeCursor : ALittle.Quad
             }
             if (rejust)
             {
-                this._edit.code_screen.container.width = line.container.width + this._edit.line_number_width;
+                this._edit.code_screen.container.width = line.container.width + CODE_LINE_NUMBER_WIDTH;
                 this._edit.code_screen.RejustScrollBar();
             }
 
@@ -450,8 +450,8 @@ public class AUICodeCursor : ALittle.Quad
         //     this._edit.line_list[i].container.y -= this._edit.line_height;
         // 设置新的光标位置
         this.SetLineChar(new_it_line, new_it_char);
-        if (this._edit.code_screen.container.width < pre_line.container.width + this._edit.line_number_width)
-            this._edit.code_screen.container.width = pre_line.container.width + this._edit.line_number_width;
+        if (this._edit.code_screen.container.width < pre_line.container.width + CODE_LINE_NUMBER_WIDTH)
+            this._edit.code_screen.container.width = pre_line.container.width + CODE_LINE_NUMBER_WIDTH;
         this._edit.code_screen.RejustScrollBar();
 
         if (need_revoke)
@@ -516,7 +516,7 @@ public class AUICodeCursor : ALittle.Quad
             }
             if (rejust)
             {
-                this._edit.code_screen.container.width = line.container.width + this._edit.line_number_width;
+                this._edit.code_screen.container.width = line.container.width + CODE_LINE_NUMBER_WIDTH;
                 this._edit.code_screen.RejustScrollBar();
             }
 
@@ -585,8 +585,8 @@ public class AUICodeCursor : ALittle.Quad
         //    this._edit.line_list[i].container.y -= this._edit.line_height;
         // 设置新的光标位置
         this.SetLineChar(new_it_line, new_it_char);
-        if (this._edit.code_screen.container.width < cur_line.container.width + this._edit.line_number_width)
-            this._edit.code_screen.container.width = cur_line.container.width + this._edit.line_number_width;
+        if (this._edit.code_screen.container.width < cur_line.container.width + CODE_LINE_NUMBER_WIDTH)
+            this._edit.code_screen.container.width = cur_line.container.width + CODE_LINE_NUMBER_WIDTH;
         this._edit.code_screen.RejustScrollBar();
 
         if (need_revoke)

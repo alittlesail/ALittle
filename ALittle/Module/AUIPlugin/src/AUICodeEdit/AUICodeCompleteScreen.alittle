@@ -172,7 +172,7 @@ protected class AUICodeCompleteScreen
         if (this._complete == null) return false;
         // 计算坐标
         var x, y = edit.CalcAbsPosition(this._complete.line_start, this._complete.char_start, true);
-        y += edit.line_height;
+        y += CODE_LINE_HEIGHT;
 
         if (this._screen == null)
         {

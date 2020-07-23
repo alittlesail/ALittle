@@ -329,8 +329,8 @@ public class AUICodeEdit : ALittle.DisplayLayout
     // 全文查找
     private ALittle.Dialog _find_dialog;        // 查找对话框
     private ALittle.ImageInput _find_input;  // 输入框
-    private Map<int, List<AUICodeFindInfo>> _find_map; // 查找列表
-    private AUICodeFindInfo _first_info;	// 第一个查找结果
+    private List<string> _find_text;		// 查找文本
+    private Map<AUICodeFindInfo, bool> _find_map; // 查找列表
 
     private ALittle.ScrollScreen _code_screen;  // 滚动屏幕
 	private AUICodeLinear _code_linear;      // 代码容器
@@ -794,9 +794,12 @@ public class AUICodeEdit : ALittle.DisplayLayout
         this._error_list = null;
         this._error_count = 0;
         this._error_index = 0;
-        this._error_btn.visible = false;
         var list = this._language.QueryError(this._force_query_error);
-        if (list == null) return;
+        if (list == null)
+        {
+            this._error_btn.visible = false;
+            return;
+        }
 
         this._error_list = new List<ALittle.DisplayObject>();
         this._error_count = 0;
@@ -839,12 +842,12 @@ public class AUICodeEdit : ALittle.DisplayLayout
         this.ClearFindInfo();
 
         var content = this._find_input.text;
-        var list = ALittle.String_SplitUTF8(content);
-        var find_len = ALittle.List_MaxN(list);
+        this._find_text = ALittle.String_SplitUTF8(content);
+        var find_len = ALittle.List_MaxN(this._find_text);
         if (find_len == 0) return;
 
-        this._find_map = new Map<int, List<AUICodeFindInfo>>();
-        this._first_info = null;
+        this._find_map = new Map<AUICodeFindInfo, bool>();
+        var first_info:AUICodeFindInfo = null;
         for (var index, line in this._line_list)
         {
             if (line.char_count >= find_len)
@@ -853,7 +856,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
                 while (char_index <= line.char_count)
                 {
                     var find = true;
-                    for (var i, char in list)
+                    for (var i, char in this._find_text)
                     {
                         if (char != line.char_list[char_index + i - 1].char)
                         {
@@ -872,21 +875,15 @@ public class AUICodeEdit : ALittle.DisplayLayout
                         item.width = line.char_list[char_index + find_len].pre_width - line.char_list[char_index].pre_width;
                         item.height = LINE_HEIGHT;
                         line.container._find.AddChild(item);
-                        var find_line = this._find_map[index];
-                        if (find_line == null)
-                        {
-                            find_line = new List<AUICodeFindInfo>();
-                            this._find_map[index] = find_line;
-                        }
                         var info = new AUICodeFindInfo();
                         info._focus_quad = item;
                         info.it_line = index;
                         info.it_char_start = char_index;
                         info.it_char_end = char_index + find_len - 1;
-                        ALittle.List_Push(find_line, info);
+                        item._user_data = info;
+                        this._find_map[info] = true;
+                        if (first_info == null) first_info = info;
                         char_index += find_len;
-
-                        if (this._first_info == null) this._first_info = info;
                     }
                     else
                     {
@@ -896,44 +893,99 @@ public class AUICodeEdit : ALittle.DisplayLayout
             }
         }
 
-        if (this._first_info != null)
-            this.EditFocus(this._first_info.it_line, this._first_info.it_char_start, this._first_info.it_line, this._first_info.it_char_end, false);
+        if (first_info != null)
+            this.EditFocus(first_info.it_line, first_info.it_char_start, first_info.it_line, first_info.it_char_end, false);
     }
 
     private fun HandleFindNextClick(ALittle.UIClickEvent event)
     {
-        if (this._find_map == null)
-            this.HandleFindInputChanged(null);
-        if (this._find_map == null) return;
+        if (this.FindNextImpl(this._cursor.line, true)) return;
+        this.FindNextImpl(1, false);
+    }
 
-        // 获取当前光标位置，然后向下查找最近
-        var line_index = this._cursor.line;
+    private fun FindNextImpl(int start_line, bool check_cursor) : bool
+    {
+        var line_index = start_line;
         while (line_index <= this._line_count)
         {
-            var find_line = this._find_map[line_index];
-            if (find_line != null)
+            var line = this._line_list[line_index];
+            for (var index, child in line.container._find.childs)
             {
-                for (var index, info in find_line)
+                var info = cast<AUICodeFindInfo>(child._user_data);
+                if (!check_cursor || line_index != this._cursor.line || info.it_char_start > this._cursor.char + 1)
                 {
-                    if (line_index != this._cursor.line || info.it_char_start > this._cursor.char + 1)
-                    {
-                        this.EditFocus(info.it_line, info.it_char_start, info.it_line, info.it_char_end, false);
-                        return;
-                    }
+                    this.EditFocus(info.it_line, info.it_char_start, info.it_line, info.it_char_end, false);
+                    return true;
                 }
             }
 
             line_index += 1;
         }
 
-        if (this._first_info != null)
-        	this.EditFocus(this._first_info.it_line, this._first_info.it_char_start, this._first_info.it_line, this._first_info.it_char_end, false);
+        return false;
+    }
+
+    public fun UpdateLineFind(int it_line)
+    {
+        if (this._find_map == null) return;
+
+        // 删除当前行
+        var line = this._line_list[it_line];
+        if (line == null) return;
+
+        for (var index, child in line.container._find.childs)
+            this._find_map[child._user_data] = null;
+        line.container._find.RemoveAllChild();
+
+        // 重新计算
+        var find_len = ALittle.List_MaxN(this._find_text);
+        if (find_len == 0) return;
+
+        if (line.char_count >= find_len)
+        {
+            var char_index = 1;
+            while (char_index <= line.char_count)
+            {
+                var find = true;
+                for (var i, char in this._find_text)
+                {
+                    if (char != line.char_list[char_index + i - 1].char)
+                    {
+                        find = false;
+                        break;
+                    }
+                }
+
+                if (find)
+                {
+                    var item = new ALittle.Quad(g_Control);
+                    item.red = FIND_RED;
+                    item.green = FIND_GREEN;
+                    item.blue = FIND_BLUE;
+                    item.x = line.char_list[char_index].pre_width;
+                    item.width = line.char_list[char_index + find_len].pre_width - line.char_list[char_index].pre_width;
+                    item.height = LINE_HEIGHT;
+                    line.container._find.AddChild(item);
+                    var info = new AUICodeFindInfo();
+                    info._focus_quad = item;
+                    info.it_line = it_line;
+                    info.it_char_start = char_index;
+                    info.it_char_end = char_index + find_len - 1;
+                    item._user_data = info;
+                    this._find_map[info] = true;
+                    char_index += find_len;
+                }
+                else
+                {
+                    char_index += 1;
+                }
+            }   
+        }
     }
 
     private fun HandleFindEscClick(ALittle.UIEvent event)
     {
         this._find_dialog.visible = false;
-
         this.ClearFindInfo();
     }
 
@@ -941,14 +993,10 @@ public class AUICodeEdit : ALittle.DisplayLayout
     {
         if (this._find_map != null)
         {
-            for (var it_line, list in this._find_map)
-            {
-                for (var index, info in list)
-                    info._focus_quad.RemoveFromParent();   
-            }
+            for (var info, _ in this._find_map)
+                info._focus_quad.RemoveFromParent();
         }
         this._find_map = null;
-        this._first_info = null;
     }
 
     private fun HandleChangedEvent(ALittle.UIChangedEvent event)
@@ -960,7 +1008,6 @@ public class AUICodeEdit : ALittle.DisplayLayout
         for (var object:AUICodeLineContainer, _ in map)
             object.RestoreColor();
 
-        this.ClearFindInfo();
         this.StartErrorLoop(false);
     }
 
@@ -1953,6 +2000,9 @@ public class AUICodeEdit : ALittle.DisplayLayout
         var split_pre_line:AUICodeLineInfo = this._line_list[this._cursor.line];
         var split_it_char = this._cursor.char;
 
+        // 记录行编号
+        var line_map = new Map<int, bool>();
+
         // 如果当前没有数据，那么就构建一个
         if (split_pre_line == null)
         {
@@ -1966,12 +2016,16 @@ public class AUICodeEdit : ALittle.DisplayLayout
             this._code_linear.AddChild(split_pre_line.container);
             this._line_count += 1;
             this._line_list[this._line_count] = split_pre_line;
+
+            line_map[this._line_count] = true;
         }
 
         // 把当前行拆成两行
         var split_next_line:AUICodeLineInfo = split_pre_line;
         var it_cursor_line = this._cursor.line;
         var it_cursor_char = this._cursor.char;
+
+        line_map[this._cursor.line] = true;
 
         // 将插入的行位置空出来
         if (line_count > 1)
@@ -2021,6 +2075,8 @@ public class AUICodeEdit : ALittle.DisplayLayout
                 this._code_linear.AddChild(line.container);
                 new_line_count += 1;
                 new_line_list[new_line_count] = line;
+
+                line_map[new_line_count] = true;
             }
             // 插入拆分行
             {
@@ -2029,6 +2085,8 @@ public class AUICodeEdit : ALittle.DisplayLayout
                 new_line_list[new_line_count] = split_next_line;
                 it_cursor_line = new_line_count;
                 it_cursor_char = 0;
+
+                line_map[new_line_count] = true;
             }
             // 插入剩余行
             for (var i = this._cursor.line + 1; i <= this._line_count; 1)
@@ -2146,6 +2204,11 @@ public class AUICodeEdit : ALittle.DisplayLayout
                 this._revoke_list.PushRevoke(insert_revoke);
         }
 
+        if (this._find_map != null)
+        {
+            for (var line_index, _ in line_map)
+                this.UpdateLineFind(line_index);
+        }
         this.UpdateLineNumber();
         return is_changed;
     }

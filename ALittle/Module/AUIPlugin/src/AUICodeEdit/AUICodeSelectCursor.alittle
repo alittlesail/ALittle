@@ -314,7 +314,7 @@ public class AUICodeSelectCursor
                 this._edit.code_screen.container.width = line.container.width + this._edit.line_number_width;
                 this._edit.code_screen.RejustScrollBar();
             }
-
+            
             if (need_revoke)
             {
                 var revoke = new AUICodeDeleteSelectRevoke(this._edit, this._edit.cursor, this
@@ -326,6 +326,7 @@ public class AUICodeSelectCursor
                     this._edit.revoke_list.PushRevoke(revoke);
             }
 
+            this._edit.UpdateLineFind(this._it_line_start);
             return true, it_line_start, it_char_start;
         }
 
@@ -445,6 +446,7 @@ public class AUICodeSelectCursor
                 this._edit.revoke_list.PushRevoke(revoke);
         }
 
+        this._edit.UpdateLineFind(it_line_start);
         this._edit.UpdateLineNumber();
         return true, it_line_start, it_char_start;
     }

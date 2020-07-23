@@ -321,6 +321,7 @@ function AUICodeSelectCursor:DeleteSelect(need_revoke, revoke_bind)
 				self._edit.revoke_list:PushRevoke(revoke)
 			end
 		end
+		self._edit:UpdateLineFind(self._it_line_start)
 		return true, it_line_start, it_char_start
 	end
 	local old_it_line_start = self._it_line_start
@@ -433,6 +434,7 @@ function AUICodeSelectCursor:DeleteSelect(need_revoke, revoke_bind)
 			self._edit.revoke_list:PushRevoke(revoke)
 		end
 	end
+	self._edit:UpdateLineFind(it_line_start)
 	self._edit:UpdateLineNumber()
 	return true, it_line_start, it_char_start
 end

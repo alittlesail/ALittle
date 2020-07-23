@@ -842,9 +842,9 @@ function AUICodeEdit:UpdateErrorInfo()
 	self._error_list = nil
 	self._error_count = 0
 	self._error_index = 0
-	self._error_btn.visible = false
 	local list = self._language:QueryError(self._force_query_error)
 	if list == nil then
+		self._error_btn.visible = false
 		return
 	end
 	self._error_list = {}
@@ -889,19 +889,19 @@ end
 function AUICodeEdit:HandleFindInputChanged(event)
 	self:ClearFindInfo()
 	local content = self._find_input.text
-	local list = ALittle.String_SplitUTF8(content)
-	local find_len = ALittle.List_MaxN(list)
+	self._find_text = ALittle.String_SplitUTF8(content)
+	local find_len = ALittle.List_MaxN(self._find_text)
 	if find_len == 0 then
 		return
 	end
 	self._find_map = {}
-	self._first_info = nil
+	local first_info = nil
 	for index, line in ___ipairs(self._line_list) do
 		if line.char_count >= find_len then
 			local char_index = 1
 			while char_index <= line.char_count do
 				local find = true
-				for i, char in ___ipairs(list) do
+				for i, char in ___ipairs(self._find_text) do
 					if char ~= line.char_list[char_index + i - 1].char then
 						find = false
 						break
@@ -916,54 +916,98 @@ function AUICodeEdit:HandleFindInputChanged(event)
 					item.width = line.char_list[char_index + find_len].pre_width - line.char_list[char_index].pre_width
 					item.height = LINE_HEIGHT
 					line.container._find:AddChild(item)
-					local find_line = self._find_map[index]
-					if find_line == nil then
-						find_line = {}
-						self._find_map[index] = find_line
-					end
 					local info = {}
 					info._focus_quad = item
 					info.it_line = index
 					info.it_char_start = char_index
 					info.it_char_end = char_index + find_len - 1
-					ALittle.List_Push(find_line, info)
-					char_index = char_index + (find_len)
-					if self._first_info == nil then
-						self._first_info = info
+					item._user_data = info
+					self._find_map[info] = true
+					if first_info == nil then
+						first_info = info
 					end
+					char_index = char_index + (find_len)
 				else
 					char_index = char_index + (1)
 				end
 			end
 		end
 	end
-	if self._first_info ~= nil then
-		self:EditFocus(self._first_info.it_line, self._first_info.it_char_start, self._first_info.it_line, self._first_info.it_char_end, false)
+	if first_info ~= nil then
+		self:EditFocus(first_info.it_line, first_info.it_char_start, first_info.it_line, first_info.it_char_end, false)
 	end
 end
 
 function AUICodeEdit:HandleFindNextClick(event)
-	if self._find_map == nil then
-		self:HandleFindInputChanged(nil)
-	end
-	if self._find_map == nil then
+	if self:FindNextImpl(self._cursor.line, true) then
 		return
 	end
-	local line_index = self._cursor.line
+	self:FindNextImpl(1, false)
+end
+
+function AUICodeEdit:FindNextImpl(start_line, check_cursor)
+	local line_index = start_line
 	while line_index <= self._line_count do
-		local find_line = self._find_map[line_index]
-		if find_line ~= nil then
-			for index, info in ___ipairs(find_line) do
-				if line_index ~= self._cursor.line or info.it_char_start > self._cursor.char + 1 then
-					self:EditFocus(info.it_line, info.it_char_start, info.it_line, info.it_char_end, false)
-					return
-				end
+		local line = self._line_list[line_index]
+		for index, child in ___ipairs(line.container._find.childs) do
+			local info = child._user_data
+			if not check_cursor or line_index ~= self._cursor.line or info.it_char_start > self._cursor.char + 1 then
+				self:EditFocus(info.it_line, info.it_char_start, info.it_line, info.it_char_end, false)
+				return true
 			end
 		end
 		line_index = line_index + (1)
 	end
-	if self._first_info ~= nil then
-		self:EditFocus(self._first_info.it_line, self._first_info.it_char_start, self._first_info.it_line, self._first_info.it_char_end, false)
+	return false
+end
+
+function AUICodeEdit:UpdateLineFind(it_line)
+	if self._find_map == nil then
+		return
+	end
+	local line = self._line_list[it_line]
+	if line == nil then
+		return
+	end
+	for index, child in ___ipairs(line.container._find.childs) do
+		self._find_map[child._user_data] = nil
+	end
+	line.container._find:RemoveAllChild()
+	local find_len = ALittle.List_MaxN(self._find_text)
+	if find_len == 0 then
+		return
+	end
+	if line.char_count >= find_len then
+		local char_index = 1
+		while char_index <= line.char_count do
+			local find = true
+			for i, char in ___ipairs(self._find_text) do
+				if char ~= line.char_list[char_index + i - 1].char then
+					find = false
+					break
+				end
+			end
+			if find then
+				local item = ALittle.Quad(g_Control)
+				item.red = FIND_RED
+				item.green = FIND_GREEN
+				item.blue = FIND_BLUE
+				item.x = line.char_list[char_index].pre_width
+				item.width = line.char_list[char_index + find_len].pre_width - line.char_list[char_index].pre_width
+				item.height = LINE_HEIGHT
+				line.container._find:AddChild(item)
+				local info = {}
+				info._focus_quad = item
+				info.it_line = it_line
+				info.it_char_start = char_index
+				info.it_char_end = char_index + find_len - 1
+				item._user_data = info
+				self._find_map[info] = true
+				char_index = char_index + (find_len)
+			else
+				char_index = char_index + (1)
+			end
+		end
 	end
 end
 
@@ -974,14 +1018,11 @@ end
 
 function AUICodeEdit:ClearFindInfo()
 	if self._find_map ~= nil then
-		for it_line, list in ___pairs(self._find_map) do
-			for index, info in ___ipairs(list) do
-				info._focus_quad:RemoveFromParent()
-			end
+		for info, _ in ___pairs(self._find_map) do
+			info._focus_quad:RemoveFromParent()
 		end
 	end
 	self._find_map = nil
-	self._first_info = nil
 end
 
 function AUICodeEdit:HandleChangedEvent(event)
@@ -992,7 +1033,6 @@ function AUICodeEdit:HandleChangedEvent(event)
 	for object, _ in ___pairs(map) do
 		object:RestoreColor()
 	end
-	self:ClearFindInfo()
 	self:StartErrorLoop(false)
 end
 
@@ -1905,6 +1945,7 @@ function AUICodeEdit:InsertText(content, need_revoke, revoke_bind)
 	local old_it_char = self._cursor.char
 	local split_pre_line = self._line_list[self._cursor.line]
 	local split_it_char = self._cursor.char
+	local line_map = {}
 	if split_pre_line == nil then
 		split_pre_line = {}
 		split_pre_line.edit = self
@@ -1916,10 +1957,12 @@ function AUICodeEdit:InsertText(content, need_revoke, revoke_bind)
 		self._code_linear:AddChild(split_pre_line.container)
 		self._line_count = self._line_count + (1)
 		self._line_list[self._line_count] = split_pre_line
+		line_map[self._line_count] = true
 	end
 	local split_next_line = split_pre_line
 	local it_cursor_line = self._cursor.line
 	local it_cursor_char = self._cursor.char
+	line_map[self._cursor.line] = true
 	if line_count > 1 then
 		self._code_linear:RemoveAllChild()
 		local new_line_list = {}
@@ -1965,6 +2008,7 @@ function AUICodeEdit:InsertText(content, need_revoke, revoke_bind)
 			self._code_linear:AddChild(line.container)
 			new_line_count = new_line_count + (1)
 			new_line_list[new_line_count] = line
+			line_map[new_line_count] = true
 			i = i+(1)
 		end
 		do
@@ -1973,6 +2017,7 @@ function AUICodeEdit:InsertText(content, need_revoke, revoke_bind)
 			new_line_list[new_line_count] = split_next_line
 			it_cursor_line = new_line_count
 			it_cursor_char = 0
+			line_map[new_line_count] = true
 		end
 		local i = self._cursor.line + 1
 		while true do
@@ -2097,6 +2142,11 @@ function AUICodeEdit:InsertText(content, need_revoke, revoke_bind)
 			revoke_bind:PushRevoke(insert_revoke)
 		else
 			self._revoke_list:PushRevoke(insert_revoke)
+		end
+	end
+	if self._find_map ~= nil then
+		for line_index, _ in ___pairs(line_map) do
+			self:UpdateLineFind(line_index)
 		end
 	end
 	self:UpdateLineNumber()

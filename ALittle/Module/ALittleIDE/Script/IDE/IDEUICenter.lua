@@ -359,6 +359,5 @@ end
 
 function IDEUICenter:HandleProjectOpen(event)
 	self._target_language.text = g_IDEProject.project.config:GetConfig("target_language", "Lua")
-	ALittle.Log("HandleProjectOpen", self._target_language.text)
 end
 

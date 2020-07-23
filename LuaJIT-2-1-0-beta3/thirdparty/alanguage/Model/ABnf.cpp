@@ -434,17 +434,32 @@ bool ABnf::AnalysisABnfRuleMatch(ABnfRuleInfo* rule, ABnfNodeElementPtr parent, 
     {
         // 从pin_offset开始查找结束符
         int find = m_file->GetLength();
+        const auto& text = m_file->GetText();
         int index = -1;
         for (int i = static_cast<int>(m_stop_stack.size()) - 1; i >= 0; --i)
         {
             const auto& stop_token = m_stop_stack[i]->GetStopToken();
-            if (stop_token.empty()) continue;
+            int token_size = static_cast<int>(stop_token.size());
+            if (token_size <= 0) continue;
             // 查找结束符
-            size_t value = m_file->GetText().find(stop_token.c_str(), pin_offset, find - pin_offset);
+            int value = -1;
+            for (int j = pin_offset; j <= find - token_size; ++j) {
+                bool is_find = true;
+                for (int k = 0; k < token_size; ++k) {
+                    if (text[j + k] != stop_token[k]) {
+                        is_find = false;
+                        break;
+                    }
+                }
+                if (is_find) {
+                    value = j;
+                }
+            }
+            // size_t value = m_file->GetText().find(stop_token.c_str(), pin_offset, find - pin_offset);
             // 如果找到了，并且比find更近，那么就是用当前这个
-            if (value != std::string::npos && find > static_cast<int>(value))
+            if (value >= 0 && find > value)
             {
-                find = static_cast<int>(value);
+                find = value;
                 index = i;
             }
         }

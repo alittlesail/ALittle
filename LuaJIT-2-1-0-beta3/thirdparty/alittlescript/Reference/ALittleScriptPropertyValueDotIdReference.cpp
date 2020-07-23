@@ -112,9 +112,9 @@ bool ALittleScriptPropertyValueDotIdReference::QueryCompletion(ABnfElementPtr se
             auto class_var_name_dec = class_var_dec->GetClassVarNameDec();
             if (class_var_name_dec == nullptr) continue;
             if (is_dot_id)
-                list.emplace_back(class_var_name_dec->GetElementText(), "." + class_var_name_dec->GetElementText(), ALittleScriptIconType::VARIABLE);
+                list.emplace_back(class_var_name_dec->GetElementText(), "." + class_var_name_dec->GetElementText(), ALittleScriptIconType::VARIABLE, dec->GetDescriptor());
             else
-                list.emplace_back(class_var_name_dec->GetElementText(), ALittleScriptIconType::VARIABLE);
+                list.emplace_back(class_var_name_dec->GetElementText(), ALittleScriptIconType::VARIABLE, dec->GetDescriptor());
         }
 
         // 所有setter,getter
@@ -125,9 +125,9 @@ bool ALittleScriptPropertyValueDotIdReference::QueryCompletion(ABnfElementPtr se
         for (auto& class_method_name_dec : class_method_name_dec_list)
         {
             if (is_dot_id)
-                list.emplace_back(class_method_name_dec->GetElementText(), "." + class_method_name_dec->GetElementText(), ALittleScriptIconType::FIELD_METHOD);
+                list.emplace_back(class_method_name_dec->GetElementText(), "." + class_method_name_dec->GetElementText(), ALittleScriptIconType::FIELD_METHOD, class_method_name_dec->GetDescriptor());
             else
-                list.emplace_back(class_method_name_dec->GetElementText(), ALittleScriptIconType::FIELD_METHOD);
+                list.emplace_back(class_method_name_dec->GetElementText(), ALittleScriptIconType::FIELD_METHOD, class_method_name_dec->GetDescriptor());
         }
 
         // 所有成员函数
@@ -137,9 +137,9 @@ bool ALittleScriptPropertyValueDotIdReference::QueryCompletion(ABnfElementPtr se
         for (auto& class_method_name_dec : class_method_name_dec_list)
         {
             if (is_dot_id)
-                list.emplace_back(class_method_name_dec->GetElementText(), "." + class_method_name_dec->GetElementText(), ALittleScriptIconType::MEMBER_METHOD);
+                list.emplace_back(class_method_name_dec->GetElementText(), "." + class_method_name_dec->GetElementText(), ALittleScriptIconType::MEMBER_METHOD, class_method_name_dec->GetDescriptor());
             else
-                list.emplace_back(class_method_name_dec->GetElementText(), ALittleScriptIconType::MEMBER_METHOD);
+                list.emplace_back(class_method_name_dec->GetElementText(), ALittleScriptIconType::MEMBER_METHOD, class_method_name_dec->GetDescriptor());
         }
     }
     // 处理结构体的实例对象
@@ -155,9 +155,9 @@ bool ALittleScriptPropertyValueDotIdReference::QueryCompletion(ABnfElementPtr se
             if (name_dec == nullptr) continue;
 
             if (is_dot_id)
-                list.emplace_back(name_dec->GetElementText(), "." + name_dec->GetElementText(), ALittleScriptIconType::PROPERTY);
+                list.emplace_back(name_dec->GetElementText(), "." + name_dec->GetElementText(), ALittleScriptIconType::PROPERTY, struct_var_dec->GetDescriptor());
             else
-                list.emplace_back(name_dec->GetElementText(), ALittleScriptIconType::PROPERTY);
+                list.emplace_back(name_dec->GetElementText(), ALittleScriptIconType::PROPERTY, struct_var_dec->GetDescriptor());
         }
     }
     // 比如 ALittleName.XXX
@@ -172,9 +172,9 @@ bool ALittleScriptPropertyValueDotIdReference::QueryCompletion(ABnfElementPtr se
         for (auto& enum_name_dec : enum_name_dec_list)
         {
             if (is_dot_id)
-                list.emplace_back(enum_name_dec->GetElementText(), "." + enum_name_dec->GetElementText(), ALittleScriptIconType::ENUM);
+                list.emplace_back(enum_name_dec->GetElementText(), "." + enum_name_dec->GetElementText(), ALittleScriptIconType::ENUM, enum_name_dec->GetDescriptor());
             else
-                list.emplace_back(enum_name_dec->GetElementText(), ALittleScriptIconType::ENUM);
+                list.emplace_back(enum_name_dec->GetElementText(), ALittleScriptIconType::ENUM, enum_name_dec->GetDescriptor());
         }
         // 所有全局函数
         std::vector<ABnfElementPtr> method_name_dec_list;
@@ -183,9 +183,9 @@ bool ALittleScriptPropertyValueDotIdReference::QueryCompletion(ABnfElementPtr se
         for (auto& method_name_dec : method_name_dec_list)
         {
             if (is_dot_id)
-                list.emplace_back(method_name_dec->GetElementText(), "." + method_name_dec->GetElementText(), ALittleScriptIconType::GLOBAL_METHOD);
+                list.emplace_back(method_name_dec->GetElementText(), "." + method_name_dec->GetElementText(), ALittleScriptIconType::GLOBAL_METHOD, method_name_dec->GetDescriptor());
             else
-                list.emplace_back(method_name_dec->GetElementText(), ALittleScriptIconType::GLOBAL_METHOD);
+                list.emplace_back(method_name_dec->GetElementText(), ALittleScriptIconType::GLOBAL_METHOD, method_name_dec->GetDescriptor());
         }   
         // 所有类名
         std::vector<ABnfElementPtr> class_name_dec_list;
@@ -194,9 +194,9 @@ bool ALittleScriptPropertyValueDotIdReference::QueryCompletion(ABnfElementPtr se
         for (auto& class_name_dec : class_name_dec_list)
         {
             if (is_dot_id)
-                list.emplace_back(class_name_dec->GetElementText(), "." + class_name_dec->GetElementText(), ALittleScriptIconType::CLASS);
+                list.emplace_back(class_name_dec->GetElementText(), "." + class_name_dec->GetElementText(), ALittleScriptIconType::CLASS, class_name_dec->GetDescriptor());
             else
-                list.emplace_back(class_name_dec->GetElementText(), ALittleScriptIconType::CLASS);
+                list.emplace_back(class_name_dec->GetElementText(), ALittleScriptIconType::CLASS, class_name_dec->GetDescriptor());
         }   
         // 所有结构体名
         std::vector<ABnfElementPtr> struct_name_dec_list;
@@ -205,9 +205,9 @@ bool ALittleScriptPropertyValueDotIdReference::QueryCompletion(ABnfElementPtr se
         for (auto& struct_name_dec : struct_name_dec_list)
         {
             if (is_dot_id)
-                list.emplace_back(struct_name_dec->GetElementText(), "." + struct_name_dec->GetElementText(), ALittleScriptIconType::STRUCT);
+                list.emplace_back(struct_name_dec->GetElementText(), "." + struct_name_dec->GetElementText(), ALittleScriptIconType::STRUCT, struct_name_dec->GetDescriptor());
             else
-                list.emplace_back(struct_name_dec->GetElementText(), ALittleScriptIconType::STRUCT);
+                list.emplace_back(struct_name_dec->GetElementText(), ALittleScriptIconType::STRUCT, struct_name_dec->GetDescriptor());
         }
         // 所有单例
         std::vector<ABnfElementPtr> instance_name_dec_list;
@@ -216,9 +216,9 @@ bool ALittleScriptPropertyValueDotIdReference::QueryCompletion(ABnfElementPtr se
         for (auto& instance_name_dec : instance_name_dec_list)
         {
             if (is_dot_id)
-                list.emplace_back(instance_name_dec->GetElementText(), "." + instance_name_dec->GetElementText(), ALittleScriptIconType::INSTANCE);
+                list.emplace_back(instance_name_dec->GetElementText(), "." + instance_name_dec->GetElementText(), ALittleScriptIconType::INSTANCE, instance_name_dec->GetDescriptor());
             else
-                list.emplace_back(instance_name_dec->GetElementText(), ALittleScriptIconType::INSTANCE);
+                list.emplace_back(instance_name_dec->GetElementText(), ALittleScriptIconType::INSTANCE, instance_name_dec->GetDescriptor());
         }
     }
     // 比如 AClassName.XXX
@@ -236,9 +236,9 @@ bool ALittleScriptPropertyValueDotIdReference::QueryCompletion(ABnfElementPtr se
         for (auto& class_method_name_dec : class_method_name_dec_list)
         {
             if (is_dot_id)
-                list.emplace_back(class_method_name_dec->GetElementText(), "." + class_method_name_dec->GetElementText(), ALittleScriptIconType::STATIC_METHOD);
+                list.emplace_back(class_method_name_dec->GetElementText(), "." + class_method_name_dec->GetElementText(), ALittleScriptIconType::STATIC_METHOD, class_method_name_dec->GetDescriptor());
             else
-                list.emplace_back(class_method_name_dec->GetElementText(), ALittleScriptIconType::STATIC_METHOD);
+                list.emplace_back(class_method_name_dec->GetElementText(), ALittleScriptIconType::STATIC_METHOD, class_method_name_dec->GetDescriptor());
         }   
         // 所有成员函数
         class_method_name_dec_list.resize(0);
@@ -246,9 +246,9 @@ bool ALittleScriptPropertyValueDotIdReference::QueryCompletion(ABnfElementPtr se
         for (auto& class_method_name_dec : class_method_name_dec_list)
         {
             if (is_dot_id)
-                list.emplace_back(class_method_name_dec->GetElementText(), "." + class_method_name_dec->GetElementText(), ALittleScriptIconType::MEMBER_METHOD);
+                list.emplace_back(class_method_name_dec->GetElementText(), "." + class_method_name_dec->GetElementText(), ALittleScriptIconType::MEMBER_METHOD, class_method_name_dec->GetDescriptor());
             else
-                list.emplace_back(class_method_name_dec->GetElementText(), ALittleScriptIconType::MEMBER_METHOD);
+                list.emplace_back(class_method_name_dec->GetElementText(), ALittleScriptIconType::MEMBER_METHOD, class_method_name_dec->GetDescriptor());
         }   
         // 所有setter,getter
         class_method_name_dec_list.resize(0);
@@ -258,9 +258,9 @@ bool ALittleScriptPropertyValueDotIdReference::QueryCompletion(ABnfElementPtr se
         for (auto& class_method_name_dec : class_method_name_dec_list)
         {
             if (is_dot_id)
-                list.emplace_back(class_method_name_dec->GetElementText(), "." + class_method_name_dec->GetElementText(), ALittleScriptIconType::FIELD_METHOD);
+                list.emplace_back(class_method_name_dec->GetElementText(), "." + class_method_name_dec->GetElementText(), ALittleScriptIconType::FIELD_METHOD, class_method_name_dec->GetDescriptor());
             else
-                list.emplace_back(class_method_name_dec->GetElementText(), ALittleScriptIconType::FIELD_METHOD);
+                list.emplace_back(class_method_name_dec->GetElementText(), ALittleScriptIconType::FIELD_METHOD, class_method_name_dec->GetDescriptor());
         }   
     }
     // 比如 AEnum.XXX
@@ -277,9 +277,9 @@ bool ALittleScriptPropertyValueDotIdReference::QueryCompletion(ABnfElementPtr se
             if (var_name_dec == nullptr) continue;
 
             if (is_dot_id)
-                list.emplace_back(var_name_dec->GetElementText(), "." + var_name_dec->GetElementText(), ALittleScriptIconType::ENUM);
+                list.emplace_back(var_name_dec->GetElementText(), "." + var_name_dec->GetElementText(), ALittleScriptIconType::ENUM, var_dec->GetDescriptor());
             else
-                list.emplace_back(var_name_dec->GetElementText(), ALittleScriptIconType::ENUM);
+                list.emplace_back(var_name_dec->GetElementText(), ALittleScriptIconType::ENUM, var_dec->GetDescriptor());
         }
     }
 

@@ -46,7 +46,7 @@ bool ALittleScriptClassExtendsDecReference::QueryCompletion(ABnfElementPtr selec
             ABnfElementType::CLASS_NAME, element->GetFile(), m_namespace_name, u8"", true, dec_list);
 
         for (auto& dec : dec_list)
-            list.emplace_back(dec->GetElementText(), ALittleScriptIconType::CLASS);
+            list.emplace_back(dec->GetElementText(), ALittleScriptIconType::CLASS, dec->GetDescriptor());
     }
     return true;
 }

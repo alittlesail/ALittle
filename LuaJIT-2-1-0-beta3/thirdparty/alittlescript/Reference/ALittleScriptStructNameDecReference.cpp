@@ -90,7 +90,7 @@ bool ALittleScriptStructNameDecReference::QueryCompletion(ABnfElementPtr select,
         ABnfElementType::STRUCT_NAME, element->GetFile(), m_namespace_name, u8"", true, dec_list);
 
     for (auto& dec : dec_list)
-        list.emplace_back(dec->GetElementText(), ALittleScriptIconType::STRUCT);
+        list.emplace_back(dec->GetElementText(), ALittleScriptIconType::STRUCT, dec->GetDescriptor());
 
     return true;
 }

@@ -72,6 +72,6 @@ bool ALittleScriptNamespaceNameDecReference::QueryCompletion(ABnfElementPtr sele
     std::unordered_map<std::string, std::shared_ptr<ALittleScriptNamespaceNameDecElement>> name_dec_map;
     index->FindNamespaceNameDecList(m_key, name_dec_map);
     for (auto& pair : name_dec_map)
-        list.emplace_back(pair.second->GetElementText(), ALittleScriptIconType::NAMESPACE);
+        list.emplace_back(pair.second->GetElementText(), ALittleScriptIconType::NAMESPACE, pair.second->GetDescriptor());
     return true;
 }

@@ -31,6 +31,8 @@ protected:
     int m_line = 1;                        // 所在行
     int m_col = 1;                         // 所在列
 
+    std::string m_descriptor;           // 节点描述信息
+
 public:
     ABnfElement(ABnfFactory* factory, ABnfFile* file, int line, int col, int offset);
     virtual ~ABnfElement();
@@ -60,6 +62,10 @@ public:
 
     // 当前节点是否和指定范围有交集
     bool IntersectsWith(int start, int end);
+
+    // 设置和获取描述
+    inline void SetDescriptor(const std::string& value) { m_descriptor = value; }
+    inline const std::string& GetDescriptor() const { return m_descriptor; }
 
     // 根据偏移位置，获取期望的元素
     virtual ABnfElementPtr GetException(int offset) { return nullptr; }

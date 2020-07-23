@@ -35,6 +35,8 @@
 #include "../Generate/ALittleScriptVarAssignNameDecElement.h"
 #include "../Generate/ALittleScriptUsingDecElement.h"
 #include "../Generate/ALittleScriptUsingNameDecElement.h"
+#include "../Generate/ALittleScriptBlockCommentElement.h"
+#include "../Generate/ALittleScriptLineCommentElement.h"
 
 #include "../Guess/ALittleScriptGuessClass.h"
 #include "../Guess/ALittleScriptGuessPrimitive.h"
@@ -362,14 +364,20 @@ void ALittleScriptIndex::AddClassData(std::shared_ptr<ALittleScriptClassDecEleme
 
     auto template_dec = dec->GetTemplateDec();
     if (template_dec != nullptr)
-        class_data.AddClassChildDec(template_dec);
+        class_data.AddClassChildDec(template_dec, nullptr, nullptr);
 
     auto body_dec = dec->GetClassBodyDec();
     if (body_dec == nullptr) return;
 
-    const auto& element_dec_list = body_dec->GetClassElementDecList();
-    for (auto& element_dec : element_dec_list)
-        class_data.AddClassChildDec(element_dec);
+    const auto& child_list = body_dec->GetChilds();
+    for (size_t i = 0; i < child_list.size(); ++i)
+    {
+        ABnfElementPtr pre_child;
+        if (i > 0) pre_child = child_list[i - 1];
+        ABnfElementPtr next_child;
+        if (i < child_list.size() - 1) next_child = child_list[i + 1];
+        class_data.AddClassChildDec(child_list[i], pre_child, next_child);
+    }
 }
 
 // 获取类索引数据
@@ -396,9 +404,13 @@ void ALittleScriptIndex::AddStructData(std::shared_ptr<ALittleScriptStructDecEle
     auto body_dec = dec->GetStructBodyDec();
     if (body_dec == nullptr) return;
 
-    const auto& var_dec_list = body_dec->GetStructVarDecList();
-    for (auto& var_dec : var_dec_list)
-        struct_data.AddVarDec(var_dec);
+    const auto& child_list = body_dec->GetChilds();
+    for (size_t i = 0; i < child_list.size(); ++i)
+    {
+        ABnfElementPtr next_child;
+        if (i < child_list.size() - 1) next_child = child_list[i + 1];
+        struct_data.AddVarDec(child_list[i], next_child);
+    }
 }
 
 // 获取结构体数据
@@ -425,9 +437,13 @@ void ALittleScriptIndex::AddEnumData(std::shared_ptr<ALittleScriptEnumDecElement
     auto body_dec = dec->GetEnumBodyDec();
     if (body_dec == nullptr) return;
 
-    const auto& var_dec_list = body_dec->GetEnumVarDecList();
-    for (auto& var_dec : var_dec_list)
-        enum_data.AddVarDec(var_dec);
+    const auto& child_list = body_dec->GetChilds();
+    for (size_t i = 0; i < child_list.size(); ++i)
+    {
+        ABnfElementPtr next_child;
+        if (i < child_list.size() - 1) next_child = child_list[i + 1];
+        enum_data.AddVarDec(child_list[i], next_child);
+    }
 }
 
 // 获取枚举数据
@@ -465,104 +481,34 @@ void ALittleScriptIndex::AddRoot(std::shared_ptr<ALittleScriptRootElement> root)
     auto& namespace_access_data = m_namespace_access_map[name];
     auto& file_access_data = m_file_access_map[root->GetFile()];
 
-    const auto& element_dec_list = namespace_dec->GetNamespaceElementDecList();
-    for (auto& child : element_dec_list)
+    const auto& child_list = namespace_dec->GetChilds();
+    for (size_t i = 0; i < child_list.size(); ++i)
     {
-        // 添加类
-        if (child->GetClassDec() != nullptr)
-        {
-            auto class_dec = child->GetClassDec();
-            auto name_dec = class_dec->GetClassNameDec();
-            if (name_dec == nullptr) continue;
+        auto child = child_list[i];
+        ABnfElementPtr pre_child;
+        if (i > 0) pre_child = child_list[i - 1];
+        ABnfElementPtr next_child;
+        if (i < child_list.size() - 1) next_child = child_list[i + 1];
 
-            // 添加类数据
-            AddClassData(class_dec);
-            // 添加到全权限
-            all_access_data.AddNameDec(name_dec);
-            // 按访问权限划分
-            auto access_type = ALittleScriptUtility::CalcAccessType(child->GetModifierList());
-            if (access_type == ClassAccessType::PUBLIC)
-                global_access_data.AddNameDec(name_dec);
-            else if (access_type == ClassAccessType::PROTECTED)
-                namespace_access_data.AddNameDec(name_dec);
-            else if (access_type == ClassAccessType::PRIVATE)
-                file_access_data.AddNameDec(name_dec);
-        }
-        // 添加枚举
-        else if (child->GetEnumDec() != nullptr)
-        {
-            auto enum_dec = child->GetEnumDec();
-            auto name_dec = enum_dec->GetEnumNameDec();
-            if (name_dec == nullptr) continue;
-
-            //  添加枚举数据
-            AddEnumData(enum_dec);
-            // 添加到全权限
-            all_access_data.AddNameDec(name_dec);
-            // 按访问权限划分
-            auto access_type = ALittleScriptUtility::CalcAccessType(child->GetModifierList());
-            if (access_type == ClassAccessType::PUBLIC)
-                global_access_data.AddNameDec(name_dec);
-            else if (access_type == ClassAccessType::PROTECTED)
-                namespace_access_data.AddNameDec(name_dec);
-            else if (access_type == ClassAccessType::PRIVATE)
-                file_access_data.AddNameDec(name_dec);
-        }
-        // 添加结构体
-        else if (child->GetStructDec() != nullptr)
-        {
-            auto struct_dec = child->GetStructDec();
-            auto name_dec = struct_dec->GetStructNameDec();
-            if (name_dec == nullptr) continue;
-
-            //  添加结构体数据
-            AddStructData(struct_dec);
-            // 添加到全权限
-            all_access_data.AddNameDec(name_dec);
-            // 按访问权限划分
-            auto access_type = ALittleScriptUtility::CalcAccessType(child->GetModifierList());
-            if (access_type == ClassAccessType::PUBLIC)
-                global_access_data.AddNameDec(name_dec);
-            else if (access_type == ClassAccessType::PROTECTED)
-                namespace_access_data.AddNameDec(name_dec);
-            else if (access_type == ClassAccessType::PRIVATE)
-                file_access_data.AddNameDec(name_dec);
-        }
-        // 添加全局函数
-        else if (child->GetGlobalMethodDec() != nullptr)
-        {
-            auto method_dec = child->GetGlobalMethodDec();
-            auto name_dec = method_dec->GetMethodNameDec();
-            if (name_dec == nullptr) continue;
-
-            // 添加到全权限
-            all_access_data.AddNameDec(name_dec);
-            // 按访问权限划分
-            auto access_type = ALittleScriptUtility::CalcAccessType(child->GetModifierList());
-            if (access_type == ClassAccessType::PUBLIC)
-                global_access_data.AddNameDec(name_dec);
-            else if (access_type == ClassAccessType::PROTECTED)
-                namespace_access_data.AddNameDec(name_dec);
-            else if (access_type == ClassAccessType::PRIVATE)
-                file_access_data.AddNameDec(name_dec);
-        }
-        // 添加单例
-        else if (child->GetInstanceDec() != nullptr)
-        {
-            auto instance_dec = child->GetInstanceDec();
-            auto access_type = ALittleScriptUtility::CalcAccessType(child->GetModifierList());
-
-            auto var_assign_expr = instance_dec->GetVarAssignExpr();
-            if (var_assign_expr == nullptr) continue;
-            const auto& var_assign_dec_list = var_assign_expr->GetVarAssignDecList();
-            for (auto& var_assign_dec : var_assign_dec_list)
+        auto namespace_element = std::dynamic_pointer_cast<ALittleScriptNamespaceElementDecElement>(child);
+        if (namespace_element) {
+            // 添加类
+            if (namespace_element->GetClassDec() != nullptr)
             {
-                auto name_dec = var_assign_dec->GetVarAssignNameDec();
+                auto class_dec = namespace_element->GetClassDec();
+                auto name_dec = class_dec->GetClassNameDec();
                 if (name_dec == nullptr) continue;
 
+                // 如果pre_dec是注释，那么就去描述
+                if (std::dynamic_pointer_cast<ALittleScriptBlockCommentElement>(pre_child) || std::dynamic_pointer_cast<ALittleScriptLineCommentElement>(pre_child))
+                    name_dec->SetDescriptor(pre_child->GetElementText());
+
+                // 添加类数据
+                AddClassData(class_dec);
                 // 添加到全权限
                 all_access_data.AddNameDec(name_dec);
                 // 按访问权限划分
+                auto access_type = ALittleScriptUtility::CalcAccessType(namespace_element->GetModifierList());
                 if (access_type == ClassAccessType::PUBLIC)
                     global_access_data.AddNameDec(name_dec);
                 else if (access_type == ClassAccessType::PROTECTED)
@@ -570,24 +516,129 @@ void ALittleScriptIndex::AddRoot(std::shared_ptr<ALittleScriptRootElement> root)
                 else if (access_type == ClassAccessType::PRIVATE)
                     file_access_data.AddNameDec(name_dec);
             }
-        }
-        // 添加using
-        else if (child->GetUsingDec() != nullptr)
-        {
-            auto using_dec = child->GetUsingDec();
-            auto name_dec = using_dec->GetUsingNameDec();
-            if (name_dec == nullptr) continue;
+            // 添加枚举
+            else if (namespace_element->GetEnumDec() != nullptr)
+            {
+                auto enum_dec = namespace_element->GetEnumDec();
+                auto name_dec = enum_dec->GetEnumNameDec();
+                if (name_dec == nullptr) continue;
 
-            // 添加到全权限
-            all_access_data.AddNameDec(name_dec);
-            // 按访问权限划分
-            auto access_type = ALittleScriptUtility::CalcAccessType(child->GetModifierList());
-            if (access_type == ClassAccessType::PUBLIC)
-                global_access_data.AddNameDec(name_dec);
-            else if (access_type == ClassAccessType::PROTECTED)
-                namespace_access_data.AddNameDec(name_dec);
-            else if (access_type == ClassAccessType::PRIVATE)
-                file_access_data.AddNameDec(name_dec);
+                // 如果pre_dec是注释，那么就去描述
+                if (std::dynamic_pointer_cast<ALittleScriptBlockCommentElement>(pre_child) || std::dynamic_pointer_cast<ALittleScriptLineCommentElement>(pre_child))
+                    name_dec->SetDescriptor(pre_child->GetElementText());
+
+                //  添加枚举数据
+                AddEnumData(enum_dec);
+                // 添加到全权限
+                all_access_data.AddNameDec(name_dec);
+                // 按访问权限划分
+                auto access_type = ALittleScriptUtility::CalcAccessType(namespace_element->GetModifierList());
+                if (access_type == ClassAccessType::PUBLIC)
+                    global_access_data.AddNameDec(name_dec);
+                else if (access_type == ClassAccessType::PROTECTED)
+                    namespace_access_data.AddNameDec(name_dec);
+                else if (access_type == ClassAccessType::PRIVATE)
+                    file_access_data.AddNameDec(name_dec);
+            }
+            // 添加结构体
+            else if (namespace_element->GetStructDec() != nullptr)
+            {
+                auto struct_dec = namespace_element->GetStructDec();
+                auto name_dec = struct_dec->GetStructNameDec();
+                if (name_dec == nullptr) continue;
+
+                // 如果pre_dec是注释，那么就去描述
+                if (std::dynamic_pointer_cast<ALittleScriptBlockCommentElement>(pre_child) || std::dynamic_pointer_cast<ALittleScriptLineCommentElement>(pre_child))
+                    name_dec->SetDescriptor(pre_child->GetElementText());
+
+
+                //  添加结构体数据
+                AddStructData(struct_dec);
+                // 添加到全权限
+                all_access_data.AddNameDec(name_dec);
+                // 按访问权限划分
+                auto access_type = ALittleScriptUtility::CalcAccessType(namespace_element->GetModifierList());
+                if (access_type == ClassAccessType::PUBLIC)
+                    global_access_data.AddNameDec(name_dec);
+                else if (access_type == ClassAccessType::PROTECTED)
+                    namespace_access_data.AddNameDec(name_dec);
+                else if (access_type == ClassAccessType::PRIVATE)
+                    file_access_data.AddNameDec(name_dec);
+            }
+            // 添加全局函数
+            else if (namespace_element->GetGlobalMethodDec() != nullptr)
+            {
+                auto method_dec = namespace_element->GetGlobalMethodDec();
+                auto name_dec = method_dec->GetMethodNameDec();
+                if (name_dec == nullptr) continue;
+
+                // 如果pre_dec是注释，那么就去描述
+                if (std::dynamic_pointer_cast<ALittleScriptBlockCommentElement>(pre_child) || std::dynamic_pointer_cast<ALittleScriptLineCommentElement>(pre_child))
+                    name_dec->SetDescriptor(pre_child->GetElementText());
+
+
+                // 添加到全权限
+                all_access_data.AddNameDec(name_dec);
+                // 按访问权限划分
+                auto access_type = ALittleScriptUtility::CalcAccessType(namespace_element->GetModifierList());
+                if (access_type == ClassAccessType::PUBLIC)
+                    global_access_data.AddNameDec(name_dec);
+                else if (access_type == ClassAccessType::PROTECTED)
+                    namespace_access_data.AddNameDec(name_dec);
+                else if (access_type == ClassAccessType::PRIVATE)
+                    file_access_data.AddNameDec(name_dec);
+            }
+            // 添加单例
+            else if (namespace_element->GetInstanceDec() != nullptr)
+            {
+                auto instance_dec = namespace_element->GetInstanceDec();
+                auto access_type = ALittleScriptUtility::CalcAccessType(namespace_element->GetModifierList());
+
+                auto var_assign_expr = instance_dec->GetVarAssignExpr();
+                if (var_assign_expr == nullptr) continue;
+                const auto& var_assign_dec_list = var_assign_expr->GetVarAssignDecList();
+                for (auto& var_assign_dec : var_assign_dec_list)
+                {
+                    auto name_dec = var_assign_dec->GetVarAssignNameDec();
+                    if (name_dec == nullptr) continue;
+
+                    // 如果pre_dec是注释，那么就去描述
+                    if (std::dynamic_pointer_cast<ALittleScriptBlockCommentElement>(pre_child) || std::dynamic_pointer_cast<ALittleScriptLineCommentElement>(pre_child))
+                        name_dec->SetDescriptor(pre_child->GetElementText());
+
+                    // 添加到全权限
+                    all_access_data.AddNameDec(name_dec);
+                    // 按访问权限划分
+                    if (access_type == ClassAccessType::PUBLIC)
+                        global_access_data.AddNameDec(name_dec);
+                    else if (access_type == ClassAccessType::PROTECTED)
+                        namespace_access_data.AddNameDec(name_dec);
+                    else if (access_type == ClassAccessType::PRIVATE)
+                        file_access_data.AddNameDec(name_dec);
+                }
+            }
+            // 添加using
+            else if (namespace_element->GetUsingDec() != nullptr)
+            {
+                auto using_dec = namespace_element->GetUsingDec();
+                auto name_dec = using_dec->GetUsingNameDec();
+                if (name_dec == nullptr) continue;
+
+                // 如果pre_dec是注释，那么就去描述
+                if (std::dynamic_pointer_cast<ALittleScriptBlockCommentElement>(pre_child) || std::dynamic_pointer_cast<ALittleScriptLineCommentElement>(pre_child))
+                    name_dec->SetDescriptor(pre_child->GetElementText());
+
+                // 添加到全权限
+                all_access_data.AddNameDec(name_dec);
+                // 按访问权限划分
+                auto access_type = ALittleScriptUtility::CalcAccessType(namespace_element->GetModifierList());
+                if (access_type == ClassAccessType::PUBLIC)
+                    global_access_data.AddNameDec(name_dec);
+                else if (access_type == ClassAccessType::PROTECTED)
+                    namespace_access_data.AddNameDec(name_dec);
+                else if (access_type == ClassAccessType::PRIVATE)
+                    file_access_data.AddNameDec(name_dec);
+            }
         }
     }
 }

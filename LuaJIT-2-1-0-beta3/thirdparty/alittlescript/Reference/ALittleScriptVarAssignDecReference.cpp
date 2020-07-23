@@ -113,16 +113,16 @@ bool ALittleScriptVarAssignDecReference::QueryCompletion(ABnfElementPtr select, 
             auto error = dec->GuessType(guess);
             if (error)
             {
-                list.emplace_back(dec->GetElementText(), ALittleScriptIconType::CLASS);
+                list.emplace_back(dec->GetElementText(), ALittleScriptIconType::CLASS, dec->GetDescriptor());
             }
             else
             {
                 if (std::dynamic_pointer_cast<ALittleScriptGuessClass>(guess))
-                    list.emplace_back(dec->GetElementText(), ALittleScriptIconType::CLASS);
+                    list.emplace_back(dec->GetElementText(), ALittleScriptIconType::CLASS, dec->GetDescriptor());
                 else if (std::dynamic_pointer_cast<ALittleScriptGuessStruct>(guess))
-                    list.emplace_back(dec->GetElementText(), ALittleScriptIconType::STRUCT);
+                    list.emplace_back(dec->GetElementText(), ALittleScriptIconType::STRUCT, dec->GetDescriptor());
                 else
-                    list.emplace_back(dec->GetElementText(), ALittleScriptIconType::PROPERTY);
+                    list.emplace_back(dec->GetElementText(), ALittleScriptIconType::PROPERTY, dec->GetDescriptor());
             }
         }
     }
@@ -133,7 +133,7 @@ bool ALittleScriptVarAssignDecReference::QueryCompletion(ABnfElementPtr select, 
         index->FindALittleNameDecList(
             ABnfElementType::CLASS_NAME, element->GetFile(), m_namespace_name, u8"", true, dec_list);
         for (auto& dec : dec_list)
-            list.emplace_back(dec->GetElementText(), ALittleScriptIconType::CLASS);
+            list.emplace_back(dec->GetElementText(), ALittleScriptIconType::CLASS, dec->GetDescriptor());
     }
     // 查找类模板
     {
@@ -148,7 +148,7 @@ bool ALittleScriptVarAssignDecReference::QueryCompletion(ABnfElementPtr select, 
                 auto pair_dec = std::dynamic_pointer_cast<ALittleScriptTemplatePairDecElement>(dec);
                 auto pair_name_dec = pair_dec->GetTemplateNameDec();
                 if (pair_name_dec != nullptr)
-                    list.emplace_back(pair_name_dec->GetElementText(), ALittleScriptIconType::TEMPLATE);
+                    list.emplace_back(pair_name_dec->GetElementText(), ALittleScriptIconType::TEMPLATE, dec->GetDescriptor());
             }
         }
     }
@@ -162,7 +162,7 @@ bool ALittleScriptVarAssignDecReference::QueryCompletion(ABnfElementPtr select, 
             {
                 auto pair_name_dec = pair_dec->GetTemplateNameDec();
                 if (pair_name_dec != nullptr)
-                    list.emplace_back(pair_name_dec->GetElementText(), ALittleScriptIconType::TEMPLATE);
+                    list.emplace_back(pair_name_dec->GetElementText(), ALittleScriptIconType::TEMPLATE, pair_name_dec->GetDescriptor());
             }
         }
     }
@@ -172,7 +172,7 @@ bool ALittleScriptVarAssignDecReference::QueryCompletion(ABnfElementPtr select, 
         index->FindALittleNameDecList(
             ABnfElementType::STRUCT_NAME, element->GetFile(), m_namespace_name, u8"", true, dec_list);
         for (auto& dec : dec_list)
-            list.emplace_back(dec->GetElementText(), ALittleScriptIconType::STRUCT);
+            list.emplace_back(dec->GetElementText(), ALittleScriptIconType::STRUCT, dec->GetDescriptor());
     }
     // 枚举名
     {
@@ -180,7 +180,7 @@ bool ALittleScriptVarAssignDecReference::QueryCompletion(ABnfElementPtr select, 
         index->FindALittleNameDecList(
             ABnfElementType::ENUM_NAME, element->GetFile(), m_namespace_name, u8"", true, dec_list);
         for (auto& dec : dec_list)
-            list.emplace_back(dec->GetElementText(), ALittleScriptIconType::ENUM);
+            list.emplace_back(dec->GetElementText(), ALittleScriptIconType::ENUM, dec->GetDescriptor());
     }
     // 查找全局函数
     {
@@ -188,14 +188,14 @@ bool ALittleScriptVarAssignDecReference::QueryCompletion(ABnfElementPtr select, 
         index->FindALittleNameDecList(
             ABnfElementType::GLOBAL_METHOD, element->GetFile(), m_namespace_name, u8"", true, dec_list);
         for (auto& dec : dec_list)
-            list.emplace_back(dec->GetElementText(), ALittleScriptIconType::GLOBAL_METHOD);
+            list.emplace_back(dec->GetElementText(), ALittleScriptIconType::GLOBAL_METHOD, dec->GetDescriptor());
     }
     // 查找所有命名域
     {
         std::unordered_map<std::string, std::shared_ptr<ALittleScriptNamespaceNameDecElement>> dec_map;
         index->FindNamespaceNameDecList("", dec_map);
         for (auto& pair : dec_map)
-            list.emplace_back(pair.second->GetElementText(), ALittleScriptIconType::NAMESPACE);
+            list.emplace_back(pair.second->GetElementText(), ALittleScriptIconType::NAMESPACE, pair.second->GetDescriptor());
     }
 
     return true;

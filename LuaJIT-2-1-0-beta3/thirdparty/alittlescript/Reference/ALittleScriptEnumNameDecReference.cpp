@@ -45,7 +45,7 @@ bool ALittleScriptEnumNameDecReference::QueryCompletion(ABnfElementPtr select, s
         ABnfElementType::ENUM_NAME, element->GetFile(), m_namespace_name, m_key, true, dec_list);
 
     for (auto& dec : dec_list)
-        list.emplace_back(dec->GetElementText(), ALittleScriptIconType::ENUM);
+        list.emplace_back(dec->GetElementText(), ALittleScriptIconType::ENUM, dec->GetDescriptor());
 
     return true;
 }

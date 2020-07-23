@@ -301,29 +301,29 @@ bool ALittleScriptCustomTypeCommonReference::QueryCompletion(ABnfElementPtr sele
             if (is_dot_it)
             {
                 if (error)
-                    list.emplace_back(dec->GetElementText(), "." + dec->GetElementText(), ALittleScriptIconType::CLASS);
+                    list.emplace_back(dec->GetElementText(), "." + dec->GetElementText(), ALittleScriptIconType::CLASS, dec->GetDescriptor());
                 else
                 {
                     if (std::dynamic_pointer_cast<ALittleScriptGuessClass>(guess))
-                        list.emplace_back(dec->GetElementText(), "." + dec->GetElementText(), ALittleScriptIconType::CLASS);
+                        list.emplace_back(dec->GetElementText(), "." + dec->GetElementText(), ALittleScriptIconType::CLASS, dec->GetDescriptor());
                     else if (std::dynamic_pointer_cast<ALittleScriptGuessStruct>(guess))
-                        list.emplace_back(dec->GetElementText(), "." + dec->GetElementText(), ALittleScriptIconType::STRUCT);
+                        list.emplace_back(dec->GetElementText(), "." + dec->GetElementText(), ALittleScriptIconType::STRUCT, dec->GetDescriptor());
                     else
-                        list.emplace_back(dec->GetElementText(), "." + dec->GetElementText(), ALittleScriptIconType::PROPERTY);
+                        list.emplace_back(dec->GetElementText(), "." + dec->GetElementText(), ALittleScriptIconType::PROPERTY, dec->GetDescriptor());
                 }
             }
             else
             {
                 if (error)
-                    list.emplace_back(dec->GetElementText(), ALittleScriptIconType::CLASS);
+                    list.emplace_back(dec->GetElementText(), ALittleScriptIconType::CLASS, dec->GetDescriptor());
                 else
                 {
                     if (std::dynamic_pointer_cast<ALittleScriptGuessClass>(guess))
-                        list.emplace_back(dec->GetElementText(), ALittleScriptIconType::CLASS);
+                        list.emplace_back(dec->GetElementText(), ALittleScriptIconType::CLASS, dec->GetDescriptor());
                     else if (std::dynamic_pointer_cast<ALittleScriptGuessStruct>(guess))
-                        list.emplace_back(dec->GetElementText(), ALittleScriptIconType::STRUCT);
+                        list.emplace_back(dec->GetElementText(), ALittleScriptIconType::STRUCT, dec->GetDescriptor());
                     else
-                        list.emplace_back(dec->GetElementText(), ALittleScriptIconType::PROPERTY);
+                        list.emplace_back(dec->GetElementText(), ALittleScriptIconType::PROPERTY, dec->GetDescriptor());
                 }
             }
         }
@@ -337,9 +337,9 @@ bool ALittleScriptCustomTypeCommonReference::QueryCompletion(ABnfElementPtr sele
         for (auto& dec : dec_list)
         {
             if (is_dot_it)
-                list.emplace_back(dec->GetElementText(), "." + dec->GetElementText(), ALittleScriptIconType::CLASS);
+                list.emplace_back(dec->GetElementText(), "." + dec->GetElementText(), ALittleScriptIconType::CLASS, dec->GetDescriptor());
             else
-                list.emplace_back(dec->GetElementText(), ALittleScriptIconType::CLASS);
+                list.emplace_back(dec->GetElementText(), ALittleScriptIconType::CLASS, dec->GetDescriptor());
         }   
     }
     // 查找类模板
@@ -357,9 +357,9 @@ bool ALittleScriptCustomTypeCommonReference::QueryCompletion(ABnfElementPtr sele
                 if (pair_name_dec == nullptr) continue;
 
                 if (is_dot_it)
-                    list.emplace_back(pair_name_dec->GetElementText(), "." + pair_name_dec->GetElementText(), ALittleScriptIconType::TEMPLATE);
+                    list.emplace_back(pair_name_dec->GetElementText(), "." + pair_name_dec->GetElementText(), ALittleScriptIconType::TEMPLATE, dec->GetDescriptor());
                 else
-                    list.emplace_back(pair_name_dec->GetElementText(), ALittleScriptIconType::TEMPLATE);
+                    list.emplace_back(pair_name_dec->GetElementText(), ALittleScriptIconType::TEMPLATE, dec->GetDescriptor());
             }
         }
     }
@@ -375,9 +375,9 @@ bool ALittleScriptCustomTypeCommonReference::QueryCompletion(ABnfElementPtr sele
                 if (pair_name_dec == nullptr) continue;
 
                 if (is_dot_it)
-                    list.emplace_back(pair_name_dec->GetElementText(), "." + pair_name_dec->GetElementText(), ALittleScriptIconType::TEMPLATE);
+                    list.emplace_back(pair_name_dec->GetElementText(), "." + pair_name_dec->GetElementText(), ALittleScriptIconType::TEMPLATE, pair_name_dec->GetDescriptor());
                 else
-                    list.emplace_back(pair_name_dec->GetElementText(), ALittleScriptIconType::TEMPLATE);
+                    list.emplace_back(pair_name_dec->GetElementText(), ALittleScriptIconType::TEMPLATE, pair_name_dec->GetDescriptor());
             }
         }
     }
@@ -389,9 +389,9 @@ bool ALittleScriptCustomTypeCommonReference::QueryCompletion(ABnfElementPtr sele
         for (auto& dec : dec_list)
         {
             if (is_dot_it)
-                list.emplace_back(dec->GetElementText(), "." + dec->GetElementText(), ALittleScriptIconType::STRUCT);
+                list.emplace_back(dec->GetElementText(), "." + dec->GetElementText(), ALittleScriptIconType::STRUCT, dec->GetDescriptor());
             else
-                list.emplace_back(dec->GetElementText(), ALittleScriptIconType::STRUCT);
+                list.emplace_back(dec->GetElementText(), ALittleScriptIconType::STRUCT, dec->GetDescriptor());
         }   
     }
     // 枚举名
@@ -400,7 +400,7 @@ bool ALittleScriptCustomTypeCommonReference::QueryCompletion(ABnfElementPtr sele
         index->FindALittleNameDecList(
             ABnfElementType::ENUM_NAME, element->GetFile(), m_namespace_name, u8"", true, dec_list);
         for (auto& dec : dec_list)
-            list.emplace_back(dec->GetElementText(), ALittleScriptIconType::ENUM);
+            list.emplace_back(dec->GetElementText(), ALittleScriptIconType::ENUM, dec->GetDescriptor());
     }
     // 查找全局函数
     {
@@ -410,9 +410,9 @@ bool ALittleScriptCustomTypeCommonReference::QueryCompletion(ABnfElementPtr sele
         for (auto& dec : dec_list)
         {
             if (is_dot_it)
-                list.emplace_back(dec->GetElementText(), "." + dec->GetElementText(), ALittleScriptIconType::GLOBAL_METHOD);
+                list.emplace_back(dec->GetElementText(), "." + dec->GetElementText(), ALittleScriptIconType::GLOBAL_METHOD, dec->GetDescriptor());
             else
-                list.emplace_back(dec->GetElementText(), ALittleScriptIconType::GLOBAL_METHOD);
+                list.emplace_back(dec->GetElementText(), ALittleScriptIconType::GLOBAL_METHOD, dec->GetDescriptor());
         }
             
     }
@@ -423,9 +423,9 @@ bool ALittleScriptCustomTypeCommonReference::QueryCompletion(ABnfElementPtr sele
         for (auto& pair : dec_map)
         {
             if (is_dot_it)
-                list.emplace_back(pair.second->GetElementText(), "." + pair.second->GetElementText(), ALittleScriptIconType::NAMESPACE);
+                list.emplace_back(pair.second->GetElementText(), "." + pair.second->GetElementText(), ALittleScriptIconType::NAMESPACE, pair.second->GetDescriptor());
             else
-                list.emplace_back(pair.second->GetElementText(), ALittleScriptIconType::NAMESPACE);
+                list.emplace_back(pair.second->GetElementText(), ALittleScriptIconType::NAMESPACE, pair.second->GetDescriptor());
         }
             
     }

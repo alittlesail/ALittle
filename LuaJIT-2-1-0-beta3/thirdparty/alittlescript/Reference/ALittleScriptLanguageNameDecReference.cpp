@@ -22,7 +22,7 @@ bool ALittleScriptLanguageNameDecReference::QueryCompletion(ABnfElementPtr selec
     auto* project = dynamic_cast<ALittleScriptProjectClass*>(element->GetFile()->GetProject());
     if (project == nullptr) return false;
     for (auto& name : project->GetLanguageSet())
-        list.emplace_back(name, ALittleScriptIconType::LANGUAGE);
+        list.emplace_back(name, ALittleScriptIconType::LANGUAGE, "");
     return true;
 }
 

@@ -396,6 +396,8 @@ public class AUICodeCursor : ALittle.Quad
                 else
                     this._edit.revoke_list.PushRevoke(revoke);
             }
+
+            this._edit.UpdateLineFind(this._it_line);
             return true;
         }
 
@@ -460,6 +462,9 @@ public class AUICodeCursor : ALittle.Quad
             else
                 this._edit.revoke_list.PushRevoke(revoke);
         }
+
+        this._edit.UpdateLineFind(this._it_line);
+        this._edit.UpdateLineNumber();
         return true;
     }
 
@@ -526,6 +531,8 @@ public class AUICodeCursor : ALittle.Quad
                 else
                     this._edit.revoke_list.PushRevoke(revoke);
             }
+
+            this._edit.UpdateLineFind(this._it_line);
             return true;
         }
 
@@ -590,6 +597,9 @@ public class AUICodeCursor : ALittle.Quad
             else
                 this._edit.revoke_list.PushRevoke(revoke);
         }
+
+        this._edit.UpdateLineFind(this._it_line);
+        this._edit.UpdateLineNumber();
         return true;
     }
 

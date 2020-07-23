@@ -388,6 +388,7 @@ function AUICodeCursor:DeleteLeft(need_revoke, revoke_bind)
 				self._edit.revoke_list:PushRevoke(revoke)
 			end
 		end
+		self._edit:UpdateLineFind(self._it_line)
 		return true
 	end
 	if self._it_line <= 1 then
@@ -451,6 +452,8 @@ function AUICodeCursor:DeleteLeft(need_revoke, revoke_bind)
 			self._edit.revoke_list:PushRevoke(revoke)
 		end
 	end
+	self._edit:UpdateLineFind(self._it_line)
+	self._edit:UpdateLineNumber()
 	return true
 end
 
@@ -513,6 +516,7 @@ function AUICodeCursor:DeleteRight(need_revoke, revoke_bind)
 				self._edit.revoke_list:PushRevoke(revoke)
 			end
 		end
+		self._edit:UpdateLineFind(self._it_line)
 		return true
 	end
 	if self._it_line >= self._edit.line_count then
@@ -573,6 +577,8 @@ function AUICodeCursor:DeleteRight(need_revoke, revoke_bind)
 			self._edit.revoke_list:PushRevoke(revoke)
 		end
 	end
+	self._edit:UpdateLineFind(self._it_line)
+	self._edit:UpdateLineNumber()
 	return true
 end
 

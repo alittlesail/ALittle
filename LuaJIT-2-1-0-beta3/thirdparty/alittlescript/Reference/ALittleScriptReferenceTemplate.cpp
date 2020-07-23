@@ -216,7 +216,7 @@ bool ALittleScriptReference::QueryKeyWord(ABnfElementPtr select, std::vector<ALa
     auto& abnf = select->GetFile()->GetProject()->RefABnf();
 
     for (auto& key : abnf.GetKeySet())
-        list.emplace_back(key, 0);
+        list.emplace_back(key, 0, "");
     return false;
 }
 

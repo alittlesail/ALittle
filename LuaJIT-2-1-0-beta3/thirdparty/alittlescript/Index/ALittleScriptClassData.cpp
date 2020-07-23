@@ -14,9 +14,11 @@
 #include "../Generate/ALittleScriptClassGetterDecElement.h"
 #include "../Generate/ALittleScriptClassSetterDecElement.h"
 #include "../Generate/ALittleScriptClassStaticDecElement.h"
+#include "../Generate/ALittleScriptLineCommentElement.h"
+#include "../Generate/ALittleScriptBlockCommentElement.h"
 
 // 添加新元素
-void ALittleScriptClassData::AddClassChildDec(std::shared_ptr<ABnfElement> dec)
+void ALittleScriptClassData::AddClassChildDec(std::shared_ptr<ABnfElement> dec, std::shared_ptr<ABnfElement> pre_dec, std::shared_ptr<ABnfElement> next_dec)
 {
     // 模板定义特殊处理
     auto template_dec = std::dynamic_pointer_cast<ALittleScriptTemplateDecElement>(dec);
@@ -24,14 +26,14 @@ void ALittleScriptClassData::AddClassChildDec(std::shared_ptr<ABnfElement> dec)
     {
         const auto& pair_dec_list = template_dec->GetTemplatePairDecList();
         for (auto& pair_dec : pair_dec_list)
-            AddClassChildDec(pair_dec);
+            AddClassChildDec(pair_dec, nullptr, nullptr);
         return;
     }
 
     ClassAccessType access_type = ClassAccessType::PRIVATE;
     ClassAttrType attr_type;
     std::string name;
-
+    
     // 处理模板参数
     if (std::dynamic_pointer_cast<ALittleScriptTemplatePairDecElement>(dec))
     {
@@ -53,6 +55,10 @@ void ALittleScriptClassData::AddClassChildDec(std::shared_ptr<ABnfElement> dec)
             name = name_dec->GetElementText();
             attr_type = ClassAttrType::VAR;
             dec = element_dec->GetClassVarDec();
+
+            // 如果next_dec是行注释，并且同行，那么就是注释
+            if (std::dynamic_pointer_cast<ALittleScriptLineCommentElement>(next_dec) && next_dec->GetStartLine() == name_dec->GetEndLine())
+                dec->SetDescriptor(next_dec->GetElementText());
         }
         // 处理成员函数
         else if (element_dec->GetClassMethodDec() != nullptr)
@@ -63,6 +69,10 @@ void ALittleScriptClassData::AddClassChildDec(std::shared_ptr<ABnfElement> dec)
             dec = name_dec;
             name = name_dec->GetElementText();
             attr_type = ClassAttrType::FUN;
+
+            // 如果pre_dec是注释，那么就去描述
+            if (std::dynamic_pointer_cast<ALittleScriptBlockCommentElement>(pre_dec) || std::dynamic_pointer_cast<ALittleScriptLineCommentElement>(pre_dec))
+                dec->SetDescriptor(pre_dec->GetElementText());
         }
         // 处理getter函数
         else if (element_dec->GetClassGetterDec() != nullptr)
@@ -73,6 +83,10 @@ void ALittleScriptClassData::AddClassChildDec(std::shared_ptr<ABnfElement> dec)
             dec = name_dec;
             name = name_dec->GetElementText();
             attr_type = ClassAttrType::GETTER;
+
+            // 如果pre_dec是注释，那么就去描述
+            if (std::dynamic_pointer_cast<ALittleScriptBlockCommentElement>(pre_dec) || std::dynamic_pointer_cast<ALittleScriptLineCommentElement>(pre_dec))
+                dec->SetDescriptor(pre_dec->GetElementText());
         }
         // 处理setter函数
         else if (element_dec->GetClassSetterDec() != nullptr)
@@ -83,6 +97,10 @@ void ALittleScriptClassData::AddClassChildDec(std::shared_ptr<ABnfElement> dec)
             dec = name_dec;
             name = name_dec->GetElementText();
             attr_type = ClassAttrType::SETTER;
+
+            // 如果pre_dec是注释，那么就去描述
+            if (std::dynamic_pointer_cast<ALittleScriptBlockCommentElement>(pre_dec) || std::dynamic_pointer_cast<ALittleScriptLineCommentElement>(pre_dec))
+                dec->SetDescriptor(pre_dec->GetElementText());
         }
         // 处理静态函数
         else if (element_dec->GetClassStaticDec() != nullptr)
@@ -93,6 +111,10 @@ void ALittleScriptClassData::AddClassChildDec(std::shared_ptr<ABnfElement> dec)
             dec = name_dec;
             name = name_dec->GetElementText();
             attr_type = ClassAttrType::STATIC;
+
+            // 如果pre_dec是注释，那么就去描述
+            if (std::dynamic_pointer_cast<ALittleScriptBlockCommentElement>(pre_dec) || std::dynamic_pointer_cast<ALittleScriptLineCommentElement>(pre_dec))
+                dec->SetDescriptor(pre_dec->GetElementText());
         }
         else
         {

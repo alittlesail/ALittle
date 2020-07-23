@@ -460,28 +460,28 @@ bool ALittleScriptPropertyValueCustomTypeReference::QueryCompletion(ABnfElementP
         std::unordered_map<std::string, std::shared_ptr<ALittleScriptNamespaceNameDecElement>> dec_map;
         index->FindNamespaceNameDecList("", dec_map);
         for (auto& pair : dec_map)
-            list.emplace_back(pair.second->GetElementText(), ALittleScriptIconType::NAMESPACE);
+            list.emplace_back(pair.second->GetElementText(), ALittleScriptIconType::NAMESPACE, pair.second->GetDescriptor());
     }
     // 处理全局函数
     {
         std::vector<std::shared_ptr<ABnfElement>> dec_list;
         index->FindALittleNameDecList(ABnfElementType::GLOBAL_METHOD, element->GetFile(), m_namespace_name, u8"", true, dec_list);
         for (auto& dec : dec_list)
-            list.emplace_back(dec->GetElementText(), ALittleScriptIconType::GLOBAL_METHOD);
+            list.emplace_back(dec->GetElementText(), ALittleScriptIconType::GLOBAL_METHOD, dec->GetDescriptor());
     }
     // 处理类名
     {
         std::vector<std::shared_ptr<ABnfElement>> dec_list;
         index->FindALittleNameDecList(ABnfElementType::CLASS_NAME, element->GetFile(), m_namespace_name, u8"", true, dec_list);
         for (auto& dec : dec_list)
-            list.emplace_back(dec->GetElementText(), ALittleScriptIconType::CLASS);
+            list.emplace_back(dec->GetElementText(), ALittleScriptIconType::CLASS, dec->GetDescriptor());
     }
     // 处理结构体名
     {
         std::vector<std::shared_ptr<ABnfElement>> dec_list;
         index->FindALittleNameDecList(ABnfElementType::STRUCT_NAME, element->GetFile(), m_namespace_name, u8"", true, dec_list);
         for (auto& dec : dec_list)
-            list.emplace_back(dec->GetElementText(), ALittleScriptIconType::STRUCT);
+            list.emplace_back(dec->GetElementText(), ALittleScriptIconType::STRUCT, dec->GetDescriptor());
     }
     // 处理using
     {
@@ -492,15 +492,15 @@ bool ALittleScriptPropertyValueCustomTypeReference::QueryCompletion(ABnfElementP
             ABnfGuessPtr guess;
             auto error = dec->GuessType(guess);
             if (error)
-                list.emplace_back(dec->GetElementText(), ALittleScriptIconType::CLASS);
+                list.emplace_back(dec->GetElementText(), ALittleScriptIconType::CLASS, dec->GetDescriptor());
             else
             {
                 if (std::dynamic_pointer_cast<ALittleScriptGuessClass>(guess))
-                    list.emplace_back(dec->GetElementText(), ALittleScriptIconType::CLASS);
+                    list.emplace_back(dec->GetElementText(), ALittleScriptIconType::CLASS, dec->GetDescriptor());
                 else if (std::dynamic_pointer_cast<ALittleScriptGuessStruct>(guess))
-                    list.emplace_back(dec->GetElementText(), ALittleScriptIconType::STRUCT);
+                    list.emplace_back(dec->GetElementText(), ALittleScriptIconType::STRUCT, dec->GetDescriptor());
                 else
-                    list.emplace_back(dec->GetElementText(), ALittleScriptIconType::PROPERTY);
+                    list.emplace_back(dec->GetElementText(), ALittleScriptIconType::PROPERTY, dec->GetDescriptor());
             }
         }
     }
@@ -509,14 +509,14 @@ bool ALittleScriptPropertyValueCustomTypeReference::QueryCompletion(ABnfElementP
         std::vector<std::shared_ptr<ABnfElement>> dec_list;
         index->FindALittleNameDecList(ABnfElementType::ENUM_NAME, element->GetFile(), m_namespace_name, u8"", true, dec_list);
         for (auto& dec : dec_list)
-            list.emplace_back(dec->GetElementText(), ALittleScriptIconType::ENUM);
+            list.emplace_back(dec->GetElementText(), ALittleScriptIconType::ENUM, dec->GetDescriptor());
     }
     // 处理单例
     {
         std::vector<std::shared_ptr<ABnfElement>> dec_list;
         index->FindALittleNameDecList(ABnfElementType::INSTANCE_NAME, element->GetFile(), m_namespace_name, u8"", true, dec_list);
         for (auto& dec : dec_list)
-            list.emplace_back(dec->GetElementText(), ALittleScriptIconType::INSTANCE);
+            list.emplace_back(dec->GetElementText(), ALittleScriptIconType::INSTANCE, dec->GetDescriptor());
     }
 
     // 处理参数
@@ -526,7 +526,7 @@ bool ALittleScriptPropertyValueCustomTypeReference::QueryCompletion(ABnfElementP
         std::vector<std::shared_ptr<ALittleScriptMethodParamNameDecElement>> dec_list;
         ALittleScriptUtility::FindMethodParamNameDecList(method_dec, u8"", dec_list);
         for (auto& dec : dec_list)
-            list.emplace_back(dec->GetElementText(), ALittleScriptIconType::PARAM);
+            list.emplace_back(dec->GetElementText(), ALittleScriptIconType::PARAM, dec->GetDescriptor());
     }
 
     // 处理表达式
@@ -534,7 +534,7 @@ bool ALittleScriptPropertyValueCustomTypeReference::QueryCompletion(ABnfElementP
         std::vector<std::shared_ptr<ALittleScriptVarAssignNameDecElement>> dec_list;
         ALittleScriptUtility::FindVarAssignNameDecList(element, u8"", dec_list);
         for (auto& dec : dec_list)
-            list.emplace_back(dec->GetElementText(), ALittleScriptIconType::VARIABLE);
+            list.emplace_back(dec->GetElementText(), ALittleScriptIconType::VARIABLE, dec->GetDescriptor());
     }
 
     return true;

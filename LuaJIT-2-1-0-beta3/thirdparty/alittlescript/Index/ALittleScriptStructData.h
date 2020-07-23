@@ -7,6 +7,7 @@
 #include <memory>
 
 class ALittleScriptStructVarDecElement;
+class ABnfElement;
 
 class ALittleScriptStructData
 {
@@ -16,7 +17,7 @@ private:
 
 public:
     // 添加新元素
-    void AddVarDec(std::shared_ptr<ALittleScriptStructVarDecElement> dec);
+    void AddVarDec(std::shared_ptr<ABnfElement> dec, std::shared_ptr<ABnfElement> next_dec);
 
     // 查找元素
     void FindVarDecList(const std::string& name, std::vector<std::shared_ptr<ALittleScriptStructVarDecElement>>& result) const;

@@ -419,14 +419,14 @@ void ABnfProject::QueryComplete(const std::string& full_path, int query_id, int 
         });
 }
 
-void ABnfProject::QuerySignatureHelp(const std::string& full_path, int query_id, int version, int it_line, int it_char)
+void ABnfProject::QueryParamList(const std::string& full_path, int query_id, int version, int it_line, int it_char)
 {
     auto it = m_file_map.find(full_path);
     if (it != m_file_map.end())
     {
         std::vector<ALanguageParameterInfo> info_list;
         int line_start; int char_start; int line_end; int char_end;
-        if (it->second->QuerySignatureHelp(version, it_line, it_char, info_list, line_start, char_start, line_end, char_end))
+        if (it->second->QueryParamList(version, it_line, it_char, info_list, line_start, char_start, line_end, char_end))
         {
             std::unique_lock<std::mutex> lock(m_output_lock);
             m_outputs.push_back([query_id, info_list, line_start, char_start, line_end, char_end](lua_State* L)->int

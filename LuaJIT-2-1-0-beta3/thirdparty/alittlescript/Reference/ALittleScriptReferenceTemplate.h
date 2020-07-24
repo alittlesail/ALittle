@@ -25,11 +25,12 @@ public:
     virtual int QueryDesiredIndent(int it_line, int it_char, ABnfElementPtr select) override;
 
     virtual int QueryFormateIndent(int it_line, int it_char, ABnfElementPtr select) override;
+    virtual int QueryParamIndex(int it_line, int it_char, ABnfElementPtr select) override;
 
     virtual bool QueryKeyWord(ABnfElementPtr select, std::vector<ALanguageCompletionInfo>& list) override;
 
     // 函数调用时的函数提示
-    virtual bool QuerySignatureHelp(int& line_start, int& char_start, int& line_end, int& char_end, std::vector<ALanguageParameterInfo>& param_list) override;
+    virtual bool QueryParamList(int& line_start, int& char_start, int& line_end, int& char_end, std::vector<ALanguageParameterInfo>& param_list) override;
 
     ALittleScriptIndex* GetIndex();
 };

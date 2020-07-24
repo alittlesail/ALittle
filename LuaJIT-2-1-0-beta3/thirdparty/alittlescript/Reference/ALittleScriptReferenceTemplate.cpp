@@ -56,6 +56,7 @@
 #include "../Generate/ALittleScriptAllTypeElement.h"
 #include "../Generate/ALittleScriptMethodParamOneDecElement.h"
 #include "../Generate/ALittleScriptMethodParamNameDecElement.h"
+#include "../Generate/ALittleScriptValueStatElement.h"
 
 #include "../Guess/ALittleScriptGuessTemplate.h"
 #include "../Guess/ALittleScriptGuessClass.h"
@@ -224,6 +225,62 @@ int ALittleScriptReference::QueryFormateIndent(int it_line, int it_char, ABnfEle
     return m_format_indent;
 }
 
+int ALittleScriptReference::QueryParamIndex(int it_line, int it_char, ABnfElementPtr select)
+{
+    ABnfElementPtr parent = m_ref_element.lock();
+    if (parent == nullptr) return -1;
+
+    while (parent != nullptr)
+    {
+        const std::vector<std::shared_ptr<ALittleScriptStringElement>>* symbol_list = nullptr;
+        if (std::dynamic_pointer_cast<ALittleScriptPropertyValueMethodCallElement>(parent))
+        {
+            auto stat = std::dynamic_pointer_cast<ALittleScriptPropertyValueMethodCallElement>(parent);
+            symbol_list = &stat->GetStringList();
+        }
+        else if (std::dynamic_pointer_cast<ALittleScriptOpNewStatElement>(parent))
+        {
+            auto stat = std::dynamic_pointer_cast<ALittleScriptOpNewStatElement>(parent);
+            symbol_list = &stat->GetStringList();
+        }
+
+        if (symbol_list != nullptr)
+        {
+            if (symbol_list->empty()) return -1;
+
+            int start = 0;
+            for (int i = static_cast<int>(symbol_list->size()) - 1; i >= 0; --i)
+            {
+                if ((*symbol_list)[i]->GetElementText() == "(")
+                {
+                    start = i;
+                    break;
+                }
+            }
+            int index = 0;
+            for (size_t i = start; i < symbol_list->size(); ++i)
+            {
+                auto& symbol = (*symbol_list)[i];
+                if (symbol->GetElementText() == "(") continue;
+
+                if (it_line < symbol->GetEndLine()) return index;
+                if (it_char < symbol->GetEndCol()) return index;
+
+                ++index;
+            }
+
+            return -1;
+        }
+
+        if (std::dynamic_pointer_cast<ALittleScriptMethodBodyDecElement>(parent)) return -1;
+        if (std::dynamic_pointer_cast<ALittleScriptAllExprElement>(parent)) return -1;
+
+        parent = parent->GetParent();
+    }
+
+    return false;
+}
+
 bool ALittleScriptReference::QueryKeyWord(ABnfElementPtr select, std::vector<ALanguageCompletionInfo>& list)
 {
     auto& abnf = select->GetFile()->GetProject()->RefABnf();
@@ -233,7 +290,7 @@ bool ALittleScriptReference::QueryKeyWord(ABnfElementPtr select, std::vector<ALa
     return false;
 }
 
-bool ALittleScriptReference::QuerySignatureHelp(int& line_start, int& char_start, int& line_end, int& char_end, std::vector<ALanguageParameterInfo>& param_list)
+bool ALittleScriptReference::QueryParamList(int& line_start, int& char_start, int& line_end, int& char_end, std::vector<ALanguageParameterInfo>& param_list)
 {
     ABnfElementPtr parent = m_ref_element.lock();
     if (parent == nullptr) return 0;

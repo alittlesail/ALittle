@@ -117,10 +117,15 @@ void abnffile_querycomplete(void* abnf_file, int query_id, int version, int it_l
 	project_c->Add(std::bind(&ABnfProject::QueryComplete, project_c, ((ABnfFile*)abnf_file)->GetFullPath(), query_id, version, it_line, it_char));
 }
 
-void abnffile_querysignaturehelp(void* abnf_file, int query_id, int version, int it_line, int it_char)
+void abnffile_queryparamlist(void* abnf_file, int query_id, int version, int it_line, int it_char)
 {
 	auto* project_c = ((ABnfFile*)abnf_file)->GetProject();
-	project_c->Add(std::bind(&ABnfProject::QuerySignatureHelp, project_c, ((ABnfFile*)abnf_file)->GetFullPath(), query_id, version, it_line, it_char));
+	project_c->Add(std::bind(&ABnfProject::QueryParamList, project_c, ((ABnfFile*)abnf_file)->GetFullPath(), query_id, version, it_line, it_char));
+}
+
+int abnffile_queryparamindex(void* abnf_file, int version, int it_line, int it_char)
+{
+	return ((ABnfFile*)abnf_file)->QueryParamIndex(version, it_line, it_char);
 }
 
 void abnffile_queryerror(void* abnf_file, int query_id, int version, int force)

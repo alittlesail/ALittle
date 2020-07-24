@@ -82,10 +82,12 @@ public:
     bool QueryComplete(int version, int it_line, int it_char
         , std::vector<ALanguageCompletionInfo>& info_list
         , int& line_start, int& char_start, int& line_end, int& char_end);
-    // 获取提示
-    bool QuerySignatureHelp(int version, int it_line, int it_char
+    // 获取参数列表
+    bool QueryParamList(int version, int it_line, int it_char
         , std::vector<ALanguageParameterInfo>& param_list
         , int& line_start, int& char_start, int& line_end, int& char_end);
+    // 获取参数下标
+    int QueryParamIndex(int version, int it_line, int it_char);
     // 获取错误
     bool QueryError(int version, bool force, std::vector<ALanguageErrorInfo>& info_list);
     // 获取插入缩进

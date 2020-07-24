@@ -209,7 +209,7 @@ static int alanguagelib_abnffile_querycomplete(lua_State* L)
     return 0;
 }
 
-static int alanguagelib_abnffile_querysignaturehelp(lua_State* L)
+static int alanguagelib_abnffile_queryparamlist(lua_State* L)
 {
     void** c = (void**)lua_touserdata(L, 1);
     luaL_argcheck(L, c != 0, 1, "abnf file object is null");
@@ -217,8 +217,19 @@ static int alanguagelib_abnffile_querysignaturehelp(lua_State* L)
     int version = (int)luaL_checkinteger(L, 3);
     int it_line = (int)luaL_checkinteger(L, 4);
     int it_char = (int)luaL_checkinteger(L, 5);
-    abnffile_querysignaturehelp(*c, query_id, version, it_line - 1, it_char);
+    abnffile_queryparamlist(*c, query_id, version, it_line - 1, it_char);
     return 0;
+}
+
+static int alanguagelib_abnffile_queryparamindex(lua_State* L)
+{
+    void** c = (void**)lua_touserdata(L, 1);
+    luaL_argcheck(L, c != 0, 1, "abnf file object is null");
+    int version = (int)luaL_checkinteger(L, 2);
+    int it_line = (int)luaL_checkinteger(L, 3);
+    int it_char = (int)luaL_checkinteger(L, 4);
+    lua_pushinteger(L, abnffile_queryparamindex(*c, version, it_line - 1, it_char));
+    return 1;
 }
 
 static int alanguagelib_abnffile_queryerror(lua_State* L)
@@ -308,7 +319,8 @@ static struct luaL_Reg alanguagelib[] = {
   {"abnffile_queryinfo", alanguagelib_abnffile_queryinfo},
   {"abnffile_querygoto", alanguagelib_abnffile_querygoto},
   {"abnffile_querycomplete", alanguagelib_abnffile_querycomplete},
-  {"abnffile_querysignaturehelp", alanguagelib_abnffile_querysignaturehelp},
+  {"abnffile_queryparamlist", alanguagelib_abnffile_queryparamlist},
+  {"abnffile_queryparamindex", alanguagelib_abnffile_queryparamindex},
   {"abnffile_queryerror", alanguagelib_abnffile_queryerror},
 
   {"abnffile_querydesiredindent", alanguagelib_abnffile_querydesiredindent},

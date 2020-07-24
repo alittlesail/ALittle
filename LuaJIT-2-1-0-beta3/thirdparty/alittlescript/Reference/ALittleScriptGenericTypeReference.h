@@ -11,6 +11,7 @@ public:
     ALittleScriptGenericTypeReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptGenericTypeElement>(element) {}
     static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptGenericTypeReference(element); }
     ABnfGuessError GuessTypes(std::vector<ABnfGuessPtr>& guess_list) override;
+    ABnfGuessError CheckError() override;
 };
 
 #endif // _ALITTLE_ALITTLESCRIPTGENERICTYPEREFERENCE_H_

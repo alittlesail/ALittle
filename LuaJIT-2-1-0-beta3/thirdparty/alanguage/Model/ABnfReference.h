@@ -35,11 +35,7 @@ public:
     virtual int QueryFormateIndent(int it_line, int it_char, ABnfElementPtr select) { return 0; }
 
     // 函数调用时的函数提示
-    virtual void QuerySignatureHelp(int& start, int& length, ALanguageSignatureInfo& info)
-    {
-        start = 0;
-        length = 0;
-    }
+    virtual bool QuerySignatureHelp(int& line_start, int& char_start, int& line_end, int& char_end, std::vector<ALanguageParameterInfo>& param_list) { return false; }
 
     // 鼠标移入时，显示的快捷信息
     virtual void QueryQuickInfo(std::string& info) { }

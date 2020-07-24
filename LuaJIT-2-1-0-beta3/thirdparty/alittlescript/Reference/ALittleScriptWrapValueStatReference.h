@@ -11,6 +11,7 @@ public:
     ALittleScriptWrapValueStatReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptWrapValueStatElement>(element) {}
     static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptWrapValueStatReference(element); }
     ABnfGuessError GuessTypes(std::vector<ABnfGuessPtr>& guess_list) override;
+    ABnfGuessError CheckError() override;
 };
 
 #endif // _ALITTLE_ALITTLESCRIPTWRAPVALUESTATREFERENCE_H_

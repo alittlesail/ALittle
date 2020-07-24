@@ -19,3 +19,12 @@ ABnfGuessError ALittleScriptWrapValueStatReference::GuessTypes(std::vector<ABnfG
     guess_list.resize(0);
     return nullptr;
 }
+
+ABnfGuessError ALittleScriptWrapValueStatReference::CheckError()
+{
+    auto element = m_element.lock();
+    if (element == nullptr) return ABnfGuessError(nullptr, u8"节点失效");
+
+    if (element->GetValueStat() == nullptr) return ABnfGuessError(element, u8"这里不能为空");
+    return nullptr;
+}

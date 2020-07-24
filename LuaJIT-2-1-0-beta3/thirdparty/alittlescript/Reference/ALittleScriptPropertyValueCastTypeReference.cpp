@@ -19,6 +19,9 @@ ABnfGuessError ALittleScriptPropertyValueCastTypeReference::CheckError()
     auto element = m_element.lock();
     if (element == nullptr) return ABnfGuessError(element, u8"节点失效");
 
+    if (element->GetAllType() == nullptr) return ABnfGuessError(element, u8"请填写要转换的类型");
+    if (element->GetValueFactorStat() == nullptr) return ABnfGuessError(element, u8"请填写要转换的对象");
+
     std::vector<ABnfGuessPtr> guess_list;
     auto error = element->GuessTypes(guess_list);
     if (error) return error;

@@ -23,10 +23,10 @@ ABnfGuessError ALittleScriptForExprReference::CheckError()
     auto element = m_element.lock();
     if (element == nullptr) return ABnfGuessError(element, u8"节点失效");
     auto for_condition = element->GetForCondition();
-    if (for_condition == nullptr) return nullptr;
+    if (for_condition == nullptr) return ABnfGuessError(element, u8"请填写循环条件");
 
     auto for_pair_dec = for_condition->GetForPairDec();
-    if (for_pair_dec == nullptr) return nullptr;
+    if (for_pair_dec == nullptr) return ABnfGuessError(for_condition, u8"请填写循环条件");
 
     auto step_condition = for_condition->GetForStepCondition();
     auto in_condition = for_condition->GetForInCondition();

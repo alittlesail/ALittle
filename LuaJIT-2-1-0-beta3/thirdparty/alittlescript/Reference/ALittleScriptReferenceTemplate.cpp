@@ -48,6 +48,19 @@
 #include "../Generate/ALittleScriptBindStatElement.h"
 #include "../Generate/ALittleScriptTcallStatElement.h"
 #include "../Generate/ALittleScriptOpNewStatElement.h"
+#include "../Generate/ALittleScriptStringElement.h"
+#include "../Generate/ALittleScriptCustomTypeElement.h"
+#include "../Generate/ALittleScriptClassCtorDecElement.h"
+#include "../Generate/ALittleScriptMethodParamOneDecElement.h"
+#include "../Generate/ALittleScriptMethodParamTailDecElement.h"
+#include "../Generate/ALittleScriptAllTypeElement.h"
+#include "../Generate/ALittleScriptMethodParamOneDecElement.h"
+#include "../Generate/ALittleScriptMethodParamNameDecElement.h"
+
+#include "../Guess/ALittleScriptGuessTemplate.h"
+#include "../Guess/ALittleScriptGuessClass.h"
+
+#include "ALittleScriptPropertyValueMethodCallReference.h"
 
 ALittleScriptReference::ALittleScriptReference(ABnfElementPtr p_element)
 {
@@ -217,6 +230,153 @@ bool ALittleScriptReference::QueryKeyWord(ABnfElementPtr select, std::vector<ALa
 
     for (auto& key : abnf.GetKeySet())
         list.emplace_back(key, 0, "");
+    return false;
+}
+
+bool ALittleScriptReference::QuerySignatureHelp(int& line_start, int& char_start, int& line_end, int& char_end, std::vector<ALanguageParameterInfo>& param_list)
+{
+    ABnfElementPtr parent = m_ref_element.lock();
+    if (parent == nullptr) return 0;
+    while (parent != nullptr)
+    {
+        if (std::dynamic_pointer_cast<ALittleScriptPropertyValueMethodCallElement>(parent))
+        {
+            auto refe = dynamic_cast<ALittleScriptPropertyValueMethodCallReference*>(parent->GetReference());
+            if (refe == nullptr) return false;
+
+            ABnfGuessPtr guess;
+            auto error = refe->GuessPreType(guess);
+            if (error) return false;
+
+            auto guess_functor = std::dynamic_pointer_cast<ALittleScriptGuessFunctor>(guess);
+            if (guess_functor == nullptr) return false;
+
+            for (size_t i = 0; i < guess_functor->param_name_list.size(); ++i)
+            {
+                std::string type = "";
+                if (i < guess_functor->param_nullable_list.size() && guess_functor->param_nullable_list[i])
+                    type = "[Nullable] ";
+                if (i < guess_functor->param_list.size())
+                {
+                    auto guess_e = guess_functor->param_list[i].lock();
+                    if (guess_e) type += guess_e->GetValue();
+                }
+                
+                ALanguageParameterInfo param;
+                param.name = type + " " + guess_functor->param_name_list[i];
+
+                param_list.push_back(param);
+            }
+            if (guess_functor->param_tail.lock() != nullptr)
+            {
+                ALanguageParameterInfo param;
+                param.name = guess_functor->param_tail.lock()->GetValue();
+                param_list.push_back(param);
+            }
+
+            line_start = parent->GetStartLine();
+            char_start = parent->GetStartCol();
+            line_end = parent->GetEndLine();
+            char_end = parent->GetEndCol();
+
+            auto method_call = std::dynamic_pointer_cast<ALittleScriptPropertyValueMethodCallElement>(parent);
+            if (method_call == nullptr) return false;
+            const auto& string_list = method_call->GetStringList();
+            if (string_list.size() > 1)
+            {
+                line_start = string_list[0]->GetStartLine();
+                char_start = string_list[0]->GetStartCol();
+                line_end = parent->GetEndLine();
+                char_end = parent->GetEndCol();
+            }
+            return true;
+        }
+        else if (std::dynamic_pointer_cast<ALittleScriptOpNewStatElement>(parent))
+        {
+            auto custom_type = std::dynamic_pointer_cast<ALittleScriptOpNewStatElement>(parent)->GetCustomType();
+            if (custom_type == nullptr) return false;
+
+            ABnfGuessPtr guess;
+            auto error = custom_type->GuessType(guess);
+            if (error) return false;
+
+            if (std::dynamic_pointer_cast<ALittleScriptGuessTemplate>(guess))
+            {
+                auto guess_template = std::dynamic_pointer_cast<ALittleScriptGuessTemplate>(guess);
+                if (guess_template->template_extends.lock() != nullptr)
+                    guess = guess_template->template_extends.lock();
+            }
+
+            if (std::dynamic_pointer_cast<ALittleScriptGuessClass>(guess))
+            {
+                auto class_dec = std::dynamic_pointer_cast<ALittleScriptGuessClass>(guess)->class_dec.lock();
+                if (class_dec == nullptr) return false;
+                auto ctor = ALittleScriptUtility::FindFirstCtorDecFromExtends(class_dec, 100);
+                if (ctor == nullptr) return false;
+
+                auto param_dec = ctor->GetMethodParamDec();
+                if (param_dec == nullptr) return false;
+
+                const auto& param_one_dec_list = param_dec->GetMethodParamOneDecList();
+                if (param_one_dec_list.size() == 0) return false;
+
+                for (size_t i = 0; i < param_one_dec_list.size(); ++i)
+                {
+                    auto param_one_dec = param_one_dec_list[i];
+                    auto tail_dec = param_one_dec->GetMethodParamTailDec();
+                    if (tail_dec != nullptr)
+                    {
+                        ALanguageParameterInfo param_info;
+                        param_info.name = tail_dec->GetElementText();
+                        param_list.push_back(param_info);
+                        continue;
+                    }
+
+                    auto nullable = ALittleScriptUtility::IsNullable(param_one_dec->GetModifierList());
+
+                    auto all_type = param_one_dec->GetAllType();
+                    if (all_type == nullptr) return false;
+
+                    ABnfGuessPtr all_type_guess;
+                    error = all_type->GuessType(all_type_guess);
+                    if (error) return false;
+
+                    ALanguageParameterInfo param;
+                    param.name = all_type_guess->GetValue();
+                    if (param_one_dec->GetMethodParamNameDec() != nullptr)
+                    {
+                        if (nullable) param.name += " [Nullable]";
+                        param.name += " " + param_one_dec->GetMethodParamNameDec()->GetElementText();
+                    }
+
+                    param_list.push_back(param);
+                }
+
+                line_start = parent->GetStartLine();
+                char_start = parent->GetStartCol();
+                line_end = parent->GetEndLine();
+                char_end = parent->GetEndCol();
+
+                auto new_stat = std::dynamic_pointer_cast<ALittleScriptOpNewStatElement>(parent);
+                const auto& string_list = new_stat->GetStringList();
+                if (string_list.size() > 1)
+                {
+                    line_start = string_list[0]->GetStartLine();
+                    char_start = string_list[0]->GetStartCol();
+                    line_end = parent->GetEndLine();
+                    char_end = parent->GetEndCol();
+                }
+                return true;
+            }
+            return false;
+        }
+
+        if (std::dynamic_pointer_cast<ALittleScriptMethodBodyDecElement>(parent)) return false;
+        if (std::dynamic_pointer_cast<ALittleScriptAllExprElement>(parent)) return false;
+
+        parent = parent->GetParent();
+    }
+
     return false;
 }
 

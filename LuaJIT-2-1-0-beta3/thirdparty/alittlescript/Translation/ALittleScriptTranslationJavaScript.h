@@ -216,16 +216,16 @@ public:
     ALittleScriptTranslationJavaScript() {}
 
     // 生成bind命令
-    ABnfGuessError GenerateBindStat(std::shared_ptr<ALittleScriptBindStatElement> bind_stat, std::string& content);
+    ABnfGuessError GenerateBindStat(std::shared_ptr<ALittleScriptBindStatElement> bind_stat, const std::string& pre_tab, std::string& content);
 
     // 生成tcall命令
-    ABnfGuessError GenerateTcallStat(std::shared_ptr<ALittleScriptTcallStatElement> tcall_stat, std::string& content);
+    ABnfGuessError GenerateTcallStat(std::shared_ptr<ALittleScriptTcallStatElement> tcall_stat, const std::string& pre_tab, std::string& content);
 
     // 生成new List
-    ABnfGuessError GenerateOpNewListStat(std::shared_ptr<ALittleScriptOpNewListStatElement> op_new_list, std::string& content);
+    ABnfGuessError GenerateOpNewListStat(std::shared_ptr<ALittleScriptOpNewListStatElement> op_new_list, const std::string& pre_tab, std::string& content);
 
     // 生成new
-    ABnfGuessError GenerateOpNewStat(std::shared_ptr<ALittleScriptOpNewStatElement> op_new_stat, std::string& content);
+    ABnfGuessError GenerateOpNewStat(std::shared_ptr<ALittleScriptOpNewStatElement> op_new_stat, const std::string& pre_tab, std::string& content);
 
     // 生成custom_type定义中的模板参数列表
     ABnfGuessError GenerateCustomTypeTemplateList(std::vector<ABnfGuessPtr>& guess_list,
@@ -233,95 +233,95 @@ public:
         std::vector<std::string>& template_param_name_list);
 
     // 生成custom_type
-    ABnfGuessError GenerateCustomType(std::shared_ptr<ALittleScriptCustomTypeElement> custom_type, std::string& content);
+    ABnfGuessError GenerateCustomType(std::shared_ptr<ALittleScriptCustomTypeElement> custom_type, const std::string& pre_tab, std::string& content);
 
     // 生成8级运算符
-    ABnfGuessError GenerateOp8Suffix(std::shared_ptr<ALittleScriptOp8SuffixElement> suffix, std::string& content);
+    ABnfGuessError GenerateOp8Suffix(std::shared_ptr<ALittleScriptOp8SuffixElement> suffix, const std::string& pre_tab, std::string& content);
 
 
-    ABnfGuessError GenerateOp8SuffixEe(std::shared_ptr<ALittleScriptOp8SuffixEeElement> suffix, std::string& content);
+    ABnfGuessError GenerateOp8SuffixEe(std::shared_ptr<ALittleScriptOp8SuffixEeElement> suffix, const std::string& pre_tab, std::string& content);
 
 
-    ABnfGuessError GenerateOp8SuffixEx(std::shared_ptr<ALittleScriptOp8SuffixExElement> suffix, std::string& content);
+    ABnfGuessError GenerateOp8SuffixEx(std::shared_ptr<ALittleScriptOp8SuffixExElement> suffix, const std::string& pre_tab, std::string& content);
 
 
-    ABnfGuessError GenerateOp8Stat(std::shared_ptr<ALittleScriptValueFactorStatElement> value_factor_stat, std::shared_ptr<ALittleScriptOp8StatElement> op_8_stat, std::string& content);
+    ABnfGuessError GenerateOp8Stat(std::shared_ptr<ALittleScriptValueFactorStatElement> value_factor_stat, std::shared_ptr<ALittleScriptOp8StatElement> op_8_stat, const std::string& pre_tab, std::string& content);
 
     // 生成7级运算符
-    ABnfGuessError GenerateOp7Suffix(std::shared_ptr<ALittleScriptOp7SuffixElement> suffix, std::string& content);
+    ABnfGuessError GenerateOp7Suffix(std::shared_ptr<ALittleScriptOp7SuffixElement> suffix, const std::string& pre_tab, std::string& content);
 
 
-    ABnfGuessError GenerateOp7SuffixEe(std::shared_ptr<ALittleScriptOp7SuffixEeElement> suffix, std::string& content);
+    ABnfGuessError GenerateOp7SuffixEe(std::shared_ptr<ALittleScriptOp7SuffixEeElement> suffix, const std::string& pre_tab, std::string& content);
 
 
-    ABnfGuessError GenerateOp7SuffixEx(std::shared_ptr<ALittleScriptOp7SuffixExElement> suffix, std::string& content);
+    ABnfGuessError GenerateOp7SuffixEx(std::shared_ptr<ALittleScriptOp7SuffixExElement> suffix, const std::string& pre_tab, std::string& content);
 
-    ABnfGuessError GenerateOp7Stat(std::shared_ptr<ALittleScriptValueFactorStatElement> value_factor_stat, std::shared_ptr<ALittleScriptOp7StatElement> op_7_stat, std::string& content);
+    ABnfGuessError GenerateOp7Stat(std::shared_ptr<ALittleScriptValueFactorStatElement> value_factor_stat, std::shared_ptr<ALittleScriptOp7StatElement> op_7_stat, const std::string& pre_tab, std::string& content);
 
     // 生成6级运算符
-    ABnfGuessError GenerateOp6Suffix(std::shared_ptr<ALittleScriptOp6SuffixElement> suffix, std::string& content);
+    ABnfGuessError GenerateOp6Suffix(std::shared_ptr<ALittleScriptOp6SuffixElement> suffix, const std::string& pre_tab, std::string& content);
 
 
-    ABnfGuessError GenerateOp6SuffixEe(std::shared_ptr<ALittleScriptOp6SuffixEeElement> suffix, std::string& content);
+    ABnfGuessError GenerateOp6SuffixEe(std::shared_ptr<ALittleScriptOp6SuffixEeElement> suffix, const std::string& pre_tab, std::string& content);
 
 
-    ABnfGuessError GenerateOp6SuffixEx(std::shared_ptr<ALittleScriptOp6SuffixExElement> suffix, std::string& content);
+    ABnfGuessError GenerateOp6SuffixEx(std::shared_ptr<ALittleScriptOp6SuffixExElement> suffix, const std::string& pre_tab, std::string& content);
 
 
-    ABnfGuessError GenerateOp6Stat(std::shared_ptr<ALittleScriptValueFactorStatElement> value_factor_stat, std::shared_ptr<ALittleScriptOp6StatElement> op_6_tat, std::string& content);
+    ABnfGuessError GenerateOp6Stat(std::shared_ptr<ALittleScriptValueFactorStatElement> value_factor_stat, std::shared_ptr<ALittleScriptOp6StatElement> op_6_tat, const std::string& pre_tab, std::string& content);
 
     // 生成5级运算符
 
-    ABnfGuessError GenerateOp5Suffix(std::shared_ptr<ALittleScriptOp5SuffixElement> suffix, std::string& content);
+    ABnfGuessError GenerateOp5Suffix(std::shared_ptr<ALittleScriptOp5SuffixElement> suffix, const std::string& pre_tab, std::string& content);
 
 
-    ABnfGuessError GenerateOp5SuffixEe(std::shared_ptr<ALittleScriptOp5SuffixEeElement> suffix, std::string& content);
+    ABnfGuessError GenerateOp5SuffixEe(std::shared_ptr<ALittleScriptOp5SuffixEeElement> suffix, const std::string& pre_tab, std::string& content);
 
 
-    ABnfGuessError GenerateOp5SuffixEx(std::shared_ptr<ALittleScriptOp5SuffixExElement> suffix, std::string& content);
+    ABnfGuessError GenerateOp5SuffixEx(std::shared_ptr<ALittleScriptOp5SuffixExElement> suffix, const std::string& pre_tab, std::string& content);
         
-    ABnfGuessError GenerateOp5Stat(std::shared_ptr<ALittleScriptValueFactorStatElement> value_factor_stat, std::shared_ptr<ALittleScriptOp5StatElement> op_5_stat, std::string& content);
+    ABnfGuessError GenerateOp5Stat(std::shared_ptr<ALittleScriptValueFactorStatElement> value_factor_stat, std::shared_ptr<ALittleScriptOp5StatElement> op_5_stat, const std::string& pre_tab, std::string& content);
 
     // 生成4级运算符
-    ABnfGuessError GenerateOp4Suffix(std::shared_ptr<ALittleScriptOp4SuffixElement> suffix, std::string& content);
+    ABnfGuessError GenerateOp4Suffix(std::shared_ptr<ALittleScriptOp4SuffixElement> suffix, const std::string& pre_tab, std::string& content);
 
-    ABnfGuessError GenerateOp4SuffixEe(std::shared_ptr<ALittleScriptOp4SuffixEeElement> suffix, std::string& content);
+    ABnfGuessError GenerateOp4SuffixEe(std::shared_ptr<ALittleScriptOp4SuffixEeElement> suffix, const std::string& pre_tab, std::string& content);
 
 
-    ABnfGuessError GenerateOp4SuffixEx(std::shared_ptr<ALittleScriptOp4SuffixExElement> suffix, std::string& content);
+    ABnfGuessError GenerateOp4SuffixEx(std::shared_ptr<ALittleScriptOp4SuffixExElement> suffix, const std::string& pre_tab, std::string& content);
 
-    ABnfGuessError GenerateOp4Stat(std::shared_ptr<ALittleScriptValueFactorStatElement> value_factor_stat, std::shared_ptr<ALittleScriptOp4StatElement> op_4_stat, std::string& content);
+    ABnfGuessError GenerateOp4Stat(std::shared_ptr<ALittleScriptValueFactorStatElement> value_factor_stat, std::shared_ptr<ALittleScriptOp4StatElement> op_4_stat, const std::string& pre_tab, std::string& content);
 
     // 生成3级运算符
-    ABnfGuessError GenerateOp3Suffix(std::shared_ptr<ALittleScriptOp3SuffixElement> suffix, std::string& content);
+    ABnfGuessError GenerateOp3Suffix(std::shared_ptr<ALittleScriptOp3SuffixElement> suffix, const std::string& pre_tab, std::string& content);
 
-    ABnfGuessError GenerateOp3SuffixEx(std::shared_ptr<ALittleScriptOp3SuffixExElement> suffix, std::string& content);
+    ABnfGuessError GenerateOp3SuffixEx(std::shared_ptr<ALittleScriptOp3SuffixExElement> suffix, const std::string& pre_tab, std::string& content);
 
-    ABnfGuessError GenerateValueOpStat(std::shared_ptr<ALittleScriptValueOpStatElement> value_op_stat, std::string& content);
+    ABnfGuessError GenerateValueOpStat(std::shared_ptr<ALittleScriptValueOpStatElement> value_op_stat, const std::string& pre_tab, std::string& content);
 
-    ABnfGuessError GenerateOp3Stat(std::shared_ptr<ALittleScriptValueFactorStatElement> value_factor_stat, std::shared_ptr<ALittleScriptOp3StatElement> op_3_stat, std::string& content);
+    ABnfGuessError GenerateOp3Stat(std::shared_ptr<ALittleScriptValueFactorStatElement> value_factor_stat, std::shared_ptr<ALittleScriptOp3StatElement> op_3_stat, const std::string& pre_tab, std::string& content);
 
     // 生成2级运算符
-    ABnfGuessError GenerateOp2SuffixEx(std::shared_ptr<ALittleScriptOp2SuffixExElement> suffix, std::string& content);
+    ABnfGuessError GenerateOp2SuffixEx(std::shared_ptr<ALittleScriptOp2SuffixExElement> suffix, const std::string& pre_tab, std::string& content);
 
-    ABnfGuessError GenerateOp2Value(std::shared_ptr<ALittleScriptOp2ValueElement> op_2_value, std::string& content);
+    ABnfGuessError GenerateOp2Value(std::shared_ptr<ALittleScriptOp2ValueElement> op_2_value, const std::string& pre_tab, std::string& content);
 
-    ABnfGuessError GenerateOp2Stat(std::shared_ptr<ALittleScriptOp2StatElement> op_2_stat, std::string& content);
+    ABnfGuessError GenerateOp2Stat(std::shared_ptr<ALittleScriptOp2StatElement> op_2_stat, const std::string& pre_tab, std::string& content);
 
     // 生成值表达式
-    ABnfGuessError GenerateValueStat(std::shared_ptr<ALittleScriptValueStatElement> root, std::string& content);
+    ABnfGuessError GenerateValueStat(std::shared_ptr<ALittleScriptValueStatElement> root, const std::string& pre_tab, std::string& content);
         
     // 生成ValueFactorStat
-    ABnfGuessError GenerateValueFactorStat(std::shared_ptr<ALittleScriptValueFactorStatElement> value_factor, std::string& content);
+    ABnfGuessError GenerateValueFactorStat(std::shared_ptr<ALittleScriptValueFactorStatElement> value_factor, const std::string& pre_tab, std::string& content);
 
     // 生成常量
-    ABnfGuessError GenerateConstValue(std::shared_ptr<ALittleScriptConstValueElement> const_value, std::string& content);
+    ABnfGuessError GenerateConstValue(std::shared_ptr<ALittleScriptConstValueElement> const_value, const std::string& pre_tab, std::string& content);
 
     // 生成路径信息
-    ABnfGuessError GeneratePathsValue(std::shared_ptr<ALittleScriptPathsValueElement> paths_value, std::string& content);
+    ABnfGuessError GeneratePathsValue(std::shared_ptr<ALittleScriptPathsValueElement> paths_value, const std::string& pre_tab, std::string& content);
 
     // 生成反射
-    ABnfGuessError GenerateReflectValue(std::shared_ptr<ALittleScriptReflectValueElement> reflect_value, std::string& content);
+    ABnfGuessError GenerateReflectValue(std::shared_ptr<ALittleScriptReflectValueElement> reflect_value, const std::string& pre_tab, std::string& content);
 
     // 生成struct的反射信息
     ABnfGuessError GenerateReflectStructInfo(ABnfGuessPtr guess);
@@ -330,10 +330,10 @@ public:
     ABnfGuessError GenerateEnumValue(std::shared_ptr<ALittleScriptPropertyValueElement> prop_value, bool& handle, std::string& content);
 
     // 生成属性值表达式
-    ABnfGuessError GeneratePropertyValue(std::shared_ptr<ALittleScriptPropertyValueElement> prop_value, std::string& content, std::string& map_set, std::string& map_del);
+    ABnfGuessError GeneratePropertyValue(std::shared_ptr<ALittleScriptPropertyValueElement> prop_value, const std::string& pre_tab, std::string& content, std::string& map_set, std::string& map_del);
 
     // 生成co
-    ABnfGuessError GenerateCoroutineStat(std::shared_ptr<ALittleScriptCoroutineStatElement> root, std::string& content);
+    ABnfGuessError GenerateCoroutineStat(std::shared_ptr<ALittleScriptCoroutineStatElement> root, const std::string& pre_tab, std::string& content);
 
     // 生成using
     ABnfGuessError GenerateUsingDec(const std::vector<std::shared_ptr<ALittleScriptModifierElement>>& modifier, std::shared_ptr<ALittleScriptUsingDecElement> root, const std::string& pre_tab, std::string& content);

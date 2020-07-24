@@ -57,13 +57,8 @@ struct ALanguageErrorInfo
 
 struct ALanguageParameterInfo
 {
-    std::string documentation;
+    std::string descriptor;
     std::string name;
-};
-
-struct ALanguageSignatureInfo
-{
-    std::vector<ALanguageParameterInfo> param_list;
 };
 
 struct ALanguageHighlightWordInfo

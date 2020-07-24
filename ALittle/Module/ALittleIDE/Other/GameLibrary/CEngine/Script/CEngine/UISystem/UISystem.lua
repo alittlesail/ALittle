@@ -199,11 +199,13 @@ function UISystem:HandleMouseMoved(x, y)
 				self._dl = true
 				local event = {}
 				event.target = self._sfc
-				event.rel_x, event.rel_y = self._sfc:GlobalToLocalMatrix2D(self._mouse_x, self._mouse_y)
-				event.abs_x = x
-				event.abs_y = y
-				event.delta_x = self._dl_delta_x
-				event.delta_y = self._dl_delta_y
+				local mouse_x = x - delta_x
+				local mouse_y = y - delta_y
+				event.rel_x, event.rel_y = self._sfc:GlobalToLocalMatrix2D(mouse_x, mouse_y)
+				event.abs_x = mouse_x
+				event.abs_y = mouse_y
+				event.delta_x = 0
+				event.delta_y = 0
 				self._sfc:DispatchEvent(___all_struct[1301789264], event)
 			end
 		end

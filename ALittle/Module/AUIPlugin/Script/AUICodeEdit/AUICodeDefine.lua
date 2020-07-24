@@ -6,8 +6,8 @@ local ___ipairs = ipairs
 
 ALittle.RegStruct(-2130019625, "AUIPlugin.AUICodeErrorInfo", {
 name = "AUIPlugin.AUICodeErrorInfo", ns_name = "AUIPlugin", rl_name = "AUICodeErrorInfo", hash_code = -2130019625,
-name_list = {"_focus_quad","info"},
-type_list = {"ALittle.DisplayObject","lua.ABnfQueryError"},
+name_list = {"_focus_quad","info","item"},
+type_list = {"ALittle.DisplayObject","lua.ABnfQueryError","ALittle.DisplayObject"},
 option_map = {}
 })
 ALittle.RegStruct(-1898137181, "AUIPlugin.AUICodeEditJumpEvent", {
@@ -73,6 +73,12 @@ CODE_LINE_NUMBER_BLUE = 100 / 255
 CODE_FOCUS_RED = 88 / 255
 CODE_FOCUS_GREEN = 157 / 255
 CODE_FOCUS_BLUE = 246 / 255
+CODE_SIGNTURE_RED = 224 / 255
+CODE_SIGNTURE_GREEN = 224 / 255
+CODE_SIGNTURE_BLUE = 224 / 255
+CODE_SIGNTURE_FOCUS_RED = 224 / 255
+CODE_SIGNTURE_FOCUS_GREEN = 224 / 255
+CODE_SIGNTURE_FOCUS_BLUE = 224 / 255
 CODE_DEFAULT_COLOR = {}
 CODE_DEFAULT_COLOR.red = CODE_FONT_RED
 CODE_DEFAULT_COLOR.green = CODE_FONT_GREEN

@@ -55,7 +55,20 @@ public class AUICodeEdit : ALittle.DisplayLayout
     private bool _in_drag = false;
     private bool _force_query_error = false;
 
+    // 帮助层
+    private ALittle.DisplayLayout _help_container;
+    private AUICodeCompleteScreen _complete_screen;
+    private AUICodeSigntruetureHelp _signture_help;
+
     public static Create() : AUICodeEdit { return g_Control.CreateControl{AUICodeEdit}("ide_code_tab_screen"); }
+
+    public ctor(ALittle.ControlSystem ctrl_sys)
+    {
+        // 创建提示滚动屏
+        this._complete_screen = new AUICodeCompleteScreen(this);
+        // 创建函数提示
+        this._signture_help = new AUICodeSigntruetureHelp(this);
+    }
 
 	public fun TCtor()
 	{
@@ -78,7 +91,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
         this._find_dialog.close_callback = bind(this.HandleFindEscClick, this, null);
 
         this._error_btn.visible = false;
-
+        
 		// 创建编辑容器
         this._code_screen.container = new AUICodeEditContainer(this._ctrl_sys);
         this._edit_quad._user_data = this;
@@ -97,7 +110,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
         this._cursor.Hide();
 
         this._select_cursor = new AUICodeSelectCursor(this);
-
+        
         this._text_show = new ALittle.Text(this._ctrl_sys);
         this._text_show.font_path = "YaHei-Consolas.ttf";
         this._text_show.font_size = 14;
@@ -119,10 +132,12 @@ public class AUICodeEdit : ALittle.DisplayLayout
     public get select_cursor() : AUICodeSelectCursor { return this._select_cursor; }
     public get language() : AUICodeLanguage { return this._language; }
     public get ascii_width() : double { return this._ascii_width; }
+    public get word_width() : double { return this._word_width; }
     public set line_count(int count) { this._line_count = count; }
     public get line_count() : int { return this._line_count; }
     public get line_list() : List<AUICodeLineInfo> { return this._line_list; }
     public get revoke_list() : ALittle.RevokeList { return this._revoke_list; }
+    public get help_container() : ALittle.DisplayLayout { return this._help_container; }
 
     private fun DispatchJumEvent()
     {
@@ -320,11 +335,11 @@ public class AUICodeEdit : ALittle.DisplayLayout
                     this._error_quad_move_in = item;
                     if (item != null)
                     {
-                        var item_info = cast<AUICodeErrorInfo>(item._user_data);
+                        var info = cast<lua.ABnfQueryError>(item._user_data);
                         var x, y = item.LocalToGlobal();
                         var center_x = x + item.width / 2;
                         var center_y = y;
-                        g_AUITool.ShowTip(item_info.info.error);
+                        g_AUITool.ShowTip(info.error);
                         var tip_width, tip_height = g_AUITool.GetTipSize();
                         g_AUITool.MoveTip(center_x - tip_width / 2, center_y - tip_height);
                     }
@@ -493,7 +508,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
         if (this._error_map != null)
         {
             for (var info, _ in this._error_map)
-                info._focus_quad.RemoveFromParent();
+                info.item.RemoveFromParent();
         }
         this._error_map = null;
         var list = this._language.QueryError(this._force_query_error);
@@ -518,8 +533,9 @@ public class AUICodeEdit : ALittle.DisplayLayout
             item.x = x;
             item.width = width;
             item.height = CODE_LINE_HEIGHT;
-            item_info._focus_quad = item;
-            item._user_data = item_info;
+            item_info._focus_quad._user_data = info;
+            item_info.item = item;
+            item_info.info = info;
             line.container._error.AddChild(item);
             error_count += 1;
             this._error_map[item_info] = true;
@@ -541,10 +557,10 @@ public class AUICodeEdit : ALittle.DisplayLayout
             var line = this._line_list[line_index];
             for (var index, child in line.container._error.childs)
             {
-                var info = cast<AUICodeErrorInfo>(child._user_data);
-                if (!check_cursor || line_index != this._cursor.line || info.info.char_start > this._cursor.char + 1)
+                var info = cast<lua.ABnfQueryError>(child._user_data);
+                if (!check_cursor || line_index != this._cursor.line || info.char_start > this._cursor.char + 1)
                 {
-                    this.EditFocus(info.info.line_start, info.info.char_start, null, null, false);
+                    this.EditFocus(info.line_start, info.char_start, null, null, false);
                     return true;
                 }
             }
@@ -818,14 +834,6 @@ public class AUICodeEdit : ALittle.DisplayLayout
         return x, y;
     }
 
-    // 计算绝对坐标
-    public fun CalcAbsPosition(int it_line, int it_char, bool pre) : double, double
-    {
-        var x, y = this.CalcPosition(it_line, it_char, pre);
-        var abs_x, abs_y = this._edit_quad.LocalToGlobal();
-        return abs_x + x, abs_y + y;
-    }
-
     // 上色
     public fun BrushColor(int line_start, int char_start, int line_end, int char_end, double red, double green, double blue)
     {
@@ -907,7 +915,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
             }
 
             this.DispatchEvent(new ALittle.UIChangedEvent());
-            g_AUICodeCompleteScreen.ShowComplete(this);
+            this._complete_screen.ShowComplete();
         }   
     }
 
@@ -925,7 +933,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
                 else
                     this._cursor.OffsetLeft(ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) != 0);
                 this._cursor.RejustShowCursor();
-                g_AUICodeCompleteScreen.TryHide(this);
+                this._complete_screen.TryHide(this);
             }
             else
             {
@@ -935,16 +943,16 @@ public class AUICodeEdit : ALittle.DisplayLayout
                 if (this._cursor.line == this._select_cursor.line_start && this._cursor.char == this._select_cursor.char_start)
                     this._cursor.OffsetLeft(ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) != 0);
                 this._select_cursor.UpdateLineChar(this._cursor.line, this._cursor.char);
-                g_AUICodeCompleteScreen.Hide();
+                this._complete_screen.Hide();
             }
 
 			event.handled = true;
         }
         elseif (event.sym == ALittle.UIEnumTypes.KEY_UP)
         {
-            if (g_AUICodeCompleteScreen.IsShow())
+            if (this._complete_screen.IsShow())
             {
-                g_AUICodeCompleteScreen.SelectUp();   
+                this._complete_screen.SelectUp();   
             }
             else
             {
@@ -967,15 +975,15 @@ public class AUICodeEdit : ALittle.DisplayLayout
                 }
                 var offset_y = this._cursor.y + this._code_screen.container_y;
                 if (offset_y < 0) this.FocusLineCharToUp(this._cursor.line, this._cursor.char);
-                g_AUICodeCompleteScreen.Hide();
+                this._complete_screen.Hide();
             }
 			event.handled = true;
         }
         elseif (event.sym == ALittle.UIEnumTypes.KEY_DOWN)
         {
-            if (g_AUICodeCompleteScreen.IsShow())
+            if (this._complete_screen.IsShow())
             {
-                g_AUICodeCompleteScreen.SelectDown();   
+                this._complete_screen.SelectDown();   
             }
             else
             {
@@ -998,7 +1006,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
                 }
                 var offset_y = this._cursor.y + this._cursor.height + this._code_screen.container_y;
                 if (offset_y > this._code_screen.view_height) this.FocusLineCharToDown(this._cursor.line, this._cursor.char);
-                g_AUICodeCompleteScreen.Hide();
+                this._complete_screen.Hide();
             }
 			event.handled = true;
         }
@@ -1011,7 +1019,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
                 else
                     this._cursor.OffsetRight(ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) != 0);
                 this._cursor.RejustShowCursor();
-                g_AUICodeCompleteScreen.TryHide(this);
+                this._complete_screen.TryHide(this);
             }
             else
             {
@@ -1021,7 +1029,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
                 if (this._cursor.line == this._select_cursor.line_start && this._cursor.char == this._select_cursor.char_start)
                     this._cursor.OffsetRight(ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) != 0);
                 this._select_cursor.UpdateLineChar(this._cursor.line, this._cursor.char);   
-                g_AUICodeCompleteScreen.Hide();
+                this._complete_screen.Hide();
             }
 			event.handled = true;
         }
@@ -1033,14 +1041,14 @@ public class AUICodeEdit : ALittle.DisplayLayout
                 {
                     is_change = this._cursor.DeleteLeft(true);
                     this._cursor.RejustShowCursor();
-                    g_AUICodeCompleteScreen.TryHide(this);
-                    if (g_AUICodeCompleteScreen.IsShow())
-                        g_AUICodeCompleteScreen.ShowComplete(this);
+                    this._complete_screen.TryHide(this);
+                    if (this._complete_screen.IsShow())
+                        this._complete_screen.ShowComplete();
                 }
                 else
                 {
                     is_change = this.DeleteSelectText();
-                    g_AUICodeCompleteScreen.Hide();
+                    this._complete_screen.Hide();
                 }
                 event.handled = true;
             }
@@ -1064,7 +1072,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
                     this._select_cursor.Hide();
                 else
                     this._cursor.OffsetHome();
-                g_AUICodeCompleteScreen.TryHide(this);
+                this._complete_screen.TryHide(this);
             }
             else
             {
@@ -1072,7 +1080,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
                     this._select_cursor.StartLineChar(this._cursor.line, this._cursor.char);
                 this._cursor.OffsetHome();
                 this._select_cursor.UpdateLineChar(this._cursor.line, this._cursor.char);  
-                g_AUICodeCompleteScreen.Hide(); 
+                this._complete_screen.Hide(); 
             }
             event.handled = true;
         }
@@ -1084,7 +1092,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
                     this._select_cursor.Hide();
                 else
                     this._cursor.OffsetEnd();
-                g_AUICodeCompleteScreen.TryHide(this);
+                this._complete_screen.TryHide(this);
             }
             else
             {
@@ -1092,7 +1100,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
                     this._select_cursor.StartLineChar(this._cursor.line, this._cursor.char);
                 this._cursor.OffsetEnd();
                 this._select_cursor.UpdateLineChar(this._cursor.line, this._cursor.char); 
-                g_AUICodeCompleteScreen.Hide();   
+                this._complete_screen.Hide();   
             }
 			event.handled = true;
         }
@@ -1100,9 +1108,9 @@ public class AUICodeEdit : ALittle.DisplayLayout
         {
             if (this._editable)
             {
-                if (g_AUICodeCompleteScreen.IsShow())
+                if (this._complete_screen.IsShow())
                 {
-                    is_change = g_AUICodeCompleteScreen.DoSelect();
+                    is_change = this._complete_screen.DoSelect();
                 }
                 else
                 {
@@ -1148,7 +1156,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
                     var text = this._cursor.virtual_indent.."\t";
                     is_change = this.InsertText(text, true);
                 }
-                g_AUICodeCompleteScreen.Hide();   
+                this._complete_screen.Hide();   
                 event.handled = true;
             }
         }
@@ -1160,7 +1168,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
                 if (select_text != null)
                     ALittle.System_SetClipboardText(select_text);
                 is_change = this.DeleteSelectText();
-                g_AUICodeCompleteScreen.Hide();   
+                this._complete_screen.Hide();   
                 event.handled = true;
             }
         }
@@ -1180,7 +1188,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
                     var old_line = this._cursor.line;
                     is_change = this.InsertText(ALittle.System_GetClipboardText(), true);
                     var new_line = this._cursor.line;
-                    g_AUICodeCompleteScreen.Hide();
+                    this._complete_screen.Hide();
                     this.MultiLineFormat(old_line, new_line);
                 }
                 event.handled = true;
@@ -1193,7 +1201,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
                 this._cursor.SetLineChar(this._line_count, this._line_list[this._line_count].char_count);
                 this._select_cursor.StartLineChar(1, 0);
                 this._select_cursor.UpdateLineChar(this._cursor.line, this._cursor.char);
-                g_AUICodeCompleteScreen.Hide();   
+                this._complete_screen.Hide();   
             }
 			event.handled = true;
         }
@@ -1254,7 +1262,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
 
     public fun OnUnDo()
     {
-        g_AUICodeCompleteScreen.Hide();
+        this._complete_screen.Hide();
     }
 
     public fun OnTabRightMenu(AUIRightMenu menu)

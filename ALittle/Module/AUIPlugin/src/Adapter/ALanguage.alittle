@@ -46,6 +46,21 @@ public struct ABnfQueryComplete
     List<ABnfQueryCompleteInfo> complete_list;
 }
 
+public struct ABnfQueryParameterInfo
+{
+    string descriptor;
+    string name;
+}
+
+public struct ABnfQuerySignatureHelp
+{
+    int line_start;
+    int char_start;
+    int line_end;
+    int char_end;
+    List<ABnfQueryParameterInfo> param_list;
+}
+
 public struct ABnfQueryError
 {
     int line_start;
@@ -85,6 +100,7 @@ public class alanguage
     public static abnffile_queryinfo(ABnfFile abnf_file, int query_id, int version, int line, int char) /*: ABnfQueryInfo*/ {}
     public static abnffile_querygoto(ABnfFile abnf_file, int query_id, int version, int line, int char) /*: ABnfQueryGoto*/ {}
     public static abnffile_querycomplete(ABnfFile abnf_file, int query_id, int version, int line, int char) /*: ABnfQueryComplete*/ {}
+    public static abnffile_querysignaturehelp(ABnfFile abnf_file, int query_id, int version, int line, int char) /*: ABnfQuerySignatureHelp*/ {}
     public static abnffile_queryerror(ABnfFile abnf_file, int query_id, int version, bool force) /*: List<ABnfQueryError>*/ {}
 
     public static abnffile_querydesiredindent(ABnfFile abnf_file, int version, int line, int char) : int {}

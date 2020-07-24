@@ -100,6 +100,14 @@ public class AUICodeLanguage
         return yield;
     }
 
+    // 查询参数输入
+    public await fun QuerySigntureHelp(int line, int char) : lua.ABnfQuerySignatureHelp
+    {
+        var query_id = this._project.Add(co);
+        lua.alanguage.abnffile_querycomplete(this._abnf_file, query_id, this._version, line, char);
+        return yield;
+    }
+
     // 查询错误信息
     public await fun QueryError(bool force) : List<lua.ABnfQueryError>
     {

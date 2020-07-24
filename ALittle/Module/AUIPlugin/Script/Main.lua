@@ -33,8 +33,14 @@ function __Plugin_Setup(control, module_base_path, script_base_path)
 	g_Control = control
 	g_ModuleBasePath = module_base_path
 	g_ScriptBasePath = script_base_path
-	RequireFromPaths(script_base_path, "AUI/", {"AUIWebLoginManager.alittle", "AUIVersionManager.alittle", "AUITool.alittle", "AUIRightMenu.alittle", "AUIImageCutPlugin.alittle", "AUIIMEManager.alittle", "AUIFileSelectDialog.alittle", "AUIEditImageDialog.alittle"})
-	RequireFromPaths(script_base_path, "AUICodeEdit/", {"AUICodeSelectCursor.alittle", "AUICodeRevocation.alittle", "AUICodeProject.alittle", "AUICodeLineNumber.alittle", "AUICodeLineContainer.alittle", "AUICodeLanguage.alittle", "AUICodeEdit.alittle", "AUICodeDefine.alittle", "AUICodeCursor.alittle", "AUICodeComponent.alittle", "AUICodeCompleteScreen.alittle", "ABnf/AUICodeCommon.alittle", "ABnf/AUICodeALittleScript.alittle", "ABnf/AUICodeABnf.alittle"})
+	RequireFromPaths(script_base_path, "AUI/", {"AUIWebLoginManager.alittle", "AUIVersionManager.alittle", "AUITool.alittle"
+		, "AUIRightMenu.alittle", "AUIImageCutPlugin.alittle", "AUIIMEManager.alittle"
+		, "AUIFileSelectDialog.alittle", "AUIEditImageDialog.alittle"})
+	RequireFromPaths(script_base_path, "AUICodeEdit/", {"AUICodeSigntureHelp.alittle", "AUICodeSelectCursor.alittle", "AUICodeRevocation.alittle"
+		, "AUICodeProject.alittle", "AUICodeLineNumber.alittle", "AUICodeLineContainer.alittle"
+		, "AUICodeLanguage.alittle", "AUICodeEdit.alittle", "AUICodeDefine.alittle"
+		, "AUICodeCursor.alittle", "AUICodeComponent.alittle", "AUICodeCompleteScreen.alittle"
+		, "ABnf/AUICodeCommon.alittle", "ABnf/AUICodeALittleScript.alittle", "ABnf/AUICodeABnf.alittle"})
 	g_AUIIMEManager:Setup()
 end
 __Plugin_Setup = Lua.CoWrap(__Plugin_Setup)
@@ -42,7 +48,6 @@ __Plugin_Setup = Lua.CoWrap(__Plugin_Setup)
 function __Plugin_Shutdown()
 	g_AUIIMEManager:Shutdown()
 	g_AUITool:Shutdown()
-	g_AUICodeCompleteScreen:Shutdown()
 	AUICodeProject.Shutdown()
 end
 

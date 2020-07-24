@@ -112,7 +112,11 @@ option_map = {}
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
 AUICodeEdit = Lua.Class(ALittle.DisplayLayout, "AUIPlugin.AUICodeEdit")
 
-function AUICodeEdit:Ctor()
+function AUICodeEdit.Create()
+	return g_Control:CreateControl("ide_code_tab_screen")
+end
+
+function AUICodeEdit:Ctor(ctrl_sys)
 	___rawset(self, "_editable", true)
 	___rawset(self, "_in_query_info", false)
 	___rawset(self, "_move_in", false)
@@ -120,10 +124,8 @@ function AUICodeEdit:Ctor()
 	___rawset(self, "_line_count", 0)
 	___rawset(self, "_in_drag", false)
 	___rawset(self, "_force_query_error", false)
-end
-
-function AUICodeEdit.Create()
-	return g_Control:CreateControl("ide_code_tab_screen")
+	___rawset(self, "_complete_screen", AUICodeCompleteScreen(self))
+	___rawset(self, "_signture_help", AUICodeSigntruetureHelp(self))
 end
 
 function AUICodeEdit:TCtor()
@@ -214,6 +216,10 @@ function AUICodeEdit.__getter:ascii_width()
 	return self._ascii_width
 end
 
+function AUICodeEdit.__getter:word_width()
+	return self._word_width
+end
+
 function AUICodeEdit.__setter:line_count(count)
 	self._line_count = count
 end
@@ -228,6 +234,10 @@ end
 
 function AUICodeEdit.__getter:revoke_list()
 	return self._revoke_list
+end
+
+function AUICodeEdit.__getter:help_container()
+	return self._help_container
 end
 
 function AUICodeEdit:DispatchJumEvent()
@@ -401,11 +411,11 @@ function AUICodeEdit:HandleMouseMove(event)
 				end
 				self._error_quad_move_in = item
 				if item ~= nil then
-					local item_info = item._user_data
+					local info = item._user_data
 					local x, y = item:LocalToGlobal()
 					local center_x = x + item.width / 2
 					local center_y = y
-					g_AUITool:ShowTip(item_info.info.error)
+					g_AUITool:ShowTip(info.error)
 					local tip_width, tip_height = g_AUITool:GetTipSize()
 					g_AUITool:MoveTip(center_x - tip_width / 2, center_y - tip_height)
 				end
@@ -548,7 +558,7 @@ function AUICodeEdit:UpdateErrorInfo()
 	self._error_quad_move_in = nil
 	if self._error_map ~= nil then
 		for info, _ in ___pairs(self._error_map) do
-			info._focus_quad:RemoveFromParent()
+			info.item:RemoveFromParent()
 		end
 	end
 	self._error_map = nil
@@ -575,8 +585,9 @@ function AUICodeEdit:UpdateErrorInfo()
 		item.x = x
 		item.width = width
 		item.height = CODE_LINE_HEIGHT
-		item_info._focus_quad = item
-		item._user_data = item_info
+		item_info._focus_quad._user_data = info
+		item_info.item = item
+		item_info.info = info
 		line.container._error:AddChild(item)
 		error_count = error_count + (1)
 		self._error_map[item_info] = true
@@ -598,8 +609,8 @@ function AUICodeEdit:ErrorNextImpl(start_line, check_cursor)
 		local line = self._line_list[line_index]
 		for index, child in ___ipairs(line.container._error.childs) do
 			local info = child._user_data
-			if not check_cursor or line_index ~= self._cursor.line or info.info.char_start > self._cursor.char + 1 then
-				self:EditFocus(info.info.line_start, info.info.char_start, nil, nil, false)
+			if not check_cursor or line_index ~= self._cursor.line or info.char_start > self._cursor.char + 1 then
+				self:EditFocus(info.line_start, info.char_start, nil, nil, false)
 				return true
 			end
 		end
@@ -853,12 +864,6 @@ function AUICodeEdit:CalcPosition(it_line, it_char, pre)
 	return x, y
 end
 
-function AUICodeEdit:CalcAbsPosition(it_line, it_char, pre)
-	local x, y = self:CalcPosition(it_line, it_char, pre)
-	local abs_x, abs_y = self._edit_quad:LocalToGlobal()
-	return abs_x + x, abs_y + y
-end
-
 function AUICodeEdit:BrushColor(line_start, char_start, line_end, char_end, red, green, blue)
 	if line_start == line_end then
 		local line = self._line_list[line_start]
@@ -957,7 +962,7 @@ function AUICodeEdit:HandleTextInput(event)
 			end
 		end
 		self:DispatchEvent(___all_struct[958494922], {})
-		g_AUICodeCompleteScreen:ShowComplete(self)
+		self._complete_screen:ShowComplete()
 	end
 end
 
@@ -971,7 +976,7 @@ function AUICodeEdit:HandleKeyDown(event)
 				self._cursor:OffsetLeft(ALittle.BitAnd(event.mod, 0x00c0) ~= 0)
 			end
 			self._cursor:RejustShowCursor()
-			g_AUICodeCompleteScreen:TryHide(self)
+			self._complete_screen:TryHide(self)
 		else
 			if self._select_cursor.line_start == nil then
 				self._select_cursor:StartLineChar(self._cursor.line, self._cursor.char)
@@ -981,12 +986,12 @@ function AUICodeEdit:HandleKeyDown(event)
 				self._cursor:OffsetLeft(ALittle.BitAnd(event.mod, 0x00c0) ~= 0)
 			end
 			self._select_cursor:UpdateLineChar(self._cursor.line, self._cursor.char)
-			g_AUICodeCompleteScreen:Hide()
+			self._complete_screen:Hide()
 		end
 		event.handled = true
 	elseif event.sym == 1073741906 then
-		if g_AUICodeCompleteScreen:IsShow() then
-			g_AUICodeCompleteScreen:SelectUp()
+		if self._complete_screen:IsShow() then
+			self._complete_screen:SelectUp()
 		else
 			if ALittle.BitAnd(event.mod, 0x0003) == 0 then
 				if self._select_cursor.line_start ~= nil then
@@ -1009,12 +1014,12 @@ function AUICodeEdit:HandleKeyDown(event)
 			if offset_y < 0 then
 				self:FocusLineCharToUp(self._cursor.line, self._cursor.char)
 			end
-			g_AUICodeCompleteScreen:Hide()
+			self._complete_screen:Hide()
 		end
 		event.handled = true
 	elseif event.sym == 1073741905 then
-		if g_AUICodeCompleteScreen:IsShow() then
-			g_AUICodeCompleteScreen:SelectDown()
+		if self._complete_screen:IsShow() then
+			self._complete_screen:SelectDown()
 		else
 			if ALittle.BitAnd(event.mod, 0x0003) == 0 then
 				if self._select_cursor.line_start ~= nil then
@@ -1037,7 +1042,7 @@ function AUICodeEdit:HandleKeyDown(event)
 			if offset_y > self._code_screen.view_height then
 				self:FocusLineCharToDown(self._cursor.line, self._cursor.char)
 			end
-			g_AUICodeCompleteScreen:Hide()
+			self._complete_screen:Hide()
 		end
 		event.handled = true
 	elseif event.sym == 1073741903 then
@@ -1048,7 +1053,7 @@ function AUICodeEdit:HandleKeyDown(event)
 				self._cursor:OffsetRight(ALittle.BitAnd(event.mod, 0x00c0) ~= 0)
 			end
 			self._cursor:RejustShowCursor()
-			g_AUICodeCompleteScreen:TryHide(self)
+			self._complete_screen:TryHide(self)
 		else
 			if self._select_cursor.line_start == nil then
 				self._select_cursor:StartLineChar(self._cursor.line, self._cursor.char)
@@ -1058,7 +1063,7 @@ function AUICodeEdit:HandleKeyDown(event)
 				self._cursor:OffsetRight(ALittle.BitAnd(event.mod, 0x00c0) ~= 0)
 			end
 			self._select_cursor:UpdateLineChar(self._cursor.line, self._cursor.char)
-			g_AUICodeCompleteScreen:Hide()
+			self._complete_screen:Hide()
 		end
 		event.handled = true
 	elseif event.sym == 8 then
@@ -1066,13 +1071,13 @@ function AUICodeEdit:HandleKeyDown(event)
 			if self._select_cursor.line_start == nil then
 				is_change = self._cursor:DeleteLeft(true)
 				self._cursor:RejustShowCursor()
-				g_AUICodeCompleteScreen:TryHide(self)
-				if g_AUICodeCompleteScreen:IsShow() then
-					g_AUICodeCompleteScreen:ShowComplete(self)
+				self._complete_screen:TryHide(self)
+				if self._complete_screen:IsShow() then
+					self._complete_screen:ShowComplete()
 				end
 			else
 				is_change = self:DeleteSelectText()
-				g_AUICodeCompleteScreen:Hide()
+				self._complete_screen:Hide()
 			end
 			event.handled = true
 		end
@@ -1092,14 +1097,14 @@ function AUICodeEdit:HandleKeyDown(event)
 			else
 				self._cursor:OffsetHome()
 			end
-			g_AUICodeCompleteScreen:TryHide(self)
+			self._complete_screen:TryHide(self)
 		else
 			if self._select_cursor.line_start == nil then
 				self._select_cursor:StartLineChar(self._cursor.line, self._cursor.char)
 			end
 			self._cursor:OffsetHome()
 			self._select_cursor:UpdateLineChar(self._cursor.line, self._cursor.char)
-			g_AUICodeCompleteScreen:Hide()
+			self._complete_screen:Hide()
 		end
 		event.handled = true
 	elseif event.sym == 1073741901 then
@@ -1109,20 +1114,20 @@ function AUICodeEdit:HandleKeyDown(event)
 			else
 				self._cursor:OffsetEnd()
 			end
-			g_AUICodeCompleteScreen:TryHide(self)
+			self._complete_screen:TryHide(self)
 		else
 			if self._select_cursor.line_start == nil then
 				self._select_cursor:StartLineChar(self._cursor.line, self._cursor.char)
 			end
 			self._cursor:OffsetEnd()
 			self._select_cursor:UpdateLineChar(self._cursor.line, self._cursor.char)
-			g_AUICodeCompleteScreen:Hide()
+			self._complete_screen:Hide()
 		end
 		event.handled = true
 	elseif event.sym == 13 or event.sym == 1073741912 then
 		if self._editable then
-			if g_AUICodeCompleteScreen:IsShow() then
-				is_change = g_AUICodeCompleteScreen:DoSelect()
+			if self._complete_screen:IsShow() then
+				is_change = self._complete_screen:DoSelect()
 			else
 				local old_line = self._cursor.line
 				local old_char = self._cursor.char
@@ -1159,7 +1164,7 @@ function AUICodeEdit:HandleKeyDown(event)
 				local text = self._cursor.virtual_indent .. "\t"
 				is_change = self:InsertText(text, true)
 			end
-			g_AUICodeCompleteScreen:Hide()
+			self._complete_screen:Hide()
 			event.handled = true
 		end
 	elseif event.sym == 120 and ALittle.BitAnd(event.mod, 0x00c0) ~= 0 then
@@ -1169,7 +1174,7 @@ function AUICodeEdit:HandleKeyDown(event)
 				ALittle.System_SetClipboardText(select_text)
 			end
 			is_change = self:DeleteSelectText()
-			g_AUICodeCompleteScreen:Hide()
+			self._complete_screen:Hide()
 			event.handled = true
 		end
 	elseif event.sym == 99 and ALittle.BitAnd(event.mod, 0x00c0) ~= 0 then
@@ -1184,7 +1189,7 @@ function AUICodeEdit:HandleKeyDown(event)
 				local old_line = self._cursor.line
 				is_change = self:InsertText(ALittle.System_GetClipboardText(), true)
 				local new_line = self._cursor.line
-				g_AUICodeCompleteScreen:Hide()
+				self._complete_screen:Hide()
 				self:MultiLineFormat(old_line, new_line)
 			end
 			event.handled = true
@@ -1194,7 +1199,7 @@ function AUICodeEdit:HandleKeyDown(event)
 			self._cursor:SetLineChar(self._line_count, self._line_list[self._line_count].char_count)
 			self._select_cursor:StartLineChar(1, 0)
 			self._select_cursor:UpdateLineChar(self._cursor.line, self._cursor.char)
-			g_AUICodeCompleteScreen:Hide()
+			self._complete_screen:Hide()
 		end
 		event.handled = true
 	elseif event.sym == 102 and ALittle.BitAnd(event.mod, 0x00c0) ~= 0 then
@@ -1237,7 +1242,7 @@ function AUICodeEdit:HandleKeyUp(event)
 end
 
 function AUICodeEdit:OnUnDo()
-	g_AUICodeCompleteScreen:Hide()
+	self._complete_screen:Hide()
 end
 
 function AUICodeEdit:OnTabRightMenu(menu)

@@ -189,7 +189,7 @@ EmptyExpr = ';';
 
 // for 流程控制
 ForExpr = <for>@ ForCondition (ForBody | AllExpr)?;
-ForCondition = '('@ <var>@ ForPairDec (ForStepCondition | ForInCondition) ')';
+ForCondition = '('@ (<var>@ ForPairDec (ForStepCondition | ForInCondition))? ')';
 ForBody = '{'@ AllExpr* '}';
 
 ForStepCondition = ForStartStat ';'@ ForEndStat ';'@ ForStepStat;
@@ -262,9 +262,9 @@ CustomTypeTemplate = '<'@ AllType (',' AllType)* '>';
 
 // 通用类型
 GenericType = GenericListType | GenericMapType | GenericFunctorType;
-GenericMapType = <Map>@ '<' AllType ','@ AllType '>';
-GenericListType = <List>@ '<' AllType '>';
-GenericFunctorType = <Functor>@ '<' AllTypeConst? CoroutineModifier? '(' GenericFunctorParamType? ')' GenericFunctorReturnType? '>';
+GenericMapType = <Map>@ '<' (AllType (','@ AllType)?)? '>';
+GenericListType = <List>@ '<' AllType? '>';
+GenericFunctorType = <Functor>@ '<' (AllTypeConst? CoroutineModifier? '('@ GenericFunctorParamType? ')' GenericFunctorReturnType?)? '>';
 
 GenericFunctorParamOneType = GenericFunctorParamTail | AllType;
 GenericFunctorParamTail = '...';
@@ -291,7 +291,7 @@ BindStat = <bind>@ '(' (ValueStat (','@ ValueStat)*)? ')';
 // tcall
 TcallStat = <tcall>@ '(' (ValueStat (','@ ValueStat)*)? ')';
 // 值
-WrapValueStat = '('@ ValueStat ')';
+WrapValueStat = '('@ ValueStat? ')';
 // 常量值
 ConstValue = <true> | <false> | <null> | Text | Number;
 
@@ -300,8 +300,8 @@ CoroutineStat = <co>;
 
 // 反射机制
 ReflectValue = <reflect>@ (ReflectCustomType | ReflectValueStat);
-ReflectCustomType = '<'@ CustomType '>';
-ReflectValueStat = '('@ ValueStat ')';
+ReflectCustomType = '<'@ CustomType? '>';
+ReflectValueStat = '('@ ValueStat? ')';
 
 // 文件宏
 PathsValue = <paths>@ '('@ Text? ')';
@@ -310,16 +310,16 @@ PathsValue = <paths>@ '('@ Text? ')';
 PropertyValue = PropertyValueFirstType PropertyValueSuffix*;
 
 PropertyValueFirstType = PropertyValueThisType | PropertyValueCastType | PropertyValueCustomType;
-PropertyValueCastType = <cast>@ '<' AllType '>' '(' ValueFactorStat ')';
+PropertyValueCastType = <cast>@ '<' AllType? '>' '(' ValueFactorStat? ')';
 PropertyValueCustomType = Id@;
 PropertyValueThisType = <this>@;
 
 PropertyValueSuffix = PropertyValueDotId | PropertyValueBracketValue | PropertyValueMethodCall;
 PropertyValueDotId = '.'@ PropertyValueDotIdName;
 PropertyValueDotIdName = Id#;
-PropertyValueBracketValue = '['@ ValueStat ']';
+PropertyValueBracketValue = '['@ ValueStat? ']';
 PropertyValueMethodCall = PropertyValueMethodTemplate? '('@ (ValueStat (','@ ValueStat)*)? ')';
-PropertyValueMethodTemplate = '{'@ AllType (','@ AllType)* '}';
+PropertyValueMethodTemplate = '{'@ (AllType (','@ AllType)*)? '}';
 
 // Op 类型的运算，编号越大，优先级越低///////////////////////////////////////////////////
 

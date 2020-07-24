@@ -419,6 +419,68 @@ void ABnfProject::QueryComplete(const std::string& full_path, int query_id, int 
         });
 }
 
+void ABnfProject::QuerySignatureHelp(const std::string& full_path, int query_id, int version, int it_line, int it_char)
+{
+    auto it = m_file_map.find(full_path);
+    if (it != m_file_map.end())
+    {
+        std::vector<ALanguageParameterInfo> info_list;
+        int line_start; int char_start; int line_end; int char_end;
+        if (it->second->QuerySignatureHelp(version, it_line, it_char, info_list, line_start, char_start, line_end, char_end))
+        {
+            std::unique_lock<std::mutex> lock(m_output_lock);
+            m_outputs.push_back([query_id, info_list, line_start, char_start, line_end, char_end](lua_State* L)->int
+                {
+                    lua_newtable(L);
+                    lua_pushinteger(L, query_id);
+                    lua_setfield(L, -2, "query_id");
+
+                    {
+                        lua_newtable(L);
+                        lua_pushinteger(L, line_start + 1);
+                        lua_setfield(L, -2, "line_start");
+                        lua_pushinteger(L, char_start + 1);
+                        lua_setfield(L, -2, "char_start");
+                        lua_pushinteger(L, line_end + 1);
+                        lua_setfield(L, -2, "line_end");
+                        lua_pushinteger(L, char_end);
+                        lua_setfield(L, -2, "char_end");
+
+                        lua_newtable(L);
+                        for (size_t i = 0; i < info_list.size(); ++i)
+                        {
+                            auto& info = info_list[i];
+
+                            lua_newtable(L);
+                            lua_pushstring(L, info.name.c_str());
+                            lua_setfield(L, -2, "name");
+                            if (info.descriptor.size())
+                            {
+                                lua_pushstring(L, info.descriptor.c_str());
+                                lua_setfield(L, -2, "descriptor");
+                            }
+                            lua_rawseti(L, -2, static_cast<int>(i) + 1);
+                        }
+                        lua_setfield(L, -2, "param_list");
+                    }
+
+                    lua_setfield(L, -2, "result");
+                    return 1;
+                });
+
+            return;
+        }
+    }
+
+    std::unique_lock<std::mutex> lock(m_output_lock);
+    m_outputs.push_back([query_id](lua_State* L) -> int {
+        lua_newtable(L);
+        lua_pushinteger(L, query_id);
+        lua_setfield(L, -2, "query_id");
+        return 1;
+        });
+}
+
 void ABnfProject::QueryError(const std::string& full_path, int query_id, int version, bool force)
 {
     auto it = m_file_map.find(full_path);

@@ -95,6 +95,7 @@
 #include "ALittleScriptNumberReference.h"
 #include "ALittleScriptBlockCommentReference.h"
 #include "ALittleScriptVarAssignExprReference.h"
+#include "ALittleScriptPropertyValueMethodTemplateReference.h"
 
 #include "../Index/ALittleScriptProjectClass.h"
 #include "../Index/ALittleScriptFileClass.h"
@@ -169,6 +170,7 @@ ALittleScriptFactoryClassEx::ALittleScriptFactoryClassEx()
     m_create_map["PropertyValue"] = ALittleScriptPropertyValueReference::Create;
     m_create_map["PropertyValueSuffix"] = ALittleScriptPropertyValueSuffixReference::Create;
     m_create_map["PropertyValueThisType"] = ALittleScriptPropertyValueThisTypeReference::Create;
+    m_create_map["PropertyValueMethodTemplate"] = ALittleScriptPropertyValueMethodTemplateReference::Create;
     m_create_map["ReflectValue"] = ALittleScriptReflectValueReference::Create;
     m_create_map["ReturnExpr"] = ALittleScriptReturnExprReference::Create;
     m_create_map["StructDec"] = ALittleScriptStructDecReference::Create;

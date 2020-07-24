@@ -63,7 +63,7 @@ ABnfGuessError ALittleScriptReflectValueReference::CheckError()
     if (element->GetReflectCustomType() != nullptr)
     {
         auto custom_type = element->GetReflectCustomType()->GetCustomType();
-        if (custom_type == nullptr) return nullptr;
+        if (custom_type == nullptr) return ABnfGuessError(element, u8"请填写类型");
 
         auto error = custom_type->GuessType(guess);
         if (error) return error;
@@ -71,7 +71,7 @@ ABnfGuessError ALittleScriptReflectValueReference::CheckError()
     else if (element->GetReflectValueStat() != nullptr)
     {
         auto value_stat = element->GetReflectValueStat()->GetValueStat();
-        if (value_stat == nullptr) return nullptr;
+        if (value_stat == nullptr) return ABnfGuessError(element, u8"请填写表达式");
 
         int return_count = 0;
         std::vector<ABnfGuessPtr> guess_list;

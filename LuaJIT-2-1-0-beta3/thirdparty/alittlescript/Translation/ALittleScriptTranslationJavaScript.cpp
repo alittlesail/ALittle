@@ -218,7 +218,7 @@
 #include "../Reference/ALittleScriptPropertyValueCustomTypeReference.h"
 
 // 生成bind命令
-ABnfGuessError ALittleScriptTranslationJavaScript::GenerateBindStat(std::shared_ptr<ALittleScriptBindStatElement> bind_stat, std::string& content)
+ABnfGuessError ALittleScriptTranslationJavaScript::GenerateBindStat(std::shared_ptr<ALittleScriptBindStatElement> bind_stat, const std::string& pre_tab, std::string& content)
 {
     content = "";
     const auto& value_stat_list = bind_stat->GetValueStatList();
@@ -227,7 +227,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateBindStat(std::shared_
     // 取出第一个
     auto value_stat = value_stat_list[0];
     std::string sub_content;
-    auto error = GenerateValueStat(value_stat, sub_content);
+    auto error = GenerateValueStat(value_stat, pre_tab, sub_content);
     if (error) return error;
 
     // 检查是否是成员函数
@@ -249,7 +249,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateBindStat(std::shared_
 
     for (size_t i = 1; i < value_stat_list.size(); ++i)
     {
-        error = GenerateValueStat(value_stat_list[i], sub_content);
+        error = GenerateValueStat(value_stat_list[i], pre_tab, sub_content);
         if (error) return error;
         param_list.push_back(sub_content);
     }
@@ -260,7 +260,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateBindStat(std::shared_
 
 // 生成tcall命令
 
-ABnfGuessError ALittleScriptTranslationJavaScript::GenerateTcallStat(std::shared_ptr<ALittleScriptTcallStatElement> tcall_stat, std::string& content)
+ABnfGuessError ALittleScriptTranslationJavaScript::GenerateTcallStat(std::shared_ptr<ALittleScriptTcallStatElement> tcall_stat, const std::string& pre_tab, std::string& content)
 {
     content = "";
     const auto& value_stat_list = tcall_stat->GetValueStatList();
@@ -269,7 +269,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateTcallStat(std::shared
     // 取出第一个
     auto value_stat = value_stat_list[0];
     std::string sub_content;
-    auto error = GenerateValueStat(value_stat, sub_content);
+    auto error = GenerateValueStat(value_stat, pre_tab, sub_content);
     if (error) return error;
 
     // 检查是否是成员函数
@@ -290,7 +290,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateTcallStat(std::shared
     for (size_t i = 1; i < value_stat_list.size(); ++i)
     {
         std::string param_content;
-        error = GenerateValueStat(value_stat_list[i], param_content);
+        error = GenerateValueStat(value_stat_list[i], pre_tab, param_content);
         if (error) return error;
         param_list.push_back(param_content);
     }
@@ -369,7 +369,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateTcallStat(std::shared
 
 // 生成new List
 
-ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOpNewListStat(std::shared_ptr<ALittleScriptOpNewListStatElement> op_new_list, std::string& content)
+ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOpNewListStat(std::shared_ptr<ALittleScriptOpNewListStatElement> op_new_list, const std::string& pre_tab, std::string& content)
 {
     const auto& value_stat_list = op_new_list->GetValueStatList();
 
@@ -378,7 +378,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOpNewListStat(std::sh
     for (auto& value_stat : value_stat_list)
     {
         std::string sub_content;
-        auto error = GenerateValueStat(value_stat, sub_content);
+        auto error = GenerateValueStat(value_stat, pre_tab, sub_content);
         if (error) return error;
         param_list.push_back(sub_content);
     }
@@ -389,7 +389,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOpNewListStat(std::sh
 
 // 生成new
 
-ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOpNewStat(std::shared_ptr<ALittleScriptOpNewStatElement> op_new_stat, std::string& content)
+ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOpNewStat(std::shared_ptr<ALittleScriptOpNewStatElement> op_new_stat, const std::string& pre_tab, std::string& content)
 {
     content = "";
     // 如果是通用类型
@@ -469,7 +469,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOpNewStat(std::shared
             auto class_guess = std::dynamic_pointer_cast<ALittleScriptGuessClass>(guess);
             // 生成custom_type名
             std::string custom_content;
-            error = GenerateCustomType(custom_type, custom_content);
+            error = GenerateCustomType(custom_type, pre_tab, custom_content);
             if (error) return error;
 
             // 如果是javascript原生的类，使用new的方式进行创建对象
@@ -480,7 +480,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOpNewStat(std::shared
                 for (auto& value_stat : value_stat_list)
                 {
                     std::string sub_content;
-                    error = GenerateValueStat(value_stat, sub_content);
+                    error = GenerateValueStat(value_stat, pre_tab, sub_content);
                     if (error) return error;
                     param_list.push_back(sub_content);
                 }
@@ -495,7 +495,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOpNewStat(std::shared
                 for (auto& value_stat : value_stat_list)
                 {
                     std::string sub_content;
-                    error = GenerateValueStat(value_stat, sub_content);
+                    error = GenerateValueStat(value_stat, pre_tab, sub_content);
                     if (error) return error;
                     param_list.push_back(sub_content);
                 }
@@ -537,7 +537,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOpNewStat(std::shared
             {
                 // 生成custom_type名
                 std::string custom_content;
-                error = GenerateCustomType(custom_type, custom_content);
+                error = GenerateCustomType(custom_type, pre_tab, custom_content);
                 if (error) return error;
                 std::vector<std::string> param_list;
                 param_list.push_back(custom_content);
@@ -545,7 +545,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOpNewStat(std::shared
                 for (auto& value_stat : value_stat_list)
                 {
                     std::string sub_content;
-                    error = GenerateValueStat(value_stat, sub_content);
+                    error = GenerateValueStat(value_stat, pre_tab, sub_content);
                     if (error) return error;
                     param_list.push_back(sub_content);
                 }
@@ -687,7 +687,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateCustomTypeTemplateLis
 
 // 生成custom_type
 
-ABnfGuessError ALittleScriptTranslationJavaScript::GenerateCustomType(std::shared_ptr<ALittleScriptCustomTypeElement> custom_type, std::string& content)
+ABnfGuessError ALittleScriptTranslationJavaScript::GenerateCustomType(std::shared_ptr<ALittleScriptCustomTypeElement> custom_type, const std::string& pre_tab, std::string& content)
 {
     content = "";
 
@@ -805,7 +805,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateCustomType(std::share
 
 // 生成8级运算符
 
-ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp8Suffix(std::shared_ptr<ALittleScriptOp8SuffixElement> suffix, std::string& content)
+ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp8Suffix(std::shared_ptr<ALittleScriptOp8SuffixElement> suffix, const std::string& pre_tab, std::string& content)
 {
     content = "";
     std::string op_string = suffix->GetOp8()->GetElementText();
@@ -813,12 +813,12 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp8Suffix(std::shared
     std::string value_functor_result;
     if (suffix->GetValueFactorStat() != nullptr)
     {
-        auto error = GenerateValueFactorStat(suffix->GetValueFactorStat(), value_functor_result);
+        auto error = GenerateValueFactorStat(suffix->GetValueFactorStat(), pre_tab, value_functor_result);
         if (error) return error;
     }
     else if (suffix->GetOp2Value() != nullptr)
     {
-        auto error = GenerateOp2Value(suffix->GetOp2Value(), value_functor_result);
+        auto error = GenerateOp2Value(suffix->GetOp2Value(), pre_tab, value_functor_result);
         if (error) return error;
     }
 
@@ -827,7 +827,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp8Suffix(std::shared
     for (auto& suffix_ee : suffix_ee_list)
     {
         std::string suffix_ee_result;
-        auto error = GenerateOp8SuffixEe(suffix_ee, suffix_ee_result);
+        auto error = GenerateOp8SuffixEe(suffix_ee, pre_tab, suffix_ee_result);
         if (error) return error;
         suffix_content_list.push_back(suffix_ee_result);
     }
@@ -836,18 +836,18 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp8Suffix(std::shared
     return nullptr;
 }
 
-ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp8SuffixEe(std::shared_ptr<ALittleScriptOp8SuffixEeElement> suffix, std::string& content)
+ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp8SuffixEe(std::shared_ptr<ALittleScriptOp8SuffixEeElement> suffix, const std::string& pre_tab, std::string& content)
 {
     if (suffix->GetOp3Suffix() != nullptr)
-        return GenerateOp3Suffix(suffix->GetOp3Suffix(), content);
+        return GenerateOp3Suffix(suffix->GetOp3Suffix(), pre_tab, content);
     else if (suffix->GetOp4Suffix() != nullptr)
-        return GenerateOp4Suffix(suffix->GetOp4Suffix(), content);
+        return GenerateOp4Suffix(suffix->GetOp4Suffix(), pre_tab, content);
     else if (suffix->GetOp5Suffix() != nullptr)
-        return GenerateOp5Suffix(suffix->GetOp5Suffix(), content);
+        return GenerateOp5Suffix(suffix->GetOp5Suffix(), pre_tab, content);
     else if (suffix->GetOp6Suffix() != nullptr)
-        return GenerateOp6Suffix(suffix->GetOp6Suffix(), content);
+        return GenerateOp6Suffix(suffix->GetOp6Suffix(), pre_tab, content);
     else if (suffix->GetOp7Suffix() != nullptr)
-        return GenerateOp7Suffix(suffix->GetOp7Suffix(), content);
+        return GenerateOp7Suffix(suffix->GetOp7Suffix(), pre_tab, content);
     else
     {
         content = "";
@@ -855,10 +855,10 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp8SuffixEe(std::shar
     }
 }
 
-ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp8SuffixEx(std::shared_ptr<ALittleScriptOp8SuffixExElement> suffix, std::string& content)
+ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp8SuffixEx(std::shared_ptr<ALittleScriptOp8SuffixExElement> suffix, const std::string& pre_tab, std::string& content)
 {
     if (suffix->GetOp8Suffix() != nullptr)
-        return GenerateOp8Suffix(suffix->GetOp8Suffix(), content);
+        return GenerateOp8Suffix(suffix->GetOp8Suffix(), pre_tab, content);
     else
     {
         content = "";
@@ -866,16 +866,16 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp8SuffixEx(std::shar
     }
 }
 
-ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp8Stat(std::shared_ptr<ALittleScriptValueFactorStatElement> value_factor_stat, std::shared_ptr<ALittleScriptOp8StatElement> op_8_stat, std::string& content)
+ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp8Stat(std::shared_ptr<ALittleScriptValueFactorStatElement> value_factor_stat, std::shared_ptr<ALittleScriptOp8StatElement> op_8_stat, const std::string& pre_tab, std::string& content)
 {
     content = "";
     std::string value_functor_result;
-    auto error = GenerateValueFactorStat(value_factor_stat, value_functor_result);
+    auto error = GenerateValueFactorStat(value_factor_stat, pre_tab, value_functor_result);
     if (error) return error;
 
     auto suffix = op_8_stat->GetOp8Suffix();
     std::string suffix_result;
-    error = GenerateOp8Suffix(suffix, suffix_result);
+    error = GenerateOp8Suffix(suffix, pre_tab, suffix_result);
     if (error) return error;
 
     std::vector<std::string> suffix_content_list;
@@ -883,7 +883,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp8Stat(std::shared_p
     for (auto& suffix_ex : suffix_ex_list)
     {
         std::string sub_content;
-        error = GenerateOp8SuffixEx(suffix_ex, sub_content);
+        error = GenerateOp8SuffixEx(suffix_ex, pre_tab, sub_content);
         if (error) return error;
         suffix_content_list.push_back(sub_content);
     }
@@ -894,7 +894,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp8Stat(std::shared_p
 
 // 生成7级运算符
 
-ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp7Suffix(std::shared_ptr<ALittleScriptOp7SuffixElement> suffix, std::string& content)
+ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp7Suffix(std::shared_ptr<ALittleScriptOp7SuffixElement> suffix, const std::string& pre_tab, std::string& content)
 {
     content = "";
     std::string op_string = suffix->GetOp7()->GetElementText();
@@ -902,12 +902,12 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp7Suffix(std::shared
     std::string value_functor_result;
     if (suffix->GetValueFactorStat() != nullptr)
     {
-        auto error = GenerateValueFactorStat(suffix->GetValueFactorStat(), value_functor_result);
+        auto error = GenerateValueFactorStat(suffix->GetValueFactorStat(), pre_tab, value_functor_result);
         if (error) return error;
     }
     else if (suffix->GetOp2Value() != nullptr)
     {
-        auto error = GenerateOp2Value(suffix->GetOp2Value(), value_functor_result);
+        auto error = GenerateOp2Value(suffix->GetOp2Value(), pre_tab, value_functor_result);
         if (error) return error;
     }
 
@@ -916,7 +916,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp7Suffix(std::shared
     for (auto& suffix_ee : suffix_ee_list)
     {
         std::string sub_content;
-        auto error = GenerateOp7SuffixEe(suffix_ee, sub_content);
+        auto error = GenerateOp7SuffixEe(suffix_ee, pre_tab, sub_content);
         if (error) return error;
         suffix_content_list.push_back(sub_content);
     }
@@ -925,16 +925,16 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp7Suffix(std::shared
     return nullptr;
 }
 
-ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp7SuffixEe(std::shared_ptr<ALittleScriptOp7SuffixEeElement> suffix, std::string& content)
+ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp7SuffixEe(std::shared_ptr<ALittleScriptOp7SuffixEeElement> suffix, const std::string& pre_tab, std::string& content)
 {
     if (suffix->GetOp3Suffix() != nullptr)
-        return GenerateOp3Suffix(suffix->GetOp3Suffix(), content);
+        return GenerateOp3Suffix(suffix->GetOp3Suffix(), pre_tab, content);
     else if (suffix->GetOp4Suffix() != nullptr)
-        return GenerateOp4Suffix(suffix->GetOp4Suffix(), content);
+        return GenerateOp4Suffix(suffix->GetOp4Suffix(), pre_tab, content);
     else if (suffix->GetOp5Suffix() != nullptr)
-        return GenerateOp5Suffix(suffix->GetOp5Suffix(), content);
+        return GenerateOp5Suffix(suffix->GetOp5Suffix(), pre_tab, content);
     else if (suffix->GetOp6Suffix() != nullptr)
-        return GenerateOp6Suffix(suffix->GetOp6Suffix(), content);
+        return GenerateOp6Suffix(suffix->GetOp6Suffix(), pre_tab, content);
     else
     {
         content = "";
@@ -942,12 +942,12 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp7SuffixEe(std::shar
     }
 }
 
-ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp7SuffixEx(std::shared_ptr<ALittleScriptOp7SuffixExElement> suffix, std::string& content)
+ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp7SuffixEx(std::shared_ptr<ALittleScriptOp7SuffixExElement> suffix, const std::string& pre_tab, std::string& content)
 {
     if (suffix->GetOp7Suffix() != nullptr)
-        return GenerateOp7Suffix(suffix->GetOp7Suffix(), content);
+        return GenerateOp7Suffix(suffix->GetOp7Suffix(), pre_tab, content);
     else if (suffix->GetOp8Suffix() != nullptr)
-        return GenerateOp8Suffix(suffix->GetOp8Suffix(), content);
+        return GenerateOp8Suffix(suffix->GetOp8Suffix(), pre_tab, content);
     else
     {
         content = "";
@@ -955,16 +955,16 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp7SuffixEx(std::shar
     }
 }
 
-ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp7Stat(std::shared_ptr<ALittleScriptValueFactorStatElement> value_factor_stat, std::shared_ptr<ALittleScriptOp7StatElement> op_7_stat, std::string& content)
+ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp7Stat(std::shared_ptr<ALittleScriptValueFactorStatElement> value_factor_stat, std::shared_ptr<ALittleScriptOp7StatElement> op_7_stat, const std::string& pre_tab, std::string& content)
 {
     content = "";
     std::string value_functor_result;
-    auto error = GenerateValueFactorStat(value_factor_stat, value_functor_result);
+    auto error = GenerateValueFactorStat(value_factor_stat, pre_tab, value_functor_result);
     if (error) return error;
 
     auto suffix = op_7_stat->GetOp7Suffix();
     std::string suffix_result;
-    error = GenerateOp7Suffix(suffix, suffix_result);
+    error = GenerateOp7Suffix(suffix, pre_tab, suffix_result);
     if (error) return error;
 
     std::vector<std::string> suffix_content_list;
@@ -972,7 +972,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp7Stat(std::shared_p
     for (auto& suffix_ex : suffix_ex_list)
     {
         std::string sub_content;
-        error = GenerateOp7SuffixEx(suffix_ex, sub_content);
+        error = GenerateOp7SuffixEx(suffix_ex, pre_tab, sub_content);
         if (error) return error;
         suffix_content_list.push_back(sub_content);
     }
@@ -983,7 +983,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp7Stat(std::shared_p
 
 // 生成6级运算符
 
-ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp6Suffix(std::shared_ptr<ALittleScriptOp6SuffixElement> suffix, std::string& content)
+ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp6Suffix(std::shared_ptr<ALittleScriptOp6SuffixElement> suffix, const std::string& pre_tab, std::string& content)
 {
     content = "";
     std::string op_string = suffix->GetOp6()->GetElementText();
@@ -995,12 +995,12 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp6Suffix(std::shared
     std::string value_functor_result;
     if (suffix->GetValueFactorStat() != nullptr)
     {
-        auto error = GenerateValueFactorStat(suffix->GetValueFactorStat(), value_functor_result);
+        auto error = GenerateValueFactorStat(suffix->GetValueFactorStat(), pre_tab, value_functor_result);
         if (error) return error;
     }
     else if (suffix->GetOp2Value() != nullptr)
     {
-        auto error = GenerateOp2Value(suffix->GetOp2Value(), value_functor_result);
+        auto error = GenerateOp2Value(suffix->GetOp2Value(), pre_tab, value_functor_result);
         if (error) return error;
     }
 
@@ -1009,7 +1009,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp6Suffix(std::shared
     for (auto& suffix_ee : suffix_ee_list)
     {
         std::string sub_content;
-        auto error = GenerateOp6SuffixEe(suffix_ee, sub_content);
+        auto error = GenerateOp6SuffixEe(suffix_ee, pre_tab, sub_content);
         if (error) return error;
         suffix_content_list.push_back(sub_content);
     }
@@ -1018,14 +1018,14 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp6Suffix(std::shared
     return nullptr;
 }
 
-ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp6SuffixEe(std::shared_ptr<ALittleScriptOp6SuffixEeElement> suffix, std::string& content)
+ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp6SuffixEe(std::shared_ptr<ALittleScriptOp6SuffixEeElement> suffix, const std::string& pre_tab, std::string& content)
 {
     if (suffix->GetOp3Suffix() != nullptr)
-        return GenerateOp3Suffix(suffix->GetOp3Suffix(), content);
+        return GenerateOp3Suffix(suffix->GetOp3Suffix(), pre_tab, content);
     else if (suffix->GetOp4Suffix() != nullptr)
-        return GenerateOp4Suffix(suffix->GetOp4Suffix(), content);
+        return GenerateOp4Suffix(suffix->GetOp4Suffix(), pre_tab, content);
     else if (suffix->GetOp5Suffix() != nullptr)
-        return GenerateOp5Suffix(suffix->GetOp5Suffix(), content);
+        return GenerateOp5Suffix(suffix->GetOp5Suffix(), pre_tab, content);
     else
     {
         content = "";
@@ -1033,14 +1033,14 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp6SuffixEe(std::shar
     }
 }
 
-ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp6SuffixEx(std::shared_ptr<ALittleScriptOp6SuffixExElement> suffix, std::string& content)
+ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp6SuffixEx(std::shared_ptr<ALittleScriptOp6SuffixExElement> suffix, const std::string& pre_tab, std::string& content)
 {
     if (suffix->GetOp6Suffix() != nullptr)
-        return GenerateOp6Suffix(suffix->GetOp6Suffix(), content);
+        return GenerateOp6Suffix(suffix->GetOp6Suffix(), pre_tab, content);
     else if (suffix->GetOp7Suffix() != nullptr)
-        return GenerateOp7Suffix(suffix->GetOp7Suffix(), content);
+        return GenerateOp7Suffix(suffix->GetOp7Suffix(), pre_tab, content);
     else if (suffix->GetOp8Suffix() != nullptr)
-        return GenerateOp8Suffix(suffix->GetOp8Suffix(), content);
+        return GenerateOp8Suffix(suffix->GetOp8Suffix(), pre_tab, content);
     else
     {
         content = "";
@@ -1048,16 +1048,16 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp6SuffixEx(std::shar
     }
 }
 
-ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp6Stat(std::shared_ptr<ALittleScriptValueFactorStatElement> value_factor_stat, std::shared_ptr<ALittleScriptOp6StatElement> op_6_tat, std::string& content)
+ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp6Stat(std::shared_ptr<ALittleScriptValueFactorStatElement> value_factor_stat, std::shared_ptr<ALittleScriptOp6StatElement> op_6_tat, const std::string& pre_tab, std::string& content)
 {
     content = "";
     std::string value_functor_result;
-    auto error = GenerateValueFactorStat(value_factor_stat, value_functor_result);
+    auto error = GenerateValueFactorStat(value_factor_stat, pre_tab, value_functor_result);
     if (error) return error;
 
     auto suffix = op_6_tat->GetOp6Suffix();
     std::string suffix_result;
-    error = GenerateOp6Suffix(suffix, suffix_result);
+    error = GenerateOp6Suffix(suffix, pre_tab, suffix_result);
     if (error) return error;
 
     std::vector<std::string> suffix_content_list;
@@ -1065,7 +1065,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp6Stat(std::shared_p
     for (auto& suffix_ex : suffix_ex_list)
     {
         std::string sub_content;
-        error = GenerateOp6SuffixEx(suffix_ex, sub_content);
+        error = GenerateOp6SuffixEx(suffix_ex, pre_tab, sub_content);
         if (error) return error;
         suffix_content_list.push_back(sub_content);
     }
@@ -1074,7 +1074,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp6Stat(std::shared_p
     return nullptr;
 }
 
-ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp5Suffix(std::shared_ptr<ALittleScriptOp5SuffixElement> suffix, std::string& content)
+ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp5Suffix(std::shared_ptr<ALittleScriptOp5SuffixElement> suffix, const std::string& pre_tab, std::string& content)
 {
     content = "";
     std::string op_string = suffix->GetOp5()->GetElementText();
@@ -1084,12 +1084,12 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp5Suffix(std::shared
     std::string value_functor_result;
     if (suffix->GetValueFactorStat() != nullptr)
     {
-        auto error = GenerateValueFactorStat(suffix->GetValueFactorStat(), value_functor_result);
+        auto error = GenerateValueFactorStat(suffix->GetValueFactorStat(), pre_tab, value_functor_result);
         if (error) return error;
     }
     else if (suffix->GetOp2Value() != nullptr)
     {
-        auto error = GenerateOp2Value(suffix->GetOp2Value(), value_functor_result);
+        auto error = GenerateOp2Value(suffix->GetOp2Value(), pre_tab, value_functor_result);
         if (error) return error;
     }
 
@@ -1098,7 +1098,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp5Suffix(std::shared
     for (auto& suffix_ee : suffix_ee_list)
     {
         std::string sub_content;
-        auto error = GenerateOp5SuffixEe(suffix_ee, sub_content);
+        auto error = GenerateOp5SuffixEe(suffix_ee, pre_tab, sub_content);
         if (error) return error;
         suffix_content_list.push_back(sub_content);
     }
@@ -1114,12 +1114,12 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp5Suffix(std::shared
     return nullptr;
 }
 
-ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp5SuffixEe(std::shared_ptr<ALittleScriptOp5SuffixEeElement> suffix, std::string& content)
+ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp5SuffixEe(std::shared_ptr<ALittleScriptOp5SuffixEeElement> suffix, const std::string& pre_tab, std::string& content)
 {
     if (suffix->GetOp3Suffix() != nullptr)
-        return GenerateOp3Suffix(suffix->GetOp3Suffix(), content);
+        return GenerateOp3Suffix(suffix->GetOp3Suffix(), pre_tab, content);
     else if (suffix->GetOp4Suffix() != nullptr)
-        return GenerateOp4Suffix(suffix->GetOp4Suffix(), content);
+        return GenerateOp4Suffix(suffix->GetOp4Suffix(), pre_tab, content);
     else
     {
         content = "";
@@ -1127,16 +1127,16 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp5SuffixEe(std::shar
     }
 }
 
-ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp5SuffixEx(std::shared_ptr<ALittleScriptOp5SuffixExElement> suffix, std::string& content)
+ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp5SuffixEx(std::shared_ptr<ALittleScriptOp5SuffixExElement> suffix, const std::string& pre_tab, std::string& content)
 {
     if (suffix->GetOp5Suffix() != nullptr)
-        return GenerateOp5Suffix(suffix->GetOp5Suffix(), content);
+        return GenerateOp5Suffix(suffix->GetOp5Suffix(), pre_tab, content);
     else if (suffix->GetOp6Suffix() != nullptr)
-        return GenerateOp6Suffix(suffix->GetOp6Suffix(), content);
+        return GenerateOp6Suffix(suffix->GetOp6Suffix(), pre_tab, content);
     else if (suffix->GetOp7Suffix() != nullptr)
-        return GenerateOp7Suffix(suffix->GetOp7Suffix(), content);
+        return GenerateOp7Suffix(suffix->GetOp7Suffix(), pre_tab, content);
     else if (suffix->GetOp8Suffix() != nullptr)
-        return GenerateOp8Suffix(suffix->GetOp8Suffix(), content);
+        return GenerateOp8Suffix(suffix->GetOp8Suffix(), pre_tab, content);
     else
     {
         content = "";
@@ -1144,16 +1144,16 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp5SuffixEx(std::shar
     }
 }
 
-ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp5Stat(std::shared_ptr<ALittleScriptValueFactorStatElement> value_factor_stat, std::shared_ptr<ALittleScriptOp5StatElement> op_5_stat, std::string& content)
+ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp5Stat(std::shared_ptr<ALittleScriptValueFactorStatElement> value_factor_stat, std::shared_ptr<ALittleScriptOp5StatElement> op_5_stat, const std::string& pre_tab, std::string& content)
 {
     content = "";
     std::string value_functor_result;
-    auto error = GenerateValueFactorStat(value_factor_stat, value_functor_result);
+    auto error = GenerateValueFactorStat(value_factor_stat, pre_tab, value_functor_result);
     if (error) return error;
 
     auto suffix = op_5_stat->GetOp5Suffix();
     std::string suffix_result;
-    error = GenerateOp5Suffix(suffix, suffix_result);
+    error = GenerateOp5Suffix(suffix, pre_tab, suffix_result);
     if (error) return error;
 
     std::vector<std::string> suffix_content_list;
@@ -1161,7 +1161,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp5Stat(std::shared_p
     for (auto& suffix_ex : suffix_ex_list)
     {
         std::string sub_content;
-        error = GenerateOp5SuffixEx(suffix_ex, sub_content);
+        error = GenerateOp5SuffixEx(suffix_ex, pre_tab, sub_content);
         if (error) return error;
         suffix_content_list.push_back(sub_content);
     }
@@ -1172,7 +1172,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp5Stat(std::shared_p
 
 // 生成4级运算符
 
-ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp4Suffix(std::shared_ptr<ALittleScriptOp4SuffixElement> suffix, std::string& content)
+ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp4Suffix(std::shared_ptr<ALittleScriptOp4SuffixElement> suffix, const std::string& pre_tab, std::string& content)
 {
     content = "";
     std::string op_string = suffix->GetOp4()->GetElementText();
@@ -1180,12 +1180,12 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp4Suffix(std::shared
     std::string value_functor_result;
     if (suffix->GetValueFactorStat() != nullptr)
     {
-        auto error = GenerateValueFactorStat(suffix->GetValueFactorStat(), value_functor_result);
+        auto error = GenerateValueFactorStat(suffix->GetValueFactorStat(), pre_tab, value_functor_result);
         if (error) return error;
     }
     else if (suffix->GetOp2Value() != nullptr)
     {
-        auto error = GenerateOp2Value(suffix->GetOp2Value(), value_functor_result);
+        auto error = GenerateOp2Value(suffix->GetOp2Value(), pre_tab, value_functor_result);
         if (error) return error;
     }
 
@@ -1194,7 +1194,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp4Suffix(std::shared
     for (auto& suffix_ee : suffix_ee_list)
     {
         std::string sub_content;
-        auto error = GenerateOp4SuffixEe(suffix_ee, sub_content);
+        auto error = GenerateOp4SuffixEe(suffix_ee, pre_tab, sub_content);
         if (error) return error;
         suffix_content_list.push_back(sub_content);
     }
@@ -1203,10 +1203,10 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp4Suffix(std::shared
     return nullptr;
 }
 
-ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp4SuffixEe(std::shared_ptr<ALittleScriptOp4SuffixEeElement> suffix, std::string& content)
+ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp4SuffixEe(std::shared_ptr<ALittleScriptOp4SuffixEeElement> suffix, const std::string& pre_tab, std::string& content)
 {
     if (suffix->GetOp3Suffix() != nullptr)
-        return GenerateOp3Suffix(suffix->GetOp3Suffix(), content);
+        return GenerateOp3Suffix(suffix->GetOp3Suffix(), pre_tab, content);
     else
     {
         content = "";
@@ -1214,18 +1214,18 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp4SuffixEe(std::shar
     }
 }
 
-ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp4SuffixEx(std::shared_ptr<ALittleScriptOp4SuffixExElement> suffix, std::string& content)
+ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp4SuffixEx(std::shared_ptr<ALittleScriptOp4SuffixExElement> suffix, const std::string& pre_tab, std::string& content)
 {
     if (suffix->GetOp4Suffix() != nullptr)
-        return GenerateOp4Suffix(suffix->GetOp4Suffix(), content);
+        return GenerateOp4Suffix(suffix->GetOp4Suffix(), pre_tab, content);
     else if (suffix->GetOp5Suffix() != nullptr)
-        return GenerateOp5Suffix(suffix->GetOp5Suffix(), content);
+        return GenerateOp5Suffix(suffix->GetOp5Suffix(), pre_tab, content);
     else if (suffix->GetOp6Suffix() != nullptr)
-        return GenerateOp6Suffix(suffix->GetOp6Suffix(), content);
+        return GenerateOp6Suffix(suffix->GetOp6Suffix(), pre_tab, content);
     else if (suffix->GetOp7Suffix() != nullptr)
-        return GenerateOp7Suffix(suffix->GetOp7Suffix(), content);
+        return GenerateOp7Suffix(suffix->GetOp7Suffix(), pre_tab, content);
     else if (suffix->GetOp8Suffix() != nullptr)
-        return GenerateOp8Suffix(suffix->GetOp8Suffix(), content);
+        return GenerateOp8Suffix(suffix->GetOp8Suffix(), pre_tab, content);
     else
     {
         content = "";
@@ -1233,16 +1233,16 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp4SuffixEx(std::shar
     }
 }
 
-ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp4Stat(std::shared_ptr<ALittleScriptValueFactorStatElement> value_factor_stat, std::shared_ptr<ALittleScriptOp4StatElement> op_4_stat, std::string& content)
+ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp4Stat(std::shared_ptr<ALittleScriptValueFactorStatElement> value_factor_stat, std::shared_ptr<ALittleScriptOp4StatElement> op_4_stat, const std::string& pre_tab, std::string& content)
 {
     content = "";
     std::string value_functor_result;
-    auto error = GenerateValueFactorStat(value_factor_stat, value_functor_result);
+    auto error = GenerateValueFactorStat(value_factor_stat, pre_tab, value_functor_result);
     if (error) return error;
 
     auto suffix = op_4_stat->GetOp4Suffix();
     std::string suffix_result;
-    error = GenerateOp4Suffix(suffix, suffix_result);
+    error = GenerateOp4Suffix(suffix, pre_tab, suffix_result);
     if (error) return error;
 
     std::vector<std::string> suffix_content_list;
@@ -1250,7 +1250,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp4Stat(std::shared_p
     for (auto& suffix_ex : suffix_ex_list)
     {
         std::string sub_content;
-        error = GenerateOp4SuffixEx(suffix_ex, sub_content);
+        error = GenerateOp4SuffixEx(suffix_ex, pre_tab, sub_content);
         if (error) return error;
         suffix_content_list.push_back(sub_content);
     }
@@ -1261,7 +1261,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp4Stat(std::shared_p
 
 // 生成3级运算符
 
-ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp3Suffix(std::shared_ptr<ALittleScriptOp3SuffixElement> suffix, std::string& content)
+ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp3Suffix(std::shared_ptr<ALittleScriptOp3SuffixElement> suffix, const std::string& pre_tab, std::string& content)
 {
     content = "";
     std::string op_string = suffix->GetOp3()->GetElementText();
@@ -1269,12 +1269,12 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp3Suffix(std::shared
     std::string value_result;
     if (suffix->GetValueFactorStat() != nullptr)
     {
-        auto error = GenerateValueFactorStat(suffix->GetValueFactorStat(), value_result);
+        auto error = GenerateValueFactorStat(suffix->GetValueFactorStat(), pre_tab, value_result);
         if (error) return error;
     }
     else if (suffix->GetOp2Value() != nullptr)
     {
-        auto error = GenerateOp2Value(suffix->GetOp2Value(), value_result);
+        auto error = GenerateOp2Value(suffix->GetOp2Value(), pre_tab, value_result);
         if (error) return error;
     }
     else
@@ -1286,20 +1286,20 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp3Suffix(std::shared
     return nullptr;
 }
 
-ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp3SuffixEx(std::shared_ptr<ALittleScriptOp3SuffixExElement> suffix, std::string& content)
+ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp3SuffixEx(std::shared_ptr<ALittleScriptOp3SuffixExElement> suffix, const std::string& pre_tab, std::string& content)
 {
     if (suffix->GetOp3Suffix() != nullptr)
-        return GenerateOp3Suffix(suffix->GetOp3Suffix(), content);
+        return GenerateOp3Suffix(suffix->GetOp3Suffix(), pre_tab, content);
     else if (suffix->GetOp4Suffix() != nullptr)
-        return GenerateOp4Suffix(suffix->GetOp4Suffix(), content);
+        return GenerateOp4Suffix(suffix->GetOp4Suffix(), pre_tab, content);
     else if (suffix->GetOp5Suffix() != nullptr)
-        return GenerateOp5Suffix(suffix->GetOp5Suffix(), content);
+        return GenerateOp5Suffix(suffix->GetOp5Suffix(), pre_tab, content);
     else if (suffix->GetOp6Suffix() != nullptr)
-        return GenerateOp6Suffix(suffix->GetOp6Suffix(), content);
+        return GenerateOp6Suffix(suffix->GetOp6Suffix(), pre_tab, content);
     else if (suffix->GetOp7Suffix() != nullptr)
-        return GenerateOp7Suffix(suffix->GetOp7Suffix(), content);
+        return GenerateOp7Suffix(suffix->GetOp7Suffix(), pre_tab, content);
     else if (suffix->GetOp8Suffix() != nullptr)
-        return GenerateOp8Suffix(suffix->GetOp8Suffix(), content);
+        return GenerateOp8Suffix(suffix->GetOp8Suffix(), pre_tab, content);
     else
     {
         content = "";
@@ -1307,7 +1307,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp3SuffixEx(std::shar
     }
 }
 
-ABnfGuessError ALittleScriptTranslationJavaScript::GenerateValueOpStat(std::shared_ptr<ALittleScriptValueOpStatElement> value_op_stat, std::string& content)
+ABnfGuessError ALittleScriptTranslationJavaScript::GenerateValueOpStat(std::shared_ptr<ALittleScriptValueOpStatElement> value_op_stat, const std::string& pre_tab, std::string& content)
 {
     content = "";
 
@@ -1315,36 +1315,36 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateValueOpStat(std::shar
     if (value_factor_stat == nullptr) return ABnfGuessError(nullptr, u8"表达式不完整");
 
     if (value_op_stat->GetOp3Stat() != nullptr)
-        return GenerateOp3Stat(value_factor_stat, value_op_stat->GetOp3Stat(), content);
+        return GenerateOp3Stat(value_factor_stat, value_op_stat->GetOp3Stat(), pre_tab, content);
 
     if (value_op_stat->GetOp4Stat() != nullptr)
-        return GenerateOp4Stat(value_factor_stat, value_op_stat->GetOp4Stat(), content);
+        return GenerateOp4Stat(value_factor_stat, value_op_stat->GetOp4Stat(), pre_tab, content);
 
     if (value_op_stat->GetOp5Stat() != nullptr)
-        return GenerateOp5Stat(value_factor_stat, value_op_stat->GetOp5Stat(), content);
+        return GenerateOp5Stat(value_factor_stat, value_op_stat->GetOp5Stat(), pre_tab, content);
 
     if (value_op_stat->GetOp6Stat() != nullptr)
-        return GenerateOp6Stat(value_factor_stat, value_op_stat->GetOp6Stat(), content);
+        return GenerateOp6Stat(value_factor_stat, value_op_stat->GetOp6Stat(), pre_tab, content);
 
     if (value_op_stat->GetOp7Stat() != nullptr)
-        return GenerateOp7Stat(value_factor_stat, value_op_stat->GetOp7Stat(), content);
+        return GenerateOp7Stat(value_factor_stat, value_op_stat->GetOp7Stat(), pre_tab, content);
 
     if (value_op_stat->GetOp8Stat() != nullptr)
-        return GenerateOp8Stat(value_factor_stat, value_op_stat->GetOp8Stat(), content);
+        return GenerateOp8Stat(value_factor_stat, value_op_stat->GetOp8Stat(), pre_tab, content);
 
-    return GenerateValueFactorStat(value_factor_stat, content);
+    return GenerateValueFactorStat(value_factor_stat, pre_tab, content);
 }
 
-ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp3Stat(std::shared_ptr<ALittleScriptValueFactorStatElement> value_factor_stat, std::shared_ptr<ALittleScriptOp3StatElement> op_3_stat, std::string& content)
+ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp3Stat(std::shared_ptr<ALittleScriptValueFactorStatElement> value_factor_stat, std::shared_ptr<ALittleScriptOp3StatElement> op_3_stat, const std::string& pre_tab, std::string& content)
 {
     content = "";
     std::string value_functor_result;
-    auto error = GenerateValueFactorStat(value_factor_stat, value_functor_result);
+    auto error = GenerateValueFactorStat(value_factor_stat, pre_tab, value_functor_result);
     if (error) return error;
 
     auto suffix = op_3_stat->GetOp3Suffix();
     std::string suffix_result;
-    error = GenerateOp3Suffix(suffix, suffix_result);
+    error = GenerateOp3Suffix(suffix, pre_tab, suffix_result);
     if (error) return error;
 
     std::vector<std::string> suffix_content_list;
@@ -1352,7 +1352,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp3Stat(std::shared_p
     for (auto& suffix_ex : suffix_ex_list)
     {
         std::string sub_content;
-        error = GenerateOp3SuffixEx(suffix_ex, sub_content);
+        error = GenerateOp3SuffixEx(suffix_ex, pre_tab, sub_content);
         if (error) return error;
         suffix_content_list.push_back(sub_content);
     }
@@ -1363,20 +1363,20 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp3Stat(std::shared_p
 
 // 生成2级运算符
 
-ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp2SuffixEx(std::shared_ptr<ALittleScriptOp2SuffixExElement> suffix, std::string& content)
+ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp2SuffixEx(std::shared_ptr<ALittleScriptOp2SuffixExElement> suffix, const std::string& pre_tab, std::string& content)
 {
     if (suffix->GetOp3Suffix() != nullptr)
-        return GenerateOp3Suffix(suffix->GetOp3Suffix(), content);
+        return GenerateOp3Suffix(suffix->GetOp3Suffix(), pre_tab, content);
     else if (suffix->GetOp4Suffix() != nullptr)
-        return GenerateOp4Suffix(suffix->GetOp4Suffix(), content);
+        return GenerateOp4Suffix(suffix->GetOp4Suffix(), pre_tab, content);
     else if (suffix->GetOp5Suffix() != nullptr)
-        return GenerateOp5Suffix(suffix->GetOp5Suffix(), content);
+        return GenerateOp5Suffix(suffix->GetOp5Suffix(), pre_tab, content);
     else if (suffix->GetOp6Suffix() != nullptr)
-        return GenerateOp6Suffix(suffix->GetOp6Suffix(), content);
+        return GenerateOp6Suffix(suffix->GetOp6Suffix(), pre_tab, content);
     else if (suffix->GetOp7Suffix() != nullptr)
-        return GenerateOp7Suffix(suffix->GetOp7Suffix(), content);
+        return GenerateOp7Suffix(suffix->GetOp7Suffix(), pre_tab, content);
     else if (suffix->GetOp8Suffix() != nullptr)
-        return GenerateOp8Suffix(suffix->GetOp8Suffix(), content);
+        return GenerateOp8Suffix(suffix->GetOp8Suffix(), pre_tab, content);
     else
     {
         content = "";
@@ -1384,7 +1384,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp2SuffixEx(std::shar
     }
 }
 
-ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp2Value(std::shared_ptr<ALittleScriptOp2ValueElement> op_2_value, std::string& content)
+ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp2Value(std::shared_ptr<ALittleScriptOp2ValueElement> op_2_value, const std::string& pre_tab, std::string& content)
 {
     content = "";
 
@@ -1393,7 +1393,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp2Value(std::shared_
         return ABnfGuessError(nullptr, u8"GenerateOp2Stat单目运算没有操作对象");
 
     std::string value_stat_result;
-    auto error = GenerateValueFactorStat(value_factor, value_stat_result);
+    auto error = GenerateValueFactorStat(value_factor, pre_tab, value_stat_result);
     if (error) return error;
     std::string op_string = op_2_value->GetOp2()->GetElementText();
     if (op_string == "!")
@@ -1406,9 +1406,9 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp2Value(std::shared_
     return nullptr;
 }
 
-ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp2Stat(std::shared_ptr<ALittleScriptOp2StatElement> op_2_stat, std::string& content)
+ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp2Stat(std::shared_ptr<ALittleScriptOp2StatElement> op_2_stat, const std::string& pre_tab, std::string& content)
 {
-    auto error = GenerateOp2Value(op_2_stat->GetOp2Value(), content);
+    auto error = GenerateOp2Value(op_2_stat->GetOp2Value(), pre_tab, content);
     if (error) return error;
 
     std::vector<std::string> suffix_content_list;
@@ -1416,7 +1416,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp2Stat(std::shared_p
     for (auto& suffix_ex : suffix_ex_list)
     {
         std::string sub_content;
-        error = GenerateOp2SuffixEx(suffix_ex, sub_content);
+        error = GenerateOp2SuffixEx(suffix_ex, pre_tab, sub_content);
         if (error) return error;
         suffix_content_list.push_back(sub_content);
     }
@@ -1427,25 +1427,25 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp2Stat(std::shared_p
 
 // 生成值表达式
 
-ABnfGuessError ALittleScriptTranslationJavaScript::GenerateValueStat(std::shared_ptr<ALittleScriptValueStatElement> root, std::string& content)
+ABnfGuessError ALittleScriptTranslationJavaScript::GenerateValueStat(std::shared_ptr<ALittleScriptValueStatElement> root, const std::string& pre_tab, std::string& content)
 {
     if (root->GetValueOpStat() != nullptr)
-        return GenerateValueOpStat(root->GetValueOpStat(), content);
+        return GenerateValueOpStat(root->GetValueOpStat(), pre_tab, content);
 
     if (root->GetOp2Stat() != nullptr)
-        return GenerateOp2Stat(root->GetOp2Stat(), content);
+        return GenerateOp2Stat(root->GetOp2Stat(), pre_tab, content);
 
     if (root->GetOpNewStat() != nullptr)
-        return GenerateOpNewStat(root->GetOpNewStat(), content);
+        return GenerateOpNewStat(root->GetOpNewStat(), pre_tab, content);
 
     if (root->GetOpNewListStat() != nullptr)
-        return GenerateOpNewListStat(root->GetOpNewListStat(), content);
+        return GenerateOpNewListStat(root->GetOpNewListStat(), pre_tab, content);
 
     if (root->GetBindStat() != nullptr)
-        return GenerateBindStat(root->GetBindStat(), content);
+        return GenerateBindStat(root->GetBindStat(), pre_tab, content);
 
     if (root->GetTcallStat() != nullptr)
-        return GenerateTcallStat(root->GetTcallStat(), content);
+        return GenerateTcallStat(root->GetTcallStat(), pre_tab, content);
 
     content = "";
     return nullptr;
@@ -1453,32 +1453,32 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateValueStat(std::shared
 
 // 生成ValueFactorStat
 
-ABnfGuessError ALittleScriptTranslationJavaScript::GenerateValueFactorStat(std::shared_ptr<ALittleScriptValueFactorStatElement> value_factor, std::string& content)
+ABnfGuessError ALittleScriptTranslationJavaScript::GenerateValueFactorStat(std::shared_ptr<ALittleScriptValueFactorStatElement> value_factor, const std::string& pre_tab, std::string& content)
 {
     if (value_factor->GetConstValue() != nullptr)
-        return GenerateConstValue(value_factor->GetConstValue(), content);
+        return GenerateConstValue(value_factor->GetConstValue(), pre_tab, content);
 
     if (value_factor->GetReflectValue() != nullptr)
-        return GenerateReflectValue(value_factor->GetReflectValue(), content);
+        return GenerateReflectValue(value_factor->GetReflectValue(), pre_tab, content);
 
     if (value_factor->GetPathsValue() != nullptr)
-        return GeneratePathsValue(value_factor->GetPathsValue(), content);
+        return GeneratePathsValue(value_factor->GetPathsValue(), pre_tab, content);
 
     if (value_factor->GetPropertyValue() != nullptr)
     {
         std::string map_set;
         std::string map_del;
-        return GeneratePropertyValue(value_factor->GetPropertyValue(), content, map_set, map_del);
+        return GeneratePropertyValue(value_factor->GetPropertyValue(), pre_tab, content, map_set, map_del);
     }
 
     if (value_factor->GetCoroutineStat() != nullptr)
-        return GenerateCoroutineStat(value_factor->GetCoroutineStat(), content);
+        return GenerateCoroutineStat(value_factor->GetCoroutineStat(), pre_tab, content);
 
     if (value_factor->GetWrapValueStat() != nullptr)
     {
         content = "";
         std::string sub_content;
-        auto error = GenerateValueStat(value_factor->GetWrapValueStat()->GetValueStat(), sub_content);
+        auto error = GenerateValueStat(value_factor->GetWrapValueStat()->GetValueStat(), pre_tab, sub_content);
         if (error) return error;
         content = "(" + sub_content + ")";
         return nullptr;
@@ -1496,7 +1496,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateValueFactorStat(std::
 
 // 生成常量
 
-ABnfGuessError ALittleScriptTranslationJavaScript::GenerateConstValue(std::shared_ptr<ALittleScriptConstValueElement> const_value, std::string& content)
+ABnfGuessError ALittleScriptTranslationJavaScript::GenerateConstValue(std::shared_ptr<ALittleScriptConstValueElement> const_value, const std::string& pre_tab, std::string& content)
 {
     content = "";
     std::string const_value_string = const_value->GetElementText();
@@ -1509,7 +1509,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateConstValue(std::share
 
 // 生成路径信息
 
-ABnfGuessError ALittleScriptTranslationJavaScript::GeneratePathsValue(std::shared_ptr<ALittleScriptPathsValueElement> paths_value, std::string& content)
+ABnfGuessError ALittleScriptTranslationJavaScript::GeneratePathsValue(std::shared_ptr<ALittleScriptPathsValueElement> paths_value, const std::string& pre_tab, std::string& content)
 {
     content = "";
     auto text = paths_value->GetText();
@@ -1529,7 +1529,11 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GeneratePathsValue(std::share
     content = "[";
     for (size_t i = 0; i < path_list.size(); ++i)
     {
-        if (i != 0) content += ", ";
+        if (i != 0)
+        {
+            if (i % 3 == 0) content = "\n" + pre_tab + "\t";
+            content += ", ";
+        }
         content += "\"" + path_list[i] + "\"";
     }
     content += "]";
@@ -1538,7 +1542,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GeneratePathsValue(std::share
 
 // 生成反射
 
-ABnfGuessError ALittleScriptTranslationJavaScript::GenerateReflectValue(std::shared_ptr<ALittleScriptReflectValueElement> reflect_value, std::string& content)
+ABnfGuessError ALittleScriptTranslationJavaScript::GenerateReflectValue(std::shared_ptr<ALittleScriptReflectValueElement> reflect_value, const std::string& pre_tab, std::string& content)
 {
     content = "";
     if (reflect_value->GetReflectCustomType() != nullptr)
@@ -1610,7 +1614,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateReflectValue(std::sha
         else if (std::dynamic_pointer_cast<ALittleScriptGuessClass>(guess))
         {
             std::string sub_content;
-            error = GenerateValueStat(value_stat, sub_content);
+            error = GenerateValueStat(value_stat, pre_tab, sub_content);
             if (error) return error;
             content = "(" + sub_content + ").__class";
             return nullptr;
@@ -1621,7 +1625,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateReflectValue(std::sha
             if (std::dynamic_pointer_cast<ALittleScriptGuessClass>(guess_template->template_extends.lock()) || guess_template->is_class)
             {
                 std::string sub_content;
-                error = GenerateValueStat(value_stat, sub_content);
+                error = GenerateValueStat(value_stat, pre_tab, sub_content);
                 if (error) return error;
                 content = "(" + sub_content + ").__class";
                 return nullptr;
@@ -1838,7 +1842,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateEnumValue(std::shared
 
 // 生成属性值表达式
 
-ABnfGuessError ALittleScriptTranslationJavaScript::GeneratePropertyValue(std::shared_ptr<ALittleScriptPropertyValueElement> prop_value, std::string& content, std::string& map_set, std::string& map_del)
+ABnfGuessError ALittleScriptTranslationJavaScript::GeneratePropertyValue(std::shared_ptr<ALittleScriptPropertyValueElement> prop_value, const std::string& pre_tab, std::string& content, std::string& map_set, std::string& map_del)
 {
     map_set = "";
     map_del = "";
@@ -1902,7 +1906,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GeneratePropertyValue(std::sh
         auto value_factor_stat = cast_type->GetValueFactorStat();
         if (value_factor_stat == nullptr) return ABnfGuessError(nullptr, u8"cast没有填写转换对象");
         std::string sub_content;
-        error = GenerateValueFactorStat(value_factor_stat, sub_content);
+        error = GenerateValueFactorStat(value_factor_stat, pre_tab, sub_content);
         if (error) return error;
         content += sub_content;
     }
@@ -2017,7 +2021,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GeneratePropertyValue(std::sh
             if (value_stat != nullptr)
             {
                 std::string sub_content;
-                error = GenerateValueStat(value_stat, sub_content);
+                error = GenerateValueStat(value_stat, pre_tab, sub_content);
                 if (error) return error;
 
                 // 获取前一个后缀的类型
@@ -2126,7 +2130,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GeneratePropertyValue(std::sh
                 for (auto& value_stat : value_stat_list)
                 {
                     std::string sub_content;
-                    error = GenerateValueStat(value_stat, sub_content);
+                    error = GenerateValueStat(value_stat, pre_tab, sub_content);
                     if (error) return error;
                     param_list.push_back(sub_content);
                 }
@@ -2194,14 +2198,14 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GeneratePropertyValue(std::sh
                         || std::dynamic_pointer_cast<ALittleScriptClassSetterDecElement>(pre_type_functor->element.lock())))
                     {
                         std::string sub_content;
-                        error = GenerateValueStat(value_stat, sub_content);
+                        error = GenerateValueStat(value_stat, pre_tab, sub_content);
                         if (error) return error;
                         param_list.insert(param_list.begin(), sub_content);
                     }
                     else
                     {
                         std::string sub_content;
-                        error = GenerateValueStat(value_stat, sub_content);
+                        error = GenerateValueStat(value_stat, pre_tab, sub_content);
                         if (error) return error;
                         param_list.push_back(sub_content);
                     }
@@ -2231,7 +2235,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GeneratePropertyValue(std::sh
 
 // 生成co
 
-ABnfGuessError ALittleScriptTranslationJavaScript::GenerateCoroutineStat(std::shared_ptr<ALittleScriptCoroutineStatElement> root, std::string& content)
+ABnfGuessError ALittleScriptTranslationJavaScript::GenerateCoroutineStat(std::shared_ptr<ALittleScriptCoroutineStatElement> root, const std::string& pre_tab, std::string& content)
 {
     content = "___COROUTINE";
     return nullptr;
@@ -2262,7 +2266,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateUsingDec(const std::v
         content += "let ";
 
     std::string sub_content;
-    error = GenerateCustomType(custom_type, sub_content);
+    error = GenerateCustomType(custom_type, pre_tab, sub_content);
     if (error) return error;
     content += name_dec->GetElementText() + " = " + sub_content + ";\n";
     return nullptr;
@@ -2291,7 +2295,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateThrowExpr(std::shared
     for (size_t i = 0; i < value_stat_list.size(); ++i)
     {
         std::string sub_content;
-        error = GenerateValueStat(value_stat_list[i], sub_content);
+        error = GenerateValueStat(value_stat_list[i], pre_tab, sub_content);
         if (error) return error;
         param_list.push_back(sub_content);
     }
@@ -2320,7 +2324,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateAssertExpr(std::share
     for (size_t i = 0; i < value_stat_list.size(); ++i)
     {
         std::string sub_content;
-        error = GenerateValueStat(value_stat_list[i], sub_content);
+        error = GenerateValueStat(value_stat_list[i], pre_tab, sub_content);
         if (error) return error;
         param_list.push_back(sub_content);
     }
@@ -2341,7 +2345,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp1Expr(std::shared_p
     auto op_1 = root->GetOp1();
 
     std::string value_stat_result;
-    auto error = GenerateValueStat(value_stat, value_stat_result);
+    auto error = GenerateValueStat(value_stat, pre_tab, value_stat_result);
     if (error) return error;
 
     std::string op_1_string = op_1->GetElementText();
@@ -2379,7 +2383,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateVarAssignExpr(std::sh
     }
 
     std::string sub_content;
-    auto error = GenerateValueStat(value_stat, sub_content);
+    auto error = GenerateValueStat(value_stat, pre_tab, sub_content);
     if (error) return error;
 
     // 获取右边表达式的
@@ -2424,7 +2428,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOpAssignExpr(std::sha
         std::string sub_content;
         std::string map_set;
         std::string map_del;
-        auto guess_error = GeneratePropertyValue(prop_value, sub_content, map_set, map_del);
+        auto guess_error = GeneratePropertyValue(prop_value, pre_tab, sub_content, map_set, map_del);
         if (guess_error) return guess_error;
         content_list.push_back(sub_content);
         map_set_list.push_back(map_set);
@@ -2444,7 +2448,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOpAssignExpr(std::sha
 
     // 获取赋值表达式
     std::string value_stat_result;
-    auto error = GenerateValueStat(value_stat, value_stat_result);
+    auto error = GenerateValueStat(value_stat, pre_tab, value_stat_result);
     if (error) return error;
 
     // 处理等号
@@ -2565,7 +2569,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateElseIfExpr(std::share
         return ABnfGuessError(nullptr, u8"elseif (?) elseif没有条件值:" + root->GetElementText());
 
     std::string value_stat_result;
-    auto error = GenerateValueStat(condition->GetValueStat(), value_stat_result);
+    auto error = GenerateValueStat(condition->GetValueStat(), pre_tab, value_stat_result);
     if (error) return error;
 
     content = pre_tab;
@@ -2608,7 +2612,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateIfExpr(std::shared_pt
         return ABnfGuessError(nullptr, u8"if (?) if没有条件值:" + root->GetElementText());
 
     std::string value_stat_result;
-    auto error = GenerateValueStat(condition->GetValueStat(), value_stat_result);
+    auto error = GenerateValueStat(condition->GetValueStat(), pre_tab, value_stat_result);
     if (error) return error;
 
     content = pre_tab;
@@ -2686,7 +2690,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateForExpr(std::shared_p
             return ABnfGuessError(nullptr, u8"for 没有初始表达式:" + root->GetElementText());
 
         std::string start_value_stat_result;
-        auto error = GenerateValueStat(start_value_stat, start_value_stat_result);
+        auto error = GenerateValueStat(start_value_stat, pre_tab, start_value_stat_result);
         if (error) return error;
 
         auto name_dec = for_pair_dec->GetVarAssignNameDec();
@@ -2703,7 +2707,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateForExpr(std::shared_p
 
         auto end_value_stat = for_end_stat->GetValueStat();
         std::string sub_content;
-        error = GenerateValueStat(end_value_stat, sub_content);
+        error = GenerateValueStat(end_value_stat, pre_tab, sub_content);
         if (error) return error;
         content += sub_content + "; ";
 
@@ -2712,7 +2716,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateForExpr(std::shared_p
             return ABnfGuessError(nullptr, u8"for 没有步长表达式");
 
         auto step_value_stat = for_step_stat->GetValueStat();
-        error = GenerateValueStat(step_value_stat, sub_content);
+        error = GenerateValueStat(step_value_stat, pre_tab, sub_content);
         if (error) return error;
         content += start_var_name + " += " + sub_content;
 
@@ -2725,7 +2729,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateForExpr(std::shared_p
             return ABnfGuessError(nullptr, u8"for in 没有遍历的对象:" + root->GetElementText());
 
         std::string value_stat_result;
-        auto error = GenerateValueStat(value_stat, value_stat_result);
+        auto error = GenerateValueStat(value_stat, pre_tab, value_stat_result);
         if (error) return error;
 
         auto pair_list = for_in_condition->GetForPairDecList();
@@ -2865,7 +2869,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateWhileExpr(std::shared
         return ABnfGuessError(nullptr, u8"while (?) { ... } while中没有条件值");
 
     std::string value_stat_result;
-    auto error = GenerateValueStat(condition->GetValueStat(), value_stat_result);
+    auto error = GenerateValueStat(condition->GetValueStat(), pre_tab, value_stat_result);
     if (error) return error;
 
     content = pre_tab + "while (" + value_stat_result + ") {\n";
@@ -2909,7 +2913,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateDoWhileExpr(std::shar
         return ABnfGuessError(nullptr, u8"do { ... } while(?) while中没有条件值");
 
     std::string value_stat_result;
-    auto error = GenerateValueStat(condition->GetValueStat(), value_stat_result);
+    auto error = GenerateValueStat(condition->GetValueStat(), pre_tab, value_stat_result);
     if (error) return error;
 
     content = pre_tab + "do {\n";
@@ -3056,7 +3060,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateReturnExpr(std::share
     for (auto& value_stat : value_stat_list)
     {
         std::string sub_content;
-        auto error = GenerateValueStat(value_stat, sub_content);
+        auto error = GenerateValueStat(value_stat, pre_tab, sub_content);
         if (error) return error;
         content_list.push_back(sub_content);
     }
@@ -3339,14 +3343,14 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateClass(std::shared_ptr
             if (var_value_dec->GetConstValue() != nullptr)
             {
                 std::string var_value_content;
-                auto error = GenerateConstValue(var_value_dec->GetConstValue(), var_value_content);
+                auto error = GenerateConstValue(var_value_dec->GetConstValue(), pre_tab, var_value_content);
                 if (error) return nullptr;
                 var_init += pre_tab + "\t\t" + "this." + var_name + " = " + var_value_content + ";\n";
             }
             else if (var_value_dec->GetOpNewStat() != nullptr)
             {
                 std::string op_new_stat_content;
-                auto error = GenerateOpNewStat(var_value_dec->GetOpNewStat(), op_new_stat_content);
+                auto error = GenerateOpNewStat(var_value_dec->GetOpNewStat(), pre_tab, op_new_stat_content);
                 if (error) return nullptr;
                 var_init += pre_tab + "\t\t" + "this." + var_name + " = " + op_new_stat_content + ";\n";
             }
@@ -3738,7 +3742,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateInstance(const std::v
     }
 
     std::string sub_content;
-    error = GenerateValueStat(value_stat, sub_content);
+    error = GenerateValueStat(value_stat, pre_tab, sub_content);
     if (error) return error;
     content += " = " + sub_content + ";\n";
     return nullptr;

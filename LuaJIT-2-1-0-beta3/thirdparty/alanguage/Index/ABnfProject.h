@@ -72,6 +72,7 @@ public:
 	void QueryInfo(const std::string& full_path, int query_id, int version, int it_line, int it_char);
 	void QueryGoto(const std::string& full_path, int query_id, int version, int it_line, int it_char);
 	void QueryComplete(const std::string& full_path, int query_id, int version, int it_line, int it_char);
+	void QuerySignatureHelp(const std::string& full_path, int query_id, int version, int it_line, int it_char);
 	void QueryError(const std::string& full_path, int query_id, int version, bool force);
 };
 

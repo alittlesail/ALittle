@@ -705,10 +705,10 @@ bool ABnf::AnalysisABnfKeyMatch(ABnfRuleInfo* rule
         if (ignore_error) return false;
         // 添加错误节点
         if (offset < m_file->GetLength())
-            parent->AddChild(ABnfErrorElementPtr(new ABnfErrorElement(m_factory, m_file, line, col, offset, rule->id.value + "expect" + node->value.value + " but get " + m_file->GetText()[offset]
+            parent->AddChild(ABnfErrorElementPtr(new ABnfErrorElement(m_factory, m_file, line, col, offset, rule->id.value + " expect " + node->value.value + " but get " + m_file->GetText()[offset]
                 , ABnfKeyElementPtr(new ABnfKeyElement(m_factory, m_file, line, col, offset, node->value.value)))));
         else
-            parent->AddChild(ABnfErrorElementPtr(new ABnfErrorElement(m_factory, m_file, line, col, offset, rule->id.value + "expect" + node->value.value + " but get end of file"
+            parent->AddChild(ABnfErrorElementPtr(new ABnfErrorElement(m_factory, m_file, line, col, offset, rule->id.value + " expect " + node->value.value + " but get end of file"
                 , ABnfKeyElementPtr(new ABnfKeyElement(m_factory, m_file, line, col, offset, node->value.value)))));
         return false;
     }
@@ -762,10 +762,10 @@ bool ABnf::AnalysisABnfStringMatch(ABnfRuleInfo* rule
         if (ignore_error) return false;
         // 添加错误节点
         if (offset < m_file->GetLength())
-            parent->AddChild(ABnfErrorElementPtr(new ABnfErrorElement(m_factory, m_file, line, col, offset, rule->id.value + "expect" + node->value.value + " but get " + m_file->GetText()[offset]
+            parent->AddChild(ABnfErrorElementPtr(new ABnfErrorElement(m_factory, m_file, line, col, offset, rule->id.value + " expect " + node->value.value + " but get " + m_file->GetText()[offset]
                 , ABnfStringElementPtr(new ABnfStringElement(m_factory, m_file, line, col, offset, node->value.value)))));
         else
-            parent->AddChild(ABnfErrorElementPtr(new ABnfErrorElement(m_factory, m_file, line, col, offset, rule->id.value + "expect" + node->value.value + " but get end of file"
+            parent->AddChild(ABnfErrorElementPtr(new ABnfErrorElement(m_factory, m_file, line, col, offset, rule->id.value + " expect " + node->value.value + " but get end of file"
                 , ABnfStringElementPtr(new ABnfStringElement(m_factory, m_file, line, col, offset, node->value.value)))));
         return false;
     }
@@ -856,22 +856,22 @@ bool ABnf::AnalysisABnfRegexMatch(ABnfRuleInfo* rule
         if (length > 0)
         {
             parent->AddChild(ABnfErrorElementPtr(new ABnfErrorElement(m_factory, m_file, line, col, offset
-                , rule->id.value + "expect" + node->value.value + " but get keyword" + m_file->Substring(offset, length)
+                , rule->id.value + " expect " + node->value.value + " but get keyword" + m_file->Substring(offset, length)
                 , ABnfRegexElementPtr(new ABnfRegexElement(m_factory, m_file, line, col, offset, "", node->value.regex)))));
         }
         else if (length < 0)
         {
-            parent->AddChild(ABnfErrorElementPtr(new ABnfErrorElement(m_factory, m_file, line, col, offset, rule->id.value + "expect" + node->value.value + " but get " + m_file->Substring(offset, -length)
+            parent->AddChild(ABnfErrorElementPtr(new ABnfErrorElement(m_factory, m_file, line, col, offset, rule->id.value + " expect " + node->value.value + " but get " + m_file->Substring(offset, -length)
                 , ABnfRegexElementPtr(new ABnfRegexElement(m_factory, m_file, line, col, offset, "", node->value.regex)))));
             AnalysisOffset(-length, line, col, offset);
             pin_offset = offset - length;
         }
         else
-            parent->AddChild(ABnfErrorElementPtr(new ABnfErrorElement(m_factory, m_file, line, col, offset, rule->id.value + "expect" + node->value.value + " but get " + m_file->GetText()[offset]
+            parent->AddChild(ABnfErrorElementPtr(new ABnfErrorElement(m_factory, m_file, line, col, offset, rule->id.value + " expect " + node->value.value + " but get " + m_file->GetText()[offset]
                 , ABnfRegexElementPtr(new ABnfRegexElement(m_factory, m_file, line, col, offset, "", node->value.regex)))));
     }
     else
-        parent->AddChild(ABnfErrorElementPtr(new ABnfErrorElement(m_factory, m_file, line, col, offset, rule->id.value + "expect" + node->value.value + " but get end of file"
+        parent->AddChild(ABnfErrorElementPtr(new ABnfErrorElement(m_factory, m_file, line, col, offset, rule->id.value + " expect " + node->value.value + " but get end of file"
             , ABnfRegexElementPtr(new ABnfRegexElement(m_factory, m_file, line, col, offset, "", node->value.regex)))));
     return false;
 }

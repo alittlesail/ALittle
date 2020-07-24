@@ -216,7 +216,7 @@
 
 #include "../Reference/ALittleScriptPropertyValueMethodCallReference.h"
 
-ABnfGuessError ALittleScriptTranslationLua::GenerateBindStat(std::shared_ptr<ALittleScriptBindStatElement> bind_stat, std::string& content)
+ABnfGuessError ALittleScriptTranslationLua::GenerateBindStat(std::shared_ptr<ALittleScriptBindStatElement> bind_stat, const std::string& pre_tab, std::string& content)
 {
     const auto& value_stat_list = bind_stat->GetValueStatList();
 
@@ -225,7 +225,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateBindStat(std::shared_ptr<ALi
     for (auto& value_stat : value_stat_list)
     {
         std::string sub_content;
-        auto error = GenerateValueStat(value_stat, sub_content);
+        auto error = GenerateValueStat(value_stat, pre_tab, sub_content);
         if (error) return error;
         param_list.push_back(sub_content);
     }
@@ -236,7 +236,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateBindStat(std::shared_ptr<ALi
 
 // 生成tcall命令
 
-ABnfGuessError ALittleScriptTranslationLua::GenerateTcallStat(std::shared_ptr<ALittleScriptTcallStatElement> tcall_stat, std::string& content)
+ABnfGuessError ALittleScriptTranslationLua::GenerateTcallStat(std::shared_ptr<ALittleScriptTcallStatElement> tcall_stat, const std::string& pre_tab, std::string& content)
 {
     const auto& value_stat_list = tcall_stat->GetValueStatList();
 
@@ -245,7 +245,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateTcallStat(std::shared_ptr<AL
     for (auto& value_stat : value_stat_list)
     {
         std::string sub_content;
-        auto error = GenerateValueStat(value_stat, sub_content);
+        auto error = GenerateValueStat(value_stat, pre_tab, sub_content);
         if (error) return error;
         param_list.push_back(sub_content);
     }
@@ -256,7 +256,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateTcallStat(std::shared_ptr<AL
 
 // 生成new List
 
-ABnfGuessError ALittleScriptTranslationLua::GenerateOpNewListStat(std::shared_ptr<ALittleScriptOpNewListStatElement> op_new_list, std::string& content)
+ABnfGuessError ALittleScriptTranslationLua::GenerateOpNewListStat(std::shared_ptr<ALittleScriptOpNewListStatElement> op_new_list, const std::string& pre_tab, std::string& content)
 {
     const auto& value_stat_list = op_new_list->GetValueStatList();
 
@@ -265,7 +265,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateOpNewListStat(std::shared_pt
     for (auto& value_stat : value_stat_list)
     {
         std::string sub_content;
-        auto error = GenerateValueStat(value_stat, sub_content);
+        auto error = GenerateValueStat(value_stat, pre_tab, sub_content);
         if (error) return error;
         param_list.push_back(sub_content);
     }
@@ -276,7 +276,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateOpNewListStat(std::shared_pt
 
 // 生成new
 
-ABnfGuessError ALittleScriptTranslationLua::GenerateOpNewStat(std::shared_ptr<ALittleScriptOpNewStatElement> op_new_stat, std::string& content)
+ABnfGuessError ALittleScriptTranslationLua::GenerateOpNewStat(std::shared_ptr<ALittleScriptOpNewStatElement> op_new_stat, const std::string& pre_tab, std::string& content)
 {
     content = "";
     // 如果是通用类型
@@ -337,7 +337,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateOpNewStat(std::shared_ptr<AL
         if (std::dynamic_pointer_cast<ALittleScriptGuessClass>(guess))
         {
             // 生成custom_type名
-            error = GenerateCustomType(custom_type, content);
+            error = GenerateCustomType(custom_type, pre_tab, content);
             if (error) return error;
             content += "(";
             std::vector<std::string> param_list;
@@ -345,7 +345,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateOpNewStat(std::shared_ptr<AL
             for (auto& value_stat : value_stat_list)
             {
                 std::string sub_content;
-                error = GenerateValueStat(value_stat, sub_content);
+                error = GenerateValueStat(value_stat, pre_tab, sub_content);
                 if (error) return error;
                 param_list.push_back(sub_content);
             }
@@ -384,7 +384,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateOpNewStat(std::shared_ptr<AL
             if (std::dynamic_pointer_cast<ALittleScriptGuessClass>(guess_template->template_extends.lock()))
             {
                 // 生成custom_type名
-                error = GenerateCustomType(custom_type, content);
+                error = GenerateCustomType(custom_type, pre_tab, content);
                 if (error) return error;
                 content += "(";
                 std::vector<std::string> param_list;
@@ -392,7 +392,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateOpNewStat(std::shared_ptr<AL
                 for (auto& value_stat : value_stat_list)
                 {
                     std::string sub_content;
-                    error = GenerateValueStat(value_stat, sub_content);
+                    error = GenerateValueStat(value_stat, pre_tab, sub_content);
                     if (error) return error;
                     param_list.push_back(sub_content);
                 }
@@ -530,7 +530,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateCustomTypeTemplateList(std::
 }
 
 // 生成custom_type
-ABnfGuessError ALittleScriptTranslationLua::GenerateCustomType(std::shared_ptr<ALittleScriptCustomTypeElement> custom_type, std::string& content)
+ABnfGuessError ALittleScriptTranslationLua::GenerateCustomType(std::shared_ptr<ALittleScriptCustomTypeElement> custom_type, const std::string& pre_tab, std::string& content)
 {
     content = "";
 
@@ -639,7 +639,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateCustomType(std::shared_ptr<A
 }
 
 // 生成8级运算符
-ABnfGuessError ALittleScriptTranslationLua::GenerateOp8Suffix(std::shared_ptr<ALittleScriptOp8SuffixElement> suffix, std::string& content)
+ABnfGuessError ALittleScriptTranslationLua::GenerateOp8Suffix(std::shared_ptr<ALittleScriptOp8SuffixElement> suffix, const std::string& pre_tab, std::string& content)
 {
     content = "";
     std::string op_string = suffix->GetOp8()->GetElementText();
@@ -648,12 +648,12 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateOp8Suffix(std::shared_ptr<AL
     std::string value_functor_result;
     if (suffix->GetValueFactorStat() != nullptr)
     {
-        auto error = GenerateValueFactorStat(suffix->GetValueFactorStat(), value_functor_result);
+        auto error = GenerateValueFactorStat(suffix->GetValueFactorStat(), pre_tab, value_functor_result);
         if (error) return error;
     }
     else if (suffix->GetOp2Value() != nullptr)
     {
-        auto error = GenerateOp2Value(suffix->GetOp2Value(), value_functor_result);
+        auto error = GenerateOp2Value(suffix->GetOp2Value(), pre_tab, value_functor_result);
         if (error) return error;
     }
 
@@ -662,7 +662,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateOp8Suffix(std::shared_ptr<AL
     for (auto& suffix_ee : suffix_ee_list)
     {
         std::string suffix_ee_result;
-        auto error = GenerateOp8SuffixEe(suffix_ee, suffix_ee_result);
+        auto error = GenerateOp8SuffixEe(suffix_ee, pre_tab, suffix_ee_result);
         if (error) return error;
         suffix_content_list.push_back(suffix_ee_result);
     }
@@ -671,18 +671,18 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateOp8Suffix(std::shared_ptr<AL
     return nullptr;
 }
 
-ABnfGuessError ALittleScriptTranslationLua::GenerateOp8SuffixEe(std::shared_ptr<ALittleScriptOp8SuffixEeElement> suffix, std::string& content)
+ABnfGuessError ALittleScriptTranslationLua::GenerateOp8SuffixEe(std::shared_ptr<ALittleScriptOp8SuffixEeElement> suffix, const std::string& pre_tab, std::string& content)
 {
     if (suffix->GetOp3Suffix() != nullptr)
-        return GenerateOp3Suffix(suffix->GetOp3Suffix(), content);
+        return GenerateOp3Suffix(suffix->GetOp3Suffix(), pre_tab, content);
     else if (suffix->GetOp4Suffix() != nullptr)
-        return GenerateOp4Suffix(suffix->GetOp4Suffix(), content);
+        return GenerateOp4Suffix(suffix->GetOp4Suffix(), pre_tab, content);
     else if (suffix->GetOp5Suffix() != nullptr)
-        return GenerateOp5Suffix(suffix->GetOp5Suffix(), content);
+        return GenerateOp5Suffix(suffix->GetOp5Suffix(), pre_tab, content);
     else if (suffix->GetOp6Suffix() != nullptr)
-        return GenerateOp6Suffix(suffix->GetOp6Suffix(), content);
+        return GenerateOp6Suffix(suffix->GetOp6Suffix(), pre_tab, content);
     else if (suffix->GetOp7Suffix() != nullptr)
-        return GenerateOp7Suffix(suffix->GetOp7Suffix(), content);
+        return GenerateOp7Suffix(suffix->GetOp7Suffix(), pre_tab, content);
     else
     {
         content = "";
@@ -690,10 +690,10 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateOp8SuffixEe(std::shared_ptr<
     }
 }
 
-ABnfGuessError ALittleScriptTranslationLua::GenerateOp8SuffixEx(std::shared_ptr<ALittleScriptOp8SuffixExElement> suffix, std::string& content)
+ABnfGuessError ALittleScriptTranslationLua::GenerateOp8SuffixEx(std::shared_ptr<ALittleScriptOp8SuffixExElement> suffix, const std::string& pre_tab, std::string& content)
 {
     if (suffix->GetOp8Suffix() != nullptr)
-        return GenerateOp8Suffix(suffix->GetOp8Suffix(), content);
+        return GenerateOp8Suffix(suffix->GetOp8Suffix(), pre_tab, content);
     else
     {
         content = "";
@@ -701,16 +701,16 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateOp8SuffixEx(std::shared_ptr<
     }
 }
 
-ABnfGuessError ALittleScriptTranslationLua::GenerateOp8Stat(std::shared_ptr<ALittleScriptValueFactorStatElement> value_factor_stat, std::shared_ptr<ALittleScriptOp8StatElement> op_8_stat, std::string& content)
+ABnfGuessError ALittleScriptTranslationLua::GenerateOp8Stat(std::shared_ptr<ALittleScriptValueFactorStatElement> value_factor_stat, std::shared_ptr<ALittleScriptOp8StatElement> op_8_stat, const std::string& pre_tab, std::string& content)
 {
     content = "";
     std::string value_functor_result;
-    auto error = GenerateValueFactorStat(value_factor_stat, value_functor_result);
+    auto error = GenerateValueFactorStat(value_factor_stat, pre_tab, value_functor_result);
     if (error) return error;
 
     auto suffix = op_8_stat->GetOp8Suffix();
     std::string suffix_result;
-    error = GenerateOp8Suffix(suffix, suffix_result);
+    error = GenerateOp8Suffix(suffix, pre_tab, suffix_result);
     if (error) return error;
 
     std::vector<std::string> suffix_content_list;
@@ -718,7 +718,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateOp8Stat(std::shared_ptr<ALit
     for (auto& suffix_ex : suffix_ex_list)
     {
         std::string sub_content;
-        error = GenerateOp8SuffixEx(suffix_ex, sub_content);
+        error = GenerateOp8SuffixEx(suffix_ex, pre_tab, sub_content);
         if (error) return error;
         suffix_content_list.push_back(sub_content);
     }
@@ -728,7 +728,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateOp8Stat(std::shared_ptr<ALit
 }
 
 // 生成7级运算符
-ABnfGuessError ALittleScriptTranslationLua::GenerateOp7Suffix(std::shared_ptr<ALittleScriptOp7SuffixElement> suffix, std::string& content)
+ABnfGuessError ALittleScriptTranslationLua::GenerateOp7Suffix(std::shared_ptr<ALittleScriptOp7SuffixElement> suffix, const std::string& pre_tab, std::string& content)
 {
     content = "";
     std::string op_string = suffix->GetOp7()->GetElementText();
@@ -738,12 +738,12 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateOp7Suffix(std::shared_ptr<AL
     std::string value_functor_result;
     if (suffix->GetValueFactorStat() != nullptr)
     {
-        auto error = GenerateValueFactorStat(suffix->GetValueFactorStat(), value_functor_result);
+        auto error = GenerateValueFactorStat(suffix->GetValueFactorStat(), pre_tab, value_functor_result);
         if (error) return error;
     }
     else if (suffix->GetOp2Value() != nullptr)
     {
-        auto error = GenerateOp2Value(suffix->GetOp2Value(), value_functor_result);
+        auto error = GenerateOp2Value(suffix->GetOp2Value(), pre_tab, value_functor_result);
         if (error) return error;
     }
 
@@ -752,7 +752,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateOp7Suffix(std::shared_ptr<AL
     for (auto& suffix_ee : suffix_ee_list)
     {
         std::string sub_content;
-        auto error = GenerateOp7SuffixEe(suffix_ee, sub_content);
+        auto error = GenerateOp7SuffixEe(suffix_ee, pre_tab, sub_content);
         if (error) return error;
         suffix_content_list.push_back(sub_content);
     }
@@ -761,16 +761,16 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateOp7Suffix(std::shared_ptr<AL
     return nullptr;
 }
 
-ABnfGuessError ALittleScriptTranslationLua::GenerateOp7SuffixEe(std::shared_ptr<ALittleScriptOp7SuffixEeElement> suffix, std::string& content)
+ABnfGuessError ALittleScriptTranslationLua::GenerateOp7SuffixEe(std::shared_ptr<ALittleScriptOp7SuffixEeElement> suffix, const std::string& pre_tab, std::string& content)
 {
     if (suffix->GetOp3Suffix() != nullptr)
-        return GenerateOp3Suffix(suffix->GetOp3Suffix(), content);
+        return GenerateOp3Suffix(suffix->GetOp3Suffix(), pre_tab, content);
     else if (suffix->GetOp4Suffix() != nullptr)
-        return GenerateOp4Suffix(suffix->GetOp4Suffix(), content);
+        return GenerateOp4Suffix(suffix->GetOp4Suffix(), pre_tab, content);
     else if (suffix->GetOp5Suffix() != nullptr)
-        return GenerateOp5Suffix(suffix->GetOp5Suffix(), content);
+        return GenerateOp5Suffix(suffix->GetOp5Suffix(), pre_tab, content);
     else if (suffix->GetOp6Suffix() != nullptr)
-        return GenerateOp6Suffix(suffix->GetOp6Suffix(), content);
+        return GenerateOp6Suffix(suffix->GetOp6Suffix(), pre_tab, content);
     else
     {
         content = "";
@@ -778,12 +778,12 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateOp7SuffixEe(std::shared_ptr<
     }
 }
 
-ABnfGuessError ALittleScriptTranslationLua::GenerateOp7SuffixEx(std::shared_ptr<ALittleScriptOp7SuffixExElement> suffix, std::string& content)
+ABnfGuessError ALittleScriptTranslationLua::GenerateOp7SuffixEx(std::shared_ptr<ALittleScriptOp7SuffixExElement> suffix, const std::string& pre_tab, std::string& content)
 {
     if (suffix->GetOp7Suffix() != nullptr)
-        return GenerateOp7Suffix(suffix->GetOp7Suffix(), content);
+        return GenerateOp7Suffix(suffix->GetOp7Suffix(), pre_tab, content);
     else if (suffix->GetOp8Suffix() != nullptr)
-        return GenerateOp8Suffix(suffix->GetOp8Suffix(), content);
+        return GenerateOp8Suffix(suffix->GetOp8Suffix(), pre_tab, content);
     else
     {
         content = "";
@@ -791,16 +791,16 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateOp7SuffixEx(std::shared_ptr<
     }
 }
 
-ABnfGuessError ALittleScriptTranslationLua::GenerateOp7Stat(std::shared_ptr<ALittleScriptValueFactorStatElement> value_factor_stat, std::shared_ptr<ALittleScriptOp7StatElement> op_7_stat, std::string& content)
+ABnfGuessError ALittleScriptTranslationLua::GenerateOp7Stat(std::shared_ptr<ALittleScriptValueFactorStatElement> value_factor_stat, std::shared_ptr<ALittleScriptOp7StatElement> op_7_stat, const std::string& pre_tab, std::string& content)
 {
     content = "";
     std::string value_functor_result;
-    auto error = GenerateValueFactorStat(value_factor_stat, value_functor_result);
+    auto error = GenerateValueFactorStat(value_factor_stat, pre_tab, value_functor_result);
     if (error) return error;
 
     auto suffix = op_7_stat->GetOp7Suffix();
     std::string suffix_result;
-    error = GenerateOp7Suffix(suffix, suffix_result);
+    error = GenerateOp7Suffix(suffix, pre_tab, suffix_result);
     if (error) return error;
 
     std::vector<std::string> suffix_content_list;
@@ -808,7 +808,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateOp7Stat(std::shared_ptr<ALit
     for (auto& suffix_ex : suffix_ex_list)
     {
         std::string sub_content;
-        error = GenerateOp7SuffixEx(suffix_ex, sub_content);
+        error = GenerateOp7SuffixEx(suffix_ex, pre_tab, sub_content);
         if (error) return error;
         suffix_content_list.push_back(sub_content);
     }
@@ -819,7 +819,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateOp7Stat(std::shared_ptr<ALit
 
 // 生成6级运算符
 
-ABnfGuessError ALittleScriptTranslationLua::GenerateOp6Suffix(std::shared_ptr<ALittleScriptOp6SuffixElement> suffix, std::string& content)
+ABnfGuessError ALittleScriptTranslationLua::GenerateOp6Suffix(std::shared_ptr<ALittleScriptOp6SuffixElement> suffix, const std::string& pre_tab, std::string& content)
 {
     content = "";
     std::string op_string = suffix->GetOp6()->GetElementText();
@@ -829,12 +829,12 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateOp6Suffix(std::shared_ptr<AL
     std::string value_functor_result;
     if (suffix->GetValueFactorStat() != nullptr)
     {
-        auto error = GenerateValueFactorStat(suffix->GetValueFactorStat(), value_functor_result);
+        auto error = GenerateValueFactorStat(suffix->GetValueFactorStat(), pre_tab, value_functor_result);
         if (error) return error;
     }
     else if (suffix->GetOp2Value() != nullptr)
     {
-        auto error = GenerateOp2Value(suffix->GetOp2Value(), value_functor_result);
+        auto error = GenerateOp2Value(suffix->GetOp2Value(), pre_tab, value_functor_result);
         if (error) return error;
     }
 
@@ -843,7 +843,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateOp6Suffix(std::shared_ptr<AL
     for (auto& suffix_ee : suffix_ee_list)
     {
         std::string sub_content;
-        auto error = GenerateOp6SuffixEe(suffix_ee, sub_content);
+        auto error = GenerateOp6SuffixEe(suffix_ee, pre_tab, sub_content);
         if (error) return error;
         suffix_content_list.push_back(sub_content);
     }
@@ -852,14 +852,14 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateOp6Suffix(std::shared_ptr<AL
     return nullptr;
 }
 
-ABnfGuessError ALittleScriptTranslationLua::GenerateOp6SuffixEe(std::shared_ptr<ALittleScriptOp6SuffixEeElement> suffix, std::string& content)
+ABnfGuessError ALittleScriptTranslationLua::GenerateOp6SuffixEe(std::shared_ptr<ALittleScriptOp6SuffixEeElement> suffix, const std::string& pre_tab, std::string& content)
 {
     if (suffix->GetOp3Suffix() != nullptr)
-        return GenerateOp3Suffix(suffix->GetOp3Suffix(), content);
+        return GenerateOp3Suffix(suffix->GetOp3Suffix(), pre_tab, content);
     else if (suffix->GetOp4Suffix() != nullptr)
-        return GenerateOp4Suffix(suffix->GetOp4Suffix(), content);
+        return GenerateOp4Suffix(suffix->GetOp4Suffix(), pre_tab, content);
     else if (suffix->GetOp5Suffix() != nullptr)
-        return GenerateOp5Suffix(suffix->GetOp5Suffix(), content);
+        return GenerateOp5Suffix(suffix->GetOp5Suffix(), pre_tab, content);
     else
     {
         content = "";
@@ -867,14 +867,14 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateOp6SuffixEe(std::shared_ptr<
     }
 }
 
-ABnfGuessError ALittleScriptTranslationLua::GenerateOp6SuffixEx(std::shared_ptr<ALittleScriptOp6SuffixExElement> suffix, std::string& content)
+ABnfGuessError ALittleScriptTranslationLua::GenerateOp6SuffixEx(std::shared_ptr<ALittleScriptOp6SuffixExElement> suffix, const std::string& pre_tab, std::string& content)
 {
     if (suffix->GetOp6Suffix() != nullptr)
-        return GenerateOp6Suffix(suffix->GetOp6Suffix(), content);
+        return GenerateOp6Suffix(suffix->GetOp6Suffix(), pre_tab, content);
     else if (suffix->GetOp7Suffix() != nullptr)
-        return GenerateOp7Suffix(suffix->GetOp7Suffix(), content);
+        return GenerateOp7Suffix(suffix->GetOp7Suffix(), pre_tab, content);
     else if (suffix->GetOp8Suffix() != nullptr)
-        return GenerateOp8Suffix(suffix->GetOp8Suffix(), content);
+        return GenerateOp8Suffix(suffix->GetOp8Suffix(), pre_tab, content);
     else
     {
         content = "";
@@ -882,16 +882,16 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateOp6SuffixEx(std::shared_ptr<
     }
 }
 
-ABnfGuessError ALittleScriptTranslationLua::GenerateOp6Stat(std::shared_ptr<ALittleScriptValueFactorStatElement> value_factor_stat, std::shared_ptr<ALittleScriptOp6StatElement> op_6_tat, std::string& content)
+ABnfGuessError ALittleScriptTranslationLua::GenerateOp6Stat(std::shared_ptr<ALittleScriptValueFactorStatElement> value_factor_stat, std::shared_ptr<ALittleScriptOp6StatElement> op_6_tat, const std::string& pre_tab, std::string& content)
 {
     content = "";
     std::string value_functor_result;
-    auto error = GenerateValueFactorStat(value_factor_stat, value_functor_result);
+    auto error = GenerateValueFactorStat(value_factor_stat, pre_tab, value_functor_result);
     if (error) return error;
 
     auto suffix = op_6_tat->GetOp6Suffix();
     std::string suffix_result;
-    error = GenerateOp6Suffix(suffix, suffix_result);
+    error = GenerateOp6Suffix(suffix, pre_tab, suffix_result);
     if (error) return error;
 
     std::vector<std::string> suffix_content_list;
@@ -899,7 +899,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateOp6Stat(std::shared_ptr<ALit
     for (auto& suffix_ex : suffix_ex_list)
     {
         std::string sub_content;
-        error = GenerateOp6SuffixEx(suffix_ex, sub_content);
+        error = GenerateOp6SuffixEx(suffix_ex, pre_tab, sub_content);
         if (error) return error;
         suffix_content_list.push_back(sub_content);
     }
@@ -908,7 +908,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateOp6Stat(std::shared_ptr<ALit
     return nullptr;
 }
 
-ABnfGuessError ALittleScriptTranslationLua::GenerateOp5Suffix(std::shared_ptr<ALittleScriptOp5SuffixElement> suffix, std::string& content)
+ABnfGuessError ALittleScriptTranslationLua::GenerateOp5Suffix(std::shared_ptr<ALittleScriptOp5SuffixElement> suffix, const std::string& pre_tab, std::string& content)
 {
     content = "";
     std::string op_string = suffix->GetOp5()->GetElementText();
@@ -916,12 +916,12 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateOp5Suffix(std::shared_ptr<AL
     std::string value_functor_result;
     if (suffix->GetValueFactorStat() != nullptr)
     {
-        auto error = GenerateValueFactorStat(suffix->GetValueFactorStat(), value_functor_result);
+        auto error = GenerateValueFactorStat(suffix->GetValueFactorStat(), pre_tab, value_functor_result);
         if (error) return error;
     }
     else if (suffix->GetOp2Value() != nullptr)
     {
-        auto error = GenerateOp2Value(suffix->GetOp2Value(), value_functor_result);
+        auto error = GenerateOp2Value(suffix->GetOp2Value(), pre_tab, value_functor_result);
         if (error) return error;
     }
 
@@ -930,7 +930,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateOp5Suffix(std::shared_ptr<AL
     for (auto& suffix_ee : suffix_ee_list)
     {
         std::string sub_content;
-        auto error = GenerateOp5SuffixEe(suffix_ee, sub_content);
+        auto error = GenerateOp5SuffixEe(suffix_ee, pre_tab, sub_content);
         if (error) return error;
         suffix_content_list.push_back(sub_content);
     }
@@ -939,12 +939,12 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateOp5Suffix(std::shared_ptr<AL
     return nullptr;
 }
 
-ABnfGuessError ALittleScriptTranslationLua::GenerateOp5SuffixEe(std::shared_ptr<ALittleScriptOp5SuffixEeElement> suffix, std::string& content)
+ABnfGuessError ALittleScriptTranslationLua::GenerateOp5SuffixEe(std::shared_ptr<ALittleScriptOp5SuffixEeElement> suffix, const std::string& pre_tab, std::string& content)
 {
     if (suffix->GetOp3Suffix() != nullptr)
-        return GenerateOp3Suffix(suffix->GetOp3Suffix(), content);
+        return GenerateOp3Suffix(suffix->GetOp3Suffix(), pre_tab, content);
     else if (suffix->GetOp4Suffix() != nullptr)
-        return GenerateOp4Suffix(suffix->GetOp4Suffix(), content);
+        return GenerateOp4Suffix(suffix->GetOp4Suffix(), pre_tab, content);
     else
     {
         content = "";
@@ -952,16 +952,16 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateOp5SuffixEe(std::shared_ptr<
     }
 }
 
-ABnfGuessError ALittleScriptTranslationLua::GenerateOp5SuffixEx(std::shared_ptr<ALittleScriptOp5SuffixExElement> suffix, std::string& content)
+ABnfGuessError ALittleScriptTranslationLua::GenerateOp5SuffixEx(std::shared_ptr<ALittleScriptOp5SuffixExElement> suffix, const std::string& pre_tab, std::string& content)
 {
     if (suffix->GetOp5Suffix() != nullptr)
-        return GenerateOp5Suffix(suffix->GetOp5Suffix(), content);
+        return GenerateOp5Suffix(suffix->GetOp5Suffix(), pre_tab, content);
     else if (suffix->GetOp6Suffix() != nullptr)
-        return GenerateOp6Suffix(suffix->GetOp6Suffix(), content);
+        return GenerateOp6Suffix(suffix->GetOp6Suffix(), pre_tab, content);
     else if (suffix->GetOp7Suffix() != nullptr)
-        return GenerateOp7Suffix(suffix->GetOp7Suffix(), content);
+        return GenerateOp7Suffix(suffix->GetOp7Suffix(), pre_tab, content);
     else if (suffix->GetOp8Suffix() != nullptr)
-        return GenerateOp8Suffix(suffix->GetOp8Suffix(), content);
+        return GenerateOp8Suffix(suffix->GetOp8Suffix(), pre_tab, content);
     else
     {
         content = "";
@@ -969,16 +969,16 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateOp5SuffixEx(std::shared_ptr<
     }
 }
 
-ABnfGuessError ALittleScriptTranslationLua::GenerateOp5Stat(std::shared_ptr<ALittleScriptValueFactorStatElement> value_factor_stat, std::shared_ptr<ALittleScriptOp5StatElement> op_5_stat, std::string& content)
+ABnfGuessError ALittleScriptTranslationLua::GenerateOp5Stat(std::shared_ptr<ALittleScriptValueFactorStatElement> value_factor_stat, std::shared_ptr<ALittleScriptOp5StatElement> op_5_stat, const std::string& pre_tab, std::string& content)
 {
     content = "";
     std::string value_functor_result;
-    auto error = GenerateValueFactorStat(value_factor_stat, value_functor_result);
+    auto error = GenerateValueFactorStat(value_factor_stat, pre_tab, value_functor_result);
     if (error) return error;
 
     auto suffix = op_5_stat->GetOp5Suffix();
     std::string suffix_result;
-    error = GenerateOp5Suffix(suffix, suffix_result);
+    error = GenerateOp5Suffix(suffix, pre_tab, suffix_result);
     if (error) return error;
 
     std::vector<std::string> suffix_content_list;
@@ -986,7 +986,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateOp5Stat(std::shared_ptr<ALit
     for (auto& suffix_ex : suffix_ex_list)
     {
         std::string sub_content;
-        error = GenerateOp5SuffixEx(suffix_ex, sub_content);
+        error = GenerateOp5SuffixEx(suffix_ex, pre_tab, sub_content);
         if (error) return error;
         suffix_content_list.push_back(sub_content);
     }
@@ -997,7 +997,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateOp5Stat(std::shared_ptr<ALit
 
 // 生成4级运算符
 
-ABnfGuessError ALittleScriptTranslationLua::GenerateOp4Suffix(std::shared_ptr<ALittleScriptOp4SuffixElement> suffix, std::string& content)
+ABnfGuessError ALittleScriptTranslationLua::GenerateOp4Suffix(std::shared_ptr<ALittleScriptOp4SuffixElement> suffix, const std::string& pre_tab, std::string& content)
 {
     content = "";
     std::string op_string = suffix->GetOp4()->GetElementText();
@@ -1005,12 +1005,12 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateOp4Suffix(std::shared_ptr<AL
     std::string value_functor_result;
     if (suffix->GetValueFactorStat() != nullptr)
     {
-        auto error = GenerateValueFactorStat(suffix->GetValueFactorStat(), value_functor_result);
+        auto error = GenerateValueFactorStat(suffix->GetValueFactorStat(), pre_tab, value_functor_result);
         if (error) return error;
     }
     else if (suffix->GetOp2Value() != nullptr)
     {
-        auto error = GenerateOp2Value(suffix->GetOp2Value(), value_functor_result);
+        auto error = GenerateOp2Value(suffix->GetOp2Value(), pre_tab, value_functor_result);
         if (error) return error;
     }
 
@@ -1019,7 +1019,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateOp4Suffix(std::shared_ptr<AL
     for (auto& suffix_ee : suffix_ee_list)
     {
         std::string sub_content;
-        auto error = GenerateOp4SuffixEe(suffix_ee, sub_content);
+        auto error = GenerateOp4SuffixEe(suffix_ee, pre_tab, sub_content);
         if (error) return error;
         suffix_content_list.push_back(sub_content);
     }
@@ -1028,10 +1028,10 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateOp4Suffix(std::shared_ptr<AL
     return nullptr;
 }
 
-ABnfGuessError ALittleScriptTranslationLua::GenerateOp4SuffixEe(std::shared_ptr<ALittleScriptOp4SuffixEeElement> suffix, std::string& content)
+ABnfGuessError ALittleScriptTranslationLua::GenerateOp4SuffixEe(std::shared_ptr<ALittleScriptOp4SuffixEeElement> suffix, const std::string& pre_tab, std::string& content)
 {
     if (suffix->GetOp3Suffix() != nullptr)
-        return GenerateOp3Suffix(suffix->GetOp3Suffix(), content);
+        return GenerateOp3Suffix(suffix->GetOp3Suffix(), pre_tab, content);
     else
     {
         content = "";
@@ -1039,18 +1039,18 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateOp4SuffixEe(std::shared_ptr<
     }
 }
 
-ABnfGuessError ALittleScriptTranslationLua::GenerateOp4SuffixEx(std::shared_ptr<ALittleScriptOp4SuffixExElement> suffix, std::string& content)
+ABnfGuessError ALittleScriptTranslationLua::GenerateOp4SuffixEx(std::shared_ptr<ALittleScriptOp4SuffixExElement> suffix, const std::string& pre_tab, std::string& content)
 {
     if (suffix->GetOp4Suffix() != nullptr)
-        return GenerateOp4Suffix(suffix->GetOp4Suffix(), content);
+        return GenerateOp4Suffix(suffix->GetOp4Suffix(), pre_tab, content);
     else if (suffix->GetOp5Suffix() != nullptr)
-        return GenerateOp5Suffix(suffix->GetOp5Suffix(), content);
+        return GenerateOp5Suffix(suffix->GetOp5Suffix(), pre_tab, content);
     else if (suffix->GetOp6Suffix() != nullptr)
-        return GenerateOp6Suffix(suffix->GetOp6Suffix(), content);
+        return GenerateOp6Suffix(suffix->GetOp6Suffix(), pre_tab, content);
     else if (suffix->GetOp7Suffix() != nullptr)
-        return GenerateOp7Suffix(suffix->GetOp7Suffix(), content);
+        return GenerateOp7Suffix(suffix->GetOp7Suffix(), pre_tab, content);
     else if (suffix->GetOp8Suffix() != nullptr)
-        return GenerateOp8Suffix(suffix->GetOp8Suffix(), content);
+        return GenerateOp8Suffix(suffix->GetOp8Suffix(), pre_tab, content);
     else
     {
         content = "";
@@ -1058,16 +1058,16 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateOp4SuffixEx(std::shared_ptr<
     }
 }
 
-ABnfGuessError ALittleScriptTranslationLua::GenerateOp4Stat(std::shared_ptr<ALittleScriptValueFactorStatElement> value_factor_stat, std::shared_ptr<ALittleScriptOp4StatElement> op_4_stat, std::string& content)
+ABnfGuessError ALittleScriptTranslationLua::GenerateOp4Stat(std::shared_ptr<ALittleScriptValueFactorStatElement> value_factor_stat, std::shared_ptr<ALittleScriptOp4StatElement> op_4_stat, const std::string& pre_tab, std::string& content)
 {
     content = "";
     std::string value_functor_result;
-    auto error = GenerateValueFactorStat(value_factor_stat, value_functor_result);
+    auto error = GenerateValueFactorStat(value_factor_stat, pre_tab, value_functor_result);
     if (error) return error;
 
     auto suffix = op_4_stat->GetOp4Suffix();
     std::string suffix_result;
-    error = GenerateOp4Suffix(suffix, suffix_result);
+    error = GenerateOp4Suffix(suffix, pre_tab, suffix_result);
     if (error) return error;
 
     std::vector<std::string> suffix_content_list;
@@ -1075,7 +1075,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateOp4Stat(std::shared_ptr<ALit
     for (auto& suffix_ex : suffix_ex_list)
     {
         std::string sub_content;
-        error = GenerateOp4SuffixEx(suffix_ex, sub_content);
+        error = GenerateOp4SuffixEx(suffix_ex, pre_tab, sub_content);
         if (error) return error;
         suffix_content_list.push_back(sub_content);
     }
@@ -1086,7 +1086,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateOp4Stat(std::shared_ptr<ALit
 
 // 生成3级运算符
 
-ABnfGuessError ALittleScriptTranslationLua::GenerateOp3Suffix(std::shared_ptr<ALittleScriptOp3SuffixElement> suffix, std::string& content)
+ABnfGuessError ALittleScriptTranslationLua::GenerateOp3Suffix(std::shared_ptr<ALittleScriptOp3SuffixElement> suffix, const std::string& pre_tab, std::string& content)
 {
     content = "";
     std::string op_string = suffix->GetOp3()->GetElementText();
@@ -1094,12 +1094,12 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateOp3Suffix(std::shared_ptr<AL
     std::string value_result;
     if (suffix->GetValueFactorStat() != nullptr)
     {
-        auto error = GenerateValueFactorStat(suffix->GetValueFactorStat(), value_result);
+        auto error = GenerateValueFactorStat(suffix->GetValueFactorStat(), pre_tab, value_result);
         if (error) return error;
     }
     else if (suffix->GetOp2Value() != nullptr)
     {
-        auto error = GenerateOp2Value(suffix->GetOp2Value(), value_result);
+        auto error = GenerateOp2Value(suffix->GetOp2Value(), pre_tab, value_result);
         if (error) return error;
     }
     else
@@ -1111,20 +1111,20 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateOp3Suffix(std::shared_ptr<AL
     return nullptr;
 }
 
-ABnfGuessError ALittleScriptTranslationLua::GenerateOp3SuffixEx(std::shared_ptr<ALittleScriptOp3SuffixExElement> suffix, std::string& content)
+ABnfGuessError ALittleScriptTranslationLua::GenerateOp3SuffixEx(std::shared_ptr<ALittleScriptOp3SuffixExElement> suffix, const std::string& pre_tab, std::string& content)
 {
     if (suffix->GetOp3Suffix() != nullptr)
-        return GenerateOp3Suffix(suffix->GetOp3Suffix(), content);
+        return GenerateOp3Suffix(suffix->GetOp3Suffix(), pre_tab, content);
     else if (suffix->GetOp4Suffix() != nullptr)
-        return GenerateOp4Suffix(suffix->GetOp4Suffix(), content);
+        return GenerateOp4Suffix(suffix->GetOp4Suffix(), pre_tab, content);
     else if (suffix->GetOp5Suffix() != nullptr)
-        return GenerateOp5Suffix(suffix->GetOp5Suffix(), content);
+        return GenerateOp5Suffix(suffix->GetOp5Suffix(), pre_tab, content);
     else if (suffix->GetOp6Suffix() != nullptr)
-        return GenerateOp6Suffix(suffix->GetOp6Suffix(), content);
+        return GenerateOp6Suffix(suffix->GetOp6Suffix(), pre_tab, content);
     else if (suffix->GetOp7Suffix() != nullptr)
-        return GenerateOp7Suffix(suffix->GetOp7Suffix(), content);
+        return GenerateOp7Suffix(suffix->GetOp7Suffix(), pre_tab, content);
     else if (suffix->GetOp8Suffix() != nullptr)
-        return GenerateOp8Suffix(suffix->GetOp8Suffix(), content);
+        return GenerateOp8Suffix(suffix->GetOp8Suffix(), pre_tab, content);
     else
     {
         content = "";
@@ -1132,7 +1132,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateOp3SuffixEx(std::shared_ptr<
     }
 }
 
-ABnfGuessError ALittleScriptTranslationLua::GenerateValueOpStat(std::shared_ptr<ALittleScriptValueOpStatElement> value_op_stat, std::string& content)
+ABnfGuessError ALittleScriptTranslationLua::GenerateValueOpStat(std::shared_ptr<ALittleScriptValueOpStatElement> value_op_stat, const std::string& pre_tab, std::string& content)
 {
     content = "";
 
@@ -1140,36 +1140,36 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateValueOpStat(std::shared_ptr<
     if (value_factor_stat == nullptr) return ABnfGuessError(nullptr, u8"表达式不完整");
 
     if (value_op_stat->GetOp3Stat() != nullptr)
-        return GenerateOp3Stat(value_factor_stat, value_op_stat->GetOp3Stat(), content);
+        return GenerateOp3Stat(value_factor_stat, value_op_stat->GetOp3Stat(), pre_tab, content);
 
     if (value_op_stat->GetOp4Stat() != nullptr)
-        return GenerateOp4Stat(value_factor_stat, value_op_stat->GetOp4Stat(), content);
+        return GenerateOp4Stat(value_factor_stat, value_op_stat->GetOp4Stat(), pre_tab, content);
 
     if (value_op_stat->GetOp5Stat() != nullptr)
-        return GenerateOp5Stat(value_factor_stat, value_op_stat->GetOp5Stat(), content);
+        return GenerateOp5Stat(value_factor_stat, value_op_stat->GetOp5Stat(), pre_tab, content);
 
     if (value_op_stat->GetOp6Stat() != nullptr)
-        return GenerateOp6Stat(value_factor_stat, value_op_stat->GetOp6Stat(), content);
+        return GenerateOp6Stat(value_factor_stat, value_op_stat->GetOp6Stat(), pre_tab, content);
 
     if (value_op_stat->GetOp7Stat() != nullptr)
-        return GenerateOp7Stat(value_factor_stat, value_op_stat->GetOp7Stat(), content);
+        return GenerateOp7Stat(value_factor_stat, value_op_stat->GetOp7Stat(), pre_tab, content);
 
     if (value_op_stat->GetOp8Stat() != nullptr)
-        return GenerateOp8Stat(value_factor_stat, value_op_stat->GetOp8Stat(), content);
+        return GenerateOp8Stat(value_factor_stat, value_op_stat->GetOp8Stat(), pre_tab, content);
 
-    return GenerateValueFactorStat(value_factor_stat, content);
+    return GenerateValueFactorStat(value_factor_stat, pre_tab, content);
 }
 
-ABnfGuessError ALittleScriptTranslationLua::GenerateOp3Stat(std::shared_ptr<ALittleScriptValueFactorStatElement> value_factor_stat, std::shared_ptr<ALittleScriptOp3StatElement> op_3_stat, std::string& content)
+ABnfGuessError ALittleScriptTranslationLua::GenerateOp3Stat(std::shared_ptr<ALittleScriptValueFactorStatElement> value_factor_stat, std::shared_ptr<ALittleScriptOp3StatElement> op_3_stat, const std::string& pre_tab, std::string& content)
 {
     content = "";
     std::string value_functor_result;
-    auto error = GenerateValueFactorStat(value_factor_stat, value_functor_result);
+    auto error = GenerateValueFactorStat(value_factor_stat, pre_tab, value_functor_result);
     if (error) return error;
 
     auto suffix = op_3_stat->GetOp3Suffix();
     std::string suffix_result;
-    error = GenerateOp3Suffix(suffix, suffix_result);
+    error = GenerateOp3Suffix(suffix, pre_tab, suffix_result);
     if (error) return error;
 
     std::vector<std::string> suffix_content_list;
@@ -1177,7 +1177,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateOp3Stat(std::shared_ptr<ALit
     for (auto& suffix_ex : suffix_ex_list)
     {
         std::string sub_content;
-        error = GenerateOp3SuffixEx(suffix_ex, sub_content);
+        error = GenerateOp3SuffixEx(suffix_ex, pre_tab, sub_content);
         if (error) return error;
         suffix_content_list.push_back(sub_content);
     }
@@ -1188,20 +1188,20 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateOp3Stat(std::shared_ptr<ALit
 
 // 生成2级运算符
 
-ABnfGuessError ALittleScriptTranslationLua::GenerateOp2SuffixEx(std::shared_ptr<ALittleScriptOp2SuffixExElement> suffix, std::string& content)
+ABnfGuessError ALittleScriptTranslationLua::GenerateOp2SuffixEx(std::shared_ptr<ALittleScriptOp2SuffixExElement> suffix, const std::string& pre_tab, std::string& content)
 {
     if (suffix->GetOp3Suffix() != nullptr)
-        return GenerateOp3Suffix(suffix->GetOp3Suffix(), content);
+        return GenerateOp3Suffix(suffix->GetOp3Suffix(), pre_tab, content);
     else if (suffix->GetOp4Suffix() != nullptr)
-        return GenerateOp4Suffix(suffix->GetOp4Suffix(), content);
+        return GenerateOp4Suffix(suffix->GetOp4Suffix(), pre_tab, content);
     else if (suffix->GetOp5Suffix() != nullptr)
-        return GenerateOp5Suffix(suffix->GetOp5Suffix(), content);
+        return GenerateOp5Suffix(suffix->GetOp5Suffix(), pre_tab, content);
     else if (suffix->GetOp6Suffix() != nullptr)
-        return GenerateOp6Suffix(suffix->GetOp6Suffix(), content);
+        return GenerateOp6Suffix(suffix->GetOp6Suffix(), pre_tab, content);
     else if (suffix->GetOp7Suffix() != nullptr)
-        return GenerateOp7Suffix(suffix->GetOp7Suffix(), content);
+        return GenerateOp7Suffix(suffix->GetOp7Suffix(), pre_tab, content);
     else if (suffix->GetOp8Suffix() != nullptr)
-        return GenerateOp8Suffix(suffix->GetOp8Suffix(), content);
+        return GenerateOp8Suffix(suffix->GetOp8Suffix(), pre_tab, content);
     else
     {
         content = "";
@@ -1209,7 +1209,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateOp2SuffixEx(std::shared_ptr<
     }
 }
 
-ABnfGuessError ALittleScriptTranslationLua::GenerateOp2Value(std::shared_ptr<ALittleScriptOp2ValueElement> op_2_value, std::string& content)
+ABnfGuessError ALittleScriptTranslationLua::GenerateOp2Value(std::shared_ptr<ALittleScriptOp2ValueElement> op_2_value, const std::string& pre_tab, std::string& content)
 {
     content = "";
 
@@ -1218,7 +1218,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateOp2Value(std::shared_ptr<ALi
         return ABnfGuessError(nullptr, u8"GenerateOp2Stat单目运算没有操作对象");
 
     std::string value_stat_result;
-    auto error = GenerateValueFactorStat(value_factor, value_stat_result);
+    auto error = GenerateValueFactorStat(value_factor, pre_tab, value_stat_result);
     if (error) return error;
     std::string op_string = op_2_value->GetOp2()->GetElementText();
     if (op_string == "!")
@@ -1231,9 +1231,9 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateOp2Value(std::shared_ptr<ALi
     return nullptr;
 }
 
-ABnfGuessError ALittleScriptTranslationLua::GenerateOp2Stat(std::shared_ptr<ALittleScriptOp2StatElement> op_2_stat, std::string& content)
+ABnfGuessError ALittleScriptTranslationLua::GenerateOp2Stat(std::shared_ptr<ALittleScriptOp2StatElement> op_2_stat, const std::string& pre_tab, std::string& content)
 {
-    auto error = GenerateOp2Value(op_2_stat->GetOp2Value(), content);
+    auto error = GenerateOp2Value(op_2_stat->GetOp2Value(), pre_tab, content);
     if (error) return error;
 
     std::vector<std::string> suffix_content_list;
@@ -1241,7 +1241,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateOp2Stat(std::shared_ptr<ALit
     for (auto& suffix_ex : suffix_ex_list)
     {
         std::string sub_content;
-        error = GenerateOp2SuffixEx(suffix_ex, sub_content);
+        error = GenerateOp2SuffixEx(suffix_ex, pre_tab, sub_content);
         if (error) return error;
         suffix_content_list.push_back(sub_content);
     }
@@ -1252,25 +1252,25 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateOp2Stat(std::shared_ptr<ALit
 
 // 生成值表达式
 
-ABnfGuessError ALittleScriptTranslationLua::GenerateValueStat(std::shared_ptr<ALittleScriptValueStatElement> root, std::string& content)
+ABnfGuessError ALittleScriptTranslationLua::GenerateValueStat(std::shared_ptr<ALittleScriptValueStatElement> root, const std::string& pre_tab, std::string& content)
 {
     if (root->GetValueOpStat() != nullptr)
-        return GenerateValueOpStat(root->GetValueOpStat(), content);
+        return GenerateValueOpStat(root->GetValueOpStat(), pre_tab, content);
 
     if (root->GetOp2Stat() != nullptr)
-        return GenerateOp2Stat(root->GetOp2Stat(), content);
+        return GenerateOp2Stat(root->GetOp2Stat(), pre_tab, content);
 
     if (root->GetOpNewStat() != nullptr)
-        return GenerateOpNewStat(root->GetOpNewStat(), content);
+        return GenerateOpNewStat(root->GetOpNewStat(), pre_tab, content);
 
     if (root->GetOpNewListStat() != nullptr)
-        return GenerateOpNewListStat(root->GetOpNewListStat(), content);
+        return GenerateOpNewListStat(root->GetOpNewListStat(), pre_tab, content);
 
     if (root->GetBindStat() != nullptr)
-        return GenerateBindStat(root->GetBindStat(), content);
+        return GenerateBindStat(root->GetBindStat(), pre_tab, content);
 
     if (root->GetTcallStat() != nullptr)
-        return GenerateTcallStat(root->GetTcallStat(), content);
+        return GenerateTcallStat(root->GetTcallStat(), pre_tab, content);
 
     content = "";
     return nullptr;
@@ -1278,19 +1278,19 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateValueStat(std::shared_ptr<AL
 
 // 生成ValueFactorStat
 
-ABnfGuessError ALittleScriptTranslationLua::GenerateValueFactorStat(std::shared_ptr<ALittleScriptValueFactorStatElement> value_factor, std::string& content)
+ABnfGuessError ALittleScriptTranslationLua::GenerateValueFactorStat(std::shared_ptr<ALittleScriptValueFactorStatElement> value_factor, const std::string& pre_tab, std::string& content)
 {
     if (value_factor->GetConstValue() != nullptr)
-        return GenerateConstValue(value_factor->GetConstValue(), content);
+        return GenerateConstValue(value_factor->GetConstValue(), pre_tab, content);
 
     if (value_factor->GetReflectValue() != nullptr)
-        return GenerateReflectValue(value_factor->GetReflectValue(), content);
+        return GenerateReflectValue(value_factor->GetReflectValue(), pre_tab, content);
 
     if (value_factor->GetPathsValue() != nullptr)
-        return GeneratePathsValue(value_factor->GetPathsValue(), content);
+        return GeneratePathsValue(value_factor->GetPathsValue(), pre_tab, content);
 
     if (value_factor->GetPropertyValue() != nullptr)
-        return GeneratePropertyValue(value_factor->GetPropertyValue(), content);
+        return GeneratePropertyValue(value_factor->GetPropertyValue(), pre_tab, content);
 
     if (value_factor->GetCoroutineStat() != nullptr)
         return GenerateCoroutineStat(value_factor->GetCoroutineStat(), content);
@@ -1299,7 +1299,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateValueFactorStat(std::shared_
     {
         content = "";
         std::string sub_content;
-        auto error = GenerateValueStat(value_factor->GetWrapValueStat()->GetValueStat(), sub_content);
+        auto error = GenerateValueStat(value_factor->GetWrapValueStat()->GetValueStat(), pre_tab, sub_content);
         if (error) return error;
         content = "(" + sub_content + ")";
         return nullptr;
@@ -1315,7 +1315,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateValueFactorStat(std::shared_
     return ABnfGuessError(nullptr, u8"GenerateValueFactor出现未知类型");
 }
 
-ABnfGuessError ALittleScriptTranslationLua::GenerateConstValue(std::shared_ptr<ALittleScriptConstValueElement> const_value, std::string& content)
+ABnfGuessError ALittleScriptTranslationLua::GenerateConstValue(std::shared_ptr<ALittleScriptConstValueElement> const_value, const std::string& pre_tab, std::string& content)
 {
     content = "";
     std::string const_value_string = const_value->GetElementText();
@@ -1328,7 +1328,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateConstValue(std::shared_ptr<A
 
 // 生成路径信息
 
-ABnfGuessError ALittleScriptTranslationLua::GeneratePathsValue(std::shared_ptr<ALittleScriptPathsValueElement> paths_value, std::string& content)
+ABnfGuessError ALittleScriptTranslationLua::GeneratePathsValue(std::shared_ptr<ALittleScriptPathsValueElement> paths_value, const std::string& pre_tab, std::string& content)
 {
     content = "";
     auto text = paths_value->GetText();
@@ -1348,7 +1348,11 @@ ABnfGuessError ALittleScriptTranslationLua::GeneratePathsValue(std::shared_ptr<A
     content = "{";
     for (size_t i = 0; i < path_list.size(); ++i)
     {
-        if (i != 0) content += ", ";
+        if (i != 0)
+        {
+            if (i % 3 == 0) content += "\n" + pre_tab + "\t";
+            content += ", ";
+        }
         content += "\"" + path_list[i] + "\"";
     }
     content += "}";
@@ -1357,7 +1361,7 @@ ABnfGuessError ALittleScriptTranslationLua::GeneratePathsValue(std::shared_ptr<A
 
 // 生成反射
 
-ABnfGuessError ALittleScriptTranslationLua::GenerateReflectValue(std::shared_ptr<ALittleScriptReflectValueElement> reflect_value, std::string& content)
+ABnfGuessError ALittleScriptTranslationLua::GenerateReflectValue(std::shared_ptr<ALittleScriptReflectValueElement> reflect_value, const std::string& pre_tab, std::string& content)
 {
     content = "";
     if (reflect_value->GetReflectCustomType() != nullptr)
@@ -1429,7 +1433,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateReflectValue(std::shared_ptr
         else if (std::dynamic_pointer_cast<ALittleScriptGuessClass>(guess))
         {
             std::string sub_content;
-            error = GenerateValueStat(value_stat, sub_content);
+            error = GenerateValueStat(value_stat, pre_tab, sub_content);
             if (error) return error;
             content = "(" + sub_content + ").__class";
             return nullptr;
@@ -1440,7 +1444,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateReflectValue(std::shared_ptr
             if (std::dynamic_pointer_cast<ALittleScriptGuessClass>(guess_template->template_extends.lock()) || guess_template->is_class)
             {
                 std::string sub_content;
-                error = GenerateValueStat(value_stat, sub_content);
+                error = GenerateValueStat(value_stat, pre_tab, sub_content);
                 if (error) return error;
                 content = "(" + sub_content + ").__class";
                 return nullptr;
@@ -1655,7 +1659,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateEnumValue(std::shared_ptr<AL
 
 // 生成属性值表达式
 
-ABnfGuessError ALittleScriptTranslationLua::GeneratePropertyValue(std::shared_ptr<ALittleScriptPropertyValueElement> prop_value, std::string& content)
+ABnfGuessError ALittleScriptTranslationLua::GeneratePropertyValue(std::shared_ptr<ALittleScriptPropertyValueElement> prop_value, const std::string& pre_tab, std::string& content)
 {
     // 对于枚举值进行特殊处理
     bool handle = false;
@@ -1707,7 +1711,7 @@ ABnfGuessError ALittleScriptTranslationLua::GeneratePropertyValue(std::shared_pt
         auto value_factor_stat = cast_type->GetValueFactorStat();
         if (value_factor_stat == nullptr) return ABnfGuessError(nullptr, u8"cast没有填写转换对象");
         std::string sub_content;
-        error = GenerateValueFactorStat(value_factor_stat, sub_content);
+        error = GenerateValueFactorStat(value_factor_stat, pre_tab, sub_content);
         if (error) return error;
         content += sub_content;
     }
@@ -1825,7 +1829,7 @@ ABnfGuessError ALittleScriptTranslationLua::GeneratePropertyValue(std::shared_pt
             if (value_stat != nullptr)
             {
                 std::string sub_content;
-                error = GenerateValueStat(value_stat, sub_content);
+                error = GenerateValueStat(value_stat, pre_tab, sub_content);
                 if (error) return error;
                 content += "[" + sub_content + "]";
             }
@@ -1898,7 +1902,7 @@ ABnfGuessError ALittleScriptTranslationLua::GeneratePropertyValue(std::shared_pt
                 for (auto& value_stat : value_stat_list)
                 {
                     std::string sub_content;
-                    error = GenerateValueStat(value_stat, sub_content);
+                    error = GenerateValueStat(value_stat, pre_tab, sub_content);
                     if (error) return error;
                     param_list.push_back(sub_content);
                 }
@@ -1966,14 +1970,14 @@ ABnfGuessError ALittleScriptTranslationLua::GeneratePropertyValue(std::shared_pt
                         || std::dynamic_pointer_cast<ALittleScriptClassSetterDecElement>(pre_type_functor->element.lock())))
                     {
                         std::string sub_content;
-                        error = GenerateValueStat(value_stat, sub_content);
+                        error = GenerateValueStat(value_stat, pre_tab, sub_content);
                         if (error) return error;
                         param_list.insert(param_list.begin(), sub_content);
                     }
                     else
                     {
                         std::string sub_content;
-                        error = GenerateValueStat(value_stat, sub_content);
+                        error = GenerateValueStat(value_stat, pre_tab, sub_content);
                         if (error) return error;
                         param_list.push_back(sub_content);
                     }
@@ -2022,7 +2026,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateUsingDec(const std::vector<s
         content += "local ";
 
     std::string sub_content;
-    error = GenerateCustomType(custom_type, sub_content);
+    error = GenerateCustomType(custom_type, pre_tab, sub_content);
     if (error) return error;
     content += name_dec->GetElementText() + " = " + sub_content + ";\n";
     return nullptr;
@@ -2051,7 +2055,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateThrowExpr(std::shared_ptr<AL
     for (size_t i = 0; i < value_stat_list.size(); ++i)
     {
         std::string sub_content;
-        error = GenerateValueStat(value_stat_list[i], sub_content);
+        error = GenerateValueStat(value_stat_list[i], pre_tab, sub_content);
         if (error) return error;
         param_list.push_back(sub_content);
     }
@@ -2080,7 +2084,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateAssertExpr(std::shared_ptr<A
     for (size_t i = 0; i < value_stat_list.size(); ++i)
     {
         std::string sub_content;
-        error = GenerateValueStat(value_stat_list[i], sub_content);
+        error = GenerateValueStat(value_stat_list[i], pre_tab, sub_content);
         if (error) return error;
         param_list.push_back(sub_content);
     }
@@ -2101,7 +2105,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateOp1Expr(std::shared_ptr<ALit
     auto op_1 = root->GetOp1();
 
     std::string value_stat_result;
-    auto error = GenerateValueStat(value_stat, value_stat_result);
+    auto error = GenerateValueStat(value_stat, pre_tab, value_stat_result);
     if (error) return error;
 
     std::string op_1_string = op_1->GetElementText();
@@ -2145,7 +2149,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateVarAssignExpr(std::shared_pt
     }
 
     std::string sub_content;
-    auto error = GenerateValueStat(value_stat, sub_content);
+    auto error = GenerateValueStat(value_stat, pre_tab, sub_content);
     if (error) return error;
     content += " = " + sub_content + "\n";
     return nullptr;
@@ -2163,7 +2167,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateOpAssignExpr(std::shared_ptr
     for (auto& prop_value : prop_value_list)
     {
         std::string sub_content;
-        auto guess_error = GeneratePropertyValue(prop_value, sub_content);
+        auto guess_error = GeneratePropertyValue(prop_value, pre_tab, sub_content);
         if (guess_error) return guess_error;
         content_list.push_back(sub_content);
     }
@@ -2180,7 +2184,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateOpAssignExpr(std::shared_ptr
 
     // 获取赋值表达式
     std::string value_stat_result;
-    auto error = GenerateValueStat(value_stat, value_stat_result);
+    auto error = GenerateValueStat(value_stat, pre_tab, value_stat_result);
     if (error) return error;
 
     // 处理等号
@@ -2296,7 +2300,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateElseIfExpr(std::shared_ptr<A
         return ABnfGuessError(nullptr, u8"elseif (?) elseif没有条件值:" + root->GetElementText());
 
     std::string value_stat_result;
-    auto error = GenerateValueStat(condition->GetValueStat(), value_stat_result);
+    auto error = GenerateValueStat(condition->GetValueStat(), pre_tab, value_stat_result);
     if (error) return error;
 
     content = pre_tab;
@@ -2340,7 +2344,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateIfExpr(std::shared_ptr<ALitt
         return ABnfGuessError(nullptr, u8"if (?) if没有条件值:" + root->GetElementText());
 
     std::string value_stat_result;
-    auto error = GenerateValueStat(condition->GetValueStat(), value_stat_result);
+    auto error = GenerateValueStat(condition->GetValueStat(), pre_tab, value_stat_result);
     if (error) return error;
 
     content = pre_tab;
@@ -2418,7 +2422,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateForExpr(std::shared_ptr<ALit
             return ABnfGuessError(nullptr, u8"for 没有初始表达式:" + root->GetElementText());
 
         std::string start_value_stat_result;
-        auto error = GenerateValueStat(start_value_stat, start_value_stat_result);
+        auto error = GenerateValueStat(start_value_stat, pre_tab, start_value_stat_result);
         if (error) return error;
 
         auto name_dec = for_pair_dec->GetVarAssignNameDec();
@@ -2436,7 +2440,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateForExpr(std::shared_ptr<ALit
 
         auto end_value_stat = for_end_stat->GetValueStat();
         std::string sub_content;
-        error = GenerateValueStat(end_value_stat, sub_content);
+        error = GenerateValueStat(end_value_stat, pre_tab, sub_content);
         if (error) return error;
         content += pre_tab + "\tif not(" + sub_content + ") then break end\n";
 
@@ -2445,7 +2449,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateForExpr(std::shared_ptr<ALit
             return ABnfGuessError(nullptr, u8"for 没有步长表达式");
 
         auto step_value_stat = for_step_stat->GetValueStat();
-        error = GenerateValueStat(step_value_stat, sub_content);
+        error = GenerateValueStat(step_value_stat, pre_tab, sub_content);
         if (error) return error;
 
         for_step_content = pre_tab + "\t" + start_var_name + " = " + start_var_name + "+(" + sub_content + ")\n";
@@ -2457,7 +2461,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateForExpr(std::shared_ptr<ALit
             return ABnfGuessError(nullptr, u8"for : 没有遍历的对象:" + root->GetElementText());
 
         std::string value_stat_result;
-        auto error = GenerateValueStat(value_stat, value_stat_result);
+        auto error = GenerateValueStat(value_stat, pre_tab, value_stat_result);
         if (error) return error;
 
         auto pair_list = for_in_condition->GetForPairDecList();
@@ -2533,7 +2537,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateWhileExpr(std::shared_ptr<AL
         return ABnfGuessError(nullptr, u8"while (?) { ... } while中没有条件值");
 
     std::string value_stat_result;
-    auto error = GenerateValueStat(condition->GetValueStat(), value_stat_result);
+    auto error = GenerateValueStat(condition->GetValueStat(), pre_tab, value_stat_result);
     if (error) return error;
 
     content = pre_tab + "while " + value_stat_result + " do\n";
@@ -2582,7 +2586,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateDoWhileExpr(std::shared_ptr<
         return ABnfGuessError(nullptr, u8"do { ... } while(?) while中没有条件值");
 
     std::string value_stat_result;
-    auto error = GenerateValueStat(condition->GetValueStat(), value_stat_result);
+    auto error = GenerateValueStat(condition->GetValueStat(), pre_tab, value_stat_result);
     if (error) return error;
 
     content = pre_tab + "repeat\n";
@@ -2658,7 +2662,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateReturnExpr(std::shared_ptr<A
     for (auto& value_stat : value_stat_list)
     {
         std::string sub_content;
-        auto error = GenerateValueStat(value_stat, sub_content);
+        auto error = GenerateValueStat(value_stat, pre_tab, sub_content);
         if (error) return error;
         content_list.push_back(sub_content);
     }
@@ -2925,7 +2929,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateClass(std::shared_ptr<ALittl
             if (var_value_dec->GetConstValue() != nullptr)
             {
                 std::string var_value_content;
-                auto error = GenerateConstValue(var_value_dec->GetConstValue(), var_value_content);
+                auto error = GenerateConstValue(var_value_dec->GetConstValue(), pre_tab, var_value_content);
                 if (error) return nullptr;
                 ++m_rawset_usecount;
                 var_init += pre_tab + "\t" + "___rawset(self, \"" + var_name + "\", " + var_value_content + ")\n";
@@ -2933,7 +2937,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateClass(std::shared_ptr<ALittl
             else if (var_value_dec->GetOpNewStat() != nullptr)
             {
                 std::string op_new_stat_content;
-                auto error = GenerateOpNewStat(var_value_dec->GetOpNewStat(), op_new_stat_content);
+                auto error = GenerateOpNewStat(var_value_dec->GetOpNewStat(), pre_tab, op_new_stat_content);
                 if (error) return nullptr;
                 ++m_rawset_usecount;
                 var_init += pre_tab + "\t" + "___rawset(self, \"" + var_name + "\", " + op_new_stat_content + ")\n";
@@ -3295,7 +3299,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateInstance(const std::vector<s
     }
 
     std::string sub_content;
-    auto error = GenerateValueStat(value_stat, sub_content);
+    auto error = GenerateValueStat(value_stat, pre_tab, sub_content);
     if (error) return error;
     content += " = " + sub_content + "\n";
     return nullptr;

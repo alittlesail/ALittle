@@ -81,7 +81,7 @@ ABnfGuessError ALittleScriptPropertyValueBracketValueReference::CheckError()
     auto element = m_element.lock();
     if (element == nullptr) return ABnfGuessError(element, u8"节点失效");
     auto value_stat = element->GetValueStat();
-    if (value_stat == nullptr) return nullptr;
+    if (value_stat == nullptr) return ABnfGuessError(element, u8"请填写索引值");
 
     // 获取父节点
     auto property_value_suffix = std::dynamic_pointer_cast<ALittleScriptPropertyValueSuffixElement>(element->GetParent());

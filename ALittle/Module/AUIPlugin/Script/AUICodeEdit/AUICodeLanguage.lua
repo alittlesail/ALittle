@@ -92,11 +92,15 @@ function AUICodeLanguage:QueryComplete(line, char)
 	return coroutine.yield()
 end
 
-function AUICodeLanguage:QuerySigntureHelp(line, char)
+function AUICodeLanguage:QueryParamList(line, char)
 	local ___COROUTINE = coroutine.running()
 	local query_id = self._project:Add(___COROUTINE)
 	alanguage.abnffile_querycomplete(self._abnf_file, query_id, self._version, line, char)
 	return coroutine.yield()
+end
+
+function AUICodeLanguage:QueryParamIndex(line, char)
+	return alanguage.abnffile_queryparamindex(self._abnf_file, self._version, line, char)
 end
 
 function AUICodeLanguage:QueryError(force)

@@ -224,7 +224,7 @@ protected class AUICodeCompleteScreen
             item_info.complete = info;
             this._item_list[index] = item_info;
 
-            var title_wdith = this._edit.ascii_width * ALittle.String_Len(info.display);
+            var title_wdith = this._edit.ascii_width * ALittle.String_Len(info.display) + item_info._item_title.x + 5;
             if (max_width < title_wdith) max_width = title_wdith;
 
             this._item_height = item_info._item.height;
@@ -294,25 +294,24 @@ protected class AUICodeCompleteScreen
         this._edit.help_container.RemoveChild(this._screen);
     }
 
-    public fun TryHide(AUICodeEdit edit)
+    public fun TryHide()
     {
-        if (this._edit != edit) return;
         if (this._complete == null) return;
 
         // 检查光标
-        if (edit.cursor.line < this._complete.line_start || edit.cursor.line > this._line_end)
+        if (this._edit.cursor.line < this._complete.line_start || this._edit.cursor.line > this._line_end)
         {
             this.Hide();
             return;
         }
 
-        if (edit.cursor.line == this._complete.line_start && edit.cursor.char < this._complete.char_start)
+        if (this._edit.cursor.line == this._complete.line_start && this._edit.cursor.char < this._complete.char_start)
         {
             this.Hide();
             return;
         }
 
-        if (edit.cursor.line == this._line_end && edit.cursor.char > this._char_end)
+        if (this._edit.cursor.line == this._line_end && this._edit.cursor.char > this._char_end)
         {
             this.Hide();
             return;

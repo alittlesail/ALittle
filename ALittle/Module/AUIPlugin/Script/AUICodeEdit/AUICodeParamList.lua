@@ -25,17 +25,17 @@ type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
 
-AUICodeSigntruetureHelp = Lua.Class(nil, "AUIPlugin.AUICodeSigntruetureHelp")
+AUICodeParamList = Lua.Class(nil, "AUIPlugin.AUICodeParamList")
 
-function AUICodeSigntruetureHelp:Ctor(edit)
+function AUICodeParamList:Ctor(edit)
 	___rawset(self, "_edit", edit)
 end
 
-function AUICodeSigntruetureHelp:Shutdown()
+function AUICodeParamList:Shutdown()
 	self:Hide()
 end
 
-function AUICodeSigntruetureHelp:ShowSigntureHelp()
+function AUICodeParamList:ShowSigntureHelp()
 	if self._signture_help == nil then
 		if not self:ReInit() then
 			self:Hide()
@@ -65,18 +65,18 @@ function AUICodeSigntruetureHelp:ShowSigntureHelp()
 		end
 	end
 end
-AUICodeSigntruetureHelp.ShowSigntureHelp = Lua.CoWrap(AUICodeSigntruetureHelp.ShowSigntureHelp)
+AUICodeParamList.ShowSigntureHelp = Lua.CoWrap(AUICodeParamList.ShowSigntureHelp)
 
-function AUICodeSigntruetureHelp:IsShow()
+function AUICodeParamList:IsShow()
 	return self._signture_help ~= nil
 end
 
-function AUICodeSigntruetureHelp:ReInit()
+function AUICodeParamList:ReInit()
 	local ___COROUTINE = coroutine.running()
 	if self._edit.language == nil then
 		return false
 	end
-	self._signture_help = self._edit.language:QuerySigntureHelp(self._edit.cursor.line, self._edit.cursor.char - 1)
+	self._signture_help = self._edit.language:QueryParamList(self._edit.cursor.line, self._edit.cursor.char - 1)
 	if self._signture_help == nil then
 		return false
 	end
@@ -140,18 +140,18 @@ function AUICodeSigntruetureHelp:ReInit()
 	return true
 end
 
-function AUICodeSigntruetureHelp:Fliter(line, char)
+function AUICodeParamList:Fliter(line, char)
 	local sort_list = {}
 	local count = 0
 	return true
 end
 
-function AUICodeSigntruetureHelp:Hide()
+function AUICodeParamList:Hide()
 	self._signture_help = nil
 	self._edit.help_container:RemoveChild(self._dialog)
 end
 
-function AUICodeSigntruetureHelp:TryHide()
+function AUICodeParamList:TryHide()
 	if self._signture_help == nil then
 		return
 	end
@@ -169,7 +169,7 @@ function AUICodeSigntruetureHelp:TryHide()
 	end
 end
 
-function AUICodeSigntruetureHelp:HandleHideEvent(event)
+function AUICodeParamList:HandleHideEvent(event)
 	self._edit = nil
 	self._signture_help = nil
 end

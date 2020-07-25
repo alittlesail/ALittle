@@ -58,7 +58,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
     // 帮助层
     private ALittle.DisplayLayout _help_container;
     private AUICodeCompleteScreen _complete_screen;
-    private AUICodeSigntruetureHelp _signture_help;
+    private AUICodeParamList _param_dialog;
 
     public static Create() : AUICodeEdit { return g_Control.CreateControl{AUICodeEdit}("ide_code_tab_screen"); }
 
@@ -67,7 +67,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
         // 创建提示滚动屏
         this._complete_screen = new AUICodeCompleteScreen(this);
         // 创建函数提示
-        this._signture_help = new AUICodeSigntruetureHelp(this);
+        this._param_dialog = new AUICodeParamList(this);
     }
 
 	public fun TCtor()
@@ -252,6 +252,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
             this.StopQueryInfo();
         }
 
+        this._complete_screen.TryHide();
         this._cursor.RejustShowCursor();
         this.DispatchJumEvent();
     }
@@ -536,6 +537,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
             item_info._focus_quad._user_data = info;
             item_info.item = item;
             item_info.info = info;
+            item._user_data = info;
             line.container._error.AddChild(item);
             error_count += 1;
             this._error_map[item_info] = true;
@@ -933,7 +935,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
                 else
                     this._cursor.OffsetLeft(ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) != 0);
                 this._cursor.RejustShowCursor();
-                this._complete_screen.TryHide(this);
+                this._complete_screen.TryHide();
             }
             else
             {
@@ -1019,7 +1021,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
                 else
                     this._cursor.OffsetRight(ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) != 0);
                 this._cursor.RejustShowCursor();
-                this._complete_screen.TryHide(this);
+                this._complete_screen.TryHide();
             }
             else
             {
@@ -1041,7 +1043,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
                 {
                     is_change = this._cursor.DeleteLeft(true);
                     this._cursor.RejustShowCursor();
-                    this._complete_screen.TryHide(this);
+                    this._complete_screen.TryHide();
                     if (this._complete_screen.IsShow())
                         this._complete_screen.ShowComplete();
                 }
@@ -1072,7 +1074,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
                     this._select_cursor.Hide();
                 else
                     this._cursor.OffsetHome();
-                this._complete_screen.TryHide(this);
+                this._complete_screen.TryHide();
             }
             else
             {
@@ -1092,7 +1094,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
                     this._select_cursor.Hide();
                 else
                     this._cursor.OffsetEnd();
-                this._complete_screen.TryHide(this);
+                this._complete_screen.TryHide();
             }
             else
             {

@@ -101,11 +101,17 @@ public class AUICodeLanguage
     }
 
     // 查询参数输入
-    public await fun QuerySigntureHelp(int line, int char) : lua.ABnfQuerySignatureHelp
+    public await fun QueryParamList(int line, int char) : lua.ABnfQuerySignatureHelp
     {
         var query_id = this._project.Add(co);
         lua.alanguage.abnffile_querycomplete(this._abnf_file, query_id, this._version, line, char);
         return yield;
+    }
+
+    // 查询参数位置
+    public fun QueryParamIndex(int line, int char) : int
+    {
+        return lua.alanguage.abnffile_queryparamindex(this._abnf_file, this._version, line, char);
     }
 
     // 查询错误信息

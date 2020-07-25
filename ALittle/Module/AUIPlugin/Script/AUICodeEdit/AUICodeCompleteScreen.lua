@@ -208,7 +208,7 @@ function AUICodeCompleteScreen:ReInit()
 		item_info._item._user_data = item_info
 		item_info.complete = info
 		self._item_list[index] = item_info
-		local title_wdith = self._edit.ascii_width * ALittle.String_Len(info.display)
+		local title_wdith = self._edit.ascii_width * ALittle.String_Len(info.display) + item_info._item_title.x + 5
 		if max_width < title_wdith then
 			max_width = title_wdith
 		end
@@ -274,22 +274,19 @@ function AUICodeCompleteScreen:Hide()
 	self._edit.help_container:RemoveChild(self._screen)
 end
 
-function AUICodeCompleteScreen:TryHide(edit)
-	if self._edit ~= edit then
-		return
-	end
+function AUICodeCompleteScreen:TryHide()
 	if self._complete == nil then
 		return
 	end
-	if edit.cursor.line < self._complete.line_start or edit.cursor.line > self._line_end then
+	if self._edit.cursor.line < self._complete.line_start or self._edit.cursor.line > self._line_end then
 		self:Hide()
 		return
 	end
-	if edit.cursor.line == self._complete.line_start and edit.cursor.char < self._complete.char_start then
+	if self._edit.cursor.line == self._complete.line_start and self._edit.cursor.char < self._complete.char_start then
 		self:Hide()
 		return
 	end
-	if edit.cursor.line == self._line_end and edit.cursor.char > self._char_end then
+	if self._edit.cursor.line == self._line_end and self._edit.cursor.char > self._char_end then
 		self:Hide()
 		return
 	end

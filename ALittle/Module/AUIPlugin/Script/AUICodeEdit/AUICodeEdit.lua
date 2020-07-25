@@ -125,7 +125,7 @@ function AUICodeEdit:Ctor(ctrl_sys)
 	___rawset(self, "_in_drag", false)
 	___rawset(self, "_force_query_error", false)
 	___rawset(self, "_complete_screen", AUICodeCompleteScreen(self))
-	___rawset(self, "_signture_help", AUICodeSigntruetureHelp(self))
+	___rawset(self, "_param_dialog", AUICodeParamList(self))
 end
 
 function AUICodeEdit:TCtor()
@@ -340,6 +340,7 @@ function AUICodeEdit:HandleLButtonDown(event)
 		self:DoQueryGoto(it_line, it_char)
 		self:StopQueryInfo()
 	end
+	self._complete_screen:TryHide()
 	self._cursor:RejustShowCursor()
 	self:DispatchJumEvent()
 end
@@ -588,6 +589,7 @@ function AUICodeEdit:UpdateErrorInfo()
 		item_info._focus_quad._user_data = info
 		item_info.item = item
 		item_info.info = info
+		item._user_data = info
 		line.container._error:AddChild(item)
 		error_count = error_count + (1)
 		self._error_map[item_info] = true
@@ -976,7 +978,7 @@ function AUICodeEdit:HandleKeyDown(event)
 				self._cursor:OffsetLeft(ALittle.BitAnd(event.mod, 0x00c0) ~= 0)
 			end
 			self._cursor:RejustShowCursor()
-			self._complete_screen:TryHide(self)
+			self._complete_screen:TryHide()
 		else
 			if self._select_cursor.line_start == nil then
 				self._select_cursor:StartLineChar(self._cursor.line, self._cursor.char)
@@ -1053,7 +1055,7 @@ function AUICodeEdit:HandleKeyDown(event)
 				self._cursor:OffsetRight(ALittle.BitAnd(event.mod, 0x00c0) ~= 0)
 			end
 			self._cursor:RejustShowCursor()
-			self._complete_screen:TryHide(self)
+			self._complete_screen:TryHide()
 		else
 			if self._select_cursor.line_start == nil then
 				self._select_cursor:StartLineChar(self._cursor.line, self._cursor.char)
@@ -1071,7 +1073,7 @@ function AUICodeEdit:HandleKeyDown(event)
 			if self._select_cursor.line_start == nil then
 				is_change = self._cursor:DeleteLeft(true)
 				self._cursor:RejustShowCursor()
-				self._complete_screen:TryHide(self)
+				self._complete_screen:TryHide()
 				if self._complete_screen:IsShow() then
 					self._complete_screen:ShowComplete()
 				end
@@ -1097,7 +1099,7 @@ function AUICodeEdit:HandleKeyDown(event)
 			else
 				self._cursor:OffsetHome()
 			end
-			self._complete_screen:TryHide(self)
+			self._complete_screen:TryHide()
 		else
 			if self._select_cursor.line_start == nil then
 				self._select_cursor:StartLineChar(self._cursor.line, self._cursor.char)
@@ -1114,7 +1116,7 @@ function AUICodeEdit:HandleKeyDown(event)
 			else
 				self._cursor:OffsetEnd()
 			end
-			self._complete_screen:TryHide(self)
+			self._complete_screen:TryHide()
 		else
 			if self._select_cursor.line_start == nil then
 				self._select_cursor:StartLineChar(self._cursor.line, self._cursor.char)

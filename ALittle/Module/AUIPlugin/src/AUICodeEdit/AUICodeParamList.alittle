@@ -6,14 +6,14 @@ struct AUICodeParamItemInfo
     List<ALittle.DisplayObject> text_list;
 }
 
-protected class AUICodeSigntruetureHelp
+protected class AUICodeParamList
 {
-    private ALittle.DisplayLayout _dialog;
-    private ALittle.DisplayLayout _text_container;
-    private List<AUICodeParamItemInfo> _item_list;
+    private ALittle.DisplayLayout _dialog;			// 实际显示的对话框
+    private ALittle.DisplayLayout _text_container;	// 文本容器
+    private List<AUICodeParamItemInfo> _item_list;	// 每个参数文本信息列表
 
-    private lua.ABnfQuerySignatureHelp _signture_help;
-    private int _line_start;
+    private lua.ABnfQueryParamList _param_list;		// 查询的信息列表
+    private int _line_start;	
     private int _char_start;
     private AUICodeEdit _edit;
 
@@ -27,9 +27,9 @@ protected class AUICodeSigntruetureHelp
         this.Hide();
     }
 
-    public async fun ShowSigntureHelp()
+    public async fun ShowParamList()
     {
-        if (this._signture_help == null)
+        if (this._param_list == null)
         {
             if (!this.ReInit())
             {
@@ -40,7 +40,7 @@ protected class AUICodeSigntruetureHelp
 
         this._line_start = this._edit.cursor.line;
         this._char_start = this._edit.cursor.char;
-        var text = this._edit.GetTargetText(this._signture_help.line_start, this._signture_help.char_start - 1, this._edit.cursor.line, this._edit.cursor.char);
+        var text = this._edit.GetTargetText(this._param_list.line_start, this._param_list.char_start - 1, this._edit.cursor.line, this._edit.cursor.char);
         if (text == null || text == "")
         {
             this.Hide();
@@ -56,7 +56,7 @@ protected class AUICodeSigntruetureHelp
 
             this._line_start = this._edit.cursor.line;
             this._char_start = this._edit.cursor.char;
-            text = this._edit.GetTargetText(this._signture_help.line_start, this._signture_help.char_start - 1, this._edit.cursor.line, this._edit.cursor.char);
+            text = this._edit.GetTargetText(this._param_list.line_start, this._param_list.char_start - 1, this._edit.cursor.line, this._edit.cursor.char);
             if (text == null || text == "")
                 return;
             if (!this.Fliter(0, 0))
@@ -64,16 +64,16 @@ protected class AUICodeSigntruetureHelp
         }
     }
 
-    public fun IsShow() : bool { return this._signture_help != null; }
+    public fun IsShow() : bool { return this._param_list != null; }
 
     private await fun ReInit() : bool
     {
         if (this._edit.language == null) return false;
-        this._signture_help = this._edit.language.QuerySigntureHelp(this._edit.cursor.line, this._edit.cursor.char - 1);
-        if (this._signture_help == null) return false;
+        this._param_list = this._edit.language.QueryParamList(this._edit.cursor.line, this._edit.cursor.char - 1);
+        if (this._param_list == null) return false;
         
         // 计算坐标
-        var x, y = this._edit.CalcPosition(this._signture_help.line_start, this._signture_help.char_start, true);
+        var x, y = this._edit.CalcPosition(this._param_list.line_start, this._param_list.char_start, true);
         y += CODE_LINE_HEIGHT;
 
         if (this._dialog == null)
@@ -90,7 +90,7 @@ protected class AUICodeSigntruetureHelp
         this._item_list = new List<AUICodeParamItemInfo>();
 
         var offset = 0.0;
-        for (var param_index, param in this._signture_help.param_list)
+        for (var param_index, param in this._param_list.param_list)
         {
             var info = new AUICodeParamItemInfo();
             info.text_list = new List<ALittle.DisplayObject>();
@@ -156,22 +156,22 @@ protected class AUICodeSigntruetureHelp
 
     public fun Hide()
     {
-        this._signture_help = null;
+        this._param_list = null;
         this._edit.help_container.RemoveChild(this._dialog);
     }
 
     public fun TryHide()
     {
-        if (this._signture_help == null) return;
+        if (this._param_list == null) return;
 
             // 检查光标
-        if (this._edit.cursor.line < this._signture_help.line_start || this._edit.cursor.line > this._line_start)
+        if (this._edit.cursor.line < this._param_list.line_start || this._edit.cursor.line > this._line_start)
         {
             this.Hide();
             return;
         }
 
-        if (this._edit.cursor.line == this._signture_help.line_start && this._edit.cursor.char < this._signture_help.char_start)
+        if (this._edit.cursor.line == this._param_list.line_start && this._edit.cursor.char < this._param_list.char_start)
         {
             this.Hide();
             return;
@@ -186,7 +186,6 @@ protected class AUICodeSigntruetureHelp
 
     private fun HandleHideEvent(ALittle.UIHideEvent event)
     {
-        this._edit = null;
-        this._signture_help = null;
+        this._param_list = null;
     }
 }

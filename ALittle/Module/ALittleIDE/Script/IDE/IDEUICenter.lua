@@ -374,6 +374,8 @@ function IDEUICenter:HandleJumpPreCodeClick(event)
 end
 
 function IDEUICenter:HandleProjectOpen(event)
+	self._tool_ui_container.visible = false
+	self._tool_code_container.visible = false
 	self._tool_language.text = g_IDEProject.project.config:GetConfig("target_language", "Lua")
 end
 

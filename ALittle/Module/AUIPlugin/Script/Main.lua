@@ -36,8 +36,8 @@ function __Plugin_Setup(control, module_base_path, script_base_path)
 	RequireFromPaths(script_base_path, "AUI/", {"AUIWebLoginManager.alittle", "AUIVersionManager.alittle", "AUITool.alittle"
 		, "AUIRightMenu.alittle", "AUIImageCutPlugin.alittle", "AUIIMEManager.alittle"
 		, "AUIFileSelectDialog.alittle", "AUIEditImageDialog.alittle"})
-	RequireFromPaths(script_base_path, "AUICodeEdit/", {"AUICodeSigntureHelp.alittle", "AUICodeSelectCursor.alittle", "AUICodeRevocation.alittle"
-		, "AUICodeProject.alittle", "AUICodeLineNumber.alittle", "AUICodeLineContainer.alittle"
+	RequireFromPaths(script_base_path, "AUICodeEdit/", {"AUICodeSelectCursor.alittle", "AUICodeRevocation.alittle", "AUICodeProject.alittle"
+		, "AUICodeParamList.alittle", "AUICodeLineNumber.alittle", "AUICodeLineContainer.alittle"
 		, "AUICodeLanguage.alittle", "AUICodeEdit.alittle", "AUICodeDefine.alittle"
 		, "AUICodeCursor.alittle", "AUICodeComponent.alittle", "AUICodeCompleteScreen.alittle"
 		, "ABnf/AUICodeCommon.alittle", "ABnf/AUICodeALittleScript.alittle", "ABnf/AUICodeABnf.alittle"})

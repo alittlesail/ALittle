@@ -370,6 +370,8 @@ protected class IDEUICenter : ALittle.DisplayLayout
 
     private fun HandleProjectOpen(IDEProjectOpenEvent event)
     {
+        this._tool_ui_container.visible = false;
+        this._tool_code_container.visible = false;
         this._tool_language.text = g_IDEProject.project.config.GetConfig("target_language", "Lua");
     }
 }

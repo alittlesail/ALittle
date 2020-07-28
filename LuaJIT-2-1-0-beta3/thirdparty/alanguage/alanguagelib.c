@@ -228,7 +228,7 @@ static int alanguagelib_abnffile_queryparamindex(lua_State* L)
     int version = (int)luaL_checkinteger(L, 2);
     int it_line = (int)luaL_checkinteger(L, 3);
     int it_char = (int)luaL_checkinteger(L, 4);
-    lua_pushinteger(L, abnffile_queryparamindex(*c, version, it_line - 1, it_char));
+    lua_pushinteger(L, abnffile_queryparamindex(*c, version, it_line - 1, it_char) + 1);
     return 1;
 }
 

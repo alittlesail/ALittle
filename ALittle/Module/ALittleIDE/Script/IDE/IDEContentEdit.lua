@@ -214,6 +214,9 @@ end
 
 function IDEContentEdit:CloseTab(child)
 	local tab_child = child._user_data
+	if self._main_tab.tab == child then
+		tab_child:OnHide()
+	end
 	tab_child:OnClose()
 	self._main_tab:RemoveChild(child)
 	self:ChangeTabEdit(nil, self._main_tab.tab)
@@ -284,6 +287,10 @@ end
 function IDEContentEdit:MainTabTabCloseYesOrNot(child)
 	local tab_child = child._user_data
 	if tab_child.save then
+		if self._main_tab.tab == child then
+			tab_child:OnHide()
+		end
+		tab_child:OnClose()
 		return true
 	end
 	self:MainTabTabCloseImpl(tab_child, child)

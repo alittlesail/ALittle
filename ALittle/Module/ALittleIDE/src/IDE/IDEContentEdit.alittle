@@ -151,6 +151,8 @@ public class IDEContentEdit : ALittle.DisplayLayout
 	public fun CloseTab(ALittle.DisplayObject child)
 	{
 		var tab_child:IDETabChild = child._user_data;
+        if (this._main_tab.tab == child)
+        	tab_child.OnHide();
 		tab_child.OnClose();
 		this._main_tab.RemoveChild(child);
 
@@ -245,7 +247,13 @@ public class IDEContentEdit : ALittle.DisplayLayout
 	private fun MainTabTabCloseYesOrNot(ALittle.DisplayObject child) : bool
 	{
 		var tab_child:IDETabChild = child._user_data;
-		if (tab_child.save) return true;
+		if (tab_child.save)
+        {
+            if (this._main_tab.tab == child)
+            	tab_child.OnHide();
+            tab_child.OnClose();
+            return true;
+        }
 	
 		this.MainTabTabCloseImpl(tab_child, child);
 		return false;

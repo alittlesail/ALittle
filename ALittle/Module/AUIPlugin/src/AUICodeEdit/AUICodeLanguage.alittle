@@ -101,10 +101,10 @@ public class AUICodeLanguage
     }
 
     // 查询参数输入
-    public await fun QueryParamList(int line, int char) : lua.ABnfQuerySignatureHelp
+    public await fun QueryParamList(int line, int char) : lua.ABnfQueryParamList
     {
         var query_id = this._project.Add(co);
-        lua.alanguage.abnffile_querycomplete(this._abnf_file, query_id, this._version, line, char);
+        lua.alanguage.abnffile_queryparamlist(this._abnf_file, query_id, this._version, line, char);
         return yield;
     }
 

@@ -12,7 +12,8 @@ protected class AUICodeParamList
     private ALittle.DisplayLayout _text_container;	// 文本容器
     private List<AUICodeParamItemInfo> _item_list;	// 每个参数文本信息列表
 
-    private lua.ABnfQueryParamList _param_list;		// 查询的信息列表
+    private lua.ABnfQueryParamList _param_info;		// 查询的信息列表
+    private int _param_index;	// 当前的参数焦点
     private int _line_start;	
     private int _char_start;
     private AUICodeEdit _edit;
@@ -22,14 +23,9 @@ protected class AUICodeParamList
         this._edit = edit;
     }
 
-    public fun Shutdown()
-    {
-        this.Hide();
-    }
-
     public async fun ShowParamList()
     {
-        if (this._param_list == null)
+        if (this._param_info == null)
         {
             if (!this.ReInit())
             {
@@ -38,69 +34,80 @@ protected class AUICodeParamList
             }
         }
 
-        this._line_start = this._edit.cursor.line;
-        this._char_start = this._edit.cursor.char;
-        var text = this._edit.GetTargetText(this._param_list.line_start, this._param_list.char_start - 1, this._edit.cursor.line, this._edit.cursor.char);
-        if (text == null || text == "")
+        // 查询坐标位置
+        var param_index = this._edit.language.QueryParamIndex(this._edit.cursor.line, this._edit.cursor.char - 1);
+        if (param_index < 1)
         {
             this.Hide();
             return;
         }
+    
+        ALittle.Log(param_index);
+        // 如果参数一致，那么就直接返回
+        if (this._param_index == param_index) return;
 
-        if (!this.Fliter(0, 0))
+        // 更新参数焦点
+        var item_info = this._item_list[this._param_index];
+        if (item_info != null)
         {
-            this.Hide();
-
-            if (!this.ReInit())
-                return;
-
-            this._line_start = this._edit.cursor.line;
-            this._char_start = this._edit.cursor.char;
-            text = this._edit.GetTargetText(this._param_list.line_start, this._param_list.char_start - 1, this._edit.cursor.line, this._edit.cursor.char);
-            if (text == null || text == "")
-                return;
-            if (!this.Fliter(0, 0))
-                this.Hide();
+            for (var index, text in item_info.text_list)
+            {
+                text.red = CODE_PARAMLIST_RED;
+                text.green = CODE_PARAMLIST_GREEN;
+                text.blue = CODE_PARAMLIST_BLUE;
+            }
+        }
+        this._param_index = param_index;
+        item_info = this._item_list[this._param_index];
+        if (item_info != null)
+        {
+            for (var index, text in item_info.text_list)
+            {
+                text.red = CODE_PARAMLIST_FOCUS_RED;
+                text.green = CODE_PARAMLIST_FOCUS_GREEN;
+                text.blue = CODE_PARAMLIST_FOCUS_BLUE;
+            }
         }
     }
 
-    public fun IsShow() : bool { return this._param_list != null; }
+    public fun IsShow() : bool { return this._param_info != null; }
 
     private await fun ReInit() : bool
     {
         if (this._edit.language == null) return false;
-        this._param_list = this._edit.language.QueryParamList(this._edit.cursor.line, this._edit.cursor.char - 1);
-        if (this._param_list == null) return false;
+        this._param_info = this._edit.language.QueryParamList(this._edit.cursor.line, this._edit.cursor.char - 1);
+        if (this._param_info == null) return false;
         
         // 计算坐标
-        var x, y = this._edit.CalcPosition(this._param_list.line_start, this._param_list.char_start, true);
-        y += CODE_LINE_HEIGHT;
-
+        var x, y = this._edit.CalcPosition(this._param_info.line_start, this._param_info.char_start, true);
         if (this._dialog == null)
         {
-            this._dialog = g_Control.CreateControl{ALittle.DisplayLayout}("ide_tool_signture_tip");
+            this._dialog = g_Control.CreateControl{ALittle.DisplayLayout}("ide_tool_paramlist_tip", this);
             this._dialog.width = 200;
-            this._dialog.AddEventListener(this, this.HandleHideEvent);
+            this._dialog.height = CODE_LINE_HEIGHT + this._text_container.height_value;
         }
+        y -= this._dialog.height;
         this._text_container.RemoveAllChild();
 
         this._dialog.x = x;
         this._dialog.y = y;
 
         this._item_list = new List<AUICodeParamItemInfo>();
-
+        this._param_index = 0;
         var offset = 0.0;
-        for (var param_index, param in this._param_list.param_list)
+        var param_len = ALittle.List_MaxN(this._param_info.param_list);
+        for (var param_index, param in this._param_info.param_list)
         {
             var info = new AUICodeParamItemInfo();
             info.text_list = new List<ALittle.DisplayObject>();
             var text_count = 0;
-
-            var text_list = ALittle.String_SplitUTF8(param.name);
-            var len = ALittle.List_MaxN(text_list);
-            for (var index = len; index >= 1; -1)
+            var param_name = param.name;
+            if (param_index != param_len) {
+                param_name = param_name..", ";
+            }
+            var text_list = ALittle.String_SplitUTF8(param_name);
+            for (var index, char in text_list)
             {
-                var char = text_list[index];
                 if (char == "\t")
                     offset += this._edit.ascii_width * 4;
                 elseif (char == " ")
@@ -120,9 +127,9 @@ protected class AUICodeParamList
                     }
 
                     var text = new ALittle.Text(g_Control);
-                    text.red = CODE_SIGNTURE_RED;
-                    text.green = CODE_SIGNTURE_GREEN;
-                    text.blue = CODE_SIGNTURE_BLUE;
+                    text.red = CODE_PARAMLIST_RED;
+                    text.green = CODE_PARAMLIST_GREEN;
+                    text.blue = CODE_PARAMLIST_BLUE;
                     text.text = char;
                     text.x = offset;
                     text.font_path = CODE_FONT_PATH;
@@ -138,54 +145,38 @@ protected class AUICodeParamList
             }
             this._item_list[param_index] = info;
         }
-
-        this._dialog.width = offset;
-
-        A_LayerManager.ShowFromRight(this._dialog, false);
-
-        return true;
-    }
-
-    private fun Fliter(int line, int char) : bool
-    {
-        var sort_list = new List<AUICodeCompleteItemInfo>();
-        var count = 0;
-
+        this._dialog.width = offset + this._text_container.width_value;
+        this._edit.help_container.AddChild(this._dialog);
         return true;
     }
 
     public fun Hide()
     {
-        this._param_list = null;
+        this._param_info = null;
         this._edit.help_container.RemoveChild(this._dialog);
     }
 
     public fun TryHide()
     {
-        if (this._param_list == null) return;
+        if (this._param_info == null) return;
 
-            // 检查光标
-        if (this._edit.cursor.line < this._param_list.line_start || this._edit.cursor.line > this._line_start)
+        // 检查光标
+        if (this._edit.cursor.line < this._param_info.line_start || this._edit.cursor.line > this._param_info.line_end)
         {
             this.Hide();
             return;
         }
 
-        if (this._edit.cursor.line == this._param_list.line_start && this._edit.cursor.char < this._param_list.char_start)
+        if (this._edit.cursor.line == this._param_info.line_start && this._edit.cursor.char < this._param_info.char_start)
         {
             this.Hide();
             return;
         }
 
-        if (this._edit.cursor.line == this._line_start && this._edit.cursor.char > this._char_start)
+        if (this._edit.cursor.line == this._param_info.line_end && this._edit.cursor.char > this._param_info.char_end)
         {
             this.Hide();
             return;
         }
-    }
-
-    private fun HandleHideEvent(ALittle.UIHideEvent event)
-    {
-        this._param_list = null;
     }
 }

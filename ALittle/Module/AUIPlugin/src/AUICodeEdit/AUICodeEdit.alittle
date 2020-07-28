@@ -253,6 +253,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
         }
 
         this._complete_screen.TryHide();
+        this._param_dialog.TryHide();
         this._cursor.RejustShowCursor();
         this.DispatchJumEvent();
     }
@@ -918,6 +919,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
 
             this.DispatchEvent(new ALittle.UIChangedEvent());
             this._complete_screen.ShowComplete();
+            this._param_dialog.ShowParamList();
         }   
     }
 
@@ -936,6 +938,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
                     this._cursor.OffsetLeft(ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) != 0);
                 this._cursor.RejustShowCursor();
                 this._complete_screen.TryHide();
+                this._param_dialog.TryHide();
             }
             else
             {
@@ -946,6 +949,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
                     this._cursor.OffsetLeft(ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) != 0);
                 this._select_cursor.UpdateLineChar(this._cursor.line, this._cursor.char);
                 this._complete_screen.Hide();
+                this._param_dialog.Hide();
             }
 
 			event.handled = true;
@@ -978,6 +982,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
                 var offset_y = this._cursor.y + this._code_screen.container_y;
                 if (offset_y < 0) this.FocusLineCharToUp(this._cursor.line, this._cursor.char);
                 this._complete_screen.Hide();
+                this._param_dialog.Hide();
             }
 			event.handled = true;
         }
@@ -1009,6 +1014,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
                 var offset_y = this._cursor.y + this._cursor.height + this._code_screen.container_y;
                 if (offset_y > this._code_screen.view_height) this.FocusLineCharToDown(this._cursor.line, this._cursor.char);
                 this._complete_screen.Hide();
+                this._param_dialog.Hide();
             }
 			event.handled = true;
         }
@@ -1022,6 +1028,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
                     this._cursor.OffsetRight(ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) != 0);
                 this._cursor.RejustShowCursor();
                 this._complete_screen.TryHide();
+                this._param_dialog.TryHide();
             }
             else
             {
@@ -1032,6 +1039,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
                     this._cursor.OffsetRight(ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) != 0);
                 this._select_cursor.UpdateLineChar(this._cursor.line, this._cursor.char);   
                 this._complete_screen.Hide();
+                this._param_dialog.Hide();
             }
 			event.handled = true;
         }
@@ -1046,11 +1054,15 @@ public class AUICodeEdit : ALittle.DisplayLayout
                     this._complete_screen.TryHide();
                     if (this._complete_screen.IsShow())
                         this._complete_screen.ShowComplete();
+                    this._param_dialog.TryHide();
+                    if (this._param_dialog.IsShow())
+                    	this._param_dialog.ShowParamList();
                 }
                 else
                 {
                     is_change = this.DeleteSelectText();
                     this._complete_screen.Hide();
+                    this._param_dialog.Hide();
                 }
                 event.handled = true;
             }
@@ -1075,6 +1087,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
                 else
                     this._cursor.OffsetHome();
                 this._complete_screen.TryHide();
+                this._param_dialog.TryHide();
             }
             else
             {
@@ -1082,7 +1095,8 @@ public class AUICodeEdit : ALittle.DisplayLayout
                     this._select_cursor.StartLineChar(this._cursor.line, this._cursor.char);
                 this._cursor.OffsetHome();
                 this._select_cursor.UpdateLineChar(this._cursor.line, this._cursor.char);  
-                this._complete_screen.Hide(); 
+                this._complete_screen.Hide();
+                this._param_dialog.Hide(); 
             }
             event.handled = true;
         }
@@ -1095,6 +1109,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
                 else
                     this._cursor.OffsetEnd();
                 this._complete_screen.TryHide();
+                this._param_dialog.TryHide();
             }
             else
             {
@@ -1102,7 +1117,8 @@ public class AUICodeEdit : ALittle.DisplayLayout
                     this._select_cursor.StartLineChar(this._cursor.line, this._cursor.char);
                 this._cursor.OffsetEnd();
                 this._select_cursor.UpdateLineChar(this._cursor.line, this._cursor.char); 
-                this._complete_screen.Hide();   
+                this._complete_screen.Hide();
+                this._param_dialog.Hide();
             }
 			event.handled = true;
         }
@@ -1158,7 +1174,8 @@ public class AUICodeEdit : ALittle.DisplayLayout
                     var text = this._cursor.virtual_indent.."\t";
                     is_change = this.InsertText(text, true);
                 }
-                this._complete_screen.Hide();   
+                this._complete_screen.Hide();
+                this._param_dialog.Hide();
                 event.handled = true;
             }
         }
@@ -1170,7 +1187,8 @@ public class AUICodeEdit : ALittle.DisplayLayout
                 if (select_text != null)
                     ALittle.System_SetClipboardText(select_text);
                 is_change = this.DeleteSelectText();
-                this._complete_screen.Hide();   
+                this._complete_screen.Hide();
+                this._param_dialog.Hide();
                 event.handled = true;
             }
         }
@@ -1191,6 +1209,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
                     is_change = this.InsertText(ALittle.System_GetClipboardText(), true);
                     var new_line = this._cursor.line;
                     this._complete_screen.Hide();
+                    this._param_dialog.Hide();
                     this.MultiLineFormat(old_line, new_line);
                 }
                 event.handled = true;
@@ -1203,7 +1222,8 @@ public class AUICodeEdit : ALittle.DisplayLayout
                 this._cursor.SetLineChar(this._line_count, this._line_list[this._line_count].char_count);
                 this._select_cursor.StartLineChar(1, 0);
                 this._select_cursor.UpdateLineChar(this._cursor.line, this._cursor.char);
-                this._complete_screen.Hide();   
+                this._complete_screen.Hide(); 
+                this._param_dialog.Hide();  
             }
 			event.handled = true;
         }
@@ -1265,6 +1285,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
     public fun OnUnDo()
     {
         this._complete_screen.Hide();
+        this._param_dialog.Hide();
     }
 
     public fun OnTabRightMenu(AUIRightMenu menu)

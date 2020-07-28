@@ -341,6 +341,7 @@ function AUICodeEdit:HandleLButtonDown(event)
 		self:StopQueryInfo()
 	end
 	self._complete_screen:TryHide()
+	self._param_dialog:TryHide()
 	self._cursor:RejustShowCursor()
 	self:DispatchJumEvent()
 end
@@ -965,6 +966,7 @@ function AUICodeEdit:HandleTextInput(event)
 		end
 		self:DispatchEvent(___all_struct[958494922], {})
 		self._complete_screen:ShowComplete()
+		self._param_dialog:ShowParamList()
 	end
 end
 
@@ -979,6 +981,7 @@ function AUICodeEdit:HandleKeyDown(event)
 			end
 			self._cursor:RejustShowCursor()
 			self._complete_screen:TryHide()
+			self._param_dialog:TryHide()
 		else
 			if self._select_cursor.line_start == nil then
 				self._select_cursor:StartLineChar(self._cursor.line, self._cursor.char)
@@ -989,6 +992,7 @@ function AUICodeEdit:HandleKeyDown(event)
 			end
 			self._select_cursor:UpdateLineChar(self._cursor.line, self._cursor.char)
 			self._complete_screen:Hide()
+			self._param_dialog:Hide()
 		end
 		event.handled = true
 	elseif event.sym == 1073741906 then
@@ -1017,6 +1021,7 @@ function AUICodeEdit:HandleKeyDown(event)
 				self:FocusLineCharToUp(self._cursor.line, self._cursor.char)
 			end
 			self._complete_screen:Hide()
+			self._param_dialog:Hide()
 		end
 		event.handled = true
 	elseif event.sym == 1073741905 then
@@ -1045,6 +1050,7 @@ function AUICodeEdit:HandleKeyDown(event)
 				self:FocusLineCharToDown(self._cursor.line, self._cursor.char)
 			end
 			self._complete_screen:Hide()
+			self._param_dialog:Hide()
 		end
 		event.handled = true
 	elseif event.sym == 1073741903 then
@@ -1056,6 +1062,7 @@ function AUICodeEdit:HandleKeyDown(event)
 			end
 			self._cursor:RejustShowCursor()
 			self._complete_screen:TryHide()
+			self._param_dialog:TryHide()
 		else
 			if self._select_cursor.line_start == nil then
 				self._select_cursor:StartLineChar(self._cursor.line, self._cursor.char)
@@ -1066,6 +1073,7 @@ function AUICodeEdit:HandleKeyDown(event)
 			end
 			self._select_cursor:UpdateLineChar(self._cursor.line, self._cursor.char)
 			self._complete_screen:Hide()
+			self._param_dialog:Hide()
 		end
 		event.handled = true
 	elseif event.sym == 8 then
@@ -1077,9 +1085,14 @@ function AUICodeEdit:HandleKeyDown(event)
 				if self._complete_screen:IsShow() then
 					self._complete_screen:ShowComplete()
 				end
+				self._param_dialog:TryHide()
+				if self._param_dialog:IsShow() then
+					self._param_dialog:ShowParamList()
+				end
 			else
 				is_change = self:DeleteSelectText()
 				self._complete_screen:Hide()
+				self._param_dialog:Hide()
 			end
 			event.handled = true
 		end
@@ -1100,6 +1113,7 @@ function AUICodeEdit:HandleKeyDown(event)
 				self._cursor:OffsetHome()
 			end
 			self._complete_screen:TryHide()
+			self._param_dialog:TryHide()
 		else
 			if self._select_cursor.line_start == nil then
 				self._select_cursor:StartLineChar(self._cursor.line, self._cursor.char)
@@ -1107,6 +1121,7 @@ function AUICodeEdit:HandleKeyDown(event)
 			self._cursor:OffsetHome()
 			self._select_cursor:UpdateLineChar(self._cursor.line, self._cursor.char)
 			self._complete_screen:Hide()
+			self._param_dialog:Hide()
 		end
 		event.handled = true
 	elseif event.sym == 1073741901 then
@@ -1117,6 +1132,7 @@ function AUICodeEdit:HandleKeyDown(event)
 				self._cursor:OffsetEnd()
 			end
 			self._complete_screen:TryHide()
+			self._param_dialog:TryHide()
 		else
 			if self._select_cursor.line_start == nil then
 				self._select_cursor:StartLineChar(self._cursor.line, self._cursor.char)
@@ -1124,6 +1140,7 @@ function AUICodeEdit:HandleKeyDown(event)
 			self._cursor:OffsetEnd()
 			self._select_cursor:UpdateLineChar(self._cursor.line, self._cursor.char)
 			self._complete_screen:Hide()
+			self._param_dialog:Hide()
 		end
 		event.handled = true
 	elseif event.sym == 13 or event.sym == 1073741912 then
@@ -1167,6 +1184,7 @@ function AUICodeEdit:HandleKeyDown(event)
 				is_change = self:InsertText(text, true)
 			end
 			self._complete_screen:Hide()
+			self._param_dialog:Hide()
 			event.handled = true
 		end
 	elseif event.sym == 120 and ALittle.BitAnd(event.mod, 0x00c0) ~= 0 then
@@ -1177,6 +1195,7 @@ function AUICodeEdit:HandleKeyDown(event)
 			end
 			is_change = self:DeleteSelectText()
 			self._complete_screen:Hide()
+			self._param_dialog:Hide()
 			event.handled = true
 		end
 	elseif event.sym == 99 and ALittle.BitAnd(event.mod, 0x00c0) ~= 0 then
@@ -1192,6 +1211,7 @@ function AUICodeEdit:HandleKeyDown(event)
 				is_change = self:InsertText(ALittle.System_GetClipboardText(), true)
 				local new_line = self._cursor.line
 				self._complete_screen:Hide()
+				self._param_dialog:Hide()
 				self:MultiLineFormat(old_line, new_line)
 			end
 			event.handled = true
@@ -1202,6 +1222,7 @@ function AUICodeEdit:HandleKeyDown(event)
 			self._select_cursor:StartLineChar(1, 0)
 			self._select_cursor:UpdateLineChar(self._cursor.line, self._cursor.char)
 			self._complete_screen:Hide()
+			self._param_dialog:Hide()
 		end
 		event.handled = true
 	elseif event.sym == 102 and ALittle.BitAnd(event.mod, 0x00c0) ~= 0 then
@@ -1245,6 +1266,7 @@ end
 
 function AUICodeEdit:OnUnDo()
 	self._complete_screen:Hide()
+	self._param_dialog:Hide()
 end
 
 function AUICodeEdit:OnTabRightMenu(menu)

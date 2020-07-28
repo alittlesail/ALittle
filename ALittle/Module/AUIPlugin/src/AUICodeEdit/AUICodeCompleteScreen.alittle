@@ -37,11 +37,6 @@ protected class AUICodeCompleteScreen
         this._edit = edit;
     }
 
-    public fun Shutdown()
-    {
-        this.Hide();
-    }
-
     public async fun ShowComplete()
     {
         if (this._complete == null)
@@ -179,7 +174,6 @@ protected class AUICodeCompleteScreen
         {
             this._screen = g_Control.CreateControl{ALittle.ScrollScreen}("ide_code_scroll_screen");
             this._screen.width = 200;
-            this._screen.AddEventListener(this, this.HandleHideEvent);
         }
         this._screen.RemoveAllChild();
 
@@ -316,12 +310,6 @@ protected class AUICodeCompleteScreen
             this.Hide();
             return;
         }
-    }
-
-    private fun HandleHideEvent(ALittle.UIHideEvent event)
-    {
-        this.HideTip();
-        this._complete = null;
     }
 
 	// 显示TIP

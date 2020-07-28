@@ -22,13 +22,13 @@ protected var CODE_FOCUS_RED = 88/255;
 protected var CODE_FOCUS_GREEN = 157/255;
 protected var CODE_FOCUS_BLUE = 246/255;
 
-protected var CODE_SIGNTURE_RED = 224/255;
-protected var CODE_SIGNTURE_GREEN = 224/255;
-protected var CODE_SIGNTURE_BLUE = 224/255;
+protected var CODE_PARAMLIST_RED = 128/255;
+protected var CODE_PARAMLIST_GREEN = 128/255;
+protected var CODE_PARAMLIST_BLUE = 128/255;
 
-protected var CODE_SIGNTURE_FOCUS_RED = 224/255;
-protected var CODE_SIGNTURE_FOCUS_GREEN = 224/255;
-protected var CODE_SIGNTURE_FOCUS_BLUE = 224/255;
+protected var CODE_PARAMLIST_FOCUS_RED = 169/255;
+protected var CODE_PARAMLIST_FOCUS_GREEN = 183/255;
+protected var CODE_PARAMLIST_FOCUS_BLUE = 198/255;
 
 protected var CODE_DEFAULT_COLOR = new ABnfColor();
 CODE_DEFAULT_COLOR.red = CODE_FONT_RED;

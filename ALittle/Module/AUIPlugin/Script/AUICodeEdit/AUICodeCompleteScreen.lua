@@ -4,7 +4,6 @@ module("AUIPlugin", package.seeall)
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___all_struct = ALittle.GetAllStruct()
 
 ALittle.RegStruct(1773085126, "AUIPlugin.AUICodeCompleteItemInfo", {
 name = "AUIPlugin.AUICodeCompleteItemInfo", ns_name = "AUIPlugin", rl_name = "AUICodeCompleteItemInfo", hash_code = 1773085126,
@@ -12,22 +11,10 @@ name_list = {"_item_button","_item_title","_tag_image","_item","pos","upper","co
 type_list = {"ALittle.TextRadioButton","ALittle.Text","ALittle.Image","ALittle.DisplayObject","int","string","lua.ABnfQueryCompleteInfo"},
 option_map = {}
 })
-ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
-name = "ALittle.UIEvent", ns_name = "ALittle", rl_name = "UIEvent", hash_code = -1479093282,
-name_list = {"target"},
-type_list = {"ALittle.DisplayObject"},
-option_map = {}
-})
 ALittle.RegStruct(-1149003083, "lua.ABnfQueryCompleteInfo", {
 name = "lua.ABnfQueryCompleteInfo", ns_name = "lua", rl_name = "ABnfQueryCompleteInfo", hash_code = -1149003083,
 name_list = {"display","insert","descriptor","tag"},
 type_list = {"string","string","string","int"},
-option_map = {}
-})
-ALittle.RegStruct(348388800, "ALittle.UIHideEvent", {
-name = "ALittle.UIHideEvent", ns_name = "ALittle", rl_name = "UIHideEvent", hash_code = 348388800,
-name_list = {"target"},
-type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
 
@@ -38,10 +25,6 @@ function AUICodeCompleteScreen:Ctor(edit)
 	___rawset(self, "_item_pool_count", 0)
 	___rawset(self, "_item_height", 0)
 	___rawset(self, "_edit", edit)
-end
-
-function AUICodeCompleteScreen:Shutdown()
-	self:Hide()
 end
 
 function AUICodeCompleteScreen:ShowComplete()
@@ -173,7 +156,6 @@ function AUICodeCompleteScreen:ReInit()
 	if self._screen == nil then
 		self._screen = g_Control:CreateControl("ide_code_scroll_screen")
 		self._screen.width = 200
-		self._screen:AddEventListener(___all_struct[348388800], self, self.HandleHideEvent)
 	end
 	self._screen:RemoveAllChild()
 	self._screen.x = x
@@ -290,11 +272,6 @@ function AUICodeCompleteScreen:TryHide()
 		self:Hide()
 		return
 	end
-end
-
-function AUICodeCompleteScreen:HandleHideEvent(event)
-	self:HideTip()
-	self._complete = nil
 end
 
 function AUICodeCompleteScreen:ShowTip(content)

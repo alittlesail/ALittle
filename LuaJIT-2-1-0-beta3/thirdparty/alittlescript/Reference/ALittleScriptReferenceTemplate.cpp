@@ -269,7 +269,7 @@ int ALittleScriptReference::QueryParamIndex(int it_line, int it_char, ABnfElemen
                 ++index;
             }
 
-            return -1;
+            return index;
         }
 
         if (std::dynamic_pointer_cast<ALittleScriptMethodBodyDecElement>(parent)) return -1;

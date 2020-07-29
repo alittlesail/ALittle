@@ -109,7 +109,7 @@ public class AUICodeLanguage
     }
 
     // 查询参数位置
-    public fun QueryParamIndex(int line, int char) : int
+    public fun QueryParamIndex(int line, int char) : int, int
     {
         return lua.alanguage.abnffile_queryparamindex(this._abnf_file, this._version, line, char);
     }

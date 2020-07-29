@@ -13,9 +13,9 @@ protected class AUICodeParamList
     private List<AUICodeParamItemInfo> _item_list;	// 每个参数文本信息列表
 
     private lua.ABnfQueryParamList _param_info;		// 查询的信息列表
+    private int _param_count;
     private int _param_index;	// 当前的参数焦点
-    private int _line_start;	
-    private int _char_start;
+    private int _start_offset;
     private AUICodeEdit _edit;
 
     public ctor(AUICodeEdit edit)
@@ -35,16 +35,37 @@ protected class AUICodeParamList
         }
 
         // 查询坐标位置
-        var param_index = this._edit.language.QueryParamIndex(this._edit.cursor.line, this._edit.cursor.char - 1);
+        var param_index, start_offset = this._edit.language.QueryParamIndex(this._edit.cursor.line, this._edit.cursor.char - 1);
+        ALittle.Log(param_index, start_offset);
         if (param_index < 1)
         {
             this.Hide();
             return;
         }
+
+        if (this._start_offset == null)
+        {
+            this._start_offset = start_offset;
+        }
+        elseif (this._start_offset != start_offset)
+        {
+            this.Hide();
+            if (!this.ReInit())
+            {
+                this.Hide();
+                return;
+            }
+            this._start_offset = start_offset;
+        }
     
-        ALittle.Log(param_index);
         // 如果参数一致，那么就直接返回
         if (this._param_index == param_index) return;
+
+        if (param_index > this._param_count)
+        {
+            this.Hide();
+            return;
+        }
 
         // 更新参数焦点
         var item_info = this._item_list[this._param_index];
@@ -77,6 +98,8 @@ protected class AUICodeParamList
         if (this._edit.language == null) return false;
         this._param_info = this._edit.language.QueryParamList(this._edit.cursor.line, this._edit.cursor.char - 1);
         if (this._param_info == null) return false;
+        this._param_count = ALittle.List_MaxN(this._param_info.param_list);
+        if (this._param_count == 0) return false;
         
         // 计算坐标
         var x, y = this._edit.CalcPosition(this._param_info.line_start, this._param_info.char_start, true);
@@ -153,6 +176,9 @@ protected class AUICodeParamList
     public fun Hide()
     {
         this._param_info = null;
+        this._start_offset = null;
+        this._param_count = 0;
+        this._param_index = 0;
         this._edit.help_container.RemoveChild(this._dialog);
     }
 

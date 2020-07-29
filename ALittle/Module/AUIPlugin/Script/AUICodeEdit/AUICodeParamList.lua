@@ -25,13 +25,27 @@ function AUICodeParamList:ShowParamList()
 			return
 		end
 	end
-	local param_index = self._edit.language:QueryParamIndex(self._edit.cursor.line, self._edit.cursor.char - 1)
+	local param_index, start_offset = self._edit.language:QueryParamIndex(self._edit.cursor.line, self._edit.cursor.char - 1)
+	ALittle.Log(param_index, start_offset)
 	if param_index < 1 then
 		self:Hide()
 		return
 	end
-	ALittle.Log(param_index)
+	if self._start_offset == nil then
+		self._start_offset = start_offset
+	elseif self._start_offset ~= start_offset then
+		self:Hide()
+		if not self:ReInit() then
+			self:Hide()
+			return
+		end
+		self._start_offset = start_offset
+	end
 	if self._param_index == param_index then
+		return
+	end
+	if param_index > self._param_count then
+		self:Hide()
 		return
 	end
 	local item_info = self._item_list[self._param_index]
@@ -65,6 +79,10 @@ function AUICodeParamList:ReInit()
 	end
 	self._param_info = self._edit.language:QueryParamList(self._edit.cursor.line, self._edit.cursor.char - 1)
 	if self._param_info == nil then
+		return false
+	end
+	self._param_count = ALittle.List_MaxN(self._param_info.param_list)
+	if self._param_count == 0 then
 		return false
 	end
 	local x, y = self._edit:CalcPosition(self._param_info.line_start, self._param_info.char_start, true)
@@ -130,6 +148,9 @@ end
 
 function AUICodeParamList:Hide()
 	self._param_info = nil
+	self._start_offset = nil
+	self._param_count = 0
+	self._param_index = 0
 	self._edit.help_container:RemoveChild(self._dialog)
 end
 

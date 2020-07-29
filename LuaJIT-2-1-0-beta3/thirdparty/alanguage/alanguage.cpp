@@ -123,9 +123,9 @@ void abnffile_queryparamlist(void* abnf_file, int query_id, int version, int it_
 	project_c->Add(std::bind(&ABnfProject::QueryParamList, project_c, ((ABnfFile*)abnf_file)->GetFullPath(), query_id, version, it_line, it_char));
 }
 
-int abnffile_queryparamindex(void* abnf_file, int version, int it_line, int it_char)
+int abnffile_queryparamindex(void* abnf_file, int version, int it_line, int it_char, int* start_offset)
 {
-	return ((ABnfFile*)abnf_file)->QueryParamIndex(version, it_line, it_char);
+	return ((ABnfFile*)abnf_file)->QueryParamIndex(version, it_line, it_char, start_offset);
 }
 
 void abnffile_queryerror(void* abnf_file, int query_id, int version, int force)

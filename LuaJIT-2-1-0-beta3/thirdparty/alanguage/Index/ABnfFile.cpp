@@ -235,7 +235,7 @@ bool ABnfFile::QueryParamList(int version, int it_line, int it_char
     return node->GetReference()->QueryParamList(line_start, char_start, line_end, char_end, param_list);
 }
 
-int ABnfFile::QueryParamIndex(int version, int it_line, int it_char)
+int ABnfFile::QueryParamIndex(int version, int it_line, int it_char, int* start_offset)
 {
     AnalysisText(version);
     if (m_root == nullptr) return 0;
@@ -247,7 +247,7 @@ int ABnfFile::QueryParamIndex(int version, int it_line, int it_char)
     if (node == nullptr) node = std::dynamic_pointer_cast<ABnfNodeElement>(element->GetParent());
     if (node == nullptr) return 0;
 
-    return node->GetReference()->QueryParamIndex(it_line, it_char, element);
+    return node->GetReference()->QueryParamIndex(it_line, it_char, element, *start_offset);
 }
 
 bool ABnfFile::QueryError(int version, bool force, std::vector<ALanguageErrorInfo>& info_list)

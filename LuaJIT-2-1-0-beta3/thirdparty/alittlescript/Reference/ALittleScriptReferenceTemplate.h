@@ -25,7 +25,7 @@ public:
     virtual int QueryDesiredIndent(int it_line, int it_char, ABnfElementPtr select) override;
 
     virtual int QueryFormateIndent(int it_line, int it_char, ABnfElementPtr select) override;
-    virtual int QueryParamIndex(int it_line, int it_char, ABnfElementPtr select) override;
+    virtual int QueryParamIndex(int it_line, int it_char, ABnfElementPtr select, int& start_offset) override;
 
     virtual bool QueryKeyWord(ABnfElementPtr select, std::vector<ALanguageCompletionInfo>& list) override;
 

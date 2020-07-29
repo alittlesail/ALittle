@@ -225,7 +225,7 @@ int ALittleScriptReference::QueryFormateIndent(int it_line, int it_char, ABnfEle
     return m_format_indent;
 }
 
-int ALittleScriptReference::QueryParamIndex(int it_line, int it_char, ABnfElementPtr select)
+int ALittleScriptReference::QueryParamIndex(int it_line, int it_char, ABnfElementPtr select, int& start_offset)
 {
     ABnfElementPtr parent = m_ref_element.lock();
     if (parent == nullptr) return -1;
@@ -253,6 +253,7 @@ int ALittleScriptReference::QueryParamIndex(int it_line, int it_char, ABnfElemen
             {
                 if ((*symbol_list)[i]->GetElementText() == "(")
                 {
+                    start_offset = (*symbol_list)[i]->GetStart();
                     start = i;
                     break;
                 }

@@ -63,6 +63,7 @@ public:
 	void UpdateFile(const std::string& module_path, const std::string& full_path, int version);
 	void TempFile(const std::string& module_path, const std::string& full_path, const std::string& text, int version);
 	void RemoveFile(const std::string& full_path);
+	void FindFile(int query_id, const std::string& text);
 	void UpdateText(const std::string& full_path, int version, const std::string& text);
 	void InsertText(const std::string& full_path, int version, const std::string& text, int it_line, int it_char);
 	void DeleteText(const std::string& full_path, int version, int it_line_start, int it_char_start, int it_line_end, int it_char_end);

@@ -178,6 +178,34 @@ void ABnfProject::RemoveFile(const std::string& full_path)
     m_file_map.erase(it);
 }
 
+void ABnfProject::FindFile(int query_id, const std::string& text)
+{
+    std::vector<std::string> file_list;
+    for (auto& pair : m_file_map)
+    {
+        if (pair.second->ContainText(text))
+            file_list.push_back(pair.first);
+    }
+
+    std::unique_lock<std::mutex> lock(m_output_lock);
+    m_outputs.push_back([query_id, file_list](lua_State* L)->int
+    {
+        lua_newtable(L);
+        lua_pushinteger(L, query_id);
+        lua_setfield(L, -2, "query_id");
+        {
+            lua_newtable(L);
+            for (size_t i = 0; i < file_list.size(); ++i)
+            {
+                lua_pushstring(L, file_list[i].c_str());
+                lua_rawseti(L, -2, static_cast<int>(i) + 1);
+            }
+        }
+        lua_setfield(L, -2, "result");
+        return 1;
+    });
+}
+
 void ABnfProject::UpdateText(const std::string& full_path, int version, const std::string& text)
 {
     auto it = m_file_map.find(full_path);

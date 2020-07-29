@@ -71,6 +71,9 @@ public:
     // it_char_end 从0开始算
     void DeleteText(int it_line_start, int it_char_start, int it_line_end, int it_char_end);
 
+    // 是否包含改文本
+    bool ContainText(const std::string& text);
+
     // 获取颜色
     // it_line 从0开始算
     const std::vector<ALanguageColorInfo>* QueryColor(int version, int it_line);

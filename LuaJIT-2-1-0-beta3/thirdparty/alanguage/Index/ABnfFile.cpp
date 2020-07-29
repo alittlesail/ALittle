@@ -128,6 +128,11 @@ void ABnfFile::DeleteText(int it_line_start, int it_char_start, int it_line_end,
     m_text.erase(start_index, end_index - start_index);
 }
 
+bool ABnfFile::ContainText(const std::string& text)
+{
+    return m_text.find(text) != std::string::npos;
+}
+
 const std::vector<ALanguageColorInfo>* ABnfFile::QueryColor(int version, int it_line)
 {
     AnalysisText(version);

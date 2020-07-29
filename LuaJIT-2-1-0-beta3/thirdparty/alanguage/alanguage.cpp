@@ -63,6 +63,12 @@ void alanguage_project_removefile(void* project, const char* full_path)
 	project_c->Add(std::bind(&ABnfProject::RemoveFile, project_c, std::string(full_path)));
 }
 
+void alanguage_project_findfile(void* project, int query_id, const char* text)
+{
+	auto* project_c = (ABnfProject*)project;
+	project_c->Add(std::bind(&ABnfProject::FindFile, project_c, query_id, std::string(text)));
+}
+
 void alanguage_project_clear(void* project)
 {
 	auto* project_c = (ABnfProject*)project;

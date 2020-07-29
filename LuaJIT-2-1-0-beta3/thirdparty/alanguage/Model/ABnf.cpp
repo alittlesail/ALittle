@@ -340,6 +340,7 @@ bool ABnf::AnalysisABnfRuleMatch(ABnfRuleInfo* rule, ABnfNodeElementPtr parent, 
     auto* index_list = rule->CheckNextChar(next_char);
     if (!index_list) return false;
 
+    ABnfNodeElementPtr stop_token_element;
     // 遍历选择规则
     std::vector<ABnfNodeElementPtr> option_list;
     for (auto option_index : *index_list)
@@ -411,6 +412,7 @@ bool ABnf::AnalysisABnfRuleMatch(ABnfRuleInfo* rule, ABnfNodeElementPtr parent, 
 
             option_list.clear();
             option_list.push_back(element);
+            stop_token_element = element;
             break;
         }
         // 如果没有出现pin，把错误添加到option_list
@@ -453,6 +455,7 @@ bool ABnf::AnalysisABnfRuleMatch(ABnfRuleInfo* rule, ABnfNodeElementPtr parent, 
                 }
                 if (is_find) {
                     value = j;
+                    break;
                 }
             }
             // size_t value = m_file->GetText().find(stop_token.c_str(), pin_offset, find - pin_offset);
@@ -473,7 +476,9 @@ bool ABnf::AnalysisABnfRuleMatch(ABnfRuleInfo* rule, ABnfNodeElementPtr parent, 
                 // 跳过分隔符
                 AnalysisOffset(find + static_cast<int>(m_stop_stack[index]->GetStopToken().size()) - offset, line, col, offset);
                 // 添加syntax error
-                parent->AddChild(ABnfErrorElementPtr(new ABnfErrorElement(m_factory, m_file, line, col, offset, "syntax error", nullptr)));
+                auto error_element = ABnfErrorElementPtr(new ABnfErrorElement(m_factory, m_file, line, col, offset, "syntax error", nullptr));
+                if (stop_token_element) stop_token_element->AddChild(error_element);
+                else parent->AddChild(error_element);
                 // 返回匹配成功，目的是吸纳错误文本，让剩下的文本继续匹配
                 return true;
             }

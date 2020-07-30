@@ -2,7 +2,7 @@
 #ifndef _ALITTLE_ALITTLESCRIPTPROJECTCLASS_H_
 #define _ALITTLE_ALITTLESCRIPTPROJECTCLASS_H_
 
-#include "ALittle/LibCommon/ThirdParty/alanguage/Index/ABnfProject.h"
+#include "../../alanguage/Index/ABnfProject.h"
 #include "ALittleScriptIndex.h"
 #include "../Reference/ALittleScriptFactoryClassEx.h"
 #include <unordered_map>

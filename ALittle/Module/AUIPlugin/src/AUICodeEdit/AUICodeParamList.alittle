@@ -36,7 +36,6 @@ protected class AUICodeParamList
 
         // 查询坐标位置
         var param_index, start_offset = this._edit.language.QueryParamIndex(this._edit.cursor.line, this._edit.cursor.char - 1);
-        ALittle.Log(param_index, start_offset);
         if (param_index < 1)
         {
             this.Hide();

@@ -373,6 +373,10 @@ function IDEUICenter:HandleJumpPreCodeClick(event)
 	g_IDECenter.center.code_list:OpenByFullPath(info.file_path, info.it_line, info.it_char, nil, nil)
 end
 
+function IDEUICenter:HandleFindFileClick(event)
+	g_IDEProjectFindFileDialog:ShowFindFile()
+end
+
 function IDEUICenter:HandleProjectOpen(event)
 	self._tool_ui_container.visible = false
 	self._tool_code_container.visible = false

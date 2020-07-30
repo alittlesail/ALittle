@@ -87,7 +87,7 @@ end
 
 function IDECodeTreeItem:HandleRButtonDown(event)
 	local menu = AUIPlugin.AUIRightMenu()
-	if self._user_info.project ~= nil then
+	if self._user_info.project ~= nil and ALittle.File_GetFileExtByPathAndUpper(self._user_info.path) == self._user_info.project.upper_ext then
 		self._user_info.project:OnTreeItemMenu(self._user_info.path, menu)
 	end
 	menu:AddItem("重命名", Lua.Bind(self.HandleRenameFile, self))
@@ -125,19 +125,19 @@ function IDECodeTreeItem:HandleRenameFile()
 	self._user_info.path = new_path
 	self._user_info.name = new_name
 	self._item_title.text = self._user_info.name
-	if self._user_info.project ~= nil then
+	if self._user_info.project ~= nil and ALittle.File_GetFileExtByPathAndUpper(self._user_info.path) == self._user_info.project.upper_ext then
 		self._user_info.project:RemoveFile(old_path)
 	end
 	ALittle.File_RenameFile(old_path, new_path)
 	g_IDECenter.center.content_edit:RenameTabByName(IDECodeTabChild, old_name, self._user_info.name)
-	if self._user_info.project ~= nil then
+	if self._user_info.project ~= nil and ALittle.File_GetFileExtByPathAndUpper(self._user_info.path) == self._user_info.project.upper_ext then
 		self._user_info.project:UpdateFile(self._user_info.module_path, self._user_info.path)
 	end
 end
 IDECodeTreeItem.HandleRenameFile = Lua.CoWrap(IDECodeTreeItem.HandleRenameFile)
 
 function IDECodeTreeItem:OnDelete()
-	if self._user_info.project ~= nil then
+	if self._user_info.project ~= nil and ALittle.File_GetFileExtByPathAndUpper(self._user_info.path) == self._user_info.project.upper_ext then
 		self._user_info.project:RemoveFile(self._user_info.path)
 	end
 end

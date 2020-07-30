@@ -112,6 +112,11 @@ public class AUICodeABnf : AUICodeLanguage
         menu.AddItem("生成", bind(this.GenerateABnf, this));
     }
 
+    public fun OnTabRightMenu(AUIRightMenu menu)
+    {
+        menu.AddItem("生成", bind(this.GenerateABnf, this));
+    }
+
     // 生成对应的代码
     public async fun GenerateABnf()
     {

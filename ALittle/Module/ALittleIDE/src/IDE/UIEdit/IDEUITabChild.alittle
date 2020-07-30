@@ -14,7 +14,7 @@ struct IDEUITabChildHandleInfo
     
     double delta_x;
     double delta_y;
-    bool lock_x_or_y;           // 锁定x或者y
+    bool lock_x_or_y;		// 锁定位置
 
     double delta_width;
     double delta_height;
@@ -640,7 +640,7 @@ public class IDEUITabChild : IDETabChild
             control_line.quad.AddEventListener(this, this.HandleHandleQuadKeyDown);
 	
 		    // control_line.size_quad_container.visible = false
-            control_line.size_quad.AddEventListener(this, this.HandleHandleSizeQuadKeyDown);
+            control_line.size_quad.AddEventListener(this, this.HandleHandleQuadKeyDown);
             control_line.size_quad.AddEventListener(this, this.HandleHandleSizeQuadDragBegin);
             control_line.size_quad.AddEventListener(this, this.HandleHandleSizeQuadDrag);
             control_line.size_quad.AddEventListener(this, this.HandleHandleSizeQuadDragEnd);
@@ -713,7 +713,7 @@ public class IDEUITabChild : IDETabChild
             control_line.quad.AddEventListener(this, this.HandleHandleQuadKeyDown);
 	
 		    // control_line.size_quad_container.visible = false
-            control_line.size_quad.AddEventListener(this, this.HandleHandleSizeQuadKeyDown);
+            control_line.size_quad.AddEventListener(this, this.HandleHandleQuadKeyDown);
             control_line.size_quad.AddEventListener(this, this.HandleHandleSizeQuadDragBegin);
             control_line.size_quad.AddEventListener(this, this.HandleHandleSizeQuadDrag);
             control_line.size_quad.AddEventListener(this, this.HandleHandleSizeQuadDragEnd);
@@ -1127,7 +1127,7 @@ public class IDEUITabChild : IDETabChild
         {
             handle_info.delta_x = 0;
             handle_info.delta_y = 0;
-            handle_info.lock_x_or_y = ALittle.Math_Abs(event.delta_x) > ALittle.Math_Abs(event.delta_y);
+            handle_info.lock_x_or_y = null;
             handle_info.buttondown_lock = false;
 		}
 	
@@ -1155,19 +1155,26 @@ public class IDEUITabChild : IDETabChild
         {
             var delta_x = event.delta_x;
             var delta_y = event.delta_y;
-			
+
 			if (shift)
             {
+                if (handle_info.lock_x_or_y == null)
+                    handle_info.lock_x_or_y = ALittle.Math_Abs(delta_x) > ALittle.Math_Abs(delta_y);
+
 				if (handle_info.lock_x_or_y)
                     delta_y = 0;
 				else
                     delta_x = 0;
 			}
-	
+            else
+            {
+                handle_info.lock_x_or_y = null;
+            }
+
 			// 旧的绝对位置
             var old_abs_x = event.abs_x - delta_x;
             var old_abs_y = event.abs_y - delta_y;
-	
+        
 			// 旧的绝对位置，转为旧的相对位置
             var old_rel_x, old_rel_y = target.user_info.object.show_parent.GlobalToLocalMatrix2D(old_abs_x, old_abs_y);
 			// 新的绝对位置，转为新的相对位置
@@ -1227,11 +1234,6 @@ public class IDEUITabChild : IDETabChild
 	}
 	
 	////////////////////////////////////////////////////////////////////////////////////////////////////
-	public fun HandleHandleSizeQuadKeyDown(ALittle.UIKeyDownEvent event)
-    {
-	
-	}
-	
 	public fun HandleHandleSizeQuadDragBegin(ALittle.UIButtonDragBeginEvent event)
     {
 		// 获取信息
@@ -1249,7 +1251,7 @@ public class IDEUITabChild : IDETabChild
         {
             handle_info.delta_width = 0;
             handle_info.delta_height = 0;
-            handle_info.lock_width_or_height = ALittle.Math_Abs(event.delta_x) > ALittle.Math_Abs(event.delta_y);
+            handle_info.lock_width_or_height = null;
 		}
 	
         this.save = false;
@@ -1274,11 +1276,18 @@ public class IDEUITabChild : IDETabChild
 			
 		if (shift)
         {
+            if (handle_info.lock_width_or_height == null)
+                handle_info.lock_width_or_height = ALittle.Math_Abs(delta_x) > ALittle.Math_Abs(delta_y);
+
 			if (handle_info.lock_width_or_height)
                 delta_y = 0;
 			else
                 delta_x = 0;
 		}
+        else
+        {
+            handle_info.lock_width_or_height = null;
+        }
 	
 		// 旧的绝对位置
         var old_abs_x = event.abs_x - delta_x;

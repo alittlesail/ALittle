@@ -23,6 +23,10 @@ public class AUICodeEdit : ALittle.DisplayLayout
     private List<string> _find_text;		// 查找文本
     private Map<AUICodeFindInfo, bool> _find_map; // 查找列表
 
+    // 跳转到行
+    private ALittle.Dialog _gotoline_dialog;	// 跳转对话框
+    private ALittle.ImageInput _gotoline_input;	// 跳转输入框
+
     private ALittle.ScrollScreen _code_screen;  // 滚动屏幕
 	private AUICodeLinear _code_linear;      // 代码容器
     private ALittle.DisplayLayout _cursor_container;    // 光标容器
@@ -90,6 +94,8 @@ public class AUICodeEdit : ALittle.DisplayLayout
         this._find_dialog.visible = false;
         this._find_dialog.close_callback = bind(this.HandleFindEscClick, this, null);
 
+        this._gotoline_dialog.visible = false;
+
         this._error_btn.visible = false;
         
 		// 创建编辑容器
@@ -148,12 +154,13 @@ public class AUICodeEdit : ALittle.DisplayLayout
         this.DispatchEvent(event);
     }
 
-    public fun FocusLineCharToCenter(int it_line, int it_char)
+    public fun FocusLineCharToCenter(int it_line, int it_char) : bool
     {
         var line = this._line_list[it_line];
-        if (line == null) return;
+        if (line == null) return false;
         var char = line.char_list[it_char];
         if (char == null) char = line.char_list[1];
+        if (char == null) return false;
 
         var y = (it_line - 1) * CODE_LINE_HEIGHT;
         var x = char.pre_width;
@@ -174,6 +181,8 @@ public class AUICodeEdit : ALittle.DisplayLayout
             this._code_screen.right_scrollbar.offset_rate = (center_y - view_y) / real_height;
         }
         this._code_screen.RejustScrollBar();
+
+        return true;
     }
 
     public fun FocusLineCharToUp(int it_line, int it_char)
@@ -648,7 +657,10 @@ public class AUICodeEdit : ALittle.DisplayLayout
     public fun FindNext(string content)
     {
         if (content != null && this._find_input.text != content)
+        {
             this.SetFindInput(content);
+            return;
+        }
         if (this.FindNextImpl(this._cursor.line, true)) return;
         this.FindNextImpl(1, false);
     }
@@ -673,6 +685,15 @@ public class AUICodeEdit : ALittle.DisplayLayout
         }
 
         return false;
+    }
+
+    private fun HandleGotoLineClick(ALittle.UIClickEvent evnet)
+    {
+        var number = ALittle.Math_ToInt(this._gotoline_input.text);
+        if (number == null) return;
+
+        if (number > this._line_count) number = this._line_count;
+        this.EditFocus(number, 1, null, null, true);
     }
 
     public fun UpdateLineFind(int it_line)
@@ -1233,6 +1254,12 @@ public class AUICodeEdit : ALittle.DisplayLayout
             this._find_input.DelayFocus();
             this._find_input.SelectAll();
         }
+        elseif (event.sym == ALittle.UIEnumTypes.KEY_G && ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) != 0)
+        {
+            this._gotoline_dialog.visible = true;
+            this._gotoline_input.DelayFocus();
+            this._gotoline_input.SelectAll();
+        }
         elseif (event.sym == ALittle.UIEnumTypes.KEY_CTRL)
         {
             if (this._move_in && !this._in_query_info)
@@ -1246,6 +1273,12 @@ public class AUICodeEdit : ALittle.DisplayLayout
             if (this._find_dialog != null && this._find_dialog.visible)
             {
                 this._find_dialog.visible = false;
+                event.handled = true;
+            }
+
+            if (this._gotoline_dialog != null && this._gotoline_dialog.visible)
+            {
+                this._gotoline_dialog.visible = false;
                 event.handled = true;
             }
         }

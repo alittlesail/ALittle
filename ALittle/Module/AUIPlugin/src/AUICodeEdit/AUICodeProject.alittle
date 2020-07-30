@@ -90,6 +90,12 @@ public class AUICodeProject : ALittle.EventDispatcher
     public fun UpdateFile(string module_path, string full_path) { lua.alanguage.abnfproject_updatefile(this._project, module_path, full_path, 0); }
     public fun TempFile(string module_path, string full_path, string text) { lua.alanguage.abnfproject_tempfile(this._project, module_path, full_path, text, 0); }
     public fun RemoveFile(string full_path) { lua.alanguage.abnfproject_removefile(this._project, full_path); }
+    public await fun FindFile(string text) : List<string>
+    {
+        var query_id = this.Add(co);
+        lua.alanguage.abnfproject_findfile(this._project, query_id, text);
+        return yield;
+    }
     
     public fun Start()
     {

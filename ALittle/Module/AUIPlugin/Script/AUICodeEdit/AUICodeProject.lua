@@ -100,6 +100,13 @@ function AUICodeProject:RemoveFile(full_path)
 	alanguage.abnfproject_removefile(self._project, full_path)
 end
 
+function AUICodeProject:FindFile(text)
+	local ___COROUTINE = coroutine.running()
+	local query_id = self:Add(___COROUTINE)
+	alanguage.abnfproject_findfile(self._project, query_id, text)
+	return coroutine.yield()
+end
+
 function AUICodeProject:Start()
 	if self._loop ~= nil then
 		return

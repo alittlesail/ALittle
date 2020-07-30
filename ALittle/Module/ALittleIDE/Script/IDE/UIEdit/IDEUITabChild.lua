@@ -605,7 +605,7 @@ function IDEUITabChild:ShowHandleQuad(target, force_shift)
 		control_line.quad:AddEventListener(___all_struct[150587926], self, self.HandleHandleQuadDragEnd)
 		control_line.quad:AddEventListener(___all_struct[-641444818], self, self.HandleHandleQuadRButtonDown)
 		control_line.quad:AddEventListener(___all_struct[-1604617962], self, self.HandleHandleQuadKeyDown)
-		control_line.size_quad:AddEventListener(___all_struct[-1604617962], self, self.HandleHandleSizeQuadKeyDown)
+		control_line.size_quad:AddEventListener(___all_struct[-1604617962], self, self.HandleHandleQuadKeyDown)
 		control_line.size_quad:AddEventListener(___all_struct[1301789264], self, self.HandleHandleSizeQuadDragBegin)
 		control_line.size_quad:AddEventListener(___all_struct[1337289812], self, self.HandleHandleSizeQuadDrag)
 		control_line.size_quad:AddEventListener(___all_struct[150587926], self, self.HandleHandleSizeQuadDragEnd)
@@ -662,7 +662,7 @@ function IDEUITabChild:ShowHandleQuadList(list)
 		control_line.quad:AddEventListener(___all_struct[150587926], self, self.HandleHandleQuadDragEnd)
 		control_line.quad:AddEventListener(___all_struct[-641444818], self, self.HandleHandleQuadRButtonDown)
 		control_line.quad:AddEventListener(___all_struct[-1604617962], self, self.HandleHandleQuadKeyDown)
-		control_line.size_quad:AddEventListener(___all_struct[-1604617962], self, self.HandleHandleSizeQuadKeyDown)
+		control_line.size_quad:AddEventListener(___all_struct[-1604617962], self, self.HandleHandleQuadKeyDown)
 		control_line.size_quad:AddEventListener(___all_struct[1301789264], self, self.HandleHandleSizeQuadDragBegin)
 		control_line.size_quad:AddEventListener(___all_struct[1337289812], self, self.HandleHandleSizeQuadDrag)
 		control_line.size_quad:AddEventListener(___all_struct[150587926], self, self.HandleHandleSizeQuadDragEnd)
@@ -1019,7 +1019,7 @@ function IDEUITabChild:HandleHandleQuadDragBegin(event)
 	for target, handle_info in ___pairs(self._tab_quad_map) do
 		handle_info.delta_x = 0
 		handle_info.delta_y = 0
-		handle_info.lock_x_or_y = ALittle.Math_Abs(event.delta_x) > ALittle.Math_Abs(event.delta_y)
+		handle_info.lock_x_or_y = nil
 		handle_info.buttondown_lock = false
 	end
 	self.save = false
@@ -1042,11 +1042,16 @@ function IDEUITabChild:HandleHandleQuadDrag(event)
 		local delta_x = event.delta_x
 		local delta_y = event.delta_y
 		if shift then
+			if handle_info.lock_x_or_y == nil then
+				handle_info.lock_x_or_y = ALittle.Math_Abs(delta_x) > ALittle.Math_Abs(delta_y)
+			end
 			if handle_info.lock_x_or_y then
 				delta_y = 0
 			else
 				delta_x = 0
 			end
+		else
+			handle_info.lock_x_or_y = nil
 		end
 		local old_abs_x = event.abs_x - delta_x
 		local old_abs_y = event.abs_y - delta_y
@@ -1097,9 +1102,6 @@ function IDEUITabChild:HandleHandleQuadRButtonDown(event)
 	menu:Show()
 end
 
-function IDEUITabChild:HandleHandleSizeQuadKeyDown(event)
-end
-
 function IDEUITabChild:HandleHandleSizeQuadDragBegin(event)
 	local target_handle_info = event.target._user_data
 	local target = target_handle_info.target
@@ -1110,7 +1112,7 @@ function IDEUITabChild:HandleHandleSizeQuadDragBegin(event)
 	for child, handle_info in ___pairs(self._tab_quad_map) do
 		handle_info.delta_width = 0
 		handle_info.delta_height = 0
-		handle_info.lock_width_or_height = ALittle.Math_Abs(event.delta_x) > ALittle.Math_Abs(event.delta_y)
+		handle_info.lock_width_or_height = nil
 	end
 	self.save = false
 end
@@ -1126,11 +1128,16 @@ function IDEUITabChild:HandleHandleSizeQuadDrag(event)
 	local delta_x = event.delta_x
 	local delta_y = event.delta_y
 	if shift then
+		if handle_info.lock_width_or_height == nil then
+			handle_info.lock_width_or_height = ALittle.Math_Abs(delta_x) > ALittle.Math_Abs(delta_y)
+		end
 		if handle_info.lock_width_or_height then
 			delta_y = 0
 		else
 			delta_x = 0
 		end
+	else
+		handle_info.lock_width_or_height = nil
 	end
 	local old_abs_x = event.abs_x - delta_x
 	local old_abs_y = event.abs_y - delta_y

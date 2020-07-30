@@ -51,8 +51,8 @@ function __Module_Setup(layer_group, control, module_base_path, script_base_path
 	g_LayerGroup:AddChild(g_DialogLayer)
 	RequireFromPaths(g_ScriptBasePath, "Data/", {"IDEUIManager.alittle", "IDEProject.alittle", "IDEEnum.alittle"})
 	RequireFromPaths(script_base_path, "Dialog/", {"IDEVersionList.alittle", "IDEProjectSettingDialog.alittle", "IDEProjectOpenDialog.alittle"
-		, "IDEProjectNewDialog.alittle", "IDEProjectExportDialog.alittle", "IDEImageSelectDialog.alittle"
-		, "IDEExport.alittle"})
+		, "IDEProjectNewDialog.alittle", "IDEProjectFindFileDialog.alittle", "IDEProjectExportDialog.alittle"
+		, "IDEImageSelectDialog.alittle", "IDEExport.alittle"})
 	RequireFromPaths(script_base_path, "IDE/", {"IDEUtility.alittle", "IDEUIProjectList.alittle", "IDEUIProjectDropdown.alittle"
 		, "IDEUIMainMenu.alittle", "IDEUIControlList.alittle", "IDEUICodeList.alittle"
 		, "IDEUICenter.alittle", "IDEUIAccount.alittle", "IDEContentEdit.alittle"

@@ -19,29 +19,32 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="alanguage.cpp" />
     <ClCompile Include="alanguagelib.c" />
+    <ClCompile Include="Index\ABnfFactory.cpp" />
     <ClCompile Include="Index\ABnfFile.cpp" />
     <ClCompile Include="Index\ABnfProject.cpp" />
     <ClCompile Include="Model\ABnf.cpp" />
     <ClCompile Include="Model\ABnfElement.cpp" />
-    <ClCompile Include="Model\ABnfFactory.cpp" />
     <ClCompile Include="Model\ABnfLeafElement.cpp" />
     <ClCompile Include="Model\ABnfNodeElement.cpp" />
     <ClCompile Include="Model\ABnfRule.cpp" />
     <ClCompile Include="Model\ABnfRuleInfo.cpp" />
     <ClCompile Include="Model\ABnfRuleNodeInfo.cpp" />
+    <ClCompile Include="Model\ARegex.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="alanguage.h" />
     <ClInclude Include="alanguagelib.h" />
+    <ClInclude Include="Index\ABnfFactory.h" />
     <ClInclude Include="Index\ABnfFile.h" />
     <ClInclude Include="Index\ABnfProject.h" />
     <ClInclude Include="Model\ABnf.h" />
     <ClInclude Include="Model\ABnfElement.h" />
     <ClInclude Include="Model\ABnfErrorElement.h" />
-    <ClInclude Include="Model\ABnfFactory.h" />
     <ClInclude Include="Model\ABnfGuess.h" />
-    <ClInclude Include="Model\ABnfLeafElement.h" />
     <ClInclude Include="Model\ABnfKeyElement.h" />
+    <ClInclude Include="Model\ABnfLeafElement.h" />
     <ClInclude Include="Model\ABnfNodeElement.h" />
     <ClInclude Include="Model\ABnfReference.h" />
     <ClInclude Include="Model\ABnfRegexElement.h" />
@@ -51,6 +54,7 @@
     <ClInclude Include="Model\ABnfRuleTokenInfo.h" />
     <ClInclude Include="Model\ABnfStringElement.h" />
     <ClInclude Include="Model\ALanguageHelperInfo.h" />
+    <ClInclude Include="Model\ARegex.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

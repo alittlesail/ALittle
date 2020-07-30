@@ -145,6 +145,7 @@ function AUICodeEdit:TCtor()
 	self:AddEventListener(___all_struct[958494922], self, self.HandleChangedEvent)
 	self._find_dialog.visible = false
 	self._find_dialog.close_callback = Lua.Bind(self.HandleFindEscClick, self, nil)
+	self._gotoline_dialog.visible = false
 	self._error_btn.visible = false
 	self._code_screen.container = AUICodeEditContainer(self._ctrl_sys)
 	self._edit_quad._user_data = self
@@ -251,11 +252,14 @@ end
 function AUICodeEdit:FocusLineCharToCenter(it_line, it_char)
 	local line = self._line_list[it_line]
 	if line == nil then
-		return
+		return false
 	end
 	local char = line.char_list[it_char]
 	if char == nil then
 		char = line.char_list[1]
+	end
+	if char == nil then
+		return false
 	end
 	local y = (it_line - 1) * CODE_LINE_HEIGHT
 	local x = char.pre_width
@@ -272,6 +276,7 @@ function AUICodeEdit:FocusLineCharToCenter(it_line, it_char)
 		self._code_screen.right_scrollbar.offset_rate = (center_y - view_y) / real_height
 	end
 	self._code_screen:RejustScrollBar()
+	return true
 end
 
 function AUICodeEdit:FocusLineCharToUp(it_line, it_char)
@@ -686,6 +691,7 @@ end
 function AUICodeEdit:FindNext(content)
 	if content ~= nil and self._find_input.text ~= content then
 		self:SetFindInput(content)
+		return
 	end
 	if self:FindNextImpl(self._cursor.line, true) then
 		return
@@ -707,6 +713,17 @@ function AUICodeEdit:FindNextImpl(start_line, check_cursor)
 		line_index = line_index + (1)
 	end
 	return false
+end
+
+function AUICodeEdit:HandleGotoLineClick(evnet)
+	local number = ALittle.Math_ToInt(self._gotoline_input.text)
+	if number == nil then
+		return
+	end
+	if number > self._line_count then
+		number = self._line_count
+	end
+	self:EditFocus(number, 1, nil, nil, true)
 end
 
 function AUICodeEdit:UpdateLineFind(it_line)
@@ -1229,6 +1246,10 @@ function AUICodeEdit:HandleKeyDown(event)
 		self._find_dialog.visible = true
 		self._find_input:DelayFocus()
 		self._find_input:SelectAll()
+	elseif event.sym == 103 and ALittle.BitAnd(event.mod, 0x00c0) ~= 0 then
+		self._gotoline_dialog.visible = true
+		self._gotoline_input:DelayFocus()
+		self._gotoline_input:SelectAll()
 	elseif event.sym == 1073742048 then
 		if self._move_in and not self._in_query_info then
 			local x, y = self._edit_quad:LocalToGlobal()
@@ -1237,6 +1258,10 @@ function AUICodeEdit:HandleKeyDown(event)
 	elseif event.sym == 27 then
 		if self._find_dialog ~= nil and self._find_dialog.visible then
 			self._find_dialog.visible = false
+			event.handled = true
+		end
+		if self._gotoline_dialog ~= nil and self._gotoline_dialog.visible then
+			self._gotoline_dialog.visible = false
 			event.handled = true
 		end
 	elseif event.sym == 1073741893 then

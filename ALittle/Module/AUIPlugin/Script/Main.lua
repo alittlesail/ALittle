@@ -33,6 +33,12 @@ function __Plugin_Setup(control, module_base_path, script_base_path)
 	g_Control = control
 	g_ModuleBasePath = module_base_path
 	g_ScriptBasePath = script_base_path
+	if ALittle.System_GetPlatform() == "Windows" then
+		package.cpath = package.cpath .. ";./" .. module_base_path .. "Other/?.dll"
+		require("alanguage")
+		require("abnf")
+		require("alittlescript")
+	end
 	RequireFromPaths(script_base_path, "AUI/", {"AUIWebLoginManager.alittle", "AUIVersionManager.alittle", "AUITool.alittle"
 		, "AUIRightMenu.alittle", "AUIImageCutPlugin.alittle", "AUIIMEManager.alittle"
 		, "AUIFileSelectDialog.alittle", "AUIEditImageDialog.alittle"})

@@ -119,4 +119,9 @@ public class IDECodeTabChild : IDETabChild
     {
         this._edit.EditFocus(line_start, char_start, line_end, char_end, true);
     }
+
+    public fun FindText(string text)
+    {
+        this._edit.FindNext(text);
+    }
 }

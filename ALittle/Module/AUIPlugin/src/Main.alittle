@@ -48,6 +48,15 @@ public async static __Plugin_Setup(ALittle.ControlSystem control, string module_
 	g_ModuleBasePath = module_base_path;
     g_ScriptBasePath = script_base_path;
 
+	[Language(Lua)]
+	if (ALittle.System_GetPlatform() == "Windows")
+	{
+		package.cpath = package.cpath..";./"..module_base_path.."Other/?.dll";
+        lua.require("alanguage");
+        lua.require("abnf");
+        lua.require("alittlescript");
+    }
+
     alittle.RequireFromPaths(script_base_path, "AUI/", paths("src/AUI"));
     alittle.RequireFromPaths(script_base_path, "AUICodeEdit/", paths("src/AUICodeEdit"));
     g_AUIIMEManager.Setup();

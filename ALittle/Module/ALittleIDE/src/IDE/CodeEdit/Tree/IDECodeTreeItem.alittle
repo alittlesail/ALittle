@@ -49,7 +49,7 @@ public class IDECodeTreeItem : IDECodeTreeLogic
 	private fun HandleRButtonDown(ALittle.UIRButtonDownEvent event)
 	{
         var menu = new AUIPlugin.AUIRightMenu();
-		if (this._user_info.project != null)
+		if (this._user_info.project != null && ALittle.File_GetFileExtByPathAndUpper(this._user_info.path) == this._user_info.project.upper_ext)
 			this._user_info.project.OnTreeItemMenu(this._user_info.path, menu);
 		menu.AddItem("重命名", bind(this.HandleRenameFile, this));
 		menu.AddItem("删除", bind(this.HandleDeleteFile, this));
@@ -88,21 +88,21 @@ public class IDECodeTreeItem : IDECodeTreeLogic
 
 		this._item_title.text = this._user_info.name;
 
-		if (this._user_info.project != null)
+		if (this._user_info.project != null && ALittle.File_GetFileExtByPathAndUpper(this._user_info.path) == this._user_info.project.upper_ext)
 			this._user_info.project.RemoveFile(old_path);
 
 		ALittle.File_RenameFile(old_path, new_path);
 
 		g_IDECenter.center.content_edit.RenameTabByName{IDECodeTabChild}(old_name, this._user_info.name);
 
-		if (this._user_info.project != null)
+		if (this._user_info.project != null && ALittle.File_GetFileExtByPathAndUpper(this._user_info.path) == this._user_info.project.upper_ext)
 			this._user_info.project.UpdateFile(this._user_info.module_path, this._user_info.path);
     }
 
 	// 触发删除
 	public fun OnDelete()
 	{
-		if (this._user_info.project != null)
+		if (this._user_info.project != null && ALittle.File_GetFileExtByPathAndUpper(this._user_info.path) == this._user_info.project.upper_ext)
 			this._user_info.project.RemoveFile(this._user_info.path);
     }
 }

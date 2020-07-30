@@ -1,6 +1,6 @@
 
 #include "ABnfCommonReference.h"
-#include "ALittle/LibCommon/ThirdParty/alanguage/Model/ABnfElement.h"
+#include "../../alanguage/Model/ABnfElement.h"
 
 ABnfCommonReference::ABnfCommonReference(ABnfElementPtr element)
 {

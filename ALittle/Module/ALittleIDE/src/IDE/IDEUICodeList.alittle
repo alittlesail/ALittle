@@ -164,7 +164,7 @@ public class IDEUICodeList : ALittle.DisplayLayout
         return true;
     }
 
-	public fun OpenByFullPath(string full_path, int line_start, int char_start, int line_end, int char_end)
+	public fun OpenByFullPath(string full_path, int line_start, int char_start, int line_end, int char_end) : IDECodeTabChild
 	{
         for (var index, child:IDECodeTreeLogic in this._code_scroll_screen.childs)
 		{
@@ -173,16 +173,16 @@ public class IDEUICodeList : ALittle.DisplayLayout
 			{
                 var code_child = g_IDECenter.center.content_edit.StartEditCodeBySelect(item.user_info.name, item.user_info);
 				code_child.JumpFocus(line_start, char_start, line_end, char_end);
-				return;
+				return code_child;
             }
         }
 
-		if (ALittle.File_GetFileAttr(full_path) == null) return;
+		if (ALittle.File_GetFileAttr(full_path) == null) return null;
 
 		var user_info = new IDECodeTreeUserInfo();
 		user_info.name = ALittle.File_GetFileNameByPath(full_path);
 		user_info.path = full_path;
-		g_IDECenter.center.content_edit.StartEditCodeBySelect(user_info.name, user_info);
+		return g_IDECenter.center.content_edit.StartEditCodeBySelect(user_info.name, user_info);
     }
 
 	public fun AddModule(string name)

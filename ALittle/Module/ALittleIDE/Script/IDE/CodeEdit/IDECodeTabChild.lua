@@ -145,3 +145,7 @@ function IDECodeTabChild:JumpFocus(line_start, char_start, line_end, char_end)
 	self._edit:EditFocus(line_start, char_start, line_end, char_end, true)
 end
 
+function IDECodeTabChild:FindText(text)
+	self._edit:FindNext(text)
+end
+

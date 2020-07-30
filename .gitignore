@@ -26,3 +26,8 @@
 /nginx-1.16.1/logs
 /nginx-1.16.1/temp
 /ALittle/Module/G2048/Export
+/LuaJIT-2-1-0-beta3/thirdparty/.vs
+/LuaJIT-2-1-0-beta3/thirdparty/x64
+/LuaJIT-2-1-0-beta3/thirdparty/alittlescript/x64
+/LuaJIT-2-1-0-beta3/thirdparty/alanguage/x64
+/LuaJIT-2-1-0-beta3/thirdparty/abnf/x64

@@ -26,7 +26,6 @@ function AUICodeParamList:ShowParamList()
 		end
 	end
 	local param_index, start_offset = self._edit.language:QueryParamIndex(self._edit.cursor.line, self._edit.cursor.char - 1)
-	ALittle.Log(param_index, start_offset)
 	if param_index < 1 then
 		self:Hide()
 		return

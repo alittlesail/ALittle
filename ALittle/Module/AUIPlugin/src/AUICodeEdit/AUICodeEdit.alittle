@@ -599,7 +599,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
         if (find_len == 0) return;
 
         this._find_map = new Map<AUICodeFindInfo, bool>();
-        var first_info:AUICodeFindInfo = null;
+        var has_find = false;
         for (var index, line in this._line_list)
         {
             if (line.char_count >= find_len)
@@ -634,8 +634,9 @@ public class AUICodeEdit : ALittle.DisplayLayout
                         info.it_char_end = char_index + find_len - 1;
                         item._user_data = info;
                         this._find_map[info] = true;
-                        if (first_info == null) first_info = info;
                         char_index += find_len;
+
+                        has_find = true;
                     }
                     else
                     {
@@ -645,8 +646,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
             }
         }
 
-        if (first_info != null)
-            this.EditFocus(first_info.it_line, first_info.it_char_start, first_info.it_line, first_info.it_char_end, false);
+        if (has_find) this.FindNextImpl(this._cursor.line, true);
     }
 
     private fun HandleFindNextClick(ALittle.UIClickEvent event)
@@ -1471,7 +1471,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
         var last_char = last_line.char_list[last_line.char_count];
         if (last_char == null) return line_list, line_count, max_width;
 
-            // 如果最后一个是回车，那么加一个空行
+        // 如果最后一个是回车，那么加一个空行
         if (last_char.char == "\n")
         {
             line = new AUICodeLineInfo();
@@ -1845,6 +1845,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
                 split_next_line.container = new AUICodeLineContainer(g_Control);
                 split_next_line.container._user_data = split_next_line;
                 split_next_line.container.height = CODE_LINE_HEIGHT;
+                // 把split_pre_line的后半段添加到split_next_line
                 for (var i = this._cursor.char + 1; i <= split_pre_line.char_count; 1)
                 {
                     split_next_line.char_count += 1;
@@ -1853,11 +1854,12 @@ public class AUICodeEdit : ALittle.DisplayLayout
                         split_next_line.container.AddChild(split_pre_line.char_list[i].text);
                 }
 
+                // split_pre_line的后半段删除
                 var split_count = split_pre_line.char_count - this._cursor.char;
                 ALittle.List_Splice(split_pre_line.char_list, this._cursor.char + 1, split_count);
                 split_pre_line.char_count -= split_count;
 
-                // 插入旧行
+                // 插入旧行（前半段）
                 this._code_linear.AddChild(split_pre_line.container);
                 new_line_count += 1;
                 new_line_list[new_line_count] = split_pre_line;
@@ -1872,7 +1874,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
 
                 line_map[new_line_count] = true;
             }
-            // 插入拆分行
+            // 插入拆分行（后半段）
             {
                 this._code_linear.AddChild(split_next_line.container);
                 new_line_count += 1;
@@ -1925,8 +1927,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
                 pre_width += char.width;
             }
             // 如果只在起始行插入，那么光标移动到插入最后字符的位置
-            if (line_count <= 1)
-                it_cursor_char = char_count;
+            if (line_count <= 1) it_cursor_char = char_count;
             // 插入后缀数据
             for (var i = split_it_char + 1; i <= split_pre_line.char_count; 1)
             {
@@ -1962,6 +1963,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
                 char_list[char_count] = char;
                 pre_width += char.width;
             }
+        	// 那么光标移动到插入最后字符的位置
             it_cursor_char = char_count;
             // 插入后缀数据
             for (var i = 1; i <= split_next_line.char_count; 1)

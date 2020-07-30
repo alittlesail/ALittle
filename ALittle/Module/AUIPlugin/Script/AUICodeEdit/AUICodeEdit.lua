@@ -641,7 +641,7 @@ function AUICodeEdit:HandleFindInputChanged(event)
 		return
 	end
 	self._find_map = {}
-	local first_info = nil
+	local has_find = false
 	for index, line in ___ipairs(self._line_list) do
 		if line.char_count >= find_len then
 			local char_index = 1
@@ -669,18 +669,16 @@ function AUICodeEdit:HandleFindInputChanged(event)
 					info.it_char_end = char_index + find_len - 1
 					item._user_data = info
 					self._find_map[info] = true
-					if first_info == nil then
-						first_info = info
-					end
 					char_index = char_index + (find_len)
+					has_find = true
 				else
 					char_index = char_index + (1)
 				end
 			end
 		end
 	end
-	if first_info ~= nil then
-		self:EditFocus(first_info.it_line, first_info.it_char_start, first_info.it_line, first_info.it_char_end, false)
+	if has_find then
+		self:FindNextImpl(self._cursor.line, true)
 	end
 end
 

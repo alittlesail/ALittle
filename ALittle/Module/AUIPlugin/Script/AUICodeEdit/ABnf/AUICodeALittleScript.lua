@@ -74,9 +74,9 @@ function AUICodeALittleScript:Ctor(project, full_path, module_path)
 		end
 		do
 			color = {}
-			color.red = 156 / 255
-			color.green = 220 / 255
-			color.blue = 254 / 255
+			color.red = 146 / 255
+			color.green = 210 / 255
+			color.blue = 244 / 255
 			g_ALittleScriptColor[ALittleScriptColorType.CUSTOM_NAME] = color
 		end
 		do
@@ -95,9 +95,9 @@ function AUICodeALittleScript:Ctor(project, full_path, module_path)
 		end
 		do
 			color = {}
-			color.red = 220 / 255
-			color.green = 220 / 255
-			color.blue = 170 / 255
+			color.red = 210 / 255
+			color.green = 210 / 255
+			color.blue = 160 / 255
 			g_ALittleScriptColor[ALittleScriptColorType.METHOD_NAME] = color
 		end
 		do

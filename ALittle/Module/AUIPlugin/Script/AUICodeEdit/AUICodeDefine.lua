@@ -53,10 +53,10 @@ type_list = {"ALittle.DisplayObject","string","int","int","int","int"},
 option_map = {}
 })
 
-CODE_LINE_HEIGHT = 18
+CODE_LINE_HEIGHT = 16
 CODE_LINE_NUMBER_WIDTH = 40
 CODE_PAD_LINES = 5
-CODE_FONT_SIZE = 14
+CODE_FONT_SIZE = 13
 CODE_FONT_PATH = "YaHei-Consolas.ttf"
 CODE_FONT_RED = 169 / 255
 CODE_FONT_GREEN = 183 / 255

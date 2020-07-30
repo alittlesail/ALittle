@@ -163,8 +163,8 @@ function AUICodeEdit:TCtor()
 	self._cursor:Hide()
 	self._select_cursor = AUICodeSelectCursor(self)
 	self._text_show = ALittle.Text(self._ctrl_sys)
-	self._text_show.font_path = "YaHei-Consolas.ttf"
-	self._text_show.font_size = 14
+	self._text_show.font_path = CODE_FONT_PATH
+	self._text_show.font_size = CODE_FONT_SIZE
 	self._ascii_width = self._text_show.native_show:CalcTextWidth("A")
 	self._word_width = self._text_show.native_show:CalcTextWidth("测")
 end

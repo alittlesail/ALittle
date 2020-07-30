@@ -118,8 +118,8 @@ public class AUICodeEdit : ALittle.DisplayLayout
         this._select_cursor = new AUICodeSelectCursor(this);
         
         this._text_show = new ALittle.Text(this._ctrl_sys);
-        this._text_show.font_path = "YaHei-Consolas.ttf";
-        this._text_show.font_size = 14;
+        this._text_show.font_path = CODE_FONT_PATH;
+        this._text_show.font_size = CODE_FONT_SIZE;
 
         this._ascii_width = this._text_show.native_show.CalcTextWidth("A");
         this._word_width = this._text_show.native_show.CalcTextWidth("测");

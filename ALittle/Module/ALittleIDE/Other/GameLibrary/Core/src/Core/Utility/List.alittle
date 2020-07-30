@@ -43,6 +43,23 @@ public static List_PushList<T>(List<T> list, List<T> other_list)
         List_Push(list, other);
 }
 
+public static List_Find<T>(List<T> list, T object) : int
+{
+    for (var index, o in list)
+    {
+        if (o == object) return index;
+    }
+    return null;
+}
+
+public static List_Copy<T>(List<T> list) : List<T>
+{
+    var new_list = new List<T>();
+    for (var index, o in list)
+    	new_list[index] = o;
+    return new_list;
+}
+
 public static List_Insert<T>(List<T> list, int index, T object)
 {
     [Language(Lua)]

@@ -34,6 +34,7 @@ public class AUICodeProject : ALittle.EventDispatcher
 
     public static CreateALittleScriptProject() : AUICodeProject
     {
+        if (lua.alittlescript == null) return null;
         var abnf_buffer = ALittle.File_ReadTextFromFile(g_ModuleBasePath.."Other/ABnf/ALittleScript.abnf");
         var project = new AUICodeALittleScriptProject(lua.alittlescript.create_alittlescript_project(abnf_buffer));
         project.Start();
@@ -43,6 +44,7 @@ public class AUICodeProject : ALittle.EventDispatcher
     // 构建一个ABnf项目
     public static CreateABnfProject() : AUICodeProject
     {
+        if (lua.abnf == null) return null;
         var abnf_project = g_ABnfProjectMap["abnf"];
         if (abnf_project == null)
         {
@@ -62,6 +64,8 @@ public class AUICodeProject : ALittle.EventDispatcher
     // 构建通用着色项目
     public static CreateCommonProject(string upper_ext) : AUICodeProject
     {
+        if (lua.alanguage == null) return null;
+
         var abnf = g_UpperExtMapABnf[upper_ext];
         if (abnf == null) return null;
 

@@ -155,6 +155,12 @@ function GCenter:Setup()
 	self._login_button.visible = true
 	self._logout_button.visible = false
 	self._login_ip_input.text = g_GConfig:GetString("login_ip", "127.0.0.1")
+	local data_list = g_GConfig:GetConfig("login_ip_list", {})
+	if ALittle.List_Find(data_list, self._login_ip_input.text) == nil then
+		ALittle.List_Push(data_list, self._login_ip_input.text)
+	end
+	self._ip_dropdown.data_list = data_list
+	self._ip_dropdown.text = ""
 	self._login_port_input.text = ALittle.String_ToString(g_GConfig:GetInt("login_port", 0))
 	self._right_grad3_ud.up_size = g_GConfig:GetDouble("right_grid3_up_size", self._right_grad3_ud.up_size)
 	self._main_grid3_lr.down_size = g_GConfig:GetDouble("main_grid3_down_size", self._main_grid3_lr.down_size)
@@ -167,6 +173,10 @@ end
 
 function GCenter:UpdateFrame(frame_time)
 	A_LuaSocketSchedule:RunInFrame()
+end
+
+function GCenter:HandleIpSelectChanged(event)
+	self._login_ip_input.text = self._ip_dropdown.text
 end
 
 function GCenter:HandleShowSettingDialog(event)
@@ -531,6 +541,13 @@ function GCenter:HandleLoginClick(event)
 	end
 	g_GConfig:SetConfig("login_ip", ip)
 	g_GConfig:SetConfig("login_port", port)
+	local data_list = ALittle.List_Copy(g_GConfig:GetConfig("login_ip_list", {}))
+	if ALittle.List_Find(data_list, ip) == nil then
+		ALittle.List_Push(data_list, ip)
+	end
+	g_GConfig:SetConfig("login_ip_list", data_list)
+	self._ip_dropdown.data_list = data_list
+	self._ip_dropdown.text = ""
 	self._login_button.visible = false
 	self._logout_button.visible = true
 	self._login_status = LoginStatus.EMULATOR_LOGINING

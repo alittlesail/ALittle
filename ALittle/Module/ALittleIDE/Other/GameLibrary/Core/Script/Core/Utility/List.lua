@@ -23,6 +23,23 @@ function List_PushList(list, other_list)
 	end
 end
 
+function List_Find(list, object)
+	for index, o in ___ipairs(list) do
+		if o == object then
+			return index
+		end
+	end
+	return nil
+end
+
+function List_Copy(list)
+	local new_list = {}
+	for index, o in ___ipairs(list) do
+		new_list[index] = o
+	end
+	return new_list
+end
+
 function List_Insert(list, index, object)
 	insert(list, index, object)
 end

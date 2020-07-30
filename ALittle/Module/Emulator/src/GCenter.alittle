@@ -85,6 +85,7 @@ class GCenter
     // 登陆界面
     private ALittle.ScrollScreen _login_scroll_screen;
     private ALittle.DisplayObject _login_ip_input;
+    private ALittle.DropDown _ip_dropdown;
     private ALittle.DisplayObject _login_port_input;
     private DetailInfo _login_detail_info;
     private ALittle.TextButton _login_button;
@@ -129,18 +130,18 @@ class GCenter
         g_LayerGroup.AddChild(this._dialog_layer, null);
 
         // 创建主界面
-        g_Control.CreateControl{ALittle.DisplayObject }("main_scene", this, this._main_layer);
+        g_Control.CreateControl{ALittle.DisplayObject}("main_scene", this, this._main_layer);
 
         // 设置界面
-        this._setting_dialog = g_Control.CreateControl{ALittle.Dialog }("main_setting_dialog", this);
+        this._setting_dialog = g_Control.CreateControl{ALittle.Dialog}("main_setting_dialog", this);
         A_LayerManager.AddToModal(this._setting_dialog);
 
         // 右键菜单
-        this._proto_item_msg_menu = g_Control.CreateControl{ALittle.DisplayLayout }("main_msg_menu", this);
-        this._log_item_msg_menu = g_Control.CreateControl{ALittle.DisplayLayout }("main_msg_menu", this);
+        this._proto_item_msg_menu = g_Control.CreateControl{ALittle.DisplayLayout}("main_msg_menu", this);
+        this._log_item_msg_menu = g_Control.CreateControl{ALittle.DisplayLayout}("main_msg_menu", this);
 
         // 过滤界面
-        this._log_fliter_dialog = g_Control.CreateControl{ALittle.Dialog }("main_log_fliter_dialog", this);
+        this._log_fliter_dialog = g_Control.CreateControl{ALittle.Dialog}("main_log_fliter_dialog", this);
         this._dialog_layer.AddChild(this._log_fliter_dialog);
         this._log_fliter_dialog.visible = false;
         this._fliter_map = new Map<string, bool>();
@@ -191,6 +192,11 @@ class GCenter
         this._login_button.visible = true;
         this._logout_button.visible = false;
         this._login_ip_input.text = g_GConfig.GetString("login_ip", "127.0.0.1");
+        var data_list = g_GConfig.GetConfig("login_ip_list", new List<string>());
+        if (ALittle.List_Find(data_list, this._login_ip_input.text) == null)
+        	ALittle.List_Push(data_list, this._login_ip_input.text);
+        this._ip_dropdown.data_list = data_list;
+        this._ip_dropdown.text = "";
         this._login_port_input.text = ALittle.String_ToString(g_GConfig.GetInt("login_port", 0));
 
         this._right_grad3_ud.up_size = g_GConfig.GetDouble("right_grid3_up_size", this._right_grad3_ud.up_size);
@@ -209,6 +215,11 @@ class GCenter
     public fun UpdateFrame(int frame_time)
     {
         A_LuaSocketSchedule.RunInFrame();
+    }
+
+    private fun HandleIpSelectChanged(ALittle.UISelectChangedEvent event)
+    {
+        this._login_ip_input.text = this._ip_dropdown.text;
     }
 
     // 显示设置对话框
@@ -680,6 +691,12 @@ class GCenter
 
         g_GConfig.SetConfig("login_ip", ip);
         g_GConfig.SetConfig("login_port", port);
+        var data_list = ALittle.List_Copy(g_GConfig.GetConfig("login_ip_list", new List<string>()));
+        if (ALittle.List_Find(data_list, ip) == null)
+        	ALittle.List_Push(data_list, ip);
+        g_GConfig.SetConfig("login_ip_list", data_list);
+        this._ip_dropdown.data_list = data_list;
+        this._ip_dropdown.text = "";
 
         this._login_button.visible = false;
         this._logout_button.visible = true;

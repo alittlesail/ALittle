@@ -33,6 +33,9 @@ function AUICodeProject:Ctor(project)
 end
 
 function AUICodeProject.CreateALittleScriptProject()
+	if alittlescript == nil then
+		return nil
+	end
 	local abnf_buffer = ALittle.File_ReadTextFromFile(g_ModuleBasePath .. "Other/ABnf/ALittleScript.abnf")
 	local project = AUICodeALittleScriptProject(alittlescript.create_alittlescript_project(abnf_buffer))
 	project:Start()
@@ -40,6 +43,9 @@ function AUICodeProject.CreateALittleScriptProject()
 end
 
 function AUICodeProject.CreateABnfProject()
+	if abnf == nil then
+		return nil
+	end
 	local abnf_project = g_ABnfProjectMap["abnf"]
 	if abnf_project == nil then
 		local abnf_buffer = ALittle.File_ReadTextFromFile(g_ModuleBasePath .. "/Other/ABnf/ABnf.abnf")
@@ -55,6 +61,9 @@ function AUICodeProject.SupportUpperExt(upper_ext)
 end
 
 function AUICodeProject.CreateCommonProject(upper_ext)
+	if alanguage == nil then
+		return nil
+	end
 	local abnf = g_UpperExtMapABnf[upper_ext]
 	if abnf == nil then
 		return nil

@@ -25,6 +25,29 @@ ALittle.List_PushList = function(list, other_list) {
 	}
 }
 
+ALittle.List_Find = function(list, object) {
+	let ___OBJECT_2 = list;
+	for (let index = 1; index <= ___OBJECT_2.length; ++index) {
+		let o = ___OBJECT_2[index - 1];
+		if (o === undefined) break;
+		if (o === object) {
+			return index;
+		}
+	}
+	return undefined;
+}
+
+ALittle.List_Copy = function(list) {
+	let new_list = [];
+	let ___OBJECT_3 = list;
+	for (let index = 1; index <= ___OBJECT_3.length; ++index) {
+		let o = ___OBJECT_3[index - 1];
+		if (o === undefined) break;
+		new_list[index - 1] = o;
+	}
+	return new_list;
+}
+
 ALittle.List_Insert = function(list, index, object) {
 	list.splice(index - 1, 0, object);
 }

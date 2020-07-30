@@ -178,11 +178,13 @@ ALittle.UISystem = JavaScript.Class(undefined, {
 					this._dl = true;
 					let event = {};
 					event.target = this._sfc;
-					[event.rel_x, event.rel_y] = this._sfc.GlobalToLocalMatrix2D(this._mouse_x, this._mouse_y);
-					event.abs_x = x;
-					event.abs_y = y;
-					event.delta_x = this._dl_delta_x;
-					event.delta_y = this._dl_delta_y;
+					let mouse_x = x - delta_x;
+					let mouse_y = y - delta_y;
+					[event.rel_x, event.rel_y] = this._sfc.GlobalToLocalMatrix2D(mouse_x, mouse_y);
+					event.abs_x = mouse_x;
+					event.abs_y = mouse_y;
+					event.delta_x = 0;
+					event.delta_y = 0;
 					this._sfc.DispatchEvent(___all_struct.get(1301789264), event);
 				}
 			}

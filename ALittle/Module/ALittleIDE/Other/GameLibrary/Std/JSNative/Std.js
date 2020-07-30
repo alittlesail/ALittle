@@ -413,16 +413,16 @@ ALittle.CreateCsvInfo = function(rflt) {
 {
 if (typeof ALittle === "undefined") window.ALittle = {};
 
-ALittle.RegStruct(1821069430, "ALittle.ProtocolAnyStruct", {
-name : "ALittle.ProtocolAnyStruct", ns_name : "ALittle", rl_name : "ProtocolAnyStruct", hash_code : 1821069430,
-name_list : ["hash_code","value"],
-type_list : ["int","any"],
-option_map : {}
-})
 ALittle.RegStruct(1847150134, "ALittle.StructInfo", {
 name : "ALittle.StructInfo", ns_name : "ALittle", rl_name : "StructInfo", hash_code : 1847150134,
 name_list : ["name","ns_name","rl_name","hash_code","name_list","type_list","option_map"],
 type_list : ["string","string","string","int","List<string>","List<string>","Map<string,string>"],
+option_map : {}
+})
+ALittle.RegStruct(1821069430, "ALittle.ProtocolAnyStruct", {
+name : "ALittle.ProtocolAnyStruct", ns_name : "ALittle", rl_name : "ProtocolAnyStruct", hash_code : 1821069430,
+name_list : ["hash_code","value"],
+type_list : ["int","any"],
 option_map : {}
 })
 ALittle.RegStruct(-1602043290, "ALittle.ProtocolInvokeInfo", {
@@ -1948,6 +1948,16 @@ ALittle.File_GetFileExtByPath = function(file_path) {
 	return list[l - 1];
 }
 
+ALittle.File_ChangeFileExtByPath = function(file_path, ext) {
+	let list = ALittle.String_Split(file_path, ".");
+	let l = ALittle.List_MaxN(list);
+	if (l <= 0) {
+		return file_path + "." + ext;
+	}
+	list[l - 1] = ext;
+	return ALittle.String_Join(list, ".");
+}
+
 ALittle.File_GetFileExtByPathAndUpper = function(file_path) {
 	return ALittle.String_Upper(ALittle.File_GetFileExtByPath(file_path));
 }
@@ -2283,6 +2293,43 @@ ALittle.String_IsPhoneNumber = function(number) {
 		}
 	}
 	return true;
+}
+
+ALittle.String_IsWordChar = function(char) {
+	let len = ALittle.String_Len(char);
+	if (len !== 1) {
+		return false;
+	}
+	let value = ALittle.String_Byte(char, 1);
+	if (value >= 48 && value <= 57) {
+		return true;
+	}
+	if (value === 95) {
+		return true;
+	}
+	if (value >= 97 && value <= 122) {
+		return true;
+	}
+	if (value >= 64 && value <= 90) {
+		return true;
+	}
+	return false;
+}
+
+ALittle.String_SplitUTF8 = function(content) {
+	let len = ALittle.String_Len(content);
+	let index = 1;
+	let char_list = [];
+	let char_count = 0;
+	while (index <= len) {
+		{
+			let code = content.charCodeAt(index - 1);
+			char_count = char_count + (1);
+			char_list[char_count - 1] = content.substring(index - 1, index);
+			index = index + (1);
+		}
+	}
+	return char_list;
 }
 
 }
@@ -4277,8 +4324,8 @@ JavaScript.JNetBuffer = JavaScript.Class(undefined, {
 			return;
 		}
 		let start = this._dstart;
-		let end = this._dstart + this._dsize;
-		for (let i = start; i < end; i += 1) {
+		let endv = this._dstart + this._dsize;
+		for (let i = start; i < endv; i += 1) {
 			this._memory.setUint8(i - this._dsize, this._memory.getUint8(i));
 		}
 		this._dstart = 0;
@@ -4446,16 +4493,16 @@ window.A_JSchedule = ALittle.NewObject(JavaScript.JSchedule);
 if (typeof JavaScript === "undefined") window.JavaScript = {};
 let ___all_struct = ALittle.GetAllStruct();
 
-ALittle.RegStruct(979480799, "JavaScript.TimerInfo", {
-name : "JavaScript.TimerInfo", ns_name : "JavaScript", rl_name : "TimerInfo", hash_code : 979480799,
-name_list : ["heap_index","end_time","id","loop","interval_ms"],
-type_list : ["int","int","int","int","int"],
-option_map : {}
-})
 ALittle.RegStruct(1961635951, "JavaScript.MiniHeapNodeInfo", {
 name : "JavaScript.MiniHeapNodeInfo", ns_name : "JavaScript", rl_name : "MiniHeapNodeInfo", hash_code : 1961635951,
 name_list : ["heap_index","end_time"],
 type_list : ["int","int"],
+option_map : {}
+})
+ALittle.RegStruct(979480799, "JavaScript.TimerInfo", {
+name : "JavaScript.TimerInfo", ns_name : "JavaScript", rl_name : "TimerInfo", hash_code : 979480799,
+name_list : ["heap_index","end_time","id","loop","interval_ms"],
+type_list : ["int","int","int","int","int"],
 option_map : {}
 })
 

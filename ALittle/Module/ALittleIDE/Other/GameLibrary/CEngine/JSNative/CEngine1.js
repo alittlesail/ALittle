@@ -17,6 +17,7 @@ window.RequireCEngine = function(base_path) {
 		await Require(base_path, "CEngine/Utility/AudioSystem");
 		await Require(base_path, "CEngine/Utility/ModuleSystem");
 		await Require(base_path, "CEngine/Utility/CsvConfigManager");
+		await Require(base_path, "CEngine/Utility/Revocation");
 		await Require(base_path, "CEngine/LoopSystem/LoopAnimation");
 		await Require(base_path, "CEngine/LoopSystem/LoopAttribute");
 		await Require(base_path, "CEngine/LoopSystem/LoopLinear");
@@ -320,8 +321,6 @@ ALittle.IDisplayObject = JavaScript.Class(undefined, {
 	},
 	SetDeleteline : function(value) {
 	},
-	SetOutline : function(value) {
-	},
 	GetRealWidth : function() {
 		return 0;
 	},
@@ -357,6 +356,9 @@ ALittle.IDisplayObject = JavaScript.Class(undefined, {
 		return 0;
 	},
 	GetCursorY : function() {
+		return 0;
+	},
+	GetCursorHeight : function() {
 		return 0;
 	},
 	GetText : function() {
@@ -929,8 +931,6 @@ JavaScript.JDisplayObject = JavaScript.Class(ALittle.IDisplayObject, {
 	},
 	SetDeleteline : function(value) {
 	},
-	SetOutline : function(value) {
-	},
 	GetRealWidth : function() {
 		return 0;
 	},
@@ -966,6 +966,9 @@ JavaScript.JDisplayObject = JavaScript.Class(ALittle.IDisplayObject, {
 		return 0;
 	},
 	GetCursorY : function() {
+		return 0;
+	},
+	GetCursorHeight : function() {
 		return 0;
 	},
 	GetText : function() {
@@ -2075,7 +2078,6 @@ ALittle.System_CalcLandscape = function(src_width, src_height, flag) {
 			scale = 0.5;
 		}
 	}
-	ALittle.Log(src_width, src_height, flag, scale);
 	return [src_width, src_height, flag, scale];
 }
 
@@ -2474,38 +2476,20 @@ ALittle.CreateConfigSystem = function(file_path, print_error) {
 if (typeof ALittle === "undefined") window.ALittle = {};
 let ___all_struct = ALittle.GetAllStruct();
 
+ALittle.RegStruct(1755750412, "ALittle.ALittleJsonRPCInfo", {
+name : "ALittle.ALittleJsonRPCInfo", ns_name : "ALittle", rl_name : "ALittleJsonRPCInfo", hash_code : 1755750412,
+name_list : ["method","param"],
+type_list : ["string","any"],
+option_map : {}
+})
+ALittle.RegStruct(1720966934, "ALittle.NewIntentEvent", {
+name : "ALittle.NewIntentEvent", ns_name : "ALittle", rl_name : "NewIntentEvent", hash_code : 1720966934,
+name_list : ["target","url"],
+type_list : ["ALittle.EventDispatcher","string"],
+option_map : {}
+})
 ALittle.RegStruct(1715346212, "ALittle.Event", {
 name : "ALittle.Event", ns_name : "ALittle", rl_name : "Event", hash_code : 1715346212,
-name_list : ["target"],
-type_list : ["ALittle.EventDispatcher"],
-option_map : {}
-})
-ALittle.RegStruct(-1440165311, "ALittle.AppWillEnterBackground", {
-name : "ALittle.AppWillEnterBackground", ns_name : "ALittle", rl_name : "AppWillEnterBackground", hash_code : -1440165311,
-name_list : ["target"],
-type_list : ["ALittle.EventDispatcher"],
-option_map : {}
-})
-ALittle.RegStruct(521107426, "ALittle.AppDidEnterBackground", {
-name : "ALittle.AppDidEnterBackground", ns_name : "ALittle", rl_name : "AppDidEnterBackground", hash_code : 521107426,
-name_list : ["target"],
-type_list : ["ALittle.EventDispatcher"],
-option_map : {}
-})
-ALittle.RegStruct(708183011, "ALittle.NetChangeEvent", {
-name : "ALittle.NetChangeEvent", ns_name : "ALittle", rl_name : "NetChangeEvent", hash_code : 708183011,
-name_list : ["target","net_type"],
-type_list : ["ALittle.EventDispatcher","int"],
-option_map : {}
-})
-ALittle.RegStruct(760325696, "ALittle.AppDidEnterForeground", {
-name : "ALittle.AppDidEnterForeground", ns_name : "ALittle", rl_name : "AppDidEnterForeground", hash_code : 760325696,
-name_list : ["target"],
-type_list : ["ALittle.EventDispatcher"],
-option_map : {}
-})
-ALittle.RegStruct(812594882, "ALittle.AppWillEnterForeground", {
-name : "ALittle.AppWillEnterForeground", ns_name : "ALittle", rl_name : "AppWillEnterForeground", hash_code : 812594882,
 name_list : ["target"],
 type_list : ["ALittle.EventDispatcher"],
 option_map : {}
@@ -2516,22 +2500,40 @@ name_list : ["target"],
 type_list : ["ALittle.EventDispatcher"],
 option_map : {}
 })
-ALittle.RegStruct(1720966934, "ALittle.NewIntentEvent", {
-name : "ALittle.NewIntentEvent", ns_name : "ALittle", rl_name : "NewIntentEvent", hash_code : 1720966934,
-name_list : ["target","url"],
-type_list : ["ALittle.EventDispatcher","string"],
-option_map : {}
-})
-ALittle.RegStruct(1755750412, "ALittle.ALittleJsonRPCInfo", {
-name : "ALittle.ALittleJsonRPCInfo", ns_name : "ALittle", rl_name : "ALittleJsonRPCInfo", hash_code : 1755750412,
-name_list : ["method","param"],
-type_list : ["string","any"],
+ALittle.RegStruct(-1440165311, "ALittle.AppWillEnterBackground", {
+name : "ALittle.AppWillEnterBackground", ns_name : "ALittle", rl_name : "AppWillEnterBackground", hash_code : -1440165311,
+name_list : ["target"],
+type_list : ["ALittle.EventDispatcher"],
 option_map : {}
 })
 ALittle.RegStruct(-840570937, "ALittle.NotifyJsonRPCEvent", {
 name : "ALittle.NotifyJsonRPCEvent", ns_name : "ALittle", rl_name : "NotifyJsonRPCEvent", hash_code : -840570937,
 name_list : ["target","method","param"],
 type_list : ["ALittle.EventDispatcher","string","any"],
+option_map : {}
+})
+ALittle.RegStruct(812594882, "ALittle.AppWillEnterForeground", {
+name : "ALittle.AppWillEnterForeground", ns_name : "ALittle", rl_name : "AppWillEnterForeground", hash_code : 812594882,
+name_list : ["target"],
+type_list : ["ALittle.EventDispatcher"],
+option_map : {}
+})
+ALittle.RegStruct(760325696, "ALittle.AppDidEnterForeground", {
+name : "ALittle.AppDidEnterForeground", ns_name : "ALittle", rl_name : "AppDidEnterForeground", hash_code : 760325696,
+name_list : ["target"],
+type_list : ["ALittle.EventDispatcher"],
+option_map : {}
+})
+ALittle.RegStruct(708183011, "ALittle.NetChangeEvent", {
+name : "ALittle.NetChangeEvent", ns_name : "ALittle", rl_name : "NetChangeEvent", hash_code : 708183011,
+name_list : ["target","net_type"],
+type_list : ["ALittle.EventDispatcher","int"],
+option_map : {}
+})
+ALittle.RegStruct(521107426, "ALittle.AppDidEnterBackground", {
+name : "ALittle.AppDidEnterBackground", ns_name : "ALittle", rl_name : "AppDidEnterBackground", hash_code : 521107426,
+name_list : ["target"],
+type_list : ["ALittle.EventDispatcher"],
 option_map : {}
 })
 
@@ -2651,16 +2653,16 @@ window.A_OtherSystem = ALittle.NewObject(ALittle.OtherSystem);
 if (typeof ALittle === "undefined") window.ALittle = {};
 let ___all_struct = ALittle.GetAllStruct();
 
-ALittle.RegStruct(384201948, "ALittle.ChunkInfo", {
-name : "ALittle.ChunkInfo", ns_name : "ALittle", rl_name : "ChunkInfo", hash_code : 384201948,
-name_list : ["file_path","callback","channel","volume","mute"],
-type_list : ["string","Functor<(string,int)>","int","double","bool"],
-option_map : {}
-})
 ALittle.RegStruct(1715346212, "ALittle.Event", {
 name : "ALittle.Event", ns_name : "ALittle", rl_name : "Event", hash_code : 1715346212,
 name_list : ["target"],
 type_list : ["ALittle.EventDispatcher"],
+option_map : {}
+})
+ALittle.RegStruct(384201948, "ALittle.ChunkInfo", {
+name : "ALittle.ChunkInfo", ns_name : "ALittle", rl_name : "ChunkInfo", hash_code : 384201948,
+name_list : ["file_path","callback","channel","volume","mute"],
+type_list : ["string","Functor<(string,int)>","int","double","bool"],
 option_map : {}
 })
 
@@ -2831,16 +2833,16 @@ window.A_AudioSystem = ALittle.NewObject(ALittle.AudioSystem);
 {
 if (typeof ALittle === "undefined") window.ALittle = {};
 
-ALittle.RegStruct(1376035901, "ALittle.ModuleInfo", {
-name : "ALittle.ModuleInfo", ns_name : "ALittle", rl_name : "ModuleInfo", hash_code : 1376035901,
-name_list : ["name","crypt_mode","control","module","plugin_loaded","module_loaded","browser_loaded","layer_group","browser_setup","browser_addmodule","browser_shutdown","module_setup","module_shutdown","module_getinfo","plugin_setup","plugin_shutdown"],
-type_list : ["string","bool","ALittle.ControlSystem","any","bool","bool","bool","ALittle.DisplayLayout","Functor<(ALittle.DisplayLayout,ALittle.ControlSystem,string,string)>","Functor<(string,ALittle.DisplayLayout,ALittle.ModuleShortInfo):bool>","Functor<()>","Functor<(ALittle.DisplayLayout,ALittle.ControlSystem,string,string)>","Functor<()>","Functor<(ALittle.ControlSystem,string):ALittle.ModuleShortInfo>","Functor<(ALittle.ControlSystem,string,string)>","Functor<()>"],
-option_map : {}
-})
 ALittle.RegStruct(-1652314301, "ALittle.ModuleShortInfo", {
 name : "ALittle.ModuleShortInfo", ns_name : "ALittle", rl_name : "ModuleShortInfo", hash_code : -1652314301,
 name_list : ["title","icon","width_type","width_value","height_type","height_value"],
 type_list : ["string","string","int","int","int","int"],
+option_map : {}
+})
+ALittle.RegStruct(1376035901, "ALittle.ModuleInfo", {
+name : "ALittle.ModuleInfo", ns_name : "ALittle", rl_name : "ModuleInfo", hash_code : 1376035901,
+name_list : ["name","crypt_mode","control","module","plugin_loaded","module_loaded","browser_loaded","layer_group","browser_setup","browser_addmodule","browser_shutdown","module_setup","module_shutdown","module_getinfo","plugin_setup","plugin_shutdown"],
+type_list : ["string","bool","ALittle.ControlSystem","any","bool","bool","bool","ALittle.DisplayLayout","Functor<(ALittle.DisplayLayout,ALittle.ControlSystem,string,string)>","Functor<(string,ALittle.DisplayLayout,ALittle.ModuleShortInfo):bool>","Functor<()>","Functor<(ALittle.DisplayLayout,ALittle.ControlSystem,string,string)>","Functor<()>","Functor<(ALittle.ControlSystem,string):ALittle.ModuleShortInfo>","Functor<(ALittle.ControlSystem,string,string)>","Functor<()>"],
 option_map : {}
 })
 
@@ -3132,16 +3134,103 @@ window.A_CsvConfigManager = ALittle.NewObject(ALittle.CsvConfigManager);
 {
 if (typeof ALittle === "undefined") window.ALittle = {};
 
-ALittle.RegStruct(1653869333, "ALittle.LoopGroupInfo", {
-name : "ALittle.LoopGroupInfo", ns_name : "ALittle", rl_name : "LoopGroupInfo", hash_code : 1653869333,
-name_list : ["childs"],
-type_list : ["List<ALittle.LoopListInfo>"],
-option_map : {}
-})
+
+ALittle.RevokeObject = JavaScript.Class(undefined, {
+	Forward : function() {
+	},
+	Back : function() {
+	},
+}, "ALittle.RevokeObject");
+
+ALittle.RevokeList = JavaScript.Class(undefined, {
+	Ctor : function() {
+		this._revoke_list = [];
+		this._revoke_count = 0;
+		this._revoke_index = 0;
+		this._max_count = 100;
+	},
+	PushRevoke : function(revoke) {
+		if (this._revoke_index < this._revoke_count) {
+			for (let i = this._revoke_index + 1; i <= this._revoke_count; i += 1) {
+				this._revoke_list[i - 1] = undefined;
+			}
+			this._revoke_count = this._revoke_index;
+		}
+		this._revoke_index = this._revoke_index + 1;
+		this._revoke_count = this._revoke_count + 1;
+		this._revoke_list[this._revoke_index - 1] = revoke;
+		if (this._revoke_count > this._max_count) {
+			this._revoke_index = this._revoke_index - 1;
+			this._revoke_count = this._revoke_count - 1;
+			ALittle.List_Remove(this._revoke_list, 1);
+		}
+	},
+	DoRevoke : function() {
+		if (this._revoke_index >= this._revoke_count) {
+			return;
+		}
+		this._revoke_index = this._revoke_index + 1;
+		let revoke = this._revoke_list[this._revoke_index - 1];
+		revoke.Forward();
+	},
+	UndoRevoke : function() {
+		if (this._revoke_index === 0) {
+			return;
+		}
+		let revoke = this._revoke_list[this._revoke_index - 1];
+		revoke.Back();
+		this._revoke_index = this._revoke_index - 1;
+	},
+}, "ALittle.RevokeList");
+
+if (ALittle.RevokeObject === undefined) throw new Error(" extends class:ALittle.RevokeObject is undefined");
+ALittle.RevokeBind = JavaScript.Class(ALittle.RevokeObject, {
+	Ctor : function() {
+		this._list = [];
+		this._count = 0;
+	},
+	set complete(value) {
+		this._complete = value;
+	},
+	PushRevoke : function(revoke) {
+		++ this._count;
+		this._list[this._count - 1] = revoke;
+	},
+	Forward : function() {
+		let ___OBJECT_1 = this._list;
+		for (let k = 1; k <= ___OBJECT_1.length; ++k) {
+			let revoke = ___OBJECT_1[k - 1];
+			if (revoke === undefined) break;
+			revoke.Forward();
+		}
+		if (this._complete !== undefined) {
+			this._complete();
+		}
+	},
+	Back : function() {
+		for (let i = this._count; i >= 1; i += -1) {
+			this._list[i - 1].Back();
+		}
+		if (this._complete !== undefined) {
+			this._complete();
+		}
+	},
+}, "ALittle.RevokeBind");
+
+}
+{
+if (typeof ALittle === "undefined") window.ALittle = {};
+
 ALittle.RegStruct(-1741432339, "ALittle.LoopListInfo", {
 name : "ALittle.LoopListInfo", ns_name : "ALittle", rl_name : "LoopListInfo", hash_code : -1741432339,
 name_list : ["link","attribute","init","childs"],
 type_list : ["string","string","any","List<ALittle.LoopChildInfo>"],
+option_map : {}
+})
+ALittle.RegStruct(1653869333, "ALittle.LoopGroupInfo", {
+name : "ALittle.LoopGroupInfo", ns_name : "ALittle", rl_name : "LoopGroupInfo", hash_code : 1653869333,
+name_list : ["childs"],
+type_list : ["List<ALittle.LoopListInfo>"],
 option_map : {}
 })
 ALittle.RegStruct(-925381158, "ALittle.LoopChildInfo", {
@@ -3680,11 +3769,30 @@ ALittle.UIEnumTypes = {
 	KMOD_SHIFT : 0x0003,
 	KMOD_ALT : 0x0300,
 	KMOD_GUI : 0x0c00,
-	Z : 122,
-	S : 115,
-	N : 110,
-	F5 : 1073741886,
-	CTRL : 1073742048,
+	KEY_ESC : 27,
+	KEY_Z : 122,
+	KEY_S : 115,
+	KEY_N : 110,
+	KEY_X : 120,
+	KEY_C : 99,
+	KEY_V : 118,
+	KEY_A : 97,
+	KEY_F : 102,
+	KEY_G : 103,
+	KEY_F5 : 1073741886,
+	KEY_F12 : 1073741893,
+	KEY_CTRL : 1073742048,
+	KEY_LEFT : 1073741904,
+	KEY_RIGHT : 1073741903,
+	KEY_UP : 1073741906,
+	KEY_DOWN : 1073741905,
+	KEY_BACKSPACE : 8,
+	KEY_DELETE : 127,
+	KEY_HOME : 1073741898,
+	KEY_END : 1073741901,
+	KEY_ENTER : 13,
+	KEY_NUMBER_ENTER : 1073741912,
+	KEY_TAB : 9,
 	VIEW_FULLSCREEN : 0x00000001,
 	VIEW_OPENGL : 0x00000002,
 	VIEW_SHOWN : 0x00000004,
@@ -3707,104 +3815,14 @@ ALittle.UIEnumTypes = {
 {
 if (typeof ALittle === "undefined") window.ALittle = {};
 
-ALittle.RegStruct(544684311, "ALittle.UIMoveInEvent", {
-name : "ALittle.UIMoveInEvent", ns_name : "ALittle", rl_name : "UIMoveInEvent", hash_code : 544684311,
-name_list : ["target"],
-type_list : ["ALittle.DisplayObject"],
-option_map : {}
-})
-ALittle.RegStruct(683647260, "ALittle.UIMButtonUpEvent", {
-name : "ALittle.UIMButtonUpEvent", ns_name : "ALittle", rl_name : "UIMButtonUpEvent", hash_code : 683647260,
-name_list : ["target","abs_x","abs_y","rel_x","rel_y","count","is_drag"],
-type_list : ["ALittle.DisplayObject","double","double","double","double","int","bool"],
-option_map : {}
-})
-ALittle.RegStruct(734860930, "ALittle.UIFingerUpEvent", {
-name : "ALittle.UIFingerUpEvent", ns_name : "ALittle", rl_name : "UIFingerUpEvent", hash_code : 734860930,
-name_list : ["target","abs_x","abs_y","rel_x","rel_y","finger_key","is_sfc","is_drag"],
-type_list : ["ALittle.DisplayObject","double","double","double","double","string","bool","bool"],
-option_map : {}
-})
-ALittle.RegStruct(776398171, "ALittle.UIEnterKeyEvent", {
-name : "ALittle.UIEnterKeyEvent", ns_name : "ALittle", rl_name : "UIEnterKeyEvent", hash_code : 776398171,
-name_list : ["target"],
-type_list : ["ALittle.DisplayObject"],
-option_map : {}
-})
-ALittle.RegStruct(809518110, "ALittle.UIDragUpEvent", {
-name : "ALittle.UIDragUpEvent", ns_name : "ALittle", rl_name : "UIDragUpEvent", hash_code : 809518110,
-name_list : ["target"],
-type_list : ["ALittle.DisplayObject"],
-option_map : {}
-})
-ALittle.RegStruct(882286932, "ALittle.UIKeyEvent", {
-name : "ALittle.UIKeyEvent", ns_name : "ALittle", rl_name : "UIKeyEvent", hash_code : 882286932,
-name_list : ["target","mod","sym","scancode","custom","handled"],
-type_list : ["ALittle.DisplayObject","int","int","int","bool","bool"],
-option_map : {}
-})
-ALittle.RegStruct(958494922, "ALittle.UIChangedEvent", {
-name : "ALittle.UIChangedEvent", ns_name : "ALittle", rl_name : "UIChangedEvent", hash_code : 958494922,
-name_list : ["target"],
-type_list : ["ALittle.DisplayObject"],
-option_map : {}
-})
-ALittle.RegStruct(1213009422, "ALittle.UIKeyUpEvent", {
-name : "ALittle.UIKeyUpEvent", ns_name : "ALittle", rl_name : "UIKeyUpEvent", hash_code : 1213009422,
-name_list : ["target","mod","sym","scancode","custom","handled"],
-type_list : ["ALittle.DisplayObject","int","int","int","bool","bool"],
-option_map : {}
-})
-ALittle.RegStruct(1301789264, "ALittle.UIButtonDragBeginEvent", {
-name : "ALittle.UIButtonDragBeginEvent", ns_name : "ALittle", rl_name : "UIButtonDragBeginEvent", hash_code : 1301789264,
-name_list : ["target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"],
-type_list : ["ALittle.DisplayObject","double","double","double","double","double","double"],
-option_map : {}
-})
-ALittle.RegStruct(1309977874, "ALittle.UIChangedEndEvent", {
-name : "ALittle.UIChangedEndEvent", ns_name : "ALittle", rl_name : "UIChangedEndEvent", hash_code : 1309977874,
-name_list : ["target"],
-type_list : ["ALittle.DisplayObject"],
-option_map : {}
-})
-ALittle.RegStruct(1337289812, "ALittle.UIButtonDragEvent", {
-name : "ALittle.UIButtonDragEvent", ns_name : "ALittle", rl_name : "UIButtonDragEvent", hash_code : 1337289812,
-name_list : ["target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"],
-type_list : ["ALittle.DisplayObject","double","double","double","double","double","double"],
-option_map : {}
-})
-ALittle.RegStruct(1354499457, "ALittle.UIDropEvent", {
-name : "ALittle.UIDropEvent", ns_name : "ALittle", rl_name : "UIDropEvent", hash_code : 1354499457,
-name_list : ["target","drop_target"],
-type_list : ["ALittle.DisplayObject","ALittle.DisplayObject"],
-option_map : {}
-})
-ALittle.RegStruct(1598008698, "ALittle.UIFingerDragBeginEvent", {
-name : "ALittle.UIFingerDragBeginEvent", ns_name : "ALittle", rl_name : "UIFingerDragBeginEvent", hash_code : 1598008698,
+ALittle.RegStruct(-2050069067, "ALittle.UIFingerDragEndEvent", {
+name : "ALittle.UIFingerDragEndEvent", ns_name : "ALittle", rl_name : "UIFingerDragEndEvent", hash_code : -2050069067,
 name_list : ["target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y","finger_key","is_sfc"],
 type_list : ["ALittle.DisplayObject","double","double","double","double","double","double","string","bool"],
 option_map : {}
 })
-ALittle.RegStruct(1800966813, "ALittle.UISystemSelectDirectoryEvent", {
-name : "ALittle.UISystemSelectDirectoryEvent", ns_name : "ALittle", rl_name : "UISystemSelectDirectoryEvent", hash_code : 1800966813,
-name_list : ["target","path"],
-type_list : ["ALittle.DisplayObject","string"],
-option_map : {}
-})
-ALittle.RegStruct(1816229739, "ALittle.UIAtKeyEvent", {
-name : "ALittle.UIAtKeyEvent", ns_name : "ALittle", rl_name : "UIAtKeyEvent", hash_code : 1816229739,
-name_list : ["target"],
-type_list : ["ALittle.DisplayObject"],
-option_map : {}
-})
-ALittle.RegStruct(1848466169, "ALittle.UIDragDownEvent", {
-name : "ALittle.UIDragDownEvent", ns_name : "ALittle", rl_name : "UIDragDownEvent", hash_code : 1848466169,
-name_list : ["target"],
-type_list : ["ALittle.DisplayObject"],
-option_map : {}
-})
-ALittle.RegStruct(1862557463, "ALittle.UIShowEvent", {
-name : "ALittle.UIShowEvent", ns_name : "ALittle", rl_name : "UIShowEvent", hash_code : 1862557463,
+ALittle.RegStruct(2024735182, "ALittle.UITabKeyEvent", {
+name : "ALittle.UITabKeyEvent", ns_name : "ALittle", rl_name : "UITabKeyEvent", hash_code : 2024735182,
 name_list : ["target"],
 type_list : ["ALittle.DisplayObject"],
 option_map : {}
@@ -3815,16 +3833,28 @@ name_list : ["target","abs_x","abs_y","rel_x","rel_y","count","is_drag"],
 type_list : ["ALittle.DisplayObject","double","double","double","double","int","bool"],
 option_map : {}
 })
-ALittle.RegStruct(2024735182, "ALittle.UITabKeyEvent", {
-name : "ALittle.UITabKeyEvent", ns_name : "ALittle", rl_name : "UITabKeyEvent", hash_code : 2024735182,
+ALittle.RegStruct(1862557463, "ALittle.UIShowEvent", {
+name : "ALittle.UIShowEvent", ns_name : "ALittle", rl_name : "UIShowEvent", hash_code : 1862557463,
 name_list : ["target"],
 type_list : ["ALittle.DisplayObject"],
 option_map : {}
 })
-ALittle.RegStruct(-2050069067, "ALittle.UIFingerDragEndEvent", {
-name : "ALittle.UIFingerDragEndEvent", ns_name : "ALittle", rl_name : "UIFingerDragEndEvent", hash_code : -2050069067,
-name_list : ["target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y","finger_key","is_sfc"],
-type_list : ["ALittle.DisplayObject","double","double","double","double","double","double","string","bool"],
+ALittle.RegStruct(1848466169, "ALittle.UIDragDownEvent", {
+name : "ALittle.UIDragDownEvent", ns_name : "ALittle", rl_name : "UIDragDownEvent", hash_code : 1848466169,
+name_list : ["target"],
+type_list : ["ALittle.DisplayObject"],
+option_map : {}
+})
+ALittle.RegStruct(1816229739, "ALittle.UIAtKeyEvent", {
+name : "ALittle.UIAtKeyEvent", ns_name : "ALittle", rl_name : "UIAtKeyEvent", hash_code : 1816229739,
+name_list : ["target"],
+type_list : ["ALittle.DisplayObject"],
+option_map : {}
+})
+ALittle.RegStruct(1800966813, "ALittle.UISystemSelectDirectoryEvent", {
+name : "ALittle.UISystemSelectDirectoryEvent", ns_name : "ALittle", rl_name : "UISystemSelectDirectoryEvent", hash_code : 1800966813,
+name_list : ["target","path"],
+type_list : ["ALittle.DisplayObject","string"],
 option_map : {}
 })
 ALittle.RegStruct(-1737121315, "ALittle.UIMButtonWheelEvent", {
@@ -3839,10 +3869,22 @@ name_list : ["target","path"],
 type_list : ["ALittle.DisplayObject","string"],
 option_map : {}
 })
+ALittle.RegStruct(1637310579, "ALittle.UIEscKeyEvent", {
+name : "ALittle.UIEscKeyEvent", ns_name : "ALittle", rl_name : "UIEscKeyEvent", hash_code : 1637310579,
+name_list : ["target"],
+type_list : ["ALittle.DisplayObject"],
+option_map : {}
+})
 ALittle.RegStruct(-1604617962, "ALittle.UIKeyDownEvent", {
 name : "ALittle.UIKeyDownEvent", ns_name : "ALittle", rl_name : "UIKeyDownEvent", hash_code : -1604617962,
 name_list : ["target","mod","sym","scancode","custom","handled"],
 type_list : ["ALittle.DisplayObject","int","int","int","bool","bool"],
+option_map : {}
+})
+ALittle.RegStruct(1598008698, "ALittle.UIFingerDragBeginEvent", {
+name : "ALittle.UIFingerDragBeginEvent", ns_name : "ALittle", rl_name : "UIFingerDragBeginEvent", hash_code : 1598008698,
+name_list : ["target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y","finger_key","is_sfc"],
+type_list : ["ALittle.DisplayObject","double","double","double","double","double","double","string","bool"],
 option_map : {}
 })
 ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
@@ -3851,10 +3893,34 @@ name_list : ["target"],
 type_list : ["ALittle.DisplayObject"],
 option_map : {}
 })
+ALittle.RegStruct(1354499457, "ALittle.UIDropEvent", {
+name : "ALittle.UIDropEvent", ns_name : "ALittle", rl_name : "UIDropEvent", hash_code : 1354499457,
+name_list : ["target","drop_target"],
+type_list : ["ALittle.DisplayObject","ALittle.DisplayObject"],
+option_map : {}
+})
 ALittle.RegStruct(-1347278145, "ALittle.UIButtonEvent", {
 name : "ALittle.UIButtonEvent", ns_name : "ALittle", rl_name : "UIButtonEvent", hash_code : -1347278145,
 name_list : ["target","abs_x","abs_y","rel_x","rel_y","count","is_drag"],
 type_list : ["ALittle.DisplayObject","double","double","double","double","int","bool"],
+option_map : {}
+})
+ALittle.RegStruct(1337289812, "ALittle.UIButtonDragEvent", {
+name : "ALittle.UIButtonDragEvent", ns_name : "ALittle", rl_name : "UIButtonDragEvent", hash_code : 1337289812,
+name_list : ["target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"],
+type_list : ["ALittle.DisplayObject","double","double","double","double","double","double"],
+option_map : {}
+})
+ALittle.RegStruct(1309977874, "ALittle.UIChangedEndEvent", {
+name : "ALittle.UIChangedEndEvent", ns_name : "ALittle", rl_name : "UIChangedEndEvent", hash_code : 1309977874,
+name_list : ["target"],
+type_list : ["ALittle.DisplayObject"],
+option_map : {}
+})
+ALittle.RegStruct(1301789264, "ALittle.UIButtonDragBeginEvent", {
+name : "ALittle.UIButtonDragBeginEvent", ns_name : "ALittle", rl_name : "UIButtonDragBeginEvent", hash_code : 1301789264,
+name_list : ["target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"],
+type_list : ["ALittle.DisplayObject","double","double","double","double","double","double"],
 option_map : {}
 })
 ALittle.RegStruct(-1234078962, "ALittle.UITextInputEvent", {
@@ -3869,6 +3935,12 @@ name_list : ["target","abs_x","abs_y","rel_x","rel_y","finger_key","is_sfc","is_
 type_list : ["ALittle.DisplayObject","double","double","double","double","string","bool","bool"],
 option_map : {}
 })
+ALittle.RegStruct(1213009422, "ALittle.UIKeyUpEvent", {
+name : "ALittle.UIKeyUpEvent", ns_name : "ALittle", rl_name : "UIKeyUpEvent", hash_code : 1213009422,
+name_list : ["target","mod","sym","scancode","custom","handled"],
+type_list : ["ALittle.DisplayObject","int","int","int","bool","bool"],
+option_map : {}
+})
 ALittle.RegStruct(-1202439334, "ALittle.UIMoveOutEvent", {
 name : "ALittle.UIMoveOutEvent", ns_name : "ALittle", rl_name : "UIMoveOutEvent", hash_code : -1202439334,
 name_list : ["target"],
@@ -3881,10 +3953,46 @@ name_list : ["target","abs_x","abs_y","rel_x","rel_y"],
 type_list : ["ALittle.DisplayObject","double","double","double","double"],
 option_map : {}
 })
+ALittle.RegStruct(958494922, "ALittle.UIChangedEvent", {
+name : "ALittle.UIChangedEvent", ns_name : "ALittle", rl_name : "UIChangedEvent", hash_code : 958494922,
+name_list : ["target"],
+type_list : ["ALittle.DisplayObject"],
+option_map : {}
+})
+ALittle.RegStruct(882286932, "ALittle.UIKeyEvent", {
+name : "ALittle.UIKeyEvent", ns_name : "ALittle", rl_name : "UIKeyEvent", hash_code : 882286932,
+name_list : ["target","mod","sym","scancode","custom","handled"],
+type_list : ["ALittle.DisplayObject","int","int","int","bool","bool"],
+option_map : {}
+})
 ALittle.RegStruct(-839083637, "ALittle.UIDragRightEvent", {
 name : "ALittle.UIDragRightEvent", ns_name : "ALittle", rl_name : "UIDragRightEvent", hash_code : -839083637,
 name_list : ["target"],
 type_list : ["ALittle.DisplayObject"],
+option_map : {}
+})
+ALittle.RegStruct(809518110, "ALittle.UIDragUpEvent", {
+name : "ALittle.UIDragUpEvent", ns_name : "ALittle", rl_name : "UIDragUpEvent", hash_code : 809518110,
+name_list : ["target"],
+type_list : ["ALittle.DisplayObject"],
+option_map : {}
+})
+ALittle.RegStruct(776398171, "ALittle.UIEnterKeyEvent", {
+name : "ALittle.UIEnterKeyEvent", ns_name : "ALittle", rl_name : "UIEnterKeyEvent", hash_code : 776398171,
+name_list : ["target"],
+type_list : ["ALittle.DisplayObject"],
+option_map : {}
+})
+ALittle.RegStruct(734860930, "ALittle.UIFingerUpEvent", {
+name : "ALittle.UIFingerUpEvent", ns_name : "ALittle", rl_name : "UIFingerUpEvent", hash_code : 734860930,
+name_list : ["target","abs_x","abs_y","rel_x","rel_y","finger_key","is_sfc","is_drag"],
+type_list : ["ALittle.DisplayObject","double","double","double","double","string","bool","bool"],
+option_map : {}
+})
+ALittle.RegStruct(683647260, "ALittle.UIMButtonUpEvent", {
+name : "ALittle.UIMButtonUpEvent", ns_name : "ALittle", rl_name : "UIMButtonUpEvent", hash_code : 683647260,
+name_list : ["target","abs_x","abs_y","rel_x","rel_y","count","is_drag"],
+type_list : ["ALittle.DisplayObject","double","double","double","double","int","bool"],
 option_map : {}
 })
 ALittle.RegStruct(-644464135, "ALittle.UIFocusInEvent", {
@@ -3911,6 +4019,12 @@ name_list : ["target"],
 type_list : ["ALittle.DisplayObject"],
 option_map : {}
 })
+ALittle.RegStruct(544684311, "ALittle.UIMoveInEvent", {
+name : "ALittle.UIMoveInEvent", ns_name : "ALittle", rl_name : "UIMoveInEvent", hash_code : 544684311,
+name_list : ["target"],
+type_list : ["ALittle.DisplayObject"],
+option_map : {}
+})
 ALittle.RegStruct(-525850898, "ALittle.UIFingerEvent", {
 name : "ALittle.UIFingerEvent", ns_name : "ALittle", rl_name : "UIFingerEvent", hash_code : -525850898,
 name_list : ["target","abs_x","abs_y","rel_x","rel_y","finger_key","is_sfc","is_drag"],
@@ -3921,6 +4035,12 @@ ALittle.RegStruct(-449066808, "ALittle.UIClickEvent", {
 name : "ALittle.UIClickEvent", ns_name : "ALittle", rl_name : "UIClickEvent", hash_code : -449066808,
 name_list : ["target","is_drag"],
 type_list : ["ALittle.DisplayObject","bool"],
+option_map : {}
+})
+ALittle.RegStruct(444989011, "ALittle.UISelectChangedEvent", {
+name : "ALittle.UISelectChangedEvent", ns_name : "ALittle", rl_name : "UISelectChangedEvent", hash_code : 444989011,
+name_list : ["target"],
+type_list : ["ALittle.DisplayObject"],
 option_map : {}
 })
 ALittle.RegStruct(-439548260, "ALittle.UILongButtonDownEvent", {
@@ -3935,8 +4055,44 @@ name_list : ["target"],
 type_list : ["ALittle.DisplayObject"],
 option_map : {}
 })
+ALittle.RegStruct(349963892, "ALittle.UIMButtonDownEvent", {
+name : "ALittle.UIMButtonDownEvent", ns_name : "ALittle", rl_name : "UIMButtonDownEvent", hash_code : 349963892,
+name_list : ["target","abs_x","abs_y","rel_x","rel_y","count","is_drag"],
+type_list : ["ALittle.DisplayObject","double","double","double","double","int","bool"],
+option_map : {}
+})
+ALittle.RegStruct(348388800, "ALittle.UIHideEvent", {
+name : "ALittle.UIHideEvent", ns_name : "ALittle", rl_name : "UIHideEvent", hash_code : 348388800,
+name_list : ["target"],
+type_list : ["ALittle.DisplayObject"],
+option_map : {}
+})
 ALittle.RegStruct(-338112738, "ALittle.UIDropFileEvent", {
 name : "ALittle.UIDropFileEvent", ns_name : "ALittle", rl_name : "UIDropFileEvent", hash_code : -338112738,
+name_list : ["target","path"],
+type_list : ["ALittle.DisplayObject","string"],
+option_map : {}
+})
+ALittle.RegStruct(292776509, "ALittle.UIFocusOutEvent", {
+name : "ALittle.UIFocusOutEvent", ns_name : "ALittle", rl_name : "UIFocusOutEvent", hash_code : 292776509,
+name_list : ["target"],
+type_list : ["ALittle.DisplayObject"],
+option_map : {}
+})
+ALittle.RegStruct(286797479, "ALittle.UIFClickEvent", {
+name : "ALittle.UIFClickEvent", ns_name : "ALittle", rl_name : "UIFClickEvent", hash_code : 286797479,
+name_list : ["target","is_drag"],
+type_list : ["ALittle.DisplayObject","bool"],
+option_map : {}
+})
+ALittle.RegStruct(150587926, "ALittle.UIButtonDragEndEvent", {
+name : "ALittle.UIButtonDragEndEvent", ns_name : "ALittle", rl_name : "UIButtonDragEndEvent", hash_code : 150587926,
+name_list : ["target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"],
+type_list : ["ALittle.DisplayObject","double","double","double","double","double","double"],
+option_map : {}
+})
+ALittle.RegStruct(124598654, "ALittle.UISystemSelectFileEvent", {
+name : "ALittle.UISystemSelectFileEvent", ns_name : "ALittle", rl_name : "UISystemSelectFileEvent", hash_code : 124598654,
 name_list : ["target","path"],
 type_list : ["ALittle.DisplayObject","string"],
 option_map : {}
@@ -3947,58 +4103,16 @@ name_list : ["target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y","finge
 type_list : ["ALittle.DisplayObject","double","double","double","double","double","double","string","bool"],
 option_map : {}
 })
-ALittle.RegStruct(-1330840, "ALittle.UIMClickEvent", {
-name : "ALittle.UIMClickEvent", ns_name : "ALittle", rl_name : "UIMClickEvent", hash_code : -1330840,
-name_list : ["target","is_drag"],
-type_list : ["ALittle.DisplayObject","bool"],
-option_map : {}
-})
 ALittle.RegStruct(40651933, "ALittle.UILButtonUpEvent", {
 name : "ALittle.UILButtonUpEvent", ns_name : "ALittle", rl_name : "UILButtonUpEvent", hash_code : 40651933,
 name_list : ["target","abs_x","abs_y","rel_x","rel_y","count","is_drag"],
 type_list : ["ALittle.DisplayObject","double","double","double","double","int","bool"],
 option_map : {}
 })
-ALittle.RegStruct(124598654, "ALittle.UISystemSelectFileEvent", {
-name : "ALittle.UISystemSelectFileEvent", ns_name : "ALittle", rl_name : "UISystemSelectFileEvent", hash_code : 124598654,
-name_list : ["target","path"],
-type_list : ["ALittle.DisplayObject","string"],
-option_map : {}
-})
-ALittle.RegStruct(150587926, "ALittle.UIButtonDragEndEvent", {
-name : "ALittle.UIButtonDragEndEvent", ns_name : "ALittle", rl_name : "UIButtonDragEndEvent", hash_code : 150587926,
-name_list : ["target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"],
-type_list : ["ALittle.DisplayObject","double","double","double","double","double","double"],
-option_map : {}
-})
-ALittle.RegStruct(286797479, "ALittle.UIFClickEvent", {
-name : "ALittle.UIFClickEvent", ns_name : "ALittle", rl_name : "UIFClickEvent", hash_code : 286797479,
+ALittle.RegStruct(-1330840, "ALittle.UIMClickEvent", {
+name : "ALittle.UIMClickEvent", ns_name : "ALittle", rl_name : "UIMClickEvent", hash_code : -1330840,
 name_list : ["target","is_drag"],
 type_list : ["ALittle.DisplayObject","bool"],
-option_map : {}
-})
-ALittle.RegStruct(292776509, "ALittle.UIFocusOutEvent", {
-name : "ALittle.UIFocusOutEvent", ns_name : "ALittle", rl_name : "UIFocusOutEvent", hash_code : 292776509,
-name_list : ["target"],
-type_list : ["ALittle.DisplayObject"],
-option_map : {}
-})
-ALittle.RegStruct(348388800, "ALittle.UIHideEvent", {
-name : "ALittle.UIHideEvent", ns_name : "ALittle", rl_name : "UIHideEvent", hash_code : 348388800,
-name_list : ["target"],
-type_list : ["ALittle.DisplayObject"],
-option_map : {}
-})
-ALittle.RegStruct(349963892, "ALittle.UIMButtonDownEvent", {
-name : "ALittle.UIMButtonDownEvent", ns_name : "ALittle", rl_name : "UIMButtonDownEvent", hash_code : 349963892,
-name_list : ["target","abs_x","abs_y","rel_x","rel_y","count","is_drag"],
-type_list : ["ALittle.DisplayObject","double","double","double","double","int","bool"],
-option_map : {}
-})
-ALittle.RegStruct(444989011, "ALittle.UISelectChangedEvent", {
-name : "ALittle.UISelectChangedEvent", ns_name : "ALittle", rl_name : "UISelectChangedEvent", hash_code : 444989011,
-name_list : ["target"],
-type_list : ["ALittle.DisplayObject"],
 option_map : {}
 })
 
@@ -4236,8 +4350,8 @@ option_map : {}
 })
 ALittle.RegStruct(-4982446, "ALittle.DisplayInfo", {
 name : "ALittle.DisplayInfo", ns_name : "ALittle", rl_name : "DisplayInfo", hash_code : -4982446,
-name_list : ["__target_class","__class_func","__base_attr","__show_attr","loop_map","__class","__include","__extends","__childs","__event","__link","__shows_included","__childs_included","__extends_included","description","text","font_path","font_size","red","green","blue","alpha","bold","italic","underline","deleteline","outline","x","y","x_type","x_value","y_type","y_value","width","height","width_type","width_value","height_type","height_value","scale_x","scale_y","center_x","center_y","angle","flip","hand_cursor","visible","disabled","left_size","right_size","top_size","bottom_size","texture_name","interval","play_loop_count","var_play","base_y","head_size","gap","up_size","down_size","cursor_red","cursor_green","cursor_blue","default_text_alpha","ims_padding","margin_left","margin_right","margin_top","margin_bottom","show_count","body_margin","screen_margin_left","screen_margin_right","screen_margin_top","screen_margin_bottom","start_degree","end_degree","line_spacing","max_line_count","font_red","font_green","font_blue","margin_halign","margin_valign","cursor_margin_up","cursor_margin_down","total_size","show_size","offset_rate","offset_step","grade","row_count","col_count","row_index","col_index","u1","v1","u2","v2","u3","v3","x1","y1","x2","y2","x3","y3","x_gap","y_gap","x_start_gap","y_start_gap","button_gap","button_start","button_margin","tab_index","view_margin","child_width_margin"],
-type_list : ["List<string>","any","Map<string,any>","Map<string,ALittle.DisplayInfo>","Map<string,ALittle.LoopGroupInfo>","string","string","string","List<ALittle.DisplayInfo>","List<ALittle.EventInfo>","string","bool","bool","bool","string","string","string","int","double","double","double","double","bool","bool","bool","bool","bool","double","double","int","double","int","double","double","double","int","double","int","double","double","double","double","double","double","int","bool","bool","bool","double","double","double","double","string","int","int","bool","double","double","double","double","double","double","double","double","double","double","double","double","double","double","int","double","double","double","double","double","double","double","double","int","double","double","double","double","double","double","double","double","double","double","double","int","int","int","int","int","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double"],
+name_list : ["__target_class","__class_func","__base_attr","__show_attr","loop_map","__class","__include","__extends","__childs","__event","__link","__shows_included","__childs_included","__extends_included","description","text","font_path","font_size","red","green","blue","alpha","bold","italic","underline","deleteline","x","y","x_type","x_value","y_type","y_value","width","height","width_type","width_value","height_type","height_value","scale_x","scale_y","center_x","center_y","angle","flip","hand_cursor","visible","disabled","left_size","right_size","top_size","bottom_size","texture_name","interval","play_loop_count","var_play","base_y","head_size","gap","up_size","down_size","cursor_red","cursor_green","cursor_blue","default_text_alpha","ims_padding","margin_left","margin_right","margin_top","margin_bottom","show_count","body_margin","screen_margin_left","screen_margin_right","screen_margin_top","screen_margin_bottom","start_degree","end_degree","line_spacing","max_line_count","font_red","font_green","font_blue","margin_halign","margin_valign","cursor_margin_up","cursor_margin_down","total_size","show_size","offset_rate","offset_step","grade","row_count","col_count","row_index","col_index","u1","v1","u2","v2","u3","v3","x1","y1","x2","y2","x3","y3","x_gap","y_gap","x_start_gap","y_start_gap","button_gap","button_start","button_margin","tab_index","view_margin","child_width_margin"],
+type_list : ["List<string>","any","Map<string,any>","Map<string,ALittle.DisplayInfo>","Map<string,ALittle.LoopGroupInfo>","string","string","string","List<ALittle.DisplayInfo>","List<ALittle.EventInfo>","string","bool","bool","bool","string","string","string","int","double","double","double","double","bool","bool","bool","bool","double","double","int","double","int","double","double","double","int","double","int","double","double","double","double","double","double","int","bool","bool","bool","double","double","double","double","string","int","int","bool","double","double","double","double","double","double","double","double","double","double","double","double","double","double","int","double","double","double","double","double","double","double","double","int","double","double","double","double","double","double","double","double","double","double","double","int","int","int","int","int","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double"],
 option_map : {}
 })
 
@@ -4361,6 +4475,9 @@ ALittle.DisplayObject = JavaScript.Class(ALittle.UIEventDispatcher, {
 	RemoveChild : function(child) {
 		return false;
 	},
+	SpliceChild : function(index, count) {
+		return 0;
+	},
 	RemoveAllChild : function() {
 	},
 	GetChildOffset : function() {
@@ -4376,6 +4493,9 @@ ALittle.DisplayObject = JavaScript.Class(ALittle.UIEventDispatcher, {
 		return undefined;
 	},
 	get cursor_y() {
+		return undefined;
+	},
+	get cursor_b() {
 		return undefined;
 	},
 	get is_focus() {
@@ -5045,6 +5165,7 @@ if (typeof ALittle === "undefined") window.ALittle = {};
 
 let __remove = ALittle.List_Remove;
 let __insert = ALittle.List_Insert;
+let __splice = ALittle.List_Splice;
 let __cos = ALittle.Math_Cos;
 let __sin = ALittle.Math_Sin;
 if (ALittle.DisplayObject === undefined) throw new Error(" extends class:ALittle.DisplayObject is undefined");
@@ -5162,6 +5283,31 @@ ALittle.DisplayGroup = JavaScript.Class(ALittle.DisplayObject, {
 			}
 		}
 		return false;
+	},
+	SpliceChild : function(index, count) {
+		let remain_count = this._child_count - index + 1;
+		if (count === undefined) {
+			count = remain_count;
+		} else if (count > remain_count) {
+			count = remain_count;
+		}
+		if (count <= 0) {
+			return 0;
+		}
+		let old_count = this._child_count;
+		let endv = index + count;
+		for (let i = index; i < endv; i += 1) {
+			let child = this._childs[index - 1];
+			if (child === undefined) {
+				break;
+			}
+			this._show.RemoveChild(child._show);
+			child._show_parent = undefined;
+			child._logic_parent = undefined;
+			-- this._child_count;
+		}
+		__splice(this._childs, index, count);
+		return old_count - this._child_count;
 	},
 	HasChild : function(child) {
 		if (child === undefined) {
@@ -5939,7 +6085,6 @@ ALittle.Text = JavaScript.Class(ALittle.DisplayObject, {
 		this._italic = false;
 		this._underline = false;
 		this._deleteline = false;
-		this._outline = false;
 		this._flip = 0;
 		this._show = ALittle.NewObject(JavaScript.JText);
 	},
@@ -6027,17 +6172,6 @@ ALittle.Text = JavaScript.Class(ALittle.DisplayObject, {
 	get deleteline() {
 		return this._deleteline;
 	},
-	set outline(value) {
-		if (this._outline === value) {
-			return;
-		}
-		this._outline = value;
-		this._show.SetOutline(value);
-		this.RejuseSize();
-	},
-	get outline() {
-		return this._outline;
-	},
 	RejuseSize : function() {
 		if (this._font_path === undefined || this._font_size === undefined) {
 			return;
@@ -6102,7 +6236,6 @@ ALittle.TextArea = JavaScript.Class(ALittle.DisplayObject, {
 		this._italic = false;
 		this._underline = false;
 		this._deleteline = false;
-		this._outline = false;
 		this._flip = 0;
 		this._halign_type = ALittle.UIEnumTypes.HALIGN_LEFT;
 		this._valign_type = ALittle.UIEnumTypes.VALIGN_TOP;
@@ -6185,16 +6318,6 @@ ALittle.TextArea = JavaScript.Class(ALittle.DisplayObject, {
 	get deleteline() {
 		return this._deleteline;
 	},
-	set outline(value) {
-		if (this._outline === value) {
-			return;
-		}
-		this._outline = value;
-		this._show.SetOutline(value);
-	},
-	get outline() {
-		return this._outline;
-	},
 	set halign(value) {
 		if (this._halign_type === value) {
 			return;
@@ -6250,7 +6373,6 @@ ALittle.TextEdit = JavaScript.Class(ALittle.DisplayObject, {
 		this._italic = false;
 		this._underline = false;
 		this._deleteline = false;
-		this._outline = false;
 		this._default_text = "";
 		this._default_text_alpha = 1;
 		this._flip = 0;
@@ -6335,6 +6457,9 @@ ALittle.TextEdit = JavaScript.Class(ALittle.DisplayObject, {
 	},
 	get cursor_y() {
 		return this._show.GetCursorY();
+	},
+	get cursor_b() {
+		return (this._show.GetCursorY() + this._show.GetCursorHeight()) * this.scale_y + this._ims_padding;
 	},
 	set editable(value) {
 		this._editable = value;
@@ -6423,16 +6548,6 @@ ALittle.TextEdit = JavaScript.Class(ALittle.DisplayObject, {
 	},
 	get deleteline() {
 		return this._deleteline;
-	},
-	set outline(value) {
-		if (this._outline === value) {
-			return;
-		}
-		this._outline = value;
-		this._show.SetOutline(value);
-	},
-	get outline() {
-		return this._outline;
 	},
 	SetCursorToEnd : function() {
 		this._is_selecting = false;
@@ -6827,7 +6942,6 @@ ALittle.TextInput = JavaScript.Class(ALittle.DisplayObject, {
 		this._italic = false;
 		this._underline = false;
 		this._deleteline = false;
-		this._outline = false;
 		this._password_mode = false;
 		this._default_text = "";
 		this._default_text_alpha = 1;
@@ -6895,6 +7009,9 @@ ALittle.TextInput = JavaScript.Class(ALittle.DisplayObject, {
 	},
 	get cursor_y() {
 		return this._show.GetCursorY();
+	},
+	get cursor_b() {
+		return (this._show.GetCursorY() + this._show.GetCursorHeight()) * this.scale_y + this._ims_padding;
 	},
 	set editable(value) {
 		this._editable = value;
@@ -6983,16 +7100,6 @@ ALittle.TextInput = JavaScript.Class(ALittle.DisplayObject, {
 	},
 	get deleteline() {
 		return this._deleteline;
-	},
-	set outline(value) {
-		if (this._outline === value) {
-			return;
-		}
-		this._outline = value;
-		this._show.SetOutline(value);
-	},
-	get outline() {
-		return this._outline;
 	},
 	set password_mode(value) {
 		this._is_selecting = false;
@@ -7192,6 +7299,10 @@ ALittle.TextInput = JavaScript.Class(ALittle.DisplayObject, {
 			event.handled = true;
 		} else if (event.sym === 9) {
 			this.DispatchEvent(___all_struct.get(2024735182), {});
+			event.handled = true;
+		} else if (event.sym === ALittle.UIEnumTypes.KEY_ESC) {
+			this.DispatchEvent(___all_struct.get(1637310579), {});
+			event.handled = true;
 		}
 		if (is_change) {
 			this.DispatchEvent(___all_struct.get(958494922), {});
@@ -9556,6 +9667,9 @@ ALittle.Linear = JavaScript.Class(ALittle.DisplayGroup, {
 	get gap() {
 		return this._gap;
 	},
+	GetShowMap : function() {
+		return this._show_child_map;
+	},
 	AddChild : function(child, index) {
 		if (ALittle.DisplayGroup.AddChild.call(this, child, index) === false) {
 			return false;
@@ -9591,6 +9705,33 @@ ALittle.Linear = JavaScript.Class(ALittle.DisplayGroup, {
 		child.RemoveEventListener(___all_struct.get(-431205740), this);
 		this.Layout(child_index);
 		return true;
+	},
+	SpliceChild : function(index, count) {
+		let remain_count = this._child_count - index + 1;
+		if (count === undefined) {
+			count = remain_count;
+		} else if (count > remain_count) {
+			count = remain_count;
+		}
+		if (count <= 0) {
+			return 0;
+		}
+		let endv = index + count;
+		for (let i = index; i < endv; i += 1) {
+			let child = this._childs[index - 1];
+			if (child === undefined) {
+				break;
+			}
+			this._child_width_map.delete(child);
+			this._child_height_map.delete(child);
+			this._show_child_map.delete(child);
+			child.RemoveEventListener(___all_struct.get(-431205740), this);
+		}
+		let result = ALittle.DisplayGroup.SpliceChild.call(this, index, count);
+		if (result !== 0) {
+			this.Layout(index);
+		}
+		return result;
 	},
 	RemoveAllChild : function() {
 		let ___OBJECT_1 = this._childs;
@@ -9695,7 +9836,7 @@ ALittle.Linear = JavaScript.Class(ALittle.DisplayGroup, {
 		this._clip_up_index = 0;
 		this._clip_down_index = 0;
 		let child_count = this.child_count;
-		if (index > child_count) {
+		if (index <= 0 || index > child_count) {
 			return;
 		}
 		if (this._type === ALittle.UIEnumTypes.TYPE_H) {
@@ -9848,9 +9989,7 @@ ALittle.Linear = JavaScript.Class(ALittle.DisplayGroup, {
 				if (childs[i - 1].x < right) {
 					this._show.AddChild(childs[i - 1]._show);
 					new_show_map.set(childs[i - 1], true);
-					if (childs[i - 1].ClipRect !== undefined) {
-						childs[i - 1].ClipRect(left, top, right, bottom, h_move, v_move);
-					}
+					childs[i - 1].ClipRect(left, top, right, bottom, h_move, v_move);
 					this._clip_down_index = i;
 				} else {
 					break;
@@ -9892,9 +10031,7 @@ ALittle.Linear = JavaScript.Class(ALittle.DisplayGroup, {
 				if (childs[i - 1].y < bottom) {
 					this._show.AddChild(childs[i - 1]._show);
 					new_show_map.set(childs[i - 1], true);
-					if (childs[i - 1].ClipRect !== undefined) {
-						childs[i - 1].ClipRect(left, top, right, bottom, h_move, v_move);
-					}
+					childs[i - 1].ClipRect(left, top, right, bottom, h_move, v_move);
 					this._clip_down_index = i;
 				} else {
 					break;
@@ -10344,6 +10481,59 @@ ALittle.Tab = JavaScript.Class(ALittle.Grid3, {
 		}
 		this.tab_index = new_index;
 		return true;
+	},
+	SpliceChild : function(index, count) {
+		let remain_count = this._child_count - index + 1;
+		if (count === undefined) {
+			count = remain_count;
+		}
+		if (count <= 0) {
+			return 0;
+		}
+		if (count > remain_count) {
+			count = remain_count;
+		}
+		let show_center = this.show_center;
+		let endv = index + count;
+		for (let i = index; i < endv; i += 1) {
+			let child = show_center.GetChildByIndex(i);
+			if (child === undefined) {
+				break;
+			}
+			child.visible = true;
+			this._child_id_map.delete(child);
+			let simplelayout = this._linear.GetChildByIndex(index);
+			if (simplelayout !== undefined) {
+				let layout_childs = simplelayout.childs;
+				layout_childs[1 - 1].RemoveEventListener(___all_struct.get(958494922), this, this.HandleRadioButtonChanged);
+				layout_childs[1 - 1].RemoveEventListener(___all_struct.get(1337289812), this, this.HandleRadioButtonDrag);
+				layout_childs[1 - 1].RemoveEventListener(___all_struct.get(1301789264), this, this.HandleRadioButtonDragBegin);
+				layout_childs[1 - 1].RemoveEventListener(___all_struct.get(150587926), this, this.HandleRadioButtonDragEnd);
+				layout_childs[1 - 1].RemoveEventListener(___all_struct.get(-1330840), this, this.HandleRadioButtonMClick);
+				layout_childs[1 - 1].RemoveEventListener(___all_struct.get(-641444818), this, this.HandleRadioButtonRButtonDown);
+				layout_childs[1 - 1].RemoveEventListener(___all_struct.get(-1604617962), this, this.HandleRadioButtonKeyDown);
+				layout_childs[3 - 1].RemoveEventListener(___all_struct.get(-449066808), this, this.HandleCloseButtonClick);
+				layout_childs[5 - 1].RemoveEventListener(___all_struct.get(-449066808), this, this.HandleCloseButtonClick);
+				layout_childs[1 - 1].group = undefined;
+			}
+		}
+		this._linear.SpliceChild(index, count);
+		let result = show_center.SpliceChild(index, count);
+		let new_index = 0;
+		if (this._tab_index >= index && this._tab_index < endv) {
+			new_index = index;
+		} else if (this._tab_index >= endv) {
+			new_index = this._tab_index - result;
+		} else {
+			new_index = this._tab_index;
+		}
+		if (new_index > show_center.child_count) {
+			new_index = show_center.child_count;
+		} else if (new_index < 0) {
+			new_index = 0;
+		}
+		this.tab_index = new_index;
+		return result;
 	},
 	HasChild : function(child) {
 		let show_center = this.show_center;
@@ -11597,6 +11787,7 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 		this.AddEventListener(___all_struct.get(1337289812), this, this.HandleDrag);
 		this.AddEventListener(___all_struct.get(150587926), this, this.HandleDragEnd);
 		this.AddEventListener(___all_struct.get(1301789264), this, this.HandleDragBegin);
+		this.RefreshClipDisLine();
 	},
 	HandleMButtonWheel : function(event) {
 		if (this._bottom_scroll_bar !== undefined && event.delta_x !== 0) {
@@ -11604,10 +11795,10 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 		}
 		if (this._right_scroll_bar !== undefined && event.delta_y !== 0) {
 			let offset = this._content_height * 0.1 * event.delta_y;
-			if (offset > 40) {
-				offset = 40;
-			} else if (offset < -40) {
-				offset = -40;
+			if (offset > 60) {
+				offset = 60;
+			} else if (offset < -60) {
+				offset = -60;
 			}
 			if (offset !== 0) {
 				this._right_scroll_bar.offset_rate = this._right_scroll_bar.offset_rate - offset / this._content_height;
@@ -11745,7 +11936,9 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 		return this._scroll_content.GetChildIndex(child);
 	},
 	SetChildIndex : function(child, index) {
-		return this._scroll_content.SetChildIndex(child, index);
+		let result = this._scroll_content.SetChildIndex(child, index);
+		this.RefreshClipDisLine();
+		return result;
 	},
 	GetChildByIndex : function(index) {
 		return this._scroll_content.GetChildByIndex(index);
@@ -11775,6 +11968,13 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 		}
 		this.RejustScrollBar();
 		return true;
+	},
+	SpliceChild : function(index, count) {
+		let result = this._scroll_content.SpliceChild(index, count);
+		if (result !== 0) {
+			this.RejustScrollBar();
+		}
+		return result;
 	},
 	HasChild : function(child) {
 		return this._scroll_content.HasChild(child);
@@ -11841,6 +12041,10 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 				this._static_object_h.x = x;
 			}
 		}
+		this.RefreshClipDisLine();
+	},
+	get width() {
+		return this._width;
 	},
 	set height(value) {
 		if (this._height === value) {
@@ -11892,6 +12096,10 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 				this._static_object_v.y = y;
 			}
 		}
+		this.RefreshClipDisLine();
+	},
+	get height() {
+		return this._height;
 	},
 	get view_width() {
 		return this._scroll_view.width;
@@ -12057,6 +12265,7 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 		if (this._static_object_v !== undefined) {
 			this._static_object_v.y = y;
 		}
+		this.RefreshClipDisLine();
 	},
 	HandleBottomScrollBarChange : function(event) {
 		let rate = this._bottom_scroll_bar.offset_rate;
@@ -12070,6 +12279,7 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 		if (this._static_object_h !== undefined) {
 			this._static_object_h.x = x;
 		}
+		this.RefreshClipDisLine();
 	},
 	HandleContainerResize : function(event) {
 		this.RejustScrollBar();
@@ -12139,6 +12349,7 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 					this._bottom_scroll_bar.offset_rate = -x / (this._content_width - this._scroll_view.width);
 				}
 			}
+			this.RefreshClipDisLine(event.delta_x);
 		}
 		if (event.delta_y !== 0 && this._right_scroll_bar !== undefined) {
 			if (event.delta_y > 0) {
@@ -12193,6 +12404,7 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 					this._right_scroll_bar.offset_rate = -y / (this._content_height - this._scroll_view.height);
 				}
 			}
+			this.RefreshClipDisLine(undefined, event.delta_y);
 		}
 	},
 	HandleDragEnd : function(event) {
@@ -12207,24 +12419,16 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 			if (this._scroll_content.x >= this._scroll_view.width * this._drag_rate * 0.9) {
 				this.DispatchEvent(___all_struct.get(-839083637), {});
 			}
-			let func = undefined;
-			if (this._static_object_h !== undefined) {
-				func = ALittle.ScrollScreen.XStaticObjectChange.bind(this);
-			}
 			A_LoopSystem.RemoveUpdater(this._drag_loop_x);
-			this._drag_loop_x = ALittle.NewObject(ALittle.LoopLinear, this._scroll_content, "x", 0, 200, 0, func);
+			this._drag_loop_x = ALittle.NewObject(ALittle.LoopLinear, this._scroll_content, "x", 0, 200, 0, ALittle.ScrollScreen.XScrollBarChange.bind(this));
 			A_LoopSystem.AddUpdater(this._drag_loop_x);
 		} else if (this._scroll_content.x < -this._content_width + this._scroll_view.width) {
 			if (this._scroll_content.x <= -this._content_width + this._scroll_view.width - this._scroll_view.width * this._drag_rate * 0.9) {
 				this.DispatchEvent(___all_struct.get(-567702959), {});
 			}
 			if (this._scroll_content.x < 0) {
-				let func = undefined;
-				if (this._static_object_h !== undefined) {
-					func = ALittle.ScrollScreen.XStaticObjectChange.bind(this);
-				}
 				A_LoopSystem.RemoveUpdater(this._drag_loop_x);
-				this._drag_loop_x = ALittle.NewObject(ALittle.LoopLinear, this._scroll_content, "x", -this._content_width + this._scroll_view.width, 200, 0, func);
+				this._drag_loop_x = ALittle.NewObject(ALittle.LoopLinear, this._scroll_content, "x", -this._content_width + this._scroll_view.width, 200, 0, ALittle.ScrollScreen.XScrollBarChange.bind(this));
 				A_LoopSystem.AddUpdater(this._drag_loop_x);
 			}
 		} else if (this._scroll_content.x !== 0 && this._scroll_content.x !== -this._content_width + this._scroll_view.width) {
@@ -12238,12 +12442,8 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 					event_dispatch = ALittle.ScrollScreen.ScrollDispatchDragLeftEvent.bind(this);
 				}
 				if (target_x >= min_x && target_x <= max_x) {
-					let func = undefined;
-					if (this._static_object_h !== undefined) {
-						func = ALittle.ScrollScreen.XStaticObjectChange.bind(this);
-					}
 					A_LoopSystem.RemoveUpdater(this._drag_loop_x);
-					this._drag_loop_x = ALittle.NewObject(ALittle.LoopLinear, this._scroll_content, "x", -this._content_width + this._scroll_view.width, 200, 300, func);
+					this._drag_loop_x = ALittle.NewObject(ALittle.LoopLinear, this._scroll_content, "x", -this._content_width + this._scroll_view.width, 200, 300, ALittle.ScrollScreen.XScrollBarChange.bind(this));
 					A_LoopSystem.AddUpdater(this._drag_loop_x);
 				}
 			} else if (this._drag_delta_x > 0) {
@@ -12254,22 +12454,10 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 					event_dispatch = ALittle.ScrollScreen.ScrollDispatchDragRightEvent.bind(this);
 				}
 				if (target_x >= min_x && target_x <= max_x) {
-					let func = undefined;
-					if (this._static_object_h !== undefined) {
-						func = ALittle.ScrollScreen.XStaticObjectChange.bind(this);
-					}
 					A_LoopSystem.RemoveUpdater(this._drag_loop_x);
-					this._drag_loop_x = ALittle.NewObject(ALittle.LoopLinear, this._scroll_content, "x", 0, 200, 300, func);
+					this._drag_loop_x = ALittle.NewObject(ALittle.LoopLinear, this._scroll_content, "x", 0, 200, 300, ALittle.ScrollScreen.XScrollBarChange.bind(this));
 					A_LoopSystem.AddUpdater(this._drag_loop_x);
 				}
-			}
-			let func = undefined;
-			if (this._static_object_h !== undefined && this._bottom_scroll_bar === undefined) {
-				func = ALittle.ScrollScreen.XStaticObjectChange.bind(this);
-			} else if (this._static_object_h === undefined && this._bottom_scroll_bar !== undefined) {
-				func = ALittle.ScrollScreen.XScrollBarChange.bind(this);
-			} else if (this._static_object_h !== undefined && this._bottom_scroll_bar !== undefined) {
-				func = ALittle.ScrollScreen.XStaticObjectAndScrollBarChange.bind(this);
 			}
 			A_LoopSystem.RemoveUpdater(this._x_type_dispatch);
 			if (event_dispatch !== undefined) {
@@ -12284,31 +12472,23 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 				}
 			}
 			A_LoopSystem.RemoveUpdater(this._drag_delta_loop_x);
-			this._drag_delta_loop_x = ALittle.NewObject(ALittle.LoopRit, this._scroll_content, "x", target_x, 300, 0, func);
+			this._drag_delta_loop_x = ALittle.NewObject(ALittle.LoopRit, this._scroll_content, "x", target_x, 300, 0, ALittle.ScrollScreen.XScrollBarChange.bind(this));
 			A_LoopSystem.AddUpdater(this._drag_delta_loop_x);
 		}
 		if (this._scroll_content.y > 0) {
 			if (this._scroll_content.y >= this._scroll_view.height * this._drag_rate * 0.9) {
 				this.DispatchEvent(___all_struct.get(1848466169), {});
 			}
-			let func = undefined;
-			if (this._static_object_v !== undefined) {
-				func = ALittle.ScrollScreen.YStaticObjectChange.bind(this);
-			}
 			A_LoopSystem.RemoveUpdater(this._drag_loop_y);
-			this._drag_loop_y = ALittle.NewObject(ALittle.LoopLinear, this._scroll_content, "y", 0, 200, 0, func);
+			this._drag_loop_y = ALittle.NewObject(ALittle.LoopLinear, this._scroll_content, "y", 0, 200, 0, ALittle.ScrollScreen.YScrollBarChange.bind(this));
 			A_LoopSystem.AddUpdater(this._drag_loop_y);
 		} else if (this._scroll_content.y < -this._content_height + this._scroll_view.height) {
 			if (this._scroll_content.y <= -this._content_height + this._scroll_view.height - this._scroll_view.height * this._drag_rate * 0.9) {
 				this.DispatchEvent(___all_struct.get(809518110), {});
 			}
 			if (this._scroll_content.y < 0) {
-				let func = undefined;
-				if (this._static_object_v !== undefined) {
-					func = ALittle.ScrollScreen.YStaticObjectChange.bind(this);
-				}
 				A_LoopSystem.RemoveUpdater(this._drag_loop_y);
-				this._drag_loop_y = ALittle.NewObject(ALittle.LoopLinear, this._scroll_content, "y", -this._content_height + this._scroll_view.height, 200, 0, func);
+				this._drag_loop_y = ALittle.NewObject(ALittle.LoopLinear, this._scroll_content, "y", -this._content_height + this._scroll_view.height, 200, 0, ALittle.ScrollScreen.YScrollBarChange.bind(this));
 				A_LoopSystem.AddUpdater(this._drag_loop_y);
 			}
 		} else if (this._scroll_content.y !== 0 && this._scroll_content.y !== -this._content_height + this._scroll_view.height) {
@@ -12322,12 +12502,8 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 					event_dispatch = ALittle.ScrollScreen.ScrollDispatchDragUpEvent.bind(this);
 				}
 				if (target_y >= min_y && target_y <= max_y) {
-					let func = undefined;
-					if (this._static_object_v !== undefined) {
-						func = ALittle.ScrollScreen.YStaticObjectChange.bind(this);
-					}
 					A_LoopSystem.RemoveUpdater(this._drag_loop_y);
-					this._drag_loop_y = ALittle.NewObject(ALittle.LoopLinear, this._scroll_content, "y", -this._content_height + this._scroll_view.height, 200, 300, func);
+					this._drag_loop_y = ALittle.NewObject(ALittle.LoopLinear, this._scroll_content, "y", -this._content_height + this._scroll_view.height, 200, 300, ALittle.ScrollScreen.YScrollBarChange.bind(this));
 					A_LoopSystem.AddUpdater(this._drag_loop_y);
 				}
 			} else if (this._drag_delta_y > 0) {
@@ -12338,22 +12514,10 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 					event_dispatch = ALittle.ScrollScreen.ScrollDispatchDragDownEvent.bind(this);
 				}
 				if (target_y >= min_y && target_y <= max_y) {
-					let func = undefined;
-					if (this._static_object_v !== undefined) {
-						func = ALittle.ScrollScreen.YStaticObjectChange.bind(this);
-					}
 					A_LoopSystem.RemoveUpdater(this._drag_loop_y);
-					this._drag_loop_y = ALittle.NewObject(ALittle.LoopLinear, this._scroll_content, "y", 0, 200, 300, func);
+					this._drag_loop_y = ALittle.NewObject(ALittle.LoopLinear, this._scroll_content, "y", 0, 200, 300, ALittle.ScrollScreen.YScrollBarChange.bind(this));
 					A_LoopSystem.AddUpdater(this._drag_loop_y);
 				}
-			}
-			let func = undefined;
-			if (this._static_object_v !== undefined && this._right_scroll_bar === undefined) {
-				func = ALittle.ScrollScreen.YStaticObjectChange.bind(this);
-			} else if (this._static_object_v === undefined && this._right_scroll_bar !== undefined) {
-				func = ALittle.ScrollScreen.YScrollBarChange.bind(this);
-			} else if (this._static_object_v !== undefined && this._right_scroll_bar !== undefined) {
-				func = ALittle.ScrollScreen.YStaticObjectAndScrollBarChange.bind(this);
 			}
 			A_LoopSystem.RemoveUpdater(this._y_type_dispatch);
 			if (event_dispatch !== undefined) {
@@ -12368,31 +12532,47 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 				}
 			}
 			A_LoopSystem.RemoveUpdater(this._drag_delta_loop_y);
-			this._drag_delta_loop_y = ALittle.NewObject(ALittle.LoopRit, this._scroll_content, "y", target_y, 300, 0, func);
+			this._drag_delta_loop_y = ALittle.NewObject(ALittle.LoopRit, this._scroll_content, "y", target_y, 300, 0, ALittle.ScrollScreen.YScrollBarChange.bind(this));
 			A_LoopSystem.AddUpdater(this._drag_delta_loop_y);
 		}
 		this._drag_delta_x = 0;
 		this._drag_delta_y = 0;
 	},
-	XStaticObjectAndScrollBarChange : function() {
-		this._static_object_h.x = this._scroll_content.x;
-		this._bottom_scroll_bar.offset_rate = -this._scroll_content.x / (this._content_width - this._scroll_view.width);
+	RefreshClipDisLineImpl : function(h_move, v_move) {
+		this._scroll_content.ClipRect(0, 0, this._width, this._height, h_move, v_move);
+		if (this._static_object_v !== undefined) {
+			this._static_object_v.ClipRect(0, 0, this._width, this._height, h_move, v_move);
+		}
+		if (this._static_object_h !== undefined) {
+			this._static_object_h.ClipRect(0, 0, this._width, this._height, h_move, v_move);
+		}
+		this._clip_loop = undefined;
 	},
-	XStaticObjectChange : function() {
-		this._static_object_h.x = this._scroll_content.x;
-	},
-	YStaticObjectAndScrollBarChange : function() {
-		this._static_object_v.y = this._scroll_content.y;
-		this._right_scroll_bar.offset_rate = -this._scroll_content.y / (this._content_height - this._scroll_view.height);
-	},
-	YStaticObjectChange : function() {
-		this._static_object_v.y = this._scroll_content.y;
+	RefreshClipDisLine : function(h_move, v_move) {
+		if (this._clip_loop !== undefined && this._clip_loop._user_data === undefined) {
+			return;
+		}
+		this._clip_loop = ALittle.NewObject(ALittle.LoopFunction, this.RefreshClipDisLineImpl.bind(this, h_move, v_move), 1, 0, 1);
+		this._clip_loop._user_data = v_move;
+		A_LoopSystem.AddUpdater(this._clip_loop);
 	},
 	XScrollBarChange : function() {
-		this._bottom_scroll_bar.offset_rate = -this._scroll_content.x / (this._content_width - this._scroll_view.width);
+		if (this._static_object_h !== undefined) {
+			this._static_object_h.x = this._scroll_content.x;
+		}
+		if (this._bottom_scroll_bar !== undefined) {
+			this._bottom_scroll_bar.offset_rate = -this._scroll_content.x / (this._content_width - this._scroll_view.width);
+		}
+		this.RefreshClipDisLine(undefined, undefined);
 	},
 	YScrollBarChange : function() {
-		this._right_scroll_bar.offset_rate = -this._scroll_content.y / (this._content_height - this._scroll_view.height);
+		if (this._static_object_v !== undefined) {
+			this._static_object_v.y = this._scroll_content.y;
+		}
+		if (this._right_scroll_bar !== undefined) {
+			this._right_scroll_bar.offset_rate = -this._scroll_content.y / (this._content_height - this._scroll_view.height);
+		}
+		this.RefreshClipDisLine(undefined, undefined);
 	},
 	ScrollDispatchDragDownEvent : function() {
 		this.DispatchEvent(___all_struct.get(1848466169), {});
@@ -12413,16 +12593,16 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 if (typeof ALittle === "undefined") window.ALittle = {};
 let ___all_struct = ALittle.GetAllStruct();
 
-ALittle.RegStruct(1517533145, "ALittle.DialogDragEvent", {
-name : "ALittle.DialogDragEvent", ns_name : "ALittle", rl_name : "DialogDragEvent", hash_code : 1517533145,
-name_list : ["target","delta_x","delta_y"],
-type_list : ["ALittle.DisplayObject","double","double"],
-option_map : {}
-})
 ALittle.RegStruct(1971745271, "ALittle.DialogDragBeginEvent", {
 name : "ALittle.DialogDragBeginEvent", ns_name : "ALittle", rl_name : "DialogDragBeginEvent", hash_code : 1971745271,
 name_list : ["target"],
 type_list : ["ALittle.DisplayObject"],
+option_map : {}
+})
+ALittle.RegStruct(1517533145, "ALittle.DialogDragEvent", {
+name : "ALittle.DialogDragEvent", ns_name : "ALittle", rl_name : "DialogDragEvent", hash_code : 1517533145,
+name_list : ["target","delta_x","delta_y"],
+type_list : ["ALittle.DisplayObject","double","double"],
 option_map : {}
 })
 ALittle.RegStruct(-1482649531, "ALittle.DialogDragEndEvent", {
@@ -12649,6 +12829,9 @@ ALittle.Dialog = JavaScript.Class(ALittle.DisplayLayout, {
 		}
 		return this._body.RemoveChild(child);
 	},
+	SpliceChild : function(index, count) {
+		return this._body.SpliceChild(index, count);
+	},
 	HasChild : function(child) {
 		return this._body.HasChild(child);
 	},
@@ -12764,6 +12947,31 @@ ALittle.TileTable = JavaScript.Class(ALittle.DisplayGroup, {
 		child.RemoveEventListener(___all_struct.get(-431205740), this);
 		this.Layout(child_index);
 		return true;
+	},
+	SpliceChild : function(index, count) {
+		let remain_count = this._child_count - index + 1;
+		if (count === undefined) {
+			count = remain_count;
+		} else if (count > remain_count) {
+			count = remain_count;
+		}
+		if (count <= 0) {
+			return 0;
+		}
+		let endv = index + count;
+		for (let i = index; i < endv; i += 1) {
+			let child = this._childs[i - 1];
+			if (child === undefined) {
+				break;
+			}
+			this._show_child_map.delete(child);
+			child.RemoveEventListener(___all_struct.get(-431205740), this);
+		}
+		let result = ALittle.DisplayGroup.SpliceChild.call(this, index, count);
+		if (result !== 0) {
+			this.Layout(index);
+		}
+		return result;
 	},
 	RemoveAllChild : function() {
 		let ___OBJECT_1 = this._childs;
@@ -13604,6 +13812,7 @@ ALittle.ImageInput = JavaScript.Class(ALittle.DisplayLayout, {
 		this._show_input.AddEventListener(___all_struct.get(958494922), this, this.HandleImageInputTransformChangd);
 		this._show_input.AddEventListener(___all_struct.get(776398171), this, this.HandleImageInputTransformEnterKey);
 		this._show_input.AddEventListener(___all_struct.get(2024735182), this, this.HandleImageInputTransformTabKey);
+		this._show_input.AddEventListener(___all_struct.get(1637310579), this, this.HandleImageInputTransformEscKey);
 		this._show_input.AddEventListener(___all_struct.get(-641444818), this, this.HandleImageInputTransformRButtonDown);
 		this._show_input.AddEventListener(___all_struct.get(-569321214), this, this.HandleImageInputTransformRButtonUp);
 		this._show_input.AddEventListener(___all_struct.get(-439548260), this, this.HandleImageInputTransformLongButtonDown);
@@ -13715,12 +13924,6 @@ ALittle.ImageInput = JavaScript.Class(ALittle.DisplayLayout, {
 	get deleteline() {
 		return this._show_input.deleteline;
 	},
-	set outline(value) {
-		this._show_input.outline = value;
-	},
-	get outline() {
-		return this._show_input.outline;
-	},
 	set password_mode(value) {
 		this._show_input.password_mode = value;
 	},
@@ -13819,6 +14022,10 @@ ALittle.ImageInput = JavaScript.Class(ALittle.DisplayLayout, {
 	HandleImageInputTransformTabKey : function(event) {
 		event.target = this;
 		this.DispatchEvent(___all_struct.get(2024735182), event);
+	},
+	HandleImageInputTransformEscKey : function(event) {
+		event.target = this;
+		this.DispatchEvent(___all_struct.get(1637310579), event);
 	},
 	HandleImageInputTransformRButtonDown : function(event) {
 		event.target = this;
@@ -14221,12 +14428,6 @@ ALittle.ImageEdit = JavaScript.Class(ALittle.DisplayLayout, {
 	},
 	get deleteline() {
 		return this._show_edit.deleteline;
-	},
-	set outline(value) {
-		this._show_edit.outline = value;
-	},
-	get outline() {
-		return this._show_edit.outline;
 	},
 	set cursor_red(value) {
 		this._show_edit.cursor_red = value;

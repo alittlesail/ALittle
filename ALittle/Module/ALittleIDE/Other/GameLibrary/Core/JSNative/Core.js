@@ -232,16 +232,16 @@ ALittle.GetAllStruct = function() {
 {
 if (typeof ALittle === "undefined") window.ALittle = {};
 
-ALittle.RegStruct(318154964, "ALittle.ClassInfo", {
-name : "ALittle.ClassInfo", ns_name : "ALittle", rl_name : "ClassInfo", hash_code : 318154964,
-name_list : ["__name","__super","__element","__child","__getter","__setter"],
-type_list : ["string","ALittle.ClassInfo","List<ALittle.ClassInfo>","Map<string,ALittle.ClassInfo>","Map<string,Functor<(any):any>>","Map<string,Functor<(any,any)>>"],
-option_map : {}
-})
 ALittle.RegStruct(1847150134, "ALittle.StructInfo", {
 name : "ALittle.StructInfo", ns_name : "ALittle", rl_name : "StructInfo", hash_code : 1847150134,
 name_list : ["name","ns_name","rl_name","hash_code","name_list","type_list","option_map"],
 type_list : ["string","string","string","int","List<string>","List<string>","Map<string,string>"],
+option_map : {}
+})
+ALittle.RegStruct(318154964, "ALittle.ClassInfo", {
+name : "ALittle.ClassInfo", ns_name : "ALittle", rl_name : "ClassInfo", hash_code : 318154964,
+name_list : ["__name","__super","__element","__child","__getter","__setter"],
+type_list : ["string","ALittle.ClassInfo","List<ALittle.ClassInfo>","Map<string,ALittle.ClassInfo>","Map<string,Functor<(any):any>>","Map<string,Functor<(any,any)>>"],
 option_map : {}
 })
 
@@ -250,6 +250,9 @@ ALittle.NewObject = function(clazz, ...___args) {
 }
 
 ALittle.Cast = function(T, O, object) {
+	if (object === undefined) {
+		return undefined;
+	}
 	let o_info = (object).__class;
 	let t_info = T;
 	if (o_info !== t_info) {
@@ -311,12 +314,48 @@ ALittle.List_PushList = function(list, other_list) {
 	}
 }
 
+ALittle.List_Find = function(list, object) {
+	let ___OBJECT_2 = list;
+	for (let index = 1; index <= ___OBJECT_2.length; ++index) {
+		let o = ___OBJECT_2[index - 1];
+		if (o === undefined) break;
+		if (o === object) {
+			return index;
+		}
+	}
+	return undefined;
+}
+
+ALittle.List_Copy = function(list) {
+	let new_list = [];
+	let ___OBJECT_3 = list;
+	for (let index = 1; index <= ___OBJECT_3.length; ++index) {
+		let o = ___OBJECT_3[index - 1];
+		if (o === undefined) break;
+		new_list[index - 1] = o;
+	}
+	return new_list;
+}
+
 ALittle.List_Insert = function(list, index, object) {
 	list.splice(index - 1, 0, object);
 }
 
+ALittle.List_IndexOf = function(list, object) {
+	let index = list.indexOf(object);
+	if (index < 0) {
+		return undefined;
+	} else {
+		return index + 1;
+	}
+}
+
 ALittle.List_Remove = function(list, index) {
 	list.splice(index - 1, 1);
+}
+
+ALittle.List_Splice = function(list, index, count) {
+	list.splice(index - 1, count);
 }
 
 ALittle.List_Sort = function(list, cmp) {

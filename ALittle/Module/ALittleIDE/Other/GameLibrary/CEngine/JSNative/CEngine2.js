@@ -20,6 +20,24 @@ name_list : ["acc_width","pre_width","text_info","text_object","text","ctrl_info
 type_list : ["double","double","ALittle.DisplayInfo","ALittle.Text","string","ALittle.DisplayInfo","ALittle.DisplayObject"],
 option_map : {}
 })
+ALittle.RegStruct(774620468, "ALittle.UIRichEditLongClickEvent", {
+name : "ALittle.UIRichEditLongClickEvent", ns_name : "ALittle", rl_name : "UIRichEditLongClickEvent", hash_code : 774620468,
+name_list : ["target","abs_x","abs_y","rel_x","rel_y"],
+type_list : ["ALittle.DisplayObject","double","double","double","double"],
+option_map : {}
+})
+ALittle.RegStruct(556044369, "ALittle.RichEditLineInfo", {
+name : "ALittle.RichEditLineInfo", ns_name : "ALittle", rl_name : "RichEditLineInfo", hash_code : 556044369,
+name_list : ["char_list","char_count","child_list","child_count","container","acc_height","pre_height","force_line"],
+type_list : ["List<ALittle.RichEditCharInfo>","int","List<ALittle.DisplayObject>","int","ALittle.DisplayLayout","double","double","bool"],
+option_map : {}
+})
+ALittle.RegStruct(291295687, "ALittle.RichEditMultiDragEvent", {
+name : "ALittle.RichEditMultiDragEvent", ns_name : "ALittle", rl_name : "RichEditMultiDragEvent", hash_code : 291295687,
+name_list : ["target"],
+type_list : ["ALittle.DisplayObject"],
+option_map : {}
+})
 ALittle.RegStruct(-203792390, "ALittle.RichEditMultiDragEndEvent", {
 name : "ALittle.RichEditMultiDragEndEvent", ns_name : "ALittle", rl_name : "RichEditMultiDragEndEvent", hash_code : -203792390,
 name_list : ["target"],
@@ -30,24 +48,6 @@ ALittle.RegStruct(9565867, "ALittle.RichEditMultiDragBeginEvent", {
 name : "ALittle.RichEditMultiDragBeginEvent", ns_name : "ALittle", rl_name : "RichEditMultiDragBeginEvent", hash_code : 9565867,
 name_list : ["target"],
 type_list : ["ALittle.DisplayObject"],
-option_map : {}
-})
-ALittle.RegStruct(291295687, "ALittle.RichEditMultiDragEvent", {
-name : "ALittle.RichEditMultiDragEvent", ns_name : "ALittle", rl_name : "RichEditMultiDragEvent", hash_code : 291295687,
-name_list : ["target"],
-type_list : ["ALittle.DisplayObject"],
-option_map : {}
-})
-ALittle.RegStruct(556044369, "ALittle.RichEditLineInfo", {
-name : "ALittle.RichEditLineInfo", ns_name : "ALittle", rl_name : "RichEditLineInfo", hash_code : 556044369,
-name_list : ["char_list","char_count","child_list","child_count","container","acc_height","pre_height","force_line"],
-type_list : ["List<ALittle.RichEditCharInfo>","int","List<ALittle.DisplayObject>","int","ALittle.DisplayLayout","double","double","bool"],
-option_map : {}
-})
-ALittle.RegStruct(774620468, "ALittle.UIRichEditLongClickEvent", {
-name : "ALittle.UIRichEditLongClickEvent", ns_name : "ALittle", rl_name : "UIRichEditLongClickEvent", hash_code : 774620468,
-name_list : ["target","abs_x","abs_y","rel_x","rel_y"],
-type_list : ["ALittle.DisplayObject","double","double","double","double"],
 option_map : {}
 })
 
@@ -96,9 +96,6 @@ ALittle.RichEdit = JavaScript.Class(ALittle.DisplayLayout, {
 		if (a.deleteline !== b.deleteline) {
 			return false;
 		}
-		if (a.outline !== b.outline) {
-			return false;
-		}
 		return true;
 	},
 	CopyTextInfo : function(b) {
@@ -113,7 +110,6 @@ ALittle.RichEdit = JavaScript.Class(ALittle.DisplayLayout, {
 		a.italic = b.italic;
 		a.underline = b.underline;
 		a.deleteline = b.deleteline;
-		a.outline = b.outline;
 		return a;
 	},
 	InitTextInfo : function() {
@@ -129,7 +125,6 @@ ALittle.RichEdit = JavaScript.Class(ALittle.DisplayLayout, {
 		a.italic = font_text.italic;
 		a.underline = font_text.underline;
 		a.deleteline = font_text.deleteline;
-		a.outline = font_text.outline;
 		return a;
 	},
 	SetDrawText : function(font_text) {
@@ -143,7 +138,6 @@ ALittle.RichEdit = JavaScript.Class(ALittle.DisplayLayout, {
 		draw_text.italic = font_text.italic;
 		draw_text.underline = font_text.underline;
 		draw_text.deleteline = font_text.deleteline;
-		draw_text.outline = font_text.outline;
 	},
 	UpdateFontText : function() {
 		let line_list = this._line_list;
@@ -185,10 +179,6 @@ ALittle.RichEdit = JavaScript.Class(ALittle.DisplayLayout, {
 		}
 		if (font_text.deleteline !== text_info.deleteline) {
 			font_text.deleteline = text_info.deleteline;
-			is_change = true;
-		}
-		if (font_text.outline !== text_info.outline) {
-			font_text.outline = text_info.outline;
 			is_change = true;
 		}
 		if (is_change) {
@@ -722,13 +712,6 @@ ALittle.RichEdit = JavaScript.Class(ALittle.DisplayLayout, {
 		this._font_text.italic = value;
 		this._default_text_area.italic = value;
 	},
-	set font_outline(value) {
-		if (this._font_text.outline === value) {
-			return;
-		}
-		this._font_text.outline = value;
-		this._default_text_area.outline = value;
-	},
 	set font_path(value) {
 		if (this._font_text.font_path === value) {
 			return;
@@ -954,6 +937,9 @@ ALittle.RichEdit = JavaScript.Class(ALittle.DisplayLayout, {
 	},
 	get cursor_y() {
 		return this._cursor.y;
+	},
+	get cursor_b() {
+		return (this._cursor.y + this._cursor.height) * this.scale_y + this._ims_padding;
 	},
 	get start_cursor_x() {
 		return this._event_start_x;
@@ -3455,16 +3441,10 @@ ALittle.RichEdit = JavaScript.Class(ALittle.DisplayLayout, {
 if (typeof ALittle === "undefined") window.ALittle = {};
 let ___all_struct = ALittle.GetAllStruct();
 
-ALittle.RegStruct(-256576702, "ALittle.RichInputFontChangedEvent", {
-name : "ALittle.RichInputFontChangedEvent", ns_name : "ALittle", rl_name : "RichInputFontChangedEvent", hash_code : -256576702,
-name_list : ["target"],
-type_list : ["ALittle.DisplayObject"],
-option_map : {}
-})
-ALittle.RegStruct(1424993548, "ALittle.RichInputMultiDragBeginEvent", {
-name : "ALittle.RichInputMultiDragBeginEvent", ns_name : "ALittle", rl_name : "RichInputMultiDragBeginEvent", hash_code : 1424993548,
-name_list : ["target"],
-type_list : ["ALittle.DisplayObject"],
+ALittle.RegStruct(1818243950, "ALittle.RichInputCharInfo", {
+name : "ALittle.RichInputCharInfo", ns_name : "ALittle", rl_name : "RichInputCharInfo", hash_code : 1818243950,
+name_list : ["acc_width","pre_width","text_info","text","password_text","text_object","ctrl_info","ctrl"],
+type_list : ["double","double","ALittle.DisplayInfo","string","string","ALittle.Text","ALittle.DisplayInfo","ALittle.DisplayObject"],
 option_map : {}
 })
 ALittle.RegStruct(1640499878, "ALittle.UIRichInputLongClickEvent", {
@@ -3473,10 +3453,10 @@ name_list : ["target","abs_x","abs_y","rel_x","rel_y"],
 type_list : ["ALittle.DisplayObject","double","double","double","double"],
 option_map : {}
 })
-ALittle.RegStruct(1818243950, "ALittle.RichInputCharInfo", {
-name : "ALittle.RichInputCharInfo", ns_name : "ALittle", rl_name : "RichInputCharInfo", hash_code : 1818243950,
-name_list : ["acc_width","pre_width","text_info","text","password_text","text_object","ctrl_info","ctrl"],
-type_list : ["double","double","ALittle.DisplayInfo","string","string","ALittle.Text","ALittle.DisplayInfo","ALittle.DisplayObject"],
+ALittle.RegStruct(1424993548, "ALittle.RichInputMultiDragBeginEvent", {
+name : "ALittle.RichInputMultiDragBeginEvent", ns_name : "ALittle", rl_name : "RichInputMultiDragBeginEvent", hash_code : 1424993548,
+name_list : ["target"],
+type_list : ["ALittle.DisplayObject"],
 option_map : {}
 })
 ALittle.RegStruct(-884368490, "ALittle.RichInputMultiDragEndEvent", {
@@ -3493,6 +3473,12 @@ option_map : {}
 })
 ALittle.RegStruct(-605767802, "ALittle.RichInputMultiDragEvent", {
 name : "ALittle.RichInputMultiDragEvent", ns_name : "ALittle", rl_name : "RichInputMultiDragEvent", hash_code : -605767802,
+name_list : ["target"],
+type_list : ["ALittle.DisplayObject"],
+option_map : {}
+})
+ALittle.RegStruct(-256576702, "ALittle.RichInputFontChangedEvent", {
+name : "ALittle.RichInputFontChangedEvent", ns_name : "ALittle", rl_name : "RichInputFontChangedEvent", hash_code : -256576702,
 name_list : ["target"],
 type_list : ["ALittle.DisplayObject"],
 option_map : {}
@@ -3554,9 +3540,6 @@ ALittle.RichInput = JavaScript.Class(ALittle.DisplayLayout, {
 		if (a.deleteline !== b.deleteline) {
 			return false;
 		}
-		if (a.outline !== b.outline) {
-			return false;
-		}
 		return true;
 	},
 	CopyTextInfo : function(b) {
@@ -3571,7 +3554,6 @@ ALittle.RichInput = JavaScript.Class(ALittle.DisplayLayout, {
 		a.italic = b.italic;
 		a.underline = b.underline;
 		a.deleteline = b.deleteline;
-		a.outline = b.outline;
 		return a;
 	},
 	InitTextInfo : function() {
@@ -3587,7 +3569,6 @@ ALittle.RichInput = JavaScript.Class(ALittle.DisplayLayout, {
 		a.italic = font_text.italic;
 		a.underline = font_text.underline;
 		a.deleteline = font_text.deleteline;
-		a.outline = font_text.outline;
 		return a;
 	},
 	SetDrawText : function(font_text) {
@@ -3601,7 +3582,6 @@ ALittle.RichInput = JavaScript.Class(ALittle.DisplayLayout, {
 		draw_text.italic = font_text.italic;
 		draw_text.underline = font_text.underline;
 		draw_text.deleteline = font_text.deleteline;
-		draw_text.outline = font_text.outline;
 	},
 	SplitText : function(char_info, char_info_list, char_info_list_count) {
 		let text = char_info.text;
@@ -3804,10 +3784,6 @@ ALittle.RichInput = JavaScript.Class(ALittle.DisplayLayout, {
 		}
 		if (font_text.deleteline !== text_info.deleteline) {
 			font_text.deleteline = text_info.deleteline;
-			is_change = true;
-		}
-		if (font_text.outline !== text_info.outline) {
-			font_text.outline = text_info.outline;
 			is_change = true;
 		}
 		if (is_change) {
@@ -4022,16 +3998,6 @@ ALittle.RichInput = JavaScript.Class(ALittle.DisplayLayout, {
 			this._char_info_list[1 - 1].text_info.italic = value;
 		}
 	},
-	set font_outline(value) {
-		if (this._font_text.outline === value) {
-			return;
-		}
-		this._font_text.outline = value;
-		this._default_text.outline = value;
-		if (this._char_info_list[1 - 1] !== undefined) {
-			this._char_info_list[1 - 1].text_info.outline = value;
-		}
-	},
 	set font_path(value) {
 		if (this._font_text.font_path === value) {
 			return;
@@ -4232,6 +4198,9 @@ ALittle.RichInput = JavaScript.Class(ALittle.DisplayLayout, {
 	},
 	get cursor_y() {
 		return this._cursor.y;
+	},
+	get cursor_b() {
+		return (this._cursor.y + this._cursor.height) * this.scale_y + this._ims_padding;
 	},
 	get start_cursor_x() {
 		return this._event_start_x;
@@ -5873,6 +5842,13 @@ ALittle.ScrollList = JavaScript.Class(ALittle.DisplayView, {
 		this.RefreshChild(false);
 		return true;
 	},
+	SpliceChild : function(index, count) {
+		let result = this._scroll_linear.SpliceChild(index, count);
+		if (result !== 0) {
+			this.RefreshChild(false);
+		}
+		return result;
+	},
 	AddChildEffect : function(child, up) {
 		if (child === undefined) {
 			return false;
@@ -6327,10 +6303,10 @@ ALittle.ScrollList = JavaScript.Class(ALittle.DisplayView, {
 	HandleMButtonWheel : function(event) {
 		if (this._scroll_bar !== undefined && event.delta_y !== 0) {
 			let offset = this._scroll_linear.height * 0.1 * event.delta_y;
-			if (offset > 40) {
-				offset = 40;
-			} else if (offset < -40) {
-				offset = -40;
+			if (offset > 60) {
+				offset = 60;
+			} else if (offset < -60) {
+				offset = -60;
 			}
 			if (offset !== 0) {
 				this._scroll_bar.offset_rate = this._scroll_bar.offset_rate - offset / this._scroll_linear.height;
@@ -6819,14 +6795,14 @@ ALittle.ScrollList = JavaScript.Class(ALittle.DisplayView, {
 if (typeof ALittle === "undefined") window.ALittle = {};
 let ___all_struct = ALittle.GetAllStruct();
 
-ALittle.RegStruct(2101017097, "ALittle.ScrollButtonDragEndEvent", {
-name : "ALittle.ScrollButtonDragEndEvent", ns_name : "ALittle", rl_name : "ScrollButtonDragEndEvent", hash_code : 2101017097,
+ALittle.RegStruct(-2129379001, "ALittle.ScrollButtonDragBeginEvent", {
+name : "ALittle.ScrollButtonDragBeginEvent", ns_name : "ALittle", rl_name : "ScrollButtonDragBeginEvent", hash_code : -2129379001,
 name_list : ["target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"],
 type_list : ["ALittle.DisplayObject","double","double","double","double","double","double"],
 option_map : {}
 })
-ALittle.RegStruct(-2129379001, "ALittle.ScrollButtonDragBeginEvent", {
-name : "ALittle.ScrollButtonDragBeginEvent", ns_name : "ALittle", rl_name : "ScrollButtonDragBeginEvent", hash_code : -2129379001,
+ALittle.RegStruct(2101017097, "ALittle.ScrollButtonDragEndEvent", {
+name : "ALittle.ScrollButtonDragEndEvent", ns_name : "ALittle", rl_name : "ScrollButtonDragEndEvent", hash_code : 2101017097,
 name_list : ["target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"],
 type_list : ["ALittle.DisplayObject","double","double","double","double","double","double"],
 option_map : {}
@@ -8015,11 +7991,13 @@ ALittle.UISystem = JavaScript.Class(undefined, {
 					this._dl = true;
 					let event = {};
 					event.target = this._sfc;
-					[event.rel_x, event.rel_y] = this._sfc.GlobalToLocalMatrix2D(this._mouse_x, this._mouse_y);
-					event.abs_x = x;
-					event.abs_y = y;
-					event.delta_x = this._dl_delta_x;
-					event.delta_y = this._dl_delta_y;
+					let mouse_x = x - delta_x;
+					let mouse_y = y - delta_y;
+					[event.rel_x, event.rel_y] = this._sfc.GlobalToLocalMatrix2D(mouse_x, mouse_y);
+					event.abs_x = mouse_x;
+					event.abs_y = mouse_y;
+					event.delta_x = 0;
+					event.delta_y = 0;
 					this._sfc.DispatchEvent(___all_struct.get(1301789264), event);
 				}
 			}
@@ -8222,13 +8200,12 @@ ALittle.UISystem = JavaScript.Class(undefined, {
 				let [abs_x, abs_y] = this._sfc.LocalToGlobal();
 				abs_x = abs_x + (this._sfc.cursor_x);
 				abs_y = abs_y + ((this._sfc.cursor_y + this._sfc.font_size) * this._sfc.scale_y);
-				ALittle.System_SetIMEPos(lua.math.floor(abs_x), lua.math.floor(abs_y));
+				ALittle.System_SetIMEPos(ALittle.Math_Floor(abs_x), ALittle.Math_Floor(abs_y));
 			}
 		}
 	},
 	HandleKeyDown : function(mod, sym, scancode) {
 		this._sym_map.set(sym, true);
-		let result = false;
 		if (ALittle.System_GetIMESelectList() === "" && this._ime_editing) {
 			this._ime_editing = false;
 			if (this._ime_editing_callback !== undefined) {
@@ -8250,9 +8227,17 @@ ALittle.UISystem = JavaScript.Class(undefined, {
 	},
 	HandleKeyUp : function(mod, sym, scancode) {
 		this._sym_map.delete(sym);
+		let event = {};
+		event.target = this._sfc;
+		event.mod = mod;
+		event.sym = sym;
+		event.scancode = scancode;
+		if (this._sfc !== undefined && this._ime_editing === false) {
+			this._sfc.DispatchEvent(___all_struct.get(1213009422), event);
+		}
 	},
 	HandleMouseWheel : function(x, y) {
-		if (this._mfc === undefined || this._sl) {
+		if (this._mfc === undefined) {
 			return false;
 		}
 		if (this._wfc === undefined) {
@@ -8691,22 +8676,10 @@ window.A_LayerManager = ALittle.NewObject(ALittle.LayerManager);
 {
 if (typeof ALittle === "undefined") window.ALittle = {};
 
-ALittle.RegStruct(1002517605, "ALittle.LoadingTextureObjectInfo", {
-name : "ALittle.LoadingTextureObjectInfo", ns_name : "ALittle", rl_name : "LoadingTextureObjectInfo", hash_code : 1002517605,
-name_list : ["callback"],
-type_list : ["Functor<(ALittle.DisplayObject,bool)>"],
-option_map : {}
-})
-ALittle.RegStruct(1266404893, "ALittle.LoadTextureInfo", {
-name : "ALittle.LoadTextureInfo", ns_name : "ALittle", rl_name : "LoadTextureInfo", hash_code : 1266404893,
-name_list : ["loader","cut_loader","texture_mgr"],
-type_list : ["ALittle.ITextureLoader","ALittle.ITextureCutLoader","ALittle.TextureManager"],
-option_map : {}
-})
-ALittle.RegStruct(1754262532, "ALittle.LoadingTextureInfo", {
-name : "ALittle.LoadingTextureInfo", ns_name : "ALittle", rl_name : "LoadingTextureInfo", hash_code : 1754262532,
-name_list : ["cache","object_map"],
-type_list : ["bool","Map<ALittle.DisplayObject,ALittle.LoadingTextureObjectInfo>"],
+ALittle.RegStruct(-1815508639, "ALittle.TextureCutInfo", {
+name : "ALittle.TextureCutInfo", ns_name : "ALittle", rl_name : "TextureCutInfo", hash_code : -1815508639,
+name_list : ["texture_name","max_width","max_height","cache"],
+type_list : ["string","int","int","bool"],
 option_map : {}
 })
 ALittle.RegStruct(1812223610, "ALittle.LoadAtlasInfo", {
@@ -8715,10 +8688,34 @@ name_list : ["big_path","atlas","big_width","big_height"],
 type_list : ["string","List<string>","int","int"],
 option_map : {}
 })
-ALittle.RegStruct(-1815508639, "ALittle.TextureCutInfo", {
-name : "ALittle.TextureCutInfo", ns_name : "ALittle", rl_name : "TextureCutInfo", hash_code : -1815508639,
-name_list : ["texture_name","max_width","max_height","cache"],
-type_list : ["string","int","int","bool"],
+ALittle.RegStruct(1754262532, "ALittle.LoadingTextureInfo", {
+name : "ALittle.LoadingTextureInfo", ns_name : "ALittle", rl_name : "LoadingTextureInfo", hash_code : 1754262532,
+name_list : ["cache","object_map"],
+type_list : ["bool","Map<ALittle.DisplayObject,ALittle.LoadingTextureObjectInfo>"],
+option_map : {}
+})
+ALittle.RegStruct(1390702448, "ALittle.AltasCollectInfo", {
+name : "ALittle.AltasCollectInfo", ns_name : "ALittle", rl_name : "AltasCollectInfo", hash_code : 1390702448,
+name_list : ["count","list"],
+type_list : ["int","List<List<any>>"],
+option_map : {}
+})
+ALittle.RegStruct(1305876767, "ALittle.PrepareInfo", {
+name : "ALittle.PrepareInfo", ns_name : "ALittle", rl_name : "PrepareInfo", hash_code : 1305876767,
+name_list : ["total","succeed","failed","map","callback"],
+type_list : ["int","int","int","Map<string,bool>","Functor<(int,int,int)>"],
+option_map : {}
+})
+ALittle.RegStruct(1266404893, "ALittle.LoadTextureInfo", {
+name : "ALittle.LoadTextureInfo", ns_name : "ALittle", rl_name : "LoadTextureInfo", hash_code : 1266404893,
+name_list : ["loader","cut_loader","texture_mgr"],
+type_list : ["ALittle.ITextureLoader","ALittle.ITextureCutLoader","ALittle.TextureManager"],
+option_map : {}
+})
+ALittle.RegStruct(1002517605, "ALittle.LoadingTextureObjectInfo", {
+name : "ALittle.LoadingTextureObjectInfo", ns_name : "ALittle", rl_name : "LoadingTextureObjectInfo", hash_code : 1002517605,
+name_list : ["callback"],
+type_list : ["Functor<(ALittle.DisplayObject,bool)>"],
 option_map : {}
 })
 ALittle.RegStruct(-451991995, "ALittle.AltasTextureInfo", {
@@ -8731,18 +8728,6 @@ ALittle.RegStruct(-60039899, "ALittle.AltasInfo", {
 name : "ALittle.AltasInfo", ns_name : "ALittle", rl_name : "AltasInfo", hash_code : -60039899,
 name_list : ["big_path","atlas","big_width","big_height","t","b","l","r"],
 type_list : ["string","List<string>","int","int","double","double","double","double"],
-option_map : {}
-})
-ALittle.RegStruct(1305876767, "ALittle.PrepareInfo", {
-name : "ALittle.PrepareInfo", ns_name : "ALittle", rl_name : "PrepareInfo", hash_code : 1305876767,
-name_list : ["total","succeed","failed","map","callback"],
-type_list : ["int","int","int","Map<string,bool>","Functor<(int,int,int)>"],
-option_map : {}
-})
-ALittle.RegStruct(1390702448, "ALittle.AltasCollectInfo", {
-name : "ALittle.AltasCollectInfo", ns_name : "ALittle", rl_name : "AltasCollectInfo", hash_code : 1390702448,
-name_list : ["count","list"],
-type_list : ["int","List<List<any>>"],
 option_map : {}
 })
 

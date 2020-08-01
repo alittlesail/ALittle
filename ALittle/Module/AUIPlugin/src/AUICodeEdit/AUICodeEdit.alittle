@@ -168,17 +168,23 @@ public class AUICodeEdit : ALittle.DisplayLayout
         var real_width = this._code_screen.container.width - this._code_screen.view_width;
         if (real_width > 0)
         {
-            var view_x = this._code_screen.view_width / 2;
-            var center_x = x;
-            this._code_screen.bottom_scrollbar.offset_rate = (center_x - view_x) / real_width;
+            if (this._cursor.x <= -this._code_screen.container_x || this._cursor.x >= -this._code_screen.container_x + this._code_screen.view_width)
+            {
+                var view_x = this._code_screen.view_width / 2;
+                var center_x = x;
+                this._code_screen.bottom_scrollbar.offset_rate = (center_x - view_x) / real_width;
+            }
         }
 
         var real_height = this._code_screen.container.height - this._code_screen.view_height;
         if (real_height > 0)
         {
-            var view_y = this._code_screen.view_height / 2;
-            var center_y = y;
-            this._code_screen.right_scrollbar.offset_rate = (center_y - view_y) / real_height;
+            if (this._cursor.y <= -this._code_screen.container_y || this._cursor.y + CODE_LINE_HEIGHT >= -this._code_screen.container_y + this._code_screen.view_height)
+            {
+                var view_y = this._code_screen.view_height / 2;
+                var center_y = y;
+                this._code_screen.right_scrollbar.offset_rate = (center_y - view_y) / real_height;
+            }
         }
         this._code_screen.RejustScrollBar();
 
@@ -1572,6 +1578,12 @@ public class AUICodeEdit : ALittle.DisplayLayout
         this._select_cursor.StartLineChar(old_line_start, old_char_start + 4);
         this._select_cursor.UpdateLineChar(old_line_end, old_char_end + 4);
 
+        if (this._find_map != null)
+        {
+            for (var index = line_min; index <= line_max; 1) 
+                this.UpdateLineFind(index);
+        }
+
         if (need_revoke)
         {
             var revoke = new AUICodeMultiTabInsertRevoke(this, this._cursor, this._select_cursor
@@ -1755,6 +1767,12 @@ public class AUICodeEdit : ALittle.DisplayLayout
  	           if (line.container.width > max_width) max_width = line.container.width;
         	this._code_screen.container.width = max_width + CODE_LINE_NUMBER_WIDTH;
         	this._code_screen.RejustScrollBar();
+
+            if (this._find_map != null)
+            {
+                for (var index = line_min; index <= line_max; 1) 
+                    this.UpdateLineFind(index);
+            }
 
         	if (need_revoke)
         	{

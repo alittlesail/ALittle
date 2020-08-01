@@ -265,15 +265,19 @@ function AUICodeEdit:FocusLineCharToCenter(it_line, it_char)
 	local x = char.pre_width
 	local real_width = self._code_screen.container.width - self._code_screen.view_width
 	if real_width > 0 then
-		local view_x = self._code_screen.view_width / 2
-		local center_x = x
-		self._code_screen.bottom_scrollbar.offset_rate = (center_x - view_x) / real_width
+		if self._cursor.x <= -self._code_screen.container_x or self._cursor.x >= -self._code_screen.container_x + self._code_screen.view_width then
+			local view_x = self._code_screen.view_width / 2
+			local center_x = x
+			self._code_screen.bottom_scrollbar.offset_rate = (center_x - view_x) / real_width
+		end
 	end
 	local real_height = self._code_screen.container.height - self._code_screen.view_height
 	if real_height > 0 then
-		local view_y = self._code_screen.view_height / 2
-		local center_y = y
-		self._code_screen.right_scrollbar.offset_rate = (center_y - view_y) / real_height
+		if self._cursor.y <= -self._code_screen.container_y or self._cursor.y + CODE_LINE_HEIGHT >= -self._code_screen.container_y + self._code_screen.view_height then
+			local view_y = self._code_screen.view_height / 2
+			local center_y = y
+			self._code_screen.right_scrollbar.offset_rate = (center_y - view_y) / real_height
+		end
 	end
 	self._code_screen:RejustScrollBar()
 	return true
@@ -1527,6 +1531,14 @@ function AUICodeEdit:MultiTabInsert(need_revoke, revoke_bind)
 	self._cursor:SetLineChar(old_line, old_char + 4)
 	self._select_cursor:StartLineChar(old_line_start, old_char_start + 4)
 	self._select_cursor:UpdateLineChar(old_line_end, old_char_end + 4)
+	if self._find_map ~= nil then
+		local index = line_min
+		while true do
+			if not(index <= line_max) then break end
+			self:UpdateLineFind(index)
+			index = index+(1)
+		end
+	end
 	if need_revoke then
 		local revoke = AUICodeMultiTabInsertRevoke(self, self._cursor, self._select_cursor, old_line_start, old_char_start, old_line_end, old_char_end, self._select_cursor.line_start, self._select_cursor.char_start, self._select_cursor.line_end, self._select_cursor.char_end, revoke_bind == nil)
 		insert_revoke:PushRevoke(revoke)
@@ -1696,6 +1708,14 @@ function AUICodeEdit:MultiTabDelete(need_revoke, revoke_bind)
 		end
 		self._code_screen.container.width = max_width + CODE_LINE_NUMBER_WIDTH
 		self._code_screen:RejustScrollBar()
+		if self._find_map ~= nil then
+			local index = line_min
+			while true do
+				if not(index <= line_max) then break end
+				self:UpdateLineFind(index)
+				index = index+(1)
+			end
+		end
 		if need_revoke then
 			local revoke = AUICodeMultiTabDeleteRevoke(self, self._cursor, self._select_cursor, old_line_start, old_char_start, old_line_end, old_char_end, self._select_cursor.line_start, self._select_cursor.char_start, self._select_cursor.line_end, self._select_cursor.char_end, revoke_bind == nil)
 			insert_revoke:PushRevoke(revoke)

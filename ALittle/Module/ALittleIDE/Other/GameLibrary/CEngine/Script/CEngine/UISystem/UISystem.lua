@@ -1,22 +1,22 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___all_struct = GetAllStruct()
+local ___all_struct = ALittle.GetAllStruct()
 
-RegStruct(1031172931, "ALittle.FingerInfo", {
+ALittle.RegStruct(1031172931, "ALittle.FingerInfo", {
 name = "ALittle.FingerInfo", ns_name = "ALittle", rl_name = "FingerInfo", hash_code = 1031172931,
 name_list = {"key","mouse_x","mouse_y","last_mouse_x","last_mouse_y","dl","mfc","mfc_rel_x","mfc_rel_y","is_sfc"},
 type_list = {"string","double","double","double","double","bool","ALittle.DisplayObject","double","double","bool"},
 option_map = {}
 })
 
-local __abs = Math_Abs
-UISystem = Lua.Class(nil, "ALittle.UISystem")
+local __abs = ALittle.Math_Abs
+ALittle.UISystem = Lua.Class(nil, "ALittle.UISystem")
 
-function UISystem:Ctor()
+function ALittle.UISystem:Ctor()
 	___rawset(self, "_view_width", 0)
 	___rawset(self, "_view_height", 0)
 	___rawset(self, "_mouse_x", 0)
@@ -40,7 +40,7 @@ function UISystem:Ctor()
 	___rawset(self, "_dl_delta_y", 0)
 	___rawset(self, "_max_dl_delta", 10)
 	___rawset(self, "_max_lp_delta", 2)
-	if System_GetPlatform() == "Windows" then
+	if ALittle.System_GetPlatform() == "Windows" then
 		___rawset(self, "_max_dl_delta", 1)
 		___rawset(self, "_max_lp_delta", 0)
 	end
@@ -53,43 +53,43 @@ function UISystem:Ctor()
 	___rawset(self, "_finger_info", {})
 end
 
-function UISystem.__setter:view_resize_callback(value)
+function ALittle.UISystem.__setter:view_resize_callback(value)
 	self._view_resize_callback = value
 end
 
-function UISystem.__getter:view_resize_callback()
+function ALittle.UISystem.__getter:view_resize_callback()
 	return self._view_resize_callback
 end
 
-function UISystem.__setter:keydown_callback(value)
+function ALittle.UISystem.__setter:keydown_callback(value)
 	self._keydown_callback = value
 end
 
-function UISystem.__getter:keydown_callback()
+function ALittle.UISystem.__getter:keydown_callback()
 	return self._keydown_callback
 end
 
-function UISystem.__getter:sym_map()
+function ALittle.UISystem.__getter:sym_map()
 	return self._sym_map
 end
 
-function UISystem.__setter:ime_callback(value)
+function ALittle.UISystem.__setter:ime_callback(value)
 	self._ime_editing_callback = value
 end
 
-function UISystem.__getter:ime_callback()
+function ALittle.UISystem.__getter:ime_callback()
 	return self._ime_editing_callback
 end
 
-function UISystem.__getter:mouse_x()
+function ALittle.UISystem.__getter:mouse_x()
 	return self._mouse_x
 end
 
-function UISystem.__getter:mouse_y()
+function ALittle.UISystem.__getter:mouse_y()
 	return self._mouse_y
 end
 
-function UISystem.__setter:focus(control)
+function ALittle.UISystem.__setter:focus(control)
 	if self._sfc == control then
 		return
 	end
@@ -128,11 +128,11 @@ function UISystem.__setter:focus(control)
 	end
 end
 
-function UISystem.__getter:focus()
+function ALittle.UISystem.__getter:focus()
 	return self._sfc
 end
 
-function UISystem.__setter:pick(control)
+function ALittle.UISystem.__setter:pick(control)
 	if self._pfc ~= nil then
 		A_LayerManager:RemoveFromTip(self._pfc)
 	end
@@ -142,19 +142,19 @@ function UISystem.__setter:pick(control)
 	end
 end
 
-function UISystem.__getter:pick()
+function ALittle.UISystem.__getter:pick()
 	return self._pfc
 end
 
-function UISystem.__getter:view_width()
+function ALittle.UISystem.__getter:view_width()
 	return self._view_width
 end
 
-function UISystem.__getter:view_height()
+function ALittle.UISystem.__getter:view_height()
 	return self._view_height
 end
 
-function UISystem:HandleMouseMoved(x, y)
+function ALittle.UISystem:HandleMouseMoved(x, y)
 	local delta_x = x - self._mouse_x
 	local delta_y = y - self._mouse_y
 	self._last_mouse_x = self._mouse_x
@@ -215,27 +215,27 @@ function UISystem:HandleMouseMoved(x, y)
 	return self._mfc ~= nil
 end
 
-function UISystem:HandleLButtonDown(x, y, count)
+function ALittle.UISystem:HandleLButtonDown(x, y, count)
 	self._lbutton_down = true
 	self._lbutton_finger_id = nil
 	self._lbutton_touch_id = nil
 	return self:HandleButtonDown(___all_struct[1883782801], x, y, count)
 end
 
-function UISystem:HandleLButtonUp(x, y)
+function ALittle.UISystem:HandleLButtonUp(x, y)
 	self._lbutton_down = false
 	return self:HandleButtonUp(___all_struct[40651933], x, y)
 end
 
-function UISystem:HandleMButtonDown(x, y, count)
+function ALittle.UISystem:HandleMButtonDown(x, y, count)
 	return self:HandleButtonDown(___all_struct[349963892], x, y, count)
 end
 
-function UISystem:HandleMButtonUp(x, y)
+function ALittle.UISystem:HandleMButtonUp(x, y)
 	return self:HandleButtonUp(___all_struct[683647260], x, y)
 end
 
-function UISystem:HandleButtonDown(T, x, y, count)
+function ALittle.UISystem:HandleButtonDown(T, x, y, count)
 	local rflt = T
 	self._wfc = nil
 	A_LayerManager:HandleLRButtonDown(x, y)
@@ -275,7 +275,7 @@ function UISystem:HandleButtonDown(T, x, y, count)
 			long_event.rel_x = self._mfc_rel_x
 			long_event.rel_y = self._mfc_rel_y
 			long_event.is_drag = false
-			self._long_press = LoopFunction(Lua.Bind(UISystem.DispatchLongButtonEvent, self._mfc, long_event), 1, 500, 1)
+			self._long_press = ALittle.LoopFunction(Lua.Bind(ALittle.UISystem.DispatchLongButtonEvent, self._mfc, long_event), 1, 500, 1)
 			self._long_press:Start()
 		end
 		if self._sfc == nil then
@@ -303,11 +303,11 @@ function UISystem:HandleButtonDown(T, x, y, count)
 	return false
 end
 
-function UISystem.DispatchLongButtonEvent(mfc, event)
+function ALittle.UISystem.DispatchLongButtonEvent(mfc, event)
 	mfc:DispatchEvent(___all_struct[-439548260], event)
 end
 
-function UISystem:HandleButtonUp(T, x, y)
+function ALittle.UISystem:HandleButtonUp(T, x, y)
 	if self._sl == false then
 		return false
 	end
@@ -346,7 +346,7 @@ function UISystem:HandleButtonUp(T, x, y)
 	return self._mfc ~= nil
 end
 
-function UISystem:HandleRButtonDown(x, y, count)
+function ALittle.UISystem:HandleRButtonDown(x, y, count)
 	A_LayerManager:HandleLRButtonDown(x, y)
 	if self._sl then
 		return false
@@ -367,11 +367,11 @@ function UISystem:HandleRButtonDown(x, y, count)
 	return false
 end
 
-function UISystem:HandleRButtonUp(x, y)
+function ALittle.UISystem:HandleRButtonUp(x, y)
 	return false
 end
 
-function UISystem:HandleTextInput(text)
+function ALittle.UISystem:HandleTextInput(text)
 	self._ime_editing = false
 	if self._ime_editing_callback ~= nil then
 		self._ime_editing_callback(false, nil, nil, nil, nil)
@@ -386,7 +386,7 @@ function UISystem:HandleTextInput(text)
 	return false
 end
 
-function UISystem:HandleTextEditing(text, start)
+function ALittle.UISystem:HandleTextEditing(text, start)
 	if text == "" then
 		if self._ime_editing == false then
 			return
@@ -401,7 +401,7 @@ function UISystem:HandleTextEditing(text, start)
 			return
 		end
 		if self._ime_editing_callback ~= nil then
-			local list = String_Split(System_GetIMESelectList(), " ")
+			local list = ALittle.String_Split(ALittle.System_GetIMESelectList(), " ")
 			local new_list = {}
 			local count = 0
 			for index, value in ___ipairs(list) do
@@ -411,19 +411,19 @@ function UISystem:HandleTextEditing(text, start)
 				end
 			end
 			self._ime_editing_callback(true, text, start, new_list, self._sfc)
-			System_SetIMEPos(System_GetScreenWidth(), System_GetScreenHeight())
+			ALittle.System_SetIMEPos(ALittle.System_GetScreenWidth(), ALittle.System_GetScreenHeight())
 		else
 			local abs_x, abs_y = self._sfc:LocalToGlobal()
 			abs_x = abs_x + (self._sfc.cursor_x)
 			abs_y = abs_y + ((self._sfc.cursor_y + self._sfc.font_size) * self._sfc.scale_y)
-			System_SetIMEPos(Math_Floor(abs_x), Math_Floor(abs_y))
+			ALittle.System_SetIMEPos(ALittle.Math_Floor(abs_x), ALittle.Math_Floor(abs_y))
 		end
 	end
 end
 
-function UISystem:HandleKeyDown(mod, sym, scancode)
+function ALittle.UISystem:HandleKeyDown(mod, sym, scancode)
 	self._sym_map[sym] = true
-	if System_GetIMESelectList() == "" and self._ime_editing then
+	if ALittle.System_GetIMESelectList() == "" and self._ime_editing then
 		self._ime_editing = false
 		if self._ime_editing_callback ~= nil then
 			self._ime_editing_callback(false, nil, nil, nil, nil)
@@ -443,7 +443,7 @@ function UISystem:HandleKeyDown(mod, sym, scancode)
 	end
 end
 
-function UISystem:HandleKeyUp(mod, sym, scancode)
+function ALittle.UISystem:HandleKeyUp(mod, sym, scancode)
 	self._sym_map[sym] = nil
 	local event = {}
 	event.target = self._sfc
@@ -455,7 +455,7 @@ function UISystem:HandleKeyUp(mod, sym, scancode)
 	end
 end
 
-function UISystem:HandleMouseWheel(x, y)
+function ALittle.UISystem:HandleMouseWheel(x, y)
 	if self._mfc == nil then
 		return false
 	end
@@ -479,7 +479,7 @@ function UISystem:HandleMouseWheel(x, y)
 	return true
 end
 
-function UISystem:UpdateMoveFocus(x, y)
+function ALittle.UISystem:UpdateMoveFocus(x, y)
 	local mfc
 	local mfd
 	mfc, mfd, self._mfc_rel_x, self._mfc_rel_y = A_LayerManager:PickUp(x, y)
@@ -506,7 +506,7 @@ function UISystem:UpdateMoveFocus(x, y)
 	self._wfc = nil
 end
 
-function UISystem:HandleViewResized(width, height)
+function ALittle.UISystem:HandleViewResized(width, height)
 	if self._view_width == width and self._view_height == height then
 		return
 	end
@@ -518,9 +518,9 @@ function UISystem:HandleViewResized(width, height)
 	end
 end
 
-function UISystem:HandleDropFile(path)
-	local x = System_GetCursorX() - System_GetViewX()
-	local y = System_GetCursorY() - System_GetViewY()
+function ALittle.UISystem:HandleDropFile(path)
+	local x = ALittle.System_GetCursorX() - ALittle.System_GetViewX()
+	local y = ALittle.System_GetCursorY() - ALittle.System_GetViewY()
 	self:HandleMouseMoved(x, y)
 	if self._mfc == nil then
 		return
@@ -531,16 +531,16 @@ function UISystem:HandleDropFile(path)
 	self._mfc:DispatchEvent(___all_struct[-338112738], event)
 end
 
-function UISystem:HandleWindowEnter()
+function ALittle.UISystem:HandleWindowEnter()
 end
 
-function UISystem:HandleWindowLeave()
+function ALittle.UISystem:HandleWindowLeave()
 	if self._lbutton_down then
 		self:HandleLButtonUp(self._mouse_x, self._mouse_y)
 	end
 end
 
-function UISystem:HandleFingerDown(x, y, finger_id, touch_id)
+function ALittle.UISystem:HandleFingerDown(x, y, finger_id, touch_id)
 	if self._lbutton_down == false then
 		self._lbutton_down = true
 		self._lbutton_finger_id = finger_id
@@ -581,7 +581,7 @@ function UISystem:HandleFingerDown(x, y, finger_id, touch_id)
 	return true
 end
 
-function UISystem:HandleFingerUp(x, y, finger_id, touch_id)
+function ALittle.UISystem:HandleFingerUp(x, y, finger_id, touch_id)
 	if self._lbutton_down and self._lbutton_finger_id == finger_id and self._lbutton_touch_id == touch_id then
 		self._lbutton_down = false
 		return self:HandleButtonUp(___all_struct[40651933], x, y)
@@ -624,7 +624,7 @@ function UISystem:HandleFingerUp(x, y, finger_id, touch_id)
 	return true
 end
 
-function UISystem:HandleFingerMoved(x, y, finger_id, touch_id)
+function ALittle.UISystem:HandleFingerMoved(x, y, finger_id, touch_id)
 	if self._lbutton_down and self._lbutton_finger_id == finger_id and self._lbutton_touch_id == touch_id then
 		return self:HandleMouseMoved(x, y)
 	end
@@ -674,4 +674,5 @@ function UISystem:HandleFingerMoved(x, y, finger_id, touch_id)
 	return false
 end
 
-_G.A_UISystem = UISystem()
+_G.A_UISystem = ALittle.UISystem()
+end

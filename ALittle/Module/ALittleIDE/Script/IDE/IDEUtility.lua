@@ -1,11 +1,11 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittleIDE", package.seeall)
-
+do
+if _G.ALittleIDE == nil then _G.ALittleIDE = {} end
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-function IDEUtility_CheckName(name)
+function ALittleIDE.IDEUtility_CheckName(name)
 	local len = ALittle.String_Len(name)
 	if len == 0 then
 		return "命名只能支持字母数字下划线，不能以数字开头"
@@ -30,7 +30,7 @@ function IDEUtility_CheckName(name)
 	return nil
 end
 
-function IDEUtility_CheckResourceName(name)
+function ALittleIDE.IDEUtility_CheckResourceName(name)
 	local len = ALittle.String_Len(name)
 	if len == 0 then
 		return "命名只能支持字母数字下划线"
@@ -48,3 +48,4 @@ function IDEUtility_CheckResourceName(name)
 	return nil
 end
 
+end

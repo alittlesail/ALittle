@@ -1,6 +1,6 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittleIDE", package.seeall)
-
+do
+if _G.ALittleIDE == nil then _G.ALittleIDE = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
@@ -72,14 +72,14 @@ type_list = {"Map<string,ALittle.SmallVersionInfo>","ALittle.BigVersionInfo"},
 option_map = {}
 })
 
-IDEExport = Lua.Class(nil, "ALittleIDE.IDEExport")
+ALittleIDE.IDEExport = Lua.Class(nil, "ALittleIDE.IDEExport")
 
-function IDEExport:Ctor()
+function ALittleIDE.IDEExport:Ctor()
 	___rawset(self, "_submit_dialog", nil)
 	___rawset(self, "_is_in_submit", false)
 end
 
-function IDEExport:PackagePlatform(project_name, version_info, install_info, platform)
+function ALittleIDE.IDEExport:PackagePlatform(project_name, version_info, install_info, platform)
 	local ___COROUTINE = coroutine.running()
 	ALittle.Log("========PackagePlatform" .. project_name .. "========")
 	local project_path = ALittle.File_BaseFilePath() .. "Module/" .. project_name
@@ -105,7 +105,7 @@ function IDEExport:PackagePlatform(project_name, version_info, install_info, pla
 	self:PackageVersion(package_info)
 end
 
-function IDEExport:RepairPNG(path)
+function ALittleIDE.IDEExport:RepairPNG(path)
 	ALittle.Log("========RepairPNG:" .. path .. "========")
 	Lua.Assert(ALittle.File_GetFileAttr(path) ~= nil, "IDEExport:RepairPNG path is not exist:" .. path)
 	local file_map = ALittle.File_GetFileAttrByDir(path)
@@ -120,7 +120,7 @@ function IDEExport:RepairPNG(path)
 	end
 end
 
-function IDEExport:GenerateAtlas(path)
+function ALittleIDE.IDEExport:GenerateAtlas(path)
 	ALittle.Log("========GenerateAtlas:" .. path .. "========")
 	Lua.Assert(ALittle.File_GetFileAttr(path) ~= nil, "IDEExport:GenerateAtlas path is not exist:" .. path)
 	local texture_list = {}
@@ -148,7 +148,7 @@ function IDEExport:GenerateAtlas(path)
 	ALittle.File_WriteJsonToFile(big_list, path .. "/Atlas.ali")
 end
 
-function IDEExport:PackagePath(src_path, dst_path, file_type, crypt_mode)
+function ALittleIDE.IDEExport:PackagePath(src_path, dst_path, file_type, crypt_mode)
 	ALittle.Log("========PackagePath:" .. src_path .. "========")
 	if ALittle.File_GetFileAttr(src_path) == nil then
 		return {}
@@ -182,7 +182,7 @@ function IDEExport:PackagePath(src_path, dst_path, file_type, crypt_mode)
 	return out_file_map
 end
 
-function IDEExport:PackageCommon(export_path, project_path, project_name, platform, is_plugin)
+function ALittleIDE.IDEExport:PackageCommon(export_path, project_path, project_name, platform, is_plugin)
 	ALittle.Log("========PackageCommon:" .. project_path .. "========")
 	Lua.Assert(ALittle.File_GetFileAttr(project_path) ~= nil, "项目文件夹不存在:" .. project_path)
 	if ALittle.File_GetFileAttr(export_path) == nil then
@@ -313,15 +313,15 @@ function IDEExport:PackageCommon(export_path, project_path, project_name, platfo
 	return map_list
 end
 
-function IDEExport:PackageVersion(package_info)
+function ALittleIDE.IDEExport:PackageVersion(package_info)
 	local ___COROUTINE = coroutine.running()
 	ALittle.Log("========PackageVersion========")
-	if g_IDEWebLoginManager:IsLogin() then
+	if ALittleIDE.g_IDEWebLoginManager:IsLogin() then
 		g_AUITool:ShowAlertDialog("提示", "正在请求新的版本号")
 		local param = {}
-		param.__account_id = g_IDEWebLoginManager.account_id
-		param.__session_id = g_IDEWebLoginManager.session_id
-		local client = ALittle.CreateHttpSender(g_IDEWebLoginManager.http_ip, g_IDEWebLoginManager.http_port)
+		param.__account_id = ALittleIDE.g_IDEWebLoginManager.account_id
+		param.__session_id = ALittleIDE.g_IDEWebLoginManager.session_id
+		local client = ALittle.CreateHttpSender(ALittleIDE.g_IDEWebLoginManager.http_ip, ALittleIDE.g_IDEWebLoginManager.http_port)
 		local error, result = ALittle.IHttpSender.Invoke("VersionServer.QNewUpdateTimeIndex", client, param)
 		self:HandleAskNewUpdateTimeIndex(error, result, package_info, true)
 	else
@@ -329,7 +329,7 @@ function IDEExport:PackageVersion(package_info)
 	end
 end
 
-function IDEExport:HandleAskNewUpdateTimeIndex(error, result, package_info, is_login)
+function ALittleIDE.IDEExport:HandleAskNewUpdateTimeIndex(error, result, package_info, is_login)
 	local ___COROUTINE = coroutine.running()
 	g_AUITool:HideAlertDialog()
 	if error ~= nil then
@@ -339,16 +339,16 @@ function IDEExport:HandleAskNewUpdateTimeIndex(error, result, package_info, is_l
 	self:HandleAskNewUpdateTimeIndexImpl(package_info, is_login, result.update_time, result.update_index)
 end
 
-function IDEExport:HandleAskNewUpdateTimeIndexImpl(package_info, is_login, update_time, update_index)
+function ALittleIDE.IDEExport:HandleAskNewUpdateTimeIndexImpl(package_info, is_login, update_time, update_index)
 	local ___COROUTINE = coroutine.running()
 	if is_login then
 		g_AUITool:ShowAlertDialog("提示", "正在请求CurVersion.db的文件的位置")
 		local param = {}
-		param.__account_id = g_IDEWebLoginManager.account_id
-		param.__session_id = g_IDEWebLoginManager.session_id
+		param.__account_id = ALittleIDE.g_IDEWebLoginManager.account_id
+		param.__session_id = ALittleIDE.g_IDEWebLoginManager.session_id
 		param.platform = package_info.platform
 		param.module_name = package_info.project_name
-		local client = ALittle.CreateHttpSender(g_IDEWebLoginManager.http_ip, g_IDEWebLoginManager.http_port)
+		local client = ALittle.CreateHttpSender(ALittleIDE.g_IDEWebLoginManager.http_ip, ALittleIDE.g_IDEWebLoginManager.http_port)
 		local error, result = ALittle.IHttpSender.Invoke("VersionServer.QNewCurVersion", client, param)
 		self:HandleQueryNewCurVersion(error, result, package_info, is_login, update_time, update_index)
 	else
@@ -356,7 +356,7 @@ function IDEExport:HandleAskNewUpdateTimeIndexImpl(package_info, is_login, updat
 	end
 end
 
-function IDEExport:HandleQueryNewCurVersion(error, result, package_info, is_login, update_time, update_index)
+function ALittleIDE.IDEExport:HandleQueryNewCurVersion(error, result, package_info, is_login, update_time, update_index)
 	local ___COROUTINE = coroutine.running()
 	g_AUITool:HideAlertDialog()
 	if error ~= nil then
@@ -379,7 +379,7 @@ function IDEExport:HandleQueryNewCurVersion(error, result, package_info, is_logi
 	end
 end
 
-function IDEExport:HandleDownloadCurVersion(error, package_info, is_login, update_time, update_index)
+function ALittleIDE.IDEExport:HandleDownloadCurVersion(error, package_info, is_login, update_time, update_index)
 	if error ~= nil then
 		g_AUITool:HideAlertDialog()
 		g_AUITool:ShowNotice("错误", "最新版本文件下载失败:" .. error)
@@ -389,7 +389,7 @@ function IDEExport:HandleDownloadCurVersion(error, package_info, is_login, updat
 	self:HandleQueryNewCurVersionImpl(package_info, is_login, update_time, update_index, true)
 end
 
-function IDEExport:HandleQueryNewCurVersionImpl(package_info, is_login, update_time, update_index, has_db_version)
+function ALittleIDE.IDEExport:HandleQueryNewCurVersionImpl(package_info, is_login, update_time, update_index, has_db_version)
 	g_AUITool:ShowAlertDialog("提示", "正在生成版本")
 	ALittle.System_Render()
 	local small_version_time = update_time
@@ -639,14 +639,14 @@ function IDEExport:HandleQueryNewCurVersionImpl(package_info, is_login, update_t
 	g_AUITool:ShowNotice("提示", "版本生成成功" .. package_notice)
 end
 
-function IDEExport:SubmitPlatform(project_name, platform)
+function ALittleIDE.IDEExport:SubmitPlatform(project_name, platform)
 	local ___COROUTINE = coroutine.running()
 	if self._is_in_submit == true then
 		self._submit_dialog.visible = true
 		return
 	end
 	ALittle.Log("==================SubmitPlatform:" .. platform .. "==================")
-	if g_IDEWebLoginManager:IsLogin() == false then
+	if ALittleIDE.g_IDEWebLoginManager:IsLogin() == false then
 		g_AUITool:ShowNotice("错误", "您还未登录，无法上传版本")
 		return
 	end
@@ -672,8 +672,8 @@ function IDEExport:SubmitPlatform(project_name, platform)
 	if submit_info.version_id == nil then
 		g_AUITool:ShowAlertDialog("提示", "正在创建一个新的版本")
 		local param = {}
-		param.__account_id = g_IDEWebLoginManager.account_id
-		param.__session_id = g_IDEWebLoginManager.session_id
+		param.__account_id = ALittleIDE.g_IDEWebLoginManager.account_id
+		param.__session_id = ALittleIDE.g_IDEWebLoginManager.session_id
 		param.module_name = submit_info.module_name
 		param.platform = submit_info.platform
 		param.big_version = submit_info.big_version
@@ -686,7 +686,7 @@ function IDEExport:SubmitPlatform(project_name, platform)
 		param.small_version_index = submit_info.small_version_index
 		param.update_time = submit_info.update_time
 		param.update_index = submit_info.update_index
-		local client = ALittle.CreateHttpSender(g_IDEWebLoginManager.http_ip, g_IDEWebLoginManager.http_port)
+		local client = ALittle.CreateHttpSender(ALittleIDE.g_IDEWebLoginManager.http_ip, ALittleIDE.g_IDEWebLoginManager.http_port)
 		local error, result = ALittle.IHttpSender.Invoke("VersionServer.QNewVersionInfo", client, param)
 		self:HandleNewVersionInfo(error, result, submit_info)
 	else
@@ -694,7 +694,7 @@ function IDEExport:SubmitPlatform(project_name, platform)
 	end
 end
 
-function IDEExport:HandleNewVersionInfo(error, result, submit_info)
+function ALittleIDE.IDEExport:HandleNewVersionInfo(error, result, submit_info)
 	local ___COROUTINE = coroutine.running()
 	g_AUITool:HideAlertDialog()
 	if error ~= nil then
@@ -706,10 +706,10 @@ function IDEExport:HandleNewVersionInfo(error, result, submit_info)
 	self:HandleNewVersionInfoImpl(submit_info)
 end
 
-function IDEExport:HandleNewVersionInfoImpl(submit_info)
+function ALittleIDE.IDEExport:HandleNewVersionInfoImpl(submit_info)
 	local ___COROUTINE = coroutine.running()
 	if self._submit_dialog == nil then
-		self._submit_dialog = g_Control:CreateControl("ide_submit_dialog", self)
+		self._submit_dialog = ALittleIDE.g_Control:CreateControl("ide_submit_dialog", self)
 		A_LayerManager:AddToModal(self._submit_dialog)
 	end
 	self._submit_dialog.visible = true
@@ -719,8 +719,8 @@ function IDEExport:HandleNewVersionInfoImpl(submit_info)
 	local upload_index = 0
 	local total_count = ALittle.List_MaxN(submit_info.upload_list) + 2
 	local param = {}
-	param.__account_id = g_IDEWebLoginManager.account_id
-	param.__session_id = g_IDEWebLoginManager.session_id
+	param.__account_id = ALittleIDE.g_IDEWebLoginManager.account_id
+	param.__session_id = ALittleIDE.g_IDEWebLoginManager.session_id
 	param.platform = submit_info.platform
 	param.module_name = submit_info.module_name
 	param.version_id = submit_info.version_id
@@ -730,12 +730,12 @@ function IDEExport:HandleNewVersionInfoImpl(submit_info)
 		upload_index = upload_index + 1
 		self._submit_content.text = "正在上传:" .. upload_index .. "/" .. total_count .. "\n" .. submit_info.export_module_path .. "/" .. file_path
 		param.file_path = file_path
-		param.__account_id = g_IDEWebLoginManager.account_id
-		param.__session_id = g_IDEWebLoginManager.session_id
+		param.__account_id = ALittleIDE.g_IDEWebLoginManager.account_id
+		param.__session_id = ALittleIDE.g_IDEWebLoginManager.session_id
 		local repeat_count = 0
 		while repeat_count < 1 do
 			repeat_count = repeat_count + 1
-			self._submit_client = ALittle.CreateHttpFileSender(g_IDEWebLoginManager.http_ip, g_IDEWebLoginManager.http_port, submit_info.export_module_path .. "/" .. file_path, 0, Lua.Bind(self.HandleSubmitVersionUpload, self, upload_index, total_count))
+			self._submit_client = ALittle.CreateHttpFileSender(ALittleIDE.g_IDEWebLoginManager.http_ip, ALittleIDE.g_IDEWebLoginManager.http_port, submit_info.export_module_path .. "/" .. file_path, 0, Lua.Bind(self.HandleSubmitVersionUpload, self, upload_index, total_count))
 			error = ALittle.IHttpFileSender.InvokeUpload("VersionServer.QUploadVersionFile", self._submit_client, param)
 			if error == nil then
 				break
@@ -751,12 +751,12 @@ function IDEExport:HandleNewVersionInfoImpl(submit_info)
 		upload_index = upload_index + 1
 		self._submit_content.text = "正在上传:" .. upload_index .. "/" .. total_count .. "\n" .. submit_info.project_path .. "/Export/" .. submit_info.install_name
 		param.file_path = submit_info.install_name
-		param.__account_id = g_IDEWebLoginManager.account_id
-		param.__session_id = g_IDEWebLoginManager.session_id
+		param.__account_id = ALittleIDE.g_IDEWebLoginManager.account_id
+		param.__session_id = ALittleIDE.g_IDEWebLoginManager.session_id
 		local repeat_count = 0
 		while repeat_count < 100 do
 			repeat_count = repeat_count + 1
-			self._submit_client = ALittle.CreateHttpFileSender(g_IDEWebLoginManager.http_ip, g_IDEWebLoginManager.http_port, submit_info.project_path .. "/Export/" .. submit_info.install_name, 0, Lua.Bind(self.HandleSubmitVersionUpload, self, upload_index, total_count))
+			self._submit_client = ALittle.CreateHttpFileSender(ALittleIDE.g_IDEWebLoginManager.http_ip, ALittleIDE.g_IDEWebLoginManager.http_port, submit_info.project_path .. "/Export/" .. submit_info.install_name, 0, Lua.Bind(self.HandleSubmitVersionUpload, self, upload_index, total_count))
 			error = ALittle.IHttpFileSender.InvokeUpload("VersionServer.QUploadVersionFile", self._submit_client, param)
 			if error == nil then
 				break
@@ -772,12 +772,12 @@ function IDEExport:HandleNewVersionInfoImpl(submit_info)
 		upload_index = upload_index + 1
 		self._submit_content.text = "正在上传:" .. upload_index .. "/" .. total_count .. "\n" .. submit_info.export_module_path .. "/CurVersion.db"
 		param.file_path = "CurVersion.db"
-		param.__account_id = g_IDEWebLoginManager.account_id
-		param.__session_id = g_IDEWebLoginManager.session_id
+		param.__account_id = ALittleIDE.g_IDEWebLoginManager.account_id
+		param.__session_id = ALittleIDE.g_IDEWebLoginManager.session_id
 		local repeat_count = 0
 		while repeat_count < 100 do
 			repeat_count = repeat_count + 1
-			self._submit_client = ALittle.CreateHttpFileSender(g_IDEWebLoginManager.http_ip, g_IDEWebLoginManager.http_port, submit_info.export_module_path .. "/CurVersion.db", 0, Lua.Bind(self.HandleSubmitVersionUpload, self, upload_index, total_count))
+			self._submit_client = ALittle.CreateHttpFileSender(ALittleIDE.g_IDEWebLoginManager.http_ip, ALittleIDE.g_IDEWebLoginManager.http_port, submit_info.export_module_path .. "/CurVersion.db", 0, Lua.Bind(self.HandleSubmitVersionUpload, self, upload_index, total_count))
 			error = ALittle.IHttpFileSender.InvokeUpload("VersionServer.QUploadVersionFile", self._submit_client, param)
 			if error == nil then
 				break
@@ -797,7 +797,7 @@ function IDEExport:HandleNewVersionInfoImpl(submit_info)
 	ALittle.File_WriteJsonToFile(submit_info, submit_info.project_path .. "/Export/SubmitInfo_" .. submit_info.platform .. ".json")
 end
 
-function IDEExport:HandleSubmitVersionCancel(event)
+function ALittleIDE.IDEExport:HandleSubmitVersionCancel(event)
 	if self._submit_client ~= nil then
 		self._submit_client:Stop()
 		self._submit_client = nil
@@ -805,7 +805,7 @@ function IDEExport:HandleSubmitVersionCancel(event)
 	self._submit_dialog.visible = false
 end
 
-function IDEExport:HandleSubmitVersionUpload(upload_index, total_count, file)
+function ALittleIDE.IDEExport:HandleSubmitVersionUpload(upload_index, total_count, file)
 	local file_path = file:GetFilePath()
 	local cur_size = file:GetCurSize()
 	local total_size = file:GetTotalSize()
@@ -814,7 +814,7 @@ function IDEExport:HandleSubmitVersionUpload(upload_index, total_count, file)
 	self._submit_process_bar.width = (cur_size / total_size) * self._submit_process_bg.width
 end
 
-function IDEExport:GenerateExe(package_info)
+function ALittleIDE.IDEExport:GenerateExe(package_info)
 	ALittle.Log("==================GenerateExe:" .. package_info.project_name .. "==================")
 	if ALittle.File_GetFileAttr(package_info.project_path) == nil then
 		ALittle.Log("IDEExport:GenerateExe project_path is not exist:", package_info.project_path)
@@ -870,7 +870,7 @@ function IDEExport:GenerateExe(package_info)
 	return "Install.exe"
 end
 
-function IDEExport:GenerateApk(package_info)
+function ALittleIDE.IDEExport:GenerateApk(package_info)
 	ALittle.Log("==================GenerateApk:" .. package_info.project_name .. "==================")
 	if ALittle.File_GetFileAttr(package_info.project_path) == nil then
 		ALittle.Log("IDEExport:GenerateApk project_path is not exist:", package_info.project_path)
@@ -980,7 +980,7 @@ function IDEExport:GenerateApk(package_info)
 	return "Install.apk"
 end
 
-function IDEExport:GenerateIpa(package_info)
+function ALittleIDE.IDEExport:GenerateIpa(package_info)
 	ALittle.Log("==================GenerateIpa:" .. package_info.project_name .. "==================")
 	if ALittle.File_GetFileAttr(package_info.project_path) == nil then
 		ALittle.Log("IDEExport:GenerateIpa project_path is not exist:", package_info.project_path)
@@ -1154,7 +1154,7 @@ function IDEExport:GenerateIpa(package_info)
 	return "Install.ipa"
 end
 
-function IDEExport:GenerateWeb(package_info)
+function ALittleIDE.IDEExport:GenerateWeb(package_info)
 	ALittle.Log("==================GenerateWeb:" .. package_info.project_name .. "==================")
 	if ALittle.File_GetFileAttr(package_info.project_path) == nil then
 		ALittle.Log("IDEExport:GenerateWeb project_path is not exist:", package_info.project_path)
@@ -1177,7 +1177,7 @@ function IDEExport:GenerateWeb(package_info)
 	return "Install.html"
 end
 
-function IDEExport:GenerateWeChat(package_info)
+function ALittleIDE.IDEExport:GenerateWeChat(package_info)
 	ALittle.Log("==================GenerateWeChat:" .. package_info.project_name .. "==================")
 	if ALittle.File_GetFileAttr(package_info.project_path) == nil then
 		ALittle.Log("IDEExport:GenerateWeChat project_path is not exist:", package_info.project_path)
@@ -1220,4 +1220,5 @@ function IDEExport:GenerateWeChat(package_info)
 	return "Install.js"
 end
 
-g_IDEExport = IDEExport()
+ALittleIDE.g_IDEExport = ALittleIDE.IDEExport()
+end

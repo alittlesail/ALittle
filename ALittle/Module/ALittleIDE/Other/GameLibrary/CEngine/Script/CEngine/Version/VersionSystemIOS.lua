@@ -1,22 +1,23 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
 assert(ALittle.VersionSystem, " extends class:ALittle.VersionSystem is nil")
-VersionSystemIOS = Lua.Class(ALittle.VersionSystem, "ALittle.VersionSystemIOS")
+ALittle.VersionSystemIOS = Lua.Class(ALittle.VersionSystem, "ALittle.VersionSystemIOS")
 
-function VersionSystemIOS:Ctor(account_name, module_name)
+function ALittle.VersionSystemIOS:Ctor(account_name, module_name)
 	___rawset(self, "_install_name", "Install.ipa")
 end
 
-function VersionSystemIOS.RefreshVersion()
-	VersionSystemAndroid.RefreshVersion()
+function ALittle.VersionSystemIOS.RefreshVersion()
+	ALittle.VersionSystemAndroid.RefreshVersion()
 end
 
-function VersionSystemIOS:Install(install_name)
+function ALittle.VersionSystemIOS:Install(install_name)
 end
 
+end

@@ -1,13 +1,13 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
 local __all_name_struct = {}
 local __all_id_struct = {}
-function RegStruct(hash, name, info)
+function ALittle.RegStruct(hash, name, info)
 	if __all_name_struct[name] ~= nil then
 		return
 	end
@@ -19,15 +19,16 @@ function RegStruct(hash, name, info)
 	__all_id_struct[hash] = info
 end
 
-function FindStructByName(name)
+function ALittle.FindStructByName(name)
 	return __all_name_struct[name]
 end
 
-function FindStructById(id)
+function ALittle.FindStructById(id)
 	return __all_id_struct[id]
 end
 
-function GetAllStruct()
+function ALittle.GetAllStruct()
 	return __all_id_struct
 end
 
+end

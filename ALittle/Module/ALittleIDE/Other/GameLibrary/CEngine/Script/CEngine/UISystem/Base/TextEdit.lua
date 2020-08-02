@@ -1,22 +1,22 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___all_struct = GetAllStruct()
+local ___all_struct = ALittle.GetAllStruct()
 
 
-local __type = String_Type
-local __tonumber = Math_ToDouble
-local __tostring = String_ToString
-local __floor = Math_Floor
-local __sub = String_Sub
-local __find = String_Find
+local __type = ALittle.String_Type
+local __tonumber = ALittle.Math_ToDouble
+local __tostring = ALittle.String_ToString
+local __floor = ALittle.Math_Floor
+local __sub = ALittle.String_Sub
+local __find = ALittle.String_Find
 assert(ALittle.DisplayObject, " extends class:ALittle.DisplayObject is nil")
-TextEdit = Lua.Class(ALittle.DisplayObject, "ALittle.TextEdit")
+ALittle.TextEdit = Lua.Class(ALittle.DisplayObject, "ALittle.TextEdit")
 
-function TextEdit:Ctor(ctrl_sys)
+function ALittle.TextEdit:Ctor(ctrl_sys)
 	___rawset(self, "_show", __CPPAPITextEdit())
 	___rawset(self, "_cursor_red", 1)
 	___rawset(self, "_cursor_green", 1)
@@ -49,11 +49,11 @@ function TextEdit:Ctor(ctrl_sys)
 	A_LoadTextureManager:RegisterRedrawControl(self)
 end
 
-function TextEdit:Redraw()
+function ALittle.TextEdit:Redraw()
 	self._show:NeedDraw()
 end
 
-function TextEdit:Update()
+function ALittle.TextEdit:Update()
 	if self._is_selecting == false then
 		self._current_flash_alpha = self._current_flash_alpha + self._current_flash_dir
 		if (self._current_flash_dir < 0 and self._current_flash_alpha < -0.05) or (self._current_flash_dir > 0 and self._current_flash_alpha > 1.5) then
@@ -65,28 +65,28 @@ function TextEdit:Update()
 	self._show:SetCursorAlpha(self._current_flash_alpha)
 end
 
-function TextEdit.__getter:is_input()
+function ALittle.TextEdit.__getter:is_input()
 	return true
 end
 
-function TextEdit:GetRealHeight()
+function ALittle.TextEdit:GetRealHeight()
 	return self._show:GetRealHeight()
 end
 
-function TextEdit:GetLineWidth(line_index)
+function ALittle.TextEdit:GetLineWidth(line_index)
 	line_index = line_index - 1
 	return self._show:GetLineWidth(line_index)
 end
 
-function TextEdit:GetLineCount()
+function ALittle.TextEdit:GetLineCount()
 	return self._show:GetLineCount()
 end
 
-function TextEdit:GetScrollOffset()
+function ALittle.TextEdit:GetScrollOffset()
 	return self._show:GetScrollOffset()
 end
 
-function TextEdit.__setter:default_text(value)
+function ALittle.TextEdit.__setter:default_text(value)
 	self._default_text = value
 	if self._default_text == nil then
 		self._default_text = ""
@@ -96,11 +96,11 @@ function TextEdit.__setter:default_text(value)
 	end
 end
 
-function TextEdit.__getter:default_text()
+function ALittle.TextEdit.__getter:default_text()
 	return self._default_text
 end
 
-function TextEdit.__setter:default_text_alpha(value)
+function ALittle.TextEdit.__setter:default_text_alpha(value)
 	if __type(value) ~= "number" then
 		value = __tonumber(value)
 	end
@@ -111,31 +111,31 @@ function TextEdit.__setter:default_text_alpha(value)
 	self._show:SetDefaultTextAlpha(value)
 end
 
-function TextEdit.__getter:default_text_alpha()
+function ALittle.TextEdit.__getter:default_text_alpha()
 	return self._default_text_alpha
 end
 
-function TextEdit.__getter:cursor_x()
+function ALittle.TextEdit.__getter:cursor_x()
 	return self._show:GetCursorX()
 end
 
-function TextEdit.__getter:cursor_y()
+function ALittle.TextEdit.__getter:cursor_y()
 	return self._show:GetCursorY()
 end
 
-function TextEdit.__getter:cursor_b()
+function ALittle.TextEdit.__getter:cursor_b()
 	return (self._show:GetCursorY() + self._show:GetCursorHeight()) * self.scale_y + self._ims_padding
 end
 
-function TextEdit.__setter:editable(value)
+function ALittle.TextEdit.__setter:editable(value)
 	self._editable = value
 end
 
-function TextEdit.__getter:editable()
+function ALittle.TextEdit.__getter:editable()
 	return self._editable
 end
 
-function TextEdit.__setter:font_path(value)
+function ALittle.TextEdit.__setter:font_path(value)
 	self._font_path = value
 	if self._font_path == nil or self._font_size == nil then
 		return
@@ -143,7 +143,7 @@ function TextEdit.__setter:font_path(value)
 	self._ctrl_sys:SetFont(self, self._font_path, self._font_size)
 end
 
-function TextEdit.__setter:font_size(value)
+function ALittle.TextEdit.__setter:font_size(value)
 	self._font_size = value
 	if self._font_path == nil or self._font_size == nil then
 		return
@@ -151,15 +151,15 @@ function TextEdit.__setter:font_size(value)
 	self._ctrl_sys:SetFont(self, self._font_path, self._font_size)
 end
 
-function TextEdit.__getter:font_path()
+function ALittle.TextEdit.__getter:font_path()
 	return self._font_path
 end
 
-function TextEdit.__getter:font_size()
+function ALittle.TextEdit.__getter:font_size()
 	return self._font_size
 end
 
-function TextEdit.__setter:text(value)
+function ALittle.TextEdit.__setter:text(value)
 	if value == nil then
 		return
 	end
@@ -176,14 +176,14 @@ function TextEdit.__setter:text(value)
 	end
 end
 
-function TextEdit.__getter:text()
+function ALittle.TextEdit.__getter:text()
 	if self._show:IsDefaultText() then
 		return ""
 	end
 	return self._show:GetText()
 end
 
-function TextEdit.__setter:bold(value)
+function ALittle.TextEdit.__setter:bold(value)
 	if self._bold == value then
 		return
 	end
@@ -191,11 +191,11 @@ function TextEdit.__setter:bold(value)
 	self._show:SetBold(value)
 end
 
-function TextEdit.__getter:bold()
+function ALittle.TextEdit.__getter:bold()
 	return self._bold
 end
 
-function TextEdit.__setter:italic(value)
+function ALittle.TextEdit.__setter:italic(value)
 	if self._italic == value then
 		return
 	end
@@ -203,11 +203,11 @@ function TextEdit.__setter:italic(value)
 	self._show:SetItalic(value)
 end
 
-function TextEdit.__getter:italic()
+function ALittle.TextEdit.__getter:italic()
 	return self._italic
 end
 
-function TextEdit.__setter:underline(value)
+function ALittle.TextEdit.__setter:underline(value)
 	if self._underline == value then
 		return
 	end
@@ -215,11 +215,11 @@ function TextEdit.__setter:underline(value)
 	self._show:SetUnderline(value)
 end
 
-function TextEdit.__getter:underline()
+function ALittle.TextEdit.__getter:underline()
 	return self._underline
 end
 
-function TextEdit.__setter:deleteline(value)
+function ALittle.TextEdit.__setter:deleteline(value)
 	if self._deleteline == value then
 		return
 	end
@@ -227,73 +227,73 @@ function TextEdit.__setter:deleteline(value)
 	self._show:SetDeleteline(value)
 end
 
-function TextEdit.__getter:deleteline()
+function ALittle.TextEdit.__getter:deleteline()
 	return self._deleteline
 end
 
-function TextEdit:SetCursorToEnd()
+function ALittle.TextEdit:SetCursorToEnd()
 	self._is_selecting = false
 	self._show:SetCursorToEnd()
 end
 
-function TextEdit:SetCursorToHome()
+function ALittle.TextEdit:SetCursorToHome()
 	self._is_selecting = false
 	self._show:SetCursorToHome()
 end
 
-function TextEdit.__setter:ims_padding(value)
+function ALittle.TextEdit.__setter:ims_padding(value)
 	self._ims_padding = value
 end
 
-function TextEdit.__getter:ims_padding()
+function ALittle.TextEdit.__getter:ims_padding()
 	return self._ims_padding
 end
 
-function TextEdit.__getter:regex()
+function ALittle.TextEdit.__getter:regex()
 	return self._regex
 end
 
-function TextEdit.__setter:regex(value)
+function ALittle.TextEdit.__setter:regex(value)
 	if value == nil then
 		value = ""
 	end
 	self._regex = value
 end
 
-function TextEdit.__getter:limit_len()
+function ALittle.TextEdit.__getter:limit_len()
 	return self._limit_len
 end
 
-function TextEdit.__setter:limit_len(value)
+function ALittle.TextEdit.__setter:limit_len(value)
 	if value == nil then
 		value = 0
 	end
 	self._limit_len = value
 end
 
-function TextEdit:HandleFocusIn(event)
+function ALittle.TextEdit:HandleFocusIn(event)
 	self._show:ShowCursor(true)
 	if self._loop == nil then
-		self._loop = LoopFunction(Lua.Bind(self.Update, self), -1, 1, 1)
+		self._loop = ALittle.LoopFunction(Lua.Bind(self.Update, self), -1, 1, 1)
 	end
 	A_LoopSystem:AddUpdater(self._loop)
 	if self._editable then
 		local global_x, global_y = self:LocalToGlobal()
 		global_x = global_x + (self.cursor_x)
 		global_y = global_y + ((self.cursor_y + self.font_size) * self.scale_y)
-		System_SetIMERect(__floor(global_x), __floor(global_y), 10, 5 + self._ims_padding)
-		System_OpenIME()
+		ALittle.System_SetIMERect(__floor(global_x), __floor(global_y), 10, 5 + self._ims_padding)
+		ALittle.System_OpenIME()
 	end
 	if self._show:IsDefaultText() then
 		self._show:SetDefaultText(false, "")
 	end
 end
 
-function TextEdit:HandleFocusOut(event)
+function ALittle.TextEdit:HandleFocusOut(event)
 	self._is_selecting = false
 	self._show:ShowCursor(false)
 	A_LoopSystem:RemoveUpdater(self._loop)
-	System_CloseIME()
+	ALittle.System_CloseIME()
 	if self.text == "" then
 		if self._default_text == nil then
 			self._default_text = ""
@@ -302,13 +302,13 @@ function TextEdit:HandleFocusOut(event)
 	end
 end
 
-function TextEdit:HandleLButtonDown(event)
+function ALittle.TextEdit:HandleLButtonDown(event)
 	if self._editable then
 		local global_x, global_y = self:LocalToGlobal()
 		global_x = global_x + (self.cursor_x)
 		global_y = global_y + ((self.cursor_y + self.font_size) * self.scale_y)
-		System_SetIMERect(__floor(global_x), __floor(global_y), 10, 5 + self._ims_padding)
-		System_OpenIME()
+		ALittle.System_SetIMERect(__floor(global_x), __floor(global_y), 10, 5 + self._ims_padding)
+		ALittle.System_OpenIME()
 	end
 	if event.count % 3 == 1 then
 		self._is_selecting = false
@@ -321,21 +321,21 @@ function TextEdit:HandleLButtonDown(event)
 	end
 end
 
-function TextEdit:CheckTextRegexLimit(text)
+function ALittle.TextEdit:CheckTextRegexLimit(text)
 	if self._limit_len > 0 then
-		local text_len = String_GetWordCount(text)
+		local text_len = ALittle.String_GetWordCount(text)
 		if text_len > self._limit_len then
 			return false
 		end
-		local select_len = String_GetWordCount(self._show:GetSelectText())
-		local total_len = String_GetWordCount(self.text)
+		local select_len = ALittle.String_GetWordCount(self._show:GetSelectText())
+		local total_len = ALittle.String_GetWordCount(self.text)
 		if total_len - select_len + text_len > self._limit_len then
 			return false
 		end
 	end
 	if self._regex ~= "" then
 		while text ~= "" do
-			local byte_count = String_GetByteCount(text, 1)
+			local byte_count = ALittle.String_GetByteCount(text, 1)
 			local sub_text = __sub(text, 1, byte_count)
 			local start_it = __find(sub_text, self._regex)
 			if start_it == nil then
@@ -347,7 +347,7 @@ function TextEdit:CheckTextRegexLimit(text)
 	return true
 end
 
-function TextEdit:HandleTextInput(event)
+function ALittle.TextEdit:HandleTextInput(event)
 	if self._editable or event.custom then
 		self._is_selecting = false
 		if self:CheckTextRegexLimit(event.text) == false then
@@ -360,7 +360,7 @@ function TextEdit:HandleTextInput(event)
 	end
 end
 
-function TextEdit:HandleKeyDown(event)
+function ALittle.TextEdit:HandleKeyDown(event)
 	local is_change = false
 	if event.sym == 9 then
 		if self._editable or event.custom then
@@ -375,7 +375,7 @@ function TextEdit:HandleKeyDown(event)
 			event.handled = true
 		end
 	elseif event.sym == 1073741904 then
-		if BitAnd(event.mod, UIEnumTypes.KMOD_SHIFT) == 0 then
+		if ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) == 0 then
 			self._is_selecting = false
 			self._show:CursorOffsetLR(true)
 		else
@@ -384,7 +384,7 @@ function TextEdit:HandleKeyDown(event)
 		end
 		event.handled = true
 	elseif event.sym == 1073741903 then
-		if BitAnd(event.mod, UIEnumTypes.KMOD_SHIFT) == 0 then
+		if ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) == 0 then
 			self._is_selecting = false
 			self._show:CursorOffsetLR(false)
 		else
@@ -393,7 +393,7 @@ function TextEdit:HandleKeyDown(event)
 		end
 		event.handled = true
 	elseif event.sym == 1073741906 then
-		if BitAnd(event.mod, UIEnumTypes.KMOD_SHIFT) == 0 then
+		if ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) == 0 then
 			self._is_selecting = false
 			self._show:CursorOffsetUD(true)
 		else
@@ -402,7 +402,7 @@ function TextEdit:HandleKeyDown(event)
 		end
 		event.handled = true
 	elseif event.sym == 1073741905 then
-		if BitAnd(event.mod, UIEnumTypes.KMOD_SHIFT) == 0 then
+		if ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) == 0 then
 			self._is_selecting = false
 			self._show:CursorOffsetUD(false)
 		else
@@ -442,27 +442,27 @@ function TextEdit:HandleKeyDown(event)
 			end
 			event.handled = true
 		end
-	elseif event.sym == 120 and BitAnd(event.mod, UIEnumTypes.KMOD_CTRL) ~= 0 then
+	elseif event.sym == 120 and ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) ~= 0 then
 		if self._editable or event.custom then
 			self._is_selecting = false
 			local select_text = self._show:GetSelectText()
 			if select_text ~= "" then
-				System_SetClipboardText(select_text)
+				ALittle.System_SetClipboardText(select_text)
 				is_change = self._show:DeleteSelectText()
 			end
 			event.handled = true
 		end
-	elseif event.sym == 99 and BitAnd(event.mod, UIEnumTypes.KMOD_CTRL) ~= 0 then
+	elseif event.sym == 99 and ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) ~= 0 then
 		local select_text = self._show:GetSelectText()
 		if select_text ~= "" then
-			System_SetClipboardText(select_text)
+			ALittle.System_SetClipboardText(select_text)
 		end
 		event.handled = true
-	elseif event.sym == 118 and BitAnd(event.mod, UIEnumTypes.KMOD_CTRL) ~= 0 then
+	elseif event.sym == 118 and ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) ~= 0 then
 		if self._editable or event.custom then
 			self._is_selecting = false
-			if System_HasClipboardText() then
-				local clip_board_text = System_GetClipboardText()
+			if ALittle.System_HasClipboardText() then
+				local clip_board_text = ALittle.System_GetClipboardText()
 				if self:CheckTextRegexLimit(clip_board_text) == false then
 					return
 				end
@@ -470,7 +470,7 @@ function TextEdit:HandleKeyDown(event)
 			end
 			event.handled = true
 		end
-	elseif event.sym == 97 and BitAnd(event.mod, UIEnumTypes.KMOD_CTRL) ~= 0 then
+	elseif event.sym == 97 and ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) ~= 0 then
 		self._is_selecting = true
 		self._show:SelectAll()
 		event.handled = true
@@ -481,22 +481,22 @@ function TextEdit:HandleKeyDown(event)
 	end
 end
 
-function TextEdit:SelectAll()
+function ALittle.TextEdit:SelectAll()
 	self._is_selecting = true
 	self._show:SelectAll()
 end
 
-function TextEdit:CopyText()
+function ALittle.TextEdit:CopyText()
 	local select_text = self._show:GetSelectText()
 	if select_text == "" then
 		select_text = self.text
 	end
 	if select_text ~= "" then
-		System_SetClipboardText(select_text)
+		ALittle.System_SetClipboardText(select_text)
 	end
 end
 
-function TextEdit:PasteText()
+function ALittle.TextEdit:PasteText()
 	if self._editable == false then
 		return
 	end
@@ -504,8 +504,8 @@ function TextEdit:PasteText()
 		self._show:SetDefaultText(false, "")
 	end
 	self._is_selecting = false
-	if System_HasClipboardText() then
-		local clip_board_text = System_GetClipboardText()
+	if ALittle.System_HasClipboardText() then
+		local clip_board_text = ALittle.System_GetClipboardText()
 		if self:CheckTextRegexLimit(clip_board_text) == false then
 			return
 		end
@@ -513,19 +513,19 @@ function TextEdit:PasteText()
 	end
 end
 
-function TextEdit:CutText()
+function ALittle.TextEdit:CutText()
 	if self._editable == false then
 		return
 	end
 	self._is_selecting = false
 	local select_text = self._show:GetSelectText()
 	if select_text ~= "" then
-		System_SetClipboardText(select_text)
+		ALittle.System_SetClipboardText(select_text)
 		self._show:DeleteSelectText()
 	end
 end
 
-function TextEdit:InsertText(text)
+function ALittle.TextEdit:InsertText(text)
 	if self._editable == false then
 		return
 	end
@@ -541,19 +541,19 @@ function TextEdit:InsertText(text)
 	end
 end
 
-function TextEdit:HandleDragBegin(event)
+function ALittle.TextEdit:HandleDragBegin(event)
 	self._is_selecting = true
 	self._show:DragCursorBegin()
 end
 
-function TextEdit:HandleDrag(event)
+function ALittle.TextEdit:HandleDrag(event)
 	if self._is_selecting == false then
 		return
 	end
 	self._show:DragCursor(event.rel_x, event.rel_y)
 end
 
-function TextEdit:HandleMButtonWheel(event)
+function ALittle.TextEdit:HandleMButtonWheel(event)
 	if event.delta_y > 0 then
 		self._is_selecting = false
 		self._show:CursorOffsetUD(true)
@@ -570,15 +570,15 @@ function TextEdit:HandleMButtonWheel(event)
 	end
 end
 
-function TextEdit:HandleMoveIn(event)
-	System_SetEditCursor()
+function ALittle.TextEdit:HandleMoveIn(event)
+	ALittle.System_SetEditCursor()
 end
 
-function TextEdit:HandleMoveOut(event)
-	System_SetNormalCursor()
+function ALittle.TextEdit:HandleMoveOut(event)
+	ALittle.System_SetNormalCursor()
 end
 
-function TextEdit.__setter:cursor_red(value)
+function ALittle.TextEdit.__setter:cursor_red(value)
 	if self._cursor_red == value then
 		return
 	end
@@ -586,11 +586,11 @@ function TextEdit.__setter:cursor_red(value)
 	self._show:SetCursorRed(value)
 end
 
-function TextEdit.__getter:cursor_red()
+function ALittle.TextEdit.__getter:cursor_red()
 	return self._cursor_red
 end
 
-function TextEdit.__setter:cursor_green(value)
+function ALittle.TextEdit.__setter:cursor_green(value)
 	if self._cursor_green == value then
 		return
 	end
@@ -598,11 +598,11 @@ function TextEdit.__setter:cursor_green(value)
 	self._show:SetCursorGreen(value)
 end
 
-function TextEdit.__getter:cursor_green()
+function ALittle.TextEdit.__getter:cursor_green()
 	return self._cursor_green
 end
 
-function TextEdit.__setter:cursor_blue(value)
+function ALittle.TextEdit.__setter:cursor_blue(value)
 	if self._cursor_blue == value then
 		return
 	end
@@ -610,16 +610,17 @@ function TextEdit.__setter:cursor_blue(value)
 	self._show:SetCursorBlue(value)
 end
 
-function TextEdit.__getter:cursor_blue()
+function ALittle.TextEdit.__getter:cursor_blue()
 	return self._cursor_blue
 end
 
-function TextEdit.__getter:flip()
+function ALittle.TextEdit.__getter:flip()
 	return self._flip
 end
 
-function TextEdit.__setter:flip(value)
+function ALittle.TextEdit.__setter:flip(value)
 	self._flip = value
 	self._show:SetFlip(value)
 end
 
+end

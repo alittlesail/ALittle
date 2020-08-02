@@ -1,44 +1,44 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___all_struct = GetAllStruct()
+local ___all_struct = ALittle.GetAllStruct()
 
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
-Slider = Lua.Class(ALittle.DisplayLayout, "ALittle.Slider")
+ALittle.Slider = Lua.Class(ALittle.DisplayLayout, "ALittle.Slider")
 
-function Slider:Ctor(ctrl_sys)
+function ALittle.Slider:Ctor(ctrl_sys)
 	___rawset(self, "_pickup_rect", false)
-	___rawset(self, "_type", UIEnumTypes.TYPE_V)
+	___rawset(self, "_type", ALittle.UIEnumTypes.TYPE_V)
 	___rawset(self, "_offset_rate", 0)
 	___rawset(self, "_drag_point_rate", 0)
-	___rawset(self, "_fixed", UIEnumTypes.FREE)
+	___rawset(self, "_fixed", ALittle.UIEnumTypes.FREE)
 	___rawset(self, "_grade", 2)
 	___rawset(self, "_grade_list", {})
 end
 
-function Slider.__setter:width(value)
-	DisplayLayout.__setter.width(self, value)
+function ALittle.Slider.__setter:width(value)
+	ALittle.DisplayLayout.__setter.width(self, value)
 	self:RejustBarButton()
 end
 
-function Slider.__setter:height(value)
-	DisplayLayout.__setter.height(self, value)
+function ALittle.Slider.__setter:height(value)
+	ALittle.DisplayLayout.__setter.height(self, value)
 	self:RejustBarButton()
 end
 
-function Slider.__getter:width()
+function ALittle.Slider.__getter:width()
 	return self._width
 end
 
-function Slider.__getter:height()
+function ALittle.Slider.__getter:height()
 	return self._height
 end
 
-function Slider.__setter:type(value)
+function ALittle.Slider.__setter:type(value)
 	if self._type == value then
 		return
 	end
@@ -46,11 +46,11 @@ function Slider.__setter:type(value)
 	self:RejustBarButton()
 end
 
-function Slider.__getter:type()
+function ALittle.Slider.__getter:type()
 	return self._type
 end
 
-function Slider.__setter:offset_rate(value)
+function ALittle.Slider.__setter:offset_rate(value)
 	self._offset_rate = value
 	if self._offset_rate < 0 then
 		self._offset_rate = 0
@@ -60,26 +60,26 @@ function Slider.__setter:offset_rate(value)
 	self:RejustBarButton()
 end
 
-function Slider.__getter:offset_rate()
+function ALittle.Slider.__getter:offset_rate()
 	return self._offset_rate
 end
 
-function Slider.__setter:grade_value(value)
-	if self._fixed == UIEnumTypes.FREE then
+function ALittle.Slider.__setter:grade_value(value)
+	if self._fixed == ALittle.UIEnumTypes.FREE then
 		self.offset_rate = value
 		return
 	end
 	self.offset_rate = (math.floor(value) - 1) / (self.grade - 1)
 end
 
-function Slider.__getter:grade_value()
-	if self._fixed == UIEnumTypes.FREE then
+function ALittle.Slider.__getter:grade_value()
+	if self._fixed == ALittle.UIEnumTypes.FREE then
 		return self._offset_rate
 	end
 	return math.floor(self._offset_rate * (self._grade - 1)) + 1
 end
 
-function Slider.__setter:bar_background(value)
+function ALittle.Slider.__setter:bar_background(value)
 	if self._bar_background ~= nil then
 		self._bar_background:RemoveEventListener(___all_struct[1883782801], self, self.HandleBarBackgroudLButtonDown)
 		self:RemoveChild(self._bar_background)
@@ -92,21 +92,21 @@ function Slider.__setter:bar_background(value)
 	self:RejustBarButton()
 end
 
-function Slider:HandleBarBackgroudLButtonDown(event)
+function ALittle.Slider:HandleBarBackgroudLButtonDown(event)
 	local rel_x = event.rel_x
 	local rel_y = event.rel_y
 	local real_width = self.width
 	local real_height = self.height
 	local bar_width = self._bar_button.width
 	local bar_height = self._bar_button.height
-	if self._type == UIEnumTypes.TYPE_V then
+	if self._type == ALittle.UIEnumTypes.TYPE_V then
 		local offset = rel_y / real_height
 		if offset > 1 then
 			offset = 1
 		elseif offset < 0 then
 			offset = 0
 		end
-		if self._fixed == UIEnumTypes.FREE then
+		if self._fixed == ALittle.UIEnumTypes.FREE then
 			if self._offset_rate == offset then
 				return
 			end
@@ -131,7 +131,7 @@ function Slider:HandleBarBackgroudLButtonDown(event)
 		elseif offset < 0 then
 			offset = 0
 		end
-		if self._fixed == UIEnumTypes.FREE then
+		if self._fixed == ALittle.UIEnumTypes.FREE then
 			if self._offset_rate == offset then
 				return
 			end
@@ -153,11 +153,11 @@ function Slider:HandleBarBackgroudLButtonDown(event)
 	self:DispatchEvent(___all_struct[958494922], {})
 end
 
-function Slider.__getter:bar_background()
+function ALittle.Slider.__getter:bar_background()
 	return self._bar_background
 end
 
-function Slider.__setter:bar_button(value)
+function ALittle.Slider.__setter:bar_button(value)
 	if self._bar_button ~= nil then
 		self._bar_button:RemoveEventListener(___all_struct[1337289812], self, self.HandleBarButtonDrag)
 		self._bar_button:RemoveEventListener(___all_struct[1301789264], self, self.HandleBarButtonDragBegin)
@@ -175,16 +175,16 @@ function Slider.__setter:bar_button(value)
 	self:RejustBarButton()
 end
 
-function Slider.__getter:bar_button()
+function ALittle.Slider.__getter:bar_button()
 	return self._bar_button
 end
 
-function Slider.__setter:fixed(value)
+function ALittle.Slider.__setter:fixed(value)
 	if self._fixed == value then
 		return
 	end
 	self._fixed = value
-	if self._fixed == UIEnumTypes.FIXED and self._grade ~= nil then
+	if self._fixed == ALittle.UIEnumTypes.FIXED and self._grade ~= nil then
 		self._grade_list = {}
 		self._grade_list[1] = 0
 		local dist = 1 / (self._grade - 1)
@@ -200,16 +200,16 @@ function Slider.__setter:fixed(value)
 	self:RejustBarButton()
 end
 
-function Slider.__getter:fixed()
+function ALittle.Slider.__getter:fixed()
 	return self._fixed
 end
 
-function Slider.__setter:grade(value)
+function ALittle.Slider.__setter:grade(value)
 	if self._grade == value or value < 2 then
 		return
 	end
 	self._grade = value
-	if self._fixed == UIEnumTypes.FIXED and value ~= nil then
+	if self._fixed == ALittle.UIEnumTypes.FIXED and value ~= nil then
 		self._grade_list = {}
 		self._grade_list[1] = 0
 		local dist = 1 / (value - 1)
@@ -225,15 +225,15 @@ function Slider.__setter:grade(value)
 	self:RejustBarButton()
 end
 
-function Slider.__getter:grade()
+function ALittle.Slider.__getter:grade()
 	return self._grade
 end
 
-function Slider:HandleBarButtonDragBegin(event)
+function ALittle.Slider:HandleBarButtonDragBegin(event)
 	local rel_x
 	local rel_y
 	rel_x, rel_y = self._bar_button:GlobalToLocalMatrix2D(event.abs_x, event.abs_y)
-	if self._type == UIEnumTypes.TYPE_V then
+	if self._type == ALittle.UIEnumTypes.TYPE_V then
 		local height = self._bar_button.height
 		self._drag_point_rate = 0
 		if height > 0 then
@@ -248,7 +248,7 @@ function Slider:HandleBarButtonDragBegin(event)
 	end
 end
 
-function Slider:HandleBarButtonDrag(event)
+function ALittle.Slider:HandleBarButtonDrag(event)
 	local rel_x
 	local rel_y
 	rel_x, rel_y = self._bar_button:GlobalToLocalMatrix2D(event.abs_x, event.abs_y)
@@ -259,8 +259,8 @@ function Slider:HandleBarButtonDrag(event)
 	local real_height = self.height
 	local bar_width = self._bar_button.width
 	local bar_height = self._bar_button.height
-	if self._type == UIEnumTypes.TYPE_V then
-		if self._fixed == UIEnumTypes.FREE then
+	if self._type == ALittle.UIEnumTypes.TYPE_V then
+		if self._fixed == ALittle.UIEnumTypes.FREE then
 			if (event.delta_y > 0 and rel_y < bar_height * self._drag_point_rate) or (event.delta_y < 0 and rel_y > bar_height * self._drag_point_rate) then
 				return
 			end
@@ -294,7 +294,7 @@ function Slider:HandleBarButtonDrag(event)
 			end
 		end
 	else
-		if self._fixed == UIEnumTypes.FREE then
+		if self._fixed == ALittle.UIEnumTypes.FREE then
 			if (event.delta_x > 0 and rel_x < bar_height * self._drag_point_rate) or (event.delta_x < 0 and rel_x > bar_height * self._drag_point_rate) then
 				return
 			end
@@ -331,14 +331,14 @@ function Slider:HandleBarButtonDrag(event)
 	self:DispatchEvent(___all_struct[958494922], {})
 end
 
-function Slider:HandleBarButtonScroll(event)
+function ALittle.Slider:HandleBarButtonScroll(event)
 	local step = nil
-	if self._fixed == UIEnumTypes.FREE then
+	if self._fixed == ALittle.UIEnumTypes.FREE then
 		step = 0.01
 	else
 		step = 1 / (self._grade - 1)
 	end
-	if self._type == UIEnumTypes.TYPE_V then
+	if self._type == ALittle.UIEnumTypes.TYPE_V then
 		if event.delta_y > 0 then
 			self:HandleUpDownButton(-1 * step)
 		elseif event.delta_y < 0 then
@@ -353,7 +353,7 @@ function Slider:HandleBarButtonScroll(event)
 	end
 end
 
-function Slider:HandleUpDownButton(step)
+function ALittle.Slider:HandleUpDownButton(step)
 	self._offset_rate = self._offset_rate + step
 	if self._offset_rate < 0 then
 		self._offset_rate = 0
@@ -361,7 +361,7 @@ function Slider:HandleUpDownButton(step)
 	if self._offset_rate > 1 then
 		self._offset_rate = 1
 	end
-	if self._type == UIEnumTypes.TYPE_V then
+	if self._type == ALittle.UIEnumTypes.TYPE_V then
 		self._bar_button.y = self._offset_rate * self.height - self._bar_button.height / 2
 	else
 		self._bar_button.x = self._offset_rate * self.width - self._bar_button.width / 2
@@ -369,7 +369,7 @@ function Slider:HandleUpDownButton(step)
 	self:DispatchEvent(___all_struct[958494922], {})
 end
 
-function Slider:RejustBarButton()
+function ALittle.Slider:RejustBarButton()
 	if self._bar_background ~= nil then
 		self._bar_background.x = 0
 		self._bar_background.y = 0
@@ -377,17 +377,18 @@ function Slider:RejustBarButton()
 		self._bar_background.height = self.height
 	end
 	if self._bar_button ~= nil then
-		if self._type == UIEnumTypes.TYPE_V then
-			self._bar_button.x_type = UIEnumTypes.POS_ALIGN_CENTER
+		if self._type == ALittle.UIEnumTypes.TYPE_V then
+			self._bar_button.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
 			self._bar_button.x_value = 0
-			self._bar_button.y_type = UIEnumTypes.POS_ABS
+			self._bar_button.y_type = ALittle.UIEnumTypes.POS_ABS
 			self._bar_button.y_value = self._offset_rate * self.height - self._bar_button.height / 2
 		else
-			self._bar_button.x_type = UIEnumTypes.POS_ABS
+			self._bar_button.x_type = ALittle.UIEnumTypes.POS_ABS
 			self._bar_button.x_value = self._offset_rate * self.width - self._bar_button.width / 2
-			self._bar_button.y_type = UIEnumTypes.POS_ALIGN_CENTER
+			self._bar_button.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
 			self._bar_button.y_value = 0
 		end
 	end
 end
 
+end

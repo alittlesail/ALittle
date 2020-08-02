@@ -1,30 +1,30 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
-Piechart = Lua.Class(ALittle.DisplayLayout, "ALittle.Piechart")
+ALittle.Piechart = Lua.Class(ALittle.DisplayLayout, "ALittle.Piechart")
 
-function Piechart:Ctor(ctrl_sys)
+function ALittle.Piechart:Ctor(ctrl_sys)
 	___rawset(self, "_start_degree", 0)
 	___rawset(self, "_end_degree", 0)
 	___rawset(self, "_tri_list", {})
 	local i = 1
 	while true do
 		if not(i <= 5) then break end
-		local triangle = Triangle(self._ctrl_sys)
+		local triangle = ALittle.Triangle(self._ctrl_sys)
 		triangle.u2 = 0.5
 		triangle.v2 = 0.5
-		triangle.width_type = UIEnumTypes.SIZE_MARGIN
+		triangle.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
 		triangle.width_value = 0
-		triangle.height_type = UIEnumTypes.SIZE_MARGIN
+		triangle.height_type = ALittle.UIEnumTypes.SIZE_MARGIN
 		triangle.height_value = 0
 		self._tri_list[i] = triangle
-		DisplayLayout.AddChild(self, triangle)
+		ALittle.DisplayLayout.AddChild(self, triangle)
 		i = i+(1)
 	end
 	___rawset(self, "_start_degree", 0)
@@ -33,7 +33,7 @@ function Piechart:Ctor(ctrl_sys)
 	___rawset(self, "_pie_texture_name", nil)
 end
 
-function Piechart.__setter:start_degree(value)
+function ALittle.Piechart.__setter:start_degree(value)
 	local tmp = value % 360
 	if tmp < 0 then
 		tmp = tmp + (360)
@@ -45,11 +45,11 @@ function Piechart.__setter:start_degree(value)
 	self:SetDegree(tmp, self._end_degree)
 end
 
-function Piechart.__getter:start_degree()
+function ALittle.Piechart.__getter:start_degree()
 	return self._start_degree
 end
 
-function Piechart.__setter:end_degree(value)
+function ALittle.Piechart.__setter:end_degree(value)
 	local tmp = value % 360
 	if tmp < 0 then
 		tmp = tmp + (360)
@@ -61,11 +61,11 @@ function Piechart.__setter:end_degree(value)
 	self:SetDegree(self._start_degree, tmp)
 end
 
-function Piechart.__getter:end_degree()
+function ALittle.Piechart.__getter:end_degree()
 	return self._end_degree
 end
 
-function Piechart.__setter:red(value)
+function ALittle.Piechart.__setter:red(value)
 	if self.red == value then
 		return
 	end
@@ -78,7 +78,7 @@ function Piechart.__setter:red(value)
 	end
 end
 
-function Piechart.__setter:green(value)
+function ALittle.Piechart.__setter:green(value)
 	if self.green == value then
 		return
 	end
@@ -91,7 +91,7 @@ function Piechart.__setter:green(value)
 	end
 end
 
-function Piechart.__setter:blue(value)
+function ALittle.Piechart.__setter:blue(value)
 	if self.blue == value then
 		return
 	end
@@ -104,12 +104,12 @@ function Piechart.__setter:blue(value)
 	end
 end
 
-function Piechart.__setter:width(value)
+function ALittle.Piechart.__setter:width(value)
 	if value == self._width then
 		return
 	end
 	self._width = value
-	if self._width_type == UIEnumTypes.SIZE_ABS then
+	if self._width_type == ALittle.UIEnumTypes.SIZE_ABS then
 		self._width_value = self._width
 	end
 	for k, v in ___ipairs(self._tri_list) do
@@ -122,12 +122,12 @@ function Piechart.__setter:width(value)
 	self._show:SetWidth(value)
 end
 
-function Piechart.__setter:height(value)
+function ALittle.Piechart.__setter:height(value)
 	if value == self._height then
 		return
 	end
 	self._height = value
-	if self._height_type == UIEnumTypes.SIZE_ABS then
+	if self._height_type == ALittle.UIEnumTypes.SIZE_ABS then
 		self._height_value = self._height
 	end
 	for k, v in ___ipairs(self._tri_list) do
@@ -140,7 +140,7 @@ function Piechart.__setter:height(value)
 	self._show:SetHeight(value)
 end
 
-function Piechart.__setter:texture_name(value)
+function ALittle.Piechart.__setter:texture_name(value)
 	if self._pie_texture_name == value then
 		return
 	end
@@ -150,11 +150,11 @@ function Piechart.__setter:texture_name(value)
 	end
 end
 
-function Piechart.__getter:texture_name()
+function ALittle.Piechart.__getter:texture_name()
 	return self._pie_texture_name
 end
 
-function Piechart:SetDegree(start_c, end_c)
+function ALittle.Piechart:SetDegree(start_c, end_c)
 	if end_c <= start_c then
 		return
 	end
@@ -282,7 +282,7 @@ function Piechart:SetDegree(start_c, end_c)
 	end
 end
 
-function Piechart:SetTriangleXY(tri, x1, y1, x3, y3)
+function ALittle.Piechart:SetTriangleXY(tri, x1, y1, x3, y3)
 	tri.x1 = x1
 	tri.y1 = y1
 	tri.x3 = x3
@@ -290,10 +290,11 @@ function Piechart:SetTriangleXY(tri, x1, y1, x3, y3)
 	tri.visible = true
 end
 
-function Piechart:SetTriangleUV(tri, u1, v1, u3, v3)
+function ALittle.Piechart:SetTriangleUV(tri, u1, v1, u3, v3)
 	tri.u1 = u1
 	tri.v1 = v1
 	tri.u3 = u3
 	tri.v3 = v3
 end
 
+end

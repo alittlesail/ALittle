@@ -1,55 +1,55 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittleIDE", package.seeall)
-
+do
+if _G.ALittleIDE == nil then _G.ALittleIDE = {} end
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-function __Browser_Setup(layer_group, control, module_base_path, script_base_path)
+function ALittleIDE.__Browser_Setup(layer_group, control, module_base_path, script_base_path)
 	ALittle.DeleteLog(7)
 	local window_width, window_height, flag, scale = ALittle.System_CalcLandscape(1200, 600, ALittle.BitOr(0x00000080, 0x00000020))
 	ALittle.System_CreateView("ALittleIDE", window_width, window_height, flag, scale)
 	ALittle.System_SetViewIcon(module_base_path .. "/Other/ic_launcher.png")
 	A_ModuleSystem:LoadModule(module_base_path, "ALittleIDE")
 end
-__Browser_Setup = Lua.CoWrap(__Browser_Setup)
+ALittleIDE.__Browser_Setup = Lua.CoWrap(ALittleIDE.__Browser_Setup)
 
-function __Browser_AddModule(module_name, layer_group, module_info)
+function ALittleIDE.__Browser_AddModule(module_name, layer_group, module_info)
 end
 
-function __Browser_Shutdown()
+function ALittleIDE.__Browser_Shutdown()
 end
 
-g_Control = nil
-g_AUIPluinControl = nil
-g_LayerGroup = nil
-g_ModuleBasePath = nil
-g_ScriptBasePath = nil
-g_ModuleBasePathEx = nil
-g_IDEConfig = nil
-g_IDEServerConfig = nil
-g_MainLayer = nil
-g_DialogLayer = nil
-function __Module_Setup(layer_group, control, module_base_path, script_base_path)
-	g_Control = control
-	g_LayerGroup = layer_group
-	g_ModuleBasePath = module_base_path
-	g_ModuleBasePathEx = ALittle.File_BaseFilePath() .. module_base_path
-	g_ScriptBasePath = script_base_path
-	g_AUIPluinControl = A_ModuleSystem:LoadPlugin("AUIPlugin")
-	g_IDEConfig = ALittle.CreateConfigSystem("ALittleIDE.cfg")
-	g_IDEServerConfig = ALittle.CreateConfigSystem(g_ModuleBasePath .. "/Other/Server.cfg")
+ALittleIDE.g_Control = nil
+ALittleIDE.g_AUIPluinControl = nil
+ALittleIDE.g_LayerGroup = nil
+ALittleIDE.g_ModuleBasePath = nil
+ALittleIDE.g_ScriptBasePath = nil
+ALittleIDE.g_ModuleBasePathEx = nil
+ALittleIDE.g_IDEConfig = nil
+ALittleIDE.g_IDEServerConfig = nil
+ALittleIDE.g_MainLayer = nil
+ALittleIDE.g_DialogLayer = nil
+function ALittleIDE.__Module_Setup(layer_group, control, module_base_path, script_base_path)
+	ALittleIDE.g_Control = control
+	ALittleIDE.g_LayerGroup = layer_group
+	ALittleIDE.g_ModuleBasePath = module_base_path
+	ALittleIDE.g_ModuleBasePathEx = ALittle.File_BaseFilePath() .. module_base_path
+	ALittleIDE.g_ScriptBasePath = script_base_path
+	ALittleIDE.g_AUIPluinControl = A_ModuleSystem:LoadPlugin("AUIPlugin")
+	ALittleIDE.g_IDEConfig = ALittle.CreateConfigSystem("ALittleIDE.cfg")
+	ALittleIDE.g_IDEServerConfig = ALittle.CreateConfigSystem(ALittleIDE.g_ModuleBasePath .. "/Other/Server.cfg")
 	ALittle.Math_RandomSeed(ALittle.Time_GetCurTime())
 	ALittle.System_SetThreadCount(5)
-	g_MainLayer = ALittle.DisplayLayout(g_Control)
-	g_MainLayer.width_type = 4
-	g_MainLayer.height_type = 4
-	g_LayerGroup:AddChild(g_MainLayer)
-	g_DialogLayer = ALittle.DisplayLayout(g_Control)
-	g_DialogLayer.width_type = 4
-	g_DialogLayer.height_type = 4
-	g_LayerGroup:AddChild(g_DialogLayer)
-	RequireFromPaths(g_ScriptBasePath, "Data/", {"IDEUIManager.alittle", "IDEProject.alittle", "IDEEnum.alittle"})
+	ALittleIDE.g_MainLayer = ALittle.DisplayLayout(ALittleIDE.g_Control)
+	ALittleIDE.g_MainLayer.width_type = 4
+	ALittleIDE.g_MainLayer.height_type = 4
+	ALittleIDE.g_LayerGroup:AddChild(ALittleIDE.g_MainLayer)
+	ALittleIDE.g_DialogLayer = ALittle.DisplayLayout(ALittleIDE.g_Control)
+	ALittleIDE.g_DialogLayer.width_type = 4
+	ALittleIDE.g_DialogLayer.height_type = 4
+	ALittleIDE.g_LayerGroup:AddChild(ALittleIDE.g_DialogLayer)
+	RequireFromPaths(ALittleIDE.g_ScriptBasePath, "Data/", {"IDEUIManager.alittle", "IDEProject.alittle", "IDEEnum.alittle"})
 	RequireFromPaths(script_base_path, "Dialog/", {"IDEVersionList.alittle", "IDEProjectSettingDialog.alittle", "IDEProjectOpenDialog.alittle"
 		, "IDEProjectNewDialog.alittle", "IDEProjectFindFileDialog.alittle", "IDEProjectExportDialog.alittle"
 		, "IDEImageSelectDialog.alittle", "IDEExport.alittle"})
@@ -74,19 +74,19 @@ function __Module_Setup(layer_group, control, module_base_path, script_base_path
 		, "UIEdit/Setting/DropDownS.alittle", "UIEdit/Setting/DisplayViewS.alittle", "UIEdit/Setting/TextRadioButtonS.alittle"
 		, "UIEdit/Setting/TextInputS.alittle", "UIEdit/Setting/ScrollBarS.alittle", "UIEdit/Setting/ImageInputS.alittle"
 		, "UIEdit/Tree/IDEUITreeLogic.alittle", "UIEdit/Tree/IDEUITreeItem.alittle", "UIEdit/Tree/IDEUITree.alittle"})
-	g_IDECenter:Setup()
+	ALittleIDE.g_IDECenter:Setup()
 end
-__Module_Setup = Lua.CoWrap(__Module_Setup)
+ALittleIDE.__Module_Setup = Lua.CoWrap(ALittleIDE.__Module_Setup)
 
-function __Module_Shutdown()
-	g_IDEProject:CloseProject()
-	g_IDECenter:Shutdown()
-	g_IDEImageSelectDialog:Shutdown()
-	g_IDEImageManagerDialog:Shutdown()
-	g_IDEEditImageDialog:Shutdown()
+function ALittleIDE.__Module_Shutdown()
+	ALittleIDE.g_IDEProject:CloseProject()
+	ALittleIDE.g_IDECenter:Shutdown()
+	ALittleIDE.g_IDEImageSelectDialog:Shutdown()
+	ALittleIDE.g_IDEImageManagerDialog:Shutdown()
+	ALittleIDE.g_IDEEditImageDialog:Shutdown()
 end
 
-function __Module_GetInfo(control, module_base_path, script_base_path)
+function ALittleIDE.__Module_GetInfo(control, module_base_path, script_base_path)
 	local info = {}
 	info.title = "ALittle集成开发环境"
 	info.icon = nil
@@ -97,3 +97,4 @@ function __Module_GetInfo(control, module_base_path, script_base_path)
 	return info
 end
 
+end

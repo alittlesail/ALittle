@@ -1,20 +1,20 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittleIDE", package.seeall)
-
+do
+if _G.ALittleIDE == nil then _G.ALittleIDE = {} end
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-IDECenter = Lua.Class(nil, "ALittleIDE.IDECenter")
+ALittleIDE.IDECenter = Lua.Class(nil, "ALittleIDE.IDECenter")
 
-function IDECenter:Setup()
+function ALittleIDE.IDECenter:Setup()
 	local ___COROUTINE = coroutine.running()
-	g_Control:CreateControl("ide_main_scene", self, g_MainLayer)
-	g_IDEProject:OpenLastProject()
+	ALittleIDE.g_Control:CreateControl("ide_main_scene", self, ALittleIDE.g_MainLayer)
+	ALittleIDE.g_IDEProject:OpenLastProject()
 	A_UISystem.keydown_callback = Lua.Bind(self.HandleShortcutKey, self)
 end
 
-function IDECenter:Shutdown()
+function ALittleIDE.IDECenter:Shutdown()
 	if self._account ~= nil then
 		self._account:Shutdown()
 	end
@@ -23,24 +23,24 @@ function IDECenter:Shutdown()
 	end
 end
 
-function IDECenter.__getter:center()
+function ALittleIDE.IDECenter.__getter:center()
 	return self._center
 end
 
-function IDECenter:RefreshProject()
+function ALittleIDE.IDECenter:RefreshProject()
 	if not self._center.content_edit:IsSaveAll() then
 		local result = g_AUITool:SaveNotice("提示", "是否保存当前项目?")
 		if result == "YES" then
 			self._center.content_edit:SaveAllTab()
 		end
 	end
-	g_IDEProject:RefreshProject()
+	ALittleIDE.g_IDEProject:RefreshProject()
 end
-IDECenter.RefreshProject = Lua.CoWrap(IDECenter.RefreshProject)
+ALittleIDE.IDECenter.RefreshProject = Lua.CoWrap(ALittleIDE.IDECenter.RefreshProject)
 
-function IDECenter:HandleShortcutKey(mod, sym, scancode)
+function ALittleIDE.IDECenter:HandleShortcutKey(mod, sym, scancode)
 	if A_UISystem.sym_map[1073741886] then
-		g_IDEProject:RunProject()
+		ALittleIDE.g_IDEProject:RunProject()
 		return
 	end
 	if self._center ~= nil then
@@ -48,4 +48,5 @@ function IDECenter:HandleShortcutKey(mod, sym, scancode)
 	end
 end
 
-g_IDECenter = IDECenter()
+ALittleIDE.g_IDECenter = ALittleIDE.IDECenter()
+end

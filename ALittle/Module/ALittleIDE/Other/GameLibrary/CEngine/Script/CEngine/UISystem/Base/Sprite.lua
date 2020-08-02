@@ -1,16 +1,16 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___all_struct = GetAllStruct()
+local ___all_struct = ALittle.GetAllStruct()
 
 
 assert(ALittle.DisplayObject, " extends class:ALittle.DisplayObject is nil")
-Sprite = Lua.Class(ALittle.DisplayObject, "ALittle.Sprite")
+ALittle.Sprite = Lua.Class(ALittle.DisplayObject, "ALittle.Sprite")
 
-function Sprite:Ctor(ctrl_sys)
+function ALittle.Sprite:Ctor(ctrl_sys)
 	___rawset(self, "_show", __CPPAPISprite())
 	___rawset(self, "_texture_width", 0)
 	___rawset(self, "_texture_height", 0)
@@ -29,7 +29,7 @@ function Sprite:Ctor(ctrl_sys)
 	self:AddEventListener(___all_struct[734860930], self, self.HandleFLButtonUp)
 end
 
-function Sprite:HandleLButtonUp(event)
+function ALittle.Sprite:HandleLButtonUp(event)
 	if event.rel_x >= 0 and event.rel_y >= 0 and event.rel_x < event.target._width and event.rel_y < event.target._height then
 		local c_event = {}
 		c_event.is_drag = event.is_drag
@@ -37,7 +37,7 @@ function Sprite:HandleLButtonUp(event)
 	end
 end
 
-function Sprite:HandleMButtonUp(event)
+function ALittle.Sprite:HandleMButtonUp(event)
 	if event.rel_x >= 0 and event.rel_y >= 0 and event.rel_x < event.target._width and event.rel_y < event.target._height then
 		local c_event = {}
 		c_event.is_drag = event.is_drag
@@ -45,7 +45,7 @@ function Sprite:HandleMButtonUp(event)
 	end
 end
 
-function Sprite:HandleFLButtonUp(event)
+function ALittle.Sprite:HandleFLButtonUp(event)
 	if event.rel_x >= 0 and event.rel_y >= 0 and event.rel_x < event.target._width and event.rel_y < event.target._height then
 		local c_event = {}
 		c_event.is_drag = event.is_drag
@@ -53,7 +53,7 @@ function Sprite:HandleFLButtonUp(event)
 	end
 end
 
-function Sprite:Redraw()
+function ALittle.Sprite:Redraw()
 	self._show:ClearTexture()
 	if self._texture ~= nil then
 		self._texture:Clear()
@@ -69,7 +69,7 @@ function Sprite:Redraw()
 	end
 end
 
-function Sprite:CopyTextureRef(sprite)
+function ALittle.Sprite:CopyTextureRef(sprite)
 	if sprite == nil or sprite._texture == nil then
 		return
 	end
@@ -92,7 +92,7 @@ function Sprite:CopyTextureRef(sprite)
 	self.col_index = sprite.col_index
 end
 
-function Sprite.__setter:texture_name(value)
+function ALittle.Sprite.__setter:texture_name(value)
 	if self._texture_name == value then
 		return
 	end
@@ -107,7 +107,7 @@ function Sprite.__setter:texture_name(value)
 	end
 end
 
-function Sprite:SetTextureCut(texture_name, cache, index)
+function ALittle.Sprite:SetTextureCut(texture_name, cache, index)
 	if self._texture_name ~= nil then
 		self._show:ClearTexture()
 		self._texture = nil
@@ -120,22 +120,22 @@ function Sprite:SetTextureCut(texture_name, cache, index)
 	end
 end
 
-function Sprite.__getter:texture_name()
+function ALittle.Sprite.__getter:texture_name()
 	return self._texture_name
 end
 
-function Sprite.__setter:texture(value)
+function ALittle.Sprite.__setter:texture(value)
 	self._show:SetTexture(value:GetTexture())
 	self._texture_width = value:GetWidth()
 	self._texture_height = value:GetHeight()
 	self._texture = value
 end
 
-function Sprite.__getter:texture()
+function ALittle.Sprite.__getter:texture()
 	return self._texture
 end
 
-function Sprite:SetTextureCoord(t, b, l, r)
+function ALittle.Sprite:SetTextureCoord(t, b, l, r)
 	self._tex_coord_t = t
 	self._tex_coord_b = b
 	self._tex_coord_l = l
@@ -143,62 +143,63 @@ function Sprite:SetTextureCoord(t, b, l, r)
 	self._show:SetTextureCoord(t, b, l, r)
 end
 
-function Sprite.__getter:texture_width()
+function ALittle.Sprite.__getter:texture_width()
 	return self._texture_width
 end
 
-function Sprite.__getter:texture_height()
+function ALittle.Sprite.__getter:texture_height()
 	return self._texture_height
 end
 
-function Sprite.__setter:row_count(value)
+function ALittle.Sprite.__setter:row_count(value)
 	self._row_count = value
 	self._show:SetRowColCount(self._row_count, self._col_count)
 end
 
-function Sprite.__getter:row_count()
+function ALittle.Sprite.__getter:row_count()
 	return self._row_count
 end
 
-function Sprite.__setter:col_count(value)
+function ALittle.Sprite.__setter:col_count(value)
 	self._col_count = value
 	self._show:SetRowColCount(self._row_count, self._col_count)
 end
 
-function Sprite.__getter:col_count()
+function ALittle.Sprite.__getter:col_count()
 	return self._col_count
 end
 
-function Sprite.__setter:row_index(value)
+function ALittle.Sprite.__setter:row_index(value)
 	self._row_index = value
 	self._show:SetRowColIndex(self._row_index, self._col_index)
 end
 
-function Sprite.__getter:row_index()
+function ALittle.Sprite.__getter:row_index()
 	return self._row_index
 end
 
-function Sprite.__setter:col_index(value)
+function ALittle.Sprite.__setter:col_index(value)
 	self._col_index = value
 	self._show:SetRowColIndex(self._row_index, self._col_index)
 end
 
-function Sprite.__getter:col_index()
+function ALittle.Sprite.__getter:col_index()
 	return self._col_index
 end
 
-function Sprite:SetRowCol(row, col)
+function ALittle.Sprite:SetRowCol(row, col)
 	self._row_index = row
 	self._col_index = col
 	self._show:SetRowColIndex(self._row_index, self._col_index)
 end
 
-function Sprite.__getter:flip()
+function ALittle.Sprite.__getter:flip()
 	return self._flip
 end
 
-function Sprite.__setter:flip(value)
+function ALittle.Sprite.__setter:flip(value)
 	self._flip = value
 	self._show:SetFlip(value)
 end
 
+end

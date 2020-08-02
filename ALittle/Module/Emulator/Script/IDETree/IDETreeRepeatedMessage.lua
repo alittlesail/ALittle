@@ -1,15 +1,15 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("Emulator", package.seeall)
-
+do
+if _G.Emulator == nil then _G.Emulator = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
 assert(Emulator.IDETree, " extends class:Emulator.IDETree is nil")
-IDETreeRepeatedMessage = Lua.Class(Emulator.IDETree, "Emulator.IDETreeRepeatedMessage")
+Emulator.IDETreeRepeatedMessage = Lua.Class(Emulator.IDETree, "Emulator.IDETreeRepeatedMessage")
 
-function IDETreeRepeatedMessage:Ctor(ctrl_sys, root, parent, detail_info)
+function Emulator.IDETreeRepeatedMessage:Ctor(ctrl_sys, root, parent, detail_info)
 	___rawset(self, "_parent", parent)
 	___rawset(self, "_detail_info", detail_info)
 	___rawset(self, "_head", ctrl_sys:CreateControl("ide_common_tree_repeated_message", self))
@@ -23,15 +23,16 @@ function IDETreeRepeatedMessage:Ctor(ctrl_sys, root, parent, detail_info)
 	self._delete_button.disabled = root.for_show
 end
 
-function IDETreeRepeatedMessage:GetDetailInfo()
+function Emulator.IDETreeRepeatedMessage:GetDetailInfo()
 	return self._detail_info
 end
 
-function IDETreeRepeatedMessage:HandleInsertClick(event)
+function Emulator.IDETreeRepeatedMessage:HandleInsertClick(event)
 	self._parent:CreateOneBefore(self)
 end
 
-function IDETreeRepeatedMessage:HandleDeleteClick(event)
+function Emulator.IDETreeRepeatedMessage:HandleDeleteClick(event)
 	self._parent:Delete(self)
 end
 
+end

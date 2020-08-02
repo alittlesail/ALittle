@@ -95,7 +95,7 @@ public class ISocket
         var error, msg = this.ReadMessage();
 		if (error != null) return error, null;
 
-		var content = lua.protobuf.message_jsonencode(msg);
+		var content = lua.protobuf.message_jsonencode(msg, true);
 		
 		var result, object = tcall(lua.json.decode, content);
 		if (result != null) return result, null;

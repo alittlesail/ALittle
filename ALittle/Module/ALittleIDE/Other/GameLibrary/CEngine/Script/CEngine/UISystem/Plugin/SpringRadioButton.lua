@@ -1,20 +1,20 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___all_struct = GetAllStruct()
+local ___all_struct = ALittle.GetAllStruct()
 
 
 assert(ALittle.SpringCheckButton, " extends class:ALittle.SpringCheckButton is nil")
-SpringRadioButton = Lua.Class(ALittle.SpringCheckButton, "ALittle.SpringRadioButton")
+ALittle.SpringRadioButton = Lua.Class(ALittle.SpringCheckButton, "ALittle.SpringRadioButton")
 
-function SpringRadioButton:Ctor(ctrl_sys)
+function ALittle.SpringRadioButton:Ctor(ctrl_sys)
 	___rawset(self, "_cancel_select", false)
 end
 
-function SpringRadioButton.__setter:group(group)
+function ALittle.SpringRadioButton.__setter:group(group)
 	if self._group == group then
 		return
 	end
@@ -27,12 +27,12 @@ function SpringRadioButton.__setter:group(group)
 	end
 end
 
-function SpringRadioButton.__getter:group()
+function ALittle.SpringRadioButton.__getter:group()
 	return self._group
 end
 
-function SpringRadioButton.SetGroup(list)
-	local group = CreateKeyWeakMap()
+function ALittle.SpringRadioButton.SetGroup(list)
+	local group = ALittle.CreateKeyWeakMap()
 	for index, button in ___ipairs(list) do
 		if button._group ~= nil then
 			button._group[button] = nil
@@ -42,15 +42,15 @@ function SpringRadioButton.SetGroup(list)
 	end
 end
 
-function SpringRadioButton.__setter:cancel_select(value)
+function ALittle.SpringRadioButton.__setter:cancel_select(value)
 	self._cancel_select = value
 end
 
-function SpringRadioButton.__getter:cancel_select()
+function ALittle.SpringRadioButton.__getter:cancel_select()
 	return self._cancel_select
 end
 
-function SpringRadioButton:HandleLButtonUp(event)
+function ALittle.SpringRadioButton:HandleLButtonUp(event)
 	if event.rel_x >= 0 and event.rel_y >= 0 and event.rel_x < event.target._width and event.rel_y < event.target._height then
 		if self._selected == false then
 			self._selected = true
@@ -71,7 +71,7 @@ function SpringRadioButton:HandleLButtonUp(event)
 		local e = {}
 		e.is_drag = event.is_drag
 		self:DispatchEvent(___all_struct[-449066808], e)
-		if System_IsPhone == false then
+		if ALittle.System_IsPhone == false then
 			self:ShowOver()
 		else
 			self:ShowUp()
@@ -81,7 +81,7 @@ function SpringRadioButton:HandleLButtonUp(event)
 	end
 end
 
-function SpringRadioButton.__setter:selected(value)
+function ALittle.SpringRadioButton.__setter:selected(value)
 	if self._selected == value then
 		return
 	end
@@ -104,3 +104,4 @@ function SpringRadioButton.__setter:selected(value)
 	end
 end
 
+end

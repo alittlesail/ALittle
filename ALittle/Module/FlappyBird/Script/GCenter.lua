@@ -1,41 +1,41 @@
--- ALittle Generate Lua
-module("FlappyBird", package.seeall)
-
+-- ALittle Generate Lua And Do Not Edit This Line!
+do
+if _G.FlappyBird == nil then _G.FlappyBird = {} end
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-g_GConfig = nil
-GCenter = Lua.Class(nil, "FlappyBird.GCenter")
+FlappyBird.g_GConfig = nil
+FlappyBird.GCenter = Lua.Class(nil, "FlappyBird.GCenter")
 
-function GCenter:Ctor()
+function FlappyBird.GCenter:Ctor()
 end
 
-function GCenter:Setup()
-	g_GConfig = ALittle.CreateConfigSystem(g_ModuleBasePath .. "/User.cfg")
+function FlappyBird.GCenter:Setup()
+	FlappyBird.g_GConfig = ALittle.CreateConfigSystem(FlappyBird.g_ModuleBasePath .. "/User.cfg")
 	ALittle.Math_RandomSeed(ALittle.Time_GetCurTime())
 	ALittle.System_SetThreadCount(5, 2)
-	self._main_layer = ALittle.DisplayLayout(g_Control)
+	self._main_layer = ALittle.DisplayLayout(FlappyBird.g_Control)
 	self._main_layer.width_type = 4
 	self._main_layer.height_type = 4
-	g_LayerGroup:AddChild(self._main_layer, nil)
-	self._dialog_layer = ALittle.DisplayLayout(g_Control)
+	FlappyBird.g_LayerGroup:AddChild(self._main_layer, nil)
+	self._dialog_layer = ALittle.DisplayLayout(FlappyBird.g_Control)
 	self._dialog_layer.width_type = 4
 	self._dialog_layer.height_type = 4
-	g_LayerGroup:AddChild(self._dialog_layer, nil)
-	self._main_scene = g_Control:CreateControl("main_scene", self, self._main_layer)
+	FlappyBird.g_LayerGroup:AddChild(self._dialog_layer, nil)
+	self._main_scene = FlappyBird.g_Control:CreateControl("main_scene", self, self._main_layer)
 	self._main_scene.visible = false
-	self._main_menu = g_Control:CreateControl("main_menu", self, nil)
+	self._main_menu = FlappyBird.g_Control:CreateControl("main_menu", self, nil)
 	self._dialog_layer:AddChild(self._main_menu, nil)
 	self._main_menu.visible = true
 	self._game_over.visible = false
 	self._game_title.visible = true
-	self._max_score_text._user_data = g_GConfig:GetConfig("max_score", 0)
+	self._max_score_text._user_data = FlappyBird.g_GConfig:GetConfig("max_score", 0)
 	self._max_score_text.text = self._max_score_text._user_data
 	self._frame_anti = ALittle.LoopFrame(Lua.Bind(self.LoopGroundFrame, self))
 end
 
-function GCenter:Restart()
+function FlappyBird.GCenter:Restart()
 	self._ground_frame_acc = 0
 	self._next_pipe_gap = 0
 	self._next_pipe_up = 50
@@ -53,7 +53,7 @@ function GCenter:Restart()
 	self._frame_anti:Start()
 end
 
-function GCenter:LoopGroundFrame(frame_time)
+function FlappyBird.GCenter:LoopGroundFrame(frame_time)
 	local scale = 20
 	if not self._dieing then
 		local cur_score = self._score_text._user_data + frame_time
@@ -84,7 +84,7 @@ function GCenter:LoopGroundFrame(frame_time)
 			end
 		end
 		if create_pipe then
-			local pipe = g_Control:CreateControl("pipe")
+			local pipe = FlappyBird.g_Control:CreateControl("pipe")
 			self._pipe_container:AddChild(pipe)
 			local total_height = self._bg.height - self._ground.height
 			local half_height = total_height / 2
@@ -137,23 +137,23 @@ function GCenter:LoopGroundFrame(frame_time)
 	end
 end
 
-function GCenter:HandleStartClick(event)
+function FlappyBird.GCenter:HandleStartClick(event)
 	self._main_menu.visible = false
 	self._main_scene.visible = true
 	self:Restart()
 end
 
-function GCenter:HandleLButtonDown(event)
+function FlappyBird.GCenter:HandleLButtonDown(event)
 	self._tip_1.visible = false
 	self._tip_2.visible = false
 	self._flying = true
 end
 
-function GCenter:HandleLButtonUp(event)
+function FlappyBird.GCenter:HandleLButtonUp(event)
 	self._flying = false
 end
 
-function GCenter:ShowGameOver()
+function FlappyBird.GCenter:ShowGameOver()
 	self._main_menu.visible = true
 	self._main_scene.visible = false
 	self._game_over.visible = true
@@ -164,14 +164,15 @@ function GCenter:ShowGameOver()
 	if self._max_score_text._user_data < cur_socre then
 		self._max_score_text._user_data = cur_socre
 		self._max_score_text.text = self._max_score_text._user_data
-		g_GConfig:SetConfig("max_score", cur_socre, nil)
+		FlappyBird.g_GConfig:SetConfig("max_score", cur_socre, nil)
 	end
 	return true
 end
 
-function GCenter:Shutdown()
+function FlappyBird.GCenter:Shutdown()
 	self._bird:Stop()
 	self._frame_anti:Stop()
 end
 
-g_GCenter = GCenter()
+FlappyBird.g_GCenter = FlappyBird.GCenter()
+end

@@ -1,29 +1,29 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___all_struct = GetAllStruct()
+local ___all_struct = ALittle.GetAllStruct()
 
 
 assert(ALittle.TextCheckButton, " extends class:ALittle.TextCheckButton is nil")
-DropDown = Lua.Class(ALittle.TextCheckButton, "ALittle.DropDown")
+ALittle.DropDown = Lua.Class(ALittle.TextCheckButton, "ALittle.DropDown")
 
-function DropDown:Ctor(ctrl_sys)
-	___rawset(self, "_body", DisplayLayout(self._ctrl_sys))
+function ALittle.DropDown:Ctor(ctrl_sys)
+	___rawset(self, "_body", ALittle.DisplayLayout(self._ctrl_sys))
 	self._body.__right_data = self
 	self._body.visible = false
-	___rawset(self, "_linear", Linear(self._ctrl_sys))
-	self._linear.type = UIEnumTypes.TYPE_V
-	self._linear.width_type = UIEnumTypes.SIZE_MARGIN
+	___rawset(self, "_linear", ALittle.Linear(self._ctrl_sys))
+	self._linear.type = ALittle.UIEnumTypes.TYPE_V
+	self._linear.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
 	self._linear.width_value = 0
-	self._linear.height_type = UIEnumTypes.SIZE_MARGIN
+	self._linear.height_type = ALittle.UIEnumTypes.SIZE_MARGIN
 	self._linear.height_value = 0
-	___rawset(self, "_scroll_screen", ScrollScreen(self._ctrl_sys))
-	self._scroll_screen.width_type = UIEnumTypes.SIZE_MARGIN
+	___rawset(self, "_scroll_screen", ALittle.ScrollScreen(self._ctrl_sys))
+	self._scroll_screen.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
 	self._scroll_screen.width_value = 0
-	self._scroll_screen.height_type = UIEnumTypes.SIZE_MARGIN
+	self._scroll_screen.height_type = ALittle.UIEnumTypes.SIZE_MARGIN
 	self._scroll_screen.height_value = 0
 	self._scroll_screen.container = self._linear
 	self._body:AddChild(self._scroll_screen)
@@ -37,26 +37,26 @@ function DropDown:Ctor(ctrl_sys)
 	self._body:AddEventListener(___all_struct[348388800], self, self.HandleBodyHide)
 end
 
-function DropDown.__setter:show_background(value)
+function ALittle.DropDown.__setter:show_background(value)
 	if self._background == value then
 		return
 	end
 	self._body:RemoveChild(self._background)
 	self._background = value
 	if self._background ~= nil then
-		self._background.width_type = UIEnumTypes.SIZE_MARGIN
-		self._background.height_type = UIEnumTypes.SIZE_MARGIN
+		self._background.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
+		self._background.height_type = ALittle.UIEnumTypes.SIZE_MARGIN
 		self._background.width_value = 0
 		self._background.height_value = 0
 		self._body:AddChild(self._background, 0)
 	end
 end
 
-function DropDown.__getter:show_background()
+function ALittle.DropDown.__getter:show_background()
 	return self._background
 end
 
-function DropDown.__setter:show_scrollbar(value)
+function ALittle.DropDown.__setter:show_scrollbar(value)
 	if self._scrollbar == value then
 		return
 	end
@@ -67,11 +67,11 @@ function DropDown.__setter:show_scrollbar(value)
 	self:Layout()
 end
 
-function DropDown.__getter:show_scrollbar()
+function ALittle.DropDown.__getter:show_scrollbar()
 	return self._scrollbar
 end
 
-function DropDown.__setter:show_count(value)
+function ALittle.DropDown.__setter:show_count(value)
 	if self._show_count == value then
 		return
 	end
@@ -79,11 +79,11 @@ function DropDown.__setter:show_count(value)
 	self:Layout()
 end
 
-function DropDown.__getter:show_count()
+function ALittle.DropDown.__getter:show_count()
 	return self._show_count
 end
 
-function DropDown.__setter:button_style(value)
+function ALittle.DropDown.__setter:button_style(value)
 	if self._button_style == value then
 		return
 	end
@@ -111,51 +111,51 @@ function DropDown.__setter:button_style(value)
 	end
 end
 
-function DropDown.__getter:button_style()
+function ALittle.DropDown.__getter:button_style()
 	return self._button_style
 end
 
-function DropDown.__setter:body_margin(value)
+function ALittle.DropDown.__setter:body_margin(value)
 	self._body_margin = value
 end
 
-function DropDown.__getter:body_margin()
+function ALittle.DropDown.__getter:body_margin()
 	return self._body_margin
 end
 
-function DropDown.__setter:screen_margin_left(value)
+function ALittle.DropDown.__setter:screen_margin_left(value)
 	self._screen_margin_left = value
 end
 
-function DropDown.__getter:screen_margin_left()
+function ALittle.DropDown.__getter:screen_margin_left()
 	return self._screen_margin_left
 end
 
-function DropDown.__setter:screen_margin_right(value)
+function ALittle.DropDown.__setter:screen_margin_right(value)
 	self._screen_margin_right = value
 end
 
-function DropDown.__getter:screen_margin_right()
+function ALittle.DropDown.__getter:screen_margin_right()
 	return self._screen_margin_right
 end
 
-function DropDown.__setter:screen_margin_top(value)
+function ALittle.DropDown.__setter:screen_margin_top(value)
 	self._screen_margin_top = value
 end
 
-function DropDown.__getter:screen_margin_top()
+function ALittle.DropDown.__getter:screen_margin_top()
 	return self._screen_margin_top
 end
 
-function DropDown.__setter:screen_margin_bottom(value)
+function ALittle.DropDown.__setter:screen_margin_bottom(value)
 	self._screen_margin_bottom = value
 end
 
-function DropDown.__getter:screen_margin_bottom()
+function ALittle.DropDown.__getter:screen_margin_bottom()
 	return self._screen_margin_bottom
 end
 
-function DropDown.__setter:data_list(value)
+function ALittle.DropDown.__setter:data_list(value)
 	if value == nil then
 		value = {}
 	end
@@ -163,7 +163,7 @@ function DropDown.__setter:data_list(value)
 	self._button_style = nil
 	self._data_list = value
 	self.button_style = button_style
-	if List_MaxN(value) > 0 then
+	if ALittle.List_MaxN(value) > 0 then
 		self.text = value[1]
 	else
 		self.text = ""
@@ -171,11 +171,11 @@ function DropDown.__setter:data_list(value)
 	self:Layout()
 end
 
-function DropDown.__getter:data_list()
+function ALittle.DropDown.__getter:data_list()
 	return self._data_list
 end
 
-function DropDown:HandleItemButtonClick(event)
+function ALittle.DropDown:HandleItemButtonClick(event)
 	A_LayerManager:HideFromRight(self._body)
 	if self.text == event.target.text then
 		return
@@ -184,7 +184,7 @@ function DropDown:HandleItemButtonClick(event)
 	self:DispatchEvent(___all_struct[444989011], {})
 end
 
-function DropDown:HandleButtonChange(event)
+function ALittle.DropDown:HandleButtonChange(event)
 	if event.target.selected == false then
 		A_LayerManager:HideFromRight(self._body)
 	else
@@ -207,14 +207,14 @@ function DropDown:HandleButtonChange(event)
 	end
 end
 
-function DropDown:HandleBodyHide(event)
+function ALittle.DropDown:HandleBodyHide(event)
 	if self.selected == false then
 		return
 	end
 	self.selected = false
 end
 
-function DropDown:Layout()
+function ALittle.DropDown:Layout()
 	if self._show_count == 0 or self._scrollbar == nil or self._show_count >= self._linear.child_count then
 		self._scroll_screen.right_scrollbar = nil
 		self._body.height = self._linear.height + self._screen_margin_top + self._screen_margin_bottom
@@ -229,3 +229,4 @@ function DropDown:Layout()
 	end
 end
 
+end

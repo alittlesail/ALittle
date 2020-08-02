@@ -1,16 +1,16 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-local __ceil = Math_Ceil
+local __ceil = ALittle.Math_Ceil
 assert(ALittle.DisplayGroup, " extends class:ALittle.DisplayGroup is nil")
-Grid9 = Lua.Class(ALittle.DisplayGroup, "ALittle.Grid9")
+ALittle.Grid9 = Lua.Class(ALittle.DisplayGroup, "ALittle.Grid9")
 
-function Grid9:Ctor(ctrl_sys)
+function ALittle.Grid9:Ctor(ctrl_sys)
 	___rawset(self, "_child_map", {})
 	self._child_map[1] = {}
 	self._child_map[2] = {}
@@ -27,79 +27,79 @@ function Grid9:Ctor(ctrl_sys)
 	___rawset(self, "_pickup_child", true)
 end
 
-function Grid9.__setter:show_left_top(child)
+function ALittle.Grid9.__setter:show_left_top(child)
 	self:SetShow(1, 1, child)
 end
 
-function Grid9.__getter:show_left_top()
+function ALittle.Grid9.__getter:show_left_top()
 	return self._child_map[1][1]
 end
 
-function Grid9.__setter:show_left_center(child)
+function ALittle.Grid9.__setter:show_left_center(child)
 	self:SetShow(1, 2, child)
 end
 
-function Grid9.__getter:show_left_center()
+function ALittle.Grid9.__getter:show_left_center()
 	return self._child_map[1][2]
 end
 
-function Grid9.__setter:show_left_bottom(child)
+function ALittle.Grid9.__setter:show_left_bottom(child)
 	self:SetShow(1, 3, child)
 end
 
-function Grid9.__getter:show_left_bottom()
+function ALittle.Grid9.__getter:show_left_bottom()
 	return self._child_map[1][3]
 end
 
-function Grid9.__setter:show_center_top(child)
+function ALittle.Grid9.__setter:show_center_top(child)
 	self:SetShow(2, 1, child)
 end
 
-function Grid9.__getter:show_center_top()
+function ALittle.Grid9.__getter:show_center_top()
 	return self._child_map[2][1]
 end
 
-function Grid9.__setter:show_center_center(child)
+function ALittle.Grid9.__setter:show_center_center(child)
 	self:SetShow(2, 2, child)
 end
 
-function Grid9.__getter:show_center_center()
+function ALittle.Grid9.__getter:show_center_center()
 	return self._child_map[2][2]
 end
 
-function Grid9.__setter:show_center_bottom(child)
+function ALittle.Grid9.__setter:show_center_bottom(child)
 	self:SetShow(2, 3, child)
 end
 
-function Grid9.__getter:show_center_bottom()
+function ALittle.Grid9.__getter:show_center_bottom()
 	return self._child_map[2][3]
 end
 
-function Grid9.__setter:show_right_top(child)
+function ALittle.Grid9.__setter:show_right_top(child)
 	self:SetShow(3, 1, child)
 end
 
-function Grid9.__getter:show_right_top()
+function ALittle.Grid9.__getter:show_right_top()
 	return self._child_map[3][1]
 end
 
-function Grid9.__setter:show_right_center(child)
+function ALittle.Grid9.__setter:show_right_center(child)
 	self:SetShow(3, 2, child)
 end
 
-function Grid9.__getter:show_right_center()
+function ALittle.Grid9.__getter:show_right_center()
 	return self._child_map[3][2]
 end
 
-function Grid9.__setter:show_right_bottom(child)
+function ALittle.Grid9.__setter:show_right_bottom(child)
 	self:SetShow(3, 3, child)
 end
 
-function Grid9.__getter:show_right_bottom()
+function ALittle.Grid9.__getter:show_right_bottom()
 	return self._child_map[3][3]
 end
 
-function Grid9:SetShow(col, row, child)
+function ALittle.Grid9:SetShow(col, row, child)
 	if self._child_map[col][row] ~= nil then
 		self:RemoveChild(self._child_map[col][row])
 	end
@@ -138,65 +138,65 @@ function Grid9:SetShow(col, row, child)
 	child.height = height
 end
 
-function Grid9.__setter:width(value)
+function ALittle.Grid9.__setter:width(value)
 	if value == self._width then
 		return
 	end
 	self._width = value
-	if self._width_type == UIEnumTypes.SIZE_ABS then
+	if self._width_type == ALittle.UIEnumTypes.SIZE_ABS then
 		self._width_value = self._width
 	end
 	self:CalcRealWidthCutting()
 end
 
-function Grid9.__setter:height(value)
+function ALittle.Grid9.__setter:height(value)
 	if value == self._height then
 		return
 	end
 	self._height = value
-	if self._height_type == UIEnumTypes.SIZE_ABS then
+	if self._height_type == ALittle.UIEnumTypes.SIZE_ABS then
 		self._height_value = self._height
 	end
 	self:CalcRealHeightCutting()
 end
 
-function Grid9.__setter:left_size(value)
+function ALittle.Grid9.__setter:left_size(value)
 	self._logic_left = value
 	self:CalcRealWidthCutting()
 end
 
-function Grid9.__getter:left_size()
+function ALittle.Grid9.__getter:left_size()
 	return self._logic_left
 end
 
-function Grid9.__setter:right_size(value)
+function ALittle.Grid9.__setter:right_size(value)
 	self._logic_right = value
 	self:CalcRealWidthCutting()
 end
 
-function Grid9.__getter:right_size()
+function ALittle.Grid9.__getter:right_size()
 	return self._logic_right
 end
 
-function Grid9.__setter:top_size(value)
+function ALittle.Grid9.__setter:top_size(value)
 	self._logic_top = value
 	self:CalcRealHeightCutting()
 end
 
-function Grid9.__getter:top_size()
+function ALittle.Grid9.__getter:top_size()
 	return self._logic_top
 end
 
-function Grid9.__setter:bottom_size(value)
+function ALittle.Grid9.__setter:bottom_size(value)
 	self._logic_bottom = value
 	self:CalcRealHeightCutting()
 end
 
-function Grid9.__getter:bottom_size()
+function ALittle.Grid9.__getter:bottom_size()
 	return self._logic_bottom
 end
 
-function Grid9:CalcRealWidthCutting()
+function ALittle.Grid9:CalcRealWidthCutting()
 	local real_center = 0.0
 	local logic_left = __ceil(self._logic_left)
 	local logic_right = __ceil(self._logic_right)
@@ -246,7 +246,7 @@ function Grid9:CalcRealWidthCutting()
 	end
 end
 
-function Grid9:CalcRealHeightCutting()
+function ALittle.Grid9:CalcRealHeightCutting()
 	local real_center = 0.0
 	local logic_top = __ceil(self._logic_top)
 	local logic_bottom = __ceil(self._logic_bottom)
@@ -296,3 +296,4 @@ function Grid9:CalcRealHeightCutting()
 	end
 end
 
+end

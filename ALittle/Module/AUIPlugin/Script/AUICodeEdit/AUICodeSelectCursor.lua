@@ -1,19 +1,19 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("AUIPlugin", package.seeall)
-
+do
+if _G.AUIPlugin == nil then _G.AUIPlugin = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-AUICodeSelectCursor = Lua.Class(nil, "AUIPlugin.AUICodeSelectCursor")
+AUIPlugin.AUICodeSelectCursor = Lua.Class(nil, "AUIPlugin.AUICodeSelectCursor")
 
-function AUICodeSelectCursor:Ctor(edit)
+function AUIPlugin.AUICodeSelectCursor:Ctor(edit)
 	___rawset(self, "_clear_quad", true)
 	___rawset(self, "_edit", edit)
 end
 
-function AUICodeSelectCursor:ClearQuad()
+function AUIPlugin.AUICodeSelectCursor:ClearQuad()
 	if self._clear_quad then
 		return
 	end
@@ -37,7 +37,7 @@ function AUICodeSelectCursor:ClearQuad()
 	end
 end
 
-function AUICodeSelectCursor:SetQuad()
+function AUIPlugin.AUICodeSelectCursor:SetQuad()
 	local it_line_start = self._it_line_start
 	local it_char_start = self._it_char_start
 	local it_line_end = self._it_line_end
@@ -108,23 +108,23 @@ function AUICodeSelectCursor:SetQuad()
 	end
 end
 
-function AUICodeSelectCursor.__getter:line_start()
+function AUIPlugin.AUICodeSelectCursor.__getter:line_start()
 	return self._it_line_start
 end
 
-function AUICodeSelectCursor.__getter:char_start()
+function AUIPlugin.AUICodeSelectCursor.__getter:char_start()
 	return self._it_char_start
 end
 
-function AUICodeSelectCursor.__getter:line_end()
+function AUIPlugin.AUICodeSelectCursor.__getter:line_end()
 	return self._it_line_end
 end
 
-function AUICodeSelectCursor.__getter:char_end()
+function AUIPlugin.AUICodeSelectCursor.__getter:char_end()
 	return self._it_char_end
 end
 
-function AUICodeSelectCursor:StartLineChar(line, char)
+function AUIPlugin.AUICodeSelectCursor:StartLineChar(line, char)
 	self:Hide()
 	if self._edit.line_count == 0 then
 		return
@@ -133,14 +133,14 @@ function AUICodeSelectCursor:StartLineChar(line, char)
 	self._it_char_start = char
 end
 
-function AUICodeSelectCursor:UpdateLineChar(line, char)
+function AUIPlugin.AUICodeSelectCursor:UpdateLineChar(line, char)
 	self:ClearQuad()
 	self._it_line_end = line
 	self._it_char_end = char
 	self:SetQuad()
 end
 
-function AUICodeSelectCursor:StartOffsetXY(x, y)
+function AUIPlugin.AUICodeSelectCursor:StartOffsetXY(x, y)
 	self:Hide()
 	if self._edit.line_count == 0 then
 		return
@@ -148,7 +148,7 @@ function AUICodeSelectCursor:StartOffsetXY(x, y)
 	self._it_line_start, self._it_char_start = self._edit:CalcLineAndChar(x, y)
 end
 
-function AUICodeSelectCursor:UpdateOffsetXY(x, y)
+function AUIPlugin.AUICodeSelectCursor:UpdateOffsetXY(x, y)
 	self:ClearQuad()
 	if self._it_line_start == nil then
 		return
@@ -157,7 +157,7 @@ function AUICodeSelectCursor:UpdateOffsetXY(x, y)
 	self:SetQuad()
 end
 
-function AUICodeSelectCursor:GetTargetText(it_line_start, it_char_start, it_line_end, it_char_end)
+function AUIPlugin.AUICodeSelectCursor:GetTargetText(it_line_start, it_char_start, it_line_end, it_char_end)
 	local swap = false
 	if it_line_start > it_line_end then
 		swap = true
@@ -229,14 +229,14 @@ function AUICodeSelectCursor:GetTargetText(it_line_start, it_char_start, it_line
 	return ALittle.String_Join(text, "")
 end
 
-function AUICodeSelectCursor:GetSelectText()
+function AUIPlugin.AUICodeSelectCursor:GetSelectText()
 	if self._it_line_start == nil then
 		return nil
 	end
 	return self:GetTargetText(self._it_line_start, self._it_char_start, self._it_line_end, self._it_char_end)
 end
 
-function AUICodeSelectCursor:DeleteSelect(need_revoke, revoke_bind)
+function AUIPlugin.AUICodeSelectCursor:DeleteSelect(need_revoke, revoke_bind)
 	if self._it_line_start == nil then
 		return false, nil, nil
 	end
@@ -310,11 +310,11 @@ function AUICodeSelectCursor:DeleteSelect(need_revoke, revoke_bind)
 			end
 		end
 		if rejust then
-			self._edit.code_screen.container.width = line.container.width + CODE_LINE_NUMBER_WIDTH
+			self._edit.code_screen.container.width = line.container.width + AUIPlugin.CODE_LINE_NUMBER_WIDTH
 			self._edit.code_screen:RejustScrollBar()
 		end
 		if need_revoke then
-			local revoke = AUICodeDeleteSelectRevoke(self._edit, self._edit.cursor, self, old_it_line_start, old_it_char_start, old_it_line_end, old_it_char_end, it_line_start, it_char_start, revoke_content, revoke_bind == nil)
+			local revoke = AUIPlugin.AUICodeDeleteSelectRevoke(self._edit, self._edit.cursor, self, old_it_line_start, old_it_char_start, old_it_line_end, old_it_char_end, it_line_start, it_char_start, revoke_content, revoke_bind == nil)
 			if revoke_bind ~= nil then
 				revoke_bind:PushRevoke(revoke)
 			else
@@ -424,10 +424,10 @@ function AUICodeSelectCursor:DeleteSelect(need_revoke, revoke_bind)
 			max_width = line.container.width
 		end
 	end
-	self._edit.code_screen.container.width = max_width + CODE_LINE_NUMBER_WIDTH
+	self._edit.code_screen.container.width = max_width + AUIPlugin.CODE_LINE_NUMBER_WIDTH
 	self._edit.code_screen:RejustScrollBar()
 	if need_revoke then
-		local revoke = AUICodeDeleteSelectRevoke(self._edit, self._edit.cursor, self, old_it_line_start, old_it_char_start, old_it_line_end, old_it_char_end, it_line_start, it_char_start, revoke_start .. ALittle.String_Join(revoke_center, "") .. revoke_end, revoke_bind == nil)
+		local revoke = AUIPlugin.AUICodeDeleteSelectRevoke(self._edit, self._edit.cursor, self, old_it_line_start, old_it_char_start, old_it_line_end, old_it_char_end, it_line_start, it_char_start, revoke_start .. ALittle.String_Join(revoke_center, "") .. revoke_end, revoke_bind == nil)
 		if revoke_bind ~= nil then
 			revoke_bind:PushRevoke(revoke)
 		else
@@ -439,7 +439,7 @@ function AUICodeSelectCursor:DeleteSelect(need_revoke, revoke_bind)
 	return true, it_line_start, it_char_start
 end
 
-function AUICodeSelectCursor:TryHide()
+function AUIPlugin.AUICodeSelectCursor:TryHide()
 	if self._it_line_start == nil or self._it_line_end == nil or self._it_char_start == nil or self._it_char_end == nil then
 		self:Hide()
 		return
@@ -450,7 +450,7 @@ function AUICodeSelectCursor:TryHide()
 	end
 end
 
-function AUICodeSelectCursor:Hide()
+function AUIPlugin.AUICodeSelectCursor:Hide()
 	self:ClearQuad()
 	self._clear_quad = true
 	self._it_line_start = nil
@@ -459,3 +459,4 @@ function AUICodeSelectCursor:Hide()
 	self._it_char_end = nil
 end
 
+end

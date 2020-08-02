@@ -1,38 +1,38 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("AUIPlugin", package.seeall)
-
+do
+if _G.AUIPlugin == nil then _G.AUIPlugin = {} end
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-function __Browser_Setup(layer_group, control, module_base_path, script_base_path, debug)
+function AUIPlugin.__Browser_Setup(layer_group, control, module_base_path, script_base_path, debug)
 end
-__Browser_Setup = Lua.CoWrap(__Browser_Setup)
+AUIPlugin.__Browser_Setup = Lua.CoWrap(AUIPlugin.__Browser_Setup)
 
-function __Browser_AddModule(module_name, layer_group, module_info)
-end
-
-function __Browser_Shutdown()
+function AUIPlugin.__Browser_AddModule(module_name, layer_group, module_info)
 end
 
-g_Control = nil
-g_ModuleBasePath = nil
-g_ScriptBasePath = nil
-function __Module_Setup(layer_group, control, module_base_path, script_base_path, debug)
-end
-__Module_Setup = Lua.CoWrap(__Module_Setup)
-
-function __Module_Shutdown()
+function AUIPlugin.__Browser_Shutdown()
 end
 
-function __Module_GetInfo(control, module_base_path, script_base_path)
+AUIPlugin.g_Control = nil
+AUIPlugin.g_ModuleBasePath = nil
+AUIPlugin.g_ScriptBasePath = nil
+function AUIPlugin.__Module_Setup(layer_group, control, module_base_path, script_base_path, debug)
+end
+AUIPlugin.__Module_Setup = Lua.CoWrap(AUIPlugin.__Module_Setup)
+
+function AUIPlugin.__Module_Shutdown()
+end
+
+function AUIPlugin.__Module_GetInfo(control, module_base_path, script_base_path)
 	return nil
 end
 
-function __Plugin_Setup(control, module_base_path, script_base_path)
-	g_Control = control
-	g_ModuleBasePath = module_base_path
-	g_ScriptBasePath = script_base_path
+function AUIPlugin.__Plugin_Setup(control, module_base_path, script_base_path)
+	AUIPlugin.g_Control = control
+	AUIPlugin.g_ModuleBasePath = module_base_path
+	AUIPlugin.g_ScriptBasePath = script_base_path
 	if ALittle.System_GetPlatform() == "Windows" then
 		package.cpath = package.cpath .. ";./" .. module_base_path .. "Other/?.dll"
 		require("alanguage")
@@ -47,13 +47,14 @@ function __Plugin_Setup(control, module_base_path, script_base_path)
 		, "AUICodeLanguage.alittle", "AUICodeEdit.alittle", "AUICodeDefine.alittle"
 		, "AUICodeCursor.alittle", "AUICodeComponent.alittle", "AUICodeCompleteScreen.alittle"
 		, "ABnf/AUICodeCommon.alittle", "ABnf/AUICodeALittleScript.alittle", "ABnf/AUICodeABnf.alittle"})
-	g_AUIIMEManager:Setup()
+	AUIPlugin.g_AUIIMEManager:Setup()
 end
-__Plugin_Setup = Lua.CoWrap(__Plugin_Setup)
+AUIPlugin.__Plugin_Setup = Lua.CoWrap(AUIPlugin.__Plugin_Setup)
 
-function __Plugin_Shutdown()
-	g_AUIIMEManager:Shutdown()
+function AUIPlugin.__Plugin_Shutdown()
+	AUIPlugin.g_AUIIMEManager:Shutdown()
 	g_AUITool:Shutdown()
-	AUICodeProject.Shutdown()
+	AUIPlugin.AUICodeProject.Shutdown()
 end
 
+end

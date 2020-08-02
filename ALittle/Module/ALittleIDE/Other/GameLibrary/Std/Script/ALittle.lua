@@ -1,9 +1,10 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
+do
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-function RequireStd(base_path)
+function _G.RequireStd(base_path)
 	local ___COROUTINE = coroutine.running()
 	Require(base_path, "Std/Reflect/ReflectCmd")
 	Require(base_path, "Std/Reflect/ReflectCsv")
@@ -50,3 +51,4 @@ function RequireStd(base_path)
 	Require(base_path, "Std/Singleton/Schedule")
 end
 
+end

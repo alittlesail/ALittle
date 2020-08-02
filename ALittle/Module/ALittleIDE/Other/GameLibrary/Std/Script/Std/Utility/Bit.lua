@@ -1,15 +1,16 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-function BitAnd(x, y)
+function ALittle.BitAnd(x, y)
 	return bit.band(x, y)
 end
 
-function BitOr(x, y)
+function ALittle.BitOr(x, y)
 	return bit.bor(x, y)
 end
 
+end

@@ -1,15 +1,15 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("Emulator", package.seeall)
-
+do
+if _G.Emulator == nil then _G.Emulator = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
 assert(Emulator.IDETree, " extends class:Emulator.IDETree is nil")
-IDETreeValueMapMessage = Lua.Class(Emulator.IDETree, "Emulator.IDETreeValueMapMessage")
+Emulator.IDETreeValueMapMessage = Lua.Class(Emulator.IDETree, "Emulator.IDETreeValueMapMessage")
 
-function IDETreeValueMapMessage:Ctor(ctrl_sys, root, parent, rflct, msg, key_field, detail_info)
+function Emulator.IDETreeValueMapMessage:Ctor(ctrl_sys, root, parent, rflct, msg, key_field, detail_info)
 	___rawset(self, "_detail_info", detail_info)
 	___rawset(self, "_parent", parent)
 	___rawset(self, "_rflct", rflct)
@@ -31,11 +31,11 @@ function IDETreeValueMapMessage:Ctor(ctrl_sys, root, parent, rflct, msg, key_fie
 	self._delete_button.disabled = root.for_show
 end
 
-function IDETreeValueMapMessage:GetDetailInfo()
+function Emulator.IDETreeValueMapMessage:GetDetailInfo()
 	return self._detail_info
 end
 
-function IDETreeValueMapMessage:RefreshValue()
+function Emulator.IDETreeValueMapMessage:RefreshValue()
 	if self._key_cpp_type == 1 then
 		return protobuf.reflection_getint32(self._rflct, self._msg, self._key_field)
 	elseif self._key_cpp_type == 3 then
@@ -54,7 +54,7 @@ function IDETreeValueMapMessage:RefreshValue()
 	return nil
 end
 
-function IDETreeValueMapMessage:HandleKeyInputFocusOut(event)
+function Emulator.IDETreeValueMapMessage:HandleKeyInputFocusOut(event)
 	local text = self._key_input.text
 	if self._key_cpp_type == 1 then
 		protobuf.reflection_setint32(self._rflct, self._msg, self._key_field, ALittle.Math_ToIntOrZero(text))
@@ -76,11 +76,12 @@ function IDETreeValueMapMessage:HandleKeyInputFocusOut(event)
 	self:Save()
 end
 
-function IDETreeValueMapMessage:HandleInsertClick(event)
+function Emulator.IDETreeValueMapMessage:HandleInsertClick(event)
 	self._parent:CreateOneBefore(self)
 end
 
-function IDETreeValueMapMessage:HandleDeleteClick(event)
+function Emulator.IDETreeValueMapMessage:HandleDeleteClick(event)
 	self._parent:Delete(self)
 end
 
+end

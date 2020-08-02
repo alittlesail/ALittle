@@ -1,16 +1,16 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___all_struct = GetAllStruct()
+local ___all_struct = ALittle.GetAllStruct()
 
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
-SpringCheckButton = Lua.Class(ALittle.DisplayLayout, "ALittle.SpringCheckButton")
+ALittle.SpringCheckButton = Lua.Class(ALittle.DisplayLayout, "ALittle.SpringCheckButton")
 
-function SpringCheckButton:Ctor(ctrl_sys)
+function ALittle.SpringCheckButton:Ctor(ctrl_sys)
 	___rawset(self, "_big_or_small", false)
 	___rawset(self, "_selected", false)
 	self:AddEventListener(___all_struct[544684311], self, self.HandleMoveIn)
@@ -23,8 +23,8 @@ function SpringCheckButton:Ctor(ctrl_sys)
 	___rawset(self, "_pickup_child", false)
 end
 
-function SpringCheckButton.__setter:disabled(value)
-	DisplayObject.__setter.disabled(self, value)
+function ALittle.SpringCheckButton.__setter:disabled(value)
+	ALittle.DisplayObject.__setter.disabled(self, value)
 	if self._abs_disabled then
 		self:ShowDisabled()
 	else
@@ -32,26 +32,26 @@ function SpringCheckButton.__setter:disabled(value)
 	end
 end
 
-function SpringCheckButton:HandleMoveIn(event)
+function ALittle.SpringCheckButton:HandleMoveIn(event)
 	self:ShowOver()
 end
 
-function SpringCheckButton:HandleMoveOut(event)
+function ALittle.SpringCheckButton:HandleMoveOut(event)
 	self:ShowUp()
 end
 
-function SpringCheckButton:HandleLButtonDown(event)
+function ALittle.SpringCheckButton:HandleLButtonDown(event)
 	self:ShowDown()
 end
 
-function SpringCheckButton:HandleLButtonUp(event)
+function ALittle.SpringCheckButton:HandleLButtonUp(event)
 	if event.rel_x >= 0 and event.rel_y >= 0 and event.rel_x < event.target._width and event.rel_y < event.target._height then
 		self._selected = (self._selected == false)
 		local e = {}
 		e.is_drag = event.is_drag
 		self:DispatchEvent(___all_struct[-449066808], e)
 		self:DispatchEvent(___all_struct[958494922], {})
-		if System_IsPhone == false then
+		if ALittle.System_IsPhone == false then
 			self:ShowOver()
 		else
 			self:ShowUp()
@@ -61,16 +61,16 @@ function SpringCheckButton:HandleLButtonUp(event)
 	end
 end
 
-function SpringCheckButton:HandleMButtonDown(event)
+function ALittle.SpringCheckButton:HandleMButtonDown(event)
 	self:ShowDown()
 end
 
-function SpringCheckButton:HandleMButtonUp(event)
+function ALittle.SpringCheckButton:HandleMButtonUp(event)
 	if event.rel_x >= 0 and event.rel_y >= 0 and event.rel_x < event.target._width and event.rel_y < event.target._height then
 		local e = {}
 		e.is_drag = event.is_drag
 		self:DispatchEvent(___all_struct[-1330840], e)
-		if System_IsPhone == false then
+		if ALittle.System_IsPhone == false then
 			self:ShowOver()
 		else
 			self:ShowUp()
@@ -80,7 +80,7 @@ function SpringCheckButton:HandleMButtonUp(event)
 	end
 end
 
-function SpringCheckButton.__setter:selected(value)
+function ALittle.SpringCheckButton.__setter:selected(value)
 	if self._selected == value then
 		return
 	end
@@ -92,11 +92,11 @@ function SpringCheckButton.__setter:selected(value)
 	end
 end
 
-function SpringCheckButton.__getter:selected()
+function ALittle.SpringCheckButton.__getter:selected()
 	return self._selected
 end
 
-function SpringCheckButton:ScaleTo(big_or_small, time_in_ms)
+function ALittle.SpringCheckButton:ScaleTo(big_or_small, time_in_ms)
 	if self._big_or_small == big_or_small then
 		return
 	end
@@ -109,13 +109,13 @@ function SpringCheckButton:ScaleTo(big_or_small, time_in_ms)
 		self._anti_loop:Stop()
 		self._anti_loop = nil
 	end
-	self._anti_loop = LoopGroup()
-	self._anti_loop:AddUpdater(LoopLinear(self, "scale_x", scale, time_in_ms, 1))
-	self._anti_loop:AddUpdater(LoopLinear(self, "scale_y", scale, time_in_ms, 1))
+	self._anti_loop = ALittle.LoopGroup()
+	self._anti_loop:AddUpdater(ALittle.LoopLinear(self, "scale_x", scale, time_in_ms, 1))
+	self._anti_loop:AddUpdater(ALittle.LoopLinear(self, "scale_y", scale, time_in_ms, 1))
 	self._anti_loop:Start()
 end
 
-function SpringCheckButton:ShowUp()
+function ALittle.SpringCheckButton:ShowUp()
 	if self._abs_disabled or self._disabled then
 		return
 	end
@@ -140,7 +140,7 @@ function SpringCheckButton:ShowUp()
 	self:ScaleTo(false, 200)
 end
 
-function SpringCheckButton:ShowDown()
+function ALittle.SpringCheckButton:ShowDown()
 	if self._abs_disabled or self._disabled then
 		return
 	end
@@ -165,7 +165,7 @@ function SpringCheckButton:ShowDown()
 	self:ScaleTo(true, 200)
 end
 
-function SpringCheckButton:ShowOver()
+function ALittle.SpringCheckButton:ShowOver()
 	if self._abs_disabled or self._disabled then
 		return
 	end
@@ -190,7 +190,7 @@ function SpringCheckButton:ShowOver()
 	self:ScaleTo(false, 200)
 end
 
-function SpringCheckButton:ShowDisabled()
+function ALittle.SpringCheckButton:ShowDisabled()
 	self:ScaleTo(false, 200)
 	if self._show_up ~= nil then
 		self._show_up.visible = false
@@ -209,3 +209,4 @@ function SpringCheckButton:ShowDisabled()
 	end
 end
 
+end

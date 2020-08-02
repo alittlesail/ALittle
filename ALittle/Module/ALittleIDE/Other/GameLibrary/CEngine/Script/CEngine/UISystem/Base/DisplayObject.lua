@@ -1,46 +1,46 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___all_struct = GetAllStruct()
+local ___all_struct = ALittle.GetAllStruct()
 
-RegStruct(-2110455927, "ALittle.EventInfo", {
+ALittle.RegStruct(-2110455927, "ALittle.EventInfo", {
 name = "ALittle.EventInfo", ns_name = "ALittle", rl_name = "EventInfo", hash_code = -2110455927,
 name_list = {"type","func"},
 type_list = {"string","string"},
 option_map = {}
 })
-RegStruct(-4982446, "ALittle.DisplayInfo", {
+ALittle.RegStruct(-4982446, "ALittle.DisplayInfo", {
 name = "ALittle.DisplayInfo", ns_name = "ALittle", rl_name = "DisplayInfo", hash_code = -4982446,
 name_list = {"__target_class","__class_func","__base_attr","__show_attr","loop_map","__class","__include","__extends","__childs","__event","__link","__shows_included","__childs_included","__extends_included","description","text","font_path","font_size","red","green","blue","alpha","bold","italic","underline","deleteline","x","y","x_type","x_value","y_type","y_value","width","height","width_type","width_value","height_type","height_value","scale_x","scale_y","center_x","center_y","angle","flip","hand_cursor","visible","disabled","left_size","right_size","top_size","bottom_size","texture_name","interval","play_loop_count","var_play","base_y","head_size","gap","up_size","down_size","cursor_red","cursor_green","cursor_blue","default_text_alpha","ims_padding","margin_left","margin_right","margin_top","margin_bottom","show_count","body_margin","screen_margin_left","screen_margin_right","screen_margin_top","screen_margin_bottom","start_degree","end_degree","line_spacing","max_line_count","font_red","font_green","font_blue","margin_halign","margin_valign","cursor_margin_up","cursor_margin_down","total_size","show_size","offset_rate","offset_step","grade","row_count","col_count","row_index","col_index","u1","v1","u2","v2","u3","v3","x1","y1","x2","y2","x3","y3","x_gap","y_gap","x_start_gap","y_start_gap","button_gap","button_start","button_margin","tab_index","view_margin","child_width_margin"},
 type_list = {"List<string>","any","Map<string,any>","Map<string,ALittle.DisplayInfo>","Map<string,ALittle.LoopGroupInfo>","string","string","string","List<ALittle.DisplayInfo>","List<ALittle.EventInfo>","string","bool","bool","bool","string","string","string","int","double","double","double","double","bool","bool","bool","bool","double","double","int","double","int","double","double","double","int","double","int","double","double","double","double","double","double","int","bool","bool","bool","double","double","double","double","string","int","int","bool","double","double","double","double","double","double","double","double","double","double","double","double","double","double","int","double","double","double","double","double","double","double","double","int","double","double","double","double","double","double","double","double","double","double","double","int","int","int","int","int","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double"},
 option_map = {}
 })
 
-local __cos = Math_Cos
-local __sin = Math_Sin
-local __byte = String_Byte
-local __type = String_Type
+local __cos = ALittle.Math_Cos
+local __sin = ALittle.Math_Sin
+local __byte = ALittle.String_Byte
+local __type = ALittle.String_Type
 assert(ALittle.UIEventDispatcher, " extends class:ALittle.UIEventDispatcher is nil")
-DisplayObject = Lua.Class(ALittle.UIEventDispatcher, "ALittle.DisplayObject")
+ALittle.DisplayObject = Lua.Class(ALittle.UIEventDispatcher, "ALittle.DisplayObject")
 
-function DisplayObject:Ctor(ctrl_sys)
+function ALittle.DisplayObject:Ctor(ctrl_sys)
 	___rawset(self, "_ctrl_sys", ctrl_sys)
 	___rawset(self, "_clip", false)
 	___rawset(self, "_ignore", false)
 	___rawset(self, "_x", 0)
 	___rawset(self, "_y", 0)
-	___rawset(self, "_x_type", UIEnumTypes.POS_ABS)
+	___rawset(self, "_x_type", ALittle.UIEnumTypes.POS_ABS)
 	___rawset(self, "_x_value", 0)
-	___rawset(self, "_y_type", UIEnumTypes.POS_ABS)
+	___rawset(self, "_y_type", ALittle.UIEnumTypes.POS_ABS)
 	___rawset(self, "_y_value", 0)
 	___rawset(self, "_width", 0)
 	___rawset(self, "_height", 0)
-	___rawset(self, "_width_type", UIEnumTypes.SIZE_ABS)
+	___rawset(self, "_width_type", ALittle.UIEnumTypes.SIZE_ABS)
 	___rawset(self, "_width_value", 0)
-	___rawset(self, "_height_type", UIEnumTypes.SIZE_ABS)
+	___rawset(self, "_height_type", ALittle.UIEnumTypes.SIZE_ABS)
 	___rawset(self, "_height_value", 0)
 	___rawset(self, "_scale_x", 1)
 	___rawset(self, "_scale_y", 1)
@@ -63,7 +63,7 @@ function DisplayObject:Ctor(ctrl_sys)
 	___rawset(self, "_can_scroll", false)
 end
 
-function DisplayObject.__setter:hand_cursor(value)
+function ALittle.DisplayObject.__setter:hand_cursor(value)
 	if self._hand_cursor == value then
 		return
 	end
@@ -77,138 +77,138 @@ function DisplayObject.__setter:hand_cursor(value)
 	end
 end
 
-function DisplayObject.__getter:hand_cursor()
+function ALittle.DisplayObject.__getter:hand_cursor()
 	return self._hand_cursor
 end
 
-function DisplayObject:HandleMoveInForCursor(event)
+function ALittle.DisplayObject:HandleMoveInForCursor(event)
 	if self._hand_cursor == false then
 		return
 	end
-	System_SetHandCursor()
+	ALittle.System_SetHandCursor()
 end
 
-function DisplayObject:HandleMoveOutForCursor(event)
+function ALittle.DisplayObject:HandleMoveOutForCursor(event)
 	if self._hand_cursor == false then
 		return
 	end
-	System_SetNormalCursor()
+	ALittle.System_SetNormalCursor()
 end
 
-function DisplayObject.__getter:native_show()
+function ALittle.DisplayObject.__getter:native_show()
 	return self._show
 end
 
-function DisplayObject.__getter:text()
+function ALittle.DisplayObject.__getter:text()
 	return nil
 end
 
-function DisplayObject.__setter:text(value)
+function ALittle.DisplayObject.__setter:text(value)
 end
 
-function DisplayObject.__getter:group()
+function ALittle.DisplayObject.__getter:group()
 	return nil
 end
 
-function DisplayObject.__setter:group(group)
+function ALittle.DisplayObject.__setter:group(group)
 end
 
-function DisplayObject.__getter:selected()
+function ALittle.DisplayObject.__getter:selected()
 	return nil
 end
 
-function DisplayObject.__setter:selected(value)
+function ALittle.DisplayObject.__setter:selected(value)
 end
 
-function DisplayObject.__getter:font_height()
+function ALittle.DisplayObject.__getter:font_height()
 	return nil
 end
 
-function DisplayObject:SetTextureCoord(t, b, l, r)
+function ALittle.DisplayObject:SetTextureCoord(t, b, l, r)
 end
 
-function DisplayObject.__getter:texture()
+function ALittle.DisplayObject.__getter:texture()
 	return nil
 end
 
-function DisplayObject.__setter:texture(value)
+function ALittle.DisplayObject.__setter:texture(value)
 end
 
-function DisplayObject.__getter:texture_name()
+function ALittle.DisplayObject.__getter:texture_name()
 	return nil
 end
 
-function DisplayObject.__setter:texture_name(value)
+function ALittle.DisplayObject.__setter:texture_name(value)
 end
 
-function DisplayObject:Redraw()
+function ALittle.DisplayObject:Redraw()
 end
 
-function DisplayObject.__getter:childs()
+function ALittle.DisplayObject.__getter:childs()
 	return nil
 end
 
-function DisplayObject.__getter:child_count()
+function ALittle.DisplayObject.__getter:child_count()
 	return nil
 end
 
-function DisplayObject:SetChildIndex(child, index)
+function ALittle.DisplayObject:SetChildIndex(child, index)
 	return false
 end
 
-function DisplayObject:AddChild(child, index)
+function ALittle.DisplayObject:AddChild(child, index)
 	return false
 end
 
-function DisplayObject:RemoveChild(child)
+function ALittle.DisplayObject:RemoveChild(child)
 	return false
 end
 
-function DisplayObject:SpliceChild(index, count)
+function ALittle.DisplayObject:SpliceChild(index, count)
 	return 0
 end
 
-function DisplayObject:RemoveAllChild()
+function ALittle.DisplayObject:RemoveAllChild()
 end
 
-function DisplayObject:GetChildOffset()
+function ALittle.DisplayObject:GetChildOffset()
 	return 0, 0
 end
 
-function DisplayObject.__getter:editable()
+function ALittle.DisplayObject.__getter:editable()
 	return false
 end
 
-function DisplayObject.__getter:font_size()
+function ALittle.DisplayObject.__getter:font_size()
 	return nil
 end
 
-function DisplayObject.__getter:cursor_x()
+function ALittle.DisplayObject.__getter:cursor_x()
 	return nil
 end
 
-function DisplayObject.__getter:cursor_y()
+function ALittle.DisplayObject.__getter:cursor_y()
 	return nil
 end
 
-function DisplayObject.__getter:cursor_b()
+function ALittle.DisplayObject.__getter:cursor_b()
 	return nil
 end
 
-function DisplayObject.__getter:is_focus()
+function ALittle.DisplayObject.__getter:is_focus()
 	return A_UISystem.focus == self
 end
 
-function DisplayObject:DelayFocus()
-	local loop = LoopTimer(Lua.Bind(self.HandleDelayFocus, self), 1)
+function ALittle.DisplayObject:DelayFocus()
+	local loop = ALittle.LoopTimer(Lua.Bind(self.HandleDelayFocus, self), 1)
 	loop:Start()
 end
 
-function DisplayObject:HandleDelayFocus()
+function ALittle.DisplayObject:HandleDelayFocus()
 	self.focus = true
 end
 
-function DisplayObject.__setter:focus(value)
+function ALittle.DisplayObject.__setter:focus(value)
 	if value then
 		A_UISystem.focus = self
 	else
@@ -218,35 +218,35 @@ function DisplayObject.__setter:focus(value)
 	end
 end
 
-function DisplayObject.__getter:is_input()
+function ALittle.DisplayObject.__getter:is_input()
 	return false
 end
 
-function DisplayObject.__setter:can_scroll(value)
+function ALittle.DisplayObject.__setter:can_scroll(value)
 	self._can_scroll = value
 end
 
-function DisplayObject.__getter:can_scroll()
+function ALittle.DisplayObject.__getter:can_scroll()
 	return self._can_scroll
 end
 
-function DisplayObject.__setter:description(value)
+function ALittle.DisplayObject.__setter:description(value)
 	self._description = value
 end
 
-function DisplayObject.__getter:description()
+function ALittle.DisplayObject.__getter:description()
 	return self._description
 end
 
-function DisplayObject.__setter:loop_map(value)
+function ALittle.DisplayObject.__setter:loop_map(value)
 	self._loop_map = value
 end
 
-function DisplayObject.__getter:loop_map()
+function ALittle.DisplayObject.__getter:loop_map()
 	return self._loop_map
 end
 
-function DisplayObject:CreateLoopAnimation(name)
+function ALittle.DisplayObject:CreateLoopAnimation(name)
 	if self._loop_map == nil then
 		return nil
 	end
@@ -254,35 +254,35 @@ function DisplayObject:CreateLoopAnimation(name)
 	if info == nil then
 		return nil
 	end
-	return LoopAnimation(self, info)
+	return ALittle.LoopAnimation(self, info)
 end
 
-function DisplayObject.__setter:modal(value)
+function ALittle.DisplayObject.__setter:modal(value)
 	self._modal = value
 end
 
-function DisplayObject.__getter:modal()
+function ALittle.DisplayObject.__getter:modal()
 	return self._modal
 end
 
-function DisplayObject.__setter:clip(value)
+function ALittle.DisplayObject.__setter:clip(value)
 	self._clip = value
 	self._show:SetClip(value)
 end
 
-function DisplayObject.__getter:clip()
+function ALittle.DisplayObject.__getter:clip()
 	return self._clip
 end
 
-function DisplayObject.__setter:ignore(value)
+function ALittle.DisplayObject.__setter:ignore(value)
 	self._ignore = value
 end
 
-function DisplayObject.__getter:ignore()
+function ALittle.DisplayObject.__getter:ignore()
 	return self._ignore
 end
 
-function DisplayObject:IsMouseIn()
+function ALittle.DisplayObject:IsMouseIn()
 	local abs_x, abs_y = self:LocalToGlobal()
 	local mouse_x = A_UISystem.mouse_x
 	local mouse_y = A_UISystem.mouse_y
@@ -301,7 +301,7 @@ function DisplayObject:IsMouseIn()
 	return true
 end
 
-function DisplayObject:LocalToGlobal(target)
+function ALittle.DisplayObject:LocalToGlobal(target)
 	local x = 0.0
 	local y = 0.0
 	local parent = self
@@ -323,8 +323,8 @@ function DisplayObject:LocalToGlobal(target)
 	return x, y
 end
 
-function DisplayObject:LocalToGlobalMatrix2D(target)
-	local result = Matrix2D()
+function ALittle.DisplayObject:LocalToGlobalMatrix2D(target)
+	local result = ALittle.Matrix2D()
 	local list = {}
 	local count = 0
 	local parent = self
@@ -340,7 +340,7 @@ function DisplayObject:LocalToGlobalMatrix2D(target)
 	while true do
 		if not(index >= 1) then break end
 		local object = list[index]
-		local m = Matrix2D()
+		local m = ALittle.Matrix2D()
 		if index == 1 then
 			m:Scale(object.width, object.height)
 		end
@@ -356,7 +356,7 @@ function DisplayObject:LocalToGlobalMatrix2D(target)
 	return result
 end
 
-function DisplayObject:GlobalToLocalMatrix2D(x, y, target)
+function ALittle.DisplayObject:GlobalToLocalMatrix2D(x, y, target)
 	local list = {}
 	local count = 0
 	local parent = self
@@ -378,7 +378,7 @@ function DisplayObject:GlobalToLocalMatrix2D(x, y, target)
 	return x, y
 end
 
-function DisplayObject:RemoveFromParent()
+function ALittle.DisplayObject:RemoveFromParent()
 	local parent = self._show_parent
 	if parent == nil then
 		parent = self._logic_parent
@@ -389,7 +389,7 @@ function DisplayObject:RemoveFromParent()
 	parent:RemoveChild(self)
 end
 
-function DisplayObject:IsGrandParent(target)
+function ALittle.DisplayObject:IsGrandParent(target)
 	local parent = self
 	while parent ~= nil do
 		parent = parent._show_parent
@@ -400,40 +400,40 @@ function DisplayObject:IsGrandParent(target)
 	return false
 end
 
-function DisplayObject.__getter:parent()
+function ALittle.DisplayObject.__getter:parent()
 	if self._logic_parent ~= nil then
 		return self._logic_parent
 	end
 	return self._show_parent
 end
 
-function DisplayObject.__getter:show_parent()
+function ALittle.DisplayObject.__getter:show_parent()
 	return self._show_parent
 end
 
-function DisplayObject.__getter:logic_parent()
+function ALittle.DisplayObject.__getter:logic_parent()
 	return self._logic_parent
 end
 
-function DisplayObject:MoveToTop()
+function ALittle.DisplayObject:MoveToTop()
 	if self._show_parent ~= nil then
 		self._show_parent:SetChildIndex(self, self._show_parent.child_count)
 	end
 end
 
-function DisplayObject.__setter:x(value)
+function ALittle.DisplayObject.__setter:x(value)
 	self._x = value
-	if self._x_type == UIEnumTypes.POS_ABS then
+	if self._x_type == ALittle.UIEnumTypes.POS_ABS then
 		self._x_value = value
 	end
 	self._show:SetX(value)
 end
 
-function DisplayObject.__getter:x()
+function ALittle.DisplayObject.__getter:x()
 	return self._x
 end
 
-function DisplayObject.__setter:x_type(value)
+function ALittle.DisplayObject.__setter:x_type(value)
 	if self._x_type == value then
 		return
 	end
@@ -443,7 +443,7 @@ function DisplayObject.__setter:x_type(value)
 	end
 end
 
-function DisplayObject.__setter:x_value(value)
+function ALittle.DisplayObject.__setter:x_value(value)
 	if self._x_value == value then
 		return
 	end
@@ -453,27 +453,27 @@ function DisplayObject.__setter:x_value(value)
 	end
 end
 
-function DisplayObject.__getter:x_type()
+function ALittle.DisplayObject.__getter:x_type()
 	return self._x_type
 end
 
-function DisplayObject.__getter:x_value()
+function ALittle.DisplayObject.__getter:x_value()
 	return self._x_value
 end
 
-function DisplayObject.__setter:y(value)
+function ALittle.DisplayObject.__setter:y(value)
 	self._y = value
-	if self._y_type == UIEnumTypes.POS_ABS then
+	if self._y_type == ALittle.UIEnumTypes.POS_ABS then
 		self._y_value = value
 	end
 	self._show:SetY(value)
 end
 
-function DisplayObject.__getter:y()
+function ALittle.DisplayObject.__getter:y()
 	return self._y
 end
 
-function DisplayObject.__setter:y_type(value)
+function ALittle.DisplayObject.__setter:y_type(value)
 	if self._y_type == value then
 		return
 	end
@@ -483,7 +483,7 @@ function DisplayObject.__setter:y_type(value)
 	end
 end
 
-function DisplayObject.__setter:y_value(value)
+function ALittle.DisplayObject.__setter:y_value(value)
 	if self._y_value == value then
 		return
 	end
@@ -493,187 +493,187 @@ function DisplayObject.__setter:y_value(value)
 	end
 end
 
-function DisplayObject.__getter:y_type()
+function ALittle.DisplayObject.__getter:y_type()
 	return self._y_type
 end
 
-function DisplayObject.__getter:y_value()
+function ALittle.DisplayObject.__getter:y_value()
 	return self._y_value
 end
 
-function DisplayObject.__setter:width(value)
+function ALittle.DisplayObject.__setter:width(value)
 	self._width = value
-	if self._width_type == UIEnumTypes.SIZE_ABS then
+	if self._width_type == ALittle.UIEnumTypes.SIZE_ABS then
 		self._width_value = value
 	end
 	self._show:SetWidth(value)
 end
 
-function DisplayObject.__getter:width()
+function ALittle.DisplayObject.__getter:width()
 	return self._width
 end
 
-function DisplayObject.__setter:width_type(value)
+function ALittle.DisplayObject.__setter:width_type(value)
 	if self._width_type == value then
 		return
 	end
 	self._width_type = value
 	if self._show_parent ~= nil then
 		self._show_parent:UpdateWidthLayout(self)
-		if self._x_type ~= UIEnumTypes.POS_ABS and self._x_type ~= UIEnumTypes.POS_ALIGN_STARTING and self._x_type ~= UIEnumTypes.POS_PERCENT_STARTING then
+		if self._x_type ~= ALittle.UIEnumTypes.POS_ABS and self._x_type ~= ALittle.UIEnumTypes.POS_ALIGN_STARTING and self._x_type ~= ALittle.UIEnumTypes.POS_PERCENT_STARTING then
 			self._show_parent:UpdateXLayout(self)
 		end
-	elseif self._width_type == UIEnumTypes.SIZE_ABS then
+	elseif self._width_type == ALittle.UIEnumTypes.SIZE_ABS then
 		self.width = self._width_value
 	end
 end
 
-function DisplayObject.__setter:width_value(value)
+function ALittle.DisplayObject.__setter:width_value(value)
 	if self._width_value == value then
 		return
 	end
 	self._width_value = value
 	if self._show_parent ~= nil then
 		self._show_parent:UpdateWidthLayout(self)
-		if self._x_type ~= UIEnumTypes.POS_ABS and self._x_type ~= UIEnumTypes.POS_ALIGN_STARTING and self._x_type ~= UIEnumTypes.POS_PERCENT_STARTING then
+		if self._x_type ~= ALittle.UIEnumTypes.POS_ABS and self._x_type ~= ALittle.UIEnumTypes.POS_ALIGN_STARTING and self._x_type ~= ALittle.UIEnumTypes.POS_PERCENT_STARTING then
 			self._show_parent:UpdateXLayout(self)
 		end
-	elseif self._width_type == UIEnumTypes.SIZE_ABS then
+	elseif self._width_type == ALittle.UIEnumTypes.SIZE_ABS then
 		self.width = self._width_value
 	end
 end
 
-function DisplayObject.__getter:width_type()
+function ALittle.DisplayObject.__getter:width_type()
 	return self._width_type
 end
 
-function DisplayObject.__getter:width_value()
+function ALittle.DisplayObject.__getter:width_value()
 	return self._width_value
 end
 
-function DisplayObject.__setter:height(value)
+function ALittle.DisplayObject.__setter:height(value)
 	self._height = value
-	if self._height_type == UIEnumTypes.SIZE_ABS then
+	if self._height_type == ALittle.UIEnumTypes.SIZE_ABS then
 		self._height_value = value
 	end
 	self._show:SetHeight(value)
 end
 
-function DisplayObject.__getter:height()
+function ALittle.DisplayObject.__getter:height()
 	return self._height
 end
 
-function DisplayObject.__setter:height_type(value)
+function ALittle.DisplayObject.__setter:height_type(value)
 	if self._height_type == value then
 		return
 	end
 	self._height_type = value
 	if self._show_parent ~= nil then
 		self._show_parent:UpdateHeightLayout(self)
-		if self._y_type ~= UIEnumTypes.POS_ABS and self._y_type ~= UIEnumTypes.POS_ALIGN_STARTING and self._y_type ~= UIEnumTypes.POS_PERCENT_STARTING then
+		if self._y_type ~= ALittle.UIEnumTypes.POS_ABS and self._y_type ~= ALittle.UIEnumTypes.POS_ALIGN_STARTING and self._y_type ~= ALittle.UIEnumTypes.POS_PERCENT_STARTING then
 			self._show_parent:UpdateYLayout(self)
 		end
-	elseif self._height_type == UIEnumTypes.SIZE_ABS then
+	elseif self._height_type == ALittle.UIEnumTypes.SIZE_ABS then
 		self.height = self._height_value
 	end
 end
 
-function DisplayObject.__setter:height_value(value)
+function ALittle.DisplayObject.__setter:height_value(value)
 	if self._height_value == value then
 		return
 	end
 	self._height_value = value
 	if self._show_parent ~= nil then
 		self._show_parent:UpdateHeightLayout(self)
-		if self._y_type ~= UIEnumTypes.POS_ABS and self._y_type ~= UIEnumTypes.POS_ALIGN_STARTING and self._y_type ~= UIEnumTypes.POS_PERCENT_STARTING then
+		if self._y_type ~= ALittle.UIEnumTypes.POS_ABS and self._y_type ~= ALittle.UIEnumTypes.POS_ALIGN_STARTING and self._y_type ~= ALittle.UIEnumTypes.POS_PERCENT_STARTING then
 			self._show_parent:UpdateYLayout(self)
 		end
-	elseif self._height_type == UIEnumTypes.SIZE_ABS then
+	elseif self._height_type == ALittle.UIEnumTypes.SIZE_ABS then
 		self.height = self._height_value
 	end
 end
 
-function DisplayObject.__getter:height_type()
+function ALittle.DisplayObject.__getter:height_type()
 	return self._height_type
 end
 
-function DisplayObject.__getter:height_value()
+function ALittle.DisplayObject.__getter:height_value()
 	return self._height_value
 end
 
-function DisplayObject.__setter:scale_x(value)
+function ALittle.DisplayObject.__setter:scale_x(value)
 	self._scale_x = value
 	self._show:SetScaleX(value)
 end
 
-function DisplayObject.__getter:scale_x()
+function ALittle.DisplayObject.__getter:scale_x()
 	return self._scale_x
 end
 
-function DisplayObject.__setter:scale_y(value)
+function ALittle.DisplayObject.__setter:scale_y(value)
 	self._scale_y = value
 	self._show:SetScaleY(value)
 end
 
-function DisplayObject.__getter:scale_y()
+function ALittle.DisplayObject.__getter:scale_y()
 	return self._scale_y
 end
 
-function DisplayObject.__setter:center_x(value)
+function ALittle.DisplayObject.__setter:center_x(value)
 	self._center_x = value
 	self._show:SetCenterX(value)
 end
 
-function DisplayObject.__getter:center_x()
+function ALittle.DisplayObject.__getter:center_x()
 	return self._center_x
 end
 
-function DisplayObject.__setter:center_y(value)
+function ALittle.DisplayObject.__setter:center_y(value)
 	self._center_y = value
 	self._show:SetCenterY(value)
 end
 
-function DisplayObject.__getter:center_y()
+function ALittle.DisplayObject.__getter:center_y()
 	return self._center_y
 end
 
-function DisplayObject.__setter:angle(value)
+function ALittle.DisplayObject.__setter:angle(value)
 	self._angle = value
 	self._show:SetAngle(value)
 end
 
-function DisplayObject.__getter:angle()
+function ALittle.DisplayObject.__getter:angle()
 	return self._angle
 end
 
-function DisplayObject.__setter:red(value)
+function ALittle.DisplayObject.__setter:red(value)
 	self._red = value
 	self._show:SetRed(value)
 end
 
-function DisplayObject.__getter:red()
+function ALittle.DisplayObject.__getter:red()
 	return self._red
 end
 
-function DisplayObject.__setter:green(value)
+function ALittle.DisplayObject.__setter:green(value)
 	self._green = value
 	self._show:SetGreen(value)
 end
 
-function DisplayObject.__getter:green()
+function ALittle.DisplayObject.__getter:green()
 	return self._green
 end
 
-function DisplayObject.__setter:blue(value)
+function ALittle.DisplayObject.__setter:blue(value)
 	self._blue = value
 	self._show:SetBlue(value)
 end
 
-function DisplayObject.__getter:blue()
+function ALittle.DisplayObject.__getter:blue()
 	return self._blue
 end
 
-function DisplayObject.__setter:alpha(value)
+function ALittle.DisplayObject.__setter:alpha(value)
 	self._alpha = value
 	self._abs_alpha = 1
 	if self._show_parent ~= nil then
@@ -684,15 +684,15 @@ function DisplayObject.__setter:alpha(value)
 	self._show:SetAlpha(self._abs_alpha)
 end
 
-function DisplayObject.__getter:alpha()
+function ALittle.DisplayObject.__getter:alpha()
 	return self._alpha
 end
 
-function DisplayObject.__getter:abs_alpha()
+function ALittle.DisplayObject.__getter:abs_alpha()
 	return self._abs_alpha
 end
 
-function DisplayObject.__setter:visible(value)
+function ALittle.DisplayObject.__setter:visible(value)
 	if value == false and self == A_UISystem.focus then
 		A_UISystem.focus = nil
 	end
@@ -705,15 +705,15 @@ function DisplayObject.__setter:visible(value)
 	self._show:SetVisible(self._abs_visible)
 end
 
-function DisplayObject.__getter:visible()
+function ALittle.DisplayObject.__getter:visible()
 	return self._visible
 end
 
-function DisplayObject.__getter:abs_visible()
+function ALittle.DisplayObject.__getter:abs_visible()
 	return self._abs_visible
 end
 
-function DisplayObject.__setter:disabled(value)
+function ALittle.DisplayObject.__setter:disabled(value)
 	if value == true and self == A_UISystem.focus then
 		A_UISystem.focus = nil
 	end
@@ -725,15 +725,15 @@ function DisplayObject.__setter:disabled(value)
 	end
 end
 
-function DisplayObject.__getter:disabled()
+function ALittle.DisplayObject.__getter:disabled()
 	return self._disabled
 end
 
-function DisplayObject.__getter:abs_disabled()
+function ALittle.DisplayObject.__getter:abs_disabled()
 	return self._abs_disabled
 end
 
-function DisplayObject:UpdateLayout()
+function ALittle.DisplayObject:UpdateLayout()
 	if self._show_parent == nil then
 		return
 	end
@@ -743,7 +743,7 @@ function DisplayObject:UpdateLayout()
 	self._show_parent:UpdateYLayout(self)
 end
 
-function DisplayObject:PickUp(x, y)
+function ALittle.DisplayObject:PickUp(x, y)
 	if self._ignore or self._abs_disabled or self._abs_visible == false then
 		return nil, nil, nil
 	end
@@ -784,7 +784,7 @@ function DisplayObject:PickUp(x, y)
 	end
 end
 
-function DisplayObject:PickUpSelf(x, y)
+function ALittle.DisplayObject:PickUpSelf(x, y)
 	local rel_x = x - self._x
 	local rel_y = y - self._y
 	local xx = rel_x - self._center_x
@@ -815,13 +815,13 @@ function DisplayObject:PickUpSelf(x, y)
 	return nil, rel_x, rel_y
 end
 
-function DisplayObject:ClipRect(x, y, width, height, h_move, v_move)
+function ALittle.DisplayObject:ClipRect(x, y, width, height, h_move, v_move)
 end
 
-function DisplayObject:DeepLayout()
+function ALittle.DisplayObject:DeepLayout()
 end
 
-function DisplayObject:DeserializeSetter(info)
+function ALittle.DisplayObject:DeserializeSetter(info)
 	local base_attr = info.__base_attr
 	if base_attr == nil then
 		base_attr = {}
@@ -837,7 +837,7 @@ function DisplayObject:DeserializeSetter(info)
 	end
 end
 
-function DisplayObject:DeserializeShowChild(info, target_logic)
+function ALittle.DisplayObject:DeserializeShowChild(info, target_logic)
 	if info.__target_class ~= nil and self._ctrl_sys._use_plugin_class then
 		target_logic = self
 	end
@@ -879,7 +879,7 @@ function DisplayObject:DeserializeShowChild(info, target_logic)
 	end
 end
 
-function DisplayObject:DeserializeLinkEvent(info, target_logic)
+function ALittle.DisplayObject:DeserializeLinkEvent(info, target_logic)
 	local event_list = info.__event
 	if event_list ~= nil then
 		for index, einfo in ___ipairs(event_list) do
@@ -887,7 +887,7 @@ function DisplayObject:DeserializeLinkEvent(info, target_logic)
 			if einfo.func ~= nil then
 				func = target_logic[einfo.func]
 				if func == nil and self._ctrl_sys.log_error then
-					Log("can't find event func:\"" .. einfo.func .. "\" in " .. String_ToString(target_logic))
+					ALittle.Log("can't find event func:\"" .. einfo.func .. "\" in " .. ALittle.String_ToString(target_logic))
 				end
 			end
 			if einfo.type ~= nil and func ~= nil then
@@ -900,7 +900,7 @@ function DisplayObject:DeserializeLinkEvent(info, target_logic)
 	end
 end
 
-function DisplayObject:Deserialize(info, target_logic, parent)
+function ALittle.DisplayObject:Deserialize(info, target_logic, parent)
 	self:DeserializeSetter(info)
 	if self._pickup_rect then
 		if parent ~= nil then
@@ -927,3 +927,4 @@ function DisplayObject:Deserialize(info, target_logic, parent)
 	end
 end
 
+end

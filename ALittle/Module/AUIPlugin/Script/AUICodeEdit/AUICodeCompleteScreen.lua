@@ -1,6 +1,6 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("AUIPlugin", package.seeall)
-
+do
+if _G.AUIPlugin == nil then _G.AUIPlugin = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
@@ -18,16 +18,16 @@ type_list = {"string","string","string","int"},
 option_map = {}
 })
 
-AUICodeCompleteScreen = Lua.Class(nil, "AUIPlugin.AUICodeCompleteScreen")
+AUIPlugin.AUICodeCompleteScreen = Lua.Class(nil, "AUIPlugin.AUICodeCompleteScreen")
 
-function AUICodeCompleteScreen:Ctor(edit)
+function AUIPlugin.AUICodeCompleteScreen:Ctor(edit)
 	___rawset(self, "_item_pool", {})
 	___rawset(self, "_item_pool_count", 0)
 	___rawset(self, "_item_height", 0)
 	___rawset(self, "_edit", edit)
 end
 
-function AUICodeCompleteScreen:ShowComplete()
+function AUIPlugin.AUICodeCompleteScreen:ShowComplete()
 	if self._complete == nil then
 		if not self:ReInit() then
 			self:Hide()
@@ -57,13 +57,13 @@ function AUICodeCompleteScreen:ShowComplete()
 		end
 	end
 end
-AUICodeCompleteScreen.ShowComplete = Lua.CoWrap(AUICodeCompleteScreen.ShowComplete)
+AUIPlugin.AUICodeCompleteScreen.ShowComplete = Lua.CoWrap(AUIPlugin.AUICodeCompleteScreen.ShowComplete)
 
-function AUICodeCompleteScreen:IsShow()
+function AUIPlugin.AUICodeCompleteScreen:IsShow()
 	return self._complete ~= nil
 end
 
-function AUICodeCompleteScreen:SelectUp()
+function AUIPlugin.AUICodeCompleteScreen:SelectUp()
 	local target = self:GetSelectIndex()
 	target = target - (1)
 	if target < 1 then
@@ -87,7 +87,7 @@ function AUICodeCompleteScreen:SelectUp()
 	end
 end
 
-function AUICodeCompleteScreen:SelectDown()
+function AUIPlugin.AUICodeCompleteScreen:SelectDown()
 	local target = self:GetSelectIndex()
 	target = target + (1)
 	if target > self._screen.child_count then
@@ -111,7 +111,7 @@ function AUICodeCompleteScreen:SelectDown()
 	end
 end
 
-function AUICodeCompleteScreen:DoSelect()
+function AUIPlugin.AUICodeCompleteScreen:DoSelect()
 	local target = self:GetSelectIndex()
 	if target == nil then
 		return false
@@ -131,7 +131,7 @@ function AUICodeCompleteScreen:DoSelect()
 	return result
 end
 
-function AUICodeCompleteScreen:GetSelectIndex()
+function AUIPlugin.AUICodeCompleteScreen:GetSelectIndex()
 	local target = nil
 	for index, child in ___ipairs(self._screen.childs) do
 		if child._user_data._item_button.selected then
@@ -142,7 +142,7 @@ function AUICodeCompleteScreen:GetSelectIndex()
 	return target
 end
 
-function AUICodeCompleteScreen:ReInit()
+function AUIPlugin.AUICodeCompleteScreen:ReInit()
 	local ___COROUTINE = coroutine.running()
 	if self._edit.language == nil then
 		return false
@@ -152,9 +152,9 @@ function AUICodeCompleteScreen:ReInit()
 		return false
 	end
 	local x, y = self._edit:CalcPosition(self._complete.line_start, self._complete.char_start, true)
-	y = y + (CODE_LINE_HEIGHT)
+	y = y + (AUIPlugin.CODE_LINE_HEIGHT)
 	if self._screen == nil then
-		self._screen = g_Control:CreateControl("ide_code_scroll_screen")
+		self._screen = AUIPlugin.g_Control:CreateControl("ide_code_scroll_screen")
 		self._screen.width = 200
 	end
 	self._screen:RemoveAllChild()
@@ -177,7 +177,7 @@ function AUICodeCompleteScreen:ReInit()
 			self._item_pool_count = self._item_pool_count - (1)
 		else
 			item_info = {}
-			item_info._item = g_Control:CreateControl("ide_code_complete_item", item_info)
+			item_info._item = AUIPlugin.g_Control:CreateControl("ide_code_complete_item", item_info)
 		end
 		item_info._item_button.group = self._item_group
 		item_info._item_title.text = info.display
@@ -201,11 +201,11 @@ function AUICodeCompleteScreen:ReInit()
 	return true
 end
 
-function AUICodeCompleteScreen.ItemInfoSort(a, b)
+function AUIPlugin.AUICodeCompleteScreen.ItemInfoSort(a, b)
 	return a.pos < b.pos
 end
 
-function AUICodeCompleteScreen:Fliter(text)
+function AUIPlugin.AUICodeCompleteScreen:Fliter(text)
 	local descriptor
 	local upper = ALittle.String_Upper(text)
 	local sort_list = {}
@@ -218,7 +218,7 @@ function AUICodeCompleteScreen:Fliter(text)
 			sort_list[count] = info
 		end
 	end
-	ALittle.List_Sort(sort_list, AUICodeCompleteScreen.ItemInfoSort)
+	ALittle.List_Sort(sort_list, AUIPlugin.AUICodeCompleteScreen.ItemInfoSort)
 	count = 0
 	for index, info in ___ipairs(sort_list) do
 		if self._screen.child_count == 0 then
@@ -247,7 +247,7 @@ function AUICodeCompleteScreen:Fliter(text)
 	return true
 end
 
-function AUICodeCompleteScreen:Hide()
+function AUIPlugin.AUICodeCompleteScreen:Hide()
 	self:HideTip()
 	self._complete = nil
 	if self._screen ~= nil then
@@ -256,7 +256,7 @@ function AUICodeCompleteScreen:Hide()
 	self._edit.help_container:RemoveChild(self._screen)
 end
 
-function AUICodeCompleteScreen:TryHide()
+function AUIPlugin.AUICodeCompleteScreen:TryHide()
 	if self._complete == nil then
 		return
 	end
@@ -274,9 +274,9 @@ function AUICodeCompleteScreen:TryHide()
 	end
 end
 
-function AUICodeCompleteScreen:ShowTip(content)
+function AUIPlugin.AUICodeCompleteScreen:ShowTip(content)
 	if self._tip_dialog == nil then
-		self._tip_dialog = g_Control:CreateControl("ide_tool_area_tip", self)
+		self._tip_dialog = AUIPlugin.g_Control:CreateControl("ide_tool_area_tip", self)
 		self._tip_dialog.width = 200
 	end
 	self._edit.help_container:AddChild(self._tip_dialog)
@@ -287,7 +287,7 @@ function AUICodeCompleteScreen:ShowTip(content)
 	self._tip_dialog.y = self._screen.y + self._screen.height
 end
 
-function AUICodeCompleteScreen:HideTip()
+function AUIPlugin.AUICodeCompleteScreen:HideTip()
 	if self._tip_dialog == nil then
 		return
 	end
@@ -295,3 +295,4 @@ function AUICodeCompleteScreen:HideTip()
 	self._edit.help_container:RemoveChild(self._tip_dialog)
 end
 
+end

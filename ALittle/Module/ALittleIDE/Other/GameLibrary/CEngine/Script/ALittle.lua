@@ -1,4 +1,5 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
+do
 local ___pairs = pairs
 local ___ipairs = ipairs
 
@@ -9,7 +10,7 @@ __Log = function(content, level)
 end
 
 ALittle.SetLogFunc(__Log)
-function RequireCEngine(base_path)
+function _G.RequireCEngine(base_path)
 	local ___COROUTINE = coroutine.running()
 	Require(base_path, "CEngine/UISystem/IShow")
 	Require(base_path, "CEngine/Utility/String")
@@ -81,136 +82,136 @@ function RequireCEngine(base_path)
 	Require(base_path, "CEngine/Version/VersionSystemWindows")
 end
 
-function __ALITTLEAPI_HandleConsoleCmd(cmd)
+function _G.__ALITTLEAPI_HandleConsoleCmd(cmd)
 	ALittle.ExecuteCommand(cmd)
 end
 
-function __ALITTLEAPI_FingerMoved(x, y, finger_id, touch_id)
+function _G.__ALITTLEAPI_FingerMoved(x, y, finger_id, touch_id)
 	A_UISystem:HandleFingerMoved(x, y, finger_id, touch_id)
 end
 
-function __ALITTLEAPI_FingerDown(x, y, finger_id, touch_id)
+function _G.__ALITTLEAPI_FingerDown(x, y, finger_id, touch_id)
 	A_UISystem:HandleFingerDown(x, y, finger_id, touch_id)
 end
 
-function __ALITTLEAPI_FingerUp(x, y, finger_id, touch_id)
+function _G.__ALITTLEAPI_FingerUp(x, y, finger_id, touch_id)
 	A_UISystem:HandleFingerUp(x, y, finger_id, touch_id)
 end
 
-function __ALITTLEAPI_MouseMoved(x, y)
+function _G.__ALITTLEAPI_MouseMoved(x, y)
 	A_UISystem:HandleMouseMoved(x, y)
 end
 
-function __ALITTLEAPI_LButtonDown(x, y, count)
+function _G.__ALITTLEAPI_LButtonDown(x, y, count)
 	A_UISystem:HandleLButtonDown(x, y, count)
 end
 
-function __ALITTLEAPI_LButtonUp(x, y)
+function _G.__ALITTLEAPI_LButtonUp(x, y)
 	A_UISystem:HandleLButtonUp(x, y)
 end
 
-function __ALITTLEAPI_MButtonDown(x, y, count)
+function _G.__ALITTLEAPI_MButtonDown(x, y, count)
 	A_UISystem:HandleMButtonDown(x, y, count)
 end
 
-function __ALITTLEAPI_MButtonUp(x, y)
+function _G.__ALITTLEAPI_MButtonUp(x, y)
 	A_UISystem:HandleMButtonUp(x, y)
 end
 
-function __ALITTLEAPI_RButtonDown(x, y, count)
+function _G.__ALITTLEAPI_RButtonDown(x, y, count)
 	A_UISystem:HandleRButtonDown(x, y, count)
 end
 
-function __ALITTLEAPI_RButtonUp(x, y)
+function _G.__ALITTLEAPI_RButtonUp(x, y)
 	A_UISystem:HandleRButtonUp(x, y)
 end
 
-function __ALITTLEAPI_MouseWheel(x, y)
+function _G.__ALITTLEAPI_MouseWheel(x, y)
 	A_UISystem:HandleMouseWheel(x, y)
 end
 
-function __ALITTLEAPI_KeyDown(mod, sym, scancode)
+function _G.__ALITTLEAPI_KeyDown(mod, sym, scancode)
 	A_UISystem:HandleKeyDown(mod, sym, scancode)
 end
 
-function __ALITTLEAPI_KeyUp(mod, sym, scancode)
+function _G.__ALITTLEAPI_KeyUp(mod, sym, scancode)
 	A_UISystem:HandleKeyUp(mod, sym, scancode)
 end
 
-function __ALITTLEAPI_ViewResized(width, height)
+function _G.__ALITTLEAPI_ViewResized(width, height)
 	A_UISystem:HandleViewResized(width, height)
 end
 
-function __ALITTLEAPI_TextInput(text)
+function _G.__ALITTLEAPI_TextInput(text)
 	A_UISystem:HandleTextInput(text)
 end
 
-function __ALITTLEAPI_TextEditing(text, start)
+function _G.__ALITTLEAPI_TextEditing(text, start)
 	A_UISystem:HandleTextEditing(text, start)
 end
 
-function __ALITTLEAPI_DropFile(path)
+function _G.__ALITTLEAPI_DropFile(path)
 	A_UISystem:HandleDropFile(path)
 end
 
-function __ALITTLEAPI_WindowEnter()
+function _G.__ALITTLEAPI_WindowEnter()
 	A_UISystem:HandleWindowEnter()
 end
 
-function __ALITTLEAPI_WindowLeave()
+function _G.__ALITTLEAPI_WindowLeave()
 	A_UISystem:HandleWindowLeave()
 end
 
-function __ALITTLEAPI_Update(frame_time)
+function _G.__ALITTLEAPI_Update(frame_time)
 	A_LoopSystem:Update(frame_time)
 	A_WeakLoopSystem:Update(frame_time)
 end
 
-function __ALITTLEAPI_WillEnterBackground()
+function _G.__ALITTLEAPI_WillEnterBackground()
 	A_OtherSystem:HandleWillEnterBackground()
 end
 
-function __ALITTLEAPI_DidEnterBackground()
+function _G.__ALITTLEAPI_DidEnterBackground()
 	A_OtherSystem:HandleDidEnterBackground()
 end
 
-function __ALITTLEAPI_WillEnterForeground()
+function _G.__ALITTLEAPI_WillEnterForeground()
 	A_OtherSystem:HandleWillEnterForeground()
 end
 
-function __ALITTLEAPI_DidEnterForeground()
+function _G.__ALITTLEAPI_DidEnterForeground()
 	A_OtherSystem:HandleDidEnterForeground()
 end
 
-function __ALITTLEAPI_LowMemory()
+function _G.__ALITTLEAPI_LowMemory()
 	A_OtherSystem:HandleLowMemory()
 end
 
-function __ALITTLEAPI_TextureLoadSucceed(loader, texture)
+function _G.__ALITTLEAPI_TextureLoadSucceed(loader, texture)
 	A_LoadTextureManager:HandleTextureLoadSucceed(loader, texture)
 end
 
-function __ALITTLEAPI_TextureLoadFailed(loader)
+function _G.__ALITTLEAPI_TextureLoadFailed(loader)
 	A_LoadTextureManager:HandleTextureLoadFailed(loader)
 end
 
-function __ALITTLEAPI_TextureCutLoadSucceed(loader, texture)
+function _G.__ALITTLEAPI_TextureCutLoadSucceed(loader, texture)
 	A_LoadTextureManager:HandleTextureCutLoadSucceed(loader, texture)
 end
 
-function __ALITTLEAPI_TextureCutLoadFailed(loader)
+function _G.__ALITTLEAPI_TextureCutLoadFailed(loader)
 	A_LoadTextureManager:HandleTextureCutLoadFailed(loader)
 end
 
-function __ALITTLEAPI_CsvFileLoadSucceed(loader, file)
+function _G.__ALITTLEAPI_CsvFileLoadSucceed(loader, file)
 	A_CsvConfigManager:HandleCsvFileLoadSucceed(loader, file)
 end
 
-function __ALITTLEAPI_CsvFileLoadFailed(loader)
+function _G.__ALITTLEAPI_CsvFileLoadFailed(loader)
 	A_CsvConfigManager:HandleCsvFileLoadFailed(loader)
 end
 
-function __ALITTLEAPI_RenderDeviceReset()
+function _G.__ALITTLEAPI_RenderDeviceReset()
 	A_LoadTextureManager:HandleRenderDeviceReset()
 end
 
@@ -223,36 +224,37 @@ _G.__ALITTLEAPI_ConnectSucceed = ALittle.__ALITTLEAPI_ConnectSucceed
 _G.__ALITTLEAPI_Disconnect = ALittle.__ALITTLEAPI_Disconnect
 _G.__ALITTLEAPI_ConnectFailed = ALittle.__ALITTLEAPI_ConnectFailed
 _G.__ALITTLEAPI_Message = ALittle.__ALITTLEAPI_Message
-function __ALITTLEAPI_AudioChunkStopedEvent(id)
+function _G.__ALITTLEAPI_AudioChunkStopedEvent(id)
 	A_AudioSystem:HandleAudioChunkStopedEvent(id)
 end
 
-function __ALITTLEAPI_NetworkChanged(net_type)
+function _G.__ALITTLEAPI_NetworkChanged(net_type)
 	ALittle.System_ClearAIFamily()
 	A_OtherSystem:HandleNetworkChanged(net_type)
 end
 
-function __ALITTLEAPI_ALittleJsonRPC(json)
+function _G.__ALITTLEAPI_ALittleJsonRPC(json)
 	A_OtherSystem:HandleALittleJsonRPC(json)
 end
 
-function __ALITTLEAPI_SystemSelectFile(path)
+function _G.__ALITTLEAPI_SystemSelectFile(path)
 	A_OtherSystem:HandleSystemSelectFile(path)
 end
 
-function __ALITTLEAPI_SystemSelectDirectory(path)
+function _G.__ALITTLEAPI_SystemSelectDirectory(path)
 	A_OtherSystem:HandleSystemSelectDirectory(path)
 end
 
-function __ALITTLEAPI_SystemSaveFile(path)
+function _G.__ALITTLEAPI_SystemSaveFile(path)
 	A_OtherSystem:HandleSystemSaveFile(path)
 end
 
-function __ALITTLEAPI_SetupMainModule(base_path, module_name, debug_info)
+function _G.__ALITTLEAPI_SetupMainModule(base_path, module_name, debug_info)
 	A_ModuleSystem:MainSetup(base_path, module_name, debug_info)
 end
 
-function __ALITTLEAPI_ShutdownMainModule()
+function _G.__ALITTLEAPI_ShutdownMainModule()
 	A_ModuleSystem:MainShutdown()
 end
 
+end

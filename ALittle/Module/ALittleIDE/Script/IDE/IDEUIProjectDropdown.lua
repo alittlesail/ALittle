@@ -1,6 +1,6 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittleIDE", package.seeall)
-
+do
+if _G.ALittleIDE == nil then _G.ALittleIDE = {} end
 local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = ALittle.GetAllStruct()
@@ -13,31 +13,31 @@ option_map = {}
 })
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
-IDEUIProjectDropdown = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDEUIProjectDropdown")
+ALittleIDE.IDEUIProjectDropdown = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDEUIProjectDropdown")
 
-function IDEUIProjectDropdown:TCtor()
+function ALittleIDE.IDEUIProjectDropdown:TCtor()
 	self:UpdateProjectList()
-	g_IDEProject:AddEventListener(___all_struct[-975432877], self, self.HandleProjectOpen)
-	g_IDEProject:AddEventListener(___all_struct[-332308624], self, self.HandleProjectClose)
+	ALittleIDE.g_IDEProject:AddEventListener(___all_struct[-975432877], self, self.HandleProjectOpen)
+	ALittleIDE.g_IDEProject:AddEventListener(___all_struct[-332308624], self, self.HandleProjectClose)
 end
 
-function IDEUIProjectDropdown:HandleProjectOpen(event)
-	self:UpdateProjectList()
-end
-
-function IDEUIProjectDropdown:HandleProjectClose(event)
+function ALittleIDE.IDEUIProjectDropdown:HandleProjectOpen(event)
 	self:UpdateProjectList()
 end
 
-function IDEUIProjectDropdown:UpdateProjectList()
-	if g_IDEProject.project == nil then
+function ALittleIDE.IDEUIProjectDropdown:HandleProjectClose(event)
+	self:UpdateProjectList()
+end
+
+function ALittleIDE.IDEUIProjectDropdown:UpdateProjectList()
+	if ALittleIDE.g_IDEProject.project == nil then
 		self._current_project_name.text = "当前没有打开的项目"
 	else
-		self._current_project_name.text = g_IDEProject.project.name
+		self._current_project_name.text = ALittleIDE.g_IDEProject.project.name
 	end
 	local data_list = {}
 	local data_list_count = 0
-	local project_map = g_IDEConfig:GetConfig("project_map", {})
+	local project_map = ALittleIDE.g_IDEConfig:GetConfig("project_map", {})
 	for k, v in ___pairs(project_map) do
 		data_list_count = data_list_count + 1
 		data_list[data_list_count] = v
@@ -48,17 +48,17 @@ function IDEUIProjectDropdown:UpdateProjectList()
 	self._current_project_name.text = text
 end
 
-function IDEUIProjectDropdown:HandlePeojectSelectChange(event)
+function ALittleIDE.IDEUIProjectDropdown:HandlePeojectSelectChange(event)
 	local name = ""
-	if g_IDEProject.project ~= nil then
-		name = g_IDEProject.project.name
+	if ALittleIDE.g_IDEProject.project ~= nil then
+		name = ALittleIDE.g_IDEProject.project.name
 	end
 	local new_name = event.target.text
 	if new_name == name then
 		return
 	end
-	if g_IDECenter.center.content_edit:IsSaveAll() then
-		local error = g_IDEProject:OpenProject(new_name)
+	if ALittleIDE.g_IDECenter.center.content_edit:IsSaveAll() then
+		local error = ALittleIDE.g_IDEProject:OpenProject(new_name)
 		if error ~= nil then
 			g_AUITool:ShowNotice("错误", error)
 		end
@@ -67,12 +67,13 @@ function IDEUIProjectDropdown:HandlePeojectSelectChange(event)
 	event.target.text = name
 	local result = g_AUITool:SaveNotice("提示", "是否保存当前项目?")
 	if result == "YES" then
-		g_IDECenter.center.content_edit:SaveAllTab()
+		ALittleIDE.g_IDECenter.center.content_edit:SaveAllTab()
 	end
-	local error = g_IDEProject:OpenProject(new_name)
+	local error = ALittleIDE.g_IDEProject:OpenProject(new_name)
 	if error ~= nil then
 		g_AUITool:ShowNotice("错误", error)
 	end
 end
-IDEUIProjectDropdown.HandlePeojectSelectChange = Lua.CoWrap(IDEUIProjectDropdown.HandlePeojectSelectChange)
+ALittleIDE.IDEUIProjectDropdown.HandlePeojectSelectChange = Lua.CoWrap(ALittleIDE.IDEUIProjectDropdown.HandlePeojectSelectChange)
 
+end

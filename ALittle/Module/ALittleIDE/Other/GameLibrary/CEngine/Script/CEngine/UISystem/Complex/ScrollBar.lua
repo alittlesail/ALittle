@@ -1,17 +1,17 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___all_struct = GetAllStruct()
+local ___all_struct = ALittle.GetAllStruct()
 
 
 assert(ALittle.Grid3, " extends class:ALittle.Grid3 is nil")
-ScrollBar = Lua.Class(ALittle.Grid3, "ALittle.ScrollBar")
+ALittle.ScrollBar = Lua.Class(ALittle.Grid3, "ALittle.ScrollBar")
 
-function ScrollBar:Ctor(ctrl_sys)
-	___rawset(self, "_bar_container", DisplayGroup(self._ctrl_sys))
+function ALittle.ScrollBar:Ctor(ctrl_sys)
+	___rawset(self, "_bar_container", ALittle.DisplayGroup(self._ctrl_sys))
 	self.show_center = self._bar_container
 	___rawset(self, "_offset_step", 0)
 	___rawset(self, "_offset_rate", 0)
@@ -24,51 +24,51 @@ function ScrollBar:Ctor(ctrl_sys)
 	___rawset(self, "_pickup_child", true)
 end
 
-function ScrollBar.__setter:type(value)
-	Grid3.__setter.type(self, value)
+function ALittle.ScrollBar.__setter:type(value)
+	ALittle.Grid3.__setter.type(self, value)
 	self:UpdateShowSize()
 	self:RejustBarButton()
 end
 
-function ScrollBar.__setter:up_size(value)
-	Grid3.__setter.up_size(self, value)
+function ALittle.ScrollBar.__setter:up_size(value)
+	ALittle.Grid3.__setter.up_size(self, value)
 	self:UpdateShowSize()
 	self:RejustBarButton()
 end
 
-function ScrollBar.__setter:down_size(value)
-	Grid3.__setter.down_size(self, value)
+function ALittle.ScrollBar.__setter:down_size(value)
+	ALittle.Grid3.__setter.down_size(self, value)
 	self:UpdateShowSize()
 	self:RejustBarButton()
 end
 
-function ScrollBar.__setter:gap(value)
-	Grid3.__setter.gap(self, value)
+function ALittle.ScrollBar.__setter:gap(value)
+	ALittle.Grid3.__setter.gap(self, value)
 	self:UpdateShowSize()
 	self:RejustBarButton()
 end
 
-function ScrollBar.__setter:total_size(value)
+function ALittle.ScrollBar.__setter:total_size(value)
 	self._logic_total_size = value
 	self:UpdateShowSize()
 	self:RejustBarButton()
 end
 
-function ScrollBar.__getter:total_size()
+function ALittle.ScrollBar.__getter:total_size()
 	return self._logic_total_size
 end
 
-function ScrollBar.__setter:show_size(value)
+function ALittle.ScrollBar.__setter:show_size(value)
 	self._logic_show_size = value
 	self:UpdateShowSize()
 	self:RejustBarButton()
 end
 
-function ScrollBar.__getter:show_size()
+function ALittle.ScrollBar.__getter:show_size()
 	return self._logic_show_size
 end
 
-function ScrollBar.__setter:offset_rate(value)
+function ALittle.ScrollBar.__setter:offset_rate(value)
 	self._offset_rate = value
 	if self._offset_rate < 0 then
 		self._offset_rate = 0
@@ -78,19 +78,19 @@ function ScrollBar.__setter:offset_rate(value)
 	self:RejustBarButton()
 end
 
-function ScrollBar.__getter:offset_rate()
+function ALittle.ScrollBar.__getter:offset_rate()
 	return self._offset_rate
 end
 
-function ScrollBar.__setter:offset_step(value)
+function ALittle.ScrollBar.__setter:offset_step(value)
 	self._offset_step = value
 end
 
-function ScrollBar.__getter:offset_step()
+function ALittle.ScrollBar.__getter:offset_step()
 	return self._offset_step
 end
 
-function ScrollBar:UpdateShowSize()
+function ALittle.ScrollBar:UpdateShowSize()
 	self._show_size = 0
 	self._center_size = self.center_size
 	if self._logic_show_size < self._logic_total_size then
@@ -98,30 +98,30 @@ function ScrollBar:UpdateShowSize()
 	end
 end
 
-function ScrollBar:SetToDown()
+function ALittle.ScrollBar:SetToDown()
 	self._offset_rate = 1
 	self:RejustBarButton()
 end
 
-function ScrollBar.__setter:width(value)
+function ALittle.ScrollBar.__setter:width(value)
 	if self._width == value then
 		return
 	end
-	Grid3.__setter.width(self, value)
+	ALittle.Grid3.__setter.width(self, value)
 	self:UpdateShowSize()
 	self:RejustBarButton()
 end
 
-function ScrollBar.__setter:height(value)
+function ALittle.ScrollBar.__setter:height(value)
 	if self._height == value then
 		return
 	end
-	Grid3.__setter.height(self, value)
+	ALittle.Grid3.__setter.height(self, value)
 	self:UpdateShowSize()
 	self:RejustBarButton()
 end
 
-function ScrollBar.__setter:up_button(value)
+function ALittle.ScrollBar.__setter:up_button(value)
 	if self._up_button ~= nil then
 		self._up_button:RemoveEventListener(___all_struct[-449066808], self, self.HandleUpButtonClick)
 	end
@@ -132,18 +132,18 @@ function ScrollBar.__setter:up_button(value)
 	end
 end
 
-function ScrollBar.__getter:up_button()
+function ALittle.ScrollBar.__getter:up_button()
 	return self._up_button
 end
 
-function ScrollBar:HandleUpButtonClick(event)
+function ALittle.ScrollBar:HandleUpButtonClick(event)
 	self._offset_rate = self._offset_rate - self._offset_step
 	if self._offset_rate < 0 then
 		self._offset_rate = 0
 	end
 	if self._bar_button ~= nil then
 		local offset = self._offset_rate * (self._center_size - self._show_size)
-		if self._type == UIEnumTypes.TYPE_V then
+		if self._type == ALittle.UIEnumTypes.TYPE_V then
 			self._bar_button.y = offset
 		else
 			self._bar_button.x = offset
@@ -153,7 +153,7 @@ function ScrollBar:HandleUpButtonClick(event)
 	self:DispatchEvent(___all_struct[1309977874], {})
 end
 
-function ScrollBar.__setter:down_button(value)
+function ALittle.ScrollBar.__setter:down_button(value)
 	if self._down_button ~= nil then
 		self._down_button:RemoveEventListener(___all_struct[-449066808], self, self.HandleDownButtonClick)
 	end
@@ -164,18 +164,18 @@ function ScrollBar.__setter:down_button(value)
 	end
 end
 
-function ScrollBar.__getter:down_button()
+function ALittle.ScrollBar.__getter:down_button()
 	return self._down_button
 end
 
-function ScrollBar:HandleDownButtonClick(event)
+function ALittle.ScrollBar:HandleDownButtonClick(event)
 	self._offset_rate = self._offset_rate + self._offset_step
 	if self._offset_rate > 1 then
 		self._offset_rate = 1
 	end
 	if self._bar_button ~= nil then
 		local offset = self._offset_rate * (self._center_size - self._show_size)
-		if self._type == UIEnumTypes.TYPE_V then
+		if self._type == ALittle.UIEnumTypes.TYPE_V then
 			self._bar_button.y = offset
 		else
 			self._bar_button.x = offset
@@ -185,7 +185,7 @@ function ScrollBar:HandleDownButtonClick(event)
 	self:DispatchEvent(___all_struct[1309977874], {})
 end
 
-function ScrollBar.__setter:bar_button(value)
+function ALittle.ScrollBar.__setter:bar_button(value)
 	if self._bar_button ~= nil then
 		self._bar_button:RemoveEventListener(___all_struct[1337289812], self, self.HandleBarButtonDrag)
 		self._bar_button:RemoveEventListener(___all_struct[1301789264], self, self.HandleBarButtonDragBegin)
@@ -204,11 +204,11 @@ function ScrollBar.__setter:bar_button(value)
 	self:RejustBarButton()
 end
 
-function ScrollBar.__getter:bar_button()
+function ALittle.ScrollBar.__getter:bar_button()
 	return self._bar_button
 end
 
-function ScrollBar.__setter:bar_background(value)
+function ALittle.ScrollBar.__setter:bar_background(value)
 	if self._bar_background ~= nil then
 		self._bar_container:RemoveChild(self._bar_background)
 	end
@@ -219,12 +219,12 @@ function ScrollBar.__setter:bar_background(value)
 	self:RejustBarButton()
 end
 
-function ScrollBar.__getter:bar_background()
+function ALittle.ScrollBar.__getter:bar_background()
 	return self._bar_background
 end
 
-function ScrollBar:HandleBarButtonDragBegin(event)
-	if self._type == UIEnumTypes.TYPE_V then
+function ALittle.ScrollBar:HandleBarButtonDragBegin(event)
+	if self._type == ALittle.UIEnumTypes.TYPE_V then
 		local height = self._bar_button.height
 		self._drag_point_rate = 0
 		if height > 0 then
@@ -239,8 +239,8 @@ function ScrollBar:HandleBarButtonDragBegin(event)
 	end
 end
 
-function ScrollBar:HandleBarButtonScroll(event)
-	if self._type == UIEnumTypes.TYPE_V then
+function ALittle.ScrollBar:HandleBarButtonScroll(event)
+	if self._type == ALittle.UIEnumTypes.TYPE_V then
 		if event.delta_y > 0 then
 			self:HandleUpButtonClick(nil)
 		elseif event.delta_y < 0 then
@@ -255,13 +255,13 @@ function ScrollBar:HandleBarButtonScroll(event)
 	end
 end
 
-function ScrollBar:HandleBarButtonDragEnd(event)
+function ALittle.ScrollBar:HandleBarButtonDragEnd(event)
 	self:DispatchEvent(___all_struct[1309977874], {})
 end
 
-function ScrollBar:HandleBarButtonDrag(event)
+function ALittle.ScrollBar:HandleBarButtonDrag(event)
 	local real_size = self._center_size - self._show_size
-	if self._type == UIEnumTypes.TYPE_V then
+	if self._type == ALittle.UIEnumTypes.TYPE_V then
 		if (event.delta_y > 0 and event.rel_y < self._show_size * self._drag_point_rate) or (event.delta_y < 0 and event.rel_y > self._show_size * self._drag_point_rate) then
 			return
 		end
@@ -295,9 +295,9 @@ function ScrollBar:HandleBarButtonDrag(event)
 	self:DispatchEvent(___all_struct[958494922], {})
 end
 
-function ScrollBar:RejustBarButton()
+function ALittle.ScrollBar:RejustBarButton()
 	local real_size = self._center_size - self._show_size
-	if self._type == UIEnumTypes.TYPE_V then
+	if self._type == ALittle.UIEnumTypes.TYPE_V then
 		if self._bar_button ~= nil then
 			self._bar_button.x = 0
 			self._bar_button.width = self._width
@@ -326,3 +326,4 @@ function ScrollBar:RejustBarButton()
 	end
 end
 
+end

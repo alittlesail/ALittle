@@ -1,15 +1,15 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("Emulator", package.seeall)
-
+do
+if _G.Emulator == nil then _G.Emulator = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
 assert(Emulator.IDETree, " extends class:Emulator.IDETree is nil")
-IDETreeEnumMapMessage = Lua.Class(Emulator.IDETree, "Emulator.IDETreeEnumMapMessage")
+Emulator.IDETreeEnumMapMessage = Lua.Class(Emulator.IDETree, "Emulator.IDETreeEnumMapMessage")
 
-function IDETreeEnumMapMessage:Ctor(ctrl_sys, root, parent, rflct, msg, key_field, detail_info)
+function Emulator.IDETreeEnumMapMessage:Ctor(ctrl_sys, root, parent, rflct, msg, key_field, detail_info)
 	___rawset(self, "_detail_info", detail_info)
 	___rawset(self, "_parent", parent)
 	___rawset(self, "_rflct", rflct)
@@ -48,11 +48,11 @@ function IDETreeEnumMapMessage:Ctor(ctrl_sys, root, parent, rflct, msg, key_fiel
 	self._delete_button.disabled = root.for_show
 end
 
-function IDETreeEnumMapMessage:GetDetailInfo()
+function Emulator.IDETreeEnumMapMessage:GetDetailInfo()
 	return self._detail_info
 end
 
-function IDETreeEnumMapMessage:HandleKeySelectChanegd(event)
+function Emulator.IDETreeEnumMapMessage:HandleKeySelectChanegd(event)
 	local value = self._enum_value_map[event.target.text]
 	if value == nil then
 		return
@@ -61,11 +61,12 @@ function IDETreeEnumMapMessage:HandleKeySelectChanegd(event)
 	self:Save()
 end
 
-function IDETreeEnumMapMessage:HandleInsertClick(event)
+function Emulator.IDETreeEnumMapMessage:HandleInsertClick(event)
 	self._parent:CreateOneBefore(self)
 end
 
-function IDETreeEnumMapMessage:HandleDeleteClick(event)
+function Emulator.IDETreeEnumMapMessage:HandleDeleteClick(event)
 	self._parent:Delete(self)
 end
 
+end

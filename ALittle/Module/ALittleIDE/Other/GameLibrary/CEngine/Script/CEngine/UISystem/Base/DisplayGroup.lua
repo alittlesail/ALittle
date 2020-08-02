@@ -1,20 +1,20 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-local __remove = List_Remove
-local __insert = List_Insert
-local __splice = List_Splice
-local __cos = Math_Cos
-local __sin = Math_Sin
+local __remove = ALittle.List_Remove
+local __insert = ALittle.List_Insert
+local __splice = ALittle.List_Splice
+local __cos = ALittle.Math_Cos
+local __sin = ALittle.Math_Sin
 assert(ALittle.DisplayObject, " extends class:ALittle.DisplayObject is nil")
-DisplayGroup = Lua.Class(ALittle.DisplayObject, "ALittle.DisplayGroup")
+ALittle.DisplayGroup = Lua.Class(ALittle.DisplayObject, "ALittle.DisplayGroup")
 
-function DisplayGroup:Ctor(ctrl_sys)
+function ALittle.DisplayGroup:Ctor(ctrl_sys)
 	___rawset(self, "_childs", {})
 	___rawset(self, "_child_count", 0)
 	___rawset(self, "_show", __CPPAPIDisplayObjects())
@@ -23,7 +23,7 @@ function DisplayGroup:Ctor(ctrl_sys)
 	___rawset(self, "_pickup_this", false)
 end
 
-function DisplayGroup:GetChildIndex(child)
+function ALittle.DisplayGroup:GetChildIndex(child)
 	if child == nil then
 		return 0
 	end
@@ -38,7 +38,7 @@ function DisplayGroup:GetChildIndex(child)
 	return 0
 end
 
-function DisplayGroup:SetChildIndex(child, index)
+function ALittle.DisplayGroup:SetChildIndex(child, index)
 	local cur_index = self:GetChildIndex(child)
 	if cur_index == 0 then
 		return false
@@ -64,19 +64,19 @@ function DisplayGroup:SetChildIndex(child, index)
 	return true
 end
 
-function DisplayGroup:GetChildByIndex(index)
+function ALittle.DisplayGroup:GetChildByIndex(index)
 	return self._childs[index]
 end
 
-function DisplayGroup.__getter:childs()
+function ALittle.DisplayGroup.__getter:childs()
 	return self._childs
 end
 
-function DisplayGroup.__getter:child_count()
+function ALittle.DisplayGroup.__getter:child_count()
 	return self._child_count
 end
 
-function DisplayGroup:AddChild(child, index)
+function ALittle.DisplayGroup:AddChild(child, index)
 	if child == nil or child == self then
 		return false
 	end
@@ -110,7 +110,7 @@ function DisplayGroup:AddChild(child, index)
 	return true
 end
 
-function DisplayGroup:RemoveChild(child)
+function ALittle.DisplayGroup:RemoveChild(child)
 	if child == nil then
 		return false
 	end
@@ -130,12 +130,11 @@ function DisplayGroup:RemoveChild(child)
 	return false
 end
 
-function DisplayGroup:SpliceChild(index, count)
+function ALittle.DisplayGroup:SpliceChild(index, count)
 	local remain_count = self._child_count - index + 1
 	if count == nil then
 		count = remain_count
-	end
-	if count > remain_count then
+	elseif count > remain_count then
 		count = remain_count
 	end
 	if count <= 0 then
@@ -160,21 +159,21 @@ function DisplayGroup:SpliceChild(index, count)
 	return old_count - self._child_count
 end
 
-function DisplayGroup:HasChild(child)
+function ALittle.DisplayGroup:HasChild(child)
 	if child == nil then
 		return false
 	end
 	return child._show_parent == self or child._logic_parent == self
 end
 
-function DisplayGroup.__getter:parent()
+function ALittle.DisplayGroup.__getter:parent()
 	if self._logic_parent ~= nil then
 		return self._logic_parent
 	end
 	return self._show_parent
 end
 
-function DisplayGroup:RemoveAllChild()
+function ALittle.DisplayGroup:RemoveAllChild()
 	for index, value in ___ipairs(self._childs) do
 		value._show_parent = nil
 		value._logic_parent = nil
@@ -184,7 +183,7 @@ function DisplayGroup:RemoveAllChild()
 	self._child_count = 0
 end
 
-function DisplayGroup.__setter:alpha(value)
+function ALittle.DisplayGroup.__setter:alpha(value)
 	self._alpha = value
 	if self._show_parent ~= nil then
 		self._abs_alpha = self._show_parent._abs_alpha * value
@@ -196,7 +195,7 @@ function DisplayGroup.__setter:alpha(value)
 	end
 end
 
-function DisplayGroup.__setter:visible(value)
+function ALittle.DisplayGroup.__setter:visible(value)
 	self._visible = value
 	if self._show_parent ~= nil then
 		self._abs_visible = self._show_parent._abs_visible and value
@@ -209,7 +208,7 @@ function DisplayGroup.__setter:visible(value)
 	end
 end
 
-function DisplayGroup.__setter:disabled(value)
+function ALittle.DisplayGroup.__setter:disabled(value)
 	self._disabled = value
 	if self._show_parent ~= nil then
 		self._abs_disabled = self._show_parent._abs_disabled or value
@@ -221,7 +220,7 @@ function DisplayGroup.__setter:disabled(value)
 	end
 end
 
-function DisplayGroup:PickUp(x, y)
+function ALittle.DisplayGroup:PickUp(x, y)
 	if self._ignore or self._abs_disabled or self._abs_visible == false then
 		return nil, nil, nil
 	end
@@ -276,29 +275,29 @@ function DisplayGroup:PickUp(x, y)
 	return nil, nil, nil
 end
 
-function DisplayGroup.__setter:width(value)
+function ALittle.DisplayGroup.__setter:width(value)
 	self._show:SetWidth(value)
 end
 
-function DisplayGroup.__setter:height(value)
+function ALittle.DisplayGroup.__setter:height(value)
 	self._show:SetHeight(value)
 end
 
-function DisplayGroup.__getter:width()
+function ALittle.DisplayGroup.__getter:width()
 	if self._pickup_rect then
 		return self._width
 	end
 	return self.bound_width
 end
 
-function DisplayGroup.__getter:height()
+function ALittle.DisplayGroup.__getter:height()
 	if self._pickup_rect then
 		return self._height
 	end
 	return self.bound_height
 end
 
-function DisplayGroup.__getter:bound_width()
+function ALittle.DisplayGroup.__getter:bound_width()
 	local min_x = nil
 	local max_x = nil
 	for index, value in ___ipairs(self._childs) do
@@ -324,7 +323,7 @@ function DisplayGroup.__getter:bound_width()
 	return real_width
 end
 
-function DisplayGroup.__getter:bound_height()
+function ALittle.DisplayGroup.__getter:bound_height()
 	local min_y = nil
 	local max_y = nil
 	for index, value in ___ipairs(self._childs) do
@@ -350,7 +349,7 @@ function DisplayGroup.__getter:bound_height()
 	return real_height
 end
 
-function DisplayGroup.__getter:max_right()
+function ALittle.DisplayGroup.__getter:max_right()
 	local max_x = nil
 	for index, value in ___ipairs(self._childs) do
 		local width = value.width
@@ -365,7 +364,7 @@ function DisplayGroup.__getter:max_right()
 	return max_x
 end
 
-function DisplayGroup.__getter:max_bottom()
+function ALittle.DisplayGroup.__getter:max_bottom()
 	local max_y = nil
 	for index, value in ___ipairs(self._childs) do
 		local height = value.height
@@ -380,15 +379,16 @@ function DisplayGroup.__getter:max_bottom()
 	return max_y
 end
 
-function DisplayGroup:UpdateXLayout(child)
+function ALittle.DisplayGroup:UpdateXLayout(child)
 end
 
-function DisplayGroup:UpdateYLayout(child)
+function ALittle.DisplayGroup:UpdateYLayout(child)
 end
 
-function DisplayGroup:UpdateWidthLayout(child)
+function ALittle.DisplayGroup:UpdateWidthLayout(child)
 end
 
-function DisplayGroup:UpdateHeightLayout(child)
+function ALittle.DisplayGroup:UpdateHeightLayout(child)
 end
 
+end

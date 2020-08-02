@@ -1,26 +1,26 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-IHttpSender = Lua.Class(nil, "ALittle.IHttpSender")
+ALittle.IHttpSender = Lua.Class(nil, "ALittle.IHttpSender")
 
-function IHttpSender:HandleSucceed()
+function ALittle.IHttpSender:HandleSucceed()
 end
 
-function IHttpSender:HandleFailed(reason)
+function ALittle.IHttpSender:HandleFailed(reason)
 end
 
-function IHttpSender:Stop()
+function ALittle.IHttpSender:Stop()
 end
 
-function IHttpSender:SendRPC(thread, method, content)
+function ALittle.IHttpSender:SendRPC(thread, method, content)
 	Lua.Throw("not impl")
 end
 
-function IHttpSender.Invoke(method, client, content)
+function ALittle.IHttpSender.Invoke(method, client, content)
 	local ___COROUTINE = coroutine.running()
 	if ___COROUTINE == nil then
 		return "当前不是协程", nil
@@ -29,3 +29,4 @@ function IHttpSender.Invoke(method, client, content)
 	return coroutine.yield()
 end
 
+end

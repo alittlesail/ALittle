@@ -1,6 +1,6 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittleIDE", package.seeall)
-
+do
+if _G.ALittleIDE == nil then _G.ALittleIDE = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
@@ -38,9 +38,9 @@ option_map = {}
 })
 
 assert(ALittleIDE.IDECodeTreeLogic, " extends class:ALittleIDE.IDECodeTreeLogic is nil")
-IDECodeTreeItem = Lua.Class(ALittleIDE.IDECodeTreeLogic, "ALittleIDE.IDECodeTreeItem")
+ALittleIDE.IDECodeTreeItem = Lua.Class(ALittleIDE.IDECodeTreeLogic, "ALittleIDE.IDECodeTreeItem")
 
-function IDECodeTreeItem:Ctor(ctrl_sys, user_info)
+function ALittleIDE.IDECodeTreeItem:Ctor(ctrl_sys, user_info)
 	___rawset(self, "_item", ctrl_sys:CreateControl("ide_code_tree_item", self))
 	self:AddChild(self._item)
 	self.width = self._item.width
@@ -53,22 +53,22 @@ function IDECodeTreeItem:Ctor(ctrl_sys, user_info)
 	self._item_title.text = self._user_info.name
 end
 
-function IDECodeTreeItem.__getter:is_tree()
+function ALittleIDE.IDECodeTreeItem.__getter:is_tree()
 	return false
 end
 
-function IDECodeTreeItem.__getter:fold()
+function ALittleIDE.IDECodeTreeItem.__getter:fold()
 	return false
 end
 
-function IDECodeTreeItem.__setter:fold(value)
+function ALittleIDE.IDECodeTreeItem.__setter:fold(value)
 end
 
-function IDECodeTreeItem:HandleClick(event)
-	g_IDECenter.center.content_edit:StartEditCodeBySelect(self._user_info.name, self._user_info)
+function ALittleIDE.IDECodeTreeItem:HandleClick(event)
+	ALittleIDE.g_IDECenter.center.content_edit:StartEditCodeBySelect(self._user_info.name, self._user_info)
 end
 
-function IDECodeTreeItem:SearchFile(name, list)
+function ALittleIDE.IDECodeTreeItem:SearchFile(name, list)
 	if list == nil then
 		list = {}
 	end
@@ -78,14 +78,14 @@ function IDECodeTreeItem:SearchFile(name, list)
 	return list
 end
 
-function IDECodeTreeItem:FindFile(full_path)
+function ALittleIDE.IDECodeTreeItem:FindFile(full_path)
 	if self._user_info.path == full_path then
 		return self
 	end
 	return nil
 end
 
-function IDECodeTreeItem:HandleRButtonDown(event)
+function ALittleIDE.IDECodeTreeItem:HandleRButtonDown(event)
 	local menu = AUIPlugin.AUIRightMenu()
 	if self._user_info.project ~= nil and ALittle.File_GetFileExtByPathAndUpper(self._user_info.path) == self._user_info.project.upper_ext then
 		self._user_info.project:OnTreeItemMenu(self._user_info.path, menu)
@@ -95,7 +95,7 @@ function IDECodeTreeItem:HandleRButtonDown(event)
 	menu:Show()
 end
 
-function IDECodeTreeItem:HandleDeleteFile()
+function ALittleIDE.IDECodeTreeItem:HandleDeleteFile()
 	local file_name = ALittle.File_GetFileNameByPath(self._user_info.path)
 	local result = g_AUITool:DeleteNotice("删除", "确定要删除" .. file_name .. "吗?")
 	if result ~= "YES" then
@@ -108,11 +108,11 @@ function IDECodeTreeItem:HandleDeleteFile()
 	if parent ~= nil then
 		parent:DispatchEvent(___all_struct[-431205740], {})
 	end
-	g_IDECenter.center.content_edit:CloseTabByName(IDECodeTabChild, self._user_info.name)
+	ALittleIDE.g_IDECenter.center.content_edit:CloseTabByName(ALittleIDE.IDECodeTabChild, self._user_info.name)
 end
-IDECodeTreeItem.HandleDeleteFile = Lua.CoWrap(IDECodeTreeItem.HandleDeleteFile)
+ALittleIDE.IDECodeTreeItem.HandleDeleteFile = Lua.CoWrap(ALittleIDE.IDECodeTreeItem.HandleDeleteFile)
 
-function IDECodeTreeItem:HandleRenameFile()
+function ALittleIDE.IDECodeTreeItem:HandleRenameFile()
 	local file_name = ALittle.File_GetFileNameByPath(self._user_info.path)
 	local x, y = self:LocalToGlobal()
 	local new_name = g_AUITool:ShowRename(file_name, x, y, 200)
@@ -129,16 +129,17 @@ function IDECodeTreeItem:HandleRenameFile()
 		self._user_info.project:RemoveFile(old_path)
 	end
 	ALittle.File_RenameFile(old_path, new_path)
-	g_IDECenter.center.content_edit:RenameTabByName(IDECodeTabChild, old_name, self._user_info.name)
+	ALittleIDE.g_IDECenter.center.content_edit:RenameTabByName(ALittleIDE.IDECodeTabChild, old_name, self._user_info.name)
 	if self._user_info.project ~= nil and ALittle.File_GetFileExtByPathAndUpper(self._user_info.path) == self._user_info.project.upper_ext then
 		self._user_info.project:UpdateFile(self._user_info.module_path, self._user_info.path)
 	end
 end
-IDECodeTreeItem.HandleRenameFile = Lua.CoWrap(IDECodeTreeItem.HandleRenameFile)
+ALittleIDE.IDECodeTreeItem.HandleRenameFile = Lua.CoWrap(ALittleIDE.IDECodeTreeItem.HandleRenameFile)
 
-function IDECodeTreeItem:OnDelete()
+function ALittleIDE.IDECodeTreeItem:OnDelete()
 	if self._user_info.project ~= nil and ALittle.File_GetFileExtByPathAndUpper(self._user_info.path) == self._user_info.project.upper_ext then
 		self._user_info.project:RemoveFile(self._user_info.path)
 	end
 end
 
+end

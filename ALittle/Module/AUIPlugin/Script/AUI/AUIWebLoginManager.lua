@@ -1,6 +1,6 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("AUIPlugin", package.seeall)
-
+do
+if _G.AUIPlugin == nil then _G.AUIPlugin = {} end
 local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = ALittle.GetAllStruct()
@@ -91,9 +91,9 @@ option_map = {}
 })
 
 assert(ALittle.EventDispatcher, " extends class:ALittle.EventDispatcher is nil")
-AUIWebLoginManager = Lua.Class(ALittle.EventDispatcher, "AUIPlugin.AUIWebLoginManager")
+AUIPlugin.AUIWebLoginManager = Lua.Class(ALittle.EventDispatcher, "AUIPlugin.AUIWebLoginManager")
 
-function AUIWebLoginManager:Setup(ip, port, config)
+function AUIPlugin.AUIWebLoginManager:Setup(ip, port, config)
 	self._logingate_ip = ip
 	self._logingate_port = port
 	self._config = config
@@ -115,7 +115,7 @@ function AUIWebLoginManager:Setup(ip, port, config)
 	self:Connect()
 end
 
-function AUIWebLoginManager:Shutdown()
+function AUIPlugin.AUIWebLoginManager:Shutdown()
 	if self._msg_client ~= nil then
 		self._msg_client:Close()
 		self._msg_client = nil
@@ -130,7 +130,7 @@ function AUIWebLoginManager:Shutdown()
 	end
 end
 
-function AUIWebLoginManager:Connect()
+function AUIPlugin.AUIWebLoginManager:Connect()
 	local param = {}
 	param.route_type = 3
 	local client = ALittle.CreateHttpSender(self._logingate_ip, self._logingate_port)
@@ -153,14 +153,14 @@ function AUIWebLoginManager:Connect()
 	end
 	self:OnConnectSucceed()
 end
-AUIWebLoginManager.Connect = Lua.CoWrap(AUIWebLoginManager.Connect)
+AUIPlugin.AUIWebLoginManager.Connect = Lua.CoWrap(AUIPlugin.AUIWebLoginManager.Connect)
 
-function AUIWebLoginManager:OnConnectFailed()
+function AUIPlugin.AUIWebLoginManager:OnConnectFailed()
 	self:DispatchEvent(___all_struct[-262794256], {})
 	self:HidePasswordDialog()
 end
 
-function AUIWebLoginManager:OnConnectSucceed()
+function AUIPlugin.AUIWebLoginManager:OnConnectSucceed()
 	if (self._first_login and self._auto_login) or (self._login_button ~= nil and self._login_button.disabled) or self._is_login then
 		self:LoginImpl()
 	else
@@ -168,15 +168,15 @@ function AUIWebLoginManager:OnConnectSucceed()
 	end
 end
 
-function AUIWebLoginManager:OnDisconnected()
+function AUIPlugin.AUIWebLoginManager:OnDisconnected()
 	self:DispatchEvent(___all_struct[-262794256], {})
 	self:HidePasswordDialog()
 	A_LoopSystem:AddTimer(5000, Lua.Bind(self.Connect, self))
 end
 
-function AUIWebLoginManager:ShowLoginDialog()
+function AUIPlugin.AUIWebLoginManager:ShowLoginDialog()
 	if self._login_dialog == nil then
-		self._login_dialog = g_Control:CreateControl("ide_account_login_dialog", self)
+		self._login_dialog = AUIPlugin.g_Control:CreateControl("ide_account_login_dialog", self)
 		A_LayerManager:AddToModal(self._login_dialog)
 		self._login_account.text = self._account_name
 		self._login_password.text = ""
@@ -187,16 +187,16 @@ function AUIWebLoginManager:ShowLoginDialog()
 	self._login_account:DelayFocus()
 end
 
-function AUIWebLoginManager:HideLoginDialog()
+function AUIPlugin.AUIWebLoginManager:HideLoginDialog()
 	if self._login_dialog == nil then
 		return
 	end
 	self._login_dialog.visible = false
 end
 
-function AUIWebLoginManager:ShowPasswordDialog()
+function AUIPlugin.AUIWebLoginManager:ShowPasswordDialog()
 	if self._password_dialog == nil then
-		self._password_dialog = g_Control:CreateControl("ide_account_password_dialog", self)
+		self._password_dialog = AUIPlugin.g_Control:CreateControl("ide_account_password_dialog", self)
 		A_LayerManager:AddToModal(self._password_dialog)
 	end
 	self._password_dialog.visible = true
@@ -206,14 +206,14 @@ function AUIWebLoginManager:ShowPasswordDialog()
 	self._pas_repeat_password.text = ""
 end
 
-function AUIWebLoginManager:HidePasswordDialog()
+function AUIPlugin.AUIWebLoginManager:HidePasswordDialog()
 	if self._password_dialog == nil then
 		return
 	end
 	self._password_dialog.visible = false
 end
 
-function AUIWebLoginManager:HandleLoginClick(event)
+function AUIPlugin.AUIWebLoginManager:HandleLoginClick(event)
 	if self._login_button.disabled then
 		return
 	end
@@ -230,23 +230,23 @@ function AUIWebLoginManager:HandleLoginClick(event)
 	self:LoginImpl()
 end
 
-function AUIWebLoginManager:HandleLoginAccountTabKey(event)
+function AUIPlugin.AUIWebLoginManager:HandleLoginAccountTabKey(event)
 	self._login_password.focus = true
 end
 
-function AUIWebLoginManager:HandleLoginPasswordTabKey(event)
+function AUIPlugin.AUIWebLoginManager:HandleLoginPasswordTabKey(event)
 	self._login_account.focus = true
 end
 
-function AUIWebLoginManager:HandleOldPasswordTabKey(event)
+function AUIPlugin.AUIWebLoginManager:HandleOldPasswordTabKey(event)
 	self._pas_new_password.focus = true
 end
 
-function AUIWebLoginManager:HandleNewPasswordTabKey(event)
+function AUIPlugin.AUIWebLoginManager:HandleNewPasswordTabKey(event)
 	self._pas_repeat_password.focus = true
 end
 
-function AUIWebLoginManager:Logout()
+function AUIPlugin.AUIWebLoginManager:Logout()
 	if self._msg_client == nil then
 		return
 	end
@@ -267,9 +267,9 @@ function AUIWebLoginManager:Logout()
 	end
 	self:DispatchEvent(___all_struct[-1848509213], {})
 end
-AUIWebLoginManager.Logout = Lua.CoWrap(AUIWebLoginManager.Logout)
+AUIPlugin.AUIWebLoginManager.Logout = Lua.CoWrap(AUIPlugin.AUIWebLoginManager.Logout)
 
-function AUIWebLoginManager:HandleMsgNForceLogout()
+function AUIPlugin.AUIWebLoginManager:HandleMsgNForceLogout()
 	self._is_login = false
 	g_AUITool:ShowNotice("提示", "您的账号在另一个地方登录")
 	if self._login_button ~= nil then
@@ -283,19 +283,19 @@ function AUIWebLoginManager:HandleMsgNForceLogout()
 	self:DispatchEvent(___all_struct[-1848509213], {})
 end
 
-function AUIWebLoginManager:HandleMsgNWebSession(msg)
+function AUIPlugin.AUIWebLoginManager:HandleMsgNWebSession(msg)
 	self._session_id = msg.session_id
 end
 
-function AUIWebLoginManager:HandleMsgNWebAccountInfo(msg)
+function AUIPlugin.AUIWebLoginManager:HandleMsgNWebAccountInfo(msg)
 	self._account_info = msg
 end
 
-function AUIWebLoginManager:HandleMsgNWebServerInfo(msg)
+function AUIPlugin.AUIWebLoginManager:HandleMsgNWebServerInfo(msg)
 	self._server_info = msg
 end
 
-function AUIWebLoginManager:LoginImpl()
+function AUIPlugin.AUIWebLoginManager:LoginImpl()
 	if self._msg_client == nil then
 		return
 	end
@@ -324,9 +324,9 @@ function AUIWebLoginManager:LoginImpl()
 	self:HideLoginDialog()
 	self:DispatchEvent(___all_struct[-420010531], {})
 end
-AUIWebLoginManager.LoginImpl = Lua.CoWrap(AUIWebLoginManager.LoginImpl)
+AUIPlugin.AUIWebLoginManager.LoginImpl = Lua.CoWrap(AUIPlugin.AUIWebLoginManager.LoginImpl)
 
-function AUIWebLoginManager:HandlePasswordAlterClick(event)
+function AUIPlugin.AUIWebLoginManager:HandlePasswordAlterClick(event)
 	local old_password = self._pas_old_password.text
 	local new_password = self._pas_new_password.text
 	local repeat_password = self._pas_repeat_password.text
@@ -350,45 +350,45 @@ function AUIWebLoginManager:HandlePasswordAlterClick(event)
 	g_AUITool:ShowNotice("提示", "密码修改成功")
 	self:HidePasswordDialog()
 end
-AUIWebLoginManager.HandlePasswordAlterClick = Lua.CoWrap(AUIWebLoginManager.HandlePasswordAlterClick)
+AUIPlugin.AUIWebLoginManager.HandlePasswordAlterClick = Lua.CoWrap(AUIPlugin.AUIWebLoginManager.HandlePasswordAlterClick)
 
-function AUIWebLoginManager:HandlePasswordCancelClick(event)
+function AUIPlugin.AUIWebLoginManager:HandlePasswordCancelClick(event)
 	self:HidePasswordDialog()
 end
 
-function AUIWebLoginManager:IsLogin()
+function AUIPlugin.AUIWebLoginManager:IsLogin()
 	return self._is_login
 end
 
-function AUIWebLoginManager.__getter:account_name()
+function AUIPlugin.AUIWebLoginManager.__getter:account_name()
 	return self._account_name
 end
 
-function AUIWebLoginManager.__getter:account_id()
+function AUIPlugin.AUIWebLoginManager.__getter:account_id()
 	return self._account_info.account_id
 end
 
-function AUIWebLoginManager.__getter:session_id()
+function AUIPlugin.AUIWebLoginManager.__getter:session_id()
 	return self._session_id
 end
 
-function AUIWebLoginManager.__getter:http_ip()
+function AUIPlugin.AUIWebLoginManager.__getter:http_ip()
 	return self._server_info.http_ip
 end
 
-function AUIWebLoginManager.__getter:http_port()
+function AUIPlugin.AUIWebLoginManager.__getter:http_port()
 	return self._server_info.http_port
 end
 
-function AUIWebLoginManager.__getter:version_ip()
+function AUIPlugin.AUIWebLoginManager.__getter:version_ip()
 	return self._version_ip
 end
 
-function AUIWebLoginManager.__getter:version_port()
+function AUIPlugin.AUIWebLoginManager.__getter:version_port()
 	return self._version_port
 end
 
-function HandleMsgNForceLogout(client, msg)
+function AUIPlugin.HandleMsgNForceLogout(client, msg)
 	local manager = client._user_data
 	if manager == nil then
 		return
@@ -397,7 +397,7 @@ function HandleMsgNForceLogout(client, msg)
 end
 
 ALittle.RegMsgCallback(1391512615, HandleMsgNForceLogout)
-function HandleMsgNWebSession(client, msg)
+function AUIPlugin.HandleMsgNWebSession(client, msg)
 	local manager = client._user_data
 	if manager == nil then
 		return
@@ -406,7 +406,7 @@ function HandleMsgNWebSession(client, msg)
 end
 
 ALittle.RegMsgCallback(1809602374, HandleMsgNWebSession)
-function HandleMsgNWebAccountInfo(client, msg)
+function AUIPlugin.HandleMsgNWebAccountInfo(client, msg)
 	local manager = client._user_data
 	if manager == nil then
 		return
@@ -415,7 +415,7 @@ function HandleMsgNWebAccountInfo(client, msg)
 end
 
 ALittle.RegMsgCallback(-417093574, HandleMsgNWebAccountInfo)
-function HandleMsgNWebServerInfo(client, msg)
+function AUIPlugin.HandleMsgNWebServerInfo(client, msg)
 	local manager = client._user_data
 	if manager == nil then
 		return
@@ -424,3 +424,4 @@ function HandleMsgNWebServerInfo(client, msg)
 end
 
 ALittle.RegMsgCallback(-300988017, HandleMsgNWebServerInfo)
+end

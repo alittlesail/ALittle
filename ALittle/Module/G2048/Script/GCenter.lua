@@ -1,6 +1,6 @@
--- ALittle Generate Lua
-module("G2048", package.seeall)
-
+-- ALittle Generate Lua And Do Not Edit This Line!
+do
+if _G.G2048 == nil then _G.G2048 = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
@@ -12,14 +12,14 @@ type_list = {"ALittle.DisplayObject","int","int"},
 option_map = {}
 })
 
-g_GConfig = nil
-GCenter = Lua.Class(nil, "G2048.GCenter")
+G2048.g_GConfig = nil
+G2048.GCenter = Lua.Class(nil, "G2048.GCenter")
 
-function GCenter:Ctor()
+function G2048.GCenter:Ctor()
 	___rawset(self, "_loop_group", {})
 end
 
-function GCenter:ClearAnti()
+function G2048.GCenter:ClearAnti()
 	for k, v in ___pairs(self._loop_group) do
 		if v:IsCompleted() == false then
 			v:SetCompleted()
@@ -28,27 +28,27 @@ function GCenter:ClearAnti()
 	self._loop_group = {}
 end
 
-function GCenter:Setup()
-	g_GConfig = ALittle.CreateConfigSystem(g_ModuleBasePath .. "/User.cfg")
+function G2048.GCenter:Setup()
+	G2048.g_GConfig = ALittle.CreateConfigSystem(G2048.g_ModuleBasePath .. "/User.cfg")
 	ALittle.Math_RandomSeed(ALittle.Time_GetCurTime())
 	ALittle.System_SetThreadCount(5, 2)
-	self._main_layer = ALittle.DisplayLayout(g_Control)
+	self._main_layer = ALittle.DisplayLayout(G2048.g_Control)
 	self._main_layer.width_type = 4
 	self._main_layer.height_type = 4
-	g_LayerGroup:AddChild(self._main_layer, nil)
-	self._dialog_layer = ALittle.DisplayLayout(g_Control)
+	G2048.g_LayerGroup:AddChild(self._main_layer, nil)
+	self._dialog_layer = ALittle.DisplayLayout(G2048.g_Control)
 	self._dialog_layer.width_type = 4
 	self._dialog_layer.height_type = 4
-	g_LayerGroup:AddChild(self._dialog_layer, nil)
-	g_Control:CreateControl("main_scene", self, self._main_layer)
-	self._max_score_text._user_data = g_GConfig:GetConfig("max_score", 0)
+	G2048.g_LayerGroup:AddChild(self._dialog_layer, nil)
+	G2048.g_Control:CreateControl("main_scene", self, self._main_layer)
+	self._max_score_text._user_data = G2048.g_GConfig:GetConfig("max_score", 0)
 	self._max_score_text.text = self._max_score_text._user_data
 	self:Restart()
 end
 
-function GCenter:ShowMainMenu(content, show_back)
+function G2048.GCenter:ShowMainMenu(content, show_back)
 	if self._main_menu == nil then
-		self._main_menu = g_Control:CreateControl("main_menu", self, nil)
+		self._main_menu = G2048.g_Control:CreateControl("main_menu", self, nil)
 		self._dialog_layer:AddChild(self._main_menu, nil)
 	end
 	self._main_menu.visible = true
@@ -56,7 +56,7 @@ function GCenter:ShowMainMenu(content, show_back)
 	self._menu_back.visible = show_back
 end
 
-function GCenter:Restart()
+function G2048.GCenter:Restart()
 	if self._main_menu ~= nil then
 		self._main_menu.visible = false
 	end
@@ -75,7 +75,7 @@ function GCenter:Restart()
 	self._loop_delay = 0
 end
 
-function GCenter:GenerateItem(delay_time)
+function G2048.GCenter:GenerateItem(delay_time)
 	local list = {}
 	local list_count = 0
 	local i = 1
@@ -110,7 +110,7 @@ function GCenter:GenerateItem(delay_time)
 	return true
 end
 
-function GCenter:CalcLeft()
+function G2048.GCenter:CalcLeft()
 	local moved = false
 	local i = 1
 	while true do
@@ -175,7 +175,7 @@ function GCenter:CalcLeft()
 	end
 end
 
-function GCenter:CalcRight()
+function G2048.GCenter:CalcRight()
 	local i = 1
 	while true do
 		if not(i <= 4) then break end
@@ -239,7 +239,7 @@ function GCenter:CalcRight()
 	end
 end
 
-function GCenter:CalcUp()
+function G2048.GCenter:CalcUp()
 	local j = 1
 	while true do
 		if not(j <= 4) then break end
@@ -303,7 +303,7 @@ function GCenter:CalcUp()
 	end
 end
 
-function GCenter:CalcDown()
+function G2048.GCenter:CalcDown()
 	local j = 1
 	while true do
 		if not(j <= 4) then break end
@@ -367,10 +367,10 @@ function GCenter:CalcDown()
 	end
 end
 
-function GCenter:BornItem(number, row, col, delay_time, anti)
+function G2048.GCenter:BornItem(number, row, col, delay_time, anti)
 	local target = self["_tile" .. row .. col]
 	local ui_name = "item_" .. number
-	local item = g_Control:CreateControl(ui_name, nil, nil)
+	local item = G2048.g_Control:CreateControl(ui_name, nil, nil)
 	self._data_map[row][col] = item
 	item._user_data = number
 	self._tile_container:AddChild(item, nil)
@@ -411,7 +411,7 @@ function GCenter:BornItem(number, row, col, delay_time, anti)
 	end
 end
 
-function GCenter:TransItem(item_info, to_row, to_col)
+function G2048.GCenter:TransItem(item_info, to_row, to_col)
 	local target = self["_tile" .. to_row .. to_col]
 	local target_x = target.x
 	local target_y = target.y
@@ -434,7 +434,7 @@ function GCenter:TransItem(item_info, to_row, to_col)
 	end
 end
 
-function GCenter:CombineItems(item1_info, item2_info, to_row, to_col)
+function G2048.GCenter:CombineItems(item1_info, item2_info, to_row, to_col)
 	self:TransAndRemoveItem(item1_info.item, item1_info.row, item1_info.col, to_row, to_col)
 	self:TransAndRemoveItem(item2_info.item, item2_info.row, item2_info.col, to_row, to_col)
 	self:BornItem(item1_info.item._user_data * 2, to_row, to_col, 200, false)
@@ -446,7 +446,7 @@ function GCenter:CombineItems(item1_info, item2_info, to_row, to_col)
 	end
 end
 
-function GCenter:TransAndRemoveItem(item, from_row, from_col, to_row, to_col)
+function G2048.GCenter:TransAndRemoveItem(item, from_row, from_col, to_row, to_col)
 	local target = self["_tile" .. to_row .. to_col]
 	local target_x = target.x
 	local target_y = target.y
@@ -466,21 +466,21 @@ function GCenter:TransAndRemoveItem(item, from_row, from_col, to_row, to_col)
 	self._data_map[from_row][from_col] = nil
 end
 
-function GCenter:EraseItem(item)
+function G2048.GCenter:EraseItem(item)
 	self._tile_container:RemoveChild(item)
 end
 
-function GCenter:HandleDragBegin(event)
+function G2048.GCenter:HandleDragBegin(event)
 	self._drag_total_x = 0
 	self._drag_total_y = 0
 end
 
-function GCenter:HandleDrag(event)
+function G2048.GCenter:HandleDrag(event)
 	self._drag_total_x = self._drag_total_x + event.delta_x
 	self._drag_total_y = self._drag_total_y + event.delta_y
 end
 
-function GCenter:HandleDragEnd(event)
+function G2048.GCenter:HandleDragEnd(event)
 	self:ClearAnti()
 	self._item_moved = false
 	self._loop_delay = 0
@@ -509,7 +509,7 @@ function GCenter:HandleDragEnd(event)
 	end
 end
 
-function GCenter:CheckGameOver()
+function G2048.GCenter:CheckGameOver()
 	local i = 1
 	while true do
 		if not(i <= 4) then break end
@@ -522,7 +522,7 @@ function GCenter:CheckGameOver()
 				if self._max_score_text._user_data < self._score_text._user_data then
 					self._max_score_text._user_data = self._score_text._user_data
 					self._max_score_text.text = self._max_score_text._user_data
-					g_GConfig:SetConfig("max_score", self._max_score_text._user_data, nil)
+					G2048.g_GConfig:SetConfig("max_score", self._max_score_text._user_data, nil)
 				end
 				return true
 			end
@@ -560,19 +560,20 @@ function GCenter:CheckGameOver()
 	return true
 end
 
-function GCenter:HandleRestartClick(event)
+function G2048.GCenter:HandleRestartClick(event)
 	self:Restart()
 end
 
-function GCenter:HandleBackClick(event)
+function G2048.GCenter:HandleBackClick(event)
 	self._main_menu.visible = false
 end
 
-function GCenter:HandleMenuClick(event)
+function G2048.GCenter:HandleMenuClick(event)
 	self:ShowMainMenu("", true)
 end
 
-function GCenter:Shutdown()
+function G2048.GCenter:Shutdown()
 end
 
-g_GCenter = GCenter()
+G2048.g_GCenter = G2048.GCenter()
+end

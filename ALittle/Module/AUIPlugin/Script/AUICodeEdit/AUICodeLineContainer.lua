@@ -1,6 +1,6 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("AUIPlugin", package.seeall)
-
+do
+if _G.AUIPlugin == nil then _G.AUIPlugin = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
@@ -26,9 +26,9 @@ option_map = {}
 })
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
-AUICodeLineContainer = Lua.Class(ALittle.DisplayLayout, "AUIPlugin.AUICodeLineContainer")
+AUIPlugin.AUICodeLineContainer = Lua.Class(ALittle.DisplayLayout, "AUIPlugin.AUICodeLineContainer")
 
-function AUICodeLineContainer:Ctor(ctrl_sys)
+function AUIPlugin.AUICodeLineContainer:Ctor(ctrl_sys)
 	___rawset(self, "_showd", false)
 	___rawset(self, "_version", 0)
 	___rawset(self, "_delay_loop", nil)
@@ -38,11 +38,11 @@ function AUICodeLineContainer:Ctor(ctrl_sys)
 	self:AddChild(find)
 	___rawset(self, "_find", find)
 	local quad = ALittle.Quad(ctrl_sys)
-	quad = ALittle.Quad(g_Control)
-	quad.red = CODE_SELECT_RED
-	quad.green = CODE_SELECT_GREEN
-	quad.blue = CODE_SELECT_BLUE
-	quad.height = CODE_LINE_HEIGHT
+	quad = ALittle.Quad(AUIPlugin.g_Control)
+	quad.red = AUIPlugin.CODE_SELECT_RED
+	quad.green = AUIPlugin.CODE_SELECT_GREEN
+	quad.blue = AUIPlugin.CODE_SELECT_BLUE
+	quad.height = AUIPlugin.CODE_LINE_HEIGHT
 	quad.visible = false
 	self:AddChild(quad)
 	___rawset(self, "_select", quad)
@@ -60,7 +60,7 @@ function AUICodeLineContainer:Ctor(ctrl_sys)
 	self:AddEventListener(___all_struct[1862557463], self, self.HandleShow)
 end
 
-function AUICodeLineContainer:AddChar(char)
+function AUIPlugin.AUICodeLineContainer:AddChar(char)
 	if char.text ~= nil then
 		self._text:AddChild(char.text)
 	end
@@ -68,13 +68,13 @@ function AUICodeLineContainer:AddChar(char)
 		return
 	end
 	if char.text == nil and char.width > 0 and char.char ~= " " and char.char ~= "\t" then
-		char.text = ALittle.Text(g_Control)
+		char.text = ALittle.Text(AUIPlugin.g_Control)
 		char.text.disabled = true
 		char.text.red = char.red
 		char.text.green = char.green
 		char.text.blue = char.blue
-		char.text.font_path = CODE_FONT_PATH
-		char.text.font_size = CODE_FONT_SIZE
+		char.text.font_path = AUIPlugin.CODE_FONT_PATH
+		char.text.font_size = AUIPlugin.CODE_FONT_SIZE
 		char.text.text = char.char
 		char.text.x = char.pre_width
 		self._text:AddChild(char.text)
@@ -86,7 +86,7 @@ function AUICodeLineContainer:AddChar(char)
 	end
 end
 
-function AUICodeLineContainer:RestoreColor()
+function AUIPlugin.AUICodeLineContainer:RestoreColor()
 	self._set_color = nil
 	if self._delay_loop ~= nil then
 		return
@@ -96,7 +96,7 @@ function AUICodeLineContainer:RestoreColor()
 	self._delay_loop:Start()
 end
 
-function AUICodeLineContainer:SetColor(char_start, char_end, red, green, blue)
+function AUIPlugin.AUICodeLineContainer:SetColor(char_start, char_end, red, green, blue)
 	if self._delay_loop ~= nil then
 		self._set_color = Lua.Bind(self.SetColor, self, char_start, char_end, red, green, blue)
 		return
@@ -115,7 +115,7 @@ function AUICodeLineContainer:SetColor(char_start, char_end, red, green, blue)
 	end
 end
 
-function AUICodeLineContainer:HandleColor()
+function AUIPlugin.AUICodeLineContainer:HandleColor()
 	self._delay_loop = nil
 	if self.parent == nil then
 		return
@@ -125,7 +125,7 @@ function AUICodeLineContainer:HandleColor()
 		return
 	end
 	self._version = line.edit.language.version
-	local line_index = ALittle.Math_Floor(self.y / CODE_LINE_HEIGHT) + 1
+	local line_index = ALittle.Math_Floor(self.y / AUIPlugin.CODE_LINE_HEIGHT) + 1
 	if line_index < 1 or line_index > line.edit.line_count then
 		return
 	end
@@ -141,7 +141,7 @@ function AUICodeLineContainer:HandleColor()
 		end
 		local color = line.edit.language:QueryColorValue(info.tag)
 		if color == nil then
-			color = CODE_DEFAULT_COLOR
+			color = AUIPlugin.CODE_DEFAULT_COLOR
 		end
 		local i = char_start
 		while true do
@@ -165,24 +165,24 @@ function AUICodeLineContainer:HandleColor()
 		self._set_color = nil
 	end
 end
-AUICodeLineContainer.HandleColor = Lua.CoWrap(AUICodeLineContainer.HandleColor)
+AUIPlugin.AUICodeLineContainer.HandleColor = Lua.CoWrap(AUIPlugin.AUICodeLineContainer.HandleColor)
 
-function AUICodeLineContainer:HandleHide(event)
+function AUIPlugin.AUICodeLineContainer:HandleHide(event)
 end
 
-function AUICodeLineContainer:HandleShow(event)
+function AUIPlugin.AUICodeLineContainer:HandleShow(event)
 	if not self._showd then
 		self._showd = true
 		local line = self._user_data
 		for index, char in ___ipairs(line.char_list) do
 			if char.text == nil and char.width > 0 and char.char ~= " " and char.char ~= "\t" then
-				char.text = ALittle.Text(g_Control)
+				char.text = ALittle.Text(AUIPlugin.g_Control)
 				char.text.disabled = true
-				char.text.red = CODE_FONT_RED
-				char.text.green = CODE_FONT_GREEN
-				char.text.blue = CODE_FONT_BLUE
-				char.text.font_path = CODE_FONT_PATH
-				char.text.font_size = CODE_FONT_SIZE
+				char.text.red = AUIPlugin.CODE_FONT_RED
+				char.text.green = AUIPlugin.CODE_FONT_GREEN
+				char.text.blue = AUIPlugin.CODE_FONT_BLUE
+				char.text.font_path = AUIPlugin.CODE_FONT_PATH
+				char.text.font_size = AUIPlugin.CODE_FONT_SIZE
 				char.text.text = char.char
 				char.text.x = char.pre_width
 				self._text:AddChild(char.text)
@@ -196,3 +196,4 @@ function AUICodeLineContainer:HandleShow(event)
 	end
 end
 
+end

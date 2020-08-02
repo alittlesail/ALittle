@@ -1,6 +1,6 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittleIDE", package.seeall)
-
+do
+if _G.ALittleIDE == nil then _G.ALittleIDE = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
@@ -74,42 +74,42 @@ option_map = {}
 })
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
-IDEVersionList = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDEVersionList")
+ALittleIDE.IDEVersionList = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDEVersionList")
 
-function IDEVersionList:Ctor(ctrl_sys)
+function ALittleIDE.IDEVersionList:Ctor(ctrl_sys)
 	___rawset(self, "_platform", "Windows")
 	___rawset(self, "_config_key", "")
 end
 
-function IDEVersionList:TCtor()
+function ALittleIDE.IDEVersionList:TCtor()
 end
 
-function IDEVersionList.__setter:platform(value)
+function ALittleIDE.IDEVersionList.__setter:platform(value)
 	self._platform = value
 end
 
-function IDEVersionList.__getter:platform()
+function ALittleIDE.IDEVersionList.__getter:platform()
 	return self._platform
 end
 
-function IDEVersionList.__setter:config_key(value)
+function ALittleIDE.IDEVersionList.__setter:config_key(value)
 	self._config_key = value
 end
 
-function IDEVersionList.__getter:config_key()
+function ALittleIDE.IDEVersionList.__getter:config_key()
 	return self._config_key
 end
 
-function IDEVersionList.__getter:export_old_log()
+function ALittleIDE.IDEVersionList.__getter:export_old_log()
 	return self._export_old_log
 end
 
-function IDEVersionList:HandleRefreshVersionList(event)
-	if g_IDEProject.project == nil then
+function ALittleIDE.IDEVersionList:HandleRefreshVersionList(event)
+	if ALittleIDE.g_IDEProject.project == nil then
 		g_AUITool:ShowNotice("错误", "当前没有打开的项目")
 		return
 	end
-	if not g_IDEWebLoginManager:IsLogin() then
+	if not ALittleIDE.g_IDEWebLoginManager:IsLogin() then
 		g_AUITool:ShowNotice("错误", "请先登陆")
 		return
 	end
@@ -118,11 +118,11 @@ function IDEVersionList:HandleRefreshVersionList(event)
 	self._close_list:RemoveAllChild()
 	local group = ALittle.CreateKeyWeakMap()
 	local param = {}
-	param.__account_id = g_IDEWebLoginManager.account_id
-	param.__session_id = g_IDEWebLoginManager.session_id
+	param.__account_id = ALittleIDE.g_IDEWebLoginManager.account_id
+	param.__session_id = ALittleIDE.g_IDEWebLoginManager.session_id
 	param.platform = self._platform
-	param.module_name = g_IDEProject.project.name
-	local client = ALittle.CreateHttpSender(g_IDEWebLoginManager.http_ip, g_IDEWebLoginManager.http_port)
+	param.module_name = ALittleIDE.g_IDEProject.project.name
+	local client = ALittle.CreateHttpSender(ALittleIDE.g_IDEWebLoginManager.http_ip, ALittleIDE.g_IDEWebLoginManager.http_port)
 	local error, result = ALittle.IHttpSender.Invoke("VersionServer.QVersionInfo", client, param)
 	self._export_refresh_btn.disabled = false
 	if error ~= nil then
@@ -133,7 +133,7 @@ function IDEVersionList:HandleRefreshVersionList(event)
 	if version_list == nil then
 		version_list = {}
 	end
-	ALittle.List_Sort(version_list, IDEVersionList.VersionInfoCmp)
+	ALittle.List_Sort(version_list, ALittleIDE.IDEVersionList.VersionInfoCmp)
 	local first_version_info = nil
 	for k, v in ___ipairs(version_list) do
 		local control_line = {}
@@ -176,33 +176,33 @@ function IDEVersionList:HandleRefreshVersionList(event)
 		self:ShowVersionInfo(first_version_info)
 	end
 end
-IDEVersionList.HandleRefreshVersionList = Lua.CoWrap(IDEVersionList.HandleRefreshVersionList)
+ALittleIDE.IDEVersionList.HandleRefreshVersionList = Lua.CoWrap(ALittleIDE.IDEVersionList.HandleRefreshVersionList)
 
-function IDEVersionList.VersionInfoCmp(a, b)
+function ALittleIDE.IDEVersionList.VersionInfoCmp(a, b)
 	if a.update_time ~= b.update_time then
 		return a.update_time > b.update_time
 	end
 	return a.update_index > b.update_index
 end
 
-function IDEVersionList:HandleVersionListMenu(event)
+function ALittleIDE.IDEVersionList:HandleVersionListMenu(event)
 	local menu = AUIPlugin.AUIRightMenu()
 	menu:AddItem("删除", Lua.Bind(self.HandleVersionDelete, self, event.target._user_data))
 	menu:Show()
 end
 
-function IDEVersionList:HandleVersionDelete(version_info)
+function ALittleIDE.IDEVersionList:HandleVersionDelete(version_info)
 	local delete_result = g_AUITool:DeleteNotice("删除", "确定要删除" .. ALittle.Time_GetCurDate(version_info.data.update_time) .. "(版本时间)这个版本吗?")
 	if delete_result ~= "YES" then
 		return
 	end
 	local param = {}
-	param.__account_id = g_IDEWebLoginManager.account_id
-	param.__session_id = g_IDEWebLoginManager.session_id
+	param.__account_id = ALittleIDE.g_IDEWebLoginManager.account_id
+	param.__session_id = ALittleIDE.g_IDEWebLoginManager.session_id
 	param.platform = self._platform
-	param.module_name = g_IDEProject.project.name
+	param.module_name = ALittleIDE.g_IDEProject.project.name
 	param.version_id = version_info.data.version_id
-	local client = ALittle.CreateHttpSender(g_IDEWebLoginManager.http_ip, g_IDEWebLoginManager.http_port)
+	local client = ALittle.CreateHttpSender(ALittleIDE.g_IDEWebLoginManager.http_ip, ALittleIDE.g_IDEWebLoginManager.http_port)
 	local error, result = ALittle.IHttpSender.Invoke("VersionServer.QDeleteVersionInfo", client, param)
 	if error ~= nil then
 		g_AUITool:ShowNotice("提示", "删除失败:" .. error)
@@ -210,10 +210,10 @@ function IDEVersionList:HandleVersionDelete(version_info)
 	end
 	self:HandleRefreshVersionList(nil)
 end
-IDEVersionList.HandleVersionDelete = Lua.CoWrap(IDEVersionList.HandleVersionDelete)
+ALittleIDE.IDEVersionList.HandleVersionDelete = Lua.CoWrap(ALittleIDE.IDEVersionList.HandleVersionDelete)
 
-function IDEVersionList:HandleVersionListSelectChange(event)
-	if g_IDEProject.project == nil then
+function ALittleIDE.IDEVersionList:HandleVersionListSelectChange(event)
+	if ALittleIDE.g_IDEProject.project == nil then
 		return
 	end
 	if event.target.selected == false then
@@ -227,7 +227,7 @@ function IDEVersionList:HandleVersionListSelectChange(event)
 	self:ShowVersionInfo(version_info)
 end
 
-function IDEVersionList:ShowVersionInfo(version_info)
+function ALittleIDE.IDEVersionList:ShowVersionInfo(version_info)
 	if version_info.data.big_version ~= nil then
 		self._export_big_version.text = version_info.data.big_version
 	else
@@ -263,24 +263,24 @@ function IDEVersionList:ShowVersionInfo(version_info)
 	self._export_old_log.text = ALittle.String_Join(log_list, "\n")
 end
 
-function IDEVersionList:HandleVersionCloseListMenu(event)
+function ALittleIDE.IDEVersionList:HandleVersionCloseListMenu(event)
 	local menu = AUIPlugin.AUIRightMenu()
 	menu:AddItem("删除", Lua.Bind(self.HandleVersionCloseDelete, self, event.target._user_data))
 	menu:Show()
 end
 
-function IDEVersionList:HandleVersionCloseDelete(version_info)
+function ALittleIDE.IDEVersionList:HandleVersionCloseDelete(version_info)
 	local delete_result = g_AUITool:DeleteNotice("删除", "确定要删除" .. version_info.data.close_version .. "(" .. version_info.data.submit_platform .. ")这个拦截版本吗?")
 	if delete_result ~= "YES" then
 		return
 	end
 	local param = {}
-	param.__account_id = g_IDEWebLoginManager.account_id
-	param.__session_id = g_IDEWebLoginManager.session_id
+	param.__account_id = ALittleIDE.g_IDEWebLoginManager.account_id
+	param.__session_id = ALittleIDE.g_IDEWebLoginManager.session_id
 	param.platform = self._platform
-	param.module_name = g_IDEProject.project.name
+	param.module_name = ALittleIDE.g_IDEProject.project.name
 	param.close_version = version_info.data.close_version
-	local client = ALittle.CreateHttpSender(g_IDEWebLoginManager.http_ip, g_IDEWebLoginManager.http_port)
+	local client = ALittle.CreateHttpSender(ALittleIDE.g_IDEWebLoginManager.http_ip, ALittleIDE.g_IDEWebLoginManager.http_port)
 	local error, result = ALittle.IHttpSender.Invoke("VersionServer.QDeleteVersionClose", client, param)
 	if error ~= nil then
 		g_AUITool:ShowNotice("提示", "删除失败:" .. error)
@@ -288,12 +288,12 @@ function IDEVersionList:HandleVersionCloseDelete(version_info)
 	end
 	self:HandleRefreshVersionList(nil)
 end
-IDEVersionList.HandleVersionCloseDelete = Lua.CoWrap(IDEVersionList.HandleVersionCloseDelete)
+ALittleIDE.IDEVersionList.HandleVersionCloseDelete = Lua.CoWrap(ALittleIDE.IDEVersionList.HandleVersionCloseDelete)
 
-function IDEVersionList:HandleAddVersionClose(event)
+function ALittleIDE.IDEVersionList:HandleAddVersionClose(event)
 	if self._version_close_dialog == nil then
 		self._version_close_dialog = self._ctrl_sys:CreateControl("ide_add_version_close_dialog", self)
-		g_DialogLayer:AddChild(self._version_close_dialog)
+		ALittleIDE.g_DialogLayer:AddChild(self._version_close_dialog)
 	end
 	self._version_close_version.text = ""
 	self._version_submit_platform.text = ""
@@ -301,16 +301,16 @@ function IDEVersionList:HandleAddVersionClose(event)
 	self._version_close_dialog:MoveToTop()
 end
 
-function IDEVersionList:HandleAddVersionCloseClick(event)
+function ALittleIDE.IDEVersionList:HandleAddVersionCloseClick(event)
 	self._version_close_dialog.visible = false
 	local param = {}
-	param.__account_id = g_IDEWebLoginManager.account_id
-	param.__session_id = g_IDEWebLoginManager.session_id
+	param.__account_id = ALittleIDE.g_IDEWebLoginManager.account_id
+	param.__session_id = ALittleIDE.g_IDEWebLoginManager.session_id
 	param.platform = self._platform
-	param.module_name = g_IDEProject.project.name
+	param.module_name = ALittleIDE.g_IDEProject.project.name
 	param.close_version = self._version_close_version.text
 	param.submit_platform = self._version_submit_platform.text
-	local client = ALittle.CreateHttpSender(g_IDEWebLoginManager.http_ip, g_IDEWebLoginManager.http_port)
+	local client = ALittle.CreateHttpSender(ALittleIDE.g_IDEWebLoginManager.http_ip, ALittleIDE.g_IDEWebLoginManager.http_port)
 	local error, result = ALittle.IHttpSender.Invoke("VersionServer.QAddVersionClose", client, param)
 	if error ~= nil then
 		g_AUITool:ShowNotice("提示", "添加失败:" .. error)
@@ -318,10 +318,10 @@ function IDEVersionList:HandleAddVersionCloseClick(event)
 	end
 	self:HandleRefreshVersionList(nil)
 end
-IDEVersionList.HandleAddVersionCloseClick = Lua.CoWrap(IDEVersionList.HandleAddVersionCloseClick)
+ALittleIDE.IDEVersionList.HandleAddVersionCloseClick = Lua.CoWrap(ALittleIDE.IDEVersionList.HandleAddVersionCloseClick)
 
-function IDEVersionList:LoadConfig()
-	local export_info = g_IDEProject.project.config:GetConfig(self._config_key, {})
+function ALittleIDE.IDEVersionList:LoadConfig()
+	local export_info = ALittleIDE.g_IDEProject.project.config:GetConfig(self._config_key, {})
 	local version_info = export_info.version_info
 	if version_info == nil then
 		version_info = {}
@@ -349,7 +349,7 @@ function IDEVersionList:LoadConfig()
 	end
 end
 
-function IDEVersionList:CheckDateString(content)
+function ALittleIDE.IDEVersionList:CheckDateString(content)
 	local list = ALittle.String_Split(content, "-")
 	if ALittle.List_MaxN(list) ~= 6 then
 		return false
@@ -374,7 +374,7 @@ function IDEVersionList:CheckDateString(content)
 	return true
 end
 
-function IDEVersionList:CheckVersionString(content)
+function ALittleIDE.IDEVersionList:CheckVersionString(content)
 	local list = ALittle.String_Split(content, ".")
 	if ALittle.List_MaxN(list) ~= 3 then
 		return false
@@ -390,7 +390,7 @@ function IDEVersionList:CheckVersionString(content)
 	return true
 end
 
-function IDEVersionList:GetConfig()
+function ALittleIDE.IDEVersionList:GetConfig()
 	local version_info = {}
 	version_info.big_version = self._export_big_version.text
 	if self:CheckDateString(version_info.big_version) == false then
@@ -418,50 +418,50 @@ function IDEVersionList:GetConfig()
 	return version_info
 end
 
-function IDEVersionList:HandleGenBigVersion(event)
+function ALittleIDE.IDEVersionList:HandleGenBigVersion(event)
 	local result = g_AUITool:DeleteNotice("更新大版本号", "更新大版本号会引起强制更新，确定更新吗？")
 	if result == "YES" then
 		self._export_big_version.text = ALittle.Time_GetCurDate()
 	end
 end
-IDEVersionList.HandleGenBigVersion = Lua.CoWrap(IDEVersionList.HandleGenBigVersion)
+ALittleIDE.IDEVersionList.HandleGenBigVersion = Lua.CoWrap(ALittleIDE.IDEVersionList.HandleGenBigVersion)
 
-function IDEVersionList:HandleGenInstallVersion(event)
+function ALittleIDE.IDEVersionList:HandleGenInstallVersion(event)
 	local result = g_AUITool:DeleteNotice("更新安装包版本号", "更新安装包版本号会引起重新安装，确定更新吗？")
 	if result == "YES" then
 		self._export_install_version.text = ALittle.Time_GetCurDate()
 	end
 end
-IDEVersionList.HandleGenInstallVersion = Lua.CoWrap(IDEVersionList.HandleGenInstallVersion)
+ALittleIDE.IDEVersionList.HandleGenInstallVersion = Lua.CoWrap(ALittleIDE.IDEVersionList.HandleGenInstallVersion)
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
-IDEVersionWindows = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDEVersionWindows")
+ALittleIDE.IDEVersionWindows = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDEVersionWindows")
 
-function IDEVersionWindows:Ctor(ctrl_sys)
+function ALittleIDE.IDEVersionWindows:Ctor(ctrl_sys)
 end
 
-function IDEVersionWindows:TCtor()
+function ALittleIDE.IDEVersionWindows:TCtor()
 	self._version_list.platform = "Windows"
 	self._version_list.config_key = "windows_export_info"
 end
 
-function IDEVersionWindows.__setter:config_key(value)
+function ALittleIDE.IDEVersionWindows.__setter:config_key(value)
 	self._version_list.config_key = value
 end
 
-function IDEVersionWindows.__getter:config_key()
+function ALittleIDE.IDEVersionWindows.__getter:config_key()
 	return self._version_list.config_key
 end
 
-function IDEVersionWindows:LoadConfigImpl()
-	if g_IDEProject.project == nil then
+function ALittleIDE.IDEVersionWindows:LoadConfigImpl()
+	if ALittleIDE.g_IDEProject.project == nil then
 		g_AUITool:ShowNotice("错误", "当前没有打开的项目")
 		return false
 	end
 	self._version_list:LoadConfig()
 	self._version_list:HandleRefreshVersionList(nil)
 	self._version_list.export_old_log.text = ""
-	local export_info = g_IDEProject.project.config:GetConfig(self.config_key, {})
+	local export_info = ALittleIDE.g_IDEProject.project.config:GetConfig(self.config_key, {})
 	local install_info = export_info.install_info
 	if install_info == nil then
 		install_info = {}
@@ -484,8 +484,8 @@ function IDEVersionWindows:LoadConfigImpl()
 	return true
 end
 
-function IDEVersionWindows:SaveConfigImpl()
-	if g_IDEProject.project == nil then
+function ALittleIDE.IDEVersionWindows:SaveConfigImpl()
+	if ALittleIDE.g_IDEProject.project == nil then
 		g_AUITool:ShowNotice("错误", "当前没有打开的项目")
 		return false
 	end
@@ -509,62 +509,62 @@ function IDEVersionWindows:SaveConfigImpl()
 		return false
 	end
 	install_info.new_log = self._export_new_log.text
-	g_IDEProject.project.config:SetConfig(self.config_key, export_info)
+	ALittleIDE.g_IDEProject.project.config:SetConfig(self.config_key, export_info)
 	return true
 end
 
-function IDEVersionWindows:HandleSaveConfig(event)
+function ALittleIDE.IDEVersionWindows:HandleSaveConfig(event)
 	if self:SaveConfigImpl() == false then
 		return
 	end
 	g_AUITool:ShowNotice("提示", "配置保存成功")
 end
 
-function IDEVersionWindows:HandleExport(event)
+function ALittleIDE.IDEVersionWindows:HandleExport(event)
 	if self:SaveConfigImpl() == false then
 		return
 	end
-	local export_info = g_IDEProject.project.config:GetConfig(self.config_key, nil)
+	local export_info = ALittleIDE.g_IDEProject.project.config:GetConfig(self.config_key, nil)
 	if export_info == nil then
 		return
 	end
-	g_IDEExport:PackagePlatform(g_IDEProject.project.name, export_info.version_info, export_info.install_info, "Windows")
+	ALittleIDE.g_IDEExport:PackagePlatform(ALittleIDE.g_IDEProject.project.name, export_info.version_info, export_info.install_info, "Windows")
 end
-IDEVersionWindows.HandleExport = Lua.CoWrap(IDEVersionWindows.HandleExport)
+ALittleIDE.IDEVersionWindows.HandleExport = Lua.CoWrap(ALittleIDE.IDEVersionWindows.HandleExport)
 
-function IDEVersionWindows:HandleSubmit(event)
-	g_IDEExport:SubmitPlatform(g_IDEProject.project.name, "Windows")
+function ALittleIDE.IDEVersionWindows:HandleSubmit(event)
+	ALittleIDE.g_IDEExport:SubmitPlatform(ALittleIDE.g_IDEProject.project.name, "Windows")
 end
-IDEVersionWindows.HandleSubmit = Lua.CoWrap(IDEVersionWindows.HandleSubmit)
+ALittleIDE.IDEVersionWindows.HandleSubmit = Lua.CoWrap(ALittleIDE.IDEVersionWindows.HandleSubmit)
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
-IDEVersionAndroid = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDEVersionAndroid")
+ALittleIDE.IDEVersionAndroid = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDEVersionAndroid")
 
-function IDEVersionAndroid:Ctor(ctrl_sys)
+function ALittleIDE.IDEVersionAndroid:Ctor(ctrl_sys)
 end
 
-function IDEVersionAndroid:TCtor()
+function ALittleIDE.IDEVersionAndroid:TCtor()
 	self._version_list.platform = "Android"
 	self._version_list.config_key = "android_export_info"
 end
 
-function IDEVersionAndroid.__setter:config_key(value)
+function ALittleIDE.IDEVersionAndroid.__setter:config_key(value)
 	self._version_list.config_key = value
 end
 
-function IDEVersionAndroid.__getter:config_key()
+function ALittleIDE.IDEVersionAndroid.__getter:config_key()
 	return self._version_list.config_key
 end
 
-function IDEVersionAndroid:LoadConfigImpl()
-	if g_IDEProject.project == nil then
+function ALittleIDE.IDEVersionAndroid:LoadConfigImpl()
+	if ALittleIDE.g_IDEProject.project == nil then
 		g_AUITool:ShowNotice("错误", "当前没有打开的项目")
 		return false
 	end
 	self._version_list:LoadConfig()
 	self._version_list:HandleRefreshVersionList(nil)
 	self._version_list.export_old_log.text = ""
-	local export_info = g_IDEProject.project.config:GetConfig(self.config_key, {})
+	local export_info = ALittleIDE.g_IDEProject.project.config:GetConfig(self.config_key, {})
 	local install_info = export_info.install_info
 	if install_info == nil then
 		install_info = {}
@@ -597,8 +597,8 @@ function IDEVersionAndroid:LoadConfigImpl()
 	return true
 end
 
-function IDEVersionAndroid:SaveConfigImpl()
-	if g_IDEProject.project == nil then
+function ALittleIDE.IDEVersionAndroid:SaveConfigImpl()
+	if ALittleIDE.g_IDEProject.project == nil then
 		g_AUITool:ShowNotice("错误", "当前没有打开的项目")
 		return false
 	end
@@ -624,62 +624,62 @@ function IDEVersionAndroid:SaveConfigImpl()
 		return false
 	end
 	install_info.new_log = self._export_new_log.text
-	g_IDEProject.project.config:SetConfig(self.config_key, export_info)
+	ALittleIDE.g_IDEProject.project.config:SetConfig(self.config_key, export_info)
 	return true
 end
 
-function IDEVersionAndroid:HandleSaveConfig(event)
+function ALittleIDE.IDEVersionAndroid:HandleSaveConfig(event)
 	if self:SaveConfigImpl() == false then
 		return
 	end
 	g_AUITool:ShowNotice("提示", "配置保存成功")
 end
 
-function IDEVersionAndroid:HandleExport(event)
+function ALittleIDE.IDEVersionAndroid:HandleExport(event)
 	if self:SaveConfigImpl() == false then
 		return
 	end
-	local export_info = g_IDEProject.project.config:GetConfig(self.config_key, nil)
+	local export_info = ALittleIDE.g_IDEProject.project.config:GetConfig(self.config_key, nil)
 	if export_info == nil then
 		return
 	end
-	g_IDEExport:PackagePlatform(g_IDEProject.project.name, export_info.version_info, export_info.install_info, "Android")
+	ALittleIDE.g_IDEExport:PackagePlatform(ALittleIDE.g_IDEProject.project.name, export_info.version_info, export_info.install_info, "Android")
 end
-IDEVersionAndroid.HandleExport = Lua.CoWrap(IDEVersionAndroid.HandleExport)
+ALittleIDE.IDEVersionAndroid.HandleExport = Lua.CoWrap(ALittleIDE.IDEVersionAndroid.HandleExport)
 
-function IDEVersionAndroid:HandleSubmit(event)
-	g_IDEExport:SubmitPlatform(g_IDEProject.project.name, "Android")
+function ALittleIDE.IDEVersionAndroid:HandleSubmit(event)
+	ALittleIDE.g_IDEExport:SubmitPlatform(ALittleIDE.g_IDEProject.project.name, "Android")
 end
-IDEVersionAndroid.HandleSubmit = Lua.CoWrap(IDEVersionAndroid.HandleSubmit)
+ALittleIDE.IDEVersionAndroid.HandleSubmit = Lua.CoWrap(ALittleIDE.IDEVersionAndroid.HandleSubmit)
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
-IDEVersioniOS = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDEVersioniOS")
+ALittleIDE.IDEVersioniOS = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDEVersioniOS")
 
-function IDEVersioniOS:Ctor(ctrl_sys)
+function ALittleIDE.IDEVersioniOS:Ctor(ctrl_sys)
 end
 
-function IDEVersioniOS:TCtor()
+function ALittleIDE.IDEVersioniOS:TCtor()
 	self._version_list.platform = "iOS"
 	self._version_list.config_key = "ios_export_info"
 end
 
-function IDEVersioniOS.__setter:config_key(value)
+function ALittleIDE.IDEVersioniOS.__setter:config_key(value)
 	self._version_list.config_key = value
 end
 
-function IDEVersioniOS.__getter:config_key()
+function ALittleIDE.IDEVersioniOS.__getter:config_key()
 	return self._version_list.config_key
 end
 
-function IDEVersioniOS:LoadConfigImpl()
-	if g_IDEProject.project == nil then
+function ALittleIDE.IDEVersioniOS:LoadConfigImpl()
+	if ALittleIDE.g_IDEProject.project == nil then
 		g_AUITool:ShowNotice("错误", "当前没有打开的项目")
 		return false
 	end
 	self._version_list:LoadConfig()
 	self._version_list:HandleRefreshVersionList(nil)
 	self._version_list.export_old_log.text = ""
-	local export_info = g_IDEProject.project.config:GetConfig(self.config_key, {})
+	local export_info = ALittleIDE.g_IDEProject.project.config:GetConfig(self.config_key, {})
 	local install_info = export_info.install_info
 	if install_info == nil then
 		install_info = {}
@@ -712,8 +712,8 @@ function IDEVersioniOS:LoadConfigImpl()
 	return true
 end
 
-function IDEVersioniOS:SaveConfigImpl()
-	if g_IDEProject.project == nil then
+function ALittleIDE.IDEVersioniOS:SaveConfigImpl()
+	if ALittleIDE.g_IDEProject.project == nil then
 		g_AUITool:ShowNotice("错误", "当前没有打开的项目")
 		return false
 	end
@@ -739,62 +739,62 @@ function IDEVersioniOS:SaveConfigImpl()
 		return false
 	end
 	install_info.new_log = self._export_new_log.text
-	g_IDEProject.project.config:SetConfig(self.config_key, export_info)
+	ALittleIDE.g_IDEProject.project.config:SetConfig(self.config_key, export_info)
 	return true
 end
 
-function IDEVersioniOS:HandleSaveConfig(event)
+function ALittleIDE.IDEVersioniOS:HandleSaveConfig(event)
 	if self:SaveConfigImpl() == false then
 		return
 	end
 	g_AUITool:ShowNotice("提示", "配置保存成功")
 end
 
-function IDEVersioniOS:HandleExport(event)
+function ALittleIDE.IDEVersioniOS:HandleExport(event)
 	if self:SaveConfigImpl() == false then
 		return
 	end
-	local export_info = g_IDEProject.project.config:GetConfig(self.config_key, nil)
+	local export_info = ALittleIDE.g_IDEProject.project.config:GetConfig(self.config_key, nil)
 	if export_info == nil then
 		return
 	end
-	g_IDEExport:PackagePlatform(g_IDEProject.project.name, export_info.version_info, export_info.install_info, "iOS")
+	ALittleIDE.g_IDEExport:PackagePlatform(ALittleIDE.g_IDEProject.project.name, export_info.version_info, export_info.install_info, "iOS")
 end
-IDEVersioniOS.HandleExport = Lua.CoWrap(IDEVersioniOS.HandleExport)
+ALittleIDE.IDEVersioniOS.HandleExport = Lua.CoWrap(ALittleIDE.IDEVersioniOS.HandleExport)
 
-function IDEVersioniOS:HandleSubmit(event)
-	g_IDEExport:SubmitPlatform(g_IDEProject.project.name, "iOS")
+function ALittleIDE.IDEVersioniOS:HandleSubmit(event)
+	ALittleIDE.g_IDEExport:SubmitPlatform(ALittleIDE.g_IDEProject.project.name, "iOS")
 end
-IDEVersioniOS.HandleSubmit = Lua.CoWrap(IDEVersioniOS.HandleSubmit)
+ALittleIDE.IDEVersioniOS.HandleSubmit = Lua.CoWrap(ALittleIDE.IDEVersioniOS.HandleSubmit)
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
-IDEVersionWeb = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDEVersionWeb")
+ALittleIDE.IDEVersionWeb = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDEVersionWeb")
 
-function IDEVersionWeb:Ctor(ctrl_sys)
+function ALittleIDE.IDEVersionWeb:Ctor(ctrl_sys)
 end
 
-function IDEVersionWeb:TCtor()
+function ALittleIDE.IDEVersionWeb:TCtor()
 	self._version_list.platform = "Web"
 	self._version_list.config_key = "web_export_info"
 end
 
-function IDEVersionWeb.__setter:config_key(value)
+function ALittleIDE.IDEVersionWeb.__setter:config_key(value)
 	self._version_list.config_key = value
 end
 
-function IDEVersionWeb.__getter:config_key()
+function ALittleIDE.IDEVersionWeb.__getter:config_key()
 	return self._version_list.config_key
 end
 
-function IDEVersionWeb:LoadConfigImpl()
-	if g_IDEProject.project == nil then
+function ALittleIDE.IDEVersionWeb:LoadConfigImpl()
+	if ALittleIDE.g_IDEProject.project == nil then
 		g_AUITool:ShowNotice("错误", "当前没有打开的项目")
 		return false
 	end
 	self._version_list:LoadConfig()
 	self._version_list:HandleRefreshVersionList(nil)
 	self._version_list.export_old_log.text = ""
-	local export_info = g_IDEProject.project.config:GetConfig(self.config_key, {})
+	local export_info = ALittleIDE.g_IDEProject.project.config:GetConfig(self.config_key, {})
 	local install_info = export_info.install_info
 	if install_info == nil then
 		install_info = {}
@@ -807,8 +807,8 @@ function IDEVersionWeb:LoadConfigImpl()
 	return true
 end
 
-function IDEVersionWeb:SaveConfigImpl()
-	if g_IDEProject.project == nil then
+function ALittleIDE.IDEVersionWeb:SaveConfigImpl()
+	if ALittleIDE.g_IDEProject.project == nil then
 		g_AUITool:ShowNotice("错误", "当前没有打开的项目")
 		return false
 	end
@@ -822,62 +822,62 @@ function IDEVersionWeb:SaveConfigImpl()
 	export_info.install_info = install_info
 	install_info.file_name = "Install.html"
 	install_info.new_log = self._export_new_log.text
-	g_IDEProject.project.config:SetConfig(self.config_key, export_info)
+	ALittleIDE.g_IDEProject.project.config:SetConfig(self.config_key, export_info)
 	return true
 end
 
-function IDEVersionWeb:HandleSaveConfig(event)
+function ALittleIDE.IDEVersionWeb:HandleSaveConfig(event)
 	if self:SaveConfigImpl() == false then
 		return
 	end
 	g_AUITool:ShowNotice("提示", "配置保存成功")
 end
 
-function IDEVersionWeb:HandleExport(event)
+function ALittleIDE.IDEVersionWeb:HandleExport(event)
 	if self:SaveConfigImpl() == false then
 		return
 	end
-	local export_info = g_IDEProject.project.config:GetConfig(self.config_key, nil)
+	local export_info = ALittleIDE.g_IDEProject.project.config:GetConfig(self.config_key, nil)
 	if export_info == nil then
 		return
 	end
-	g_IDEExport:PackagePlatform(g_IDEProject.project.name, export_info.version_info, export_info.install_info, "Web")
+	ALittleIDE.g_IDEExport:PackagePlatform(ALittleIDE.g_IDEProject.project.name, export_info.version_info, export_info.install_info, "Web")
 end
-IDEVersionWeb.HandleExport = Lua.CoWrap(IDEVersionWeb.HandleExport)
+ALittleIDE.IDEVersionWeb.HandleExport = Lua.CoWrap(ALittleIDE.IDEVersionWeb.HandleExport)
 
-function IDEVersionWeb:HandleSubmit(event)
-	g_IDEExport:SubmitPlatform(g_IDEProject.project.name, "Web")
+function ALittleIDE.IDEVersionWeb:HandleSubmit(event)
+	ALittleIDE.g_IDEExport:SubmitPlatform(ALittleIDE.g_IDEProject.project.name, "Web")
 end
-IDEVersionWeb.HandleSubmit = Lua.CoWrap(IDEVersionWeb.HandleSubmit)
+ALittleIDE.IDEVersionWeb.HandleSubmit = Lua.CoWrap(ALittleIDE.IDEVersionWeb.HandleSubmit)
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
-IDEVersionWeChat = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDEVersionWeChat")
+ALittleIDE.IDEVersionWeChat = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDEVersionWeChat")
 
-function IDEVersionWeChat:Ctor(ctrl_sys)
+function ALittleIDE.IDEVersionWeChat:Ctor(ctrl_sys)
 end
 
-function IDEVersionWeChat:TCtor()
+function ALittleIDE.IDEVersionWeChat:TCtor()
 	self._version_list.platform = "WeChat"
 	self._version_list.config_key = "wechat_export_info"
 end
 
-function IDEVersionWeChat.__setter:config_key(value)
+function ALittleIDE.IDEVersionWeChat.__setter:config_key(value)
 	self._version_list.config_key = value
 end
 
-function IDEVersionWeChat.__getter:config_key()
+function ALittleIDE.IDEVersionWeChat.__getter:config_key()
 	return self._version_list.config_key
 end
 
-function IDEVersionWeChat:LoadConfigImpl()
-	if g_IDEProject.project == nil then
+function ALittleIDE.IDEVersionWeChat:LoadConfigImpl()
+	if ALittleIDE.g_IDEProject.project == nil then
 		g_AUITool:ShowNotice("错误", "当前没有打开的项目")
 		return false
 	end
 	self._version_list:LoadConfig()
 	self._version_list:HandleRefreshVersionList(nil)
 	self._version_list.export_old_log.text = ""
-	local export_info = g_IDEProject.project.config:GetConfig(self.config_key, {})
+	local export_info = ALittleIDE.g_IDEProject.project.config:GetConfig(self.config_key, {})
 	local install_info = export_info.install_info
 	if install_info == nil then
 		install_info = {}
@@ -910,8 +910,8 @@ function IDEVersionWeChat:LoadConfigImpl()
 	return true
 end
 
-function IDEVersionWeChat:SaveConfigImpl()
-	if g_IDEProject.project == nil then
+function ALittleIDE.IDEVersionWeChat:SaveConfigImpl()
+	if ALittleIDE.g_IDEProject.project == nil then
 		g_AUITool:ShowNotice("错误", "当前没有打开的项目")
 		return false
 	end
@@ -929,31 +929,32 @@ function IDEVersionWeChat:SaveConfigImpl()
 	install_info.res_port = ALittle.Math_ToIntOrZero(self._export_res_port.text)
 	install_info.res_base_path = self._export_res_base_path.text
 	install_info.screen = self._export_screen.text
-	g_IDEProject.project.config:SetConfig(self.config_key, export_info)
+	ALittleIDE.g_IDEProject.project.config:SetConfig(self.config_key, export_info)
 	return true
 end
 
-function IDEVersionWeChat:HandleSaveConfig(event)
+function ALittleIDE.IDEVersionWeChat:HandleSaveConfig(event)
 	if self:SaveConfigImpl() == false then
 		return
 	end
 	g_AUITool:ShowNotice("提示", "配置保存成功")
 end
 
-function IDEVersionWeChat:HandleExport(event)
+function ALittleIDE.IDEVersionWeChat:HandleExport(event)
 	if self:SaveConfigImpl() == false then
 		return
 	end
-	local export_info = g_IDEProject.project.config:GetConfig(self.config_key, nil)
+	local export_info = ALittleIDE.g_IDEProject.project.config:GetConfig(self.config_key, nil)
 	if export_info == nil then
 		return
 	end
-	g_IDEExport:PackagePlatform(g_IDEProject.project.name, export_info.version_info, export_info.install_info, "WeChat")
+	ALittleIDE.g_IDEExport:PackagePlatform(ALittleIDE.g_IDEProject.project.name, export_info.version_info, export_info.install_info, "WeChat")
 end
-IDEVersionWeChat.HandleExport = Lua.CoWrap(IDEVersionWeChat.HandleExport)
+ALittleIDE.IDEVersionWeChat.HandleExport = Lua.CoWrap(ALittleIDE.IDEVersionWeChat.HandleExport)
 
-function IDEVersionWeChat:HandleSubmit(event)
-	g_IDEExport:SubmitPlatform(g_IDEProject.project.name, "WeChat")
+function ALittleIDE.IDEVersionWeChat:HandleSubmit(event)
+	ALittleIDE.g_IDEExport:SubmitPlatform(ALittleIDE.g_IDEProject.project.name, "WeChat")
 end
-IDEVersionWeChat.HandleSubmit = Lua.CoWrap(IDEVersionWeChat.HandleSubmit)
+ALittleIDE.IDEVersionWeChat.HandleSubmit = Lua.CoWrap(ALittleIDE.IDEVersionWeChat.HandleSubmit)
 
+end

@@ -1,35 +1,36 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-IHttpReceiver = Lua.Class(nil, "ALittle.IHttpReceiver")
+ALittle.IHttpReceiver = Lua.Class(nil, "ALittle.IHttpReceiver")
 
 local __all_callback = {}
-function RegHttpCallback(method, callback)
+function ALittle.RegHttpCallback(method, callback)
 	if __all_callback[method] ~= nil then
-		Error("RegHttpCallback消息回调函数注册失败，名字为" .. method .. "已存在")
+		ALittle.Error("RegHttpCallback消息回调函数注册失败，名字为" .. method .. "已存在")
 		return
 	end
 	__all_callback[method] = callback
 end
 
-function FindHttpCallback(method)
+function ALittle.FindHttpCallback(method)
 	return __all_callback[method]
 end
 
 local __all_download_callback = {}
-function RegHttpDownloadCallback(method, callback)
+function ALittle.RegHttpDownloadCallback(method, callback)
 	if __all_download_callback[method] ~= nil then
-		Error("RegHttpDownloadCallback消息回调函数注册失败，名字为" .. method .. "已存在")
+		ALittle.Error("RegHttpDownloadCallback消息回调函数注册失败，名字为" .. method .. "已存在")
 		return
 	end
 	__all_download_callback[method] = callback
 end
 
-function FindHttpDownloadCallback(method)
+function ALittle.FindHttpDownloadCallback(method)
 	return __all_download_callback[method]
 end
 
+end

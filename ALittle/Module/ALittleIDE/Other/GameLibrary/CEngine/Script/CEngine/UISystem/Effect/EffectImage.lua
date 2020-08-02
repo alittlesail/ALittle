@@ -1,17 +1,17 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
 assert(ALittle.DisplayObject, " extends class:ALittle.DisplayObject is nil")
-EffectImage = Lua.Class(ALittle.DisplayObject, "ALittle.EffectImage")
+ALittle.EffectImage = Lua.Class(ALittle.DisplayObject, "ALittle.EffectImage")
 
-function EffectImage:Ctor(ctrl_sys)
+function ALittle.EffectImage:Ctor(ctrl_sys)
 end
 
-function EffectImage:Action(control)
+function ALittle.EffectImage:Action(control)
 	if control == nil then
 		return
 	end
@@ -35,10 +35,11 @@ function EffectImage:Action(control)
 	self.disabled = true
 end
 
-function EffectImage:Clear()
+function ALittle.EffectImage:Clear()
 	if self._texture == nil then
 		return
 	end
 	self._texture:Clear()
 end
 
+end

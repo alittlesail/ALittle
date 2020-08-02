@@ -1,24 +1,24 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___all_struct = GetAllStruct()
+local ___all_struct = ALittle.GetAllStruct()
 
-RegStruct(1971745271, "ALittle.DialogDragBeginEvent", {
+ALittle.RegStruct(1971745271, "ALittle.DialogDragBeginEvent", {
 name = "ALittle.DialogDragBeginEvent", ns_name = "ALittle", rl_name = "DialogDragBeginEvent", hash_code = 1971745271,
 name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
-RegStruct(1517533145, "ALittle.DialogDragEvent", {
+ALittle.RegStruct(1517533145, "ALittle.DialogDragEvent", {
 name = "ALittle.DialogDragEvent", ns_name = "ALittle", rl_name = "DialogDragEvent", hash_code = 1517533145,
 name_list = {"target","delta_x","delta_y"},
 type_list = {"ALittle.DisplayObject","double","double"},
 option_map = {}
 })
-RegStruct(-1482649531, "ALittle.DialogDragEndEvent", {
+ALittle.RegStruct(-1482649531, "ALittle.DialogDragEndEvent", {
 name = "ALittle.DialogDragEndEvent", ns_name = "ALittle", rl_name = "DialogDragEndEvent", hash_code = -1482649531,
 name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
@@ -26,30 +26,30 @@ option_map = {}
 })
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
-Dialog = Lua.Class(ALittle.DisplayLayout, "ALittle.Dialog")
+ALittle.Dialog = Lua.Class(ALittle.DisplayLayout, "ALittle.Dialog")
 
-function Dialog:Ctor(ctrl_sys)
+function ALittle.Dialog:Ctor(ctrl_sys)
 	___rawset(self, "_pickup_rect", true)
 	___rawset(self, "_pickup_child", true)
 	___rawset(self, "_title_text", "")
-	___rawset(self, "_head", DisplayLayout(self._ctrl_sys))
-	___rawset(self, "_body", DisplayLayout(self._ctrl_sys))
-	___rawset(self, "_grid3", Grid3(self._ctrl_sys))
-	self._grid3.width_type = UIEnumTypes.SIZE_MARGIN
+	___rawset(self, "_head", ALittle.DisplayLayout(self._ctrl_sys))
+	___rawset(self, "_body", ALittle.DisplayLayout(self._ctrl_sys))
+	___rawset(self, "_grid3", ALittle.Grid3(self._ctrl_sys))
+	self._grid3.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
 	self._grid3.width_value = 0
-	self._grid3.height_type = UIEnumTypes.SIZE_MARGIN
+	self._grid3.height_type = ALittle.UIEnumTypes.SIZE_MARGIN
 	self._grid3.height_value = 0
-	self._grid3.type = UIEnumTypes.TYPE_V
+	self._grid3.type = ALittle.UIEnumTypes.TYPE_V
 	self._grid3.show_up = self._head
 	self._grid3.show_center = self._body
-	DisplayLayout.AddChild(self, self._grid3)
+	ALittle.DisplayLayout.AddChild(self, self._grid3)
 end
 
-function Dialog:GetChildOffset()
+function ALittle.Dialog:GetChildOffset()
 	return 0, self._grid3.up_size
 end
 
-function Dialog.__setter:head_size(value)
+function ALittle.Dialog.__setter:head_size(value)
 	self._grid3.up_size = value
 	if self._background ~= nil then
 		self._background.height_value = self._grid3.up_size
@@ -62,11 +62,11 @@ function Dialog.__setter:head_size(value)
 	end
 end
 
-function Dialog.__getter:head_size()
+function ALittle.Dialog.__getter:head_size()
 	return self._grid3.up_size
 end
 
-function Dialog:ResetHeadOrder()
+function ALittle.Dialog:ResetHeadOrder()
 	local index = 1
 	if self._head_drag ~= nil then
 		self._head:SetChildIndex(self._head_drag, index)
@@ -82,27 +82,27 @@ function Dialog:ResetHeadOrder()
 	end
 end
 
-function Dialog.__setter:show_background(value)
+function ALittle.Dialog.__setter:show_background(value)
 	if self._background ~= nil then
-		DisplayLayout.RemoveChild(self, self._background)
+		ALittle.DisplayLayout.RemoveChild(self, self._background)
 	end
 	self._background = value
 	if self._background ~= nil then
-		self._background.width_type = UIEnumTypes.SIZE_MARGIN
+		self._background.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
 		self._background.width_value = 0
-		self._background.height_type = UIEnumTypes.SIZE_MARGIN
+		self._background.height_type = ALittle.UIEnumTypes.SIZE_MARGIN
 		self._background.height_value = self._grid3.up_size
-		self._background.y_type = UIEnumTypes.POS_ALIGN_ENDING
-		DisplayLayout.AddChild(self, self._background, 1)
+		self._background.y_type = ALittle.UIEnumTypes.POS_ALIGN_ENDING
+		ALittle.DisplayLayout.AddChild(self, self._background, 1)
 		self:ResetHeadOrder()
 	end
 end
 
-function Dialog.__getter:show_background()
+function ALittle.Dialog.__getter:show_background()
 	return self._background
 end
 
-function Dialog.__setter:show_head_drag(value)
+function ALittle.Dialog.__setter:show_head_drag(value)
 	if self._head_drag ~= nil then
 		self._head:RemoveChild(self._head_drag)
 		self._head_drag:RemoveEventListener(___all_struct[1301789264], self, self.HandleHeadDragBegin)
@@ -111,9 +111,9 @@ function Dialog.__setter:show_head_drag(value)
 	end
 	self._head_drag = value
 	if self._head_drag ~= nil then
-		self._head_drag.width_type = UIEnumTypes.SIZE_MARGIN
+		self._head_drag.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
 		self._head_drag.width_value = 0
-		self._head_drag.height_type = UIEnumTypes.SIZE_MARGIN
+		self._head_drag.height_type = ALittle.UIEnumTypes.SIZE_MARGIN
 		self._head_drag.height_value = 0
 		self._head:AddChild(self._head_drag)
 		self:ResetHeadOrder()
@@ -123,11 +123,11 @@ function Dialog.__setter:show_head_drag(value)
 	end
 end
 
-function Dialog.__getter:show_head_drag()
+function ALittle.Dialog.__getter:show_head_drag()
 	return self._head_drag
 end
 
-function Dialog.__setter:show_title(value)
+function ALittle.Dialog.__setter:show_title(value)
 	if self._title ~= nil then
 		self._title_text = self._title.text
 		self._head:RemoveChild(self._title)
@@ -136,34 +136,34 @@ function Dialog.__setter:show_title(value)
 	if self._title ~= nil then
 		self._title.text = self._title_text
 		self._title.disabled = true
-		self._title.y_type = UIEnumTypes.POS_ALIGN_CENTER
+		self._title.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
 		self._title.y_value = 0
 		self._head:AddChild(self._title)
-		self._title.x_type = UIEnumTypes.POS_ABS
+		self._title.x_type = ALittle.UIEnumTypes.POS_ABS
 		self._title.x_value = (self._grid3.up_size - self._title.font_height)
 		self:ResetHeadOrder()
 	end
 end
 
-function Dialog.__getter:show_title()
+function ALittle.Dialog.__getter:show_title()
 	return self._title
 end
 
-function Dialog.__setter:title(value)
+function ALittle.Dialog.__setter:title(value)
 	self._title_text = value
 	if self._title ~= nil then
 		self._title.text = value
 	end
 end
 
-function Dialog.__getter:title()
+function ALittle.Dialog.__getter:title()
 	if self._title ~= nil then
 		return self._title.text
 	end
 	return self._title_text
 end
 
-function Dialog.__setter:show_close_button(value)
+function ALittle.Dialog.__setter:show_close_button(value)
 	if self._close_button ~= nil then
 		self._head:RemoveChild(self._close_button)
 		self._close_button:RemoveEventListener(___all_struct[-449066808], self, self.HandleCloseButtonClicked)
@@ -171,39 +171,39 @@ function Dialog.__setter:show_close_button(value)
 	self._close_button = value
 	if self._close_button ~= nil then
 		self._close_button.y_value = 0
-		self._close_button.y_type = UIEnumTypes.POS_ALIGN_CENTER
+		self._close_button.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
 		self._head:AddChild(self._close_button)
-		self._close_button.x_type = UIEnumTypes.POS_ALIGN_ENDING
+		self._close_button.x_type = ALittle.UIEnumTypes.POS_ALIGN_ENDING
 		self._close_button.x_value = (self._grid3.up_size - self._close_button.height) / 2
 		self:ResetHeadOrder()
 		self._close_button:AddEventListener(___all_struct[-449066808], self, self.HandleCloseButtonClicked)
 	end
 end
 
-function Dialog.__getter:show_close_button()
+function ALittle.Dialog.__getter:show_close_button()
 	return self._close_button
 end
 
-function Dialog.__setter:close_callback(value)
+function ALittle.Dialog.__setter:close_callback(value)
 	self._close_callback = value
 end
 
-function Dialog.__getter:close_callback()
+function ALittle.Dialog.__getter:close_callback()
 	return self._close_callback
 end
 
-function Dialog:HandleCloseButtonClicked(event)
+function ALittle.Dialog:HandleCloseButtonClicked(event)
 	self.visible = false
 	if self._close_callback ~= nil then
 		self._close_callback()
 	end
 end
 
-function Dialog:HandleHeadDragBegin(event)
+function ALittle.Dialog:HandleHeadDragBegin(event)
 	self:DispatchEvent(___all_struct[1971745271], {})
 end
 
-function Dialog:HandleHeadDrag(event)
+function ALittle.Dialog:HandleHeadDrag(event)
 	self.x = self.x + (event.delta_x)
 	self.y = self.y + (event.delta_y)
 	local new_event = {}
@@ -213,35 +213,35 @@ function Dialog:HandleHeadDrag(event)
 	self:DispatchEvent(___all_struct[1517533145], new_event)
 end
 
-function Dialog:HandleHeadDragEnd(event)
+function ALittle.Dialog:HandleHeadDragEnd(event)
 	self:DispatchEvent(___all_struct[-1482649531], {})
 end
 
-function Dialog:GetChildIndex(child)
+function ALittle.Dialog:GetChildIndex(child)
 	return self._body:GetChildIndex(child)
 end
 
-function Dialog:SetChildIndex(child, index)
+function ALittle.Dialog:SetChildIndex(child, index)
 	return self._body:SetChildIndex(child, index)
 end
 
-function Dialog:GetChildByIndex(index)
+function ALittle.Dialog:GetChildByIndex(index)
 	return self._body:GetChildByIndex(index)
 end
 
-function Dialog:GetChildIndex(child)
+function ALittle.Dialog:GetChildIndex(child)
 	return self._body:GetChildIndex(child)
 end
 
-function Dialog.__getter:childs()
+function ALittle.Dialog.__getter:childs()
 	return self._body.childs
 end
 
-function Dialog.__getter:child_count()
+function ALittle.Dialog.__getter:child_count()
 	return self._body.child_count
 end
 
-function Dialog:AddChild(child, index)
+function ALittle.Dialog:AddChild(child, index)
 	if child == nil or child == self then
 		return false
 	end
@@ -258,7 +258,7 @@ function Dialog:AddChild(child, index)
 	return result
 end
 
-function Dialog:RemoveChild(child)
+function ALittle.Dialog:RemoveChild(child)
 	if child == nil then
 		return false
 	end
@@ -272,15 +272,16 @@ function Dialog:RemoveChild(child)
 	return self._body:RemoveChild(child)
 end
 
-function Dialog:SpliceChild(index, count)
+function ALittle.Dialog:SpliceChild(index, count)
 	return self._body:SpliceChild(index, count)
 end
 
-function Dialog:HasChild(child)
+function ALittle.Dialog:HasChild(child)
 	return self._body:HasChild(child)
 end
 
-function Dialog:RemoveAllChild()
+function ALittle.Dialog:RemoveAllChild()
 	self._body:RemoveAllChild()
 end
 
+end

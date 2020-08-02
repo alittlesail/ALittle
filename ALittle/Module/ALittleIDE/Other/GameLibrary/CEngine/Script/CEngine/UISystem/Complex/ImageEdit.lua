@@ -1,24 +1,24 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___all_struct = GetAllStruct()
+local ___all_struct = ALittle.GetAllStruct()
 
 
-local __cos = Math_Cos
-local __sin = Math_Sin
+local __cos = ALittle.Math_Cos
+local __sin = ALittle.Math_Sin
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
-ImageEdit = Lua.Class(ALittle.DisplayLayout, "ALittle.ImageEdit")
+ALittle.ImageEdit = Lua.Class(ALittle.DisplayLayout, "ALittle.ImageEdit")
 
-function ImageEdit:Ctor(ctrl_sys)
-	___rawset(self, "_show_edit", TextEdit(self._ctrl_sys))
-	self._show_edit.x_type = UIEnumTypes.POS_ALIGN_STARTING
-	self._show_edit.y_type = UIEnumTypes.POS_ALIGN_STARTING
-	self._show_edit.width_type = UIEnumTypes.SIZE_MARGIN
+function ALittle.ImageEdit:Ctor(ctrl_sys)
+	___rawset(self, "_show_edit", ALittle.TextEdit(self._ctrl_sys))
+	self._show_edit.x_type = ALittle.UIEnumTypes.POS_ALIGN_STARTING
+	self._show_edit.y_type = ALittle.UIEnumTypes.POS_ALIGN_STARTING
+	self._show_edit.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
 	self._show_edit.width_value = 0
-	self._show_edit.height_type = UIEnumTypes.SIZE_MARGIN
+	self._show_edit.height_type = ALittle.UIEnumTypes.SIZE_MARGIN
 	self._show_edit.height_value = 0
 	self:AddChild(self._show_edit, 5)
 	___rawset(self, "_logic_left", 0)
@@ -44,8 +44,8 @@ function ImageEdit:Ctor(ctrl_sys)
 	self._show_edit:AddEventListener(___all_struct[-439548260], self, self.HandleImageEditTransformLongButtonDown)
 end
 
-function ImageEdit.__setter:disabled(value)
-	DisplayObject.__setter.disabled(self, value)
+function ALittle.ImageEdit.__setter:disabled(value)
+	ALittle.DisplayObject.__setter.disabled(self, value)
 	if value then
 		self:ShowDisabled()
 	else
@@ -53,11 +53,11 @@ function ImageEdit.__setter:disabled(value)
 	end
 end
 
-function ImageEdit.__getter:is_focus()
+function ALittle.ImageEdit.__getter:is_focus()
 	return A_UISystem.focus == self._show_edit
 end
 
-function ImageEdit.__setter:focus(value)
+function ALittle.ImageEdit.__setter:focus(value)
 	if value then
 		A_UISystem.focus = self._show_edit
 	else
@@ -67,242 +67,242 @@ function ImageEdit.__setter:focus(value)
 	end
 end
 
-function ImageEdit.__getter:is_input()
+function ALittle.ImageEdit.__getter:is_input()
 	return true
 end
 
-function ImageEdit.__getter:show_edit()
+function ALittle.ImageEdit.__getter:show_edit()
 	return self._show_edit
 end
 
-function ImageEdit.__getter:cursor_x()
+function ALittle.ImageEdit.__getter:cursor_x()
 	return self._show_edit.cursor_x
 end
 
-function ImageEdit.__getter:cursor_y()
+function ALittle.ImageEdit.__getter:cursor_y()
 	return self._show_edit.cursor_y
 end
 
-function ImageEdit.__setter:editable(value)
+function ALittle.ImageEdit.__setter:editable(value)
 	self._show_edit.editable = value
 end
 
-function ImageEdit.__getter:editable()
+function ALittle.ImageEdit.__getter:editable()
 	return self._show_edit.editable
 end
 
-function ImageEdit.__setter:font_path(value)
+function ALittle.ImageEdit.__setter:font_path(value)
 	self._show_edit.font_path = value
 end
 
-function ImageEdit.__setter:font_size(value)
+function ALittle.ImageEdit.__setter:font_size(value)
 	self._show_edit.font_size = value
 end
 
-function ImageEdit.__getter:font_path()
+function ALittle.ImageEdit.__getter:font_path()
 	return self._show_edit.font_path
 end
 
-function ImageEdit.__getter:font_size()
+function ALittle.ImageEdit.__getter:font_size()
 	return self._show_edit.font_size
 end
 
-function ImageEdit.__getter:regex()
+function ALittle.ImageEdit.__getter:regex()
 	return self._show_edit.regex
 end
 
-function ImageEdit.__setter:regex(value)
+function ALittle.ImageEdit.__setter:regex(value)
 	if value == nil then
 		value = ""
 	end
 	self._show_edit.regex = value
 end
 
-function ImageEdit.__getter:limit_len()
+function ALittle.ImageEdit.__getter:limit_len()
 	return self._show_edit.limit_len
 end
 
-function ImageEdit.__setter:limit_len(value)
+function ALittle.ImageEdit.__setter:limit_len(value)
 	if value == nil then
 		value = 0
 	end
 	self._show_edit.limit_len = value
 end
 
-function ImageEdit.__setter:text(value)
+function ALittle.ImageEdit.__setter:text(value)
 	self._show_edit.text = value
 end
 
-function ImageEdit.__getter:text()
+function ALittle.ImageEdit.__getter:text()
 	return self._show_edit.text
 end
 
-function ImageEdit.__setter:bold(value)
+function ALittle.ImageEdit.__setter:bold(value)
 	self._show_edit.bold = value
 end
 
-function ImageEdit.__getter:bold()
+function ALittle.ImageEdit.__getter:bold()
 	return self._show_edit.bold
 end
 
-function ImageEdit.__setter:italic(value)
+function ALittle.ImageEdit.__setter:italic(value)
 	self._show_edit.italic = value
 end
 
-function ImageEdit.__getter:italic()
+function ALittle.ImageEdit.__getter:italic()
 	return self._show_edit.italic
 end
 
-function ImageEdit.__setter:underline(value)
+function ALittle.ImageEdit.__setter:underline(value)
 	self._show_edit.underline = value
 end
 
-function ImageEdit.__getter:underline()
+function ALittle.ImageEdit.__getter:underline()
 	return self._show_edit.underline
 end
 
-function ImageEdit.__setter:deleteline(value)
+function ALittle.ImageEdit.__setter:deleteline(value)
 	self._show_edit.deleteline = value
 end
 
-function ImageEdit.__getter:deleteline()
+function ALittle.ImageEdit.__getter:deleteline()
 	return self._show_edit.deleteline
 end
 
-function ImageEdit.__setter:cursor_red(value)
+function ALittle.ImageEdit.__setter:cursor_red(value)
 	self._show_edit.cursor_red = value
 end
 
-function ImageEdit.__getter:cursor_red()
+function ALittle.ImageEdit.__getter:cursor_red()
 	return self._show_edit.cursor_red
 end
 
-function ImageEdit.__setter:cursor_green(value)
+function ALittle.ImageEdit.__setter:cursor_green(value)
 	self._show_edit.cursor_green = value
 end
 
-function ImageEdit.__getter:cursor_green()
+function ALittle.ImageEdit.__getter:cursor_green()
 	return self._show_edit.cursor_green
 end
 
-function ImageEdit.__setter:cursor_blue(value)
+function ALittle.ImageEdit.__setter:cursor_blue(value)
 	self._show_edit.cursor_blue = value
 end
 
-function ImageEdit.__getter:cursor_blue()
+function ALittle.ImageEdit.__getter:cursor_blue()
 	return self._show_edit.cursor_blue
 end
 
-function ImageEdit.__setter:red(value)
+function ALittle.ImageEdit.__setter:red(value)
 	self._show_edit.red = value
 end
 
-function ImageEdit.__getter:red()
+function ALittle.ImageEdit.__getter:red()
 	return self._show_edit.red
 end
 
-function ImageEdit.__setter:green(value)
+function ALittle.ImageEdit.__setter:green(value)
 	self._show_edit.green = value
 end
 
-function ImageEdit.__getter:green()
+function ALittle.ImageEdit.__getter:green()
 	return self._show_edit.green
 end
 
-function ImageEdit.__setter:blue(value)
+function ALittle.ImageEdit.__setter:blue(value)
 	self._show_edit.blue = value
 end
 
-function ImageEdit.__getter:blue()
+function ALittle.ImageEdit.__getter:blue()
 	return self._show_edit.blue
 end
 
-function ImageEdit.__setter:ims_padding(value)
+function ALittle.ImageEdit.__setter:ims_padding(value)
 	self._show_edit.ims_padding = value
 end
 
-function ImageEdit.__getter:ims_padding()
+function ALittle.ImageEdit.__getter:ims_padding()
 	return self._show_edit.ims_padding
 end
 
-function ImageEdit:HandleFocusIn(event)
+function ALittle.ImageEdit:HandleFocusIn(event)
 	event.target = self
 	self:DispatchEvent(___all_struct[-644464135], event)
 	self:ShowDown()
 end
 
-function ImageEdit:HandleFocusOut(event)
+function ALittle.ImageEdit:HandleFocusOut(event)
 	event.target = self
 	self:DispatchEvent(___all_struct[292776509], event)
 	self:ShowUp()
 end
 
-function ImageEdit:HandleImageEditTransformLButtonDown(event)
+function ALittle.ImageEdit:HandleImageEditTransformLButtonDown(event)
 	event.target = self
 	self:DispatchEvent(___all_struct[1883782801], event)
 end
 
-function ImageEdit:HandleImageEditTransformTextInput(event)
+function ALittle.ImageEdit:HandleImageEditTransformTextInput(event)
 	event.target = self
 	self:DispatchEvent(___all_struct[-1234078962], event)
 end
 
-function ImageEdit:HandleImageEditTransformKeyDown(event)
+function ALittle.ImageEdit:HandleImageEditTransformKeyDown(event)
 	event.target = self
 	self:DispatchEvent(___all_struct[-1604617962], event)
 end
 
-function ImageEdit:HandleImageEditTransformDragBegin(event)
+function ALittle.ImageEdit:HandleImageEditTransformDragBegin(event)
 	event.target = self
 	self:DispatchEvent(___all_struct[1301789264], event)
 end
 
-function ImageEdit:HandleImageEditTransformDrag(event)
+function ALittle.ImageEdit:HandleImageEditTransformDrag(event)
 	event.target = self
 	self:DispatchEvent(___all_struct[1337289812], event)
 end
 
-function ImageEdit:HandleImageEditTransformDragEnd(event)
+function ALittle.ImageEdit:HandleImageEditTransformDragEnd(event)
 	event.target = self
 	self:DispatchEvent(___all_struct[150587926], event)
 end
 
-function ImageEdit:HandleImageEditTransformMButtonWheel(event)
+function ALittle.ImageEdit:HandleImageEditTransformMButtonWheel(event)
 	event.target = self
 	self:DispatchEvent(___all_struct[-1737121315], event)
 end
 
-function ImageEdit:HandleImageEditTransformChangd(event)
+function ALittle.ImageEdit:HandleImageEditTransformChangd(event)
 	event.target = self
 	self:DispatchEvent(___all_struct[958494922], event)
 end
 
-function ImageEdit:HandleImageEditTransformEnterKey(event)
+function ALittle.ImageEdit:HandleImageEditTransformEnterKey(event)
 	event.target = self
 	self:DispatchEvent(___all_struct[776398171], event)
 end
 
-function ImageEdit:HandleImageEditTransformTabKey(event)
+function ALittle.ImageEdit:HandleImageEditTransformTabKey(event)
 	event.target = self
 	self:DispatchEvent(___all_struct[2024735182], event)
 end
 
-function ImageEdit:HandleImageEditTransformRButtonDown(event)
+function ALittle.ImageEdit:HandleImageEditTransformRButtonDown(event)
 	event.target = self
 	self:DispatchEvent(___all_struct[-641444818], event)
 end
 
-function ImageEdit:HandleImageEditTransformRButtonUp(event)
+function ALittle.ImageEdit:HandleImageEditTransformRButtonUp(event)
 	event.target = self
 	self:DispatchEvent(___all_struct[-569321214], event)
 end
 
-function ImageEdit:HandleImageEditTransformLongButtonDown(event)
+function ALittle.ImageEdit:HandleImageEditTransformLongButtonDown(event)
 	event.target = self
 	self:DispatchEvent(___all_struct[-439548260], event)
 end
 
-function ImageEdit:HandleMoveIn(event)
+function ALittle.ImageEdit:HandleMoveIn(event)
 	event.target = self
 	self:DispatchEvent(___all_struct[544684311], event)
 	if A_UISystem.focus ~= self._show_edit then
@@ -310,7 +310,7 @@ function ImageEdit:HandleMoveIn(event)
 	end
 end
 
-function ImageEdit:HandleMoveOut(event)
+function ALittle.ImageEdit:HandleMoveOut(event)
 	event.target = self
 	self:DispatchEvent(___all_struct[-1202439334], event)
 	if A_UISystem.focus ~= self._show_edit then
@@ -318,7 +318,7 @@ function ImageEdit:HandleMoveOut(event)
 	end
 end
 
-function ImageEdit:ShowUp()
+function ALittle.ImageEdit:ShowUp()
 	if self._abs_disabled or self._disabled then
 		return
 	end
@@ -336,7 +336,7 @@ function ImageEdit:ShowUp()
 	end
 end
 
-function ImageEdit:ShowDown()
+function ALittle.ImageEdit:ShowDown()
 	if self._abs_disabled or self._disabled then
 		return
 	end
@@ -354,7 +354,7 @@ function ImageEdit:ShowDown()
 	end
 end
 
-function ImageEdit:ShowOver()
+function ALittle.ImageEdit:ShowOver()
 	if self._abs_disabled or self._disabled then
 		return
 	end
@@ -372,7 +372,7 @@ function ImageEdit:ShowOver()
 	end
 end
 
-function ImageEdit:ShowDisabled()
+function ALittle.ImageEdit:ShowDisabled()
 	if self._show_up ~= nil then
 		self._show_up.alpha = 0
 	end
@@ -387,12 +387,12 @@ function ImageEdit:ShowDisabled()
 	end
 end
 
-function ImageEdit.__setter:show_up(value)
+function ALittle.ImageEdit.__setter:show_up(value)
 	self:RemoveChild(self._show_up)
 	self._show_up = value
 	if self._show_up ~= nil then
-		self._show_up.width_type = UIEnumTypes.SIZE_MARGIN
-		self._show_up.height_type = UIEnumTypes.SIZE_MARGIN
+		self._show_up.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
+		self._show_up.height_type = ALittle.UIEnumTypes.SIZE_MARGIN
 		self._show_up.width_value = 0
 		self._show_up.height_value = 0
 		self:AddChild(self._show_up, 1)
@@ -400,16 +400,16 @@ function ImageEdit.__setter:show_up(value)
 	self:ShowUp()
 end
 
-function ImageEdit.__getter:show_up()
+function ALittle.ImageEdit.__getter:show_up()
 	return self._show_up
 end
 
-function ImageEdit.__setter:show_down(value)
+function ALittle.ImageEdit.__setter:show_down(value)
 	self:RemoveChild(self._show_down)
 	self._show_down = value
 	if self._show_down ~= nil then
-		self._show_down.width_type = UIEnumTypes.SIZE_MARGIN
-		self._show_down.height_type = UIEnumTypes.SIZE_MARGIN
+		self._show_down.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
+		self._show_down.height_type = ALittle.UIEnumTypes.SIZE_MARGIN
 		self._show_down.width_value = 0
 		self._show_down.height_value = 0
 		self:AddChild(self._show_down, 1)
@@ -417,16 +417,16 @@ function ImageEdit.__setter:show_down(value)
 	self:ShowUp()
 end
 
-function ImageEdit.__getter:show_down()
+function ALittle.ImageEdit.__getter:show_down()
 	return self._show_down
 end
 
-function ImageEdit.__setter:show_over(value)
+function ALittle.ImageEdit.__setter:show_over(value)
 	self:RemoveChild(self._show_over)
 	self._show_over = value
 	if self._show_over ~= nil then
-		self._show_over.width_type = UIEnumTypes.SIZE_MARGIN
-		self._show_over.height_type = UIEnumTypes.SIZE_MARGIN
+		self._show_over.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
+		self._show_over.height_type = ALittle.UIEnumTypes.SIZE_MARGIN
 		self._show_over.width_value = 0
 		self._show_over.height_value = 0
 		self:AddChild(self._show_over, 1)
@@ -434,16 +434,16 @@ function ImageEdit.__setter:show_over(value)
 	self:ShowUp()
 end
 
-function ImageEdit.__getter:show_over()
+function ALittle.ImageEdit.__getter:show_over()
 	return self._show_over
 end
 
-function ImageEdit.__setter:show_disabled(value)
+function ALittle.ImageEdit.__setter:show_disabled(value)
 	self:RemoveChild(self._show_disabled)
 	self._show_disabled = value
 	if self._show_disabled ~= nil then
-		self._show_disabled.width_type = UIEnumTypes.SIZE_MARGIN
-		self._show_disabled.height_type = UIEnumTypes.SIZE_MARGIN
+		self._show_disabled.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
+		self._show_disabled.height_type = ALittle.UIEnumTypes.SIZE_MARGIN
 		self._show_disabled.width_value = 0
 		self._show_disabled.height_value = 0
 		self:AddChild(self._show_disabled, 1)
@@ -451,47 +451,47 @@ function ImageEdit.__setter:show_disabled(value)
 	self:ShowUp()
 end
 
-function ImageEdit.__getter:show_disabled()
+function ALittle.ImageEdit.__getter:show_disabled()
 	return self._show_disabled
 end
 
-function ImageEdit.__setter:margin_left(value)
+function ALittle.ImageEdit.__setter:margin_left(value)
 	self._logic_left = value
 	self:Layout()
 end
 
-function ImageEdit.__getter:margin_left()
+function ALittle.ImageEdit.__getter:margin_left()
 	return self._logic_left
 end
 
-function ImageEdit.__setter:margin_right(value)
+function ALittle.ImageEdit.__setter:margin_right(value)
 	self._logic_right = value
 	self:Layout()
 end
 
-function ImageEdit.__getter:margin_right()
+function ALittle.ImageEdit.__getter:margin_right()
 	return self._logic_right
 end
 
-function ImageEdit.__setter:margin_top(value)
+function ALittle.ImageEdit.__setter:margin_top(value)
 	self._logic_top = value
 	self:Layout()
 end
 
-function ImageEdit.__getter:margin_top()
+function ALittle.ImageEdit.__getter:margin_top()
 	return self._logic_top
 end
 
-function ImageEdit.__setter:margin_bottom(value)
+function ALittle.ImageEdit.__setter:margin_bottom(value)
 	self._logic_bottom = value
 	self:Layout()
 end
 
-function ImageEdit.__getter:margin_bottom()
+function ALittle.ImageEdit.__getter:margin_bottom()
 	return self._logic_bottom
 end
 
-function ImageEdit:Layout()
+function ALittle.ImageEdit:Layout()
 	self:SetChildIndex(self._show_edit, 5)
 	self._show_edit.x_value = self._logic_left
 	self._show_edit.y_value = self._logic_top
@@ -499,7 +499,7 @@ function ImageEdit:Layout()
 	self._show_edit.height_value = self._logic_top + self._logic_bottom
 end
 
-function ImageEdit:PickUp(x, y)
+function ALittle.ImageEdit:PickUp(x, y)
 	if self._ignore or self._abs_disabled or self._abs_visible == false then
 		return nil, nil, nil
 	end
@@ -546,31 +546,32 @@ function ImageEdit:PickUp(x, y)
 	return nil, nil, nil
 end
 
-function ImageEdit:SetCursorToHome()
+function ALittle.ImageEdit:SetCursorToHome()
 	self._show_edit:SetCursorToHome()
 end
 
-function ImageEdit:SetCursorToEnd()
+function ALittle.ImageEdit:SetCursorToEnd()
 	self._show_edit:SetCursorToEnd()
 end
 
-function ImageEdit:SelectAll()
+function ALittle.ImageEdit:SelectAll()
 	self._show_edit:SelectAll()
 end
 
-function ImageEdit:CopyText()
+function ALittle.ImageEdit:CopyText()
 	self._show_edit:CopyText()
 end
 
-function ImageEdit:PasteText()
+function ALittle.ImageEdit:PasteText()
 	self._show_edit:PasteText()
 end
 
-function ImageEdit:CutText()
+function ALittle.ImageEdit:CutText()
 	self._show_edit:CutText()
 end
 
-function ImageEdit:InsertText(value)
+function ALittle.ImageEdit:InsertText(value)
 	self._show_edit:InsertText(value)
 end
 
+end

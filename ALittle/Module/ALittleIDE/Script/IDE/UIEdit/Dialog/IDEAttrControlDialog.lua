@@ -1,33 +1,33 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittleIDE", package.seeall)
-
+do
+if _G.ALittleIDE == nil then _G.ALittleIDE = {} end
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-IDEAttrControlDialog = Lua.Class(nil, "ALittleIDE.IDEAttrControlDialog")
+ALittleIDE.IDEAttrControlDialog = Lua.Class(nil, "ALittleIDE.IDEAttrControlDialog")
 
-function IDEAttrControlDialog.__getter:dialog()
+function ALittleIDE.IDEAttrControlDialog.__getter:dialog()
 	if self._dialog == nil then
 		self:CreateDialog()
 	end
 	return self._dialog
 end
 
-function IDEAttrControlDialog:CreateDialog()
-	self._dialog = g_Control:CreateControl("ide_control_attr_dialog", self)
-	g_DialogLayer:AddChild(self._dialog)
+function ALittleIDE.IDEAttrControlDialog:CreateDialog()
+	self._dialog = ALittleIDE.g_Control:CreateControl("ide_control_attr_dialog", self)
+	ALittleIDE.g_DialogLayer:AddChild(self._dialog)
 	self._dialog.visible = false
 end
 
-function IDEAttrControlDialog:SetTitle(title)
+function ALittleIDE.IDEAttrControlDialog:SetTitle(title)
 	if self._dialog == nil then
 		self:CreateDialog()
 	end
 	self._dialog.title = title
 end
 
-function IDEAttrControlDialog:ShowDialog(target)
+function ALittleIDE.IDEAttrControlDialog:ShowDialog(target)
 	if self._dialog == nil then
 		self:CreateDialog()
 	end
@@ -45,11 +45,12 @@ function IDEAttrControlDialog:ShowDialog(target)
 	end
 end
 
-function IDEAttrControlDialog:HideDialog()
+function ALittleIDE.IDEAttrControlDialog:HideDialog()
 	if self._dialog == nil then
 		return
 	end
 	self._dialog.visible = false
 end
 
-g_IDEAttrControlDialog = IDEAttrControlDialog()
+ALittleIDE.g_IDEAttrControlDialog = ALittleIDE.IDEAttrControlDialog()
+end

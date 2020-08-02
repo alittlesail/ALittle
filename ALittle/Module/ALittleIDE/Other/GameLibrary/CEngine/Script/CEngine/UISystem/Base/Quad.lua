@@ -1,23 +1,23 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___all_struct = GetAllStruct()
+local ___all_struct = ALittle.GetAllStruct()
 
 
 assert(ALittle.DisplayObject, " extends class:ALittle.DisplayObject is nil")
-Quad = Lua.Class(ALittle.DisplayObject, "ALittle.Quad")
+ALittle.Quad = Lua.Class(ALittle.DisplayObject, "ALittle.Quad")
 
-function Quad:Ctor(ctrl_sys)
+function ALittle.Quad:Ctor(ctrl_sys)
 	___rawset(self, "_show", __CPPAPIQuad())
 	self:AddEventListener(___all_struct[40651933], self, self.HandleLButtonUp)
 	self:AddEventListener(___all_struct[683647260], self, self.HandleMButtonUp)
 	self:AddEventListener(___all_struct[734860930], self, self.HandleFLButtonUp)
 end
 
-function Quad:HandleLButtonUp(event)
+function ALittle.Quad:HandleLButtonUp(event)
 	if event.rel_x >= 0 and event.rel_y >= 0 and event.rel_x < event.target._width and event.rel_y < event.target._height then
 		local c_event = {}
 		c_event.is_drag = event.is_drag
@@ -25,7 +25,7 @@ function Quad:HandleLButtonUp(event)
 	end
 end
 
-function Quad:HandleMButtonUp(event)
+function ALittle.Quad:HandleMButtonUp(event)
 	if event.rel_x >= 0 and event.rel_y >= 0 and event.rel_x < event.target._width and event.rel_y < event.target._height then
 		local c_event = {}
 		c_event.is_drag = event.is_drag
@@ -33,7 +33,7 @@ function Quad:HandleMButtonUp(event)
 	end
 end
 
-function Quad:HandleFLButtonUp(event)
+function ALittle.Quad:HandleFLButtonUp(event)
 	if event.rel_x >= 0 and event.rel_y >= 0 and event.rel_x < event.target._width and event.rel_y < event.target._height then
 		local c_event = {}
 		c_event.is_drag = event.is_drag
@@ -41,3 +41,4 @@ function Quad:HandleFLButtonUp(event)
 	end
 end
 
+end

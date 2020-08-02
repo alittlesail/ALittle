@@ -1,13 +1,13 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("Lua", package.seeall)
-
+do
+if _G.Lua == nil then _G.Lua = {} end
 local ___pairs = pairs
 local ___ipairs = ipairs
 
-ALittle.RegStruct(-1535459145, "Lua.ClassMetatable", {
-name = "Lua.ClassMetatable", ns_name = "Lua", rl_name = "ClassMetatable", hash_code = -1535459145,
-name_list = {"__index","__call","__tostring"},
-type_list = {"Functor<(ALittle.ClassInfo,string):any>","any","Functor<(ALittle.ClassInfo):string>"},
+ALittle.RegStruct(1652320227, "Lua.ObjectInfo", {
+name = "Lua.ObjectInfo", ns_name = "Lua", rl_name = "ObjectInfo", hash_code = 1652320227,
+name_list = {"__class"},
+type_list = {"ALittle.ClassInfo"},
 option_map = {}
 })
 ALittle.RegStruct(1620637943, "Lua.ObjectMetatable", {
@@ -16,10 +16,10 @@ name_list = {"__index","__newindex","__tostring"},
 type_list = {"Functor<(Lua.ObjectInfo,string):any>","Functor<(Lua.ObjectInfo,string,any)>","Functor<(Lua.ObjectInfo):string>"},
 option_map = {}
 })
-ALittle.RegStruct(1652320227, "Lua.ObjectInfo", {
-name = "Lua.ObjectInfo", ns_name = "Lua", rl_name = "ObjectInfo", hash_code = 1652320227,
-name_list = {"__class"},
-type_list = {"ALittle.ClassInfo"},
+ALittle.RegStruct(-1535459145, "Lua.ClassMetatable", {
+name = "Lua.ClassMetatable", ns_name = "Lua", rl_name = "ClassMetatable", hash_code = -1535459145,
+name_list = {"__index","__call","__tostring"},
+type_list = {"Functor<(ALittle.ClassInfo,string):any>","any","Functor<(ALittle.ClassInfo):string>"},
 option_map = {}
 })
 
@@ -106,7 +106,7 @@ local __class_mt = {}
 __class_mt.__index = __class_index_function
 __class_mt.__call = __class_call_function
 __class_mt.__tostring = __class_tostring_function
-function Class(super, name)
+function Lua.Class(super, name)
 	local clazz = {}
 	clazz.__super = super
 	clazz.__name = name
@@ -126,7 +126,7 @@ function Class(super, name)
 	return clazz
 end
 
-function Template(clazz, name, ...)
+function Lua.Template(clazz, name, ...)
 	local child = clazz.__child
 	if child == nil then
 		child = {}
@@ -139,7 +139,7 @@ function Template(clazz, name, ...)
 	template = {}
 	child[name] = template
 	for key, value in ___pairs(clazz) do
-		if type(value) == "function" or IsCoWrap(value) then
+		if type(value) == "function" or Lua.IsCoWrap(value) then
 			template[key] = value
 		end
 	end
@@ -152,3 +152,4 @@ function Template(clazz, name, ...)
 	return template
 end
 
+end

@@ -1,24 +1,25 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittleIDE", package.seeall)
-
+do
+if _G.ALittleIDE == nil then _G.ALittleIDE = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
 assert(ALittleIDE.SpriteS, " extends class:ALittleIDE.SpriteS is nil")
-SpritePlayS = Lua.Class(ALittleIDE.SpriteS, "ALittleIDE.SpritePlayS")
+ALittleIDE.SpritePlayS = Lua.Class(ALittleIDE.SpriteS, "ALittleIDE.SpritePlayS")
 
-function SpritePlayS:Ctor(user_info, tab_child, tree_logic)
+function ALittleIDE.SpritePlayS:Ctor(user_info, tab_child, tree_logic)
 	___rawset(self, "_layer_name", "ide_setting_spriteplay")
 end
 
-function SpritePlayS:LoadNatureBase()
-	SpriteS.LoadNatureBase(self)
+function ALittleIDE.SpritePlayS:LoadNatureBase()
+	ALittleIDE.SpriteS.LoadNatureBase(self)
 	self:LoadValueData("interval")
 end
 
-function SpritePlayS:HandleIntervalFOCUSOUT(event)
+function ALittleIDE.SpritePlayS:HandleIntervalFOCUSOUT(event)
 	self:ValueNumZInputChange("interval", false)
 end
 
+end

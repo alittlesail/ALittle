@@ -1,24 +1,24 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___all_struct = GetAllStruct()
+local ___all_struct = ALittle.GetAllStruct()
 
 
-local __cos = Math_Cos
-local __sin = Math_Sin
+local __cos = ALittle.Math_Cos
+local __sin = ALittle.Math_Sin
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
-ImageInput = Lua.Class(ALittle.DisplayLayout, "ALittle.ImageInput")
+ALittle.ImageInput = Lua.Class(ALittle.DisplayLayout, "ALittle.ImageInput")
 
-function ImageInput:Ctor(ctrl_sys)
-	___rawset(self, "_show_input", TextInput(self._ctrl_sys))
-	self._show_input.x_type = UIEnumTypes.POS_ALIGN_STARTING
-	self._show_input.y_type = UIEnumTypes.POS_ALIGN_STARTING
-	self._show_input.width_type = UIEnumTypes.SIZE_MARGIN
+function ALittle.ImageInput:Ctor(ctrl_sys)
+	___rawset(self, "_show_input", ALittle.TextInput(self._ctrl_sys))
+	self._show_input.x_type = ALittle.UIEnumTypes.POS_ALIGN_STARTING
+	self._show_input.y_type = ALittle.UIEnumTypes.POS_ALIGN_STARTING
+	self._show_input.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
 	self._show_input.width_value = 0
-	self._show_input.height_type = UIEnumTypes.SIZE_MARGIN
+	self._show_input.height_type = ALittle.UIEnumTypes.SIZE_MARGIN
 	self._show_input.height_value = 0
 	self:AddChild(self._show_input, 5)
 	___rawset(self, "_logic_left", 0)
@@ -48,8 +48,8 @@ function ImageInput:Ctor(ctrl_sys)
 	self._show_input:AddEventListener(___all_struct[-439548260], self, self.HandleImageInputTransformLongButtonDown)
 end
 
-function ImageInput.__setter:disabled(value)
-	DisplayObject.__setter.disabled(self, value)
+function ALittle.ImageInput.__setter:disabled(value)
+	ALittle.DisplayObject.__setter.disabled(self, value)
 	if value then
 		self:ShowDisabled()
 	else
@@ -57,11 +57,11 @@ function ImageInput.__setter:disabled(value)
 	end
 end
 
-function ImageInput.__getter:is_focus()
+function ALittle.ImageInput.__getter:is_focus()
 	return A_UISystem.focus == self._show_input
 end
 
-function ImageInput.__setter:focus(value)
+function ALittle.ImageInput.__setter:focus(value)
 	if value then
 		A_UISystem.focus = self._show_input
 	else
@@ -71,268 +71,268 @@ function ImageInput.__setter:focus(value)
 	end
 end
 
-function ImageInput.__getter:is_input()
+function ALittle.ImageInput.__getter:is_input()
 	return true
 end
 
-function ImageInput.__getter:regex()
+function ALittle.ImageInput.__getter:regex()
 	return self._show_input.regex
 end
 
-function ImageInput.__setter:regex(value)
+function ALittle.ImageInput.__setter:regex(value)
 	if value == nil then
 		value = ""
 	end
 	self._show_input.regex = value
 end
 
-function ImageInput.__getter:limit_len()
+function ALittle.ImageInput.__getter:limit_len()
 	return self._show_input.limit_len
 end
 
-function ImageInput.__setter:limit_len(value)
+function ALittle.ImageInput.__setter:limit_len(value)
 	if value == nil then
 		value = 0
 	end
 	self._show_input.limit_len = value
 end
 
-function ImageInput.__setter:default_text(value)
+function ALittle.ImageInput.__setter:default_text(value)
 	self._show_input.default_text = value
 end
 
-function ImageInput.__getter:default_text()
+function ALittle.ImageInput.__getter:default_text()
 	return self._show_input.default_text
 end
 
-function ImageInput.__setter:default_text_alpha(value)
+function ALittle.ImageInput.__setter:default_text_alpha(value)
 	self._show_input.default_text_alpha = value
 end
 
-function ImageInput.__getter:default_text_alpha()
+function ALittle.ImageInput.__getter:default_text_alpha()
 	return self._show_input.default_text_alpha
 end
 
-function ImageInput.__getter:cursor_x()
+function ALittle.ImageInput.__getter:cursor_x()
 	return self._show_input.cursor_x
 end
 
-function ImageInput.__getter:cursor_y()
+function ALittle.ImageInput.__getter:cursor_y()
 	return self._show_input.cursor_y
 end
 
-function ImageInput.__setter:editable(value)
+function ALittle.ImageInput.__setter:editable(value)
 	self._show_input.editable = value
 end
 
-function ImageInput.__getter:editable()
+function ALittle.ImageInput.__getter:editable()
 	return self._show_input.editable
 end
 
-function ImageInput.__setter:font_path(value)
+function ALittle.ImageInput.__setter:font_path(value)
 	self._show_input.font_path = value
 end
 
-function ImageInput.__setter:font_size(value)
+function ALittle.ImageInput.__setter:font_size(value)
 	self._show_input.font_size = value
 end
 
-function ImageInput.__getter:font_path()
+function ALittle.ImageInput.__getter:font_path()
 	return self._show_input.font_path
 end
 
-function ImageInput.__getter:font_size()
+function ALittle.ImageInput.__getter:font_size()
 	return self._show_input.font_size
 end
 
-function ImageInput.__setter:text(value)
+function ALittle.ImageInput.__setter:text(value)
 	self._show_input.text = value
 end
 
-function ImageInput.__getter:text()
+function ALittle.ImageInput.__getter:text()
 	return self._show_input.text
 end
 
-function ImageInput.__setter:bold(value)
+function ALittle.ImageInput.__setter:bold(value)
 	self._show_input.bold = value
 end
 
-function ImageInput.__getter:bold()
+function ALittle.ImageInput.__getter:bold()
 	return self._show_input.bold
 end
 
-function ImageInput.__setter:italic(value)
+function ALittle.ImageInput.__setter:italic(value)
 	self._show_input.italic = value
 end
 
-function ImageInput.__getter:italic()
+function ALittle.ImageInput.__getter:italic()
 	return self._show_input.italic
 end
 
-function ImageInput.__setter:underline(value)
+function ALittle.ImageInput.__setter:underline(value)
 	self._show_input.underline = value
 end
 
-function ImageInput.__getter:underline()
+function ALittle.ImageInput.__getter:underline()
 	return self._show_input.underline
 end
 
-function ImageInput.__setter:deleteline(value)
+function ALittle.ImageInput.__setter:deleteline(value)
 	self._show_input.deleteline = value
 end
 
-function ImageInput.__getter:deleteline()
+function ALittle.ImageInput.__getter:deleteline()
 	return self._show_input.deleteline
 end
 
-function ImageInput.__setter:password_mode(value)
+function ALittle.ImageInput.__setter:password_mode(value)
 	self._show_input.password_mode = value
 end
 
-function ImageInput.__getter:password_mode()
+function ALittle.ImageInput.__getter:password_mode()
 	return self._show_input.password_mode
 end
 
-function ImageInput.__setter:cursor_red(value)
+function ALittle.ImageInput.__setter:cursor_red(value)
 	self._show_input.cursor_red = value
 end
 
-function ImageInput.__getter:cursor_red()
+function ALittle.ImageInput.__getter:cursor_red()
 	return self._show_input.cursor_red
 end
 
-function ImageInput.__setter:cursor_green(value)
+function ALittle.ImageInput.__setter:cursor_green(value)
 	self._show_input.cursor_green = value
 end
 
-function ImageInput.__getter:cursor_green()
+function ALittle.ImageInput.__getter:cursor_green()
 	return self._show_input.cursor_green
 end
 
-function ImageInput.__setter:cursor_blue(value)
+function ALittle.ImageInput.__setter:cursor_blue(value)
 	self._show_input.cursor_blue = value
 end
 
-function ImageInput.__getter:cursor_blue()
+function ALittle.ImageInput.__getter:cursor_blue()
 	return self._show_input.cursor_blue
 end
 
-function ImageInput.__setter:red(value)
+function ALittle.ImageInput.__setter:red(value)
 	self._show_input.red = value
 end
 
-function ImageInput.__getter:red()
+function ALittle.ImageInput.__getter:red()
 	return self._show_input.red
 end
 
-function ImageInput.__setter:green(value)
+function ALittle.ImageInput.__setter:green(value)
 	self._show_input.green = value
 end
 
-function ImageInput.__getter:green()
+function ALittle.ImageInput.__getter:green()
 	return self._show_input.green
 end
 
-function ImageInput.__setter:blue(value)
+function ALittle.ImageInput.__setter:blue(value)
 	self._show_input.blue = value
 end
 
-function ImageInput.__getter:blue()
+function ALittle.ImageInput.__getter:blue()
 	return self._show_input.blue
 end
 
-function ImageInput.__setter:ims_padding(value)
+function ALittle.ImageInput.__setter:ims_padding(value)
 	self._ims_padding = value
-	self._show_input.ims_padding = Math_Floor(value + self._logic_bottom)
+	self._show_input.ims_padding = ALittle.Math_Floor(value + self._logic_bottom)
 end
 
-function ImageInput.__getter:ims_padding()
+function ALittle.ImageInput.__getter:ims_padding()
 	return self._ims_padding
 end
 
-function ImageInput:HandleFocusIn(event)
+function ALittle.ImageInput:HandleFocusIn(event)
 	event.target = self
 	self:DispatchEvent(___all_struct[-644464135], event)
 	self:ShowDown()
 end
 
-function ImageInput:HandleFocusOut(event)
+function ALittle.ImageInput:HandleFocusOut(event)
 	event.target = self
 	self:DispatchEvent(___all_struct[292776509], event)
 	self:ShowUp()
 end
 
-function ImageInput:HandleImageInputTransformLButtonDown(event)
+function ALittle.ImageInput:HandleImageInputTransformLButtonDown(event)
 	event.target = self
 	self:DispatchEvent(___all_struct[1883782801], event)
 end
 
-function ImageInput:HandleImageInputTransformTextInput(event)
+function ALittle.ImageInput:HandleImageInputTransformTextInput(event)
 	event.target = self
 	self:DispatchEvent(___all_struct[-1234078962], event)
 end
 
-function ImageInput:HandleImageInputTransformKeyDown(event)
+function ALittle.ImageInput:HandleImageInputTransformKeyDown(event)
 	event.target = self
 	self:DispatchEvent(___all_struct[-1604617962], event)
 end
 
-function ImageInput:HandleImageInputTransformDragBegin(event)
+function ALittle.ImageInput:HandleImageInputTransformDragBegin(event)
 	event.target = self
 	self:DispatchEvent(___all_struct[1301789264], event)
 end
 
-function ImageInput:HandleImageInputTransformDrag(event)
+function ALittle.ImageInput:HandleImageInputTransformDrag(event)
 	event.target = self
 	self:DispatchEvent(___all_struct[1337289812], event)
 end
 
-function ImageInput:HandleImageInputTransformDragEnd(event)
+function ALittle.ImageInput:HandleImageInputTransformDragEnd(event)
 	event.target = self
 	self:DispatchEvent(___all_struct[150587926], event)
 end
 
-function ImageInput:HandleImageInputTransformMButtonWheel(event)
+function ALittle.ImageInput:HandleImageInputTransformMButtonWheel(event)
 	event.target = self
 	self:DispatchEvent(___all_struct[-1737121315], event)
 end
 
-function ImageInput:HandleImageInputTransformChangd(event)
+function ALittle.ImageInput:HandleImageInputTransformChangd(event)
 	event.target = self
 	self:DispatchEvent(___all_struct[958494922], event)
 end
 
-function ImageInput:HandleImageInputTransformEnterKey(event)
+function ALittle.ImageInput:HandleImageInputTransformEnterKey(event)
 	event.target = self
 	self:DispatchEvent(___all_struct[776398171], event)
 end
 
-function ImageInput:HandleImageInputTransformTabKey(event)
+function ALittle.ImageInput:HandleImageInputTransformTabKey(event)
 	event.target = self
 	self:DispatchEvent(___all_struct[2024735182], event)
 end
 
-function ImageInput:HandleImageInputTransformEscKey(event)
+function ALittle.ImageInput:HandleImageInputTransformEscKey(event)
 	event.target = self
 	self:DispatchEvent(___all_struct[1637310579], event)
 end
 
-function ImageInput:HandleImageInputTransformRButtonDown(event)
+function ALittle.ImageInput:HandleImageInputTransformRButtonDown(event)
 	event.target = self
 	self:DispatchEvent(___all_struct[-641444818], event)
 end
 
-function ImageInput:HandleImageInputTransformRButtonUp(event)
+function ALittle.ImageInput:HandleImageInputTransformRButtonUp(event)
 	event.target = self
 	self:DispatchEvent(___all_struct[-569321214], event)
 end
 
-function ImageInput:HandleImageInputTransformLongButtonDown(event)
+function ALittle.ImageInput:HandleImageInputTransformLongButtonDown(event)
 	event.target = self
 	self:DispatchEvent(___all_struct[-439548260], event)
 end
 
-function ImageInput:HandleMoveIn(event)
+function ALittle.ImageInput:HandleMoveIn(event)
 	event.target = self
 	self:DispatchEvent(___all_struct[544684311], event)
 	if A_UISystem.focus ~= self._show_input then
@@ -340,7 +340,7 @@ function ImageInput:HandleMoveIn(event)
 	end
 end
 
-function ImageInput:HandleMoveOut(event)
+function ALittle.ImageInput:HandleMoveOut(event)
 	event.target = self
 	self:DispatchEvent(___all_struct[-1202439334], event)
 	if A_UISystem.focus ~= self._show_input then
@@ -348,7 +348,7 @@ function ImageInput:HandleMoveOut(event)
 	end
 end
 
-function ImageInput:ShowUp()
+function ALittle.ImageInput:ShowUp()
 	if self._abs_disabled or self._disabled then
 		return
 	end
@@ -366,7 +366,7 @@ function ImageInput:ShowUp()
 	end
 end
 
-function ImageInput:ShowDown()
+function ALittle.ImageInput:ShowDown()
 	if self._abs_disabled or self._disabled then
 		return
 	end
@@ -384,7 +384,7 @@ function ImageInput:ShowDown()
 	end
 end
 
-function ImageInput:ShowOver()
+function ALittle.ImageInput:ShowOver()
 	if self._abs_disabled or self._disabled then
 		return
 	end
@@ -402,7 +402,7 @@ function ImageInput:ShowOver()
 	end
 end
 
-function ImageInput:ShowDisabled()
+function ALittle.ImageInput:ShowDisabled()
 	if self._show_up ~= nil then
 		self._show_up.alpha = 0
 	end
@@ -417,12 +417,12 @@ function ImageInput:ShowDisabled()
 	end
 end
 
-function ImageInput.__setter:show_up(value)
+function ALittle.ImageInput.__setter:show_up(value)
 	self:RemoveChild(self._show_up)
 	self._show_up = value
 	if self._show_up ~= nil then
-		self._show_up.width_type = UIEnumTypes.SIZE_MARGIN
-		self._show_up.height_type = UIEnumTypes.SIZE_MARGIN
+		self._show_up.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
+		self._show_up.height_type = ALittle.UIEnumTypes.SIZE_MARGIN
 		self._show_up.width_value = 0
 		self._show_up.height_value = 0
 		self._show_up.disabled = true
@@ -431,16 +431,16 @@ function ImageInput.__setter:show_up(value)
 	self:ShowUp()
 end
 
-function ImageInput.__getter:show_up()
+function ALittle.ImageInput.__getter:show_up()
 	return self._show_up
 end
 
-function ImageInput.__setter:show_down(value)
+function ALittle.ImageInput.__setter:show_down(value)
 	self:RemoveChild(self._show_down)
 	self._show_down = value
 	if self._show_down ~= nil then
-		self._show_down.width_type = UIEnumTypes.SIZE_MARGIN
-		self._show_down.height_type = UIEnumTypes.SIZE_MARGIN
+		self._show_down.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
+		self._show_down.height_type = ALittle.UIEnumTypes.SIZE_MARGIN
 		self._show_down.width_value = 0
 		self._show_down.height_value = 0
 		self._show_down.disabled = true
@@ -449,16 +449,16 @@ function ImageInput.__setter:show_down(value)
 	self:ShowUp()
 end
 
-function ImageInput.__getter:show_down()
+function ALittle.ImageInput.__getter:show_down()
 	return self._show_down
 end
 
-function ImageInput.__setter:show_over(value)
+function ALittle.ImageInput.__setter:show_over(value)
 	self:RemoveChild(self._show_over)
 	self._show_over = value
 	if self._show_over ~= nil then
-		self._show_over.width_type = UIEnumTypes.SIZE_MARGIN
-		self._show_over.height_type = UIEnumTypes.SIZE_MARGIN
+		self._show_over.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
+		self._show_over.height_type = ALittle.UIEnumTypes.SIZE_MARGIN
 		self._show_over.width_value = 0
 		self._show_over.height_value = 0
 		self._show_over.disabled = true
@@ -467,16 +467,16 @@ function ImageInput.__setter:show_over(value)
 	self:ShowUp()
 end
 
-function ImageInput.__getter:show_over()
+function ALittle.ImageInput.__getter:show_over()
 	return self._show_over
 end
 
-function ImageInput.__setter:show_disabled(value)
+function ALittle.ImageInput.__setter:show_disabled(value)
 	self:RemoveChild(self._show_disabled)
 	self._show_disabled = value
 	if self._show_disabled ~= nil then
-		self._show_disabled.width_type = UIEnumTypes.SIZE_MARGIN
-		self._show_disabled.height_type = UIEnumTypes.SIZE_MARGIN
+		self._show_disabled.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
+		self._show_disabled.height_type = ALittle.UIEnumTypes.SIZE_MARGIN
 		self._show_disabled.width_value = 0
 		self._show_disabled.height_value = 0
 		self._show_disabled.disabled = true
@@ -485,52 +485,52 @@ function ImageInput.__setter:show_disabled(value)
 	self:ShowUp()
 end
 
-function ImageInput.__getter:show_disabled()
+function ALittle.ImageInput.__getter:show_disabled()
 	return self._show_disabled
 end
 
-function ImageInput.__getter:show_input()
+function ALittle.ImageInput.__getter:show_input()
 	return self._show_input
 end
 
-function ImageInput.__setter:margin_left(value)
+function ALittle.ImageInput.__setter:margin_left(value)
 	self._logic_left = value
 	self:Layout()
 end
 
-function ImageInput.__getter:margin_left()
+function ALittle.ImageInput.__getter:margin_left()
 	return self._logic_left
 end
 
-function ImageInput.__setter:margin_right(value)
+function ALittle.ImageInput.__setter:margin_right(value)
 	self._logic_right = value
 	self:Layout()
 end
 
-function ImageInput.__getter:margin_right()
+function ALittle.ImageInput.__getter:margin_right()
 	return self._logic_right
 end
 
-function ImageInput.__setter:margin_top(value)
+function ALittle.ImageInput.__setter:margin_top(value)
 	self._logic_top = value
 	self:Layout()
 end
 
-function ImageInput.__getter:margin_top()
+function ALittle.ImageInput.__getter:margin_top()
 	return self._logic_top
 end
 
-function ImageInput.__setter:margin_bottom(value)
+function ALittle.ImageInput.__setter:margin_bottom(value)
 	self._logic_bottom = value
 	self:Layout()
-	self._show_input.ims_padding = Math_Floor(self._ims_padding + self._logic_bottom)
+	self._show_input.ims_padding = ALittle.Math_Floor(self._ims_padding + self._logic_bottom)
 end
 
-function ImageInput.__getter:margin_bottom()
+function ALittle.ImageInput.__getter:margin_bottom()
 	return self._logic_bottom
 end
 
-function ImageInput:Layout()
+function ALittle.ImageInput:Layout()
 	self:SetChildIndex(self._show_input, 5)
 	self._show_input.x_value = self._logic_left
 	self._show_input.y_value = self._logic_top
@@ -538,7 +538,7 @@ function ImageInput:Layout()
 	self._show_input.height_value = self._logic_top + self._logic_bottom
 end
 
-function ImageInput:PickUp(x, y)
+function ALittle.ImageInput:PickUp(x, y)
 	if self._ignore or self._abs_disabled or self._abs_visible == false then
 		return nil, nil, nil
 	end
@@ -585,31 +585,32 @@ function ImageInput:PickUp(x, y)
 	return nil, nil, nil
 end
 
-function ImageInput:SetCursorToHome()
+function ALittle.ImageInput:SetCursorToHome()
 	self._show_input:SetCursorToHome()
 end
 
-function ImageInput:SetCursorToEnd()
+function ALittle.ImageInput:SetCursorToEnd()
 	self._show_input:SetCursorToEnd()
 end
 
-function ImageInput:SelectAll()
+function ALittle.ImageInput:SelectAll()
 	self._show_input:SelectAll()
 end
 
-function ImageInput:CopyText()
+function ALittle.ImageInput:CopyText()
 	self._show_input:CopyText()
 end
 
-function ImageInput:PasteText()
+function ALittle.ImageInput:PasteText()
 	self._show_input:PasteText()
 end
 
-function ImageInput:CutText()
+function ALittle.ImageInput:CutText()
 	self._show_input:CutText()
 end
 
-function ImageInput:InsertText(text)
+function ALittle.ImageInput:InsertText(text)
 	self._show_input:InsertText(text)
 end
 
+end

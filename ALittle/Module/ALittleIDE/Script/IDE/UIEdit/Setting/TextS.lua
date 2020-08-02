@@ -1,47 +1,47 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittleIDE", package.seeall)
-
+do
+if _G.ALittleIDE == nil then _G.ALittleIDE = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
 assert(ALittleIDE.DisplayObjectS, " extends class:ALittleIDE.DisplayObjectS is nil")
-TextS = Lua.Class(ALittleIDE.DisplayObjectS, "ALittleIDE.TextS")
+ALittleIDE.TextS = Lua.Class(ALittleIDE.DisplayObjectS, "ALittleIDE.TextS")
 
-function TextS:Ctor(user_info, tab_child, tree_logic)
+function ALittleIDE.TextS:Ctor(user_info, tab_child, tree_logic)
 	___rawset(self, "_layer_name", "ide_setting_text")
 end
 
-function TextS:LoadNatureBase()
-	DisplayObjectS.LoadNatureBase(self)
-	self:LoadBoolData("bold", false, g_IDEEnum.yn_type)
-	self:LoadBoolData("underline", false, g_IDEEnum.yn_type)
-	self:LoadBoolData("deleteline", false, g_IDEEnum.yn_type)
-	self:LoadBoolData("italic", false, g_IDEEnum.yn_type)
+function ALittleIDE.TextS:LoadNatureBase()
+	ALittleIDE.DisplayObjectS.LoadNatureBase(self)
+	self:LoadBoolData("bold", false, ALittleIDE.g_IDEEnum.yn_type)
+	self:LoadBoolData("underline", false, ALittleIDE.g_IDEEnum.yn_type)
+	self:LoadBoolData("deleteline", false, ALittleIDE.g_IDEEnum.yn_type)
+	self:LoadBoolData("italic", false, ALittleIDE.g_IDEEnum.yn_type)
 	self:LoadValueData("text")
 	self:LoadDefaultNilString("font_path")
 	self:LoadDefaultNilString("font_size")
-	self:LoadEnumData("flip", g_IDEEnum.flip_type)
+	self:LoadEnumData("flip", ALittleIDE.g_IDEEnum.flip_type)
 end
 
-function TextS:HandleBoldSELECT_CHANGE(event)
-	self:BoolSelectChange("bold", false, g_IDEEnum.yn_type)
+function ALittleIDE.TextS:HandleBoldSELECT_CHANGE(event)
+	self:BoolSelectChange("bold", false, ALittleIDE.g_IDEEnum.yn_type)
 end
 
-function TextS:HandleUnderLineSELECT_CHANGE(event)
-	self:BoolSelectChange("underline", false, g_IDEEnum.yn_type)
+function ALittleIDE.TextS:HandleUnderLineSELECT_CHANGE(event)
+	self:BoolSelectChange("underline", false, ALittleIDE.g_IDEEnum.yn_type)
 end
 
-function TextS:HandleDeleteLineSELECT_CHANGE(event)
-	self:BoolSelectChange("deleteline", false, g_IDEEnum.yn_type)
+function ALittleIDE.TextS:HandleDeleteLineSELECT_CHANGE(event)
+	self:BoolSelectChange("deleteline", false, ALittleIDE.g_IDEEnum.yn_type)
 end
 
-function TextS:HandleItalicSELECT_CHANGE(event)
-	self:BoolSelectChange("italic", false, g_IDEEnum.yn_type)
+function ALittleIDE.TextS:HandleItalicSELECT_CHANGE(event)
+	self:BoolSelectChange("italic", false, ALittleIDE.g_IDEEnum.yn_type)
 end
 
-function TextS:HandleTextFOCUSOUT(event)
+function ALittleIDE.TextS:HandleTextFOCUSOUT(event)
 	if self._default.__class == "Text" then
 		self:DefaultNoStringInputChange("text", true)
 	else
@@ -50,7 +50,7 @@ function TextS:HandleTextFOCUSOUT(event)
 	self._tree_logic:UpdateDesc()
 end
 
-function TextS:HandleFontPathFOCUSOUT(event)
+function ALittleIDE.TextS:HandleFontPathFOCUSOUT(event)
 	if self._default.__class == "Text" then
 		self:SpecialFontPathInputChange("font_path", true)
 	else
@@ -58,7 +58,7 @@ function TextS:HandleFontPathFOCUSOUT(event)
 	end
 end
 
-function TextS:HandleFontSizeFOCUSOUT(event)
+function ALittleIDE.TextS:HandleFontSizeFOCUSOUT(event)
 	if self._default.__class == "Text" then
 		self:ValueNumZInputChange("font_size", true)
 	else
@@ -66,8 +66,9 @@ function TextS:HandleFontSizeFOCUSOUT(event)
 	end
 end
 
-function TextS:HandleFlipSELECT_CHANGE(event)
-	local list = g_IDEEnum.flip_rtype
+function ALittleIDE.TextS:HandleFlipSELECT_CHANGE(event)
+	local list = ALittleIDE.g_IDEEnum.flip_rtype
 	self:TypeSelectChange("flip", list, false)
 end
 
+end

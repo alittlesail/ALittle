@@ -1,15 +1,15 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("Emulator", package.seeall)
-
+do
+if _G.Emulator == nil then _G.Emulator = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
 assert(Emulator.IDETreeLogic, " extends class:Emulator.IDETreeLogic is nil")
-IDETreeEnumMapEnum = Lua.Class(Emulator.IDETreeLogic, "Emulator.IDETreeEnumMapEnum")
+Emulator.IDETreeEnumMapEnum = Lua.Class(Emulator.IDETreeLogic, "Emulator.IDETreeEnumMapEnum")
 
-function IDETreeEnumMapEnum:Ctor(ctrl_sys, root, parent, rflct, msg, key_field, value_field)
+function Emulator.IDETreeEnumMapEnum:Ctor(ctrl_sys, root, parent, rflct, msg, key_field, value_field)
 	___rawset(self, "_parent", parent)
 	___rawset(self, "_rflct", rflct)
 	___rawset(self, "_msg", msg)
@@ -73,7 +73,7 @@ function IDETreeEnumMapEnum:Ctor(ctrl_sys, root, parent, rflct, msg, key_field, 
 	self._delete_button.disabled = root.for_show
 end
 
-function IDETreeEnumMapEnum:HandleKeySelectChanegd(event)
+function Emulator.IDETreeEnumMapEnum:HandleKeySelectChanegd(event)
 	local value = self._key_enum_value_map[event.target.text]
 	if value == nil then
 		return
@@ -82,7 +82,7 @@ function IDETreeEnumMapEnum:HandleKeySelectChanegd(event)
 	self:Save()
 end
 
-function IDETreeEnumMapEnum:HandleValueSelectChanegd(event)
+function Emulator.IDETreeEnumMapEnum:HandleValueSelectChanegd(event)
 	local value = self._value_enum_value_map[event.target.text]
 	if value == nil then
 		return
@@ -91,11 +91,12 @@ function IDETreeEnumMapEnum:HandleValueSelectChanegd(event)
 	self:Save()
 end
 
-function IDETreeEnumMapEnum:HandleInsertClick(event)
+function Emulator.IDETreeEnumMapEnum:HandleInsertClick(event)
 	self._parent:CreateOneBefore(self)
 end
 
-function IDETreeEnumMapEnum:HandleDeleteClick(event)
+function Emulator.IDETreeEnumMapEnum:HandleDeleteClick(event)
 	self._parent:Delete(self)
 end
 
+end

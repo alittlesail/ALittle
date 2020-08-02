@@ -1,27 +1,27 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittleIDE", package.seeall)
-
+do
+if _G.ALittleIDE == nil then _G.ALittleIDE = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
 assert(ALittleIDE.DisplayLayoutS, " extends class:ALittleIDE.DisplayLayoutS is nil")
-ScrollScreenS = Lua.Class(ALittleIDE.DisplayLayoutS, "ALittleIDE.ScrollScreenS")
+ALittleIDE.ScrollScreenS = Lua.Class(ALittleIDE.DisplayLayoutS, "ALittleIDE.ScrollScreenS")
 
-function ScrollScreenS:Ctor(user_info, tab_child, tree_logic)
+function ALittleIDE.ScrollScreenS:Ctor(user_info, tab_child, tree_logic)
 	___rawset(self, "_layer_name", "ide_setting_scrollscreen")
 end
 
-function ScrollScreenS:LoadNatureBase()
-	DisplayLayoutS.LoadNatureBase(self)
+function ALittleIDE.ScrollScreenS:LoadNatureBase()
+	ALittleIDE.DisplayLayoutS.LoadNatureBase(self)
 	self:LoadShowTypeDataForExtends("container")
 	self:LoadShowTypeDataForExtends("right_scrollbar")
 	self:LoadShowTypeDataForExtends("bottom_scrollbar")
-	self:LoadBoolData("open_extends_drag", true, g_IDEEnum.yn_type)
+	self:LoadBoolData("open_extends_drag", true, ALittleIDE.g_IDEEnum.yn_type)
 end
 
-function ScrollScreenS:HandleContainerFOCUSOUT(event)
+function ALittleIDE.ScrollScreenS:HandleContainerFOCUSOUT(event)
 	if event.target._user_data ~= nil then
 		if event.target._user_data == event.target.text then
 			return
@@ -31,7 +31,7 @@ function ScrollScreenS:HandleContainerFOCUSOUT(event)
 	self:RemoverToNilShowSetForExtends("container", self._container.text, false)
 end
 
-function ScrollScreenS:HandleRightSFOCUSOUT(event)
+function ALittleIDE.ScrollScreenS:HandleRightSFOCUSOUT(event)
 	if event.target._user_data ~= nil then
 		if event.target._user_data == event.target.text then
 			return
@@ -41,7 +41,7 @@ function ScrollScreenS:HandleRightSFOCUSOUT(event)
 	self:RemoverToNilShowSetForExtends("right_scrollbar", self._right_scrollbar.text, false)
 end
 
-function ScrollScreenS:HandleBottomBFOCUSOUT(event)
+function ALittleIDE.ScrollScreenS:HandleBottomBFOCUSOUT(event)
 	if event.target._user_data ~= nil then
 		if event.target._user_data == event.target.text then
 			return
@@ -51,7 +51,8 @@ function ScrollScreenS:HandleBottomBFOCUSOUT(event)
 	self:RemoverToNilShowSetForExtends("bottom_scrollbar", self._bottom_scrollbar.text, false)
 end
 
-function ScrollScreenS:HandleHandOpenExtendsDragSELECT_CHANGE(event)
-	self:BoolSelectChange("open_extends_drag", false, g_IDEEnum.yn_type)
+function ALittleIDE.ScrollScreenS:HandleHandOpenExtendsDragSELECT_CHANGE(event)
+	self:BoolSelectChange("open_extends_drag", false, ALittleIDE.g_IDEEnum.yn_type)
 end
 
+end

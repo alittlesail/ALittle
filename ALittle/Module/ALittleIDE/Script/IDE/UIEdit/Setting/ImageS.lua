@@ -1,47 +1,48 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittleIDE", package.seeall)
-
+do
+if _G.ALittleIDE == nil then _G.ALittleIDE = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
 assert(ALittleIDE.DisplayObjectS, " extends class:ALittleIDE.DisplayObjectS is nil")
-ImageS = Lua.Class(ALittleIDE.DisplayObjectS, "ALittleIDE.ImageS")
+ALittleIDE.ImageS = Lua.Class(ALittleIDE.DisplayObjectS, "ALittleIDE.ImageS")
 
-function ImageS:Ctor(user_info, tab_child, tree_logic)
+function ALittleIDE.ImageS:Ctor(user_info, tab_child, tree_logic)
 	___rawset(self, "_layer_name", "ide_setting_image")
 end
 
-function ImageS:LoadNatureBase()
-	DisplayObjectS.LoadNatureBase(self)
+function ALittleIDE.ImageS:LoadNatureBase()
+	ALittleIDE.DisplayObjectS.LoadNatureBase(self)
 	self:LoadDefaultNilString("texture_name")
-	self:LoadEnumData("flip", g_IDEEnum.flip_type)
+	self:LoadEnumData("flip", ALittleIDE.g_IDEEnum.flip_type)
 end
 
-function ImageS:HandleImageTextureNameFOCUSOUT(event)
+function ALittleIDE.ImageS:HandleImageTextureNameFOCUSOUT(event)
 	self:DefaultNilStringInputChange("texture_name", false)
 end
 
-function ImageS:HandleImageTextureNameSelect(event)
-	g_IDEImageSelectDialog:SetBasePath(g_IDEProject.project.texture_path)
-	local path = g_IDEImageSelectDialog:ShowSelect()
+function ALittleIDE.ImageS:HandleImageTextureNameSelect(event)
+	ALittleIDE.g_IDEImageSelectDialog:SetBasePath(ALittleIDE.g_IDEProject.project.texture_path)
+	local path = ALittleIDE.g_IDEImageSelectDialog:ShowSelect()
 	if path == nil then
 		return
 	end
 	self:ImagePathSelectCallback("texture_name", self.HandleImageTextureNameFOCUSOUT, nil, path)
 end
-ImageS.HandleImageTextureNameSelect = Lua.CoWrap(ImageS.HandleImageTextureNameSelect)
+ALittleIDE.ImageS.HandleImageTextureNameSelect = Lua.CoWrap(ALittleIDE.ImageS.HandleImageTextureNameSelect)
 
-function ImageS:SetTextureName(texture_name, revoke_bind)
+function ALittleIDE.ImageS:SetTextureName(texture_name, revoke_bind)
 	if texture_name == nil then
 		return
 	end
 	self:ImagePathSelectCallback("texture_name", self.HandleImageTextureNameFOCUSOUT, revoke_bind, texture_name)
 end
 
-function ImageS:HandleFlipSELECT_CHANGE(event)
-	local list = g_IDEEnum.flip_rtype
+function ALittleIDE.ImageS:HandleFlipSELECT_CHANGE(event)
+	local list = ALittleIDE.g_IDEEnum.flip_rtype
 	self:TypeSelectChange("flip", list, false)
 end
 
+end

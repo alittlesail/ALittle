@@ -1,20 +1,20 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittleIDE", package.seeall)
-
+do
+if _G.ALittleIDE == nil then _G.ALittleIDE = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
 assert(ALittleIDE.DisplayObjectS, " extends class:ALittleIDE.DisplayObjectS is nil")
-TriangleS = Lua.Class(ALittleIDE.DisplayObjectS, "ALittleIDE.TriangleS")
+ALittleIDE.TriangleS = Lua.Class(ALittleIDE.DisplayObjectS, "ALittleIDE.TriangleS")
 
-function TriangleS:Ctor(user_info, tab_child, tree_logic)
+function ALittleIDE.TriangleS:Ctor(user_info, tab_child, tree_logic)
 	___rawset(self, "_layer_name", "ide_setting_triangle")
 end
 
-function TriangleS:LoadNatureBase()
-	DisplayObjectS.LoadNatureBase(self)
+function ALittleIDE.TriangleS:LoadNatureBase()
+	ALittleIDE.DisplayObjectS.LoadNatureBase(self)
 	self:LoadDefaultNilString("texture_name")
 	self:LoadValueData("u1")
 	self:LoadValueData("v1")
@@ -30,72 +30,73 @@ function TriangleS:LoadNatureBase()
 	self:LoadValueData("y3")
 end
 
-function TriangleS:HandleImageTextureNameFOCUSOUT(event)
+function ALittleIDE.TriangleS:HandleImageTextureNameFOCUSOUT(event)
 	self:DefaultNilStringInputChange("texture_name", false)
 end
 
-function TriangleS:HandleImageTextureNameSelect(event)
-	g_IDEImageSelectDialog:SetBasePath(g_IDEProject.project.texture_path)
-	local path = g_IDEImageSelectDialog:ShowSelect()
+function ALittleIDE.TriangleS:HandleImageTextureNameSelect(event)
+	ALittleIDE.g_IDEImageSelectDialog:SetBasePath(ALittleIDE.g_IDEProject.project.texture_path)
+	local path = ALittleIDE.g_IDEImageSelectDialog:ShowSelect()
 	if path == nil then
 		return
 	end
 	self:ImagePathSelectCallback("texture_name", self.HandleImageTextureNameFOCUSOUT, nil, path)
 end
-TriangleS.HandleImageTextureNameSelect = Lua.CoWrap(TriangleS.HandleImageTextureNameSelect)
+ALittleIDE.TriangleS.HandleImageTextureNameSelect = Lua.CoWrap(ALittleIDE.TriangleS.HandleImageTextureNameSelect)
 
-function TriangleS:SetTextureName(texture_name, revoke_bind)
+function ALittleIDE.TriangleS:SetTextureName(texture_name, revoke_bind)
 	if texture_name == nil then
 		return
 	end
 	self:ImagePathSelectCallback("texture_name", self.HandleImageTextureNameFOCUSOUT, revoke_bind, texture_name)
 end
 
-function TriangleS:HandleU1FOCUSOUT(event)
+function ALittleIDE.TriangleS:HandleU1FOCUSOUT(event)
 	self:ValueNumInputChange("u1", true)
 end
 
-function TriangleS:HandleV1FOCUSOUT(event)
+function ALittleIDE.TriangleS:HandleV1FOCUSOUT(event)
 	self:ValueNumInputChange("v1", true)
 end
 
-function TriangleS:HandleU2FOCUSOUT(event)
+function ALittleIDE.TriangleS:HandleU2FOCUSOUT(event)
 	self:ValueNumInputChange("u2", true)
 end
 
-function TriangleS:HandleV2FOCUSOUT(event)
+function ALittleIDE.TriangleS:HandleV2FOCUSOUT(event)
 	self:ValueNumInputChange("v2", true)
 end
 
-function TriangleS:HandleU3FOCUSOUT(event)
+function ALittleIDE.TriangleS:HandleU3FOCUSOUT(event)
 	self:ValueNumInputChange("u3", true)
 end
 
-function TriangleS:HandleV3FOCUSOUT(event)
+function ALittleIDE.TriangleS:HandleV3FOCUSOUT(event)
 	self:ValueNumInputChange("v3", true)
 end
 
-function TriangleS:HandleX1FOCUSOUT(event)
+function ALittleIDE.TriangleS:HandleX1FOCUSOUT(event)
 	self:ValueNumInputChange("x1", true)
 end
 
-function TriangleS:HandleY1FOCUSOUT(event)
+function ALittleIDE.TriangleS:HandleY1FOCUSOUT(event)
 	self:ValueNumInputChange("y1", true)
 end
 
-function TriangleS:HandleX2FOCUSOUT(event)
+function ALittleIDE.TriangleS:HandleX2FOCUSOUT(event)
 	self:ValueNumInputChange("x2", true)
 end
 
-function TriangleS:HandleY2FOCUSOUT(event)
+function ALittleIDE.TriangleS:HandleY2FOCUSOUT(event)
 	self:ValueNumInputChange("y2", true)
 end
 
-function TriangleS:HandleX3FOCUSOUT(event)
+function ALittleIDE.TriangleS:HandleX3FOCUSOUT(event)
 	self:ValueNumInputChange("x3", true)
 end
 
-function TriangleS:HandleY3FOCUSOUT(event)
+function ALittleIDE.TriangleS:HandleY3FOCUSOUT(event)
 	self:ValueNumInputChange("y3", true)
 end
 
+end

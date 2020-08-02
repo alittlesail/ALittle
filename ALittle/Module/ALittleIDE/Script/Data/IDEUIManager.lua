@@ -1,6 +1,6 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittleIDE", package.seeall)
-
+do
+if _G.ALittleIDE == nil then _G.ALittleIDE = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
@@ -49,9 +49,9 @@ type_list = {"List<string>","any","Map<string,any>","Map<string,ALittle.DisplayI
 option_map = {}
 })
 
-IDEUIManager = Lua.Class(nil, "ALittleIDE.IDEUIManager")
+ALittleIDE.IDEUIManager = Lua.Class(nil, "ALittleIDE.IDEUIManager")
 
-function IDEUIManager:Ctor(name, control)
+function ALittleIDE.IDEUIManager:Ctor(name, control)
 	___rawset(self, "_control", control)
 	___rawset(self, "_control_map", {})
 	___rawset(self, "_base_path", ALittle.File_BaseFilePath() .. "Module/" .. name .. "/UI")
@@ -83,7 +83,7 @@ function IDEUIManager:Ctor(name, control)
 		end
 	end
 	for control_name, all_info in ___pairs(self._control_map) do
-		local map = IDEUIUtility_GetExtends(all_info.info)
+		local map = ALittleIDE.IDEUIUtility_GetExtends(all_info.info)
 		for other_name, v in ___pairs(map) do
 			local other = self._control_map[other_name]
 			if other ~= nil then
@@ -96,11 +96,11 @@ function IDEUIManager:Ctor(name, control)
 	end
 end
 
-function IDEUIManager.__getter:control_map()
+function ALittleIDE.IDEUIManager.__getter:control_map()
 	return self._control_map
 end
 
-function IDEUIManager:CalcDeepExtends(name, map, lock_map)
+function ALittleIDE.IDEUIManager:CalcDeepExtends(name, map, lock_map)
 	if map == nil then
 		map = {}
 	end
@@ -122,7 +122,7 @@ function IDEUIManager:CalcDeepExtends(name, map, lock_map)
 	return map
 end
 
-function IDEUIManager:SaveControl(name, info)
+function ALittleIDE.IDEUIManager:SaveControl(name, info)
 	local file_path = self._base_path .. "/" .. name .. ".json"
 	local save_info = {}
 	save_info[name] = info
@@ -155,7 +155,7 @@ function IDEUIManager:SaveControl(name, info)
 		all_info.extends_this = {}
 		all_info.extends_other = {}
 	end
-	local map = IDEUIUtility_GetExtends(info)
+	local map = ALittleIDE.IDEUIUtility_GetExtends(info)
 	for other_name, v in ___pairs(map) do
 		local other = self._control_map[other_name]
 		if other ~= nil then
@@ -171,7 +171,7 @@ function IDEUIManager:SaveControl(name, info)
 	return nil
 end
 
-function IDEUIManager:CanDelete(name)
+function ALittleIDE.IDEUIManager:CanDelete(name)
 	local all_info = self._control_map[name]
 	if all_info == nil then
 		return "控件不存在:" .. name
@@ -187,7 +187,7 @@ function IDEUIManager:CanDelete(name)
 	return nil
 end
 
-function IDEUIManager:DeleteControl(name)
+function ALittleIDE.IDEUIManager:DeleteControl(name)
 	local error = self:CanDelete(name)
 	if error ~= error then
 		return error
@@ -203,13 +203,13 @@ function IDEUIManager:DeleteControl(name)
 	end
 	local e = {}
 	e.name = name
-	g_IDEProject:DispatchEvent(___all_struct[1962591044], e)
+	ALittleIDE.g_IDEProject:DispatchEvent(___all_struct[1962591044], e)
 	self._control_map[name] = nil
 	self._control:UnRegisterInfo(name)
 	return nil
 end
 
-function IDEUIManager:RenameControl(old_name, new_name)
+function ALittleIDE.IDEUIManager:RenameControl(old_name, new_name)
 	local all_info = self._control_map[old_name]
 	if all_info == nil then
 		return "控件不存在:" .. old_name
@@ -223,7 +223,7 @@ function IDEUIManager:RenameControl(old_name, new_name)
 	end
 	local e = {}
 	e.name = old_name
-	g_IDEProject:DispatchEvent(___all_struct[1962591044], e)
+	ALittleIDE.g_IDEProject:DispatchEvent(___all_struct[1962591044], e)
 	self._control_map[old_name] = nil
 	self._control:UnRegisterInfo(old_name)
 	local file_path = self._base_path .. "UI/" .. old_name .. ".json"
@@ -237,7 +237,8 @@ function IDEUIManager:RenameControl(old_name, new_name)
 	ALittle.File_SaveFile(file_path, ALittle.String_JsonEncode(save_info), -1)
 	local ce = {}
 	ce.name = new_name
-	g_IDEProject:DispatchEvent(___all_struct[-93681239], ce)
+	ALittleIDE.g_IDEProject:DispatchEvent(___all_struct[-93681239], ce)
 	return nil
 end
 
+end

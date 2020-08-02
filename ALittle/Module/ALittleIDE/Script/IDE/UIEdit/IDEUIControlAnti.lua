@@ -1,6 +1,6 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittleIDE", package.seeall)
-
+do
+if _G.ALittleIDE == nil then _G.ALittleIDE = {} end
 local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = ALittle.GetAllStruct()
@@ -31,17 +31,17 @@ option_map = {}
 })
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
-IDEAntiFrameLinearItem = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDEAntiFrameLinearItem")
+ALittleIDE.IDEAntiFrameLinearItem = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDEAntiFrameLinearItem")
 
-function IDEAntiFrameLinearItem:Init(panel, frame)
+function ALittleIDE.IDEAntiFrameLinearItem:Init(panel, frame)
 	self._panel = panel
 	self._frame_text.text = frame
 end
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
-IDEAntiFrameLinkItem = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDEAntiFrameLinkItem")
+ALittleIDE.IDEAntiFrameLinkItem = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDEAntiFrameLinkItem")
 
-function IDEAntiFrameLinkItem:Init(panel, info)
+function ALittleIDE.IDEAntiFrameLinkItem:Init(panel, info)
 	self._panel = panel
 	if info ~= nil then
 		if info.link ~= nil then
@@ -62,11 +62,11 @@ function IDEAntiFrameLinkItem:Init(panel, info)
 	end
 end
 
-function IDEAntiFrameLinkItem:HandleDeleteClick(event)
+function ALittleIDE.IDEAntiFrameLinkItem:HandleDeleteClick(event)
 	self._panel:RemoveAttr(self._panel.anti_link_linear:GetChildIndex(self))
 end
 
-function IDEAntiFrameLinkItem:HandleLinkChanged(event)
+function ALittleIDE.IDEAntiFrameLinkItem:HandleLinkChanged(event)
 	local info = self._panel:GetCurLoopInfo()
 	if info == nil then
 		return
@@ -80,7 +80,7 @@ function IDEAntiFrameLinkItem:HandleLinkChanged(event)
 	self._panel.tab_child.save = false
 end
 
-function IDEAntiFrameLinkItem:HandleAttributeChanged(event)
+function ALittleIDE.IDEAntiFrameLinkItem:HandleAttributeChanged(event)
 	local info = self._panel:GetCurLoopInfo()
 	if info == nil then
 		return
@@ -103,7 +103,7 @@ function IDEAntiFrameLinkItem:HandleAttributeChanged(event)
 	self._panel.tab_child.save = false
 end
 
-function IDEAntiFrameLinkItem:HandleInitChanged(event)
+function ALittleIDE.IDEAntiFrameLinkItem:HandleInitChanged(event)
 	local info = self._panel:GetCurLoopInfo()
 	if info == nil then
 		return
@@ -126,9 +126,9 @@ function IDEAntiFrameLinkItem:HandleInitChanged(event)
 end
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
-IDEAntiFrameLoopItem = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDEAntiFrameLoopItem")
+ALittleIDE.IDEAntiFrameLoopItem = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDEAntiFrameLoopItem")
 
-function IDEAntiFrameLoopItem:Init(item, info)
+function ALittleIDE.IDEAntiFrameLoopItem:Init(item, info)
 	self._item = item
 	self._button.drag_trans_target = self._item.panel.anti_screen
 	self._bg_quad.drag_trans_target = self._item.panel.anti_screen
@@ -138,19 +138,19 @@ function IDEAntiFrameLoopItem:Init(item, info)
 	self:UpdateShow()
 end
 
-function IDEAntiFrameLoopItem.__getter:info()
+function ALittleIDE.IDEAntiFrameLoopItem.__getter:info()
 	return self._info
 end
 
-function IDEAntiFrameLoopItem.__getter:button()
+function ALittleIDE.IDEAntiFrameLoopItem.__getter:button()
 	return self._button
 end
 
-function IDEAntiFrameLoopItem.__getter:item()
+function ALittleIDE.IDEAntiFrameLoopItem.__getter:item()
 	return self._item
 end
 
-function IDEAntiFrameLoopItem:UpdateText()
+function ALittleIDE.IDEAntiFrameLoopItem:UpdateText()
 	local value = "null"
 	if self._info.target == true then
 		value = "true"
@@ -168,7 +168,7 @@ function IDEAntiFrameLoopItem:UpdateText()
 	end
 end
 
-function IDEAntiFrameLoopItem:UpdateShow()
+function ALittleIDE.IDEAntiFrameLoopItem:UpdateShow()
 	local width = self._item:CalcWidthByTime(self._info.total_time + self._info.delay_time)
 	self._button.width = self._item:CalcWidthByTime(self._info.total_time)
 	if self._button.width < self._item.panel._MIN_WIDTH then
@@ -182,15 +182,15 @@ function IDEAntiFrameLoopItem:UpdateShow()
 	self.width = width
 end
 
-function IDEAntiFrameLoopItem.__getter:info()
+function ALittleIDE.IDEAntiFrameLoopItem.__getter:info()
 	return self._info
 end
 
-function IDEAntiFrameLoopItem:HandleButtonChanged(event)
+function ALittleIDE.IDEAntiFrameLoopItem:HandleButtonChanged(event)
 	self._item.panel:ShowAntiLoop(self)
 end
 
-function IDEAntiFrameLoopItem:HandleKeyDown(event)
+function ALittleIDE.IDEAntiFrameLoopItem:HandleKeyDown(event)
 	if event.sym == 1073741904 then
 		local child_index = self._item.container:GetChildIndex(self)
 		if child_index > 1 then
@@ -214,11 +214,11 @@ function IDEAntiFrameLoopItem:HandleKeyDown(event)
 	end
 end
 
-function IDEAntiFrameLoopItem:HandleRButtonDown(event)
-	g_IDECenter.center.control_anti:ShowAntiLoopMenu(self)
+function ALittleIDE.IDEAntiFrameLoopItem:HandleRButtonDown(event)
+	ALittleIDE.g_IDECenter.center.control_anti:ShowAntiLoopMenu(self)
 end
 
-function IDEAntiFrameLoopItem.ValueToString(value)
+function ALittleIDE.IDEAntiFrameLoopItem.ValueToString(value)
 	if value == nil then
 		return ""
 	end
@@ -231,7 +231,7 @@ function IDEAntiFrameLoopItem.ValueToString(value)
 	return ALittle.String_ToString(value)
 end
 
-function IDEAntiFrameLoopItem.StringToValue(attribute, value)
+function ALittleIDE.IDEAntiFrameLoopItem.StringToValue(attribute, value)
 	if value == "" then
 		return nil
 	end
@@ -246,20 +246,20 @@ function IDEAntiFrameLoopItem.StringToValue(attribute, value)
 	end
 end
 
-function IDEAntiFrameLoopItem:SetTargetValue(text)
+function ALittleIDE.IDEAntiFrameLoopItem:SetTargetValue(text)
 	local old_value = self._info.target
-	self._info.target = IDEAntiFrameLoopItem.StringToValue(self._item.info.attribute, text)
+	self._info.target = ALittleIDE.IDEAntiFrameLoopItem.StringToValue(self._item.info.attribute, text)
 	self:UpdateText()
 	if old_value ~= self._info.target then
-		local old_value_string = IDEAntiFrameLoopItem.ValueToString(old_value)
-		local new_value_string = IDEAntiFrameLoopItem.ValueToString(self._info.target)
-		local revoke = IDEAntiLoopTargetValueChangeRevoke(self, old_value_string, new_value_string)
+		local old_value_string = ALittleIDE.IDEAntiFrameLoopItem.ValueToString(old_value)
+		local new_value_string = ALittleIDE.IDEAntiFrameLoopItem.ValueToString(self._info.target)
+		local revoke = ALittleIDE.IDEAntiLoopTargetValueChangeRevoke(self, old_value_string, new_value_string)
 		self._item.panel.tab_child.revoke_list:PushRevoke(revoke)
 		self._item.panel.tab_child.save = false
 	end
 end
 
-function IDEAntiFrameLoopItem:SetTotalTime(time)
+function ALittleIDE.IDEAntiFrameLoopItem:SetTotalTime(time)
 	if self._info.total_time == time then
 		return
 	end
@@ -270,12 +270,12 @@ function IDEAntiFrameLoopItem:SetTotalTime(time)
 	end
 	self:UpdateShow()
 	self:DispatchEvent(___all_struct[-431205740], {})
-	local revoke = IDEAntiLoopTotalTimeChangeRevoke(self, old_time, self._info.total_time)
+	local revoke = ALittleIDE.IDEAntiLoopTotalTimeChangeRevoke(self, old_time, self._info.total_time)
 	self._item.panel.tab_child.revoke_list:PushRevoke(revoke)
 	self._item.panel.tab_child.save = false
 end
 
-function IDEAntiFrameLoopItem:SetDelayTime(time)
+function ALittleIDE.IDEAntiFrameLoopItem:SetDelayTime(time)
 	if self._info.delay_time == time then
 		return
 	end
@@ -290,15 +290,15 @@ function IDEAntiFrameLoopItem:SetDelayTime(time)
 	end
 	self:UpdateShow()
 	self:DispatchEvent(___all_struct[-431205740], {})
-	local revoke = IDEAntiLoopDelayTimeChangeRevoke(self, old_time, self._info.delay_time)
+	local revoke = ALittleIDE.IDEAntiLoopDelayTimeChangeRevoke(self, old_time, self._info.delay_time)
 	self._item.panel.tab_child.revoke_list:PushRevoke(revoke)
 	self._item.panel.tab_child.save = false
 end
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
-IDEAntiFrameAntiItem = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDEAntiFrameAntiItem")
+ALittleIDE.IDEAntiFrameAntiItem = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDEAntiFrameAntiItem")
 
-function IDEAntiFrameAntiItem:Init(panel, info)
+function ALittleIDE.IDEAntiFrameAntiItem:Init(panel, info)
 	self._panel = panel
 	self._bg_quad.drag_trans_target = self._panel.anti_screen
 	self._info = info
@@ -306,41 +306,41 @@ function IDEAntiFrameAntiItem:Init(panel, info)
 		self._info.childs = {}
 	end
 	for index, child in ___ipairs(self._info.childs) do
-		local loop_item = g_Control:CreateControl("ide_anti_screen_loop_item")
+		local loop_item = ALittleIDE.g_Control:CreateControl("ide_anti_screen_loop_item")
 		loop_item:Init(self, child)
 		self._container:AddChild(loop_item)
 	end
 end
 
-function IDEAntiFrameAntiItem.__getter:panel()
+function ALittleIDE.IDEAntiFrameAntiItem.__getter:panel()
 	return self._panel
 end
 
-function IDEAntiFrameAntiItem.__getter:info()
+function ALittleIDE.IDEAntiFrameAntiItem.__getter:info()
 	return self._info
 end
 
-function IDEAntiFrameAntiItem.__getter:container()
+function ALittleIDE.IDEAntiFrameAntiItem.__getter:container()
 	return self._container
 end
 
-function IDEAntiFrameAntiItem:CalcTimeByWidth(width)
+function ALittleIDE.IDEAntiFrameAntiItem:CalcTimeByWidth(width)
 	return ALittle.Math_Floor(width / self._panel._FRAME_WIDTH * self._panel._FRAME_TIME)
 end
 
-function IDEAntiFrameAntiItem:CalcWidthByTime(time)
+function ALittleIDE.IDEAntiFrameAntiItem:CalcWidthByTime(time)
 	return time / self._panel._FRAME_TIME * self._panel._FRAME_WIDTH
 end
 
-function IDEAntiFrameAntiItem:HandleBgRButtonDown(event)
+function ALittleIDE.IDEAntiFrameAntiItem:HandleBgRButtonDown(event)
 	local child_index = self._panel.anti_anti_linear:GetChildIndex(self)
 	if child_index <= 0 then
 		return
 	end
-	g_IDECenter.center.control_anti:ShowAntiAntiMenu(self, child_index, event.rel_x)
+	ALittleIDE.g_IDECenter.center.control_anti:ShowAntiAntiMenu(self, child_index, event.rel_x)
 end
 
-function IDEAntiFrameAntiItem:Insert(rel_x, clazz)
+function ALittleIDE.IDEAntiFrameAntiItem:Insert(rel_x, clazz)
 	local child = {}
 	child.clazz = clazz
 	if self._info.attribute == "visible" or self._info.attribute == "disabled" then
@@ -361,17 +361,17 @@ function IDEAntiFrameAntiItem:Insert(rel_x, clazz)
 		return
 	end
 	ALittle.List_Push(self._info.childs, child)
-	local loop_item = g_Control:CreateControl("ide_anti_screen_loop_item")
+	local loop_item = ALittleIDE.g_Control:CreateControl("ide_anti_screen_loop_item")
 	loop_item:Init(self, child)
 	self._container:AddChild(loop_item)
-	local revoke = IDEAntiInsertLoopRevoke(self, child, loop_item, ALittle.List_MaxN(self._info.childs))
+	local revoke = ALittleIDE.IDEAntiInsertLoopRevoke(self, child, loop_item, ALittle.List_MaxN(self._info.childs))
 	self._panel.tab_child.revoke_list:PushRevoke(revoke)
 	loop_item.button.selected = true
 	self._panel:ShowAntiLoop(loop_item)
 	self._panel.tab_child.save = false
 end
 
-function IDEAntiFrameAntiItem:ClearLoop()
+function ALittleIDE.IDEAntiFrameAntiItem:ClearLoop()
 	if self._container.child_count == 0 then
 		return
 	end
@@ -380,14 +380,14 @@ function IDEAntiFrameAntiItem:ClearLoop()
 	for index, child in ___ipairs(self._container.childs) do
 		loop_item_list[index] = child
 	end
-	local revoke = IDEAntiClearLoopRevoke(self, self._info.childs, loop_item_list)
+	local revoke = ALittleIDE.IDEAntiClearLoopRevoke(self, self._info.childs, loop_item_list)
 	self._panel.tab_child.revoke_list:PushRevoke(revoke)
 	self._info.childs = {}
 	self._container:RemoveAllChild()
 	self._panel.tab_child.save = false
 end
 
-function IDEAntiFrameAntiItem:InsertBefore(loop_item, clazz)
+function ALittleIDE.IDEAntiFrameAntiItem:InsertBefore(loop_item, clazz)
 	local child = {}
 	child.clazz = clazz
 	if self._info.attribute == "visible" or self._info.attribute == "disabled" then
@@ -406,17 +406,17 @@ function IDEAntiFrameAntiItem:InsertBefore(loop_item, clazz)
 	end
 	local child_index = self._container:GetChildIndex(loop_item)
 	ALittle.List_Insert(self._info.childs, child_index, child)
-	loop_item = g_Control:CreateControl("ide_anti_screen_loop_item")
+	loop_item = ALittleIDE.g_Control:CreateControl("ide_anti_screen_loop_item")
 	loop_item:Init(self, child)
 	self._container:AddChild(loop_item, child_index)
-	local revoke = IDEAntiInsertLoopRevoke(self, child, loop_item, child_index)
+	local revoke = ALittleIDE.IDEAntiInsertLoopRevoke(self, child, loop_item, child_index)
 	self._panel.tab_child.revoke_list:PushRevoke(revoke)
 	loop_item.button.selected = true
 	self._panel:ShowAntiLoop(loop_item)
 	self._panel.tab_child.save = false
 end
 
-function IDEAntiFrameAntiItem:DeleteLoop(loop_item)
+function ALittleIDE.IDEAntiFrameAntiItem:DeleteLoop(loop_item)
 	self._panel:HideAntiLoop(loop_item)
 	local child_index = self._container:GetChildIndex(loop_item)
 	if child_index <= 0 then
@@ -425,15 +425,15 @@ function IDEAntiFrameAntiItem:DeleteLoop(loop_item)
 	local child = self._info.childs[child_index]
 	ALittle.List_Remove(self._info.childs, child_index)
 	self._container:RemoveChild(loop_item)
-	local revoke = IDEAntiDeleteLoopRevoke(self, child, loop_item, child_index)
+	local revoke = ALittleIDE.IDEAntiDeleteLoopRevoke(self, child, loop_item, child_index)
 	self._panel.tab_child.revoke_list:PushRevoke(revoke)
 	self._panel.tab_child.save = false
 end
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
-IDEAntiPanel = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDEAntiPanel")
+ALittleIDE.IDEAntiPanel = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDEAntiPanel")
 
-function IDEAntiPanel:TCtor()
+function ALittleIDE.IDEAntiPanel:TCtor()
 	self._handle_container.visible = false
 	self._loop_linear.visible = false
 	self._loop_attribute.visible = false
@@ -445,74 +445,74 @@ function IDEAntiPanel:TCtor()
 	self._MIN_WIDTH = 10
 end
 
-function IDEAntiPanel.__getter:anti_link_linear()
+function ALittleIDE.IDEAntiPanel.__getter:anti_link_linear()
 	return self._anti_link_linear
 end
 
-function IDEAntiPanel.__getter:anti_anti_linear()
+function ALittleIDE.IDEAntiPanel.__getter:anti_anti_linear()
 	return self._anti_anti_linear
 end
 
-function IDEAntiPanel.__getter:anti_screen()
+function ALittleIDE.IDEAntiPanel.__getter:anti_screen()
 	return self._anti_screen
 end
 
-function IDEAntiPanel.__getter:loop_group()
+function ALittleIDE.IDEAntiPanel.__getter:loop_group()
 	return self._loop_group
 end
 
-function IDEAntiPanel.__getter:anti_scroll_list()
+function ALittleIDE.IDEAntiPanel.__getter:anti_scroll_list()
 	return self._anti_scroll_list
 end
 
-function IDEAntiPanel.__getter:cur_show()
+function ALittleIDE.IDEAntiPanel.__getter:cur_show()
 	return self._cur_show
 end
 
-function IDEAntiPanel.__getter:cur_loop_item()
+function ALittleIDE.IDEAntiPanel.__getter:cur_loop_item()
 	return self._cur_loop_item
 end
 
-function IDEAntiPanel.__getter:linear_target_value()
+function ALittleIDE.IDEAntiPanel.__getter:linear_target_value()
 	return self._linear_target_value
 end
 
-function IDEAntiPanel.__getter:attribute_target_value()
+function ALittleIDE.IDEAntiPanel.__getter:attribute_target_value()
 	return self._attribute_target_value
 end
 
-function IDEAntiPanel.__getter:rit_target_value()
+function ALittleIDE.IDEAntiPanel.__getter:rit_target_value()
 	return self._rit_target_value
 end
 
-function IDEAntiPanel.__getter:linear_total_time()
+function ALittleIDE.IDEAntiPanel.__getter:linear_total_time()
 	return self._linear_total_time
 end
 
-function IDEAntiPanel.__getter:rit_total_time()
+function ALittleIDE.IDEAntiPanel.__getter:rit_total_time()
 	return self._rit_total_time
 end
 
-function IDEAntiPanel.__getter:linear_delay_time()
+function ALittleIDE.IDEAntiPanel.__getter:linear_delay_time()
 	return self._linear_delay_time
 end
 
-function IDEAntiPanel.__getter:attribute_delay_time()
+function ALittleIDE.IDEAntiPanel.__getter:attribute_delay_time()
 	return self._attribute_delay_time
 end
 
-function IDEAntiPanel.__getter:rit_delay_time()
+function ALittleIDE.IDEAntiPanel.__getter:rit_delay_time()
 	return self._rit_delay_time
 end
 
-function IDEAntiPanel:Init(tab_child)
+function ALittleIDE.IDEAntiPanel:Init(tab_child)
 	self._tab_child = tab_child
 	self._list_group = ALittle.CreateKeyWeakMap()
 	self._loop_group = ALittle.CreateKeyWeakMap()
 	local user_info = self._tab_child.tree_object.user_info
 	if user_info.base.loop_map ~= nil then
 		for name, info in ___pairs(user_info.base.loop_map) do
-			local item = g_Control:CreateControl("ide_common_item_radiobutton")
+			local item = ALittleIDE.g_Control:CreateControl("ide_common_item_radiobutton")
 			item.text = name
 			item.group = self._list_group
 			item:AddEventListener(___all_struct[-1479093282], self, self.HandleAntiListItemRButtonDown)
@@ -520,20 +520,20 @@ function IDEAntiPanel:Init(tab_child)
 			self._anti_scroll_list:AddChild(item)
 		end
 	end
-	local static_object_hv = g_Control:CreateControl("ide_anti_screen_hv")
-	local static_object_h = g_Control:CreateControl("ide_anti_screen_h", self)
+	local static_object_hv = ALittleIDE.g_Control:CreateControl("ide_anti_screen_hv")
+	local static_object_h = ALittleIDE.g_Control:CreateControl("ide_anti_screen_h", self)
 	self._anti_frame_linear.x = static_object_hv.width
 	local frame = 0
 	while true do
 		if not(frame <= 10000) then break end
-		local text = g_Control:CreateControl("ide_anti_screen_frame_item")
+		local text = ALittleIDE.g_Control:CreateControl("ide_anti_screen_frame_item")
 		text.width = self._FRAME_WIDTH
 		text:Init(self, frame)
 		self._anti_frame_linear:AddChild(text)
 		frame = frame+(50)
 	end
 	static_object_h.width = self._anti_frame_linear.x + self._anti_frame_linear.width
-	local static_object_v = g_Control:CreateControl("ide_anti_screen_v", self)
+	local static_object_v = ALittleIDE.g_Control:CreateControl("ide_anti_screen_v", self)
 	static_object_v.width = static_object_hv.width
 	static_object_v.height = static_object_hv.height
 	self._anti_link_linear.y = static_object_hv.height
@@ -550,11 +550,11 @@ function IDEAntiPanel:Init(tab_child)
 	end
 end
 
-function IDEAntiPanel.__getter:tab_child()
+function ALittleIDE.IDEAntiPanel.__getter:tab_child()
 	return self._tab_child
 end
 
-function IDEAntiPanel:GetCurLoopInfo()
+function ALittleIDE.IDEAntiPanel:GetCurLoopInfo()
 	if self._cur_show == nil then
 		return nil
 	end
@@ -565,7 +565,7 @@ function IDEAntiPanel:GetCurLoopInfo()
 	return user_info.base.loop_map[self._cur_show]
 end
 
-function IDEAntiPanel:CreateAnti(name)
+function ALittleIDE.IDEAntiPanel:CreateAnti(name)
 	local user_info = self._tab_child.tree_object.user_info
 	if user_info.base.loop_map == nil then
 		user_info.base.loop_map = {}
@@ -577,7 +577,7 @@ function IDEAntiPanel:CreateAnti(name)
 	local root = {}
 	root.childs = {}
 	user_info.base.loop_map[name] = root
-	local item = g_Control:CreateControl("ide_common_item_radiobutton")
+	local item = ALittleIDE.g_Control:CreateControl("ide_common_item_radiobutton")
 	item.text = name
 	item.group = self._list_group
 	item:AddEventListener(___all_struct[-1479093282], self, self.HandleAntiListItemRButtonDown)
@@ -585,12 +585,12 @@ function IDEAntiPanel:CreateAnti(name)
 	self._anti_scroll_list:AddChild(item)
 	item.selected = true
 	self:ShowAnti(name)
-	local revoke = IDECreateAntiRevoke(self, name, root, item)
+	local revoke = ALittleIDE.IDECreateAntiRevoke(self, name, root, item)
 	self._tab_child.revoke_list:PushRevoke(revoke)
 	self._tab_child.save = false
 end
 
-function IDEAntiPanel:DeleteAnti(name)
+function ALittleIDE.IDEAntiPanel:DeleteAnti(name)
 	local user_info = self._tab_child.tree_object.user_info
 	if user_info.base.loop_map == nil then
 		return
@@ -604,7 +604,7 @@ function IDEAntiPanel:DeleteAnti(name)
 		if item.text == name then
 			item.group = nil
 			self._anti_scroll_list:RemoveChild(item)
-			local revoke = IDEDeleteAntiRevoke(self, name, root, item, index)
+			local revoke = ALittleIDE.IDEDeleteAntiRevoke(self, name, root, item, index)
 			self._tab_child.revoke_list:PushRevoke(revoke)
 			break
 		end
@@ -623,7 +623,7 @@ function IDEAntiPanel:DeleteAnti(name)
 	end
 end
 
-function IDEAntiPanel:CopyAndNewAnti(old_name, new_name)
+function ALittleIDE.IDEAntiPanel:CopyAndNewAnti(old_name, new_name)
 	local user_info = self._tab_child.tree_object.user_info
 	if user_info.base.loop_map == nil then
 		return
@@ -638,7 +638,7 @@ function IDEAntiPanel:CopyAndNewAnti(old_name, new_name)
 	end
 	local new_root = ALittle.String_CopyTable(root)
 	user_info.base.loop_map[new_name] = new_root
-	local item = g_Control:CreateControl("ide_common_item_radiobutton")
+	local item = ALittleIDE.g_Control:CreateControl("ide_common_item_radiobutton")
 	item.text = new_name
 	item.group = self._list_group
 	item:AddEventListener(___all_struct[-1479093282], self, self.HandleAntiListItemRButtonDown)
@@ -646,12 +646,12 @@ function IDEAntiPanel:CopyAndNewAnti(old_name, new_name)
 	self._anti_scroll_list:AddChild(item)
 	item.selected = true
 	self:ShowAnti(new_name)
-	local revoke = IDECreateAntiRevoke(self, new_name, new_root, item)
+	local revoke = ALittleIDE.IDECreateAntiRevoke(self, new_name, new_root, item)
 	self._tab_child.revoke_list:PushRevoke(revoke)
 	self._tab_child.save = false
 end
 
-function IDEAntiPanel:ShowAnti(name)
+function ALittleIDE.IDEAntiPanel:ShowAnti(name)
 	if self._cur_show == name then
 		return
 	end
@@ -669,10 +669,10 @@ function IDEAntiPanel:ShowAnti(name)
 	self._anti_link_linear:RemoveAllChild()
 	self._anti_anti_linear:RemoveAllChild()
 	for index, child in ___ipairs(info.childs) do
-		local anti_item = g_Control:CreateControl("ide_anti_screen_anti_item")
+		local anti_item = ALittleIDE.g_Control:CreateControl("ide_anti_screen_anti_item")
 		anti_item:Init(self, child)
 		self._anti_anti_linear:AddChild(anti_item)
-		local link_item = g_Control:CreateControl("ide_anti_screen_link_item")
+		local link_item = ALittleIDE.g_Control:CreateControl("ide_anti_screen_link_item")
 		link_item:Init(self, child)
 		self._anti_link_linear:AddChild(link_item)
 	end
@@ -681,7 +681,7 @@ function IDEAntiPanel:ShowAnti(name)
 	self._handle_container.visible = true
 end
 
-function IDEAntiPanel:HideAnti()
+function ALittleIDE.IDEAntiPanel:HideAnti()
 	if self._cur_show == nil then
 		return
 	end
@@ -704,23 +704,23 @@ function IDEAntiPanel:HideAnti()
 	end
 end
 
-function IDEAntiPanel:HandleAntiListItemRButtonDown(event)
-	g_IDECenter.center.control_anti:ShowAntiListMenu(self, event.target.text)
+function ALittleIDE.IDEAntiPanel:HandleAntiListItemRButtonDown(event)
+	ALittleIDE.g_IDECenter.center.control_anti:ShowAntiListMenu(self, event.target.text)
 end
 
-function IDEAntiPanel:HandleAntiListItemClick(event)
+function ALittleIDE.IDEAntiPanel:HandleAntiListItemClick(event)
 	self:ShowAnti(event.target.text)
 end
 
-function IDEAntiPanel:HandleAntiListItemChanged(event)
+function ALittleIDE.IDEAntiPanel:HandleAntiListItemChanged(event)
 	self:ShowAnti(event.target.text)
 end
 
-function IDEAntiPanel:HandleNewClick(event)
-	g_IDECenter.center.control_anti:ShowNewAntiDialog(self)
+function ALittleIDE.IDEAntiPanel:HandleNewClick(event)
+	ALittleIDE.g_IDECenter.center.control_anti:ShowNewAntiDialog(self)
 end
 
-function IDEAntiPanel:HandleCopyAttrLineClick(event)
+function ALittleIDE.IDEAntiPanel:HandleCopyAttrLineClick(event)
 	if self._cur_loop_item == nil then
 		return
 	end
@@ -730,21 +730,21 @@ function IDEAntiPanel:HandleCopyAttrLineClick(event)
 	end
 	local child = ALittle.String_CopyTable(self._cur_loop_item.item.info)
 	ALittle.List_Push(info.childs, child)
-	local anti_item = g_Control:CreateControl("ide_anti_screen_anti_item")
+	local anti_item = ALittleIDE.g_Control:CreateControl("ide_anti_screen_anti_item")
 	anti_item:Init(self, child)
 	self._anti_anti_linear:AddChild(anti_item)
-	local link_item = g_Control:CreateControl("ide_anti_screen_link_item")
+	local link_item = ALittleIDE.g_Control:CreateControl("ide_anti_screen_link_item")
 	link_item:Init(self, child)
 	self._anti_link_linear:AddChild(link_item)
 	local static_object_v = self._anti_screen.static_object_v
 	static_object_v.height = self._anti_link_linear.y + self._anti_link_linear.height
 	self._anti_screen:RejustScrollBar()
-	local revoke = IDEAntiAddAttrRevoke(self, self._cur_show, child, anti_item, link_item)
+	local revoke = ALittleIDE.IDEAntiAddAttrRevoke(self, self._cur_show, child, anti_item, link_item)
 	self._tab_child.revoke_list:PushRevoke(revoke)
 	self._tab_child.save = false
 end
 
-function IDEAntiPanel:HandleAddAttrClick(event)
+function ALittleIDE.IDEAntiPanel:HandleAddAttrClick(event)
 	local user_info = self._tab_child.tree_object.user_info
 	if user_info.base.loop_map == nil then
 		return
@@ -757,21 +757,21 @@ function IDEAntiPanel:HandleAddAttrClick(event)
 	child.childs = {}
 	child.attribute = "x"
 	ALittle.List_Push(info.childs, child)
-	local anti_item = g_Control:CreateControl("ide_anti_screen_anti_item")
+	local anti_item = ALittleIDE.g_Control:CreateControl("ide_anti_screen_anti_item")
 	anti_item:Init(self, child)
 	self._anti_anti_linear:AddChild(anti_item)
-	local link_item = g_Control:CreateControl("ide_anti_screen_link_item")
+	local link_item = ALittleIDE.g_Control:CreateControl("ide_anti_screen_link_item")
 	link_item:Init(self, child)
 	self._anti_link_linear:AddChild(link_item)
 	local static_object_v = self._anti_screen.static_object_v
 	static_object_v.height = self._anti_link_linear.y + self._anti_link_linear.height
 	self._anti_screen:RejustScrollBar()
-	local revoke = IDEAntiAddAttrRevoke(self, self._cur_show, child, anti_item, link_item)
+	local revoke = ALittleIDE.IDEAntiAddAttrRevoke(self, self._cur_show, child, anti_item, link_item)
 	self._tab_child.revoke_list:PushRevoke(revoke)
 	self._tab_child.save = false
 end
 
-function IDEAntiPanel:RemoveAttr(child_index)
+function ALittleIDE.IDEAntiPanel:RemoveAttr(child_index)
 	local user_info = self._tab_child.tree_object.user_info
 	if user_info.base.loop_map == nil then
 		return
@@ -788,12 +788,12 @@ function IDEAntiPanel:RemoveAttr(child_index)
 	self._anti_link_linear:RemoveChild(link_item)
 	self._anti_screen.static_object_v.height = self._anti_link_linear.y + self._anti_link_linear.height
 	self._anti_screen:RejustScrollBar()
-	local revoke = IDEAntiRemoveAttrRevoke(self, self._cur_show, child, anti_item, link_item, child_index)
+	local revoke = ALittleIDE.IDEAntiRemoveAttrRevoke(self, self._cur_show, child, anti_item, link_item, child_index)
 	self._tab_child.revoke_list:PushRevoke(revoke)
 	self._tab_child.save = false
 end
 
-function IDEAntiPanel:ShowAntiLoop(loop_item)
+function ALittleIDE.IDEAntiPanel:ShowAntiLoop(loop_item)
 	local info = loop_item.info
 	if info.clazz == "LoopLinear" then
 		self._loop_linear.visible = true
@@ -845,7 +845,7 @@ function IDEAntiPanel:ShowAntiLoop(loop_item)
 	end
 end
 
-function IDEAntiPanel:HideAntiLoop(loop_item)
+function ALittleIDE.IDEAntiPanel:HideAntiLoop(loop_item)
 	if loop_item ~= nil and self._cur_loop_item ~= loop_item then
 		return
 	end
@@ -855,7 +855,7 @@ function IDEAntiPanel:HideAntiLoop(loop_item)
 	self._cur_loop_item = nil
 end
 
-function IDEAntiPanel:HandleDeleteLoopClick(event)
+function ALittleIDE.IDEAntiPanel:HandleDeleteLoopClick(event)
 	if self._cur_loop_item ~= nil then
 		self._cur_loop_item.item:DeleteLoop(self._cur_loop_item)
 		self._cur_loop_item = nil
@@ -863,14 +863,14 @@ function IDEAntiPanel:HandleDeleteLoopClick(event)
 	self:HideAntiLoop()
 end
 
-function IDEAntiPanel:HandleTargetValueChanged(event)
+function ALittleIDE.IDEAntiPanel:HandleTargetValueChanged(event)
 	if self._cur_loop_item == nil then
 		return
 	end
 	self._cur_loop_item:SetTargetValue(event.target.text)
 end
 
-function IDEAntiPanel:HandleTotalTimeChanged(event)
+function ALittleIDE.IDEAntiPanel:HandleTotalTimeChanged(event)
 	if self._cur_loop_item == nil then
 		return
 	end
@@ -882,7 +882,7 @@ function IDEAntiPanel:HandleTotalTimeChanged(event)
 	self._cur_loop_item:SetTotalTime(time)
 end
 
-function IDEAntiPanel:HandleDelayTimeChanged(event)
+function ALittleIDE.IDEAntiPanel:HandleDelayTimeChanged(event)
 	if self._cur_loop_item == nil then
 		return
 	end
@@ -894,7 +894,7 @@ function IDEAntiPanel:HandleDelayTimeChanged(event)
 	self._cur_loop_item:SetDelayTime(time)
 end
 
-function IDEAntiPanel:PlayImpl(loop)
+function ALittleIDE.IDEAntiPanel:PlayImpl(loop)
 	local cur_loop_info = self:GetCurLoopInfo()
 	if cur_loop_info == nil then
 		return
@@ -902,14 +902,14 @@ function IDEAntiPanel:PlayImpl(loop)
 	local save = self._tab_child.save
 	self._tab_child.save = true
 	if self._anti_dialog == nil then
-		self._anti_dialog = g_Control:CreateControl("ide_anti_play_dialog", self)
+		self._anti_dialog = ALittleIDE.g_Control:CreateControl("ide_anti_play_dialog", self)
 		self._anti_dialog.title = "动画播放窗口"
 		self._anti_dialog.visible = false
-		g_DialogLayer:AddChild(self._anti_dialog)
+		ALittleIDE.g_DialogLayer:AddChild(self._anti_dialog)
 	end
 	if save == false or self._cur_anti == nil or self._anti_dialog.visible == false or self._anti_dialog._user_data ~= self._tab_child.name then
 		local map = {}
-		local object = g_IDEProject.project.control:CreateControl(self._tab_child.name, map)
+		local object = ALittleIDE.g_IDEProject.project.control:CreateControl(self._tab_child.name, map)
 		local anti = ALittle.LoopAnimation(object, cur_loop_info)
 		local error = anti:Init(map)
 		if error ~= nil then
@@ -920,8 +920,8 @@ function IDEAntiPanel:PlayImpl(loop)
 		self._anti_play_container:AddChild(object)
 		self._anti_dialog._user_data = self._tab_child.name
 		if object.width_type ~= 1 or object.height_type ~= 1 then
-			self._anti_dialog.width = g_IDEProject.project.config:GetConfig("default_show_width", 800)
-			self._anti_dialog.height = g_IDEProject.project.config:GetConfig("default_show_height", 800)
+			self._anti_dialog.width = ALittleIDE.g_IDEProject.project.config:GetConfig("default_show_width", 800)
+			self._anti_dialog.height = ALittleIDE.g_IDEProject.project.config:GetConfig("default_show_height", 800)
 		else
 			self._anti_dialog.width = object.width + 10
 			self._anti_dialog.height = object.height + self._anti_dialog.head_size + 10
@@ -943,32 +943,32 @@ function IDEAntiPanel:PlayImpl(loop)
 	self._cur_anti:Play(loop)
 end
 
-function IDEAntiPanel:HandlePlayClick(event)
+function ALittleIDE.IDEAntiPanel:HandlePlayClick(event)
 	self:PlayImpl()
 end
 
-function IDEAntiPanel:HandleLoopPlayClick(event)
+function ALittleIDE.IDEAntiPanel:HandleLoopPlayClick(event)
 	self:PlayImpl(-1)
 end
 
-function IDEAntiPanel:HandlePauseClick(event)
+function ALittleIDE.IDEAntiPanel:HandlePauseClick(event)
 	if self._cur_anti ~= nil then
 		self._cur_anti:Pause()
 	end
 end
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
-IDEUIControlAnti = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDEUIControlAnti")
+ALittleIDE.IDEUIControlAnti = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDEUIControlAnti")
 
-function IDEUIControlAnti:Setup(tab, control)
+function ALittleIDE.IDEUIControlAnti:Setup(tab, control)
 	self._main_tab = tab
 	self._main_control = control
 	self._main_tab:SetChildText(self._main_control, "动画编辑器")
 end
 
-function IDEUIControlAnti:ShowNewAntiDialog(panel)
+function ALittleIDE.IDEUIControlAnti:ShowNewAntiDialog(panel)
 	if self._new_anti_dialog == nil then
-		self._new_anti_dialog = g_Control:CreateControl("ide_new_anti_dialog", self)
+		self._new_anti_dialog = ALittleIDE.g_Control:CreateControl("ide_new_anti_dialog", self)
 		A_LayerManager:AddToModal(self._new_anti_dialog)
 	end
 	self._new_anti_dialog.visible = true
@@ -976,26 +976,26 @@ function IDEUIControlAnti:ShowNewAntiDialog(panel)
 	self._new_anti_dialog._user_data = panel
 end
 
-function IDEUIControlAnti:HandleNewAntiCancel(event)
+function ALittleIDE.IDEUIControlAnti:HandleNewAntiCancel(event)
 	self._new_anti_dialog.visible = false
 	self._new_anti_dialog._user_data = nil
 end
 
-function IDEUIControlAnti:HandleNewAntiConfirm(event)
+function ALittleIDE.IDEUIControlAnti:HandleNewAntiConfirm(event)
 	self._new_anti_dialog.visible = false
 	local panel = self._new_anti_dialog._user_data
 	self._new_anti_dialog._user_data = nil
 	panel:CreateAnti(self._new_anti_name_input.text)
 end
 
-function IDEUIControlAnti:ShowAntiListMenu(panel, name)
+function ALittleIDE.IDEUIControlAnti:ShowAntiListMenu(panel, name)
 	local menu = AUIPlugin.AUIRightMenu()
 	menu:AddItem("复制并新建", Lua.Bind(self.HandleAntiListRightMenuCopyAnNew, self, panel, name))
 	menu:AddItem("删除", Lua.Bind(panel.DeleteAnti, panel, name))
 	menu:Show()
 end
 
-function IDEUIControlAnti:HandleAntiListRightMenuCopyAnNew(panel, name)
+function ALittleIDE.IDEUIControlAnti:HandleAntiListRightMenuCopyAnNew(panel, name)
 	local x, y
 	for index, child in ___ipairs(panel.anti_scroll_list.childs) do
 		if child.text == name then
@@ -1010,9 +1010,9 @@ function IDEUIControlAnti:HandleAntiListRightMenuCopyAnNew(panel, name)
 	end
 	panel:CopyAndNewAnti(old_name, new_name)
 end
-IDEUIControlAnti.HandleAntiListRightMenuCopyAnNew = Lua.CoWrap(IDEUIControlAnti.HandleAntiListRightMenuCopyAnNew)
+ALittleIDE.IDEUIControlAnti.HandleAntiListRightMenuCopyAnNew = Lua.CoWrap(ALittleIDE.IDEUIControlAnti.HandleAntiListRightMenuCopyAnNew)
 
-function IDEUIControlAnti:ShowAntiAntiMenu(item, child_index, rel_x)
+function ALittleIDE.IDEUIControlAnti:ShowAntiAntiMenu(item, child_index, rel_x)
 	local menu = AUIPlugin.AUIRightMenu()
 	menu:AddItem("插入Linear", Lua.Bind(item.Insert, item, rel_x, "LoopLinear"))
 	menu:AddItem("插入Rit", Lua.Bind(item.Insert, item, rel_x, "LoopRit"))
@@ -1021,7 +1021,7 @@ function IDEUIControlAnti:ShowAntiAntiMenu(item, child_index, rel_x)
 	menu:Show()
 end
 
-function IDEUIControlAnti:ShowAntiLoopMenu(loop_item)
+function ALittleIDE.IDEUIControlAnti:ShowAntiLoopMenu(loop_item)
 	local menu = AUIPlugin.AUIRightMenu()
 	menu:AddItem("插入Linear", Lua.Bind(loop_item.item.InsertBefore, loop_item.item, loop_item, "LoopLinear"))
 	menu:AddItem("插入Rit", Lua.Bind(loop_item.item.InsertBefore, loop_item.item, loop_item, "LoopRit"))
@@ -1030,3 +1030,4 @@ function IDEUIControlAnti:ShowAntiLoopMenu(loop_item)
 	menu:Show()
 end
 
+end

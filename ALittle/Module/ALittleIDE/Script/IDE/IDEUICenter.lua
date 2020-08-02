@@ -1,6 +1,6 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittleIDE", package.seeall)
-
+do
+if _G.ALittleIDE == nil then _G.ALittleIDE = {} end
 local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = ALittle.GetAllStruct()
@@ -49,9 +49,9 @@ option_map = {}
 })
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
-IDEUICenter = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDEUICenter")
+ALittleIDE.IDEUICenter = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDEUICenter")
 
-function IDEUICenter:TCtor()
+function ALittleIDE.IDEUICenter:TCtor()
 	self._project_edit_tab:DisableAllCloseButton()
 	self._project_edit_tab.tab_index = 1
 	self._control_tree_tab:DisableAllCloseButton()
@@ -64,58 +64,58 @@ function IDEUICenter:TCtor()
 	self._quick_edit_grid3.down_size = self._project_quick_tab.up_size
 	self._quick_fold_updown.selected = false
 	ALittle.TextRadioButton.SetGroup({self._tool_singleselect, self._tool_handdrag, self._tool_scale, self._tool_presee})
-	g_IDEProject:AddEventListener(___all_struct[-975432877], self, self.HandleProjectOpen)
+	ALittleIDE.g_IDEProject:AddEventListener(___all_struct[-975432877], self, self.HandleProjectOpen)
 end
 
-function IDEUICenter.__getter:control_tree()
+function ALittleIDE.IDEUICenter.__getter:control_tree()
 	return self._control_tree
 end
 
-function IDEUICenter.__getter:control_list()
+function ALittleIDE.IDEUICenter.__getter:control_list()
 	return self._control_list
 end
 
-function IDEUICenter.__getter:code_list()
+function ALittleIDE.IDEUICenter.__getter:code_list()
 	return self._code_list
 end
 
-function IDEUICenter.__getter:project_list()
+function ALittleIDE.IDEUICenter.__getter:project_list()
 	return self._project_list
 end
 
-function IDEUICenter.__getter:control_anti()
+function ALittleIDE.IDEUICenter.__getter:control_anti()
 	return self._control_anti
 end
 
-function IDEUICenter.__getter:content_edit()
+function ALittleIDE.IDEUICenter.__getter:content_edit()
 	return self._content_edit
 end
 
-function IDEUICenter.__getter:tool_ui()
+function ALittleIDE.IDEUICenter.__getter:tool_ui()
 	return self._tool_ui_container
 end
 
-function IDEUICenter.__getter:tool_code()
+function ALittleIDE.IDEUICenter.__getter:tool_code()
 	return self._tool_code_container
 end
 
-function IDEUICenter:System_SetVDragCursor(event)
+function ALittleIDE.IDEUICenter:System_SetVDragCursor(event)
 	ALittle.System_SetVDragCursor()
 end
 
-function IDEUICenter:System_SetNormalCursor(event)
+function ALittleIDE.IDEUICenter:System_SetNormalCursor(event)
 	ALittle.System_SetNormalCursor()
 end
 
-function IDEUICenter:System_SetHDragCursor(event)
+function ALittleIDE.IDEUICenter:System_SetHDragCursor(event)
 	ALittle.System_SetHDragCursor()
 end
 
-function IDEUICenter:System_SetHVDragCursor(event)
+function ALittleIDE.IDEUICenter:System_SetHVDragCursor(event)
 	ALittle.System_SetHVDragCursor()
 end
 
-function IDEUICenter:HandleLeftEditResizeDrag(event)
+function ALittleIDE.IDEUICenter:HandleLeftEditResizeDrag(event)
 	local up_size = self._right_edit_grid3.up_size
 	up_size = up_size + event.delta_x
 	local max_size = self._right_edit_grid3.width - self._right_edit_grid3.down_size - 50
@@ -128,7 +128,7 @@ function IDEUICenter:HandleLeftEditResizeDrag(event)
 	self._right_edit_grid3.up_size = up_size
 end
 
-function IDEUICenter:HandleControlEditResizeDrag(event)
+function ALittleIDE.IDEUICenter:HandleControlEditResizeDrag(event)
 	local up_size = self._control_edit_grid3.up_size
 	up_size = up_size + event.delta_y
 	local max_size = self._control_edit_grid3.height - self._control_edit_grid3.down_size - 50
@@ -141,7 +141,7 @@ function IDEUICenter:HandleControlEditResizeDrag(event)
 	self._control_edit_grid3.up_size = up_size
 end
 
-function IDEUICenter:HandleQuickEditResizeDrag(event)
+function ALittleIDE.IDEUICenter:HandleQuickEditResizeDrag(event)
 	local down_size = self._quick_edit_grid3.down_size
 	down_size = down_size - event.delta_y
 	local max_size = self._quick_edit_grid3.height - self._quick_edit_grid3.up_size - 50
@@ -154,7 +154,7 @@ function IDEUICenter:HandleQuickEditResizeDrag(event)
 	self._quick_edit_grid3.down_size = down_size
 end
 
-function IDEUICenter:HandleQuickFoldChanged(event)
+function ALittleIDE.IDEUICenter:HandleQuickFoldChanged(event)
 	if event.target.selected then
 		self._quick_edit_grid3.down_size = self._quick_edit_grid3_down_size
 	else
@@ -163,10 +163,10 @@ function IDEUICenter:HandleQuickFoldChanged(event)
 	end
 end
 
-function IDEUICenter:HandleShortcutKey()
+function ALittleIDE.IDEUICenter:HandleShortcutKey()
 	if A_UISystem.sym_map[27] then
-		if g_IDEAttrControlDialog.dialog.visible then
-			g_IDEAttrControlDialog:HideDialog()
+		if ALittleIDE.g_IDEAttrControlDialog.dialog.visible then
+			ALittleIDE.g_IDEAttrControlDialog:HideDialog()
 			return
 		end
 	end
@@ -186,16 +186,16 @@ function IDEUICenter:HandleShortcutKey()
 	end
 	local n = A_UISystem.sym_map[110]
 	if n then
-		g_IDECenter.center.control_list:ShowNewControl()
+		ALittleIDE.g_IDECenter.center.control_list:ShowNewControl()
 		return
 	end
 end
 
-function IDEUICenter:HandleUndoRevoke(event)
-	if g_IDEAttrEventDialog:IsShow() then
+function ALittleIDE.IDEUICenter:HandleUndoRevoke(event)
+	if ALittleIDE.g_IDEAttrEventDialog:IsShow() then
 		return
 	end
-	local tab_child = g_IDECenter.center.content_edit.cur_tab_child
+	local tab_child = ALittleIDE.g_IDECenter.center.content_edit.cur_tab_child
 	if tab_child == nil then
 		return
 	end
@@ -203,8 +203,8 @@ function IDEUICenter:HandleUndoRevoke(event)
 	tab_child:OnUndo()
 end
 
-function IDEUICenter:HandleDoRevoke(event)
-	local tab_child = g_IDECenter.center.content_edit.cur_tab_child
+function ALittleIDE.IDEUICenter:HandleDoRevoke(event)
+	local tab_child = ALittleIDE.g_IDECenter.center.content_edit.cur_tab_child
 	if tab_child == nil then
 		return
 	end
@@ -212,19 +212,19 @@ function IDEUICenter:HandleDoRevoke(event)
 	tab_child:OnRedo()
 end
 
-function IDEUICenter:HandleSaveCurrent(event)
-	local tab_child = g_IDECenter.center.content_edit.cur_tab_child
+function ALittleIDE.IDEUICenter:HandleSaveCurrent(event)
+	local tab_child = ALittleIDE.g_IDECenter.center.content_edit.cur_tab_child
 	if tab_child == nil then
 		return
 	end
 	tab_child.save = true
 end
 
-function IDEUICenter:HandleToolSingleSelect(event)
+function ALittleIDE.IDEUICenter:HandleToolSingleSelect(event)
 	local object = event.target
 	local op_event = {}
 	op_event.value = object.selected
-	g_IDECenter.center:DispatchEvent(___all_struct[-506107723], op_event)
+	ALittleIDE.g_IDECenter.center:DispatchEvent(___all_struct[-506107723], op_event)
 	self._tool_h_align_left.visible = object.selected
 	self._tool_h_align_center.visible = object.selected
 	self._tool_h_align_right.visible = object.selected
@@ -239,43 +239,43 @@ function IDEUICenter:HandleToolSingleSelect(event)
 	self._tool_v_align_bottom_icon.visible = object.selected
 end
 
-function IDEUICenter:HandleToolHandDrag(event)
+function ALittleIDE.IDEUICenter:HandleToolHandDrag(event)
 	local op_event = {}
 	op_event.value = event.target.selected
-	g_IDECenter.center:DispatchEvent(___all_struct[1299500288], op_event)
+	ALittleIDE.g_IDECenter.center:DispatchEvent(___all_struct[1299500288], op_event)
 end
 
-function IDEUICenter:HandleToolPreSee(event)
+function ALittleIDE.IDEUICenter:HandleToolPreSee(event)
 	local op_event = {}
 	op_event.value = event.target.selected
-	g_IDECenter.center:DispatchEvent(___all_struct[516695166], op_event)
+	ALittleIDE.g_IDECenter.center:DispatchEvent(___all_struct[516695166], op_event)
 end
 
-function IDEUICenter:HandleToolScale(event)
+function ALittleIDE.IDEUICenter:HandleToolScale(event)
 	local op_event = {}
 	op_event.value = event.target.selected
-	g_IDECenter.center:DispatchEvent(___all_struct[2103672497], op_event)
+	ALittleIDE.g_IDECenter.center:DispatchEvent(___all_struct[2103672497], op_event)
 	self._tool_scale_text.visible = event.target.selected
 	self._tool_scale_input.visible = event.target.selected
 end
 
-function IDEUICenter.__getter:singleselect()
+function ALittleIDE.IDEUICenter.__getter:singleselect()
 	return self._tool_singleselect.selected
 end
 
-function IDEUICenter.__getter:handdrag()
+function ALittleIDE.IDEUICenter.__getter:handdrag()
 	return self._tool_handdrag.selected
 end
 
-function IDEUICenter.__getter:scale()
+function ALittleIDE.IDEUICenter.__getter:scale()
 	return self._tool_scale.selected
 end
 
-function IDEUICenter:UpdateToolScale(scale)
+function ALittleIDE.IDEUICenter:UpdateToolScale(scale)
 	self._tool_scale_input.text = scale
 end
 
-function IDEUICenter:HandleToolScaleDrag(event)
+function ALittleIDE.IDEUICenter:HandleToolScaleDrag(event)
 	local scale = ALittle.Math_ToDouble(self._tool_scale_input.text)
 	if scale == nil then
 		scale = 1
@@ -290,16 +290,16 @@ function IDEUICenter:HandleToolScaleDrag(event)
 	self:DispatchEvent(___all_struct[1408180774], scale_event)
 end
 
-function IDEUICenter:HandleToolScaleMoveIn(event)
+function ALittleIDE.IDEUICenter:HandleToolScaleMoveIn(event)
 	ALittle.System_SetHDragCursor()
 end
 
-function IDEUICenter:HandleToolScaleMoveOut(event)
+function ALittleIDE.IDEUICenter:HandleToolScaleMoveOut(event)
 	ALittle.System_SetNormalCursor()
 end
 
-function IDEUICenter:HandleToolScaleInputFOCUSOUT(event)
-	local tab_child = g_IDECenter.center.content_edit.cur_tab_child
+function ALittleIDE.IDEUICenter:HandleToolScaleInputFOCUSOUT(event)
+	local tab_child = ALittleIDE.g_IDECenter.center.content_edit.cur_tab_child
 	if tab_child == nil then
 		return
 	end
@@ -316,8 +316,8 @@ function IDEUICenter:HandleToolScaleInputFOCUSOUT(event)
 	self:DispatchEvent(___all_struct[1408180774], scale_event)
 end
 
-function IDEUICenter:HandleToolHLAlign(event)
-	local cur_tab = g_IDECenter.center.content_edit.cur_tab
+function ALittleIDE.IDEUICenter:HandleToolHLAlign(event)
+	local cur_tab = ALittleIDE.g_IDECenter.center.content_edit.cur_tab
 	if cur_tab == nil then
 		return
 	end
@@ -337,49 +337,50 @@ function IDEUICenter:HandleToolHLAlign(event)
 	end
 end
 
-function IDEUICenter:HandleImageSelectClick(event)
-	if g_IDEProject.project == nil then
+function ALittleIDE.IDEUICenter:HandleImageSelectClick(event)
+	if ALittleIDE.g_IDEProject.project == nil then
 		g_AUITool:ShowNotice("提示", "请先打开项目")
 		return
 	end
-	g_IDEImageManagerDialog:SetBasePath(g_IDEProject.project.texture_path)
-	g_IDEImageManagerDialog:ShowDialog()
+	ALittleIDE.g_IDEImageManagerDialog:SetBasePath(ALittleIDE.g_IDEProject.project.texture_path)
+	ALittleIDE.g_IDEImageManagerDialog:ShowDialog()
 end
 
-function IDEUICenter:HandleTargetLanguageSelectChange(event)
-	if g_IDEProject.project == nil then
+function ALittleIDE.IDEUICenter:HandleTargetLanguageSelectChange(event)
+	if ALittleIDE.g_IDEProject.project == nil then
 		return
 	end
-	if g_IDEProject.project.code == nil then
+	if ALittleIDE.g_IDEProject.project.code == nil then
 		return
 	end
-	alittlescript.alittlescriptproject_settargetlanguage(g_IDEProject.project.code.project, event.target.text)
-	g_IDEProject.project.config:SetConfig("target_language", event.target.text)
+	alittlescript.alittlescriptproject_settargetlanguage(ALittleIDE.g_IDEProject.project.code.project, event.target.text)
+	ALittleIDE.g_IDEProject.project.config:SetConfig("target_language", event.target.text)
 end
 
-function IDEUICenter:HandleJumpNextCodeClick(event)
+function ALittleIDE.IDEUICenter:HandleJumpNextCodeClick(event)
 	local info = self._code_list:JumpNextCode()
 	if info == nil then
 		return
 	end
-	g_IDECenter.center.code_list:OpenByFullPath(info.file_path, info.it_line, info.it_char, nil, nil)
+	ALittleIDE.g_IDECenter.center.code_list:OpenByFullPath(info.file_path, info.it_line, info.it_char, nil, nil)
 end
 
-function IDEUICenter:HandleJumpPreCodeClick(event)
+function ALittleIDE.IDEUICenter:HandleJumpPreCodeClick(event)
 	local info = self._code_list:JumpPreCode()
 	if info == nil then
 		return
 	end
-	g_IDECenter.center.code_list:OpenByFullPath(info.file_path, info.it_line, info.it_char, nil, nil)
+	ALittleIDE.g_IDECenter.center.code_list:OpenByFullPath(info.file_path, info.it_line, info.it_char, nil, nil)
 end
 
-function IDEUICenter:HandleFindFileClick(event)
-	g_IDEProjectFindFileDialog:ShowFindFile()
+function ALittleIDE.IDEUICenter:HandleFindFileClick(event)
+	ALittleIDE.g_IDEProjectFindFileDialog:ShowFindFile()
 end
 
-function IDEUICenter:HandleProjectOpen(event)
+function ALittleIDE.IDEUICenter:HandleProjectOpen(event)
 	self._tool_ui_container.visible = false
 	self._tool_code_container.visible = false
-	self._tool_language.text = g_IDEProject.project.config:GetConfig("target_language", "Lua")
+	self._tool_language.text = ALittleIDE.g_IDEProject.project.config:GetConfig("target_language", "Lua")
 end
 
+end

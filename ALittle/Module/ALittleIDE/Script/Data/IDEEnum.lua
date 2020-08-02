@@ -1,14 +1,14 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittleIDE", package.seeall)
-
+do
+if _G.ALittleIDE == nil then _G.ALittleIDE = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-IDEEnum = Lua.Class(nil, "ALittleIDE.IDEEnum")
+ALittleIDE.IDEEnum = Lua.Class(nil, "ALittleIDE.IDEEnum")
 
-function IDEEnum:Ctor()
+function ALittleIDE.IDEEnum:Ctor()
 	___rawset(self, "xy_type", {})
 	self.xy_type[1] = "绝对位置"
 	self.xy_type[2] = "起始对齐"
@@ -135,7 +135,7 @@ function IDEEnum:Ctor()
 		if clazz == nil then
 			ALittle.Log("没有找到 " .. v .. " 这个类")
 		else
-			local object = ALittle.NewObject(clazz, g_Control)
+			local object = ALittle.NewObject(clazz, ALittleIDE.g_Control)
 			local class_info = (object).__class
 			local setter_list = class_info.__setter
 			local info = {}
@@ -198,4 +198,5 @@ function IDEEnum:Ctor()
 	end
 end
 
-g_IDEEnum = IDEEnum()
+ALittleIDE.g_IDEEnum = ALittleIDE.IDEEnum()
+end

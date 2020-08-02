@@ -1,6 +1,6 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___pairs = pairs
 local ___ipairs = ipairs
 
@@ -9,21 +9,21 @@ local insert = table.insert
 local remove = table.remove
 local maxn = table.maxn
 local sort = table.sort
-function List_MaxN(list)
+function ALittle.List_MaxN(list)
 	return maxn(list)
 end
 
-function List_Push(list, object)
+function ALittle.List_Push(list, object)
 	insert(list, object)
 end
 
-function List_PushList(list, other_list)
+function ALittle.List_PushList(list, other_list)
 	for index, other in ___ipairs(other_list) do
-		List_Push(list, other)
+		ALittle.List_Push(list, other)
 	end
 end
 
-function List_Find(list, object)
+function ALittle.List_Find(list, object)
 	for index, o in ___ipairs(list) do
 		if o == object then
 			return index
@@ -32,7 +32,7 @@ function List_Find(list, object)
 	return nil
 end
 
-function List_Copy(list)
+function ALittle.List_Copy(list)
 	local new_list = {}
 	for index, o in ___ipairs(list) do
 		new_list[index] = o
@@ -40,11 +40,11 @@ function List_Copy(list)
 	return new_list
 end
 
-function List_Insert(list, index, object)
+function ALittle.List_Insert(list, index, object)
 	insert(list, index, object)
 end
 
-function List_IndexOf(list, object)
+function ALittle.List_IndexOf(list, object)
 	for index, o in ___ipairs(list) do
 		if o == object then
 			return index
@@ -53,11 +53,11 @@ function List_IndexOf(list, object)
 	return nil
 end
 
-function List_Remove(list, index)
+function ALittle.List_Remove(list, index)
 	remove(list, index)
 end
 
-function List_Splice(list, index, count)
+function ALittle.List_Splice(list, index, count)
 	do
 		local endi = index + count
 		while list[endi] ~= nil do
@@ -73,7 +73,8 @@ function List_Splice(list, index, count)
 	end
 end
 
-function List_Sort(list, cmp)
+function ALittle.List_Sort(list, cmp)
 	sort(list, cmp)
 end
 
+end

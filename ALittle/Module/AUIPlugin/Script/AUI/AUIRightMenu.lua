@@ -1,6 +1,6 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("AUIPlugin", package.seeall)
-
+do
+if _G.AUIPlugin == nil then _G.AUIPlugin = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
@@ -25,13 +25,13 @@ type_list = {"ALittle.DisplayObject","bool"},
 option_map = {}
 })
 
-AUIRightMenu = Lua.Class(nil, "AUIPlugin.AUIRightMenu")
+AUIPlugin.AUIRightMenu = Lua.Class(nil, "AUIPlugin.AUIRightMenu")
 
-function AUIRightMenu:Ctor()
+function AUIPlugin.AUIRightMenu:Ctor()
 	___rawset(self, "_info_list", {})
 end
 
-function AUIRightMenu:AddItem(name, callback, disabled, auto_hide)
+function AUIPlugin.AUIRightMenu:AddItem(name, callback, disabled, auto_hide)
 	if name == nil then
 		name = ""
 	end
@@ -49,12 +49,12 @@ function AUIRightMenu:AddItem(name, callback, disabled, auto_hide)
 	ALittle.List_Push(self._info_list, info)
 end
 
-function AUIRightMenu:Show(target)
+function AUIPlugin.AUIRightMenu:Show(target)
 	if self._menu == nil then
-		self._menu = g_Control:CreateControl("ide_common_menu", self)
+		self._menu = AUIPlugin.g_Control:CreateControl("ide_common_menu", self)
 		local max_width = 0.0
 		for index, info in ___ipairs(self._info_list) do
-			local item = g_Control:CreateControl("ide_common_item_button")
+			local item = AUIPlugin.g_Control:CreateControl("ide_common_item_button")
 			item.text = info.name
 			if item.show_text ~= nil and item.show_text.width > max_width then
 				max_width = item.show_text.width
@@ -84,13 +84,13 @@ function AUIRightMenu:Show(target)
 	A_LayerManager:ShowFromRight(self._menu)
 end
 
-function AUIRightMenu:Hide()
+function AUIPlugin.AUIRightMenu:Hide()
 	if self._menu ~= nil then
 		A_LayerManager:HideFromRight(self._menu)
 	end
 end
 
-function AUIRightMenu:HandleItemClick(event)
+function AUIPlugin.AUIRightMenu:HandleItemClick(event)
 	local info = event.target._user_data
 	if info.auto_hide then
 		self:Hide()
@@ -100,3 +100,4 @@ function AUIRightMenu:HandleItemClick(event)
 	end
 end
 
+end

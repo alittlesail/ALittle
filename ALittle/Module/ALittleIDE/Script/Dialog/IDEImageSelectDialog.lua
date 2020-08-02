@@ -1,6 +1,6 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittleIDE", package.seeall)
-
+do
+if _G.ALittleIDE == nil then _G.ALittleIDE = {} end
 local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = ALittle.GetAllStruct()
@@ -19,14 +19,14 @@ option_map = {}
 })
 
 assert(AUIPlugin.AUIFileSelectDialog, " extends class:AUIPlugin.AUIFileSelectDialog is nil")
-IDEImageSelectDialog = Lua.Class(AUIPlugin.AUIFileSelectDialog, "ALittleIDE.IDEImageSelectDialog")
+ALittleIDE.IDEImageSelectDialog = Lua.Class(AUIPlugin.AUIFileSelectDialog, "ALittleIDE.IDEImageSelectDialog")
 
-function IDEImageSelectDialog:Ctor(title, layer, ext_list)
-	g_IDEProject:AddEventListener(___all_struct[-332308624], self, self.HandleCloseProject)
+function ALittleIDE.IDEImageSelectDialog:Ctor(title, layer, ext_list)
+	ALittleIDE.g_IDEProject:AddEventListener(___all_struct[-332308624], self, self.HandleCloseProject)
 	self:AddEventListener(___all_struct[1821709712], self, self.HandleImageSelectRButtonDown)
 end
 
-function IDEImageSelectDialog:HandleCloseProject(event)
+function ALittleIDE.IDEImageSelectDialog:HandleCloseProject(event)
 	if self._dialog == nil then
 		return
 	end
@@ -34,7 +34,7 @@ function IDEImageSelectDialog:HandleCloseProject(event)
 	self:HideDialog()
 end
 
-function IDEImageSelectDialog:HandleImageSelectRButtonDown(event)
+function ALittleIDE.IDEImageSelectDialog:HandleImageSelectRButtonDown(event)
 	A_LayerManager:RemoveFromTip(self._image_pre_dialog)
 	local ext = ALittle.File_GetFileExtByPathAndUpper(event.path)
 	if ext ~= "PNG" and ext ~= "JPG" then
@@ -51,8 +51,8 @@ function IDEImageSelectDialog:HandleImageSelectRButtonDown(event)
 	menu:Show()
 end
 
-function IDEImageSelectDialog:HandleImageCopyGrid9ImageCodeClick(event)
-	local display_info = IDEUIUtility_GenerateGrid9ImageInfo(g_IDEProject.project.texture_path .. "/", event.path)
+function ALittleIDE.IDEImageSelectDialog:HandleImageCopyGrid9ImageCodeClick(event)
+	local display_info = ALittleIDE.IDEUIUtility_GenerateGrid9ImageInfo(ALittleIDE.g_IDEProject.project.texture_path .. "/", event.path)
 	if display_info == nil then
 		g_AUITool:ShowNotice("错误", "图片加载失败:" .. event.path)
 		return
@@ -65,7 +65,7 @@ function IDEImageSelectDialog:HandleImageCopyGrid9ImageCodeClick(event)
 	ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list))
 end
 
-function IDEImageSelectDialog:HandleImageCopyImageCodeClick(event)
+function ALittleIDE.IDEImageSelectDialog:HandleImageCopyImageCodeClick(event)
 	local width = 100
 	local height = 100
 	local surface = ALittle.System_LoadSurface(self._base_path .. "/" .. event.path)
@@ -89,11 +89,11 @@ function IDEImageSelectDialog:HandleImageCopyImageCodeClick(event)
 	ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list))
 end
 
-function IDEImageSelectDialog:HandleImageEditClick(event)
-	g_IDEEditImageDialog:ShowDialog(self._base_path .. "/" .. event.path, self._base_path)
+function ALittleIDE.IDEImageSelectDialog:HandleImageEditClick(event)
+	ALittleIDE.g_IDEEditImageDialog:ShowDialog(self._base_path .. "/" .. event.path, self._base_path)
 end
 
-function IDEImageSelectDialog:HandleImageDeleteClick(event)
+function ALittleIDE.IDEImageSelectDialog:HandleImageDeleteClick(event)
 	local tittle = "确定要永久删除该文件吗？"
 	if event.directory then
 		tittle = "确定要永久删除该文件夹，以及子文件吗？"
@@ -108,8 +108,9 @@ function IDEImageSelectDialog:HandleImageDeleteClick(event)
 		self:Refresh()
 	end
 end
-IDEImageSelectDialog.HandleImageDeleteClick = Lua.CoWrap(IDEImageSelectDialog.HandleImageDeleteClick)
+ALittleIDE.IDEImageSelectDialog.HandleImageDeleteClick = Lua.CoWrap(ALittleIDE.IDEImageSelectDialog.HandleImageDeleteClick)
 
-g_IDEImageManagerDialog = IDEImageSelectDialog("图片选择器", nil, {"PNG", "JPG"})
-g_IDEImageSelectDialog = IDEImageSelectDialog("图片选择器", g_DialogLayer, {"PNG", "JPG"})
-g_IDEEditImageDialog = AUIPlugin.AUIEditImageDialog()
+ALittleIDE.g_IDEImageManagerDialog = ALittleIDE.IDEImageSelectDialog("图片选择器", nil, {"PNG", "JPG"})
+ALittleIDE.g_IDEImageSelectDialog = ALittleIDE.IDEImageSelectDialog("图片选择器", ALittleIDE.g_DialogLayer, {"PNG", "JPG"})
+ALittleIDE.g_IDEEditImageDialog = AUIPlugin.AUIEditImageDialog()
+end

@@ -1,20 +1,20 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittleIDE", package.seeall)
-
+do
+if _G.ALittleIDE == nil then _G.ALittleIDE = {} end
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-IDEProjectExportDialog = Lua.Class(nil, "ALittleIDE.IDEProjectExportDialog")
+ALittleIDE.IDEProjectExportDialog = Lua.Class(nil, "ALittleIDE.IDEProjectExportDialog")
 
-function IDEProjectExportDialog:ShowExportProject()
-	if g_IDEProject.project == nil then
+function ALittleIDE.IDEProjectExportDialog:ShowExportProject()
+	if ALittleIDE.g_IDEProject.project == nil then
 		g_AUITool:ShowNotice("错误", "当前没有打开的项目")
 		return
 	end
 	if self._export_dialog == nil then
-		self._export_dialog = g_Control:CreateControl("ide_export_dialog", self)
-		g_DialogLayer:AddChild(self._export_dialog)
+		self._export_dialog = ALittleIDE.g_Control:CreateControl("ide_export_dialog", self)
+		ALittleIDE.g_DialogLayer:AddChild(self._export_dialog)
 		self._main_export_tab:DisableAllCloseButton()
 		self._main_export_tab.tab_index = 1
 	end
@@ -26,4 +26,5 @@ function IDEProjectExportDialog:ShowExportProject()
 	self._export_wechat:LoadConfigImpl()
 end
 
-g_IDEProjectExportDialog = IDEProjectExportDialog()
+ALittleIDE.g_IDEProjectExportDialog = ALittleIDE.IDEProjectExportDialog()
+end

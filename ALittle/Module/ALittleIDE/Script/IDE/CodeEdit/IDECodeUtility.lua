@@ -1,6 +1,6 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittleIDE", package.seeall)
-
+do
+if _G.ALittleIDE == nil then _G.ALittleIDE = {} end
 local ___pairs = pairs
 local ___ipairs = ipairs
 
@@ -11,3 +11,4 @@ type_list = {"string","string","string","string","bool","Map<ALittle.TextRadioBu
 option_map = {}
 })
 
+end

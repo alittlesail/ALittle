@@ -1,41 +1,42 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-LoopObject = Lua.Class(nil, "ALittle.LoopObject")
+ALittle.LoopObject = Lua.Class(nil, "ALittle.LoopObject")
 
-function LoopObject:IsCompleted()
+function ALittle.LoopObject:IsCompleted()
 	return true
 end
 
-function LoopObject:Completed()
+function ALittle.LoopObject:Completed()
 end
 
-function LoopObject:Update(frame_time)
+function ALittle.LoopObject:Update(frame_time)
 end
 
-function LoopObject:Reset()
+function ALittle.LoopObject:Reset()
 end
 
-function LoopObject:SetTime(time)
+function ALittle.LoopObject:SetTime(time)
 	return time, true
 end
 
-function LoopObject:SetCompleted()
+function ALittle.LoopObject:SetCompleted()
 end
 
-function LoopObject:Dispose(deep)
+function ALittle.LoopObject:Dispose(deep)
 	self:Stop()
 end
 
-function LoopObject:Start()
+function ALittle.LoopObject:Start()
 	A_LuaLoopSystem:AddUpdater(self)
 end
 
-function LoopObject:Stop()
+function ALittle.LoopObject:Stop()
 	A_LuaLoopSystem:RemoveUpdater(self)
 end
 
+end

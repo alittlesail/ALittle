@@ -1,15 +1,15 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
 assert(ALittle.LoopObject, " extends class:ALittle.LoopObject is nil")
-LoopTimer = Lua.Class(ALittle.LoopObject, "ALittle.LoopTimer")
+ALittle.LoopTimer = Lua.Class(ALittle.LoopObject, "ALittle.LoopTimer")
 
-function LoopTimer:Ctor(func, delay_time)
+function ALittle.LoopTimer:Ctor(func, delay_time)
 	___rawset(self, "_func", func)
 	if delay_time == nil or delay_time < 0 then
 		delay_time = 0
@@ -20,36 +20,36 @@ function LoopTimer:Ctor(func, delay_time)
 	if self._func == nil then
 		___rawset(self, "_accumulate_count", 1)
 		___rawset(self, "_accumulate_delay_time", self._total_delay_time)
-		Log("LoopTimer create failed:function is nil or not a function")
+		ALittle.Log("LoopTimer create failed:function is nil or not a function")
 		return
 	end
 	___rawset(self, "_complete_callback", nil)
 end
 
-function LoopTimer.__getter:complete_callback()
+function ALittle.LoopTimer.__getter:complete_callback()
 	return self._complete_callback
 end
 
-function LoopTimer.__setter:complete_callback(value)
+function ALittle.LoopTimer.__setter:complete_callback(value)
 	self._complete_callback = value
 end
 
-function LoopTimer:Reset()
+function ALittle.LoopTimer:Reset()
 	self._accumulate_count = 0
 	self._accumulate_delay_time = 0
 end
 
-function LoopTimer:Completed()
+function ALittle.LoopTimer:Completed()
 	if self._complete_callback ~= nil then
 		self._complete_callback()
 	end
 end
 
-function LoopTimer:IsCompleted()
+function ALittle.LoopTimer:IsCompleted()
 	return self._accumulate_count >= 1
 end
 
-function LoopTimer:SetCompleted()
+function ALittle.LoopTimer:SetCompleted()
 	if self._accumulate_count >= 1 then
 		return
 	end
@@ -58,7 +58,7 @@ function LoopTimer:SetCompleted()
 	self._func()
 end
 
-function LoopTimer:SetTime(time)
+function ALittle.LoopTimer:SetTime(time)
 	self._accumulate_count = 0
 	self._accumulate_delay_time = 0
 	if time <= 0 then
@@ -74,7 +74,7 @@ function LoopTimer:SetTime(time)
 	return time - self._total_delay_time, true
 end
 
-function LoopTimer:Update(frame_time)
+function ALittle.LoopTimer:Update(frame_time)
 	if self._accumulate_delay_time < self._total_delay_time then
 		self._accumulate_delay_time = self._accumulate_delay_time + (frame_time)
 		if self._accumulate_delay_time < self._total_delay_time then
@@ -89,3 +89,4 @@ function LoopTimer:Update(frame_time)
 	self._func()
 end
 
+end

@@ -1,35 +1,35 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-function File_BaseFilePath()
+function ALittle.File_BaseFilePath()
 	return __CPPAPI_ScriptSystemEx:BaseFilePath()
 end
 
-function File_ExternalFilePath()
+function ALittle.File_ExternalFilePath()
 	return __CPPAPI_ScriptSystemEx:ExternalFilePath()
 end
 
-function File_CopyFile(src_path, dst_path)
+function ALittle.File_CopyFile(src_path, dst_path)
 	return __CPPAPI_CopyFile(src_path, dst_path, false)
 end
 
-function File_CopyFileFromAsset(src_path, dst_path)
+function ALittle.File_CopyFileFromAsset(src_path, dst_path)
 	return __CPPAPI_CopyFile(src_path, dst_path, true)
 end
 
-function File_SaveFile(target_path, content, size)
+function ALittle.File_SaveFile(target_path, content, size)
 	return __CPPAPI_SaveFile(target_path, content, size)
 end
 
-function File_MD5(path)
+function ALittle.File_MD5(path)
 	return __CPPAPI_ScriptSystemEx:FileMD5(path)
 end
 
-function File_CopyDeepDir(src_path, dest_path, ext, log)
+function ALittle.File_CopyDeepDir(src_path, dest_path, ext, log)
 	do
 		local upper_ext = nil
 		if ext ~= nil then
@@ -42,12 +42,12 @@ function File_CopyDeepDir(src_path, dest_path, ext, log)
 				local attr = lfs.attributes(src_file_path)
 				if attr.mode == "directory" then
 					lfs.mkdir(dest_file_path)
-					File_CopyDeepDir(src_file_path, dest_file_path, upper_ext, log)
+					ALittle.File_CopyDeepDir(src_file_path, dest_file_path, upper_ext, log)
 				else
-					if upper_ext == nil or File_GetFileExtByPathAndUpper(src_file_path) == upper_ext then
-						File_CopyFile(src_file_path, dest_file_path)
+					if upper_ext == nil or ALittle.File_GetFileExtByPathAndUpper(src_file_path) == upper_ext then
+						ALittle.File_CopyFile(src_file_path, dest_file_path)
 						if log then
-							Log("copy file:", src_file_path, dest_file_path)
+							ALittle.Log("copy file:", src_file_path, dest_file_path)
 						end
 					end
 				end
@@ -56,7 +56,7 @@ function File_CopyDeepDir(src_path, dest_path, ext, log)
 	end
 end
 
-function File_ReadTextFromFile(file_path, crypt_mode)
+function ALittle.File_ReadTextFromFile(file_path, crypt_mode)
 	do
 		local file = __CPPAPILocalFile()
 		file:SetPath(file_path)
@@ -72,11 +72,11 @@ function File_ReadTextFromFile(file_path, crypt_mode)
 	end
 end
 
-function File_WriteTextToFile(content, file_path)
-	return File_SaveFile(file_path, content, -1)
+function ALittle.File_WriteTextToFile(content, file_path)
+	return ALittle.File_SaveFile(file_path, content, -1)
 end
 
-function File_ReadJsonFromFile(file_path, crypt_mode)
+function ALittle.File_ReadJsonFromFile(file_path, crypt_mode)
 	do
 		local file = __CPPAPILocalFile()
 		file:SetPath(file_path)
@@ -96,7 +96,7 @@ function File_ReadJsonFromFile(file_path, crypt_mode)
 	end
 end
 
-function File_ReadJsonFromAsset(file_path, crypt_mode)
+function ALittle.File_ReadJsonFromAsset(file_path, crypt_mode)
 	do
 		local file = __CPPAPILocalFile()
 		file:SetPath(file_path)
@@ -116,17 +116,17 @@ function File_ReadJsonFromAsset(file_path, crypt_mode)
 	end
 end
 
-function File_WriteJsonToFile(content, file_path)
-	return File_SaveFile(file_path, json.encode(content), -1)
+function ALittle.File_WriteJsonToFile(content, file_path)
+	return ALittle.File_SaveFile(file_path, json.encode(content), -1)
 end
 
-function DeleteLog(day_count_before)
+function ALittle.DeleteLog(day_count_before)
 	do
 		if day_count_before <= 0 then
 			return
 		end
-		local log_path = File_ExternalFilePath() .. "Log"
-		if File_GetFileAttr(log_path) == nil then
+		local log_path = ALittle.File_ExternalFilePath() .. "Log"
+		if ALittle.File_GetFileAttr(log_path) == nil then
 			return
 		end
 		local time_table = os.date("*t")
@@ -143,8 +143,9 @@ function DeleteLog(day_count_before)
 			end
 		end
 		for k, v in ___ipairs(delete_list) do
-			File_DeleteFile(File_ExternalFilePath() .. "Log/" .. v)
+			ALittle.File_DeleteFile(ALittle.File_ExternalFilePath() .. "Log/" .. v)
 		end
 	end
 end
 
+end

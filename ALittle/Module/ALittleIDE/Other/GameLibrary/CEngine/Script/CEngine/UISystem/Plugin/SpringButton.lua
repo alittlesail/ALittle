@@ -1,16 +1,16 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___all_struct = GetAllStruct()
+local ___all_struct = ALittle.GetAllStruct()
 
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
-SpringButton = Lua.Class(ALittle.DisplayLayout, "ALittle.SpringButton")
+ALittle.SpringButton = Lua.Class(ALittle.DisplayLayout, "ALittle.SpringButton")
 
-function SpringButton:Ctor(ctrl_sys)
+function ALittle.SpringButton:Ctor(ctrl_sys)
 	___rawset(self, "_big_or_small", false)
 	self:AddEventListener(___all_struct[544684311], self, self.HandleMoveIn)
 	self:AddEventListener(___all_struct[-1202439334], self, self.HandleMoveOut)
@@ -25,22 +25,22 @@ function SpringButton:Ctor(ctrl_sys)
 	___rawset(self, "_pickup_child", false)
 end
 
-function SpringButton.__getter:text()
+function ALittle.SpringButton.__getter:text()
 	if self._show_text == nil then
 		return ""
 	end
 	return self._show_text.text
 end
 
-function SpringButton.__setter:text(text)
+function ALittle.SpringButton.__setter:text(text)
 	if self._show_text == nil then
 		return
 	end
 	self._show_text.text = text
 end
 
-function SpringButton.__setter:disabled(value)
-	DisplayObject.__setter.disabled(self, value)
+function ALittle.SpringButton.__setter:disabled(value)
+	ALittle.DisplayObject.__setter.disabled(self, value)
 	if value then
 		self:ShowDisabled()
 	else
@@ -48,24 +48,24 @@ function SpringButton.__setter:disabled(value)
 	end
 end
 
-function SpringButton:HandleMoveIn(event)
+function ALittle.SpringButton:HandleMoveIn(event)
 	self:ShowOver()
 end
 
-function SpringButton:HandleMoveOut(event)
+function ALittle.SpringButton:HandleMoveOut(event)
 	self:ShowUp(nil)
 end
 
-function SpringButton:HandleLButtonDown(event)
+function ALittle.SpringButton:HandleLButtonDown(event)
 	self:ShowDown()
 end
 
-function SpringButton:HandleLButtonUp(event)
+function ALittle.SpringButton:HandleLButtonUp(event)
 	if event.rel_x >= 0 and event.rel_y >= 0 and event.rel_x < event.target._width and event.rel_y < event.target._height then
 		local e = {}
 		e.is_drag = event.is_drag
 		self:DispatchEvent(___all_struct[-449066808], e)
-		if System_IsPhone == false then
+		if ALittle.System_IsPhone == false then
 			self:ShowOver()
 		else
 			self:ShowUp(nil)
@@ -75,16 +75,16 @@ function SpringButton:HandleLButtonUp(event)
 	end
 end
 
-function SpringButton:HandleMButtonDown(event)
+function ALittle.SpringButton:HandleMButtonDown(event)
 	self:ShowDown()
 end
 
-function SpringButton:HandleMButtonUp(event)
+function ALittle.SpringButton:HandleMButtonUp(event)
 	if event.rel_x >= 0 and event.rel_y >= 0 and event.rel_x < event.target._width and event.rel_y < event.target._height then
 		local e = {}
 		e.is_drag = event.is_drag
 		self:DispatchEvent(___all_struct[-1330840], e)
-		if System_IsPhone == false then
+		if ALittle.System_IsPhone == false then
 			self:ShowOver()
 		else
 			self:ShowUp(nil)
@@ -94,13 +94,13 @@ function SpringButton:HandleMButtonUp(event)
 	end
 end
 
-function SpringButton:HandleFButtonDown(event)
+function ALittle.SpringButton:HandleFButtonDown(event)
 	if event.is_sfc == false then
 		self:ShowDown()
 	end
 end
 
-function SpringButton:HandleFButtonUp(event)
+function ALittle.SpringButton:HandleFButtonUp(event)
 	if event.rel_x >= 0 and event.rel_y >= 0 and event.rel_x < event.target._width and event.rel_y < event.target._height then
 		local e = {}
 		e.is_drag = event.is_drag
@@ -111,7 +111,7 @@ function SpringButton:HandleFButtonUp(event)
 	end
 end
 
-function SpringButton:ScaleTo(big_or_small, time_in_ms)
+function ALittle.SpringButton:ScaleTo(big_or_small, time_in_ms)
 	if self._big_or_small == big_or_small then
 		return
 	end
@@ -124,13 +124,13 @@ function SpringButton:ScaleTo(big_or_small, time_in_ms)
 		self._anti_loop:Stop()
 		self._anti_loop = nil
 	end
-	self._anti_loop = LoopGroup()
-	self._anti_loop:AddUpdater(LoopLinear(self, "scale_x", scale, time_in_ms, 1))
-	self._anti_loop:AddUpdater(LoopLinear(self, "scale_y", scale, time_in_ms, 1))
+	self._anti_loop = ALittle.LoopGroup()
+	self._anti_loop:AddUpdater(ALittle.LoopLinear(self, "scale_x", scale, time_in_ms, 1))
+	self._anti_loop:AddUpdater(ALittle.LoopLinear(self, "scale_y", scale, time_in_ms, 1))
 	self._anti_loop:Start()
 end
 
-function SpringButton:ShowUp(event)
+function ALittle.SpringButton:ShowUp(event)
 	if self._abs_disabled or self._disabled then
 		return
 	end
@@ -143,7 +143,7 @@ function SpringButton:ShowUp(event)
 	self:ScaleTo(false, 200)
 end
 
-function SpringButton:ShowDown()
+function ALittle.SpringButton:ShowDown()
 	if self._abs_disabled or self._disabled then
 		return
 	end
@@ -156,7 +156,7 @@ function SpringButton:ShowDown()
 	self:ScaleTo(true, 200)
 end
 
-function SpringButton:ShowOver()
+function ALittle.SpringButton:ShowOver()
 	if self._abs_disabled or self._disabled then
 		return
 	end
@@ -169,7 +169,7 @@ function SpringButton:ShowOver()
 	self:ScaleTo(false, 200)
 end
 
-function SpringButton:ShowDisabled()
+function ALittle.SpringButton:ShowDisabled()
 	self:ScaleTo(false, 200)
 	if self._show_up ~= nil then
 		self._show_up.visible = false
@@ -181,3 +181,4 @@ function SpringButton:ShowDisabled()
 	end
 end
 
+end

@@ -1,15 +1,15 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("Emulator", package.seeall)
-
+do
+if _G.Emulator == nil then _G.Emulator = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
 assert(Emulator.IDETreeLogic, " extends class:Emulator.IDETreeLogic is nil")
-IDETreeValueMapValue = Lua.Class(Emulator.IDETreeLogic, "Emulator.IDETreeValueMapValue")
+Emulator.IDETreeValueMapValue = Lua.Class(Emulator.IDETreeLogic, "Emulator.IDETreeValueMapValue")
 
-function IDETreeValueMapValue:Ctor(ctrl_sys, root, parent, rflct, msg, key_field, value_field)
+function Emulator.IDETreeValueMapValue:Ctor(ctrl_sys, root, parent, rflct, msg, key_field, value_field)
 	___rawset(self, "_parent", parent)
 	___rawset(self, "_rflct", rflct)
 	___rawset(self, "_msg", msg)
@@ -39,7 +39,7 @@ function IDETreeValueMapValue:Ctor(ctrl_sys, root, parent, rflct, msg, key_field
 	self._delete_button.disabled = root.for_show
 end
 
-function IDETreeValueMapValue:RefreshKey()
+function Emulator.IDETreeValueMapValue:RefreshKey()
 	if self._key_cpp_type == 1 then
 		return protobuf.reflection_getint32(self._rflct, self._msg, self._key_field)
 	elseif self._key_cpp_type == 3 then
@@ -58,7 +58,7 @@ function IDETreeValueMapValue:RefreshKey()
 	return nil
 end
 
-function IDETreeValueMapValue:RefreshValue()
+function Emulator.IDETreeValueMapValue:RefreshValue()
 	if self._value_cpp_type == 1 then
 		return protobuf.reflection_getint32(self._rflct, self._msg, self._value_field)
 	elseif self._value_cpp_type == 3 then
@@ -77,7 +77,7 @@ function IDETreeValueMapValue:RefreshValue()
 	return nil
 end
 
-function IDETreeValueMapValue:HandleKeyInputFocusOut(event)
+function Emulator.IDETreeValueMapValue:HandleKeyInputFocusOut(event)
 	local text = self._key_input.text
 	if self._key_cpp_type == 1 then
 		protobuf.reflection_setint32(self._rflct, self._msg, self._key_field, ALittle.Math_ToIntOrZero(text))
@@ -99,7 +99,7 @@ function IDETreeValueMapValue:HandleKeyInputFocusOut(event)
 	self:Save()
 end
 
-function IDETreeValueMapValue:HandleValueInputFocusOut(event)
+function Emulator.IDETreeValueMapValue:HandleValueInputFocusOut(event)
 	local text = self._value_input.text
 	if self._value_cpp_type == 1 then
 		protobuf.reflection_setint32(self._rflct, self._msg, self._value_field, ALittle.Math_ToIntOrZero(text))
@@ -121,11 +121,12 @@ function IDETreeValueMapValue:HandleValueInputFocusOut(event)
 	self:Save()
 end
 
-function IDETreeValueMapValue:HandleInsertClick(event)
+function Emulator.IDETreeValueMapValue:HandleInsertClick(event)
 	self._parent:CreateOneBefore(self)
 end
 
-function IDETreeValueMapValue:HandleDeleteClick(event)
+function Emulator.IDETreeValueMapValue:HandleDeleteClick(event)
 	self._parent:Delete(self)
 end
 
+end

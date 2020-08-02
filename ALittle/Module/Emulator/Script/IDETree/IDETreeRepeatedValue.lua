@@ -1,15 +1,15 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("Emulator", package.seeall)
-
+do
+if _G.Emulator == nil then _G.Emulator = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
 assert(Emulator.IDETreeLogic, " extends class:Emulator.IDETreeLogic is nil")
-IDETreeRepeatedValue = Lua.Class(Emulator.IDETreeLogic, "Emulator.IDETreeRepeatedValue")
+Emulator.IDETreeRepeatedValue = Lua.Class(Emulator.IDETreeLogic, "Emulator.IDETreeRepeatedValue")
 
-function IDETreeRepeatedValue:Ctor(ctrl_sys, root, parent, rflct, msg, field, index)
+function Emulator.IDETreeRepeatedValue:Ctor(ctrl_sys, root, parent, rflct, msg, field, index)
 	___rawset(self, "_parent", parent)
 	___rawset(self, "_rflct", rflct)
 	___rawset(self, "_msg", msg)
@@ -32,7 +32,7 @@ function IDETreeRepeatedValue:Ctor(ctrl_sys, root, parent, rflct, msg, field, in
 	self._delete_button.disabled = root.for_show
 end
 
-function IDETreeRepeatedValue:RefreshValue(index)
+function Emulator.IDETreeRepeatedValue:RefreshValue(index)
 	if self._cpp_type == 1 then
 		return protobuf.reflection_getrepeatedint32(self._rflct, self._msg, self._field, index)
 	elseif self._cpp_type == 3 then
@@ -51,7 +51,7 @@ function IDETreeRepeatedValue:RefreshValue(index)
 	return nil
 end
 
-function IDETreeRepeatedValue:HandleInputFocusOut(event)
+function Emulator.IDETreeRepeatedValue:HandleInputFocusOut(event)
 	local text = self._value_input.text
 	local index = self._parent:GetChildIndex(self) - 1
 	if self._cpp_type == 1 then
@@ -74,11 +74,12 @@ function IDETreeRepeatedValue:HandleInputFocusOut(event)
 	self:Save()
 end
 
-function IDETreeRepeatedValue:HandleInsertClick(event)
+function Emulator.IDETreeRepeatedValue:HandleInsertClick(event)
 	self._parent:CreateOneBefore(self)
 end
 
-function IDETreeRepeatedValue:HandleDeleteClick(event)
+function Emulator.IDETreeRepeatedValue:HandleDeleteClick(event)
 	self._parent:Delete(self)
 end
 
+end

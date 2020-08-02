@@ -1,15 +1,15 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
 assert(ALittle.IMsgCommonTemplate, " extends class:ALittle.IMsgCommonTemplate is nil")
-MsgReceiverTemplate = Lua.Class(ALittle.IMsgCommonTemplate, "ALittle.MsgReceiverTemplate")
+ALittle.MsgReceiverTemplate = Lua.Class(ALittle.IMsgCommonTemplate, "ALittle.MsgReceiverTemplate")
 
-function MsgReceiverTemplate:Ctor(client_id, remote_ip, remote_port)
+function ALittle.MsgReceiverTemplate:Ctor(client_id, remote_ip, remote_port)
 	___rawset(self, "_interface", self.__class.__element[1]())
 	self._interface:SetID(client_id)
 	___rawset(self, "_write_factory", self.__class.__element[2]())
@@ -23,28 +23,28 @@ function MsgReceiverTemplate:Ctor(client_id, remote_ip, remote_port)
 	___rawset(self, "_web_is_logining", false)
 end
 
-function MsgReceiverTemplate.__getter:remote_ip()
+function ALittle.MsgReceiverTemplate.__getter:remote_ip()
 	return self._remote_ip
 end
 
-function MsgReceiverTemplate.__getter:remote_port()
+function ALittle.MsgReceiverTemplate.__getter:remote_port()
 	return self._remote_port
 end
 
-function MsgReceiverTemplate:IsConnected()
+function ALittle.MsgReceiverTemplate:IsConnected()
 	return self._is_connected
 end
 
-function MsgReceiverTemplate:HandleConnected()
+function ALittle.MsgReceiverTemplate:HandleConnected()
 	self._is_connected = true
 end
 
-function MsgReceiverTemplate:HandleDisconnected()
+function ALittle.MsgReceiverTemplate:HandleDisconnected()
 	self._is_connected = false
 	self:ClearRPC("连接断开了")
 end
 
-function MsgReceiverTemplate:Close(reason)
+function ALittle.MsgReceiverTemplate:Close(reason)
 	if not self._is_connected then
 		return
 	end
@@ -56,3 +56,4 @@ function MsgReceiverTemplate:Close(reason)
 	self._interface:Close()
 end
 
+end

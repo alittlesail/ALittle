@@ -1,16 +1,16 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-local __cos = Math_Cos
-local __sin = Math_Sin
-Matrix2D = Lua.Class(nil, "ALittle.Matrix2D")
+local __cos = ALittle.Math_Cos
+local __sin = ALittle.Math_Sin
+ALittle.Matrix2D = Lua.Class(nil, "ALittle.Matrix2D")
 
-function Matrix2D:Ctor()
+function ALittle.Matrix2D:Ctor()
 	local m = {}
 	m[0] = {}
 	m[1] = {}
@@ -19,7 +19,7 @@ function Matrix2D:Ctor()
 	self:SetIdentity()
 end
 
-function Matrix2D:SetIdentity()
+function ALittle.Matrix2D:SetIdentity()
 	local m = self._m
 	m[0][0] = 1
 	m[0][1] = 0
@@ -32,7 +32,7 @@ function Matrix2D:SetIdentity()
 	m[2][2] = 1
 end
 
-function Matrix2D:SetRotate(rad)
+function ALittle.Matrix2D:SetRotate(rad)
 	local m = self._m
 	m[0][0] = __cos(rad)
 	m[0][1] = __sin(rad)
@@ -45,13 +45,13 @@ function Matrix2D:SetRotate(rad)
 	m[2][2] = 1
 end
 
-function Matrix2D:Rotate(rad)
-	local m = Matrix2D()
+function ALittle.Matrix2D:Rotate(rad)
+	local m = ALittle.Matrix2D()
 	m:SetRotate(rad)
 	self:Multiply(m)
 end
 
-function Matrix2D:SetTranslation(x, y)
+function ALittle.Matrix2D:SetTranslation(x, y)
 	local m = self._m
 	m[0][0] = 1
 	m[0][1] = 0
@@ -64,13 +64,13 @@ function Matrix2D:SetTranslation(x, y)
 	m[2][2] = 1
 end
 
-function Matrix2D:Translation(x, y)
-	local m = Matrix2D()
+function ALittle.Matrix2D:Translation(x, y)
+	local m = ALittle.Matrix2D()
 	m:SetTranslation(x, y)
 	self:Multiply(m)
 end
 
-function Matrix2D:SetScale(x, y)
+function ALittle.Matrix2D:SetScale(x, y)
 	local m = self._m
 	m[0][0] = x
 	m[0][1] = 0
@@ -83,13 +83,13 @@ function Matrix2D:SetScale(x, y)
 	m[2][2] = 1
 end
 
-function Matrix2D:Scale(x, y)
-	local m = Matrix2D()
+function ALittle.Matrix2D:Scale(x, y)
+	local m = ALittle.Matrix2D()
 	m:SetScale(x, y)
 	self:Multiply(m)
 end
 
-function Matrix2D:Multiply(right)
+function ALittle.Matrix2D:Multiply(right)
 	local r = {}
 	local m = self._m
 	local rm = right._m
@@ -108,14 +108,14 @@ function Matrix2D:Multiply(right)
 	self._m = r
 end
 
-Vector2D = Lua.Class(nil, "ALittle.Vector2D")
+ALittle.Vector2D = Lua.Class(nil, "ALittle.Vector2D")
 
-function Vector2D:Ctor(xx, yy)
+function ALittle.Vector2D:Ctor(xx, yy)
 	___rawset(self, "_x", xx)
 	___rawset(self, "_y", yy)
 end
 
-function Vector2D:Multiply(right)
+function ALittle.Vector2D:Multiply(right)
 	local rm = right._m
 	local xx = self._x * rm[0][0] + self._y * rm[1][0] + 1 * rm[2][0]
 	local yy = self._x * rm[0][1] + self._y * rm[1][1] + 1 * rm[2][1]
@@ -123,3 +123,4 @@ function Vector2D:Multiply(right)
 	self._y = yy
 end
 
+end

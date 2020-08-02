@@ -1,15 +1,15 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("Emulator", package.seeall)
-
+do
+if _G.Emulator == nil then _G.Emulator = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
 assert(Emulator.IDETreeLogic, " extends class:Emulator.IDETreeLogic is nil")
-IDETreeValueMapBool = Lua.Class(Emulator.IDETreeLogic, "Emulator.IDETreeValueMapBool")
+Emulator.IDETreeValueMapBool = Lua.Class(Emulator.IDETreeLogic, "Emulator.IDETreeValueMapBool")
 
-function IDETreeValueMapBool:Ctor(ctrl_sys, root, parent, rflct, msg, key_field, value_field)
+function Emulator.IDETreeValueMapBool:Ctor(ctrl_sys, root, parent, rflct, msg, key_field, value_field)
 	___rawset(self, "_parent", parent)
 	___rawset(self, "_rflct", rflct)
 	___rawset(self, "_msg", msg)
@@ -42,7 +42,7 @@ function IDETreeValueMapBool:Ctor(ctrl_sys, root, parent, rflct, msg, key_field,
 	self._delete_button.disabled = root.for_show
 end
 
-function IDETreeValueMapBool:RefreshValue()
+function Emulator.IDETreeValueMapBool:RefreshValue()
 	if self._key_cpp_type == 1 then
 		return protobuf.reflection_getint32(self._rflct, self._msg, self._key_field)
 	elseif self._key_cpp_type == 3 then
@@ -61,7 +61,7 @@ function IDETreeValueMapBool:RefreshValue()
 	return nil
 end
 
-function IDETreeValueMapBool:HandleKeyInputFocusOut(event)
+function Emulator.IDETreeValueMapBool:HandleKeyInputFocusOut(event)
 	local text = self._key_input.text
 	if self._key_cpp_type == 1 then
 		protobuf.reflection_setint32(self._rflct, self._msg, self._key_field, ALittle.Math_ToIntOrZero(text))
@@ -83,7 +83,7 @@ function IDETreeValueMapBool:HandleKeyInputFocusOut(event)
 	self:Save()
 end
 
-function IDETreeValueMapBool:HandleValueSelectChanegd(event)
+function Emulator.IDETreeValueMapBool:HandleValueSelectChanegd(event)
 	if self._value_dropdown.text == "true" then
 		protobuf.reflection_setbool(self._rflct, self._msg, self._value_field, true)
 	else
@@ -92,11 +92,12 @@ function IDETreeValueMapBool:HandleValueSelectChanegd(event)
 	self:Save()
 end
 
-function IDETreeValueMapBool:HandleInsertClick(event)
+function Emulator.IDETreeValueMapBool:HandleInsertClick(event)
 	self._parent:CreateOneBefore(self)
 end
 
-function IDETreeValueMapBool:HandleDeleteClick(event)
+function Emulator.IDETreeValueMapBool:HandleDeleteClick(event)
 	self._parent:Delete(self)
 end
 
+end

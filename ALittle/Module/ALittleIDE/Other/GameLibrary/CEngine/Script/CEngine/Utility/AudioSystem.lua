@@ -1,27 +1,27 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___all_struct = GetAllStruct()
+local ___all_struct = ALittle.GetAllStruct()
 
-RegStruct(1715346212, "ALittle.Event", {
+ALittle.RegStruct(1715346212, "ALittle.Event", {
 name = "ALittle.Event", ns_name = "ALittle", rl_name = "Event", hash_code = 1715346212,
 name_list = {"target"},
 type_list = {"ALittle.EventDispatcher"},
 option_map = {}
 })
-RegStruct(384201948, "ALittle.ChunkInfo", {
+ALittle.RegStruct(384201948, "ALittle.ChunkInfo", {
 name = "ALittle.ChunkInfo", ns_name = "ALittle", rl_name = "ChunkInfo", hash_code = 384201948,
 name_list = {"file_path","callback","channel","volume","mute"},
 type_list = {"string","Functor<(string,int)>","int","double","bool"},
 option_map = {}
 })
 
-AudioSystem = Lua.Class(nil, "ALittle.AudioSystem")
+ALittle.AudioSystem = Lua.Class(nil, "ALittle.AudioSystem")
 
-function AudioSystem:Ctor()
+function ALittle.AudioSystem:Ctor()
 	___rawset(self, "_chunk_map", {})
 	___rawset(self, "_app_background", false)
 	___rawset(self, "_all_chunk_mute", false)
@@ -31,19 +31,19 @@ function AudioSystem:Ctor()
 	A_OtherSystem:AddEventListener(___all_struct[760325696], self, self.HandleDidEnterForeground)
 end
 
-function AudioSystem:HandleDidEnterBackground(event)
+function ALittle.AudioSystem:HandleDidEnterBackground(event)
 	self._app_background = true
 	self:UpdateAllChunkVolume()
 	self:UpdateMusicVolume()
 end
 
-function AudioSystem:HandleDidEnterForeground(event)
+function ALittle.AudioSystem:HandleDidEnterForeground(event)
 	self._app_background = false
 	self:UpdateAllChunkVolume()
 	self:UpdateMusicVolume()
 end
 
-function AudioSystem:UpdateChunkVolume(info)
+function ALittle.AudioSystem:UpdateChunkVolume(info)
 	local real_volume = info.volume
 	if info.mute or self._app_background or self._all_chunk_mute then
 		real_volume = 0
@@ -51,7 +51,7 @@ function AudioSystem:UpdateChunkVolume(info)
 	__CPPAPI_AudioSystem:SetChunkVolume(info.channel, real_volume)
 end
 
-function AudioSystem:UpdateMusicVolume()
+function ALittle.AudioSystem:UpdateMusicVolume()
 	local real_volume = self._music_valume
 	if self._music_mute or self._app_background then
 		real_volume = 0
@@ -59,13 +59,13 @@ function AudioSystem:UpdateMusicVolume()
 	__CPPAPI_AudioSystem:SetMusicVolume(real_volume)
 end
 
-function AudioSystem:UpdateAllChunkVolume()
+function ALittle.AudioSystem:UpdateAllChunkVolume()
 	for k, v in ___pairs(self._chunk_map) do
 		self:UpdateChunkVolume(v)
 	end
 end
 
-function AudioSystem:SetAllChunkMute(mute)
+function ALittle.AudioSystem:SetAllChunkMute(mute)
 	if self._all_chunk_mute == mute then
 		return
 	end
@@ -73,7 +73,7 @@ function AudioSystem:SetAllChunkMute(mute)
 	self:UpdateAllChunkVolume()
 end
 
-function AudioSystem:SetMusicMute(mute)
+function ALittle.AudioSystem:SetMusicMute(mute)
 	if self._music_mute == mute then
 		return
 	end
@@ -81,23 +81,23 @@ function AudioSystem:SetMusicMute(mute)
 	self:UpdateMusicVolume()
 end
 
-function AudioSystem:GetAllChunkMute()
+function ALittle.AudioSystem:GetAllChunkMute()
 	return self._all_chunk_mute
 end
 
-function AudioSystem:GetMusicMute()
+function ALittle.AudioSystem:GetMusicMute()
 	return self._music_mute
 end
 
-function AudioSystem:AddChunkCache(file_path)
+function ALittle.AudioSystem:AddChunkCache(file_path)
 	__CPPAPI_AudioSystem:AddChunkCache(file_path)
 end
 
-function AudioSystem:RemoveChunkCache(file_path)
+function ALittle.AudioSystem:RemoveChunkCache(file_path)
 	__CPPAPI_AudioSystem:RemoveChunkCache(file_path)
 end
 
-function AudioSystem:StartChunk(file_path, loop, callback)
+function ALittle.AudioSystem:StartChunk(file_path, loop, callback)
 	if loop == nil then
 		loop = 1
 	end
@@ -116,7 +116,7 @@ function AudioSystem:StartChunk(file_path, loop, callback)
 	return channel
 end
 
-function AudioSystem:StopChunk(channel)
+function ALittle.AudioSystem:StopChunk(channel)
 	local info = self._chunk_map[channel]
 	if info == nil then
 		return
@@ -125,7 +125,7 @@ function AudioSystem:StopChunk(channel)
 	__CPPAPI_AudioSystem:StopChunk(channel)
 end
 
-function AudioSystem:SetChunkMute(channel, mute)
+function ALittle.AudioSystem:SetChunkMute(channel, mute)
 	local info = self._chunk_map[channel]
 	if info == nil then
 		return
@@ -137,7 +137,7 @@ function AudioSystem:SetChunkMute(channel, mute)
 	self:UpdateChunkVolume(info)
 end
 
-function AudioSystem:GetChunkMute(channel)
+function ALittle.AudioSystem:GetChunkMute(channel)
 	local info = self._chunk_map[channel]
 	if info == nil then
 		return false
@@ -145,7 +145,7 @@ function AudioSystem:GetChunkMute(channel)
 	return info.mute
 end
 
-function AudioSystem:SetChunkVolume(channel, volume)
+function ALittle.AudioSystem:SetChunkVolume(channel, volume)
 	local info = self._chunk_map[channel]
 	if info == nil then
 		return
@@ -154,7 +154,7 @@ function AudioSystem:SetChunkVolume(channel, volume)
 	self:UpdateChunkVolume(info)
 end
 
-function AudioSystem:GetChunkVolume(channel)
+function ALittle.AudioSystem:GetChunkVolume(channel)
 	local info = self._chunk_map[channel]
 	if info == nil then
 		return 0
@@ -162,7 +162,7 @@ function AudioSystem:GetChunkVolume(channel)
 	return info.volume
 end
 
-function AudioSystem:HandleAudioChunkStopedEvent(channel)
+function ALittle.AudioSystem:HandleAudioChunkStopedEvent(channel)
 	local info = self._chunk_map[channel]
 	if info == nil then
 		return
@@ -174,7 +174,7 @@ function AudioSystem:HandleAudioChunkStopedEvent(channel)
 	info.callback(info.file_path, info.channel)
 end
 
-function AudioSystem:StartMusic(file_path, loop)
+function ALittle.AudioSystem:StartMusic(file_path, loop)
 	if loop == nil then
 		loop = 1
 	end
@@ -187,20 +187,21 @@ function AudioSystem:StartMusic(file_path, loop)
 	return result
 end
 
-function AudioSystem:StopMusic()
+function ALittle.AudioSystem:StopMusic()
 	__CPPAPI_AudioSystem:StopMusic()
 end
 
-function AudioSystem:StartRecord(file_path)
+function ALittle.AudioSystem:StartRecord(file_path)
 	return __CPPAPI_AudioSystem:StartRecord(file_path)
 end
 
-function AudioSystem:IsRecording()
+function ALittle.AudioSystem:IsRecording()
 	return __CPPAPI_AudioSystem:IsRecording()
 end
 
-function AudioSystem:StopRecord()
+function ALittle.AudioSystem:StopRecord()
 	__CPPAPI_AudioSystem:StopRecord()
 end
 
-_G.A_AudioSystem = AudioSystem()
+_G.A_AudioSystem = ALittle.AudioSystem()
+end

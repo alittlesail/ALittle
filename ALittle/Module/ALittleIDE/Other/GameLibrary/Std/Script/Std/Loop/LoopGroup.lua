@@ -1,15 +1,15 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
 assert(ALittle.LoopObject, " extends class:ALittle.LoopObject is nil")
-LoopGroup = Lua.Class(ALittle.LoopObject, "ALittle.LoopGroup")
+ALittle.LoopGroup = Lua.Class(ALittle.LoopObject, "ALittle.LoopGroup")
 
-function LoopGroup:Ctor()
+function ALittle.LoopGroup:Ctor()
 	___rawset(self, "_total_count", 0)
 	___rawset(self, "_complete_count", 0)
 	___rawset(self, "_loop_updaters", {})
@@ -17,19 +17,19 @@ function LoopGroup:Ctor()
 	___rawset(self, "_complete_callback", nil)
 end
 
-function LoopGroup.__getter:complete_callback()
+function ALittle.LoopGroup.__getter:complete_callback()
 	return self._complete_callback
 end
 
-function LoopGroup.__setter:complete_callback(value)
+function ALittle.LoopGroup.__setter:complete_callback(value)
 	self._complete_callback = value
 end
 
-function LoopGroup.__getter:total_count()
+function ALittle.LoopGroup.__getter:total_count()
 	return self._total_count
 end
 
-function LoopGroup:AddUpdater(value)
+function ALittle.LoopGroup:AddUpdater(value)
 	if value == nil then
 		return
 	end
@@ -40,7 +40,7 @@ function LoopGroup:AddUpdater(value)
 	self._total_count = self._total_count + 1
 end
 
-function LoopGroup:RemoveUpdater(value)
+function ALittle.LoopGroup:RemoveUpdater(value)
 	if self._loop_updaters[value] then
 		self._loop_updaters[value] = nil
 		self._total_count = self._total_count - 1
@@ -53,7 +53,7 @@ function LoopGroup:RemoveUpdater(value)
 	end
 end
 
-function LoopGroup:Reset()
+function ALittle.LoopGroup:Reset()
 	self._complete_count = 0
 	for updater, v in ___pairs(self._loop_updaters) do
 		updater:Reset()
@@ -64,7 +64,7 @@ function LoopGroup:Reset()
 	end
 end
 
-function LoopGroup:SetTime(time)
+function ALittle.LoopGroup:SetTime(time)
 	if self._total_count == 0 then
 		return time, true
 	end
@@ -94,17 +94,17 @@ function LoopGroup:SetTime(time)
 	return min_time, self._complete_count == self._total_count
 end
 
-function LoopGroup:IsCompleted()
+function ALittle.LoopGroup:IsCompleted()
 	return self._complete_count >= self._total_count
 end
 
-function LoopGroup:Completed()
+function ALittle.LoopGroup:Completed()
 	if self._complete_callback ~= nil then
 		self._complete_callback()
 	end
 end
 
-function LoopGroup:SetCompleted()
+function ALittle.LoopGroup:SetCompleted()
 	self._complete_count = self._total_count
 	for updater, v in ___pairs(self._loop_updaters) do
 		updater:SetCompleted()
@@ -113,7 +113,7 @@ function LoopGroup:SetCompleted()
 	self._loop_updaters = {}
 end
 
-function LoopGroup:Update(frame_time)
+function ALittle.LoopGroup:Update(frame_time)
 	if self._complete_count >= self._total_count then
 		return
 	end
@@ -133,3 +133,4 @@ function LoopGroup:Update(frame_time)
 	end
 end
 
+end

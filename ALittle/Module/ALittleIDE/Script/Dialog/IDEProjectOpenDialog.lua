@@ -1,21 +1,21 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittleIDE", package.seeall)
-
+do
+if _G.ALittleIDE == nil then _G.ALittleIDE = {} end
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-IDEProjectOpenDialog = Lua.Class(nil, "ALittleIDE.IDEProjectOpenDialog")
+ALittleIDE.IDEProjectOpenDialog = Lua.Class(nil, "ALittleIDE.IDEProjectOpenDialog")
 
-function IDEProjectOpenDialog:ShowOpenProject()
+function ALittleIDE.IDEProjectOpenDialog:ShowOpenProject()
 	if self._project_open_dialog == nil then
-		self._project_open_dialog = g_Control:CreateControl("ide_open_project_dialog", self)
+		self._project_open_dialog = ALittleIDE.g_Control:CreateControl("ide_open_project_dialog", self)
 		A_LayerManager:AddToModal(self._project_open_dialog)
 	end
 	self._project_open_name.text = ""
 	self._project_open_dialog.visible = true
 	local module_list = {}
-	local file_map = ALittle.File_GetFileNameListByDir(g_ModuleBasePath .. "..")
+	local file_map = ALittle.File_GetFileNameListByDir(ALittleIDE.g_ModuleBasePath .. "..")
 	for name, info in ___pairs(file_map) do
 		if info.mode == "directory" then
 			ALittle.List_Push(module_list, name)
@@ -26,30 +26,31 @@ function IDEProjectOpenDialog:ShowOpenProject()
 	A_UISystem.focus = self._project_open_name.show_input
 end
 
-function IDEProjectOpenDialog:HandleOpenProjectSelect(event)
+function ALittleIDE.IDEProjectOpenDialog:HandleOpenProjectSelect(event)
 	self._project_open_name.text = event.target.text
 	event.target.text = ""
 end
 
-function IDEProjectOpenDialog:HandleOpenProjectCancel(event)
+function ALittleIDE.IDEProjectOpenDialog:HandleOpenProjectCancel(event)
 	self._project_open_dialog.visible = false
 end
 
-function IDEProjectOpenDialog:HandleOpenProjectConfirm(event)
+function ALittleIDE.IDEProjectOpenDialog:HandleOpenProjectConfirm(event)
 	self._project_open_dialog.visible = false
 	local name = self._project_open_name.text
-	if not g_IDECenter.center.content_edit:IsSaveAll() then
+	if not ALittleIDE.g_IDECenter.center.content_edit:IsSaveAll() then
 		local result = g_AUITool:SaveNotice("提示", "是否保存当前项目?")
 		if result == "YES" then
-			g_IDECenter.center.content_edit:SaveAllTab()
+			ALittleIDE.g_IDECenter.center.content_edit:SaveAllTab()
 		end
 	end
-	local error = g_IDEProject:OpenProject(name)
+	local error = ALittleIDE.g_IDEProject:OpenProject(name)
 	if error ~= nil then
 		g_AUITool:ShowNotice("错误", error)
 		return
 	end
 end
-IDEProjectOpenDialog.HandleOpenProjectConfirm = Lua.CoWrap(IDEProjectOpenDialog.HandleOpenProjectConfirm)
+ALittleIDE.IDEProjectOpenDialog.HandleOpenProjectConfirm = Lua.CoWrap(ALittleIDE.IDEProjectOpenDialog.HandleOpenProjectConfirm)
 
-g_IDEProjectOpenDialog = IDEProjectOpenDialog()
+ALittleIDE.g_IDEProjectOpenDialog = ALittleIDE.IDEProjectOpenDialog()
+end

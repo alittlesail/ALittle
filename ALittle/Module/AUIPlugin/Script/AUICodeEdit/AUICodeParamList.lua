@@ -1,6 +1,6 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("AUIPlugin", package.seeall)
-
+do
+if _G.AUIPlugin == nil then _G.AUIPlugin = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
@@ -12,13 +12,13 @@ type_list = {"List<ALittle.DisplayObject>"},
 option_map = {}
 })
 
-AUICodeParamList = Lua.Class(nil, "AUIPlugin.AUICodeParamList")
+AUIPlugin.AUICodeParamList = Lua.Class(nil, "AUIPlugin.AUICodeParamList")
 
-function AUICodeParamList:Ctor(edit)
+function AUIPlugin.AUICodeParamList:Ctor(edit)
 	___rawset(self, "_edit", edit)
 end
 
-function AUICodeParamList:ShowParamList()
+function AUIPlugin.AUICodeParamList:ShowParamList()
 	if self._param_info == nil then
 		if not self:ReInit() then
 			self:Hide()
@@ -50,28 +50,28 @@ function AUICodeParamList:ShowParamList()
 	local item_info = self._item_list[self._param_index]
 	if item_info ~= nil then
 		for index, text in ___ipairs(item_info.text_list) do
-			text.red = CODE_PARAMLIST_RED
-			text.green = CODE_PARAMLIST_GREEN
-			text.blue = CODE_PARAMLIST_BLUE
+			text.red = AUIPlugin.CODE_PARAMLIST_RED
+			text.green = AUIPlugin.CODE_PARAMLIST_GREEN
+			text.blue = AUIPlugin.CODE_PARAMLIST_BLUE
 		end
 	end
 	self._param_index = param_index
 	item_info = self._item_list[self._param_index]
 	if item_info ~= nil then
 		for index, text in ___ipairs(item_info.text_list) do
-			text.red = CODE_PARAMLIST_FOCUS_RED
-			text.green = CODE_PARAMLIST_FOCUS_GREEN
-			text.blue = CODE_PARAMLIST_FOCUS_BLUE
+			text.red = AUIPlugin.CODE_PARAMLIST_FOCUS_RED
+			text.green = AUIPlugin.CODE_PARAMLIST_FOCUS_GREEN
+			text.blue = AUIPlugin.CODE_PARAMLIST_FOCUS_BLUE
 		end
 	end
 end
-AUICodeParamList.ShowParamList = Lua.CoWrap(AUICodeParamList.ShowParamList)
+AUIPlugin.AUICodeParamList.ShowParamList = Lua.CoWrap(AUIPlugin.AUICodeParamList.ShowParamList)
 
-function AUICodeParamList:IsShow()
+function AUIPlugin.AUICodeParamList:IsShow()
 	return self._param_info ~= nil
 end
 
-function AUICodeParamList:ReInit()
+function AUIPlugin.AUICodeParamList:ReInit()
 	local ___COROUTINE = coroutine.running()
 	if self._edit.language == nil then
 		return false
@@ -86,9 +86,9 @@ function AUICodeParamList:ReInit()
 	end
 	local x, y = self._edit:CalcPosition(self._param_info.line_start, self._param_info.char_start, true)
 	if self._dialog == nil then
-		self._dialog = g_Control:CreateControl("ide_tool_paramlist_tip", self)
+		self._dialog = AUIPlugin.g_Control:CreateControl("ide_tool_paramlist_tip", self)
 		self._dialog.width = 200
-		self._dialog.height = CODE_LINE_HEIGHT + self._text_container.height_value
+		self._dialog.height = AUIPlugin.CODE_LINE_HEIGHT + self._text_container.height_value
 	end
 	y = y - (self._dialog.height)
 	self._text_container:RemoveAllChild()
@@ -120,14 +120,14 @@ function AUICodeParamList:ReInit()
 						is_asicc = false
 					end
 				end
-				local text = ALittle.Text(g_Control)
-				text.red = CODE_PARAMLIST_RED
-				text.green = CODE_PARAMLIST_GREEN
-				text.blue = CODE_PARAMLIST_BLUE
+				local text = ALittle.Text(AUIPlugin.g_Control)
+				text.red = AUIPlugin.CODE_PARAMLIST_RED
+				text.green = AUIPlugin.CODE_PARAMLIST_GREEN
+				text.blue = AUIPlugin.CODE_PARAMLIST_BLUE
 				text.text = char
 				text.x = offset
-				text.font_path = CODE_FONT_PATH
-				text.font_size = CODE_FONT_SIZE
+				text.font_path = AUIPlugin.CODE_FONT_PATH
+				text.font_size = AUIPlugin.CODE_FONT_SIZE
 				self._text_container:AddChild(text)
 				if is_asicc then
 					offset = offset + (self._edit.ascii_width)
@@ -145,7 +145,7 @@ function AUICodeParamList:ReInit()
 	return true
 end
 
-function AUICodeParamList:Hide()
+function AUIPlugin.AUICodeParamList:Hide()
 	self._param_info = nil
 	self._start_offset = nil
 	self._param_count = 0
@@ -153,7 +153,7 @@ function AUICodeParamList:Hide()
 	self._edit.help_container:RemoveChild(self._dialog)
 end
 
-function AUICodeParamList:TryHide()
+function AUIPlugin.AUICodeParamList:TryHide()
 	if self._param_info == nil then
 		return
 	end
@@ -171,3 +171,4 @@ function AUICodeParamList:TryHide()
 	end
 end
 
+end

@@ -1,11 +1,11 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-UIEnumTypes = {
+ALittle.UIEnumTypes = {
 	FLIP_NONE = 0,
 	FLIP_H = 1,
 	FLIP_V = 2,
@@ -96,3 +96,4 @@ UIEnumTypes = {
 	VIEW_SHAPED_WINDOW = 0x10000000,
 }
 
+end

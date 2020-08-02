@@ -1,15 +1,15 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
 assert(ALittle.LoopObject, " extends class:ALittle.LoopObject is nil")
-LoopLinear = Lua.Class(ALittle.LoopObject, "ALittle.LoopLinear")
+ALittle.LoopLinear = Lua.Class(ALittle.LoopObject, "ALittle.LoopLinear")
 
-function LoopLinear:Ctor(target, property, target_value, total_time, delay_time, func)
+function ALittle.LoopLinear:Ctor(target, property, target_value, total_time, delay_time, func)
 	___rawset(self, "_target", target)
 	___rawset(self, "_target_value", target_value)
 	___rawset(self, "_func", func)
@@ -25,7 +25,7 @@ function LoopLinear:Ctor(target, property, target_value, total_time, delay_time,
 	___rawset(self, "_accumulate_delay_time", 0)
 	if target == nil or target[property] == nil then
 		___rawset(self, "_accumulate_time", self._total_time)
-		Log("LoopLinear create failed:loop_target is nil or property is nil")
+		ALittle.Log("LoopLinear create failed:loop_target is nil or property is nil")
 		return
 	end
 	___rawset(self, "_property", property)
@@ -34,15 +34,15 @@ function LoopLinear:Ctor(target, property, target_value, total_time, delay_time,
 	___rawset(self, "_init_value", nil)
 end
 
-function LoopLinear.__getter:complete_callback()
+function ALittle.LoopLinear.__getter:complete_callback()
 	return self._complete_callback
 end
 
-function LoopLinear.__setter:complete_callback(value)
+function ALittle.LoopLinear.__setter:complete_callback(value)
 	self._complete_callback = value
 end
 
-function LoopLinear.__getter:speed()
+function ALittle.LoopLinear.__getter:speed()
 	if self._speed ~= nil then
 		return self._speed
 	end
@@ -53,13 +53,13 @@ function LoopLinear.__getter:speed()
 	return self._speed
 end
 
-function LoopLinear:Reset()
+function ALittle.LoopLinear:Reset()
 	self._accumulate_time = 0
 	self._accumulate_delay_time = 0
 	self._init_value = nil
 end
 
-function LoopLinear:SetTime(time)
+function ALittle.LoopLinear:SetTime(time)
 	self._accumulate_delay_time = 0
 	self._accumulate_time = 0
 	if time <= 0 then
@@ -88,24 +88,24 @@ function LoopLinear:SetTime(time)
 	return time - self._total_time, true
 end
 
-function LoopLinear:IsCompleted()
+function ALittle.LoopLinear:IsCompleted()
 	return self._accumulate_time >= self._total_time
 end
 
-function LoopLinear:Completed()
+function ALittle.LoopLinear:Completed()
 	if self._complete_callback ~= nil then
 		self._complete_callback()
 	end
 end
 
-function LoopLinear:SetCompleted()
+function ALittle.LoopLinear:SetCompleted()
 	if self._accumulate_time >= self._total_time then
 		return
 	end
 	self:SetTime(self._total_time + self._total_delay_time)
 end
 
-function LoopLinear:Update(frame_time)
+function ALittle.LoopLinear:Update(frame_time)
 	if self._accumulate_delay_time < self._total_delay_time then
 		self._accumulate_delay_time = self._accumulate_delay_time + (frame_time)
 		if self._accumulate_delay_time < self._total_delay_time then
@@ -128,3 +128,4 @@ function LoopLinear:Update(frame_time)
 	end
 end
 
+end

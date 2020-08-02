@@ -1,33 +1,33 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-local __tostring = String_ToString
+local __tostring = ALittle.String_ToString
 assert(ALittle.DisplayObject, " extends class:ALittle.DisplayObject is nil")
-TextArea = Lua.Class(ALittle.DisplayObject, "ALittle.TextArea")
+ALittle.TextArea = Lua.Class(ALittle.DisplayObject, "ALittle.TextArea")
 
-function TextArea:Ctor(ctrl_sys)
+function ALittle.TextArea:Ctor(ctrl_sys)
 	___rawset(self, "_text", "")
 	___rawset(self, "_bold", false)
 	___rawset(self, "_italic", false)
 	___rawset(self, "_underline", false)
 	___rawset(self, "_deleteline", false)
 	___rawset(self, "_flip", 0)
-	___rawset(self, "_halign_type", UIEnumTypes.HALIGN_LEFT)
-	___rawset(self, "_valign_type", UIEnumTypes.VALIGN_TOP)
+	___rawset(self, "_halign_type", ALittle.UIEnumTypes.HALIGN_LEFT)
+	___rawset(self, "_valign_type", ALittle.UIEnumTypes.VALIGN_TOP)
 	___rawset(self, "_show", __CPPAPITextArea())
 	A_LoadTextureManager:RegisterRedrawControl(self)
 end
 
-function TextArea:Redraw()
+function ALittle.TextArea:Redraw()
 	self._show:NeedDraw()
 end
 
-function TextArea.__setter:font_path(value)
+function ALittle.TextArea.__setter:font_path(value)
 	self._font_path = value
 	if self._font_path == nil or self._font_size == nil then
 		return
@@ -35,7 +35,7 @@ function TextArea.__setter:font_path(value)
 	self._ctrl_sys:SetFont(self, self._font_path, self._font_size)
 end
 
-function TextArea.__setter:font_size(value)
+function ALittle.TextArea.__setter:font_size(value)
 	self._font_size = value
 	if self._font_path == nil or self._font_size == nil then
 		return
@@ -43,15 +43,15 @@ function TextArea.__setter:font_size(value)
 	self._ctrl_sys:SetFont(self, self._font_path, self._font_size)
 end
 
-function TextArea.__getter:font_path()
+function ALittle.TextArea.__getter:font_path()
 	return self._font_path
 end
 
-function TextArea.__getter:font_size()
+function ALittle.TextArea.__getter:font_size()
 	return self._font_size
 end
 
-function TextArea.__setter:text(value)
+function ALittle.TextArea.__setter:text(value)
 	if value == nil then
 		return
 	end
@@ -63,11 +63,11 @@ function TextArea.__setter:text(value)
 	self._show:SetText(value)
 end
 
-function TextArea.__getter:text()
+function ALittle.TextArea.__getter:text()
 	return self._text
 end
 
-function TextArea.__setter:bold(value)
+function ALittle.TextArea.__setter:bold(value)
 	if self._bold == value then
 		return
 	end
@@ -75,11 +75,11 @@ function TextArea.__setter:bold(value)
 	self._show:SetBold(value)
 end
 
-function TextArea.__getter:bold()
+function ALittle.TextArea.__getter:bold()
 	return self._bold
 end
 
-function TextArea.__setter:italic(value)
+function ALittle.TextArea.__setter:italic(value)
 	if self._italic == value then
 		return
 	end
@@ -87,11 +87,11 @@ function TextArea.__setter:italic(value)
 	self._show:SetItalic(value)
 end
 
-function TextArea.__getter:italic()
+function ALittle.TextArea.__getter:italic()
 	return self._italic
 end
 
-function TextArea.__setter:underline(value)
+function ALittle.TextArea.__setter:underline(value)
 	if self._underline == value then
 		return
 	end
@@ -99,11 +99,11 @@ function TextArea.__setter:underline(value)
 	self._show:SetUnderline(value)
 end
 
-function TextArea.__getter:underline()
+function ALittle.TextArea.__getter:underline()
 	return self._underline
 end
 
-function TextArea.__setter:deleteline(value)
+function ALittle.TextArea.__setter:deleteline(value)
 	if self._deleteline == value then
 		return
 	end
@@ -111,11 +111,11 @@ function TextArea.__setter:deleteline(value)
 	self._show:SetDeleteline(value)
 end
 
-function TextArea.__getter:deleteline()
+function ALittle.TextArea.__getter:deleteline()
 	return self._deleteline
 end
 
-function TextArea.__setter:halign(value)
+function ALittle.TextArea.__setter:halign(value)
 	if self._halign_type == value then
 		return
 	end
@@ -123,11 +123,11 @@ function TextArea.__setter:halign(value)
 	self._show:SetHAlign(value)
 end
 
-function TextArea.__getter:halign()
+function ALittle.TextArea.__getter:halign()
 	return self._halign_type
 end
 
-function TextArea.__setter:valign(value)
+function ALittle.TextArea.__setter:valign(value)
 	if self._valign_type == value then
 		return
 	end
@@ -135,20 +135,21 @@ function TextArea.__setter:valign(value)
 	self._show:SetVAlign(value)
 end
 
-function TextArea.__getter:valign()
+function ALittle.TextArea.__getter:valign()
 	return self._valign_type
 end
 
-function TextArea.__getter:real_height()
+function ALittle.TextArea.__getter:real_height()
 	return self._show:GetRealHeight()
 end
 
-function TextArea.__getter:flip()
+function ALittle.TextArea.__getter:flip()
 	return self._flip
 end
 
-function TextArea.__setter:flip(value)
+function ALittle.TextArea.__setter:flip(value)
 	self._flip = value
 	self._show:SetFlip(value)
 end
 
+end

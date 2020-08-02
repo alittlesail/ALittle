@@ -1,25 +1,25 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
-RegStruct(1715346212, "ALittle.Event", {
+ALittle.RegStruct(1715346212, "ALittle.Event", {
 name = "ALittle.Event", ns_name = "ALittle", rl_name = "Event", hash_code = 1715346212,
 name_list = {"target"},
 type_list = {"ALittle.EventDispatcher"},
 option_map = {}
 })
 
-EventDispatcher = Lua.Class(nil, "ALittle.EventDispatcher")
+ALittle.EventDispatcher = Lua.Class(nil, "ALittle.EventDispatcher")
 
-function EventDispatcher:Ctor()
+function ALittle.EventDispatcher:Ctor()
 	___rawset(self, "_listeners", {})
 	___rawset(self, "_abs_disabled", false)
 end
 
-function EventDispatcher:AddEventListener(T, object, callback)
+function ALittle.EventDispatcher:AddEventListener(T, object, callback)
 	if object == nil then
 		return false
 	end
@@ -29,7 +29,7 @@ function EventDispatcher:AddEventListener(T, object, callback)
 	local rflt = T
 	local callback_table = self._listeners[rflt.hash_code]
 	if callback_table == nil then
-		callback_table = CreateKeyWeakMap()
+		callback_table = ALittle.CreateKeyWeakMap()
 		self._listeners[rflt.hash_code] = callback_table
 	end
 	local callback_value = callback_table[object]
@@ -41,7 +41,7 @@ function EventDispatcher:AddEventListener(T, object, callback)
 	return true
 end
 
-function EventDispatcher:RemoveEventListener(T, object, callback)
+function ALittle.EventDispatcher:RemoveEventListener(T, object, callback)
 	local rflt = T
 	local callback_table = self._listeners[rflt.hash_code]
 	if callback_table == nil then
@@ -58,11 +58,11 @@ function EventDispatcher:RemoveEventListener(T, object, callback)
 	end
 end
 
-function EventDispatcher:ClearEventListener()
+function ALittle.EventDispatcher:ClearEventListener()
 	self._listeners = {}
 end
 
-function EventDispatcher:DispatchEvent(T, event)
+function ALittle.EventDispatcher:DispatchEvent(T, event)
 	local rflt = T
 	if event.target == nil then
 		event.target = self
@@ -78,3 +78,4 @@ function EventDispatcher:DispatchEvent(T, event)
 	end
 end
 
+end

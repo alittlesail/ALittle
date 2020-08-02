@@ -1,31 +1,32 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
 assert(ALittle.VersionSystem, " extends class:ALittle.VersionSystem is nil")
-VersionSystemWindows = Lua.Class(ALittle.VersionSystem, "ALittle.VersionSystemWindows")
+ALittle.VersionSystemWindows = Lua.Class(ALittle.VersionSystem, "ALittle.VersionSystemWindows")
 
-function VersionSystemWindows:Ctor(account_name, module_name)
+function ALittle.VersionSystemWindows:Ctor(account_name, module_name)
 	___rawset(self, "_install_name", "Install.exe")
 end
 
-function VersionSystemWindows.RefreshVersion()
+function ALittle.VersionSystemWindows.RefreshVersion()
 end
 
-function VersionSystemWindows.InstallImpl(install_name)
-	System_InstallProgram(install_name .. " /silent /norestart")
-	System_ForceExit()
+function ALittle.VersionSystemWindows.InstallImpl(install_name)
+	ALittle.System_InstallProgram(install_name .. " /silent /norestart")
+	ALittle.System_ForceExit()
 end
 
-function VersionSystemWindows:Install(install_name)
+function ALittle.VersionSystemWindows:Install(install_name)
 	if install_name == nil then
-		install_name = File_BaseFilePath() .. self._update_path .. self._install_name
+		install_name = ALittle.File_BaseFilePath() .. self._update_path .. self._install_name
 	end
-	local updater = LoopFunction(Lua.Bind(VersionSystemWindows.InstallImpl, install_name), 1, 0, 1)
+	local updater = ALittle.LoopFunction(Lua.Bind(ALittle.VersionSystemWindows.InstallImpl, install_name), 1, 0, 1)
 	updater:Start()
 end
 
+end

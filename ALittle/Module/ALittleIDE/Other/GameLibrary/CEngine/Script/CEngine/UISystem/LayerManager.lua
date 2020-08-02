@@ -1,36 +1,36 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___all_struct = GetAllStruct()
+local ___all_struct = ALittle.GetAllStruct()
 
 
-LayerManager = Lua.Class(nil, "ALittle.LayerManager")
+ALittle.LayerManager = Lua.Class(nil, "ALittle.LayerManager")
 
-function LayerManager:Ctor()
+function ALittle.LayerManager:Ctor()
 	___rawset(self, "_normal_groups", {})
 	___rawset(self, "_normal_group_count", 0)
-	___rawset(self, "_modal_layer", DisplayLayout(nil))
+	___rawset(self, "_modal_layer", ALittle.DisplayLayout(nil))
 	__CPPAPI_DisplaySystem:AddSpecialChild(self._modal_layer.native_show)
-	___rawset(self, "_right_layer", DisplayLayout(nil))
+	___rawset(self, "_right_layer", ALittle.DisplayLayout(nil))
 	___rawset(self, "_right_show", nil)
 	__CPPAPI_DisplaySystem:AddSpecialChild(self._right_layer.native_show)
-	___rawset(self, "_tip_layer", DisplayLayout(nil))
+	___rawset(self, "_tip_layer", ALittle.DisplayLayout(nil))
 	self._tip_layer.disabled = true
 	__CPPAPI_DisplaySystem:AddSpecialChild(self._tip_layer.native_show)
 end
 
-function LayerManager:Shutdown()
+function ALittle.LayerManager:Shutdown()
 	__CPPAPI_DisplaySystem:RemoveAllChild()
 end
 
-function LayerManager.__getter:group_count()
+function ALittle.LayerManager.__getter:group_count()
 	return self._normal_group_count
 end
 
-function LayerManager:AddChild(child, index)
+function ALittle.LayerManager:AddChild(child, index)
 	if child == nil then
 		return
 	end
@@ -44,21 +44,21 @@ function LayerManager:AddChild(child, index)
 		end
 		local back_child = self._normal_groups[index]
 		__CPPAPI_DisplaySystem:AddChildBefore(back_child.native_show, child.native_show)
-		List_Insert(self._normal_groups, index, child)
+		ALittle.List_Insert(self._normal_groups, index, child)
 		self._normal_group_count = self._normal_group_count + 1
 	end
 	child.width = A_UISystem.view_width
 	child.height = A_UISystem.view_height
 end
 
-function LayerManager:RemoveChild(child)
+function ALittle.LayerManager:RemoveChild(child)
 	if child == nil then
 		return
 	end
 	local has_layer = false
 	for index, value in ___ipairs(self._normal_groups) do
 		if value == child then
-			List_Remove(self._normal_groups, index)
+			ALittle.List_Remove(self._normal_groups, index)
 			has_layer = true
 			break
 		end
@@ -70,7 +70,7 @@ function LayerManager:RemoveChild(child)
 	self._normal_group_count = self._normal_group_count - 1
 end
 
-function LayerManager:HandleViewResized(width, height)
+function ALittle.LayerManager:HandleViewResized(width, height)
 	for group_index, group in ___ipairs(self._normal_groups) do
 		group.width = width
 		group.height = height
@@ -84,20 +84,20 @@ function LayerManager:HandleViewResized(width, height)
 	self:HideCurrentFromRight()
 end
 
-function LayerManager:AddToModal(dialog, index)
+function ALittle.LayerManager:AddToModal(dialog, index)
 	if dialog == nil then
 		return
 	end
-	dialog.x_type = UIEnumTypes.POS_ALIGN_CENTER
+	dialog.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
 	dialog.x_value = 0
-	dialog.y_type = UIEnumTypes.POS_ALIGN_CENTER
+	dialog.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
 	dialog.y_value = 0
 	dialog.modal = true
 	dialog.visible = false
 	self._modal_layer:AddChild(dialog, index)
 end
 
-function LayerManager:RemoveFromModal(dialog)
+function ALittle.LayerManager:RemoveFromModal(dialog)
 	if dialog == nil then
 		return
 	end
@@ -106,7 +106,7 @@ function LayerManager:RemoveFromModal(dialog)
 	self._modal_layer:RemoveChild(dialog)
 end
 
-function LayerManager:ShowFromRight(dialog, focus)
+function ALittle.LayerManager:ShowFromRight(dialog, focus)
 	if focus == nil then
 		focus = true
 	end
@@ -129,7 +129,7 @@ function LayerManager:ShowFromRight(dialog, focus)
 	end
 end
 
-function LayerManager:HideFromRight(dialog)
+function ALittle.LayerManager:HideFromRight(dialog)
 	if self._right_show ~= dialog then
 		return
 	end
@@ -142,7 +142,7 @@ function LayerManager:HideFromRight(dialog)
 	self._right_show = nil
 end
 
-function LayerManager:HideCurrentFromRight()
+function ALittle.LayerManager:HideCurrentFromRight()
 	if self._right_show == nil then
 		return false
 	end
@@ -150,19 +150,19 @@ function LayerManager:HideCurrentFromRight()
 	return true
 end
 
-function LayerManager:IsCurrentRight(dialog)
+function ALittle.LayerManager:IsCurrentRight(dialog)
 	return self._right_show == dialog
 end
 
-function LayerManager:AddToTip(dialog)
+function ALittle.LayerManager:AddToTip(dialog)
 	self._tip_layer:AddChild(dialog)
 end
 
-function LayerManager:RemoveFromTip(dialog)
+function ALittle.LayerManager:RemoveFromTip(dialog)
 	self._tip_layer:RemoveChild(dialog)
 end
 
-function LayerManager:PickUp(x, y)
+function ALittle.LayerManager:PickUp(x, y)
 	local mfc_rel_x
 	local mfc_rel_y
 	local mfc
@@ -196,7 +196,7 @@ function LayerManager:PickUp(x, y)
 	return nil, nil, nil, nil
 end
 
-function LayerManager:LayerPickup(layer, x, y)
+function ALittle.LayerManager:LayerPickup(layer, x, y)
 	local mfc_rel_x
 	local mfc_rel_y
 	local mfc
@@ -220,7 +220,7 @@ function LayerManager:LayerPickup(layer, x, y)
 	return mfc, mfd, mfc_rel_x, mfc_rel_y
 end
 
-function LayerManager:HandleLRButtonDown(x, y)
+function ALittle.LayerManager:HandleLRButtonDown(x, y)
 	if self._right_show == nil then
 		return
 	end
@@ -242,4 +242,5 @@ function LayerManager:HandleLRButtonDown(x, y)
 	self._right_show = nil
 end
 
-_G.A_LayerManager = LayerManager()
+_G.A_LayerManager = ALittle.LayerManager()
+end

@@ -1,17 +1,17 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
 assert(ALittle.ILoopSystem, " extends class:ALittle.ILoopSystem is nil")
-LoopSystem = Lua.Class(ALittle.ILoopSystem, "ALittle.LoopSystem")
+ALittle.LoopSystem = Lua.Class(ALittle.ILoopSystem, "ALittle.LoopSystem")
 
-function LoopSystem:Ctor(weak)
+function ALittle.LoopSystem:Ctor(weak)
 	if weak then
-		___rawset(self, "_loop_updaters", CreateKeyWeakMap())
+		___rawset(self, "_loop_updaters", ALittle.CreateKeyWeakMap())
 	else
 		___rawset(self, "_loop_updaters", {})
 	end
@@ -22,7 +22,7 @@ function LoopSystem:Ctor(weak)
 	___rawset(self, "_handler_map", {})
 end
 
-function LoopSystem:AddUpdater(updater)
+function ALittle.LoopSystem:AddUpdater(updater)
 	if updater == nil then
 		return
 	end
@@ -34,7 +34,7 @@ function LoopSystem:AddUpdater(updater)
 	end
 end
 
-function LoopSystem:RemoveUpdater(updater)
+function ALittle.LoopSystem:RemoveUpdater(updater)
 	if updater == nil then
 		return
 	end
@@ -46,11 +46,11 @@ function LoopSystem:RemoveUpdater(updater)
 	end
 end
 
-function LoopSystem:HasUpdater(updater)
+function ALittle.LoopSystem:HasUpdater(updater)
 	return self._loop_updaters[updater] ~= nil or self._loop_cache[updater] == true
 end
 
-function LoopSystem:AddTimer(delay_ms, callback, loop, interval_ms)
+function ALittle.LoopSystem:AddTimer(delay_ms, callback, loop, interval_ms)
 	if callback == nil then
 		return 0
 	end
@@ -65,7 +65,7 @@ function LoopSystem:AddTimer(delay_ms, callback, loop, interval_ms)
 	return id
 end
 
-function LoopSystem:RemoveTimer(id)
+function ALittle.LoopSystem:RemoveTimer(id)
 	if id == nil then
 		return false
 	end
@@ -73,7 +73,7 @@ function LoopSystem:RemoveTimer(id)
 	return self._timer:Remove(id)
 end
 
-function LoopSystem:Update(frame_time)
+function ALittle.LoopSystem:Update(frame_time)
 	self._in_update = true
 	local remove_map = nil
 	for updater, v in ___pairs(self._loop_updaters) do
@@ -125,8 +125,8 @@ function LoopSystem:Update(frame_time)
 	end
 end
 
-_G.A_LuaLoopSystem = Lua.Template(LoopSystem, "ALittle.LoopSystem<Lua.LuaHeapTimer>", Lua.LuaHeapTimer)()
-_G.A_LuaWeakLoopSystem = Lua.Template(LoopSystem, "ALittle.LoopSystem<Lua.LuaHeapTimer>", Lua.LuaHeapTimer)(true)
+_G.A_LuaLoopSystem = Lua.Template(ALittle.LoopSystem, "ALittle.LoopSystem<Lua.LuaHeapTimer>", Lua.LuaHeapTimer)()
+_G.A_LuaWeakLoopSystem = Lua.Template(ALittle.LoopSystem, "ALittle.LoopSystem<Lua.LuaHeapTimer>", Lua.LuaHeapTimer)(true)
 local GetLoopSystem
 GetLoopSystem = function()
 	return A_LuaLoopSystem
@@ -139,3 +139,4 @@ end
 
 _G.A_LoopSystem = GetLoopSystem()
 _G.A_WeakLoopSystem = GetWeakLoopSystem()
+end

@@ -1,15 +1,15 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
-FramePlay = Lua.Class(ALittle.DisplayLayout, "ALittle.FramePlay")
+ALittle.FramePlay = Lua.Class(ALittle.DisplayLayout, "ALittle.FramePlay")
 
-function FramePlay:Ctor(ctrl_sys)
+function ALittle.FramePlay:Ctor(ctrl_sys)
 	___rawset(self, "_interval", 0)
 	___rawset(self, "_play_child_index", 0)
 	___rawset(self, "_play_loop_count", 1)
@@ -17,37 +17,37 @@ function FramePlay:Ctor(ctrl_sys)
 	___rawset(self, "_auto_play", false)
 end
 
-function FramePlay.__setter:base_y(value)
+function ALittle.FramePlay.__setter:base_y(value)
 	self._base_y = value
 end
 
-function FramePlay.__getter:base_y()
+function ALittle.FramePlay.__getter:base_y()
 	if self._base_y ~= nil then
 		return self._base_y
 	end
 	return self.height
 end
 
-function FramePlay.__setter:auto_play(value)
+function ALittle.FramePlay.__setter:auto_play(value)
 	self._auto_play = value
 	if value then
 		self:Play()
 	end
 end
 
-function FramePlay.__getter:auto_play()
+function ALittle.FramePlay.__getter:auto_play()
 	return self._auto_play
 end
 
-function FramePlay:AddChild(child, index)
-	if DisplayLayout.AddChild(self, child, index) == false then
+function ALittle.FramePlay:AddChild(child, index)
+	if ALittle.DisplayLayout.AddChild(self, child, index) == false then
 		return false
 	end
 	child.visible = false
 	return true
 end
 
-function FramePlay.__setter:interval(value)
+function ALittle.FramePlay.__setter:interval(value)
 	if self._interval == value then
 		return
 	end
@@ -57,11 +57,11 @@ function FramePlay.__setter:interval(value)
 	end
 end
 
-function FramePlay.__getter:interval()
+function ALittle.FramePlay.__getter:interval()
 	return self._interval
 end
 
-function FramePlay.__setter:play_loop_count(value)
+function ALittle.FramePlay.__setter:play_loop_count(value)
 	if self._play_loop_count == value then
 		return
 	end
@@ -71,11 +71,11 @@ function FramePlay.__setter:play_loop_count(value)
 	end
 end
 
-function FramePlay.__getter:play_loop_count()
+function ALittle.FramePlay.__getter:play_loop_count()
 	return self._play_loop_count
 end
 
-function FramePlay:Play()
+function ALittle.FramePlay:Play()
 	if self._play_loop ~= nil then
 		A_WeakLoopSystem:RemoveUpdater(self._play_loop)
 		self._play_loop = nil
@@ -83,40 +83,40 @@ function FramePlay:Play()
 	self._play_child_index = 0
 	self._play_loop_index = 0
 	self:HideAllChild()
-	self._play_loop = LoopFunction(Lua.Bind(self.PlayUpdateLoop, self), -1, self._interval, 0)
+	self._play_loop = ALittle.LoopFunction(Lua.Bind(self.PlayUpdateLoop, self), -1, self._interval, 0)
 	A_WeakLoopSystem:AddUpdater(self._play_loop)
 end
 
-function FramePlay:Stop()
+function ALittle.FramePlay:Stop()
 	if self._play_loop ~= nil then
 		A_WeakLoopSystem:RemoveUpdater(self._play_loop)
 		self._play_loop = nil
 	end
 end
 
-function FramePlay:HideAllChild()
+function ALittle.FramePlay:HideAllChild()
 	for index, child in ___ipairs(self._childs) do
 		child.visible = false
-		if (child).__class == FramePlay then
+		if (child).__class == ALittle.FramePlay then
 			child:HideAllChild()
 		end
 	end
 end
 
-function FramePlay:ShowAllChild()
+function ALittle.FramePlay:ShowAllChild()
 	for index, child in ___ipairs(self._childs) do
 		child.visible = true
-		if (child).__class == FramePlay then
+		if (child).__class == ALittle.FramePlay then
 			child:ShowAllChild()
 		end
 	end
 end
 
-function FramePlay:PlayUpdateLoop()
+function ALittle.FramePlay:PlayUpdateLoop()
 	self:PlayUpdate()
 end
 
-function FramePlay:PlayUpdate()
+function ALittle.FramePlay:PlayUpdate()
 	if self._child_count == 0 or (self._play_loop_count > 0 and self._play_loop_index > self._play_loop_count) then
 		if self._play_loop ~= nil then
 			self._play_loop:SetCompleted()
@@ -126,7 +126,7 @@ function FramePlay:PlayUpdate()
 	end
 	if self._play_child_index > 0 then
 		local child = self._childs[self._play_child_index]
-		if (child).__class == FramePlay then
+		if (child).__class == ALittle.FramePlay then
 			if child:PlayUpdate() then
 				return true
 			end
@@ -152,7 +152,7 @@ function FramePlay:PlayUpdate()
 	end
 	self._childs[self._play_child_index].visible = true
 	local child = self._childs[self._play_child_index]
-	if (child).__class == FramePlay then
+	if (child).__class == ALittle.FramePlay then
 		child._play_loop_index = 0
 		child._play_child_index = 0
 		if child:PlayUpdate() then
@@ -162,3 +162,4 @@ function FramePlay:PlayUpdate()
 	return true
 end
 
+end

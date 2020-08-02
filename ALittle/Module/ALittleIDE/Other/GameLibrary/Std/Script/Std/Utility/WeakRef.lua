@@ -1,11 +1,11 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-function CreateKeyWeakMap()
+function ALittle.CreateKeyWeakMap()
 	local mt = {}
 	mt["__mode"] = "k"
 	local table = {}
@@ -13,7 +13,7 @@ function CreateKeyWeakMap()
 	return table
 end
 
-function CreateValueWeakMap()
+function ALittle.CreateValueWeakMap()
 	local mt = {}
 	mt["__mode"] = "v"
 	local table = {}
@@ -21,3 +21,4 @@ function CreateValueWeakMap()
 	return table
 end
 
+end

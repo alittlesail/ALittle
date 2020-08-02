@@ -1,16 +1,16 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___all_struct = GetAllStruct()
+local ___all_struct = ALittle.GetAllStruct()
 
 
 assert(ALittle.DisplayObject, " extends class:ALittle.DisplayObject is nil")
-Grid9Image = Lua.Class(ALittle.DisplayObject, "ALittle.Grid9Image")
+ALittle.Grid9Image = Lua.Class(ALittle.DisplayObject, "ALittle.Grid9Image")
 
-function Grid9Image:Ctor(ctrl_sys)
+function ALittle.Grid9Image:Ctor(ctrl_sys)
 	___rawset(self, "_show", __CPPAPIGrid9Image())
 	___rawset(self, "_texture_width", 0)
 	___rawset(self, "_texture_height", 0)
@@ -29,7 +29,7 @@ function Grid9Image:Ctor(ctrl_sys)
 	self:AddEventListener(___all_struct[734860930], self, self.HandleFLButtonUp)
 end
 
-function Grid9Image:HandleLButtonUp(event)
+function ALittle.Grid9Image:HandleLButtonUp(event)
 	if event.rel_x >= 0 and event.rel_y >= 0 and event.rel_x < event.target._width and event.rel_y < event.target._height then
 		local c_event = {}
 		c_event.is_drag = event.is_drag
@@ -37,7 +37,7 @@ function Grid9Image:HandleLButtonUp(event)
 	end
 end
 
-function Grid9Image:HandleMButtonUp(event)
+function ALittle.Grid9Image:HandleMButtonUp(event)
 	if event.rel_x >= 0 and event.rel_y >= 0 and event.rel_x < event.target._width and event.rel_y < event.target._height then
 		local c_event = {}
 		c_event.is_drag = event.is_drag
@@ -45,7 +45,7 @@ function Grid9Image:HandleMButtonUp(event)
 	end
 end
 
-function Grid9Image:HandleFLButtonUp(event)
+function ALittle.Grid9Image:HandleFLButtonUp(event)
 	if event.rel_x >= 0 and event.rel_y >= 0 and event.rel_x < event.target._width and event.rel_y < event.target._height then
 		local c_event = {}
 		c_event.is_drag = event.is_drag
@@ -53,7 +53,7 @@ function Grid9Image:HandleFLButtonUp(event)
 	end
 end
 
-function Grid9Image:Redraw()
+function ALittle.Grid9Image:Redraw()
 	self._show:ClearTexture()
 	if self._texture ~= nil then
 		self._texture:Clear()
@@ -69,7 +69,7 @@ function Grid9Image:Redraw()
 	end
 end
 
-function Grid9Image:CopyTextureRef(image)
+function ALittle.Grid9Image:CopyTextureRef(image)
 	if image == nil or image._texture == nil then
 		return
 	end
@@ -92,7 +92,7 @@ function Grid9Image:CopyTextureRef(image)
 	self.bottom_size = image.bottom_size
 end
 
-function Grid9Image.__setter:texture_name(value)
+function ALittle.Grid9Image.__setter:texture_name(value)
 	if self._texture_name == value then
 		return
 	end
@@ -107,7 +107,7 @@ function Grid9Image.__setter:texture_name(value)
 	end
 end
 
-function Grid9Image:SetTextureCut(texture_name, max_width, max_height, cache, index, callback)
+function ALittle.Grid9Image:SetTextureCut(texture_name, max_width, max_height, cache, index, callback)
 	if self._texture_name ~= nil then
 		self._show:ClearTexture()
 		self._texture = nil
@@ -122,11 +122,11 @@ function Grid9Image:SetTextureCut(texture_name, max_width, max_height, cache, in
 	end
 end
 
-function Grid9Image.__setter:texture_cut(param)
+function ALittle.Grid9Image.__setter:texture_cut(param)
 	self:SetTextureCut(param.texture_name, param.max_width, param.max_height, param.cache, nil)
 end
 
-function Grid9Image.__getter:texture_cut()
+function ALittle.Grid9Image.__getter:texture_cut()
 	if self._texture_cut == nil then
 		return nil
 	end
@@ -137,22 +137,22 @@ function Grid9Image.__getter:texture_cut()
 	return texture_cut
 end
 
-function Grid9Image.__getter:texture_name()
+function ALittle.Grid9Image.__getter:texture_name()
 	return self._texture_name
 end
 
-function Grid9Image.__setter:texture(value)
+function ALittle.Grid9Image.__setter:texture(value)
 	self._show:SetTexture(value:GetTexture())
 	self._texture_width = value:GetWidth()
 	self._texture_height = value:GetHeight()
 	self._texture = value
 end
 
-function Grid9Image.__getter:texture()
+function ALittle.Grid9Image.__getter:texture()
 	return self._texture
 end
 
-function Grid9Image:SetTextureCoord(t, b, l, r)
+function ALittle.Grid9Image:SetTextureCoord(t, b, l, r)
 	self._tex_coord_t = t
 	self._tex_coord_b = b
 	self._tex_coord_l = l
@@ -160,56 +160,57 @@ function Grid9Image:SetTextureCoord(t, b, l, r)
 	self._show:SetTextureCoord(t, b, l, r)
 end
 
-function Grid9Image.__setter:left_size(value)
+function ALittle.Grid9Image.__setter:left_size(value)
 	self._left_size = value
 	self._show:SetLeftSize(value)
 end
 
-function Grid9Image.__getter:left_size()
+function ALittle.Grid9Image.__getter:left_size()
 	return self._left_size
 end
 
-function Grid9Image.__setter:right_size(value)
+function ALittle.Grid9Image.__setter:right_size(value)
 	self._right_size = value
 	self._show:SetRightSize(value)
 end
 
-function Grid9Image.__getter:right_size()
+function ALittle.Grid9Image.__getter:right_size()
 	return self._right_size
 end
 
-function Grid9Image.__setter:top_size(value)
+function ALittle.Grid9Image.__setter:top_size(value)
 	self._top_size = value
 	self._show:SetTopSize(value)
 end
 
-function Grid9Image.__getter:top_size()
+function ALittle.Grid9Image.__getter:top_size()
 	return self._top_size
 end
 
-function Grid9Image.__setter:bottom_size(value)
+function ALittle.Grid9Image.__setter:bottom_size(value)
 	self._bottom_size = value
 	self._show:SetBottomSize(value)
 end
 
-function Grid9Image.__getter:bottom_size()
+function ALittle.Grid9Image.__getter:bottom_size()
 	return self._bottom_size
 end
 
-function Grid9Image.__getter:texture_width()
+function ALittle.Grid9Image.__getter:texture_width()
 	return self._texture_width
 end
 
-function Grid9Image.__getter:texture_height()
+function ALittle.Grid9Image.__getter:texture_height()
 	return self._texture_height
 end
 
-function Grid9Image.__getter:flip()
+function ALittle.Grid9Image.__getter:flip()
 	return self._flip
 end
 
-function Grid9Image.__setter:flip(value)
+function ALittle.Grid9Image.__setter:flip(value)
 	self._flip = value
 	self._show:SetFlip(value)
 end
 
+end

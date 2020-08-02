@@ -1,16 +1,16 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-local __byte = String_Byte
-local __type = String_Type
-ControlSystem = Lua.Class(nil, "ALittle.ControlSystem")
+local __byte = ALittle.String_Byte
+local __type = ALittle.String_Type
+ALittle.ControlSystem = Lua.Class(nil, "ALittle.ControlSystem")
 
-function ControlSystem:Ctor(module_name, crypt_mode)
+function ALittle.ControlSystem:Ctor(module_name, crypt_mode)
 	___rawset(self, "_log_error", true)
 	___rawset(self, "_use_plugin_class", true)
 	___rawset(self, "_font_map", {})
@@ -23,27 +23,27 @@ function ControlSystem:Ctor(module_name, crypt_mode)
 	___rawset(self, "_font_path", self._base_path .. "Font/")
 	___rawset(self, "_sound_path", self._base_path .. "Sound/")
 	___rawset(self, "_other_path", self._base_path .. "Other/")
-	___rawset(self, "_texture_mgr", TextureManager(module_name, self._crypt_mode))
+	___rawset(self, "_texture_mgr", ALittle.TextureManager(module_name, self._crypt_mode))
 	A_LoadTextureManager:RegisterTexmgrControl(self._texture_mgr)
 end
 
-function ControlSystem.__getter:crypt_mode()
+function ALittle.ControlSystem.__getter:crypt_mode()
 	return self._crypt_mode
 end
 
-function ControlSystem.__getter:log_error()
+function ALittle.ControlSystem.__getter:log_error()
 	return self._log_error
 end
 
-function ControlSystem.__setter:log_error(value)
+function ALittle.ControlSystem.__setter:log_error(value)
 	self._log_error = value
 end
 
-function ControlSystem:RegisterFont(src, dst)
+function ALittle.ControlSystem:RegisterFont(src, dst)
 	self._font_map[src] = dst
 end
 
-function ControlSystem:RegisterInfoByHttp()
+function ALittle.ControlSystem:RegisterInfoByHttp()
 	local ___COROUTINE = coroutine.running()
 	local path = self._ui_path .. "../JSUI/ui_all_in_one.json"
 	ALittle.File_MakeDeepDir(ALittle.File_GetFilePathByPath(path))
@@ -73,22 +73,22 @@ function ControlSystem:RegisterInfoByHttp()
 	end
 end
 
-function ControlSystem:RegisterInfo(name, info)
+function ALittle.ControlSystem:RegisterInfo(name, info)
 	self._name_map_info[name] = info
 	self._name_map_info_cache[name] = nil
 end
 
-function ControlSystem:UnRegisterInfo(name)
+function ALittle.ControlSystem:UnRegisterInfo(name)
 	self._name_map_info[name] = nil
 	self._name_map_info_cache[name] = nil
 end
 
-function ControlSystem:ClearAllInfo()
+function ALittle.ControlSystem:ClearAllInfo()
 	self._name_map_info = {}
 	self._name_map_info_cache = {}
 end
 
-function ControlSystem:CreateControlObject(info)
+function ALittle.ControlSystem:CreateControlObject(info)
 	local target_class = info.__target_class
 	if self._use_plugin_class and target_class ~= nil then
 		local class_func = info.__class_func
@@ -103,14 +103,14 @@ function ControlSystem:CreateControlObject(info)
 			info.__class_func = class_func
 		end
 		if class_func ~= nil then
-			return NewObject(class_func, self)
+			return ALittle.NewObject(class_func, self)
 		else
-			Log("unknow target class." .. String_Join(target_class, "."))
+			ALittle.Log("unknow target class." .. ALittle.String_Join(target_class, "."))
 		end
 	end
 	local clazz = info.__class
 	if clazz == nil then
-		Log("__class is null")
+		ALittle.Log("__class is null")
 		return nil
 	end
 	local class_func = info.__class_func
@@ -119,33 +119,33 @@ function ControlSystem:CreateControlObject(info)
 		info.__class_func = class_func
 	end
 	if class_func == nil then
-		Log("unknow class." .. clazz)
+		ALittle.Log("unknow class." .. clazz)
 		return nil
 	end
 	return ALittle.NewObject(class_func, self)
 end
 
-function ControlSystem:StartChunk(file_path, loop, callback)
+function ALittle.ControlSystem:StartChunk(file_path, loop, callback)
 	return A_AudioSystem:StartChunk(self._sound_path .. file_path, loop, callback)
 end
 
-function ControlSystem:StopChunk(channel)
+function ALittle.ControlSystem:StopChunk(channel)
 	A_AudioSystem:StopChunk(channel)
 end
 
-function ControlSystem:StartMusic(file_path, loop)
+function ALittle.ControlSystem:StartMusic(file_path, loop)
 	return A_AudioSystem:StartMusic(self._sound_path .. file_path, loop)
 end
 
-function ControlSystem:StopMusic()
+function ALittle.ControlSystem:StopMusic()
 	A_AudioSystem:StopMusic()
 end
 
-function ControlSystem:SetTexture(object, name)
+function ALittle.ControlSystem:SetTexture(object, name)
 	self._texture_mgr:SetTexture(object, name)
 end
 
-function ControlSystem:PrepareTexture(ui_list, callback)
+function ALittle.ControlSystem:PrepareTexture(ui_list, callback)
 	local name_map = {}
 	if ui_list ~= nil then
 		for index, ui in ___ipairs(ui_list) do
@@ -155,7 +155,7 @@ function ControlSystem:PrepareTexture(ui_list, callback)
 	self._texture_mgr:PrepareTexture(name_map, callback)
 end
 
-function ControlSystem:PrepareCsv(csv_map, callback)
+function ALittle.ControlSystem:PrepareCsv(csv_map, callback)
 	local new_csv_map = {}
 	for file_path, config in ___pairs(csv_map) do
 		new_csv_map[self._other_path .. file_path] = config
@@ -163,23 +163,23 @@ function ControlSystem:PrepareCsv(csv_map, callback)
 	A_CsvConfigManager:PrepareCsv(new_csv_map, callback)
 end
 
-function ControlSystem.__setter:cache_texture(cache)
+function ALittle.ControlSystem.__setter:cache_texture(cache)
 	self._texture_mgr.cache_texture = cache
 end
 
-function ControlSystem.__getter:cache_texture()
+function ALittle.ControlSystem.__getter:cache_texture()
 	return self._texture_mgr.cache_texture
 end
 
-function ControlSystem.__setter:use_plugin_class(use)
+function ALittle.ControlSystem.__setter:use_plugin_class(use)
 	self._use_plugin_class = use
 end
 
-function ControlSystem.__getter:use_plugin_class()
+function ALittle.ControlSystem.__getter:use_plugin_class()
 	return self._use_plugin_class
 end
 
-function ControlSystem:SetFont(object, font_path, font_size)
+function ALittle.ControlSystem:SetFont(object, font_path, font_size)
 	local dst = self._font_map[font_path]
 	if dst == nil then
 		dst = font_path
@@ -187,7 +187,7 @@ function ControlSystem:SetFont(object, font_path, font_size)
 	object.native_show:SetFont(self._font_path .. dst, font_size)
 end
 
-function ControlSystem:SaveControlToFile(control, file_path, scale)
+function ALittle.ControlSystem:SaveControlToFile(control, file_path, scale)
 	if control == nil then
 		return false
 	end
@@ -205,7 +205,7 @@ function ControlSystem:SaveControlToFile(control, file_path, scale)
 	control.native_show:SetY(0)
 	control.visible = true
 	control.clip = false
-	local result = texture:Save(file_path, control.native_show, Math_Floor(width), Math_Floor(height), scale)
+	local result = texture:Save(file_path, control.native_show, ALittle.Math_Floor(width), ALittle.Math_Floor(height), scale)
 	control.native_show:SetX(x)
 	control.native_show:SetY(y)
 	control.visible = visible
@@ -214,10 +214,10 @@ function ControlSystem:SaveControlToFile(control, file_path, scale)
 	return result
 end
 
-function ControlSystem:CreateControl(name, target_logic, parent)
+function ALittle.ControlSystem:CreateControl(name, target_logic, parent)
 	local info = self:LoadInfo(name)
 	if info == nil then
-		Log("can't find control name:" .. name)
+		ALittle.Log("can't find control name:" .. name)
 		return nil
 	end
 	local object = self:CreateControlObject(info)
@@ -228,22 +228,22 @@ function ControlSystem:CreateControl(name, target_logic, parent)
 	return object
 end
 
-function ControlSystem:CollectTextureName(name, map)
+function ALittle.ControlSystem:CollectTextureName(name, map)
 	local info = self:LoadInfo(name)
 	if info == nil then
-		Log("can't find control name:" .. name)
+		ALittle.Log("can't find control name:" .. name)
 		return nil
 	end
 	return self:CollectTextureNameImpl(info, map)
 end
 
-function ControlSystem:LoadInfo(name)
+function ALittle.ControlSystem:LoadInfo(name)
 	if self._name_map_info_cache[name] then
 		return self._name_map_info[name]
 	end
 	local info = self._name_map_info[name]
 	if info == nil then
-		local json = File_ReadJsonFromFile(self._ui_path .. name .. ".json", self._crypt_mode)
+		local json = ALittle.File_ReadJsonFromFile(self._ui_path .. name .. ".json", self._crypt_mode)
 		if json == nil then
 			return nil
 		end
@@ -257,7 +257,7 @@ function ControlSystem:LoadInfo(name)
 	return self._name_map_info[name]
 end
 
-function ControlSystem:CreateInfo(info)
+function ALittle.ControlSystem:CreateInfo(info)
 	if info == nil then
 		return nil
 	end
@@ -269,7 +269,7 @@ function ControlSystem:CreateInfo(info)
 		if info.__extends_included ~= true then
 			local control = self:LoadInfo(extendsv)
 			if control == nil then
-				Log("ControlSystem CreateInfo extends Failed:" .. extendsv)
+				ALittle.Log("ControlSystem CreateInfo extends Failed:" .. extendsv)
 				return nil
 			end
 			local copy = {}
@@ -307,7 +307,7 @@ function ControlSystem:CreateInfo(info)
 	return info
 end
 
-function ControlSystem:CollectTextureNameImpl(info, map)
+function ALittle.ControlSystem:CollectTextureNameImpl(info, map)
 	if map == nil then
 		map = {}
 	end
@@ -322,14 +322,14 @@ function ControlSystem:CollectTextureNameImpl(info, map)
 			end
 		end
 		if class_func == nil then
-			Log("unknow target class." .. String_Join(target_class, "."))
+			ALittle.Log("unknow target class." .. ALittle.String_Join(target_class, "."))
 		end
 	end
 	if class_func == nil then
 		class_func = ALittle[info.__class]
 	end
 	if class_func == nil then
-		Log("unknow class." .. info.__class)
+		ALittle.Log("unknow class." .. info.__class)
 		return map
 	end
 	local texture_name = info.texture_name
@@ -351,3 +351,4 @@ function ControlSystem:CollectTextureNameImpl(info, map)
 	return map
 end
 
+end

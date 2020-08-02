@@ -1,12 +1,12 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___all_struct = GetAllStruct()
+local ___all_struct = ALittle.GetAllStruct()
 
-RegStruct(-18570489, "ALittle.UITabCloseEvent", {
+ALittle.RegStruct(-18570489, "ALittle.UITabCloseEvent", {
 name = "ALittle.UITabCloseEvent", ns_name = "ALittle", rl_name = "UITabCloseEvent", hash_code = -18570489,
 name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
@@ -14,34 +14,34 @@ option_map = {}
 })
 
 assert(ALittle.Grid3, " extends class:ALittle.Grid3 is nil")
-Tab = Lua.Class(ALittle.Grid3, "ALittle.Tab")
+ALittle.Tab = Lua.Class(ALittle.Grid3, "ALittle.Tab")
 
-function Tab:Ctor(ctrl_sys)
+function ALittle.Tab:Ctor(ctrl_sys)
 	___rawset(self, "_button_inner_gap", 8)
-	___rawset(self, "_child_id_map", CreateKeyWeakMap())
-	___rawset(self, "_group", CreateKeyWeakMap())
-	self.type = UIEnumTypes.TYPE_V
-	___rawset(self, "_view", DisplayView(self._ctrl_sys))
-	self._view.height_type = UIEnumTypes.SIZE_MARGIN
-	self._view.width_type = UIEnumTypes.SIZE_MARGIN
-	___rawset(self, "_linear", Linear(self._ctrl_sys))
-	self._linear.type = UIEnumTypes.TYPE_H
-	self._linear.height_type = UIEnumTypes.SIZE_MARGIN
-	self._linear.y_type = UIEnumTypes.POS_ALIGN_ENDING
+	___rawset(self, "_child_id_map", ALittle.CreateKeyWeakMap())
+	___rawset(self, "_group", ALittle.CreateKeyWeakMap())
+	self.type = ALittle.UIEnumTypes.TYPE_V
+	___rawset(self, "_view", ALittle.DisplayView(self._ctrl_sys))
+	self._view.height_type = ALittle.UIEnumTypes.SIZE_MARGIN
+	self._view.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
+	___rawset(self, "_linear", ALittle.Linear(self._ctrl_sys))
+	self._linear.type = ALittle.UIEnumTypes.TYPE_H
+	self._linear.height_type = ALittle.UIEnumTypes.SIZE_MARGIN
+	self._linear.y_type = ALittle.UIEnumTypes.POS_ALIGN_ENDING
 	self._view:AddChild(self._linear)
 	___rawset(self, "_view_start", 0)
 	___rawset(self, "_view_margin", 0)
-	local show_up = DisplayLayout(self._ctrl_sys)
+	local show_up = ALittle.DisplayLayout(self._ctrl_sys)
 	show_up:AddChild(self._view)
 	self.show_up = show_up
-	self.show_center = DisplayLayout(self._ctrl_sys)
+	self.show_center = ALittle.DisplayLayout(self._ctrl_sys)
 	___rawset(self, "_pickup_rect", true)
 	___rawset(self, "_pickup_child", true)
 	___rawset(self, "_tab_index", 0)
 	___rawset(self, "_child_width_margin", 0)
 end
 
-function Tab:RefreshView()
+function ALittle.Tab:RefreshView()
 	if self._radiobutton_style == nil or self._text_style == nil or self._closebutton_style == nil or self._selected_text_style == nil or self._selected_closebutton_style == nil then
 		return
 	end
@@ -69,7 +69,7 @@ function Tab:RefreshView()
 		local selected_text = self._ctrl_sys:CreateControl(self._selected_text_style)
 		local selected_closebutton = self._ctrl_sys:CreateControl(self._selected_closebutton_style)
 		if radiobutton ~= nil and text ~= nil and closebutton ~= nil and selected_text ~= nil and selected_closebutton ~= nil then
-			local simplelayout = DisplayLayout(self._ctrl_sys)
+			local simplelayout = ALittle.DisplayLayout(self._ctrl_sys)
 			radiobutton.selected = (self._tab_index == k)
 			radiobutton:AddEventListener(___all_struct[958494922], self, self.HandleRadioButtonChanged)
 			radiobutton:AddEventListener(___all_struct[1337289812], self, self.HandleRadioButtonDrag)
@@ -79,28 +79,28 @@ function Tab:RefreshView()
 			radiobutton:AddEventListener(___all_struct[-641444818], self, self.HandleRadioButtonRButtonDown)
 			radiobutton:AddEventListener(___all_struct[-1604617962], self, self.HandleRadioButtonKeyDown)
 			radiobutton.group = self._group
-			radiobutton.width_type = UIEnumTypes.SIZE_MARGIN
-			radiobutton.height_type = UIEnumTypes.SIZE_MARGIN
+			radiobutton.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
+			radiobutton.height_type = ALittle.UIEnumTypes.SIZE_MARGIN
 			v.visible = radiobutton.selected
 			text.text = self._child_id_map[v]
 			text.disabled = true
-			text.y_type = UIEnumTypes.POS_ALIGN_CENTER
+			text.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
 			text.y_value = 2
 			text.x = self._button_inner_gap
 			text.visible = not radiobutton.selected
 			selected_text.text = self._child_id_map[v]
 			selected_text.disabled = true
-			selected_text.y_type = UIEnumTypes.POS_ALIGN_CENTER
+			selected_text.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
 			selected_text.y_value = 2
 			selected_text.x = self._button_inner_gap
 			selected_text.visible = radiobutton.selected
 			closebutton:AddEventListener(___all_struct[-449066808], self, self.HandleCloseButtonClick)
-			closebutton.y_type = UIEnumTypes.POS_ALIGN_CENTER
+			closebutton.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
 			closebutton.y_value = 2
 			closebutton.x = text.x + text.width + self._button_inner_gap
 			closebutton.visible = not radiobutton.selected
 			selected_closebutton:AddEventListener(___all_struct[-449066808], self, self.HandleCloseButtonClick)
-			selected_closebutton.y_type = UIEnumTypes.POS_ALIGN_CENTER
+			selected_closebutton.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
 			selected_closebutton.y_value = 2
 			selected_closebutton.x = selected_text.x + selected_text.width + self._button_inner_gap
 			selected_closebutton.visible = radiobutton.selected
@@ -115,7 +115,7 @@ function Tab:RefreshView()
 	end
 end
 
-function Tab.__setter:radiobutton_style(value)
+function ALittle.Tab.__setter:radiobutton_style(value)
 	if self._radiobutton_style == value then
 		return
 	end
@@ -123,11 +123,11 @@ function Tab.__setter:radiobutton_style(value)
 	self:RefreshView()
 end
 
-function Tab.__getter:radiobutton_style()
+function ALittle.Tab.__getter:radiobutton_style()
 	return self._radiobutton_style
 end
 
-function Tab.__setter:closebutton_style(value)
+function ALittle.Tab.__setter:closebutton_style(value)
 	if self._closebutton_style == value then
 		return
 	end
@@ -135,11 +135,11 @@ function Tab.__setter:closebutton_style(value)
 	self:RefreshView()
 end
 
-function Tab.__getter:closebutton_style()
+function ALittle.Tab.__getter:closebutton_style()
 	return self._closebutton_style
 end
 
-function Tab.__setter:selected_closebutton_style(value)
+function ALittle.Tab.__setter:selected_closebutton_style(value)
 	if self._selected_closebutton_style == value then
 		return
 	end
@@ -147,11 +147,11 @@ function Tab.__setter:selected_closebutton_style(value)
 	self:RefreshView()
 end
 
-function Tab.__getter:selected_closebutton_style()
+function ALittle.Tab.__getter:selected_closebutton_style()
 	return self._selected_closebutton_style
 end
 
-function Tab.__setter:text_style(value)
+function ALittle.Tab.__setter:text_style(value)
 	if self._text_style == value then
 		return
 	end
@@ -159,11 +159,11 @@ function Tab.__setter:text_style(value)
 	self:RefreshView()
 end
 
-function Tab.__getter:text_style()
+function ALittle.Tab.__getter:text_style()
 	return self._text_style
 end
 
-function Tab.__setter:selected_text_style(value)
+function ALittle.Tab.__setter:selected_text_style(value)
 	if self._selected_text_style == value then
 		return
 	end
@@ -171,53 +171,53 @@ function Tab.__setter:selected_text_style(value)
 	self:RefreshView()
 end
 
-function Tab.__getter:selected_text_style()
+function ALittle.Tab.__getter:selected_text_style()
 	return self._selected_text_style
 end
 
-function Tab.__setter:show_head_background(value)
+function ALittle.Tab.__setter:show_head_background(value)
 	if self._head_background ~= nil then
 		self._view:RemoveChild(self._head_background)
 	end
 	self._head_background = value
 	if self._head_background ~= nil then
-		self._head_background.width_type = UIEnumTypes.SIZE_MARGIN
+		self._head_background.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
 		self._head_background.width_value = 0
-		self._head_background.height_type = UIEnumTypes.SIZE_MARGIN
+		self._head_background.height_type = ALittle.UIEnumTypes.SIZE_MARGIN
 		self._head_background.height_value = 0
 		self._view:AddChild(self._head_background, 1)
 	end
 end
 
-function Tab.__getter:show_head_background()
+function ALittle.Tab.__getter:show_head_background()
 	return self._head_background
 end
 
-function Tab.__setter:button_gap(value)
+function ALittle.Tab.__setter:button_gap(value)
 	self._linear.gap = value
 end
 
-function Tab.__getter:button_gap()
+function ALittle.Tab.__getter:button_gap()
 	return self._linear.gap
 end
 
-function Tab.__setter:button_start(value)
+function ALittle.Tab.__setter:button_start(value)
 	self._view.x = value
 end
 
-function Tab.__getter:button_start()
+function ALittle.Tab.__getter:button_start()
 	return self._view.x
 end
 
-function Tab.__setter:button_margin(value)
+function ALittle.Tab.__setter:button_margin(value)
 	self._linear.height_value = value
 end
 
-function Tab.__getter:button_margin()
+function ALittle.Tab.__getter:button_margin()
 	return self._linear.height_value
 end
 
-function Tab.__setter:child_width_margin(value)
+function ALittle.Tab.__setter:child_width_margin(value)
 	self._child_width_margin = value
 	local show_center = self.show_center
 	local childs = show_center.childs
@@ -226,71 +226,71 @@ function Tab.__setter:child_width_margin(value)
 	end
 end
 
-function Tab.__getter:child_width_margin()
+function ALittle.Tab.__getter:child_width_margin()
 	return self._child_width_margin
 end
 
-function Tab.__setter:head_size(value)
+function ALittle.Tab.__setter:head_size(value)
 	self.up_size = value
 end
 
-function Tab.__getter:head_size()
+function ALittle.Tab.__getter:head_size()
 	return self.up_size
 end
 
-function Tab.__setter:close_callback(value)
+function ALittle.Tab.__setter:close_callback(value)
 	self._close_callback = value
 end
 
-function Tab.__getter:close_callback()
+function ALittle.Tab.__getter:close_callback()
 	return self._close_callback
 end
 
-function Tab.__setter:close_post_callback(value)
+function ALittle.Tab.__setter:close_post_callback(value)
 	self._close_post_callback = value
 end
 
-function Tab.__getter:close_post_callback()
+function ALittle.Tab.__getter:close_post_callback()
 	return self._close_post_callback
 end
 
-function Tab.__setter:drag_callback(value)
+function ALittle.Tab.__setter:drag_callback(value)
 	self._drag_callback = value
 end
 
-function Tab.__getter:drag_callback()
+function ALittle.Tab.__getter:drag_callback()
 	return self._drag_callback
 end
 
-function Tab.__setter:drag_post_callback(value)
+function ALittle.Tab.__setter:drag_post_callback(value)
 	self._drag_post_callback = value
 end
 
-function Tab.__getter:drag_post_callback()
+function ALittle.Tab.__getter:drag_post_callback()
 	return self._drag_post_callback
 end
 
-function Tab.__getter:view_margin()
+function ALittle.Tab.__getter:view_margin()
 	return self._view.width_value
 end
 
-function Tab.__setter:view_margin(value)
+function ALittle.Tab.__setter:view_margin(value)
 	self._view.width_value = value
 end
 
-function Tab.__getter:view()
+function ALittle.Tab.__getter:view()
 	return self._view
 end
 
-function Tab.__getter:view_linear()
+function ALittle.Tab.__getter:view_linear()
 	return self._linear
 end
 
-function Tab:GetChildIndex(child)
+function ALittle.Tab:GetChildIndex(child)
 	return self.show_center:GetChildIndex(child)
 end
 
-function Tab:SetChildIndex(child, index)
+function ALittle.Tab:SetChildIndex(child, index)
 	local show_center = self.show_center
 	local cur_index = show_center:GetChildIndex(child)
 	if index > show_center.child_count then
@@ -313,25 +313,25 @@ function Tab:SetChildIndex(child, index)
 	return true
 end
 
-function Tab:GetChildByIndex(index)
+function ALittle.Tab:GetChildByIndex(index)
 	return self.show_center:GetChildByIndex(index)
 end
 
-function Tab:GetChildIndex(child)
+function ALittle.Tab:GetChildIndex(child)
 	return self.show_center:GetChildIndex(child)
 end
 
-function Tab.__getter:childs()
+function ALittle.Tab.__getter:childs()
 	local show_center = self.show_center
 	return show_center.childs
 end
 
-function Tab.__getter:child_count()
+function ALittle.Tab.__getter:child_count()
 	local show_center = self.show_center
 	return show_center.child_count
 end
 
-function Tab:AddChild(child, index)
+function ALittle.Tab:AddChild(child, index)
 	if child == nil or child == self then
 		return false
 	end
@@ -348,11 +348,11 @@ function Tab:AddChild(child, index)
 	child._logic_parent = self
 	child.x = 0
 	child.y = 0
-	child.width_type = UIEnumTypes.SIZE_MARGIN
+	child.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
 	child.width_value = self._child_width_margin
-	child.height_type = UIEnumTypes.SIZE_MARGIN
+	child.height_type = ALittle.UIEnumTypes.SIZE_MARGIN
 	child.height_value = 0
-	child.x_type = UIEnumTypes.POS_ALIGN_ENDING
+	child.x_type = ALittle.UIEnumTypes.POS_ALIGN_ENDING
 	self._child_id_map[child] = child.description
 	if self._child_id_map[child] == nil then
 		self._child_id_map[child] = ""
@@ -366,7 +366,7 @@ function Tab:AddChild(child, index)
 	local selected_text = self._ctrl_sys:CreateControl(self._selected_text_style)
 	local selected_closebutton = self._ctrl_sys:CreateControl(self._selected_closebutton_style)
 	if radiobutton ~= nil and text ~= nil and closebutton ~= nil and selected_text ~= nil and selected_closebutton ~= nil then
-		local simplelayout = DisplayLayout(self._ctrl_sys)
+		local simplelayout = ALittle.DisplayLayout(self._ctrl_sys)
 		radiobutton:AddEventListener(___all_struct[958494922], self, self.HandleRadioButtonChanged)
 		radiobutton:AddEventListener(___all_struct[1337289812], self, self.HandleRadioButtonDrag)
 		radiobutton:AddEventListener(___all_struct[1301789264], self, self.HandleRadioButtonDragBegin)
@@ -375,30 +375,30 @@ function Tab:AddChild(child, index)
 		radiobutton:AddEventListener(___all_struct[-641444818], self, self.HandleRadioButtonRButtonDown)
 		radiobutton:AddEventListener(___all_struct[-1604617962], self, self.HandleRadioButtonKeyDown)
 		radiobutton.group = self._group
-		radiobutton.width_type = UIEnumTypes.SIZE_MARGIN
+		radiobutton.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
 		radiobutton.width_value = 0
-		radiobutton.height_type = UIEnumTypes.SIZE_MARGIN
+		radiobutton.height_type = ALittle.UIEnumTypes.SIZE_MARGIN
 		radiobutton.height_value = 0
 		child.visible = radiobutton.selected
 		text.text = self._child_id_map[child]
 		text.disabled = true
-		text.y_type = UIEnumTypes.POS_ALIGN_CENTER
+		text.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
 		text.y_value = 2
 		text.x = self._button_inner_gap
 		text.visible = not radiobutton.selected
 		selected_text.text = self._child_id_map[child]
 		selected_text.disabled = true
-		selected_text.y_type = UIEnumTypes.POS_ALIGN_CENTER
+		selected_text.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
 		selected_text.y_value = 2
 		selected_text.x = self._button_inner_gap
 		selected_text.visible = radiobutton.selected
 		closebutton:AddEventListener(___all_struct[-449066808], self, self.HandleCloseButtonClick)
-		closebutton.y_type = UIEnumTypes.POS_ALIGN_CENTER
+		closebutton.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
 		closebutton.y_value = 2
 		closebutton.x = text.x + text.width + self._button_inner_gap
 		closebutton.visible = not radiobutton.selected
 		selected_closebutton:AddEventListener(___all_struct[-449066808], self, self.HandleCloseButtonClick)
-		selected_closebutton.y_type = UIEnumTypes.POS_ALIGN_CENTER
+		selected_closebutton.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
 		selected_closebutton.y_value = 2
 		selected_closebutton.x = selected_text.x + selected_text.width + self._button_inner_gap
 		selected_closebutton.visible = radiobutton.selected
@@ -418,7 +418,7 @@ function Tab:AddChild(child, index)
 	return true
 end
 
-function Tab:RemoveChild(child)
+function ALittle.Tab:RemoveChild(child)
 	if child == nil then
 		return false
 	end
@@ -465,7 +465,7 @@ function Tab:RemoveChild(child)
 	return true
 end
 
-function Tab:SpliceChild(index, count)
+function ALittle.Tab:SpliceChild(index, count)
 	local remain_count = self._child_count - index + 1
 	if count == nil then
 		count = remain_count
@@ -522,12 +522,12 @@ function Tab:SpliceChild(index, count)
 	return result
 end
 
-function Tab:HasChild(child)
+function ALittle.Tab:HasChild(child)
 	local show_center = self.show_center
 	return show_center:HasChild(child)
 end
 
-function Tab:RemoveAllChild()
+function ALittle.Tab:RemoveAllChild()
 	self._linear:RemoveAllChild()
 	local show_center = self.show_center
 	local childs = show_center.childs
@@ -539,7 +539,7 @@ function Tab:RemoveAllChild()
 	self._tab_index = 0
 end
 
-function Tab:HandleRadioButtonChanged(event)
+function ALittle.Tab:HandleRadioButtonChanged(event)
 	local button = event.target
 	if button.selected then
 		local show_center = self.show_center
@@ -572,7 +572,7 @@ function Tab:HandleRadioButtonChanged(event)
 	end
 end
 
-function Tab:HandleCloseButtonClick(event)
+function ALittle.Tab:HandleCloseButtonClick(event)
 	local simplelayout = event.target._show_parent
 	local index = self._linear:GetChildIndex(simplelayout)
 	local show_center = self.show_center
@@ -588,12 +588,12 @@ function Tab:HandleCloseButtonClick(event)
 	end
 end
 
-function Tab:HandleRadioButtonDragBegin(event)
+function ALittle.Tab:HandleRadioButtonDragBegin(event)
 	local simplelayout = event.target._show_parent
 	local control_x
 	local control_y
 	control_x, control_y = simplelayout:LocalToGlobal()
-	self._tab_image = EffectImage(self._ctrl_sys)
+	self._tab_image = ALittle.EffectImage(self._ctrl_sys)
 	self._tab_image:Action(simplelayout)
 	A_LayerManager:AddToTip(self._tab_image)
 	self._tab_image.x = control_x
@@ -601,7 +601,7 @@ function Tab:HandleRadioButtonDragBegin(event)
 	self._tab_image.alpha = 0.9
 end
 
-function Tab:HandleRadioButtonDrag(event)
+function ALittle.Tab:HandleRadioButtonDrag(event)
 	if self._tab_image == nil then
 		return
 	end
@@ -609,7 +609,7 @@ function Tab:HandleRadioButtonDrag(event)
 	self._tab_image.y = self._tab_image.y + event.delta_y
 end
 
-function Tab:HandleRadioButtonDragEnd(event)
+function ALittle.Tab:HandleRadioButtonDragEnd(event)
 	local target_index = self._linear.child_count
 	if self._scale_x > 0 then
 		local linear_x
@@ -644,7 +644,7 @@ function Tab:HandleRadioButtonDragEnd(event)
 	end
 end
 
-function Tab:HandleRadioButtonMClick(event)
+function ALittle.Tab:HandleRadioButtonMClick(event)
 	local simplelayout = event.target._show_parent
 	local layout_childs = simplelayout.childs
 	if layout_childs[3].disabled and layout_childs[5].disabled then
@@ -664,7 +664,7 @@ function Tab:HandleRadioButtonMClick(event)
 	end
 end
 
-function Tab:HandleRadioButtonRButtonDown(event)
+function ALittle.Tab:HandleRadioButtonRButtonDown(event)
 	local simplelayout = event.target._show_parent
 	local index = self._linear:GetChildIndex(simplelayout)
 	local show_center = self.show_center
@@ -675,7 +675,7 @@ function Tab:HandleRadioButtonRButtonDown(event)
 	self:DispatchEvent(___all_struct[-641444818], e)
 end
 
-function Tab:HandleRadioButtonKeyDown(event)
+function ALittle.Tab:HandleRadioButtonKeyDown(event)
 	local simplelayout = event.target._show_parent
 	local index = self._linear:GetChildIndex(simplelayout)
 	local show_center = self.show_center
@@ -690,7 +690,7 @@ function Tab:HandleRadioButtonKeyDown(event)
 	event.handled = e.handled
 end
 
-function Tab:SetChildText(child, text)
+function ALittle.Tab:SetChildText(child, text)
 	if self._radiobutton_style == nil then
 		return
 	end
@@ -716,11 +716,11 @@ function Tab:SetChildText(child, text)
 	end
 end
 
-function Tab:GetChildText(child)
+function ALittle.Tab:GetChildText(child)
 	return self._child_id_map[child]
 end
 
-function Tab:HasChildText(text)
+function ALittle.Tab:HasChildText(text)
 	for k, v in ___pairs(self._child_id_map) do
 		if v == text then
 			return true
@@ -729,7 +729,7 @@ function Tab:HasChildText(text)
 	return false
 end
 
-function Tab:GetChildByText(text)
+function ALittle.Tab:GetChildByText(text)
 	for k, v in ___pairs(self._child_id_map) do
 		if v == text then
 			return k
@@ -738,7 +738,7 @@ function Tab:GetChildByText(text)
 	return nil
 end
 
-function Tab.__setter:tab(child)
+function ALittle.Tab.__setter:tab(child)
 	local show_center = self.show_center
 	local index = show_center:GetChildIndex(child)
 	if index == 0 then
@@ -747,13 +747,13 @@ function Tab.__setter:tab(child)
 	self.tab_index = index
 end
 
-function Tab.__getter:tab()
+function ALittle.Tab.__getter:tab()
 	local show_center = self.show_center
 	local show_center_childs = show_center.childs
 	return show_center_childs[self._tab_index]
 end
 
-function Tab.__setter:tab_index(index)
+function ALittle.Tab.__setter:tab_index(index)
 	local show_center = self.show_center
 	local show_center_childs = show_center.childs
 	if self._tab_index ~= 0 then
@@ -798,11 +798,11 @@ function Tab.__setter:tab_index(index)
 	end
 end
 
-function Tab.__getter:tab_index()
+function ALittle.Tab.__getter:tab_index()
 	return self._tab_index
 end
 
-function Tab:DisableCloseButton(child)
+function ALittle.Tab:DisableCloseButton(child)
 	local show_center = self.show_center
 	local index = show_center:GetChildIndex(child)
 	if index == 0 then
@@ -816,15 +816,15 @@ function Tab:DisableCloseButton(child)
 	local layout_childs = simplelayout.childs
 	layout_childs[3].visible = false
 	layout_childs[3].disabled = true
-	layout_childs[2].x_type = UIEnumTypes.POS_ALIGN_CENTER
+	layout_childs[2].x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
 	layout_childs[2].x_value = 0
 	layout_childs[5].visible = false
 	layout_childs[5].disabled = true
-	layout_childs[4].x_type = UIEnumTypes.POS_ALIGN_CENTER
+	layout_childs[4].x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
 	layout_childs[4].x_value = 0
 end
 
-function Tab:DisableAllCloseButton()
+function ALittle.Tab:DisableAllCloseButton()
 	local show_center = self.show_center
 	local count = show_center.child_count
 	local linear_childs = self._linear.childs
@@ -838,17 +838,17 @@ function Tab:DisableAllCloseButton()
 		local layout_childs = simplelayout.childs
 		layout_childs[3].visible = false
 		layout_childs[3].disabled = true
-		layout_childs[2].x_type = UIEnumTypes.POS_ALIGN_CENTER
+		layout_childs[2].x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
 		layout_childs[2].x_value = 0
 		layout_childs[5].visible = false
 		layout_childs[5].disabled = true
-		layout_childs[4].x_type = UIEnumTypes.POS_ALIGN_CENTER
+		layout_childs[4].x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
 		layout_childs[4].x_value = 0
 		index = index+(1)
 	end
 end
 
-function Tab:EnableCloseButton(child)
+function ALittle.Tab:EnableCloseButton(child)
 	local show_center = self.show_center
 	local index = show_center:GetChildIndex(child)
 	if index == 0 then
@@ -862,15 +862,15 @@ function Tab:EnableCloseButton(child)
 	local layout_childs = simplelayout.childs
 	layout_childs[3].visible = not layout_childs[1].selected
 	layout_childs[3].disabled = false
-	layout_childs[2].x_type = UIEnumTypes.POS_ABS
+	layout_childs[2].x_type = ALittle.UIEnumTypes.POS_ABS
 	layout_childs[2].x = self._button_inner_gap
 	layout_childs[5].visible = layout_childs[1].selected
 	layout_childs[5].disabled = false
-	layout_childs[4].x_type = UIEnumTypes.POS_ABS
+	layout_childs[4].x_type = ALittle.UIEnumTypes.POS_ABS
 	layout_childs[4].x = self._button_inner_gap
 end
 
-function Tab:GetChildHead(child)
+function ALittle.Tab:GetChildHead(child)
 	local show_center = self.show_center
 	local index = show_center:GetChildIndex(child)
 	if index == 0 then
@@ -880,3 +880,4 @@ function Tab:GetChildHead(child)
 	return linear_childs[index]
 end
 
+end

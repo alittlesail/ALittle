@@ -1,12 +1,12 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("Lua", package.seeall)
-
+do
+if _G.Lua == nil then _G.Lua = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-SocketStatus = {
+Lua.SocketStatus = {
 	SS_IDLE = 0,
 	SS_CONNECTING = 1,
 	SS_CONNECTED = 2,
@@ -14,25 +14,25 @@ SocketStatus = {
 
 local __MAX_ID = 0
 local __SOCKET_MAP = {}
-ISocket = Lua.Class(nil, "Lua.ISocket")
+Lua.ISocket = Lua.Class(nil, "Lua.ISocket")
 
-function ISocket:Ctor(disconnected_callback)
+function Lua.ISocket:Ctor(disconnected_callback)
 	__MAX_ID = __MAX_ID + 1
 	___rawset(self, "_id", __MAX_ID)
-	___rawset(self, "_status", SocketStatus.SS_IDLE)
+	___rawset(self, "_status", Lua.SocketStatus.SS_IDLE)
 	___rawset(self, "_disconnected_callback", disconnected_callback)
 	___rawset(self, "_socket", A_LuaSocketSchedule._socket)
 end
 
-function ISocket:IsConnected()
-	return self._status == SocketStatus.SS_CONNECTED
+function Lua.ISocket:IsConnected()
+	return self._status == Lua.SocketStatus.SS_CONNECTED
 end
 
-function ISocket:IsConnecting()
-	return self._status == SocketStatus.SS_CONNECTING
+function Lua.ISocket:IsConnecting()
+	return self._status == Lua.SocketStatus.SS_CONNECTING
 end
 
-function ISocket:Connect(ip, port)
+function Lua.ISocket:Connect(ip, port)
 	local ___COROUTINE = coroutine.running()
 	if self:IsConnecting() then
 		return "已经正在连接"
@@ -40,17 +40,17 @@ function ISocket:Connect(ip, port)
 	if self:IsConnected() then
 		return "已经连接，请先关闭连接"
 	end
-	self._status = SocketStatus.SS_CONNECTING
+	self._status = Lua.SocketStatus.SS_CONNECTING
 	socket.connect(self._socket, self._id, ip, port)
 	self._connect_thread = ___COROUTINE
 	__SOCKET_MAP[self._id] = self
 	return coroutine.yield()
 end
 
-function ISocket:Close()
+function Lua.ISocket:Close()
 	socket.close(self._socket, self._id)
 	__SOCKET_MAP[self._id] = nil
-	self._status = SocketStatus.SS_IDLE
+	self._status = Lua.SocketStatus.SS_IDLE
 	if self._connect_thread ~= nil then
 		local result, error = ALittle.Coroutine.Resume(self._connect_thread, "closed")
 		if result ~= true then
@@ -67,29 +67,29 @@ function ISocket:Close()
 	end
 end
 
-function ISocket.__setter:disconnect_callback(disconnected_callback)
+function Lua.ISocket.__setter:disconnect_callback(disconnected_callback)
 	self._disconnected_callback = disconnected_callback
 end
 
-function ISocket:WriteMessage(full_name, protobuf_msg)
+function Lua.ISocket:WriteMessage(full_name, protobuf_msg)
 	return "not implement"
 end
 
-function ISocket:ReadMessage()
+function Lua.ISocket:ReadMessage()
 	local ___COROUTINE = coroutine.running()
 	return "not implement", nil
 end
 
-function ISocket:HandleMessage(msg)
+function Lua.ISocket:HandleMessage(msg)
 end
 
-function ISocket:ReadStruct()
+function Lua.ISocket:ReadStruct()
 	local ___COROUTINE = coroutine.running()
 	local error, msg = self:ReadMessage()
 	if error ~= nil then
 		return error, nil
 	end
-	local content = protobuf.message_jsonencode(msg)
+	local content = protobuf.message_jsonencode(msg, true)
 	local result, object = Lua.TCall(json.decode, content)
 	if result ~= nil then
 		return result, nil
@@ -97,7 +97,7 @@ function ISocket:ReadStruct()
 	return nil, object
 end
 
-function ISocket:ReadUint8()
+function Lua.ISocket:ReadUint8()
 	local ___COROUTINE = coroutine.running()
 	if not self:IsConnected() then
 		return "还未连接成功", 0
@@ -110,7 +110,7 @@ function ISocket:ReadUint8()
 	return coroutine.yield()
 end
 
-function ISocket:ReadInt8()
+function Lua.ISocket:ReadInt8()
 	local ___COROUTINE = coroutine.running()
 	if not self:IsConnected() then
 		return "还未连接成功", 0
@@ -123,7 +123,7 @@ function ISocket:ReadInt8()
 	return coroutine.yield()
 end
 
-function ISocket:ReadUint16()
+function Lua.ISocket:ReadUint16()
 	local ___COROUTINE = coroutine.running()
 	if not self:IsConnected() then
 		return "还未连接成功", 0
@@ -136,7 +136,7 @@ function ISocket:ReadUint16()
 	return coroutine.yield()
 end
 
-function ISocket:ReadInt16()
+function Lua.ISocket:ReadInt16()
 	local ___COROUTINE = coroutine.running()
 	if not self:IsConnected() then
 		return "还未连接成功", 0
@@ -149,7 +149,7 @@ function ISocket:ReadInt16()
 	return coroutine.yield()
 end
 
-function ISocket:ReadUint32()
+function Lua.ISocket:ReadUint32()
 	local ___COROUTINE = coroutine.running()
 	if not self:IsConnected() then
 		return "还未连接成功", 0
@@ -162,7 +162,7 @@ function ISocket:ReadUint32()
 	return coroutine.yield()
 end
 
-function ISocket:ReadInt32()
+function Lua.ISocket:ReadInt32()
 	local ___COROUTINE = coroutine.running()
 	if not self:IsConnected() then
 		return "还未连接成功", 0
@@ -175,7 +175,7 @@ function ISocket:ReadInt32()
 	return coroutine.yield()
 end
 
-function ISocket:ReadUint64()
+function Lua.ISocket:ReadUint64()
 	local ___COROUTINE = coroutine.running()
 	if not self:IsConnected() then
 		return "还未连接成功", 0
@@ -188,7 +188,7 @@ function ISocket:ReadUint64()
 	return coroutine.yield()
 end
 
-function ISocket:ReadInt64()
+function Lua.ISocket:ReadInt64()
 	local ___COROUTINE = coroutine.running()
 	if not self:IsConnected() then
 		return "还未连接成功", 0
@@ -201,7 +201,7 @@ function ISocket:ReadInt64()
 	return coroutine.yield()
 end
 
-function ISocket:ReadFloat()
+function Lua.ISocket:ReadFloat()
 	local ___COROUTINE = coroutine.running()
 	if not self:IsConnected() then
 		return "还未连接成功", 0
@@ -214,7 +214,7 @@ function ISocket:ReadFloat()
 	return coroutine.yield()
 end
 
-function ISocket:ReadDouble()
+function Lua.ISocket:ReadDouble()
 	local ___COROUTINE = coroutine.running()
 	if not self:IsConnected() then
 		return "还未连接成功", 0
@@ -227,7 +227,7 @@ function ISocket:ReadDouble()
 	return coroutine.yield()
 end
 
-function ISocket:ReadString(len)
+function Lua.ISocket:ReadString(len)
 	local ___COROUTINE = coroutine.running()
 	if not self:IsConnected() then
 		return "还未连接成功", ""
@@ -240,7 +240,7 @@ function ISocket:ReadString(len)
 	return coroutine.yield()
 end
 
-function ISocket:ReadBinary(len)
+function Lua.ISocket:ReadBinary(len)
 	local ___COROUTINE = coroutine.running()
 	if not self:IsConnected() then
 		return "还未连接成功", 0
@@ -253,7 +253,7 @@ function ISocket:ReadBinary(len)
 	return coroutine.yield()
 end
 
-function ISocket:ReadProtobuf(full_name, len)
+function Lua.ISocket:ReadProtobuf(full_name, len)
 	local ___COROUTINE = coroutine.running()
 	local error, binary_value = self:ReadBinary(len)
 	if error ~= nil then
@@ -269,7 +269,7 @@ function ISocket:ReadProtobuf(full_name, len)
 	return nil, protobuf_msg
 end
 
-function ISocket:ReceiveMessage()
+function Lua.ISocket:ReceiveMessage()
 	while self:IsConnected() do
 		local error, protobuf_msg = self:ReadMessage()
 		if error ~= nil then
@@ -279,93 +279,93 @@ function ISocket:ReceiveMessage()
 		self:HandleMessage(protobuf_msg)
 	end
 end
-ISocket.ReceiveMessage = Lua.CoWrap(ISocket.ReceiveMessage)
+Lua.ISocket.ReceiveMessage = Lua.CoWrap(Lua.ISocket.ReceiveMessage)
 
-function ISocket:WriteUint8(value)
+function Lua.ISocket:WriteUint8(value)
 	if not self:IsConnected() then
 		return
 	end
 	socket.writeuint8(self._socket, self._id, value)
 end
 
-function ISocket:WriteInt8(value)
+function Lua.ISocket:WriteInt8(value)
 	if not self:IsConnected() then
 		return
 	end
 	socket.writeint8(self._socket, self._id, value)
 end
 
-function ISocket:WriteUint16(value)
+function Lua.ISocket:WriteUint16(value)
 	if not self:IsConnected() then
 		return
 	end
 	socket.writeuint16(self._socket, self._id, value)
 end
 
-function ISocket:WriteInt16(value)
+function Lua.ISocket:WriteInt16(value)
 	if not self:IsConnected() then
 		return
 	end
 	socket.writeint16(self._socket, self._id, value)
 end
 
-function ISocket:WriteUint32(value)
+function Lua.ISocket:WriteUint32(value)
 	if not self:IsConnected() then
 		return
 	end
 	socket.writeuint32(self._socket, self._id, value)
 end
 
-function ISocket:WriteInt32(value)
+function Lua.ISocket:WriteInt32(value)
 	if not self:IsConnected() then
 		return
 	end
 	socket.writeint32(self._socket, self._id, value)
 end
 
-function ISocket:WriteUint64(value)
+function Lua.ISocket:WriteUint64(value)
 	if not self:IsConnected() then
 		return
 	end
 	socket.writeuint64(self._socket, self._id, value)
 end
 
-function ISocket:WriteInt64(value)
+function Lua.ISocket:WriteInt64(value)
 	if not self:IsConnected() then
 		return
 	end
 	socket.writeint64(self._socket, self._id, value)
 end
 
-function ISocket:WriteFloat(value)
+function Lua.ISocket:WriteFloat(value)
 	if not self:IsConnected() then
 		return
 	end
 	socket.writefloat(self._socket, self._id, value)
 end
 
-function ISocket:WriteDouble(value)
+function Lua.ISocket:WriteDouble(value)
 	if not self:IsConnected() then
 		return
 	end
 	socket.writedouble(self._socket, self._id, value)
 end
 
-function ISocket:WriteString(value)
+function Lua.ISocket:WriteString(value)
 	if not self:IsConnected() then
 		return
 	end
 	socket.writestring(self._socket, self._id, value)
 end
 
-function ISocket:WriteBinary(buffer, size)
+function Lua.ISocket:WriteBinary(buffer, size)
 	if not self:IsConnected() then
 		return
 	end
 	socket.writebinary(self._socket, self._id, buffer, size)
 end
 
-function ISocket:WriteProtobuf(msg)
+function Lua.ISocket:WriteProtobuf(msg)
 	if not self:IsConnected() then
 		return "is not connected"
 	end
@@ -381,13 +381,13 @@ function ISocket:WriteProtobuf(msg)
 	return error
 end
 
-function ISocket:SendMessage(msg)
+function Lua.ISocket:SendMessage(msg)
 	local descriptor = protobuf.message_getdescriptor(msg)
 	local full_name = protobuf.messagedescriptor_fullname(descriptor)
 	return self:WriteMessage(full_name, msg)
 end
 
-function ISocket:SendStruct(full_name, msg)
+function Lua.ISocket:SendStruct(full_name, msg)
 	local protobuf_json = json.encode(msg)
 	local protobuf_msg = A_LuaSocketSchedule:CreateMessage(full_name)
 	if protobuf_msg == nil then
@@ -409,13 +409,13 @@ function ISocket:SendStruct(full_name, msg)
 	return error
 end
 
-function ISocket.HandleConnectFailed(id)
+function Lua.ISocket.HandleConnectFailed(id)
 	local socket = __SOCKET_MAP[id]
 	if socket == nil then
 		return
 	end
 	__SOCKET_MAP[id] = nil
-	socket._status = SocketStatus.SS_IDLE
+	socket._status = Lua.SocketStatus.SS_IDLE
 	local result, error = ALittle.Coroutine.Resume(socket._connect_thread, "connect failed")
 	if result ~= true then
 		ALittle.Error(error)
@@ -423,12 +423,12 @@ function ISocket.HandleConnectFailed(id)
 	socket._connect_thread = nil
 end
 
-function ISocket.HandleConnectSucceed(id)
+function Lua.ISocket.HandleConnectSucceed(id)
 	local socket = __SOCKET_MAP[id]
 	if socket == nil then
 		return
 	end
-	socket._status = SocketStatus.SS_CONNECTED
+	socket._status = Lua.SocketStatus.SS_CONNECTED
 	local result, error = ALittle.Coroutine.Resume(socket._connect_thread, nil)
 	if result ~= true then
 		ALittle.Error(error)
@@ -436,13 +436,13 @@ function ISocket.HandleConnectSucceed(id)
 	socket._connect_thread = nil
 end
 
-function ISocket.HandleDisconnected(id)
+function Lua.ISocket.HandleDisconnected(id)
 	local socket = __SOCKET_MAP[id]
 	if socket == nil then
 		return
 	end
 	__SOCKET_MAP[id] = nil
-	socket._status = SocketStatus.SS_IDLE
+	socket._status = Lua.SocketStatus.SS_IDLE
 	if socket._read_thread ~= nil then
 		local result, error = ALittle.Coroutine.Resume(socket._read_thread, "disconnected")
 		if result ~= true then
@@ -455,7 +455,7 @@ function ISocket.HandleDisconnected(id)
 	end
 end
 
-function ISocket.HandleReadInt(id, value)
+function Lua.ISocket.HandleReadInt(id, value)
 	local socket = __SOCKET_MAP[id]
 	if socket == nil then
 		return
@@ -470,7 +470,7 @@ function ISocket.HandleReadInt(id, value)
 	end
 end
 
-function ISocket.HandleReadDouble(id, value)
+function Lua.ISocket.HandleReadDouble(id, value)
 	local socket = __SOCKET_MAP[id]
 	if socket == nil then
 		return
@@ -485,7 +485,7 @@ function ISocket.HandleReadDouble(id, value)
 	end
 end
 
-function ISocket.HandleReadString(id, value)
+function Lua.ISocket.HandleReadString(id, value)
 	local socket = __SOCKET_MAP[id]
 	if socket == nil then
 		return
@@ -500,7 +500,7 @@ function ISocket.HandleReadString(id, value)
 	end
 end
 
-function ISocket.HandleReadProtobuf(id, value)
+function Lua.ISocket.HandleReadProtobuf(id, value)
 	local socket = __SOCKET_MAP[id]
 	if socket == nil then
 		return
@@ -515,3 +515,4 @@ function ISocket.HandleReadProtobuf(id, value)
 	end
 end
 
+end

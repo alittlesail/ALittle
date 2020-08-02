@@ -1,21 +1,21 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("AUIPlugin", package.seeall)
-
+do
+if _G.AUIPlugin == nil then _G.AUIPlugin = {} end
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-AUIIMEManager = Lua.Class(nil, "AUIPlugin.AUIIMEManager")
+AUIPlugin.AUIIMEManager = Lua.Class(nil, "AUIPlugin.AUIIMEManager")
 
-function AUIIMEManager:Ctor()
+function AUIPlugin.AUIIMEManager:Ctor()
 end
 
-function AUIIMEManager:Setup()
+function AUIPlugin.AUIIMEManager:Setup()
 	if A_UISystem.ime_callback ~= nil then
 		return
 	end
 	if self._ime_dialog == nil then
-		self._ime_dialog = g_Control:CreateControl("ide_ime_dialog", self)
+		self._ime_dialog = AUIPlugin.g_Control:CreateControl("ide_ime_dialog", self)
 		A_LayerManager:AddToTip(self._ime_dialog)
 		self._ime_dialog.visible = false
 		self._ime_dialog_init_width = self._ime_dialog.width
@@ -24,7 +24,7 @@ function AUIIMEManager:Setup()
 	A_UISystem.ime_callback = self._callback
 end
 
-function AUIIMEManager:Shutdown()
+function AUIPlugin.AUIIMEManager:Shutdown()
 	if self._ime_dialog ~= nil then
 		A_LayerManager:RemoveFromTip(self._ime_dialog)
 		self._ime_dialog = nil
@@ -35,7 +35,7 @@ function AUIIMEManager:Shutdown()
 	self._callback = nil
 end
 
-function AUIIMEManager:HandleImeEditingCallback(open, text, start, list, target)
+function AUIPlugin.AUIIMEManager:HandleImeEditingCallback(open, text, start, list, target)
 	if self._ime_dialog == nil then
 		return
 	end
@@ -81,4 +81,5 @@ function AUIIMEManager:HandleImeEditingCallback(open, text, start, list, target)
 	end
 end
 
-g_AUIIMEManager = AUIIMEManager()
+AUIPlugin.g_AUIIMEManager = AUIPlugin.AUIIMEManager()
+end

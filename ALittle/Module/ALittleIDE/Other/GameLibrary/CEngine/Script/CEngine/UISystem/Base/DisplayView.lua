@@ -1,17 +1,18 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
-DisplayView = Lua.Class(ALittle.DisplayLayout, "ALittle.DisplayView")
+ALittle.DisplayView = Lua.Class(ALittle.DisplayLayout, "ALittle.DisplayView")
 
-function DisplayView:Ctor(ctrl_sys)
+function ALittle.DisplayView:Ctor(ctrl_sys)
 	___rawset(self, "_show", __CPPAPIDisplayView())
 	___rawset(self, "_pickup_rect", true)
 	___rawset(self, "_pickup_child", true)
 end
 
+end

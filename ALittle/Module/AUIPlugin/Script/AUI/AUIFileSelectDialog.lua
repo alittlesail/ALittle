@@ -1,6 +1,6 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("AUIPlugin", package.seeall)
-
+do
+if _G.AUIPlugin == nil then _G.AUIPlugin = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
@@ -86,9 +86,9 @@ option_map = {}
 })
 
 assert(ALittle.EventDispatcher, " extends class:ALittle.EventDispatcher is nil")
-AUIFileSelectDialog = Lua.Class(ALittle.EventDispatcher, "AUIPlugin.AUIFileSelectDialog")
+AUIPlugin.AUIFileSelectDialog = Lua.Class(ALittle.EventDispatcher, "AUIPlugin.AUIFileSelectDialog")
 
-function AUIFileSelectDialog:Ctor(title, layer, ext_list)
+function AUIPlugin.AUIFileSelectDialog:Ctor(title, layer, ext_list)
 	___rawset(self, "_real_size", 100)
 	___rawset(self, "_thread", nil)
 	___rawset(self, "_base_path", nil)
@@ -103,7 +103,7 @@ function AUIFileSelectDialog:Ctor(title, layer, ext_list)
 	end
 end
 
-function AUIFileSelectDialog:Shutdown()
+function AUIPlugin.AUIFileSelectDialog:Shutdown()
 	if self._thread ~= nil then
 		ALittle.Coroutine.Resume(self._thread, nil)
 		self._thread = nil
@@ -118,7 +118,7 @@ function AUIFileSelectDialog:Shutdown()
 	end
 end
 
-function AUIFileSelectDialog:HideDialog()
+function AUIPlugin.AUIFileSelectDialog:HideDialog()
 	if self._thread ~= nil then
 		ALittle.Coroutine.Resume(self._thread, nil)
 		self._thread = nil
@@ -129,9 +129,9 @@ function AUIFileSelectDialog:HideDialog()
 	end
 end
 
-function AUIFileSelectDialog:CreateDialog()
+function AUIPlugin.AUIFileSelectDialog:CreateDialog()
 	if self._dialog == nil then
-		self._dialog = g_Control:CreateControl("ide_file_select_dialog", self)
+		self._dialog = AUIPlugin.g_Control:CreateControl("ide_file_select_dialog", self)
 		self._dialog.title = self._title
 		if self._layer ~= nil then
 			self._layer:AddChild(self._dialog)
@@ -141,7 +141,7 @@ function AUIFileSelectDialog:CreateDialog()
 	end
 end
 
-function AUIFileSelectDialog:ShowDialog()
+function AUIPlugin.AUIFileSelectDialog:ShowDialog()
 	if self._thread ~= nil then
 		ALittle.Coroutine.Resume(self._thread, nil)
 		self._thread = nil
@@ -150,30 +150,30 @@ function AUIFileSelectDialog:ShowDialog()
 	self._dialog.visible = true
 end
 
-function AUIFileSelectDialog:ShowSelect()
+function AUIPlugin.AUIFileSelectDialog:ShowSelect()
 	local ___COROUTINE = coroutine.running()
 	self:ShowDialog()
 	self._thread = ___COROUTINE
 	return coroutine.yield()
 end
 
-function AUIFileSelectDialog:System_SetVDragCursor(event)
+function AUIPlugin.AUIFileSelectDialog:System_SetVDragCursor(event)
 	ALittle.System_SetVDragCursor()
 end
 
-function AUIFileSelectDialog:System_SetNormalCursor(event)
+function AUIPlugin.AUIFileSelectDialog:System_SetNormalCursor(event)
 	ALittle.System_SetNormalCursor()
 end
 
-function AUIFileSelectDialog:System_SetHDragCursor(event)
+function AUIPlugin.AUIFileSelectDialog:System_SetHDragCursor(event)
 	ALittle.System_SetHDragCursor()
 end
 
-function AUIFileSelectDialog:System_SetHVDragCursor(event)
+function AUIPlugin.AUIFileSelectDialog:System_SetHVDragCursor(event)
 	ALittle.System_SetHVDragCursor()
 end
 
-function AUIFileSelectDialog:CreateFileItem(file_name, rel_path, abs_path)
+function AUIPlugin.AUIFileSelectDialog:CreateFileItem(file_name, rel_path, abs_path)
 	local ext = ALittle.File_GetFileExtByPath(file_name)
 	if self._ext_map ~= nil then
 		ext = ALittle.String_Upper(ext)
@@ -182,7 +182,7 @@ function AUIFileSelectDialog:CreateFileItem(file_name, rel_path, abs_path)
 		end
 	end
 	local info = {}
-	local item = g_Control:CreateControl("ide_file_select_item", info)
+	local item = AUIPlugin.g_Control:CreateControl("ide_file_select_item", info)
 	info.name.text = file_name
 	info.dir.visible = false
 	info.file.visible = false
@@ -233,9 +233,9 @@ function AUIFileSelectDialog:CreateFileItem(file_name, rel_path, abs_path)
 	return item
 end
 
-function AUIFileSelectDialog:CreateDirItem(file_name, rel_path, abs_path)
+function AUIPlugin.AUIFileSelectDialog:CreateDirItem(file_name, rel_path, abs_path)
 	local info = {}
-	local item = g_Control:CreateControl("ide_file_select_item", info)
+	local item = AUIPlugin.g_Control:CreateControl("ide_file_select_item", info)
 	info.name.text = file_name
 	info.image.visible = false
 	info.file.visible = false
@@ -252,7 +252,7 @@ function AUIFileSelectDialog:CreateDirItem(file_name, rel_path, abs_path)
 	return item
 end
 
-function AUIFileSelectDialog:BrowserCollect(browser_path)
+function AUIPlugin.AUIFileSelectDialog:BrowserCollect(browser_path)
 	local item_list_dir = {}
 	local item_list_img = {}
 	local file_map = ALittle.File_GetFileNameListByDir(browser_path)
@@ -275,7 +275,7 @@ function AUIFileSelectDialog:BrowserCollect(browser_path)
 	return item_list_dir, item_list_img
 end
 
-function AUIFileSelectDialog:SearchCollect(search_path, name, item_list, run_time)
+function AUIPlugin.AUIFileSelectDialog:SearchCollect(search_path, name, item_list, run_time)
 	if item_list == nil then
 		item_list = {}
 	end
@@ -308,15 +308,15 @@ function AUIFileSelectDialog:SearchCollect(search_path, name, item_list, run_tim
 	return item_list, run_time
 end
 
-function AUIFileSelectDialog.ItemListCmp(a, b)
+function AUIPlugin.AUIFileSelectDialog.ItemListCmp(a, b)
 	local a_user_data = a._user_data
 	local b_user_data = b._user_data
 	return a_user_data.path < b_user_data.path
 end
 
-function AUIFileSelectDialog:CreateItemAndAddToList(item_list_dir, item_list_img)
-	ALittle.List_Sort(item_list_dir, AUIFileSelectDialog.ItemListCmp)
-	ALittle.List_Sort(item_list_img, AUIFileSelectDialog.ItemListCmp)
+function AUIPlugin.AUIFileSelectDialog:CreateItemAndAddToList(item_list_dir, item_list_img)
+	ALittle.List_Sort(item_list_dir, AUIPlugin.AUIFileSelectDialog.ItemListCmp)
+	ALittle.List_Sort(item_list_img, AUIPlugin.AUIFileSelectDialog.ItemListCmp)
 	local item_list = {}
 	for index, item in ___ipairs(item_list_dir) do
 		ALittle.List_Push(item_list, item)
@@ -329,7 +329,7 @@ function AUIFileSelectDialog:CreateItemAndAddToList(item_list_dir, item_list_img
 	local container = nil
 	for index, item in ___ipairs(item_list) do
 		if remain_count == 0 then
-			container = ALittle.Linear(g_Control)
+			container = ALittle.Linear(AUIPlugin.g_Control)
 			container.type = 1
 			container.height = item.height
 			self._scroll_list:AddChild(container)
@@ -342,7 +342,7 @@ function AUIFileSelectDialog:CreateItemAndAddToList(item_list_dir, item_list_img
 	end
 end
 
-function AUIFileSelectDialog:Refresh()
+function AUIPlugin.AUIFileSelectDialog:Refresh()
 	self:CreateDialog()
 	self._scroll_list:RemoveAllChild()
 	self._path_input.text = ALittle.String_Sub(self._real_path, ALittle.String_Len(self._base_path) + 2)
@@ -352,7 +352,7 @@ function AUIFileSelectDialog:Refresh()
 	self:CreateItemAndAddToList(item_list_dir, item_list_img)
 end
 
-function AUIFileSelectDialog:Search(name)
+function AUIPlugin.AUIFileSelectDialog:Search(name)
 	self._scroll_list:RemoveAllChild()
 	local item_list_img, run_time = self:SearchCollect(self._real_path, name)
 	if run_time.cur_count >= run_time.total_count then
@@ -361,7 +361,7 @@ function AUIFileSelectDialog:Search(name)
 	self:CreateItemAndAddToList({}, item_list_img)
 end
 
-function AUIFileSelectDialog:SetPath(base_path, rel_path)
+function AUIPlugin.AUIFileSelectDialog:SetPath(base_path, rel_path)
 	local attr = ALittle.File_GetFileAttr(base_path .. "/" .. rel_path)
 	if attr == nil or attr.mode ~= "directory" then
 		g_AUITool:ShowNotice("错误", "无效路径")
@@ -376,18 +376,18 @@ function AUIFileSelectDialog:SetPath(base_path, rel_path)
 	return true
 end
 
-function AUIFileSelectDialog:SetBasePath(base_path)
+function AUIPlugin.AUIFileSelectDialog:SetBasePath(base_path)
 	if self._base_path == base_path then
 		return true
 	end
 	return self:SetPath(base_path, "")
 end
 
-function AUIFileSelectDialog:HandleSetPathClick(event)
+function AUIPlugin.AUIFileSelectDialog:HandleSetPathClick(event)
 	self:SetPath(self._base_path, self._path_input.text)
 end
 
-function AUIFileSelectDialog:HandleSetPrePathClick(event)
+function AUIPlugin.AUIFileSelectDialog:HandleSetPrePathClick(event)
 	local rel_path = ALittle.String_Sub(self._real_path, ALittle.String_Len(self._base_path) + 2)
 	if rel_path == "" then
 		return
@@ -395,11 +395,11 @@ function AUIFileSelectDialog:HandleSetPrePathClick(event)
 	self:SetPath(self._base_path, ALittle.File_GetFilePathByPath(rel_path))
 end
 
-function AUIFileSelectDialog:HandleSearchClick(event)
+function AUIPlugin.AUIFileSelectDialog:HandleSearchClick(event)
 	self:Search(self._search_input.text)
 end
 
-function AUIFileSelectDialog:HandleItemRButtonDown(event)
+function AUIPlugin.AUIFileSelectDialog:HandleItemRButtonDown(event)
 	local user_data = event.target._user_data
 	local r_event = {}
 	r_event.path = user_data.path
@@ -407,7 +407,7 @@ function AUIFileSelectDialog:HandleItemRButtonDown(event)
 	self:DispatchEvent(___all_struct[1821709712], r_event)
 end
 
-function AUIFileSelectDialog:HandleItemDropFile(event)
+function AUIPlugin.AUIFileSelectDialog:HandleItemDropFile(event)
 	local real_path = self._real_path
 	local user_data = event.target._user_data
 	if user_data ~= nil and user_data.directory then
@@ -450,7 +450,7 @@ function AUIFileSelectDialog:HandleItemDropFile(event)
 	self:Refresh()
 end
 
-function AUIFileSelectDialog:HandleNewDirectoryClick(event)
+function AUIPlugin.AUIFileSelectDialog:HandleNewDirectoryClick(event)
 	local x, y = event.target:LocalToGlobal()
 	local name = g_AUITool:ShowRename("", x, y + event.target.height, 200)
 	if name == nil or name == "" then
@@ -468,9 +468,9 @@ function AUIFileSelectDialog:HandleNewDirectoryClick(event)
 	end
 	self:Refresh()
 end
-AUIFileSelectDialog.HandleNewDirectoryClick = Lua.CoWrap(AUIFileSelectDialog.HandleNewDirectoryClick)
+AUIPlugin.AUIFileSelectDialog.HandleNewDirectoryClick = Lua.CoWrap(AUIPlugin.AUIFileSelectDialog.HandleNewDirectoryClick)
 
-function AUIFileSelectDialog:HandleItemClick(event)
+function AUIPlugin.AUIFileSelectDialog:HandleItemClick(event)
 	local user_data = event.target._user_data
 	if user_data.directory then
 		self._real_path = self._base_path .. "/" .. user_data.path
@@ -484,9 +484,9 @@ function AUIFileSelectDialog:HandleItemClick(event)
 	end
 end
 
-function AUIFileSelectDialog:HandleItemMoveIn(event)
+function AUIPlugin.AUIFileSelectDialog:HandleItemMoveIn(event)
 	if self._image_pre_dialog == nil then
-		self._image_pre_dialog = g_Control:CreateControl("ide_image_pre_dialog", self)
+		self._image_pre_dialog = AUIPlugin.g_Control:CreateControl("ide_image_pre_dialog", self)
 	end
 	A_LayerManager:AddToTip(self._image_pre_dialog)
 	local user_data = event.target._user_data
@@ -495,7 +495,7 @@ function AUIFileSelectDialog:HandleItemMoveIn(event)
 	self:UpdateImagePreDialogPos()
 end
 
-function AUIFileSelectDialog:HandleItemPreViewCallback(image, result)
+function AUIPlugin.AUIFileSelectDialog:HandleItemPreViewCallback(image, result)
 	local width = image.texture_width
 	image.width = width
 	if width < 100 then
@@ -520,15 +520,15 @@ function AUIFileSelectDialog:HandleItemPreViewCallback(image, result)
 	self._image_pre_dialog.height = self._image_pre_dialog.head_size + height
 end
 
-function AUIFileSelectDialog:HandleItemMoveOut(event)
+function AUIPlugin.AUIFileSelectDialog:HandleItemMoveOut(event)
 	A_LayerManager:RemoveFromTip(self._image_pre_dialog)
 end
 
-function AUIFileSelectDialog:HandleItemMouseMove(event)
+function AUIPlugin.AUIFileSelectDialog:HandleItemMouseMove(event)
 	self:UpdateImagePreDialogPos()
 end
 
-function AUIFileSelectDialog:UpdateImagePreDialogPos()
+function AUIPlugin.AUIFileSelectDialog:UpdateImagePreDialogPos()
 	if self._image_pre_dialog == nil then
 		return
 	end
@@ -544,7 +544,7 @@ function AUIFileSelectDialog:UpdateImagePreDialogPos()
 	self._image_pre_dialog.y = y
 end
 
-function AUIFileSelectDialog:HandleDialogDrag(event)
+function AUIPlugin.AUIFileSelectDialog:HandleDialogDrag(event)
 	local delta_x = event.delta_x
 	local delta_y = event.delta_y
 	if event.target == self._drag_lr_quad then
@@ -562,11 +562,11 @@ function AUIFileSelectDialog:HandleDialogDrag(event)
 	self._dialog.height = self._dialog.height + delta_y
 end
 
-function AUIFileSelectDialog:HandleDialogDragEnd(event)
+function AUIPlugin.AUIFileSelectDialog:HandleDialogDragEnd(event)
 	self:Refresh()
 end
 
-function AUIFileSelectDialog:CheckResourceName(name)
+function AUIPlugin.AUIFileSelectDialog:CheckResourceName(name)
 	local len = ALittle.String_Len(name)
 	if len == 0 then
 		return false, "命名只能支持字母数字下划线"
@@ -584,3 +584,4 @@ function AUIFileSelectDialog:CheckResourceName(name)
 	return true, nil
 end
 
+end

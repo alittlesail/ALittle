@@ -1,22 +1,22 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___all_struct = GetAllStruct()
+local ___all_struct = ALittle.GetAllStruct()
 
 
-local __type = String_Type
-local __tonumber = Math_ToDouble
-local __tostring = String_ToString
-local __floor = Math_Floor
-local __sub = String_Sub
-local __find = String_Find
+local __type = ALittle.String_Type
+local __tonumber = ALittle.Math_ToDouble
+local __tostring = ALittle.String_ToString
+local __floor = ALittle.Math_Floor
+local __sub = ALittle.String_Sub
+local __find = ALittle.String_Find
 assert(ALittle.DisplayObject, " extends class:ALittle.DisplayObject is nil")
-TextInput = Lua.Class(ALittle.DisplayObject, "ALittle.TextInput")
+ALittle.TextInput = Lua.Class(ALittle.DisplayObject, "ALittle.TextInput")
 
-function TextInput:Ctor(ctrl_sys)
+function ALittle.TextInput:Ctor(ctrl_sys)
 	___rawset(self, "_show", __CPPAPITextInput())
 	___rawset(self, "_cursor_red", 1)
 	___rawset(self, "_cursor_green", 1)
@@ -48,15 +48,15 @@ function TextInput:Ctor(ctrl_sys)
 	A_LoadTextureManager:RegisterRedrawControl(self)
 end
 
-function TextInput:Redraw()
+function ALittle.TextInput:Redraw()
 	self._show:NeedDraw()
 end
 
-function TextInput.__getter:is_input()
+function ALittle.TextInput.__getter:is_input()
 	return true
 end
 
-function TextInput.__setter:default_text(value)
+function ALittle.TextInput.__setter:default_text(value)
 	self._default_text = value
 	if self._default_text == nil then
 		self._default_text = ""
@@ -66,11 +66,11 @@ function TextInput.__setter:default_text(value)
 	end
 end
 
-function TextInput.__getter:default_text()
+function ALittle.TextInput.__getter:default_text()
 	return self._default_text
 end
 
-function TextInput.__setter:default_text_alpha(value)
+function ALittle.TextInput.__setter:default_text_alpha(value)
 	if self._default_text_alpha == value then
 		return
 	end
@@ -78,11 +78,11 @@ function TextInput.__setter:default_text_alpha(value)
 	self._show:SetDefaultTextAlpha(value)
 end
 
-function TextInput.__getter:default_text_alpha()
+function ALittle.TextInput.__getter:default_text_alpha()
 	return self._default_text_alpha
 end
 
-function TextInput:Update()
+function ALittle.TextInput:Update()
 	if self._is_selecting == false then
 		self._current_flash_alpha = self._current_flash_alpha + self._current_flash_dir
 		if (self._current_flash_dir < 0 and self._current_flash_alpha < -0.05) or (self._current_flash_dir > 0 and self._current_flash_alpha > 1.5) then
@@ -94,27 +94,27 @@ function TextInput:Update()
 	self._show:SetCursorAlpha(self._current_flash_alpha)
 end
 
-function TextInput.__getter:cursor_x()
+function ALittle.TextInput.__getter:cursor_x()
 	return self._show:GetCursorX()
 end
 
-function TextInput.__getter:cursor_y()
+function ALittle.TextInput.__getter:cursor_y()
 	return self._show:GetCursorY()
 end
 
-function TextInput.__getter:cursor_b()
+function ALittle.TextInput.__getter:cursor_b()
 	return (self._show:GetCursorY() + self._show:GetCursorHeight()) * self.scale_y + self._ims_padding
 end
 
-function TextInput.__setter:editable(value)
+function ALittle.TextInput.__setter:editable(value)
 	self._editable = value
 end
 
-function TextInput.__getter:editable()
+function ALittle.TextInput.__getter:editable()
 	return self._editable
 end
 
-function TextInput.__setter:font_path(value)
+function ALittle.TextInput.__setter:font_path(value)
 	self._font_path = value
 	if self._font_path == nil or self._font_size == nil then
 		return
@@ -122,7 +122,7 @@ function TextInput.__setter:font_path(value)
 	self._ctrl_sys:SetFont(self, self._font_path, self._font_size)
 end
 
-function TextInput.__setter:font_size(value)
+function ALittle.TextInput.__setter:font_size(value)
 	self._font_size = value
 	if self._font_path == nil or self._font_size == nil then
 		return
@@ -130,15 +130,15 @@ function TextInput.__setter:font_size(value)
 	self._ctrl_sys:SetFont(self, self._font_path, self._font_size)
 end
 
-function TextInput.__getter:font_path()
+function ALittle.TextInput.__getter:font_path()
 	return self._font_path
 end
 
-function TextInput.__getter:font_size()
+function ALittle.TextInput.__getter:font_size()
 	return self._font_size
 end
 
-function TextInput.__setter:text(value)
+function ALittle.TextInput.__setter:text(value)
 	if value == nil then
 		return
 	end
@@ -155,14 +155,14 @@ function TextInput.__setter:text(value)
 	end
 end
 
-function TextInput.__getter:text()
+function ALittle.TextInput.__getter:text()
 	if self._show:IsDefaultText() then
 		return ""
 	end
 	return self._show:GetText()
 end
 
-function TextInput.__setter:bold(value)
+function ALittle.TextInput.__setter:bold(value)
 	if self._bold == value then
 		return
 	end
@@ -170,11 +170,11 @@ function TextInput.__setter:bold(value)
 	self._show:SetBold(value)
 end
 
-function TextInput.__getter:bold()
+function ALittle.TextInput.__getter:bold()
 	return self._bold
 end
 
-function TextInput.__setter:italic(value)
+function ALittle.TextInput.__setter:italic(value)
 	if self._italic == value then
 		return
 	end
@@ -182,11 +182,11 @@ function TextInput.__setter:italic(value)
 	self._show:SetItalic(value)
 end
 
-function TextInput.__getter:italic()
+function ALittle.TextInput.__getter:italic()
 	return self._italic
 end
 
-function TextInput.__setter:underline(value)
+function ALittle.TextInput.__setter:underline(value)
 	if self._underline == value then
 		return
 	end
@@ -194,11 +194,11 @@ function TextInput.__setter:underline(value)
 	self._show:SetUnderline(value)
 end
 
-function TextInput.__getter:underline()
+function ALittle.TextInput.__getter:underline()
 	return self._underline
 end
 
-function TextInput.__setter:deleteline(value)
+function ALittle.TextInput.__setter:deleteline(value)
 	if self._deleteline == value then
 		return
 	end
@@ -206,11 +206,11 @@ function TextInput.__setter:deleteline(value)
 	self._show:SetDeleteline(value)
 end
 
-function TextInput.__getter:deleteline()
+function ALittle.TextInput.__getter:deleteline()
 	return self._deleteline
 end
 
-function TextInput.__setter:password_mode(value)
+function ALittle.TextInput.__setter:password_mode(value)
 	self._is_selecting = false
 	if self._password_mode == value then
 		return
@@ -219,61 +219,61 @@ function TextInput.__setter:password_mode(value)
 	self._show:SetPasswordMode(value)
 end
 
-function TextInput.__getter:password_mode()
+function ALittle.TextInput.__getter:password_mode()
 	return self._password_mode
 end
 
-function TextInput.__setter:ims_padding(value)
+function ALittle.TextInput.__setter:ims_padding(value)
 	self._ims_padding = value
 end
 
-function TextInput.__getter:ims_padding()
+function ALittle.TextInput.__getter:ims_padding()
 	return self._ims_padding
 end
 
-function TextInput.__getter:regex()
+function ALittle.TextInput.__getter:regex()
 	return self._regex
 end
 
-function TextInput.__setter:regex(value)
+function ALittle.TextInput.__setter:regex(value)
 	if value == nil then
 		value = ""
 	end
 	self._regex = value
 end
 
-function TextInput.__getter:limit_len()
+function ALittle.TextInput.__getter:limit_len()
 	return self._limit_len
 end
 
-function TextInput.__setter:limit_len(value)
+function ALittle.TextInput.__setter:limit_len(value)
 	if value == nil then
 		value = 0
 	end
 	self._limit_len = value
 end
 
-function TextInput:HandleFocusIn(event)
+function ALittle.TextInput:HandleFocusIn(event)
 	self._show:ShowCursor(true)
 	if self._loop == nil then
-		self._loop = LoopFunction(Lua.Bind(self.Update, self), -1, 1, 1)
+		self._loop = ALittle.LoopFunction(Lua.Bind(self.Update, self), -1, 1, 1)
 	end
 	A_LoopSystem:AddUpdater(self._loop)
 	if self._editable then
 		local global_x, global_y = self:LocalToGlobal()
-		System_SetIMERect(__floor(global_x), __floor(global_y), __floor(self._width * self.scale_x), __floor(self._height * self.scale_y) + self._ims_padding)
-		System_OpenIME()
+		ALittle.System_SetIMERect(__floor(global_x), __floor(global_y), __floor(self._width * self.scale_x), __floor(self._height * self.scale_y) + self._ims_padding)
+		ALittle.System_OpenIME()
 	end
 	if self._show:IsDefaultText() then
 		self._show:SetDefaultText(false, "")
 	end
 end
 
-function TextInput:HandleFocusOut(event)
+function ALittle.TextInput:HandleFocusOut(event)
 	self._is_selecting = false
 	self._show:ShowCursor(false)
 	A_LoopSystem:RemoveUpdater(self._loop)
-	System_CloseIME()
+	ALittle.System_CloseIME()
 	if self.text == "" then
 		if self._default_text == nil then
 			self._default_text = ""
@@ -282,11 +282,11 @@ function TextInput:HandleFocusOut(event)
 	end
 end
 
-function TextInput:HandleLButtonDown(event)
+function ALittle.TextInput:HandleLButtonDown(event)
 	if self._editable then
 		local global_x, global_y = self:LocalToGlobal()
-		System_SetIMERect(__floor(global_x), __floor(global_y), __floor(self._width * self.scale_x), __floor(self._height * self.scale_y) + self._ims_padding)
-		System_OpenIME()
+		ALittle.System_SetIMERect(__floor(global_x), __floor(global_y), __floor(self._width * self.scale_x), __floor(self._height * self.scale_y) + self._ims_padding)
+		ALittle.System_OpenIME()
 	end
 	if event.count % 3 == 1 then
 		self._is_selecting = false
@@ -299,21 +299,21 @@ function TextInput:HandleLButtonDown(event)
 	end
 end
 
-function TextInput:CheckTextRegexLimit(text)
+function ALittle.TextInput:CheckTextRegexLimit(text)
 	if self._limit_len > 0 then
-		local text_len = String_GetWordCount(text)
+		local text_len = ALittle.String_GetWordCount(text)
 		if text_len > self._limit_len then
 			return false
 		end
-		local select_len = String_GetWordCount(self._show:GetSelectText())
-		local total_len = String_GetWordCount(self.text)
+		local select_len = ALittle.String_GetWordCount(self._show:GetSelectText())
+		local total_len = ALittle.String_GetWordCount(self.text)
 		if total_len - select_len + text_len > self._limit_len then
 			return false
 		end
 	end
 	if self._regex ~= "" then
 		while text ~= "" do
-			local byte_count = String_GetByteCount(text, 1)
+			local byte_count = ALittle.String_GetByteCount(text, 1)
 			local sub_text = __sub(text, 1, byte_count)
 			local start_it = __find(sub_text, self._regex)
 			if start_it == nil then
@@ -325,7 +325,7 @@ function TextInput:CheckTextRegexLimit(text)
 	return true
 end
 
-function TextInput:HandleTextInput(event)
+function ALittle.TextInput:HandleTextInput(event)
 	if self._editable or event.custom then
 		self._is_selecting = false
 		if self:CheckTextRegexLimit(event.text) == false then
@@ -338,10 +338,10 @@ function TextInput:HandleTextInput(event)
 	end
 end
 
-function TextInput:HandleKeyDown(event)
+function ALittle.TextInput:HandleKeyDown(event)
 	local is_change = false
 	if event.sym == 1073741904 then
-		if BitAnd(event.mod, UIEnumTypes.KMOD_SHIFT) == 0 then
+		if ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) == 0 then
 			self._is_selecting = false
 			self._show:CursorOffset(true)
 		else
@@ -350,7 +350,7 @@ function TextInput:HandleKeyDown(event)
 		end
 		event.handled = true
 	elseif event.sym == 1073741903 then
-		if BitAnd(event.mod, UIEnumTypes.KMOD_SHIFT) == 0 then
+		if ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) == 0 then
 			self._is_selecting = false
 			self._show:CursorOffset(false)
 		else
@@ -383,27 +383,27 @@ function TextInput:HandleKeyDown(event)
 			self:DispatchEvent(___all_struct[776398171], {})
 			event.handled = true
 		end
-	elseif event.sym == 120 and BitAnd(event.mod, UIEnumTypes.KMOD_CTRL) ~= 0 then
+	elseif event.sym == 120 and ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) ~= 0 then
 		if self._editable or event.custom then
 			self._is_selecting = false
 			local select_text = self._show:GetSelectText()
 			if select_text ~= "" and (not self._password_mode) then
-				System_SetClipboardText(select_text)
+				ALittle.System_SetClipboardText(select_text)
 				is_change = self._show:DeleteSelectText()
 			end
 			event.handled = true
 		end
-	elseif event.sym == 99 and BitAnd(event.mod, UIEnumTypes.KMOD_CTRL) ~= 0 then
+	elseif event.sym == 99 and ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) ~= 0 then
 		local select_text = self._show:GetSelectText()
 		if select_text ~= "" and (not self._password_mode) then
-			System_SetClipboardText(select_text)
+			ALittle.System_SetClipboardText(select_text)
 		end
 		event.handled = true
-	elseif event.sym == 118 and BitAnd(event.mod, UIEnumTypes.KMOD_CTRL) ~= 0 then
+	elseif event.sym == 118 and ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) ~= 0 then
 		if self._editable or event.custom then
 			self._is_selecting = false
-			if System_HasClipboardText() then
-				local clip_board_text = System_GetClipboardText()
+			if ALittle.System_HasClipboardText() then
+				local clip_board_text = ALittle.System_GetClipboardText()
 				if self:CheckTextRegexLimit(clip_board_text) == false then
 					return
 				end
@@ -411,7 +411,7 @@ function TextInput:HandleKeyDown(event)
 			end
 			event.handled = true
 		end
-	elseif event.sym == 97 and BitAnd(event.mod, UIEnumTypes.KMOD_CTRL) ~= 0 then
+	elseif event.sym == 97 and ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) ~= 0 then
 		self._is_selecting = true
 		self._show:SelectAll()
 		event.handled = true
@@ -428,32 +428,32 @@ function TextInput:HandleKeyDown(event)
 	end
 end
 
-function TextInput:SetCursorToHome()
+function ALittle.TextInput:SetCursorToHome()
 	self._is_selecting = false
 	self._show:SetCursorToHome()
 end
 
-function TextInput:SetCursorToEnd()
+function ALittle.TextInput:SetCursorToEnd()
 	self._is_selecting = false
 	self._show:SetCursorToEnd()
 end
 
-function TextInput:SelectAll()
+function ALittle.TextInput:SelectAll()
 	self._is_selecting = true
 	self._show:SelectAll()
 end
 
-function TextInput:CopyText()
+function ALittle.TextInput:CopyText()
 	local select_text = self._show:GetSelectText()
 	if select_text == "" then
 		select_text = self.text
 	end
 	if select_text ~= "" then
-		System_SetClipboardText(select_text)
+		ALittle.System_SetClipboardText(select_text)
 	end
 end
 
-function TextInput:PasteText()
+function ALittle.TextInput:PasteText()
 	if self._editable == false then
 		return
 	end
@@ -461,8 +461,8 @@ function TextInput:PasteText()
 		self._show:SetDefaultText(false, "")
 	end
 	self._is_selecting = false
-	if System_HasClipboardText() then
-		local clip_board_text = System_GetClipboardText()
+	if ALittle.System_HasClipboardText() then
+		local clip_board_text = ALittle.System_GetClipboardText()
 		if self:CheckTextRegexLimit(clip_board_text) == false then
 			return
 		end
@@ -470,19 +470,19 @@ function TextInput:PasteText()
 	end
 end
 
-function TextInput:CutText()
+function ALittle.TextInput:CutText()
 	if self._editable == false then
 		return
 	end
 	self._is_selecting = false
 	local select_text = self._show:GetSelectText()
 	if select_text ~= "" then
-		System_SetClipboardText(select_text)
+		ALittle.System_SetClipboardText(select_text)
 		self._show:DeleteSelectText()
 	end
 end
 
-function TextInput:InsertText(text)
+function ALittle.TextInput:InsertText(text)
 	if self._editable == false then
 		return
 	end
@@ -498,27 +498,27 @@ function TextInput:InsertText(text)
 	end
 end
 
-function TextInput:HandleDragBegin(event)
+function ALittle.TextInput:HandleDragBegin(event)
 	self._is_selecting = true
 	self._show:DragCursorBegin()
 end
 
-function TextInput:HandleDrag(event)
+function ALittle.TextInput:HandleDrag(event)
 	if self._is_selecting == false then
 		return
 	end
 	self._show:DragCursor(event.rel_x, event.rel_y)
 end
 
-function TextInput:HandleMoveIn(event)
-	System_SetEditCursor()
+function ALittle.TextInput:HandleMoveIn(event)
+	ALittle.System_SetEditCursor()
 end
 
-function TextInput:HandleMoveOut(event)
-	System_SetNormalCursor()
+function ALittle.TextInput:HandleMoveOut(event)
+	ALittle.System_SetNormalCursor()
 end
 
-function TextInput.__setter:cursor_red(value)
+function ALittle.TextInput.__setter:cursor_red(value)
 	if self._cursor_red == value then
 		return
 	end
@@ -526,11 +526,11 @@ function TextInput.__setter:cursor_red(value)
 	self._show:SetCursorRed(value)
 end
 
-function TextInput.__getter:cursor_red()
+function ALittle.TextInput.__getter:cursor_red()
 	return self._cursor_red
 end
 
-function TextInput.__setter:cursor_green(value)
+function ALittle.TextInput.__setter:cursor_green(value)
 	if self._cursor_green == value then
 		return
 	end
@@ -538,11 +538,11 @@ function TextInput.__setter:cursor_green(value)
 	self._show:SetCursorGreen(value)
 end
 
-function TextInput.__getter:cursor_green()
+function ALittle.TextInput.__getter:cursor_green()
 	return self._cursor_green
 end
 
-function TextInput.__setter:cursor_blue(value)
+function ALittle.TextInput.__setter:cursor_blue(value)
 	if self._cursor_blue == value then
 		return
 	end
@@ -550,16 +550,17 @@ function TextInput.__setter:cursor_blue(value)
 	self._show:SetCursorBlue(value)
 end
 
-function TextInput.__getter:cursor_blue()
+function ALittle.TextInput.__getter:cursor_blue()
 	return self._cursor_blue
 end
 
-function TextInput.__getter:flip()
+function ALittle.TextInput.__getter:flip()
 	return self._flip
 end
 
-function TextInput.__setter:flip(value)
+function ALittle.TextInput.__setter:flip(value)
 	self._flip = value
 	self._show:SetFlip(value)
 end
 
+end

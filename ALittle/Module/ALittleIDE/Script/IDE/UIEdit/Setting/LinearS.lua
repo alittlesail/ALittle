@@ -1,37 +1,38 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittleIDE", package.seeall)
-
+do
+if _G.ALittleIDE == nil then _G.ALittleIDE = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
 assert(ALittleIDE.DisplayLayoutS, " extends class:ALittleIDE.DisplayLayoutS is nil")
-LinearS = Lua.Class(ALittleIDE.DisplayLayoutS, "ALittleIDE.LinearS")
+ALittleIDE.LinearS = Lua.Class(ALittleIDE.DisplayLayoutS, "ALittleIDE.LinearS")
 
-function LinearS:Ctor(user_info, tab_child, tree_logic)
+function ALittleIDE.LinearS:Ctor(user_info, tab_child, tree_logic)
 	___rawset(self, "_layer_name", "ide_setting_linear")
 end
 
-function LinearS:LoadNatureBase()
-	DisplayLayoutS.LoadNatureBase(self)
-	local list = g_IDEEnum.hv_type
+function ALittleIDE.LinearS:LoadNatureBase()
+	ALittleIDE.DisplayLayoutS.LoadNatureBase(self)
+	local list = ALittleIDE.g_IDEEnum.hv_type
 	self:LoadTypeSelectData("type", list)
-	self:LoadBoolData("size_fixed", true, g_IDEEnum.yn_type)
+	self:LoadBoolData("size_fixed", true, ALittleIDE.g_IDEEnum.yn_type)
 	self:LoadValueData("gap")
 end
 
-function LinearS:HandleLinearTypeSELECT_CHANGE(event)
-	local list = g_IDEEnum.hv_rtype
+function ALittleIDE.LinearS:HandleLinearTypeSELECT_CHANGE(event)
+	local list = ALittleIDE.g_IDEEnum.hv_rtype
 	self:TypeSelectChange("type", list, true)
 end
 
-function LinearS:HandleLinearSizeFixedSELECT_CHANGE(event)
-	local list = g_IDEEnum.yn_rtype
+function ALittleIDE.LinearS:HandleLinearSizeFixedSELECT_CHANGE(event)
+	local list = ALittleIDE.g_IDEEnum.yn_rtype
 	self:TypeSelectChange("size_fixed", list, true)
 end
 
-function LinearS:HandleLinearGapFOCUSOUT(event)
+function ALittleIDE.LinearS:HandleLinearGapFOCUSOUT(event)
 	self:ValueNumInputChange("gap", false)
 end
 
+end

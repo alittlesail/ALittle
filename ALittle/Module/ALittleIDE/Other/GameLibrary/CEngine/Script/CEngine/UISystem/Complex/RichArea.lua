@@ -1,24 +1,24 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
-RegStruct(485812343, "ALittle.RichAreaLineInfo", {
+ALittle.RegStruct(485812343, "ALittle.RichAreaLineInfo", {
 name = "ALittle.RichAreaLineInfo", ns_name = "ALittle", rl_name = "RichAreaLineInfo", hash_code = 485812343,
 name_list = {"childs","child_count","height","width"},
 type_list = {"List<ALittle.DisplayObject>","int","double","double"},
 option_map = {}
 })
 
-local __find = String_Find
-local __sub = String_Sub
-local __floor = Math_Floor
+local __find = ALittle.String_Find
+local __sub = ALittle.String_Sub
+local __floor = ALittle.Math_Floor
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
-RichArea = Lua.Class(ALittle.DisplayLayout, "ALittle.RichArea")
+ALittle.RichArea = Lua.Class(ALittle.DisplayLayout, "ALittle.RichArea")
 
-function RichArea:SplitText(char_info, char_info_list, char_info_list_count)
+function ALittle.RichArea:SplitText(char_info, char_info_list, char_info_list_count)
 	local text = char_info.text
 	while true do
 		local start_index_1 = __find(text, "\n")
@@ -31,28 +31,28 @@ function RichArea:SplitText(char_info, char_info_list, char_info_list_count)
 			end
 		end
 		if start_index_1 ~= nil then
-			local new_char_info = String_CopyTable(char_info)
+			local new_char_info = ALittle.String_CopyTable(char_info)
 			new_char_info.text = __sub(text, 1, start_index_1 - 1)
 			char_info_list_count = char_info_list_count + 1
 			char_info_list[char_info_list_count] = new_char_info
-			new_char_info = String_CopyTable(char_info)
+			new_char_info = ALittle.String_CopyTable(char_info)
 			new_char_info.text = "\n"
 			char_info_list_count = char_info_list_count + 1
 			char_info_list[char_info_list_count] = new_char_info
 			text = __sub(text, start_index_1 + 1)
 		elseif start_index_2 ~= nil then
-			local new_char_info = String_CopyTable(char_info)
+			local new_char_info = ALittle.String_CopyTable(char_info)
 			new_char_info.text = __sub(text, 1, start_index_2 - 1)
 			char_info_list_count = char_info_list_count + 1
 			char_info_list[char_info_list_count] = new_char_info
-			new_char_info = String_CopyTable(char_info)
+			new_char_info = ALittle.String_CopyTable(char_info)
 			new_char_info.text = "\t"
 			char_info_list_count = char_info_list_count + 1
 			char_info_list[char_info_list_count] = new_char_info
 			text = __sub(text, start_index_2 + 1)
 		else
 			if text ~= "" then
-				local new_char_info = String_CopyTable(char_info)
+				local new_char_info = ALittle.String_CopyTable(char_info)
 				new_char_info.text = text
 				char_info_list_count = char_info_list_count + 1
 				char_info_list[char_info_list_count] = new_char_info
@@ -63,45 +63,45 @@ function RichArea:SplitText(char_info, char_info_list, char_info_list_count)
 	return char_info_list_count
 end
 
-function RichArea:Ctor(ctrl_sys)
+function ALittle.RichArea:Ctor(ctrl_sys)
 	___rawset(self, "_enter_key_height", 20)
 	___rawset(self, "_line_spacing", 0)
-	___rawset(self, "_halign", UIEnumTypes.HALIGN_LEFT)
-	___rawset(self, "_valign", UIEnumTypes.VALIGN_TOP)
+	___rawset(self, "_halign", ALittle.UIEnumTypes.HALIGN_LEFT)
+	___rawset(self, "_valign", ALittle.UIEnumTypes.VALIGN_TOP)
 	___rawset(self, "_display_list", nil)
 	___rawset(self, "_line_list", {})
 	___rawset(self, "_line_count", 0)
 	___rawset(self, "_real_height", 0)
-	___rawset(self, "_link_map", CreateValueWeakMap())
+	___rawset(self, "_link_map", ALittle.CreateValueWeakMap())
 	___rawset(self, "_max_line_count", 0)
 end
 
-function RichArea.__getter:link_map()
+function ALittle.RichArea.__getter:link_map()
 	return self._link_map
 end
 
-function RichArea:ClearLinkMap()
-	self._link_map = CreateValueWeakMap()
+function ALittle.RichArea:ClearLinkMap()
+	self._link_map = ALittle.CreateValueWeakMap()
 end
 
-function RichArea.__setter:width(value)
+function ALittle.RichArea.__setter:width(value)
 	if self.width == value then
 		return
 	end
-	DisplayLayout.__setter.width(self, value)
+	ALittle.DisplayLayout.__setter.width(self, value)
 	self:Refresh()
 end
 
-function RichArea.__setter:display_list(value)
+function ALittle.RichArea.__setter:display_list(value)
 	self._display_list = value
 	self:Refresh()
 end
 
-function RichArea.__getter:display_list()
+function ALittle.RichArea.__getter:display_list()
 	return self._display_list
 end
 
-function RichArea.__setter:halign(value)
+function ALittle.RichArea.__setter:halign(value)
 	if self._halign == value then
 		return
 	end
@@ -109,11 +109,11 @@ function RichArea.__setter:halign(value)
 	self:RefreshX()
 end
 
-function RichArea.__getter:halign()
+function ALittle.RichArea.__getter:halign()
 	return self._halign
 end
 
-function RichArea.__setter:valign(value)
+function ALittle.RichArea.__setter:valign(value)
 	if self._valign == value then
 		return
 	end
@@ -121,19 +121,19 @@ function RichArea.__setter:valign(value)
 	self:RefreshY()
 end
 
-function RichArea.__getter:valign()
+function ALittle.RichArea.__getter:valign()
 	return self._valign
 end
 
-function RichArea.__getter:lin_count()
+function ALittle.RichArea.__getter:lin_count()
 	return self._line_count
 end
 
-function RichArea.__getter:max_line_count()
+function ALittle.RichArea.__getter:max_line_count()
 	return self._max_line_count
 end
 
-function RichArea.__setter:max_line_count(value)
+function ALittle.RichArea.__setter:max_line_count(value)
 	if self._max_line_count == value then
 		return
 	end
@@ -141,7 +141,7 @@ function RichArea.__setter:max_line_count(value)
 	self:Refresh()
 end
 
-function RichArea:GetLineWidth(line_index)
+function ALittle.RichArea:GetLineWidth(line_index)
 	local count = self._line_count
 	if line_index < 1 or line_index > count then
 		return 0
@@ -150,11 +150,11 @@ function RichArea:GetLineWidth(line_index)
 	return line.width
 end
 
-function RichArea.__getter:real_height()
+function ALittle.RichArea.__getter:real_height()
 	return self._real_height
 end
 
-function RichArea.__setter:line_spacing(line_spacing)
+function ALittle.RichArea.__setter:line_spacing(line_spacing)
 	if self._line_spacing == line_spacing then
 		return
 	end
@@ -162,11 +162,11 @@ function RichArea.__setter:line_spacing(line_spacing)
 	self:RefreshY()
 end
 
-function RichArea.__getter:line_spacing()
+function ALittle.RichArea.__getter:line_spacing()
 	return self._line_spacing
 end
 
-function RichArea:Refresh()
+function ALittle.RichArea:Refresh()
 	self:RemoveAllChild()
 	self._line_list = {}
 	self._line_count = 0
@@ -224,7 +224,7 @@ function RichArea:Refresh()
 			elseif display_info.text == "\t" then
 				if display_object == nil then
 					local name = "nkacbjbsakcvuqocbakcbjcbvjhciqwojqppwvnwe"
-					self._ctrl_sys:RegisterInfo(name, String_CopyTable(display_info))
+					self._ctrl_sys:RegisterInfo(name, ALittle.String_CopyTable(display_info))
 					display_object = self._ctrl_sys:CreateControl(name, self._link_map)
 					self._ctrl_sys:UnRegisterInfo(name)
 					display_object.text = "    "
@@ -253,7 +253,7 @@ function RichArea:Refresh()
 					local count = display_object._show:CutTextByWidth(__floor(remain_width), display_info.text, __floor(total_width))
 					if count > 0 then
 						display_object.text = __sub(display_info.text, 1, count)
-						local new_display_info = String_CopyTable(display_info)
+						local new_display_info = ALittle.String_CopyTable(display_info)
 						new_display_info.text = __sub(display_info.text, count + 1)
 						line_info.child_count = line_info.child_count + 1
 						line_info.childs[line_info.child_count] = display_object
@@ -282,7 +282,7 @@ function RichArea:Refresh()
 				else
 					if display_object == nil then
 						local name = "nkacbjbsakcvuqocbakcbjcbvjhciqwojqppwvnwe"
-						self._ctrl_sys:RegisterInfo(name, String_CopyTable(display_info))
+						self._ctrl_sys:RegisterInfo(name, ALittle.String_CopyTable(display_info))
 						display_object = self._ctrl_sys:CreateControl(name, self._link_map)
 						self._ctrl_sys:UnRegisterInfo(name)
 					end
@@ -290,13 +290,13 @@ function RichArea:Refresh()
 					local object_height = display_object.height
 					local count = display_object._show:CutTextByWidth(__floor(remain_width), display_info.text, __floor(total_width))
 					if count == 0 and line_info.child_count == 0 then
-						count = String_GetByteCount(display_info.text, 1)
+						count = ALittle.String_GetByteCount(display_info.text, 1)
 					end
 					if count == 0 then
 						remain_width = 0
 					else
 						display_object.text = __sub(display_info.text, 1, count)
-						local new_display_info = String_CopyTable(display_info)
+						local new_display_info = ALittle.String_CopyTable(display_info)
 						new_display_info.text = __sub(display_info.text, count + 1)
 						line_info.child_count = line_info.child_count + 1
 						line_info.childs[line_info.child_count] = display_object
@@ -320,7 +320,7 @@ function RichArea:Refresh()
 		else
 			if display_object == nil then
 				local name = "nkacbjbsakcvuqocbakcbjcbvjhciqwojqppwvnwe"
-				self._ctrl_sys:RegisterInfo(name, String_CopyTable(display_info))
+				self._ctrl_sys:RegisterInfo(name, ALittle.String_CopyTable(display_info))
 				display_object = self._ctrl_sys:CreateControl(name, self._link_map)
 				self._ctrl_sys:UnRegisterInfo(name)
 			end
@@ -360,15 +360,15 @@ function RichArea:Refresh()
 	self:RefreshY()
 end
 
-function RichArea:RefreshX()
+function ALittle.RichArea:RefreshX()
 	if self._line_list == nil then
 		return
 	end
 	for k, line in ___ipairs(self._line_list) do
 		local offset_x = 0.0
-		if self._halign == UIEnumTypes.HALIGN_CENTER then
+		if self._halign == ALittle.UIEnumTypes.HALIGN_CENTER then
 			offset_x = (self.width - line.width) / 2
-		elseif self._halign == UIEnumTypes.HALIGN_RIGHT then
+		elseif self._halign == ALittle.UIEnumTypes.HALIGN_RIGHT then
 			offset_x = self.width - line.width
 		end
 		for index, child in ___ipairs(line.childs) do
@@ -378,7 +378,7 @@ function RichArea:RefreshX()
 	end
 end
 
-function RichArea:RefreshY()
+function ALittle.RichArea:RefreshY()
 	if self._line_list == nil then
 		return
 	end
@@ -390,9 +390,9 @@ function RichArea:RefreshY()
 	end
 	self._real_height = self._real_height + (line_count - 1) * self._line_spacing
 	local offset_y = 0.0
-	if self._valign == UIEnumTypes.VALIGN_CENTER then
+	if self._valign == ALittle.UIEnumTypes.VALIGN_CENTER then
 		offset_y = (self.height - self._real_height) / 2
-	elseif self._valign == UIEnumTypes.VALIGN_BOTTOM then
+	elseif self._valign == ALittle.UIEnumTypes.VALIGN_BOTTOM then
 		offset_y = self.height - self._real_height
 	end
 	for k, line in ___ipairs(self._line_list) do
@@ -403,3 +403,4 @@ function RichArea:RefreshY()
 	end
 end
 
+end

@@ -1,6 +1,6 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittleIDE", package.seeall)
-
+do
+if _G.ALittleIDE == nil then _G.ALittleIDE = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
@@ -122,26 +122,26 @@ option_map = {}
 })
 
 assert(ALittleIDE.IDETabChild, " extends class:ALittleIDE.IDETabChild is nil")
-IDEUITabChild = Lua.Class(ALittleIDE.IDETabChild, "ALittleIDE.IDEUITabChild")
+ALittleIDE.IDEUITabChild = Lua.Class(ALittleIDE.IDETabChild, "ALittleIDE.IDEUITabChild")
 
-function IDEUITabChild:Ctor(ctrl_sys, name, save)
-	g_IDECenter.center:AddEventListener(___all_struct[-506107723], self, self.HandleShowSelectLayer)
-	g_IDECenter.center:AddEventListener(___all_struct[1299500288], self, self.HandleShowHandDragLayer)
-	g_IDECenter.center:AddEventListener(___all_struct[2103672497], self, self.HandleShowScaleLayer)
-	g_IDEProject:AddEventListener(___all_struct[1787992834], self, self.HandleProjectSettingChanged)
+function ALittleIDE.IDEUITabChild:Ctor(ctrl_sys, name, save)
+	ALittleIDE.g_IDECenter.center:AddEventListener(___all_struct[-506107723], self, self.HandleShowSelectLayer)
+	ALittleIDE.g_IDECenter.center:AddEventListener(___all_struct[1299500288], self, self.HandleShowHandDragLayer)
+	ALittleIDE.g_IDECenter.center:AddEventListener(___all_struct[2103672497], self, self.HandleShowScaleLayer)
+	ALittleIDE.g_IDEProject:AddEventListener(___all_struct[1787992834], self, self.HandleProjectSettingChanged)
 	___rawset(self, "_group", ALittle.CreateKeyWeakMap())
-	___rawset(self, "_tab_screen", g_Control:CreateControl("ide_edit_tab_screen", self))
-	___rawset(self, "_tree_screen", g_Control:CreateControl("ide_edit_tree_screen", self))
-	___rawset(self, "_attr_screen", g_Control:CreateControl("ide_edit_attr_screen", self))
-	___rawset(self, "_anti_panel", g_Control:CreateControl("ide_edit_anti_panel", self))
+	___rawset(self, "_tab_screen", ALittleIDE.g_Control:CreateControl("ide_edit_tab_screen", self))
+	___rawset(self, "_tree_screen", ALittleIDE.g_Control:CreateControl("ide_edit_tree_screen", self))
+	___rawset(self, "_attr_screen", ALittleIDE.g_Control:CreateControl("ide_edit_attr_screen", self))
+	___rawset(self, "_anti_panel", ALittleIDE.g_Control:CreateControl("ide_edit_anti_panel", self))
 	___rawset(self, "_tree_object", nil)
-	self._tab_screen.container = ALittle.DisplayGroup(g_Control)
+	self._tab_screen.container = ALittle.DisplayGroup(ALittleIDE.g_Control)
 	self._tab_screen.container.scale_x = 1
 	self._tab_screen.container.scale_y = 1
-	self._tab_container.width = g_IDEProject.project.config:GetConfig("default_show_width", 800)
-	self._tab_container.height = g_IDEProject.project.config:GetConfig("default_show_height", 600)
+	self._tab_container.width = ALittleIDE.g_IDEProject.project.config:GetConfig("default_show_width", 800)
+	self._tab_container.height = ALittleIDE.g_IDEProject.project.config:GetConfig("default_show_height", 600)
 	self._tab_screen:RejustScrollBar()
-	self._tab_select_container.visible = g_IDECenter.center.singleselect
+	self._tab_select_container.visible = ALittleIDE.g_IDECenter.center.singleselect
 	self._tab_handle_quad:AddEventListener(___all_struct[1883782801], self, self.HandleHandleContainerLButtonDown)
 	self._tab_handle_quad:AddEventListener(___all_struct[40651933], self, self.HandleHandleContainerLButtonUp)
 	self._tab_handle_quad:AddEventListener(___all_struct[1301789264], self, self.HandleHandleContainerDragBegin)
@@ -150,9 +150,9 @@ function IDEUITabChild:Ctor(ctrl_sys, name, save)
 	self._tab_select_rect.visible = false
 	self._tab_quad_container:RemoveAllChild()
 	___rawset(self, "_tab_quad_map", {})
-	self._tab_handdrag_container.visible = g_IDECenter.center.handdrag
+	self._tab_handdrag_container.visible = ALittleIDE.g_IDECenter.center.handdrag
 	self._tab_handdrag_quad.drag_trans_target = self._tab_screen
-	self._tab_scale_container.visible = g_IDECenter.center.scale
+	self._tab_scale_container.visible = ALittleIDE.g_IDECenter.center.scale
 	self._tab_scale_quad:AddEventListener(___all_struct[1883782801], self, self.HandleScaleContainerLButtonDown)
 	___rawset(self, "_tree_search_info", {})
 	self._tree_search_info.name = ""
@@ -164,48 +164,48 @@ function IDEUITabChild:Ctor(ctrl_sys, name, save)
 	self:AddEventListener(___all_struct[-1676610185], self, self.HandleSavePng)
 end
 
-function IDEUITabChild:OnHide()
+function ALittleIDE.IDEUITabChild:OnHide()
 	self._tree_screen.visible = false
 	self._attr_screen.visible = false
 	self._anti_panel.visible = false
-	g_IDECenter.center.tool_ui.visible = false
-	g_IDEAttrControlDialog:SetTitle("")
-	g_IDEAttrControlDialog:HideDialog()
-	g_IDECenter.center:RemoveEventListener(___all_struct[1408180774], self, self.HandleEditScaleChanged)
+	ALittleIDE.g_IDECenter.center.tool_ui.visible = false
+	ALittleIDE.g_IDEAttrControlDialog:SetTitle("")
+	ALittleIDE.g_IDEAttrControlDialog:HideDialog()
+	ALittleIDE.g_IDECenter.center:RemoveEventListener(___all_struct[1408180774], self, self.HandleEditScaleChanged)
 end
 
-function IDEUITabChild:OnShow()
+function ALittleIDE.IDEUITabChild:OnShow()
 	self._tree_screen.visible = true
 	self._attr_screen.visible = true
 	self._anti_panel.visible = true
-	g_IDECenter.center.tool_ui.visible = true
+	ALittleIDE.g_IDECenter.center.tool_ui.visible = true
 	local panel_childs = self._attr_screen.childs
 	if panel_childs[1] ~= nil then
-		g_IDEAttrControlDialog:SetTitle(panel_childs[1]._user_data.title)
+		ALittleIDE.g_IDEAttrControlDialog:SetTitle(panel_childs[1]._user_data.title)
 	end
-	g_IDECenter.center:UpdateToolScale(self:GetScale())
-	g_IDECenter.center:AddEventListener(___all_struct[1408180774], self, self.HandleEditScaleChanged)
+	ALittleIDE.g_IDECenter.center:UpdateToolScale(self:GetScale())
+	ALittleIDE.g_IDECenter.center:AddEventListener(___all_struct[1408180774], self, self.HandleEditScaleChanged)
 end
 
-function IDEUITabChild:OnClose()
-	g_IDECenter.center.control_tree:RemoveChild(self._tree_screen)
-	g_IDEAttrControlDialog.dialog:RemoveChild(self._attr_screen)
-	g_IDECenter.center.control_anti:RemoveChild(self._anti_panel)
-	g_IDEProject:RemoveEventListener(___all_struct[1787992834], self, self.HandleProjectSettingChanged)
-	g_IDECenter.center:RemoveEventListener(___all_struct[1408180774], self, self.HandleEditScaleChanged)
-	g_IDECenter.center:RemoveEventListener(___all_struct[-506107723], self, self.HandleShowSelectLayer)
-	g_IDECenter.center:RemoveEventListener(___all_struct[1299500288], self, self.HandleShowHandDragLayer)
-	g_IDECenter.center:RemoveEventListener(___all_struct[2103672497], self, self.HandleShowScaleLayer)
+function ALittleIDE.IDEUITabChild:OnClose()
+	ALittleIDE.g_IDECenter.center.control_tree:RemoveChild(self._tree_screen)
+	ALittleIDE.g_IDEAttrControlDialog.dialog:RemoveChild(self._attr_screen)
+	ALittleIDE.g_IDECenter.center.control_anti:RemoveChild(self._anti_panel)
+	ALittleIDE.g_IDEProject:RemoveEventListener(___all_struct[1787992834], self, self.HandleProjectSettingChanged)
+	ALittleIDE.g_IDECenter.center:RemoveEventListener(___all_struct[1408180774], self, self.HandleEditScaleChanged)
+	ALittleIDE.g_IDECenter.center:RemoveEventListener(___all_struct[-506107723], self, self.HandleShowSelectLayer)
+	ALittleIDE.g_IDECenter.center:RemoveEventListener(___all_struct[1299500288], self, self.HandleShowHandDragLayer)
+	ALittleIDE.g_IDECenter.center:RemoveEventListener(___all_struct[2103672497], self, self.HandleShowScaleLayer)
 end
 
-function IDEUITabChild:OnOpen()
-	g_IDECenter.center.control_tree:AddChild(self._tree_screen)
-	g_IDEAttrControlDialog.dialog:AddChild(self._attr_screen)
-	g_IDECenter.center.control_anti:AddChild(self._anti_panel)
+function ALittleIDE.IDEUITabChild:OnOpen()
+	ALittleIDE.g_IDECenter.center.control_tree:AddChild(self._tree_screen)
+	ALittleIDE.g_IDEAttrControlDialog.dialog:AddChild(self._attr_screen)
+	ALittleIDE.g_IDECenter.center.control_anti:AddChild(self._anti_panel)
 	self:ShowInCenter()
 end
 
-function IDEUITabChild:ShowInCenter()
+function ALittleIDE.IDEUITabChild:ShowInCenter()
 	local object = self._tree_object.user_info.object
 	local x, y = object:LocalToGlobal(self._tab_object_container)
 	if x > 0 and y > 0 then
@@ -225,13 +225,13 @@ function IDEUITabChild:ShowInCenter()
 	end
 end
 
-function IDEUITabChild:OnTabRightMenu(menu)
+function ALittleIDE.IDEUITabChild:OnTabRightMenu(menu)
 	menu:AddItem("截图导出", Lua.Bind(A_OtherSystem.SystemSaveFile, A_OtherSystem, self, self._name .. ".png", nil))
 	menu:AddItem("复制控件名", Lua.Bind(ALittle.System_SetClipboardText, self._name))
 	menu:AddItem("复制继承代码", Lua.Bind(self.CopyExtends, self))
 end
 
-function IDEUITabChild:CopyExtends()
+function ALittleIDE.IDEUITabChild:CopyExtends()
 	local name = self._name
 	local display_info = {}
 	display_info.__extends = name
@@ -243,7 +243,7 @@ function IDEUITabChild:CopyExtends()
 	ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list))
 end
 
-function IDEUITabChild:HandleProjectSettingChanged(event)
+function ALittleIDE.IDEUITabChild:HandleProjectSettingChanged(event)
 	self._tab_container.width = event.default_show_width
 	self._tab_container.height = event.default_show_height
 	self._tab_screen:RejustScrollBar()
@@ -252,43 +252,43 @@ function IDEUITabChild:HandleProjectSettingChanged(event)
 	end
 end
 
-function IDEUITabChild:HandleTreeSizeChanged(event)
+function ALittleIDE.IDEUITabChild:HandleTreeSizeChanged(event)
 	self._tree_screen:RejustScrollBar()
 end
 
-function IDEUITabChild:HandleSavePng(event)
-	g_Control:SaveControlToFile(self._tree_object.user_info.object, event.path)
+function ALittleIDE.IDEUITabChild:HandleSavePng(event)
+	ALittleIDE.g_Control:SaveControlToFile(self._tree_object.user_info.object, event.path)
 end
 
-function IDEUITabChild.__getter:tab_body()
+function ALittleIDE.IDEUITabChild.__getter:tab_body()
 	return self._tab_screen
 end
 
-function IDEUITabChild.__getter:edit_screen()
+function ALittleIDE.IDEUITabChild.__getter:edit_screen()
 	return self._edit_screen
 end
 
-function IDEUITabChild.__getter:tree_screen()
+function ALittleIDE.IDEUITabChild.__getter:tree_screen()
 	return self._tree_screen
 end
 
-function IDEUITabChild.__getter:attr_screen()
+function ALittleIDE.IDEUITabChild.__getter:attr_screen()
 	return self._attr_screen
 end
 
-function IDEUITabChild.__getter:anti_panel()
+function ALittleIDE.IDEUITabChild.__getter:anti_panel()
 	return self._anti_panel
 end
 
-function IDEUITabChild.__getter:group()
+function ALittleIDE.IDEUITabChild.__getter:group()
 	return self._group
 end
 
-function IDEUITabChild.__getter:tree_object()
+function ALittleIDE.IDEUITabChild.__getter:tree_object()
 	return self._tree_object
 end
 
-function IDEUITabChild.__setter:save(value)
+function ALittleIDE.IDEUITabChild.__setter:save(value)
 	if self._save == value then
 		return
 	end
@@ -301,7 +301,7 @@ function IDEUITabChild.__setter:save(value)
 		return
 	end
 	local info = self._tree_object:CalcInfo()
-	local error = g_IDEProject.project.ui:SaveControl(self._name, info)
+	local error = ALittleIDE.g_IDEProject.project.ui:SaveControl(self._name, info)
 	if error ~= nil then
 		return
 	end
@@ -309,12 +309,12 @@ function IDEUITabChild.__setter:save(value)
 	self:UpdateTitle()
 end
 
-function IDEUITabChild:Rename(name)
+function ALittleIDE.IDEUITabChild:Rename(name)
 	self._name = name
 	self:UpdateTitle()
 end
 
-function IDEUITabChild:UpdateTitle()
+function ALittleIDE.IDEUITabChild:UpdateTitle()
 	if self._tree_object == nil then
 		return
 	end
@@ -328,10 +328,10 @@ function IDEUITabChild:UpdateTitle()
 	if self._save == false then
 		text = text .. " *"
 	end
-	g_IDECenter.center.content_edit.main_tab:SetChildText(self._tab_screen, text)
+	ALittleIDE.g_IDECenter.center.content_edit.main_tab:SetChildText(self._tab_screen, text)
 end
 
-function IDEUITabChild.__getter:title()
+function ALittleIDE.IDEUITabChild.__getter:title()
 	local text = self._tree_object:GetDesc()
 	if text == "" then
 		return self._name
@@ -339,19 +339,19 @@ function IDEUITabChild.__getter:title()
 	return self._name .. "(" .. text .. ")"
 end
 
-function IDEUITabChild:CanDelete(name)
+function ALittleIDE.IDEUITabChild:CanDelete(name)
 	if self._tree_object == nil then
 		return nil
 	end
 	local info = self._tree_object:CalcInfo()
-	local map = IDEUIUtility_GetExtends(info)
+	local map = ALittleIDE.IDEUIUtility_GetExtends(info)
 	if map[name] then
 		return self._name .. " 引用了 " .. name
 	end
 	return nil
 end
 
-function IDEUITabChild:SelectAlign(align_type)
+function ALittleIDE.IDEUITabChild:SelectAlign(align_type)
 	local count = 0
 	local first_target = nil
 	for target, handle_info in ___pairs(self._tab_quad_map) do
@@ -385,7 +385,7 @@ function IDEUITabChild:SelectAlign(align_type)
 		end
 		first_target:DragXY(drag_x, drag_y)
 		self:UpdateHandleQuadLayout(first_target)
-		local revoke = IDEDragXYRevoke(first_target, drag_x, drag_y)
+		local revoke = ALittleIDE.IDEDragXYRevoke(first_target, drag_x, drag_y)
 		self._revoke_list:PushRevoke(revoke)
 	else
 		local revoke_bind = ALittle.RevokeBind()
@@ -400,7 +400,7 @@ function IDEUITabChild:SelectAlign(align_type)
 				local drag_x = common - target.user_info.object.x
 				target:DragXY(drag_x, 0)
 				self:UpdateHandleQuadLayout(target)
-				local revoke = IDEDragXYRevoke(target, drag_x, 0)
+				local revoke = ALittleIDE.IDEDragXYRevoke(target, drag_x, 0)
 				revoke_bind:PushRevoke(revoke)
 			end
 		elseif align_type == "h_align_center" then
@@ -413,7 +413,7 @@ function IDEUITabChild:SelectAlign(align_type)
 				local drag_x = common - (target.user_info.object.x + target.user_info.object.width / 2)
 				target:DragXY(drag_x, 0)
 				self:UpdateHandleQuadLayout(target)
-				local revoke = IDEDragXYRevoke(target, drag_x, 0)
+				local revoke = ALittleIDE.IDEDragXYRevoke(target, drag_x, 0)
 				revoke_bind:PushRevoke(revoke)
 			end
 		elseif align_type == "h_align_right" then
@@ -427,7 +427,7 @@ function IDEUITabChild:SelectAlign(align_type)
 				local drag_x = common - (target.user_info.object.x + target.user_info.object.width)
 				target:DragXY(drag_x, 0)
 				self:UpdateHandleQuadLayout(target)
-				local revoke = IDEDragXYRevoke(target, drag_x, 0)
+				local revoke = ALittleIDE.IDEDragXYRevoke(target, drag_x, 0)
 				revoke_bind:PushRevoke(revoke)
 			end
 		elseif align_type == "v_align_top" then
@@ -441,7 +441,7 @@ function IDEUITabChild:SelectAlign(align_type)
 				local drag_y = common - target.user_info.object.y
 				target:DragXY(0, drag_y)
 				self:UpdateHandleQuadLayout(target)
-				local revoke = IDEDragXYRevoke(target, 0, drag_y)
+				local revoke = ALittleIDE.IDEDragXYRevoke(target, 0, drag_y)
 				revoke_bind:PushRevoke(revoke)
 			end
 		elseif align_type == "v_align_center" then
@@ -454,7 +454,7 @@ function IDEUITabChild:SelectAlign(align_type)
 				local drag_y = common - (target.user_info.object.y + target.user_info.object.height / 2)
 				target:DragXY(0, drag_y)
 				self:UpdateHandleQuadLayout(target)
-				local revoke = IDEDragXYRevoke(target, 0, drag_y)
+				local revoke = ALittleIDE.IDEDragXYRevoke(target, 0, drag_y)
 				revoke_bind:PushRevoke(revoke)
 			end
 		elseif align_type == "v_align_bottom" then
@@ -468,7 +468,7 @@ function IDEUITabChild:SelectAlign(align_type)
 				local drag_y = common - (target.user_info.object.y + target.user_info.object.height)
 				target:DragXY(0, drag_y)
 				self:UpdateHandleQuadLayout(target)
-				local revoke = IDEDragXYRevoke(target, 0, drag_y)
+				local revoke = ALittleIDE.IDEDragXYRevoke(target, 0, drag_y)
 				revoke_bind:PushRevoke(revoke)
 			end
 		end
@@ -477,58 +477,58 @@ function IDEUITabChild:SelectAlign(align_type)
 	self.save = false
 end
 
-function IDEUITabChild:HandleShowSelectLayer(event)
+function ALittleIDE.IDEUITabChild:HandleShowSelectLayer(event)
 	self._tab_select_container.visible = event.value
 end
 
-function IDEUITabChild:HandleShowHandDragLayer(event)
+function ALittleIDE.IDEUITabChild:HandleShowHandDragLayer(event)
 	self._tab_handdrag_container.visible = event.value
 end
 
-function IDEUITabChild:HandleShowScaleLayer(event)
+function ALittleIDE.IDEUITabChild:HandleShowScaleLayer(event)
 	self._tab_scale_container.visible = event.value
 end
 
-function IDEUITabChild:CreateByNew(type)
+function ALittleIDE.IDEUITabChild:CreateByNew(type)
 	local info = {}
 	info.__class = type
-	local object = ALittle.NewObject(ALittle[type], g_IDEProject.project.control)
-	IDEUIUtility_NewGiveBaseCase(info, object)
+	local object = ALittle.NewObject(ALittle[type], ALittleIDE.g_IDEProject.project.control)
+	ALittleIDE.IDEUIUtility_NewGiveBaseCase(info, object)
 	self._tab_object_container:AddChild(object)
-	self._tree_object = IDEUIUtility_CreateTree(info, false, object, nil, self, true)
+	self._tree_object = ALittleIDE.IDEUIUtility_CreateTree(info, false, object, nil, self, true)
 	self._tree_object:AddEventListener(___all_struct[-431205740], self, self.HandleTreeSizeChanged)
 	self._tree_object.fold = true
 	self._tree_screen:AddChild(self._tree_object)
 	self._anti_panel:Init(self)
 end
 
-function IDEUITabChild:CreateByExtends(extends_v)
+function ALittleIDE.IDEUITabChild:CreateByExtends(extends_v)
 	local info = {}
 	info.__extends = extends_v
-	local object = g_IDEProject.project.control:CreateControl(extends_v)
+	local object = ALittleIDE.g_IDEProject.project.control:CreateControl(extends_v)
 	self._tab_object_container:AddChild(object)
-	self._tree_object = IDEUIUtility_CreateTree(info, false, object, nil, self, true)
+	self._tree_object = ALittleIDE.IDEUIUtility_CreateTree(info, false, object, nil, self, true)
 	self._tree_object:AddEventListener(___all_struct[-431205740], self, self.HandleTreeSizeChanged)
 	self._tree_object.fold = true
 	self._tree_screen:AddChild(self._tree_object)
 	self._anti_panel:Init(self)
 end
 
-function IDEUITabChild:CreateBySelect(info)
-	local object = g_IDEProject.project.control:CreateControl(self._name)
+function ALittleIDE.IDEUITabChild:CreateBySelect(info)
+	local object = ALittleIDE.g_IDEProject.project.control:CreateControl(self._name)
 	self._tab_object_container:AddChild(object)
-	self._tree_object = IDEUIUtility_CreateTree(info, false, object, nil, self, true)
+	self._tree_object = ALittleIDE.IDEUIUtility_CreateTree(info, false, object, nil, self, true)
 	self._tree_object:AddEventListener(___all_struct[-431205740], self, self.HandleTreeSizeChanged)
 	self._tree_object.fold = true
 	self._tree_screen:AddChild(self._tree_object)
 	self._anti_panel:Init(self)
 end
 
-function IDEUITabChild:IsShowHandleQuad(target)
+function ALittleIDE.IDEUITabChild:IsShowHandleQuad(target)
 	return self._tab_quad_map[target] ~= nil
 end
 
-function IDEUITabChild:FocusInHandleQuad(target)
+function ALittleIDE.IDEUITabChild:FocusInHandleQuad(target)
 	local handle_info = self._tab_quad_map[target]
 	if handle_info == nil then
 		return
@@ -536,12 +536,12 @@ function IDEUITabChild:FocusInHandleQuad(target)
 	A_UISystem.focus = handle_info.focus_quad
 end
 
-function IDEUITabChild:ClearHandQuad()
+function ALittleIDE.IDEUITabChild:ClearHandQuad()
 	self._tab_quad_map = {}
 	self._tab_quad_container:RemoveAllChild()
 end
 
-function IDEUITabChild:ShowHandleQuad(target, force_shift)
+function ALittleIDE.IDEUITabChild:ShowHandleQuad(target, force_shift)
 	local shift = (A_UISystem.sym_map[1073742049] ~= nil or A_UISystem.sym_map[1073742053] ~= nil)
 	if force_shift then
 		shift = true
@@ -597,7 +597,7 @@ function IDEUITabChild:ShowHandleQuad(target, force_shift)
 	end
 	for index, child in ___ipairs(list) do
 		local control_line = {}
-		local handle_quad = g_Control:CreateControl("ide_common_handle_quad", control_line)
+		local handle_quad = ALittleIDE.g_Control:CreateControl("ide_common_handle_quad", control_line)
 		control_line.quad:AddEventListener(___all_struct[40651933], self, self.HandleHandleQuadLButtonUp)
 		control_line.quad:AddEventListener(___all_struct[1883782801], self, self.HandleHandleQuadLButtonDown)
 		control_line.quad:AddEventListener(___all_struct[1301789264], self, self.HandleHandleQuadDragBegin)
@@ -624,7 +624,7 @@ function IDEUITabChild:ShowHandleQuad(target, force_shift)
 			quad_parent.center_x = target_parent.center_x
 			quad_parent.center_y = target_parent.center_y
 			quad_parent.angle = target_parent.angle
-			local display_group = ALittle.DisplayGroup(g_Control)
+			local display_group = ALittle.DisplayGroup(ALittleIDE.g_Control)
 			display_group:AddChild(quad_parent)
 			if target_parent.show_parent == self._tab_object_container then
 				handle_info.display_group = display_group
@@ -647,14 +647,14 @@ function IDEUITabChild:ShowHandleQuad(target, force_shift)
 	loop:Start()
 end
 
-function IDEUITabChild:ShowHandleQuadList(list)
+function ALittleIDE.IDEUITabChild:ShowHandleQuadList(list)
 	self._tab_quad_map = {}
 	self._tab_quad_container:RemoveAllChild()
 	local target = nil
 	for index, child in ___ipairs(list) do
 		target = child
 		local control_line = {}
-		local handle_quad = g_Control:CreateControl("ide_common_handle_quad", control_line)
+		local handle_quad = ALittleIDE.g_Control:CreateControl("ide_common_handle_quad", control_line)
 		control_line.quad:AddEventListener(___all_struct[40651933], self, self.HandleHandleQuadLButtonUp)
 		control_line.quad:AddEventListener(___all_struct[1883782801], self, self.HandleHandleQuadLButtonDown)
 		control_line.quad:AddEventListener(___all_struct[1301789264], self, self.HandleHandleQuadDragBegin)
@@ -681,7 +681,7 @@ function IDEUITabChild:ShowHandleQuadList(list)
 			quad_parent.center_x = target_parent.center_x
 			quad_parent.center_y = target_parent.center_y
 			quad_parent.angle = target_parent.angle
-			local display_group = ALittle.DisplayGroup(g_Control)
+			local display_group = ALittle.DisplayGroup(ALittleIDE.g_Control)
 			display_group:AddChild(quad_parent)
 			if target_parent.show_parent == self._tab_object_container then
 				handle_info.display_group = display_group
@@ -707,7 +707,7 @@ function IDEUITabChild:ShowHandleQuadList(list)
 	loop:Start()
 end
 
-function IDEUITabChild:HideHandleQuad(target, shift)
+function ALittleIDE.IDEUITabChild:HideHandleQuad(target, shift)
 	local handle_info = self._tab_quad_map[target]
 	if handle_info == nil then
 		return
@@ -731,7 +731,7 @@ function IDEUITabChild:HideHandleQuad(target, shift)
 	self._tab_quad_map[handle_info.target] = nil
 end
 
-function IDEUITabChild:UpdateHandleQuadLayout(target)
+function ALittleIDE.IDEUITabChild:UpdateHandleQuadLayout(target)
 	local handle_info = self._tab_quad_map[target]
 	if handle_info == nil then
 		return
@@ -747,7 +747,7 @@ function IDEUITabChild:UpdateHandleQuadLayout(target)
 	handle_info.handle_quad.angle = target.user_info.object.angle
 end
 
-function IDEUITabChild:UpdateHandleQuadRemove(target)
+function ALittleIDE.IDEUITabChild:UpdateHandleQuadRemove(target)
 	local handle_info = self._tab_quad_map[target]
 	if handle_info == nil then
 		return
@@ -756,11 +756,11 @@ function IDEUITabChild:UpdateHandleQuadRemove(target)
 	self._tab_quad_map[target] = nil
 end
 
-function IDEUITabChild:HandleHandleContainerLButtonDown(event)
+function ALittleIDE.IDEUITabChild:HandleHandleContainerLButtonDown(event)
 	self._container_drag = false
 end
 
-function IDEUITabChild:HandleHandleContainerLButtonUp(event)
+function ALittleIDE.IDEUITabChild:HandleHandleContainerLButtonUp(event)
 	if self._container_drag then
 		return
 	end
@@ -774,7 +774,7 @@ function IDEUITabChild:HandleHandleContainerLButtonUp(event)
 	self:ShowHandleQuad(target)
 end
 
-function IDEUITabChild:HandleHandleContainerDragBegin(event)
+function ALittleIDE.IDEUITabChild:HandleHandleContainerDragBegin(event)
 	self:ClearHandQuad()
 	local target = self._tree_object:EditPickUp(event.rel_x, event.rel_y)
 	if target == nil then
@@ -790,7 +790,7 @@ function IDEUITabChild:HandleHandleContainerDragBegin(event)
 	self._tab_select_rect.height = 0
 end
 
-function IDEUITabChild:HandleHandleContainerDrag(event)
+function ALittleIDE.IDEUITabChild:HandleHandleContainerDrag(event)
 	local min_x = self._container_drag_x
 	local max_x = event.rel_x
 	if self._container_drag_x > event.rel_x then
@@ -809,7 +809,7 @@ function IDEUITabChild:HandleHandleContainerDrag(event)
 	self._tab_select_rect.height = max_y - min_y
 end
 
-function IDEUITabChild:HandleHandleContainerDragEnd(event)
+function ALittleIDE.IDEUITabChild:HandleHandleContainerDragEnd(event)
 	self._tab_select_rect.visible = false
 	if self._container_drag_parent == nil then
 		return
@@ -840,7 +840,7 @@ function IDEUITabChild:HandleHandleContainerDragEnd(event)
 	self._container_drag = true
 end
 
-function IDEUITabChild:HandleSelectRightExItemClick(event)
+function ALittleIDE.IDEUITabChild:HandleSelectRightExItemClick(event)
 	local tree = event.target._user_data
 	if tree == nil then
 		return
@@ -848,7 +848,7 @@ function IDEUITabChild:HandleSelectRightExItemClick(event)
 	self:ShowHandleQuad(tree)
 end
 
-function IDEUITabChild:HandleScaleContainerLButtonDown(event)
+function ALittleIDE.IDEUITabChild:HandleScaleContainerLButtonDown(event)
 	local shift = (A_UISystem.sym_map[1073742049] ~= nil or A_UISystem.sym_map[1073742053] ~= nil)
 	local scale = self._tab_screen.container.scale_x
 	if shift then
@@ -862,43 +862,43 @@ function IDEUITabChild:HandleScaleContainerLButtonDown(event)
 	self._tab_screen.container.scale_x = scale
 	self._tab_screen.container.scale_y = scale
 	self._tab_screen:RejustScrollBar()
-	g_IDECenter.center:UpdateToolScale(scale)
+	ALittleIDE.g_IDECenter.center:UpdateToolScale(scale)
 end
 
-function IDEUITabChild:HandleEditScaleChanged(event)
+function ALittleIDE.IDEUITabChild:HandleEditScaleChanged(event)
 	self._tab_screen.container.scale_x = event.scale
 	self._tab_screen.container.scale_y = event.scale
 	self._tab_screen:RejustScrollBar()
 end
 
-function IDEUITabChild:GetScale()
+function ALittleIDE.IDEUITabChild:GetScale()
 	return self._tab_screen.container.scale_x
 end
 
-function IDEUITabChild:HandleHandleQuadLButtonDown(event)
+function ALittleIDE.IDEUITabChild:HandleHandleQuadLButtonDown(event)
 	local handle_info = event.target._user_data
 	handle_info.buttondown_lock = true
 	handle_info.buttondown_count = event.count
 end
 
-function IDEUITabChild:HandleHandleQuadLButtonUp(event)
+function ALittleIDE.IDEUITabChild:HandleHandleQuadLButtonUp(event)
 	local handle_info = event.target._user_data
 	if handle_info.buttondown_lock ~= true then
 		return
 	end
 	self:HideHandleQuad(handle_info.target)
 	if handle_info.buttondown_count >= 2 then
-		g_IDEAttrControlDialog:ShowDialog(handle_info.target.user_info.object)
+		ALittleIDE.g_IDEAttrControlDialog:ShowDialog(handle_info.target.user_info.object)
 	else
-		g_IDEAttrControlDialog:HideDialog()
+		ALittleIDE.g_IDEAttrControlDialog:HideDialog()
 	end
 end
 
-function IDEUITabChild.ControlCopyInfoCmp(a, b)
+function ALittleIDE.IDEUITabChild.ControlCopyInfoCmp(a, b)
 	return a.index < b.index
 end
 
-function IDEUITabChild:HandleHandleQuadKeyDown(event)
+function ALittleIDE.IDEUITabChild:HandleHandleQuadKeyDown(event)
 	if event.sym == 99 and ALittle.BitAnd(event.mod, 0x00c0) ~= 0 then
 		local copy_list = {}
 		local copy_list_count = 0
@@ -912,7 +912,7 @@ function IDEUITabChild:HandleHandleQuadKeyDown(event)
 			end
 		end
 		if copy_list_count > 0 then
-			ALittle.List_Sort(copy_list, IDEUITabChild.ControlCopyInfoCmp)
+			ALittle.List_Sort(copy_list, ALittleIDE.IDEUITabChild.ControlCopyInfoCmp)
 			ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list))
 		end
 		return
@@ -928,7 +928,7 @@ function IDEUITabChild:HandleHandleQuadKeyDown(event)
 			copy_list[copy_list_count] = info
 		end
 		if copy_list_count > 0 then
-			ALittle.List_Sort(copy_list, IDEUITabChild.ControlCopyInfoCmp)
+			ALittle.List_Sort(copy_list, ALittleIDE.IDEUITabChild.ControlCopyInfoCmp)
 			ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list))
 			local revoke_bind = ALittle.RevokeBind()
 			for target, handle_info in ___pairs(self._tab_quad_map) do
@@ -985,7 +985,7 @@ function IDEUITabChild:HandleHandleQuadKeyDown(event)
 	if common_parent == nil then
 		return
 	end
-	if g_IDEEnum.can_move_child_map[common_parent.user_info.default.__class] == nil then
+	if ALittleIDE.g_IDEEnum.can_move_child_map[common_parent.user_info.default.__class] == nil then
 		return
 	end
 	local revoke_bind = ALittle.RevokeBind()
@@ -994,7 +994,7 @@ function IDEUITabChild:HandleHandleQuadKeyDown(event)
 		target:DragXY(delta_x, delta_y)
 		self:UpdateHandleQuadLayout(target)
 		has_target = true
-		local revoke = IDEDragXYRevoke(target, delta_x, delta_y)
+		local revoke = ALittleIDE.IDEDragXYRevoke(target, delta_x, delta_y)
 		revoke_bind:PushRevoke(revoke)
 	end
 	if has_target == false then
@@ -1004,7 +1004,7 @@ function IDEUITabChild:HandleHandleQuadKeyDown(event)
 	self.save = false
 end
 
-function IDEUITabChild:HandleHandleQuadDragBegin(event)
+function ALittleIDE.IDEUITabChild:HandleHandleQuadDragBegin(event)
 	local common_parent = nil
 	for tree_target, handle_info in ___pairs(self._tab_quad_map) do
 		common_parent = tree_target.logic_parent
@@ -1013,7 +1013,7 @@ function IDEUITabChild:HandleHandleQuadDragBegin(event)
 	if common_parent == nil then
 		return
 	end
-	if g_IDEEnum.can_move_child_map[common_parent.user_info.default.__class] == nil then
+	if ALittleIDE.g_IDEEnum.can_move_child_map[common_parent.user_info.default.__class] == nil then
 		return
 	end
 	for target, handle_info in ___pairs(self._tab_quad_map) do
@@ -1025,7 +1025,7 @@ function IDEUITabChild:HandleHandleQuadDragBegin(event)
 	self.save = false
 end
 
-function IDEUITabChild:HandleHandleQuadDrag(event)
+function ALittleIDE.IDEUITabChild:HandleHandleQuadDrag(event)
 	local common_parent = nil
 	for tree_target, handle_info in ___pairs(self._tab_quad_map) do
 		common_parent = tree_target.logic_parent
@@ -1034,7 +1034,7 @@ function IDEUITabChild:HandleHandleQuadDrag(event)
 	if common_parent == nil then
 		return
 	end
-	if g_IDEEnum.can_move_child_map[common_parent.user_info.default.__class] == nil then
+	if ALittleIDE.g_IDEEnum.can_move_child_map[common_parent.user_info.default.__class] == nil then
 		return
 	end
 	local shift = (A_UISystem.sym_map[1073742049] ~= nil or A_UISystem.sym_map[1073742053] ~= nil)
@@ -1066,12 +1066,12 @@ function IDEUITabChild:HandleHandleQuadDrag(event)
 	end
 end
 
-function IDEUITabChild:HandleHandleQuadDragEnd(event)
+function ALittleIDE.IDEUITabChild:HandleHandleQuadDragEnd(event)
 	local revoke_bind = ALittle.RevokeBind()
 	local has_target = false
 	for target, handle_info in ___pairs(self._tab_quad_map) do
 		has_target = true
-		local revoke = IDEDragXYRevoke(target, handle_info.delta_x, handle_info.delta_y)
+		local revoke = ALittleIDE.IDEDragXYRevoke(target, handle_info.delta_x, handle_info.delta_y)
 		revoke_bind:PushRevoke(revoke)
 	end
 	if has_target == false then
@@ -1080,33 +1080,33 @@ function IDEUITabChild:HandleHandleQuadDragEnd(event)
 	self._revoke_list:PushRevoke(revoke_bind)
 end
 
-function IDEUITabChild:HandleHandleQuadRButtonDown(event)
+function ALittleIDE.IDEUITabChild:HandleHandleQuadRButtonDown(event)
 	local handle_info = event.target._user_data
 	local target = handle_info.target
 	local menu = AUIPlugin.AUIRightMenu()
 	menu:AddItem("获取焦点", Lua.Bind(self.ShowTreeItemFocus, self, target))
 	menu:AddItem("拾取父节点", Lua.Bind(self.PickParent, self, target), target.user_info.root)
-	menu:AddItem("设置", Lua.Bind(g_IDEAttrControlDialog.ShowDialog, g_IDEAttrControlDialog, target.user_info.object))
-	menu:AddItem("文本编辑", Lua.Bind(self.TextEdit, self, target), g_IDEEnum.text_edit_display_map[target.user_info.default.__class] == nil)
+	menu:AddItem("设置", Lua.Bind(ALittleIDE.g_IDEAttrControlDialog.ShowDialog, ALittleIDE.g_IDEAttrControlDialog, target.user_info.object))
+	menu:AddItem("文本编辑", Lua.Bind(self.TextEdit, self, target), ALittleIDE.g_IDEEnum.text_edit_display_map[target.user_info.default.__class] == nil)
 	menu:AddItem("上移", Lua.Bind(target.TransferUp, target), target.user_info.root or target.user_info.child_type ~= "child")
 	menu:AddItem("下移", Lua.Bind(target.TransferDown, target), target.user_info.root or target.user_info.child_type ~= "child")
-	menu:AddItem("添加", Lua.Bind(g_IDECenter.center.control_tree.ShowAddDialog, g_IDECenter.center.control_tree, target), not target.is_tree)
-	menu:AddItem("添加Image", Lua.Bind(g_IDECenter.center.control_tree.ShowAddImageDialog, g_IDECenter.center.control_tree, target), not target.is_tree)
-	menu:AddItem("添加Text", Lua.Bind(g_IDECenter.center.control_tree.ShowAddTextDialog, g_IDECenter.center.control_tree, target), not target.is_tree)
+	menu:AddItem("添加", Lua.Bind(ALittleIDE.g_IDECenter.center.control_tree.ShowAddDialog, ALittleIDE.g_IDECenter.center.control_tree, target), not target.is_tree)
+	menu:AddItem("添加Image", Lua.Bind(ALittleIDE.g_IDECenter.center.control_tree.ShowAddImageDialog, ALittleIDE.g_IDECenter.center.control_tree, target), not target.is_tree)
+	menu:AddItem("添加Text", Lua.Bind(ALittleIDE.g_IDECenter.center.control_tree.ShowAddTextDialog, ALittleIDE.g_IDECenter.center.control_tree, target), not target.is_tree)
 	menu:AddItem("复制", Lua.Bind(self.Copy, self, target))
 	menu:AddItem("粘贴", Lua.Bind(self.Paste, self, target))
 	menu:AddItem("剪切", Lua.Bind(self.Cut, self, target), target.user_info.root)
 	menu:AddItem("删除", Lua.Bind(self.Delete, self, target), target.user_info.root)
-	menu:AddItem("替换", Lua.Bind(g_IDECenter.center.control_tree.ShowReplaceDialog, g_IDECenter.center.control_tree, target), target.user_info.root)
+	menu:AddItem("替换", Lua.Bind(ALittleIDE.g_IDECenter.center.control_tree.ShowReplaceDialog, ALittleIDE.g_IDECenter.center.control_tree, target), target.user_info.root)
 	menu:AddItem("跳转", Lua.Bind(self.Jump, self, target), not target.user_info.extends_root)
 	menu:Show()
 end
 
-function IDEUITabChild:HandleHandleSizeQuadDragBegin(event)
+function ALittleIDE.IDEUITabChild:HandleHandleSizeQuadDragBegin(event)
 	local target_handle_info = event.target._user_data
 	local target = target_handle_info.target
 	local parent = target.logic_parent
-	if parent ~= nil and g_IDEEnum.can_move_child_map[parent.user_info.default.__class] == nil then
+	if parent ~= nil and ALittleIDE.g_IDEEnum.can_move_child_map[parent.user_info.default.__class] == nil then
 		return
 	end
 	for child, handle_info in ___pairs(self._tab_quad_map) do
@@ -1117,11 +1117,11 @@ function IDEUITabChild:HandleHandleSizeQuadDragBegin(event)
 	self.save = false
 end
 
-function IDEUITabChild:HandleHandleSizeQuadDrag(event)
+function ALittleIDE.IDEUITabChild:HandleHandleSizeQuadDrag(event)
 	local handle_info = event.target._user_data
 	local target = handle_info.target
 	local parent = target.logic_parent
-	if parent ~= nil and g_IDEEnum.can_move_child_map[parent.user_info.default.__class] == nil then
+	if parent ~= nil and ALittleIDE.g_IDEEnum.can_move_child_map[parent.user_info.default.__class] == nil then
 		return
 	end
 	local shift = (A_UISystem.sym_map[1073742049] ~= nil or A_UISystem.sym_map[1073742053] ~= nil)
@@ -1161,22 +1161,22 @@ function IDEUITabChild:HandleHandleSizeQuadDrag(event)
 	self:UpdateHandleQuadLayout(target)
 end
 
-function IDEUITabChild:HandleHandleSizeQuadDragEnd(event)
+function ALittleIDE.IDEUITabChild:HandleHandleSizeQuadDragEnd(event)
 	local handle_info = event.target._user_data
 	local target = handle_info.target
-	local revoke = IDEDragWHRevoke(target, handle_info.delta_width, handle_info.delta_height)
+	local revoke = ALittleIDE.IDEDragWHRevoke(target, handle_info.delta_width, handle_info.delta_height)
 	self._revoke_list:PushRevoke(revoke)
 end
 
-function IDEUITabChild:HandleHandleSizeQuadMoveIn(event)
+function ALittleIDE.IDEUITabChild:HandleHandleSizeQuadMoveIn(event)
 	ALittle.System_SetHVDragCursor()
 end
 
-function IDEUITabChild:HandleHandleSizeQuadMoveOut(event)
+function ALittleIDE.IDEUITabChild:HandleHandleSizeQuadMoveOut(event)
 	ALittle.System_SetNormalCursor()
 end
 
-function IDEUITabChild:Copy(target)
+function ALittleIDE.IDEUITabChild:Copy(target)
 	local copy_list = {}
 	local copy_list_count = 0
 	for child, handle_info in ___pairs(self._tab_quad_map) do
@@ -1187,12 +1187,12 @@ function IDEUITabChild:Copy(target)
 		copy_list[copy_list_count] = info
 	end
 	if copy_list_count > 0 then
-		ALittle.List_Sort(copy_list, IDEUITabChild.ControlCopyInfoCmp)
+		ALittle.List_Sort(copy_list, ALittleIDE.IDEUITabChild.ControlCopyInfoCmp)
 		ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list))
 	end
 end
 
-function IDEUITabChild:RightControlTreePasteImpl(target, copy_list, child_index, revoke_bind, callback)
+function ALittleIDE.IDEUITabChild:RightControlTreePasteImpl(target, copy_list, child_index, revoke_bind, callback)
 	if copy_list == nil then
 		local text_info = ALittle.System_GetClipboardText()
 		if text_info == nil then
@@ -1223,7 +1223,7 @@ function IDEUITabChild:RightControlTreePasteImpl(target, copy_list, child_index,
 	end
 	self:ClearHandQuad()
 	local clazz = target.user_info.default.__class
-	if g_IDEEnum.can_add_child_map[clazz] and g_IDEEnum.child_show_map[clazz] == nil then
+	if ALittleIDE.g_IDEEnum.can_add_child_map[clazz] and ALittleIDE.g_IDEEnum.child_show_map[clazz] == nil then
 		local add_list = {}
 		local add_list_count = 0
 		local inner_revoke_bind = ALittle.RevokeBind()
@@ -1247,11 +1247,11 @@ function IDEUITabChild:RightControlTreePasteImpl(target, copy_list, child_index,
 			callback(true, add_list)
 		end
 	else
-		g_IDECenter.center.control_tree:ShowPasteDialog(target, copy_list[1].info, child_index, revoke_bind, callback)
+		ALittleIDE.g_IDECenter.center.control_tree:ShowPasteDialog(target, copy_list[1].info, child_index, revoke_bind, callback)
 	end
 end
 
-function IDEUITabChild:Paste(target)
+function ALittleIDE.IDEUITabChild:Paste(target)
 	if target.is_tree then
 		self:RightControlTreePasteImpl(target)
 	else
@@ -1266,7 +1266,7 @@ function IDEUITabChild:Paste(target)
 	end
 end
 
-function IDEUITabChild:Delete(target)
+function ALittleIDE.IDEUITabChild:Delete(target)
 	local revoke_bind = ALittle.RevokeBind()
 	local has_target = false
 	for child, handle_info in ___pairs(self._tab_quad_map) do
@@ -1280,7 +1280,7 @@ function IDEUITabChild:Delete(target)
 	end
 end
 
-function IDEUITabChild:Cut(target)
+function ALittleIDE.IDEUITabChild:Cut(target)
 	local copy_list = {}
 	local copy_list_count = 0
 	for child, handle_info in ___pairs(self._tab_quad_map) do
@@ -1291,7 +1291,7 @@ function IDEUITabChild:Cut(target)
 		copy_list[copy_list_count] = info
 	end
 	if copy_list_count > 0 then
-		ALittle.List_Sort(copy_list, IDEUITabChild.ControlCopyInfoCmp)
+		ALittle.List_Sort(copy_list, ALittleIDE.IDEUITabChild.ControlCopyInfoCmp)
 		ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list))
 		local revoke_bind = ALittle.RevokeBind()
 		for child, handle_info in ___pairs(self._tab_quad_map) do
@@ -1301,20 +1301,20 @@ function IDEUITabChild:Cut(target)
 	end
 end
 
-function IDEUITabChild:Jump(target)
+function ALittleIDE.IDEUITabChild:Jump(target)
 	local extends_name = target.user_info.base.__extends
-	local control_info = g_IDEProject.project.ui.control_map[extends_name]
+	local control_info = ALittleIDE.g_IDEProject.project.ui.control_map[extends_name]
 	if control_info == nil then
 		g_AUITool:ShowNotice("错误", "控件不存在:" .. extends_name)
 		return
 	end
-	g_IDECenter.center.content_edit:StartEditControlBySelect(control_info.name, control_info.info)
+	ALittleIDE.g_IDECenter.center.content_edit:StartEditControlBySelect(control_info.name, control_info.info)
 end
 
-function IDEUITabChild:TextEdit(target)
+function ALittleIDE.IDEUITabChild:TextEdit(target)
 	local object = target.user_info.object
 	if self._control_tabchild_textinput == nil then
-		self._control_tabchild_textinput = g_Control:CreateControl("ide_rename_image_input", self)
+		self._control_tabchild_textinput = ALittleIDE.g_Control:CreateControl("ide_rename_image_input", self)
 		self._control_tabchild_textinput.width = 200
 		A_LayerManager:AddToModal(self._control_tabchild_textinput)
 	end
@@ -1328,7 +1328,7 @@ function IDEUITabChild:TextEdit(target)
 	A_UISystem.focus = self._control_tabchild_textinput.show_input
 end
 
-function IDEUITabChild:PickParent(target)
+function ALittleIDE.IDEUITabChild:PickParent(target)
 	local parent = target.logic_parent
 	if parent == nil then
 		return
@@ -1336,7 +1336,7 @@ function IDEUITabChild:PickParent(target)
 	self:ShowHandleQuad(parent)
 end
 
-function IDEUITabChild:HandleRenameConfirm(event)
+function ALittleIDE.IDEUITabChild:HandleRenameConfirm(event)
 	local target = self._control_tabchild_textinput._user_data
 	if target == nil then
 		return
@@ -1350,7 +1350,7 @@ function IDEUITabChild:HandleRenameConfirm(event)
 	target:ChangeText(text)
 end
 
-function IDEUITabChild:ShowTreeItemFocus(target)
+function ALittleIDE.IDEUITabChild:ShowTreeItemFocus(target)
 	if self._tree_object == nil then
 		return
 	end
@@ -1380,7 +1380,7 @@ function IDEUITabChild:ShowTreeItemFocus(target)
 	self._tree_loop_y:Start()
 end
 
-function IDEUITabChild:SearchLink(name)
+function ALittleIDE.IDEUITabChild:SearchLink(name)
 	if self._tree_object == nil then
 		return
 	end
@@ -1401,7 +1401,7 @@ function IDEUITabChild:SearchLink(name)
 	self:ShowHandleQuad(target)
 end
 
-function IDEUITabChild:SearchEvent(name)
+function ALittleIDE.IDEUITabChild:SearchEvent(name)
 	if self._tree_object == nil then
 		return
 	end
@@ -1422,7 +1422,7 @@ function IDEUITabChild:SearchEvent(name)
 	self:ShowHandleQuad(target)
 end
 
-function IDEUITabChild:SearchDescription(name)
+function ALittleIDE.IDEUITabChild:SearchDescription(name)
 	if self._tree_object == nil then
 		return
 	end
@@ -1443,7 +1443,7 @@ function IDEUITabChild:SearchDescription(name)
 	self:ShowHandleQuad(target)
 end
 
-function IDEUITabChild:SearchTargetClass(name)
+function ALittleIDE.IDEUITabChild:SearchTargetClass(name)
 	if self._tree_object == nil then
 		return
 	end
@@ -1464,7 +1464,7 @@ function IDEUITabChild:SearchTargetClass(name)
 	self:ShowHandleQuad(target)
 end
 
-function IDEUITabChild:SearchTextureName(name)
+function ALittleIDE.IDEUITabChild:SearchTextureName(name)
 	if self._tree_object == nil then
 		return
 	end
@@ -1485,7 +1485,7 @@ function IDEUITabChild:SearchTextureName(name)
 	self:ShowHandleQuad(target)
 end
 
-function IDEUITabChild:QuickDragAddControl(abs_x, abs_y, control_name)
+function ALittleIDE.IDEUITabChild:QuickDragAddControl(abs_x, abs_y, control_name)
 	if self._tree_object == nil then
 		return
 	end
@@ -1515,7 +1515,7 @@ function IDEUITabChild:QuickDragAddControl(abs_x, abs_y, control_name)
 	menu:AddItem("取消", nil)
 end
 
-function IDEUITabChild:QuickDragAddStart(tree, user_data)
+function ALittleIDE.IDEUITabChild:QuickDragAddStart(tree, user_data)
 	local revoke_bind = ALittle.RevokeBind()
 	local display_info = {}
 	display_info.__extends = user_data.control_name
@@ -1527,7 +1527,7 @@ function IDEUITabChild:QuickDragAddStart(tree, user_data)
 	self:RightControlTreePasteImpl(tree, copy_list, tree.child_count + 1, revoke_bind, Lua.Bind(self.QuickDragAddEnd, self, tree, user_data, revoke_bind))
 end
 
-function IDEUITabChild:QuickDragAddEnd(tree, user_data, revoke_bind, result, add_list)
+function ALittleIDE.IDEUITabChild:QuickDragAddEnd(tree, user_data, revoke_bind, result, add_list)
 	if result == false then
 		return
 	end
@@ -1541,3 +1541,4 @@ function IDEUITabChild:QuickDragAddEnd(tree, user_data, revoke_bind, result, add
 	self._revoke_list:PushRevoke(revoke_bind)
 end
 
+end

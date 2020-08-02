@@ -1,47 +1,47 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittleIDE", package.seeall)
-
+do
+if _G.ALittleIDE == nil then _G.ALittleIDE = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
 assert(ALittleIDE.DisplayLayoutS, " extends class:ALittleIDE.DisplayLayoutS is nil")
-SliderS = Lua.Class(ALittleIDE.DisplayLayoutS, "ALittleIDE.SliderS")
+ALittleIDE.SliderS = Lua.Class(ALittleIDE.DisplayLayoutS, "ALittleIDE.SliderS")
 
-function SliderS:Ctor(user_info, tab_child, tree_logic)
+function ALittleIDE.SliderS:Ctor(user_info, tab_child, tree_logic)
 	___rawset(self, "_layer_name", "ide_setting_slider")
 end
 
-function SliderS:LoadNatureBase()
-	DisplayLayoutS.LoadNatureBase(self)
-	self:LoadTypeSelectData("type", g_IDEEnum.hv_type)
-	self:LoadTypeSelectData("fixed", g_IDEEnum.fix_type)
+function ALittleIDE.SliderS:LoadNatureBase()
+	ALittleIDE.DisplayLayoutS.LoadNatureBase(self)
+	self:LoadTypeSelectData("type", ALittleIDE.g_IDEEnum.hv_type)
+	self:LoadTypeSelectData("fixed", ALittleIDE.g_IDEEnum.fix_type)
 	self:LoadValueData("grade")
 	self:LoadValueData("offset_rate")
 	self:LoadShowTypeDataForExtends("bar_button")
 	self:LoadShowTypeDataForImage("bar_background")
 end
 
-function SliderS:HandleSliderTypeSELECT_CHANGE(event)
-	local list = g_IDEEnum.hv_rtype
+function ALittleIDE.SliderS:HandleSliderTypeSELECT_CHANGE(event)
+	local list = ALittleIDE.g_IDEEnum.hv_rtype
 	self:TypeSelectChange("type", list, false)
 end
 
-function SliderS:HandleOffsetRateFOCUSOUT(event)
+function ALittleIDE.SliderS:HandleOffsetRateFOCUSOUT(event)
 	self:Z2OValueInputChange("offset_rate", false)
 end
 
-function SliderS:HandleGradeFOCUSOUT(event)
+function ALittleIDE.SliderS:HandleGradeFOCUSOUT(event)
 	self:ValueNumInputChange("grade", false)
 end
 
-function SliderS:HandleFixedSELECT_CHANGE(event)
-	local list = g_IDEEnum.fix_rtype
+function ALittleIDE.SliderS:HandleFixedSELECT_CHANGE(event)
+	local list = ALittleIDE.g_IDEEnum.fix_rtype
 	self:TypeSelectChange("fixed", list, false)
 end
 
-function SliderS:HandleBarButtonFOCUSOUT(event)
+function ALittleIDE.SliderS:HandleBarButtonFOCUSOUT(event)
 	if event.target._user_data ~= nil then
 		if event.target._user_data == event.target.text then
 			return
@@ -51,7 +51,7 @@ function SliderS:HandleBarButtonFOCUSOUT(event)
 	self:RemoverToNilShowSetForExtends("bar_button", self._bar_button.text, false)
 end
 
-function SliderS:HandleBarBackFOCUSOUT(event)
+function ALittleIDE.SliderS:HandleBarBackFOCUSOUT(event)
 	if event.target._user_data ~= nil then
 		if event.target._user_data == event.target.text then
 			return
@@ -61,13 +61,14 @@ function SliderS:HandleBarBackFOCUSOUT(event)
 	self:RemoverToNilShowSetForImage("bar_background", self._bar_background.text, self._bar_background_grid9.selected, false)
 end
 
-function SliderS:HandleBarBackSelect(event)
-	g_IDEImageSelectDialog:SetBasePath(g_IDEProject.project.texture_path)
-	local path = g_IDEImageSelectDialog:ShowSelect()
+function ALittleIDE.SliderS:HandleBarBackSelect(event)
+	ALittleIDE.g_IDEImageSelectDialog:SetBasePath(ALittleIDE.g_IDEProject.project.texture_path)
+	local path = ALittleIDE.g_IDEImageSelectDialog:ShowSelect()
 	if path == nil then
 		return
 	end
 	self:ImagePathSelectCallback("bar_background", self.HandleBarBackFOCUSOUT, nil, path)
 end
-SliderS.HandleBarBackSelect = Lua.CoWrap(SliderS.HandleBarBackSelect)
+ALittleIDE.SliderS.HandleBarBackSelect = Lua.CoWrap(ALittleIDE.SliderS.HandleBarBackSelect)
 
+end

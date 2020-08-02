@@ -1,6 +1,6 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("Lua", package.seeall)
-
+do
+if _G.Lua == nil then _G.Lua = {} end
 local ___pairs = pairs
 local ___ipairs = ipairs
 
@@ -16,16 +16,16 @@ name_list = {"_func"},
 type_list = {"Functor<(any):any>"},
 option_map = {}
 })
-ALittle.RegStruct(1453939213, "Lua.FunctorMetatable", {
-name = "Lua.FunctorMetatable", ns_name = "Lua", rl_name = "FunctorMetatable", hash_code = 1453939213,
-name_list = {"__call","__tostring"},
-type_list = {"any","Functor<(Lua.FunctorObject):string>"},
-option_map = {}
-})
 ALittle.RegStruct(-1456681653, "Lua.FunctorObject", {
 name = "Lua.FunctorObject", ns_name = "Lua", rl_name = "FunctorObject", hash_code = -1456681653,
 name_list = {"_arg","_arg_count","_func"},
 type_list = {"List<any>","int","Functor<(any):any>"},
+option_map = {}
+})
+ALittle.RegStruct(1453939213, "Lua.FunctorMetatable", {
+name = "Lua.FunctorMetatable", ns_name = "Lua", rl_name = "FunctorMetatable", hash_code = 1453939213,
+name_list = {"__call","__tostring"},
+type_list = {"any","Functor<(Lua.FunctorObject):string>"},
 option_map = {}
 })
 
@@ -65,7 +65,7 @@ __functor_mt__tostring = function(caller)
 end
 
 __functor_mt.__tostring = __functor_mt__tostring
-function Bind(func, ...)
+function Lua.Bind(func, ...)
 	Lua.Assert(func, "func == null")
 	if select("#", ...) == 0 then
 		return func
@@ -91,14 +91,15 @@ __co_functor_mt__tostring = function(caller)
 end
 
 __co_functor_mt.__tostring = __co_functor_mt__tostring
-function CoWrap(func)
+function Lua.CoWrap(func)
 	local object = {}
 	object._func = func
 	setmetatable(object, __co_functor_mt)
 	return object
 end
 
-function IsCoWrap(value)
+function Lua.IsCoWrap(value)
 	return type(value) == "table" and getmetatable(value) == __co_functor_mt
 end
 
+end

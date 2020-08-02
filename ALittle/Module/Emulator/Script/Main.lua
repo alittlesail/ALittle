@@ -1,34 +1,34 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("Emulator", package.seeall)
-
+do
+if _G.Emulator == nil then _G.Emulator = {} end
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-function __Browser_Setup(layer_group, control, module_base_path, script_base_path)
+function Emulator.__Browser_Setup(layer_group, control, module_base_path, script_base_path)
 	local window_width, window_height, flag, scale = ALittle.System_CalcLandscape(1200, 600, 0x00000020)
 	ALittle.System_CreateView("Emulator", window_width, window_height, flag, scale)
 	ALittle.System_SetViewIcon(module_base_path .. "/Other/ic_launcher.png")
 	A_ModuleSystem:LoadModule(module_base_path, "Emulator")
 end
-__Browser_Setup = Lua.CoWrap(__Browser_Setup)
+Emulator.__Browser_Setup = Lua.CoWrap(Emulator.__Browser_Setup)
 
-function __Browser_AddModule(module_name, layer_group, module_info)
+function Emulator.__Browser_AddModule(module_name, layer_group, module_info)
 end
 
-function __Browser_Shutdown()
+function Emulator.__Browser_Shutdown()
 end
 
-g_Control = nil
-g_LayerGroup = nil
-g_ModuleBasePath = nil
-g_AUIPluinControl = nil
-g_VersionManager = nil
-function __Module_Setup(layer_group, control, module_base_path, script_base_path, debug)
-	g_Control = control
-	g_LayerGroup = layer_group
-	g_ModuleBasePath = module_base_path
-	g_AUIPluinControl = A_ModuleSystem:LoadPlugin("AUIPlugin")
+Emulator.g_Control = nil
+Emulator.g_LayerGroup = nil
+Emulator.g_ModuleBasePath = nil
+Emulator.g_AUIPluinControl = nil
+Emulator.g_VersionManager = nil
+function Emulator.__Module_Setup(layer_group, control, module_base_path, script_base_path, debug)
+	Emulator.g_Control = control
+	Emulator.g_LayerGroup = layer_group
+	Emulator.g_ModuleBasePath = module_base_path
+	Emulator.g_AUIPluinControl = A_ModuleSystem:LoadPlugin("AUIPlugin")
 	if ALittle.System_GetPlatform() == "Windows" then
 		package.cpath = package.cpath .. ";./" .. module_base_path .. "Other/?.dll"
 		require("memory")
@@ -63,19 +63,19 @@ function __Module_Setup(layer_group, control, module_base_path, script_base_path
 	Require(script_base_path, "GUtility")
 	Require(script_base_path, "PluginSocket")
 	g_GCenter:Setup()
-	g_VersionManager = AUIPlugin.AUIVersionManager("139.159.176.119", 1100, "alittle", "Emulator")
+	Emulator.g_VersionManager = AUIPlugin.AUIVersionManager("139.159.176.119", 1100, "alittle", "Emulator")
 	if A_ModuleSystem:GetDebugInfo() ~= "debug" then
-		g_VersionManager:CheckVersionUpdate()
+		Emulator.g_VersionManager:CheckVersionUpdate()
 	end
 end
-__Module_Setup = Lua.CoWrap(__Module_Setup)
+Emulator.__Module_Setup = Lua.CoWrap(Emulator.__Module_Setup)
 
-function __Module_Shutdown()
-	g_VersionManager:Shutdown()
+function Emulator.__Module_Shutdown()
+	Emulator.g_VersionManager:Shutdown()
 	g_GCenter:Shutdown()
 end
 
-function __Module_GetInfo(control, module_base_path, script_base_path)
+function Emulator.__Module_GetInfo(control, module_base_path, script_base_path)
 	local info = {}
 	info.title = "Emulator"
 	info.icon = nil
@@ -86,3 +86,4 @@ function __Module_GetInfo(control, module_base_path, script_base_path)
 	return info
 end
 
+end

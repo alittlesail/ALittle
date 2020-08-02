@@ -1,6 +1,6 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittleIDE", package.seeall)
-
+do
+if _G.ALittleIDE == nil then _G.ALittleIDE = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
@@ -104,9 +104,9 @@ option_map = {}
 })
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
-IDEUIControlList = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDEUIControlList")
+ALittleIDE.IDEUIControlList = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDEUIControlList")
 
-function IDEUIControlList:Ctor(ctrl_sys)
+function ALittleIDE.IDEUIControlList:Ctor(ctrl_sys)
 	___rawset(self, "_drag_effect", nil)
 	___rawset(self, "_drag_shift", false)
 	___rawset(self, "_item_pool", {})
@@ -114,19 +114,19 @@ function IDEUIControlList:Ctor(ctrl_sys)
 	___rawset(self, "_item_used", {})
 end
 
-function IDEUIControlList:TCtor()
-	g_IDEProject:AddEventListener(___all_struct[-332308624], self, self.HandleProjectClose)
+function ALittleIDE.IDEUIControlList:TCtor()
+	ALittleIDE.g_IDEProject:AddEventListener(___all_struct[-332308624], self, self.HandleProjectClose)
 end
 
-function IDEUIControlList:HandleProjectClose(event)
+function ALittleIDE.IDEUIControlList:HandleProjectClose(event)
 	self:ClearControlItem()
 end
 
-function IDEUIControlList.ControlInfoCmp(a, b)
+function ALittleIDE.IDEUIControlList.ControlInfoCmp(a, b)
 	return a.name < b.name
 end
 
-function IDEUIControlList:HandleControlSearchClick(event)
+function ALittleIDE.IDEUIControlList:HandleControlSearchClick(event)
 	self._control_scroll_screen:RemoveAllChild()
 	for k, item in ___ipairs(self._item_used) do
 		self._item_pool_count = self._item_pool_count + 1
@@ -134,7 +134,7 @@ function IDEUIControlList:HandleControlSearchClick(event)
 	end
 	self._item_used = {}
 	local item_used_count = 0
-	local project = g_IDEProject.project
+	local project = ALittleIDE.g_IDEProject.project
 	if project == nil then
 		g_AUITool:ShowNotice("提示", "当前没有打开的项目")
 		return
@@ -151,21 +151,21 @@ function IDEUIControlList:HandleControlSearchClick(event)
 				control_info_list[control_info_count] = control_info
 			end
 		elseif search_type == "插件名" then
-			if IDEUIUtility_HasTargetClass(control_info.info, key) then
+			if ALittleIDE.IDEUIUtility_HasTargetClass(control_info.info, key) then
 				control_info_count = control_info_count + 1
 				control_info_list[control_info_count] = control_info
 			end
 		elseif search_type == "事件设置" then
-			if IDEUIUtility_HasEventCallback(control_info.info, key) then
+			if ALittleIDE.IDEUIUtility_HasEventCallback(control_info.info, key) then
 				control_info_count = control_info_count + 1
 				control_info_list[control_info_count] = control_info
 			end
 		end
 	end
-	local tabname_map = g_IDECenter.center.content_edit:GetTabIdMap(IDEUITabChild)
+	local tabname_map = ALittleIDE.g_IDECenter.center.content_edit:GetTabIdMap(ALittleIDE.IDEUITabChild)
 	local search_count = 0
 	local last_control_info = nil
-	ALittle.List_Sort(control_info_list, IDEUIControlList.ControlInfoCmp)
+	ALittle.List_Sort(control_info_list, ALittleIDE.IDEUIControlList.ControlInfoCmp)
 	for index, control_info in ___ipairs(control_info_list) do
 		local item = nil
 		if self._item_pool_count > 0 then
@@ -173,7 +173,7 @@ function IDEUIControlList:HandleControlSearchClick(event)
 			self._item_pool_count = self._item_pool_count - 1
 		end
 		if item == nil then
-			item = g_Control:CreateControl("ide_common_item_checkbutton")
+			item = ALittleIDE.g_Control:CreateControl("ide_common_item_checkbutton")
 			item:AddEventListener(___all_struct[-449066808], self, self.HandleControlItemClick)
 			item:AddEventListener(___all_struct[-641444818], self, self.HandleControlItemRightClick)
 			item:AddEventListener(___all_struct[-1604617962], self, self.HandleControlKeyDown)
@@ -198,51 +198,51 @@ function IDEUIControlList:HandleControlSearchClick(event)
 		last_control_info = control_info
 	end
 	if search_count == 1 then
-		g_IDECenter.center.content_edit:StartEditControlBySelect(last_control_info.name, last_control_info.info)
+		ALittleIDE.g_IDECenter.center.content_edit:StartEditControlBySelect(last_control_info.name, last_control_info.info)
 	end
 end
 
-function IDEUIControlList:HandleControlItemClick(event)
+function ALittleIDE.IDEUIControlList:HandleControlItemClick(event)
 	local info = event.target._user_data
 	info.presee = false
 	event.target.selected = true
-	g_IDECenter.center.content_edit:StartEditControlBySelect(info.control_info.name, info.control_info.info)
+	ALittleIDE.g_IDECenter.center.content_edit:StartEditControlBySelect(info.control_info.name, info.control_info.info)
 end
 
-function IDEUIControlList:HandleControlPreseeMoveIn(event)
+function ALittleIDE.IDEUIControlList:HandleControlPreseeMoveIn(event)
 	local info = event.target._user_data
 	info.presee = true
-	if g_IDECenter.center.content_edit:GetTabById(IDEUITabChild, info.control_info.name) ~= nil then
+	if ALittleIDE.g_IDECenter.center.content_edit:GetTabById(ALittleIDE.IDEUITabChild, info.control_info.name) ~= nil then
 		info.presee = false
 		return
 	end
-	info.pre_index = g_IDECenter.center.content_edit:GetCurTabIndex()
-	g_IDECenter.center.content_edit:StartEditControlBySelect(info.control_info.name, info.control_info.info)
+	info.pre_index = ALittleIDE.g_IDECenter.center.content_edit:GetCurTabIndex()
+	ALittleIDE.g_IDECenter.center.content_edit:StartEditControlBySelect(info.control_info.name, info.control_info.info)
 end
 
-function IDEUIControlList:HandleControlPreseeMoveOut(event)
+function ALittleIDE.IDEUIControlList:HandleControlPreseeMoveOut(event)
 	local info = event.target._user_data
 	if info.presee ~= true then
 		return
 	end
-	local child = g_IDECenter.center.content_edit:GetTabById(IDEUITabChild, info.control_info.name)
+	local child = ALittleIDE.g_IDECenter.center.content_edit:GetTabById(ALittleIDE.IDEUITabChild, info.control_info.name)
 	if child == nil then
 		return
 	end
-	g_IDECenter.center.content_edit:CloseTab(child)
+	ALittleIDE.g_IDECenter.center.content_edit:CloseTab(child)
 	if info.pre_index ~= nil then
-		g_IDECenter.center.content_edit:SetCurTabIndex(info.pre_index)
+		ALittleIDE.g_IDECenter.center.content_edit:SetCurTabIndex(info.pre_index)
 	end
 end
 
-function IDEUIControlList:HandleControlKeyDown(event)
+function ALittleIDE.IDEUIControlList:HandleControlKeyDown(event)
 	if event.sym == 1073741883 then
 		self:ControlRename(event.target)
 	end
 end
-IDEUIControlList.HandleControlKeyDown = Lua.CoWrap(IDEUIControlList.HandleControlKeyDown)
+ALittleIDE.IDEUIControlList.HandleControlKeyDown = Lua.CoWrap(ALittleIDE.IDEUIControlList.HandleControlKeyDown)
 
-function IDEUIControlList:HandleControlDragBegin(event)
+function ALittleIDE.IDEUIControlList:HandleControlDragBegin(event)
 	self._drag_shift = (A_UISystem.sym_map[1073742049] ~= nil or A_UISystem.sym_map[1073742053] ~= nil)
 	if self._drag_shift == false then
 		event.target = self._control_scroll_screen
@@ -250,7 +250,7 @@ function IDEUIControlList:HandleControlDragBegin(event)
 		return
 	end
 	local x, y = event.target:LocalToGlobal()
-	self._drag_effect = ALittle.EffectImage(g_Control)
+	self._drag_effect = ALittle.EffectImage(ALittleIDE.g_Control)
 	self._drag_effect:Action(event.target)
 	A_LayerManager:AddToTip(self._drag_effect)
 	self._drag_effect.x = x
@@ -260,17 +260,17 @@ function IDEUIControlList:HandleControlDragBegin(event)
 	if info.presee ~= true then
 		return
 	end
-	local child = g_IDECenter.center.content_edit:GetTabById(IDEUITabChild, info.control_info.name)
+	local child = ALittleIDE.g_IDECenter.center.content_edit:GetTabById(ALittleIDE.IDEUITabChild, info.control_info.name)
 	if child == nil then
 		return
 	end
-	g_IDECenter.center.content_edit:CloseTab(child)
+	ALittleIDE.g_IDECenter.center.content_edit:CloseTab(child)
 	if info.pre_index ~= nil then
-		g_IDECenter.center.content_edit:SetCurTabIndex(info.pre_index)
+		ALittleIDE.g_IDECenter.center.content_edit:SetCurTabIndex(info.pre_index)
 	end
 end
 
-function IDEUIControlList:HandleControlDrag(event)
+function ALittleIDE.IDEUIControlList:HandleControlDrag(event)
 	if self._drag_shift == false then
 		event.target = self._control_scroll_screen
 		self._control_scroll_screen:DispatchEvent(___all_struct[1337289812], event)
@@ -283,7 +283,7 @@ function IDEUIControlList:HandleControlDrag(event)
 	self._drag_effect.y = self._drag_effect.y + event.delta_y
 end
 
-function IDEUIControlList:HandleControlDragEnd(event)
+function ALittleIDE.IDEUIControlList:HandleControlDragEnd(event)
 	if self._drag_shift == false then
 		event.target = self._control_scroll_screen
 		self._control_scroll_screen:DispatchEvent(___all_struct[150587926], event)
@@ -294,7 +294,7 @@ function IDEUIControlList:HandleControlDragEnd(event)
 		self._drag_effect:Clear()
 		self._drag_effect = nil
 	end
-	local tab_child = ALittle.Cast(IDEUITabChild, IDETabChild, g_IDECenter.center.content_edit.cur_tab_child)
+	local tab_child = ALittle.Cast(ALittleIDE.IDEUITabChild, ALittleIDE.IDETabChild, ALittleIDE.g_IDECenter.center.content_edit.cur_tab_child)
 	if tab_child == nil then
 		return
 	end
@@ -334,19 +334,19 @@ function IDEUIControlList:HandleControlDragEnd(event)
 	end
 end
 
-function IDEUIControlList:ClearControlItem()
+function ALittleIDE.IDEUIControlList:ClearControlItem()
 	self._control_scroll_screen:RemoveAllChild()
 end
 
-function IDEUIControlList:ShowNewControl()
-	if g_IDEProject.project == nil then
+function ALittleIDE.IDEUIControlList:ShowNewControl()
+	if ALittleIDE.g_IDEProject.project == nil then
 		g_AUITool:ShowNotice("提示", "当前没有打开的项目")
 		return
 	end
 	if self._control_new_dialog == nil then
-		self._control_new_dialog = g_Control:CreateControl("ide_new_control_dialog", self)
+		self._control_new_dialog = ALittleIDE.g_Control:CreateControl("ide_new_control_dialog", self)
 		A_LayerManager:AddToModal(self._control_new_dialog)
-		self._control_new_type.data_list = g_IDEEnum.child_type_list
+		self._control_new_type.data_list = ALittleIDE.g_IDEEnum.child_type_list
 	end
 	self._control_new_name.text = ""
 	self._control_new_extends_name.text = ""
@@ -354,12 +354,12 @@ function IDEUIControlList:ShowNewControl()
 	A_UISystem.focus = self._control_new_name.show_input
 end
 
-function IDEUIControlList:HandleNewControlCancel(event)
+function ALittleIDE.IDEUIControlList:HandleNewControlCancel(event)
 	self._control_new_dialog.visible = false
 end
 
-function IDEUIControlList:HandleNewControlConfirm(event)
-	local project = g_IDEProject.project
+function ALittleIDE.IDEUIControlList:HandleNewControlConfirm(event)
+	local project = ALittleIDE.g_IDEProject.project
 	if project == nil then
 		g_AUITool:ShowNotice("错误", "当前没有打开的项目")
 		return
@@ -369,7 +369,7 @@ function IDEUIControlList:HandleNewControlConfirm(event)
 		g_AUITool:ShowNotice("错误", "请输入控件名")
 		return
 	end
-	if IDEUtility_CheckName(name) ~= nil then
+	if ALittleIDE.IDEUtility_CheckName(name) ~= nil then
 		g_AUITool:ShowNotice("错误", "控件名不合法:" .. name)
 		return
 	end
@@ -377,7 +377,7 @@ function IDEUIControlList:HandleNewControlConfirm(event)
 		g_AUITool:ShowNotice("错误", "控件已存在:" .. name)
 		return
 	end
-	if g_IDECenter.center.content_edit:GetTabById(IDEUITabChild, name) ~= nil then
+	if ALittleIDE.g_IDECenter.center.content_edit:GetTabById(ALittleIDE.IDEUITabChild, name) ~= nil then
 		g_AUITool:ShowNotice("错误", "控件名已存在:" .. name)
 		return
 	end
@@ -388,14 +388,14 @@ function IDEUIControlList:HandleNewControlConfirm(event)
 	end
 	local extends_name = self._control_new_extends_name.text
 	if extends_name ~= "" then
-		g_IDECenter.center.content_edit:StartEditControlByExtends(name, extends_name)
+		ALittleIDE.g_IDECenter.center.content_edit:StartEditControlByExtends(name, extends_name)
 	else
-		g_IDECenter.center.content_edit:StartEditControlByNew(name, control_type)
+		ALittleIDE.g_IDECenter.center.content_edit:StartEditControlByNew(name, control_type)
 	end
 	self._control_new_dialog.visible = false
 end
 
-function IDEUIControlList:HandleControlItemRightClick(event)
+function ALittleIDE.IDEUIControlList:HandleControlItemRightClick(event)
 	local user_data = event.target._user_data
 	local menu = AUIPlugin.AUIRightMenu()
 	menu:AddItem("复制控件名", Lua.Bind(self.CopyName, self, event.target))
@@ -406,15 +406,15 @@ function IDEUIControlList:HandleControlItemRightClick(event)
 	menu:Show()
 end
 
-function IDEUIControlList:Delete(target)
+function ALittleIDE.IDEUIControlList:Delete(target)
 	local user_data = target._user_data
 	local name = user_data.control_info.name
-	local error = g_IDEProject.project.ui:CanDelete(name)
+	local error = ALittleIDE.g_IDEProject.project.ui:CanDelete(name)
 	if error ~= nil then
 		g_AUITool:ShowNotice("错误", error)
 		return
 	end
-	error = g_IDECenter.center.content_edit:CanDelete(name)
+	error = ALittleIDE.g_IDECenter.center.content_edit:CanDelete(name)
 	if error ~= nil then
 		g_AUITool:ShowNotice("错误", error)
 		return
@@ -422,27 +422,27 @@ function IDEUIControlList:Delete(target)
 	local del_result = g_AUITool:DeleteNotice("提示", "确定要删除" .. target.text .. "吗?")
 	if del_result == "YES" then
 		self._control_scroll_screen:RemoveChild(target)
-		error = g_IDEProject.project.ui:DeleteControl(user_data.control_info.name)
+		error = ALittleIDE.g_IDEProject.project.ui:DeleteControl(user_data.control_info.name)
 		if error ~= nil then
 			g_AUITool:ShowNotice("提示", error)
 			return
 		end
-		local tab = g_IDECenter.center.content_edit:GetTabById(IDEUITabChild, user_data.control_info.name)
+		local tab = ALittleIDE.g_IDECenter.center.content_edit:GetTabById(ALittleIDE.IDEUITabChild, user_data.control_info.name)
 		if tab == nil then
 			return
 		end
-		g_IDECenter.center.content_edit:CloseTab(tab)
+		ALittleIDE.g_IDECenter.center.content_edit:CloseTab(tab)
 	end
 end
-IDEUIControlList.Delete = Lua.CoWrap(IDEUIControlList.Delete)
+ALittleIDE.IDEUIControlList.Delete = Lua.CoWrap(ALittleIDE.IDEUIControlList.Delete)
 
-function IDEUIControlList:CopyName(target)
+function ALittleIDE.IDEUIControlList:CopyName(target)
 	local user_data = target._user_data
 	local name = user_data.control_info.name
 	ALittle.System_SetClipboardText(name)
 end
 
-function IDEUIControlList:CopyInfo(target)
+function ALittleIDE.IDEUIControlList:CopyInfo(target)
 	local user_data = target._user_data
 	local old_name = user_data.control_info.name
 	local x, y = target:LocalToGlobal()
@@ -452,42 +452,42 @@ function IDEUIControlList:CopyInfo(target)
 	end
 	self:ControlCopyInfo(old_name, new_name)
 end
-IDEUIControlList.CopyInfo = Lua.CoWrap(IDEUIControlList.CopyInfo)
+ALittleIDE.IDEUIControlList.CopyInfo = Lua.CoWrap(ALittleIDE.IDEUIControlList.CopyInfo)
 
-function IDEUIControlList:ControlCopyInfo(target_name, new_name)
-	local error = IDEUtility_CheckName(new_name)
+function ALittleIDE.IDEUIControlList:ControlCopyInfo(target_name, new_name)
+	local error = ALittleIDE.IDEUtility_CheckName(new_name)
 	if error ~= nil then
 		g_AUITool:ShowNotice("错误", error)
 		return
 	end
-	local info = g_IDEProject.project.ui.control_map[new_name]
+	local info = ALittleIDE.g_IDEProject.project.ui.control_map[new_name]
 	if info ~= nil then
 		g_AUITool:ShowNotice("错误", "控件名已存在:" .. new_name)
 		return
 	end
-	info = g_IDEProject.project.ui.control_map[target_name]
+	info = ALittleIDE.g_IDEProject.project.ui.control_map[target_name]
 	if info == nil then
 		g_AUITool:ShowNotice("错误", "控件不存在:" .. target_name)
 		return
 	end
-	g_IDEProject.project.ui:SaveControl(new_name, ALittle.String_CopyTable(info.info))
-	info = g_IDEProject.project.ui.control_map[new_name]
+	ALittleIDE.g_IDEProject.project.ui:SaveControl(new_name, ALittle.String_CopyTable(info.info))
+	info = ALittleIDE.g_IDEProject.project.ui.control_map[new_name]
 	if info == nil then
 		g_AUITool:ShowNotice("错误", "控件新建失败:" .. new_name)
 		return
 	end
-	g_IDECenter.center.content_edit:StartEditControlBySelect(new_name, info.info)
+	ALittleIDE.g_IDECenter.center.content_edit:StartEditControlBySelect(new_name, info.info)
 end
 
-function IDEUIControlList:ControlRename(target)
+function ALittleIDE.IDEUIControlList:ControlRename(target)
 	local user_data = target._user_data
 	local old_name = user_data.control_info.name
-	local error = g_IDEProject.project.ui:CanDelete(old_name)
+	local error = ALittleIDE.g_IDEProject.project.ui:CanDelete(old_name)
 	if error ~= nil then
 		g_AUITool:ShowNotice("错误", error)
 		return
 	end
-	error = g_IDECenter.center.content_edit:CanDelete(old_name)
+	error = ALittleIDE.g_IDECenter.center.content_edit:CanDelete(old_name)
 	if error ~= nil then
 		g_AUITool:ShowNotice("错误", error)
 		return
@@ -497,22 +497,22 @@ function IDEUIControlList:ControlRename(target)
 	if new_name == nil or old_name == new_name then
 		return
 	end
-	error = g_IDEProject.project.ui:RenameControl(old_name, new_name)
+	error = ALittleIDE.g_IDEProject.project.ui:RenameControl(old_name, new_name)
 	if error ~= nil then
 		g_AUITool:ShowNotice("错误", error)
 		return
 	end
 	target.text = new_name
-	local tab = g_IDECenter.center.content_edit:GetTabById(IDEUITabChild, old_name)
+	local tab = ALittleIDE.g_IDECenter.center.content_edit:GetTabById(ALittleIDE.IDEUITabChild, old_name)
 	if tab == nil then
 		return
 	end
 	local tab_child = tab._user_data
 	tab_child:Rename(new_name)
 end
-IDEUIControlList.ControlRename = Lua.CoWrap(IDEUIControlList.ControlRename)
+ALittleIDE.IDEUIControlList.ControlRename = Lua.CoWrap(ALittleIDE.IDEUIControlList.ControlRename)
 
-function IDEUIControlList:CopyExtends(target)
+function ALittleIDE.IDEUIControlList:CopyExtends(target)
 	local user_data = target._user_data
 	local name = user_data.control_info.name
 	local save_info = {}
@@ -525,3 +525,4 @@ function IDEUIControlList:CopyExtends(target)
 	ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list))
 end
 
+end

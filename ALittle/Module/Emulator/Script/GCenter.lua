@@ -1,6 +1,6 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("Emulator", package.seeall)
-
+do
+if _G.Emulator == nil then _G.Emulator = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
@@ -73,53 +73,53 @@ type_list = {},
 option_map = {}
 })
 
-g_GConfig = nil
-g_GProtoCache = nil
-LoginStatus = {
+Emulator.g_GConfig = nil
+Emulator.g_GProtoCache = nil
+Emulator.LoginStatus = {
 	EMULATOR_IDLE = 0,
 	EMULATOR_LOGINING = 1,
 	EMULATOR_LOGINED = 2,
 }
 
-GCenter = Lua.Class(nil, "Emulator.GCenter")
+Emulator.GCenter = Lua.Class(nil, "Emulator.GCenter")
 
-function GCenter:Ctor()
+function Emulator.GCenter:Ctor()
 	___rawset(self, "_proto_search_item_pool", {})
 	___rawset(self, "_proto_search_group", {})
 	___rawset(self, "_detail_tree_item_pool", {})
 	___rawset(self, "_log_search_group", {})
 	___rawset(self, "_log_item_list", {})
 	___rawset(self, "_log_item_count", 0)
-	___rawset(self, "_login_status", LoginStatus.EMULATOR_IDLE)
+	___rawset(self, "_login_status", Emulator.LoginStatus.EMULATOR_IDLE)
 end
 
-function GCenter:Setup()
-	g_GConfig = ALittle.CreateConfigSystem(g_ModuleBasePath .. "/User.cfg")
-	g_GProtoCache = ALittle.CreateConfigSystem(g_ModuleBasePath .. "/ProtoCache.cfg")
+function Emulator.GCenter:Setup()
+	Emulator.g_GConfig = ALittle.CreateConfigSystem(Emulator.g_ModuleBasePath .. "/User.cfg")
+	Emulator.g_GProtoCache = ALittle.CreateConfigSystem(Emulator.g_ModuleBasePath .. "/ProtoCache.cfg")
 	ALittle.Math_RandomSeed(ALittle.Time_GetCurTime())
 	ALittle.System_SetThreadCount(1, 2)
-	self._main_layer = ALittle.DisplayLayout(g_Control)
+	self._main_layer = ALittle.DisplayLayout(Emulator.g_Control)
 	self._main_layer.width_type = 4
 	self._main_layer.height_type = 4
-	g_LayerGroup:AddChild(self._main_layer, nil)
-	self._dialog_layer = ALittle.DisplayLayout(g_Control)
+	Emulator.g_LayerGroup:AddChild(self._main_layer, nil)
+	self._dialog_layer = ALittle.DisplayLayout(Emulator.g_Control)
 	self._dialog_layer.width_type = 4
 	self._dialog_layer.height_type = 4
-	g_LayerGroup:AddChild(self._dialog_layer, nil)
-	g_Control:CreateControl("main_scene", self, self._main_layer)
-	self._setting_dialog = g_Control:CreateControl("main_setting_dialog", self)
+	Emulator.g_LayerGroup:AddChild(self._dialog_layer, nil)
+	Emulator.g_Control:CreateControl("main_scene", self, self._main_layer)
+	self._setting_dialog = Emulator.g_Control:CreateControl("main_setting_dialog", self)
 	A_LayerManager:AddToModal(self._setting_dialog)
-	self._proto_item_msg_menu = g_Control:CreateControl("main_msg_menu", self)
-	self._log_item_msg_menu = g_Control:CreateControl("main_msg_menu", self)
-	self._log_fliter_dialog = g_Control:CreateControl("main_log_fliter_dialog", self)
+	self._proto_item_msg_menu = Emulator.g_Control:CreateControl("main_msg_menu", self)
+	self._log_item_msg_menu = Emulator.g_Control:CreateControl("main_msg_menu", self)
+	self._log_fliter_dialog = Emulator.g_Control:CreateControl("main_log_fliter_dialog", self)
 	self._dialog_layer:AddChild(self._log_fliter_dialog)
 	self._log_fliter_dialog.visible = false
 	self._fliter_map = {}
-	local fliter_list = g_GConfig:GetConfig("fliter_list", {})
+	local fliter_list = Emulator.g_GConfig:GetConfig("fliter_list", {})
 	for index, fliter in ___ipairs(fliter_list) do
 		self._fliter_map[fliter] = true
 	end
-	local plugin_path = g_GConfig:GetString("plugin_script", "")
+	local plugin_path = Emulator.g_GConfig:GetString("plugin_script", "")
 	if ALittle.File_GetFileExtByPathAndUpper(plugin_path) == "LUA" then
 		local plugin_script = ALittle.File_ReadTextFromStdFile(plugin_path)
 		if plugin_script ~= nil then
@@ -130,7 +130,7 @@ function GCenter:Setup()
 	else
 		self:HandleShowSettingDialog(nil)
 	end
-	local proto_root = g_GConfig:GetString("proto_root", "")
+	local proto_root = Emulator.g_GConfig:GetString("proto_root", "")
 	if proto_root ~= "" and ALittle.File_GetFileAttr(proto_root) ~= nil then
 		local error = A_LuaSocketSchedule:LoadProto(proto_root)
 		if error == nil then
@@ -146,24 +146,24 @@ function GCenter:Setup()
 			self:HandleShowSettingDialog(nil)
 		end
 	end
-	local login_proto = g_GConfig:GetString("login_proto", "")
+	local login_proto = Emulator.g_GConfig:GetString("login_proto", "")
 	local msg_info = A_LuaSocketSchedule:GetMessageInfo(login_proto)
 	if msg_info ~= nil then
-		self._login_detail_info = Utility_CreateTreeForEdit(msg_info)
+		self._login_detail_info = Emulator.Utility_CreateTreeForEdit(msg_info)
 		self._login_scroll_screen:SetContainer(self._login_detail_info.tree)
 	end
 	self._login_button.visible = true
 	self._logout_button.visible = false
-	self._login_ip_input.text = g_GConfig:GetString("login_ip", "127.0.0.1")
-	local data_list = g_GConfig:GetConfig("login_ip_list", {})
+	self._login_ip_input.text = Emulator.g_GConfig:GetString("login_ip", "127.0.0.1")
+	local data_list = Emulator.g_GConfig:GetConfig("login_ip_list", {})
 	if ALittle.List_Find(data_list, self._login_ip_input.text) == nil then
 		ALittle.List_Push(data_list, self._login_ip_input.text)
 	end
 	self._ip_dropdown.data_list = data_list
 	self._ip_dropdown.text = ""
-	self._login_port_input.text = ALittle.String_ToString(g_GConfig:GetInt("login_port", 0))
-	self._right_grad3_ud.up_size = g_GConfig:GetDouble("right_grid3_up_size", self._right_grad3_ud.up_size)
-	self._main_grid3_lr.down_size = g_GConfig:GetDouble("main_grid3_down_size", self._main_grid3_lr.down_size)
+	self._login_port_input.text = ALittle.String_ToString(Emulator.g_GConfig:GetInt("login_port", 0))
+	self._right_grad3_ud.up_size = Emulator.g_GConfig:GetDouble("right_grid3_up_size", self._right_grad3_ud.up_size)
+	self._main_grid3_lr.down_size = Emulator.g_GConfig:GetDouble("main_grid3_down_size", self._main_grid3_lr.down_size)
 	self._send_button.disabled = true
 	self._frame_loop = ALittle.LoopFrame(Lua.Bind(self.UpdateFrame, self))
 	self._frame_loop:Start()
@@ -171,49 +171,49 @@ function GCenter:Setup()
 	self._json_container:AddChild(self._json_codeedit)
 end
 
-function GCenter:UpdateFrame(frame_time)
+function Emulator.GCenter:UpdateFrame(frame_time)
 	A_LuaSocketSchedule:RunInFrame()
 end
 
-function GCenter:HandleIpSelectChanged(event)
+function Emulator.GCenter:HandleIpSelectChanged(event)
 	self._login_ip_input.text = self._ip_dropdown.text
 end
 
-function GCenter:HandleShowSettingDialog(event)
+function Emulator.GCenter:HandleShowSettingDialog(event)
 	self._setting_dialog.visible = true
-	self._proto_root_input.text = g_GConfig:GetString("proto_root", "")
-	self._login_proto_input.text = g_GConfig:GetString("login_proto", "")
-	self._plugin_file_input.text = g_GConfig:GetString("plugin_script", "")
+	self._proto_root_input.text = Emulator.g_GConfig:GetString("proto_root", "")
+	self._login_proto_input.text = Emulator.g_GConfig:GetString("login_proto", "")
+	self._plugin_file_input.text = Emulator.g_GConfig:GetString("plugin_script", "")
 end
 
-function GCenter:HandleShowVersionDialog(event)
-	g_VersionManager:ShowDialog()
+function Emulator.GCenter:HandleShowVersionDialog(event)
+	Emulator.g_VersionManager:ShowDialog()
 end
 
-function GCenter:HandleSettingSelectProtoRootClick(event)
+function Emulator.GCenter:HandleSettingSelectProtoRootClick(event)
 	if event.path == nil then
 		return
 	end
 	self._proto_root_input.text = event.path
 end
 
-function GCenter:HandleSettingSelectPluginScriptClick(event)
+function Emulator.GCenter:HandleSettingSelectPluginScriptClick(event)
 	if event.path == nil then
 		return
 	end
 	self._plugin_file_input.text = event.path
 end
 
-function GCenter:HandleSettingGeneratePluginScriptClick(event)
+function Emulator.GCenter:HandleSettingGeneratePluginScriptClick(event)
 	if event.path == nil then
 		return
 	end
 	self._plugin_file_input.text = event.path .. "\\TemplatePlugin.lua"
-	g_GConfig:SetConfig("plugin_script", self._plugin_file_input.text)
-	ALittle.File_CopyFile(g_ModuleBasePath .. "Other/TemplatePlugin.lua", self._plugin_file_input.text)
+	Emulator.g_GConfig:SetConfig("plugin_script", self._plugin_file_input.text)
+	ALittle.File_CopyFile(Emulator.g_ModuleBasePath .. "Other/TemplatePlugin.lua", self._plugin_file_input.text)
 end
 
-function GCenter:HandleSettingConfirmClick(event)
+function Emulator.GCenter:HandleSettingConfirmClick(event)
 	local attr = ALittle.File_GetFileAttr(self._proto_root_input.text)
 	if attr == nil or attr.mode ~= "directory" then
 		g_AUITool:ShowNotice("错误", "文件夹不存在")
@@ -239,7 +239,7 @@ function GCenter:HandleSettingConfirmClick(event)
 		return
 	end
 	self._setting_dialog.visible = false
-	g_GConfig:SetConfig("proto_root", self._proto_root_input.text)
+	Emulator.g_GConfig:SetConfig("proto_root", self._proto_root_input.text)
 	local func = _G["__PLUGIN_ProtoRefresh"]
 	if func ~= nil then
 		error = Lua.TCall(func)
@@ -266,24 +266,24 @@ function GCenter:HandleSettingConfirmClick(event)
 	local login_proto = self._login_proto_input.text
 	local msg_info = A_LuaSocketSchedule:GetMessageInfo(login_proto)
 	if msg_info ~= nil then
-		self._login_detail_info = Utility_CreateTreeForEdit(msg_info)
+		self._login_detail_info = Emulator.Utility_CreateTreeForEdit(msg_info)
 		self._login_scroll_screen:SetContainer(self._login_detail_info.tree)
 	else
 		self._login_scroll_screen:SetContainer(nil)
 	end
-	g_GConfig:SetConfig("login_proto", login_proto)
-	g_GConfig:SetConfig("plugin_script", self._plugin_file_input.text)
+	Emulator.g_GConfig:SetConfig("login_proto", login_proto)
+	Emulator.g_GConfig:SetConfig("plugin_script", self._plugin_file_input.text)
 end
 
-function GCenter:HandleSettingCancelClick(event)
+function Emulator.GCenter:HandleSettingCancelClick(event)
 	self._setting_dialog.visible = false
 end
 
-function GCenter:HandleProtoSearchClick(event)
+function Emulator.GCenter:HandleProtoSearchClick(event)
 	self:RefreshProtoList()
 end
 
-function GCenter:RefreshProtoList()
+function Emulator.GCenter:RefreshProtoList()
 	local key = self._proto_search_key.text
 	key = ALittle.String_Upper(key)
 	local key_list = ALittle.String_SplitSepList(key, {" ", "\t"})
@@ -300,7 +300,7 @@ function GCenter:RefreshProtoList()
 	for index, info in ___ipairs(list) do
 		local item = self._proto_search_item_pool[info.name]
 		if item == nil then
-			item = g_Control:CreateControl("emulator_common_item_radiobutton")
+			item = Emulator.g_Control:CreateControl("emulator_common_item_radiobutton")
 			item.text = info.name
 			self._proto_search_item_pool[info.name] = item
 			item.drag_trans_target = self._protobuf_scroll_screen
@@ -316,11 +316,11 @@ function GCenter:RefreshProtoList()
 	self._protobuf_scroll_screen:RejustScrollBar()
 end
 
-function GCenter:HandleProtoItemSelected(event)
+function Emulator.GCenter:HandleProtoItemSelected(event)
 	local info = event.target._user_data
 	local detail_info = self._detail_tree_item_pool[info.full_name]
 	if detail_info == nil then
-		detail_info = Utility_CreateTreeForEdit(info)
+		detail_info = Emulator.Utility_CreateTreeForEdit(info)
 		if detail_info == nil then
 			return
 		end
@@ -330,18 +330,18 @@ function GCenter:HandleProtoItemSelected(event)
 	self._detail_scroll_screen:RejustScrollBar()
 end
 
-function GCenter:HandleProtoItemRButtonDown(event)
+function Emulator.GCenter:HandleProtoItemRButtonDown(event)
 	A_LayerManager:ShowFromRight(self._proto_item_msg_menu)
 	self._proto_item_msg_menu.x = A_UISystem.mouse_x
 	self._proto_item_msg_menu.y = A_UISystem.mouse_y
 	self._proto_item_msg_menu._user_data = event.target._user_data
 end
 
-function GCenter:HandleLogSearchClick(event)
+function Emulator.GCenter:HandleLogSearchClick(event)
 	self:RefreshLogList()
 end
 
-function GCenter:HandleLogClearClick(event)
+function Emulator.GCenter:HandleLogClearClick(event)
 	self._log_search_key.text = ""
 	self._log_item_list = {}
 	self._log_item_count = 0
@@ -350,27 +350,27 @@ function GCenter:HandleLogClearClick(event)
 	self._json_codeedit:OnClose()
 end
 
-function GCenter:HandleLogFliterClick(event)
+function Emulator.GCenter:HandleLogFliterClick(event)
 	self._log_fliter_dialog.visible = true
-	local fliter_list = g_GConfig:GetConfig("fliter_list", {})
+	local fliter_list = Emulator.g_GConfig:GetConfig("fliter_list", {})
 	self._log_fliter_edit.text = ALittle.String_Join(fliter_list, "\n")
 end
 
-function GCenter:HandleLogFliterCancelClick(event)
+function Emulator.GCenter:HandleLogFliterCancelClick(event)
 	self._log_fliter_dialog.visible = false
 end
 
-function GCenter:HandleLogFliterConfirmClick(event)
+function Emulator.GCenter:HandleLogFliterConfirmClick(event)
 	self._log_fliter_dialog.visible = false
 	local fliter_list = ALittle.String_SplitSepList(self._log_fliter_edit.text, {"\r", "\n"})
-	g_GConfig:SetConfig("fliter_list", fliter_list)
+	Emulator.g_GConfig:SetConfig("fliter_list", fliter_list)
 	self._fliter_map = {}
 	for index, fliter in ___ipairs(fliter_list) do
 		self._fliter_map[fliter] = true
 	end
 end
 
-function GCenter:RefreshLogList()
+function Emulator.GCenter:RefreshLogList()
 	local key = self._log_search_key.text
 	key = ALittle.String_Upper(key)
 	for index, child in ___ipairs(self._log_scroll_screen.childs) do
@@ -387,7 +387,7 @@ function GCenter:RefreshLogList()
 	self._log_scroll_screen:RejustScrollBar()
 end
 
-function GCenter:AddLogMessage(msg)
+function Emulator.GCenter:AddLogMessage(msg)
 	local descriptor = protobuf.message_getdescriptor(msg)
 	local full_name = protobuf.messagedescriptor_fullname(descriptor)
 	if self._fliter_map[full_name] ~= nil then
@@ -407,7 +407,7 @@ function GCenter:AddLogMessage(msg)
 	user_data.info = A_LuaSocketSchedule:GetMessageInfoByMessage(msg)
 	user_data.msg = protobuf.clonemessage(msg)
 	user_data.upper_name = ALittle.String_Upper(user_data.info.name)
-	local item = g_Control:CreateControl("emulator_common_item_radiobutton")
+	local item = Emulator.g_Control:CreateControl("emulator_common_item_radiobutton")
 	item.text = user_data.info.name
 	item.drag_trans_target = self._log_scroll_screen
 	item._user_data = user_data
@@ -427,7 +427,7 @@ function GCenter:AddLogMessage(msg)
 	end
 end
 
-function GCenter:HandleLogItemSelected(event)
+function Emulator.GCenter:HandleLogItemSelected(event)
 	self._show_search_key.text = ""
 	self._cur_item_user_data = event.target._user_data
 	if self._cur_item_user_data.json_content == nil then
@@ -437,14 +437,14 @@ function GCenter:HandleLogItemSelected(event)
 	self._json_codeedit:Load("temp.json", self._cur_item_user_data.json_content, nil)
 end
 
-function GCenter:HandleProtoLogRButtonDown(event)
+function Emulator.GCenter:HandleProtoLogRButtonDown(event)
 	A_LayerManager:ShowFromRight(self._log_item_msg_menu)
 	self._log_item_msg_menu.x = A_UISystem.mouse_x
 	self._log_item_msg_menu.y = A_UISystem.mouse_y
 	self._log_item_msg_menu._user_data = event.target._user_data
 end
 
-function GCenter:HandleShowSearchClick(event)
+function Emulator.GCenter:HandleShowSearchClick(event)
 	if self._cur_item_user_data == nil then
 		return
 	end
@@ -452,7 +452,7 @@ function GCenter:HandleShowSearchClick(event)
 	self._json_codeedit:FindNext(key)
 end
 
-function GCenter:HandleMsgCopyFullName(event)
+function Emulator.GCenter:HandleMsgCopyFullName(event)
 	if A_LayerManager:IsCurrentRight(self._proto_item_msg_menu) then
 		local info = self._proto_item_msg_menu._user_data
 		ALittle.System_SetClipboardText(info.full_name)
@@ -463,7 +463,7 @@ function GCenter:HandleMsgCopyFullName(event)
 	A_LayerManager:HideCurrentFromRight()
 end
 
-function GCenter:HandleMsgCopyName(event)
+function Emulator.GCenter:HandleMsgCopyName(event)
 	if A_LayerManager:IsCurrentRight(self._proto_item_msg_menu) then
 		local info = self._proto_item_msg_menu._user_data
 		ALittle.System_SetClipboardText(info.name)
@@ -474,7 +474,7 @@ function GCenter:HandleMsgCopyName(event)
 	A_LayerManager:HideCurrentFromRight()
 end
 
-function GCenter:HandleMsgAddToFliter(event)
+function Emulator.GCenter:HandleMsgAddToFliter(event)
 	local full_name = nil
 	if A_LayerManager:IsCurrentRight(self._proto_item_msg_menu) then
 		local info = self._proto_item_msg_menu._user_data
@@ -488,16 +488,16 @@ function GCenter:HandleMsgAddToFliter(event)
 	for name, _ in ___pairs(self._fliter_map) do
 		ALittle.List_Push(list, name)
 	end
-	g_GConfig:SetConfig("fliter_list", list)
+	Emulator.g_GConfig:SetConfig("fliter_list", list)
 	A_LayerManager:HideCurrentFromRight()
 end
 
-function GCenter:HandleClientSocketDisconnected(socket)
+function Emulator.GCenter:HandleClientSocketDisconnected(socket)
 	self._client_socket = nil
 	self._send_button.disabled = true
 	self._login_button.visible = true
 	self._logout_button.visible = false
-	if self._login_status == LoginStatus.EMULATOR_LOGINED then
+	if self._login_status == Emulator.LoginStatus.EMULATOR_LOGINED then
 		local func = _G["__PLUGIN_HandleLogout"]
 		if func ~= nil then
 			local error = Lua.TCall(func)
@@ -506,10 +506,10 @@ function GCenter:HandleClientSocketDisconnected(socket)
 			end
 		end
 	end
-	self._login_status = LoginStatus.EMULATOR_IDLE
+	self._login_status = Emulator.LoginStatus.EMULATOR_IDLE
 end
 
-function GCenter:HandleSendClick(event)
+function Emulator.GCenter:HandleSendClick(event)
 	local tree = self._detail_scroll_screen.container
 	if tree == nil then
 		return
@@ -520,7 +520,7 @@ function GCenter:HandleSendClick(event)
 	end
 end
 
-function GCenter:HandleLoginClick(event)
+function Emulator.GCenter:HandleLoginClick(event)
 	local ip = self._login_ip_input.text
 	local port = ALittle.Math_ToInt(self._login_port_input.text)
 	if port == nil or port <= 0 then
@@ -531,26 +531,26 @@ function GCenter:HandleLoginClick(event)
 		g_AUITool:ShowNotice("提示", "请设置登陆协议")
 		return
 	end
-	if self._login_status == LoginStatus.EMULATOR_LOGINING then
+	if self._login_status == Emulator.LoginStatus.EMULATOR_LOGINING then
 		g_AUITool:ShowNotice("提示", "当前正在登陆，请先断开")
 		return
 	end
-	if self._login_status == LoginStatus.EMULATOR_LOGINED then
+	if self._login_status == Emulator.LoginStatus.EMULATOR_LOGINED then
 		g_AUITool:ShowNotice("提示", "当前已登录，请先断开")
 		return
 	end
-	g_GConfig:SetConfig("login_ip", ip)
-	g_GConfig:SetConfig("login_port", port)
-	local data_list = ALittle.List_Copy(g_GConfig:GetConfig("login_ip_list", {}))
+	Emulator.g_GConfig:SetConfig("login_ip", ip)
+	Emulator.g_GConfig:SetConfig("login_port", port)
+	local data_list = ALittle.List_Copy(Emulator.g_GConfig:GetConfig("login_ip_list", {}))
 	if ALittle.List_Find(data_list, ip) == nil then
 		ALittle.List_Push(data_list, ip)
 	end
-	g_GConfig:SetConfig("login_ip_list", data_list)
+	Emulator.g_GConfig:SetConfig("login_ip_list", data_list)
 	self._ip_dropdown.data_list = data_list
 	self._ip_dropdown.text = ""
 	self._login_button.visible = false
 	self._logout_button.visible = true
-	self._login_status = LoginStatus.EMULATOR_LOGINING
+	self._login_status = Emulator.LoginStatus.EMULATOR_LOGINING
 	local error = nil
 	if self._client_socket ~= nil then
 		self._client_socket:Close()
@@ -571,18 +571,18 @@ function GCenter:HandleLoginClick(event)
 			self._client_socket.disconnect_callback = Lua.Bind(self.HandleClientSocketDisconnected, self)
 			self._client_socket:ReceiveMessage()
 		end
-		self._login_status = LoginStatus.EMULATOR_LOGINED
+		self._login_status = Emulator.LoginStatus.EMULATOR_LOGINED
 		self._send_button.disabled = false
 	else
 		g_AUITool:ShowNotice("提示", error)
-		self._login_status = LoginStatus.EMULATOR_IDLE
+		self._login_status = Emulator.LoginStatus.EMULATOR_IDLE
 		self._login_button.visible = true
 		self._logout_button.visible = false
 	end
 end
-GCenter.HandleLoginClick = Lua.CoWrap(GCenter.HandleLoginClick)
+Emulator.GCenter.HandleLoginClick = Lua.CoWrap(Emulator.GCenter.HandleLoginClick)
 
-function GCenter:HandleLogoutClick(event)
+function Emulator.GCenter:HandleLogoutClick(event)
 	if self._client_socket ~= nil then
 		self._client_socket:Close()
 		self._client_socket = nil
@@ -590,7 +590,7 @@ function GCenter:HandleLogoutClick(event)
 	self._send_button.disabled = true
 	self._login_button.visible = true
 	self._logout_button.visible = false
-	if self._login_status == LoginStatus.EMULATOR_LOGINED then
+	if self._login_status == Emulator.LoginStatus.EMULATOR_LOGINED then
 		local func = _G["__PLUGIN_HandleLogout"]
 		if func ~= nil then
 			local error = Lua.TCall(func)
@@ -599,39 +599,40 @@ function GCenter:HandleLogoutClick(event)
 			end
 		end
 	end
-	self._login_status = LoginStatus.EMULATOR_IDLE
+	self._login_status = Emulator.LoginStatus.EMULATOR_IDLE
 end
 
-function GCenter:HandleDragRightQuadUD(event)
+function Emulator.GCenter:HandleDragRightQuadUD(event)
 	self._right_grad3_ud.up_size = self._right_grad3_ud.up_size + (event.delta_y)
 end
 
-function GCenter:HandleDragEndRightQuadUD(event)
-	g_GConfig:SetConfig("right_grid3_up_size", self._right_grad3_ud.up_size)
+function Emulator.GCenter:HandleDragEndRightQuadUD(event)
+	Emulator.g_GConfig:SetConfig("right_grid3_up_size", self._right_grad3_ud.up_size)
 end
 
-function GCenter:HandleDragRightQuadLR(event)
+function Emulator.GCenter:HandleDragRightQuadLR(event)
 	self._main_grid3_lr.down_size = self._main_grid3_lr.down_size - (event.delta_x)
 end
 
-function GCenter:HandleDragEndRightQuadLR(event)
-	g_GConfig:SetConfig("main_grid3_down_size", self._main_grid3_lr.down_size)
+function Emulator.GCenter:HandleDragEndRightQuadLR(event)
+	Emulator.g_GConfig:SetConfig("main_grid3_down_size", self._main_grid3_lr.down_size)
 end
 
-function GCenter:HandleSetVDragCursor(event)
+function Emulator.GCenter:HandleSetVDragCursor(event)
 	ALittle.System_SetVDragCursor()
 end
 
-function GCenter:HandleSetHDragCursor(event)
+function Emulator.GCenter:HandleSetHDragCursor(event)
 	ALittle.System_SetHDragCursor()
 end
 
-function GCenter:HandleSetNormalCursor(event)
+function Emulator.GCenter:HandleSetNormalCursor(event)
 	ALittle.System_SetNormalCursor()
 end
 
-function GCenter:Shutdown()
+function Emulator.GCenter:Shutdown()
 	self._frame_loop:Stop()
 end
 
-_G.g_GCenter = GCenter()
+_G.g_GCenter = Emulator.GCenter()
+end

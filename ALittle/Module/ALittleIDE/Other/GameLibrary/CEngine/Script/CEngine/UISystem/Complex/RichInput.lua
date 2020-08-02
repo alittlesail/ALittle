@@ -1,65 +1,65 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___all_struct = GetAllStruct()
+local ___all_struct = ALittle.GetAllStruct()
 
-RegStruct(1818243950, "ALittle.RichInputCharInfo", {
+ALittle.RegStruct(1818243950, "ALittle.RichInputCharInfo", {
 name = "ALittle.RichInputCharInfo", ns_name = "ALittle", rl_name = "RichInputCharInfo", hash_code = 1818243950,
 name_list = {"acc_width","pre_width","text_info","text","password_text","text_object","ctrl_info","ctrl"},
 type_list = {"double","double","ALittle.DisplayInfo","string","string","ALittle.Text","ALittle.DisplayInfo","ALittle.DisplayObject"},
 option_map = {}
 })
-RegStruct(1640499878, "ALittle.UIRichInputLongClickEvent", {
+ALittle.RegStruct(1640499878, "ALittle.UIRichInputLongClickEvent", {
 name = "ALittle.UIRichInputLongClickEvent", ns_name = "ALittle", rl_name = "UIRichInputLongClickEvent", hash_code = 1640499878,
 name_list = {"target","abs_x","abs_y","rel_x","rel_y"},
 type_list = {"ALittle.DisplayObject","double","double","double","double"},
 option_map = {}
 })
-RegStruct(1424993548, "ALittle.RichInputMultiDragBeginEvent", {
+ALittle.RegStruct(1424993548, "ALittle.RichInputMultiDragBeginEvent", {
 name = "ALittle.RichInputMultiDragBeginEvent", ns_name = "ALittle", rl_name = "RichInputMultiDragBeginEvent", hash_code = 1424993548,
 name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
-RegStruct(-884368490, "ALittle.RichInputMultiDragEndEvent", {
+ALittle.RegStruct(-884368490, "ALittle.RichInputMultiDragEndEvent", {
 name = "ALittle.RichInputMultiDragEndEvent", ns_name = "ALittle", rl_name = "RichInputMultiDragEndEvent", hash_code = -884368490,
 name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
-RegStruct(-683607428, "ALittle.RichInputCursorClickEvent", {
+ALittle.RegStruct(-683607428, "ALittle.RichInputCursorClickEvent", {
 name = "ALittle.RichInputCursorClickEvent", ns_name = "ALittle", rl_name = "RichInputCursorClickEvent", hash_code = -683607428,
 name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
-RegStruct(-605767802, "ALittle.RichInputMultiDragEvent", {
+ALittle.RegStruct(-605767802, "ALittle.RichInputMultiDragEvent", {
 name = "ALittle.RichInputMultiDragEvent", ns_name = "ALittle", rl_name = "RichInputMultiDragEvent", hash_code = -605767802,
 name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
-RegStruct(-256576702, "ALittle.RichInputFontChangedEvent", {
+ALittle.RegStruct(-256576702, "ALittle.RichInputFontChangedEvent", {
 name = "ALittle.RichInputFontChangedEvent", ns_name = "ALittle", rl_name = "RichInputFontChangedEvent", hash_code = -256576702,
 name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
 
-local __byte = String_Byte
-local __sub = String_Sub
-local __find = String_Find
-local __floor = Math_Floor
-local __len = String_Len
-local __abs = Math_Abs
-local __type = String_Type
+local __byte = ALittle.String_Byte
+local __sub = ALittle.String_Sub
+local __find = ALittle.String_Find
+local __floor = ALittle.Math_Floor
+local __len = ALittle.String_Len
+local __abs = ALittle.Math_Abs
+local __type = ALittle.String_Type
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
-RichInput = Lua.Class(ALittle.DisplayLayout, "ALittle.RichInput")
+ALittle.RichInput = Lua.Class(ALittle.DisplayLayout, "ALittle.RichInput")
 
-function RichInput:CheckDisplayList(content)
+function ALittle.RichInput:CheckDisplayList(content)
 	for k, v in ___ipairs(content) do
 		if v.__class == nil then
 			return false
@@ -68,17 +68,17 @@ function RichInput:CheckDisplayList(content)
 	return true
 end
 
-function RichInput:CharIsNumber(str)
+function ALittle.RichInput:CharIsNumber(str)
 	local c = __byte(str, 1)
 	return c >= 48 and c <= 57
 end
 
-function RichInput:CharIsLetter(str)
+function ALittle.RichInput:CharIsLetter(str)
 	local c = __byte(str, 1)
 	return c >= 65 and c <= 90 or c >= 97 and c <= 122
 end
 
-function RichInput:CompareTextInfo(a, b)
+function ALittle.RichInput:CompareTextInfo(a, b)
 	if a.font_path ~= b.font_path then
 		return false
 	end
@@ -109,7 +109,7 @@ function RichInput:CompareTextInfo(a, b)
 	return true
 end
 
-function RichInput:CopyTextInfo(b)
+function ALittle.RichInput:CopyTextInfo(b)
 	local a = {}
 	a.__class = "Text"
 	a.font_path = b.font_path
@@ -124,7 +124,7 @@ function RichInput:CopyTextInfo(b)
 	return a
 end
 
-function RichInput:InitTextInfo()
+function ALittle.RichInput:InitTextInfo()
 	local font_text = self._font_text
 	local a = {}
 	a.__class = "Text"
@@ -140,7 +140,7 @@ function RichInput:InitTextInfo()
 	return a
 end
 
-function RichInput:SetDrawText(font_text)
+function ALittle.RichInput:SetDrawText(font_text)
 	local draw_text = self._draw_text
 	draw_text.font_path = font_text.font_path
 	draw_text.font_size = font_text.font_size
@@ -153,7 +153,7 @@ function RichInput:SetDrawText(font_text)
 	draw_text.deleteline = font_text.deleteline
 end
 
-function RichInput:SplitText(char_info, char_info_list, char_info_list_count)
+function ALittle.RichInput:SplitText(char_info, char_info_list, char_info_list_count)
 	local text = char_info.text
 	while true do
 		local start_index_1 = __find(text, "\n")
@@ -169,7 +169,7 @@ function RichInput:SplitText(char_info, char_info_list, char_info_list_count)
 			local sub_text = __sub(text, 1, start_index_1 - 1)
 			text = __sub(text, start_index_1 + 1)
 			if sub_text ~= "" then
-				local new_char_info = String_CopyTable(char_info)
+				local new_char_info = ALittle.String_CopyTable(char_info)
 				new_char_info.text = sub_text
 				char_info_list_count = char_info_list_count + 1
 				char_info_list[char_info_list_count] = new_char_info
@@ -178,14 +178,14 @@ function RichInput:SplitText(char_info, char_info_list, char_info_list_count)
 			local sub_text = __sub(text, 1, start_index_2 - 1)
 			text = __sub(text, start_index_2 + 1)
 			if sub_text ~= "" then
-				local new_char_info = String_CopyTable(char_info)
+				local new_char_info = ALittle.String_CopyTable(char_info)
 				new_char_info.text = sub_text
 				char_info_list_count = char_info_list_count + 1
 				char_info_list[char_info_list_count] = new_char_info
 			end
 		else
 			if text ~= "" then
-				local new_char_info = String_CopyTable(char_info)
+				local new_char_info = ALittle.String_CopyTable(char_info)
 				new_char_info.text = text
 				char_info_list_count = char_info_list_count + 1
 				char_info_list[char_info_list_count] = new_char_info
@@ -196,7 +196,7 @@ function RichInput:SplitText(char_info, char_info_list, char_info_list_count)
 	return char_info_list_count
 end
 
-function RichInput:DisplayListToCharInfoList(display_list, default_text_info)
+function ALittle.RichInput:DisplayListToCharInfoList(display_list, default_text_info)
 	local char_info_list = {}
 	local char_info_list_count = 0
 	local last_text_info = default_text_info
@@ -232,7 +232,7 @@ function RichInput:DisplayListToCharInfoList(display_list, default_text_info)
 	return char_info_list
 end
 
-function RichInput:CharInfoListToDisplayList(list)
+function ALittle.RichInput:CharInfoListToDisplayList(list)
 	local display_list = {}
 	local display_list_count = 0
 	local text_info = nil
@@ -253,9 +253,9 @@ function RichInput:CharInfoListToDisplayList(list)
 					text_list_count = text_list_count + 1
 					text_list[text_list_count] = char_info.text
 				else
-					local text = String_Join(text_list, "")
+					local text = ALittle.String_Join(text_list, "")
 					if text ~= "" then
-						local text_ctrl = String_CopyTable(text_info)
+						local text_ctrl = ALittle.String_CopyTable(text_info)
 						text_ctrl.__class = "Text"
 						text_ctrl.text = text
 						display_list_count = display_list_count + 1
@@ -269,9 +269,9 @@ function RichInput:CharInfoListToDisplayList(list)
 			end
 		else
 			if text_info ~= nil then
-				local text = String_Join(text_list, "")
+				local text = ALittle.String_Join(text_list, "")
 				if text ~= "" then
-					local text_ctrl = String_CopyTable(text_info)
+					local text_ctrl = ALittle.String_CopyTable(text_info)
 					text_ctrl.__class = "Text"
 					text_ctrl.text = text
 					display_list_count = display_list_count + 1
@@ -282,13 +282,13 @@ function RichInput:CharInfoListToDisplayList(list)
 				text_list_count = 0
 			end
 			display_list_count = display_list_count + 1
-			display_list[display_list_count] = String_CopyTable(char_info.ctrl_info)
+			display_list[display_list_count] = ALittle.String_CopyTable(char_info.ctrl_info)
 		end
 	end
 	if text_info ~= nil then
-		local text = String_Join(text_list, "")
+		local text = ALittle.String_Join(text_list, "")
 		if text ~= "" then
-			local text_ctrl = String_CopyTable(text_info)
+			local text_ctrl = ALittle.String_CopyTable(text_info)
 			text_ctrl.__class = "Text"
 			text_ctrl.text = text
 			display_list_count = display_list_count + 1
@@ -298,7 +298,7 @@ function RichInput:CharInfoListToDisplayList(list)
 	return display_list
 end
 
-function RichInput:CharInfoListToWord(list)
+function ALittle.RichInput:CharInfoListToWord(list)
 	local text_list = {}
 	local text_list_count = 0
 	for char_index, char_info in ___ipairs(list) do
@@ -307,10 +307,10 @@ function RichInput:CharInfoListToWord(list)
 			text_list[text_list_count] = char_info.text
 		end
 	end
-	return String_Join(text_list, "")
+	return ALittle.String_Join(text_list, "")
 end
 
-function RichInput:UpdateFontText()
+function ALittle.RichInput:UpdateFontText()
 	local char_info = self._char_info_list[self._char_cursor_it]
 	local is_change = false
 	local font_text = self._font_text
@@ -356,7 +356,7 @@ function RichInput:UpdateFontText()
 	end
 end
 
-function RichInput:GetCursorWidth(font_size)
+function ALittle.RichInput:GetCursorWidth(font_size)
 	if font_size == nil or font_size < 15 then
 		return 1
 	end
@@ -366,41 +366,41 @@ function RichInput:GetCursorWidth(font_size)
 	return __floor((font_size / 100) * 10)
 end
 
-function RichInput:Ctor(ctrl_sys)
+function ALittle.RichInput:Ctor(ctrl_sys)
 	___rawset(self, "_char_info_list", {})
 	___rawset(self, "_char_count", 0)
-	___rawset(self, "_font_text", Text(self._ctrl_sys))
-	___rawset(self, "_draw_text", Text(self._ctrl_sys))
+	___rawset(self, "_font_text", ALittle.Text(self._ctrl_sys))
+	___rawset(self, "_draw_text", ALittle.Text(self._ctrl_sys))
 	___rawset(self, "_char_cursor_it", 1)
 	___rawset(self, "_char_select_it", 1)
-	___rawset(self, "_display_view", DisplayView(self._ctrl_sys))
-	self._display_view.width_type = UIEnumTypes.SIZE_MARGIN
-	self._display_view.height_type = UIEnumTypes.SIZE_MARGIN
-	self._display_view.x_type = UIEnumTypes.POS_ALIGN_CENTER
-	self._display_view.y_type = UIEnumTypes.POS_ALIGN_CENTER
+	___rawset(self, "_display_view", ALittle.DisplayView(self._ctrl_sys))
+	self._display_view.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
+	self._display_view.height_type = ALittle.UIEnumTypes.SIZE_MARGIN
+	self._display_view.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
+	self._display_view.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
 	self:AddChild(self._display_view)
-	___rawset(self, "_display_show", DisplayLayout(self._ctrl_sys))
+	___rawset(self, "_display_show", ALittle.DisplayLayout(self._ctrl_sys))
 	self._display_show.width = 0
 	self._display_show.height = 0
 	self._display_show.x = 0
-	self._display_show.y_type = UIEnumTypes.POS_ALIGN_ENDING
+	self._display_show.y_type = ALittle.UIEnumTypes.POS_ALIGN_ENDING
 	self._display_show.y_value = 0
 	self._display_view:AddChild(self._display_show)
 	___rawset(self, "_current_flash_alpha", 1)
 	___rawset(self, "_current_flash_dir", -0.05)
-	___rawset(self, "_cursor", Quad(self._ctrl_sys))
+	___rawset(self, "_cursor", ALittle.Quad(self._ctrl_sys))
 	self._cursor.width = 1
 	self:AddChild(self._cursor)
 	self._cursor.visible = false
-	___rawset(self, "_select", Quad(self._ctrl_sys))
+	___rawset(self, "_select", ALittle.Quad(self._ctrl_sys))
 	self:AddChild(self._select)
 	self._select.visible = false
 	self._select.alpha = 0.5
-	___rawset(self, "_start_cursor", Quad(self._ctrl_sys))
+	___rawset(self, "_start_cursor", ALittle.Quad(self._ctrl_sys))
 	self._start_cursor.width = 1
 	self:AddChild(self._start_cursor)
 	self._start_cursor.visible = false
-	___rawset(self, "_end_cursor", Quad(self._ctrl_sys))
+	___rawset(self, "_end_cursor", ALittle.Quad(self._ctrl_sys))
 	self._end_cursor.width = 1
 	self:AddChild(self._end_cursor)
 	self._end_cursor.visible = false
@@ -427,12 +427,12 @@ function RichInput:Ctor(ctrl_sys)
 	___rawset(self, "_is_drag_begin", false)
 	___rawset(self, "_password_mode", false)
 	___rawset(self, "_ims_padding", 0)
-	___rawset(self, "_default_text", Text(self._ctrl_sys))
-	self._default_text.y_type = UIEnumTypes.POS_ALIGN_ENDING
+	___rawset(self, "_default_text", ALittle.Text(self._ctrl_sys))
+	self._default_text.y_type = ALittle.UIEnumTypes.POS_ALIGN_ENDING
 	self._default_text.y_value = 0
 	self._display_view:AddChild(self._default_text)
 	___rawset(self, "_default_font_height", 20)
-	___rawset(self, "_link_map", CreateValueWeakMap())
+	___rawset(self, "_link_map", ALittle.CreateValueWeakMap())
 	___rawset(self, "_pickup_rect", true)
 	___rawset(self, "_pickup_child", false)
 	___rawset(self, "_pickup_this", true)
@@ -458,92 +458,92 @@ function RichInput:Ctor(ctrl_sys)
 	self:AddEventListener(___all_struct[-439548260], self, self.HandleLongLButtonDown)
 	self:ClearCharInfo()
 	if self._loop == nil then
-		___rawset(self, "_loop", LoopFunction(Lua.Bind(self.Update, self), -1, 1, 1))
+		___rawset(self, "_loop", ALittle.LoopFunction(Lua.Bind(self.Update, self), -1, 1, 1))
 	end
 	A_LoopSystem:AddUpdater(self._loop)
 end
 
-function RichInput:GetCursor()
+function ALittle.RichInput:GetCursor()
 	return self._cursor
 end
 
-function RichInput:ClearLinkMap()
-	self._link_map = CreateValueWeakMap()
+function ALittle.RichInput:ClearLinkMap()
+	self._link_map = ALittle.CreateValueWeakMap()
 end
 
-function RichInput.__getter:real_width()
+function ALittle.RichInput.__getter:real_width()
 	return self._char_info_list[self._char_count].acc_width
 end
 
-function RichInput.__getter:real_height()
+function ALittle.RichInput.__getter:real_height()
 	return self._display_show.height
 end
 
-function RichInput.__getter:can_drag_text()
+function ALittle.RichInput.__getter:can_drag_text()
 	return self._can_drag_text
 end
 
-function RichInput.__setter:can_drag_text(value)
+function ALittle.RichInput.__setter:can_drag_text(value)
 	self._can_drag_text = value
 end
 
-function RichInput.__setter:auto_ims(value)
+function ALittle.RichInput.__setter:auto_ims(value)
 	self._auto_ims = value
 end
 
-function RichInput.__getter:auto_ims()
+function ALittle.RichInput.__getter:auto_ims()
 	return self._auto_ims
 end
 
-function RichInput.__getter:multi_cursor()
+function ALittle.RichInput.__getter:multi_cursor()
 	return self._multi_cursor
 end
 
-function RichInput.__setter:width(value)
+function ALittle.RichInput.__setter:width(value)
 	if self.width == value then
 		return
 	end
-	DisplayLayout.__setter.width(self, value)
+	ALittle.DisplayLayout.__setter.width(self, value)
 	self:ResetShowXByCursor()
 	self:ResetCursor()
 end
 
-function RichInput.__setter:height(value)
+function ALittle.RichInput.__setter:height(value)
 	if self.height == value then
 		return
 	end
-	DisplayLayout.__setter.height(self, value)
+	ALittle.DisplayLayout.__setter.height(self, value)
 	self:ResetCursor()
 end
 
-function RichInput.__setter:cursor_red(value)
+function ALittle.RichInput.__setter:cursor_red(value)
 	self._cursor.red = value
 	self._select.red = value
 end
 
-function RichInput.__getter:cursor_red()
+function ALittle.RichInput.__getter:cursor_red()
 	return self._cursor.red
 end
 
-function RichInput.__setter:cursor_green(value)
+function ALittle.RichInput.__setter:cursor_green(value)
 	self._cursor.green = value
 	self._select.green = value
 end
 
-function RichInput.__getter:cursor_green()
+function ALittle.RichInput.__getter:cursor_green()
 	return self._cursor.green
 end
 
-function RichInput.__setter:cursor_blue(value)
+function ALittle.RichInput.__setter:cursor_blue(value)
 	self._cursor.blue = value
 	self._select.blue = value
 end
 
-function RichInput.__getter:cursor_blue()
+function ALittle.RichInput.__getter:cursor_blue()
 	return self._cursor.blue
 end
 
-function RichInput.__setter:font_bold(value)
+function ALittle.RichInput.__setter:font_bold(value)
 	if self._font_text.bold == value then
 		return
 	end
@@ -554,7 +554,7 @@ function RichInput.__setter:font_bold(value)
 	end
 end
 
-function RichInput.__setter:font_underline(value)
+function ALittle.RichInput.__setter:font_underline(value)
 	if self._font_text.underline == value then
 		return
 	end
@@ -565,7 +565,7 @@ function RichInput.__setter:font_underline(value)
 	end
 end
 
-function RichInput.__setter:font_deleteline(value)
+function ALittle.RichInput.__setter:font_deleteline(value)
 	if self._font_text.deleteline == value then
 		return
 	end
@@ -576,7 +576,7 @@ function RichInput.__setter:font_deleteline(value)
 	end
 end
 
-function RichInput.__setter:font_italic(value)
+function ALittle.RichInput.__setter:font_italic(value)
 	if self._font_text.italic == value then
 		return
 	end
@@ -587,7 +587,7 @@ function RichInput.__setter:font_italic(value)
 	end
 end
 
-function RichInput.__setter:font_path(value)
+function ALittle.RichInput.__setter:font_path(value)
 	if self._font_text.font_path == value then
 		return
 	end
@@ -598,7 +598,7 @@ function RichInput.__setter:font_path(value)
 	end
 end
 
-function RichInput.__setter:font_size(value)
+function ALittle.RichInput.__setter:font_size(value)
 	if self._font_text.font_size == value then
 		return
 	end
@@ -609,15 +609,15 @@ function RichInput.__setter:font_size(value)
 	end
 end
 
-function RichInput.__getter:font_path()
+function ALittle.RichInput.__getter:font_path()
 	return self._font_text.font_path
 end
 
-function RichInput.__getter:font_size()
+function ALittle.RichInput.__getter:font_size()
 	return self._font_text.font_size
 end
 
-function RichInput.__setter:font_red(value)
+function ALittle.RichInput.__setter:font_red(value)
 	if self._font_text.red == value then
 		return
 	end
@@ -628,11 +628,11 @@ function RichInput.__setter:font_red(value)
 	end
 end
 
-function RichInput.__getter:font_red()
+function ALittle.RichInput.__getter:font_red()
 	return self._font_text.red
 end
 
-function RichInput.__setter:font_green(value)
+function ALittle.RichInput.__setter:font_green(value)
 	if self._font_text.green == value then
 		return
 	end
@@ -643,11 +643,11 @@ function RichInput.__setter:font_green(value)
 	end
 end
 
-function RichInput.__getter:font_green()
+function ALittle.RichInput.__getter:font_green()
 	return self._font_text.green
 end
 
-function RichInput.__setter:font_blue(value)
+function ALittle.RichInput.__setter:font_blue(value)
 	if self._font_text.blue == value then
 		return
 	end
@@ -658,18 +658,18 @@ function RichInput.__setter:font_blue(value)
 	end
 end
 
-function RichInput.__getter:font_blue()
+function ALittle.RichInput.__getter:font_blue()
 	return self._font_text.blue
 end
 
-function RichInput.__setter:text(value)
+function ALittle.RichInput.__setter:text(value)
 	self:ClearCharInfo()
 	self:InsertTextNative(value)
 	self:ResetShowXByCursor()
 	self:ShowDefaultText()
 end
 
-function RichInput.__getter:text()
+function ALittle.RichInput.__getter:text()
 	local displaylist = self:CharInfoListToDisplayList(self._char_info_list)
 	local text = ""
 	for k, v in ___ipairs(displaylist) do
@@ -680,23 +680,23 @@ function RichInput.__getter:text()
 	return text
 end
 
-function RichInput.__setter:default_text(value)
+function ALittle.RichInput.__setter:default_text(value)
 	self._default_text.text = value
 end
 
-function RichInput.__getter:default_text()
+function ALittle.RichInput.__getter:default_text()
 	return self._default_text.text
 end
 
-function RichInput.__setter:default_text_alpha(value)
+function ALittle.RichInput.__setter:default_text_alpha(value)
 	self._default_text.alpha = value
 end
 
-function RichInput.__getter:default_text_alpha()
+function ALittle.RichInput.__getter:default_text_alpha()
 	return self._default_text.alpha
 end
 
-function RichInput.__setter:display_list(value)
+function ALittle.RichInput.__setter:display_list(value)
 	local char_info_list = self:DisplayListToCharInfoList(value)
 	self:ClearCharInfo()
 	self:InsertCharInfo(char_info_list, false)
@@ -704,11 +704,11 @@ function RichInput.__setter:display_list(value)
 	self:ShowDefaultText()
 end
 
-function RichInput.__getter:display_list()
+function ALittle.RichInput.__getter:display_list()
 	return self:CharInfoListToDisplayList(self._char_info_list)
 end
 
-function RichInput.__setter:start_cursor(value)
+function ALittle.RichInput.__setter:start_cursor(value)
 	if value == nil then
 		return
 	end
@@ -716,21 +716,21 @@ function RichInput.__setter:start_cursor(value)
 		return
 	end
 	self:RemoveChild(self._start_cursor)
-	value.x_type = UIEnumTypes.POS_ABS
-	value.y_type = UIEnumTypes.POS_ABS
-	value.width_type = UIEnumTypes.SIZE_ABS
-	value.height_type = UIEnumTypes.SIZE_ABS
+	value.x_type = ALittle.UIEnumTypes.POS_ABS
+	value.y_type = ALittle.UIEnumTypes.POS_ABS
+	value.width_type = ALittle.UIEnumTypes.SIZE_ABS
+	value.height_type = ALittle.UIEnumTypes.SIZE_ABS
 	self._start_cursor = value
 	self:AddChild(self._start_cursor)
 	self._start_cursor.visible = false
 	self:ResetCursor()
 end
 
-function RichInput.__getter:start_cursor()
+function ALittle.RichInput.__getter:start_cursor()
 	return self._start_cursor
 end
 
-function RichInput.__setter:end_cursor(value)
+function ALittle.RichInput.__setter:end_cursor(value)
 	if value == nil then
 		return
 	end
@@ -738,21 +738,21 @@ function RichInput.__setter:end_cursor(value)
 		return
 	end
 	self:RemoveChild(self._end_cursor)
-	value.x_type = UIEnumTypes.POS_ABS
-	value.y_type = UIEnumTypes.POS_ABS
-	value.width_type = UIEnumTypes.SIZE_ABS
-	value.height_type = UIEnumTypes.SIZE_ABS
+	value.x_type = ALittle.UIEnumTypes.POS_ABS
+	value.y_type = ALittle.UIEnumTypes.POS_ABS
+	value.width_type = ALittle.UIEnumTypes.SIZE_ABS
+	value.height_type = ALittle.UIEnumTypes.SIZE_ABS
 	self._end_cursor = value
 	self:AddChild(self._end_cursor)
 	self._end_cursor.visible = false
 	self:ResetCursor()
 end
 
-function RichInput.__getter:end_cursor()
+function ALittle.RichInput.__getter:end_cursor()
 	return self._end_cursor
 end
 
-function RichInput.__setter:cursor_margin_up(value)
+function ALittle.RichInput.__setter:cursor_margin_up(value)
 	if value == self._cursor_margin_up then
 		return
 	end
@@ -760,11 +760,11 @@ function RichInput.__setter:cursor_margin_up(value)
 	self:ResetCursor()
 end
 
-function RichInput.__getter:cursor_margin_up()
+function ALittle.RichInput.__getter:cursor_margin_up()
 	return self._cursor_margin_up
 end
 
-function RichInput.__setter:cursor_margin_down(value)
+function ALittle.RichInput.__setter:cursor_margin_down(value)
 	if value == self._cursor_margin_down then
 		return
 	end
@@ -772,11 +772,11 @@ function RichInput.__setter:cursor_margin_down(value)
 	self:ResetCursor()
 end
 
-function RichInput.__getter:cursor_margin_down()
+function ALittle.RichInput.__getter:cursor_margin_down()
 	return self._cursor_margin_down
 end
 
-function RichInput.__setter:margin_halign(value)
+function ALittle.RichInput.__setter:margin_halign(value)
 	if value == self._margin_halign then
 		return
 	end
@@ -786,11 +786,11 @@ function RichInput.__setter:margin_halign(value)
 	self:ResetCursor()
 end
 
-function RichInput.__getter:margin_halign()
+function ALittle.RichInput.__getter:margin_halign()
 	return self._margin_halign
 end
 
-function RichInput.__setter:margin_valign(value)
+function ALittle.RichInput.__setter:margin_valign(value)
 	if value == self._margin_valign then
 		return
 	end
@@ -799,71 +799,71 @@ function RichInput.__setter:margin_valign(value)
 	self:ResetCursor()
 end
 
-function RichInput.__getter:margin_valign()
+function ALittle.RichInput.__getter:margin_valign()
 	return self._margin_valign
 end
 
-function RichInput.__setter:focus_cursor(value)
+function ALittle.RichInput.__setter:focus_cursor(value)
 	self._focus_cursor = value
 end
 
-function RichInput.__getter:focus_cursor()
+function ALittle.RichInput.__getter:focus_cursor()
 	return self._focus_cursor
 end
 
-function RichInput.__getter:cursor_x()
+function ALittle.RichInput.__getter:cursor_x()
 	return self._cursor.x
 end
 
-function RichInput.__getter:cursor_y()
+function ALittle.RichInput.__getter:cursor_y()
 	return self._cursor.y
 end
 
-function RichInput.__getter:cursor_b()
+function ALittle.RichInput.__getter:cursor_b()
 	return (self._cursor.y + self._cursor.height) * self.scale_y + self._ims_padding
 end
 
-function RichInput.__getter:start_cursor_x()
+function ALittle.RichInput.__getter:start_cursor_x()
 	return self._event_start_x
 end
 
-function RichInput.__getter:start_cursor_y()
+function ALittle.RichInput.__getter:start_cursor_y()
 	return self._event_start_y
 end
 
-function RichInput.__getter:end_cursor_x()
+function ALittle.RichInput.__getter:end_cursor_x()
 	return self._event_end_x
 end
 
-function RichInput.__getter:end_cursor_y()
+function ALittle.RichInput.__getter:end_cursor_y()
 	return self._event_end_y
 end
 
-function RichInput.__getter:is_input()
+function ALittle.RichInput.__getter:is_input()
 	return true
 end
 
-function RichInput.__getter:is_empty()
+function ALittle.RichInput.__getter:is_empty()
 	return self._char_count == 1
 end
 
-function RichInput.__getter:editable()
+function ALittle.RichInput.__getter:editable()
 	return self._editable
 end
 
-function RichInput.__setter:editable(value)
+function ALittle.RichInput.__setter:editable(value)
 	self._editable = value
 end
 
-function RichInput.__setter:ims_padding(value)
+function ALittle.RichInput.__setter:ims_padding(value)
 	self._ims_padding = value
 end
 
-function RichInput.__getter:ims_padding()
+function ALittle.RichInput.__getter:ims_padding()
 	return self._ims_padding
 end
 
-function RichInput.__setter:password_mode(value)
+function ALittle.RichInput.__setter:password_mode(value)
 	if self._password_mode == value then
 		return
 	end
@@ -876,33 +876,33 @@ function RichInput.__setter:password_mode(value)
 	self:ShowDefaultText()
 end
 
-function RichInput.__getter:password_mode()
+function ALittle.RichInput.__getter:password_mode()
 	return self._password_mode
 end
 
-function RichInput.__getter:regex()
+function ALittle.RichInput.__getter:regex()
 	return self._regex
 end
 
-function RichInput.__setter:regex(value)
+function ALittle.RichInput.__setter:regex(value)
 	if value == nil then
 		value = ""
 	end
 	self._regex = value
 end
 
-function RichInput.__getter:limit_len()
+function ALittle.RichInput.__getter:limit_len()
 	return self._limit_len
 end
 
-function RichInput.__setter:limit_len(value)
+function ALittle.RichInput.__setter:limit_len(value)
 	if value == nil then
 		value = 0
 	end
 	self._limit_len = value
 end
 
-function RichInput.__setter:input_align(value)
+function ALittle.RichInput.__setter:input_align(value)
 	if self._input_align == value then
 		return
 	end
@@ -911,11 +911,11 @@ function RichInput.__setter:input_align(value)
 	self:ResetCursor()
 end
 
-function RichInput.__getter:input_align()
+function ALittle.RichInput.__getter:input_align()
 	return self._input_align
 end
 
-function RichInput:Update()
+function ALittle.RichInput:Update()
 	if self._cursor.abs_visible then
 		self._current_flash_alpha = self._current_flash_alpha + self._current_flash_dir
 		if (self._current_flash_dir < 0 and self._current_flash_alpha < -0.05) or (self._current_flash_dir > 0 and self._current_flash_alpha > 1.5) then
@@ -925,15 +925,15 @@ function RichInput:Update()
 	end
 end
 
-function RichInput:Draw()
+function ALittle.RichInput:Draw()
 	if self._draw_loop ~= nil then
 		return
 	end
-	self._draw_loop = LoopFunction(Lua.Bind(self.DrawImpl, self), 1, 0, 1)
+	self._draw_loop = ALittle.LoopFunction(Lua.Bind(self.DrawImpl, self), 1, 0, 1)
 	A_LoopSystem:AddUpdater(self._draw_loop)
 end
 
-function RichInput:DrawImpl()
+function ALittle.RichInput:DrawImpl()
 	self._display_show:RemoveAllChild()
 	local real_height = 0.0
 	local offset_x = 0.0
@@ -945,9 +945,9 @@ function RichInput:DrawImpl()
 		end
 		if child ~= nil and child ~= last_child then
 			last_child = child
-			child.x_type = UIEnumTypes.POS_ALIGN_STARTING
+			child.x_type = ALittle.UIEnumTypes.POS_ALIGN_STARTING
 			child.x_value = offset_x
-			child.y_type = UIEnumTypes.POS_ALIGN_ENDING
+			child.y_type = ALittle.UIEnumTypes.POS_ALIGN_ENDING
 			child.y_value = 0
 			self._display_show:AddChild(child)
 			offset_x = offset_x + child.width
@@ -960,7 +960,7 @@ function RichInput:DrawImpl()
 	self._draw_loop = nil
 end
 
-function RichInput:ClearCharInfo()
+function ALittle.RichInput:ClearCharInfo()
 	self._char_info_list = {}
 	self._char_count = 0
 	local char_info = {}
@@ -979,7 +979,7 @@ function RichInput:ClearCharInfo()
 	self:Draw()
 end
 
-function RichInput:InsertCharInfo(char_info_list, selected)
+function ALittle.RichInput:InsertCharInfo(char_info_list, selected)
 	if self._font_text.font_path == nil or self._font_text.font_size == nil then
 		return
 	end
@@ -1028,7 +1028,7 @@ function RichInput:InsertCharInfo(char_info_list, selected)
 			else
 				text_info = display_info.text_info
 				local name = "nkacbjbsakcvuqocbakcbjcbvjhciqwojqppwvnwe"
-				self._ctrl_sys:RegisterInfo(name, String_CopyTable(display_info.text_info))
+				self._ctrl_sys:RegisterInfo(name, ALittle.String_CopyTable(display_info.text_info))
 				text_object = self._ctrl_sys:CreateControl(name, self._link_map)
 				self._ctrl_sys:UnRegisterInfo(name)
 				display_object = text_object
@@ -1038,7 +1038,7 @@ function RichInput:InsertCharInfo(char_info_list, selected)
 			local calc_text = display_info.text
 			local password_width = nil
 			while calc_text ~= "" do
-				local byte_count = String_GetByteCount(calc_text, 1)
+				local byte_count = ALittle.String_GetByteCount(calc_text, 1)
 				local real_text = __sub(calc_text, 1, byte_count)
 				local password_text = "*"
 				local text_width = 0.0
@@ -1071,7 +1071,7 @@ function RichInput:InsertCharInfo(char_info_list, selected)
 			text_info = nil
 			text_object = nil
 			local name = "nkacbjbsakcvuqocbakcbjcbvjhciqwojqppwvnwe"
-			self._ctrl_sys:RegisterInfo(name, String_CopyTable(display_info.ctrl_info))
+			self._ctrl_sys:RegisterInfo(name, ALittle.String_CopyTable(display_info.ctrl_info))
 			local display_object = self._ctrl_sys:CreateControl(name, self._link_map)
 			self._ctrl_sys:UnRegisterInfo(name)
 			local char_info = {}
@@ -1143,7 +1143,7 @@ function RichInput:InsertCharInfo(char_info_list, selected)
 	self:Draw()
 end
 
-function RichInput:DeleteCharInfo(begin_char_it, end_char_it)
+function ALittle.RichInput:DeleteCharInfo(begin_char_it, end_char_it)
 	if self._font_text.font_path == nil or self._font_text.font_size == nil then
 		return
 	end
@@ -1215,7 +1215,7 @@ function RichInput:DeleteCharInfo(begin_char_it, end_char_it)
 	self:Draw()
 end
 
-function RichInput:GetIteratorByOffset(offset_x)
+function ALittle.RichInput:GetIteratorByOffset(offset_x)
 	local real_offset_x = offset_x - self._display_show.x
 	if real_offset_x < 0 then
 		return 1
@@ -1241,7 +1241,7 @@ function RichInput:GetIteratorByOffset(offset_x)
 	return char_it
 end
 
-function RichInput:ClickCursorToHome()
+function ALittle.RichInput:ClickCursorToHome()
 	self._char_select_it = self._char_count + 1
 	self._char_cursor_it = 1
 	self:UpdateFontText()
@@ -1249,7 +1249,7 @@ function RichInput:ClickCursorToHome()
 	self:ResetCursor()
 end
 
-function RichInput:ClickCursorToEnd()
+function ALittle.RichInput:ClickCursorToEnd()
 	self._char_select_it = self._char_count + 1
 	self._char_cursor_it = self._char_count
 	self:UpdateFontText()
@@ -1257,7 +1257,7 @@ function RichInput:ClickCursorToEnd()
 	self:ResetCursor()
 end
 
-function RichInput:ClickCursor(offset_x)
+function ALittle.RichInput:ClickCursor(offset_x)
 	self._char_select_it = self._char_count + 1
 	self._char_cursor_it = self:GetIteratorByOffset(offset_x)
 	self:UpdateFontText()
@@ -1265,7 +1265,7 @@ function RichInput:ClickCursor(offset_x)
 	self:ResetCursor()
 end
 
-function RichInput:ClickMultiCursor(offset_x, trans)
+function ALittle.RichInput:ClickMultiCursor(offset_x, trans)
 	local char_cursor_it
 	if trans then
 		char_cursor_it = self._char_cursor_it
@@ -1289,7 +1289,7 @@ function RichInput:ClickMultiCursor(offset_x, trans)
 	self:ResetCursor()
 end
 
-function RichInput:ClickWordCursor(offset_x)
+function ALittle.RichInput:ClickWordCursor(offset_x)
 	self._char_cursor_it = self:GetIteratorByOffset(offset_x)
 	self._char_select_it = self._char_cursor_it
 	while true do
@@ -1322,7 +1322,7 @@ function RichInput:ClickWordCursor(offset_x)
 	return self._char_select_it <= self._char_count
 end
 
-function RichInput:SelectAll()
+function ALittle.RichInput:SelectAll()
 	self._char_select_it = 1
 	self._char_cursor_it = self._char_count
 	self:UpdateFontText()
@@ -1330,7 +1330,7 @@ function RichInput:SelectAll()
 	self:ResetCursor()
 end
 
-function RichInput:CursorOffsetLR(left)
+function ALittle.RichInput:CursorOffsetLR(left)
 	if self._char_select_it <= self._char_count and self._char_select_it ~= self._char_cursor_it then
 		if self._char_cursor_it > self._char_select_it and left then
 			self._char_cursor_it = self._char_select_it
@@ -1356,7 +1356,7 @@ function RichInput:CursorOffsetLR(left)
 	self:ResetCursor()
 end
 
-function RichInput:SelectCursorOffsetLR(left)
+function ALittle.RichInput:SelectCursorOffsetLR(left)
 	if self._char_select_it > self._char_count then
 		self._char_select_it = self._char_cursor_it
 	end
@@ -1376,11 +1376,11 @@ function RichInput:SelectCursorOffsetLR(left)
 	self:ResetCursor()
 end
 
-function RichInput:DragCursorBegin()
+function ALittle.RichInput:DragCursorBegin()
 	self._char_select_it = self._char_cursor_it
 end
 
-function RichInput:DragCursor(offset_x)
+function ALittle.RichInput:DragCursor(offset_x)
 	self._char_cursor_it = self:GetIteratorByOffset(offset_x)
 	if self._char_info_list[self._char_cursor_it].pre_width == -self._display_show.x and self._char_cursor_it ~= 1 and offset_x < 0 then
 		self._char_cursor_it = self._char_cursor_it - 1
@@ -1393,7 +1393,7 @@ function RichInput:DragCursor(offset_x)
 	self:ResetCursor()
 end
 
-function RichInput:DragMultiCursor(offset_x)
+function ALittle.RichInput:DragMultiCursor(offset_x)
 	offset_x = offset_x + self._drag_delta_x
 	self._char_cursor_it = self:GetIteratorByOffset(offset_x)
 	if self._char_info_list[self._char_cursor_it].pre_width == -self._display_show.x and self._char_cursor_it ~= 1 and offset_x < 0 then
@@ -1407,7 +1407,7 @@ function RichInput:DragMultiCursor(offset_x)
 	self:ResetCursor()
 end
 
-function RichInput:DragInput(delta_x)
+function ALittle.RichInput:DragInput(delta_x)
 	local display_show_x = self._display_show.x + delta_x
 	local display_show_width = self._char_info_list[self._char_count].acc_width
 	if self._display_show.width < self._display_view.width or display_show_x > 0 then
@@ -1419,7 +1419,7 @@ function RichInput:DragInput(delta_x)
 	self:ResetCursor()
 end
 
-function RichInput:ResetShowXByCursor()
+function ALittle.RichInput:ResetShowXByCursor()
 	local char_info = self._char_info_list[self._char_cursor_it]
 	local next_char_info = self._char_info_list[self._char_cursor_it + 1]
 	local max_char_info = self._char_info_list[self._char_count]
@@ -1442,7 +1442,7 @@ function RichInput:ResetShowXByCursor()
 	end
 end
 
-function RichInput:ResetCursor()
+function ALittle.RichInput:ResetCursor()
 	if self._font_text.font_path == nil or self._font_text.font_size == nil then
 		return
 	end
@@ -1610,7 +1610,7 @@ function RichInput:ResetCursor()
 	end
 end
 
-function RichInput:ShowDefaultText()
+function ALittle.RichInput:ShowDefaultText()
 	if self._is_focus == false then
 		if self._focus_cursor and self.is_empty then
 			self._default_text.visible = true
@@ -1622,7 +1622,7 @@ function RichInput:ShowDefaultText()
 	end
 end
 
-function RichInput:DeleteSelectText()
+function ALittle.RichInput:DeleteSelectText()
 	if self._font_text.font_path == nil or self._font_text.font_size == nil then
 		return false
 	end
@@ -1646,7 +1646,7 @@ function RichInput:DeleteSelectText()
 	return true
 end
 
-function RichInput:CheckDisplayListRegexLimit(display_list)
+function ALittle.RichInput:CheckDisplayListRegexLimit(display_list)
 	if self._regex == "" then
 		return false
 	end
@@ -1660,7 +1660,7 @@ function RichInput:CheckDisplayListRegexLimit(display_list)
 	return self:CheckTextRegexLimit(text)
 end
 
-function RichInput:InsertDisplayListNative(display_list, selected)
+function ALittle.RichInput:InsertDisplayListNative(display_list, selected)
 	if self._font_text.font_path == nil or self._font_text.font_size == nil then
 		return false
 	end
@@ -1674,9 +1674,9 @@ function RichInput:InsertDisplayListNative(display_list, selected)
 	return true
 end
 
-function RichInput:CheckTextRegexLimit(text)
+function ALittle.RichInput:CheckTextRegexLimit(text)
 	if self._limit_len > 0 then
-		local text_len = String_GetWordCount(text)
+		local text_len = ALittle.String_GetWordCount(text)
 		if text_len > self._limit_len then
 			return false
 		end
@@ -1684,14 +1684,14 @@ function RichInput:CheckTextRegexLimit(text)
 		local displaylist = self:GetSelectText()
 		for k, v in ___ipairs(displaylist) do
 			if v.__class == "Text" then
-				select_len = select_len + String_GetWordCount(v.text)
+				select_len = select_len + ALittle.String_GetWordCount(v.text)
 			end
 		end
 		displaylist = self.display_list
 		local total_len = 0
 		for k, v in ___ipairs(displaylist) do
 			if v.__class == "Text" then
-				total_len = total_len + String_GetWordCount(v.text)
+				total_len = total_len + ALittle.String_GetWordCount(v.text)
 			end
 		end
 		if total_len - select_len + text_len > self._limit_len then
@@ -1700,7 +1700,7 @@ function RichInput:CheckTextRegexLimit(text)
 	end
 	if self._regex ~= "" then
 		while text ~= "" do
-			local byte_count = String_GetByteCount(text, 1)
+			local byte_count = ALittle.String_GetByteCount(text, 1)
 			local sub_text = __sub(text, 1, byte_count)
 			local start_it = __find(sub_text, self._regex)
 			if start_it == nil then
@@ -1712,7 +1712,7 @@ function RichInput:CheckTextRegexLimit(text)
 	return true
 end
 
-function RichInput:InsertTextNative(text)
+function ALittle.RichInput:InsertTextNative(text)
 	if self._font_text.font_path == nil or self._font_text.font_size == nil then
 		return false
 	end
@@ -1734,7 +1734,7 @@ function RichInput:InsertTextNative(text)
 	return true
 end
 
-function RichInput:GetSelectText()
+function ALittle.RichInput:GetSelectText()
 	local select_text = {}
 	local select_text_count = 0
 	if self._char_select_it > self._char_count then
@@ -1760,7 +1760,7 @@ function RichInput:GetSelectText()
 	return self:CharInfoListToDisplayList(select_text)
 end
 
-function RichInput:GetSelectWord()
+function ALittle.RichInput:GetSelectWord()
 	local select_text = {}
 	local select_text_count = 0
 	if self._char_select_it > self._char_count then
@@ -1786,7 +1786,7 @@ function RichInput:GetSelectWord()
 	return self:CharInfoListToWord(select_text)
 end
 
-function RichInput:DeleteText(left)
+function ALittle.RichInput:DeleteText(left)
 	if self._font_text.font_path == nil or self._font_text.font_size == nil then
 		return false
 	end
@@ -1811,7 +1811,7 @@ function RichInput:DeleteText(left)
 	return true
 end
 
-function RichInput:SetCursor(rel_x, rel_y)
+function ALittle.RichInput:SetCursor(rel_x, rel_y)
 	if self._auto_ims then
 		self:OpenIME()
 	end
@@ -1827,7 +1827,7 @@ function RichInput:SetCursor(rel_x, rel_y)
 	end
 end
 
-function RichInput:SetMultiCursor(rel_x, rel_y)
+function ALittle.RichInput:SetMultiCursor(rel_x, rel_y)
 	if self._auto_ims then
 		self:OpenIME()
 	end
@@ -1843,7 +1843,7 @@ function RichInput:SetMultiCursor(rel_x, rel_y)
 	end
 end
 
-function RichInput:TransToCursor()
+function ALittle.RichInput:TransToCursor()
 	if self._end_cursor_data == "select" then
 		self._char_cursor_it = self._char_select_it
 	end
@@ -1858,7 +1858,7 @@ function RichInput:TransToCursor()
 	self:ResetCursor()
 end
 
-function RichInput:TransToMulti()
+function ALittle.RichInput:TransToMulti()
 	if self._multi_cursor then
 		return
 	end
@@ -1870,26 +1870,26 @@ function RichInput:TransToMulti()
 	self:ClickMultiCursor(nil, true)
 end
 
-function RichInput:OpenIME(x, y, width, height)
+function ALittle.RichInput:OpenIME(x, y, width, height)
 	if self._editable then
 		if x ~= nil and y ~= nil and width ~= nil and height ~= nil then
-			System_SetIMERect(__floor(x), __floor(y), __floor(width), __floor(height))
+			ALittle.System_SetIMERect(__floor(x), __floor(y), __floor(width), __floor(height))
 		else
 			local global_x, global_y = self:LocalToGlobal()
 			global_x = global_x + self.cursor_x
 			global_y = global_y + (self.cursor_y + self.font_size) * self.scale_y
-			System_SetIMERect(__floor(global_x), __floor(global_y), 10, __floor(5 + self._ims_padding))
+			ALittle.System_SetIMERect(__floor(global_x), __floor(global_y), 10, __floor(5 + self._ims_padding))
 		end
-		System_OpenIME()
+		ALittle.System_OpenIME()
 		self:ResetCursor()
 	end
 end
 
-function RichInput:CloseIME()
-	System_CloseIME()
+function ALittle.RichInput:CloseIME()
+	ALittle.System_CloseIME()
 end
 
-function RichInput:InsertText(display_list, selected)
+function ALittle.RichInput:InsertText(display_list, selected)
 	if self._editable == false then
 		return
 	end
@@ -1905,7 +1905,7 @@ function RichInput:InsertText(display_list, selected)
 	self:ShowDefaultText()
 end
 
-function RichInput:InsertWord(word_text)
+function ALittle.RichInput:InsertWord(word_text)
 	if self._editable == false then
 		return
 	end
@@ -1918,13 +1918,13 @@ function RichInput:InsertWord(word_text)
 	self:ShowDefaultText()
 end
 
-function RichInput:CopyText(return_cursor)
+function ALittle.RichInput:CopyText(return_cursor)
 	if self._password_mode then
 		return
 	end
 	local select_text = self:GetSelectText()
 	if select_text[1] ~= nil then
-		System_SetClipboardText(json.encode(select_text))
+		ALittle.System_SetClipboardText(json.encode(select_text))
 	end
 	if return_cursor then
 		self:TransToCursor()
@@ -1932,13 +1932,13 @@ function RichInput:CopyText(return_cursor)
 	self:ShowDefaultText()
 end
 
-function RichInput:CopyWord(return_cursor)
+function ALittle.RichInput:CopyWord(return_cursor)
 	if self._password_mode then
 		return
 	end
 	local select_text = self:GetSelectWord()
 	if select_text ~= nil then
-		System_SetClipboardText(select_text)
+		ALittle.System_SetClipboardText(select_text)
 	end
 	if return_cursor then
 		self:TransToCursor()
@@ -1946,7 +1946,7 @@ function RichInput:CopyWord(return_cursor)
 	self:ShowDefaultText()
 end
 
-function RichInput:CutText()
+function ALittle.RichInput:CutText()
 	if self._password_mode then
 		return
 	end
@@ -1959,14 +1959,14 @@ function RichInput:CutText()
 	self._is_selecting = false
 	local select_text = self:GetSelectText()
 	if select_text[1] ~= nil then
-		System_SetClipboardText(json.encode(select_text))
+		ALittle.System_SetClipboardText(json.encode(select_text))
 		self:DeleteSelectText()
 		self:TransToCursor()
 	end
 	self:ShowDefaultText()
 end
 
-function RichInput:CutWord()
+function ALittle.RichInput:CutWord()
 	if self._password_mode then
 		return
 	end
@@ -1979,14 +1979,14 @@ function RichInput:CutWord()
 	self._is_selecting = false
 	local select_text = self:GetSelectWord()
 	if select_text ~= nil then
-		System_SetClipboardText(select_text)
+		ALittle.System_SetClipboardText(select_text)
 		self:DeleteSelectText()
 		self:TransToCursor()
 	end
 	self:ShowDefaultText()
 end
 
-function RichInput:PasteText()
+function ALittle.RichInput:PasteText()
 	if self._editable == false then
 		return
 	end
@@ -1994,8 +1994,8 @@ function RichInput:PasteText()
 		return
 	end
 	self._is_selecting = false
-	if System_HasClipboardText() then
-		local content = System_GetClipboardText()
+	if ALittle.System_HasClipboardText() then
+		local content = ALittle.System_GetClipboardText()
 		local error, new_content = Lua.TCall(json.decode, content)
 		if error == nil and __type(new_content) == "table" and self:CheckDisplayList(new_content) then
 			if self:CheckAtKeyInput(new_content) then
@@ -2013,7 +2013,7 @@ function RichInput:PasteText()
 	self:ShowDefaultText()
 end
 
-function RichInput:PasteWord()
+function ALittle.RichInput:PasteWord()
 	if self._editable == false then
 		return
 	end
@@ -2021,20 +2021,20 @@ function RichInput:PasteWord()
 		return
 	end
 	self._is_selecting = false
-	if System_HasClipboardText() then
-		local content = System_GetClipboardText()
+	if ALittle.System_HasClipboardText() then
+		local content = ALittle.System_GetClipboardText()
 		self:InsertTextNative(content)
 		self:TransToCursor()
 	end
 	self:ShowDefaultText()
 end
 
-function RichInput:Clear()
+function ALittle.RichInput:Clear()
 	self:ClearCharInfo()
 	self:ShowDefaultText()
 end
 
-function RichInput:Delete()
+function ALittle.RichInput:Delete()
 	if self._editable == false then
 		return
 	end
@@ -2047,13 +2047,13 @@ function RichInput:Delete()
 	self:ShowDefaultText()
 end
 
-function RichInput:GetWord()
+function ALittle.RichInput:GetWord()
 	return self:CharInfoListToWord(self._char_info_list)
 end
 
-function RichInput:HandleFocusOut(event)
+function ALittle.RichInput:HandleFocusOut(event)
 	if self._auto_ims then
-		System_CloseIME()
+		ALittle.System_CloseIME()
 	end
 	self._is_focus = false
 	if self._focus_cursor then
@@ -2064,7 +2064,7 @@ function RichInput:HandleFocusOut(event)
 	self:ShowDefaultText()
 end
 
-function RichInput:HandleFocusIn(event)
+function ALittle.RichInput:HandleFocusIn(event)
 	if self._auto_ims then
 		self:OpenIME()
 	end
@@ -2074,15 +2074,15 @@ function RichInput:HandleFocusIn(event)
 	self:ShowDefaultText()
 end
 
-function RichInput:HandleMoveIn(event)
-	System_SetEditCursor()
+function ALittle.RichInput:HandleMoveIn(event)
+	ALittle.System_SetEditCursor()
 end
 
-function RichInput:HandleMoveOut(event)
-	System_SetNormalCursor()
+function ALittle.RichInput:HandleMoveOut(event)
+	ALittle.System_SetNormalCursor()
 end
 
-function RichInput:HandleLButtonDown(event)
+function ALittle.RichInput:HandleLButtonDown(event)
 	if self._multi_cursor == false then
 		self._is_longclick = false
 		if event.rel_x > self._display_view.x and event.rel_x <= self._display_view.x + self._display_view.width and event.rel_y >= self._display_view.y and event.rel_y <= self._display_view.y + self._display_view.height then
@@ -2121,7 +2121,7 @@ function RichInput:HandleLButtonDown(event)
 	end
 end
 
-function RichInput:HandleLButtonUp(event)
+function ALittle.RichInput:HandleLButtonUp(event)
 	if self._multi_cursor == true then
 		if self._is_click and self._is_longclick == false and self._click_drag_delta_x < 2 and self._click_drag_delta_y < 2 then
 			self._multi_cursor = false
@@ -2134,7 +2134,7 @@ function RichInput:HandleLButtonUp(event)
 	end
 end
 
-function RichInput:CheckAtKeyInput(input_text)
+function ALittle.RichInput:CheckAtKeyInput(input_text)
 	if input_text ~= "@" then
 		return false
 	end
@@ -2152,7 +2152,7 @@ function RichInput:CheckAtKeyInput(input_text)
 	return false
 end
 
-function RichInput:HandleTextInput(event)
+function ALittle.RichInput:HandleTextInput(event)
 	local is_change = false
 	if self._multi_cursor == false then
 		if (self._editable or event.custom) then
@@ -2178,11 +2178,11 @@ function RichInput:HandleTextInput(event)
 	end
 end
 
-function RichInput:HandleKeyDown(event)
+function ALittle.RichInput:HandleKeyDown(event)
 	local is_change = false
 	if event.sym == 1073741904 then
 		if self._multi_cursor == false then
-			if bit.band(event.mod, UIEnumTypes.KMOD_SHIFT) == 0 then
+			if bit.band(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) == 0 then
 				self._is_selecting = false
 				self:CursorOffsetLR(true)
 			else
@@ -2193,7 +2193,7 @@ function RichInput:HandleKeyDown(event)
 		event.handled = true
 	elseif event.sym == 1073741903 then
 		if self._multi_cursor == false then
-			if bit.band(event.mod, UIEnumTypes.KMOD_SHIFT) == 0 then
+			if bit.band(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) == 0 then
 				self._is_selecting = false
 				self:CursorOffsetLR(false)
 			else
@@ -2244,13 +2244,13 @@ function RichInput:HandleKeyDown(event)
 			self:DispatchEvent(___all_struct[776398171], {})
 			event.handled = true
 		end
-	elseif event.sym == 120 and bit.band(event.mod, UIEnumTypes.KMOD_CTRL) ~= 0 then
+	elseif event.sym == 120 and bit.band(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) ~= 0 then
 		if self._multi_cursor == false then
 			if (self._editable or event.custom) and not self._password_mode then
 				self._is_selecting = false
 				local select_text = self:GetSelectText()
 				if select_text[1] ~= nil then
-					System_SetClipboardText(json.encode(select_text))
+					ALittle.System_SetClipboardText(json.encode(select_text))
 					is_change = self:DeleteSelectText()
 				end
 			end
@@ -2259,27 +2259,27 @@ function RichInput:HandleKeyDown(event)
 				self._is_selecting = false
 				local select_text = self:GetSelectText()
 				if select_text[1] ~= nil then
-					System_SetClipboardText(json.encode(select_text))
+					ALittle.System_SetClipboardText(json.encode(select_text))
 					is_change = self:DeleteSelectText()
 				end
 				self._multi_cursor = false
 			end
 		end
 		event.handled = true
-	elseif event.sym == 99 and bit.band(event.mod, UIEnumTypes.KMOD_CTRL) ~= 0 then
+	elseif event.sym == 99 and bit.band(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) ~= 0 then
 		if not self._password_mode then
 			local select_text = self:GetSelectText()
 			if select_text[1] ~= nil then
-				System_SetClipboardText(json.encode(select_text))
+				ALittle.System_SetClipboardText(json.encode(select_text))
 			end
 		end
 		event.handled = true
-	elseif event.sym == 118 and bit.band(event.mod, UIEnumTypes.KMOD_CTRL) ~= 0 then
+	elseif event.sym == 118 and bit.band(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) ~= 0 then
 		if self._multi_cursor == false then
 			if self._editable or event.custom then
 				self._is_selecting = false
-				if System_HasClipboardText() then
-					local content = System_GetClipboardText()
+				if ALittle.System_HasClipboardText() then
+					local content = ALittle.System_GetClipboardText()
 					local error, new_content = Lua.TCall(json.decode, content)
 					if error == nil and __type(new_content) == "table" and self:CheckDisplayList(new_content) then
 						if self:CheckAtKeyInput(new_content) then
@@ -2297,8 +2297,8 @@ function RichInput:HandleKeyDown(event)
 		else
 			if self._is_selecting and self._editable then
 				self._is_selecting = false
-				if System_HasClipboardText() then
-					local content = System_GetClipboardText()
+				if ALittle.System_HasClipboardText() then
+					local content = ALittle.System_GetClipboardText()
 					local error, new_content = Lua.TCall(json.decode, content)
 					if error == nil and __type(new_content) == "table" and self:CheckDisplayList(new_content) then
 						is_change = self:InsertDisplayListNative(new_content, false)
@@ -2310,7 +2310,7 @@ function RichInput:HandleKeyDown(event)
 			end
 		end
 		event.handled = true
-	elseif event.sym == 97 and bit.band(event.mod, UIEnumTypes.KMOD_CTRL) ~= 0 then
+	elseif event.sym == 97 and bit.band(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) ~= 0 then
 		self._is_selecting = true
 		self:SelectAll()
 		event.handled = true
@@ -2325,7 +2325,7 @@ function RichInput:HandleKeyDown(event)
 	end
 end
 
-function RichInput:HandleDragBegin(event)
+function ALittle.RichInput:HandleDragBegin(event)
 	if self._can_drag_text == false then
 		return
 	end
@@ -2362,7 +2362,7 @@ function RichInput:HandleDragBegin(event)
 	end
 end
 
-function RichInput:HandleDrag(event)
+function ALittle.RichInput:HandleDrag(event)
 	if self._can_drag_text == false then
 		return
 	end
@@ -2386,7 +2386,7 @@ function RichInput:HandleDrag(event)
 	end
 end
 
-function RichInput:HandleDragEnd(event)
+function ALittle.RichInput:HandleDragEnd(event)
 	if self._can_drag_text == false then
 		return
 	end
@@ -2401,7 +2401,7 @@ function RichInput:HandleDragEnd(event)
 	end
 end
 
-function RichInput:HandleLongLButtonDown(event)
+function ALittle.RichInput:HandleLongLButtonDown(event)
 	if self._is_click then
 		if self.editable == false then
 			self._is_selecting = true
@@ -2432,3 +2432,4 @@ function RichInput:HandleLongLButtonDown(event)
 	end
 end
 
+end

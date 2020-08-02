@@ -1,6 +1,6 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittleIDE", package.seeall)
-
+do
+if _G.ALittleIDE == nil then _G.ALittleIDE = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
@@ -32,21 +32,21 @@ option_map = {}
 })
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
-IDEUICodeList = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDEUICodeList")
+ALittleIDE.IDEUICodeList = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDEUICodeList")
 
-function IDEUICodeList:Ctor(ctrl_sys)
+function ALittleIDE.IDEUICodeList:Ctor(ctrl_sys)
 	___rawset(self, "_jump_list", {})
 	___rawset(self, "_jump_count", 0)
 	___rawset(self, "_jump_index", 0)
 	___rawset(self, "_group", {})
 end
 
-function IDEUICodeList:TCtor()
-	g_IDEProject:AddEventListener(___all_struct[-975432877], self, self.HandleProjectOpen)
-	g_IDEProject:AddEventListener(___all_struct[-332308624], self, self.HandleProjectClose)
+function ALittleIDE.IDEUICodeList:TCtor()
+	ALittleIDE.g_IDEProject:AddEventListener(___all_struct[-975432877], self, self.HandleProjectOpen)
+	ALittleIDE.g_IDEProject:AddEventListener(___all_struct[-332308624], self, self.HandleProjectClose)
 end
 
-function IDEUICodeList:AddCodeJump(info)
+function ALittleIDE.IDEUICodeList:AddCodeJump(info)
 	if self._jump_count > 0 and self._jump_index < self._jump_count then
 		ALittle.List_Splice(self._jump_list, self._jump_index + 1, self._jump_count - self._jump_index)
 		self._jump_count = self._jump_index
@@ -56,7 +56,7 @@ function IDEUICodeList:AddCodeJump(info)
 	self._jump_list[self._jump_count] = info
 end
 
-function IDEUICodeList:JumpPreCode()
+function ALittleIDE.IDEUICodeList:JumpPreCode()
 	if self._jump_count == 0 then
 		return nil
 	end
@@ -67,7 +67,7 @@ function IDEUICodeList:JumpPreCode()
 	return self._jump_list[self._jump_index]
 end
 
-function IDEUICodeList:JumpNextCode()
+function ALittleIDE.IDEUICodeList:JumpNextCode()
 	if self._jump_count == 0 then
 		return nil
 	end
@@ -78,15 +78,15 @@ function IDEUICodeList:JumpNextCode()
 	return self._jump_list[self._jump_index]
 end
 
-function IDEUICodeList:HandleProjectClose(event)
+function ALittleIDE.IDEUICodeList:HandleProjectClose(event)
 	self._code_scroll_screen:RemoveAllChild()
 end
 
-function IDEUICodeList:HandleProjectOpen(event)
+function ALittleIDE.IDEUICodeList:HandleProjectOpen(event)
 	self._jump_count = 0
 	self._jump_index = 0
 	self._jump_list = {}
-	local module_map = g_IDEProject.project.config:GetConfig("code_module", {})
+	local module_map = ALittleIDE.g_IDEProject.project.config:GetConfig("code_module", {})
 	module_map["Core"] = nil
 	module_map["Std"] = nil
 	module_map["CEngine"] = nil
@@ -98,8 +98,8 @@ function IDEUICodeList:HandleProjectOpen(event)
 	info.module_path = ALittle.File_BaseFilePath() .. "Module/" .. event.name .. "/"
 	info.group = self._group
 	info.root = true
-	info.project = g_IDEProject.project.code
-	self._code_scroll_screen:AddChild(IDECodeTree(g_Control, info))
+	info.project = ALittleIDE.g_IDEProject.project.code
+	self._code_scroll_screen:AddChild(ALittleIDE.IDECodeTree(ALittleIDE.g_Control, info))
 	local std_list = {"Core", "Std", "CEngine"}
 	for index, name in ___ipairs(std_list) do
 		info = {}
@@ -109,8 +109,8 @@ function IDEUICodeList:HandleProjectOpen(event)
 		info.module_path = ALittle.File_BaseFilePath() .. "Module/ALittleIDE/Other/GameLibrary/" .. name .. "/"
 		info.group = self._group
 		info.root = true
-		info.project = g_IDEProject.project.code
-		local tree = IDECodeTree(g_Control, info)
+		info.project = ALittleIDE.g_IDEProject.project.code
+		local tree = ALittleIDE.IDECodeTree(ALittleIDE.g_Control, info)
 		self._code_scroll_screen:AddChild(tree)
 	end
 	for index, module in ___pairs(module_map) do
@@ -120,25 +120,25 @@ function IDEUICodeList:HandleProjectOpen(event)
 		info.path = module.root_path
 		info.module_path = ALittle.File_GetFilePathByPath(module.root_path) .. "/"
 		info.group = self._group
-		info.project = g_IDEProject.project.code
+		info.project = ALittleIDE.g_IDEProject.project.code
 		info.root = true
-		local tree = IDECodeTree(g_Control, info)
+		local tree = ALittleIDE.IDECodeTree(ALittleIDE.g_Control, info)
 		self._code_scroll_screen:AddChild(tree)
 	end
 end
 
-function IDEUICodeList:AddLibrary(name)
+function ALittleIDE.IDEUICodeList:AddLibrary(name)
 	local file_map = ALittle.File_GetFileNameListByDir(ALittle.File_BaseFilePath() .. "Module/ALittleIDE/Other/GameLibrary")
 	local attr = file_map[name]
 	if attr == nil or attr.mode ~= "directory" then
 		return false
 	end
-	local module_map = g_IDEProject.project.config:GetConfig("code_module", {})
+	local module_map = ALittleIDE.g_IDEProject.project.config:GetConfig("code_module", {})
 	local module_info = {}
 	module_info.module_name = name
 	module_info.root_path = ALittle.File_BaseFilePath() .. "Module/ALittleIDE/Other/GameLibrary/" .. name .. "/src"
 	module_map[name] = module_info
-	g_IDEProject.project.config:SetConfig("code_module", module_map)
+	ALittleIDE.g_IDEProject.project.config:SetConfig("code_module", module_map)
 	local info = {}
 	info.module_name = name
 	info.name = "src"
@@ -146,17 +146,17 @@ function IDEUICodeList:AddLibrary(name)
 	info.module_path = ALittle.File_BaseFilePath() .. "Module/ALittleIDE/Other/GameLibrary/" .. name .. "/"
 	info.group = self._group
 	info.root = true
-	info.project = g_IDEProject.project.code
-	local tree = IDECodeTree(g_Control, info)
+	info.project = ALittleIDE.g_IDEProject.project.code
+	local tree = ALittleIDE.IDECodeTree(ALittleIDE.g_Control, info)
 	self._code_scroll_screen:AddChild(tree)
 	return true
 end
 
-function IDEUICodeList:OpenByFullPath(full_path, line_start, char_start, line_end, char_end)
+function ALittleIDE.IDEUICodeList:OpenByFullPath(full_path, line_start, char_start, line_end, char_end)
 	for index, child in ___ipairs(self._code_scroll_screen.childs) do
 		local item = child:FindFile(full_path)
 		if item ~= nil then
-			local code_child = g_IDECenter.center.content_edit:StartEditCodeBySelect(item.user_info.name, item.user_info)
+			local code_child = ALittleIDE.g_IDECenter.center.content_edit:StartEditCodeBySelect(item.user_info.name, item.user_info)
 			code_child:JumpFocus(line_start, char_start, line_end, char_end)
 			return code_child
 		end
@@ -167,21 +167,21 @@ function IDEUICodeList:OpenByFullPath(full_path, line_start, char_start, line_en
 	local user_info = {}
 	user_info.name = ALittle.File_GetFileNameByPath(full_path)
 	user_info.path = full_path
-	return g_IDECenter.center.content_edit:StartEditCodeBySelect(user_info.name, user_info)
+	return ALittleIDE.g_IDECenter.center.content_edit:StartEditCodeBySelect(user_info.name, user_info)
 end
 
-function IDEUICodeList:AddModule(name)
+function ALittleIDE.IDEUICodeList:AddModule(name)
 	for index, tree in ___ipairs(self._code_scroll_screen.childs) do
 		if tree.user_info.module_name == name then
 			return
 		end
 	end
-	local module_map = g_IDEProject.project.config:GetConfig("code_module", {})
+	local module_map = ALittleIDE.g_IDEProject.project.config:GetConfig("code_module", {})
 	local module_info = {}
 	module_info.module_name = name
 	module_info.root_path = ALittle.File_BaseFilePath() .. "Module/" .. name .. "/src"
 	module_map[name] = module_info
-	g_IDEProject.project.config:SetConfig("code_module", module_map)
+	ALittleIDE.g_IDEProject.project.config:SetConfig("code_module", module_map)
 	local info = {}
 	info.module_name = name
 	info.name = ALittle.File_GetFileNameByPath(module_info.root_path)
@@ -189,12 +189,12 @@ function IDEUICodeList:AddModule(name)
 	info.module_path = ALittle.File_BaseFilePath() .. "Module/" .. name .. "/"
 	info.group = self._group
 	info.root = true
-	info.project = g_IDEProject.project.code
-	local tree = IDECodeTree(g_Control, info)
+	info.project = ALittleIDE.g_IDEProject.project.code
+	local tree = ALittleIDE.IDECodeTree(ALittleIDE.g_Control, info)
 	self._code_scroll_screen:AddChild(tree)
 end
 
-function IDEUICodeList:ShowTreeItemFocus(target)
+function ALittleIDE.IDEUICodeList:ShowTreeItemFocus(target)
 	target:ShowSelect()
 	if target ~= self._code_scroll_screen then
 		local parent = target.logic_parent
@@ -221,7 +221,7 @@ function IDEUICodeList:ShowTreeItemFocus(target)
 	self._tree_loop_y:Start()
 end
 
-function IDEUICodeList:HandleCodeSearchClick(event)
+function ALittleIDE.IDEUICodeList:HandleCodeSearchClick(event)
 	if self._search_info == nil or self._search_info.name ~= self._code_search_key.text then
 		self._search_info = {}
 		self._search_info.name = self._code_search_key.text
@@ -243,3 +243,4 @@ function IDEUICodeList:HandleCodeSearchClick(event)
 	self:ShowTreeItemFocus(item)
 end
 
+end

@@ -1,12 +1,12 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("Lua", package.seeall)
-
+do
+if _G.Lua == nil then _G.Lua = {} end
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
 local error = error
-function TCall(...)
+function Lua.TCall(...)
 	local out_list = {pcall(...)}
 	if out_list[1] ~= true then
 		if out_list[2] == nil then
@@ -19,11 +19,11 @@ function TCall(...)
 	return unpack(out_list, 1, l)
 end
 
-function Throw(msg)
+function Lua.Throw(msg)
 	error(msg)
 end
 
-function Assert(value, msg)
+function Lua.Assert(value, msg)
 	if value ~= nil and value ~= false then
 		return
 	end
@@ -33,3 +33,4 @@ function Assert(value, msg)
 	error(msg)
 end
 
+end

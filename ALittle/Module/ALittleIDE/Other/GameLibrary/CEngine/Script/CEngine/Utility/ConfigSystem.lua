@@ -1,14 +1,14 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
 assert(ALittle.IFileLoader, " extends class:ALittle.IFileLoader is nil")
-LuaClientFileLoader = Lua.Class(ALittle.IFileLoader, "ALittle.LuaClientFileLoader")
+ALittle.LuaClientFileLoader = Lua.Class(ALittle.IFileLoader, "ALittle.LuaClientFileLoader")
 
-function LuaClientFileLoader:Load(file_path)
+function ALittle.LuaClientFileLoader:Load(file_path)
 	local file = __CPPAPILocalFile()
 	file:SetPath(file_path)
 	if not file:Load() then
@@ -20,13 +20,14 @@ function LuaClientFileLoader:Load(file_path)
 end
 
 assert(ALittle.IFileSaver, " extends class:ALittle.IFileSaver is nil")
-LuaClientFileSaver = Lua.Class(ALittle.IFileSaver, "ALittle.LuaClientFileSaver")
+ALittle.LuaClientFileSaver = Lua.Class(ALittle.IFileSaver, "ALittle.LuaClientFileSaver")
 
-function LuaClientFileSaver:Save(file_path, content)
-	return File_SaveFile(file_path, content, -1)
+function ALittle.LuaClientFileSaver:Save(file_path, content)
+	return ALittle.File_SaveFile(file_path, content, -1)
 end
 
-function CreateConfigSystem(file_path, print_error)
-	return Lua.Template(JsonConfig, "ALittle.JsonConfig<ALittle.LuaClientFileLoader, ALittle.LuaClientFileSaver>", LuaClientFileLoader, LuaClientFileSaver)(file_path, print_error)
+function ALittle.CreateConfigSystem(file_path, print_error)
+	return Lua.Template(ALittle.JsonConfig, "ALittle.JsonConfig<ALittle.LuaClientFileLoader, ALittle.LuaClientFileSaver>", ALittle.LuaClientFileLoader, ALittle.LuaClientFileSaver)(file_path, print_error)
 end
 
+end

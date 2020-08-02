@@ -1,79 +1,79 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
-RegStruct(-1815508639, "ALittle.TextureCutInfo", {
+ALittle.RegStruct(-1815508639, "ALittle.TextureCutInfo", {
 name = "ALittle.TextureCutInfo", ns_name = "ALittle", rl_name = "TextureCutInfo", hash_code = -1815508639,
 name_list = {"texture_name","max_width","max_height","cache"},
 type_list = {"string","int","int","bool"},
 option_map = {}
 })
-RegStruct(1812223610, "ALittle.LoadAtlasInfo", {
+ALittle.RegStruct(1812223610, "ALittle.LoadAtlasInfo", {
 name = "ALittle.LoadAtlasInfo", ns_name = "ALittle", rl_name = "LoadAtlasInfo", hash_code = 1812223610,
 name_list = {"big_path","atlas","big_width","big_height"},
 type_list = {"string","List<string>","int","int"},
 option_map = {}
 })
-RegStruct(1754262532, "ALittle.LoadingTextureInfo", {
+ALittle.RegStruct(1754262532, "ALittle.LoadingTextureInfo", {
 name = "ALittle.LoadingTextureInfo", ns_name = "ALittle", rl_name = "LoadingTextureInfo", hash_code = 1754262532,
 name_list = {"cache","object_map"},
 type_list = {"bool","Map<ALittle.DisplayObject,ALittle.LoadingTextureObjectInfo>"},
 option_map = {}
 })
-RegStruct(1390702448, "ALittle.AltasCollectInfo", {
+ALittle.RegStruct(1390702448, "ALittle.AltasCollectInfo", {
 name = "ALittle.AltasCollectInfo", ns_name = "ALittle", rl_name = "AltasCollectInfo", hash_code = 1390702448,
 name_list = {"count","list"},
 type_list = {"int","List<List<any>>"},
 option_map = {}
 })
-RegStruct(1305876767, "ALittle.PrepareInfo", {
+ALittle.RegStruct(1305876767, "ALittle.PrepareInfo", {
 name = "ALittle.PrepareInfo", ns_name = "ALittle", rl_name = "PrepareInfo", hash_code = 1305876767,
 name_list = {"total","succeed","failed","map","callback"},
 type_list = {"int","int","int","Map<string,bool>","Functor<(int,int,int)>"},
 option_map = {}
 })
-RegStruct(1266404893, "ALittle.LoadTextureInfo", {
+ALittle.RegStruct(1266404893, "ALittle.LoadTextureInfo", {
 name = "ALittle.LoadTextureInfo", ns_name = "ALittle", rl_name = "LoadTextureInfo", hash_code = 1266404893,
 name_list = {"loader","cut_loader","texture_mgr"},
 type_list = {"ALittle.ITextureLoader","ALittle.ITextureCutLoader","ALittle.TextureManager"},
 option_map = {}
 })
-RegStruct(1002517605, "ALittle.LoadingTextureObjectInfo", {
+ALittle.RegStruct(1002517605, "ALittle.LoadingTextureObjectInfo", {
 name = "ALittle.LoadingTextureObjectInfo", ns_name = "ALittle", rl_name = "LoadingTextureObjectInfo", hash_code = 1002517605,
 name_list = {"callback"},
 type_list = {"Functor<(ALittle.DisplayObject,bool)>"},
 option_map = {}
 })
-RegStruct(-451991995, "ALittle.AltasTextureInfo", {
+ALittle.RegStruct(-451991995, "ALittle.AltasTextureInfo", {
 name = "ALittle.AltasTextureInfo", ns_name = "ALittle", rl_name = "AltasTextureInfo", hash_code = -451991995,
 name_list = {"width","height","path"},
 type_list = {"int","int","string"},
 option_map = {}
 })
-RegStruct(-60039899, "ALittle.AltasInfo", {
+ALittle.RegStruct(-60039899, "ALittle.AltasInfo", {
 name = "ALittle.AltasInfo", ns_name = "ALittle", rl_name = "AltasInfo", hash_code = -60039899,
 name_list = {"big_path","atlas","big_width","big_height","t","b","l","r"},
 type_list = {"string","List<string>","int","int","double","double","double","double"},
 option_map = {}
 })
 
-LoadTextureManager = Lua.Class(nil, "ALittle.LoadTextureManager")
+ALittle.LoadTextureManager = Lua.Class(nil, "ALittle.LoadTextureManager")
 
-function LoadTextureManager:Ctor()
+function ALittle.LoadTextureManager:Ctor()
 	___rawset(self, "_id_map_info", {})
-	___rawset(self, "_path_map_texture_cut", CreateValueWeakMap())
+	___rawset(self, "_path_map_texture_cut", ALittle.CreateValueWeakMap())
 	___rawset(self, "_path_map_objects_cut", {})
-	___rawset(self, "_redraw_map_redraw", CreateKeyWeakMap())
-	___rawset(self, "_texmgr_map_texmgr", CreateKeyWeakMap())
+	___rawset(self, "_redraw_map_redraw", ALittle.CreateKeyWeakMap())
+	___rawset(self, "_texmgr_map_texmgr", ALittle.CreateKeyWeakMap())
 end
 
-function LoadTextureManager:CreateTexture(texture_mgr, atlas)
+function ALittle.LoadTextureManager:CreateTexture(texture_mgr, atlas)
 	local loader
 	loader = __CPPAPITextureLoader()
-	loader:SetPath(atlas.big_path, String_Join(atlas.atlas, ";"), atlas.big_width, atlas.big_height, texture_mgr.crypt_mode)
+	loader:SetPath(atlas.big_path, ALittle.String_Join(atlas.atlas, ";"), atlas.big_width, atlas.big_height, texture_mgr.crypt_mode)
 	local info = {}
 	self._id_map_info[loader:GetID()] = info
 	info.texture_mgr = texture_mgr
@@ -81,7 +81,7 @@ function LoadTextureManager:CreateTexture(texture_mgr, atlas)
 	loader:Start()
 end
 
-function LoadTextureManager:HandleTextureLoadSucceed(loader, texture)
+function ALittle.LoadTextureManager:HandleTextureLoadSucceed(loader, texture)
 	local loader_id = loader:GetID()
 	local info = self._id_map_info[loader_id]
 	if info == nil then
@@ -91,7 +91,7 @@ function LoadTextureManager:HandleTextureLoadSucceed(loader, texture)
 	info.texture_mgr:HandleTextureLoadSucceed(loader, texture)
 end
 
-function LoadTextureManager:HandleTextureLoadFailed(loader)
+function ALittle.LoadTextureManager:HandleTextureLoadFailed(loader)
 	local loader_id = loader:GetID()
 	local info = self._id_map_info[loader_id]
 	if info == nil then
@@ -101,31 +101,31 @@ function LoadTextureManager:HandleTextureLoadFailed(loader)
 	info.texture_mgr:HandleTextureLoadFailed(loader)
 end
 
-function LoadTextureManager:GetTextureCut(path, max_width, max_height)
+function ALittle.LoadTextureManager:GetTextureCut(path, max_width, max_height)
 	local texture_id = path .. "_" .. max_width .. "_" .. max_height
 	return self._path_map_texture_cut[texture_id]
 end
 
-function LoadTextureManager:ClearTextureCut(path, max_width, max_height)
+function ALittle.LoadTextureManager:ClearTextureCut(path, max_width, max_height)
 	local texture_id = path .. "_" .. max_width .. "_" .. max_height
 	self._path_map_texture_cut[texture_id] = nil
 end
 
-function LoadTextureManager:IsLoadingTextureCut(path, max_width, max_height)
+function ALittle.LoadTextureManager:IsLoadingTextureCut(path, max_width, max_height)
 	local texture_id = path .. "_" .. max_width .. "_" .. max_height
 	return self._path_map_objects_cut[texture_id] ~= nil
 end
 
-function LoadTextureManager:SetTextureCut(object, path, max_width, max_height, cache, callback)
+function ALittle.LoadTextureManager:SetTextureCut(object, path, max_width, max_height, cache, callback)
 	object:SetTextureCoord(0, 1, 0, 1)
 	if max_width == nil then
 		max_width = 0
 	end
-	max_width = Math_Floor(max_width)
+	max_width = ALittle.Math_Floor(max_width)
 	if max_height == nil then
 		max_height = 0
 	end
-	max_height = Math_Floor(max_height)
+	max_height = ALittle.Math_Floor(max_height)
 	if cache == nil then
 		cache = false
 	end
@@ -148,7 +148,7 @@ function LoadTextureManager:SetTextureCut(object, path, max_width, max_height, c
 	loading_info = {}
 	loading_info.cache = cache
 	self._path_map_objects_cut[texture_id] = loading_info
-	loading_info.object_map = CreateKeyWeakMap()
+	loading_info.object_map = ALittle.CreateKeyWeakMap()
 	local object_info = {}
 	object_info.callback = callback
 	loading_info.object_map[object] = object_info
@@ -161,7 +161,7 @@ function LoadTextureManager:SetTextureCut(object, path, max_width, max_height, c
 	loader:Start()
 end
 
-function LoadTextureManager:HandleTextureCutLoadSucceed(loader, texture)
+function ALittle.LoadTextureManager:HandleTextureCutLoadSucceed(loader, texture)
 	local loader_id = loader:GetID()
 	local info = self._id_map_info[loader_id]
 	if info == nil then
@@ -193,7 +193,7 @@ function LoadTextureManager:HandleTextureCutLoadSucceed(loader, texture)
 	self._path_map_objects_cut[texture_id] = nil
 end
 
-function LoadTextureManager:HandleTextureCutLoadFailed(loader)
+function ALittle.LoadTextureManager:HandleTextureCutLoadFailed(loader)
 	local loader_id = loader:GetID()
 	local info = self._id_map_info[loader_id]
 	if info == nil then
@@ -216,16 +216,16 @@ function LoadTextureManager:HandleTextureCutLoadFailed(loader)
 	self._path_map_objects_cut[texture_id] = nil
 end
 
-function LoadTextureManager:RegisterRedrawControl(control)
+function ALittle.LoadTextureManager:RegisterRedrawControl(control)
 	self._redraw_map_redraw[control] = true
 end
 
-function LoadTextureManager:RegisterTexmgrControl(control)
+function ALittle.LoadTextureManager:RegisterTexmgrControl(control)
 	self._texmgr_map_texmgr[control] = nil
 end
 
-function LoadTextureManager:HandleRenderDeviceReset()
-	self._path_map_texture_cut = CreateValueWeakMap()
+function ALittle.LoadTextureManager:HandleRenderDeviceReset()
+	self._path_map_texture_cut = ALittle.CreateValueWeakMap()
 	for texmgr, _ in ___pairs(self._texmgr_map_texmgr) do
 		texmgr:ClearCache()
 	end
@@ -234,10 +234,10 @@ function LoadTextureManager:HandleRenderDeviceReset()
 	end
 end
 
-_G.A_LoadTextureManager = LoadTextureManager()
-AltasBinary = Lua.Class(nil, "ALittle.AltasBinary")
+_G.A_LoadTextureManager = ALittle.LoadTextureManager()
+ALittle.AltasBinary = Lua.Class(nil, "ALittle.AltasBinary")
 
-function AltasBinary:Ctor(x, y, width, height)
+function ALittle.AltasBinary:Ctor(x, y, width, height)
 	___rawset(self, "_width", width)
 	___rawset(self, "_height", height)
 	___rawset(self, "_x", x)
@@ -251,7 +251,7 @@ function AltasBinary:Ctor(x, y, width, height)
 	___rawset(self, "_right", nil)
 end
 
-function AltasBinary:Fill(texture_info, padding)
+function ALittle.AltasBinary:Fill(texture_info, padding)
 	if self._left ~= nil then
 		if self._left:Fill(texture_info, padding) then
 			return true
@@ -276,14 +276,14 @@ function AltasBinary:Fill(texture_info, padding)
 		self._texture_x = self._x + padding
 		self._texture_y = self._y + padding
 		self._texture_path = texture_info.path
-		self._left = AltasBinary(self._x + real_width, self._y, self._width - real_width, real_height)
-		self._right = AltasBinary(self._x, self._y + real_height, self._width, self._height - real_height)
+		self._left = ALittle.AltasBinary(self._x + real_width, self._y, self._width - real_width, real_height)
+		self._right = ALittle.AltasBinary(self._x, self._y + real_height, self._width, self._height - real_height)
 		return true
 	end
 	return false
 end
 
-function AltasBinary:GetInfo(list_info)
+function ALittle.AltasBinary:GetInfo(list_info)
 	if list_info == nil then
 		list_info = {}
 		list_info.count = 0
@@ -308,7 +308,7 @@ function AltasBinary:GetInfo(list_info)
 	return list_info.list
 end
 
-function AltasBinary.TextureListComp(a, b)
+function ALittle.AltasBinary.TextureListComp(a, b)
 	if a.height > b.height then
 		return true
 	elseif a.height == b.height then
@@ -323,8 +323,8 @@ function AltasBinary.TextureListComp(a, b)
 	return false
 end
 
-function AltasBinary.GenerateAltas(texture_list, max_width, max_height, padding)
-	List_Sort(texture_list, AltasBinary.TextureListComp)
+function ALittle.AltasBinary.GenerateAltas(texture_list, max_width, max_height, padding)
+	ALittle.List_Sort(texture_list, ALittle.AltasBinary.TextureListComp)
 	local big_list = {}
 	local big_list_count = 0
 	big_list_count = big_list_count + 1
@@ -332,7 +332,7 @@ function AltasBinary.GenerateAltas(texture_list, max_width, max_height, padding)
 	big_list_count = big_list_count + 1
 	big_list[big_list_count] = max_height
 	while true do
-		local altas = AltasBinary(0, 0, max_width, max_height)
+		local altas = ALittle.AltasBinary(0, 0, max_width, max_height)
 		local left_list = {}
 		local left_list_count = 0
 		for index, texture_info in ___ipairs(texture_list) do
@@ -358,28 +358,28 @@ function AltasBinary.GenerateAltas(texture_list, max_width, max_height, padding)
 	return big_list
 end
 
-TextureManager = Lua.Class(nil, "ALittle.TextureManager")
+ALittle.TextureManager = Lua.Class(nil, "ALittle.TextureManager")
 
-function TextureManager:Ctor(module_name, crypt_mode)
+function ALittle.TextureManager:Ctor(module_name, crypt_mode)
 	___rawset(self, "_cache_texture", true)
 	___rawset(self, "_base_path", "Module/" .. module_name .. "/Texture/")
 	___rawset(self, "_crypt_mode", crypt_mode or false)
-	___rawset(self, "_path_map_texture", CreateValueWeakMap())
+	___rawset(self, "_path_map_texture", ALittle.CreateValueWeakMap())
 	___rawset(self, "_prepare_map", {})
 	___rawset(self, "_path_map_objects", {})
 	self:LoadAtlas()
 end
 
-function TextureManager:LoadAtlas()
+function ALittle.TextureManager:LoadAtlas()
 	self._name_map_atlas = {}
 	if not self._crypt_mode then
 		return
 	end
-	local big_list = File_ReadJsonFromFile(self._base_path .. "Atlas.ali", self._crypt_mode)
+	local big_list = ALittle.File_ReadJsonFromFile(self._base_path .. "Atlas.ali", self._crypt_mode)
 	if big_list == nil then
 		return
 	end
-	local big_list_count = List_MaxN(big_list)
+	local big_list_count = ALittle.List_MaxN(big_list)
 	if big_list_count < 2 then
 		return
 	end
@@ -415,7 +415,7 @@ function TextureManager:LoadAtlas()
 	end
 end
 
-function TextureManager:GetAtlas(name)
+function ALittle.TextureManager:GetAtlas(name)
 	local atlas = self._name_map_atlas[name]
 	if atlas ~= nil then
 		return atlas
@@ -434,24 +434,24 @@ function TextureManager:GetAtlas(name)
 	return atlas
 end
 
-function TextureManager.__setter:cache_texture(cache)
+function ALittle.TextureManager.__setter:cache_texture(cache)
 	self._cache_texture = cache
 end
 
-function TextureManager.__getter:cache_texture()
+function ALittle.TextureManager.__getter:cache_texture()
 	return self._cache_texture
 end
 
-function TextureManager.__getter:crypt_mode()
+function ALittle.TextureManager.__getter:crypt_mode()
 	return self._crypt_mode
 end
 
-function TextureManager:ClearCache()
-	self._path_map_texture = CreateValueWeakMap()
+function ALittle.TextureManager:ClearCache()
+	self._path_map_texture = ALittle.CreateValueWeakMap()
 	self._prepare_map = {}
 end
 
-function TextureManager:PrepareTexture(name_map, callback)
+function ALittle.TextureManager:PrepareTexture(name_map, callback)
 	local new_name_map = {}
 	for name, value in ___pairs(name_map) do
 		local atlas = self:GetAtlas(name)
@@ -460,7 +460,7 @@ function TextureManager:PrepareTexture(name_map, callback)
 			if texture == nil then
 				local loading_map = self._path_map_objects[atlas.big_path]
 				if loading_map == nil then
-					loading_map = CreateKeyWeakMap()
+					loading_map = ALittle.CreateKeyWeakMap()
 					self._path_map_objects[atlas.big_path] = loading_map
 				end
 				A_LoadTextureManager:CreateTexture(self, atlas)
@@ -490,7 +490,7 @@ function TextureManager:PrepareTexture(name_map, callback)
 	end
 end
 
-function TextureManager:SetTexture(object, name)
+function ALittle.TextureManager:SetTexture(object, name)
 	local atlas = self:GetAtlas(name)
 	object:SetTextureCoord(atlas.t, atlas.b, atlas.l, atlas.r)
 	local texture = self._path_map_texture[atlas.big_path]
@@ -503,13 +503,13 @@ function TextureManager:SetTexture(object, name)
 		loading_map[object] = name
 		return
 	end
-	loading_map = CreateKeyWeakMap()
+	loading_map = ALittle.CreateKeyWeakMap()
 	self._path_map_objects[atlas.big_path] = loading_map
 	loading_map[object] = name
 	A_LoadTextureManager:CreateTexture(self, atlas)
 end
 
-function TextureManager:HandleTextureLoadSucceed(loader, texture)
+function ALittle.TextureManager:HandleTextureLoadSucceed(loader, texture)
 	local texture_wrap = __CPPAPITextureWrap()
 	texture_wrap:SetTexture(texture)
 	texture = texture_wrap
@@ -548,7 +548,7 @@ function TextureManager:HandleTextureLoadSucceed(loader, texture)
 	end
 end
 
-function TextureManager:HandleTextureLoadFailed(loader)
+function ALittle.TextureManager:HandleTextureLoadFailed(loader)
 	local path = loader:GetPath()
 	self._path_map_objects[path] = nil
 	local erase_map = {}
@@ -569,3 +569,4 @@ function TextureManager:HandleTextureLoadFailed(loader)
 	end
 end
 
+end

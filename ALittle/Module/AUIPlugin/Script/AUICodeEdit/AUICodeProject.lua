@@ -1,6 +1,6 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("AUIPlugin", package.seeall)
-
+do
+if _G.AUIPlugin == nil then _G.AUIPlugin = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
@@ -18,105 +18,105 @@ type_list = {"ALittle.EventDispatcher"},
 option_map = {}
 })
 
-g_ABnfProjectMap = ALittle.CreateValueWeakMap()
-g_UpperExtMapABnf = {}
-g_UpperExtMapABnf["JSON"] = "AJson.abnf"
-g_UpperExtMapABnf["CFG"] = "AJson.abnf"
-g_UpperExtMapABnf["XML"] = "AXml.abnf"
+AUIPlugin.g_ABnfProjectMap = ALittle.CreateValueWeakMap()
+AUIPlugin.g_UpperExtMapABnf = {}
+AUIPlugin.g_UpperExtMapABnf["JSON"] = "AJson.abnf"
+AUIPlugin.g_UpperExtMapABnf["CFG"] = "AJson.abnf"
+AUIPlugin.g_UpperExtMapABnf["XML"] = "AXml.abnf"
 assert(ALittle.EventDispatcher, " extends class:ALittle.EventDispatcher is nil")
-AUICodeProject = Lua.Class(ALittle.EventDispatcher, "AUIPlugin.AUICodeProject")
+AUIPlugin.AUICodeProject = Lua.Class(ALittle.EventDispatcher, "AUIPlugin.AUICodeProject")
 
-function AUICodeProject:Ctor(project)
+function AUIPlugin.AUICodeProject:Ctor(project)
 	___rawset(self, "_query_id", 0)
 	___rawset(self, "_project", project)
 	___rawset(self, "_map", {})
 end
 
-function AUICodeProject.CreateALittleScriptProject()
+function AUIPlugin.AUICodeProject.CreateALittleScriptProject()
 	if alittlescript == nil then
 		return nil
 	end
-	local abnf_buffer = ALittle.File_ReadTextFromFile(g_ModuleBasePath .. "Other/ABnf/ALittleScript.abnf")
-	local project = AUICodeALittleScriptProject(alittlescript.create_alittlescript_project(abnf_buffer))
+	local abnf_buffer = ALittle.File_ReadTextFromFile(AUIPlugin.g_ModuleBasePath .. "Other/ABnf/ALittleScript.abnf")
+	local project = AUIPlugin.AUICodeALittleScriptProject(alittlescript.create_alittlescript_project(abnf_buffer))
 	project:Start()
 	return project
 end
 
-function AUICodeProject.CreateABnfProject()
+function AUIPlugin.AUICodeProject.CreateABnfProject()
 	if abnf == nil then
 		return nil
 	end
-	local abnf_project = g_ABnfProjectMap["abnf"]
+	local abnf_project = AUIPlugin.g_ABnfProjectMap["abnf"]
 	if abnf_project == nil then
-		local abnf_buffer = ALittle.File_ReadTextFromFile(g_ModuleBasePath .. "/Other/ABnf/ABnf.abnf")
-		abnf_project = AUICodeABnfProject(abnf.create_abnf_project(abnf_buffer))
-		g_ABnfProjectMap["abnf"] = abnf_project
+		local abnf_buffer = ALittle.File_ReadTextFromFile(AUIPlugin.g_ModuleBasePath .. "/Other/ABnf/ABnf.abnf")
+		abnf_project = AUIPlugin.AUICodeABnfProject(abnf.create_abnf_project(abnf_buffer))
+		AUIPlugin.g_ABnfProjectMap["abnf"] = abnf_project
 		abnf_project:Start()
 	end
 	return abnf_project
 end
 
-function AUICodeProject.SupportUpperExt(upper_ext)
-	return g_UpperExtMapABnf[upper_ext] ~= nil
+function AUIPlugin.AUICodeProject.SupportUpperExt(upper_ext)
+	return AUIPlugin.g_UpperExtMapABnf[upper_ext] ~= nil
 end
 
-function AUICodeProject.CreateCommonProject(upper_ext)
+function AUIPlugin.AUICodeProject.CreateCommonProject(upper_ext)
 	if alanguage == nil then
 		return nil
 	end
-	local abnf = g_UpperExtMapABnf[upper_ext]
+	local abnf = AUIPlugin.g_UpperExtMapABnf[upper_ext]
 	if abnf == nil then
 		return nil
 	end
-	local abnf_project = g_ABnfProjectMap[abnf]
+	local abnf_project = AUIPlugin.g_ABnfProjectMap[abnf]
 	if abnf_project == nil then
-		local abnf_buffer = ALittle.File_ReadTextFromFile(g_ModuleBasePath .. "/Other/ABnf/" .. abnf)
-		abnf_project = AUICodeCommonProject(alanguage.create_abnfproject(abnf_buffer), upper_ext)
-		g_ABnfProjectMap[abnf] = abnf_project
+		local abnf_buffer = ALittle.File_ReadTextFromFile(AUIPlugin.g_ModuleBasePath .. "/Other/ABnf/" .. abnf)
+		abnf_project = AUIPlugin.AUICodeCommonProject(alanguage.create_abnfproject(abnf_buffer), upper_ext)
+		AUIPlugin.g_ABnfProjectMap[abnf] = abnf_project
 		abnf_project:Start()
 	end
 	return abnf_project
 end
 
-function AUICodeProject.Shutdown()
-	for name, project in ___pairs(g_ABnfProjectMap) do
+function AUIPlugin.AUICodeProject.Shutdown()
+	for name, project in ___pairs(AUIPlugin.g_ABnfProjectMap) do
 		project:Stop()
 	end
-	g_ABnfProjectMap = ALittle.CreateValueWeakMap()
+	AUIPlugin.g_ABnfProjectMap = ALittle.CreateValueWeakMap()
 end
 
-function AUICodeProject.__getter:upper_ext()
+function AUIPlugin.AUICodeProject.__getter:upper_ext()
 	return nil
 end
 
-function AUICodeProject.__getter:project()
+function AUIPlugin.AUICodeProject.__getter:project()
 	return self._project
 end
 
-function AUICodeProject:QueryRuleColor()
+function AUIPlugin.AUICodeProject:QueryRuleColor()
 	return alanguage.abnfproject_queryrulecolor(self._project)
 end
 
-function AUICodeProject:UpdateFile(module_path, full_path)
+function AUIPlugin.AUICodeProject:UpdateFile(module_path, full_path)
 	alanguage.abnfproject_updatefile(self._project, module_path, full_path, 0)
 end
 
-function AUICodeProject:TempFile(module_path, full_path, text)
+function AUIPlugin.AUICodeProject:TempFile(module_path, full_path, text)
 	alanguage.abnfproject_tempfile(self._project, module_path, full_path, text, 0)
 end
 
-function AUICodeProject:RemoveFile(full_path)
+function AUIPlugin.AUICodeProject:RemoveFile(full_path)
 	alanguage.abnfproject_removefile(self._project, full_path)
 end
 
-function AUICodeProject:FindFile(text)
+function AUIPlugin.AUICodeProject:FindFile(text)
 	local ___COROUTINE = coroutine.running()
 	local query_id = self:Add(___COROUTINE)
 	alanguage.abnfproject_findfile(self._project, query_id, text)
 	return coroutine.yield()
 end
 
-function AUICodeProject:Start()
+function AUIPlugin.AUICodeProject:Start()
 	if self._loop ~= nil then
 		return
 	end
@@ -124,19 +124,19 @@ function AUICodeProject:Start()
 	A_WeakLoopSystem:AddUpdater(self._loop)
 end
 
-function AUICodeProject:Add(thread)
+function AUIPlugin.AUICodeProject:Add(thread)
 	self._query_id = self._query_id + 1
 	self._map[self._query_id] = thread
 	return self._query_id
 end
 
-function AUICodeProject:OnTreeMenu(full_path, menu)
+function AUIPlugin.AUICodeProject:OnTreeMenu(full_path, menu)
 end
 
-function AUICodeProject:OnTreeItemMenu(full_path, menu)
+function AUIPlugin.AUICodeProject:OnTreeItemMenu(full_path, menu)
 end
 
-function AUICodeProject:Update(frame)
+function AUIPlugin.AUICodeProject:Update(frame)
 	while true do
 		local info = alanguage.abnfproject_pollone(self._project)
 		if info == nil then
@@ -150,7 +150,7 @@ function AUICodeProject:Update(frame)
 	end
 end
 
-function AUICodeProject:Stop()
+function AUIPlugin.AUICodeProject:Stop()
 	alanguage.abnfproject_clear(self._project)
 	if self._loop == nil then
 		return
@@ -159,3 +159,4 @@ function AUICodeProject:Stop()
 	self._loop = nil
 end
 
+end

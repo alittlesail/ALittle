@@ -1,15 +1,16 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-ISchedule = Lua.Class(nil, "ALittle.ISchedule")
+ALittle.ISchedule = Lua.Class(nil, "ALittle.ISchedule")
 
-function ISchedule:Run()
+function ALittle.ISchedule:Run()
 end
 
-function ISchedule:RunInFrame()
+function ALittle.ISchedule:RunInFrame()
 end
 
+end

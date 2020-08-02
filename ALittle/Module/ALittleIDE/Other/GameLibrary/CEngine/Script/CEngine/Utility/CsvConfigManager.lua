@@ -1,30 +1,30 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
-RegStruct(-1040774381, "ALittle.CsvPreloadInfo", {
+ALittle.RegStruct(-1040774381, "ALittle.CsvPreloadInfo", {
 name = "ALittle.CsvPreloadInfo", ns_name = "ALittle", rl_name = "CsvPreloadInfo", hash_code = -1040774381,
 name_list = {"total","succeed","failed","loader_map","callback"},
 type_list = {"int","int","int","Map<int,ALittle.CsvPreloadInfoDetail>","Functor<(int,int,int)>"},
 option_map = {}
 })
-RegStruct(332955965, "ALittle.CsvPreloadInfoDetail", {
+ALittle.RegStruct(332955965, "ALittle.CsvPreloadInfoDetail", {
 name = "ALittle.CsvPreloadInfoDetail", ns_name = "ALittle", rl_name = "CsvPreloadInfoDetail", hash_code = 332955965,
 name_list = {"loader","config"},
 type_list = {"ALittle.ICsvFileLoader","ALittle.CsvConfig"},
 option_map = {}
 })
 
-CsvConfigManager = Lua.Class(nil, "ALittle.CsvConfigManager")
+ALittle.CsvConfigManager = Lua.Class(nil, "ALittle.CsvConfigManager")
 
-function CsvConfigManager:Ctor()
+function ALittle.CsvConfigManager:Ctor()
 	___rawset(self, "_preload_map", {})
 end
 
-function CsvConfigManager:PrepareCsv(csv_map, callback)
+function ALittle.CsvConfigManager:PrepareCsv(csv_map, callback)
 	local preload_info = {}
 	preload_info.total = 0
 	preload_info.succeed = 0
@@ -50,7 +50,7 @@ function CsvConfigManager:PrepareCsv(csv_map, callback)
 	end
 end
 
-function CsvConfigManager:HandleCsvFileLoadSucceed(loader, file)
+function ALittle.CsvConfigManager:HandleCsvFileLoadSucceed(loader, file)
 	local id = loader:GetID()
 	for info, value in ___pairs(self._preload_map) do
 		local detail = info.loader_map[id]
@@ -72,8 +72,8 @@ function CsvConfigManager:HandleCsvFileLoadSucceed(loader, file)
 	end
 end
 
-function CsvConfigManager:HandleCsvFileLoadFailed(loader)
-	Error("csv load failed! path:" .. loader:GetPath())
+function ALittle.CsvConfigManager:HandleCsvFileLoadFailed(loader)
+	ALittle.Error("csv load failed! path:" .. loader:GetPath())
 	local id = loader:GetID()
 	for info, value in ___pairs(self._preload_map) do
 		local detail = info.loader_map[id]
@@ -93,4 +93,5 @@ function CsvConfigManager:HandleCsvFileLoadFailed(loader)
 	end
 end
 
-_G.A_CsvConfigManager = CsvConfigManager()
+_G.A_CsvConfigManager = ALittle.CsvConfigManager()
+end

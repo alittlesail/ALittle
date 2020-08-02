@@ -1,70 +1,70 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___all_struct = GetAllStruct()
+local ___all_struct = ALittle.GetAllStruct()
 
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
-TextCheckButton = Lua.Class(ALittle.DisplayLayout, "ALittle.TextCheckButton")
+ALittle.TextCheckButton = Lua.Class(ALittle.DisplayLayout, "ALittle.TextCheckButton")
 
-function TextCheckButton:Ctor(ctrl_sys)
+function ALittle.TextCheckButton:Ctor(ctrl_sys)
 	___rawset(self, "_show_text", ({}))
 	self._show_text.width = 0
 	self._show_text.height = 0
 	self._show_text.text = ""
-	self._show_text.x_type = UIEnumTypes.POS_ALIGN_CENTER
+	self._show_text.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
 	self._show_text.x_value = 0
 	self._show_text.visible = true
 	___rawset(self, "_show_over_text", ({}))
 	self._show_over_text.width = 0
 	self._show_over_text.height = 0
 	self._show_over_text.text = ""
-	self._show_over_text.x_type = UIEnumTypes.POS_ALIGN_CENTER
+	self._show_over_text.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
 	self._show_over_text.x_value = 0
 	self._show_over_text.visible = false
 	___rawset(self, "_show_down_text", ({}))
 	self._show_down_text.width = 0
 	self._show_down_text.height = 0
 	self._show_down_text.text = ""
-	self._show_down_text.x_type = UIEnumTypes.POS_ALIGN_CENTER
+	self._show_down_text.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
 	self._show_down_text.x_value = 0
 	self._show_down_text.visible = false
 	___rawset(self, "_show_disabled_text", ({}))
 	self._show_disabled_text.width = 0
 	self._show_disabled_text.height = 0
 	self._show_disabled_text.text = ""
-	self._show_disabled_text.x_type = UIEnumTypes.POS_ALIGN_CENTER
+	self._show_disabled_text.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
 	self._show_disabled_text.x_value = 0
 	self._show_disabled_text.visible = false
 	___rawset(self, "_show_selected_text", ({}))
 	self._show_selected_text.width = 0
 	self._show_selected_text.height = 0
 	self._show_selected_text.text = ""
-	self._show_selected_text.x_type = UIEnumTypes.POS_ALIGN_CENTER
+	self._show_selected_text.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
 	self._show_selected_text.x_value = 0
 	self._show_selected_text.visible = false
 	___rawset(self, "_show_selected_over_text", ({}))
 	self._show_selected_over_text.width = 0
 	self._show_selected_over_text.height = 0
 	self._show_selected_over_text.text = ""
-	self._show_selected_over_text.x_type = UIEnumTypes.POS_ALIGN_CENTER
+	self._show_selected_over_text.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
 	self._show_selected_over_text.x_value = 0
 	self._show_selected_over_text.visible = false
 	___rawset(self, "_show_selected_down_text", ({}))
 	self._show_selected_down_text.width = 0
 	self._show_selected_down_text.height = 0
 	self._show_selected_down_text.text = ""
-	self._show_selected_down_text.x_type = UIEnumTypes.POS_ALIGN_CENTER
+	self._show_selected_down_text.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
 	self._show_selected_down_text.x_value = 0
 	self._show_selected_down_text.visible = false
 	___rawset(self, "_show_selected_disabled_text", ({}))
 	self._show_selected_disabled_text.width = 0
 	self._show_selected_disabled_text.height = 0
 	self._show_selected_disabled_text.text = ""
-	self._show_selected_disabled_text.x_type = UIEnumTypes.POS_ALIGN_CENTER
+	self._show_selected_disabled_text.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
 	self._show_selected_disabled_text.x_value = 0
 	self._show_selected_disabled_text.visible = false
 	___rawset(self, "_selected", false)
@@ -78,8 +78,8 @@ function TextCheckButton:Ctor(ctrl_sys)
 	___rawset(self, "_pickup_child", false)
 end
 
-function TextCheckButton.__setter:disabled(value)
-	DisplayObject.__setter.disabled(self, value)
+function ALittle.TextCheckButton.__setter:disabled(value)
+	ALittle.DisplayObject.__setter.disabled(self, value)
 	if self._abs_disabled then
 		self:ShowDisabled()
 	else
@@ -87,26 +87,26 @@ function TextCheckButton.__setter:disabled(value)
 	end
 end
 
-function TextCheckButton:HandleMoveIn(event)
+function ALittle.TextCheckButton:HandleMoveIn(event)
 	self:ShowOver()
 end
 
-function TextCheckButton:HandleMoveOut(event)
+function ALittle.TextCheckButton:HandleMoveOut(event)
 	self:ShowUp()
 end
 
-function TextCheckButton:HandleLButtonDown(event)
+function ALittle.TextCheckButton:HandleLButtonDown(event)
 	self:ShowDown()
 end
 
-function TextCheckButton:HandleLButtonUp(event)
+function ALittle.TextCheckButton:HandleLButtonUp(event)
 	if event.rel_x >= 0 and event.rel_y >= 0 and event.rel_x < event.target._width and event.rel_y < event.target._height then
 		self._selected = (self._selected == false)
 		local e = {}
 		e.is_drag = event.is_drag
 		self:DispatchEvent(___all_struct[-449066808], e)
 		self:DispatchEvent(___all_struct[958494922], {})
-		if System_IsPhone == false then
+		if ALittle.System_IsPhone == false then
 			self:ShowOver()
 		else
 			self:ShowUp()
@@ -116,16 +116,16 @@ function TextCheckButton:HandleLButtonUp(event)
 	end
 end
 
-function TextCheckButton:HandleMButtonDown(event)
+function ALittle.TextCheckButton:HandleMButtonDown(event)
 	self:ShowDown()
 end
 
-function TextCheckButton:HandleMButtonUp(event)
+function ALittle.TextCheckButton:HandleMButtonUp(event)
 	if event.rel_x >= 0 and event.rel_y >= 0 and event.rel_x < event.target._width and event.rel_y < event.target._height then
 		local e = {}
 		e.is_drag = event.is_drag
 		self:DispatchEvent(___all_struct[-1330840], e)
-		if System_IsPhone == false then
+		if ALittle.System_IsPhone == false then
 			self:ShowOver()
 		else
 			self:ShowUp()
@@ -135,7 +135,7 @@ function TextCheckButton:HandleMButtonUp(event)
 	end
 end
 
-function TextCheckButton.__setter:text(value)
+function ALittle.TextCheckButton.__setter:text(value)
 	self._show_text.text = value
 	self._show_over_text.text = value
 	self._show_down_text.text = value
@@ -146,11 +146,11 @@ function TextCheckButton.__setter:text(value)
 	self._show_selected_disabled_text.text = value
 end
 
-function TextCheckButton.__getter:text()
+function ALittle.TextCheckButton.__getter:text()
 	return self._show_text.text
 end
 
-function TextCheckButton.__setter:text_x_type(value)
+function ALittle.TextCheckButton.__setter:text_x_type(value)
 	self._show_text.x_type = value
 	self._show_over_text.x_type = value
 	self._show_down_text.x_type = value
@@ -161,11 +161,11 @@ function TextCheckButton.__setter:text_x_type(value)
 	self._show_selected_disabled_text.x_type = value
 end
 
-function TextCheckButton.__getter:text_x_type()
+function ALittle.TextCheckButton.__getter:text_x_type()
 	return self._show_text.x_type
 end
 
-function TextCheckButton.__setter:text_x_value(value)
+function ALittle.TextCheckButton.__setter:text_x_value(value)
 	self._show_text.x_value = value
 	self._show_over_text.x_value = value
 	self._show_down_text.x_value = value
@@ -176,11 +176,11 @@ function TextCheckButton.__setter:text_x_value(value)
 	self._show_selected_disabled_text.x_value = value
 end
 
-function TextCheckButton.__getter:text_x_value()
+function ALittle.TextCheckButton.__getter:text_x_value()
 	return self._show_text.x_value
 end
 
-function TextCheckButton.__setter:selected(value)
+function ALittle.TextCheckButton.__setter:selected(value)
 	if self._selected == value then
 		return
 	end
@@ -192,11 +192,11 @@ function TextCheckButton.__setter:selected(value)
 	end
 end
 
-function TextCheckButton.__getter:selected()
+function ALittle.TextCheckButton.__getter:selected()
 	return self._selected
 end
 
-function TextCheckButton:HideAllShow()
+function ALittle.TextCheckButton:HideAllShow()
 	if self._show_selected_up ~= nil then
 		self._show_selected_up.alpha = 0
 	end
@@ -223,7 +223,7 @@ function TextCheckButton:HideAllShow()
 	end
 end
 
-function TextCheckButton:ShowUp()
+function ALittle.TextCheckButton:ShowUp()
 	if self._abs_disabled or self._disabled then
 		return
 	end
@@ -267,7 +267,7 @@ function TextCheckButton:ShowUp()
 	end
 end
 
-function TextCheckButton:ShowDown()
+function ALittle.TextCheckButton:ShowDown()
 	if self._abs_disabled or self._disabled then
 		return
 	end
@@ -314,7 +314,7 @@ function TextCheckButton:ShowDown()
 	end
 end
 
-function TextCheckButton:ShowOver()
+function ALittle.TextCheckButton:ShowOver()
 	if self._abs_disabled or self._disabled then
 		return
 	end
@@ -361,7 +361,7 @@ function TextCheckButton:ShowOver()
 	end
 end
 
-function TextCheckButton:ShowDisabled()
+function ALittle.TextCheckButton:ShowDisabled()
 	self:HideAllShow()
 	if self._selected then
 		if self._show_selected_disabled ~= nil then
@@ -405,7 +405,7 @@ function TextCheckButton:ShowDisabled()
 	end
 end
 
-function TextCheckButton.__setter:show_text(value)
+function ALittle.TextCheckButton.__setter:show_text(value)
 	if value == nil then
 		local show = self._show_text
 		self:RemoveChild(show)
@@ -426,18 +426,18 @@ function TextCheckButton.__setter:show_text(value)
 	value.x_value = self._show_text.x_value
 	self:RemoveChild(self._show_text)
 	self._show_text = value
-	self._show_text.y_type = UIEnumTypes.POS_ALIGN_CENTER
+	self._show_text.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
 	self:AddChild(self._show_text, 10)
 end
 
-function TextCheckButton.__getter:show_text()
+function ALittle.TextCheckButton.__getter:show_text()
 	if self._show_text._show == nil then
 		return nil
 	end
 	return self._show_text
 end
 
-function TextCheckButton.__setter:show_over_text(value)
+function ALittle.TextCheckButton.__setter:show_over_text(value)
 	if value == nil then
 		local show = self._show_over_text
 		self:RemoveChild(show)
@@ -458,18 +458,18 @@ function TextCheckButton.__setter:show_over_text(value)
 	value.x_value = self._show_over_text.x_value
 	self:RemoveChild(self._show_over_text)
 	self._show_over_text = value
-	self._show_over_text.y_type = UIEnumTypes.POS_ALIGN_CENTER
+	self._show_over_text.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
 	self:AddChild(self._show_over_text, 10)
 end
 
-function TextCheckButton.__getter:show_over_text()
+function ALittle.TextCheckButton.__getter:show_over_text()
 	if self._show_over_text._show == nil then
 		return nil
 	end
 	return self._show_over_text
 end
 
-function TextCheckButton.__setter:show_down_text(value)
+function ALittle.TextCheckButton.__setter:show_down_text(value)
 	if value == nil then
 		local show = self._show_down_text
 		self:RemoveChild(show)
@@ -490,18 +490,18 @@ function TextCheckButton.__setter:show_down_text(value)
 	value.x_value = self._show_down_text.x_value
 	self:RemoveChild(self._show_down_text)
 	self._show_down_text = value
-	self._show_down_text.y_type = UIEnumTypes.POS_ALIGN_CENTER
+	self._show_down_text.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
 	self:AddChild(self._show_down_text, 10)
 end
 
-function TextCheckButton.__getter:show_down_text()
+function ALittle.TextCheckButton.__getter:show_down_text()
 	if self._show_down_text._show == nil then
 		return nil
 	end
 	return self._show_down_text
 end
 
-function TextCheckButton.__setter:show_disabled_text(value)
+function ALittle.TextCheckButton.__setter:show_disabled_text(value)
 	if value == nil then
 		local show = self._show_disabled_text
 		self:RemoveChild(show)
@@ -522,18 +522,18 @@ function TextCheckButton.__setter:show_disabled_text(value)
 	value.x_value = self._show_disabled_text.x_value
 	self:RemoveChild(self._show_disabled_text)
 	self._show_disabled_text = value
-	self._show_disabled_text.y_type = UIEnumTypes.POS_ALIGN_CENTER
+	self._show_disabled_text.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
 	self:AddChild(self._show_disabled_text, 10)
 end
 
-function TextCheckButton.__getter:show_disabled_text()
+function ALittle.TextCheckButton.__getter:show_disabled_text()
 	if self._show_disabled_text._show == nil then
 		return nil
 	end
 	return self._show_disabled_text
 end
 
-function TextCheckButton.__setter:show_selected_text(value)
+function ALittle.TextCheckButton.__setter:show_selected_text(value)
 	if value == nil then
 		local show = self._show_selected_text
 		self:RemoveChild(show)
@@ -554,18 +554,18 @@ function TextCheckButton.__setter:show_selected_text(value)
 	value.x_value = self._show_selected_text.x_value
 	self:RemoveChild(self._show_selected_text)
 	self._show_selected_text = value
-	self._show_selected_text.y_type = UIEnumTypes.POS_ALIGN_CENTER
+	self._show_selected_text.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
 	self:AddChild(self._show_selected_text, 10)
 end
 
-function TextCheckButton.__getter:show_selected_text()
+function ALittle.TextCheckButton.__getter:show_selected_text()
 	if self._show_selected_text._show == nil then
 		return nil
 	end
 	return self._show_selected_text
 end
 
-function TextCheckButton.__setter:show_selected_over_text(value)
+function ALittle.TextCheckButton.__setter:show_selected_over_text(value)
 	if value == nil then
 		local show = self._show_selected_over_text
 		self:RemoveChild(show)
@@ -586,18 +586,18 @@ function TextCheckButton.__setter:show_selected_over_text(value)
 	value.x_value = self._show_selected_over_text.x_value
 	self:RemoveChild(self._show_selected_over_text)
 	self._show_selected_over_text = value
-	self._show_selected_over_text.y_type = UIEnumTypes.POS_ALIGN_CENTER
+	self._show_selected_over_text.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
 	self:AddChild(self._show_selected_over_text, 10)
 end
 
-function TextCheckButton.__getter:show_selected_over_text()
+function ALittle.TextCheckButton.__getter:show_selected_over_text()
 	if self._show_selected_over_text._show == nil then
 		return nil
 	end
 	return self._show_selected_over_text
 end
 
-function TextCheckButton.__setter:show_selected_down_text(value)
+function ALittle.TextCheckButton.__setter:show_selected_down_text(value)
 	if value == nil then
 		local show = self._show_selected_down_text
 		self:RemoveChild(show)
@@ -618,18 +618,18 @@ function TextCheckButton.__setter:show_selected_down_text(value)
 	value.x_value = self._show_selected_down_text.x_value
 	self:RemoveChild(self._show_selected_down_text)
 	self._show_selected_down_text = value
-	self._show_selected_down_text.y_type = UIEnumTypes.POS_ALIGN_CENTER
+	self._show_selected_down_text.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
 	self:AddChild(self._show_selected_down_text, 10)
 end
 
-function TextCheckButton.__getter:show_selected_down_text()
+function ALittle.TextCheckButton.__getter:show_selected_down_text()
 	if self._show_selected_down_text._show == nil then
 		return nil
 	end
 	return self._show_selected_down_text
 end
 
-function TextCheckButton.__setter:show_selected_disabled_text(value)
+function ALittle.TextCheckButton.__setter:show_selected_disabled_text(value)
 	if value == nil then
 		local show = self._show_selected_disabled_text
 		self:RemoveChild(show)
@@ -650,23 +650,23 @@ function TextCheckButton.__setter:show_selected_disabled_text(value)
 	value.x_value = self._show_selected_disabled_text.x_value
 	self:RemoveChild(self._show_selected_disabled_text)
 	self._show_selected_disabled_text = value
-	self._show_selected_disabled_text.y_type = UIEnumTypes.POS_ALIGN_CENTER
+	self._show_selected_disabled_text.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
 	self:AddChild(self._show_selected_disabled_text, 10)
 end
 
-function TextCheckButton.__getter:show_selected_disabled_text()
+function ALittle.TextCheckButton.__getter:show_selected_disabled_text()
 	if self._show_selected_disabled_text._show == nil then
 		return nil
 	end
 	return self._show_selected_disabled_text
 end
 
-function TextCheckButton.__setter:show_up(value)
+function ALittle.TextCheckButton.__setter:show_up(value)
 	self:RemoveChild(self._show_up)
 	self._show_up = value
 	if self._show_up ~= nil then
-		self._show_up.width_type = UIEnumTypes.SIZE_MARGIN
-		self._show_up.height_type = UIEnumTypes.SIZE_MARGIN
+		self._show_up.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
+		self._show_up.height_type = ALittle.UIEnumTypes.SIZE_MARGIN
 		self._show_up.width_value = 0
 		self._show_up.height_value = 0
 		self:AddChild(self._show_up, 1)
@@ -674,16 +674,16 @@ function TextCheckButton.__setter:show_up(value)
 	self:ShowUp()
 end
 
-function TextCheckButton.__getter:show_up()
+function ALittle.TextCheckButton.__getter:show_up()
 	return self._show_up
 end
 
-function TextCheckButton.__setter:show_down(value)
+function ALittle.TextCheckButton.__setter:show_down(value)
 	self:RemoveChild(self._show_down)
 	self._show_down = value
 	if self._show_down ~= nil then
-		self._show_down.width_type = UIEnumTypes.SIZE_MARGIN
-		self._show_down.height_type = UIEnumTypes.SIZE_MARGIN
+		self._show_down.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
+		self._show_down.height_type = ALittle.UIEnumTypes.SIZE_MARGIN
 		self._show_down.width_value = 0
 		self._show_down.height_value = 0
 		self:AddChild(self._show_down, 1)
@@ -691,16 +691,16 @@ function TextCheckButton.__setter:show_down(value)
 	self:ShowUp()
 end
 
-function TextCheckButton.__getter:show_down()
+function ALittle.TextCheckButton.__getter:show_down()
 	return self._show_down
 end
 
-function TextCheckButton.__setter:show_over(value)
+function ALittle.TextCheckButton.__setter:show_over(value)
 	self:RemoveChild(self._show_over)
 	self._show_over = value
 	if self._show_over ~= nil then
-		self._show_over.width_type = UIEnumTypes.SIZE_MARGIN
-		self._show_over.height_type = UIEnumTypes.SIZE_MARGIN
+		self._show_over.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
+		self._show_over.height_type = ALittle.UIEnumTypes.SIZE_MARGIN
 		self._show_over.width_value = 0
 		self._show_over.height_value = 0
 		self:AddChild(self._show_over, 1)
@@ -708,16 +708,16 @@ function TextCheckButton.__setter:show_over(value)
 	self:ShowUp()
 end
 
-function TextCheckButton.__getter:show_over()
+function ALittle.TextCheckButton.__getter:show_over()
 	return self._show_over
 end
 
-function TextCheckButton.__setter:show_disabled(value)
+function ALittle.TextCheckButton.__setter:show_disabled(value)
 	self:RemoveChild(self._show_disabled)
 	self._show_disabled = value
 	if self._show_disabled ~= nil then
-		self._show_disabled.width_type = UIEnumTypes.SIZE_MARGIN
-		self._show_disabled.height_type = UIEnumTypes.SIZE_MARGIN
+		self._show_disabled.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
+		self._show_disabled.height_type = ALittle.UIEnumTypes.SIZE_MARGIN
 		self._show_disabled.width_value = 0
 		self._show_disabled.height_value = 0
 		self:AddChild(self._show_disabled, 1)
@@ -725,16 +725,16 @@ function TextCheckButton.__setter:show_disabled(value)
 	self:ShowUp()
 end
 
-function TextCheckButton.__getter:show_disabled()
+function ALittle.TextCheckButton.__getter:show_disabled()
 	return self._show_disabled
 end
 
-function TextCheckButton.__setter:show_selected_up(value)
+function ALittle.TextCheckButton.__setter:show_selected_up(value)
 	self:RemoveChild(self._show_selected_up)
 	self._show_selected_up = value
 	if self._show_selected_up ~= nil then
-		self._show_selected_up.width_type = UIEnumTypes.SIZE_MARGIN
-		self._show_selected_up.height_type = UIEnumTypes.SIZE_MARGIN
+		self._show_selected_up.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
+		self._show_selected_up.height_type = ALittle.UIEnumTypes.SIZE_MARGIN
 		self._show_selected_up.width_value = 0
 		self._show_selected_up.height_value = 0
 		self:AddChild(self._show_selected_up, 1)
@@ -742,16 +742,16 @@ function TextCheckButton.__setter:show_selected_up(value)
 	self:ShowUp()
 end
 
-function TextCheckButton.__getter:show_selected_up()
+function ALittle.TextCheckButton.__getter:show_selected_up()
 	return self._show_selected_up
 end
 
-function TextCheckButton.__setter:show_selected_down(value)
+function ALittle.TextCheckButton.__setter:show_selected_down(value)
 	self:RemoveChild(self._show_selected_down)
 	self._show_selected_down = value
 	if self._show_selected_down ~= nil then
-		self._show_selected_down.width_type = UIEnumTypes.SIZE_MARGIN
-		self._show_selected_down.height_type = UIEnumTypes.SIZE_MARGIN
+		self._show_selected_down.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
+		self._show_selected_down.height_type = ALittle.UIEnumTypes.SIZE_MARGIN
 		self._show_selected_down.width_value = 0
 		self._show_selected_down.height_value = 0
 		self:AddChild(self._show_selected_down, 1)
@@ -759,16 +759,16 @@ function TextCheckButton.__setter:show_selected_down(value)
 	self:ShowUp()
 end
 
-function TextCheckButton.__getter:show_selected_down()
+function ALittle.TextCheckButton.__getter:show_selected_down()
 	return self._show_selected_down
 end
 
-function TextCheckButton.__setter:show_selected_over(value)
+function ALittle.TextCheckButton.__setter:show_selected_over(value)
 	self:RemoveChild(self._show_selected_over)
 	self._show_selected_over = value
 	if self._show_selected_over ~= nil then
-		self._show_selected_over.width_type = UIEnumTypes.SIZE_MARGIN
-		self._show_selected_over.height_type = UIEnumTypes.SIZE_MARGIN
+		self._show_selected_over.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
+		self._show_selected_over.height_type = ALittle.UIEnumTypes.SIZE_MARGIN
 		self._show_selected_over.width_value = 0
 		self._show_selected_over.height_value = 0
 		self:AddChild(self._show_selected_over, 1)
@@ -776,16 +776,16 @@ function TextCheckButton.__setter:show_selected_over(value)
 	self:ShowUp()
 end
 
-function TextCheckButton.__getter:show_selected_over()
+function ALittle.TextCheckButton.__getter:show_selected_over()
 	return self._show_selected_over
 end
 
-function TextCheckButton.__setter:show_selected_disabled(value)
+function ALittle.TextCheckButton.__setter:show_selected_disabled(value)
 	self:RemoveChild(self._show_selected_disabled)
 	self._show_selected_disabled = value
 	if self._show_selected_disabled ~= nil then
-		self._show_selected_disabled.width_type = UIEnumTypes.SIZE_MARGIN
-		self._show_selected_disabled.height_type = UIEnumTypes.SIZE_MARGIN
+		self._show_selected_disabled.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
+		self._show_selected_disabled.height_type = ALittle.UIEnumTypes.SIZE_MARGIN
 		self._show_selected_disabled.width_value = 0
 		self._show_selected_disabled.height_value = 0
 		self:AddChild(self._show_selected_disabled, 1)
@@ -793,7 +793,8 @@ function TextCheckButton.__setter:show_selected_disabled(value)
 	self:ShowUp()
 end
 
-function TextCheckButton.__getter:show_selected_disabled()
+function ALittle.TextCheckButton.__getter:show_selected_disabled()
 	return self._show_selected_disabled
 end
 
+end

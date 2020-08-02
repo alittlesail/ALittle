@@ -1,6 +1,6 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittleIDE", package.seeall)
-
+do
+if _G.ALittleIDE == nil then _G.ALittleIDE = {} end
 local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = ALittle.GetAllStruct()
@@ -25,15 +25,15 @@ option_map = {}
 })
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
-IDEUIProjectList = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDEUIProjectList")
+ALittleIDE.IDEUIProjectList = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDEUIProjectList")
 
-function IDEUIProjectList:HandleProjectSearchClick(event)
+function ALittleIDE.IDEUIProjectList:HandleProjectSearchClick(event)
 	self._project_scroll_screen:RemoveAllChild()
 	local key = self._project_search_key.text
-	local project_map = g_IDEConfig:GetConfig("project_map", {})
+	local project_map = ALittleIDE.g_IDEConfig:GetConfig("project_map", {})
 	for k, v in ___pairs(project_map) do
 		if key == "" or ALittle.String_Find(v, key) ~= nil then
-			local item = g_Control:CreateControl("ide_common_item_button")
+			local item = ALittleIDE.g_Control:CreateControl("ide_common_item_button")
 			item.text = v
 			item.drag_trans_target = self._project_scroll_screen
 			item:AddEventListener(___all_struct[-641444818], self, self.HandleProjectItemRightClick)
@@ -42,7 +42,7 @@ function IDEUIProjectList:HandleProjectSearchClick(event)
 	end
 end
 
-function IDEUIProjectList:HandleProjectItemRightClick(event)
+function ALittleIDE.IDEUIProjectList:HandleProjectItemRightClick(event)
 	local menu = AUIPlugin.AUIRightMenu()
 	menu:AddItem("打开", Lua.Bind(self.HandleRightProjectOpen, self, event.target))
 	menu:AddItem("关闭", Lua.Bind(self.HandleRightProjectClose, self, event.target))
@@ -50,43 +50,44 @@ function IDEUIProjectList:HandleProjectItemRightClick(event)
 	menu:Show()
 end
 
-function IDEUIProjectList:HandleRightProjectOpen(target)
+function ALittleIDE.IDEUIProjectList:HandleRightProjectOpen(target)
 	local project_name = target.text
-	if not g_IDECenter.center.content_edit:IsSaveAll() then
+	if not ALittleIDE.g_IDECenter.center.content_edit:IsSaveAll() then
 		local result = g_AUITool:SaveNotice("提示", "是否保存当前项目?")
 		if result == "YES" then
-			g_IDECenter.center.content_edit:SaveAllTab()
+			ALittleIDE.g_IDECenter.center.content_edit:SaveAllTab()
 		end
 	end
-	local error = g_IDEProject:OpenProject(project_name)
+	local error = ALittleIDE.g_IDEProject:OpenProject(project_name)
 	if error ~= nil then
 		g_AUITool:ShowNotice("错误", error)
 	end
 end
-IDEUIProjectList.HandleRightProjectOpen = Lua.CoWrap(IDEUIProjectList.HandleRightProjectOpen)
+ALittleIDE.IDEUIProjectList.HandleRightProjectOpen = Lua.CoWrap(ALittleIDE.IDEUIProjectList.HandleRightProjectOpen)
 
-function IDEUIProjectList:HandleRightProjectRemove(target)
+function ALittleIDE.IDEUIProjectList:HandleRightProjectRemove(target)
 	local project_name = target.text
-	if g_IDEProject.project ~= nil and g_IDEProject.project.name == project_name then
+	if ALittleIDE.g_IDEProject.project ~= nil and ALittleIDE.g_IDEProject.project.name == project_name then
 		g_AUITool:ShowNotice("提示", "当前项目正在编辑，请先关闭")
 		return
 	end
 	self._project_scroll_screen:RemoveChild(target)
-	g_IDEProject:RemoveProject(project_name)
+	ALittleIDE.g_IDEProject:RemoveProject(project_name)
 end
 
-function IDEUIProjectList:HandleRightProjectClose(target)
+function ALittleIDE.IDEUIProjectList:HandleRightProjectClose(target)
 	local project_name = target.text
-	if g_IDEProject.project == nil or g_IDEProject.project.name ~= project_name then
+	if ALittleIDE.g_IDEProject.project == nil or ALittleIDE.g_IDEProject.project.name ~= project_name then
 		return
 	end
-	if not g_IDECenter.center.content_edit:IsSaveAll() then
+	if not ALittleIDE.g_IDECenter.center.content_edit:IsSaveAll() then
 		local result = g_AUITool:SaveNotice("提示", "是否保存当前项目?")
 		if result == "YES" then
-			g_IDECenter.center.content_edit:SaveAllTab()
+			ALittleIDE.g_IDECenter.center.content_edit:SaveAllTab()
 		end
 	end
-	g_IDEProject:CloseProject()
+	ALittleIDE.g_IDEProject:CloseProject()
 end
-IDEUIProjectList.HandleRightProjectClose = Lua.CoWrap(IDEUIProjectList.HandleRightProjectClose)
+ALittleIDE.IDEUIProjectList.HandleRightProjectClose = Lua.CoWrap(ALittleIDE.IDEUIProjectList.HandleRightProjectClose)
 
+end

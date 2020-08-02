@@ -1,15 +1,15 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("Emulator", package.seeall)
-
+do
+if _G.Emulator == nil then _G.Emulator = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
 assert(Emulator.IDETreeLogic, " extends class:Emulator.IDETreeLogic is nil")
-IDETreeRepeatedEnum = Lua.Class(Emulator.IDETreeLogic, "Emulator.IDETreeRepeatedEnum")
+Emulator.IDETreeRepeatedEnum = Lua.Class(Emulator.IDETreeLogic, "Emulator.IDETreeRepeatedEnum")
 
-function IDETreeRepeatedEnum:Ctor(ctrl_sys, root, parent, rflct, msg, field, index)
+function Emulator.IDETreeRepeatedEnum:Ctor(ctrl_sys, root, parent, rflct, msg, field, index)
 	___rawset(self, "_parent", parent)
 	___rawset(self, "_rflct", rflct)
 	___rawset(self, "_msg", msg)
@@ -49,7 +49,7 @@ function IDETreeRepeatedEnum:Ctor(ctrl_sys, root, parent, rflct, msg, field, ind
 	self._delete_button.disabled = root.for_show
 end
 
-function IDETreeRepeatedEnum:HandleSelectChanegd(event)
+function Emulator.IDETreeRepeatedEnum:HandleSelectChanegd(event)
 	local value = self._enum_value_map[event.target.text]
 	if value == nil then
 		return
@@ -59,11 +59,12 @@ function IDETreeRepeatedEnum:HandleSelectChanegd(event)
 	self:Save()
 end
 
-function IDETreeRepeatedEnum:HandleInsertClick(event)
+function Emulator.IDETreeRepeatedEnum:HandleInsertClick(event)
 	self._parent:CreateOneBefore(self)
 end
 
-function IDETreeRepeatedEnum:HandleDeleteClick(event)
+function Emulator.IDETreeRepeatedEnum:HandleDeleteClick(event)
 	self._parent:Delete(self)
 end
 
+end

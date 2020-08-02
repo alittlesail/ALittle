@@ -1,81 +1,81 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___all_struct = GetAllStruct()
+local ___all_struct = ALittle.GetAllStruct()
 
-RegStruct(1949279026, "ALittle.RichEditFontChangedEvent", {
+ALittle.RegStruct(1949279026, "ALittle.RichEditFontChangedEvent", {
 name = "ALittle.RichEditFontChangedEvent", ns_name = "ALittle", rl_name = "RichEditFontChangedEvent", hash_code = 1949279026,
 name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
-RegStruct(-1053992999, "ALittle.RichEditCursorClickEvent", {
+ALittle.RegStruct(-1053992999, "ALittle.RichEditCursorClickEvent", {
 name = "ALittle.RichEditCursorClickEvent", ns_name = "ALittle", rl_name = "RichEditCursorClickEvent", hash_code = -1053992999,
 name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
-RegStruct(-923963966, "ALittle.RichEditCharInfo", {
+ALittle.RegStruct(-923963966, "ALittle.RichEditCharInfo", {
 name = "ALittle.RichEditCharInfo", ns_name = "ALittle", rl_name = "RichEditCharInfo", hash_code = -923963966,
 name_list = {"acc_width","pre_width","text_info","text_object","text","ctrl_info","ctrl"},
 type_list = {"double","double","ALittle.DisplayInfo","ALittle.Text","string","ALittle.DisplayInfo","ALittle.DisplayObject"},
 option_map = {}
 })
-RegStruct(774620468, "ALittle.UIRichEditLongClickEvent", {
+ALittle.RegStruct(774620468, "ALittle.UIRichEditLongClickEvent", {
 name = "ALittle.UIRichEditLongClickEvent", ns_name = "ALittle", rl_name = "UIRichEditLongClickEvent", hash_code = 774620468,
 name_list = {"target","abs_x","abs_y","rel_x","rel_y"},
 type_list = {"ALittle.DisplayObject","double","double","double","double"},
 option_map = {}
 })
-RegStruct(556044369, "ALittle.RichEditLineInfo", {
+ALittle.RegStruct(556044369, "ALittle.RichEditLineInfo", {
 name = "ALittle.RichEditLineInfo", ns_name = "ALittle", rl_name = "RichEditLineInfo", hash_code = 556044369,
 name_list = {"char_list","char_count","child_list","child_count","container","acc_height","pre_height","force_line"},
 type_list = {"List<ALittle.RichEditCharInfo>","int","List<ALittle.DisplayObject>","int","ALittle.DisplayLayout","double","double","bool"},
 option_map = {}
 })
-RegStruct(291295687, "ALittle.RichEditMultiDragEvent", {
+ALittle.RegStruct(291295687, "ALittle.RichEditMultiDragEvent", {
 name = "ALittle.RichEditMultiDragEvent", ns_name = "ALittle", rl_name = "RichEditMultiDragEvent", hash_code = 291295687,
 name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
-RegStruct(-203792390, "ALittle.RichEditMultiDragEndEvent", {
+ALittle.RegStruct(-203792390, "ALittle.RichEditMultiDragEndEvent", {
 name = "ALittle.RichEditMultiDragEndEvent", ns_name = "ALittle", rl_name = "RichEditMultiDragEndEvent", hash_code = -203792390,
 name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
-RegStruct(9565867, "ALittle.RichEditMultiDragBeginEvent", {
+ALittle.RegStruct(9565867, "ALittle.RichEditMultiDragBeginEvent", {
 name = "ALittle.RichEditMultiDragBeginEvent", ns_name = "ALittle", rl_name = "RichEditMultiDragBeginEvent", hash_code = 9565867,
 name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
 
-local __byte = String_Byte
-local __sub = String_Sub
-local __find = String_Find
-local __floor = Math_Floor
-local __len = String_Len
-local __abs = Math_Abs
-local __type = String_Type
+local __byte = ALittle.String_Byte
+local __sub = ALittle.String_Sub
+local __find = ALittle.String_Find
+local __floor = ALittle.Math_Floor
+local __len = ALittle.String_Len
+local __abs = ALittle.Math_Abs
+local __type = ALittle.String_Type
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
-RichEdit = Lua.Class(ALittle.DisplayLayout, "ALittle.RichEdit")
+ALittle.RichEdit = Lua.Class(ALittle.DisplayLayout, "ALittle.RichEdit")
 
-function RichEdit:CharIsNumber(str)
+function ALittle.RichEdit:CharIsNumber(str)
 	local c = __byte(str, 1)
 	return c >= 48 and c <= 57
 end
 
-function RichEdit:CharIsLetter(str)
+function ALittle.RichEdit:CharIsLetter(str)
 	local c = __byte(str, 1)
 	return c >= 65 and c <= 90 or c >= 97 and c <= 122
 end
 
-function RichEdit:CompareTextInfo(a, b)
+function ALittle.RichEdit:CompareTextInfo(a, b)
 	if a.font_path ~= b.font_path then
 		return false
 	end
@@ -106,7 +106,7 @@ function RichEdit:CompareTextInfo(a, b)
 	return true
 end
 
-function RichEdit:CopyTextInfo(b)
+function ALittle.RichEdit:CopyTextInfo(b)
 	local a = {}
 	a.__class = "Text"
 	a.font_path = b.font_path
@@ -121,7 +121,7 @@ function RichEdit:CopyTextInfo(b)
 	return a
 end
 
-function RichEdit:InitTextInfo()
+function ALittle.RichEdit:InitTextInfo()
 	local font_text = self._font_text
 	local a = {}
 	a.__class = "Text"
@@ -137,7 +137,7 @@ function RichEdit:InitTextInfo()
 	return a
 end
 
-function RichEdit:SetDrawText(font_text)
+function ALittle.RichEdit:SetDrawText(font_text)
 	local draw_text = self._draw_text
 	draw_text.font_path = font_text.font_path
 	draw_text.font_size = font_text.font_size
@@ -150,7 +150,7 @@ function RichEdit:SetDrawText(font_text)
 	draw_text.deleteline = font_text.deleteline
 end
 
-function RichEdit:UpdateFontText()
+function ALittle.RichEdit:UpdateFontText()
 	local line_list = self._line_list
 	local char_info = line_list[self._line_cursor_it].char_list[self._char_cursor_it]
 	local is_change = false
@@ -197,7 +197,7 @@ function RichEdit:UpdateFontText()
 	end
 end
 
-function RichEdit:CheckDisplayList(content)
+function ALittle.RichEdit:CheckDisplayList(content)
 	for k, v in ___ipairs(content) do
 		if v.__class == nil then
 			return false
@@ -206,7 +206,7 @@ function RichEdit:CheckDisplayList(content)
 	return true
 end
 
-function RichEdit:DisplayListToCharInfoList(display_list, default_text_info)
+function ALittle.RichEdit:DisplayListToCharInfoList(display_list, default_text_info)
 	local char_info_list = {}
 	local char_info_list_count = 0
 	local last_text_info = default_text_info
@@ -242,7 +242,7 @@ function RichEdit:DisplayListToCharInfoList(display_list, default_text_info)
 	return char_info_list
 end
 
-function RichEdit:GetCharInfoList()
+function ALittle.RichEdit:GetCharInfoList()
 	local char_info_list = {}
 	local char_info_list_count = 0
 	for line_index, line_info in ___ipairs(self._line_list) do
@@ -254,7 +254,7 @@ function RichEdit:GetCharInfoList()
 	return char_info_list
 end
 
-function RichEdit:JoinCharInfoList(char_info_list)
+function ALittle.RichEdit:JoinCharInfoList(char_info_list)
 	local new_char_info_list = {}
 	local new_char_info_list_count = 0
 	local text_info = nil
@@ -275,7 +275,7 @@ function RichEdit:JoinCharInfoList(char_info_list)
 					text_list_count = text_list_count + 1
 					text_list[text_list_count] = char_info.text
 				else
-					local text = String_Join(text_list, "")
+					local text = ALittle.String_Join(text_list, "")
 					if text ~= "" then
 						local new_char_info = {}
 						new_char_info.acc_width = 0
@@ -296,7 +296,7 @@ function RichEdit:JoinCharInfoList(char_info_list)
 			end
 		else
 			if text_info ~= nil then
-				local text = String_Join(text_list, "")
+				local text = ALittle.String_Join(text_list, "")
 				if text ~= "" then
 					local new_char_info = {}
 					new_char_info.acc_width = 0
@@ -326,7 +326,7 @@ function RichEdit:JoinCharInfoList(char_info_list)
 		end
 	end
 	if text_info ~= nil then
-		local text = String_Join(text_list, "")
+		local text = ALittle.String_Join(text_list, "")
 		if text ~= "" then
 			local new_char_info = {}
 			new_char_info.acc_width = 0
@@ -343,7 +343,7 @@ function RichEdit:JoinCharInfoList(char_info_list)
 	return new_char_info_list
 end
 
-function RichEdit:CharInfoListToDisplayList(list)
+function ALittle.RichEdit:CharInfoListToDisplayList(list)
 	local display_list = {}
 	local display_list_count = 0
 	local text_info = nil
@@ -364,9 +364,9 @@ function RichEdit:CharInfoListToDisplayList(list)
 					text_list_count = text_list_count + 1
 					text_list[text_list_count] = char_info.text
 				else
-					local text = String_Join(text_list, "")
+					local text = ALittle.String_Join(text_list, "")
 					if text ~= "" then
-						local text_ctrl = String_CopyTable(text_info)
+						local text_ctrl = ALittle.String_CopyTable(text_info)
 						text_ctrl.__class = "Text"
 						text_ctrl.text = text
 						display_list_count = display_list_count + 1
@@ -380,9 +380,9 @@ function RichEdit:CharInfoListToDisplayList(list)
 			end
 		else
 			if text_info ~= nil then
-				local text = String_Join(text_list, "")
+				local text = ALittle.String_Join(text_list, "")
 				if text ~= "" then
-					local text_ctrl = String_CopyTable(text_info)
+					local text_ctrl = ALittle.String_CopyTable(text_info)
 					text_ctrl.__class = "Text"
 					text_ctrl.text = text
 					display_list_count = display_list_count + 1
@@ -393,13 +393,13 @@ function RichEdit:CharInfoListToDisplayList(list)
 				text_list_count = 0
 			end
 			display_list_count = display_list_count + 1
-			display_list[display_list_count] = String_CopyTable(char_info.ctrl_info)
+			display_list[display_list_count] = ALittle.String_CopyTable(char_info.ctrl_info)
 		end
 	end
 	if text_info ~= nil then
-		local text = String_Join(text_list, "")
+		local text = ALittle.String_Join(text_list, "")
 		if text ~= "" then
-			local text_ctrl = String_CopyTable(text_info)
+			local text_ctrl = ALittle.String_CopyTable(text_info)
 			text_ctrl.__class = "Text"
 			text_ctrl.text = text
 			display_list_count = display_list_count + 1
@@ -409,7 +409,7 @@ function RichEdit:CharInfoListToDisplayList(list)
 	return display_list
 end
 
-function RichEdit:CharInfoListToWord(list)
+function ALittle.RichEdit:CharInfoListToWord(list)
 	local text_list = {}
 	local text_list_count = 0
 	for char_index, char_info in ___ipairs(list) do
@@ -418,10 +418,10 @@ function RichEdit:CharInfoListToWord(list)
 			text_list[text_list_count] = char_info.text
 		end
 	end
-	return String_Join(text_list, "")
+	return ALittle.String_Join(text_list, "")
 end
 
-function RichEdit:SplitText(char_info, char_info_list, char_info_list_count)
+function ALittle.RichEdit:SplitText(char_info, char_info_list, char_info_list_count)
 	local text = char_info.text
 	while true do
 		local start_index_1 = __find(text, "\n")
@@ -434,28 +434,28 @@ function RichEdit:SplitText(char_info, char_info_list, char_info_list_count)
 			end
 		end
 		if start_index_1 ~= nil then
-			local new_char_info = String_CopyTable(char_info)
+			local new_char_info = ALittle.String_CopyTable(char_info)
 			new_char_info.text = __sub(text, 1, start_index_1 - 1)
 			char_info_list_count = char_info_list_count + 1
 			char_info_list[char_info_list_count] = new_char_info
-			new_char_info = String_CopyTable(char_info)
+			new_char_info = ALittle.String_CopyTable(char_info)
 			new_char_info.text = "\n"
 			char_info_list_count = char_info_list_count + 1
 			char_info_list[char_info_list_count] = new_char_info
 			text = __sub(text, start_index_1 + 1)
 		elseif start_index_2 ~= nil then
-			local new_char_info = String_CopyTable(char_info)
+			local new_char_info = ALittle.String_CopyTable(char_info)
 			new_char_info.text = __sub(text, 1, start_index_2 - 1)
 			char_info_list_count = char_info_list_count + 1
 			char_info_list[char_info_list_count] = new_char_info
-			new_char_info = String_CopyTable(char_info)
+			new_char_info = ALittle.String_CopyTable(char_info)
 			new_char_info.text = "\t"
 			char_info_list_count = char_info_list_count + 1
 			char_info_list[char_info_list_count] = new_char_info
 			text = __sub(text, start_index_2 + 1)
 		else
 			if text ~= "" then
-				local new_char_info = String_CopyTable(char_info)
+				local new_char_info = ALittle.String_CopyTable(char_info)
 				new_char_info.text = text
 				char_info_list_count = char_info_list_count + 1
 				char_info_list[char_info_list_count] = new_char_info
@@ -466,7 +466,7 @@ function RichEdit:SplitText(char_info, char_info_list, char_info_list_count)
 	return char_info_list_count
 end
 
-function RichEdit:GetCursorWidth(font_size)
+function ALittle.RichEdit:GetCursorWidth(font_size)
 	if font_size == nil or font_size < 15 then
 		return 1
 	end
@@ -476,45 +476,45 @@ function RichEdit:GetCursorWidth(font_size)
 	return __floor((font_size / 100) * 10)
 end
 
-function RichEdit:Ctor(ctrl_sys)
+function ALittle.RichEdit:Ctor(ctrl_sys)
 	___rawset(self, "_enter_key_height", 20)
 	___rawset(self, "_line_list", {})
 	___rawset(self, "_line_count", 0)
-	___rawset(self, "_font_text", Text(self._ctrl_sys))
-	___rawset(self, "_draw_text", Text(self._ctrl_sys))
+	___rawset(self, "_font_text", ALittle.Text(self._ctrl_sys))
+	___rawset(self, "_draw_text", ALittle.Text(self._ctrl_sys))
 	___rawset(self, "_line_start_it", nil)
 	___rawset(self, "_line_cursor_it", nil)
 	___rawset(self, "_char_cursor_it", nil)
 	___rawset(self, "_line_select_it", nil)
 	___rawset(self, "_char_select_it", nil)
-	___rawset(self, "_scroll_list", ScrollList(self._ctrl_sys))
-	self._scroll_list.right_scrollbar = ScrollBar(self._ctrl_sys)
-	self._scroll_list.width_type = UIEnumTypes.SIZE_MARGIN
-	self._scroll_list.height_type = UIEnumTypes.SIZE_MARGIN
-	self._scroll_list.x_type = UIEnumTypes.POS_ALIGN_CENTER
-	self._scroll_list.y_type = UIEnumTypes.POS_ALIGN_CENTER
+	___rawset(self, "_scroll_list", ALittle.ScrollList(self._ctrl_sys))
+	self._scroll_list.right_scrollbar = ALittle.ScrollBar(self._ctrl_sys)
+	self._scroll_list.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
+	self._scroll_list.height_type = ALittle.UIEnumTypes.SIZE_MARGIN
+	self._scroll_list.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
+	self._scroll_list.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
 	self:AddChild(self._scroll_list)
 	___rawset(self, "_current_flash_alpha", 1)
 	___rawset(self, "_current_flash_dir", -0.05)
-	___rawset(self, "_cursor", Quad(self._ctrl_sys))
+	___rawset(self, "_cursor", ALittle.Quad(self._ctrl_sys))
 	self:AddChild(self._cursor)
 	self._cursor.visible = false
 	self._cursor.width = 1
-	___rawset(self, "_select_1", Quad(self._ctrl_sys))
+	___rawset(self, "_select_1", ALittle.Quad(self._ctrl_sys))
 	self:AddChild(self._select_1)
 	self._select_1.visible = false
 	self._select_1.alpha = 0.5
-	___rawset(self, "_select_2", Quad(self._ctrl_sys))
+	___rawset(self, "_select_2", ALittle.Quad(self._ctrl_sys))
 	self:AddChild(self._select_2)
 	self._select_2.visible = false
 	self._select_2.alpha = 0.5
-	___rawset(self, "_select_3", Quad(self._ctrl_sys))
+	___rawset(self, "_select_3", ALittle.Quad(self._ctrl_sys))
 	self:AddChild(self._select_3)
 	self._select_3.visible = false
 	self._select_3.alpha = 0.5
-	___rawset(self, "_start_cursor", Quad(self._ctrl_sys))
+	___rawset(self, "_start_cursor", ALittle.Quad(self._ctrl_sys))
 	self._start_cursor.width = 1
-	___rawset(self, "_end_cursor", Quad(self._ctrl_sys))
+	___rawset(self, "_end_cursor", ALittle.Quad(self._ctrl_sys))
 	self._end_cursor.width = 1
 	___rawset(self, "_start_cursor_data", nil)
 	___rawset(self, "_end_cursor_data", nil)
@@ -544,13 +544,13 @@ function RichEdit:Ctor(ctrl_sys)
 	___rawset(self, "_line_spacing", 0)
 	___rawset(self, "_is_drag_begin", false)
 	___rawset(self, "_ims_padding", 0)
-	___rawset(self, "_default_text_area", TextArea(self._ctrl_sys))
-	self._default_text_area.width_type = UIEnumTypes.SIZE_MARGIN
+	___rawset(self, "_default_text_area", ALittle.TextArea(self._ctrl_sys))
+	self._default_text_area.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
 	self._default_text_area.height = 0
-	self._default_text_area.x_type = UIEnumTypes.POS_ALIGN_CENTER
+	self._default_text_area.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
 	self._default_text_area.y = 0
 	self:AddChild(self._default_text_area)
-	___rawset(self, "_link_map", CreateValueWeakMap())
+	___rawset(self, "_link_map", ALittle.CreateValueWeakMap())
 	___rawset(self, "_pickup_rect", true)
 	___rawset(self, "_pickup_child", false)
 	___rawset(self, "_pickup_this", true)
@@ -577,28 +577,28 @@ function RichEdit:Ctor(ctrl_sys)
 	self:AddEventListener(___all_struct[-439548260], self, self.HandleLongLButtonDown)
 	self:ClearText()
 	if self._loop == nil then
-		___rawset(self, "_loop", LoopFunction(Lua.Bind(self.Update, self), -1, 1, 1))
+		___rawset(self, "_loop", ALittle.LoopFunction(Lua.Bind(self.Update, self), -1, 1, 1))
 	end
 	A_LoopSystem:AddUpdater(self._loop)
 end
 
-function RichEdit:GetCursor()
+function ALittle.RichEdit:GetCursor()
 	return self._cursor
 end
 
-function RichEdit.__getter:link_map()
+function ALittle.RichEdit.__getter:link_map()
 	return self._link_map
 end
 
-function RichEdit:ClearLinkMap()
-	self._link_map = CreateValueWeakMap()
+function ALittle.RichEdit:ClearLinkMap()
+	self._link_map = ALittle.CreateValueWeakMap()
 end
 
-function RichEdit.__getter:real_height()
+function ALittle.RichEdit.__getter:real_height()
 	return self._line_list[self._line_count].acc_height
 end
 
-function RichEdit.__getter:real_edit_height()
+function ALittle.RichEdit.__getter:real_edit_height()
 	local line_list = self._line_list
 	local last_line = line_list[self._line_count]
 	if last_line.acc_height ~= last_line.pre_height then
@@ -607,42 +607,42 @@ function RichEdit.__getter:real_edit_height()
 	return last_line.acc_height + self._enter_key_height
 end
 
-function RichEdit.__getter:can_drag_text()
+function ALittle.RichEdit.__getter:can_drag_text()
 	return self._can_drag_text
 end
 
-function RichEdit.__setter:can_drag_text(value)
+function ALittle.RichEdit.__setter:can_drag_text(value)
 	self._can_drag_text = value
 end
 
-function RichEdit.__setter:auto_ims(value)
+function ALittle.RichEdit.__setter:auto_ims(value)
 	self._auto_ims = value
 end
 
-function RichEdit.__getter:auto_ims()
+function ALittle.RichEdit.__getter:auto_ims()
 	return self._auto_ims
 end
 
-function RichEdit.__getter:multi_cursor()
+function ALittle.RichEdit.__getter:multi_cursor()
 	return self._multi_cursor
 end
 
-function RichEdit.__setter:width(value)
+function ALittle.RichEdit.__setter:width(value)
 	if self.width == value then
 		return
 	end
-	DisplayLayout.__setter.width(self, value)
+	ALittle.DisplayLayout.__setter.width(self, value)
 	local char_info_list = self:GetCharInfoList()
 	self:ClearText()
 	self:InsertTextImpl(char_info_list, false)
 	self:ResetCursor()
 end
 
-function RichEdit.__setter:height(value)
+function ALittle.RichEdit.__setter:height(value)
 	if self.height == value then
 		return
 	end
-	DisplayLayout.__setter.height(self, value)
+	ALittle.DisplayLayout.__setter.height(self, value)
 	self._default_text_area.y = self._scroll_list.y
 	self._default_text_area.height = self._default_text_area.real_height
 	if self._default_text_area.height > self._scroll_list.height then
@@ -652,40 +652,40 @@ function RichEdit.__setter:height(value)
 	self:ResetCursor()
 end
 
-function RichEdit.__setter:cursor_red(value)
+function ALittle.RichEdit.__setter:cursor_red(value)
 	self._cursor.red = value
 	self._select_1.red = value
 	self._select_2.red = value
 	self._select_3.red = value
 end
 
-function RichEdit.__getter:cursor_red()
+function ALittle.RichEdit.__getter:cursor_red()
 	return self._cursor.red
 end
 
-function RichEdit.__setter:cursor_green(value)
+function ALittle.RichEdit.__setter:cursor_green(value)
 	self._cursor.green = value
 	self._select_1.green = value
 	self._select_2.green = value
 	self._select_3.green = value
 end
 
-function RichEdit.__getter:cursor_green()
+function ALittle.RichEdit.__getter:cursor_green()
 	return self._cursor.green
 end
 
-function RichEdit.__setter:cursor_blue(value)
+function ALittle.RichEdit.__setter:cursor_blue(value)
 	self._cursor.blue = value
 	self._select_1.blue = value
 	self._select_2.blue = value
 	self._select_3.blue = value
 end
 
-function RichEdit.__getter:cursor_blue()
+function ALittle.RichEdit.__getter:cursor_blue()
 	return self._cursor.blue
 end
 
-function RichEdit:ShowCursor(value)
+function ALittle.RichEdit:ShowCursor(value)
 	if self._multi_cursor == false then
 		if value then
 			if self._select_1.visible == false then
@@ -699,7 +699,7 @@ function RichEdit:ShowCursor(value)
 	end
 end
 
-function RichEdit.__setter:font_bold(value)
+function ALittle.RichEdit.__setter:font_bold(value)
 	if self._font_text.bold == value then
 		return
 	end
@@ -711,7 +711,7 @@ function RichEdit.__setter:font_bold(value)
 	self:ResetCursor()
 end
 
-function RichEdit.__setter:font_underline(value)
+function ALittle.RichEdit.__setter:font_underline(value)
 	if self._font_text.underline == value then
 		return
 	end
@@ -719,7 +719,7 @@ function RichEdit.__setter:font_underline(value)
 	self._default_text_area.underline = value
 end
 
-function RichEdit.__setter:font_deleteline(value)
+function ALittle.RichEdit.__setter:font_deleteline(value)
 	if self._font_text.deleteline == value then
 		return
 	end
@@ -727,7 +727,7 @@ function RichEdit.__setter:font_deleteline(value)
 	self._default_text_area.deleteline = value
 end
 
-function RichEdit.__setter:font_italic(value)
+function ALittle.RichEdit.__setter:font_italic(value)
 	if self._font_text.italic == value then
 		return
 	end
@@ -735,7 +735,7 @@ function RichEdit.__setter:font_italic(value)
 	self._default_text_area.italic = value
 end
 
-function RichEdit.__setter:font_path(value)
+function ALittle.RichEdit.__setter:font_path(value)
 	if self._font_text.font_path == value then
 		return
 	end
@@ -754,7 +754,7 @@ function RichEdit.__setter:font_path(value)
 	end
 end
 
-function RichEdit.__setter:font_size(value)
+function ALittle.RichEdit.__setter:font_size(value)
 	if self._font_text.font_size == value then
 		return
 	end
@@ -773,15 +773,15 @@ function RichEdit.__setter:font_size(value)
 	end
 end
 
-function RichEdit.__getter:font_path()
+function ALittle.RichEdit.__getter:font_path()
 	return self._font_text.font_path
 end
 
-function RichEdit.__getter:font_size()
+function ALittle.RichEdit.__getter:font_size()
 	return self._font_text.font_size
 end
 
-function RichEdit.__setter:font_red(value)
+function ALittle.RichEdit.__setter:font_red(value)
 	if self._font_text.red == value then
 		return
 	end
@@ -789,11 +789,11 @@ function RichEdit.__setter:font_red(value)
 	self._default_text_area.red = value
 end
 
-function RichEdit.__getter:font_red()
+function ALittle.RichEdit.__getter:font_red()
 	return self._font_text.red
 end
 
-function RichEdit.__setter:font_green(value)
+function ALittle.RichEdit.__setter:font_green(value)
 	if self._font_text.green == value then
 		return
 	end
@@ -801,11 +801,11 @@ function RichEdit.__setter:font_green(value)
 	self._default_text_area.green = value
 end
 
-function RichEdit.__getter:font_green()
+function ALittle.RichEdit.__getter:font_green()
 	return self._font_text.green
 end
 
-function RichEdit.__setter:font_blue(value)
+function ALittle.RichEdit.__setter:font_blue(value)
 	if self._font_text.blue == value then
 		return
 	end
@@ -813,11 +813,11 @@ function RichEdit.__setter:font_blue(value)
 	self._default_text_area.blue = value
 end
 
-function RichEdit.__getter:font_blue()
+function ALittle.RichEdit.__getter:font_blue()
 	return self._font_text.blue
 end
 
-function RichEdit.__setter:default_text(value)
+function ALittle.RichEdit.__setter:default_text(value)
 	self._default_text_area.text = value
 	self._default_text_area.height = self._default_text_area.real_height
 	if self._default_text_area.height > self._scroll_list.height then
@@ -825,13 +825,13 @@ function RichEdit.__setter:default_text(value)
 	end
 end
 
-function RichEdit.__setter:text(value)
+function ALittle.RichEdit.__setter:text(value)
 	self:ClearText()
 	self:InsertTextNative(value)
 	self:ShowDefaultText()
 end
 
-function RichEdit.__getter:text()
+function ALittle.RichEdit.__getter:text()
 	local displaylist = self:CharInfoListToDisplayList(self:GetCharInfoList())
 	local text = ""
 	for k, v in ___ipairs(displaylist) do
@@ -842,19 +842,19 @@ function RichEdit.__getter:text()
 	return text
 end
 
-function RichEdit.__getter:default_text()
+function ALittle.RichEdit.__getter:default_text()
 	return self._default_text_area.text
 end
 
-function RichEdit.__setter:default_text_alpha(value)
+function ALittle.RichEdit.__setter:default_text_alpha(value)
 	self._default_text_area.alpha = value
 end
 
-function RichEdit.__getter:default_text_alpha()
+function ALittle.RichEdit.__getter:default_text_alpha()
 	return self._default_text_area.alpha
 end
 
-function RichEdit.__setter:display_list(value)
+function ALittle.RichEdit.__setter:display_list(value)
 	local char_info_list = self:DisplayListToCharInfoList(value)
 	self:ClearText()
 	self:InsertTextImpl(char_info_list, false)
@@ -862,49 +862,49 @@ function RichEdit.__setter:display_list(value)
 	self:ShowDefaultText()
 end
 
-function RichEdit.__getter:display_list()
+function ALittle.RichEdit.__getter:display_list()
 	return self:CharInfoListToDisplayList(self:GetCharInfoList())
 end
 
-function RichEdit.__setter:start_cursor(value)
+function ALittle.RichEdit.__setter:start_cursor(value)
 	if value == self._start_cursor then
 		return
 	end
 	self:RemoveChild(self._start_cursor)
-	value.x_type = UIEnumTypes.POS_ABS
-	value.y_type = UIEnumTypes.POS_ABS
-	value.width_type = UIEnumTypes.SIZE_ABS
-	value.height_type = UIEnumTypes.SIZE_ABS
+	value.x_type = ALittle.UIEnumTypes.POS_ABS
+	value.y_type = ALittle.UIEnumTypes.POS_ABS
+	value.width_type = ALittle.UIEnumTypes.SIZE_ABS
+	value.height_type = ALittle.UIEnumTypes.SIZE_ABS
 	self._start_cursor = value
 	self:AddChild(self._start_cursor)
 	self._start_cursor.visible = false
 	self:ResetCursor()
 end
 
-function RichEdit.__getter:start_cursor()
+function ALittle.RichEdit.__getter:start_cursor()
 	return self._start_cursor
 end
 
-function RichEdit.__setter:end_cursor(value)
+function ALittle.RichEdit.__setter:end_cursor(value)
 	if value == self._end_cursor then
 		return
 	end
 	self:RemoveChild(self._end_cursor)
-	value.x_type = UIEnumTypes.POS_ABS
-	value.y_type = UIEnumTypes.POS_ABS
-	value.width_type = UIEnumTypes.SIZE_ABS
-	value.height_type = UIEnumTypes.SIZE_ABS
+	value.x_type = ALittle.UIEnumTypes.POS_ABS
+	value.y_type = ALittle.UIEnumTypes.POS_ABS
+	value.width_type = ALittle.UIEnumTypes.SIZE_ABS
+	value.height_type = ALittle.UIEnumTypes.SIZE_ABS
 	self._end_cursor = value
 	self:AddChild(self._end_cursor)
 	self._end_cursor.visible = false
 	self:ResetCursor()
 end
 
-function RichEdit.__getter:end_cursor()
+function ALittle.RichEdit.__getter:end_cursor()
 	return self._end_cursor
 end
 
-function RichEdit.__setter:cursor_margin_up(value)
+function ALittle.RichEdit.__setter:cursor_margin_up(value)
 	if value == self._cursor_margin_up then
 		return
 	end
@@ -912,11 +912,11 @@ function RichEdit.__setter:cursor_margin_up(value)
 	self:ResetCursor()
 end
 
-function RichEdit.__getter:cursor_margin_up()
+function ALittle.RichEdit.__getter:cursor_margin_up()
 	return self._cursor_margin_up
 end
 
-function RichEdit.__setter:cursor_margin_down(value)
+function ALittle.RichEdit.__setter:cursor_margin_down(value)
 	if value == self._cursor_margin_down then
 		return
 	end
@@ -924,11 +924,11 @@ function RichEdit.__setter:cursor_margin_down(value)
 	self:ResetCursor()
 end
 
-function RichEdit.__getter:cursor_margin_down()
+function ALittle.RichEdit.__getter:cursor_margin_down()
 	return self._cursor_margin_down
 end
 
-function RichEdit.__setter:margin_halign(value)
+function ALittle.RichEdit.__setter:margin_halign(value)
 	if value == self._margin_halign then
 		return
 	end
@@ -941,11 +941,11 @@ function RichEdit.__setter:margin_halign(value)
 	self:ResetCursor()
 end
 
-function RichEdit.__getter:margin_halign()
+function ALittle.RichEdit.__getter:margin_halign()
 	return self._margin_halign
 end
 
-function RichEdit.__setter:margin_valign(value)
+function ALittle.RichEdit.__setter:margin_valign(value)
 	if value == self._margin_valign then
 		return
 	end
@@ -962,7 +962,7 @@ function RichEdit.__setter:margin_valign(value)
 	self:ResetCursor()
 end
 
-function RichEdit.__setter:line_spacing(value)
+function ALittle.RichEdit.__setter:line_spacing(value)
 	if self._line_spacing == self._line_spacing then
 		return
 	end
@@ -970,73 +970,73 @@ function RichEdit.__setter:line_spacing(value)
 	self._scroll_list.gap = value
 end
 
-function RichEdit.__getter:line_spacing()
+function ALittle.RichEdit.__getter:line_spacing()
 	return self._line_spacing
 end
 
-function RichEdit.__getter:margin_valign()
+function ALittle.RichEdit.__getter:margin_valign()
 	return self._margin_valign
 end
 
-function RichEdit.__setter:focus_cursor(value)
+function ALittle.RichEdit.__setter:focus_cursor(value)
 	self._focus_cursor = value
 end
 
-function RichEdit.__getter:focus_cursor()
+function ALittle.RichEdit.__getter:focus_cursor()
 	return self._focus_cursor
 end
 
-function RichEdit.__getter:cursor_x()
+function ALittle.RichEdit.__getter:cursor_x()
 	return self._cursor.x
 end
 
-function RichEdit.__getter:cursor_y()
+function ALittle.RichEdit.__getter:cursor_y()
 	return self._cursor.y
 end
 
-function RichEdit.__getter:cursor_b()
+function ALittle.RichEdit.__getter:cursor_b()
 	return (self._cursor.y + self._cursor.height) * self.scale_y + self._ims_padding
 end
 
-function RichEdit.__getter:start_cursor_x()
+function ALittle.RichEdit.__getter:start_cursor_x()
 	return self._event_start_x
 end
 
-function RichEdit.__getter:start_cursor_y()
+function ALittle.RichEdit.__getter:start_cursor_y()
 	return self._event_start_y
 end
 
-function RichEdit.__getter:end_cursor_x()
+function ALittle.RichEdit.__getter:end_cursor_x()
 	return self._event_end_x
 end
 
-function RichEdit.__getter:end_cursor_y()
+function ALittle.RichEdit.__getter:end_cursor_y()
 	return self._event_end_y
 end
 
-function RichEdit.__getter:regex()
+function ALittle.RichEdit.__getter:regex()
 	return self._regex
 end
 
-function RichEdit.__setter:regex(value)
+function ALittle.RichEdit.__setter:regex(value)
 	if value == nil then
 		value = ""
 	end
 	self._regex = value
 end
 
-function RichEdit.__getter:limit_len()
+function ALittle.RichEdit.__getter:limit_len()
 	return self._limit_len
 end
 
-function RichEdit.__setter:limit_len(value)
+function ALittle.RichEdit.__setter:limit_len(value)
 	if value == nil then
 		value = 0
 	end
 	self._limit_len = value
 end
 
-function RichEdit:GetLineWidth(value)
+function ALittle.RichEdit:GetLineWidth(value)
 	local line = self._line_list[value]
 	if line == nil then
 		return 0
@@ -1044,18 +1044,18 @@ function RichEdit:GetLineWidth(value)
 	return line.char_list[line.char_count].acc_width
 end
 
-function RichEdit:GetScrollOffset()
+function ALittle.RichEdit:GetScrollOffset()
 	if self._line_start_it == nil then
 		return 0
 	end
 	return self._line_list[self._line_start_it].pre_height + self._start_it_delta
 end
 
-function RichEdit:GetLineCount()
+function ALittle.RichEdit:GetLineCount()
 	return self._line_count
 end
 
-function RichEdit:Update()
+function ALittle.RichEdit:Update()
 	if self._cursor.abs_visible then
 		self._current_flash_alpha = self._current_flash_alpha + self._current_flash_dir
 		if (self._current_flash_dir < 0 and self._current_flash_alpha < -0.05) or (self._current_flash_dir > 0 and self._current_flash_alpha > 1.5) then
@@ -1065,7 +1065,7 @@ function RichEdit:Update()
 	end
 end
 
-function RichEdit:GetSelectText()
+function ALittle.RichEdit:GetSelectText()
 	local line_list = self._line_list
 	local select_text = {}
 	local select_text_count = 0
@@ -1156,7 +1156,7 @@ function RichEdit:GetSelectText()
 	return self:CharInfoListToDisplayList(select_text)
 end
 
-function RichEdit:GetSelectWord()
+function ALittle.RichEdit:GetSelectWord()
 	local line_list = self._line_list
 	local select_text = {}
 	local select_text_count = 0
@@ -1247,7 +1247,7 @@ function RichEdit:GetSelectWord()
 	return self:CharInfoListToWord(select_text)
 end
 
-function RichEdit:DeleteSelectText()
+function ALittle.RichEdit:DeleteSelectText()
 	if self._font_text.font_path == nil or self._font_text.font_size == nil then
 		return false
 	end
@@ -1294,9 +1294,9 @@ function RichEdit:DeleteSelectText()
 	return true
 end
 
-function RichEdit:CheckTextRegexLimit(text)
+function ALittle.RichEdit:CheckTextRegexLimit(text)
 	if self._limit_len ~= 0 then
-		local text_len = String_GetWordCount(text)
+		local text_len = ALittle.String_GetWordCount(text)
 		if text_len > self._limit_len then
 			return false
 		end
@@ -1304,14 +1304,14 @@ function RichEdit:CheckTextRegexLimit(text)
 		local displaylist = self:GetSelectText()
 		for k, v in ___ipairs(displaylist) do
 			if v.__class == "Text" then
-				select_len = select_len + String_GetWordCount(v.text)
+				select_len = select_len + ALittle.String_GetWordCount(v.text)
 			end
 		end
 		displaylist = self.display_list
 		local total_len = 0
 		for k, v in ___ipairs(displaylist) do
 			if v.__class == "Text" then
-				total_len = total_len + String_GetWordCount(v.text)
+				total_len = total_len + ALittle.String_GetWordCount(v.text)
 			end
 		end
 		if total_len - select_len + text_len > self._limit_len then
@@ -1320,7 +1320,7 @@ function RichEdit:CheckTextRegexLimit(text)
 	end
 	if self._regex ~= "" then
 		while text ~= "" do
-			local byte_count = String_GetByteCount(text, 1)
+			local byte_count = ALittle.String_GetByteCount(text, 1)
 			local sub_text = __sub(text, 1, byte_count)
 			local start_it = __find(sub_text, self._regex)
 			if start_it == nil then
@@ -1332,7 +1332,7 @@ function RichEdit:CheckTextRegexLimit(text)
 	return true
 end
 
-function RichEdit:InsertTextNative(text)
+function ALittle.RichEdit:InsertTextNative(text)
 	if self._font_text.font_path == nil or self._font_text.font_size == nil then
 		return false
 	end
@@ -1358,7 +1358,7 @@ function RichEdit:InsertTextNative(text)
 	return true
 end
 
-function RichEdit:CheckDisplayListRegexLimit(display_list)
+function ALittle.RichEdit:CheckDisplayListRegexLimit(display_list)
 	if self._regex == "" then
 		return false
 	end
@@ -1372,7 +1372,7 @@ function RichEdit:CheckDisplayListRegexLimit(display_list)
 	return self:CheckTextRegexLimit(text)
 end
 
-function RichEdit:InsertDisplayListNative(display_list, selected)
+function ALittle.RichEdit:InsertDisplayListNative(display_list, selected)
 	if self._font_text.font_path == nil or self._font_text.font_size == nil then
 		return false
 	end
@@ -1390,7 +1390,7 @@ function RichEdit:InsertDisplayListNative(display_list, selected)
 	return true
 end
 
-function RichEdit:DeleteText(left)
+function ALittle.RichEdit:DeleteText(left)
 	if self._font_text.font_path == nil or self._font_text.font_size == nil then
 		return false
 	end
@@ -1458,7 +1458,7 @@ function RichEdit:DeleteText(left)
 	return true
 end
 
-function RichEdit:ClearText()
+function ALittle.RichEdit:ClearText()
 	self._line_list = {}
 	self._line_count = 0
 	local line_info = {}
@@ -1491,7 +1491,7 @@ function RichEdit:ClearText()
 	self:Draw()
 end
 
-function RichEdit:SetStartIt(line_index)
+function ALittle.RichEdit:SetStartIt(line_index)
 	if line_index < 1 or line_index > self._line_count then
 		return
 	end
@@ -1500,7 +1500,7 @@ function RichEdit:SetStartIt(line_index)
 	self:RejustContentY()
 end
 
-function RichEdit:ResetCursor()
+function ALittle.RichEdit:ResetCursor()
 	if self._font_text.font_path == nil or self._font_text.font_size == nil then
 		return
 	end
@@ -1784,7 +1784,7 @@ function RichEdit:ResetCursor()
 	end
 end
 
-function RichEdit:DeleteTextImpl(line_begin_it, begin_it, line_end_it, end_it)
+function ALittle.RichEdit:DeleteTextImpl(line_begin_it, begin_it, line_end_it, end_it)
 	if self._font_text.font_path == nil or self._font_text.font_size == nil then
 		return
 	end
@@ -1900,7 +1900,7 @@ function RichEdit:DeleteTextImpl(line_begin_it, begin_it, line_end_it, end_it)
 	self:Draw()
 end
 
-function RichEdit:InsertTextImpl(char_info_list, selected)
+function ALittle.RichEdit:InsertTextImpl(char_info_list, selected)
 	if self._font_text.font_path == nil or self._font_text.font_size == nil then
 		return
 	end
@@ -2012,7 +2012,7 @@ function RichEdit:InsertTextImpl(char_info_list, selected)
 	self:Draw()
 end
 
-function RichEdit:InsertTextUtil(char_info_list)
+function ALittle.RichEdit:InsertTextUtil(char_info_list)
 	local line_list = self._line_list
 	local total_width = self._scroll_list.width
 	local new_char_info_list = {}
@@ -2079,7 +2079,7 @@ function RichEdit:InsertTextUtil(char_info_list)
 			elseif display_info.text == "\t" then
 				if display_object == nil then
 					local name = "nkacbjbsakcvuqocbakcbjcbvjhciqwojqppwvnwe"
-					self._ctrl_sys:RegisterInfo(name, String_CopyTable(display_info.text_info))
+					self._ctrl_sys:RegisterInfo(name, ALittle.String_CopyTable(display_info.text_info))
 					display_object = self._ctrl_sys:CreateControl(name, self._link_map)
 					self._ctrl_sys:UnRegisterInfo(name)
 					display_object.text = "    "
@@ -2089,7 +2089,7 @@ function RichEdit:InsertTextUtil(char_info_list)
 				self:SetDrawText(display_object)
 				local calc_text = "\t"
 				while calc_text ~= "" do
-					local byte_count = String_GetByteCount(calc_text, 1)
+					local byte_count = ALittle.String_GetByteCount(calc_text, 1)
 					local sub_text = __sub(calc_text, 1, byte_count)
 					local text_width = self._draw_text.native_show:CalcTextWidth("    ")
 					local char_info = {}
@@ -2147,13 +2147,13 @@ function RichEdit:InsertTextUtil(char_info_list)
 					end
 					if display_object == nil then
 						local name = "nkacbjbsakcvuqocbakcbjcbvjhciqwojqppwvnwe"
-						self._ctrl_sys:RegisterInfo(name, String_CopyTable(display_info.text_info))
+						self._ctrl_sys:RegisterInfo(name, ALittle.String_CopyTable(display_info.text_info))
 						display_object = self._ctrl_sys:CreateControl(name, self._link_map)
 						self._ctrl_sys:UnRegisterInfo(name)
 					end
 					local count = display_object._show:CutTextByWidth(__floor(remain_width), display_info.text, __floor(total_width))
 					if count == 0 and line_info.char_count <= 1 then
-						count = String_GetByteCount(display_info.text, 1)
+						count = ALittle.String_GetByteCount(display_info.text, 1)
 					end
 					if count == 0 then
 						remain_width = 0
@@ -2167,7 +2167,7 @@ function RichEdit:InsertTextUtil(char_info_list)
 						local i = 1
 						while true do
 							if not(i <= char_count) then break end
-							local byte_count = String_GetByteCount(calc_text, 1)
+							local byte_count = ALittle.String_GetByteCount(calc_text, 1)
 							local sub_text = __sub(calc_text, 1, byte_count)
 							local text_width = display_object._show:GetCutWidthByIndex(i - 1)
 							local char_info = {}
@@ -2185,7 +2185,7 @@ function RichEdit:InsertTextUtil(char_info_list)
 						end
 						remain_width = remain_width - object_width
 						display_object._show:ClearCutWidthCache()
-						local new_display_info = String_CopyTable(display_info)
+						local new_display_info = ALittle.String_CopyTable(display_info)
 						new_display_info.text = __sub(display_info.text, count + 1)
 						line_info.child_count = line_info.child_count + 1
 						line_info.child_list[line_info.child_count] = display_object
@@ -2226,7 +2226,7 @@ function RichEdit:InsertTextUtil(char_info_list)
 			if display_object == nil then
 				if display_info.ctrl == nil then
 					local name = "nkacbjbsakcvuqocbakcbjcbvjhciqwojqppwvnwe"
-					self._ctrl_sys:RegisterInfo(name, String_CopyTable(display_info.ctrl_info))
+					self._ctrl_sys:RegisterInfo(name, ALittle.String_CopyTable(display_info.ctrl_info))
 					display_object = self._ctrl_sys:CreateControl(name, self._link_map)
 					self._ctrl_sys:UnRegisterInfo(name)
 				else
@@ -2317,14 +2317,14 @@ function RichEdit:InsertTextUtil(char_info_list)
 	return line_begin_it, begin_it
 end
 
-function RichEdit:DrawImpl()
+function ALittle.RichEdit:DrawImpl()
 	self._scroll_list:RemoveAllChild()
 	for line_index, line_info in ___ipairs(self._line_list) do
 		local displayout = line_info.container
 		if displayout == nil then
-			displayout = DisplayLayout(self._ctrl_sys)
+			displayout = ALittle.DisplayLayout(self._ctrl_sys)
 			line_info.container = displayout
-			displayout.width_type = UIEnumTypes.SIZE_MARGIN
+			displayout.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
 			displayout.height = line_info.acc_height - line_info.pre_height
 			local offset_x = 0.0
 			for child_index, child in ___ipairs(line_info.child_list) do
@@ -2343,7 +2343,7 @@ function RichEdit:DrawImpl()
 	self._draw_loop = nil
 end
 
-function RichEdit:RejustContentY()
+function ALittle.RichEdit:RejustContentY()
 	if self._draw_loop ~= nil then
 		return
 	end
@@ -2353,15 +2353,15 @@ function RichEdit:RejustContentY()
 	self._scroll_list:RejustScrollBar()
 end
 
-function RichEdit:Draw()
+function ALittle.RichEdit:Draw()
 	if self._draw_loop ~= nil then
 		return
 	end
-	self._draw_loop = LoopFunction(Lua.Bind(self.DrawImpl, self), 1, 0, 1)
+	self._draw_loop = ALittle.LoopFunction(Lua.Bind(self.DrawImpl, self), 1, 0, 1)
 	A_LoopSystem:AddUpdater(self._draw_loop)
 end
 
-function RichEdit:CursorOffsetLR(left)
+function ALittle.RichEdit:CursorOffsetLR(left)
 	local line_list = self._line_list
 	if self._char_select_it <= line_list[self._line_select_it].char_count then
 		self._char_select_it = line_list[self._line_select_it].char_count + 1
@@ -2371,7 +2371,7 @@ function RichEdit:CursorOffsetLR(left)
 	self:CursorOffsetLRImpl(left)
 end
 
-function RichEdit:CursorOffsetUD(up)
+function ALittle.RichEdit:CursorOffsetUD(up)
 	local line_list = self._line_list
 	if self._char_select_it <= line_list[self._line_select_it].char_count then
 		self._char_select_it = line_list[self._line_select_it].char_count + 1
@@ -2381,7 +2381,7 @@ function RichEdit:CursorOffsetUD(up)
 	self:CursorOffsetUDImpl(up)
 end
 
-function RichEdit:SelectCursorOffsetLR(left)
+function ALittle.RichEdit:SelectCursorOffsetLR(left)
 	local line_list = self._line_list
 	if self._char_select_it > line_list[self._line_select_it].char_count then
 		self._line_select_it = self._line_cursor_it
@@ -2390,7 +2390,7 @@ function RichEdit:SelectCursorOffsetLR(left)
 	self:CursorOffsetLRImpl(left)
 end
 
-function RichEdit:SelectCursorOffsetUD(up)
+function ALittle.RichEdit:SelectCursorOffsetUD(up)
 	local line_list = self._line_list
 	if self._char_select_it > line_list[self._line_select_it].char_count then
 		self._line_select_it = self._line_cursor_it
@@ -2399,14 +2399,14 @@ function RichEdit:SelectCursorOffsetUD(up)
 	self:CursorOffsetUDImpl(up)
 end
 
-function RichEdit:SetCursorToHome()
+function ALittle.RichEdit:SetCursorToHome()
 	local line_list = self._line_list
 	self._char_select_it = line_list[self._line_select_it].char_count + 1
 	self._char_cursor_it = 1
 	self:ResetCursor()
 end
 
-function RichEdit:SetCursorToEnd()
+function ALittle.RichEdit:SetCursorToEnd()
 	local line_list = self._line_list
 	self._char_select_it = line_list[self._line_select_it].char_count + 1
 	self._char_cursor_it = line_list[self._line_cursor_it].char_count + 1
@@ -2414,7 +2414,7 @@ function RichEdit:SetCursorToEnd()
 	self:ResetCursor()
 end
 
-function RichEdit:SelectAll()
+function ALittle.RichEdit:SelectAll()
 	local line_list = self._line_list
 	self._line_select_it = 1
 	self._char_select_it = 1
@@ -2426,7 +2426,7 @@ function RichEdit:SelectAll()
 	self:ResetCursor()
 end
 
-function RichEdit:ResetCursorLine()
+function ALittle.RichEdit:ResetCursorLine()
 	local line_list = self._line_list
 	if self._line_cursor_it == self._line_count then
 		if line_list[self._line_cursor_it].acc_height > self._scroll_list.height and self._scroll_list.scroll_offset < 0 then
@@ -2464,7 +2464,7 @@ function RichEdit:ResetCursorLine()
 	self._start_it_delta = -self._scroll_list.scroll_offset - line_list[self._line_start_it].pre_height
 end
 
-function RichEdit:ClickCursor(offset_x, offset_y)
+function ALittle.RichEdit:ClickCursor(offset_x, offset_y)
 	local line_list = self._line_list
 	self._char_select_it = line_list[self._line_select_it].char_count + 1
 	self._line_cursor_it, self._char_cursor_it = self:GetIteratorByOffset(offset_x, offset_y)
@@ -2473,7 +2473,7 @@ function RichEdit:ClickCursor(offset_x, offset_y)
 	self:ResetCursor()
 end
 
-function RichEdit:ClickWordCursor(offset_x, offset_y)
+function ALittle.RichEdit:ClickWordCursor(offset_x, offset_y)
 	local line_list = self._line_list
 	self._line_cursor_it, self._char_cursor_it = self:GetIteratorByOffset(offset_x, offset_y)
 	self._char_select_it = self._char_cursor_it
@@ -2535,13 +2535,13 @@ function RichEdit:ClickWordCursor(offset_x, offset_y)
 	return self._char_select_it <= line_list[self._line_select_it].char_count
 end
 
-function RichEdit:DragCursorBegin()
+function ALittle.RichEdit:DragCursorBegin()
 	local line_list = self._line_list
 	self._line_select_it = self._line_cursor_it
 	self._char_select_it = self._char_cursor_it
 end
 
-function RichEdit:DragCursor(offset_x, offset_y)
+function ALittle.RichEdit:DragCursor(offset_x, offset_y)
 	local line_list = self._line_list
 	self._line_cursor_it, self._char_cursor_it = self:GetIteratorByOffset(offset_x, offset_y)
 	if line_list[self._line_cursor_it].pre_height == -self._scroll_list.scroll_offset and self._line_cursor_it ~= 1 and offset_y < 0 then
@@ -2558,7 +2558,7 @@ function RichEdit:DragCursor(offset_x, offset_y)
 	self:ResetCursor()
 end
 
-function RichEdit:DragEdit(delta_y)
+function ALittle.RichEdit:DragEdit(delta_y)
 	local event = {}
 	event.target = self._scroll_list
 	event.delta_x = 0
@@ -2580,7 +2580,7 @@ function RichEdit:DragEdit(delta_y)
 	self:ResetCursor()
 end
 
-function RichEdit:CheckMultiCursor(offset_x, offset_y, trans)
+function ALittle.RichEdit:CheckMultiCursor(offset_x, offset_y, trans)
 	local line_list = self._line_list
 	local line_cursor_it
 	local char_cursor_it
@@ -2629,13 +2629,13 @@ function RichEdit:CheckMultiCursor(offset_x, offset_y, trans)
 	return true
 end
 
-function RichEdit:ClickMultiCursor()
+function ALittle.RichEdit:ClickMultiCursor()
 	self:UpdateFontText()
 	self:ResetCursorLine()
 	self:ResetCursor()
 end
 
-function RichEdit:DragMultiCursor(offset_x, offset_y)
+function ALittle.RichEdit:DragMultiCursor(offset_x, offset_y)
 	local line_list = self._line_list
 	offset_x = offset_x + self._drag_delta_x
 	offset_y = offset_y + self._drag_delta_y
@@ -2654,7 +2654,7 @@ function RichEdit:DragMultiCursor(offset_x, offset_y)
 	self:ResetCursor()
 end
 
-function RichEdit:ShowDefaultText()
+function ALittle.RichEdit:ShowDefaultText()
 	if self._is_focus == false then
 		if self._focus_cursor and self.is_empty then
 			self._default_text_area.visible = true
@@ -2666,7 +2666,7 @@ function RichEdit:ShowDefaultText()
 	end
 end
 
-function RichEdit:CursorOffsetLRImpl(left)
+function ALittle.RichEdit:CursorOffsetLRImpl(left)
 	local line_list = self._line_list
 	if left then
 		if self._line_cursor_it == 1 and self._char_cursor_it == 1 then
@@ -2721,7 +2721,7 @@ function RichEdit:CursorOffsetLRImpl(left)
 	self:ResetCursor()
 end
 
-function RichEdit:CursorOffsetUDImpl(up)
+function ALittle.RichEdit:CursorOffsetUDImpl(up)
 	local line_list = self._line_list
 	if up then
 		if self._line_cursor_it == 1 then
@@ -2782,7 +2782,7 @@ function RichEdit:CursorOffsetUDImpl(up)
 	self:ResetCursor()
 end
 
-function RichEdit:GetIteratorByOffset(offset_x, offset_y)
+function ALittle.RichEdit:GetIteratorByOffset(offset_x, offset_y)
 	local line_list = self._line_list
 	local line_it = self._line_start_it
 	local line_end_it = self._line_count + 1
@@ -2826,31 +2826,31 @@ function RichEdit:GetIteratorByOffset(offset_x, offset_y)
 	return line_it_result, char_it_result
 end
 
-function RichEdit.__getter:is_input()
+function ALittle.RichEdit.__getter:is_input()
 	return true
 end
 
-function RichEdit.__getter:is_empty()
+function ALittle.RichEdit.__getter:is_empty()
 	return self._line_count == 1 and self._line_list[1].char_count == 1
 end
 
-function RichEdit.__getter:editable()
+function ALittle.RichEdit.__getter:editable()
 	return self._editable
 end
 
-function RichEdit.__setter:editable(value)
+function ALittle.RichEdit.__setter:editable(value)
 	self._editable = value
 end
 
-function RichEdit.__setter:ims_padding(value)
+function ALittle.RichEdit.__setter:ims_padding(value)
 	self._ims_padding = value
 end
 
-function RichEdit.__getter:ims_padding()
+function ALittle.RichEdit.__getter:ims_padding()
 	return self._ims_padding
 end
 
-function RichEdit:SetCursor(rel_x, rel_y)
+function ALittle.RichEdit:SetCursor(rel_x, rel_y)
 	if self._auto_ims then
 		self:OpenIME()
 	end
@@ -2866,7 +2866,7 @@ function RichEdit:SetCursor(rel_x, rel_y)
 	end
 end
 
-function RichEdit:SetMultiCursor(rel_x, rel_y)
+function ALittle.RichEdit:SetMultiCursor(rel_x, rel_y)
 	if self._auto_ims then
 		self:OpenIME()
 	end
@@ -2887,7 +2887,7 @@ function RichEdit:SetMultiCursor(rel_x, rel_y)
 	return true
 end
 
-function RichEdit:TransToCursor()
+function ALittle.RichEdit:TransToCursor()
 	if self._multi_cursor == false then
 		return
 	end
@@ -2907,7 +2907,7 @@ function RichEdit:TransToCursor()
 	self:ResetCursor()
 end
 
-function RichEdit:TransToMulti()
+function ALittle.RichEdit:TransToMulti()
 	if self._multi_cursor then
 		return false
 	end
@@ -2926,28 +2926,28 @@ function RichEdit:TransToMulti()
 	return true
 end
 
-function RichEdit:OpenIME(x, y, width, height)
+function ALittle.RichEdit:OpenIME(x, y, width, height)
 	if self._editable then
 		self:ResetCursor()
 		if x ~= nil and y ~= nil and width ~= nil and height ~= nil then
-			System_SetIMERect(__floor(x), __floor(y), __floor(width), __floor(height))
+			ALittle.System_SetIMERect(__floor(x), __floor(y), __floor(width), __floor(height))
 		else
 			local global_x, global_y = self:LocalToGlobal()
 			global_x = global_x + self.cursor_x
 			global_y = global_y + (self.cursor_y + self.font_size) * self.scale_y
-			System_SetIMERect(__floor(global_x), __floor(global_y), 10, __floor(5 + self._ims_padding))
+			ALittle.System_SetIMERect(__floor(global_x), __floor(global_y), 10, __floor(5 + self._ims_padding))
 		end
-		System_OpenIME()
+		ALittle.System_OpenIME()
 	end
 end
 
-function RichEdit:CloseIME()
-	System_CloseIME()
+function ALittle.RichEdit:CloseIME()
+	ALittle.System_CloseIME()
 end
 
-function RichEdit:HandleFocusOut(event)
+function ALittle.RichEdit:HandleFocusOut(event)
 	if self._auto_ims then
-		System_CloseIME()
+		ALittle.System_CloseIME()
 	end
 	self._is_focus = false
 	if self._focus_cursor then
@@ -2958,7 +2958,7 @@ function RichEdit:HandleFocusOut(event)
 	self:ShowDefaultText()
 end
 
-function RichEdit:HandleFocusIn(event)
+function ALittle.RichEdit:HandleFocusIn(event)
 	if self._auto_ims then
 		self:OpenIME()
 	end
@@ -2969,7 +2969,7 @@ function RichEdit:HandleFocusIn(event)
 	self:ShowDefaultText()
 end
 
-function RichEdit:HandleLButtonDown(event)
+function ALittle.RichEdit:HandleLButtonDown(event)
 	if self._multi_cursor == false then
 		self._is_longclick = false
 		if event.rel_x >= self._scroll_list.x and event.rel_x <= self._scroll_list.x + self._scroll_list.width and event.rel_y >= self._scroll_list.y and event.rel_y <= self._scroll_list.y + self._scroll_list.height then
@@ -3008,7 +3008,7 @@ function RichEdit:HandleLButtonDown(event)
 	end
 end
 
-function RichEdit:HandleLButtonUp(event)
+function ALittle.RichEdit:HandleLButtonUp(event)
 	if self._multi_cursor == true then
 		if self._is_click and self._is_longclick == false and self._click_drag_delta_x < 2 and self._click_drag_delta_y < 2 then
 			self._multi_cursor = false
@@ -3021,7 +3021,7 @@ function RichEdit:HandleLButtonUp(event)
 	end
 end
 
-function RichEdit:HandleLongLButtonDown(event)
+function ALittle.RichEdit:HandleLongLButtonDown(event)
 	if self._is_click then
 		if self.editable == false then
 			local result = self:CheckMultiCursor(event.rel_x - self._scroll_list.x, event.rel_y - self._scroll_list.y, false)
@@ -3055,7 +3055,7 @@ function RichEdit:HandleLongLButtonDown(event)
 	end
 end
 
-function RichEdit:CheckAtKeyInput(input_text)
+function ALittle.RichEdit:CheckAtKeyInput(input_text)
 	if input_text ~= "@" then
 		return false
 	end
@@ -3079,7 +3079,7 @@ function RichEdit:CheckAtKeyInput(input_text)
 	return false
 end
 
-function RichEdit:HandleTextInput(event)
+function ALittle.RichEdit:HandleTextInput(event)
 	if self._multi_cursor == false then
 		if (self._editable or event.custom) then
 			if self:CheckAtKeyInput(event.text) then
@@ -3105,7 +3105,7 @@ function RichEdit:HandleTextInput(event)
 	end
 end
 
-function RichEdit:HandleDragBegin(event)
+function ALittle.RichEdit:HandleDragBegin(event)
 	if self._can_drag_text == false then
 		return
 	end
@@ -3145,7 +3145,7 @@ function RichEdit:HandleDragBegin(event)
 	end
 end
 
-function RichEdit:HandleDrag(event)
+function ALittle.RichEdit:HandleDrag(event)
 	if self._can_drag_text == false then
 		return
 	end
@@ -3171,7 +3171,7 @@ function RichEdit:HandleDrag(event)
 	end
 end
 
-function RichEdit:HandleDragEnd(event)
+function ALittle.RichEdit:HandleDragEnd(event)
 	if self._can_drag_text == false then
 		return
 	end
@@ -3186,7 +3186,7 @@ function RichEdit:HandleDragEnd(event)
 	end
 end
 
-function RichEdit:HandleMButtonWheel(event)
+function ALittle.RichEdit:HandleMButtonWheel(event)
 	if self._multi_cursor == false then
 		if event.delta_y > 0 then
 			self._is_selecting = false
@@ -3207,15 +3207,15 @@ function RichEdit:HandleMButtonWheel(event)
 	end
 end
 
-function RichEdit:HandleMoveIn(event)
-	System_SetEditCursor()
+function ALittle.RichEdit:HandleMoveIn(event)
+	ALittle.System_SetEditCursor()
 end
 
-function RichEdit:HandleMoveOut(event)
-	System_SetNormalCursor()
+function ALittle.RichEdit:HandleMoveOut(event)
+	ALittle.System_SetNormalCursor()
 end
 
-function RichEdit:HandleKeyDown(event)
+function ALittle.RichEdit:HandleKeyDown(event)
 	local is_change = false
 	if event.sym == 9 then
 		if self._multi_cursor == false then
@@ -3233,7 +3233,7 @@ function RichEdit:HandleKeyDown(event)
 		end
 	elseif event.sym == 1073741904 then
 		if self._multi_cursor == false then
-			if bit.band(event.mod, UIEnumTypes.KMOD_SHIFT) == 0 then
+			if bit.band(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) == 0 then
 				self._is_selecting = false
 				self:CursorOffsetLR(true)
 				self:UpdateFontText()
@@ -3245,7 +3245,7 @@ function RichEdit:HandleKeyDown(event)
 		event.handled = true
 	elseif event.sym == 1073741903 then
 		if self._multi_cursor == false then
-			if bit.band(event.mod, UIEnumTypes.KMOD_SHIFT) == 0 then
+			if bit.band(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) == 0 then
 				self._is_selecting = false
 				self:CursorOffsetLR(false)
 				self:UpdateFontText()
@@ -3257,7 +3257,7 @@ function RichEdit:HandleKeyDown(event)
 		event.handled = true
 	elseif event.sym == 1073741906 then
 		if self._multi_cursor == false then
-			if bit.band(event.mod, UIEnumTypes.KMOD_SHIFT) == 0 then
+			if bit.band(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) == 0 then
 				self._is_selecting = false
 				self:CursorOffsetUD(true)
 				self:UpdateFontText()
@@ -3269,7 +3269,7 @@ function RichEdit:HandleKeyDown(event)
 		event.handled = true
 	elseif event.sym == 1073741905 then
 		if self._multi_cursor == false then
-			if bit.band(event.mod, UIEnumTypes.KMOD_SHIFT) == 0 then
+			if bit.band(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) == 0 then
 				self._is_selecting = false
 				self:CursorOffsetUD(false)
 				self:UpdateFontText()
@@ -3340,13 +3340,13 @@ function RichEdit:HandleKeyDown(event)
 				self._multi_cursor = false
 			end
 		end
-	elseif event.sym == 120 and bit.band(event.mod, UIEnumTypes.KMOD_CTRL) ~= 0 then
+	elseif event.sym == 120 and bit.band(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) ~= 0 then
 		if self._multi_cursor == false then
 			if self._editable or event.custom then
 				self._is_selecting = false
 				local select_text = self:GetSelectText()
 				if select_text[1] ~= nil then
-					System_SetClipboardText(json.encode(select_text))
+					ALittle.System_SetClipboardText(json.encode(select_text))
 					is_change = self:DeleteSelectText()
 				end
 				self:UpdateFontText()
@@ -3357,7 +3357,7 @@ function RichEdit:HandleKeyDown(event)
 				self._is_selecting = false
 				local select_text = self:GetSelectText()
 				if select_text[1] ~= nil then
-					System_SetClipboardText(json.encode(select_text))
+					ALittle.System_SetClipboardText(json.encode(select_text))
 					is_change = self:DeleteSelectText()
 				end
 				self:UpdateFontText()
@@ -3365,18 +3365,18 @@ function RichEdit:HandleKeyDown(event)
 				self._multi_cursor = false
 			end
 		end
-	elseif event.sym == 99 and bit.band(event.mod, UIEnumTypes.KMOD_CTRL) ~= 0 then
+	elseif event.sym == 99 and bit.band(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) ~= 0 then
 		local select_text = self:GetSelectText()
 		if select_text[1] ~= nil then
-			System_SetClipboardText(json.encode(select_text))
+			ALittle.System_SetClipboardText(json.encode(select_text))
 		end
 		event.handled = true
-	elseif event.sym == 118 and bit.band(event.mod, UIEnumTypes.KMOD_CTRL) ~= 0 then
+	elseif event.sym == 118 and bit.band(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) ~= 0 then
 		if self._multi_cursor == false then
 			if self._editable or event.custom then
 				self._is_selecting = false
-				if System_HasClipboardText() then
-					local content = System_GetClipboardText()
+				if ALittle.System_HasClipboardText() then
+					local content = ALittle.System_GetClipboardText()
 					local error, new_content = Lua.TCall(json.decode, content)
 					if error == nil and __type(new_content) == "table" and self:CheckDisplayList(new_content) then
 						if self:CheckAtKeyInput(new_content) then
@@ -3394,8 +3394,8 @@ function RichEdit:HandleKeyDown(event)
 		else
 			if self._is_selecting and self._editable then
 				self._is_selecting = false
-				if System_HasClipboardText() then
-					local content = System_GetClipboardText()
+				if ALittle.System_HasClipboardText() then
+					local content = ALittle.System_GetClipboardText()
 					local error, new_content = Lua.TCall(json.decode, content)
 					if error == nil and __type(new_content) == "table" and self:CheckDisplayList(new_content) then
 						is_change = self:InsertDisplayListNative(new_content, false)
@@ -3407,7 +3407,7 @@ function RichEdit:HandleKeyDown(event)
 				self._multi_cursor = false
 			end
 		end
-	elseif event.sym == 97 and bit.band(event.mod, UIEnumTypes.KMOD_CTRL) ~= 0 then
+	elseif event.sym == 97 and bit.band(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) ~= 0 then
 		self._is_selecting = true
 		self:SelectAll()
 		event.handled = true
@@ -3419,7 +3419,7 @@ function RichEdit:HandleKeyDown(event)
 	end
 end
 
-function RichEdit:InsertText(display_list, selected)
+function ALittle.RichEdit:InsertText(display_list, selected)
 	if self._editable == false then
 		return
 	end
@@ -3432,7 +3432,7 @@ function RichEdit:InsertText(display_list, selected)
 	self:ShowDefaultText()
 end
 
-function RichEdit:InsertWord(word_text)
+function ALittle.RichEdit:InsertWord(word_text)
 	if self._editable == false then
 		return
 	end
@@ -3445,10 +3445,10 @@ function RichEdit:InsertWord(word_text)
 	self:ShowDefaultText()
 end
 
-function RichEdit:CopyText(return_cursor)
+function ALittle.RichEdit:CopyText(return_cursor)
 	local select_text = self:GetSelectText()
 	if select_text[1] ~= nil then
-		System_SetClipboardText(json.encode(select_text))
+		ALittle.System_SetClipboardText(json.encode(select_text))
 	end
 	if return_cursor then
 		self:TransToCursor()
@@ -3456,10 +3456,10 @@ function RichEdit:CopyText(return_cursor)
 	self:ShowDefaultText()
 end
 
-function RichEdit:CopyWord(return_cursor)
+function ALittle.RichEdit:CopyWord(return_cursor)
 	local select_text = self:GetSelectWord()
 	if select_text ~= nil then
-		System_SetClipboardText(select_text)
+		ALittle.System_SetClipboardText(select_text)
 	end
 	if return_cursor then
 		self:TransToCursor()
@@ -3467,7 +3467,7 @@ function RichEdit:CopyWord(return_cursor)
 	self:ShowDefaultText()
 end
 
-function RichEdit:CutText()
+function ALittle.RichEdit:CutText()
 	if self._editable == false then
 		return
 	end
@@ -3477,7 +3477,7 @@ function RichEdit:CutText()
 	self._is_selecting = false
 	local select_text = self:GetSelectText()
 	if select_text[1] ~= nil then
-		System_SetClipboardText(json.encode(select_text))
+		ALittle.System_SetClipboardText(json.encode(select_text))
 		self:DeleteSelectText()
 		self:UpdateFontText()
 		self:TransToCursor()
@@ -3485,7 +3485,7 @@ function RichEdit:CutText()
 	self:ShowDefaultText()
 end
 
-function RichEdit:CutWord()
+function ALittle.RichEdit:CutWord()
 	if self._editable == false then
 		return
 	end
@@ -3495,7 +3495,7 @@ function RichEdit:CutWord()
 	self._is_selecting = false
 	local select_text = self:GetSelectWord()
 	if select_text ~= nil then
-		System_SetClipboardText(select_text)
+		ALittle.System_SetClipboardText(select_text)
 		self:DeleteSelectText()
 		self:UpdateFontText()
 		self:TransToCursor()
@@ -3503,7 +3503,7 @@ function RichEdit:CutWord()
 	self:ShowDefaultText()
 end
 
-function RichEdit:PasteText()
+function ALittle.RichEdit:PasteText()
 	if self._editable == false then
 		return
 	end
@@ -3511,8 +3511,8 @@ function RichEdit:PasteText()
 		return
 	end
 	self._is_selecting = false
-	if System_HasClipboardText() then
-		local content = System_GetClipboardText()
+	if ALittle.System_HasClipboardText() then
+		local content = ALittle.System_GetClipboardText()
 		local error, new_content = Lua.TCall(json.decode, content)
 		if error == nil and __type(new_content) == "table" and self:CheckDisplayList(new_content) then
 			if self:CheckAtKeyInput(new_content) then
@@ -3530,7 +3530,7 @@ function RichEdit:PasteText()
 	self:ShowDefaultText()
 end
 
-function RichEdit:PasteWord()
+function ALittle.RichEdit:PasteWord()
 	if self._editable == false then
 		return
 	end
@@ -3538,20 +3538,20 @@ function RichEdit:PasteWord()
 		return
 	end
 	self._is_selecting = false
-	if System_HasClipboardText() then
-		local content = System_GetClipboardText()
+	if ALittle.System_HasClipboardText() then
+		local content = ALittle.System_GetClipboardText()
 		self:InsertTextNative(content)
 		self:TransToCursor()
 	end
 	self:ShowDefaultText()
 end
 
-function RichEdit:Clear()
+function ALittle.RichEdit:Clear()
 	self:ClearText()
 	self:ShowDefaultText()
 end
 
-function RichEdit:Delete()
+function ALittle.RichEdit:Delete()
 	if self._editable == false then
 		return
 	end
@@ -3564,3 +3564,4 @@ function RichEdit:Delete()
 	self:ShowDefaultText()
 end
 
+end

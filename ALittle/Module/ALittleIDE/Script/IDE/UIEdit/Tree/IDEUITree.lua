@@ -1,6 +1,6 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittleIDE", package.seeall)
-
+do
+if _G.ALittleIDE == nil then _G.ALittleIDE = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
@@ -62,9 +62,9 @@ option_map = {}
 })
 
 assert(ALittleIDE.IDEUITreeLogic, " extends class:ALittleIDE.IDEUITreeLogic is nil")
-IDEUITree = Lua.Class(ALittleIDE.IDEUITreeLogic, "ALittleIDE.IDEUITree")
+ALittleIDE.IDEUITree = Lua.Class(ALittleIDE.IDEUITreeLogic, "ALittleIDE.IDEUITree")
 
-function IDEUITree:Ctor(ctrl_sys, user_info, tab_child)
+function ALittleIDE.IDEUITree:Ctor(ctrl_sys, user_info, tab_child)
 	if self._user_info.extends then
 		___rawset(self, "_head", ctrl_sys:CreateControl("ide_common_tree_head_disabled", self))
 	else
@@ -79,7 +79,7 @@ function IDEUITree:Ctor(ctrl_sys, user_info, tab_child)
 	self._item_button:AddEventListener(___all_struct[1301789264], self, self.HandleDragBegin)
 	self._item_button:AddEventListener(___all_struct[1337289812], self, self.HandleDrag)
 	self._item_button:AddEventListener(___all_struct[150587926], self, self.HandleDragEnd)
-	self._item_button:AddEventListener(___all_struct[-641444818], g_IDECenter.center.control_tree, g_IDECenter.center.control_tree.HandleControlTreeItemRightClick)
+	self._item_button:AddEventListener(___all_struct[-641444818], ALittleIDE.g_IDECenter.center.control_tree, ALittleIDE.g_IDECenter.center.control_tree.HandleControlTreeItemRightClick)
 	self._item_button._user_data = self
 	___rawset(self, "_body", ALittle.Linear(ctrl_sys))
 	self._body.type = 2
@@ -94,7 +94,7 @@ function IDEUITree:Ctor(ctrl_sys, user_info, tab_child)
 	self.fold = false
 end
 
-function IDEUITree:UpdateDesc()
+function ALittleIDE.IDEUITree:UpdateDesc()
 	local title = ""
 	if self._user_info.child_type ~= nil and self._user_info.child_type ~= "child" then
 		title = title .. "[" .. self._user_info.child_type .. "]"
@@ -121,22 +121,22 @@ function IDEUITree:UpdateDesc()
 	end
 end
 
-function IDEUITree:HandleLButtonDown(event)
+function ALittleIDE.IDEUITree:HandleLButtonDown(event)
 	if event.count == 1 then
 		return
 	end
 	self.fold = not self.fold
 end
 
-function IDEUITree.__getter:is_tree()
+function ALittleIDE.IDEUITree.__getter:is_tree()
 	return true
 end
 
-function IDEUITree:GetDataListForAdd()
+function ALittleIDE.IDEUITree:GetDataListForAdd()
 	local data_list = {}
 	local data_list_count = 0
 	local clazz = self._user_info.default.__class
-	if g_IDEEnum.can_add_child_map[clazz] then
+	if ALittleIDE.g_IDEEnum.can_add_child_map[clazz] then
 		local can_add = true
 		for index, child in ___ipairs(self._body.childs) do
 			if child.user_info.child_type == "child" and child.user_info.extends then
@@ -149,7 +149,7 @@ function IDEUITree:GetDataListForAdd()
 			data_list[data_list_count] = "child"
 		end
 	end
-	local show_list = g_IDEEnum.child_show_map[clazz]
+	local show_list = ALittleIDE.g_IDEEnum.child_show_map[clazz]
 	local show_list_count = 0
 	if show_list ~= nil then
 		for k, v in ___ipairs(show_list) do
@@ -169,9 +169,9 @@ function IDEUITree:GetDataListForAdd()
 	return data_list
 end
 
-function IDEUITree:CanAddChild()
+function ALittleIDE.IDEUITree:CanAddChild()
 	local clazz = self._user_info.default.__class
-	if g_IDEEnum.can_add_child_map[clazz] then
+	if ALittleIDE.g_IDEEnum.can_add_child_map[clazz] then
 		local can_add = true
 		for index, child in ___ipairs(self._body.childs) do
 			if child.user_info.child_type == "child" and child.user_info.extends then
@@ -186,7 +186,7 @@ function IDEUITree:CanAddChild()
 	return false
 end
 
-function IDEUITree:CalcInfo()
+function ALittleIDE.IDEUITree:CalcInfo()
 	local info = ALittle.String_CopyTable(self._user_info.base)
 	info.__childs = nil
 	local child_count = 0
@@ -208,7 +208,7 @@ function IDEUITree:CalcInfo()
 	return info
 end
 
-function IDEUITree:SearchLink(name, list)
+function ALittleIDE.IDEUITree:SearchLink(name, list)
 	if list == nil then
 		list = {}
 	end
@@ -227,7 +227,7 @@ function IDEUITree:SearchLink(name, list)
 	return list
 end
 
-function IDEUITree:SearchEvent(name, list)
+function ALittleIDE.IDEUITree:SearchEvent(name, list)
 	if list == nil then
 		list = {}
 	end
@@ -249,7 +249,7 @@ function IDEUITree:SearchEvent(name, list)
 	return list
 end
 
-function IDEUITree:SearchDescription(name, list)
+function ALittleIDE.IDEUITree:SearchDescription(name, list)
 	if list == nil then
 		list = {}
 	end
@@ -268,7 +268,7 @@ function IDEUITree:SearchDescription(name, list)
 	return list
 end
 
-function IDEUITree:SearchTargetClass(name, list)
+function ALittleIDE.IDEUITree:SearchTargetClass(name, list)
 	if list == nil then
 		list = {}
 	end
@@ -288,7 +288,7 @@ function IDEUITree:SearchTargetClass(name, list)
 	return list
 end
 
-function IDEUITree:SearchTextureName(name, list)
+function ALittleIDE.IDEUITree:SearchTextureName(name, list)
 	if list == nil then
 		list = {}
 	end
@@ -307,7 +307,7 @@ function IDEUITree:SearchTextureName(name, list)
 	return list
 end
 
-function IDEUITree:EditPickUp(x, y)
+function ALittleIDE.IDEUITree:EditPickUp(x, y)
 	if self._user_info.extends then
 		return nil
 	end
@@ -334,7 +334,7 @@ function IDEUITree:EditPickUp(x, y)
 	return nil
 end
 
-function IDEUITree:QuickPickUp(x, y, list)
+function ALittleIDE.IDEUITree:QuickPickUp(x, y, list)
 	if self._user_info.extends then
 		return
 	end
@@ -354,7 +354,7 @@ function IDEUITree:QuickPickUp(x, y, list)
 	end
 end
 
-function IDEUITree:SelectPickUp(x, y)
+function ALittleIDE.IDEUITree:SelectPickUp(x, y)
 	if self._user_info.extends then
 		return nil, nil
 	end
@@ -378,44 +378,44 @@ function IDEUITree:SelectPickUp(x, y)
 	return nil, nil
 end
 
-function IDEUITree:HandleChildResize(event)
+function ALittleIDE.IDEUITree:HandleChildResize(event)
 	self:DispatchEvent(___all_struct[-431205740], {})
 end
 
-function IDEUITree:HandleHeadChanged(event)
+function ALittleIDE.IDEUITree:HandleHeadChanged(event)
 	self._body.visible = event.target.selected
 	self:DispatchEvent(___all_struct[-431205740], {})
 end
 
-function IDEUITree:GetChildIndex(child)
+function ALittleIDE.IDEUITree:GetChildIndex(child)
 	return self._body:GetChildIndex(child)
 end
 
-function IDEUITree:SetChildIndex(child, index)
+function ALittleIDE.IDEUITree:SetChildIndex(child, index)
 	return self._body:SetChildIndex(child, index)
 end
 
-function IDEUITree:GetChildByIndex(index)
+function ALittleIDE.IDEUITree:GetChildByIndex(index)
 	return self._body:GetChildByIndex(index)
 end
 
-function IDEUITree:GetChildIndex(child)
+function ALittleIDE.IDEUITree:GetChildIndex(child)
 	return self._body:GetChildIndex(child)
 end
 
-function IDEUITree.__getter:childs()
+function ALittleIDE.IDEUITree.__getter:childs()
 	return self._body.childs
 end
 
-function IDEUITree.__getter:child_count()
+function ALittleIDE.IDEUITree.__getter:child_count()
 	return self._body.child_count
 end
 
-function IDEUITree:HasChild(child)
+function ALittleIDE.IDEUITree:HasChild(child)
 	return self._body:HasChild(child)
 end
 
-function IDEUITree:AddChild(child, index)
+function ALittleIDE.IDEUITree:AddChild(child, index)
 	if self._body:AddChild(child, index) == false then
 		return false
 	end
@@ -426,7 +426,7 @@ function IDEUITree:AddChild(child, index)
 	return true
 end
 
-function IDEUITree:RemoveChild(child)
+function ALittleIDE.IDEUITree:RemoveChild(child)
 	if self._body:RemoveChild(child) == false then
 		return false
 	end
@@ -436,7 +436,7 @@ function IDEUITree:RemoveChild(child)
 	return true
 end
 
-function IDEUITree:SpliceChild(index, count)
+function ALittleIDE.IDEUITree:SpliceChild(index, count)
 	local result = self._body:SpliceChild(index, count)
 	if result == 0 then
 		return 0
@@ -447,14 +447,14 @@ function IDEUITree:SpliceChild(index, count)
 	return result
 end
 
-function IDEUITree:RemoveAllChild()
+function ALittleIDE.IDEUITree:RemoveAllChild()
 	self._body:RemoveAllChild()
 	if self._body.abs_visible then
 		self:DispatchEvent(___all_struct[-431205740], {})
 	end
 end
 
-function IDEUITree.__getter:width()
+function ALittleIDE.IDEUITree.__getter:width()
 	local head_width = 0.0
 	if self._head ~= nil then
 		head_width = self._head.width
@@ -477,7 +477,7 @@ function IDEUITree.__getter:width()
 	return body_width
 end
 
-function IDEUITree.__getter:height()
+function ALittleIDE.IDEUITree.__getter:height()
 	local head_height = 0.0
 	if self._head ~= nil then
 		head_height = self._head.height
@@ -488,11 +488,11 @@ function IDEUITree.__getter:height()
 	return head_height
 end
 
-function IDEUITree.__getter:fold()
+function ALittleIDE.IDEUITree.__getter:fold()
 	return self._body.visible
 end
 
-function IDEUITree.__setter:fold(value)
+function ALittleIDE.IDEUITree.__setter:fold(value)
 	if value == self._body.visible then
 		return
 	end
@@ -501,11 +501,12 @@ function IDEUITree.__setter:fold(value)
 	self:DispatchEvent(___all_struct[-431205740], {})
 end
 
-function IDEUITree.__getter:max_right()
+function ALittleIDE.IDEUITree.__getter:max_right()
 	return self.width
 end
 
-function IDEUITree.__getter:max_bottom()
+function ALittleIDE.IDEUITree.__getter:max_bottom()
 	return self.height
 end
 
+end

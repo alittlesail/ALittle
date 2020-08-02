@@ -1,308 +1,308 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-function System_CalcPortrait(src_width, src_height, flag)
+function ALittle.System_CalcPortrait(src_width, src_height, flag)
 	local scale = 1.0
-	local platform = System_GetPlatform()
+	local platform = ALittle.System_GetPlatform()
 	if platform == "iOS" or platform == "Android" then
-		local screen_width = System_GetScreenWidth()
-		local screen_height = System_GetScreenHeight()
-		src_height = Math_Floor(screen_height / screen_width * src_width)
-		flag = BitOr(flag, UIEnumTypes.VIEW_FULLSCREEN)
+		local screen_width = ALittle.System_GetScreenWidth()
+		local screen_height = ALittle.System_GetScreenHeight()
+		src_height = ALittle.Math_Floor(screen_height / screen_width * src_width)
+		flag = ALittle.BitOr(flag, ALittle.UIEnumTypes.VIEW_FULLSCREEN)
 	elseif platform == "Web" then
-		if BitAnd(flag, UIEnumTypes.VIEW_RESIZABLE) > 0 then
-			src_width = System_GetScreenWidth()
-			src_height = System_GetScreenHeight()
+		if ALittle.BitAnd(flag, ALittle.UIEnumTypes.VIEW_RESIZABLE) > 0 then
+			src_width = ALittle.System_GetScreenWidth()
+			src_height = ALittle.System_GetScreenHeight()
 		else
-			scale = System_GetScreenHeight() / src_height
+			scale = ALittle.System_GetScreenHeight() / src_height
 		end
 	elseif platform == "WeChat" then
-		local screen_width = System_GetScreenWidth()
-		local screen_height = System_GetScreenHeight()
-		src_height = Math_Floor(screen_height / screen_width * src_width)
+		local screen_width = ALittle.System_GetScreenWidth()
+		local screen_height = ALittle.System_GetScreenHeight()
+		src_height = ALittle.Math_Floor(screen_height / screen_width * src_width)
 		scale = screen_width / src_width
 	elseif platform == "Windows" then
-		if src_height > System_GetScreenHeight() then
+		if src_height > ALittle.System_GetScreenHeight() then
 			scale = 0.5
 		end
 	end
 	return src_width, src_height, flag, scale
 end
 
-function System_CalcLandscape(src_width, src_height, flag)
+function ALittle.System_CalcLandscape(src_width, src_height, flag)
 	local scale = 1.0
-	local platform = System_GetPlatform()
+	local platform = ALittle.System_GetPlatform()
 	if platform == "iOS" or platform == "Android" then
-		local screen_width = System_GetScreenWidth()
-		local screen_height = System_GetScreenHeight()
-		src_width = Math_Floor(screen_width / screen_height * src_height)
-		flag = BitOr(flag, UIEnumTypes.VIEW_FULLSCREEN)
+		local screen_width = ALittle.System_GetScreenWidth()
+		local screen_height = ALittle.System_GetScreenHeight()
+		src_width = ALittle.Math_Floor(screen_width / screen_height * src_height)
+		flag = ALittle.BitOr(flag, ALittle.UIEnumTypes.VIEW_FULLSCREEN)
 	elseif platform == "Web" then
-		if BitAnd(flag, UIEnumTypes.VIEW_RESIZABLE) > 0 then
-			src_width = System_GetScreenWidth()
-			src_height = System_GetScreenHeight()
+		if ALittle.BitAnd(flag, ALittle.UIEnumTypes.VIEW_RESIZABLE) > 0 then
+			src_width = ALittle.System_GetScreenWidth()
+			src_height = ALittle.System_GetScreenHeight()
 		else
-			scale = System_GetScreenWidth() / src_width
+			scale = ALittle.System_GetScreenWidth() / src_width
 		end
 	elseif platform == "WeChat" then
-		local screen_width = System_GetScreenWidth()
-		local screen_height = System_GetScreenHeight()
-		src_width = Math_Floor(screen_width / screen_height * src_height)
+		local screen_width = ALittle.System_GetScreenWidth()
+		local screen_height = ALittle.System_GetScreenHeight()
+		src_width = ALittle.Math_Floor(screen_width / screen_height * src_height)
 		scale = screen_height / src_height
 	elseif platform == "Windows" then
-		if src_width > System_GetScreenWidth() then
+		if src_width > ALittle.System_GetScreenWidth() then
 			scale = 0.5
 		end
 	end
 	return src_width, src_height, flag, scale
 end
 
-function System_GetPlatform()
+function ALittle.System_GetPlatform()
 	return __CPPAPI_GetPlatform()
 end
 
-function System_GetDeviceID()
+function ALittle.System_GetDeviceID()
 	return __CPPAPI_GetDeviceID()
 end
 
-function System_GetLocalIPList()
+function ALittle.System_GetLocalIPList()
 	return __CPPAPI_GetLocalIPList()
 end
 
-function System_IsPhone()
+function ALittle.System_IsPhone()
 	local platform = __CPPAPI_GetPlatform()
 	return platform ~= "Windows" and platform ~= "Emscripten"
 end
 
-function System_InstallProgram(file_path)
+function ALittle.System_InstallProgram(file_path)
 	__CPPAPI_InstallProgram(file_path)
 end
 
-function System_ClearAIFamily()
+function ALittle.System_ClearAIFamily()
 	__CPPAPI_ClearAIFamily()
 end
 
-function System_StartProgram(package_name)
+function ALittle.System_StartProgram(package_name)
 	__CPPAPI_StartProgram(package_name)
 end
 
-function System_BackProgram()
+function ALittle.System_BackProgram()
 	__CPPAPI_BackProgram()
 end
 
-function System_GetScreenWidth()
+function ALittle.System_GetScreenWidth()
 	return __CPPAPI_GetScreenWidth()
 end
 
-function System_GetScreenHeight()
+function ALittle.System_GetScreenHeight()
 	return __CPPAPI_GetScreenHeight()
 end
 
-function System_GetStatusBarHeight()
+function ALittle.System_GetStatusBarHeight()
 	return __CPPAPI_GetStatusBarHeight()
 end
 
-function System_ForceExit()
+function ALittle.System_ForceExit()
 	__CPPAPI_ScheduleSystem:ForceExit()
 end
 
-function System_Exit()
+function ALittle.System_Exit()
 	__CPPAPI_ScheduleSystem:Exit()
 end
 
-function System_Restart()
+function ALittle.System_Restart()
 	__CPPAPI_ScheduleSystem:Restart()
 end
 
-function System_SetFPS(fps)
+function ALittle.System_SetFPS(fps)
 	__CPPAPI_ScheduleSystem:SetFPS(fps)
 end
 
-function System_SetAppPauseInterval(interval)
+function ALittle.System_SetAppPauseInterval(interval)
 	__CPPAPI_ScheduleSystem:SetAppPauseInterval(interval)
 end
 
-function System_GetAppPauseInterval()
+function ALittle.System_GetAppPauseInterval()
 	return __CPPAPI_ScheduleSystem:GetAppPauseInterval()
 end
 
-SystemThreadType = {
+ALittle.SystemThreadType = {
 	FAST = 0,
 	MIDDLE = 1,
 	SLOW = 2,
 }
 
-function System_SetThreadCount(count, thread_type)
+function ALittle.System_SetThreadCount(count, thread_type)
 	if thread_type == nil then
-		thread_type = SystemThreadType.SLOW
+		thread_type = ALittle.SystemThreadType.SLOW
 	end
 	__CPPAPI_ThreadSystem:SetThreadCount(count, thread_type)
 end
 
-function System_GetThreadCount(thread_type)
+function ALittle.System_GetThreadCount(thread_type)
 	if thread_type == nil then
-		thread_type = SystemThreadType.SLOW
+		thread_type = ALittle.SystemThreadType.SLOW
 	end
 	return __CPPAPI_ThreadSystem:GetThreadCount(thread_type)
 end
 
-function System_GetIMESelectList()
+function ALittle.System_GetIMESelectList()
 	return __CPPAPI_GetIMESelectList()
 end
 
-function System_SetIMEPos(x, y)
+function ALittle.System_SetIMEPos(x, y)
 	__CPPAPI_SetIMSPos(x, y)
 end
 
-function System_SetIMERect(x, y, w, h)
+function ALittle.System_SetIMERect(x, y, w, h)
 	__CPPAPI_SetIMSRect(x, y, w, h)
 end
 
-function System_OpenIME()
+function ALittle.System_OpenIME()
 	__CPPAPI_OpenIME()
 end
 
-function System_CloseIME()
+function ALittle.System_CloseIME()
 	__CPPAPI_CloseIME()
 end
 
-function System_GetCursorX()
+function ALittle.System_GetCursorX()
 	return __CPPAPI_GetCursorX()
 end
 
-function System_GetCursorY()
+function ALittle.System_GetCursorY()
 	return __CPPAPI_GetCursorY()
 end
 
-function System_SetEditCursor()
+function ALittle.System_SetEditCursor()
 	__CPPAPI_SetEditCursor()
 end
 
-function System_SetNormalCursor()
+function ALittle.System_SetNormalCursor()
 	__CPPAPI_SetNormalCursor()
 end
 
-function System_SetHandCursor()
+function ALittle.System_SetHandCursor()
 	__CPPAPI_SetHandCursor()
 end
 
-function System_SetHDragCursor()
+function ALittle.System_SetHDragCursor()
 	__CPPAPI_SetHDragCursor()
 end
 
-function System_SetVDragCursor()
+function ALittle.System_SetVDragCursor()
 	__CPPAPI_SetVDragCursor()
 end
 
-function System_SetHVDragCursor()
+function ALittle.System_SetHVDragCursor()
 	__CPPAPI_SetHVDragCursor()
 end
 
-function System_SetHV2DragCursor()
+function ALittle.System_SetHV2DragCursor()
 	__CPPAPI_SetHV2DragCursor()
 end
 
-function System_SetCrossDragCursor()
+function ALittle.System_SetCrossDragCursor()
 	__CPPAPI_SetCrossDragCursor()
 end
 
-function System_CreateView(title, width, height, flag, scale)
+function ALittle.System_CreateView(title, width, height, flag, scale)
 	return __CPPAPI_RenderSystem:CreateView(title, width, height, flag, scale)
 end
 
-function System_SetViewTitle(title)
+function ALittle.System_SetViewTitle(title)
 	return __CPPAPI_RenderSystem:SetViewTitle(title)
 end
 
-function System_SetViewIcon(path)
+function ALittle.System_SetViewIcon(path)
 	return __CPPAPI_RenderSystem:SetViewIcon(path)
 end
 
-function System_SetViewShape(path)
+function ALittle.System_SetViewShape(path)
 	return __CPPAPI_RenderSystem:SetViewShape(path)
 end
 
-function System_SetViewSize(width, height)
+function ALittle.System_SetViewSize(width, height)
 	__CPPAPI_RenderSystem:SetViewSize(width, height)
 end
 
-function System_SetMaxViewSize()
+function ALittle.System_SetMaxViewSize()
 	__CPPAPI_RenderSystem:SetMaxViewSize()
 end
 
-function System_SetMinViewSize()
+function ALittle.System_SetMinViewSize()
 	__CPPAPI_RenderSystem:SetMinViewSize()
 end
 
-function System_SetRestoreViewSize()
+function ALittle.System_SetRestoreViewSize()
 	__CPPAPI_RenderSystem:SetRestoreViewSize()
 end
 
-function System_RaiseView()
+function ALittle.System_RaiseView()
 	__CPPAPI_RenderSystem:RaiseView()
 end
 
-function System_ShowView()
+function ALittle.System_ShowView()
 	__CPPAPI_RenderSystem:ShowView()
 end
 
-function System_HideView()
+function ALittle.System_HideView()
 	__CPPAPI_RenderSystem:HideView()
 end
 
-function System_GetViewX()
+function ALittle.System_GetViewX()
 	return __CPPAPI_RenderSystem:GetViewX()
 end
 
-function System_GetViewY()
+function ALittle.System_GetViewY()
 	return __CPPAPI_RenderSystem:GetViewY()
 end
 
-function System_SetViewPosition(x, y)
+function ALittle.System_SetViewPosition(x, y)
 	__CPPAPI_RenderSystem:SetViewPosition(x, y)
 end
 
-function System_GetMaxTextureWidth()
+function ALittle.System_GetMaxTextureWidth()
 	return __CPPAPI_RenderSystem:GetMaxTextureWidth()
 end
 
-function System_GetMaxTextureHeight()
+function ALittle.System_GetMaxTextureHeight()
 	return __CPPAPI_RenderSystem:GetMaxTextureHeight()
 end
 
-function System_Render()
+function ALittle.System_Render()
 	return __CPPAPI_RenderSystem:Render()
 end
 
-function System_GetClipboardText()
+function ALittle.System_GetClipboardText()
 	return __CPPAPI_GetClipboardText()
 end
 
-function System_SetClipboardText(content)
+function ALittle.System_SetClipboardText(content)
 	__CPPAPI_SetClipboardText(content)
 end
 
-function System_HasClipboardText()
+function ALittle.System_HasClipboardText()
 	return __CPPAPI_HasClipboardText()
 end
 
-function System_GetClipboardImage()
+function ALittle.System_GetClipboardImage()
 	return __CPPAPI_GetClipboardImage()
 end
 
-function System_SetClipboardImage(surface)
+function ALittle.System_SetClipboardImage(surface)
 	__CPPAPI_SetClipboardImage(surface)
 end
 
-function System_HasClipboardImage()
+function ALittle.System_HasClipboardImage()
 	return __CPPAPI_HasClipboardImage()
 end
 
-SystemOrientationType = {
+ALittle.SystemOrientationType = {
 	SDL_ORIENTATION_UNKNOWN = 0,
 	SDL_ORIENTATION_LANDSCAPE = 1,
 	SDL_ORIENTATION_LANDSCAPE_FLIPPED = 2,
@@ -310,85 +310,85 @@ SystemOrientationType = {
 	SDL_ORIENTATION_PORTRAIT_FLIPPED = 4,
 }
 
-function System_GetDisplayOrientation()
+function ALittle.System_GetDisplayOrientation()
 	return __CPPAPI_GetDisplayOrientation()
 end
 
-function System_EnableScreenSaver()
+function ALittle.System_EnableScreenSaver()
 	__CPPAPI_EnableScreenSaver()
 end
 
-function System_DisableScreenSaver()
+function ALittle.System_DisableScreenSaver()
 	__CPPAPI_DisableScreenSaver()
 end
 
-function System_OpenUrlBySystemBrowser(url)
+function ALittle.System_OpenUrlBySystemBrowser(url)
 	__CPPAPI_OpenUrlBySystemBrowser(url)
 end
 
-function System_Alert(msg)
+function ALittle.System_Alert(msg)
 	__CPPAPI_Alert(msg)
 end
 
-function System_LoadSurface(path)
+function ALittle.System_LoadSurface(path)
 	return __CPPAPI_LoadSurface(path)
 end
 
-function System_CreateSurface(width, height)
+function ALittle.System_CreateSurface(width, height)
 	return __CPPAPI_CreateSurface(width, height)
 end
 
-function System_SaveSurface(surface, path)
+function ALittle.System_SaveSurface(surface, path)
 	return __CPPAPI_SaveSurface(surface, path)
 end
 
-function System_FreeSurface(surface)
+function ALittle.System_FreeSurface(surface)
 	__CPPAPI_FreeSurface(surface)
 end
 
-function System_GetSurfaceWidth(surface)
+function ALittle.System_GetSurfaceWidth(surface)
 	return __CPPAPI_GetSurfaceWidth(surface)
 end
 
-function System_GetSurfaceHeight(surface)
+function ALittle.System_GetSurfaceHeight(surface)
 	return __CPPAPI_GetSurfaceHeight(surface)
 end
 
-function System_CutBlitSurface(new_surface, surface, to, from)
+function ALittle.System_CutBlitSurface(new_surface, surface, to, from)
 	return __CPPAPI_CutBlitSurface(new_surface, surface, to, from)
 end
 
-function System_SetSurfacePixel(surface, x, y, color)
+function ALittle.System_SetSurfacePixel(surface, x, y, color)
 	return __CPPAPI_SetSurfacePixel(surface, x, y, color)
 end
 
-function System_GetSurfacePixel(surface, x, y)
+function ALittle.System_GetSurfacePixel(surface, x, y)
 	return __CPPAPI_GetSurfacePixel(surface, x, y)
 end
 
-function System_GetPixelAlpha(color)
+function ALittle.System_GetPixelAlpha(color)
 	return __CPPAPI_GetPixelAlpha(color)
 end
 
-function System_SetPixelAlpha(color, alpha)
+function ALittle.System_SetPixelAlpha(color, alpha)
 	return __CPPAPI_SetPixelAlpha(color, alpha)
 end
 
-function System_GetSurfaceGrid9(surface, type)
+function ALittle.System_GetSurfaceGrid9(surface, type)
 	return __CPPAPI_GetSurfaceGrid9(surface, type)
 end
 
-function CreateMsgSender(heartbeat, check_heartbeat, callback)
-	return Lua.Template(MsgSenderTemplate, "ALittle.MsgSenderTemplate<lua.__CPPAPIMsgInterface, lua.__CPPAPIMessageWriteFactory>", __CPPAPIMsgInterface, __CPPAPIMessageWriteFactory)(heartbeat, check_heartbeat, A_LuaLoopSystem, callback)
+function ALittle.CreateMsgSender(heartbeat, check_heartbeat, callback)
+	return Lua.Template(ALittle.MsgSenderTemplate, "ALittle.MsgSenderTemplate<lua.__CPPAPIMsgInterface, lua.__CPPAPIMessageWriteFactory>", __CPPAPIMsgInterface, __CPPAPIMessageWriteFactory)(heartbeat, check_heartbeat, A_LuaLoopSystem, callback)
 end
 
-function CreateHttpSender(ip, port)
-	return Lua.Template(HttpSenderTemplate, "ALittle.HttpSenderTemplate<lua.__CPPAPIHttpInterface>", __CPPAPIHttpInterface)(ip, port)
+function ALittle.CreateHttpSender(ip, port)
+	return Lua.Template(ALittle.HttpSenderTemplate, "ALittle.HttpSenderTemplate<lua.__CPPAPIHttpInterface>", __CPPAPIHttpInterface)(ip, port)
 end
 
-function HttpRequest(ip, port, method)
+function ALittle.HttpRequest(ip, port, method)
 	local ___COROUTINE = coroutine.running()
-	local sender = CreateHttpSender(ip, port)
+	local sender = ALittle.CreateHttpSender(ip, port)
 	if ___COROUTINE == nil then
 		return "当前不是协程", nil
 	end
@@ -396,13 +396,13 @@ function HttpRequest(ip, port, method)
 	return coroutine.yield()
 end
 
-function CreateHttpFileSender(ip, port, file_path, start_size, callback)
-	return Lua.Template(HttpFileSenderTemplate, "ALittle.HttpFileSenderTemplate<lua.__CPPAPIHttpFileInterface>", __CPPAPIHttpFileInterface)(ip, port, file_path, start_size, callback)
+function ALittle.CreateHttpFileSender(ip, port, file_path, start_size, callback)
+	return Lua.Template(ALittle.HttpFileSenderTemplate, "ALittle.HttpFileSenderTemplate<lua.__CPPAPIHttpFileInterface>", __CPPAPIHttpFileInterface)(ip, port, file_path, start_size, callback)
 end
 
-function HttpDownloadRequest(ip, port, file_path, method, callback)
+function ALittle.HttpDownloadRequest(ip, port, file_path, method, callback)
 	local ___COROUTINE = coroutine.running()
-	local sender = CreateHttpFileSender(ip, port, file_path, 0, callback)
+	local sender = ALittle.CreateHttpFileSender(ip, port, file_path, 0, callback)
 	if ___COROUTINE == nil then
 		return "当前不是协程"
 	end
@@ -410,3 +410,4 @@ function HttpDownloadRequest(ip, port, file_path, method, callback)
 	return coroutine.yield()
 end
 
+end

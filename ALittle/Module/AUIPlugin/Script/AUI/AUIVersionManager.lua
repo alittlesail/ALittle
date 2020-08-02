@@ -1,20 +1,20 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("AUIPlugin", package.seeall)
-
+do
+if _G.AUIPlugin == nil then _G.AUIPlugin = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-AUIVersionManager = Lua.Class(nil, "AUIPlugin.AUIVersionManager")
+AUIPlugin.AUIVersionManager = Lua.Class(nil, "AUIPlugin.AUIVersionManager")
 
-function AUIVersionManager:Ctor(ip, port, account, module_name)
+function AUIPlugin.AUIVersionManager:Ctor(ip, port, account, module_name)
 	___rawset(self, "_version_ip", ip)
 	___rawset(self, "_version_port", port)
 	___rawset(self, "_version_system", ALittle.VersionSystem.CreateVersionSystem(account, module_name))
 end
 
-function AUIVersionManager:Shutdown()
+function AUIPlugin.AUIVersionManager:Shutdown()
 	if self._dialog ~= nil then
 		A_LayerManager:RemoveFromModal(self._dialog)
 		self._dialog = nil
@@ -25,9 +25,9 @@ function AUIVersionManager:Shutdown()
 	self._version_system:StopUpdate()
 end
 
-function AUIVersionManager:CreateDialog()
+function AUIPlugin.AUIVersionManager:CreateDialog()
 	if self._dialog == nil then
-		self._dialog = g_Control:CreateControl("ide_version_dialog", self)
+		self._dialog = AUIPlugin.g_Control:CreateControl("ide_version_dialog", self)
 		A_LayerManager:AddToModal(self._dialog)
 		self._notice_content.text = ""
 		self._notice_content.visible = true
@@ -43,38 +43,38 @@ function AUIVersionManager:CreateDialog()
 	end
 end
 
-function AUIVersionManager:ShowDialog()
+function AUIPlugin.AUIVersionManager:ShowDialog()
 	self:CreateDialog()
 	self._dialog.visible = true
 	self:UpdateVersion(true)
 end
 
-function AUIVersionManager:HandleCheckClick(event)
+function AUIPlugin.AUIVersionManager:HandleCheckClick(event)
 	self:UpdateVersion(true)
 end
 
-function AUIVersionManager:HandleUpdateClick(event)
+function AUIPlugin.AUIVersionManager:HandleUpdateClick(event)
 	self:UpdateVersion(false)
 end
 
-function AUIVersionManager:HandleNoUpdateClick(event)
+function AUIPlugin.AUIVersionManager:HandleNoUpdateClick(event)
 	self._dialog.visible = false
 end
 
-function AUIVersionManager:HandleInstallClick(event)
+function AUIPlugin.AUIVersionManager:HandleInstallClick(event)
 	self._version_system:Install(nil)
 end
 
-function AUIVersionManager:HandleRestartClick(event)
+function AUIPlugin.AUIVersionManager:HandleRestartClick(event)
 	ALittle.System_Restart()
 end
 
-function AUIVersionManager:CheckVersionUpdate()
+function AUIPlugin.AUIVersionManager:CheckVersionUpdate()
 	local loop = ALittle.LoopFunction(Lua.Bind(self.CheckVersionUpdateImpl, self), -1, 3600000, 0)
 	loop:Start()
 end
 
-function AUIVersionManager:CheckVersionUpdateImpl()
+function AUIPlugin.AUIVersionManager:CheckVersionUpdateImpl()
 	if self._version_system.doing then
 		return
 	end
@@ -83,9 +83,9 @@ function AUIVersionManager:CheckVersionUpdateImpl()
 		g_AUITool:ShowTipHelp("有最新版本，需要就更新~", 10000)
 	end
 end
-AUIVersionManager.CheckVersionUpdateImpl = Lua.CoWrap(AUIVersionManager.CheckVersionUpdateImpl)
+AUIPlugin.AUIVersionManager.CheckVersionUpdateImpl = Lua.CoWrap(AUIPlugin.AUIVersionManager.CheckVersionUpdateImpl)
 
-function AUIVersionManager:UpdateVersion(check)
+function AUIPlugin.AUIVersionManager:UpdateVersion(check)
 	self:CreateDialog()
 	if self._version_system.doing then
 		return
@@ -174,9 +174,9 @@ function AUIVersionManager:UpdateVersion(check)
 		self._restart_btn.visible = false
 	end
 end
-AUIVersionManager.UpdateVersion = Lua.CoWrap(AUIVersionManager.UpdateVersion)
+AUIPlugin.AUIVersionManager.UpdateVersion = Lua.CoWrap(AUIPlugin.AUIVersionManager.UpdateVersion)
 
-function AUIVersionManager:HandleUpdateVersion(file_name, cur_size, total_size, cur_file_index, file_count)
+function AUIPlugin.AUIVersionManager:HandleUpdateVersion(file_name, cur_size, total_size, cur_file_index, file_count)
 	self._notice_content.text = "版本正在更新..." .. ALittle.Math_Floor(self._version_system.current_update_size / self._version_system.total_update_size * 100) .. "%"
 	self._notice_content.visible = true
 	self._notice_edit.visible = false
@@ -191,3 +191,4 @@ function AUIVersionManager:HandleUpdateVersion(file_name, cur_size, total_size, 
 	self._restart_btn.visible = false
 end
 
+end

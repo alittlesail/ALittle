@@ -1,18 +1,18 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___all_struct = GetAllStruct()
+local ___all_struct = ALittle.GetAllStruct()
 
 
 assert(ALittle.TextCheckButton, " extends class:ALittle.TextCheckButton is nil")
-TextRadioButton = Lua.Class(ALittle.TextCheckButton, "ALittle.TextRadioButton")
+ALittle.TextRadioButton = Lua.Class(ALittle.TextCheckButton, "ALittle.TextRadioButton")
 
-function TextRadioButton:Ctor(ctrl_sys)
+function ALittle.TextRadioButton:Ctor(ctrl_sys)
 end
 
-function TextRadioButton.__setter:group(group)
+function ALittle.TextRadioButton.__setter:group(group)
 	if self._group == group then
 		return
 	end
@@ -25,12 +25,12 @@ function TextRadioButton.__setter:group(group)
 	end
 end
 
-function TextRadioButton.__getter:group()
+function ALittle.TextRadioButton.__getter:group()
 	return self._group
 end
 
-function TextRadioButton.SetGroup(list)
-	local group = CreateKeyWeakMap()
+function ALittle.TextRadioButton.SetGroup(list)
+	local group = ALittle.CreateKeyWeakMap()
 	for index, button in ___ipairs(list) do
 		if button._group ~= nil then
 			button._group[button] = nil
@@ -40,7 +40,7 @@ function TextRadioButton.SetGroup(list)
 	end
 end
 
-function TextRadioButton:HandleLButtonUp(event)
+function ALittle.TextRadioButton:HandleLButtonUp(event)
 	if event.rel_x >= 0 and event.rel_y >= 0 and event.rel_x < event.target._width and event.rel_y < event.target._height then
 		if self._selected == false then
 			self._selected = true
@@ -58,7 +58,7 @@ function TextRadioButton:HandleLButtonUp(event)
 		local e = {}
 		e.is_drag = event.is_drag
 		self:DispatchEvent(___all_struct[-449066808], e)
-		if System_IsPhone == false then
+		if ALittle.System_IsPhone == false then
 			self:ShowOver()
 		else
 			self:ShowUp()
@@ -68,7 +68,7 @@ function TextRadioButton:HandleLButtonUp(event)
 	end
 end
 
-function TextRadioButton.__setter:selected(value)
+function ALittle.TextRadioButton.__setter:selected(value)
 	if self._selected == value then
 		return
 	end
@@ -91,3 +91,4 @@ function TextRadioButton.__setter:selected(value)
 	end
 end
 
+end

@@ -1,15 +1,15 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittleIDE", package.seeall)
-
+do
+if _G.ALittleIDE == nil then _G.ALittleIDE = {} end
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-IDEAttrTextDialog = Lua.Class(nil, "ALittleIDE.IDEAttrTextDialog")
+ALittleIDE.IDEAttrTextDialog = Lua.Class(nil, "ALittleIDE.IDEAttrTextDialog")
 
-function IDEAttrTextDialog:ShowDialog(target_panel, text, need_reset)
+function ALittleIDE.IDEAttrTextDialog:ShowDialog(target_panel, text, need_reset)
 	if self._dialog == nil then
-		self._dialog = g_Control:CreateControl("ide_text_edit_dialog", self)
+		self._dialog = ALittleIDE.g_Control:CreateControl("ide_text_edit_dialog", self)
 		A_LayerManager:AddToModal(self._dialog)
 	end
 	self._dialog.visible = true
@@ -19,11 +19,11 @@ function IDEAttrTextDialog:ShowDialog(target_panel, text, need_reset)
 	self:ResetText()
 end
 
-function IDEAttrTextDialog:HideDialog()
+function ALittleIDE.IDEAttrTextDialog:HideDialog()
 	self._dialog.visible = false
 end
 
-function IDEAttrTextDialog:ReadColor(text)
+function ALittleIDE.IDEAttrTextDialog:ReadColor(text)
 	local display_object = self["_" .. text]
 	local value = ALittle.Math_ToDouble(display_object.text)
 	if value == nil or value < 0 then
@@ -38,7 +38,7 @@ function IDEAttrTextDialog:ReadColor(text)
 	end
 end
 
-function IDEAttrTextDialog:HandleEditChanged(event)
+function ALittleIDE.IDEAttrTextDialog:HandleEditChanged(event)
 	local info = {}
 	info.__class = "Text"
 	if self._bold.text == "是" then
@@ -76,7 +76,7 @@ function IDEAttrTextDialog:HandleEditChanged(event)
 	self._target_panel:RemoverToNilShowSet(self._target_text, info_json, self._target_need_reset)
 end
 
-function IDEAttrTextDialog:ResetText()
+function ALittleIDE.IDEAttrTextDialog:ResetText()
 	local info = self._target_panel.base[self._target_text]
 	if info == nil then
 		info = {}
@@ -98,15 +98,15 @@ function IDEAttrTextDialog:ResetText()
 		self._italic.text = "是"
 	end
 	self._font_path.text = ""
-	if g_IDEProject.project ~= nil then
-		self._font_path.text = g_IDEProject.project.config:GetConfig("default_font_path", "")
+	if ALittleIDE.g_IDEProject.project ~= nil then
+		self._font_path.text = ALittleIDE.g_IDEProject.project.config:GetConfig("default_font_path", "")
 	end
 	if info.font_path ~= nil then
 		self._font_path.text = info.font_path
 	end
 	self._font_size.text = ""
-	if g_IDEProject.project ~= nil then
-		self._font_size.text = g_IDEProject.project.config:GetConfig("default_font_size", 15)
+	if ALittleIDE.g_IDEProject.project ~= nil then
+		self._font_size.text = ALittleIDE.g_IDEProject.project.config:GetConfig("default_font_size", 15)
 	end
 	if info.font_size ~= nil then
 		self._font_size.text = info.font_size
@@ -128,4 +128,5 @@ function IDEAttrTextDialog:ResetText()
 	end
 end
 
-g_IDEAttrTextDialog = IDEAttrTextDialog()
+ALittleIDE.g_IDEAttrTextDialog = ALittleIDE.IDEAttrTextDialog()
+end

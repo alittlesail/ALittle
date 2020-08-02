@@ -1,16 +1,16 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___all_struct = GetAllStruct()
+local ___all_struct = ALittle.GetAllStruct()
 
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
-SpringTextButton = Lua.Class(ALittle.DisplayLayout, "ALittle.SpringTextButton")
+ALittle.SpringTextButton = Lua.Class(ALittle.DisplayLayout, "ALittle.SpringTextButton")
 
-function SpringTextButton:Ctor(ctrl_sys)
+function ALittle.SpringTextButton:Ctor(ctrl_sys)
 	___rawset(self, "_show_text", ({}))
 	self._show_text.width = 0
 	self._show_text.height = 0
@@ -36,8 +36,8 @@ function SpringTextButton:Ctor(ctrl_sys)
 	___rawset(self, "_pickup_child", false)
 end
 
-function SpringTextButton.__setter:disabled(value)
-	DisplayObject.__setter.disabled(self, value)
+function ALittle.SpringTextButton.__setter:disabled(value)
+	ALittle.DisplayObject.__setter.disabled(self, value)
 	if value then
 		self:ShowDisabled()
 	else
@@ -45,19 +45,19 @@ function SpringTextButton.__setter:disabled(value)
 	end
 end
 
-function SpringTextButton:HandleMoveIn(event)
+function ALittle.SpringTextButton:HandleMoveIn(event)
 	self:ShowOver()
 end
 
-function SpringTextButton:HandleMoveOut(event)
+function ALittle.SpringTextButton:HandleMoveOut(event)
 	self:ShowUp(nil)
 end
 
-function SpringTextButton:HandleLButtonDown(event)
+function ALittle.SpringTextButton:HandleLButtonDown(event)
 	self:ShowDown()
 end
 
-function SpringTextButton:HandleLButtonUp(event)
+function ALittle.SpringTextButton:HandleLButtonUp(event)
 	if event.rel_x >= 0 and event.rel_y >= 0 and event.rel_x < event.target._width and event.rel_y < event.target._height then
 		local e = {}
 		e.is_drag = event.is_drag
@@ -65,7 +65,7 @@ function SpringTextButton:HandleLButtonUp(event)
 		if self._file_select then
 			A_OtherSystem:SystemSelectFile(self)
 		end
-		if System_IsPhone == false then
+		if ALittle.System_IsPhone == false then
 			self:ShowOver()
 		else
 			self:ShowUp(nil)
@@ -75,16 +75,16 @@ function SpringTextButton:HandleLButtonUp(event)
 	end
 end
 
-function SpringTextButton:HandleMButtonDown(event)
+function ALittle.SpringTextButton:HandleMButtonDown(event)
 	self:ShowDown()
 end
 
-function SpringTextButton:HandleMButtonUp(event)
+function ALittle.SpringTextButton:HandleMButtonUp(event)
 	if event.rel_x >= 0 and event.rel_y >= 0 and event.rel_x < event.target._width and event.rel_y < event.target._height then
 		local e = {}
 		e.is_drag = event.is_drag
 		self:DispatchEvent(___all_struct[-1330840], e)
-		if System_IsPhone == false then
+		if ALittle.System_IsPhone == false then
 			self:ShowOver()
 		else
 			self:ShowUp(nil)
@@ -94,13 +94,13 @@ function SpringTextButton:HandleMButtonUp(event)
 	end
 end
 
-function SpringTextButton:HandleFButtonDown(event)
+function ALittle.SpringTextButton:HandleFButtonDown(event)
 	if event.is_sfc == false then
 		self:ShowDown()
 	end
 end
 
-function SpringTextButton:HandleFButtonUp(event)
+function ALittle.SpringTextButton:HandleFButtonUp(event)
 	if event.rel_x >= 0 and event.rel_y >= 0 and event.rel_x < event.target._width and event.rel_y < event.target._height then
 		local e = {}
 		e.is_drag = event.is_drag
@@ -111,16 +111,16 @@ function SpringTextButton:HandleFButtonUp(event)
 	end
 end
 
-function SpringTextButton.__setter:text(value)
+function ALittle.SpringTextButton.__setter:text(value)
 	self._show_text.text = value
 	self._show_disabled_text.text = value
 end
 
-function SpringTextButton.__getter:text()
+function ALittle.SpringTextButton.__getter:text()
 	return self._show_text.text
 end
 
-function SpringTextButton:ShowUp(event)
+function ALittle.SpringTextButton:ShowUp(event)
 	if self._abs_disabled or self._disabled then
 		return
 	end
@@ -135,7 +135,7 @@ function SpringTextButton:ShowUp(event)
 	self:ScaleTo(false, 200)
 end
 
-function SpringTextButton:ShowDown()
+function ALittle.SpringTextButton:ShowDown()
 	if self._abs_disabled or self._disabled then
 		return
 	end
@@ -150,7 +150,7 @@ function SpringTextButton:ShowDown()
 	self:ScaleTo(true, 200)
 end
 
-function SpringTextButton:ScaleTo(big_or_small, time_in_ms)
+function ALittle.SpringTextButton:ScaleTo(big_or_small, time_in_ms)
 	if self._big_or_small == big_or_small then
 		return
 	end
@@ -163,13 +163,13 @@ function SpringTextButton:ScaleTo(big_or_small, time_in_ms)
 		self._anti_loop:Stop()
 		self._anti_loop = nil
 	end
-	self._anti_loop = LoopGroup()
-	self._anti_loop:AddUpdater(LoopLinear(self, "scale_x", scale, time_in_ms, 1))
-	self._anti_loop:AddUpdater(LoopLinear(self, "scale_y", scale, time_in_ms, 1))
+	self._anti_loop = ALittle.LoopGroup()
+	self._anti_loop:AddUpdater(ALittle.LoopLinear(self, "scale_x", scale, time_in_ms, 1))
+	self._anti_loop:AddUpdater(ALittle.LoopLinear(self, "scale_y", scale, time_in_ms, 1))
 	self._anti_loop:Start()
 end
 
-function SpringTextButton:ShowOver()
+function ALittle.SpringTextButton:ShowOver()
 	if self._abs_disabled or self._disabled then
 		return
 	end
@@ -184,7 +184,7 @@ function SpringTextButton:ShowOver()
 	self:ScaleTo(false, 200)
 end
 
-function SpringTextButton:ShowDisabled()
+function ALittle.SpringTextButton:ShowDisabled()
 	self:ScaleTo(false, 200)
 	if self._show_up ~= nil then
 		self._show_up.alpha = 0
@@ -196,7 +196,7 @@ function SpringTextButton:ShowDisabled()
 	self._show_disabled_text.visible = true
 end
 
-function SpringTextButton.__setter:show_text(value)
+function ALittle.SpringTextButton.__setter:show_text(value)
 	if value == nil then
 		local show = self._show_text
 		self:RemoveChild(show)
@@ -211,19 +211,19 @@ function SpringTextButton.__setter:show_text(value)
 	value.visible = self._show_text.visible
 	self:RemoveChild(self._show_text)
 	self._show_text = value
-	self._show_text.x_type = UIEnumTypes.POS_ALIGN_CENTER
-	self._show_text.y_type = UIEnumTypes.POS_ALIGN_CENTER
+	self._show_text.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
+	self._show_text.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
 	self:AddChild(self._show_text, 6)
 end
 
-function SpringTextButton.__getter:show_text()
+function ALittle.SpringTextButton.__getter:show_text()
 	if self._show_text._show == nil then
 		return nil
 	end
 	return self._show_text
 end
 
-function SpringTextButton.__setter:show_disabled_text(value)
+function ALittle.SpringTextButton.__setter:show_disabled_text(value)
 	if value == nil then
 		local show = self._show_disabled_text
 		self:RemoveChild(show)
@@ -238,24 +238,24 @@ function SpringTextButton.__setter:show_disabled_text(value)
 	value.visible = self._show_disabled_text.visible
 	self:RemoveChild(self._show_disabled_text)
 	self._show_disabled_text = value
-	self._show_disabled_text.x_type = UIEnumTypes.POS_ALIGN_CENTER
-	self._show_disabled_text.y_type = UIEnumTypes.POS_ALIGN_CENTER
+	self._show_disabled_text.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
+	self._show_disabled_text.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
 	self:AddChild(self._show_disabled_text, 6)
 end
 
-function SpringTextButton.__getter:show_disabled_text()
+function ALittle.SpringTextButton.__getter:show_disabled_text()
 	if self._show_disabled_text._show == nil then
 		return nil
 	end
 	return self._show_disabled_text
 end
 
-function SpringTextButton.__setter:show_up(value)
+function ALittle.SpringTextButton.__setter:show_up(value)
 	self:RemoveChild(self._show_up)
 	self._show_up = value
 	if self._show_up ~= nil then
-		self._show_up.width_type = UIEnumTypes.SIZE_MARGIN
-		self._show_up.height_type = UIEnumTypes.SIZE_MARGIN
+		self._show_up.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
+		self._show_up.height_type = ALittle.UIEnumTypes.SIZE_MARGIN
 		self._show_up.width_value = 0
 		self._show_up.height_value = 0
 		self:AddChild(self._show_up, 1)
@@ -267,16 +267,16 @@ function SpringTextButton.__setter:show_up(value)
 	end
 end
 
-function SpringTextButton.__getter:show_up()
+function ALittle.SpringTextButton.__getter:show_up()
 	return self._show_up
 end
 
-function SpringTextButton.__setter:show_disabled(value)
+function ALittle.SpringTextButton.__setter:show_disabled(value)
 	self:RemoveChild(self._show_disabled)
 	self._show_disabled = value
 	if self._show_disabled ~= nil then
-		self._show_disabled.width_type = UIEnumTypes.SIZE_MARGIN
-		self._show_disabled.height_type = UIEnumTypes.SIZE_MARGIN
+		self._show_disabled.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
+		self._show_disabled.height_type = ALittle.UIEnumTypes.SIZE_MARGIN
 		self._show_disabled.width_value = 0
 		self._show_disabled.height_value = 0
 		self:AddChild(self._show_disabled, 1)
@@ -288,15 +288,16 @@ function SpringTextButton.__setter:show_disabled(value)
 	end
 end
 
-function SpringTextButton.__getter:show_disabled()
+function ALittle.SpringTextButton.__getter:show_disabled()
 	return self._show_disabled
 end
 
-function SpringTextButton.__setter:file_select(value)
+function ALittle.SpringTextButton.__setter:file_select(value)
 	self._file_select = value
 end
 
-function SpringTextButton.__getter:file_select()
+function ALittle.SpringTextButton.__getter:file_select()
 	return self._file_select
 end
 
+end

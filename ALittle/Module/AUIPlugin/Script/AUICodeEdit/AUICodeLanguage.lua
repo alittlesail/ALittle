@@ -1,6 +1,6 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("AUIPlugin", package.seeall)
-
+do
+if _G.AUIPlugin == nil then _G.AUIPlugin = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
@@ -12,9 +12,9 @@ type_list = {"double","double","double"},
 option_map = {}
 })
 
-AUICodeLanguage = Lua.Class(nil, "AUIPlugin.AUICodeLanguage")
+AUIPlugin.AUICodeLanguage = Lua.Class(nil, "AUIPlugin.AUICodeLanguage")
 
-function AUICodeLanguage:Ctor(project, full_path)
+function AUIPlugin.AUICodeLanguage:Ctor(project, full_path)
 	___rawset(self, "_version", 1)
 	___rawset(self, "_project", project)
 	___rawset(self, "_full_path", full_path)
@@ -27,98 +27,98 @@ function AUICodeLanguage:Ctor(project, full_path)
 	self._auto_pair["'"] = "'"
 end
 
-function AUICodeLanguage.__getter:version()
+function AUIPlugin.AUICodeLanguage.__getter:version()
 	return self._version
 end
 
-function AUICodeLanguage:OnOpen(content)
+function AUIPlugin.AUICodeLanguage:OnOpen(content)
 end
 
-function AUICodeLanguage:OnClose()
+function AUIPlugin.AUICodeLanguage:OnClose()
 end
 
-function AUICodeLanguage:OnShow()
+function AUIPlugin.AUICodeLanguage:OnShow()
 end
 
-function AUICodeLanguage:OnHide()
+function AUIPlugin.AUICodeLanguage:OnHide()
 end
 
-function AUICodeLanguage:OnSave()
+function AUIPlugin.AUICodeLanguage:OnSave()
 end
 
-function AUICodeLanguage:OnTabRightMenu(menu)
+function AUIPlugin.AUICodeLanguage:OnTabRightMenu(menu)
 end
 
-function AUICodeLanguage:SetText(content)
+function AUIPlugin.AUICodeLanguage:SetText(content)
 	self._version = self._version + (1)
 	alanguage.abnffile_settext(self._abnf_file, self._version, content)
 end
 
-function AUICodeLanguage:InsertText(content, it_line, it_char)
+function AUIPlugin.AUICodeLanguage:InsertText(content, it_line, it_char)
 	self._version = self._version + (1)
 	alanguage.abnffile_inserttext(self._abnf_file, self._version, content, it_line, it_char)
 end
 
-function AUICodeLanguage:DeleteText(it_line_start, it_char_start, it_line_end, it_char_end)
+function AUIPlugin.AUICodeLanguage:DeleteText(it_line_start, it_char_start, it_line_end, it_char_end)
 	self._version = self._version + (1)
 	alanguage.abnffile_deletetext(self._abnf_file, self._version, it_line_start, it_char_start, it_line_end, it_char_end)
 end
 
-function AUICodeLanguage:QueryColor(line)
+function AUIPlugin.AUICodeLanguage:QueryColor(line)
 	local ___COROUTINE = coroutine.running()
 	local query_id = self._project:Add(___COROUTINE)
 	alanguage.abnffile_querycolor(self._abnf_file, query_id, self._version, line)
 	return coroutine.yield()
 end
 
-function AUICodeLanguage:QueryInfo(line, char)
+function AUIPlugin.AUICodeLanguage:QueryInfo(line, char)
 	local ___COROUTINE = coroutine.running()
 	local query_id = self._project:Add(___COROUTINE)
 	alanguage.abnffile_queryinfo(self._abnf_file, query_id, self._version, line, char)
 	return coroutine.yield()
 end
 
-function AUICodeLanguage:QueryGoto(line, char)
+function AUIPlugin.AUICodeLanguage:QueryGoto(line, char)
 	local ___COROUTINE = coroutine.running()
 	local query_id = self._project:Add(___COROUTINE)
 	alanguage.abnffile_querygoto(self._abnf_file, query_id, self._version, line, char)
 	return coroutine.yield()
 end
 
-function AUICodeLanguage:QueryComplete(line, char)
+function AUIPlugin.AUICodeLanguage:QueryComplete(line, char)
 	local ___COROUTINE = coroutine.running()
 	local query_id = self._project:Add(___COROUTINE)
 	alanguage.abnffile_querycomplete(self._abnf_file, query_id, self._version, line, char)
 	return coroutine.yield()
 end
 
-function AUICodeLanguage:QueryParamList(line, char)
+function AUIPlugin.AUICodeLanguage:QueryParamList(line, char)
 	local ___COROUTINE = coroutine.running()
 	local query_id = self._project:Add(___COROUTINE)
 	alanguage.abnffile_queryparamlist(self._abnf_file, query_id, self._version, line, char)
 	return coroutine.yield()
 end
 
-function AUICodeLanguage:QueryParamIndex(line, char)
+function AUIPlugin.AUICodeLanguage:QueryParamIndex(line, char)
 	return alanguage.abnffile_queryparamindex(self._abnf_file, self._version, line, char)
 end
 
-function AUICodeLanguage:QueryError(force)
+function AUIPlugin.AUICodeLanguage:QueryError(force)
 	local ___COROUTINE = coroutine.running()
 	local query_id = self._project:Add(___COROUTINE)
 	alanguage.abnffile_queryerror(self._abnf_file, query_id, self._version, force)
 	return coroutine.yield()
 end
 
-function AUICodeLanguage:QueryDesiredIndent(line, char)
+function AUIPlugin.AUICodeLanguage:QueryDesiredIndent(line, char)
 	return alanguage.abnffile_querydesiredindent(self._abnf_file, self._version, line, char)
 end
 
-function AUICodeLanguage:QueryFormateIndent(line, char)
+function AUIPlugin.AUICodeLanguage:QueryFormateIndent(line, char)
 	return alanguage.abnffile_queryformateindent(self._abnf_file, self._version, line, char)
 end
 
-function AUICodeLanguage:QueryAutoPair(line, char, input)
+function AUIPlugin.AUICodeLanguage:QueryAutoPair(line, char, input)
 	local right = self._auto_pair[input]
 	if right == nil then
 		return nil
@@ -129,19 +129,20 @@ function AUICodeLanguage:QueryAutoPair(line, char, input)
 	return right
 end
 
-function AUICodeLanguage:QueryAutoFormat(input)
+function AUIPlugin.AUICodeLanguage:QueryAutoFormat(input)
 	return false
 end
 
-function AUICodeLanguage:NeedAutoFormat()
+function AUIPlugin.AUICodeLanguage:NeedAutoFormat()
 	return false
 end
 
-function AUICodeLanguage:QueryColorValue(tag)
+function AUIPlugin.AUICodeLanguage:QueryColorValue(tag)
 	return nil
 end
 
-function AUICodeLanguage:QueryCompleteIcon(tag)
+function AUIPlugin.AUICodeLanguage:QueryCompleteIcon(tag)
 	return nil
 end
 
+end

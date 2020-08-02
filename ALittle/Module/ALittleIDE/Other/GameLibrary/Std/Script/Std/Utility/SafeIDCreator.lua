@@ -1,19 +1,19 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-SafeIDCreator = Lua.Class(nil, "ALittle.SafeIDCreator")
+ALittle.SafeIDCreator = Lua.Class(nil, "ALittle.SafeIDCreator")
 
-function SafeIDCreator:Ctor()
+function ALittle.SafeIDCreator:Ctor()
 	___rawset(self, "_max_id", 0)
 	___rawset(self, "_map", {})
 end
 
-function SafeIDCreator:CreateID()
+function ALittle.SafeIDCreator:CreateID()
 	local id = nil
 	for k, v in ___pairs(self._map) do
 		id = k
@@ -27,15 +27,16 @@ function SafeIDCreator:CreateID()
 	return self._max_id
 end
 
-function SafeIDCreator:ReleaseID(id)
+function ALittle.SafeIDCreator:ReleaseID(id)
 	self._map[id] = true
 end
 
-function SafeIDCreator:PrintStatus()
+function ALittle.SafeIDCreator:PrintStatus()
 	local count = 0
 	for k, v in ___pairs(self._map) do
 		count = count + 1
 	end
-	Log("SafeIDCreator:PrintStatus count:" .. count .. " max_id:" .. self._max_id)
+	ALittle.Log("SafeIDCreator:PrintStatus count:" .. count .. " max_id:" .. self._max_id)
 end
 
+end

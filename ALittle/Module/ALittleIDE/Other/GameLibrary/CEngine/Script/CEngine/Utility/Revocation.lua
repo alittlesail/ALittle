@@ -1,29 +1,29 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-RevokeObject = Lua.Class(nil, "ALittle.RevokeObject")
+ALittle.RevokeObject = Lua.Class(nil, "ALittle.RevokeObject")
 
-function RevokeObject:Forward()
+function ALittle.RevokeObject:Forward()
 end
 
-function RevokeObject:Back()
+function ALittle.RevokeObject:Back()
 end
 
-RevokeList = Lua.Class(nil, "ALittle.RevokeList")
+ALittle.RevokeList = Lua.Class(nil, "ALittle.RevokeList")
 
-function RevokeList:Ctor()
+function ALittle.RevokeList:Ctor()
 	___rawset(self, "_revoke_list", {})
 	___rawset(self, "_revoke_count", 0)
 	___rawset(self, "_revoke_index", 0)
 	___rawset(self, "_max_count", 100)
 end
 
-function RevokeList:PushRevoke(revoke)
+function ALittle.RevokeList:PushRevoke(revoke)
 	if self._revoke_index < self._revoke_count then
 		local i = self._revoke_index + 1
 		while true do
@@ -43,7 +43,7 @@ function RevokeList:PushRevoke(revoke)
 	end
 end
 
-function RevokeList:DoRevoke()
+function ALittle.RevokeList:DoRevoke()
 	if self._revoke_index >= self._revoke_count then
 		return
 	end
@@ -52,7 +52,7 @@ function RevokeList:DoRevoke()
 	revoke:Forward()
 end
 
-function RevokeList:UndoRevoke()
+function ALittle.RevokeList:UndoRevoke()
 	if self._revoke_index == 0 then
 		return
 	end
@@ -62,23 +62,23 @@ function RevokeList:UndoRevoke()
 end
 
 assert(ALittle.RevokeObject, " extends class:ALittle.RevokeObject is nil")
-RevokeBind = Lua.Class(ALittle.RevokeObject, "ALittle.RevokeBind")
+ALittle.RevokeBind = Lua.Class(ALittle.RevokeObject, "ALittle.RevokeBind")
 
-function RevokeBind:Ctor()
+function ALittle.RevokeBind:Ctor()
 	___rawset(self, "_list", {})
 	___rawset(self, "_count", 0)
 end
 
-function RevokeBind.__setter:complete(value)
+function ALittle.RevokeBind.__setter:complete(value)
 	self._complete = value
 end
 
-function RevokeBind:PushRevoke(revoke)
+function ALittle.RevokeBind:PushRevoke(revoke)
 	self._count = self._count + 1
 	self._list[self._count] = revoke
 end
 
-function RevokeBind:Forward()
+function ALittle.RevokeBind:Forward()
 	for k, revoke in ___ipairs(self._list) do
 		revoke:Forward()
 	end
@@ -87,7 +87,7 @@ function RevokeBind:Forward()
 	end
 end
 
-function RevokeBind:Back()
+function ALittle.RevokeBind:Back()
 	local i = self._count
 	while true do
 		if not(i >= 1) then break end
@@ -99,3 +99,4 @@ function RevokeBind:Back()
 	end
 end
 
+end

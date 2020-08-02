@@ -1,6 +1,6 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("AUIPlugin", package.seeall)
-
+do
+if _G.AUIPlugin == nil then _G.AUIPlugin = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
@@ -20,9 +20,9 @@ option_map = {}
 })
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
-AUICodeLineNumber = Lua.Class(ALittle.DisplayLayout, "AUIPlugin.AUICodeLineNumber")
+AUIPlugin.AUICodeLineNumber = Lua.Class(ALittle.DisplayLayout, "AUIPlugin.AUICodeLineNumber")
 
-function AUICodeLineNumber:Ctor(ctrl_sys, font_path, font_size, ascii_width, word_width)
+function AUIPlugin.AUICodeLineNumber:Ctor(ctrl_sys, font_path, font_size, ascii_width, word_width)
 	___rawset(self, "_showd", false)
 	___rawset(self, "_text", "")
 	___rawset(self, "_font_path", font_path)
@@ -32,7 +32,7 @@ function AUICodeLineNumber:Ctor(ctrl_sys, font_path, font_size, ascii_width, wor
 	self:AddEventListener(___all_struct[1862557463], self, self.HandleShow)
 end
 
-function AUICodeLineNumber:HandleShow(event)
+function AUIPlugin.AUICodeLineNumber:HandleShow(event)
 	if self._showd then
 		return
 	end
@@ -40,7 +40,7 @@ function AUICodeLineNumber:HandleShow(event)
 	self:UpdateShow()
 end
 
-function AUICodeLineNumber:UpdateShow()
+function AUIPlugin.AUICodeLineNumber:UpdateShow()
 	local text_list = ALittle.String_SplitUTF8(self._text)
 	self:RemoveAllChild()
 	local quad = ALittle.Quad(self._ctrl_sys)
@@ -89,35 +89,36 @@ function AUICodeLineNumber:UpdateShow()
 	end
 end
 
-function AUICodeLineNumber.__getter:text()
+function AUIPlugin.AUICodeLineNumber.__getter:text()
 	return self._text
 end
 
-function AUICodeLineNumber.__setter:text(value)
+function AUIPlugin.AUICodeLineNumber.__setter:text(value)
 	if self._text == value then
 		return
 	end
 	self._text = value
 end
 
-function AUICodeLineNumber.__setter:red(value)
+function AUIPlugin.AUICodeLineNumber.__setter:red(value)
 	self._red = value
 	for index, child in ___ipairs(self._childs) do
 		child.red = value
 	end
 end
 
-function AUICodeLineNumber.__setter:green(value)
+function AUIPlugin.AUICodeLineNumber.__setter:green(value)
 	self._green = value
 	for index, child in ___ipairs(self._childs) do
 		child.green = value
 	end
 end
 
-function AUICodeLineNumber.__setter:blue(value)
+function AUIPlugin.AUICodeLineNumber.__setter:blue(value)
 	self._blue = value
 	for index, child in ___ipairs(self._childs) do
 		child.blue = value
 	end
 end
 
+end

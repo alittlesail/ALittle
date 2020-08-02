@@ -1,26 +1,26 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittleIDE", package.seeall)
-
+do
+if _G.ALittleIDE == nil then _G.ALittleIDE = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
 assert(ALittleIDE.DisplayLayoutS, " extends class:ALittleIDE.DisplayLayoutS is nil")
-RichEditS = Lua.Class(ALittleIDE.DisplayLayoutS, "ALittleIDE.RichEditS")
+ALittleIDE.RichEditS = Lua.Class(ALittleIDE.DisplayLayoutS, "ALittleIDE.RichEditS")
 
-function RichEditS:Ctor(user_info, tab_child, tree_logic)
+function ALittleIDE.RichEditS:Ctor(user_info, tab_child, tree_logic)
 	___rawset(self, "_layer_name", "ide_setting_richedit")
 end
 
-function RichEditS:LoadNatureBase()
-	DisplayLayoutS.LoadNatureBase(self)
+function ALittleIDE.RichEditS:LoadNatureBase()
+	ALittleIDE.DisplayLayoutS.LoadNatureBase(self)
 	self:LoadDefaultNilString("font_path")
 	self:LoadDefaultNilString("font_size")
 	self:LoadShowTypeData("display_list")
-	self:LoadBoolData("editable", true, g_IDEEnum.yn_type)
-	self:LoadBoolData("can_drag_text", true, g_IDEEnum.yn_type)
-	self:LoadBoolData("focus_cursor", true, g_IDEEnum.yn_type)
+	self:LoadBoolData("editable", true, ALittleIDE.g_IDEEnum.yn_type)
+	self:LoadBoolData("can_drag_text", true, ALittleIDE.g_IDEEnum.yn_type)
+	self:LoadBoolData("focus_cursor", true, ALittleIDE.g_IDEEnum.yn_type)
 	self:LoadDefaultNilString("default_text")
 	self:LoadValueData("default_text_alpha")
 	self:LoadColorData("cursor_red")
@@ -38,39 +38,39 @@ function RichEditS:LoadNatureBase()
 	self:LoadShowTypeDataForExtends("end_cursor")
 end
 
-function RichEditS:HandleFontPathFOCUSOUT(event)
+function ALittleIDE.RichEditS:HandleFontPathFOCUSOUT(event)
 	self:SpecialFontPathInputChange("font_path", false)
 end
 
-function RichEditS:HandleFontSizeFOCUSOUT(event)
+function ALittleIDE.RichEditS:HandleFontSizeFOCUSOUT(event)
 	self:ValueNumZInputChange("font_size", false)
 end
 
-function RichEditS:HandleFontRedFOCUSOUT(event)
+function ALittleIDE.RichEditS:HandleFontRedFOCUSOUT(event)
 	self:ColorValueInputChange("font_red", false)
 end
 
-function RichEditS:HandleFontGreenFOCUSOUT(event)
+function ALittleIDE.RichEditS:HandleFontGreenFOCUSOUT(event)
 	self:ColorValueInputChange("font_green", false)
 end
 
-function RichEditS:HandleFontBlueFOCUSOUT(event)
+function ALittleIDE.RichEditS:HandleFontBlueFOCUSOUT(event)
 	self:ColorValueInputChange("font_blue", false)
 end
 
-function RichEditS:HandleCursorRedFOCUSOUT(event)
+function ALittleIDE.RichEditS:HandleCursorRedFOCUSOUT(event)
 	self:ColorValueInputChange("cursor_red", false)
 end
 
-function RichEditS:HandleCursorGreenFOCUSOUT(event)
+function ALittleIDE.RichEditS:HandleCursorGreenFOCUSOUT(event)
 	self:ColorValueInputChange("cursor_green", false)
 end
 
-function RichEditS:HandleCursorBlueFOCUSOUT(event)
+function ALittleIDE.RichEditS:HandleCursorBlueFOCUSOUT(event)
 	self:ColorValueInputChange("cursor_blue", false)
 end
 
-function RichEditS:HandleDisplayListFOCUSOUT(event)
+function ALittleIDE.RichEditS:HandleDisplayListFOCUSOUT(event)
 	if event.target._user_data ~= nil then
 		if event.target._user_data == event.target.text then
 			return
@@ -80,35 +80,35 @@ function RichEditS:HandleDisplayListFOCUSOUT(event)
 	self:TableDataSet("display_list", true)
 end
 
-function RichEditS:HandleEditableSELECT_CHANGE(event)
-	self:BoolSelectChange("editable", false, g_IDEEnum.yn_type)
+function ALittleIDE.RichEditS:HandleEditableSELECT_CHANGE(event)
+	self:BoolSelectChange("editable", false, ALittleIDE.g_IDEEnum.yn_type)
 end
 
-function RichEditS:HandleFocusCurosrSELECT_CHANGE(event)
-	self:BoolSelectChange("focus_cursor", false, g_IDEEnum.yn_type)
+function ALittleIDE.RichEditS:HandleFocusCurosrSELECT_CHANGE(event)
+	self:BoolSelectChange("focus_cursor", false, ALittleIDE.g_IDEEnum.yn_type)
 end
 
-function RichEditS:HandleCanDragTextSELECT_CHANGE(event)
-	self:BoolSelectChange("can_drag_text", false, g_IDEEnum.yn_type)
+function ALittleIDE.RichEditS:HandleCanDragTextSELECT_CHANGE(event)
+	self:BoolSelectChange("can_drag_text", false, ALittleIDE.g_IDEEnum.yn_type)
 end
 
-function RichEditS:HandleMarginHalignFOCUSOUT(event)
+function ALittleIDE.RichEditS:HandleMarginHalignFOCUSOUT(event)
 	self:ValueNumInputChange("margin_halign", false)
 end
 
-function RichEditS:HandleMarginValignFOCUSOUT(event)
+function ALittleIDE.RichEditS:HandleMarginValignFOCUSOUT(event)
 	self:ValueNumInputChange("margin_valign", false)
 end
 
-function RichEditS:HandleCursorMarginUpFOCUSOUT(event)
+function ALittleIDE.RichEditS:HandleCursorMarginUpFOCUSOUT(event)
 	self:ValueNumInputChange("cursor_margin_up", false)
 end
 
-function RichEditS:HandleCursorMarginDownFOCUSOUT(event)
+function ALittleIDE.RichEditS:HandleCursorMarginDownFOCUSOUT(event)
 	self:ValueNumInputChange("cursor_margin_down", false)
 end
 
-function RichEditS:HandleStartCursorFOCUSOUT(event)
+function ALittleIDE.RichEditS:HandleStartCursorFOCUSOUT(event)
 	if event.target._user_data ~= nil then
 		if event.target._user_data == event.target.text then
 			return
@@ -118,7 +118,7 @@ function RichEditS:HandleStartCursorFOCUSOUT(event)
 	self:RemoverToNilShowSetForExtends("start_cursor", self._start_cursor.text, false)
 end
 
-function RichEditS:HandleEndCursorFOCUSOUT(event)
+function ALittleIDE.RichEditS:HandleEndCursorFOCUSOUT(event)
 	if event.target._user_data ~= nil then
 		if event.target._user_data == event.target.text then
 			return
@@ -128,23 +128,24 @@ function RichEditS:HandleEndCursorFOCUSOUT(event)
 	self:RemoverToNilShowSetForExtends("end_cursor", self._end_cursor.text, false)
 end
 
-function RichEditS:HandleDefaultTextFOCUSOUT(event)
+function ALittleIDE.RichEditS:HandleDefaultTextFOCUSOUT(event)
 	self:DefaultNoStringInputChange("default_text", false)
 end
 
-function RichEditS:HandleDefaultTextAlphaFOCUSOUT(event)
+function ALittleIDE.RichEditS:HandleDefaultTextAlphaFOCUSOUT(event)
 	self:Z2OValueInputChange("default_text_alpha", false)
 end
 
-function RichEditS:HandleImsPaddingFOCUSOUT(event)
+function ALittleIDE.RichEditS:HandleImsPaddingFOCUSOUT(event)
 	self:ValueNumInputChange("ims_padding", false)
 end
 
-function RichEditS:HandleRegexFOCUSOUT(event)
+function ALittleIDE.RichEditS:HandleRegexFOCUSOUT(event)
 	self:DefaultNoStringInputChange("regex", false)
 end
 
-function RichEditS:HandleLimitLenFOCUSOUT(event)
+function ALittleIDE.RichEditS:HandleLimitLenFOCUSOUT(event)
 	self:ValueNumInputChange("limit_len", false)
 end
 
+end

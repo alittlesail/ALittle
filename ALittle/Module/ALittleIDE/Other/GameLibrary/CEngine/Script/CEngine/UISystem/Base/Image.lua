@@ -1,16 +1,16 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___all_struct = GetAllStruct()
+local ___all_struct = ALittle.GetAllStruct()
 
 
 assert(ALittle.DisplayObject, " extends class:ALittle.DisplayObject is nil")
-Image = Lua.Class(ALittle.DisplayObject, "ALittle.Image")
+ALittle.Image = Lua.Class(ALittle.DisplayObject, "ALittle.Image")
 
-function Image:Ctor(ctrl_sys)
+function ALittle.Image:Ctor(ctrl_sys)
 	___rawset(self, "_show", __CPPAPIImage())
 	___rawset(self, "_texture_width", 0)
 	___rawset(self, "_texture_height", 0)
@@ -25,7 +25,7 @@ function Image:Ctor(ctrl_sys)
 	self:AddEventListener(___all_struct[734860930], self, self.HandleFLButtonUp)
 end
 
-function Image:HandleLButtonUp(event)
+function ALittle.Image:HandleLButtonUp(event)
 	if event.rel_x >= 0 and event.rel_y >= 0 and event.rel_x < event.target._width and event.rel_y < event.target._height then
 		local c_event = {}
 		c_event.is_drag = event.is_drag
@@ -33,7 +33,7 @@ function Image:HandleLButtonUp(event)
 	end
 end
 
-function Image:HandleMButtonUp(event)
+function ALittle.Image:HandleMButtonUp(event)
 	if event.rel_x >= 0 and event.rel_y >= 0 and event.rel_x < event.target._width and event.rel_y < event.target._height then
 		local c_event = {}
 		c_event.is_drag = event.is_drag
@@ -41,7 +41,7 @@ function Image:HandleMButtonUp(event)
 	end
 end
 
-function Image:HandleFLButtonUp(event)
+function ALittle.Image:HandleFLButtonUp(event)
 	if event.rel_x >= 0 and event.rel_y >= 0 and event.rel_x < event.target._width and event.rel_y < event.target._height then
 		local c_event = {}
 		c_event.is_drag = event.is_drag
@@ -49,7 +49,7 @@ function Image:HandleFLButtonUp(event)
 	end
 end
 
-function Image:Redraw()
+function ALittle.Image:Redraw()
 	self._show:ClearTexture()
 	if self._texture ~= nil then
 		self._texture:Clear()
@@ -65,7 +65,7 @@ function Image:Redraw()
 	end
 end
 
-function Image:CopyTextureRef(image)
+function ALittle.Image:CopyTextureRef(image)
 	if image == nil or image._texture == nil then
 		return
 	end
@@ -84,7 +84,7 @@ function Image:CopyTextureRef(image)
 	self._texture_height = image._texture_height
 end
 
-function Image.__setter:texture_name(value)
+function ALittle.Image.__setter:texture_name(value)
 	if self._texture_name == value then
 		return
 	end
@@ -99,7 +99,7 @@ function Image.__setter:texture_name(value)
 	end
 end
 
-function Image:SetTextureCut(texture_name, max_width, max_height, cache, callback)
+function ALittle.Image:SetTextureCut(texture_name, max_width, max_height, cache, callback)
 	if self._texture_name ~= nil then
 		self._show:ClearTexture()
 		self._texture = nil
@@ -120,11 +120,11 @@ function Image:SetTextureCut(texture_name, max_width, max_height, cache, callbac
 	end
 end
 
-function Image.__setter:texture_cut(param)
+function ALittle.Image.__setter:texture_cut(param)
 	self:SetTextureCut(param.texture_name, param.max_width, param.max_height, param.cache)
 end
 
-function Image.__getter:texture_cut()
+function ALittle.Image.__getter:texture_cut()
 	if self._texture_cut == nil then
 		return nil
 	end
@@ -135,22 +135,22 @@ function Image.__getter:texture_cut()
 	return texture_cut
 end
 
-function Image.__getter:texture_name()
+function ALittle.Image.__getter:texture_name()
 	return self._texture_name
 end
 
-function Image.__setter:texture(value)
+function ALittle.Image.__setter:texture(value)
 	self._show:SetTexture(value:GetTexture())
 	self._texture_width = value:GetWidth()
 	self._texture_height = value:GetHeight()
 	self._texture = value
 end
 
-function Image.__getter:texture()
+function ALittle.Image.__getter:texture()
 	return self._texture
 end
 
-function Image:SetTextureCoord(t, b, l, r)
+function ALittle.Image:SetTextureCoord(t, b, l, r)
 	self._tex_coord_t = t
 	self._tex_coord_b = b
 	self._tex_coord_l = l
@@ -158,20 +158,21 @@ function Image:SetTextureCoord(t, b, l, r)
 	self._show:SetTextureCoord(t, b, l, r)
 end
 
-function Image.__getter:texture_width()
+function ALittle.Image.__getter:texture_width()
 	return self._texture_width
 end
 
-function Image.__getter:texture_height()
+function ALittle.Image.__getter:texture_height()
 	return self._texture_height
 end
 
-function Image.__getter:flip()
+function ALittle.Image.__getter:flip()
 	return self._flip
 end
 
-function Image.__setter:flip(value)
+function ALittle.Image.__setter:flip(value)
 	self._flip = value
 	self._show:SetFlip(value)
 end
 
+end

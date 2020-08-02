@@ -1,15 +1,15 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("AUIPlugin", package.seeall)
-
+do
+if _G.AUIPlugin == nil then _G.AUIPlugin = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
 assert(ALittle.Quad, " extends class:ALittle.Quad is nil")
-AUICodeCursor = Lua.Class(ALittle.Quad, "AUIPlugin.AUICodeCursor")
+AUIPlugin.AUICodeCursor = Lua.Class(ALittle.Quad, "AUIPlugin.AUICodeCursor")
 
-function AUICodeCursor:Ctor(ctrl_sys, edit)
+function AUIPlugin.AUICodeCursor:Ctor(ctrl_sys, edit)
 	___rawset(self, "_flash_alpha", 0)
 	___rawset(self, "_flash_dir", 0.05)
 	___rawset(self, "_it_line", 1)
@@ -19,15 +19,15 @@ function AUICodeCursor:Ctor(ctrl_sys, edit)
 	___rawset(self, "_edit", edit)
 end
 
-function AUICodeCursor.__getter:line()
+function AUIPlugin.AUICodeCursor.__getter:line()
 	return self._it_line
 end
 
-function AUICodeCursor.__getter:char()
+function AUIPlugin.AUICodeCursor.__getter:char()
 	return self._it_char
 end
 
-function AUICodeCursor.__getter:virtual_indent()
+function AUIPlugin.AUICodeCursor.__getter:virtual_indent()
 	if self._virtual_indent == 0 then
 		return ""
 	end
@@ -42,7 +42,7 @@ function AUICodeCursor.__getter:virtual_indent()
 	return indent_str
 end
 
-function AUICodeCursor:Show(x, y)
+function AUIPlugin.AUICodeCursor:Show(x, y)
 	if self._loop == nil then
 		self._loop = ALittle.LoopFunction(Lua.Bind(self.Update, self), -1, 1, 1)
 	end
@@ -52,7 +52,7 @@ function AUICodeCursor:Show(x, y)
 	self.visible = true
 end
 
-function AUICodeCursor:GetCurCharInLine()
+function AUIPlugin.AUICodeCursor:GetCurCharInLine()
 	local line = self._edit.line_list[self._it_line]
 	if line == nil then
 		return nil
@@ -64,7 +64,7 @@ function AUICodeCursor:GetCurCharInLine()
 	return line.char_list[index].char
 end
 
-function AUICodeCursor:GetNextCharInLine()
+function AUIPlugin.AUICodeCursor:GetNextCharInLine()
 	local line = self._edit.line_list[self._it_line]
 	if line == nil then
 		return nil
@@ -76,7 +76,7 @@ function AUICodeCursor:GetNextCharInLine()
 	return line.char_list[index].char
 end
 
-function AUICodeCursor:CalcSelectWord()
+function AUIPlugin.AUICodeCursor:CalcSelectWord()
 	local line = self._edit.line_list[self._it_line]
 	if line == nil then
 		return nil, nil
@@ -113,14 +113,14 @@ function AUICodeCursor:CalcSelectWord()
 	return it_start, it_end
 end
 
-function AUICodeCursor:SetOffsetXY(x, y, show)
+function AUIPlugin.AUICodeCursor:SetOffsetXY(x, y, show)
 	if self._edit.line_count <= 0 then
 		self._it_line = 1
 		self._it_char = 0
 	else
 		self._it_line, self._it_char = self._edit:CalcLineAndChar(x, y)
 	end
-	self.y = (self._it_line - 1) * CODE_LINE_HEIGHT
+	self.y = (self._it_line - 1) * AUIPlugin.CODE_LINE_HEIGHT
 	local line = self._edit.line_list[self._it_line]
 	if line == nil or self._it_char == 0 then
 		self.x = 0
@@ -135,15 +135,15 @@ function AUICodeCursor:SetOffsetXY(x, y, show)
 	self._move_char = self._it_char
 end
 
-function AUICodeCursor:SetLineChar(it_line, it_char)
+function AUIPlugin.AUICodeCursor:SetLineChar(it_line, it_char)
 	self:SetLineCharInner(it_line, it_char)
 	self._move_char = self._it_char
 end
 
-function AUICodeCursor:SetLineCharInner(it_line, it_char)
+function AUIPlugin.AUICodeCursor:SetLineCharInner(it_line, it_char)
 	self._it_line = it_line
 	self._it_char = it_char
-	self.y = (self._it_line - 1) * CODE_LINE_HEIGHT
+	self.y = (self._it_line - 1) * AUIPlugin.CODE_LINE_HEIGHT
 	local line = self._edit.line_list[self._it_line]
 	if line == nil or self._it_char <= 0 then
 		self.x = 0
@@ -153,7 +153,7 @@ function AUICodeCursor:SetLineCharInner(it_line, it_char)
 	self._virtual_indent = 0
 end
 
-function AUICodeCursor:CurLineHasChar()
+function AUIPlugin.AUICodeCursor:CurLineHasChar()
 	local line = self._edit.line_list[self._it_line]
 	if line == nil then
 		return false
@@ -164,7 +164,7 @@ function AUICodeCursor:CurLineHasChar()
 	return true
 end
 
-function AUICodeCursor:RejustShowCursor()
+function AUIPlugin.AUICodeCursor:RejustShowCursor()
 	local line = self._edit.line_list[self._it_line]
 	if line == nil then
 		return
@@ -180,13 +180,13 @@ function AUICodeCursor:RejustShowCursor()
 	end
 end
 
-function AUICodeCursor:UpdateVirtualIndent()
+function AUIPlugin.AUICodeCursor:UpdateVirtualIndent()
 	if self._edit.language ~= nil then
 		self._virtual_indent = self._edit.language:QueryDesiredIndent(self._it_line, self._it_char)
 	end
 end
 
-function AUICodeCursor:OffsetUp()
+function AUIPlugin.AUICodeCursor:OffsetUp()
 	if self._it_line <= 1 then
 		return
 	end
@@ -205,7 +205,7 @@ function AUICodeCursor:OffsetUp()
 	self:SetLineCharInner(it_line, it_char)
 end
 
-function AUICodeCursor:OffsetDown()
+function AUIPlugin.AUICodeCursor:OffsetDown()
 	if self._it_line >= self._edit.line_count then
 		return
 	end
@@ -224,7 +224,7 @@ function AUICodeCursor:OffsetDown()
 	self:SetLineCharInner(it_line, it_char)
 end
 
-function AUICodeCursor:OffsetLeft(ctrl)
+function AUIPlugin.AUICodeCursor:OffsetLeft(ctrl)
 	if self._it_char > 0 then
 		if not ctrl then
 			self:SetLineChar(self._it_line, self._it_char - 1)
@@ -260,7 +260,7 @@ function AUICodeCursor:OffsetLeft(ctrl)
 	self:SetLineChar(1, 0)
 end
 
-function AUICodeCursor:OffsetRight(ctrl)
+function AUIPlugin.AUICodeCursor:OffsetRight(ctrl)
 	if self._edit.line_count <= 0 then
 		return
 	end
@@ -293,7 +293,7 @@ function AUICodeCursor:OffsetRight(ctrl)
 	self:SetLineChar(self._it_line + 1, 0)
 end
 
-function AUICodeCursor:OffsetHome()
+function AUIPlugin.AUICodeCursor:OffsetHome()
 	if self._it_char <= 0 then
 		return
 	end
@@ -316,7 +316,7 @@ function AUICodeCursor:OffsetHome()
 	end
 end
 
-function AUICodeCursor:OffsetEnd()
+function AUIPlugin.AUICodeCursor:OffsetEnd()
 	local line = self._edit.line_list[self._it_line]
 	if line == nil then
 		return
@@ -330,7 +330,7 @@ function AUICodeCursor:OffsetEnd()
 	end
 end
 
-function AUICodeCursor:DeleteLeft(need_revoke, revoke_bind)
+function AUIPlugin.AUICodeCursor:DeleteLeft(need_revoke, revoke_bind)
 	local old_it_line = self._it_line
 	local old_it_char = self._it_char
 	if self._it_char > 0 then
@@ -372,13 +372,13 @@ function AUICodeCursor:DeleteLeft(need_revoke, revoke_bind)
 			end
 		end
 		if rejust then
-			self._edit.code_screen.container.width = line.container.width + CODE_LINE_NUMBER_WIDTH
+			self._edit.code_screen.container.width = line.container.width + AUIPlugin.CODE_LINE_NUMBER_WIDTH
 			self._edit.code_screen:RejustScrollBar()
 		end
 		if need_revoke then
 			local new_it_line = self._it_line
 			local new_it_char = self._it_char
-			local revoke = AUICodeDeleteLeftRevoke(self._edit, self, old_it_line, old_it_char, new_it_line, new_it_char, revoke_content, revoke_bind == nil)
+			local revoke = AUIPlugin.AUICodeDeleteLeftRevoke(self._edit, self, old_it_line, old_it_char, new_it_line, new_it_char, revoke_content, revoke_bind == nil)
 			if revoke_bind ~= nil then
 				revoke_bind:PushRevoke(revoke)
 			else
@@ -437,12 +437,12 @@ function AUICodeCursor:DeleteLeft(need_revoke, revoke_bind)
 	self._edit.line_count = self._edit.line_count - (1)
 	ALittle.List_Remove(self._edit.line_list, self._it_line)
 	self:SetLineChar(new_it_line, new_it_char)
-	if self._edit.code_screen.container.width < pre_line.container.width + CODE_LINE_NUMBER_WIDTH then
-		self._edit.code_screen.container.width = pre_line.container.width + CODE_LINE_NUMBER_WIDTH
+	if self._edit.code_screen.container.width < pre_line.container.width + AUIPlugin.CODE_LINE_NUMBER_WIDTH then
+		self._edit.code_screen.container.width = pre_line.container.width + AUIPlugin.CODE_LINE_NUMBER_WIDTH
 	end
 	self._edit.code_screen:RejustScrollBar()
 	if need_revoke then
-		local revoke = AUICodeDeleteLeftRevoke(self._edit, self, old_it_line, old_it_char, new_it_line, new_it_char, revoke_content, revoke_bind == nil)
+		local revoke = AUIPlugin.AUICodeDeleteLeftRevoke(self._edit, self, old_it_line, old_it_char, new_it_line, new_it_char, revoke_content, revoke_bind == nil)
 		if revoke_bind ~= nil then
 			revoke_bind:PushRevoke(revoke)
 		else
@@ -454,7 +454,7 @@ function AUICodeCursor:DeleteLeft(need_revoke, revoke_bind)
 	return true
 end
 
-function AUICodeCursor:DeleteRight(need_revoke, revoke_bind)
+function AUIPlugin.AUICodeCursor:DeleteRight(need_revoke, revoke_bind)
 	local old_it_line = self._it_line
 	local old_it_char = self._it_char
 	local line = self._edit.line_list[self._it_line]
@@ -500,13 +500,13 @@ function AUICodeCursor:DeleteRight(need_revoke, revoke_bind)
 			end
 		end
 		if rejust then
-			self._edit.code_screen.container.width = line.container.width + CODE_LINE_NUMBER_WIDTH
+			self._edit.code_screen.container.width = line.container.width + AUIPlugin.CODE_LINE_NUMBER_WIDTH
 			self._edit.code_screen:RejustScrollBar()
 		end
 		local new_it_line = self._it_line
 		local new_it_char = self._it_char
 		if need_revoke then
-			local revoke = AUICodeDeleteRightRevoke(self._edit, self, old_it_line, old_it_char, new_it_line, new_it_char, revoke_content, revoke_bind == nil)
+			local revoke = AUIPlugin.AUICodeDeleteRightRevoke(self._edit, self, old_it_line, old_it_char, new_it_line, new_it_char, revoke_content, revoke_bind == nil)
 			if revoke_bind ~= nil then
 				revoke_bind:PushRevoke(revoke)
 			else
@@ -562,12 +562,12 @@ function AUICodeCursor:DeleteRight(need_revoke, revoke_bind)
 	self._edit.line_count = self._edit.line_count - (1)
 	ALittle.List_Remove(self._edit.line_list, self._it_line + 1)
 	self:SetLineChar(new_it_line, new_it_char)
-	if self._edit.code_screen.container.width < cur_line.container.width + CODE_LINE_NUMBER_WIDTH then
-		self._edit.code_screen.container.width = cur_line.container.width + CODE_LINE_NUMBER_WIDTH
+	if self._edit.code_screen.container.width < cur_line.container.width + AUIPlugin.CODE_LINE_NUMBER_WIDTH then
+		self._edit.code_screen.container.width = cur_line.container.width + AUIPlugin.CODE_LINE_NUMBER_WIDTH
 	end
 	self._edit.code_screen:RejustScrollBar()
 	if need_revoke then
-		local revoke = AUICodeDeleteRightRevoke(self._edit, self, old_it_line, old_it_char, new_it_line, new_it_char, revoke_content, revoke_bind == nil)
+		local revoke = AUIPlugin.AUICodeDeleteRightRevoke(self._edit, self, old_it_line, old_it_char, new_it_line, new_it_char, revoke_content, revoke_bind == nil)
 		if revoke_bind ~= nil then
 			revoke_bind:PushRevoke(revoke)
 		else
@@ -579,14 +579,14 @@ function AUICodeCursor:DeleteRight(need_revoke, revoke_bind)
 	return true
 end
 
-function AUICodeCursor:Hide()
+function AUIPlugin.AUICodeCursor:Hide()
 	if self._loop ~= nil then
 		self._loop:Stop()
 	end
 	self.visible = false
 end
 
-function AUICodeCursor:Update()
+function AUIPlugin.AUICodeCursor:Update()
 	if self.abs_visible then
 		self._flash_alpha = self._flash_alpha + self._flash_dir
 		if (self._flash_dir < 0 and self._flash_alpha < -0.05) or (self._flash_dir > 0 and self._flash_alpha > 1.5) then
@@ -596,3 +596,4 @@ function AUICodeCursor:Update()
 	end
 end
 
+end

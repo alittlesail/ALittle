@@ -1,35 +1,35 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-IHttpSenderNative = Lua.Class(nil, "ALittle.IHttpSenderNative")
+ALittle.IHttpSenderNative = Lua.Class(nil, "ALittle.IHttpSenderNative")
 
-function IHttpSenderNative:GetID()
+function ALittle.IHttpSenderNative:GetID()
 	return 0
 end
 
-function IHttpSenderNative:SetURL(url, content)
+function ALittle.IHttpSenderNative:SetURL(url, content)
 end
 
-function IHttpSenderNative:Start()
+function ALittle.IHttpSenderNative:Start()
 end
 
-function IHttpSenderNative:Stop()
+function ALittle.IHttpSenderNative:Stop()
 end
 
-function IHttpSenderNative:GetResponse()
+function ALittle.IHttpSenderNative:GetResponse()
 	return nil
 end
 
 local __HttpSenderMap = {}
 assert(ALittle.IHttpSender, " extends class:ALittle.IHttpSender is nil")
-HttpSenderTemplate = Lua.Class(ALittle.IHttpSender, "ALittle.HttpSenderTemplate")
+ALittle.HttpSenderTemplate = Lua.Class(ALittle.IHttpSender, "ALittle.HttpSenderTemplate")
 
-function HttpSenderTemplate:Ctor(ip, port)
+function ALittle.HttpSenderTemplate:Ctor(ip, port)
 	___rawset(self, "_interface", self.__class.__element[1]())
 	___rawset(self, "_ip", ip)
 	___rawset(self, "_port", port)
@@ -38,11 +38,11 @@ function HttpSenderTemplate:Ctor(ip, port)
 	end
 end
 
-function HttpSenderTemplate:SendRPC(thread, method, content)
+function ALittle.HttpSenderTemplate:SendRPC(thread, method, content)
 	self._thread = thread
 	__HttpSenderMap[self._interface:GetID()] = self
 	local url = self._ip .. ":" .. self._port .. "/" .. method
-	if String_Find(self._ip, "http://") ~= 1 and String_Find(self._ip, "https://") ~= 1 then
+	if ALittle.String_Find(self._ip, "http://") ~= 1 and ALittle.String_Find(self._ip, "https://") ~= 1 then
 		if self._port == 443 then
 			url = "https://" .. url
 		else
@@ -52,47 +52,47 @@ function HttpSenderTemplate:SendRPC(thread, method, content)
 	if content == nil then
 		self._interface:SetURL(url, nil)
 	else
-		self._interface:SetURL(url, String_JsonEncode(content))
+		self._interface:SetURL(url, ALittle.String_JsonEncode(content))
 	end
 	self._interface:Start()
 end
 
-function HttpSenderTemplate:Stop()
+function ALittle.HttpSenderTemplate:Stop()
 	self._interface:Stop()
 end
 
-function HttpSenderTemplate:HandleSucceed()
+function ALittle.HttpSenderTemplate:HandleSucceed()
 	__HttpSenderMap[self._interface:GetID()] = nil
-	local error, param = Lua.TCall(String_JsonDecode, self._interface:GetResponse())
+	local error, param = Lua.TCall(ALittle.String_JsonDecode, self._interface:GetResponse())
 	if error ~= nil then
-		local result, reason = Coroutine.Resume(self._thread, error, nil)
+		local result, reason = ALittle.Coroutine.Resume(self._thread, error, nil)
 		if result ~= true then
-			Error(reason)
+			ALittle.Error(reason)
 		end
 		return
 	end
 	if param["error"] ~= nil then
-		local result, reason = Coroutine.Resume(self._thread, param["error"], nil)
+		local result, reason = ALittle.Coroutine.Resume(self._thread, param["error"], nil)
 		if result ~= true then
-			Error(reason)
+			ALittle.Error(reason)
 		end
 		return
 	end
-	local result, reason = Coroutine.Resume(self._thread, nil, param)
+	local result, reason = ALittle.Coroutine.Resume(self._thread, nil, param)
 	if result ~= true then
-		Error(reason)
+		ALittle.Error(reason)
 	end
 end
 
-function HttpSenderTemplate:HandleFailed(reason)
+function ALittle.HttpSenderTemplate:HandleFailed(reason)
 	__HttpSenderMap[self._interface:GetID()] = nil
-	local result, error = Coroutine.Resume(self._thread, reason, nil)
+	local result, error = ALittle.Coroutine.Resume(self._thread, reason, nil)
 	if result ~= true then
-		Error(error)
+		ALittle.Error(error)
 	end
 end
 
-function __ALITTLEAPI_HttpClientSucceed(id)
+function ALittle.__ALITTLEAPI_HttpClientSucceed(id)
 	local client = __HttpSenderMap[id]
 	if client == nil then
 		return
@@ -100,7 +100,7 @@ function __ALITTLEAPI_HttpClientSucceed(id)
 	client:HandleSucceed()
 end
 
-function __ALITTLEAPI_HttpClientFailed(id, reason)
+function ALittle.__ALITTLEAPI_HttpClientFailed(id, reason)
 	local client = __HttpSenderMap[id]
 	if client == nil then
 		return
@@ -108,3 +108,4 @@ function __ALITTLEAPI_HttpClientFailed(id, reason)
 	client:HandleFailed(reason)
 end
 
+end

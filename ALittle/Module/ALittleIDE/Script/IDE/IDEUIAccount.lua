@@ -1,6 +1,6 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittleIDE", package.seeall)
-
+do
+if _G.ALittleIDE == nil then _G.ALittleIDE = {} end
 local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = ALittle.GetAllStruct()
@@ -30,40 +30,40 @@ type_list = {"ALittle.EventDispatcher"},
 option_map = {}
 })
 
-g_IDEWebLoginManager = nil
+ALittleIDE.g_IDEWebLoginManager = nil
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
-IDEUIAccount = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDEUIAccount")
+ALittleIDE.IDEUIAccount = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDEUIAccount")
 
-function IDEUIAccount:TCtor()
-	local logingate_ip = g_IDEServerConfig:GetConfig("logingate_ip", "139.159.176.119")
-	local logingate_port = g_IDEServerConfig:GetConfig("logingate_port", 1000)
-	g_IDEWebLoginManager = AUIPlugin.AUIWebLoginManager()
-	g_IDEWebLoginManager:AddEventListener(___all_struct[-262794256], self, self.HandleAccountInReconnect)
-	g_IDEWebLoginManager:AddEventListener(___all_struct[-1848509213], self, self.HandleAccountInLogout)
-	g_IDEWebLoginManager:AddEventListener(___all_struct[-420010531], self, self.HandleAccountInLogin)
-	g_IDEWebLoginManager:Setup(logingate_ip, logingate_port, g_IDEConfig)
+function ALittleIDE.IDEUIAccount:TCtor()
+	local logingate_ip = ALittleIDE.g_IDEServerConfig:GetConfig("logingate_ip", "139.159.176.119")
+	local logingate_port = ALittleIDE.g_IDEServerConfig:GetConfig("logingate_port", 1000)
+	ALittleIDE.g_IDEWebLoginManager = AUIPlugin.AUIWebLoginManager()
+	ALittleIDE.g_IDEWebLoginManager:AddEventListener(___all_struct[-262794256], self, self.HandleAccountInReconnect)
+	ALittleIDE.g_IDEWebLoginManager:AddEventListener(___all_struct[-1848509213], self, self.HandleAccountInLogout)
+	ALittleIDE.g_IDEWebLoginManager:AddEventListener(___all_struct[-420010531], self, self.HandleAccountInLogin)
+	ALittleIDE.g_IDEWebLoginManager:Setup(logingate_ip, logingate_port, ALittleIDE.g_IDEConfig)
 end
 
-function IDEUIAccount:Shutdown()
-	g_IDEWebLoginManager:Shutdown()
+function ALittleIDE.IDEUIAccount:Shutdown()
+	ALittleIDE.g_IDEWebLoginManager:Shutdown()
 end
 
-function IDEUIAccount:HandleAccountLoginLB(event)
-	g_IDEWebLoginManager:ShowLoginDialog()
+function ALittleIDE.IDEUIAccount:HandleAccountLoginLB(event)
+	ALittleIDE.g_IDEWebLoginManager:ShowLoginDialog()
 end
 
-function IDEUIAccount:HandleAccountInLogin(event)
+function ALittleIDE.IDEUIAccount:HandleAccountInLogin(event)
 	self._account_login.visible = false
 	self._account_dropdown.visible = true
 	local data_list = {}
 	data_list[1] = "修改密码"
 	data_list[2] = "登出"
 	self._account_dropdown.data_list = data_list
-	self._account_dropdown.text = g_IDEWebLoginManager.account_name
+	self._account_dropdown.text = ALittleIDE.g_IDEWebLoginManager.account_name
 	self._account_icon.x_value = self._account_dropdown.x_value + self._account_dropdown.width + 5
 end
 
-function IDEUIAccount:HandleAccountInLogout(event)
+function ALittleIDE.IDEUIAccount:HandleAccountInLogout(event)
 	self._account_login.text = "请登录"
 	self._account_login.underline = true
 	self._account_login.visible = true
@@ -72,7 +72,7 @@ function IDEUIAccount:HandleAccountInLogout(event)
 	self._account_icon.x_value = self._account_login.x_value + self._account_login.width + 5
 end
 
-function IDEUIAccount:HandleAccountInReconnect(event)
+function ALittleIDE.IDEUIAccount:HandleAccountInReconnect(event)
 	self._account_login.text = "正在重连"
 	self._account_login.underline = false
 	self._account_login.visible = true
@@ -81,12 +81,13 @@ function IDEUIAccount:HandleAccountInReconnect(event)
 	self._account_icon.x_value = self._account_login.x_value + self._account_login.width + 5
 end
 
-function IDEUIAccount:HandleAccountDropdownChange(event)
+function ALittleIDE.IDEUIAccount:HandleAccountDropdownChange(event)
 	if event.target.text == "登出" then
-		g_IDEWebLoginManager:Logout()
+		ALittleIDE.g_IDEWebLoginManager:Logout()
 	elseif event.target.text == "修改密码" then
-		g_IDEWebLoginManager:ShowPasswordDialog()
+		ALittleIDE.g_IDEWebLoginManager:ShowPasswordDialog()
 	end
-	self._account_dropdown.text = g_IDEWebLoginManager.account_name
+	self._account_dropdown.text = ALittleIDE.g_IDEWebLoginManager.account_name
 end
 
+end

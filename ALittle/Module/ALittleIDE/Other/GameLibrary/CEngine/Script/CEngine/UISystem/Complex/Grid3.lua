@@ -1,16 +1,16 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
 assert(ALittle.DisplayGroup, " extends class:ALittle.DisplayGroup is nil")
-Grid3 = Lua.Class(ALittle.DisplayGroup, "ALittle.Grid3")
+ALittle.Grid3 = Lua.Class(ALittle.DisplayGroup, "ALittle.Grid3")
 
-function Grid3:Ctor(ctrl_sys)
-	___rawset(self, "_type", UIEnumTypes.TYPE_V)
+function ALittle.Grid3:Ctor(ctrl_sys)
+	___rawset(self, "_type", ALittle.UIEnumTypes.TYPE_V)
 	___rawset(self, "_child_map", {})
 	___rawset(self, "_logic_up", 0)
 	___rawset(self, "_logic_down", 0)
@@ -22,7 +22,7 @@ function Grid3:Ctor(ctrl_sys)
 	___rawset(self, "_pickup_child", true)
 end
 
-function Grid3.__setter:type(value)
+function ALittle.Grid3.__setter:type(value)
 	if self._type == value then
 		return
 	end
@@ -31,45 +31,45 @@ function Grid3.__setter:type(value)
 	self:CalcRealHeightCutting()
 end
 
-function Grid3.__getter:type()
+function ALittle.Grid3.__getter:type()
 	return self._type
 end
 
-function Grid3.__setter:show_up(child)
+function ALittle.Grid3.__setter:show_up(child)
 	self:SetShow(1, child)
 end
 
-function Grid3.__getter:show_up()
+function ALittle.Grid3.__getter:show_up()
 	return self._child_map[1]
 end
 
-function Grid3.__setter:show_center(child)
+function ALittle.Grid3.__setter:show_center(child)
 	self:SetShow(2, child)
 end
 
-function Grid3.__getter:show_center()
+function ALittle.Grid3.__getter:show_center()
 	return self._child_map[2]
 end
 
-function Grid3.__setter:show_down(child)
+function ALittle.Grid3.__setter:show_down(child)
 	self:SetShow(3, child)
 end
 
-function Grid3.__getter:show_down()
+function ALittle.Grid3.__getter:show_down()
 	return self._child_map[3]
 end
 
-function Grid3:SetShow(index, child)
+function ALittle.Grid3:SetShow(index, child)
 	if self._child_map[index] ~= nil then
-		DisplayGroup.RemoveChild(self, self._child_map[index])
+		ALittle.DisplayGroup.RemoveChild(self, self._child_map[index])
 	end
 	self._child_map[index] = nil
 	if child == nil then
 		return
 	end
 	self._child_map[index] = child
-	DisplayGroup.AddChild(self, child)
-	if self._type == UIEnumTypes.TYPE_V then
+	ALittle.DisplayGroup.AddChild(self, child)
+	if self._type == ALittle.UIEnumTypes.TYPE_V then
 		child.x = 0
 		child.width = self._width
 		local y = 0.0
@@ -106,9 +106,9 @@ function Grid3:SetShow(index, child)
 	end
 end
 
-function Grid3.__getter:center_size()
+function ALittle.Grid3.__getter:center_size()
 	local size = 0.0
-	if self._type == UIEnumTypes.TYPE_V then
+	if self._type == ALittle.UIEnumTypes.TYPE_V then
 		size = self._height - self._real_gap * 2 - self._real_up - self._real_down
 	else
 		size = self._width - self._real_gap * 2 - self._real_up - self._real_down
@@ -116,72 +116,72 @@ function Grid3.__getter:center_size()
 	return size
 end
 
-function Grid3.__getter:real_gap()
+function ALittle.Grid3.__getter:real_gap()
 	return self._real_gap
 end
 
-function Grid3.__getter:gap()
+function ALittle.Grid3.__getter:gap()
 	return self._logic_gap
 end
 
-function Grid3.__getter:real_up_size()
+function ALittle.Grid3.__getter:real_up_size()
 	return self._real_up
 end
 
-function Grid3.__getter:up_size()
+function ALittle.Grid3.__getter:up_size()
 	return self._logic_up
 end
 
-function Grid3.__getter:real_down_size()
+function ALittle.Grid3.__getter:real_down_size()
 	return self._real_down
 end
 
-function Grid3.__getter:down_size()
+function ALittle.Grid3.__getter:down_size()
 	return self._logic_down
 end
 
-function Grid3.__setter:up_size(value)
+function ALittle.Grid3.__setter:up_size(value)
 	self._logic_up = value
 	self:CalcRealWidthCutting()
 	self:CalcRealHeightCutting()
 end
 
-function Grid3.__setter:down_size(value)
+function ALittle.Grid3.__setter:down_size(value)
 	self._logic_down = value
 	self:CalcRealWidthCutting()
 	self:CalcRealHeightCutting()
 end
 
-function Grid3.__setter:gap(value)
+function ALittle.Grid3.__setter:gap(value)
 	self._logic_gap = value
 	self:CalcRealWidthCutting()
 	self:CalcRealHeightCutting()
 end
 
-function Grid3.__setter:width(value)
+function ALittle.Grid3.__setter:width(value)
 	if value == self._width then
 		return
 	end
 	self._width = value
-	if self._width_type == UIEnumTypes.SIZE_ABS then
+	if self._width_type == ALittle.UIEnumTypes.SIZE_ABS then
 		self._width_value = self._width
 	end
 	self:CalcRealWidthCutting()
 end
 
-function Grid3.__setter:height(value)
+function ALittle.Grid3.__setter:height(value)
 	if value == self._height then
 		return
 	end
 	self._height = value
-	if self._height_type == UIEnumTypes.SIZE_ABS then
+	if self._height_type == ALittle.UIEnumTypes.SIZE_ABS then
 		self._height_value = self._height
 	end
 	self:CalcRealHeightCutting()
 end
 
-function Grid3:CalcRealWidthCutting()
-	if self._type == UIEnumTypes.TYPE_V then
+function ALittle.Grid3:CalcRealWidthCutting()
+	if self._type == ALittle.UIEnumTypes.TYPE_V then
 		local index = 1
 		while true do
 			if not(index <= 3) then break end
@@ -239,8 +239,8 @@ function Grid3:CalcRealWidthCutting()
 	end
 end
 
-function Grid3:CalcRealHeightCutting()
-	if self._type == UIEnumTypes.TYPE_H then
+function ALittle.Grid3:CalcRealHeightCutting()
+	if self._type == ALittle.UIEnumTypes.TYPE_H then
 		local index = 1
 		while true do
 			if not(index <= 3) then break end
@@ -298,3 +298,4 @@ function Grid3:CalcRealHeightCutting()
 	end
 end
 
+end

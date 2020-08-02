@@ -1,15 +1,15 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("Emulator", package.seeall)
-
+do
+if _G.Emulator == nil then _G.Emulator = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
 assert(Emulator.IDETreeLogic, " extends class:Emulator.IDETreeLogic is nil")
-IDETreeBoolMapEnum = Lua.Class(Emulator.IDETreeLogic, "Emulator.IDETreeBoolMapEnum")
+Emulator.IDETreeBoolMapEnum = Lua.Class(Emulator.IDETreeLogic, "Emulator.IDETreeBoolMapEnum")
 
-function IDETreeBoolMapEnum:Ctor(ctrl_sys, root, parent, rflct, msg, key_field, value_field)
+function Emulator.IDETreeBoolMapEnum:Ctor(ctrl_sys, root, parent, rflct, msg, key_field, value_field)
 	___rawset(self, "_parent", parent)
 	___rawset(self, "_rflct", rflct)
 	___rawset(self, "_msg", msg)
@@ -59,7 +59,7 @@ function IDETreeBoolMapEnum:Ctor(ctrl_sys, root, parent, rflct, msg, key_field, 
 	self._delete_button.disabled = root.for_show
 end
 
-function IDETreeBoolMapEnum:HandleKeySelectChanegd(event)
+function Emulator.IDETreeBoolMapEnum:HandleKeySelectChanegd(event)
 	if self._key_dropdown.text == "true" then
 		protobuf.reflection_setbool(self._rflct, self._msg, self._key_field, true)
 	else
@@ -68,7 +68,7 @@ function IDETreeBoolMapEnum:HandleKeySelectChanegd(event)
 	self:Save()
 end
 
-function IDETreeBoolMapEnum:HandleValueSelectChanegd(event)
+function Emulator.IDETreeBoolMapEnum:HandleValueSelectChanegd(event)
 	local value = self._enum_value_map[event.target.text]
 	if value == nil then
 		return
@@ -78,11 +78,12 @@ function IDETreeBoolMapEnum:HandleValueSelectChanegd(event)
 	self:Save()
 end
 
-function IDETreeBoolMapEnum:HandleInsertClick(event)
+function Emulator.IDETreeBoolMapEnum:HandleInsertClick(event)
 	self._parent:CreateOneBefore(self)
 end
 
-function IDETreeBoolMapEnum:HandleDeleteClick(event)
+function Emulator.IDETreeBoolMapEnum:HandleDeleteClick(event)
 	self._parent:Delete(self)
 end
 
+end

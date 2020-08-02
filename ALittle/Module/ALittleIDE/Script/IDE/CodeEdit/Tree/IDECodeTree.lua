@@ -1,6 +1,6 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittleIDE", package.seeall)
-
+do
+if _G.ALittleIDE == nil then _G.ALittleIDE = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
@@ -38,9 +38,9 @@ option_map = {}
 })
 
 assert(ALittleIDE.IDECodeTreeLogic, " extends class:ALittleIDE.IDECodeTreeLogic is nil")
-IDECodeTree = Lua.Class(ALittleIDE.IDECodeTreeLogic, "ALittleIDE.IDECodeTree")
+ALittleIDE.IDECodeTree = Lua.Class(ALittleIDE.IDECodeTreeLogic, "ALittleIDE.IDECodeTree")
 
-function IDECodeTree:Ctor(ctrl_sys, user_info)
+function ALittleIDE.IDECodeTree:Ctor(ctrl_sys, user_info)
 	___rawset(self, "_head", ctrl_sys:CreateControl("ide_code_tree_head", self))
 	ALittle.DisplayGroup.AddChild(self, self._head)
 	self._item_button.selected = false
@@ -67,14 +67,14 @@ function IDECodeTree:Ctor(ctrl_sys, user_info)
 	self:Refresh()
 end
 
-function IDECodeTree:HandleLButtonDown(event)
+function ALittleIDE.IDECodeTree:HandleLButtonDown(event)
 	if event.count == 1 then
 		return
 	end
 	self.fold = not self.fold
 end
 
-function IDECodeTree:HandleRButtonDown(event)
+function ALittleIDE.IDECodeTree:HandleRButtonDown(event)
 	local menu = AUIPlugin.AUIRightMenu()
 	if self._user_info.project ~= nil then
 		self._user_info.project:OnTreeMenu(self._user_info.path, menu)
@@ -89,14 +89,14 @@ function IDECodeTree:HandleRButtonDown(event)
 		menu:AddItem("添加模块", Lua.Bind(self.HandleAddModule, self))
 		menu:AddItem("添加库", Lua.Bind(self.HandleAddLibrary, self))
 	end
-	local can_remove = self._user_info.root and self._user_info.module_name ~= "Std" and self._user_info.module_name ~= "Core" and self._user_info.module_name ~= "CEngine" and self._user_info.module_name ~= g_IDEProject.project.name
+	local can_remove = self._user_info.root and self._user_info.module_name ~= "Std" and self._user_info.module_name ~= "Core" and self._user_info.module_name ~= "CEngine" and self._user_info.module_name ~= ALittleIDE.g_IDEProject.project.name
 	if can_remove then
 		menu:AddItem("移除模块", Lua.Bind(self.HandleRemoveModule, self))
 	end
 	menu:Show()
 end
 
-function IDECodeTree:HandleCreateFile()
+function ALittleIDE.IDECodeTree:HandleCreateFile()
 	local x, y = self._head:LocalToGlobal()
 	local name = g_AUITool:ShowRename("", x, y + self._head.height, 200)
 	if name == nil or name == "" then
@@ -105,9 +105,9 @@ function IDECodeTree:HandleCreateFile()
 	ALittle.File_WriteTextToFile("", self._user_info.path .. "/" .. name)
 	self:Refresh()
 end
-IDECodeTree.HandleCreateFile = Lua.CoWrap(IDECodeTree.HandleCreateFile)
+ALittleIDE.IDECodeTree.HandleCreateFile = Lua.CoWrap(ALittleIDE.IDECodeTree.HandleCreateFile)
 
-function IDECodeTree:HandleCreateDir()
+function ALittleIDE.IDECodeTree:HandleCreateDir()
 	local x, y = self._head:LocalToGlobal()
 	local name = g_AUITool:ShowRename("", x, y + self._head.height, 200)
 	if name == nil or name == "" then
@@ -116,29 +116,29 @@ function IDECodeTree:HandleCreateDir()
 	ALittle.File_MakeDir(self._user_info.path .. "/" .. name)
 	self:Refresh()
 end
-IDECodeTree.HandleCreateDir = Lua.CoWrap(IDECodeTree.HandleCreateDir)
+ALittleIDE.IDECodeTree.HandleCreateDir = Lua.CoWrap(ALittleIDE.IDECodeTree.HandleCreateDir)
 
-function IDECodeTree:HandleAddModule()
+function ALittleIDE.IDECodeTree:HandleAddModule()
 	local x, y = self._head:LocalToGlobal()
 	local name = g_AUITool:ShowRename("", x, y + self._head.height, 200)
 	if name == nil or name == "" then
 		return
 	end
-	g_IDECenter.center.code_list:AddModule(name)
+	ALittleIDE.g_IDECenter.center.code_list:AddModule(name)
 end
-IDECodeTree.HandleAddModule = Lua.CoWrap(IDECodeTree.HandleAddModule)
+ALittleIDE.IDECodeTree.HandleAddModule = Lua.CoWrap(ALittleIDE.IDECodeTree.HandleAddModule)
 
-function IDECodeTree:HandleAddLibrary()
+function ALittleIDE.IDECodeTree:HandleAddLibrary()
 	local x, y = self._head:LocalToGlobal()
 	local name = g_AUITool:ShowRename("", x, y + self._head.height, 200)
 	if name == nil or name == "" then
 		return
 	end
-	g_IDECenter.center.code_list:AddLibrary(name)
+	ALittleIDE.g_IDECenter.center.code_list:AddLibrary(name)
 end
-IDECodeTree.HandleAddLibrary = Lua.CoWrap(IDECodeTree.HandleAddLibrary)
+ALittleIDE.IDECodeTree.HandleAddLibrary = Lua.CoWrap(ALittleIDE.IDECodeTree.HandleAddLibrary)
 
-function IDECodeTree:HandleDeleteDir()
+function ALittleIDE.IDECodeTree:HandleDeleteDir()
 	local file_name = ALittle.File_GetFileNameByPath(self._user_info.path)
 	local result = g_AUITool:DeleteNotice("删除", "确定要删除" .. file_name .. "，以及子文件和子文件夹吗?")
 	if result ~= "YES" then
@@ -152,9 +152,9 @@ function IDECodeTree:HandleDeleteDir()
 		parent:DispatchEvent(___all_struct[-431205740], {})
 	end
 end
-IDECodeTree.HandleDeleteDir = Lua.CoWrap(IDECodeTree.HandleDeleteDir)
+ALittleIDE.IDECodeTree.HandleDeleteDir = Lua.CoWrap(ALittleIDE.IDECodeTree.HandleDeleteDir)
 
-function IDECodeTree:HandleRemoveModule()
+function ALittleIDE.IDECodeTree:HandleRemoveModule()
 	local file_name = ALittle.File_GetFileNameByPath(self._user_info.path)
 	local result = g_AUITool:DeleteNotice("移除", "确定要移除" .. file_name .. "模块吗?")
 	if result ~= "YES" then
@@ -162,17 +162,17 @@ function IDECodeTree:HandleRemoveModule()
 	end
 	self:OnDelete()
 	self:RemoveFromParent()
-	local module_map = g_IDEProject.project.config:GetConfig("code_module", {})
+	local module_map = ALittleIDE.g_IDEProject.project.config:GetConfig("code_module", {})
 	module_map[self._user_info.module_name] = nil
-	g_IDEProject.project.config:SetConfig("code_module", module_map)
+	ALittleIDE.g_IDEProject.project.config:SetConfig("code_module", module_map)
 end
-IDECodeTree.HandleRemoveModule = Lua.CoWrap(IDECodeTree.HandleRemoveModule)
+ALittleIDE.IDECodeTree.HandleRemoveModule = Lua.CoWrap(ALittleIDE.IDECodeTree.HandleRemoveModule)
 
-function IDECodeTree.__getter:is_tree()
+function ALittleIDE.IDECodeTree.__getter:is_tree()
 	return true
 end
 
-function IDECodeTree:Refresh()
+function ALittleIDE.IDECodeTree:Refresh()
 	local map = ALittle.File_GetFileNameListByDir(self._user_info.path)
 	local remove = nil
 	for index, child in ___ipairs(self.childs) do
@@ -221,7 +221,7 @@ function IDECodeTree:Refresh()
 			info.group = self._user_info.group
 			info.project = self._user_info.project
 			info.root = false
-			self:AddChild(IDECodeTree(self._ctrl_sys, info))
+			self:AddChild(ALittleIDE.IDECodeTree(self._ctrl_sys, info))
 		end
 	end
 	if add_file ~= nil then
@@ -236,7 +236,7 @@ function IDECodeTree:Refresh()
 			info.group = self._user_info.group
 			info.project = self._user_info.project
 			info.root = false
-			self:AddChild(IDECodeTreeItem(self._ctrl_sys, info))
+			self:AddChild(ALittleIDE.IDECodeTreeItem(self._ctrl_sys, info))
 			if self._user_info.project ~= nil and ALittle.File_GetFileExtByPathAndUpper(info.path) == self._user_info.project.upper_ext then
 				self._user_info.project:UpdateFile(info.module_path, info.path)
 			end
@@ -245,7 +245,7 @@ function IDECodeTree:Refresh()
 	self:DispatchEvent(___all_struct[-431205740], {})
 end
 
-function IDECodeTree:SearchFile(name, list)
+function ALittleIDE.IDECodeTree:SearchFile(name, list)
 	if list == nil then
 		list = {}
 	end
@@ -255,7 +255,7 @@ function IDECodeTree:SearchFile(name, list)
 	return list
 end
 
-function IDECodeTree:FindFile(full_path)
+function ALittleIDE.IDECodeTree:FindFile(full_path)
 	if ALittle.String_Find(full_path, self._user_info.path) ~= 1 then
 		return nil
 	end
@@ -268,50 +268,50 @@ function IDECodeTree:FindFile(full_path)
 	return nil
 end
 
-function IDECodeTree:OnDelete()
+function ALittleIDE.IDECodeTree:OnDelete()
 	for index, child in ___ipairs(self.childs) do
 		child:OnDelete()
 	end
 end
 
-function IDECodeTree:HandleChildResize(event)
+function ALittleIDE.IDECodeTree:HandleChildResize(event)
 	self:DispatchEvent(___all_struct[-431205740], {})
 end
 
-function IDECodeTree:HandleHeadChanged(event)
+function ALittleIDE.IDECodeTree:HandleHeadChanged(event)
 	self._body.visible = event.target.selected
 	self:DispatchEvent(___all_struct[-431205740], {})
 end
 
-function IDECodeTree:GetChildIndex(child)
+function ALittleIDE.IDECodeTree:GetChildIndex(child)
 	return self._body:GetChildIndex(child)
 end
 
-function IDECodeTree:SetChildIndex(child, index)
+function ALittleIDE.IDECodeTree:SetChildIndex(child, index)
 	return self._body:SetChildIndex(child, index)
 end
 
-function IDECodeTree:GetChildByIndex(index)
+function ALittleIDE.IDECodeTree:GetChildByIndex(index)
 	return self._body:GetChildByIndex(index)
 end
 
-function IDECodeTree:GetChildIndex(child)
+function ALittleIDE.IDECodeTree:GetChildIndex(child)
 	return self._body:GetChildIndex(child)
 end
 
-function IDECodeTree.__getter:childs()
+function ALittleIDE.IDECodeTree.__getter:childs()
 	return self._body.childs
 end
 
-function IDECodeTree.__getter:child_count()
+function ALittleIDE.IDECodeTree.__getter:child_count()
 	return self._body.child_count
 end
 
-function IDECodeTree:HasChild(child)
+function ALittleIDE.IDECodeTree:HasChild(child)
 	return self._body:HasChild(child)
 end
 
-function IDECodeTree:AddChild(child, index)
+function ALittleIDE.IDECodeTree:AddChild(child, index)
 	if self._body:AddChild(child, index) == false then
 		return false
 	end
@@ -322,7 +322,7 @@ function IDECodeTree:AddChild(child, index)
 	return true
 end
 
-function IDECodeTree:RemoveChild(child)
+function ALittleIDE.IDECodeTree:RemoveChild(child)
 	if self._body:RemoveChild(child) == false then
 		return false
 	end
@@ -333,7 +333,7 @@ function IDECodeTree:RemoveChild(child)
 	return true
 end
 
-function IDECodeTree:SpliceChild(index, count)
+function ALittleIDE.IDECodeTree:SpliceChild(index, count)
 	local remain_count = self._child_count - index + 1
 	if count == nil then
 		count = remain_count
@@ -364,7 +364,7 @@ function IDECodeTree:SpliceChild(index, count)
 	return result
 end
 
-function IDECodeTree:RemoveAllChild()
+function ALittleIDE.IDECodeTree:RemoveAllChild()
 	for index, child in ___ipairs(self.childs) do
 		child.group = nil
 	end
@@ -374,7 +374,7 @@ function IDECodeTree:RemoveAllChild()
 	end
 end
 
-function IDECodeTree.__getter:width()
+function ALittleIDE.IDECodeTree.__getter:width()
 	local head_width = 0.0
 	if self._head ~= nil then
 		head_width = self._head.width
@@ -397,7 +397,7 @@ function IDECodeTree.__getter:width()
 	return body_width
 end
 
-function IDECodeTree.__getter:height()
+function ALittleIDE.IDECodeTree.__getter:height()
 	local head_height = 0.0
 	if self._head ~= nil then
 		head_height = self._head.height
@@ -408,11 +408,11 @@ function IDECodeTree.__getter:height()
 	return head_height
 end
 
-function IDECodeTree.__getter:fold()
+function ALittleIDE.IDECodeTree.__getter:fold()
 	return self._body.visible
 end
 
-function IDECodeTree.__setter:fold(value)
+function ALittleIDE.IDECodeTree.__setter:fold(value)
 	if value == self._body.visible then
 		return
 	end
@@ -421,11 +421,12 @@ function IDECodeTree.__setter:fold(value)
 	self:DispatchEvent(___all_struct[-431205740], {})
 end
 
-function IDECodeTree.__getter:max_right()
+function ALittleIDE.IDECodeTree.__getter:max_right()
 	return self.width
 end
 
-function IDECodeTree.__getter:max_bottom()
+function ALittleIDE.IDECodeTree.__getter:max_bottom()
 	return self.height
 end
 
+end

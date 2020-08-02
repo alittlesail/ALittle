@@ -1,17 +1,17 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___all_struct = GetAllStruct()
+local ___all_struct = ALittle.GetAllStruct()
 
 
-local __sin = Math_Sin
+local __sin = ALittle.Math_Sin
 assert(ALittle.DisplayGroup, " extends class:ALittle.DisplayGroup is nil")
-ScrollScreen = Lua.Class(ALittle.DisplayGroup, "ALittle.ScrollScreen")
+ALittle.ScrollScreen = Lua.Class(ALittle.DisplayGroup, "ALittle.ScrollScreen")
 
-function ScrollScreen:Ctor(ctrl_sys)
+function ALittle.ScrollScreen:Ctor(ctrl_sys)
 	___rawset(self, "_width", 0)
 	___rawset(self, "_height", 0)
 	___rawset(self, "_content_width", 0)
@@ -20,9 +20,9 @@ function ScrollScreen:Ctor(ctrl_sys)
 	___rawset(self, "_open_extends_drag", false)
 	___rawset(self, "_drag_delta_x", 0)
 	___rawset(self, "_drag_delta_y", 0)
-	___rawset(self, "_scroll_view", DisplayView(self._ctrl_sys))
-	DisplayGroup.AddChild(self, self._scroll_view)
-	___rawset(self, "_scroll_content", DisplayGroup(self._ctrl_sys))
+	___rawset(self, "_scroll_view", ALittle.DisplayView(self._ctrl_sys))
+	ALittle.DisplayGroup.AddChild(self, self._scroll_view)
+	___rawset(self, "_scroll_content", ALittle.DisplayGroup(self._ctrl_sys))
 	self._scroll_view:AddChild(self._scroll_content)
 	___rawset(self, "_pickup_rect", true)
 	___rawset(self, "_pickup_child", true)
@@ -35,7 +35,7 @@ function ScrollScreen:Ctor(ctrl_sys)
 	self:RefreshClipDisLine()
 end
 
-function ScrollScreen:HandleMButtonWheel(event)
+function ALittle.ScrollScreen:HandleMButtonWheel(event)
 	if self._bottom_scroll_bar ~= nil and event.delta_x ~= 0 then
 		self._bottom_scroll_bar.offset_rate = self._bottom_scroll_bar.offset_rate - 0.1 * event.delta_x
 	end
@@ -53,25 +53,25 @@ function ScrollScreen:HandleMButtonWheel(event)
 	self:RejustScrollBar()
 end
 
-function ScrollScreen.__getter:open_extends_drag()
+function ALittle.ScrollScreen.__getter:open_extends_drag()
 	return self._open_extends_drag
 end
 
-function ScrollScreen.__setter:open_extends_drag(value)
+function ALittle.ScrollScreen.__setter:open_extends_drag(value)
 	self._open_extends_drag = value
 end
 
-function ScrollScreen.__getter:container()
+function ALittle.ScrollScreen.__getter:container()
 	return self._scroll_content
 end
 
-function ScrollScreen.__getter:view()
+function ALittle.ScrollScreen.__getter:view()
 	return self._scroll_view
 end
 
-function ScrollScreen.__setter:container(value)
+function ALittle.ScrollScreen.__setter:container(value)
 	if value == nil then
-		value = DisplayGroup(self._ctrl_sys)
+		value = ALittle.DisplayGroup(self._ctrl_sys)
 	end
 	local child_list = {}
 	local child_list_count = 0
@@ -91,9 +91,9 @@ function ScrollScreen.__setter:container(value)
 	self:RejustScrollBar()
 end
 
-function ScrollScreen:SetContainer(value)
+function ALittle.ScrollScreen:SetContainer(value)
 	if value == nil then
-		value = DisplayGroup(self._ctrl_sys)
+		value = ALittle.DisplayGroup(self._ctrl_sys)
 	end
 	self._scroll_content:RemoveEventListener(___all_struct[-431205740], self, self.HandleContainerResize)
 	self._scroll_view:RemoveChild(self._scroll_content)
@@ -103,7 +103,7 @@ function ScrollScreen:SetContainer(value)
 	self:RejustScrollBar()
 end
 
-function ScrollScreen.__setter:container_y(value)
+function ALittle.ScrollScreen.__setter:container_y(value)
 	if self._scroll_content == nil then
 		return
 	end
@@ -112,14 +112,14 @@ function ScrollScreen.__setter:container_y(value)
 	self:RejustScrollBar()
 end
 
-function ScrollScreen.__getter:container_y()
+function ALittle.ScrollScreen.__getter:container_y()
 	if self._scroll_content == nil then
 		return 0
 	end
 	return self._scroll_content.y
 end
 
-function ScrollScreen.__setter:container_x(value)
+function ALittle.ScrollScreen.__setter:container_x(value)
 	if self._scroll_content == nil then
 		return
 	end
@@ -128,18 +128,18 @@ function ScrollScreen.__setter:container_x(value)
 	self:RejustScrollBar()
 end
 
-function ScrollScreen.__getter:container_x()
+function ALittle.ScrollScreen.__getter:container_x()
 	if self._scroll_content == nil then
 		return 0
 	end
 	return self._scroll_content.x
 end
 
-function ScrollScreen.__getter:static_object_h()
+function ALittle.ScrollScreen.__getter:static_object_h()
 	return self._static_object_h
 end
 
-function ScrollScreen.__setter:static_object_h(value)
+function ALittle.ScrollScreen.__setter:static_object_h(value)
 	if self._static_object_h == value then
 		return
 	end
@@ -153,11 +153,11 @@ function ScrollScreen.__setter:static_object_h(value)
 	self._static_object_h.x = self._scroll_content.x
 end
 
-function ScrollScreen.__getter:static_object_v()
+function ALittle.ScrollScreen.__getter:static_object_v()
 	return self._static_object_v
 end
 
-function ScrollScreen.__setter:static_object_v(value)
+function ALittle.ScrollScreen.__setter:static_object_v(value)
 	if self._static_object_v == value then
 		return
 	end
@@ -171,11 +171,11 @@ function ScrollScreen.__setter:static_object_v(value)
 	self._static_object_v.x = 0
 end
 
-function ScrollScreen.__getter:static_object_hv()
+function ALittle.ScrollScreen.__getter:static_object_hv()
 	return self._static_object_hv
 end
 
-function ScrollScreen.__setter:static_object_hv(value)
+function ALittle.ScrollScreen.__setter:static_object_hv(value)
 	if self._static_object_hv == value then
 		return
 	end
@@ -189,29 +189,29 @@ function ScrollScreen.__setter:static_object_hv(value)
 	self._static_object_hv.x = 0
 end
 
-function ScrollScreen:GetChildIndex(child)
+function ALittle.ScrollScreen:GetChildIndex(child)
 	return self._scroll_content:GetChildIndex(child)
 end
 
-function ScrollScreen:SetChildIndex(child, index)
+function ALittle.ScrollScreen:SetChildIndex(child, index)
 	local result = self._scroll_content:SetChildIndex(child, index)
 	self:RefreshClipDisLine()
 	return result
 end
 
-function ScrollScreen:GetChildByIndex(index)
+function ALittle.ScrollScreen:GetChildByIndex(index)
 	return self._scroll_content:GetChildByIndex(index)
 end
 
-function ScrollScreen.__getter:childs()
+function ALittle.ScrollScreen.__getter:childs()
 	return self._scroll_content.childs
 end
 
-function ScrollScreen.__getter:child_count()
+function ALittle.ScrollScreen.__getter:child_count()
 	return self._scroll_content.child_count
 end
 
-function ScrollScreen:AddChild(child, index)
+function ALittle.ScrollScreen:AddChild(child, index)
 	if child == nil then
 		return false
 	end
@@ -222,7 +222,7 @@ function ScrollScreen:AddChild(child, index)
 	return true
 end
 
-function ScrollScreen:RemoveChild(child)
+function ALittle.ScrollScreen:RemoveChild(child)
 	if child == nil then
 		return false
 	end
@@ -233,7 +233,7 @@ function ScrollScreen:RemoveChild(child)
 	return true
 end
 
-function ScrollScreen:SpliceChild(index, count)
+function ALittle.ScrollScreen:SpliceChild(index, count)
 	local result = self._scroll_content:SpliceChild(index, count)
 	if result ~= 0 then
 		self:RejustScrollBar()
@@ -241,11 +241,11 @@ function ScrollScreen:SpliceChild(index, count)
 	return result
 end
 
-function ScrollScreen:HasChild(child)
+function ALittle.ScrollScreen:HasChild(child)
 	return self._scroll_content:HasChild(child)
 end
 
-function ScrollScreen:RemoveAllChild()
+function ALittle.ScrollScreen:RemoveAllChild()
 	A_LoopSystem:RemoveUpdater(self._drag_loop_x)
 	A_LoopSystem:RemoveUpdater(self._drag_loop_y)
 	A_LoopSystem:RemoveUpdater(self._drag_delta_loop_x)
@@ -256,12 +256,12 @@ function ScrollScreen:RemoveAllChild()
 	self:RejustScrollBar()
 end
 
-function ScrollScreen.__setter:width(value)
+function ALittle.ScrollScreen.__setter:width(value)
 	if self._width == value then
 		return
 	end
 	self._width = value
-	if self._width_type == UIEnumTypes.SIZE_ABS then
+	if self._width_type == ALittle.UIEnumTypes.SIZE_ABS then
 		self._width_value = self._width
 	end
 	local width = 0.0
@@ -311,16 +311,16 @@ function ScrollScreen.__setter:width(value)
 	self:RefreshClipDisLine()
 end
 
-function ScrollScreen.__getter:width()
+function ALittle.ScrollScreen.__getter:width()
 	return self._width
 end
 
-function ScrollScreen.__setter:height(value)
+function ALittle.ScrollScreen.__setter:height(value)
 	if self._height == value then
 		return
 	end
 	self._height = value
-	if self._height_type == UIEnumTypes.SIZE_ABS then
+	if self._height_type == ALittle.UIEnumTypes.SIZE_ABS then
 		self._height_value = self._height
 	end
 	local height = 0.0
@@ -368,29 +368,29 @@ function ScrollScreen.__setter:height(value)
 	self:RefreshClipDisLine()
 end
 
-function ScrollScreen.__getter:height()
+function ALittle.ScrollScreen.__getter:height()
 	return self._height
 end
 
-function ScrollScreen.__getter:view_width()
+function ALittle.ScrollScreen.__getter:view_width()
 	return self._scroll_view.width
 end
 
-function ScrollScreen.__getter:view_height()
+function ALittle.ScrollScreen.__getter:view_height()
 	return self._scroll_view.height
 end
 
-function ScrollScreen.__setter:right_scrollbar(value)
+function ALittle.ScrollScreen.__setter:right_scrollbar(value)
 	if self._right_scroll_bar ~= nil then
-		DisplayGroup.RemoveChild(self, self._right_scroll_bar)
+		ALittle.DisplayGroup.RemoveChild(self, self._right_scroll_bar)
 		self._right_scroll_bar:RemoveEventListener(___all_struct[958494922], self, self.HandleRightScrollBarChange)
 	end
 	self._right_scroll_bar = value
 	local width = 0.0
 	if self._right_scroll_bar ~= nil then
-		self._right_scroll_bar.type = UIEnumTypes.TYPE_V
+		self._right_scroll_bar.type = ALittle.UIEnumTypes.TYPE_V
 		width = self._right_scroll_bar.width
-		DisplayGroup.AddChild(self, self._right_scroll_bar)
+		ALittle.DisplayGroup.AddChild(self, self._right_scroll_bar)
 		self._right_scroll_bar:AddEventListener(___all_struct[958494922], self, self.HandleRightScrollBarChange)
 		self._right_scroll_bar.height = self._scroll_view.height
 		self._right_scroll_bar.y = 0
@@ -428,11 +428,11 @@ function ScrollScreen.__setter:right_scrollbar(value)
 	end
 end
 
-function ScrollScreen.__getter:right_scrollbar()
+function ALittle.ScrollScreen.__getter:right_scrollbar()
 	return self._right_scroll_bar
 end
 
-function ScrollScreen:ScrollToBottom()
+function ALittle.ScrollScreen:ScrollToBottom()
 	if self._right_scroll_bar == nil then
 		return
 	end
@@ -440,7 +440,7 @@ function ScrollScreen:ScrollToBottom()
 	self._right_scroll_bar:DispatchEvent(___all_struct[958494922], {})
 end
 
-function ScrollScreen:ScrollToRight()
+function ALittle.ScrollScreen:ScrollToRight()
 	if self._bottom_scroll_bar == nil then
 		return
 	end
@@ -448,17 +448,17 @@ function ScrollScreen:ScrollToRight()
 	self._bottom_scroll_bar:DispatchEvent(___all_struct[958494922], {})
 end
 
-function ScrollScreen.__setter:bottom_scrollbar(value)
+function ALittle.ScrollScreen.__setter:bottom_scrollbar(value)
 	if self._bottom_scroll_bar ~= nil then
-		DisplayGroup.RemoveChild(self, self._bottom_scroll_bar)
+		ALittle.DisplayGroup.RemoveChild(self, self._bottom_scroll_bar)
 		self._bottom_scroll_bar:RemoveEventListener(___all_struct[958494922], self, self.HandleBottomScrollBarChange)
 	end
 	self._bottom_scroll_bar = value
 	local height = 0.0
 	if self._bottom_scroll_bar ~= nil then
-		self._bottom_scroll_bar.type = UIEnumTypes.TYPE_H
+		self._bottom_scroll_bar.type = ALittle.UIEnumTypes.TYPE_H
 		height = self._bottom_scroll_bar.height
-		DisplayGroup.AddChild(self, self._bottom_scroll_bar)
+		ALittle.DisplayGroup.AddChild(self, self._bottom_scroll_bar)
 		self._bottom_scroll_bar:AddEventListener(___all_struct[958494922], self, self.HandleBottomScrollBarChange)
 		self._bottom_scroll_bar.width = self._scroll_view.width
 		self._bottom_scroll_bar.x = 0
@@ -496,11 +496,11 @@ function ScrollScreen.__setter:bottom_scrollbar(value)
 	end
 end
 
-function ScrollScreen.__getter:bottom_scrollbar()
+function ALittle.ScrollScreen.__getter:bottom_scrollbar()
 	return self._bottom_scroll_bar
 end
 
-function ScrollScreen:RejustScrollBar()
+function ALittle.ScrollScreen:RejustScrollBar()
 	self._content_width = self._scroll_content.max_right
 	if self._static_object_h ~= nil then
 		if self._static_object_h.width > self._content_width then
@@ -533,7 +533,7 @@ function ScrollScreen:RejustScrollBar()
 	end
 end
 
-function ScrollScreen:HandleRightScrollBarChange(event)
+function ALittle.ScrollScreen:HandleRightScrollBarChange(event)
 	local rate = self._right_scroll_bar.offset_rate
 	local y = 0.0
 	local content_height = self._content_height
@@ -548,7 +548,7 @@ function ScrollScreen:HandleRightScrollBarChange(event)
 	self:RefreshClipDisLine()
 end
 
-function ScrollScreen:HandleBottomScrollBarChange(event)
+function ALittle.ScrollScreen:HandleBottomScrollBarChange(event)
 	local rate = self._bottom_scroll_bar.offset_rate
 	local x = 0.0
 	local content_width = self._content_width
@@ -563,14 +563,14 @@ function ScrollScreen:HandleBottomScrollBarChange(event)
 	self:RefreshClipDisLine()
 end
 
-function ScrollScreen:HandleContainerResize(event)
+function ALittle.ScrollScreen:HandleContainerResize(event)
 	self:RejustScrollBar()
 end
 
-function ScrollScreen:HandleDragBegin(event)
+function ALittle.ScrollScreen:HandleDragBegin(event)
 end
 
-function ScrollScreen:HandleDrag(event)
+function ALittle.ScrollScreen:HandleDrag(event)
 	self._drag_delta_x = event.delta_x
 	self._drag_delta_y = event.delta_y
 	self._content_width = self._scroll_content.max_right
@@ -692,7 +692,7 @@ function ScrollScreen:HandleDrag(event)
 	end
 end
 
-function ScrollScreen:HandleDragEnd(event)
+function ALittle.ScrollScreen:HandleDragEnd(event)
 	self._content_width = self._scroll_content.max_right
 	if self._static_object_h ~= nil then
 		if self._static_object_h.width > self._content_width then
@@ -705,7 +705,7 @@ function ScrollScreen:HandleDragEnd(event)
 			self:DispatchEvent(___all_struct[-839083637], {})
 		end
 		A_LoopSystem:RemoveUpdater(self._drag_loop_x)
-		self._drag_loop_x = LoopLinear(self._scroll_content, "x", 0, 200, 0, Lua.Bind(ScrollScreen.XScrollBarChange, self))
+		self._drag_loop_x = ALittle.LoopLinear(self._scroll_content, "x", 0, 200, 0, Lua.Bind(ALittle.ScrollScreen.XScrollBarChange, self))
 		A_LoopSystem:AddUpdater(self._drag_loop_x)
 	elseif self._scroll_content.x < -self._content_width + self._scroll_view.width then
 		if self._scroll_content.x <= -self._content_width + self._scroll_view.width - self._scroll_view.width * self._drag_rate * 0.9 then
@@ -713,7 +713,7 @@ function ScrollScreen:HandleDragEnd(event)
 		end
 		if self._scroll_content.x < 0 then
 			A_LoopSystem:RemoveUpdater(self._drag_loop_x)
-			self._drag_loop_x = LoopLinear(self._scroll_content, "x", -self._content_width + self._scroll_view.width, 200, 0, Lua.Bind(ScrollScreen.XScrollBarChange, self))
+			self._drag_loop_x = ALittle.LoopLinear(self._scroll_content, "x", -self._content_width + self._scroll_view.width, 200, 0, Lua.Bind(ALittle.ScrollScreen.XScrollBarChange, self))
 			A_LoopSystem:AddUpdater(self._drag_loop_x)
 		end
 	elseif self._scroll_content.x ~= 0 and self._scroll_content.x ~= -self._content_width + self._scroll_view.width then
@@ -724,11 +724,11 @@ function ScrollScreen:HandleDragEnd(event)
 			local min_x = max_x - self._scroll_view.width * self._drag_rate
 			if target_x < min_x then
 				target_x = min_x
-				event_dispatch = Lua.Bind(ScrollScreen.ScrollDispatchDragLeftEvent, self)
+				event_dispatch = Lua.Bind(ALittle.ScrollScreen.ScrollDispatchDragLeftEvent, self)
 			end
 			if target_x >= min_x and target_x <= max_x then
 				A_LoopSystem:RemoveUpdater(self._drag_loop_x)
-				self._drag_loop_x = LoopLinear(self._scroll_content, "x", -self._content_width + self._scroll_view.width, 200, 300, Lua.Bind(ScrollScreen.XScrollBarChange, self))
+				self._drag_loop_x = ALittle.LoopLinear(self._scroll_content, "x", -self._content_width + self._scroll_view.width, 200, 300, Lua.Bind(ALittle.ScrollScreen.XScrollBarChange, self))
 				A_LoopSystem:AddUpdater(self._drag_loop_x)
 			end
 		elseif self._drag_delta_x > 0 then
@@ -736,17 +736,17 @@ function ScrollScreen:HandleDragEnd(event)
 			local min_x = 0
 			if target_x > max_x then
 				target_x = max_x
-				event_dispatch = Lua.Bind(ScrollScreen.ScrollDispatchDragRightEvent, self)
+				event_dispatch = Lua.Bind(ALittle.ScrollScreen.ScrollDispatchDragRightEvent, self)
 			end
 			if target_x >= min_x and target_x <= max_x then
 				A_LoopSystem:RemoveUpdater(self._drag_loop_x)
-				self._drag_loop_x = LoopLinear(self._scroll_content, "x", 0, 200, 300, Lua.Bind(ScrollScreen.XScrollBarChange, self))
+				self._drag_loop_x = ALittle.LoopLinear(self._scroll_content, "x", 0, 200, 300, Lua.Bind(ALittle.ScrollScreen.XScrollBarChange, self))
 				A_LoopSystem:AddUpdater(self._drag_loop_x)
 			end
 		end
 		A_LoopSystem:RemoveUpdater(self._x_type_dispatch)
 		if event_dispatch ~= nil then
-			self._x_type_dispatch = LoopFunction(event_dispatch, 1, 0, 300)
+			self._x_type_dispatch = ALittle.LoopFunction(event_dispatch, 1, 0, 300)
 			A_LoopSystem:AddUpdater(self._x_type_dispatch)
 		end
 		if self._open_extends_drag == false then
@@ -757,7 +757,7 @@ function ScrollScreen:HandleDragEnd(event)
 			end
 		end
 		A_LoopSystem:RemoveUpdater(self._drag_delta_loop_x)
-		self._drag_delta_loop_x = LoopRit(self._scroll_content, "x", target_x, 300, 0, Lua.Bind(ScrollScreen.XScrollBarChange, self))
+		self._drag_delta_loop_x = ALittle.LoopRit(self._scroll_content, "x", target_x, 300, 0, Lua.Bind(ALittle.ScrollScreen.XScrollBarChange, self))
 		A_LoopSystem:AddUpdater(self._drag_delta_loop_x)
 	end
 	if self._scroll_content.y > 0 then
@@ -765,7 +765,7 @@ function ScrollScreen:HandleDragEnd(event)
 			self:DispatchEvent(___all_struct[1848466169], {})
 		end
 		A_LoopSystem:RemoveUpdater(self._drag_loop_y)
-		self._drag_loop_y = LoopLinear(self._scroll_content, "y", 0, 200, 0, Lua.Bind(ScrollScreen.YScrollBarChange, self))
+		self._drag_loop_y = ALittle.LoopLinear(self._scroll_content, "y", 0, 200, 0, Lua.Bind(ALittle.ScrollScreen.YScrollBarChange, self))
 		A_LoopSystem:AddUpdater(self._drag_loop_y)
 	elseif self._scroll_content.y < -self._content_height + self._scroll_view.height then
 		if self._scroll_content.y <= -self._content_height + self._scroll_view.height - self._scroll_view.height * self._drag_rate * 0.9 then
@@ -773,7 +773,7 @@ function ScrollScreen:HandleDragEnd(event)
 		end
 		if self._scroll_content.y < 0 then
 			A_LoopSystem:RemoveUpdater(self._drag_loop_y)
-			self._drag_loop_y = LoopLinear(self._scroll_content, "y", -self._content_height + self._scroll_view.height, 200, 0, Lua.Bind(ScrollScreen.YScrollBarChange, self))
+			self._drag_loop_y = ALittle.LoopLinear(self._scroll_content, "y", -self._content_height + self._scroll_view.height, 200, 0, Lua.Bind(ALittle.ScrollScreen.YScrollBarChange, self))
 			A_LoopSystem:AddUpdater(self._drag_loop_y)
 		end
 	elseif self._scroll_content.y ~= 0 and self._scroll_content.y ~= -self._content_height + self._scroll_view.height then
@@ -784,11 +784,11 @@ function ScrollScreen:HandleDragEnd(event)
 			local min_y = max_y - self._scroll_view.height * self._drag_rate
 			if target_y < min_y then
 				target_y = min_y
-				event_dispatch = Lua.Bind(ScrollScreen.ScrollDispatchDragUpEvent, self)
+				event_dispatch = Lua.Bind(ALittle.ScrollScreen.ScrollDispatchDragUpEvent, self)
 			end
 			if target_y >= min_y and target_y <= max_y then
 				A_LoopSystem:RemoveUpdater(self._drag_loop_y)
-				self._drag_loop_y = LoopLinear(self._scroll_content, "y", -self._content_height + self._scroll_view.height, 200, 300, Lua.Bind(ScrollScreen.YScrollBarChange, self))
+				self._drag_loop_y = ALittle.LoopLinear(self._scroll_content, "y", -self._content_height + self._scroll_view.height, 200, 300, Lua.Bind(ALittle.ScrollScreen.YScrollBarChange, self))
 				A_LoopSystem:AddUpdater(self._drag_loop_y)
 			end
 		elseif self._drag_delta_y > 0 then
@@ -796,17 +796,17 @@ function ScrollScreen:HandleDragEnd(event)
 			local min_y = 0.0
 			if target_y > max_y then
 				target_y = max_y
-				event_dispatch = Lua.Bind(ScrollScreen.ScrollDispatchDragDownEvent, self)
+				event_dispatch = Lua.Bind(ALittle.ScrollScreen.ScrollDispatchDragDownEvent, self)
 			end
 			if target_y >= min_y and target_y <= max_y then
 				A_LoopSystem:RemoveUpdater(self._drag_loop_y)
-				self._drag_loop_y = LoopLinear(self._scroll_content, "y", 0, 200, 300, Lua.Bind(ScrollScreen.YScrollBarChange, self))
+				self._drag_loop_y = ALittle.LoopLinear(self._scroll_content, "y", 0, 200, 300, Lua.Bind(ALittle.ScrollScreen.YScrollBarChange, self))
 				A_LoopSystem:AddUpdater(self._drag_loop_y)
 			end
 		end
 		A_LoopSystem:RemoveUpdater(self._y_type_dispatch)
 		if event_dispatch ~= nil then
-			self._y_type_dispatch = LoopFunction(event_dispatch, 1, 0, 300)
+			self._y_type_dispatch = ALittle.LoopFunction(event_dispatch, 1, 0, 300)
 			A_LoopSystem:AddUpdater(self._y_type_dispatch)
 		end
 		if self._open_extends_drag == false then
@@ -817,14 +817,14 @@ function ScrollScreen:HandleDragEnd(event)
 			end
 		end
 		A_LoopSystem:RemoveUpdater(self._drag_delta_loop_y)
-		self._drag_delta_loop_y = LoopRit(self._scroll_content, "y", target_y, 300, 0, Lua.Bind(ScrollScreen.YScrollBarChange, self))
+		self._drag_delta_loop_y = ALittle.LoopRit(self._scroll_content, "y", target_y, 300, 0, Lua.Bind(ALittle.ScrollScreen.YScrollBarChange, self))
 		A_LoopSystem:AddUpdater(self._drag_delta_loop_y)
 	end
 	self._drag_delta_x = 0
 	self._drag_delta_y = 0
 end
 
-function ScrollScreen:RefreshClipDisLineImpl(h_move, v_move)
+function ALittle.ScrollScreen:RefreshClipDisLineImpl(h_move, v_move)
 	self._scroll_content:ClipRect(0, 0, self._width, self._height, h_move, v_move)
 	if self._static_object_v ~= nil then
 		self._static_object_v:ClipRect(0, 0, self._width, self._height, h_move, v_move)
@@ -835,16 +835,16 @@ function ScrollScreen:RefreshClipDisLineImpl(h_move, v_move)
 	self._clip_loop = nil
 end
 
-function ScrollScreen:RefreshClipDisLine(h_move, v_move)
+function ALittle.ScrollScreen:RefreshClipDisLine(h_move, v_move)
 	if self._clip_loop ~= nil and self._clip_loop._user_data == nil then
 		return
 	end
-	self._clip_loop = LoopFunction(Lua.Bind(self.RefreshClipDisLineImpl, self, h_move, v_move), 1, 0, 1)
+	self._clip_loop = ALittle.LoopFunction(Lua.Bind(self.RefreshClipDisLineImpl, self, h_move, v_move), 1, 0, 1)
 	self._clip_loop._user_data = v_move
 	A_LoopSystem:AddUpdater(self._clip_loop)
 end
 
-function ScrollScreen:XScrollBarChange()
+function ALittle.ScrollScreen:XScrollBarChange()
 	if self._static_object_h ~= nil then
 		self._static_object_h.x = self._scroll_content.x
 	end
@@ -854,7 +854,7 @@ function ScrollScreen:XScrollBarChange()
 	self:RefreshClipDisLine(nil, nil)
 end
 
-function ScrollScreen:YScrollBarChange()
+function ALittle.ScrollScreen:YScrollBarChange()
 	if self._static_object_v ~= nil then
 		self._static_object_v.y = self._scroll_content.y
 	end
@@ -864,19 +864,20 @@ function ScrollScreen:YScrollBarChange()
 	self:RefreshClipDisLine(nil, nil)
 end
 
-function ScrollScreen:ScrollDispatchDragDownEvent()
+function ALittle.ScrollScreen:ScrollDispatchDragDownEvent()
 	self:DispatchEvent(___all_struct[1848466169], {})
 end
 
-function ScrollScreen:ScrollDispatchDragUpEvent()
+function ALittle.ScrollScreen:ScrollDispatchDragUpEvent()
 	self:DispatchEvent(___all_struct[809518110], {})
 end
 
-function ScrollScreen:ScrollDispatchDragLeftEvent()
+function ALittle.ScrollScreen:ScrollDispatchDragLeftEvent()
 	self:DispatchEvent(___all_struct[-567702959], {})
 end
 
-function ScrollScreen:ScrollDispatchDragRightEvent()
+function ALittle.ScrollScreen:ScrollDispatchDragRightEvent()
 	self:DispatchEvent(___all_struct[-839083637], {})
 end
 
+end

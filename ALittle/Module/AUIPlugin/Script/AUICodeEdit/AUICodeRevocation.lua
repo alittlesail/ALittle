@@ -1,6 +1,6 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("AUIPlugin", package.seeall)
-
+do
+if _G.AUIPlugin == nil then _G.AUIPlugin = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
@@ -20,9 +20,9 @@ option_map = {}
 })
 
 assert(ALittle.RevokeObject, " extends class:ALittle.RevokeObject is nil")
-AUICodeDeleteLeftRevoke = Lua.Class(ALittle.RevokeObject, "AUIPlugin.AUICodeDeleteLeftRevoke")
+AUIPlugin.AUICodeDeleteLeftRevoke = Lua.Class(ALittle.RevokeObject, "AUIPlugin.AUICodeDeleteLeftRevoke")
 
-function AUICodeDeleteLeftRevoke:Ctor(edit, cursor, old_it_line, old_it_char, new_it_line, new_it_char, content, dispatch_event)
+function AUIPlugin.AUICodeDeleteLeftRevoke:Ctor(edit, cursor, old_it_line, old_it_char, new_it_line, new_it_char, content, dispatch_event)
 	___rawset(self, "_edit", edit)
 	___rawset(self, "_cursor", cursor)
 	___rawset(self, "_old_it_line", old_it_line)
@@ -33,7 +33,7 @@ function AUICodeDeleteLeftRevoke:Ctor(edit, cursor, old_it_line, old_it_char, ne
 	___rawset(self, "_dispatch_event", dispatch_event)
 end
 
-function AUICodeDeleteLeftRevoke:Forward()
+function AUIPlugin.AUICodeDeleteLeftRevoke:Forward()
 	self._cursor:SetLineChar(self._old_it_line, self._old_it_char)
 	self._cursor:DeleteLeft(false)
 	if self._dispatch_event then
@@ -41,7 +41,7 @@ function AUICodeDeleteLeftRevoke:Forward()
 	end
 end
 
-function AUICodeDeleteLeftRevoke:Back()
+function AUIPlugin.AUICodeDeleteLeftRevoke:Back()
 	self._cursor:SetLineChar(self._new_it_line, self._new_it_char)
 	self._edit:InsertText(self._content, false)
 	if self._dispatch_event then
@@ -50,9 +50,9 @@ function AUICodeDeleteLeftRevoke:Back()
 end
 
 assert(ALittle.RevokeObject, " extends class:ALittle.RevokeObject is nil")
-AUICodeDeleteRightRevoke = Lua.Class(ALittle.RevokeObject, "AUIPlugin.AUICodeDeleteRightRevoke")
+AUIPlugin.AUICodeDeleteRightRevoke = Lua.Class(ALittle.RevokeObject, "AUIPlugin.AUICodeDeleteRightRevoke")
 
-function AUICodeDeleteRightRevoke:Ctor(edit, cursor, old_it_line, old_it_char, new_it_line, new_it_char, content, dispatch_event)
+function AUIPlugin.AUICodeDeleteRightRevoke:Ctor(edit, cursor, old_it_line, old_it_char, new_it_line, new_it_char, content, dispatch_event)
 	___rawset(self, "_edit", edit)
 	___rawset(self, "_cursor", cursor)
 	___rawset(self, "_old_it_line", old_it_line)
@@ -63,7 +63,7 @@ function AUICodeDeleteRightRevoke:Ctor(edit, cursor, old_it_line, old_it_char, n
 	___rawset(self, "_dispatch_event", dispatch_event)
 end
 
-function AUICodeDeleteRightRevoke:Forward()
+function AUIPlugin.AUICodeDeleteRightRevoke:Forward()
 	self._cursor:SetLineChar(self._old_it_line, self._old_it_char)
 	self._cursor:DeleteRight(false)
 	if self._dispatch_event then
@@ -71,7 +71,7 @@ function AUICodeDeleteRightRevoke:Forward()
 	end
 end
 
-function AUICodeDeleteRightRevoke:Back()
+function AUIPlugin.AUICodeDeleteRightRevoke:Back()
 	self._cursor:SetLineChar(self._new_it_line, self._new_it_char)
 	self._edit:InsertText(self._content, false)
 	self._cursor:SetLineChar(self._new_it_line, self._new_it_char)
@@ -81,9 +81,9 @@ function AUICodeDeleteRightRevoke:Back()
 end
 
 assert(ALittle.RevokeObject, " extends class:ALittle.RevokeObject is nil")
-AUICodeInsertTextRevoke = Lua.Class(ALittle.RevokeObject, "AUIPlugin.AUICodeInsertTextRevoke")
+AUIPlugin.AUICodeInsertTextRevoke = Lua.Class(ALittle.RevokeObject, "AUIPlugin.AUICodeInsertTextRevoke")
 
-function AUICodeInsertTextRevoke:Ctor(edit, cursor, select_cursor, old_it_line, old_it_char, new_it_line, new_it_char, content, dispatch_event)
+function AUIPlugin.AUICodeInsertTextRevoke:Ctor(edit, cursor, select_cursor, old_it_line, old_it_char, new_it_line, new_it_char, content, dispatch_event)
 	___rawset(self, "_edit", edit)
 	___rawset(self, "_cursor", cursor)
 	___rawset(self, "_select_cursor", select_cursor)
@@ -95,7 +95,7 @@ function AUICodeInsertTextRevoke:Ctor(edit, cursor, select_cursor, old_it_line, 
 	___rawset(self, "_dispatch_event", dispatch_event)
 end
 
-function AUICodeInsertTextRevoke:Forward()
+function AUIPlugin.AUICodeInsertTextRevoke:Forward()
 	self._cursor:SetLineChar(self._old_it_line, self._old_it_char)
 	self._edit:InsertText(self._content, false)
 	if self._dispatch_event then
@@ -103,7 +103,7 @@ function AUICodeInsertTextRevoke:Forward()
 	end
 end
 
-function AUICodeInsertTextRevoke:Back()
+function AUIPlugin.AUICodeInsertTextRevoke:Back()
 	self._select_cursor:StartLineChar(self._old_it_line, self._old_it_char)
 	self._select_cursor:UpdateLineChar(self._new_it_line, self._new_it_char)
 	self._select_cursor:DeleteSelect(false)
@@ -114,9 +114,9 @@ function AUICodeInsertTextRevoke:Back()
 end
 
 assert(ALittle.RevokeObject, " extends class:ALittle.RevokeObject is nil")
-AUICodeDeleteSelectRevoke = Lua.Class(ALittle.RevokeObject, "AUIPlugin.AUICodeDeleteSelectRevoke")
+AUIPlugin.AUICodeDeleteSelectRevoke = Lua.Class(ALittle.RevokeObject, "AUIPlugin.AUICodeDeleteSelectRevoke")
 
-function AUICodeDeleteSelectRevoke:Ctor(edit, cursor, select_cursor, old_it_line_start, old_it_char_start, old_it_line_end, old_it_char_end, new_it_line, new_it_char, content, dispatch_event)
+function AUIPlugin.AUICodeDeleteSelectRevoke:Ctor(edit, cursor, select_cursor, old_it_line_start, old_it_char_start, old_it_line_end, old_it_char_end, new_it_line, new_it_char, content, dispatch_event)
 	___rawset(self, "_edit", edit)
 	___rawset(self, "_cursor", cursor)
 	___rawset(self, "_select_cursor", select_cursor)
@@ -130,7 +130,7 @@ function AUICodeDeleteSelectRevoke:Ctor(edit, cursor, select_cursor, old_it_line
 	___rawset(self, "_dispatch_event", dispatch_event)
 end
 
-function AUICodeDeleteSelectRevoke:Forward()
+function AUIPlugin.AUICodeDeleteSelectRevoke:Forward()
 	self._select_cursor:StartLineChar(self._old_it_line_start, self._old_it_char_start)
 	self._select_cursor:UpdateLineChar(self._old_it_line_end, self._old_it_char_end)
 	self._select_cursor:DeleteSelect(false)
@@ -140,7 +140,7 @@ function AUICodeDeleteSelectRevoke:Forward()
 	end
 end
 
-function AUICodeDeleteSelectRevoke:Back()
+function AUIPlugin.AUICodeDeleteSelectRevoke:Back()
 	self._cursor:SetLineChar(self._new_it_line, self._new_it_char)
 	self._edit:InsertText(self._content, false)
 	if self._dispatch_event then
@@ -149,9 +149,9 @@ function AUICodeDeleteSelectRevoke:Back()
 end
 
 assert(ALittle.RevokeObject, " extends class:ALittle.RevokeObject is nil")
-AUICodeMultiTabInsertRevoke = Lua.Class(ALittle.RevokeObject, "AUIPlugin.AUICodeMultiTabInsertRevoke")
+AUIPlugin.AUICodeMultiTabInsertRevoke = Lua.Class(ALittle.RevokeObject, "AUIPlugin.AUICodeMultiTabInsertRevoke")
 
-function AUICodeMultiTabInsertRevoke:Ctor(edit, cursor, select_cursor, old_it_line_start, old_it_char_start, old_it_line_end, old_it_char_end, new_it_line_start, new_it_char_start, new_it_line_end, new_it_char_end, dispatch_event)
+function AUIPlugin.AUICodeMultiTabInsertRevoke:Ctor(edit, cursor, select_cursor, old_it_line_start, old_it_char_start, old_it_line_end, old_it_char_end, new_it_line_start, new_it_char_start, new_it_line_end, new_it_char_end, dispatch_event)
 	___rawset(self, "_edit", edit)
 	___rawset(self, "_cursor", cursor)
 	___rawset(self, "_select_cursor", select_cursor)
@@ -166,7 +166,7 @@ function AUICodeMultiTabInsertRevoke:Ctor(edit, cursor, select_cursor, old_it_li
 	___rawset(self, "_dispatch_event", dispatch_event)
 end
 
-function AUICodeMultiTabInsertRevoke:Forward()
+function AUIPlugin.AUICodeMultiTabInsertRevoke:Forward()
 	self._select_cursor:StartLineChar(self._old_it_line_start, self._old_it_char_start)
 	self._select_cursor:UpdateLineChar(self._old_it_line_end, self._old_it_char_end)
 	self._edit:MultiTabInsert(false)
@@ -175,7 +175,7 @@ function AUICodeMultiTabInsertRevoke:Forward()
 	end
 end
 
-function AUICodeMultiTabInsertRevoke:Back()
+function AUIPlugin.AUICodeMultiTabInsertRevoke:Back()
 	self._select_cursor:StartLineChar(self._new_it_line_start, self._new_it_char_start)
 	self._select_cursor:UpdateLineChar(self._new_it_line_end, self._new_it_char_end)
 	self._edit:MultiTabDelete(false)
@@ -185,9 +185,9 @@ function AUICodeMultiTabInsertRevoke:Back()
 end
 
 assert(ALittle.RevokeObject, " extends class:ALittle.RevokeObject is nil")
-AUICodeMultiTabDeleteRevoke = Lua.Class(ALittle.RevokeObject, "AUIPlugin.AUICodeMultiTabDeleteRevoke")
+AUIPlugin.AUICodeMultiTabDeleteRevoke = Lua.Class(ALittle.RevokeObject, "AUIPlugin.AUICodeMultiTabDeleteRevoke")
 
-function AUICodeMultiTabDeleteRevoke:Ctor(edit, cursor, select_cursor, old_it_line_start, old_it_char_start, old_it_line_end, old_it_char_end, new_it_line_start, new_it_char_start, new_it_line_end, new_it_char_end, dispatch_event)
+function AUIPlugin.AUICodeMultiTabDeleteRevoke:Ctor(edit, cursor, select_cursor, old_it_line_start, old_it_char_start, old_it_line_end, old_it_char_end, new_it_line_start, new_it_char_start, new_it_line_end, new_it_char_end, dispatch_event)
 	___rawset(self, "_edit", edit)
 	___rawset(self, "_cursor", cursor)
 	___rawset(self, "_select_cursor", select_cursor)
@@ -202,7 +202,7 @@ function AUICodeMultiTabDeleteRevoke:Ctor(edit, cursor, select_cursor, old_it_li
 	___rawset(self, "_dispatch_event", dispatch_event)
 end
 
-function AUICodeMultiTabDeleteRevoke:Forward()
+function AUIPlugin.AUICodeMultiTabDeleteRevoke:Forward()
 	self._select_cursor:StartLineChar(self._old_it_line_start, self._old_it_char_start)
 	self._select_cursor:UpdateLineChar(self._old_it_line_end, self._old_it_char_end)
 	self._edit:MultiTabDelete(false)
@@ -211,7 +211,7 @@ function AUICodeMultiTabDeleteRevoke:Forward()
 	end
 end
 
-function AUICodeMultiTabDeleteRevoke:Back()
+function AUIPlugin.AUICodeMultiTabDeleteRevoke:Back()
 	self._select_cursor:StartLineChar(self._new_it_line_start, self._new_it_char_start)
 	self._select_cursor:UpdateLineChar(self._new_it_line_end, self._new_it_char_end)
 	self._edit:MultiTabInsert(false)
@@ -220,3 +220,4 @@ function AUICodeMultiTabDeleteRevoke:Back()
 	end
 end
 
+end

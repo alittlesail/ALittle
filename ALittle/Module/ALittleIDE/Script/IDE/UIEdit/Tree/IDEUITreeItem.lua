@@ -1,6 +1,6 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittleIDE", package.seeall)
-
+do
+if _G.ALittleIDE == nil then _G.ALittleIDE = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
@@ -50,9 +50,9 @@ option_map = {}
 })
 
 assert(ALittleIDE.IDEUITreeLogic, " extends class:ALittleIDE.IDEUITreeLogic is nil")
-IDEUITreeItem = Lua.Class(ALittleIDE.IDEUITreeLogic, "ALittleIDE.IDEUITreeItem")
+ALittleIDE.IDEUITreeItem = Lua.Class(ALittleIDE.IDEUITreeLogic, "ALittleIDE.IDEUITreeItem")
 
-function IDEUITreeItem:Ctor(ctrl_sys, user_info, tab_child)
+function ALittleIDE.IDEUITreeItem:Ctor(ctrl_sys, user_info, tab_child)
 	if self._user_info.extends then
 		___rawset(self, "_item", ctrl_sys:CreateControl("ide_common_tree_item_disabled", self))
 	else
@@ -106,11 +106,11 @@ function IDEUITreeItem:Ctor(ctrl_sys, user_info, tab_child)
 	self._item_button:AddEventListener(___all_struct[1301789264], self, self.HandleDragBegin)
 	self._item_button:AddEventListener(___all_struct[1337289812], self, self.HandleDrag)
 	self._item_button:AddEventListener(___all_struct[150587926], self, self.HandleDragEnd)
-	self._item_button:AddEventListener(___all_struct[-641444818], g_IDECenter.center.control_tree, g_IDECenter.center.control_tree.HandleControlTreeItemRightClick)
+	self._item_button:AddEventListener(___all_struct[-641444818], ALittleIDE.g_IDECenter.center.control_tree, ALittleIDE.g_IDECenter.center.control_tree.HandleControlTreeItemRightClick)
 	self._item_button._user_data = self
 end
 
-function IDEUITreeItem:UpdateDesc()
+function ALittleIDE.IDEUITreeItem:UpdateDesc()
 	local title = ""
 	if self._user_info.child_type ~= nil and self._user_info.child_type ~= "child" then
 		title = title .. "[" .. self._user_info.child_type .. "]"
@@ -136,26 +136,26 @@ function IDEUITreeItem:UpdateDesc()
 	end
 end
 
-function IDEUITreeItem.__getter:is_tree()
+function ALittleIDE.IDEUITreeItem.__getter:is_tree()
 	return false
 end
 
-function IDEUITreeItem.__getter:fold()
+function ALittleIDE.IDEUITreeItem.__getter:fold()
 	return false
 end
 
-function IDEUITreeItem.__setter:fold(value)
+function ALittleIDE.IDEUITreeItem.__setter:fold(value)
 end
 
-function IDEUITreeItem:GetDataListForAdd()
+function ALittleIDE.IDEUITreeItem:GetDataListForAdd()
 	return {}
 end
 
-function IDEUITreeItem:CalcInfo()
+function ALittleIDE.IDEUITreeItem:CalcInfo()
 	return ALittle.String_CopyTable(self._user_info.base)
 end
 
-function IDEUITreeItem:SearchLink(name, list)
+function ALittleIDE.IDEUITreeItem:SearchLink(name, list)
 	if list == nil then
 		list = {}
 	end
@@ -172,7 +172,7 @@ function IDEUITreeItem:SearchLink(name, list)
 	return list
 end
 
-function IDEUITreeItem:SearchEvent(name, list)
+function ALittleIDE.IDEUITreeItem:SearchEvent(name, list)
 	if list == nil then
 		list = {}
 	end
@@ -191,7 +191,7 @@ function IDEUITreeItem:SearchEvent(name, list)
 	return list
 end
 
-function IDEUITreeItem:SearchDescription(name, list)
+function ALittleIDE.IDEUITreeItem:SearchDescription(name, list)
 	if list == nil then
 		list = {}
 	end
@@ -208,7 +208,7 @@ function IDEUITreeItem:SearchDescription(name, list)
 	return list
 end
 
-function IDEUITreeItem:SearchTargetClass(name, list)
+function ALittleIDE.IDEUITreeItem:SearchTargetClass(name, list)
 	if list == nil then
 		list = {}
 	end
@@ -226,7 +226,7 @@ function IDEUITreeItem:SearchTargetClass(name, list)
 	return list
 end
 
-function IDEUITreeItem:SearchTextureName(name, list)
+function ALittleIDE.IDEUITreeItem:SearchTextureName(name, list)
 	if list == nil then
 		list = {}
 	end
@@ -243,7 +243,7 @@ function IDEUITreeItem:SearchTextureName(name, list)
 	return list
 end
 
-function IDEUITreeItem:EditPickUp(x, y)
+function ALittleIDE.IDEUITreeItem:EditPickUp(x, y)
 	if self._user_info.extends then
 		return nil
 	end
@@ -255,10 +255,10 @@ function IDEUITreeItem:EditPickUp(x, y)
 	return nil
 end
 
-function IDEUITreeItem:QuickPickUp(x, y, list)
+function ALittleIDE.IDEUITreeItem:QuickPickUp(x, y, list)
 end
 
-function IDEUITreeItem:SelectPickUp(x, y)
+function ALittleIDE.IDEUITreeItem:SelectPickUp(x, y)
 	if self._user_info.extends then
 		return nil, nil
 	end
@@ -269,3 +269,4 @@ function IDEUITreeItem:SelectPickUp(x, y)
 	return nil, nil
 end
 
+end

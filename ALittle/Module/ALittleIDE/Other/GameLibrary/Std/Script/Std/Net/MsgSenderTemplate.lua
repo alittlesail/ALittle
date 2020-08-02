@@ -1,6 +1,6 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
@@ -8,9 +8,9 @@ local ___ipairs = ipairs
 
 local __MsgSenderMap = {}
 assert(ALittle.IMsgCommonTemplate, " extends class:ALittle.IMsgCommonTemplate is nil")
-MsgSenderTemplate = Lua.Class(ALittle.IMsgCommonTemplate, "ALittle.MsgSenderTemplate")
+ALittle.MsgSenderTemplate = Lua.Class(ALittle.IMsgCommonTemplate, "ALittle.MsgSenderTemplate")
 
-function MsgSenderTemplate:Ctor(heartbeat, check_heartbeat, loop_system, callback)
+function ALittle.MsgSenderTemplate:Ctor(heartbeat, check_heartbeat, loop_system, callback)
 	___rawset(self, "_interface", self.__class.__element[1]())
 	___rawset(self, "_write_factory", self.__class.__element[2]())
 	___rawset(self, "_loop_system", loop_system)
@@ -24,7 +24,7 @@ function MsgSenderTemplate:Ctor(heartbeat, check_heartbeat, loop_system, callbac
 	___rawset(self, "_callback", callback)
 end
 
-function MsgSenderTemplate:Connect(ip, port)
+function ALittle.MsgSenderTemplate:Connect(ip, port)
 	local ___COROUTINE = coroutine.running()
 	if ip == nil then
 		ip = ""
@@ -43,17 +43,17 @@ function MsgSenderTemplate:Connect(ip, port)
 	return coroutine.yield()
 end
 
-function MsgSenderTemplate:HandleConnectSucceed()
+function ALittle.MsgSenderTemplate:HandleConnectSucceed()
 	self._last_recv_time = 0
 	self:SendHeartbeat()
 	self:StartHeartbeat()
-	local result, reason = Coroutine.Resume(self._co, nil)
+	local result, reason = ALittle.Coroutine.Resume(self._co, nil)
 	if result ~= true then
-		Error(reason)
+		ALittle.Error(reason)
 	end
 end
 
-function MsgSenderTemplate:HandleDisconnect()
+function ALittle.MsgSenderTemplate:HandleDisconnect()
 	self:StopHeartbeat()
 	__MsgSenderMap[self._interface:GetID()] = nil
 	self:ClearRPC("连接断开了")
@@ -62,18 +62,18 @@ function MsgSenderTemplate:HandleDisconnect()
 	end
 end
 
-function MsgSenderTemplate:HandleConnectFailed(error)
+function ALittle.MsgSenderTemplate:HandleConnectFailed(error)
 	__MsgSenderMap[self._interface:GetID()] = nil
 	if error == nil then
 		error = self._ip .. ":" .. self._port .. "连接失败"
 	end
-	local result, reason = Coroutine.Resume(self._co, error)
+	local result, reason = ALittle.Coroutine.Resume(self._co, error)
 	if result ~= true then
-		Error(reason)
+		ALittle.Error(reason)
 	end
 end
 
-function MsgSenderTemplate:Close(reason)
+function ALittle.MsgSenderTemplate:Close(reason)
 	self:StopHeartbeat()
 	self._interface:Close()
 	if reason == nil then
@@ -83,7 +83,7 @@ function MsgSenderTemplate:Close(reason)
 	__MsgSenderMap[self._interface:GetID()] = nil
 end
 
-function MsgSenderTemplate:SendHeartbeat(max_ms)
+function ALittle.MsgSenderTemplate:SendHeartbeat(max_ms)
 	if self._interface:IsConnected() == false then
 		return
 	end
@@ -92,7 +92,7 @@ function MsgSenderTemplate:SendHeartbeat(max_ms)
 	self._write_factory:SetRpcID(0)
 	self._interface:SendFactory(self._write_factory)
 	if self._check_heartbeat then
-		local send_time = Time_GetCurTime()
+		local send_time = ALittle.Time_GetCurTime()
 		local default_delta = self._heartbeat / 2
 		local delta_time = max_ms
 		if delta_time == nil then
@@ -101,12 +101,12 @@ function MsgSenderTemplate:SendHeartbeat(max_ms)
 		if delta_time > default_delta then
 			delta_time = default_delta
 		end
-		self._loop_system:AddTimer(Math_Floor(delta_time) * 1000, Lua.Bind(self.CheckHeartbeat, self, send_time, Math_Floor(delta_time)))
+		self._loop_system:AddTimer(ALittle.Math_Floor(delta_time) * 1000, Lua.Bind(self.CheckHeartbeat, self, send_time, ALittle.Math_Floor(delta_time)))
 	end
 end
 
-function MsgSenderTemplate:CheckHeartbeat(send_time, delta_time)
-	local invoke_time = Time_GetCurTime()
+function ALittle.MsgSenderTemplate:CheckHeartbeat(send_time, delta_time)
+	local invoke_time = ALittle.Time_GetCurTime()
 	local interval_time = invoke_time - send_time
 	if interval_time > delta_time + 2 then
 		return
@@ -122,7 +122,7 @@ function MsgSenderTemplate:CheckHeartbeat(send_time, delta_time)
 	end
 end
 
-function MsgSenderTemplate:StartHeartbeat()
+function ALittle.MsgSenderTemplate:StartHeartbeat()
 	if self._heartbeat == nil then
 		return
 	end
@@ -135,7 +135,7 @@ function MsgSenderTemplate:StartHeartbeat()
 	self._heartbeat_loop = self._loop_system:AddTimer(1, Lua.Bind(self.SendHeartbeat, self, nil), -1, self._heartbeat * 1000)
 end
 
-function MsgSenderTemplate:StopHeartbeat()
+function ALittle.MsgSenderTemplate:StopHeartbeat()
 	if self._heartbeat_loop == nil then
 		return
 	end
@@ -144,7 +144,7 @@ function MsgSenderTemplate:StopHeartbeat()
 	self._heartbeat_loop = nil
 end
 
-function __ALITTLEAPI_ConnectSucceed(id)
+function ALittle.__ALITTLEAPI_ConnectSucceed(id)
 	local client = __MsgSenderMap[id]
 	if client == nil then
 		return
@@ -152,7 +152,7 @@ function __ALITTLEAPI_ConnectSucceed(id)
 	client:HandleConnectSucceed()
 end
 
-function __ALITTLEAPI_Disconnect(id)
+function ALittle.__ALITTLEAPI_Disconnect(id)
 	local client = __MsgSenderMap[id]
 	if client == nil then
 		return
@@ -160,7 +160,7 @@ function __ALITTLEAPI_Disconnect(id)
 	client:HandleDisconnect()
 end
 
-function __ALITTLEAPI_ConnectFailed(id)
+function ALittle.__ALITTLEAPI_ConnectFailed(id)
 	local client = __MsgSenderMap[id]
 	if client == nil then
 		return
@@ -168,7 +168,7 @@ function __ALITTLEAPI_ConnectFailed(id)
 	client:HandleConnectFailed(nil)
 end
 
-function __ALITTLEAPI_Message(id, msg_id, rpc_id, factory)
+function ALittle.__ALITTLEAPI_Message(id, msg_id, rpc_id, factory)
 	local client = __MsgSenderMap[id]
 	if client == nil then
 		return
@@ -176,3 +176,4 @@ function __ALITTLEAPI_Message(id, msg_id, rpc_id, factory)
 	client:HandleMessage(msg_id, rpc_id, factory)
 end
 
+end

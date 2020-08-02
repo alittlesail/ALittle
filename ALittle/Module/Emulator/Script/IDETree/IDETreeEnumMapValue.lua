@@ -1,15 +1,15 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("Emulator", package.seeall)
-
+do
+if _G.Emulator == nil then _G.Emulator = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
 assert(Emulator.IDETreeLogic, " extends class:Emulator.IDETreeLogic is nil")
-IDETreeEnumMapValue = Lua.Class(Emulator.IDETreeLogic, "Emulator.IDETreeEnumMapValue")
+Emulator.IDETreeEnumMapValue = Lua.Class(Emulator.IDETreeLogic, "Emulator.IDETreeEnumMapValue")
 
-function IDETreeEnumMapValue:Ctor(ctrl_sys, root, parent, rflct, msg, key_field, value_field)
+function Emulator.IDETreeEnumMapValue:Ctor(ctrl_sys, root, parent, rflct, msg, key_field, value_field)
 	___rawset(self, "_parent", parent)
 	___rawset(self, "_rflct", rflct)
 	___rawset(self, "_msg", msg)
@@ -56,7 +56,7 @@ function IDETreeEnumMapValue:Ctor(ctrl_sys, root, parent, rflct, msg, key_field,
 	self._delete_button.disabled = root.for_show
 end
 
-function IDETreeEnumMapValue:RefreshValue()
+function Emulator.IDETreeEnumMapValue:RefreshValue()
 	if self._value_cpp_type == 1 then
 		return protobuf.reflection_getint32(self._rflct, self._msg, self._value_field)
 	elseif self._value_cpp_type == 3 then
@@ -75,7 +75,7 @@ function IDETreeEnumMapValue:RefreshValue()
 	return nil
 end
 
-function IDETreeEnumMapValue:HandleKeySelectChanegd(event)
+function Emulator.IDETreeEnumMapValue:HandleKeySelectChanegd(event)
 	local value = self._enum_value_map[event.target.text]
 	if value == nil then
 		return
@@ -84,7 +84,7 @@ function IDETreeEnumMapValue:HandleKeySelectChanegd(event)
 	self:Save()
 end
 
-function IDETreeEnumMapValue:HandleValueFocusOut(event)
+function Emulator.IDETreeEnumMapValue:HandleValueFocusOut(event)
 	local text = self._value_input.text
 	if self._value_cpp_type == 1 then
 		protobuf.reflection_setint32(self._rflct, self._msg, self._value_field, ALittle.Math_ToIntOrZero(text))
@@ -106,11 +106,12 @@ function IDETreeEnumMapValue:HandleValueFocusOut(event)
 	self:Save()
 end
 
-function IDETreeEnumMapValue:HandleInsertClick(event)
+function Emulator.IDETreeEnumMapValue:HandleInsertClick(event)
 	self._parent:CreateOneBefore(self)
 end
 
-function IDETreeEnumMapValue:HandleDeleteClick(event)
+function Emulator.IDETreeEnumMapValue:HandleDeleteClick(event)
 	self._parent:Delete(self)
 end
 
+end

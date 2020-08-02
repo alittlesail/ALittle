@@ -1,9 +1,10 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
+do
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-function Require(base_path, url)
+function _G.Require(base_path, url)
 	local ___COROUTINE = coroutine.running()
 	if _G["core_require"] ~= nil then
 		_G["core_require"](base_path .. url)
@@ -13,7 +14,7 @@ function Require(base_path, url)
 	return nil
 end
 
-function RequireFromPaths(base_path, rel_path, file_list)
+function _G.RequireFromPaths(base_path, rel_path, file_list)
 	local ___COROUTINE = coroutine.running()
 	for index, path in ___ipairs(file_list) do
 		path = string.sub(path, 1, -9)
@@ -21,7 +22,7 @@ function RequireFromPaths(base_path, rel_path, file_list)
 	end
 end
 
-function RequireCore(base_path)
+function _G.RequireCore(base_path)
 	local ___COROUTINE = coroutine.running()
 	Require(base_path, "Core/Reflect/ReflectRegister")
 	Require(base_path, "Core/Reflect/ReflectDefine")
@@ -45,3 +46,4 @@ function RequireCore(base_path)
 	Require(base_path, "Core/Net/MsgCommon")
 end
 
+end

@@ -1,48 +1,48 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-function String_JsonEncode(object)
+function ALittle.String_JsonEncode(object)
 	return json.encode(object)
 end
 
-function String_JsonDecode(text)
+function ALittle.String_JsonDecode(text)
 	return json.decode(text)
 end
 
-function String_MD5(text)
+function ALittle.String_MD5(text)
 	return md5.stringmd5(text)
 end
 
-function String_Base64Encode(text)
+function ALittle.String_Base64Encode(text)
 	return base64.encode(text)
 end
 
-function String_Base64Decode(text)
+function ALittle.String_Base64Decode(text)
 	return base64.decode(text)
 end
 
-function String_GetWordCount(text)
+function ALittle.String_GetWordCount(text)
 	return utf8.wordcount(text)
 end
 
-function String_GetByteCount(text, word_count)
+function ALittle.String_GetByteCount(text, word_count)
 	return utf8.bytecount(text, 0, word_count)
 end
 
-StringGenerateID = Lua.Class(nil, "ALittle.StringGenerateID")
+ALittle.StringGenerateID = Lua.Class(nil, "ALittle.StringGenerateID")
 
-function StringGenerateID:Ctor()
+function ALittle.StringGenerateID:Ctor()
 	___rawset(self, "_string_last_index", 0)
 	___rawset(self, "_string_last_time", 0)
 end
 
-function StringGenerateID:GenID(pre)
-	local cur_time = Time_GetCurTime()
+function ALittle.StringGenerateID:GenID(pre)
+	local cur_time = ALittle.Time_GetCurTime()
 	if cur_time ~= self._string_last_time then
 		self._string_last_time = cur_time
 		self._string_last_index = 0
@@ -53,25 +53,25 @@ function StringGenerateID:GenID(pre)
 	if pre ~= nil then
 		result = pre .. "-"
 	end
-	result = result .. self._string_last_time .. "-" .. self._string_last_index .. "-" .. Math_RandomInt(0, 10000) .. "-" .. Math_RandomInt(0, 10000)
+	result = result .. self._string_last_time .. "-" .. self._string_last_index .. "-" .. ALittle.Math_RandomInt(0, 10000) .. "-" .. ALittle.Math_RandomInt(0, 10000)
 	return result
 end
 
-local A_StringGenerateID = StringGenerateID()
-function String_GenerateID(pre)
+local A_StringGenerateID = ALittle.StringGenerateID()
+function ALittle.String_GenerateID(pre)
 	return A_StringGenerateID:GenID(pre)
 end
 
-function String_HttpAnalysisValueMap(param, content)
+function ALittle.String_HttpAnalysisValueMap(param, content)
 	local value_map = {}
-	local param_split_list = String_Split(param, "&")
+	local param_split_list = ALittle.String_Split(param, "&")
 	for index, param_content in ___ipairs(param_split_list) do
-		local value_split_list = String_Split(param_content, "=")
-		if List_MaxN(value_split_list) == 2 then
-			if String_Sub(value_split_list[2], 1, 1) == "\"" and String_Sub(value_split_list[2], -1, -1) == "\"" then
-				value_map[value_split_list[1]] = String_Sub(value_split_list[2], 2, -2)
+		local value_split_list = ALittle.String_Split(param_content, "=")
+		if ALittle.List_MaxN(value_split_list) == 2 then
+			if ALittle.String_Sub(value_split_list[2], 1, 1) == "\"" and ALittle.String_Sub(value_split_list[2], -1, -1) == "\"" then
+				value_map[value_split_list[1]] = ALittle.String_Sub(value_split_list[2], 2, -2)
 			else
-				local number = Math_ToDouble(value_split_list[2])
+				local number = ALittle.Math_ToDouble(value_split_list[2])
 				if number == nil then
 					value_map[value_split_list[1]] = value_split_list[2]
 				else
@@ -80,8 +80,8 @@ function String_HttpAnalysisValueMap(param, content)
 			end
 		end
 	end
-	if String_Len(content) > 0 then
-		local error, value = Lua.TCall(String_JsonDecode, content)
+	if ALittle.String_Len(content) > 0 then
+		local error, value = Lua.TCall(ALittle.String_JsonDecode, content)
 		if error == nil then
 			for k, v in ___pairs(value) do
 				value_map[k] = v
@@ -91,12 +91,12 @@ function String_HttpAnalysisValueMap(param, content)
 	return value_map
 end
 
-function String_IsPhoneNumber(number)
-	local l = String_Len(number)
+function ALittle.String_IsPhoneNumber(number)
+	local l = ALittle.String_Len(number)
 	local i = 1
 	while true do
 		if not(i <= l) then break end
-		local value = String_Byte(number, i)
+		local value = ALittle.String_Byte(number, i)
 		if value < 48 then
 			return false
 		end
@@ -108,12 +108,12 @@ function String_IsPhoneNumber(number)
 	return true
 end
 
-function String_IsWordChar(char)
-	local len = String_Len(char)
+function ALittle.String_IsWordChar(char)
+	local len = ALittle.String_Len(char)
 	if len ~= 1 then
 		return false
 	end
-	local value = String_Byte(char, 1)
+	local value = ALittle.String_Byte(char, 1)
 	if value >= 48 and value <= 57 then
 		return true
 	end
@@ -129,7 +129,7 @@ function String_IsWordChar(char)
 	return false
 end
 
-function String_SplitUTF8(content)
+function ALittle.String_SplitUTF8(content)
 	local len = ALittle.String_Len(content)
 	local index = 1
 	local char_list = {}
@@ -145,3 +145,4 @@ function String_SplitUTF8(content)
 	return char_list
 end
 
+end

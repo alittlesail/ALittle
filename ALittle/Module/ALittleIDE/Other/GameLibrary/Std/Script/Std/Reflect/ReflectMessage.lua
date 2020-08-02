@@ -1,22 +1,22 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___pairs = pairs
 local ___ipairs = ipairs
 
-RegStruct(1821069430, "ALittle.ProtocolAnyStruct", {
-name = "ALittle.ProtocolAnyStruct", ns_name = "ALittle", rl_name = "ProtocolAnyStruct", hash_code = 1821069430,
-name_list = {"hash_code","value"},
-type_list = {"int","any"},
-option_map = {}
-})
-RegStruct(1847150134, "ALittle.StructInfo", {
+ALittle.RegStruct(1847150134, "ALittle.StructInfo", {
 name = "ALittle.StructInfo", ns_name = "ALittle", rl_name = "StructInfo", hash_code = 1847150134,
 name_list = {"name","ns_name","rl_name","hash_code","name_list","type_list","option_map"},
 type_list = {"string","string","string","int","List<string>","List<string>","Map<string,string>"},
 option_map = {}
 })
-RegStruct(-1602043290, "ALittle.ProtocolInvokeInfo", {
+ALittle.RegStruct(1821069430, "ALittle.ProtocolAnyStruct", {
+name = "ALittle.ProtocolAnyStruct", ns_name = "ALittle", rl_name = "ProtocolAnyStruct", hash_code = 1821069430,
+name_list = {"hash_code","value"},
+type_list = {"int","any"},
+option_map = {}
+})
+ALittle.RegStruct(-1602043290, "ALittle.ProtocolInvokeInfo", {
 name = "ALittle.ProtocolInvokeInfo", ns_name = "ALittle", rl_name = "ProtocolInvokeInfo", hash_code = -1602043290,
 name_list = {"wfunc","rfunc","rflt","var_name","key_info","value_info","sub_info","handle"},
 type_list = {"Functor<(ALittle.IMessageWriteFactory,ALittle.ProtocolInvokeInfo,any,any):int>","Functor<(ALittle.IMessageReadFactory,ALittle.ProtocolInvokeInfo,any,int):any,int>","ALittle.StructInfo","string","ALittle.ProtocolInvokeInfo","ALittle.ProtocolInvokeInfo","ALittle.ProtocolInvokeInfo","List<ALittle.ProtocolInvokeInfo>"},
@@ -104,7 +104,7 @@ PS_WriteMap = function(factory, var_info, parent, var_value)
 	return l
 end
 
-function PS_WriteMessage(factory, var_info, parent, var_value)
+function ALittle.PS_WriteMessage(factory, var_info, parent, var_value)
 	if var_value == nil then
 		local offset = factory:GetOffset()
 		local pre_size = factory:WriteInt(0)
@@ -125,12 +125,12 @@ function PS_WriteMessage(factory, var_info, parent, var_value)
 	return pre_size + size
 end
 
-function PS_WriteAny(factory, var_info, parent, var_value)
-	local invoke_info = CreateProtocolInvokeInfo(parent.hash_code)
-	return PS_WriteMessage(factory, invoke_info, parent, var_value)
+function ALittle.PS_WriteAny(factory, var_info, parent, var_value)
+	local invoke_info = ALittle.CreateProtocolInvokeInfo(parent.hash_code)
+	return ALittle.PS_WriteMessage(factory, invoke_info, parent, var_value)
 end
 
-function PS_WriteMessageForSend(factory, var_info, parent, var_value)
+function ALittle.PS_WriteMessageForSend(factory, var_info, parent, var_value)
 	if var_value == nil then
 		local offset = factory:GetOffset()
 		local size = 0
@@ -270,7 +270,7 @@ PS_ReadMap = function(factory, var_info, parent, l)
 	end
 end
 
-function PS_ReadMessage(factory, var_info, parent, l)
+function ALittle.PS_ReadMessage(factory, var_info, parent, l)
 	if l == 0 then
 		local value_map = {}
 		local sub_len = 0
@@ -301,12 +301,12 @@ function PS_ReadMessage(factory, var_info, parent, l)
 	return value_map, save_len
 end
 
-function PS_ReadAny(factory, var_info, parent, l)
-	local invoke_info = CreateProtocolInvokeInfo(parent.hash_code)
-	return PS_ReadMessage(factory, invoke_info, parent, l)
+function ALittle.PS_ReadAny(factory, var_info, parent, l)
+	local invoke_info = ALittle.CreateProtocolInvokeInfo(parent.hash_code)
+	return ALittle.PS_ReadMessage(factory, invoke_info, parent, l)
 end
 
-function PS_ReadMessageForReceive(factory, var_info, parent, l)
+function ALittle.PS_ReadMessageForReceive(factory, var_info, parent, l)
 	if l == 0 then
 		local value_map = {}
 		local sub_len = 0
@@ -333,19 +333,19 @@ __ps_write_data_map["int"] = PS_WriteInt
 __ps_write_data_map["long"] = PS_WriteLong
 __ps_write_data_map["string"] = PS_WriteString
 __ps_write_data_map["double"] = PS_WriteDouble
-__ps_write_data_map["any"] = PS_WriteAny
+__ps_write_data_map["any"] = ALittle.PS_WriteAny
 local __ps_read_data_map = {}
 __ps_read_data_map["bool"] = PS_ReadBool
 __ps_read_data_map["int"] = PS_ReadInt
 __ps_read_data_map["long"] = PS_ReadLong
 __ps_read_data_map["string"] = PS_ReadString
 __ps_read_data_map["double"] = PS_ReadDouble
-__ps_read_data_map["any"] = PS_ReadAny
-local find = String_Find
-local sub = String_Sub
-local len = String_Len
-local byte = String_Byte
-function CreateSubInfo(sub_type)
+__ps_read_data_map["any"] = ALittle.PS_ReadAny
+local find = ALittle.String_Find
+local sub = ALittle.String_Sub
+local len = ALittle.String_Len
+local byte = ALittle.String_Byte
+function ALittle.CreateSubInfo(sub_type)
 	local wfunc = __ps_write_data_map[sub_type]
 	if wfunc ~= nil then
 		local sub_info = {}
@@ -354,23 +354,23 @@ function CreateSubInfo(sub_type)
 		return sub_info
 	end
 	if find(sub_type, "List<") == 1 then
-		return CreateArrayInfo(sub_type)
+		return ALittle.CreateArrayInfo(sub_type)
 	end
 	if find(sub_type, "Map<") == 1 then
-		return CreateMapInfo(sub_type)
+		return ALittle.CreateMapInfo(sub_type)
 	end
-	return CreateMessageInfo(sub_type)
+	return ALittle.CreateMessageInfo(sub_type)
 end
 
-function CreateArrayInfo(var_type)
+function ALittle.CreateArrayInfo(var_type)
 	local invoke_info = {}
 	invoke_info.wfunc = PS_WriteArray
 	invoke_info.rfunc = PS_ReadArray
-	invoke_info.sub_info = CreateSubInfo(sub(var_type, 6, -2))
+	invoke_info.sub_info = ALittle.CreateSubInfo(sub(var_type, 6, -2))
 	return invoke_info
 end
 
-function CreateMapInfo(var_type)
+function ALittle.CreateMapInfo(var_type)
 	local invoke_info = {}
 	local sub_type = sub(var_type, 5, -2)
 	local comma_index = 0
@@ -395,34 +395,34 @@ function CreateMapInfo(var_type)
 	Lua.Assert(comma_index ~= 0, "can'f find comma in var_type:" .. var_type)
 	invoke_info.wfunc = PS_WriteMap
 	invoke_info.rfunc = PS_ReadMap
-	invoke_info.key_info = CreateSubInfo(sub(sub_type, 1, comma_index - 1))
-	invoke_info.value_info = CreateSubInfo(sub(sub_type, comma_index + 1))
+	invoke_info.key_info = ALittle.CreateSubInfo(sub(sub_type, 1, comma_index - 1))
+	invoke_info.value_info = ALittle.CreateSubInfo(sub(sub_type, comma_index + 1))
 	return invoke_info
 end
 
-function CreateMessageInfo(var_type)
+function ALittle.CreateMessageInfo(var_type)
 	local invoke = __all_name_invoke[var_type]
 	if invoke ~= nil then
 		return invoke
 	end
-	local rflt = FindStructByName(var_type)
+	local rflt = ALittle.FindStructByName(var_type)
 	Lua.Assert(rflt ~= nil, "FindReflect调用失败! 未知类型:" .. var_type)
-	invoke = CreateMessageInfoImpl(rflt)
+	invoke = ALittle.CreateMessageInfoImpl(rflt)
 	__all_id_invoke[rflt.hash_code] = invoke
 	__all_name_invoke[rflt.name] = invoke
 	return invoke
 end
 
-function CreateMessageInfoImpl(rflt)
+function ALittle.CreateMessageInfoImpl(rflt)
 	local invoke_info = {}
-	invoke_info.wfunc = PS_WriteMessage
-	invoke_info.rfunc = PS_ReadMessage
+	invoke_info.wfunc = ALittle.PS_WriteMessage
+	invoke_info.rfunc = ALittle.PS_ReadMessage
 	invoke_info.rflt = rflt
 	local handle = {}
 	invoke_info.handle = handle
 	local handle_count = 0
 	for index, var_name in ___ipairs(rflt.name_list) do
-		local var_info = CreateSubInfo(rflt.type_list[index])
+		local var_info = ALittle.CreateSubInfo(rflt.type_list[index])
 		var_info.var_name = var_name
 		handle_count = handle_count + 1
 		handle[handle_count] = var_info
@@ -430,14 +430,14 @@ function CreateMessageInfoImpl(rflt)
 	return invoke_info
 end
 
-function CreateProtocolInvokeInfo(msg_id)
+function ALittle.CreateProtocolInvokeInfo(msg_id)
 	local invoke = __all_id_invoke[msg_id]
 	if invoke ~= nil then
 		return invoke
 	end
-	local rflt = FindStructById(msg_id)
+	local rflt = ALittle.FindStructById(msg_id)
 	Lua.Assert(rflt ~= nil, "FindReflect调用失败! 未知ID:" .. msg_id)
-	invoke = CreateMessageInfoImpl(rflt)
+	invoke = ALittle.CreateMessageInfoImpl(rflt)
 	__all_id_invoke[rflt.hash_code] = invoke
 	__all_name_invoke[rflt.name] = invoke
 	return invoke
@@ -470,11 +470,11 @@ CollectStructInfo = function(invoke, map)
 	end
 end
 
-function CollectStructReflect(info, map)
+function ALittle.CollectStructReflect(info, map)
 	if info == nil then
 		return "参数info是null"
 	end
-	local error, invoke = Lua.TCall(CreateMessageInfoImpl, info)
+	local error, invoke = Lua.TCall(ALittle.CreateMessageInfoImpl, info)
 	if error ~= nil then
 		return error
 	end
@@ -482,3 +482,4 @@ function CollectStructReflect(info, map)
 	return nil
 end
 
+end

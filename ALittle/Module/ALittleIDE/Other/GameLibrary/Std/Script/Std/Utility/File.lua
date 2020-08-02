@@ -1,6 +1,6 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___pairs = pairs
 local ___ipairs = ipairs
 
@@ -14,16 +14,16 @@ local currentdir = lfs.currentdir
 local chdir = lfs.chdir
 local rmdir = lfs.rmdir
 local mkdir = lfs.mkdir
-IFileLoader = Lua.Class(nil, "ALittle.IFileLoader")
+ALittle.IFileLoader = Lua.Class(nil, "ALittle.IFileLoader")
 
-function IFileLoader:Load(file_path)
+function ALittle.IFileLoader:Load(file_path)
 	return nil
 end
 
 assert(ALittle.IFileLoader, " extends class:ALittle.IFileLoader is nil")
-LuaFileLoader = Lua.Class(ALittle.IFileLoader, "ALittle.LuaFileLoader")
+ALittle.LuaFileLoader = Lua.Class(ALittle.IFileLoader, "ALittle.LuaFileLoader")
 
-function LuaFileLoader:Load(file_path)
+function ALittle.LuaFileLoader:Load(file_path)
 	local file = open(file_path, "r")
 	if file == nil then
 		return nil
@@ -33,16 +33,16 @@ function LuaFileLoader:Load(file_path)
 	return content
 end
 
-IFileSaver = Lua.Class(nil, "ALittle.IFileSaver")
+ALittle.IFileSaver = Lua.Class(nil, "ALittle.IFileSaver")
 
-function IFileSaver:Save(file_path, content)
+function ALittle.IFileSaver:Save(file_path, content)
 	return false
 end
 
 assert(ALittle.IFileSaver, " extends class:ALittle.IFileSaver is nil")
-LuaFileSaver = Lua.Class(ALittle.IFileSaver, "ALittle.LuaFileSaver")
+ALittle.LuaFileSaver = Lua.Class(ALittle.IFileSaver, "ALittle.LuaFileSaver")
 
-function LuaFileSaver:Save(file_path, content)
+function ALittle.LuaFileSaver:Save(file_path, content)
 	local file = open(file_path, "w")
 	if file == nil then
 		return false
@@ -52,27 +52,27 @@ function LuaFileSaver:Save(file_path, content)
 	return true
 end
 
-function File_GetCurrentPath()
+function ALittle.File_GetCurrentPath()
 	return currentdir()
 end
 
-function File_SetCurrentPath(path)
+function ALittle.File_SetCurrentPath(path)
 	return chdir(path)
 end
 
-function File_RenameFile(path, new_path)
+function ALittle.File_RenameFile(path, new_path)
 	return rename(path, new_path)
 end
 
-function File_DeleteFile(path)
+function ALittle.File_DeleteFile(path)
 	return remove(path)
 end
 
-function File_GetFileAttr(path)
+function ALittle.File_GetFileAttr(path)
 	return attributes(path)
 end
 
-function File_GetFileAttrByDir(path, file_map)
+function ALittle.File_GetFileAttrByDir(path, file_map)
 	do
 		if file_map == nil then
 			file_map = {}
@@ -82,7 +82,7 @@ function File_GetFileAttrByDir(path, file_map)
 				local file_path = path .. "/" .. file
 				local attr = attributes(file_path)
 				if attr.mode == "directory" then
-					File_GetFileAttrByDir(file_path, file_map)
+					ALittle.File_GetFileAttrByDir(file_path, file_map)
 				else
 					file_map[file_path] = attr
 				end
@@ -92,7 +92,7 @@ function File_GetFileAttrByDir(path, file_map)
 	end
 end
 
-function File_GetFileListByDir(path, file_list)
+function ALittle.File_GetFileListByDir(path, file_list)
 	do
 		if file_list == nil then
 			file_list = {}
@@ -102,9 +102,9 @@ function File_GetFileListByDir(path, file_list)
 				local file_path = path .. "/" .. file
 				local attr = attributes(file_path)
 				if attr.mode == "directory" then
-					File_GetFileListByDir(file_path, file_list)
+					ALittle.File_GetFileListByDir(file_path, file_list)
 				else
-					List_Push(file_list, file_path)
+					ALittle.List_Push(file_list, file_path)
 				end
 			end
 		end
@@ -112,7 +112,7 @@ function File_GetFileListByDir(path, file_list)
 	end
 end
 
-function File_GetFileNameListByDir(path, file_map)
+function ALittle.File_GetFileNameListByDir(path, file_map)
 	do
 		if file_map == nil then
 			file_map = {}
@@ -127,16 +127,16 @@ function File_GetFileNameListByDir(path, file_map)
 	end
 end
 
-function File_DeleteDir(path)
+function ALittle.File_DeleteDir(path)
 	return rmdir(path)
 end
 
-function File_DeleteDeepDir(path, log_path)
+function ALittle.File_DeleteDeepDir(path, log_path)
 	do
 		if path == nil or path == "" then
 			return
 		end
-		if File_GetFileAttr(path) == nil then
+		if ALittle.File_GetFileAttr(path) == nil then
 			return
 		end
 		for file in dir(path) do
@@ -144,96 +144,96 @@ function File_DeleteDeepDir(path, log_path)
 				local file_path = path .. "/" .. file
 				local attr = attributes(file_path)
 				if attr.mode == "directory" then
-					File_DeleteDeepDir(file_path, log_path)
+					ALittle.File_DeleteDeepDir(file_path, log_path)
 				else
-					File_DeleteFile(file_path)
+					ALittle.File_DeleteFile(file_path)
 					if log_path then
-						Log("delete file:", file_path)
+						ALittle.Log("delete file:", file_path)
 					end
 				end
 			end
 		end
-		File_DeleteDir(path)
+		ALittle.File_DeleteDir(path)
 	end
 end
 
-function File_MakeDir(path)
+function ALittle.File_MakeDir(path)
 	return mkdir(path)
 end
 
-function File_MakeDeepDir(path)
-	local path_list = String_SplitSepList(path, {"/", "\\"})
+function ALittle.File_MakeDeepDir(path)
+	local path_list = ALittle.String_SplitSepList(path, {"/", "\\"})
 	local cur_path = ""
 	for index, sub_path in ___ipairs(path_list) do
 		cur_path = cur_path .. sub_path
-		File_MakeDir(cur_path)
+		ALittle.File_MakeDir(cur_path)
 		cur_path = cur_path .. "/"
 	end
 end
 
-function File_PathEndWithSplit(file_path)
-	local len = String_Len(file_path)
+function ALittle.File_PathEndWithSplit(file_path)
+	local len = ALittle.String_Len(file_path)
 	if len == 0 then
 		return file_path
 	end
-	local byte = String_Byte(file_path, len)
+	local byte = ALittle.String_Byte(file_path, len)
 	if byte == 47 or byte == 92 then
 		return file_path
 	end
-	if String_Find(file_path, "\\") ~= nil then
+	if ALittle.String_Find(file_path, "\\") ~= nil then
 		return file_path .. "\\"
 	end
 	return file_path .. "/"
 end
 
-function File_GetFileNameByPath(file_path)
-	local list = String_SplitSepList(file_path, {"/", "\\"})
-	local l = List_MaxN(list)
+function ALittle.File_GetFileNameByPath(file_path)
+	local list = ALittle.String_SplitSepList(file_path, {"/", "\\"})
+	local l = ALittle.List_MaxN(list)
 	if l <= 0 then
 		return file_path
 	end
 	return list[l]
 end
 
-function File_GetFilePathByPath(file_path)
-	local new_file_path = File_GetFileNameByPath(file_path)
-	return String_Sub(file_path, 1, -String_Len(new_file_path) - 2)
+function ALittle.File_GetFilePathByPath(file_path)
+	local new_file_path = ALittle.File_GetFileNameByPath(file_path)
+	return ALittle.String_Sub(file_path, 1, -ALittle.String_Len(new_file_path) - 2)
 end
 
-function File_GetFileExtByPath(file_path)
-	local list = String_Split(file_path, ".")
-	local l = List_MaxN(list)
+function ALittle.File_GetFileExtByPath(file_path)
+	local list = ALittle.String_Split(file_path, ".")
+	local l = ALittle.List_MaxN(list)
 	if l <= 0 then
 		return file_path
 	end
 	return list[l]
 end
 
-function File_ChangeFileExtByPath(file_path, ext)
-	local list = String_Split(file_path, ".")
-	local l = List_MaxN(list)
+function ALittle.File_ChangeFileExtByPath(file_path, ext)
+	local list = ALittle.String_Split(file_path, ".")
+	local l = ALittle.List_MaxN(list)
 	if l <= 0 then
 		return file_path .. "." .. ext
 	end
 	list[l] = ext
-	return String_Join(list, ".")
+	return ALittle.String_Join(list, ".")
 end
 
-function File_GetFileExtByPathAndUpper(file_path)
-	return String_Upper(File_GetFileExtByPath(file_path))
+function ALittle.File_GetFileExtByPathAndUpper(file_path)
+	return ALittle.String_Upper(ALittle.File_GetFileExtByPath(file_path))
 end
 
-function File_GetJustFileNameByPath(file_path)
-	local new_file_path = File_GetFileNameByPath(file_path)
-	local list = String_Split(new_file_path, ".")
-	local l = List_MaxN(list)
+function ALittle.File_GetJustFileNameByPath(file_path)
+	local new_file_path = ALittle.File_GetFileNameByPath(file_path)
+	local list = ALittle.String_Split(new_file_path, ".")
+	local l = ALittle.List_MaxN(list)
 	if l <= 1 then
 		return new_file_path
 	end
 	return list[l - 1]
 end
 
-function File_ReadJsonFromStdFile(file_path)
+function ALittle.File_ReadJsonFromStdFile(file_path)
 	do
 		local file = io.open(file_path, "rb")
 		if file == nil then
@@ -249,7 +249,7 @@ function File_ReadJsonFromStdFile(file_path)
 	end
 end
 
-function File_WriteJsonFromStdFile(content, file_path)
+function ALittle.File_WriteJsonFromStdFile(content, file_path)
 	do
 		local file = io.open(file_path, "wb")
 		if file == nil then
@@ -261,7 +261,7 @@ function File_WriteJsonFromStdFile(content, file_path)
 	end
 end
 
-function File_ReadTextFromStdFile(file_path)
+function ALittle.File_ReadTextFromStdFile(file_path)
 	do
 		local file = io.open(file_path, "rb")
 		if file == nil then
@@ -273,7 +273,7 @@ function File_ReadTextFromStdFile(file_path)
 	end
 end
 
-function File_WriteTextFromStdFile(content, file_path)
+function ALittle.File_WriteTextFromStdFile(content, file_path)
 	do
 		local file = io.open(file_path, "wb")
 		if file == nil then
@@ -285,3 +285,4 @@ function File_WriteTextFromStdFile(content, file_path)
 	end
 end
 
+end

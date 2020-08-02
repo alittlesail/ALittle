@@ -1,17 +1,17 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___all_struct = GetAllStruct()
+local ___all_struct = ALittle.GetAllStruct()
 
 
-local __ceil = Math_Ceil
+local __ceil = ALittle.Math_Ceil
 assert(ALittle.DisplayGroup, " extends class:ALittle.DisplayGroup is nil")
-TileTable = Lua.Class(ALittle.DisplayGroup, "ALittle.TileTable")
+ALittle.TileTable = Lua.Class(ALittle.DisplayGroup, "ALittle.TileTable")
 
-function TileTable:Ctor(ctrl_sys)
+function ALittle.TileTable:Ctor(ctrl_sys)
 	___rawset(self, "_x_gap", 0)
 	___rawset(self, "_y_gap", 0)
 	___rawset(self, "_x_start_gap", 0)
@@ -21,22 +21,22 @@ function TileTable:Ctor(ctrl_sys)
 	___rawset(self, "_clip_right_index", 0)
 	___rawset(self, "_clip_top_index", 0)
 	___rawset(self, "_clip_bottom_index", 0)
-	___rawset(self, "_show_child_map", CreateKeyWeakMap())
+	___rawset(self, "_show_child_map", ALittle.CreateKeyWeakMap())
 	___rawset(self, "_pickup_rect", false)
 	___rawset(self, "_pickup_child", true)
 	___rawset(self, "_width", 0)
 	___rawset(self, "_height", 0)
 end
 
-function TileTable.__getter:width()
+function ALittle.TileTable.__getter:width()
 	return self._width
 end
 
-function TileTable.__getter:height()
+function ALittle.TileTable.__getter:height()
 	return self._height
 end
 
-function TileTable.__setter:x_start_gap(value)
+function ALittle.TileTable.__setter:x_start_gap(value)
 	if self._x_start_gap == value then
 		return
 	end
@@ -44,11 +44,11 @@ function TileTable.__setter:x_start_gap(value)
 	self:Layout(1)
 end
 
-function TileTable.__getter:x_start_gap()
+function ALittle.TileTable.__getter:x_start_gap()
 	return self._x_start_gap
 end
 
-function TileTable.__setter:y_start_gap(value)
+function ALittle.TileTable.__setter:y_start_gap(value)
 	if self._y_start_gap == value then
 		return
 	end
@@ -56,11 +56,11 @@ function TileTable.__setter:y_start_gap(value)
 	self:Layout(1)
 end
 
-function TileTable.__getter:y_start_gap()
+function ALittle.TileTable.__getter:y_start_gap()
 	return self._y_start_gap
 end
 
-function TileTable.__setter:x_gap(value)
+function ALittle.TileTable.__setter:x_gap(value)
 	if self._x_gap == value then
 		return
 	end
@@ -68,11 +68,11 @@ function TileTable.__setter:x_gap(value)
 	self:Layout(1)
 end
 
-function TileTable.__getter:x_gap()
+function ALittle.TileTable.__getter:x_gap()
 	return self._x_gap
 end
 
-function TileTable.__setter:y_gap(value)
+function ALittle.TileTable.__setter:y_gap(value)
 	if self._y_gap == value then
 		return
 	end
@@ -80,11 +80,11 @@ function TileTable.__setter:y_gap(value)
 	self:Layout(1)
 end
 
-function TileTable.__getter:y_gap()
+function ALittle.TileTable.__getter:y_gap()
 	return self._y_gap
 end
 
-function TileTable.__setter:col_count(value)
+function ALittle.TileTable.__setter:col_count(value)
 	if value <= 0 or self._col_count == value then
 		return
 	end
@@ -92,12 +92,12 @@ function TileTable.__setter:col_count(value)
 	self:Layout(1)
 end
 
-function TileTable.__getter:col_count()
+function ALittle.TileTable.__getter:col_count()
 	return self._col_count
 end
 
-function TileTable:AddChild(child, index)
-	local result = DisplayGroup.AddChild(self, child, index)
+function ALittle.TileTable:AddChild(child, index)
+	local result = ALittle.DisplayGroup.AddChild(self, child, index)
 	if result == false then
 		return false
 	end
@@ -110,12 +110,12 @@ function TileTable:AddChild(child, index)
 	return true
 end
 
-function TileTable:RemoveChild(child)
+function ALittle.TileTable:RemoveChild(child)
 	local child_index = self:GetChildIndex(child)
 	if child_index == 0 then
 		return false
 	end
-	local result = DisplayGroup.RemoveChild(self, child)
+	local result = ALittle.DisplayGroup.RemoveChild(self, child)
 	if result == false then
 		return false
 	end
@@ -125,7 +125,7 @@ function TileTable:RemoveChild(child)
 	return true
 end
 
-function TileTable:SpliceChild(index, count)
+function ALittle.TileTable:SpliceChild(index, count)
 	local remain_count = self._child_count - index + 1
 	if count == nil then
 		count = remain_count
@@ -147,32 +147,32 @@ function TileTable:SpliceChild(index, count)
 		child:RemoveEventListener(___all_struct[-431205740], self)
 		i = i+(1)
 	end
-	local result = DisplayGroup.SpliceChild(self, index, count)
+	local result = ALittle.DisplayGroup.SpliceChild(self, index, count)
 	if result ~= 0 then
 		self:Layout(index)
 	end
 	return result
 end
 
-function TileTable:RemoveAllChild()
+function ALittle.TileTable:RemoveAllChild()
 	for k, child in ___ipairs(self._childs) do
 		child:RemoveEventListener(___all_struct[-431205740], self)
 	end
-	self._show_child_map = CreateKeyWeakMap()
+	self._show_child_map = ALittle.CreateKeyWeakMap()
 	self._clip_left_index = 0
 	self._clip_right_index = 0
 	self._clip_top_index = 0
 	self._clip_bottom_index = 0
-	DisplayGroup.RemoveAllChild(self)
+	ALittle.DisplayGroup.RemoveAllChild(self)
 end
 
-function TileTable:SetChildIndex(child, index)
-	local result = DisplayGroup.SetChildIndex(self, child, index)
+function ALittle.TileTable:SetChildIndex(child, index)
+	local result = ALittle.DisplayGroup.SetChildIndex(self, child, index)
 	self:Layout(1)
 	return result
 end
 
-function TileTable:Layout(index)
+function ALittle.TileTable:Layout(index)
 	local child_count = self.child_count
 	if child_count == 0 then
 		self._width = 0
@@ -224,12 +224,12 @@ function TileTable:Layout(index)
 	end
 end
 
-function TileTable:HandleChildResize(event)
+function ALittle.TileTable:HandleChildResize(event)
 	self:Layout(self:GetChildIndex(event.target))
 	self:DispatchEvent(___all_struct[-431205740], {})
 end
 
-function TileTable:ClipRect(left, top, right, bottom, h_move, v_move)
+function ALittle.TileTable:ClipRect(left, top, right, bottom, h_move, v_move)
 	left = left - self._x
 	if left < 0 then
 		left = 0
@@ -256,7 +256,7 @@ function TileTable:ClipRect(left, top, right, bottom, h_move, v_move)
 		return
 	end
 	local childs = self.childs
-	local new_show_map = CreateKeyWeakMap()
+	local new_show_map = ALittle.CreateKeyWeakMap()
 	self._show:RemoveAllChild()
 	local max_index = self._col_count
 	if self._child_count < max_index then
@@ -396,3 +396,4 @@ function TileTable:ClipRect(left, top, right, bottom, h_move, v_move)
 	self._show_child_map = new_show_map
 end
 
+end

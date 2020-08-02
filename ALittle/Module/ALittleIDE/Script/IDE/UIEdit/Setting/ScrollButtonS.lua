@@ -1,20 +1,20 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittleIDE", package.seeall)
-
+do
+if _G.ALittleIDE == nil then _G.ALittleIDE = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
 assert(ALittleIDE.DisplayLayoutS, " extends class:ALittleIDE.DisplayLayoutS is nil")
-ScrollButtonS = Lua.Class(ALittleIDE.DisplayLayoutS, "ALittleIDE.ScrollButtonS")
+ALittleIDE.ScrollButtonS = Lua.Class(ALittleIDE.DisplayLayoutS, "ALittleIDE.ScrollButtonS")
 
-function ScrollButtonS:Ctor(user_info, tab_child, tree_logic)
+function ALittleIDE.ScrollButtonS:Ctor(user_info, tab_child, tree_logic)
 	___rawset(self, "_layer_name", "ide_setting_scrollbutton")
 end
 
-function ScrollButtonS:LoadNatureBase()
-	DisplayLayoutS.LoadNatureBase(self)
+function ALittleIDE.ScrollButtonS:LoadNatureBase()
+	ALittleIDE.DisplayLayoutS.LoadNatureBase(self)
 	self:LoadValueData("text")
 	self:LoadShowTypeDataForImage("show_up")
 	self:LoadShowTypeDataForImage("show_over")
@@ -22,11 +22,11 @@ function ScrollButtonS:LoadNatureBase()
 	self:LoadShowTypeDataForImage("show_disabled")
 end
 
-function ScrollButtonS:HandleMTextFOCUSOUT(event)
+function ALittleIDE.ScrollButtonS:HandleMTextFOCUSOUT(event)
 	self:DefaultNoStringInputChange("text", false)
 end
 
-function ScrollButtonS:HandleShowUpFOCUSOUT(event)
+function ALittleIDE.ScrollButtonS:HandleShowUpFOCUSOUT(event)
 	if event.target._user_data ~= nil then
 		if event.target._user_data == event.target.text then
 			return
@@ -36,17 +36,17 @@ function ScrollButtonS:HandleShowUpFOCUSOUT(event)
 	self:RemoverToNilShowSetForImage("show_up", self._show_up.text, self._show_up_grid9.selected, false)
 end
 
-function ScrollButtonS:HandleShowUpSelect(event)
-	g_IDEImageSelectDialog:SetBasePath(g_IDEProject.project.texture_path)
-	local path = g_IDEImageSelectDialog:ShowSelect()
+function ALittleIDE.ScrollButtonS:HandleShowUpSelect(event)
+	ALittleIDE.g_IDEImageSelectDialog:SetBasePath(ALittleIDE.g_IDEProject.project.texture_path)
+	local path = ALittleIDE.g_IDEImageSelectDialog:ShowSelect()
 	if path == nil then
 		return
 	end
 	self:ImagePathSelectCallback("show_up", self.HandleShowUpFOCUSOUT, nil, path)
 end
-ScrollButtonS.HandleShowUpSelect = Lua.CoWrap(ScrollButtonS.HandleShowUpSelect)
+ALittleIDE.ScrollButtonS.HandleShowUpSelect = Lua.CoWrap(ALittleIDE.ScrollButtonS.HandleShowUpSelect)
 
-function ScrollButtonS:HandleShowOverFOCUSOUT(event)
+function ALittleIDE.ScrollButtonS:HandleShowOverFOCUSOUT(event)
 	if event.target._user_data ~= nil then
 		if event.target._user_data == event.target.text then
 			return
@@ -56,17 +56,17 @@ function ScrollButtonS:HandleShowOverFOCUSOUT(event)
 	self:RemoverToNilShowSetForImage("show_over", self._show_over.text, self._show_over_grid9.selected, false)
 end
 
-function ScrollButtonS:HandleShowOverSelect(event)
-	g_IDEImageSelectDialog:SetBasePath(g_IDEProject.project.texture_path)
-	local path = g_IDEImageSelectDialog:ShowSelect()
+function ALittleIDE.ScrollButtonS:HandleShowOverSelect(event)
+	ALittleIDE.g_IDEImageSelectDialog:SetBasePath(ALittleIDE.g_IDEProject.project.texture_path)
+	local path = ALittleIDE.g_IDEImageSelectDialog:ShowSelect()
 	if path == nil then
 		return
 	end
 	self:ImagePathSelectCallback("show_over", self.HandleShowOverFOCUSOUT, nil, path)
 end
-ScrollButtonS.HandleShowOverSelect = Lua.CoWrap(ScrollButtonS.HandleShowOverSelect)
+ALittleIDE.ScrollButtonS.HandleShowOverSelect = Lua.CoWrap(ALittleIDE.ScrollButtonS.HandleShowOverSelect)
 
-function ScrollButtonS:HandleShowDownFOCUSOUT(event)
+function ALittleIDE.ScrollButtonS:HandleShowDownFOCUSOUT(event)
 	if event.target._user_data ~= nil then
 		if event.target._user_data == event.target.text then
 			return
@@ -76,17 +76,17 @@ function ScrollButtonS:HandleShowDownFOCUSOUT(event)
 	self:RemoverToNilShowSetForImage("show_down", self._show_down.text, self._show_down_grid9.selected, false)
 end
 
-function ScrollButtonS:HandleShowDownSelect(event)
-	g_IDEImageSelectDialog:SetBasePath(g_IDEProject.project.texture_path)
-	local path = g_IDEImageSelectDialog:ShowSelect()
+function ALittleIDE.ScrollButtonS:HandleShowDownSelect(event)
+	ALittleIDE.g_IDEImageSelectDialog:SetBasePath(ALittleIDE.g_IDEProject.project.texture_path)
+	local path = ALittleIDE.g_IDEImageSelectDialog:ShowSelect()
 	if path == nil then
 		return
 	end
 	self:ImagePathSelectCallback("show_down", self.HandleShowDownFOCUSOUT, nil, path)
 end
-ScrollButtonS.HandleShowDownSelect = Lua.CoWrap(ScrollButtonS.HandleShowDownSelect)
+ALittleIDE.ScrollButtonS.HandleShowDownSelect = Lua.CoWrap(ALittleIDE.ScrollButtonS.HandleShowDownSelect)
 
-function ScrollButtonS:HandleShowDisabledFOCUSOUT(event)
+function ALittleIDE.ScrollButtonS:HandleShowDisabledFOCUSOUT(event)
 	if event.target._user_data ~= nil then
 		if event.target._user_data == event.target.text then
 			return
@@ -96,29 +96,30 @@ function ScrollButtonS:HandleShowDisabledFOCUSOUT(event)
 	self:RemoverToNilShowSetForImage("show_disabled", self._show_disabled.text, self._show_disabled_grid9.selected, false)
 end
 
-function ScrollButtonS:HandleShowDisabledSelect(event)
-	g_IDEImageSelectDialog:SetBasePath(g_IDEProject.project.texture_path)
-	local path = g_IDEImageSelectDialog:ShowSelect()
+function ALittleIDE.ScrollButtonS:HandleShowDisabledSelect(event)
+	ALittleIDE.g_IDEImageSelectDialog:SetBasePath(ALittleIDE.g_IDEProject.project.texture_path)
+	local path = ALittleIDE.g_IDEImageSelectDialog:ShowSelect()
 	if path == nil then
 		return
 	end
 	self:ImagePathSelectCallback("show_disabled", self.HandleShowDisabledFOCUSOUT, nil, path)
 end
-ScrollButtonS.HandleShowDisabledSelect = Lua.CoWrap(ScrollButtonS.HandleShowDisabledSelect)
+ALittleIDE.ScrollButtonS.HandleShowDisabledSelect = Lua.CoWrap(ALittleIDE.ScrollButtonS.HandleShowDisabledSelect)
 
-function ScrollButtonS:HandleShowTextFOCUSOUT(event)
-	g_IDEAttrTextDialog:ShowDialog(self, "show_text", false)
+function ALittleIDE.ScrollButtonS:HandleShowTextFOCUSOUT(event)
+	ALittleIDE.g_IDEAttrTextDialog:ShowDialog(self, "show_text", false)
 end
 
-function ScrollButtonS:HandleShowOverTextFOCUSOUT(event)
-	g_IDEAttrTextDialog:ShowDialog(self, "show_over_text", false)
+function ALittleIDE.ScrollButtonS:HandleShowOverTextFOCUSOUT(event)
+	ALittleIDE.g_IDEAttrTextDialog:ShowDialog(self, "show_over_text", false)
 end
 
-function ScrollButtonS:HandleShowDownTextFOCUSOUT(event)
-	g_IDEAttrTextDialog:ShowDialog(self, "show_down_text", false)
+function ALittleIDE.ScrollButtonS:HandleShowDownTextFOCUSOUT(event)
+	ALittleIDE.g_IDEAttrTextDialog:ShowDialog(self, "show_down_text", false)
 end
 
-function ScrollButtonS:HandleShowDisabledTextFOCUSOUT(event)
-	g_IDEAttrTextDialog:ShowDialog(self, "show_disabled_text", false)
+function ALittleIDE.ScrollButtonS:HandleShowDisabledTextFOCUSOUT(event)
+	ALittleIDE.g_IDEAttrTextDialog:ShowDialog(self, "show_disabled_text", false)
 end
 
+end

@@ -1,14 +1,14 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittleIDE", package.seeall)
-
+do
+if _G.ALittleIDE == nil then _G.ALittleIDE = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-DisplayObjectS = Lua.Class(nil, "ALittleIDE.DisplayObjectS")
+ALittleIDE.DisplayObjectS = Lua.Class(nil, "ALittleIDE.DisplayObjectS")
 
-function DisplayObjectS:Ctor(user_info, tab_child, tree_logic)
+function ALittleIDE.DisplayObjectS:Ctor(user_info, tab_child, tree_logic)
 	___rawset(self, "_layer_name", "ide_setting_displayobject")
 	___rawset(self, "_base", user_info.base)
 	___rawset(self, "_default", user_info.default)
@@ -17,44 +17,44 @@ function DisplayObjectS:Ctor(user_info, tab_child, tree_logic)
 	___rawset(self, "_tree_logic", tree_logic)
 end
 
-function DisplayObjectS.__getter:base()
+function ALittleIDE.DisplayObjectS.__getter:base()
 	return self._base
 end
 
-function DisplayObjectS.__getter:default()
+function ALittleIDE.DisplayObjectS.__getter:default()
 	return self._default
 end
 
-function DisplayObjectS.__getter:x_value()
+function ALittleIDE.DisplayObjectS.__getter:x_value()
 	return self._x_value
 end
 
-function DisplayObjectS.__getter:y_value()
+function ALittleIDE.DisplayObjectS.__getter:y_value()
 	return self._y_value
 end
 
-function DisplayObjectS.__getter:width_value()
+function ALittleIDE.DisplayObjectS.__getter:width_value()
 	return self._width_value
 end
 
-function DisplayObjectS.__getter:height_value()
+function ALittleIDE.DisplayObjectS.__getter:height_value()
 	return self._height_value
 end
 
-function DisplayObjectS.__getter:title()
+function ALittleIDE.DisplayObjectS.__getter:title()
 	return self._default.__class
 end
 
-function DisplayObjectS.__getter:layer()
+function ALittleIDE.DisplayObjectS.__getter:layer()
 	if self._layer == nil then
-		self._layer = g_Control:CreateControl(self._layer_name, self)
+		self._layer = ALittleIDE.g_Control:CreateControl(self._layer_name, self)
 		self:LoadNatureBase()
 	end
 	return self._layer
 end
 
-function DisplayObjectS:LoadNatureBase()
-	self:LoadEnumData("x_type", g_IDEEnum.xy_type)
+function ALittleIDE.DisplayObjectS:LoadNatureBase()
+	self:LoadEnumData("x_type", ALittleIDE.g_IDEEnum.xy_type)
 	if self._default.x == 0 then
 		if self._base.x ~= nil then
 			self._x_value.text = self._base.x
@@ -74,7 +74,7 @@ function DisplayObjectS:LoadNatureBase()
 	elseif self._default.x ~= 0 and self._default.x_value ~= 0 then
 		ALittle.Log("x value error")
 	end
-	self:LoadEnumData("y_type", g_IDEEnum.xy_type)
+	self:LoadEnumData("y_type", ALittleIDE.g_IDEEnum.xy_type)
 	if self._default.y == 0 then
 		if self._base.y ~= nil then
 			self._y_value.text = self._base.y
@@ -94,7 +94,7 @@ function DisplayObjectS:LoadNatureBase()
 	elseif self._default.y ~= 0 and self._default.y_value ~= 0 then
 		ALittle.Log("y value error")
 	end
-	self:LoadEnumData("width_type", g_IDEEnum.wh_type)
+	self:LoadEnumData("width_type", ALittleIDE.g_IDEEnum.wh_type)
 	if self._default.width == 0 then
 		if self._base.width ~= nil then
 			self._width_value.text = self._base.width
@@ -114,7 +114,7 @@ function DisplayObjectS:LoadNatureBase()
 	elseif self._default.width ~= 0 and self._default.width_value ~= 0 then
 		ALittle.Log("width value error")
 	end
-	self:LoadEnumData("height_type", g_IDEEnum.wh_type)
+	self:LoadEnumData("height_type", ALittleIDE.g_IDEEnum.wh_type)
 	if self._default.height == 0 then
 		if self._base.height ~= nil then
 			self._height_value.text = self._base.height
@@ -143,9 +143,9 @@ function DisplayObjectS:LoadNatureBase()
 	self:LoadValueData("center_x")
 	self:LoadValueData("center_y")
 	self:LoadValueData("angle")
-	self:LoadBoolData("hand_cursor", false, g_IDEEnum.yn_type)
-	self:LoadBoolData("visible", true, g_IDEEnum.yn_type)
-	self:LoadBoolData("disabled", true, g_IDEEnum.yn_type)
+	self:LoadBoolData("hand_cursor", false, ALittleIDE.g_IDEEnum.yn_type)
+	self:LoadBoolData("visible", true, ALittleIDE.g_IDEEnum.yn_type)
+	self:LoadBoolData("disabled", true, ALittleIDE.g_IDEEnum.yn_type)
 	self:LoadDefaultNilString("__link")
 	self:LoadShowTypeData("__event")
 	self:LoadShowTypeDataForTargetClass("__target_class")
@@ -154,24 +154,24 @@ function DisplayObjectS:LoadNatureBase()
 	self._link_dropdown.text = ""
 end
 
-function DisplayObjectS:HandleCommonInputFOCUSIN(event)
+function ALittleIDE.DisplayObjectS:HandleCommonInputFOCUSIN(event)
 	event.target._user_data = event.target.text
 end
 
-function DisplayObjectS:SetXType(x_type, revoke_bind)
+function ALittleIDE.DisplayObjectS:SetXType(x_type, revoke_bind)
 	if x_type == nil then
 		return
 	end
-	self._x_type.text = g_IDEEnum.xy_type[x_type]
-	local list = g_IDEEnum.xy_rtype
+	self._x_type.text = ALittleIDE.g_IDEEnum.xy_type[x_type]
+	local list = ALittleIDE.g_IDEEnum.xy_rtype
 	self:TypeSelectChange("x_type", list, true, revoke_bind)
 end
 
-function DisplayObjectS:HandleXTypeSELECT_CHANGE(event)
+function ALittleIDE.DisplayObjectS:HandleXTypeSELECT_CHANGE(event)
 	local object = self._object
 	local target_x = object.x
 	local new_x = target_x
-	local list = g_IDEEnum.xy_rtype
+	local list = ALittleIDE.g_IDEEnum.xy_rtype
 	local revoke_bind = ALittle.RevokeBind()
 	self:TypeSelectChange("x_type", list, true, revoke_bind)
 	if object.x_type == 1 then
@@ -205,20 +205,20 @@ function DisplayObjectS:HandleXTypeSELECT_CHANGE(event)
 	self._tab_child.revoke_list:PushRevoke(revoke_bind)
 end
 
-function DisplayObjectS:SetYType(y_type, revoke_bind)
+function ALittleIDE.DisplayObjectS:SetYType(y_type, revoke_bind)
 	if y_type == nil then
 		return
 	end
-	self._y_type.text = g_IDEEnum.xy_type[y_type]
-	local list = g_IDEEnum.xy_rtype
+	self._y_type.text = ALittleIDE.g_IDEEnum.xy_type[y_type]
+	local list = ALittleIDE.g_IDEEnum.xy_rtype
 	self:TypeSelectChange("y_type", list, true, revoke_bind)
 end
 
-function DisplayObjectS:HandleYTypeSELECT_CHANGE(event)
+function ALittleIDE.DisplayObjectS:HandleYTypeSELECT_CHANGE(event)
 	local object = self._object
 	local target_y = object.y
 	local new_y = target_y
-	local list = g_IDEEnum.xy_rtype
+	local list = ALittleIDE.g_IDEEnum.xy_rtype
 	local revoke_bind = ALittle.RevokeBind()
 	self:TypeSelectChange("y_type", list, true, revoke_bind)
 	if object.y_type == 1 then
@@ -252,35 +252,35 @@ function DisplayObjectS:HandleYTypeSELECT_CHANGE(event)
 	self._tab_child.revoke_list:PushRevoke(revoke_bind)
 end
 
-function DisplayObjectS:SetWType(width_type, revoke_bind)
+function ALittleIDE.DisplayObjectS:SetWType(width_type, revoke_bind)
 	if width_type == nil then
 		return
 	end
-	self._width_type.text = g_IDEEnum.wh_type[width_type]
-	local list = g_IDEEnum.wh_rtype
+	self._width_type.text = ALittleIDE.g_IDEEnum.wh_type[width_type]
+	local list = ALittleIDE.g_IDEEnum.wh_rtype
 	self:TypeSelectChange("width_type", list, true, revoke_bind)
 end
 
-function DisplayObjectS:HandleWTypeSELECT_CHANGE(event)
-	local list = g_IDEEnum.wh_rtype
+function ALittleIDE.DisplayObjectS:HandleWTypeSELECT_CHANGE(event)
+	local list = ALittleIDE.g_IDEEnum.wh_rtype
 	self:TypeSelectChange("width_type", list, true)
 end
 
-function DisplayObjectS:SetHType(height_type, revoke_bind)
+function ALittleIDE.DisplayObjectS:SetHType(height_type, revoke_bind)
 	if height_type == nil then
 		return
 	end
-	self._height_type.text = g_IDEEnum.wh_type[height_type]
-	local list = g_IDEEnum.wh_rtype
+	self._height_type.text = ALittleIDE.g_IDEEnum.wh_type[height_type]
+	local list = ALittleIDE.g_IDEEnum.wh_rtype
 	self:TypeSelectChange("height_type", list, true, revoke_bind)
 end
 
-function DisplayObjectS:HandleHTypeSELECT_CHANGE(event)
-	local list = g_IDEEnum.wh_rtype
+function ALittleIDE.DisplayObjectS:HandleHTypeSELECT_CHANGE(event)
+	local list = ALittleIDE.g_IDEEnum.wh_rtype
 	self:TypeSelectChange("height_type", list, true)
 end
 
-function DisplayObjectS:SetXValue(x_value, revoke_bind)
+function ALittleIDE.DisplayObjectS:SetXValue(x_value, revoke_bind)
 	if x_value == nil then
 		return
 	end
@@ -289,25 +289,25 @@ function DisplayObjectS:SetXValue(x_value, revoke_bind)
 	self:ValueNumInputChange("x_value", true, revoke_bind)
 end
 
-function DisplayObjectS:HandleXValueFOCUSOUT(event)
+function ALittleIDE.DisplayObjectS:HandleXValueFOCUSOUT(event)
 	self._base.x = nil
 	self:ValueNumInputChange("x_value", true)
 end
 
-function DisplayObjectS:HandleXValueMoveIn(event)
+function ALittleIDE.DisplayObjectS:HandleXValueMoveIn(event)
 	ALittle.System_SetHDragCursor()
 end
 
-function DisplayObjectS:HandleXValueMoveOut(event)
+function ALittleIDE.DisplayObjectS:HandleXValueMoveOut(event)
 	ALittle.System_SetNormalCursor()
 end
 
-function DisplayObjectS:HandleXValueTabKey(event)
+function ALittleIDE.DisplayObjectS:HandleXValueTabKey(event)
 	self._y_value.focus = true
 	self._y_value:SelectAll()
 end
 
-function DisplayObjectS:HandleXValueDrag(event)
+function ALittleIDE.DisplayObjectS:HandleXValueDrag(event)
 	local value = ALittle.Math_ToDouble(self._x_value.text)
 	if value == nil then
 		value = 0
@@ -317,7 +317,7 @@ function DisplayObjectS:HandleXValueDrag(event)
 	self:ValueNumInputChange("x_value", true)
 end
 
-function DisplayObjectS:SetYValue(y_value, revoke_bind)
+function ALittleIDE.DisplayObjectS:SetYValue(y_value, revoke_bind)
 	if y_value == nil then
 		return
 	end
@@ -326,25 +326,25 @@ function DisplayObjectS:SetYValue(y_value, revoke_bind)
 	self:ValueNumInputChange("y_value", true, revoke_bind)
 end
 
-function DisplayObjectS:HandleYValueFOCUSOUT(event)
+function ALittleIDE.DisplayObjectS:HandleYValueFOCUSOUT(event)
 	self._base.y = nil
 	self:ValueNumInputChange("y_value", true)
 end
 
-function DisplayObjectS:HandleYValueMoveIn(event)
+function ALittleIDE.DisplayObjectS:HandleYValueMoveIn(event)
 	ALittle.System_SetHDragCursor()
 end
 
-function DisplayObjectS:HandleYValueMoveOut(event)
+function ALittleIDE.DisplayObjectS:HandleYValueMoveOut(event)
 	ALittle.System_SetNormalCursor()
 end
 
-function DisplayObjectS:HandleYValueTabKey(event)
+function ALittleIDE.DisplayObjectS:HandleYValueTabKey(event)
 	self._width_value.focus = true
 	self._width_value:SelectAll()
 end
 
-function DisplayObjectS:HandleYValueDrag(event)
+function ALittleIDE.DisplayObjectS:HandleYValueDrag(event)
 	local value = ALittle.Math_ToDouble(self._y_value.text)
 	if value == nil then
 		value = 0
@@ -354,7 +354,7 @@ function DisplayObjectS:HandleYValueDrag(event)
 	self:ValueNumInputChange("y_value", true)
 end
 
-function DisplayObjectS:SetWValue(width_value, revoke_bind)
+function ALittleIDE.DisplayObjectS:SetWValue(width_value, revoke_bind)
 	if width_value == nil then
 		return
 	end
@@ -363,25 +363,25 @@ function DisplayObjectS:SetWValue(width_value, revoke_bind)
 	self:ValueNumInputChange("width_value", true, revoke_bind)
 end
 
-function DisplayObjectS:HandleWValueFOCUSOUT(event)
+function ALittleIDE.DisplayObjectS:HandleWValueFOCUSOUT(event)
 	self._base.width = nil
 	self:ValueNumInputChange("width_value", true)
 end
 
-function DisplayObjectS:HandleWValueMoveIn(event)
+function ALittleIDE.DisplayObjectS:HandleWValueMoveIn(event)
 	ALittle.System_SetHDragCursor()
 end
 
-function DisplayObjectS:HandleWValueMoveOut(event)
+function ALittleIDE.DisplayObjectS:HandleWValueMoveOut(event)
 	ALittle.System_SetNormalCursor()
 end
 
-function DisplayObjectS:HandleWValueTabKey(event)
+function ALittleIDE.DisplayObjectS:HandleWValueTabKey(event)
 	self._height_value.focus = true
 	self._height_value:SelectAll()
 end
 
-function DisplayObjectS:HandleWValueDrag(event)
+function ALittleIDE.DisplayObjectS:HandleWValueDrag(event)
 	local value = ALittle.Math_ToDouble(self._width_value.text)
 	if value == nil then
 		value = 0
@@ -391,7 +391,7 @@ function DisplayObjectS:HandleWValueDrag(event)
 	self:ValueNumInputChange("width_value", true)
 end
 
-function DisplayObjectS:SetHValue(height_value, revoke_bind)
+function ALittleIDE.DisplayObjectS:SetHValue(height_value, revoke_bind)
 	if height_value == nil then
 		return
 	end
@@ -400,25 +400,25 @@ function DisplayObjectS:SetHValue(height_value, revoke_bind)
 	self:ValueNumInputChange("height_value", true, revoke_bind)
 end
 
-function DisplayObjectS:HandleHValueFOCUSOUT(event)
+function ALittleIDE.DisplayObjectS:HandleHValueFOCUSOUT(event)
 	self._base.height = nil
 	self:ValueNumInputChange("height_value", true)
 end
 
-function DisplayObjectS:HandleHValueMoveIn(event)
+function ALittleIDE.DisplayObjectS:HandleHValueMoveIn(event)
 	ALittle.System_SetHDragCursor()
 end
 
-function DisplayObjectS:HandleHValueMoveOut(event)
+function ALittleIDE.DisplayObjectS:HandleHValueMoveOut(event)
 	ALittle.System_SetNormalCursor()
 end
 
-function DisplayObjectS:HandleHValueTabKey(event)
+function ALittleIDE.DisplayObjectS:HandleHValueTabKey(event)
 	self._description.focus = true
 	self._description:SelectAll()
 end
 
-function DisplayObjectS:HandleHValueDrag(event)
+function ALittleIDE.DisplayObjectS:HandleHValueDrag(event)
 	local value = ALittle.Math_ToDouble(self._height_value.text)
 	if value == nil then
 		value = 0
@@ -428,7 +428,7 @@ function DisplayObjectS:HandleHValueDrag(event)
 	self:ValueNumInputChange("height_value", true)
 end
 
-function DisplayObjectS:SetAlpha(alpha, revoke_bind)
+function ALittleIDE.DisplayObjectS:SetAlpha(alpha, revoke_bind)
 	if alpha == nil then
 		return
 	end
@@ -436,24 +436,24 @@ function DisplayObjectS:SetAlpha(alpha, revoke_bind)
 	self:ColorValueInputChange("alpha", false, revoke_bind)
 end
 
-function DisplayObjectS:HandleAlphaFOCUSOUT(event)
+function ALittleIDE.DisplayObjectS:HandleAlphaFOCUSOUT(event)
 	self:ColorValueInputChange("alpha", false)
 end
 
-function DisplayObjectS:HandleAlphaValueMoveIn(event)
+function ALittleIDE.DisplayObjectS:HandleAlphaValueMoveIn(event)
 	ALittle.System_SetHDragCursor()
 end
 
-function DisplayObjectS:HandleAlphaValueMoveOut(event)
+function ALittleIDE.DisplayObjectS:HandleAlphaValueMoveOut(event)
 	ALittle.System_SetNormalCursor()
 end
 
-function DisplayObjectS:HandleAlphaValueTabKey(event)
+function ALittleIDE.DisplayObjectS:HandleAlphaValueTabKey(event)
 	self._x_value.focus = true
 	self._x_value:SelectAll()
 end
 
-function DisplayObjectS:HandleAlphaValueDrag(event)
+function ALittleIDE.DisplayObjectS:HandleAlphaValueDrag(event)
 	local value = ALittle.Math_ToDouble(self._alpha.text)
 	if value == nil then
 		value = 0
@@ -468,7 +468,7 @@ function DisplayObjectS:HandleAlphaValueDrag(event)
 	self:ColorValueInputChange("alpha", true)
 end
 
-function DisplayObjectS:SetRed(red, revoke_bind)
+function ALittleIDE.DisplayObjectS:SetRed(red, revoke_bind)
 	if red == nil then
 		return
 	end
@@ -476,24 +476,24 @@ function DisplayObjectS:SetRed(red, revoke_bind)
 	self:ColorValueInputChange("red", false, revoke_bind)
 end
 
-function DisplayObjectS:HandleRedFOCUSOUT(event)
+function ALittleIDE.DisplayObjectS:HandleRedFOCUSOUT(event)
 	self:ColorValueInputChange("red", false)
 end
 
-function DisplayObjectS:HandleRedValueMoveIn(event)
+function ALittleIDE.DisplayObjectS:HandleRedValueMoveIn(event)
 	ALittle.System_SetHDragCursor()
 end
 
-function DisplayObjectS:HandleRedValueMoveOut(event)
+function ALittleIDE.DisplayObjectS:HandleRedValueMoveOut(event)
 	ALittle.System_SetNormalCursor()
 end
 
-function DisplayObjectS:HandleRedValueTabKey(event)
+function ALittleIDE.DisplayObjectS:HandleRedValueTabKey(event)
 	self._green.focus = true
 	self._green:SelectAll()
 end
 
-function DisplayObjectS:HandleRedValueDrag(event)
+function ALittleIDE.DisplayObjectS:HandleRedValueDrag(event)
 	local value = ALittle.Math_ToDouble(self._red.text)
 	if value == nil then
 		value = 0
@@ -508,7 +508,7 @@ function DisplayObjectS:HandleRedValueDrag(event)
 	self:ColorValueInputChange("red", true)
 end
 
-function DisplayObjectS:SetGreen(green, revoke_bind)
+function ALittleIDE.DisplayObjectS:SetGreen(green, revoke_bind)
 	if green == nil then
 		return
 	end
@@ -516,24 +516,24 @@ function DisplayObjectS:SetGreen(green, revoke_bind)
 	self:ColorValueInputChange("green", false, revoke_bind)
 end
 
-function DisplayObjectS:HandleGreenFOCUSOUT(event)
+function ALittleIDE.DisplayObjectS:HandleGreenFOCUSOUT(event)
 	self:ColorValueInputChange("green", false)
 end
 
-function DisplayObjectS:HandleGreenValueMoveIn(event)
+function ALittleIDE.DisplayObjectS:HandleGreenValueMoveIn(event)
 	ALittle.System_SetHDragCursor()
 end
 
-function DisplayObjectS:HandleGreenValueMoveOut(event)
+function ALittleIDE.DisplayObjectS:HandleGreenValueMoveOut(event)
 	ALittle.System_SetNormalCursor()
 end
 
-function DisplayObjectS:HandleGreenValueTabKey(event)
+function ALittleIDE.DisplayObjectS:HandleGreenValueTabKey(event)
 	self._blue.focus = true
 	self._blue:SelectAll()
 end
 
-function DisplayObjectS:HandleGreenValueDrag(event)
+function ALittleIDE.DisplayObjectS:HandleGreenValueDrag(event)
 	local value = ALittle.Math_ToDouble(self._green.text)
 	if value == nil then
 		value = 0
@@ -548,7 +548,7 @@ function DisplayObjectS:HandleGreenValueDrag(event)
 	self:ColorValueInputChange("green", true)
 end
 
-function DisplayObjectS:SetBlue(blue, revoke_bind)
+function ALittleIDE.DisplayObjectS:SetBlue(blue, revoke_bind)
 	if blue == nil then
 		return
 	end
@@ -556,24 +556,24 @@ function DisplayObjectS:SetBlue(blue, revoke_bind)
 	self:ColorValueInputChange("blue", false, revoke_bind)
 end
 
-function DisplayObjectS:HandleBlueFOCUSOUT(event)
+function ALittleIDE.DisplayObjectS:HandleBlueFOCUSOUT(event)
 	self:ColorValueInputChange("blue", false)
 end
 
-function DisplayObjectS:HandleBlueValueMoveIn(event)
+function ALittleIDE.DisplayObjectS:HandleBlueValueMoveIn(event)
 	ALittle.System_SetHDragCursor()
 end
 
-function DisplayObjectS:HandleBlueValueMoveOut(event)
+function ALittleIDE.DisplayObjectS:HandleBlueValueMoveOut(event)
 	ALittle.System_SetNormalCursor()
 end
 
-function DisplayObjectS:HandleBlueValueTabKey(event)
+function ALittleIDE.DisplayObjectS:HandleBlueValueTabKey(event)
 	self._alpha.focus = true
 	self._alpha:SelectAll()
 end
 
-function DisplayObjectS:HandleBlueValueDrag(event)
+function ALittleIDE.DisplayObjectS:HandleBlueValueDrag(event)
 	local value = ALittle.Math_ToDouble(self._blue.text)
 	if value == nil then
 		value = 0
@@ -588,11 +588,11 @@ function DisplayObjectS:HandleBlueValueDrag(event)
 	self:ColorValueInputChange("blue", true)
 end
 
-function DisplayObjectS:HandleScaleXFOCUSOUT(event)
+function ALittleIDE.DisplayObjectS:HandleScaleXFOCUSOUT(event)
 	self:ValueNumInputChange("scale_x", true)
 end
 
-function DisplayObjectS:SetScaleX(scale_x, revoke_bind)
+function ALittleIDE.DisplayObjectS:SetScaleX(scale_x, revoke_bind)
 	if scale_x == nil then
 		return
 	end
@@ -600,11 +600,11 @@ function DisplayObjectS:SetScaleX(scale_x, revoke_bind)
 	self:ValueNumInputChange("scale_x", true, revoke_bind)
 end
 
-function DisplayObjectS:HandleScaleYFOCUSOUT(event)
+function ALittleIDE.DisplayObjectS:HandleScaleYFOCUSOUT(event)
 	self:ValueNumInputChange("scale_y", true)
 end
 
-function DisplayObjectS:SetScaleY(scale_y, revoke_bind)
+function ALittleIDE.DisplayObjectS:SetScaleY(scale_y, revoke_bind)
 	if scale_y == nil then
 		return
 	end
@@ -612,11 +612,11 @@ function DisplayObjectS:SetScaleY(scale_y, revoke_bind)
 	self:ValueNumInputChange("scale_y", true, revoke_bind)
 end
 
-function DisplayObjectS:HandleCenterXFOCUSOUT(event)
+function ALittleIDE.DisplayObjectS:HandleCenterXFOCUSOUT(event)
 	self:ValueNumInputChange("center_x", true)
 end
 
-function DisplayObjectS:SetCenterX(center_x, revoke_bind)
+function ALittleIDE.DisplayObjectS:SetCenterX(center_x, revoke_bind)
 	if center_x == nil then
 		return
 	end
@@ -624,11 +624,11 @@ function DisplayObjectS:SetCenterX(center_x, revoke_bind)
 	self:ValueNumInputChange("center_x", true, revoke_bind)
 end
 
-function DisplayObjectS:HandleCenterYFOCUSOUT(event)
+function ALittleIDE.DisplayObjectS:HandleCenterYFOCUSOUT(event)
 	self:ValueNumInputChange("center_y", true)
 end
 
-function DisplayObjectS:SetCenterY(center_y, revoke_bind)
+function ALittleIDE.DisplayObjectS:SetCenterY(center_y, revoke_bind)
 	if center_y == nil then
 		return
 	end
@@ -636,22 +636,22 @@ function DisplayObjectS:SetCenterY(center_y, revoke_bind)
 	self:ValueNumInputChange("center_y", true, revoke_bind)
 end
 
-function DisplayObjectS:HandleAutoCenter(event)
+function ALittleIDE.DisplayObjectS:HandleAutoCenter(event)
 	self._center_x.text = self._object.width / 2
 	self:ValueNumInputChange("center_x", true)
 	self._center_y.text = self._object.height / 2
 	self:ValueNumInputChange("center_y", true)
 end
 
-function DisplayObjectS:HandleAngleMoveIn(event)
+function ALittleIDE.DisplayObjectS:HandleAngleMoveIn(event)
 	ALittle.System_SetHDragCursor()
 end
 
-function DisplayObjectS:HandleAngleMoveOut(event)
+function ALittleIDE.DisplayObjectS:HandleAngleMoveOut(event)
 	ALittle.System_SetNormalCursor()
 end
 
-function DisplayObjectS:HandleAngleDrag(event)
+function ALittleIDE.DisplayObjectS:HandleAngleDrag(event)
 	local value = ALittle.Math_ToDouble(self._angle.text)
 	if value == nil then
 		value = 0
@@ -661,11 +661,11 @@ function DisplayObjectS:HandleAngleDrag(event)
 	self:ValueNumInputChange("angle", true)
 end
 
-function DisplayObjectS:HandleAngleFOCUSOUT(event)
+function ALittleIDE.DisplayObjectS:HandleAngleFOCUSOUT(event)
 	self:ValueNumInputChange("angle", true)
 end
 
-function DisplayObjectS:SetAngle(angle, revoke_bind)
+function ALittleIDE.DisplayObjectS:SetAngle(angle, revoke_bind)
 	if angle == nil then
 		return
 	end
@@ -673,43 +673,43 @@ function DisplayObjectS:SetAngle(angle, revoke_bind)
 	self:ValueNumInputChange("angle", true, revoke_bind)
 end
 
-function DisplayObjectS:SetHandCursor(hand_cursor, revoke_bind)
+function ALittleIDE.DisplayObjectS:SetHandCursor(hand_cursor, revoke_bind)
 	if hand_cursor == nil then
 		return
 	end
-	self._hand_cursor.text = g_IDEEnum.yn_type[hand_cursor]
-	self:BoolSelectChange("hand_cursor", false, g_IDEEnum.yn_type, revoke_bind)
+	self._hand_cursor.text = ALittleIDE.g_IDEEnum.yn_type[hand_cursor]
+	self:BoolSelectChange("hand_cursor", false, ALittleIDE.g_IDEEnum.yn_type, revoke_bind)
 end
 
-function DisplayObjectS:HandleHandCursorSELECT_CHANGE(event)
-	self:BoolSelectChange("hand_cursor", false, g_IDEEnum.yn_type)
+function ALittleIDE.DisplayObjectS:HandleHandCursorSELECT_CHANGE(event)
+	self:BoolSelectChange("hand_cursor", false, ALittleIDE.g_IDEEnum.yn_type)
 end
 
-function DisplayObjectS:SetVisible(visible, revoke_bind)
+function ALittleIDE.DisplayObjectS:SetVisible(visible, revoke_bind)
 	if visible == nil then
 		return
 	end
-	self._visible.text = g_IDEEnum.yn_type[visible]
-	self:BoolSelectChange("visible", false, g_IDEEnum.yn_type, revoke_bind)
+	self._visible.text = ALittleIDE.g_IDEEnum.yn_type[visible]
+	self:BoolSelectChange("visible", false, ALittleIDE.g_IDEEnum.yn_type, revoke_bind)
 end
 
-function DisplayObjectS:HandleVisibleSELECT_CHANGE(event)
-	self:BoolSelectChange("visible", false, g_IDEEnum.yn_type)
+function ALittleIDE.DisplayObjectS:HandleVisibleSELECT_CHANGE(event)
+	self:BoolSelectChange("visible", false, ALittleIDE.g_IDEEnum.yn_type)
 end
 
-function DisplayObjectS:SetDisabled(disabled, revoke_bind)
+function ALittleIDE.DisplayObjectS:SetDisabled(disabled, revoke_bind)
 	if disabled == nil then
 		return
 	end
-	self._disabled.text = g_IDEEnum.yn_type[disabled]
-	self:BoolSelectChange("disabled", false, g_IDEEnum.yn_type, revoke_bind)
+	self._disabled.text = ALittleIDE.g_IDEEnum.yn_type[disabled]
+	self:BoolSelectChange("disabled", false, ALittleIDE.g_IDEEnum.yn_type, revoke_bind)
 end
 
-function DisplayObjectS:HandleDisabledSELECT_CHANGE(event)
-	self:BoolSelectChange("disabled", false, g_IDEEnum.yn_type)
+function ALittleIDE.DisplayObjectS:HandleDisabledSELECT_CHANGE(event)
+	self:BoolSelectChange("disabled", false, ALittleIDE.g_IDEEnum.yn_type)
 end
 
-function DisplayObjectS:SetDescription(description, revoke_bind)
+function ALittleIDE.DisplayObjectS:SetDescription(description, revoke_bind)
 	if description == nil then
 		return
 	end
@@ -718,17 +718,17 @@ function DisplayObjectS:SetDescription(description, revoke_bind)
 	self._tree_logic:UpdateDesc()
 end
 
-function DisplayObjectS:HandleDescriptionFOCUSOUT(event)
+function ALittleIDE.DisplayObjectS:HandleDescriptionFOCUSOUT(event)
 	self:DefaultNilStringInputChange("description", false)
 	self._tree_logic:UpdateDesc()
 end
 
-function DisplayObjectS:HandleDescriptionTabKey(event)
+function ALittleIDE.DisplayObjectS:HandleDescriptionTabKey(event)
 	self.___target_class.focus = true
 	self.___target_class:SelectAll()
 end
 
-function DisplayObjectS:SetLink(link, revoke_bind)
+function ALittleIDE.DisplayObjectS:SetLink(link, revoke_bind)
 	if link == nil then
 		return
 	end
@@ -737,17 +737,17 @@ function DisplayObjectS:SetLink(link, revoke_bind)
 	self._tree_logic:UpdateDesc()
 end
 
-function DisplayObjectS:HandleLinkFOCUSOUT(event)
+function ALittleIDE.DisplayObjectS:HandleLinkFOCUSOUT(event)
 	self:DefaultNilStringInputChange("__link", false)
 	self._tree_logic:UpdateDesc()
 end
 
-function DisplayObjectS:HandleLinkTabKey(event)
+function ALittleIDE.DisplayObjectS:HandleLinkTabKey(event)
 	self._id.focus = true
 	self._id:SelectAll()
 end
 
-function DisplayObjectS:HandleLinkSELECT_CHANGE(event)
+function ALittleIDE.DisplayObjectS:HandleLinkSELECT_CHANGE(event)
 	if event.target.text == "清空" then
 		self:SetLink("")
 	else
@@ -756,7 +756,7 @@ function DisplayObjectS:HandleLinkSELECT_CHANGE(event)
 	event.target.text = ""
 end
 
-function DisplayObjectS:SetEvent(event, revoke_bind)
+function ALittleIDE.DisplayObjectS:SetEvent(event, revoke_bind)
 	if event == nil then
 		return
 	end
@@ -775,11 +775,11 @@ function DisplayObjectS:SetEvent(event, revoke_bind)
 	self:TableDataSet("__event", false, revoke_bind)
 end
 
-function DisplayObjectS:HandleEventFOCUSOUT(event)
-	g_IDEAttrEventDialog:ShowDialog(self, "__event", false)
+function ALittleIDE.DisplayObjectS:HandleEventFOCUSOUT(event)
+	ALittleIDE.g_IDEAttrEventDialog:ShowDialog(self, "__event", false)
 end
 
-function DisplayObjectS:SetTargetClass(target_class, revoke_bind)
+function ALittleIDE.DisplayObjectS:SetTargetClass(target_class, revoke_bind)
 	if target_class == nil then
 		return
 	end
@@ -788,16 +788,16 @@ function DisplayObjectS:SetTargetClass(target_class, revoke_bind)
 	self:TableDataSetForTargetClass("__target_class", false, revoke_bind)
 end
 
-function DisplayObjectS:HandleTargetClassFOCUSOUT(event)
+function ALittleIDE.DisplayObjectS:HandleTargetClassFOCUSOUT(event)
 	self:TableDataSetForTargetClass("__target_class", false)
 end
 
-function DisplayObjectS:HandleTargetClassTabKey(event)
+function ALittleIDE.DisplayObjectS:HandleTargetClassTabKey(event)
 	self.___link.focus = true
 	self.___link:SelectAll()
 end
 
-function DisplayObjectS:HandleTargetClassSELECT_CHANGE(event)
+function ALittleIDE.DisplayObjectS:HandleTargetClassSELECT_CHANGE(event)
 	if event.target.text == "清空" then
 		self:SetTargetClass({})
 	else
@@ -806,7 +806,7 @@ function DisplayObjectS:HandleTargetClassSELECT_CHANGE(event)
 	event.target.text = ""
 end
 
-function DisplayObjectS:TypeSelectChange(text, list, need_reset, revoke_bind)
+function ALittleIDE.DisplayObjectS:TypeSelectChange(text, list, need_reset, revoke_bind)
 	local old_base = self._base[text]
 	local old_object = self._object[text]
 	local display_object = self["_" .. text]
@@ -826,7 +826,7 @@ function DisplayObjectS:TypeSelectChange(text, list, need_reset, revoke_bind)
 	if display_object ~= nil then
 		old_text = display_object.text
 	end
-	local revoke = IDENatureChangeRevoke(self._tree_logic, text, old_base, new_base, old_object, new_object, old_text, need_reset)
+	local revoke = ALittleIDE.IDENatureChangeRevoke(self._tree_logic, text, old_base, new_base, old_object, new_object, old_text, need_reset)
 	if revoke_bind ~= nil then
 		revoke_bind:PushRevoke(revoke)
 	else
@@ -834,7 +834,7 @@ function DisplayObjectS:TypeSelectChange(text, list, need_reset, revoke_bind)
 	end
 end
 
-function DisplayObjectS:ValueNumInputChange(text, need_reset, revoke_bind)
+function ALittleIDE.DisplayObjectS:ValueNumInputChange(text, need_reset, revoke_bind)
 	local old_base = self._base[text]
 	local old_object = self._object[text]
 	local display_object = self["_" .. text]
@@ -864,7 +864,7 @@ function DisplayObjectS:ValueNumInputChange(text, need_reset, revoke_bind)
 	if display_object ~= nil then
 		old_text = display_object.text
 	end
-	local revoke = IDENatureChangeRevoke(self._tree_logic, text, old_base, new_base, old_object, new_object, old_text, need_reset)
+	local revoke = ALittleIDE.IDENatureChangeRevoke(self._tree_logic, text, old_base, new_base, old_object, new_object, old_text, need_reset)
 	if revoke_bind ~= nil then
 		revoke_bind:PushRevoke(revoke)
 	else
@@ -872,7 +872,7 @@ function DisplayObjectS:ValueNumInputChange(text, need_reset, revoke_bind)
 	end
 end
 
-function DisplayObjectS:ValueNumZInputChange(text, need_reset, revoke_bind)
+function ALittleIDE.DisplayObjectS:ValueNumZInputChange(text, need_reset, revoke_bind)
 	local old_base = self._base[text]
 	local old_object = self._object[text]
 	local display_object = self["_" .. text]
@@ -902,7 +902,7 @@ function DisplayObjectS:ValueNumZInputChange(text, need_reset, revoke_bind)
 	if display_object ~= nil then
 		old_text = display_object.text
 	end
-	local revoke = IDENatureChangeRevoke(self._tree_logic, text, old_base, new_base, old_object, new_object, old_text, need_reset)
+	local revoke = ALittleIDE.IDENatureChangeRevoke(self._tree_logic, text, old_base, new_base, old_object, new_object, old_text, need_reset)
 	if revoke_bind ~= nil then
 		revoke_bind:PushRevoke(revoke)
 	else
@@ -910,7 +910,7 @@ function DisplayObjectS:ValueNumZInputChange(text, need_reset, revoke_bind)
 	end
 end
 
-function DisplayObjectS:ColorValueInputChange(text, need_reset, revoke_bind)
+function ALittleIDE.DisplayObjectS:ColorValueInputChange(text, need_reset, revoke_bind)
 	local old_base = self._base[text]
 	local old_object = self._object[text]
 	local display_object = self["_" .. text]
@@ -948,7 +948,7 @@ function DisplayObjectS:ColorValueInputChange(text, need_reset, revoke_bind)
 	if display_object ~= nil then
 		old_text = display_object.text
 	end
-	local revoke = IDENatureChangeRevoke(self._tree_logic, text, old_base, new_base, old_object, new_object, old_text, need_reset)
+	local revoke = ALittleIDE.IDENatureChangeRevoke(self._tree_logic, text, old_base, new_base, old_object, new_object, old_text, need_reset)
 	if revoke_bind ~= nil then
 		revoke_bind:PushRevoke(revoke)
 	else
@@ -956,7 +956,7 @@ function DisplayObjectS:ColorValueInputChange(text, need_reset, revoke_bind)
 	end
 end
 
-function DisplayObjectS:Z2OValueInputChange(text, need_reset, revoke_bind)
+function ALittleIDE.DisplayObjectS:Z2OValueInputChange(text, need_reset, revoke_bind)
 	local old_base = self._base[text]
 	local old_object = self._object[text]
 	local display_object = self["_" .. text]
@@ -993,7 +993,7 @@ function DisplayObjectS:Z2OValueInputChange(text, need_reset, revoke_bind)
 	if display_object ~= nil then
 		old_text = display_object.text
 	end
-	local revoke = IDENatureChangeRevoke(self._tree_logic, text, old_base, new_base, old_object, new_object, old_text, need_reset)
+	local revoke = ALittleIDE.IDENatureChangeRevoke(self._tree_logic, text, old_base, new_base, old_object, new_object, old_text, need_reset)
 	if revoke_bind ~= nil then
 		revoke_bind:PushRevoke(revoke)
 	else
@@ -1001,7 +1001,7 @@ function DisplayObjectS:Z2OValueInputChange(text, need_reset, revoke_bind)
 	end
 end
 
-function DisplayObjectS:DefaultNilStringInputChange(text, need_reset, revoke_bind)
+function ALittleIDE.DisplayObjectS:DefaultNilStringInputChange(text, need_reset, revoke_bind)
 	local old_base = self._base[text]
 	local old_object = self._object[text]
 	local display_object = self["_" .. text]
@@ -1034,7 +1034,7 @@ function DisplayObjectS:DefaultNilStringInputChange(text, need_reset, revoke_bin
 	if display_object ~= nil then
 		old_text = display_object.text
 	end
-	local revoke = IDENatureChangeRevoke(self._tree_logic, text, old_base, new_base, old_object, new_object, old_text, need_reset)
+	local revoke = ALittleIDE.IDENatureChangeRevoke(self._tree_logic, text, old_base, new_base, old_object, new_object, old_text, need_reset)
 	if revoke_bind ~= nil then
 		revoke_bind:PushRevoke(revoke)
 	else
@@ -1042,7 +1042,7 @@ function DisplayObjectS:DefaultNilStringInputChange(text, need_reset, revoke_bin
 	end
 end
 
-function DisplayObjectS:DefaultNoStringInputChange(text, need_reset, revoke_bind)
+function ALittleIDE.DisplayObjectS:DefaultNoStringInputChange(text, need_reset, revoke_bind)
 	local old_base = self._base[text]
 	local old_object = self._object[text]
 	local display_object = self["_" .. text]
@@ -1062,7 +1062,7 @@ function DisplayObjectS:DefaultNoStringInputChange(text, need_reset, revoke_bind
 	if display_object ~= nil then
 		old_text = display_object.text
 	end
-	local revoke = IDENatureChangeRevoke(self._tree_logic, text, old_base, new_base, old_object, new_object, old_text, need_reset)
+	local revoke = ALittleIDE.IDENatureChangeRevoke(self._tree_logic, text, old_base, new_base, old_object, new_object, old_text, need_reset)
 	if revoke_bind ~= nil then
 		revoke_bind:PushRevoke(revoke)
 	else
@@ -1070,7 +1070,7 @@ function DisplayObjectS:DefaultNoStringInputChange(text, need_reset, revoke_bind
 	end
 end
 
-function DisplayObjectS:SpecialFontPathInputChange(text, need_reset, revoke_bind)
+function ALittleIDE.DisplayObjectS:SpecialFontPathInputChange(text, need_reset, revoke_bind)
 	local old_base = self._base[text]
 	local old_object = self._object[text]
 	local display_object = self["_" .. text]
@@ -1104,7 +1104,7 @@ function DisplayObjectS:SpecialFontPathInputChange(text, need_reset, revoke_bind
 	if display_object ~= nil then
 		old_text = display_object.text
 	end
-	local revoke = IDENatureChangeRevoke(self._tree_logic, text, old_base, new_base, old_object, new_object, old_text, need_reset)
+	local revoke = ALittleIDE.IDENatureChangeRevoke(self._tree_logic, text, old_base, new_base, old_object, new_object, old_text, need_reset)
 	if revoke_bind ~= nil then
 		revoke_bind:PushRevoke(revoke)
 	else
@@ -1112,7 +1112,7 @@ function DisplayObjectS:SpecialFontPathInputChange(text, need_reset, revoke_bind
 	end
 end
 
-function DisplayObjectS:BoolSelectChange(text, need_reset, list, revoke_bind)
+function ALittleIDE.DisplayObjectS:BoolSelectChange(text, need_reset, list, revoke_bind)
 	local old_base = self._base[text]
 	local old_object = self._object[text]
 	local display_object = self["_" .. text]
@@ -1142,7 +1142,7 @@ function DisplayObjectS:BoolSelectChange(text, need_reset, list, revoke_bind)
 	if display_object ~= nil then
 		old_text = display_object.text
 	end
-	local revoke = IDENatureChangeRevoke(self._tree_logic, text, old_base, new_base, old_object, new_object, old_text, need_reset)
+	local revoke = ALittleIDE.IDENatureChangeRevoke(self._tree_logic, text, old_base, new_base, old_object, new_object, old_text, need_reset)
 	if revoke_bind ~= nil then
 		revoke_bind:PushRevoke(revoke)
 	else
@@ -1150,12 +1150,12 @@ function DisplayObjectS:BoolSelectChange(text, need_reset, list, revoke_bind)
 	end
 end
 
-function DisplayObjectS:RemoverToNilShowSetForImage(text, image_path, grid9, need_reset, revoke_bind)
+function ALittleIDE.DisplayObjectS:RemoverToNilShowSetForImage(text, image_path, grid9, need_reset, revoke_bind)
 	if image_path == "" then
 		self:RemoverToNilShowSet(text, "", need_reset, revoke_bind)
 	else
 		if grid9 then
-			local display_info = IDEUIUtility_GenerateGrid9ImageInfo(g_IDEProject.project.texture_path .. "/", image_path)
+			local display_info = ALittleIDE.IDEUIUtility_GenerateGrid9ImageInfo(ALittleIDE.g_IDEProject.project.texture_path .. "/", image_path)
 			if display_info == nil then
 				g_AUITool:ShowNotice("错误", "图片不存在:" .. image_path)
 				return
@@ -1170,9 +1170,9 @@ function DisplayObjectS:RemoverToNilShowSetForImage(text, image_path, grid9, nee
 	end
 end
 
-function DisplayObjectS:RemoverToNilShowSetForExtends(text, extends_v, need_reset, revoke_bind)
+function ALittleIDE.DisplayObjectS:RemoverToNilShowSetForExtends(text, extends_v, need_reset, revoke_bind)
 	if extends_v ~= "" then
-		if g_IDEProject.project.ui.control_map[extends_v] == nil then
+		if ALittleIDE.g_IDEProject.project.ui.control_map[extends_v] == nil then
 			g_AUITool:ShowNotice("错误", "要继承的控件不存在:" .. extends_v)
 			return
 		end
@@ -1184,7 +1184,7 @@ function DisplayObjectS:RemoverToNilShowSetForExtends(text, extends_v, need_rese
 	end
 end
 
-function DisplayObjectS:RemoverToNilShowSet(text, json_content, need_reset, revoke_bind)
+function ALittleIDE.DisplayObjectS:RemoverToNilShowSet(text, json_content, need_reset, revoke_bind)
 	local old_base = self._base[text]
 	local old_object = self._object[text]
 	if json_content == "" then
@@ -1195,10 +1195,10 @@ function DisplayObjectS:RemoverToNilShowSet(text, json_content, need_reset, revo
 			if error1 == nil then
 				local error2, content2 = Lua.TCall(ALittle.String_JsonDecode, content1)
 				local name = "mnbvcxzasdfghjklpoiuytrewq20160121"
-				g_IDEProject.project.control:RegisterInfo(name, content2)
-				local temp = g_IDEProject.project.control:CreateControl(name)
+				ALittleIDE.g_IDEProject.project.control:RegisterInfo(name, content2)
+				local temp = ALittleIDE.g_IDEProject.project.control:CreateControl(name)
 				self._object[text] = temp
-				g_IDEProject.project.control:UnRegisterInfo(name)
+				ALittleIDE.g_IDEProject.project.control:UnRegisterInfo(name)
 			end
 		else
 			self._object[text] = nil
@@ -1213,7 +1213,7 @@ function DisplayObjectS:RemoverToNilShowSet(text, json_content, need_reset, revo
 				include = content1.__extends
 			end
 			if include ~= nil then
-				if g_IDEProject.project.ui.control_map[include] == nil then
+				if ALittleIDE.g_IDEProject.project.ui.control_map[include] == nil then
 					g_AUITool:ShowNotice("错误", "指定__include或__extends不存在")
 					return
 				end
@@ -1221,10 +1221,10 @@ function DisplayObjectS:RemoverToNilShowSet(text, json_content, need_reset, revo
 			self._base[text] = content1
 			local error2, content2 = Lua.TCall(ALittle.String_JsonDecode, content)
 			local name = "mnbvcxzasdfghjklpoiuytrewq20160121"
-			g_IDEProject.project.control:RegisterInfo(name, content2)
-			local temp = g_IDEProject.project.control:CreateControl(name)
+			ALittleIDE.g_IDEProject.project.control:RegisterInfo(name, content2)
+			local temp = ALittleIDE.g_IDEProject.project.control:CreateControl(name)
 			self._object[text] = temp
-			g_IDEProject.project.control:UnRegisterInfo(name)
+			ALittleIDE.g_IDEProject.project.control:UnRegisterInfo(name)
 		else
 			g_AUITool:ShowNotice("错误", "输入show设置错误")
 			return
@@ -1239,7 +1239,7 @@ function DisplayObjectS:RemoverToNilShowSet(text, json_content, need_reset, revo
 	if display_object ~= nil then
 		old_text = display_object.text
 	end
-	local revoke = IDENatureChangeRevoke(self._tree_logic, text, old_base, new_base, old_object, new_object, old_text, need_reset)
+	local revoke = ALittleIDE.IDENatureChangeRevoke(self._tree_logic, text, old_base, new_base, old_object, new_object, old_text, need_reset)
 	if revoke_bind ~= nil then
 		revoke_bind:PushRevoke(revoke)
 	else
@@ -1247,7 +1247,7 @@ function DisplayObjectS:RemoverToNilShowSet(text, json_content, need_reset, revo
 	end
 end
 
-function DisplayObjectS:RemoverToNilNoNilShowSet(text, need_reset, revoke_bind)
+function ALittleIDE.DisplayObjectS:RemoverToNilNoNilShowSet(text, need_reset, revoke_bind)
 	local old_base = self._base[text]
 	local old_object = self._object[text]
 	local display_object = self["_" .. text]
@@ -1260,10 +1260,10 @@ function DisplayObjectS:RemoverToNilNoNilShowSet(text, need_reset, revoke_bind)
 				display_object.text = content1
 				local error2, content2 = Lua.TCall(ALittle.String_JsonDecode, content1)
 				local name = "mnbvcxzasdfghjklpoiuytrewq20160121"
-				g_IDEProject.project.control:RegisterInfo(name, content2)
-				local temp = g_IDEProject.project.control:CreateControl(name)
+				ALittleIDE.g_IDEProject.project.control:RegisterInfo(name, content2)
+				local temp = ALittleIDE.g_IDEProject.project.control:CreateControl(name)
 				self._object[text] = temp
-				g_IDEProject.project.control:UnRegisterInfo(name)
+				ALittleIDE.g_IDEProject.project.control:UnRegisterInfo(name)
 			end
 		else
 			self._object[text] = nil
@@ -1277,7 +1277,7 @@ function DisplayObjectS:RemoverToNilNoNilShowSet(text, need_reset, revoke_bind)
 				include = content1.__extends
 			end
 			if include ~= nil then
-				if g_IDEProject.project.ui.control_map[include] == nil then
+				if ALittleIDE.g_IDEProject.project.ui.control_map[include] == nil then
 					g_AUITool:ShowNotice("错误", "指定__include或__extends不存在")
 					display_object.text = ""
 					return
@@ -1286,10 +1286,10 @@ function DisplayObjectS:RemoverToNilNoNilShowSet(text, need_reset, revoke_bind)
 			self._base[text] = content1
 			local error2, content2 = Lua.TCall(ALittle.String_JsonDecode, content)
 			local name = "mnbvcxzasdfghjklpoiuytrewq20160121"
-			g_IDEProject.project.control:RegisterInfo(name, content2)
-			local temp = g_IDEProject.project.control:CreateControl(name)
+			ALittleIDE.g_IDEProject.project.control:RegisterInfo(name, content2)
+			local temp = ALittleIDE.g_IDEProject.project.control:CreateControl(name)
 			self._object[text] = temp
-			g_IDEProject.project.control:UnRegisterInfo(name)
+			ALittleIDE.g_IDEProject.project.control:UnRegisterInfo(name)
 		else
 			g_AUITool:ShowNotice("错误", "输入show设置错误")
 			display_object.text = ""
@@ -1304,7 +1304,7 @@ function DisplayObjectS:RemoverToNilNoNilShowSet(text, need_reset, revoke_bind)
 	if display_object ~= nil then
 		old_text = display_object.text
 	end
-	local revoke = IDENatureChangeRevoke(self._tree_logic, text, old_base, new_base, old_object, new_object, old_text, need_reset)
+	local revoke = ALittleIDE.IDENatureChangeRevoke(self._tree_logic, text, old_base, new_base, old_object, new_object, old_text, need_reset)
 	if revoke_bind ~= nil then
 		revoke_bind:PushRevoke(revoke)
 	else
@@ -1312,7 +1312,7 @@ function DisplayObjectS:RemoverToNilNoNilShowSet(text, need_reset, revoke_bind)
 	end
 end
 
-function DisplayObjectS:TableDataSet(text, need_reset, revoke_bind)
+function ALittleIDE.DisplayObjectS:TableDataSet(text, need_reset, revoke_bind)
 	local old_base = self._base[text]
 	local old_object = self._object[text]
 	local display_object = self["_" .. text]
@@ -1347,7 +1347,7 @@ function DisplayObjectS:TableDataSet(text, need_reset, revoke_bind)
 	if display_object ~= nil then
 		old_text = display_object.text
 	end
-	local revoke = IDENatureChangeRevoke(self._tree_logic, text, old_base, new_base, old_object, new_object, old_text, need_reset)
+	local revoke = ALittleIDE.IDENatureChangeRevoke(self._tree_logic, text, old_base, new_base, old_object, new_object, old_text, need_reset)
 	if revoke_bind ~= nil then
 		revoke_bind:PushRevoke(revoke)
 	else
@@ -1355,7 +1355,7 @@ function DisplayObjectS:TableDataSet(text, need_reset, revoke_bind)
 	end
 end
 
-function DisplayObjectS:TableDataSetForTargetClass(text, need_reset, revoke_bind)
+function ALittleIDE.DisplayObjectS:TableDataSetForTargetClass(text, need_reset, revoke_bind)
 	local old_base = self._base[text]
 	local old_object = self._object[text]
 	local default_value = nil
@@ -1394,7 +1394,7 @@ function DisplayObjectS:TableDataSetForTargetClass(text, need_reset, revoke_bind
 	if display_object ~= nil then
 		old_text = display_object.text
 	end
-	local revoke = IDENatureChangeRevoke(self._tree_logic, text, old_base, new_base, old_object, new_object, old_text, need_reset)
+	local revoke = ALittleIDE.IDENatureChangeRevoke(self._tree_logic, text, old_base, new_base, old_object, new_object, old_text, need_reset)
 	if revoke_bind ~= nil then
 		revoke_bind:PushRevoke(revoke)
 	else
@@ -1402,7 +1402,7 @@ function DisplayObjectS:TableDataSetForTargetClass(text, need_reset, revoke_bind
 	end
 end
 
-function DisplayObjectS:LoadShowTypeDataForExtends(text)
+function ALittleIDE.DisplayObjectS:LoadShowTypeDataForExtends(text)
 	local display_object = self["_" .. text]
 	local content = self._base[text]
 	if content == nil then
@@ -1423,7 +1423,7 @@ function DisplayObjectS:LoadShowTypeDataForExtends(text)
 	end
 end
 
-function DisplayObjectS:LoadShowTypeDataForImage(text)
+function ALittleIDE.DisplayObjectS:LoadShowTypeDataForImage(text)
 	local display_object = self["_" .. text]
 	local display_object_grid9 = self["_" .. text .. "_grid9"]
 	local content = self._base[text]
@@ -1455,7 +1455,7 @@ function DisplayObjectS:LoadShowTypeDataForImage(text)
 	end
 end
 
-function DisplayObjectS:LoadShowTypeDataForTargetClass(text)
+function ALittleIDE.DisplayObjectS:LoadShowTypeDataForTargetClass(text)
 	local display_object = self["_" .. text]
 	local content = self._base[text]
 	if content == nil then
@@ -1468,7 +1468,7 @@ function DisplayObjectS:LoadShowTypeDataForTargetClass(text)
 	end
 end
 
-function DisplayObjectS:LoadShowTypeData(text)
+function ALittleIDE.DisplayObjectS:LoadShowTypeData(text)
 	local display_object = self["_" .. text]
 	local content = self._base[text]
 	if content == nil then
@@ -1486,7 +1486,7 @@ function DisplayObjectS:LoadShowTypeData(text)
 	end
 end
 
-function DisplayObjectS:LoadShowTypeNoNilData(text)
+function ALittleIDE.DisplayObjectS:LoadShowTypeNoNilData(text)
 	local display_object = self["_" .. text]
 	if self._default[text] ~= nil and (self._default[text].__class ~= nil or self._default[text].__include ~= nil or self._default[text].__extends ~= nil) then
 		local content = self._base[text]
@@ -1518,7 +1518,7 @@ function DisplayObjectS:LoadShowTypeNoNilData(text)
 	end
 end
 
-function DisplayObjectS:LoadValueData(text)
+function ALittleIDE.DisplayObjectS:LoadValueData(text)
 	local display_object = self["_" .. text]
 	if self._base[text] ~= nil then
 		display_object.text = self._base[text]
@@ -1527,7 +1527,7 @@ function DisplayObjectS:LoadValueData(text)
 	end
 end
 
-function DisplayObjectS:LoadEnumData(text, list)
+function ALittleIDE.DisplayObjectS:LoadEnumData(text, list)
 	local display_object = self["_" .. text]
 	if self._base[text] ~= nil then
 		display_object.text = list[self._base[text]]
@@ -1536,7 +1536,7 @@ function DisplayObjectS:LoadEnumData(text, list)
 	end
 end
 
-function DisplayObjectS:LoadColorData(text)
+function ALittleIDE.DisplayObjectS:LoadColorData(text)
 	local display_object = self["_" .. text]
 	local color = self._base[text]
 	if color == nil then
@@ -1545,7 +1545,7 @@ function DisplayObjectS:LoadColorData(text)
 	display_object.text = color * 255
 end
 
-function DisplayObjectS:LoadBoolData(text, default_bool, list)
+function ALittleIDE.DisplayObjectS:LoadBoolData(text, default_bool, list)
 	local display_object = self["_" .. text]
 	local temp = default_bool
 	if self._base[text] ~= nil then
@@ -1568,7 +1568,7 @@ function DisplayObjectS:LoadBoolData(text, default_bool, list)
 	end
 end
 
-function DisplayObjectS:LoadTypeSelectData(text, list)
+function ALittleIDE.DisplayObjectS:LoadTypeSelectData(text, list)
 	local content = self._base[text]
 	if content == nil then
 		content = self._default[text]
@@ -1576,7 +1576,7 @@ function DisplayObjectS:LoadTypeSelectData(text, list)
 	self["_" .. text].text = list[content]
 end
 
-function DisplayObjectS:LoadDefaultNilString(text)
+function ALittleIDE.DisplayObjectS:LoadDefaultNilString(text)
 	local display_object = self["_" .. text]
 	local content = self._base[text]
 	if content == nil then
@@ -1589,13 +1589,13 @@ function DisplayObjectS:LoadDefaultNilString(text)
 	end
 end
 
-function DisplayObjectS:ImagePathSelectCallback(text, callback, revoke_bind, path)
+function ALittleIDE.DisplayObjectS:ImagePathSelectCallback(text, callback, revoke_bind, path)
 	local display_object = self["_" .. text]
 	display_object.text = path
 	local e = {}
 	e.target = display_object
 	callback(self, e)
-	local surface = ALittle.System_LoadSurface(g_IDEProject.project.texture_path .. "/" .. path)
+	local surface = ALittle.System_LoadSurface(ALittleIDE.g_IDEProject.project.texture_path .. "/" .. path)
 	if surface == nil then
 		return
 	end
@@ -1616,6 +1616,7 @@ function DisplayObjectS:ImagePathSelectCallback(text, callback, revoke_bind, pat
 	end
 end
 
-function DisplayObjectS:SetTextureName(texture_name, revoke_bind)
+function ALittleIDE.DisplayObjectS:SetTextureName(texture_name, revoke_bind)
 end
 
+end

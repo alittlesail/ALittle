@@ -1,6 +1,6 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittleIDE", package.seeall)
-
+do
+if _G.ALittleIDE == nil then _G.ALittleIDE = {} end
 local ___pairs = pairs
 local ___ipairs = ipairs
 
@@ -42,9 +42,9 @@ option_map = {}
 })
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
-IDEUIControlTree = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDEUIControlTree")
+ALittleIDE.IDEUIControlTree = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDEUIControlTree")
 
-function IDEUIControlTree:HandleControlTreeItemRightClick(event)
+function ALittleIDE.IDEUIControlTree:HandleControlTreeItemRightClick(event)
 	local target = event.target._user_data
 	if target.user_info.extends then
 		return
@@ -66,14 +66,14 @@ function IDEUIControlTree:HandleControlTreeItemRightClick(event)
 	menu:Show()
 end
 
-function IDEUIControlTree:ShowSettingDialog(item)
+function ALittleIDE.IDEUIControlTree:ShowSettingDialog(item)
 	item:ShowFocus(false)
-	g_IDEAttrControlDialog:ShowDialog(item.user_info.object)
+	ALittleIDE.g_IDEAttrControlDialog:ShowDialog(item.user_info.object)
 end
 
-function IDEUIControlTree:ShowAddImageDialog(target)
-	g_IDEImageSelectDialog:SetBasePath(g_IDEProject.project.texture_path)
-	local path = g_IDEImageSelectDialog:ShowSelect()
+function ALittleIDE.IDEUIControlTree:ShowAddImageDialog(target)
+	ALittleIDE.g_IDEImageSelectDialog:SetBasePath(ALittleIDE.g_IDEProject.project.texture_path)
+	local path = ALittleIDE.g_IDEImageSelectDialog:ShowSelect()
 	if path == nil then
 		return
 	end
@@ -89,9 +89,9 @@ function IDEUIControlTree:ShowAddImageDialog(target)
 	tree_object.attr_panel:SetTextureName(path, nil)
 	tree_object:ShowFocus(false)
 end
-IDEUIControlTree.ShowAddImageDialog = Lua.CoWrap(IDEUIControlTree.ShowAddImageDialog)
+ALittleIDE.IDEUIControlTree.ShowAddImageDialog = Lua.CoWrap(ALittleIDE.IDEUIControlTree.ShowAddImageDialog)
 
-function IDEUIControlTree:ShowAddTextDialog(target)
+function ALittleIDE.IDEUIControlTree:ShowAddTextDialog(target)
 	if target:CanAddChild() == false then
 		g_AUITool:ShowNotice("提示", "当前控件不能添加子控件")
 		return
@@ -104,10 +104,10 @@ function IDEUIControlTree:ShowAddTextDialog(target)
 	tree_object:ShowFocus(false)
 end
 
-function IDEUIControlTree:ShowAddDialog(target)
+function ALittleIDE.IDEUIControlTree:ShowAddDialog(target)
 	if self._control_add_dialog == nil then
-		self._control_add_dialog = g_Control:CreateControl("ide_add_control_dialog", self)
-		self._control_add_new_type.data_list = g_IDEEnum.child_type_list
+		self._control_add_dialog = ALittleIDE.g_Control:CreateControl("ide_add_control_dialog", self)
+		self._control_add_new_type.data_list = ALittleIDE.g_IDEEnum.child_type_list
 		A_LayerManager:AddToModal(self._control_add_dialog)
 		self._control_add_dialog.visible = false
 	end
@@ -122,16 +122,16 @@ function IDEUIControlTree:ShowAddDialog(target)
 	self._control_add_extends_name.text = ""
 end
 
-function IDEUIControlTree:HandleAddControlCancel(event)
+function ALittleIDE.IDEUIControlTree:HandleAddControlCancel(event)
 	self._control_add_dialog.visible = false
 	self._control_add_dialog._user_data = nil
 end
 
-function IDEUIControlTree:HandleAddControlConfirm(event)
+function ALittleIDE.IDEUIControlTree:HandleAddControlConfirm(event)
 	local target = self._control_add_dialog._user_data
 	self._control_add_dialog._user_data = nil
 	local extends_name = self._control_add_extends_name.text
-	if extends_name ~= "" and g_IDEProject.project.ui.control_map[extends_name] == nil then
+	if extends_name ~= "" and ALittleIDE.g_IDEProject.project.ui.control_map[extends_name] == nil then
 		g_AUITool:ShowNotice("错误", "继承控件不存在:" .. extends_name)
 		return
 	end
@@ -144,7 +144,7 @@ function IDEUIControlTree:HandleAddControlConfirm(event)
 	end
 end
 
-function IDEUIControlTree:ShowReplaceDialog(target)
+function ALittleIDE.IDEUIControlTree:ShowReplaceDialog(target)
 	if target.is_tree and target.child_count > 0 then
 		g_AUITool:ShowNotice("提示", "当前控件有子控件，不能替换")
 		return
@@ -155,8 +155,8 @@ function IDEUIControlTree:ShowReplaceDialog(target)
 	end
 	local child_type = target.user_info.child_type
 	if self._control_replace_dialog == nil then
-		self._control_replace_dialog = g_Control:CreateControl("ide_replace_control_dialog", self)
-		self._control_replace_new_type.data_list = g_IDEEnum.child_type_list
+		self._control_replace_dialog = ALittleIDE.g_Control:CreateControl("ide_replace_control_dialog", self)
+		self._control_replace_new_type.data_list = ALittleIDE.g_IDEEnum.child_type_list
 		A_LayerManager:AddToModal(self._control_replace_dialog)
 		self._control_replace_dialog.visible = false
 	end
@@ -177,16 +177,16 @@ function IDEUIControlTree:ShowReplaceDialog(target)
 	self._control_replace_extends_name.text = ""
 end
 
-function IDEUIControlTree:HandleReplaceControlCancel(event)
+function ALittleIDE.IDEUIControlTree:HandleReplaceControlCancel(event)
 	self._control_replace_dialog.visible = false
 	self._control_replace_dialog._user_data = nil
 end
 
-function IDEUIControlTree:HandleReplaceControlConfirm(event)
+function ALittleIDE.IDEUIControlTree:HandleReplaceControlConfirm(event)
 	local target = self._control_replace_dialog._user_data
 	self._control_replace_dialog._user_data = nil
 	local extends_name = self._control_replace_extends_name.text
-	if extends_name ~= "" and g_IDEProject.project.ui.control_map[extends_name] == nil then
+	if extends_name ~= "" and ALittleIDE.g_IDEProject.project.ui.control_map[extends_name] == nil then
 		g_AUITool:ShowNotice("错误", "继承控件不存在:" .. extends_name)
 		return
 	end
@@ -196,7 +196,7 @@ function IDEUIControlTree:HandleReplaceControlConfirm(event)
 	target:TreeReplace(extends_name, class_name, child_type)
 end
 
-function IDEUIControlTree:ShowPasteDialog(target, info, child_index, revoke_bind, callback)
+function ALittleIDE.IDEUIControlTree:ShowPasteDialog(target, info, child_index, revoke_bind, callback)
 	local data_list = target:GetDataListForAdd()
 	if ALittle.List_MaxN(data_list) == 0 then
 		g_AUITool:ShowNotice("提示", "当前控件不能添加子控件")
@@ -206,7 +206,7 @@ function IDEUIControlTree:ShowPasteDialog(target, info, child_index, revoke_bind
 		return
 	end
 	if self._paste_control_dialog == nil then
-		self._paste_control_dialog = g_Control:CreateControl("ide_paste_control_dialog", self)
+		self._paste_control_dialog = ALittleIDE.g_Control:CreateControl("ide_paste_control_dialog", self)
 		A_LayerManager:AddToModal(self._paste_control_dialog)
 	end
 	self._paste_control_dialog.visible = true
@@ -220,7 +220,7 @@ function IDEUIControlTree:ShowPasteDialog(target, info, child_index, revoke_bind
 	user_data.callback = callback
 end
 
-function IDEUIControlTree:HandlePasteControlCancel(event)
+function ALittleIDE.IDEUIControlTree:HandlePasteControlCancel(event)
 	self._paste_control_dialog.visible = false
 	local user_data = self._paste_control_dialog._user_data
 	local callback = user_data.callback
@@ -230,7 +230,7 @@ function IDEUIControlTree:HandlePasteControlCancel(event)
 	self._paste_control_dialog._user_data = nil
 end
 
-function IDEUIControlTree:HandlePasteControlConfirm(event)
+function ALittleIDE.IDEUIControlTree:HandlePasteControlConfirm(event)
 	self._paste_control_dialog.visible = false
 	local user_data = self._paste_control_dialog._user_data
 	self._paste_control_dialog._user_data = nil
@@ -243,17 +243,17 @@ function IDEUIControlTree:HandlePasteControlConfirm(event)
 	end
 end
 
-function IDEUIControlTree:ControlTreeJump(target)
+function ALittleIDE.IDEUIControlTree:ControlTreeJump(target)
 	local extends_name = target.user_info.base.__extends
-	local control_info = g_IDEProject.project.ui.control_map[extends_name]
+	local control_info = ALittleIDE.g_IDEProject.project.ui.control_map[extends_name]
 	if control_info == nil then
 		g_AUITool:ShowNotice("错误", "控件不存在:" .. extends_name)
 		return
 	end
-	g_IDECenter.center.content_edit:StartEditControlBySelect(control_info.name, control_info.info)
+	ALittleIDE.g_IDECenter.center.content_edit:StartEditControlBySelect(control_info.name, control_info.info)
 end
 
-function IDEUIControlTree:ControlTreeDesc(target)
+function ALittleIDE.IDEUIControlTree:ControlTreeDesc(target)
 	local x, y = target:LocalToGlobal()
 	local desc = target:GetDesc()
 	local name = g_AUITool:ShowRename(desc, x, y, target.width)
@@ -262,10 +262,10 @@ function IDEUIControlTree:ControlTreeDesc(target)
 	end
 	target:SetDesc(name)
 end
-IDEUIControlTree.ControlTreeDesc = Lua.CoWrap(IDEUIControlTree.ControlTreeDesc)
+ALittleIDE.IDEUIControlTree.ControlTreeDesc = Lua.CoWrap(ALittleIDE.IDEUIControlTree.ControlTreeDesc)
 
-function IDEUIControlTree:HandleTreeSearchClick(event)
-	local tab = g_IDECenter.center.content_edit.cur_tab
+function ALittleIDE.IDEUIControlTree:HandleTreeSearchClick(event)
+	local tab = ALittleIDE.g_IDECenter.center.content_edit.cur_tab
 	if tab == nil then
 		return
 	end
@@ -285,3 +285,4 @@ function IDEUIControlTree:HandleTreeSearchClick(event)
 	end
 end
 
+end

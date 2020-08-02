@@ -1,15 +1,15 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
 assert(ALittle.LoopObject, " extends class:ALittle.LoopObject is nil")
-LoopAttribute = Lua.Class(ALittle.LoopObject, "ALittle.LoopAttribute")
+ALittle.LoopAttribute = Lua.Class(ALittle.LoopObject, "ALittle.LoopAttribute")
 
-function LoopAttribute:Ctor(target, property, target_value, delay_time)
+function ALittle.LoopAttribute:Ctor(target, property, target_value, delay_time)
 	___rawset(self, "_target", target)
 	___rawset(self, "_property", property)
 	___rawset(self, "_target_value", target_value)
@@ -22,30 +22,30 @@ function LoopAttribute:Ctor(target, property, target_value, delay_time)
 	___rawset(self, "_complete_callback", nil)
 end
 
-function LoopAttribute.__getter:complete_callback()
+function ALittle.LoopAttribute.__getter:complete_callback()
 	return self._complete_callback
 end
 
-function LoopAttribute.__setter:complete_callback(value)
+function ALittle.LoopAttribute.__setter:complete_callback(value)
 	self._complete_callback = value
 end
 
-function LoopAttribute:Reset()
+function ALittle.LoopAttribute:Reset()
 	self._accumulate_count = 0
 	self._accumulate_delay_time = 0
 end
 
-function LoopAttribute:Completed()
+function ALittle.LoopAttribute:Completed()
 	if self._complete_callback ~= nil then
 		self._complete_callback()
 	end
 end
 
-function LoopAttribute:IsCompleted()
+function ALittle.LoopAttribute:IsCompleted()
 	return self._accumulate_count >= 1
 end
 
-function LoopAttribute:SetCompleted()
+function ALittle.LoopAttribute:SetCompleted()
 	if self._accumulate_count >= 1 then
 		return
 	end
@@ -54,7 +54,7 @@ function LoopAttribute:SetCompleted()
 	self._target[self._property] = self._target_value
 end
 
-function LoopAttribute:SetTime(time)
+function ALittle.LoopAttribute:SetTime(time)
 	self._accumulate_count = 0
 	self._accumulate_delay_time = 0
 	if time <= 0 then
@@ -70,7 +70,7 @@ function LoopAttribute:SetTime(time)
 	return time - self._total_delay_time, true
 end
 
-function LoopAttribute:Update(frame_time)
+function ALittle.LoopAttribute:Update(frame_time)
 	if self._accumulate_delay_time < self._total_delay_time then
 		self._accumulate_delay_time = self._accumulate_delay_time + (frame_time)
 		if self._accumulate_delay_time < self._total_delay_time then
@@ -85,3 +85,4 @@ function LoopAttribute:Update(frame_time)
 	self._target[self._property] = self._target_value
 end
 
+end

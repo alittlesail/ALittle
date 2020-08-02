@@ -1,11 +1,11 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("Lua", package.seeall)
-
+do
+if _G.Lua == nil then _G.Lua = {} end
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-net_type = {
+Lua.net_type = {
 	HTTP_SUCCEED = 1,
 	HTTP_FAILED = 2,
 	HTTP_FILE_SUCCEED = 11,
@@ -19,12 +19,12 @@ net_type = {
 }
 
 assert(ALittle.ISchedule, " extends class:ALittle.ISchedule is nil")
-LuaSchedule = Lua.Class(ALittle.ISchedule, "Lua.LuaSchedule")
+Lua.LuaSchedule = Lua.Class(ALittle.ISchedule, "Lua.LuaSchedule")
 
-function LuaSchedule:Ctor()
+function Lua.LuaSchedule:Ctor()
 end
 
-function LuaSchedule:RunInFrame()
+function Lua.LuaSchedule:RunInFrame()
 	if self._net == nil then
 		self._net = net.create()
 	end
@@ -37,7 +37,7 @@ function LuaSchedule:RunInFrame()
 	end
 end
 
-function LuaSchedule:Run()
+function Lua.LuaSchedule:Run()
 	if self._net == nil then
 		self._net = net.create()
 	end
@@ -47,7 +47,7 @@ function LuaSchedule:Run()
 		if event == nil then
 			break
 		end
-		if event.type == net_type.TIMER then
+		if event.type == Lua.net_type.TIMER then
 			if self._last_time ~= nil then
 				A_LuaLoopSystem:Update(event.time - self._last_time)
 				A_LuaWeakLoopSystem:Update(event.time - self._last_time)
@@ -60,28 +60,29 @@ function LuaSchedule:Run()
 	end
 end
 
-function LuaSchedule:HandleEvent(event)
-	if event.type == net_type.MSG_MESSAGE then
+function Lua.LuaSchedule:HandleEvent(event)
+	if event.type == Lua.net_type.MSG_MESSAGE then
 		self._factory:SetFactory(event.factory)
 		ALittle.__ALITTLEAPI_Message(event.id, event.msg_id, event.rpc_id, self._factory)
 		net.rfactoryrelease(self._net, event.factory)
-	elseif event.type == net_type.HTTP_SUCCEED then
+	elseif event.type == Lua.net_type.HTTP_SUCCEED then
 		ALittle.__ALITTLEAPI_HttpClientSucceed(event.id)
-	elseif event.type == net_type.HTTP_FAILED then
+	elseif event.type == Lua.net_type.HTTP_FAILED then
 		ALittle.__ALITTLEAPI_HttpClientFailed(event.id, event.error)
-	elseif event.type == net_type.HTTP_FILE_SUCCEED then
+	elseif event.type == Lua.net_type.HTTP_FILE_SUCCEED then
 		ALittle.__ALITTLEAPI_HttpFileSucceed(event.id)
-	elseif event.type == net_type.HTTP_FILE_FAILED then
+	elseif event.type == Lua.net_type.HTTP_FILE_FAILED then
 		ALittle.__ALITTLEAPI_HttpFileFailed(event.id, event.error)
-	elseif event.type == net_type.HTTP_FILE_PROGRESS then
+	elseif event.type == Lua.net_type.HTTP_FILE_PROGRESS then
 		ALittle.__ALITTLEAPI_HttpFileProcess(event.id, event.cur_size, event.total_size)
-	elseif event.type == net_type.MSG_CONNECT_SUCCEED then
+	elseif event.type == Lua.net_type.MSG_CONNECT_SUCCEED then
 		ALittle.__ALITTLEAPI_ConnectSucceed(event.id)
-	elseif event.type == net_type.MSG_CONNECT_FAILED then
+	elseif event.type == Lua.net_type.MSG_CONNECT_FAILED then
 		ALittle.__ALITTLEAPI_ConnectFailed(event.id)
-	elseif event.type == net_type.MSG_DISCONNECTED then
+	elseif event.type == Lua.net_type.MSG_DISCONNECTED then
 		ALittle.__ALITTLEAPI_Disconnect(event.id)
 	end
 end
 
-_G.A_LuaSchedule = LuaSchedule()
+_G.A_LuaSchedule = Lua.LuaSchedule()
+end

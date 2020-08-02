@@ -1,46 +1,46 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittleIDE", package.seeall)
-
+do
+if _G.ALittleIDE == nil then _G.ALittleIDE = {} end
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
 assert(ALittle.Linear, " extends class:ALittle.Linear is nil")
-IDEUIMainMenu = Lua.Class(ALittle.Linear, "ALittleIDE.IDEUIMainMenu")
+ALittleIDE.IDEUIMainMenu = Lua.Class(ALittle.Linear, "ALittleIDE.IDEUIMainMenu")
 
-function IDEUIMainMenu:TCtor()
-	local version_ip = g_IDEServerConfig:GetConfig("version_ip", "139.159.176.119")
-	local version_port = g_IDEServerConfig:GetConfig("version_port", 1100)
+function ALittleIDE.IDEUIMainMenu:TCtor()
+	local version_ip = ALittleIDE.g_IDEServerConfig:GetConfig("version_ip", "139.159.176.119")
+	local version_port = ALittleIDE.g_IDEServerConfig:GetConfig("version_port", 1100)
 	self._version_manager = AUIPlugin.AUIVersionManager(version_ip, version_port, "alittle", "ALittleIDE")
-	if not g_Control.crypt_mode then
+	if not ALittleIDE.g_Control.crypt_mode then
 		self._version_manager:CheckVersionUpdate()
 	end
 end
 
-function IDEUIMainMenu:Shutdown()
+function ALittleIDE.IDEUIMainMenu:Shutdown()
 	self._version_manager:Shutdown()
 end
 
-function IDEUIMainMenu:HandleFileMenuClick(event)
+function ALittleIDE.IDEUIMainMenu:HandleFileMenuClick(event)
 	local menu = AUIPlugin.AUIRightMenu()
-	menu:AddItem("新建", Lua.Bind(g_IDEProjectNewDialog.ShowNewProject, g_IDEProjectNewDialog))
-	menu:AddItem("打开", Lua.Bind(g_IDEProjectOpenDialog.ShowOpenProject, g_IDEProjectOpenDialog))
-	menu:AddItem("设置", Lua.Bind(g_IDEProjectSettingDialog.ShowSettingProject, g_IDEProjectSettingDialog))
-	menu:AddItem("保存", Lua.Bind(g_IDECenter.center.content_edit.SaveAllTab, g_IDECenter.center.content_edit))
-	menu:AddItem("刷新", Lua.Bind(g_IDECenter.RefreshProject, g_IDECenter))
-	menu:AddItem("导出项目", Lua.Bind(g_IDEProjectExportDialog.ShowExportProject, g_IDEProjectExportDialog))
+	menu:AddItem("新建", Lua.Bind(ALittleIDE.g_IDEProjectNewDialog.ShowNewProject, ALittleIDE.g_IDEProjectNewDialog))
+	menu:AddItem("打开", Lua.Bind(ALittleIDE.g_IDEProjectOpenDialog.ShowOpenProject, ALittleIDE.g_IDEProjectOpenDialog))
+	menu:AddItem("设置", Lua.Bind(ALittleIDE.g_IDEProjectSettingDialog.ShowSettingProject, ALittleIDE.g_IDEProjectSettingDialog))
+	menu:AddItem("保存", Lua.Bind(ALittleIDE.g_IDECenter.center.content_edit.SaveAllTab, ALittleIDE.g_IDECenter.center.content_edit))
+	menu:AddItem("刷新", Lua.Bind(ALittleIDE.g_IDECenter.RefreshProject, ALittleIDE.g_IDECenter))
+	menu:AddItem("导出项目", Lua.Bind(ALittleIDE.g_IDEProjectExportDialog.ShowExportProject, ALittleIDE.g_IDEProjectExportDialog))
 	menu:Show(event.target)
 end
 
-function IDEUIMainMenu:HandleEditMenuClick(event)
+function ALittleIDE.IDEUIMainMenu:HandleEditMenuClick(event)
 	local menu = AUIPlugin.AUIRightMenu()
-	menu:AddItem("新建控件", Lua.Bind(g_IDECenter.center.control_list.ShowNewControl, g_IDECenter.center.control_list))
-	menu:AddItem("重做", Lua.Bind(g_IDECenter.center.HandleDoRevoke, g_IDECenter.center, nil))
-	menu:AddItem("撤销", Lua.Bind(g_IDECenter.center.HandleUndoRevoke, g_IDECenter.center, nil))
+	menu:AddItem("新建控件", Lua.Bind(ALittleIDE.g_IDECenter.center.control_list.ShowNewControl, ALittleIDE.g_IDECenter.center.control_list))
+	menu:AddItem("重做", Lua.Bind(ALittleIDE.g_IDECenter.center.HandleDoRevoke, ALittleIDE.g_IDECenter.center, nil))
+	menu:AddItem("撤销", Lua.Bind(ALittleIDE.g_IDECenter.center.HandleUndoRevoke, ALittleIDE.g_IDECenter.center, nil))
 	menu:Show(event.target)
 end
 
-function IDEUIMainMenu:HandleToolMenuClick(event)
+function ALittleIDE.IDEUIMainMenu:HandleToolMenuClick(event)
 	local menu = AUIPlugin.AUIRightMenu()
 	menu:AddItem("生成core_all_in_one", Lua.Bind(self.HandleGenCoreAllInOneClick, self))
 	menu:AddItem("生成std_all_in_one", Lua.Bind(self.HandleGenStdAllInOneClick, self))
@@ -48,15 +48,15 @@ function IDEUIMainMenu:HandleToolMenuClick(event)
 	menu:Show(event.target)
 end
 
-function IDEUIMainMenu:HandleVersionMenuClick(event)
+function ALittleIDE.IDEUIMainMenu:HandleVersionMenuClick(event)
 	self._version_manager:ShowDialog()
 end
 
-function IDEUIMainMenu:HandleRunMenuClick(event)
-	g_IDEProject:RunProject()
+function ALittleIDE.IDEUIMainMenu:HandleRunMenuClick(event)
+	ALittleIDE.g_IDEProject:RunProject()
 end
 
-function IDEUIMainMenu:HandleGenCoreAllInOneClick()
+function ALittleIDE.IDEUIMainMenu:HandleGenCoreAllInOneClick()
 	local all_in_one = {}
 	local base_path = "Module/ALittleIDE/Other/GameLibrary/Core/JSScript/"
 	local file_list = {}
@@ -81,7 +81,7 @@ function IDEUIMainMenu:HandleGenCoreAllInOneClick()
 	end
 end
 
-function IDEUIMainMenu:HandleGenStdAllInOneClick()
+function ALittleIDE.IDEUIMainMenu:HandleGenStdAllInOneClick()
 	local all_in_one = {}
 	local base_path = "Module/ALittleIDE/Other/GameLibrary/Std/JSScript/"
 	local file_list = {}
@@ -113,7 +113,7 @@ function IDEUIMainMenu:HandleGenStdAllInOneClick()
 	end
 end
 
-function IDEUIMainMenu:HandleGenCEngineAllInOneClick()
+function ALittleIDE.IDEUIMainMenu:HandleGenCEngineAllInOneClick()
 	local base_path = "Module/ALittleIDE/Other/GameLibrary/CEngine/JSScript/"
 	local file_list = {}
 	ALittle.List_Push(file_list, base_path .. "ALittle.js")
@@ -221,3 +221,4 @@ function IDEUIMainMenu:HandleGenCEngineAllInOneClick()
 	g_AUITool:ShowNotice("提示", "生成成功")
 end
 
+end

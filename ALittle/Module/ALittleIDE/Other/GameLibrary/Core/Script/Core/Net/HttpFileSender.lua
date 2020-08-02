@@ -1,45 +1,45 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-IHttpFileSender = Lua.Class(nil, "ALittle.IHttpFileSender")
+ALittle.IHttpFileSender = Lua.Class(nil, "ALittle.IHttpFileSender")
 
-function IHttpFileSender:HandleSucceed()
+function ALittle.IHttpFileSender:HandleSucceed()
 end
 
-function IHttpFileSender:HandleProcess(cur_size, total_size)
+function ALittle.IHttpFileSender:HandleProcess(cur_size, total_size)
 end
 
-function IHttpFileSender:HandleFailed(reason)
+function ALittle.IHttpFileSender:HandleFailed(reason)
 end
 
-function IHttpFileSender:Stop()
+function ALittle.IHttpFileSender:Stop()
 end
 
-function IHttpFileSender:GetFilePath()
+function ALittle.IHttpFileSender:GetFilePath()
 	return nil
 end
 
-function IHttpFileSender:GetTotalSize()
+function ALittle.IHttpFileSender:GetTotalSize()
 	return 0
 end
 
-function IHttpFileSender:GetCurSize()
+function ALittle.IHttpFileSender:GetCurSize()
 	return 0
 end
 
-function IHttpFileSender:SendDownloadRPC(thread, method, content)
+function ALittle.IHttpFileSender:SendDownloadRPC(thread, method, content)
 	Lua.Throw("not impl")
 end
 
-function IHttpFileSender:SendUploadRPC(thread, method, content)
+function ALittle.IHttpFileSender:SendUploadRPC(thread, method, content)
 	Lua.Throw("not impl")
 end
 
-function IHttpFileSender.InvokeDownload(method, client, content)
+function ALittle.IHttpFileSender.InvokeDownload(method, client, content)
 	local ___COROUTINE = coroutine.running()
 	if ___COROUTINE == nil then
 		return "当前不是协程"
@@ -48,7 +48,7 @@ function IHttpFileSender.InvokeDownload(method, client, content)
 	return coroutine.yield()
 end
 
-function IHttpFileSender.InvokeUpload(method, client, content)
+function ALittle.IHttpFileSender.InvokeUpload(method, client, content)
 	local ___COROUTINE = coroutine.running()
 	if ___COROUTINE == nil then
 		return "当前不是协程"
@@ -57,3 +57,4 @@ function IHttpFileSender.InvokeUpload(method, client, content)
 	return coroutine.yield()
 end
 
+end

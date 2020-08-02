@@ -1,6 +1,6 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittleIDE", package.seeall)
-
+do
+if _G.ALittleIDE == nil then _G.ALittleIDE = {} end
 local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = ALittle.GetAllStruct()
@@ -18,11 +18,11 @@ type_list = {"ALittle.DisplayObject","bool"},
 option_map = {}
 })
 
-IDEAttrEventDialog = Lua.Class(nil, "ALittleIDE.IDEAttrEventDialog")
+ALittleIDE.IDEAttrEventDialog = Lua.Class(nil, "ALittleIDE.IDEAttrEventDialog")
 
-function IDEAttrEventDialog:ShowDialog(target_panel, text, need_reset)
+function ALittleIDE.IDEAttrEventDialog:ShowDialog(target_panel, text, need_reset)
 	if self._dialog == nil then
-		self._dialog = g_Control:CreateControl("ide_event_edit_dialog", self)
+		self._dialog = ALittleIDE.g_Control:CreateControl("ide_event_edit_dialog", self)
 		A_LayerManager:AddToModal(self._dialog)
 	end
 	self._dialog.visible = true
@@ -33,18 +33,18 @@ function IDEAttrEventDialog:ShowDialog(target_panel, text, need_reset)
 	A_UISystem.focus = self._event_edit.show_edit
 end
 
-function IDEAttrEventDialog:HideDialog()
+function ALittleIDE.IDEAttrEventDialog:HideDialog()
 	self._dialog.visible = false
 end
 
-function IDEAttrEventDialog:IsShow()
+function ALittleIDE.IDEAttrEventDialog:IsShow()
 	if self._dialog == nil then
 		return false
 	end
 	return self._dialog.visible
 end
 
-function IDEAttrEventDialog:HandleEventConfirm(event)
+function ALittleIDE.IDEAttrEventDialog:HandleEventConfirm(event)
 	local content = self._event_edit.text
 	if content == "" then
 		self._dialog.visible = false
@@ -86,7 +86,7 @@ function IDEAttrEventDialog:HandleEventConfirm(event)
 	self._target_panel:TableDataSet(self._target_text, false)
 end
 
-function IDEAttrEventDialog:ResetText()
+function ALittleIDE.IDEAttrEventDialog:ResetText()
 	local info = self._target_panel.base[self._target_text]
 	if info == nil then
 		info = self._target_panel.default[self._target_text]
@@ -108,11 +108,11 @@ function IDEAttrEventDialog:ResetText()
 	self._revoke_list = ALittle.RevokeList()
 end
 
-function IDEAttrEventDialog:ShowEventSelectDialog(x, y)
+function ALittleIDE.IDEAttrEventDialog:ShowEventSelectDialog(x, y)
 	if self._select_dialog == nil then
-		self._select_dialog = g_Control:CreateControl("ide_event_select_screen", self)
-		for k, v in ___ipairs(g_IDEEnum.event_type_list) do
-			local button = g_Control:CreateControl("ide_common_item_button")
+		self._select_dialog = ALittleIDE.g_Control:CreateControl("ide_event_select_screen", self)
+		for k, v in ___ipairs(ALittleIDE.g_IDEEnum.event_type_list) do
+			local button = ALittleIDE.g_Control:CreateControl("ide_common_item_button")
 			button.text = v
 			button:AddEventListener(___all_struct[-449066808], self, self.HandleEventSelectClick)
 			button.drag_trans_target = self._select_dialog
@@ -124,24 +124,24 @@ function IDEAttrEventDialog:ShowEventSelectDialog(x, y)
 	A_LayerManager:ShowFromRight(self._select_dialog)
 end
 
-function IDEAttrEventDialog:HandleEventSelectClick(event)
+function ALittleIDE.IDEAttrEventDialog:HandleEventSelectClick(event)
 	A_LayerManager:HideFromRight(self._select_dialog)
 	local text = event.target.text
 	self._event_edit:InsertText("ALittle." .. text)
 end
 
-function IDEAttrEventDialog:HandleEventRightButtonDown(event)
+function ALittleIDE.IDEAttrEventDialog:HandleEventRightButtonDown(event)
 	self:ShowEventSelectDialog(A_UISystem.mouse_x, A_UISystem.mouse_y)
 end
 
-function IDEAttrEventDialog:HandleEventChange(event)
+function ALittleIDE.IDEAttrEventDialog:HandleEventChange(event)
 	local edit_new_text = self._event_edit.text
-	local revoke = IDETextEditRevoke(self._event_edit, self._edit_old_text, edit_new_text)
+	local revoke = ALittleIDE.IDETextEditRevoke(self._event_edit, self._edit_old_text, edit_new_text)
 	self._edit_old_text = edit_new_text
 	self._revoke_list:PushRevoke(revoke)
 end
 
-function IDEAttrEventDialog:HandleEventKeyDown(event)
+function ALittleIDE.IDEAttrEventDialog:HandleEventKeyDown(event)
 	local ctrl = A_UISystem.sym_map[1073742048]
 	if ctrl == nil then
 		return false
@@ -153,4 +153,5 @@ function IDEAttrEventDialog:HandleEventKeyDown(event)
 	return true
 end
 
-g_IDEAttrEventDialog = IDEAttrEventDialog()
+ALittleIDE.g_IDEAttrEventDialog = ALittleIDE.IDEAttrEventDialog()
+end

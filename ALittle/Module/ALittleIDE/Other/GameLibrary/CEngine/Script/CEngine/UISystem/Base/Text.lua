@@ -1,18 +1,18 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-local __tostring = String_ToString
-local __byte = String_Byte
-local __type = String_Type
+local __tostring = ALittle.String_ToString
+local __byte = ALittle.String_Byte
+local __type = ALittle.String_Type
 assert(ALittle.DisplayObject, " extends class:ALittle.DisplayObject is nil")
-Text = Lua.Class(ALittle.DisplayObject, "ALittle.Text")
+ALittle.Text = Lua.Class(ALittle.DisplayObject, "ALittle.Text")
 
-function Text:Ctor(ctrl_sys)
+function ALittle.Text:Ctor(ctrl_sys)
 	___rawset(self, "_text", "")
 	___rawset(self, "_bold", false)
 	___rawset(self, "_italic", false)
@@ -23,11 +23,11 @@ function Text:Ctor(ctrl_sys)
 	A_LoadTextureManager:RegisterRedrawControl(self)
 end
 
-function Text:Redraw()
+function ALittle.Text:Redraw()
 	self._show:NeedDraw()
 end
 
-function Text.__setter:font_path(value)
+function ALittle.Text.__setter:font_path(value)
 	self._font_path = value
 	if self._font_path == nil or self._font_size == nil then
 		return
@@ -36,7 +36,7 @@ function Text.__setter:font_path(value)
 	self:RejuseSize()
 end
 
-function Text.__setter:font_size(value)
+function ALittle.Text.__setter:font_size(value)
 	self._font_size = value
 	if self._font_path == nil or self._font_size == nil then
 		return
@@ -45,15 +45,15 @@ function Text.__setter:font_size(value)
 	self:RejuseSize()
 end
 
-function Text.__getter:font_path()
+function ALittle.Text.__getter:font_path()
 	return self._font_path
 end
 
-function Text.__getter:font_size()
+function ALittle.Text.__getter:font_size()
 	return self._font_size
 end
 
-function Text.__setter:text(value)
+function ALittle.Text.__setter:text(value)
 	if value == nil then
 		return
 	end
@@ -66,11 +66,11 @@ function Text.__setter:text(value)
 	self:RejuseSize()
 end
 
-function Text.__getter:text()
+function ALittle.Text.__getter:text()
 	return self._text
 end
 
-function Text.__setter:bold(value)
+function ALittle.Text.__setter:bold(value)
 	if self._bold == value then
 		return
 	end
@@ -79,11 +79,11 @@ function Text.__setter:bold(value)
 	self:RejuseSize()
 end
 
-function Text.__getter:bold()
+function ALittle.Text.__getter:bold()
 	return self._bold
 end
 
-function Text.__setter:italic(value)
+function ALittle.Text.__setter:italic(value)
 	if self._italic == value then
 		return
 	end
@@ -92,11 +92,11 @@ function Text.__setter:italic(value)
 	self:RejuseSize()
 end
 
-function Text.__getter:italic()
+function ALittle.Text.__getter:italic()
 	return self._italic
 end
 
-function Text.__setter:underline(value)
+function ALittle.Text.__setter:underline(value)
 	if self._underline == value then
 		return
 	end
@@ -105,11 +105,11 @@ function Text.__setter:underline(value)
 	self:RejuseSize()
 end
 
-function Text.__getter:underline()
+function ALittle.Text.__getter:underline()
 	return self._underline
 end
 
-function Text.__setter:deleteline(value)
+function ALittle.Text.__setter:deleteline(value)
 	if self._deleteline == value then
 		return
 	end
@@ -118,11 +118,11 @@ function Text.__setter:deleteline(value)
 	self:RejuseSize()
 end
 
-function Text.__getter:deleteline()
+function ALittle.Text.__getter:deleteline()
 	return self._deleteline
 end
 
-function Text:RejuseSize()
+function ALittle.Text:RejuseSize()
 	if self._font_path == nil or self._font_size == nil then
 		return
 	end
@@ -131,14 +131,14 @@ function Text:RejuseSize()
 	self:UpdateLayout()
 end
 
-function Text.__setter:rejust_size(value)
+function ALittle.Text.__setter:rejust_size(value)
 	if value ~= true then
 		return
 	end
 	self:RejuseSize()
 end
 
-function Text:DeserializeSetter(info)
+function ALittle.Text:DeserializeSetter(info)
 	local base_attr = info.__base_attr
 	if base_attr == nil then
 		base_attr = {}
@@ -157,16 +157,17 @@ function Text:DeserializeSetter(info)
 	end
 end
 
-function Text.__getter:font_height()
+function ALittle.Text.__getter:font_height()
 	return self._show:GetFontHeight()
 end
 
-function Text.__getter:flip()
+function ALittle.Text.__getter:flip()
 	return self._flip
 end
 
-function Text.__setter:flip(value)
+function ALittle.Text.__setter:flip(value)
 	self._flip = value
 	self._show:SetFlip(value)
 end
 
+end

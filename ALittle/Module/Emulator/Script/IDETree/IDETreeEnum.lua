@@ -1,15 +1,15 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("Emulator", package.seeall)
-
+do
+if _G.Emulator == nil then _G.Emulator = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
 assert(Emulator.IDETreeLogic, " extends class:Emulator.IDETreeLogic is nil")
-IDETreeEnum = Lua.Class(Emulator.IDETreeLogic, "Emulator.IDETreeEnum")
+Emulator.IDETreeEnum = Lua.Class(Emulator.IDETreeLogic, "Emulator.IDETreeEnum")
 
-function IDETreeEnum:Ctor(ctrl_sys, root, field_name, rflct, msg, field)
+function Emulator.IDETreeEnum:Ctor(ctrl_sys, root, field_name, rflct, msg, field)
 	___rawset(self, "_rflct", rflct)
 	___rawset(self, "_msg", msg)
 	___rawset(self, "_field", field)
@@ -44,7 +44,7 @@ function IDETreeEnum:Ctor(ctrl_sys, root, field_name, rflct, msg, field)
 	self._value_dropdown.disabled = root.for_show
 end
 
-function IDETreeEnum:HandleSelectChanegd(event)
+function Emulator.IDETreeEnum:HandleSelectChanegd(event)
 	local value = self._enum_value_map[event.target.text]
 	if value == nil then
 		return
@@ -53,3 +53,4 @@ function IDETreeEnum:HandleSelectChanegd(event)
 	self:Save()
 end
 
+end

@@ -1,390 +1,391 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-IDisplayObject = Lua.Class(nil, "ALittle.IDisplayObject")
+ALittle.IDisplayObject = Lua.Class(nil, "ALittle.IDisplayObject")
 
-function IDisplayObject:SetX(value)
+function ALittle.IDisplayObject:SetX(value)
 end
 
-function IDisplayObject:SetY(value)
+function ALittle.IDisplayObject:SetY(value)
 end
 
-function IDisplayObject:SetScaleX(value)
+function ALittle.IDisplayObject:SetScaleX(value)
 end
 
-function IDisplayObject:SetScaleY(value)
+function ALittle.IDisplayObject:SetScaleY(value)
 end
 
-function IDisplayObject:SetCenterX(value)
+function ALittle.IDisplayObject:SetCenterX(value)
 end
 
-function IDisplayObject:SetCenterY(value)
+function ALittle.IDisplayObject:SetCenterY(value)
 end
 
-function IDisplayObject:SetAngle(value)
+function ALittle.IDisplayObject:SetAngle(value)
 end
 
-function IDisplayObject:SetRed(value)
+function ALittle.IDisplayObject:SetRed(value)
 end
 
-function IDisplayObject:SetGreen(value)
+function ALittle.IDisplayObject:SetGreen(value)
 end
 
-function IDisplayObject:SetBlue(value)
+function ALittle.IDisplayObject:SetBlue(value)
 end
 
-function IDisplayObject:SetAlpha(value)
+function ALittle.IDisplayObject:SetAlpha(value)
 end
 
-function IDisplayObject:SetClip(value)
+function ALittle.IDisplayObject:SetClip(value)
 end
 
-function IDisplayObject:SetWidth(value)
+function ALittle.IDisplayObject:SetWidth(value)
 end
 
-function IDisplayObject:SetHeight(value)
+function ALittle.IDisplayObject:SetHeight(value)
 end
 
-function IDisplayObject:SetVisible(value)
+function ALittle.IDisplayObject:SetVisible(value)
 end
 
-function IDisplayObject:RemoveChild(value)
+function ALittle.IDisplayObject:RemoveChild(value)
 end
 
-function IDisplayObject:AddChild(value)
+function ALittle.IDisplayObject:AddChild(value)
 end
 
-function IDisplayObject:AddChildBefore(value1, value2)
+function ALittle.IDisplayObject:AddChildBefore(value1, value2)
 end
 
-function IDisplayObject:RemoveAllChild()
+function ALittle.IDisplayObject:RemoveAllChild()
 end
 
-function IDisplayObject:SetFont(path, size)
+function ALittle.IDisplayObject:SetFont(path, size)
 end
 
-function IDisplayObject:ClearTexture()
+function ALittle.IDisplayObject:ClearTexture()
 end
 
-function IDisplayObject:SetTexture(texture)
+function ALittle.IDisplayObject:SetTexture(texture)
 end
 
-function IDisplayObject:SetTextureCoord(t, b, l, r)
+function ALittle.IDisplayObject:SetTextureCoord(t, b, l, r)
 end
 
-function IDisplayObject:SetFlip(value)
+function ALittle.IDisplayObject:SetFlip(value)
 end
 
-function IDisplayObject:SetRowColCount(row_count, col_count)
+function ALittle.IDisplayObject:SetRowColCount(row_count, col_count)
 end
 
-function IDisplayObject:SetRowColIndex(row, col)
+function ALittle.IDisplayObject:SetRowColIndex(row, col)
 end
 
-function IDisplayObject:NeedDraw()
+function ALittle.IDisplayObject:NeedDraw()
 end
 
-function IDisplayObject:SetText(value)
+function ALittle.IDisplayObject:SetText(value)
 end
 
-function IDisplayObject:SetBold(value)
+function ALittle.IDisplayObject:SetBold(value)
 end
 
-function IDisplayObject:SetItalic(value)
+function ALittle.IDisplayObject:SetItalic(value)
 end
 
-function IDisplayObject:SetUnderline(value)
+function ALittle.IDisplayObject:SetUnderline(value)
 end
 
-function IDisplayObject:SetDeleteline(value)
+function ALittle.IDisplayObject:SetDeleteline(value)
 end
 
-function IDisplayObject:GetRealWidth()
+function ALittle.IDisplayObject:GetRealWidth()
 	return 0
 end
 
-function IDisplayObject:GetRealHeight()
+function ALittle.IDisplayObject:GetRealHeight()
 	return 0
 end
 
-function IDisplayObject:GetFontHeight()
+function ALittle.IDisplayObject:GetFontHeight()
 	return 0
 end
 
-function IDisplayObject:SetHAlign(value)
+function ALittle.IDisplayObject:SetHAlign(value)
 end
 
-function IDisplayObject:SetVAlign(value)
+function ALittle.IDisplayObject:SetVAlign(value)
 end
 
-function IDisplayObject:SetCursorAlpha(value)
+function ALittle.IDisplayObject:SetCursorAlpha(value)
 end
 
-function IDisplayObject:GetLineWidth(value)
+function ALittle.IDisplayObject:GetLineWidth(value)
 	return 0
 end
 
-function IDisplayObject:GetLineCount()
+function ALittle.IDisplayObject:GetLineCount()
 	return 0
 end
 
-function IDisplayObject:GetScrollOffset()
+function ALittle.IDisplayObject:GetScrollOffset()
 	return 0
 end
 
-function IDisplayObject:IsDefaultText()
+function ALittle.IDisplayObject:IsDefaultText()
 	return false
 end
 
-function IDisplayObject:SetDefaultText(defaultv, value)
+function ALittle.IDisplayObject:SetDefaultText(defaultv, value)
 end
 
-function IDisplayObject:SetDefaultTextAlpha(value)
+function ALittle.IDisplayObject:SetDefaultTextAlpha(value)
 end
 
-function IDisplayObject:GetCursorX()
+function ALittle.IDisplayObject:GetCursorX()
 	return 0
 end
 
-function IDisplayObject:GetCursorY()
+function ALittle.IDisplayObject:GetCursorY()
 	return 0
 end
 
-function IDisplayObject:GetCursorHeight()
+function ALittle.IDisplayObject:GetCursorHeight()
 	return 0
 end
 
-function IDisplayObject:GetText()
+function ALittle.IDisplayObject:GetText()
 	return nil
 end
 
-function IDisplayObject:SetCursorToEnd()
+function ALittle.IDisplayObject:SetCursorToEnd()
 end
 
-function IDisplayObject:SetCursorToHome()
+function ALittle.IDisplayObject:SetCursorToHome()
 end
 
-function IDisplayObject:ShowCursor(value)
+function ALittle.IDisplayObject:ShowCursor(value)
 end
 
-function IDisplayObject:ClickCursor(x, y)
+function ALittle.IDisplayObject:ClickCursor(x, y)
 end
 
-function IDisplayObject:ClickWordCursor(x, y)
+function ALittle.IDisplayObject:ClickWordCursor(x, y)
 	return false
 end
 
-function IDisplayObject:SelectAll()
+function ALittle.IDisplayObject:SelectAll()
 end
 
-function IDisplayObject:GetSelectText()
+function ALittle.IDisplayObject:GetSelectText()
 	return nil
 end
 
-function IDisplayObject:InsertText(value)
+function ALittle.IDisplayObject:InsertText(value)
 	return false
 end
 
-function IDisplayObject:CursorOffsetLR(value)
+function ALittle.IDisplayObject:CursorOffsetLR(value)
 end
 
-function IDisplayObject:SelectCursorOffsetLR(value)
+function ALittle.IDisplayObject:SelectCursorOffsetLR(value)
 end
 
-function IDisplayObject:CursorOffsetUD(value)
+function ALittle.IDisplayObject:CursorOffsetUD(value)
 end
 
-function IDisplayObject:SelectCursorOffsetUD(value)
+function ALittle.IDisplayObject:SelectCursorOffsetUD(value)
 end
 
-function IDisplayObject:DeleteText(value)
+function ALittle.IDisplayObject:DeleteText(value)
 	return false
 end
 
-function IDisplayObject:DeleteSelectText()
+function ALittle.IDisplayObject:DeleteSelectText()
 	return false
 end
 
-function IDisplayObject:DragCursorBegin()
+function ALittle.IDisplayObject:DragCursorBegin()
 end
 
-function IDisplayObject:DragCursor(x, y)
+function ALittle.IDisplayObject:DragCursor(x, y)
 end
 
-function IDisplayObject:SetCursorRed(value)
+function ALittle.IDisplayObject:SetCursorRed(value)
 end
 
-function IDisplayObject:SetCursorGreen(value)
+function ALittle.IDisplayObject:SetCursorGreen(value)
 end
 
-function IDisplayObject:SetCursorBlue(value)
+function ALittle.IDisplayObject:SetCursorBlue(value)
 end
 
-function IDisplayObject:SetPasswordMode(value)
+function ALittle.IDisplayObject:SetPasswordMode(value)
 end
 
-function IDisplayObject:CursorOffset(value)
+function ALittle.IDisplayObject:CursorOffset(value)
 end
 
-function IDisplayObject:SelectCursorOffset(value)
+function ALittle.IDisplayObject:SelectCursorOffset(value)
 end
 
-function IDisplayObject:SetTexUV(index, u, v)
+function ALittle.IDisplayObject:SetTexUV(index, u, v)
 end
 
-function IDisplayObject:SetPosXY(index, x, y)
+function ALittle.IDisplayObject:SetPosXY(index, x, y)
 end
 
-function IDisplayObject:SetLeftSize(value)
+function ALittle.IDisplayObject:SetLeftSize(value)
 end
 
-function IDisplayObject:SetRightSize(value)
+function ALittle.IDisplayObject:SetRightSize(value)
 end
 
-function IDisplayObject:SetTopSize(value)
+function ALittle.IDisplayObject:SetTopSize(value)
 end
 
-function IDisplayObject:SetBottomSize(value)
+function ALittle.IDisplayObject:SetBottomSize(value)
 end
 
-function IDisplayObject:CutTextByWidth(remain_width, text, total_width)
+function ALittle.IDisplayObject:CutTextByWidth(remain_width, text, total_width)
 	return 0
 end
 
-function IDisplayObject:ClearCutWidthCache()
+function ALittle.IDisplayObject:ClearCutWidthCache()
 end
 
-function IDisplayObject:GetCutWidthListCount()
+function ALittle.IDisplayObject:GetCutWidthListCount()
 	return 0
 end
 
-function IDisplayObject:GetCutWidthByIndex(index)
+function ALittle.IDisplayObject:GetCutWidthByIndex(index)
 	return 0
 end
 
-function IDisplayObject:CalcTextWidth(value)
+function ALittle.IDisplayObject:CalcTextWidth(value)
 	return 0
 end
 
 assert(ALittle.IDisplayObject, " extends class:ALittle.IDisplayObject is nil")
-IDisplayObjects = Lua.Class(ALittle.IDisplayObject, "ALittle.IDisplayObjects")
+ALittle.IDisplayObjects = Lua.Class(ALittle.IDisplayObject, "ALittle.IDisplayObjects")
 
 assert(ALittle.IDisplayObject, " extends class:ALittle.IDisplayObject is nil")
-IDisplayView = Lua.Class(ALittle.IDisplayObject, "ALittle.IDisplayView")
+ALittle.IDisplayView = Lua.Class(ALittle.IDisplayObject, "ALittle.IDisplayView")
 
 assert(ALittle.IDisplayObject, " extends class:ALittle.IDisplayObject is nil")
-IImage = Lua.Class(ALittle.IDisplayObject, "ALittle.IImage")
+ALittle.IImage = Lua.Class(ALittle.IDisplayObject, "ALittle.IImage")
 
 assert(ALittle.IDisplayObject, " extends class:ALittle.IDisplayObject is nil")
-IQuad = Lua.Class(ALittle.IDisplayObject, "ALittle.IQuad")
+ALittle.IQuad = Lua.Class(ALittle.IDisplayObject, "ALittle.IQuad")
 
 assert(ALittle.IDisplayObject, " extends class:ALittle.IDisplayObject is nil")
-ISprite = Lua.Class(ALittle.IDisplayObject, "ALittle.ISprite")
+ALittle.ISprite = Lua.Class(ALittle.IDisplayObject, "ALittle.ISprite")
 
 assert(ALittle.IDisplayObject, " extends class:ALittle.IDisplayObject is nil")
-IText = Lua.Class(ALittle.IDisplayObject, "ALittle.IText")
+ALittle.IText = Lua.Class(ALittle.IDisplayObject, "ALittle.IText")
 
 assert(ALittle.IDisplayObject, " extends class:ALittle.IDisplayObject is nil")
-ITextArea = Lua.Class(ALittle.IDisplayObject, "ALittle.ITextArea")
+ALittle.ITextArea = Lua.Class(ALittle.IDisplayObject, "ALittle.ITextArea")
 
 assert(ALittle.IDisplayObject, " extends class:ALittle.IDisplayObject is nil")
-ITextEdit = Lua.Class(ALittle.IDisplayObject, "ALittle.ITextEdit")
+ALittle.ITextEdit = Lua.Class(ALittle.IDisplayObject, "ALittle.ITextEdit")
 
 assert(ALittle.IDisplayObject, " extends class:ALittle.IDisplayObject is nil")
-ITextInput = Lua.Class(ALittle.IDisplayObject, "ALittle.ITextInput")
+ALittle.ITextInput = Lua.Class(ALittle.IDisplayObject, "ALittle.ITextInput")
 
 assert(ALittle.IDisplayObject, " extends class:ALittle.IDisplayObject is nil")
-ITriangle = Lua.Class(ALittle.IDisplayObject, "ALittle.ITriangle")
+ALittle.ITriangle = Lua.Class(ALittle.IDisplayObject, "ALittle.ITriangle")
 
 assert(ALittle.IDisplayObject, " extends class:ALittle.IDisplayObject is nil")
-IGrid9Image = Lua.Class(ALittle.IDisplayObject, "ALittle.IGrid9Image")
+ALittle.IGrid9Image = Lua.Class(ALittle.IDisplayObject, "ALittle.IGrid9Image")
 
-IDisplaySystem = Lua.Class(nil, "ALittle.IDisplaySystem")
+ALittle.IDisplaySystem = Lua.Class(nil, "ALittle.IDisplaySystem")
 
-function IDisplaySystem:AddSpecialChild(value)
+function ALittle.IDisplaySystem:AddSpecialChild(value)
 end
 
-function IDisplaySystem:AddChild(value)
+function ALittle.IDisplaySystem:AddChild(value)
 end
 
-function IDisplaySystem:AddChildBefore(value1, value2)
+function ALittle.IDisplaySystem:AddChildBefore(value1, value2)
 end
 
-function IDisplaySystem:RemoveChild(value)
+function ALittle.IDisplaySystem:RemoveChild(value)
 end
 
-function IDisplaySystem:RemoveAllChild()
+function ALittle.IDisplaySystem:RemoveAllChild()
 end
 
-ITexture = Lua.Class(nil, "ALittle.ITexture")
+ALittle.ITexture = Lua.Class(nil, "ALittle.ITexture")
 
-function ITexture:Clear()
+function ALittle.ITexture:Clear()
 end
 
-function ITexture:GetTexture()
+function ALittle.ITexture:GetTexture()
 	return self
 end
 
-function ITexture:GetWidth()
+function ALittle.ITexture:GetWidth()
 	return 0
 end
 
-function ITexture:GetHeight()
+function ALittle.ITexture:GetHeight()
 	return 0
 end
 
 assert(ALittle.ITexture, " extends class:ALittle.ITexture is nil")
-IRenderTexture = Lua.Class(ALittle.ITexture, "ALittle.IRenderTexture")
+ALittle.IRenderTexture = Lua.Class(ALittle.ITexture, "ALittle.IRenderTexture")
 
-function IRenderTexture:Save(file_path, show, width, height, scale)
+function ALittle.IRenderTexture:Save(file_path, show, width, height, scale)
 	return false
 end
 
-function IRenderTexture:Draw(show, width, height, scale)
+function ALittle.IRenderTexture:Draw(show, width, height, scale)
 	return false
 end
 
-ITextureLoader = Lua.Class(nil, "ALittle.ITextureLoader")
+ALittle.ITextureLoader = Lua.Class(nil, "ALittle.ITextureLoader")
 
-function ITextureLoader:SetPath(big_path, altas, big_width, big_height, crypt_mode)
+function ALittle.ITextureLoader:SetPath(big_path, altas, big_width, big_height, crypt_mode)
 end
 
-function ITextureLoader:Start()
+function ALittle.ITextureLoader:Start()
 end
 
-function ITextureLoader:GetID()
+function ALittle.ITextureLoader:GetID()
 	return 0
 end
 
-function ITextureLoader:GetPath()
+function ALittle.ITextureLoader:GetPath()
 	return nil
 end
 
-ITextureCutLoader = Lua.Class(nil, "ALittle.ITextureCutLoader")
+ALittle.ITextureCutLoader = Lua.Class(nil, "ALittle.ITextureCutLoader")
 
-function ITextureCutLoader:SetPath(path, max_width, max_height)
+function ALittle.ITextureCutLoader:SetPath(path, max_width, max_height)
 end
 
-function ITextureCutLoader:Start()
+function ALittle.ITextureCutLoader:Start()
 end
 
-function ITextureCutLoader:GetID()
+function ALittle.ITextureCutLoader:GetID()
 	return 0
 end
 
-function ITextureCutLoader:GetPath()
+function ALittle.ITextureCutLoader:GetPath()
 	return nil
 end
 
-function ITextureCutLoader:GetMaxWidth()
+function ALittle.ITextureCutLoader:GetMaxWidth()
 	return 0
 end
 
-function ITextureCutLoader:GetMaxHeight()
+function ALittle.ITextureCutLoader:GetMaxHeight()
 	return 0
 end
 
+end

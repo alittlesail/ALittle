@@ -1,6 +1,6 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittleIDE", package.seeall)
-
+do
+if _G.ALittleIDE == nil then _G.ALittleIDE = {} end
 local ___pairs = pairs
 local ___ipairs = ipairs
 
@@ -47,7 +47,7 @@ type_list = {"List<string>","any","Map<string,any>","Map<string,ALittle.DisplayI
 option_map = {}
 })
 
-function IDEUIUtility_CalcTextureName(info, map)
+function ALittleIDE.IDEUIUtility_CalcTextureName(info, map)
 	if map == nil then
 		map = {}
 	end
@@ -55,19 +55,19 @@ function IDEUIUtility_CalcTextureName(info, map)
 		if k == "texture_name" then
 			map[v] = true
 		elseif ALittle.String_Type(v) == "table" then
-			IDEUIUtility_CalcTextureName(v, map)
+			ALittleIDE.IDEUIUtility_CalcTextureName(v, map)
 		end
 	end
 	return map
 end
 
-function IDEUIUtility_GetExtends(info, map)
+function ALittleIDE.IDEUIUtility_GetExtends(info, map)
 	if map == nil then
 		map = {}
 	end
 	for k, v in ___pairs(info) do
 		if ALittle.String_Type(v) == "table" then
-			IDEUIUtility_GetExtends(v, map)
+			ALittleIDE.IDEUIUtility_GetExtends(v, map)
 		elseif k == "__extends" or k == "__include" then
 			map[v] = true
 		end
@@ -75,7 +75,7 @@ function IDEUIUtility_GetExtends(info, map)
 	return map
 end
 
-function IDEUIUtility_HasTargetClass(info, name)
+function ALittleIDE.IDEUIUtility_HasTargetClass(info, name)
 	local target_class = info.__target_class
 	if target_class ~= nil then
 		local str = ALittle.String_Join(target_class, ".")
@@ -85,7 +85,7 @@ function IDEUIUtility_HasTargetClass(info, name)
 	end
 	for k, v in ___pairs(info) do
 		if ALittle.String_Type(v) == "table" then
-			if IDEUIUtility_HasTargetClass(v, name) then
+			if ALittleIDE.IDEUIUtility_HasTargetClass(v, name) then
 				return true
 			end
 		end
@@ -93,7 +93,7 @@ function IDEUIUtility_HasTargetClass(info, name)
 	return false
 end
 
-function IDEUIUtility_HasEventCallback(info, name)
+function ALittleIDE.IDEUIUtility_HasEventCallback(info, name)
 	local event = info.__event
 	if event ~= nil then
 		local content_list = {}
@@ -111,7 +111,7 @@ function IDEUIUtility_HasEventCallback(info, name)
 	end
 	for k, v in ___pairs(info) do
 		if ALittle.String_Type(v) == "table" then
-			if IDEUIUtility_HasEventCallback(v, name) then
+			if ALittleIDE.IDEUIUtility_HasEventCallback(v, name) then
 				return true
 			end
 		end
@@ -119,11 +119,11 @@ function IDEUIUtility_HasEventCallback(info, name)
 	return false
 end
 
-function IDEUIUtility_NewGiveBaseCase(info, object)
-	if g_IDEEnum.text_type_display_map[info.__class] then
-		info.font_path = g_IDEProject.project.config:GetConfig("default_font_path", nil)
+function ALittleIDE.IDEUIUtility_NewGiveBaseCase(info, object)
+	if ALittleIDE.g_IDEEnum.text_type_display_map[info.__class] then
+		info.font_path = ALittleIDE.g_IDEProject.project.config:GetConfig("default_font_path", nil)
 		object.font_path = info.font_path
-		local size = g_IDEProject.project.config:GetConfig("default_font_size", 15)
+		local size = ALittleIDE.g_IDEProject.project.config:GetConfig("default_font_size", 15)
 		info.font_size = size
 		object.font_size = size
 		if info.__class == "Text" then
@@ -144,10 +144,10 @@ function IDEUIUtility_NewGiveBaseCase(info, object)
 	end
 end
 
-function IDEUIUtility_DragAddGiveBaseCase(info)
-	if g_IDEEnum.text_type_display_map[info.__class] then
-		info.font_path = g_IDEProject.project.config:GetConfig("default_font_path", nil)
-		local size = g_IDEProject.project.config:GetConfig("default_font_size", 15)
+function ALittleIDE.IDEUIUtility_DragAddGiveBaseCase(info)
+	if ALittleIDE.g_IDEEnum.text_type_display_map[info.__class] then
+		info.font_path = ALittleIDE.g_IDEProject.project.config:GetConfig("default_font_path", nil)
+		local size = ALittleIDE.g_IDEProject.project.config:GetConfig("default_font_size", 15)
 		info.font_size = size
 		if info.__class ~= "Text" then
 			info.width_value = 100
@@ -161,12 +161,12 @@ function IDEUIUtility_DragAddGiveBaseCase(info)
 	end
 end
 
-function IDEUIUtility_GetBaseInfo(info)
+function ALittleIDE.IDEUIUtility_GetBaseInfo(info)
 	local base = {}
 	for k, v in ___pairs(info) do
 		if ALittle.String_Type(v) ~= "table" then
 			base[k] = v
-		elseif not (k == "__childs" or (g_IDEEnum.nature_show_map_map[info.__class] ~= nil and g_IDEEnum.nature_show_map_map[info.__class][k]) or (g_IDEEnum.child_show_map_map[info.__class] ~= nil and g_IDEEnum.child_show_map_map[info.__class][k])) then
+		elseif not (k == "__childs" or (ALittleIDE.g_IDEEnum.nature_show_map_map[info.__class] ~= nil and ALittleIDE.g_IDEEnum.nature_show_map_map[info.__class][k]) or (ALittleIDE.g_IDEEnum.child_show_map_map[info.__class] ~= nil and ALittleIDE.g_IDEEnum.child_show_map_map[info.__class][k])) then
 			base[k] = ALittle.String_CopyTable(v)
 		end
 	end
@@ -181,19 +181,19 @@ function IDEUIUtility_GetBaseInfo(info)
 	return base
 end
 
-function IDEUIUtility_GetDefaultInfo(info)
+function ALittleIDE.IDEUIUtility_GetDefaultInfo(info)
 	local default_v = {}
 	if info.__extends ~= nil then
-		default_v = IDEUIUtility_GetDefaultInfo(g_IDEProject.project.ui.control_map[info.__extends].info)
+		default_v = ALittleIDE.IDEUIUtility_GetDefaultInfo(ALittleIDE.g_IDEProject.project.ui.control_map[info.__extends].info)
 		for k, v in ___pairs(info) do
 			if k ~= "__extends" then
 				default_v[k] = v
 			end
 		end
 	elseif info.__include ~= nil then
-		default_v = IDEUIUtility_GetDefaultInfo(g_IDEProject.project.ui.control_map[info.__include].info)
+		default_v = ALittleIDE.IDEUIUtility_GetDefaultInfo(ALittleIDE.g_IDEProject.project.ui.control_map[info.__include].info)
 	elseif info.__class ~= nil then
-		local class_default = g_IDEEnum.type_default_map[info.__class]
+		local class_default = ALittleIDE.g_IDEEnum.type_default_map[info.__class]
 		default_v = {}
 		for k, v in ___pairs(class_default) do
 			if ALittle.String_Type(v) ~= "table" then
@@ -209,27 +209,27 @@ function IDEUIUtility_GetDefaultInfo(info)
 	return default_v
 end
 
-function IDEUIUtility_CreateTree(control, extends_v, object, child_type, tab_child, root)
+function ALittleIDE.IDEUIUtility_CreateTree(control, extends_v, object, child_type, tab_child, root)
 	local user_info = {}
-	user_info.base = IDEUIUtility_GetBaseInfo(control)
+	user_info.base = ALittleIDE.IDEUIUtility_GetBaseInfo(control)
 	if control.__extends ~= nil then
-		local control_info = g_IDEProject.project.ui.control_map[control.__extends]
+		local control_info = ALittleIDE.g_IDEProject.project.ui.control_map[control.__extends]
 		if control_info == nil then
 			g_AUITool:ShowNotice("错误", "extends 的控件不存在:" .. control.__extends)
 		end
-		user_info.default = IDEUIUtility_GetDefaultInfo(control_info.info)
+		user_info.default = ALittleIDE.IDEUIUtility_GetDefaultInfo(control_info.info)
 	elseif control.__include ~= nil then
-		local control_info = g_IDEProject.project.ui.control_map[control.__include]
+		local control_info = ALittleIDE.g_IDEProject.project.ui.control_map[control.__include]
 		if control_info == nil then
 			g_AUITool:ShowNotice("错误", "include 的控件不存在:" .. control.__include)
 		end
-		user_info.default = IDEUIUtility_GetDefaultInfo(control_info.info)
+		user_info.default = ALittleIDE.IDEUIUtility_GetDefaultInfo(control_info.info)
 	elseif control.__class ~= nil then
-		user_info.default = g_IDEEnum.type_default_map[control.__class]
+		user_info.default = ALittleIDE.g_IDEEnum.type_default_map[control.__class]
 	else
 		ALittle.Log("error CreateTree: there have no extends,include,class")
 	end
-	local nature_list = g_IDEEnum.nature_show_map[user_info.default.__class]
+	local nature_list = ALittleIDE.g_IDEEnum.nature_show_map[user_info.default.__class]
 	if nature_list ~= nil then
 		for index, name in ___ipairs(nature_list) do
 			if control[name] ~= nil then
@@ -243,32 +243,32 @@ function IDEUIUtility_CreateTree(control, extends_v, object, child_type, tab_chi
 	user_info.extends = extends_v
 	user_info.extends_root = control.__extends ~= nil
 	local tree_logic = nil
-	if g_IDEEnum.can_add_child_map[user_info.default.__class] or g_IDEEnum.child_show_map[user_info.default.__class] ~= nil then
-		tree_logic = IDEUITree(g_Control, user_info, tab_child)
+	if ALittleIDE.g_IDEEnum.can_add_child_map[user_info.default.__class] or ALittleIDE.g_IDEEnum.child_show_map[user_info.default.__class] ~= nil then
+		tree_logic = ALittleIDE.IDEUITree(ALittleIDE.g_Control, user_info, tab_child)
 	else
-		tree_logic = IDEUITreeItem(g_Control, user_info, tab_child)
+		tree_logic = ALittleIDE.IDEUITreeItem(ALittleIDE.g_Control, user_info, tab_child)
 	end
-	if g_IDEEnum.can_add_child_map[user_info.default.__class] and object.childs ~= nil and ALittle.List_MaxN(object.childs) > 0 then
+	if ALittleIDE.g_IDEEnum.can_add_child_map[user_info.default.__class] and object.childs ~= nil and ALittle.List_MaxN(object.childs) > 0 then
 		if control.__childs ~= nil and ALittle.List_MaxN(control.__childs) > 0 then
 			local childs = control.__childs
 			for k, v in ___ipairs(childs) do
-				tree_logic:AddChild(IDEUIUtility_CreateTree(v, extends_v, object.childs[k], "child", tab_child, false))
+				tree_logic:AddChild(ALittleIDE.IDEUIUtility_CreateTree(v, extends_v, object.childs[k], "child", tab_child, false))
 			end
 		elseif user_info.default.__childs ~= nil and ALittle.List_MaxN(user_info.default.__childs) > 0 then
 			local childs = user_info.default.__childs
 			for k, v in ___ipairs(childs) do
-				tree_logic:AddChild(IDEUIUtility_CreateTree(v, true, object.childs[k], "child", tab_child, false))
+				tree_logic:AddChild(ALittleIDE.IDEUIUtility_CreateTree(v, true, object.childs[k], "child", tab_child, false))
 			end
 		end
 	end
-	local show_list = g_IDEEnum.child_show_map[user_info.default.__class]
+	local show_list = ALittleIDE.g_IDEEnum.child_show_map[user_info.default.__class]
 	if show_list ~= nil then
 		for index, name in ___ipairs(show_list) do
 			if object[name] ~= nil then
 				if control[name] ~= nil then
-					tree_logic:AddChild(IDEUIUtility_CreateTree(control[name], extends_v, object[name], name, tab_child, false))
+					tree_logic:AddChild(ALittleIDE.IDEUIUtility_CreateTree(control[name], extends_v, object[name], name, tab_child, false))
 				elseif user_info.default[name] ~= nil then
-					tree_logic:AddChild(IDEUIUtility_CreateTree(user_info.default[name], true, object[name], name, tab_child, false))
+					tree_logic:AddChild(ALittleIDE.IDEUIUtility_CreateTree(user_info.default[name], true, object[name], name, tab_child, false))
 				end
 			end
 		end
@@ -277,7 +277,7 @@ function IDEUIUtility_CreateTree(control, extends_v, object, child_type, tab_chi
 	return tree_logic
 end
 
-function IDEUIUtility_GenerateGrid9ImageInfo(base_path, image_path)
+function ALittleIDE.IDEUIUtility_GenerateGrid9ImageInfo(base_path, image_path)
 	local surface = ALittle.System_LoadSurface(base_path .. image_path)
 	if surface == nil then
 		return nil
@@ -333,3 +333,4 @@ function IDEUIUtility_GenerateGrid9ImageInfo(base_path, image_path)
 	return display_info
 end
 
+end

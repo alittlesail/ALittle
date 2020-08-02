@@ -1,6 +1,6 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittleIDE", package.seeall)
-
+do
+if _G.ALittleIDE == nil then _G.ALittleIDE = {} end
 local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = ALittle.GetAllStruct()
@@ -79,26 +79,26 @@ option_map = {}
 })
 
 assert(ALittle.EventDispatcher, " extends class:ALittle.EventDispatcher is nil")
-IDEProject = Lua.Class(ALittle.EventDispatcher, "ALittleIDE.IDEProject")
+ALittleIDE.IDEProject = Lua.Class(ALittle.EventDispatcher, "ALittleIDE.IDEProject")
 
-function IDEProject:AddProjectConfig(name)
-	local project_map = g_IDEConfig:GetConfig("project_map", {})
+function ALittleIDE.IDEProject:AddProjectConfig(name)
+	local project_map = ALittleIDE.g_IDEConfig:GetConfig("project_map", {})
 	if project_map[name] == nil then
 		project_map[name] = name
-		g_IDEConfig:SetConfig("project_map", project_map)
+		ALittleIDE.g_IDEConfig:SetConfig("project_map", project_map)
 	end
 end
 
-function IDEProject:RemoveProjectConfig(name)
-	local project_map = g_IDEConfig:GetConfig("project_map", {})
+function ALittleIDE.IDEProject:RemoveProjectConfig(name)
+	local project_map = ALittleIDE.g_IDEConfig:GetConfig("project_map", {})
 	if project_map[name] == nil then
 		return
 	end
 	project_map[name] = nil
-	g_IDEConfig:SetConfig("project_map", project_map)
+	ALittleIDE.g_IDEConfig:SetConfig("project_map", project_map)
 end
 
-function IDEProject:NewProject(name, window_width, window_height, font_path, font_size)
+function ALittleIDE.IDEProject:NewProject(name, window_width, window_height, font_path, font_size)
 	ALittle.File_MakeDeepDir(ALittle.File_BaseFilePath() .. "Module/" .. name)
 	ALittle.File_MakeDir(ALittle.File_BaseFilePath() .. "Module/" .. name .. "/Texture")
 	ALittle.File_MakeDir(ALittle.File_BaseFilePath() .. "Module/" .. name .. "/Texture/" .. name)
@@ -150,7 +150,7 @@ function IDEProject:NewProject(name, window_width, window_height, font_path, fon
 	return true
 end
 
-function IDEProject:RefreshProject()
+function ALittleIDE.IDEProject:RefreshProject()
 	if self._project == nil then
 		return
 	end
@@ -159,7 +159,7 @@ function IDEProject:RefreshProject()
 	self:OpenProject(name)
 end
 
-function IDEProject:OpenProject(name)
+function ALittleIDE.IDEProject:OpenProject(name)
 	if name == "" or name == nil then
 		return "请输入项目名"
 	end
@@ -178,7 +178,7 @@ function IDEProject:OpenProject(name)
 	self._project.control.cache_texture = false
 	self._project.control.use_plugin_class = false
 	self._project.config = ALittle.CreateConfigSystem("Module/" .. name .. "/ALittleIDE.cfg")
-	self._project.ui = IDEUIManager(name, self._project.control)
+	self._project.ui = ALittleIDE.IDEUIManager(name, self._project.control)
 	self._project.code = AUIPlugin.AUICodeProject.CreateALittleScriptProject()
 	if self._project.code ~= nil then
 		self._project.code:AddEventListener(___all_struct[2057209532], self, self.HandleCodeProjectGoToEvent)
@@ -186,26 +186,26 @@ function IDEProject:OpenProject(name)
 	if self._project.code ~= nil then
 		alittlescript.alittlescriptproject_settargetlanguage(self._project.code.project, self._project.config:GetConfig("target_language", "Lua"))
 	end
-	g_IDEConfig:SetConfig("last_project", name)
+	ALittleIDE.g_IDEConfig:SetConfig("last_project", name)
 	local e = {}
 	e.name = name
 	self:DispatchEvent(___all_struct[-975432877], e)
 	return nil
 end
 
-function IDEProject:HandleCodeProjectGoToEvent(event)
-	g_IDECenter.center.code_list:OpenByFullPath(event.file_path, event.line_start, event.char_start, event.line_end, event.char_end)
+function ALittleIDE.IDEProject:HandleCodeProjectGoToEvent(event)
+	ALittleIDE.g_IDECenter.center.code_list:OpenByFullPath(event.file_path, event.line_start, event.char_start, event.line_end, event.char_end)
 end
 
-function IDEProject:OpenLastProject()
-	local name = g_IDEConfig:GetString("last_project", nil)
+function ALittleIDE.IDEProject:OpenLastProject()
+	local name = ALittleIDE.g_IDEConfig:GetString("last_project", nil)
 	if name == nil then
 		return
 	end
 	self:OpenProject(name)
 end
 
-function IDEProject:CloseProject()
+function ALittleIDE.IDEProject:CloseProject()
 	if self._project == nil then
 		return "当前没有项目"
 	end
@@ -220,14 +220,14 @@ function IDEProject:CloseProject()
 	return nil
 end
 
-function IDEProject:RemoveProject(name)
+function ALittleIDE.IDEProject:RemoveProject(name)
 	if self._project ~= nil and self._project.name == name then
 		return "请先关闭项目，再移除"
 	end
 	self:RemoveProjectConfig(name)
-	local project_name = g_IDEConfig:GetConfig("last_project", "")
+	local project_name = ALittleIDE.g_IDEConfig:GetConfig("last_project", "")
 	if project_name == name then
-		g_IDEConfig:SetConfig("last_project", "")
+		ALittleIDE.g_IDEConfig:SetConfig("last_project", "")
 	end
 	local event = {}
 	event.name = name
@@ -235,7 +235,7 @@ function IDEProject:RemoveProject(name)
 	return nil
 end
 
-function IDEProject:RunProject()
+function ALittleIDE.IDEProject:RunProject()
 	if self._project == nil then
 		g_AUITool:ShowNotice("提示", "当前没有打开的项目")
 		return
@@ -243,8 +243,9 @@ function IDEProject:RunProject()
 	os.execute("start ALittleClient.exe " .. self._project.name .. " debug")
 end
 
-function IDEProject.__getter:project()
+function ALittleIDE.IDEProject.__getter:project()
 	return self._project
 end
 
-g_IDEProject = IDEProject()
+ALittleIDE.g_IDEProject = ALittleIDE.IDEProject()
+end

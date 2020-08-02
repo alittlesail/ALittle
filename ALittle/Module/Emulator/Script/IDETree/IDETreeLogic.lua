@@ -1,50 +1,50 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("Emulator", package.seeall)
-
+do
+if _G.Emulator == nil then _G.Emulator = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
-IDETreeLogic = Lua.Class(ALittle.DisplayLayout, "Emulator.IDETreeLogic")
+Emulator.IDETreeLogic = Lua.Class(ALittle.DisplayLayout, "Emulator.IDETreeLogic")
 
-function IDETreeLogic:Ctor(ctrl_sys, root)
+function Emulator.IDETreeLogic:Ctor(ctrl_sys, root)
 	___rawset(self, "_root", root)
 end
 
-function IDETreeLogic:Init()
+function Emulator.IDETreeLogic:Init()
 	self._upper_description = ALittle.String_Upper(self._item_title.text)
 end
 
-function IDETreeLogic:IsTree()
+function Emulator.IDETreeLogic:IsTree()
 	return false
 end
 
-function IDETreeLogic.__getter:title()
+function Emulator.IDETreeLogic.__getter:title()
 	return self._item_title.text
 end
 
-function IDETreeLogic.__setter:fold(value)
+function Emulator.IDETreeLogic.__setter:fold(value)
 end
 
-function IDETreeLogic.__getter:fold()
+function Emulator.IDETreeLogic.__getter:fold()
 	return false
 end
 
-function IDETreeLogic.__setter:light(value)
+function Emulator.IDETreeLogic.__setter:light(value)
 	self._light.visible = value
 end
 
-function IDETreeLogic.__getter:light()
+function Emulator.IDETreeLogic.__getter:light()
 	return self._light.visible
 end
 
-function IDETreeLogic:SearchBegin()
+function Emulator.IDETreeLogic:SearchBegin()
 	self.light = false
 end
 
-function IDETreeLogic:SearchEnd(list)
+function Emulator.IDETreeLogic:SearchEnd(list)
 	for index, parent in ___ipairs(list) do
 		parent.light = true
 		if parent ~= self then
@@ -60,7 +60,7 @@ function IDETreeLogic:SearchEnd(list)
 	end
 end
 
-function IDETreeLogic:SearchDescription(name, list)
+function Emulator.IDETreeLogic:SearchDescription(name, list)
 	if list == nil then
 		list = {}
 	end
@@ -71,11 +71,12 @@ function IDETreeLogic:SearchDescription(name, list)
 	return list
 end
 
-function IDETreeLogic:Save()
+function Emulator.IDETreeLogic:Save()
 	local content = protobuf.message_jsonencode(self._root.detail_info.message, false)
 	if content == nil then
 		return
 	end
-	g_GProtoCache:SetConfig(self._root.detail_info.info.full_name, content)
+	Emulator.g_GProtoCache:SetConfig(self._root.detail_info.info.full_name, content)
 end
 
+end

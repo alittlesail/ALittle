@@ -1,14 +1,14 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("Lua", package.seeall)
-
+do
+if _G.Lua == nil then _G.Lua = {} end
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
 assert(ALittle.ICsvFile, " extends class:ALittle.ICsvFile is nil")
-LuaCsvFile = Lua.Class(ALittle.ICsvFile, "Lua.LuaCsvFile")
+Lua.LuaCsvFile = Lua.Class(ALittle.ICsvFile, "Lua.LuaCsvFile")
 
-function LuaCsvFile:Load(path)
+function Lua.LuaCsvFile:Load(path)
 	self._path = path
 	self._csv = csv.create()
 	local error = csv.load(self._csv, path)
@@ -18,31 +18,32 @@ function LuaCsvFile:Load(path)
 	return error == nil
 end
 
-function LuaCsvFile:Close()
+function Lua.LuaCsvFile:Close()
 	if self._csv ~= nil then
 		csv.clear(self._csv)
 		self._csv = nil
 	end
 end
 
-function LuaCsvFile:ReadCell(row, col)
+function Lua.LuaCsvFile:ReadCell(row, col)
 	if self._csv == nil then
 		return ""
 	end
 	return csv.readcell(self._csv, row, col)
 end
 
-function LuaCsvFile:GetRowCount()
+function Lua.LuaCsvFile:GetRowCount()
 	if self._csv == nil then
 		return 0
 	end
 	return csv.rowcount(self._csv)
 end
 
-function LuaCsvFile:GetColCount()
+function Lua.LuaCsvFile:GetColCount()
 	if self._csv == nil then
 		return 0
 	end
 	return csv.colcount(self._csv)
 end
 
+end

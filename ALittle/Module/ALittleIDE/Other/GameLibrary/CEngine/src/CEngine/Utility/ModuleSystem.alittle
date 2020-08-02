@@ -76,10 +76,9 @@ class ModuleSystem
     
         // 加载Main文件
         [Language(Lua)]
-        if (package.loaded[name] == null)
-            alittle.Require(module_base_path, "Script/Main");
+        if (_G[name] == null) alittle.Require(module_base_path, "Script/Main");
         [Language(Lua)]
-        info.module = package.loaded[name];
+        info.module = _G[name];
         [Language(JavaScript)]
         if (cast<Map<string, any>>(window)[name] == null)
             alittle.Require(module_base_path, "JSScript/Main");
@@ -139,8 +138,6 @@ class ModuleSystem
         A_LayerManager.RemoveChild(info.layer_group);
     
         // 释放项目
-        [Language(Lua)]
-        package.loaded[name] = null;
         [Language(Lua)]
         cast<Map<string, any>>(_G)[name] = null;
         [Language(JavaScript)]

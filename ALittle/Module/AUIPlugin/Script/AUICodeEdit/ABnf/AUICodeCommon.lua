@@ -1,23 +1,23 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("AUIPlugin", package.seeall)
-
+do
+if _G.AUIPlugin == nil then _G.AUIPlugin = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
 assert(AUIPlugin.AUICodeLanguage, " extends class:AUIPlugin.AUICodeLanguage is nil")
-AUICodeCommon = Lua.Class(AUIPlugin.AUICodeLanguage, "AUIPlugin.AUICodeCommon")
+AUIPlugin.AUICodeCommon = Lua.Class(AUIPlugin.AUICodeLanguage, "AUIPlugin.AUICodeCommon")
 
-function AUICodeCommon:Ctor(project, full_path)
+function AUIPlugin.AUICodeCommon:Ctor(project, full_path)
 	if self._project == nil then
-		___rawset(self, "_project", AUICodeProject.CreateCommonProject(ALittle.File_GetFileExtByPathAndUpper(full_path)))
+		___rawset(self, "_project", AUIPlugin.AUICodeProject.CreateCommonProject(ALittle.File_GetFileExtByPathAndUpper(full_path)))
 	end
 	___rawset(self, "_abnf_color", self._project:QueryRuleColor())
 	___rawset(self, "_abnf_file", alanguage.create_abnffile(self._project.project, full_path, ""))
 end
 
-function AUICodeCommon:OnOpen(content)
+function AUIPlugin.AUICodeCommon:OnOpen(content)
 	if content ~= nil then
 		self._project:TempFile("", self._full_path, content)
 	else
@@ -25,37 +25,38 @@ function AUICodeCommon:OnOpen(content)
 	end
 end
 
-function AUICodeCommon:OnShow()
+function AUIPlugin.AUICodeCommon:OnShow()
 end
 
-function AUICodeCommon:OnHide()
+function AUIPlugin.AUICodeCommon:OnHide()
 end
 
-function AUICodeCommon:OnClose()
+function AUIPlugin.AUICodeCommon:OnClose()
 	self._project:RemoveFile(self._full_path)
 end
 
-function AUICodeCommon:QueryColorValue(tag)
+function AUIPlugin.AUICodeCommon:QueryColorValue(tag)
 	return self._abnf_color[tag]
 end
 
-function AUICodeCommon:OnRightMenu(menu)
+function AUIPlugin.AUICodeCommon:OnRightMenu(menu)
 end
 
 assert(AUIPlugin.AUICodeProject, " extends class:AUIPlugin.AUICodeProject is nil")
-AUICodeCommonProject = Lua.Class(AUIPlugin.AUICodeProject, "AUIPlugin.AUICodeCommonProject")
+AUIPlugin.AUICodeCommonProject = Lua.Class(AUIPlugin.AUICodeProject, "AUIPlugin.AUICodeCommonProject")
 
-function AUICodeCommonProject:Ctor(project, upper_ext)
+function AUIPlugin.AUICodeCommonProject:Ctor(project, upper_ext)
 	___rawset(self, "_upper_ext", upper_ext)
 end
 
-function AUICodeCommonProject.__getter:upper_ext()
+function AUIPlugin.AUICodeCommonProject.__getter:upper_ext()
 	return self._upper_ext
 end
 
-function AUICodeCommonProject:OnTreeMenu(full_path, menu)
+function AUIPlugin.AUICodeCommonProject:OnTreeMenu(full_path, menu)
 end
 
-function AUICodeCommonProject:OnTreeItemMenu(full_path, menu)
+function AUIPlugin.AUICodeCommonProject:OnTreeItemMenu(full_path, menu)
 end
 
+end

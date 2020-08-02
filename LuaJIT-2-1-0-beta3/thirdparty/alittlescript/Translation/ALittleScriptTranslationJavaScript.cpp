@@ -1855,7 +1855,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GeneratePropertyValue(std::sh
 
     content = "";
 
-    // 用来标记第一个变量是不是lua命名域
+    // 用来标记第一个变量是不是javascript命名域
     bool is_js_namespace = false;
 
     // 获取开头的属性信息
@@ -1877,7 +1877,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GeneratePropertyValue(std::sh
         if (std::dynamic_pointer_cast<ALittleScriptGuessNamespaceName>(custom_guess) && (custom_guess->GetValue() == "javascript" || custom_guess->GetValue() == "alittle"))
             is_js_namespace = true;
 
-        // 如果是lua命名域，那么就忽略
+        // 如果是javascript命名域，那么就忽略
         if (!is_js_namespace)
         {
             // 如果custom_type不是命名域，那么就自动补上命名域
@@ -3216,7 +3216,6 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateAllExpr(std::shared_p
 }
 
 // 生成枚举
-
 ABnfGuessError ALittleScriptTranslationJavaScript::GenerateEnum(std::shared_ptr<ALittleScriptEnumDecElement> root, const std::string& pre_tab, std::string& content)
 {
     content = "";
@@ -3977,15 +3976,10 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateRoot(const std::vecto
     m_reflect_map.clear();
 
     m_alittle_gen_namespace_pre = "";
-    // 如果是lua命名域，那么就不要使用module;
     if (m_namespace_name == "javascript" || m_namespace_name == "alittle")
-    {
         m_alittle_gen_namespace_pre = "window.";
-    }
     else
-    {
         m_alittle_gen_namespace_pre = m_namespace_name + ".";
-    }
 
     std::string other_content = "";
     for (auto& child : element_dec_list)
@@ -4059,13 +4053,9 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateRoot(const std::vecto
     }
 
     if (m_namespace_name == "javascript" || m_namespace_name == "alittle")
-    {
         content += "{\n";
-    }
     else
-    {
         content += "{\nif (typeof " + m_namespace_name + " === \"undefined\") window." + m_namespace_name + " = {};\n";
-    }
 
     if (m_need_all_struct) content += "let ___all_struct = ALittle.GetAllStruct();\n";
     content += "\n";

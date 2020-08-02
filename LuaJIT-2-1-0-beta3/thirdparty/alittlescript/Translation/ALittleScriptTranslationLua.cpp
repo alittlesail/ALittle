@@ -215,6 +215,7 @@
 #include "../Index/ALittleScriptProjectClass.h"
 
 #include "../Reference/ALittleScriptPropertyValueMethodCallReference.h"
+#include "../Reference/ALittleScriptPropertyValueCustomTypeReference.h"
 
 ABnfGuessError ALittleScriptTranslationLua::GenerateBindStat(std::shared_ptr<ALittleScriptBindStatElement> bind_stat, const std::string& pre_tab, std::string& content)
 {
@@ -432,7 +433,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateCustomTypeTemplateList(std::
                 // 拆分名称，检查命名域，如果与当前相同，或者是lua，那么就去掉
                 std::vector<std::string> split;
                 ABnfFactory::Split(name, ".", split);
-                if (split.size() == 2 && (split[0] == m_namespace_name || split[0] == "lua"))
+                if (split.size() == 2 && split[0] == "lua")
                     template_param_list.push_back(split[1]);
                 else
                     template_param_list.push_back(name);
@@ -472,7 +473,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateCustomTypeTemplateList(std::
 
                 // 计算实际类名
                 std::string class_name = full_class_name;
-                if (guess_class->namespace_name == m_namespace_name || guess_class->namespace_name == "lua")
+                if (guess_class->namespace_name == "lua")
                     class_name = guess_class->class_name;
 
                 // 计算模板名
@@ -562,11 +563,19 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateCustomType(std::shared_ptr<A
             auto dot_id_name = dot_id->GetCustomTypeDotIdName();
             if (dot_id_name != nullptr)
             {
-                if (class_name == m_namespace_name || class_name == "lua")
+                if (class_name == "lua")
                     class_name = dot_id_name->GetElementText();
                 else
                     class_name += "." + dot_id_name->GetElementText();
             }
+            else
+            {
+                class_name = guess_class->namespace_name + "." + class_name;
+            }
+        }
+        else
+        {
+            class_name = guess_class->namespace_name + "." + class_name;
         }
 
         // 如果有填充模板参数，那么就模板模板
@@ -1387,7 +1396,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateReflectValue(std::shared_ptr
             if (guess_class->using_name.size()) name = guess_class->using_name;
             std::vector<std::string> split;
             ABnfFactory::Split(name, ".", split);
-            if (split.size() == 2 && (split[0] == m_namespace_name || split[0] == "lua"))
+            if (split.size() == 2 && split[0] == "lua")
                 content = split[1];
             else
                 content = name;
@@ -1669,11 +1678,9 @@ ABnfGuessError ALittleScriptTranslationLua::GeneratePropertyValue(std::shared_pt
 
     content = "";
 
-
     // 用来标记第一个变量是不是lua命名域
     bool is_lua_namespace = false;
-    bool is_alittle_namespace = false;
-
+    
     // 获取开头的属性信息
     auto first_type = prop_value->GetPropertyValueFirstType();
     auto custom_type = first_type->GetPropertyValueCustomType();
@@ -1691,15 +1698,27 @@ ABnfGuessError ALittleScriptTranslationLua::GeneratePropertyValue(std::shared_pt
             || std::dynamic_pointer_cast<ALittleScriptGuessEnumName>(custom_guess))
             AddRelay(std::dynamic_pointer_cast<ALittleScriptGuess>(custom_guess)->GetElement());
 
-        if (std::dynamic_pointer_cast<ALittleScriptGuessNamespaceName>(custom_guess))
-        {
-            is_lua_namespace = custom_guess->GetValue() == "lua";
-            is_alittle_namespace = custom_guess->GetValue() == "alittle";
-        }
+        if (std::dynamic_pointer_cast<ALittleScriptGuessNamespaceName>(custom_guess) && (custom_guess->GetValue() == "lua" || custom_guess->GetValue() == "alittle"))
+            is_lua_namespace = true;
 
         // 如果是lua命名域，那么就忽略
-        if (!is_lua_namespace && !is_alittle_namespace)
+        if (!is_lua_namespace)
+        {
+            // 如果custom_type不是命名域，那么就自动补上命名域
+            if (!std::dynamic_pointer_cast<ALittleScriptGuessNamespaceName>(custom_guess) && std::dynamic_pointer_cast<ALittleScriptGuess>(custom_guess))
+            {
+                // 判断custom_type的来源
+                std::string pre_namespace_name;
+                error = dynamic_cast<ALittleScriptPropertyValueCustomTypeReference*>(custom_type->GetReference())->CalcNamespaceName(pre_namespace_name);
+                if (error) return error;
+
+                if (pre_namespace_name == "alittle") pre_namespace_name = "";
+                if (pre_namespace_name.size() > 0)
+                    content += pre_namespace_name + ".";
+            }
+
             content += custom_type->GetElementText();
+        }
     }
     // 如果是this，那么就变为self
     else if (this_type != nullptr)
@@ -1803,7 +1822,7 @@ ABnfGuessError ALittleScriptTranslationLua::GeneratePropertyValue(std::shared_pt
                 AddRelay(std::dynamic_pointer_cast<ALittleScriptGuess>(guess)->GetElement());
             }
 
-            if (!is_lua_namespace && !is_alittle_namespace)
+            if (!is_lua_namespace)
                 content += split;
 
             if (dot_id->GetPropertyValueDotIdName() == nullptr)
@@ -1818,7 +1837,6 @@ ABnfGuessError ALittleScriptTranslationLua::GeneratePropertyValue(std::shared_pt
 
             // 置为false，表示不是命名域
             is_lua_namespace = false;
-            is_alittle_namespace = false;
             continue;
         }
 
@@ -1922,7 +1940,7 @@ ABnfGuessError ALittleScriptTranslationLua::GeneratePropertyValue(std::shared_pt
                     if (std::dynamic_pointer_cast<ALittleScriptGuessClass>(guess))
                     {
                         auto guess_class = std::dynamic_pointer_cast<ALittleScriptGuessClass>(guess);
-                        if (guess_class->namespace_name == m_namespace_name || guess_class->namespace_name == "lua")
+                        if (guess_class->namespace_name == "lua")
                             param_list.push_back(guess_class->class_name);
                         else
                             param_list.push_back(guess_class->GetValue());
@@ -2805,7 +2823,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateEnum(std::shared_ptr<ALittle
     auto name_dec = root->GetEnumNameDec();
     if (name_dec == nullptr) return ABnfGuessError(root, root->GetElementText() + u8"没有定义枚举名");
 
-    content += pre_tab + name_dec->GetElementText() + " = {\n";
+    content += pre_tab + m_alittle_gen_namespace_pre + name_dec->GetElementText() + " = {\n";
 
     int enum_value = -1;
     std::string enum_string;
@@ -2896,7 +2914,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateClass(std::shared_ptr<ALittl
     else
         content += pre_tab + "assert(" + extends_name + ", \" extends class:" + extends_name + " is nil\")\n";
 
-    content += pre_tab + class_name + " = "
+    content += pre_tab + m_alittle_gen_namespace_pre + class_name + " = "
         + "Lua.Class(" + extends_name + ", \""
         + ALittleScriptUtility::GetNamespaceName(root) + "." + class_name + "\")\n\n";
 
@@ -2948,7 +2966,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateClass(std::shared_ptr<ALittl
     // 如果没有ctor，并且有初始化函数
     if (!has_ctor && var_init.size() > 0)
     {
-        content += pre_tab + "function " + class_name + ":Ctor()\n";
+        content += pre_tab + "function " + m_alittle_gen_namespace_pre + class_name + ":Ctor()\n";
         content += var_init;
         content += pre_tab + "end\n";
         content += "\n";
@@ -2984,7 +3002,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateClass(std::shared_ptr<ALittl
                 }
             }
             ctor_param_list = ABnfFactory::Join(param_name_list, ", ");
-            content += pre_tab + "function " + class_name + ":Ctor(" + ctor_param_list + ")\n";
+            content += pre_tab + "function " + m_alittle_gen_namespace_pre + class_name + ":Ctor(" + ctor_param_list + ")\n";
 
             m_open_rawset = true;
 
@@ -3028,7 +3046,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateClass(std::shared_ptr<ALittl
             if (class_method_name_dec == nullptr)
                 return ABnfGuessError(nullptr, u8"class " + class_name + u8" getter函数没有函数名");
 
-            content += pre_tab + "function " + class_name + ".__getter:" + class_method_name_dec->GetElementText() + "()\n";
+            content += pre_tab + "function " + m_alittle_gen_namespace_pre + class_name + ".__getter:" + class_method_name_dec->GetElementText() + "()\n";
 
             auto class_method_body_dec = class_getter_dec->GetMethodBodyDec();
             if (class_method_body_dec == nullptr)
@@ -3067,7 +3085,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateClass(std::shared_ptr<ALittl
             if (param_name_dec == nullptr)
                 return ABnfGuessError(nullptr, u8"class " + class_name + u8" 函数没有定义函数名");
 
-            content += pre_tab + "function " + class_name + ".__setter:"
+            content += pre_tab + "function " + m_alittle_gen_namespace_pre + class_name + ".__setter:"
                 + class_method_name_dec->GetElementText() + "("
                 + param_name_dec->GetElementText() + ")\n";
 
@@ -3137,7 +3155,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateClass(std::shared_ptr<ALittl
                 }
             }
             std::string method_param_list = ABnfFactory::Join(param_name_list, ", ");
-            content += pre_tab + "function " + class_name + ":"
+            content += pre_tab + "function " + m_alittle_gen_namespace_pre + class_name + ":"
                 + class_method_name_dec->GetElementText()
                 + "(" + method_param_list + ")\n";
 
@@ -3164,9 +3182,9 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateClass(std::shared_ptr<ALittl
             if (coroutine_type == "async")
             {
                 content += pre_tab
-                    + class_name + "." + class_method_name_dec->GetElementText()
+                    + m_alittle_gen_namespace_pre + class_name + "." + class_method_name_dec->GetElementText()
                     + " = " + "Lua.CoWrap("
-                    + class_name + "." + class_method_name_dec->GetElementText()
+                    + m_alittle_gen_namespace_pre + class_name + "." + class_method_name_dec->GetElementText()
                     + ")\n";
             }
 
@@ -3218,7 +3236,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateClass(std::shared_ptr<ALittl
             }
 
             std::string method_param_list = ABnfFactory::Join(param_name_list, ", ");
-            content += pre_tab + "function " + class_name + "."
+            content += pre_tab + "function " + m_alittle_gen_namespace_pre + class_name + "."
                 + class_method_name_dec->GetElementText()
                 + "(" + method_param_list + ")\n";
 
@@ -3246,9 +3264,9 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateClass(std::shared_ptr<ALittl
             if (coroutine_type == "async")
             {
                 content += pre_tab
-                    + class_name + "." + class_method_name_dec->GetElementText()
+                    + m_alittle_gen_namespace_pre + class_name + "." + class_method_name_dec->GetElementText()
                     + " = " + "Lua.CoWrap("
-                    + class_name + "." + class_method_name_dec->GetElementText()
+                    + m_alittle_gen_namespace_pre + class_name + "." + class_method_name_dec->GetElementText()
                     + ")\n";
             }
             content += "\n";
@@ -3283,7 +3301,8 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateInstance(const std::vector<s
     }
     else if (access_type == ClassAccessType::PROTECTED)
     {
-        content += ABnfFactory::Join(name_list, ", ");
+        content += m_alittle_gen_namespace_pre;
+        content += ABnfFactory::Join(name_list, ", " + m_alittle_gen_namespace_pre);
     }
     else if (access_type == ClassAccessType::PUBLIC)
     {
@@ -3372,7 +3391,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateGlobalMethod(const std::vect
     }
     else
     {
-        content += pre_tab + "function " + method_name + "(" + method_param_list + ")\n";
+        content += pre_tab + "function " + m_alittle_gen_namespace_pre + method_name + "(" + method_param_list + ")\n";
     }
 
     auto coroutine_type = ALittleScriptUtility::GetCoroutineType(modifier);
@@ -3399,9 +3418,9 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateGlobalMethod(const std::vect
     // 协程判定
     if (coroutine_type == "async")
     {
-        content += pre_tab + method_name
+        content += pre_tab + m_alittle_gen_namespace_pre + method_name
             + " = " + "Lua.CoWrap("
-            + method_name + ")\n";
+            + m_alittle_gen_namespace_pre + method_name + ")\n";
     }
 
     content += "\n";
@@ -3446,20 +3465,20 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateGlobalMethod(const std::vect
         if (proto_type == "Http")
         {
             if (return_list.size() != 1) return ABnfGuessError(nullptr, u8"带" + proto_type + u8"的全局函数，有且仅有一个返回值");
-            content += pre_tab + m_alittle_gen_namespace_pre + "RegHttpCallback(\"" + guess_param_struct->GetValue() + "\", " + method_name + ")\n";
+            content += pre_tab + "ALittle.RegHttpCallback(\"" + guess_param_struct->GetValue() + "\", " + method_name + ")\n";
         }
         else if (proto_type == "HttpDownload")
         {
             if (return_list.size() != 2) return ABnfGuessError(nullptr, u8"带" + proto_type + u8"的全局函数，有且仅有两个返回值");
-            content += pre_tab + m_alittle_gen_namespace_pre
-                + "RegHttpDownloadCallback(\""
+            content += pre_tab
+                + "ALittle.RegHttpDownloadCallback(\""
                 + guess_param_struct->GetValue() + "\", " + method_name + ")\n";
         }
         else if (proto_type == "HttpUpload")
         {
             if (return_list.size() != 0) return ABnfGuessError(nullptr, u8"带" + proto_type + u8"的全局函数，不能有返回值");
-            content += pre_tab + m_alittle_gen_namespace_pre
-                + "RegHttpFileCallback(\""
+            content += pre_tab
+                + "ALittle.RegHttpFileCallback(\""
                 + guess_param_struct->GetValue() + "\", " + method_name + ")\n";
         }
         else if (proto_type == "Msg")
@@ -3470,8 +3489,8 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateGlobalMethod(const std::vect
 
             if (guess_return == nullptr)
             {
-                content += pre_tab + m_alittle_gen_namespace_pre
-                    + "RegMsgCallback(" + std::to_string(ALittleScriptUtility::StructHash(guess_param_struct))
+                content += pre_tab
+                    + "ALittle.RegMsgCallback(" + std::to_string(ALittleScriptUtility::StructHash(guess_param_struct))
                     + ", " + method_name + ")\n";
             }
             else
@@ -3479,8 +3498,8 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateGlobalMethod(const std::vect
                 auto guess_return_struct = std::dynamic_pointer_cast<ALittleScriptGuessStruct>(guess_return);
                 if (!guess_return_struct) return ABnfGuessError(nullptr, u8"带" + proto_type + u8"的全局函数，返回值必须是struct");
 
-                content += pre_tab + m_alittle_gen_namespace_pre
-                    + "RegMsgRpcCallback(" + std::to_string(ALittleScriptUtility::StructHash(guess_param_struct))
+                content += pre_tab
+                    + "ALittle.RegMsgRpcCallback(" + std::to_string(ALittleScriptUtility::StructHash(guess_param_struct))
                     + ", " + method_name + ", " + std::to_string(ALittleScriptUtility::StructHash(guess_return_struct))
                     + ")\n";
 
@@ -3508,8 +3527,8 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateGlobalMethod(const std::vect
             }
         }
 
-        content += pre_tab + m_alittle_gen_namespace_pre
-            + "RegCmdCallback(\"" + method_name + "\", " + method_name
+        content += pre_tab
+            + "ALittle.RegCmdCallback(\"" + method_name + "\", " + method_name
             + ", {" + ABnfFactory::Join(var_list, ",") + "}, {" + ABnfFactory::Join(name_list, ",")
             + "}, \"" + command_text + "\")\n";
     }
@@ -3519,18 +3538,14 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateGlobalMethod(const std::vect
 
 ABnfGuessError ALittleScriptTranslationLua::GenerateRoot(const std::vector<std::shared_ptr<ALittleScriptNamespaceElementDecElement>>& element_dec_list, std::string& content)
 {
-    content = "-- ALittle Generate Lua And Do Not Edit This Line!";
-
-    m_alittle_gen_namespace_pre = "ALittle.";
-    if (m_namespace_name == "ALittle") m_alittle_gen_namespace_pre = "";
-
+    content = "-- ALittle Generate Lua And Do Not Edit This Line!\n";
     m_reflect_map.clear();
 
-    // 如果是lua命名域，那么就不要使用module;
+    m_alittle_gen_namespace_pre = "";
     if (m_namespace_name == "lua" || m_namespace_name == "alittle")
-        content += "\n";
+        m_alittle_gen_namespace_pre = "_G.";
     else
-        content += "\nmodule(\"" + m_namespace_name + "\", package.seeall)\n\n";
+        m_alittle_gen_namespace_pre = m_namespace_name + ".";
 
     std::string other_content = "";
     for (auto& child : element_dec_list)
@@ -3604,11 +3619,16 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateRoot(const std::vector<std::
         }
     }
 
+    if (m_namespace_name == "lua" || m_namespace_name == "alittle")
+        content += "do\n";
+    else
+        content += "do\nif _G." + m_namespace_name + " == nil then _G." + m_namespace_name + " = {} end\n";
+
     if (m_rawset_usecount > 0) content += "local ___rawset = rawset\n";
     content += "local ___pairs = pairs\n";
     content += "local ___ipairs = ipairs\n";
-    if (m_need_all_struct)
-        content += "local ___all_struct = " + m_alittle_gen_namespace_pre + "GetAllStruct()\n";
+
+    if (m_need_all_struct) content += "local ___all_struct = ALittle.GetAllStruct()\n";
     content += "\n";
 
     std::list<StructReflectInfo*> info_list;
@@ -3617,12 +3637,13 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateRoot(const std::vector<std::
     for (auto& info : info_list)
     {
         if (!info->generate) continue;
-        content += m_alittle_gen_namespace_pre
-            + "RegStruct(" + std::to_string(info->hash_code) + ", \"" + info->name + "\", " + info->content + ")\n";
+        content += "ALittle.RegStruct(" + std::to_string(info->hash_code) + ", \"" + info->name + "\", " + info->content + ")\n";
     }
     content += "\n";
 
     content += other_content;
+
+    content += "end";
 
     return nullptr;
 }

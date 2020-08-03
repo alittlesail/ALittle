@@ -396,7 +396,7 @@ function AUIPlugin.HandleMsgNForceLogout(client, msg)
 	manager:HandleMsgNForceLogout()
 end
 
-ALittle.RegMsgCallback(1391512615, HandleMsgNForceLogout)
+ALittle.RegMsgCallback(1391512615, AUIPlugin.HandleMsgNForceLogout)
 function AUIPlugin.HandleMsgNWebSession(client, msg)
 	local manager = client._user_data
 	if manager == nil then
@@ -405,7 +405,7 @@ function AUIPlugin.HandleMsgNWebSession(client, msg)
 	manager:HandleMsgNWebSession(msg)
 end
 
-ALittle.RegMsgCallback(1809602374, HandleMsgNWebSession)
+ALittle.RegMsgCallback(1809602374, AUIPlugin.HandleMsgNWebSession)
 function AUIPlugin.HandleMsgNWebAccountInfo(client, msg)
 	local manager = client._user_data
 	if manager == nil then
@@ -414,7 +414,7 @@ function AUIPlugin.HandleMsgNWebAccountInfo(client, msg)
 	manager:HandleMsgNWebAccountInfo(msg)
 end
 
-ALittle.RegMsgCallback(-417093574, HandleMsgNWebAccountInfo)
+ALittle.RegMsgCallback(-417093574, AUIPlugin.HandleMsgNWebAccountInfo)
 function AUIPlugin.HandleMsgNWebServerInfo(client, msg)
 	local manager = client._user_data
 	if manager == nil then
@@ -423,5 +423,5 @@ function AUIPlugin.HandleMsgNWebServerInfo(client, msg)
 	manager:HandleMsgNWebServerInfo(msg)
 end
 
-ALittle.RegMsgCallback(-300988017, HandleMsgNWebServerInfo)
+ALittle.RegMsgCallback(-300988017, AUIPlugin.HandleMsgNWebServerInfo)
 end

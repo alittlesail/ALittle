@@ -1,20 +1,50 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("VersionServer", package.seeall)
-
+do
+if _G.VersionServer == nil then _G.VersionServer = {} end
 local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = ALittle.GetAllStruct()
 
+ALittle.RegStruct(1929027535, "VersionServer.QDeleteVersionInfo", {
+name = "VersionServer.QDeleteVersionInfo", ns_name = "VersionServer", rl_name = "QDeleteVersionInfo", hash_code = 1929027535,
+name_list = {"__account_id","__session_id","platform","module_name","version_id"},
+type_list = {"string","string","string","string","string"},
+option_map = {}
+})
+ALittle.RegStruct(1929027487, "VersionServer.ADeleteVersionInfo", {
+name = "VersionServer.ADeleteVersionInfo", ns_name = "VersionServer", rl_name = "ADeleteVersionInfo", hash_code = 1929027487,
+name_list = {},
+type_list = {},
+option_map = {}
+})
+ALittle.RegStruct(-1889282870, "VersionServer.ANewVersionInfo", {
+name = "VersionServer.ANewVersionInfo", ns_name = "VersionServer", rl_name = "ANewVersionInfo", hash_code = -1889282870,
+name_list = {"version_id","update_time","update_index"},
+type_list = {"string","int","int"},
+option_map = {}
+})
 ALittle.RegStruct(-1754421001, "VersionServer.VersionClose", {
 name = "VersionServer.VersionClose", ns_name = "VersionServer", rl_name = "VersionClose", hash_code = -1754421001,
 name_list = {"account_id","module_name","platform","close_version","submit_platform","create_time","create_index","update_time","update_index"},
 type_list = {"string","string","string","string","string","int","int","int","int"},
 option_map = {}
 })
+ALittle.RegStruct(1657250345, "VersionServer.D_VersionInfo", {
+name = "VersionServer.D_VersionInfo", ns_name = "VersionServer", rl_name = "D_VersionInfo", hash_code = 1657250345,
+name_list = {"version_id","account_id","module_name","platform","big_version","version_number","install_version","plugin_list","install_size","status","small_version_time","small_version_index","create_time","create_index","update_time","update_index"},
+type_list = {"string","string","string","string","string","string","string","string","int","int","int","int","int","int","int","int"},
+option_map = {}
+})
 ALittle.RegStruct(-1549559517, "VersionServer.QAddVersionClose", {
 name = "VersionServer.QAddVersionClose", ns_name = "VersionServer", rl_name = "QAddVersionClose", hash_code = -1549559517,
 name_list = {"__account_id","__session_id","platform","module_name","close_version","submit_platform"},
 type_list = {"string","string","string","string","string","string"},
+option_map = {}
+})
+ALittle.RegStruct(1318347807, "VersionServer.QNewUpdateTimeIndex", {
+name = "VersionServer.QNewUpdateTimeIndex", ns_name = "VersionServer", rl_name = "QNewUpdateTimeIndex", hash_code = 1318347807,
+name_list = {"__account_id","__session_id"},
+type_list = {"string","string"},
 option_map = {}
 })
 ALittle.RegStruct(-1265122365, "VersionServer.ANewUpdateTimeIndex", {
@@ -29,10 +59,70 @@ name_list = {"version_info","http_ip","http_port"},
 type_list = {"VersionServer.D_VersionInfo","string","int"},
 option_map = {}
 })
+ALittle.RegStruct(1083241076, "VersionServer.QNewCurVersion", {
+name = "VersionServer.QNewCurVersion", ns_name = "VersionServer", rl_name = "QNewCurVersion", hash_code = 1083241076,
+name_list = {"__account_id","__session_id","platform","module_name"},
+type_list = {"string","string","string","string"},
+option_map = {}
+})
+ALittle.RegStruct(929252339, "VersionServer.D_VersionClose", {
+name = "VersionServer.D_VersionClose", ns_name = "VersionServer", rl_name = "D_VersionClose", hash_code = 929252339,
+name_list = {"account_id","module_name","platform","close_version","submit_platform","create_time","create_index","update_time","update_index"},
+type_list = {"string","string","string","string","string","int","int","int","int"},
+option_map = {}
+})
+ALittle.RegStruct(763533061, "VersionServer.QNewVersionInfo", {
+name = "VersionServer.QNewVersionInfo", ns_name = "VersionServer", rl_name = "QNewVersionInfo", hash_code = 763533061,
+name_list = {"__account_id","__session_id","module_name","platform","big_version","version_number","install_version","plugin_list","install_size","log_list","small_version_time","small_version_index","update_time","update_index"},
+type_list = {"string","string","string","string","string","string","string","string","int","List<string>","int","int","int","int"},
+option_map = {}
+})
+ALittle.RegStruct(660825889, "VersionServer.QDeleteVersionClose", {
+name = "VersionServer.QDeleteVersionClose", ns_name = "VersionServer", rl_name = "QDeleteVersionClose", hash_code = 660825889,
+name_list = {"__account_id","__session_id","platform","module_name","close_version"},
+type_list = {"string","string","string","string","string"},
+option_map = {}
+})
 ALittle.RegStruct(-637772875, "VersionServer.D_VersionLog", {
 name = "VersionServer.D_VersionLog", ns_name = "VersionServer", rl_name = "D_VersionLog", hash_code = -637772875,
 name_list = {"version_id","account_id","module_name","platform","content","create_time","create_index","update_time","update_index"},
 type_list = {"string","string","string","string","string","int","int","int","int"},
+option_map = {}
+})
+ALittle.RegStruct(535646734, "VersionServer.VersionInfo", {
+name = "VersionServer.VersionInfo", ns_name = "VersionServer", rl_name = "VersionInfo", hash_code = 535646734,
+name_list = {"version_id","account_id","module_name","platform","big_version","version_number","install_version","plugin_list","install_size","status","small_version_time","small_version_index","create_time","create_index","update_time","update_index"},
+type_list = {"string","string","string","string","string","string","string","string","int","int","int","int","int","int","int","int"},
+option_map = {primary="version_id"}
+})
+ALittle.RegStruct(520612441, "VersionServer.AAddVersionClose", {
+name = "VersionServer.AAddVersionClose", ns_name = "VersionServer", rl_name = "AAddVersionClose", hash_code = 520612441,
+name_list = {},
+type_list = {},
+option_map = {}
+})
+ALittle.RegStruct(403574870, "VersionServer.QVersionInfo", {
+name = "VersionServer.QVersionInfo", ns_name = "VersionServer", rl_name = "QVersionInfo", hash_code = 403574870,
+name_list = {"__account_id","__session_id","module_name","platform"},
+type_list = {"string","string","string","string"},
+option_map = {}
+})
+ALittle.RegStruct(285640750, "VersionServer.AUploadVersionFile", {
+name = "VersionServer.AUploadVersionFile", ns_name = "VersionServer", rl_name = "AUploadVersionFile", hash_code = 285640750,
+name_list = {},
+type_list = {},
+option_map = {}
+})
+ALittle.RegStruct(285640734, "VersionServer.QUploadVersionFile", {
+name = "VersionServer.QUploadVersionFile", ns_name = "VersionServer", rl_name = "QUploadVersionFile", hash_code = 285640734,
+name_list = {"__account_id","__session_id","platform","module_name","version_id","file_path"},
+type_list = {"string","string","string","string","string","string"},
+option_map = {}
+})
+ALittle.RegStruct(242024252, "VersionServer.ADeleteVersionClose", {
+name = "VersionServer.ADeleteVersionClose", ns_name = "VersionServer", rl_name = "ADeleteVersionClose", hash_code = 242024252,
+name_list = {},
+type_list = {},
 option_map = {}
 })
 ALittle.RegStruct(-219924640, "VersionServer.VersionLog", {
@@ -53,103 +143,13 @@ name_list = {"version_list","close_list","log_list"},
 type_list = {"List<VersionServer.D_VersionInfo>","List<VersionServer.D_VersionClose>","List<VersionServer.D_VersionLog>"},
 option_map = {}
 })
-ALittle.RegStruct(242024252, "VersionServer.ADeleteVersionClose", {
-name = "VersionServer.ADeleteVersionClose", ns_name = "VersionServer", rl_name = "ADeleteVersionClose", hash_code = 242024252,
-name_list = {},
-type_list = {},
-option_map = {}
-})
-ALittle.RegStruct(285640734, "VersionServer.QUploadVersionFile", {
-name = "VersionServer.QUploadVersionFile", ns_name = "VersionServer", rl_name = "QUploadVersionFile", hash_code = 285640734,
-name_list = {"__account_id","__session_id","platform","module_name","version_id","file_path"},
-type_list = {"string","string","string","string","string","string"},
-option_map = {}
-})
-ALittle.RegStruct(285640750, "VersionServer.AUploadVersionFile", {
-name = "VersionServer.AUploadVersionFile", ns_name = "VersionServer", rl_name = "AUploadVersionFile", hash_code = 285640750,
-name_list = {},
-type_list = {},
-option_map = {}
-})
-ALittle.RegStruct(403574870, "VersionServer.QVersionInfo", {
-name = "VersionServer.QVersionInfo", ns_name = "VersionServer", rl_name = "QVersionInfo", hash_code = 403574870,
-name_list = {"__account_id","__session_id","module_name","platform"},
-type_list = {"string","string","string","string"},
-option_map = {}
-})
-ALittle.RegStruct(520612441, "VersionServer.AAddVersionClose", {
-name = "VersionServer.AAddVersionClose", ns_name = "VersionServer", rl_name = "AAddVersionClose", hash_code = 520612441,
-name_list = {},
-type_list = {},
-option_map = {}
-})
-ALittle.RegStruct(535646734, "VersionServer.VersionInfo", {
-name = "VersionServer.VersionInfo", ns_name = "VersionServer", rl_name = "VersionInfo", hash_code = 535646734,
-name_list = {"version_id","account_id","module_name","platform","big_version","version_number","install_version","plugin_list","install_size","status","small_version_time","small_version_index","create_time","create_index","update_time","update_index"},
-type_list = {"string","string","string","string","string","string","string","string","int","int","int","int","int","int","int","int"},
-option_map = {primary="version_id"}
-})
-ALittle.RegStruct(660825889, "VersionServer.QDeleteVersionClose", {
-name = "VersionServer.QDeleteVersionClose", ns_name = "VersionServer", rl_name = "QDeleteVersionClose", hash_code = 660825889,
-name_list = {"__account_id","__session_id","platform","module_name","close_version"},
-type_list = {"string","string","string","string","string"},
-option_map = {}
-})
-ALittle.RegStruct(763533061, "VersionServer.QNewVersionInfo", {
-name = "VersionServer.QNewVersionInfo", ns_name = "VersionServer", rl_name = "QNewVersionInfo", hash_code = 763533061,
-name_list = {"__account_id","__session_id","module_name","platform","big_version","version_number","install_version","plugin_list","install_size","log_list","small_version_time","small_version_index","update_time","update_index"},
-type_list = {"string","string","string","string","string","string","string","string","int","List<string>","int","int","int","int"},
-option_map = {}
-})
-ALittle.RegStruct(929252339, "VersionServer.D_VersionClose", {
-name = "VersionServer.D_VersionClose", ns_name = "VersionServer", rl_name = "D_VersionClose", hash_code = 929252339,
-name_list = {"account_id","module_name","platform","close_version","submit_platform","create_time","create_index","update_time","update_index"},
-type_list = {"string","string","string","string","string","int","int","int","int"},
-option_map = {}
-})
-ALittle.RegStruct(1083241076, "VersionServer.QNewCurVersion", {
-name = "VersionServer.QNewCurVersion", ns_name = "VersionServer", rl_name = "QNewCurVersion", hash_code = 1083241076,
-name_list = {"__account_id","__session_id","platform","module_name"},
-type_list = {"string","string","string","string"},
-option_map = {}
-})
-ALittle.RegStruct(1318347807, "VersionServer.QNewUpdateTimeIndex", {
-name = "VersionServer.QNewUpdateTimeIndex", ns_name = "VersionServer", rl_name = "QNewUpdateTimeIndex", hash_code = 1318347807,
-name_list = {"__account_id","__session_id"},
-type_list = {"string","string"},
-option_map = {}
-})
-ALittle.RegStruct(1657250345, "VersionServer.D_VersionInfo", {
-name = "VersionServer.D_VersionInfo", ns_name = "VersionServer", rl_name = "D_VersionInfo", hash_code = 1657250345,
-name_list = {"version_id","account_id","module_name","platform","big_version","version_number","install_version","plugin_list","install_size","status","small_version_time","small_version_index","create_time","create_index","update_time","update_index"},
-type_list = {"string","string","string","string","string","string","string","string","int","int","int","int","int","int","int","int"},
-option_map = {}
-})
-ALittle.RegStruct(1929027487, "VersionServer.ADeleteVersionInfo", {
-name = "VersionServer.ADeleteVersionInfo", ns_name = "VersionServer", rl_name = "ADeleteVersionInfo", hash_code = 1929027487,
-name_list = {},
-type_list = {},
-option_map = {}
-})
-ALittle.RegStruct(1929027535, "VersionServer.QDeleteVersionInfo", {
-name = "VersionServer.QDeleteVersionInfo", ns_name = "VersionServer", rl_name = "QDeleteVersionInfo", hash_code = 1929027535,
-name_list = {"__account_id","__session_id","platform","module_name","version_id"},
-type_list = {"string","string","string","string","string"},
-option_map = {}
-})
-ALittle.RegStruct(-1889282870, "VersionServer.ANewVersionInfo", {
-name = "VersionServer.ANewVersionInfo", ns_name = "VersionServer", rl_name = "ANewVersionInfo", hash_code = -1889282870,
-name_list = {"version_id","update_time","update_index"},
-type_list = {"string","int","int"},
-option_map = {}
-})
 
-VersionManager = Lua.Class(nil, "VersionServer.VersionManager")
+VersionServer.VersionManager = Lua.Class(nil, "VersionServer.VersionManager")
 
-function VersionManager:Ctor()
+function VersionServer.VersionManager:Ctor()
 end
 
-function VersionManager:Setup()
+function VersionServer.VersionManager:Setup()
 	local ___COROUTINE = coroutine.running()
 	local error = A_MysqlSystem:CreateIfNotExit(___all_struct[535646734])
 	Lua.Assert(error == nil, error)
@@ -157,18 +157,18 @@ function VersionManager:Setup()
 	Lua.Assert(error == nil, error)
 	error = A_MysqlSystem:CreateIfNotExit(___all_struct[-219924640])
 	Lua.Assert(error == nil, error)
-	self._version_path = g_ConfigSystem:GetString("version_path", "")
+	self._version_path = VersionServer.g_ConfigSystem:GetString("version_path", "")
 end
 
-function VersionManager:Shutdown()
+function VersionServer.VersionManager:Shutdown()
 end
 
-function VersionManager.__getter:version_path()
+function VersionServer.VersionManager.__getter:version_path()
 	return self._version_path
 end
 
-g_VersionManager = VersionManager()
-function HandleHttpQVersionInfo(client, msg)
+VersionServer.g_VersionManager = VersionServer.VersionManager()
+function VersionServer.HandleHttpQVersionInfo(client, msg)
 	local ___COROUTINE = coroutine.running()
 	local param = {}
 	param.version_list = {}
@@ -269,8 +269,8 @@ function HandleHttpQVersionInfo(client, msg)
 	return param
 end
 
-ALittle.RegHttpCallback("VersionServer.QVersionInfo", HandleHttpQVersionInfo)
-function HandleHttpQAddVersionClose(client, msg)
+ALittle.RegHttpCallback("VersionServer.QVersionInfo", VersionServer.HandleHttpQVersionInfo)
+function VersionServer.HandleHttpQAddVersionClose(client, msg)
 	local ___COROUTINE = coroutine.running()
 	local web_account = A_WebAccountManager:CheckLoginById(msg.__account_id, msg.__session_id)
 	local sql = "INSERT INTO `VersionClose` (`account_id`,`module_name`,`platform`,`close_version`,`submit_platform`,`create_time`,`create_index`,`update_time`,`update_index`) VALUES (?,?,?,?,?,?,?,?,?)"
@@ -293,8 +293,8 @@ function HandleHttpQAddVersionClose(client, msg)
 	return {}
 end
 
-ALittle.RegHttpCallback("VersionServer.QAddVersionClose", HandleHttpQAddVersionClose)
-function HandleHttpQDeleteVersionClose(client, msg)
+ALittle.RegHttpCallback("VersionServer.QAddVersionClose", VersionServer.HandleHttpQAddVersionClose)
+function VersionServer.HandleHttpQDeleteVersionClose(client, msg)
 	local ___COROUTINE = coroutine.running()
 	local web_account = A_WebAccountManager:CheckLoginById(msg.__account_id, msg.__session_id)
 	local sql = "DELETE FROM `VersionClose` WHERE `account_id`=? AND `module_name`=? AND `platform`=? AND `close_version`=?"
@@ -311,8 +311,8 @@ function HandleHttpQDeleteVersionClose(client, msg)
 	return {}
 end
 
-ALittle.RegHttpCallback("VersionServer.QDeleteVersionClose", HandleHttpQDeleteVersionClose)
-function HandleHttpQNewUpdateTimeIndex(client, msg)
+ALittle.RegHttpCallback("VersionServer.QDeleteVersionClose", VersionServer.HandleHttpQDeleteVersionClose)
+function VersionServer.HandleHttpQNewUpdateTimeIndex(client, msg)
 	local ___COROUTINE = coroutine.running()
 	local web_account = A_WebAccountManager:CheckLoginById(msg.__account_id, msg.__session_id)
 	local param = {}
@@ -320,8 +320,8 @@ function HandleHttpQNewUpdateTimeIndex(client, msg)
 	return param
 end
 
-ALittle.RegHttpCallback("VersionServer.QNewUpdateTimeIndex", HandleHttpQNewUpdateTimeIndex)
-function HandleHttpQNewCurVersion(client, msg)
+ALittle.RegHttpCallback("VersionServer.QNewUpdateTimeIndex", VersionServer.HandleHttpQNewUpdateTimeIndex)
+function VersionServer.HandleHttpQNewCurVersion(client, msg)
 	local ___COROUTINE = coroutine.running()
 	local param = {}
 	local web_account = A_WebAccountManager:CheckLoginById(msg.__account_id, msg.__session_id)
@@ -366,8 +366,8 @@ function HandleHttpQNewCurVersion(client, msg)
 	return param
 end
 
-ALittle.RegHttpCallback("VersionServer.QNewCurVersion", HandleHttpQNewCurVersion)
-function HandleHttpQNewVersionInfo(client, msg)
+ALittle.RegHttpCallback("VersionServer.QNewCurVersion", VersionServer.HandleHttpQNewCurVersion)
+function VersionServer.HandleHttpQNewVersionInfo(client, msg)
 	local ___COROUTINE = coroutine.running()
 	local web_account = A_WebAccountManager:CheckLoginById(msg.__account_id, msg.__session_id)
 	local version_id = ALittle.String_GenerateID("VERSION")
@@ -422,8 +422,8 @@ function HandleHttpQNewVersionInfo(client, msg)
 	return param
 end
 
-ALittle.RegHttpCallback("VersionServer.QNewVersionInfo", HandleHttpQNewVersionInfo)
-function HandleHttpQUpdateVersion(client, msg)
+ALittle.RegHttpCallback("VersionServer.QNewVersionInfo", VersionServer.HandleHttpQNewVersionInfo)
+function VersionServer.HandleHttpQUpdateVersion(client, msg)
 	local ___COROUTINE = coroutine.running()
 	local error, base_info = A_MysqlSystem:SelectOneFromByKey(___all_struct[-192825113], "account_name", msg.account_name)
 	if error ~= nil then
@@ -519,13 +519,13 @@ function HandleHttpQUpdateVersion(client, msg)
 	return param
 end
 
-ALittle.RegHttpCallback("VersionServer.QUpdateVersion", HandleHttpQUpdateVersion)
-function HandleHttpQDownloadVersionFile(client, msg)
+ALittle.RegHttpCallback("VersionServer.QUpdateVersion", VersionServer.HandleHttpQUpdateVersion)
+function VersionServer.HandleHttpQDownloadVersionFile(client, msg)
 	local ___COROUTINE = coroutine.running()
 	Lua.Assert(ALittle.String_Find(msg.platform, "..") == nil, "platform不能带两个点")
 	Lua.Assert(ALittle.String_Find(msg.version_id, "..") == nil, "version_id不能带两个点")
 	Lua.Assert(ALittle.String_Find(msg.file_path, "..") == nil, "file_path不能带两个点")
-	local file_path = g_VersionManager.version_path .. "Version/" .. msg.platform .. "/" .. msg.version_id .. "/" .. msg.file_path
+	local file_path = VersionServer.g_VersionManager.version_path .. "Version/" .. msg.platform .. "/" .. msg.version_id .. "/" .. msg.file_path
 	local start_size = msg.start_size
 	if start_size == nil then
 		start_size = 0
@@ -533,8 +533,8 @@ function HandleHttpQDownloadVersionFile(client, msg)
 	return file_path, start_size
 end
 
-ALittle.RegHttpDownloadCallback("VersionServer.QDownloadVersionFile", HandleHttpQDownloadVersionFile)
-function HandleHttpQDeleteVersionInfo(client, msg)
+ALittle.RegHttpDownloadCallback("VersionServer.QDownloadVersionFile", VersionServer.HandleHttpQDownloadVersionFile)
+function VersionServer.HandleHttpQDeleteVersionInfo(client, msg)
 	local ___COROUTINE = coroutine.running()
 	local web_account = A_WebAccountManager:CheckLoginById(msg.__account_id, msg.__session_id)
 	local sql = "SELECT `version_id` FROM `VersionInfo` WHERE `status`=1 AND `account_id`=? AND `module_name`=? AND `platform`=? ORDER BY `update_time` DESC,`update_index` DESC LIMIT 1"
@@ -573,13 +573,13 @@ function HandleHttpQDeleteVersionInfo(client, msg)
 			Lua.Throw("数据库操作失败:" .. error)
 		end
 	end
-	local file_path = g_VersionManager.version_path .. "Version/" .. msg.platform .. "/" .. msg.version_id
+	local file_path = VersionServer.g_VersionManager.version_path .. "Version/" .. msg.platform .. "/" .. msg.version_id
 	ALittle.File_DeleteDeepDir(file_path, false)
 	return {}
 end
 
-ALittle.RegHttpCallback("VersionServer.QDeleteVersionInfo", HandleHttpQDeleteVersionInfo)
-function HandleHttpQUploadVersionFile(client, msg)
+ALittle.RegHttpCallback("VersionServer.QDeleteVersionInfo", VersionServer.HandleHttpQDeleteVersionInfo)
+function VersionServer.HandleHttpQUploadVersionFile(client, msg)
 	local ___COROUTINE = coroutine.running()
 	local web_account = A_WebAccountManager:CheckLoginById(msg.__account_id, msg.__session_id)
 	Lua.Assert(ALittle.String_Find(msg.platform, "..") == nil, "platform不能带两个点")
@@ -596,7 +596,7 @@ function HandleHttpQUploadVersionFile(client, msg)
 		Lua.Throw("数据库操作失败:" .. error)
 	end
 	Lua.Assert(query.count ~= 0, "模块不存在")
-	local file_path = g_VersionManager.version_path .. "Version/" .. msg.platform .. "/" .. msg.version_id .. "/" .. msg.file_path
+	local file_path = VersionServer.g_VersionManager.version_path .. "Version/" .. msg.platform .. "/" .. msg.version_id .. "/" .. msg.file_path
 	ALittle.File_MakeDeepDir(ALittle.File_GetFilePathByPath(file_path))
 	error = client:StartReceiveFile(file_path, 0)
 	if error ~= nil then
@@ -616,4 +616,5 @@ function HandleHttpQUploadVersionFile(client, msg)
 	end
 end
 
-ALittle.RegHttpFileCallback("VersionServer.QUploadVersionFile", HandleHttpQUploadVersionFile)
+ALittle.RegHttpFileCallback("VersionServer.QUploadVersionFile", VersionServer.HandleHttpQUploadVersionFile)
+end

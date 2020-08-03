@@ -726,6 +726,11 @@ function AUIPlugin.AUICodeEdit:HandleGotoLineClick(evnet)
 		number = self._line_count
 	end
 	self:EditFocus(number, 1, nil, nil, true)
+	self._gotoline_dialog.visible = false
+end
+
+function AUIPlugin.AUICodeEdit:HandleGotoLineEscClick(event)
+	self._gotoline_dialog.visible = false
 end
 
 function AUIPlugin.AUICodeEdit:UpdateLineFind(it_line)

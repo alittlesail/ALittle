@@ -611,7 +611,9 @@
     <ClCompile Include="Reference\ALittleScriptEnumDecReference.cpp" />
     <ClCompile Include="Reference\ALittleScriptEnumNameDecReference.cpp" />
     <ClCompile Include="Reference\ALittleScriptEnumVarDecReference.cpp" />
-    <ClCompile Include="Reference\ALittleScriptFactoryClassEx.cpp" />
+    <ClCompile Include="Reference\ALittleScriptFactoryClassEx.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">/bigobj %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
     <ClCompile Include="Reference\ALittleScriptFlowExprReference.cpp" />
     <ClCompile Include="Reference\ALittleScriptForExprReference.cpp" />
     <ClCompile Include="Reference\ALittleScriptForPairDecReference.cpp" />

@@ -1,11 +1,11 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-WebPermission = {
+ALittle.WebPermission = {
 	PERMISSION_ACCOUNT_CREATE = "101",
 	PERMISSION_ACCOUNT_DELETE = "102",
 	PERMISSION_SET_ROLE = "103",
@@ -24,3 +24,4 @@ WebPermission = {
 	PERMISSION_PROGRESS_QUERY = "304",
 }
 
+end

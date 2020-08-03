@@ -1,27 +1,27 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
-RegStruct(244548997, "ALittle.FullData", {
+ALittle.RegStruct(244548997, "ALittle.FullData", {
 name = "ALittle.FullData", ns_name = "ALittle", rl_name = "FullData", hash_code = 244548997,
 name_list = {"id"},
 type_list = {"int"},
 option_map = {primary="id"}
 })
 
-FullDataSet = Lua.Class(nil, "ALittle.FullDataSet")
+ALittle.FullDataSet = Lua.Class(nil, "ALittle.FullDataSet")
 
-function FullDataSet:Ctor(submit_interval_ms)
+function ALittle.FullDataSet:Ctor(submit_interval_ms)
 	___rawset(self, "_submit_interval_ms", submit_interval_ms)
 	___rawset(self, "_data_map", {})
 	___rawset(self, "_loading_map", {})
 	___rawset(self, "_dirty_map", {})
 end
 
-function FullDataSet:Init()
+function ALittle.FullDataSet:Init()
 	local ___COROUTINE = coroutine.running()
 	local rflt = self.__class.__element[1]
 	self._primary = rflt.option_map["primary"]
@@ -49,7 +49,7 @@ function FullDataSet:Init()
 	return nil
 end
 
-function FullDataSet:Release()
+function ALittle.FullDataSet:Release()
 	if self._submit_timer ~= nil then
 		A_LoopSystem:RemoveTimer(self._submit_timer)
 		self._submit_timer = nil
@@ -60,10 +60,10 @@ function FullDataSet:Release()
 	self._dirty_map = {}
 	self._release = true
 	local rflt = self.__class.__element[1]
-	Log(rflt.name .. "操作完毕")
+	ALittle.Log(rflt.name .. "操作完毕")
 end
 
-function FullDataSet:Submit(loop)
+function ALittle.FullDataSet:Submit(loop)
 	self._submit_timer = nil
 	local data_map = self._data_map
 	local dirty_map = self._dirty_map
@@ -72,7 +72,7 @@ function FullDataSet:Submit(loop)
 		if data ~= nil then
 			local error = A_MysqlSystem:UpdateOne(self.__class.__element[1], data, self._primary, data.id, data.id)
 			if error ~= nil then
-				Error(error)
+				ALittle.Error(error)
 			end
 		end
 	end
@@ -81,9 +81,9 @@ function FullDataSet:Submit(loop)
 		self._submit_timer = A_LoopSystem:AddTimer(self._submit_interval_ms, Lua.Bind(self.Submit, self, true))
 	end
 end
-FullDataSet.Submit = Lua.CoWrap(FullDataSet.Submit)
+ALittle.FullDataSet.Submit = Lua.CoWrap(ALittle.FullDataSet.Submit)
 
-function FullDataSet:GetDataAndDirty(id)
+function ALittle.FullDataSet:GetDataAndDirty(id)
 	local ___COROUTINE = coroutine.running()
 	local data = self:GetData(id)
 	if data ~= nil then
@@ -92,7 +92,7 @@ function FullDataSet:GetDataAndDirty(id)
 	return data
 end
 
-function FullDataSet:GetData(id)
+function ALittle.FullDataSet:GetData(id)
 	local ___COROUTINE = coroutine.running()
 	if self._release then
 		return nil
@@ -111,7 +111,7 @@ function FullDataSet:GetData(id)
 	self._loading_map[id] = true
 	local error, new_data = A_MysqlSystem:SelectOneFromByKey(self.__class.__element[1], self._primary, id, id)
 	if error ~= nil then
-		Error(error)
+		ALittle.Error(error)
 	end
 	if self._release then
 		return nil
@@ -124,7 +124,7 @@ function FullDataSet:GetData(id)
 	return data
 end
 
-function FullDataSet:CreateData(data)
+function ALittle.FullDataSet:CreateData(data)
 	local ___COROUTINE = coroutine.running()
 	if self._release then
 		return "数据集已经被释放"
@@ -141,12 +141,12 @@ function FullDataSet:CreateData(data)
 	self._data_map[data.id] = data
 	local error = A_MysqlSystem:InsertInto(self.__class.__element[1], data, nil, data.id)
 	if error ~= nil then
-		Error(error)
+		ALittle.Error(error)
 	end
 	return nil
 end
 
-function FullDataSet:DeleteData(id)
+function ALittle.FullDataSet:DeleteData(id)
 	local ___COROUTINE = coroutine.running()
 	if self._release then
 		return "数据集已经被释放"
@@ -161,8 +161,9 @@ function FullDataSet:DeleteData(id)
 	self._data_map[id] = nil
 	local error = A_MysqlSystem:DeleteFromByKey(self.__class.__element[1], self._primary, id, id)
 	if error ~= nil then
-		Error(error)
+		ALittle.Error(error)
 	end
 	return nil
 end
 
+end

@@ -1,13 +1,13 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
 local __VersionTime = 0
 local __VersionIndex = 0
-function NewTimeAndIndex()
+function ALittle.NewTimeAndIndex()
 	local cur_time = os.time()
 	if __VersionTime == cur_time then
 		__VersionIndex = __VersionIndex + 1
@@ -18,7 +18,7 @@ function NewTimeAndIndex()
 	return __VersionTime, __VersionIndex
 end
 
-TimeSecond = {
+ALittle.TimeSecond = {
 	ONE_MINUTE_SECONDS = 60,
 	ONE_HOUR_SECONDS = 3600,
 	ONE_DAY_SECONDS = 86400,
@@ -26,15 +26,16 @@ TimeSecond = {
 	ONE_WEEK_SECONDS = 604800,
 }
 
-function DateInfo(time)
+function ALittle.DateInfo(time)
 	return os.date("*t", time)
 end
 
-function GetNextTodayBeginTime()
-	local date = DateInfo()
+function ALittle.GetNextTodayBeginTime()
+	local date = ALittle.DateInfo()
 	date.hour = 0
 	date.min = 0
 	date.sec = 0
-	return os.time(date) + TimeSecond.ONE_DAY_SECONDS
+	return os.time(date) + ALittle.TimeSecond.ONE_DAY_SECONDS
 end
 
+end

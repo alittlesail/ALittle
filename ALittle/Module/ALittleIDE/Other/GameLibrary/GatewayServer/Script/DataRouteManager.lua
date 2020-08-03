@@ -1,21 +1,21 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("GatewayServer", package.seeall)
-
+do
+if _G.GatewayServer == nil then _G.GatewayServer = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = ALittle.GetAllStruct()
 
-ALittle.RegStruct(1715346212, "ALittle.Event", {
-name = "ALittle.Event", ns_name = "ALittle", rl_name = "Event", hash_code = 1715346212,
-name_list = {"target"},
-type_list = {"ALittle.EventDispatcher"},
-option_map = {}
-})
 ALittle.RegStruct(1723229779, "GatewayServer.DataRouteInfo", {
 name = "GatewayServer.DataRouteInfo", ns_name = "GatewayServer", rl_name = "DataRouteInfo", hash_code = 1723229779,
 name_list = {"route_type","route_num","route_weight","route_info","session"},
 type_list = {"int","int","int","GatewayServer.ConnectInfo","ALittle.MsgSessionTemplate<ALittle.MsgSessionNative,lua.__CPPAPIMessageWriteFactory>"},
+option_map = {}
+})
+ALittle.RegStruct(1715346212, "ALittle.Event", {
+name = "ALittle.Event", ns_name = "ALittle", rl_name = "Event", hash_code = 1715346212,
+name_list = {"target"},
+type_list = {"ALittle.EventDispatcher"},
 option_map = {}
 })
 ALittle.RegStruct(-969892976, "GatewayServer.ConnectInfo", {
@@ -31,14 +31,14 @@ type_list = {"ALittle.EventDispatcher","int","int","int","ALittle.MsgSessionTemp
 option_map = {}
 })
 
-DataRouteManager = Lua.Class(nil, "GatewayServer.DataRouteManager")
+GatewayServer.DataRouteManager = Lua.Class(nil, "GatewayServer.DataRouteManager")
 
-function DataRouteManager:Ctor()
+function GatewayServer.DataRouteManager:Ctor()
 	___rawset(self, "_route_map", {})
 	A_SessionSystem:AddEventListener(___all_struct[-36908822], self, self.HandleAnySessionDisconnected)
 end
 
-function DataRouteManager:HandleAnySessionDisconnected(event)
+function GatewayServer.DataRouteManager:HandleAnySessionDisconnected(event)
 	if event.route_type ~= 2 then
 		return
 	end
@@ -46,7 +46,7 @@ function DataRouteManager:HandleAnySessionDisconnected(event)
 	self._route_map[key] = nil
 end
 
-function DataRouteManager:HandleUpdateRouteInfo(client, msg)
+function GatewayServer.DataRouteManager:HandleUpdateRouteInfo(client, msg)
 	if client.route_type ~= 2 then
 		return
 	end
@@ -60,7 +60,7 @@ function DataRouteManager:HandleUpdateRouteInfo(client, msg)
 	self._route_map[key] = info
 end
 
-function DataRouteManager:HandleUpdateRouteWeight(client, msg)
+function GatewayServer.DataRouteManager:HandleUpdateRouteWeight(client, msg)
 	if client.route_type ~= 2 then
 		return
 	end
@@ -72,7 +72,7 @@ function DataRouteManager:HandleUpdateRouteWeight(client, msg)
 	info.route_weight = msg.route_weight
 end
 
-function DataRouteManager:GetRouteInfo()
+function GatewayServer.DataRouteManager:GetRouteInfo()
 	local min_weight = 0
 	local target = nil
 	for key, info in ___pairs(self._route_map) do
@@ -84,9 +84,10 @@ function DataRouteManager:GetRouteInfo()
 	return target
 end
 
-function DataRouteManager:FindRouteInfo(route_num)
+function GatewayServer.DataRouteManager:FindRouteInfo(route_num)
 	local key = 2 .. "_" .. route_num
 	return self._route_map[key]
 end
 
-g_DataRouteManager = DataRouteManager()
+GatewayServer.g_DataRouteManager = GatewayServer.DataRouteManager()
+end

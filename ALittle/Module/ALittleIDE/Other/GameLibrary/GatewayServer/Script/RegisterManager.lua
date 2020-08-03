@@ -1,62 +1,26 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("GatewayServer", package.seeall)
-
+do
+if _G.GatewayServer == nil then _G.GatewayServer = {} end
 local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = ALittle.GetAllStruct()
 
-ALittle.RegStruct(90250184, "GatewayServer.RegisterInfo", {
-name = "GatewayServer.RegisterInfo", ns_name = "GatewayServer", rl_name = "RegisterInfo", hash_code = 90250184,
-name_list = {"account_id","user_id","p_account_id","phone_number","device_id","account_name","account_pwd","create_time"},
-type_list = {"int","string","int","string","string","string","string","int"},
-option_map = {primary="account_id",index="user_id,phone_number,device_id,account_name"}
-})
-ALittle.RegStruct(945940302, "GatewayServer.QBindPhone", {
-name = "GatewayServer.QBindPhone", ns_name = "GatewayServer", rl_name = "QBindPhone", hash_code = 945940302,
-name_list = {"account_id","phone_number","phone_code"},
-type_list = {"int","string","string"},
-option_map = {}
-})
-ALittle.RegStruct(1066813511, "GatewayServer.QPhoneRegister", {
-name = "GatewayServer.QPhoneRegister", ns_name = "GatewayServer", rl_name = "QPhoneRegister", hash_code = 1066813511,
-name_list = {"phone_number","phone_pwd","phone_code","p_user_id"},
-type_list = {"string","string","string","string"},
-option_map = {}
-})
-ALittle.RegStruct(1693893532, "GatewayServer.QNormalRegister", {
-name = "GatewayServer.QNormalRegister", ns_name = "GatewayServer", rl_name = "QNormalRegister", hash_code = 1693893532,
-name_list = {"account_name","account_pwd","p_user_id"},
-type_list = {"string","string","string"},
-option_map = {}
-})
 ALittle.RegStruct(-2105123691, "GatewayServer.ARegister", {
 name = "GatewayServer.ARegister", ns_name = "GatewayServer", rl_name = "ARegister", hash_code = -2105123691,
 name_list = {},
 type_list = {},
 option_map = {}
 })
-ALittle.RegStruct(-729612372, "GatewayServer.ABindPhone", {
-name = "GatewayServer.ABindPhone", ns_name = "GatewayServer", rl_name = "ABindPhone", hash_code = -729612372,
-name_list = {},
-type_list = {},
-option_map = {}
-})
-ALittle.RegStruct(39013007, "GatewayServer.GW2C_ALogin", {
-name = "GatewayServer.GW2C_ALogin", ns_name = "GatewayServer", rl_name = "GW2C_ALogin", hash_code = 39013007,
-name_list = {"client_ip","client_port","account_id","session_id"},
-type_list = {"string","int","int","string"},
-option_map = {}
-})
-ALittle.RegStruct(1231533201, "GatewayServer.C2GW_QLogin", {
-name = "GatewayServer.C2GW_QLogin", ns_name = "GatewayServer", rl_name = "C2GW_QLogin", hash_code = 1231533201,
-name_list = {"device_id","account_name","account_pwd"},
-type_list = {"string","string","string"},
-option_map = {}
-})
 ALittle.RegStruct(-2061561503, "GatewayServer.QChangePwd", {
 name = "GatewayServer.QChangePwd", ns_name = "GatewayServer", rl_name = "QChangePwd", hash_code = -2061561503,
 name_list = {"account_id","old_pwd","new_pwd"},
 type_list = {"int","string","string"},
+option_map = {}
+})
+ALittle.RegStruct(1693893532, "GatewayServer.QNormalRegister", {
+name = "GatewayServer.QNormalRegister", ns_name = "GatewayServer", rl_name = "QNormalRegister", hash_code = 1693893532,
+name_list = {"account_name","account_pwd","p_user_id"},
+type_list = {"string","string","string"},
 option_map = {}
 })
 ALittle.RegStruct(-1343408203, "DataServer.GW2DATA_QLogin", {
@@ -71,16 +35,52 @@ name_list = {"phone_number","phone_code","new_pwd"},
 type_list = {"string","string","string"},
 option_map = {}
 })
+ALittle.RegStruct(1231533201, "GatewayServer.C2GW_QLogin", {
+name = "GatewayServer.C2GW_QLogin", ns_name = "GatewayServer", rl_name = "C2GW_QLogin", hash_code = 1231533201,
+name_list = {"device_id","account_name","account_pwd"},
+type_list = {"string","string","string"},
+option_map = {}
+})
+ALittle.RegStruct(1066813511, "GatewayServer.QPhoneRegister", {
+name = "GatewayServer.QPhoneRegister", ns_name = "GatewayServer", rl_name = "QPhoneRegister", hash_code = 1066813511,
+name_list = {"phone_number","phone_pwd","phone_code","p_user_id"},
+type_list = {"string","string","string","string"},
+option_map = {}
+})
+ALittle.RegStruct(945940302, "GatewayServer.QBindPhone", {
+name = "GatewayServer.QBindPhone", ns_name = "GatewayServer", rl_name = "QBindPhone", hash_code = 945940302,
+name_list = {"account_id","phone_number","phone_code"},
+type_list = {"int","string","string"},
+option_map = {}
+})
 ALittle.RegStruct(-937945851, "DataServer.GW2DATA_ALogin", {
 name = "DataServer.GW2DATA_ALogin", ns_name = "DataServer", rl_name = "GW2DATA_ALogin", hash_code = -937945851,
 name_list = {"client_ip","client_port","session_id"},
 type_list = {"string","int","string"},
 option_map = {}
 })
+ALittle.RegStruct(-729612372, "GatewayServer.ABindPhone", {
+name = "GatewayServer.ABindPhone", ns_name = "GatewayServer", rl_name = "ABindPhone", hash_code = -729612372,
+name_list = {},
+type_list = {},
+option_map = {}
+})
 ALittle.RegStruct(-147839140, "GatewayServer.AForgotPwd", {
 name = "GatewayServer.AForgotPwd", ns_name = "GatewayServer", rl_name = "AForgotPwd", hash_code = -147839140,
 name_list = {},
 type_list = {},
+option_map = {}
+})
+ALittle.RegStruct(90250184, "GatewayServer.RegisterInfo", {
+name = "GatewayServer.RegisterInfo", ns_name = "GatewayServer", rl_name = "RegisterInfo", hash_code = 90250184,
+name_list = {"account_id","user_id","p_account_id","phone_number","device_id","account_name","account_pwd","create_time"},
+type_list = {"int","string","int","string","string","string","string","int"},
+option_map = {primary="account_id",index="user_id,phone_number,device_id,account_name"}
+})
+ALittle.RegStruct(39013007, "GatewayServer.GW2C_ALogin", {
+name = "GatewayServer.GW2C_ALogin", ns_name = "GatewayServer", rl_name = "GW2C_ALogin", hash_code = 39013007,
+name_list = {"client_ip","client_port","account_id","session_id"},
+type_list = {"string","int","int","string"},
 option_map = {}
 })
 ALittle.RegStruct(38167126, "GatewayServer.AChangePwd", {
@@ -90,21 +90,21 @@ type_list = {},
 option_map = {}
 })
 
-RegisterManager = Lua.Class(nil, "GatewayServer.RegisterManager")
+GatewayServer.RegisterManager = Lua.Class(nil, "GatewayServer.RegisterManager")
 
-function RegisterManager:Ctor()
+function GatewayServer.RegisterManager:Ctor()
 end
 
-function RegisterManager:Setup()
+function GatewayServer.RegisterManager:Setup()
 	local ___COROUTINE = coroutine.running()
 	local error = A_MysqlSystem:CreateIfNotExit(___all_struct[90250184])
 	Lua.Assert(error == nil, error)
 end
 
-function RegisterManager:Shutdown()
+function GatewayServer.RegisterManager:Shutdown()
 end
 
-function RegisterManager:GenerateUserId()
+function GatewayServer.RegisterManager:GenerateUserId()
 	local ___COROUTINE = coroutine.running()
 	local i = 6
 	while true do
@@ -129,7 +129,7 @@ function RegisterManager:GenerateUserId()
 	return nil
 end
 
-function RegisterManager:GenerateAccountId(data_route_num)
+function GatewayServer.RegisterManager:GenerateAccountId(data_route_num)
 	local ___COROUTINE = coroutine.running()
 	local max_id = ALittle.MAX_ACCOUNT_ID_BY_DATA_ROUTE_NUM(data_route_num)
 	local min_id = ALittle.MIN_ACCOUNT_ID_BY_DATA_ROUTE_NUM(data_route_num)
@@ -149,8 +149,8 @@ function RegisterManager:GenerateAccountId(data_route_num)
 	return nil
 end
 
-g_RegisterManager = RegisterManager()
-function HandleQNormalRegister(client, msg)
+GatewayServer.g_RegisterManager = GatewayServer.RegisterManager()
+function GatewayServer.HandleQNormalRegister(client, msg)
 	local ___COROUTINE = coroutine.running()
 	Lua.Assert(msg.account_name ~= nil and msg.account_name ~= "", "账号名不能为空")
 	Lua.Assert(msg.account_pwd ~= nil and msg.account_pwd ~= "", "密码不能为空")
@@ -160,7 +160,7 @@ function HandleQNormalRegister(client, msg)
 		Lua.Throw("数据库操作失败:" .. error)
 	end
 	Lua.Assert(count == 0, "账号名已被注册")
-	local data_route_info = g_DataRouteManager:GetRouteInfo()
+	local data_route_info = GatewayServer.g_DataRouteManager:GetRouteInfo()
 	Lua.Assert(data_route_info ~= nil, "没有数据代理服务器可以选择")
 	local p_info = nil
 	if msg.p_user_id ~= nil and msg.p_user_id ~= "" then
@@ -169,9 +169,9 @@ function HandleQNormalRegister(client, msg)
 			Lua.Throw("数据库操作失败" .. error)
 		end
 	end
-	local user_id = g_RegisterManager:GenerateUserId()
+	local user_id = GatewayServer.g_RegisterManager:GenerateUserId()
 	Lua.Assert(user_id ~= nil, "编号生成失败")
-	local next_id = g_RegisterManager:GenerateAccountId(data_route_info.route_num)
+	local next_id = GatewayServer.g_RegisterManager:GenerateAccountId(data_route_info.route_num)
 	Lua.Assert(next_id ~= nil, "账号ID生成失败")
 	local info = {}
 	info.account_id = next_id
@@ -192,8 +192,8 @@ function HandleQNormalRegister(client, msg)
 	return {}
 end
 
-ALittle.RegMsgRpcCallback(1693893532, HandleQNormalRegister, -2105123691)
-function HandleQPhoneRegister(client, msg)
+ALittle.RegMsgRpcCallback(1693893532, GatewayServer.HandleQNormalRegister, -2105123691)
+function GatewayServer.HandleQPhoneRegister(client, msg)
 	local ___COROUTINE = coroutine.running()
 	Lua.Assert(msg.phone_number ~= nil and msg.phone_number ~= "", "手机号码不能为空")
 	Lua.Assert(msg.phone_pwd ~= nil and msg.phone_pwd ~= "", "密码不能为空")
@@ -202,13 +202,13 @@ function HandleQPhoneRegister(client, msg)
 		Lua.Throw("数据库操作失败:" .. error)
 	end
 	Lua.Assert(count == 0, "手机号码已被注册")
-	error = g_PhoneCodeManager:CheckPhoneCode(msg.phone_number, msg.phone_code)
+	error = GatewayServer.g_PhoneCodeManager:CheckPhoneCode(msg.phone_number, msg.phone_code)
 	Lua.Assert(error == nil, error)
-	local dp_route_info = g_DataRouteManager:GetRouteInfo()
+	local dp_route_info = GatewayServer.g_DataRouteManager:GetRouteInfo()
 	Lua.Assert(dp_route_info ~= nil, "没有数据代理服务器可以选择")
-	local user_id = g_RegisterManager:GenerateUserId()
+	local user_id = GatewayServer.g_RegisterManager:GenerateUserId()
 	Lua.Assert(user_id ~= nil, "编号生成失败")
-	local next_id = g_RegisterManager:GenerateAccountId(dp_route_info.route_num)
+	local next_id = GatewayServer.g_RegisterManager:GenerateAccountId(dp_route_info.route_num)
 	Lua.Assert(next_id ~= nil, "账号ID生成失败")
 	local p_info = nil
 	if msg.p_user_id ~= nil and msg.p_user_id ~= "" then
@@ -230,12 +230,12 @@ function HandleQPhoneRegister(client, msg)
 	if error ~= nil then
 		Lua.Throw("数据库操作失败:" .. error)
 	end
-	g_PhoneCodeManager:RemovePhoneCode(msg.phone_number)
+	GatewayServer.g_PhoneCodeManager:RemovePhoneCode(msg.phone_number)
 	return {}
 end
 
-ALittle.RegMsgRpcCallback(1066813511, HandleQPhoneRegister, -2105123691)
-function HandleQBindPhone(client, msg)
+ALittle.RegMsgRpcCallback(1066813511, GatewayServer.HandleQPhoneRegister, -2105123691)
+function GatewayServer.HandleQBindPhone(client, msg)
 	local ___COROUTINE = coroutine.running()
 	Lua.Assert(msg.phone_number ~= nil and msg.phone_number ~= "", "手机号码不能为空")
 	local error, info = A_MysqlSystem:SelectOneFromByKey(___all_struct[90250184], "phone_number", msg.phone_number)
@@ -248,7 +248,7 @@ function HandleQBindPhone(client, msg)
 		Lua.Throw("数据库操作失败:" .. error)
 	end
 	Lua.Assert(info, "要绑定的账号不存在")
-	error = g_PhoneCodeManager:CheckPhoneCode(msg.phone_number, msg.phone_code)
+	error = GatewayServer.g_PhoneCodeManager:CheckPhoneCode(msg.phone_number, msg.phone_code)
 	if error ~= nil then
 		Lua.Throw(error)
 	end
@@ -256,23 +256,23 @@ function HandleQBindPhone(client, msg)
 	if error ~= nil then
 		Lua.Throw("绑定失败:" .. error)
 	end
-	g_PhoneCodeManager:RemovePhoneCode(msg.phone_number)
+	GatewayServer.g_PhoneCodeManager:RemovePhoneCode(msg.phone_number)
 	return {}
 end
 
-ALittle.RegMsgRpcCallback(945940302, HandleQBindPhone, -729612372)
-function HandleQLogin(client, msg)
+ALittle.RegMsgRpcCallback(945940302, GatewayServer.HandleQBindPhone, -729612372)
+function GatewayServer.HandleQLogin(client, msg)
 	local ___COROUTINE = coroutine.running()
 	local info = nil
 	if msg.device_id ~= nil and msg.device_id ~= "" then
 		local error = nil
 		error, info = A_MysqlSystem:SelectOneFromByKey(___all_struct[90250184], "device_id", msg.device_id)
 		if info == nil then
-			local data_route_info = g_DataRouteManager:GetRouteInfo()
+			local data_route_info = GatewayServer.g_DataRouteManager:GetRouteInfo()
 			Lua.Assert(data_route_info ~= nil, "没有数据代理服务器可以选择")
-			local user_id = g_RegisterManager:GenerateUserId()
+			local user_id = GatewayServer.g_RegisterManager:GenerateUserId()
 			Lua.Assert(user_id ~= nil, "编号生成失败")
-			local next_id = g_RegisterManager:GenerateAccountId(data_route_info.route_num)
+			local next_id = GatewayServer.g_RegisterManager:GenerateAccountId(data_route_info.route_num)
 			Lua.Assert(next_id ~= nil, "账号ID生成失败")
 			info = {}
 			info.account_id = next_id
@@ -305,7 +305,7 @@ function HandleQLogin(client, msg)
 		Lua.Assert(info.account_pwd == ALittle.String_MD5("ALittle" .. msg.account_pwd .. "ALittle"), "账号或密码错误")
 	end
 	local data_route_num = ALittle.GET_DATA_ROUTE_NUM_BY_ACCOUNT_ID(info.account_id)
-	local data_route_info = g_DataRouteManager:FindRouteInfo(data_route_num)
+	local data_route_info = GatewayServer.g_DataRouteManager:FindRouteInfo(data_route_num)
 	Lua.Assert(data_route_info, "没有找到DataServer的路由信息")
 	local param = {}
 	param.account_id = info.account_id
@@ -321,8 +321,8 @@ function HandleQLogin(client, msg)
 	return anwser
 end
 
-ALittle.RegHttpCallback("GatewayServer.C2GW_QLogin", HandleQLogin)
-function HandleQChangePwd(client, msg)
+ALittle.RegHttpCallback("GatewayServer.C2GW_QLogin", GatewayServer.HandleQLogin)
+function GatewayServer.HandleQChangePwd(client, msg)
 	local ___COROUTINE = coroutine.running()
 	local error, info = A_MysqlSystem:SelectOneFromByKey(___all_struct[90250184], "account_id", msg.account_id)
 	if error ~= nil then
@@ -338,8 +338,8 @@ function HandleQChangePwd(client, msg)
 	return {}
 end
 
-ALittle.RegMsgRpcCallback(-2061561503, HandleQChangePwd, 38167126)
-function HandleQForgotPwd(client, msg)
+ALittle.RegMsgRpcCallback(-2061561503, GatewayServer.HandleQChangePwd, 38167126)
+function GatewayServer.HandleQForgotPwd(client, msg)
 	local ___COROUTINE = coroutine.running()
 	Lua.Assert(msg.phone_number ~= nil and msg.phone_number ~= "", "手机号码不能为空")
 	local error, info = A_MysqlSystem:SelectOneFromByKey(___all_struct[90250184], "phone_number", msg.phone_number)
@@ -347,7 +347,7 @@ function HandleQForgotPwd(client, msg)
 		Lua.Throw("数据库操作失败:" .. error)
 	end
 	Lua.Assert(info, "手机号码不存在")
-	error = g_PhoneCodeManager:CheckPhoneCode(msg.phone_number, msg.phone_code)
+	error = GatewayServer.g_PhoneCodeManager:CheckPhoneCode(msg.phone_number, msg.phone_code)
 	if error ~= nil then
 		Lua.Throw(error)
 	end
@@ -356,8 +356,9 @@ function HandleQForgotPwd(client, msg)
 	if error ~= nil then
 		Lua.Throw("修改失败:" .. error)
 	end
-	g_PhoneCodeManager:RemovePhoneCode(msg.phone_number)
+	GatewayServer.g_PhoneCodeManager:RemovePhoneCode(msg.phone_number)
 	return {}
 end
 
-ALittle.RegMsgRpcCallback(-1289005117, HandleQForgotPwd, -147839140)
+ALittle.RegMsgRpcCallback(-1289005117, GatewayServer.HandleQForgotPwd, -147839140)
+end

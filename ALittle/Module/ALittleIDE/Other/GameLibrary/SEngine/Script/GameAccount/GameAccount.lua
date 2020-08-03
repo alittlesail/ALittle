@@ -1,101 +1,101 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___all_struct = GetAllStruct()
+local ___all_struct = ALittle.GetAllStruct()
 
-RegStruct(1463647694, "DataServer.GS2DATA_NBackupStruct", {
-name = "DataServer.GS2DATA_NBackupStruct", ns_name = "DataServer", rl_name = "GS2DATA_NBackupStruct", hash_code = 1463647694,
-name_list = {"account_id","data"},
-type_list = {"int","ALittle.ProtocolAnyStruct"},
-option_map = {}
-})
-RegStruct(1821069430, "ALittle.ProtocolAnyStruct", {
+ALittle.RegStruct(1821069430, "ALittle.ProtocolAnyStruct", {
 name = "ALittle.ProtocolAnyStruct", ns_name = "ALittle", rl_name = "ProtocolAnyStruct", hash_code = 1821069430,
 name_list = {"hash_code","value"},
 type_list = {"int","any"},
 option_map = {}
 })
-RegStruct(-1121683527, "DataServer.GS2DATA_QLoadStruct", {
+ALittle.RegStruct(1463647694, "DataServer.GS2DATA_NBackupStruct", {
+name = "DataServer.GS2DATA_NBackupStruct", ns_name = "DataServer", rl_name = "GS2DATA_NBackupStruct", hash_code = 1463647694,
+name_list = {"account_id","data"},
+type_list = {"int","ALittle.ProtocolAnyStruct"},
+option_map = {}
+})
+ALittle.RegStruct(-1121683527, "DataServer.GS2DATA_QLoadStruct", {
 name = "DataServer.GS2DATA_QLoadStruct", ns_name = "DataServer", rl_name = "GS2DATA_QLoadStruct", hash_code = -1121683527,
 name_list = {"account_id","hash_code"},
 type_list = {"int","int"},
 option_map = {}
 })
-RegStruct(-197564509, "ALittle.GS2C_NAccountInfo", {
+ALittle.RegStruct(-197564509, "ALittle.GS2C_NAccountInfo", {
 name = "ALittle.GS2C_NAccountInfo", ns_name = "ALittle", rl_name = "GS2C_NAccountInfo", hash_code = -197564509,
 name_list = {"session_code","account_id","gs_route_id"},
 type_list = {"string","int","int"},
 option_map = {}
 })
 
-GameAccountStatus = {
+ALittle.GameAccountStatus = {
 	CREATE = 1,
 	LOADING = 2,
 	CACHE = 3,
 	ONLINE = 4,
 }
 
-GameModule = Lua.Class(nil, "ALittle.GameModule")
+ALittle.GameModule = Lua.Class(nil, "ALittle.GameModule")
 
-function GameModule:Ctor(account)
+function ALittle.GameModule:Ctor(account)
 	___rawset(self, "_account", account)
 	self._account:RegisterModule(self)
 end
 
-function GameModule:GetDataReflect()
+function ALittle.GameModule:GetDataReflect()
 	return nil
 end
 
-function GameModule:Release()
+function ALittle.GameModule:Release()
 end
 
-function GameModule:HasData()
+function ALittle.GameModule:HasData()
 	return false
 end
 
-function GameModule:LoadData(session)
+function ALittle.GameModule:LoadData(session)
 end
-GameModule.LoadData = Lua.CoWrap(GameModule.LoadData)
+ALittle.GameModule.LoadData = Lua.CoWrap(ALittle.GameModule.LoadData)
 
-function GameModule:BackupData(session)
-end
-
-function GameModule:OnDataReady()
+function ALittle.GameModule:BackupData(session)
 end
 
-function GameModule:OnSendData()
+function ALittle.GameModule:OnDataReady()
 end
 
-function GameModule:OnLogout()
+function ALittle.GameModule:OnSendData()
+end
+
+function ALittle.GameModule:OnLogout()
 end
 
 assert(ALittle.GameModule, " extends class:ALittle.GameModule is nil")
-GameModuleTemplate = Lua.Class(ALittle.GameModule, "ALittle.GameModuleTemplate")
+ALittle.GameModuleTemplate = Lua.Class(ALittle.GameModule, "ALittle.GameModuleTemplate")
 
-function GameModuleTemplate:GetDataReflect()
+function ALittle.GameModuleTemplate:GetDataReflect()
 	return self.__class.__element[1]
 end
 
-function GameModuleTemplate:OnSendData()
+function ALittle.GameModuleTemplate:OnSendData()
 	self._account:SendMsg(self.__class.__element[1], self._data)
 end
 
-function GameModuleTemplate:HasData()
+function ALittle.GameModuleTemplate:HasData()
 	return true
 end
 
-function GameModuleTemplate:LoadData(session)
+function ALittle.GameModuleTemplate:LoadData(session)
 	if session == nil then
-		Error(tostring(self) .. " session == null")
+		ALittle.Error(tostring(self) .. " session == null")
 		self._account:LoadOneCompleted(false)
 		return
 	end
 	local rflt = self:GetDataReflect()
 	if rflt == nil then
-		Error(tostring(self) .. ":GetDataReflect() == null")
+		ALittle.Error(tostring(self) .. ":GetDataReflect() == null")
 		self._account:LoadOneCompleted(false)
 		return
 	end
@@ -104,22 +104,22 @@ function GameModuleTemplate:LoadData(session)
 	param.hash_code = rflt.hash_code
 	local error, result = ALittle.IMsgCommon.InvokeRPC(-1121683527, session, param)
 	if error ~= nil then
-		Error(tostring(self) .. " DataServer.HandleQLoadStruct() failed:" .. error)
+		ALittle.Error(tostring(self) .. " DataServer.HandleQLoadStruct() failed:" .. error)
 		self._account:LoadOneCompleted(false)
 		return
 	end
 	self._data = result.value
 	self._account:LoadOneCompleted(true)
 end
-GameModuleTemplate.LoadData = Lua.CoWrap(GameModuleTemplate.LoadData)
+ALittle.GameModuleTemplate.LoadData = Lua.CoWrap(ALittle.GameModuleTemplate.LoadData)
 
-function GameModuleTemplate:BackupData(session)
+function ALittle.GameModuleTemplate:BackupData(session)
 	if session == nil then
 		return
 	end
 	local rflt = self:GetDataReflect()
 	if rflt == nil then
-		Error(tostring(self) .. ":GetDataReflect() == null")
+		ALittle.Error(tostring(self) .. ":GetDataReflect() == null")
 		self._account:LoadOneCompleted(false)
 		return
 	end
@@ -131,20 +131,20 @@ function GameModuleTemplate:BackupData(session)
 	session:SendMsg(___all_struct[1463647694], param)
 end
 
-GameAccount = Lua.Class(nil, "ALittle.GameAccount")
+ALittle.GameAccount = Lua.Class(nil, "ALittle.GameAccount")
 
-function GameAccount:Ctor(id)
+function ALittle.GameAccount:Ctor(id)
 	___rawset(self, "_id", id)
 	___rawset(self, "_loading_count", 0)
 	___rawset(self, "_loading_failed", false)
-	___rawset(self, "_status", GameAccountStatus.CREATE)
+	___rawset(self, "_status", ALittle.GameAccountStatus.CREATE)
 	___rawset(self, "_module_map", {})
 	___rawset(self, "_BACKUP_INTERVAL", 10 * 1000)
 	___rawset(self, "_CACHE_INTERVAL", 30 * 1000)
 	___rawset(self, "_session", tostring(math.random(10000, 99999)))
 end
 
-function GameAccount:Release()
+function ALittle.GameAccount:Release()
 	for name, module in ___pairs(self._module_map) do
 		module:Release()
 	end
@@ -152,36 +152,36 @@ function GameAccount:Release()
 	self:StopCacheTimer()
 end
 
-function GameAccount:GetId()
+function ALittle.GameAccount:GetId()
 	return self._id
 end
 
-function GameAccount:SetClient(client)
+function ALittle.GameAccount:SetClient(client)
 	self._client = client
 end
 
-function GameAccount:GetClient()
+function ALittle.GameAccount:GetClient()
 	return self._client
 end
 
-function GameAccount:GetStatus()
+function ALittle.GameAccount:GetStatus()
 	return self._status
 end
 
-function GameAccount:SetStatus(status)
+function ALittle.GameAccount:SetStatus(status)
 	self._status = status
 end
 
-function GameAccount:GetSession()
+function ALittle.GameAccount:GetSession()
 	return self._session
 end
 
-function GameAccount:RegisterModule(module)
+function ALittle.GameAccount:RegisterModule(module)
 	local rflt = (module).__class
 	self._module_map[rflt.__name] = module
 end
 
-function GameAccount:GetAllDataReflect()
+function ALittle.GameAccount:GetAllDataReflect()
 	local map = {}
 	local table_map = {}
 	for name, module in ___pairs(self._module_map) do
@@ -190,7 +190,7 @@ function GameAccount:GetAllDataReflect()
 			table_map[rflt.hash_code] = true
 			local error = ALittle.CollectStructReflect(rflt, map)
 			if error ~= nil then
-				Error(error)
+				ALittle.Error(error)
 			end
 		end
 	end
@@ -203,7 +203,7 @@ function GameAccount:GetAllDataReflect()
 	return rflt_list, table_map
 end
 
-function GameAccount:StartLoading(session)
+function ALittle.GameAccount:StartLoading(session)
 	if not A_GameAccountManager:IsSendModuleReflect(session) then
 		local rflt_list, table_map = self:GetAllDataReflect()
 		A_GameAccountManager:SendModuleReflect(session, rflt_list, table_map)
@@ -223,7 +223,7 @@ function GameAccount:StartLoading(session)
 	end
 end
 
-function GameAccount:LoadOneCompleted(result)
+function ALittle.GameAccount:LoadOneCompleted(result)
 	self._loading_count = self._loading_count - 1
 	if not result then
 		self._loading_failed = true
@@ -234,23 +234,23 @@ function GameAccount:LoadOneCompleted(result)
 	self:LoadOneCompletedImpl()
 end
 
-function GameAccount:LoadOneCompletedImpl()
+function ALittle.GameAccount:LoadOneCompletedImpl()
 	local account = A_GameAccountManager:GetAccountById(self._id)
 	if account ~= self then
 		return
 	end
 	self:OnDataReady()
 	if self._client ~= nil then
-		self:SetStatus(GameAccountStatus.ONLINE)
+		self:SetStatus(ALittle.GameAccountStatus.ONLINE)
 		self:LoginAction()
 	else
-		self:SetStatus(GameAccountStatus.CACHE)
+		self:SetStatus(ALittle.GameAccountStatus.CACHE)
 		self:StartCacheTimer()
 	end
 	self:StartBackupTimer()
 end
 
-function GameAccount:StartBackupTimer()
+function ALittle.GameAccount:StartBackupTimer()
 	ALittle.Log("StartBackupTimer, account_id:" .. self._id)
 	if self._backup_timer ~= nil then
 		A_LoopSystem:RemoveTimer(self._backup_timer)
@@ -258,7 +258,7 @@ function GameAccount:StartBackupTimer()
 	self._backup_timer = A_LoopSystem:AddTimer(self._BACKUP_INTERVAL, Lua.Bind(self.Backup, self), 0, self._BACKUP_INTERVAL)
 end
 
-function GameAccount:StopBackupTimer()
+function ALittle.GameAccount:StopBackupTimer()
 	if self._backup_timer == nil then
 		return
 	end
@@ -267,7 +267,7 @@ function GameAccount:StopBackupTimer()
 	self._backup_timer = nil
 end
 
-function GameAccount:StartCacheTimer()
+function ALittle.GameAccount:StartCacheTimer()
 	ALittle.Log("StartCacheTimer, account_id:" .. self._id)
 	if self._cache_timer ~= nil then
 		A_LoopSystem:RemoveTimer(self._cache_timer)
@@ -275,7 +275,7 @@ function GameAccount:StartCacheTimer()
 	self._cache_timer = A_LoopSystem:AddTimer(self._CACHE_INTERVAL, Lua.Bind(self.CacheTimeout, self))
 end
 
-function GameAccount:StopCacheTimer()
+function ALittle.GameAccount:StopCacheTimer()
 	if self._cache_timer == nil then
 		return
 	end
@@ -284,17 +284,17 @@ function GameAccount:StopCacheTimer()
 	self._cache_timer = nil
 end
 
-function GameAccount:CacheTimeout()
+function ALittle.GameAccount:CacheTimeout()
 	ALittle.Log("CacheTimeout, account_id:" .. self._id)
 	self._cache_timer = nil
 	self:Backup()
-	g_GameLeaseManager:ReleaseLease(self._id)
+	ALittle.g_GameLeaseManager:ReleaseLease(self._id)
 	A_GameAccountManager:DeleteAccount(self)
 end
 
-function GameAccount:Backup()
+function ALittle.GameAccount:Backup()
 	ALittle.Log("Backup, account_id:" .. self._id)
-	local lease_info = g_GameLeaseManager:GetLease(self._id)
+	local lease_info = ALittle.g_GameLeaseManager:GetLease(self._id)
 	if lease_info == nil or lease_info.session == nil then
 		return
 	end
@@ -303,20 +303,20 @@ function GameAccount:Backup()
 	end
 end
 
-function GameAccount:LogoutAction()
+function ALittle.GameAccount:LogoutAction()
 	for name, module in ___pairs(self._module_map) do
 		module:OnLogout()
 	end
 	self:Backup()
 end
 
-function GameAccount:OnDataReady()
+function ALittle.GameAccount:OnDataReady()
 	for name, module in ___pairs(self._module_map) do
 		module:OnDataReady()
 	end
 end
 
-function GameAccount:LoginAction()
+function ALittle.GameAccount:LoginAction()
 	local param = {}
 	param.account_id = self._id
 	param.gs_route_id = __CPPAPI_ServerSchedule:GetRouteId()
@@ -328,10 +328,11 @@ function GameAccount:LoginAction()
 	self:SendMsg(___all_struct[-1836835016], {})
 end
 
-function GameAccount:SendMsg(T, msg)
+function ALittle.GameAccount:SendMsg(T, msg)
 	if self._client == nil then
 		return
 	end
 	self._client:SendMsg(T, msg)
 end
 
+end

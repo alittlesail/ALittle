@@ -216,6 +216,7 @@
 
 #include "../Reference/ALittleScriptPropertyValueMethodCallReference.h"
 #include "../Reference/ALittleScriptPropertyValueCustomTypeReference.h"
+#include "../Reference/ALittleScriptCustomTypeReference.h"
 
 ABnfGuessError ALittleScriptTranslationLua::GenerateBindStat(std::shared_ptr<ALittleScriptBindStatElement> bind_stat, const std::string& pre_tab, std::string& content)
 {
@@ -570,12 +571,28 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateCustomType(std::shared_ptr<A
             }
             else
             {
-                class_name = guess_class->namespace_name + "." + class_name;
+                // 判断custom_type的来源
+                std::string pre_namespace_name;
+                error = dynamic_cast<ALittleScriptCustomTypeReference*>(custom_type->GetReference())->CalcNamespaceName(pre_namespace_name);
+                if (error) return error;
+
+                if (pre_namespace_name == "alittle") pre_namespace_name = "";
+                if (pre_namespace_name.size() > 0) pre_namespace_name += ".";
+
+                class_name = pre_namespace_name + class_name;
             }
         }
         else
         {
-            class_name = guess_class->namespace_name + "." + class_name;
+            // 判断custom_type的来源
+            std::string pre_namespace_name;
+            error = dynamic_cast<ALittleScriptCustomTypeReference*>(custom_type->GetReference())->CalcNamespaceName(pre_namespace_name);
+            if (error) return error;
+
+            if (pre_namespace_name == "alittle") pre_namespace_name = "";
+            if (pre_namespace_name.size() > 0) pre_namespace_name += ".";
+
+            class_name = pre_namespace_name + class_name;
         }
 
         // 如果有填充模板参数，那么就模板模板
@@ -2042,6 +2059,8 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateUsingDec(const std::vector<s
 
     if (ALittleScriptUtility::CalcAccessType(modifier) == ClassAccessType::PRIVATE)
         content += "local ";
+    else
+        content += m_alittle_gen_namespace_pre;
 
     std::string sub_content;
     error = GenerateCustomType(custom_type, pre_tab, sub_content);
@@ -3325,7 +3344,6 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateInstance(const std::vector<s
 }
 
 // 生成全局函数
-
 ABnfGuessError ALittleScriptTranslationLua::GenerateGlobalMethod(const std::vector<std::shared_ptr<ALittleScriptModifierElement>>& modifier, std::shared_ptr<ALittleScriptGlobalMethodDecElement> root, const std::string& pre_tab, std::string& content)
 {
     content = "";
@@ -3465,21 +3483,21 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateGlobalMethod(const std::vect
         if (proto_type == "Http")
         {
             if (return_list.size() != 1) return ABnfGuessError(nullptr, u8"带" + proto_type + u8"的全局函数，有且仅有一个返回值");
-            content += pre_tab + "ALittle.RegHttpCallback(\"" + guess_param_struct->GetValue() + "\", " + method_name + ")\n";
+            content += pre_tab + "ALittle.RegHttpCallback(\"" + guess_param_struct->GetValue() + "\", " + m_alittle_gen_namespace_pre + method_name + ")\n";
         }
         else if (proto_type == "HttpDownload")
         {
             if (return_list.size() != 2) return ABnfGuessError(nullptr, u8"带" + proto_type + u8"的全局函数，有且仅有两个返回值");
             content += pre_tab
                 + "ALittle.RegHttpDownloadCallback(\""
-                + guess_param_struct->GetValue() + "\", " + method_name + ")\n";
+                + guess_param_struct->GetValue() + "\", " + m_alittle_gen_namespace_pre + method_name + ")\n";
         }
         else if (proto_type == "HttpUpload")
         {
             if (return_list.size() != 0) return ABnfGuessError(nullptr, u8"带" + proto_type + u8"的全局函数，不能有返回值");
             content += pre_tab
                 + "ALittle.RegHttpFileCallback(\""
-                + guess_param_struct->GetValue() + "\", " + method_name + ")\n";
+                + guess_param_struct->GetValue() + "\", " + m_alittle_gen_namespace_pre + method_name + ")\n";
         }
         else if (proto_type == "Msg")
         {
@@ -3491,7 +3509,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateGlobalMethod(const std::vect
             {
                 content += pre_tab
                     + "ALittle.RegMsgCallback(" + std::to_string(ALittleScriptUtility::StructHash(guess_param_struct))
-                    + ", " + method_name + ")\n";
+                    + ", " + m_alittle_gen_namespace_pre + method_name + ")\n";
             }
             else
             {
@@ -3500,7 +3518,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateGlobalMethod(const std::vect
 
                 content += pre_tab
                     + "ALittle.RegMsgRpcCallback(" + std::to_string(ALittleScriptUtility::StructHash(guess_param_struct))
-                    + ", " + method_name + ", " + std::to_string(ALittleScriptUtility::StructHash(guess_return_struct))
+                    + ", " + m_alittle_gen_namespace_pre + method_name + ", " + std::to_string(ALittleScriptUtility::StructHash(guess_return_struct))
                     + ")\n";
 
                 error = GenerateReflectStructInfo(guess_return_struct);
@@ -3528,7 +3546,7 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateGlobalMethod(const std::vect
         }
 
         content += pre_tab
-            + "ALittle.RegCmdCallback(\"" + method_name + "\", " + method_name
+            + "ALittle.RegCmdCallback(\"" + method_name + "\", " + m_alittle_gen_namespace_pre + method_name
             + ", {" + ABnfFactory::Join(var_list, ",") + "}, {" + ABnfFactory::Join(name_list, ",")
             + "}, \"" + command_text + "\")\n";
     }

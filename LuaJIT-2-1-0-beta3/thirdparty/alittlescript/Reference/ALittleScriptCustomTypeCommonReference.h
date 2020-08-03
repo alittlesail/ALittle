@@ -31,6 +31,9 @@ protected:
     ABnfElementPtr GotoDefinition() override;
 
     bool QueryCompletion(ABnfElementPtr select, std::vector<ALanguageCompletionInfo>& list) override;
+
+public:
+    ABnfGuessError CalcNamespaceName(std::string& namespace_name);
 };
 
 #endif // _ALITTLE_ALITTLESCRIPTCUSTOMTYPECOMMONREFERENCE_H_

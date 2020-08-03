@@ -10,6 +10,9 @@
 #include "../Generate/ALittleScriptTemplateNameDecElement.h"
 #include "../Generate/ALittleScriptNamespaceNameDecElement.h"
 #include "../Generate/ALittleScriptCustomTypeDotIdElement.h"
+#include "../Generate/ALittleScriptUsingNameDecElement.h"
+#include "../Generate/ALittleScriptUsingDecElement.h"
+#include "../Generate/ALittleScriptNamespaceElementDecElement.h"
 
 #include "../Index/ALittleScriptIndex.h"
 #include "../Index/ALittleScriptUtility.h"
@@ -18,6 +21,7 @@
 
 #include "../Guess/ALittleScriptGuessClass.h"
 #include "../Guess/ALittleScriptGuessStruct.h"
+#include "../Guess/ALittleScriptGuessEnum.h"
 
 ALittleScriptCustomTypeCommonReference::ALittleScriptCustomTypeCommonReference(std::shared_ptr<ALittleScriptCustomTypeElement> custom_type, ABnfElementPtr element) : ALittleScriptReferenceTemplate<ABnfElement>(element)
 {
@@ -431,4 +435,89 @@ bool ALittleScriptCustomTypeCommonReference::QueryCompletion(ABnfElementPtr sele
     }
 
     return true;
+}
+
+ABnfGuessError ALittleScriptCustomTypeCommonReference::CalcNamespaceName(std::string& namespace_name)
+{
+    namespace_name = "";
+    auto element = m_element.lock();
+    if (element == nullptr) return ABnfGuessError(nullptr, u8"节点失效");
+    auto custom_type = m_custom_type.lock();
+    if (custom_type == nullptr) return ABnfGuessError(nullptr, u8"节点失效");
+
+    if (m_key.size() == 0) return ABnfGuessError(element, u8"找不到指定类型, namespace:" + m_namespace_name + ", key:" + m_key);
+
+    auto* index = GetIndex();
+    auto custom_type_template = custom_type->GetCustomTypeTemplate();
+    {
+        std::vector<ABnfElementPtr> dec_list;
+        index->FindALittleNameDecList(ABnfElementType::USING_NAME, element->GetFile(), m_namespace_name, m_key, true, dec_list);
+        for (auto& dec : dec_list)
+        {
+            if (std::dynamic_pointer_cast<ALittleScriptUsingNameDecElement>(dec))
+            {
+                auto using_dec = std::dynamic_pointer_cast<ALittleScriptUsingDecElement>(dec->GetParent());
+                if (using_dec == nullptr)
+                    return ABnfGuessError(element, u8"ALittleScriptUsingNameDecElement的父节点不是ALittleScriptUsingDecElement");
+                auto element_dec = std::dynamic_pointer_cast<ALittleScriptNamespaceElementDecElement>(using_dec->GetParent());
+                if (element_dec == nullptr)
+                    return ABnfGuessError(element, u8"ALittleScriptUsingDecElement的父节点不是ALittleScriptNamespaceElementDecElement");
+                auto access_type = ALittleScriptUtility::CalcAccessType(element_dec->GetModifierList());
+                if (access_type != ClassAccessType::PRIVATE)
+                    namespace_name = ALittleScriptUtility::GetNamespaceName(dec);
+                return nullptr;
+            }
+        }
+    }
+    {
+        // 根据名字获取对应的类
+        std::vector<ABnfElementPtr> dec_list;
+        index->FindALittleNameDecList(ABnfElementType::CLASS_NAME, element->GetFile(), m_namespace_name, m_key, true, dec_list);
+
+        // 遍历所有的类
+        for (auto& dec : dec_list)
+        {
+            ABnfGuessPtr class_guess;
+            auto error = dec->GuessType(class_guess);
+            if (error) return error;
+            if (!std::dynamic_pointer_cast<ALittleScriptGuessClass>(class_guess))
+                return ABnfGuessError(element, u8"ALittleClassNameDec->GuessType()的结果不是ALittleScriptGuessClass");
+
+            auto class_guess_class = std::dynamic_pointer_cast<ALittleScriptGuessClass>(class_guess);
+            namespace_name = class_guess_class->namespace_name;
+            return nullptr;
+        }
+    }
+    {
+        std::vector<ABnfElementPtr> dec_list;
+        index->FindALittleNameDecList(ABnfElementType::STRUCT_NAME, element->GetFile(), m_namespace_name, m_key, true, dec_list);
+        for (auto& dec : dec_list)
+        {
+            ABnfGuessPtr struct_guess;
+            auto error = dec->GuessType(struct_guess);
+            if (error) return error;
+            if (!std::dynamic_pointer_cast<ALittleScriptGuessStruct>(struct_guess))
+                return ABnfGuessError(element, u8"ALittleStructNameDec->GuessType()的结果不是ALittleScriptGuessStruct");
+            auto struct_guess_struct = std::dynamic_pointer_cast<ALittleScriptGuessStruct>(struct_guess);
+            namespace_name = struct_guess_struct->namespace_name;
+            return nullptr;
+        }
+    }
+    {
+        std::vector<ABnfElementPtr> dec_list;
+        index->FindALittleNameDecList(ABnfElementType::ENUM_NAME, element->GetFile(), m_namespace_name, m_key, true, dec_list);
+        for (auto& dec : dec_list)
+        {
+            ABnfGuessPtr enum_guess;
+            auto error = dec->GuessType(enum_guess);
+            if (error) return error;
+            if (!std::dynamic_pointer_cast<ALittleScriptGuessEnum>(enum_guess))
+                return ABnfGuessError(element, u8"ALittleEnumNameDec->GuessType()的结果不是ALittleScriptGuessEnum");
+            auto enum_guess_enum = std::dynamic_pointer_cast<ALittleScriptGuessEnum>(enum_guess);
+            namespace_name = enum_guess_enum->namespace_name;
+            return nullptr;
+        }
+    }
+
+    return nullptr;
 }

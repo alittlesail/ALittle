@@ -306,7 +306,7 @@ function ALittle.VersionSystem:UpdateVersion(ip, port, callback, check, repeat_c
 		param.platform = ALittle.System_GetPlatform()
 		param.module_name = self._module_name
 		param.account_name = self._account_name
-		self._ask_update_request = ALittle.HttpSender(self._ip, self._port)
+		self._ask_update_request = HttpSender(self._ip, self._port)
 		self._doing = true
 		local error, result = ALittle.IHttpSender.Invoke("VersionServer.QUpdateVersion", self._ask_update_request, param)
 		self._ask_update_request = nil
@@ -349,7 +349,7 @@ function ALittle.VersionSystem:UpdateVersion(ip, port, callback, check, repeat_c
 		param.platform = ALittle.System_GetPlatform()
 		param.version_id = self._update_info.version_info.version_id
 		param.file_path = "CurVersion.db"
-		self._current_request = ALittle.HttpFileSender(self._ip, self._port, ALittle.File_BaseFilePath() .. self._update_path .. self._new_version_tmp, 0, nil)
+		self._current_request = HttpFileSender(self._ip, self._port, ALittle.File_BaseFilePath() .. self._update_path .. self._new_version_tmp, 0, nil)
 		local error = ALittle.IHttpFileSender.InvokeDownload("VersionServer.QDownloadVersionFile", self._current_request, param)
 		self._current_request = nil
 		if error ~= nil then
@@ -459,7 +459,7 @@ function ALittle.VersionSystem:DownloadNext()
 	param.start_size = file_info.start_size
 	param.version_id = self._update_info.version_info.version_id
 	param.file_path = file_info.c_file_path
-	self._current_request = ALittle.HttpFileSender(self._ip, self._port, file_full_path, file_info.start_size, Lua.Bind(self.DownloadUpdateFileCallback, self, file_info))
+	self._current_request = HttpFileSender(self._ip, self._port, file_full_path, file_info.start_size, Lua.Bind(self.DownloadUpdateFileCallback, self, file_info))
 	local error = ALittle.IHttpFileSender.InvokeDownload("VersionServer.QDownloadVersionFile", self._current_request, param)
 	if error ~= nil then
 		self._current_request = nil

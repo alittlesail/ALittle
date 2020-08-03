@@ -1,45 +1,45 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___all_struct = GetAllStruct()
+local ___all_struct = ALittle.GetAllStruct()
 
-RegStruct(-417093574, "ALittle.S2CWebAccountInfo", {
-name = "ALittle.S2CWebAccountInfo", ns_name = "ALittle", rl_name = "S2CWebAccountInfo", hash_code = -417093574,
-name_list = {"account_id","account_name","role_id","role_name","permission_map"},
-type_list = {"string","string","string","string","Map<string,bool>"},
-option_map = {}
-})
-RegStruct(-300988017, "ALittle.S2CWebServerInfo", {
-name = "ALittle.S2CWebServerInfo", ns_name = "ALittle", rl_name = "S2CWebServerInfo", hash_code = -300988017,
-name_list = {"http_ip","http_port"},
-type_list = {"string","int"},
-option_map = {}
-})
-RegStruct(799192036, "ALittle.SessionInfo", {
-name = "ALittle.SessionInfo", ns_name = "ALittle", rl_name = "SessionInfo", hash_code = 799192036,
-name_list = {"new_client","old_client","time"},
-type_list = {"string","string","int"},
-option_map = {}
-})
-RegStruct(1391512615, "ALittle.S2CWebForceLogout", {
-name = "ALittle.S2CWebForceLogout", ns_name = "ALittle", rl_name = "S2CWebForceLogout", hash_code = 1391512615,
-name_list = {"reason"},
-type_list = {"string"},
-option_map = {}
-})
-RegStruct(1809602374, "ALittle.S2CWebSession", {
+ALittle.RegStruct(1809602374, "ALittle.S2CWebSession", {
 name = "ALittle.S2CWebSession", ns_name = "ALittle", rl_name = "S2CWebSession", hash_code = 1809602374,
 name_list = {"session_id"},
 type_list = {"string"},
 option_map = {}
 })
+ALittle.RegStruct(1391512615, "ALittle.S2CWebForceLogout", {
+name = "ALittle.S2CWebForceLogout", ns_name = "ALittle", rl_name = "S2CWebForceLogout", hash_code = 1391512615,
+name_list = {"reason"},
+type_list = {"string"},
+option_map = {}
+})
+ALittle.RegStruct(799192036, "ALittle.SessionInfo", {
+name = "ALittle.SessionInfo", ns_name = "ALittle", rl_name = "SessionInfo", hash_code = 799192036,
+name_list = {"new_client","old_client","time"},
+type_list = {"string","string","int"},
+option_map = {}
+})
+ALittle.RegStruct(-417093574, "ALittle.S2CWebAccountInfo", {
+name = "ALittle.S2CWebAccountInfo", ns_name = "ALittle", rl_name = "S2CWebAccountInfo", hash_code = -417093574,
+name_list = {"account_id","account_name","role_id","role_name","permission_map"},
+type_list = {"string","string","string","string","Map<string,bool>"},
+option_map = {}
+})
+ALittle.RegStruct(-300988017, "ALittle.S2CWebServerInfo", {
+name = "ALittle.S2CWebServerInfo", ns_name = "ALittle", rl_name = "S2CWebServerInfo", hash_code = -300988017,
+name_list = {"http_ip","http_port"},
+type_list = {"string","int"},
+option_map = {}
+})
 
-WebAccount = Lua.Class(nil, "ALittle.WebAccount")
+ALittle.WebAccount = Lua.Class(nil, "ALittle.WebAccount")
 
-function WebAccount:Ctor(client, base_info, role_info)
+function ALittle.WebAccount:Ctor(client, base_info, role_info)
 	___rawset(self, "_session_info", {})
 	self._session_info.old_client = "s" .. tostring(math.random(100000, 999999))
 	self._session_info.new_client = self._session_info.old_client
@@ -53,36 +53,36 @@ function WebAccount:Ctor(client, base_info, role_info)
 	end
 end
 
-function WebAccount:IsLogin()
+function ALittle.WebAccount:IsLogin()
 	return self._is_login
 end
 
-function WebAccount:IsDataReady()
+function ALittle.WebAccount:IsDataReady()
 	return self._is_login
 end
 
-function WebAccount:GetID()
+function ALittle.WebAccount:GetID()
 	return self._base_info.account_id
 end
 
-function WebAccount:GetRoleID()
+function ALittle.WebAccount:GetRoleID()
 	return self._role_info.role_id
 end
 
-function WebAccount:GetAccountName()
+function ALittle.WebAccount:GetAccountName()
 	return self._base_info.account_name
 end
 
-function WebAccount:GetClient()
+function ALittle.WebAccount:GetClient()
 	return self._client
 end
 
-function WebAccount:UpdateRoleInfo()
+function ALittle.WebAccount:UpdateRoleInfo()
 	local ___COROUTINE = coroutine.running()
 	do
 		local error, base_info = A_MysqlSystem:SelectOneFromByKey(___all_struct[-192825113], "account_id", self._base_info.account_id)
 		if error ~= nil then
-			Error(error)
+			ALittle.Error(error)
 		end
 		if base_info == nil then
 			return
@@ -94,7 +94,7 @@ function WebAccount:UpdateRoleInfo()
 		self._permission_map = {}
 		local error, role_info = A_MysqlSystem:SelectOneFromByKey(___all_struct[-699725823], "role_id", self._base_info.role_id)
 		if error ~= nil then
-			Error(error)
+			ALittle.Error(error)
 		end
 		if role_info == nil then
 			return
@@ -106,24 +106,24 @@ function WebAccount:UpdateRoleInfo()
 	end
 end
 
-function WebAccount:CheckPermission(permission)
+function ALittle.WebAccount:CheckPermission(permission)
 	if self._role_info.role_id == "alittle" then
 		return true
 	end
 	return self._permission_map[permission] ~= nil
 end
 
-function WebAccount:ForceLogout(reason)
+function ALittle.WebAccount:ForceLogout(reason)
 	local param = {}
 	param.reason = reason
 	self._client:SendMsg(___all_struct[1391512615], param)
 end
 
-function WebAccount:LogoutActionSystem()
+function ALittle.WebAccount:LogoutActionSystem()
 	self._is_login = false
 end
 
-function WebAccount:LoginActionSystem()
+function ALittle.WebAccount:LoginActionSystem()
 	self._is_login = true
 	self:GenSessionCodeAndSync()
 	do
@@ -146,7 +146,7 @@ function WebAccount:LoginActionSystem()
 	end
 end
 
-function WebAccount:GenSessionCodeAndSync()
+function ALittle.WebAccount:GenSessionCodeAndSync()
 	self._session_info.old_client = self._session_info.new_client
 	self._session_info.new_client = "s" .. tostring(math.random(100000, 999999))
 	self._session_info.time = os.time(nil)
@@ -155,7 +155,7 @@ function WebAccount:GenSessionCodeAndSync()
 	self._client:SendMsg(___all_struct[1809602374], param)
 end
 
-function WebAccount:CheckSessionCodeAndSync(session_code)
+function ALittle.WebAccount:CheckSessionCodeAndSync(session_code)
 	if session_code == nil or session_code == "" then
 		return false
 	end
@@ -167,3 +167,4 @@ function WebAccount:CheckSessionCodeAndSync(session_code)
 	return result
 end
 
+end

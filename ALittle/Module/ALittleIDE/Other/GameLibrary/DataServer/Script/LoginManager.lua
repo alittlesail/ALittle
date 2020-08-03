@@ -1,9 +1,15 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("DataServer", package.seeall)
-
+do
+if _G.DataServer == nil then _G.DataServer = {} end
 local ___pairs = pairs
 local ___ipairs = ipairs
 
+ALittle.RegStruct(-1922773679, "ALittle.DATA2GS_QSaveSession", {
+name = "ALittle.DATA2GS_QSaveSession", ns_name = "ALittle", rl_name = "DATA2GS_QSaveSession", hash_code = -1922773679,
+name_list = {"account_id","session"},
+type_list = {"int","string"},
+option_map = {}
+})
 ALittle.RegStruct(-1627449907, "ALittle.DATA2GS_QEmpty", {
 name = "ALittle.DATA2GS_QEmpty", ns_name = "ALittle", rl_name = "DATA2GS_QEmpty", hash_code = -1627449907,
 name_list = {},
@@ -14,6 +20,12 @@ ALittle.RegStruct(-1343408203, "DataServer.GW2DATA_QLogin", {
 name = "DataServer.GW2DATA_QLogin", ns_name = "DataServer", rl_name = "GW2DATA_QLogin", hash_code = -1343408203,
 name_list = {"account_id"},
 type_list = {"int"},
+option_map = {}
+})
+ALittle.RegStruct(-963859571, "ALittle.GS2DATA_ASaveSession", {
+name = "ALittle.GS2DATA_ASaveSession", ns_name = "ALittle", rl_name = "GS2DATA_ASaveSession", hash_code = -963859571,
+name_list = {},
+type_list = {},
 option_map = {}
 })
 ALittle.RegStruct(-937945851, "DataServer.GW2DATA_ALogin", {
@@ -28,24 +40,12 @@ name_list = {},
 type_list = {},
 option_map = {}
 })
-ALittle.RegStruct(-1922773679, "ALittle.DATA2GS_QSaveSession", {
-name = "ALittle.DATA2GS_QSaveSession", ns_name = "ALittle", rl_name = "DATA2GS_QSaveSession", hash_code = -1922773679,
-name_list = {"account_id","session"},
-type_list = {"int","string"},
-option_map = {}
-})
-ALittle.RegStruct(-963859571, "ALittle.GS2DATA_ASaveSession", {
-name = "ALittle.GS2DATA_ASaveSession", ns_name = "ALittle", rl_name = "GS2DATA_ASaveSession", hash_code = -963859571,
-name_list = {},
-type_list = {},
-option_map = {}
-})
 
-function HandleQLogin(client, msg)
+function DataServer.HandleQLogin(client, msg)
 	local ___COROUTINE = coroutine.running()
-	local info = g_LeaseManager:GetLease(msg.account_id)
+	local info = DataServer.g_LeaseManager:GetLease(msg.account_id)
 	Lua.Assert(info, "租约信息获取失败")
-	local gs_info = g_LeaseManager:GetGameServerInfo(info.gs_route_num)
+	local gs_info = DataServer.g_LeaseManager:GetGameServerInfo(info.gs_route_num)
 	Lua.Assert(gs_info, "GS连接不存在")
 	if not info.confirm then
 		local error, result = ALittle.IMsgCommon.InvokeRPC(-1627449907, gs_info.session, {})
@@ -68,4 +68,5 @@ function HandleQLogin(client, msg)
 	return param
 end
 
-ALittle.RegMsgRpcCallback(-1343408203, HandleQLogin, -937945851)
+ALittle.RegMsgRpcCallback(-1343408203, DataServer.HandleQLogin, -937945851)
+end

@@ -1,4 +1,5 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
+do
 local ___pairs = pairs
 local ___ipairs = ipairs
 
@@ -9,7 +10,7 @@ __Log = function(content, level)
 end
 
 ALittle.SetLogFunc(__Log)
-function RequireSEngine(base_path)
+function _G.RequireSEngine(base_path)
 	local ___COROUTINE = coroutine.running()
 	Require(base_path, "Utility/Time")
 	Require(base_path, "Utility/System")
@@ -24,7 +25,7 @@ function RequireSEngine(base_path)
 	Require(base_path, "Utility/GatewaySystem")
 end
 
-function __ALITTLEAPI_SetupMainModule(sengine_path, module_path, module_name, config_path)
+function _G.__ALITTLEAPI_SetupMainModule(sengine_path, module_path, module_name, config_path)
 	local ___COROUTINE = coroutine.running()
 	ALittle.Log("module_name:" .. module_name)
 	Require(module_path, "Script/Main")
@@ -41,7 +42,7 @@ function __ALITTLEAPI_SetupMainModule(sengine_path, module_path, module_name, co
 	setup_module(sengine_path, module_path, config_path)
 end
 
-function __ALITTLEAPI_ShutdownMainModule(module_name)
+function _G.__ALITTLEAPI_ShutdownMainModule(module_name)
 	local module = _G[module_name]
 	if module == nil then
 		ALittle.Log("找不到模块:" .. module_name)
@@ -55,27 +56,27 @@ function __ALITTLEAPI_ShutdownMainModule(module_name)
 	shutdown_module()
 end
 
-function __ALITTLEAPI_Update(frame_time)
+function _G.__ALITTLEAPI_Update(frame_time)
 	A_LoopSystem:Update(frame_time)
 end
 
-function __ALITTLEAPI_HandleMysqlQueryTask(id, reason)
+function _G.__ALITTLEAPI_HandleMysqlQueryTask(id, reason)
 	A_MysqlSystem:HandleMysqlQueryTask(id, reason)
 end
 
-function __ALITTLEAPI_HandleMysqlEmptyTask(id, reason)
+function _G.__ALITTLEAPI_HandleMysqlEmptyTask(id, reason)
 	A_MysqlSystem:HandleMysqlEmptyTask(id, reason)
 end
 
-function __ALITTLEAPI_HttpSucceed(id, response)
+function _G.__ALITTLEAPI_HttpSucceed(id, response)
 	A_HttpSystem:HandleHttpSucceed(id, response)
 end
 
-function __ALITTLEAPI_HttpFailed(id, reason)
+function _G.__ALITTLEAPI_HttpFailed(id, reason)
 	A_HttpSystem:HandleHttpFailed(id, reason)
 end
 
-function __ALITTLEAPI_HttpTask(http_id, path, param, content)
+function _G.__ALITTLEAPI_HttpTask(http_id, path, param, content)
 	local http_callback = ALittle.FindHttpCallback(path)
 	if http_callback ~= nil then
 		ALittle.HttpSystem.HandleHttpTask(http_id, http_callback, ALittle.String_HttpAnalysisValueMap(param, content))
@@ -89,47 +90,48 @@ function __ALITTLEAPI_HttpTask(http_id, path, param, content)
 	__CPPAPI_ServerSchedule:HttpClose(http_id)
 end
 
-function __ALITTLEAPI_HttpFileTask(http_id, path, param, content)
+function _G.__ALITTLEAPI_HttpFileTask(http_id, path, param, content)
 	A_HttpFileSystem:HandleHttpFileTask(http_id, path, ALittle.FindHttpFileReceiverCallback(path), ALittle.String_HttpAnalysisValueMap(param, content))
 end
 
-function __ALITTLEAPI_HttpFileCompletedTask(http_id, reason)
+function _G.__ALITTLEAPI_HttpFileCompletedTask(http_id, reason)
 	A_HttpFileSystem:HandleHttpFileCompletedTask(http_id, reason)
 end
 
-function __ALITTLEAPI_ClientConnect(client_id, remote_ip, remote_port)
+function _G.__ALITTLEAPI_ClientConnect(client_id, remote_ip, remote_port)
 	A_ClientSystem:HandleClientConnect(client_id, remote_ip, remote_port)
 end
 
-function __ALITTLEAPI_ClientDisconnect(client_id)
+function _G.__ALITTLEAPI_ClientDisconnect(client_id)
 	A_ClientSystem:HandleClientDisconnect(client_id)
 end
 
-function __ALITTLEAPI_ClientMessage(client_id, id, rpc_id, factory)
+function _G.__ALITTLEAPI_ClientMessage(client_id, id, rpc_id, factory)
 	A_ClientSystem:HandleClientMessage(client_id, id, rpc_id, factory)
 end
 
-function __ALITTLEAPI_SessionConnect(connect_key, route_type, route_num)
+function _G.__ALITTLEAPI_SessionConnect(connect_key, route_type, route_num)
 	A_SessionSystem:HandleSessionConnect(connect_key, route_type, route_num)
 end
 
-function __ALITTLEAPI_SessionDisconnect(connect_key, route_type, route_num)
+function _G.__ALITTLEAPI_SessionDisconnect(connect_key, route_type, route_num)
 	A_SessionSystem:HandleSessionDisconnect(connect_key, route_type, route_num)
 end
 
-function __ALITTLEAPI_SessionMessage(connect_key, id, rpc_id, factory)
+function _G.__ALITTLEAPI_SessionMessage(connect_key, id, rpc_id, factory)
 	A_SessionSystem:HandleSessionMessage(connect_key, id, rpc_id, factory)
 end
 
-function __ALITTLEAPI_ConnectSessionFailed(route_type, route_num, reason)
+function _G.__ALITTLEAPI_ConnectSessionFailed(route_type, route_num, reason)
 	A_SessionSystem:HandleConnectSessionFailed(route_type, route_num, reason)
 end
 
-function __ALITTLEAPI_ConnectSessionSucceed(connect_key, route_type, route_num)
+function _G.__ALITTLEAPI_ConnectSessionSucceed(connect_key, route_type, route_num)
 	A_SessionSystem:HandleConnectSessionSucceed(connect_key, route_type, route_num)
 end
 
-function __ALITTLEAPI_HandleConsoleCmd(cmd)
+function _G.__ALITTLEAPI_HandleConsoleCmd(cmd)
 	ALittle.ExecuteCommand(cmd)
 end
 
+end

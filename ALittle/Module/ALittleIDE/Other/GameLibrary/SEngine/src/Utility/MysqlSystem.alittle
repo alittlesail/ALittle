@@ -312,13 +312,13 @@ public class MysqlSystem
                 map[name] = query.String;
             else
             {
-                var value = query.String;
-                if (value == "")
+                var str = query.String;
+                if (str == "")
                     map[name] = new Map<any, any>();
                 else
                 {
                     var content:any = null;
-                    error, content = tcall(lua.ajson.decode, value);
+                    error, content = tcall(lua.ajson.decode, str);
                     if (error != null)
                         return error, null;
                     else

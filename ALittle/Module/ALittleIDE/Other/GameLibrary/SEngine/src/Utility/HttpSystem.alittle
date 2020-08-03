@@ -119,8 +119,8 @@ public class HttpSystem
         this._id_creator.ReleaseID(id);
         var thread = this._request_map[id];
         this._request_map[id] = null;
-        var result, reason = lua.coroutine.resume(thread, reason, null);
-        if (result != true) Error(reason);
+        var result, error = lua.coroutine.resume(thread, reason, null);
+        if (result != true) Error(error);
     }
 }
 

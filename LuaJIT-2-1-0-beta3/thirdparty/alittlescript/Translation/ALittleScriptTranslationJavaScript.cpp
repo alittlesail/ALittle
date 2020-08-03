@@ -216,6 +216,7 @@
 
 #include "../Reference/ALittleScriptPropertyValueMethodCallReference.h"
 #include "../Reference/ALittleScriptPropertyValueCustomTypeReference.h"
+#include "../Reference/ALittleScriptCustomTypeReference.h"
 
 // 生成bind命令
 ABnfGuessError ALittleScriptTranslationJavaScript::GenerateBindStat(std::shared_ptr<ALittleScriptBindStatElement> bind_stat, const std::string& pre_tab, std::string& content)
@@ -727,12 +728,28 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateCustomType(std::share
             }
             else
             {
-                class_name = guess_class->namespace_name + "." + class_name;
+                // 判断custom_type的来源
+                std::string pre_namespace_name;
+                error = dynamic_cast<ALittleScriptCustomTypeReference*>(custom_type->GetReference())->CalcNamespaceName(pre_namespace_name);
+                if (error) return error;
+
+                if (pre_namespace_name == "alittle") pre_namespace_name = "";
+                if (pre_namespace_name.size() > 0) pre_namespace_name += ".";
+
+                class_name = pre_namespace_name + class_name;
             }
         }
         else
         {
-            class_name = guess_class->namespace_name + "." + class_name;
+            // 判断custom_type的来源
+            std::string pre_namespace_name;
+            error = dynamic_cast<ALittleScriptCustomTypeReference*>(custom_type->GetReference())->CalcNamespaceName(pre_namespace_name);
+            if (error) return error;
+
+            if (pre_namespace_name == "alittle") pre_namespace_name = "";
+            if (pre_namespace_name.size() > 0) pre_namespace_name += ".";
+
+            class_name = pre_namespace_name + class_name;
         }
 
         // 如果有填充模板参数，那么就模板模板
@@ -1889,8 +1906,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GeneratePropertyValue(std::sh
                 if (error) return error;
 
                 if (pre_namespace_name == "alittle") pre_namespace_name = "";
-                if (pre_namespace_name.size() > 0)
-                    content += pre_namespace_name + ".";
+                if (pre_namespace_name.size() > 0) content += pre_namespace_name + ".";
             }
 
             content += custom_type->GetElementText();
@@ -2234,7 +2250,6 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GeneratePropertyValue(std::sh
 }
 
 // 生成co
-
 ABnfGuessError ALittleScriptTranslationJavaScript::GenerateCoroutineStat(std::shared_ptr<ALittleScriptCoroutineStatElement> root, const std::string& pre_tab, std::string& content)
 {
     content = "___COROUTINE";
@@ -2242,7 +2257,6 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateCoroutineStat(std::sh
 }
 
 // 生成using
-
 ABnfGuessError ALittleScriptTranslationJavaScript::GenerateUsingDec(const std::vector<std::shared_ptr<ALittleScriptModifierElement>>& modifier, std::shared_ptr<ALittleScriptUsingDecElement> root, const std::string& pre_tab, std::string& content)
 {
     content = "";
@@ -2264,6 +2278,8 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateUsingDec(const std::v
 
     if (ALittleScriptUtility::CalcAccessType(modifier) == ClassAccessType::PRIVATE)
         content += "let ";
+    else
+        content += m_alittle_gen_namespace_pre;
 
     std::string sub_content;
     error = GenerateCustomType(custom_type, pre_tab, sub_content);

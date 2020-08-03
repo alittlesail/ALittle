@@ -1,13 +1,13 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("DataServer", package.seeall)
-
+do
+if _G.DataServer == nil then _G.DataServer = {} end
 local ___pairs = pairs
 local ___ipairs = ipairs
 
-ALittle.RegStruct(1463647694, "DataServer.GS2DATA_NBackupStruct", {
-name = "DataServer.GS2DATA_NBackupStruct", ns_name = "DataServer", rl_name = "GS2DATA_NBackupStruct", hash_code = 1463647694,
-name_list = {"account_id","data"},
-type_list = {"int","ALittle.ProtocolAnyStruct"},
+ALittle.RegStruct(1847150134, "ALittle.StructInfo", {
+name = "ALittle.StructInfo", ns_name = "ALittle", rl_name = "StructInfo", hash_code = 1847150134,
+name_list = {"name","ns_name","rl_name","hash_code","name_list","type_list","option_map"},
+type_list = {"string","string","string","int","List<string>","List<string>","Map<string,string>"},
 option_map = {}
 })
 ALittle.RegStruct(1821069430, "ALittle.ProtocolAnyStruct", {
@@ -16,16 +16,16 @@ name_list = {"hash_code","value"},
 type_list = {"int","any"},
 option_map = {}
 })
-ALittle.RegStruct(1847150134, "ALittle.StructInfo", {
-name = "ALittle.StructInfo", ns_name = "ALittle", rl_name = "StructInfo", hash_code = 1847150134,
-name_list = {"name","ns_name","rl_name","hash_code","name_list","type_list","option_map"},
-type_list = {"string","string","string","int","List<string>","List<string>","Map<string,string>"},
-option_map = {}
-})
 ALittle.RegStruct(-1546420203, "DataServer.TableReadyInfo", {
 name = "DataServer.TableReadyInfo", ns_name = "DataServer", rl_name = "TableReadyInfo", hash_code = -1546420203,
 name_list = {"total","ready"},
 type_list = {"int","Map<int,bool>"},
+option_map = {}
+})
+ALittle.RegStruct(1463647694, "DataServer.GS2DATA_NBackupStruct", {
+name = "DataServer.GS2DATA_NBackupStruct", ns_name = "DataServer", rl_name = "GS2DATA_NBackupStruct", hash_code = 1463647694,
+name_list = {"account_id","data"},
+type_list = {"int","ALittle.ProtocolAnyStruct"},
 option_map = {}
 })
 ALittle.RegStruct(-1121683527, "DataServer.GS2DATA_QLoadStruct", {
@@ -42,7 +42,7 @@ option_map = {}
 })
 
 local TABLE_REGISTER_MAP = {}
-function HandleQRegStruct(common, msg)
+function DataServer.HandleQRegStruct(common, msg)
 	local connect_key = common:GetID()
 	local register_map = TABLE_REGISTER_MAP[connect_key]
 	if register_map == nil then
@@ -67,10 +67,10 @@ function HandleQRegStruct(common, msg)
 		end
 	end
 end
-HandleQRegStruct = Lua.CoWrap(HandleQRegStruct)
+DataServer.HandleQRegStruct = Lua.CoWrap(DataServer.HandleQRegStruct)
 
-ALittle.RegMsgCallback(-1010453448, HandleQRegStruct)
-function HandleQLoadStruct(client, msg)
+ALittle.RegMsgCallback(-1010453448, DataServer.HandleQRegStruct)
+function DataServer.HandleQLoadStruct(client, msg)
 	local ___COROUTINE = coroutine.running()
 	local connect_key = client:GetID()
 	local register_map = TABLE_REGISTER_MAP[connect_key]
@@ -104,13 +104,13 @@ function HandleQLoadStruct(client, msg)
 	return param
 end
 
-ALittle.RegMsgRpcCallback(-1121683527, HandleQLoadStruct, 1821069430)
-function HandleNBackupStruct(client, msg)
+ALittle.RegMsgRpcCallback(-1121683527, DataServer.HandleQLoadStruct, 1821069430)
+function DataServer.HandleNBackupStruct(client, msg)
 	local session = client
 	if session.route_type ~= 7 then
 		return
 	end
-	if not g_LeaseManager:CheckLease(msg.account_id, session.route_num) then
+	if not DataServer.g_LeaseManager:CheckLease(msg.account_id, session.route_num) then
 		ALittle.Warn("CheckLease failed! account_id:" .. msg.account_id .. ", route_num:" .. session.route_num .. ", hash_code:" .. msg.data.hash_code)
 		return
 	end
@@ -131,6 +131,7 @@ function HandleNBackupStruct(client, msg)
 		Lua.Throw("数据库操作失败:" .. error)
 	end
 end
-HandleNBackupStruct = Lua.CoWrap(HandleNBackupStruct)
+DataServer.HandleNBackupStruct = Lua.CoWrap(DataServer.HandleNBackupStruct)
 
-ALittle.RegMsgCallback(1463647694, HandleNBackupStruct)
+ALittle.RegMsgCallback(1463647694, DataServer.HandleNBackupStruct)
+end

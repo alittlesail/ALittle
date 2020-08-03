@@ -1,17 +1,11 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("GatewayServer", package.seeall)
-
+do
+if _G.GatewayServer == nil then _G.GatewayServer = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = ALittle.GetAllStruct()
 
-ALittle.RegStruct(702085384, "GatewayServer.PhoneCodeCfg", {
-name = "GatewayServer.PhoneCodeCfg", ns_name = "GatewayServer", rl_name = "PhoneCodeCfg", hash_code = 702085384,
-name_list = {"url","sid","token","appid","templateid"},
-type_list = {"string","string","string","string","string"},
-option_map = {}
-})
 ALittle.RegStruct(1926215703, "GatewayServer.PhoneCodeSendParam", {
 name = "GatewayServer.PhoneCodeSendParam", ns_name = "GatewayServer", rl_name = "PhoneCodeSendParam", hash_code = 1926215703,
 name_list = {"sid","token","appid","templateid","param","mobile"},
@@ -36,6 +30,12 @@ name_list = {"code","msg"},
 type_list = {"string","string"},
 option_map = {}
 })
+ALittle.RegStruct(702085384, "GatewayServer.PhoneCodeCfg", {
+name = "GatewayServer.PhoneCodeCfg", ns_name = "GatewayServer", rl_name = "PhoneCodeCfg", hash_code = 702085384,
+name_list = {"url","sid","token","appid","templateid"},
+type_list = {"string","string","string","string","string"},
+option_map = {}
+})
 ALittle.RegStruct(-247110298, "GatewayServer.APhoneCode", {
 name = "GatewayServer.APhoneCode", ns_name = "GatewayServer", rl_name = "APhoneCode", hash_code = -247110298,
 name_list = {},
@@ -43,26 +43,26 @@ type_list = {},
 option_map = {}
 })
 
-PhoneCodeManager = Lua.Class(nil, "GatewayServer.PhoneCodeManager")
+GatewayServer.PhoneCodeManager = Lua.Class(nil, "GatewayServer.PhoneCodeManager")
 
-function PhoneCodeManager:Ctor()
+function GatewayServer.PhoneCodeManager:Ctor()
 	___rawset(self, "_phone_code_map", {})
 end
 
-function PhoneCodeManager:Setup()
-	self._phone_code_cfg = g_ConfigSystem:GetConfig("phone_code_cfg", {})
+function GatewayServer.PhoneCodeManager:Setup()
+	self._phone_code_cfg = GatewayServer.g_ConfigSystem:GetConfig("phone_code_cfg", {})
 	local delay_time = ALittle.GetNextTodayBeginTime() - os.time()
 	self._timer = A_LoopSystem:AddTimer(delay_time * 1000, Lua.Bind(self.HandleNewDay, self))
 end
 
-function PhoneCodeManager:Shutdown()
+function GatewayServer.PhoneCodeManager:Shutdown()
 	if self._timer ~= nil then
 		A_LoopSystem:RemoveTimer(self._timer)
 		self._timer = nil
 	end
 end
 
-function PhoneCodeManager:HandleNewDay()
+function GatewayServer.PhoneCodeManager:HandleNewDay()
 	local cur_time = os.time()
 	ALittle.Log("PhoneCodeManager:HandleNewDay:" .. os.date("%Y-%m-%d %H:%M:%S", cur_time))
 	local remove_list = {}
@@ -80,7 +80,7 @@ function PhoneCodeManager:HandleNewDay()
 	self._timer = A_LoopSystem:AddTimer(delay_time * 1000, Lua.Bind(self.HandleNewDay, self))
 end
 
-function PhoneCodeManager:CheckPhoneCode(phone_number, phone_code)
+function GatewayServer.PhoneCodeManager:CheckPhoneCode(phone_number, phone_code)
 	local info = self._phone_code_map[phone_number]
 	if info == nil then
 		return "无效验证码"
@@ -94,11 +94,11 @@ function PhoneCodeManager:CheckPhoneCode(phone_number, phone_code)
 	return nil
 end
 
-function PhoneCodeManager:RemovePhoneCode(phone_number)
+function GatewayServer.PhoneCodeManager:RemovePhoneCode(phone_number)
 	self._phone_code_map[phone_number] = nil
 end
 
-function PhoneCodeManager:AddPhoneCode(phone_number, phone_code)
+function GatewayServer.PhoneCodeManager:AddPhoneCode(phone_number, phone_code)
 	local info = self._phone_code_map[phone_number]
 	if info ~= nil then
 		info.count = info.count + 1
@@ -115,16 +115,16 @@ function PhoneCodeManager:AddPhoneCode(phone_number, phone_code)
 	end
 end
 
-function PhoneCodeManager:GetPhoneCode(phone_number)
+function GatewayServer.PhoneCodeManager:GetPhoneCode(phone_number)
 	return self._phone_code_map[phone_number]
 end
 
-function PhoneCodeManager:GetPhoneCodeCfg()
+function GatewayServer.PhoneCodeManager:GetPhoneCodeCfg()
 	return self._phone_code_cfg
 end
 
-g_PhoneCodeManager = PhoneCodeManager()
-PhoneCodeRequestType = {
+GatewayServer.g_PhoneCodeManager = GatewayServer.PhoneCodeManager()
+GatewayServer.PhoneCodeRequestType = {
 	PRT_BEGIN = 0,
 	PRT_REGISTER = 1,
 	PRT_BINDPHONE = 2,
@@ -133,26 +133,26 @@ PhoneCodeRequestType = {
 	PRT_END = 5,
 }
 
-function HandleQPhoneCode(client, msg)
+function GatewayServer.HandleQPhoneCode(client, msg)
 	local ___COROUTINE = coroutine.running()
 	Lua.Assert(msg.phone_number ~= nil, "手机号码不能为空")
 	Lua.Assert(msg.phone_number ~= "", "手机号码不能为空")
-	Lua.Assert(msg.request_type > PhoneCodeRequestType.PRT_BEGIN and msg.request_type < PhoneCodeRequestType.PRT_END, "无效的请求方式!")
-	if msg.request_type == PhoneCodeRequestType.PRT_FORGOTPWD or msg.request_type == PhoneCodeRequestType.PRT_LOGIN then
+	Lua.Assert(msg.request_type > GatewayServer.PhoneCodeRequestType.PRT_BEGIN and msg.request_type < GatewayServer.PhoneCodeRequestType.PRT_END, "无效的请求方式!")
+	if msg.request_type == GatewayServer.PhoneCodeRequestType.PRT_FORGOTPWD or msg.request_type == GatewayServer.PhoneCodeRequestType.PRT_LOGIN then
 		local error, count = A_MysqlSystem:SelectCount(___all_struct[90250184], "phone_number", msg.phone_number)
 		if error ~= nil then
 			Lua.Throw(error)
 		end
 		Lua.Assert(count ~= 0, "手机号码不存在!")
 	end
-	local info = g_PhoneCodeManager:GetPhoneCode(msg.phone_number)
+	local info = GatewayServer.g_PhoneCodeManager:GetPhoneCode(msg.phone_number)
 	if info ~= nil then
 		Lua.Assert(info.count < 5, "该手机已经获取验证码满5次，请明天再试!")
 		Lua.Assert(os.time() - info.begin_time >= 120, "请在2分钟后再获取验证码!")
 	end
-	local phone_code_cfg = g_PhoneCodeManager:GetPhoneCodeCfg()
+	local phone_code_cfg = GatewayServer.g_PhoneCodeManager:GetPhoneCodeCfg()
 	Lua.Assert(phone_code_cfg.url ~= nil and phone_code_cfg.url ~= "", "暂时不支持获取验证码")
-	if msg.request_type == PhoneCodeRequestType.PRT_REGISTER or msg.request_type == PhoneCodeRequestType.PRT_BINDPHONE then
+	if msg.request_type == GatewayServer.PhoneCodeRequestType.PRT_REGISTER or msg.request_type == GatewayServer.PhoneCodeRequestType.PRT_BINDPHONE then
 		local error, count = A_MysqlSystem:SelectCount(___all_struct[90250184], "phone_number", msg.phone_number)
 		if error ~= nil then
 			Lua.Throw("数据库操作失败:" .. error)
@@ -160,7 +160,7 @@ function HandleQPhoneCode(client, msg)
 		Lua.Assert(count > 0, "该号码已经被注册了!")
 	end
 	local phone_code = tostring(math.random(1000, 9999))
-	local cfg = g_PhoneCodeManager:GetPhoneCodeCfg()
+	local cfg = GatewayServer.g_PhoneCodeManager:GetPhoneCodeCfg()
 	local send_param = {}
 	send_param.sid = cfg.sid
 	send_param.token = cfg.token
@@ -173,8 +173,9 @@ function HandleQPhoneCode(client, msg)
 	local result, response = Lua.TCall(json.decode, content)
 	Lua.Assert(result == nil, "验证码发送结果解析错误")
 	Lua.Assert(response.code == "000000", "验证码发送失败")
-	g_PhoneCodeManager:AddPhoneCode(msg.phone_number, phone_code)
+	GatewayServer.g_PhoneCodeManager:AddPhoneCode(msg.phone_number, phone_code)
 	return {}
 end
 
-ALittle.RegMsgRpcCallback(-801052492, HandleQPhoneCode, -247110298)
+ALittle.RegMsgRpcCallback(-801052492, GatewayServer.HandleQPhoneCode, -247110298)
+end

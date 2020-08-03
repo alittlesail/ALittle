@@ -700,6 +700,13 @@ public class AUICodeEdit : ALittle.DisplayLayout
 
         if (number > this._line_count) number = this._line_count;
         this.EditFocus(number, 1, null, null, true);
+
+        this._gotoline_dialog.visible = false;
+    }
+
+    private fun HandleGotoLineEscClick(ALittle.UIEvent event)
+    {
+        this._gotoline_dialog.visible = false;
     }
 
     public fun UpdateLineFind(int it_line)

@@ -1,81 +1,81 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("ALittle", package.seeall)
-
+do
+if _G.ALittle == nil then _G.ALittle = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___all_struct = GetAllStruct()
+local ___all_struct = ALittle.GetAllStruct()
 
-RegStruct(-36908822, "ALittle.SessionDisconnectEvent", {
-name = "ALittle.SessionDisconnectEvent", ns_name = "ALittle", rl_name = "SessionDisconnectEvent", hash_code = -36908822,
-name_list = {"target","connect_key","route_type","route_num","session"},
-type_list = {"ALittle.EventDispatcher","int","int","int","ALittle.MsgSessionTemplate<ALittle.MsgSessionNative,lua.__CPPAPIMessageWriteFactory>"},
-option_map = {}
-})
-RegStruct(888437463, "ALittle.SessionConnectEvent", {
-name = "ALittle.SessionConnectEvent", ns_name = "ALittle", rl_name = "SessionConnectEvent", hash_code = 888437463,
-name_list = {"target","connect_key","route_type","route_num","session"},
-type_list = {"ALittle.EventDispatcher","int","int","int","ALittle.MsgSessionTemplate<ALittle.MsgSessionNative,lua.__CPPAPIMessageWriteFactory>"},
-option_map = {}
-})
-RegStruct(1715346212, "ALittle.Event", {
+ALittle.RegStruct(1715346212, "ALittle.Event", {
 name = "ALittle.Event", ns_name = "ALittle", rl_name = "Event", hash_code = 1715346212,
 name_list = {"target"},
 type_list = {"ALittle.EventDispatcher"},
 option_map = {}
 })
-RegStruct(-1417161474, "ALittle.ConnectSessionInfo", {
+ALittle.RegStruct(-1417161474, "ALittle.ConnectSessionInfo", {
 name = "ALittle.ConnectSessionInfo", ns_name = "ALittle", rl_name = "ConnectSessionInfo", hash_code = -1417161474,
 name_list = {"route_type","route_num","connect_key","is_connecting"},
 type_list = {"int","int","int","bool"},
 option_map = {}
 })
+ALittle.RegStruct(888437463, "ALittle.SessionConnectEvent", {
+name = "ALittle.SessionConnectEvent", ns_name = "ALittle", rl_name = "SessionConnectEvent", hash_code = 888437463,
+name_list = {"target","connect_key","route_type","route_num","session"},
+type_list = {"ALittle.EventDispatcher","int","int","int","ALittle.MsgSessionTemplate<ALittle.MsgSessionNative,lua.__CPPAPIMessageWriteFactory>"},
+option_map = {}
+})
+ALittle.RegStruct(-36908822, "ALittle.SessionDisconnectEvent", {
+name = "ALittle.SessionDisconnectEvent", ns_name = "ALittle", rl_name = "SessionDisconnectEvent", hash_code = -36908822,
+name_list = {"target","connect_key","route_type","route_num","session"},
+type_list = {"ALittle.EventDispatcher","int","int","int","ALittle.MsgSessionTemplate<ALittle.MsgSessionNative,lua.__CPPAPIMessageWriteFactory>"},
+option_map = {}
+})
 
 assert(ALittle.IMsgCommonNative, " extends class:ALittle.IMsgCommonNative is nil")
-MsgSessionNative = Lua.Class(ALittle.IMsgCommonNative, "ALittle.MsgSessionNative")
+ALittle.MsgSessionNative = Lua.Class(ALittle.IMsgCommonNative, "ALittle.MsgSessionNative")
 
-function MsgSessionNative:SetID(id)
+function ALittle.MsgSessionNative:SetID(id)
 	self._connect_key = id
 end
 
-function MsgSessionNative:GetID()
+function ALittle.MsgSessionNative:GetID()
 	return self._connect_key
 end
 
-function MsgSessionNative:SendFactory(factory)
+function ALittle.MsgSessionNative:SendFactory(factory)
 	__CPPAPI_ServerSchedule:SessionSend(self._connect_key, factory)
 end
 
-function MsgSessionNative:Close()
+function ALittle.MsgSessionNative:Close()
 	__CPPAPI_ServerSchedule:SessionClose(self._connect_key)
 	A_SessionSystem:RemoveSessionServer(self._connect_key)
 end
 
-MsgSession = Lua.Template(MsgSessionTemplate, "ALittle.MsgSessionTemplate<ALittle.MsgSessionNative, lua.__CPPAPIMessageWriteFactory>", MsgSessionNative, __CPPAPIMessageWriteFactory);
+ALittle.MsgSession = Lua.Template(ALittle.MsgSessionTemplate, "ALittle.MsgSessionTemplate<ALittle.MsgSessionNative, lua.__CPPAPIMessageWriteFactory>", ALittle.MsgSessionNative, __CPPAPIMessageWriteFactory);
 assert(ALittle.EventDispatcher, " extends class:ALittle.EventDispatcher is nil")
-SessionSystem = Lua.Class(ALittle.EventDispatcher, "ALittle.SessionSystem")
+ALittle.SessionSystem = Lua.Class(ALittle.EventDispatcher, "ALittle.SessionSystem")
 
-function SessionSystem:Ctor()
+function ALittle.SessionSystem:Ctor()
 	___rawset(self, "_session_map", {})
 	___rawset(self, "_connect_map", {})
 	___rawset(self, "_invoke_map", {})
 end
 
-function SessionSystem:GetSessionMap()
+function ALittle.SessionSystem:GetSessionMap()
 	return self._session_map
 end
 
-function SessionSystem:SendMsgToAll(T, msg)
+function ALittle.SessionSystem:SendMsgToAll(T, msg)
 	for connect_key, session in ___pairs(self._session_map) do
 		session:SendMsg(T, msg)
 	end
 end
 
-function SessionSystem:RemoveSessionServer(connect_key)
+function ALittle.SessionSystem:RemoveSessionServer(connect_key)
 	self._session_map[connect_key] = nil
 end
 
-function SessionSystem:AddConnectSession(route_type, route_num)
+function ALittle.SessionSystem:AddConnectSession(route_type, route_num)
 	local key = route_type .. "_" .. route_num
 	local info = self._connect_map[key]
 	if info ~= nil then
@@ -89,7 +89,7 @@ function SessionSystem:AddConnectSession(route_type, route_num)
 	__CPPAPI_ServerSchedule:ConnectSession(route_type, route_num)
 end
 
-function SessionSystem:ConnectSession(route_type, route_num)
+function ALittle.SessionSystem:ConnectSession(route_type, route_num)
 	local ___COROUTINE = coroutine.running()
 	if ___COROUTINE == nil then
 		return "当前不是协程", nil
@@ -117,12 +117,12 @@ function SessionSystem:ConnectSession(route_type, route_num)
 		list = {}
 		self._invoke_map[key] = list
 	end
-	List_Push(list, ___COROUTINE)
+	ALittle.List_Push(list, ___COROUTINE)
 	return coroutine.yield()
 end
 
-function SessionSystem:HandleSessionConnect(connect_key, route_type, route_num)
-	local session = MsgSession(connect_key, route_type, route_num)
+function ALittle.SessionSystem:HandleSessionConnect(connect_key, route_type, route_num)
+	local session = ALittle.MsgSession(connect_key, route_type, route_num)
 	self._session_map[connect_key] = session
 	session:HandleConnected()
 	local event = {}
@@ -134,7 +134,7 @@ function SessionSystem:HandleSessionConnect(connect_key, route_type, route_num)
 	self:DispatchEvent(___all_struct[888437463], event)
 end
 
-function SessionSystem:HandleSessionDisconnect(connect_key, route_type, route_num)
+function ALittle.SessionSystem:HandleSessionDisconnect(connect_key, route_type, route_num)
 	local session = self._session_map[connect_key]
 	if session ~= nil then
 		self._session_map[connect_key] = nil
@@ -155,7 +155,7 @@ function SessionSystem:HandleSessionDisconnect(connect_key, route_type, route_nu
 	end
 end
 
-function SessionSystem:HandleConnectSessionFailed(route_type, route_num, reason)
+function ALittle.SessionSystem:HandleConnectSessionFailed(route_type, route_num, reason)
 	local key = route_type .. "_" .. route_num
 	local list = self._invoke_map[key]
 	if list ~= nil then
@@ -163,7 +163,7 @@ function SessionSystem:HandleConnectSessionFailed(route_type, route_num, reason)
 		for index, thread in ___ipairs(list) do
 			local result, error = coroutine.resume(thread, reason, nil)
 			if result ~= true then
-				Error(error)
+				ALittle.Error(error)
 			end
 		end
 	end
@@ -174,7 +174,7 @@ function SessionSystem:HandleConnectSessionFailed(route_type, route_num, reason)
 	end
 end
 
-function SessionSystem:HandleConnectSessionSucceed(connect_key, route_type, route_num)
+function ALittle.SessionSystem:HandleConnectSessionSucceed(connect_key, route_type, route_num)
 	local key = route_type .. "_" .. route_num
 	local info = self._connect_map[key]
 	if info ~= nil then
@@ -192,13 +192,13 @@ function SessionSystem:HandleConnectSessionSucceed(connect_key, route_type, rout
 		for index, thread in ___ipairs(list) do
 			local result, reason = coroutine.resume(thread, error, session)
 			if result ~= true then
-				Error(reason)
+				ALittle.Error(reason)
 			end
 		end
 	end
 end
 
-function SessionSystem:HandleSessionMessage(connect_key, id, rpc_id, factory)
+function ALittle.SessionSystem:HandleSessionMessage(connect_key, id, rpc_id, factory)
 	local session = self._session_map[connect_key]
 	if session == nil then
 		return
@@ -206,8 +206,9 @@ function SessionSystem:HandleSessionMessage(connect_key, id, rpc_id, factory)
 	session:HandleMessage(id, rpc_id, factory)
 end
 
-function SessionSystem:ConnectSessionImpl(info)
+function ALittle.SessionSystem:ConnectSessionImpl(info)
 	__CPPAPI_ServerSchedule:ConnectSession(info.route_type, info.route_num)
 end
 
-_G.A_SessionSystem = SessionSystem()
+_G.A_SessionSystem = ALittle.SessionSystem()
+end

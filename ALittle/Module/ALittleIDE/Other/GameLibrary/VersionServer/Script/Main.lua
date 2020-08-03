@@ -1,32 +1,33 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("VersionServer", package.seeall)
-
+do
+if _G.VersionServer == nil then _G.VersionServer = {} end
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-g_ConfigSystem = nil
-function __Module_Setup(sengine_path, module_path, config_path)
+VersionServer.g_ConfigSystem = nil
+function VersionServer.__Module_Setup(sengine_path, module_path, config_path)
 	Require(sengine_path, "Script/WebAccount/WebPermission")
 	Require(sengine_path, "Script/WebAccount/WebAccount")
 	Require(sengine_path, "Script/WebAccount/WebAccountManager")
 	Require(sengine_path, "Script/WebAccount/WebOPSManager")
 	Require(module_path, "Script/VersionManager")
 	math.randomseed(os.time())
-	g_ConfigSystem = ALittle.CreateJsonConfig(config_path, true)
-	local wan_ip = g_ConfigSystem:GetConfig("wan_ip", "127.0.0.1")
-	local yun_ip = g_ConfigSystem:GetConfig("yun_ip", "")
-	local port_offset = g_ConfigSystem:GetConfig("port_offset", 0)
+	VersionServer.g_ConfigSystem = ALittle.CreateJsonConfig(config_path, true)
+	local wan_ip = VersionServer.g_ConfigSystem:GetConfig("wan_ip", "127.0.0.1")
+	local yun_ip = VersionServer.g_ConfigSystem:GetConfig("yun_ip", "")
+	local port_offset = VersionServer.g_ConfigSystem:GetConfig("port_offset", 0)
 	__CPPAPI_ServerSchedule:StartRouteSystem(3, 1)
 	__CPPAPI_ServerSchedule:CreateConnectClient(wan_ip, 1001 + port_offset)
-	__CPPAPI_ServerSchedule:StartMysqlQuery(1, g_ConfigSystem:GetString("main_conn_ip", nil), g_ConfigSystem:GetString("main_conn_username", nil), g_ConfigSystem:GetString("main_conn_password", nil), g_ConfigSystem:GetInt("main_conn_port", nil), g_ConfigSystem:GetString("main_conn_dbname", nil))
+	__CPPAPI_ServerSchedule:StartMysqlQuery(1, VersionServer.g_ConfigSystem:GetString("main_conn_ip", nil), VersionServer.g_ConfigSystem:GetString("main_conn_username", nil), VersionServer.g_ConfigSystem:GetString("main_conn_password", nil), VersionServer.g_ConfigSystem:GetInt("main_conn_port", nil), VersionServer.g_ConfigSystem:GetString("main_conn_dbname", nil))
 	__CPPAPI_ServerSchedule:CreateHttpServer(yun_ip, wan_ip, 1100 + port_offset, false)
 	__CPPAPI_ServerSchedule:CreateClientServer(yun_ip, wan_ip, 1101 + port_offset)
 	A_WebAccountManager:Setup()
-	g_VersionManager:Setup()
+	VersionServer.g_VersionManager:Setup()
 end
-__Module_Setup = Lua.CoWrap(__Module_Setup)
+VersionServer.__Module_Setup = Lua.CoWrap(VersionServer.__Module_Setup)
 
-function __Module_Shutdown()
+function VersionServer.__Module_Shutdown()
 end
 
+end

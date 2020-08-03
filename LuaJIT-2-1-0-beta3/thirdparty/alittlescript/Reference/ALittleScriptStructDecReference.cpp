@@ -95,7 +95,7 @@ ABnfGuessError ALittleScriptStructDecReference::CheckError()
             {
                 ALittleScriptUtility::TrimLeft(name);
                 ALittleScriptUtility::TrimRight(name);
-                if (name_set.find(text) == name_set.end())
+                if (name_set.find(name) == name_set.end())
                     return ABnfGuessError(option_value, u8"没有找到对应的字段名:" + name);
             }
             continue;

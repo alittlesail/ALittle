@@ -278,4 +278,18 @@ function AUIPlugin.AUICodeALittleScriptProject:Generate(full_path)
 	return coroutine.yield()
 end
 
+function AUIPlugin.AUICodeALittleScriptProject:GetAllNamespace()
+	local ___COROUTINE = coroutine.running()
+	local query_id = self:Add(___COROUTINE)
+	alittlescript.alittlescriptproject_getallnamespace(self._project, query_id)
+	return coroutine.yield()
+end
+
+function AUIPlugin.AUICodeALittleScriptProject:GetAllClass(namespace_name)
+	local ___COROUTINE = coroutine.running()
+	local query_id = self:Add(___COROUTINE)
+	alittlescript.alittlescriptproject_getallclass(self._project, query_id, namespace_name)
+	return coroutine.yield()
+end
+
 end

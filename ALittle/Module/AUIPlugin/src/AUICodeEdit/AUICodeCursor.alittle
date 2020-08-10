@@ -169,7 +169,8 @@ public class AUICodeCursor : ALittle.Quad
                 if (this._virtual_indent > 0)
                 {
                     this.x = this._virtual_indent * this._edit.ascii_width;
-                    this._move_char = this._virtual_indent;
+                    if (this._virtual_indent > this._move_char)
+                    	this._move_char = this._virtual_indent;
                 }
             }
         }

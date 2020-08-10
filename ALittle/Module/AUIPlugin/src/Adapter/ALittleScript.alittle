@@ -21,4 +21,6 @@ public class alittlescript
     public static alittlescriptproject_settargetlanguage(ABnfProject project, string target_language) {}
     public static alittlescriptproject_gettargetlanguage(ABnfProject project) : string {}
     public static alittlescriptproject_generate(ABnfProject project, int query_id, string full_path) {}
+    public static alittlescriptproject_getallnamespace(ABnfProject project, int query_id) : List<string> {}
+    public static alittlescriptproject_getallclass(ABnfProject project, int query_id, string namespace_name) : List<string> {}
 }

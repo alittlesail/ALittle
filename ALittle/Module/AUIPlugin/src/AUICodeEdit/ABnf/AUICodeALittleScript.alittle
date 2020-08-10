@@ -295,4 +295,20 @@ public class AUICodeALittleScriptProject : AUICodeProject
         lua.alittlescript.alittlescriptproject_generate(this._project, query_id, full_path);
         return yield;
     }
+
+    // 获取所有命名域
+    public await fun GetAllNamespace() : List<string>
+    {
+        var query_id = this.Add(co);
+        lua.alittlescript.alittlescriptproject_getallnamespace(this._project, query_id);
+        return yield;
+    }
+
+    // 获取所有类名
+    public await fun GetAllClass(string namespace_name) : List<string>
+    {
+        var query_id = this.Add(co);
+        lua.alittlescript.alittlescriptproject_getallclass(this._project, query_id, namespace_name);
+        return yield;
+    }
 }

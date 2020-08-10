@@ -105,3 +105,59 @@ void ALittleScriptProjectClass::Generate(int query_id, const std::string& full_p
     });
 }
 
+void ALittleScriptProjectClass::GetAllNamespace(int query_id)
+{
+    std::unordered_map<std::string, std::shared_ptr<ALittleScriptNamespaceNameDecElement>> result;
+    FindNamespaceNameDecList("", result);
+    std::vector<std::string> name_list;
+    name_list.reserve(result.size());
+    for (auto& pair : result)
+        name_list.push_back(pair.first);
+
+    std::unique_lock<std::mutex> lock(m_output_lock);
+    m_outputs.push_back([query_id, name_list](lua_State* L)->int
+    {
+        lua_newtable(L);
+        lua_pushinteger(L, query_id);
+        lua_setfield(L, -2, "query_id");
+    	
+        lua_newtable(L);
+    	for (size_t i = 0; i < name_list.size(); ++i)
+    	{
+            lua_pushstring(L, name_list[i].c_str());
+            lua_rawseti(L, -2, static_cast<int>(i) + 1);
+    	}
+
+        lua_setfield(L, -2, "result");
+        return 1;
+    });
+}
+
+void ALittleScriptProjectClass::GetAllClass(int query_id, const std::string& namespace_name)
+{
+    std::vector<std::shared_ptr<ABnfElement>> result;
+    FindALittleNameDecList(ABnfElementType::CLASS_NAME, nullptr, namespace_name, "", true, result);
+    std::vector<std::string> name_list;
+    name_list.reserve(result.size());
+    for (auto& element : result)
+        name_list.push_back(element->GetElementText());
+
+    std::unique_lock<std::mutex> lock(m_output_lock);
+    m_outputs.push_back([query_id, name_list](lua_State* L)->int
+    {
+        lua_newtable(L);
+        lua_pushinteger(L, query_id);
+        lua_setfield(L, -2, "query_id");
+
+        lua_newtable(L);
+        for (size_t i = 0; i < name_list.size(); ++i)
+        {
+            lua_pushstring(L, name_list[i].c_str());
+            lua_rawseti(L, -2, static_cast<int>(i) + 1);
+        }
+    	
+        lua_setfield(L, -2, "result");
+        return 1;
+    });
+}
+

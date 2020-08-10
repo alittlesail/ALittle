@@ -34,6 +34,7 @@ G2048.GCenter = JavaScript.Class(undefined, {
 		this._dialog_layer.width_type = 4;
 		this._dialog_layer.height_type = 4;
 		G2048.g_LayerGroup.AddChild(this._dialog_layer, undefined);
+		G2048.g_Control.PrepareTexture(["item_2", "item_4", "item_8", "item_16", "item_32", "item_64", "item_128", "item_256", "item_512", "item_1024", "item_2048"], undefined);
 		G2048.g_Control.CreateControl("main_scene", this, this._main_layer);
 		this._max_score_text._user_data = G2048.g_GConfig.GetConfig("max_score", 0);
 		this._max_score_text.text = this._max_score_text._user_data;

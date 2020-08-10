@@ -70,6 +70,9 @@ class GCenter
         this._dialog_layer.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
         this._dialog_layer.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
         g_LayerGroup.AddChild(this._dialog_layer, null);
+
+        // 纹理准备
+        g_Control.PrepareTexture(["item_2","item_4","item_8","item_16","item_32","item_64","item_128","item_256","item_512","item_1024","item_2048"], null);
     
         // 创建主界面
         g_Control.CreateControl{ALittle.DisplayObject}("main_scene", this, this._main_layer);

@@ -267,20 +267,20 @@ class GCenter
             || unit_right == null || unit_right < 0
             || unit_top == null || unit_top < 0
             || unit_bottom == null || unit_bottom < 0)
-        { g_IDETool.ShowNotice("提示", "请输入正整数"); return; }
+        { g_AUITool.ShowNotice("提示", "请输入正整数"); return; }
 
         var module_path = "Module/"..this._setting_project_name_input.text;
         if (ALittle.File_GetFileAttr(module_path) == null)
-        { g_IDETool.ShowNotice("提示", "项目不存在"); return; }
+        { g_AUITool.ShowNotice("提示", "项目不存在"); return; }
 
         if (ALittle.File_GetFileAttr(module_path.."/Texture/"..this._setting_texture_path_input.text) == null)
-        { g_IDETool.ShowNotice("提示", "格子图片路径不存在"); return; }
+        { g_AUITool.ShowNotice("提示", "格子图片路径不存在"); return; }
 
         if (ALittle.File_GetFileAttr(module_path.."/Other/"..this._setting_data_path_input.text) == null)
-        { g_IDETool.ShowNotice("提示", "场景数据路径不存在"); return; }
+        { g_AUITool.ShowNotice("提示", "场景数据路径不存在"); return; }
 
         if (ALittle.File_GetFileAttr(module_path.."/Texture/"..this._setting_texture_path_input.text.."/"..this._unit_empty_name_input.text) == null)
-        { g_IDETool.ShowNotice("提示", "空格子图片不存在"); return; }
+        { g_AUITool.ShowNotice("提示", "空格子图片不存在"); return; }
 
         this._file_base_path = module_path.."/Other/"..this._setting_data_path_input.text;
         this._tex_name_base_path = this._setting_texture_path_input.text.."/";
@@ -314,27 +314,23 @@ class GCenter
     }
     
     //文件列表////////////////////////////////////////////////////////////////////////
-    private fun HandleFileNewClick(ALittle.UIClickEvent event)
+    private async fun HandleFileNewClick(ALittle.UIClickEvent event)
     {
         var x, y = event.target.LocalToGlobal();
-        g_IDETool.ShowRename(bind(this.HandleNewFile, this), "", x, y + event.target.height, 200);
-    }
-
-    private fun HandleNewFile(string file_name)
-    {
-        if (file_name == "") return;
+        var file_name = g_AUITool.ShowRename("", x, y + event.target.height, 200);
+        if (file_name == "" || file_name == null) return;
 
         var check, error = IDEUtility_CheckResourceName(file_name);
         if (!check)
         {
-            g_IDETool.ShowNotice("提示", error);
+            g_AUITool.ShowNotice("提示", error);
             return;
         }
 
         var file_path = this._file_base_path.."/"..file_name..".map";
         if (ALittle.File_GetFileAttr(file_path) != null)
         {
-            g_IDETool.ShowNotice("提示", "文件已存在");
+            g_AUITool.ShowNotice("提示", "文件已存在");
             return;
         }
 
@@ -697,22 +693,17 @@ class GCenter
     }
 
     //图层列表//////////////////////////////////////////////////////////////////////
-    private fun HandleNewFloorClick(ALittle.UIClickEvent event)
+    private async fun HandleNewFloorClick(ALittle.UIClickEvent event)
     {
         if (this._cur_file == null)
         {
-            g_IDETool.ShowNotice("提示", "请先打开文件");
+            g_AUITool.ShowNotice("提示", "请先打开文件");
             return;
         }
 
         var x, y = event.target.LocalToGlobal();
-        g_IDETool.ShowRename(bind(this.HandleNewFloor, this), "", x, y + event.target.height, 200);
-    }
-
-    // 处理新增图层
-    private fun HandleNewFloor(string name)
-    {
-        if (name == "") return;
+        var name = g_AUITool.ShowRename("", x, y + event.target.height, 200);
+        if (name == "" || name == null) return;
 
         var floor_data = new FloorData();
         floor_data.name = name;
@@ -1077,7 +1068,7 @@ class GCenter
         // 保存到文件
         if (!factory.WriteToStdFile(this._cur_file.file_path))
         {
-            g_IDETool.ShowNotice("提示", "保存失败");
+            g_AUITool.ShowNotice("提示", "保存失败");
             return;
         }
 

@@ -57,60 +57,116 @@ function ALittleIDE.IDEUIMainMenu:HandleRunMenuClick(event)
 end
 
 function ALittleIDE.IDEUIMainMenu:HandleGenCoreAllInOneClick()
-	local all_in_one = {}
-	local base_path = "Module/ALittleIDE/Other/GameLibrary/Core/JSScript/"
-	local file_list = {}
-	ALittle.List_Push(file_list, base_path .. "ALittle.js")
-	ALittle.List_PushList(file_list, ALittle.File_GetFileListByDir(base_path .. "Core/JavaScript/"))
-	ALittle.List_Push(file_list, base_path .. "Core/Reflect/ReflectRegister.js")
-	ALittle.List_Push(file_list, base_path .. "Core/Reflect/ReflectDefine.js")
-	ALittle.List_PushList(file_list, ALittle.File_GetFileListByDir(base_path .. "Core/Utility/"))
-	ALittle.List_PushList(file_list, ALittle.File_GetFileListByDir(base_path .. "Core/Net/"))
-	for index, path in ___ipairs(file_list) do
-		all_in_one[index] = ALittle.File_ReadTextFromStdFile(path)
-		if all_in_one[index] == nil then
+	do
+		local all_in_one = {}
+		local base_path = "Module/ALittleIDE/Other/GameLibrary/Core/JSScript/"
+		local file_list = {}
+		ALittle.List_Push(file_list, base_path .. "ALittle.js")
+		ALittle.List_PushList(file_list, ALittle.File_GetFileListByDir(base_path .. "Core/JavaScript/"))
+		ALittle.List_Push(file_list, base_path .. "Core/Reflect/ReflectRegister.js")
+		ALittle.List_Push(file_list, base_path .. "Core/Reflect/ReflectDefine.js")
+		ALittle.List_PushList(file_list, ALittle.File_GetFileListByDir(base_path .. "Core/Utility/"))
+		ALittle.List_PushList(file_list, ALittle.File_GetFileListByDir(base_path .. "Core/Net/"))
+		for index, path in ___ipairs(file_list) do
+			all_in_one[index] = ALittle.File_ReadTextFromStdFile(path)
+			if all_in_one[index] == nil then
+				g_AUITool:ShowNotice("提示", "生成失败")
+				return
+			end
+		end
+		local result = ALittle.File_WriteTextFromStdFile(ALittle.String_Join(all_in_one, "\n"), "Module/ALittleIDE/Other/GameLibrary/Core/JSNative/Core.js")
+		if not result then
 			g_AUITool:ShowNotice("提示", "生成失败")
 			return
 		end
 	end
-	local result = ALittle.File_WriteTextFromStdFile(ALittle.String_Join(all_in_one, "\n"), "Module/ALittleIDE/Other/GameLibrary/Core/JSNative/Core.js")
-	if result then
-		g_AUITool:ShowNotice("提示", "生成成功")
-	else
-		g_AUITool:ShowNotice("提示", "生成失败")
+	do
+		local all_in_one = {}
+		local base_path = "Module/ALittleIDE/Other/GameLibrary/Core/Script/"
+		local file_list = {}
+		ALittle.List_Push(file_list, base_path .. "ALittle.lua")
+		ALittle.List_Push(file_list, base_path .. "Core/Reflect/ReflectRegister.lua")
+		ALittle.List_Push(file_list, base_path .. "Core/Reflect/ReflectDefine.lua")
+		ALittle.List_PushList(file_list, ALittle.File_GetFileListByDir(base_path .. "Core/Utility/"))
+		ALittle.List_PushList(file_list, ALittle.File_GetFileListByDir(base_path .. "Core/Net/"))
+		for index, path in ___ipairs(file_list) do
+			all_in_one[index] = ALittle.File_ReadTextFromStdFile(path)
+			if all_in_one[index] == nil then
+				g_AUITool:ShowNotice("提示", "生成失败")
+				return
+			end
+		end
+		local result = ALittle.File_WriteTextFromStdFile(ALittle.String_Join(all_in_one, "\n"), "Module/ALittleIDE/Other/GameLibrary/Core/Core.lua")
+		if not result then
+			g_AUITool:ShowNotice("提示", "生成失败")
+			return
+		end
 	end
+	g_AUITool:ShowNotice("提示", "生成成功")
 end
 
 function ALittleIDE.IDEUIMainMenu:HandleGenStdAllInOneClick()
-	local all_in_one = {}
-	local base_path = "Module/ALittleIDE/Other/GameLibrary/Std/JSScript/"
-	local file_list = {}
-	ALittle.List_Push(file_list, base_path .. "ALittle.js")
-	ALittle.List_PushList(file_list, ALittle.File_GetFileListByDir(base_path .. "Std/Reflect/"))
-	ALittle.List_Push(file_list, base_path .. "Std/Loop/LoopObject.js")
-	ALittle.List_Push(file_list, base_path .. "Std/Loop/ILoopSystem.js")
-	ALittle.List_Push(file_list, base_path .. "Std/Loop/LoopFrame.js")
-	ALittle.List_Push(file_list, base_path .. "Std/Loop/LoopFunction.js")
-	ALittle.List_Push(file_list, base_path .. "Std/Loop/LoopGroup.js")
-	ALittle.List_Push(file_list, base_path .. "Std/Loop/LoopList.js")
-	ALittle.List_Push(file_list, base_path .. "Std/Loop/LoopTimer.js")
-	ALittle.List_PushList(file_list, ALittle.File_GetFileListByDir(base_path .. "Std/Utility/"))
-	ALittle.List_PushList(file_list, ALittle.File_GetFileListByDir(base_path .. "Std/Net/"))
-	ALittle.List_PushList(file_list, ALittle.File_GetFileListByDir(base_path .. "Adapter/JavaScript/"))
-	ALittle.List_PushList(file_list, ALittle.File_GetFileListByDir(base_path .. "Std/Singleton/"))
-	for index, path in ___ipairs(file_list) do
-		all_in_one[index] = ALittle.File_ReadTextFromStdFile(path)
-		if all_in_one[index] == nil then
+	do
+		local all_in_one = {}
+		local base_path = "Module/ALittleIDE/Other/GameLibrary/Std/JSScript/"
+		local file_list = {}
+		ALittle.List_Push(file_list, base_path .. "ALittle.js")
+		ALittle.List_PushList(file_list, ALittle.File_GetFileListByDir(base_path .. "Std/Reflect/"))
+		ALittle.List_Push(file_list, base_path .. "Std/Loop/LoopObject.js")
+		ALittle.List_Push(file_list, base_path .. "Std/Loop/ILoopSystem.js")
+		ALittle.List_Push(file_list, base_path .. "Std/Loop/LoopFrame.js")
+		ALittle.List_Push(file_list, base_path .. "Std/Loop/LoopFunction.js")
+		ALittle.List_Push(file_list, base_path .. "Std/Loop/LoopGroup.js")
+		ALittle.List_Push(file_list, base_path .. "Std/Loop/LoopList.js")
+		ALittle.List_Push(file_list, base_path .. "Std/Loop/LoopTimer.js")
+		ALittle.List_PushList(file_list, ALittle.File_GetFileListByDir(base_path .. "Std/Utility/"))
+		ALittle.List_PushList(file_list, ALittle.File_GetFileListByDir(base_path .. "Std/Net/"))
+		ALittle.List_PushList(file_list, ALittle.File_GetFileListByDir(base_path .. "Adapter/JavaScript/"))
+		ALittle.List_PushList(file_list, ALittle.File_GetFileListByDir(base_path .. "Std/Singleton/"))
+		for index, path in ___ipairs(file_list) do
+			all_in_one[index] = ALittle.File_ReadTextFromStdFile(path)
+			if all_in_one[index] == nil then
+				g_AUITool:ShowNotice("提示", "生成失败")
+				return
+			end
+		end
+		local result = ALittle.File_WriteTextFromStdFile(ALittle.String_Join(all_in_one, "\n"), "Module/ALittleIDE/Other/GameLibrary/Std/JSNative/Std.js")
+		if not result then
 			g_AUITool:ShowNotice("提示", "生成失败")
 			return
 		end
 	end
-	local result = ALittle.File_WriteTextFromStdFile(ALittle.String_Join(all_in_one, "\n"), "Module/ALittleIDE/Other/GameLibrary/Std/JSNative/Std.js")
-	if result then
-		g_AUITool:ShowNotice("提示", "生成成功")
-	else
-		g_AUITool:ShowNotice("提示", "生成失败")
+	do
+		local all_in_one = {}
+		local base_path = "Module/ALittleIDE/Other/GameLibrary/Std/Script/"
+		local file_list = {}
+		ALittle.List_Push(file_list, base_path .. "ALittle.lua")
+		ALittle.List_PushList(file_list, ALittle.File_GetFileListByDir(base_path .. "Std/Reflect/"))
+		ALittle.List_Push(file_list, base_path .. "Std/Loop/LoopObject.lua")
+		ALittle.List_Push(file_list, base_path .. "Std/Loop/ILoopSystem.lua")
+		ALittle.List_Push(file_list, base_path .. "Std/Loop/LoopFrame.lua")
+		ALittle.List_Push(file_list, base_path .. "Std/Loop/LoopFunction.lua")
+		ALittle.List_Push(file_list, base_path .. "Std/Loop/LoopGroup.lua")
+		ALittle.List_Push(file_list, base_path .. "Std/Loop/LoopList.lua")
+		ALittle.List_Push(file_list, base_path .. "Std/Loop/LoopTimer.lua")
+		ALittle.List_PushList(file_list, ALittle.File_GetFileListByDir(base_path .. "Std/Utility/"))
+		ALittle.List_PushList(file_list, ALittle.File_GetFileListByDir(base_path .. "Std/Net/"))
+		ALittle.List_PushList(file_list, ALittle.File_GetFileListByDir(base_path .. "Adapter/JavaScript/"))
+		ALittle.List_PushList(file_list, ALittle.File_GetFileListByDir(base_path .. "Std/Singleton/"))
+		for index, path in ___ipairs(file_list) do
+			all_in_one[index] = ALittle.File_ReadTextFromStdFile(path)
+			if all_in_one[index] == nil then
+				g_AUITool:ShowNotice("提示", "生成失败")
+				return
+			end
+		end
+		local result = ALittle.File_WriteTextFromStdFile(ALittle.String_Join(all_in_one, "\n"), "Module/ALittleIDE/Other/GameLibrary/Std/Std.lua")
+		if not result then
+			g_AUITool:ShowNotice("提示", "生成失败")
+			return
+		end
 	end
+	g_AUITool:ShowNotice("提示", "生成成功")
 end
 
 function ALittleIDE.IDEUIMainMenu:HandleGenCEngineAllInOneClick()

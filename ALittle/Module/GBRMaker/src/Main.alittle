@@ -28,6 +28,7 @@ public static __Browser_Shutdown()
 }
 
 protected var g_Control:ALittle.ControlSystem;
+protected var g_AUIPluinControl:ALittle.ControlSystem;
 protected var g_LayerGroup:ALittle.DisplayLayout;
 protected var g_ModuleBasePath:string;
 
@@ -39,12 +40,11 @@ public async static __Module_Setup(ALittle.DisplayLayout layer_group, ALittle.Co
 	g_Control = control;
 	g_LayerGroup = layer_group;
 	g_ModuleBasePath = module_base_path;
+
+    g_AUIPluinControl = A_ModuleSystem.LoadPlugin("AUIPlugin");
 	
 	alittle.Require(script_base_path, "GCenter");
 	alittle.Require(script_base_path, "GUtility");
-	alittle.Require(script_base_path, "IDEIMEManager");
-	alittle.Require(script_base_path, "IDETool");
-	g_IDEIMEManager.Setup();
 	g_GCenter.Setup();
 }
 
@@ -52,7 +52,6 @@ public async static __Module_Setup(ALittle.DisplayLayout layer_group, ALittle.Co
 public static __Module_Shutdown()
 {
 	g_GCenter.Shutdown();
-	g_IDEIMEManager.Shutdown();
 }
 
 // 提供给壳的模块信息

@@ -1,14 +1,20 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("GBRMaker", package.seeall)
-
+do
+if _G.GBRMaker == nil then _G.GBRMaker = {} end
 local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = ALittle.GetAllStruct()
 
-ALittle.RegStruct(-869410065, "GBRMaker.FloorData", {
-name = "GBRMaker.FloorData", ns_name = "GBRMaker", rl_name = "FloorData", hash_code = -869410065,
-name_list = {"name","data"},
-type_list = {"string","Map<int,Map<int,int>>"},
+ALittle.RegStruct(1988329150, "GBRMaker.FloorSelectItemInfo", {
+name = "GBRMaker.FloorSelectItemInfo", ns_name = "GBRMaker", rl_name = "FloorSelectItemInfo", hash_code = 1988329150,
+name_list = {"select_item","floor_info","edit_item"},
+type_list = {"ALittle.TextRadioButton","GBRMaker.FloorInfo","ALittle.DisplayLayout"},
+option_map = {}
+})
+ALittle.RegStruct(1883782801, "ALittle.UILButtonDownEvent", {
+name = "ALittle.UILButtonDownEvent", ns_name = "ALittle", rl_name = "UILButtonDownEvent", hash_code = 1883782801,
+name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
+type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
 option_map = {}
 })
 ALittle.RegStruct(-1481607580, "GBRMaker.MapData", {
@@ -17,28 +23,34 @@ name_list = {"floor_list","tex_map","y_max","x_max","nx_max"},
 type_list = {"List<GBRMaker.FloorData>","Map<int,string>","int","int","int"},
 option_map = {}
 })
+ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
+name = "ALittle.UIEvent", ns_name = "ALittle", rl_name = "UIEvent", hash_code = -1479093282,
+name_list = {"target"},
+type_list = {"ALittle.DisplayObject"},
+option_map = {}
+})
+ALittle.RegStruct(-1347278145, "ALittle.UIButtonEvent", {
+name = "ALittle.UIButtonEvent", ns_name = "ALittle", rl_name = "UIButtonEvent", hash_code = -1347278145,
+name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
+type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
+option_map = {}
+})
+ALittle.RegStruct(1337289812, "ALittle.UIButtonDragEvent", {
+name = "ALittle.UIButtonDragEvent", ns_name = "ALittle", rl_name = "UIButtonDragEvent", hash_code = 1337289812,
+name_list = {"target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"},
+type_list = {"ALittle.DisplayObject","double","double","double","double","double","double"},
+option_map = {}
+})
 ALittle.RegStruct(-1328202806, "GBRMaker.FloorInfo", {
 name = "GBRMaker.FloorInfo", ns_name = "GBRMaker", rl_name = "FloorInfo", hash_code = -1328202806,
 name_list = {"file_info","floor_data","visible","child_map"},
 type_list = {"GBRMaker.FileSelectItemInfo","GBRMaker.FloorData","bool","Map<int,Map<int,ALittle.Image>>"},
 option_map = {}
 })
-ALittle.RegStruct(-838616264, "GBRMaker.FileSelectItemInfo", {
-name = "GBRMaker.FileSelectItemInfo", ns_name = "GBRMaker", rl_name = "FileSelectItemInfo", hash_code = -838616264,
-name_list = {"item","file_path","upper_file_name","map_data","map_info","save"},
-type_list = {"ALittle.TextRadioButton","string","string","GBRMaker.MapData","GBRMaker.MapInfo","bool"},
-option_map = {}
-})
-ALittle.RegStruct(339827246, "GBRMaker.MapInfo", {
-name = "GBRMaker.MapInfo", ns_name = "GBRMaker", rl_name = "MapInfo", hash_code = 339827246,
-name_list = {"floor_list","tex_map","tex_max_id"},
-type_list = {"List<GBRMaker.FloorInfo>","Map<string,int>","int"},
-option_map = {}
-})
-ALittle.RegStruct(1988329150, "GBRMaker.FloorSelectItemInfo", {
-name = "GBRMaker.FloorSelectItemInfo", ns_name = "GBRMaker", rl_name = "FloorSelectItemInfo", hash_code = 1988329150,
-name_list = {"select_item","floor_info","edit_item"},
-type_list = {"ALittle.TextRadioButton","GBRMaker.FloorInfo","ALittle.DisplayLayout"},
+ALittle.RegStruct(1301789264, "ALittle.UIButtonDragBeginEvent", {
+name = "ALittle.UIButtonDragBeginEvent", ns_name = "ALittle", rl_name = "UIButtonDragBeginEvent", hash_code = 1301789264,
+name_list = {"target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"},
+type_list = {"ALittle.DisplayObject","double","double","double","double","double","double"},
 option_map = {}
 })
 ALittle.RegStruct(-1261197262, "GBRMaker.ImageSelectItemInfo", {
@@ -53,34 +65,22 @@ name_list = {"item","image","name","button","frame","upper_file_name","texture_n
 type_list = {"ALittle.DisplayLayout","ALittle.Image","ALittle.DisplayObject","ALittle.DisplayObject","ALittle.DisplayLayout","string","string"},
 option_map = {}
 })
-ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
-name = "ALittle.UIEvent", ns_name = "ALittle", rl_name = "UIEvent", hash_code = -1479093282,
-name_list = {"target"},
-type_list = {"ALittle.DisplayObject"},
-option_map = {}
-})
 ALittle.RegStruct(958494922, "ALittle.UIChangedEvent", {
 name = "ALittle.UIChangedEvent", ns_name = "ALittle", rl_name = "UIChangedEvent", hash_code = 958494922,
 name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
-ALittle.RegStruct(-449066808, "ALittle.UIClickEvent", {
-name = "ALittle.UIClickEvent", ns_name = "ALittle", rl_name = "UIClickEvent", hash_code = -449066808,
-name_list = {"target","is_drag"},
-type_list = {"ALittle.DisplayObject","bool"},
+ALittle.RegStruct(-869410065, "GBRMaker.FloorData", {
+name = "GBRMaker.FloorData", ns_name = "GBRMaker", rl_name = "FloorData", hash_code = -869410065,
+name_list = {"name","data"},
+type_list = {"string","Map<int,Map<int,int>>"},
 option_map = {}
 })
-ALittle.RegStruct(-1347278145, "ALittle.UIButtonEvent", {
-name = "ALittle.UIButtonEvent", ns_name = "ALittle", rl_name = "UIButtonEvent", hash_code = -1347278145,
-name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
-type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
-option_map = {}
-})
-ALittle.RegStruct(-439548260, "ALittle.UILongButtonDownEvent", {
-name = "ALittle.UILongButtonDownEvent", ns_name = "ALittle", rl_name = "UILongButtonDownEvent", hash_code = -439548260,
-name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
-type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
+ALittle.RegStruct(-838616264, "GBRMaker.FileSelectItemInfo", {
+name = "GBRMaker.FileSelectItemInfo", ns_name = "GBRMaker", rl_name = "FileSelectItemInfo", hash_code = -838616264,
+name_list = {"item","file_path","upper_file_name","map_data","map_info","save"},
+type_list = {"ALittle.TextRadioButton","string","string","GBRMaker.MapData","GBRMaker.MapInfo","bool"},
 option_map = {}
 })
 ALittle.RegStruct(-641444818, "ALittle.UIRButtonDownEvent", {
@@ -89,48 +89,48 @@ name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
 type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
 option_map = {}
 })
-ALittle.RegStruct(1883782801, "ALittle.UILButtonDownEvent", {
-name = "ALittle.UILButtonDownEvent", ns_name = "ALittle", rl_name = "UILButtonDownEvent", hash_code = 1883782801,
+ALittle.RegStruct(-449066808, "ALittle.UIClickEvent", {
+name = "ALittle.UIClickEvent", ns_name = "ALittle", rl_name = "UIClickEvent", hash_code = -449066808,
+name_list = {"target","is_drag"},
+type_list = {"ALittle.DisplayObject","bool"},
+option_map = {}
+})
+ALittle.RegStruct(-439548260, "ALittle.UILongButtonDownEvent", {
+name = "ALittle.UILongButtonDownEvent", ns_name = "ALittle", rl_name = "UILongButtonDownEvent", hash_code = -439548260,
 name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
 type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
 option_map = {}
 })
-ALittle.RegStruct(1337289812, "ALittle.UIButtonDragEvent", {
-name = "ALittle.UIButtonDragEvent", ns_name = "ALittle", rl_name = "UIButtonDragEvent", hash_code = 1337289812,
-name_list = {"target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"},
-type_list = {"ALittle.DisplayObject","double","double","double","double","double","double"},
-option_map = {}
-})
-ALittle.RegStruct(1301789264, "ALittle.UIButtonDragBeginEvent", {
-name = "ALittle.UIButtonDragBeginEvent", ns_name = "ALittle", rl_name = "UIButtonDragBeginEvent", hash_code = 1301789264,
-name_list = {"target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"},
-type_list = {"ALittle.DisplayObject","double","double","double","double","double","double"},
+ALittle.RegStruct(339827246, "GBRMaker.MapInfo", {
+name = "GBRMaker.MapInfo", ns_name = "GBRMaker", rl_name = "MapInfo", hash_code = 339827246,
+name_list = {"floor_list","tex_map","tex_max_id"},
+type_list = {"List<GBRMaker.FloorInfo>","Map<string,int>","int"},
 option_map = {}
 })
 
-g_GConfig = nil
-GCenter = Lua.Class(nil, "GBRMaker.GCenter")
+GBRMaker.g_GConfig = nil
+GBRMaker.GCenter = Lua.Class(nil, "GBRMaker.GCenter")
 
-function GCenter:Ctor()
+function GBRMaker.GCenter:Ctor()
 end
 
-function GCenter:Setup()
-	g_GConfig = ALittle.CreateConfigSystem(g_ModuleBasePath .. "/User.cfg")
+function GBRMaker.GCenter:Setup()
+	GBRMaker.g_GConfig = ALittle.CreateConfigSystem(GBRMaker.g_ModuleBasePath .. "/User.cfg")
 	ALittle.Math_RandomSeed(ALittle.Time_GetCurTime())
 	ALittle.System_SetThreadCount(1, 2)
-	self._main_layer = ALittle.DisplayLayout(g_Control)
+	self._main_layer = ALittle.DisplayLayout(GBRMaker.g_Control)
 	self._main_layer.width_type = 4
 	self._main_layer.height_type = 4
-	g_LayerGroup:AddChild(self._main_layer, nil)
-	self._dialog_layer = ALittle.DisplayLayout(g_Control)
+	GBRMaker.g_LayerGroup:AddChild(self._main_layer, nil)
+	self._dialog_layer = ALittle.DisplayLayout(GBRMaker.g_Control)
 	self._dialog_layer.width_type = 4
 	self._dialog_layer.height_type = 4
-	g_LayerGroup:AddChild(self._dialog_layer, nil)
-	self._setting_dialog = g_Control:CreateControl("main_setting_dialog", self)
+	GBRMaker.g_LayerGroup:AddChild(self._dialog_layer, nil)
+	self._setting_dialog = GBRMaker.g_Control:CreateControl("main_setting_dialog", self)
 	A_LayerManager:AddToModal(self._setting_dialog)
-	g_Control:CreateControl("main_scene", self, self._main_layer)
-	self._right_grad3_ud.up_size = g_GConfig:GetDouble("right_grid3_up_size", self._right_grad3_ud.up_size)
-	self._main_grid3_lr.down_size = g_GConfig:GetDouble("main_grid3_down_size", self._main_grid3_lr.down_size)
+	GBRMaker.g_Control:CreateControl("main_scene", self, self._main_layer)
+	self._right_grad3_ud.up_size = GBRMaker.g_GConfig:GetDouble("right_grid3_up_size", self._right_grad3_ud.up_size)
+	self._main_grid3_lr.down_size = GBRMaker.g_GConfig:GetDouble("main_grid3_down_size", self._main_grid3_lr.down_size)
 	local tool_group = {}
 	self._tool_brush.group = tool_group
 	self._tool_erase.group = tool_group
@@ -142,21 +142,21 @@ function GCenter:Setup()
 	self._layer_scale_info.visible = false
 	self._layer_erase_info.visible = false
 	A_UISystem.keydown_callback = Lua.Bind(self.HandleKeyDown, self)
-	self._setting_project_name_input.text = g_GConfig:GetString("project_name", "")
-	self._setting_texture_path_input.text = g_GConfig:GetString("texture_path", "")
-	self._unit_empty_name_input.text = g_GConfig:GetString("empty_name", "")
-	self._setting_data_path_input.text = g_GConfig:GetString("data_path", "")
-	self._unit_width = g_GConfig:GetInt("unit_width", 100)
+	self._setting_project_name_input.text = GBRMaker.g_GConfig:GetString("project_name", "")
+	self._setting_texture_path_input.text = GBRMaker.g_GConfig:GetString("texture_path", "")
+	self._unit_empty_name_input.text = GBRMaker.g_GConfig:GetString("empty_name", "")
+	self._setting_data_path_input.text = GBRMaker.g_GConfig:GetString("data_path", "")
+	self._unit_width = GBRMaker.g_GConfig:GetInt("unit_width", 100)
 	self._unit_width_input.text = self._unit_width
-	self._unit_height = g_GConfig:GetInt("unit_height", 100)
+	self._unit_height = GBRMaker.g_GConfig:GetInt("unit_height", 100)
 	self._unit_height_input.text = self._unit_height
-	self._unit_left = g_GConfig:GetInt("unit_left", 0)
+	self._unit_left = GBRMaker.g_GConfig:GetInt("unit_left", 0)
 	self._unit_left_input.text = self._unit_left
-	self._unit_right = g_GConfig:GetInt("unit_right", 0)
+	self._unit_right = GBRMaker.g_GConfig:GetInt("unit_right", 0)
 	self._unit_right_input.text = self._unit_right
-	self._unit_top = g_GConfig:GetInt("unit_top", 0)
+	self._unit_top = GBRMaker.g_GConfig:GetInt("unit_top", 0)
 	self._unit_top_input.text = self._unit_top
-	self._unit_bottom = g_GConfig:GetInt("unit_bottom", 0)
+	self._unit_bottom = GBRMaker.g_GConfig:GetInt("unit_bottom", 0)
 	self._unit_bottom_input.text = self._unit_bottom
 	self._unit_real_width = self._unit_width - self._unit_left - self._unit_right
 	self._unit_real_height = self._unit_height - self._unit_top - self._unit_bottom
@@ -174,15 +174,15 @@ function GCenter:Setup()
 	end
 end
 
-function GCenter:HandleShowSettingDialog(event)
+function GBRMaker.GCenter:HandleShowSettingDialog(event)
 	self._setting_dialog.visible = true
 end
 
-function GCenter:HandleSettingCancelClick(event)
+function GBRMaker.GCenter:HandleSettingCancelClick(event)
 	self._setting_dialog.visible = false
 end
 
-function GCenter:HandleSettingConfirmClick(event)
+function GBRMaker.GCenter:HandleSettingConfirmClick(event)
 	local unit_width = ALittle.Math_ToInt(self._unit_width_input.text)
 	local unit_height = ALittle.Math_ToInt(self._unit_height_input.text)
 	local unit_left = ALittle.Math_ToInt(self._unit_left_input.text)
@@ -190,24 +190,24 @@ function GCenter:HandleSettingConfirmClick(event)
 	local unit_top = ALittle.Math_ToInt(self._unit_top_input.text)
 	local unit_bottom = ALittle.Math_ToInt(self._unit_bottom_input.text)
 	if unit_width == nil or unit_width < 0 or unit_height == nil or unit_height < 0 or unit_left == nil or unit_left < 0 or unit_right == nil or unit_right < 0 or unit_top == nil or unit_top < 0 or unit_bottom == nil or unit_bottom < 0 then
-		g_IDETool:ShowNotice("提示", "请输入正整数")
+		g_AUITool:ShowNotice("提示", "请输入正整数")
 		return
 	end
 	local module_path = "Module/" .. self._setting_project_name_input.text
 	if ALittle.File_GetFileAttr(module_path) == nil then
-		g_IDETool:ShowNotice("提示", "项目不存在")
+		g_AUITool:ShowNotice("提示", "项目不存在")
 		return
 	end
 	if ALittle.File_GetFileAttr(module_path .. "/Texture/" .. self._setting_texture_path_input.text) == nil then
-		g_IDETool:ShowNotice("提示", "格子图片路径不存在")
+		g_AUITool:ShowNotice("提示", "格子图片路径不存在")
 		return
 	end
 	if ALittle.File_GetFileAttr(module_path .. "/Other/" .. self._setting_data_path_input.text) == nil then
-		g_IDETool:ShowNotice("提示", "场景数据路径不存在")
+		g_AUITool:ShowNotice("提示", "场景数据路径不存在")
 		return
 	end
 	if ALittle.File_GetFileAttr(module_path .. "/Texture/" .. self._setting_texture_path_input.text .. "/" .. self._unit_empty_name_input.text) == nil then
-		g_IDETool:ShowNotice("提示", "空格子图片不存在")
+		g_AUITool:ShowNotice("提示", "空格子图片不存在")
 		return
 	end
 	self._file_base_path = module_path .. "/Other/" .. self._setting_data_path_input.text
@@ -221,45 +221,43 @@ function GCenter:HandleSettingConfirmClick(event)
 	self._unit_bottom = unit_bottom
 	self._unit_real_width = self._unit_width - self._unit_left - self._unit_right
 	self._unit_real_height = self._unit_height - self._unit_top - self._unit_bottom
-	g_GConfig:SetConfig("unit_width", self._unit_width)
-	g_GConfig:SetConfig("unit_height", self._unit_height)
-	g_GConfig:SetConfig("unit_left", self._unit_left)
-	g_GConfig:SetConfig("unit_right", self._unit_right)
-	g_GConfig:SetConfig("unit_top", self._unit_top)
-	g_GConfig:SetConfig("unit_bottom", self._unit_bottom)
-	g_GConfig:SetConfig("project_name", self._setting_project_name_input.text)
-	g_GConfig:SetConfig("texture_path", self._setting_texture_path_input.text)
-	g_GConfig:SetConfig("empty_name", self._unit_empty_name_input.text)
-	g_GConfig:SetConfig("data_path", self._setting_data_path_input.text)
+	GBRMaker.g_GConfig:SetConfig("unit_width", self._unit_width)
+	GBRMaker.g_GConfig:SetConfig("unit_height", self._unit_height)
+	GBRMaker.g_GConfig:SetConfig("unit_left", self._unit_left)
+	GBRMaker.g_GConfig:SetConfig("unit_right", self._unit_right)
+	GBRMaker.g_GConfig:SetConfig("unit_top", self._unit_top)
+	GBRMaker.g_GConfig:SetConfig("unit_bottom", self._unit_bottom)
+	GBRMaker.g_GConfig:SetConfig("project_name", self._setting_project_name_input.text)
+	GBRMaker.g_GConfig:SetConfig("texture_path", self._setting_texture_path_input.text)
+	GBRMaker.g_GConfig:SetConfig("empty_name", self._unit_empty_name_input.text)
+	GBRMaker.g_GConfig:SetConfig("data_path", self._setting_data_path_input.text)
 	self._setting_dialog.visible = false
 	self._control = ALittle.ControlSystem(self._setting_project_name_input.text)
 	self:RefreshTexture()
 	self:RefreshFile()
 end
 
-function GCenter:HandleFileNewClick(event)
+function GBRMaker.GCenter:HandleFileNewClick(event)
 	local x, y = event.target:LocalToGlobal()
-	g_IDETool:ShowRename(Lua.Bind(self.HandleNewFile, self), "", x, y + event.target.height, 200)
-end
-
-function GCenter:HandleNewFile(file_name)
-	if file_name == "" then
+	local file_name = g_AUITool:ShowRename("", x, y + event.target.height, 200)
+	if file_name == "" or file_name == nil then
 		return
 	end
-	local check, error = IDEUtility_CheckResourceName(file_name)
+	local check, error = GBRMaker.IDEUtility_CheckResourceName(file_name)
 	if not check then
-		g_IDETool:ShowNotice("提示", error)
+		g_AUITool:ShowNotice("提示", error)
 		return
 	end
 	local file_path = self._file_base_path .. "/" .. file_name .. ".map"
 	if ALittle.File_GetFileAttr(file_path) ~= nil then
-		g_IDETool:ShowNotice("提示", "文件已存在")
+		g_AUITool:ShowNotice("提示", "文件已存在")
 		return
 	end
 	ALittle.File_WriteTextToFile("", file_path)
 end
+GBRMaker.GCenter.HandleFileNewClick = Lua.CoWrap(GBRMaker.GCenter.HandleFileNewClick)
 
-function GCenter:HandleSelectFile(event)
+function GBRMaker.GCenter:HandleSelectFile(event)
 	if not event.target.selected then
 		return
 	end
@@ -298,7 +296,7 @@ function GCenter:HandleSelectFile(event)
 	self:StartEdit(info)
 end
 
-function GCenter:RefreshFile()
+function GBRMaker.GCenter:RefreshFile()
 	self._file_cache_list = {}
 	self._file_radio_group = {}
 	self._file_scroll_screen:RemoveAllChild()
@@ -310,7 +308,7 @@ function GCenter:RefreshFile()
 	for index, file_path in ___ipairs(file_list) do
 		local rel_path = ALittle.String_Sub(file_path, ALittle.String_Len(self._file_base_path) + 2)
 		local info = {}
-		info.item = g_Control:CreateControl("ide_common_item_radiobutton", info)
+		info.item = GBRMaker.g_Control:CreateControl("ide_common_item_radiobutton", info)
 		info.item._user_data = info
 		info.item.group = self._file_radio_group
 		info.item.text = ALittle.File_GetJustFileNameByPath(rel_path)
@@ -324,7 +322,7 @@ function GCenter:RefreshFile()
 	self:HandleFileSearchClick(nil)
 end
 
-function GCenter:HandleFileSearchClick(event)
+function GBRMaker.GCenter:HandleFileSearchClick(event)
 	self._file_scroll_screen:RemoveAllChild()
 	local upper_key = ALittle.String_Upper(self._file_search_key.text)
 	for index, info in ___ipairs(self._file_cache_list) do
@@ -334,7 +332,7 @@ function GCenter:HandleFileSearchClick(event)
 	end
 end
 
-function GCenter:RefreshTexture()
+function GBRMaker.GCenter:RefreshTexture()
 	self._image_cache_list = {}
 	self._texture_scroll_list:RemoveAllChild()
 	if ALittle.File_GetFileAttr(self._texture_base_path) == nil then
@@ -346,7 +344,7 @@ function GCenter:RefreshTexture()
 		local rel_path = ALittle.String_Sub(file_path, ALittle.String_Len(self._texture_base_path) + 2)
 		local texture_name = self._tex_name_base_path .. rel_path
 		local info = {}
-		info.item = g_Control:CreateControl("ide_image_select_item", info)
+		info.item = GBRMaker.g_Control:CreateControl("ide_image_select_item", info)
 		info.button._user_data = info
 		info.image:SetTextureCut(file_path, ALittle.Math_Floor(info.frame.width), ALittle.Math_Floor(info.frame.height), true)
 		info.name.text = ALittle.File_GetJustFileNameByPath(rel_path)
@@ -359,7 +357,7 @@ function GCenter:RefreshTexture()
 	self:HandleTextureSearchClick(nil)
 end
 
-function GCenter:HandleTextureSearchClick(event)
+function GBRMaker.GCenter:HandleTextureSearchClick(event)
 	self._texture_scroll_list:RemoveAllChild()
 	local upper_key = ALittle.String_Upper(self._texture_search_key.text)
 	local col_count = ALittle.Math_Floor(self._texture_scroll_list.width / self._real_size)
@@ -368,7 +366,7 @@ function GCenter:HandleTextureSearchClick(event)
 	for index, info in ___ipairs(self._image_cache_list) do
 		if ALittle.String_Find(info.upper_file_name, upper_key) ~= nil then
 			if remain_count == 0 then
-				container = ALittle.Linear(g_Control)
+				container = ALittle.Linear(GBRMaker.g_Control)
 				container.type = 1
 				container.height = info.item.height
 				self._texture_scroll_list:AddChild(container)
@@ -382,7 +380,7 @@ function GCenter:HandleTextureSearchClick(event)
 	end
 end
 
-function GCenter:HandleTextureSelectClick(event)
+function GBRMaker.GCenter:HandleTextureSelectClick(event)
 	local ctrl = A_UISystem.sym_map[1073742048]
 	if ctrl == nil then
 		self._brush_scroll_screen:RemoveAllChild()
@@ -397,7 +395,7 @@ function GCenter:HandleTextureSelectClick(event)
 		end
 	end
 	local info = {}
-	info.item = g_Control:CreateControl("ide_image_select_item", info)
+	info.item = GBRMaker.g_Control:CreateControl("ide_image_select_item", info)
 	info.button._user_data = info
 	info.item._user_data = info
 	info.image:SetTextureCut(image_info.file_path, ALittle.Math_Floor(info.frame.width), ALittle.Math_Floor(info.frame.height), true)
@@ -410,16 +408,16 @@ function GCenter:HandleTextureSelectClick(event)
 	self._brush_scroll_screen:AddChild(info.item)
 end
 
-function GCenter:HandleBrushCancelClick(event)
+function GBRMaker.GCenter:HandleBrushCancelClick(event)
 	local info = event.target._user_data
 	self._brush_scroll_screen:RemoveChild(info.item)
 end
 
-function GCenter:HandleBrushAllCancelClick(event)
+function GBRMaker.GCenter:HandleBrushAllCancelClick(event)
 	self._brush_scroll_screen:RemoveAllChild()
 end
 
-function GCenter:EraseCell(floor, virtual_x, virtual_y)
+function GBRMaker.GCenter:EraseCell(floor, virtual_x, virtual_y)
 	if floor == nil then
 		return
 	end
@@ -444,7 +442,7 @@ function GCenter:EraseCell(floor, virtual_x, virtual_y)
 	end
 end
 
-function GCenter:SetCell(file, floor, virtual_x, virtual_y, info)
+function GBRMaker.GCenter:SetCell(file, floor, virtual_x, virtual_y, info)
 	local tex_id = file.map_info.tex_map[info.texture_name]
 	if tex_id == nil then
 		file.map_info.tex_max_id = file.map_info.tex_max_id + 1
@@ -462,7 +460,7 @@ function GCenter:SetCell(file, floor, virtual_x, virtual_y, info)
 		image.texture_name = info.texture_name
 		image.width = self._unit_width
 		image.height = self._unit_height
-		local show_x, show_y = IDECoordVirtual2Show(virtual_x, virtual_y, self._unit_real_width, self._unit_width, self._unit_real_height, self._unit_height)
+		local show_x, show_y = GBRMaker.IDECoordVirtual2Show(virtual_x, virtual_y, self._unit_real_width, self._unit_width, self._unit_real_height, self._unit_height)
 		image.x = show_x
 		image.y = show_y
 		floor.edit_item:AddChild(image)
@@ -479,14 +477,14 @@ function GCenter:SetCell(file, floor, virtual_x, virtual_y, info)
 	self:SaveCurEdit(false)
 end
 
-function GCenter:OverWriteCell(file, floor, virtual_x, virtual_y)
+function GBRMaker.GCenter:OverWriteCell(file, floor, virtual_x, virtual_y)
 	self:EraseCell(floor, virtual_x, virtual_y)
 	local index = ALittle.Math_RandomInt(1, self._brush_scroll_screen.child_count)
 	local info = self._brush_scroll_screen.childs[index]._user_data
 	self:SetCell(file, floor, virtual_x, virtual_y, info)
 end
 
-function GCenter:HandleBrushQuadLButtonDown(event)
+function GBRMaker.GCenter:HandleBrushQuadLButtonDown(event)
 	if self._brush_scroll_screen.child_count == 0 then
 		return
 	end
@@ -496,16 +494,16 @@ function GCenter:HandleBrushQuadLButtonDown(event)
 	if self._cur_floor == nil then
 		return
 	end
-	local virtual_x, virtual_y = IDECoordShow2Virtual(event.rel_x, event.rel_y, self._unit_real_width, self._unit_width, self._unit_real_height, self._unit_height)
+	local virtual_x, virtual_y = GBRMaker.IDECoordShow2Virtual(event.rel_x, event.rel_y, self._unit_real_width, self._unit_width, self._unit_real_height, self._unit_height)
 	self:OverWriteCell(self._cur_file, self._cur_floor, virtual_x, virtual_y)
 end
 
-function GCenter:HandleBrushQuadDragBegin(event)
+function GBRMaker.GCenter:HandleBrushQuadDragBegin(event)
 	self._cur_brush_virtual_x = nil
 	self._cur_brush_virtual_y = nil
 end
 
-function GCenter:HandleBrushQuadDrag(event)
+function GBRMaker.GCenter:HandleBrushQuadDrag(event)
 	if self._brush_scroll_screen.child_count == 0 then
 		return
 	end
@@ -515,7 +513,7 @@ function GCenter:HandleBrushQuadDrag(event)
 	if self._cur_floor == nil then
 		return
 	end
-	local virtual_x, virtual_y = IDECoordShow2Virtual(event.rel_x, event.rel_y, self._unit_real_width, self._unit_width, self._unit_real_height, self._unit_height)
+	local virtual_x, virtual_y = GBRMaker.IDECoordShow2Virtual(event.rel_x, event.rel_y, self._unit_real_width, self._unit_width, self._unit_real_height, self._unit_height)
 	if self._cur_brush_virtual_x == virtual_x and self._cur_brush_virtual_y == virtual_y then
 		return
 	end
@@ -524,24 +522,24 @@ function GCenter:HandleBrushQuadDrag(event)
 	self:OverWriteCell(self._cur_file, self._cur_floor, virtual_x, virtual_y)
 end
 
-function GCenter:HandleEraseQuadLButtonDown(event)
+function GBRMaker.GCenter:HandleEraseQuadLButtonDown(event)
 	if self._cur_floor == nil then
 		return
 	end
-	local virtual_x, virtual_y = IDECoordShow2Virtual(event.rel_x, event.rel_y, self._unit_real_width, self._unit_width, self._unit_real_height, self._unit_height)
+	local virtual_x, virtual_y = GBRMaker.IDECoordShow2Virtual(event.rel_x, event.rel_y, self._unit_real_width, self._unit_width, self._unit_real_height, self._unit_height)
 	self:EraseCell(self._cur_floor, virtual_x, virtual_y)
 end
 
-function GCenter:HandleEraseQuadDragBegin(event)
+function GBRMaker.GCenter:HandleEraseQuadDragBegin(event)
 	self._cur_erase_virtual_x = nil
 	self._cur_erase_virtual_y = nil
 end
 
-function GCenter:HandleEraseQuadDrag(event)
+function GBRMaker.GCenter:HandleEraseQuadDrag(event)
 	if self._cur_floor == nil then
 		return
 	end
-	local virtual_x, virtual_y = IDECoordShow2Virtual(event.rel_x, event.rel_y, self._unit_real_width, self._unit_width, self._unit_real_height, self._unit_height)
+	local virtual_x, virtual_y = GBRMaker.IDECoordShow2Virtual(event.rel_x, event.rel_y, self._unit_real_width, self._unit_width, self._unit_real_height, self._unit_height)
 	if self._cur_erase_virtual_x == virtual_x and self._cur_erase_virtual_y == virtual_y then
 		return
 	end
@@ -550,17 +548,14 @@ function GCenter:HandleEraseQuadDrag(event)
 	self:EraseCell(self._cur_floor, virtual_x, virtual_y)
 end
 
-function GCenter:HandleNewFloorClick(event)
+function GBRMaker.GCenter:HandleNewFloorClick(event)
 	if self._cur_file == nil then
-		g_IDETool:ShowNotice("提示", "请先打开文件")
+		g_AUITool:ShowNotice("提示", "请先打开文件")
 		return
 	end
 	local x, y = event.target:LocalToGlobal()
-	g_IDETool:ShowRename(Lua.Bind(self.HandleNewFloor, self), "", x, y + event.target.height, 200)
-end
-
-function GCenter:HandleNewFloor(name)
-	if name == "" then
+	local name = g_AUITool:ShowRename("", x, y + event.target.height, 200)
+	if name == "" or name == nil then
 		return
 	end
 	local floor_data = {}
@@ -578,7 +573,7 @@ function GCenter:HandleNewFloor(name)
 		group = {}
 	end
 	local info = {}
-	info.select_item = g_Control:CreateControl("ide_common_item_radiobutton", info)
+	info.select_item = GBRMaker.g_Control:CreateControl("ide_common_item_radiobutton", info)
 	info.select_item._user_data = info
 	info.select_item.group = group
 	info.select_item.text = floor_info.floor_data.name
@@ -590,8 +585,9 @@ function GCenter:HandleNewFloor(name)
 	self._cur_edit_layer:AddChild(info.edit_item, 1)
 	self:SaveCurEdit(false)
 end
+GBRMaker.GCenter.HandleNewFloorClick = Lua.CoWrap(GBRMaker.GCenter.HandleNewFloorClick)
 
-function GCenter:HandleSelectFloor(event)
+function GBRMaker.GCenter:HandleSelectFloor(event)
 	local info = event.target._user_data
 	if event.target.selected then
 		info.edit_item.alpha = 1
@@ -601,9 +597,9 @@ function GCenter:HandleSelectFloor(event)
 	self._cur_floor = info
 end
 
-function GCenter:HandleFloorRButtonDown(event)
+function GBRMaker.GCenter:HandleFloorRButtonDown(event)
 	if self._floor_right_menu == nil then
-		self._floor_right_menu = g_Control:CreateControl("ide_floor_right_menu", self)
+		self._floor_right_menu = GBRMaker.g_Control:CreateControl("ide_floor_right_menu", self)
 	end
 	self._floor_right_menu.x = A_UISystem.mouse_x
 	self._floor_right_menu.y = A_UISystem.mouse_y
@@ -614,7 +610,7 @@ function GCenter:HandleFloorRButtonDown(event)
 	self._floor_right_show_btn.disabled = info.floor_info.visible
 end
 
-function GCenter:HandleFloorRightMenu(event)
+function GBRMaker.GCenter:HandleFloorRightMenu(event)
 	local info = self._floor_right_menu._user_data
 	self._floor_right_menu._user_data = nil
 	A_LayerManager:HideFromRight(self._floor_right_menu)
@@ -656,7 +652,7 @@ function GCenter:HandleFloorRightMenu(event)
 	end
 end
 
-function GCenter:StartEdit(file_info)
+function GBRMaker.GCenter:StartEdit(file_info)
 	self._cur_file = file_info
 	self._cur_floor = nil
 	self._edit_title.text = file_info.item.text
@@ -676,8 +672,8 @@ function GCenter:StartEdit(file_info)
 	end
 	local layer_width = 0.0
 	local layer_height = 0.0
-	self._cur_layer = ALittle.DisplayLayout(g_Control)
-	self._cur_grid_layer = ALittle.DisplayLayout(g_Control)
+	self._cur_layer = ALittle.DisplayLayout(GBRMaker.g_Control)
+	self._cur_grid_layer = ALittle.DisplayLayout(GBRMaker.g_Control)
 	self._cur_grid_layer.width_type = 4
 	self._cur_grid_layer.height_type = 4
 	self._cur_layer:AddChild(self._cur_grid_layer)
@@ -692,7 +688,7 @@ function GCenter:StartEdit(file_info)
 			image.texture_name = self._tex_name_base_path .. self._unit_empty_name_input.text
 			image.width = self._unit_width
 			image.height = self._unit_height
-			local show_x, show_y = IDECoordVirtual2Show(x, y, self._unit_real_width, self._unit_width, self._unit_real_height, self._unit_height)
+			local show_x, show_y = GBRMaker.IDECoordVirtual2Show(x, y, self._unit_real_width, self._unit_width, self._unit_real_height, self._unit_height)
 			image.x = show_x
 			image.y = show_y
 			self._cur_grid_layer:AddChild(image)
@@ -712,7 +708,7 @@ function GCenter:StartEdit(file_info)
 		local y = 0
 		while true do
 			if not(y < y_max) then break end
-			local show_x, show_y = IDECoordVirtual2Show(x, y, self._unit_real_width, self._unit_width, self._unit_real_height, self._unit_height)
+			local show_x, show_y = GBRMaker.IDECoordVirtual2Show(x, y, self._unit_real_width, self._unit_width, self._unit_real_height, self._unit_height)
 			if show_x + self._unit_width / 2 >= 0 then
 				local image = ALittle.Image(self._control)
 				image.texture_name = self._tex_name_base_path .. self._unit_empty_name_input.text
@@ -732,7 +728,7 @@ function GCenter:StartEdit(file_info)
 		end
 		x = x+(-1)
 	end
-	self._cur_brush_quad = ALittle.Quad(g_Control)
+	self._cur_brush_quad = ALittle.Quad(GBRMaker.g_Control)
 	self._cur_brush_quad.alpha = 0
 	self._cur_brush_quad.width_type = 4
 	self._cur_brush_quad.height_type = 4
@@ -740,7 +736,7 @@ function GCenter:StartEdit(file_info)
 	self._cur_brush_quad:AddEventListener(___all_struct[1883782801], self, self.HandleBrushQuadLButtonDown)
 	self._cur_brush_quad:AddEventListener(___all_struct[1301789264], self, self.HandleBrushQuadDragBegin)
 	self._cur_brush_quad:AddEventListener(___all_struct[1337289812], self, self.HandleBrushQuadDrag)
-	self._cur_erase_quad = ALittle.Quad(g_Control)
+	self._cur_erase_quad = ALittle.Quad(GBRMaker.g_Control)
 	self._cur_erase_quad.alpha = 0
 	self._cur_erase_quad.visible = false
 	self._cur_erase_quad.width_type = 4
@@ -749,14 +745,14 @@ function GCenter:StartEdit(file_info)
 	self._cur_erase_quad:AddEventListener(___all_struct[1883782801], self, self.HandleEraseQuadLButtonDown)
 	self._cur_erase_quad:AddEventListener(___all_struct[1301789264], self, self.HandleEraseQuadDragBegin)
 	self._cur_erase_quad:AddEventListener(___all_struct[1337289812], self, self.HandleEraseQuadDrag)
-	self._cur_drag_quad = ALittle.Quad(g_Control)
+	self._cur_drag_quad = ALittle.Quad(GBRMaker.g_Control)
 	self._cur_drag_quad.alpha = 0
 	self._cur_drag_quad.visible = false
 	self._cur_drag_quad.width_type = 4
 	self._cur_drag_quad.height_type = 4
 	self._cur_layer:AddChild(self._cur_drag_quad)
 	self._cur_drag_quad.drag_trans_target = self._edit_scroll_screen
-	self._cur_edit_layer = ALittle.DisplayLayout(g_Control)
+	self._cur_edit_layer = ALittle.DisplayLayout(GBRMaker.g_Control)
 	self._cur_edit_layer.width_type = 4
 	self._cur_edit_layer.height_type = 4
 	self._cur_layer:AddChild(self._cur_edit_layer)
@@ -770,7 +766,7 @@ function GCenter:StartEdit(file_info)
 	local group = {}
 	for index, floor_info in ___ipairs(self._cur_file.map_info.floor_list) do
 		local info = {}
-		info.select_item = g_Control:CreateControl("ide_common_item_radiobutton", info)
+		info.select_item = GBRMaker.g_Control:CreateControl("ide_common_item_radiobutton", info)
 		info.select_item._user_data = info
 		info.select_item.group = group
 		info.select_item.text = floor_info.floor_data.name
@@ -789,7 +785,7 @@ function GCenter:StartEdit(file_info)
 	end
 end
 
-function GCenter:CreateFloorEdit(info)
+function GBRMaker.GCenter:CreateFloorEdit(info)
 	local layer = ALittle.DisplayLayout(self._control)
 	for x, y_data in ___pairs(info.floor_info.floor_data.data) do
 		for y, tex_id in ___pairs(y_data) do
@@ -797,7 +793,7 @@ function GCenter:CreateFloorEdit(info)
 			image.texture_name = info.floor_info.file_info.map_data.tex_map[tex_id]
 			image.width = self._unit_width
 			image.height = self._unit_height
-			local show_x, show_y = IDECoordVirtual2Show(x, y, self._unit_real_width, self._unit_width, self._unit_real_height, self._unit_height)
+			local show_x, show_y = GBRMaker.IDECoordVirtual2Show(x, y, self._unit_real_width, self._unit_width, self._unit_real_height, self._unit_height)
 			image.x = show_x
 			image.y = show_y
 			layer:AddChild(image)
@@ -812,7 +808,7 @@ function GCenter:CreateFloorEdit(info)
 	return layer
 end
 
-function GCenter:UpdateFloorAlpha()
+function GBRMaker.GCenter:UpdateFloorAlpha()
 	for index, child in ___ipairs(self._floor_scroll_screen.childs) do
 		local info = child._user_data
 		if info.select_item.selected then
@@ -823,7 +819,7 @@ function GCenter:UpdateFloorAlpha()
 	end
 end
 
-function GCenter:HandleToolBrushSelect(event)
+function GBRMaker.GCenter:HandleToolBrushSelect(event)
 	self._layer_brush_info.visible = event.target.selected
 	if self._cur_brush_quad ~= nil then
 		self._cur_brush_quad.visible = event.target.selected
@@ -831,7 +827,7 @@ function GCenter:HandleToolBrushSelect(event)
 	self:UpdateFloorAlpha()
 end
 
-function GCenter:HandleToolEraseSelect(event)
+function GBRMaker.GCenter:HandleToolEraseSelect(event)
 	self._layer_erase_info.visible = event.target.selected
 	if self._cur_erase_quad ~= nil then
 		self._cur_erase_quad.visible = event.target.selected
@@ -839,12 +835,12 @@ function GCenter:HandleToolEraseSelect(event)
 	self:UpdateFloorAlpha()
 end
 
-function GCenter:HandleToolScaleSelect(event)
+function GBRMaker.GCenter:HandleToolScaleSelect(event)
 	self._layer_scale_info.visible = event.target.selected
 	self:UpdateFloorAlpha()
 end
 
-function GCenter:HandleToolDragSelect(event)
+function GBRMaker.GCenter:HandleToolDragSelect(event)
 	self._layer_drag_info.visible = event.target.selected
 	if self._cur_drag_quad ~= nil then
 		self._cur_drag_quad.visible = event.target.selected
@@ -854,7 +850,7 @@ function GCenter:HandleToolDragSelect(event)
 	end
 end
 
-function GCenter:SaveCurEdit(save)
+function GBRMaker.GCenter:SaveCurEdit(save)
 	if self._cur_file == nil then
 		return
 	end
@@ -874,14 +870,14 @@ function GCenter:SaveCurEdit(save)
 	end
 	ALittle.PS_WriteMessage(factory, invoke_info, nil, self._cur_file.map_data)
 	if not factory:WriteToStdFile(self._cur_file.file_path) then
-		g_IDETool:ShowNotice("提示", "保存失败")
+		g_AUITool:ShowNotice("提示", "保存失败")
 		return
 	end
 	self._cur_file.save = true
 	self._edit_title.text = self._cur_file.item.text
 end
 
-function GCenter:HandleKeyDown(mod, sym, scancode)
+function GBRMaker.GCenter:HandleKeyDown(mod, sym, scancode)
 	if sym == 115 and ALittle.BitAnd(mod, 0x00c0) ~= 0 then
 		self:SaveCurEdit(true)
 	end
@@ -907,35 +903,36 @@ function GCenter:HandleKeyDown(mod, sym, scancode)
 	end
 end
 
-function GCenter:HandleDragRightQuadUD(event)
+function GBRMaker.GCenter:HandleDragRightQuadUD(event)
 	self._right_grad3_ud.up_size = self._right_grad3_ud.up_size + (event.delta_y)
 end
 
-function GCenter:HandleDragEndRightQuadUD(event)
-	g_GConfig:SetConfig("right_grid3_up_size", self._right_grad3_ud.up_size)
+function GBRMaker.GCenter:HandleDragEndRightQuadUD(event)
+	GBRMaker.g_GConfig:SetConfig("right_grid3_up_size", self._right_grad3_ud.up_size)
 end
 
-function GCenter:HandleDragRightQuadLR(event)
+function GBRMaker.GCenter:HandleDragRightQuadLR(event)
 	self._main_grid3_lr.down_size = self._main_grid3_lr.down_size - (event.delta_x)
 end
 
-function GCenter:HandleDragEndRightQuadLR(event)
-	g_GConfig:SetConfig("main_grid3_down_size", self._main_grid3_lr.down_size)
+function GBRMaker.GCenter:HandleDragEndRightQuadLR(event)
+	GBRMaker.g_GConfig:SetConfig("main_grid3_down_size", self._main_grid3_lr.down_size)
 end
 
-function GCenter:HandleSetVDragCursor(event)
+function GBRMaker.GCenter:HandleSetVDragCursor(event)
 	ALittle.System_SetVDragCursor()
 end
 
-function GCenter:HandleSetHDragCursor(event)
+function GBRMaker.GCenter:HandleSetHDragCursor(event)
 	ALittle.System_SetHDragCursor()
 end
 
-function GCenter:HandleSetNormalCursor(event)
+function GBRMaker.GCenter:HandleSetNormalCursor(event)
 	ALittle.System_SetNormalCursor()
 end
 
-function GCenter:Shutdown()
+function GBRMaker.GCenter:Shutdown()
 end
 
-_G.g_GCenter = GCenter()
+_G.g_GCenter = GBRMaker.GCenter()
+end

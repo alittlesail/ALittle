@@ -40,6 +40,7 @@ function G2048.GCenter:Setup()
 	self._dialog_layer.width_type = 4
 	self._dialog_layer.height_type = 4
 	G2048.g_LayerGroup:AddChild(self._dialog_layer, nil)
+	G2048.g_Control:PrepareTexture({"item_2", "item_4", "item_8", "item_16", "item_32", "item_64", "item_128", "item_256", "item_512", "item_1024", "item_2048"}, nil)
 	G2048.g_Control:CreateControl("main_scene", self, self._main_layer)
 	self._max_score_text._user_data = G2048.g_GConfig:GetConfig("max_score", 0)
 	self._max_score_text.text = self._max_score_text._user_data

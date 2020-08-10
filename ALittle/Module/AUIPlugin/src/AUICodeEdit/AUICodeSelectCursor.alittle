@@ -122,6 +122,34 @@ public class AUICodeSelectCursor
     public get line_end() : int { return this._it_line_end; }
     public get char_end() : int { return this._it_char_end; }
 
+    public fun GetLineCharCloseToEnd() : int, int
+    {
+        if (this._it_line_start < this._it_line_end)
+            return this._it_line_end, this._it_char_end;
+
+        if (this._it_line_start > this._it_line_end)
+        	return this._it_line_start, this._it_char_start;
+
+        if (this._it_char_start < this._it_char_end)
+            return this._it_line_end, this._it_char_end;	
+
+        return this._it_line_start, this._it_char_start;
+	}
+
+    public fun GetLineCharCloseToHome() : int, int
+    {
+        if (this._it_line_start > this._it_line_end)
+            return this._it_line_end, this._it_char_end;
+
+        if (this._it_line_start < this._it_line_end)
+        	return this._it_line_start, this._it_char_start;
+
+        if (this._it_char_start > this._it_char_end)
+            return this._it_line_end, this._it_char_end;	
+
+        return this._it_line_start, this._it_char_start;
+	}
+
     public fun StartLineChar(int line, int char)
     {
         this.Hide();

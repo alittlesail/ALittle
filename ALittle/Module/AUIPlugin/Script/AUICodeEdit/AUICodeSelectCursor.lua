@@ -124,6 +124,32 @@ function AUIPlugin.AUICodeSelectCursor.__getter:char_end()
 	return self._it_char_end
 end
 
+function AUIPlugin.AUICodeSelectCursor:GetLineCharCloseToEnd()
+	if self._it_line_start < self._it_line_end then
+		return self._it_line_end, self._it_char_end
+	end
+	if self._it_line_start > self._it_line_end then
+		return self._it_line_start, self._it_char_start
+	end
+	if self._it_char_start < self._it_char_end then
+		return self._it_line_end, self._it_char_end
+	end
+	return self._it_line_start, self._it_char_start
+end
+
+function AUIPlugin.AUICodeSelectCursor:GetLineCharCloseToHome()
+	if self._it_line_start > self._it_line_end then
+		return self._it_line_end, self._it_char_end
+	end
+	if self._it_line_start < self._it_line_end then
+		return self._it_line_start, self._it_char_start
+	end
+	if self._it_char_start > self._it_char_end then
+		return self._it_line_end, self._it_char_end
+	end
+	return self._it_line_start, self._it_char_start
+end
+
 function AUIPlugin.AUICodeSelectCursor:StartLineChar(line, char)
 	self:Hide()
 	if self._edit.line_count == 0 then

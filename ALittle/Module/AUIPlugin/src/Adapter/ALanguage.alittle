@@ -90,19 +90,20 @@ public class alanguage
     public static abnfproject_updatefile(ABnfProject project, string module_path, string full_path, int version) {}
     public static abnfproject_tempfile(ABnfProject project, string module_path, string full_path, string text, int version) {}
     public static abnfproject_removefile(ABnfProject project, string full_path) {}
-    public static abnfproject_findfile(ABnfProject project, int query_id, string text) /*: List<string>*/ {}
+    public static abnfproject_findfile(ABnfProject project, int query_id, string text) /*: List<string> */ {}
+    public static abnfproject_finddefine(ABnfProject project, int query_id, string pre_input, string input) /*: List<ABnfQueryCompleteInfo> */ {}
     public static abnfproject_clear(ABnfProject project) {}
 
     public static abnffile_settext(ABnfFile abnf_file, int version, string text) {}
     public static abnffile_inserttext(ABnfFile abnf_file, int version, string text, int it_line, int it_char) {}
     public static abnffile_deletetext(ABnfFile abnf_file, int version, int it_line_start, int it_char_start, int it_line_end, int it_char_end) {}
     
-    public static abnffile_querycolor(ABnfFile abnf_file, int query_id, int version, int line) /*: List<ABnfQueryColor>*/ {}
-    public static abnffile_queryinfo(ABnfFile abnf_file, int query_id, int version, int line, int char) /*: ABnfQueryInfo*/ {}
-    public static abnffile_querygoto(ABnfFile abnf_file, int query_id, int version, int line, int char) /*: ABnfQueryGoto*/ {}
-    public static abnffile_querycomplete(ABnfFile abnf_file, int query_id, int version, int line, int char) /*: ABnfQueryComplete*/ {}
-    public static abnffile_queryparamlist(ABnfFile abnf_file, int query_id, int version, int line, int char) /*: ABnfQueryParamList*/ {}
-    public static abnffile_queryerror(ABnfFile abnf_file, int query_id, int version, bool force) /*: List<ABnfQueryError>*/ {}
+    public static abnffile_querycolor(ABnfFile abnf_file, int query_id, int version, int line) /*: List<ABnfQueryColor> */ {}
+    public static abnffile_queryinfo(ABnfFile abnf_file, int query_id, int version, int line, int char) /*: ABnfQueryInfo */ {}
+    public static abnffile_querygoto(ABnfFile abnf_file, int query_id, int version, int line, int char) /*: ABnfQueryGoto */ {}
+    public static abnffile_querycomplete(ABnfFile abnf_file, int query_id, int version, int line, int char) /*: ABnfQueryComplete */ {}
+    public static abnffile_queryparamlist(ABnfFile abnf_file, int query_id, int version, int line, int char) /*: ABnfQueryParamList */ {}
+    public static abnffile_queryerror(ABnfFile abnf_file, int query_id, int version, bool force) /*: List<ABnfQueryError> */ {}
 
     public static abnffile_querydesiredindent(ABnfFile abnf_file, int version, int line, int char) : int {}
     public static abnffile_queryformateindent(ABnfFile abnf_file, int version, int line, int char) : int {}

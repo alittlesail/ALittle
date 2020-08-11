@@ -44,9 +44,10 @@ function AUIPlugin.__Plugin_Setup(control, module_base_path, script_base_path)
 		, "AUIFileSelectDialog.alittle", "AUIEditImageDialog.alittle"})
 	RequireFromPaths(script_base_path, "AUICodeEdit/", {"AUICodeSelectCursor.alittle", "AUICodeRevocation.alittle", "AUICodeProject.alittle"
 		, "AUICodeParamList.alittle", "AUICodeLineNumber.alittle", "AUICodeLineContainer.alittle"
-		, "AUICodeLanguage.alittle", "AUICodeEdit.alittle", "AUICodeDefine.alittle"
-		, "AUICodeCursor.alittle", "AUICodeComponent.alittle", "AUICodeCompleteScreen.alittle"
-		, "ABnf/AUICodeCommon.alittle", "ABnf/AUICodeALittleScript.alittle", "ABnf/AUICodeABnf.alittle"})
+		, "AUICodeLanguage.alittle", "AUICodeFilterScreen.alittle", "AUICodeEdit.alittle"
+		, "AUICodeDefine.alittle", "AUICodeCursor.alittle", "AUICodeComponent.alittle"
+		, "AUICodeCompleteScreen.alittle", "ABnf/AUICodeCommon.alittle", "ABnf/AUICodeALittleScript.alittle"
+		, "ABnf/AUICodeABnf.alittle"})
 	AUIPlugin.g_AUIIMEManager:Setup()
 end
 AUIPlugin.__Plugin_Setup = Lua.CoWrap(AUIPlugin.__Plugin_Setup)

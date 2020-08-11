@@ -116,6 +116,17 @@ function AUIPlugin.AUICodeProject:FindFile(text)
 	return coroutine.yield()
 end
 
+function AUIPlugin.AUICodeProject:FindDefine(pre_input, input)
+	local ___COROUTINE = coroutine.running()
+	local query_id = self:Add(___COROUTINE)
+	alanguage.abnfproject_finddefine(self._project, query_id, pre_input, input)
+	return coroutine.yield()
+end
+
+function AUIPlugin.AUICodeProject:QueryCompleteIcon(tag)
+	return nil
+end
+
 function AUIPlugin.AUICodeProject:Start()
 	if self._loop ~= nil then
 		return

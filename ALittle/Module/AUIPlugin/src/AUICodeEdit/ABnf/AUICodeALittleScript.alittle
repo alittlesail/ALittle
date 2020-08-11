@@ -2,7 +2,6 @@
 namespace AUIPlugin;
 
 private var g_ALittleScriptColor:Map<int, ABnfColor>;
-private var g_ALittleScriptIcon:Map<int, string>;
 
 enum ALittleScriptColorType
 {
@@ -34,6 +33,22 @@ enum ALittleScriptIconType
     PARAM = 13;
     VARIABLE = 14;
 }
+
+private var g_ALittleScriptIcon:Map<int, string> = new Map<int, string>();
+g_ALittleScriptIcon[ALittleScriptIconType.CLASS] = "ABnf/ALittleScript/ALittleScriptClassIcon.png";
+g_ALittleScriptIcon[ALittleScriptIconType.STRUCT] = "ABnf/ALittleScript/ALittleScriptStructIcon.png";
+g_ALittleScriptIcon[ALittleScriptIconType.PROPERTY] = "ABnf/ALittleScript/ALittleScriptPropertyIcon.png";
+g_ALittleScriptIcon[ALittleScriptIconType.NAMESPACE] = "ABnf/ALittleScript/ALittleScriptNamespaceIcon.png";
+g_ALittleScriptIcon[ALittleScriptIconType.TEMPLATE] = "ABnf/ALittleScript/ALittleScriptTemplateIcon.png";
+g_ALittleScriptIcon[ALittleScriptIconType.ENUM] = "ABnf/ALittleScript/ALittleScriptEnumIcon.png";
+g_ALittleScriptIcon[ALittleScriptIconType.LANGUAGE] = "ABnf/ALittleScript/ALittleScriptNamespaceIcon.png";
+g_ALittleScriptIcon[ALittleScriptIconType.GLOBAL_METHOD] = "ABnf/ALittleScript/ALittleScriptStaticIcon.png";
+g_ALittleScriptIcon[ALittleScriptIconType.MEMBER_METHOD] = "ABnf/ALittleScript/ALittleScriptMethodIcon.png";
+g_ALittleScriptIcon[ALittleScriptIconType.FIELD_METHOD] = "ABnf/ALittleScript/ALittleScriptFieldIcon.png";
+g_ALittleScriptIcon[ALittleScriptIconType.STATIC_METHOD] = "ABnf/ALittleScript/ALittleScriptStaticIcon.png";
+g_ALittleScriptIcon[ALittleScriptIconType.INSTANCE] = "ABnf/ALittleScript/ALittleScriptInstanceIcon.png";
+g_ALittleScriptIcon[ALittleScriptIconType.PARAM] = "ABnf/ALittleScript/ALittleScriptParamIcon.png";
+g_ALittleScriptIcon[ALittleScriptIconType.VARIABLE] = "ABnf/ALittleScript/ALittleScriptVariableIcon.png";
 
 public class AUICodeALittleScript : AUICodeLanguage
 {
@@ -106,25 +121,6 @@ public class AUICodeALittleScript : AUICodeLanguage
                 color.blue = 133/255;
                 g_ALittleScriptColor[ALittleScriptColorType.TEXT] = color;   
             }
-        }
-
-        if (g_ALittleScriptIcon == null)
-        {
-            g_ALittleScriptIcon = new Map<int, string>();
-            g_ALittleScriptIcon[ALittleScriptIconType.CLASS] = "ABnf/ALittleScript/ALittleScriptClassIcon.png";
-            g_ALittleScriptIcon[ALittleScriptIconType.STRUCT] = "ABnf/ALittleScript/ALittleScriptStructIcon.png";
-            g_ALittleScriptIcon[ALittleScriptIconType.PROPERTY] = "ABnf/ALittleScript/ALittleScriptPropertyIcon.png";
-            g_ALittleScriptIcon[ALittleScriptIconType.NAMESPACE] = "ABnf/ALittleScript/ALittleScriptNamespaceIcon.png";
-            g_ALittleScriptIcon[ALittleScriptIconType.TEMPLATE] = "ABnf/ALittleScript/ALittleScriptTemplateIcon.png";
-            g_ALittleScriptIcon[ALittleScriptIconType.ENUM] = "ABnf/ALittleScript/ALittleScriptEnumIcon.png";
-            g_ALittleScriptIcon[ALittleScriptIconType.LANGUAGE] = "ABnf/ALittleScript/ALittleScriptNamespaceIcon.png";
-            g_ALittleScriptIcon[ALittleScriptIconType.GLOBAL_METHOD] = "ABnf/ALittleScript/ALittleScriptStaticIcon.png";
-            g_ALittleScriptIcon[ALittleScriptIconType.MEMBER_METHOD] = "ABnf/ALittleScript/ALittleScriptMethodIcon.png";
-            g_ALittleScriptIcon[ALittleScriptIconType.FIELD_METHOD] = "ABnf/ALittleScript/ALittleScriptFieldIcon.png";
-            g_ALittleScriptIcon[ALittleScriptIconType.STATIC_METHOD] = "ABnf/ALittleScript/ALittleScriptStaticIcon.png";
-            g_ALittleScriptIcon[ALittleScriptIconType.INSTANCE] = "ABnf/ALittleScript/ALittleScriptInstanceIcon.png";
-            g_ALittleScriptIcon[ALittleScriptIconType.PARAM] = "ABnf/ALittleScript/ALittleScriptParamIcon.png";
-            g_ALittleScriptIcon[ALittleScriptIconType.VARIABLE] = "ABnf/ALittleScript/ALittleScriptVariableIcon.png";
         }
 
         this._abnf_file = lua.alittlescript.create_alittlescript_file(project.project, module_path, full_path, "");
@@ -296,19 +292,9 @@ public class AUICodeALittleScriptProject : AUICodeProject
         return yield;
     }
 
-    // 获取所有命名域
-    public await fun GetAllNamespace() : List<string>
+    // 查询提示图标路径
+    public fun QueryCompleteIcon(int tag) : string
     {
-        var query_id = this.Add(co);
-        lua.alittlescript.alittlescriptproject_getallnamespace(this._project, query_id);
-        return yield;
-    }
-
-    // 获取所有类名
-    public await fun GetAllClass(string namespace_name) : List<string>
-    {
-        var query_id = this.Add(co);
-        lua.alittlescript.alittlescriptproject_getallclass(this._project, query_id, namespace_name);
-        return yield;
+        return g_ALittleScriptIcon[tag];
     }
 }

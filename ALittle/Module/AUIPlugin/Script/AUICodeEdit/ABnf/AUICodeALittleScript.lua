@@ -14,7 +14,6 @@ option_map = {}
 })
 
 local g_ALittleScriptColor = nil
-local g_ALittleScriptIcon = nil
 AUIPlugin.ALittleScriptColorType = {
 	COMMENT = 1,
 	DEFINE_NAME = 2,
@@ -44,6 +43,21 @@ AUIPlugin.ALittleScriptIconType = {
 	VARIABLE = 14,
 }
 
+local g_ALittleScriptIcon = {}
+g_ALittleScriptIcon[AUIPlugin.ALittleScriptIconType.CLASS] = "ABnf/ALittleScript/ALittleScriptClassIcon.png"
+g_ALittleScriptIcon[AUIPlugin.ALittleScriptIconType.STRUCT] = "ABnf/ALittleScript/ALittleScriptStructIcon.png"
+g_ALittleScriptIcon[AUIPlugin.ALittleScriptIconType.PROPERTY] = "ABnf/ALittleScript/ALittleScriptPropertyIcon.png"
+g_ALittleScriptIcon[AUIPlugin.ALittleScriptIconType.NAMESPACE] = "ABnf/ALittleScript/ALittleScriptNamespaceIcon.png"
+g_ALittleScriptIcon[AUIPlugin.ALittleScriptIconType.TEMPLATE] = "ABnf/ALittleScript/ALittleScriptTemplateIcon.png"
+g_ALittleScriptIcon[AUIPlugin.ALittleScriptIconType.ENUM] = "ABnf/ALittleScript/ALittleScriptEnumIcon.png"
+g_ALittleScriptIcon[AUIPlugin.ALittleScriptIconType.LANGUAGE] = "ABnf/ALittleScript/ALittleScriptNamespaceIcon.png"
+g_ALittleScriptIcon[AUIPlugin.ALittleScriptIconType.GLOBAL_METHOD] = "ABnf/ALittleScript/ALittleScriptStaticIcon.png"
+g_ALittleScriptIcon[AUIPlugin.ALittleScriptIconType.MEMBER_METHOD] = "ABnf/ALittleScript/ALittleScriptMethodIcon.png"
+g_ALittleScriptIcon[AUIPlugin.ALittleScriptIconType.FIELD_METHOD] = "ABnf/ALittleScript/ALittleScriptFieldIcon.png"
+g_ALittleScriptIcon[AUIPlugin.ALittleScriptIconType.STATIC_METHOD] = "ABnf/ALittleScript/ALittleScriptStaticIcon.png"
+g_ALittleScriptIcon[AUIPlugin.ALittleScriptIconType.INSTANCE] = "ABnf/ALittleScript/ALittleScriptInstanceIcon.png"
+g_ALittleScriptIcon[AUIPlugin.ALittleScriptIconType.PARAM] = "ABnf/ALittleScript/ALittleScriptParamIcon.png"
+g_ALittleScriptIcon[AUIPlugin.ALittleScriptIconType.VARIABLE] = "ABnf/ALittleScript/ALittleScriptVariableIcon.png"
 assert(AUIPlugin.AUICodeLanguage, " extends class:AUIPlugin.AUICodeLanguage is nil")
 AUIPlugin.AUICodeALittleScript = Lua.Class(AUIPlugin.AUICodeLanguage, "AUIPlugin.AUICodeALittleScript")
 
@@ -114,23 +128,6 @@ function AUIPlugin.AUICodeALittleScript:Ctor(project, full_path, module_path)
 			color.blue = 133 / 255
 			g_ALittleScriptColor[AUIPlugin.ALittleScriptColorType.TEXT] = color
 		end
-	end
-	if g_ALittleScriptIcon == nil then
-		g_ALittleScriptIcon = {}
-		g_ALittleScriptIcon[AUIPlugin.ALittleScriptIconType.CLASS] = "ABnf/ALittleScript/ALittleScriptClassIcon.png"
-		g_ALittleScriptIcon[AUIPlugin.ALittleScriptIconType.STRUCT] = "ABnf/ALittleScript/ALittleScriptStructIcon.png"
-		g_ALittleScriptIcon[AUIPlugin.ALittleScriptIconType.PROPERTY] = "ABnf/ALittleScript/ALittleScriptPropertyIcon.png"
-		g_ALittleScriptIcon[AUIPlugin.ALittleScriptIconType.NAMESPACE] = "ABnf/ALittleScript/ALittleScriptNamespaceIcon.png"
-		g_ALittleScriptIcon[AUIPlugin.ALittleScriptIconType.TEMPLATE] = "ABnf/ALittleScript/ALittleScriptTemplateIcon.png"
-		g_ALittleScriptIcon[AUIPlugin.ALittleScriptIconType.ENUM] = "ABnf/ALittleScript/ALittleScriptEnumIcon.png"
-		g_ALittleScriptIcon[AUIPlugin.ALittleScriptIconType.LANGUAGE] = "ABnf/ALittleScript/ALittleScriptNamespaceIcon.png"
-		g_ALittleScriptIcon[AUIPlugin.ALittleScriptIconType.GLOBAL_METHOD] = "ABnf/ALittleScript/ALittleScriptStaticIcon.png"
-		g_ALittleScriptIcon[AUIPlugin.ALittleScriptIconType.MEMBER_METHOD] = "ABnf/ALittleScript/ALittleScriptMethodIcon.png"
-		g_ALittleScriptIcon[AUIPlugin.ALittleScriptIconType.FIELD_METHOD] = "ABnf/ALittleScript/ALittleScriptFieldIcon.png"
-		g_ALittleScriptIcon[AUIPlugin.ALittleScriptIconType.STATIC_METHOD] = "ABnf/ALittleScript/ALittleScriptStaticIcon.png"
-		g_ALittleScriptIcon[AUIPlugin.ALittleScriptIconType.INSTANCE] = "ABnf/ALittleScript/ALittleScriptInstanceIcon.png"
-		g_ALittleScriptIcon[AUIPlugin.ALittleScriptIconType.PARAM] = "ABnf/ALittleScript/ALittleScriptParamIcon.png"
-		g_ALittleScriptIcon[AUIPlugin.ALittleScriptIconType.VARIABLE] = "ABnf/ALittleScript/ALittleScriptVariableIcon.png"
 	end
 	___rawset(self, "_abnf_file", alittlescript.create_alittlescript_file(project.project, module_path, full_path, ""))
 end
@@ -278,18 +275,8 @@ function AUIPlugin.AUICodeALittleScriptProject:Generate(full_path)
 	return coroutine.yield()
 end
 
-function AUIPlugin.AUICodeALittleScriptProject:GetAllNamespace()
-	local ___COROUTINE = coroutine.running()
-	local query_id = self:Add(___COROUTINE)
-	alittlescript.alittlescriptproject_getallnamespace(self._project, query_id)
-	return coroutine.yield()
-end
-
-function AUIPlugin.AUICodeALittleScriptProject:GetAllClass(namespace_name)
-	local ___COROUTINE = coroutine.running()
-	local query_id = self:Add(___COROUTINE)
-	alittlescript.alittlescriptproject_getallclass(self._project, query_id, namespace_name)
-	return coroutine.yield()
+function AUIPlugin.AUICodeALittleScriptProject:QueryCompleteIcon(tag)
+	return g_ALittleScriptIcon[tag]
 end
 
 end

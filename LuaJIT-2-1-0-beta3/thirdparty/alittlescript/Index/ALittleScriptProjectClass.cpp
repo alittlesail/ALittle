@@ -154,9 +154,7 @@ void ALittleScriptProjectClass::FindDefineImpl(const std::string& pre_input, con
                 ALittleScriptUtility::FilterSameName(result, result);
                 for (auto& element : result)
                 {
-                    auto method_dec = std::dynamic_pointer_cast<ALittleScriptClassMethodDecElement>(element);
-                    if (method_dec == nullptr) continue;
-                    auto name_dec = method_dec->GetMethodNameDec();
+                    auto name_dec = std::dynamic_pointer_cast<ALittleScriptMethodNameDecElement>(element);
                     if (name_dec == nullptr) continue;
                     if (namespace_in_input)
                         info_list.emplace_back(namespace_name + "." + define_name + "." + name_dec->GetElementText(), ALittleScriptIconType::MEMBER_METHOD, element->GetDescriptor());
@@ -170,9 +168,7 @@ void ALittleScriptProjectClass::FindDefineImpl(const std::string& pre_input, con
                 ALittleScriptUtility::FindClassAttrList(class_dec, ALittleScriptUtility::sAccessPrivateAndProtectedAndPublic, ClassAttrType::STATIC, u8"", result, 100);
                 for (auto& element : result)
                 {
-                    auto method_dec = std::dynamic_pointer_cast<ALittleScriptClassStaticDecElement>(element);
-                    if (method_dec == nullptr) continue;
-                    auto name_dec = method_dec->GetMethodNameDec();
+                    auto name_dec = std::dynamic_pointer_cast<ALittleScriptMethodNameDecElement>(element);
                     if (name_dec == nullptr) continue;
                     if (namespace_in_input)
                         info_list.emplace_back(namespace_name + "." + define_name + "." + name_dec->GetElementText(), ALittleScriptIconType::STATIC_METHOD, element->GetDescriptor());

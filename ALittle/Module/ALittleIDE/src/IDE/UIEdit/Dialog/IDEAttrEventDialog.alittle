@@ -1,6 +1,59 @@
 
 namespace ALittleIDE;
 
+public class IDEAttrEventItem : ALittle.DisplayLayout
+{
+    private ALittle.ImageInput _name;
+    private ALittle.ImageInput _handle;
+
+    private IDEAttrEventDialog _dialog;
+    
+    public fun Init(IDEAttrEventDialog dialog, string name, string handle)
+    {
+        this._dialog = dialog;
+        this._name.text = name;
+        this._handle.text = handle;
+    }
+    
+    private fun HandleDeleteClick(ALittle.UIClickEvent event)
+    {
+        this._dialog.DeleteItem(this);
+    }
+
+    public async fun HandleGotoClick(ALittle.UIClickEvent event)
+    {
+        var target_class = this._dialog.GetParentTargetClass();
+        if (target_class == null) return;
+    
+        if (g_IDEProject.project.code == null) return;
+        var info = g_IDEProject.project.code.FindGoto(target_class.."."..this._handle.text);
+        if (info != null) g_IDECenter.center.code_list.OpenByFullPath(info.file_path, info.line_start, info.char_start, info.line_end, info.char_end);
+    }
+
+    public fun HandleNameChanged(ALittle.UIChangedEvent event)
+    {
+        var target_class = this._dialog.GetParentTargetClass();
+        if (target_class == null) return;
+        if (g_IDEProject.project.code == null) return;
+        g_AUICodeFilterScreen.ShowComplete(g_IDEProject.project.code, "", this._name);
+    }
+
+    public fun HandleHandleChanged(ALittle.UIChangedEvent event)
+    {
+        var target_class = this._dialog.GetParentTargetClass();
+        if (target_class == null) return;
+        if (g_IDEProject.project.code == null) return;
+        g_AUICodeFilterScreen.ShowComplete(g_IDEProject.project.code, target_class, this._handle);
+    }
+
+    public fun GetContent() : string
+    {
+        if (this._name.text == "") return null;
+        if (this._handle.text == "") return null;
+        return this._name.text..":"..this._handle.text;
+    }
+}
+
 public class IDEAttrEventDialog
 {
     private ALittle.DisplayObject _dialog;
@@ -8,11 +61,10 @@ public class IDEAttrEventDialog
     private string _target_text;
     private bool _target_need_reset;
 
-    private ALittle.ImageEdit _event_edit;
+    private ALittle.ScrollScreen _event_scroll_screen;
 
     private string _edit_old_text;
     private ALittle.RevokeList _revoke_list;
-    private ALittle.DisplayObject _select_dialog;
 
     ////////////////////////////////////////////////////////////////////////////////////////
     public fun ShowDialog(DisplayObjectS target_panel, string text, bool need_reset)
@@ -23,14 +75,12 @@ public class IDEAttrEventDialog
             this._dialog = g_Control.CreateControl{ALittle.DisplayObject}("ide_event_edit_dialog", this);
             A_LayerManager.AddToModal(this._dialog);
         }
-        // 显示提示对话框，设置标题和内容
+            // 显示提示对话框，设置标题和内容
         this._dialog.visible = true;
         this._target_panel = target_panel;
         this._target_text = text;
         this._target_need_reset = need_reset;
         this.ResetText();
-    
-        A_UISystem.focus = this._event_edit.show_edit;
     }
     public fun HideDialog()
     {
@@ -41,10 +91,33 @@ public class IDEAttrEventDialog
         if (this._dialog == null) return false;
         return this._dialog.visible;
     }
-    
+
+    public fun GetParentTargetClass() : string
+    {
+        return this._target_panel.GetParentTargetClass();
+    }
+
+    private fun HandleAddItem(ALittle.UIClickEvent event)
+    {
+        var item = g_Control.CreateControl{IDEAttrEventItem}("ide_event_item");
+        item.Init(this, "", "");
+        this._event_scroll_screen.AddChild(item);
+    }
+
+    public fun DeleteItem(IDEAttrEventItem item)
+    {
+        this._event_scroll_screen.RemoveChild(item);
+    }
+
     public fun HandleEventConfirm(ALittle.UIClickEvent event)
     {
-        var content = this._event_edit.text;
+        var content_list = new List<string>();
+        for (var index, child in this._event_scroll_screen.childs)
+        {
+            var text = cast<IDEAttrEventItem>(child).GetContent();
+            if (text != null) ALittle.List_Push(content_list, text);
+        }
+        var content = ALittle.String_Join(content_list, "\r\n");
         if (content == "")
         {
             this._dialog.visible = false;
@@ -71,7 +144,7 @@ public class IDEAttrEventDialog
                 event_info.func = event_split[2];
             }
 
-            // 如果是有效信息，那么就添加到列表中
+                // 如果是有效信息，那么就添加到列表中
             if (event_info != null)
                 ALittle.List_Push(event_data, event_info);
             else
@@ -88,79 +161,32 @@ public class IDEAttrEventDialog
         cast<ALittle.DisplayObject>(cast<Map<string, any>>(this._target_panel)["_"..this._target_text]).text = ALittle.String_JsonEncode(event_data);
         this._target_panel.TableDataSet(this._target_text, false);
     }
-    
+
     public fun ResetText()
     {
+        this._event_scroll_screen.RemoveAllChild();
         var info:List<ALittle.EventInfo> = cast<Map<string, any>>(this._target_panel.base)[this._target_text];
         if (info == null) info = cast<Map<string, any>>(this._target_panel.default)[this._target_text];
         if (info == null) info = new List<ALittle.EventInfo>();
-        var content = new List<string>();
-        var content_count = 0;
         for (var index, event_info in info)
         {
-            var data_type = event_info.type..":";
-            var event_string = data_type..event_info.func;
-            ++ content_count;
-            content[content_count] = event_string;
+            var item = g_Control.CreateControl{IDEAttrEventItem}("ide_event_item");
+            item.Init(this, event_info.type, event_info.func);
+            this._event_scroll_screen.AddChild(item);
         }
-        var content_str = ALittle.String_Join(content, "\n");
-        this._event_edit.text = content_str;
-        this._edit_old_text = content_str;
         this._revoke_list = new ALittle.RevokeList();
     }
-    
-    public fun ShowEventSelectDialog(double x, double y)
-    {
-        if (this._select_dialog == null)
-        {
-            // 创建控件
-            this._select_dialog = g_Control.CreateControl{ALittle.DisplayObject}("ide_event_select_screen", this);
-            // 把事件类型添加进来
-            for (var k, v in g_IDEEnum.event_type_list)
-            {
-                var button = g_Control.CreateControl{ALittle.DisplayObject}("ide_common_item_button");
-                button.text = v;
-                button.AddEventListener(this, this.HandleEventSelectClick);
-                button.drag_trans_target = this._select_dialog;
-                this._select_dialog.AddChild(button);
-            }
-        }
-    
-        this._select_dialog.x = x;
-        this._select_dialog.y = y;
-        A_LayerManager.ShowFromRight(this._select_dialog);
-    }
-    
-    public fun HandleEventSelectClick(ALittle.UIClickEvent event)
-    {
-        A_LayerManager.HideFromRight(this._select_dialog);
-        var text = event.target.text;
-        this._event_edit.InsertText("ALittle."..text);
-    }
-    
-    public fun HandleEventRightButtonDown(ALittle.UIRButtonDownEvent event)
-    {
-        this.ShowEventSelectDialog(A_UISystem.mouse_x, A_UISystem.mouse_y);
-    }
-    
-    public fun HandleEventChange(ALittle.UIChangedEvent event)
-    {
-        var edit_new_text = this._event_edit.text;
-        var revoke = new IDETextEditRevoke(this._event_edit, this._edit_old_text, edit_new_text);
-        this._edit_old_text = edit_new_text;
-        this._revoke_list.PushRevoke(revoke);
-    }
-    
+
     public fun HandleEventKeyDown(ALittle.UIKeyDownEvent event) : bool
     {
-            // 判定Ctrl键是否按下
+        // 判定Ctrl键是否按下
         var ctrl = A_UISystem.sym_map[1073742048];
         if (ctrl == null) return false;
-        // 判断Ctrl+Z
+            // 判断Ctrl+Z
         var z = A_UISystem.sym_map[122];
         if (z)
             this._revoke_list.UndoRevoke();
-        
+    
         return true;
     }
 }

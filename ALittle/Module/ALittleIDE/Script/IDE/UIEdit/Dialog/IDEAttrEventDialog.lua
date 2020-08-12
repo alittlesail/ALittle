@@ -3,20 +3,67 @@ do
 if _G.ALittleIDE == nil then _G.ALittleIDE = {} end
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ___all_struct = ALittle.GetAllStruct()
 
-ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
-name = "ALittle.UIEvent", ns_name = "ALittle", rl_name = "UIEvent", hash_code = -1479093282,
-name_list = {"target"},
-type_list = {"ALittle.DisplayObject"},
-option_map = {}
-})
-ALittle.RegStruct(-449066808, "ALittle.UIClickEvent", {
-name = "ALittle.UIClickEvent", ns_name = "ALittle", rl_name = "UIClickEvent", hash_code = -449066808,
-name_list = {"target","is_drag"},
-type_list = {"ALittle.DisplayObject","bool"},
-option_map = {}
-})
+
+assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
+ALittleIDE.IDEAttrEventItem = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDEAttrEventItem")
+
+function ALittleIDE.IDEAttrEventItem:Init(dialog, name, handle)
+	self._dialog = dialog
+	self._name.text = name
+	self._handle.text = handle
+end
+
+function ALittleIDE.IDEAttrEventItem:HandleDeleteClick(event)
+	self._dialog:DeleteItem(self)
+end
+
+function ALittleIDE.IDEAttrEventItem:HandleGotoClick(event)
+	local target_class = self._dialog:GetParentTargetClass()
+	if target_class == nil then
+		return
+	end
+	if ALittleIDE.g_IDEProject.project.code == nil then
+		return
+	end
+	local info = ALittleIDE.g_IDEProject.project.code:FindGoto(target_class .. "." .. self._handle.text)
+	if info ~= nil then
+		ALittleIDE.g_IDECenter.center.code_list:OpenByFullPath(info.file_path, info.line_start, info.char_start, info.line_end, info.char_end)
+	end
+end
+ALittleIDE.IDEAttrEventItem.HandleGotoClick = Lua.CoWrap(ALittleIDE.IDEAttrEventItem.HandleGotoClick)
+
+function ALittleIDE.IDEAttrEventItem:HandleNameChanged(event)
+	local target_class = self._dialog:GetParentTargetClass()
+	if target_class == nil then
+		return
+	end
+	if ALittleIDE.g_IDEProject.project.code == nil then
+		return
+	end
+	g_AUICodeFilterScreen:ShowComplete(ALittleIDE.g_IDEProject.project.code, "", self._name)
+end
+
+function ALittleIDE.IDEAttrEventItem:HandleHandleChanged(event)
+	local target_class = self._dialog:GetParentTargetClass()
+	if target_class == nil then
+		return
+	end
+	if ALittleIDE.g_IDEProject.project.code == nil then
+		return
+	end
+	g_AUICodeFilterScreen:ShowComplete(ALittleIDE.g_IDEProject.project.code, target_class, self._handle)
+end
+
+function ALittleIDE.IDEAttrEventItem:GetContent()
+	if self._name.text == "" then
+		return nil
+	end
+	if self._handle.text == "" then
+		return nil
+	end
+	return self._name.text .. ":" .. self._handle.text
+end
 
 ALittleIDE.IDEAttrEventDialog = Lua.Class(nil, "ALittleIDE.IDEAttrEventDialog")
 
@@ -30,7 +77,6 @@ function ALittleIDE.IDEAttrEventDialog:ShowDialog(target_panel, text, need_reset
 	self._target_text = text
 	self._target_need_reset = need_reset
 	self:ResetText()
-	A_UISystem.focus = self._event_edit.show_edit
 end
 
 function ALittleIDE.IDEAttrEventDialog:HideDialog()
@@ -44,8 +90,29 @@ function ALittleIDE.IDEAttrEventDialog:IsShow()
 	return self._dialog.visible
 end
 
+function ALittleIDE.IDEAttrEventDialog:GetParentTargetClass()
+	return self._target_panel:GetParentTargetClass()
+end
+
+function ALittleIDE.IDEAttrEventDialog:HandleAddItem(event)
+	local item = ALittleIDE.g_Control:CreateControl("ide_event_item")
+	item:Init(self, "", "")
+	self._event_scroll_screen:AddChild(item)
+end
+
+function ALittleIDE.IDEAttrEventDialog:DeleteItem(item)
+	self._event_scroll_screen:RemoveChild(item)
+end
+
 function ALittleIDE.IDEAttrEventDialog:HandleEventConfirm(event)
-	local content = self._event_edit.text
+	local content_list = {}
+	for index, child in ___ipairs(self._event_scroll_screen.childs) do
+		local text = child:GetContent()
+		if text ~= nil then
+			ALittle.List_Push(content_list, text)
+		end
+	end
+	local content = ALittle.String_Join(content_list, "\r\n")
 	if content == "" then
 		self._dialog.visible = false
 		local object = self._target_panel["_" .. self._target_text]
@@ -87,6 +154,7 @@ function ALittleIDE.IDEAttrEventDialog:HandleEventConfirm(event)
 end
 
 function ALittleIDE.IDEAttrEventDialog:ResetText()
+	self._event_scroll_screen:RemoveAllChild()
 	local info = self._target_panel.base[self._target_text]
 	if info == nil then
 		info = self._target_panel.default[self._target_text]
@@ -94,51 +162,12 @@ function ALittleIDE.IDEAttrEventDialog:ResetText()
 	if info == nil then
 		info = {}
 	end
-	local content = {}
-	local content_count = 0
 	for index, event_info in ___ipairs(info) do
-		local data_type = event_info.type .. ":"
-		local event_string = data_type .. event_info.func
-		content_count = content_count + 1
-		content[content_count] = event_string
+		local item = ALittleIDE.g_Control:CreateControl("ide_event_item")
+		item:Init(self, event_info.type, event_info.func)
+		self._event_scroll_screen:AddChild(item)
 	end
-	local content_str = ALittle.String_Join(content, "\n")
-	self._event_edit.text = content_str
-	self._edit_old_text = content_str
 	self._revoke_list = ALittle.RevokeList()
-end
-
-function ALittleIDE.IDEAttrEventDialog:ShowEventSelectDialog(x, y)
-	if self._select_dialog == nil then
-		self._select_dialog = ALittleIDE.g_Control:CreateControl("ide_event_select_screen", self)
-		for k, v in ___ipairs(ALittleIDE.g_IDEEnum.event_type_list) do
-			local button = ALittleIDE.g_Control:CreateControl("ide_common_item_button")
-			button.text = v
-			button:AddEventListener(___all_struct[-449066808], self, self.HandleEventSelectClick)
-			button.drag_trans_target = self._select_dialog
-			self._select_dialog:AddChild(button)
-		end
-	end
-	self._select_dialog.x = x
-	self._select_dialog.y = y
-	A_LayerManager:ShowFromRight(self._select_dialog)
-end
-
-function ALittleIDE.IDEAttrEventDialog:HandleEventSelectClick(event)
-	A_LayerManager:HideFromRight(self._select_dialog)
-	local text = event.target.text
-	self._event_edit:InsertText("ALittle." .. text)
-end
-
-function ALittleIDE.IDEAttrEventDialog:HandleEventRightButtonDown(event)
-	self:ShowEventSelectDialog(A_UISystem.mouse_x, A_UISystem.mouse_y)
-end
-
-function ALittleIDE.IDEAttrEventDialog:HandleEventChange(event)
-	local edit_new_text = self._event_edit.text
-	local revoke = ALittleIDE.IDETextEditRevoke(self._event_edit, self._edit_old_text, edit_new_text)
-	self._edit_old_text = edit_new_text
-	self._revoke_list:PushRevoke(revoke)
 end
 
 function ALittleIDE.IDEAttrEventDialog:HandleEventKeyDown(event)

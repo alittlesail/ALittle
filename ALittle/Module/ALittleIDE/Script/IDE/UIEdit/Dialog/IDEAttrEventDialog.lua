@@ -34,10 +34,6 @@ end
 ALittleIDE.IDEAttrEventItem.HandleGotoClick = Lua.CoWrap(ALittleIDE.IDEAttrEventItem.HandleGotoClick)
 
 function ALittleIDE.IDEAttrEventItem:HandleNameChanged(event)
-	local target_class = self._dialog:GetParentTargetClass()
-	if target_class == nil then
-		return
-	end
 	if ALittleIDE.g_IDEProject.project.code == nil then
 		return
 	end
@@ -67,12 +63,19 @@ end
 
 ALittleIDE.IDEAttrEventDialog = Lua.Class(nil, "ALittleIDE.IDEAttrEventDialog")
 
-function ALittleIDE.IDEAttrEventDialog:ShowDialog(target_panel, text, need_reset)
+function ALittleIDE.IDEAttrEventDialog:ShowDialog(target_panel, text, need_reset, x, y)
 	if self._dialog == nil then
 		self._dialog = ALittleIDE.g_Control:CreateControl("ide_event_edit_dialog", self)
-		A_LayerManager:AddToModal(self._dialog)
+		ALittleIDE.g_DialogLayer:AddChild(self._dialog)
 	end
 	self._dialog.visible = true
+	self._dialog:MoveToTop()
+	if x ~= nil then
+		self._dialog.x = x
+	end
+	if y ~= nil then
+		self._dialog.y = y
+	end
 	self._target_panel = target_panel
 	self._target_text = text
 	self._target_need_reset = need_reset

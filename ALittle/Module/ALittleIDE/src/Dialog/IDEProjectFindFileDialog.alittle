@@ -19,12 +19,19 @@ protected class IDEProjectFindFileDialog
 		if (this._project_find_file_dialog == null)
 		{
 			this._project_find_file_dialog = g_Control.CreateControl{ALittle.DisplayObject}("ide_find_file_dialog", this);
-			A_LayerManager.AddToModal(this._project_find_file_dialog);
+			g_DialogLayer.AddChild(this._project_find_file_dialog);
 		}
         
         // 显示对话框
 		this._project_find_file_dialog.visible = true;
+        this._project_find_file_dialog.MoveToTop();
+        this._find_input.DelayFocus();
 	}
+
+    private fun HandleEnterKeyClick(ALittle.UIEnterKeyEvent event)
+    {
+        this.HandleSearchClick(null);
+    }
 
     private async fun HandleSearchClick(ALittle.UIClickEvent event)
     {

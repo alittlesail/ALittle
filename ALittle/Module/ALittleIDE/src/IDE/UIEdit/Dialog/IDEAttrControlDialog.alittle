@@ -5,18 +5,17 @@ public class IDEAttrControlDialog
 {
 	private ALittle.Dialog _dialog;
 
-	public get dialog() : ALittle.Dialog
-	{
-		if (this._dialog == null) this.CreateDialog();
-		return this._dialog;
-	}
-
 	private fun CreateDialog()
 	{
         this._dialog = g_Control.CreateControl{ALittle.Dialog}("ide_control_attr_dialog", this);
         g_DialogLayer.AddChild(this._dialog);
         this._dialog.visible = false;
 	}
+    public get dialog() : ALittle.Dialog
+    {
+		if (this._dialog == null) this.CreateDialog();
+        return this._dialog;
+    }
 	
 	////////////////////////////////////////////////////////////////////////////////////////
 	public fun SetTitle(string title)
@@ -44,6 +43,11 @@ public class IDEAttrControlDialog
 		if (this._dialog == null) return;
 		this._dialog.visible = false;
 	}
+    public fun IsShow() : bool
+    {
+		if (this._dialog == null) return false;
+		return this._dialog.visible;
+    }
 }
 
 protected var g_IDEAttrControlDialog = new IDEAttrControlDialog();

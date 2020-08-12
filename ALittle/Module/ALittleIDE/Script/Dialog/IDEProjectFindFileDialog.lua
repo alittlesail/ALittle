@@ -27,9 +27,15 @@ function ALittleIDE.IDEProjectFindFileDialog:ShowFindFile()
 	end
 	if self._project_find_file_dialog == nil then
 		self._project_find_file_dialog = ALittleIDE.g_Control:CreateControl("ide_find_file_dialog", self)
-		A_LayerManager:AddToModal(self._project_find_file_dialog)
+		ALittleIDE.g_DialogLayer:AddChild(self._project_find_file_dialog)
 	end
 	self._project_find_file_dialog.visible = true
+	self._project_find_file_dialog:MoveToTop()
+	self._find_input:DelayFocus()
+end
+
+function ALittleIDE.IDEProjectFindFileDialog:HandleEnterKeyClick(event)
+	self:HandleSearchClick(nil)
 end
 
 function ALittleIDE.IDEProjectFindFileDialog:HandleSearchClick(event)

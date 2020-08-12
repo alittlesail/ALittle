@@ -7,17 +7,17 @@ local ___ipairs = ipairs
 
 ALittleIDE.IDEAttrControlDialog = Lua.Class(nil, "ALittleIDE.IDEAttrControlDialog")
 
+function ALittleIDE.IDEAttrControlDialog:CreateDialog()
+	self._dialog = ALittleIDE.g_Control:CreateControl("ide_control_attr_dialog", self)
+	ALittleIDE.g_DialogLayer:AddChild(self._dialog)
+	self._dialog.visible = false
+end
+
 function ALittleIDE.IDEAttrControlDialog.__getter:dialog()
 	if self._dialog == nil then
 		self:CreateDialog()
 	end
 	return self._dialog
-end
-
-function ALittleIDE.IDEAttrControlDialog:CreateDialog()
-	self._dialog = ALittleIDE.g_Control:CreateControl("ide_control_attr_dialog", self)
-	ALittleIDE.g_DialogLayer:AddChild(self._dialog)
-	self._dialog.visible = false
 end
 
 function ALittleIDE.IDEAttrControlDialog:SetTitle(title)
@@ -50,6 +50,13 @@ function ALittleIDE.IDEAttrControlDialog:HideDialog()
 		return
 	end
 	self._dialog.visible = false
+end
+
+function ALittleIDE.IDEAttrControlDialog:IsShow()
+	if self._dialog == nil then
+		return false
+	end
+	return self._dialog.visible
 end
 
 ALittleIDE.g_IDEAttrControlDialog = ALittleIDE.IDEAttrControlDialog()

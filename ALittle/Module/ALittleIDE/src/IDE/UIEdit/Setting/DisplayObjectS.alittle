@@ -758,7 +758,8 @@ public class DisplayObjectS
 	// __event
 	public fun HandleEventFOCUSOUT(ALittle.UIEvent event)
 	{
-		g_IDEAttrEventDialog.ShowDialog(this, "__event", false);
+        var x, y = event.target.LocalToGlobal();
+		g_IDEAttrEventDialog.ShowDialog(this, "__event", false, x + event.target.width + 10, y);
 	}
 	//设置__target_class
 	public fun SetTargetClass(List<string> target_class, [Nullable] ALittle.RevokeBind revoke_bind)

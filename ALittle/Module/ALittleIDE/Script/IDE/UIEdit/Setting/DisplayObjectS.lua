@@ -817,7 +817,8 @@ function ALittleIDE.DisplayObjectS:SetEvent(event, revoke_bind)
 end
 
 function ALittleIDE.DisplayObjectS:HandleEventFOCUSOUT(event)
-	ALittleIDE.g_IDEAttrEventDialog:ShowDialog(self, "__event", false)
+	local x, y = event.target:LocalToGlobal()
+	ALittleIDE.g_IDEAttrEventDialog:ShowDialog(self, "__event", false, x + event.target.width + 10, y)
 end
 
 function ALittleIDE.DisplayObjectS:SetTargetClass(target_class, revoke_bind)

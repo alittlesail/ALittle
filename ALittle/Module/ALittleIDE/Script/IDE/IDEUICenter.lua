@@ -165,6 +165,10 @@ end
 
 function ALittleIDE.IDEUICenter:HandleShortcutKey()
 	if A_UISystem.sym_map[27] then
+		if ALittleIDE.g_IDEAttrEventDialog:IsShow() then
+			ALittleIDE.g_IDEAttrEventDialog:HideDialog()
+			return
+		end
 		if ALittleIDE.g_IDEAttrControlDialog.dialog.visible then
 			ALittleIDE.g_IDEAttrControlDialog:HideDialog()
 			return

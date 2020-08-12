@@ -164,6 +164,11 @@ protected class IDEUICenter : ALittle.DisplayLayout
 		// 判断ESC
 		if (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_ESC])
 		{
+            if (g_IDEAttrEventDialog.IsShow())
+            {
+                g_IDEAttrEventDialog.HideDialog();
+                return;
+            }
             if (g_IDEAttrControlDialog.dialog.visible)
 			{
                 g_IDEAttrControlDialog.HideDialog();

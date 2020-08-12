@@ -32,8 +32,6 @@ public class IDEAttrEventItem : ALittle.DisplayLayout
 
     public fun HandleNameChanged(ALittle.UIChangedEvent event)
     {
-        var target_class = this._dialog.GetParentTargetClass();
-        if (target_class == null) return;
         if (g_IDEProject.project.code == null) return;
         g_AUICodeFilterScreen.ShowComplete(g_IDEProject.project.code, "", this._name);
     }
@@ -67,16 +65,19 @@ public class IDEAttrEventDialog
     private ALittle.RevokeList _revoke_list;
 
     ////////////////////////////////////////////////////////////////////////////////////////
-    public fun ShowDialog(DisplayObjectS target_panel, string text, bool need_reset)
+    public fun ShowDialog(DisplayObjectS target_panel, string text, bool need_reset, [Nullable] double x, [Nullable] double y)
     {
         // 创建模态提示对话框，并添加到模态层
         if (this._dialog == null)
         {
             this._dialog = g_Control.CreateControl{ALittle.DisplayObject}("ide_event_edit_dialog", this);
-            A_LayerManager.AddToModal(this._dialog);
+            g_DialogLayer.AddChild(this._dialog);
         }
             // 显示提示对话框，设置标题和内容
         this._dialog.visible = true;
+        this._dialog.MoveToTop();
+        if (x != null) this._dialog.x = x;
+        if (y != null) this._dialog.y = y;
         this._target_panel = target_panel;
         this._target_text = text;
         this._target_need_reset = need_reset;

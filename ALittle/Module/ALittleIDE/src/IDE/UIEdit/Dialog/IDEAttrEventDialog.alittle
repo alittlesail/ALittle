@@ -78,6 +78,10 @@ public class IDEAttrEventDialog
         this._dialog.MoveToTop();
         if (x != null) this._dialog.x = x;
         if (y != null) this._dialog.y = y;
+        if (this._dialog.x + this._dialog.width > A_UISystem.view_width)
+        	this._dialog.x = A_UISystem.view_width - this._dialog.width;
+        if (this._dialog.y + this._dialog.height > A_UISystem.view_height)
+        	this._dialog.y = A_UISystem.view_height - this._dialog.height;
         this._target_panel = target_panel;
         this._target_text = text;
         this._target_need_reset = need_reset;

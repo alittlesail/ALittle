@@ -19,6 +19,8 @@ protected class IDEProjectFindFileDialog
 		if (this._project_find_file_dialog == null)
 		{
 			this._project_find_file_dialog = g_Control.CreateControl{ALittle.DisplayObject}("ide_find_file_dialog", this);
+            this._project_find_file_dialog.x = (A_UISystem.view_width - this._project_find_file_dialog.width) / 2;
+            this._project_find_file_dialog.y = (A_UISystem.view_height - this._project_find_file_dialog.height) / 2;
 			g_DialogLayer.AddChild(this._project_find_file_dialog);
 		}
         

@@ -11,6 +11,7 @@ function ALittleIDE.IDEAttrControlDialog:CreateDialog()
 	self._dialog = ALittleIDE.g_Control:CreateControl("ide_control_attr_dialog", self)
 	ALittleIDE.g_DialogLayer:AddChild(self._dialog)
 	self._dialog.visible = false
+	self._dialog.close_callback = Lua.Bind(self.HandleClose, self)
 end
 
 function ALittleIDE.IDEAttrControlDialog.__getter:dialog()
@@ -18,6 +19,10 @@ function ALittleIDE.IDEAttrControlDialog.__getter:dialog()
 		self:CreateDialog()
 	end
 	return self._dialog
+end
+
+function ALittleIDE.IDEAttrControlDialog:HandleClose()
+	ALittleIDE.g_IDEAttrEventDialog:HideDialog()
 end
 
 function ALittleIDE.IDEAttrControlDialog:SetTitle(title)
@@ -50,6 +55,7 @@ function ALittleIDE.IDEAttrControlDialog:HideDialog()
 		return
 	end
 	self._dialog.visible = false
+	ALittleIDE.g_IDEAttrEventDialog:HideDialog()
 end
 
 function ALittleIDE.IDEAttrControlDialog:IsShow()

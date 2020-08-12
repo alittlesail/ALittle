@@ -76,6 +76,12 @@ function ALittleIDE.IDEAttrEventDialog:ShowDialog(target_panel, text, need_reset
 	if y ~= nil then
 		self._dialog.y = y
 	end
+	if self._dialog.x + self._dialog.width > A_UISystem.view_width then
+		self._dialog.x = A_UISystem.view_width - self._dialog.width
+	end
+	if self._dialog.y + self._dialog.height > A_UISystem.view_height then
+		self._dialog.y = A_UISystem.view_height - self._dialog.height
+	end
 	self._target_panel = target_panel
 	self._target_text = text
 	self._target_need_reset = need_reset

@@ -10,11 +10,17 @@ public class IDEAttrControlDialog
         this._dialog = g_Control.CreateControl{ALittle.Dialog}("ide_control_attr_dialog", this);
         g_DialogLayer.AddChild(this._dialog);
         this._dialog.visible = false;
+        this._dialog.close_callback = bind(this.HandleClose, this);
 	}
     public get dialog() : ALittle.Dialog
     {
 		if (this._dialog == null) this.CreateDialog();
         return this._dialog;
+    }
+
+    private fun HandleClose()
+    {
+        g_IDEAttrEventDialog.HideDialog();
     }
 	
 	////////////////////////////////////////////////////////////////////////////////////////
@@ -42,6 +48,7 @@ public class IDEAttrControlDialog
 	{
 		if (this._dialog == null) return;
 		this._dialog.visible = false;
+        g_IDEAttrEventDialog.HideDialog();
 	}
     public fun IsShow() : bool
     {

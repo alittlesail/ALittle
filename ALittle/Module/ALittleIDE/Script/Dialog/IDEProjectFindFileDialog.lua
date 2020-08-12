@@ -27,6 +27,8 @@ function ALittleIDE.IDEProjectFindFileDialog:ShowFindFile()
 	end
 	if self._project_find_file_dialog == nil then
 		self._project_find_file_dialog = ALittleIDE.g_Control:CreateControl("ide_find_file_dialog", self)
+		self._project_find_file_dialog.x = (A_UISystem.view_width - self._project_find_file_dialog.width) / 2
+		self._project_find_file_dialog.y = (A_UISystem.view_height - self._project_find_file_dialog.height) / 2
 		ALittleIDE.g_DialogLayer:AddChild(self._project_find_file_dialog)
 	end
 	self._project_find_file_dialog.visible = true

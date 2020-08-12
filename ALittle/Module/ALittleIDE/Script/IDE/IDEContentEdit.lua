@@ -300,6 +300,9 @@ end
 function ALittleIDE.IDEContentEdit:MainTabTabCloseImpl(tab_child, child)
 	local cancel_callback = Lua.Bind(self.CloseTab, self, child)
 	local result = g_AUITool:SaveNotice("提示", "是否保存?")
+	if result == "CANCEL" then
+		return
+	end
 	if result == "YES" then
 		tab_child.save = true
 	end
@@ -357,6 +360,9 @@ function ALittleIDE.IDEContentEdit:CloseTabWithAsk(child)
 		return
 	end
 	local result = g_AUITool:SaveNotice("提示", "是否保存当前标签页?")
+	if result == "CANCEL" then
+		return
+	end
 	if result == "YES" then
 		tab_child.save = true
 	end

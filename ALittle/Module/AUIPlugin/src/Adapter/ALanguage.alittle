@@ -92,6 +92,7 @@ public class alanguage
     public static abnfproject_removefile(ABnfProject project, string full_path) {}
     public static abnfproject_findfile(ABnfProject project, int query_id, string text) /*: List<string> */ {}
     public static abnfproject_finddefine(ABnfProject project, int query_id, string pre_input, string input) /*: List<ABnfQueryCompleteInfo> */ {}
+    public static abnfproject_findgoto(ABnfProject project, int query_id, string text) /* ABnfQueryGoto */ {}
     public static abnfproject_clear(ABnfProject project) {}
 
     public static abnffile_settext(ABnfFile abnf_file, int version, string text) {}

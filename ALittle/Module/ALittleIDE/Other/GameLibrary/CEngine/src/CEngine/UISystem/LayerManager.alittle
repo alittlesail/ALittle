@@ -208,7 +208,6 @@ public class LayerManager
             return;
         if (this._right_show == null)
             return;
-        
         this._right_show.DispatchEvent(new UIHideEvent());
         this._right_layer.RemoveChild(this._right_show);
         this._right_show.focus = false;

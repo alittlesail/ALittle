@@ -67,5 +67,6 @@ public static __Plugin_Shutdown()
 {
     g_AUIIMEManager.Shutdown();
     g_AUITool.Shutdown();
+    g_AUICodeFilterScreen.Shutdown();
     AUICodeProject.Shutdown();
 }

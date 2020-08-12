@@ -4,17 +4,42 @@ if _G.AUIPlugin == nil then _G.AUIPlugin = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
+local ___all_struct = ALittle.GetAllStruct()
 
+ALittle.RegStruct(-1604617962, "ALittle.UIKeyDownEvent", {
+name = "ALittle.UIKeyDownEvent", ns_name = "ALittle", rl_name = "UIKeyDownEvent", hash_code = -1604617962,
+name_list = {"target","mod","sym","scancode","custom","handled"},
+type_list = {"ALittle.DisplayObject","int","int","int","bool","bool"},
+option_map = {}
+})
+ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
+name = "ALittle.UIEvent", ns_name = "ALittle", rl_name = "UIEvent", hash_code = -1479093282,
+name_list = {"target"},
+type_list = {"ALittle.DisplayObject"},
+option_map = {}
+})
 ALittle.RegStruct(-1149003083, "lua.ABnfQueryCompleteInfo", {
 name = "lua.ABnfQueryCompleteInfo", ns_name = "lua", rl_name = "ABnfQueryCompleteInfo", hash_code = -1149003083,
 name_list = {"display","insert","descriptor","tag"},
 type_list = {"string","string","string","int"},
 option_map = {}
 })
+ALittle.RegStruct(882286932, "ALittle.UIKeyEvent", {
+name = "ALittle.UIKeyEvent", ns_name = "ALittle", rl_name = "UIKeyEvent", hash_code = 882286932,
+name_list = {"target","mod","sym","scancode","custom","handled"},
+type_list = {"ALittle.DisplayObject","int","int","int","bool","bool"},
+option_map = {}
+})
 ALittle.RegStruct(-352292202, "AUIPlugin.AUICodeFilterItemInfo", {
 name = "AUIPlugin.AUICodeFilterItemInfo", ns_name = "AUIPlugin", rl_name = "AUICodeFilterItemInfo", hash_code = -352292202,
 name_list = {"_item_button","_item_title","_tag_image","_item","pos","upper","complete"},
 type_list = {"ALittle.TextRadioButton","ALittle.Text","ALittle.Image","ALittle.DisplayObject","int","string","lua.ABnfQueryCompleteInfo"},
+option_map = {}
+})
+ALittle.RegStruct(348388800, "ALittle.UIHideEvent", {
+name = "ALittle.UIHideEvent", ns_name = "ALittle", rl_name = "UIHideEvent", hash_code = 348388800,
+name_list = {"target"},
+type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
 
@@ -27,20 +52,47 @@ function AUIPlugin.AUICodeFilterScreen:Ctor()
 end
 
 function AUIPlugin.AUICodeFilterScreen:ShowComplete(project, pre_input, edit)
-	self._edit = edit
+	if self._edit ~= edit then
+		if self._edit ~= nil then
+			self._edit:RemoveEventListener(___all_struct[-1604617962], self, self.HandleEditKeyDown)
+		end
+		self._edit = edit
+		if self._edit ~= nil then
+			self._edit:AddEventListener(___all_struct[-1604617962], self, self.HandleEditKeyDown)
+		end
+	end
+	local text = self._edit.text
+	local split = ALittle.String_Split(text, ".")
+	local split_len = ALittle.List_MaxN(split)
+	if split_len > 0 then
+		if split[split_len] == "" then
+			self._complete = nil
+		end
+		split[split_len] = nil
+	end
 	self._project = project
 	if self._complete == nil then
-		if not self:ReInit(pre_input, self._edit.text) then
+		if not self:ReInit(pre_input, ALittle.String_Join(split, ".")) then
 			self:Hide()
 			return
 		end
 	end
-	if not self:Fliter(self._edit.text) then
+	if not self:Fliter(text) then
 		self:Hide()
 		return
 	end
 end
 AUIPlugin.AUICodeFilterScreen.ShowComplete = Lua.CoWrap(AUIPlugin.AUICodeFilterScreen.ShowComplete)
+
+function AUIPlugin.AUICodeFilterScreen:HandleEditKeyDown(event)
+	if event.sym == 13 then
+		self:DoSelect()
+	elseif event.sym == 1073741906 then
+		self:SelectUp()
+	elseif event.sym == 1073741905 then
+		self:SelectDown()
+	end
+end
 
 function AUIPlugin.AUICodeFilterScreen:IsShow()
 	return self._edit ~= nil
@@ -137,6 +189,7 @@ function AUIPlugin.AUICodeFilterScreen:ReInit(pre_input, input)
 	if self._screen == nil then
 		self._screen = AUIPlugin.g_Control:CreateControl("ide_code_scroll_screen")
 		self._screen.width = 200
+		self._screen:AddEventListener(___all_struct[348388800], self, self.HandleHide)
 	end
 	self._screen:RemoveAllChild()
 	self._screen.x = x
@@ -178,8 +231,12 @@ function AUIPlugin.AUICodeFilterScreen:ReInit(pre_input, input)
 		self._item_height = item_info._item.height
 	end
 	self._screen.width = max_width
-	A_LayerManager:ShowFromRight(self._screen)
+	A_LayerManager:ShowFromRight(self._screen, false)
 	return true
+end
+
+function AUIPlugin.AUICodeFilterScreen:HandleHide(event)
+	self:HideImpl()
 end
 
 function AUIPlugin.AUICodeFilterScreen.ItemInfoSort(a, b)
@@ -229,12 +286,20 @@ function AUIPlugin.AUICodeFilterScreen:Fliter(text)
 end
 
 function AUIPlugin.AUICodeFilterScreen:Hide()
+	self:HideImpl()
+	A_LayerManager:HideFromRight(self._screen)
+end
+
+function AUIPlugin.AUICodeFilterScreen:HideImpl()
 	self:HideTip()
+	if self._edit ~= nil then
+		self._edit:RemoveEventListener(___all_struct[-1604617962], self, self.HandleEditKeyDown)
+	end
+	self._edit = nil
 	self._complete = nil
 	if self._screen ~= nil then
 		self._screen:RemoveAllChild()
 	end
-	A_LayerManager:HideFromRight(self._screen)
 end
 
 function AUIPlugin.AUICodeFilterScreen:ShowTip(content)
@@ -258,4 +323,9 @@ function AUIPlugin.AUICodeFilterScreen:HideTip()
 	A_LayerManager:RemoveFromTip(self._tip_dialog)
 end
 
+function AUIPlugin.AUICodeFilterScreen:Shutdown()
+	self:Hide()
+end
+
+_G.g_AUICodeFilterScreen = AUIPlugin.AUICodeFilterScreen()
 end

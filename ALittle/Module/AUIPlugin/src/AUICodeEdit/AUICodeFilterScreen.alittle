@@ -30,32 +30,55 @@ protected class AUICodeFilterScreen
     private int _line_end;
     private int _char_end;
     private ALittle.DisplayObject _edit;
-    private AUICodeALittleScriptProject _project;
+    private AUICodeProject _project;
     private double _item_height = 0;
 
-    public ctor()
-    {
-    }
-
     // 显示列表
-    public async fun ShowComplete(AUICodeALittleScriptProject project, string pre_input, ALittle.DisplayObject edit)
+    public async fun ShowComplete(AUICodeProject project, string pre_input, ALittle.DisplayObject edit)
     {
-        this._edit = edit;
+        if (this._edit != edit)
+        {
+            if (this._edit != null)
+                this._edit.RemoveEventListener(this, this.HandleEditKeyDown);
+            this._edit = edit;
+            if (this._edit != null)
+            	this._edit.AddEventListener(this, this.HandleEditKeyDown);
+        }
+
+        var text = this._edit.text;
+        var split = ALittle.String_Split(text, ".");
+        var split_len = ALittle.List_MaxN(split);
+        if (split_len > 0) 
+        {
+            if (split[split_len] == "") this._complete = null;
+            split[split_len] = null;
+        }
+
         this._project = project;
         if (this._complete == null)
         {
-            if (!this.ReInit(pre_input, this._edit.text))
+            if (!this.ReInit(pre_input, ALittle.String_Join(split, ".")))
             {
                 this.Hide();
                 return;
             }
         }
 
-        if (!this.Fliter(this._edit.text))
+        if (!this.Fliter(text))
         {
             this.Hide();
             return;
         }
+    }
+
+    private fun HandleEditKeyDown(ALittle.UIKeyDownEvent event)
+    {
+        if (event.sym == ALittle.UIEnumTypes.KEY_ENTER)
+            this.DoSelect();
+        elseif (event.sym == ALittle.UIEnumTypes.KEY_UP)
+        	this.SelectUp();
+        elseif (event.sym == ALittle.UIEnumTypes.KEY_DOWN)
+        	this.SelectDown();
     }
 
     public fun IsShow() : bool { return this._edit != null; }
@@ -155,6 +178,8 @@ protected class AUICodeFilterScreen
         {
             this._screen = g_Control.CreateControl{ALittle.ScrollScreen}("ide_code_scroll_screen");
             this._screen.width = 200;
+
+            this._screen.AddEventListener(this, this.HandleHide);
         }
         this._screen.RemoveAllChild();
 
@@ -207,9 +232,14 @@ protected class AUICodeFilterScreen
 
         this._screen.width = max_width;
 
-        A_LayerManager.ShowFromRight(this._screen);
+        A_LayerManager.ShowFromRight(this._screen, false);
 
         return true;
+    }
+
+    private fun HandleHide(ALittle.UIHideEvent event)
+    {
+        this.HideImpl();
     }
 
     private static ItemInfoSort(AUICodeFilterItemInfo a, AUICodeFilterItemInfo b) : bool
@@ -263,10 +293,17 @@ protected class AUICodeFilterScreen
 
     public fun Hide()
     {
+        this.HideImpl();
+        A_LayerManager.HideFromRight(this._screen);
+    }
+
+    private fun HideImpl()
+    {
         this.HideTip();
+        if (this._edit != null) this._edit.RemoveEventListener(this, this.HandleEditKeyDown);
+        this._edit = null;
         this._complete = null;
         if (this._screen != null) this._screen.RemoveAllChild();
-        A_LayerManager.HideFromRight(this._screen);
     }
 
 	// 显示TIP
@@ -295,4 +332,11 @@ protected class AUICodeFilterScreen
 		this._tip_dialog.visible = false;
         A_LayerManager.RemoveFromTip(this._tip_dialog);
 	}
+
+    public fun Shutdown()
+    {
+        this.Hide();
+    }
 }
+
+public var g_AUICodeFilterScreen = new AUICodeFilterScreen();

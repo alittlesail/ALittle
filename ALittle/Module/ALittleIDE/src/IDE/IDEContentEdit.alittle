@@ -263,6 +263,8 @@ public class IDEContentEdit : ALittle.DisplayLayout
 	{
 		var cancel_callback = bind(this.CloseTab, this, child);
 		var result = g_AUITool.SaveNotice("提示", "是否保存?");
+        if (result == AUIPlugin.AUIToolOption.CANCEL)
+        	return;
 		if (result == AUIPlugin.AUIToolOption.YES)
 			tab_child.save = true;
 		this.CloseTab(child);    
@@ -334,6 +336,8 @@ public class IDEContentEdit : ALittle.DisplayLayout
 			return;
 		}
 		var result = g_AUITool.SaveNotice("提示", "是否保存当前标签页?");
+        if (result == AUIPlugin.AUIToolOption.CANCEL)
+            return;
 		if (result == AUIPlugin.AUIToolOption.YES)
 			tab_child.save = true;
 		this.CloseTab(child);

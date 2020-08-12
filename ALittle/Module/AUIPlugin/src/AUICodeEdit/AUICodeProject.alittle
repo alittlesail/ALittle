@@ -110,6 +110,14 @@ public class AUICodeProject : ALittle.EventDispatcher
         return yield;
     }
 
+    // 查找跳转
+    public await fun FindGoto(string text) : lua.ABnfQueryGoto
+    {
+        var query_id = this.Add(co);
+        lua.alanguage.abnfproject_findgoto(this._project, query_id, text);
+        return yield;
+    }
+
     // 查询提示图标路径
     public fun QueryCompleteIcon(int tag) : string
     {

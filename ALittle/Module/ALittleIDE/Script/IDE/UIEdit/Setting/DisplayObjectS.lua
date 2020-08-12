@@ -150,7 +150,6 @@ function ALittleIDE.DisplayObjectS:LoadNatureBase()
 	self:LoadShowTypeData("__event")
 	self:LoadShowTypeDataForTargetClass("__target_class")
 	self:LoadDefaultNilString("description")
-	self._target_class_dropdown.text = ""
 	self._link_dropdown.text = ""
 end
 
@@ -784,7 +783,6 @@ function ALittleIDE.DisplayObjectS:SetTargetClass(target_class, revoke_bind)
 		return
 	end
 	self.___target_class.text = ALittle.String_Join(target_class, ".")
-	ALittle.Log(self.___target_class.text, ALittle.String_Join(target_class, "."))
 	self:TableDataSetForTargetClass("__target_class", false, revoke_bind)
 end
 
@@ -797,14 +795,24 @@ function ALittleIDE.DisplayObjectS:HandleTargetClassTabKey(event)
 	self.___link:SelectAll()
 end
 
-function ALittleIDE.DisplayObjectS:HandleTargetClassSELECT_CHANGE(event)
-	if event.target.text == "清空" then
-		self:SetTargetClass({})
-	else
-		self:SetTargetClass(ALittle.String_Split(event.target.text, "."))
+function ALittleIDE.DisplayObjectS:HandleTargetClassEditClick(event)
+	if ALittleIDE.g_IDEProject.project.code == nil then
+		return
 	end
-	event.target.text = ""
+	local info = ALittleIDE.g_IDEProject.project.code:FindGoto(self.___target_class.text)
+	if info ~= nil then
+		ALittleIDE.g_IDECenter.center.code_list:OpenByFullPath(info.file_path, info.line_start, info.char_start, info.line_end, info.char_end)
+	end
 end
+ALittleIDE.DisplayObjectS.HandleTargetClassEditClick = Lua.CoWrap(ALittleIDE.DisplayObjectS.HandleTargetClassEditClick)
+
+function ALittleIDE.DisplayObjectS:HandleTargetClassChanged(event)
+	if ALittleIDE.g_IDEProject.project.code == nil then
+		return
+	end
+	g_AUICodeFilterScreen:ShowComplete(ALittleIDE.g_IDEProject.project.code, "", self.___target_class)
+end
+ALittleIDE.DisplayObjectS.HandleTargetClassChanged = Lua.CoWrap(ALittleIDE.DisplayObjectS.HandleTargetClassChanged)
 
 function ALittleIDE.DisplayObjectS:TypeSelectChange(text, list, need_reset, revoke_bind)
 	local old_base = self._base[text]

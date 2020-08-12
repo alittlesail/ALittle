@@ -42,7 +42,6 @@ public class DisplayObjectS
 	private ALittle.ImageInput _id;
 	private ALittle.ImageInput ___event;
 
-	private ALittle.DropDown _target_class_dropdown;
 	private ALittle.DropDown _link_dropdown;
     
 	public ctor(IDEUITreeUserInfo user_info, IDEUITabChild tab_child, IDEUITreeLogic tree_logic)
@@ -230,7 +229,6 @@ public class DisplayObjectS
 		////////////////////////////////////////////////////////////////////////////////////////////-
 		this.LoadDefaultNilString("description");
 		////////////////////////////////////////////////////////////////////////////////////////////-
-		this._target_class_dropdown.text = "";
 		this._link_dropdown.text = "";
 	}
 	//通用失去焦点事件
@@ -740,7 +738,6 @@ public class DisplayObjectS
 	{
 		if (target_class == null) return;
 		this.___target_class.text = ALittle.String_Join(target_class, ".");
-		ALittle.Log(this.___target_class.text, ALittle.String_Join(target_class, "."));
 		this.TableDataSetForTargetClass("__target_class", false, revoke_bind);
 	}
 	// __target_class
@@ -749,16 +746,18 @@ public class DisplayObjectS
 		this.TableDataSetForTargetClass("__target_class", false);
 	}
 	public fun HandleTargetClassTabKey(ALittle.UIEvent event) { this.___link.focus = true; this.___link.SelectAll(); }
-	// 插件类下拉菜单，便捷选择
-	public fun HandleTargetClassSELECT_CHANGE(ALittle.UIEvent event)
-	{
-		if (event.target.text == "清空")
-			this.SetTargetClass(new List<string>());
-		else
-			this.SetTargetClass(ALittle.String_Split(event.target.text, "."));
-		event.target.text = "";
-	}
-	
+	public async fun HandleTargetClassEditClick(ALittle.UIEvent event)
+    {
+        if (g_IDEProject.project.code == null) return;
+        var info = g_IDEProject.project.code.FindGoto(this.___target_class.text);
+        if (info != null) g_IDECenter.center.code_list.OpenByFullPath(info.file_path, info.line_start, info.char_start, info.line_end, info.char_end);
+    }
+    public async fun HandleTargetClassChanged(ALittle.UIEvent event)
+    {
+        if (g_IDEProject.project.code == null) return;
+        g_AUICodeFilterScreen.ShowComplete(g_IDEProject.project.code, "", this.___target_class);
+    }
+
 	////////////////////////修改用函数////////////////////////////////////////////////////////////-
 	//select
 	//用于处理类型改变的函数

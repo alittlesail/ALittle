@@ -267,7 +267,7 @@ public class IDEContentEdit : ALittle.DisplayLayout
         	return;
 		if (result == AUIPlugin.AUIToolOption.YES)
 			tab_child.save = true;
-		this.CloseTab(child);    
+		this.CloseTab(child);
     }
 	
 	// Tab右键事件

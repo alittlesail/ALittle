@@ -746,15 +746,26 @@ function ALittleIDE.DisplayObjectS:HandleLinkTabKey(event)
 end
 
 function ALittleIDE.DisplayObjectS:GetParentTargetClass()
+	local tree = self._tree_logic
 	repeat
-		local parent = self._tree_logic.parent
-		local text = parent.attr_panel.___target_class.text
-		if text ~= "" then
-			return text
+		local parent = tree.parent
+		if parent == nil then
+			break
+		end
+		local target_class = parent.user_info.base.__target_class
+		if target_class == nil then
+			target_class = parent.user_info.default.__target_class
+		end
+		if target_class ~= nil then
+			local text = ALittle.String_Join(target_class, ".")
+			if text ~= "" then
+				return text
+			end
 		end
 		if parent.is_root then
 			break
 		end
+		tree = parent
 	until not(true)
 	return nil
 end

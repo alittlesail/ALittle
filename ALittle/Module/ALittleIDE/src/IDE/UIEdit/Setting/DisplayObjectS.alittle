@@ -699,14 +699,22 @@ public class DisplayObjectS
 	}
 	public fun HandleLinkTabKey(ALittle.UIEvent event) { this._id.focus = true; this._id.SelectAll(); }
     // 找到父节点设置的插件类
-    private fun GetParentTargetClass() : string
+    public fun GetParentTargetClass() : string
     {
+        var tree = this._tree_logic;
         do
         {
-            var parent = cast<IDEUITreeLogic>(this._tree_logic.parent);
-            var text = parent.attr_panel.___target_class.text;
-            if (text != "") return text;
+            var parent = cast<IDEUITreeLogic>(tree.parent);
+            if (parent == null) break;
+            var target_class = parent.user_info.base.__target_class;
+            if (target_class == null) target_class = parent.user_info.default.__target_class;
+            if (target_class != null)
+            {
+                var text = ALittle.String_Join(target_class, ".");
+                if (text != "") return text;
+            }
             if (parent.is_root) break;
+            tree = parent;
         }
         while(true);
 

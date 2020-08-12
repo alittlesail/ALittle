@@ -236,7 +236,11 @@ function ALittleIDE.IDEUIControlTree:HandlePasteControlConfirm(event)
 	self._paste_control_dialog._user_data = nil
 	user_data.target.tab_child:ClearHandQuad()
 	local add_list = {}
-	local tree_object = user_data.target:TreePaste(user_data.info, self._control_paste_type.text, user_data.child_index + 1, false, user_data.revoke_bind)
+	local child_index = nil
+	if user_data.child_index ~= nil then
+		child_index = user_data.child_index + 1
+	end
+	local tree_object = user_data.target:TreePaste(user_data.info, self._control_paste_type.text, child_index, false, user_data.revoke_bind)
 	add_list[1] = tree_object
 	if user_data.callback ~= nil then
 		user_data.callback(true, add_list)

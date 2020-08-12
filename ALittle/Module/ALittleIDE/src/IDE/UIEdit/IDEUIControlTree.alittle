@@ -269,7 +269,9 @@ public class IDEUIControlTree : ALittle.DisplayLayout
         user_data.target.tab_child.ClearHandQuad();
 	
 		var add_list = new List<IDEUITreeLogic>();
-		var tree_object = user_data.target.TreePaste(user_data.info, this._control_paste_type.text, user_data.child_index + 1, false, user_data.revoke_bind);
+        var child_index:int = null;
+        if (user_data.child_index != null) child_index = user_data.child_index + 1;
+		var tree_object = user_data.target.TreePaste(user_data.info, this._control_paste_type.text, child_index, false, user_data.revoke_bind);
 		add_list[1] = tree_object;
 		if (user_data.callback != null) user_data.callback(true, add_list);
 	}

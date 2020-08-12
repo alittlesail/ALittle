@@ -153,6 +153,9 @@ function ALittleIDE.IDEUICodeList:AddLibrary(name)
 end
 
 function ALittleIDE.IDEUICodeList:OpenByFullPath(full_path, line_start, char_start, line_end, char_end)
+	if full_path == nil or full_path == "" then
+		return nil
+	end
 	for index, child in ___ipairs(self._code_scroll_screen.childs) do
 		local item = child:FindFile(full_path)
 		if item ~= nil then

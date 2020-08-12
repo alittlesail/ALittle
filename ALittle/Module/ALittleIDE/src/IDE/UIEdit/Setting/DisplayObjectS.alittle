@@ -41,8 +41,6 @@ public class DisplayObjectS
 	private ALittle.ImageInput ___link;
 	private ALittle.ImageInput _id;
 	private ALittle.ImageInput ___event;
-
-	private ALittle.DropDown _link_dropdown;
     
 	public ctor(IDEUITreeUserInfo user_info, IDEUITabChild tab_child, IDEUITreeLogic tree_logic)
 	{
@@ -229,7 +227,6 @@ public class DisplayObjectS
 		////////////////////////////////////////////////////////////////////////////////////////////-
 		this.LoadDefaultNilString("description");
 		////////////////////////////////////////////////////////////////////////////////////////////-
-		this._link_dropdown.text = "";
 	}
 	//通用失去焦点事件
 	public fun HandleCommonInputFOCUSIN(ALittle.UIEvent event)
@@ -701,15 +698,37 @@ public class DisplayObjectS
 		this._tree_logic.UpdateDesc();
 	}
 	public fun HandleLinkTabKey(ALittle.UIEvent event) { this._id.focus = true; this._id.SelectAll(); }
-	// 绑定下拉菜单，便捷选择
-	public fun HandleLinkSELECT_CHANGE(ALittle.UIEvent event)
-	{
-		if (event.target.text == "清空")
-			this.SetLink("");
-		else
-			this.SetLink(event.target.text);
-		event.target.text = "";
-	}
+    // 找到父节点设置的插件类
+    private fun GetParentTargetClass() : string
+    {
+        do
+        {
+            var parent = cast<IDEUITreeLogic>(this._tree_logic.parent);
+            var text = parent.attr_panel.___target_class.text;
+            if (text != "") return text;
+            if (parent.is_root) break;
+        }
+        while(true);
+
+        return null;
+    }
+
+    public async fun HandleLinkEditClick(ALittle.UIEvent event)
+    {
+        if (g_IDEProject.project.code == null) return;
+        var pre_input = this.GetParentTargetClass();
+        if (pre_input == null) return;
+
+        var info = g_IDEProject.project.code.FindGoto(pre_input.."."..this.___link.text);
+        if (info != null) g_IDECenter.center.code_list.OpenByFullPath(info.file_path, info.line_start, info.char_start, info.line_end, info.char_end);
+    }
+    public async fun HandleLinkChanged(ALittle.UIEvent event)
+    {
+        if (g_IDEProject.project.code == null) return;
+        var pre_input = this.GetParentTargetClass();
+        if (pre_input == null) return;
+        g_AUICodeFilterScreen.ShowComplete(g_IDEProject.project.code, pre_input, this.___link);
+    }
 	
 	//设置__event
 	public fun SetEvent(List<ALittle.EventInfo> event, [Nullable] ALittle.RevokeBind revoke_bind)

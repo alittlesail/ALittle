@@ -64,6 +64,8 @@ public class IDEUITreeLogic : ALittle.DisplayLayout
 	{
 	}
 
+    public get attr_panel() : DisplayObjectS { return this._attr_panel; }
+
 	// 移除属性面板
 	public fun RemoveAttributePanel()
 	{

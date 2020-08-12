@@ -166,6 +166,8 @@ public class IDEUICodeList : ALittle.DisplayLayout
 
 	public fun OpenByFullPath(string full_path, int line_start, int char_start, int line_end, int char_end) : IDECodeTabChild
 	{
+        if (full_path == null || full_path == "") return null;
+
         for (var index, child:IDECodeTreeLogic in this._code_scroll_screen.childs)
 		{
             var item = child.FindFile(full_path);

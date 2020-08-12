@@ -97,6 +97,10 @@ end
 function ALittleIDE.IDEUITreeLogic:UpdateDesc()
 end
 
+function ALittleIDE.IDEUITreeLogic.__getter:attr_panel()
+	return self._attr_panel
+end
+
 function ALittleIDE.IDEUITreeLogic:RemoveAttributePanel()
 	if self._attr_panel == nil then
 		return

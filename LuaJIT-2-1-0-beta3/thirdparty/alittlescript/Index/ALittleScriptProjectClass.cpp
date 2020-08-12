@@ -138,36 +138,48 @@ void ALittleScriptProjectClass::FindDefineImpl(const std::string& pre_input, con
                 ALittleScriptUtility::FindClassAttrList(class_dec, ALittleScriptUtility::sAccessPrivateAndProtectedAndPublic, ClassAttrType::VAR, u8"", result, 100);
                 for (auto& element : result)
                 {
+                    auto var_dec = std::dynamic_pointer_cast<ALittleScriptClassVarDecElement>(element);
+                    if (var_dec == nullptr) continue;
+                    auto name_dec = var_dec->GetClassVarNameDec();
+                    if (name_dec == nullptr) continue;
                 	if (namespace_in_input)
-                        info_list.emplace_back(namespace_name + "." + define_name + "." + element->GetElementText(), ALittleScriptIconType::VARIABLE, element->GetDescriptor());
+                        info_list.emplace_back(namespace_name + "." + define_name + "." + name_dec->GetElementText(), ALittleScriptIconType::VARIABLE, element->GetDescriptor());
                     else if (define_in_input)
-                        info_list.emplace_back(define_name + "." + element->GetElementText(), ALittleScriptIconType::VARIABLE, element->GetDescriptor());
+                        info_list.emplace_back(define_name + "." + name_dec->GetElementText(), ALittleScriptIconType::VARIABLE, element->GetDescriptor());
                     else
-	                    info_list.emplace_back(element->GetElementText(), ALittleScriptIconType::VARIABLE, element->GetDescriptor());
+	                    info_list.emplace_back(name_dec->GetElementText(), ALittleScriptIconType::VARIABLE, element->GetDescriptor());
                 }
                 result.clear();
                 ALittleScriptUtility::FindClassAttrList(class_dec, ALittleScriptUtility::sAccessPrivateAndProtectedAndPublic, ClassAttrType::FUN, u8"", result, 100);
                 ALittleScriptUtility::FilterSameName(result, result);
                 for (auto& element : result)
                 {
+                    auto method_dec = std::dynamic_pointer_cast<ALittleScriptClassMethodDecElement>(element);
+                    if (method_dec == nullptr) continue;
+                    auto name_dec = method_dec->GetMethodNameDec();
+                    if (name_dec == nullptr) continue;
                     if (namespace_in_input)
-                        info_list.emplace_back(namespace_name + "." + define_name + "." + element->GetElementText(), ALittleScriptIconType::MEMBER_METHOD, element->GetDescriptor());
+                        info_list.emplace_back(namespace_name + "." + define_name + "." + name_dec->GetElementText(), ALittleScriptIconType::MEMBER_METHOD, element->GetDescriptor());
                     else if (define_in_input)
-                        info_list.emplace_back(define_name + "." + element->GetElementText(), ALittleScriptIconType::MEMBER_METHOD, element->GetDescriptor());
+                        info_list.emplace_back(define_name + "." + name_dec->GetElementText(), ALittleScriptIconType::MEMBER_METHOD, element->GetDescriptor());
                     else
-                        info_list.emplace_back(element->GetElementText(), ALittleScriptIconType::MEMBER_METHOD, element->GetDescriptor());
+                        info_list.emplace_back(name_dec->GetElementText(), ALittleScriptIconType::MEMBER_METHOD, element->GetDescriptor());
                 }
                     
                 result.clear();
                 ALittleScriptUtility::FindClassAttrList(class_dec, ALittleScriptUtility::sAccessPrivateAndProtectedAndPublic, ClassAttrType::STATIC, u8"", result, 100);
                 for (auto& element : result)
                 {
+                    auto method_dec = std::dynamic_pointer_cast<ALittleScriptClassStaticDecElement>(element);
+                    if (method_dec == nullptr) continue;
+                    auto name_dec = method_dec->GetMethodNameDec();
+                    if (name_dec == nullptr) continue;
                     if (namespace_in_input)
-                        info_list.emplace_back(namespace_name + "." + define_name + "." + element->GetElementText(), ALittleScriptIconType::STATIC_METHOD, element->GetDescriptor());
+                        info_list.emplace_back(namespace_name + "." + define_name + "." + name_dec->GetElementText(), ALittleScriptIconType::STATIC_METHOD, element->GetDescriptor());
                     else if (define_in_input)
-                        info_list.emplace_back(define_name + "." + element->GetElementText(), ALittleScriptIconType::STATIC_METHOD, element->GetDescriptor());
+                        info_list.emplace_back(define_name + "." + name_dec->GetElementText(), ALittleScriptIconType::STATIC_METHOD, element->GetDescriptor());
                     else
-                        info_list.emplace_back(element->GetElementText(), ALittleScriptIconType::STATIC_METHOD, element->GetDescriptor());
+                        info_list.emplace_back(name_dec->GetElementText(), ALittleScriptIconType::STATIC_METHOD, element->GetDescriptor());
                 }
             }
         }
@@ -183,12 +195,14 @@ void ALittleScriptProjectClass::FindDefineImpl(const std::string& pre_input, con
                 ALittleScriptUtility::FindStructVarDecList(struct_dec, u8"", result, 100);
                 for (auto& element : result)
                 {
+                    auto name_dec = element->GetStructVarNameDec();
+                    if (name_dec == nullptr) continue;
                     if (namespace_in_input)
-                        info_list.emplace_back(namespace_name + "." + define_name + "." + element->GetElementText(), ALittleScriptIconType::PROPERTY, element->GetDescriptor());
+                        info_list.emplace_back(namespace_name + "." + define_name + "." + name_dec->GetElementText(), ALittleScriptIconType::PROPERTY, element->GetDescriptor());
                     else if (define_in_input)
-                        info_list.emplace_back(define_name + "." + element->GetElementText(), ALittleScriptIconType::PROPERTY, element->GetDescriptor());
+                        info_list.emplace_back(define_name + "." + name_dec->GetElementText(), ALittleScriptIconType::PROPERTY, element->GetDescriptor());
                     else
-                        info_list.emplace_back(element->GetElementText(), ALittleScriptIconType::PROPERTY, element->GetDescriptor());
+                        info_list.emplace_back(name_dec->GetElementText(), ALittleScriptIconType::PROPERTY, element->GetDescriptor());
                 }
             }
         }
@@ -204,12 +218,14 @@ void ALittleScriptProjectClass::FindDefineImpl(const std::string& pre_input, con
                 ALittleScriptUtility::FindEnumVarDecList(enum_dec, u8"", result);
                 for (auto& element : result)
                 {
+                    auto name_dec = element->GetEnumVarNameDec();
+                    if (name_dec == nullptr) continue;
                     if (namespace_in_input)
-                        info_list.emplace_back(namespace_name + "." + define_name + "." + element->GetElementText(), ALittleScriptIconType::PROPERTY, element->GetDescriptor());
+                        info_list.emplace_back(namespace_name + "." + define_name + "." + name_dec->GetElementText(), ALittleScriptIconType::PROPERTY, element->GetDescriptor());
                     else if (define_in_input)
-                        info_list.emplace_back(define_name + "." + element->GetElementText(), ALittleScriptIconType::PROPERTY, element->GetDescriptor());
+                        info_list.emplace_back(define_name + "." + name_dec->GetElementText(), ALittleScriptIconType::PROPERTY, element->GetDescriptor());
                     else
-                        info_list.emplace_back(element->GetElementText(), ALittleScriptIconType::PROPERTY, element->GetDescriptor());
+                        info_list.emplace_back(name_dec->GetElementText(), ALittleScriptIconType::PROPERTY, element->GetDescriptor());
                 }
             }
         }

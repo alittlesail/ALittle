@@ -150,7 +150,6 @@ function ALittleIDE.DisplayObjectS:LoadNatureBase()
 	self:LoadShowTypeData("__event")
 	self:LoadShowTypeDataForTargetClass("__target_class")
 	self:LoadDefaultNilString("description")
-	self._link_dropdown.text = ""
 end
 
 function ALittleIDE.DisplayObjectS:HandleCommonInputFOCUSIN(event)
@@ -746,14 +745,46 @@ function ALittleIDE.DisplayObjectS:HandleLinkTabKey(event)
 	self._id:SelectAll()
 end
 
-function ALittleIDE.DisplayObjectS:HandleLinkSELECT_CHANGE(event)
-	if event.target.text == "清空" then
-		self:SetLink("")
-	else
-		self:SetLink(event.target.text)
-	end
-	event.target.text = ""
+function ALittleIDE.DisplayObjectS:GetParentTargetClass()
+	repeat
+		local parent = self._tree_logic.parent
+		local text = parent.attr_panel.___target_class.text
+		if text ~= "" then
+			return text
+		end
+		if parent.is_root then
+			break
+		end
+	until not(true)
+	return nil
 end
+
+function ALittleIDE.DisplayObjectS:HandleLinkEditClick(event)
+	if ALittleIDE.g_IDEProject.project.code == nil then
+		return
+	end
+	local pre_input = self:GetParentTargetClass()
+	if pre_input == nil then
+		return
+	end
+	local info = ALittleIDE.g_IDEProject.project.code:FindGoto(pre_input .. "." .. self.___link.text)
+	if info ~= nil then
+		ALittleIDE.g_IDECenter.center.code_list:OpenByFullPath(info.file_path, info.line_start, info.char_start, info.line_end, info.char_end)
+	end
+end
+ALittleIDE.DisplayObjectS.HandleLinkEditClick = Lua.CoWrap(ALittleIDE.DisplayObjectS.HandleLinkEditClick)
+
+function ALittleIDE.DisplayObjectS:HandleLinkChanged(event)
+	if ALittleIDE.g_IDEProject.project.code == nil then
+		return
+	end
+	local pre_input = self:GetParentTargetClass()
+	if pre_input == nil then
+		return
+	end
+	g_AUICodeFilterScreen:ShowComplete(ALittleIDE.g_IDEProject.project.code, pre_input, self.___link)
+end
+ALittleIDE.DisplayObjectS.HandleLinkChanged = Lua.CoWrap(ALittleIDE.DisplayObjectS.HandleLinkChanged)
 
 function ALittleIDE.DisplayObjectS:SetEvent(event, revoke_bind)
 	if event == nil then

@@ -206,6 +206,75 @@ void ABnfProject::FindFile(int query_id, const std::string& text)
     });
 }
 
+void ABnfProject::FindDefine(int query_id, const std::string& pre_input, const std::string& input)
+{
+    std::vector<ALanguageCompletionInfo> info_list;
+    FindDefineImpl(pre_input, input, info_list);
+
+    std::unique_lock<std::mutex> lock(m_output_lock);
+    m_outputs.push_back([query_id, info_list](lua_State* L)->int
+    {
+        lua_newtable(L);
+        lua_pushinteger(L, query_id);
+        lua_setfield(L, -2, "query_id");
+
+        lua_newtable(L);
+        for (size_t i = 0; i < info_list.size(); ++i)
+        {
+            auto& complete = info_list[i];
+
+            lua_newtable(L);
+            lua_pushstring(L, complete.display.c_str());
+            lua_setfield(L, -2, "display");
+            if (complete.insert.size())
+            {
+                lua_pushstring(L, complete.insert.c_str());
+                lua_setfield(L, -2, "insert");
+            }
+            if (complete.descriptor.size())
+            {
+                lua_pushstring(L, complete.descriptor.c_str());
+                lua_setfield(L, -2, "descriptor");
+            }
+            lua_pushinteger(L, complete.tag);
+            lua_setfield(L, -2, "tag");
+        	
+            lua_rawseti(L, -2, static_cast<int>(i) + 1);
+        }
+        lua_setfield(L, -2, "result");
+        return 1;
+    });
+}
+
+void ABnfProject::FindGoto(int query_id, const std::string& text)
+{
+    ALanguageGotoInfo info;
+    FindGotoImpl(text, info);
+
+    std::unique_lock<std::mutex> lock(m_output_lock);
+    m_outputs.push_back([query_id, info](lua_State* L)->int
+    {
+        lua_newtable(L);
+        lua_pushinteger(L, query_id);
+        lua_setfield(L, -2, "query_id");
+
+        lua_newtable(L);
+        lua_pushinteger(L, info.line_start + 1);
+        lua_setfield(L, -2, "line_start");
+        lua_pushinteger(L, info.char_start + 1);
+        lua_setfield(L, -2, "char_start");
+        lua_pushinteger(L, info.line_end + 1);
+        lua_setfield(L, -2, "line_end");
+        lua_pushinteger(L, info.char_end);
+        lua_setfield(L, -2, "char_end");
+        lua_pushstring(L, info.file_path.c_str());
+        lua_setfield(L, -2, "file_path");
+    	
+        lua_setfield(L, -2, "result");
+        return 1;
+    });
+}
+
 void ABnfProject::UpdateText(const std::string& full_path, int version, const std::string& text)
 {
     auto it = m_file_map.find(full_path);

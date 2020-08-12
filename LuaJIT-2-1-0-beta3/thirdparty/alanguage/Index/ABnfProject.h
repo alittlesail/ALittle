@@ -47,7 +47,7 @@ public:
 public:
 	void Start(const std::string& abnf_buffer);
 	void Stop();
-	inline bool IsStoped() { return m_run == false; }
+	inline bool IsStoped() const { return m_run == false; }
 	int PollOne(lua_State* L);
 	void Add(std::function<void()> fun);
 
@@ -58,12 +58,17 @@ public:
 
 	int QueryRuleColor(lua_State* L);
 
+	virtual void FindDefineImpl(const std::string& pre_input, const std::string& input, std::vector<ALanguageCompletionInfo>& info_list) {}
+	virtual void FindGotoImpl(const std::string& text, ALanguageGotoInfo& info) { }
+
 public:
 	ABnfFile* GetFile(const std::string& full_path);
 	void UpdateFile(const std::string& module_path, const std::string& full_path, int version);
 	void TempFile(const std::string& module_path, const std::string& full_path, const std::string& text, int version);
 	void RemoveFile(const std::string& full_path);
 	void FindFile(int query_id, const std::string& text);
+	void FindDefine(int query_id, const std::string& pre_input, const std::string& input);
+	void FindGoto(int query_id, const std::string& text);
 	void UpdateText(const std::string& full_path, int version, const std::string& text);
 	void InsertText(const std::string& full_path, int version, const std::string& text, int it_line, int it_char);
 	void DeleteText(const std::string& full_path, int version, int it_line_start, int it_char_start, int it_line_end, int it_char_end);

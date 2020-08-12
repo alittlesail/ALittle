@@ -54,28 +54,6 @@ static int alittlescriptlib_alittlescriptproject_gettargetlanguage(lua_State* L)
 	return 1;
 }
 
-static int alittlescriptlib_alittlescriptproject_getallnamespace(lua_State* L)
-{
-	void** c = (void**)lua_touserdata(L, 1);
-	luaL_argcheck(L, c != 0, 1, "alittlescript project object is null");
-	int query_id = (int)luaL_checkinteger(L, 2);
-
-	alittlescriptproject_getallnamespace(*c, query_id);
-	return 0;
-}
-
-static int alittlescriptlib_alittlescriptproject_getallclass(lua_State* L)
-{
-	void** c = (void**)lua_touserdata(L, 1);
-	luaL_argcheck(L, c != 0, 1, "alittlescript project object is null");
-	int query_id = (int)luaL_checkinteger(L, 2);
-	const char* namespace_name = luaL_checkstring(L, 3);
-	luaL_argcheck(L, namespace_name != 0, 3, "namespace_name is null");
-
-	alittlescriptproject_getallclass(*c, query_id, namespace_name);
-	return 0;
-}
-
 static int alittlescriptlib_alittlescriptproject_generate(lua_State* L)
 {
 	void** c = (void**)lua_touserdata(L, 1);
@@ -138,8 +116,6 @@ static struct luaL_Reg alittlescriptlib[] = {
   {"alittlescriptproject_settargetlanguage", alittlescriptlib_alittlescriptproject_settargetlanguage},
   {"alittlescriptproject_gettargetlanguage", alittlescriptlib_alittlescriptproject_gettargetlanguage},
   {"alittlescriptproject_generate", alittlescriptlib_alittlescriptproject_generate},
-  {"alittlescriptproject_getallnamespace", alittlescriptlib_alittlescriptproject_getallnamespace},
-  {"alittlescriptproject_getallclass", alittlescriptlib_alittlescriptproject_getallclass},
   {NULL, NULL}
 };
 

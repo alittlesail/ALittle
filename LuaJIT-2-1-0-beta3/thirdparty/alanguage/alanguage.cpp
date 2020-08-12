@@ -69,6 +69,18 @@ void alanguage_project_findfile(void* project, int query_id, const char* text)
 	project_c->Add(std::bind(&ABnfProject::FindFile, project_c, query_id, std::string(text)));
 }
 
+void alanguage_project_finddefine(void* project, int query_id, const char* pre_input, const char* input)
+{
+	auto* project_c = (ABnfProject*)project;
+	project_c->Add(std::bind(&ABnfProject::FindDefine, project_c, query_id, std::string(pre_input), std::string(input)));
+}
+
+void alanguage_project_findgoto(void* project, int query_id, const char* text)
+{
+	auto* project_c = (ABnfProject*)project;
+	project_c->Add(std::bind(&ABnfProject::FindGoto, project_c, query_id, std::string(text)));
+}
+
 void alanguage_project_clear(void* project)
 {
 	auto* project_c = (ABnfProject*)project;

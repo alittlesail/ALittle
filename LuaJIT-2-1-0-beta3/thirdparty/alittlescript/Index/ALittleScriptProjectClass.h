@@ -28,12 +28,13 @@ public:
 public:
     ABnfFactory& RefFactory() override { return m_factory; }
 
+    void FindDefineImpl(const std::string& pre_input, const std::string& input, std::vector<ALanguageCompletionInfo>& info_list) override;
+    void FindGotoImpl(const std::string& text, ALanguageGotoInfo& info) override;
+
 public:
     void SetTargetLanguage(const std::string& language);
     void SetTargetLanguageUI(const std::string& language);
     void Generate(int query_id, const std::string& full_path);
-    void GetAllNamespace(int query_id);
-    void GetAllClass(int query_id, const std::string& namespace_name);
     const std::string& GetTargetLanguage() const { return m_target_language; }
     const std::string& GetTargetLanguageUI() const { return m_target_language_ui; }
     const std::unordered_set<std::string>& GetLanguageSet() const { return m_language_set; }

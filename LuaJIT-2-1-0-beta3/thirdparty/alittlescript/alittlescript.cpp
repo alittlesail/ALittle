@@ -41,18 +41,6 @@ void alittlescriptproject_generate(void* project, int query_id, const char* full
 	project_c->Add(std::bind(&ALittleScriptProjectClass::Generate, project_c, query_id, std::string(full_path)));
 }
 
-void alittlescriptproject_getallnamespace(void* project, int query_id)
-{
-	auto* project_c = (ALittleScriptProjectClass*)project;
-	project_c->Add(std::bind(&ALittleScriptProjectClass::GetAllNamespace, project_c, query_id));
-}
-
-void alittlescriptproject_getallclass(void* project, int query_id, const char* namespace_name)
-{
-	auto* project_c = (ALittleScriptProjectClass*)project;
-	project_c->Add(std::bind(&ALittleScriptProjectClass::GetAllClass, project_c, query_id, std::string(namespace_name)));
-}
-
 void* create_alittlescript_file(void* project, const char* module_path, const char* full_path, const char* text, size_t len)
 {
 	return new ALittleScriptFileClass((ABnfProject*)project, module_path, full_path, text, len, true);

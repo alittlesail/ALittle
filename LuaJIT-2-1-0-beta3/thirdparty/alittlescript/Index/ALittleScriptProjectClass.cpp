@@ -1,5 +1,9 @@
 
 #include "ALittleScriptProjectClass.h"
+
+
+#include "ALittleScriptUtility.h"
+#include "../Reference/ALittleScriptReferenceTemplate.h"
 #include "../Translation/ALittleScriptTranslation.h"
 
 void ALittleScriptProjectClass::ClearImpl()
@@ -16,6 +20,361 @@ ALittleScriptProjectClass::ALittleScriptProjectClass()
 
 ALittleScriptProjectClass::~ALittleScriptProjectClass()
 {
+}
+
+void ALittleScriptProjectClass::FindDefineImpl(const std::string& pre_input, const std::string& input, std::vector<ALanguageCompletionInfo>& info_list)
+{
+    std::list<std::string> pre_split;
+    ABnfFactory::Split(pre_input, ".", pre_split);
+    std::list<std::string> split;
+    ABnfFactory::Split(input, ".", split);
+
+	// 获取命名域
+    std::string namespace_name;
+    bool namespace_in_input = false;
+    if (pre_split.size() > 0)
+    {
+        namespace_name = pre_split.front();
+        pre_split.pop_front();
+    }
+    else if (split.size() > 0)
+    {
+        namespace_in_input = true;
+        namespace_name = split.front();
+        split.pop_front();
+    }
+
+	// 如果命名域是空的，那么就是获取命名域
+	if (namespace_name.empty())
+	{
+        std::unordered_map<std::string, std::shared_ptr<ALittleScriptNamespaceNameDecElement>> name_dec_map;
+        FindNamespaceNameDecList(namespace_name, name_dec_map);
+        for (auto& pair : name_dec_map)
+            info_list.emplace_back(pair.second->GetElementText(), ALittleScriptIconType::NAMESPACE, pair.second->GetDescriptor());
+        return;
+	}
+
+	// 获取定义名
+    std::string define_name;
+    bool define_in_input = false;
+	if (pre_split.size() > 0)
+	{
+		define_name = pre_split.front();
+        pre_split.pop_front();
+	}
+    else if (split.size() > 0)
+    {
+        define_in_input = true;
+        define_name = split.front();
+        split.pop_front();
+    }
+
+	// 如果定义名是空的，那么就获取定义名
+	if (define_name.empty())
+	{
+        {
+            std::vector<ABnfElementPtr> dec_list;
+            FindALittleNameDecList(ABnfElementType::CLASS_NAME, nullptr, namespace_name, u8"", true, dec_list);
+
+            for (auto& dec : dec_list)
+            {
+            	if (namespace_in_input)
+                    info_list.emplace_back(namespace_name + "." + dec->GetElementText(), ALittleScriptIconType::CLASS, dec->GetDescriptor());
+                else
+	                info_list.emplace_back(dec->GetElementText(), ALittleScriptIconType::CLASS, dec->GetDescriptor());
+            }                
+        }
+        {
+            std::vector<std::shared_ptr<ABnfElement>> dec_list;
+            FindALittleNameDecList(ABnfElementType::STRUCT_NAME, nullptr, namespace_name, u8"", true, dec_list);
+
+            for (auto& dec : dec_list)
+            {
+                if (namespace_in_input)
+                    info_list.emplace_back(namespace_name + "." + dec->GetElementText(), ALittleScriptIconType::STRUCT, dec->GetDescriptor());
+                else
+                    info_list.emplace_back(dec->GetElementText(), ALittleScriptIconType::STRUCT, dec->GetDescriptor());
+            }
+        }
+        {
+            std::vector<std::shared_ptr<ABnfElement>> dec_list;
+            FindALittleNameDecList(ABnfElementType::ENUM_NAME, nullptr, namespace_name, u8"", true, dec_list);
+
+            for (auto& dec : dec_list)
+            {
+                if (namespace_in_input)
+                    info_list.emplace_back(namespace_name + "." + dec->GetElementText(), ALittleScriptIconType::ENUM, dec->GetDescriptor());
+                else
+                    info_list.emplace_back(dec->GetElementText(), ALittleScriptIconType::ENUM, dec->GetDescriptor());
+            }
+        }
+        return;
+	}
+
+    // 获取定义名
+    std::string var_name;
+    if (pre_split.size() > 0)
+    {
+        var_name = pre_split.front();
+        pre_split.pop_front();
+    }
+    else if (split.size() > 0)
+    {
+        var_name = split.front();
+        split.pop_front();
+    }
+
+    if (var_name.empty())
+    {
+        {
+            std::vector<ABnfElementPtr> dec_list;
+            FindALittleNameDecList(ABnfElementType::CLASS_NAME, nullptr, namespace_name, define_name, true, dec_list);
+
+            for (auto& dec : dec_list)
+            {
+                auto class_dec = std::dynamic_pointer_cast<ALittleScriptClassDecElement>(dec->GetParent());
+                if (class_dec == nullptr) continue;
+                std::vector<std::shared_ptr<ABnfElement>> result;
+                ALittleScriptUtility::FindClassAttrList(class_dec, ALittleScriptUtility::sAccessPrivateAndProtectedAndPublic, ClassAttrType::VAR, u8"", result, 100);
+                for (auto& element : result)
+                {
+                	if (namespace_in_input)
+                        info_list.emplace_back(namespace_name + "." + define_name + "." + element->GetElementText(), ALittleScriptIconType::VARIABLE, element->GetDescriptor());
+                    else if (define_in_input)
+                        info_list.emplace_back(define_name + "." + element->GetElementText(), ALittleScriptIconType::VARIABLE, element->GetDescriptor());
+                    else
+	                    info_list.emplace_back(element->GetElementText(), ALittleScriptIconType::VARIABLE, element->GetDescriptor());
+                }
+                result.clear();
+                ALittleScriptUtility::FindClassAttrList(class_dec, ALittleScriptUtility::sAccessPrivateAndProtectedAndPublic, ClassAttrType::FUN, u8"", result, 100);
+                ALittleScriptUtility::FilterSameName(result, result);
+                for (auto& element : result)
+                {
+                    if (namespace_in_input)
+                        info_list.emplace_back(namespace_name + "." + define_name + "." + element->GetElementText(), ALittleScriptIconType::MEMBER_METHOD, element->GetDescriptor());
+                    else if (define_in_input)
+                        info_list.emplace_back(define_name + "." + element->GetElementText(), ALittleScriptIconType::MEMBER_METHOD, element->GetDescriptor());
+                    else
+                        info_list.emplace_back(element->GetElementText(), ALittleScriptIconType::MEMBER_METHOD, element->GetDescriptor());
+                }
+                    
+                result.clear();
+                ALittleScriptUtility::FindClassAttrList(class_dec, ALittleScriptUtility::sAccessPrivateAndProtectedAndPublic, ClassAttrType::STATIC, u8"", result, 100);
+                for (auto& element : result)
+                {
+                    if (namespace_in_input)
+                        info_list.emplace_back(namespace_name + "." + define_name + "." + element->GetElementText(), ALittleScriptIconType::STATIC_METHOD, element->GetDescriptor());
+                    else if (define_in_input)
+                        info_list.emplace_back(define_name + "." + element->GetElementText(), ALittleScriptIconType::STATIC_METHOD, element->GetDescriptor());
+                    else
+                        info_list.emplace_back(element->GetElementText(), ALittleScriptIconType::STATIC_METHOD, element->GetDescriptor());
+                }
+            }
+        }
+        {
+            std::vector<ABnfElementPtr> dec_list;
+            FindALittleNameDecList(ABnfElementType::STRUCT_NAME, nullptr, namespace_name, define_name, true, dec_list);
+
+            for (auto& dec : dec_list)
+            {
+                auto struct_dec = std::dynamic_pointer_cast<ALittleScriptStructDecElement>(dec->GetParent());
+                if (struct_dec == nullptr) continue;
+                std::vector<std::shared_ptr<ALittleScriptStructVarDecElement>> result;
+                ALittleScriptUtility::FindStructVarDecList(struct_dec, u8"", result, 100);
+                for (auto& element : result)
+                {
+                    if (namespace_in_input)
+                        info_list.emplace_back(namespace_name + "." + define_name + "." + element->GetElementText(), ALittleScriptIconType::PROPERTY, element->GetDescriptor());
+                    else if (define_in_input)
+                        info_list.emplace_back(define_name + "." + element->GetElementText(), ALittleScriptIconType::PROPERTY, element->GetDescriptor());
+                    else
+                        info_list.emplace_back(element->GetElementText(), ALittleScriptIconType::PROPERTY, element->GetDescriptor());
+                }
+            }
+        }
+        {
+            std::vector<ABnfElementPtr> dec_list;
+            FindALittleNameDecList(ABnfElementType::ENUM_NAME, nullptr, namespace_name, define_name, true, dec_list);
+
+            for (auto& dec : dec_list)
+            {
+                auto enum_dec = std::dynamic_pointer_cast<ALittleScriptEnumDecElement>(dec->GetParent());
+                if (enum_dec == nullptr) continue;
+                std::vector<std::shared_ptr<ALittleScriptEnumVarDecElement>> result;
+                ALittleScriptUtility::FindEnumVarDecList(enum_dec, u8"", result);
+                for (auto& element : result)
+                {
+                    if (namespace_in_input)
+                        info_list.emplace_back(namespace_name + "." + define_name + "." + element->GetElementText(), ALittleScriptIconType::PROPERTY, element->GetDescriptor());
+                    else if (define_in_input)
+                        info_list.emplace_back(define_name + "." + element->GetElementText(), ALittleScriptIconType::PROPERTY, element->GetDescriptor());
+                    else
+                        info_list.emplace_back(element->GetElementText(), ALittleScriptIconType::PROPERTY, element->GetDescriptor());
+                }
+            }
+        }
+        return;
+    }
+}
+
+void ALittleScriptProjectClass::FindGotoImpl(const std::string& text, ALanguageGotoInfo& info)
+{
+    std::vector<std::string> split;
+    ABnfFactory::Split(text, ".", split);
+
+    if (split.size() == 0) return;
+
+    // 如果命名域是空的，那么就是获取命名域
+    if (split.size() <= 1)
+    {
+        std::unordered_map<std::string, std::shared_ptr<ALittleScriptNamespaceNameDecElement>> name_dec_map;
+        FindNamespaceNameDecList(split[0], name_dec_map);
+        for (auto& pair : name_dec_map)
+        {
+            info.file_path = pair.second->GetFullPath();
+            info.line_start = pair.second->GetStartLine();
+            info.char_start = pair.second->GetStartCol();
+            info.line_end = pair.second->GetEndLine();
+            info.char_end = pair.second->GetEndCol();
+            return;
+        }
+        return;
+    }
+
+	if (split.size() <= 2)
+	{
+        {
+            std::vector<ABnfElementPtr> dec_list;
+            FindALittleNameDecList(ABnfElementType::CLASS_NAME, nullptr, split[0], split[1], true, dec_list);
+            for (auto& dec : dec_list)
+            {
+                info.file_path = dec->GetFullPath();
+                info.line_start = dec->GetStartLine();
+                info.char_start = dec->GetStartCol();
+                info.line_end = dec->GetEndLine();
+                info.char_end = dec->GetEndCol();
+                return;
+            }
+        }
+        {
+            std::vector<std::shared_ptr<ABnfElement>> dec_list;
+            FindALittleNameDecList(ABnfElementType::STRUCT_NAME, nullptr, split[0], split[1], true, dec_list);
+            for (auto& dec : dec_list)
+            {
+                info.file_path = dec->GetFullPath();
+                info.line_start = dec->GetStartLine();
+                info.char_start = dec->GetStartCol();
+                info.line_end = dec->GetEndLine();
+                info.char_end = dec->GetEndCol();
+                return;
+            }
+        }
+        {
+            std::vector<std::shared_ptr<ABnfElement>> dec_list;
+            FindALittleNameDecList(ABnfElementType::ENUM_NAME, nullptr, split[0], split[1], true, dec_list);
+            for (auto& dec : dec_list)
+            {
+                info.file_path = dec->GetFullPath();
+                info.line_start = dec->GetStartLine();
+                info.char_start = dec->GetStartCol();
+                info.line_end = dec->GetEndLine();
+                info.char_end = dec->GetEndCol();
+                return;
+            }
+        }
+        return;
+    }
+
+    if (split.size() >= 3)
+    {
+        {
+            std::vector<ABnfElementPtr> dec_list;
+            FindALittleNameDecList(ABnfElementType::CLASS_NAME, nullptr, split[0], split[1], true, dec_list);
+
+            for (auto& dec : dec_list)
+            {
+                auto class_dec = std::dynamic_pointer_cast<ALittleScriptClassDecElement>(dec->GetParent());
+                if (class_dec == nullptr) continue;
+                std::vector<std::shared_ptr<ABnfElement>> result;
+                ALittleScriptUtility::FindClassAttrList(class_dec, ALittleScriptUtility::sAccessPrivateAndProtectedAndPublic, ClassAttrType::VAR, split[2], result, 100);
+                for (auto& element : result)
+                {
+                    info.file_path = element->GetFullPath();
+                    info.line_start = element->GetStartLine();
+                    info.char_start = element->GetStartCol();
+                    info.line_end = element->GetEndLine();
+                    info.char_end = element->GetEndCol();
+                    return;
+                }
+                result.clear();
+                ALittleScriptUtility::FindClassAttrList(class_dec, ALittleScriptUtility::sAccessPrivateAndProtectedAndPublic, ClassAttrType::FUN, split[2], result, 100);
+                for (auto& element : result)
+                {
+                    info.file_path = element->GetFullPath();
+                    info.line_start = element->GetStartLine();
+                    info.char_start = element->GetStartCol();
+                    info.line_end = element->GetEndLine();
+                    info.char_end = element->GetEndCol();
+                    return;
+                }
+
+                result.clear();
+                ALittleScriptUtility::FindClassAttrList(class_dec, ALittleScriptUtility::sAccessPrivateAndProtectedAndPublic, ClassAttrType::STATIC, split[2], result, 100);
+                for (auto& element : result)
+                {
+                    info.file_path = element->GetFullPath();
+                    info.line_start = element->GetStartLine();
+                    info.char_start = element->GetStartCol();
+                    info.line_end = element->GetEndLine();
+                    info.char_end = element->GetEndCol();
+                    return;
+                }
+            }
+        }
+        {
+            std::vector<ABnfElementPtr> dec_list;
+            FindALittleNameDecList(ABnfElementType::STRUCT_NAME, nullptr, split[0], split[1], true, dec_list);
+
+            for (auto& dec : dec_list)
+            {
+                auto struct_dec = std::dynamic_pointer_cast<ALittleScriptStructDecElement>(dec->GetParent());
+                if (struct_dec == nullptr) continue;
+                std::vector<std::shared_ptr<ALittleScriptStructVarDecElement>> result;
+                ALittleScriptUtility::FindStructVarDecList(struct_dec, split[2], result, 100);
+                for (auto& element : result)
+                {
+                    info.file_path = element->GetFullPath();
+                    info.line_start = element->GetStartLine();
+                    info.char_start = element->GetStartCol();
+                    info.line_end = element->GetEndLine();
+                    info.char_end = element->GetEndCol();
+                    return;
+                }
+            }
+        }
+        {
+            std::vector<ABnfElementPtr> dec_list;
+            FindALittleNameDecList(ABnfElementType::ENUM_NAME, nullptr, split[0], split[1], true, dec_list);
+
+            for (auto& dec : dec_list)
+            {
+                auto enum_dec = std::dynamic_pointer_cast<ALittleScriptEnumDecElement>(dec->GetParent());
+                if (enum_dec == nullptr) continue;
+                std::vector<std::shared_ptr<ALittleScriptEnumVarDecElement>> result;
+                ALittleScriptUtility::FindEnumVarDecList(enum_dec, split[2], result);
+                for (auto& element : result)
+                {
+                    info.file_path = element->GetFullPath();
+                    info.line_start = element->GetStartLine();
+                    info.char_start = element->GetStartCol();
+                    info.line_end = element->GetEndLine();
+                    info.char_end = element->GetEndCol();
+                    return;
+                }
+            }
+        }
+        return;
+    }
 }
 
 void ALittleScriptProjectClass::SetTargetLanguage(const std::string& language)
@@ -100,62 +459,6 @@ void ALittleScriptProjectClass::Generate(int query_id, const std::string& full_p
         lua_pushstring(L, error.c_str());
         lua_setfield(L, -2, "error");
 
-        lua_setfield(L, -2, "result");
-        return 1;
-    });
-}
-
-void ALittleScriptProjectClass::GetAllNamespace(int query_id)
-{
-    std::unordered_map<std::string, std::shared_ptr<ALittleScriptNamespaceNameDecElement>> result;
-    FindNamespaceNameDecList("", result);
-    std::vector<std::string> name_list;
-    name_list.reserve(result.size());
-    for (auto& pair : result)
-        name_list.push_back(pair.first);
-
-    std::unique_lock<std::mutex> lock(m_output_lock);
-    m_outputs.push_back([query_id, name_list](lua_State* L)->int
-    {
-        lua_newtable(L);
-        lua_pushinteger(L, query_id);
-        lua_setfield(L, -2, "query_id");
-    	
-        lua_newtable(L);
-    	for (size_t i = 0; i < name_list.size(); ++i)
-    	{
-            lua_pushstring(L, name_list[i].c_str());
-            lua_rawseti(L, -2, static_cast<int>(i) + 1);
-    	}
-
-        lua_setfield(L, -2, "result");
-        return 1;
-    });
-}
-
-void ALittleScriptProjectClass::GetAllClass(int query_id, const std::string& namespace_name)
-{
-    std::vector<std::shared_ptr<ABnfElement>> result;
-    FindALittleNameDecList(ABnfElementType::CLASS_NAME, nullptr, namespace_name, "", true, result);
-    std::vector<std::string> name_list;
-    name_list.reserve(result.size());
-    for (auto& element : result)
-        name_list.push_back(element->GetElementText());
-
-    std::unique_lock<std::mutex> lock(m_output_lock);
-    m_outputs.push_back([query_id, name_list](lua_State* L)->int
-    {
-        lua_newtable(L);
-        lua_pushinteger(L, query_id);
-        lua_setfield(L, -2, "query_id");
-
-        lua_newtable(L);
-        for (size_t i = 0; i < name_list.size(); ++i)
-        {
-            lua_pushstring(L, name_list[i].c_str());
-            lua_rawseti(L, -2, static_cast<int>(i) + 1);
-        }
-    	
         lua_setfield(L, -2, "result");
         return 1;
     });

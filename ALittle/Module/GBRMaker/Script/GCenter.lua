@@ -154,7 +154,7 @@ function GBRMaker.GCenter:Setup()
 		self._tex_name_base_path = setting_data.texture_path .. "/"
 		self._texture_base_path = module_path .. "/Texture/" .. setting_data.texture_path
 		self:RefreshTexture()
-		self:RefreshFile()
+		self._file_list:RefreshFile()
 	end
 end
 
@@ -169,7 +169,11 @@ function GBRMaker.GCenter:HandleSettingChanged(event)
 	self._texture_base_path = module_path .. "/Texture/" .. event.data.texture_path
 	self._control = ALittle.ControlSystem(event.data.project_name)
 	self:RefreshTexture()
-	self:RefreshFile()
+	self._file_list:RefreshFile()
+end
+
+function GBRMaker.GCenter.__getter:setting_dialog()
+	return self._setting_dialog
 end
 
 function GBRMaker.GCenter:HandleFileNewClick(event)
@@ -178,94 +182,8 @@ function GBRMaker.GCenter:HandleFileNewClick(event)
 	if file_name == "" or file_name == nil then
 		return
 	end
-	local check, error = GBRMaker.IDEUtility_CheckResourceName(file_name)
-	if not check then
-		g_AUITool:ShowNotice("提示", error)
-		return
-	end
-	local file_path = self._file_base_path .. "/" .. file_name .. ".map"
-	if ALittle.File_GetFileAttr(file_path) ~= nil then
-		g_AUITool:ShowNotice("提示", "文件已存在")
-		return
-	end
-	ALittle.File_WriteTextToFile("", file_path)
 end
 GBRMaker.GCenter.HandleFileNewClick = Lua.CoWrap(GBRMaker.GCenter.HandleFileNewClick)
-
-function GBRMaker.GCenter:HandleSelectFile(event)
-	if not event.target.selected then
-		return
-	end
-	self:SaveCurEdit(true)
-	local info = event.target._user_data
-	if info.map_data == nil then
-		local rflct = ___all_struct[-1481607580]
-		local factory = __CPPAPIMessageReadFactory()
-		if not factory:ReadFromStdFile(info.file_path) then
-			return
-		end
-		local invoke_info = ALittle.CreateMessageInfo(rflct.name)
-		if invoke_info == nil then
-			return
-		end
-		info.map_data = ALittle.PS_ReadMessage(factory, invoke_info, nil, factory:GetDataSize())
-		info.map_info = {}
-		info.map_info.tex_map = {}
-		info.map_info.tex_max_id = 0
-		for id, path in ___pairs(info.map_data.tex_map) do
-			info.map_info.tex_map[path] = id
-			if info.map_info.tex_max_id < id then
-				info.map_info.tex_max_id = id
-			end
-		end
-		info.map_info.floor_list = {}
-		for index, floor_data in ___ipairs(info.map_data.floor_list) do
-			local floor_info = {}
-			floor_info.floor_data = floor_data
-			floor_info.file_info = info
-			floor_info.visible = true
-			floor_info.child_map = {}
-			ALittle.List_Push(info.map_info.floor_list, floor_info)
-		end
-	end
-	self:StartEdit(info)
-end
-
-function GBRMaker.GCenter:RefreshFile()
-	self._file_cache_list = {}
-	self._file_radio_group = {}
-	self._file_scroll_screen:RemoveAllChild()
-	if ALittle.File_GetFileAttr(self._file_base_path) == nil then
-		return
-	end
-	local file_list = ALittle.File_GetFileListByDir(self._file_base_path)
-	ALittle.List_Sort(file_list)
-	for index, file_path in ___ipairs(file_list) do
-		local rel_path = ALittle.String_Sub(file_path, ALittle.String_Len(self._file_base_path) + 2)
-		local info = {}
-		info.item = GBRMaker.g_Control:CreateControl("ide_common_item_radiobutton", info)
-		info.item._user_data = info
-		info.item.group = self._file_radio_group
-		info.item.text = ALittle.File_GetJustFileNameByPath(rel_path)
-		info.upper_file_name = ALittle.String_Upper(info.item.text)
-		info.file_path = file_path
-		info.save = true
-		info.item:AddEventListener(___all_struct[958494922], self, self.HandleSelectFile)
-		info.item.drag_trans_target = self._file_scroll_screen
-		self._file_cache_list[index] = info
-	end
-	self:HandleFileSearchClick(nil)
-end
-
-function GBRMaker.GCenter:HandleFileSearchClick(event)
-	self._file_scroll_screen:RemoveAllChild()
-	local upper_key = ALittle.String_Upper(self._file_search_key.text)
-	for index, info in ___ipairs(self._file_cache_list) do
-		if ALittle.String_Find(info.upper_file_name, upper_key) ~= nil then
-			self._file_scroll_screen:AddChild(info.item)
-		end
-	end
-end
 
 function GBRMaker.GCenter:RefreshTexture()
 	self._image_cache_list = {}

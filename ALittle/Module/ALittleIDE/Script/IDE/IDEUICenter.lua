@@ -169,8 +169,12 @@ function ALittleIDE.IDEUICenter:HandleShortcutKey()
 			ALittleIDE.g_IDEAttrEventDialog:HideDialog()
 			return
 		end
-		if ALittleIDE.g_IDEAttrControlDialog.dialog.visible then
+		if ALittleIDE.g_IDEAttrControlDialog:IsShow() then
 			ALittleIDE.g_IDEAttrControlDialog:HideDialog()
+			return
+		end
+		if ALittleIDE.g_IDEProjectFindFileDialog:IsShow() then
+			ALittleIDE.g_IDEProjectFindFileDialog:HideDialog()
 			return
 		end
 	end

@@ -80,6 +80,9 @@ end
 
 function ALittleIDE.IDEUICodeList:HandleProjectClose(event)
 	self._code_scroll_screen:RemoveAllChild()
+	self._jump_count = 0
+	self._jump_index = 0
+	self._jump_list = {}
 end
 
 function ALittleIDE.IDEUICodeList:HandleProjectOpen(event)

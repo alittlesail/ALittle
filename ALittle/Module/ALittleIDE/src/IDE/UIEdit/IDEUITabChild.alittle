@@ -222,6 +222,7 @@ public class IDEUITabChild : IDETabChild
 		menu.AddItem("截图导出", bind(A_OtherSystem.SystemSaveFile, A_OtherSystem, this, this._name..".png", null));
 		menu.AddItem("复制控件名", bind(ALittle.System_SetClipboardText, this._name));
 		menu.AddItem("复制继承代码", bind(this.CopyExtends, this));
+		menu.AddItem("刷新", bind(this.Refresh, this));
 	}
     
 	private fun CopyExtends()
@@ -496,6 +497,42 @@ public class IDEUITabChild : IDETabChild
 	}
 	
 	////////////////////////////////////////////////////////////////////////////////////////////-
+
+    public fun Refresh()
+    {
+        // 获取控件信息
+        var control_info = g_IDEProject.project.ui.control_map[this._name];
+        if (control_info == null) return;
+		// 新建控件对象
+        var object = g_IDEProject.project.control.CreateControl{ALittle.DisplayObject}(this._name);
+		// 添加到标签页
+        this._tab_object_container.RemoveAllChild();
+        this._tab_object_container.AddChild(object);
+		//控件树
+        this._tree_object = IDEUIUtility_CreateTree(control_info.info, false, object, null, this, true);
+        this._tree_object.AddEventListener(this, this.HandleTreeSizeChanged);
+        this._tree_object.fold = true;
+        this._tree_screen.RemoveAllChild();
+        this._tree_screen.AddChild(this._tree_object);
+        this._anti_panel.Init(this);
+
+		// 组名
+		this._group = ALittle.CreateKeyWeakMap();
+
+		// 选中层
+		this._tab_quad_container.RemoveAllChild();
+		this._tab_quad_map = new Map<IDEUITreeLogic, IDEUITabChildHandleInfo>(); // 收集的选中的TreeLogic
+		// 搜索信息
+		this._tree_search_info = new IDEUITabChildSearchInfo();
+		this._tree_search_info.name = "";
+		this._tree_search_info.index = 0;
+
+        // 标记为保存，然后更新标题
+		this._save = true;
+        this.UpdateTitle();
+		// 清空撤销列表
+		this._revoke_list = new ALittle.RevokeList();
+    }
 	
 	public fun CreateByNew(string type)
     {

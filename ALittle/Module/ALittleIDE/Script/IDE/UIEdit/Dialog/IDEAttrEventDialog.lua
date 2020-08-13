@@ -89,6 +89,9 @@ function ALittleIDE.IDEAttrEventDialog:ShowDialog(target_panel, text, need_reset
 end
 
 function ALittleIDE.IDEAttrEventDialog:HideDialog()
+	if self._dialog == nil then
+		return
+	end
 	self._dialog.visible = false
 end
 

@@ -190,7 +190,7 @@ function AUIPlugin.AUICodeCompleteScreen:ReInit()
 		item_info._item._user_data = item_info
 		item_info.complete = info
 		self._item_list[index] = item_info
-		local title_wdith = self._edit.ascii_width * ALittle.String_Len(info.display) + item_info._item_title.x + 5
+		local title_wdith = item_info._item_title.width + item_info._item_title.x + 5
 		if max_width < title_wdith then
 			max_width = title_wdith
 		end

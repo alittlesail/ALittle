@@ -89,6 +89,7 @@ public class IDEAttrEventDialog
     }
     public fun HideDialog()
     {
+        if (this._dialog == null) return;
         this._dialog.visible = false;
     }
     public fun IsShow() : bool

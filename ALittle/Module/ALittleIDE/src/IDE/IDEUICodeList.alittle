@@ -78,6 +78,9 @@ public class IDEUICodeList : ALittle.DisplayLayout
 	private fun HandleProjectClose(IDEProjectCloseEvent event)
 	{
 		this._code_scroll_screen.RemoveAllChild();
+        this._jump_count = 0;
+        this._jump_index = 0;
+        this._jump_list = new List<IDECodeJumpInfo>();
     }
 
 	private fun HandleProjectOpen(IDEProjectOpenEvent event)

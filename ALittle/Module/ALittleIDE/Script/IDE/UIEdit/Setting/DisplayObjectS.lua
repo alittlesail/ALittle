@@ -1530,7 +1530,7 @@ function ALittleIDE.DisplayObjectS:LoadShowTypeData(text)
 		if error == nil then
 			display_object.text = object
 		else
-			ALittle.Log("encode failed")
+			ALittle.Log("encode failed:" .. error)
 		end
 	else
 		display_object.text = ""
@@ -1549,7 +1549,7 @@ function ALittleIDE.DisplayObjectS:LoadShowTypeNoNilData(text)
 			if error == nil then
 				display_object.text = new_content
 			else
-				ALittle.Log("encode failed")
+				ALittle.Log("encode failed:" .. error)
 			end
 		else
 			display_object.text = ""
@@ -1561,7 +1561,7 @@ function ALittleIDE.DisplayObjectS:LoadShowTypeNoNilData(text)
 			if error == nil then
 				display_object.text = new_content
 			else
-				ALittle.Log("encode failed")
+				ALittle.Log("encode failed:" .. error)
 			end
 		else
 			display_object.text = ""

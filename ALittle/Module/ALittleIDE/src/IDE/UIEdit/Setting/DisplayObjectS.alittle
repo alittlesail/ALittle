@@ -1554,7 +1554,7 @@ public class DisplayObjectS
 			if (error == null)
 				display_object.text = object;
 			else 
-				ALittle.Log("encode failed");
+				ALittle.Log("encode failed:"..error);
 		}
 		else
 			display_object.text = "";
@@ -1578,7 +1578,7 @@ public class DisplayObjectS
 				if (error == null)
 					display_object.text = new_content;
 				else 
-					ALittle.Log("encode failed");
+					ALittle.Log("encode failed:"..error);
 			}
 			else
 				display_object.text = "";
@@ -1592,7 +1592,7 @@ public class DisplayObjectS
 				if (error == null)
 					display_object.text = new_content;
 				else 
-					ALittle.Log("encode failed");
+					ALittle.Log("encode failed:"..error);
 			}
 			else
 				display_object.text = "";

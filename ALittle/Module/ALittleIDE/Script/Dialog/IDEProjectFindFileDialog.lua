@@ -36,6 +36,20 @@ function ALittleIDE.IDEProjectFindFileDialog:ShowFindFile()
 	self._find_input:DelayFocus()
 end
 
+function ALittleIDE.IDEProjectFindFileDialog:HideDialog()
+	if self._project_find_file_dialog == nil then
+		return
+	end
+	self._project_find_file_dialog.visible = false
+end
+
+function ALittleIDE.IDEProjectFindFileDialog:IsShow()
+	if self._project_find_file_dialog == nil then
+		return false
+	end
+	return self._project_find_file_dialog.visible
+end
+
 function ALittleIDE.IDEProjectFindFileDialog:HandleEnterKeyClick(event)
 	self:HandleSearchClick(nil)
 end

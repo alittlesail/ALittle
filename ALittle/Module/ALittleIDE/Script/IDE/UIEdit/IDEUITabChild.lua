@@ -229,6 +229,7 @@ function ALittleIDE.IDEUITabChild:OnTabRightMenu(menu)
 	menu:AddItem("截图导出", Lua.Bind(A_OtherSystem.SystemSaveFile, A_OtherSystem, self, self._name .. ".png", nil))
 	menu:AddItem("复制控件名", Lua.Bind(ALittle.System_SetClipboardText, self._name))
 	menu:AddItem("复制继承代码", Lua.Bind(self.CopyExtends, self))
+	menu:AddItem("刷新", Lua.Bind(self.Refresh, self))
 end
 
 function ALittleIDE.IDEUITabChild:CopyExtends()
@@ -487,6 +488,31 @@ end
 
 function ALittleIDE.IDEUITabChild:HandleShowScaleLayer(event)
 	self._tab_scale_container.visible = event.value
+end
+
+function ALittleIDE.IDEUITabChild:Refresh()
+	local control_info = ALittleIDE.g_IDEProject.project.ui.control_map[self._name]
+	if control_info == nil then
+		return
+	end
+	local object = ALittleIDE.g_IDEProject.project.control:CreateControl(self._name)
+	self._tab_object_container:RemoveAllChild()
+	self._tab_object_container:AddChild(object)
+	self._tree_object = ALittleIDE.IDEUIUtility_CreateTree(control_info.info, false, object, nil, self, true)
+	self._tree_object:AddEventListener(___all_struct[-431205740], self, self.HandleTreeSizeChanged)
+	self._tree_object.fold = true
+	self._tree_screen:RemoveAllChild()
+	self._tree_screen:AddChild(self._tree_object)
+	self._anti_panel:Init(self)
+	self._group = ALittle.CreateKeyWeakMap()
+	self._tab_quad_container:RemoveAllChild()
+	self._tab_quad_map = {}
+	self._tree_search_info = {}
+	self._tree_search_info.name = ""
+	self._tree_search_info.index = 0
+	self._save = true
+	self:UpdateTitle()
+	self._revoke_list = ALittle.RevokeList()
 end
 
 function ALittleIDE.IDEUITabChild:CreateByNew(type)

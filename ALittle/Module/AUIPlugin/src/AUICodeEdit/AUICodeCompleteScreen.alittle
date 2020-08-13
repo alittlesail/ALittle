@@ -218,7 +218,7 @@ protected class AUICodeCompleteScreen
             item_info.complete = info;
             this._item_list[index] = item_info;
 
-            var title_wdith = this._edit.ascii_width * ALittle.String_Len(info.display) + item_info._item_title.x + 5;
+            var title_wdith = item_info._item_title.width + item_info._item_title.x + 5;
             if (max_width < title_wdith) max_width = title_wdith;
 
             this._item_height = item_info._item.height;

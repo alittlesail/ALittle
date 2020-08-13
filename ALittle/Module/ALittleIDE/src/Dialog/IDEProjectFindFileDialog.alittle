@@ -30,6 +30,18 @@ protected class IDEProjectFindFileDialog
         this._find_input.DelayFocus();
 	}
 
+    public fun HideDialog()
+    {
+        if (this._project_find_file_dialog == null) return;
+        this._project_find_file_dialog.visible = false;
+    }
+
+    public fun IsShow() : bool
+    {
+        if (this._project_find_file_dialog == null) return false;
+        return this._project_find_file_dialog.visible;
+    }
+
     private fun HandleEnterKeyClick(ALittle.UIEnterKeyEvent event)
     {
         this.HandleSearchClick(null);

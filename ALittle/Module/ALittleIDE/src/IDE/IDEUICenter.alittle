@@ -169,10 +169,15 @@ protected class IDEUICenter : ALittle.DisplayLayout
                 g_IDEAttrEventDialog.HideDialog();
                 return;
             }
-            if (g_IDEAttrControlDialog.dialog.visible)
+            if (g_IDEAttrControlDialog.IsShow())
 			{
                 g_IDEAttrControlDialog.HideDialog();
 				return;
+            }
+            if (g_IDEProjectFindFileDialog.IsShow())
+            {
+                g_IDEProjectFindFileDialog.HideDialog();
+                return;
             }
         }
 

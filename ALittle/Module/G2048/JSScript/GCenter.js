@@ -66,6 +66,7 @@ G2048.GCenter = JavaScript.Class(undefined, {
 		this.GenerateItem(0);
 		this._item_moved = false;
 		this._loop_delay = 0;
+		this._drag_quad.DelayFocus();
 	},
 	GenerateItem : function(delay_time) {
 		let list = [];
@@ -421,6 +422,30 @@ G2048.GCenter = JavaScript.Class(undefined, {
 	},
 	EraseItem : function(item) {
 		this._tile_container.RemoveChild(item);
+	},
+	HandleKeyDown : function(event) {
+		this.ClearAnti();
+		this._item_moved = false;
+		this._loop_delay = 0;
+		if (event.sym === 1073741904) {
+			this.CalcLeft();
+		} else if (event.sym === 1073741903) {
+			this.CalcRight();
+		} else if (event.sym === 1073741906) {
+			this.CalcUp();
+		} else if (event.sym === 1073741905) {
+			this.CalcDown();
+		}
+		if (this.CheckGameOver()) {
+			return;
+		}
+		if (this._item_moved === false) {
+			return;
+		}
+		this.GenerateItem(this._loop_delay);
+		if (this.CheckGameOver()) {
+			return;
+		}
 	},
 	HandleDragBegin : function(event) {
 		this._drag_total_x = 0;

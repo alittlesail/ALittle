@@ -34,6 +34,7 @@ class GCenter
     
     private bool _item_moved;
     
+    private ALittle.DisplayObject _drag_quad;
     private double _drag_total_x;
     private double _drag_total_y;
 
@@ -76,8 +77,8 @@ class GCenter
     
         // 创建主界面
         g_Control.CreateControl{ALittle.DisplayObject}("main_scene", this, this._main_layer);
-    
-        this._max_score_text._user_data = g_GConfig.GetConfig("max_score", 0);        
+
+        this._max_score_text._user_data = g_GConfig.GetConfig("max_score", 0);
         this._max_score_text.text = this._max_score_text._user_data;
     
         this.Restart();
@@ -121,6 +122,8 @@ class GCenter
     
         this._item_moved = false;
         this._loop_delay = 0;
+
+        this._drag_quad.DelayFocus();
     }
     
     public fun GenerateItem(int delay_time) : bool
@@ -618,22 +621,50 @@ class GCenter
     {
         this._tile_container.RemoveChild(item);
     }
+
+    private fun HandleKeyDown(ALittle.UIKeyDownEvent event)
+    {
+        // 清除所有动画
+        this.ClearAnti();
     
-    public fun HandleDragBegin(ALittle.UIButtonDragEvent event)
+        this._item_moved = false;
+        this._loop_delay = 0;
+    
+        // 水平方向
+        if (event.sym == ALittle.UIEnumTypes.KEY_LEFT)
+            this.CalcLeft();
+        elseif (event.sym == ALittle.UIEnumTypes.KEY_RIGHT)
+            this.CalcRight();
+        elseif (event.sym == ALittle.UIEnumTypes.KEY_UP)
+            this.CalcUp();
+        elseif (event.sym == ALittle.UIEnumTypes.KEY_DOWN)
+            this.CalcDown();
+    
+        // 检查是否游戏结束
+        if (this.CheckGameOver()) return;
+    
+        if (this._item_moved == false) return;
+        this.GenerateItem(this._loop_delay);
+    
+        // 检查是否游戏结束
+        if (this.CheckGameOver()) return;
+    }
+    
+    private fun HandleDragBegin(ALittle.UIButtonDragEvent event)
     {
         // 重置拖拽累计
         this._drag_total_x = 0;
         this._drag_total_y = 0;
     }
     
-    public fun HandleDrag(ALittle.UIButtonDragEvent event)
+    private fun HandleDrag(ALittle.UIButtonDragEvent event)
     {
         // 拖拽累计
         this._drag_total_x = this._drag_total_x + event.delta_x;
         this._drag_total_y = this._drag_total_y + event.delta_y;
     }
     
-    public fun HandleDragEnd(ALittle.UIButtonDragEvent event)
+    private fun HandleDragEnd(ALittle.UIButtonDragEvent event)
     {
         // 清除所有动画
         this.ClearAnti();

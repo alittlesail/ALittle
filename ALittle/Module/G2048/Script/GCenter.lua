@@ -74,6 +74,7 @@ function G2048.GCenter:Restart()
 	self:GenerateItem(0)
 	self._item_moved = false
 	self._loop_delay = 0
+	self._drag_quad:DelayFocus()
 end
 
 function G2048.GCenter:GenerateItem(delay_time)
@@ -469,6 +470,31 @@ end
 
 function G2048.GCenter:EraseItem(item)
 	self._tile_container:RemoveChild(item)
+end
+
+function G2048.GCenter:HandleKeyDown(event)
+	self:ClearAnti()
+	self._item_moved = false
+	self._loop_delay = 0
+	if event.sym == 1073741904 then
+		self:CalcLeft()
+	elseif event.sym == 1073741903 then
+		self:CalcRight()
+	elseif event.sym == 1073741906 then
+		self:CalcUp()
+	elseif event.sym == 1073741905 then
+		self:CalcDown()
+	end
+	if self:CheckGameOver() then
+		return
+	end
+	if self._item_moved == false then
+		return
+	end
+	self:GenerateItem(self._loop_delay)
+	if self:CheckGameOver() then
+		return
+	end
 end
 
 function G2048.GCenter:HandleDragBegin(event)

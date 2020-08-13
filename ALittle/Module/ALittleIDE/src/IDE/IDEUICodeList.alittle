@@ -36,6 +36,9 @@ public class IDEUICodeList : ALittle.DisplayLayout
     private int _jump_count = 0;
     private int _jump_index = 0;
 
+    private IDECodeTreeItem _cut_item;		// 剪切对象
+    private IDECodeTreeItem _copy_item;		// 复制对象
+
 	public ctor(ALittle.ControlSystem ctrl_sys)
 	{
 		this._group = new ALittle.TextRadioButtonGroup();
@@ -266,5 +269,22 @@ public class IDEUICodeList : ALittle.DisplayLayout
 			this._search_info.index = 1;
 		var item = this._search_info.list[this._search_info.index];
 		this.ShowTreeItemFocus(item);
+    }
+
+    // 设置剪切内容
+    public fun SetCutTreeItem(IDECodeTreeItem item) { this._cut_item = item; this._copy_item = null; }
+    // 获取剪切内容
+    public fun GetCutTreeItem() : IDECodeTreeItem { return this._cut_item; }
+
+    // 设置复制内容
+    public fun SetCopyTreeItem(IDECodeTreeItem item) { this._copy_item = item; this._cut_item = null; }
+    // 获取复制内容
+    public fun GetCopyTreeItem() : IDECodeTreeItem { return this._copy_item; }
+
+    // 设置剪切内容
+    public fun ClearCutAndCopy()
+    {
+        this._cut_item = null;
+        this._copy_item = null;
     }
 }

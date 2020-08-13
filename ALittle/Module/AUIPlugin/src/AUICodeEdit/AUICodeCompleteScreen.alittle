@@ -224,7 +224,7 @@ protected class AUICodeCompleteScreen
             this._item_height = item_info._item.height;
         }
 
-        this._screen.width = max_width;
+        this._screen.width = max_width + this._screen.right_scrollbar.width;
 
         this._edit.help_container.AddChild(this._screen);
 

@@ -1140,6 +1140,8 @@ function AUIPlugin.AUICodeEdit:HandleKeyDown(event)
 	elseif event.sym == 1073741898 then
 		if ALittle.BitAnd(event.mod, 0x0003) == 0 then
 			if self._select_cursor.line_start ~= nil then
+				local it_line, it_char = self._select_cursor:GetLineCharCloseToHome()
+				self._cursor:SetLineChar(it_line, it_char)
 				self._select_cursor:Hide()
 			else
 				self._cursor:OffsetHome()
@@ -1159,6 +1161,8 @@ function AUIPlugin.AUICodeEdit:HandleKeyDown(event)
 	elseif event.sym == 1073741901 then
 		if ALittle.BitAnd(event.mod, 0x0003) == 0 then
 			if self._select_cursor.line_start ~= nil then
+				local it_line, it_char = self._select_cursor:GetLineCharCloseToEnd()
+				self._cursor:SetLineChar(it_line, it_char)
 				self._select_cursor:Hide()
 			else
 				self._cursor:OffsetEnd()

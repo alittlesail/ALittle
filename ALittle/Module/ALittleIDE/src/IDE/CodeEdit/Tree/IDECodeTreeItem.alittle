@@ -52,6 +52,8 @@ public class IDECodeTreeItem : IDECodeTreeLogic
 		if (this._user_info.project != null && ALittle.File_GetFileExtByPathAndUpper(this._user_info.path) == this._user_info.project.upper_ext)
 			this._user_info.project.OnTreeItemMenu(this._user_info.path, menu);
 		menu.AddItem("重命名", bind(this.HandleRenameFile, this));
+        menu.AddItem("剪切", bind(this.HandleCutFile, this));
+        menu.AddItem("复制", bind(this.HandleCopyFile, this));
 		menu.AddItem("删除", bind(this.HandleDeleteFile, this));
 		menu.Show();
     }
@@ -70,6 +72,16 @@ public class IDECodeTreeItem : IDECodeTreeLogic
         this.RemoveFromParent();
 		if (parent != null) parent.DispatchEvent(new ALittle.UIResizeEvent());
 		g_IDECenter.center.content_edit.CloseTabByName{IDECodeTabChild}(this._user_info.name);
+    }
+
+    private fun HandleCutFile()
+    {
+        g_IDECenter.center.code_list.SetCutTreeItem(this);
+    }
+
+    private fun HandleCopyFile()
+    {
+        g_IDECenter.center.code_list.SetCopyTreeItem(this);
     }
 
 	private async fun HandleRenameFile()

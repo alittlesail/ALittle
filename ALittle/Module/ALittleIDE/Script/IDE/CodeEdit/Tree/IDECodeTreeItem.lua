@@ -91,6 +91,8 @@ function ALittleIDE.IDECodeTreeItem:HandleRButtonDown(event)
 		self._user_info.project:OnTreeItemMenu(self._user_info.path, menu)
 	end
 	menu:AddItem("重命名", Lua.Bind(self.HandleRenameFile, self))
+	menu:AddItem("剪切", Lua.Bind(self.HandleCutFile, self))
+	menu:AddItem("复制", Lua.Bind(self.HandleCopyFile, self))
 	menu:AddItem("删除", Lua.Bind(self.HandleDeleteFile, self))
 	menu:Show()
 end
@@ -111,6 +113,14 @@ function ALittleIDE.IDECodeTreeItem:HandleDeleteFile()
 	ALittleIDE.g_IDECenter.center.content_edit:CloseTabByName(ALittleIDE.IDECodeTabChild, self._user_info.name)
 end
 ALittleIDE.IDECodeTreeItem.HandleDeleteFile = Lua.CoWrap(ALittleIDE.IDECodeTreeItem.HandleDeleteFile)
+
+function ALittleIDE.IDECodeTreeItem:HandleCutFile()
+	ALittleIDE.g_IDECenter.center.code_list:SetCutTreeItem(self)
+end
+
+function ALittleIDE.IDECodeTreeItem:HandleCopyFile()
+	ALittleIDE.g_IDECenter.center.code_list:SetCopyTreeItem(self)
+end
 
 function ALittleIDE.IDECodeTreeItem:HandleRenameFile()
 	local file_name = ALittle.File_GetFileNameByPath(self._user_info.path)

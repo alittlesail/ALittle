@@ -1133,7 +1133,11 @@ public class AUICodeEdit : ALittle.DisplayLayout
             if (ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) == 0)
             {
                 if (this._select_cursor.line_start != null)
+                {
+                    var it_line, it_char = this._select_cursor.GetLineCharCloseToHome();
+                    this._cursor.SetLineChar(it_line, it_char);
                     this._select_cursor.Hide();
+                }
                 else
                     this._cursor.OffsetHome();
                 this._complete_screen.TryHide();
@@ -1155,7 +1159,11 @@ public class AUICodeEdit : ALittle.DisplayLayout
             if (ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) == 0)
             {
                 if (this._select_cursor.line_start != null)
+                {
+                    var it_line, it_char = this._select_cursor.GetLineCharCloseToEnd();
+                    this._cursor.SetLineChar(it_line, it_char);
                     this._select_cursor.Hide();
+                }
                 else
                     this._cursor.OffsetEnd();
                 this._complete_screen.TryHide();

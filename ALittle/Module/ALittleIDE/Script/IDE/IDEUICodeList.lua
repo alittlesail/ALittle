@@ -249,4 +249,27 @@ function ALittleIDE.IDEUICodeList:HandleCodeSearchClick(event)
 	self:ShowTreeItemFocus(item)
 end
 
+function ALittleIDE.IDEUICodeList:SetCutTreeItem(item)
+	self._cut_item = item
+	self._copy_item = nil
+end
+
+function ALittleIDE.IDEUICodeList:GetCutTreeItem()
+	return self._cut_item
+end
+
+function ALittleIDE.IDEUICodeList:SetCopyTreeItem(item)
+	self._copy_item = item
+	self._cut_item = nil
+end
+
+function ALittleIDE.IDEUICodeList:GetCopyTreeItem()
+	return self._copy_item
+end
+
+function ALittleIDE.IDEUICodeList:ClearCutAndCopy()
+	self._cut_item = nil
+	self._copy_item = nil
+end
+
 end

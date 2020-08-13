@@ -79,9 +79,12 @@ function ALittleIDE.IDECodeTree:HandleRButtonDown(event)
 	if self._user_info.project ~= nil then
 		self._user_info.project:OnTreeMenu(self._user_info.path, menu)
 	end
-	menu:AddItem("新建文件", Lua.Bind(self.HandleCreateFile, self))
+	menu:AddItem("新建ALittle文件", Lua.Bind(self.HandleCreateFile, self))
 	menu:AddItem("新建文件夹", Lua.Bind(self.HandleCreateDir, self))
 	menu:AddItem("刷新", Lua.Bind(self.Refresh, self))
+	if ALittleIDE.g_IDECenter.center.code_list:GetCutTreeItem() ~= nil or ALittleIDE.g_IDECenter.center.code_list:GetCopyTreeItem() ~= nil then
+		menu:AddItem("粘贴", Lua.Bind(self.PasteFile, self))
+	end
 	if not self._user_info.root then
 		menu:AddItem("删除", Lua.Bind(self.HandleDeleteDir, self))
 	end
@@ -102,7 +105,8 @@ function ALittleIDE.IDECodeTree:HandleCreateFile()
 	if name == nil or name == "" then
 		return
 	end
-	ALittle.File_WriteTextToFile("", self._user_info.path .. "/" .. name)
+	local content = "\nnamespace " .. ALittleIDE.g_IDEProject.project.name .. ";\n\n"
+	ALittle.File_WriteTextToFile(content, self._user_info.path .. "/" .. name .. ".alittle")
 	self:Refresh()
 end
 ALittleIDE.IDECodeTree.HandleCreateFile = Lua.CoWrap(ALittleIDE.IDECodeTree.HandleCreateFile)
@@ -170,6 +174,40 @@ ALittleIDE.IDECodeTree.HandleRemoveModule = Lua.CoWrap(ALittleIDE.IDECodeTree.Ha
 
 function ALittleIDE.IDECodeTree.__getter:is_tree()
 	return true
+end
+
+function ALittleIDE.IDECodeTree:PasteFile()
+	local item = ALittleIDE.g_IDECenter.center.code_list:GetCutTreeItem()
+	if item ~= nil then
+		local path = ALittle.File_GetFilePathByPath(item.user_info.path)
+		local name = ALittle.File_GetFileNameByPath(item.user_info.path)
+		if path == self._user_info.path then
+			return
+		end
+		ALittle.File_RenameFile(item.user_info.path, self._user_info.path .. "/" .. name)
+		item:OnDelete()
+		local parent = item.parent
+		item:RemoveFromParent()
+		if parent ~= nil then
+			parent:DispatchEvent(___all_struct[-431205740], {})
+		end
+		ALittleIDE.g_IDECenter.center.content_edit:CloseTabByName(ALittleIDE.IDECodeTabChild, item.user_info.name)
+		self:Refresh()
+		ALittleIDE.g_IDECenter.center.code_list:ClearCutAndCopy()
+		return
+	end
+	item = ALittleIDE.g_IDECenter.center.code_list:GetCopyTreeItem()
+	if item ~= nil then
+		local path = ALittle.File_GetFilePathByPath(item.user_info.path)
+		local name = ALittle.File_GetFileNameByPath(item.user_info.path)
+		if path == self._user_info.path then
+			return
+		end
+		ALittle.File_CopyFile(item.user_info.path, self._user_info.path .. "/" .. name)
+		self:Refresh()
+		ALittleIDE.g_IDECenter.center.code_list:ClearCutAndCopy()
+		return
+	end
 end
 
 function ALittleIDE.IDECodeTree:Refresh()

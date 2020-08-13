@@ -196,7 +196,7 @@ function AUIPlugin.AUICodeCompleteScreen:ReInit()
 		end
 		self._item_height = item_info._item.height
 	end
-	self._screen.width = max_width
+	self._screen.width = max_width + self._screen.right_scrollbar.width
 	self._edit.help_container:AddChild(self._screen)
 	return true
 end

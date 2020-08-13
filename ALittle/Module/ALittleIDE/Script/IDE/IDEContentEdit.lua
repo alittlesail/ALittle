@@ -226,7 +226,7 @@ function ALittleIDE.IDEContentEdit:CloseTabByName(T, name)
 	for index, child in ___ipairs(self._main_tab.childs) do
 		local tab_child = child._user_data
 		local target_child = ALittle.Cast(T, ALittleIDE.IDETabChild, tab_child)
-		if target_child ~= nil and target_child.name == name then
+		if target_child ~= nil and self._main_tab:GetChildText(child) == name then
 			self:CloseTab(tab_child.tab_body)
 			break
 		end
@@ -237,7 +237,7 @@ function ALittleIDE.IDEContentEdit:RenameTabByName(T, old_name, new_name)
 	for index, child in ___ipairs(self._main_tab.childs) do
 		local tab_child = child._user_data
 		local target_child = ALittle.Cast(T, ALittleIDE.IDETabChild, tab_child)
-		if target_child ~= nil and target_child.name == old_name then
+		if target_child ~= nil and self._main_tab:GetChildText(child) == old_name then
 			self._main_tab:SetChildText(tab_child.tab_body, new_name)
 			break
 		end

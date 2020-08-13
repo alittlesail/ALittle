@@ -166,7 +166,7 @@ public class IDEContentEdit : ALittle.DisplayLayout
 		{
             var tab_child:IDETabChild = child._user_data;
             var target_child = ALittle.Cast{T}(tab_child);
-			if (target_child != null && target_child.name == name)
+			if (target_child != null && this._main_tab.GetChildText(child) == name)
 			{
                 this.CloseTab(tab_child.tab_body);
 				break;
@@ -180,7 +180,7 @@ public class IDEContentEdit : ALittle.DisplayLayout
 		{
             var tab_child:IDETabChild = child._user_data;
             var target_child = ALittle.Cast{T}(tab_child);
-			if (target_child != null && target_child.name == old_name)
+			if (target_child != null && this._main_tab.GetChildText(child) == old_name)
 			{
 				this._main_tab.SetChildText(tab_child.tab_body, new_name);
 				break;

@@ -43,8 +43,7 @@ public async static __Module_Setup(ALittle.DisplayLayout layer_group, ALittle.Co
 
     g_AUIPluinControl = A_ModuleSystem.LoadPlugin("AUIPlugin");
 	
-	alittle.Require(script_base_path, "GCenter");
-	alittle.Require(script_base_path, "GUtility");
+    alittle.RequireFromPaths(script_base_path, "", paths("src"));
 	g_GCenter.Setup();
 }
 

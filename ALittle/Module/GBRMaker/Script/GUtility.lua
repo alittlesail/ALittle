@@ -1,11 +1,11 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
-module("GBRMaker", package.seeall)
-
+do
+if _G.GBRMaker == nil then _G.GBRMaker = {} end
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-function IDEUtility_CheckResourceName(name)
+function GBRMaker.IDEUtility_CheckResourceName(name)
 	local len = ALittle.String_Len(name)
 	if len == 0 then
 		return false, "命名只能支持字母数字下划线"
@@ -23,13 +23,13 @@ function IDEUtility_CheckResourceName(name)
 	return true, nil
 end
 
-function IDECoordVirtual2Show(x, y, unit_real_width, unit_width, unit_real_height, unit_height)
+function GBRMaker.IDECoordVirtual2Show(x, y, unit_real_width, unit_width, unit_real_height, unit_height)
 	local show_x = y * unit_real_width / 2 + x * unit_real_width - unit_width / 2
 	local show_y = y * unit_real_height * 3 / 4 - unit_height / 2
 	return show_x, show_y
 end
 
-function IDECoordShow2Virtual(x, y, unit_real_width, unit_width, unit_real_height, unit_height)
+function GBRMaker.IDECoordShow2Virtual(x, y, unit_real_width, unit_width, unit_real_height, unit_height)
 	local yy = y / ALittle.Math_Cos(3.1415926 / 6)
 	local offset_yy = yy + unit_real_width / 2
 	local virutal_y = ALittle.Math_Floor(offset_yy / unit_real_width)
@@ -37,3 +37,4 @@ function IDECoordShow2Virtual(x, y, unit_real_width, unit_width, unit_real_heigh
 	return virtual_x, virutal_y
 end
 
+end

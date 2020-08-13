@@ -1,7 +1,0 @@
-
-namespace GBRMaker;
-
-public class MainSettingDialog : ALittle.Dialog
-{
-
-}

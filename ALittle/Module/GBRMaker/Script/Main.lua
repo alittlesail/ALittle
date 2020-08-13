@@ -28,8 +28,8 @@ function GBRMaker.__Module_Setup(layer_group, control, module_base_path, script_
 	GBRMaker.g_LayerGroup = layer_group
 	GBRMaker.g_ModuleBasePath = module_base_path
 	GBRMaker.g_AUIPluinControl = A_ModuleSystem:LoadPlugin("AUIPlugin")
-	Require(script_base_path, "GCenter")
-	Require(script_base_path, "GUtility")
+	RequireFromPaths(script_base_path, "", {"Main.alittle", "GUtility.alittle", "GCenter.alittle"
+		, "Dialog/MainSettingDialog.alittle"})
 	g_GCenter:Setup()
 end
 GBRMaker.__Module_Setup = Lua.CoWrap(GBRMaker.__Module_Setup)

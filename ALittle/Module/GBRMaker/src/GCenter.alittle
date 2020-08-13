@@ -94,27 +94,9 @@ class GCenter
     private ALittle.Grid3 _main_grid3_lr;
 
     // 设置界面
-    private ALittle.Dialog _setting_dialog;
-    private ALittle.DisplayObject _setting_project_name_input;
-    private ALittle.DisplayObject _setting_texture_path_input;
-    private ALittle.DisplayObject _setting_data_path_input;
-    private ALittle.DisplayObject _unit_empty_name_input;
-    private ALittle.DisplayObject _unit_width_input;
-    private ALittle.DisplayObject _unit_height_input;
-    private ALittle.DisplayObject _unit_left_input;
-    private ALittle.DisplayObject _unit_right_input;
-    private ALittle.DisplayObject _unit_top_input;
-    private ALittle.DisplayObject _unit_bottom_input;
+    private MainSettingDialog _setting_dialog;
     private ALittle.ControlSystem _control;
-    private int _unit_width;
-    private int _unit_height;
-    private int _unit_left;
-    private int _unit_right;
-    private int _unit_top;
-    private int _unit_bottom;
-    private int _unit_real_width;
-    private int _unit_real_height;
-    
+
     // 纹理列表
     private ALittle.ScrollList _texture_scroll_list;
     private List<ImageSelectItemInfo> _image_cache_list;
@@ -189,7 +171,8 @@ class GCenter
         this._dialog_layer.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
         g_LayerGroup.AddChild(this._dialog_layer, null);
     
-        this._setting_dialog = g_Control.CreateControl{ALittle.Dialog}("main_setting_dialog", this);
+        this._setting_dialog = g_Control.CreateControl{MainSettingDialog}("main_setting_dialog", this);
+        this._setting_dialog.AddEventListener(this, this.HandleSettingChanged);
         A_LayerManager.AddToModal(this._setting_dialog);
         
         // 创建主界面
@@ -212,36 +195,23 @@ class GCenter
 
         A_UISystem.keydown_callback = bind(this.HandleKeyDown, this);
 
-        this._setting_project_name_input.text = g_GConfig.GetString("project_name", "");
-        this._setting_texture_path_input.text = g_GConfig.GetString("texture_path", "");
-        this._unit_empty_name_input.text = g_GConfig.GetString("empty_name", "");
-        this._setting_data_path_input.text = g_GConfig.GetString("data_path", "");
-
-        this._unit_width = g_GConfig.GetInt("unit_width", 100); this._unit_width_input.text = this._unit_width;
-        this._unit_height = g_GConfig.GetInt("unit_height", 100); this._unit_height_input.text = this._unit_height;
-        this._unit_left = g_GConfig.GetInt("unit_left", 0); this._unit_left_input.text = this._unit_left;
-        this._unit_right = g_GConfig.GetInt("unit_right", 0); this._unit_right_input.text = this._unit_right;
-        this._unit_top = g_GConfig.GetInt("unit_top", 0); this._unit_top_input.text = this._unit_top;
-        this._unit_bottom = g_GConfig.GetInt("unit_bottom", 0); this._unit_bottom_input.text = this._unit_bottom;
-        this._unit_real_width = this._unit_width - this._unit_left - this._unit_right;
-        this._unit_real_height = this._unit_height - this._unit_top - this._unit_bottom;
-        
-        var module_path = "Module/"..this._setting_project_name_input.text;
+        var setting_data = this._setting_dialog.data;
+        var module_path = "Module/"..setting_data.project_name;
         if (ALittle.File_GetFileAttr(module_path) == null
-            || ALittle.File_GetFileAttr(module_path.."/Texture/"..this._setting_texture_path_input.text) == null
-            || ALittle.File_GetFileAttr(module_path.."/Texture/"..this._setting_texture_path_input.text.."/"..this._unit_empty_name_input.text) == null
-            || ALittle.File_GetFileAttr(module_path.."/Other/"..this._setting_data_path_input.text) == null)
+            || ALittle.File_GetFileAttr(module_path.."/Texture/"..setting_data.texture_path) == null
+            || ALittle.File_GetFileAttr(module_path.."/Texture/"..setting_data.texture_path.."/"..setting_data.empty_name) == null
+            || ALittle.File_GetFileAttr(module_path.."/Other/"..setting_data.data_path) == null)
         {
             this._setting_dialog.visible = true;
         }
         else
         {
-            this._control = new ALittle.ControlSystem(this._setting_project_name_input.text);
+            this._control = new ALittle.ControlSystem(setting_data.project_name);
             // 固定配置值
             this._real_size = 100;
-            this._file_base_path = module_path.."/Other/"..this._setting_data_path_input.text;
-            this._tex_name_base_path = this._setting_texture_path_input.text.."/";
-            this._texture_base_path = module_path.."/Texture/"..this._setting_texture_path_input.text;
+            this._file_base_path = module_path.."/Other/"..setting_data.data_path;
+            this._tex_name_base_path = setting_data.texture_path.."/";
+            this._texture_base_path = module_path.."/Texture/"..setting_data.texture_path;
 
             this.RefreshTexture();
             this.RefreshFile();
@@ -251,63 +221,15 @@ class GCenter
 
     //设置界面////////////////////////////////////////////////////////////////////////
     private fun HandleShowSettingDialog(ALittle.UIClickEvent event) { this._setting_dialog.visible = true; }
-    private fun HandleSettingCancelClick(ALittle.UIClickEvent event) { this._setting_dialog.visible = false; }
-    private fun HandleSettingConfirmClick(ALittle.UIClickEvent event)
+    private fun HandleSettingChanged(UIMainSettingChangedEvent event)
     {
-        var unit_width = ALittle.Math_ToInt(this._unit_width_input.text);
-        var unit_height = ALittle.Math_ToInt(this._unit_height_input.text);
-        var unit_left = ALittle.Math_ToInt(this._unit_left_input.text);
-        var unit_right = ALittle.Math_ToInt(this._unit_right_input.text);
-        var unit_top = ALittle.Math_ToInt(this._unit_top_input.text);
-        var unit_bottom = ALittle.Math_ToInt(this._unit_bottom_input.text);
+        var module_path = "Module/"..event.data.project_name;
 
-        if (unit_width == null || unit_width < 0
-            || unit_height == null || unit_height < 0
-            || unit_left == null || unit_left < 0
-            || unit_right == null || unit_right < 0
-            || unit_top == null || unit_top < 0
-            || unit_bottom == null || unit_bottom < 0)
-        { g_AUITool.ShowNotice("提示", "请输入正整数"); return; }
+        this._file_base_path = module_path.."/Other/"..event.data.data_path;
+        this._tex_name_base_path = event.data.texture_path.."/";
+        this._texture_base_path = module_path.."/Texture/"..event.data.texture_path;
 
-        var module_path = "Module/"..this._setting_project_name_input.text;
-        if (ALittle.File_GetFileAttr(module_path) == null)
-        { g_AUITool.ShowNotice("提示", "项目不存在"); return; }
-
-        if (ALittle.File_GetFileAttr(module_path.."/Texture/"..this._setting_texture_path_input.text) == null)
-        { g_AUITool.ShowNotice("提示", "格子图片路径不存在"); return; }
-
-        if (ALittle.File_GetFileAttr(module_path.."/Other/"..this._setting_data_path_input.text) == null)
-        { g_AUITool.ShowNotice("提示", "场景数据路径不存在"); return; }
-
-        if (ALittle.File_GetFileAttr(module_path.."/Texture/"..this._setting_texture_path_input.text.."/"..this._unit_empty_name_input.text) == null)
-        { g_AUITool.ShowNotice("提示", "空格子图片不存在"); return; }
-
-        this._file_base_path = module_path.."/Other/"..this._setting_data_path_input.text;
-        this._tex_name_base_path = this._setting_texture_path_input.text.."/";
-        this._texture_base_path = module_path.."/Texture/"..this._setting_texture_path_input.text;
-
-        this._unit_width = unit_width;
-        this._unit_height = unit_height;
-        this._unit_left = unit_left;
-        this._unit_right = unit_right;
-        this._unit_top = unit_top;
-        this._unit_bottom = unit_bottom;
-        this._unit_real_width = this._unit_width - this._unit_left - this._unit_right;
-        this._unit_real_height = this._unit_height - this._unit_top - this._unit_bottom;
-
-        g_GConfig.SetConfig("unit_width", this._unit_width);
-        g_GConfig.SetConfig("unit_height", this._unit_height);
-        g_GConfig.SetConfig("unit_left", this._unit_left);
-        g_GConfig.SetConfig("unit_right", this._unit_right);
-        g_GConfig.SetConfig("unit_top", this._unit_top);
-        g_GConfig.SetConfig("unit_bottom", this._unit_bottom);
-        g_GConfig.SetConfig("project_name", this._setting_project_name_input.text);
-        g_GConfig.SetConfig("texture_path", this._setting_texture_path_input.text);
-        g_GConfig.SetConfig("empty_name", this._unit_empty_name_input.text);
-        g_GConfig.SetConfig("data_path", this._setting_data_path_input.text);
-        
-        this._setting_dialog.visible = false;
-        this._control = new ALittle.ControlSystem(this._setting_project_name_input.text);
+        this._control = new ALittle.ControlSystem(event.data.project_name);
     
         this.RefreshTexture();
         this.RefreshFile();
@@ -589,12 +511,14 @@ class GCenter
                 y_info = new Map<int, ALittle.Image>();
                 floor.floor_info.child_map[virtual_x] = y_info;
             }
+
+            var setting_data = this._setting_dialog.data;
             
             var image = new ALittle.Image(this._control);
             image.texture_name = info.texture_name;
-            image.width = this._unit_width;
-            image.height = this._unit_height;
-            var show_x, show_y = IDECoordVirtual2Show(virtual_x, virtual_y, this._unit_real_width, this._unit_width, this._unit_real_height, this._unit_height);
+            image.width = setting_data.unit_width;
+            image.height = setting_data.unit_height;
+            var show_x, show_y = IDECoordVirtual2Show(virtual_x, virtual_y, setting_data.unit_real_width, setting_data.unit_width, setting_data.unit_real_height, setting_data.unit_height);
             image.x = show_x;
             image.y = show_y;
             floor.edit_item.AddChild(image);
@@ -633,8 +557,9 @@ class GCenter
         // 获取当前层
         if (this._cur_floor == null) return;
 
+        var setting_data = this._setting_dialog.data;
         // 计算坐标
-        var virtual_x, virtual_y = IDECoordShow2Virtual(event.rel_x, event.rel_y, this._unit_real_width, this._unit_width, this._unit_real_height, this._unit_height);
+        var virtual_x, virtual_y = IDECoordShow2Virtual(event.rel_x, event.rel_y, setting_data.unit_real_width, setting_data.unit_width, setting_data.unit_real_height, setting_data.unit_height);
         this.OverWriteCell(this._cur_file, this._cur_floor, virtual_x, virtual_y);
     }
 
@@ -653,8 +578,9 @@ class GCenter
         // 获取当前层
         if (this._cur_floor == null) return;
 
+        var setting_data = this._setting_dialog.data;
         // 计算坐标
-        var virtual_x, virtual_y = IDECoordShow2Virtual(event.rel_x, event.rel_y, this._unit_real_width, this._unit_width, this._unit_real_height, this._unit_height);
+        var virtual_x, virtual_y = IDECoordShow2Virtual(event.rel_x, event.rel_y, setting_data.unit_real_width, setting_data.unit_width, setting_data.unit_real_height, setting_data.unit_height);
         if (this._cur_brush_virtual_x == virtual_x && this._cur_brush_virtual_y == virtual_y) return;
         this._cur_brush_virtual_x = virtual_x;
         this._cur_brush_virtual_y = virtual_y;
@@ -667,8 +593,9 @@ class GCenter
         // 获取当前层
         if (this._cur_floor == null) return;
 
+        var setting_data = this._setting_dialog.data;
         // 计算坐标
-        var virtual_x, virtual_y = IDECoordShow2Virtual(event.rel_x, event.rel_y, this._unit_real_width, this._unit_width, this._unit_real_height, this._unit_height);
+        var virtual_x, virtual_y = IDECoordShow2Virtual(event.rel_x, event.rel_y, setting_data.unit_real_width, setting_data.unit_width, setting_data.unit_real_height, setting_data.unit_height);
         this.EraseCell(this._cur_floor, virtual_x, virtual_y);
     }
 
@@ -683,8 +610,9 @@ class GCenter
         // 获取当前层
         if (this._cur_floor == null) return;
 
+        var setting_data = this._setting_dialog.data;
         // 计算坐标
-        var virtual_x, virtual_y = IDECoordShow2Virtual(event.rel_x, event.rel_y, this._unit_real_width, this._unit_width, this._unit_real_height, this._unit_height);
+        var virtual_x, virtual_y = IDECoordShow2Virtual(event.rel_x, event.rel_y, setting_data.unit_real_width, setting_data.unit_width, setting_data.unit_real_height, setting_data.unit_height);
         if (this._cur_erase_virtual_x == virtual_x && this._cur_erase_virtual_y == virtual_y) return;
         this._cur_erase_virtual_x = virtual_x;
         this._cur_erase_virtual_y = virtual_y;
@@ -835,6 +763,8 @@ class GCenter
     //编辑区////////////////////////////////////////////////////////////////////////
     public fun StartEdit(FileSelectItemInfo file_info)
     {
+        var setting_data = this._setting_dialog.data;
+
         // 设置当前编辑信息
         this._cur_file = file_info;
         this._cur_floor = null;
@@ -865,10 +795,10 @@ class GCenter
             for (var y = 0; y < y_max; 1)
             {
                 var image = new ALittle.Image(this._control);
-                image.texture_name = this._tex_name_base_path..this._unit_empty_name_input.text;
-                image.width = this._unit_width;
-                image.height = this._unit_height;
-                var show_x, show_y = IDECoordVirtual2Show(x, y, this._unit_real_width, this._unit_width, this._unit_real_height, this._unit_height);
+                image.texture_name = this._tex_name_base_path..setting_data.empty_name;
+                image.width = setting_data.unit_width;
+                image.height = setting_data.unit_height;
+                var show_x, show_y = IDECoordVirtual2Show(x, y, setting_data.unit_real_width, setting_data.unit_width, setting_data.unit_real_height, setting_data.unit_height);
                 image.x = show_x;
                 image.y = show_y;
                 this._cur_grid_layer.AddChild(image);
@@ -881,13 +811,13 @@ class GCenter
         {
             for (var y = 0; y < y_max; 1)
             {
-                var show_x, show_y = IDECoordVirtual2Show(x, y, this._unit_real_width, this._unit_width, this._unit_real_height, this._unit_height);
-                if (show_x + this._unit_width / 2 >= 0)
+                var show_x, show_y = IDECoordVirtual2Show(x, y, setting_data.unit_real_width, setting_data.unit_width, setting_data.unit_real_height, setting_data.unit_height);
+                if (show_x + setting_data.unit_width / 2 >= 0)
                 {
                     var image = new ALittle.Image(this._control);
-                    image.texture_name = this._tex_name_base_path..this._unit_empty_name_input.text;
-                    image.width = this._unit_width;
-                    image.height = this._unit_height;
+                    image.texture_name = this._tex_name_base_path..setting_data.empty_name;
+                    image.width = setting_data.unit_width;
+                    image.height = setting_data.unit_height;
                     image.x = show_x;
                     image.y = show_y;
                     this._cur_grid_layer.AddChild(image);
@@ -970,6 +900,8 @@ class GCenter
     
     private fun CreateFloorEdit(FloorSelectItemInfo info) : ALittle.DisplayLayout
     {
+        var setting_data = this._setting_dialog.data;
+
         var layer = new ALittle.DisplayLayout(this._control);
         // 填充格子
         for (var x, y_data in info.floor_info.floor_data.data)
@@ -978,9 +910,9 @@ class GCenter
             {
                 var image = new ALittle.Image(this._control);
                 image.texture_name = info.floor_info.file_info.map_data.tex_map[tex_id];
-                image.width = this._unit_width;
-                image.height = this._unit_height;
-                var show_x, show_y = IDECoordVirtual2Show(x, y, this._unit_real_width, this._unit_width, this._unit_real_height, this._unit_height);
+                image.width = setting_data.unit_width;
+                image.height = setting_data.unit_height;
+                var show_x, show_y = IDECoordVirtual2Show(x, y, setting_data.unit_real_width, setting_data.unit_width, setting_data.unit_real_height, setting_data.unit_height);
                 image.x = show_x;
                 image.y = show_y;
                 layer.AddChild(image);
@@ -1036,8 +968,12 @@ class GCenter
     {
         this._layer_drag_info.visible = event.target.selected;
         if (this._cur_drag_quad != null) this._cur_drag_quad.visible = event.target.selected;
-        for (var index, child in this._cur_edit_layer.childs)
-            child.alpha = 1;
+
+        if (this._cur_edit_layer != null)
+        {
+            for (var index, child in this._cur_edit_layer.childs)
+                child.alpha = 1;
+        }
     }
 
     //其他////////////////////////////////////////////////////////////////////////

@@ -105,7 +105,7 @@ function ALittleIDE.IDECodeTree:HandleCreateFile()
 	if name == nil or name == "" then
 		return
 	end
-	local content = "\nnamespace " .. ALittleIDE.g_IDEProject.project.name .. ";\n\n"
+	local content = "\nnamespace " .. ALittleIDE.g_IDEProject.project.name .. ";\n\nprotected class " .. name .. "\n{\n}\n"
 	ALittle.File_WriteTextToFile(content, self._user_info.path .. "/" .. name .. ".alittle")
 	self:Refresh()
 end

@@ -82,11 +82,6 @@ protected struct BrushSelectItemInfo
 
 class GCenter
 {
-    private double _real_size;
-    private string _texture_base_path;
-    private string _tex_name_base_path;
-    private string _file_base_path;
-
     private ALittle.DisplayLayout _main_layer;
     private ALittle.DisplayLayout _dialog_layer;
 
@@ -98,10 +93,8 @@ class GCenter
     private ALittle.ControlSystem _control;
 
     // 纹理列表
-    private ALittle.ScrollList _texture_scroll_list;
-    private List<ImageSelectItemInfo> _image_cache_list;
-    private ALittle.DisplayObject _texture_search_key;
-    
+    private MainTextureList _texture_list;
+
     // 文件列表
     private MainFileList _file_list;
 
@@ -204,13 +197,8 @@ class GCenter
         else
         {
             this._control = new ALittle.ControlSystem(setting_data.project_name);
-            // 固定配置值
-            this._real_size = 100;
-            this._file_base_path = module_path.."/Other/"..setting_data.data_path;
-            this._tex_name_base_path = setting_data.texture_path.."/";
-            this._texture_base_path = module_path.."/Texture/"..setting_data.texture_path;
-
-            this.RefreshTexture();
+            
+            this._texture_list.RefreshTexture();
             this._file_list.RefreshFile();
         }
     }
@@ -222,101 +210,21 @@ class GCenter
     {
         var module_path = "Module/"..event.data.project_name;
 
-        this._file_base_path = module_path.."/Other/"..event.data.data_path;
-        this._tex_name_base_path = event.data.texture_path.."/";
-        this._texture_base_path = module_path.."/Texture/"..event.data.texture_path;
-
         this._control = new ALittle.ControlSystem(event.data.project_name);
     
-        this.RefreshTexture();
+        this._texture_list.RefreshTexture();
         this._file_list.RefreshFile();
     }
     public get setting_dialog() : MainSettingDialog { return this._setting_dialog; }
+    public get right_grad3_ud() : ALittle.Grid3 { return this._right_grad3_ud; }
     
-    //文件列表////////////////////////////////////////////////////////////////////////
-    private async fun HandleFileNewClick(ALittle.UIClickEvent event)
+    public fun SelectTexture(ImageSelectItemInfo image_info, bool multi)
     {
-        var x, y = event.target.LocalToGlobal();
-        var file_name = g_AUITool.ShowRename("", x, y + event.target.height, 200);
-        if (file_name == "" || file_name == null) return;
-    }
-
-    //纹理列表////////////////////////////////////////////////////////////////////////
-    public fun RefreshTexture()
-    {
-        this._image_cache_list = new List<ImageSelectItemInfo>();
-        this._texture_scroll_list.RemoveAllChild();
-
-        if (ALittle.File_GetFileAttr(this._texture_base_path) == null) return;
-
-        var file_list = ALittle.File_GetFileListByDir(this._texture_base_path);
-        ALittle.List_Sort(file_list);
-
-        for (var index, file_path in file_list)
-        {
-            var rel_path = ALittle.String_Sub(file_path, ALittle.String_Len(this._texture_base_path) + 2);
-            var texture_name = this._tex_name_base_path..rel_path;
-
-            var info = new ImageSelectItemInfo();
-            info.item = g_Control.CreateControl{ALittle.DisplayLayout}("ide_image_select_item", info);
-            info.button._user_data = info;
-			info.image.SetTextureCut(file_path, ALittle.Math_Floor(info.frame.width), ALittle.Math_Floor(info.frame.height), true);
-            info.name.text = ALittle.File_GetJustFileNameByPath(rel_path);
-            info.upper_file_name = ALittle.String_Upper(info.name.text);
-            info.file_path = file_path;
-
-            info.button.drag_trans_target = this._texture_scroll_list;
-            info.button.AddEventListener(this, this.HandleTextureSelectClick);
-
-            this._image_cache_list[index] = info;
-        }
-
-        this.HandleTextureSearchClick(null);
-    }
-
-    public fun HandleTextureSearchClick(ALittle.UIEvent event)
-    {
-        this._texture_scroll_list.RemoveAllChild();
-        var upper_key = ALittle.String_Upper(this._texture_search_key.text);
-        
-        var col_count = ALittle.Math_Floor(this._texture_scroll_list.width / this._real_size);
-		var remain_count = 0;
-		var container:ALittle.Linear = null;
-		// 遍历列表
-		for (var index, info in this._image_cache_list)
-		{
-            if (ALittle.String_Find(info.upper_file_name, upper_key) != null)
-            {
-			    if (remain_count == 0)
-			    {
-				    container = new ALittle.Linear(g_Control);
-				    container.type = ALittle.UIEnumTypes.TYPE_H;
-				    container.height = info.item.height;
-				    this._texture_scroll_list.AddChild(container);
-				    container.AddChild(info.item);
-	
-				    remain_count = col_count - 1;
-			    }
-			    else
-			    {
-				    remain_count = remain_count - 1;
-				    container.AddChild(info.item);
-			    } 
-            }
-		}
-    }
-
-    private fun HandleTextureSelectClick(ALittle.UIClickEvent event)
-    {
-        // 如果没有按ctrl键，那么就直接清空当前
-        var ctrl = A_UISystem.sym_map[1073742048];
-        if (ctrl == null)
+        if (!multi)
             this._brush_scroll_screen.RemoveAllChild();
 
-        var image_info:ImageSelectItemInfo = event.target._user_data;
-        
-        var rel_path = ALittle.String_Sub(image_info.file_path, ALittle.String_Len(this._texture_base_path) + 2);
-        var texture_name = this._tex_name_base_path..rel_path;
+        var rel_path = ALittle.String_Sub(image_info.file_path, ALittle.String_Len(this._texture_list.texture_base_path) + 2);
+        var texture_name = this._texture_list.tex_name_base_path..rel_path;
 
         for (var index, child in this._brush_scroll_screen.childs)
         {
@@ -681,7 +589,7 @@ class GCenter
             for (var y = 0; y < y_max; 1)
             {
                 var image = new ALittle.Image(this._control);
-                image.texture_name = this._tex_name_base_path..setting_data.empty_name;
+                image.texture_name = this._texture_list.tex_name_base_path..setting_data.empty_name;
                 image.width = setting_data.unit_width;
                 image.height = setting_data.unit_height;
                 var show_x, show_y = IDECoordVirtual2Show(x, y, setting_data.unit_real_width, setting_data.unit_width, setting_data.unit_real_height, setting_data.unit_height);
@@ -701,7 +609,7 @@ class GCenter
                 if (show_x + setting_data.unit_width / 2 >= 0)
                 {
                     var image = new ALittle.Image(this._control);
-                    image.texture_name = this._tex_name_base_path..setting_data.empty_name;
+                    image.texture_name = this._texture_list.tex_name_base_path..setting_data.empty_name;
                     image.width = setting_data.unit_width;
                     image.height = setting_data.unit_height;
                     image.x = show_x;
@@ -920,10 +828,7 @@ class GCenter
         }
         // ALittle.Log(lua.ajson.encode(A_UISystem.sym_map));
     }
-    
-    // 日志列表和详细列表之间的上下调整
-    private fun HandleDragRightQuadUD(ALittle.UIButtonDragEvent event) { this._right_grad3_ud.up_size += event.delta_y; }
-    private fun HandleDragEndRightQuadUD(ALittle.UIButtonDragEndEvent event) { g_GConfig.SetConfig("right_grid3_up_size", this._right_grad3_ud.up_size); }
+
     // 中间部分和右边部分之间的左右调整
     private fun HandleDragRightQuadLR(ALittle.UIButtonDragEvent event) { this._main_grid3_lr.down_size -= event.delta_x; }
     private fun HandleDragEndRightQuadLR(ALittle.UIButtonDragEndEvent event) { g_GConfig.SetConfig("main_grid3_down_size", this._main_grid3_lr.down_size); }

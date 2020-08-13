@@ -149,11 +149,7 @@ function GBRMaker.GCenter:Setup()
 		self._setting_dialog.visible = true
 	else
 		self._control = ALittle.ControlSystem(setting_data.project_name)
-		self._real_size = 100
-		self._file_base_path = module_path .. "/Other/" .. setting_data.data_path
-		self._tex_name_base_path = setting_data.texture_path .. "/"
-		self._texture_base_path = module_path .. "/Texture/" .. setting_data.texture_path
-		self:RefreshTexture()
+		self._texture_list:RefreshTexture()
 		self._file_list:RefreshFile()
 	end
 end
@@ -164,11 +160,8 @@ end
 
 function GBRMaker.GCenter:HandleSettingChanged(event)
 	local module_path = "Module/" .. event.data.project_name
-	self._file_base_path = module_path .. "/Other/" .. event.data.data_path
-	self._tex_name_base_path = event.data.texture_path .. "/"
-	self._texture_base_path = module_path .. "/Texture/" .. event.data.texture_path
 	self._control = ALittle.ControlSystem(event.data.project_name)
-	self:RefreshTexture()
+	self._texture_list:RefreshTexture()
 	self._file_list:RefreshFile()
 end
 
@@ -176,71 +169,16 @@ function GBRMaker.GCenter.__getter:setting_dialog()
 	return self._setting_dialog
 end
 
-function GBRMaker.GCenter:HandleFileNewClick(event)
-	local x, y = event.target:LocalToGlobal()
-	local file_name = g_AUITool:ShowRename("", x, y + event.target.height, 200)
-	if file_name == "" or file_name == nil then
-		return
-	end
-end
-GBRMaker.GCenter.HandleFileNewClick = Lua.CoWrap(GBRMaker.GCenter.HandleFileNewClick)
-
-function GBRMaker.GCenter:RefreshTexture()
-	self._image_cache_list = {}
-	self._texture_scroll_list:RemoveAllChild()
-	if ALittle.File_GetFileAttr(self._texture_base_path) == nil then
-		return
-	end
-	local file_list = ALittle.File_GetFileListByDir(self._texture_base_path)
-	ALittle.List_Sort(file_list)
-	for index, file_path in ___ipairs(file_list) do
-		local rel_path = ALittle.String_Sub(file_path, ALittle.String_Len(self._texture_base_path) + 2)
-		local texture_name = self._tex_name_base_path .. rel_path
-		local info = {}
-		info.item = GBRMaker.g_Control:CreateControl("ide_image_select_item", info)
-		info.button._user_data = info
-		info.image:SetTextureCut(file_path, ALittle.Math_Floor(info.frame.width), ALittle.Math_Floor(info.frame.height), true)
-		info.name.text = ALittle.File_GetJustFileNameByPath(rel_path)
-		info.upper_file_name = ALittle.String_Upper(info.name.text)
-		info.file_path = file_path
-		info.button.drag_trans_target = self._texture_scroll_list
-		info.button:AddEventListener(___all_struct[-449066808], self, self.HandleTextureSelectClick)
-		self._image_cache_list[index] = info
-	end
-	self:HandleTextureSearchClick(nil)
+function GBRMaker.GCenter.__getter:right_grad3_ud()
+	return self._right_grad3_ud
 end
 
-function GBRMaker.GCenter:HandleTextureSearchClick(event)
-	self._texture_scroll_list:RemoveAllChild()
-	local upper_key = ALittle.String_Upper(self._texture_search_key.text)
-	local col_count = ALittle.Math_Floor(self._texture_scroll_list.width / self._real_size)
-	local remain_count = 0
-	local container = nil
-	for index, info in ___ipairs(self._image_cache_list) do
-		if ALittle.String_Find(info.upper_file_name, upper_key) ~= nil then
-			if remain_count == 0 then
-				container = ALittle.Linear(GBRMaker.g_Control)
-				container.type = 1
-				container.height = info.item.height
-				self._texture_scroll_list:AddChild(container)
-				container:AddChild(info.item)
-				remain_count = col_count - 1
-			else
-				remain_count = remain_count - 1
-				container:AddChild(info.item)
-			end
-		end
-	end
-end
-
-function GBRMaker.GCenter:HandleTextureSelectClick(event)
-	local ctrl = A_UISystem.sym_map[1073742048]
-	if ctrl == nil then
+function GBRMaker.GCenter:SelectTexture(image_info, multi)
+	if not multi then
 		self._brush_scroll_screen:RemoveAllChild()
 	end
-	local image_info = event.target._user_data
-	local rel_path = ALittle.String_Sub(image_info.file_path, ALittle.String_Len(self._texture_base_path) + 2)
-	local texture_name = self._tex_name_base_path .. rel_path
+	local rel_path = ALittle.String_Sub(image_info.file_path, ALittle.String_Len(self._texture_list.texture_base_path) + 2)
+	local texture_name = self._texture_list.tex_name_base_path .. rel_path
 	for index, child in ___ipairs(self._brush_scroll_screen.childs) do
 		local info = child._user_data
 		if info.texture_name == texture_name then
@@ -544,7 +482,7 @@ function GBRMaker.GCenter:StartEdit(file_info)
 		while true do
 			if not(y < y_max) then break end
 			local image = ALittle.Image(self._control)
-			image.texture_name = self._tex_name_base_path .. setting_data.empty_name
+			image.texture_name = self._texture_list.tex_name_base_path .. setting_data.empty_name
 			image.width = setting_data.unit_width
 			image.height = setting_data.unit_height
 			local show_x, show_y = GBRMaker.IDECoordVirtual2Show(x, y, setting_data.unit_real_width, setting_data.unit_width, setting_data.unit_real_height, setting_data.unit_height)
@@ -570,7 +508,7 @@ function GBRMaker.GCenter:StartEdit(file_info)
 			local show_x, show_y = GBRMaker.IDECoordVirtual2Show(x, y, setting_data.unit_real_width, setting_data.unit_width, setting_data.unit_real_height, setting_data.unit_height)
 			if show_x + setting_data.unit_width / 2 >= 0 then
 				local image = ALittle.Image(self._control)
-				image.texture_name = self._tex_name_base_path .. setting_data.empty_name
+				image.texture_name = self._texture_list.tex_name_base_path .. setting_data.empty_name
 				image.width = setting_data.unit_width
 				image.height = setting_data.unit_height
 				image.x = show_x
@@ -763,14 +701,6 @@ function GBRMaker.GCenter:HandleKeyDown(mod, sym, scancode)
 		self._tool_erase:DispatchEvent(___all_struct[958494922], {})
 		self._tool_scale:DispatchEvent(___all_struct[958494922], {})
 	end
-end
-
-function GBRMaker.GCenter:HandleDragRightQuadUD(event)
-	self._right_grad3_ud.up_size = self._right_grad3_ud.up_size + (event.delta_y)
-end
-
-function GBRMaker.GCenter:HandleDragEndRightQuadUD(event)
-	GBRMaker.g_GConfig:SetConfig("right_grid3_up_size", self._right_grad3_ud.up_size)
 end
 
 function GBRMaker.GCenter:HandleDragRightQuadLR(event)

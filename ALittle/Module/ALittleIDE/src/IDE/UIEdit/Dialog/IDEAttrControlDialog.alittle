@@ -35,7 +35,8 @@ public class IDEAttrControlDialog
 		if (this._dialog == null) this.CreateDialog();
 		this._dialog.visible = true;
 
-        this._dialog.x = A_UISystem.mouse_x + 50;
+        var x, y = target.LocalToGlobal();
+        this._dialog.x = x + target.width + 20;
 		this._dialog.y = A_UISystem.mouse_y - (this._dialog.height - target.height) / 2;
 		if (this._dialog.y < 0) this._dialog.y = 0;
 

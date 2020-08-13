@@ -37,7 +37,8 @@ function ALittleIDE.IDEAttrControlDialog:ShowDialog(target)
 		self:CreateDialog()
 	end
 	self._dialog.visible = true
-	self._dialog.x = A_UISystem.mouse_x + 50
+	local x, y = target:LocalToGlobal()
+	self._dialog.x = x + target.width + 20
 	self._dialog.y = A_UISystem.mouse_y - (self._dialog.height - target.height) / 2
 	if self._dialog.y < 0 then
 		self._dialog.y = 0

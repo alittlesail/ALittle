@@ -151,7 +151,10 @@ bool ALittleScriptClassNameDecReference::QueryCompletion(ABnfElementPtr select, 
             ABnfElementType::CLASS_NAME, element->GetFile(), m_namespace_name, u8"", true, dec_list);
 
         for (auto& dec : dec_list)
+        {
+            if (m_key == dec->GetElementText()) continue;
             list.emplace_back(dec->GetElementText(), ALittleScriptIconType::CLASS, dec->GetDescriptor());
+        }
     }
 
     if (std::dynamic_pointer_cast<ALittleScriptClassExtendsDecElement>(element->GetParent()))
@@ -159,7 +162,10 @@ bool ALittleScriptClassNameDecReference::QueryCompletion(ABnfElementPtr select, 
         std::unordered_map<std::string, std::shared_ptr<ALittleScriptNamespaceNameDecElement>> dec_list;
         index->FindNamespaceNameDecList("", dec_list);
         for (auto& pair : dec_list)
+        {
+            if (m_key == pair.first) continue;
             list.emplace_back(pair.first, ALittleScriptIconType::NAMESPACE, pair.second->GetDescriptor());
+        }
     }
     return true;
 }

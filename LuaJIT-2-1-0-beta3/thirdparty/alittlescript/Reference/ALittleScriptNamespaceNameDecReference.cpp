@@ -70,8 +70,11 @@ bool ALittleScriptNamespaceNameDecReference::QueryCompletion(ABnfElementPtr sele
     auto* index = GetIndex();
     if (index == nullptr) return false;
     std::unordered_map<std::string, std::shared_ptr<ALittleScriptNamespaceNameDecElement>> name_dec_map;
-    index->FindNamespaceNameDecList(m_key, name_dec_map);
+    index->FindNamespaceNameDecList("", name_dec_map);
     for (auto& pair : name_dec_map)
+    {
+        if (m_key == pair.second->GetElementText()) continue;
         list.emplace_back(pair.second->GetElementText(), ALittleScriptIconType::NAMESPACE, pair.second->GetDescriptor());
+    }
     return true;
 }

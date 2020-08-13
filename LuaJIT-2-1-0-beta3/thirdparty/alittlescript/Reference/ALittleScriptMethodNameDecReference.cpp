@@ -610,7 +610,11 @@ bool ALittleScriptMethodNameDecReference::QueryCompletion(ABnfElementPtr select,
         std::vector<ABnfElementPtr> dec_list;
         ALittleScriptUtility::FindClassMethodNameDecList(class_dec, ALittleScriptUtility::sAccessPrivateAndProtectedAndPublic, u8"", dec_list, 100);
         for (int i = 0; i < dec_list.size(); ++i)
+        {
+            if (m_key == dec_list[i]->GetElementText()) continue;
             list.emplace_back(dec_list[i]->GetElementText(), ALittleScriptIconType::MEMBER_METHOD, dec_list[i]->GetDescriptor());
+        }
+            
     }
     // È«¾Öº¯Êý
     else if (std::dynamic_pointer_cast<ALittleScriptNamespaceElementDecElement>(method_dec->GetParent()))
@@ -619,7 +623,10 @@ bool ALittleScriptMethodNameDecReference::QueryCompletion(ABnfElementPtr select,
         index->FindALittleNameDecList(
             ABnfElementType::GLOBAL_METHOD, element->GetFile(), m_namespace_name, u8"", true, dec_list);
         for (auto& dec : dec_list)
+        {
+            if (m_key == dec->GetElementText()) continue;
             list.emplace_back(dec->GetElementText(), ALittleScriptIconType::GLOBAL_METHOD, dec->GetDescriptor());
+        }
     }
 
     return true;

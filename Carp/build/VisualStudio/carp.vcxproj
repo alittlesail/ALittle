@@ -57,6 +57,9 @@
     <ClInclude Include="..\..\include\carp_dump.h" />
     <ClInclude Include="..\..\include\carp_log.h" />
     <ClInclude Include="..\..\include\carp_schedule.h" />
+    <ClInclude Include="..\..\include\carp_script.h" />
+    <ClInclude Include="..\..\include\carp_platform.h" />
+    <ClInclude Include="..\..\thirdparty\klib\kstring.h" />
     <ClInclude Include="..\..\thirdparty\lua-5.4.0\src\lapi.h" />
     <ClInclude Include="..\..\thirdparty\lua-5.4.0\src\lauxlib.h" />
     <ClInclude Include="..\..\thirdparty\lua-5.4.0\src\lcode.h" />
@@ -166,7 +169,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\..\include;$(SolutionDir)..\..\thirdparty\lua-5.4.0;$(SolutionDir)..\..\thirdparty\sokol;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\..\include;$(SolutionDir)..\..\thirdparty\lua-5.4.0\src;$(SolutionDir)..\..\thirdparty\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -181,7 +184,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\..\include;$(SolutionDir)..\..\thirdparty\lua-5.4.0;$(SolutionDir)..\..\thirdparty\sokol;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\..\include;$(SolutionDir)..\..\thirdparty\lua-5.4.0\src;$(SolutionDir)..\..\thirdparty\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -197,7 +200,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\..\include;$(SolutionDir)..\..\thirdparty\lua-5.4.0;$(SolutionDir)..\..\thirdparty\sokol;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\..\include;$(SolutionDir)..\..\thirdparty\lua-5.4.0\src;$(SolutionDir)..\..\thirdparty\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -213,7 +216,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\..\include;$(SolutionDir)..\..\thirdparty\lua-5.4.0;$(SolutionDir)..\..\thirdparty\sokol;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\..\include;$(SolutionDir)..\..\thirdparty\lua-5.4.0\src;$(SolutionDir)..\..\thirdparty\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

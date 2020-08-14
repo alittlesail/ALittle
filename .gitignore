@@ -31,3 +31,6 @@
 /LuaJIT-2-1-0-beta3/thirdparty/alittlescript/x64
 /LuaJIT-2-1-0-beta3/thirdparty/alanguage/x64
 /LuaJIT-2-1-0-beta3/thirdparty/abnf/x64
+/Carp/build/VisualStudio/Debug
+/Carp/build/VisualStudio/x64
+/Carp/build/VisualStudio/.vs

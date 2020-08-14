@@ -1,0 +1,228 @@
+
+namespace GBRMaker;
+
+public class MainLayerList : ALittle.DisplayLayout
+{
+    private ALittle.ScrollScreen _floor_scroll_screen;
+
+    private ALittle.DisplayObject _floor_right_menu;
+    private ALittle.DisplayObject _floor_right_show_btn;
+    private ALittle.DisplayObject _floor_right_hide_btn;
+
+    public fun Init()
+    {
+        // 清理图层
+        this._floor_scroll_screen.RemoveAllChild();
+        // 构建图层和编辑区
+        var group = new ALittle.TextRadioButtonGroup();
+        for (var index, floor_info in g_GCenter.cur_file.map_info.floor_list)
+        {
+            var info = new FloorSelectItemInfo();
+            info.select_item = g_Control.CreateControl{ALittle.TextRadioButton}("ide_common_item_radiobutton", info);
+            info.select_item._user_data = info;
+            info.select_item.group = group;
+            info.select_item.text = floor_info.floor_data.name;
+            info.select_item.AddEventListener(this, this.HandleSelectFloor);
+            info.select_item.AddEventListener(this, this.HandleFloorRButtonDown);
+            info.floor_info = floor_info;
+            this._floor_scroll_screen.AddChild(info.select_item);
+
+            info.edit_item = this.CreateFloorEdit(info);
+            g_GCenter.cur_edit_layer.AddChild(info.edit_item);
+            info.edit_item.alpha = 0.5;
+
+            if (index == 1)
+            {
+                info.select_item.selected = true;
+                info.edit_item.alpha = 1;
+                g_GCenter.cur_floor = info;
+            }
+        }
+    }
+
+    //图层列表//////////////////////////////////////////////////////////////////////
+    private async fun HandleNewFloorClick(ALittle.UIClickEvent event)
+    {
+        var cur_file = g_GCenter.cur_file;
+
+        if (cur_file == null)
+        {
+            g_AUITool.ShowNotice("提示", "请先打开文件");
+            return;
+        }
+
+        var x, y = event.target.LocalToGlobal();
+        var name = g_AUITool.ShowRename("", x, y + event.target.height, 200);
+        if (name == "" || name == null) return;
+
+        var floor_data = new FloorData();
+        floor_data.name = name;
+        var floor_info = new FloorInfo();
+        floor_info.floor_data = floor_data;
+        floor_info.file_info = cur_file;
+        floor_info.visible = true;
+
+        ALittle.List_Insert(cur_file.map_data.floor_list, 1, floor_data);
+        ALittle.List_Insert(cur_file.map_info.floor_list, 1, floor_info);
+
+        var group:ALittle.TextRadioButtonGroup = null;
+        if (this._floor_scroll_screen.child_count > 0)
+            group = this._floor_scroll_screen.childs[1].group;
+        else
+            group = new ALittle.TextRadioButtonGroup();
+    
+        var info = new FloorSelectItemInfo();
+        info.select_item = g_Control.CreateControl{ALittle.TextRadioButton}("ide_common_item_radiobutton", info);
+        info.select_item._user_data = info;
+        info.select_item.group = group;
+        info.select_item.text = floor_info.floor_data.name;
+        info.select_item.AddEventListener(this, this.HandleSelectFloor);
+        info.select_item.AddEventListener(this, this.HandleFloorRButtonDown);
+        info.floor_info = floor_info;
+        this._floor_scroll_screen.AddChild(info.select_item, 1);
+    
+        info.edit_item = this.CreateFloorEdit(info);
+        g_GCenter.cur_edit_layer.AddChild(info.edit_item, 1);
+
+        g_GCenter.SaveCurEdit(false);
+    }
+
+    private fun HandleSelectFloor(ALittle.UIChangedEvent event)
+    {
+        var info:FloorSelectItemInfo = event.target._user_data;
+
+        if (event.target.selected)
+            info.edit_item.alpha = 1;
+        else
+            info.edit_item.alpha = 0.5;
+
+        g_GCenter.cur_floor = info;
+    }
+
+    private fun HandleFloorRButtonDown(ALittle.UIRButtonDownEvent event)
+    {
+        // 创建图层右键菜单
+        if (this._floor_right_menu == null)
+            this._floor_right_menu = g_Control.CreateControl{ALittle.DisplayLayout}("ide_floor_right_menu", this);
+        this._floor_right_menu.x = A_UISystem.mouse_x;
+        this._floor_right_menu.y = A_UISystem.mouse_y;
+        A_LayerManager.ShowFromRight(this._floor_right_menu);
+
+        // 传递数据
+        this._floor_right_menu._user_data = event.target._user_data;
+
+        // 显示是否禁用
+        var info:FloorSelectItemInfo = event.target._user_data;
+        this._floor_right_hide_btn.disabled = !info.floor_info.visible;
+        this._floor_right_show_btn.disabled = info.floor_info.visible;
+    }
+
+    private fun HandleFloorRightMenu(ALittle.UIClickEvent event)
+    {
+        var info:FloorSelectItemInfo = this._floor_right_menu._user_data;
+        this._floor_right_menu._user_data = null;
+
+        A_LayerManager.HideFromRight(this._floor_right_menu);
+    
+        // 获取下标
+        var index = this._floor_scroll_screen.GetChildIndex(info.select_item);
+    
+        if (event.target.text == "上移")
+        {
+            // 移动控件
+            this._floor_scroll_screen.SetChildIndex(info.select_item, index - 1);
+            g_GCenter.cur_edit_layer.SetChildIndex(info.edit_item, index - 1);
+            // 移动数据
+            var floor_data = info.floor_info.file_info.map_data.floor_list[index];
+            ALittle.List_Remove(info.floor_info.file_info.map_data.floor_list, index);
+            ALittle.List_Insert(info.floor_info.file_info.map_data.floor_list, index - 1, floor_data);
+            var floor_info = info.floor_info.file_info.map_info.floor_list[index];
+            ALittle.List_Remove(info.floor_info.file_info.map_info.floor_list, index);
+            ALittle.List_Insert(info.floor_info.file_info.map_info.floor_list, index - 1, floor_info);
+
+            g_GCenter.SaveCurEdit(false);
+        }
+        elseif (event.target.text == "下移")
+        {
+            // 移动控件
+            this._floor_scroll_screen.SetChildIndex(info.select_item, index + 1);
+            g_GCenter.cur_edit_layer.SetChildIndex(info.edit_item, index + 1);
+            // 移动数据
+            var floor_data = info.floor_info.file_info.map_data.floor_list[index];
+            ALittle.List_Remove(info.floor_info.file_info.map_data.floor_list, index);
+            ALittle.List_Insert(info.floor_info.file_info.map_data.floor_list, index + 1, floor_data);
+            var floor_info = info.floor_info.file_info.map_info.floor_list[index];
+            ALittle.List_Remove(info.floor_info.file_info.map_info.floor_list, index);
+            ALittle.List_Insert(info.floor_info.file_info.map_info.floor_list, index + 1, floor_info);
+
+            g_GCenter.SaveCurEdit(false);
+        }
+        elseif (event.target.text == "隐藏")
+        {
+            info.select_item.text = info.floor_info.floor_data.name.."(隐藏)";
+            info.edit_item.visible = false;
+            info.floor_info.visible = false;
+        }
+        elseif (event.target.text == "显示")
+        {
+            info.select_item.text = info.floor_info.floor_data.name;
+            info.edit_item.visible = true;
+            info.floor_info.visible = true;
+        }
+        elseif (event.target.text == "删除")
+        {
+            // 删除Item
+            this._floor_scroll_screen.RemoveChild(info.select_item);
+            g_GCenter.cur_edit_layer.RemoveChild(info.edit_item);
+            // 移除数据
+            ALittle.List_Remove(info.floor_info.file_info.map_data.floor_list, index);
+            ALittle.List_Remove(info.floor_info.file_info.map_info.floor_list, index);
+
+            g_GCenter.SaveCurEdit(false);
+        }
+    }
+
+    private fun CreateFloorEdit(FloorSelectItemInfo info) : ALittle.DisplayLayout
+    {
+        var setting_data = g_GCenter.setting_dialog.data;
+
+        var layer = new ALittle.DisplayLayout(g_GCenter.control);
+        // 填充格子
+        for (var x, y_data in info.floor_info.floor_data.data)
+        {
+            for (var y, tex_id in y_data)
+            {
+                var image = new ALittle.Image(g_GCenter.control);
+                image.texture_name = info.floor_info.file_info.map_data.tex_map[tex_id];
+                image.width = setting_data.unit_width;
+                image.height = setting_data.unit_height;
+                var show_x, show_y = IDECoordVirtual2Show(x, y, setting_data.unit_real_width, setting_data.unit_width, setting_data.unit_real_height, setting_data.unit_height);
+                image.x = show_x;
+                image.y = show_y;
+                layer.AddChild(image);
+
+                var y_info = info.floor_info.child_map[x];
+                if (y_info == null)
+                {
+                    y_info = new Map<int, ALittle.Image>();
+                    info.floor_info.child_map[x] = y_info;
+                }
+                y_info[y] = image;
+            }
+        }
+        return layer;
+    }
+
+    // 更新透明度
+    public fun UpdateFloorAlpha()
+    {
+        for (var index, child in this._floor_scroll_screen.childs)
+        {
+            var info:FloorSelectItemInfo = child._user_data;
+            if (info.select_item.selected)
+                info.edit_item.alpha = 1;
+            else
+                info.edit_item.alpha = 0.5;
+        }
+    }
+}

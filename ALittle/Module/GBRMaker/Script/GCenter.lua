@@ -83,12 +83,6 @@ name_list = {"item","file_path","upper_file_name","map_data","map_info","save"},
 type_list = {"ALittle.TextRadioButton","string","string","GBRMaker.MapData","GBRMaker.MapInfo","bool"},
 option_map = {}
 })
-ALittle.RegStruct(-641444818, "ALittle.UIRButtonDownEvent", {
-name = "ALittle.UIRButtonDownEvent", ns_name = "ALittle", rl_name = "UIRButtonDownEvent", hash_code = -641444818,
-name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
-type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
-option_map = {}
-})
 ALittle.RegStruct(-449066808, "ALittle.UIClickEvent", {
 name = "ALittle.UIClickEvent", ns_name = "ALittle", rl_name = "UIClickEvent", hash_code = -449066808,
 name_list = {"target","is_drag"},
@@ -171,6 +165,22 @@ end
 
 function GBRMaker.GCenter.__getter:right_grad3_ud()
 	return self._right_grad3_ud
+end
+
+function GBRMaker.GCenter.__getter:cur_file()
+	return self._cur_file
+end
+
+function GBRMaker.GCenter.__getter:cur_edit_layer()
+	return self._cur_edit_layer
+end
+
+function GBRMaker.GCenter.__setter:cur_floor(floor)
+	self._cur_floor = floor
+end
+
+function GBRMaker.GCenter.__getter:control()
+	return self._control
 end
 
 function GBRMaker.GCenter:SelectTexture(image_info, multi)
@@ -344,116 +354,11 @@ function GBRMaker.GCenter:HandleEraseQuadDrag(event)
 	self:EraseCell(self._cur_floor, virtual_x, virtual_y)
 end
 
-function GBRMaker.GCenter:HandleNewFloorClick(event)
-	if self._cur_file == nil then
-		g_AUITool:ShowNotice("提示", "请先打开文件")
-		return
-	end
-	local x, y = event.target:LocalToGlobal()
-	local name = g_AUITool:ShowRename("", x, y + event.target.height, 200)
-	if name == "" or name == nil then
-		return
-	end
-	local floor_data = {}
-	floor_data.name = name
-	local floor_info = {}
-	floor_info.floor_data = floor_data
-	floor_info.file_info = self._cur_file
-	floor_info.visible = true
-	ALittle.List_Insert(self._cur_file.map_data.floor_list, 1, floor_data)
-	ALittle.List_Insert(self._cur_file.map_info.floor_list, 1, floor_info)
-	local group = nil
-	if self._floor_scroll_screen.child_count > 0 then
-		group = self._floor_scroll_screen.childs[1].group
-	else
-		group = {}
-	end
-	local info = {}
-	info.select_item = GBRMaker.g_Control:CreateControl("ide_common_item_radiobutton", info)
-	info.select_item._user_data = info
-	info.select_item.group = group
-	info.select_item.text = floor_info.floor_data.name
-	info.select_item:AddEventListener(___all_struct[958494922], self, self.HandleSelectFloor)
-	info.select_item:AddEventListener(___all_struct[-641444818], self, self.HandleFloorRButtonDown)
-	info.floor_info = floor_info
-	self._floor_scroll_screen:AddChild(info.select_item, 1)
-	info.edit_item = self:CreateFloorEdit(info)
-	self._cur_edit_layer:AddChild(info.edit_item, 1)
-	self:SaveCurEdit(false)
-end
-GBRMaker.GCenter.HandleNewFloorClick = Lua.CoWrap(GBRMaker.GCenter.HandleNewFloorClick)
-
-function GBRMaker.GCenter:HandleSelectFloor(event)
-	local info = event.target._user_data
-	if event.target.selected then
-		info.edit_item.alpha = 1
-	else
-		info.edit_item.alpha = 0.5
-	end
-	self._cur_floor = info
-end
-
-function GBRMaker.GCenter:HandleFloorRButtonDown(event)
-	if self._floor_right_menu == nil then
-		self._floor_right_menu = GBRMaker.g_Control:CreateControl("ide_floor_right_menu", self)
-	end
-	self._floor_right_menu.x = A_UISystem.mouse_x
-	self._floor_right_menu.y = A_UISystem.mouse_y
-	A_LayerManager:ShowFromRight(self._floor_right_menu)
-	self._floor_right_menu._user_data = event.target._user_data
-	local info = event.target._user_data
-	self._floor_right_hide_btn.disabled = not info.floor_info.visible
-	self._floor_right_show_btn.disabled = info.floor_info.visible
-end
-
-function GBRMaker.GCenter:HandleFloorRightMenu(event)
-	local info = self._floor_right_menu._user_data
-	self._floor_right_menu._user_data = nil
-	A_LayerManager:HideFromRight(self._floor_right_menu)
-	local index = self._floor_scroll_screen:GetChildIndex(info.select_item)
-	if event.target.text == "上移" then
-		self._floor_scroll_screen:SetChildIndex(info.select_item, index - 1)
-		self._cur_edit_layer:SetChildIndex(info.edit_item, index - 1)
-		local floor_data = info.floor_info.file_info.map_data.floor_list[index]
-		ALittle.List_Remove(info.floor_info.file_info.map_data.floor_list, index)
-		ALittle.List_Insert(info.floor_info.file_info.map_data.floor_list, index - 1, floor_data)
-		local floor_info = info.floor_info.file_info.map_info.floor_list[index]
-		ALittle.List_Remove(info.floor_info.file_info.map_info.floor_list, index)
-		ALittle.List_Insert(info.floor_info.file_info.map_info.floor_list, index - 1, floor_info)
-		self:SaveCurEdit(false)
-	elseif event.target.text == "下移" then
-		self._floor_scroll_screen:SetChildIndex(info.select_item, index + 1)
-		self._cur_edit_layer:SetChildIndex(info.edit_item, index + 1)
-		local floor_data = info.floor_info.file_info.map_data.floor_list[index]
-		ALittle.List_Remove(info.floor_info.file_info.map_data.floor_list, index)
-		ALittle.List_Insert(info.floor_info.file_info.map_data.floor_list, index + 1, floor_data)
-		local floor_info = info.floor_info.file_info.map_info.floor_list[index]
-		ALittle.List_Remove(info.floor_info.file_info.map_info.floor_list, index)
-		ALittle.List_Insert(info.floor_info.file_info.map_info.floor_list, index + 1, floor_info)
-		self:SaveCurEdit(false)
-	elseif event.target.text == "隐藏" then
-		info.select_item.text = info.floor_info.floor_data.name .. "(隐藏)"
-		info.edit_item.visible = false
-		info.floor_info.visible = false
-	elseif event.target.text == "显示" then
-		info.select_item.text = info.floor_info.floor_data.name
-		info.edit_item.visible = true
-		info.floor_info.visible = true
-	elseif event.target.text == "删除" then
-		self._floor_scroll_screen:RemoveChild(info.select_item)
-		self._cur_edit_layer:RemoveChild(info.edit_item)
-		ALittle.List_Remove(info.floor_info.file_info.map_data.floor_list, index)
-		ALittle.List_Remove(info.floor_info.file_info.map_info.floor_list, index)
-		self:SaveCurEdit(false)
-	end
-end
-
 function GBRMaker.GCenter:StartEdit(file_info)
 	local setting_data = self._setting_dialog.data
 	self._cur_file = file_info
 	self._cur_floor = nil
 	self._edit_title.text = file_info.item.text
-	self._floor_scroll_screen:RemoveAllChild()
 	self._edit_scroll_screen:RemoveAllChild()
 	local x_max = file_info.map_data.x_max
 	if x_max < 10 then
@@ -560,26 +465,7 @@ function GBRMaker.GCenter:StartEdit(file_info)
 	self._cur_layer.height = layer_height
 	self._edit_scroll_screen:AddChild(self._cur_layer)
 	self._edit_scroll_screen:RejustScrollBar()
-	local group = {}
-	for index, floor_info in ___ipairs(self._cur_file.map_info.floor_list) do
-		local info = {}
-		info.select_item = GBRMaker.g_Control:CreateControl("ide_common_item_radiobutton", info)
-		info.select_item._user_data = info
-		info.select_item.group = group
-		info.select_item.text = floor_info.floor_data.name
-		info.select_item:AddEventListener(___all_struct[958494922], self, self.HandleSelectFloor)
-		info.select_item:AddEventListener(___all_struct[-641444818], self, self.HandleFloorRButtonDown)
-		info.floor_info = floor_info
-		self._floor_scroll_screen:AddChild(info.select_item)
-		info.edit_item = self:CreateFloorEdit(info)
-		self._cur_edit_layer:AddChild(info.edit_item)
-		info.edit_item.alpha = 0.5
-		if index == 1 then
-			info.select_item.selected = true
-			info.edit_item.alpha = 1
-			self._cur_floor = info
-		end
-	end
+	self._layer_list:Init()
 end
 
 function GBRMaker.GCenter:CreateFloorEdit(info)
@@ -606,23 +492,12 @@ function GBRMaker.GCenter:CreateFloorEdit(info)
 	return layer
 end
 
-function GBRMaker.GCenter:UpdateFloorAlpha()
-	for index, child in ___ipairs(self._floor_scroll_screen.childs) do
-		local info = child._user_data
-		if info.select_item.selected then
-			info.edit_item.alpha = 1
-		else
-			info.edit_item.alpha = 0.5
-		end
-	end
-end
-
 function GBRMaker.GCenter:HandleToolBrushSelect(event)
 	self._layer_brush_info.visible = event.target.selected
 	if self._cur_brush_quad ~= nil then
 		self._cur_brush_quad.visible = event.target.selected
 	end
-	self:UpdateFloorAlpha()
+	self._layer_list:UpdateFloorAlpha()
 end
 
 function GBRMaker.GCenter:HandleToolEraseSelect(event)
@@ -630,12 +505,12 @@ function GBRMaker.GCenter:HandleToolEraseSelect(event)
 	if self._cur_erase_quad ~= nil then
 		self._cur_erase_quad.visible = event.target.selected
 	end
-	self:UpdateFloorAlpha()
+	self._layer_list:UpdateFloorAlpha()
 end
 
 function GBRMaker.GCenter:HandleToolScaleSelect(event)
 	self._layer_scale_info.visible = event.target.selected
-	self:UpdateFloorAlpha()
+	self._layer_list:UpdateFloorAlpha()
 end
 
 function GBRMaker.GCenter:HandleToolDragSelect(event)

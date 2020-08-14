@@ -1,0 +1,239 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="lua">
+      <UniqueIdentifier>{a55f9b2e-f7bf-4306-93dc-f3837309fd8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sokol">
+      <UniqueIdentifier>{4f6213b5-0cf8-4047-8ba1-92977e3a5ca2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{a1ffdb8c-632e-4557-a1d2-81bfbb0827b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{8264f9e2-b8d1-4eac-a932-fe58455b1ed6}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\thirdparty\lua-5.4.0\src\lstrlib.c">
+      <Filter>lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\thirdparty\lua-5.4.0\src\ltable.c">
+      <Filter>lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\thirdparty\lua-5.4.0\src\ltablib.c">
+      <Filter>lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\thirdparty\lua-5.4.0\src\ltm.c">
+      <Filter>lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\thirdparty\lua-5.4.0\src\lundump.c">
+      <Filter>lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\thirdparty\lua-5.4.0\src\lutf8lib.c">
+      <Filter>lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\thirdparty\lua-5.4.0\src\lvm.c">
+      <Filter>lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\thirdparty\lua-5.4.0\src\lzio.c">
+      <Filter>lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\thirdparty\lua-5.4.0\src\lapi.c">
+      <Filter>lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\thirdparty\lua-5.4.0\src\lauxlib.c">
+      <Filter>lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\thirdparty\lua-5.4.0\src\lbaselib.c">
+      <Filter>lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\thirdparty\lua-5.4.0\src\lcode.c">
+      <Filter>lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\thirdparty\lua-5.4.0\src\lcorolib.c">
+      <Filter>lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\thirdparty\lua-5.4.0\src\lctype.c">
+      <Filter>lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\thirdparty\lua-5.4.0\src\ldblib.c">
+      <Filter>lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\thirdparty\lua-5.4.0\src\ldebug.c">
+      <Filter>lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\thirdparty\lua-5.4.0\src\ldo.c">
+      <Filter>lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\thirdparty\lua-5.4.0\src\ldump.c">
+      <Filter>lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\thirdparty\lua-5.4.0\src\lfunc.c">
+      <Filter>lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\thirdparty\lua-5.4.0\src\lgc.c">
+      <Filter>lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\thirdparty\lua-5.4.0\src\linit.c">
+      <Filter>lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\thirdparty\lua-5.4.0\src\liolib.c">
+      <Filter>lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\thirdparty\lua-5.4.0\src\llex.c">
+      <Filter>lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\thirdparty\lua-5.4.0\src\lmathlib.c">
+      <Filter>lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\thirdparty\lua-5.4.0\src\lmem.c">
+      <Filter>lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\thirdparty\lua-5.4.0\src\loadlib.c">
+      <Filter>lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\thirdparty\lua-5.4.0\src\lobject.c">
+      <Filter>lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\thirdparty\lua-5.4.0\src\lopcodes.c">
+      <Filter>lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\thirdparty\lua-5.4.0\src\loslib.c">
+      <Filter>lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\thirdparty\lua-5.4.0\src\lparser.c">
+      <Filter>lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\thirdparty\lua-5.4.0\src\lstate.c">
+      <Filter>lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\thirdparty\lua-5.4.0\src\lstring.c">
+      <Filter>lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\carp.c">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\thirdparty\lua-5.4.0\src\ltable.h">
+      <Filter>lua</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\thirdparty\lua-5.4.0\src\ltm.h">
+      <Filter>lua</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\thirdparty\lua-5.4.0\src\lua.h">
+      <Filter>lua</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\thirdparty\lua-5.4.0\src\lua.hpp">
+      <Filter>lua</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\thirdparty\lua-5.4.0\src\luaconf.h">
+      <Filter>lua</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\thirdparty\lua-5.4.0\src\lualib.h">
+      <Filter>lua</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\thirdparty\lua-5.4.0\src\lundump.h">
+      <Filter>lua</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\thirdparty\lua-5.4.0\src\lvm.h">
+      <Filter>lua</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\thirdparty\lua-5.4.0\src\lzio.h">
+      <Filter>lua</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\thirdparty\lua-5.4.0\src\lapi.h">
+      <Filter>lua</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\thirdparty\lua-5.4.0\src\lauxlib.h">
+      <Filter>lua</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\thirdparty\lua-5.4.0\src\lcode.h">
+      <Filter>lua</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\thirdparty\lua-5.4.0\src\lctype.h">
+      <Filter>lua</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\thirdparty\lua-5.4.0\src\ldebug.h">
+      <Filter>lua</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\thirdparty\lua-5.4.0\src\ldo.h">
+      <Filter>lua</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\thirdparty\lua-5.4.0\src\lfunc.h">
+      <Filter>lua</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\thirdparty\lua-5.4.0\src\lgc.h">
+      <Filter>lua</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\thirdparty\lua-5.4.0\src\ljumptab.h">
+      <Filter>lua</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\thirdparty\lua-5.4.0\src\llex.h">
+      <Filter>lua</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\thirdparty\lua-5.4.0\src\llimits.h">
+      <Filter>lua</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\thirdparty\lua-5.4.0\src\lmem.h">
+      <Filter>lua</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\thirdparty\lua-5.4.0\src\lobject.h">
+      <Filter>lua</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\thirdparty\lua-5.4.0\src\lopcodes.h">
+      <Filter>lua</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\thirdparty\lua-5.4.0\src\lopnames.h">
+      <Filter>lua</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\thirdparty\lua-5.4.0\src\lparser.h">
+      <Filter>lua</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\thirdparty\lua-5.4.0\src\lprefix.h">
+      <Filter>lua</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\thirdparty\lua-5.4.0\src\lstate.h">
+      <Filter>lua</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\thirdparty\lua-5.4.0\src\lstring.h">
+      <Filter>lua</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\thirdparty\sokol\sokol_fetch.h">
+      <Filter>sokol</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\thirdparty\sokol\sokol_gfx.h">
+      <Filter>sokol</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\thirdparty\sokol\sokol_glue.h">
+      <Filter>sokol</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\thirdparty\sokol\sokol_time.h">
+      <Filter>sokol</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\thirdparty\sokol\sokol_app.h">
+      <Filter>sokol</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\thirdparty\sokol\sokol_args.h">
+      <Filter>sokol</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\thirdparty\sokol\sokol_audio.h">
+      <Filter>sokol</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\carp_schedule.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\carp_dump.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\carp_log.h">
+      <Filter>include</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\thirdparty\lua-5.4.0\src\Makefile">
+      <Filter>lua</Filter>
+    </None>
+  </ItemGroup>
+</Project>

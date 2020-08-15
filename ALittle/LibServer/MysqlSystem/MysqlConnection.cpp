@@ -271,7 +271,7 @@ MysqlConnection::MysqlStmtInfoPtr MysqlConnection::GetStmt(const std::string& sq
 			}
 
 			// set bind input info
-			for (int i = 0; i < field_count; ++i)
+			for (unsigned int i = 0; i < field_count; ++i)
 			{
 				MYSQL_BIND& bind = info->bind_output[i];
 				bind.buffer_type = field_list[i].type;

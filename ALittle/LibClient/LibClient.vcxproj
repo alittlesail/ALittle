@@ -223,7 +223,7 @@
       <PreprocessorDefinitions>_DEBUG;_LIB;_CRTDBG_MAP_ALLOC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)..;$(SolutionDir)..\SDL_mixer\;$(SolutionDir)..\SDL_net\;$(SolutionDir)..\SDL_image\;$(SolutionDir)..\SDL_ttf\;$(SolutionDir)..\SDL\include\;$(SolutionDir)..\LuaJIT-2.1.0-beta3\src\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..;$(SolutionDir)..\SDL_mixer\include\;$(SolutionDir)..\SDL_net\;$(SolutionDir)..\SDL_image\;$(SolutionDir)..\SDL_ttf\;$(SolutionDir)..\SDL\include\;$(SolutionDir)..\LuaJIT-2.1.0-beta3\src\;$(SolutionDir)..\LuaBridge\Source\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -241,7 +241,7 @@
       <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)..;$(SolutionDir)..\SDL_mixer\;$(SolutionDir)..\SDL_net\;$(SolutionDir)..\SDL_image\;$(SolutionDir)..\SDL_ttf\;$(SolutionDir)..\SDL\include\;$(SolutionDir)..\LuaJIT-2.1.0-beta3\src\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..;$(SolutionDir)..\SDL_mixer\include\;$(SolutionDir)..\SDL_net\;$(SolutionDir)..\SDL_image\;$(SolutionDir)..\SDL_ttf\;$(SolutionDir)..\SDL\include\;$(SolutionDir)..\LuaJIT-2.1.0-beta3\src\;$(SolutionDir)..\LuaBridge\Source\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

@@ -2,7 +2,7 @@
 #ifndef _ALITTLE_CONNECTENDPOINT_H_
 #define _ALITTLE_CONNECTENDPOINT_H_
 
-#include <asio/asio.hpp>
+#include <asio.hpp>
 #include "ALittle/LibCommon/Protocol/Message.h"
 #include "ALittle/LibCommon/Tool/SafeIDCreator.h"
 #include "RouteIdDefine.h"

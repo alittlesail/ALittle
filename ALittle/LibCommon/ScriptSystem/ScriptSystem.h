@@ -5,7 +5,7 @@
 #ifdef __EMSCRIPTEN__
 #include "lua.hpp"
 #else
-#include "LuaJIT-2-1-0-beta3/src/lua.hpp"
+#include "LuaJIT-2.1.0-beta3/src/lua.hpp"
 #endif
 #include "LuaBridge/Source/LuaBridge/LuaBridge.h"
 #include <string>

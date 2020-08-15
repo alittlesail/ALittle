@@ -1,0 +1,70 @@
+1. 安装代码管理软件 TortoiseGit和TortoiseHg
+
+2. Git添加子模块
+	https://github.com/vinniefalco/LuaBridge.git
+	https://github.com/chriskohlhoff/asio.git
+
+3. Hg拉取SDL源码（这样修改源码的部分也可以提交到本地Hg，然后再提交到Git。如果官方有新的改动也可以拉取下来，可以方便的解决冲突的部分）
+	http://hg.libsdl.org/SDL
+	http://hg.libsdl.org/SDL_net
+	http://hg.libsdl.org/SDL_image
+	http://hg.libsdl.org/SDL_ttf
+	http://hg.libsdl.org/SDL_mixer
+
+4. 下载最新的jdk
+	a. 地址 https://www.oracle.com/technetwork/java/javase/downloads/index.html
+	b. 直接默认安装，然后再安装目录中复制jdk整个目录到  Git根目录\ALittleIDE\Export\Android
+
+5. 下载最新的msys2
+	a. 地址 http://www.msys2.org/   选择msys2-x86_64
+	b. 直接安装，可以选择想要的安装目录
+	c. 打开64位的msys2，安装make gcc mercurial
+	d. pacman -S make
+	e. pacman -S gcc
+	f. pacman -S mercurial
+
+6. 下载最新的ndk
+	a. 地址 https://developer.android.google.cn/ndk/downloads/
+	b. 解压到 Git根目录所在盘的根目录下
+	c. 切换到 android-ndk-r20\toolchains\llvm\prebuilt\windows-x86_64\bin 目录下
+		复制aarch64-linux-android29-clang文件，改名为 aarch64-linux-android29-gcc
+		复制aarch64-linux-android29-clang++文件，改名为 aarch64-linux-android29-g++
+		复制aarch64-linux-android-ar.exe文件，改名为 aarch64-linux-android29-ar.exe
+		复制aarch64-linux-android-strip.exe文件，改名为 aarch64-linux-android29-strip.exe
+
+7. 下载最新的sdk
+	a. 地址 https://android-sdk.en.softonic.com/
+	b. 解压到 NewALittle\bin\Export\Android
+	c. NewALittle\bin\Export\Android\build-tools\tools\bin\sdkmanager.bat 点击右键，已管理员身份运行
+	d. 打开命令行控制台，路径切到NewALittle\bin\Export\Android\build-tools\tools\bin\
+	e. 执行 sdkmanager --list      查看最新的版本platform和build-tools版本，比如platforms;android-29 和 build-tools;29.0.2
+	f. 执行 sdkmanager "build-tools;29.0.2" "platforms;android-29"
+
+	注意：如果遇到.android/repositories.cfg could not be loaded，那么就自己创建一个repositories.cfg文件即可
+
+8 下载最新的luajit
+	a. 地址 http://luajit.org/download.html  选择LuaJIT-2.1.0-beta3 如果有最新的选择最新的
+	b. ndk编译，请查看svn下的build-android.sh文件进行编译
+	c. ios编译，请查看svn下的build-ios.sh文件进行编译
+	d. windows编译，打开vs对应的Developer Command Prompt，然后执行msvcbuild.bat
+
+9. 下载Mysql社区版
+	a. 地址 https://dev.mysql.com/downloads/mysql/
+	b. 可以点击Looking for the latest GA version? 然后选择5.6开头的版本，选择64位进行下载
+	c. 从安装目录中拷贝出开发库
+
+10. 下载openssl
+	a. 地址 http://slproweb.com/products/Win32OpenSSL.html
+	b. 选择Win64 OpenSSL v1.1.1d 进行下载，然后默认目录安装
+	c. 从安装目录中拷贝出开发库
+
+	openssl 源码下载
+	a. 地址 https://www.openssl.org/source/old/1.1.1/openssl-1.1.1b.tar.gz
+	b. android 编译脚本 https://github.com/leenjewel/openssl_for_ios_and_android/tools/build-openssl_111_4android.sh
+		调整：
+			OPENSSL_VERSION=1.1.1d
+			ANDROID_NDK=/d/android-ndk-r20
+			TOOLCHAIN=$ANDROID_NDK/toolchains/llvm/prebuilt/windows-x86_64
+			API_LEVEL=29
+
+	b. ios 编译脚本 https://github.com/sinofool/build-openssl-ios

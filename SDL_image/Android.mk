@@ -3,17 +3,17 @@ SDL_IMAGE_LOCAL_PATH := $(call my-dir)
 
 # Enable this if you want to support loading JPEG images
 # The library path should be a relative path to this directory.
-SUPPORT_JPG ?= true
+SUPPORT_JPG := true
 JPG_LIBRARY_PATH := external/jpeg-9c
 
 # Enable this if you want to support loading PNG images
 # The library path should be a relative path to this directory.
-SUPPORT_PNG ?= true
+SUPPORT_PNG := true
 PNG_LIBRARY_PATH := external/libpng-1.6.37
 
 # Enable this if you want to support loading WebP images
 # The library path should be a relative path to this directory.
-SUPPORT_WEBP ?= true
+SUPPORT_WEBP := false
 WEBP_LIBRARY_PATH := external/libwebp-1.0.3
 
 

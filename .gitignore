@@ -1,4 +1,3 @@
-/Emscripten
 /ALittleIDE/Log
 /ALittleIDE/Module/ALittleIDE/.vs
 /ALittleIDE/Module/Emulator/.vs
@@ -23,12 +22,5 @@
 /ALittleIDE/Module/AEditor/.vs
 /ALittleIDE/Module/AUIPlugin/.vs
 /ALittleIDE/Module/FlappyBird/Export
-/nginx-1.16.1/logs
-/nginx-1.16.1/temp
 /ALittleIDE/Module/G2048/Export
-/LuaJIT-2-1-0-beta3/thirdparty/.vs
-/LuaJIT-2-1-0-beta3/thirdparty/x64
-/LuaJIT-2-1-0-beta3/thirdparty/alittlescript/x64
-/LuaJIT-2-1-0-beta3/thirdparty/alanguage/x64
-/LuaJIT-2-1-0-beta3/thirdparty/abnf/x64
 /ALittle/lib/ALittle

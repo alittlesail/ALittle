@@ -139,7 +139,7 @@
       <PreprocessorDefinitions>NDEBUG;_LIB;ASIO_STANDALONE;_WIN32_WINNT=0x0501;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)..;$(SolutionDir)..\LuaJIT-2.1.0-beta3\src\;$(SolutionDir)LibCommon\ThirdParty\protobuf\include\;$(SolutionDir)LibCommon\ThirdParty\socket\include\asio\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\;$(SolutionDir)..\LuaJIT-2.1.0-beta3\src\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -157,7 +157,7 @@
       <PreprocessorDefinitions>_DEBUG;_LIB;_CRTDBG_MAP_ALLOC;_CRTDBG_MAP_ALLOC_NEW;ASIO_STANDALONE;_WIN32_WINNT=0x0501;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)..;$(SolutionDir)..\LuaJIT-2.1.0-beta3\src\;$(SolutionDir)LibCommon\ThirdParty\protobuf\include\;$(SolutionDir)LibCommon\ThirdParty\socket\include\asio\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\;$(SolutionDir)..\LuaJIT-2.1.0-beta3\src\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

@@ -1,0 +1,536 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="AudioSystem">
+      <UniqueIdentifier>{578fefee-5961-407b-8aa5-0c80dc156ca6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AudioSystem\bcg729">
+      <UniqueIdentifier>{853a82e4-7274-4276-aa8a-30fcd98fe5da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AudioSystem\bcg729\bcg729">
+      <UniqueIdentifier>{8b818820-fe5e-4ec7-bfa5-868edc4b0c74}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Helper">
+      <UniqueIdentifier>{8f151102-bb70-4f9b-9d29-72e1cac6dfdb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NetSystem">
+      <UniqueIdentifier>{9856c608-9521-4b6b-9283-9d2e4292482f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Platform">
+      <UniqueIdentifier>{4e401199-bb36-4f77-989d-cca3631622e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Platform\Android">
+      <UniqueIdentifier>{1f0d7cde-30a0-48d0-b540-1063e039ff4f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Platform\iOS">
+      <UniqueIdentifier>{9570b580-0b34-42f6-8256-d5c74cf91582}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Platform\Windows">
+      <UniqueIdentifier>{931dd32a-eebe-41d1-86c9-41d0514c0625}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RenderSystem">
+      <UniqueIdentifier>{61bba85b-daa0-48a4-8576-8fe7b737dd12}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RenderSystem\DisplayObject">
+      <UniqueIdentifier>{cfe0a606-0980-484e-a48e-ac14b415f12d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RenderSystem\Image">
+      <UniqueIdentifier>{585e3a0e-987a-461c-9041-498ac1b9741d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RenderSystem\Text">
+      <UniqueIdentifier>{6904f8df-8380-4f39-8bf6-8771c793d8ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RenderSystem\TextArea">
+      <UniqueIdentifier>{6e4e6ba6-b881-45e6-b815-52995fb3bdad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RenderSystem\TextEdit">
+      <UniqueIdentifier>{5074885a-ca16-4ea3-8ec7-5ec406db8ea7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RenderSystem\TextInput">
+      <UniqueIdentifier>{6cb693f4-6ced-4661-a386-f2f0a385c6c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RenderSystem\Texture">
+      <UniqueIdentifier>{accc5b3b-5fcc-47cf-b085-4986a3e17c17}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ScheduleSystem">
+      <UniqueIdentifier>{3b0ad290-ffef-490c-a40a-22b593e53473}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ScriptSystem">
+      <UniqueIdentifier>{4ebaf0a4-49d1-4a52-8c67-21be59b4fe2f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ThreadSystem">
+      <UniqueIdentifier>{f265c66f-108d-484e-8c09-e366b455f6ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tool">
+      <UniqueIdentifier>{b239759e-fac4-4750-bb3f-b926a755c2ed}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AudioSystem\bcg729\bcg729\encoder.h">
+      <Filter>AudioSystem\bcg729\bcg729</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioSystem\bcg729\bcg729\decoder.h">
+      <Filter>AudioSystem\bcg729\bcg729</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioSystem\bcg729\LPSynthesisFilter.h">
+      <Filter>AudioSystem\bcg729</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioSystem\bcg729\LSPQuantization.h">
+      <Filter>AudioSystem\bcg729</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioSystem\bcg729\postFilter.h">
+      <Filter>AudioSystem\bcg729</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioSystem\bcg729\postProcessing.h">
+      <Filter>AudioSystem\bcg729</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioSystem\bcg729\preProcessing.h">
+      <Filter>AudioSystem\bcg729</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioSystem\bcg729\qLSP2LP.h">
+      <Filter>AudioSystem\bcg729</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioSystem\bcg729\typedef.h">
+      <Filter>AudioSystem\bcg729</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioSystem\bcg729\utils.h">
+      <Filter>AudioSystem\bcg729</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioSystem\bcg729\adaptativeCodebookSearch.h">
+      <Filter>AudioSystem\bcg729</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioSystem\bcg729\basicOperationsMacros.h">
+      <Filter>AudioSystem\bcg729</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioSystem\bcg729\codebooks.h">
+      <Filter>AudioSystem\bcg729</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioSystem\bcg729\codecParameters.h">
+      <Filter>AudioSystem\bcg729</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioSystem\bcg729\computeAdaptativeCodebookGain.h">
+      <Filter>AudioSystem\bcg729</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioSystem\bcg729\computeLP.h">
+      <Filter>AudioSystem\bcg729</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioSystem\bcg729\computeWeightedSpeech.h">
+      <Filter>AudioSystem\bcg729</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioSystem\bcg729\decodeAdaptativeCodeVector.h">
+      <Filter>AudioSystem\bcg729</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioSystem\bcg729\decodeFixedCodeVector.h">
+      <Filter>AudioSystem\bcg729</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioSystem\bcg729\decodeGains.h">
+      <Filter>AudioSystem\bcg729</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioSystem\bcg729\decodeLSP.h">
+      <Filter>AudioSystem\bcg729</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioSystem\bcg729\findOpenLoopPitchDelay.h">
+      <Filter>AudioSystem\bcg729</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioSystem\bcg729\fixedCodebookSearch.h">
+      <Filter>AudioSystem\bcg729</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioSystem\bcg729\fixedPointMacros.h">
+      <Filter>AudioSystem\bcg729</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioSystem\bcg729\floatingPointMacros.h">
+      <Filter>AudioSystem\bcg729</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioSystem\bcg729\g729FixedPointMath.h">
+      <Filter>AudioSystem\bcg729</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioSystem\bcg729\gainQuantization.h">
+      <Filter>AudioSystem\bcg729</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioSystem\bcg729\interpolateqLSP.h">
+      <Filter>AudioSystem\bcg729</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioSystem\bcg729\LP2LSPConversion.h">
+      <Filter>AudioSystem\bcg729</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioSystem\AudioSystem.h">
+      <Filter>AudioSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Helper\InputHelper.h">
+      <Filter>Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="Helper\NetHelper.h">
+      <Filter>Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="Helper\SystemHelper.h">
+      <Filter>Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="Helper\TextureHelper.h">
+      <Filter>Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="Helper\BitHelper.h">
+      <Filter>Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="Helper\FileHelperEx.h">
+      <Filter>Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="Helper\FontHelper.h">
+      <Filter>Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="NetSystem\NetSystem.h">
+      <Filter>NetSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="NetSystem\ReceiveThread.h">
+      <Filter>NetSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="NetSystem\SendThread.h">
+      <Filter>NetSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="NetSystem\HttpClient.h">
+      <Filter>NetSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="NetSystem\HttpFile.h">
+      <Filter>NetSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="NetSystem\MessageReceiver.h">
+      <Filter>NetSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform\Android\AndroidSystem.h">
+      <Filter>Platform\Android</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform\iOS\iOSSystem.h">
+      <Filter>Platform\iOS</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform\iOS\KeychainItemWrapper.h">
+      <Filter>Platform\iOS</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform\iOS\Reachability.h">
+      <Filter>Platform\iOS</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform\iOS\iOSDelegate.h">
+      <Filter>Platform\iOS</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform\Windows\WindowsSystem.h">
+      <Filter>Platform\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderSystem\DisplayObject\DisplayView.h">
+      <Filter>RenderSystem\DisplayObject</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderSystem\DisplayObject\DisplayObject.h">
+      <Filter>RenderSystem\DisplayObject</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderSystem\DisplayObject\DisplayObjects.h">
+      <Filter>RenderSystem\DisplayObject</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderSystem\Image\Quad.h">
+      <Filter>RenderSystem\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderSystem\Image\Sprite.h">
+      <Filter>RenderSystem\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderSystem\Image\Triangle.h">
+      <Filter>RenderSystem\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderSystem\Image\Grid9Image.h">
+      <Filter>RenderSystem\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderSystem\Image\Image.h">
+      <Filter>RenderSystem\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderSystem\Text\Text.h">
+      <Filter>RenderSystem\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderSystem\TextArea\TextArea.h">
+      <Filter>RenderSystem\TextArea</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderSystem\TextEdit\TextEdit.h">
+      <Filter>RenderSystem\TextEdit</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderSystem\TextInput\TextInput.h">
+      <Filter>RenderSystem\TextInput</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderSystem\Texture\Texture.h">
+      <Filter>RenderSystem\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderSystem\Texture\TextureCutLoader.h">
+      <Filter>RenderSystem\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderSystem\Texture\TextureLoader.h">
+      <Filter>RenderSystem\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderSystem\Texture\RenderTexture.h">
+      <Filter>RenderSystem\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderSystem\Texture\SurfaceTexture.h">
+      <Filter>RenderSystem\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderSystem\Matrix2D.h">
+      <Filter>RenderSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderSystem\RenderSystem.h">
+      <Filter>RenderSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderSystem\DisplaySystem.h">
+      <Filter>RenderSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="ScheduleSystem\ScheduleSystem.h">
+      <Filter>ScheduleSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="ScheduleSystem\EventDefine.h">
+      <Filter>ScheduleSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptSystem\ScriptSystemEx.h">
+      <Filter>ScriptSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadSystem\Thread.h">
+      <Filter>ThreadSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadSystem\ThreadSystem.h">
+      <Filter>ThreadSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadSystem\Task.h">
+      <Filter>ThreadSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Tool\LocalFile.h">
+      <Filter>Tool</Filter>
+    </ClInclude>
+    <ClInclude Include="Tool\MemoryPool.h">
+      <Filter>Tool</Filter>
+    </ClInclude>
+    <ClInclude Include="Tool\concurrentqueue.h">
+      <Filter>Tool</Filter>
+    </ClInclude>
+    <ClInclude Include="Tool\CsvFile.h">
+      <Filter>Tool</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="AudioSystem\bcg729\LSPQuantization.c">
+      <Filter>AudioSystem\bcg729</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioSystem\bcg729\postFilter.c">
+      <Filter>AudioSystem\bcg729</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioSystem\bcg729\postProcessing.c">
+      <Filter>AudioSystem\bcg729</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioSystem\bcg729\preProcessing.c">
+      <Filter>AudioSystem\bcg729</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioSystem\bcg729\qLSP2LP.c">
+      <Filter>AudioSystem\bcg729</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioSystem\bcg729\utils.c">
+      <Filter>AudioSystem\bcg729</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioSystem\bcg729\adaptativeCodebookSearch.c">
+      <Filter>AudioSystem\bcg729</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioSystem\bcg729\codebooks.c">
+      <Filter>AudioSystem\bcg729</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioSystem\bcg729\computeAdaptativeCodebookGain.c">
+      <Filter>AudioSystem\bcg729</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioSystem\bcg729\computeLP.c">
+      <Filter>AudioSystem\bcg729</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioSystem\bcg729\computeWeightedSpeech.c">
+      <Filter>AudioSystem\bcg729</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioSystem\bcg729\decodeAdaptativeCodeVector.c">
+      <Filter>AudioSystem\bcg729</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioSystem\bcg729\decodeFixedCodeVector.c">
+      <Filter>AudioSystem\bcg729</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioSystem\bcg729\decodeGains.c">
+      <Filter>AudioSystem\bcg729</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioSystem\bcg729\decodeLSP.c">
+      <Filter>AudioSystem\bcg729</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioSystem\bcg729\decoder.c">
+      <Filter>AudioSystem\bcg729</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioSystem\bcg729\encoder.c">
+      <Filter>AudioSystem\bcg729</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioSystem\bcg729\findOpenLoopPitchDelay.c">
+      <Filter>AudioSystem\bcg729</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioSystem\bcg729\fixedCodebookSearch.c">
+      <Filter>AudioSystem\bcg729</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioSystem\bcg729\gainQuantization.c">
+      <Filter>AudioSystem\bcg729</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioSystem\bcg729\interpolateqLSP.c">
+      <Filter>AudioSystem\bcg729</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioSystem\bcg729\LP2LSPConversion.c">
+      <Filter>AudioSystem\bcg729</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioSystem\bcg729\LPSynthesisFilter.c">
+      <Filter>AudioSystem\bcg729</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioSystem\AudioSystem.cpp">
+      <Filter>AudioSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Helper\NetHelper.cpp">
+      <Filter>Helper</Filter>
+    </ClCompile>
+    <ClCompile Include="Helper\SystemHelper.cpp">
+      <Filter>Helper</Filter>
+    </ClCompile>
+    <ClCompile Include="Helper\TextureHelper.cpp">
+      <Filter>Helper</Filter>
+    </ClCompile>
+    <ClCompile Include="Helper\BitHelper.cpp">
+      <Filter>Helper</Filter>
+    </ClCompile>
+    <ClCompile Include="Helper\FileHelperEx.cpp">
+      <Filter>Helper</Filter>
+    </ClCompile>
+    <ClCompile Include="Helper\FontHelper.cpp">
+      <Filter>Helper</Filter>
+    </ClCompile>
+    <ClCompile Include="Helper\InputHelper.cpp">
+      <Filter>Helper</Filter>
+    </ClCompile>
+    <ClCompile Include="NetSystem\ReceiveThread.cpp">
+      <Filter>NetSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="NetSystem\SendThread.cpp">
+      <Filter>NetSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="NetSystem\HttpClient.cpp">
+      <Filter>NetSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="NetSystem\HttpFile.cpp">
+      <Filter>NetSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="NetSystem\MessageReceiver.cpp">
+      <Filter>NetSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="NetSystem\NetSystem.cpp">
+      <Filter>NetSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Platform\Android\AndroidSystem.cpp">
+      <Filter>Platform\Android</Filter>
+    </ClCompile>
+    <ClCompile Include="Platform\Windows\WindowsSystem.cpp">
+      <Filter>Platform\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderSystem\DisplayObject\DisplayView.cpp">
+      <Filter>RenderSystem\DisplayObject</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderSystem\DisplayObject\DisplayObject.cpp">
+      <Filter>RenderSystem\DisplayObject</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderSystem\DisplayObject\DisplayObjects.cpp">
+      <Filter>RenderSystem\DisplayObject</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderSystem\Image\Sprite.cpp">
+      <Filter>RenderSystem\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderSystem\Image\Triangle.cpp">
+      <Filter>RenderSystem\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderSystem\Image\Grid9Image.cpp">
+      <Filter>RenderSystem\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderSystem\Image\Image.cpp">
+      <Filter>RenderSystem\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderSystem\Image\Quad.cpp">
+      <Filter>RenderSystem\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderSystem\Text\Text.cpp">
+      <Filter>RenderSystem\Text</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderSystem\TextArea\TextArea.cpp">
+      <Filter>RenderSystem\TextArea</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderSystem\TextEdit\TextEdit1.cpp">
+      <Filter>RenderSystem\TextEdit</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderSystem\TextEdit\TextEdit2.cpp">
+      <Filter>RenderSystem\TextEdit</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderSystem\TextEdit\TextEdit3.cpp">
+      <Filter>RenderSystem\TextEdit</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderSystem\TextEdit\TextEdit4.cpp">
+      <Filter>RenderSystem\TextEdit</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderSystem\TextEdit\TextEdit.cpp">
+      <Filter>RenderSystem\TextEdit</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderSystem\TextInput\TextInput2.cpp">
+      <Filter>RenderSystem\TextInput</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderSystem\TextInput\TextInput3.cpp">
+      <Filter>RenderSystem\TextInput</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderSystem\TextInput\TextInput4.cpp">
+      <Filter>RenderSystem\TextInput</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderSystem\TextInput\TextInput.cpp">
+      <Filter>RenderSystem\TextInput</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderSystem\TextInput\TextInput1.cpp">
+      <Filter>RenderSystem\TextInput</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderSystem\Texture\TextureCutLoader.cpp">
+      <Filter>RenderSystem\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderSystem\Texture\TextureLoader.cpp">
+      <Filter>RenderSystem\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderSystem\Texture\RenderTexture.cpp">
+      <Filter>RenderSystem\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderSystem\Texture\SurfaceTexture.cpp">
+      <Filter>RenderSystem\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderSystem\RenderSystem.cpp">
+      <Filter>RenderSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderSystem\DisplaySystem.cpp">
+      <Filter>RenderSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="ScheduleSystem\ScheduleSystem.cpp">
+      <Filter>ScheduleSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="ScriptSystem\ScriptSystemEx.cpp">
+      <Filter>ScriptSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="ThreadSystem\ThreadSystem.cpp">
+      <Filter>ThreadSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="ThreadSystem\Thread.cpp">
+      <Filter>ThreadSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Tool\LocalFile.cpp">
+      <Filter>Tool</Filter>
+    </ClCompile>
+    <ClCompile Include="Tool\CsvFile.cpp">
+      <Filter>Tool</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Platform\iOS\iOSSystem.mm">
+      <Filter>Platform\iOS</Filter>
+    </None>
+    <None Include="Platform\iOS\KeychainItemWrapper.m">
+      <Filter>Platform\iOS</Filter>
+    </None>
+    <None Include="Platform\iOS\Reachability.m">
+      <Filter>Platform\iOS</Filter>
+    </None>
+    <None Include="Platform\iOS\iOSDelegate.mm">
+      <Filter>Platform\iOS</Filter>
+    </None>
+  </ItemGroup>
+</Project>

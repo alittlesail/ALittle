@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AudioSystem\AudioSystem.h" />
+    <ClInclude Include="AudioSystem\bcg729\adaptativeCodebookSearch.h" />
+    <ClInclude Include="AudioSystem\bcg729\basicOperationsMacros.h" />
+    <ClInclude Include="AudioSystem\bcg729\bcg729\decoder.h" />
+    <ClInclude Include="AudioSystem\bcg729\bcg729\encoder.h" />
+    <ClInclude Include="AudioSystem\bcg729\codebooks.h" />
+    <ClInclude Include="AudioSystem\bcg729\codecParameters.h" />
+    <ClInclude Include="AudioSystem\bcg729\computeAdaptativeCodebookGain.h" />
+    <ClInclude Include="AudioSystem\bcg729\computeLP.h" />
+    <ClInclude Include="AudioSystem\bcg729\computeWeightedSpeech.h" />
+    <ClInclude Include="AudioSystem\bcg729\decodeAdaptativeCodeVector.h" />
+    <ClInclude Include="AudioSystem\bcg729\decodeFixedCodeVector.h" />
+    <ClInclude Include="AudioSystem\bcg729\decodeGains.h" />
+    <ClInclude Include="AudioSystem\bcg729\decodeLSP.h" />
+    <ClInclude Include="AudioSystem\bcg729\findOpenLoopPitchDelay.h" />
+    <ClInclude Include="AudioSystem\bcg729\fixedCodebookSearch.h" />
+    <ClInclude Include="AudioSystem\bcg729\fixedPointMacros.h" />
+    <ClInclude Include="AudioSystem\bcg729\floatingPointMacros.h" />
+    <ClInclude Include="AudioSystem\bcg729\g729FixedPointMath.h" />
+    <ClInclude Include="AudioSystem\bcg729\gainQuantization.h" />
+    <ClInclude Include="AudioSystem\bcg729\interpolateqLSP.h" />
+    <ClInclude Include="AudioSystem\bcg729\LP2LSPConversion.h" />
+    <ClInclude Include="AudioSystem\bcg729\LPSynthesisFilter.h" />
+    <ClInclude Include="AudioSystem\bcg729\LSPQuantization.h" />
+    <ClInclude Include="AudioSystem\bcg729\postFilter.h" />
+    <ClInclude Include="AudioSystem\bcg729\postProcessing.h" />
+    <ClInclude Include="AudioSystem\bcg729\preProcessing.h" />
+    <ClInclude Include="AudioSystem\bcg729\qLSP2LP.h" />
+    <ClInclude Include="AudioSystem\bcg729\typedef.h" />
+    <ClInclude Include="AudioSystem\bcg729\utils.h" />
+    <ClInclude Include="Helper\BitHelper.h" />
+    <ClInclude Include="Helper\FileHelperEx.h" />
+    <ClInclude Include="Helper\FontHelper.h" />
+    <ClInclude Include="Helper\InputHelper.h" />
+    <ClInclude Include="Helper\NetHelper.h" />
+    <ClInclude Include="Helper\SystemHelper.h" />
+    <ClInclude Include="Helper\TextureHelper.h" />
+    <ClInclude Include="NetSystem\HttpClient.h" />
+    <ClInclude Include="NetSystem\HttpFile.h" />
+    <ClInclude Include="NetSystem\MessageReceiver.h" />
+    <ClInclude Include="NetSystem\NetSystem.h" />
+    <ClInclude Include="NetSystem\ReceiveThread.h" />
+    <ClInclude Include="NetSystem\SendThread.h" />
+    <ClInclude Include="Platform\Android\AndroidSystem.h" />
+    <ClInclude Include="Platform\iOS\iOSDelegate.h" />
+    <ClInclude Include="Platform\iOS\iOSSystem.h" />
+    <ClInclude Include="Platform\iOS\KeychainItemWrapper.h" />
+    <ClInclude Include="Platform\iOS\Reachability.h" />
+    <ClInclude Include="Platform\Windows\WindowsSystem.h" />
+    <ClInclude Include="RenderSystem\DisplayObject\DisplayObject.h" />
+    <ClInclude Include="RenderSystem\DisplayObject\DisplayObjects.h" />
+    <ClInclude Include="RenderSystem\DisplayObject\DisplayView.h" />
+    <ClInclude Include="RenderSystem\DisplaySystem.h" />
+    <ClInclude Include="RenderSystem\Image\Grid9Image.h" />
+    <ClInclude Include="RenderSystem\Image\Image.h" />
+    <ClInclude Include="RenderSystem\Image\Quad.h" />
+    <ClInclude Include="RenderSystem\Image\Sprite.h" />
+    <ClInclude Include="RenderSystem\Image\Triangle.h" />
+    <ClInclude Include="RenderSystem\Matrix2D.h" />
+    <ClInclude Include="RenderSystem\RenderSystem.h" />
+    <ClInclude Include="RenderSystem\TextArea\TextArea.h" />
+    <ClInclude Include="RenderSystem\TextEdit\TextEdit.h" />
+    <ClInclude Include="RenderSystem\TextInput\TextInput.h" />
+    <ClInclude Include="RenderSystem\Texture\RenderTexture.h" />
+    <ClInclude Include="RenderSystem\Texture\SurfaceTexture.h" />
+    <ClInclude Include="RenderSystem\Texture\Texture.h" />
+    <ClInclude Include="RenderSystem\Texture\TextureCutLoader.h" />
+    <ClInclude Include="RenderSystem\Texture\TextureLoader.h" />
+    <ClInclude Include="RenderSystem\Text\Text.h" />
+    <ClInclude Include="ScheduleSystem\EventDefine.h" />
+    <ClInclude Include="ScheduleSystem\ScheduleSystem.h" />
+    <ClInclude Include="ScriptSystem\ScriptSystemEx.h" />
+    <ClInclude Include="ThreadSystem\Task.h" />
+    <ClInclude Include="ThreadSystem\Thread.h" />
+    <ClInclude Include="ThreadSystem\ThreadSystem.h" />
+    <ClInclude Include="Tool\concurrentqueue.h" />
+    <ClInclude Include="Tool\CsvFile.h" />
+    <ClInclude Include="Tool\LocalFile.h" />
+    <ClInclude Include="Tool\MemoryPool.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="AudioSystem\AudioSystem.cpp" />
+    <ClCompile Include="AudioSystem\bcg729\adaptativeCodebookSearch.c" />
+    <ClCompile Include="AudioSystem\bcg729\codebooks.c" />
+    <ClCompile Include="AudioSystem\bcg729\computeAdaptativeCodebookGain.c" />
+    <ClCompile Include="AudioSystem\bcg729\computeLP.c" />
+    <ClCompile Include="AudioSystem\bcg729\computeWeightedSpeech.c" />
+    <ClCompile Include="AudioSystem\bcg729\decodeAdaptativeCodeVector.c" />
+    <ClCompile Include="AudioSystem\bcg729\decodeFixedCodeVector.c" />
+    <ClCompile Include="AudioSystem\bcg729\decodeGains.c" />
+    <ClCompile Include="AudioSystem\bcg729\decodeLSP.c" />
+    <ClCompile Include="AudioSystem\bcg729\decoder.c" />
+    <ClCompile Include="AudioSystem\bcg729\encoder.c" />
+    <ClCompile Include="AudioSystem\bcg729\findOpenLoopPitchDelay.c" />
+    <ClCompile Include="AudioSystem\bcg729\fixedCodebookSearch.c" />
+    <ClCompile Include="AudioSystem\bcg729\gainQuantization.c" />
+    <ClCompile Include="AudioSystem\bcg729\interpolateqLSP.c" />
+    <ClCompile Include="AudioSystem\bcg729\LP2LSPConversion.c" />
+    <ClCompile Include="AudioSystem\bcg729\LPSynthesisFilter.c" />
+    <ClCompile Include="AudioSystem\bcg729\LSPQuantization.c" />
+    <ClCompile Include="AudioSystem\bcg729\postFilter.c" />
+    <ClCompile Include="AudioSystem\bcg729\postProcessing.c" />
+    <ClCompile Include="AudioSystem\bcg729\preProcessing.c" />
+    <ClCompile Include="AudioSystem\bcg729\qLSP2LP.c" />
+    <ClCompile Include="AudioSystem\bcg729\utils.c" />
+    <ClCompile Include="Helper\BitHelper.cpp" />
+    <ClCompile Include="Helper\FileHelperEx.cpp" />
+    <ClCompile Include="Helper\FontHelper.cpp" />
+    <ClCompile Include="Helper\InputHelper.cpp" />
+    <ClCompile Include="Helper\NetHelper.cpp" />
+    <ClCompile Include="Helper\SystemHelper.cpp" />
+    <ClCompile Include="Helper\TextureHelper.cpp" />
+    <ClCompile Include="NetSystem\HttpClient.cpp" />
+    <ClCompile Include="NetSystem\HttpFile.cpp" />
+    <ClCompile Include="NetSystem\MessageReceiver.cpp" />
+    <ClCompile Include="NetSystem\NetSystem.cpp" />
+    <ClCompile Include="NetSystem\ReceiveThread.cpp" />
+    <ClCompile Include="NetSystem\SendThread.cpp" />
+    <ClCompile Include="Platform\Android\AndroidSystem.cpp" />
+    <ClCompile Include="Platform\Windows\WindowsSystem.cpp" />
+    <ClCompile Include="RenderSystem\DisplayObject\DisplayObject.cpp" />
+    <ClCompile Include="RenderSystem\DisplayObject\DisplayObjects.cpp" />
+    <ClCompile Include="RenderSystem\DisplayObject\DisplayView.cpp" />
+    <ClCompile Include="RenderSystem\DisplaySystem.cpp" />
+    <ClCompile Include="RenderSystem\Image\Grid9Image.cpp" />
+    <ClCompile Include="RenderSystem\Image\Image.cpp" />
+    <ClCompile Include="RenderSystem\Image\Quad.cpp" />
+    <ClCompile Include="RenderSystem\Image\Sprite.cpp" />
+    <ClCompile Include="RenderSystem\Image\Triangle.cpp" />
+    <ClCompile Include="RenderSystem\RenderSystem.cpp" />
+    <ClCompile Include="RenderSystem\TextArea\TextArea.cpp" />
+    <ClCompile Include="RenderSystem\TextEdit\TextEdit.cpp" />
+    <ClCompile Include="RenderSystem\TextEdit\TextEdit1.cpp" />
+    <ClCompile Include="RenderSystem\TextEdit\TextEdit2.cpp" />
+    <ClCompile Include="RenderSystem\TextEdit\TextEdit3.cpp" />
+    <ClCompile Include="RenderSystem\TextEdit\TextEdit4.cpp" />
+    <ClCompile Include="RenderSystem\TextInput\TextInput.cpp" />
+    <ClCompile Include="RenderSystem\TextInput\TextInput1.cpp" />
+    <ClCompile Include="RenderSystem\TextInput\TextInput2.cpp" />
+    <ClCompile Include="RenderSystem\TextInput\TextInput3.cpp" />
+    <ClCompile Include="RenderSystem\TextInput\TextInput4.cpp" />
+    <ClCompile Include="RenderSystem\Texture\RenderTexture.cpp" />
+    <ClCompile Include="RenderSystem\Texture\SurfaceTexture.cpp" />
+    <ClCompile Include="RenderSystem\Texture\TextureCutLoader.cpp" />
+    <ClCompile Include="RenderSystem\Texture\TextureLoader.cpp" />
+    <ClCompile Include="RenderSystem\Text\Text.cpp" />
+    <ClCompile Include="ScheduleSystem\ScheduleSystem.cpp" />
+    <ClCompile Include="ScriptSystem\ScriptSystemEx.cpp" />
+    <ClCompile Include="ThreadSystem\Thread.cpp" />
+    <ClCompile Include="ThreadSystem\ThreadSystem.cpp" />
+    <ClCompile Include="Tool\CsvFile.cpp" />
+    <ClCompile Include="Tool\LocalFile.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Platform\iOS\iOSDelegate.mm" />
+    <None Include="Platform\iOS\iOSSystem.mm" />
+    <None Include="Platform\iOS\KeychainItemWrapper.m" />
+    <None Include="Platform\iOS\Reachability.m" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <ProjectGuid>{AD64F491-95B8-4E5D-BD5C-9DE55509538A}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>LibClient</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>NotSet</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>NotSet</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)lib\ALittle\</OutDir>
+    <IntDir>$(SolutionDir)temp\$(ProjectName)\$(Configuration)\</IntDir>
+    <TargetName>$(ProjectName)d</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)lib\ALittle\</OutDir>
+    <IntDir>$(SolutionDir)temp\$(ProjectName)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_LIB;_CRTDBG_MAP_ALLOC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(SolutionDir)..;$(SolutionDir)..\SDL_mixer\;$(SolutionDir)..\SDL_net\;$(SolutionDir)..\SDL_image\;$(SolutionDir)..\SDL_ttf\;$(SolutionDir)..\SDL\include\;$(SolutionDir)..\LuaJIT-2.1.0-beta3\src\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(SolutionDir)..;$(SolutionDir)..\SDL_mixer\;$(SolutionDir)..\SDL_net\;$(SolutionDir)..\SDL_image\;$(SolutionDir)..\SDL_ttf\;$(SolutionDir)..\SDL\include\;$(SolutionDir)..\LuaJIT-2.1.0-beta3\src\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

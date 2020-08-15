@@ -1,0 +1,174 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="HttpSystem">
+      <UniqueIdentifier>{c5b5f4d9-1718-48b2-b6b6-cd1ce9254446}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HttpSystem\Client">
+      <UniqueIdentifier>{7dd3ba41-6a60-476e-b730-663629164946}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HttpSystem\Server">
+      <UniqueIdentifier>{50f19811-ff72-411f-9ab5-d22d140c2fe3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tool">
+      <UniqueIdentifier>{51e048a3-bdb0-4522-933e-4fe3869e0c96}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ServerSystem">
+      <UniqueIdentifier>{e42ba274-3d66-48a6-8467-40e63b321136}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MysqlSystem">
+      <UniqueIdentifier>{7bf4d6e2-0872-40e7-906b-717a1c22b9f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ClientSystem">
+      <UniqueIdentifier>{ec65227c-8071-4af6-8515-f73e1cfa01aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RouteSystem">
+      <UniqueIdentifier>{bec30482-4d9f-4b24-9250-6888d99de42a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="HttpSystem\Client\HttpClientPost.h">
+      <Filter>HttpSystem\Client</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpSystem\Client\HttpClientText.h">
+      <Filter>HttpSystem\Client</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpSystem\Server\HttpSender.h">
+      <Filter>HttpSystem\Server</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpSystem\Server\HttpServer.h">
+      <Filter>HttpSystem\Server</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpSystem\Server\HttpReceiver.h">
+      <Filter>HttpSystem\Server</Filter>
+    </ClInclude>
+    <ClInclude Include="Tool\FileCacheSystem.h">
+      <Filter>Tool</Filter>
+    </ClInclude>
+    <ClInclude Include="Tool\SocketWrap.h">
+      <Filter>Tool</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerSystem\ServerSystem.h">
+      <Filter>ServerSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="MysqlSystem\MysqlConnection.h">
+      <Filter>MysqlSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerSystem\ServerSchedule.h">
+      <Filter>ServerSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="ClientSystem\ClientReceiver.h">
+      <Filter>ClientSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="ClientSystem\ClientServer.h">
+      <Filter>ClientSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="RouteSystem\RouteDefine.h">
+      <Filter>RouteSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="RouteSystem\RouteIdDefine.h">
+      <Filter>RouteSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="RouteSystem\RouteMessage.h">
+      <Filter>RouteSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="RouteSystem\ConnectMessage.h">
+      <Filter>RouteSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="RouteSystem\ConnectServer.h">
+      <Filter>RouteSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="RouteSystem\ConnectEndpoint.h">
+      <Filter>RouteSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="RouteSystem\ConnectClient.h">
+      <Filter>RouteSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="RouteSystem\ConnectReceiver.h">
+      <Filter>RouteSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="RouteSystem\RouteSystem.h">
+      <Filter>RouteSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="RouteSystem\SessionConnection.h">
+      <Filter>RouteSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="MysqlSystem\MysqlStatementQuery.h">
+      <Filter>MysqlSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="MysqlSystem\MysqlThreadSystem.h">
+      <Filter>MysqlSystem</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="HttpSystem\Client\HttpClientText.cpp">
+      <Filter>HttpSystem\Client</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpSystem\Client\HttpClientPost.cpp">
+      <Filter>HttpSystem\Client</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpSystem\Server\HttpSender.cpp">
+      <Filter>HttpSystem\Server</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpSystem\Server\HttpServer.cpp">
+      <Filter>HttpSystem\Server</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpSystem\Server\HttpReceiver.cpp">
+      <Filter>HttpSystem\Server</Filter>
+    </ClCompile>
+    <ClCompile Include="Tool\FileCacheSystem.cpp">
+      <Filter>Tool</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerSystem\ServerSystem.cpp">
+      <Filter>ServerSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="MysqlSystem\MysqlConnection.cpp">
+      <Filter>MysqlSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerSystem\ServerSchedule.cpp">
+      <Filter>ServerSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="ClientSystem\ClientReceiver.cpp">
+      <Filter>ClientSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="ClientSystem\ClientServer.cpp">
+      <Filter>ClientSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="RouteSystem\ConnectServer.cpp">
+      <Filter>RouteSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="RouteSystem\ConnectEndpoint.cpp">
+      <Filter>RouteSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="RouteSystem\ConnectClient.cpp">
+      <Filter>RouteSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="RouteSystem\ConnectReceiver.cpp">
+      <Filter>RouteSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="RouteSystem\RouteSystem.cpp">
+      <Filter>RouteSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="RouteSystem\RouteSystemConnect.cpp">
+      <Filter>RouteSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="RouteSystem\RouteSystemSearch.cpp">
+      <Filter>RouteSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="RouteSystem\SessionConnection.cpp">
+      <Filter>RouteSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="MysqlSystem\MysqlStatementQuery.cpp">
+      <Filter>MysqlSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="MysqlSystem\MysqlThreadSystem.cpp">
+      <Filter>MysqlSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="ClientSystem\ClientReceiverWebSocket.cpp">
+      <Filter>ClientSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="ClientSystem\ClientReceiverBinary.cpp">
+      <Filter>ClientSystem</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

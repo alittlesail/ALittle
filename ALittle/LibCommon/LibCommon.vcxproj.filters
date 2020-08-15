@@ -1,0 +1,261 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Helper">
+      <UniqueIdentifier>{af3c384f-9861-419d-94a5-96a1cd61c61e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Protocol">
+      <UniqueIdentifier>{2147ddca-f604-4167-8e21-8c19292db89d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ScriptSystem">
+      <UniqueIdentifier>{b516be14-981a-4224-b410-2b4af60aa674}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tool">
+      <UniqueIdentifier>{91fec1d8-3979-422a-aff5-a87005587e25}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ScriptSystem\lfs">
+      <UniqueIdentifier>{c24376c8-5639-42f2-81a8-488695cd5b2d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ScriptSystem\json">
+      <UniqueIdentifier>{549118bd-7737-44fe-a844-d8b6d5fa27c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ScriptSystem\base64">
+      <UniqueIdentifier>{e98ef01f-d005-49f1-810b-8f85f8efdc8e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ScriptSystem\csv">
+      <UniqueIdentifier>{265565a0-e604-43cd-87c6-0d95f9cdae11}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ScriptSystem\md5">
+      <UniqueIdentifier>{bfef287f-7dc7-4b6a-b96e-ea56e06c4714}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ScriptSystem\sqlite3">
+      <UniqueIdentifier>{0822d25b-919c-489e-8ce7-36a508acb9c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ScriptSystem\timer">
+      <UniqueIdentifier>{735ab41c-444f-4ee4-97d3-e0fd20637ab6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ScriptSystem\utf8">
+      <UniqueIdentifier>{91e26171-a994-44b4-8c7d-0ec4b2dbb3d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ScriptSystem\klib">
+      <UniqueIdentifier>{fc6b4694-b228-490c-9be7-1ab6829caf37}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ScriptSystem\sha1">
+      <UniqueIdentifier>{9f0c32ba-84fb-44fd-9be3-b8b3f3a7fc7f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Helper\FileHelper.cpp">
+      <Filter>Helper</Filter>
+    </ClCompile>
+    <ClCompile Include="Helper\HttpHelper.cpp">
+      <Filter>Helper</Filter>
+    </ClCompile>
+    <ClCompile Include="Helper\LogHelper.cpp">
+      <Filter>Helper</Filter>
+    </ClCompile>
+    <ClCompile Include="Helper\StringHelper.cpp">
+      <Filter>Helper</Filter>
+    </ClCompile>
+    <ClCompile Include="Helper\TimeHelper.cpp">
+      <Filter>Helper</Filter>
+    </ClCompile>
+    <ClCompile Include="Helper\CryptHelper.cpp">
+      <Filter>Helper</Filter>
+    </ClCompile>
+    <ClCompile Include="Protocol\Message.cpp">
+      <Filter>Protocol</Filter>
+    </ClCompile>
+    <ClCompile Include="Protocol\MessageReadFactory.cpp">
+      <Filter>Protocol</Filter>
+    </ClCompile>
+    <ClCompile Include="Protocol\MessageWriteFactory.cpp">
+      <Filter>Protocol</Filter>
+    </ClCompile>
+    <ClCompile Include="ScriptSystem\ScriptSystem.cpp">
+      <Filter>ScriptSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Tool\LogSystem.cpp">
+      <Filter>Tool</Filter>
+    </ClCompile>
+    <ClCompile Include="Helper\DumpHelper.cpp">
+      <Filter>Helper</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\base64\base64.c">
+      <Filter>ScriptSystem\base64</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\base64\base64lib.c">
+      <Filter>ScriptSystem\base64</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\csv\csv.c">
+      <Filter>ScriptSystem\csv</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\csv\csvlib.c">
+      <Filter>ScriptSystem\csv</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\json\fpconv.c">
+      <Filter>ScriptSystem\json</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\json\lua_ajson.c">
+      <Filter>ScriptSystem\json</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\json\lua_cjson.c">
+      <Filter>ScriptSystem\json</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\json\strbuf.c">
+      <Filter>ScriptSystem\json</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\lfs\lfs.c">
+      <Filter>ScriptSystem\lfs</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\md5\md5lib.c">
+      <Filter>ScriptSystem\md5</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\md5\md5.c">
+      <Filter>ScriptSystem\md5</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\sqlite3\lsqlite3.c">
+      <Filter>ScriptSystem\sqlite3</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\sqlite3\sqlite3.c">
+      <Filter>ScriptSystem\sqlite3</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\timer\miniheap.c">
+      <Filter>ScriptSystem\timer</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\timer\timer.c">
+      <Filter>ScriptSystem\timer</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\timer\timerlib.c">
+      <Filter>ScriptSystem\timer</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\utf8\utf8lib.c">
+      <Filter>ScriptSystem\utf8</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\utf8\utf8.c">
+      <Filter>ScriptSystem\utf8</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\klib\kstring.c">
+      <Filter>ScriptSystem\klib</Filter>
+    </ClCompile>
+    <ClCompile Include="Tool\ConsoleSystem.cpp">
+      <Filter>Tool</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\sha1\sha1.c">
+      <Filter>ScriptSystem\sha1</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Helper\FileHelper.h">
+      <Filter>Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="Helper\HttpHelper.h">
+      <Filter>Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="Helper\LogHelper.h">
+      <Filter>Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="Helper\StringHelper.h">
+      <Filter>Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="Helper\TimeHelper.h">
+      <Filter>Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="Helper\CryptHelper.h">
+      <Filter>Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="Protocol\Message.h">
+      <Filter>Protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="Protocol\MessageReadFactory.h">
+      <Filter>Protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="Protocol\MessageWriteFactory.h">
+      <Filter>Protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptSystem\ScriptSystem.h">
+      <Filter>ScriptSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Tool\LogSystem.h">
+      <Filter>Tool</Filter>
+    </ClInclude>
+    <ClInclude Include="Tool\ThreadConsumer.h">
+      <Filter>Tool</Filter>
+    </ClInclude>
+    <ClInclude Include="Tool\SafeIDCreator.h">
+      <Filter>Tool</Filter>
+    </ClInclude>
+    <ClInclude Include="Helper\DumpHelper.h">
+      <Filter>Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\base64\base64lib.h">
+      <Filter>ScriptSystem\base64</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\base64\base64.h">
+      <Filter>ScriptSystem\base64</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\csv\csvlib.h">
+      <Filter>ScriptSystem\csv</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\csv\csv.h">
+      <Filter>ScriptSystem\csv</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\json\strbuf.h">
+      <Filter>ScriptSystem\json</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\json\fpconv.h">
+      <Filter>ScriptSystem\json</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\json\lua_ajson.h">
+      <Filter>ScriptSystem\json</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\json\lua_cjson.h">
+      <Filter>ScriptSystem\json</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\lfs\lfs.h">
+      <Filter>ScriptSystem\lfs</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\md5\md5.h">
+      <Filter>ScriptSystem\md5</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\sqlite3\sqlite3ext.h">
+      <Filter>ScriptSystem\sqlite3</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\sqlite3\lsqlite3.h">
+      <Filter>ScriptSystem\sqlite3</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\sqlite3\sqlite3.h">
+      <Filter>ScriptSystem\sqlite3</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\timer\timerlib.h">
+      <Filter>ScriptSystem\timer</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\timer\miniheap.h">
+      <Filter>ScriptSystem\timer</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\timer\timer.h">
+      <Filter>ScriptSystem\timer</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\utf8\utf8lib.h">
+      <Filter>ScriptSystem\utf8</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\utf8\utf8.h">
+      <Filter>ScriptSystem\utf8</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\klib\kstring.h">
+      <Filter>ScriptSystem\klib</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\klib\kvec.h">
+      <Filter>ScriptSystem\klib</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\klib\khash.h">
+      <Filter>ScriptSystem\klib</Filter>
+    </ClInclude>
+    <ClInclude Include="Tool\ConsoleSystem.h">
+      <Filter>Tool</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\sha1\sha1.h">
+      <Filter>ScriptSystem\sha1</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

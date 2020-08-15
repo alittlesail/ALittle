@@ -1,0 +1,178 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="abnflib.h" />
+    <ClInclude Include="abnf_c.h" />
+    <ClInclude Include="Index\ABnfFileClass.h">
+      <Filter>Index</Filter>
+    </ClInclude>
+    <ClInclude Include="Index\ABnfProjectClass.h">
+      <Filter>Index</Filter>
+    </ClInclude>
+    <ClInclude Include="Index\ABnfFactoryClass.h">
+      <Filter>Index</Filter>
+    </ClInclude>
+    <ClInclude Include="Reference\ABnfKeyReference.h">
+      <Filter>Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Reference\ABnfNodeReference.h">
+      <Filter>Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Reference\ABnfNumberReference.h">
+      <Filter>Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Reference\ABnfRegexReference.h">
+      <Filter>Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Reference\ABnfStringReference.h">
+      <Filter>Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Reference\ABnfCommonReference.h">
+      <Filter>Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Reference\ABnfIdReference.h">
+      <Filter>Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="..\alanguage\Model\ABnfLeafElement.h">
+      <Filter>ALanguage\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\alanguage\Model\ABnfNodeElement.h">
+      <Filter>ALanguage\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\alanguage\Model\ABnfReference.h">
+      <Filter>ALanguage\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\alanguage\Model\ABnfRegexElement.h">
+      <Filter>ALanguage\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\alanguage\Model\ABnfRule.h">
+      <Filter>ALanguage\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\alanguage\Model\ABnfRuleInfo.h">
+      <Filter>ALanguage\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\alanguage\Model\ABnfRuleNodeInfo.h">
+      <Filter>ALanguage\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\alanguage\Model\ABnfRuleTokenInfo.h">
+      <Filter>ALanguage\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\alanguage\Model\ABnfStringElement.h">
+      <Filter>ALanguage\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\alanguage\Model\ALanguageHelperInfo.h">
+      <Filter>ALanguage\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\alanguage\Model\ARegex.h">
+      <Filter>ALanguage\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\alanguage\Model\ABnf.h">
+      <Filter>ALanguage\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\alanguage\Model\ABnfElement.h">
+      <Filter>ALanguage\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\alanguage\Model\ABnfErrorElement.h">
+      <Filter>ALanguage\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\alanguage\Model\ABnfGuess.h">
+      <Filter>ALanguage\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\alanguage\Model\ABnfKeyElement.h">
+      <Filter>ALanguage\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\alanguage\Index\ABnfFile.h">
+      <Filter>ALanguage\Index</Filter>
+    </ClInclude>
+    <ClInclude Include="..\alanguage\Index\ABnfProject.h">
+      <Filter>ALanguage\Index</Filter>
+    </ClInclude>
+    <ClInclude Include="..\alanguage\Index\ABnfFactory.h">
+      <Filter>ALanguage\Index</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="abnflib.c" />
+    <ClCompile Include="abnf_c.cpp" />
+    <ClCompile Include="Index\ABnfProjectClass.cpp">
+      <Filter>Index</Filter>
+    </ClCompile>
+    <ClCompile Include="Index\ABnfFactoryClass.cpp">
+      <Filter>Index</Filter>
+    </ClCompile>
+    <ClCompile Include="Index\ABnfFileClass.cpp">
+      <Filter>Index</Filter>
+    </ClCompile>
+    <ClCompile Include="Reference\ABnfNodeReference.cpp">
+      <Filter>Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Reference\ABnfNumberReference.cpp">
+      <Filter>Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Reference\ABnfRegexReference.cpp">
+      <Filter>Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Reference\ABnfStringReference.cpp">
+      <Filter>Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Reference\ABnfCommonReference.cpp">
+      <Filter>Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Reference\ABnfIdReference.cpp">
+      <Filter>Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Reference\ABnfKeyReference.cpp">
+      <Filter>Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="..\alanguage\Model\ABnfLeafElement.cpp">
+      <Filter>ALanguage\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="..\alanguage\Model\ABnfNodeElement.cpp">
+      <Filter>ALanguage\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="..\alanguage\Model\ABnfRule.cpp">
+      <Filter>ALanguage\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="..\alanguage\Model\ABnfRuleInfo.cpp">
+      <Filter>ALanguage\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="..\alanguage\Model\ABnfRuleNodeInfo.cpp">
+      <Filter>ALanguage\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="..\alanguage\Model\ARegex.cpp">
+      <Filter>ALanguage\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="..\alanguage\Model\ABnf.cpp">
+      <Filter>ALanguage\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="..\alanguage\Model\ABnfElement.cpp">
+      <Filter>ALanguage\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="..\alanguage\Index\ABnfFile.cpp">
+      <Filter>ALanguage\Index</Filter>
+    </ClCompile>
+    <ClCompile Include="..\alanguage\Index\ABnfProject.cpp">
+      <Filter>ALanguage\Index</Filter>
+    </ClCompile>
+    <ClCompile Include="..\alanguage\Index\ABnfFactory.cpp">
+      <Filter>ALanguage\Index</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Index">
+      <UniqueIdentifier>{a6cfe03e-931c-418c-8e42-bb958b685937}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Reference">
+      <UniqueIdentifier>{fa293e03-802d-40b1-b744-2e4e85df4d1f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ALanguage">
+      <UniqueIdentifier>{ada982e6-343c-4d24-92af-4c71afc35acc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ALanguage\Model">
+      <UniqueIdentifier>{8b97b787-d968-4d5a-a547-93c9561e82ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ALanguage\Index">
+      <UniqueIdentifier>{6dc49aa3-3cf1-4578-8e6f-012611364af3}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

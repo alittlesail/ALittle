@@ -287,11 +287,12 @@ typedef enum {
 
 static int TTF_initFontMetrics(TTF_Font *font);
 
-static int TTF_Size_Internal(TTF_Font *font, const char *text, str_type_t str_type,
-        int *w, int *h, int *xstart, int *ystart, int measure_width, int *extent, int *count);
+static int TTF_Size_Internal(TTF_Font *font, const char *text, const str_type_t str_type,
+        int *w, int *h, int *xstart, int *ystart, int measure_width, int *extent, int *count,
+        TTF_MeasureText_Callback callback, void* user_data);
 
 #define NO_MEASUREMENT  \
-        0, NULL, NULL
+        0, NULL, NULL, NULL, NULL
 
 
 static SDL_Surface* TTF_Render_Internal(TTF_Font *font, const char *text, str_type_t str_type,
@@ -2549,8 +2550,8 @@ int TTF_GlyphMetrics32(TTF_Font *font, Uint32 ch,
 
 static int TTF_Size_Internal(TTF_Font *font,
         const char *text, const str_type_t str_type,
-        int *w, int *h, int *xstart, int *ystart,
-        int measure_width, int *extent, int *count)
+        int measure_width, int *extent, int *count,
+        TTF_MeasureText_Callback callback, void* user_data)
 {
     int x = 0;
     int pos_x, pos_y;
@@ -2643,6 +2644,7 @@ static int TTF_Size_Internal(TTF_Font *font,
         textlen -= inc;
 
         if (c == UNICODE_BOM_NATIVE || c == UNICODE_BOM_SWAPPED) {
+            if (callback) callback(user_data, current_width);
             continue;
         }
 #endif
@@ -2727,6 +2729,7 @@ static int TTF_Size_Internal(TTF_Font *font,
             }
             current_width = cw;
             char_count += 1;
+            if (callback) callback(user_data, current_width);
         }
     }
 
@@ -2804,19 +2807,19 @@ int TTF_SizeUNICODE(TTF_Font *font, const Uint16 *text, int *w, int *h)
     return TTF_Size_Internal(font, (const char *)text, STR_UNICODE, w, h, NULL, NULL, NO_MEASUREMENT);
 }
 
-int TTF_MeasureText(TTF_Font *font, const char *text, int width, int *extent, int *count)
+int TTF_MeasureText(TTF_Font *font, const char *text, int width, int *extent, int *count, TTF_MeasureText_Callback callback, void* user_data)
 {
-    return TTF_Size_Internal(font, text, STR_TEXT, NULL, NULL, NULL, NULL, width, extent, count);
+    return TTF_Size_Internal(font, text, STR_TEXT, NULL, NULL, NULL, NULL, width, extent, count, callback, user_data);
 }
 
-int TTF_MeasureUTF8(TTF_Font *font, const char *text, int width, int *extent, int *count)
+int TTF_MeasureUTF8(TTF_Font *font, const char *text, int width, int *extent, int *count, TTF_MeasureText_Callback callback, void* user_data)
 {
-    return TTF_Size_Internal(font, text, STR_UTF8, NULL, NULL, NULL, NULL, width, extent, count);
+    return TTF_Size_Internal(font, text, STR_UTF8, NULL, NULL, NULL, NULL, width, extent, count, callback, user_data);
 }
 
-int TTF_MeasureUNICODE(TTF_Font *font, const Uint16 *text, int width, int *extent, int *count)
+int TTF_MeasureUNICODE(TTF_Font *font, const Uint16 *text, int width, int *extent, int *count, TTF_MeasureText_Callback callback, void* user_data)
 {
-    return TTF_Size_Internal(font, (const char *)text, STR_UNICODE, NULL, NULL, NULL, NULL, width, extent, count);
+    return TTF_Size_Internal(font, (const char *)text, STR_UNICODE, NULL, NULL, NULL, NULL, width, extent, count, callback, user_data);
 }
 
 static SDL_Surface* TTF_Render_Internal(TTF_Font *font, const char *text, const str_type_t str_type,
@@ -3067,7 +3070,7 @@ static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text
 
             strLines[numLines++] = text_cpy;
 
-            if (TTF_MeasureUTF8(font, text_cpy, wrapLength, &extent, &max_count) < 0) {
+            if (TTF_MeasureUTF8(font, text_cpy, wrapLength, &extent, &max_count, NULL, NULL) < 0) {
                 TTF_SetError("Error measure text");
                 goto failure;
             }

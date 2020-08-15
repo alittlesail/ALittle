@@ -643,6 +643,102 @@ GLES_QueueCopy(SDL_Renderer * renderer, SDL_RenderCommand *cmd, SDL_Texture * te
 }
 
 static int
+GLES_QueueQuad(SDL_Renderer * renderer, SDL_RenderCommand *cmd, SDL_Texture * texture,
+                          const float * src, const float * dst)
+{
+    GLES_TextureData *texturedata = (GLES_TextureData *) texture->driverdata;
+    // GLfloat minx, miny, maxx, maxy;
+    // GLfloat minu, maxu, minv, maxv;
+    GLfloat *verts = (GLfloat *) SDL_AllocateRenderVertices(renderer, 16 * sizeof (GLfloat), 0, &cmd->data.draw.first);
+
+    if (!verts) {
+        return -1;
+    }
+
+    cmd->data.draw.count = 1;
+
+    // minx = dstrect->x;
+    // miny = dstrect->y;
+    // maxx = dstrect->x + dstrect->w;
+    // maxy = dstrect->y + dstrect->h;
+
+    // minu = (GLfloat) srcrect->x / texture->w;
+    // minu *= texturedata->texw;
+    // maxu = (GLfloat) (srcrect->x + srcrect->w) / texture->w;
+    // maxu *= texturedata->texw;
+    // minv = (GLfloat) srcrect->y / texture->h;
+    // minv *= texturedata->texh;
+    // maxv = (GLfloat) (srcrect->y + srcrect->h) / texture->h;
+    // maxv *= texturedata->texh;
+
+    *(verts++) = dst[0];    // minx;
+    *(verts++) = dst[1];    // miny;
+    *(verts++) = dst[2];    // maxx;
+    *(verts++) = dst[3];    // miny;
+    *(verts++) = dst[6];    // minx;
+    *(verts++) = dst[7];    // maxy;
+    *(verts++) = dst[4];    // maxx;
+    *(verts++) = dst[5];    // maxy;
+
+    *(verts++) = src[0];    // minu;
+    *(verts++) = src[1];    // minv;
+    *(verts++) = src[2];    // maxu;
+    *(verts++) = src[3];    // minv;
+    *(verts++) = src[6];    // minu;
+    *(verts++) = src[7];    // maxv;
+    *(verts++) = src[4];    // maxu;
+    *(verts++) = src[5];    // maxv;
+
+    return 0;
+}
+
+static int
+GLES_QueueTriangle(SDL_Renderer * renderer, SDL_RenderCommand *cmd, SDL_Texture * texture,
+                          const float * src, const float * dst)
+{
+    GLES_TextureData *texturedata = (GLES_TextureData *) texture->driverdata;
+    // GLfloat minx, miny, maxx, maxy;
+    // GLfloat minu, maxu, minv, maxv;
+    GLfloat *verts = (GLfloat *) SDL_AllocateRenderVertices(renderer, 12 * sizeof (GLfloat), 0, &cmd->data.draw.first);
+
+    if (!verts) {
+        return -1;
+    }
+
+    cmd->data.draw.count = 1;
+
+    // minx = dstrect->x;
+    // miny = dstrect->y;
+    // maxx = dstrect->x + dstrect->w;
+    // maxy = dstrect->y + dstrect->h;
+
+    // minu = (GLfloat) srcrect->x / texture->w;
+    // minu *= texturedata->texw;
+    // maxu = (GLfloat) (srcrect->x + srcrect->w) / texture->w;
+    // maxu *= texturedata->texw;
+    // minv = (GLfloat) srcrect->y / texture->h;
+    // minv *= texturedata->texh;
+    // maxv = (GLfloat) (srcrect->y + srcrect->h) / texture->h;
+    // maxv *= texturedata->texh;
+
+    *(verts++) = dst[0];    // minx;
+    *(verts++) = dst[1];    // miny;
+    *(verts++) = dst[2];    // maxx;
+    *(verts++) = dst[3];    // miny;
+    *(verts++) = dst[4];    // maxx;
+    *(verts++) = dst[5];    // maxy;
+
+    *(verts++) = src[0];    // minu;
+    *(verts++) = src[1];    // minv;
+    *(verts++) = src[2];    // maxu;
+    *(verts++) = src[3];    // minv;
+    *(verts++) = src[4];    // maxu;
+    *(verts++) = src[5];    // maxv;
+
+    return 0;
+}
+
+static int
 GLES_QueueCopyEx(SDL_Renderer * renderer, SDL_RenderCommand *cmd, SDL_Texture * texture,
                         const SDL_Rect * srcquad, const SDL_FRect * dstrect,
                         const double angle, const SDL_FPoint *center, const SDL_RendererFlip flip)
@@ -935,6 +1031,24 @@ GLES_RunCommandQueue(SDL_Renderer * renderer, SDL_RenderCommand *cmd, void *vert
                 break;
             }
 
+            case SDL_RENDERCMD_QUAD: {
+                const GLfloat *verts = (GLfloat *) (((Uint8 *) vertices) + cmd->data.draw.first);
+                SetCopyState(data, cmd);
+                data->glVertexPointer(2, GL_FLOAT, 0, verts);
+                data->glTexCoordPointer(2, GL_FLOAT, 0, verts + 8);
+                data->glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+                break;
+            }
+
+            case SDL_RENDERCMD_TRIANGLE: {
+                const GLfloat *verts = (GLfloat *) (((Uint8 *) vertices) + cmd->data.draw.first);
+                SetCopyState(data, cmd);
+                data->glVertexPointer(2, GL_FLOAT, 0, verts);
+                data->glTexCoordPointer(2, GL_FLOAT, 0, verts + 6);
+                data->glDrawArrays(GL_TRIANGLE_STRIP, 0, 3);
+                break;
+            }
+
             case SDL_RENDERCMD_COPY_EX: {
                 const GLfloat *verts = (GLfloat *) (((Uint8 *) vertices) + cmd->data.draw.first);
                 const GLfloat translatex = verts[16];
@@ -1162,6 +1276,8 @@ GLES_CreateRenderer(SDL_Window * window, Uint32 flags)
     renderer->QueueDrawLines = GLES_QueueDrawPoints;  /* lines and points queue vertices the same way. */
     renderer->QueueFillRects = GLES_QueueFillRects;
     renderer->QueueCopy = GLES_QueueCopy;
+    renderer->QueueQuad = GLES_QueueQuad;
+    renderer->QueueTriangle = GLES_QueueTriangle;
     renderer->QueueCopyEx = GLES_QueueCopyEx;
     renderer->RunCommandQueue = GLES_RunCommandQueue;
     renderer->RenderReadPixels = GLES_RenderReadPixels;

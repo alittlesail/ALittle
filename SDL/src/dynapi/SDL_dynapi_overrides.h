@@ -341,6 +341,8 @@
 #define SDL_RenderFillRect SDL_RenderFillRect_REAL
 #define SDL_RenderFillRects SDL_RenderFillRects_REAL
 #define SDL_RenderCopy SDL_RenderCopy_REAL
+#define SDL_RenderQuad SDL_RenderQuad_REAL
+#define SDL_RenderTriangle SDL_RenderTriangle_REAL
 #define SDL_RenderCopyEx SDL_RenderCopyEx_REAL
 #define SDL_RenderReadPixels SDL_RenderReadPixels_REAL
 #define SDL_RenderPresent SDL_RenderPresent_REAL
@@ -349,6 +351,7 @@
 #define SDL_GL_BindTexture SDL_GL_BindTexture_REAL
 #define SDL_GL_UnbindTexture SDL_GL_UnbindTexture_REAL
 #define SDL_RWFromFile SDL_RWFromFile_REAL
+#define SDL_RWFromFileByPlatform SDL_RWFromFileByPlatform_REAL
 #define SDL_RWFromMem SDL_RWFromMem_REAL
 #define SDL_RWFromConstMem SDL_RWFromConstMem_REAL
 #define SDL_AllocRW SDL_AllocRW_REAL

@@ -939,6 +939,129 @@ D3D_QueueCopy(SDL_Renderer * renderer, SDL_RenderCommand *cmd, SDL_Texture * tex
 }
 
 static int
+D3D_QueueQuad(SDL_Renderer * renderer, SDL_RenderCommand *cmd, SDL_Texture * texture,
+                          const float * src, const float * dst)
+{
+    const DWORD color = D3DCOLOR_ARGB(cmd->data.draw.a, cmd->data.draw.r, cmd->data.draw.g, cmd->data.draw.b);
+    // float minx, miny, maxx, maxy;
+    // float minu, maxu, minv, maxv;
+    const size_t vertslen = sizeof (Vertex) * 4;
+    Vertex *verts = (Vertex *) SDL_AllocateRenderVertices(renderer, vertslen, 0, &cmd->data.draw.first);
+
+    if (!verts) {
+        return -1;
+    }
+
+    cmd->data.draw.count = 1;
+
+    // minx = dstrect->x - 0.5f;
+    // miny = dstrect->y - 0.5f;
+    // maxx = dstrect->x + dstrect->w - 0.5f;
+    // maxy = dstrect->y + dstrect->h - 0.5f;
+
+    // minu = (float) srcrect->x / texture->w;
+    // maxu = (float) (srcrect->x + srcrect->w) / texture->w;
+    // minv = (float) srcrect->y / texture->h;
+    // maxv = (float) (srcrect->y + srcrect->h) / texture->h;
+
+    verts->x = dst[0] - 0.5f;  // minx;
+    verts->y = dst[1] - 0.5f;  // miny;
+    verts->z = 0.0f;
+    verts->color = color;
+    verts->u = src[0];         // minu;
+    verts->v = src[1];         // minv;
+    verts++;
+
+    verts->x = dst[2] - 0.5f;  // maxx;
+    verts->y = dst[3] - 0.5f;  // miny;
+    verts->z = 0.0f;
+    verts->color = color;
+    verts->u = src[2];         // maxu;
+    verts->v = src[3];         // minv;
+    verts++;
+
+    verts->x = dst[4] - 0.5f;  // maxx;
+    verts->y = dst[5] - 0.5f;  // maxy;
+    verts->z = 0.0f;
+    verts->color = color;
+    verts->u = src[4];         // maxu;
+    verts->v = src[5];         // maxv;
+    verts++;
+
+    verts->x = dst[6] - 0.5f;  // minx;
+    verts->y = dst[7] - 0.5f;  // maxy;
+    verts->z = 0.0f;
+    verts->color = color;
+    verts->u = src[6];         // minu;
+    verts->v = src[7];         // maxv;
+    verts++;
+
+    return 0;
+}
+
+static int
+D3D_QueueTriangle(SDL_Renderer * renderer, SDL_RenderCommand *cmd, SDL_Texture * texture,
+                          const float * src, const float * dst)
+{
+
+    const DWORD color = D3DCOLOR_ARGB(cmd->data.draw.a, cmd->data.draw.r, cmd->data.draw.g, cmd->data.draw.b);
+    // float minx, miny, maxx, maxy;
+    // float minu, maxu, minv, maxv;
+    const size_t vertslen = sizeof (Vertex) * 4;
+    Vertex *verts = (Vertex *) SDL_AllocateRenderVertices(renderer, vertslen, 0, &cmd->data.draw.first);
+
+    if (!verts) {
+        return -1;
+    }
+
+    cmd->data.draw.count = 1;
+
+    // minx = dstrect->x - 0.5f;
+    // miny = dstrect->y - 0.5f;
+    // maxx = dstrect->x + dstrect->w - 0.5f;
+    // maxy = dstrect->y + dstrect->h - 0.5f;
+
+    // minu = (float) srcrect->x / texture->w;
+    // maxu = (float) (srcrect->x + srcrect->w) / texture->w;
+    // minv = (float) srcrect->y / texture->h;
+    // maxv = (float) (srcrect->y + srcrect->h) / texture->h;
+
+    verts->x = dst[0] - 0.5f;  // minx;
+    verts->y = dst[1] - 0.5f;  // miny;
+    verts->z = 0.0f;
+    verts->color = color;
+    verts->u = src[0];         // minu;
+    verts->v = src[1];         // minv;
+    verts++;
+
+    verts->x = dst[2] - 0.5f;  // maxx;
+    verts->y = dst[3] - 0.5f;  // miny;
+    verts->z = 0.0f;
+    verts->color = color;
+    verts->u = src[2];         // maxu;
+    verts->v = src[3];         // minv;
+    verts++;
+
+    verts->x = dst[4] - 0.5f;  // maxx;
+    verts->y = dst[5] - 0.5f;  // maxy;
+    verts->z = 0.0f;
+    verts->color = color;
+    verts->u = src[4];         // maxu;
+    verts->v = src[5];         // maxv;
+    verts++;
+
+    // verts->x = dst[6] - 0.5f;  // minx;
+    // verts->y = dst[7] - 0.5f;  // maxy;
+    // verts->z = 0.0f;
+    // verts->color = color;
+    // verts->u = src[6];         // minu;
+    // verts->v = src[7];         // maxv;
+    // verts++;
+
+    return 0;
+}
+
+static int
 D3D_QueueCopyEx(SDL_Renderer * renderer, SDL_RenderCommand *cmd, SDL_Texture * texture,
                         const SDL_Rect * srcquad, const SDL_FRect * dstrect,
                         const double angle, const SDL_FPoint *center, const SDL_RendererFlip flip)
@@ -1411,6 +1534,42 @@ D3D_RunCommandQueue(SDL_Renderer * renderer, SDL_RenderCommand *cmd, void *verti
                 break;
             }
 
+            case SDL_RENDERCMD_QUAD: {
+                const size_t count = cmd->data.draw.count;
+                const size_t first = cmd->data.draw.first;
+                SetDrawState(data, cmd);
+                if (vbo) {
+                    size_t offset = 0;
+                    for (i = 0; i < count; ++i, offset += 4) {
+                        IDirect3DDevice9_DrawPrimitive(data->device, D3DPT_TRIANGLEFAN, (UINT) ((first / sizeof (Vertex)) + offset), 2);
+                    }
+                } else {
+                    const Vertex *verts = (Vertex *) (((Uint8 *) vertices) + first);
+                    for (i = 0; i < count; ++i, verts += 4) {
+                        IDirect3DDevice9_DrawPrimitiveUP(data->device, D3DPT_TRIANGLEFAN, 2, verts, sizeof (Vertex));
+                    }
+                }
+                break;
+            }
+
+            case SDL_RENDERCMD_TRIANGLE: {
+                const size_t count = cmd->data.draw.count;
+                const size_t first = cmd->data.draw.first;
+                SetDrawState(data, cmd);
+                if (vbo) {
+                    size_t offset = 0;
+                    for (i = 0; i < count; ++i, offset += 3) {
+                        IDirect3DDevice9_DrawPrimitive(data->device, D3DPT_TRIANGLEFAN, (UINT) ((first / sizeof (Vertex)) + offset), 1);
+                    }
+                } else {
+                    const Vertex *verts = (Vertex *) (((Uint8 *) vertices) + first);
+                    for (i = 0; i < count; ++i, verts += 3) {
+                        IDirect3DDevice9_DrawPrimitiveUP(data->device, D3DPT_TRIANGLEFAN, 1, verts, sizeof (Vertex));
+                    }
+                }
+                break;
+            }
+
             case SDL_RENDERCMD_COPY_EX: {
                 const size_t first = cmd->data.draw.first;
                 const Vertex *verts = (Vertex *) (((Uint8 *) vertices) + first);
@@ -1722,6 +1881,8 @@ D3D_CreateRenderer(SDL_Window * window, Uint32 flags)
     renderer->QueueDrawLines = D3D_QueueDrawPoints;  /* lines and points queue vertices the same way. */
     renderer->QueueFillRects = D3D_QueueFillRects;
     renderer->QueueCopy = D3D_QueueCopy;
+    renderer->QueueQuad = D3D_QueueQuad;
+    renderer->QueueTriangle = D3D_QueueTriangle;
     renderer->QueueCopyEx = D3D_QueueCopyEx;
     renderer->RunCommandQueue = D3D_RunCommandQueue;
     renderer->RenderReadPixels = D3D_RenderReadPixels;

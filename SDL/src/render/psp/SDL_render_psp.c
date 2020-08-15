@@ -582,6 +582,20 @@ PSP_QueueCopy(SDL_Renderer * renderer, SDL_RenderCommand *cmd, SDL_Texture * tex
 }
 
 static int
+PSP_QueueQuad(SDL_Renderer * renderer, SDL_RenderCommand *cmd, SDL_Texture * texture,
+             const float * src, const float * dst)
+{
+    return -1;
+}
+
+static int
+PSP_QueueTriangle(SDL_Renderer * renderer, SDL_RenderCommand *cmd, SDL_Texture * texture,
+             const float * src, const float * dst)
+{
+    return -1;
+}
+
+static int
 PSP_QueueCopyEx(SDL_Renderer * renderer, SDL_RenderCommand *cmd, SDL_Texture * texture,
                const SDL_Rect * srcrect, const SDL_FRect * dstrect,
                const double angle, const SDL_FPoint *center, const SDL_RendererFlip flip)
@@ -957,6 +971,8 @@ PSP_CreateRenderer(SDL_Window * window, Uint32 flags)
     renderer->QueueDrawLines = PSP_QueueDrawPoints;  /* lines and points queue vertices the same way. */
     renderer->QueueFillRects = PSP_QueueFillRects;
     renderer->QueueCopy = PSP_QueueCopy;
+    renderer->QueueQuad = PSP_QueueQuad;
+    renderer->QueueTriangle = PSP_QueueTriangle;
     renderer->QueueCopyEx = PSP_QueueCopyEx;
     renderer->RunCommandQueue = PSP_RunCommandQueue;
     renderer->RenderReadPixels = PSP_RenderReadPixels;

@@ -649,6 +649,20 @@ DirectFB_QueueCopy(SDL_Renderer * renderer, SDL_RenderCommand *cmd, SDL_Texture 
 }
 
 static int
+DirectFB_QueueQuad(SDL_Renderer * renderer, SDL_RenderCommand *cmd, SDL_Texture * texture,
+             const float * src, const float * dst)
+{
+    return -1;
+}
+
+static int
+DirectFB_QueueTriangle(SDL_Renderer * renderer, SDL_RenderCommand *cmd, SDL_Texture * texture,
+             const float * src, const float * dst)
+{
+    return -1;
+}
+
+static int
 DirectFB_QueueCopyEx(SDL_Renderer * renderer, SDL_RenderCommand *cmd, SDL_Texture * texture,
                const SDL_Rect * srcrect, const SDL_FRect * dstrect,
                const double angle, const SDL_FPoint *center, const SDL_RendererFlip flip)
@@ -986,6 +1000,8 @@ DirectFB_CreateRenderer(SDL_Window * window, Uint32 flags)
     renderer->QueueDrawLines = DirectFB_QueueDrawPoints;  /* lines and points queue vertices the same way. */
     renderer->QueueFillRects = DirectFB_QueueFillRects;
     renderer->QueueCopy = DirectFB_QueueCopy;
+    renderer->QueueQuad = DirectFB_QueueQuad;
+    renderer->QueueTriangle = DirectFB_QueueTriangle;
     renderer->QueueCopyEx = DirectFB_QueueCopyEx;
     renderer->RunCommandQueue = DirectFB_RunCommandQueue;
     renderer->RenderPresent = DirectFB_RenderPresent;

@@ -1729,6 +1729,140 @@ D3D11_QueueCopy(SDL_Renderer * renderer, SDL_RenderCommand *cmd, SDL_Texture * t
 }
 
 static int
+D3D11_QueueQuad(SDL_Renderer * renderer, SDL_RenderCommand *cmd, SDL_Texture * texture,
+             const float * src, const float * dst)
+{
+    VertexPositionColor *verts = (VertexPositionColor *) SDL_AllocateRenderVertices(renderer, 4 * sizeof (VertexPositionColor), 0, &cmd->data.draw.first);
+    const float r = (float)(cmd->data.draw.r / 255.0f);
+    const float g = (float)(cmd->data.draw.g / 255.0f);
+    const float b = (float)(cmd->data.draw.b / 255.0f);
+    const float a = (float)(cmd->data.draw.a / 255.0f);
+    // const float minu = (float) srcrect->x / texture->w;
+    // const float maxu = (float) (srcrect->x + srcrect->w) / texture->w;
+    // const float minv = (float) srcrect->y / texture->h;
+    // const float maxv = (float) (srcrect->y + srcrect->h) / texture->h;
+
+    if (!verts) {
+        return -1;
+    }
+
+    cmd->data.draw.count = 1;
+
+    verts->pos.x = dst[0];         // dstrect->x;
+    verts->pos.y = dst[1];         // dstrect->y;
+    verts->pos.z = 0.0f;
+    verts->tex.x = src[0];         // minu;
+    verts->tex.y = src[1];         // minv;
+    verts->color.x = r;
+    verts->color.y = g;
+    verts->color.z = b;
+    verts->color.w = a;
+    verts++;
+
+    verts->pos.x = dst[6];         // dstrect->x;
+    verts->pos.y = dst[7];         // dstrect->y + dstrect->h;
+    verts->pos.z = 0.0f;
+    verts->tex.x = src[6];         // minu;
+    verts->tex.y = src[7];         // maxv;
+    verts->color.x = r;
+    verts->color.y = g;
+    verts->color.z = b;
+    verts->color.w = a;
+    verts++;
+
+    verts->pos.x = dst[2];         // dstrect->x + dstrect->w;
+    verts->pos.y = dst[3];         // dstrect->y;
+    verts->pos.z = 0.0f;
+    verts->tex.x = src[2];         // maxu;
+    verts->tex.y = src[3];         // minv;
+    verts->color.x = r;
+    verts->color.y = g;
+    verts->color.z = b;
+    verts->color.w = a;
+    verts++;
+
+    verts->pos.x = dst[4];         // dstrect->x + dstrect->w;
+    verts->pos.y = dst[5];         // dstrect->y + dstrect->h;
+    verts->pos.z = 0.0f;
+    verts->tex.x = src[4];         // maxu;
+    verts->tex.y = src[5];         // maxv;
+    verts->color.x = r;
+    verts->color.y = g;
+    verts->color.z = b;
+    verts->color.w = a;
+    verts++;
+
+    return 0;
+}
+
+static int
+D3D11_QueueTriangle(SDL_Renderer * renderer, SDL_RenderCommand *cmd, SDL_Texture * texture,
+             const float * src, const float * dst)
+{
+    VertexPositionColor *verts = (VertexPositionColor *) SDL_AllocateRenderVertices(renderer, 4 * sizeof (VertexPositionColor), 0, &cmd->data.draw.first);
+    const float r = (float)(cmd->data.draw.r / 255.0f);
+    const float g = (float)(cmd->data.draw.g / 255.0f);
+    const float b = (float)(cmd->data.draw.b / 255.0f);
+    const float a = (float)(cmd->data.draw.a / 255.0f);
+    // const float minu = (float) srcrect->x / texture->w;
+    // const float maxu = (float) (srcrect->x + srcrect->w) / texture->w;
+    // const float minv = (float) srcrect->y / texture->h;
+    // const float maxv = (float) (srcrect->y + srcrect->h) / texture->h;
+
+    if (!verts) {
+        return -1;
+    }
+
+    cmd->data.draw.count = 1;
+
+    verts->pos.x = dst[0];         // dstrect->x;
+    verts->pos.y = dst[1];         // dstrect->y;
+    verts->pos.z = 0.0f;
+    verts->tex.x = src[0];         // minu;
+    verts->tex.y = src[1];         // minv;
+    verts->color.x = r;
+    verts->color.y = g;
+    verts->color.z = b;
+    verts->color.w = a;
+    verts++;
+
+    // verts->pos.x = dst[6];         // dstrect->x;
+    // verts->pos.y = dst[7];         // dstrect->y + dstrect->h;
+    // verts->pos.z = 0.0f;
+    // verts->tex.x = src[6];         // minu;
+    // verts->tex.y = src[7];         // maxv;
+    // verts->color.x = r;
+    // verts->color.y = g;
+    // verts->color.z = b;
+    // verts->color.w = a;
+    // verts++;
+
+    verts->pos.x = dst[2];         // dstrect->x + dstrect->w;
+    verts->pos.y = dst[3];         // dstrect->y;
+    verts->pos.z = 0.0f;
+    verts->tex.x = src[2];         // maxu;
+    verts->tex.y = src[3];         // minv;
+    verts->color.x = r;
+    verts->color.y = g;
+    verts->color.z = b;
+    verts->color.w = a;
+    verts++;
+
+    verts->pos.x = dst[4];         // dstrect->x + dstrect->w;
+    verts->pos.y = dst[5];         // dstrect->y + dstrect->h;
+    verts->pos.z = 0.0f;
+    verts->tex.x = src[4];         // maxu;
+    verts->tex.y = src[5];         // maxv;
+    verts->color.x = r;
+    verts->color.y = g;
+    verts->color.z = b;
+    verts->color.w = a;
+    verts++;
+
+    return 0;
+}
+
+static int
 D3D11_QueueCopyEx(SDL_Renderer * renderer, SDL_RenderCommand *cmd, SDL_Texture * texture,
                const SDL_Rect * srcrect, const SDL_FRect * dstrect,
                const double angle, const SDL_FPoint *center, const SDL_RendererFlip flip)
@@ -2296,6 +2430,22 @@ D3D11_RunCommandQueue(SDL_Renderer * renderer, SDL_RenderCommand *cmd, void *ver
                 break;
             }
 
+            case SDL_RENDERCMD_QUAD: {
+                const size_t first = cmd->data.draw.first;
+                const size_t start = first / sizeof (VertexPositionColor);
+                D3D11_SetCopyState(renderer, cmd, NULL);
+                D3D11_DrawPrimitives(renderer, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP, start, 4);
+                break;
+            }
+
+            case SDL_RENDERCMD_TRIANGLE: {
+                const size_t first = cmd->data.draw.first;
+                const size_t start = first / sizeof (VertexPositionColor);
+                D3D11_SetCopyState(renderer, cmd, NULL);
+                D3D11_DrawPrimitives(renderer, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP, start, 3);
+                break;
+            }
+
             case SDL_RENDERCMD_COPY_EX: {
                 const size_t first = cmd->data.draw.first;
                 const size_t start = first / sizeof (VertexPositionColor);
@@ -2521,6 +2671,8 @@ D3D11_CreateRenderer(SDL_Window * window, Uint32 flags)
     renderer->QueueDrawLines = D3D11_QueueDrawPoints;  /* lines and points queue vertices the same way. */
     renderer->QueueFillRects = D3D11_QueueFillRects;
     renderer->QueueCopy = D3D11_QueueCopy;
+    renderer->QueueQuad = D3D11_QueueQuad;
+    renderer->QueueTriangle = D3D11_QueueTriangle;
     renderer->QueueCopyEx = D3D11_QueueCopyEx;
     renderer->RunCommandQueue = D3D11_RunCommandQueue;
     renderer->RenderReadPixels = D3D11_RenderReadPixels;

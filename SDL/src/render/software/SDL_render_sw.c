@@ -294,6 +294,20 @@ SW_QueueCopy(SDL_Renderer * renderer, SDL_RenderCommand *cmd, SDL_Texture * text
     return 0;
 }
 
+static int
+SW_QueueQuad(SDL_Renderer * renderer, SDL_RenderCommand *cmd, SDL_Texture * texture,
+             const float * src, const float * dst)
+{
+    return -1;
+}
+
+static int
+SW_QueueTriangle(SDL_Renderer * renderer, SDL_RenderCommand *cmd, SDL_Texture * texture,
+             const float * src, const float * dst)
+{
+    return -1;
+}
+
 typedef struct CopyExData
 {
     SDL_Rect srcrect;
@@ -843,6 +857,8 @@ SW_CreateRendererForSurface(SDL_Surface * surface)
     renderer->QueueDrawLines = SW_QueueDrawPoints;  /* lines and points queue vertices the same way. */
     renderer->QueueFillRects = SW_QueueFillRects;
     renderer->QueueCopy = SW_QueueCopy;
+    renderer->QueueQuad = SW_QueueQuad;
+    renderer->QueueTriangle = SW_QueueTriangle;
     renderer->QueueCopyEx = SW_QueueCopyEx;
     renderer->RunCommandQueue = SW_RunCommandQueue;
     renderer->RenderReadPixels = SW_RenderReadPixels;

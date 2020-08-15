@@ -860,6 +860,96 @@ GLES2_QueueCopy(SDL_Renderer * renderer, SDL_RenderCommand *cmd, SDL_Texture * t
 }
 
 static int
+GLES2_QueueQuad(SDL_Renderer * renderer, SDL_RenderCommand *cmd, SDL_Texture * texture,
+                          const float * src, const float * dst)
+{
+    // GLfloat minx, miny, maxx, maxy;
+    // GLfloat minu, maxu, minv, maxv;
+    GLfloat *verts = (GLfloat *) SDL_AllocateRenderVertices(renderer, 16 * sizeof (GLfloat), 0, &cmd->data.draw.first);
+
+    if (!verts) {
+        return -1;
+    }
+
+    cmd->data.draw.count = 1;
+
+    // minx = dstrect->x;
+    // miny = dstrect->y;
+    // maxx = dstrect->x + dstrect->w;
+    // maxy = dstrect->y + dstrect->h;
+
+    // minu = (GLfloat) srcrect->x / texture->w;
+    // maxu = (GLfloat) (srcrect->x + srcrect->w) / texture->w;
+    // minv = (GLfloat) srcrect->y / texture->h;
+    // maxv = (GLfloat) (srcrect->y + srcrect->h) / texture->h;
+
+    *(verts++) = dst[0];    // minx;
+    *(verts++) = dst[1];    // miny;
+    *(verts++) = dst[2];    // maxx;
+    *(verts++) = dst[3];    // miny;
+    *(verts++) = dst[6];    // minx;
+    *(verts++) = dst[7];    // maxy;
+    *(verts++) = dst[4];    // maxx;
+    *(verts++) = dst[5];    // maxy;
+
+    *(verts++) = src[0];    // minu;
+    *(verts++) = src[1];    // minv;
+    *(verts++) = src[2];    // maxu;
+    *(verts++) = src[3];    // minv;
+    *(verts++) = src[6];    // minu;
+    *(verts++) = src[7];    // maxv;
+    *(verts++) = src[4];    // maxu;
+    *(verts++) = src[5];    // maxv;
+
+    return 0;
+}
+
+static int
+GLES2_QueueTriangle(SDL_Renderer * renderer, SDL_RenderCommand *cmd, SDL_Texture * texture,
+                          const float * src, const float * dst)
+{
+    // GLfloat minx, miny, maxx, maxy;
+    // GLfloat minu, maxu, minv, maxv;
+    GLfloat *verts = (GLfloat *) SDL_AllocateRenderVertices(renderer, 12 * sizeof (GLfloat), 0, &cmd->data.draw.first);
+
+    if (!verts) {
+        return -1;
+    }
+
+    cmd->data.draw.count = 1;
+
+    // minx = dstrect->x;
+    // miny = dstrect->y;
+    // maxx = dstrect->x + dstrect->w;
+    // maxy = dstrect->y + dstrect->h;
+
+    // minu = (GLfloat) srcrect->x / texture->w;
+    // maxu = (GLfloat) (srcrect->x + srcrect->w) / texture->w;
+    // minv = (GLfloat) srcrect->y / texture->h;
+    // maxv = (GLfloat) (srcrect->y + srcrect->h) / texture->h;
+
+    *(verts++) = dst[0];    // minx;
+    *(verts++) = dst[1];    // miny;
+    *(verts++) = dst[2];    // maxx;
+    *(verts++) = dst[3];    // miny;
+    // *(verts++) = dst[6];    // minx;
+    // *(verts++) = dst[7];    // maxy;
+    *(verts++) = dst[4];    // maxx;
+    *(verts++) = dst[5];    // maxy;
+
+    *(verts++) = src[0];    // minu;
+    *(verts++) = src[1];    // minv;
+    *(verts++) = src[2];    // maxu;
+    *(verts++) = src[3];    // minv;
+    // *(verts++) = src[6];    // minu;
+    // *(verts++) = src[7];    // maxv;
+    *(verts++) = src[4];    // maxu;
+    *(verts++) = src[5];    // maxv;
+
+    return 0;
+}
+
+static int
 GLES2_QueueCopyEx(SDL_Renderer * renderer, SDL_RenderCommand *cmd, SDL_Texture * texture,
                         const SDL_Rect * srcquad, const SDL_FRect * dstrect,
                         const double angle, const SDL_FPoint *center, const SDL_RendererFlip flip)
@@ -1321,9 +1411,17 @@ GLES2_RunCommandQueue(SDL_Renderer * renderer, SDL_RenderCommand *cmd, void *ver
             }
 
             case SDL_RENDERCMD_COPY:
+            case SDL_RENDERCMD_QUAD:
             case SDL_RENDERCMD_COPY_EX: {
                 if (SetCopyState(renderer, cmd) == 0) {
                     data->glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+                }
+                break;
+            }
+
+            case SDL_RENDERCMD_TRIANGLE: {
+                if (SetCopyState(renderer, cmd) == 0) {
+                    data->glDrawArrays(GL_TRIANGLE_STRIP, 0, 3);
                 }
                 break;
             }
@@ -2102,6 +2200,8 @@ GLES2_CreateRenderer(SDL_Window *window, Uint32 flags)
     renderer->QueueDrawLines      = GLES2_QueueDrawPoints;  /* lines and points queue vertices the same way. */
     renderer->QueueFillRects      = GLES2_QueueFillRects;
     renderer->QueueCopy           = GLES2_QueueCopy;
+    renderer->QueueQuad           = GLES2_QueueQuad;
+    renderer->QueueTriangle       = GLES2_QueueTriangle;
     renderer->QueueCopyEx         = GLES2_QueueCopyEx;
     renderer->RunCommandQueue     = GLES2_RunCommandQueue;
     renderer->RenderReadPixels    = GLES2_RenderReadPixels;

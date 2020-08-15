@@ -152,6 +152,8 @@ typedef struct SDL_RWops
 
 extern DECLSPEC SDL_RWops *SDLCALL SDL_RWFromFile(const char *file,
                                                   const char *mode);
+extern DECLSPEC SDL_RWops *SDLCALL SDL_RWFromFileByPlatform(const char *file,
+                                                  const char *mode);
 
 #ifdef HAVE_STDIO_H
 extern DECLSPEC SDL_RWops *SDLCALL SDL_RWFromFP(FILE * fp,

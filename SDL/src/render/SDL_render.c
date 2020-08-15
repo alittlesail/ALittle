@@ -530,6 +530,34 @@ QueueCmdCopy(SDL_Renderer *renderer, SDL_Texture * texture, const SDL_Rect * src
 }
 
 static int
+QueueCmdQuad(SDL_Renderer *renderer, SDL_Texture * texture, const float * src, const float * dst)
+{
+    SDL_RenderCommand *cmd = PrepQueueCmdDrawTexture(renderer, texture, SDL_RENDERCMD_QUAD);
+    int retval = -1;
+    if (cmd != NULL) {
+        retval = renderer->QueueQuad(renderer, cmd, texture, src, dst);
+        if (retval < 0) {
+            cmd->command = SDL_RENDERCMD_NO_OP;
+        }
+    }
+    return retval;
+}
+
+static int
+QueueCmdTriangle(SDL_Renderer *renderer, SDL_Texture * texture, const float * src, const float * dst)
+{
+    SDL_RenderCommand *cmd = PrepQueueCmdDrawTexture(renderer, texture, SDL_RENDERCMD_TRIANGLE);
+    int retval = -1;
+    if (cmd != NULL) {
+        retval = renderer->QueueTriangle(renderer, cmd, texture, src, dst);
+        if (retval < 0) {
+            cmd->command = SDL_RENDERCMD_NO_OP;
+        }
+    }
+    return retval;
+}
+
+static int
 QueueCmdCopyEx(SDL_Renderer *renderer, SDL_Texture * texture,
                const SDL_Rect * srcquad, const SDL_FRect * dstrect,
                const double angle, const SDL_FPoint *center, const SDL_RendererFlip flip)
@@ -780,6 +808,8 @@ void VerifyDrawQueueFunctions(const SDL_Renderer *renderer)
     SDL_assert(renderer->QueueDrawLines != NULL);
     SDL_assert(renderer->QueueFillRects != NULL);
     SDL_assert(renderer->QueueCopy != NULL);
+    SDL_assert(renderer->QueueQuad != NULL);
+    SDL_assert(renderer->QueueTriangle != NULL);
     SDL_assert(renderer->RunCommandQueue != NULL);
 }
 
@@ -3020,6 +3050,140 @@ SDL_RenderCopyF(SDL_Renderer * renderer, SDL_Texture * texture,
     texture->last_command_generation = renderer->render_command_generation;
 
     retval = QueueCmdCopy(renderer, texture, &real_srcrect, &real_dstrect);
+    return retval < 0 ? retval : FlushRenderCommandsIfNotBatching(renderer);
+}
+
+int
+SDL_RenderQuad(SDL_Renderer * renderer, SDL_Texture * texture,
+                const float * src, const float * dst)
+{
+    // SDL_Rect real_srcrect;
+    // SDL_FRect real_dstrect;
+    // SDL_Rect r;
+    int retval;
+    float real_dst[8];
+
+    CHECK_RENDERER_MAGIC(renderer, -1);
+    CHECK_TEXTURE_MAGIC(texture, -1);
+
+    if (renderer != texture->renderer) {
+        return SDL_SetError("Texture was not created with this renderer");
+    }
+
+    /* Don't draw while we're hidden */
+    if (renderer->hidden) {
+        return 0;
+    }
+
+    // real_srcrect.x = 0;
+    // real_srcrect.y = 0;
+    // real_srcrect.w = texture->w;
+    // real_srcrect.h = texture->h;
+    // if (srcrect) {
+    //     if (!SDL_IntersectRect(srcrect, &real_srcrect, &real_srcrect)) {
+    //         return 0;
+    //     }
+    // }
+
+    // SDL_zero(r);
+    // SDL_RenderGetViewport(renderer, &r);
+    // real_dstrect.x = 0.0f;
+    // real_dstrect.y = 0.0f;
+    // real_dstrect.w = (float) r.w;
+    // real_dstrect.h = (float) r.h;
+    // if (dstrect) {
+    //     if (!SDL_HasIntersectionF(dstrect, &real_dstrect)) {
+    //         return 0;
+    //     }
+    //     real_dstrect = *dstrect;
+    // }
+
+    if (texture->native) {
+        texture = texture->native;
+    }
+
+    // real_dstrect.x *= renderer->scale.x;
+    // real_dstrect.y *= renderer->scale.y;
+    // real_dstrect.w *= renderer->scale.x;
+    // real_dstrect.h *= renderer->scale.y;
+    real_dst[0] = dst[0] * renderer->scale.x;
+    real_dst[1] = dst[1] * renderer->scale.y;
+    real_dst[2] = dst[2] * renderer->scale.x;
+    real_dst[3] = dst[3] * renderer->scale.y;
+    real_dst[4] = dst[4] * renderer->scale.x;
+    real_dst[5] = dst[5] * renderer->scale.y;
+    real_dst[6] = dst[6] * renderer->scale.x;
+    real_dst[7] = dst[7] * renderer->scale.y;
+
+    texture->last_command_generation = renderer->render_command_generation;
+
+    retval = QueueCmdQuad(renderer, texture, src, real_dst);
+    return retval < 0 ? retval : FlushRenderCommandsIfNotBatching(renderer);
+}
+
+int
+SDL_RenderTriangle(SDL_Renderer * renderer, SDL_Texture * texture,
+                const float * src, const float * dst)
+{
+    // SDL_Rect real_srcrect;
+    // SDL_FRect real_dstrect;
+    // SDL_Rect r;
+    int retval;
+    float real_dst[6];
+
+    CHECK_RENDERER_MAGIC(renderer, -1);
+    CHECK_TEXTURE_MAGIC(texture, -1);
+
+    if (renderer != texture->renderer) {
+        return SDL_SetError("Texture was not created with this renderer");
+    }
+
+    /* Don't draw while we're hidden */
+    if (renderer->hidden) {
+        return 0;
+    }
+
+    // real_srcrect.x = 0;
+    // real_srcrect.y = 0;
+    // real_srcrect.w = texture->w;
+    // real_srcrect.h = texture->h;
+    // if (srcrect) {
+    //     if (!SDL_IntersectRect(srcrect, &real_srcrect, &real_srcrect)) {
+    //         return 0;
+    //     }
+    // }
+
+    // SDL_zero(r);
+    // SDL_RenderGetViewport(renderer, &r);
+    // real_dstrect.x = 0.0f;
+    // real_dstrect.y = 0.0f;
+    // real_dstrect.w = (float) r.w;
+    // real_dstrect.h = (float) r.h;
+    // if (dstrect) {
+    //     if (!SDL_HasIntersectionF(dstrect, &real_dstrect)) {
+    //         return 0;
+    //     }
+    //     real_dstrect = *dstrect;
+    // }
+
+    if (texture->native) {
+        texture = texture->native;
+    }
+
+    // real_dstrect.x *= renderer->scale.x;
+    // real_dstrect.y *= renderer->scale.y;
+    // real_dstrect.w *= renderer->scale.x;
+    // real_dstrect.h *= renderer->scale.y;
+    real_dst[0] = dst[0] * renderer->scale.x;
+    real_dst[1] = dst[1] * renderer->scale.y;
+    real_dst[2] = dst[2] * renderer->scale.x;
+    real_dst[3] = dst[3] * renderer->scale.y;
+    real_dst[4] = dst[4] * renderer->scale.x;
+    real_dst[5] = dst[5] * renderer->scale.y;
+
+    texture->last_command_generation = renderer->render_command_generation;
+
+    retval = QueueCmdTriangle(renderer, texture, src, real_dst);
     return retval < 0 ? retval : FlushRenderCommandsIfNotBatching(renderer);
 }
 

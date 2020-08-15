@@ -45,7 +45,7 @@ struct _TCPsocket {
 */
 TCPsocket SDLNet_TCP_Open(IPaddress *ip)
 {
-    TCPsocket sock;
+    TCPsocket sock = 0;
     struct sockaddr_in sock_addr;
 
     /* Allocate a TCP socket structure */
@@ -165,7 +165,7 @@ error_return:
 */
 TCPsocket SDLNet_TCP_Accept(TCPsocket server)
 {
-    TCPsocket sock;
+    TCPsocket sock = 0;
     struct sockaddr_in sock_addr;
     socklen_t sock_alen;
 
@@ -290,8 +290,358 @@ void SDLNet_TCP_Close(TCPsocket sock)
 {
     if ( sock != NULL ) {
         if ( sock->channel != INVALID_SOCKET ) {
+#ifdef _WIN32
+            shutdown(sock->channel, 2);
+#else
+            shutdown(sock->channel, SHUT_RDWR);
+#endif
             closesocket(sock->channel);
         }
         SDL_free(sock);
     }
+}
+
+
+/* Just shutdown a TCP network socket */
+void SDLNet_TCP_JustShutdown(TCPsocket sock)
+{
+    if ( sock != NULL ) {
+        if ( sock->channel != INVALID_SOCKET ) {
+#ifdef _WIN32
+            shutdown(sock->channel, 2);
+#else
+            shutdown(sock->channel, SHUT_RDWR);
+#endif
+        }
+    }
+}
+
+/* Just close a TCP network socket */
+void SDLNet_TCP_JustClose(TCPsocket sock)
+{
+    if ( sock != NULL ) {
+        if ( sock->channel != INVALID_SOCKET ) {
+#ifdef _WIN32
+            shutdown(sock->channel, 2);
+#else
+            shutdown(sock->channel, SHUT_RDWR);
+#endif
+            closesocket(sock->channel);
+            sock->channel = INVALID_SOCKET;
+        }
+    }
+}
+
+/* Just free a TCP network socket */
+void SDLNet_TCP_JustFree(TCPsocket sock)
+{
+    if ( sock != NULL ) {
+        SDL_free(sock);
+    }
+}
+
+TCPsocket SDLNet_TCP_SocketCreate()
+{
+    TCPsocket sock = 0;
+
+    /* Allocate a TCP socket structure */
+    sock = (TCPsocket)SDL_malloc(sizeof(*sock));
+    if ( sock == NULL ) {
+        SDLNet_SetError("Out of memory");
+        return 0;
+    }
+
+    /* Open the socket */
+    sock->channel = socket(AF_INET, SOCK_STREAM, 0);
+    if ( sock->channel == INVALID_SOCKET ) {
+        SDLNet_SetError("Couldn't create socket");
+        return 0;
+    }
+    return sock;
+}
+
+TCPsocket SDLNet_TCP_IPV6SocketCreate(int ai_family)
+{
+    TCPsocket sock = 0;
+
+    /* Allocate a TCP socket structure */
+    sock = (TCPsocket)SDL_malloc(sizeof(*sock));
+    if ( sock == NULL ) {
+        SDLNet_SetError("Out of memory");
+        return 0;
+    }
+
+    /* Open the socket */
+    sock->channel = socket(ai_family, SOCK_STREAM, 0);
+    if ( sock->channel == INVALID_SOCKET ) {
+        SDLNet_SetError("Couldn't create socket");
+        return 0;
+    }
+    return sock;
+}
+
+int SDLNet_TCP_SocketConnect(IPaddress *ip, TCPsocket sock)
+{
+    struct sockaddr_in sock_addr;
+
+    /* Connect to remote, or bind locally, as appropriate */
+    if ( (ip->host != INADDR_NONE) && (ip->host != INADDR_ANY) ) {
+
+    // #########  Connecting to remote
+
+        SDL_memset(&sock_addr, 0, sizeof(sock_addr));
+        sock_addr.sin_family = AF_INET;
+        sock_addr.sin_addr.s_addr = ip->host;
+        sock_addr.sin_port = ip->port;
+
+        /* Connect to the remote host */
+        if ( connect(sock->channel, (struct sockaddr *)&sock_addr,
+                sizeof(sock_addr)) == SOCKET_ERROR ) {
+            SDLNet_SetError("Couldn't connect to remote host");
+            goto error_return;
+        }
+        sock->sflag = 0;
+    } else {
+
+    // ##########  Binding locally
+
+        SDL_memset(&sock_addr, 0, sizeof(sock_addr));
+        sock_addr.sin_family = AF_INET;
+        sock_addr.sin_addr.s_addr = INADDR_ANY;
+        sock_addr.sin_port = ip->port;
+
+/*
+ * Windows gets bad mojo with SO_REUSEADDR:
+ * http://www.devolution.com/pipermail/sdl/2005-September/070491.html
+ *   --ryan.
+ */
+#ifndef WIN32
+        /* allow local address reuse */
+        { int yes = 1;
+            setsockopt(sock->channel, SOL_SOCKET, SO_REUSEADDR, (char*)&yes, sizeof(yes));
+        }
+#endif
+
+        /* Bind the socket for listening */
+        if ( bind(sock->channel, (struct sockaddr *)&sock_addr,
+                sizeof(sock_addr)) == SOCKET_ERROR ) {
+            SDLNet_SetError("Couldn't bind to local port");
+            goto error_return;
+        }
+        if ( listen(sock->channel, 5) == SOCKET_ERROR ) {
+            SDLNet_SetError("Couldn't listen to local port");
+            goto error_return;
+        }
+
+        /* Set the socket to non-blocking mode for accept() */
+#if defined(__BEOS__) && defined(SO_NONBLOCK)
+        /* On BeOS r5 there is O_NONBLOCK but it's for files only */
+        {
+            long b = 1;
+            setsockopt(sock->channel, SOL_SOCKET, SO_NONBLOCK, &b, sizeof(b));
+        }
+#elif defined(O_NONBLOCK)
+        {
+            fcntl(sock->channel, F_SETFL, O_NONBLOCK);
+        }
+#elif defined(WIN32)
+        {
+            unsigned long mode = 1;
+            ioctlsocket (sock->channel, FIONBIO, &mode);
+        }
+#elif defined(__OS2__)
+        {
+            int dontblock = 1;
+            ioctl(sock->channel, FIONBIO, &dontblock);
+        }
+#else
+#warning How do we set non-blocking mode on other operating systems?
+#endif
+        sock->sflag = 1;
+    }
+    sock->ready = 0;
+
+#ifdef TCP_NODELAY
+    /* Set the nodelay TCP option for real-time games */
+    { int yes = 1;
+    setsockopt(sock->channel, IPPROTO_TCP, TCP_NODELAY, (char*)&yes, sizeof(yes));
+    }
+#else
+#warning Building without TCP_NODELAY
+#endif /* TCP_NODELAY */
+
+    /* Fill in the channel host address */
+    sock->remoteAddress.host = sock_addr.sin_addr.s_addr;
+    sock->remoteAddress.port = sock_addr.sin_port;
+
+    /* The socket is ready */
+    return(0);
+
+error_return:
+    return(-1);
+}
+
+int SDLNet_TCP_IPV6SocketConnect(TCPsocket sock, const char* ip, Uint16 port)
+{
+#ifdef WIN32
+    SDLNet_SetError("windows not support ipv6");
+    return -1;
+#else
+    // 解析ip port
+    int ret = 0;                                // getaddrinfo返回结果
+    struct addrinfo hints;
+    struct addrinfo* result = 0;            // hints 设置参数 result 解析后的地址 最后用freeaddrinfo释放
+
+    char text[32] = {0};
+
+    if (ip == 0) 
+    {
+        SDLNet_SetError("IP can not be 0");
+        goto error_return;
+    }
+
+    SDL_memset(&hints, 0, sizeof(hints));   // 将内存置0
+    //hints.ai_flags = AI_PASSIVE;          // 用于server绑定bind
+    hints.ai_family = AF_UNSPEC;            // IPV6 和 IPV4相关
+    hints.ai_socktype = SOCK_STREAM;        // UDP TCP相关
+    hints.ai_protocol = IPPROTO_IP;         // 协议相关
+
+#ifdef _WIN32
+    sprintf_s(text, 32, "%d", port);
+#else
+    sprintf(text, "%d", port);
+#endif
+    ret = getaddrinfo(ip, text, &hints, &result);
+    if (ret !=0 )  
+    {
+        SDLNet_SetError(gai_strerror(ret));
+        goto error_return;
+    }
+
+    /* Connect to remote, or bind locally, as appropriate */
+    if ( strlen(ip) > 0 ) {
+        /* Connect to the remote host */
+        if (connect(sock->channel, result->ai_addr,
+                result->ai_addrlen) == SOCKET_ERROR ) {
+            SDLNet_SetError("Couldn't connect to remote host");
+            goto error_return;
+        }
+        sock->sflag = 0;
+    } else {
+/*
+ * Windows gets bad mojo with SO_REUSEADDR:
+ * http://www.devolution.com/pipermail/sdl/2005-September/070491.html
+ *   --ryan.
+ */
+#ifndef WIN32
+        /* allow local address reuse */
+        { int yes = 1;
+            setsockopt(sock->channel, SOL_SOCKET, SO_REUSEADDR, (char*)&yes, sizeof(yes));
+        }
+#endif
+
+        /* Bind the socket for listening */
+        if ( bind(sock->channel, result->ai_addr,
+                result->ai_addrlen) == SOCKET_ERROR ) {
+            SDLNet_SetError("Couldn't bind to local port");
+            goto error_return;
+        }
+        if ( listen(sock->channel, 5) == SOCKET_ERROR ) {
+            SDLNet_SetError("Couldn't listen to local port");
+            goto error_return;
+        }
+
+        /* Set the socket to non-blocking mode for accept() */
+#if defined(__BEOS__) && defined(SO_NONBLOCK)
+        /* On BeOS r5 there is O_NONBLOCK but it's for files only */
+        {
+            long b = 1;
+            setsockopt(sock->channel, SOL_SOCKET, SO_NONBLOCK, &b, sizeof(b));
+        }
+#elif defined(O_NONBLOCK)
+        {
+            fcntl(sock->channel, F_SETFL, O_NONBLOCK);
+        }
+#elif defined(WIN32)
+        {
+            unsigned long mode = 1;
+            ioctlsocket (sock->channel, FIONBIO, &mode);
+        }
+#elif defined(__OS2__)
+        {
+            int dontblock = 1;
+            ioctl(sock->channel, FIONBIO, &dontblock);
+        }
+#else
+#warning How do we set non-blocking mode on other operating systems?
+#endif
+        sock->sflag = 1;
+    }
+    sock->ready = 0;
+
+#ifdef TCP_NODELAY
+    /* Set the nodelay TCP option for real-time games */
+    { int yes = 1;
+    setsockopt(sock->channel, IPPROTO_TCP, TCP_NODELAY, (char*)&yes, sizeof(yes));
+    }
+#else
+#warning Building without TCP_NODELAY
+#endif /* TCP_NODELAY */
+
+    /* Fill in the channel host address */
+    //sock->remoteAddress.host = host;
+    //sock->remoteAddress.port = port;
+
+    /* The socket is ready */
+    if (result) freeaddrinfo(result);
+    return(0);
+
+error_return:
+    if (result) freeaddrinfo(result);
+    return(-1);
+#endif
+}
+
+int SDLNet_TCP_GetAIFamily(const char* ip, Uint16 port)
+{
+#ifdef WIN32
+    SDLNet_SetError("windows not support ipv6");
+    return -1;
+#else
+    // 解析ip port
+    int ret = 0;                                // getaddrinfo返回结果
+    struct addrinfo hints;
+    struct addrinfo* result = 0;            // hints 设置参数 result 解析后的地址 最后用freeaddrinfo释放
+
+    char text[32] = {0};
+
+    if (ip == 0) return -1;
+
+    SDL_memset(&hints, 0, sizeof(hints));   // 将内存置0
+    //hints.ai_flags = AI_PASSIVE;          // 用于server绑定bind
+    hints.ai_family = AF_UNSPEC;            // IPV6 和 IPV4相关
+    hints.ai_socktype = SOCK_STREAM;        // UDP TCP相关
+    hints.ai_protocol = IPPROTO_IP;         // 协议相关
+
+#ifdef _WIN32
+    sprintf_s(text, 32, "%d", port);
+#else
+    sprintf(text, "%d", port);
+#endif
+    ret = getaddrinfo(ip, text, &hints, &result);
+    if (ret !=0 )  
+    {
+        SDLNet_SetError(gai_strerror(ret));
+        goto error_return;
+    }
+
+error_return:
+    ret = -1;
+    if (result)
+    {
+        ret = result->ai_family;
+        freeaddrinfo(result);
+    }
+    return ret;
+#endif
 }

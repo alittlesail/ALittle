@@ -181,6 +181,9 @@ extern DECLSPEC int SDLCALL SDLNet_TCP_Recv(TCPsocket sock, void *data, int maxl
 /* Close a TCP network socket */
 extern DECLSPEC void SDLCALL SDLNet_TCP_Close(TCPsocket sock);
 
+extern DECLSPEC void SDLCALL SDLNet_TCP_JustShutdown(TCPsocket sock);
+extern DECLSPEC void SDLCALL SDLNet_TCP_JustClose(TCPsocket sock);
+extern DECLSPEC void SDLCALL SDLNet_TCP_JustFree(TCPsocket sock);
 
 /***********************************************************************/
 /* UDP network API                                                     */
@@ -313,6 +316,12 @@ typedef struct _SDLNet_SocketSet *SDLNet_SocketSet;
 typedef struct _SDLNet_GenericSocket {
     int ready;
 } *SDLNet_GenericSocket;
+
+extern DECLSPEC TCPsocket SDLCALL SDLNet_TCP_SocketCreate();
+extern DECLSPEC TCPsocket SDLCALL SDLNet_TCP_IPV6SocketCreate(int ai_family);
+extern DECLSPEC int SDLCALL SDLNet_TCP_SocketConnect(IPaddress *ip, TCPsocket sock);
+extern DECLSPEC int SDLCALL SDLNet_TCP_IPV6SocketConnect(TCPsocket sock, const char* ip, Uint16 port);
+extern DECLSPEC int SDLCALL SDLNet_TCP_GetAIFamily(const char* ip, Uint16 port);
 
 /* Allocate a socket set for use with SDLNet_CheckSockets()
    This returns a socket set for up to 'maxsockets' sockets, or NULL if

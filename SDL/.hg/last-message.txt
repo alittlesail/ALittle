@@ -1,2 +1,1 @@
-添加RenderQuad，RenderTriangle接口
-添加SDL_RWFromFileByPlatform接口
+合并

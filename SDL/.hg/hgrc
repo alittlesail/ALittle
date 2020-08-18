@@ -12,3 +12,8 @@ default = http://hg.libsdl.org/SDL
 [ui]
 # name and email (local to this repository, optional), e.g.
 # username = Jane Doe <jdoe@example.com>
+
+
+[tortoisehg]
+postpull = none
+autoresolve = True

@@ -173,6 +173,9 @@ class ModuleSystem
         }
         // 检查__Plugin_Setup是否已经调用过了
         if (info.plugin_loaded) return info.control;
+
+        // 把插件control添加给主模块
+        this._main_module.control.RegisterPlugin(module_name, info.control);
     
         // 调用启动函数
         var setup_func = info.plugin_setup;

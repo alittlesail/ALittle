@@ -94,6 +94,7 @@ ALittle.ModuleSystem = JavaScript.Class(undefined, {
 			if (info.plugin_loaded) {
 				___COROUTINE(info.control); return;
 			}
+			this._main_module.control.RegisterPlugin(module_name, info.control);
 			let setup_func = info.plugin_setup;
 			if (setup_func === undefined) {
 				ALittle.Log("can't find Plugin_Setup funciton in Module:" + module_name);

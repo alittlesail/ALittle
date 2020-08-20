@@ -22,6 +22,7 @@ public struct DisplayInfo
     
     Map<string, LoopGroupInfo> loop_map; // 动画信息
     
+    string __module;	// 如果为null，那么就表示当前模块。否则指定某个模块
     string __class;
     string __include;
     string __extends;

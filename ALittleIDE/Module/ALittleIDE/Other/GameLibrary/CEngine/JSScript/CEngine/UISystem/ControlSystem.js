@@ -9,6 +9,7 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 		this._log_error = true;
 		this._use_plugin_class = true;
 		this._font_map = {};
+		this._plugin_map = {};
 		this._name_map_info = {};
 		this._name_map_info_cache = {};
 		this._module_name = module_name;
@@ -55,6 +56,9 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 	},
 	RegisterFont : function(src, dst) {
 		this._font_map[src] = dst;
+	},
+	RegisterPlugin : function(module_name, plugin) {
+		this._plugin_map[module_name] = plugin;
 	},
 	RegisterInfoByHttp : function() {
 		return new Promise((async function(___COROUTINE, ___) {
@@ -106,6 +110,14 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 		this._name_map_info_cache = {};
 	},
 	CreateControlObject : function(info) {
+		if (info.__module !== undefined && info.__module !== this._module_name) {
+			let plugin = this._plugin_map[info.__module];
+			if (plugin === undefined) {
+				ALittle.Log("unknow module " + info.__module);
+				return undefined;
+			}
+			return plugin.CreateControlObject(info);
+		}
 		let target_class = info.__target_class;
 		if (this._use_plugin_class && target_class !== undefined) {
 			let class_func = info.__class_func;
@@ -227,7 +239,7 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 		return result;
 	},
 	CreateControl : function(name, target_logic, parent) {
-		let info = this.LoadInfo(name);
+		let info = this.LoadInfo(name, undefined);
 		if (info === undefined) {
 			ALittle.Log("can't find control name:" + name);
 			return undefined;
@@ -240,14 +252,21 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 		return object;
 	},
 	CollectTextureName : function(name, map) {
-		let info = this.LoadInfo(name);
+		let info = this.LoadInfo(name, undefined);
 		if (info === undefined) {
 			ALittle.Log("can't find control name:" + name);
 			return undefined;
 		}
 		return this.CollectTextureNameImpl(info, map);
 	},
-	LoadInfo : function(name) {
+	LoadInfo : function(name, module_name) {
+		if (module_name !== undefined && module_name !== this._module_name) {
+			let plugin = this._plugin_map[module_name];
+			if (plugin === undefined) {
+				return undefined;
+			}
+			return plugin.LoadInfo(name, undefined);
+		}
 		if (this._name_map_info_cache[name]) {
 			return this._name_map_info[name];
 		}
@@ -274,12 +293,12 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 			return undefined;
 		}
 		if (info.__include !== undefined) {
-			return this.LoadInfo(info.__include);
+			return this.LoadInfo(info.__include, info.__module);
 		}
 		let extendsv = info.__extends;
 		if (extendsv !== undefined) {
 			if (info.__extends_included !== true) {
-				let control = this.LoadInfo(extendsv);
+				let control = this.LoadInfo(extendsv, info.__module);
 				if (control === undefined) {
 					ALittle.Log("ControlSystem CreateInfo extends Failed:" + extendsv);
 					return undefined;

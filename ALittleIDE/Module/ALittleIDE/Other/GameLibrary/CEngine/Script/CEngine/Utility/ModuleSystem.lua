@@ -107,6 +107,7 @@ function ALittle.ModuleSystem:LoadPlugin(module_name)
 	if info.plugin_loaded then
 		return info.control
 	end
+	self._main_module.control:RegisterPlugin(module_name, info.control)
 	local setup_func = info.plugin_setup
 	if setup_func == nil then
 		ALittle.Log("can't find Plugin_Setup funciton in Module:" .. module_name)

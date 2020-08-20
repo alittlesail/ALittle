@@ -14,6 +14,7 @@ function ALittle.ControlSystem:Ctor(module_name, crypt_mode)
 	___rawset(self, "_log_error", true)
 	___rawset(self, "_use_plugin_class", true)
 	___rawset(self, "_font_map", {})
+	___rawset(self, "_plugin_map", {})
 	___rawset(self, "_name_map_info", {})
 	___rawset(self, "_name_map_info_cache", {})
 	___rawset(self, "_module_name", module_name)
@@ -41,6 +42,10 @@ end
 
 function ALittle.ControlSystem:RegisterFont(src, dst)
 	self._font_map[src] = dst
+end
+
+function ALittle.ControlSystem:RegisterPlugin(module_name, plugin)
+	self._plugin_map[module_name] = plugin
 end
 
 function ALittle.ControlSystem:RegisterInfoByHttp()
@@ -89,6 +94,14 @@ function ALittle.ControlSystem:ClearAllInfo()
 end
 
 function ALittle.ControlSystem:CreateControlObject(info)
+	if info.__module ~= nil and info.__module ~= self._module_name then
+		local plugin = self._plugin_map[info.__module]
+		if plugin == nil then
+			ALittle.Log("unknow module " .. info.__module)
+			return nil
+		end
+		return plugin:CreateControlObject(info)
+	end
 	local target_class = info.__target_class
 	if self._use_plugin_class and target_class ~= nil then
 		local class_func = info.__class_func
@@ -215,7 +228,7 @@ function ALittle.ControlSystem:SaveControlToFile(control, file_path, scale)
 end
 
 function ALittle.ControlSystem:CreateControl(name, target_logic, parent)
-	local info = self:LoadInfo(name)
+	local info = self:LoadInfo(name, nil)
 	if info == nil then
 		ALittle.Log("can't find control name:" .. name)
 		return nil
@@ -229,7 +242,7 @@ function ALittle.ControlSystem:CreateControl(name, target_logic, parent)
 end
 
 function ALittle.ControlSystem:CollectTextureName(name, map)
-	local info = self:LoadInfo(name)
+	local info = self:LoadInfo(name, nil)
 	if info == nil then
 		ALittle.Log("can't find control name:" .. name)
 		return nil
@@ -237,7 +250,14 @@ function ALittle.ControlSystem:CollectTextureName(name, map)
 	return self:CollectTextureNameImpl(info, map)
 end
 
-function ALittle.ControlSystem:LoadInfo(name)
+function ALittle.ControlSystem:LoadInfo(name, module_name)
+	if module_name ~= nil and module_name ~= self._module_name then
+		local plugin = self._plugin_map[module_name]
+		if plugin == nil then
+			return nil
+		end
+		return plugin:LoadInfo(name, nil)
+	end
 	if self._name_map_info_cache[name] then
 		return self._name_map_info[name]
 	end
@@ -262,12 +282,12 @@ function ALittle.ControlSystem:CreateInfo(info)
 		return nil
 	end
 	if info.__include ~= nil then
-		return self:LoadInfo(info.__include)
+		return self:LoadInfo(info.__include, info.__module)
 	end
 	local extendsv = info.__extends
 	if extendsv ~= nil then
 		if info.__extends_included ~= true then
-			local control = self:LoadInfo(extendsv)
+			local control = self:LoadInfo(extendsv, info.__module)
 			if control == nil then
 				ALittle.Log("ControlSystem CreateInfo extends Failed:" .. extendsv)
 				return nil

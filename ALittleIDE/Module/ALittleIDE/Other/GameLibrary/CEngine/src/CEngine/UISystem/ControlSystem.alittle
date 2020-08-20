@@ -27,6 +27,7 @@ public class ControlSystem
     private TextureManager      _texture_mgr;
     
     private Map<string, string> _font_map;
+    private Map<string, ControlSystem> _plugin_map;
     
     // @param module_name 模块名
     // @param crypt_mode 是否是加密模式
@@ -39,6 +40,9 @@ public class ControlSystem
 
         // 字体映射
         this._font_map = new Map<string, string>();
+
+        // 插件模块
+        this._plugin_map = new Map<string, ControlSystem>();
         
         // 定义缓存
         this._name_map_info = new Map<string, DisplayInfo>();
@@ -93,6 +97,11 @@ public class ControlSystem
     public fun RegisterFont(string src, string dst)
     {
         this._font_map[src] = dst;
+    }
+
+    public fun RegisterPlugin(string module_name, ControlSystem plugin)
+    {
+        this._plugin_map[module_name] = plugin;
     }
     
     public await fun RegisterInfoByHttp()
@@ -150,6 +159,17 @@ public class ControlSystem
 
     public fun CreateControlObject(DisplayInfo info) : DisplayObject
     {
+        if (info.__module != null && info.__module != this._module_name)
+        {
+            var plugin = this._plugin_map[info.__module];
+            if (plugin == null)
+            {
+                Log("unknow module "..info.__module);
+                return null;
+            }
+            return plugin.CreateControlObject(info);
+        }
+
         // 如果默认的插件类没有填写，那么就是用UI编辑的插件类
         var target_class = info.__target_class;
         if (this._use_plugin_class && target_class != null)
@@ -298,7 +318,7 @@ public class ControlSystem
 
     public fun CreateControl<T>(string name, [Nullable] any target_logic, [Nullable] DisplayGroup parent) : T
     {
-        var info = this.LoadInfo(name);
+        var info = this.LoadInfo(name, null);
         if (info == null)
         {
             Log("can't find control name:" .. name);
@@ -316,7 +336,7 @@ public class ControlSystem
     // map 初始映射表
     public fun CollectTextureName(string name, Map<string, bool> map) : Map<string, bool>
     {
-        var info = this.LoadInfo(name);
+        var info = this.LoadInfo(name, null);
         if (info == null)
         {
             Log("can't find control name:" .. name);
@@ -327,8 +347,16 @@ public class ControlSystem
     }
     
     // 根据UI的名字，从文件中加载信息
-    protected fun LoadInfo(string name) : DisplayInfo
+    protected fun LoadInfo(string name, string module_name) : DisplayInfo
     {
+        // 如果是其他模块，那么就获取插件在调用
+        if (module_name != null && module_name != this._module_name)
+        {
+            var plugin = this._plugin_map[module_name];
+            if (plugin == null) return null;
+            return plugin.LoadInfo(name, null);
+        }
+
         // 如果已经处理过，那么直接返回结果
         if (this._name_map_info_cache[name]) return this._name_map_info[name];
 
@@ -356,7 +384,7 @@ public class ControlSystem
     
         // 引用
         if (info.__include != null)
-            return this.LoadInfo(info.__include);
+            return this.LoadInfo(info.__include, info.__module);
 
         // 继承
         var extendsv = info.__extends;
@@ -364,7 +392,7 @@ public class ControlSystem
         {
             if (info.__extends_included != true)
             {
-                var control = this.LoadInfo(extendsv);
+                var control = this.LoadInfo(extendsv, info.__module);
                 if (control == null)
                 {
                     Log("ControlSystem CreateInfo extends Failed:"..extendsv);

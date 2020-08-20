@@ -208,8 +208,8 @@ ABnfGuessError ALittleScriptReturnExprReference::CheckError()
         for (auto& value_stat : value_stat_list)
         {
             int return_count = 0;
-            std::vector<ABnfGuessPtr> guess_list;
-            auto error = ALittleScriptUtility::CalcReturnCount(value_stat, return_count, guess_list);
+            std::vector<ABnfGuessPtr> guess_temp;
+            auto error = ALittleScriptUtility::CalcReturnCount(value_stat, return_count, guess_temp);
             if (error) return error;
             if (return_count != 1) return ABnfGuessError(value_stat, u8"表达式必须只能是一个返回值");
 

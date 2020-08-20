@@ -31,3 +31,6 @@
 /ALittleIDE/*.ilk
 /ALittleIDE/ALittleClientd.exe
 /ALittleIDE/ALittleServerd.exe
+/ALittle/LibCommon/ThirdParty/.vs
+/ALittle/LibCommon/ThirdParty/x64
+/ALittle/LibCommon/ThirdParty/alittlescript/x64

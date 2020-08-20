@@ -1,11 +1,11 @@
 
 namespace ALittleIDE;
 
-public class IDECodeTreeItem : IDECodeTreeLogic
+public class IDEControlTreeItem : IDEControlTreeLogic
 {
-	public ctor(ALittle.ControlSystem ctrl_sys, IDECodeTreeUserInfo user_info)
+	public ctor(ALittle.ControlSystem ctrl_sys, IDEControlTreeUserInfo user_info)
 	{
-		this._item = ctrl_sys.CreateControl{ALittle.DisplayObject}("ide_code_tree_item", this);
+		this._item = ctrl_sys.CreateControl{ALittle.DisplayObject}("ide_control_tree_item", this);
 		this.AddChild(this._item);
 		this.width = this._item.width;
 		this.height = this._item.height;
@@ -14,7 +14,6 @@ public class IDECodeTreeItem : IDECodeTreeLogic
 		this._item_button.group = user_info.group;
 		this._item_button.AddEventListener(this, this.HandleClick);
 		this._item_button.AddEventListener(this, this.HandleRButtonDown);
-		this._item_button.AddEventListener(this, this.HandleKeyDown);
 		this._item_button._user_data = this;
 		
 		this._item_title.text = this._user_info.name;
@@ -27,13 +26,12 @@ public class IDECodeTreeItem : IDECodeTreeLogic
 	// 打开文件
 	private fun HandleClick(ALittle.UIClickEvent event)
 	{
-		g_IDECenter.center.content_edit.StartEditCodeBySelect(this._user_info.name, this._user_info);
     }
 	
 	// 搜索文件
-	public fun SearchFile(string name, [Nullable] List<IDECodeTreeLogic> list) : List<IDECodeTreeLogic>
+	public fun SearchFile(string name, [Nullable] List<IDEControlTreeLogic> list) : List<IDEControlTreeLogic>
 	{
-		if (list == null) list = new List<IDECodeTreeLogic>();
+		if (list == null) list = new List<IDEControlTreeLogic>();
 	
 		if (ALittle.String_Find(this._user_info.name, name) != null)
 			ALittle.List_Push(list, this);
@@ -41,7 +39,7 @@ public class IDECodeTreeItem : IDECodeTreeLogic
 	}
 
 	// 查找文件
-	public fun FindFile(string full_path) : IDECodeTreeLogic
+	public fun FindFile(string full_path) : IDEControlTreeLogic
 	{
 		if (this._user_info.path == full_path) return this;
 		return null;
@@ -50,19 +48,9 @@ public class IDECodeTreeItem : IDECodeTreeLogic
 	private fun HandleRButtonDown(ALittle.UIRButtonDownEvent event)
 	{
         var menu = new AUIPlugin.AUIRightMenu();
-		if (this._user_info.project != null && ALittle.File_GetFileExtByPathAndUpper(this._user_info.path) == this._user_info.project.upper_ext)
-			this._user_info.project.OnTreeItemMenu(this._user_info.path, menu);
 		menu.AddItem("重命名", bind(this.HandleRenameFile, this));
-        menu.AddItem("剪切", bind(this.HandleCutFile, this));
-        menu.AddItem("复制", bind(this.HandleCopyFile, this));
 		menu.AddItem("删除", bind(this.HandleDeleteFile, this));
 		menu.Show();
-    }
-
-    private fun HandleKeyDown(ALittle.UIKeyDownEvent event)
-    {
-        if (event.sym == ALittle.UIEnumTypes.KEY_F2)
-        	this.HandleRenameFile();
     }
 
 	private async fun HandleDeleteFile()
@@ -81,33 +69,15 @@ public class IDECodeTreeItem : IDECodeTreeLogic
 		g_IDECenter.center.content_edit.CloseTabByName{IDECodeTabChild}(this._user_info.name);
     }
 
-    private fun HandleCutFile()
-    {
-        g_IDECenter.center.code_list.SetCutTreeItem(this);
-    }
-
-    private fun HandleCopyFile()
-    {
-        g_IDECenter.center.code_list.SetCopyTreeItem(this);
-    }
-
 	private async fun HandleRenameFile()
 	{
-		var old_name = this._user_info.name;
-		var old_path = this._user_info.path;
-
-        var tab_child = g_IDECenter.center.content_edit.GetTabChildById{IDECodeTabChild}(old_path);
-        if (tab_child != null && tab_child.save != true)
-        {
-            g_AUITool.ShowNotice("提示", "请先保存再重命名");
-            return;
-        }
-
 		var file_name = ALittle.File_GetFileNameByPath(this._user_info.path);
 		var x, y = this.LocalToGlobal();
 		var new_name = g_AUITool.ShowRename(file_name, x, y, 200);
 		if (new_name == null || new_name == "") return;
 
+		var old_name = this._user_info.name;
+		var old_path = this._user_info.path;
 		var new_path = ALittle.File_GetFilePathByPath(old_path).."/"..new_name;
 
 		this._user_info.path = new_path;
@@ -115,22 +85,14 @@ public class IDECodeTreeItem : IDECodeTreeLogic
 
 		this._item_title.text = this._user_info.name;
 
-		if (this._user_info.project != null && ALittle.File_GetFileExtByPathAndUpper(this._user_info.path) == this._user_info.project.upper_ext)
-			this._user_info.project.RemoveFile(old_path);
-
 		ALittle.File_RenameFile(old_path, new_path);
 
-        if (tab_child != null) tab_child.UpdateUserInfo(this._user_info);
 		g_IDECenter.center.content_edit.RenameTabByName{IDECodeTabChild}(old_name, this._user_info.name);
 
-		if (this._user_info.project != null && ALittle.File_GetFileExtByPathAndUpper(this._user_info.path) == this._user_info.project.upper_ext)
-			this._user_info.project.UpdateFile(this._user_info.module_path, this._user_info.path);
     }
 
 	// 触发删除
 	public fun OnDelete()
 	{
-		if (this._user_info.project != null && ALittle.File_GetFileExtByPathAndUpper(this._user_info.path) == this._user_info.project.upper_ext)
-			this._user_info.project.RemoveFile(this._user_info.path);
     }
 }

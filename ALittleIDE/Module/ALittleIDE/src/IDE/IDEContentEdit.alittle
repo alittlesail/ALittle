@@ -69,7 +69,7 @@ public class IDEContentEdit : ALittle.DisplayLayout
     }
 	
 	////////////////////////////////////////////////////////////////////////-	
-	// 按照name遍历Tab是否已存在某个名字的控件
+	// 按照id遍历Tab是否已存在某个名字的控件
 	public fun GetTabById<T:IDETabChild>(string id) : ALittle.DisplayObject
 	{
 		//遍历
@@ -79,6 +79,20 @@ public class IDEContentEdit : ALittle.DisplayLayout
 			var tab_child = ALittle.Cast{T, IDETabChild}(child._user_data);
 			if (tab_child != null && tab_child.id == id)
 				return child;
+		}
+		return null;
+	}
+
+    // 按照id遍历Tab是否已存在某个名字的TabChild
+	public fun GetTabChildById<T:IDETabChild>(string id) : T
+	{
+		//遍历
+		var tab_childs = this._main_tab.childs;
+		for (var index, child in tab_childs)
+		{
+			var tab_child = ALittle.Cast{T, IDETabChild}(child._user_data);
+			if (tab_child != null && tab_child.id == id)
+				return tab_child;
 		}
 		return null;
 	}

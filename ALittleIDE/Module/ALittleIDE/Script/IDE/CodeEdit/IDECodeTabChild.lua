@@ -136,6 +136,10 @@ function ALittleIDE.IDECodeTabChild.__getter:title()
 	return self._name
 end
 
+function ALittleIDE.IDECodeTabChild:UpdateUserInfo(info)
+	self._user_info = info
+end
+
 function ALittleIDE.IDECodeTabChild:CreateBySelect(info)
 	self._user_info = info
 	self._edit:EditFocus(0, 0, nil, nil, true)

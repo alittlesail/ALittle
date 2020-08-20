@@ -163,6 +163,17 @@ function ALittleIDE.IDEContentEdit:GetTabById(T, id)
 	return nil
 end
 
+function ALittleIDE.IDEContentEdit:GetTabChildById(T, id)
+	local tab_childs = self._main_tab.childs
+	for index, child in ___ipairs(tab_childs) do
+		local tab_child = ALittle.Cast(T, ALittleIDE.IDETabChild, child._user_data)
+		if tab_child ~= nil and tab_child.id == id then
+			return tab_child
+		end
+	end
+	return nil
+end
+
 function ALittleIDE.IDEContentEdit:GetTabIdMap(T)
 	local info = {}
 	local tab_childs = self._main_tab.childs

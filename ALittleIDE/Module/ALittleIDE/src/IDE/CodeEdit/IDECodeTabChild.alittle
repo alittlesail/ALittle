@@ -109,6 +109,11 @@ public class IDECodeTabChild : IDETabChild
         return this._name;
 	}
 
+    public fun UpdateUserInfo(IDECodeTreeUserInfo info)
+    {
+        this._user_info = info;
+    }
+
     public fun CreateBySelect(IDECodeTreeUserInfo info)
     {
         this._user_info = info;

@@ -48,48 +48,155 @@ public class IDEControlTreeItem : IDEControlTreeLogic
 	private fun HandleRButtonDown(ALittle.UIRButtonDownEvent event)
 	{
         var menu = new AUIPlugin.AUIRightMenu();
-		menu.AddItem("重命名", bind(this.HandleRenameFile, this));
-		menu.AddItem("删除", bind(this.HandleDeleteFile, this));
+		menu.AddItem("复制控件名", bind(this.HandleCopyName, this));
+		menu.AddItem("复制并新建控件", bind(this.HandleCopyInfo, this));
+		menu.AddItem("复制继承代码", bind(this.HandleCopyExtends, this));
+		menu.AddItem("修改控件名", bind(this.HandleControlRename, this));
+		menu.AddItem("删除", bind(this.HandleDelete, this));
 		menu.Show();
     }
 
-	private async fun HandleDeleteFile()
+	// 处理删除信息
+	public async fun HandleDelete()
 	{
-		var file_name = ALittle.File_GetFileNameByPath(this._user_info.path);
-		var result = g_AUITool.DeleteNotice("删除", "确定要删除"..file_name.."吗?");
-		if (result != AUIPlugin.AUIToolOption.YES) return;
+		var name = this._user_info.name;
+		var error = g_IDEProject.project.ui.CanDelete(name);
+		if (error != null)
+		{
+			g_AUITool.ShowNotice("错误", error);
+			return;
+		}
+		error = g_IDECenter.center.content_edit.CanDelete(name);
+		if (error != null)
+		{
+			g_AUITool.ShowNotice("错误", error);
+			return;
+		}
+        
+		var del_result = g_AUITool.DeleteNotice("提示", "确定要删除"..this._user_info.name.."吗?");
+		if (del_result != AUIPlugin.AUIToolOption.YES) return;
+
+		error = g_IDEProject.project.ui.DeleteControl(this._user_info.name);
+		if (error != null)
+		{
+			g_AUITool.ShowNotice("提示", error);
+			return;
+		}
 
 		this.OnDelete();
-
-		ALittle.File_DeleteFile(this._user_info.path);
 
 		var parent = this.parent;
         this.RemoveFromParent();
 		if (parent != null) parent.DispatchEvent(new ALittle.UIResizeEvent());
-		g_IDECenter.center.content_edit.CloseTabByName{IDECodeTabChild}(this._user_info.name);
-    }
-
-	private async fun HandleRenameFile()
+		g_IDECenter.center.content_edit.CloseTabByName{IDEUITabChild}(this._user_info.name);
+	}
+	// 处理复制控件名
+	public fun HandleCopyName()
 	{
-		var file_name = ALittle.File_GetFileNameByPath(this._user_info.path);
+		ALittle.System_SetClipboardText(this._user_info.name);
+	}
+	// 处理复制控件
+	public async fun HandleCopyInfo()
+	{
+		var old_name = this._user_info.name;
 		var x, y = this.LocalToGlobal();
-		var new_name = g_AUITool.ShowRename(file_name, x, y, 200);
-		if (new_name == null || new_name == "") return;
+		var new_name = g_AUITool.ShowRename(old_name, x, y, this.width);
+		if (new_name == null || old_name == new_name) return;
+		this.ControlCopyInfo(old_name, new_name);
+	}
 
+	// 复制控件信息
+	public fun ControlCopyInfo(string target_name, string new_name)
+	{
+		var error = IDEUtility_CheckName(new_name);
+		if (error != null)
+		{
+			g_AUITool.ShowNotice("错误", error);
+			return;
+		}
+		var info = g_IDEProject.project.ui.control_map[new_name];
+		if (info != null)
+		{
+			g_AUITool.ShowNotice("错误", "控件名已存在:"..new_name);
+			return;
+		}
+		info = g_IDEProject.project.ui.control_map[target_name];
+		if (info == null)
+		{
+			g_AUITool.ShowNotice("错误", "控件不存在:"..target_name);
+			return;
+		}
+		g_IDEProject.project.ui.SaveControl(new_name, ALittle.String_CopyTable(info.info));
+		info = g_IDEProject.project.ui.control_map[new_name];
+		if (info == null)
+		{
+			g_AUITool.ShowNotice("错误", "控件新建失败:"..new_name);
+			return;
+		}
+            // 直接打开这个控件
+		g_IDECenter.center.content_edit.StartEditControlBySelect(new_name, info.info);
+	}
+
+	// 修改控件名事件处理
+	public async fun HandleControlRename()
+	{
 		var old_name = this._user_info.name;
 		var old_path = this._user_info.path;
+
+		var error = g_IDEProject.project.ui.CanDelete(old_name);
+		if (error != null)
+		{
+			g_AUITool.ShowNotice("错误", error);
+			return;
+		}
+		error = g_IDECenter.center.content_edit.CanDelete(old_name);
+		if (error != null)
+		{
+			g_AUITool.ShowNotice("错误", error);
+			return;
+		}
+
+        var tab_child = g_IDECenter.center.content_edit.GetTabChildById{IDEUITabChild}(old_name);
+        if (tab_child != null && tab_child.save != true)
+        {
+            g_AUITool.ShowNotice("提示", "请先保存再重命名");
+            return;
+        }
+	
+		var x, y = this.LocalToGlobal();
+		var new_name = g_AUITool.ShowRename(old_name, x, y, this.width);
+		if (new_name == null || old_name == new_name) return;
+        // 重命名
+		error = g_IDEProject.project.ui.RenameControl(old_name, new_name);
+		if (error != null)
+		{
+			g_AUITool.ShowNotice("错误", error);
+			return;
+		}
+	
+		this.text = new_name;
+
 		var new_path = ALittle.File_GetFilePathByPath(old_path).."/"..new_name;
 
 		this._user_info.path = new_path;
 		this._user_info.name = new_name;
 
-		this._item_title.text = this._user_info.name;
-
-		ALittle.File_RenameFile(old_path, new_path);
-
+        if (tab_child != null) tab_child.Rename(this._user_info.name);
 		g_IDECenter.center.content_edit.RenameTabByName{IDECodeTabChild}(old_name, this._user_info.name);
-
-    }
+	}
+	// 复制继承代码
+	public fun HandleCopyExtends()
+	{
+		var name = this._user_info.name;
+		var save_info = new Map<string, any>();
+		save_info["__extends"] = name;
+		var copy_list = new List<Map<string, any>>();
+		var info = new Map<string, any>();
+		info["index"] = 1;
+		info["info"] = save_info;
+		copy_list[1] = info;
+		ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list));
+	}
 
 	// 触发删除
 	public fun OnDelete()

@@ -70,6 +70,7 @@ protected class IDEUICenter : ALittle.DisplayLayout
 
 	private IDEUIControlTree _control_tree;	// 控件树
 	private IDEUIControlList _control_list;	// 控件库
+	private IDEUIControlList2 _control_list2;	// 控件库
 	private IDEUICodeList    _code_list;	// 代码库
 	private IDEUIProjectList _project_list;	// 项目库
 	private IDEUIControlAnti _control_anti;	// 动画编辑器
@@ -101,6 +102,7 @@ protected class IDEUICenter : ALittle.DisplayLayout
 	
 	public get control_tree() : IDEUIControlTree { return this._control_tree; }
 	public get control_list() : IDEUIControlList { return this._control_list; }
+	public get control_list2() : IDEUIControlList2 { return this._control_list2; }
 	public get code_list() : IDEUICodeList { return this._code_list; }
 	public get project_list() : IDEUIProjectList { return this._project_list; }
 	public get control_anti() : IDEUIControlAnti { return this._control_anti; }

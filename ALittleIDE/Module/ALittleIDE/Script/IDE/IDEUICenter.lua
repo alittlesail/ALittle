@@ -75,6 +75,10 @@ function ALittleIDE.IDEUICenter.__getter:control_list()
 	return self._control_list
 end
 
+function ALittleIDE.IDEUICenter.__getter:control_list2()
+	return self._control_list2
+end
+
 function ALittleIDE.IDEUICenter.__getter:code_list()
 	return self._code_list
 end

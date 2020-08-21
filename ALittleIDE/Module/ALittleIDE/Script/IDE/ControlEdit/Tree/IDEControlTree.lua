@@ -76,31 +76,15 @@ end
 
 function ALittleIDE.IDEControlTree:HandleRButtonDown(event)
 	local menu = AUIPlugin.AUIRightMenu()
+	if self._user_info.root then
+		menu:AddItem("添加模块", Lua.Bind(self.HandleAddModule, self))
+	end
+	local can_remove = self._user_info.root and self._user_info.module_name ~= "Std" and self._user_info.module_name ~= "Core" and self._user_info.module_name ~= "CEngine" and self._user_info.module_name ~= ALittleIDE.g_IDEProject.project.name
+	if can_remove then
+		menu:AddItem("移除模块", Lua.Bind(self.HandleRemoveModule, self))
+	end
 	menu:Show()
 end
-
-function ALittleIDE.IDEControlTree:HandleCreateFile()
-	local x, y = self._head:LocalToGlobal()
-	local name = g_AUITool:ShowRename("", x, y + self._head.height, 200)
-	if name == nil or name == "" then
-		return
-	end
-	local content = "\nnamespace " .. ALittleIDE.g_IDEProject.project.name .. ";\n\nprotected class " .. name .. "\n{\n}\n"
-	ALittle.File_WriteTextToFile(content, self._user_info.path .. "/" .. name .. ".alittle")
-	self:Refresh()
-end
-ALittleIDE.IDEControlTree.HandleCreateFile = Lua.CoWrap(ALittleIDE.IDEControlTree.HandleCreateFile)
-
-function ALittleIDE.IDEControlTree:HandleCreateDir()
-	local x, y = self._head:LocalToGlobal()
-	local name = g_AUITool:ShowRename("", x, y + self._head.height, 200)
-	if name == nil or name == "" then
-		return
-	end
-	ALittle.File_MakeDir(self._user_info.path .. "/" .. name)
-	self:Refresh()
-end
-ALittleIDE.IDEControlTree.HandleCreateDir = Lua.CoWrap(ALittleIDE.IDEControlTree.HandleCreateDir)
 
 function ALittleIDE.IDEControlTree:HandleAddModule()
 	local x, y = self._head:LocalToGlobal()
@@ -108,35 +92,9 @@ function ALittleIDE.IDEControlTree:HandleAddModule()
 	if name == nil or name == "" then
 		return
 	end
-	ALittleIDE.g_IDECenter.center.code_list:AddModule(name)
+	ALittleIDE.g_IDECenter.center.control_list2:AddModule(name)
 end
 ALittleIDE.IDEControlTree.HandleAddModule = Lua.CoWrap(ALittleIDE.IDEControlTree.HandleAddModule)
-
-function ALittleIDE.IDEControlTree:HandleAddLibrary()
-	local x, y = self._head:LocalToGlobal()
-	local name = g_AUITool:ShowRename("", x, y + self._head.height, 200)
-	if name == nil or name == "" then
-		return
-	end
-	ALittleIDE.g_IDECenter.center.code_list:AddLibrary(name)
-end
-ALittleIDE.IDEControlTree.HandleAddLibrary = Lua.CoWrap(ALittleIDE.IDEControlTree.HandleAddLibrary)
-
-function ALittleIDE.IDEControlTree:HandleDeleteDir()
-	local file_name = ALittle.File_GetFileNameByPath(self._user_info.path)
-	local result = g_AUITool:DeleteNotice("删除", "确定要删除" .. file_name .. "，以及子文件和子文件夹吗?")
-	if result ~= "YES" then
-		return
-	end
-	self:OnDelete()
-	ALittle.File_DeleteDeepDir(self._user_info.path)
-	local parent = self.parent
-	self:RemoveFromParent()
-	if parent ~= nil then
-		parent:DispatchEvent(___all_struct[-431205740], {})
-	end
-end
-ALittleIDE.IDEControlTree.HandleDeleteDir = Lua.CoWrap(ALittleIDE.IDEControlTree.HandleDeleteDir)
 
 function ALittleIDE.IDEControlTree:HandleRemoveModule()
 	local file_name = ALittle.File_GetFileNameByPath(self._user_info.path)
@@ -146,48 +104,14 @@ function ALittleIDE.IDEControlTree:HandleRemoveModule()
 	end
 	self:OnDelete()
 	self:RemoveFromParent()
-	local module_map = ALittleIDE.g_IDEProject.project.config:GetConfig("code_module", {})
+	local module_map = ALittleIDE.g_IDEProject.project.config:GetConfig("control_module", {})
 	module_map[self._user_info.module_name] = nil
-	ALittleIDE.g_IDEProject.project.config:SetConfig("code_module", module_map)
+	ALittleIDE.g_IDEProject.project.config:SetConfig("control_module", module_map)
 end
 ALittleIDE.IDEControlTree.HandleRemoveModule = Lua.CoWrap(ALittleIDE.IDEControlTree.HandleRemoveModule)
 
 function ALittleIDE.IDEControlTree.__getter:is_tree()
 	return true
-end
-
-function ALittleIDE.IDEControlTree:PasteFile()
-	local item = ALittleIDE.g_IDECenter.center.code_list:GetCutTreeItem()
-	if item ~= nil then
-		local path = ALittle.File_GetFilePathByPath(item.user_info.path)
-		local name = ALittle.File_GetFileNameByPath(item.user_info.path)
-		if path == self._user_info.path then
-			return
-		end
-		ALittle.File_RenameFile(item.user_info.path, self._user_info.path .. "/" .. name)
-		item:OnDelete()
-		local parent = item.parent
-		item:RemoveFromParent()
-		if parent ~= nil then
-			parent:DispatchEvent(___all_struct[-431205740], {})
-		end
-		ALittleIDE.g_IDECenter.center.content_edit:CloseTabByName(ALittleIDE.IDECodeTabChild, item.user_info.name)
-		self:Refresh()
-		ALittleIDE.g_IDECenter.center.code_list:ClearCutAndCopy()
-		return
-	end
-	item = ALittleIDE.g_IDECenter.center.code_list:GetCopyTreeItem()
-	if item ~= nil then
-		local path = ALittle.File_GetFilePathByPath(item.user_info.path)
-		local name = ALittle.File_GetFileNameByPath(item.user_info.path)
-		if path == self._user_info.path then
-			return
-		end
-		ALittle.File_CopyFile(item.user_info.path, self._user_info.path .. "/" .. name)
-		self:Refresh()
-		ALittleIDE.g_IDECenter.center.code_list:ClearCutAndCopy()
-		return
-	end
 end
 
 function ALittleIDE.IDEControlTree:SearchFile(name, list)

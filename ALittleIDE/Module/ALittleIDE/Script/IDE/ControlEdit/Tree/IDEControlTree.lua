@@ -79,7 +79,7 @@ function ALittleIDE.IDEControlTree:HandleRButtonDown(event)
 	if self._user_info.root then
 		menu:AddItem("添加模块", Lua.Bind(self.HandleAddModule, self))
 	end
-	local can_remove = self._user_info.root and self._user_info.module_name ~= "Std" and self._user_info.module_name ~= "Core" and self._user_info.module_name ~= "CEngine" and self._user_info.module_name ~= ALittleIDE.g_IDEProject.project.name
+	local can_remove = self._user_info.root and self._user_info.module_name ~= ALittleIDE.g_IDEProject.project.name
 	if can_remove then
 		menu:AddItem("移除模块", Lua.Bind(self.HandleRemoveModule, self))
 	end
@@ -92,7 +92,7 @@ function ALittleIDE.IDEControlTree:HandleAddModule()
 	if name == nil or name == "" then
 		return
 	end
-	ALittleIDE.g_IDECenter.center.control_list2:AddModule(name)
+	ALittleIDE.g_IDECenter.center.control_list:AddModule(name)
 end
 ALittleIDE.IDEControlTree.HandleAddModule = Lua.CoWrap(ALittleIDE.IDEControlTree.HandleAddModule)
 
@@ -112,6 +112,71 @@ ALittleIDE.IDEControlTree.HandleRemoveModule = Lua.CoWrap(ALittleIDE.IDEControlT
 
 function ALittleIDE.IDEControlTree.__getter:is_tree()
 	return true
+end
+
+function ALittleIDE.IDEControlTree:Refresh()
+	local map = ALittle.File_GetFileNameListByDir(self._user_info.path)
+	local remove = nil
+	for index, child in ___ipairs(self.childs) do
+		local attr = map[child._user_info.name]
+		if attr == nil then
+			if remove == nil then
+				remove = {}
+			end
+			ALittle.List_Push(remove, child)
+		end
+		map[child._user_info.name] = nil
+		child:Refresh()
+	end
+	if remove ~= nil then
+		for index, child in ___ipairs(remove) do
+			self:RemoveChild(child)
+		end
+	end
+	local add_file = nil
+	local add_dir = nil
+	for name, attr in ___pairs(map) do
+		if attr.mode == "directory" then
+			if add_dir == nil then
+				add_dir = {}
+			end
+			ALittle.List_Push(add_dir, name)
+		else
+			if add_file == nil then
+				add_file = {}
+			end
+			ALittle.List_Push(add_file, name)
+		end
+	end
+	if add_dir ~= nil then
+		ALittle.List_Sort(add_dir)
+		for index, name in ___ipairs(add_dir) do
+			local attr = map[name]
+			local info = {}
+			info.module_name = self._user_info.module_name
+			info.module_path = self._user_info.module_path
+			info.name = name
+			info.path = self._user_info.path .. "/" .. name
+			info.group = self._user_info.group
+			info.root = false
+			self:AddChild(ALittleIDE.IDEControlTree(self._ctrl_sys, info))
+		end
+	end
+	if add_file ~= nil then
+		ALittle.List_Sort(add_file)
+		for index, name in ___ipairs(add_file) do
+			local attr = map[name]
+			local info = {}
+			info.module_name = self._user_info.module_name
+			info.module_path = self._user_info.module_path
+			info.name = name
+			info.path = self._user_info.path .. "/" .. name
+			info.group = self._user_info.group
+			info.root = false
+			self:AddChild(ALittleIDE.IDEControlTreeItem(self._ctrl_sys, info))
+		end
+	end
+	self:DispatchEvent(___all_struct[-431205740], {})
 end
 
 function ALittleIDE.IDEControlTree:SearchFile(name, list)

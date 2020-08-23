@@ -51,8 +51,7 @@ public class IDEControlTree : IDEControlTreeLogic
 		if (this._user_info.root)
 			menu.AddItem("添加模块", bind(this.HandleAddModule, this));
 
-		var can_remove = this._user_info.root && this._user_info.module_name != "Std" && this._user_info.module_name != "Core" && this._user_info.module_name != "CEngine"
-            && this._user_info.module_name != g_IDEProject.project.name;
+		var can_remove = this._user_info.root && this._user_info.module_name != g_IDEProject.project.name;
 		if (can_remove) menu.AddItem("移除模块", bind(this.HandleRemoveModule, this));
     
 		menu.Show();
@@ -63,7 +62,7 @@ public class IDEControlTree : IDEControlTreeLogic
 		var x, y = this._head.LocalToGlobal();
         var name = g_AUITool.ShowRename("", x, y + this._head.height, 200);
 		if (name == null || name == "") return;
-		g_IDECenter.center.control_list2.AddModule(name);
+		g_IDECenter.center.control_list.AddModule(name);
     }
 
 	private async fun HandleRemoveModule()
@@ -79,6 +78,86 @@ public class IDEControlTree : IDEControlTreeLogic
     }
 	
 	public get is_tree() : bool { return true; }
+
+	// 刷新子节点
+	public fun Refresh()
+	{
+		var map = ALittle.File_GetFileNameListByDir(this._user_info.path);
+
+		// 刷新已存在
+		var remove:List<IDEControlTreeLogic> = null;
+		for (var index, child:IDEControlTreeLogic in this.childs)
+		{
+            var attr = map[child._user_info.name];
+			if (attr == null)
+			{
+				if (remove == null) remove = new List<IDEControlTreeLogic>();
+				ALittle.List_Push(remove, child);
+            }
+
+			map[child._user_info.name] = null;
+			child.Refresh();
+        }
+
+		if (remove != null)
+		{
+            for (var index, child:IDEControlTreeLogic in remove)
+                this.RemoveChild(child);
+        }
+
+        // 添加
+		var add_file:List<string> = null;
+		var add_dir:List<string> = null;
+		for (var name, attr in map)
+		{
+			if (attr.mode == "directory")
+			{
+                if (add_dir == null) add_dir = new List<string>();
+                ALittle.List_Push(add_dir, name);
+            }
+			else
+			{
+                if (add_file == null) add_file = new List<string>();
+                ALittle.List_Push(add_file, name);
+            }	
+		}
+
+		if (add_dir != null)
+		{
+			ALittle.List_Sort(add_dir);
+			for (var index, name in add_dir)
+			{
+                var attr = map[name];
+				var info = new IDEControlTreeUserInfo();
+				info.module_name = this._user_info.module_name;
+				info.module_path = this._user_info.module_path;
+				info.name = name;
+				info.path = this._user_info.path.."/"..name;
+				info.group = this._user_info.group;
+				info.root = false;
+                this.AddChild(new IDEControlTree(this._ctrl_sys, info));
+            }
+        }
+
+		if (add_file != null)
+		{
+			ALittle.List_Sort(add_file);
+			for (var index, name in add_file)
+			{
+                var attr = map[name];
+				var info = new IDEControlTreeUserInfo();
+				info.module_name = this._user_info.module_name;
+				info.module_path = this._user_info.module_path;
+				info.name = name;
+				info.path = this._user_info.path.."/"..name;
+				info.group = this._user_info.group;
+				info.root = false;
+                this.AddChild(new IDEControlTreeItem(this._ctrl_sys, info));
+            }
+        }
+
+		this.DispatchEvent(new ALittle.UIResizeEvent());
+    }
 
 	// 搜索文件
 	public fun SearchFile(string name, [Nullable] List<IDEControlTreeLogic> list) : List<IDEControlTreeLogic>

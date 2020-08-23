@@ -1541,15 +1541,21 @@ public class AUICodeEdit : ALittle.DisplayLayout
 
         for (var index, line in this._line_list)
             this._code_linear.AddChild(line.container);
-        this._code_screen.container.width = max_width + CODE_LINE_NUMBER_WIDTH;
-        this._code_screen.container.height = this._line_count * CODE_LINE_HEIGHT + CODE_PAD_LINES * CODE_LINE_HEIGHT;
-        this._code_screen.RejustScrollBar();
+        this.RejustCodeScreen(max_width);
 
         this._cursor.SetLineChar(1, 0);
 
         if (this._language != null) this._language.SetText(content);
 
 		this.UpdateLineNumber();
+    }
+
+    // 更新代码窗口大小
+    public fun RejustCodeScreen(double max_width)
+    {
+        this._code_screen.container.width = max_width + CODE_LINE_NUMBER_WIDTH;
+        this._code_screen.container.height = this._line_count * CODE_LINE_HEIGHT + CODE_PAD_LINES * CODE_LINE_HEIGHT;
+        this._code_screen.RejustScrollBar();
     }
 
     // 插入多行tab键

@@ -75,10 +75,6 @@ function ALittleIDE.IDEUICenter.__getter:control_list()
 	return self._control_list
 end
 
-function ALittleIDE.IDEUICenter.__getter:control_list2()
-	return self._control_list2
-end
-
 function ALittleIDE.IDEUICenter.__getter:code_list()
 	return self._code_list
 end
@@ -198,7 +194,7 @@ function ALittleIDE.IDEUICenter:HandleShortcutKey()
 	end
 	local n = A_UISystem.sym_map[110]
 	if n then
-		ALittleIDE.g_IDECenter.center.control_list:ShowNewControl()
+		self._control_list:ShowNewControl()
 		return
 	end
 end

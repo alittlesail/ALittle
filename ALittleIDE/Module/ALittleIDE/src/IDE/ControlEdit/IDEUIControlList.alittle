@@ -1,0 +1,352 @@
+
+namespace ALittleIDE;
+
+protected struct IDEControlModuleInfo
+{
+    string module_name;
+	string root_path;
+}
+
+struct IDEControlFileSearchInfo
+{
+    List<IDEControlTreeLogic> list;
+	int count;
+	int index;
+	string name;
+}
+
+struct IDEControlItemUserData
+{
+	int pre_index;
+	bool presee;
+	IDEControlInfo control_info;
+}
+
+public class IDEUIControlList : ALittle.DisplayLayout
+{	
+	private ALittle.ScrollScreen _control_scroll_screen;
+	private ALittle.DisplayObject _control_search_key;
+	private ALittle.DisplayObject _control_search_type;
+	private ALittle.TextRadioButtonGroup _group;
+	private IDEControlFileSearchInfo _search_info;                // 搜索集合
+    
+    private ALittle.Dialog _control_new_dialog;
+    private ALittle.DropDown _control_new_type;
+    private ALittle.ImageInput _control_new_name;
+    private ALittle.ImageInput _control_new_extends_name;
+
+	private ALittle.EffectImage _drag_effect;
+	private bool _drag_shift;
+
+	private ALittle.LoopLinear _tree_loop_x;
+	private ALittle.LoopLinear _tree_loop_y;
+
+	public ctor(ALittle.ControlSystem ctrl_sys)
+	{
+		this._group = new ALittle.TextRadioButtonGroup();
+	}
+
+	public fun TCtor()
+	{
+        g_IDEProject.AddEventListener(this, this.HandleProjectOpen);
+        g_IDEProject.AddEventListener(this, this.HandleProjectClose);
+    }
+
+	private fun HandleProjectClose(IDEProjectCloseEvent event)
+	{
+		this._control_scroll_screen.RemoveAllChild();
+    }
+
+	private fun HandleProjectOpen(IDEProjectOpenEvent event)
+	{
+		// 读取项目配置
+		var module_map = g_IDEProject.project.config.GetConfig("control_module", new Map<string, IDEControlModuleInfo>());
+		module_map[event.name] = null;
+
+		// 添加自己的项目
+		var info = new IDEControlTreeUserInfo();
+		info.module_name = event.name;
+		info.name = "ui";
+		info.path = ALittle.File_BaseFilePath().."Module/"..event.name.."/UI";
+		info.module_path = ALittle.File_BaseFilePath().."Module/"..event.name.."/";
+		info.group = this._group;
+		info.root = true;
+		this._control_scroll_screen.AddChild(new IDEControlTree(g_Control, info));
+    
+		// 添加其他模块
+		for (var index, module in module_map)
+		{
+			info = new IDEControlTreeUserInfo();
+			info.module_name = module.module_name;
+			info.name = ALittle.File_GetFileNameByPath(module.root_path);
+			info.path = module.root_path;
+            info.module_path = ALittle.File_GetFilePathByPath(module.root_path).."/";
+			info.group = this._group;
+			info.root = true;
+			var tree = new IDEControlTree(g_Control, info);
+			this._control_scroll_screen.AddChild(tree);
+        }
+    }
+
+	public fun AddModule(string name)
+	{
+        for (var index, tree:IDEControlTreeLogic in this._control_scroll_screen.childs)
+            if (tree.user_info.module_name == name) return;
+
+		var module_map = g_IDEProject.project.config.GetConfig("control_module", new Map<string, IDEControlModuleInfo>());
+
+		var module_info = new IDEControlModuleInfo();
+		module_info.module_name = name;
+		module_info.root_path = ALittle.File_BaseFilePath().."Module/"..name.."/ui";
+		module_map[name] = module_info;
+		g_IDEProject.project.config.SetConfig("control_module", module_map);
+    
+        var info = new IDEControlTreeUserInfo();
+        info.module_name = name;
+        info.name = ALittle.File_GetFileNameByPath(module_info.root_path);
+        info.path = module_info.root_path;
+        info.module_path = ALittle.File_BaseFilePath().."Module/"..name.."/";
+        info.group = this._group;
+		info.root = true;
+        var tree = new IDEControlTree(g_Control, info);
+        this._control_scroll_screen.AddChild(tree);
+    }
+
+	// 在树形区域，设置控件焦点
+	public fun ShowTreeItemFocus(IDEControlTreeLogic target)
+    {
+        // 显示
+        target.ShowSelect();
+
+		if (target != this._control_scroll_screen)
+        {
+            var parent = cast<IDEUITreeLogic>(target.logic_parent);
+			while (parent != null && parent != this._control_scroll_screen)
+            {
+                parent.fold = true;
+                parent = cast<IDEUITreeLogic>(parent.logic_parent);
+			}
+		}
+        this._control_scroll_screen.RejustScrollBar();
+
+		// 如果现在直接看的见的话，就直接返回了
+        var x, y = target.LocalToGlobal(this._control_scroll_screen.container);
+        var target_x = (this._control_scroll_screen.view_width - target.width / 2) / 2 - x;
+        var target_y = (this._control_scroll_screen.view_height - target.height) / 2 - y;
+
+        if (this._tree_loop_x != null) { this._tree_loop_x.Stop(); this._tree_loop_x = null; }
+        if (this._tree_loop_y != null) { this._tree_loop_y.Stop(); this._tree_loop_y = null; }
+
+        this._tree_loop_x = new ALittle.LoopLinear(this._control_scroll_screen, "container_x", target_x, 300, 0);
+        this._tree_loop_x.Start();
+        this._tree_loop_y = new ALittle.LoopLinear(this._control_scroll_screen, "container_y", target_y, 300, 0);
+        this._tree_loop_y.Start();
+	}
+
+	private fun HandleControlSearchClick(ALittle.UIEvent event)
+	{
+		if (this._search_info == null || this._search_info.name != this._control_search_key.text)
+		{
+            this._search_info = new IDEControlFileSearchInfo();
+			this._search_info.name = this._control_search_key.text;
+			this._search_info.index = 0;
+			this._search_info.list = new List<IDEControlTreeLogic>();
+			for (var index, child:IDEControlTreeLogic in this._control_scroll_screen.childs)
+                child.SearchFile(this._search_info.name, this._search_info.list);
+			this._search_info.count = ALittle.List_MaxN(this._search_info.list);
+        }
+
+		if (this._search_info.count <= 0) return;
+
+		this._search_info.index += 1;
+		if (this._search_info.index > this._search_info.count)
+			this._search_info.index = 1;
+		var item = this._search_info.list[this._search_info.index];
+		this.ShowTreeItemFocus(item);
+    }
+
+	public fun ShowNewControl()
+	{
+		// 检查当前是否打开项目
+		if (g_IDEProject.project == null)
+		{
+			g_AUITool.ShowNotice("提示", "当前没有打开的项目");
+			return;
+		}
+		
+            // 创建新建控件对话框，并加入模态层
+		if (this._control_new_dialog == null)
+		{
+			this._control_new_dialog = g_Control.CreateControl{ALittle.Dialog}("ide_new_control_dialog", this);
+			A_LayerManager.AddToModal(this._control_new_dialog);
+			// 把可以新建的空间列表设置到控件中
+			this._control_new_type.data_list = g_IDEEnum.child_type_list;
+		}
+        
+            // 清空输入框
+		this._control_new_name.text = "";
+		this._control_new_extends_name.text = "";
+		// 隐藏对话框
+		this._control_new_dialog.visible = true;
+		//- 把输入框设置为焦点
+		A_UISystem.focus = this._control_new_name.show_input;
+	}
+
+	// 处理新建控件-取消
+	private fun HandleNewControlCancel(ALittle.UIEvent event)
+	{
+		this._control_new_dialog.visible = false;
+	}
+	// 处理新建控件-确认
+	private fun HandleNewControlConfirm(ALittle.UIEvent event)
+	{
+		// 获取当前项目
+		var project = g_IDEProject.project;
+		if (project == null)
+		{
+			g_AUITool.ShowNotice("错误", "当前没有打开的项目");
+			return;
+		}
+            // 获取控件名字
+		var name = this._control_new_name.text;
+		if (name == "")
+		{
+			g_AUITool.ShowNotice("错误", "请输入控件名");
+			return;
+		}
+            // 检查控件名
+		if (IDEUtility_CheckName(name) != null)
+		{
+			g_AUITool.ShowNotice("错误", "控件名不合法:"..name);
+			return;
+		}
+            // 检查控件是否存在
+		if (project.ui.control_map[name] != null)
+		{
+			g_AUITool.ShowNotice("错误", "控件已存在:"..name);
+			return;
+		}
+            // 检查控件名是否已经正在编辑了
+		if (g_IDECenter.center.content_edit.GetTabById{IDEUITabChild}(name) != null)
+		{
+			g_AUITool.ShowNotice("错误", "控件名已存在:"..name);
+			return;
+		}
+            // 获取控件类型
+		var control_type = this._control_new_type.text;
+		if (control_type == "")
+		{
+			g_AUITool.ShowNotice("错误", "请选择控件类型");
+			return;
+		}
+            // 获取继承控件名
+		var extends_name = this._control_new_extends_name.text;
+		if (extends_name != "")
+			g_IDECenter.center.content_edit.StartEditControlByExtends(name, extends_name);
+		else
+			g_IDECenter.center.content_edit.StartEditControlByNew(name, control_type);
+		// 关闭对话框
+		this._control_new_dialog.visible = false;
+	}
+
+
+	private fun HandleControlDragBegin(ALittle.UIButtonDragBeginEvent event)
+	{
+		this._drag_shift = (A_UISystem.sym_map[1073742049] != null || A_UISystem.sym_map[1073742053] != null);
+		if (this._drag_shift == false)
+		{
+			event.target = this._control_scroll_screen;
+			this._control_scroll_screen.DispatchEvent(event);
+			return;
+		}
+
+		var x, y = event.target.LocalToGlobal();
+		// 创建渲染图片
+		this._drag_effect = new ALittle.EffectImage(g_Control);
+		this._drag_effect.Action(event.target);
+		// 添加到Tip层
+		A_LayerManager.AddToTip(this._drag_effect);
+		this._drag_effect.x = x;
+		this._drag_effect.y = y;
+		this._drag_effect.alpha = 0.6;
+    
+		var info:IDEControlItemUserData = event.target._user_data;
+		if (info.presee != true) return;
+		var child = g_IDECenter.center.content_edit.GetTabById{IDEUITabChild}(info.control_info.name);
+		if (child == null) return;
+		g_IDECenter.center.content_edit.CloseTab(child);
+		if (info.pre_index != null) g_IDECenter.center.content_edit.SetCurTabIndex(info.pre_index);
+	}
+	private fun HandleControlDrag(ALittle.UIButtonDragEvent event)
+	{
+		if (this._drag_shift == false)
+		{
+			event.target = this._control_scroll_screen;
+			this._control_scroll_screen.DispatchEvent(event);
+			return;
+		}
+		if (this._drag_effect == null) return;
+		this._drag_effect.x = this._drag_effect.x + event.delta_x;
+		this._drag_effect.y = this._drag_effect.y + event.delta_y;
+	}
+	private fun HandleControlDragEnd(ALittle.UIButtonDragEndEvent event)
+	{
+		if (this._drag_shift == false)
+		{
+			event.target = this._control_scroll_screen;
+			this._control_scroll_screen.DispatchEvent(event);
+			return;
+		}
+		if (this._drag_effect != null)
+		{
+			// 从Tip层移除
+			A_LayerManager.RemoveFromTip(this._drag_effect);
+			this._drag_effect.Clear();
+			this._drag_effect = null;
+		}
+	
+		var tab_child = ALittle.Cast{IDEUITabChild}(g_IDECenter.center.content_edit.cur_tab_child);
+		if (tab_child == null) return;
+
+		var x, y = tab_child.tree_object.LocalToGlobal();
+		var delta_x = event.abs_x - x;
+		var delta_y = event.abs_y - y;
+	
+		var target = tab_child.tree_object.PickUp(delta_x, delta_y);
+		if (target == null)
+		{
+			ALittle.Log("IDEUITreeLogic:HandleDrag} target null");
+			return;
+		}
+		var tree:IDEUITreeLogic = target._user_data;
+
+		var user_data:IDEControlItemUserData = event.target._user_data;
+		// 把自己剪切
+		var save_info = new Map<string, any>();
+		save_info["__extends"] = user_data.control_info.name;
+		var copy_list = new List<Map<string, any>>();
+		var info = new Map<string, any>();
+		info["index"] = 1;
+		info["info"] = save_info;
+		copy_list[1] = info;
+		ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list));
+	
+		if (tree.is_tree)
+			tab_child.RightControlTreePasteImpl(tree, null, 1);
+		else
+		{
+			// 获取父控件
+			var common_parent = tree.logic_parent;
+			if (common_parent == null)
+			{
+				g_AUITool.ShowNotice("提示", "当前是根节点，并且不是容器，粘帖失败");
+				return;
+			}
+			var child_index = common_parent.GetChildIndex(tree);
+			x, y = target.LocalToGlobal();
+			y = y + target.height / 2;
+			if (event.abs_y > y) child_index = child_index + 1;
+			tab_child.RightControlTreePasteImpl(cast<IDEUITreeLogic>(common_parent), null, child_index);
+		}
+	}
+}

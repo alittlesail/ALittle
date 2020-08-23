@@ -26,6 +26,7 @@ public class IDEControlTreeItem : IDEControlTreeLogic
 	// 打开文件
 	private fun HandleClick(ALittle.UIClickEvent event)
 	{
+		g_IDECenter.center.content_edit.StartEditControlBySelect2(ALittle.File_GetJustFileNameByPath(this._user_info.name));
     }
 	
 	// 搜索文件
@@ -182,7 +183,7 @@ public class IDEControlTreeItem : IDEControlTreeLogic
 		this._user_info.name = new_name;
 
         if (tab_child != null) tab_child.Rename(this._user_info.name);
-		g_IDECenter.center.content_edit.RenameTabByName{IDECodeTabChild}(old_name, this._user_info.name);
+		g_IDECenter.center.content_edit.RenameTabByName{IDEUITabChild}(old_name, this._user_info.name);
 	}
 	// 复制继承代码
 	public fun HandleCopyExtends()

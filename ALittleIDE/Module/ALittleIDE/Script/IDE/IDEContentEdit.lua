@@ -443,6 +443,15 @@ function ALittleIDE.IDEContentEdit:StartEditControlByExtends(name, extends_v)
 	return tab_child
 end
 
+function ALittleIDE.IDEContentEdit:StartEditControlBySelect2(name)
+	local control_info = ALittleIDE.g_IDEProject.project.ui.control_map[name]
+	if control_info == nil then
+		return nil
+	end
+	local info = control_info.info
+	return self:StartEditControlBySelect(name, info)
+end
+
 function ALittleIDE.IDEContentEdit:StartEditControlBySelect(name, info)
 	local child = self:GetTabById(ALittleIDE.IDEUITabChild, name)
 	if child ~= nil then

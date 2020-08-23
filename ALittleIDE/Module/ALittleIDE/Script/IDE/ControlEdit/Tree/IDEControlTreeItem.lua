@@ -65,6 +65,7 @@ function ALittleIDE.IDEControlTreeItem.__setter:fold(value)
 end
 
 function ALittleIDE.IDEControlTreeItem:HandleClick(event)
+	ALittleIDE.g_IDECenter.center.content_edit:StartEditControlBySelect2(ALittle.File_GetJustFileNameByPath(self._user_info.name))
 end
 
 function ALittleIDE.IDEControlTreeItem:SearchFile(name, list)
@@ -200,7 +201,7 @@ function ALittleIDE.IDEControlTreeItem:HandleControlRename()
 	if tab_child ~= nil then
 		tab_child:Rename(self._user_info.name)
 	end
-	ALittleIDE.g_IDECenter.center.content_edit:RenameTabByName(ALittleIDE.IDECodeTabChild, old_name, self._user_info.name)
+	ALittleIDE.g_IDECenter.center.content_edit:RenameTabByName(ALittleIDE.IDEUITabChild, old_name, self._user_info.name)
 end
 ALittleIDE.IDEControlTreeItem.HandleControlRename = Lua.CoWrap(ALittleIDE.IDEControlTreeItem.HandleControlRename)
 

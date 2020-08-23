@@ -434,6 +434,15 @@ public class IDEContentEdit : ALittle.DisplayLayout
 		tab_child.ShowHandleQuad(tab_child.tree_object);
 		return tab_child;
 	}
+
+    public fun StartEditControlBySelect2(string name) : IDEUITabChild
+    {
+        var control_info = g_IDEProject.project.ui.control_map[name];
+        if (control_info == null) return null;
+
+        var info = control_info.info;
+        return this.StartEditControlBySelect(name, info);
+    }
 	
 	// 选择控件，并编辑
 	public fun StartEditControlBySelect(string name, const ALittle.DisplayInfo info) : IDEUITabChild

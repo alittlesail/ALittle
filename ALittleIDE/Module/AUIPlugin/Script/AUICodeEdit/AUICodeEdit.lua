@@ -1479,14 +1479,18 @@ function AUIPlugin.AUICodeEdit:SetText(content)
 	for index, line in ___ipairs(self._line_list) do
 		self._code_linear:AddChild(line.container)
 	end
-	self._code_screen.container.width = max_width + AUIPlugin.CODE_LINE_NUMBER_WIDTH
-	self._code_screen.container.height = self._line_count * AUIPlugin.CODE_LINE_HEIGHT + AUIPlugin.CODE_PAD_LINES * AUIPlugin.CODE_LINE_HEIGHT
-	self._code_screen:RejustScrollBar()
+	self:RejustCodeScreen(max_width)
 	self._cursor:SetLineChar(1, 0)
 	if self._language ~= nil then
 		self._language:SetText(content)
 	end
 	self:UpdateLineNumber()
+end
+
+function AUIPlugin.AUICodeEdit:RejustCodeScreen(max_width)
+	self._code_screen.container.width = max_width + AUIPlugin.CODE_LINE_NUMBER_WIDTH
+	self._code_screen.container.height = self._line_count * AUIPlugin.CODE_LINE_HEIGHT + AUIPlugin.CODE_PAD_LINES * AUIPlugin.CODE_LINE_HEIGHT
+	self._code_screen:RejustScrollBar()
 end
 
 function AUIPlugin.AUICodeEdit:MultiTabInsert(need_revoke, revoke_bind)

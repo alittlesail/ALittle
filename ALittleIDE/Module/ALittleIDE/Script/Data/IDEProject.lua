@@ -43,8 +43,8 @@ option_map = {}
 })
 ALittle.RegStruct(934918978, "ALittleIDE.IDEProjectInfo", {
 name = "ALittleIDE.IDEProjectInfo", ns_name = "ALittleIDE", rl_name = "IDEProjectInfo", hash_code = 934918978,
-name_list = {"name","base_path","texture_path","save","control","config","ui","code"},
-type_list = {"string","string","string","bool","ALittle.ControlSystem","ALittle.IJsonConfig","ALittleIDE.IDEUIManager","AUIPlugin.AUICodeProject"},
+name_list = {"name","config","ui","code"},
+type_list = {"string","ALittle.IJsonConfig","Map<string,ALittleIDE.IDEUIManager>","AUIPlugin.AUICodeProject"},
 option_map = {}
 })
 ALittle.RegStruct(-685984390, "ALittleIDE.IDEProjectAddEvent", {
@@ -170,15 +170,9 @@ function ALittleIDE.IDEProject:OpenProject(name)
 	self:AddProjectConfig(name)
 	self._project = {}
 	self._project.name = name
-	self._project.base_path = ALittle.File_BaseFilePath() .. "Module/" .. name .. "/"
-	self._project.texture_path = self._project.base_path .. "Texture"
-	self._project.save = true
-	self._project.control = ALittle.ControlSystem(name)
-	self._project.control.log_error = false
-	self._project.control.cache_texture = false
-	self._project.control.use_plugin_class = false
 	self._project.config = ALittle.CreateConfigSystem("Module/" .. name .. "/ALittleIDE.cfg")
-	self._project.ui = ALittleIDE.IDEUIManager(name, self._project.control)
+	self._project.ui = {}
+	self._project.ui[name] = ALittleIDE.IDEUIManager(name)
 	self._project.code = AUIPlugin.AUICodeProject.CreateALittleScriptProject()
 	if self._project.code ~= nil then
 		self._project.code:AddEventListener(___all_struct[2057209532], self, self.HandleCodeProjectGoToEvent)
@@ -245,6 +239,16 @@ end
 
 function ALittleIDE.IDEProject.__getter:project()
 	return self._project
+end
+
+function ALittleIDE.IDEProject:GetUIManager(module_name)
+	if self._project == nil then
+		return nil
+	end
+	if module_name == nil then
+		module_name = self._project.name
+	end
+	return self._project.ui[module_name]
 end
 
 ALittleIDE.g_IDEProject = ALittleIDE.IDEProject()

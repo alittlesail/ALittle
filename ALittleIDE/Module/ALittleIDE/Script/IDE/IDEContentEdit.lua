@@ -58,8 +58,9 @@ option_map = {}
 assert(ALittle.UIEventDispatcher, " extends class:ALittle.UIEventDispatcher is nil")
 ALittleIDE.IDETabChild = Lua.Class(ALittle.UIEventDispatcher, "ALittleIDE.IDETabChild")
 
-function ALittleIDE.IDETabChild:Ctor(ctrl_sys, name, save)
+function ALittleIDE.IDETabChild:Ctor(ctrl_sys, module, name, save)
 	___rawset(self, "_name", name)
+	___rawset(self, "_module", module)
 	___rawset(self, "_save", save)
 	___rawset(self, "_revoke_list", ALittle.RevokeList())
 end
@@ -70,6 +71,10 @@ end
 
 function ALittleIDE.IDETabChild.__getter:name()
 	return self._name
+end
+
+function ALittleIDE.IDETabChild.__getter:module()
+	return self._module
 end
 
 function ALittleIDE.IDETabChild.__getter:save()
@@ -180,7 +185,7 @@ function ALittleIDE.IDEContentEdit:GetTabIdMap(T)
 	for index, child in ___ipairs(tab_childs) do
 		local tab_child = ALittle.Cast(T, ALittleIDE.IDETabChild, child._user_data)
 		if tab_child ~= nil then
-			info[tab_child.id] = true
+			info[tab_child.id] = tab_child
 		end
 	end
 	return info
@@ -417,9 +422,9 @@ function ALittleIDE.IDEContentEdit:CloseRightTab(child)
 	end
 end
 
-function ALittleIDE.IDEContentEdit:StartEditControlByNew(name, type)
+function ALittleIDE.IDEContentEdit:StartEditControlByNew(module, name, type)
 	local child_from = self._main_tab.tab
-	local tab_child = ALittleIDE.IDEUITabChild(ALittleIDE.g_Control, name, false)
+	local tab_child = ALittleIDE.IDEUITabChild(ALittleIDE.g_Control, module, name, false)
 	tab_child:CreateByNew(type)
 	self._main_tab:AddChild(tab_child.tab_body)
 	tab_child:OnOpen()
@@ -430,10 +435,12 @@ function ALittleIDE.IDEContentEdit:StartEditControlByNew(name, type)
 	return tab_child
 end
 
-function ALittleIDE.IDEContentEdit:StartEditControlByExtends(name, extends_v)
+function ALittleIDE.IDEContentEdit:StartEditControlByExtends(module, name, extends_module, extends_name)
 	local child_from = self._main_tab.tab
-	local tab_child = ALittleIDE.IDEUITabChild(ALittleIDE.g_Control, name, false)
-	tab_child:CreateByExtends(extends_v)
+	local tab_child = ALittleIDE.IDEUITabChild(ALittleIDE.g_Control, module, name, false)
+	if not tab_child:CreateByExtends(extends_module, extends_name) then
+		return nil
+	end
 	self._main_tab:AddChild(tab_child.tab_body)
 	tab_child:OnOpen()
 	self._main_tab.tab = tab_child.tab_body
@@ -443,16 +450,19 @@ function ALittleIDE.IDEContentEdit:StartEditControlByExtends(name, extends_v)
 	return tab_child
 end
 
-function ALittleIDE.IDEContentEdit:StartEditControlBySelect2(name)
-	local control_info = ALittleIDE.g_IDEProject.project.ui.control_map[name]
+function ALittleIDE.IDEContentEdit:StartEditControlBySelect(module, name)
+	local ui_manager = ALittleIDE.g_IDEProject.project.ui[module]
+	if ui_manager == nil then
+		return nil
+	end
+	local control_info = ui_manager.control_map[name]
 	if control_info == nil then
 		return nil
 	end
 	local info = control_info.info
-	return self:StartEditControlBySelect(name, info)
-end
-
-function ALittleIDE.IDEContentEdit:StartEditControlBySelect(name, info)
+	if info == nil then
+		return nil
+	end
 	local child = self:GetTabById(ALittleIDE.IDEUITabChild, name)
 	if child ~= nil then
 		local child_from = self._main_tab.tab
@@ -461,7 +471,7 @@ function ALittleIDE.IDEContentEdit:StartEditControlBySelect(name, info)
 		return child._user_data
 	end
 	local child_from = self._main_tab.tab
-	local tab_child = ALittleIDE.IDEUITabChild(ALittleIDE.g_Control, name, true)
+	local tab_child = ALittleIDE.IDEUITabChild(ALittleIDE.g_Control, module, name, true)
 	tab_child:CreateBySelect(info)
 	self._main_tab:AddChild(tab_child.tab_body, 1)
 	tab_child:OnOpen()
@@ -483,7 +493,7 @@ function ALittleIDE.IDEContentEdit:StartEditCodeBySelect(name, info)
 		return child._user_data
 	end
 	local child_from = self._main_tab.tab
-	local tab_child = ALittleIDE.IDECodeTabChild(ALittleIDE.g_Control, name, true, info)
+	local tab_child = ALittleIDE.IDECodeTabChild(ALittleIDE.g_Control, info.module_name, name, true, info)
 	tab_child:CreateBySelect(info)
 	self._main_tab:AddChild(tab_child.tab_body, 1)
 	tab_child:OnOpen()

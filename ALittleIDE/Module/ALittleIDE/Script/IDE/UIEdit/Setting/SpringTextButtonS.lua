@@ -38,7 +38,11 @@ function ALittleIDE.SpringTextButtonS:HandleShowUpFOCUSOUT(event)
 end
 
 function ALittleIDE.SpringTextButtonS:HandleShowUpSelect(event)
-	ALittleIDE.g_IDEImageSelectDialog:SetBasePath(ALittleIDE.g_IDEProject.project.texture_path)
+	local ui_manager = ALittleIDE.g_IDEProject:GetUIManager(self._tree_logic.user_info.module)
+	if ui_manager == nil then
+		return
+	end
+	ALittleIDE.g_IDEImageSelectDialog:SetBasePath(ui_manager.texture_path)
 	local path = ALittleIDE.g_IDEImageSelectDialog:ShowSelect()
 	if path == nil then
 		return
@@ -58,7 +62,11 @@ function ALittleIDE.SpringTextButtonS:HandleShowDisabledFOCUSOUT(event)
 end
 
 function ALittleIDE.SpringTextButtonS:HandleShowDisabledSelect(event)
-	ALittleIDE.g_IDEImageSelectDialog:SetBasePath(ALittleIDE.g_IDEProject.project.texture_path)
+	local ui_manager = ALittleIDE.g_IDEProject:GetUIManager(self._tree_logic.user_info.module)
+	if ui_manager == nil then
+		return
+	end
+	ALittleIDE.g_IDEImageSelectDialog:SetBasePath(ui_manager.texture_path)
 	local path = ALittleIDE.g_IDEImageSelectDialog:ShowSelect()
 	if path == nil then
 		return

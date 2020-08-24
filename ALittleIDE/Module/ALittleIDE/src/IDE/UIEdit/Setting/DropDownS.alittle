@@ -39,7 +39,10 @@ public class DropDownS : TextCheckButtonS
 	}
 	public async fun HandleShowBackGSelect(ALittle.UIEvent event)
 	{
-		g_IDEImageSelectDialog.SetBasePath(g_IDEProject.project.texture_path);
+        var ui_manager = g_IDEProject.GetUIManager(this._tree_logic.user_info.module);
+        if (ui_manager == null) return;
+
+		g_IDEImageSelectDialog.SetBasePath(ui_manager.texture_path);
 		var path = g_IDEImageSelectDialog.ShowSelect();
 		if (path == null) return;
 		this.ImagePathSelectCallback("show_background", this.HandleShowBackGFOCUSOUT, null, path);
@@ -52,7 +55,7 @@ public class DropDownS : TextCheckButtonS
 			if (event.target._user_data == event.target.text) return;
 			event.target._user_data = event.target.text;
 		}
-		this.RemoverToNilShowSetForExtends("show_scrollbar", this._show_scrollbar.text, false);
+		this.RemoverToNilShowSetForExtends("show_scrollbar", null, this._show_scrollbar.text, false);
 	}
 	
 	public fun HandleButtonStyleFOCUSOUT(ALittle.UIEvent event)

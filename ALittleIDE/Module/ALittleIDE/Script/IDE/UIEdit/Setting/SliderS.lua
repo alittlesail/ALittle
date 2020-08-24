@@ -48,7 +48,7 @@ function ALittleIDE.SliderS:HandleBarButtonFOCUSOUT(event)
 		end
 		event.target._user_data = event.target.text
 	end
-	self:RemoverToNilShowSetForExtends("bar_button", self._bar_button.text, false)
+	self:RemoverToNilShowSetForExtends("bar_button", nil, self._bar_button.text, false)
 end
 
 function ALittleIDE.SliderS:HandleBarBackFOCUSOUT(event)
@@ -62,7 +62,11 @@ function ALittleIDE.SliderS:HandleBarBackFOCUSOUT(event)
 end
 
 function ALittleIDE.SliderS:HandleBarBackSelect(event)
-	ALittleIDE.g_IDEImageSelectDialog:SetBasePath(ALittleIDE.g_IDEProject.project.texture_path)
+	local ui_manager = ALittleIDE.g_IDEProject:GetUIManager(self._tree_logic.user_info.module)
+	if ui_manager == nil then
+		return
+	end
+	ALittleIDE.g_IDEImageSelectDialog:SetBasePath(ui_manager.texture_path)
 	local path = ALittleIDE.g_IDEImageSelectDialog:ShowSelect()
 	if path == nil then
 		return

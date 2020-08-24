@@ -52,7 +52,11 @@ function ALittleIDE.ImageInputS:HandleShowUpFOCUSOUT(event)
 end
 
 function ALittleIDE.ImageInputS:HandleShowUpSelect(event)
-	ALittleIDE.g_IDEImageSelectDialog:SetBasePath(ALittleIDE.g_IDEProject.project.texture_path)
+	local ui_manager = ALittleIDE.g_IDEProject:GetUIManager(self._tree_logic.user_info.module)
+	if ui_manager == nil then
+		return
+	end
+	ALittleIDE.g_IDEImageSelectDialog:SetBasePath(ui_manager.texture_path)
 	local path = ALittleIDE.g_IDEImageSelectDialog:ShowSelect()
 	if path == nil then
 		return
@@ -72,7 +76,11 @@ function ALittleIDE.ImageInputS:HandleShowOverFOCUSOUT(event)
 end
 
 function ALittleIDE.ImageInputS:HandleShowOverSelect(event)
-	ALittleIDE.g_IDEImageSelectDialog:SetBasePath(ALittleIDE.g_IDEProject.project.texture_path)
+	local ui_manager = ALittleIDE.g_IDEProject:GetUIManager(self._tree_logic.user_info.module)
+	if ui_manager == nil then
+		return
+	end
+	ALittleIDE.g_IDEImageSelectDialog:SetBasePath(ui_manager.texture_path)
 	local path = ALittleIDE.g_IDEImageSelectDialog:ShowSelect()
 	if path == nil then
 		return
@@ -92,7 +100,11 @@ function ALittleIDE.ImageInputS:HandleShowDownFOCUSOUT(event)
 end
 
 function ALittleIDE.ImageInputS:HandleShowDownSelect(event)
-	ALittleIDE.g_IDEImageSelectDialog:SetBasePath(ALittleIDE.g_IDEProject.project.texture_path)
+	local ui_manager = ALittleIDE.g_IDEProject:GetUIManager(self._tree_logic.user_info.module)
+	if ui_manager == nil then
+		return
+	end
+	ALittleIDE.g_IDEImageSelectDialog:SetBasePath(ui_manager.texture_path)
 	local path = ALittleIDE.g_IDEImageSelectDialog:ShowSelect()
 	if path == nil then
 		return
@@ -112,7 +124,11 @@ function ALittleIDE.ImageInputS:HandleShowDisabledFOCUSOUT(event)
 end
 
 function ALittleIDE.ImageInputS:HandleShowDisabledSelect(event)
-	ALittleIDE.g_IDEImageSelectDialog:SetBasePath(ALittleIDE.g_IDEProject.project.texture_path)
+	local ui_manager = ALittleIDE.g_IDEProject:GetUIManager(self._tree_logic.user_info.module)
+	if ui_manager == nil then
+		return
+	end
+	ALittleIDE.g_IDEImageSelectDialog:SetBasePath(ui_manager.texture_path)
 	local path = ALittleIDE.g_IDEImageSelectDialog:ShowSelect()
 	if path == nil then
 		return

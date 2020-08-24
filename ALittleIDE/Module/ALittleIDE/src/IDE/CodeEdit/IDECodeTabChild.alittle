@@ -9,7 +9,7 @@ public class IDECodeTabChild : IDETabChild
 
     private AUIPlugin.AUICodeLanguage _language;
 
-	public ctor(ALittle.ControlSystem ctrl_sys, string name, bool save, IDECodeTreeUserInfo user_info)
+	public ctor(ALittle.ControlSystem ctrl_sys, string module, string name, bool save, IDECodeTreeUserInfo user_info)
 	{
         this._user_info = user_info;
 		// 创建编辑容器

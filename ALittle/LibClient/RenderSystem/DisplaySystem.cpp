@@ -613,6 +613,7 @@ TTF_Font* DisplaySystem::GetFont(const char* font_path, unsigned int font_style,
 	}
 	TTF_SetFontKerning(font, 0);
 	TTF_SetFontHinting(font, TTF_HINTING_LIGHT);
+	TTF_SetFontStyle(font, font_style);
 	// save font
 	size_map[font_size] = font;
 

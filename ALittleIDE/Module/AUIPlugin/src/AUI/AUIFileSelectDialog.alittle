@@ -128,6 +128,8 @@ public class AUIFileSelectDialog : ALittle.EventDispatcher
 		this._dialog.visible = true;
 	}
 
+    public get base_path() : string { return this._base_path; }
+
 	public await fun ShowSelect() : string
 	{
 		this.ShowDialog();

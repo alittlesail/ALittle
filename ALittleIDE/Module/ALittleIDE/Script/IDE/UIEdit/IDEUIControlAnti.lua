@@ -909,7 +909,8 @@ function ALittleIDE.IDEAntiPanel:PlayImpl(loop)
 	end
 	if save == false or self._cur_anti == nil or self._anti_dialog.visible == false or self._anti_dialog._user_data ~= self._tab_child.name then
 		local map = {}
-		local object = ALittleIDE.g_IDEProject.project.control:CreateControl(self._tab_child.name, map)
+		local ui_manager = ALittleIDE.g_IDEProject:GetUIManager(self._tab_child.module)
+		local object = ui_manager.control:CreateControl(self._tab_child.name, map)
 		local anti = ALittle.LoopAnimation(object, cur_loop_info)
 		local error = anti:Init(map)
 		if error ~= nil then

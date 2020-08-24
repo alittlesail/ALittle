@@ -48,6 +48,10 @@ function ALittle.ControlSystem:RegisterPlugin(module_name, plugin)
 	self._plugin_map[module_name] = plugin
 end
 
+function ALittle.ControlSystem:UnRegisterPlugin(module_name)
+	self._plugin_map[module_name] = nil
+end
+
 function ALittle.ControlSystem:RegisterInfoByHttp()
 	local ___COROUTINE = coroutine.running()
 	local path = self._ui_path .. "../JSUI/ui_all_in_one.json"

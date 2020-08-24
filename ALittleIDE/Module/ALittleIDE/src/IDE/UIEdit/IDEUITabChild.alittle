@@ -82,7 +82,7 @@ public class IDEUITabChild : IDETabChild
     private double _container_drag_y;
     private IDEUITree _container_drag_parent;
 
-	public ctor(ALittle.ControlSystem ctrl_sys, string name, bool save)
+	public ctor(ALittle.ControlSystem ctrl_sys, string module, string name, bool save)
 	{
         g_IDECenter.center.AddEventListener(this, this.HandleShowSelectLayer);
         g_IDECenter.center.AddEventListener(this, this.HandleShowHandDragLayer);
@@ -260,7 +260,6 @@ public class IDEUITabChild : IDETabChild
 	
 	////////////////////////////////////////////////////////////////////////////////////////////-
 	public get tab_body() : ALittle.DisplayObject { return this._tab_screen; }
-
     public get edit_screen() : ALittle.ScrollScreen { return this._edit_screen; }
 	public get tree_screen() : ALittle.ScrollScreen { return this._tree_screen; }
 	public get attr_screen() : ALittle.ScrollScreen { return this._attr_screen; }
@@ -277,9 +276,12 @@ public class IDEUITabChild : IDETabChild
             return;
 		}
         if (this._tree_object == null) return;
+
+        var ui_manager = g_IDEProject.GetUIManager(this._module);
+        if (ui_manager == null) return;
 	
         var info = this._tree_object.CalcInfo();
-        var error = g_IDEProject.project.ui.SaveControl(this._name, info);
+        var error = ui_manager.SaveControl(this._name, info);
         if (error != null) return;
 	
         this._save = value;
@@ -500,11 +502,14 @@ public class IDEUITabChild : IDETabChild
 
     public fun Refresh()
     {
+        var ui_manager = g_IDEProject.GetUIManager(this._module);
+        if (ui_manager == null) return;
+
         // 获取控件信息
-        var control_info = g_IDEProject.project.ui.control_map[this._name];
+        var control_info = ui_manager.control_map[this._name];
         if (control_info == null) return;
 		// 新建控件对象
-        var object = g_IDEProject.project.control.CreateControl{ALittle.DisplayObject}(this._name);
+        var object = ui_manager.control.CreateControl{ALittle.DisplayObject}(this._name);
 		// 添加到标签页
         this._tab_object_container.RemoveAllChild();
         this._tab_object_container.AddChild(object);
@@ -536,11 +541,14 @@ public class IDEUITabChild : IDETabChild
 	
 	public fun CreateByNew(string type)
     {
+        var ui_manager = g_IDEProject.GetUIManager(this._module);
+        if (ui_manager == null) return;
+
 		// 创建初始信息
         var info = new ALittle.DisplayInfo();
         info.__class = type;
 		// 新建控件对象
-        var object = ALittle.NewObject(cast<Map<string,any>>(ALittle)[type], g_IDEProject.project.control);
+        var object = ALittle.NewObject(cast<Map<string,any>>(ALittle)[type], ui_manager.control);
 		// 初始化一些数据，便于编辑
         IDEUIUtility_NewGiveBaseCase(info, object);
 		// 添加到标签页
@@ -553,13 +561,20 @@ public class IDEUITabChild : IDETabChild
         this._anti_panel.Init(this);
 	}
 	
-	public fun CreateByExtends(string extends_v)
+	public fun CreateByExtends(string extends_module, string extends_name) : bool
     {
+        var extends_ui = g_IDEProject.GetUIManager(extends_module);
+        if (extends_ui == null) return false;
+
+        if (extends_ui.control_map[extends_name] == null) return false;
+
 		// 创建初始信息
         var info = new ALittle.DisplayInfo();
-        info.__extends = extends_v;
+        info.__module = extends_module;
+        info.__extends = extends_name;
+
 		// 新建控件对象
-        var object = g_IDEProject.project.control.CreateControl{ALittle.DisplayObject}(extends_v);
+        var object = extends_ui.control.CreateControl{ALittle.DisplayObject}(extends_name);
 		// 添加到标签页
         this._tab_object_container.AddChild(object);
 		//控件树
@@ -568,12 +583,17 @@ public class IDEUITabChild : IDETabChild
         this._tree_object.fold = true;
         this._tree_screen.AddChild(this._tree_object);
         this._anti_panel.Init(this);
+
+        return true;
 	}
 	
 	public fun CreateBySelect(const ALittle.DisplayInfo info)
     {
+        var ui_manager = g_IDEProject.GetUIManager(this._module);
+        if (ui_manager == null) return;
+
 		// 新建控件对象
-        var object = g_IDEProject.project.control.CreateControl{ALittle.DisplayObject}(this._name);
+        var object = ui_manager.control.CreateControl{ALittle.DisplayObject}(ALittle.File_GetJustFileNameByPath(this._name));
 		// 添加到标签页
         this._tab_object_container.AddChild(object);
 		//控件树
@@ -1265,7 +1285,6 @@ public class IDEUITabChild : IDETabChild
 		menu.AddItem("粘贴", bind(this.Paste, this, target));
 		menu.AddItem("剪切", bind(this.Cut, this, target), target.user_info.root);
 		menu.AddItem("删除", bind(this.Delete, this, target), target.user_info.root);
-		menu.AddItem("替换", bind(g_IDECenter.center.control_tree.ShowReplaceDialog, g_IDECenter.center.control_tree, target), target.user_info.root);
 		menu.AddItem("跳转", bind(this.Jump, this, target), !target.user_info.extends_root);
         menu.Show();
 	}
@@ -1527,15 +1546,19 @@ public class IDEUITabChild : IDETabChild
 	// 处理跳转
 	public fun Jump(IDEUITreeLogic target)
     {
+        var extends_module = target.user_info.base.__module;
         var extends_name = target.user_info.base.__extends;
-        var control_info = g_IDEProject.project.ui.control_map[extends_name];
+        var ui_manager = g_IDEProject.GetUIManager(extends_module);
+        if (ui_manager == null) return;
+
+        var control_info = ui_manager.control_map[extends_name];
 		if (control_info == null)
         {
             g_AUITool.ShowNotice("错误", "控件不存在:"..extends_name);
             return;
 		}
 	
-        g_IDECenter.center.content_edit.StartEditControlBySelect(control_info.name, control_info.info);
+        g_IDECenter.center.content_edit.StartEditControlBySelect(extends_module, extends_name);
 	}
 	// 处理文本编辑
 	public fun TextEdit(IDEUITreeLogic target)

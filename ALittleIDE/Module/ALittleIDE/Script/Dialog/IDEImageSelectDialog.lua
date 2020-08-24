@@ -52,7 +52,11 @@ function ALittleIDE.IDEImageSelectDialog:HandleImageSelectRButtonDown(event)
 end
 
 function ALittleIDE.IDEImageSelectDialog:HandleImageCopyGrid9ImageCodeClick(event)
-	local display_info = ALittleIDE.IDEUIUtility_GenerateGrid9ImageInfo(ALittleIDE.g_IDEProject.project.texture_path .. "/", event.path)
+	local target = ALittle.Cast(AUIPlugin.AUIFileSelectDialog, ALittle.EventDispatcher, event.target)
+	if target == nil then
+		return
+	end
+	local display_info = ALittleIDE.IDEUIUtility_GenerateGrid9ImageInfo(target.base_path .. "/", event.path)
 	if display_info == nil then
 		g_AUITool:ShowNotice("错误", "图片加载失败:" .. event.path)
 		return

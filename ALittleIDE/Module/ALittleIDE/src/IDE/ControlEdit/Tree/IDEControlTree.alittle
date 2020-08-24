@@ -67,6 +67,23 @@ public class IDEControlTree : IDEControlTreeLogic
 
 	private async fun HandleRemoveModule()
 	{
+        var ui_manager = g_IDEProject.GetUIManager(null);
+        if (ui_manager == null) return;
+
+        var tab_child_map = g_IDECenter.center.content_edit.GetTabIdMap{IDEUITabChild}();
+        // 如果有当前的模块，那么就全部移除掉
+        for (var id, tab_child in tab_child_map)
+        {
+            if (tab_child.module == this._user_info.module_name && !tab_child.save)
+            {
+                g_AUITool.ShowNotice("错误", "还有UI正在编辑并为保存");
+                return;
+            }
+        }
+
+        for (var id, tab_child in tab_child_map)
+            g_IDECenter.center.content_edit.CloseTabByName{IDEUITabChild}(tab_child.name);
+
 		var file_name = ALittle.File_GetFileNameByPath(this._user_info.path);
 		var result = g_AUITool.DeleteNotice("移除", "确定要移除"..file_name.."模块吗?");
 		if (result != AUIPlugin.AUIToolOption.YES) return;
@@ -75,6 +92,8 @@ public class IDEControlTree : IDEControlTreeLogic
 		var module_map = g_IDEProject.project.config.GetConfig("control_module", new Map<string, IDEControlModuleInfo>());
         module_map[this._user_info.module_name] = null;
         g_IDEProject.project.config.SetConfig("control_module", module_map);
+
+        ui_manager.control.UnRegisterPlugin(this._user_info.module_name);
     }
 	
 	public get is_tree() : bool { return true; }

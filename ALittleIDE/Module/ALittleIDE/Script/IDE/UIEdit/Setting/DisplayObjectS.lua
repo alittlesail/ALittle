@@ -1206,7 +1206,8 @@ function ALittleIDE.DisplayObjectS:RemoverToNilShowSetForImage(text, image_path,
 		self:RemoverToNilShowSet(text, "", need_reset, revoke_bind)
 	else
 		if grid9 then
-			local display_info = ALittleIDE.IDEUIUtility_GenerateGrid9ImageInfo(ALittleIDE.g_IDEProject.project.texture_path .. "/", image_path)
+			local ui_manager = ALittleIDE.g_IDEProject:GetUIManager(self._tree_logic.user_info.module)
+			local display_info = ALittleIDE.IDEUIUtility_GenerateGrid9ImageInfo(ui_manager.texture_path .. "/", image_path)
 			if display_info == nil then
 				g_AUITool:ShowNotice("错误", "图片不存在:" .. image_path)
 				return
@@ -1221,14 +1222,16 @@ function ALittleIDE.DisplayObjectS:RemoverToNilShowSetForImage(text, image_path,
 	end
 end
 
-function ALittleIDE.DisplayObjectS:RemoverToNilShowSetForExtends(text, extends_v, need_reset, revoke_bind)
-	if extends_v ~= "" then
-		if ALittleIDE.g_IDEProject.project.ui.control_map[extends_v] == nil then
-			g_AUITool:ShowNotice("错误", "要继承的控件不存在:" .. extends_v)
+function ALittleIDE.DisplayObjectS:RemoverToNilShowSetForExtends(text, extends_module, extends_name, need_reset, revoke_bind)
+	if extends_name ~= "" then
+		local ui_manager = ALittleIDE.g_IDEProject:GetUIManager(extends_module)
+		if ui_manager.control_map[extends_name] == nil then
+			g_AUITool:ShowNotice("错误", "要继承的控件不存在:" .. extends_name)
 			return
 		end
 		local display_info = {}
-		display_info.__extends = extends_v
+		display_info.__module = extends_module
+		display_info.__extends = extends_name
 		self:RemoverToNilShowSet(text, ALittle.String_JsonEncode(display_info), need_reset, revoke_bind)
 	else
 		self:RemoverToNilShowSet(text, "", need_reset, revoke_bind)
@@ -1246,10 +1249,11 @@ function ALittleIDE.DisplayObjectS:RemoverToNilShowSet(text, json_content, need_
 			if error1 == nil then
 				local error2, content2 = Lua.TCall(ALittle.String_JsonDecode, content1)
 				local name = "mnbvcxzasdfghjklpoiuytrewq20160121"
-				ALittleIDE.g_IDEProject.project.control:RegisterInfo(name, content2)
-				local temp = ALittleIDE.g_IDEProject.project.control:CreateControl(name)
+				local ui_manager = ALittleIDE.g_IDEProject:GetUIManager(self._tree_logic.user_info.module)
+				ui_manager.control:RegisterInfo(name, content2)
+				local temp = ui_manager.control:CreateControl(name)
 				self._object[text] = temp
-				ALittleIDE.g_IDEProject.project.control:UnRegisterInfo(name)
+				ui_manager.control:UnRegisterInfo(name)
 			end
 		else
 			self._object[text] = nil
@@ -1264,7 +1268,8 @@ function ALittleIDE.DisplayObjectS:RemoverToNilShowSet(text, json_content, need_
 				include = content1.__extends
 			end
 			if include ~= nil then
-				if ALittleIDE.g_IDEProject.project.ui.control_map[include] == nil then
+				local ui_manager = ALittleIDE.g_IDEProject:GetUIManager(content1.__module)
+				if ui_manager.control_map[include] == nil then
 					g_AUITool:ShowNotice("错误", "指定__include或__extends不存在")
 					return
 				end
@@ -1272,10 +1277,11 @@ function ALittleIDE.DisplayObjectS:RemoverToNilShowSet(text, json_content, need_
 			self._base[text] = content1
 			local error2, content2 = Lua.TCall(ALittle.String_JsonDecode, content)
 			local name = "mnbvcxzasdfghjklpoiuytrewq20160121"
-			ALittleIDE.g_IDEProject.project.control:RegisterInfo(name, content2)
-			local temp = ALittleIDE.g_IDEProject.project.control:CreateControl(name)
+			local ui_manager = ALittleIDE.g_IDEProject:GetUIManager(self._tree_logic.user_info.module)
+			ui_manager.control:RegisterInfo(name, content2)
+			local temp = ui_manager.control:CreateControl(name)
 			self._object[text] = temp
-			ALittleIDE.g_IDEProject.project.control:UnRegisterInfo(name)
+			ui_manager.control:UnRegisterInfo(name)
 		else
 			g_AUITool:ShowNotice("错误", "输入show设置错误")
 			return
@@ -1311,10 +1317,11 @@ function ALittleIDE.DisplayObjectS:RemoverToNilNoNilShowSet(text, need_reset, re
 				display_object.text = content1
 				local error2, content2 = Lua.TCall(ALittle.String_JsonDecode, content1)
 				local name = "mnbvcxzasdfghjklpoiuytrewq20160121"
-				ALittleIDE.g_IDEProject.project.control:RegisterInfo(name, content2)
-				local temp = ALittleIDE.g_IDEProject.project.control:CreateControl(name)
+				local ui_manager = ALittleIDE.g_IDEProject:GetUIManager(self._tree_logic.user_info.module)
+				ui_manager.control:RegisterInfo(name, content2)
+				local temp = ui_manager.control:CreateControl(name)
 				self._object[text] = temp
-				ALittleIDE.g_IDEProject.project.control:UnRegisterInfo(name)
+				ui_manager.control:UnRegisterInfo(name)
 			end
 		else
 			self._object[text] = nil
@@ -1328,7 +1335,8 @@ function ALittleIDE.DisplayObjectS:RemoverToNilNoNilShowSet(text, need_reset, re
 				include = content1.__extends
 			end
 			if include ~= nil then
-				if ALittleIDE.g_IDEProject.project.ui.control_map[include] == nil then
+				local ui_manager = ALittleIDE.g_IDEProject:GetUIManager(content1.__module)
+				if ui_manager.control_map[include] == nil then
 					g_AUITool:ShowNotice("错误", "指定__include或__extends不存在")
 					display_object.text = ""
 					return
@@ -1337,10 +1345,11 @@ function ALittleIDE.DisplayObjectS:RemoverToNilNoNilShowSet(text, need_reset, re
 			self._base[text] = content1
 			local error2, content2 = Lua.TCall(ALittle.String_JsonDecode, content)
 			local name = "mnbvcxzasdfghjklpoiuytrewq20160121"
-			ALittleIDE.g_IDEProject.project.control:RegisterInfo(name, content2)
-			local temp = ALittleIDE.g_IDEProject.project.control:CreateControl(name)
+			local ui_manager = ALittleIDE.g_IDEProject:GetUIManager(self._tree_logic.user_info.module)
+			ui_manager.control:RegisterInfo(name, content2)
+			local temp = ui_manager.control:CreateControl(name)
 			self._object[text] = temp
-			ALittleIDE.g_IDEProject.project.control:UnRegisterInfo(name)
+			ui_manager.control:UnRegisterInfo(name)
 		else
 			g_AUITool:ShowNotice("错误", "输入show设置错误")
 			display_object.text = ""
@@ -1641,12 +1650,16 @@ function ALittleIDE.DisplayObjectS:LoadDefaultNilString(text)
 end
 
 function ALittleIDE.DisplayObjectS:ImagePathSelectCallback(text, callback, revoke_bind, path)
+	local ui_manager = ALittleIDE.g_IDEProject:GetUIManager(self._tree_logic.user_info.module)
+	if ui_manager == nil then
+		return
+	end
 	local display_object = self["_" .. text]
 	display_object.text = path
 	local e = {}
 	e.target = display_object
 	callback(self, e)
-	local surface = ALittle.System_LoadSurface(ALittleIDE.g_IDEProject.project.texture_path .. "/" .. path)
+	local surface = ALittle.System_LoadSurface(ui_manager.texture_path .. "/" .. path)
 	if surface == nil then
 		return
 	end

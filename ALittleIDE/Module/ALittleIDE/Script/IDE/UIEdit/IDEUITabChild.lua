@@ -124,7 +124,7 @@ option_map = {}
 assert(ALittleIDE.IDETabChild, " extends class:ALittleIDE.IDETabChild is nil")
 ALittleIDE.IDEUITabChild = Lua.Class(ALittleIDE.IDETabChild, "ALittleIDE.IDEUITabChild")
 
-function ALittleIDE.IDEUITabChild:Ctor(ctrl_sys, name, save)
+function ALittleIDE.IDEUITabChild:Ctor(ctrl_sys, module, name, save)
 	ALittleIDE.g_IDECenter.center:AddEventListener(___all_struct[-506107723], self, self.HandleShowSelectLayer)
 	ALittleIDE.g_IDECenter.center:AddEventListener(___all_struct[1299500288], self, self.HandleShowHandDragLayer)
 	ALittleIDE.g_IDECenter.center:AddEventListener(___all_struct[2103672497], self, self.HandleShowScaleLayer)
@@ -301,8 +301,12 @@ function ALittleIDE.IDEUITabChild.__setter:save(value)
 	if self._tree_object == nil then
 		return
 	end
+	local ui_manager = ALittleIDE.g_IDEProject:GetUIManager(self._module)
+	if ui_manager == nil then
+		return
+	end
 	local info = self._tree_object:CalcInfo()
-	local error = ALittleIDE.g_IDEProject.project.ui:SaveControl(self._name, info)
+	local error = ui_manager:SaveControl(self._name, info)
 	if error ~= nil then
 		return
 	end
@@ -491,11 +495,15 @@ function ALittleIDE.IDEUITabChild:HandleShowScaleLayer(event)
 end
 
 function ALittleIDE.IDEUITabChild:Refresh()
-	local control_info = ALittleIDE.g_IDEProject.project.ui.control_map[self._name]
+	local ui_manager = ALittleIDE.g_IDEProject:GetUIManager(self._module)
+	if ui_manager == nil then
+		return
+	end
+	local control_info = ui_manager.control_map[self._name]
 	if control_info == nil then
 		return
 	end
-	local object = ALittleIDE.g_IDEProject.project.control:CreateControl(self._name)
+	local object = ui_manager.control:CreateControl(self._name)
 	self._tab_object_container:RemoveAllChild()
 	self._tab_object_container:AddChild(object)
 	self._tree_object = ALittleIDE.IDEUIUtility_CreateTree(control_info.info, false, object, nil, self, true)
@@ -516,9 +524,13 @@ function ALittleIDE.IDEUITabChild:Refresh()
 end
 
 function ALittleIDE.IDEUITabChild:CreateByNew(type)
+	local ui_manager = ALittleIDE.g_IDEProject:GetUIManager(self._module)
+	if ui_manager == nil then
+		return
+	end
 	local info = {}
 	info.__class = type
-	local object = ALittle.NewObject(ALittle[type], ALittleIDE.g_IDEProject.project.control)
+	local object = ALittle.NewObject(ALittle[type], ui_manager.control)
 	ALittleIDE.IDEUIUtility_NewGiveBaseCase(info, object)
 	self._tab_object_container:AddChild(object)
 	self._tree_object = ALittleIDE.IDEUIUtility_CreateTree(info, false, object, nil, self, true)
@@ -528,20 +540,33 @@ function ALittleIDE.IDEUITabChild:CreateByNew(type)
 	self._anti_panel:Init(self)
 end
 
-function ALittleIDE.IDEUITabChild:CreateByExtends(extends_v)
+function ALittleIDE.IDEUITabChild:CreateByExtends(extends_module, extends_name)
+	local extends_ui = ALittleIDE.g_IDEProject:GetUIManager(extends_module)
+	if extends_ui == nil then
+		return false
+	end
+	if extends_ui.control_map[extends_name] == nil then
+		return false
+	end
 	local info = {}
-	info.__extends = extends_v
-	local object = ALittleIDE.g_IDEProject.project.control:CreateControl(extends_v)
+	info.__module = extends_module
+	info.__extends = extends_name
+	local object = extends_ui.control:CreateControl(extends_name)
 	self._tab_object_container:AddChild(object)
 	self._tree_object = ALittleIDE.IDEUIUtility_CreateTree(info, false, object, nil, self, true)
 	self._tree_object:AddEventListener(___all_struct[-431205740], self, self.HandleTreeSizeChanged)
 	self._tree_object.fold = true
 	self._tree_screen:AddChild(self._tree_object)
 	self._anti_panel:Init(self)
+	return true
 end
 
 function ALittleIDE.IDEUITabChild:CreateBySelect(info)
-	local object = ALittleIDE.g_IDEProject.project.control:CreateControl(self._name)
+	local ui_manager = ALittleIDE.g_IDEProject:GetUIManager(self._module)
+	if ui_manager == nil then
+		return
+	end
+	local object = ui_manager.control:CreateControl(ALittle.File_GetJustFileNameByPath(self._name))
 	self._tab_object_container:AddChild(object)
 	self._tree_object = ALittleIDE.IDEUIUtility_CreateTree(info, false, object, nil, self, true)
 	self._tree_object:AddEventListener(___all_struct[-431205740], self, self.HandleTreeSizeChanged)
@@ -1123,7 +1148,6 @@ function ALittleIDE.IDEUITabChild:HandleHandleQuadRButtonDown(event)
 	menu:AddItem("粘贴", Lua.Bind(self.Paste, self, target))
 	menu:AddItem("剪切", Lua.Bind(self.Cut, self, target), target.user_info.root)
 	menu:AddItem("删除", Lua.Bind(self.Delete, self, target), target.user_info.root)
-	menu:AddItem("替换", Lua.Bind(ALittleIDE.g_IDECenter.center.control_tree.ShowReplaceDialog, ALittleIDE.g_IDECenter.center.control_tree, target), target.user_info.root)
 	menu:AddItem("跳转", Lua.Bind(self.Jump, self, target), not target.user_info.extends_root)
 	menu:Show()
 end
@@ -1328,13 +1352,18 @@ function ALittleIDE.IDEUITabChild:Cut(target)
 end
 
 function ALittleIDE.IDEUITabChild:Jump(target)
+	local extends_module = target.user_info.base.__module
 	local extends_name = target.user_info.base.__extends
-	local control_info = ALittleIDE.g_IDEProject.project.ui.control_map[extends_name]
+	local ui_manager = ALittleIDE.g_IDEProject:GetUIManager(extends_module)
+	if ui_manager == nil then
+		return
+	end
+	local control_info = ui_manager.control_map[extends_name]
 	if control_info == nil then
 		g_AUITool:ShowNotice("错误", "控件不存在:" .. extends_name)
 		return
 	end
-	ALittleIDE.g_IDECenter.center.content_edit:StartEditControlBySelect(control_info.name, control_info.info)
+	ALittleIDE.g_IDECenter.center.content_edit:StartEditControlBySelect(extends_module, extends_name)
 end
 
 function ALittleIDE.IDEUITabChild:TextEdit(target)

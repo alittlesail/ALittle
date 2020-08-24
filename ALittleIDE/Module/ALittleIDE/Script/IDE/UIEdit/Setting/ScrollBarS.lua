@@ -48,7 +48,7 @@ function ALittleIDE.ScrollBarS:HandleUpButtonFOCUSOUT(event)
 		end
 		event.target._user_data = event.target.text
 	end
-	self:RemoverToNilShowSetForExtends("up_button", self._up_button.text, false)
+	self:RemoverToNilShowSetForExtends("up_button", nil, self._up_button.text, false)
 end
 
 function ALittleIDE.ScrollBarS:HandleDownButtonFOCUSOUT(event)
@@ -58,7 +58,7 @@ function ALittleIDE.ScrollBarS:HandleDownButtonFOCUSOUT(event)
 		end
 		event.target._user_data = event.target.text
 	end
-	self:RemoverToNilShowSetForExtends("down_button", self._down_button.text, false)
+	self:RemoverToNilShowSetForExtends("down_button", nil, self._down_button.text, false)
 end
 
 function ALittleIDE.ScrollBarS:HandleBarButtonFOCUSOUT(event)
@@ -68,7 +68,7 @@ function ALittleIDE.ScrollBarS:HandleBarButtonFOCUSOUT(event)
 		end
 		event.target._user_data = event.target.text
 	end
-	self:RemoverToNilShowSetForExtends("bar_button", self._bar_button.text, false)
+	self:RemoverToNilShowSetForExtends("bar_button", nil, self._bar_button.text, false)
 end
 
 function ALittleIDE.ScrollBarS:HandleBarBackFOCUSOUT(event)
@@ -82,7 +82,11 @@ function ALittleIDE.ScrollBarS:HandleBarBackFOCUSOUT(event)
 end
 
 function ALittleIDE.ScrollBarS:HandleBarBackSelect(event)
-	ALittleIDE.g_IDEImageSelectDialog:SetBasePath(ALittleIDE.g_IDEProject.project.texture_path)
+	local ui_manager = ALittleIDE.g_IDEProject:GetUIManager(self._tree_logic.user_info.module)
+	if ui_manager == nil then
+		return
+	end
+	ALittleIDE.g_IDEImageSelectDialog:SetBasePath(ui_manager.texture_path)
 	local path = ALittleIDE.g_IDEImageSelectDialog:ShowSelect()
 	if path == nil then
 		return

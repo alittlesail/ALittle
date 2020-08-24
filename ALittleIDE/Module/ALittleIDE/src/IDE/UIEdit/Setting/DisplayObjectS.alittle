@@ -1177,7 +1177,8 @@ public class DisplayObjectS
 		{
 			if (grid9)
 			{
-				var display_info = IDEUIUtility_GenerateGrid9ImageInfo(g_IDEProject.project.texture_path.."/", image_path);
+                var ui_manager = g_IDEProject.GetUIManager(this._tree_logic.user_info.module);
+				var display_info = IDEUIUtility_GenerateGrid9ImageInfo(ui_manager.texture_path.."/", image_path);
 				if (display_info == null)
 				{
 					g_AUITool.ShowNotice("错误", "图片不存在:"..image_path);
@@ -1194,17 +1195,19 @@ public class DisplayObjectS
 			}
 		}
 	}
-	public fun RemoverToNilShowSetForExtends(string text, string extends_v, bool need_reset, [Nullable] ALittle.RevokeBind revoke_bind)
+	public fun RemoverToNilShowSetForExtends(string text, string extends_module, string extends_name, bool need_reset, [Nullable] ALittle.RevokeBind revoke_bind)
 	{
-		if (extends_v != "")
+		if (extends_name != "")
 		{
-			if (g_IDEProject.project.ui.control_map[extends_v] == null)
+            var ui_manager = g_IDEProject.GetUIManager(extends_module);
+			if (ui_manager.control_map[extends_name] == null)
 			{
-				g_AUITool.ShowNotice("错误", "要继承的控件不存在:"..extends_v);
+				g_AUITool.ShowNotice("错误", "要继承的控件不存在:"..extends_name);
 				return ;
 			}
 			var display_info = new ALittle.DisplayInfo();
-			display_info.__extends = extends_v;
+            display_info.__module = extends_module;
+			display_info.__extends = extends_name;
 			this.RemoverToNilShowSet(text, ALittle.String_JsonEncode(display_info), need_reset, revoke_bind);
 		}
 		else
@@ -1228,10 +1231,11 @@ public class DisplayObjectS
 					// 最终生成object的数据重新tcall，避免CreateControl对default数据的操作
 					var error2, content2 = tcall(ALittle.String_JsonDecode, content1);
 					var name = "mnbvcxzasdfghjklpoiuytrewq20160121";
-					g_IDEProject.project.control.RegisterInfo(name, content2);
-					var temp = g_IDEProject.project.control.CreateControl{ALittle.DisplayObject}(name);
+                    var ui_manager = g_IDEProject.GetUIManager(this._tree_logic.user_info.module);
+					ui_manager.control.RegisterInfo(name, content2);
+					var temp = ui_manager.control.CreateControl{ALittle.DisplayObject}(name);
 					cast<Map<string, any>>(this._object)[text] = temp;
-					g_IDEProject.project.control.UnRegisterInfo(name);
+					ui_manager.control.UnRegisterInfo(name);
 				}
 			}
 			else
@@ -1250,7 +1254,8 @@ public class DisplayObjectS
 				if (include == null) include = content1.__extends;
 				if (include != null)
 				{
-					if (g_IDEProject.project.ui.control_map[include] == null)
+                    var ui_manager = g_IDEProject.GetUIManager(content1.__module);
+					if (ui_manager.control_map[include] == null)
 					{
 						g_AUITool.ShowNotice("错误", "指定__include或__extends不存在");
 						return;
@@ -1259,10 +1264,11 @@ public class DisplayObjectS
 				cast<Map<string, ALittle.DisplayInfo>>(this._base)[text] = content1;
 				var error2, content2:ALittle.DisplayInfo = tcall(ALittle.String_JsonDecode, content);
 				var name = "mnbvcxzasdfghjklpoiuytrewq20160121";
-				g_IDEProject.project.control.RegisterInfo(name, content2);
-				var temp = g_IDEProject.project.control.CreateControl{ALittle.DisplayObject}(name);
+                var ui_manager = g_IDEProject.GetUIManager(this._tree_logic.user_info.module);
+				ui_manager.control.RegisterInfo(name, content2);
+				var temp = ui_manager.control.CreateControl{ALittle.DisplayObject}(name);
 				cast<Map<string, any>>(this._object)[text] = temp;
-				g_IDEProject.project.control.UnRegisterInfo(name);
+				ui_manager.control.UnRegisterInfo(name);
 			}
 			else
 			{
@@ -1310,10 +1316,11 @@ public class DisplayObjectS
 					//最终生成object的数据重新tcall，避免CreateControl对default数据的操作
 					var error2, content2:ALittle.DisplayInfo = tcall(ALittle.String_JsonDecode, content1);
 					var name = "mnbvcxzasdfghjklpoiuytrewq20160121";
-					g_IDEProject.project.control.RegisterInfo(name, content2);
-					var temp = g_IDEProject.project.control.CreateControl{ALittle.DisplayObject}(name);
+                    var ui_manager = g_IDEProject.GetUIManager(this._tree_logic.user_info.module);
+					ui_manager.control.RegisterInfo(name, content2);
+					var temp = ui_manager.control.CreateControl{ALittle.DisplayObject}(name);
 					cast<Map<string, any>>(this._object)[text] = temp;
-					g_IDEProject.project.control.UnRegisterInfo(name);
+					ui_manager.control.UnRegisterInfo(name);
 				}
 			}
 			else
@@ -1329,7 +1336,8 @@ public class DisplayObjectS
 				if (include == null) include = content1.__extends;
 				if (include != null)
 				{
-					if (g_IDEProject.project.ui.control_map[include] == null)
+                    var ui_manager = g_IDEProject.GetUIManager(content1.__module);
+					if (ui_manager.control_map[include] == null)
 					{
 						g_AUITool.ShowNotice("错误", "指定__include或__extends不存在");
 						display_object.text = "";
@@ -1339,10 +1347,11 @@ public class DisplayObjectS
 				cast<Map<string, any>>(this._base)[text] = content1;
 				var error2, content2:ALittle.DisplayInfo = tcall(ALittle.String_JsonDecode, content);
 				var name = "mnbvcxzasdfghjklpoiuytrewq20160121";
-				g_IDEProject.project.control.RegisterInfo(name, content2);
-				var temp = g_IDEProject.project.control.CreateControl{ALittle.DisplayObject}(name);
+                var ui_manager = g_IDEProject.GetUIManager(this._tree_logic.user_info.module);
+				ui_manager.control.RegisterInfo(name, content2);
+				var temp = ui_manager.control.CreateControl{ALittle.DisplayObject}(name);
 				cast<Map<string, any>>(this._object)[text] = temp;
-				g_IDEProject.project.control.UnRegisterInfo(name);
+				ui_manager.control.UnRegisterInfo(name);
 			}
 			else
 			{
@@ -1680,14 +1689,17 @@ public class DisplayObjectS
 	//选择图片路径
 	public fun ImagePathSelectCallback(string text, Functor<(DisplayObjectS, ALittle.UIEvent)> callback, ALittle.RevokeBind revoke_bind, string path)
 	{
+        var ui_manager = g_IDEProject.GetUIManager(this._tree_logic.user_info.module);
+        if (ui_manager == null) return;
+
 		var display_object:ALittle.DisplayObject = cast<Map<string, any>>(this)["_"..text];
 		display_object.text = path;
 		var e = new ALittle.UIFocusOutEvent();
 		e.target = display_object;
 		callback(this, e);
-	
+
 		// 获取图片大小
-		var surface = ALittle.System_LoadSurface(g_IDEProject.project.texture_path.."/"..path);
+		var surface = ALittle.System_LoadSurface(ui_manager.texture_path.."/"..path);
 		if (surface == null) return;
 		var w = ALittle.System_GetSurfaceWidth(surface);
 		var h = ALittle.System_GetSurfaceHeight(surface);
@@ -1700,9 +1712,10 @@ public class DisplayObjectS
 		this.SetHValue(h, revoke_bind);
 		if (new_revoke) this._tab_child.revoke_list.PushRevoke(revoke_bind);
 	}
-    
-	//设置texture_name
-	public fun SetTextureName(string texture_name, [Nullable] ALittle.RevokeBind revoke_bind)
-	{
-	}
+
+    //设置texture_name
+    public fun SetTextureName(string texture_name, [Nullable] ALittle.RevokeBind revoke_bind)
+    {
+        // 用于子类继承
+    }
 }

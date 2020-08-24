@@ -15,11 +15,18 @@ public class IDEUIManager
 	private Map<string, IDEControlInfo> _control_map;
 	private string _base_path;
 	private ALittle.ControlSystem _control;
+    private string _name;
 
-	public ctor(string name, ALittle.ControlSystem control)
+	public ctor(string name)
 	{
-		// 控制系统
-		this._control = control;
+        this._name = name;
+
+        // 控件系统
+		this._control = new ALittle.ControlSystem(name);
+		this._control.log_error = false;
+		this._control.cache_texture = false;
+		this._control.use_plugin_class = false;
+
 		// 加载所有控件
 		this._control_map = new Map<string, IDEControlInfo>();
 		// 遍历文件夹，加载所有控件
@@ -82,6 +89,10 @@ public class IDEUIManager
 
 	[Constant]
 	public get control_map() : const Map<string, IDEControlInfo> { return this._control_map; }
+
+    public get control() : ALittle.ControlSystem { return this._control; }
+
+    public get texture_path() : string { return ALittle.File_BaseFilePath().."Module/"..this._name.."/Texture"; }
 
 	// 计算出某个控件，继承了哪些控件，以及这些控件继承了哪些控件
 	// 这个主要用于在新建控件时，避开循环继承

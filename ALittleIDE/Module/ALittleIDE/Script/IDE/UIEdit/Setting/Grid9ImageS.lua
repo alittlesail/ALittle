@@ -25,7 +25,11 @@ function ALittleIDE.Grid9ImageS:HandleImageTextureNameFOCUSOUT(event)
 end
 
 function ALittleIDE.Grid9ImageS:HandleImageTextureNameSelect(event)
-	ALittleIDE.g_IDEImageSelectDialog:SetBasePath(ALittleIDE.g_IDEProject.project.texture_path)
+	local ui_manager = ALittleIDE.g_IDEProject:GetUIManager(self._tree_logic.user_info.module)
+	if ui_manager == nil then
+		return
+	end
+	ALittleIDE.g_IDEImageSelectDialog:SetBasePath(ui_manager.texture_path)
 	local path = ALittleIDE.g_IDEImageSelectDialog:ShowSelect()
 	if path == nil then
 		return
@@ -40,8 +44,12 @@ function ALittleIDE.Grid9ImageS:HandleFlipSELECT_CHANGE(event)
 end
 
 function ALittleIDE.Grid9ImageS:HandleAutoCut(event)
+	local ui_manager = ALittleIDE.g_IDEProject:GetUIManager(self._tree_logic.user_info.module)
+	if ui_manager == nil then
+		return
+	end
 	local image_path = self._texture_name.text
-	local display_info = ALittleIDE.IDEUIUtility_GenerateGrid9ImageInfo(ALittleIDE.g_IDEProject.project.texture_path .. "/", image_path)
+	local display_info = ALittleIDE.IDEUIUtility_GenerateGrid9ImageInfo(ui_manager.texture_path .. "/", image_path)
 	if display_info == nil then
 		return
 	end

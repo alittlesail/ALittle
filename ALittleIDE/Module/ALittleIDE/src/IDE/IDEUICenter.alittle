@@ -355,7 +355,9 @@ protected class IDEUICenter : ALittle.DisplayLayout
             g_AUITool.ShowNotice("提示", "请先打开项目");
 			return;
         }
-		g_IDEImageManagerDialog.SetBasePath(g_IDEProject.project.texture_path);
+        var ui_manager = g_IDEProject.GetUIManager(null);
+        if (ui_manager == null) return;
+		g_IDEImageManagerDialog.SetBasePath(ui_manager.texture_path);
 		g_IDEImageManagerDialog.ShowDialog();
 	}
 

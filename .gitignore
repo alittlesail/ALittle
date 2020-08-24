@@ -34,3 +34,5 @@
 /ALittle/LibCommon/ThirdParty/.vs
 /ALittle/LibCommon/ThirdParty/x64
 /ALittle/LibCommon/ThirdParty/alittlescript/x64
+/ALittleIDE/*.iobj
+/ALittleIDE/*.ipdb

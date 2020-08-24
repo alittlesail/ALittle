@@ -286,10 +286,14 @@ function ALittleIDE.IDEUITreeLogic:TreePaste(info, child_type, child_index, is_g
 			end
 		end
 	end
+	local ui_manager = ALittleIDE.g_IDEProject:GetUIManager(self._user_info.module)
+	if ui_manager == nil then
+		return nil
+	end
 	local control_name = "alittleide201601291343"
-	ALittleIDE.g_IDEProject.project.control:RegisterInfo(control_name, ALittle.String_CopyTable(info))
-	local object = ALittleIDE.g_IDEProject.project.control:CreateControl(control_name)
-	ALittleIDE.g_IDEProject.project.control:UnRegisterInfo(control_name)
+	ui_manager.control:RegisterInfo(control_name, ALittle.String_CopyTable(info))
+	local object = ui_manager.control:CreateControl(control_name)
+	ui_manager.control:UnRegisterInfo(control_name)
 	if child_type == "child" then
 		self._user_info.object:AddChild(object, child_index)
 	else
@@ -310,11 +314,7 @@ function ALittleIDE.IDEUITreeLogic:TreePaste(info, child_type, child_index, is_g
 	return tree_object
 end
 
-function ALittleIDE.IDEUITreeLogic:TreeAdd(extends_name, class_name, child_type)
-	local extends_info = ALittleIDE.g_IDEProject.project.ui.control_map[extends_name]
-	if extends_name ~= "" and extends_info == nil then
-		return nil
-	end
+function ALittleIDE.IDEUITreeLogic:TreeAdd(extends_module, extends_name, class_name, child_type)
 	local revoke_bind = ALittle.RevokeBind()
 	if child_type ~= "child" and self._user_info.object[child_type] ~= nil then
 		self._user_info.object[child_type] = nil
@@ -328,10 +328,14 @@ function ALittleIDE.IDEUITreeLogic:TreeAdd(extends_name, class_name, child_type)
 		end
 	end
 	local tree_object = nil
-	if extends_info == nil then
+	local ui_manager = ALittleIDE.g_IDEProject:GetUIManager(self._user_info.module)
+	if ui_manager == nil then
+		return nil
+	end
+	if extends_name == nil or extends_name == "" then
 		local info = {}
 		info.__class = class_name
-		local object = ALittle.NewObject(ALittle[info.__class], ALittleIDE.g_IDEProject.project.control)
+		local object = ALittle.NewObject(ALittle[info.__class], ui_manager.control)
 		ALittleIDE.IDEUIUtility_NewGiveBaseCase(info, object)
 		if child_type == "child" then
 			self._user_info.object:AddChild(object)
@@ -347,9 +351,18 @@ function ALittleIDE.IDEUITreeLogic:TreeAdd(extends_name, class_name, child_type)
 		tree_object:ShowAttributePanel()
 		self._tab_child:ShowTreeItemFocus(tree_object)
 	else
+		local extends_ui = ALittleIDE.g_IDEProject:GetUIManager(extends_module)
+		if extends_ui == nil then
+			return nil
+		end
+		local extends_info = ui_manager.control_map[extends_name]
+		if extends_name ~= "" and extends_info == nil then
+			return nil
+		end
 		local info = {}
+		info.__module = extends_module
 		info.__extends = extends_name
-		local object = ALittleIDE.g_IDEProject.project.control:CreateControl(extends_name)
+		local object = ui_manager.control:CreateControl(extends_name)
 		if child_type == "child" then
 			self._user_info.object:AddChild(object)
 		else
@@ -366,189 +379,6 @@ function ALittleIDE.IDEUITreeLogic:TreeAdd(extends_name, class_name, child_type)
 	end
 	self._tab_child.revoke_list:PushRevoke(revoke_bind)
 	return tree_object
-end
-
-function ALittleIDE.IDEUITreeLogic:TreeReplace(extends_name, class_name, child_type)
-	local extends_info = ALittleIDE.g_IDEProject.project.ui.control_map[extends_name]
-	if extends_name ~= "" and extends_info == nil then
-		return
-	end
-	local revoke_bind = ALittle.RevokeBind()
-	local target_parent = self._logic_parent
-	local child_index = nil
-	if self._user_info.child_type ~= "child" then
-		target_parent._user_info.object[child_type] = nil
-		for k, v in ___ipairs(target_parent.childs) do
-			if v._user_info.child_type == child_type then
-				target_parent:RemoveChild(v)
-				local revoke = ALittleIDE.IDEDeleteRevoke(target_parent, v, k)
-				revoke_bind:PushRevoke(revoke)
-				break
-			end
-		end
-	else
-		child_index = target_parent:GetChildIndex(self)
-		target_parent._user_info.object:RemoveChild(self._user_info.object)
-		target_parent:RemoveChild(self)
-		local revoke = ALittleIDE.IDEDeleteRevoke(target_parent, self, child_index)
-		revoke_bind:PushRevoke(revoke)
-	end
-	local tree_object = nil
-	if extends_info == nil then
-		local info = {}
-		info.__class = class_name
-		local object = ALittle.NewObject(ALittle[info.__class], ALittleIDE.g_IDEProject.project.control)
-		ALittleIDE.IDEUIUtility_NewGiveBaseCase(info, object)
-		if child_type == "child" then
-			target_parent._user_info.object:AddChild(object, child_index)
-		else
-			target_parent._user_info.object[child_type] = object
-		end
-		tree_object = ALittleIDE.IDEUIUtility_CreateTree(info, false, object, child_type, target_parent._tab_child, false)
-		target_parent:AddChild(tree_object, child_index)
-		target_parent._tab_child.save = false
-		local index = target_parent:GetChildIndex(tree_object)
-		local revoke = ALittleIDE.IDEChildShowRevoke(target_parent, tree_object, index)
-		revoke_bind:PushRevoke(revoke)
-	else
-		local info = {}
-		info.__extends = extends_name
-		local object = ALittleIDE.g_IDEProject.project.control:CreateControl(extends_name)
-		if child_type == "child" then
-			target_parent._user_info.object:AddChild(object, child_index)
-		else
-			target_parent._user_info.object[child_type] = object
-		end
-		tree_object = ALittleIDE.IDEUIUtility_CreateTree(info, false, object, child_type, target_parent._tab_child, false)
-		target_parent:AddChild(tree_object, child_index)
-		target_parent._tab_child.save = false
-		local index = target_parent:GetChildIndex(tree_object)
-		local revoke = ALittleIDE.IDEChildShowRevoke(target_parent, tree_object, index)
-		revoke_bind:PushRevoke(revoke)
-	end
-	tree_object:ShowAttributePanel()
-	if self._user_info.base.x_type ~= nil then
-		tree_object._attr_panel:SetXType(self._user_info.base.x_type, revoke_bind)
-	else
-		tree_object._attr_panel:SetXType(self._user_info.default.x_type, revoke_bind)
-	end
-	if self._user_info.base.y_type ~= nil then
-		tree_object._attr_panel:SetYType(self._user_info.base.y_type, revoke_bind)
-	else
-		tree_object._attr_panel:SetYType(self._user_info.default.y_type, revoke_bind)
-	end
-	if self._user_info.base.x_value ~= nil then
-		tree_object._attr_panel:SetXValue(self._user_info.base.x_value, revoke_bind)
-	else
-		tree_object._attr_panel:SetXValue(self._user_info.default.x_value, revoke_bind)
-	end
-	if self._user_info.base.y_value ~= nil then
-		tree_object._attr_panel:SetYValue(self._user_info.base.y_value, revoke_bind)
-	else
-		tree_object._attr_panel:SetYValue(self._user_info.default.y_value, revoke_bind)
-	end
-	if self._user_info.base.width_type ~= nil then
-		tree_object._attr_panel:SetWType(self._user_info.base.width_type, revoke_bind)
-	else
-		tree_object._attr_panel:SetWType(self._user_info.default.width_type, revoke_bind)
-	end
-	if self._user_info.base.height_type ~= nil then
-		tree_object._attr_panel:SetHType(self._user_info.base.height_type, revoke_bind)
-	else
-		tree_object._attr_panel:SetHType(self._user_info.default.height_type, revoke_bind)
-	end
-	if self._user_info.base.width_value ~= nil then
-		tree_object._attr_panel:SetWValue(self._user_info.base.width_value, revoke_bind)
-	else
-		tree_object._attr_panel:SetWValue(self._user_info.default.width_value, revoke_bind)
-	end
-	if self._user_info.base.height_value ~= nil then
-		tree_object._attr_panel:SetHValue(self._user_info.base.height_value, revoke_bind)
-	else
-		tree_object._attr_panel:SetHValue(self._user_info.default.height_value, revoke_bind)
-	end
-	if self._user_info.base.alpha ~= nil then
-		tree_object._attr_panel:SetAlpha(self._user_info.base.alpha * 255, revoke_bind)
-	else
-		tree_object._attr_panel:SetAlpha(self._user_info.default.alpha * 255, revoke_bind)
-	end
-	if self._user_info.base.red ~= nil then
-		tree_object._attr_panel:SetRed(self._user_info.base.red * 255, revoke_bind)
-	else
-		tree_object._attr_panel:SetRed(self._user_info.default.red * 255, revoke_bind)
-	end
-	if self._user_info.base.green ~= nil then
-		tree_object._attr_panel:SetGreen(self._user_info.base.green * 255, revoke_bind)
-	else
-		tree_object._attr_panel:SetGreen(self._user_info.default.green * 255, revoke_bind)
-	end
-	if self._user_info.base.blue ~= nil then
-		tree_object._attr_panel:SetBlue(self._user_info.base.blue * 255, revoke_bind)
-	else
-		tree_object._attr_panel:SetBlue(self._user_info.default.blue * 255, revoke_bind)
-	end
-	if self._user_info.base.scale_x ~= nil then
-		tree_object._attr_panel:SetScaleX(self._user_info.base.scale_x, revoke_bind)
-	else
-		tree_object._attr_panel:SetScaleX(self._user_info.default.scale_x, revoke_bind)
-	end
-	if self._user_info.base.scale_y ~= nil then
-		tree_object._attr_panel:SetScaleY(self._user_info.base.scale_y, revoke_bind)
-	else
-		tree_object._attr_panel:SetScaleY(self._user_info.default.scale_y, revoke_bind)
-	end
-	if self._user_info.base.center_x ~= nil then
-		tree_object._attr_panel:SetCenterX(self._user_info.base.center_x, revoke_bind)
-	else
-		tree_object._attr_panel:SetCenterX(self._user_info.default.center_x, revoke_bind)
-	end
-	if self._user_info.base.center_y ~= nil then
-		tree_object._attr_panel:SetCenterY(self._user_info.base.center_y, revoke_bind)
-	else
-		tree_object._attr_panel:SetCenterY(self._user_info.default.center_y, revoke_bind)
-	end
-	if self._user_info.base.angle ~= nil then
-		tree_object._attr_panel:SetAngle(self._user_info.base.angle, revoke_bind)
-	else
-		tree_object._attr_panel:SetAngle(self._user_info.default.angle, revoke_bind)
-	end
-	if self._user_info.base.hand_cursor ~= nil then
-		tree_object._attr_panel:SetHandCursor(self._user_info.base.hand_cursor, revoke_bind)
-	else
-		tree_object._attr_panel:SetHandCursor(self._user_info.default.hand_cursor, revoke_bind)
-	end
-	if self._user_info.base.visible ~= nil then
-		tree_object._attr_panel:SetVisible(self._user_info.base.visible, revoke_bind)
-	else
-		tree_object._attr_panel:SetVisible(self._user_info.default.visible, revoke_bind)
-	end
-	if self._user_info.base.disabled ~= nil then
-		tree_object._attr_panel:SetDisabled(self._user_info.base.disabled, revoke_bind)
-	else
-		tree_object._attr_panel:SetDisabled(self._user_info.default.disabled, revoke_bind)
-	end
-	if self._user_info.base.description ~= nil then
-		tree_object._attr_panel:SetDescription(self._user_info.base.description, revoke_bind)
-	else
-		tree_object._attr_panel:SetDescription(self._user_info.default.description, revoke_bind)
-	end
-	if self._user_info.base.__link ~= nil then
-		tree_object._attr_panel:SetLink(self._user_info.base.__link, revoke_bind)
-	else
-		tree_object._attr_panel:SetLink(self._user_info.default.__link, revoke_bind)
-	end
-	if self._user_info.base.__target_class ~= nil then
-		tree_object._attr_panel:SetTargetClass(self._user_info.base.__target_class, revoke_bind)
-	else
-		tree_object._attr_panel:SetTargetClass(self._user_info.default.__target_class, revoke_bind)
-	end
-	if self._user_info.base.__event ~= nil then
-		tree_object._attr_panel:SetEvent(self._user_info.base.__event, revoke_bind)
-	else
-		tree_object._attr_panel:SetEvent(self._user_info.default.__event, revoke_bind)
-	end
-	self._tab_child:ShowTreeItemFocus(tree_object)
-	target_parent._tab_child.revoke_list:PushRevoke(revoke_bind)
 end
 
 function ALittleIDE.IDEUITreeLogic:TreeDelete(revoke_bind)

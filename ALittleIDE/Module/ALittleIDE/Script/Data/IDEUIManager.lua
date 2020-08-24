@@ -51,8 +51,12 @@ option_map = {}
 
 ALittleIDE.IDEUIManager = Lua.Class(nil, "ALittleIDE.IDEUIManager")
 
-function ALittleIDE.IDEUIManager:Ctor(name, control)
-	___rawset(self, "_control", control)
+function ALittleIDE.IDEUIManager:Ctor(name)
+	___rawset(self, "_name", name)
+	___rawset(self, "_control", ALittle.ControlSystem(name))
+	self._control.log_error = false
+	self._control.cache_texture = false
+	self._control.use_plugin_class = false
 	___rawset(self, "_control_map", {})
 	___rawset(self, "_base_path", ALittle.File_BaseFilePath() .. "Module/" .. name .. "/UI")
 	local file_map = ALittle.File_GetFileAttrByDir(self._base_path)
@@ -98,6 +102,14 @@ end
 
 function ALittleIDE.IDEUIManager.__getter:control_map()
 	return self._control_map
+end
+
+function ALittleIDE.IDEUIManager.__getter:control()
+	return self._control
+end
+
+function ALittleIDE.IDEUIManager.__getter:texture_path()
+	return ALittle.File_BaseFilePath() .. "Module/" .. self._name .. "/Texture"
 end
 
 function ALittleIDE.IDEUIManager:CalcDeepExtends(name, map, lock_map)

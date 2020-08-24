@@ -27,13 +27,9 @@ public struct IDEProjectSettingChanged : ALittle.Event
 public struct IDEProjectInfo
 {
 	string name;								// 项目名称
-	string base_path;							// 项目基本路径，尾部带/
-	string texture_path;						// 纹理路径，尾部不带/
-	bool save;									// 所有信息是否已保存
-	ALittle.ControlSystem control;				// 项目的控件系统
 	ALittle.IJsonConfig config;					// 项目的配置文件系统
 	// UI数据管理
-	IDEUIManager ui;
+	Map<string, IDEUIManager> ui;		// ui信息
 	// 代码数据管理
 	AUIPlugin.AUICodeProject code;
 }
@@ -176,15 +172,9 @@ public class IDEProject : ALittle.EventDispatcher
 		// 加载项目信息
 		this._project = new IDEProjectInfo();
 		this._project.name = name;
-		this._project.base_path = ALittle.File_BaseFilePath().."Module/"..name.."/";
-		this._project.texture_path = this._project.base_path.."Texture";
-		this._project.save = true;
-		this._project.control = new ALittle.ControlSystem(name);
-		this._project.control.log_error = false;
-		this._project.control.cache_texture = false;
-		this._project.control.use_plugin_class = false;
 		this._project.config = ALittle.CreateConfigSystem("Module/"..name.."/ALittleIDE.cfg");
-		this._project.ui = new IDEUIManager(name, this._project.control);
+		this._project.ui = new Map<string, IDEUIManager>();
+        this._project.ui[name] = new IDEUIManager(name);
 		[Language(Lua)]
 		this._project.code = AUIPlugin.AUICodeProject.CreateALittleScriptProject();
 		[Language(Lua)]
@@ -278,6 +268,17 @@ public class IDEProject : ALittle.EventDispatcher
 	{
 		return this._project;
 	}
+
+    // 获取当前ui管理器
+    public fun GetUIManager(string module_name) : IDEUIManager
+    {
+        if (this._project == null) return null;
+
+        if (module_name == null)
+        	module_name = this._project.name;
+
+        return this._project.ui[module_name];
+    }
 }
 
 protected var g_IDEProject = new IDEProject();

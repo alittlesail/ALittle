@@ -350,7 +350,11 @@ function ALittleIDE.IDEUICenter:HandleImageSelectClick(event)
 		g_AUITool:ShowNotice("提示", "请先打开项目")
 		return
 	end
-	ALittleIDE.g_IDEImageManagerDialog:SetBasePath(ALittleIDE.g_IDEProject.project.texture_path)
+	local ui_manager = ALittleIDE.g_IDEProject:GetUIManager(nil)
+	if ui_manager == nil then
+		return
+	end
+	ALittleIDE.g_IDEImageManagerDialog:SetBasePath(ui_manager.texture_path)
 	ALittleIDE.g_IDEImageManagerDialog:ShowDialog()
 end
 

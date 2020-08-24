@@ -62,7 +62,10 @@ public class ImageInputS : TextInputS
     }
     public async fun HandleShowUpSelect(ALittle.UIEvent event)
     {
-		g_IDEImageSelectDialog.SetBasePath(g_IDEProject.project.texture_path);
+        var ui_manager = g_IDEProject.GetUIManager(this._tree_logic.user_info.module);
+        if (ui_manager == null) return;
+
+		g_IDEImageSelectDialog.SetBasePath(ui_manager.texture_path);
 		var path = g_IDEImageSelectDialog.ShowSelect();
 		if (path == null) return;
 		this.ImagePathSelectCallback("show_up", this.HandleShowUpFOCUSOUT, null, path);
@@ -79,7 +82,10 @@ public class ImageInputS : TextInputS
     }
     public async fun HandleShowOverSelect(ALittle.UIEvent event)
     {
-		g_IDEImageSelectDialog.SetBasePath(g_IDEProject.project.texture_path);
+        var ui_manager = g_IDEProject.GetUIManager(this._tree_logic.user_info.module);
+        if (ui_manager == null) return;
+
+		g_IDEImageSelectDialog.SetBasePath(ui_manager.texture_path);
 		var path = g_IDEImageSelectDialog.ShowSelect();
 		if (path == null) return;
 		this.ImagePathSelectCallback("show_over", this.HandleShowOverFOCUSOUT, null, path);
@@ -96,7 +102,10 @@ public class ImageInputS : TextInputS
     }
     public async fun HandleShowDownSelect(ALittle.UIEvent event)
     {
-		g_IDEImageSelectDialog.SetBasePath(g_IDEProject.project.texture_path);
+        var ui_manager = g_IDEProject.GetUIManager(this._tree_logic.user_info.module);
+        if (ui_manager == null) return;
+
+		g_IDEImageSelectDialog.SetBasePath(ui_manager.texture_path);
 		var path = g_IDEImageSelectDialog.ShowSelect();
 		if (path == null) return;
 		this.ImagePathSelectCallback("show_down", this.HandleShowDownFOCUSOUT, null, path);
@@ -113,7 +122,10 @@ public class ImageInputS : TextInputS
     }
     public async fun HandleShowDisabledSelect(ALittle.UIEvent event)
     {
-		g_IDEImageSelectDialog.SetBasePath(g_IDEProject.project.texture_path);
+        var ui_manager = g_IDEProject.GetUIManager(this._tree_logic.user_info.module);
+        if (ui_manager == null) return;
+
+		g_IDEImageSelectDialog.SetBasePath(ui_manager.texture_path);
 		var path = g_IDEImageSelectDialog.ShowSelect();
 		if (path == null) return;
 		this.ImagePathSelectCallback("show_disabled", this.HandleShowDisabledFOCUSOUT, null, path);

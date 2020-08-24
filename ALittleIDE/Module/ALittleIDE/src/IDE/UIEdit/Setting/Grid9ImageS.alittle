@@ -25,7 +25,10 @@ public class Grid9ImageS : Grid9S
     }
     public async fun HandleImageTextureNameSelect(ALittle.UIEvent event)
     {
-		g_IDEImageSelectDialog.SetBasePath(g_IDEProject.project.texture_path);
+        var ui_manager = g_IDEProject.GetUIManager(this._tree_logic.user_info.module);
+        if (ui_manager == null) return;
+
+		g_IDEImageSelectDialog.SetBasePath(ui_manager.texture_path);
 		var path = g_IDEImageSelectDialog.ShowSelect();
 		if (path == null) return;
 		this.ImagePathSelectCallback("texture_name", this.HandleImageTextureNameFOCUSOUT, null, path);
@@ -37,8 +40,11 @@ public class Grid9ImageS : Grid9S
     }
     public fun HandleAutoCut(ALittle.UIEvent event)
     {
+        var ui_manager = g_IDEProject.GetUIManager(this._tree_logic.user_info.module);
+        if (ui_manager == null) return;
+
         var image_path = this._texture_name.text;
-        var display_info = IDEUIUtility_GenerateGrid9ImageInfo(g_IDEProject.project.texture_path.."/", image_path);
+        var display_info = IDEUIUtility_GenerateGrid9ImageInfo(ui_manager.texture_path.."/", image_path);
         if (display_info == null) return;
         var revoke_bind = new ALittle.RevokeBind();
         this._left_size.text = display_info.left_size;

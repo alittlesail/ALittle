@@ -1020,11 +1020,11 @@ public class IDEAntiPanel : ALittle.DisplayLayout
 			g_DialogLayer.AddChild(this._anti_dialog);
 		}
 
-		if (save == false || this._cur_anti == null
-			|| this._anti_dialog.visible == false || this._anti_dialog._user_data != this._tab_child.name)
+		if (save == false || this._cur_anti == null || this._anti_dialog.visible == false || this._anti_dialog._user_data != this._tab_child.name)
 		{
 			var map = new Map<string, ALittle.DisplayObject>();
-			var object = g_IDEProject.project.control.CreateControl{ALittle.DisplayObject}(this._tab_child.name, map);
+            var ui_manager = g_IDEProject.GetUIManager(this._tab_child.module);
+			var object = ui_manager.control.CreateControl{ALittle.DisplayObject}(this._tab_child.name, map);
 			var anti = new ALittle.LoopAnimation(object, cur_loop_info);
 			var error = anti.Init(map);
 			if (error != null)

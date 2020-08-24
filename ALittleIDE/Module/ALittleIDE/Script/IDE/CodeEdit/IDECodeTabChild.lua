@@ -34,7 +34,7 @@ option_map = {}
 assert(ALittleIDE.IDETabChild, " extends class:ALittleIDE.IDETabChild is nil")
 ALittleIDE.IDECodeTabChild = Lua.Class(ALittleIDE.IDETabChild, "ALittleIDE.IDECodeTabChild")
 
-function ALittleIDE.IDECodeTabChild:Ctor(ctrl_sys, name, save, user_info)
+function ALittleIDE.IDECodeTabChild:Ctor(ctrl_sys, module, name, save, user_info)
 	___rawset(self, "_user_info", user_info)
 	___rawset(self, "_edit", ALittleIDE.g_AUIPluinControl:CreateControl("ide_code_tab_screen", self))
 	self._edit:AddEventListener(___all_struct[958494922], self, self.HandleChangedEvent)

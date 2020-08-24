@@ -4,14 +4,16 @@ namespace ALittleIDE;
 public class IDETabChild : ALittle.UIEventDispatcher
 {
 	private string _name;           // 当前控件名
+    private string _module;		// 当前模块
 	private bool _save;             // 是否已保存
 	
 	private ALittle.RevokeList _revoke_list;         // 撤销操作列表
     private ALittle.ControlSystem _ctrl_sys;	// 控件系统
 
-	public ctor(ALittle.ControlSystem ctrl_sys, string name, bool save)
+	public ctor(ALittle.ControlSystem ctrl_sys, string module, string name, bool save)
 	{
 		this._name = name;
+        this._module = module;
 		this._save = save;
 		// 撤销列表
 		this._revoke_list = new ALittle.RevokeList();
@@ -19,6 +21,7 @@ public class IDETabChild : ALittle.UIEventDispatcher
 	
 	public get id() : string { return this._name; }
 	public get name() : string { return this._name; }
+    public get module() : string { return this._module; }
 	public get save() : bool { return this._save; }
 	public set save(bool value) {}
 	public fun Save() { this.save = true; }
@@ -98,16 +101,16 @@ public class IDEContentEdit : ALittle.DisplayLayout
 	}
 	
 	// 获取控件映射表
-	public fun GetTabIdMap<T:IDETabChild>() : Map<string, bool>
+	public fun GetTabIdMap<T:IDETabChild>() : Map<string, T>
 	{
 		//遍历
-		var info = new Map<string, bool>();
+		var info = new Map<string, T>();
 		var tab_childs = this._main_tab.childs;
 		for (var index, child in tab_childs)
 		{
 			var tab_child = ALittle.Cast{T, IDETabChild}(child._user_data);
 			if (tab_child != null)
-				info[tab_child.id] = true;
+				info[tab_child.id] = tab_child;
         }
 
 		return info;
@@ -390,12 +393,12 @@ public class IDEContentEdit : ALittle.DisplayLayout
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// 新建控件，并编辑
-	public fun StartEditControlByNew(string name, string type) : IDEUITabChild
+	public fun StartEditControlByNew(string module, string name, string type) : IDEUITabChild
 	{
 		// 获取当前正在编辑的分页
 		var child_from = this._main_tab.tab;
 		// 创建Tab子控件
-		var tab_child = new IDEUITabChild(g_Control, name, false);
+		var tab_child = new IDEUITabChild(g_Control, module, name, false);
 		tab_child.CreateByNew(type);
 		// 添加到界面中去
 		this._main_tab.AddChild(tab_child.tab_body);
@@ -413,13 +416,13 @@ public class IDEContentEdit : ALittle.DisplayLayout
 	}
 	
 	// 继承控件，并编辑
-	public fun StartEditControlByExtends(string name, string extends_v) : IDEUITabChild
+	public fun StartEditControlByExtends(string module, string name, string extends_module, string extends_name) : IDEUITabChild
 	{
 		// 获取当前正在编辑的分页
 		var child_from = this._main_tab.tab;
 		// 创建Tab子控件
-		var tab_child = new IDEUITabChild(g_Control, name, false);
-		tab_child.CreateByExtends(extends_v);
+		var tab_child = new IDEUITabChild(g_Control, module, name, false);
+		if (!tab_child.CreateByExtends(extends_module, extends_name)) return null;
 		// 添加到界面中去
 		this._main_tab.AddChild(tab_child.tab_body);
 		// 发送打开事件
@@ -435,18 +438,18 @@ public class IDEContentEdit : ALittle.DisplayLayout
 		return tab_child;
 	}
 
-    public fun StartEditControlBySelect2(string name) : IDEUITabChild
-    {
-        var control_info = g_IDEProject.project.ui.control_map[name];
+	// 选择控件，并编辑
+	public fun StartEditControlBySelect(string module, string name) : IDEUITabChild
+	{
+        var ui_manager = g_IDEProject.project.ui[module];
+        if (ui_manager == null) return null;
+
+        var control_info = ui_manager.control_map[name];
         if (control_info == null) return null;
 
         var info = control_info.info;
-        return this.StartEditControlBySelect(name, info);
-    }
-	
-	// 选择控件，并编辑
-	public fun StartEditControlBySelect(string name, const ALittle.DisplayInfo info) : IDEUITabChild
-	{
+        if (info == null) return null;
+
 		// 判断显示tab栏中是否已有该控件
 		var child = this.GetTabById{IDEUITabChild}(name);
 		if (child != null) // 切换
@@ -462,7 +465,7 @@ public class IDEContentEdit : ALittle.DisplayLayout
 	
 		// 获取当前正在编辑的标签页
 		var child_from = this._main_tab.tab;
-		var tab_child = new IDEUITabChild(g_Control, name, true);
+		var tab_child = new IDEUITabChild(g_Control, module, name, true);
 		tab_child.CreateBySelect(info);
 	
 		// 添加到界面中去
@@ -500,7 +503,7 @@ public class IDEContentEdit : ALittle.DisplayLayout
 
 		// 获取当前正在编辑的标签页
 		var child_from = this._main_tab.tab;
-		var tab_child = new IDECodeTabChild(g_Control, name, true, info);
+		var tab_child = new IDECodeTabChild(g_Control, info.module_name, name, true, info);
 		tab_child.CreateBySelect(info);
 	
 		// 添加到界面中去

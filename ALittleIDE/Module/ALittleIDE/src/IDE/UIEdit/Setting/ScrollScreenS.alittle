@@ -28,7 +28,7 @@ public class ScrollScreenS : DisplayLayoutS
 			if (event.target._user_data == event.target.text) return;
 			event.target._user_data = event.target.text;
 		}
-		this.RemoverToNilShowSetForExtends("container", this._container.text, false);
+		this.RemoverToNilShowSetForExtends("container", null, this._container.text, false);
 	}
 	
 	public fun HandleRightSFOCUSOUT(ALittle.UIEvent event)
@@ -38,7 +38,7 @@ public class ScrollScreenS : DisplayLayoutS
 			if (event.target._user_data == event.target.text) return;
 			event.target._user_data = event.target.text;
 		}
-		this.RemoverToNilShowSetForExtends("right_scrollbar", this._right_scrollbar.text, false);
+		this.RemoverToNilShowSetForExtends("right_scrollbar", null, this._right_scrollbar.text, false);
 	}
 	
 	public fun HandleBottomBFOCUSOUT(ALittle.UIEvent event)
@@ -48,7 +48,7 @@ public class ScrollScreenS : DisplayLayoutS
 			if (event.target._user_data == event.target.text) return;
 			event.target._user_data = event.target.text;
 		}
-		this.RemoverToNilShowSetForExtends("bottom_scrollbar", this._bottom_scrollbar.text, false);
+		this.RemoverToNilShowSetForExtends("bottom_scrollbar", null, this._bottom_scrollbar.text, false);
 	}
 	
 	public fun HandleHandOpenExtendsDragSELECT_CHANGE(ALittle.UIEvent event)

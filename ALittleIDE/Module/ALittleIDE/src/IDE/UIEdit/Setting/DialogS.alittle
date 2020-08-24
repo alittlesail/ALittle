@@ -47,7 +47,10 @@ public class DialogS : DisplayLayoutS
 	}
 	public async fun HandleShowBackgroundSelect(ALittle.UIEvent event)
 	{
-		g_IDEImageSelectDialog.SetBasePath(g_IDEProject.project.texture_path);
+        var ui_manager = g_IDEProject.GetUIManager(this._tree_logic.user_info.module);
+        if (ui_manager == null) return;
+
+		g_IDEImageSelectDialog.SetBasePath(ui_manager.texture_path);
 		var path = g_IDEImageSelectDialog.ShowSelect();
 		if (path == null) return;
 		this.ImagePathSelectCallback("show_background", this.HandleShowBackgroundFOCUSOUT, null, path);
@@ -63,7 +66,10 @@ public class DialogS : DisplayLayoutS
 	}
 	public async fun HandleShowHeadDragSelect(ALittle.UIEvent event)
 	{
-		g_IDEImageSelectDialog.SetBasePath(g_IDEProject.project.texture_path);
+        var ui_manager = g_IDEProject.GetUIManager(this._tree_logic.user_info.module);
+        if (ui_manager == null) return;
+
+		g_IDEImageSelectDialog.SetBasePath(ui_manager.texture_path);
 		var path = g_IDEImageSelectDialog.ShowSelect();
 		if (path == null) return;
 		this.ImagePathSelectCallback("show_head_drag", this.HandleShowHeadDragFOCUSOUT, null, path);
@@ -76,7 +82,7 @@ public class DialogS : DisplayLayoutS
 			if (event.target._user_data == event.target.text) return;
 			event.target._user_data = event.target.text;
 		}
-		this.RemoverToNilShowSetForExtends("show_close_button", this._show_close_button.text, false);
+		this.RemoverToNilShowSetForExtends("show_close_button", null, this._show_close_button.text, false);
 	}
 	
 	public fun HandleShowTitleFOCUSOUT(ALittle.UIEvent event)

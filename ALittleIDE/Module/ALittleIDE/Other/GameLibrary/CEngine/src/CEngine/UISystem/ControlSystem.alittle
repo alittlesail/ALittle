@@ -103,6 +103,11 @@ public class ControlSystem
     {
         this._plugin_map[module_name] = plugin;
     }
+
+    public fun UnRegisterPlugin(string module_name)
+    {
+        this._plugin_map[module_name] = null;
+    }
     
     public await fun RegisterInfoByHttp()
     {

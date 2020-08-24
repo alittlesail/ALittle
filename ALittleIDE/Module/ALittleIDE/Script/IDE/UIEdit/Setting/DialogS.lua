@@ -42,7 +42,11 @@ function ALittleIDE.DialogS:HandleShowBackgroundFOCUSOUT(event)
 end
 
 function ALittleIDE.DialogS:HandleShowBackgroundSelect(event)
-	ALittleIDE.g_IDEImageSelectDialog:SetBasePath(ALittleIDE.g_IDEProject.project.texture_path)
+	local ui_manager = ALittleIDE.g_IDEProject:GetUIManager(self._tree_logic.user_info.module)
+	if ui_manager == nil then
+		return
+	end
+	ALittleIDE.g_IDEImageSelectDialog:SetBasePath(ui_manager.texture_path)
 	local path = ALittleIDE.g_IDEImageSelectDialog:ShowSelect()
 	if path == nil then
 		return
@@ -62,7 +66,11 @@ function ALittleIDE.DialogS:HandleShowHeadDragFOCUSOUT(event)
 end
 
 function ALittleIDE.DialogS:HandleShowHeadDragSelect(event)
-	ALittleIDE.g_IDEImageSelectDialog:SetBasePath(ALittleIDE.g_IDEProject.project.texture_path)
+	local ui_manager = ALittleIDE.g_IDEProject:GetUIManager(self._tree_logic.user_info.module)
+	if ui_manager == nil then
+		return
+	end
+	ALittleIDE.g_IDEImageSelectDialog:SetBasePath(ui_manager.texture_path)
 	local path = ALittleIDE.g_IDEImageSelectDialog:ShowSelect()
 	if path == nil then
 		return
@@ -78,7 +86,7 @@ function ALittleIDE.DialogS:HandleShowCloseButtonFOCUSOUT(event)
 		end
 		event.target._user_data = event.target.text
 	end
-	self:RemoverToNilShowSetForExtends("show_close_button", self._show_close_button.text, false)
+	self:RemoverToNilShowSetForExtends("show_close_button", nil, self._show_close_button.text, false)
 end
 
 function ALittleIDE.DialogS:HandleShowTitleFOCUSOUT(event)

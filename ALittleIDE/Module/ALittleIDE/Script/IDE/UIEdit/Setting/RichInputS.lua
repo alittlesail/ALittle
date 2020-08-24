@@ -117,7 +117,7 @@ function ALittleIDE.RichInputS:HandleStartCursorFOCUSOUT(event)
 		end
 		event.target._user_data = event.target.text
 	end
-	self:RemoverToNilShowSetForExtends("start_cursor", self._start_cursor.text, false)
+	self:RemoverToNilShowSetForExtends("start_cursor", nil, self._start_cursor.text, false)
 end
 
 function ALittleIDE.RichInputS:HandleEndCursorFOCUSOUT(event)
@@ -127,7 +127,7 @@ function ALittleIDE.RichInputS:HandleEndCursorFOCUSOUT(event)
 		end
 		event.target._user_data = event.target.text
 	end
-	self:RemoverToNilShowSetForExtends("end_cursor", self._end_cursor.text, false)
+	self:RemoverToNilShowSetForExtends("end_cursor", nil, self._end_cursor.text, false)
 end
 
 function ALittleIDE.RichInputS:HandlePasswordModeSELECT_CHANGE(event)

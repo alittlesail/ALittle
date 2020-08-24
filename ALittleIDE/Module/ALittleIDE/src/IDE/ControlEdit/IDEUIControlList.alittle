@@ -32,8 +32,8 @@ public class IDEUIControlList : ALittle.DisplayLayout
     
     private ALittle.Dialog _control_new_dialog;
     private ALittle.DropDown _control_new_type;
+    private ALittle.DropDown _control_new_module;
     private ALittle.ImageInput _control_new_name;
-    private ALittle.ImageInput _control_new_extends_name;
 
 	private ALittle.EffectImage _drag_effect;
 	private bool _drag_shift;
@@ -59,6 +59,9 @@ public class IDEUIControlList : ALittle.DisplayLayout
 
 	private fun HandleProjectOpen(IDEProjectOpenEvent event)
 	{
+        var ui_manager = g_IDEProject.GetUIManager(null);
+        if (ui_manager == null) return;
+
 		// 读取项目配置
 		var module_map = g_IDEProject.project.config.GetConfig("control_module", new Map<string, IDEControlModuleInfo>());
 		module_map[event.name] = null;
@@ -85,11 +88,18 @@ public class IDEUIControlList : ALittle.DisplayLayout
 			info.root = true;
 			var tree = new IDEControlTree(g_Control, info);
 			this._control_scroll_screen.AddChild(tree);
+
+            var plugin_ui = new IDEUIManager(module.module_name);
+            g_IDEProject.project.ui[module.module_name] = plugin_ui;
+            ui_manager.control.RegisterPlugin(module.module_name, plugin_ui.control);
         }
     }
 
 	public fun AddModule(string name)
 	{
+        var ui_manager = g_IDEProject.GetUIManager(null);
+        if (ui_manager == null) return;
+
         for (var index, tree:IDEControlTreeLogic in this._control_scroll_screen.childs)
             if (tree.user_info.module_name == name) return;
 
@@ -100,6 +110,10 @@ public class IDEUIControlList : ALittle.DisplayLayout
 		module_info.root_path = ALittle.File_BaseFilePath().."Module/"..name.."/ui";
 		module_map[name] = module_info;
 		g_IDEProject.project.config.SetConfig("control_module", module_map);
+
+        var plugin_ui = new IDEUIManager(name);
+        g_IDEProject.project.ui[name] = plugin_ui;
+        ui_manager.control.RegisterPlugin(name, plugin_ui.control);
     
         var info = new IDEControlTreeUserInfo();
         info.module_name = name;
@@ -182,10 +196,15 @@ public class IDEUIControlList : ALittle.DisplayLayout
 			// 把可以新建的空间列表设置到控件中
 			this._control_new_type.data_list = g_IDEEnum.child_type_list;
 		}
+
+        // 显示类型
+        var data_list = new List<string>();
+        for (var name, ui in g_IDEProject.project.ui)
+        	ALittle.List_Push(data_list, name);
+        this._control_new_module.data_list = data_list;
         
-            // 清空输入框
+        // 清空输入框
 		this._control_new_name.text = "";
-		this._control_new_extends_name.text = "";
 		// 隐藏对话框
 		this._control_new_dialog.visible = true;
 		//- 把输入框设置为焦点
@@ -220,13 +239,22 @@ public class IDEUIControlList : ALittle.DisplayLayout
 			g_AUITool.ShowNotice("错误", "控件名不合法:"..name);
 			return;
 		}
-            // 检查控件是否存在
-		if (project.ui.control_map[name] != null)
+
+        // 检查模块名
+        var ui_manager = project.ui[this._control_new_module.text];
+        if (ui_manager == null)
+        {
+            g_AUITool.ShowNotice("错误", "模块不存在");
+            return;
+        }
+
+        // 检查控件是否存在
+		if (ui_manager.control_map[name] != null)
 		{
 			g_AUITool.ShowNotice("错误", "控件已存在:"..name);
 			return;
 		}
-            // 检查控件名是否已经正在编辑了
+        // 检查控件名是否已经正在编辑了
 		if (g_IDECenter.center.content_edit.GetTabById{IDEUITabChild}(name) != null)
 		{
 			g_AUITool.ShowNotice("错误", "控件名已存在:"..name);
@@ -239,12 +267,9 @@ public class IDEUIControlList : ALittle.DisplayLayout
 			g_AUITool.ShowNotice("错误", "请选择控件类型");
 			return;
 		}
-            // 获取继承控件名
-		var extends_name = this._control_new_extends_name.text;
-		if (extends_name != "")
-			g_IDECenter.center.content_edit.StartEditControlByExtends(name, extends_name);
-		else
-			g_IDECenter.center.content_edit.StartEditControlByNew(name, control_type);
+
+        // 创建控件
+		g_IDECenter.center.content_edit.StartEditControlByNew(this._control_new_module.text, name, control_type);
 		// 关闭对话框
 		this._control_new_dialog.visible = false;
 	}

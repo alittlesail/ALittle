@@ -38,7 +38,11 @@ function ALittleIDE.DropDownS:HandleShowBackGFOCUSOUT(event)
 end
 
 function ALittleIDE.DropDownS:HandleShowBackGSelect(event)
-	ALittleIDE.g_IDEImageSelectDialog:SetBasePath(ALittleIDE.g_IDEProject.project.texture_path)
+	local ui_manager = ALittleIDE.g_IDEProject:GetUIManager(self._tree_logic.user_info.module)
+	if ui_manager == nil then
+		return
+	end
+	ALittleIDE.g_IDEImageSelectDialog:SetBasePath(ui_manager.texture_path)
 	local path = ALittleIDE.g_IDEImageSelectDialog:ShowSelect()
 	if path == nil then
 		return
@@ -54,7 +58,7 @@ function ALittleIDE.DropDownS:HandleShowScrollBarFOCUSOUT(event)
 		end
 		event.target._user_data = event.target.text
 	end
-	self:RemoverToNilShowSetForExtends("show_scrollbar", self._show_scrollbar.text, false)
+	self:RemoverToNilShowSetForExtends("show_scrollbar", nil, self._show_scrollbar.text, false)
 end
 
 function ALittleIDE.DropDownS:HandleButtonStyleFOCUSOUT(event)

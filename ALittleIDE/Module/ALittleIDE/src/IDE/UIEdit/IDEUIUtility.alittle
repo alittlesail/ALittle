@@ -198,7 +198,8 @@ public static IDEUIUtility_GetDefaultInfo(const ALittle.DisplayInfo info) : ALit
 	if (info.__extends != null)
 	{
 		// 获取控件默认数据
-		default_v = IDEUIUtility_GetDefaultInfo(g_IDEProject.project.ui.control_map[info.__extends].info);
+        var ui_manager = g_IDEProject.GetUIManager(info.__module);
+		default_v = IDEUIUtility_GetDefaultInfo(ui_manager.control_map[info.__extends].info);
 		// 覆盖其他属性
 		for (var k, v in cast<Map<string, any>>(info))
 		{
@@ -208,8 +209,11 @@ public static IDEUIUtility_GetDefaultInfo(const ALittle.DisplayInfo info) : ALit
 	}
 	// 处理包含
 	elseif (info.__include != null)
+    {
 		// 获取控件默认属性 
-		default_v = IDEUIUtility_GetDefaultInfo(g_IDEProject.project.ui.control_map[info.__include].info);
+        var ui_manager = g_IDEProject.GetUIManager(info.__module);
+		default_v = IDEUIUtility_GetDefaultInfo(ui_manager.control_map[info.__include].info);
+    }
 	// 处理class
 	elseif (info.__class != null)
 	{
@@ -243,6 +247,7 @@ public struct IDEUITreeUserInfo
 	ALittle.DisplayObject object;   // 显示对象
 	bool extends;                   // 是否是继承
 	bool extends_root;              // 标记是否是继承的根节点
+    string module;				  // 所在模块
 }
 
 // 递归创建控件树
@@ -256,13 +261,15 @@ public static IDEUIUtility_CreateTree(const ALittle.DisplayInfo control, bool ex
 {
 	// 创建核心数据
 	var user_info = new IDEUITreeUserInfo();
+    user_info.module = tab_child.module;
 //////////////////////////////////////////////////////////////////////////////////////////////////////////-
 	// 获取基础信息
 	user_info.base = IDEUIUtility_GetBaseInfo(control);
 	// 剥开一层，然后获取继承信息
 	if (control.__extends != null)
 	{
-		var control_info = g_IDEProject.project.ui.control_map[control.__extends];
+        var ui_manager = g_IDEProject.GetUIManager(control.__module);
+		var control_info = ui_manager.control_map[control.__extends];
 		if (control_info == null)
 			g_AUITool.ShowNotice("错误", "extends 的控件不存在:"..control.__extends);
 		// 获取默认信息
@@ -270,7 +277,8 @@ public static IDEUIUtility_CreateTree(const ALittle.DisplayInfo control, bool ex
 	}
 	elseif (control.__include != null)
 	{
-		var control_info = g_IDEProject.project.ui.control_map[control.__include];
+        var ui_manager = g_IDEProject.GetUIManager(control.__module);
+		var control_info = ui_manager.control_map[control.__include];
 		if (control_info == null)
 			g_AUITool.ShowNotice("错误", "include 的控件不存在:"..control.__include);
 		// 获取默认信息

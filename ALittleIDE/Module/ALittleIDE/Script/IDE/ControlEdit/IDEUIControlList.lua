@@ -102,6 +102,10 @@ function ALittleIDE.IDEUIControlList:HandleProjectClose(event)
 end
 
 function ALittleIDE.IDEUIControlList:HandleProjectOpen(event)
+	local ui_manager = ALittleIDE.g_IDEProject:GetUIManager(nil)
+	if ui_manager == nil then
+		return
+	end
 	local module_map = ALittleIDE.g_IDEProject.project.config:GetConfig("control_module", {})
 	module_map[event.name] = nil
 	local info = {}
@@ -122,10 +126,17 @@ function ALittleIDE.IDEUIControlList:HandleProjectOpen(event)
 		info.root = true
 		local tree = ALittleIDE.IDEControlTree(ALittleIDE.g_Control, info)
 		self._control_scroll_screen:AddChild(tree)
+		local plugin_ui = ALittleIDE.IDEUIManager(module.module_name)
+		ALittleIDE.g_IDEProject.project.ui[module.module_name] = plugin_ui
+		ui_manager.control:RegisterPlugin(module.module_name, plugin_ui.control)
 	end
 end
 
 function ALittleIDE.IDEUIControlList:AddModule(name)
+	local ui_manager = ALittleIDE.g_IDEProject:GetUIManager(nil)
+	if ui_manager == nil then
+		return
+	end
 	for index, tree in ___ipairs(self._control_scroll_screen.childs) do
 		if tree.user_info.module_name == name then
 			return
@@ -137,6 +148,9 @@ function ALittleIDE.IDEUIControlList:AddModule(name)
 	module_info.root_path = ALittle.File_BaseFilePath() .. "Module/" .. name .. "/ui"
 	module_map[name] = module_info
 	ALittleIDE.g_IDEProject.project.config:SetConfig("control_module", module_map)
+	local plugin_ui = ALittleIDE.IDEUIManager(name)
+	ALittleIDE.g_IDEProject.project.ui[name] = plugin_ui
+	ui_manager.control:RegisterPlugin(name, plugin_ui.control)
 	local info = {}
 	info.module_name = name
 	info.name = ALittle.File_GetFileNameByPath(module_info.root_path)
@@ -207,8 +221,12 @@ function ALittleIDE.IDEUIControlList:ShowNewControl()
 		A_LayerManager:AddToModal(self._control_new_dialog)
 		self._control_new_type.data_list = ALittleIDE.g_IDEEnum.child_type_list
 	end
+	local data_list = {}
+	for name, ui in ___pairs(ALittleIDE.g_IDEProject.project.ui) do
+		ALittle.List_Push(data_list, name)
+	end
+	self._control_new_module.data_list = data_list
 	self._control_new_name.text = ""
-	self._control_new_extends_name.text = ""
 	self._control_new_dialog.visible = true
 	A_UISystem.focus = self._control_new_name.show_input
 end
@@ -232,7 +250,12 @@ function ALittleIDE.IDEUIControlList:HandleNewControlConfirm(event)
 		g_AUITool:ShowNotice("错误", "控件名不合法:" .. name)
 		return
 	end
-	if project.ui.control_map[name] ~= nil then
+	local ui_manager = project.ui[self._control_new_module.text]
+	if ui_manager == nil then
+		g_AUITool:ShowNotice("错误", "模块不存在")
+		return
+	end
+	if ui_manager.control_map[name] ~= nil then
 		g_AUITool:ShowNotice("错误", "控件已存在:" .. name)
 		return
 	end
@@ -245,12 +268,7 @@ function ALittleIDE.IDEUIControlList:HandleNewControlConfirm(event)
 		g_AUITool:ShowNotice("错误", "请选择控件类型")
 		return
 	end
-	local extends_name = self._control_new_extends_name.text
-	if extends_name ~= "" then
-		ALittleIDE.g_IDECenter.center.content_edit:StartEditControlByExtends(name, extends_name)
-	else
-		ALittleIDE.g_IDECenter.center.content_edit:StartEditControlByNew(name, control_type)
-	end
+	ALittleIDE.g_IDECenter.center.content_edit:StartEditControlByNew(self._control_new_module.text, name, control_type)
 	self._control_new_dialog.visible = false
 end
 

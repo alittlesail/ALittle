@@ -30,7 +30,7 @@ function ALittleIDE.ScrollListS:HandleRightSFOCUSOUT(event)
 		end
 		event.target._user_data = event.target.text
 	end
-	self:RemoverToNilShowSetForExtends("right_scrollbar", self._right_scrollbar.text, false)
+	self:RemoverToNilShowSetForExtends("right_scrollbar", nil, self._right_scrollbar.text, false)
 end
 
 function ALittleIDE.ScrollListS:HandleScrollListTypeSELECT_CHANGE(event)

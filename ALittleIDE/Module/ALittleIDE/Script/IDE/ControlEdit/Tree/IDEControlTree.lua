@@ -97,6 +97,20 @@ end
 ALittleIDE.IDEControlTree.HandleAddModule = Lua.CoWrap(ALittleIDE.IDEControlTree.HandleAddModule)
 
 function ALittleIDE.IDEControlTree:HandleRemoveModule()
+	local ui_manager = ALittleIDE.g_IDEProject:GetUIManager(nil)
+	if ui_manager == nil then
+		return
+	end
+	local tab_child_map = ALittleIDE.g_IDECenter.center.content_edit:GetTabIdMap(ALittleIDE.IDEUITabChild)
+	for id, tab_child in ___pairs(tab_child_map) do
+		if tab_child.module == self._user_info.module_name and not tab_child.save then
+			g_AUITool:ShowNotice("错误", "还有UI正在编辑并为保存")
+			return
+		end
+	end
+	for id, tab_child in ___pairs(tab_child_map) do
+		ALittleIDE.g_IDECenter.center.content_edit:CloseTabByName(ALittleIDE.IDEUITabChild, tab_child.name)
+	end
 	local file_name = ALittle.File_GetFileNameByPath(self._user_info.path)
 	local result = g_AUITool:DeleteNotice("移除", "确定要移除" .. file_name .. "模块吗?")
 	if result ~= "YES" then
@@ -107,6 +121,7 @@ function ALittleIDE.IDEControlTree:HandleRemoveModule()
 	local module_map = ALittleIDE.g_IDEProject.project.config:GetConfig("control_module", {})
 	module_map[self._user_info.module_name] = nil
 	ALittleIDE.g_IDEProject.project.config:SetConfig("control_module", module_map)
+	ui_manager.control:UnRegisterPlugin(self._user_info.module_name)
 end
 ALittleIDE.IDEControlTree.HandleRemoveModule = Lua.CoWrap(ALittleIDE.IDEControlTree.HandleRemoveModule)
 

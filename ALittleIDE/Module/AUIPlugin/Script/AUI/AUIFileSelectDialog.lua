@@ -150,6 +150,10 @@ function AUIPlugin.AUIFileSelectDialog:ShowDialog()
 	self._dialog.visible = true
 end
 
+function AUIPlugin.AUIFileSelectDialog.__getter:base_path()
+	return self._base_path
+end
+
 function AUIPlugin.AUIFileSelectDialog:ShowSelect()
 	local ___COROUTINE = coroutine.running()
 	self:ShowDialog()

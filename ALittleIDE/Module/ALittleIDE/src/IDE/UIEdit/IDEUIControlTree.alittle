@@ -57,7 +57,11 @@ public class IDEUIControlTree : ALittle.DisplayLayout
 	public async fun ShowAddImageDialog(IDEUITreeLogic target)
 	{
         var ui_manager = g_IDEProject.GetUIManager(target.user_info.module);
-        if (ui_manager == null) return;
+        if (ui_manager == null)
+        {
+            g_AUITool.ShowNotice("错误", "模块不存在:"..target.user_info.module);
+            return;
+        }
 
         // 直接显示图片选择框
 		g_IDEImageSelectDialog.SetBasePath(ui_manager.texture_path);
@@ -209,7 +213,11 @@ public class IDEUIControlTree : ALittle.DisplayLayout
 		var extends_name = target.user_info.base.__extends;
 
         var ui_manager = g_IDEProject.GetUIManager(extends_module);
-        if (ui_manager == null) return;
+        if (ui_manager == null)
+        {
+            g_AUITool.ShowNotice("错误", "模块不存在:"..extends_module);
+            return;
+        }
 
 		var control_info = ui_manager.control_map[extends_name];
 		if (control_info == null)

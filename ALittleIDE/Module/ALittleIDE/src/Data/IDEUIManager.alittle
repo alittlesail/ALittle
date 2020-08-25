@@ -93,6 +93,7 @@ public class IDEUIManager
                     }
                     else
                     {
+                        var full_name = module_name.."."..other_name;
                         // 计算当前控件依赖外部控件
                         var other_map = this._cur_map_other[control_name];
                         if (other_map == null)
@@ -100,14 +101,14 @@ public class IDEUIManager
                             other_map = new Map<string, bool>();
                             this._cur_map_other[control_name] = other_map;
                         }
-                        other_map[module..other_name] = true;
+                        other_map[full_name] = true;
 
                         // 计算外部控件被当前控件依赖
-                        var cur_map = this._other_map_cur[module..other_name];
+                        var cur_map = this._other_map_cur[full_name];
                         if (cur_map == null)
                         {
                             cur_map = new Map<string, bool>();
-                            this._other_map_cur[module..other_name] = cur_map;
+                            this._other_map_cur[full_name] = cur_map;
                         }
                         cur_map[control_name] = true;
                     }
@@ -251,36 +252,32 @@ public class IDEUIManager
 	}
 
 	// 删除控件
-	public fun CanDelete(string module, string name) : string
+	public fun CanDelete(string name) : string
 	{
-        if (module == null) module = this._module;
+        // 检查控件是否存在
+        var all_info = this._control_map[name];
+        if (all_info == null) return "控件不存在:"..name;
 
-        if (module == this._module)
+            // 检查是否有被其他控件引用
+        var extends_name:string = null;
+        for (var k, v in all_info.extends_this)
         {
-            // 检查控件是否存在
-            var all_info = this._control_map[name];
-            if (all_info == null) return "控件不存在:"..name;
-
-                // 检查是否有被其他控件引用
-            var extends_name:string = null;
-            for (var k, v in all_info.extends_this)
-            {
-                extends_name = k;
-                break;
-            }
-            if (extends_name != null) return "被其他控件引用:"..extends_name;
+            extends_name = k;
+            break;
         }
+        if (extends_name != null) return "被其他控件引用:"..extends_name;
 
-        var full_name = module..name;
+        var full_name = this._module.."."..name;
         for (var module_name, ui_manager in g_IDEProject.project.ui)
         {
             if (module_name != this._module)
             {
                 var cur_map = ui_manager._other_map_cur[full_name];
-                if (cur_map == null) return null;
-
-                for (var control_name, _ in cur_map)
-                    return "被其他模块控件引用:"..module_name.."."..control_name;
+                if (cur_map != null)
+                {
+                    for (var control_name, _ in cur_map)
+                        return "被其他模块控件引用:"..module_name.."."..control_name;
+                }
             }
         }
 
@@ -288,10 +285,10 @@ public class IDEUIManager
 	}
 
 	// 删除
-	public fun DeleteControl(string module, string name) : string
+	public fun DeleteControl(string name) : string
 	{
 		// 检查是否能够删除
-		var error = this.CanDelete(module, name);
+		var error = this.CanDelete(name);
 		if (error != error) return error;
         
 		// 删除文件
@@ -337,14 +334,14 @@ public class IDEUIManager
 	}
 
 	// 重命名名控件（控件未保存是，不允许修改名称）
-	public fun RenameControl(string module, string old_name, string new_name) : string
+	public fun RenameControl(string old_name, string new_name) : string
 	{
 		// 检查控件是否存在
 		var all_info = this._control_map[old_name];
 		if (all_info == null) return "控件不存在:"..old_name;
 
 		// 检查是否能够重命名
-		var error = this.CanDelete(module, old_name);
+		var error = this.CanDelete(old_name);
 		if (error != null) return "控件被其他控件引用，不能重命名";
 
 		// 检查新名称是否已存在
@@ -361,7 +358,7 @@ public class IDEUIManager
 		// 注销控件
 		this._control.UnRegisterInfo(old_name);
 		// 删除文件
-		var file_path = this._base_path.."UI/"..old_name..".json";
+		var file_path = this._base_path.."/"..old_name..".json";
 		ALittle.File_DeleteFile(file_path);
 
 		// 设置新的控件名并注册

@@ -101,16 +101,17 @@ function ALittleIDE.IDEUIManager:Ctor(module)
 						ALittle.Log("IDEProject:OpenProject calc extends failed:", other_name)
 					end
 				else
+					local full_name = module_name .. "." .. other_name
 					local other_map = self._cur_map_other[control_name]
 					if other_map == nil then
 						other_map = {}
 						self._cur_map_other[control_name] = other_map
 					end
-					other_map[module .. other_name] = true
-					local cur_map = self._other_map_cur[module .. other_name]
+					other_map[full_name] = true
+					local cur_map = self._other_map_cur[full_name]
 					if cur_map == nil then
 						cur_map = {}
-						self._other_map_cur[module .. other_name] = cur_map
+						self._other_map_cur[full_name] = cur_map
 					end
 					cur_map[control_name] = true
 				end
@@ -232,41 +233,35 @@ function ALittleIDE.IDEUIManager:SaveControl(name, info)
 	return nil
 end
 
-function ALittleIDE.IDEUIManager:CanDelete(module, name)
-	if module == nil then
-		module = self._module
+function ALittleIDE.IDEUIManager:CanDelete(name)
+	local all_info = self._control_map[name]
+	if all_info == nil then
+		return "控件不存在:" .. name
 	end
-	if module == self._module then
-		local all_info = self._control_map[name]
-		if all_info == nil then
-			return "控件不存在:" .. name
-		end
-		local extends_name = nil
-		for k, v in ___pairs(all_info.extends_this) do
-			extends_name = k
-			break
-		end
-		if extends_name ~= nil then
-			return "被其他控件引用:" .. extends_name
-		end
+	local extends_name = nil
+	for k, v in ___pairs(all_info.extends_this) do
+		extends_name = k
+		break
 	end
-	local full_name = module .. name
+	if extends_name ~= nil then
+		return "被其他控件引用:" .. extends_name
+	end
+	local full_name = self._module .. "." .. name
 	for module_name, ui_manager in ___pairs(ALittleIDE.g_IDEProject.project.ui) do
 		if module_name ~= self._module then
 			local cur_map = ui_manager._other_map_cur[full_name]
-			if cur_map == nil then
-				return nil
-			end
-			for control_name, _ in ___pairs(cur_map) do
-				return "被其他模块控件引用:" .. module_name .. "." .. control_name
+			if cur_map ~= nil then
+				for control_name, _ in ___pairs(cur_map) do
+					return "被其他模块控件引用:" .. module_name .. "." .. control_name
+				end
 			end
 		end
 	end
 	return nil
 end
 
-function ALittleIDE.IDEUIManager:DeleteControl(module, name)
-	local error = self:CanDelete(module, name)
+function ALittleIDE.IDEUIManager:DeleteControl(name)
+	local error = self:CanDelete(name)
 	if error ~= error then
 		return error
 	end
@@ -301,12 +296,12 @@ function ALittleIDE.IDEUIManager:DeleteControl(module, name)
 	return nil
 end
 
-function ALittleIDE.IDEUIManager:RenameControl(module, old_name, new_name)
+function ALittleIDE.IDEUIManager:RenameControl(old_name, new_name)
 	local all_info = self._control_map[old_name]
 	if all_info == nil then
 		return "控件不存在:" .. old_name
 	end
-	local error = self:CanDelete(module, old_name)
+	local error = self:CanDelete(old_name)
 	if error ~= nil then
 		return "控件被其他控件引用，不能重命名"
 	end
@@ -319,7 +314,7 @@ function ALittleIDE.IDEUIManager:RenameControl(module, old_name, new_name)
 	ALittleIDE.g_IDEProject:DispatchEvent(___all_struct[1962591044], e)
 	self._control_map[old_name] = nil
 	self._control:UnRegisterInfo(old_name)
-	local file_path = self._base_path .. "UI/" .. old_name .. ".json"
+	local file_path = self._base_path .. "/" .. old_name .. ".json"
 	ALittle.File_DeleteFile(file_path)
 	all_info.name = new_name
 	self._control_map[new_name] = all_info

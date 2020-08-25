@@ -279,7 +279,11 @@ public class IDEUITabChild : IDETabChild
         if (this._tree_object == null) return;
 
         var ui_manager = g_IDEProject.GetUIManager(this._module);
-        if (ui_manager == null) return;
+        if (ui_manager == null)
+        {
+            g_AUITool.ShowNotice("错误", "模块不存在:"..this._module);
+            return;
+        }
 	
         var info = this._tree_object.CalcInfo();
 

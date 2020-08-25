@@ -74,7 +74,11 @@ public class TextButtonS : DisplayLayoutS
 	public async fun HandleShowUpSelect(ALittle.UIEvent event)
 	{
         var ui_manager = g_IDEProject.GetUIManager(this._tree_logic.user_info.module);
-        if (ui_manager == null) return;
+        if (ui_manager == null)
+        {
+            g_AUITool.ShowNotice("错误", "模块不存在:"..this._tree_logic.user_info.module);
+            return;
+        }
 
 		g_IDEImageSelectDialog.SetBasePath(ui_manager.texture_path);
 		var path = g_IDEImageSelectDialog.ShowSelect();
@@ -94,7 +98,11 @@ public class TextButtonS : DisplayLayoutS
 	public async fun HandleShowOverSelect(ALittle.UIEvent event)
 	{
         var ui_manager = g_IDEProject.GetUIManager(this._tree_logic.user_info.module);
-        if (ui_manager == null) return;
+        if (ui_manager == null)
+        {
+            g_AUITool.ShowNotice("错误", "模块不存在:"..this._tree_logic.user_info.module);
+            return;
+        }
 
 		g_IDEImageSelectDialog.SetBasePath(ui_manager.texture_path);
 		var path = g_IDEImageSelectDialog.ShowSelect();
@@ -114,7 +122,11 @@ public class TextButtonS : DisplayLayoutS
 	public async fun HandleShowDownSelect(ALittle.UIEvent event)
 	{
         var ui_manager = g_IDEProject.GetUIManager(this._tree_logic.user_info.module);
-        if (ui_manager == null) return;
+        if (ui_manager == null)
+        {
+            g_AUITool.ShowNotice("错误", "模块不存在:"..this._tree_logic.user_info.module);
+            return;
+        }
 
 		g_IDEImageSelectDialog.SetBasePath(ui_manager.texture_path);
 		var path = g_IDEImageSelectDialog.ShowSelect();
@@ -134,7 +146,11 @@ public class TextButtonS : DisplayLayoutS
 	public async fun HandleShowDisabledSelect(ALittle.UIEvent event)
 	{
         var ui_manager = g_IDEProject.GetUIManager(this._tree_logic.user_info.module);
-        if (ui_manager == null) return;
+        if (ui_manager == null)
+        {
+            g_AUITool.ShowNotice("错误", "模块不存在:"..this._tree_logic.user_info.module);
+            return;
+        }
 
 		g_IDEImageSelectDialog.SetBasePath(ui_manager.texture_path);
 		var path = g_IDEImageSelectDialog.ShowSelect();

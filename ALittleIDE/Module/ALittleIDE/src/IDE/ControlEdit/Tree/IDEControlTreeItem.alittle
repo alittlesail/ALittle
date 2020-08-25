@@ -60,7 +60,7 @@ public class IDEControlTreeItem : IDEControlTreeLogic
 	// 处理删除信息
 	public async fun HandleDelete()
 	{
-		var error = this._user_info.ui.CanDelete(this._user_info.module_name, this._user_info.name);
+		var error = this._user_info.ui.CanDelete(this._user_info.name);
 		if (error != null)
 		{
 			g_AUITool.ShowNotice("错误", error);
@@ -70,7 +70,7 @@ public class IDEControlTreeItem : IDEControlTreeLogic
 		var del_result = g_AUITool.DeleteNotice("提示", "确定要删除"..this._user_info.name.."吗?");
 		if (del_result != AUIPlugin.AUIToolOption.YES) return;
 
-		error = this._user_info.ui.DeleteControl(this._user_info.module_name, this._user_info.name);
+		error = this._user_info.ui.DeleteControl(this._user_info.name);
 		if (error != null)
 		{
 			g_AUITool.ShowNotice("提示", error);
@@ -131,7 +131,7 @@ public class IDEControlTreeItem : IDEControlTreeLogic
 	// 修改控件名事件处理
 	public async fun HandleControlRename()
 	{
-		var error = this._user_info.ui.CanDelete(this._user_info.module_name, this._user_info.name);
+		var error = this._user_info.ui.CanDelete(this._user_info.name);
 		if (error != null)
 		{
 			g_AUITool.ShowNotice("错误", error);
@@ -149,7 +149,7 @@ public class IDEControlTreeItem : IDEControlTreeLogic
 		var new_name = g_AUITool.ShowRename(this._user_info.name, x, y, this.width);
 		if (new_name == null || this._user_info.name == new_name) return;
         // 重命名
-		error = this._user_info.ui.RenameControl(this._user_info.module_name, this._user_info.name, new_name);
+		error = this._user_info.ui.RenameControl(this._user_info.name, new_name);
 		if (error != null)
 		{
 			g_AUITool.ShowNotice("错误", error);
@@ -162,7 +162,7 @@ public class IDEControlTreeItem : IDEControlTreeLogic
 		this._user_info.path = ALittle.File_GetFilePathByPath(this._user_info.path).."/"..this._user_info.name;
         this._user_info.name = new_name;
 
-        this.text = this._user_info.name;
+        this._item_title.text = this._user_info.name;
 
         if (tab_child != null) tab_child.Rename(this._user_info.name);
 		g_IDECenter.center.content_edit.RenameTabByName{IDEUITabChild}(old_name, this._user_info.name);

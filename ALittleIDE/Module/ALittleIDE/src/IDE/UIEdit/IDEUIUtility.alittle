@@ -32,12 +32,13 @@ public static IDEUIUtility_GetExtends(string module, const ALittle.DisplayInfo i
 			IDEUIUtility_GetExtends(module, v, map);
 		elseif (k == "__extends" || k == "__include")
         {
-            if (info.__module != null) module = info.__module;
-            var sub_map = map[module];
+            var module_name = module;
+            if (info.__module != null) module_name = info.__module;
+            var sub_map = map[module_name];
             if (sub_map == null)
             {
                 sub_map = new Map<string, bool>();
-                map[module] = sub_map;
+                map[module_name] = sub_map;
             }
 			sub_map[v] = true;
         }
@@ -199,7 +200,7 @@ public static IDEUIUtility_GetBaseInfo(const ALittle.DisplayInfo info) : ALittle
 }	
 
 // 获取默认属性
-public static IDEUIUtility_GetDefaultInfo(const ALittle.DisplayInfo info) : ALittle.DisplayInfo
+public static IDEUIUtility_GetDefaultInfo(string module_name, const ALittle.DisplayInfo info) : ALittle.DisplayInfo
 {
 	// 默认属性
 	var default_v = new ALittle.DisplayInfo();
@@ -207,12 +208,13 @@ public static IDEUIUtility_GetDefaultInfo(const ALittle.DisplayInfo info) : ALit
 	if (info.__extends != null)
 	{
 		// 获取控件默认数据
-        var ui_manager = g_IDEProject.GetUIManager(info.__module);
-		default_v = IDEUIUtility_GetDefaultInfo(ui_manager.control_map[info.__extends].info);
+        if (info.__module != null) module_name = info.__module;
+        var ui_manager = g_IDEProject.GetUIManager(module_name);
+		default_v = IDEUIUtility_GetDefaultInfo(module_name, ui_manager.control_map[info.__extends].info);
 		// 覆盖其他属性
 		for (var k, v in cast<Map<string, any>>(info))
 		{
-			if (k != "__extends")
+			if (k != "__extends" && k != "__module")
 				cast<Map<string, any>>(default_v)[k] = v;
 		}
 	}
@@ -220,8 +222,9 @@ public static IDEUIUtility_GetDefaultInfo(const ALittle.DisplayInfo info) : ALit
 	elseif (info.__include != null)
     {
 		// 获取控件默认属性 
-        var ui_manager = g_IDEProject.GetUIManager(info.__module);
-		default_v = IDEUIUtility_GetDefaultInfo(ui_manager.control_map[info.__include].info);
+        if (info.__module != null) module_name = info.__module;
+        var ui_manager = g_IDEProject.GetUIManager(module_name);
+		default_v = IDEUIUtility_GetDefaultInfo(module_name, ui_manager.control_map[info.__include].info);
     }
 	// 处理class
 	elseif (info.__class != null)
@@ -277,21 +280,25 @@ public static IDEUIUtility_CreateTree(const ALittle.DisplayInfo control, bool ex
 	// 剥开一层，然后获取继承信息
 	if (control.__extends != null)
 	{
-        var ui_manager = g_IDEProject.GetUIManager(control.__module);
+        var module_name:string = control.__module;
+        if (module_name == null) module_name = user_info.module;
+        var ui_manager = g_IDEProject.GetUIManager(module_name);
 		var control_info = ui_manager.control_map[control.__extends];
 		if (control_info == null)
 			g_AUITool.ShowNotice("错误", "extends 的控件不存在:"..control.__extends);
 		// 获取默认信息
-		user_info.default = IDEUIUtility_GetDefaultInfo(control_info.info);
+		user_info.default = IDEUIUtility_GetDefaultInfo(module_name, control_info.info);
 	}
 	elseif (control.__include != null)
 	{
-        var ui_manager = g_IDEProject.GetUIManager(control.__module);
+        var module_name:string = control.__module;
+        if (module_name == null) module_name = user_info.module;
+        var ui_manager = g_IDEProject.GetUIManager(module_name);
 		var control_info = ui_manager.control_map[control.__include];
 		if (control_info == null)
 			g_AUITool.ShowNotice("错误", "include 的控件不存在:"..control.__include);
 		// 获取默认信息
-		user_info.default = IDEUIUtility_GetDefaultInfo(control_info.info);
+		user_info.default = IDEUIUtility_GetDefaultInfo(module_name, control_info.info);
 	}
 	elseif (control.__class != null)
 		// 直接从枚举里面获取信息

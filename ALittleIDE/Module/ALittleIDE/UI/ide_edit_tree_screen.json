@@ -1,1 +1,1 @@
-{"ide_edit_tree_screen":{"x_type":3,"y_value":5,"height_value":38,"width_value":10,"height_type":4,"width_type":4,"y_type":4,"__extends":"ide_common_scroll_screen"}}
+{"ide_edit_tree_screen":{"height_value":38,"width_value":10,"__extends":"ide_common_scroll_screen","__module":"AUIPlugin","y_type":4,"y_value":5,"x_type":3,"height_type":4,"width_type":4}}

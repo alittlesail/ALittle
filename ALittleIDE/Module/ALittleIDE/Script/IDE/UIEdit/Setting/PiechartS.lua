@@ -27,6 +27,7 @@ end
 function ALittleIDE.PiechartS:HandleImageTextureNameSelect(event)
 	local ui_manager = ALittleIDE.g_IDEProject:GetUIManager(self._tree_logic.user_info.module)
 	if ui_manager == nil then
+		g_AUITool:ShowNotice("错误", "模块不存在:" .. self._tree_logic.user_info.module)
 		return
 	end
 	ALittleIDE.g_IDEImageSelectDialog:SetBasePath(ui_manager.texture_path)

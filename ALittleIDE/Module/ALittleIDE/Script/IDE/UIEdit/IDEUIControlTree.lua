@@ -73,6 +73,7 @@ end
 function ALittleIDE.IDEUIControlTree:ShowAddImageDialog(target)
 	local ui_manager = ALittleIDE.g_IDEProject:GetUIManager(target.user_info.module)
 	if ui_manager == nil then
+		g_AUITool:ShowNotice("错误", "模块不存在:" .. target.user_info.module)
 		return
 	end
 	ALittleIDE.g_IDEImageSelectDialog:SetBasePath(ui_manager.texture_path)
@@ -203,6 +204,7 @@ function ALittleIDE.IDEUIControlTree:ControlTreeJump(target)
 	local extends_name = target.user_info.base.__extends
 	local ui_manager = ALittleIDE.g_IDEProject:GetUIManager(extends_module)
 	if ui_manager == nil then
+		g_AUITool:ShowNotice("错误", "模块不存在:" .. extends_module)
 		return
 	end
 	local control_info = ui_manager.control_map[extends_name]

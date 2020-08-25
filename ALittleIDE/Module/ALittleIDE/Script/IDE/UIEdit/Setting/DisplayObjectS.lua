@@ -1207,6 +1207,10 @@ function ALittleIDE.DisplayObjectS:RemoverToNilShowSetForImage(text, image_path,
 	else
 		if grid9 then
 			local ui_manager = ALittleIDE.g_IDEProject:GetUIManager(self._tree_logic.user_info.module)
+			if ui_manager == nil then
+				g_AUITool:ShowNotice("错误", "模块不存在:" .. self._tree_logic.user_info.module)
+				return
+			end
 			local display_info = ALittleIDE.IDEUIUtility_GenerateGrid9ImageInfo(ui_manager.texture_path .. "/", image_path)
 			if display_info == nil then
 				g_AUITool:ShowNotice("错误", "图片不存在:" .. image_path)
@@ -1652,6 +1656,7 @@ end
 function ALittleIDE.DisplayObjectS:ImagePathSelectCallback(text, callback, revoke_bind, path)
 	local ui_manager = ALittleIDE.g_IDEProject:GetUIManager(self._tree_logic.user_info.module)
 	if ui_manager == nil then
+		g_AUITool:ShowNotice("错误", "模块不存在:" .. self._tree_logic.user_info.module)
 		return
 	end
 	local display_object = self["_" .. text]

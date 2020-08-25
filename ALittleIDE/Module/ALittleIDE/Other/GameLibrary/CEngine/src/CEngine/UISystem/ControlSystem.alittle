@@ -352,6 +352,7 @@ public class ControlSystem
     }
     
     // 根据UI的名字，从文件中加载信息
+    // module_name不为空，那么就指定某个模块找。否则先到本地找，没有再遍历插件找
     protected fun LoadInfo(string name, string module_name) : DisplayInfo
     {
         // 如果是其他模块，那么就获取插件在调用
@@ -359,7 +360,7 @@ public class ControlSystem
         {
             var plugin = this._plugin_map[module_name];
             if (plugin == null) return null;
-            return plugin.LoadInfo(name, null);
+            return plugin.LoadInfo(name, module_name);
         }
 
         // 如果已经处理过，那么直接返回结果
@@ -370,7 +371,20 @@ public class ControlSystem
         {
             // 直接从文件中读入json，并且解密
             var json:Map<string, DisplayInfo> = File_ReadJsonFromFile(this._ui_path .. name .. ".json", this._crypt_mode);
-            if (json == null) return null;
+            if (json == null)
+            {
+                // 如果module_name为空，那么就表示到插件里面找
+                if (module_name == null)
+                {
+                    for (var plugin_module, plugin in this._plugin_map)
+                    {
+                        info = plugin.LoadInfo(name, plugin_module);
+                        if (info != null) return info;
+                    }
+                }
+
+                return null;
+            }
             
             for (var key, value in json)
                 this.RegisterInfo(key, value);

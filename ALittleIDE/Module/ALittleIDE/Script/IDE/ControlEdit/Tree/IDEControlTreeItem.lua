@@ -96,7 +96,7 @@ function ALittleIDE.IDEControlTreeItem:HandleRButtonDown(event)
 end
 
 function ALittleIDE.IDEControlTreeItem:HandleDelete()
-	local error = self._user_info.ui:CanDelete(self._user_info.module_name, self._user_info.name)
+	local error = self._user_info.ui:CanDelete(self._user_info.name)
 	if error ~= nil then
 		g_AUITool:ShowNotice("错误", error)
 		return
@@ -105,7 +105,7 @@ function ALittleIDE.IDEControlTreeItem:HandleDelete()
 	if del_result ~= "YES" then
 		return
 	end
-	error = self._user_info.ui:DeleteControl(self._user_info.module_name, self._user_info.name)
+	error = self._user_info.ui:DeleteControl(self._user_info.name)
 	if error ~= nil then
 		g_AUITool:ShowNotice("提示", error)
 		return
@@ -157,7 +157,7 @@ function ALittleIDE.IDEControlTreeItem:ControlCopyInfo(target_name, new_name)
 end
 
 function ALittleIDE.IDEControlTreeItem:HandleControlRename()
-	local error = self._user_info.ui:CanDelete(self._user_info.module_name, self._user_info.name)
+	local error = self._user_info.ui:CanDelete(self._user_info.name)
 	if error ~= nil then
 		g_AUITool:ShowNotice("错误", error)
 		return
@@ -172,7 +172,7 @@ function ALittleIDE.IDEControlTreeItem:HandleControlRename()
 	if new_name == nil or self._user_info.name == new_name then
 		return
 	end
-	error = self._user_info.ui:RenameControl(self._user_info.module_name, self._user_info.name, new_name)
+	error = self._user_info.ui:RenameControl(self._user_info.name, new_name)
 	if error ~= nil then
 		g_AUITool:ShowNotice("错误", error)
 		return
@@ -181,7 +181,7 @@ function ALittleIDE.IDEControlTreeItem:HandleControlRename()
 	self._user_info.name = new_name
 	self._user_info.path = ALittle.File_GetFilePathByPath(self._user_info.path) .. "/" .. self._user_info.name
 	self._user_info.name = new_name
-	self.text = self._user_info.name
+	self._item_title.text = self._user_info.name
 	if tab_child ~= nil then
 		tab_child:Rename(self._user_info.name)
 	end

@@ -1178,6 +1178,11 @@ public class DisplayObjectS
 			if (grid9)
 			{
                 var ui_manager = g_IDEProject.GetUIManager(this._tree_logic.user_info.module);
+                if (ui_manager == null)
+                {
+					g_AUITool.ShowNotice("错误", "模块不存在:"..this._tree_logic.user_info.module);
+					return;
+                }
 				var display_info = IDEUIUtility_GenerateGrid9ImageInfo(ui_manager.texture_path.."/", image_path);
 				if (display_info == null)
 				{
@@ -1690,7 +1695,11 @@ public class DisplayObjectS
 	public fun ImagePathSelectCallback(string text, Functor<(DisplayObjectS, ALittle.UIEvent)> callback, ALittle.RevokeBind revoke_bind, string path)
 	{
         var ui_manager = g_IDEProject.GetUIManager(this._tree_logic.user_info.module);
-        if (ui_manager == null) return;
+        if (ui_manager == null)
+        {
+            g_AUITool.ShowNotice("错误", "模块不存在:"..this._tree_logic.user_info.module);
+            return;
+        }
 
 		var display_object:ALittle.DisplayObject = cast<Map<string, any>>(this)["_"..text];
 		display_object.text = path;

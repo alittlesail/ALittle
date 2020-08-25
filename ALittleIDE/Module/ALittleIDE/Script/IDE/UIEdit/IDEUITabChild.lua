@@ -304,6 +304,7 @@ function ALittleIDE.IDEUITabChild.__setter:save(value)
 	end
 	local ui_manager = ALittleIDE.g_IDEProject:GetUIManager(self._module)
 	if ui_manager == nil then
+		g_AUITool:ShowNotice("错误", "模块不存在:" .. self._module)
 		return
 	end
 	local info = self._tree_object:CalcInfo()

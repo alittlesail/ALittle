@@ -1,1 +1,0 @@
-{"ide_common_sbar_button":{"height_value":13,"show_down":{"__class":"Image","texture_name":"bar_upbutton_down.png"},"show_disabled":{"__class":"Image","texture_name":"bar_upbutton_disabled.png"},"width_value":13,"show_over":{"__class":"Image","texture_name":"bar_upbutton_over.png"},"show_up":{"__class":"Image","texture_name":"bar_upbutton_up.png"},"__class":"TextButton"}}

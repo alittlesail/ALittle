@@ -260,7 +260,7 @@ function ALittle.ControlSystem:LoadInfo(name, module_name)
 		if plugin == nil then
 			return nil
 		end
-		return plugin:LoadInfo(name, nil)
+		return plugin:LoadInfo(name, module_name)
 	end
 	if self._name_map_info_cache[name] then
 		return self._name_map_info[name]
@@ -269,6 +269,14 @@ function ALittle.ControlSystem:LoadInfo(name, module_name)
 	if info == nil then
 		local json = ALittle.File_ReadJsonFromFile(self._ui_path .. name .. ".json", self._crypt_mode)
 		if json == nil then
+			if module_name == nil then
+				for plugin_module, plugin in ___pairs(self._plugin_map) do
+					info = plugin:LoadInfo(name, plugin_module)
+					if info ~= nil then
+						return info
+					end
+				end
+			end
 			return nil
 		end
 		for key, value in ___pairs(json) do

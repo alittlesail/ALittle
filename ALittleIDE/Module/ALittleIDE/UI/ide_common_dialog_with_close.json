@@ -1,1 +1,0 @@
-{"ide_common_dialog_with_close":{"show_head_drag":{"top_size":10,"__class":"Grid9Image","left_size":3,"bottom_size":10,"right_size":3,"texture_name":"tab_radio_up2.png"},"__extends":"ide_common_dialog","show_close_button":{"__extends":"ide_common_tab_closebutton"}}}

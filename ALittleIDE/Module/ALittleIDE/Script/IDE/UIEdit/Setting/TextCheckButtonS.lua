@@ -72,6 +72,7 @@ end
 function ALittleIDE.TextCheckButtonS:HandleShowUpSelect(event)
 	local ui_manager = ALittleIDE.g_IDEProject:GetUIManager(self._tree_logic.user_info.module)
 	if ui_manager == nil then
+		g_AUITool:ShowNotice("错误", "模块不存在:" .. self._tree_logic.user_info.module)
 		return
 	end
 	ALittleIDE.g_IDEImageSelectDialog:SetBasePath(ui_manager.texture_path)
@@ -96,6 +97,7 @@ end
 function ALittleIDE.TextCheckButtonS:HandleShowOverSelect(event)
 	local ui_manager = ALittleIDE.g_IDEProject:GetUIManager(self._tree_logic.user_info.module)
 	if ui_manager == nil then
+		g_AUITool:ShowNotice("错误", "模块不存在:" .. self._tree_logic.user_info.module)
 		return
 	end
 	ALittleIDE.g_IDEImageSelectDialog:SetBasePath(ui_manager.texture_path)
@@ -120,6 +122,7 @@ end
 function ALittleIDE.TextCheckButtonS:HandleShowDownSelect(event)
 	local ui_manager = ALittleIDE.g_IDEProject:GetUIManager(self._tree_logic.user_info.module)
 	if ui_manager == nil then
+		g_AUITool:ShowNotice("错误", "模块不存在:" .. self._tree_logic.user_info.module)
 		return
 	end
 	ALittleIDE.g_IDEImageSelectDialog:SetBasePath(ui_manager.texture_path)
@@ -144,6 +147,7 @@ end
 function ALittleIDE.TextCheckButtonS:HandleShowDisabledSelect(event)
 	local ui_manager = ALittleIDE.g_IDEProject:GetUIManager(self._tree_logic.user_info.module)
 	if ui_manager == nil then
+		g_AUITool:ShowNotice("错误", "模块不存在:" .. self._tree_logic.user_info.module)
 		return
 	end
 	ALittleIDE.g_IDEImageSelectDialog:SetBasePath(ui_manager.texture_path)
@@ -168,6 +172,7 @@ end
 function ALittleIDE.TextCheckButtonS:HandleShowSUpSelect(event)
 	local ui_manager = ALittleIDE.g_IDEProject:GetUIManager(self._tree_logic.user_info.module)
 	if ui_manager == nil then
+		g_AUITool:ShowNotice("错误", "模块不存在:" .. self._tree_logic.user_info.module)
 		return
 	end
 	ALittleIDE.g_IDEImageSelectDialog:SetBasePath(ui_manager.texture_path)
@@ -192,6 +197,7 @@ end
 function ALittleIDE.TextCheckButtonS:HandleShowSOverSelect(event)
 	local ui_manager = ALittleIDE.g_IDEProject:GetUIManager(self._tree_logic.user_info.module)
 	if ui_manager == nil then
+		g_AUITool:ShowNotice("错误", "模块不存在:" .. self._tree_logic.user_info.module)
 		return
 	end
 	ALittleIDE.g_IDEImageSelectDialog:SetBasePath(ui_manager.texture_path)
@@ -216,6 +222,7 @@ end
 function ALittleIDE.TextCheckButtonS:HandleShowSDownSelect(event)
 	local ui_manager = ALittleIDE.g_IDEProject:GetUIManager(self._tree_logic.user_info.module)
 	if ui_manager == nil then
+		g_AUITool:ShowNotice("错误", "模块不存在:" .. self._tree_logic.user_info.module)
 		return
 	end
 	ALittleIDE.g_IDEImageSelectDialog:SetBasePath(ui_manager.texture_path)
@@ -240,6 +247,7 @@ end
 function ALittleIDE.TextCheckButtonS:HandleShowSDisabledSelect(event)
 	local ui_manager = ALittleIDE.g_IDEProject:GetUIManager(self._tree_logic.user_info.module)
 	if ui_manager == nil then
+		g_AUITool:ShowNotice("错误", "模块不存在:" .. self._tree_logic.user_info.module)
 		return
 	end
 	ALittleIDE.g_IDEImageSelectDialog:SetBasePath(ui_manager.texture_path)

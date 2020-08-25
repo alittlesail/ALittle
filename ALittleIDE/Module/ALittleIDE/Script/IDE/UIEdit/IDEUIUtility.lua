@@ -69,13 +69,14 @@ function ALittleIDE.IDEUIUtility_GetExtends(module, info, map)
 		if ALittle.String_Type(v) == "table" then
 			ALittleIDE.IDEUIUtility_GetExtends(module, v, map)
 		elseif k == "__extends" or k == "__include" then
+			local module_name = module
 			if info.__module ~= nil then
-				module = info.__module
+				module_name = info.__module
 			end
-			local sub_map = map[module]
+			local sub_map = map[module_name]
 			if sub_map == nil then
 				sub_map = {}
-				map[module] = sub_map
+				map[module_name] = sub_map
 			end
 			sub_map[v] = true
 		end
@@ -189,19 +190,25 @@ function ALittleIDE.IDEUIUtility_GetBaseInfo(info)
 	return base
 end
 
-function ALittleIDE.IDEUIUtility_GetDefaultInfo(info)
+function ALittleIDE.IDEUIUtility_GetDefaultInfo(module_name, info)
 	local default_v = {}
 	if info.__extends ~= nil then
-		local ui_manager = ALittleIDE.g_IDEProject:GetUIManager(info.__module)
-		default_v = ALittleIDE.IDEUIUtility_GetDefaultInfo(ui_manager.control_map[info.__extends].info)
+		if info.__module ~= nil then
+			module_name = info.__module
+		end
+		local ui_manager = ALittleIDE.g_IDEProject:GetUIManager(module_name)
+		default_v = ALittleIDE.IDEUIUtility_GetDefaultInfo(module_name, ui_manager.control_map[info.__extends].info)
 		for k, v in ___pairs(info) do
-			if k ~= "__extends" then
+			if k ~= "__extends" and k ~= "__module" then
 				default_v[k] = v
 			end
 		end
 	elseif info.__include ~= nil then
-		local ui_manager = ALittleIDE.g_IDEProject:GetUIManager(info.__module)
-		default_v = ALittleIDE.IDEUIUtility_GetDefaultInfo(ui_manager.control_map[info.__include].info)
+		if info.__module ~= nil then
+			module_name = info.__module
+		end
+		local ui_manager = ALittleIDE.g_IDEProject:GetUIManager(module_name)
+		default_v = ALittleIDE.IDEUIUtility_GetDefaultInfo(module_name, ui_manager.control_map[info.__include].info)
 	elseif info.__class ~= nil then
 		local class_default = ALittleIDE.g_IDEEnum.type_default_map[info.__class]
 		default_v = {}
@@ -224,19 +231,27 @@ function ALittleIDE.IDEUIUtility_CreateTree(control, extends_v, object, child_ty
 	user_info.module = tab_child.module
 	user_info.base = ALittleIDE.IDEUIUtility_GetBaseInfo(control)
 	if control.__extends ~= nil then
-		local ui_manager = ALittleIDE.g_IDEProject:GetUIManager(control.__module)
+		local module_name = control.__module
+		if module_name == nil then
+			module_name = user_info.module
+		end
+		local ui_manager = ALittleIDE.g_IDEProject:GetUIManager(module_name)
 		local control_info = ui_manager.control_map[control.__extends]
 		if control_info == nil then
 			g_AUITool:ShowNotice("错误", "extends 的控件不存在:" .. control.__extends)
 		end
-		user_info.default = ALittleIDE.IDEUIUtility_GetDefaultInfo(control_info.info)
+		user_info.default = ALittleIDE.IDEUIUtility_GetDefaultInfo(module_name, control_info.info)
 	elseif control.__include ~= nil then
-		local ui_manager = ALittleIDE.g_IDEProject:GetUIManager(control.__module)
+		local module_name = control.__module
+		if module_name == nil then
+			module_name = user_info.module
+		end
+		local ui_manager = ALittleIDE.g_IDEProject:GetUIManager(module_name)
 		local control_info = ui_manager.control_map[control.__include]
 		if control_info == nil then
 			g_AUITool:ShowNotice("错误", "include 的控件不存在:" .. control.__include)
 		end
-		user_info.default = ALittleIDE.IDEUIUtility_GetDefaultInfo(control_info.info)
+		user_info.default = ALittleIDE.IDEUIUtility_GetDefaultInfo(module_name, control_info.info)
 	elseif control.__class ~= nil then
 		user_info.default = ALittleIDE.g_IDEEnum.type_default_map[control.__class]
 	else

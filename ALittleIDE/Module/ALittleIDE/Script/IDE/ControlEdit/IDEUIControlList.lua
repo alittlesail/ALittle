@@ -102,13 +102,12 @@ function ALittleIDE.IDEUIControlList:HandleProjectClose(event)
 end
 
 function ALittleIDE.IDEUIControlList:HandleProjectOpen(event)
-	local ui_manager = ALittleIDE.g_IDEProject:GetUIManager(nil)
-	if ui_manager == nil then
-		return
-	end
 	local module_map = ALittleIDE.g_IDEProject.project.config:GetConfig("control_module", {})
 	module_map[event.name] = nil
+	local ui = ALittleIDE.IDEUIManager(event.name)
+	ALittleIDE.g_IDEProject.project.ui[event.name] = ui
 	local info = {}
+	info.ui = ui
 	info.module_name = event.name
 	info.name = "ui"
 	info.path = ALittle.File_BaseFilePath() .. "Module/" .. event.name .. "/UI"
@@ -118,18 +117,27 @@ function ALittleIDE.IDEUIControlList:HandleProjectOpen(event)
 	self._control_scroll_screen:AddChild(ALittleIDE.IDEControlTree(ALittleIDE.g_Control, info))
 	for index, module in ___pairs(module_map) do
 		info = {}
+		info.ui = ALittleIDE.IDEUIManager(module.module_name)
 		info.module_name = module.module_name
 		info.name = ALittle.File_GetFileNameByPath(module.root_path)
 		info.path = module.root_path
 		info.module_path = ALittle.File_GetFilePathByPath(module.root_path) .. "/"
 		info.group = self._group
 		info.root = true
+		ALittleIDE.g_IDEProject.project.ui[module.module_name] = info.ui
+		ui.control:RegisterPlugin(module.module_name, info.ui.control)
 		local tree = ALittleIDE.IDEControlTree(ALittleIDE.g_Control, info)
 		self._control_scroll_screen:AddChild(tree)
-		local plugin_ui = ALittleIDE.IDEUIManager(module.module_name)
-		ALittleIDE.g_IDEProject.project.ui[module.module_name] = plugin_ui
-		ui_manager.control:RegisterPlugin(module.module_name, plugin_ui.control)
 	end
+end
+
+function ALittleIDE.IDEUIControlList:GetControlTree(module)
+	for index, child in ___ipairs(self._control_scroll_screen.childs) do
+		if child.user_info.module_name == module then
+			return child
+		end
+	end
+	return nil
 end
 
 function ALittleIDE.IDEUIControlList:AddModule(name)
@@ -145,19 +153,19 @@ function ALittleIDE.IDEUIControlList:AddModule(name)
 	local module_map = ALittleIDE.g_IDEProject.project.config:GetConfig("control_module", {})
 	local module_info = {}
 	module_info.module_name = name
-	module_info.root_path = ALittle.File_BaseFilePath() .. "Module/" .. name .. "/ui"
+	module_info.root_path = ALittle.File_BaseFilePath() .. "Module/" .. name .. "/UI"
 	module_map[name] = module_info
 	ALittleIDE.g_IDEProject.project.config:SetConfig("control_module", module_map)
-	local plugin_ui = ALittleIDE.IDEUIManager(name)
-	ALittleIDE.g_IDEProject.project.ui[name] = plugin_ui
-	ui_manager.control:RegisterPlugin(name, plugin_ui.control)
 	local info = {}
 	info.module_name = name
-	info.name = ALittle.File_GetFileNameByPath(module_info.root_path)
+	info.name = "ui"
 	info.path = module_info.root_path
 	info.module_path = ALittle.File_BaseFilePath() .. "Module/" .. name .. "/"
 	info.group = self._group
 	info.root = true
+	info.ui = ALittleIDE.IDEUIManager(name)
+	ALittleIDE.g_IDEProject.project.ui[name] = info.ui
+	ui_manager.control:RegisterPlugin(name, info.ui.control)
 	local tree = ALittleIDE.IDEControlTree(ALittleIDE.g_Control, info)
 	self._control_scroll_screen:AddChild(tree)
 end

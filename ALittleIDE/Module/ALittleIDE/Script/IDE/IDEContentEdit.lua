@@ -92,10 +92,6 @@ function ALittleIDE.IDETabChild.__getter:revoke_list()
 	return self._revoke_list
 end
 
-function ALittleIDE.IDETabChild:CanDelete(control_name)
-	return nil
-end
-
 function ALittleIDE.IDETabChild.__getter:title()
 	return self._name
 end
@@ -281,17 +277,6 @@ function ALittleIDE.IDEContentEdit:SaveAllTab()
 	end
 end
 
-function ALittleIDE.IDEContentEdit:CanDelete(control_name)
-	for k, child in ___ipairs(self._main_tab.childs) do
-		local tab_child = child._user_data
-		local error = tab_child:CanDelete(control_name)
-		if error ~= nil then
-			return error
-		end
-	end
-	return nil
-end
-
 function ALittleIDE.IDEContentEdit:HandleMainTabSelectChange(event)
 	self:ChangeTabEdit(self._cur_tab, self._main_tab.tab)
 end
@@ -451,18 +436,17 @@ function ALittleIDE.IDEContentEdit:StartEditControlByExtends(module, name, exten
 end
 
 function ALittleIDE.IDEContentEdit:StartEditControlBySelect(module, name)
-	local ui_manager = ALittleIDE.g_IDEProject.project.ui[module]
+	local ui_manager = ALittleIDE.g_IDEProject:GetUIManager(module)
 	if ui_manager == nil then
+		g_AUITool:ShowNotice("错误", "ui_manager获取失败")
 		return nil
 	end
 	local control_info = ui_manager.control_map[name]
 	if control_info == nil then
+		g_AUITool:ShowNotice("错误", "控件不存在")
 		return nil
 	end
 	local info = control_info.info
-	if info == nil then
-		return nil
-	end
 	local child = self:GetTabById(ALittleIDE.IDEUITabChild, name)
 	if child ~= nil then
 		local child_from = self._main_tab.tab

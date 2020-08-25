@@ -69,7 +69,6 @@ public class IDEProjectNewDialog
 	
 		// 如果当前没有打开的项目，就直接打开
 		if (g_IDEProject.project == null)
-			// 打开项目
 			g_IDEProject.OpenProject(name);
 	
 		// 关闭对话框

@@ -12,25 +12,28 @@ public struct IDEControlInfo
 
 public class IDEUIManager
 {
-	private Map<string, IDEControlInfo> _control_map;
-	private string _base_path;
-	private ALittle.ControlSystem _control;
-    private string _name;
+	private Map<string, IDEControlInfo> _control_map = new Map<string, IDEControlInfo>(); // 当前所有控件信息
+	private string _base_path; // 基础路径
+	private ALittle.ControlSystem _control; // 控制系统
+    private string _module;	// 模块名
 
-	public ctor(string name)
+    // 依赖其他模块控件，KEY1:控件名 KEY2:模块名.控件名
+    private Map<string, Map<string, bool>> _cur_map_other = new Map<string, Map<string, bool>>();
+    // 依赖其他模块控件，KEY1:模块名.控件名 KEY2:控件名
+    private Map<string, Map<string, bool>> _other_map_cur = new Map<string, Map<string, bool>>();
+
+	public ctor(string module)
 	{
-        this._name = name;
+        this._module = module;
 
         // 控件系统
-		this._control = new ALittle.ControlSystem(name);
+		this._control = new ALittle.ControlSystem(this._module);
 		this._control.log_error = false;
 		this._control.cache_texture = false;
 		this._control.use_plugin_class = false;
 
-		// 加载所有控件
-		this._control_map = new Map<string, IDEControlInfo>();
 		// 遍历文件夹，加载所有控件
-		this._base_path = ALittle.File_BaseFilePath().."Module/"..name.."/UI";
+		this._base_path = ALittle.File_BaseFilePath().."Module/"..this._module.."/UI";
 		// 加载UI文件夹内的所有json文件
 		var file_map = ALittle.File_GetFileAttrByDir(this._base_path);
 		for (var file_path, attr in file_map)
@@ -71,19 +74,45 @@ public class IDEUIManager
 		for (var control_name, all_info in this._control_map)
 		{
 			// 计算继承了哪些控件
-			var map = IDEUIUtility_GetExtends(all_info.info);
-			for (var other_name, v in map)
-			{
-				// 取出继承的那个控件，然后互相标记一下
-				var other = this._control_map[other_name];
-				if (other != null)
-				{
-					other.extends_this[control_name] = true;
-					all_info.extends_other[other_name] = true;
-				}
-				else
-					ALittle.Log("IDEProject:OpenProject calc extends failed:", other_name);
-			}
+			var map = IDEUIUtility_GetExtends(this._module, all_info.info);
+            for (var module_name, sub_map in map)
+            {
+                for (var other_name, v in sub_map)
+                {
+                    if (module_name == this._module)
+                    {
+                        // 取出继承的那个控件，然后互相标记一下
+                        var other = this._control_map[other_name];
+                        if (other != null)
+                        {
+                            other.extends_this[control_name] = true;
+                            all_info.extends_other[other_name] = true;
+                        }
+                        else
+                            ALittle.Log("IDEProject:OpenProject calc extends failed:", other_name);
+                    }
+                    else
+                    {
+                        // 计算当前控件依赖外部控件
+                        var other_map = this._cur_map_other[control_name];
+                        if (other_map == null)
+                        {
+                            other_map = new Map<string, bool>();
+                            this._cur_map_other[control_name] = other_map;
+                        }
+                        other_map[module..other_name] = true;
+
+                        // 计算外部控件被当前控件依赖
+                        var cur_map = this._other_map_cur[module..other_name];
+                        if (cur_map == null)
+                        {
+                            cur_map = new Map<string, bool>();
+                            this._other_map_cur[module..other_name] = cur_map;
+                        }
+                        cur_map[control_name] = true;
+                    }
+                }
+            }
 		}
 	}
 
@@ -92,7 +121,7 @@ public class IDEUIManager
 
     public get control() : ALittle.ControlSystem { return this._control; }
 
-    public get texture_path() : string { return ALittle.File_BaseFilePath().."Module/"..this._name.."/Texture"; }
+    public get texture_path() : string { return ALittle.File_BaseFilePath().."Module/"..this._module.."/Texture"; }
 
 	// 计算出某个控件，继承了哪些控件，以及这些控件继承了哪些控件
 	// 这个主要用于在新建控件时，避开循环继承
@@ -142,6 +171,18 @@ public class IDEUIManager
 				else
 					ALittle.Log("IDEProject:SaveControl calc extends failed:", other_name);
 			}
+            // 注销继承外部的关系
+            var cur_map = this._cur_map_other[name];
+            if (cur_map != null)
+            {
+                for (var full_name, _ in cur_map)
+                {
+                    var other_map = this._other_map_cur[full_name];
+                    if (other_map != null) other_map[name] = null;
+                    if (ALittle.IsEmpty(other_map)) this._other_map_cur[full_name] = null;
+                }
+                this._cur_map_other[name] = null;
+            }
 			// 清理对其他控件的继承关系
 			all_info.extends_other = new Map<string, bool>();
 			// 处理那些继承自己的控件，重新注册一下
@@ -164,18 +205,43 @@ public class IDEUIManager
 		}
 
 		// 重新注册继承的那些控件
-		var map = IDEUIUtility_GetExtends(info);
-		for (var other_name, v in map)
-		{
-			var other = this._control_map[other_name];
-			if (other != null)
-			{
-				other.extends_this[name] = true;
-				all_info.extends_other[other_name] = true;
-			}
-			else
-				ALittle.Log("IDEProject:SaveControl calc extends failed:", other_name);
-		}
+		var map = IDEUIUtility_GetExtends(this._module, info);
+		for (var module_name, sub_map in map)
+        {
+            for (var other_name, v in sub_map)
+            {
+                if (module_name == this._module)
+                {
+                    // 取出继承的那个控件，然后互相标记一下
+                    var other = this._control_map[other_name];
+                    if (other != null)
+                    {
+                        other.extends_this[name] = true;
+                        all_info.extends_other[other_name] = true;
+                    }
+                    else
+                        ALittle.Log("IDEProject:OpenProject calc extends failed:", other_name);
+                }
+                else
+                {
+                    var other_map = this._cur_map_other[name];
+                    if (other_map == null)
+                    {
+                        other_map = new Map<string, bool>();
+                        this._cur_map_other[name] = other_map;
+                    }
+                    other_map[module_name..other_name] = true;
+
+                    var cur_map = this._other_map_cur[module_name..other_name];
+                    if (cur_map == null)
+                    {
+                        cur_map = new Map<string, bool>();
+                        this._other_map_cur[module_name..other_name] = cur_map;
+                    }
+                    cur_map[name] = true;
+                }
+            }
+        }
 		all_info.info = info;
 		// 设置到项目中
 		this._control_map[name] = all_info;
@@ -185,28 +251,47 @@ public class IDEUIManager
 	}
 
 	// 删除控件
-	public fun CanDelete(string name) : string
+	public fun CanDelete(string module, string name) : string
 	{
-		// 检查控件是否存在
-		var all_info = this._control_map[name];
-		if (all_info == null) return "控件不存在:"..name;
+        if (module == null) module = this._module;
 
-		// 检查是否有被其他控件引用
-		var extends_name:string = null;
-		for (var k, v in all_info.extends_this)
-		{
-			extends_name = k;
-			break;
-		}
-		if (extends_name != null) return "被其他控件引用:"..extends_name;
-		return null;
+        if (module == this._module)
+        {
+            // 检查控件是否存在
+            var all_info = this._control_map[name];
+            if (all_info == null) return "控件不存在:"..name;
+
+                // 检查是否有被其他控件引用
+            var extends_name:string = null;
+            for (var k, v in all_info.extends_this)
+            {
+                extends_name = k;
+                break;
+            }
+            if (extends_name != null) return "被其他控件引用:"..extends_name;
+        }
+
+        var full_name = module..name;
+        for (var module_name, ui_manager in g_IDEProject.project.ui)
+        {
+            if (module_name != this._module)
+            {
+                var cur_map = ui_manager._other_map_cur[full_name];
+                if (cur_map == null) return null;
+
+                for (var control_name, _ in cur_map)
+                    return "被其他模块控件引用:"..module_name.."."..control_name;
+            }
+        }
+
+        return null;
 	}
 
 	// 删除
-	public fun DeleteControl(string name) : string
+	public fun DeleteControl(string module, string name) : string
 	{
 		// 检查是否能够删除
-		var error = this.CanDelete(name);
+		var error = this.CanDelete(module, name);
 		if (error != error) return error;
         
 		// 删除文件
@@ -222,8 +307,23 @@ public class IDEUIManager
 			if (other != null)
 				other.extends_this[name] = null;
 		}
-        
+    
+        // 注销继承外部的关系
+        var cur_map = this._cur_map_other[name];
+        if (cur_map != null)
+        {
+            for (var full_name, _ in cur_map)
+            {
+                var other_map = this._other_map_cur[full_name];
+                if (other_map != null) other_map[name] = null;
+                if (ALittle.IsEmpty(other_map)) this._other_map_cur[full_name] = null;
+            }
+            this._cur_map_other[name] = null;
+        }
+
+        // 发送删除控件的事件
 		var e = new IDEProjectDeleteControlEvent();
+        e.module = this._module;
 		e.name = name;
 		g_IDEProject.DispatchEvent(e);
 		// 从控件表中删除
@@ -237,14 +337,14 @@ public class IDEUIManager
 	}
 
 	// 重命名名控件（控件未保存是，不允许修改名称）
-	public fun RenameControl(string old_name, string new_name) : string
+	public fun RenameControl(string module, string old_name, string new_name) : string
 	{
 		// 检查控件是否存在
 		var all_info = this._control_map[old_name];
 		if (all_info == null) return "控件不存在:"..old_name;
 
 		// 检查是否能够重命名
-		var error = this.CanDelete(old_name);
+		var error = this.CanDelete(module, old_name);
 		if (error != null) return "控件被其他控件引用，不能重命名";
 
 		// 检查新名称是否已存在
@@ -252,6 +352,7 @@ public class IDEUIManager
 
 		// 注销控件
 		var e = new IDEProjectDeleteControlEvent();
+        e.module = this._module;
 		e.name = old_name;
 		g_IDEProject.DispatchEvent(e);
 
@@ -275,6 +376,7 @@ public class IDEUIManager
 
 		// 创建控件
         var ce = new IDEProjectCreateControlEvent();
+        ce.module = this._module;
 		ce.name = new_name;
 		g_IDEProject.DispatchEvent(ce);
 

@@ -59,15 +59,17 @@ public class IDEUIControlList : ALittle.DisplayLayout
 
 	private fun HandleProjectOpen(IDEProjectOpenEvent event)
 	{
-        var ui_manager = g_IDEProject.GetUIManager(null);
-        if (ui_manager == null) return;
-
 		// 读取项目配置
 		var module_map = g_IDEProject.project.config.GetConfig("control_module", new Map<string, IDEControlModuleInfo>());
 		module_map[event.name] = null;
 
+        // 主项目的UI管理器
+        var ui = new IDEUIManager(event.name);
+        g_IDEProject.project.ui[event.name] = ui;
+
 		// 添加自己的项目
 		var info = new IDEControlTreeUserInfo();
+        info.ui = ui;
 		info.module_name = event.name;
 		info.name = "ui";
 		info.path = ALittle.File_BaseFilePath().."Module/"..event.name.."/UI";
@@ -80,19 +82,30 @@ public class IDEUIControlList : ALittle.DisplayLayout
 		for (var index, module in module_map)
 		{
 			info = new IDEControlTreeUserInfo();
+            info.ui = new IDEUIManager(module.module_name);
 			info.module_name = module.module_name;
 			info.name = ALittle.File_GetFileNameByPath(module.root_path);
 			info.path = module.root_path;
             info.module_path = ALittle.File_GetFilePathByPath(module.root_path).."/";
 			info.group = this._group;
 			info.root = true;
+            
+            g_IDEProject.project.ui[module.module_name] = info.ui;
+            ui.control.RegisterPlugin(module.module_name, info.ui.control);
+
 			var tree = new IDEControlTree(g_Control, info);
 			this._control_scroll_screen.AddChild(tree);
-
-            var plugin_ui = new IDEUIManager(module.module_name);
-            g_IDEProject.project.ui[module.module_name] = plugin_ui;
-            ui_manager.control.RegisterPlugin(module.module_name, plugin_ui.control);
         }
+    }
+
+    public fun GetControlTree(string module) : IDEControlTree
+    {
+        for (var index, child:IDEControlTree in this._control_scroll_screen.childs)
+        {
+            if (child.user_info.module_name == module)
+            	return child;
+        }
+        return null;
     }
 
 	public fun AddModule(string name)
@@ -107,21 +120,21 @@ public class IDEUIControlList : ALittle.DisplayLayout
 
 		var module_info = new IDEControlModuleInfo();
 		module_info.module_name = name;
-		module_info.root_path = ALittle.File_BaseFilePath().."Module/"..name.."/ui";
+		module_info.root_path = ALittle.File_BaseFilePath().."Module/"..name.."/UI";
 		module_map[name] = module_info;
 		g_IDEProject.project.config.SetConfig("control_module", module_map);
 
-        var plugin_ui = new IDEUIManager(name);
-        g_IDEProject.project.ui[name] = plugin_ui;
-        ui_manager.control.RegisterPlugin(name, plugin_ui.control);
-    
         var info = new IDEControlTreeUserInfo();
         info.module_name = name;
-        info.name = ALittle.File_GetFileNameByPath(module_info.root_path);
+        info.name = "ui";
         info.path = module_info.root_path;
         info.module_path = ALittle.File_BaseFilePath().."Module/"..name.."/";
         info.group = this._group;
 		info.root = true;
+        info.ui = new IDEUIManager(name);
+        g_IDEProject.project.ui[name] = info.ui;
+        ui_manager.control.RegisterPlugin(name, info.ui.control);
+    
         var tree = new IDEControlTree(g_Control, info);
         this._control_scroll_screen.AddChild(tree);
     }

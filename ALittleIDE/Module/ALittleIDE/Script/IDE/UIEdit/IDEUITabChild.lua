@@ -306,9 +306,14 @@ function ALittleIDE.IDEUITabChild.__setter:save(value)
 		return
 	end
 	local info = self._tree_object:CalcInfo()
+	local create = ui_manager.control_map[self._name] == nil
 	local error = ui_manager:SaveControl(self._name, info)
 	if error ~= nil then
 		return
+	end
+	local tree = ALittleIDE.g_IDECenter.center.control_list:GetControlTree(self._module)
+	if tree ~= nil then
+		tree:Refresh()
 	end
 	self._save = value
 	self:UpdateTitle()
@@ -342,18 +347,6 @@ function ALittleIDE.IDEUITabChild.__getter:title()
 		return self._name
 	end
 	return self._name .. "(" .. text .. ")"
-end
-
-function ALittleIDE.IDEUITabChild:CanDelete(name)
-	if self._tree_object == nil then
-		return nil
-	end
-	local info = self._tree_object:CalcInfo()
-	local map = ALittleIDE.IDEUIUtility_GetExtends(info)
-	if map[name] then
-		return self._name .. " 引用了 " .. name
-	end
-	return nil
 end
 
 function ALittleIDE.IDEUITabChild:SelectAlign(align_type)

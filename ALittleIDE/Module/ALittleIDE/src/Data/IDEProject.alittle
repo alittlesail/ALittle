@@ -4,8 +4,10 @@ namespace ALittleIDE;
 // 项目事件
 struct IDEProjectEvent : ALittle.Event
 {
+    string module;	// 模块名
 	string name;	// 名称
 }
+
 public struct IDEProjectOpenEvent : IDEProjectEvent {}
 public struct IDEProjectCloseEvent : IDEProjectEvent {}
 public struct IDEProjectAddEvent : IDEProjectEvent { }
@@ -26,12 +28,10 @@ public struct IDEProjectSettingChanged : ALittle.Event
 // 项目信息
 public struct IDEProjectInfo
 {
-	string name;								// 项目名称
-	ALittle.IJsonConfig config;					// 项目的配置文件系统
-	// UI数据管理
-	Map<string, IDEUIManager> ui;		// ui信息
-	// 代码数据管理
-	AUIPlugin.AUICodeProject code;
+	string name;				   // 项目名称
+	ALittle.IJsonConfig config;	// 项目的配置文件系统
+	Map<string, IDEUIManager> ui;  // UI数据管理
+	AUIPlugin.AUICodeProject code; // 代码数据管理
 }
 
 public class IDEProject : ALittle.EventDispatcher
@@ -58,16 +58,12 @@ public class IDEProject : ALittle.EventDispatcher
 	}
 
 	// 新建项目
-	// name 项目名
-	public fun NewProject(string name
-						 , int window_width, int window_height
-						 , string font_path, int font_size) : bool
+	public fun NewProject(string name, int window_width, int window_height, string font_path, int font_size) : bool
 	{
 		// 创建项目
 		ALittle.File_MakeDeepDir(ALittle.File_BaseFilePath().."Module/"..name);
 
 		ALittle.File_MakeDir(ALittle.File_BaseFilePath().."Module/"..name.."/Texture");
-		ALittle.File_MakeDir(ALittle.File_BaseFilePath().."Module/"..name.."/Texture/"..name);
 		ALittle.File_MakeDir(ALittle.File_BaseFilePath().."Module/"..name.."/Font");
 		ALittle.File_MakeDir(ALittle.File_BaseFilePath().."Module/"..name.."/Sound");
 		ALittle.File_MakeDir(ALittle.File_BaseFilePath().."Module/"..name.."/Other");
@@ -174,7 +170,6 @@ public class IDEProject : ALittle.EventDispatcher
 		this._project.name = name;
 		this._project.config = ALittle.CreateConfigSystem("Module/"..name.."/ALittleIDE.cfg");
 		this._project.ui = new Map<string, IDEUIManager>();
-        this._project.ui[name] = new IDEUIManager(name);
 		[Language(Lua)]
 		this._project.code = AUIPlugin.AUICodeProject.CreateALittleScriptProject();
 		[Language(Lua)]

@@ -281,9 +281,18 @@ public class IDEUITabChild : IDETabChild
         if (ui_manager == null) return;
 	
         var info = this._tree_object.CalcInfo();
+
+        // 判断原来是否有这个控件
+        var create = ui_manager.control_map[this._name] == null;
+
+        // 保存控件
         var error = ui_manager.SaveControl(this._name, info);
         if (error != null) return;
 	
+        // 刷新控件树
+        var tree = g_IDECenter.center.control_list.GetControlTree(this._module);
+        if (tree != null) tree.Refresh();
+
         this._save = value;
         this.UpdateTitle();
 	}
@@ -315,17 +324,6 @@ public class IDEUITabChild : IDETabChild
         var text = this._tree_object.GetDesc();
         if (text == "") return this._name;
         return this._name.."("..text..")";
-	}
-	
-	public fun CanDelete(string name) : string
-    {
-        if (this._tree_object == null) return null;
-        var info = this._tree_object.CalcInfo();
-        var map = IDEUIUtility_GetExtends(info);
-		if (map[name])
-            return this._name.." 引用了 "..name;
-        
-        return null;
 	}
 	
 	// 对选中的控件进行处理

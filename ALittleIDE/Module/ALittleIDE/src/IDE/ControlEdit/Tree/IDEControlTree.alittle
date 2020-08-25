@@ -70,18 +70,22 @@ public class IDEControlTree : IDEControlTreeLogic
         var ui_manager = g_IDEProject.GetUIManager(null);
         if (ui_manager == null) return;
 
+        // 检查是否有当前模块正在编辑。如果有并且已保存那么就全部移除掉
+        var remove_list = new List<IDEUITabChild>();
         var tab_child_map = g_IDECenter.center.content_edit.GetTabIdMap{IDEUITabChild}();
-        // 如果有当前的模块，那么就全部移除掉
         for (var id, tab_child in tab_child_map)
         {
-            if (tab_child.module == this._user_info.module_name && !tab_child.save)
+            if (tab_child.module == this._user_info.module_name)
             {
-                g_AUITool.ShowNotice("错误", "还有UI正在编辑并为保存");
-                return;
+                if (!tab_child.save)
+                {
+                    g_AUITool.ShowNotice("错误", "还有UI正在编辑并为保存");
+                    return;
+                }
+                ALittle.List_Push(remove_list, tab_child);
             }
         }
-
-        for (var id, tab_child in tab_child_map)
+        for (var index, tab_child in remove_list)
             g_IDECenter.center.content_edit.CloseTabByName{IDEUITabChild}(tab_child.name);
 
 		var file_name = ALittle.File_GetFileNameByPath(this._user_info.path);
@@ -89,10 +93,12 @@ public class IDEControlTree : IDEControlTreeLogic
 		if (result != AUIPlugin.AUIToolOption.YES) return;
 		this.OnDelete();
         this.RemoveFromParent();
+
 		var module_map = g_IDEProject.project.config.GetConfig("control_module", new Map<string, IDEControlModuleInfo>());
         module_map[this._user_info.module_name] = null;
         g_IDEProject.project.config.SetConfig("control_module", module_map);
 
+        g_IDEProject.project.ui[this._user_info.module_name] = null;
         ui_manager.control.UnRegisterPlugin(this._user_info.module_name);
     }
 	
@@ -154,6 +160,7 @@ public class IDEControlTree : IDEControlTreeLogic
 				info.path = this._user_info.path.."/"..name;
 				info.group = this._user_info.group;
 				info.root = false;
+                info.ui = this._user_info.ui;
                 this.AddChild(new IDEControlTree(this._ctrl_sys, info));
             }
         }
@@ -167,10 +174,11 @@ public class IDEControlTree : IDEControlTreeLogic
 				var info = new IDEControlTreeUserInfo();
 				info.module_name = this._user_info.module_name;
 				info.module_path = this._user_info.module_path;
-				info.name = name;
+				info.name = ALittle.File_GetJustFileNameByPath(name);
 				info.path = this._user_info.path.."/"..name;
 				info.group = this._user_info.group;
 				info.root = false;
+                info.ui = this._user_info.ui;
                 this.AddChild(new IDEControlTreeItem(this._ctrl_sys, info));
             }
         }

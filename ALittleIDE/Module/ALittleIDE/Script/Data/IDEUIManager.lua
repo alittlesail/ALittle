@@ -51,14 +51,16 @@ option_map = {}
 
 ALittleIDE.IDEUIManager = Lua.Class(nil, "ALittleIDE.IDEUIManager")
 
-function ALittleIDE.IDEUIManager:Ctor(name)
-	___rawset(self, "_name", name)
-	___rawset(self, "_control", ALittle.ControlSystem(name))
+function ALittleIDE.IDEUIManager:Ctor(module)
+	___rawset(self, "_control_map", {})
+	___rawset(self, "_cur_map_other", {})
+	___rawset(self, "_other_map_cur", {})
+	___rawset(self, "_module", module)
+	___rawset(self, "_control", ALittle.ControlSystem(self._module))
 	self._control.log_error = false
 	self._control.cache_texture = false
 	self._control.use_plugin_class = false
-	___rawset(self, "_control_map", {})
-	___rawset(self, "_base_path", ALittle.File_BaseFilePath() .. "Module/" .. name .. "/UI")
+	___rawset(self, "_base_path", ALittle.File_BaseFilePath() .. "Module/" .. self._module .. "/UI")
 	local file_map = ALittle.File_GetFileAttrByDir(self._base_path)
 	for file_path, attr in ___pairs(file_map) do
 		local ext = ALittle.String_Upper(ALittle.File_GetFileExtByPath(file_path))
@@ -87,14 +89,31 @@ function ALittleIDE.IDEUIManager:Ctor(name)
 		end
 	end
 	for control_name, all_info in ___pairs(self._control_map) do
-		local map = ALittleIDE.IDEUIUtility_GetExtends(all_info.info)
-		for other_name, v in ___pairs(map) do
-			local other = self._control_map[other_name]
-			if other ~= nil then
-				other.extends_this[control_name] = true
-				all_info.extends_other[other_name] = true
-			else
-				ALittle.Log("IDEProject:OpenProject calc extends failed:", other_name)
+		local map = ALittleIDE.IDEUIUtility_GetExtends(self._module, all_info.info)
+		for module_name, sub_map in ___pairs(map) do
+			for other_name, v in ___pairs(sub_map) do
+				if module_name == self._module then
+					local other = self._control_map[other_name]
+					if other ~= nil then
+						other.extends_this[control_name] = true
+						all_info.extends_other[other_name] = true
+					else
+						ALittle.Log("IDEProject:OpenProject calc extends failed:", other_name)
+					end
+				else
+					local other_map = self._cur_map_other[control_name]
+					if other_map == nil then
+						other_map = {}
+						self._cur_map_other[control_name] = other_map
+					end
+					other_map[module .. other_name] = true
+					local cur_map = self._other_map_cur[module .. other_name]
+					if cur_map == nil then
+						cur_map = {}
+						self._other_map_cur[module .. other_name] = cur_map
+					end
+					cur_map[control_name] = true
+				end
 			end
 		end
 	end
@@ -109,7 +128,7 @@ function ALittleIDE.IDEUIManager.__getter:control()
 end
 
 function ALittleIDE.IDEUIManager.__getter:texture_path()
-	return ALittle.File_BaseFilePath() .. "Module/" .. self._name .. "/Texture"
+	return ALittle.File_BaseFilePath() .. "Module/" .. self._module .. "/Texture"
 end
 
 function ALittleIDE.IDEUIManager:CalcDeepExtends(name, map, lock_map)
@@ -151,6 +170,19 @@ function ALittleIDE.IDEUIManager:SaveControl(name, info)
 				ALittle.Log("IDEProject:SaveControl calc extends failed:", other_name)
 			end
 		end
+		local cur_map = self._cur_map_other[name]
+		if cur_map ~= nil then
+			for full_name, _ in ___pairs(cur_map) do
+				local other_map = self._other_map_cur[full_name]
+				if other_map ~= nil then
+					other_map[name] = nil
+				end
+				if ALittle.IsEmpty(other_map) then
+					self._other_map_cur[full_name] = nil
+				end
+			end
+			self._cur_map_other[name] = nil
+		end
 		all_info.extends_other = {}
 		for other_name, v in ___pairs(all_info.extends_this) do
 			local other = self._control_map[other_name]
@@ -167,14 +199,31 @@ function ALittleIDE.IDEUIManager:SaveControl(name, info)
 		all_info.extends_this = {}
 		all_info.extends_other = {}
 	end
-	local map = ALittleIDE.IDEUIUtility_GetExtends(info)
-	for other_name, v in ___pairs(map) do
-		local other = self._control_map[other_name]
-		if other ~= nil then
-			other.extends_this[name] = true
-			all_info.extends_other[other_name] = true
-		else
-			ALittle.Log("IDEProject:SaveControl calc extends failed:", other_name)
+	local map = ALittleIDE.IDEUIUtility_GetExtends(self._module, info)
+	for module_name, sub_map in ___pairs(map) do
+		for other_name, v in ___pairs(sub_map) do
+			if module_name == self._module then
+				local other = self._control_map[other_name]
+				if other ~= nil then
+					other.extends_this[name] = true
+					all_info.extends_other[other_name] = true
+				else
+					ALittle.Log("IDEProject:OpenProject calc extends failed:", other_name)
+				end
+			else
+				local other_map = self._cur_map_other[name]
+				if other_map == nil then
+					other_map = {}
+					self._cur_map_other[name] = other_map
+				end
+				other_map[module_name .. other_name] = true
+				local cur_map = self._other_map_cur[module_name .. other_name]
+				if cur_map == nil then
+					cur_map = {}
+					self._other_map_cur[module_name .. other_name] = cur_map
+				end
+				cur_map[name] = true
+			end
 		end
 	end
 	all_info.info = info
@@ -183,24 +232,41 @@ function ALittleIDE.IDEUIManager:SaveControl(name, info)
 	return nil
 end
 
-function ALittleIDE.IDEUIManager:CanDelete(name)
-	local all_info = self._control_map[name]
-	if all_info == nil then
-		return "控件不存在:" .. name
+function ALittleIDE.IDEUIManager:CanDelete(module, name)
+	if module == nil then
+		module = self._module
 	end
-	local extends_name = nil
-	for k, v in ___pairs(all_info.extends_this) do
-		extends_name = k
-		break
+	if module == self._module then
+		local all_info = self._control_map[name]
+		if all_info == nil then
+			return "控件不存在:" .. name
+		end
+		local extends_name = nil
+		for k, v in ___pairs(all_info.extends_this) do
+			extends_name = k
+			break
+		end
+		if extends_name ~= nil then
+			return "被其他控件引用:" .. extends_name
+		end
 	end
-	if extends_name ~= nil then
-		return "被其他控件引用:" .. extends_name
+	local full_name = module .. name
+	for module_name, ui_manager in ___pairs(ALittleIDE.g_IDEProject.project.ui) do
+		if module_name ~= self._module then
+			local cur_map = ui_manager._other_map_cur[full_name]
+			if cur_map == nil then
+				return nil
+			end
+			for control_name, _ in ___pairs(cur_map) do
+				return "被其他模块控件引用:" .. module_name .. "." .. control_name
+			end
+		end
 	end
 	return nil
 end
 
-function ALittleIDE.IDEUIManager:DeleteControl(name)
-	local error = self:CanDelete(name)
+function ALittleIDE.IDEUIManager:DeleteControl(module, name)
+	local error = self:CanDelete(module, name)
 	if error ~= error then
 		return error
 	end
@@ -213,7 +279,21 @@ function ALittleIDE.IDEUIManager:DeleteControl(name)
 			other.extends_this[name] = nil
 		end
 	end
+	local cur_map = self._cur_map_other[name]
+	if cur_map ~= nil then
+		for full_name, _ in ___pairs(cur_map) do
+			local other_map = self._other_map_cur[full_name]
+			if other_map ~= nil then
+				other_map[name] = nil
+			end
+			if ALittle.IsEmpty(other_map) then
+				self._other_map_cur[full_name] = nil
+			end
+		end
+		self._cur_map_other[name] = nil
+	end
 	local e = {}
+	e.module = self._module
 	e.name = name
 	ALittleIDE.g_IDEProject:DispatchEvent(___all_struct[1962591044], e)
 	self._control_map[name] = nil
@@ -221,12 +301,12 @@ function ALittleIDE.IDEUIManager:DeleteControl(name)
 	return nil
 end
 
-function ALittleIDE.IDEUIManager:RenameControl(old_name, new_name)
+function ALittleIDE.IDEUIManager:RenameControl(module, old_name, new_name)
 	local all_info = self._control_map[old_name]
 	if all_info == nil then
 		return "控件不存在:" .. old_name
 	end
-	local error = self:CanDelete(old_name)
+	local error = self:CanDelete(module, old_name)
 	if error ~= nil then
 		return "控件被其他控件引用，不能重命名"
 	end
@@ -234,6 +314,7 @@ function ALittleIDE.IDEUIManager:RenameControl(old_name, new_name)
 		return "控件已存在:" .. new_name
 	end
 	local e = {}
+	e.module = self._module
 	e.name = old_name
 	ALittleIDE.g_IDEProject:DispatchEvent(___all_struct[1962591044], e)
 	self._control_map[old_name] = nil
@@ -248,6 +329,7 @@ function ALittleIDE.IDEUIManager:RenameControl(old_name, new_name)
 	save_info[new_name] = all_info.info
 	ALittle.File_SaveFile(file_path, ALittle.String_JsonEncode(save_info), -1)
 	local ce = {}
+	ce.module = self._module
 	ce.name = new_name
 	ALittleIDE.g_IDEProject:DispatchEvent(___all_struct[-93681239], ce)
 	return nil

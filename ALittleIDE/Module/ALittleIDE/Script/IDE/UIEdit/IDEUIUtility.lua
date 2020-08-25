@@ -61,15 +61,23 @@ function ALittleIDE.IDEUIUtility_CalcTextureName(info, map)
 	return map
 end
 
-function ALittleIDE.IDEUIUtility_GetExtends(info, map)
+function ALittleIDE.IDEUIUtility_GetExtends(module, info, map)
 	if map == nil then
 		map = {}
 	end
 	for k, v in ___pairs(info) do
 		if ALittle.String_Type(v) == "table" then
-			ALittleIDE.IDEUIUtility_GetExtends(v, map)
+			ALittleIDE.IDEUIUtility_GetExtends(module, v, map)
 		elseif k == "__extends" or k == "__include" then
-			map[v] = true
+			if info.__module ~= nil then
+				module = info.__module
+			end
+			local sub_map = map[module]
+			if sub_map == nil then
+				sub_map = {}
+				map[module] = sub_map
+			end
+			sub_map[v] = true
 		end
 	end
 	return map

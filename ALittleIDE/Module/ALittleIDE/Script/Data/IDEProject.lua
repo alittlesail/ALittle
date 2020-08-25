@@ -13,14 +13,14 @@ option_map = {}
 })
 ALittle.RegStruct(1962591044, "ALittleIDE.IDEProjectDeleteControlEvent", {
 name = "ALittleIDE.IDEProjectDeleteControlEvent", ns_name = "ALittleIDE", rl_name = "IDEProjectDeleteControlEvent", hash_code = 1962591044,
-name_list = {"target","name"},
-type_list = {"ALittle.EventDispatcher","string"},
+name_list = {"target","module","name"},
+type_list = {"ALittle.EventDispatcher","string","string"},
 option_map = {}
 })
 ALittle.RegStruct(1910687721, "ALittleIDE.IDEProjectEvent", {
 name = "ALittleIDE.IDEProjectEvent", ns_name = "ALittleIDE", rl_name = "IDEProjectEvent", hash_code = 1910687721,
-name_list = {"target","name"},
-type_list = {"ALittle.EventDispatcher","string"},
+name_list = {"target","module","name"},
+type_list = {"ALittle.EventDispatcher","string","string"},
 option_map = {}
 })
 ALittle.RegStruct(1787992834, "ALittleIDE.IDEProjectSettingChanged", {
@@ -37,8 +37,8 @@ option_map = {}
 })
 ALittle.RegStruct(-975432877, "ALittleIDE.IDEProjectOpenEvent", {
 name = "ALittleIDE.IDEProjectOpenEvent", ns_name = "ALittleIDE", rl_name = "IDEProjectOpenEvent", hash_code = -975432877,
-name_list = {"target","name"},
-type_list = {"ALittle.EventDispatcher","string"},
+name_list = {"target","module","name"},
+type_list = {"ALittle.EventDispatcher","string","string"},
 option_map = {}
 })
 ALittle.RegStruct(934918978, "ALittleIDE.IDEProjectInfo", {
@@ -49,32 +49,32 @@ option_map = {}
 })
 ALittle.RegStruct(-685984390, "ALittleIDE.IDEProjectAddEvent", {
 name = "ALittleIDE.IDEProjectAddEvent", ns_name = "ALittleIDE", rl_name = "IDEProjectAddEvent", hash_code = -685984390,
-name_list = {"target","name"},
-type_list = {"ALittle.EventDispatcher","string"},
+name_list = {"target","module","name"},
+type_list = {"ALittle.EventDispatcher","string","string"},
 option_map = {}
 })
 ALittle.RegStruct(374071006, "ALittleIDE.IDEProjectChangeControlEvent", {
 name = "ALittleIDE.IDEProjectChangeControlEvent", ns_name = "ALittleIDE", rl_name = "IDEProjectChangeControlEvent", hash_code = 374071006,
-name_list = {"target","name"},
-type_list = {"ALittle.EventDispatcher","string"},
+name_list = {"target","module","name"},
+type_list = {"ALittle.EventDispatcher","string","string"},
 option_map = {}
 })
 ALittle.RegStruct(-332308624, "ALittleIDE.IDEProjectCloseEvent", {
 name = "ALittleIDE.IDEProjectCloseEvent", ns_name = "ALittleIDE", rl_name = "IDEProjectCloseEvent", hash_code = -332308624,
-name_list = {"target","name"},
-type_list = {"ALittle.EventDispatcher","string"},
+name_list = {"target","module","name"},
+type_list = {"ALittle.EventDispatcher","string","string"},
 option_map = {}
 })
 ALittle.RegStruct(-277092447, "ALittleIDE.IDEProjectRemoveEvent", {
 name = "ALittleIDE.IDEProjectRemoveEvent", ns_name = "ALittleIDE", rl_name = "IDEProjectRemoveEvent", hash_code = -277092447,
-name_list = {"target","name"},
-type_list = {"ALittle.EventDispatcher","string"},
+name_list = {"target","module","name"},
+type_list = {"ALittle.EventDispatcher","string","string"},
 option_map = {}
 })
 ALittle.RegStruct(-93681239, "ALittleIDE.IDEProjectCreateControlEvent", {
 name = "ALittleIDE.IDEProjectCreateControlEvent", ns_name = "ALittleIDE", rl_name = "IDEProjectCreateControlEvent", hash_code = -93681239,
-name_list = {"target","name"},
-type_list = {"ALittle.EventDispatcher","string"},
+name_list = {"target","module","name"},
+type_list = {"ALittle.EventDispatcher","string","string"},
 option_map = {}
 })
 
@@ -101,7 +101,6 @@ end
 function ALittleIDE.IDEProject:NewProject(name, window_width, window_height, font_path, font_size)
 	ALittle.File_MakeDeepDir(ALittle.File_BaseFilePath() .. "Module/" .. name)
 	ALittle.File_MakeDir(ALittle.File_BaseFilePath() .. "Module/" .. name .. "/Texture")
-	ALittle.File_MakeDir(ALittle.File_BaseFilePath() .. "Module/" .. name .. "/Texture/" .. name)
 	ALittle.File_MakeDir(ALittle.File_BaseFilePath() .. "Module/" .. name .. "/Font")
 	ALittle.File_MakeDir(ALittle.File_BaseFilePath() .. "Module/" .. name .. "/Sound")
 	ALittle.File_MakeDir(ALittle.File_BaseFilePath() .. "Module/" .. name .. "/Other")
@@ -172,7 +171,6 @@ function ALittleIDE.IDEProject:OpenProject(name)
 	self._project.name = name
 	self._project.config = ALittle.CreateConfigSystem("Module/" .. name .. "/ALittleIDE.cfg")
 	self._project.ui = {}
-	self._project.ui[name] = ALittleIDE.IDEUIManager(name)
 	self._project.code = AUIPlugin.AUICodeProject.CreateALittleScriptProject()
 	if self._project.code ~= nil then
 		self._project.code:AddEventListener(___all_struct[2057209532], self, self.HandleCodeProjectGoToEvent)

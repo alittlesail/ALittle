@@ -101,14 +101,18 @@ function ALittleIDE.IDEControlTree:HandleRemoveModule()
 	if ui_manager == nil then
 		return
 	end
+	local remove_list = {}
 	local tab_child_map = ALittleIDE.g_IDECenter.center.content_edit:GetTabIdMap(ALittleIDE.IDEUITabChild)
 	for id, tab_child in ___pairs(tab_child_map) do
-		if tab_child.module == self._user_info.module_name and not tab_child.save then
-			g_AUITool:ShowNotice("错误", "还有UI正在编辑并为保存")
-			return
+		if tab_child.module == self._user_info.module_name then
+			if not tab_child.save then
+				g_AUITool:ShowNotice("错误", "还有UI正在编辑并为保存")
+				return
+			end
+			ALittle.List_Push(remove_list, tab_child)
 		end
 	end
-	for id, tab_child in ___pairs(tab_child_map) do
+	for index, tab_child in ___ipairs(remove_list) do
 		ALittleIDE.g_IDECenter.center.content_edit:CloseTabByName(ALittleIDE.IDEUITabChild, tab_child.name)
 	end
 	local file_name = ALittle.File_GetFileNameByPath(self._user_info.path)
@@ -121,6 +125,7 @@ function ALittleIDE.IDEControlTree:HandleRemoveModule()
 	local module_map = ALittleIDE.g_IDEProject.project.config:GetConfig("control_module", {})
 	module_map[self._user_info.module_name] = nil
 	ALittleIDE.g_IDEProject.project.config:SetConfig("control_module", module_map)
+	ALittleIDE.g_IDEProject.project.ui[self._user_info.module_name] = nil
 	ui_manager.control:UnRegisterPlugin(self._user_info.module_name)
 end
 ALittleIDE.IDEControlTree.HandleRemoveModule = Lua.CoWrap(ALittleIDE.IDEControlTree.HandleRemoveModule)
@@ -174,6 +179,7 @@ function ALittleIDE.IDEControlTree:Refresh()
 			info.path = self._user_info.path .. "/" .. name
 			info.group = self._user_info.group
 			info.root = false
+			info.ui = self._user_info.ui
 			self:AddChild(ALittleIDE.IDEControlTree(self._ctrl_sys, info))
 		end
 	end
@@ -184,10 +190,11 @@ function ALittleIDE.IDEControlTree:Refresh()
 			local info = {}
 			info.module_name = self._user_info.module_name
 			info.module_path = self._user_info.module_path
-			info.name = name
+			info.name = ALittle.File_GetJustFileNameByPath(name)
 			info.path = self._user_info.path .. "/" .. name
 			info.group = self._user_info.group
 			info.root = false
+			info.ui = self._user_info.ui
 			self:AddChild(ALittleIDE.IDEControlTreeItem(self._ctrl_sys, info))
 		end
 	end

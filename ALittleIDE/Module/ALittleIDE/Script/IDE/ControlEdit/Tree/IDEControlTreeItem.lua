@@ -65,7 +65,7 @@ function ALittleIDE.IDEControlTreeItem.__setter:fold(value)
 end
 
 function ALittleIDE.IDEControlTreeItem:HandleClick(event)
-	ALittleIDE.g_IDECenter.center.content_edit:StartEditControlBySelect(self._user_info.module_name, ALittle.File_GetJustFileNameByPath(self._user_info.name))
+	ALittleIDE.g_IDECenter.center.content_edit:StartEditControlBySelect(self._user_info.module_name, self._user_info.name)
 end
 
 function ALittleIDE.IDEControlTreeItem:SearchFile(name, list)
@@ -96,18 +96,7 @@ function ALittleIDE.IDEControlTreeItem:HandleRButtonDown(event)
 end
 
 function ALittleIDE.IDEControlTreeItem:HandleDelete()
-	local name = self._user_info.name
-	local ui_manager = ALittleIDE.g_IDEProject.project.ui[self._user_info.module_name]
-	if ui_manager == nil then
-		g_AUITool:ShowNotice("错误", "模块不存在:" .. self._user_info.module_name)
-		return
-	end
-	local error = ui_manager:CanDelete(name)
-	if error ~= nil then
-		g_AUITool:ShowNotice("错误", error)
-		return
-	end
-	error = ALittleIDE.g_IDECenter.center.content_edit:CanDelete(name)
+	local error = self._user_info.ui:CanDelete(self._user_info.module_name, self._user_info.name)
 	if error ~= nil then
 		g_AUITool:ShowNotice("错误", error)
 		return
@@ -116,7 +105,7 @@ function ALittleIDE.IDEControlTreeItem:HandleDelete()
 	if del_result ~= "YES" then
 		return
 	end
-	error = ui_manager:DeleteControl(self._user_info.name)
+	error = self._user_info.ui:DeleteControl(self._user_info.module_name, self._user_info.name)
 	if error ~= nil then
 		g_AUITool:ShowNotice("提示", error)
 		return
@@ -152,62 +141,47 @@ function ALittleIDE.IDEControlTreeItem:ControlCopyInfo(target_name, new_name)
 		g_AUITool:ShowNotice("错误", error)
 		return
 	end
-	local ui_manager = ALittleIDE.g_IDEProject.project.ui[self._user_info.module_name]
-	if ui_manager == nil then
-		g_AUITool:ShowNotice("错误", "模块不存在:" .. self._user_info.module_name)
-		return
-	end
-	local info = ui_manager.control_map[new_name]
+	local info = self._user_info.ui.control_map[new_name]
 	if info ~= nil then
 		g_AUITool:ShowNotice("错误", "控件名已存在:" .. new_name)
 		return
 	end
-	info = ui_manager.control_map[target_name]
+	info = self._user_info.ui.control_map[target_name]
 	if info == nil then
 		g_AUITool:ShowNotice("错误", "控件不存在:" .. target_name)
 		return
 	end
-	ui_manager:SaveControl(new_name, ALittle.String_CopyTable(info.info))
+	self._user_info.ui:SaveControl(new_name, ALittle.String_CopyTable(info.info))
+	self.parent:Refresh()
 	ALittleIDE.g_IDECenter.center.content_edit:StartEditControlBySelect(self._user_info.module_name, new_name)
 end
 
 function ALittleIDE.IDEControlTreeItem:HandleControlRename()
-	local old_name = self._user_info.name
-	local old_path = self._user_info.path
-	local ui_manager = ALittleIDE.g_IDEProject.project.ui[self._user_info.module_name]
-	if ui_manager == nil then
-		g_AUITool:ShowNotice("错误", "模块不存在:" .. self._user_info.module_name)
-		return
-	end
-	local error = ui_manager:CanDelete(old_name)
+	local error = self._user_info.ui:CanDelete(self._user_info.module_name, self._user_info.name)
 	if error ~= nil then
 		g_AUITool:ShowNotice("错误", error)
 		return
 	end
-	error = ALittleIDE.g_IDECenter.center.content_edit:CanDelete(old_name)
-	if error ~= nil then
-		g_AUITool:ShowNotice("错误", error)
-		return
-	end
-	local tab_child = ALittleIDE.g_IDECenter.center.content_edit:GetTabChildById(ALittleIDE.IDEUITabChild, old_name)
+	local tab_child = ALittleIDE.g_IDECenter.center.content_edit:GetTabChildById(ALittleIDE.IDEUITabChild, self._user_info.name)
 	if tab_child ~= nil and tab_child.save ~= true then
 		g_AUITool:ShowNotice("提示", "请先保存再重命名")
 		return
 	end
 	local x, y = self:LocalToGlobal()
-	local new_name = g_AUITool:ShowRename(old_name, x, y, self.width)
-	if new_name == nil or old_name == new_name then
+	local new_name = g_AUITool:ShowRename(self._user_info.name, x, y, self.width)
+	if new_name == nil or self._user_info.name == new_name then
 		return
 	end
-	error = ui_manager:RenameControl(old_name, new_name)
+	error = self._user_info.ui:RenameControl(self._user_info.module_name, self._user_info.name, new_name)
 	if error ~= nil then
 		g_AUITool:ShowNotice("错误", error)
 		return
 	end
-	self.text = new_name
-	local new_path = ALittle.File_GetFilePathByPath(old_path) .. "/" .. new_name
-	self._user_info.path = new_path
+	local old_name = self._user_info.name
 	self._user_info.name = new_name
+	self._user_info.path = ALittle.File_GetFilePathByPath(self._user_info.path) .. "/" .. self._user_info.name
+	self._user_info.name = new_name
+	self.text = self._user_info.name
 	if tab_child ~= nil then
 		tab_child:Rename(self._user_info.name)
 	end
@@ -219,6 +193,7 @@ function ALittleIDE.IDEControlTreeItem:HandleCopyExtends()
 	local name = self._user_info.name
 	local save_info = {}
 	save_info["__extends"] = name
+	save_info["__module"] = self._user_info.module_name
 	local copy_list = {}
 	local info = {}
 	info["index"] = 1

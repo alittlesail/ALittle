@@ -40,10 +40,7 @@ public class IDEImageSelectDialog : AUIPlugin.AUIFileSelectDialog
 	
 	private fun HandleImageCopyGrid9ImageCodeClick(AUIPlugin.AUIFileSelectRightButtonDownEvent event)
 	{
-        var target = ALittle.Cast{AUIPlugin.AUIFileSelectDialog}(event.target);
-        if (target == null) return;
-
-		var display_info = IDEUIUtility_GenerateGrid9ImageInfo(target.base_path.."/", event.path);
+		var display_info = IDEUIUtility_GenerateGrid9ImageInfo(this._base_path.."/", event.path);
 		if (display_info == null)
 		{
 			g_AUITool.ShowNotice("错误", "图片加载失败:"..cast<string>(event.path));

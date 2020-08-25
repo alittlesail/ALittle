@@ -26,7 +26,6 @@ public class IDETabChild : ALittle.UIEventDispatcher
 	public set save(bool value) {}
 	public fun Save() { this.save = true; }
 	public get revoke_list() : ALittle.RevokeList { return this._revoke_list; }
-	public fun CanDelete(string control_name) : string { return null; }
 	public get title() : string { return this._name; }
 	public get tab_body() : ALittle.DisplayObject { return null; }
 
@@ -234,18 +233,6 @@ public class IDEContentEdit : ALittle.DisplayLayout
 			tab_child.save = true;
 		}
 	}
-
-	// 是否允许删除某个控件
-	public fun CanDelete(string control_name) : string
-	{
-		for (var k, child in this._main_tab.childs)
-		{
-			var tab_child:IDETabChild = child._user_data;
-			var error = tab_child.CanDelete(control_name);
-			if (error != null) return error;
-		}
-		return null;
-	}
 	
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////-
 	// Tab栏的选中项发生改变时执行的操作
@@ -441,14 +428,21 @@ public class IDEContentEdit : ALittle.DisplayLayout
 	// 选择控件，并编辑
 	public fun StartEditControlBySelect(string module, string name) : IDEUITabChild
 	{
-        var ui_manager = g_IDEProject.project.ui[module];
-        if (ui_manager == null) return null;
+        var ui_manager = g_IDEProject.GetUIManager(module);
+        if (ui_manager == null)
+        {
+            g_AUITool.ShowNotice("错误", "ui_manager获取失败");
+            return null;
+        }
 
         var control_info = ui_manager.control_map[name];
-        if (control_info == null) return null;
+        if (control_info == null)
+        {
+            g_AUITool.ShowNotice("错误", "控件不存在");
+            return null;
+        }
 
         var info = control_info.info;
-        if (info == null) return null;
 
 		// 判断显示tab栏中是否已有该控件
 		var child = this.GetTabById{IDEUITabChild}(name);

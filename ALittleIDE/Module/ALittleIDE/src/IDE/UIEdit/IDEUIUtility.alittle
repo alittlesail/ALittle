@@ -23,15 +23,24 @@ public static IDEUIUtility_CalcTextureName(ALittle.DisplayInfo info, Map<string,
 }
 
 // 收集所有引用的控件名称
-public static IDEUIUtility_GetExtends(const ALittle.DisplayInfo info, [Nullable] Map<string, bool> map) : Map<string, bool>
+public static IDEUIUtility_GetExtends(string module, const ALittle.DisplayInfo info, [Nullable] Map<string, Map<string, bool>> map) : Map<string, Map<string, bool>>
 {
-	if (map == null) map = new Map<string, bool>();
+	if (map == null) map = new Map<string, Map<string, bool>>();
 	for (var k, v in cast<Map<string, any>>(info))
 	{
 		if (ALittle.String_Type(v) == "table")
-			IDEUIUtility_GetExtends(v, map);
+			IDEUIUtility_GetExtends(module, v, map);
 		elseif (k == "__extends" || k == "__include")
-			map[v] = true;
+        {
+            if (info.__module != null) module = info.__module;
+            var sub_map = map[module];
+            if (sub_map == null)
+            {
+                sub_map = new Map<string, bool>();
+                map[module] = sub_map;
+            }
+			sub_map[v] = true;
+        }
 	}
 	return map;
 }

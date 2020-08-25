@@ -9,4 +9,5 @@ protected struct IDEControlTreeUserInfo
     string name;
     bool root;
     ALittle.TextRadioButtonGroup group;
+    IDEUIManager ui;
 }

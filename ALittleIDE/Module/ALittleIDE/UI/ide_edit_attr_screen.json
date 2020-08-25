@@ -1,1 +1,6 @@
-{"ide_edit_attr_screen":{"right_scrollbar":{"__module":"AUIPlugin","__include":"ide_common_vscroll_bar"},"width_value":0,"height_value":0,"width_type":4,"height_type":4,"__class":"ScrollScreen"}}
+{
+    "ide_edit_attr_screen":{
+        "__extends" : "ide_common_scroll_screen_v_no_container",
+        "__module" : "AUIPlugin"
+    }
+}

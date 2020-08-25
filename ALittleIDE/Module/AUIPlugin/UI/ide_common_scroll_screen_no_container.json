@@ -1,1 +1,1 @@
-{"ide_common_scroll_screen_no_container":{"right_scrollbar":{"__extends":"ide_common_vscroll_bar"},"__class":"ScrollScreen","bottom_scrollbar":{"__include":"ide_common_hscroll_bar"}}}
+{"ide_common_scroll_screen_no_container":{"__class":"ScrollScreen","right_scrollbar":{"__extends":"ide_common_vscroll_bar"},"height_type":4,"bottom_scrollbar":{"__include":"ide_common_hscroll_bar"},"width_type":4}}

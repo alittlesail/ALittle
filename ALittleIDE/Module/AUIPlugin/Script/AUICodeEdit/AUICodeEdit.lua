@@ -1349,7 +1349,6 @@ function AUIPlugin.AUICodeEdit:OnClose()
 	if self._language ~= nil then
 		self._language:OnClose()
 	end
-	collectgarbage("collect")
 end
 
 function AUIPlugin.AUICodeEdit:Load(file_path, content, revoke_list, language)

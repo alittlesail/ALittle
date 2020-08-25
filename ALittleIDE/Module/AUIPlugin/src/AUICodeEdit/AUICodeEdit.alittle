@@ -1391,9 +1391,6 @@ public class AUICodeEdit : ALittle.DisplayLayout
         ALittle.System_CloseIME();
 
         if (this._language != null) this._language.OnClose();
-
-        [Language(Lua)]
-        lua.collectgarbage("collect");
     }
 
     public fun Load(string file_path, string content, ALittle.RevokeList revoke_list, [Nullable] AUICodeLanguage language) : bool

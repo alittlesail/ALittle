@@ -121,6 +121,12 @@ public class IDEUIControlTree : ALittle.DisplayLayout
 		this._control_add_dialog._user_data = target;
 		// 设置下拉菜单的data_list
 		this._control_add_type.data_list = data_list;
+
+        // 获取模块
+        data_list = new List<string>();
+        for (var module_name, ui in g_IDEProject.project.ui)
+        	ALittle.List_Push(data_list, module_name);
+        this._control_add_module.data_list = data_list;
 		this._control_add_dialog.visible = true;
 	}
 	// 添加取消

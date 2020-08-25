@@ -635,7 +635,6 @@ public class AUICodeEdit : ALittle.DisplayLayout
                         line.container._find.AddChild(item);
                         var info = new AUICodeFindInfo();
                         info._focus_quad = item;
-                        info.it_line = index;
                         info.it_char_start = char_index;
                         info.it_char_end = char_index + find_len - 1;
                         item._user_data = info;
@@ -682,7 +681,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
                 var info = cast<AUICodeFindInfo>(child._user_data);
                 if (!check_cursor || line_index != this._cursor.line || info.it_char_start > this._cursor.char + 1)
                 {
-                    this.EditFocus(info.it_line, info.it_char_start, info.it_line, info.it_char_end, false);
+                    this.EditFocus(line_index, info.it_char_start, line_index, info.it_char_end, false);
                     return true;
                 }
             }
@@ -752,7 +751,6 @@ public class AUICodeEdit : ALittle.DisplayLayout
                     line.container._find.AddChild(item);
                     var info = new AUICodeFindInfo();
                     info._focus_quad = item;
-                    info.it_line = it_line;
                     info.it_char_start = char_index;
                     info.it_char_end = char_index + find_len - 1;
                     item._user_data = info;

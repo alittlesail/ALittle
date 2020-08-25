@@ -223,6 +223,7 @@ public class IDEUITabChild : IDETabChild
 		menu.AddItem("复制控件名", bind(ALittle.System_SetClipboardText, this._name));
 		menu.AddItem("复制继承代码", bind(this.CopyExtends, this));
 		menu.AddItem("刷新", bind(this.Refresh, this));
+		menu.AddItem("获取焦点", bind(this.ShowControlFocus, this));
 	}
     
 	private fun CopyExtends()
@@ -535,6 +536,21 @@ public class IDEUITabChild : IDETabChild
         this.UpdateTitle();
 		// 清空撤销列表
 		this._revoke_list = new ALittle.RevokeList();
+    }
+
+    public fun ShowControlFocus()
+    {
+        var tree = g_IDECenter.center.control_list.GetControlTree(this._module);
+        if (tree == null) return;
+
+        for (var index, child:IDEControlTreeLogic in tree.childs)
+        {
+            if (child.user_info.name == this._name)
+            {
+                g_IDECenter.center.control_list.ShowTreeItemFocus(child);
+                return;
+            }
+        }
     }
 	
 	public fun CreateByNew(string type)

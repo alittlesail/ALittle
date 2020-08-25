@@ -193,6 +193,18 @@ public class IDEUICodeList : ALittle.DisplayLayout
 		return g_IDECenter.center.content_edit.StartEditCodeBySelect(user_info.name, user_info);
     }
 
+    public fun GetCodeTree(string full_path) : IDECodeTreeLogic
+    {
+        for (var index, child:IDECodeTreeLogic in this._code_scroll_screen.childs)
+		{
+            var item = child.FindFile(full_path);
+			if (item != null)
+                return item;
+        }
+
+        return null;
+    }
+
 	public fun AddModule(string name)
 	{
         for (var index, tree:IDECodeTreeLogic in this._code_scroll_screen.childs)

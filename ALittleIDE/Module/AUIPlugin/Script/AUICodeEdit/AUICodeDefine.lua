@@ -36,8 +36,8 @@ option_map = {}
 })
 ALittle.RegStruct(-1073016186, "AUIPlugin.AUICodeFindInfo", {
 name = "AUIPlugin.AUICodeFindInfo", ns_name = "AUIPlugin", rl_name = "AUICodeFindInfo", hash_code = -1073016186,
-name_list = {"_focus_quad","it_line","it_char_start","it_char_end"},
-type_list = {"ALittle.DisplayObject","int","int","int"},
+name_list = {"_focus_quad","it_char_start","it_char_end"},
+type_list = {"ALittle.DisplayObject","int","int"},
 option_map = {}
 })
 ALittle.RegStruct(-947960184, "lua.ABnfQueryError", {

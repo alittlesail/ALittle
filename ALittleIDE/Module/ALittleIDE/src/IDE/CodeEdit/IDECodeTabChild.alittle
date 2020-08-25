@@ -46,6 +46,15 @@ public class IDECodeTabChild : IDETabChild
     private fun OnTabRightMenu(AUIPlugin.AUIRightMenu menu)
     {
         this._edit.OnTabRightMenu(menu);
+		menu.AddItem("获取焦点", bind(this.ShowControlFocus, this));
+    }
+
+    public fun ShowControlFocus()
+    {
+        var tree = g_IDECenter.center.code_list.GetCodeTree(this._user_info.path);
+        if (tree == null) return;
+
+        g_IDECenter.center.code_list.ShowTreeItemFocus(tree);
     }
 
     private fun HandleEditGotoEvent(AUIPlugin.AUICodeEditGotoEvent event)

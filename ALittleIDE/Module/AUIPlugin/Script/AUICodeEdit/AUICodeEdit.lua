@@ -668,7 +668,6 @@ function AUIPlugin.AUICodeEdit:HandleFindInputChanged(event)
 					line.container._find:AddChild(item)
 					local info = {}
 					info._focus_quad = item
-					info.it_line = index
 					info.it_char_start = char_index
 					info.it_char_end = char_index + find_len - 1
 					item._user_data = info
@@ -708,7 +707,7 @@ function AUIPlugin.AUICodeEdit:FindNextImpl(start_line, check_cursor)
 		for index, child in ___ipairs(line.container._find.childs) do
 			local info = child._user_data
 			if not check_cursor or line_index ~= self._cursor.line or info.it_char_start > self._cursor.char + 1 then
-				self:EditFocus(info.it_line, info.it_char_start, info.it_line, info.it_char_end, false)
+				self:EditFocus(line_index, info.it_char_start, line_index, info.it_char_end, false)
 				return true
 			end
 		end
@@ -770,7 +769,6 @@ function AUIPlugin.AUICodeEdit:UpdateLineFind(it_line)
 				line.container._find:AddChild(item)
 				local info = {}
 				info._focus_quad = item
-				info.it_line = it_line
 				info.it_char_start = char_index
 				info.it_char_end = char_index + find_len - 1
 				item._user_data = info

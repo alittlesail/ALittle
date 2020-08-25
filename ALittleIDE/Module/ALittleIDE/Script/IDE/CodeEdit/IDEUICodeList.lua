@@ -176,6 +176,16 @@ function ALittleIDE.IDEUICodeList:OpenByFullPath(full_path, line_start, char_sta
 	return ALittleIDE.g_IDECenter.center.content_edit:StartEditCodeBySelect(user_info.name, user_info)
 end
 
+function ALittleIDE.IDEUICodeList:GetCodeTree(full_path)
+	for index, child in ___ipairs(self._code_scroll_screen.childs) do
+		local item = child:FindFile(full_path)
+		if item ~= nil then
+			return item
+		end
+	end
+	return nil
+end
+
 function ALittleIDE.IDEUICodeList:AddModule(name)
 	for index, tree in ___ipairs(self._code_scroll_screen.childs) do
 		if tree.user_info.module_name == name then

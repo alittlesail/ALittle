@@ -62,7 +62,6 @@ protected struct AUICodeErrorInfo
 protected struct AUICodeFindInfo
 {
     ALittle.DisplayObject _focus_quad;
-    int it_line;
     int it_char_start;
     int it_char_end;
 }

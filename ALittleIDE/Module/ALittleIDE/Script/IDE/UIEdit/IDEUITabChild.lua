@@ -230,6 +230,7 @@ function ALittleIDE.IDEUITabChild:OnTabRightMenu(menu)
 	menu:AddItem("复制控件名", Lua.Bind(ALittle.System_SetClipboardText, self._name))
 	menu:AddItem("复制继承代码", Lua.Bind(self.CopyExtends, self))
 	menu:AddItem("刷新", Lua.Bind(self.Refresh, self))
+	menu:AddItem("获取焦点", Lua.Bind(self.ShowControlFocus, self))
 end
 
 function ALittleIDE.IDEUITabChild:CopyExtends()
@@ -514,6 +515,19 @@ function ALittleIDE.IDEUITabChild:Refresh()
 	self._save = true
 	self:UpdateTitle()
 	self._revoke_list = ALittle.RevokeList()
+end
+
+function ALittleIDE.IDEUITabChild:ShowControlFocus()
+	local tree = ALittleIDE.g_IDECenter.center.control_list:GetControlTree(self._module)
+	if tree == nil then
+		return
+	end
+	for index, child in ___ipairs(tree.childs) do
+		if child.user_info.name == self._name then
+			ALittleIDE.g_IDECenter.center.control_list:ShowTreeItemFocus(child)
+			return
+		end
+	end
 end
 
 function ALittleIDE.IDEUITabChild:CreateByNew(type)

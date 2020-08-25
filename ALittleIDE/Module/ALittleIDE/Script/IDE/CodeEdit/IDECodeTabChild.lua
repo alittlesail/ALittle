@@ -74,6 +74,15 @@ end
 
 function ALittleIDE.IDECodeTabChild:OnTabRightMenu(menu)
 	self._edit:OnTabRightMenu(menu)
+	menu:AddItem("获取焦点", Lua.Bind(self.ShowControlFocus, self))
+end
+
+function ALittleIDE.IDECodeTabChild:ShowControlFocus()
+	local tree = ALittleIDE.g_IDECenter.center.code_list:GetCodeTree(self._user_info.path)
+	if tree == nil then
+		return
+	end
+	ALittleIDE.g_IDECenter.center.code_list:ShowTreeItemFocus(tree)
 end
 
 function ALittleIDE.IDECodeTabChild:HandleEditGotoEvent(event)

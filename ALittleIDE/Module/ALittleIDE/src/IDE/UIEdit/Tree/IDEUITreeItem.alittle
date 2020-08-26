@@ -87,7 +87,7 @@ public class IDEUITreeItem : IDEUITreeLogic
 		
 		var link = this._user_info.base.__link;
 		if (link == null) link = this._user_info.default.__link;
-	
+
 		if (this._user_info.base.description != null)
 			title = title..this._user_info.base.description;
 		elseif (this._user_info.default.description != null)

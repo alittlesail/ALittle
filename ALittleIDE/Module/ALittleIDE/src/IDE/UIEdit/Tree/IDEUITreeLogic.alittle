@@ -110,7 +110,7 @@ public class IDEUITreeLogic : ALittle.DisplayLayout
 	{
 		if (this._user_info.extends) { this.ShowAttributePanel(); return; }
 	
-		var shift = (A_UISystem.sym_map[1073742049] != null || A_UISystem.sym_map[1073742053] != null);
+		var shift = (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_LSHIFT] != null || A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_RSHIFT] != null);
 		if (shift && this._tab_child.IsShowHandleQuad(this))
 			this._tab_child.HideHandleQuad(this);
 		else

@@ -66,7 +66,6 @@ protected class IDEUICenter : ALittle.DisplayLayout
     private ALittle.DropDown _tool_language;	// 目标语言下拉菜单
     private ALittle.DisplayObject _tool_jumpprecode;
     private ALittle.DisplayObject _tool_jumpnextcode;
-    private ALittle.DisplayObject _tool_findfile;
 
 	private IDEUIControlTree _control_tree;	// 控件树
 	private IDEUIControlList _control_list;	// 控件库

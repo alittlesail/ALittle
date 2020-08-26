@@ -1200,18 +1200,18 @@ public class DisplayObjectS
 			}
 		}
 	}
-	public fun RemoverToNilShowSetForExtends(string text, string extends_module, string extends_name, bool need_reset, [Nullable] ALittle.RevokeBind revoke_bind)
+	public fun RemoverToNilShowSetForExtends(string text, string extends_name, bool need_reset, [Nullable] ALittle.RevokeBind revoke_bind)
 	{
 		if (extends_name != "")
 		{
-            var ui_manager = g_IDEProject.GetUIManager(extends_module);
+            var ui_manager = g_IDEProject.GetUIManager(this._tree_logic.user_info.module);
 			if (ui_manager.control_map[extends_name] == null)
 			{
 				g_AUITool.ShowNotice("错误", "要继承的控件不存在:"..extends_name);
 				return ;
 			}
 			var display_info = new ALittle.DisplayInfo();
-            display_info.__module = extends_module;
+            display_info.__module = this._tree_logic.user_info.module;
 			display_info.__extends = extends_name;
 			this.RemoverToNilShowSet(text, ALittle.String_JsonEncode(display_info), need_reset, revoke_bind);
 		}

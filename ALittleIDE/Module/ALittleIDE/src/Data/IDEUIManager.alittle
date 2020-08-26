@@ -50,6 +50,17 @@ public class IDEUIManager
 					{
 						for (var control_name, control_info in content_info_map)
 						{
+                            if (this._module == "GBRMaker" && IDEUIUtility_GetExtends222(control_info))
+                            {
+                                // 将信息保存到文件中
+                                var file_path1111 = this._base_path.."/"..control_name..".json";
+                                // 创建一个保存映射表
+                                var save_info = new Map<string, ALittle.DisplayInfo>();
+                                save_info[control_name] = control_info;
+                                // 保存文件
+                                ALittle.File_SaveFile(file_path1111, ALittle.String_JsonEncode(save_info), -1);
+                            }
+
 							// 获取信息
 							var all_info = new IDEControlInfo();
 							all_info.info = control_info;

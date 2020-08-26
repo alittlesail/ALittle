@@ -53,7 +53,7 @@ public class SliderS : DisplayLayoutS
             if (event.target._user_data == event.target.text) return;
             event.target._user_data = event.target.text;
         }
-        this.RemoverToNilShowSetForExtends("bar_button", null, this._bar_button.text, false);
+        this.RemoverToNilShowSetForExtends("bar_button", this._bar_button.text, false);
     }
     
     public fun HandleBarBackFOCUSOUT(ALittle.UIEvent event)

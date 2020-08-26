@@ -90,7 +90,7 @@ public class DialogS : DisplayLayoutS
 			if (event.target._user_data == event.target.text) return;
 			event.target._user_data = event.target.text;
 		}
-		this.RemoverToNilShowSetForExtends("show_close_button", null, this._show_close_button.text, false);
+		this.RemoverToNilShowSetForExtends("show_close_button", this._show_close_button.text, false);
 	}
 	
 	public fun HandleShowTitleFOCUSOUT(ALittle.UIEvent event)

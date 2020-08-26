@@ -115,7 +115,7 @@ function ALittleIDE.RichEditS:HandleStartCursorFOCUSOUT(event)
 		end
 		event.target._user_data = event.target.text
 	end
-	self:RemoverToNilShowSetForExtends("start_cursor", nil, self._start_cursor.text, false)
+	self:RemoverToNilShowSetForExtends("start_cursor", self._start_cursor.text, false)
 end
 
 function ALittleIDE.RichEditS:HandleEndCursorFOCUSOUT(event)
@@ -125,7 +125,7 @@ function ALittleIDE.RichEditS:HandleEndCursorFOCUSOUT(event)
 		end
 		event.target._user_data = event.target.text
 	end
-	self:RemoverToNilShowSetForExtends("end_cursor", nil, self._end_cursor.text, false)
+	self:RemoverToNilShowSetForExtends("end_cursor", self._end_cursor.text, false)
 end
 
 function ALittleIDE.RichEditS:HandleDefaultTextFOCUSOUT(event)

@@ -29,7 +29,7 @@ public class ScrollListS : DisplayLayoutS
 			if (event.target._user_data == event.target.text) return;
 			event.target._user_data = event.target.text;
 		}
-		this.RemoverToNilShowSetForExtends("right_scrollbar", null, this._right_scrollbar.text, false);
+		this.RemoverToNilShowSetForExtends("right_scrollbar", this._right_scrollbar.text, false);
 	}
 	
 	public fun HandleScrollListTypeSELECT_CHANGE(ALittle.UIEvent event)

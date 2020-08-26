@@ -135,7 +135,7 @@ public class RichInputS : DisplayLayoutS
             if (event.target._user_data == event.target.text) return;
             event.target._user_data = event.target.text;
         }
-        this.RemoverToNilShowSetForExtends("start_cursor", null, this._start_cursor.text, false);
+        this.RemoverToNilShowSetForExtends("start_cursor", this._start_cursor.text, false);
     }
     
     public fun HandleEndCursorFOCUSOUT(ALittle.UIEvent event)
@@ -145,7 +145,7 @@ public class RichInputS : DisplayLayoutS
             if (event.target._user_data == event.target.text) return;
             event.target._user_data = event.target.text;
         }
-        this.RemoverToNilShowSetForExtends("end_cursor", null, this._end_cursor.text, false);
+        this.RemoverToNilShowSetForExtends("end_cursor", this._end_cursor.text, false);
     }
     
     public fun HandlePasswordModeSELECT_CHANGE(ALittle.UIEvent event)

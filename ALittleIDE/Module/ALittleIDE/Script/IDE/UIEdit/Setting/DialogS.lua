@@ -88,7 +88,7 @@ function ALittleIDE.DialogS:HandleShowCloseButtonFOCUSOUT(event)
 		end
 		event.target._user_data = event.target.text
 	end
-	self:RemoverToNilShowSetForExtends("show_close_button", nil, self._show_close_button.text, false)
+	self:RemoverToNilShowSetForExtends("show_close_button", self._show_close_button.text, false)
 end
 
 function ALittleIDE.DialogS:HandleShowTitleFOCUSOUT(event)

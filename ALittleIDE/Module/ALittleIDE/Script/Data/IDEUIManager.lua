@@ -70,6 +70,12 @@ function ALittleIDE.IDEUIManager:Ctor(module)
 				local error, content_info_map = Lua.TCall(ALittle.String_JsonDecode, content)
 				if error == nil then
 					for control_name, control_info in ___pairs(content_info_map) do
+						if self._module == "GBRMaker" and ALittleIDE.IDEUIUtility_GetExtends222(control_info) then
+							local file_path1111 = self._base_path .. "/" .. control_name .. ".json"
+							local save_info = {}
+							save_info[control_name] = control_info
+							ALittle.File_SaveFile(file_path1111, ALittle.String_JsonEncode(save_info), -1)
+						end
 						local all_info = {}
 						all_info.info = control_info
 						all_info.name = control_name

@@ -48,7 +48,7 @@ function ALittleIDE.SliderS:HandleBarButtonFOCUSOUT(event)
 		end
 		event.target._user_data = event.target.text
 	end
-	self:RemoverToNilShowSetForExtends("bar_button", nil, self._bar_button.text, false)
+	self:RemoverToNilShowSetForExtends("bar_button", self._bar_button.text, false)
 end
 
 function ALittleIDE.SliderS:HandleBarBackFOCUSOUT(event)

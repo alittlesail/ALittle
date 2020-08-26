@@ -1226,15 +1226,15 @@ function ALittleIDE.DisplayObjectS:RemoverToNilShowSetForImage(text, image_path,
 	end
 end
 
-function ALittleIDE.DisplayObjectS:RemoverToNilShowSetForExtends(text, extends_module, extends_name, need_reset, revoke_bind)
+function ALittleIDE.DisplayObjectS:RemoverToNilShowSetForExtends(text, extends_name, need_reset, revoke_bind)
 	if extends_name ~= "" then
-		local ui_manager = ALittleIDE.g_IDEProject:GetUIManager(extends_module)
+		local ui_manager = ALittleIDE.g_IDEProject:GetUIManager(self._tree_logic.user_info.module)
 		if ui_manager.control_map[extends_name] == nil then
 			g_AUITool:ShowNotice("错误", "要继承的控件不存在:" .. extends_name)
 			return
 		end
 		local display_info = {}
-		display_info.__module = extends_module
+		display_info.__module = self._tree_logic.user_info.module
 		display_info.__extends = extends_name
 		self:RemoverToNilShowSet(text, ALittle.String_JsonEncode(display_info), need_reset, revoke_bind)
 	else

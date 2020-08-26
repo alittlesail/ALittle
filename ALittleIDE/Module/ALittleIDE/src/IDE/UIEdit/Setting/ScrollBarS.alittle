@@ -55,7 +55,7 @@ public class ScrollBarS : Grid3S
             if (event.target._user_data == event.target.text) return;
             event.target._user_data = event.target.text;
         }
-        this.RemoverToNilShowSetForExtends("up_button", null, this._up_button.text, false);
+        this.RemoverToNilShowSetForExtends("up_button", this._up_button.text, false);
     }
     
     public fun HandleDownButtonFOCUSOUT(ALittle.UIEvent event)
@@ -65,7 +65,7 @@ public class ScrollBarS : Grid3S
             if (event.target._user_data == event.target.text) return;
             event.target._user_data = event.target.text;
         }
-        this.RemoverToNilShowSetForExtends("down_button", null, this._down_button.text, false);
+        this.RemoverToNilShowSetForExtends("down_button", this._down_button.text, false);
     }
     
     public fun HandleBarButtonFOCUSOUT(ALittle.UIEvent event)
@@ -75,7 +75,7 @@ public class ScrollBarS : Grid3S
             if (event.target._user_data == event.target.text) return;
             event.target._user_data = event.target.text;
         }
-        this.RemoverToNilShowSetForExtends("bar_button", null, this._bar_button.text, false);
+        this.RemoverToNilShowSetForExtends("bar_button", this._bar_button.text, false);
     }
     
     public fun HandleBarBackFOCUSOUT(ALittle.UIEvent event)

@@ -59,7 +59,7 @@ public class DropDownS : TextCheckButtonS
 			if (event.target._user_data == event.target.text) return;
 			event.target._user_data = event.target.text;
 		}
-		this.RemoverToNilShowSetForExtends("show_scrollbar", null, this._show_scrollbar.text, false);
+		this.RemoverToNilShowSetForExtends("show_scrollbar", this._show_scrollbar.text, false);
 	}
 	
 	public fun HandleButtonStyleFOCUSOUT(ALittle.UIEvent event)

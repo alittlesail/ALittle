@@ -28,7 +28,7 @@ function ALittleIDE.ScrollScreenS:HandleContainerFOCUSOUT(event)
 		end
 		event.target._user_data = event.target.text
 	end
-	self:RemoverToNilShowSetForExtends("container", nil, self._container.text, false)
+	self:RemoverToNilShowSetForExtends("container", self._container.text, false)
 end
 
 function ALittleIDE.ScrollScreenS:HandleRightSFOCUSOUT(event)
@@ -38,7 +38,7 @@ function ALittleIDE.ScrollScreenS:HandleRightSFOCUSOUT(event)
 		end
 		event.target._user_data = event.target.text
 	end
-	self:RemoverToNilShowSetForExtends("right_scrollbar", nil, self._right_scrollbar.text, false)
+	self:RemoverToNilShowSetForExtends("right_scrollbar", self._right_scrollbar.text, false)
 end
 
 function ALittleIDE.ScrollScreenS:HandleBottomBFOCUSOUT(event)
@@ -48,7 +48,7 @@ function ALittleIDE.ScrollScreenS:HandleBottomBFOCUSOUT(event)
 		end
 		event.target._user_data = event.target.text
 	end
-	self:RemoverToNilShowSetForExtends("bottom_scrollbar", nil, self._bottom_scrollbar.text, false)
+	self:RemoverToNilShowSetForExtends("bottom_scrollbar", self._bottom_scrollbar.text, false)
 end
 
 function ALittleIDE.ScrollScreenS:HandleHandOpenExtendsDragSELECT_CHANGE(event)

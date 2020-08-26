@@ -59,7 +59,7 @@ function ALittleIDE.DropDownS:HandleShowScrollBarFOCUSOUT(event)
 		end
 		event.target._user_data = event.target.text
 	end
-	self:RemoverToNilShowSetForExtends("show_scrollbar", nil, self._show_scrollbar.text, false)
+	self:RemoverToNilShowSetForExtends("show_scrollbar", self._show_scrollbar.text, false)
 end
 
 function ALittleIDE.DropDownS:HandleButtonStyleFOCUSOUT(event)

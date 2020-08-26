@@ -5,6 +5,7 @@ namespace ALittleIDE;
 public struct IDEControlCopyInfo
 {
 	int index;					// 控件位置
+    string module;				// 来源模块
 	ALittle.DisplayInfo info;	// 控件信息
 }
 

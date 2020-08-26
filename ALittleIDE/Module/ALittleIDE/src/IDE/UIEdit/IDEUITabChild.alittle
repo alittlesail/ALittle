@@ -1062,7 +1062,7 @@ public class IDEUITabChild : IDETabChild
 	public fun HandleHandleQuadKeyDown(ALittle.UIKeyDownEvent event)
     {
 	    //处理Ctrl+C////////////////////////////////////////////////////////////////////////
-		if (event.sym == 99 && ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) != 0)
+		if (event.sym == ALittle.UIEnumTypes.KEY_C && ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) != 0)
         {
             var copy_list = new List<IDEControlCopyInfo>();
             var copy_list_count = 0;
@@ -1071,6 +1071,7 @@ public class IDEUITabChild : IDETabChild
 				if (handle_info.target.logic_parent != null)
                 {
                     var info = new IDEControlCopyInfo();
+                    info.module = this._module;
                     info.index = handle_info.target.logic_parent.GetChildIndex(handle_info.target);
 					info.info = handle_info.target.CalcInfo();
                     ++ copy_list_count;
@@ -1085,13 +1086,14 @@ public class IDEUITabChild : IDETabChild
             return;
 		}
 	    //处理Ctrl+X////////////////////////////////////////////////////////////////////////
-		if (event.sym == 120 && ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) != 0)
+		if (event.sym == ALittle.UIEnumTypes.KEY_X && ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) != 0)
         {
             var copy_list = new List<IDEControlCopyInfo>();
             var copy_list_count = 0;
 			for (var target, handle_info in this._tab_quad_map)
             {
                 var info = new IDEControlCopyInfo();
+                info.module = this._module;
                 info.index = handle_info.target.logic_parent.GetChildIndex(handle_info.target);
                 info.info = handle_info.target.CalcInfo();
                 ++ copy_list_count;
@@ -1109,7 +1111,7 @@ public class IDEUITabChild : IDETabChild
             return;
 		}
 	    //处理Delete键
-		if (event.sym == 127)
+		if (event.sym == ALittle.UIEnumTypes.KEY_DELETE)
         {
             var revoke_bind = new ALittle.RevokeBind();
             var has_target = false;
@@ -1127,7 +1129,7 @@ public class IDEUITabChild : IDETabChild
             return;
 		}
 	    //处理Ctrl+V////////////////////////////////////////////////////////////////////////
-		if (event.sym == 118 && ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) != 0)
+		if (event.sym == ALittle.UIEnumTypes.KEY_V && ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) != 0)
         {
             var handle_info:IDEUITabChildHandleInfo = event.target._user_data;
 			// 获取父控件
@@ -1470,6 +1472,14 @@ public class IDEUITabChild : IDETabChild
                 if (callback != null) callback(false, null);
                 return;
 			}
+
+            // 检查模块
+            if (info.module != null && info.module != this._module)
+            {
+                g_AUITool.ShowNotice("错误", "剪切板的内容属于其他模块不能粘帖");
+                if (callback != null) callback(false, null);
+                return;
+            }
 		}
 
         // 清理红色矩形

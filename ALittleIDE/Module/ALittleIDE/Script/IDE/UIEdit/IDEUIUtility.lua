@@ -36,8 +36,8 @@ option_map = {}
 })
 ALittle.RegStruct(489101099, "ALittleIDE.IDEControlCopyInfo", {
 name = "ALittleIDE.IDEControlCopyInfo", ns_name = "ALittleIDE", rl_name = "IDEControlCopyInfo", hash_code = 489101099,
-name_list = {"index","info"},
-type_list = {"int","ALittle.DisplayInfo"},
+name_list = {"index","module","info"},
+type_list = {"int","string","ALittle.DisplayInfo"},
 option_map = {}
 })
 ALittle.RegStruct(-4982446, "ALittle.DisplayInfo", {

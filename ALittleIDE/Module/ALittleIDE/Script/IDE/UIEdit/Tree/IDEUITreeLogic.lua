@@ -194,7 +194,7 @@ function ALittleIDE.IDEUITreeLogic:HandleDragEnd(event)
 	local delta_y = event.abs_y - y
 	local target = self._tab_child.tree_object:PickUp(delta_x, delta_y)
 	if target == nil then
-		ALittle.Log("IDEUITreeLogic:HandleDrag} target null")
+		ALittle.Log("IDEUITreeLogic:HandleDragEnd target null")
 		return
 	end
 	local tree = target._user_data
@@ -208,6 +208,7 @@ function ALittleIDE.IDEUITreeLogic:HandleDragEnd(event)
 	end
 	local copy_list = {}
 	local info = {}
+	info.module = self._user_info.module
 	info.index = 1
 	info.info = self:CalcInfo()
 	copy_list[1] = info
@@ -571,6 +572,7 @@ end
 
 function ALittleIDE.IDEUITreeLogic:CopyToClipboard()
 	local info = {}
+	info.module = self._user_info.module
 	info.index = 1
 	info.info = self:CalcInfo()
 	local copy_list = {}
@@ -580,6 +582,7 @@ end
 
 function ALittleIDE.IDEUITreeLogic:CutToClipboard()
 	local info = {}
+	info.module = self._user_info.module
 	info.index = 1
 	info.info = self:CalcInfo()
 	local copy_list = {}

@@ -966,6 +966,7 @@ function ALittleIDE.IDEUITabChild:HandleHandleQuadKeyDown(event)
 		for target, handle_info in ___pairs(self._tab_quad_map) do
 			if handle_info.target.logic_parent ~= nil then
 				local info = {}
+				info.module = self._module
 				info.index = handle_info.target.logic_parent:GetChildIndex(handle_info.target)
 				info.info = handle_info.target:CalcInfo()
 				copy_list_count = copy_list_count + 1
@@ -983,6 +984,7 @@ function ALittleIDE.IDEUITabChild:HandleHandleQuadKeyDown(event)
 		local copy_list_count = 0
 		for target, handle_info in ___pairs(self._tab_quad_map) do
 			local info = {}
+			info.module = self._module
 			info.index = handle_info.target.logic_parent:GetChildIndex(handle_info.target)
 			info.info = handle_info.target:CalcInfo()
 			copy_list_count = copy_list_count + 1
@@ -1275,6 +1277,13 @@ function ALittleIDE.IDEUITabChild:RightControlTreePasteImpl(target, copy_list, c
 	for k, info in ___ipairs(copy_list) do
 		if info.info.__class == nil and info.info.__extends == nil then
 			g_AUITool:ShowNotice("错误", "剪切板的内容不能粘帖")
+			if callback ~= nil then
+				callback(false, nil)
+			end
+			return
+		end
+		if info.module ~= nil and info.module ~= self._module then
+			g_AUITool:ShowNotice("错误", "剪切板的内容属于其他模块不能粘帖")
 			if callback ~= nil then
 				callback(false, nil)
 			end

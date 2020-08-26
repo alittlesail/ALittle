@@ -41,6 +41,7 @@ struct IDEUITabChildQuickDragAddUserData
 {
     double abs_x;           // 绝对坐标X
     double abs_y;           // 绝对坐标Y
+    string module_name;     // 模块名
     string control_name;    // 拖拽的控件名称
 }
 
@@ -228,9 +229,9 @@ public class IDEUITabChild : IDETabChild
     
 	private fun CopyExtends()
 	{
-		var name = this._name;
 		var display_info = new ALittle.DisplayInfo();
-		display_info.__extends = name;
+        display_info.__module = this._module;
+		display_info.__extends = this._name;
 		var copy_list = new List<IDEControlCopyInfo>();
 		var info = new IDEControlCopyInfo();
 		info.index = 1;
@@ -295,8 +296,11 @@ public class IDEUITabChild : IDETabChild
         if (error != null) return;
 	
         // 刷新控件树
-        var tree = g_IDECenter.center.control_list.GetControlTree(this._module);
-        if (tree != null) tree.Refresh();
+        if (create)
+        {
+            var tree = g_IDECenter.center.control_list.GetControlTree(this._module);
+            if (tree != null) tree.Refresh();
+        }
 
         this._save = value;
         this.UpdateTitle();
@@ -1771,7 +1775,7 @@ public class IDEUITabChild : IDETabChild
 	//////////////////////////////////////////////////////////////////-
 	
 	// 实际处理快捷操作添加控件
-	public fun QuickDragAddControl(double abs_x, double abs_y, string control_name)
+	public fun QuickDragAddControl(double abs_x, double abs_y, string module_name, string control_name)
     {
 		// 检查必要参数
         if (this._tree_object == null) return;
@@ -1792,6 +1796,7 @@ public class IDEUITabChild : IDETabChild
         var user_data = new IDEUITabChildQuickDragAddUserData();
         user_data.abs_x = abs_x;
         user_data.abs_y = abs_y;
+        user_data.module_name = module_name;
         user_data.control_name = control_name;
 	
 		if (count == 1)
@@ -1812,6 +1817,7 @@ public class IDEUITabChild : IDETabChild
         var revoke_bind = new ALittle.RevokeBind();
 	
         var display_info = new ALittle.DisplayInfo();
+        display_info.__module = user_data.module_name;
         display_info.__extends = user_data.control_name;
         var info = new IDEControlCopyInfo();
         info.index = 1;

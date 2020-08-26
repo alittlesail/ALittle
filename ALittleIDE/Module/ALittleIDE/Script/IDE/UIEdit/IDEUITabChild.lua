@@ -104,8 +104,8 @@ option_map = {}
 })
 ALittle.RegStruct(-370908646, "ALittleIDE.IDEUITabChildQuickDragAddUserData", {
 name = "ALittleIDE.IDEUITabChildQuickDragAddUserData", ns_name = "ALittleIDE", rl_name = "IDEUITabChildQuickDragAddUserData", hash_code = -370908646,
-name_list = {"abs_x","abs_y","control_name"},
-type_list = {"double","double","string"},
+name_list = {"abs_x","abs_y","module_name","control_name"},
+type_list = {"double","double","string","string"},
 option_map = {}
 })
 ALittle.RegStruct(150587926, "ALittle.UIButtonDragEndEvent", {
@@ -234,9 +234,9 @@ function ALittleIDE.IDEUITabChild:OnTabRightMenu(menu)
 end
 
 function ALittleIDE.IDEUITabChild:CopyExtends()
-	local name = self._name
 	local display_info = {}
-	display_info.__extends = name
+	display_info.__module = self._module
+	display_info.__extends = self._name
 	local copy_list = {}
 	local info = {}
 	info.index = 1
@@ -313,9 +313,11 @@ function ALittleIDE.IDEUITabChild.__setter:save(value)
 	if error ~= nil then
 		return
 	end
-	local tree = ALittleIDE.g_IDECenter.center.control_list:GetControlTree(self._module)
-	if tree ~= nil then
-		tree:Refresh()
+	if create then
+		local tree = ALittleIDE.g_IDECenter.center.control_list:GetControlTree(self._module)
+		if tree ~= nil then
+			tree:Refresh()
+		end
 	end
 	self._save = value
 	self:UpdateTitle()
@@ -1548,7 +1550,7 @@ function ALittleIDE.IDEUITabChild:SearchTextureName(name)
 	self:ShowHandleQuad(target)
 end
 
-function ALittleIDE.IDEUITabChild:QuickDragAddControl(abs_x, abs_y, control_name)
+function ALittleIDE.IDEUITabChild:QuickDragAddControl(abs_x, abs_y, module_name, control_name)
 	if self._tree_object == nil then
 		return
 	end
@@ -1566,6 +1568,7 @@ function ALittleIDE.IDEUITabChild:QuickDragAddControl(abs_x, abs_y, control_name
 	local user_data = {}
 	user_data.abs_x = abs_x
 	user_data.abs_y = abs_y
+	user_data.module_name = module_name
 	user_data.control_name = control_name
 	if count == 1 then
 		self:QuickDragAddStart(list[1], user_data)
@@ -1581,6 +1584,7 @@ end
 function ALittleIDE.IDEUITabChild:QuickDragAddStart(tree, user_data)
 	local revoke_bind = ALittle.RevokeBind()
 	local display_info = {}
+	display_info.__module = user_data.module_name
 	display_info.__extends = user_data.control_name
 	local info = {}
 	info.index = 1

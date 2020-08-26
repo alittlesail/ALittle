@@ -18,6 +18,18 @@ name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
 type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
 option_map = {}
 })
+ALittle.RegStruct(1337289812, "ALittle.UIButtonDragEvent", {
+name = "ALittle.UIButtonDragEvent", ns_name = "ALittle", rl_name = "UIButtonDragEvent", hash_code = 1337289812,
+name_list = {"target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"},
+type_list = {"ALittle.DisplayObject","double","double","double","double","double","double"},
+option_map = {}
+})
+ALittle.RegStruct(1301789264, "ALittle.UIButtonDragBeginEvent", {
+name = "ALittle.UIButtonDragBeginEvent", ns_name = "ALittle", rl_name = "UIButtonDragBeginEvent", hash_code = 1301789264,
+name_list = {"target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"},
+type_list = {"ALittle.DisplayObject","double","double","double","double","double","double"},
+option_map = {}
+})
 ALittle.RegStruct(-641444818, "ALittle.UIRButtonDownEvent", {
 name = "ALittle.UIRButtonDownEvent", ns_name = "ALittle", rl_name = "UIRButtonDownEvent", hash_code = -641444818,
 name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
@@ -36,6 +48,12 @@ name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
+ALittle.RegStruct(150587926, "ALittle.UIButtonDragEndEvent", {
+name = "ALittle.UIButtonDragEndEvent", ns_name = "ALittle", rl_name = "UIButtonDragEndEvent", hash_code = 150587926,
+name_list = {"target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"},
+type_list = {"ALittle.DisplayObject","double","double","double","double","double","double"},
+option_map = {}
+})
 
 assert(ALittleIDE.IDEControlTreeLogic, " extends class:ALittleIDE.IDEControlTreeLogic is nil")
 ALittleIDE.IDEControlTreeItem = Lua.Class(ALittleIDE.IDEControlTreeLogic, "ALittleIDE.IDEControlTreeItem")
@@ -49,6 +67,9 @@ function ALittleIDE.IDEControlTreeItem:Ctor(ctrl_sys, user_info)
 	self._item_button.group = user_info.group
 	self._item_button:AddEventListener(___all_struct[-449066808], self, self.HandleClick)
 	self._item_button:AddEventListener(___all_struct[-641444818], self, self.HandleRButtonDown)
+	self._item_button:AddEventListener(___all_struct[1301789264], self, self.HandleControlDragBegin)
+	self._item_button:AddEventListener(___all_struct[1337289812], self, self.HandleControlDrag)
+	self._item_button:AddEventListener(___all_struct[150587926], self, self.HandleControlDragEnd)
 	self._item_button._user_data = self
 	self._item_title.text = self._user_info.name
 end
@@ -65,6 +86,9 @@ function ALittleIDE.IDEControlTreeItem.__setter:fold(value)
 end
 
 function ALittleIDE.IDEControlTreeItem:HandleClick(event)
+	if event.is_drag then
+		return
+	end
 	ALittleIDE.g_IDECenter.center.content_edit:StartEditControlBySelect(self._user_info.module_name, self._user_info.name)
 end
 
@@ -203,6 +227,53 @@ function ALittleIDE.IDEControlTreeItem:HandleCopyExtends()
 end
 
 function ALittleIDE.IDEControlTreeItem:OnDelete()
+end
+
+function ALittleIDE.IDEControlTreeItem:HandleControlDragBegin(event)
+	self._drag_shift = (A_UISystem.sym_map[1073742049] ~= nil or A_UISystem.sym_map[1073742053] ~= nil)
+	if self._drag_shift == false then
+		event.target = ALittleIDE.g_IDECenter.center.control_list.scroll_screen
+		ALittleIDE.g_IDECenter.center.control_list.scroll_screen:DispatchEvent(___all_struct[1301789264], event)
+		return
+	end
+	local x, y = event.target:LocalToGlobal()
+	self._drag_effect = ALittle.EffectImage(ALittleIDE.g_Control)
+	self._drag_effect:Action(event.target)
+	A_LayerManager:AddToTip(self._drag_effect)
+	self._drag_effect.x = x
+	self._drag_effect.y = y
+	self._drag_effect.alpha = 0.6
+end
+
+function ALittleIDE.IDEControlTreeItem:HandleControlDrag(event)
+	if self._drag_shift == false then
+		event.target = ALittleIDE.g_IDECenter.center.control_list.scroll_screen
+		ALittleIDE.g_IDECenter.center.control_list.scroll_screen:DispatchEvent(___all_struct[1337289812], event)
+		return
+	end
+	if self._drag_effect == nil then
+		return
+	end
+	self._drag_effect.x = self._drag_effect.x + event.delta_x
+	self._drag_effect.y = self._drag_effect.y + event.delta_y
+end
+
+function ALittleIDE.IDEControlTreeItem:HandleControlDragEnd(event)
+	if self._drag_shift == false then
+		event.target = ALittleIDE.g_IDECenter.center.control_list.scroll_screen
+		ALittleIDE.g_IDECenter.center.control_list.scroll_screen:DispatchEvent(___all_struct[150587926], event)
+		return
+	end
+	if self._drag_effect ~= nil then
+		A_LayerManager:RemoveFromTip(self._drag_effect)
+		self._drag_effect:Clear()
+		self._drag_effect = nil
+	end
+	local tab_child = ALittle.Cast(ALittleIDE.IDEUITabChild, ALittleIDE.IDETabChild, ALittleIDE.g_IDECenter.center.content_edit.cur_tab_child)
+	if tab_child == nil then
+		return
+	end
+	tab_child:QuickDragAddControl(event.abs_x, event.abs_y, self._user_info.module_name, self._user_info.name)
 end
 
 end

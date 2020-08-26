@@ -16,7 +16,7 @@ public class AUICodeCursor : ALittle.Quad
     // 缩进数量
     private int _virtual_indent = 0;
     // 记录当前列
-    private int _move_char = 0;
+    private double _move_acc_width = 0;
 
     public ctor(ALittle.ControlSystem ctrl_sys, AUICodeEdit edit)
     {
@@ -119,13 +119,13 @@ public class AUICodeCursor : ALittle.Quad
         if (show == null || show) this.Show();
 
         this._virtual_indent = 0;
-        this._move_char = this._it_char;
+        this._move_acc_width = this.x;
     }
 
     public fun SetLineChar(int it_line, int it_char)
     {
         this.SetLineCharInner(it_line, it_char);
-        this._move_char = this._it_char;
+        this._move_acc_width = this.x;
     }
 
     private fun SetLineCharInner(int it_line, int it_char)
@@ -169,8 +169,8 @@ public class AUICodeCursor : ALittle.Quad
                 if (this._virtual_indent > 0)
                 {
                     this.x = this._virtual_indent * this._edit.ascii_width;
-                    if (this._virtual_indent > this._move_char)
-                    	this._move_char = this._virtual_indent;
+                    if (this.x > this._move_acc_width)
+                    	this._move_acc_width = this.x;
                 }
             }
         }
@@ -193,7 +193,12 @@ public class AUICodeCursor : ALittle.Quad
         var it_char = line.char_count;
         while (it_char > 0 && line.char_list[it_char].width <= 0)
             -- it_char;
-        if (this._move_char < it_char) it_char = this._move_char;
+        while (it_char > 0)
+        {
+            if (line.char_list[it_char].pre_width + line.char_list[it_char].width <= this._move_acc_width)
+                break;
+            --it_char;
+        }
 
         this.SetLineCharInner(it_line, it_char);
     }
@@ -208,7 +213,12 @@ public class AUICodeCursor : ALittle.Quad
         var it_char = line.char_count;
         while (it_char > 0 && line.char_list[it_char].width <= 0)
             -- it_char;
-        if (this._move_char < it_char) it_char = this._move_char;
+        while (it_char > 0)
+        {
+            if (line.char_list[it_char].pre_width + line.char_list[it_char].width <= this._move_acc_width)
+                break;
+            --it_char;
+        }
 
         this.SetLineCharInner(it_line, it_char);
     }

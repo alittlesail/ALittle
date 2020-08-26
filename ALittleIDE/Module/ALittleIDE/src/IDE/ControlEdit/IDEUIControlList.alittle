@@ -15,13 +15,6 @@ struct IDEControlFileSearchInfo
 	string name;
 }
 
-struct IDEControlItemUserData
-{
-	int pre_index;
-	bool presee;
-	IDEControlInfo control_info;
-}
-
 public class IDEUIControlList : ALittle.DisplayLayout
 {	
 	private ALittle.ScrollScreen _control_scroll_screen;
@@ -34,9 +27,6 @@ public class IDEUIControlList : ALittle.DisplayLayout
     private ALittle.DropDown _control_new_type;
     private ALittle.DropDown _control_new_module;
     private ALittle.ImageInput _control_new_name;
-
-	private ALittle.EffectImage _drag_effect;
-	private bool _drag_shift;
 
 	private ALittle.LoopLinear _tree_loop_x;
 	private ALittle.LoopLinear _tree_loop_y;
@@ -107,6 +97,8 @@ public class IDEUIControlList : ALittle.DisplayLayout
         }
         return null;
     }
+
+    public get scroll_screen() : ALittle.ScrollScreen { return this._control_scroll_screen; }
 
 	public fun AddModule(string name)
 	{
@@ -285,106 +277,5 @@ public class IDEUIControlList : ALittle.DisplayLayout
 		g_IDECenter.center.content_edit.StartEditControlByNew(this._control_new_module.text, name, control_type);
 		// 关闭对话框
 		this._control_new_dialog.visible = false;
-	}
-
-
-	private fun HandleControlDragBegin(ALittle.UIButtonDragBeginEvent event)
-	{
-		this._drag_shift = (A_UISystem.sym_map[1073742049] != null || A_UISystem.sym_map[1073742053] != null);
-		if (this._drag_shift == false)
-		{
-			event.target = this._control_scroll_screen;
-			this._control_scroll_screen.DispatchEvent(event);
-			return;
-		}
-
-		var x, y = event.target.LocalToGlobal();
-		// 创建渲染图片
-		this._drag_effect = new ALittle.EffectImage(g_Control);
-		this._drag_effect.Action(event.target);
-		// 添加到Tip层
-		A_LayerManager.AddToTip(this._drag_effect);
-		this._drag_effect.x = x;
-		this._drag_effect.y = y;
-		this._drag_effect.alpha = 0.6;
-    
-		var info:IDEControlItemUserData = event.target._user_data;
-		if (info.presee != true) return;
-		var child = g_IDECenter.center.content_edit.GetTabById{IDEUITabChild}(info.control_info.name);
-		if (child == null) return;
-		g_IDECenter.center.content_edit.CloseTab(child);
-		if (info.pre_index != null) g_IDECenter.center.content_edit.SetCurTabIndex(info.pre_index);
-	}
-	private fun HandleControlDrag(ALittle.UIButtonDragEvent event)
-	{
-		if (this._drag_shift == false)
-		{
-			event.target = this._control_scroll_screen;
-			this._control_scroll_screen.DispatchEvent(event);
-			return;
-		}
-		if (this._drag_effect == null) return;
-		this._drag_effect.x = this._drag_effect.x + event.delta_x;
-		this._drag_effect.y = this._drag_effect.y + event.delta_y;
-	}
-	private fun HandleControlDragEnd(ALittle.UIButtonDragEndEvent event)
-	{
-		if (this._drag_shift == false)
-		{
-			event.target = this._control_scroll_screen;
-			this._control_scroll_screen.DispatchEvent(event);
-			return;
-		}
-		if (this._drag_effect != null)
-		{
-			// 从Tip层移除
-			A_LayerManager.RemoveFromTip(this._drag_effect);
-			this._drag_effect.Clear();
-			this._drag_effect = null;
-		}
-	
-		var tab_child = ALittle.Cast{IDEUITabChild}(g_IDECenter.center.content_edit.cur_tab_child);
-		if (tab_child == null) return;
-
-		var x, y = tab_child.tree_object.LocalToGlobal();
-		var delta_x = event.abs_x - x;
-		var delta_y = event.abs_y - y;
-	
-		var target = tab_child.tree_object.PickUp(delta_x, delta_y);
-		if (target == null)
-		{
-			ALittle.Log("IDEUITreeLogic:HandleDrag} target null");
-			return;
-		}
-		var tree:IDEUITreeLogic = target._user_data;
-
-		var user_data:IDEControlItemUserData = event.target._user_data;
-		// 把自己剪切
-		var save_info = new Map<string, any>();
-		save_info["__extends"] = user_data.control_info.name;
-		var copy_list = new List<Map<string, any>>();
-		var info = new Map<string, any>();
-		info["index"] = 1;
-		info["info"] = save_info;
-		copy_list[1] = info;
-		ALittle.System_SetClipboardText(ALittle.String_JsonEncode(copy_list));
-	
-		if (tree.is_tree)
-			tab_child.RightControlTreePasteImpl(tree, null, 1);
-		else
-		{
-			// 获取父控件
-			var common_parent = tree.logic_parent;
-			if (common_parent == null)
-			{
-				g_AUITool.ShowNotice("提示", "当前是根节点，并且不是容器，粘帖失败");
-				return;
-			}
-			var child_index = common_parent.GetChildIndex(tree);
-			x, y = target.LocalToGlobal();
-			y = y + target.height / 2;
-			if (event.abs_y > y) child_index = child_index + 1;
-			tab_child.RightControlTreePasteImpl(cast<IDEUITreeLogic>(common_parent), null, child_index);
-		}
 	}
 }

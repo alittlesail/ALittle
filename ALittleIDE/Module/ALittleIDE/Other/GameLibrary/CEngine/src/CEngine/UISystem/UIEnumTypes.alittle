@@ -89,6 +89,8 @@ public enum UIEnumTypes
     KEY_ENTER = 13;         // 字符表的回车键
     KEY_NUMBER_ENTER = 1073741912; // 数字盘的回车键
     KEY_TAB = 9;
+    KEY_LSHIFT = 1073742049;
+    KEY_RSHIFT = 1073742053;
 
     VIEW_FULLSCREEN = 0x00000001; // /**< fullscreen window */
     VIEW_OPENGL = 0x00000002; // /**< window usable with OpenGL context */

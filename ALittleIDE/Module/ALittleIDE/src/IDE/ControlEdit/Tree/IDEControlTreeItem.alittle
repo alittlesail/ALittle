@@ -3,6 +3,9 @@ namespace ALittleIDE;
 
 public class IDEControlTreeItem : IDEControlTreeLogic
 {
+	private ALittle.EffectImage _drag_effect;
+	private bool _drag_shift;
+
 	public ctor(ALittle.ControlSystem ctrl_sys, IDEControlTreeUserInfo user_info)
 	{
 		this._item = ctrl_sys.CreateControl{ALittle.DisplayObject}("ide_control_tree_item", this);
@@ -14,6 +17,9 @@ public class IDEControlTreeItem : IDEControlTreeLogic
 		this._item_button.group = user_info.group;
 		this._item_button.AddEventListener(this, this.HandleClick);
 		this._item_button.AddEventListener(this, this.HandleRButtonDown);
+		this._item_button.AddEventListener(this, this.HandleControlDragBegin);
+		this._item_button.AddEventListener(this, this.HandleControlDrag);
+		this._item_button.AddEventListener(this, this.HandleControlDragEnd);
 		this._item_button._user_data = this;
 		
 		this._item_title.text = this._user_info.name;
@@ -26,6 +32,7 @@ public class IDEControlTreeItem : IDEControlTreeLogic
 	// 打开文件
 	private fun HandleClick(ALittle.UIClickEvent event)
 	{
+        if (event.is_drag) return;
 		g_IDECenter.center.content_edit.StartEditControlBySelect(this._user_info.module_name, this._user_info.name);
     }
 	
@@ -187,4 +194,64 @@ public class IDEControlTreeItem : IDEControlTreeLogic
 	public fun OnDelete()
 	{
     }
+
+	private fun HandleControlDragBegin(ALittle.UIButtonDragBeginEvent event)
+	{
+		this._drag_shift = (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_LSHIFT] != null || A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_RSHIFT] != null);
+		if (this._drag_shift == false)
+		{
+			event.target = g_IDECenter.center.control_list.scroll_screen;
+			g_IDECenter.center.control_list.scroll_screen.DispatchEvent(event);
+			return;
+		}
+
+		var x, y = event.target.LocalToGlobal();
+		// 创建渲染图片
+		this._drag_effect = new ALittle.EffectImage(g_Control);
+		this._drag_effect.Action(event.target);
+		// 添加到Tip层
+		A_LayerManager.AddToTip(this._drag_effect);
+		this._drag_effect.x = x;
+		this._drag_effect.y = y;
+		this._drag_effect.alpha = 0.6;
+    
+		// var child = g_IDECenter.center.content_edit.GetTabById{IDEUITabChild}(info.control_info.name);
+		// if (child == null) return;
+		// g_IDECenter.center.content_edit.CloseTab(child);
+		// if (info.pre_index != null) g_IDECenter.center.content_edit.SetCurTabIndex(info.pre_index);
+	}
+
+	private fun HandleControlDrag(ALittle.UIButtonDragEvent event)
+	{
+		if (this._drag_shift == false)
+		{
+			event.target = g_IDECenter.center.control_list.scroll_screen;
+			g_IDECenter.center.control_list.scroll_screen.DispatchEvent(event);
+			return;
+		}
+		if (this._drag_effect == null) return;
+		this._drag_effect.x = this._drag_effect.x + event.delta_x;
+		this._drag_effect.y = this._drag_effect.y + event.delta_y;
+	}
+	private fun HandleControlDragEnd(ALittle.UIButtonDragEndEvent event)
+	{
+		if (this._drag_shift == false)
+		{
+			event.target = g_IDECenter.center.control_list.scroll_screen;
+			g_IDECenter.center.control_list.scroll_screen.DispatchEvent(event);
+			return;
+		}
+		if (this._drag_effect != null)
+		{
+			// 从Tip层移除
+			A_LayerManager.RemoveFromTip(this._drag_effect);
+			this._drag_effect.Clear();
+			this._drag_effect = null;
+		}
+	
+		var tab_child = ALittle.Cast{IDEUITabChild}(g_IDECenter.center.content_edit.cur_tab_child);
+		if (tab_child == null) return;
+
+        tab_child.QuickDragAddControl(event.abs_x, event.abs_y, this._user_info.module_name, this._user_info.name);
+	}
 }

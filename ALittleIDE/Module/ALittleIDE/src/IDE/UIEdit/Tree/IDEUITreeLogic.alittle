@@ -683,7 +683,6 @@ public class IDEUITreeLogic : ALittle.DisplayLayout
 	
 		// 检查自己是否被选中
 		var object = this._user_info.object;
-		
 		// 坐标转换
 		var pick_this_1, rel_min_x, rel_min_y = object.PickUpSelf(min_x, min_y);
 		var pick_this_2, rel_max_x, rel_max_y = object.PickUpSelf(max_x, max_y);

@@ -321,19 +321,31 @@ public class ControlSystem
         return result;
     }
 
-    public fun CreateControl<T>(string name, [Nullable] any target_logic, [Nullable] DisplayGroup parent) : T
+    private fun CreateControlImpl(string name, [Nullable] any target_logic, [Nullable] DisplayGroup parent) : ALittle.DisplayObject
     {
-        var info = this.LoadInfo(name, null);
-        if (info == null)
-        {
-            Log("can't find control name:" .. name);
-            return null;
-        }
+        var info = this.LoadInfo(name);
+        if (info == null) return null;
+        
         var object = this.CreateControlObject(info);
         if (object == null) return null;
     
         object.Deserialize(info, target_logic, parent);
-        return cast<T>(object);
+        return object;
+    }
+
+    public fun CreateControl<T>(string name, [Nullable] any target_logic, [Nullable] DisplayGroup parent) : T
+    {
+        var object = this.CreateControlImpl(name, target_logic, parent);
+        if (object != null) return cast<T>(object);
+
+        for (var module_name, plugin in this._plugin_map)
+        {
+            object = plugin.CreateControlImpl(name, target_logic, parent);
+            if (object != null) return cast<T>(object);
+        }
+
+        Log("can't find control name:" .. name);
+        return null;
     }
     
     // 根据UI控件的名字，来获取所有需要加载的纹理对象
@@ -341,7 +353,16 @@ public class ControlSystem
     // map 初始映射表
     public fun CollectTextureName(string name, Map<string, bool> map) : Map<string, bool>
     {
-        var info = this.LoadInfo(name, null);
+        var info = this.LoadInfo(name);
+        if (info == null)
+        {
+            for (var module_name, plugin in this._plugin_map)
+            {
+                info = plugin.LoadInfo(name);
+                if (info != null) break;
+            }
+        }
+
         if (info == null)
         {
             Log("can't find control name:" .. name);
@@ -353,16 +374,8 @@ public class ControlSystem
     
     // 根据UI的名字，从文件中加载信息
     // module_name不为空，那么就指定某个模块找。否则先到本地找，没有再遍历插件找
-    protected fun LoadInfo(string name, string module_name) : DisplayInfo
+    protected fun LoadInfo(string name) : DisplayInfo
     {
-        // 如果是其他模块，那么就获取插件在调用
-        if (module_name != null && module_name != this._module_name)
-        {
-            var plugin = this._plugin_map[module_name];
-            if (plugin == null) return null;
-            return plugin.LoadInfo(name, module_name);
-        }
-
         // 如果已经处理过，那么直接返回结果
         if (this._name_map_info_cache[name]) return this._name_map_info[name];
 
@@ -371,20 +384,7 @@ public class ControlSystem
         {
             // 直接从文件中读入json，并且解密
             var json:Map<string, DisplayInfo> = File_ReadJsonFromFile(this._ui_path .. name .. ".json", this._crypt_mode);
-            if (json == null)
-            {
-                // 如果module_name为空，那么就表示到插件里面找
-                if (module_name == null)
-                {
-                    for (var plugin_module, plugin in this._plugin_map)
-                    {
-                        info = plugin.LoadInfo(name, plugin_module);
-                        if (info != null) return info;
-                    }
-                }
-
-                return null;
-            }
+            if (json == null) return null;
             
             for (var key, value in json)
                 this.RegisterInfo(key, value);
@@ -403,7 +403,13 @@ public class ControlSystem
     
         // 引用
         if (info.__include != null)
-            return this.LoadInfo(info.__include, info.__module);
+        {
+            if (info.__module == null || info.__module == this._module_name)
+            	return this.LoadInfo(info.__include);
+            var plugin = this._plugin_map[info.__module];
+            if (plugin != null) return plugin.LoadInfo(info.__include);
+            return null;
+        }
 
         // 继承
         var extendsv = info.__extends;
@@ -411,12 +417,32 @@ public class ControlSystem
         {
             if (info.__extends_included != true)
             {
-                var control = this.LoadInfo(extendsv, info.__module);
-                if (control == null)
+                var control:DisplayInfo = null;
+                if (info.__module == null || info.__module == this._module_name)
                 {
-                    Log("ControlSystem CreateInfo extends Failed:"..extendsv);
-                    return null;
+                	control = this.LoadInfo(extendsv);
+                    if (control == null)
+                    {
+                        Log("ControlSystem CreateInfo extends Failed, can't find control. extends:"..extendsv.." module:"..this._module_name);
+                        return null;
+                    }
                 }
+                else
+                {
+                    var plugin = this._plugin_map[info.__module];
+                    if (plugin == null)
+                    {
+                        Log("ControlSystem CreateInfo extends Failed, can't find plugin. extends:"..extendsv.." module:"..info.__module);
+                        return null;
+                    }
+                    control = plugin.LoadInfo(extendsv);
+                    if (control == null)
+                    {
+                        Log("ControlSystem CreateInfo extends Failed, can't find control. extends:"..extendsv.." module:"..info.__module);
+                        return null;
+                    }
+                }
+
                 var copy = new DisplayInfo();
                 for (var key, value in cast<Map<string, any>>(control))
                     cast<Map<string, any>>(copy)[key] = value;
@@ -463,38 +489,7 @@ public class ControlSystem
     // 递归info对象，把使用到的图片全部收集到map
     protected fun CollectTextureNameImpl(DisplayInfo info, Map<string, bool> map) : Map<string, bool>
     {
-        if (map == null)
-            map = new Map<string, bool>();
-    
-        // 获取对应的类
-        var class_func:any = null;
-        var target_class = info.__target_class;
-        if (this._use_plugin_class && target_class != null)
-        {
-            [Language(Lua)]
-            class_func = _G;
-            [Language(JavaScript)]
-            class_func = window;
-            for (var index, value in target_class)
-            {
-                class_func = cast<Map<string,any>>(class_func)[value];
-                if (class_func == null)
-                    break;
-            }
-    
-            if (class_func == null)
-                Log("unknow target class." .. String_Join(target_class, "."));
-        }
-    
-        if (class_func == null)
-            class_func = cast<Map<string,any>>(ALittle)[info.__class];
-    
-        // 检查类是否存在
-        if (class_func == null)
-        {
-            Log("unknow class." .. info.__class);
-            return map;
-        }
+        if (map == null) map = new Map<string, bool>();
     
         // 处理
         var texture_name = info.texture_name;

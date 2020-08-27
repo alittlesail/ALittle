@@ -209,6 +209,7 @@ class GCenter
 
         // 创建一个CodeEdit
 		this._json_codeedit = AUIPlugin.AUICodeEdit.Create();
+        this._json_codeedit.editable = false;
         this._json_container.AddChild(this._json_codeedit);
     }
 

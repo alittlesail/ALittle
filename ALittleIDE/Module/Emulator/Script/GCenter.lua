@@ -168,6 +168,7 @@ function Emulator.GCenter:Setup()
 	self._frame_loop = ALittle.LoopFrame(Lua.Bind(self.UpdateFrame, self))
 	self._frame_loop:Start()
 	self._json_codeedit = AUIPlugin.AUICodeEdit.Create()
+	self._json_codeedit.editable = false
 	self._json_container:AddChild(self._json_codeedit)
 end
 

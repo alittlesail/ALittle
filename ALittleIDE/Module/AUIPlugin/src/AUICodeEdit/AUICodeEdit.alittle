@@ -127,7 +127,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
 
     public get is_input() : bool { return true; }
     public get editable() : bool { return this._editable; }
-    public set editable(bool value) { this._editable = value; }
+    public set editable(bool value) { this._editable = value; this._edit_quad.editable = value; }
     public get cursor_x() : double { return this._edit_quad.cursor_x; }
     public get cursor_y() : double { return this._edit_quad.cursor_y; }
     public get cursor_b() : double { return this._edit_quad.cursor_b; }
@@ -927,6 +927,8 @@ public class AUICodeEdit : ALittle.DisplayLayout
 
     private fun HandleTextInput(ALittle.UITextInputEvent event)
     {
+        if (!this._editable) return;
+
         var text = this._cursor.virtual_indent..event.text;
         if (this.InsertText(text, true))
         {

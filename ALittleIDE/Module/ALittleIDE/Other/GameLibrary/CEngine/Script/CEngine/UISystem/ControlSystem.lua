@@ -231,10 +231,9 @@ function ALittle.ControlSystem:SaveControlToFile(control, file_path, scale)
 	return result
 end
 
-function ALittle.ControlSystem:CreateControl(name, target_logic, parent)
-	local info = self:LoadInfo(name, nil)
+function ALittle.ControlSystem:CreateControlImpl(name, target_logic, parent)
+	local info = self:LoadInfo(name)
 	if info == nil then
-		ALittle.Log("can't find control name:" .. name)
 		return nil
 	end
 	local object = self:CreateControlObject(info)
@@ -245,8 +244,31 @@ function ALittle.ControlSystem:CreateControl(name, target_logic, parent)
 	return object
 end
 
+function ALittle.ControlSystem:CreateControl(name, target_logic, parent)
+	local object = self:CreateControlImpl(name, target_logic, parent)
+	if object ~= nil then
+		return object
+	end
+	for module_name, plugin in ___pairs(self._plugin_map) do
+		object = plugin:CreateControlImpl(name, target_logic, parent)
+		if object ~= nil then
+			return object
+		end
+	end
+	ALittle.Log("can't find control name:" .. name)
+	return nil
+end
+
 function ALittle.ControlSystem:CollectTextureName(name, map)
-	local info = self:LoadInfo(name, nil)
+	local info = self:LoadInfo(name)
+	if info == nil then
+		for module_name, plugin in ___pairs(self._plugin_map) do
+			info = plugin:LoadInfo(name)
+			if info ~= nil then
+				break
+			end
+		end
+	end
 	if info == nil then
 		ALittle.Log("can't find control name:" .. name)
 		return nil
@@ -254,14 +276,7 @@ function ALittle.ControlSystem:CollectTextureName(name, map)
 	return self:CollectTextureNameImpl(info, map)
 end
 
-function ALittle.ControlSystem:LoadInfo(name, module_name)
-	if module_name ~= nil and module_name ~= self._module_name then
-		local plugin = self._plugin_map[module_name]
-		if plugin == nil then
-			return nil
-		end
-		return plugin:LoadInfo(name, module_name)
-	end
+function ALittle.ControlSystem:LoadInfo(name)
 	if self._name_map_info_cache[name] then
 		return self._name_map_info[name]
 	end
@@ -269,14 +284,6 @@ function ALittle.ControlSystem:LoadInfo(name, module_name)
 	if info == nil then
 		local json = ALittle.File_ReadJsonFromFile(self._ui_path .. name .. ".json", self._crypt_mode)
 		if json == nil then
-			if module_name == nil then
-				for plugin_module, plugin in ___pairs(self._plugin_map) do
-					info = plugin:LoadInfo(name, plugin_module)
-					if info ~= nil then
-						return info
-					end
-				end
-			end
 			return nil
 		end
 		for key, value in ___pairs(json) do
@@ -294,15 +301,36 @@ function ALittle.ControlSystem:CreateInfo(info)
 		return nil
 	end
 	if info.__include ~= nil then
-		return self:LoadInfo(info.__include, info.__module)
+		if info.__module == nil or info.__module == self._module_name then
+			return self:LoadInfo(info.__include)
+		end
+		local plugin = self._plugin_map[info.__module]
+		if plugin ~= nil then
+			return plugin:LoadInfo(info.__include)
+		end
+		return nil
 	end
 	local extendsv = info.__extends
 	if extendsv ~= nil then
 		if info.__extends_included ~= true then
-			local control = self:LoadInfo(extendsv, info.__module)
-			if control == nil then
-				ALittle.Log("ControlSystem CreateInfo extends Failed:" .. extendsv)
-				return nil
+			local control = nil
+			if info.__module == nil or info.__module == self._module_name then
+				control = self:LoadInfo(extendsv)
+				if control == nil then
+					ALittle.Log("ControlSystem CreateInfo extends Failed, can't find control. extends:" .. extendsv .. " module:" .. self._module_name)
+					return nil
+				end
+			else
+				local plugin = self._plugin_map[info.__module]
+				if plugin == nil then
+					ALittle.Log("ControlSystem CreateInfo extends Failed, can't find plugin. extends:" .. extendsv .. " module:" .. info.__module)
+					return nil
+				end
+				control = plugin:LoadInfo(extendsv)
+				if control == nil then
+					ALittle.Log("ControlSystem CreateInfo extends Failed, can't find control. extends:" .. extendsv .. " module:" .. info.__module)
+					return nil
+				end
 			end
 			local copy = {}
 			for key, value in ___pairs(control) do
@@ -342,27 +370,6 @@ end
 function ALittle.ControlSystem:CollectTextureNameImpl(info, map)
 	if map == nil then
 		map = {}
-	end
-	local class_func = nil
-	local target_class = info.__target_class
-	if self._use_plugin_class and target_class ~= nil then
-		class_func = _G
-		for index, value in ___ipairs(target_class) do
-			class_func = class_func[value]
-			if class_func == nil then
-				break
-			end
-		end
-		if class_func == nil then
-			ALittle.Log("unknow target class." .. ALittle.String_Join(target_class, "."))
-		end
-	end
-	if class_func == nil then
-		class_func = ALittle[info.__class]
-	end
-	if class_func == nil then
-		ALittle.Log("unknow class." .. info.__class)
-		return map
 	end
 	local texture_name = info.texture_name
 	if texture_name ~= nil and texture_name ~= "" then

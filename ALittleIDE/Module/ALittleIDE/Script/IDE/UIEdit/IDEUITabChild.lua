@@ -852,6 +852,9 @@ function ALittleIDE.IDEUITabChild:HandleHandleContainerDragBegin(event)
 end
 
 function ALittleIDE.IDEUITabChild:HandleHandleContainerDrag(event)
+	if self._container_drag_x == nil then
+		return
+	end
 	local min_x = self._container_drag_x
 	local max_x = event.rel_x
 	if self._container_drag_x > event.rel_x then
@@ -876,21 +879,28 @@ function ALittleIDE.IDEUITabChild:HandleHandleContainerDragEnd(event)
 		return
 	end
 	local rel_x, rel_y = self._container_drag_parent.user_info.object:LocalToGlobal(self._edit_screen)
+	local offset_x, offset_y = self._container_drag_parent.user_info.object:GetChildOffset()
+	rel_x = rel_x + (offset_x)
+	rel_y = rel_y + (offset_y)
 	local min_x = self._container_drag_x
 	local max_x = event.rel_x
 	if self._container_drag_x > event.rel_x then
 		min_x = event.rel_x
 		max_x = self._container_drag_x
 	end
+	min_x = min_x - (rel_x)
+	max_x = max_x - (rel_x)
 	local min_y = self._container_drag_y
 	local max_y = event.rel_y
 	if self._container_drag_y > event.rel_y then
 		min_y = event.rel_y
 		max_y = self._container_drag_y
 	end
+	min_y = min_y - (rel_y)
+	max_y = max_y - (rel_y)
 	local list = {}
 	for index, tree_logic in ___ipairs(self._container_drag_parent.childs) do
-		if tree_logic:SelectPickRange(min_x - rel_x, min_y - rel_y, max_x - rel_x, max_y - rel_y) then
+		if tree_logic:SelectPickRange(min_x, min_y, max_x, max_y) then
 			ALittle.List_Push(list, tree_logic)
 		end
 	end

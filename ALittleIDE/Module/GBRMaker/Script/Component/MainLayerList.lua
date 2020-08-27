@@ -108,58 +108,59 @@ function GBRMaker.MainLayerList:HandleSelectFloor(event)
 end
 
 function GBRMaker.MainLayerList:HandleFloorRButtonDown(event)
-	if self._floor_right_menu == nil then
-		self._floor_right_menu = GBRMaker.g_Control:CreateControl("ide_floor_right_menu", self)
-	end
-	self._floor_right_menu.x = A_UISystem.mouse_x
-	self._floor_right_menu.y = A_UISystem.mouse_y
-	A_LayerManager:ShowFromRight(self._floor_right_menu)
-	self._floor_right_menu._user_data = event.target._user_data
 	local info = event.target._user_data
-	self._floor_right_hide_btn.disabled = not info.floor_info.visible
-	self._floor_right_show_btn.disabled = info.floor_info.visible
+	local index = self._floor_scroll_screen:GetChildIndex(info.select_item)
+	local menu = AUIPlugin.AUIRightMenu()
+	menu:AddItem("上移", Lua.Bind(self.HandleLayerMoveUp, self, info, index))
+	menu:AddItem("下移", Lua.Bind(self.HandleLayerMoveDown, self, info, index))
+	menu:AddItem("隐藏", Lua.Bind(self.HandleLayerHide, self, info), not info.floor_info.visible)
+	menu:AddItem("显示", Lua.Bind(self.HandleLayerShow, self, info), info.floor_info.visible)
+	menu:AddItem("删除", Lua.Bind(self.HandleLayerDelete, self, info, index))
+	menu:Show()
 end
 
-function GBRMaker.MainLayerList:HandleFloorRightMenu(event)
-	local info = self._floor_right_menu._user_data
-	self._floor_right_menu._user_data = nil
-	A_LayerManager:HideFromRight(self._floor_right_menu)
-	local index = self._floor_scroll_screen:GetChildIndex(info.select_item)
-	if event.target.text == "上移" then
-		self._floor_scroll_screen:SetChildIndex(info.select_item, index - 1)
-		g_GCenter.cur_edit_layer:SetChildIndex(info.edit_item, index - 1)
-		local floor_data = info.floor_info.file_info.map_data.floor_list[index]
-		ALittle.List_Remove(info.floor_info.file_info.map_data.floor_list, index)
-		ALittle.List_Insert(info.floor_info.file_info.map_data.floor_list, index - 1, floor_data)
-		local floor_info = info.floor_info.file_info.map_info.floor_list[index]
-		ALittle.List_Remove(info.floor_info.file_info.map_info.floor_list, index)
-		ALittle.List_Insert(info.floor_info.file_info.map_info.floor_list, index - 1, floor_info)
-		g_GCenter:SaveCurEdit(false)
-	elseif event.target.text == "下移" then
-		self._floor_scroll_screen:SetChildIndex(info.select_item, index + 1)
-		g_GCenter.cur_edit_layer:SetChildIndex(info.edit_item, index + 1)
-		local floor_data = info.floor_info.file_info.map_data.floor_list[index]
-		ALittle.List_Remove(info.floor_info.file_info.map_data.floor_list, index)
-		ALittle.List_Insert(info.floor_info.file_info.map_data.floor_list, index + 1, floor_data)
-		local floor_info = info.floor_info.file_info.map_info.floor_list[index]
-		ALittle.List_Remove(info.floor_info.file_info.map_info.floor_list, index)
-		ALittle.List_Insert(info.floor_info.file_info.map_info.floor_list, index + 1, floor_info)
-		g_GCenter:SaveCurEdit(false)
-	elseif event.target.text == "隐藏" then
-		info.select_item.text = info.floor_info.floor_data.name .. "(隐藏)"
-		info.edit_item.visible = false
-		info.floor_info.visible = false
-	elseif event.target.text == "显示" then
-		info.select_item.text = info.floor_info.floor_data.name
-		info.edit_item.visible = true
-		info.floor_info.visible = true
-	elseif event.target.text == "删除" then
-		self._floor_scroll_screen:RemoveChild(info.select_item)
-		g_GCenter.cur_edit_layer:RemoveChild(info.edit_item)
-		ALittle.List_Remove(info.floor_info.file_info.map_data.floor_list, index)
-		ALittle.List_Remove(info.floor_info.file_info.map_info.floor_list, index)
-		g_GCenter:SaveCurEdit(false)
-	end
+function GBRMaker.MainLayerList:HandleLayerMoveUp(info, index)
+	self._floor_scroll_screen:SetChildIndex(info.select_item, index - 1)
+	g_GCenter.cur_edit_layer:SetChildIndex(info.edit_item, index - 1)
+	local floor_data = info.floor_info.file_info.map_data.floor_list[index]
+	ALittle.List_Remove(info.floor_info.file_info.map_data.floor_list, index)
+	ALittle.List_Insert(info.floor_info.file_info.map_data.floor_list, index - 1, floor_data)
+	local floor_info = info.floor_info.file_info.map_info.floor_list[index]
+	ALittle.List_Remove(info.floor_info.file_info.map_info.floor_list, index)
+	ALittle.List_Insert(info.floor_info.file_info.map_info.floor_list, index - 1, floor_info)
+	g_GCenter:SaveCurEdit(false)
+end
+
+function GBRMaker.MainLayerList:HandleLayerMoveDown(info, index)
+	self._floor_scroll_screen:SetChildIndex(info.select_item, index + 1)
+	g_GCenter.cur_edit_layer:SetChildIndex(info.edit_item, index + 1)
+	local floor_data = info.floor_info.file_info.map_data.floor_list[index]
+	ALittle.List_Remove(info.floor_info.file_info.map_data.floor_list, index)
+	ALittle.List_Insert(info.floor_info.file_info.map_data.floor_list, index + 1, floor_data)
+	local floor_info = info.floor_info.file_info.map_info.floor_list[index]
+	ALittle.List_Remove(info.floor_info.file_info.map_info.floor_list, index)
+	ALittle.List_Insert(info.floor_info.file_info.map_info.floor_list, index + 1, floor_info)
+	g_GCenter:SaveCurEdit(false)
+end
+
+function GBRMaker.MainLayerList:HandleLayerHide(info)
+	info.select_item.text = info.floor_info.floor_data.name .. "(隐藏)"
+	info.edit_item.visible = false
+	info.floor_info.visible = false
+end
+
+function GBRMaker.MainLayerList:HandleLayerShow(info)
+	info.select_item.text = info.floor_info.floor_data.name
+	info.edit_item.visible = true
+	info.floor_info.visible = true
+end
+
+function GBRMaker.MainLayerList:HandleLayerDelete(info, index)
+	self._floor_scroll_screen:RemoveChild(info.select_item)
+	g_GCenter.cur_edit_layer:RemoveChild(info.edit_item)
+	ALittle.List_Remove(info.floor_info.file_info.map_data.floor_list, index)
+	ALittle.List_Remove(info.floor_info.file_info.map_info.floor_list, index)
+	g_GCenter:SaveCurEdit(false)
 end
 
 function GBRMaker.MainLayerList:CreateFloorEdit(info)

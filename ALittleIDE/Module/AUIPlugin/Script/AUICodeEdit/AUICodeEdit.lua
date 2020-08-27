@@ -179,6 +179,7 @@ end
 
 function AUIPlugin.AUICodeEdit.__setter:editable(value)
 	self._editable = value
+	self._edit_quad.editable = value
 end
 
 function AUIPlugin.AUICodeEdit.__getter:cursor_x()
@@ -971,6 +972,9 @@ function AUIPlugin.AUICodeEdit:DeleteSelectText()
 end
 
 function AUIPlugin.AUICodeEdit:HandleTextInput(event)
+	if not self._editable then
+		return
+	end
 	local text = self._cursor.virtual_indent .. event.text
 	if self:InsertText(text, true) then
 		if self._language ~= nil then

@@ -935,6 +935,8 @@ public class IDEUITabChild : IDETabChild
 
     private fun HandleHandleContainerDrag(ALittle.UIButtonDragEvent event)
     {
+        if (this._container_drag_x == null) return;
+
         var min_x = this._container_drag_x;
         var max_x = event.rel_x;
         if (this._container_drag_x > event.rel_x)
@@ -963,7 +965,11 @@ public class IDEUITabChild : IDETabChild
         // 遍历判断
         if (this._container_drag_parent == null) return;
         var rel_x, rel_y = this._container_drag_parent.user_info.object.LocalToGlobal(this._edit_screen);
-        
+
+		var offset_x, offset_y = this._container_drag_parent.user_info.object.GetChildOffset();
+        rel_x += offset_x;
+        rel_y += offset_y;
+                
         var min_x = this._container_drag_x;
         var max_x = event.rel_x;
         if (this._container_drag_x > event.rel_x)
@@ -971,6 +977,8 @@ public class IDEUITabChild : IDETabChild
             min_x = event.rel_x;
             max_x = this._container_drag_x;
         }
+        min_x -= rel_x;
+        max_x -= rel_x;
         
         var min_y = this._container_drag_y;
         var max_y = event.rel_y;
@@ -979,11 +987,13 @@ public class IDEUITabChild : IDETabChild
             min_y = event.rel_y;
             max_y = this._container_drag_y;
         }
+        min_y -= rel_y;
+        max_y -= rel_y;
 
         var list = new List<IDEUITreeLogic>();
         for (var index, tree_logic in this._container_drag_parent.childs)
         {
-            if (cast<IDEUITreeLogic>(tree_logic).SelectPickRange(min_x - rel_x, min_y - rel_y, max_x - rel_x, max_y - rel_y))
+            if (cast<IDEUITreeLogic>(tree_logic).SelectPickRange(min_x, min_y, max_x, max_y))
                 ALittle.List_Push(list, cast<IDEUITreeLogic>(tree_logic));
         }
 

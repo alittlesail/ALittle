@@ -119,12 +119,12 @@ function ALittleIDE.IDEUITreeItem:UpdateDesc()
 	if link == nil then
 		link = self._user_info.default.__link
 	end
-	if self._user_info.base.description ~= nil then
+	if link ~= nil then
+		title = title .. link
+	elseif self._user_info.base.description ~= nil then
 		title = title .. self._user_info.base.description
 	elseif self._user_info.default.description ~= nil then
 		title = title .. self._user_info.default.description
-	elseif link ~= nil then
-		title = title .. link
 	elseif self._user_info.base.text ~= nil then
 		title = title .. self._user_info.base.text
 	elseif self._user_info.default.text ~= nil then
@@ -267,6 +267,36 @@ function ALittleIDE.IDEUITreeItem:SelectPickUp(x, y)
 		return nil, self
 	end
 	return nil, nil
+end
+
+function ALittleIDE.IDEUITreeItem:GenerateClassMember(list)
+	local link = self._user_info.base.__link
+	if link == nil then
+		link = self._user_info.default.__link
+	end
+	if link == nil then
+		return
+	end
+	local member = "\tprivate "
+	if self._user_info.base.__target_class ~= nil then
+		member = member .. ALittle.String_Join(self._user_info.base.__target_class, ".")
+	elseif self._user_info.default.__target_class ~= nil then
+		member = member .. ALittle.String_Join(self._user_info.default.__target_class, ".")
+	elseif self._user_info.base.__class ~= nil then
+		member = member .. "ALittle." .. self._user_info.base.__class
+	else
+		member = member .. "ALittle." .. self._user_info.default.__class
+	end
+	member = member .. " " .. link .. ";"
+	local desc = self._user_info.base.description
+	if desc == nil or desc == "" then
+		desc = self._user_info.default.description
+	end
+	if desc ~= nil and desc ~= "" then
+		member = member .. " // " .. desc
+	end
+	member = member .. "\n"
+	ALittle.List_Push(list, member)
 end
 
 end

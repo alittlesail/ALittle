@@ -170,11 +170,11 @@ function GBRMaker.MainLayerList:CreateFloorEdit(info)
 		for y, tex_id in ___pairs(y_data) do
 			local image = ALittle.Image(g_GCenter.control)
 			image.texture_name = info.floor_info.file_info.map_data.tex_map[tex_id]
-			image.width = setting_data.unit_width
-			image.height = setting_data.unit_height
-			local show_x, show_y = GBRMaker.IDECoordVirtual2Show(x, y, setting_data.unit_real_width, setting_data.unit_width, setting_data.unit_real_height, setting_data.unit_height)
-			image.x = show_x
-			image.y = show_y
+			image.width = setting_data.image_w
+			image.height = setting_data.image_h
+			local center_x, center_y = GBRMaker.IDECoordVirtual2Show(x, y, setting_data.unit_length)
+			image.x = center_x - setting_data.center_x
+			image.y = center_y - setting_data.center_y
 			layer:AddChild(image)
 			local y_info = info.floor_info.child_map[x]
 			if y_info == nil then

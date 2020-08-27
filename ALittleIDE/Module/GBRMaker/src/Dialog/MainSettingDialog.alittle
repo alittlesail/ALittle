@@ -3,19 +3,15 @@ namespace GBRMaker;
 
 public struct MainSettingData
 {
-    int unit_width;
-    int unit_height;
-    int unit_left;
-    int unit_right;
-    int unit_top;
-    int unit_bottom;
+    int center_x;
+    int center_y;
+    int image_w;
+    int image_h;
 
-    int unit_real_width;
-    int unit_real_height;
+    int unit_length;
 
     string project_name;
     string texture_path;
-    string empty_name;
     string data_path;
 }
 
@@ -26,16 +22,14 @@ public struct UIMainSettingChangedEvent : ALittle.UIEvent
 
 public class MainSettingDialog : ALittle.Dialog
 {
-    private ALittle.DisplayObject _setting_project_name_input;
-    private ALittle.DisplayObject _setting_texture_path_input;
-    private ALittle.DisplayObject _setting_data_path_input;
-    private ALittle.DisplayObject _unit_empty_name_input;
-    private ALittle.DisplayObject _unit_width_input;
-    private ALittle.DisplayObject _unit_height_input;
-    private ALittle.DisplayObject _unit_left_input;
-    private ALittle.DisplayObject _unit_right_input;
-    private ALittle.DisplayObject _unit_top_input;
-    private ALittle.DisplayObject _unit_bottom_input;
+	private ALittle.ImageInput _center_x_input; // 单位图片中心X坐标
+	private ALittle.ImageInput _center_y_input; // 单位图片中心Y坐标
+	private ALittle.ImageInput _image_h_input; // 单位图片高
+	private ALittle.ImageInput _image_w_input; // 单位图片宽
+	private ALittle.ImageInput _unit_length_input; // 单位格子边长
+	private ALittle.ImageInput _project_name_input; // 项目名
+	private ALittle.ImageInput _texture_path_input; // 格子图片路径
+	private ALittle.ImageInput _data_path_input; // 场景数据路径
 
     private MainSettingData _data;
 
@@ -48,80 +42,63 @@ public class MainSettingDialog : ALittle.Dialog
         this._data = g_GConfig.GetConfig("setting_data", new MainSettingData());
 
         // 数据初始化
-        if (this._data.project_name == null) this._data.project_name = "";
-        if (this._data.texture_path == null) this._data.texture_path = "";
-        if (this._data.empty_name == null) this._data.empty_name = "";
-        if (this._data.data_path == null) this._data.data_path = "";
+        if (this._data.project_name == null) this._data.project_name = "GBR";
+        if (this._data.texture_path == null) this._data.texture_path = "MapTile";
+        if (this._data.data_path == null) this._data.data_path = "Scene";
 
-        if (this._data.unit_width == null) this._data.unit_width = 100;
-        if (this._data.unit_height == null) this._data.unit_height = 100;
-
-        if (this._data.unit_left == null) this._data.unit_left = 0;
-        if (this._data.unit_right == null) this._data.unit_right = 0;
-        if (this._data.unit_top == null) this._data.unit_top = 0;
-        if (this._data.unit_bottom == null) this._data.unit_bottom = 0;
-
-        this._data.unit_real_width = this._data.unit_width - this._data.unit_left - this._data.unit_right;
-        this._data.unit_real_height = this._data.unit_height - this._data.unit_top - this._data.unit_bottom;
+        if (this._data.center_x == null) this._data.center_x = 0;
+        if (this._data.center_y == null) this._data.center_y = 0;
+        if (this._data.image_w == null) this._data.image_w = 100;
+        if (this._data.image_h == null) this._data.image_h = 100;
+        if (this._data.unit_length == null) this._data.unit_length = 100;
 
         // 初始化界面
-        this._setting_project_name_input.text = this._data.project_name;
-        this._setting_texture_path_input.text = this._data.texture_path;
-        this._unit_empty_name_input.text = this._data.empty_name;
-        this._setting_data_path_input.text = this._data.data_path;
+        this._project_name_input.text = this._data.project_name;
+        this._texture_path_input.text = this._data.texture_path;
+        this._data_path_input.text = this._data.data_path;
 
-        this._unit_width_input.text = this._data.unit_width;
-        this._unit_height_input.text = this._data.unit_height;
-        this._unit_left_input.text = this._data.unit_left;
-        this._unit_right_input.text = this._data.unit_right;
-        this._unit_top_input.text = this._data.unit_top;
-        this._unit_bottom_input.text = this._data.unit_bottom;
+        this._center_x_input.text = this._data.center_x;
+        this._center_y_input.text = this._data.center_y;
+        this._image_w_input.text = this._data.image_w;
+        this._image_h_input.text = this._data.image_h;
+        this._unit_length_input.text = this._data.unit_length;
     }
 
     private fun HandleSettingCancelClick(ALittle.UIClickEvent event) { this.visible = false; }
     private fun HandleSettingConfirmClick(ALittle.UIClickEvent event)
     {
-        var unit_width = ALittle.Math_ToInt(this._unit_width_input.text);
-        var unit_height = ALittle.Math_ToInt(this._unit_height_input.text);
-        var unit_left = ALittle.Math_ToInt(this._unit_left_input.text);
-        var unit_right = ALittle.Math_ToInt(this._unit_right_input.text);
-        var unit_top = ALittle.Math_ToInt(this._unit_top_input.text);
-        var unit_bottom = ALittle.Math_ToInt(this._unit_bottom_input.text);
+        var center_x = ALittle.Math_ToInt(this._center_x_input.text);
+        var center_y = ALittle.Math_ToInt(this._center_y_input.text);
+        var image_w = ALittle.Math_ToInt(this._image_w_input.text);
+        var image_h = ALittle.Math_ToInt(this._image_h_input.text);
+        var unit_length = ALittle.Math_ToInt(this._unit_length_input.text);
 
-        if (unit_width == null || unit_width < 0
-            || unit_height == null || unit_height < 0
-            || unit_left == null || unit_left < 0
-            || unit_right == null || unit_right < 0
-            || unit_top == null || unit_top < 0
-            || unit_bottom == null || unit_bottom < 0)
+        if (center_x == null || center_x < 0
+            || center_y == null || center_y < 0
+            || image_w == null || image_w < 0
+            || image_h == null || image_h < 0
+        	|| unit_length == null || unit_length < 0)
         { g_AUITool.ShowNotice("提示", "请输入正整数"); return; }
 
-        var module_path = "Module/"..this._setting_project_name_input.text;
+        var module_path = "Module/"..this._project_name_input.text;
         if (ALittle.File_GetFileAttr(module_path) == null)
         { g_AUITool.ShowNotice("提示", "项目不存在"); return; }
 
-        if (ALittle.File_GetFileAttr(module_path.."/Texture/"..this._setting_texture_path_input.text) == null)
+        if (ALittle.File_GetFileAttr(module_path.."/Texture/"..this._texture_path_input.text) == null)
         { g_AUITool.ShowNotice("提示", "格子图片路径不存在"); return; }
 
-        if (ALittle.File_GetFileAttr(module_path.."/Other/"..this._setting_data_path_input.text) == null)
+        if (ALittle.File_GetFileAttr(module_path.."/Other/"..this._data_path_input.text) == null)
         { g_AUITool.ShowNotice("提示", "场景数据路径不存在"); return; }
 
-        if (ALittle.File_GetFileAttr(module_path.."/Texture/"..this._setting_texture_path_input.text.."/"..this._unit_empty_name_input.text) == null)
-        { g_AUITool.ShowNotice("提示", "空格子图片不存在"); return; }
+        this._data.center_x = center_x;
+        this._data.center_y = center_y;
+        this._data.image_w = image_w;
+        this._data.image_h = image_h;
+        this._data.unit_length = unit_length;
 
-        this._data.unit_width = unit_width;
-        this._data.unit_height = unit_height;
-        this._data.unit_left = unit_left;
-        this._data.unit_right = unit_right;
-        this._data.unit_top = unit_top;
-        this._data.unit_bottom = unit_bottom;
-        this._data.unit_real_width = this._data.unit_width - this._data.unit_left - this._data.unit_right;
-        this._data.unit_real_height = this._data.unit_height - this._data.unit_top - this._data.unit_bottom;
-
-        this._data.project_name = this._setting_project_name_input.text;
-        this._data.texture_path = this._setting_texture_path_input.text;
-        this._data.data_path = this._setting_data_path_input.text;
-        this._data.empty_name = this._unit_empty_name_input.text;
+        this._data.project_name = this._project_name_input.text;
+        this._data.texture_path = this._texture_path_input.text;
+        this._data.data_path = this._data_path_input.text;
 
         g_GConfig.SetConfig("setting_data", this._data);
 

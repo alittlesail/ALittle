@@ -52,9 +52,8 @@ function GBRMaker.MainTextureList:RefreshTexture()
 		local info = {}
 		info.item = GBRMaker.g_Control:CreateControl("ide_image_select_item", info)
 		info.button._user_data = info
-		info.image:SetTextureCut(file_path, ALittle.Math_Floor(info.frame.width), ALittle.Math_Floor(info.frame.height), true)
-		info.name.text = ALittle.File_GetJustFileNameByPath(rel_path)
-		info.upper_file_name = ALittle.String_Upper(info.name.text)
+		info.image:SetTextureCut(file_path, ALittle.Math_Floor(info.image.width), ALittle.Math_Floor(info.image.height), true)
+		info.upper_file_name = ALittle.String_Upper(ALittle.File_GetJustFileNameByPath(rel_path))
 		info.file_path = file_path
 		info.button.drag_trans_target = self._texture_scroll_list
 		info.button:AddEventListener(___all_struct[-449066808], self, self.HandleTextureSelectClick)

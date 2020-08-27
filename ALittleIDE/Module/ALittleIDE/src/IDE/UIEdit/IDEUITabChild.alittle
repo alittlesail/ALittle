@@ -1320,6 +1320,7 @@ public class IDEUITabChild : IDETabChild
 		menu.AddItem("剪切", bind(this.Cut, this, target), target.user_info.root);
 		menu.AddItem("删除", bind(this.Delete, this, target), target.user_info.root);
 		menu.AddItem("跳转", bind(this.Jump, this, target), !target.user_info.extends_root);
+		menu.AddItem("生成成员变量代码", bind(this.GenerateClassMember, this, target), target.is_tree && target.user_info.base.__target_class == null && target.user_info.default.__target_class == null);
         menu.Show();
 	}
 	
@@ -1602,6 +1603,49 @@ public class IDEUITabChild : IDETabChild
 	
         g_IDECenter.center.content_edit.StartEditControlBySelect(extends_module, extends_name);
 	}
+    // 生成类成员变量代码
+    public async fun GenerateClassMember(IDEUITreeLogic target)
+    {
+        if (!target.is_tree)
+        {
+            g_AUITool.ShowNotice("错误", "容器才能生成成员变量代码");
+            return;
+        }
+
+        var target_class = target.user_info.base.__target_class;
+        if (target_class == null) target_class = target.user_info.default.__target_class;
+        if (target_class == null)
+        {
+            g_AUITool.ShowNotice("错误", "没有设置插件类");
+            return;
+        }
+
+        if (g_IDEProject.project.code == null) return;
+        var find_text = ALittle.String_Join(target_class, ".");
+        var info = g_IDEProject.project.code.FindGoto(find_text);
+        if (info == null)
+        {
+            g_AUITool.ShowNotice("错误", "找不到插件类:"..find_text);
+            return;
+        }
+        var tab_child = g_IDECenter.center.code_list.OpenByFullPath(info.file_path, info.line_start, info.char_start, info.line_end, info.char_end);
+        if (tab_child == null)
+        {
+            g_AUITool.ShowNotice("错误", "找不到插件类:"..find_text);
+            return;
+        }
+
+        // 生成link相关的代码
+        var member_list = new List<string>();
+        for (var index, child:IDEUITreeLogic in target.childs)
+            child.GenerateClassMember(member_list);
+        if (ALittle.List_MaxN(member_list) == 0) return;
+
+        var text = ALittle.String_Join(member_list, "");
+        tab_child.edit.EditFocus(info.line_end + 2, 0, null, null, true);
+        tab_child.edit.InsertText(text, true);
+    }
+
 	// 处理文本编辑
 	public fun TextEdit(IDEUITreeLogic target)
     {

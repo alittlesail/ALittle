@@ -696,4 +696,5 @@ public class IDEUITreeLogic : ALittle.DisplayLayout
 		return true;
 	}
 	public fun GetDataListForAdd() : List<string> { return null; }
+    public fun GenerateClassMember(List<string> list) { }
 }

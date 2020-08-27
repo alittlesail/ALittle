@@ -40,7 +40,6 @@ public class MainLayerList : ALittle.DisplayLayout
     private async fun HandleNewFloorClick(ALittle.UIClickEvent event)
     {
         var cur_file = g_GCenter.cur_file;
-
         if (cur_file == null)
         {
             g_AUITool.ShowNotice("提示", "请先打开文件");
@@ -182,11 +181,11 @@ public class MainLayerList : ALittle.DisplayLayout
             {
                 var image = new ALittle.Image(g_GCenter.control);
                 image.texture_name = info.floor_info.file_info.map_data.tex_map[tex_id];
-                image.width = setting_data.unit_width;
-                image.height = setting_data.unit_height;
-                var show_x, show_y = IDECoordVirtual2Show(x, y, setting_data.unit_real_width, setting_data.unit_width, setting_data.unit_real_height, setting_data.unit_height);
-                image.x = show_x;
-                image.y = show_y;
+                image.width = setting_data.image_w;
+                image.height = setting_data.image_h;
+                var center_x, center_y = IDECoordVirtual2Show(x, y, setting_data.unit_length);
+                image.x = center_x - setting_data.center_x;
+                image.y = center_y - setting_data.center_y;
                 layer.AddChild(image);
 
                 var y_info = info.floor_info.child_map[x];

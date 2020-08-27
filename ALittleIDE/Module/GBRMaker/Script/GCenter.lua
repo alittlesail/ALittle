@@ -55,14 +55,14 @@ option_map = {}
 })
 ALittle.RegStruct(-1261197262, "GBRMaker.ImageSelectItemInfo", {
 name = "GBRMaker.ImageSelectItemInfo", ns_name = "GBRMaker", rl_name = "ImageSelectItemInfo", hash_code = -1261197262,
-name_list = {"item","image","name","button","frame","upper_file_name","file_path"},
-type_list = {"ALittle.DisplayLayout","ALittle.Image","ALittle.DisplayObject","ALittle.DisplayObject","ALittle.DisplayLayout","string","string"},
+name_list = {"item","image","button","upper_file_name","file_path"},
+type_list = {"ALittle.DisplayLayout","ALittle.Image","ALittle.DisplayObject","string","string"},
 option_map = {}
 })
 ALittle.RegStruct(996973755, "GBRMaker.BrushSelectItemInfo", {
 name = "GBRMaker.BrushSelectItemInfo", ns_name = "GBRMaker", rl_name = "BrushSelectItemInfo", hash_code = 996973755,
-name_list = {"item","image","name","button","frame","upper_file_name","texture_name"},
-type_list = {"ALittle.DisplayLayout","ALittle.Image","ALittle.DisplayObject","ALittle.DisplayObject","ALittle.DisplayLayout","string","string"},
+name_list = {"item","image","button","upper_file_name","texture_name"},
+type_list = {"ALittle.DisplayLayout","ALittle.Image","ALittle.DisplayObject","string","string"},
 option_map = {}
 })
 ALittle.RegStruct(958494922, "ALittle.UIChangedEvent", {
@@ -139,7 +139,7 @@ function GBRMaker.GCenter:Setup()
 	A_UISystem.keydown_callback = Lua.Bind(self.HandleKeyDown, self)
 	local setting_data = self._setting_dialog.data
 	local module_path = "Module/" .. setting_data.project_name
-	if ALittle.File_GetFileAttr(module_path) == nil or ALittle.File_GetFileAttr(module_path .. "/Texture/" .. setting_data.texture_path) == nil or ALittle.File_GetFileAttr(module_path .. "/Texture/" .. setting_data.texture_path .. "/" .. setting_data.empty_name) == nil or ALittle.File_GetFileAttr(module_path .. "/Other/" .. setting_data.data_path) == nil then
+	if ALittle.File_GetFileAttr(module_path) == nil or ALittle.File_GetFileAttr(module_path .. "/Texture/" .. setting_data.texture_path) == nil or ALittle.File_GetFileAttr(module_path .. "/Other/" .. setting_data.data_path) == nil then
 		self._setting_dialog.visible = true
 	else
 		self._control = ALittle.ControlSystem(setting_data.project_name)
@@ -199,9 +199,8 @@ function GBRMaker.GCenter:SelectTexture(image_info, multi)
 	info.item = GBRMaker.g_Control:CreateControl("ide_image_select_item", info)
 	info.button._user_data = info
 	info.item._user_data = info
-	info.image:SetTextureCut(image_info.file_path, ALittle.Math_Floor(info.frame.width), ALittle.Math_Floor(info.frame.height), true)
-	info.name.text = ALittle.File_GetJustFileNameByPath(rel_path)
-	info.upper_file_name = ALittle.String_Upper(info.name.text)
+	info.image:SetTextureCut(image_info.file_path, ALittle.Math_Floor(info.image.width), ALittle.Math_Floor(info.image.height), true)
+	info.upper_file_name = ALittle.String_Upper(ALittle.File_GetJustFileNameByPath(rel_path))
 	info.texture_name = texture_name
 	info.button.drag_trans_target = self._brush_scroll_screen
 	info.button:AddEventListener(___all_struct[-449066808], self, self.HandleBrushCancelClick)
@@ -260,11 +259,11 @@ function GBRMaker.GCenter:SetCell(file, floor, virtual_x, virtual_y, info)
 		local setting_data = self._setting_dialog.data
 		local image = ALittle.Image(self._control)
 		image.texture_name = info.texture_name
-		image.width = setting_data.unit_width
-		image.height = setting_data.unit_height
-		local show_x, show_y = GBRMaker.IDECoordVirtual2Show(virtual_x, virtual_y, setting_data.unit_real_width, setting_data.unit_width, setting_data.unit_real_height, setting_data.unit_height)
-		image.x = show_x
-		image.y = show_y
+		image.width = setting_data.image_w
+		image.height = setting_data.image_h
+		local center_x, center_y = GBRMaker.IDECoordVirtual2Show(virtual_x, virtual_y, setting_data.unit_length)
+		image.x = center_x - setting_data.center_x
+		image.y = center_y - setting_data.center_y
 		floor.edit_item:AddChild(image)
 		y_info[virtual_y] = image
 	end
@@ -297,7 +296,7 @@ function GBRMaker.GCenter:HandleBrushQuadLButtonDown(event)
 		return
 	end
 	local setting_data = self._setting_dialog.data
-	local virtual_x, virtual_y = GBRMaker.IDECoordShow2Virtual(event.rel_x, event.rel_y, setting_data.unit_real_width, setting_data.unit_width, setting_data.unit_real_height, setting_data.unit_height)
+	local virtual_x, virtual_y = GBRMaker.IDECoordShow2Virtual(event.rel_x, event.rel_y, setting_data.unit_length)
 	self:OverWriteCell(self._cur_file, self._cur_floor, virtual_x, virtual_y)
 end
 
@@ -317,7 +316,7 @@ function GBRMaker.GCenter:HandleBrushQuadDrag(event)
 		return
 	end
 	local setting_data = self._setting_dialog.data
-	local virtual_x, virtual_y = GBRMaker.IDECoordShow2Virtual(event.rel_x, event.rel_y, setting_data.unit_real_width, setting_data.unit_width, setting_data.unit_real_height, setting_data.unit_height)
+	local virtual_x, virtual_y = GBRMaker.IDECoordShow2Virtual(event.rel_x, event.rel_y, setting_data.unit_length)
 	if self._cur_brush_virtual_x == virtual_x and self._cur_brush_virtual_y == virtual_y then
 		return
 	end
@@ -331,7 +330,7 @@ function GBRMaker.GCenter:HandleEraseQuadLButtonDown(event)
 		return
 	end
 	local setting_data = self._setting_dialog.data
-	local virtual_x, virtual_y = GBRMaker.IDECoordShow2Virtual(event.rel_x, event.rel_y, setting_data.unit_real_width, setting_data.unit_width, setting_data.unit_real_height, setting_data.unit_height)
+	local virtual_x, virtual_y = GBRMaker.IDECoordShow2Virtual(event.rel_x, event.rel_y, setting_data.unit_length)
 	self:EraseCell(self._cur_floor, virtual_x, virtual_y)
 end
 
@@ -345,7 +344,7 @@ function GBRMaker.GCenter:HandleEraseQuadDrag(event)
 		return
 	end
 	local setting_data = self._setting_dialog.data
-	local virtual_x, virtual_y = GBRMaker.IDECoordShow2Virtual(event.rel_x, event.rel_y, setting_data.unit_real_width, setting_data.unit_width, setting_data.unit_real_height, setting_data.unit_height)
+	local virtual_x, virtual_y = GBRMaker.IDECoordShow2Virtual(event.rel_x, event.rel_y, setting_data.unit_length)
 	if self._cur_erase_virtual_x == virtual_x and self._cur_erase_virtual_y == virtual_y then
 		return
 	end
@@ -386,19 +385,18 @@ function GBRMaker.GCenter:StartEdit(file_info)
 		local y = 0
 		while true do
 			if not(y < y_max) then break end
-			local image = ALittle.Image(self._control)
-			image.texture_name = self._texture_list.tex_name_base_path .. setting_data.empty_name
-			image.width = setting_data.unit_width
-			image.height = setting_data.unit_height
-			local show_x, show_y = GBRMaker.IDECoordVirtual2Show(x, y, setting_data.unit_real_width, setting_data.unit_width, setting_data.unit_real_height, setting_data.unit_height)
-			image.x = show_x
-			image.y = show_y
-			self._cur_grid_layer:AddChild(image)
-			if image.x + image.width > layer_width then
-				layer_width = image.x + image.width
+			local grid = GBRMaker.g_Control:CreateControl("gbr_hex_grid")
+			grid.width = setting_data.unit_length * GBRMaker.WIDTH_RATE
+			grid.height = setting_data.unit_length * GBRMaker.HEIGHT_RATE
+			local center_x, center_y = GBRMaker.IDECoordVirtual2Show(x, y, setting_data.unit_length)
+			grid.x = center_x - grid.width / 2
+			grid.y = center_y - grid.height / 2
+			self._cur_grid_layer:AddChild(grid)
+			if grid.x + grid.width > layer_width then
+				layer_width = grid.x + grid.width
 			end
-			if image.y + image.height > layer_height then
-				layer_height = image.y + image.height
+			if grid.y + grid.height > layer_height then
+				layer_height = grid.y + grid.height
 			end
 			y = y+(1)
 		end
@@ -410,21 +408,18 @@ function GBRMaker.GCenter:StartEdit(file_info)
 		local y = 0
 		while true do
 			if not(y < y_max) then break end
-			local show_x, show_y = GBRMaker.IDECoordVirtual2Show(x, y, setting_data.unit_real_width, setting_data.unit_width, setting_data.unit_real_height, setting_data.unit_height)
-			if show_x + setting_data.unit_width / 2 >= 0 then
-				local image = ALittle.Image(self._control)
-				image.texture_name = self._texture_list.tex_name_base_path .. setting_data.empty_name
-				image.width = setting_data.unit_width
-				image.height = setting_data.unit_height
-				image.x = show_x
-				image.y = show_y
-				self._cur_grid_layer:AddChild(image)
-				if image.x + image.width > layer_width then
-					layer_width = image.x + image.width
-				end
-				if image.y + image.height > layer_height then
-					layer_height = image.y + image.height
-				end
+			local grid = GBRMaker.g_Control:CreateControl("gbr_hex_grid")
+			grid.width = setting_data.unit_length * GBRMaker.WIDTH_RATE
+			grid.height = setting_data.unit_length * GBRMaker.HEIGHT_RATE
+			local center_x, center_y = GBRMaker.IDECoordVirtual2Show(x, y, setting_data.unit_length)
+			grid.x = center_x - grid.width / 2
+			grid.y = center_y - grid.height / 2
+			self._cur_grid_layer:AddChild(grid)
+			if grid.x + grid.width > layer_width then
+				layer_width = grid.x + grid.width
+			end
+			if grid.y + grid.height > layer_height then
+				layer_height = grid.y + grid.height
 			end
 			y = y+(1)
 		end
@@ -475,11 +470,11 @@ function GBRMaker.GCenter:CreateFloorEdit(info)
 		for y, tex_id in ___pairs(y_data) do
 			local image = ALittle.Image(self._control)
 			image.texture_name = info.floor_info.file_info.map_data.tex_map[tex_id]
-			image.width = setting_data.unit_width
-			image.height = setting_data.unit_height
-			local show_x, show_y = GBRMaker.IDECoordVirtual2Show(x, y, setting_data.unit_real_width, setting_data.unit_width, setting_data.unit_real_height, setting_data.unit_height)
-			image.x = show_x
-			image.y = show_y
+			image.width = setting_data.image_w
+			image.height = setting_data.image_h
+			local center_x, center_y = GBRMaker.IDECoordVirtual2Show(x, y, setting_data.unit_length)
+			image.x = center_x - setting_data.center_x
+			image.y = center_y - setting_data.center_y
 			layer:AddChild(image)
 			local y_info = info.floor_info.child_map[x]
 			if y_info == nil then

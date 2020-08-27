@@ -23,18 +23,22 @@ function GBRMaker.IDEUtility_CheckResourceName(name)
 	return true, nil
 end
 
-function GBRMaker.IDECoordVirtual2Show(x, y, unit_real_width, unit_width, unit_real_height, unit_height)
-	local show_x = y * unit_real_width / 2 + x * unit_real_width - unit_width / 2
-	local show_y = y * unit_real_height * 3 / 4 - unit_height / 2
+GBRMaker.WIDTH_RATE = ALittle.Math_Sqrt(3)
+GBRMaker.HEIGHT_RATE = 2
+function GBRMaker.IDECoordVirtual2Show(x, y, unit_length)
+	local unit_width = unit_length * GBRMaker.WIDTH_RATE
+	local show_x = x * unit_width + y * unit_width / 2
+	local show_y = y * unit_length * 3 / 2
 	return show_x, show_y
 end
 
-function GBRMaker.IDECoordShow2Virtual(x, y, unit_real_width, unit_width, unit_real_height, unit_height)
+function GBRMaker.IDECoordShow2Virtual(x, y, unit_length)
+	local unit_width = unit_length * GBRMaker.WIDTH_RATE
 	local yy = y / ALittle.Math_Cos(3.1415926 / 6)
-	local offset_yy = yy + unit_real_width / 2
-	local virutal_y = ALittle.Math_Floor(offset_yy / unit_real_width)
-	local virtual_x = ALittle.Math_Floor(((x + unit_width / 2) - virutal_y * unit_real_width / 2) / unit_real_width)
-	return virtual_x, virutal_y
+	local virtual_y = ALittle.Math_Floor((yy + unit_width / 2) / unit_width)
+	local xx = x - virtual_y * unit_width / 2
+	local virtual_x = ALittle.Math_Floor((xx + unit_width / 2) / unit_width)
+	return virtual_x, virtual_y
 end
 
 end

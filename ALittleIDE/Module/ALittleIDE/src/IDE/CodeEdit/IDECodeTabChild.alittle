@@ -138,4 +138,6 @@ public class IDECodeTabChild : IDETabChild
     {
         this._edit.FindNext(text);
     }
+
+    public get edit() : AUIPlugin.AUICodeEdit { return this._edit; }
 }

@@ -21,24 +21,29 @@ public static IDEUtility_CheckResourceName(string name) : bool, string
 	return true, null;
 }
 
+protected var WIDTH_RATE = ALittle.Math_Sqrt(3);
+protected var HEIGHT_RATE = 2;
+
 // 虚拟坐标转显示坐标
-public static IDECoordVirtual2Show(int x, int y, double unit_real_width, double unit_width, double unit_real_height, double unit_height) : double, double
+// 根据格子坐标，转为显示控件中心坐标
+public static IDECoordVirtual2Show(int x, int y, int unit_length) : double, double
 {
-    var show_x = y * unit_real_width / 2 + x * unit_real_width - unit_width / 2;
-	var show_y = y * unit_real_height * 3 / 4 - unit_height / 2;
+    var unit_width = unit_length * WIDTH_RATE;
+    var show_x =  x * unit_width + y * unit_width / 2;
+	var show_y = y * unit_length * 3 / 2;
 	return show_x, show_y;
 }
 
 // 显示坐标转虚拟坐标
-public static IDECoordShow2Virtual(double x, double y, double unit_real_width, double unit_width, double unit_real_height, double unit_height) : int, int
+public static IDECoordShow2Virtual(double x, double y, int unit_length) : int, int
 {
+    var unit_width = unit_length * WIDTH_RATE;
 	// 将y投影到六边形坐标系
-	var yy = y / ALittle.Math_Cos(3.1415926/ 6);
-	// 原点偏移unit_real_width / 2
-	var offset_yy = yy + unit_real_width / 2;
+	var yy = y / ALittle.Math_Cos(3.1415926 / 6);
 	// 算出格子坐标
-	var virutal_y = ALittle.Math_Floor(offset_yy / unit_real_width);
+	var virtual_y = ALittle.Math_Floor((yy + unit_width /  2) / unit_width);
 
-    var virtual_x = ALittle.Math_Floor(((x + unit_width / 2) - virutal_y * unit_real_width / 2) / unit_real_width);
-	return virtual_x, virutal_y;
+    var xx = x - virtual_y * unit_width / 2;
+    var virtual_x = ALittle.Math_Floor((xx + unit_width / 2) / unit_width);
+	return virtual_x, virtual_y;
 }

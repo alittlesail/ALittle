@@ -667,4 +667,7 @@ function ALittleIDE.IDEUITreeLogic:GetDataListForAdd()
 	return nil
 end
 
+function ALittleIDE.IDEUITreeLogic:GenerateClassMember(list)
+end
+
 end

@@ -19,8 +19,8 @@ option_map = {}
 })
 ALittle.RegStruct(-982324742, "GBRMaker.MainSettingData", {
 name = "GBRMaker.MainSettingData", ns_name = "GBRMaker", rl_name = "MainSettingData", hash_code = -982324742,
-name_list = {"unit_width","unit_height","unit_left","unit_right","unit_top","unit_bottom","unit_real_width","unit_real_height","project_name","texture_path","empty_name","data_path"},
-type_list = {"int","int","int","int","int","int","int","int","string","string","string","string"},
+name_list = {"center_x","center_y","image_w","image_h","unit_length","project_name","texture_path","data_path"},
+type_list = {"int","int","int","int","int","string","string","string"},
 option_map = {}
 })
 ALittle.RegStruct(-449066808, "ALittle.UIClickEvent", {
@@ -40,47 +40,37 @@ end
 function GBRMaker.MainSettingDialog:TCtor()
 	self._data = GBRMaker.g_GConfig:GetConfig("setting_data", {})
 	if self._data.project_name == nil then
-		self._data.project_name = ""
+		self._data.project_name = "GBR"
 	end
 	if self._data.texture_path == nil then
-		self._data.texture_path = ""
-	end
-	if self._data.empty_name == nil then
-		self._data.empty_name = ""
+		self._data.texture_path = "MapTile"
 	end
 	if self._data.data_path == nil then
-		self._data.data_path = ""
+		self._data.data_path = "Scene"
 	end
-	if self._data.unit_width == nil then
-		self._data.unit_width = 100
+	if self._data.center_x == nil then
+		self._data.center_x = 0
 	end
-	if self._data.unit_height == nil then
-		self._data.unit_height = 100
+	if self._data.center_y == nil then
+		self._data.center_y = 0
 	end
-	if self._data.unit_left == nil then
-		self._data.unit_left = 0
+	if self._data.image_w == nil then
+		self._data.image_w = 100
 	end
-	if self._data.unit_right == nil then
-		self._data.unit_right = 0
+	if self._data.image_h == nil then
+		self._data.image_h = 100
 	end
-	if self._data.unit_top == nil then
-		self._data.unit_top = 0
+	if self._data.unit_length == nil then
+		self._data.unit_length = 100
 	end
-	if self._data.unit_bottom == nil then
-		self._data.unit_bottom = 0
-	end
-	self._data.unit_real_width = self._data.unit_width - self._data.unit_left - self._data.unit_right
-	self._data.unit_real_height = self._data.unit_height - self._data.unit_top - self._data.unit_bottom
-	self._setting_project_name_input.text = self._data.project_name
-	self._setting_texture_path_input.text = self._data.texture_path
-	self._unit_empty_name_input.text = self._data.empty_name
-	self._setting_data_path_input.text = self._data.data_path
-	self._unit_width_input.text = self._data.unit_width
-	self._unit_height_input.text = self._data.unit_height
-	self._unit_left_input.text = self._data.unit_left
-	self._unit_right_input.text = self._data.unit_right
-	self._unit_top_input.text = self._data.unit_top
-	self._unit_bottom_input.text = self._data.unit_bottom
+	self._project_name_input.text = self._data.project_name
+	self._texture_path_input.text = self._data.texture_path
+	self._data_path_input.text = self._data.data_path
+	self._center_x_input.text = self._data.center_x
+	self._center_y_input.text = self._data.center_y
+	self._image_w_input.text = self._data.image_w
+	self._image_h_input.text = self._data.image_h
+	self._unit_length_input.text = self._data.unit_length
 end
 
 function GBRMaker.MainSettingDialog:HandleSettingCancelClick(event)
@@ -88,45 +78,36 @@ function GBRMaker.MainSettingDialog:HandleSettingCancelClick(event)
 end
 
 function GBRMaker.MainSettingDialog:HandleSettingConfirmClick(event)
-	local unit_width = ALittle.Math_ToInt(self._unit_width_input.text)
-	local unit_height = ALittle.Math_ToInt(self._unit_height_input.text)
-	local unit_left = ALittle.Math_ToInt(self._unit_left_input.text)
-	local unit_right = ALittle.Math_ToInt(self._unit_right_input.text)
-	local unit_top = ALittle.Math_ToInt(self._unit_top_input.text)
-	local unit_bottom = ALittle.Math_ToInt(self._unit_bottom_input.text)
-	if unit_width == nil or unit_width < 0 or unit_height == nil or unit_height < 0 or unit_left == nil or unit_left < 0 or unit_right == nil or unit_right < 0 or unit_top == nil or unit_top < 0 or unit_bottom == nil or unit_bottom < 0 then
+	local center_x = ALittle.Math_ToInt(self._center_x_input.text)
+	local center_y = ALittle.Math_ToInt(self._center_y_input.text)
+	local image_w = ALittle.Math_ToInt(self._image_w_input.text)
+	local image_h = ALittle.Math_ToInt(self._image_h_input.text)
+	local unit_length = ALittle.Math_ToInt(self._unit_length_input.text)
+	if center_x == nil or center_x < 0 or center_y == nil or center_y < 0 or image_w == nil or image_w < 0 or image_h == nil or image_h < 0 or unit_length == nil or unit_length < 0 then
 		g_AUITool:ShowNotice("提示", "请输入正整数")
 		return
 	end
-	local module_path = "Module/" .. self._setting_project_name_input.text
+	local module_path = "Module/" .. self._project_name_input.text
 	if ALittle.File_GetFileAttr(module_path) == nil then
 		g_AUITool:ShowNotice("提示", "项目不存在")
 		return
 	end
-	if ALittle.File_GetFileAttr(module_path .. "/Texture/" .. self._setting_texture_path_input.text) == nil then
+	if ALittle.File_GetFileAttr(module_path .. "/Texture/" .. self._texture_path_input.text) == nil then
 		g_AUITool:ShowNotice("提示", "格子图片路径不存在")
 		return
 	end
-	if ALittle.File_GetFileAttr(module_path .. "/Other/" .. self._setting_data_path_input.text) == nil then
+	if ALittle.File_GetFileAttr(module_path .. "/Other/" .. self._data_path_input.text) == nil then
 		g_AUITool:ShowNotice("提示", "场景数据路径不存在")
 		return
 	end
-	if ALittle.File_GetFileAttr(module_path .. "/Texture/" .. self._setting_texture_path_input.text .. "/" .. self._unit_empty_name_input.text) == nil then
-		g_AUITool:ShowNotice("提示", "空格子图片不存在")
-		return
-	end
-	self._data.unit_width = unit_width
-	self._data.unit_height = unit_height
-	self._data.unit_left = unit_left
-	self._data.unit_right = unit_right
-	self._data.unit_top = unit_top
-	self._data.unit_bottom = unit_bottom
-	self._data.unit_real_width = self._data.unit_width - self._data.unit_left - self._data.unit_right
-	self._data.unit_real_height = self._data.unit_height - self._data.unit_top - self._data.unit_bottom
-	self._data.project_name = self._setting_project_name_input.text
-	self._data.texture_path = self._setting_texture_path_input.text
-	self._data.data_path = self._setting_data_path_input.text
-	self._data.empty_name = self._unit_empty_name_input.text
+	self._data.center_x = center_x
+	self._data.center_y = center_y
+	self._data.image_w = image_w
+	self._data.image_h = image_h
+	self._data.unit_length = unit_length
+	self._data.project_name = self._project_name_input.text
+	self._data.texture_path = self._texture_path_input.text
+	self._data.data_path = self._data_path_input.text
 	GBRMaker.g_GConfig:SetConfig("setting_data", self._data)
 	self.visible = false
 	local changed_event = {}

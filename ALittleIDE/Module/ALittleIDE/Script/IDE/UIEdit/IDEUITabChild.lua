@@ -1171,6 +1171,7 @@ function ALittleIDE.IDEUITabChild:HandleHandleQuadRButtonDown(event)
 	menu:AddItem("剪切", Lua.Bind(self.Cut, self, target), target.user_info.root)
 	menu:AddItem("删除", Lua.Bind(self.Delete, self, target), target.user_info.root)
 	menu:AddItem("跳转", Lua.Bind(self.Jump, self, target), not target.user_info.extends_root)
+	menu:AddItem("生成成员变量代码", Lua.Bind(self.GenerateClassMember, self, target), target.is_tree and target.user_info.base.__target_class == nil and target.user_info.default.__target_class == nil)
 	menu:Show()
 end
 
@@ -1394,6 +1395,46 @@ function ALittleIDE.IDEUITabChild:Jump(target)
 	end
 	ALittleIDE.g_IDECenter.center.content_edit:StartEditControlBySelect(extends_module, extends_name)
 end
+
+function ALittleIDE.IDEUITabChild:GenerateClassMember(target)
+	if not target.is_tree then
+		g_AUITool:ShowNotice("错误", "容器才能生成成员变量代码")
+		return
+	end
+	local target_class = target.user_info.base.__target_class
+	if target_class == nil then
+		target_class = target.user_info.default.__target_class
+	end
+	if target_class == nil then
+		g_AUITool:ShowNotice("错误", "没有设置插件类")
+		return
+	end
+	if ALittleIDE.g_IDEProject.project.code == nil then
+		return
+	end
+	local find_text = ALittle.String_Join(target_class, ".")
+	local info = ALittleIDE.g_IDEProject.project.code:FindGoto(find_text)
+	if info == nil then
+		g_AUITool:ShowNotice("错误", "找不到插件类:" .. find_text)
+		return
+	end
+	local tab_child = ALittleIDE.g_IDECenter.center.code_list:OpenByFullPath(info.file_path, info.line_start, info.char_start, info.line_end, info.char_end)
+	if tab_child == nil then
+		g_AUITool:ShowNotice("错误", "找不到插件类:" .. find_text)
+		return
+	end
+	local member_list = {}
+	for index, child in ___ipairs(target.childs) do
+		child:GenerateClassMember(member_list)
+	end
+	if ALittle.List_MaxN(member_list) == 0 then
+		return
+	end
+	local text = ALittle.String_Join(member_list, "")
+	tab_child.edit:EditFocus(info.line_end + 2, 0, nil, nil, true)
+	tab_child.edit:InsertText(text, true)
+end
+ALittleIDE.IDEUITabChild.GenerateClassMember = Lua.CoWrap(ALittleIDE.IDEUITabChild.GenerateClassMember)
 
 function ALittleIDE.IDEUITabChild:TextEdit(target)
 	local object = target.user_info.object

@@ -162,4 +162,8 @@ function ALittleIDE.IDECodeTabChild:FindText(text)
 	self._edit:FindNext(text)
 end
 
+function ALittleIDE.IDECodeTabChild.__getter:edit()
+	return self._edit
+end
+
 end

@@ -208,6 +208,41 @@ function ALittleIDE.IDEUITree:CalcInfo()
 	return info
 end
 
+function ALittleIDE.IDEUITree:GenerateClassMember(list)
+	local link = self._user_info.base.__link
+	if link == nil then
+		link = self._user_info.default.__link
+	end
+	if link ~= nil then
+		local member = "\tprivate "
+		if self._user_info.base.__target_class ~= nil then
+			member = member .. ALittle.String_Join(self._user_info.base.__target_class, ".")
+		elseif self._user_info.default.__target_class ~= nil then
+			member = member .. ALittle.String_Join(self._user_info.default.__target_class, ".")
+		elseif self._user_info.base.__class ~= nil then
+			member = member .. "ALittle." .. self._user_info.base.__class
+		else
+			member = member .. "ALittle." .. self._user_info.default.__class
+		end
+		member = member .. " " .. link .. ";"
+		local desc = self._user_info.base.description
+		if desc == nil or desc == "" then
+			desc = self._user_info.default.description
+		end
+		if desc ~= nil and desc ~= "" then
+			member = member .. " // " .. desc
+		end
+		member = member .. "\n"
+		ALittle.List_Push(list, member)
+	end
+	if self._user_info.base.__target_class ~= nil or self._user_info.default.__target_class ~= nil then
+		return
+	end
+	for k, child in ___ipairs(self._body.childs) do
+		child:GenerateClassMember(list)
+	end
+end
+
 function ALittleIDE.IDEUITree:SearchLink(name, list)
 	if list == nil then
 		list = {}

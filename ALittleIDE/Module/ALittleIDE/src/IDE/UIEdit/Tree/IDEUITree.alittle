@@ -184,6 +184,41 @@ public class IDEUITree : IDEUITreeLogic
 		}
 		return info;
 	}
+
+    public fun GenerateClassMember(List<string> list)
+    {
+        var link = this._user_info.base.__link;
+        if (link == null) link = this._user_info.default.__link;
+        if (link != null)
+        {
+            var member = "\tprivate ";
+            if (this._user_info.base.__target_class != null)
+                member = member..ALittle.String_Join(this._user_info.base.__target_class, ".");
+            elseif (this._user_info.default.__target_class != null)
+                member = member..ALittle.String_Join(this._user_info.default.__target_class, ".");
+            elseif (this._user_info.base.__class != null)
+                member = member.."ALittle."..this._user_info.base.__class;
+            else
+                member = member.."ALittle."..this._user_info.default.__class;
+
+            member = member.." "..link..";";
+
+            var desc = this._user_info.base.description;
+            if (desc == null || desc == "")
+                desc = this._user_info.default.description;
+            if (desc != null && desc != "")
+                member = member.." // "..desc;
+
+            member = member.."\n";
+            ALittle.List_Push(list, member);
+        }
+
+        // 如果有target class，那么不用遍历子控件
+        if (this._user_info.base.__target_class != null || this._user_info.default.__target_class != null) return;
+
+		for (var k, child:IDEUITreeLogic in this._body.childs)
+			child.GenerateClassMember(list);
+    }
 	
 	// 搜索link
 	public fun SearchLink(string name, [Nullable] List<IDEUITreeLogic> list) : List<IDEUITreeLogic>

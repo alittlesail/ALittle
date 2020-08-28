@@ -19,8 +19,8 @@ option_map = {}
 })
 ALittle.RegStruct(-982324742, "GBRMaker.MainSettingData", {
 name = "GBRMaker.MainSettingData", ns_name = "GBRMaker", rl_name = "MainSettingData", hash_code = -982324742,
-name_list = {"center_x","center_y","image_w","image_h","unit_length","project_name","texture_path","data_path"},
-type_list = {"int","int","int","int","int","string","string","string"},
+name_list = {"center_x","center_y","image_w","image_h","unit_length","project_name","data_path"},
+type_list = {"int","int","int","int","int","string","string"},
 option_map = {}
 })
 ALittle.RegStruct(-449066808, "ALittle.UIClickEvent", {
@@ -42,9 +42,6 @@ function GBRMaker.MainSettingDialog:TCtor()
 	if self._data.project_name == nil then
 		self._data.project_name = "GBR"
 	end
-	if self._data.texture_path == nil then
-		self._data.texture_path = "MapTile"
-	end
 	if self._data.data_path == nil then
 		self._data.data_path = "Scene"
 	end
@@ -64,7 +61,6 @@ function GBRMaker.MainSettingDialog:TCtor()
 		self._data.unit_length = 100
 	end
 	self._project_name_input.text = self._data.project_name
-	self._texture_path_input.text = self._data.texture_path
 	self._data_path_input.text = self._data.data_path
 	self._center_x_input.text = self._data.center_x
 	self._center_y_input.text = self._data.center_y
@@ -92,10 +88,6 @@ function GBRMaker.MainSettingDialog:HandleSettingConfirmClick(event)
 		g_AUITool:ShowNotice("提示", "项目不存在")
 		return
 	end
-	if ALittle.File_GetFileAttr(module_path .. "/Texture/" .. self._texture_path_input.text) == nil then
-		g_AUITool:ShowNotice("提示", "格子图片路径不存在")
-		return
-	end
 	if ALittle.File_GetFileAttr(module_path .. "/Other/" .. self._data_path_input.text) == nil then
 		g_AUITool:ShowNotice("提示", "场景数据路径不存在")
 		return
@@ -106,7 +98,6 @@ function GBRMaker.MainSettingDialog:HandleSettingConfirmClick(event)
 	self._data.image_h = image_h
 	self._data.unit_length = unit_length
 	self._data.project_name = self._project_name_input.text
-	self._data.texture_path = self._texture_path_input.text
 	self._data.data_path = self._data_path_input.text
 	GBRMaker.g_GConfig:SetConfig("setting_data", self._data)
 	self.visible = false

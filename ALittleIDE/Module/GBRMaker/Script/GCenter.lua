@@ -53,12 +53,6 @@ name_list = {"target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"},
 type_list = {"ALittle.DisplayObject","double","double","double","double","double","double"},
 option_map = {}
 })
-ALittle.RegStruct(-1261197262, "GBRMaker.ImageSelectItemInfo", {
-name = "GBRMaker.ImageSelectItemInfo", ns_name = "GBRMaker", rl_name = "ImageSelectItemInfo", hash_code = -1261197262,
-name_list = {"item","image","button","upper_file_name","file_path"},
-type_list = {"ALittle.DisplayLayout","ALittle.Image","ALittle.DisplayObject","string","string"},
-option_map = {}
-})
 ALittle.RegStruct(996973755, "GBRMaker.BrushSelectItemInfo", {
 name = "GBRMaker.BrushSelectItemInfo", ns_name = "GBRMaker", rl_name = "BrushSelectItemInfo", hash_code = 996973755,
 name_list = {"item","image","button","upper_file_name","texture_name"},
@@ -139,7 +133,7 @@ function GBRMaker.GCenter:Setup()
 	A_UISystem.keydown_callback = Lua.Bind(self.HandleKeyDown, self)
 	local setting_data = self._setting_dialog.data
 	local module_path = "Module/" .. setting_data.project_name
-	if ALittle.File_GetFileAttr(module_path) == nil or ALittle.File_GetFileAttr(module_path .. "/Texture/" .. setting_data.texture_path) == nil or ALittle.File_GetFileAttr(module_path .. "/Other/" .. setting_data.data_path) == nil then
+	if ALittle.File_GetFileAttr(module_path) == nil or ALittle.File_GetFileAttr(module_path .. "/Other/" .. setting_data.data_path) == nil then
 		self._setting_dialog.visible = true
 	else
 		self._control = ALittle.ControlSystem(setting_data.project_name)
@@ -183,12 +177,8 @@ function GBRMaker.GCenter.__getter:control()
 	return self._control
 end
 
-function GBRMaker.GCenter:SelectTexture(image_info, multi)
-	if not multi then
-		self._brush_scroll_screen:RemoveAllChild()
-	end
-	local rel_path = ALittle.String_Sub(image_info.file_path, ALittle.String_Len(self._texture_list.texture_base_path) + 2)
-	local texture_name = self._texture_list.tex_name_base_path .. rel_path
+function GBRMaker.GCenter:SelectTexture(texture_name)
+	self._brush_scroll_screen:RemoveAllChild()
 	for index, child in ___ipairs(self._brush_scroll_screen.childs) do
 		local info = child._user_data
 		if info.texture_name == texture_name then
@@ -199,8 +189,8 @@ function GBRMaker.GCenter:SelectTexture(image_info, multi)
 	info.item = GBRMaker.g_Control:CreateControl("ide_image_select_item", info)
 	info.button._user_data = info
 	info.item._user_data = info
-	info.image:SetTextureCut(image_info.file_path, ALittle.Math_Floor(info.image.width), ALittle.Math_Floor(info.image.height), true)
-	info.upper_file_name = ALittle.String_Upper(ALittle.File_GetJustFileNameByPath(rel_path))
+	info.image:SetTextureCut(texture_name, ALittle.Math_Floor(info.image.width), ALittle.Math_Floor(info.image.height), true)
+	info.upper_file_name = ALittle.String_Upper(ALittle.File_GetJustFileNameByPath(texture_name))
 	info.texture_name = texture_name
 	info.button.drag_trans_target = self._brush_scroll_screen
 	info.button:AddEventListener(___all_struct[-449066808], self, self.HandleBrushCancelClick)

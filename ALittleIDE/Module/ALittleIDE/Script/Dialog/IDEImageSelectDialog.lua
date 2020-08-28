@@ -30,12 +30,10 @@ function ALittleIDE.IDEImageSelectDialog:HandleCloseProject(event)
 	if self._dialog == nil then
 		return
 	end
-	self._scroll_list:RemoveAllChild()
 	self:HideDialog()
 end
 
 function ALittleIDE.IDEImageSelectDialog:HandleImageSelectRButtonDown(event)
-	A_LayerManager:RemoveFromTip(self._image_pre_dialog)
 	local ext = ALittle.File_GetFileExtByPathAndUpper(event.path)
 	if ext ~= "PNG" and ext ~= "JPG" then
 		local menu = AUIPlugin.AUIRightMenu()
@@ -52,7 +50,7 @@ function ALittleIDE.IDEImageSelectDialog:HandleImageSelectRButtonDown(event)
 end
 
 function ALittleIDE.IDEImageSelectDialog:HandleImageCopyGrid9ImageCodeClick(event)
-	local display_info = ALittleIDE.IDEUIUtility_GenerateGrid9ImageInfo(self._base_path .. "/", event.path)
+	local display_info = ALittleIDE.IDEUIUtility_GenerateGrid9ImageInfo(self.base_path .. "/", event.path)
 	if display_info == nil then
 		g_AUITool:ShowNotice("错误", "图片加载失败:" .. event.path)
 		return
@@ -68,7 +66,7 @@ end
 function ALittleIDE.IDEImageSelectDialog:HandleImageCopyImageCodeClick(event)
 	local width = 100
 	local height = 100
-	local surface = ALittle.System_LoadSurface(self._base_path .. "/" .. event.path)
+	local surface = ALittle.System_LoadSurface(self.base_path .. "/" .. event.path)
 	if surface ~= nil then
 		width = ALittle.System_GetSurfaceWidth(surface)
 		height = ALittle.System_GetSurfaceHeight(surface)
@@ -90,7 +88,7 @@ function ALittleIDE.IDEImageSelectDialog:HandleImageCopyImageCodeClick(event)
 end
 
 function ALittleIDE.IDEImageSelectDialog:HandleImageEditClick(event)
-	ALittleIDE.g_IDEEditImageDialog:ShowDialog(self._base_path .. "/" .. event.path, self._base_path)
+	ALittleIDE.g_IDEEditImageDialog:ShowDialog(self.base_path .. "/" .. event.path, self.base_path)
 end
 
 function ALittleIDE.IDEImageSelectDialog:HandleImageDeleteClick(event)
@@ -101,9 +99,9 @@ function ALittleIDE.IDEImageSelectDialog:HandleImageDeleteClick(event)
 	local result = g_AUITool:DeleteNotice("删除", tittle)
 	if result == "YES" then
 		if event.directory then
-			ALittle.File_DeleteDeepDir(self._base_path .. "/" .. event.path)
+			ALittle.File_DeleteDeepDir(self.base_path .. "/" .. event.path)
 		else
-			ALittle.File_DeleteFile(self._base_path .. "/" .. event.path)
+			ALittle.File_DeleteFile(self.base_path .. "/" .. event.path)
 		end
 		self:Refresh()
 	end

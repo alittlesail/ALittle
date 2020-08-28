@@ -11,7 +11,6 @@ public struct MainSettingData
     int unit_length;
 
     string project_name;
-    string texture_path;
     string data_path;
 }
 
@@ -28,7 +27,6 @@ public class MainSettingDialog : ALittle.Dialog
 	private ALittle.ImageInput _image_w_input; // 单位图片宽
 	private ALittle.ImageInput _unit_length_input; // 单位格子边长
 	private ALittle.ImageInput _project_name_input; // 项目名
-	private ALittle.ImageInput _texture_path_input; // 格子图片路径
 	private ALittle.ImageInput _data_path_input; // 场景数据路径
 
     private MainSettingData _data;
@@ -43,7 +41,6 @@ public class MainSettingDialog : ALittle.Dialog
 
         // 数据初始化
         if (this._data.project_name == null) this._data.project_name = "GBR";
-        if (this._data.texture_path == null) this._data.texture_path = "MapTile";
         if (this._data.data_path == null) this._data.data_path = "Scene";
 
         if (this._data.center_x == null) this._data.center_x = 0;
@@ -54,7 +51,6 @@ public class MainSettingDialog : ALittle.Dialog
 
         // 初始化界面
         this._project_name_input.text = this._data.project_name;
-        this._texture_path_input.text = this._data.texture_path;
         this._data_path_input.text = this._data.data_path;
 
         this._center_x_input.text = this._data.center_x;
@@ -84,9 +80,6 @@ public class MainSettingDialog : ALittle.Dialog
         if (ALittle.File_GetFileAttr(module_path) == null)
         { g_AUITool.ShowNotice("提示", "项目不存在"); return; }
 
-        if (ALittle.File_GetFileAttr(module_path.."/Texture/"..this._texture_path_input.text) == null)
-        { g_AUITool.ShowNotice("提示", "格子图片路径不存在"); return; }
-
         if (ALittle.File_GetFileAttr(module_path.."/Other/"..this._data_path_input.text) == null)
         { g_AUITool.ShowNotice("提示", "场景数据路径不存在"); return; }
 
@@ -97,7 +90,6 @@ public class MainSettingDialog : ALittle.Dialog
         this._data.unit_length = unit_length;
 
         this._data.project_name = this._project_name_input.text;
-        this._data.texture_path = this._texture_path_input.text;
         this._data.data_path = this._data_path_input.text;
 
         g_GConfig.SetConfig("setting_data", this._data);

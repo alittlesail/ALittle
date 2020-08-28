@@ -246,36 +246,39 @@ function ALittleIDE.IDEUIUtility_GetDefaultInfo(module_name, info)
 	return default_v
 end
 
-function ALittleIDE.IDEUIUtility_CreateTree(control, extends_v, object, child_type, tab_child, root)
+function ALittleIDE.IDEUIUtility_CreateTree(control, module, extends_v, object, child_type, tab_child, root)
 	local user_info = {}
-	user_info.module = tab_child.module
+	user_info.module = module
 	user_info.base = ALittleIDE.IDEUIUtility_GetBaseInfo(control)
 	if control.__extends ~= nil then
-		local module_name = control.__module
-		if module_name == nil then
-			module_name = user_info.module
+		local module_name = user_info.module
+		if control.__module ~= nil then
+			module_name = control.__module
 		end
 		local ui_manager = ALittleIDE.g_IDEProject:GetUIManager(module_name)
 		local control_info = ui_manager.control_map[control.__extends]
 		if control_info == nil then
 			g_AUITool:ShowNotice("错误", "extends 的控件不存在:" .. control.__extends)
+			return nil
 		end
 		user_info.default = ALittleIDE.IDEUIUtility_GetDefaultInfo(module_name, control_info.info)
 	elseif control.__include ~= nil then
-		local module_name = control.__module
-		if module_name == nil then
-			module_name = user_info.module
+		local module_name = user_info.module
+		if control.__module ~= nil then
+			module_name = control.__module
 		end
 		local ui_manager = ALittleIDE.g_IDEProject:GetUIManager(module_name)
 		local control_info = ui_manager.control_map[control.__include]
 		if control_info == nil then
 			g_AUITool:ShowNotice("错误", "include 的控件不存在:" .. control.__include)
+			return nil
 		end
 		user_info.default = ALittleIDE.IDEUIUtility_GetDefaultInfo(module_name, control_info.info)
 	elseif control.__class ~= nil then
 		user_info.default = ALittleIDE.g_IDEEnum.type_default_map[control.__class]
 	else
-		ALittle.Log("error CreateTree: there have no extends,include,class")
+		g_AUITool:ShowNotice("错误", "控件内容没有定义:extends,include,class")
+		return nil
 	end
 	local nature_list = ALittleIDE.g_IDEEnum.nature_show_map[user_info.default.__class]
 	if nature_list ~= nil then
@@ -300,12 +303,24 @@ function ALittleIDE.IDEUIUtility_CreateTree(control, extends_v, object, child_ty
 		if control.__childs ~= nil and ALittle.List_MaxN(control.__childs) > 0 then
 			local childs = control.__childs
 			for k, v in ___ipairs(childs) do
-				tree_logic:AddChild(ALittleIDE.IDEUIUtility_CreateTree(v, extends_v, object.childs[k], "child", tab_child, false))
+				local tree = ALittleIDE.IDEUIUtility_CreateTree(v, module, extends_v, object.childs[k], "child", tab_child, false)
+				if tree == nil then
+					return nil
+				end
+				tree_logic:AddChild(tree)
 			end
 		elseif user_info.default.__childs ~= nil and ALittle.List_MaxN(user_info.default.__childs) > 0 then
+			local module_name = module
+			if control.__module ~= nil then
+				module_name = control.__module
+			end
 			local childs = user_info.default.__childs
 			for k, v in ___ipairs(childs) do
-				tree_logic:AddChild(ALittleIDE.IDEUIUtility_CreateTree(v, true, object.childs[k], "child", tab_child, false))
+				local tree = ALittleIDE.IDEUIUtility_CreateTree(v, module_name, true, object.childs[k], "child", tab_child, false)
+				if tree == nil then
+					return nil
+				end
+				tree_logic:AddChild(tree)
 			end
 		end
 	end
@@ -314,9 +329,21 @@ function ALittleIDE.IDEUIUtility_CreateTree(control, extends_v, object, child_ty
 		for index, name in ___ipairs(show_list) do
 			if object[name] ~= nil then
 				if control[name] ~= nil then
-					tree_logic:AddChild(ALittleIDE.IDEUIUtility_CreateTree(control[name], extends_v, object[name], name, tab_child, false))
+					local tree = ALittleIDE.IDEUIUtility_CreateTree(control[name], module, extends_v, object[name], name, tab_child, false)
+					if tree == nil then
+						return nil
+					end
+					tree_logic:AddChild(tree)
 				elseif user_info.default[name] ~= nil then
-					tree_logic:AddChild(ALittleIDE.IDEUIUtility_CreateTree(user_info.default[name], true, object[name], name, tab_child, false))
+					local module_name = module
+					if control.__module ~= nil then
+						module_name = control.__module
+					end
+					local tree = ALittleIDE.IDEUIUtility_CreateTree(user_info.default[name], module_name, true, object[name], name, tab_child, false)
+					if tree == nil then
+						return nil
+					end
+					tree_logic:AddChild(tree)
 				end
 			end
 		end

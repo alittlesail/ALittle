@@ -294,34 +294,41 @@ public struct IDEUITreeUserInfo
 // parent 父控件
 // child_type 子控件类型
 // group_name 单选按键组名
-public static IDEUIUtility_CreateTree(const ALittle.DisplayInfo control, bool extends_v, ALittle.DisplayObject object, string child_type, IDEUITabChild tab_child, bool root) : IDEUITreeLogic
+public static IDEUIUtility_CreateTree(const ALittle.DisplayInfo control, string module, bool extends_v, ALittle.DisplayObject object, string child_type, IDEUITabChild tab_child, bool root) : IDEUITreeLogic
 {
 	// 创建核心数据
 	var user_info = new IDEUITreeUserInfo();
-    user_info.module = tab_child.module;
+    user_info.module = module;
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////-
 	// 获取基础信息
 	user_info.base = IDEUIUtility_GetBaseInfo(control);
 	// 剥开一层，然后获取继承信息
 	if (control.__extends != null)
 	{
-        var module_name:string = control.__module;
-        if (module_name == null) module_name = user_info.module;
+        var module_name = user_info.module;
+        if (control.__module != null) module_name = control.__module;
         var ui_manager = g_IDEProject.GetUIManager(module_name);
 		var control_info = ui_manager.control_map[control.__extends];
 		if (control_info == null)
+        {
 			g_AUITool.ShowNotice("错误", "extends 的控件不存在:"..control.__extends);
+            return null;
+        }
 		// 获取默认信息
 		user_info.default = IDEUIUtility_GetDefaultInfo(module_name, control_info.info);
 	}
 	elseif (control.__include != null)
 	{
-        var module_name:string = control.__module;
-        if (module_name == null) module_name = user_info.module;
+        var module_name = user_info.module;
+        if (control.__module != null) module_name = control.__module;
         var ui_manager = g_IDEProject.GetUIManager(module_name);
 		var control_info = ui_manager.control_map[control.__include];
 		if (control_info == null)
+        {
 			g_AUITool.ShowNotice("错误", "include 的控件不存在:"..control.__include);
+            return null;
+        }
 		// 获取默认信息
 		user_info.default = IDEUIUtility_GetDefaultInfo(module_name, control_info.info);
 	}
@@ -329,8 +336,10 @@ public static IDEUIUtility_CreateTree(const ALittle.DisplayInfo control, bool ex
 		// 直接从枚举里面获取信息
 		user_info.default = g_IDEEnum.type_default_map[control.__class];
 	else
-		// 错误则打印日志
-		ALittle.Log("error CreateTree: there have no extends,include,class");
+    {
+        g_AUITool.ShowNotice("错误", "控件内容没有定义:extends,include,class");
+        return null;
+    }
 
 	// 处理普通的show
 	var nature_list = g_IDEEnum.nature_show_map[user_info.default.__class];
@@ -339,19 +348,16 @@ public static IDEUIUtility_CreateTree(const ALittle.DisplayInfo control, bool ex
 		for (var index, name in nature_list)
 		{
 			if (cast<Map<string, any>>(control)[name] != null)
-				cast<Map<string, any>>(user_info.base)[name] = ALittle.String_CopyTable(cast<Map<string, any> >(control)[name]);
+				cast<Map<string, any>>(user_info.base)[name] = ALittle.String_CopyTable(cast<Map<string, any>>(control)[name]);
 		}
 	}
 
 	// 设置当前子控件类型，null：根控件，child：子控件，showXX：show
 	user_info.child_type = child_type;
-
 	// 标记为不是根
 	user_info.root = root;
-
 	// 设置控件对象
 	user_info.object = object;
-
 	// 设置是否是继承
 	user_info.extends = extends_v;
 	// 标记是否是继承的根节点
@@ -374,14 +380,25 @@ public static IDEUIUtility_CreateTree(const ALittle.DisplayInfo control, bool ex
 		{
 			var childs = control.__childs;
 			for (var k, v in childs)
-				tree_logic.AddChild(IDEUIUtility_CreateTree(v, extends_v, object.childs[k], "child", tab_child, false));
+            {
+                var tree = IDEUIUtility_CreateTree(v, module, extends_v, object.childs[k], "child", tab_child, false);
+                if (tree == null) return null;
+				tree_logic.AddChild(tree);
+            }
 		}
 		// 如果继承就有子控件，那么都是继承
 		elseif (user_info.default.__childs != null && ALittle.List_MaxN(user_info.default.__childs) > 0)
 		{
+            var module_name = module;
+            if (control.__module != null) module_name = control.__module;
 			var childs = user_info.default.__childs;
 			for (var k, v in childs)
-				tree_logic.AddChild(IDEUIUtility_CreateTree(v, true, object.childs[k], "child", tab_child, false));
+            {
+                var tree = IDEUIUtility_CreateTree(v, module_name, true, object.childs[k], "child", tab_child, false);
+                if (tree == null) return null;
+                tree_logic.AddChild(tree);
+            }
+				
 		}
 	}
 
@@ -396,10 +413,20 @@ public static IDEUIUtility_CreateTree(const ALittle.DisplayInfo control, bool ex
 			{
 				// 如果这个show是当前控件的，那么是否继承由extends决定
 				if (cast<Map<string, any>>(control)[name] != null)
-					tree_logic.AddChild(IDEUIUtility_CreateTree(cast<Map<string, any>>(control)[name], extends_v, cast<Map<string,any>>(object)[name], name, tab_child, false));
+                {
+                    var tree = IDEUIUtility_CreateTree(cast<Map<string, any>>(control)[name], module, extends_v, cast<Map<string,any>>(object)[name], name, tab_child, false);
+                    if (tree == null) return null;
+					tree_logic.AddChild(tree);
+                }
 				// 如果这个show是继承的，那么都是继承
 				elseif (cast<Map<string, any>>(user_info.default)[name] != null)
-					tree_logic.AddChild(IDEUIUtility_CreateTree(cast<Map<string, any>>(user_info.default)[name], true, cast<Map<string,any>>(object)[name], name, tab_child, false));
+                {
+                    var module_name = module;
+                    if (control.__module != null) module_name = control.__module;
+                    var tree = IDEUIUtility_CreateTree(cast<Map<string, any>>(user_info.default)[name], module_name, true, cast<Map<string,any>>(object)[name], name, tab_child, false);
+                    if (tree == null) return null;
+					tree_logic.AddChild(tree);
+                }
 			}
 		}
 	}

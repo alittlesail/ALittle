@@ -310,7 +310,7 @@ public class IDEUITreeLogic : ALittle.DisplayLayout
 			cast<Map<string,any>>(this._user_info.object)[child_type] = object;
 		
 		// 添加控件树
-		var tree_object = IDEUIUtility_CreateTree(info, false, object, child_type, this._tab_child, false);
+		var tree_object = IDEUIUtility_CreateTree(info, this._user_info.module, false, object, child_type, this._tab_child, false);
 		this.AddChild(tree_object, child_index);
 		this._tab_child.save = false;
 		
@@ -373,7 +373,7 @@ public class IDEUITreeLogic : ALittle.DisplayLayout
 				cast<Map<string,any>>(this._user_info.object)[child_type] = object;
 
 			// 添加控件树
-			tree_object = IDEUIUtility_CreateTree(info, false, object, child_type, this._tab_child, false);
+			tree_object = IDEUIUtility_CreateTree(info, this._user_info.module, false, object, child_type, this._tab_child, false);
 			this.AddChild(tree_object);
 			this._tab_child.save = false;
 			// 生成撤销类
@@ -402,7 +402,7 @@ public class IDEUITreeLogic : ALittle.DisplayLayout
 			else
 				cast<Map<string,any>>(this._user_info.object)[child_type] = object;
 
-			tree_object = IDEUIUtility_CreateTree(info, false, object, child_type, this._tab_child, false);
+			tree_object = IDEUIUtility_CreateTree(info, this._user_info.module, false, object, child_type, this._tab_child, false);
 			this.AddChild(tree_object);
 			this._tab_child.save = false;
 			// 生成撤销类

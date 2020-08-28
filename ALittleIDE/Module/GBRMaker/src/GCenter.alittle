@@ -56,16 +56,6 @@ protected struct FileSelectItemInfo
     bool save;
 }
 
-// 图片信息
-protected struct ImageSelectItemInfo
-{
-    ALittle.DisplayLayout item;
-    ALittle.Image image;
-    ALittle.DisplayObject button;
-    string upper_file_name;
-    string file_path;
-}
-
 // 笔刷信息
 protected struct BrushSelectItemInfo
 {
@@ -180,7 +170,6 @@ class GCenter
         var setting_data = this._setting_dialog.data;
         var module_path = "Module/"..setting_data.project_name;
         if (ALittle.File_GetFileAttr(module_path) == null
-            || ALittle.File_GetFileAttr(module_path.."/Texture/"..setting_data.texture_path) == null
             || ALittle.File_GetFileAttr(module_path.."/Other/"..setting_data.data_path) == null)
         {
             this._setting_dialog.visible = true;
@@ -213,13 +202,9 @@ class GCenter
     public set cur_floor(FloorSelectItemInfo floor) { this._cur_floor = floor; }
     public get control() : ALittle.ControlSystem { return this._control; }
     
-    public fun SelectTexture(ImageSelectItemInfo image_info, bool multi)
+    public fun SelectTexture(string texture_name)
     {
-        if (!multi)
-            this._brush_scroll_screen.RemoveAllChild();
-
-        var rel_path = ALittle.String_Sub(image_info.file_path, ALittle.String_Len(this._texture_list.texture_base_path) + 2);
-        var texture_name = this._texture_list.tex_name_base_path..rel_path;
+        this._brush_scroll_screen.RemoveAllChild();
 
         for (var index, child in this._brush_scroll_screen.childs)
         {
@@ -231,8 +216,8 @@ class GCenter
         info.item = g_Control.CreateControl{ALittle.DisplayLayout}("ide_image_select_item", info);
         info.button._user_data = info;
         info.item._user_data = info;
-		info.image.SetTextureCut(image_info.file_path, ALittle.Math_Floor(info.image.width), ALittle.Math_Floor(info.image.height), true);
-        info.upper_file_name = ALittle.String_Upper(ALittle.File_GetJustFileNameByPath(rel_path));
+		info.image.SetTextureCut(texture_name, ALittle.Math_Floor(info.image.width), ALittle.Math_Floor(info.image.height), true);
+        info.upper_file_name = ALittle.String_Upper(ALittle.File_GetJustFileNameByPath(texture_name));
         info.texture_name = texture_name;
 
         info.button.drag_trans_target = this._brush_scroll_screen;

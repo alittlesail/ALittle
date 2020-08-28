@@ -300,7 +300,7 @@ function ALittleIDE.IDEUITreeLogic:TreePaste(info, child_type, child_index, is_g
 	else
 		self._user_info.object[child_type] = object
 	end
-	local tree_object = ALittleIDE.IDEUIUtility_CreateTree(info, false, object, child_type, self._tab_child, false)
+	local tree_object = ALittleIDE.IDEUIUtility_CreateTree(info, self._user_info.module, false, object, child_type, self._tab_child, false)
 	self:AddChild(tree_object, child_index)
 	self._tab_child.save = false
 	local index = self:GetChildIndex(tree_object)
@@ -343,7 +343,7 @@ function ALittleIDE.IDEUITreeLogic:TreeAdd(extends_module, extends_name, class_n
 		else
 			self._user_info.object[child_type] = object
 		end
-		tree_object = ALittleIDE.IDEUIUtility_CreateTree(info, false, object, child_type, self._tab_child, false)
+		tree_object = ALittleIDE.IDEUIUtility_CreateTree(info, self._user_info.module, false, object, child_type, self._tab_child, false)
 		self:AddChild(tree_object)
 		self._tab_child.save = false
 		local index = self:GetChildIndex(tree_object)
@@ -369,7 +369,7 @@ function ALittleIDE.IDEUITreeLogic:TreeAdd(extends_module, extends_name, class_n
 		else
 			self._user_info.object[child_type] = object
 		end
-		tree_object = ALittleIDE.IDEUIUtility_CreateTree(info, false, object, child_type, self._tab_child, false)
+		tree_object = ALittleIDE.IDEUIUtility_CreateTree(info, self._user_info.module, false, object, child_type, self._tab_child, false)
 		self:AddChild(tree_object)
 		self._tab_child.save = false
 		local index = self:GetChildIndex(tree_object)

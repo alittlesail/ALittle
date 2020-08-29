@@ -38,6 +38,8 @@ function GBRMaker.MainLayerList:Init()
 	local group = {}
 	for index, floor_info in ___ipairs(g_GCenter.cur_file.map_info.floor_list) do
 		local info = {}
+		info.edit_item = self:CreateFloorEdit(floor_info)
+		g_GCenter.cur_edit_layer:AddChild(info.edit_item)
 		info.select_item = GBRMaker.g_Control:CreateControl("ide_common_item_radiobutton", info)
 		info.select_item._user_data = info
 		info.select_item.group = group
@@ -46,8 +48,6 @@ function GBRMaker.MainLayerList:Init()
 		info.select_item:AddEventListener(___all_struct[-641444818], self, self.HandleFloorRButtonDown)
 		info.floor_info = floor_info
 		self._floor_scroll_screen:AddChild(info.select_item)
-		info.edit_item = self:CreateFloorEdit(info)
-		g_GCenter.cur_edit_layer:AddChild(info.edit_item)
 		info.edit_item.alpha = 0.5
 		if index == 1 then
 			info.select_item.selected = true
@@ -70,6 +70,7 @@ function GBRMaker.MainLayerList:HandleNewFloorClick(event)
 	end
 	local floor_data = {}
 	floor_data.name = name
+	floor_data.data = {}
 	local floor_info = {}
 	floor_info.floor_data = floor_data
 	floor_info.file_info = cur_file
@@ -83,6 +84,8 @@ function GBRMaker.MainLayerList:HandleNewFloorClick(event)
 		group = {}
 	end
 	local info = {}
+	info.edit_item = self:CreateFloorEdit(floor_info)
+	g_GCenter.cur_edit_layer:AddChild(info.edit_item, 1)
 	info.select_item = GBRMaker.g_Control:CreateControl("ide_common_item_radiobutton", info)
 	info.select_item._user_data = info
 	info.select_item.group = group
@@ -91,8 +94,6 @@ function GBRMaker.MainLayerList:HandleNewFloorClick(event)
 	info.select_item:AddEventListener(___all_struct[-641444818], self, self.HandleFloorRButtonDown)
 	info.floor_info = floor_info
 	self._floor_scroll_screen:AddChild(info.select_item, 1)
-	info.edit_item = self:CreateFloorEdit(info)
-	g_GCenter.cur_edit_layer:AddChild(info.edit_item, 1)
 	g_GCenter:SaveCurEdit(false)
 end
 GBRMaker.MainLayerList.HandleNewFloorClick = Lua.CoWrap(GBRMaker.MainLayerList.HandleNewFloorClick)
@@ -163,23 +164,23 @@ function GBRMaker.MainLayerList:HandleLayerDelete(info, index)
 	g_GCenter:SaveCurEdit(false)
 end
 
-function GBRMaker.MainLayerList:CreateFloorEdit(info)
+function GBRMaker.MainLayerList:CreateFloorEdit(floor_info)
 	local setting_data = g_GCenter.setting_dialog.data
 	local layer = ALittle.DisplayLayout(g_GCenter.control)
-	for x, y_data in ___pairs(info.floor_info.floor_data.data) do
+	for x, y_data in ___pairs(floor_info.floor_data.data) do
 		for y, tex_id in ___pairs(y_data) do
 			local image = ALittle.Image(g_GCenter.control)
-			image.texture_name = info.floor_info.file_info.map_data.tex_map[tex_id]
+			image.texture_name = floor_info.file_info.map_data.tex_map[tex_id]
 			image.width = setting_data.image_w
 			image.height = setting_data.image_h
 			local center_x, center_y = GBRMaker.IDECoordVirtual2Show(x, y, setting_data.unit_length)
 			image.x = center_x - setting_data.center_x
 			image.y = center_y - setting_data.center_y
 			layer:AddChild(image)
-			local y_info = info.floor_info.child_map[x]
+			local y_info = floor_info.child_map[x]
 			if y_info == nil then
 				y_info = {}
-				info.floor_info.child_map[x] = y_info
+				floor_info.child_map[x] = y_info
 			end
 			y_info[y] = image
 		end

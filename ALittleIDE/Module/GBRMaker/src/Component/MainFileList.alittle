@@ -34,6 +34,7 @@ public class MainFileList : ALittle.DisplayLayout
 
         // 创建一个文件
         ALittle.File_WriteTextToFile("", file_path);
+        this.RefreshFile();
     }
 
     private fun HandleSelectFile(ALittle.UIChangedEvent event)
@@ -133,5 +134,4 @@ public class MainFileList : ALittle.DisplayLayout
                 this._file_scroll_screen.AddChild(info.item);
 		}
     }
-
 }

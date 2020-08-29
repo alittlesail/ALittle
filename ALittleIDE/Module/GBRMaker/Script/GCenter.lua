@@ -77,18 +77,6 @@ name_list = {"item","file_path","upper_file_name","map_data","map_info","save"},
 type_list = {"ALittle.TextRadioButton","string","string","GBRMaker.MapData","GBRMaker.MapInfo","bool"},
 option_map = {}
 })
-ALittle.RegStruct(-449066808, "ALittle.UIClickEvent", {
-name = "ALittle.UIClickEvent", ns_name = "ALittle", rl_name = "UIClickEvent", hash_code = -449066808,
-name_list = {"target","is_drag"},
-type_list = {"ALittle.DisplayObject","bool"},
-option_map = {}
-})
-ALittle.RegStruct(-439548260, "ALittle.UILongButtonDownEvent", {
-name = "ALittle.UILongButtonDownEvent", ns_name = "ALittle", rl_name = "UILongButtonDownEvent", hash_code = -439548260,
-name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
-type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
-option_map = {}
-})
 ALittle.RegStruct(339827246, "GBRMaker.MapInfo", {
 name = "GBRMaker.MapInfo", ns_name = "GBRMaker", rl_name = "MapInfo", hash_code = 339827246,
 name_list = {"floor_list","tex_map","tex_max_id"},
@@ -173,13 +161,17 @@ function GBRMaker.GCenter.__setter:cur_floor(floor)
 	self._cur_floor = floor
 end
 
+function GBRMaker.GCenter.__getter:cur_floor()
+	return self._cur_floor
+end
+
 function GBRMaker.GCenter.__getter:control()
 	return self._control
 end
 
-function GBRMaker.GCenter:SelectTexture(texture_name)
-	self._brush_scroll_screen:RemoveAllChild()
-	for index, child in ___ipairs(self._brush_scroll_screen.childs) do
+function GBRMaker.GCenter:SelectTexture(full_path, texture_name)
+	self._layer_brush_info:RemoveAllChild()
+	for index, child in ___ipairs(self._layer_brush_info.childs) do
 		local info = child._user_data
 		if info.texture_name == texture_name then
 			return
@@ -189,22 +181,11 @@ function GBRMaker.GCenter:SelectTexture(texture_name)
 	info.item = GBRMaker.g_Control:CreateControl("ide_image_select_item", info)
 	info.button._user_data = info
 	info.item._user_data = info
-	info.image:SetTextureCut(texture_name, ALittle.Math_Floor(info.image.width), ALittle.Math_Floor(info.image.height), true)
+	info.image:SetTextureCut(full_path, ALittle.Math_Floor(info.image.width), ALittle.Math_Floor(info.image.height), true)
 	info.upper_file_name = ALittle.String_Upper(ALittle.File_GetJustFileNameByPath(texture_name))
 	info.texture_name = texture_name
-	info.button.drag_trans_target = self._brush_scroll_screen
-	info.button:AddEventListener(___all_struct[-449066808], self, self.HandleBrushCancelClick)
-	info.button:AddEventListener(___all_struct[-439548260], self, self.HandleBrushAllCancelClick)
-	self._brush_scroll_screen:AddChild(info.item)
-end
-
-function GBRMaker.GCenter:HandleBrushCancelClick(event)
-	local info = event.target._user_data
-	self._brush_scroll_screen:RemoveChild(info.item)
-end
-
-function GBRMaker.GCenter:HandleBrushAllCancelClick(event)
-	self._brush_scroll_screen:RemoveAllChild()
+	info.button.drag_trans_target = self._layer_brush_info
+	self._layer_brush_info:AddChild(info.item)
 end
 
 function GBRMaker.GCenter:EraseCell(floor, virtual_x, virtual_y)
@@ -270,19 +251,22 @@ end
 
 function GBRMaker.GCenter:OverWriteCell(file, floor, virtual_x, virtual_y)
 	self:EraseCell(floor, virtual_x, virtual_y)
-	local index = ALittle.Math_RandomInt(1, self._brush_scroll_screen.child_count)
-	local info = self._brush_scroll_screen.childs[index]._user_data
+	local index = ALittle.Math_RandomInt(1, self._layer_brush_info.child_count)
+	local info = self._layer_brush_info.childs[index]._user_data
 	self:SetCell(file, floor, virtual_x, virtual_y, info)
 end
 
 function GBRMaker.GCenter:HandleBrushQuadLButtonDown(event)
-	if self._brush_scroll_screen.child_count == 0 then
+	if self._layer_brush_info.child_count == 0 then
+		g_AUITool:ShowNotice("错误", "您还未选择格子图片")
 		return
 	end
 	if self._cur_file == nil then
+		g_AUITool:ShowNotice("错误", "您还未选择编辑的文件")
 		return
 	end
 	if self._cur_floor == nil then
+		g_AUITool:ShowNotice("错误", "您还未选择编辑的层")
 		return
 	end
 	local setting_data = self._setting_dialog.data
@@ -296,7 +280,7 @@ function GBRMaker.GCenter:HandleBrushQuadDragBegin(event)
 end
 
 function GBRMaker.GCenter:HandleBrushQuadDrag(event)
-	if self._brush_scroll_screen.child_count == 0 then
+	if self._layer_brush_info.child_count == 0 then
 		return
 	end
 	if self._cur_file == nil then

@@ -24,9 +24,10 @@ public class MainTextureList : ALittle.DisplayLayout
 
     private fun HandleTextureSelectClick(AUIPlugin.AUIFileSelectClickUIEvent event)
     {
-        ALittle.Log(event.path);
-
-        // g_GCenter.SelectTexture(image_info, multi);
+        var setting_data = g_GCenter.setting_dialog.data;
+        var module_path = "Module/"..setting_data.project_name;
+        var file_path = ALittle.File_BaseFilePath()..module_path.."/Texture/"..event.path;
+        g_GCenter.SelectTexture(file_path, event.path);
     }
 
     // 日志列表和详细列表之间的上下调整

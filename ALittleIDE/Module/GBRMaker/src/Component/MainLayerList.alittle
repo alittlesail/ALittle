@@ -14,6 +14,9 @@ public class MainLayerList : ALittle.DisplayLayout
         for (var index, floor_info in g_GCenter.cur_file.map_info.floor_list)
         {
             var info = new FloorSelectItemInfo();
+            info.edit_item = this.CreateFloorEdit(floor_info);
+            g_GCenter.cur_edit_layer.AddChild(info.edit_item);
+
             info.select_item = g_Control.CreateControl{ALittle.TextRadioButton}("ide_common_item_radiobutton", info);
             info.select_item._user_data = info;
             info.select_item.group = group;
@@ -23,8 +26,6 @@ public class MainLayerList : ALittle.DisplayLayout
             info.floor_info = floor_info;
             this._floor_scroll_screen.AddChild(info.select_item);
 
-            info.edit_item = this.CreateFloorEdit(info);
-            g_GCenter.cur_edit_layer.AddChild(info.edit_item);
             info.edit_item.alpha = 0.5;
 
             if (index == 1)
@@ -52,6 +53,8 @@ public class MainLayerList : ALittle.DisplayLayout
 
         var floor_data = new FloorData();
         floor_data.name = name;
+        floor_data.data = new Map<int, Map<int, int>>();
+
         var floor_info = new FloorInfo();
         floor_info.floor_data = floor_data;
         floor_info.file_info = cur_file;
@@ -66,7 +69,11 @@ public class MainLayerList : ALittle.DisplayLayout
         else
             group = new ALittle.TextRadioButtonGroup();
     
+
         var info = new FloorSelectItemInfo();
+        info.edit_item = this.CreateFloorEdit(floor_info);
+        g_GCenter.cur_edit_layer.AddChild(info.edit_item, 1);
+
         info.select_item = g_Control.CreateControl{ALittle.TextRadioButton}("ide_common_item_radiobutton", info);
         info.select_item._user_data = info;
         info.select_item.group = group;
@@ -76,11 +83,8 @@ public class MainLayerList : ALittle.DisplayLayout
         info.floor_info = floor_info;
         this._floor_scroll_screen.AddChild(info.select_item, 1);
     
-        info.edit_item = this.CreateFloorEdit(info);
-        g_GCenter.cur_edit_layer.AddChild(info.edit_item, 1);
-
         g_GCenter.SaveCurEdit(false);
-    }
+	}
 
     private fun HandleSelectFloor(ALittle.UIChangedEvent event)
     {
@@ -169,18 +173,18 @@ public class MainLayerList : ALittle.DisplayLayout
         g_GCenter.SaveCurEdit(false);
     }
 
-    private fun CreateFloorEdit(FloorSelectItemInfo info) : ALittle.DisplayLayout
+    private fun CreateFloorEdit(FloorInfo floor_info) : ALittle.DisplayLayout
     {
         var setting_data = g_GCenter.setting_dialog.data;
 
         var layer = new ALittle.DisplayLayout(g_GCenter.control);
         // 填充格子
-        for (var x, y_data in info.floor_info.floor_data.data)
+        for (var x, y_data in floor_info.floor_data.data)
         {
             for (var y, tex_id in y_data)
             {
                 var image = new ALittle.Image(g_GCenter.control);
-                image.texture_name = info.floor_info.file_info.map_data.tex_map[tex_id];
+                image.texture_name = floor_info.file_info.map_data.tex_map[tex_id];
                 image.width = setting_data.image_w;
                 image.height = setting_data.image_h;
                 var center_x, center_y = IDECoordVirtual2Show(x, y, setting_data.unit_length);
@@ -188,11 +192,11 @@ public class MainLayerList : ALittle.DisplayLayout
                 image.y = center_y - setting_data.center_y;
                 layer.AddChild(image);
 
-                var y_info = info.floor_info.child_map[x];
+                var y_info = floor_info.child_map[x];
                 if (y_info == null)
                 {
                     y_info = new Map<int, ALittle.Image>();
-                    info.floor_info.child_map[x] = y_info;
+                    floor_info.child_map[x] = y_info;
                 }
                 y_info[y] = image;
             }

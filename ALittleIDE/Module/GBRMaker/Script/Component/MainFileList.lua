@@ -38,6 +38,7 @@ function GBRMaker.MainFileList:HandleFileNewClick(event)
 		return
 	end
 	ALittle.File_WriteTextToFile("", file_path)
+	self:RefreshFile()
 end
 GBRMaker.MainFileList.HandleFileNewClick = Lua.CoWrap(GBRMaker.MainFileList.HandleFileNewClick)
 

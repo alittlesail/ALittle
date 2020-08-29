@@ -38,7 +38,10 @@ function GBRMaker.MainTextureList:RefreshTexture()
 end
 
 function GBRMaker.MainTextureList:HandleTextureSelectClick(event)
-	g_GCenter:SelectTexture(event.path)
+	local setting_data = g_GCenter.setting_dialog.data
+	local module_path = "Module/" .. setting_data.project_name
+	local file_path = ALittle.File_BaseFilePath() .. module_path .. "/Texture/" .. event.path
+	g_GCenter:SelectTexture(file_path, event.path)
 end
 
 function GBRMaker.MainTextureList:HandleDragRightQuadUD(event)

@@ -54,11 +54,12 @@ public class MainLayerList : ALittle.DisplayLayout
         var floor_data = new FloorData();
         floor_data.name = name;
         floor_data.data = new Map<int, Map<int, int>>();
-
+        
         var floor_info = new FloorInfo();
         floor_info.floor_data = floor_data;
         floor_info.file_info = cur_file;
         floor_info.visible = true;
+        floor_info.child_map = new Map<int, Map<int, ALittle.Image>>();
 
         ALittle.List_Insert(cur_file.map_data.floor_list, 1, floor_data);
         ALittle.List_Insert(cur_file.map_info.floor_list, 1, floor_info);

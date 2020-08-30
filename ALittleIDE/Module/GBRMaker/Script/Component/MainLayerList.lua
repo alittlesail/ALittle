@@ -75,6 +75,7 @@ function GBRMaker.MainLayerList:HandleNewFloorClick(event)
 	floor_info.floor_data = floor_data
 	floor_info.file_info = cur_file
 	floor_info.visible = true
+	floor_info.child_map = {}
 	ALittle.List_Insert(cur_file.map_data.floor_list, 1, floor_data)
 	ALittle.List_Insert(cur_file.map_info.floor_list, 1, floor_info)
 	local group = nil

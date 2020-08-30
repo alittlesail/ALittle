@@ -576,7 +576,7 @@ class GCenter
             this._edit_title.text = this._cur_file.item.text.."*";
             return;
         }
-        
+
         var rflct = reflect<MapData>;
         // 打开文件
         var factory = new lua.__CPPAPIMessageWriteFactory();
@@ -586,7 +586,7 @@ class GCenter
 
         // 反序列化
         ALittle.PS_WriteMessage(factory, invoke_info, null, this._cur_file.map_data);
-        
+    
         // 保存到文件
         if (!factory.WriteToStdFile(this._cur_file.file_path))
         {

@@ -147,7 +147,7 @@ function AUIPlugin.AUIFileSelectLayout:CreateFileItem(file_name, rel_path, abs_p
 	info.dir.visible = false
 	info.file.visible = false
 	info.image.visible = false
-	if ext == "PNG" or ext == "JPG" then
+	if ext == "PNG" or ext == "JPG" or ext == "BMP" then
 		local width = nil
 		local height = nil
 		local surface = ALittle.System_LoadSurface(abs_path)

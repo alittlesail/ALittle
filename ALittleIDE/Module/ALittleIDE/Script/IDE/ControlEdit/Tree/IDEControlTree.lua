@@ -79,6 +79,7 @@ function ALittleIDE.IDEControlTree:HandleRButtonDown(event)
 	if self._user_info.root then
 		menu:AddItem("添加模块", Lua.Bind(self.HandleAddModule, self))
 	end
+	menu:AddItem("新建控件", Lua.Bind(self.HandleNewControl, self))
 	local can_remove = self._user_info.root and self._user_info.module_name ~= ALittleIDE.g_IDEProject.project.name
 	if can_remove then
 		menu:AddItem("移除模块", Lua.Bind(self.HandleRemoveModule, self))
@@ -129,6 +130,10 @@ function ALittleIDE.IDEControlTree:HandleRemoveModule()
 	ui_manager.control:UnRegisterPlugin(self._user_info.module_name)
 end
 ALittleIDE.IDEControlTree.HandleRemoveModule = Lua.CoWrap(ALittleIDE.IDEControlTree.HandleRemoveModule)
+
+function ALittleIDE.IDEControlTree:HandleNewControl()
+	ALittleIDE.g_IDECenter.center.control_list:ShowNewControl(self._user_info.module_name)
+end
 
 function ALittleIDE.IDEControlTree.__getter:is_tree()
 	return true

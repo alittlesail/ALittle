@@ -111,7 +111,7 @@ public class AUIFileSelectLayout : ALittle.DisplayLayout
 		info.dir.visible = false;
 		info.file.visible = false;
 		info.image.visible = false;
-		if (ext == "PNG" || ext == "JPG")
+		if (ext == "PNG" || ext == "JPG" || ext == "BMP")
 		{
 			// 获取图片大小
 			var width:double = null;

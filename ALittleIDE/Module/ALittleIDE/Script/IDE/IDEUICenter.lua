@@ -194,7 +194,7 @@ function ALittleIDE.IDEUICenter:HandleShortcutKey()
 	end
 	local n = A_UISystem.sym_map[110]
 	if n then
-		self._control_list:ShowNewControl()
+		self._control_list:ShowNewControl(nil)
 		return
 	end
 end

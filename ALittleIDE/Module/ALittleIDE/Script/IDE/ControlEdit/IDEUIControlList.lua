@@ -163,10 +163,13 @@ function ALittleIDE.IDEUIControlList:HandleControlSearchClick(event)
 	self:ShowTreeItemFocus(item)
 end
 
-function ALittleIDE.IDEUIControlList:ShowNewControl()
+function ALittleIDE.IDEUIControlList:ShowNewControl(module_name)
 	if ALittleIDE.g_IDEProject.project == nil then
 		g_AUITool:ShowNotice("提示", "当前没有打开的项目")
 		return
+	end
+	if module_name == nil then
+		module_name = ALittleIDE.g_IDEProject.project.name
 	end
 	if self._control_new_dialog == nil then
 		self._control_new_dialog = ALittleIDE.g_Control:CreateControl("ide_new_control_dialog", self)
@@ -178,6 +181,7 @@ function ALittleIDE.IDEUIControlList:ShowNewControl()
 		ALittle.List_Push(data_list, name)
 	end
 	self._control_new_module.data_list = data_list
+	self._control_new_module.text = module_name
 	self._control_new_name.text = ""
 	self._control_new_dialog.visible = true
 	A_UISystem.focus = self._control_new_name.show_input

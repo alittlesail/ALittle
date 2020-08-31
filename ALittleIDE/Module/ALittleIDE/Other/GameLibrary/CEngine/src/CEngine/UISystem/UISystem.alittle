@@ -120,7 +120,7 @@ class UISystem
         return this._view_resize_callback;
     }
 
-    // 注册输入法回调函数
+    // 注册输入法回调函数，参数为mod, sym, scancode
     public set keydown_callback(Functor<(int, int, int)> value)
     {
         this._keydown_callback = value;

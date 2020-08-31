@@ -34,7 +34,7 @@ end
 
 function ALittleIDE.IDEUIMainMenu:HandleEditMenuClick(event)
 	local menu = AUIPlugin.AUIRightMenu()
-	menu:AddItem("新建控件", Lua.Bind(ALittleIDE.g_IDECenter.center.control_list.ShowNewControl, ALittleIDE.g_IDECenter.center.control_list))
+	menu:AddItem("新建控件", Lua.Bind(ALittleIDE.g_IDECenter.center.control_list.ShowNewControl, ALittleIDE.g_IDECenter.center.control_list, nil))
 	menu:AddItem("重做", Lua.Bind(ALittleIDE.g_IDECenter.center.HandleDoRevoke, ALittleIDE.g_IDECenter.center, nil))
 	menu:AddItem("撤销", Lua.Bind(ALittleIDE.g_IDECenter.center.HandleUndoRevoke, ALittleIDE.g_IDECenter.center, nil))
 	menu:Show(event.target)

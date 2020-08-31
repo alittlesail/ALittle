@@ -184,7 +184,7 @@ public class IDEUIControlList : ALittle.DisplayLayout
 		this.ShowTreeItemFocus(item);
     }
 
-	public fun ShowNewControl()
+	public fun ShowNewControl(string module_name)
 	{
 		// 检查当前是否打开项目
 		if (g_IDEProject.project == null)
@@ -192,6 +192,8 @@ public class IDEUIControlList : ALittle.DisplayLayout
 			g_AUITool.ShowNotice("提示", "当前没有打开的项目");
 			return;
 		}
+
+        if (module_name == null) module_name = g_IDEProject.project.name;
 		
             // 创建新建控件对话框，并加入模态层
 		if (this._control_new_dialog == null)
@@ -207,6 +209,7 @@ public class IDEUIControlList : ALittle.DisplayLayout
         for (var name, ui in g_IDEProject.project.ui)
         	ALittle.List_Push(data_list, name);
         this._control_new_module.data_list = data_list;
+        this._control_new_module.text = module_name;
         
         // 清空输入框
 		this._control_new_name.text = "";

@@ -1,0 +1,108 @@
+
+namespace BattleCity;
+
+public class BattleSelectScene : ALittle.DisplayLayout
+{
+	private ALittle.Quad _quad_up;
+	private ALittle.Quad _quad_down;
+	private ALittle.Text _stage_num;
+    private ALittle.DisplayLayout _stage_container;
+
+    private int _stage = 1;
+
+    private ALittle.LoopList _anti_loop;
+
+    private fun TCtor()
+    {
+    }
+
+    public get stage() : int { return this._stage; }
+
+    public fun Show(int stage)
+    {
+        if (stage == null)
+            this._stage = 1;
+        else
+            this._stage = stage;
+
+        this.visible = true;
+        this._stage_num.text = this._stage;
+
+        if (this._anti_loop != null)
+        {
+            this._anti_loop.Stop();
+            this._anti_loop = null;
+        }
+
+        this._quad_up.y = -this._quad_up.height;
+        this._quad_down.y = A_UISystem.view_height;
+        this._stage_container.visible = true;
+
+        this._anti_loop = new ALittle.LoopList();
+        var group = new ALittle.LoopGroup();
+        group.AddUpdater(new ALittle.LoopLinear(this._quad_up, "y", 0, 1000, 0));
+        group.AddUpdater(new ALittle.LoopLinear(this._quad_down, "y", 0, 1000, 0));
+        this._anti_loop.AddUpdater(group);
+
+        if (stage != null)
+        {
+            this._anti_loop.AddUpdater(new ALittle.LoopAttribute(this._stage_container, "visible", false, 1000));
+            group = new ALittle.LoopGroup();
+            group.AddUpdater(new ALittle.LoopLinear(this._quad_up, "y", -this._quad_up.height, 500, 0));
+            group.AddUpdater(new ALittle.LoopLinear(this._quad_down, "y", A_UISystem.view_height, 500, 0));
+            this._anti_loop.AddUpdater(group);
+            this._anti_loop.AddUpdater(new ALittle.LoopAttribute(this, "visible", false, 0));
+            this._anti_loop.AddUpdater(new ALittle.LoopTimer(bind(g_GCenter.StartBattle, g_GCenter, this._stage), 0));
+        }
+
+        this._anti_loop.Start();
+
+        if (stage == null)
+            A_UISystem.keydown_callback = bind(this.HandleKeyDown, this);
+    }
+
+    public fun Hide()
+    {
+        if (this._anti_loop != null)
+        {
+            this._anti_loop.Stop();
+            this._anti_loop = null;
+        }
+
+        this._quad_up.y = 0;
+        this._quad_down.y = 0;
+        this._stage_container.visible = false;
+
+        this._anti_loop = new ALittle.LoopList();
+        var group = new ALittle.LoopGroup();
+        group.AddUpdater(new ALittle.LoopLinear(this._quad_up, "y", -this._quad_up.height, 500, 0));
+        group.AddUpdater(new ALittle.LoopLinear(this._quad_down, "y", A_UISystem.view_height, 500, 0));
+        this._anti_loop.AddUpdater(group);
+        this._anti_loop.AddUpdater(new ALittle.LoopAttribute(this, "visible", false, 0));
+        this._anti_loop.AddUpdater(new ALittle.LoopTimer(bind(g_GCenter.StartBattle, g_GCenter, this._stage), 0));
+
+        this._anti_loop.Start();
+    }
+
+    private fun HandleKeyDown(int mod, int sym, int scancode)
+    {
+        if (sym == ALittle.UIEnumTypes.KEY_J)
+        {
+            if (this._stage <= 1)
+            	return;
+            this._stage -= 1;
+            this._stage_num.text = this._stage;
+        }
+        elseif (sym == ALittle.UIEnumTypes.KEY_K)
+        {
+            if (this._stage >= 255)
+            	return;
+            this._stage += 1;
+            this._stage_num.text = this._stage;
+        }
+        elseif (sym == ALittle.UIEnumTypes.KEY_H)
+        {
+            this.Hide();
+        }
+    }
+}

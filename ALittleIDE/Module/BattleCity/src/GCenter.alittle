@@ -1,0 +1,76 @@
+namespace BattleCity;
+
+protected var g_GConfig:ALittle.IJsonConfig;
+
+class GCenter
+{
+    private ALittle.DisplayLayout _main_layer;
+    private ALittle.DisplayLayout _dialog_layer;
+
+    private int _player_count = 1;
+
+    private LoginScene _login_scene;
+    private BattleSelectScene _battle_select_scene;
+
+    public ctor()
+    {
+    }
+
+    public fun Setup()
+    {
+        // 获取配置信息
+        g_GConfig = ALittle.CreateConfigSystem(g_ModuleBasePath.."/User.cfg");
+        // 生成随机数种子
+        ALittle.Math_RandomSeed(ALittle.Time_GetCurTime());
+        // 设置1个线程
+        ALittle.System_SetThreadCount(1, ALittle.SystemThreadType.SLOW);
+
+        // 创建主层
+        this._main_layer = new ALittle.DisplayLayout(g_Control);
+        this._main_layer.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+        this._main_layer.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+        g_LayerGroup.AddChild(this._main_layer, null);
+        this._dialog_layer = new ALittle.DisplayLayout(g_Control);
+        this._dialog_layer.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+        this._dialog_layer.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+        g_LayerGroup.AddChild(this._dialog_layer, null);
+
+        this._login_scene = g_Control.CreateControl{LoginScene}("login_scene");
+        this._login_scene.visible = false;
+        g_LayerGroup.AddChild(this._login_scene);
+        this._battle_select_scene = g_Control.CreateControl{BattleSelectScene}("battle_select");
+        this._battle_select_scene.visible = false;
+        g_LayerGroup.AddChild(this._battle_select_scene);
+
+        this.Restart();
+    }
+
+    public fun Shutdown()
+    {
+    }
+
+    public get player_count() : int { return this._player_count; }
+
+    public fun Restart()
+    {
+        this._login_scene.Show();
+    }
+
+    public fun StartPlay(int player_count)
+    {
+        this._player_count = player_count;
+        this._battle_select_scene.Show(null);
+    }
+
+    public fun StartConstruction()
+    {
+
+    }
+
+    public fun StartBattle(int stage)
+    {
+
+    }
+}
+
+public var g_GCenter = new GCenter();

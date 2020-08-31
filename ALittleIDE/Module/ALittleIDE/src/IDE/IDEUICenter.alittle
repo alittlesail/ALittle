@@ -201,7 +201,7 @@ protected class IDEUICenter : ALittle.DisplayLayout
 		var n = A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_N];
 		if (n)
 		{
-			this._control_list.ShowNewControl();
+			this._control_list.ShowNewControl(null);
 			return;
 		}
 	}

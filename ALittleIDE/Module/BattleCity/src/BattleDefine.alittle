@@ -3,9 +3,16 @@ namespace BattleCity;
 
 protected struct BattleMap
 {
-    // 把所有类型拆分开，因为它们的最小单位不一样
-    Map<int, Map<int, bool>> wall_map;	// KEY1:X坐标，KEY2:Y坐标，是否有墙
-    Map<int, Map<int, bool>> iron_map;	// KEY1:X坐标，KEY2:Y坐标，是否有铁块
-    Map<int, Map<int, bool>> grass_map;	// KEY1:X坐标，KEY2:Y坐标，是否有草地
-    Map<int, Map<int, bool>> river_map;	// KEY1:X坐标，KEY2:Y坐标，是否有河流
+    Map<int, Map<int, int>> tile_map;	// KEY1:X坐标，KEY2:Y坐标，VALUE 类型
 }
+
+
+enum BrushType
+{
+    BT_WALL = 1;
+    BT_IRON = 2;
+    BT_GRASS = 3;
+    BT_RIVER = 4;
+    BT_CASTLE = 6;
+}
+

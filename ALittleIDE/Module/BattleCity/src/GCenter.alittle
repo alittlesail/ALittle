@@ -14,6 +14,7 @@ class GCenter
     private LoginScene _login_scene;
     private BattleSelectScene _battle_select_scene;
     private BattleScene _battle_scene;
+    private EditScene _edit_scene;
 
     public ctor()
     {
@@ -48,6 +49,13 @@ class GCenter
         this._battle_scene.visible = false;
         g_LayerGroup.AddChild(this._battle_scene);
 
+        if (A_ModuleSystem.GetDebugInfo() == "debug")
+        {
+            this._edit_scene = g_Control.CreateControl{EditScene}("edit_scene");
+            this._edit_scene.visible = false;
+            g_LayerGroup.AddChild(this._edit_scene);
+        }
+
         this.Restart();
     }
 
@@ -77,7 +85,7 @@ class GCenter
 
     public fun StartEdit()
     {
-
+        this._edit_scene.Show();
     }
 
     public fun StartBattle(int stage)

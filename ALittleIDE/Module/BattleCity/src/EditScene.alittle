@@ -1,0 +1,253 @@
+
+namespace BattleCity;
+
+
+public class EditScene : ALittle.DisplayLayout
+{
+	private ALittle.DisplayLayout _tile_container;
+    private Map<int, Map<int, ALittle.Sprite>> _sprite_map;
+
+    private ALittle.Sprite _select_sripte;
+    private ALittle.TextInput _stage_input;
+    private ALittle.TextInput _size_input;
+    private ALittle.DisplayLayout _tile_range;
+    
+    private BattleMap _cur_data;
+    private string _path;
+    private int _size = 1;
+    private double _cell_size = 0;
+
+    private fun TCtor()
+    {
+        this._tile_range.visible = false;
+    }
+
+    public fun Show()
+    {
+        this.visible = true;
+
+        this.Load(1);
+        ALittle.File_MakeDeepDir(g_ModuleBasePath.."Other/Map");
+        this._cell_size = this._tile_container.width / (13 * 4);
+
+        this._tile_range.width = this._size * this._cell_size;
+        this._tile_range.height = this._size * this._cell_size;
+    }
+
+    private async fun Load(int stage)
+    {
+        this.Save();
+
+        this._stage_input.text = stage;
+        this._path = "Other/Map/stage_"..stage..".map";
+        this._cur_data = g_Control.LoadMessageFromFile{BattleMap}(this._path);
+        if (this._cur_data == null)
+        {
+            this._cur_data = new BattleMap();
+            this._cur_data.tile_map = new Map<int, Map<int, int>>();
+        }
+
+        this._tile_container.RemoveAllChild();
+        this._sprite_map = new Map<int, Map<int, ALittle.Sprite>>();
+
+        for (var row, sub_map in this._cur_data.tile_map)
+        {
+            for (var col, type in sub_map)
+                this.SetTileShow(row, col, type);
+        }
+    }
+
+    private fun Save()
+    {
+        if (this._cur_data == null) return;
+
+        var rflct = reflect<BattleMap>;
+        // 打开文件
+        var factory = new lua.__CPPAPIMessageWriteFactory();
+        // 获取反射信息
+        var invoke_info = ALittle.CreateMessageInfo(rflct.name);
+        if (invoke_info == null) return;
+
+        // 反序列化
+        ALittle.PS_WriteMessage(factory, invoke_info, null, this._cur_data);
+
+        // 保存到文件
+        factory.WriteToStdFile(ALittle.File_BaseFilePath()..g_ModuleBasePath..this._path);
+    }
+
+    private fun HandleTileSelect(ALittle.UILButtonDownEvent event)
+    {
+        this._select_sripte.col_index = cast<ALittle.Sprite>(event.target).col_index;
+    }
+
+    private fun HandleStageInputChanged(ALittle.UIChangedEvent event)
+    {
+        var num = ALittle.Math_ToInt(this._stage_input.text);
+        if (num == null || num < 0 || num > 255) return;
+
+        this.Load(num);
+    }
+
+    private fun SetTileShow(int row, int col, int type)
+    {
+        var sub_map = this._sprite_map[row];
+        if (sub_map == null)
+        {
+            sub_map = new Map<int, ALittle.Sprite>();
+            this._sprite_map[row] = sub_map;
+        }
+
+        if (sub_map[col] != null)
+            this._tile_container.RemoveChild(sub_map[col]);
+
+        // 设置表现
+        var sprite = new ALittle.Sprite(g_Control);
+        sprite.texture_name = "tile.png";
+        sprite.width = 32 / 4;
+        sprite.height = 32 / 4;
+        sprite.x = col * sprite.width;
+        sprite.y = row * sprite.height;
+        sprite.row_count = 4;
+        sprite.col_count = 7 * 4;
+        sprite.row_index = row % 4 + 1;
+        sprite.col_index = col % 4 + 1 + (type - 1) * 4;
+        this._tile_container.AddChild(sprite);
+
+        sub_map[col] = sprite;
+    }
+
+    private fun RemoveTileShow(int row, int col)
+    {
+        var sub_map = this._sprite_map[row];
+        if (sub_map == null) return;
+        
+        if (sub_map[col] != null)
+        {
+            this._tile_container.RemoveChild(sub_map[col]);
+            sub_map[col] = null;
+        }
+    }
+
+    private fun WriteCell(double x, double y, int brush_type)
+    {
+        var left_col, right_col, top_row, bottom_row = this.CalcRangeRowCol(x, y);
+    
+        for (var row = top_row; row <= bottom_row; 1)
+        {
+            for (var col = left_col; col <= right_col; 1)
+            {
+                var sub_map = this._cur_data.tile_map[row];
+                if (sub_map == null)
+                {
+                    sub_map = new Map<int, int>();
+                    this._cur_data.tile_map[row] = sub_map;
+                }
+
+                sub_map[col] = brush_type;
+
+                this.SetTileShow(row, col, brush_type);
+            }
+        }
+    }
+
+    private fun CalcRangeRowCol(double x, double y) : int, int, int, int
+    {
+        var center_col = ALittle.Math_Floor(x / this._cell_size);
+        var center_row = ALittle.Math_Floor(y / this._cell_size);
+
+        var size_offset = ALittle.Math_Floor((this._size - 1) / 2);
+
+        var left_col = center_col - size_offset;
+        var right_col = left_col + this._size - 1;
+        var top_row = center_row - size_offset;
+        var bottom_row = top_row + this._size - 1;
+
+        if (left_col < 0) left_col = 0;
+        if (left_col >= 13 * 4) left_col = 13 * 4 - 1;
+        if (right_col < 0) right_col = 0;
+        if (right_col >= 13 * 4) right_col = 13 * 4 - 1;
+
+        if (top_row < 0) top_row = 0;
+        if (top_row >= 13 * 4) top_row = 13 * 4 - 1;
+        if (bottom_row < 0) bottom_row = 0;
+        if (bottom_row >= 13 * 4) bottom_row = 13 * 4 - 1;
+
+        return left_col, right_col, top_row, bottom_row;
+    }
+
+    private fun EraseCell(double x, double y)
+    {
+        var left_col, right_col, top_row, bottom_row = this.CalcRangeRowCol(x, y);
+
+        for (var row = top_row; row <= bottom_row; 1)
+        {
+            for (var col = left_col; col <= right_col; 1)
+            {
+                var sub_map = this._cur_data.tile_map[row];
+                if (sub_map != null)
+                {
+                    sub_map[col] = null;
+                    if (ALittle.IsEmpty(sub_map))
+                        this._cur_data.tile_map[row] = null;
+
+                    this.RemoveTileShow(row, col);
+                }
+            }
+        }
+    }
+
+    private fun HandleBrushLButtonDown(ALittle.UILButtonDownEvent event)
+    {
+        if (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_LSHIFT] != null)
+            this.EraseCell(event.rel_x, event.rel_y);
+        else
+	        this.WriteCell(event.rel_x, event.rel_y, this._select_sripte.col_index);
+    }
+
+    private fun HandleBrushDrag(ALittle.UIButtonDragEvent event)
+    {
+        var left_col, right_col, top_row, bottom_row = this.CalcRangeRowCol(event.rel_x, event.rel_y);
+        this._tile_range.x = left_col * this._cell_size;
+        this._tile_range.y = top_row * this._cell_size;
+
+        if (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_LSHIFT] != null)
+            this.EraseCell(event.rel_x, event.rel_y);
+        else
+	        this.WriteCell(event.rel_x, event.rel_y, this._select_sripte.col_index);
+    }
+
+    private fun HandleSaveClick(ALittle.UILButtonDownEvent event)
+    {
+        this.Save();
+    }
+
+    private fun HandleSizeInputChanged(ALittle.UIChangedEvent event)
+    {
+        this._size = ALittle.Math_ToInt(event.target.text);
+        if (this._size == null || this._size <= 0)
+        {
+            this._size = 1;
+            event.target.text = this._size;
+        }
+
+        this._tile_range.width = this._size * this._cell_size;
+        this._tile_range.height = this._size * this._cell_size;
+    }
+
+    private fun HandleBrushMoveIn(ALittle.UIMoveInEvent event)
+    {
+        this._tile_range.visible = true;
+    }
+
+    private fun HandleBrushMoveOut(ALittle.UIMoveOutEvent event)
+    {
+        this._tile_range.visible = false;
+    }
+
+    private fun HandleBrushMove(ALittle.UIMouseMoveEvent event)
+    {
+        var left_col, right_col, top_row, bottom_row = this.CalcRangeRowCol(event.rel_x, event.rel_y);
+        this._tile_range.x = left_col * this._cell_size;
+        this._tile_range.y = top_row * this._cell_size;
+    }
+}

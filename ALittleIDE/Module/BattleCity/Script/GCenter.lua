@@ -36,6 +36,11 @@ function BattleCity.GCenter:Setup()
 	self._battle_scene = BattleCity.g_Control:CreateControl("battle_scene")
 	self._battle_scene.visible = false
 	BattleCity.g_LayerGroup:AddChild(self._battle_scene)
+	if A_ModuleSystem:GetDebugInfo() == "debug" then
+		self._edit_scene = BattleCity.g_Control:CreateControl("edit_scene")
+		self._edit_scene.visible = false
+		BattleCity.g_LayerGroup:AddChild(self._edit_scene)
+	end
 	self:Restart()
 end
 
@@ -61,6 +66,7 @@ function BattleCity.GCenter:StartConstruction()
 end
 
 function BattleCity.GCenter:StartEdit()
+	self._edit_scene:Show()
 end
 
 function BattleCity.GCenter:StartBattle(stage)

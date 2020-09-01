@@ -6,9 +6,17 @@ local ___ipairs = ipairs
 
 ALittle.RegStruct(-922796193, "BattleCity.BattleMap", {
 name = "BattleCity.BattleMap", ns_name = "BattleCity", rl_name = "BattleMap", hash_code = -922796193,
-name_list = {"wall_map","iron_map","grass_map","river_map"},
-type_list = {"Map<int,Map<int,bool>>","Map<int,Map<int,bool>>","Map<int,Map<int,bool>>","Map<int,Map<int,bool>>"},
+name_list = {"tile_map"},
+type_list = {"Map<int,Map<int,int>>"},
 option_map = {}
 })
+
+BattleCity.BrushType = {
+	BT_WALL = 1,
+	BT_IRON = 2,
+	BT_GRASS = 3,
+	BT_RIVER = 4,
+	BT_CASTLE = 6,
+}
 
 end

@@ -6,7 +6,7 @@ ALittle.IHttpFileSenderNative = JavaScript.Class(undefined, {
 	GetID : function() {
 		return 0;
 	},
-	SetURL : function(url, file_path, download, start_size) {
+	SetURL : function(url, file_path, download, start_size, array_buffer) {
 	},
 	Start : function() {
 	},
@@ -37,7 +37,7 @@ ALittle.HttpFileSenderTemplate = JavaScript.Class(ALittle.IHttpFileSender, {
 		this._cur_size = 0;
 		this._total_size = 0;
 	},
-	SendDownloadRPC : function(thread, method, content) {
+	SendDownloadRPC : function(thread, method, content, array_buffer) {
 		this._thread = thread;
 		__HttpFileSenderMap.set(this._interface.GetID(), this);
 		if (this._start_size === undefined) {
@@ -55,17 +55,17 @@ ALittle.HttpFileSenderTemplate = JavaScript.Class(ALittle.IHttpFileSender, {
 				}
 			}
 		}
-		this._interface.SetURL(this.HttpUrlAppendParamMap(url, content), this._file_path, true, this._start_size);
+		this._interface.SetURL(this.HttpUrlAppendParamMap(url, content), this._file_path, true, this._start_size, array_buffer);
 		this._interface.Start();
 	},
-	SendUploadRPC : function(thread, method, content) {
+	SendUploadRPC : function(thread, method, content, array_buffer) {
 		this._thread = thread;
 		__HttpFileSenderMap.set(this._interface.GetID(), this);
 		if (this._start_size === undefined) {
 			this._start_size = 0;
 		}
 		let url = "http://" + this._ip + ":" + this._port + "/" + method;
-		this._interface.SetURL(this.HttpUrlAppendParamMap(url, content), this._file_path, false, this._start_size);
+		this._interface.SetURL(this.HttpUrlAppendParamMap(url, content), this._file_path, false, this._start_size, array_buffer);
 		this._interface.Start();
 	},
 	Stop : function() {
@@ -147,19 +147,19 @@ ALittle.__ALITTLEAPI_HttpFileProcess = function(id, cur_size, total_size) {
 	client.HandleProcess(cur_size, total_size);
 }
 
-ALittle.DownloadFile = function(ip, port, method, file_path) {
+ALittle.DownloadFile = function(ip, port, method, file_path, array_buffer) {
 	return new Promise(async function(___COROUTINE, ___) {
 		let sender = undefined;
 		sender = ALittle.NewObject(JavaScript.Template(ALittle.HttpFileSenderTemplate, "ALittle.HttpFileSenderTemplate<JavaScript.JHttpFileInterface>", JavaScript.JHttpFileInterface), ip, port, file_path, 0);
-		___COROUTINE(await ALittle.IHttpFileSender.InvokeDownload(method, sender, undefined)); return;
+		___COROUTINE(await ALittle.IHttpFileSender.InvokeDownload(method, sender, undefined, array_buffer)); return;
 	});
 }
 
-ALittle.UploadFile = function(ip, port, method, file_path) {
+ALittle.UploadFile = function(ip, port, method, file_path, array_buffer) {
 	return new Promise(async function(___COROUTINE, ___) {
 		let sender = undefined;
 		sender = ALittle.NewObject(JavaScript.Template(ALittle.HttpFileSenderTemplate, "ALittle.HttpFileSenderTemplate<JavaScript.JHttpFileInterface>", JavaScript.JHttpFileInterface), ip, port, file_path, 0);
-		let error = await ALittle.IHttpFileSender.InvokeUpload(method, sender, undefined);
+		let error = await ALittle.IHttpFileSender.InvokeUpload(method, sender, undefined, array_buffer);
 		___COROUTINE(error); return;
 	});
 }

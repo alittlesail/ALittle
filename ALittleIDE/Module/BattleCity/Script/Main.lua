@@ -29,6 +29,7 @@ function BattleCity.__Module_Setup(layer_group, control, module_base_path, scrip
 	Require(script_base_path, "GCenter")
 	Require(script_base_path, "LoginScene")
 	Require(script_base_path, "BattleSelectScene")
+	Require(script_base_path, "BattleScene")
 	g_GCenter:Setup()
 end
 BattleCity.__Module_Setup = Lua.CoWrap(BattleCity.__Module_Setup)

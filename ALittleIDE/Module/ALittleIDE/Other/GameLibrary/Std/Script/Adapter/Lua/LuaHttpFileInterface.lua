@@ -19,7 +19,7 @@ function Lua.LuaHttpFileInterface:GetID()
 	return self._id
 end
 
-function Lua.LuaHttpFileInterface:SetURL(url, file_path, download, start_size)
+function Lua.LuaHttpFileInterface:SetURL(url, file_path, download, start_size, array_buffer)
 	self._url = url
 	self._file_path = file_path
 	self._download = download

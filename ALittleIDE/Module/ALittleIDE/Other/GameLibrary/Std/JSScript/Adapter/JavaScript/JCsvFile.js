@@ -25,7 +25,7 @@ JavaScript.JCsvFile = JavaScript.Class(ALittle.ICsvFile, {
 		return true;
 	},
 	Load : function(path) {
-		let content = JavaScript.File_LoadFile(path);
+		let [content] = JavaScript.File_LoadFile(path);
 		if (content === undefined) {
 			ALittle.Error("file load failed:" + path);
 			return false;

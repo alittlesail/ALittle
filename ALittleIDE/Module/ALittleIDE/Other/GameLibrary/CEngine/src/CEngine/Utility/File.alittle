@@ -46,7 +46,7 @@ public static File_SaveFile(string target_path, string content, int size) : bool
     [Language(Lua)]
     return lua.__CPPAPI_SaveFile(target_path, content, size);
     [Language(JavaScript)]
-    return JavaScript.File_SaveFile(target_path, content);
+    return JavaScript.File_SaveFile(target_path, content, null);
 }
 
 // 文件MD5
@@ -130,7 +130,10 @@ public static File_ReadTextFromFile(string file_path, [Nullable] bool crypt_mode
     }
     
     [Language(JavaScript)]
-    return JavaScript.File_LoadFile(file_path);
+    {
+        var content, buffer = JavaScript.File_LoadFile(file_path);
+        return content;
+    } 
 }
 
 // 直接把文本写入现有目录

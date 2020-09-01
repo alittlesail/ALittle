@@ -19,11 +19,11 @@ ALittle.File_CopyFileFromAsset = function(src_path, dst_path) {
 }
 
 ALittle.File_SaveFile = function(target_path, content, size) {
-	return JavaScript.File_SaveFile(target_path, content);
+	return JavaScript.File_SaveFile(target_path, content, undefined);
 }
 
 ALittle.File_MD5 = function(path) {
-	let content = JavaScript.File_LoadFile(path);
+	let [content] = JavaScript.File_LoadFile(path);
 	if (content === undefined) {
 		return "";
 	}
@@ -35,7 +35,10 @@ ALittle.File_CopyDeepDir = function(src_path, dest_path, ext, log) {
 }
 
 ALittle.File_ReadTextFromFile = function(file_path, crypt_mode) {
-	return JavaScript.File_LoadFile(file_path);
+	{
+		let [content, buffer] = JavaScript.File_LoadFile(file_path);
+		return content;
+	}
 }
 
 ALittle.File_WriteTextToFile = function(content, file_path) {

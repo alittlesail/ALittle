@@ -7,6 +7,7 @@ public struct FileInfo
     FileInfo parent;
     string name;
     string content;
+    javascript.ArrayBuffer buffer;
     bool is_directory;
     Map<string, FileInfo> file;
 }
@@ -129,7 +130,12 @@ public static File_GetFileAttr(string path) : lua.fileattr
     if (cur_file.is_directory)
         attr.mode = "directory";
     else
-        attr.size = ALittle.String_Len(cur_file.content);
+    {
+        if (cur_file.buffer != null)
+        	attr.size = cur_file.buffer.byteLength;
+        else
+	        attr.size = ALittle.String_Len(cur_file.content);
+    }
     
     return attr;
 }
@@ -332,33 +338,33 @@ public static File_MakeDir(string path) : bool
     return true;
 }
 
-public static File_LoadFile(string path) : string
+public static File_LoadFile(string path) : string, javascript.ArrayBuffer
 {
     var list = Path_FilterEmpty(ALittle.String_SplitSepList(path, ["/", "\\"]));
     var list_len = ALittle.List_MaxN(list);
     var cur = root;
     for (var i = 1; i <= list_len - 1; 1)
     {
-        if (cur.file == null) return null;
+        if (cur.file == null) return null, null;
         var file = cur.file[list[i]];
-        if (file == null) return null;
-        if (!file.is_directory) return null;
+        if (file == null) return null, null;
+        if (!file.is_directory) return null, null;
         cur = file;
     }
-    if (cur.file == null) return null;
+    if (cur.file == null) return null, null;
     var cur_file = cur.file[list[list_len]];
-    if (cur_file == null || cur_file.is_directory) return null;
-    return cur_file.content;
+    if (cur_file == null || cur_file.is_directory) return null, null;
+    return cur_file.content, cur_file.buffer;
 }
 
 public static File_CopyFile(string src_path, string dst_path) : bool
 {
-    var content = File_LoadFile(src_path);
-    if (content == null) return false;
-    return File_SaveFile(dst_path, content);
+    var content, buffer = File_LoadFile(src_path);
+    if (content == null && buffer == null) return false;
+    return File_SaveFile(dst_path, content, buffer);
 }
 
-public static File_SaveFile(string path, string content) : bool
+public static File_SaveFile(string path, string content, javascript.ArrayBuffer buffer) : bool
 {
     var list = Path_FilterEmpty(ALittle.String_SplitSepList(path, ["/", "\\"]));
     var list_len = ALittle.List_MaxN(list);
@@ -375,6 +381,7 @@ public static File_SaveFile(string path, string content) : bool
         cur.file = new Map<string, FileInfo>();
     var file = new FileInfo();
     file.content = content;
+    file.buffer = buffer;
     file.is_directory = false;
     file.name = list[list_len];
     file.parent = cur;

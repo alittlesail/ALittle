@@ -14,20 +14,20 @@ public class IHttpFileSender
     public fun GetCurSize() : int { return 0; }
     
     // 提供子类继承
-    protected fun SendDownloadRPC(Thread thread, string method, any content) { throw("not impl"); }
-    protected fun SendUploadRPC(Thread thread, string method, any content) { throw("not impl"); }
+    protected fun SendDownloadRPC(Thread thread, string method, any content, bool array_buffer) { throw("not impl"); }
+    protected fun SendUploadRPC(Thread thread, string method, any content, bool array_buffer) { throw("not impl"); }
     
     // 提供框架调用
-    public await static InvokeDownload(string method, IHttpFileSender client, any content) : string
+    public await static InvokeDownload(string method, IHttpFileSender client, any content, bool array_buffer) : string
     {
         if (co == null) return "当前不是协程";
-        client.SendDownloadRPC(co, method, content);
+        client.SendDownloadRPC(co, method, content, array_buffer);
         return yield;
     }
-    public await static InvokeUpload(string method, IHttpFileSender client, any content) : string
+    public await static InvokeUpload(string method, IHttpFileSender client, any content, bool array_buffer) : string
     {
         if (co == null) return "当前不是协程";
-        client.SendUploadRPC(co, method, content);
+        client.SendUploadRPC(co, method, content, array_buffer);
         return yield;
     }
 }

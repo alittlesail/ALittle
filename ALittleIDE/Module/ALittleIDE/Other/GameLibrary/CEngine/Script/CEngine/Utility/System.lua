@@ -400,13 +400,13 @@ function ALittle.CreateHttpFileSender(ip, port, file_path, start_size, callback)
 	return Lua.Template(ALittle.HttpFileSenderTemplate, "ALittle.HttpFileSenderTemplate<lua.__CPPAPIHttpFileInterface>", __CPPAPIHttpFileInterface)(ip, port, file_path, start_size, callback)
 end
 
-function ALittle.HttpDownloadRequest(ip, port, file_path, method, callback)
+function ALittle.HttpDownloadRequest(ip, port, file_path, method, callback, array_buffer)
 	local ___COROUTINE = coroutine.running()
 	local sender = ALittle.CreateHttpFileSender(ip, port, file_path, 0, callback)
 	if ___COROUTINE == nil then
 		return "当前不是协程"
 	end
-	sender:SendDownloadRPC(___COROUTINE, method, nil)
+	sender:SendDownloadRPC(___COROUTINE, method, nil, array_buffer)
 	return coroutine.yield()
 end
 

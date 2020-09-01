@@ -1,0 +1,20 @@
+
+namespace BattleCity;
+
+public class BattleScene : ALittle.DisplayLayout
+{
+	private ALittle.TileTable _enemy_tiletable;
+	private ALittle.Text _player1_life;
+	private ALittle.Text _player2_life;
+	private ALittle.Text _stage_num;
+	private ALittle.DisplayLayout _wall_container;
+	private ALittle.DisplayLayout _river_container;
+	private ALittle.DisplayLayout _grass_container;
+	private ALittle.DisplayLayout _iron_container;
+	private ALittle.DisplayLayout _castle_container;
+
+    public fun Show(int stage)
+    {
+        this.visible = true;
+    }
+}

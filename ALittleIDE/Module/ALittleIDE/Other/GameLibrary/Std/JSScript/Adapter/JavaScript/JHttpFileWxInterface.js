@@ -12,16 +12,18 @@ JavaScript.JHttpFileWxInterface = JavaScript.Class(ALittle.IHttpFileSenderNative
 	GetID : function() {
 		return this._id;
 	},
-	SetURL : function(url, file_path, download, start_size) {
+	SetURL : function(url, file_path, download, start_size, array_buffer) {
 		this._url = url;
 		this._file_path = file_path;
 		this._download = download;
+		this._array_buffer = array_buffer;
 	},
 	Start : function() {
 		let content = undefined;
+		let buffer = undefined;
 		if (!this._download) {
-			content = JavaScript.File_LoadFile(this._file_path);
-			if (content === undefined) {
+			[content, buffer] = JavaScript.File_LoadFile(this._file_path);
+			if (content === undefined && buffer === undefined) {
 				ALittle.__ALITTLEAPI_HttpFileFailed(this._id, "file is not exist:" + this._file_path);
 				return;
 			}
@@ -34,9 +36,15 @@ JavaScript.JHttpFileWxInterface = JavaScript.Class(ALittle.IHttpFileSenderNative
 			info.method = "POST";
 		}
 		if (content !== undefined) {
+			info.dataType = "text";
 			info.data = content;
+		} else if (buffer !== undefined) {
+			info.dataType = "arraybuffer";
+			info.data = buffer;
 		}
-		info.dataType = "text";
+		if (this._array_buffer === true) {
+			info.responseType = "arraybuffer";
+		}
 		info.success = this.HandleCompleted.bind(this);
 		info.fail = this.HandleError.bind(this);
 		this._request = window.wx.request(info);
@@ -56,7 +64,14 @@ JavaScript.JHttpFileWxInterface = JavaScript.Class(ALittle.IHttpFileSenderNative
 		ALittle.__ALITTLEAPI_HttpFileFailed(this._id, "wx.request failed");
 	},
 	HandleCompleted : function(info) {
-		if (this._download && !JavaScript.File_SaveFile(this._file_path, info.data)) {
+		let content = undefined;
+		let buffer = undefined;
+		if (this._array_buffer) {
+			buffer = info.data;
+		} else {
+			content = info.data;
+		}
+		if (this._download && !JavaScript.File_SaveFile(this._file_path, content, buffer)) {
 			ALittle.__ALITTLEAPI_HttpFileFailed(this._id, "file save failed:" + this._file_path);
 			return;
 		}

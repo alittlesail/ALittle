@@ -3,8 +3,8 @@ if (typeof JavaScript === "undefined") window.JavaScript = {};
 
 ALittle.RegStruct(-1393456776, "JavaScript.FileInfo", {
 name : "JavaScript.FileInfo", ns_name : "JavaScript", rl_name : "FileInfo", hash_code : -1393456776,
-name_list : ["parent","name","content","is_directory","file"],
-type_list : ["JavaScript.FileInfo","string","string","bool","Map<string,JavaScript.FileInfo>"],
+name_list : ["parent","name","content","buffer","is_directory","file"],
+type_list : ["JavaScript.FileInfo","string","string","native javascript.ArrayBuffer","bool","Map<string,JavaScript.FileInfo>"],
 option_map : {}
 })
 
@@ -163,7 +163,11 @@ JavaScript.File_GetFileAttr = function(path) {
 	if (cur_file.is_directory) {
 		attr.mode = "directory";
 	} else {
-		attr.size = ALittle.String_Len(cur_file.content);
+		if (cur_file.buffer !== undefined) {
+			attr.size = cur_file.buffer.byteLength;
+		} else {
+			attr.size = ALittle.String_Len(cur_file.content);
+		}
 	}
 	return attr;
 }
@@ -401,36 +405,36 @@ JavaScript.File_LoadFile = function(path) {
 	let cur = root;
 	for (let i = 1; i <= list_len - 1; i += 1) {
 		if (cur.file === undefined) {
-			return undefined;
+			return [undefined, undefined];
 		}
 		let file = cur.file[list[i - 1]];
 		if (file === undefined) {
-			return undefined;
+			return [undefined, undefined];
 		}
 		if (!file.is_directory) {
-			return undefined;
+			return [undefined, undefined];
 		}
 		cur = file;
 	}
 	if (cur.file === undefined) {
-		return undefined;
+		return [undefined, undefined];
 	}
 	let cur_file = cur.file[list[list_len - 1]];
 	if (cur_file === undefined || cur_file.is_directory) {
-		return undefined;
+		return [undefined, undefined];
 	}
-	return cur_file.content;
+	return [cur_file.content, cur_file.buffer];
 }
 
 JavaScript.File_CopyFile = function(src_path, dst_path) {
-	let content = JavaScript.File_LoadFile(src_path);
-	if (content === undefined) {
+	let [content, buffer] = JavaScript.File_LoadFile(src_path);
+	if (content === undefined && buffer === undefined) {
 		return false;
 	}
-	return JavaScript.File_SaveFile(dst_path, content);
+	return JavaScript.File_SaveFile(dst_path, content, buffer);
 }
 
-JavaScript.File_SaveFile = function(path, content) {
+JavaScript.File_SaveFile = function(path, content, buffer) {
 	let list = Path_FilterEmpty(ALittle.String_SplitSepList(path, ["/", "\\"]));
 	let list_len = ALittle.List_MaxN(list);
 	let cur = root;
@@ -452,6 +456,7 @@ JavaScript.File_SaveFile = function(path, content) {
 	}
 	let file = {};
 	file.content = content;
+	file.buffer = buffer;
 	file.is_directory = false;
 	file.name = list[list_len - 1];
 	file.parent = cur;

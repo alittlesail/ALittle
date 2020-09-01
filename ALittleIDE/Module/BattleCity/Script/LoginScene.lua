@@ -18,6 +18,7 @@ function BattleCity.LoginScene:TCtor()
 	self._last_score.text = BattleCity.g_GConfig:GetInt("last_score", 0)
 	self._cursor:Stop()
 	self.disabled = true
+	self._edit_text.visible = A_ModuleSystem:GetDebugInfo() == "debug"
 end
 
 function BattleCity.LoginScene:Show()
@@ -54,8 +55,14 @@ function BattleCity.LoginScene:HandleKeyDown(mod, sym, scancode)
 	end
 	if sym == 103 then
 		self._select_option = self._select_option + (1)
-		if self._select_option > 3 then
-			self._select_option = 1
+		if A_ModuleSystem:GetDebugInfo() == "debug" then
+			if self._select_option > 4 then
+				self._select_option = 1
+			end
+		else
+			if self._select_option > 3 then
+				self._select_option = 1
+			end
 		end
 		if self._select_option == 1 then
 			self._cursor.y = self._1_player_text.y + self._1_player_text.height / 2 - self._cursor.height / 2
@@ -63,6 +70,8 @@ function BattleCity.LoginScene:HandleKeyDown(mod, sym, scancode)
 			self._cursor.y = self._2_player_text.y + self._2_player_text.height / 2 - self._cursor.height / 2
 		elseif self._select_option == 3 then
 			self._cursor.y = self._construction_text.y + self._construction_text.height / 2 - self._cursor.height / 2
+		elseif self._select_option == 4 then
+			self._cursor.y = self._edit_text.y + self._edit_text.height / 2 - self._cursor.height / 2
 		end
 		return
 	end
@@ -70,6 +79,8 @@ function BattleCity.LoginScene:HandleKeyDown(mod, sym, scancode)
 		self:Hide()
 		if self._select_option == 3 then
 			g_GCenter:StartConstruction()
+		elseif self._select_option == 4 then
+			g_GCenter:StartEdit()
 		else
 			g_GCenter:StartPlay(self._select_option)
 		end

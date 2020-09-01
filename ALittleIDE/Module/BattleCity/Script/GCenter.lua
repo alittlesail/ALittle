@@ -11,6 +11,8 @@ BattleCity.GCenter = Lua.Class(nil, "BattleCity.GCenter")
 
 function BattleCity.GCenter:Ctor()
 	___rawset(self, "_player_count", 1)
+	___rawset(self, "_player1_life", 2)
+	___rawset(self, "_player2_life", 2)
 end
 
 function BattleCity.GCenter:Setup()
@@ -31,6 +33,9 @@ function BattleCity.GCenter:Setup()
 	self._battle_select_scene = BattleCity.g_Control:CreateControl("battle_select")
 	self._battle_select_scene.visible = false
 	BattleCity.g_LayerGroup:AddChild(self._battle_select_scene)
+	self._battle_scene = BattleCity.g_Control:CreateControl("battle_scene")
+	self._battle_scene.visible = false
+	BattleCity.g_LayerGroup:AddChild(self._battle_scene)
 	self:Restart()
 end
 
@@ -47,13 +52,19 @@ end
 
 function BattleCity.GCenter:StartPlay(player_count)
 	self._player_count = player_count
-	self._battle_select_scene:Show(nil)
+	self._player1_life = 2
+	self._player2_life = 2
+	self._battle_select_scene:Show(1)
 end
 
 function BattleCity.GCenter:StartConstruction()
 end
 
+function BattleCity.GCenter:StartEdit()
+end
+
 function BattleCity.GCenter:StartBattle(stage)
+	self._battle_scene:Show(stage)
 end
 
 _G.g_GCenter = BattleCity.GCenter()

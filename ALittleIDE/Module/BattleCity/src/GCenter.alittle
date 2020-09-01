@@ -8,9 +8,12 @@ class GCenter
     private ALittle.DisplayLayout _dialog_layer;
 
     private int _player_count = 1;
+    private int _player1_life = 2;
+    private int _player2_life = 2;
 
     private LoginScene _login_scene;
     private BattleSelectScene _battle_select_scene;
+    private BattleScene _battle_scene;
 
     public ctor()
     {
@@ -41,6 +44,9 @@ class GCenter
         this._battle_select_scene = g_Control.CreateControl{BattleSelectScene}("battle_select");
         this._battle_select_scene.visible = false;
         g_LayerGroup.AddChild(this._battle_select_scene);
+        this._battle_scene = g_Control.CreateControl{BattleScene}("battle_scene");
+        this._battle_scene.visible = false;
+        g_LayerGroup.AddChild(this._battle_scene);
 
         this.Restart();
     }
@@ -59,7 +65,9 @@ class GCenter
     public fun StartPlay(int player_count)
     {
         this._player_count = player_count;
-        this._battle_select_scene.Show(null);
+        this._player1_life = 2;
+        this._player2_life = 2;
+        this._battle_select_scene.Show(1);
     }
 
     public fun StartConstruction()
@@ -67,9 +75,14 @@ class GCenter
 
     }
 
-    public fun StartBattle(int stage)
+    public fun StartEdit()
     {
 
+    }
+
+    public fun StartBattle(int stage)
+    {
+        this._battle_scene.Show(stage);
     }
 }
 

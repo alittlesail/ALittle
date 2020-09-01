@@ -6,4 +6,5 @@ register namespace javascript;
 public class ArrayBuffer
 {
     public ctor(int init_size) {}
+    public get byteLength() : int {}
 }

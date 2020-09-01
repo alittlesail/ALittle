@@ -82,6 +82,26 @@ function ALittle.ControlSystem:RegisterInfoByHttp()
 	end
 end
 
+function ALittle.ControlSystem:LoadMessageFromFile(T, path)
+	local ___COROUTINE = coroutine.running()
+	local module_path = "Module/" .. self._module_name .. "/" .. path
+	local factory = nil
+	do
+		local lua_factory = __CPPAPIMessageReadFactory()
+		if not lua_factory:ReadFromStdFile(module_path) then
+			return nil
+		end
+		factory = lua_factory
+	end
+	local rflct = T
+	local invoke_info = ALittle.CreateMessageInfo(rflct.name)
+	if invoke_info == nil then
+		return nil
+	end
+	local data = ALittle.PS_ReadMessage(factory, invoke_info, nil, factory:GetDataSize())
+	return data
+end
+
 function ALittle.ControlSystem:RegisterInfo(name, info)
 	self._name_map_info[name] = info
 	self._name_map_info_cache[name] = nil

@@ -691,11 +691,11 @@ public static CreateHttpFileSender(string ip, int port, string file_path, int st
         return new HttpFileSenderTemplate<JavaScript.JHttpFileInterface>(ip, port, file_path, start_size, callback);
 }
 
-public await static HttpDownloadRequest(string ip, int port, string file_path, string method, [Nullable] Functor<(IHttpFileSender)> callback) : string
+public await static HttpDownloadRequest(string ip, int port, string file_path, string method, [Nullable] Functor<(IHttpFileSender)> callback, [Nullable]bool array_buffer) : string
 {
     var sender = CreateHttpFileSender(ip, port, file_path, 0, callback);
     
     if (co == null) return "当前不是协程";
-    sender.SendDownloadRPC(co, method, null);
+    sender.SendDownloadRPC(co, method, null, array_buffer);
     return yield;
 }

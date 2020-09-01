@@ -143,7 +143,46 @@ public class ControlSystem
             this._name_map_info_cache[name] = true;
         }
     }
-    
+
+    public await fun LoadMessageFromFile<T:struct>(string path) : T
+    {
+        var module_path = "Module/"..this._module_name.."/"..path;
+        var factory:IMessageReadFactory = null;
+
+        [Language(JavaScript)]
+        {
+            var content, buffer = JavaScript.File_LoadFile(path);
+            if (buffer == null)
+            {
+                File_MakeDeepDir(ALittle.File_GetFilePathByPath(module_path));
+                var error = HttpDownloadRequest(this._host, this._port, module_path, module_path, null, true);
+                if (error == null) return null;
+
+                content, buffer = JavaScript.File_LoadFile(path);
+            }
+            if (buffer == null) return null;
+            factory = new JavaScript.JMessageReadFactory(new javascript.DataView(buffer), 0);
+            
+        }
+
+        [Language(Lua)]
+        {
+            var lua_factory = new lua.__CPPAPIMessageReadFactory();
+            if (!lua_factory.ReadFromStdFile(module_path)) return null;
+            factory = lua_factory;
+        }
+
+        var rflct = reflect<T>;
+
+        // 获取反射信息
+        var invoke_info = CreateMessageInfo(rflct.name);
+        if (invoke_info == null) return null;
+
+        // 反序列化
+        var data = PS_ReadMessage(factory, invoke_info, null, factory.GetDataSize());
+        return data;
+    }
+
     public fun RegisterInfo(string name, DisplayInfo info)
     {
         this._name_map_info[name] = info;

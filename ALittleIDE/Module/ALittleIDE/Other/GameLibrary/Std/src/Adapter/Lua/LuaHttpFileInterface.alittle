@@ -19,7 +19,7 @@ public class LuaHttpFileInterface : ALittle.IHttpFileSenderNative
     public fun GetID() : int { return this._id; }
     
     // start_size暂时不支持
-    public fun SetURL(string url, string file_path, bool download, int start_size)
+    public fun SetURL(string url, string file_path, bool download, int start_size, bool array_buffer)
     {
         this._url = url;
         this._file_path = file_path;

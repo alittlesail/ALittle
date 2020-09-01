@@ -9,7 +9,7 @@ public class IHttpFileSenderNative
     // file_path是本地文件路径
     // download 为true表示下载，false表示上传
     // start_size 文件的起始位置
-    public fun SetURL(string url, string file_path, bool download, int start_size) {}
+    public fun SetURL(string url, string file_path, bool download, int start_size, bool array_buffer) {}
     public fun Start() {}                   // 开始请求
     public fun Stop() {}                    // 结束请求
     public fun GetPath() : string { return ""; }        // 获取文件路径
@@ -54,7 +54,7 @@ public class HttpFileSenderTemplate<NATIVE : IHttpFileSenderNative> : IHttpFileS
         this._total_size = 0;
     }
     
-    protected fun SendDownloadRPC(Thread thread, string method, any content)
+    protected fun SendDownloadRPC(Thread thread, string method, any content, bool array_buffer)
     {
         this._thread = thread;
         __HttpFileSenderMap[this._interface.GetID()] = this;
@@ -83,11 +83,11 @@ public class HttpFileSenderTemplate<NATIVE : IHttpFileSenderNative> : IHttpFileS
             else
                 url = "http://"..url;
         }
-        this._interface.SetURL(this.HttpUrlAppendParamMap(url, content), this._file_path, true, this._start_size);
+        this._interface.SetURL(this.HttpUrlAppendParamMap(url, content), this._file_path, true, this._start_size, array_buffer);
         this._interface.Start();
     }
 
-    protected fun SendUploadRPC(Thread thread, string method, any content)
+    protected fun SendUploadRPC(Thread thread, string method, any content, bool array_buffer)
     {
         this._thread = thread;
         __HttpFileSenderMap[this._interface.GetID()] = this;
@@ -97,7 +97,7 @@ public class HttpFileSenderTemplate<NATIVE : IHttpFileSenderNative> : IHttpFileS
         
         // 设置URL
         var url = "http://"..this._ip..":"..this._port.."/"..method;
-        this._interface.SetURL(this.HttpUrlAppendParamMap(url, content), this._file_path, false, this._start_size);
+        this._interface.SetURL(this.HttpUrlAppendParamMap(url, content), this._file_path, false, this._start_size, array_buffer);
         this._interface.Start();
     }
 
@@ -176,7 +176,7 @@ public static __ALITTLEAPI_HttpFileProcess(int id, int cur_size, int total_size)
     client.HandleProcess(cur_size, total_size);
 }
 
-public await static DownloadFile(string ip, int port, string method, string file_path) : string
+public await static DownloadFile(string ip, int port, string method, string file_path, bool array_buffer) : string
 {
     var sender:IHttpFileSender;
     [Language(Lua)]
@@ -184,10 +184,10 @@ public await static DownloadFile(string ip, int port, string method, string file
     [Language(JavaScript)]
     sender = new HttpFileSenderTemplate<JavaScript.JHttpFileInterface>(ip, port, file_path, 0);
     
-    return IHttpFileSender.InvokeDownload(method, sender, null);
+    return IHttpFileSender.InvokeDownload(method, sender, null, array_buffer);
 }
 
-public await static UploadFile(string ip, int port, string method, string file_path) : string
+public await static UploadFile(string ip, int port, string method, string file_path, bool array_buffer) : string
 {
     var sender:IHttpFileSender;
     [Language(Lua)]
@@ -195,6 +195,6 @@ public await static UploadFile(string ip, int port, string method, string file_p
     [Language(JavaScript)]
     sender = new HttpFileSenderTemplate<JavaScript.JHttpFileInterface>(ip, port, file_path, 0);
     
-    var error = IHttpFileSender.InvokeUpload(method, sender, null);
+    var error = IHttpFileSender.InvokeUpload(method, sender, null, array_buffer);
     return error;
 }

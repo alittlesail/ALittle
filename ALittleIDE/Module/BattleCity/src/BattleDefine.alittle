@@ -6,8 +6,7 @@ protected struct BattleMap
     Map<int, Map<int, int>> tile_map;	// KEY1:X坐标，KEY2:Y坐标，VALUE 类型
 }
 
-
-enum BrushType
+protected enum BrushType
 {
     BT_WALL = 1;
     BT_IRON = 2;
@@ -16,3 +15,16 @@ enum BrushType
     BT_CASTLE = 6;
 }
 
+protected enum DirType
+{
+    DT_UP = 1;
+    DT_DOWN = 2;
+    DT_LEFT = 3;
+    DT_RIGHT = 4;
+}
+
+protected struct PlayerData
+{
+    int level;
+    int life;
+}

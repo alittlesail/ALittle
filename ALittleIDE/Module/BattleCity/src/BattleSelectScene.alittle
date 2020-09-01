@@ -8,19 +8,12 @@ public class BattleSelectScene : ALittle.DisplayLayout
 	private ALittle.Text _stage_num;
     private ALittle.DisplayLayout _stage_container;
 
-    private int _stage = 1;
-    private BattleMap _battle_map;
-
     private ALittle.LoopList _anti_loop;
    
-    public get stage() : int { return this._stage; }
-
     public fun Show(int stage)
     {
-        this._stage = stage;
-
         this.visible = true;
-        this._stage_num.text = this._stage;
+        this._stage_num.text = stage;
 
         if (this._anti_loop != null)
         {
@@ -37,59 +30,8 @@ public class BattleSelectScene : ALittle.DisplayLayout
         group.AddUpdater(new ALittle.LoopLinear(this._quad_up, "y", 0, 1000, 0));
         group.AddUpdater(new ALittle.LoopLinear(this._quad_down, "y", 0, 1000, 0));
         this._anti_loop.AddUpdater(group);
-        this._anti_loop.AddUpdater(new ALittle.LoopTimer(bind(this.LoadScene, this), 0));
-
-        this._anti_loop.Start();
-    }
-
-    private fun HandleKeyDown(int mod, int sym, int scancode)
-    {
-        if (sym == ALittle.UIEnumTypes.KEY_J)
-        {
-            if (this._stage <= 1)
-            	return;
-            this._stage -= 1;
-            this._stage_num.text = this._stage;
-        }
-        elseif (sym == ALittle.UIEnumTypes.KEY_K)
-        {
-            if (this._stage >= 255)
-            	return;
-            this._stage += 1;
-            this._stage_num.text = this._stage;
-        }
-        elseif (sym == ALittle.UIEnumTypes.KEY_H)
-        {
-            this.LoadScene();
-        }
-    }
-
-    private async fun LoadScene()
-    {
-        this._battle_map = g_Control.LoadMessageFromFile{BattleMap}("Other/Map/stage_"..this._stage..".map");
-        if (this._battle_map == null)
-        {
-            ALittle.Error("map load filed! Other/Map/stage_"..this._stage..".map");
-            return;
-        }
-
-        if (this._anti_loop != null)
-        {
-            this._anti_loop.Stop();
-            this._anti_loop = null;
-        }
-
-        this._quad_up.y = 0;
-        this._quad_down.y = 0;
-        this._stage_container.visible = false;
-
-        this._anti_loop = new ALittle.LoopList();
-        var group = new ALittle.LoopGroup();
-        group.AddUpdater(new ALittle.LoopLinear(this._quad_up, "y", -this._quad_up.height, 500, 0));
-        group.AddUpdater(new ALittle.LoopLinear(this._quad_down, "y", A_UISystem.view_height, 500, 0));
-        this._anti_loop.AddUpdater(group);
+        this._anti_loop.AddUpdater(new ALittle.LoopTimer(bind(g_GCenter.StartBattle, g_GCenter, stage), 0));
         this._anti_loop.AddUpdater(new ALittle.LoopAttribute(this, "visible", false, 0));
-        this._anti_loop.AddUpdater(new ALittle.LoopTimer(bind(g_GCenter.StartBattle, g_GCenter, this._stage), 0));
 
         this._anti_loop.Start();
     }

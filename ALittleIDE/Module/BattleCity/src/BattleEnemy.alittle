@@ -1,0 +1,6 @@
+
+namespace BattleCity;
+
+public class BattleEnemy : BattleRole
+{
+}

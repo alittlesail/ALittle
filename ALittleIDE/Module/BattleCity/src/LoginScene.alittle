@@ -58,6 +58,7 @@ public class LoginScene : ALittle.DisplayLayout
 
         this._cursor.Stop();
         this.visible = false;
+        A_UISystem.keydown_callback = null;
     }
 
     private fun HandleKeyDown(int mod, int sym, int scancode)

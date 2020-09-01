@@ -1,0 +1,1 @@
+{"effect_shield":{"height_value":32,"width_value":32,"__childs":[{"height_value":32,"width_value":32,"texture_name":"shield.png","__class":"Sprite","row_count":2},{"__class":"Sprite","width_value":32,"row_index":2,"row_count":2,"height_value":32,"texture_name":"shield.png"}],"__class":"FramePlay","play_loop_count":0,"interval":60}}

@@ -1,0 +1,12 @@
+
+namespace BattleCity;
+
+public class BattlePlayer : BattleRole
+{
+    public fun LevelUp()
+    {
+        if (this._level >= 4) return;
+        this._level += 1;
+        this.UpdateSprite(0);
+    }
+}

@@ -8,8 +8,8 @@ class GCenter
     private ALittle.DisplayLayout _dialog_layer;
 
     private int _player_count = 1;
-    private int _player1_life = 2;
-    private int _player2_life = 2;
+    private PlayerData _player1;
+    private PlayerData _player2;
 
     private LoginScene _login_scene;
     private BattleSelectScene _battle_select_scene;
@@ -65,16 +65,26 @@ class GCenter
 
     public get player_count() : int { return this._player_count; }
 
+    public get player1_data() : PlayerData { return this._player1; }
+    public get player2_data() : PlayerData { return this._player2; }
+
+    public get battle_scene() : BattleScene { return this._battle_scene; }
+    
     public fun Restart()
     {
+        this._player1 = new PlayerData();
+        this._player1.level = 1;
+        this._player1.life = 2;
+        this._player2 = new PlayerData();
+        this._player2.level = 1;
+        this._player2.life = 2;
+
         this._login_scene.Show();
     }
 
     public fun StartPlay(int player_count)
     {
         this._player_count = player_count;
-        this._player1_life = 2;
-        this._player2_life = 2;
         this._battle_select_scene.Show(1);
     }
 

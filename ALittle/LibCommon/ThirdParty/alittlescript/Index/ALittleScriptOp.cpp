@@ -799,7 +799,7 @@ ABnfGuessError ALittleScriptOp::GuessTypeEqual(ABnfGuessPtr left_guess, ABnfElem
         if (std::dynamic_pointer_cast<ALittleScriptGuessLong>(right_guess))
             return ABnfGuessError(right_src, u8"long赋值给int，需要使用cast<int>()做强制类型转换");
         if (std::dynamic_pointer_cast<ALittleScriptGuessDouble>(right_guess))
-            return ABnfGuessError(right_src, "double赋值给int，需要使用cast<int>()做强制类型转换");
+            return ABnfGuessError(right_src, u8"double赋值给int，需要使用cast<int>()做强制类型转换");
         return ABnfGuessError(right_src, u8"要求是int, 不能是:" + right_guess->GetValue());
     }
 

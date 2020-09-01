@@ -3,18 +3,261 @@ namespace BattleCity;
 
 public class BattleScene : ALittle.DisplayLayout
 {
+	private ALittle.Quad _quad_up;
+	private ALittle.Quad _quad_down;
+
 	private ALittle.TileTable _enemy_tiletable;
+
 	private ALittle.Text _player1_life;
 	private ALittle.Text _player2_life;
 	private ALittle.Text _stage_num;
-	private ALittle.DisplayLayout _wall_container;
-	private ALittle.DisplayLayout _river_container;
-	private ALittle.DisplayLayout _grass_container;
-	private ALittle.DisplayLayout _iron_container;
-	private ALittle.DisplayLayout _castle_container;
 
-    public fun Show(int stage)
+	private ALittle.DisplayLayout _tile_container;
+    private Map<int, Map<int, ALittle.Sprite>> _sprite_map;
+
+    private ALittle.DisplayLayout _entity_container;
+
+    private BattleMap _battle_map;
+    private ALittle.LoopList _anti_loop;
+    private double _cell_size;
+
+    private BattlePlayer _player_1;
+    private BattlePlayer _player_2;
+
+    private ALittle.LoopFrame _frame_loop;
+
+    private Map<BattleRole, bool> _enemy_map;
+
+    private fun TCtor()
     {
+        this._player_1 = g_Control.CreateControl{BattlePlayer}("battle_player1");
+        this._player_2 = g_Control.CreateControl{BattlePlayer}("battle_player2");
+
+        this._cell_size = this._tile_container.width / (13 * 4);
+    }
+
+    public get cell_size() : double { return this._cell_size; }
+
+    public async fun Show(int stage)
+    {
+        if (this._anti_loop != null)
+        {
+            this._anti_loop.Stop();
+            this._anti_loop = null;
+        }
+
+        this._battle_map = g_Control.LoadMessageFromFile{BattleMap}("Other/Map/stage_"..stage..".map");
+        if (this._battle_map == null)
+        {
+            ALittle.Error("map load filed! Other/Map/stage_"..stage..".map");
+            return;
+        }
+
+        this._tile_container.RemoveAllChild();
+        this._sprite_map = new Map<int, Map<int, ALittle.Sprite>>();
+
+        // 根据数据构建地图
+        for (var row, sub_map in this._battle_map.tile_map)
+        {
+            for (var col, type in sub_map)
+                this.SetTileShow(row, col, type);
+        }
+
         this.visible = true;
+
+        // 设置第几关
+        this._stage_num.text = stage;
+
+        // 设置生命值
+        this._player1_life.text = g_GCenter.player1_data.life;
+        this._player2_life.text = g_GCenter.player2_data.life;
+
+        // 初始化敌军个数
+        this._enemy_tiletable.RemoveAllChild();
+        for (var i = 1; i <= 20; 1)
+        {
+            var icon = g_Control.CreateControl{ALittle.DisplayObject}("enemy_icon");
+            this._enemy_tiletable.AddChild(icon);
+        }
+
+        this._player_1.RemoveFromParent();
+        this._player_2.RemoveFromParent();
+
+        this._quad_up.y = 0;
+        this._quad_up.visible = true;
+        this._quad_down.y = 0;
+        this._quad_down.visible = true;
+
+        this._anti_loop = new ALittle.LoopList();
+        var group = new ALittle.LoopGroup();
+        group.AddUpdater(new ALittle.LoopLinear(this._quad_up, "y", -this._quad_up.height, 500, 0));
+        group.AddUpdater(new ALittle.LoopLinear(this._quad_down, "y", A_UISystem.view_height, 500, 0));
+        this._anti_loop.AddUpdater(group);
+        this._anti_loop.AddUpdater(new ALittle.LoopTimer(bind(this.Start, this), 0));
+
+        this._anti_loop.Start();
+
+        A_UISystem.keydown_callback = bind(this.HandleKeyDown, this);
+
+        if (this._frame_loop != null)
+            this._frame_loop.Stop();
+        this._frame_loop = new ALittle.LoopFrame(bind(this.HandleFrame, this));
+        this._frame_loop.Start();
+    }
+
+    public fun Hide()
+    {
+        if (this._frame_loop != null)
+        {
+            this._frame_loop.Stop();
+            this._frame_loop = null;
+        }
+
+        if (this._anti_loop != null)
+        {
+            this._anti_loop.Stop();
+            this._anti_loop = null;
+        }
+    }
+
+    private fun SetTileShow(int row, int col, int type)
+    {
+        var sub_map = this._sprite_map[row];
+        if (sub_map == null)
+        {
+            sub_map = new Map<int, ALittle.Sprite>();
+            this._sprite_map[row] = sub_map;
+        }
+
+        if (sub_map[col] != null)
+            this._tile_container.RemoveChild(sub_map[col]);
+
+            // 设置表现
+        var sprite = new ALittle.Sprite(g_Control);
+        sprite.texture_name = "tile.png";
+        sprite.width = 32 / 4;
+        sprite.height = 32 / 4;
+        sprite.x = col * sprite.width;
+        sprite.y = row * sprite.height;
+        sprite.row_count = 4;
+        sprite.col_count = 7 * 4;
+        sprite.row_index = row % 4 + 1;
+        sprite.col_index = col % 4 + 1 + (type - 1) * 4;
+        this._tile_container.AddChild(sprite);
+
+        sub_map[col] = sprite;
+    }
+
+    private fun RemoveTileShow(int row, int col)
+    {
+        var sub_map = this._sprite_map[row];
+        if (sub_map == null) return;
+    
+        if (sub_map[col] != null)
+        {
+            this._tile_container.RemoveChild(sub_map[col]);
+            sub_map[col] = null;
+        }
+    }
+
+    public fun CanWalkByMap(int row, int col) : bool
+    {
+        var sub_map = this._sprite_map[row];
+        if (sub_map == null) return true;
+
+        var sprite = sub_map[col];
+        if (sprite == null) return true;
+
+        return sprite.col_index >= (BrushType.BT_GRASS - 1) * 4 + 1 && sprite.col_index <= (BrushType.BT_GRASS) * 4;
+    }
+
+    public fun Collision(double left, double top, double right, double bottom, ALittle.DisplayObject target) : bool
+    {
+        var not_check = right < target.x || bottom < target.y || target.x + target.width < left || target.y + target.height < top;
+        return !not_check;
+    }
+
+    public fun CanWalkByEntity(BattleRole entity, double left, double top, double right, double bottom) : bool
+    {
+        if (this._player_1.parent != null && this._player_1.alive && entity != this._player_1 && this.Collision(left, top, right, bottom, this._player_1)) return true;
+        if (this._player_2.parent != null && this._player_2.alive && entity != this._player_2 && this.Collision(left, top, right, bottom, this._player_2)) return true;
+        for (var role, _ in this._enemy_map)
+        {
+            if (role != entity && entity.alive && this.Collision(left, top, right, bottom, role))
+            	return true;
+        }
+        return false;
+    }
+
+    public get map_size() : double { return this._tile_container.width; }
+
+    private fun Start()
+    {
+        if (g_GCenter.player_count >= 1)
+        {
+            this._entity_container.AddChild(this._player_1);
+            this._player_1.StartBorn(12 * 4, 4* 4, g_GCenter.player1_data.level, DirType.DT_UP, 0.1);
+        }
+
+        if (g_GCenter.player_count >= 2)
+        {
+            this._entity_container.AddChild(this._player_2);
+            this._player_2.StartBorn(12 * 4, 8* 4, g_GCenter.player2_data.level, DirType.DT_UP, 0.1);
+        }
+    }
+
+    private fun HandleFrame(int frame_time)
+    {
+        if (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_A])
+        {
+            if (this._player_1.parent != null && !this._player_1.alive) return;
+            this._player_1.Walk(DirType.DT_LEFT, frame_time);
+        }
+		elseif (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_W])
+        {
+            if (this._player_1.parent != null && !this._player_1.alive) return;
+            this._player_1.Walk(DirType.DT_UP, frame_time);
+        }
+		elseif (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_S])
+        {
+            if (this._player_1.parent != null && !this._player_1.alive) return;
+            this._player_1.Walk(DirType.DT_DOWN, frame_time);
+        }
+        elseif (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_D])
+        {
+            if (this._player_1.parent != null && !this._player_1.alive) return;
+            this._player_1.Walk(DirType.DT_RIGHT, frame_time);
+        }
+
+
+        if (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_LEFT])
+        {
+            if (this._player_2.parent != null && !this._player_2.alive) return;
+            this._player_2.Walk(DirType.DT_LEFT, frame_time);
+        }
+		elseif (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_UP])
+        {
+            if (this._player_2.parent != null && !this._player_2.alive) return;
+            this._player_2.Walk(DirType.DT_UP, frame_time);
+        }
+        elseif (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_DOWN])
+        {
+            if (this._player_2.parent != null && !this._player_2.alive) return;
+            this._player_2.Walk(DirType.DT_DOWN, frame_time);
+        }
+        elseif (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_RIGHT])
+        {
+            if (this._player_2.parent != null && !this._player_2.alive) return;
+            this._player_2.Walk(DirType.DT_RIGHT, frame_time);
+        }
+    }
+
+    private fun HandleKeyDown(int mod, int sym, int scancode)
+    {
+    }
+
+    public fun RoleDeath(BattleRole player)
+    {
+
     }
 }

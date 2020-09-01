@@ -11,8 +11,6 @@ BattleCity.GCenter = Lua.Class(nil, "BattleCity.GCenter")
 
 function BattleCity.GCenter:Ctor()
 	___rawset(self, "_player_count", 1)
-	___rawset(self, "_player1_life", 2)
-	___rawset(self, "_player2_life", 2)
 end
 
 function BattleCity.GCenter:Setup()
@@ -51,14 +49,30 @@ function BattleCity.GCenter.__getter:player_count()
 	return self._player_count
 end
 
+function BattleCity.GCenter.__getter:player1_data()
+	return self._player1
+end
+
+function BattleCity.GCenter.__getter:player2_data()
+	return self._player2
+end
+
+function BattleCity.GCenter.__getter:battle_scene()
+	return self._battle_scene
+end
+
 function BattleCity.GCenter:Restart()
+	self._player1 = {}
+	self._player1.level = 1
+	self._player1.life = 2
+	self._player2 = {}
+	self._player2.level = 1
+	self._player2.life = 2
 	self._login_scene:Show()
 end
 
 function BattleCity.GCenter:StartPlay(player_count)
 	self._player_count = player_count
-	self._player1_life = 2
-	self._player2_life = 2
 	self._battle_select_scene:Show(1)
 end
 

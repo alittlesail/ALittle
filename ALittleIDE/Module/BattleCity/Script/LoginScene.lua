@@ -44,6 +44,7 @@ function BattleCity.LoginScene:Hide()
 	end
 	self._cursor:Stop()
 	self.visible = false
+	A_UISystem.keydown_callback = nil
 end
 
 function BattleCity.LoginScene:HandleKeyDown(mod, sym, scancode)

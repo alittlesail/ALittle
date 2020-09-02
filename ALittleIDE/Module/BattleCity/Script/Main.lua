@@ -32,6 +32,7 @@ function BattleCity.__Module_Setup(layer_group, control, module_base_path, scrip
 	Require(script_base_path, "BattleScene")
 	Require(script_base_path, "EditScene")
 	Require(script_base_path, "BattleDefine")
+	Require(script_base_path, "BattleBullet")
 	Require(script_base_path, "BattleRole")
 	Require(script_base_path, "BattlePlayer")
 	Require(script_base_path, "BattleEnemy")

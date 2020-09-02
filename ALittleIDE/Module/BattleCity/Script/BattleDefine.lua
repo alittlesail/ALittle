@@ -22,7 +22,9 @@ BattleCity.BrushType = {
 	BT_IRON = 2,
 	BT_GRASS = 3,
 	BT_RIVER = 4,
+	BT_RIVER2 = 5,
 	BT_CASTLE = 6,
+	BT_CASTLE2 = 7,
 }
 
 BattleCity.DirType = {

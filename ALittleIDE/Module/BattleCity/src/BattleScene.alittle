@@ -17,6 +17,9 @@ public class BattleScene : ALittle.DisplayLayout
 
     private ALittle.DisplayLayout _entity_container;
 
+    private ALittle.DisplayLayout _bullet_container;
+    private Map<BattleBullet, bool> _bullet_map;
+
     private BattleMap _battle_map;
     private ALittle.LoopList _anti_loop;
     private double _cell_size;
@@ -63,9 +66,6 @@ public class BattleScene : ALittle.DisplayLayout
 
         this._tile_container.RemoveAllChild();
         this._sprite_map = new Map<int, Map<int, ALittle.Sprite>>();
-        this._enemy_map = new Map<BattleRole, bool>();
-        this._enemy_count = 0;
-        this._generate_enemy_cool = 1000;
 
         // 根据数据构建地图
         for (var row, sub_map in this._battle_map.tile_map)
@@ -90,7 +90,15 @@ public class BattleScene : ALittle.DisplayLayout
             var icon = g_Control.CreateControl{ALittle.DisplayObject}("enemy_icon");
             this._enemy_tiletable.AddChild(icon);
         }
+        this._enemy_map = new Map<BattleRole, bool>();
+        this._enemy_count = 0;
+        this._generate_enemy_cool = 1000;
 
+        this._bullet_container.RemoveAllChild();
+        this._bullet_map = new Map<BattleBullet, bool>();
+    
+        this._entity_container.RemoveAllChild();
+    
         this._player_1.RemoveFromParent();
         this._player_2.RemoveFromParent();
 
@@ -161,6 +169,23 @@ public class BattleScene : ALittle.DisplayLayout
         sub_map[col] = sprite;
     }
 
+    private fun TryRemoveWall(int row, int col) : bool
+    {
+        var sub_map = this._sprite_map[row];
+        if (sub_map == null) return false;
+
+        var sprite = sub_map[col];
+        if (sprite == null) return false;
+
+        if (sprite.col_index >= (BrushType.BT_WALL - 1) * 4 + 1 && sprite.col_index <= (BrushType.BT_WALL) * 4)
+        {
+            this._tile_container.RemoveChild(sprite);
+            sub_map[col] = null;
+            return true;
+        }
+        return false;
+    }
+
     private fun RemoveTileShow(int row, int col)
     {
         var sub_map = this._sprite_map[row];
@@ -200,6 +225,101 @@ public class BattleScene : ALittle.DisplayLayout
             	return false;
         }
         return true;
+    }
+
+    public fun BulletCollision(int row, int col, bool min_or_max, int dir) : bool
+    {
+        var sub_map = this._sprite_map[row];
+        if (sub_map == null) return false;
+
+        var sprite = sub_map[col];
+        if (sprite == null) return false;
+
+        // 如果是铁
+        if (sprite.col_index >= (BrushType.BT_IRON - 1) * 4 + 1 && sprite.col_index <= (BrushType.BT_IRON) * 4)
+        	return true;
+
+        // 如果是草
+        if (sprite.col_index >= (BrushType.BT_GRASS - 1) * 4 + 1 && sprite.col_index <= (BrushType.BT_GRASS) * 4)
+        	return false;
+
+        // 如果是河
+        if (sprite.col_index >= (BrushType.BT_RIVER - 1) * 4 + 1 && sprite.col_index <= (BrushType.BT_RIVER) * 4)
+        	return false;
+        if (sprite.col_index >= (BrushType.BT_RIVER2 - 1) * 4 + 1 && sprite.col_index <= (BrushType.BT_RIVER2) * 4)
+        	return false;
+
+        // 如果是城堡
+        if (sprite.col_index >= (BrushType.BT_CASTLE2 - 1) * 4 + 1 && sprite.col_index <= (BrushType.BT_CASTLE2) * 4)
+        	return false;
+        if (sprite.col_index >= (BrushType.BT_CASTLE - 1) * 4 + 1 && sprite.col_index <= (BrushType.BT_CASTLE) * 4)
+        {
+            // 整个鸟巢作为废墟
+            for (var r = 12*4; r < 13*4; 1)
+            {
+                for (var c = 6*4; c < 7*4; 1)
+                	this.SetTileShow(r, c, BrushType.BT_CASTLE2);
+            }
+        	return true;
+        }
+
+        // 如果是墙
+        if (sprite.col_index >= (BrushType.BT_WALL - 1) * 4 + 1 && sprite.col_index <= (BrushType.BT_WALL) * 4)
+        {
+            if (dir == DirType.DT_UP || dir == DirType.DT_DOWN)
+            {
+                this.TryRemoveWall(row, col - 1);
+                this.TryRemoveWall(row, col);
+                this.TryRemoveWall(row, col + 1);
+
+                if (min_or_max)
+                    this.TryRemoveWall(row, col - 2);
+                else
+                    this.TryRemoveWall(row, col + 2);
+            }
+            else
+            {
+                this.TryRemoveWall(row - 1, col);
+                this.TryRemoveWall(row, col);
+                this.TryRemoveWall(row + 1, col);
+
+                if (min_or_max)
+                	this.TryRemoveWall(row - 2, col);
+                else
+                    this.TryRemoveWall(row + 2, col);
+            }
+            return true;
+        }
+
+        return false;
+    }
+
+    public fun FireBullet(BattleRole role)
+    {
+        var bullet = g_Control.CreateControl{BattleBullet}("battle_bullet");
+        if (role.dir == DirType.DT_UP)
+        {
+            bullet.x = role.x + role.width / 2 - bullet.width / 2;
+            bullet.y = role.y;
+        }
+        elseif (role.dir == DirType.DT_RIGHT)
+        {
+            bullet.x = role.x + role.width - bullet.width;
+            bullet.y = role.y + role.height / 2 - bullet.height / 2;
+        }
+        elseif (role.dir == DirType.DT_DOWN)
+        {
+            bullet.x = role.x + role.width / 2 - bullet.width / 2;
+            bullet.y = role.y + role.height - bullet.height;
+        }
+        else
+        {
+            bullet.x = role.x;
+            bullet.y = role.y + role.height / 2 - bullet.height / 2;
+        }
+        bullet.Init(role.dir, role);
+        this._bullet_container.AddChild(bullet);
+        this._bullet_map[bullet] = true;
     }
 
     public fun GenerateEnemy()
@@ -301,7 +421,6 @@ public class BattleScene : ALittle.DisplayLayout
             this._player_1.Walk(DirType.DT_RIGHT, frame_time);
         }
 
-
         if (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_LEFT])
         {
             if (this._player_2.parent != null && !this._player_2.alive) return;
@@ -326,14 +445,32 @@ public class BattleScene : ALittle.DisplayLayout
         if (this._player_1.parent != null) this._player_1.UpdateFrame(frame_time);
         if (this._player_2.parent != null) this._player_2.UpdateFrame(frame_time);
         for (var enemy, _ in this._enemy_map) enemy.UpdateFrame(frame_time);
+        for (var bullet, _ in this._bullet_map) bullet.UpdateFrame(frame_time);
     }
 
     private fun HandleKeyDown(int mod, int sym, int scancode)
     {
+        if (sym == ALittle.UIEnumTypes.KEY_J)
+        {
+            if (this._player_1.parent != null && !this._player_1.alive) return;
+            this._player_1.Fire();
+        }
+
+        if (sym == ALittle.UIEnumTypes.KEY_1)
+        {
+            if (this._player_2.parent != null && !this._player_2.alive) return;
+            this._player_2.Fire();
+        }
     }
 
     public fun RoleDeath(BattleRole player)
     {
 
+    }
+
+    public fun BulletDeath(BattleBullet bullet)
+    {
+        this._bullet_container.RemoveChild(bullet);
+        this._bullet_map[bullet] = null;
     }
 }

@@ -42,9 +42,6 @@ function BattleCity.BattleScene:Show(stage)
 	end
 	self._tile_container:RemoveAllChild()
 	self._sprite_map = {}
-	self._enemy_map = {}
-	self._enemy_count = 0
-	self._generate_enemy_cool = 1000
 	for row, sub_map in ___pairs(self._battle_map.tile_map) do
 		for col, type in ___pairs(sub_map) do
 			self:SetTileShow(row, col, type)
@@ -62,6 +59,12 @@ function BattleCity.BattleScene:Show(stage)
 		self._enemy_tiletable:AddChild(icon)
 		i = i+(1)
 	end
+	self._enemy_map = {}
+	self._enemy_count = 0
+	self._generate_enemy_cool = 1000
+	self._bullet_container:RemoveAllChild()
+	self._bullet_map = {}
+	self._entity_container:RemoveAllChild()
 	self._player_1:RemoveFromParent()
 	self._player_2:RemoveFromParent()
 	self._quad_up.y = 0
@@ -119,6 +122,23 @@ function BattleCity.BattleScene:SetTileShow(row, col, type)
 	sub_map[col] = sprite
 end
 
+function BattleCity.BattleScene:TryRemoveWall(row, col)
+	local sub_map = self._sprite_map[row]
+	if sub_map == nil then
+		return false
+	end
+	local sprite = sub_map[col]
+	if sprite == nil then
+		return false
+	end
+	if sprite.col_index >= (BattleCity.BrushType.BT_WALL - 1) * 4 + 1 and sprite.col_index <= (BattleCity.BrushType.BT_WALL) * 4 then
+		self._tile_container:RemoveChild(sprite)
+		sub_map[col] = nil
+		return true
+	end
+	return false
+end
+
 function BattleCity.BattleScene:RemoveTileShow(row, col)
 	local sub_map = self._sprite_map[row]
 	if sub_map == nil then
@@ -160,6 +180,89 @@ function BattleCity.BattleScene:CanWalkByEntity(entity, left, top, right, bottom
 		end
 	end
 	return true
+end
+
+function BattleCity.BattleScene:BulletCollision(row, col, min_or_max, dir)
+	local sub_map = self._sprite_map[row]
+	if sub_map == nil then
+		return false
+	end
+	local sprite = sub_map[col]
+	if sprite == nil then
+		return false
+	end
+	if sprite.col_index >= (BattleCity.BrushType.BT_IRON - 1) * 4 + 1 and sprite.col_index <= (BattleCity.BrushType.BT_IRON) * 4 then
+		return true
+	end
+	if sprite.col_index >= (BattleCity.BrushType.BT_GRASS - 1) * 4 + 1 and sprite.col_index <= (BattleCity.BrushType.BT_GRASS) * 4 then
+		return false
+	end
+	if sprite.col_index >= (BattleCity.BrushType.BT_RIVER - 1) * 4 + 1 and sprite.col_index <= (BattleCity.BrushType.BT_RIVER) * 4 then
+		return false
+	end
+	if sprite.col_index >= (BattleCity.BrushType.BT_RIVER2 - 1) * 4 + 1 and sprite.col_index <= (BattleCity.BrushType.BT_RIVER2) * 4 then
+		return false
+	end
+	if sprite.col_index >= (BattleCity.BrushType.BT_CASTLE2 - 1) * 4 + 1 and sprite.col_index <= (BattleCity.BrushType.BT_CASTLE2) * 4 then
+		return false
+	end
+	if sprite.col_index >= (BattleCity.BrushType.BT_CASTLE - 1) * 4 + 1 and sprite.col_index <= (BattleCity.BrushType.BT_CASTLE) * 4 then
+		local r = 12 * 4
+		while true do
+			if not(r < 13 * 4) then break end
+			local c = 6 * 4
+			while true do
+				if not(c < 7 * 4) then break end
+				self:SetTileShow(r, c, BattleCity.BrushType.BT_CASTLE2)
+				c = c+(1)
+			end
+			r = r+(1)
+		end
+		return true
+	end
+	if sprite.col_index >= (BattleCity.BrushType.BT_WALL - 1) * 4 + 1 and sprite.col_index <= (BattleCity.BrushType.BT_WALL) * 4 then
+		if dir == BattleCity.DirType.DT_UP or dir == BattleCity.DirType.DT_DOWN then
+			self:TryRemoveWall(row, col - 1)
+			self:TryRemoveWall(row, col)
+			self:TryRemoveWall(row, col + 1)
+			if min_or_max then
+				self:TryRemoveWall(row, col - 2)
+			else
+				self:TryRemoveWall(row, col + 2)
+			end
+		else
+			self:TryRemoveWall(row - 1, col)
+			self:TryRemoveWall(row, col)
+			self:TryRemoveWall(row + 1, col)
+			if min_or_max then
+				self:TryRemoveWall(row - 2, col)
+			else
+				self:TryRemoveWall(row + 2, col)
+			end
+		end
+		return true
+	end
+	return false
+end
+
+function BattleCity.BattleScene:FireBullet(role)
+	local bullet = BattleCity.g_Control:CreateControl("battle_bullet")
+	if role.dir == BattleCity.DirType.DT_UP then
+		bullet.x = role.x + role.width / 2 - bullet.width / 2
+		bullet.y = role.y
+	elseif role.dir == BattleCity.DirType.DT_RIGHT then
+		bullet.x = role.x + role.width - bullet.width
+		bullet.y = role.y + role.height / 2 - bullet.height / 2
+	elseif role.dir == BattleCity.DirType.DT_DOWN then
+		bullet.x = role.x + role.width / 2 - bullet.width / 2
+		bullet.y = role.y + role.height - bullet.height
+	else
+		bullet.x = role.x
+		bullet.y = role.y + role.height / 2 - bullet.height / 2
+	end
+	bullet:Init(role.dir, role)
+	self._bullet_container:AddChild(bullet)
+	self._bullet_map[bullet] = true
 end
 
 function BattleCity.BattleScene:GenerateEnemy()
@@ -280,12 +383,32 @@ function BattleCity.BattleScene:HandleFrame(frame_time)
 	for enemy, _ in ___pairs(self._enemy_map) do
 		enemy:UpdateFrame(frame_time)
 	end
+	for bullet, _ in ___pairs(self._bullet_map) do
+		bullet:UpdateFrame(frame_time)
+	end
 end
 
 function BattleCity.BattleScene:HandleKeyDown(mod, sym, scancode)
+	if sym == 106 then
+		if self._player_1.parent ~= nil and not self._player_1.alive then
+			return
+		end
+		self._player_1:Fire()
+	end
+	if sym == 1073741913 then
+		if self._player_2.parent ~= nil and not self._player_2.alive then
+			return
+		end
+		self._player_2:Fire()
+	end
 end
 
 function BattleCity.BattleScene:RoleDeath(player)
+end
+
+function BattleCity.BattleScene:BulletDeath(bullet)
+	self._bullet_container:RemoveChild(bullet)
+	self._bullet_map[bullet] = nil
 end
 
 end

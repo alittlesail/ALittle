@@ -75,6 +75,10 @@ function ALittle.FramePlay.__getter:play_loop_count()
 	return self._play_loop_count
 end
 
+function ALittle.FramePlay:IsPlaying()
+	return self._play_loop ~= nil
+end
+
 function ALittle.FramePlay:Play()
 	if self._play_loop ~= nil then
 		A_WeakLoopSystem:RemoveUpdater(self._play_loop)

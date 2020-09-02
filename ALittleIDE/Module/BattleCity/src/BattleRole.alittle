@@ -11,6 +11,9 @@ public class BattleRole : ALittle.DisplayLayout
     private int _level = 1;
     private int _dir = 1;
 
+    private int _bullet_total = 1;
+    private int _bullet_count = 0;
+
     private double _speed = 0;
 
     public fun TCtor()
@@ -27,6 +30,8 @@ public class BattleRole : ALittle.DisplayLayout
         if (this._effect_explosion.visible) return false;
         return true;
     }
+
+    public get dir() : int { return this._dir; }
 
     public fun StartExplosion()
     {
@@ -47,13 +52,20 @@ public class BattleRole : ALittle.DisplayLayout
         loop.Start();
     }
 
+    // 如果返回false，那么表示移除
     public fun UpdateFrame(int frame_time)
     {
-
     }
 
     private fun UpdateWalk(int frame_time)
     {
+    }
+
+    public fun Fire()
+    {
+        if (this._bullet_count >= this._bullet_total) return;
+        this._bullet_count += 1;
+        g_GCenter.battle_scene.FireBullet(this);
     }
 
     public fun Walk(int dir, int frame_time) : bool
@@ -209,6 +221,12 @@ public class BattleRole : ALittle.DisplayLayout
     {
         this._effect_shield.visible = false;
         this._effect_shield.Stop();
+    }
+
+    public fun AddBullet()
+    {
+        if (this._bullet_count == 0) return;
+        this._bullet_count -= 1;
     }
 
     public fun Clear()

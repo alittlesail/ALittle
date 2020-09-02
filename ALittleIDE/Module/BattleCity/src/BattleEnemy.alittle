@@ -8,6 +8,7 @@ public class BattleEnemy : BattleRole
     private double _flash_frame = 0;
 
     private double _changed_frame = 0;
+    private double _fire_frame = 0;
 
     public fun StartBorn(int row, int col, int level, int dir, bool flash)
     {
@@ -53,6 +54,11 @@ public class BattleEnemy : BattleRole
                 if (!this.Walk(this._dir, frame_time))
                 	this._changed_frame = 1;
             }
+
+            this._fire_frame += frame_time * 0.001;
+            if (this._fire_frame >= 2) this._fire_frame = 0;
+            if (this._fire_frame > 1 && ALittle.Math_RandomInt(1, 100) > 90)
+            	this.Fire();
         }
 
         this.UpdateSpriteCol(frame_time);

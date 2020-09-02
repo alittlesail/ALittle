@@ -14,6 +14,7 @@ function BattleCity.BattleEnemy:Ctor()
 	___rawset(self, "_walk_frame", 0)
 	___rawset(self, "_flash_frame", 0)
 	___rawset(self, "_changed_frame", 0)
+	___rawset(self, "_fire_frame", 0)
 end
 
 function BattleCity.BattleEnemy:StartBorn(row, col, level, dir, flash)
@@ -55,8 +56,16 @@ function BattleCity.BattleEnemy:UpdateFrame(frame_time)
 				self._changed_frame = 1
 			end
 		end
+		self._fire_frame = self._fire_frame + (frame_time * 0.001)
+		if self._fire_frame >= 2 then
+			self._fire_frame = 0
+		end
+		if self._fire_frame > 1 and ALittle.Math_RandomInt(1, 100) > 90 then
+			self:Fire()
+		end
 	end
 	self:UpdateSpriteCol(frame_time)
+	return true
 end
 
 function BattleCity.BattleEnemy:UpdateWalk(frame_time)

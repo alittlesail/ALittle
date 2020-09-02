@@ -87,6 +87,8 @@ public class FramePlay : DisplayLayout
     {
         return this._play_loop_count;
     }
+
+    public fun IsPlaying() : bool { return this._play_loop != null; }
     
     public fun Play()
     {

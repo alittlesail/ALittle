@@ -12,6 +12,8 @@ BattleCity.BattleRole = Lua.Class(ALittle.DisplayLayout, "BattleCity.BattleRole"
 function BattleCity.BattleRole:Ctor()
 	___rawset(self, "_level", 1)
 	___rawset(self, "_dir", 1)
+	___rawset(self, "_bullet_total", 1)
+	___rawset(self, "_bullet_count", 0)
 	___rawset(self, "_speed", 0)
 end
 
@@ -30,6 +32,10 @@ function BattleCity.BattleRole.__getter:alive()
 		return false
 	end
 	return true
+end
+
+function BattleCity.BattleRole.__getter:dir()
+	return self._dir
 end
 
 function BattleCity.BattleRole:StartExplosion()
@@ -51,6 +57,14 @@ function BattleCity.BattleRole:UpdateFrame(frame_time)
 end
 
 function BattleCity.BattleRole:UpdateWalk(frame_time)
+end
+
+function BattleCity.BattleRole:Fire()
+	if self._bullet_count >= self._bullet_total then
+		return
+	end
+	self._bullet_count = self._bullet_count + (1)
+	g_GCenter.battle_scene:FireBullet(self)
 end
 
 function BattleCity.BattleRole:Walk(dir, frame_time)
@@ -233,6 +247,13 @@ end
 function BattleCity.BattleRole:HandleShieldStop()
 	self._effect_shield.visible = false
 	self._effect_shield:Stop()
+end
+
+function BattleCity.BattleRole:AddBullet()
+	if self._bullet_count == 0 then
+		return
+	end
+	self._bullet_count = self._bullet_count - (1)
 end
 
 function BattleCity.BattleRole:Clear()

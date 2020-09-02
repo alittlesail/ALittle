@@ -63,8 +63,9 @@ public class BattleRole : ALittle.DisplayLayout
 
         if (this._dir == DirType.DT_UP)
         {
-            var col = ALittle.Math_Floor(this.x / g_GCenter.battle_scene.cell_size);
-            var col_ex = this.x - col *g_GCenter.battle_scene.cell_size > 2;
+            var col_min = ALittle.Math_Floor(this.x / g_GCenter.battle_scene.cell_size);
+            var col_max = ALittle.Math_Floor((this.x + this.width - 1) / g_GCenter.battle_scene.cell_size);
+
             var cur_row = ALittle.Math_Floor(this.y / g_GCenter.battle_scene.cell_size);
             var y = this.y - frame_time * this._speed;
             if (y <= 0) y = 0;
@@ -72,14 +73,23 @@ public class BattleRole : ALittle.DisplayLayout
             var target = this.y;
             for (var row = cur_row; row >= next_row; -1)
             {
-                if (!g_GCenter.battle_scene.CanWalkByMap(row, col)) break;
-                if (!g_GCenter.battle_scene.CanWalkByMap(row, col + 1)) break;
-                if (!g_GCenter.battle_scene.CanWalkByMap(row, col + 2)) break;
-                if (!g_GCenter.battle_scene.CanWalkByMap(row, col + 3)) break;
-                if (col_ex && !g_GCenter.battle_scene.CanWalkByMap(row, col + 4)) break;
+                var failed = false;
+                for (var col = col_min; col <= col_max; 1)
+                {
+                    if (!g_GCenter.battle_scene.CanWalkByMap(row, col))
+                    {
+                        failed = true;
+                        break;
+                    }
+                }
+                if (failed) break;
                 target = row * g_GCenter.battle_scene.cell_size;
             }
             if (target < y) target = y;
+
+            if (!g_GCenter.battle_scene.CanWalkByEntity(this, this.x, target, this.x + this.width, target + this.height))
+                return;
+
             this.y = target;
 
             return;
@@ -87,9 +97,10 @@ public class BattleRole : ALittle.DisplayLayout
 
         if (this._dir == DirType.DT_DOWN)
         {
+            var col_min = ALittle.Math_Floor(this.x / g_GCenter.battle_scene.cell_size);
+            var col_max = ALittle.Math_Floor((this.x + this.width - 1) / g_GCenter.battle_scene.cell_size);
+
             var bottom = this.y + this.height;
-            var col = ALittle.Math_Floor(this.x / g_GCenter.battle_scene.cell_size);
-            var col_ex = this.x - col *g_GCenter.battle_scene.cell_size > 2;
             var cur_row = ALittle.Math_Floor(bottom / g_GCenter.battle_scene.cell_size);
             var y = bottom + frame_time * this._speed;
             if (y >= g_GCenter.battle_scene.map_size) y = g_GCenter.battle_scene.map_size;
@@ -97,14 +108,22 @@ public class BattleRole : ALittle.DisplayLayout
             var target = bottom;
             for (var row = cur_row; row <= next_row; 1)
             {
-                if (!g_GCenter.battle_scene.CanWalkByMap(row, col)) break;
-                if (!g_GCenter.battle_scene.CanWalkByMap(row, col + 1)) break;
-                if (!g_GCenter.battle_scene.CanWalkByMap(row, col + 2)) break;
-                if (!g_GCenter.battle_scene.CanWalkByMap(row, col + 3)) break;
-                if (col_ex && !g_GCenter.battle_scene.CanWalkByMap(row, col + 4)) break;
+                var failed = false;
+                for (var col = col_min; col <= col_max; 1)
+                {
+                    if (!g_GCenter.battle_scene.CanWalkByMap(row, col))
+                    {
+                        failed = true;
+                        break;
+                    }
+                }
+                if (failed) break;
                 target = (row + 1) * g_GCenter.battle_scene.cell_size;
             }
             if (target > y) target = y;
+
+            if (!g_GCenter.battle_scene.CanWalkByEntity(this, this.x, target - this.height, this.x + this.width, target))
+                return;
             this.y = target - this.height;
 
             return;
@@ -112,8 +131,9 @@ public class BattleRole : ALittle.DisplayLayout
 
         if (this._dir == DirType.DT_LEFT)
         {
-            var row = ALittle.Math_Floor(this.y / g_GCenter.battle_scene.cell_size);
-            var row_ex = this.y - row *g_GCenter.battle_scene.cell_size > 2;
+            var row_min = ALittle.Math_Floor(this.y / g_GCenter.battle_scene.cell_size);
+            var row_max = ALittle.Math_Floor((this.y + this.height - 1) / g_GCenter.battle_scene.cell_size);
+
             var cur_col = ALittle.Math_Floor(this.x / g_GCenter.battle_scene.cell_size);
             var x = this.x - frame_time * this._speed;
             if (x <= 0) x = 0;
@@ -121,14 +141,21 @@ public class BattleRole : ALittle.DisplayLayout
             var target = this.x;
             for (var col = cur_col; col >= next_col; -1)
             {
-                if (!g_GCenter.battle_scene.CanWalkByMap(row, col)) break;
-                if (!g_GCenter.battle_scene.CanWalkByMap(row + 1, col)) break;
-                if (!g_GCenter.battle_scene.CanWalkByMap(row + 2, col)) break;
-                if (!g_GCenter.battle_scene.CanWalkByMap(row + 3, col)) break;
-                if (row_ex && !g_GCenter.battle_scene.CanWalkByMap(row + 4, col)) break;
+                var failed = false;
+                for (var row = row_min; row <= row_max; 1)
+                {
+                    if (!g_GCenter.battle_scene.CanWalkByMap(row, col))
+                    {
+                        failed = true;
+                        break;
+                    }
+                }
+                if (failed) break;
                 target = col * g_GCenter.battle_scene.cell_size;
             }
             if (target < x) target = x;
+            if (!g_GCenter.battle_scene.CanWalkByEntity(this, target, this.y, target + this.width, this.y + this.height))
+                return;
             this.x = target;
 
             return;
@@ -136,9 +163,10 @@ public class BattleRole : ALittle.DisplayLayout
 
         if (this._dir == DirType.DT_RIGHT)
         {
+            var row_min = ALittle.Math_Floor(this.y / g_GCenter.battle_scene.cell_size);
+            var row_max = ALittle.Math_Floor((this.y + this.height - 1) / g_GCenter.battle_scene.cell_size);
+
             var right = this.x + this.width;
-            var row = ALittle.Math_Floor(this.y / g_GCenter.battle_scene.cell_size);
-            var row_ex = this.y - row *g_GCenter.battle_scene.cell_size > 2;
             var cur_col = ALittle.Math_Floor(right / g_GCenter.battle_scene.cell_size);
             var x = right + frame_time * this._speed;
             if (x >= g_GCenter.battle_scene.map_size) x = g_GCenter.battle_scene.map_size;
@@ -146,14 +174,21 @@ public class BattleRole : ALittle.DisplayLayout
             var target = right;
             for (var col = cur_col; col <= next_col; 1)
             {
-                if (!g_GCenter.battle_scene.CanWalkByMap(row, col)) break;
-                if (!g_GCenter.battle_scene.CanWalkByMap(row + 1, col)) break;
-                if (!g_GCenter.battle_scene.CanWalkByMap(row + 2, col)) break;
-                if (!g_GCenter.battle_scene.CanWalkByMap(row + 3, col)) break;
-                if (row_ex && !g_GCenter.battle_scene.CanWalkByMap(row + 4, col)) break;
+                var failed = false;
+                for (var row = row_min; row <= row_max; 1)
+                {
+                    if (!g_GCenter.battle_scene.CanWalkByMap(row, col))
+                    {
+                        failed = true;
+                        break;
+                    }
+                }
+                if (failed) break;
                 target = (col + 1) * g_GCenter.battle_scene.cell_size;
             }
             if (target > x) target = x;
+            if (!g_GCenter.battle_scene.CanWalkByEntity(this, target - this.width, this.y, target, this.y + this.height))
+                return;
             this.x = target - this.width;
         
             return;

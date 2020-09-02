@@ -31,6 +31,7 @@ function BattleCity.BattleScene:Show(stage)
 	end
 	self._tile_container:RemoveAllChild()
 	self._sprite_map = {}
+	self._enemy_map = {}
 	for row, sub_map in ___pairs(self._battle_map.tile_map) do
 		for col, type in ___pairs(sub_map) do
 			self:SetTileShow(row, col, type)
@@ -134,17 +135,20 @@ end
 
 function BattleCity.BattleScene:CanWalkByEntity(entity, left, top, right, bottom)
 	if self._player_1.parent ~= nil and self._player_1.alive and entity ~= self._player_1 and self:Collision(left, top, right, bottom, self._player_1) then
-		return true
+		return false
 	end
 	if self._player_2.parent ~= nil and self._player_2.alive and entity ~= self._player_2 and self:Collision(left, top, right, bottom, self._player_2) then
-		return true
+		return false
 	end
 	for role, _ in ___pairs(self._enemy_map) do
 		if role ~= entity and entity.alive and self:Collision(left, top, right, bottom, role) then
-			return true
+			return false
 		end
 	end
-	return false
+	return true
+end
+
+function BattleCity.BattleScene:GenerateEnemy()
 end
 
 function BattleCity.BattleScene.__getter:map_size()
@@ -154,11 +158,11 @@ end
 function BattleCity.BattleScene:Start()
 	if g_GCenter.player_count >= 1 then
 		self._entity_container:AddChild(self._player_1)
-		self._player_1:StartBorn(12 * 4, 4 * 4, g_GCenter.player1_data.level, BattleCity.DirType.DT_UP, 0.1)
+		self._player_1:StartBorn(12 * 4, 4 * 4 + 2, g_GCenter.player1_data.level, BattleCity.DirType.DT_UP, 0.08)
 	end
 	if g_GCenter.player_count >= 2 then
 		self._entity_container:AddChild(self._player_2)
-		self._player_2:StartBorn(12 * 4, 8 * 4, g_GCenter.player2_data.level, BattleCity.DirType.DT_UP, 0.1)
+		self._player_2:StartBorn(12 * 4, 8 * 4 - 2, g_GCenter.player2_data.level, BattleCity.DirType.DT_UP, 0.08)
 	end
 end
 

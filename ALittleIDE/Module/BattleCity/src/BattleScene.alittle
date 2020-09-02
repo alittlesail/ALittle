@@ -55,6 +55,7 @@ public class BattleScene : ALittle.DisplayLayout
 
         this._tile_container.RemoveAllChild();
         this._sprite_map = new Map<int, Map<int, ALittle.Sprite>>();
+        this._enemy_map = new Map<BattleRole, bool>();
 
         // 根据数据构建地图
         for (var row, sub_map in this._battle_map.tile_map)
@@ -179,14 +180,20 @@ public class BattleScene : ALittle.DisplayLayout
 
     public fun CanWalkByEntity(BattleRole entity, double left, double top, double right, double bottom) : bool
     {
-        if (this._player_1.parent != null && this._player_1.alive && entity != this._player_1 && this.Collision(left, top, right, bottom, this._player_1)) return true;
-        if (this._player_2.parent != null && this._player_2.alive && entity != this._player_2 && this.Collision(left, top, right, bottom, this._player_2)) return true;
+        if (this._player_1.parent != null && this._player_1.alive && entity != this._player_1 && this.Collision(left, top, right, bottom, this._player_1)) return false;
+        if (this._player_2.parent != null && this._player_2.alive && entity != this._player_2 && this.Collision(left, top, right, bottom, this._player_2)) return false;
         for (var role, _ in this._enemy_map)
         {
             if (role != entity && entity.alive && this.Collision(left, top, right, bottom, role))
-            	return true;
+            	return false;
         }
-        return false;
+        return true;
+    }
+
+    public fun GenerateEnemy()
+    {
+        // 随机出生点
+
     }
 
     public get map_size() : double { return this._tile_container.width; }
@@ -196,13 +203,13 @@ public class BattleScene : ALittle.DisplayLayout
         if (g_GCenter.player_count >= 1)
         {
             this._entity_container.AddChild(this._player_1);
-            this._player_1.StartBorn(12 * 4, 4* 4, g_GCenter.player1_data.level, DirType.DT_UP, 0.1);
+            this._player_1.StartBorn(12 * 4, 4* 4 + 2, g_GCenter.player1_data.level, DirType.DT_UP, 0.08);
         }
 
         if (g_GCenter.player_count >= 2)
         {
             this._entity_container.AddChild(this._player_2);
-            this._player_2.StartBorn(12 * 4, 8* 4, g_GCenter.player2_data.level, DirType.DT_UP, 0.1);
+            this._player_2.StartBorn(12 * 4, 8* 4 - 2, g_GCenter.player2_data.level, DirType.DT_UP, 0.08);
         }
     }
 

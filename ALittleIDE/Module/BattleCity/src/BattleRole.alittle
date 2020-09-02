@@ -11,7 +11,6 @@ public class BattleRole : ALittle.DisplayLayout
     private int _level = 1;
     private int _dir = 1;
 
-    private double _frame = 0;
     private double _speed = 0;
 
     public fun TCtor()
@@ -29,22 +28,6 @@ public class BattleRole : ALittle.DisplayLayout
         return true;
     }
 
-    public fun StartBorn(int row, int col, int level, int dir, double speed)
-    {
-        this._level = level;
-        this._dir = dir;
-        this._speed = speed;
-
-        this.x = col * g_GCenter.battle_scene.cell_size;
-        this.y = row * g_GCenter.battle_scene.cell_size;
-
-        this._effect_born.visible = true;
-        this._effect_born.Play();
-
-        var loop = new ALittle.LoopTimer(bind(this.HandleShow, this), 1000);
-        loop.Start();
-    }
-
     public fun StartExplosion()
     {
         this._sprite.visible = false;
@@ -55,11 +38,29 @@ public class BattleRole : ALittle.DisplayLayout
         loop.Start();
     }
 
-    public fun Walk(int dir, int frame_time)
+    public fun StartShield()
+    {
+        this._effect_shield.visible = true;
+        this._effect_shield.Play();
+
+        var loop = new ALittle.LoopTimer(bind(this.HandleShieldStop, this), 5000);
+        loop.Start();
+    }
+
+    public fun UpdateFrame(int frame_time)
+    {
+
+    }
+
+    private fun UpdateWalk(int frame_time)
+    {
+    }
+
+    public fun Walk(int dir, int frame_time) : bool
     {
         var walk = (this._dir == dir);
         this._dir = dir;
-        this.UpdateSprite(frame_time);
+        this.UpdateWalk(frame_time);
 
         if (this._dir == DirType.DT_UP)
         {
@@ -88,11 +89,11 @@ public class BattleRole : ALittle.DisplayLayout
             if (target < y) target = y;
 
             if (!g_GCenter.battle_scene.CanWalkByEntity(this, this.x, target, this.x + this.width, target + this.height))
-                return;
+                return false;
 
+            if (this.y == target) return false;
             this.y = target;
-
-            return;
+            return true;
         }
 
         if (this._dir == DirType.DT_DOWN)
@@ -123,10 +124,11 @@ public class BattleRole : ALittle.DisplayLayout
             if (target > y) target = y;
 
             if (!g_GCenter.battle_scene.CanWalkByEntity(this, this.x, target - this.height, this.x + this.width, target))
-                return;
+                return false;
+            if (this.y == target - this.height) return false;
             this.y = target - this.height;
 
-            return;
+            return true;
         }
 
         if (this._dir == DirType.DT_LEFT)
@@ -155,10 +157,10 @@ public class BattleRole : ALittle.DisplayLayout
             }
             if (target < x) target = x;
             if (!g_GCenter.battle_scene.CanWalkByEntity(this, target, this.y, target + this.width, this.y + this.height))
-                return;
+                return false;
+            if (this.x == target) return false;
             this.x = target;
-
-            return;
+            return true;
         }
 
         if (this._dir == DirType.DT_RIGHT)
@@ -188,44 +190,14 @@ public class BattleRole : ALittle.DisplayLayout
             }
             if (target > x) target = x;
             if (!g_GCenter.battle_scene.CanWalkByEntity(this, target - this.width, this.y, target, this.y + this.height))
-                return;
+                return false;
+            if (this.x == target - this.width) return false;
             this.x = target - this.width;
         
-            return;
+            return true;
         }
-    }
 
-    private fun UpdateSprite(int frame_time)
-    {
-        if (this._dir == DirType.DT_UP)
-            this._sprite.row_index = 1;
-        elseif (this._dir == DirType.DT_RIGHT)
-        	this._sprite.row_index = 2;
-        elseif (this._dir == DirType.DT_DOWN)
-        	this._sprite.row_index = 3;
-        elseif (this._dir == DirType.DT_LEFT)
-        	this._sprite.row_index = 4;
-
-        this._frame +=0.01 * frame_time;
-        if (this._frame > 2) this._frame = 0;
-
-        if (this._frame <= 1)
-        	this._sprite.col_index = (this._level - 1) * 2 + 1;
-        else
-            this._sprite.col_index = (this._level - 1) * 2 + 2;
-    }
-
-    private fun HandleShow()
-    {
-        this._sprite.visible = true;
-        this.UpdateSprite(0);
-
-        this._effect_born.visible = false;
-        this._effect_shield.visible = true;
-        this._effect_shield.Play();
-
-        var loop = new ALittle.LoopTimer(bind(this.HandleShieldStop, this), 5000);
-        loop.Start();
+        return false;
     }
 
     private fun HandleExplosionEnd()

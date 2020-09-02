@@ -17,6 +17,19 @@ function ALittle.List_Push(list, object)
 	insert(list, object)
 end
 
+function ALittle.List_Shuffle(list)
+	local len = ALittle.List_MaxN(list)
+	local i = 1
+	while true do
+		if not(i <= len) then break end
+		local index = ALittle.Math_RandomInt(i, len)
+		local temp = list[index]
+		list[index] = list[i]
+		list[i] = temp
+		i = i+(1)
+	end
+end
+
 function ALittle.List_PushList(list, other_list)
 	for index, other in ___ipairs(other_list) do
 		ALittle.List_Push(list, other)

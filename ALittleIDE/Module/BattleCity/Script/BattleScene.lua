@@ -1,6 +1,7 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
 do
 if _G.BattleCity == nil then _G.BattleCity = {} end
+local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = ALittle.GetAllStruct()
@@ -9,10 +10,20 @@ local ___all_struct = ALittle.GetAllStruct()
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
 BattleCity.BattleScene = Lua.Class(ALittle.DisplayLayout, "BattleCity.BattleScene")
 
+function BattleCity.BattleScene:Ctor()
+	___rawset(self, "_enemy_count", 0)
+	___rawset(self, "_generate_enemy_cool", 0)
+	___rawset(self, "_enemy_width", 0)
+	___rawset(self, "_enemy_height", 0)
+end
+
 function BattleCity.BattleScene:TCtor()
 	self._player_1 = BattleCity.g_Control:CreateControl("battle_player1")
 	self._player_2 = BattleCity.g_Control:CreateControl("battle_player2")
 	self._cell_size = self._tile_container.width / (13 * 4)
+	local enemy = BattleCity.g_Control:CreateControl("battle_enemy")
+	self._enemy_width = enemy.width
+	self._enemy_height = enemy.height
 end
 
 function BattleCity.BattleScene.__getter:cell_size()
@@ -32,6 +43,8 @@ function BattleCity.BattleScene:Show(stage)
 	self._tile_container:RemoveAllChild()
 	self._sprite_map = {}
 	self._enemy_map = {}
+	self._enemy_count = 0
+	self._generate_enemy_cool = 1000
 	for row, sub_map in ___pairs(self._battle_map.tile_map) do
 		for col, type in ___pairs(sub_map) do
 			self:SetTileShow(row, col, type)
@@ -68,6 +81,7 @@ function BattleCity.BattleScene:Show(stage)
 	end
 	self._frame_loop = ALittle.LoopFrame(Lua.Bind(self.HandleFrame, self))
 	self._frame_loop:Start()
+	self:GenerateEnemy()
 end
 BattleCity.BattleScene.Show = Lua.CoWrap(BattleCity.BattleScene.Show)
 
@@ -134,14 +148,14 @@ function BattleCity.BattleScene:Collision(left, top, right, bottom, target)
 end
 
 function BattleCity.BattleScene:CanWalkByEntity(entity, left, top, right, bottom)
-	if self._player_1.parent ~= nil and self._player_1.alive and entity ~= self._player_1 and self:Collision(left, top, right, bottom, self._player_1) then
+	if self._player_1.parent ~= nil and entity ~= self._player_1 and self:Collision(left, top, right, bottom, self._player_1) then
 		return false
 	end
-	if self._player_2.parent ~= nil and self._player_2.alive and entity ~= self._player_2 and self:Collision(left, top, right, bottom, self._player_2) then
+	if self._player_2.parent ~= nil and entity ~= self._player_2 and self:Collision(left, top, right, bottom, self._player_2) then
 		return false
 	end
 	for role, _ in ___pairs(self._enemy_map) do
-		if role ~= entity and entity.alive and self:Collision(left, top, right, bottom, role) then
+		if role ~= entity and self:Collision(left, top, right, bottom, role) then
 			return false
 		end
 	end
@@ -149,6 +163,48 @@ function BattleCity.BattleScene:CanWalkByEntity(entity, left, top, right, bottom
 end
 
 function BattleCity.BattleScene:GenerateEnemy()
+	local born_pos = {}
+	born_pos[1] = 0
+	born_pos[2] = 6
+	born_pos[3] = 12
+	ALittle.List_Shuffle(born_pos)
+	for index, pos in ___ipairs(born_pos) do
+		local failed = false
+		local row = 0
+		while true do
+			if not(row < 4) then break end
+			local col = pos * 4
+			while true do
+				if not(col < (pos + 1) * 4) then break end
+				if not self:CanWalkByMap(row, col) then
+					failed = true
+					break
+				end
+				col = col+(1)
+			end
+			if failed then
+				break
+			end
+			row = row+(1)
+		end
+		if not failed then
+			local left = pos * 4 * self._cell_size
+			local right = left + self._enemy_width
+			if not self:CanWalkByEntity(nil, left, 0, right, self._enemy_height) then
+				failed = true
+			end
+		end
+		if not failed then
+			self._enemy_tiletable:RemoveChild(self._enemy_tiletable.childs[self._enemy_tiletable.child_count])
+			local enemy = BattleCity.g_Control:CreateControl("battle_enemy")
+			self._enemy_map[enemy] = true
+			enemy:StartBorn(0, pos * 4, ALittle.Math_RandomInt(1, 3), BattleCity.DirType.DT_DOWN, ALittle.Math_RandomInt(1, 100) > 80)
+			self._entity_container:AddChild(enemy)
+			self._enemy_count = self._enemy_count + (1)
+			self._generate_enemy_cool = 1000
+			break
+		end
+	end
 end
 
 function BattleCity.BattleScene.__getter:map_size()
@@ -167,6 +223,12 @@ function BattleCity.BattleScene:Start()
 end
 
 function BattleCity.BattleScene:HandleFrame(frame_time)
+	if self._enemy_count < 4 then
+		self._generate_enemy_cool = self._generate_enemy_cool - (frame_time)
+		if self._generate_enemy_cool <= 0 then
+			self:GenerateEnemy()
+		end
+	end
 	if A_UISystem.sym_map[97] then
 		if self._player_1.parent ~= nil and not self._player_1.alive then
 			return
@@ -208,6 +270,15 @@ function BattleCity.BattleScene:HandleFrame(frame_time)
 			return
 		end
 		self._player_2:Walk(BattleCity.DirType.DT_RIGHT, frame_time)
+	end
+	if self._player_1.parent ~= nil then
+		self._player_1:UpdateFrame(frame_time)
+	end
+	if self._player_2.parent ~= nil then
+		self._player_2:UpdateFrame(frame_time)
+	end
+	for enemy, _ in ___pairs(self._enemy_map) do
+		enemy:UpdateFrame(frame_time)
 	end
 end
 

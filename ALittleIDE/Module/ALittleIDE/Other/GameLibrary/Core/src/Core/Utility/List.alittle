@@ -37,6 +37,18 @@ public static List_Push<T>(List<T> list, T object)
     cast<javascript.Array>(list).push(object);
 }
 
+public static List_Shuffle<T>(List<T> list)
+{
+    var len = List_MaxN(list);
+    for (var i = 1; i <= len; 1)
+    {
+        var index = Math_RandomInt(i, len);
+        var temp = list[index];
+        list[index] = list[i];
+        list[i] = temp;
+    }
+}
+
 public static List_PushList<T>(List<T> list, List<T> other_list)
 {
     for (var index, other in other_list)

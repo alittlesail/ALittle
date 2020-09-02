@@ -3,10 +3,58 @@ namespace BattleCity;
 
 public class BattlePlayer : BattleRole
 {
+    private double _walk_frame = 0;
+
+    public fun StartBorn(int row, int col, int level, int dir, double speed)
+    {
+        this._level = level;
+        this._dir = dir;
+        this._speed = speed;
+
+        this.x = col * g_GCenter.battle_scene.cell_size;
+        this.y = row * g_GCenter.battle_scene.cell_size;
+
+        this._effect_born.visible = true;
+        this._effect_born.Play();
+
+        var loop = new ALittle.LoopTimer(bind(this.HandleBornEnd, this), 1000);
+        loop.Start();
+    }
+
+    private fun HandleBornEnd()
+    {
+        this._sprite.visible = true;
+        this._effect_born.visible = false;
+        this.UpdateFrame(0);
+        this.UpdateWalk(0);
+
+        this.StartShield();
+    }
+
     public fun LevelUp()
     {
         if (this._level >= 4) return;
         this._level += 1;
-        this.UpdateSprite(0);
+        this.UpdateWalk(0);
+    }
+
+    private fun UpdateWalk(int frame_time)
+    {
+        if (this._dir == DirType.DT_UP)
+            this._sprite.row_index = 1;
+        elseif (this._dir == DirType.DT_RIGHT)
+        	this._sprite.row_index = 2;
+        elseif (this._dir == DirType.DT_DOWN)
+        	this._sprite.row_index = 3;
+        elseif (this._dir == DirType.DT_LEFT)
+        	this._sprite.row_index = 4;
+
+        this._walk_frame +=0.01 * frame_time;
+        if (this._walk_frame > 2) this._walk_frame = 0;
+
+        if (this._walk_frame <= 1)
+        	this._sprite.col_index = (this._level - 1) * 2 + 1;
+        else
+            this._sprite.col_index = (this._level - 1) * 2 + 2;
     }
 }

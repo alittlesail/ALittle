@@ -27,6 +27,10 @@ public class BattleScene : ALittle.DisplayLayout
     private ALittle.LoopFrame _frame_loop;
 
     private Map<BattleRole, bool> _enemy_map;
+    private int _enemy_count = 0;			// 敌军数量
+    private int _generate_enemy_cool = 0;	// 生成敌军冷却时间
+    private double _enemy_width = 0;		 // 敌军的宽
+    private double _enemy_height = 0;		// 敌军的高
 
     private fun TCtor()
     {
@@ -34,6 +38,10 @@ public class BattleScene : ALittle.DisplayLayout
         this._player_2 = g_Control.CreateControl{BattlePlayer}("battle_player2");
 
         this._cell_size = this._tile_container.width / (13 * 4);
+        
+        var enemy = g_Control.CreateControl{BattleEnemy}("battle_enemy");
+        this._enemy_width = enemy.width;
+        this._enemy_height = enemy.height;
     }
 
     public get cell_size() : double { return this._cell_size; }
@@ -56,6 +64,8 @@ public class BattleScene : ALittle.DisplayLayout
         this._tile_container.RemoveAllChild();
         this._sprite_map = new Map<int, Map<int, ALittle.Sprite>>();
         this._enemy_map = new Map<BattleRole, bool>();
+        this._enemy_count = 0;
+        this._generate_enemy_cool = 1000;
 
         // 根据数据构建地图
         for (var row, sub_map in this._battle_map.tile_map)
@@ -104,6 +114,8 @@ public class BattleScene : ALittle.DisplayLayout
             this._frame_loop.Stop();
         this._frame_loop = new ALittle.LoopFrame(bind(this.HandleFrame, this));
         this._frame_loop.Start();
+
+        this.GenerateEnemy();
     }
 
     public fun Hide()
@@ -180,11 +192,11 @@ public class BattleScene : ALittle.DisplayLayout
 
     public fun CanWalkByEntity(BattleRole entity, double left, double top, double right, double bottom) : bool
     {
-        if (this._player_1.parent != null && this._player_1.alive && entity != this._player_1 && this.Collision(left, top, right, bottom, this._player_1)) return false;
-        if (this._player_2.parent != null && this._player_2.alive && entity != this._player_2 && this.Collision(left, top, right, bottom, this._player_2)) return false;
+        if (this._player_1.parent != null && entity != this._player_1 && this.Collision(left, top, right, bottom, this._player_1)) return false;
+        if (this._player_2.parent != null && entity != this._player_2 && this.Collision(left, top, right, bottom, this._player_2)) return false;
         for (var role, _ in this._enemy_map)
         {
-            if (role != entity && entity.alive && this.Collision(left, top, right, bottom, role))
+            if (role != entity && this.Collision(left, top, right, bottom, role))
             	return false;
         }
         return true;
@@ -193,7 +205,52 @@ public class BattleScene : ALittle.DisplayLayout
     public fun GenerateEnemy()
     {
         // 随机出生点
+        var born_pos = new List<int>();
+        born_pos[1] = 0;
+        born_pos[2] = 6;
+        born_pos[3] = 12;
 
+        // 洗牌
+        ALittle.List_Shuffle(born_pos);
+
+        for (var index, pos in born_pos)
+        {
+            var failed = false;
+            // 内部格子是否被占领
+            for (var row = 0; row < 4; 1)
+            {
+                for (var col = pos * 4; col < (pos + 1) * 4; 1)
+                {
+                    if (!this.CanWalkByMap(row, col))
+                    {
+                        failed = true;
+                        break;
+                    }
+                }
+
+                if (failed) break;
+            }
+
+            if (!failed)
+            {
+                var left = pos * 4 * this._cell_size;
+                var right = left + this._enemy_width;
+                if (!this.CanWalkByEntity(null, left, 0, right, this._enemy_height))
+                    failed = true;
+            }
+
+            if (!failed)
+            {
+                this._enemy_tiletable.RemoveChild(this._enemy_tiletable.childs[this._enemy_tiletable.child_count]);
+                var enemy = g_Control.CreateControl{BattleEnemy}("battle_enemy");
+                this._enemy_map[enemy] = true;
+                enemy.StartBorn(0, pos * 4, ALittle.Math_RandomInt(1, 3), DirType.DT_DOWN, ALittle.Math_RandomInt(1, 100) > 80);
+                this._entity_container.AddChild(enemy);
+                this._enemy_count += 1;
+                this._generate_enemy_cool = 1000;
+                break;
+            }
+        }
     }
 
     public get map_size() : double { return this._tile_container.width; }
@@ -215,6 +272,14 @@ public class BattleScene : ALittle.DisplayLayout
 
     private fun HandleFrame(int frame_time)
     {
+        // 尝试生成敌军
+        if (this._enemy_count < 4)
+        {
+            this._generate_enemy_cool -= frame_time;
+            if (this._generate_enemy_cool <= 0)
+            	this.GenerateEnemy();
+        }
+
         if (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_A])
         {
             if (this._player_1.parent != null && !this._player_1.alive) return;
@@ -257,6 +322,10 @@ public class BattleScene : ALittle.DisplayLayout
             if (this._player_2.parent != null && !this._player_2.alive) return;
             this._player_2.Walk(DirType.DT_RIGHT, frame_time);
         }
+
+        if (this._player_1.parent != null) this._player_1.UpdateFrame(frame_time);
+        if (this._player_2.parent != null) this._player_2.UpdateFrame(frame_time);
+        for (var enemy, _ in this._enemy_map) enemy.UpdateFrame(frame_time);
     }
 
     private fun HandleKeyDown(int mod, int sym, int scancode)

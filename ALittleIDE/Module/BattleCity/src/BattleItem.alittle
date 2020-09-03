@@ -1,0 +1,9 @@
+
+namespace BattleCity;
+
+public class BattleItem : ALittle.FramePlay
+{
+    private ALittle.Sprite _sprite;
+
+    public get sprite() : ALittle.Sprite { return this._sprite; }
+}

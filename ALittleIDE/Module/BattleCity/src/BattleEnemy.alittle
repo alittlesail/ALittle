@@ -47,6 +47,7 @@ public class BattleEnemy : BattleRole
         if (this._flash)
         {
             this._flash = false;
+            g_GCenter.battle_scene.GenerateItem();
             return false;
         }
 
@@ -58,7 +59,7 @@ public class BattleEnemy : BattleRole
 
     public fun UpdateFrame(int frame_time)
     {
-        if (this.alive)
+        if (this.alive && !g_GCenter.battle_scene.IsEnemyStopping())
         {
             this._changed_frame += frame_time * 0.001;
             if (this._changed_frame >= 2) this._changed_frame = 0;

@@ -39,6 +39,11 @@ function BattleCity.BattlePlayer:LevelUp()
 		return
 	end
 	self._level = self._level + (1)
+	if self._level >= 2 then
+		self._bullet_total = 2
+	else
+		self._bullet_total = 1
+	end
 	self:UpdateWalk(0)
 end
 

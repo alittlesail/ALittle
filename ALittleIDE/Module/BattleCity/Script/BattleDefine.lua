@@ -34,4 +34,13 @@ BattleCity.DirType = {
 	DT_RIGHT = 4,
 }
 
+BattleCity.ItemType = {
+	IT_LIFE = 1,
+	IT_STOP = 2,
+	IT_IRON = 3,
+	IT_BOMB = 4,
+	IT_STAR = 5,
+	IT_SHIELD = 6,
+}
+
 end

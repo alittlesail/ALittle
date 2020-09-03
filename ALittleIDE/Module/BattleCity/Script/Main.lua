@@ -36,6 +36,7 @@ function BattleCity.__Module_Setup(layer_group, control, module_base_path, scrip
 	Require(script_base_path, "BattleRole")
 	Require(script_base_path, "BattlePlayer")
 	Require(script_base_path, "BattleEnemy")
+	Require(script_base_path, "BattleItem")
 	g_GCenter:Setup()
 end
 BattleCity.__Module_Setup = Lua.CoWrap(BattleCity.__Module_Setup)

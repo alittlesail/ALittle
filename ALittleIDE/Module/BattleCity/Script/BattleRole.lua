@@ -42,6 +42,10 @@ function BattleCity.BattleRole.__getter:dir()
 	return self._dir
 end
 
+function BattleCity.BattleRole.__getter:level()
+	return self._level
+end
+
 function BattleCity.BattleRole:StartExplosion()
 	self._sprite.visible = false
 	self._effect_explosion.visible = true

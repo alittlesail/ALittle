@@ -15,6 +15,7 @@ end
 function BattleCity.BattleBullet:Init(dir, role)
 	self._dir = dir
 	self._role = role
+	self._alive = true
 	if self._dir == BattleCity.DirType.DT_UP then
 		self._bullet.col_index = 1
 	elseif self._dir == BattleCity.DirType.DT_RIGHT then
@@ -28,6 +29,10 @@ end
 
 function BattleCity.BattleBullet.__getter:role()
 	return self._role
+end
+
+function BattleCity.BattleBullet.__getter:alive()
+	return self._alive
 end
 
 function BattleCity.BattleBullet:UpdateFrame(frame_time)
@@ -132,6 +137,7 @@ function BattleCity.BattleBullet:UpdateFrame(frame_time)
 		end
 	end
 	if explosion then
+		self._alive = false
 		self:BulletExpision()
 	end
 end
@@ -143,6 +149,7 @@ function BattleCity.BattleBullet:BulletExpision()
 end
 
 function BattleCity.BattleBullet:BulletEnd()
+	self._alive = false
 	self._effect_explosion:Stop()
 	self._effect_explosion.visible = false
 	self._role:AddBullet()

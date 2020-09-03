@@ -36,6 +36,10 @@ public class BattlePlayer : BattleRole
     {
         if (this._level >= 4) return;
         this._level += 1;
+        if (this._level >= 2)
+        	this._bullet_total = 2;
+        else
+        	this._bullet_total = 1;
         this.UpdateWalk(0);
     }
 

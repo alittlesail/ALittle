@@ -30,3 +30,13 @@ protected struct PlayerData
     int level;
     int life;
 }
+
+protected enum ItemType
+{
+    IT_LIFE = 1;	// 奖一条命
+    IT_STOP = 2;	// 时间静止
+    IT_IRON = 3;	// 铁块
+    IT_BOMB = 4;	// 炸弹
+    IT_STAR = 5;	// 星星
+    IT_SHIELD = 6;	// 护盾
+}

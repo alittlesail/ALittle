@@ -1,0 +1,1 @@
+{"battle_item":{"__target_class":["BattleCity","BattleItem"],"__class":"FramePlay","play_loop_count":0,"__childs":[{"col_count":6,"__class":"Sprite","width_value":28,"height_value":28,"__link":"_sprite","texture_name":"bonus.png"},{"width_type":4,"__class":"DisplayLayout","height_type":4}],"width_value":28,"height_value":28,"interval":240}}

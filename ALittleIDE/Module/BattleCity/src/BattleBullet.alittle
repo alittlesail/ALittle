@@ -8,6 +8,7 @@ public class BattleBullet : ALittle.DisplayLayout
 
     private BattleRole _role;
     private int _dir;
+    private bool _alive;
 
     private fun TCtor()
     {
@@ -18,6 +19,7 @@ public class BattleBullet : ALittle.DisplayLayout
     {
         this._dir = dir;
         this._role = role;
+        this._alive = true;
 
         if (this._dir == DirType.DT_UP)
         	this._bullet.col_index = 1;
@@ -30,6 +32,7 @@ public class BattleBullet : ALittle.DisplayLayout
     }
 
     public get role() : BattleRole { return this._role; }
+    public get alive() : bool { return this._alive; }
 
     public fun UpdateFrame(int frame_time)
     {
@@ -136,7 +139,11 @@ public class BattleBullet : ALittle.DisplayLayout
             if (!this._effect_explosion.IsPlaying()) this.BulletEnd();
         }
 
-        if (explosion) this.BulletExpision();
+        if (explosion)
+        {
+            this._alive = false;
+            this.BulletExpision();
+        } 
     }
 
     private fun BulletExpision()
@@ -146,8 +153,9 @@ public class BattleBullet : ALittle.DisplayLayout
         this._effect_explosion.Play();
     }
 
-    private fun BulletEnd()
+    public fun BulletEnd()
     {
+        this._alive = false;
         this._effect_explosion.Stop();
         this._effect_explosion.visible = false;
         this._role.AddBullet();

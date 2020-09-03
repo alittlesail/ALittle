@@ -46,6 +46,7 @@ end
 function BattleCity.BattleEnemy:BeAttack()
 	if self._flash then
 		self._flash = false
+		g_GCenter.battle_scene:GenerateItem()
 		return false
 	end
 	self:StartExplosion()
@@ -57,7 +58,7 @@ function BattleCity.BattleEnemy.__getter:is_enemy()
 end
 
 function BattleCity.BattleEnemy:UpdateFrame(frame_time)
-	if self.alive then
+	if self.alive and not g_GCenter.battle_scene:IsEnemyStopping() then
 		self._changed_frame = self._changed_frame + (frame_time * 0.001)
 		if self._changed_frame >= 2 then
 			self._changed_frame = 0

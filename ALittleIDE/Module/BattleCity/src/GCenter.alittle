@@ -97,6 +97,7 @@ class GCenter
     public fun StartPlay(int player_count)
     {
         this._player_count = player_count;
+        this._stage = 1;
         this._battle_select_scene.Show(this._stage);
     }
 

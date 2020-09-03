@@ -88,6 +88,7 @@ end
 
 function BattleCity.GCenter:StartPlay(player_count)
 	self._player_count = player_count
+	self._stage = 1
 	self._battle_select_scene:Show(self._stage)
 end
 

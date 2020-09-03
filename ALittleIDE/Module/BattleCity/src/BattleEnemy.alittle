@@ -26,6 +26,9 @@ public class BattleEnemy : BattleRole
         this.x = col * g_GCenter.battle_scene.cell_size;
         this.y = row * g_GCenter.battle_scene.cell_size;
 
+        this._sprite.visible = false;
+        this._effect_explosion.visible = false;
+        this._effect_explosion.Stop();
         this._effect_born.visible = true;
         this._effect_born.Play();
 

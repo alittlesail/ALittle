@@ -30,6 +30,9 @@ function BattleCity.BattleEnemy:StartBorn(row, col, level, dir, flash)
 	end
 	self.x = col * g_GCenter.battle_scene.cell_size
 	self.y = row * g_GCenter.battle_scene.cell_size
+	self._sprite.visible = false
+	self._effect_explosion.visible = false
+	self._effect_explosion:Stop()
 	self._effect_born.visible = true
 	self._effect_born:Play()
 	local loop = ALittle.LoopTimer(Lua.Bind(self.HandleBornEnd, self), 1000)

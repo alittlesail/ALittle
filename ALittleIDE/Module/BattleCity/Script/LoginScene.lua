@@ -15,7 +15,8 @@ end
 
 function BattleCity.LoginScene:TCtor()
 	self._high_score.text = BattleCity.g_GConfig:GetInt("high_score", 2000)
-	self._last_score.text = BattleCity.g_GConfig:GetInt("last_score", 0)
+	self._last_score_1.text = BattleCity.g_GConfig:GetInt("last_score_1", 0)
+	self._last_score_2.text = BattleCity.g_GConfig:GetInt("last_score_2", 0)
 	self._cursor:Stop()
 	self.disabled = true
 	self._edit_text.visible = A_ModuleSystem:GetDebugInfo() == "debug"
@@ -27,7 +28,7 @@ function BattleCity.LoginScene:Show()
 		self._anti_loop:Stop()
 		self._anti_loop = nil
 	end
-	self._y = A_UISystem.view_height
+	self.y = A_UISystem.view_height
 	self._cursor.visible = false
 	self._anti_loop = ALittle.LoopList()
 	self._anti_loop:AddUpdater(ALittle.LoopLinear(self, "y", 0, 10000, 0))
@@ -70,8 +71,6 @@ function BattleCity.LoginScene:HandleKeyDown(mod, sym, scancode)
 		elseif self._select_option == 2 then
 			self._cursor.y = self._2_player_text.y + self._2_player_text.height / 2 - self._cursor.height / 2
 		elseif self._select_option == 3 then
-			self._cursor.y = self._construction_text.y + self._construction_text.height / 2 - self._cursor.height / 2
-		elseif self._select_option == 4 then
 			self._cursor.y = self._edit_text.y + self._edit_text.height / 2 - self._cursor.height / 2
 		end
 		return
@@ -79,9 +78,7 @@ function BattleCity.LoginScene:HandleKeyDown(mod, sym, scancode)
 	if sym == 104 then
 		self:Hide()
 		if self._select_option == 3 then
-			g_GCenter:StartConstruction()
-		elseif self._select_option == 4 then
-			g_GCenter:StartEdit()
+			g_GCenter.edit_scene:Show()
 		else
 			g_GCenter:StartPlay(self._select_option)
 		end

@@ -23,7 +23,7 @@ function BattleCity.BattleSelectScene:Show(stage)
 	group:AddUpdater(ALittle.LoopLinear(self._quad_up, "y", 0, 1000, 0))
 	group:AddUpdater(ALittle.LoopLinear(self._quad_down, "y", 0, 1000, 0))
 	self._anti_loop:AddUpdater(group)
-	self._anti_loop:AddUpdater(ALittle.LoopTimer(Lua.Bind(g_GCenter.StartBattle, g_GCenter, stage), 0))
+	self._anti_loop:AddUpdater(ALittle.LoopTimer(Lua.Bind(g_GCenter.battle_scene.Show, g_GCenter.battle_scene, stage), 0))
 	self._anti_loop:AddUpdater(ALittle.LoopAttribute(self, "visible", false, 0))
 	self._anti_loop:Start()
 end

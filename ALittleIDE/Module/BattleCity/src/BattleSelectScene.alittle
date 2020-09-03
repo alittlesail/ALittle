@@ -30,7 +30,7 @@ public class BattleSelectScene : ALittle.DisplayLayout
         group.AddUpdater(new ALittle.LoopLinear(this._quad_up, "y", 0, 1000, 0));
         group.AddUpdater(new ALittle.LoopLinear(this._quad_down, "y", 0, 1000, 0));
         this._anti_loop.AddUpdater(group);
-        this._anti_loop.AddUpdater(new ALittle.LoopTimer(bind(g_GCenter.StartBattle, g_GCenter, stage), 0));
+        this._anti_loop.AddUpdater(new ALittle.LoopTimer(bind(g_GCenter.battle_scene.Show, g_GCenter.battle_scene, stage), 0));
         this._anti_loop.AddUpdater(new ALittle.LoopAttribute(this, "visible", false, 0));
 
         this._anti_loop.Start();

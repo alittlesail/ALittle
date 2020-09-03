@@ -16,13 +16,17 @@ public class BattleScene : ALittle.DisplayLayout
 
 	private ALittle.DisplayLayout _tile_container;
     private Map<int, Map<int, ALittle.Sprite>> _sprite_map;
+    private Map<int, Map<int, ALittle.Sprite>> _river_map;
 
     private ALittle.DisplayLayout _entity_container;
 
     private ALittle.DisplayLayout _bullet_container;
     private Map<BattleBullet, bool> _bullet_map;
 
+    private ALittle.DisplayLayout _grass_container;
+
     private ALittle.DisplayLayout _item_container;
+    private ALittle.DisplayLayout _effect_container;
 
     private BattleMap _battle_map;
     private ALittle.LoopList _anti_loop;
@@ -41,10 +45,23 @@ public class BattleScene : ALittle.DisplayLayout
 
     private bool _iron_flash = false;		// 是否闪烁
     private double _iron_flash_frame = 0;	// 闪烁帧累计
+    private int _iron_flash_brush = 0;
     private int _iron_flash_count = 0;		// 闪烁次数，到达一定次数之后自动停止
     private ALittle.LoopTimer _iron_flash_delay_loop;	// 延迟闪烁
 
+    private double _river_flash_frame = 0;	// 河流闪烁
+    private int _river_flash_brush = 0;
+    
     private ALittle.LoopTimer _item_stop_delay_loop;
+
+    private ALittle.FramePlay _castle_explosion;
+
+    private bool _is_gameover = false;
+    private ALittle.Image _gameover_image;
+    private ALittle.LoopList _gameover_loop;
+
+    private Map<int, int> _player1_kill;	// 玩家1击杀数量
+    private Map<int, int> _player2_kill;	// 玩家2击杀数量
 
     private fun TCtor()
     {
@@ -59,9 +76,13 @@ public class BattleScene : ALittle.DisplayLayout
     }
 
     public get cell_size() : double { return this._cell_size; }
+    public get is_gameover() : bool { return this._is_gameover; }
 
     public async fun Show(int stage)
     {
+        this._player1_kill = new Map<int, int>();
+        this._player2_kill = new Map<int, int>();
+
         if (this._anti_loop != null)
         {
             this._anti_loop.Stop();
@@ -77,6 +98,7 @@ public class BattleScene : ALittle.DisplayLayout
 
         this._tile_container.RemoveAllChild();
         this._sprite_map = new Map<int, Map<int, ALittle.Sprite>>();
+        this._river_map = new Map<int, Map<int, ALittle.Sprite>>();
 
         // 根据数据构建地图
         for (var row, sub_map in this._battle_map.tile_map)
@@ -84,8 +106,36 @@ public class BattleScene : ALittle.DisplayLayout
             for (var col, type in sub_map)
                 this.SetTileShow(row, col, type);
         }
+        // 收集所有的河流
+        for (var row, sub_map in this._sprite_map)
+        {
+            for (var col, sprite in sub_map)
+            {
+                if (sprite.col_index >= (BrushType.BT_RIVER - 1) * 4 + 1 && sprite.col_index <= (BrushType.BT_RIVER) * 4)
+                {
+                    var r_sub_map = this._river_map[row];
+                    if (r_sub_map == null)
+                    {
+                        r_sub_map = new Map<int, ALittle.Sprite>();
+                        this._river_map[row] = r_sub_map;
+                    }
+                    r_sub_map[col] = sprite;
+                }
+            }
+        }
+        this._river_flash_brush = BrushType.BT_RIVER;
+
+        if (this._castle_explosion != null)
+        {
+            this._castle_explosion.Stop();
+            this._castle_explosion.visible = false;
+        }
 
         this.visible = true;
+        this._is_gameover = false;
+        this._gameover_image.visible = false;
+        this._iron_flash = false;
+        this._iron_flash_brush = BrushType.BT_WALL;
 
         // 设置第几关
         this._stage_num.text = stage;
@@ -112,6 +162,8 @@ public class BattleScene : ALittle.DisplayLayout
         for (var index, child:BattleItem in this._item_container.childs)
         	child.Stop();
         this._item_container.RemoveAllChild();
+
+        this._grass_container.RemoveAllChild();
     
         this._player_1.RemoveFromParent();
         this._player_2.RemoveFromParent();
@@ -139,8 +191,6 @@ public class BattleScene : ALittle.DisplayLayout
             this._frame_loop.Stop();
         this._frame_loop = new ALittle.LoopFrame(bind(this.HandleFrame, this));
         this._frame_loop.Start();
-
-        this.GenerateEnemy();
     }
 
     public fun Hide()
@@ -156,6 +206,24 @@ public class BattleScene : ALittle.DisplayLayout
             this._anti_loop.Stop();
             this._anti_loop = null;
         }
+
+        for (var index, child:BattleItem in this._item_container.childs)
+        	child.Stop();
+        this._item_container.RemoveAllChild();
+
+        if (this._castle_explosion != null)
+        {
+            this._castle_explosion.Stop();
+            this._castle_explosion.visible = false;
+        }
+
+        if (this._gameover_loop != null)
+        {
+            this._gameover_loop.Stop();
+            this._gameover_loop = null;
+        }
+
+        this.visible = false;
     }
 
     private fun SetTileShow(int row, int col, int type)
@@ -168,7 +236,7 @@ public class BattleScene : ALittle.DisplayLayout
         }
 
         if (sub_map[col] != null)
-            this._tile_container.RemoveChild(sub_map[col]);
+        	sub_map[col].RemoveFromParent();
 
             // 设置表现
         var sprite = new ALittle.Sprite(g_Control);
@@ -181,7 +249,10 @@ public class BattleScene : ALittle.DisplayLayout
         sprite.col_count = 7 * 4;
         sprite.row_index = row % 4 + 1;
         sprite.col_index = col % 4 + 1 + (type - 1) * 4;
-        this._tile_container.AddChild(sprite);
+        if (type == BrushType.BT_GRASS)
+            this._grass_container.AddChild(sprite);
+        else
+	        this._tile_container.AddChild(sprite);
 
         sub_map[col] = sprite;
     }
@@ -264,10 +335,49 @@ public class BattleScene : ALittle.DisplayLayout
             for (var role, _ in this._enemy_map)
             {
                 if (role != bullet.role && role.alive && this.Collision(left, top, right, bottom, role))
-                    return true, role.BeAttack();
+                {
+                    var death = role.BeAttack();
+                    if (death)
+                    {
+                        if (bullet.role == this._player_1)
+                        {
+                            var count = this._player1_kill[role.level];
+                            if (count == null) count = 0;
+                            count += 1;
+                            this._player1_kill[role.level] = count;
+                        }
+                        elseif (bullet.role == this._player_2)
+                        {
+                            var count = this._player2_kill[role.level];
+                            if (count == null) count = 0;
+                            count += 2;
+                            this._player2_kill[role.level] = count;
+                        }
+                    }
+                    return true, death;
+                }
             }
         }
         return false, false;
+    }
+
+    private fun ShowGameOver()
+    {
+        if (this._is_gameover) return;
+        this._is_gameover = true;
+
+        this._gameover_image.visible = true;
+        this._gameover_loop = new ALittle.LoopList();
+        this._gameover_loop.AddUpdater(new ALittle.LoopLinear(this._gameover_image, "y", A_UISystem.view_height / 2, 2000, 0));
+        this._gameover_loop.AddUpdater(new ALittle.LoopTimer(bind(g_GCenter.Restart, g_GCenter), 1000));
+        this._gameover_loop.Start();
+    }
+
+    // 完成关卡
+    private fun StageCompleted()
+    {
+        g_GCenter.battle_settlement.Show(this._player1_kill, this._player2_kill);
+        this.Hide();
     }
 
     public fun BulletCollisionByMap(int row, int col, bool min_or_max, int dir) : bool
@@ -303,6 +413,18 @@ public class BattleScene : ALittle.DisplayLayout
                 for (var c = 6*4; c < 7*4; 1)
                 	this.SetTileShow(r, c, BrushType.BT_CASTLE2);
             }
+            // 显示一个爆炸效果
+            if (this._castle_explosion == null)
+            {
+                this._castle_explosion = g_Control.CreateControl{ALittle.FramePlay}("effect_explosion_big");
+                this._castle_explosion.x = this.map_size / 2 - this._castle_explosion.width / 2;
+                this._castle_explosion.y = this.map_size - this._cell_size * 2 - this._castle_explosion.height / 2;
+                this._effect_container.AddChild(this._castle_explosion);
+            }
+            this._castle_explosion.visible = true;
+            this._castle_explosion.Play();
+
+            this.ShowGameOver();
         	return true;
         }
 
@@ -337,7 +459,7 @@ public class BattleScene : ALittle.DisplayLayout
         return this._item_stop_delay_loop != null && !this._item_stop_delay_loop.IsCompleted();
     }
 
-    public fun FireBullet(BattleRole role)
+    public fun FireBullet(BattleRole role, double speed)
     {
         var bullet = g_Control.CreateControl{BattleBullet}("battle_bullet");
         if (role.dir == DirType.DT_UP)
@@ -360,7 +482,7 @@ public class BattleScene : ALittle.DisplayLayout
             bullet.x = role.x;
             bullet.y = role.y + role.height / 2 - bullet.height / 2;
         }
-        bullet.Init(role.dir, role);
+        bullet.Init(role.dir, role, speed);
         this._bullet_container.AddChild(bullet);
         this._bullet_map[bullet] = true;
     }
@@ -456,60 +578,61 @@ public class BattleScene : ALittle.DisplayLayout
             this._entity_container.AddChild(this._player_2);
             this._player_2.StartBorn(12 * 4, 8* 4, g_GCenter.player2_data.level, DirType.DT_UP, 0.08);
         }
-
-        this.GenerateItem();
     }
 
     private fun HandleFrame(int frame_time)
     {
         // 尝试生成敌军
-        if (this._enemy_count < 4)
+        if (this._enemy_count < 4 && this._enemy_tiletable.child_count > 0)
         {
             this._generate_enemy_cool -= frame_time;
             if (this._generate_enemy_cool <= 0)
             	this.GenerateEnemy();
         }
 
-        if (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_A])
+        if (!this._is_gameover)
         {
-            if (this._player_1.parent != null && this._player_1.alive)
-            	this._player_1.Walk(DirType.DT_LEFT, frame_time);
-        }
-		elseif (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_W])
-        {
-            if (this._player_1.parent != null && this._player_1.alive)
-            	this._player_1.Walk(DirType.DT_UP, frame_time);
-        }
-		elseif (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_S])
-        {
-            if (this._player_1.parent != null && this._player_1.alive)
-            	this._player_1.Walk(DirType.DT_DOWN, frame_time);
-        }
-        elseif (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_D])
-        {
-            if (this._player_1.parent != null && this._player_1.alive)
-            	this._player_1.Walk(DirType.DT_RIGHT, frame_time);
-        }
+            if (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_A])
+            {
+                if (this._player_1.parent != null && this._player_1.alive)
+                    this._player_1.Walk(DirType.DT_LEFT, frame_time);
+            }
+            elseif (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_W])
+            {
+                if (this._player_1.parent != null && this._player_1.alive)
+                    this._player_1.Walk(DirType.DT_UP, frame_time);
+            }
+            elseif (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_S])
+            {
+                if (this._player_1.parent != null && this._player_1.alive)
+                    this._player_1.Walk(DirType.DT_DOWN, frame_time);
+            }
+            elseif (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_D])
+            {
+                if (this._player_1.parent != null && this._player_1.alive)
+                    this._player_1.Walk(DirType.DT_RIGHT, frame_time);
+            }
 
-        if (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_LEFT])
-        {
-            if (this._player_2.parent != null && this._player_2.alive)
-            	this._player_2.Walk(DirType.DT_LEFT, frame_time);
-        }
-		elseif (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_UP])
-        {
-            if (this._player_2.parent != null && this._player_2.alive)
-            	this._player_2.Walk(DirType.DT_UP, frame_time);
-        }
-        elseif (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_DOWN])
-        {
-            if (this._player_2.parent != null && this._player_2.alive)
-            	this._player_2.Walk(DirType.DT_DOWN, frame_time);
-        }
-        elseif (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_RIGHT])
-        {
-            if (this._player_2.parent != null && this._player_2.alive)
-            	this._player_2.Walk(DirType.DT_RIGHT, frame_time);
+            if (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_LEFT])
+            {
+                if (this._player_2.parent != null && this._player_2.alive)
+                    this._player_2.Walk(DirType.DT_LEFT, frame_time);
+            }
+            elseif (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_UP])
+            {
+                if (this._player_2.parent != null && this._player_2.alive)
+                    this._player_2.Walk(DirType.DT_UP, frame_time);
+            }
+            elseif (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_DOWN])
+            {
+                if (this._player_2.parent != null && this._player_2.alive)
+                    this._player_2.Walk(DirType.DT_DOWN, frame_time);
+            }
+            elseif (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_RIGHT])
+            {
+                if (this._player_2.parent != null && this._player_2.alive)
+                    this._player_2.Walk(DirType.DT_RIGHT, frame_time);
+            }
         }
 
         if (this._player_1.parent != null) this._player_1.UpdateFrame(frame_time);
@@ -641,24 +764,50 @@ public class BattleScene : ALittle.DisplayLayout
                     this._iron_flash = false;
             }
 
-            // 把这几个位置设置为墙
-            for (var row = 11 * 4 + 2; row <= 11 * 4 + 3; 1)
+            if (this._iron_flash_brush != brush_type)
             {
-                for (var col = 5*4+2; col <= 5*4+9; 1)
-                    this.SetTileShow(row, col, brush_type);
-            }
+                this._iron_flash_brush = brush_type;
 
-            for (var row = 12 * 4 + 0; row <= 12 * 4 + 3; 1)
-            {
-                for (var col = 5* 4 + 2; col <= 5* 4 + 3; 1)
-                    this.SetTileShow(row, col, brush_type);
-            }
+                // 把这几个位置设置为墙
+                for (var row = 11 * 4 + 2; row <= 11 * 4 + 3; 1)
+                {
+                    for (var col = 5*4+2; col <= 5*4+9; 1)
+                        this.SetTileShow(row, col, brush_type);
+                }
 
-            for (var row = 12 * 4 + 0; row <= 12 * 4 + 3; 1)
-            {
-                for (var col = 5* 4 + 8; col <= 5* 4 + 9; 1)
-                    this.SetTileShow(row, col, brush_type);
+                for (var row = 12 * 4 + 0; row <= 12 * 4 + 3; 1)
+                {
+                    for (var col = 5* 4 + 2; col <= 5* 4 + 3; 1)
+                        this.SetTileShow(row, col, brush_type);
+                }
+
+                for (var row = 12 * 4 + 0; row <= 12 * 4 + 3; 1)
+                {
+                    for (var col = 5* 4 + 8; col <= 5* 4 + 9; 1)
+                        this.SetTileShow(row, col, brush_type);
+                }
             }
+        }
+
+        var brush_type = BrushType.BT_RIVER;
+        this._river_flash_frame += 0.0008 * frame_time;
+        if (this._river_flash_frame >= 2) this._river_flash_frame = 0;
+        if (this._river_flash_frame > 1) brush_type = BrushType.BT_RIVER2;
+
+        if (this._river_flash_brush != brush_type)
+        {
+            this._river_flash_brush = brush_type;
+            // 河流闪烁
+            for (var row, sub_map in this._river_map)
+            {
+                for (var col, sprite in sub_map)
+                    this.SetTileShow(row, col, this._river_flash_brush);
+            }
+        }
+
+        if (this._enemy_count <= 0 && this._enemy_tiletable.child_count == 0)
+        {
+            this.StageCompleted();
         }
     }
 
@@ -720,11 +869,21 @@ public class BattleScene : ALittle.DisplayLayout
             this._enemy_map[role] = null;
             this._enemy_count -= 1;
         }
+
+        if (g_GCenter.player_count >= 2 && !this._player_1.alive && g_GCenter.player1_data.life <= 0 && !this._player_2.alive && g_GCenter.player2_data.life <= 0
+        	|| g_GCenter.player_count >= 1 && !this._player_1.alive && g_GCenter.player1_data.life <= 0)
+        {
+            this.ShowGameOver();
+        }
     }
 
     public fun BulletDeath(BattleBullet bullet)
     {
-        this._bullet_container.RemoveChild(bullet);
+        var exist = this._bullet_map[bullet];
+        if (exist == null) return;
+
         this._bullet_map[bullet] = null;
+        bullet.role.AddBullet();
+        this._bullet_container.RemoveChild(bullet);
     }
 }

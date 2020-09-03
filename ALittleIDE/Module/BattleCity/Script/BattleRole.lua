@@ -13,8 +13,9 @@ function BattleCity.BattleRole:Ctor()
 	___rawset(self, "_level", 1)
 	___rawset(self, "_dir", 1)
 	___rawset(self, "_bullet_total", 1)
-	___rawset(self, "_bullet_count", 0)
+	___rawset(self, "_fire_count", 0)
 	___rawset(self, "_speed", 0)
+	___rawset(self, "_bullet_speed", 0.2)
 end
 
 function BattleCity.BattleRole:TCtor()
@@ -50,15 +51,21 @@ function BattleCity.BattleRole:StartExplosion()
 	self._sprite.visible = false
 	self._effect_explosion.visible = true
 	self._effect_explosion:Play()
-	local loop = ALittle.LoopTimer(Lua.Bind(self.HandleExplosionEnd, self), 1000)
-	loop:Start()
+	if self._effect_explosion_loop ~= nil then
+		self._effect_explosion_loop:Stop()
+	end
+	self._effect_explosion_loop = ALittle.LoopTimer(Lua.Bind(self.HandleExplosionEnd, self), 1000)
+	self._effect_explosion_loop:Start()
 end
 
 function BattleCity.BattleRole:StartShield()
 	self._effect_shield.visible = true
 	self._effect_shield:Play()
-	local loop = ALittle.LoopTimer(Lua.Bind(self.HandleShieldStop, self), 5000)
-	loop:Start()
+	if self._effect_shield_loop ~= nil then
+		self._effect_shield_loop:Stop()
+	end
+	self._effect_shield_loop = ALittle.LoopTimer(Lua.Bind(self.HandleShieldStop, self), 5000)
+	self._effect_shield_loop:Start()
 end
 
 function BattleCity.BattleRole:UpdateFrame(frame_time)
@@ -72,11 +79,11 @@ function BattleCity.BattleRole:BeAttack()
 end
 
 function BattleCity.BattleRole:Fire()
-	if self._bullet_count >= self._bullet_total then
+	if self._fire_count >= self._bullet_total then
 		return
 	end
-	self._bullet_count = self._bullet_count + (1)
-	g_GCenter.battle_scene:FireBullet(self)
+	self._fire_count = self._fire_count + (1)
+	g_GCenter.battle_scene:FireBullet(self, self._bullet_speed)
 end
 
 function BattleCity.BattleRole:Walk(dir, frame_time)
@@ -263,10 +270,10 @@ function BattleCity.BattleRole:HandleShieldStop()
 end
 
 function BattleCity.BattleRole:AddBullet()
-	if self._bullet_count == 0 then
+	if self._fire_count <= 0 then
 		return
 	end
-	self._bullet_count = self._bullet_count - (1)
+	self._fire_count = self._fire_count - (1)
 end
 
 function BattleCity.BattleRole:Clear()

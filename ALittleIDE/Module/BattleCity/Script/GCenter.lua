@@ -11,6 +11,7 @@ BattleCity.GCenter = Lua.Class(nil, "BattleCity.GCenter")
 
 function BattleCity.GCenter:Ctor()
 	___rawset(self, "_player_count", 1)
+	___rawset(self, "_stage", 1)
 end
 
 function BattleCity.GCenter:Setup()
@@ -27,13 +28,16 @@ function BattleCity.GCenter:Setup()
 	BattleCity.g_LayerGroup:AddChild(self._dialog_layer, nil)
 	self._login_scene = BattleCity.g_Control:CreateControl("login_scene")
 	self._login_scene.visible = false
-	BattleCity.g_LayerGroup:AddChild(self._login_scene)
+	self._main_layer:AddChild(self._login_scene)
 	self._battle_select_scene = BattleCity.g_Control:CreateControl("battle_select")
 	self._battle_select_scene.visible = false
-	BattleCity.g_LayerGroup:AddChild(self._battle_select_scene)
+	self._main_layer:AddChild(self._battle_select_scene)
 	self._battle_scene = BattleCity.g_Control:CreateControl("battle_scene")
 	self._battle_scene.visible = false
-	BattleCity.g_LayerGroup:AddChild(self._battle_scene)
+	self._main_layer:AddChild(self._battle_scene)
+	self._battle_settlement = BattleCity.g_Control:CreateControl("battle_settlement")
+	self._battle_settlement.visible = false
+	self._main_layer:AddChild(self._battle_settlement)
 	if A_ModuleSystem:GetDebugInfo() == "debug" then
 		self._edit_scene = BattleCity.g_Control:CreateControl("edit_scene")
 		self._edit_scene.visible = false
@@ -61,30 +65,38 @@ function BattleCity.GCenter.__getter:battle_scene()
 	return self._battle_scene
 end
 
+function BattleCity.GCenter.__getter:battle_settlement()
+	return self._battle_settlement
+end
+
+function BattleCity.GCenter.__getter:edit_scene()
+	return self._edit_scene
+end
+
 function BattleCity.GCenter:Restart()
+	self._battle_scene:Hide()
 	self._player1 = {}
 	self._player1.level = 1
 	self._player1.life = 2
+	self._player1.score = 0
 	self._player2 = {}
 	self._player2.level = 1
 	self._player2.life = 2
+	self._player2.score = 0
 	self._login_scene:Show()
 end
 
 function BattleCity.GCenter:StartPlay(player_count)
 	self._player_count = player_count
-	self._battle_select_scene:Show(1)
+	self._battle_select_scene:Show(self._stage)
 end
 
-function BattleCity.GCenter:StartConstruction()
-end
-
-function BattleCity.GCenter:StartEdit()
-	self._edit_scene:Show()
-end
-
-function BattleCity.GCenter:StartBattle(stage)
-	self._battle_scene:Show(stage)
+function BattleCity.GCenter:NextStage()
+	self._stage = self._stage + (1)
+	if self._stage >= 100 then
+		self._stage = 1
+	end
+	self._battle_select_scene:Show(self._stage)
 end
 
 _G.g_GCenter = BattleCity.GCenter()

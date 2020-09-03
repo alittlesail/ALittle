@@ -12,8 +12,8 @@ option_map = {}
 })
 ALittle.RegStruct(446914235, "BattleCity.PlayerData", {
 name = "BattleCity.PlayerData", ns_name = "BattleCity", rl_name = "PlayerData", hash_code = 446914235,
-name_list = {"level","life"},
-type_list = {"int","int"},
+name_list = {"level","life","score"},
+type_list = {"int","int","int"},
 option_map = {}
 })
 

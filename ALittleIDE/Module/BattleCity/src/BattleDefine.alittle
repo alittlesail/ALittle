@@ -29,6 +29,7 @@ protected struct PlayerData
 {
     int level;
     int life;
+    int score;
 }
 
 protected enum ItemType

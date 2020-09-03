@@ -15,15 +15,28 @@ end
 
 function BattleCity.BattlePlayer:StartBorn(row, col, level, dir, speed)
 	self._level = level
+	if self._level >= 2 then
+		self._bullet_total = 2
+	else
+		self._bullet_total = 1
+	end
+	if self._level >= 2 then
+		self._bullet_speed = 0.4
+	else
+		self._bullet_speed = 0.2
+	end
 	self._dir = dir
 	self._speed = speed
 	self.x = col * g_GCenter.battle_scene.cell_size
 	self.y = row * g_GCenter.battle_scene.cell_size
+	self._sprite.visible = false
+	self._effect_explosion:Stop()
 	self._effect_explosion.visible = false
 	self._effect_born.visible = true
 	self._effect_born:Play()
 	local loop = ALittle.LoopTimer(Lua.Bind(self.HandleBornEnd, self), 1000)
 	loop:Start()
+	self:UpdateWalk(0)
 end
 
 function BattleCity.BattlePlayer:HandleBornEnd()
@@ -39,10 +52,15 @@ function BattleCity.BattlePlayer:LevelUp()
 		return
 	end
 	self._level = self._level + (1)
-	if self._level >= 2 then
+	if self._level >= 3 then
 		self._bullet_total = 2
 	else
 		self._bullet_total = 1
+	end
+	if self._level >= 2 then
+		self._bullet_speed = 0.4
+	else
+		self._bullet_speed = 0.2
 	end
 	self:UpdateWalk(0)
 end

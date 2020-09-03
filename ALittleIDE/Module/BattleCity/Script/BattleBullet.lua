@@ -1,6 +1,7 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
 do
 if _G.BattleCity == nil then _G.BattleCity = {} end
+local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
@@ -8,14 +9,19 @@ local ___ipairs = ipairs
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
 BattleCity.BattleBullet = Lua.Class(ALittle.DisplayLayout, "BattleCity.BattleBullet")
 
+function BattleCity.BattleBullet:Ctor()
+	___rawset(self, "_speed", 0.2)
+end
+
 function BattleCity.BattleBullet:TCtor()
 	self._effect_explosion.visible = false
 end
 
-function BattleCity.BattleBullet:Init(dir, role)
+function BattleCity.BattleBullet:Init(dir, role, speed)
 	self._dir = dir
 	self._role = role
 	self._alive = true
+	self._speed = speed
 	if self._dir == BattleCity.DirType.DT_UP then
 		self._bullet.col_index = 1
 	elseif self._dir == BattleCity.DirType.DT_RIGHT then
@@ -39,7 +45,7 @@ function BattleCity.BattleBullet:UpdateFrame(frame_time)
 	local explosion = false
 	if self._bullet.visible then
 		if self._dir == BattleCity.DirType.DT_UP then
-			self.y = self.y - (0.2 * frame_time)
+			self.y = self.y - (self._speed * frame_time)
 			local check_collision, check_explosion = g_GCenter.battle_scene:BulletCollisionByEntity(self, self.x, self.y, self.x + self.width, self.y + self.height)
 			if check_collision then
 				if check_explosion then
@@ -62,7 +68,7 @@ function BattleCity.BattleBullet:UpdateFrame(frame_time)
 				end
 			end
 		elseif self._dir == BattleCity.DirType.DT_RIGHT then
-			self.x = self.x + (0.2 * frame_time)
+			self.x = self.x + (self._speed * frame_time)
 			local check_collision, check_explosion = g_GCenter.battle_scene:BulletCollisionByEntity(self, self.x, self.y, self.x + self.width, self.y + self.height)
 			if check_collision then
 				if check_explosion then
@@ -85,7 +91,7 @@ function BattleCity.BattleBullet:UpdateFrame(frame_time)
 				end
 			end
 		elseif self._dir == BattleCity.DirType.DT_DOWN then
-			self.y = self.y + (0.2 * frame_time)
+			self.y = self.y + (self._speed * frame_time)
 			local check_collision, check_explosion = g_GCenter.battle_scene:BulletCollisionByEntity(self, self.x, self.y, self.x + self.width, self.y + self.height)
 			if check_collision then
 				if check_explosion then
@@ -108,7 +114,7 @@ function BattleCity.BattleBullet:UpdateFrame(frame_time)
 				end
 			end
 		else
-			self.x = self.x - (0.2 * frame_time)
+			self.x = self.x - (self._speed * frame_time)
 			local check_collision, check_explosion = g_GCenter.battle_scene:BulletCollisionByEntity(self, self.x, self.y, self.x + self.width, self.y + self.height)
 			if check_collision then
 				if check_explosion then
@@ -137,12 +143,12 @@ function BattleCity.BattleBullet:UpdateFrame(frame_time)
 		end
 	end
 	if explosion then
-		self._alive = false
 		self:BulletExpision()
 	end
 end
 
 function BattleCity.BattleBullet:BulletExpision()
+	self._alive = false
 	self._bullet.visible = false
 	self._effect_explosion.visible = true
 	self._effect_explosion:Play()
@@ -152,7 +158,6 @@ function BattleCity.BattleBullet:BulletEnd()
 	self._alive = false
 	self._effect_explosion:Stop()
 	self._effect_explosion.visible = false
-	self._role:AddBullet()
 	local loop = ALittle.LoopTimer(Lua.Bind(g_GCenter.battle_scene.BulletDeath, g_GCenter.battle_scene, self), 0)
 	loop:Start()
 end

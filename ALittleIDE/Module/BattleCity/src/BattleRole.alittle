@@ -12,9 +12,12 @@ public class BattleRole : ALittle.DisplayLayout
     private int _dir = 1;
 
     private int _bullet_total = 1;
-    private int _bullet_count = 0;
+    private int _fire_count = 0;
 
     private double _speed = 0;
+    private double _bullet_speed = 0.2;
+    private ALittle.LoopObject _effect_shield_loop;
+    private ALittle.LoopObject _effect_explosion_loop;
 
     public fun TCtor()
     {
@@ -42,8 +45,9 @@ public class BattleRole : ALittle.DisplayLayout
         this._effect_explosion.visible = true;
         this._effect_explosion.Play();
 
-        var loop = new ALittle.LoopTimer(bind(this.HandleExplosionEnd, this), 1000);
-        loop.Start();
+        if (this._effect_explosion_loop != null) this._effect_explosion_loop.Stop();
+        this._effect_explosion_loop = new ALittle.LoopTimer(bind(this.HandleExplosionEnd, this), 1000);
+        this._effect_explosion_loop.Start();
     }
 
     public fun StartShield()
@@ -51,8 +55,9 @@ public class BattleRole : ALittle.DisplayLayout
         this._effect_shield.visible = true;
         this._effect_shield.Play();
 
-        var loop = new ALittle.LoopTimer(bind(this.HandleShieldStop, this), 5000);
-        loop.Start();
+        if (this._effect_shield_loop != null) this._effect_shield_loop.Stop();
+        this._effect_shield_loop = new ALittle.LoopTimer(bind(this.HandleShieldStop, this), 5000);
+        this._effect_shield_loop.Start();
     }
 
     public fun UpdateFrame(int frame_time)
@@ -71,9 +76,9 @@ public class BattleRole : ALittle.DisplayLayout
 
     public fun Fire()
     {
-        if (this._bullet_count >= this._bullet_total) return;
-        this._bullet_count += 1;
-        g_GCenter.battle_scene.FireBullet(this);
+        if (this._fire_count >= this._bullet_total) return;
+        this._fire_count += 1;
+        g_GCenter.battle_scene.FireBullet(this, this._bullet_speed);
     }
 
     public fun Walk(int dir, int frame_time) : bool
@@ -234,8 +239,8 @@ public class BattleRole : ALittle.DisplayLayout
 
     public fun AddBullet()
     {
-        if (this._bullet_count == 0) return;
-        this._bullet_count -= 1;
+        if (this._fire_count <= 0) return;
+        this._fire_count -= 1;
     }
 
     public fun Clear()
